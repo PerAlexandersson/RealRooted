@@ -772,14 +772,15 @@ lemma isRealRooted_closed_segment_of_sameDegree {f g : ℝ[X]}
 /--
 ASW/PF bridge for the positive-combination endpoint target.
 
-If every nonnegative right pencil `f + z g` has a Polya-frequency coefficient
-sequence, then ASW gives real-rootedness of `f + z g`; rescaling by a positive
-constant gives real-rootedness of every positive combination
-`a f + b g`.
+If every nonnegative right pencil `f + z g` is nonzero and has a
+Polya-frequency coefficient sequence, then ASW gives real-rootedness of
+`f + z g`; rescaling by a positive constant gives real-rootedness of every
+positive combination `a f + b g`.
 -/
 theorem of_aissenSchoenbergWhitney_right_pencil
     {f g : ℝ[X]}
     (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hne : ∀ {z : ℝ}, 0 ≤ z → f + C z * g ≠ 0)
     (hnn : ∀ {z : ℝ}, 0 ≤ z → HasNonnegCoeffs (f + C z * g))
     (hpf : ∀ {z : ℝ}, 0 ≤ z →
       IsPolyaFrequencySequence (fun n => (f + C z * g).coeff n)) :
@@ -787,7 +788,7 @@ theorem of_aissenSchoenbergWhitney_right_pencil
   intro a b ha hb
   let z : ℝ := b / a
   have hz : 0 ≤ z := div_nonneg hb.le ha.le
-  have hp_rr : IsRealRooted (f + C z * g) := (hASW (hnn hz) (hpf hz)).1
+  have hp_rr : IsRealRooted (f + C z * g) := (hASW (hne hz) (hnn hz) (hpf hz)).1
   have haz : a * z = b := by
     dsimp [z]
     exact mul_div_cancel₀ b ha.ne'
@@ -815,11 +816,12 @@ nonnegativity rather than the PF alias.
 theorem of_aissenSchoenbergWhitney_right_pencil_tnn
     {f g : ℝ[X]}
     (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hne : ∀ {z : ℝ}, 0 ≤ z → f + C z * g ≠ 0)
     (hnn : ∀ {z : ℝ}, 0 ≤ z → HasNonnegCoeffs (f + C z * g))
     (htnn : ∀ {z : ℝ}, 0 ≤ z →
       ToeplitzTotallyNonnegative (fun n => (f + C z * g).coeff n)) :
     PosComboRealRooted f g :=
-  PosComboRealRooted.of_aissenSchoenbergWhitney_right_pencil hASW hnn
+  PosComboRealRooted.of_aissenSchoenbergWhitney_right_pencil hASW hne hnn
     (fun {z} hz => htnn (z := z) hz)
 
 /-- Any two positive combinations from the same one-parameter family again form

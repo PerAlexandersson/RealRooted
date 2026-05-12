@@ -146,15 +146,22 @@ Catalog context:
 
 - `nonneg_of_isPolyaFrequencySequence` and
   `hasNonnegCoeffs_of_isPolyaFrequencySequence_coeff`: basic PF consequences.
+- `toeplitzTotallyNonnegative_zero`, `isPolyaFrequencySequence_zero`, and
+  `not_aissenSchoenbergWhitneyForward_without_nonzero`: the zero sequence is
+  PF, so the forward ASW-to-`IsRealRooted` interface must explicitly exclude
+  the zero polynomial.
 - `isPolyaFrequencySequence_veroneseSectionSeq`: fixed-residue subsequences of
   a PF sequence are PF.
 - `isPolyaFrequencySequence_veroneseSectionPolynomial_coeff` and
   `hasNonnegCoeffs_veroneseSectionPolynomial`: coefficient-level facts for
   Veronese section polynomials.
-- `isRealRooted_veroneseSectionPolynomial_of_realRooted_nonneg`: a
-  real-rooted polynomial with nonnegative coefficients has real-rooted Veronese
-  section polynomials, conditional on the forward and reverse
-  Aissen-Schoenberg-Whitney interfaces.
+- `veroneseSectionPolynomial_ne_zero_of_coeff_ne_zero`: a selected nonzero
+  coefficient gives a nonzero section.
+- `veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_realRooted_nonneg` and
+  `isRealRooted_veroneseSectionPolynomial_of_realRooted_nonneg`: a real-rooted
+  polynomial with nonnegative coefficients has zero-or-real-rooted Veronese
+  sections, and strictly real-rooted nonzero sections, conditional on the
+  forward and reverse Aissen-Schoenberg-Whitney interfaces.
 - `VeronesePairFullyInterlacing.section`,
   `VeronesePairFullyInterlacing.sectionPair`, and
   `VeronesePairFullyInterlacing.sectionPair_fin`: Veronese sections preserve
@@ -231,7 +238,10 @@ Catalog context:
 Several declarations are intentionally statement-level interfaces for classical
 theorems that are not yet fully formalized here.  Recent work also found that a
 sign-free Hermite-Biehler forward interface was false as stated; the theorem
-`not_hermiteBiehlerForwardStatement` records the checked counterexample.
+`not_hermiteBiehlerForwardStatement` records the checked counterexample.  The
+forward Aissen-Schoenberg-Whitney interface is also stated for nonzero
+polynomials, since PF includes the zero sequence while `IsRealRooted` is strict
+in this library.
 
 The Veronese-section file is in this category.  It fully formalizes the
 coefficient definitions, Toeplitz-total-nonnegativity submatrix argument, and

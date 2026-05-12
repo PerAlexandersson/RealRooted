@@ -30,6 +30,28 @@ def ToeplitzTotallyNonnegative (a : ℕ → ℝ) : Prop :=
 def IsPolyaFrequencySequence (a : ℕ → ℝ) : Prop :=
   ToeplitzTotallyNonnegative a
 
+/-- The zero sequence is Toeplitz totally nonnegative.  This is harmless for
+PF sequences, but it means the strict real-rootedness conclusion in ASW must
+exclude the zero polynomial. -/
+theorem toeplitzTotallyNonnegative_zero :
+    ToeplitzTotallyNonnegative (fun _ : ℕ => (0 : ℝ)) := by
+  intro n rows cols hrows hcols
+  by_cases hn : n = 0
+  · subst n
+    norm_num [toeplitzMinor]
+  · have hnpos : 0 < n := Nat.pos_of_ne_zero hn
+    have hmatrix :
+        toeplitzMinor (fun _ : ℕ => (0 : ℝ)) rows cols = 0 := by
+      ext i j
+      simp [toeplitzMinor, toeplitzEntry]
+    rw [hmatrix]
+    have hne : Nonempty (Fin n) := ⟨⟨0, hnpos⟩⟩
+    rw [Matrix.det_zero hne]
+
+theorem isPolyaFrequencySequence_zero :
+    IsPolyaFrequencySequence (fun _ : ℕ => (0 : ℝ)) :=
+  toeplitzTotallyNonnegative_zero
+
 /-- A Polya-frequency sequence has nonnegative entries, by its `1 × 1`
 Toeplitz minors. -/
 theorem nonneg_of_isPolyaFrequencySequence
@@ -66,10 +88,11 @@ theorem hasNonnegCoeffs_of_isPolyaFrequencySequence_coeff
   exact nonneg_of_isPolyaFrequencySequence hpf k
 
 /-- Planning stub for the forward Aissen--Schoenberg--Whitney theorem:
-Toeplitz total nonnegativity of the coefficient sequence should imply that the
-polynomial has only real nonpositive roots. -/
+Toeplitz total nonnegativity of the coefficient sequence of a nonzero
+polynomial should imply that the polynomial has only real nonpositive roots. -/
 def aissenSchoenbergWhitneyForwardStatement : Prop :=
   ∀ ⦃p : ℝ[X]⦄,
+    p ≠ 0 →
     HasNonnegCoeffs p →
     IsPolyaFrequencySequence (fun n => p.coeff n) →
     IsRealRooted p ∧ ∀ r ∈ p.roots, r ≤ 0
@@ -78,6 +101,7 @@ def aissenSchoenbergWhitneyForwardStatement : Prop :=
 hypothesis removed. -/
 def aissenSchoenbergWhitneyForwardNoNonnegStatement : Prop :=
   ∀ ⦃p : ℝ[X]⦄,
+    p ≠ 0 →
     IsPolyaFrequencySequence (fun n => p.coeff n) →
     IsRealRooted p ∧ ∀ r ∈ p.roots, r ≤ 0
 
@@ -86,16 +110,16 @@ formulation, since PF coefficients are already nonnegative. -/
 theorem aissenSchoenbergWhitneyForwardNoNonneg_of_forward
     (hASW : aissenSchoenbergWhitneyForwardStatement) :
     aissenSchoenbergWhitneyForwardNoNonnegStatement := by
-  intro p hpf
-  exact hASW (hasNonnegCoeffs_of_isPolyaFrequencySequence_coeff hpf) hpf
+  intro p hp0 hpf
+  exact hASW hp0 (hasNonnegCoeffs_of_isPolyaFrequencySequence_coeff hpf) hpf
 
 /-- The no-extra-nonnegativity formulation implies the current forward ASW
 statement. -/
 theorem aissenSchoenbergWhitneyForward_of_noNonneg
     (hASW : aissenSchoenbergWhitneyForwardNoNonnegStatement) :
     aissenSchoenbergWhitneyForwardStatement := by
-  intro p _ hpf
-  exact hASW hpf
+  intro p hp0 _ hpf
+  exact hASW hp0 hpf
 
 /-- The two forward ASW interfaces are equivalent. -/
 theorem aissenSchoenbergWhitneyForward_iff_noNonneg :
@@ -104,6 +128,27 @@ theorem aissenSchoenbergWhitneyForward_iff_noNonneg :
   constructor
   · exact aissenSchoenbergWhitneyForwardNoNonneg_of_forward
   · exact aissenSchoenbergWhitneyForward_of_noNonneg
+
+/-- Without a nonzero hypothesis, the forward ASW interface would force the
+zero polynomial to be real-rooted, contrary to the strict local definition of
+`IsRealRooted`. -/
+theorem not_aissenSchoenbergWhitneyForward_without_nonzero :
+    ¬ (∀ ⦃p : ℝ[X]⦄,
+      HasNonnegCoeffs p →
+      IsPolyaFrequencySequence (fun n => p.coeff n) →
+      IsRealRooted p ∧ ∀ r ∈ p.roots, r ≤ 0) := by
+  intro h
+  have hnn : HasNonnegCoeffs (0 : ℝ[X]) := by
+    intro n
+    simp
+  have hpf : IsPolyaFrequencySequence (fun n => (0 : ℝ[X]).coeff n) := by
+    have hcoeff :
+        (fun n => (0 : ℝ[X]).coeff n) = (fun _ : ℕ => (0 : ℝ)) := by
+      funext n
+      simp
+    rw [hcoeff]
+    exact @isPolyaFrequencySequence_zero
+  exact (h hnn hpf).1.1 rfl
 
 /-- Planning stub for the reverse Aissen--Schoenberg--Whitney theorem. -/
 def aissenSchoenbergWhitneyReverseStatement : Prop :=

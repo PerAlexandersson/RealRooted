@@ -101,6 +101,17 @@ theorem hasNonnegCoeffs_veroneseSectionPolynomial {r k : ℕ} {p : ℝ[X]}
   rw [coeff_veroneseSectionPolynomial (r := r) (k := k) (p := p) hr]
   exact hp (k + r * n)
 
+theorem veroneseSectionPolynomial_ne_zero_of_coeff_ne_zero
+    {r k n : ℕ} {p : ℝ[X]} (hr : 0 < r)
+    (hcoeff : p.coeff (k + r * n) ≠ 0) :
+    veroneseSectionPolynomial r k p ≠ 0 := by
+  intro hzero
+  have hcoeff_zero : (veroneseSectionPolynomial r k p).coeff n = 0 := by
+    rw [hzero]
+    simp
+  rw [coeff_veroneseSectionPolynomial (r := r) (k := k) (p := p) hr] at hcoeff_zero
+  exact hcoeff hcoeff_zero
+
 /-! ## Two-row Lace matrices -/
 
 /-- The Lace matrix of a two-term sequence of coefficient sequences.
@@ -1328,12 +1339,26 @@ theorem and a PF certificate for the original polynomial. -/
 theorem isRealRooted_veroneseSectionPolynomial_of_pf {p : ℝ[X]}
     (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hp : IsPolyaFrequencySequence (fun n => p.coeff n)) {r k : ℕ}
-    (hr : 0 < r) (hk : k < r) :
+    (hr : 0 < r) (hk : k < r)
+    (hsec0 : veroneseSectionPolynomial r k p ≠ 0) :
     IsRealRooted (veroneseSectionPolynomial r k p) := by
   have hpf : IsPolyaFrequencySequence
       (fun n => (veroneseSectionPolynomial r k p).coeff n) :=
     isPolyaFrequencySequence_veroneseSectionPolynomial_coeff (p := p) hp hr hk
-  exact (hASW (hasNonnegCoeffs_of_isPolyaFrequencySequence_coeff hpf) hpf).1
+  exact (hASW hsec0 (hasNonnegCoeffs_of_isPolyaFrequencySequence_coeff hpf) hpf).1
+
+/-- Zero-aware real-rootedness of Veronese sections from the forward ASW
+theorem and a PF certificate for the original polynomial. -/
+theorem veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_pf {p : ℝ[X]}
+    (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hp : IsPolyaFrequencySequence (fun n => p.coeff n)) {r k : ℕ}
+    (hr : 0 < r) (hk : k < r) :
+    veroneseSectionPolynomial r k p = 0 ∨
+      IsRealRooted (veroneseSectionPolynomial r k p) := by
+  by_cases hsec0 : veroneseSectionPolynomial r k p = 0
+  · exact Or.inl hsec0
+  · exact Or.inr <|
+      isRealRooted_veroneseSectionPolynomial_of_pf hASW hp hr hk hsec0
 
 /-- Conditional PF preservation for Veronese sections of real-rooted
 nonnegative-coefficient polynomials, using the reverse ASW theorem. -/
@@ -1356,12 +1381,29 @@ theorem isRealRooted_veroneseSectionPolynomial_of_realRooted_nonneg {p : ℝ[X]}
     (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hASWrev : aissenSchoenbergWhitneyReverseStatement)
     (hpnn : HasNonnegCoeffs p) (hprr : IsRealRooted p) {r k : ℕ}
-    (hr : 0 < r) (hk : k < r) :
+    (hr : 0 < r) (hk : k < r)
+    (hsec0 : veroneseSectionPolynomial r k p ≠ 0) :
     IsRealRooted (veroneseSectionPolynomial r k p) := by
   have hpf : IsPolyaFrequencySequence
       (fun n => (veroneseSectionPolynomial r k p).coeff n) :=
     isPolyaFrequencySequence_veroneseSectionPolynomial_of_realRooted_nonneg
       (p := p) hASWrev hpnn hprr hr hk
-  exact (hASW (hasNonnegCoeffs_of_isPolyaFrequencySequence_coeff hpf) hpf).1
+  exact (hASW hsec0 (hasNonnegCoeffs_of_isPolyaFrequencySequence_coeff hpf) hpf).1
+
+/-- Zero-aware real-rootedness of Veronese sections of real-rooted
+nonnegative-coefficient polynomials, assuming both directions of ASW. -/
+theorem veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_realRooted_nonneg
+    {p : ℝ[X]}
+    (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hASWrev : aissenSchoenbergWhitneyReverseStatement)
+    (hpnn : HasNonnegCoeffs p) (hprr : IsRealRooted p) {r k : ℕ}
+    (hr : 0 < r) (hk : k < r) :
+    veroneseSectionPolynomial r k p = 0 ∨
+      IsRealRooted (veroneseSectionPolynomial r k p) := by
+  by_cases hsec0 : veroneseSectionPolynomial r k p = 0
+  · exact Or.inl hsec0
+  · exact Or.inr <|
+      isRealRooted_veroneseSectionPolynomial_of_realRooted_nonneg
+        hASW hASWrev hpnn hprr hr hk hsec0
 
 end RealRooted

@@ -5037,8 +5037,8 @@ theorem prec_of_affine_segment_endpoints_sameDegree_nonneg
 ASW/PF version of `prec_of_affine_segment_endpoints_nonneg`.
 
 For every positive affine factor `sX+t`, it is enough to prove Polya-frequency
-for the coefficient sequence of the endpoint pencil `F0 + z F1`, `z>=0`.
-ASW turns this Toeplitz-total-nonnegativity input into endpoint
+for the coefficient sequence of each nonzero endpoint pencil `F0 + z F1`,
+`z>=0`. ASW turns this Toeplitz-total-nonnegativity input into endpoint
 `PosComboRealRooted`; the preceding affine-segment wrapper then gives the
 directed segment relation.
 -/
@@ -5050,6 +5050,10 @@ theorem prec_of_affine_segment_endpoint_pf_nonneg
     (hPβnn : HasNonnegCoeffs (C (1 - β) * P0 + C β * P1))
     (hHβnn : HasNonnegCoeffs (C (1 - β) * H0 + C β * H1))
     (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hpencil_ne :
+      ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
+        ((((C s * X + C t) * P0) + H0) +
+          C z * (((C s * X + C t) * P1) + H1)) ≠ 0)
     (hpencil_nn :
       ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
         HasNonnegCoeffs
@@ -5075,6 +5079,7 @@ theorem prec_of_affine_segment_endpoint_pf_nonneg
     (f := (((C s * X + C t) * P0) + H0))
     (g := (((C s * X + C t) * P1) + H1))
     hASW
+    (fun {z} hz => hpencil_ne hs ht hz)
     (fun {z} hz => hpencil_nn hs ht hz)
     (fun {z} hz => hpencil_pf hs ht hz)
 
@@ -5094,6 +5099,10 @@ theorem prec_of_affine_segment_endpoint_tnn_nonneg
     (hPβnn : HasNonnegCoeffs (C (1 - β) * P0 + C β * P1))
     (hHβnn : HasNonnegCoeffs (C (1 - β) * H0 + C β * H1))
     (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hpencil_ne :
+      ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
+        ((((C s * X + C t) * P0) + H0) +
+          C z * (((C s * X + C t) * P1) + H1)) ≠ 0)
     (hpencil_nn :
       ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
         HasNonnegCoeffs
@@ -5114,7 +5123,7 @@ theorem prec_of_affine_segment_endpoint_tnn_nonneg
     Prec (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) := by
   exact
     prec_of_affine_segment_endpoint_pf_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn hHβnn hASW
-      hpencil_nn
+      hpencil_ne hpencil_nn
       (fun {s t z} hs ht hz => hpencil_tnn hs ht hz)
       hleft hright
 
@@ -5131,6 +5140,10 @@ theorem prec_of_affine_segment_endpoint_pf_sameDegree_nonneg
     (hPβnn : HasNonnegCoeffs (C (1 - β) * P0 + C β * P1))
     (hHβnn : HasNonnegCoeffs (C (1 - β) * H0 + C β * H1))
     (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hpencil_ne :
+      ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
+        ((((C s * X + C t) * P0) + H0) +
+          C z * (((C s * X + C t) * P1) + H1)) ≠ 0)
     (hpencil_nn :
       ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
         HasNonnegCoeffs
@@ -5160,6 +5173,7 @@ theorem prec_of_affine_segment_endpoint_pf_sameDegree_nonneg
     (f := (((C s * X + C t) * P0) + H0))
     (g := (((C s * X + C t) * P1) + H1))
     hASW
+    (fun {z} hz => hpencil_ne hs ht hz)
     (fun {z} hz => hpencil_nn hs ht hz)
     (fun {z} hz => hpencil_pf hs ht hz)
 
@@ -5174,6 +5188,10 @@ theorem prec_of_affine_segment_endpoint_tnn_sameDegree_nonneg
     (hPβnn : HasNonnegCoeffs (C (1 - β) * P0 + C β * P1))
     (hHβnn : HasNonnegCoeffs (C (1 - β) * H0 + C β * H1))
     (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hpencil_ne :
+      ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
+        ((((C s * X + C t) * P0) + H0) +
+          C z * (((C s * X + C t) * P1) + H1)) ≠ 0)
     (hpencil_nn :
       ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
         HasNonnegCoeffs
@@ -5198,7 +5216,7 @@ theorem prec_of_affine_segment_endpoint_tnn_sameDegree_nonneg
     Prec (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) := by
   exact
     prec_of_affine_segment_endpoint_pf_sameDegree_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn
-      hHβnn hASW hpencil_nn
+      hHβnn hASW hpencil_ne hpencil_nn
       (fun {s t z} hs ht hz => hpencil_tnn hs ht hz)
       hleft_pos hright_pos hdeg
 
