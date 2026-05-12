@@ -604,6 +604,44 @@ def veronesePairSectionPolynomial (r : ℕ) (p q : ℝ[X]) (i : ℕ) : ℝ[X] :=
   · simp [hi, veroneseSectionSeq,
       coeff_veroneseSectionPolynomial (r := r) (k := i / 2) (p := q) hr]
 
+theorem coeff_function_veroneseSectionPolynomial {r k : ℕ} {p : ℝ[X]}
+    (hr : 0 < r) :
+    (fun n => (veroneseSectionPolynomial r k p).coeff n) =
+      veroneseSectionSeq r k (fun n => p.coeff n) := by
+  funext n
+  simp [veroneseSectionSeq,
+    coeff_veroneseSectionPolynomial (r := r) (k := k) (p := p) hr]
+
+theorem coeff_function_veronesePairSectionPolynomial {r i : ℕ} {p q : ℝ[X]}
+    (hr : 0 < r) :
+    (fun n => (veronesePairSectionPolynomial r p q i).coeff n) =
+      veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) i := by
+  funext n
+  exact coeff_veronesePairSectionPolynomial
+    (r := r) (i := i) (p := p) (q := q) hr
+
+theorem fullyInterlacingPair_veroneseSectionPolynomial_coeff
+    {p q : ℝ[X]} {r k : ℕ}
+    (hfull : FullyInterlacingPair (fun n => p.coeff n) (fun n => q.coeff n))
+    (hr : 0 < r) (hk : k < r) :
+    FullyInterlacingPair
+      (fun n => (veroneseSectionPolynomial r k p).coeff n)
+      (fun n => (veroneseSectionPolynomial r k q).coeff n) := by
+  rw [coeff_function_veroneseSectionPolynomial (p := p) hr,
+    coeff_function_veroneseSectionPolynomial (p := q) hr]
+  exact fullyInterlacingPair_veroneseSectionPair hfull hr hk
+
+theorem fullyInterlacingPair_veronesePairSectionPolynomial_coeff
+    {p q : ℝ[X]} {r i j : ℕ}
+    (hfull : FullyInterlacingPair (fun n => p.coeff n) (fun n => q.coeff n))
+    (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
+    FullyInterlacingPair
+      (fun n => (veronesePairSectionPolynomial r p q i).coeff n)
+      (fun n => (veronesePairSectionPolynomial r p q j).coeff n) := by
+  rw [coeff_function_veronesePairSectionPolynomial (p := p) (q := q) (i := i) hr,
+    coeff_function_veronesePairSectionPolynomial (p := p) (q := q) (i := j) hr]
+  exact fullyInterlacingPair_veroneseSectionPairwise hfull hr hij hj
+
 /-! ## Conditional bridge to polynomial interlacing -/
 
 /-- Strong interface for the polynomial-to-lace direction.
@@ -790,28 +828,8 @@ theorem prec0_veroneseSectionPolynomial_of_fullyInterlacingPair
     (hfull : FullyInterlacingPair (fun n => p.coeff n) (fun n => q.coeff n))
     (hr : 0 < r) (hk : k < r) :
     Prec0 (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) := by
-  apply hFullToPrec0
-  have hfull' :
-      FullyInterlacingPair (veroneseSectionSeq r k (fun n => p.coeff n))
-        (veroneseSectionSeq r k (fun n => q.coeff n)) :=
-    fullyInterlacingPair_veroneseSectionPair hfull hr hk
-  have hpcoeff :
-      (fun n => (veroneseSectionPolynomial r k p).coeff n) =
-        veroneseSectionSeq r k (fun n => p.coeff n) := by
-    funext n
-    simp [veroneseSectionSeq,
-      coeff_veroneseSectionPolynomial (r := r) (k := k) (p := p) hr]
-  have hqcoeff :
-      (fun n => (veroneseSectionPolynomial r k q).coeff n) =
-        veroneseSectionSeq r k (fun n => q.coeff n) := by
-    funext n
-    simp [veroneseSectionSeq,
-      coeff_veroneseSectionPolynomial (r := r) (k := k) (p := q) hr]
-  rw [hpcoeff, hqcoeff]
-  change InfiniteMatrixTotallyNonnegative
-    (lacePairEntry (veroneseSectionSeq r k (fun n => p.coeff n))
-      (veroneseSectionSeq r k (fun n => q.coeff n)))
-  exact hfull'
+  exact hFullToPrec0
+    (fullyInterlacingPair_veroneseSectionPolynomial_coeff hfull hr hk)
 
 /-- Strict version of
 `prec0_veroneseSectionPolynomial_of_fullyInterlacingPair`. -/
@@ -821,28 +839,8 @@ theorem prec_veroneseSectionPolynomial_of_fullyInterlacingPair
     (hfull : FullyInterlacingPair (fun n => p.coeff n) (fun n => q.coeff n))
     (hr : 0 < r) (hk : k < r) :
     Prec (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) := by
-  apply hFullToPrec
-  have hfull' :
-      FullyInterlacingPair (veroneseSectionSeq r k (fun n => p.coeff n))
-        (veroneseSectionSeq r k (fun n => q.coeff n)) :=
-    fullyInterlacingPair_veroneseSectionPair hfull hr hk
-  have hpcoeff :
-      (fun n => (veroneseSectionPolynomial r k p).coeff n) =
-        veroneseSectionSeq r k (fun n => p.coeff n) := by
-    funext n
-    simp [veroneseSectionSeq,
-      coeff_veroneseSectionPolynomial (r := r) (k := k) (p := p) hr]
-  have hqcoeff :
-      (fun n => (veroneseSectionPolynomial r k q).coeff n) =
-        veroneseSectionSeq r k (fun n => q.coeff n) := by
-    funext n
-    simp [veroneseSectionSeq,
-      coeff_veroneseSectionPolynomial (r := r) (k := k) (p := q) hr]
-  rw [hpcoeff, hqcoeff]
-  change InfiniteMatrixTotallyNonnegative
-    (lacePairEntry (veroneseSectionSeq r k (fun n => p.coeff n))
-      (veroneseSectionSeq r k (fun n => q.coeff n)))
-  exact hfull'
+  exact hFullToPrec
+    (fullyInterlacingPair_veroneseSectionPolynomial_coeff hfull hr hk)
 
 /-- Lace-certificate version of the pairwise Veronese polynomial theorem. -/
 theorem prec0_veronesePairSectionPolynomial_of_fullyInterlacingPair
@@ -852,30 +850,8 @@ theorem prec0_veronesePairSectionPolynomial_of_fullyInterlacingPair
     (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
     Prec0 (veronesePairSectionPolynomial r p q i)
       (veronesePairSectionPolynomial r p q j) := by
-  apply hFullToPrec0
-  have hfull' :
-      FullyInterlacingPair
-        (veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) i)
-        (veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) j) :=
-    fullyInterlacingPair_veroneseSectionPairwise hfull hr hij hj
-  have hicoeff :
-      (fun n => (veronesePairSectionPolynomial r p q i).coeff n) =
-        veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) i := by
-    funext n
-    exact coeff_veronesePairSectionPolynomial
-      (r := r) (i := i) (n := n) (p := p) (q := q) hr
-  have hjcoeff :
-      (fun n => (veronesePairSectionPolynomial r p q j).coeff n) =
-        veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) j := by
-    funext n
-    exact coeff_veronesePairSectionPolynomial
-      (r := r) (i := j) (n := n) (p := p) (q := q) hr
-  rw [hicoeff, hjcoeff]
-  change InfiniteMatrixTotallyNonnegative
-    (lacePairEntry
-      (veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) i)
-      (veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) j))
-  exact hfull'
+  exact hFullToPrec0
+    (fullyInterlacingPair_veronesePairSectionPolynomial_coeff hfull hr hij hj)
 
 /-- Strict lace-certificate version of the pairwise Veronese polynomial
 theorem. -/
@@ -886,30 +862,8 @@ theorem prec_veronesePairSectionPolynomial_of_fullyInterlacingPair
     (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
     Prec (veronesePairSectionPolynomial r p q i)
       (veronesePairSectionPolynomial r p q j) := by
-  apply hFullToPrec
-  have hfull' :
-      FullyInterlacingPair
-        (veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) i)
-        (veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) j) :=
-    fullyInterlacingPair_veroneseSectionPairwise hfull hr hij hj
-  have hicoeff :
-      (fun n => (veronesePairSectionPolynomial r p q i).coeff n) =
-        veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) i := by
-    funext n
-    exact coeff_veronesePairSectionPolynomial
-      (r := r) (i := i) (n := n) (p := p) (q := q) hr
-  have hjcoeff :
-      (fun n => (veronesePairSectionPolynomial r p q j).coeff n) =
-        veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) j := by
-    funext n
-    exact coeff_veronesePairSectionPolynomial
-      (r := r) (i := j) (n := n) (p := p) (q := q) hr
-  rw [hicoeff, hjcoeff]
-  change InfiniteMatrixTotallyNonnegative
-    (lacePairEntry
-      (veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) i)
-      (veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) j))
-  exact hfull'
+  exact hFullToPrec
+    (fullyInterlacingPair_veronesePairSectionPolynomial_coeff hfull hr hij hj)
 
 /-- Fin-indexed zero-aware lace-certificate version. -/
 theorem prec0_veronesePairSectionPolynomial_fin_of_fullyInterlacingPair
@@ -1234,28 +1188,8 @@ theorem prec0_veroneseSectionPolynomial_of_prec {p q : ℝ[X]} {r k : ℕ}
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
     (hpq : Prec p q) (hr : 0 < r) (hk : k < r) :
     Prec0 (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) := by
-  apply hFullToPrec0
-  have hfull :
-      FullyInterlacingPair (veroneseSectionSeq r k (fun n => p.coeff n))
-        (veroneseSectionSeq r k (fun n => q.coeff n)) :=
-    fullyInterlacingPair_veroneseSectionPair (hPrecToFull hpq) hr hk
-  have hpcoeff :
-      (fun n => (veroneseSectionPolynomial r k p).coeff n) =
-        veroneseSectionSeq r k (fun n => p.coeff n) := by
-    funext n
-    simp [veroneseSectionSeq,
-      coeff_veroneseSectionPolynomial (r := r) (k := k) (p := p) hr]
-  have hqcoeff :
-      (fun n => (veroneseSectionPolynomial r k q).coeff n) =
-        veroneseSectionSeq r k (fun n => q.coeff n) := by
-    funext n
-    simp [veroneseSectionSeq,
-      coeff_veroneseSectionPolynomial (r := r) (k := k) (p := q) hr]
-  rw [hpcoeff, hqcoeff]
-  change InfiniteMatrixTotallyNonnegative
-    (lacePairEntry (veroneseSectionSeq r k (fun n => p.coeff n))
-      (veroneseSectionSeq r k (fun n => q.coeff n)))
-  exact hfull
+  exact prec0_veroneseSectionPolynomial_of_fullyInterlacingPair
+    hFullToPrec0 (hPrecToFull hpq) hr hk
 
 /-- Strict version of `prec0_veroneseSectionPolynomial_of_prec`, for
 applications where the two-row Lace condition is known to imply the strict
@@ -1265,28 +1199,8 @@ theorem prec_veroneseSectionPolynomial_of_prec {p q : ℝ[X]} {r k : ℕ}
     (hFullToPrec : FullyInterlacingPairToPrecStatement)
     (hpq : Prec p q) (hr : 0 < r) (hk : k < r) :
     Prec (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) := by
-  apply hFullToPrec
-  have hfull :
-      FullyInterlacingPair (veroneseSectionSeq r k (fun n => p.coeff n))
-        (veroneseSectionSeq r k (fun n => q.coeff n)) :=
-    fullyInterlacingPair_veroneseSectionPair (hPrecToFull hpq) hr hk
-  have hpcoeff :
-      (fun n => (veroneseSectionPolynomial r k p).coeff n) =
-        veroneseSectionSeq r k (fun n => p.coeff n) := by
-    funext n
-    simp [veroneseSectionSeq,
-      coeff_veroneseSectionPolynomial (r := r) (k := k) (p := p) hr]
-  have hqcoeff :
-      (fun n => (veroneseSectionPolynomial r k q).coeff n) =
-        veroneseSectionSeq r k (fun n => q.coeff n) := by
-    funext n
-    simp [veroneseSectionSeq,
-      coeff_veroneseSectionPolynomial (r := r) (k := k) (p := q) hr]
-  rw [hpcoeff, hqcoeff]
-  change InfiniteMatrixTotallyNonnegative
-    (lacePairEntry (veroneseSectionSeq r k (fun n => p.coeff n))
-      (veroneseSectionSeq r k (fun n => q.coeff n)))
-  exact hfull
+  exact prec_veroneseSectionPolynomial_of_fullyInterlacingPair
+    hFullToPrec (hPrecToFull hpq) hr hk
 
 /-- Conditional polynomial version of the pairwise form of
 Athanasiadis--Wagner Corollary 5.6.  Among the interleaved sequence
@@ -1298,30 +1212,8 @@ theorem prec0_veronesePairSectionPolynomial_of_prec {p q : ℝ[X]} {r i j : ℕ}
     (hpq : Prec p q) (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
     Prec0 (veronesePairSectionPolynomial r p q i)
       (veronesePairSectionPolynomial r p q j) := by
-  apply hFullToPrec0
-  have hfull :
-      FullyInterlacingPair
-        (veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) i)
-        (veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) j) :=
-    fullyInterlacingPair_veroneseSectionPairwise (hPrecToFull hpq) hr hij hj
-  have hicoeff :
-      (fun n => (veronesePairSectionPolynomial r p q i).coeff n) =
-        veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) i := by
-    funext n
-    exact coeff_veronesePairSectionPolynomial
-      (r := r) (i := i) (n := n) (p := p) (q := q) hr
-  have hjcoeff :
-      (fun n => (veronesePairSectionPolynomial r p q j).coeff n) =
-        veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) j := by
-    funext n
-    exact coeff_veronesePairSectionPolynomial
-      (r := r) (i := j) (n := n) (p := p) (q := q) hr
-  rw [hicoeff, hjcoeff]
-  change InfiniteMatrixTotallyNonnegative
-    (lacePairEntry
-      (veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) i)
-      (veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) j))
-  exact hfull
+  exact prec0_veronesePairSectionPolynomial_of_fullyInterlacingPair
+    hFullToPrec0 (hPrecToFull hpq) hr hij hj
 
 /-- Strict version of `prec0_veronesePairSectionPolynomial_of_prec`, for
 nondegenerate applications where the Lace condition is known to imply the
@@ -1332,30 +1224,8 @@ theorem prec_veronesePairSectionPolynomial_of_prec {p q : ℝ[X]} {r i j : ℕ}
     (hpq : Prec p q) (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
     Prec (veronesePairSectionPolynomial r p q i)
       (veronesePairSectionPolynomial r p q j) := by
-  apply hFullToPrec
-  have hfull :
-      FullyInterlacingPair
-        (veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) i)
-        (veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) j) :=
-    fullyInterlacingPair_veroneseSectionPairwise (hPrecToFull hpq) hr hij hj
-  have hicoeff :
-      (fun n => (veronesePairSectionPolynomial r p q i).coeff n) =
-        veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) i := by
-    funext n
-    exact coeff_veronesePairSectionPolynomial
-      (r := r) (i := i) (n := n) (p := p) (q := q) hr
-  have hjcoeff :
-      (fun n => (veronesePairSectionPolynomial r p q j).coeff n) =
-        veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) j := by
-    funext n
-    exact coeff_veronesePairSectionPolynomial
-      (r := r) (i := j) (n := n) (p := p) (q := q) hr
-  rw [hicoeff, hjcoeff]
-  change InfiniteMatrixTotallyNonnegative
-    (lacePairEntry
-      (veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) i)
-      (veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) j))
-  exact hfull
+  exact prec_veronesePairSectionPolynomial_of_fullyInterlacingPair
+    hFullToPrec (hPrecToFull hpq) hr hij hj
 
 /-- Fin-indexed version of
 `prec0_veronesePairSectionPolynomial_of_prec`.  This states the pairwise
