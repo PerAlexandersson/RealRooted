@@ -25,6 +25,22 @@ lake build RealRooted.VeroneseSection
 lake build RealRooted.HurwitzMatrix
 ```
 
+## References And Context
+
+The formalization follows the real-rootedness and interlacing terminology used
+in the Symmetric Functions Catalog:
+
+- [Interlacing polynomials](https://www.symmetricfunctions.com/realRootedInterlacing.htm#interlacingPolynomials)
+  for interlacing, Sturm sequences, compatible polynomials, and preservers.
+- [Real-rooted words](https://www.symmetricfunctions.com/realRootedWords.htm#realRootedWords)
+  for permutation, set-partition, and Stirling-permutation polynomial
+  examples.
+- [Real-rooted Catalan families](https://www.symmetricfunctions.com/realRootedCatalan.htm#realRootedCatalan)
+  for Catalan-family examples such as Motzkin and Narayana polynomials.
+
+Combinatorial sequence modules are collected under
+`RealRooted/CombinatorialExamples/`.
+
 ## Main Definitions
 
 - `IsRealRooted p`: a nonzero real polynomial whose multiset of real roots has

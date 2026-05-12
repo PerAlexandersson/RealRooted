@@ -5,7 +5,7 @@ zip-with-product constructions, common-interleaver outputs for product
 families (Brändén Theorem 7.8.3).
 -/
 import RealRooted.CommonInterleaverSeq
-import RealRooted.ExamplesCommon
+import RealRooted.CombinatorialExamples.Common
 
 set_option linter.unnecessarySimpa false
 set_option linter.unusedSimpArgs false

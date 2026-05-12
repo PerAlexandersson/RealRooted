@@ -20,7 +20,7 @@ import RealRooted.Linear
 import RealRooted.Derivative
 import RealRooted.Wagner
 import RealRooted.ObreschkoffConverse
-import RealRooted.Motzkin
+import RealRooted.CombinatorialExamples.Motzkin
 -- import RealRooted.AffineDerivative  -- uncomment when AffineDerivative is built
 
 set_option linter.unnecessarySimpa false

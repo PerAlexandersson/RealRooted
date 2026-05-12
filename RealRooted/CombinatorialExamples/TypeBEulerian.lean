@@ -1,4 +1,4 @@
-import RealRooted.ExamplesCommon
+import RealRooted.CombinatorialExamples.Common
 import RealRooted.MaWang
 import Mathlib.Tactic
 

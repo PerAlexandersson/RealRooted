@@ -1,5 +1,5 @@
 import RealRooted.Basic
-import RealRooted.ExamplesCommon
+import RealRooted.CombinatorialExamples.Common
 import RealRooted.Linear
 import RealRooted.MaWang
 import RealRooted.Wagner
