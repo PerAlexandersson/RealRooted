@@ -156,6 +156,9 @@ Catalog context:
   `not_aissenSchoenbergWhitneyForward_without_nonzero`: the zero sequence is
   PF, so the forward ASW-to-`IsRealRooted` interface must explicitly exclude
   the zero polynomial.
+- `aissenSchoenbergWhitneyForwardOrZeroStatement` and
+  `aissenSchoenbergWhitneyForward_iff_orZero`: zero-aware and strict forward
+  ASW interfaces are equivalent.
 - `isPolyaFrequencySequence_veroneseSectionSeq`: fixed-residue subsequences of
   a PF sequence are PF.
 - `isPolyaFrequencySequence_veroneseSectionPolynomial_coeff` and
@@ -163,11 +166,12 @@ Catalog context:
   Veronese section polynomials.
 - `veroneseSectionPolynomial_ne_zero_of_coeff_ne_zero`: a selected nonzero
   coefficient gives a nonzero section.
-- `veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_realRooted_nonneg` and
-  `isRealRooted_veroneseSectionPolynomial_of_realRooted_nonneg`: a real-rooted
-  polynomial with nonnegative coefficients has zero-or-real-rooted Veronese
-  sections, and strictly real-rooted nonzero sections, conditional on the
-  forward and reverse Aissen-Schoenberg-Whitney interfaces.
+- `isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg`,
+  `veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_realRooted_nonneg`,
+  and `isRealRooted_veroneseSectionPolynomial_of_realRooted_nonneg`: a
+  real-rooted polynomial with nonnegative coefficients has zero-or-real-rooted
+  Veronese sections, and strictly real-rooted nonzero sections, conditional on
+  the forward and reverse Aissen-Schoenberg-Whitney interfaces.
 - `VeronesePairFullyInterlacing.section`,
   `VeronesePairFullyInterlacing.sectionPair`, and
   `VeronesePairFullyInterlacing.sectionPair_fin`: Veronese sections preserve

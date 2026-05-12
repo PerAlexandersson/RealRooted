@@ -97,6 +97,15 @@ def aissenSchoenbergWhitneyForwardStatement : Prop :=
     IsPolyaFrequencySequence (fun n => p.coeff n) →
     IsRealRooted p ∧ ∀ r ∈ p.roots, r ≤ 0
 
+/-- Zero-aware forward ASW interface.  This is often the most convenient
+closure form: a PF coefficient sequence gives either the zero polynomial or a
+strictly real-rooted polynomial with nonpositive roots. -/
+def aissenSchoenbergWhitneyForwardOrZeroStatement : Prop :=
+  ∀ ⦃p : ℝ[X]⦄,
+    HasNonnegCoeffs p →
+    IsPolyaFrequencySequence (fun n => p.coeff n) →
+    IsRealRootedOrZero p ∧ ∀ r ∈ p.roots, r ≤ 0
+
 /-- Equivalent forward ASW statement with the redundant nonnegative-coefficient
 hypothesis removed. -/
 def aissenSchoenbergWhitneyForwardNoNonnegStatement : Prop :=
@@ -128,6 +137,36 @@ theorem aissenSchoenbergWhitneyForward_iff_noNonneg :
   constructor
   · exact aissenSchoenbergWhitneyForwardNoNonneg_of_forward
   · exact aissenSchoenbergWhitneyForward_of_noNonneg
+
+/-- The strict nonzero forward ASW interface implies the zero-aware one. -/
+theorem aissenSchoenbergWhitneyForwardOrZero_of_forward
+    (hASW : aissenSchoenbergWhitneyForwardStatement) :
+    aissenSchoenbergWhitneyForwardOrZeroStatement := by
+  intro p hnn hpf
+  by_cases hp0 : p = 0
+  · refine ⟨Or.inl hp0, ?_⟩
+    intro r hr
+    subst p
+    simp at hr
+  · rcases hASW hp0 hnn hpf with ⟨hrr, hroots⟩
+    exact ⟨Or.inr hrr, hroots⟩
+
+/-- The zero-aware forward ASW interface implies the strict nonzero one by
+discarding the zero case. -/
+theorem aissenSchoenbergWhitneyForward_of_orZero
+    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement) :
+    aissenSchoenbergWhitneyForwardStatement := by
+  intro p hp0 hnn hpf
+  have h := hASW hnn hpf
+  exact ⟨h.1.of_ne_zero hp0, h.2⟩
+
+/-- The strict and zero-aware forward ASW interfaces are equivalent. -/
+theorem aissenSchoenbergWhitneyForward_iff_orZero :
+    aissenSchoenbergWhitneyForwardStatement ↔
+      aissenSchoenbergWhitneyForwardOrZeroStatement := by
+  constructor
+  · exact aissenSchoenbergWhitneyForwardOrZero_of_forward
+  · exact aissenSchoenbergWhitneyForward_of_orZero
 
 /-- Without a nonzero hypothesis, the forward ASW interface would force the
 zero polynomial to be real-rooted, contrary to the strict local definition of
