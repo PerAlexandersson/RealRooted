@@ -1,5 +1,8 @@
 name: Update Dependencies
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 on:
   # schedule:             # Sets a schedule to trigger the workflow
   #   - cron: "0 8 * * *" # Every day at 08:00 AM UTC (see https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#schedule)
