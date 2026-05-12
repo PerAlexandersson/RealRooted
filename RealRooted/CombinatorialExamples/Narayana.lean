@@ -1,0 +1,431 @@
+/- 
+# Conditional Sturm-sequence package for Narayana polynomials
+
+This file formalizes the easy Liu--Wang consequence of the three-term Narayana
+recurrence
+
+`(n+1) P_n = (2n-1) (1 + X) P_{n-1} - (n-2) (1 - X)^2 P_{n-2}`.
+
+Since every Narayana polynomial has `X` as a factor, it is cleaner to divide by
+`X` first and work with the quotient sequence `Q_n = P_n / X`. The same
+recurrence holds for `Q_n`, now with `Q_1 = 1` and `Q_2 = 1 + X`.
+
+Assuming the quotient sequence has nonnegative coefficients, the weak Liu--Wang
+theorem proves `Q_n ⊳ Q_{n+1}` for all `n ≥ 1`, hence also for the original
+Narayana polynomials after multiplying both sides by the common factor `X`.
+-/
+import RealRooted.MaWang
+import RealRooted.Linear
+import Mathlib.Tactic
+
+open Polynomial
+
+noncomputable section
+
+namespace RealRooted
+
+/-- The linear coefficient block in the normalized Narayana recurrence. -/
+def narayanaCoeffA (n : Nat) : ℝ[X] :=
+  C (((2 * n + 3 : ℝ) / (n + 3 : ℝ))) * (1 + X)
+
+/-- The quadratic coefficient block in the normalized Narayana recurrence. -/
+def narayanaCoeffB (n : Nat) : ℝ[X] :=
+  C ((-(n : ℝ)) / (n + 3 : ℝ)) * (1 - X) ^ 2
+
+/-- The quotient Narayana sequence `Q_n = P_n / X`, defined recursively from
+
+`(n+3) Q_{n+2} = (2n+3) (1 + X) Q_{n+1} - n (1 - X)^2 Q_n`
+
+with `Q_1 = 1`. -/
+def narayanaQuot : Nat → ℝ[X]
+  | 0 => 0
+  | 1 => 1
+  | n + 2 => narayanaCoeffA n * narayanaQuot (n + 1) + narayanaCoeffB n * narayanaQuot n
+
+/-- The original Narayana sequence `P_n = X * Q_n`. -/
+def narayana (n : Nat) : ℝ[X] :=
+  X * narayanaQuot n
+
+@[simp] lemma narayanaQuot_zero : narayanaQuot 0 = 0 := rfl
+
+@[simp] lemma narayanaQuot_one : narayanaQuot 1 = 1 := rfl
+
+@[simp] lemma narayanaQuot_succ_succ (n : Nat) :
+    narayanaQuot (n + 2) =
+      narayanaCoeffA n * narayanaQuot (n + 1) + narayanaCoeffB n * narayanaQuot n := by
+  simp [narayanaQuot]
+
+@[simp] lemma narayana_zero : narayana 0 = 0 := by
+  simp [narayana]
+
+@[simp] lemma narayana_one : narayana 1 = X := by
+  simp [narayana]
+
+lemma narayanaQuot_two : narayanaQuot 2 = 1 + X := by
+  simp [narayanaQuot, narayanaCoeffA, narayanaCoeffB]
+
+lemma narayana_two : narayana 2 = X + X ^ 2 := by
+  rw [narayana, narayanaQuot_two]
+  ring
+
+lemma narayana_succ_succ (n : Nat) :
+    narayana (n + 2) =
+      narayanaCoeffA n * narayana (n + 1) + narayanaCoeffB n * narayana n := by
+  rw [narayana, narayana, narayana, narayanaQuot_succ_succ]
+  ring
+
+private lemma interlaces_one_linear {p : ℝ[X]} (hp_deg : p.natDegree = 1) :
+    Interlaces (1 : ℝ[X]) p := by
+  have h1_rr : IsRealRooted (1 : ℝ[X]) := by
+    simpa using isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)
+  have hp_rr : IsRealRooted p := isRealRooted_of_degree_one hp_deg
+  have hp_deg' : p.degree = 1 := by
+    rw [degree_eq_natDegree hp_rr.1, hp_deg]
+    norm_num
+  refine ⟨hp_rr, h1_rr, by simp [Polynomial.natDegree_one, hp_deg], ?_⟩
+  refine ⟨[-(p.coeff 1)⁻¹ * p.coeff 0], [], by simp, by simp, ?_, by simp, by simp [ListInterlaces]⟩
+  simpa [hp_deg'] using (Polynomial.roots_degree_eq_one (p := p) hp_deg').symm
+
+private lemma narayanaCoeffA_natDegree (n : Nat) :
+    (narayanaCoeffA n).natDegree = 1 := by
+  unfold narayanaCoeffA
+  rw [mul_add, mul_one]
+  simpa [add_comm] using
+    (Polynomial.natDegree_linear
+      (a := (((2 * n + 3 : ℝ) / (n + 3 : ℝ))))
+      (b := (((2 * n + 3 : ℝ) / (n + 3 : ℝ))))
+      (by positivity))
+
+private lemma narayanaCoeffA_leadingCoeff (n : Nat) :
+    (narayanaCoeffA n).leadingCoeff = ((2 * n + 3 : ℝ) / (n + 3 : ℝ)) := by
+  unfold narayanaCoeffA
+  rw [mul_add, mul_one]
+  simpa [add_comm] using
+    (Polynomial.leadingCoeff_linear
+      (a := (((2 * n + 3 : ℝ) / (n + 3 : ℝ))))
+      (b := (((2 * n + 3 : ℝ) / (n + 3 : ℝ))))
+      (by positivity))
+
+private lemma natDegree_one_sub_X :
+    ((1 - X : ℝ[X])).natDegree = 1 := by
+  simpa [sub_eq_add_neg, add_comm] using
+    (Polynomial.natDegree_linear (a := (-1 : ℝ)) (b := (1 : ℝ)) (by norm_num))
+
+private lemma leadingCoeff_one_sub_X :
+    ((1 - X : ℝ[X])).leadingCoeff = -1 := by
+  simpa [sub_eq_add_neg, add_comm] using
+    (Polynomial.leadingCoeff_linear (a := (-1 : ℝ)) (b := (1 : ℝ)) (by norm_num))
+
+private lemma natDegree_one_sub_X_sq :
+    ((1 - X : ℝ[X]) ^ 2).natDegree = 2 := by
+  have hmul_ne :
+      ((1 - X : ℝ[X])).leadingCoeff * ((1 - X : ℝ[X])).leadingCoeff ≠ 0 := by
+    rw [leadingCoeff_one_sub_X]
+    norm_num
+  rw [pow_two, natDegree_mul' hmul_ne, natDegree_one_sub_X]
+
+private lemma leadingCoeff_one_sub_X_sq :
+    ((1 - X : ℝ[X]) ^ 2).leadingCoeff = 1 := by
+  have hmul_ne :
+      ((1 - X : ℝ[X])).leadingCoeff * ((1 - X : ℝ[X])).leadingCoeff ≠ 0 := by
+    rw [leadingCoeff_one_sub_X]
+    norm_num
+  rw [pow_two, leadingCoeff_mul' hmul_ne]
+  rw [leadingCoeff_one_sub_X]
+  norm_num
+
+private lemma narayanaCoeffB_natDegree (n : Nat) (hn : 1 ≤ n) :
+    (narayanaCoeffB n).natDegree = 2 := by
+  unfold narayanaCoeffB
+  have hcoeff_ne : ((-(n : ℝ)) / (n + 3 : ℝ)) ≠ 0 := by
+    refine div_ne_zero ?_ ?_
+    · exact neg_ne_zero.mpr (by exact_mod_cast Nat.ne_of_gt hn)
+    · positivity
+  have hmul_ne :
+      (C ((-(n : ℝ)) / (n + 3 : ℝ))).leadingCoeff * ((1 - X : ℝ[X]) ^ 2).leadingCoeff ≠ 0 := by
+    rw [leadingCoeff_C, leadingCoeff_one_sub_X_sq]
+    exact mul_ne_zero hcoeff_ne one_ne_zero
+  rw [natDegree_mul' hmul_ne, natDegree_C, natDegree_one_sub_X_sq]
+
+private lemma narayanaCoeffB_leadingCoeff (n : Nat) (hn : 1 ≤ n) :
+    (narayanaCoeffB n).leadingCoeff = ((-(n : ℝ)) / (n + 3 : ℝ)) := by
+  unfold narayanaCoeffB
+  have hcoeff_ne : ((-(n : ℝ)) / (n + 3 : ℝ)) ≠ 0 := by
+    refine div_ne_zero ?_ ?_
+    · exact neg_ne_zero.mpr (by exact_mod_cast Nat.ne_of_gt hn)
+    · positivity
+  have hmul_ne :
+      (C ((-(n : ℝ)) / (n + 3 : ℝ))).leadingCoeff * ((1 - X : ℝ[X]) ^ 2).leadingCoeff ≠ 0 := by
+    rw [leadingCoeff_C, leadingCoeff_one_sub_X_sq]
+    exact mul_ne_zero hcoeff_ne one_ne_zero
+  rw [leadingCoeff_mul' hmul_ne, leadingCoeff_C, leadingCoeff_one_sub_X_sq]
+  ring
+
+private lemma natDegree_leadingCoeff_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
+    (hdeg_succ : (narayanaQuot (n + 1)).natDegree = n)
+    (hlc_succ : (narayanaQuot (n + 1)).leadingCoeff = 1)
+    (hdeg : (narayanaQuot n).natDegree = n - 1)
+    (hlc : (narayanaQuot n).leadingCoeff = 1) :
+    (narayanaQuot (n + 2)).natDegree = n + 1 ∧
+      (narayanaQuot (n + 2)).leadingCoeff = 1 := by
+  let A : ℝ[X] := narayanaCoeffA n * narayanaQuot (n + 1)
+  let B : ℝ[X] := narayanaCoeffB n * narayanaQuot n
+  have hA_lc_ne : (narayanaCoeffA n).leadingCoeff * (narayanaQuot (n + 1)).leadingCoeff ≠ 0 := by
+    rw [narayanaCoeffA_leadingCoeff, hlc_succ]
+    positivity
+  have hA_natDegree : A.natDegree = n + 1 := by
+    dsimp [A]
+    rw [natDegree_mul' hA_lc_ne, narayanaCoeffA_natDegree, hdeg_succ]
+    omega
+  have hA_leadingCoeff : A.leadingCoeff = ((2 * n + 3 : ℝ) / (n + 3 : ℝ)) := by
+    dsimp [A]
+    rw [leadingCoeff_mul' hA_lc_ne, narayanaCoeffA_leadingCoeff, hlc_succ]
+    ring
+  have hB_lc_ne : (narayanaCoeffB n).leadingCoeff * (narayanaQuot n).leadingCoeff ≠ 0 := by
+    rw [narayanaCoeffB_leadingCoeff n hn, hlc]
+    refine mul_ne_zero ?_ one_ne_zero
+    refine div_ne_zero ?_ ?_
+    · exact neg_ne_zero.mpr (by exact_mod_cast Nat.ne_of_gt hn)
+    · positivity
+  have hB_natDegree : B.natDegree = n + 1 := by
+    dsimp [B]
+    rw [natDegree_mul' hB_lc_ne, narayanaCoeffB_natDegree n hn, hdeg]
+    omega
+  have hB_leadingCoeff : B.leadingCoeff = ((-(n : ℝ)) / (n + 3 : ℝ)) := by
+    dsimp [B]
+    rw [leadingCoeff_mul' hB_lc_ne, narayanaCoeffB_leadingCoeff n hn, hlc]
+    ring
+  have hA_ne : A ≠ 0 := leadingCoeff_ne_zero.mp (by rw [hA_leadingCoeff]; positivity)
+  have hB_ne : B ≠ 0 := by
+    apply leadingCoeff_ne_zero.mp
+    rw [hB_leadingCoeff]
+    refine div_ne_zero ?_ ?_
+    · exact neg_ne_zero.mpr (by exact_mod_cast Nat.ne_of_gt hn)
+    · positivity
+  have hA_degree : A.degree = n + 1 := by
+    rw [degree_eq_natDegree hA_ne, hA_natDegree]
+    simp
+  have hB_degree : B.degree = n + 1 := by
+    rw [degree_eq_natDegree hB_ne, hB_natDegree]
+    simp
+  have hsum_lc :
+      A.leadingCoeff + B.leadingCoeff = 1 := by
+    rw [hA_leadingCoeff, hB_leadingCoeff]
+    field_simp
+    ring
+  have hsum_lc_ne : A.leadingCoeff + B.leadingCoeff ≠ 0 := by
+    rw [hsum_lc]
+    norm_num
+  have hsum_degree : (A + B).degree = n + 1 := by
+    rw [Polynomial.degree_add_eq_of_leadingCoeff_add_ne_zero hsum_lc_ne, hA_degree, hB_degree,
+      max_eq_left le_rfl]
+  have hsum_natDegree : (A + B).natDegree = n + 1 :=
+    natDegree_eq_of_degree_eq_some hsum_degree
+  have hsum_leadingCoeff : (A + B).leadingCoeff = 1 := by
+    rw [Polynomial.leadingCoeff_add_of_degree_eq (hA_degree.trans hB_degree.symm) hsum_lc_ne]
+    rw [hsum_lc]
+  simpa [narayanaQuot_succ_succ, A, B] using ⟨hsum_natDegree, hsum_leadingCoeff⟩
+
+private lemma natDegree_leadingCoeff_narayanaQuot :
+    ∀ n : Nat, 1 ≤ n →
+      (narayanaQuot n).natDegree = n - 1 ∧
+        (narayanaQuot n).leadingCoeff = 1
+  | 0, hn => by
+      omega
+  | 1, _ => by
+      simp [narayanaQuot]
+  | 2, _ => by
+      rw [narayanaQuot_two]
+      constructor
+      · simpa [add_comm] using
+          (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by norm_num))
+      · simpa [add_comm] using
+          (Polynomial.leadingCoeff_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by norm_num))
+  | n + 3, _ => by
+      have hprev_succ := natDegree_leadingCoeff_narayanaQuot (n + 2) (by omega)
+      have hprev := natDegree_leadingCoeff_narayanaQuot (n + 1) (by omega)
+      have hstep :=
+        natDegree_leadingCoeff_narayanaQuot_step (n + 1) (by omega)
+          hprev_succ.1 hprev_succ.2 hprev.1 hprev.2
+      simpa [Nat.add_assoc] using hstep
+
+lemma natDegree_narayanaQuot (n : Nat) (hn : 1 ≤ n) :
+    (narayanaQuot n).natDegree = n - 1 := by
+  exact (natDegree_leadingCoeff_narayanaQuot n hn).1
+
+lemma leadingCoeff_narayanaQuot (n : Nat) (hn : 1 ≤ n) :
+    (narayanaQuot n).leadingCoeff = 1 := by
+  exact (natDegree_leadingCoeff_narayanaQuot n hn).2
+
+lemma narayanaQuot_ne_zero (n : Nat) (hn : 1 ≤ n) :
+    narayanaQuot n ≠ 0 := by
+  intro hzero
+  have hcoeff : (narayanaQuot n).leadingCoeff = 0 := by simp [hzero]
+  rw [leadingCoeff_narayanaQuot n hn] at hcoeff
+  norm_num at hcoeff
+
+lemma narayanaQuot_posLeadingCoeff (n : Nat) (hn : 1 ≤ n) :
+    HasPosLeadingCoeff (narayanaQuot n) := by
+  unfold HasPosLeadingCoeff
+  rw [leadingCoeff_narayanaQuot n hn]
+  norm_num
+
+lemma natDegree_narayana (n : Nat) (hn : 1 ≤ n) :
+    (narayana n).natDegree = n := by
+  unfold narayana
+  have hmul_ne : X.leadingCoeff * (narayanaQuot n).leadingCoeff ≠ 0 := by
+    rw [leadingCoeff_X, leadingCoeff_narayanaQuot n hn]
+    norm_num
+  rw [natDegree_mul' hmul_ne, natDegree_X, natDegree_narayanaQuot n hn]
+  omega
+
+lemma narayanaQuot_one_two_interlaces :
+    Interlaces (narayanaQuot 1) (narayanaQuot 2) := by
+  rw [narayanaQuot_one, narayanaQuot_two]
+  refine interlaces_one_linear ?_
+  simpa [add_comm] using
+    (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by norm_num))
+
+private lemma prec_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
+    (hInter : Interlaces (narayanaQuot n) (narayanaQuot (n + 1)))
+    (hnonneg : HasNonnegCoeffs (narayanaQuot (n + 1))) :
+    Prec (narayanaQuot (n + 1)) (narayanaQuot (n + 2)) := by
+  have hg_pos : HasPosLeadingCoeff (narayanaQuot n) :=
+    narayanaQuot_posLeadingCoeff n hn
+  have hF_pos : HasPosLeadingCoeff (narayanaQuot (n + 2)) :=
+    narayanaQuot_posLeadingCoeff (n + 2) (by omega)
+  have hdeg_lo :
+      (narayanaQuot (n + 1)).natDegree ≤
+        (narayanaCoeffA n * narayanaQuot (n + 1) +
+          narayanaCoeffB n * narayanaQuot n).natDegree := by
+    rw [← narayanaQuot_succ_succ, natDegree_narayanaQuot (n + 1) (by omega),
+      natDegree_narayanaQuot (n + 2) (by omega)]
+    omega
+  have hdeg_hi :
+      (narayanaCoeffA n * narayanaQuot (n + 1) +
+          narayanaCoeffB n * narayanaQuot n).natDegree ≤
+        (narayanaQuot (n + 1)).natDegree + 1 := by
+    rw [← narayanaQuot_succ_succ, natDegree_narayanaQuot (n + 1) (by omega),
+      natDegree_narayanaQuot (n + 2) (by omega)]
+    omega
+  have hb_nonpos :
+      ∀ r, (narayanaQuot (n + 1)).IsRoot r → (narayanaCoeffB n).eval r ≤ 0 := by
+    intro r hr
+    have hr_nonpos :
+        r ≤ 0 := roots_nonpos_of_nonneg_coeffs hInter.1 hnonneg r
+          ((mem_roots hInter.1.1).mpr hr)
+    have hcoef_nonpos : (((-(n : ℝ)) / (n + 3 : ℝ)) : ℝ) ≤ 0 := by
+      have hnum : (-(n : ℝ)) ≤ 0 := by
+        exact neg_nonpos.mpr (by positivity)
+      have hden : 0 ≤ (n + 3 : ℝ) := by positivity
+      exact div_nonpos_of_nonpos_of_nonneg hnum hden
+    have hsq_nonneg : 0 ≤ (1 - r) ^ 2 := sq_nonneg (1 - r)
+    have : (((-(n : ℝ)) / (n + 3 : ℝ)) : ℝ) * (1 - r) ^ 2 ≤ 0 :=
+      mul_nonpos_of_nonpos_of_nonneg hcoef_nonpos hsq_nonneg
+    simpa [narayanaCoeffB, eval_mul, eval_sub, eval_one, eval_X] using this
+  simpa [narayanaQuot_succ_succ] using
+    (prec_of_interlaces_evalCoeff_nonpos
+      (f := narayanaQuot (n + 1))
+      (g := narayanaQuot n)
+      (a := narayanaCoeffA n)
+      (b := narayanaCoeffB n)
+      hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos)
+
+/-- Conditional oriented interlacing for the quotient Narayana sequence. Once
+nonnegative coefficients are known, the three-term recurrence is an immediate
+weak Liu--Wang induction. -/
+theorem prec_narayanaQuot_succ_of_nonnegCoeffs :
+    ∀ n : Nat, 1 ≤ n →
+      (∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) →
+      Prec (narayanaQuot n) (narayanaQuot (n + 1))
+  | 0, hn, _ => by
+      omega
+  | 1, _, _ => by
+      exact narayanaQuot_one_two_interlaces.toPrec
+  | n + 2, _, hnonneg => by
+      have hprev : Prec (narayanaQuot (n + 1)) (narayanaQuot (n + 2)) :=
+        prec_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by omega) hnonneg
+      have hInter : Interlaces (narayanaQuot (n + 1)) (narayanaQuot (n + 2)) := by
+        apply hprev.toInterlaces
+        rw [natDegree_narayanaQuot (n + 2) (by omega), natDegree_narayanaQuot (n + 1) (by omega)]
+        omega
+      exact prec_narayanaQuot_step (n + 1) (by omega) hInter (hnonneg (n + 2))
+
+theorem interlaces_narayanaQuot_succ_of_nonnegCoeffs (n : Nat) (hn : 1 ≤ n)
+    (hnonneg : ∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) :
+    Interlaces (narayanaQuot n) (narayanaQuot (n + 1)) := by
+  apply (prec_narayanaQuot_succ_of_nonnegCoeffs n hn hnonneg).toInterlaces
+  rw [natDegree_narayanaQuot (n + 1) (by omega), natDegree_narayanaQuot n hn]
+  omega
+
+/-- Conditional real-rootedness of the quotient Narayana sequence. -/
+theorem isRealRooted_narayanaQuot_of_nonnegCoeffs :
+    ∀ n : Nat, 1 ≤ n →
+      (∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) →
+      IsRealRooted (narayanaQuot n)
+  | 0, hn, _ => by
+      omega
+  | 1, _, _ => by
+      simpa [narayanaQuot_one] using
+        isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)
+  | n + 2, _, hnonneg => by
+      exact (prec_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by omega) hnonneg).2.1
+
+/-- Conditional interlacing for the original Narayana sequence. This is just
+the quotient result with the common `X` factor reattached on both sides. -/
+theorem interlaces_narayana_succ_of_nonnegCoeffs (n : Nat) (hn : 1 ≤ n)
+    (hnonneg : ∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) :
+    Interlaces (narayana n) (narayana (n + 1)) := by
+  have hprecQ : Prec (narayanaQuot n) (narayanaQuot (n + 1)) :=
+    prec_narayanaQuot_succ_of_nonnegCoeffs n hn hnonneg
+  have hq_nonpos : ∀ r ∈ (narayanaQuot n).roots, r ≤ 0 :=
+    roots_nonpos_of_nonneg_coeffs hprecQ.1 (hnonneg n)
+  have hq_succ_nonpos : ∀ r ∈ (narayanaQuot (n + 1)).roots, r ≤ 0 :=
+    roots_nonpos_of_nonneg_coeffs hprecQ.2.1 (hnonneg (n + 1))
+  have hprec : Prec (narayana n) (narayana (n + 1)) := by
+    simpa [narayana] using
+      prec_mul_X_both_of_roots_nonpos hprecQ hq_nonpos hq_succ_nonpos
+  exact hprec.toInterlaces (by
+    rw [natDegree_narayana (n + 1) (by omega), natDegree_narayana n hn])
+
+/-- Conditional real-rootedness of the original Narayana sequence. -/
+theorem isRealRooted_narayana_of_nonnegCoeffs :
+    ∀ n : Nat, 1 ≤ n →
+      (∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) →
+      IsRealRooted (narayana n)
+  | 0, hn, _ => by
+      omega
+  | 1, _, _ => by
+      simpa using isRealRooted_of_degree_one (by simp)
+  | n + 2, _, hnonneg => by
+      exact (interlaces_narayana_succ_of_nonnegCoeffs (n + 1) (by omega) hnonneg).1
+
+/-- The descending prefix `[P_{n+1}, P_n, ..., P_1]` of the original Narayana
+sequence. -/
+def narayanaPrefix : Nat → List ℝ[X]
+  | 0 => [narayana 1]
+  | n + 1 => narayana (n + 2) :: narayanaPrefix n
+
+@[simp] lemma narayanaPrefix_zero : narayanaPrefix 0 = [narayana 1] := rfl
+
+@[simp] lemma narayanaPrefix_succ (n : Nat) :
+    narayanaPrefix (n + 1) = narayana (n + 2) :: narayanaPrefix n := rfl
+
+/-- Conditional Sturm-sequence package for the original Narayana polynomials. -/
+theorem isSturmSeq_narayanaPrefix_of_nonnegCoeffs
+    (hnonneg : ∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) :
+    ∀ n : Nat, IsSturmSeq (narayanaPrefix n) := by
+  intro n
+  induction n with
+  | zero =>
+      simp [narayanaPrefix, IsSturmSeq]
+  | succ n ih =>
+      cases n with
+      | zero =>
+          simpa [narayanaPrefix, IsSturmSeq] using
+            interlaces_narayana_succ_of_nonnegCoeffs 1 (by norm_num) hnonneg
+      | succ n =>
+          simpa [narayanaPrefix, IsSturmSeq] using
+            And.intro (interlaces_narayana_succ_of_nonnegCoeffs (n + 2) (by omega) hnonneg) ih
+
+end RealRooted
