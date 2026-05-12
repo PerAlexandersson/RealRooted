@@ -18,7 +18,7 @@ namespace RealRooted
 
 /-- All real linear combinations of `f` and `g` are real-rooted (or zero). -/
 def AllComboRealRooted (f g : ℝ[X]) : Prop :=
-  ∀ α β : ℝ, C α * f + C β * g = 0 ∨ IsRealRooted (C α * f + C β * g)
+  ∀ α β : ℝ, IsRealRootedOrZero (C α * f + C β * g)
 
 lemma allComboRealRooted_comm {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
     AllComboRealRooted g f := by

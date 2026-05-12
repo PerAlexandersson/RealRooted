@@ -21,6 +21,26 @@ namespace RealRooted
 def IsRealRooted (p : ℝ[X]) : Prop :=
   p ≠ 0 ∧ p.roots.card = p.natDegree
 
+/-- Zero-aware real-rootedness.  This is the convention often used for
+closure statements, while `IsRealRooted` remains the strict nonzero predicate
+used by root-list and interlacing proofs. -/
+def IsRealRootedOrZero (p : ℝ[X]) : Prop :=
+  p = 0 ∨ IsRealRooted p
+
+lemma IsRealRooted.toOrZero {p : ℝ[X]} (hp : IsRealRooted p) :
+    IsRealRootedOrZero p :=
+  Or.inr hp
+
+lemma isRealRootedOrZero_zero : IsRealRootedOrZero (0 : ℝ[X]) :=
+  Or.inl rfl
+
+lemma IsRealRootedOrZero.of_ne_zero {p : ℝ[X]}
+    (hp : IsRealRootedOrZero p) (hp0 : p ≠ 0) :
+    IsRealRooted p := by
+  rcases hp with hzero | hrr
+  · exact False.elim (hp0 hzero)
+  · exact hrr
+
 /-! ## Root interleaving predicates on sorted lists -/
 
 /-- **Differ-by-1 interleaving**: `ss` (length n−1) interleaves into `rs` (length n).

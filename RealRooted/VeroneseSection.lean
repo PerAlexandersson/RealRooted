@@ -1353,8 +1353,7 @@ theorem veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_pf {p : ℝ[X]}
     (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hp : IsPolyaFrequencySequence (fun n => p.coeff n)) {r k : ℕ}
     (hr : 0 < r) (hk : k < r) :
-    veroneseSectionPolynomial r k p = 0 ∨
-      IsRealRooted (veroneseSectionPolynomial r k p) := by
+    IsRealRootedOrZero (veroneseSectionPolynomial r k p) := by
   by_cases hsec0 : veroneseSectionPolynomial r k p = 0
   · exact Or.inl hsec0
   · exact Or.inr <|
@@ -1398,8 +1397,7 @@ theorem veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_realRooted_nonneg
     (hASWrev : aissenSchoenbergWhitneyReverseStatement)
     (hpnn : HasNonnegCoeffs p) (hprr : IsRealRooted p) {r k : ℕ}
     (hr : 0 < r) (hk : k < r) :
-    veroneseSectionPolynomial r k p = 0 ∨
-      IsRealRooted (veroneseSectionPolynomial r k p) := by
+    IsRealRootedOrZero (veroneseSectionPolynomial r k p) := by
   by_cases hsec0 : veroneseSectionPolynomial r k p = 0
   · exact Or.inl hsec0
   · exact Or.inr <|

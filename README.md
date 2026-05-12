@@ -53,6 +53,8 @@ Combinatorial sequence modules are collected under
 
 - `IsRealRooted p`: a nonzero real polynomial whose multiset of real roots has
   cardinality equal to `p.natDegree`.
+- `IsRealRootedOrZero p`: the zero-aware wrapper used for closure statements
+  where the zero polynomial is a natural exceptional case.
 - `Interlaces f g`, `Prec f g`, and `Prec0 f g`: the main interlacing
   relations.  `Prec0` is the zero-aware version.
 - `IsGeneralizedSturmSeq ps`: a list-level Sturm sequence predicate using
@@ -61,6 +63,8 @@ Combinatorial sequence modules are collected under
   sequence predicates for finite lists.
 - `Compatible f g`, `PairwiseCompatible fs`, and `FamilyCompatible fs`:
   Chudnovsky-Seymour style compatibility predicates.
+- `AllComboRealRooted f g`: every real linear combination of `f` and `g` is
+  `IsRealRootedOrZero`.
 - `HasCommonInterleaver fs` and `PairwiseHasCommonInterleaver fs`: common
   right-interleaver predicates for finite families.
 - `IsPolyaFrequencySequence a`: total nonnegativity of the Toeplitz matrix of a
@@ -122,8 +126,10 @@ and [operators preserving real-rootedness](https://www.symmetricfunctions.com/re
   preservers from 2-by-2 conditions.
 - `rowThreshold_matrix_preserves_interlacing_seq_of_2x2`: row-threshold
   specialization of the matrix-preserver theorem.
-- `operatorPreservesInterlacingPairsUpToOrder`: an operator preserving
-  real-rootedness preserves interlacing pairs up to order.
+- `PreservesRealRootedOrZero` and
+  `operatorPreservesInterlacingPairsUpToOrder`: an operator preserving
+  `IsRealRootedOrZero` on strict real-rooted inputs preserves interlacing pairs
+  up to order.
 - `gammaRealRootedIffPolynomialRealRootedNonpos`: gamma-transform
   real-rootedness criterion with nonpositive roots.
 

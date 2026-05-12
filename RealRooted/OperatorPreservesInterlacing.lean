@@ -9,7 +9,7 @@ namespace RealRooted
 /-- A linear operator preserves real-rootedness up to the natural zero escape
 that can occur for non-injective operators. -/
 def PreservesRealRootedOrZero (T : ℝ[X] →ₗ[ℝ] ℝ[X]) : Prop :=
-  ∀ p : ℝ[X], IsRealRooted p → T p = 0 ∨ IsRealRooted (T p)
+  ∀ p : ℝ[X], IsRealRooted p → IsRealRootedOrZero (T p)
 
 /-- Strong oriented target notion for interlacing preservation by a linear
 operator. This is intentionally stronger than the theorem proved below: with the
