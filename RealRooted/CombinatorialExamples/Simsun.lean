@@ -49,9 +49,11 @@ lemma simsun_three : simsun 3 = 1 + C (4 : ℝ) * X := by
           ring
     _ = 1 + X * C (4 : ℝ) := by
           have hC2 : (C (2 : ℝ) : ℝ[X]) = 2 := by
-            ext n <;> cases n <;> simp
+            ext n
+            cases n <;> simp
           have hC4 : (C (4 : ℝ) : ℝ[X]) = 4 := by
-            ext n <;> cases n <;> simp
+            ext n
+            cases n <;> simp
           rw [hC2, hC4]
           ring
     _ = 1 + C (4 : ℝ) * X := by
@@ -203,7 +205,7 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
       · set k : Nat := (n + 2) / 2 - 1
         have hk_succ : k + 1 = (n + 2) / 2 := by
           omega
-        rw [show (n + 2) / 2 = k + 1 by simpa [hk_succ], coeff_simsun_succ]
+        rw [show (n + 2) / 2 = k + 1 by simp [hk_succ], coeff_simsun_succ]
         rcases Nat.mod_two_eq_zero_or_one n with hpar | hpar
         · have hk_eq : k = n / 2 := by
             omega
@@ -228,7 +230,7 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
                     simp [hprev_zero, hscale_eq]
             _ = (((n + 1 : Nat) : ℝ) - 2 * (k : ℝ)) * coeff (simsun (n + 1)) k +
                   ((k : ℝ) + 2) * coeff (simsun (n + 1)) (k + 1) := by
-                    simp [hcast]
+                    simp
         · have hk_eq : k = n / 2 := by
             omega
           have hk_top : k + 1 = (n + 1) / 2 := by
@@ -288,7 +290,7 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
                     =
                     ((n : ℝ) + 1 - 2 * (k : ℝ)) * coeff (simsun (n + 1)) k +
                       ((k : ℝ) + 2) * coeff (simsun (n + 1)) (k + 1) := by
-                        simp [hcast]
+                        simp
                 _ = 0 := by simp [hk_succ_zero, hscale_eq]
 
 lemma simsun_nonnegCoeffs (n : Nat) :

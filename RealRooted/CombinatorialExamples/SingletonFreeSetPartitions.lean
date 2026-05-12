@@ -35,7 +35,7 @@ lemma singletonFreeSetPartitions_two :
 
 lemma singletonFreeSetPartitions_three :
     singletonFreeSetPartitions 3 = X := by
-  simp [singletonFreeSetPartitions, singletonFreeSetPartitions_two]
+  simp [singletonFreeSetPartitions]
 
 lemma coeff_singletonFreeSetPartitions_succ_succ (n m : Nat) :
     coeff (singletonFreeSetPartitions (n + 2)) (m + 1) =
@@ -182,7 +182,7 @@ lemma natDegree_singletonFreeSetPartitions (n : Nat) (hn : 2 ≤ n) :
 lemma singletonFreeSetPartitions_nonzero (n : Nat) (hn : 2 ≤ n) :
     singletonFreeSetPartitions n ≠ 0 := by
   rcases coeff_singletonFreeSetPartitions_top_pos_and_above n hn with ⟨htop, _⟩
-  exact fun h0 => by simpa [h0] using htop
+  exact fun h0 => by simp [h0] at htop
 
 lemma singletonFreeSetPartitions_posLeadingCoeff (n : Nat) (hn : 2 ≤ n) :
     HasPosLeadingCoeff (singletonFreeSetPartitions n) := by
@@ -282,7 +282,7 @@ lemma prec_singletonFreeSetPartitions_three_four :
   have hone_nonpos : ∀ r ∈ (1 : ℝ[X]).roots, r ≤ 0 := by
     intro r hr
     have : False := by
-      simpa using hr
+      simp at hr
     exact False.elim this
   have hlin_nonneg : HasNonnegCoeffs (1 + C (3 : ℝ) * X) := by
     have hX_nonneg : HasNonnegCoeffs (X : ℝ[X]) := by
@@ -308,7 +308,8 @@ lemma prec_singletonFreeSetPartitions_three_four :
   have hfour : singletonFreeSetPartitions 4 = X * (1 + C (3 : ℝ) * X) := by
     rw [singletonFreeSetPartitions_succ_succ_eq_X_mul_core, singletonFreeSetPartitionsCore,
       singletonFreeSetPartitions_two, singletonFreeSetPartitions_three]
-    simp
+    simp only [Nat.cast_ofNat, map_add, map_one, derivative_X, mul_eq_mul_left_iff,
+      X_ne_zero, or_false]
     have hC : (C (2 : ℝ) + 1 : ℝ[X]) = C (3 : ℝ) := by
       ext m
       cases m with

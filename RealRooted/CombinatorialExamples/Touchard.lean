@@ -62,7 +62,7 @@ lemma natDegree_touchard (n : Nat) :
   rcases coeff_touchard_top_and_above n with ⟨htop, habove⟩
   apply natDegree_eq_of_le_of_coeff_ne_zero
   · exact natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm)
-  · simpa [htop]
+  · simp [htop]
 
 lemma monic_touchard (n : Nat) :
     (touchard n).Monic := by
@@ -131,7 +131,7 @@ lemma prec_touchard_one_two :
     intro r hr
     have hr_zero : r = 0 := by
       simpa [touchard_one, Polynomial.IsRoot.def] using hr
-    simpa [hr_zero]
+    simp [hr_zero]
   rw [← hF_eq]
   exact
     prec_of_interlaces_evalCoeff_nonpos

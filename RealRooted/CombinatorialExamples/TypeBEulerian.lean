@@ -160,7 +160,7 @@ lemma natDegree_typeBEulerian (n : Nat) :
   rcases coeff_typeBEulerian_top_and_above n with ⟨htop, habove⟩
   apply natDegree_eq_of_le_of_coeff_ne_zero
   · exact natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm)
-  · simpa [htop]
+  · simp [htop]
 
 lemma monic_typeBEulerian (n : Nat) :
     (typeBEulerian n).Monic := by

@@ -25,6 +25,15 @@ lake build RealRooted.VeroneseSection
 lake build RealRooted.HurwitzMatrix
 ```
 
+## Lean Style
+
+New Lean code should generally follow the Lean community
+[Library Style Guidelines](https://leanprover-community.github.io/contribute/style.html).
+The most relevant local conventions are: keep lines at or below 100 characters,
+use two-space indentation, keep top-level declarations flush-left, prefer
+explicit declaration types, put `:= by` on the theorem statement line for tactic
+proofs, and add module docstrings with references for substantial files.
+
 ## Catalog References
 
 The external mathematical guide is the Symmetric Functions Catalog.  The README

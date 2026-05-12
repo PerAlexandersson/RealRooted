@@ -138,7 +138,8 @@ lemma sturmDerangementsExc_five :
     ext n
     cases n <;> simp
   rw [sturmDerangementsExc_recurrence 2, sturmDerangementsExc_three, sturmDerangementsExc_four]
-  simp
+  simp only [Nat.cast_ofNat, derivative_X_pow_succ, map_add, map_one,
+    derivative_mul, derivative_ofNat, zero_mul, Nat.cast_one, pow_one, zero_add, derivative_X]
   rw [hC2]
   ring_nf
 
@@ -159,7 +160,7 @@ lemma coeff_sturmDerangementsExc_succ (n m : Nat) :
       ((n + 2 : ℝ) - m) * coeff (sturmDerangementsExc (n + 2)) m +
       (m + 1 : ℝ) * coeff (sturmDerangementsExc (n + 2)) (m + 1) := by
   rw [sturmDerangementsExc_recurrence, coeff_X_mul]
-  simp [coeff_one_sub_X_mul_derivative]
+  simp only [coeff_add, coeff_one_sub_X_mul_derivative]
   have h₁ :
       (((n + 2 : ℝ[X])) * sturmDerangementsExc (n + 1)).coeff m =
         (n + 2 : ℝ) * (sturmDerangementsExc (n + 1)).coeff m := by
@@ -202,7 +203,8 @@ lemma coeff_sturmDerangementsExc_top_and_above :
           simp [coeff_X, hm1']
         simp [hX2, hX]
   | n + 4, _ => by
-      rcases coeff_sturmDerangementsExc_top_and_above (n + 2) (by omega) with ⟨hsmall_top, hsmall_hi⟩
+      rcases coeff_sturmDerangementsExc_top_and_above (n + 2) (by omega) with
+        ⟨hsmall_top, hsmall_hi⟩
       rcases coeff_sturmDerangementsExc_top_and_above (n + 3) (by omega) with ⟨hbig_top, hbig_hi⟩
       constructor
       · have hsmall_zero : coeff (sturmDerangementsExc (n + 2)) (n + 2) = 0 :=
@@ -248,7 +250,7 @@ lemma coeff_sturmDerangementsExc_symm :
   | n + 3, 0, hm => by
       have hcoeff0 : coeff (sturmDerangementsExc (n + 3)) 0 = 0 := by
         rcases X_dvd_sturmDerangementsExc (n + 3) with ⟨q, hq⟩
-        simpa [hq] using (coeff_X_mul q 0)
+        simp [hq]
       have hcoeff_hi : coeff (sturmDerangementsExc (n + 3)) (n + 3) = 0 := by
         rcases coeff_sturmDerangementsExc_top_and_above (n + 3) (by omega) with ⟨_, habove⟩
         exact habove (n + 3) (by omega)
@@ -260,7 +262,7 @@ lemma coeff_sturmDerangementsExc_symm :
           exact habove (m + 1) (by omega)
         have hcoeff0 : coeff (sturmDerangementsExc (n + 3)) 0 = 0 := by
           rcases X_dvd_sturmDerangementsExc (n + 3) with ⟨q, hq⟩
-          simpa [hq] using (coeff_X_mul q 0)
+          simp [hq]
         simpa [htop] using hcoeff_hi.trans hcoeff0.symm
       · have hm_le : m ≤ n + 1 := by omega
         have hm_succ_le : m + 1 ≤ n + 2 := by omega
@@ -432,7 +434,7 @@ lemma sturmDerangementsExc_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (sturmDer
               hbig_hi (m + 1) (by omega)
             simp [hsmall_zero, hbig_zero₁, hbig_zero₂]
 
-lemma roots_nonpos_sturmDerangementsExc_of_isRealRooted {n : Nat} (hn : 2 ≤ n)
+lemma roots_nonpos_sturmDerangementsExc_of_isRealRooted {n : Nat} (_hn : 2 ≤ n)
     (hrr : IsRealRooted (sturmDerangementsExc n)) :
     ∀ r ∈ (sturmDerangementsExc n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs hrr (sturmDerangementsExc_nonnegCoeffs n)
@@ -473,8 +475,7 @@ lemma affine_sturmDerangementsExc_nonnegCoeffs {n : Nat} (hn : 2 ≤ n) :
   rw [coeff_add]
   rw [show coeff (C (n : ℝ) * sturmDerangementsExc n) m =
       (n : ℝ) * coeff (sturmDerangementsExc n) m by
-      simpa using
-        (coeff_C_mul (n := m) (a := (n : ℝ)) (p := sturmDerangementsExc n))]
+      rw [coeff_C_mul]]
   rw [coeff_one_sub_X_mul_derivative]
   by_cases hm : m ≤ n
   · have hcoeff_m : 0 ≤ coeff (sturmDerangementsExc n) m :=
@@ -510,12 +511,16 @@ lemma affine_sturmDerangementsExc_isRoot_neg_one_of_even {n : Nat}
     exact Polynomial.IsRoot.def.mp (sturmDerangementsExc_isRoot_neg_one_of_odd hprev_odd)
   have hnext0 : (sturmDerangementsExc (k + k + 1)).eval (-1) = 0 := by
     exact Polynomial.IsRoot.def.mp (sturmDerangementsExc_isRoot_neg_one_of_odd hnext_odd)
-  have hrec_eval :=
-    congrArg (fun p : ℝ[X] => p.eval (-1)) (sturmDerangementsExc_recurrence (k + k - 2))
   have hk1 : k + k - 2 + 1 = k + k - 1 := by omega
   have hk2 : k + k - 2 + 2 = k + k := by omega
   have hk3 : k + k - 2 + 3 = k + k + 1 := by omega
-  simp [hk1, hk2, hk3, Polynomial.eval_add, Polynomial.eval_mul, hprev0, hnext0] at hrec_eval
+  have hrec_eval :
+      0 =
+        -(((↑(k + k - 2) : ℝ) + 2) * (sturmDerangementsExc (k + k)).eval (-1) +
+          (1 + 1 : ℝ) * (sturmDerangementsExc (k + k)).derivative.eval (-1)) := by
+    simpa [hk1, hk2, hk3, Polynomial.eval_add, Polynomial.eval_mul, hprev0, hnext0]
+      using congrArg (fun p : ℝ[X] => p.eval (-1))
+        (sturmDerangementsExc_recurrence (k + k - 2))
   have hcoef : ((↑(k + k - 2) : ℝ) + 2) = (k + k : ℝ) := by
     have hcast :
         (((k + k - 2 : Nat) : ℝ)) = (k + k : ℝ) - 2 := by

@@ -81,11 +81,11 @@ lemma prec_X_add_C_to_X_mul_X_add_C {a b : ℝ}
     (ha : 0 ≤ a) (hab : a ≤ b) :
     Prec (X + C a) (X * (X + C b)) := by
   have hdeg_a : (X + C a).natDegree = 1 := by
-    simpa [add_comm] using
-      (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := a) (by positivity))
+    rw [show X + C a = C (1 : ℝ) * X + C a by simp]
+    exact Polynomial.natDegree_linear (a := (1 : ℝ)) (b := a) one_ne_zero
   have hdeg_b : (X + C b).natDegree = 1 := by
-    simpa [add_comm] using
-      (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := b) (by positivity))
+    rw [show X + C b = C (1 : ℝ) * X + C b by simp]
+    exact Polynomial.natDegree_linear (a := (1 : ℝ)) (b := b) one_ne_zero
   have hrr_a : IsRealRooted (X + C a) := isRealRooted_of_degree_one hdeg_a
   have hrr_b : IsRealRooted (X + C b) := isRealRooted_of_degree_one hdeg_b
   have hrr_q : IsRealRooted (X * (X + C b)) := isRealRooted_X_mul hrr_b
@@ -101,12 +101,13 @@ lemma prec_X_add_C_to_X_mul_X_add_C {a b : ℝ}
   have hrs_eq : (↑([-b, (0 : ℝ)] : List ℝ) : Multiset ℝ) = (X * (X + C b)).roots := by
     rw [roots_mul (mul_ne_zero X_ne_zero hrr_b.1), roots_X]
     have hlin_roots : (X + C b).roots = {(-b : ℝ)} := by
-      simpa [sub_eq_add_neg, add_comm] using (roots_X_sub_C (-b))
+      rw [show X + C b = X - C (-b) by simp [sub_eq_add_neg], roots_X_sub_C]
     rw [hlin_roots]
     rw [Multiset.add_comm]
     rfl
   have hss_eq : (↑([-a] : List ℝ) : Multiset ℝ) = (X + C a).roots := by
-    simpa [sub_eq_add_neg, add_comm] using (roots_X_sub_C (-a)).symm
+    rw [show X + C a = X - C (-a) by simp [sub_eq_add_neg], roots_X_sub_C]
+    rfl
   have hint : ListInterlaces ([-a] : List ℝ) [-b, (0 : ℝ)] := by
     change -b ≤ -a ∧ -a ≤ (0 : ℝ) ∧ True
     constructor
@@ -249,8 +250,8 @@ lemma oneDescentQ_one_succ (m : Nat) :
 lemma prec_one_X_add_C (a : ℝ) :
     Prec (1 : ℝ[X]) (X + C a) := by
   have hdeg : (X + C a).natDegree = 1 := by
-    simpa [add_comm] using
-      (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := a) (by positivity))
+    rw [show X + C a = C (1 : ℝ) * X + C a by simp]
+    exact Polynomial.natDegree_linear (a := (1 : ℝ)) (b := a) one_ne_zero
   exact (interlaces_one_linear (p := X + C a) hdeg).toPrec
 
 lemma oneDescentQ_one (m : Nat) (hm : 0 < m) :

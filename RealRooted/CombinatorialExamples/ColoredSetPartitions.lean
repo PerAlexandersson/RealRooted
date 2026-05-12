@@ -96,7 +96,7 @@ lemma natDegree_coloredSetPartitions (c m n : Nat) :
   rcases coeff_coloredSetPartitions_top_and_above c m n with ⟨htop, habove⟩
   apply natDegree_eq_of_le_of_coeff_ne_zero
   · exact natDegree_le_iff_coeff_eq_zero.mpr (fun k hk => habove k hk)
-  · simpa [htop]
+  · simp [htop]
 
 lemma monic_coloredSetPartitions (c m n : Nat) :
     (coloredSetPartitions c m n).Monic := by
@@ -135,7 +135,8 @@ lemma coloredSetPartitions_nonnegCoeffs :
                 (c : ℝ) * coeff (coloredSetPartitions c m n) 0 := by
             rw [coeff_C_mul]
           have hB_zero :
-              coeff (coloredSetPartitionsCoeffB m * (coloredSetPartitions c m n).derivative) 0 = 0 := by
+              coeff (coloredSetPartitionsCoeffB m *
+                (coloredSetPartitions c m n).derivative) 0 = 0 := by
             simp [coloredSetPartitionsCoeffB]
           rw [coloredSetPartitions_succ, coeff_add, coloredSetPartitionsCoeffA, add_mul, coeff_add,
             hX_zero, hC_zero, hB_zero]
@@ -179,7 +180,7 @@ lemma prec_coloredSetPartitions_one_two (c m : Nat) :
   have hg_pos :
       HasPosLeadingCoeff (coloredSetPartitions c m 1).derivative :=
     hasPosLeadingCoeff_derivative (coloredSetPartitions_posLeadingCoeff c m 1) (by
-      simpa [hdeg])
+      simp [hdeg])
   have hNext_eq :
       coloredSetPartitionsCoeffA c * coloredSetPartitions c m 1 +
           coloredSetPartitionsCoeffB m * (coloredSetPartitions c m 1).derivative =
@@ -256,12 +257,14 @@ theorem prec_coloredSetPartitions_succ (c m : Nat) :
       have hdeg_lo :
           (coloredSetPartitions c m (n + 2)).natDegree ≤
             (coloredSetPartitionsCoeffA c * coloredSetPartitions c m (n + 2) +
-              coloredSetPartitionsCoeffB m * (coloredSetPartitions c m (n + 2)).derivative).natDegree := by
+              coloredSetPartitionsCoeffB m *
+                (coloredSetPartitions c m (n + 2)).derivative).natDegree := by
         rw [hNext_eq, natDegree_coloredSetPartitions, natDegree_coloredSetPartitions]
         omega
       have hdeg_hi :
           (coloredSetPartitionsCoeffA c * coloredSetPartitions c m (n + 2) +
-              coloredSetPartitionsCoeffB m * (coloredSetPartitions c m (n + 2)).derivative).natDegree ≤
+              coloredSetPartitionsCoeffB m *
+                (coloredSetPartitions c m (n + 2)).derivative).natDegree ≤
             (coloredSetPartitions c m (n + 2)).natDegree + 1 := by
         rw [hNext_eq, natDegree_coloredSetPartitions, natDegree_coloredSetPartitions]
       have hb_nonpos :

@@ -40,8 +40,9 @@ lemma eulerianTilde_recurrence (n : Nat) :
 lemma eulerianTilde_one : eulerianTilde 1 = X + X ^ 2 := by
   rw [eulerianTilde_recurrence 0]
   have htwo : (C (2 : ℝ) : ℝ[X]) = (2 : ℝ[X]) := by
-    ext n <;> cases n <;> simp
-  simp [eulerianTilde_zero, pow_two]
+    ext n
+    cases n <;> simp
+  simp only [CharP.cast_eq_zero, zero_add, eulerianTilde_zero, derivative_X, mul_one]
   rw [htwo]
   ring
 
@@ -69,7 +70,7 @@ lemma coeff_eulerianTilde_succ (n m : Nat) :
       ((n + 2 : ℝ) - m) * coeff (eulerianTilde n) m +
       (m + 1 : ℝ) * coeff (eulerianTilde n) (m + 1) := by
   rw [eulerianTilde_recurrence, coeff_X_mul]
-  simp [coeff_one_sub_X_mul_derivative]
+  simp only [map_add, map_natCast, coeff_add, coeff_one_sub_X_mul_derivative]
   have hC :
       (C (n + 2 : ℝ) * eulerianTilde n).coeff m =
         (n + 2 : ℝ) * (eulerianTilde n).coeff m := by
