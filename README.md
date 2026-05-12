@@ -25,18 +25,26 @@ lake build RealRooted.VeroneseSection
 lake build RealRooted.HurwitzMatrix
 ```
 
-## References And Context
+## Catalog References
 
-The formalization follows the real-rootedness and interlacing terminology used
-in the Symmetric Functions Catalog:
+The external mathematical guide is the Symmetric Functions Catalog.  The README
+is organized around these pages and anchors:
 
-- [Interlacing polynomials](https://www.symmetricfunctions.com/realRootedInterlacing.htm#interlacingPolynomials)
-  for interlacing, Sturm sequences, compatible polynomials, and preservers.
-- [Real-rooted words](https://www.symmetricfunctions.com/realRootedWords.htm#realRootedWords)
-  for permutation, set-partition, and Stirling-permutation polynomial
-  examples.
-- [Real-rooted Catalan families](https://www.symmetricfunctions.com/realRootedCatalan.htm#realRootedCatalan)
-  for Catalan-family examples such as Motzkin and Narayana polynomials.
+- [Interlacing and interleaving roots](https://www.symmetricfunctions.com/realRootedInterlacing.htm#interlacingPolynomials):
+  derivative interlacing, Sturm sequences, Ma-Wang and Liu-Wang style criteria.
+- [Interlacing sequences](https://www.symmetricfunctions.com/realRootedInterlacing.htm#interlacingSequences)
+  and [matrices preserving interlacing sequences](https://www.symmetricfunctions.com/realRootedInterlacing.htm#realMatrixRecursion):
+  finite interlacing lists and matrix preservers.
+- [Compatible polynomials](https://www.symmetricfunctions.com/realRootedInterlacing.htm#compatiblePolynomials):
+  common interlacings and Chudnovsky-Seymour compatibility.
+- [Symmetric decompositions](https://www.symmetricfunctions.com/realRootedInterlacing.htm#symmetricDecompInterlacing)
+  and [operators preserving real-rootedness](https://www.symmetricfunctions.com/realRootedInterlacing.htm#realRootedPreservers):
+  transforms, gamma bases, and operator interfaces.
+- [Sturm sequences: permutations, set partitions and more](https://www.symmetricfunctions.com/realRootedWords.htm#realRootedWords):
+  Eulerian, type B Eulerian, simsun, derangement, Touchard, singleton-free
+  set-partition, colored set-partition, and Stirling-permutation examples.
+- [Sturm sequences: Catalan families](https://www.symmetricfunctions.com/realRootedCatalan.htm#realRootedCatalan):
+  Narayana and Motzkin polynomial examples.
 
 Combinatorial sequence modules are collected under
 `RealRooted/CombinatorialExamples/`.
@@ -47,6 +55,10 @@ Combinatorial sequence modules are collected under
   cardinality equal to `p.natDegree`.
 - `Interlaces f g`, `Prec f g`, and `Prec0 f g`: the main interlacing
   relations.  `Prec0` is the zero-aware version.
+- `IsGeneralizedSturmSeq ps`: a list-level Sturm sequence predicate using
+  consecutive `Prec` relations.
+- `IsInterlacingSeq fs` and `IsInterlacingSeq0 fs`: pairwise interlacing
+  sequence predicates for finite lists.
 - `Compatible f g`, `PairwiseCompatible fs`, and `FamilyCompatible fs`:
   Chudnovsky-Seymour style compatibility predicates.
 - `HasCommonInterleaver fs` and `PairwiseHasCommonInterleaver fs`: common
@@ -57,92 +69,158 @@ Combinatorial sequence modules are collected under
 - `FullyInterlacingPair a b`: two-row Lace total nonnegativity for coefficient
   sequences.
 
-## Selected Checked Theorems
+## Theorem Highlights
 
-Core interlacing and derivatives:
+Every Lean declaration named in this section is checked.
 
-- `derivative_interlaces`
-- `exists_root_derivative_between`
-- `isRoot_derivative_of_rootMultiplicity_ge_two`
+**Interlacing Core**
 
-Common interleavers and compatibility:
+Catalog context:
+[interlacing roots](https://www.symmetricfunctions.com/realRootedInterlacing.htm#interlacingPolynomials)
+and [Sturm sequences](https://www.symmetricfunctions.com/realRootedInterlacing.htm#sturmSequence).
 
-- `hasCommonInterleaverSeq_of_pairwiseHasCommonInterleaver`
-- `hasCommonInterleaver_of_pairwiseHasCommonInterleaver`
-- `isRealRooted_sum_of_commonInterleaver`
-- `isRealRooted_sum_of_commonLeftInterleaver`
-- `pairHasCommonInterleaver_of_sameDegree_slotIntersections`
-- `pairwiseCompatible_of_commonInterleaver`
-- `pairwiseHasCommonInterleaver_of_pairwiseCompatible`
-- `familyCompatible_of_commonInterleaver`
-- `pairwiseCompatible_of_familyCompatible`
-- `allComboRealRooted_of_natDegree_le_one`
-- `pairwiseCompatible_iff_familyCompatible_of_natDegree_le_one`
+- `derivative_interlaces`: Rolle-style theorem that the derivative interlaces a
+  real-rooted polynomial.
+- `exists_root_derivative_between` and
+  `isRoot_derivative_of_rootMultiplicity_ge_two`: root-location facts behind
+  derivative interlacing.
+- `prec_ma_wang`: Ma-Wang style derivative recurrence criterion.
+- `generalizedLiuWangCriterion`: Liu-Wang style weighted-sum criterion.
+- `favardInterlacing`, `isRealRooted_of_favard`, and
+  `isGeneralizedSturmSeq_reverse_range_map_of_favard`: Favard recurrence
+  interface for orthogonal-polynomial style Sturm sequences.
 
-Chudnovsky-Seymour and positive-combination packaging:
+**Compatible Polynomials**
 
-- `chudnovskySeymour_fourWay_of_compatibleDegreeSplit`
-- `chudnovskySeymour_fourWay_of_noCommonOrientation_and_nonnegCoeffs`
-- `chudnovskySeymour_fourWay_of_allComboBridge_and_nonnegCoeffs`
-- `pairwiseCompatible_iff_familyCompatible_of_pairBridgePos`
-- `pairwiseCompatible_iff_familyCompatible_of_degreeSplit_and_nonnegCoeffs`
-- `pairwiseCompatible_iff_familyCompatible_of_affineFamilyBridge_and_nonnegCoeffs`
-- `posComboNoCommonBridge_iff_orientation`
+Catalog context:
+[compatible polynomials](https://www.symmetricfunctions.com/realRootedInterlacing.htm#compatiblePolynomials).
 
-Favard, Liu-Wang, and gamma transforms:
+- `hasCommonInterleaver_of_pairwiseHasCommonInterleaver`: pairwise common
+  interleavers imply a global common interleaver.
+- `isRealRooted_sum_of_commonInterleaver` and
+  `isRealRooted_sum_of_commonLeftInterleaver`: nonnegative sums of a family with
+  a common interleaver are real-rooted.
+- `familyCompatible_of_commonInterleaver` and
+  `pairwiseCompatible_of_familyCompatible`: the common-interleaver to
+  compatibility direction and the easy reverse implication.
+- `chudnovskySeymour_fourWay_of_compatibleDegreeSplit`,
+  `chudnovskySeymour_fourWay_of_noCommonOrientation_and_nonnegCoeffs`, and
+  `chudnovskySeymour_fourWay_of_allComboBridge_and_nonnegCoeffs`: packaged
+  Chudnovsky-Seymour four-way equivalences under formalized bridge hypotheses.
+- `pairwiseCompatible_iff_familyCompatible_of_natDegree_le_one`: complete
+  low-degree compatibility equivalence.
 
-- `favardInterlacing`
-- `isRealRooted_of_favard`
-- `isGeneralizedSturmSeq_reverse_range_map_of_favard`
-- `prec_generalizedLiuWang_strict`
-- `prec_generalizedLiuWang_of_no_common`
-- `generalizedLiuWangCriterion`
-- `gammaRealRootedIffPolynomialRealRootedNonpos`
+**Interlacing Sequences And Preservers**
 
-Pólya-frequency and Veronese sections:
+Catalog context:
+[interlacing sequences](https://www.symmetricfunctions.com/realRootedInterlacing.htm#interlacingSequences),
+[matrix preservers](https://www.symmetricfunctions.com/realRootedInterlacing.htm#realMatrixRecursion),
+and [operators preserving real-rootedness](https://www.symmetricfunctions.com/realRootedInterlacing.htm#realRootedPreservers).
 
-- `nonneg_of_isPolyaFrequencySequence`
-- `hasNonnegCoeffs_of_isPolyaFrequencySequence_coeff`
-- `isPolyaFrequencySequence_veroneseSectionSeq`
-- `isPolyaFrequencySequence_veroneseSectionPolynomial_coeff`
-- `isPolyaFrequencySequence_veroneseSectionPolynomial_of_realRooted_nonneg`
-- `isRealRooted_veroneseSectionPolynomial_of_realRooted_nonneg`
-- `VeronesePairFullyInterlacing.section`
-- `VeronesePairFullyInterlacing.sectionPair`
-- `VeronesePairFullyInterlacing.sectionPair_fin`
+- `matrix_preserves_interlacing_seq` and
+  `matrix_preserves_interlacing_seq0_of_2x2`: list-matrix interlacing
+  preservers from 2-by-2 conditions.
+- `rowThreshold_matrix_preserves_interlacing_seq_of_2x2`: row-threshold
+  specialization of the matrix-preserver theorem.
+- `operatorPreservesInterlacingPairsUpToOrder`: an operator preserving
+  real-rootedness preserves interlacing pairs up to order.
+- `gammaRealRootedIffPolynomialRealRootedNonpos`: gamma-transform
+  real-rootedness criterion with nonpositive roots.
 
-Hermite-Biehler and Hurwitz-matrix interfaces:
+**Symmetric Decompositions**
 
-- `complexify_oddEvenPolynomial`
-- `eval_complexify_oddEvenPolynomial`
-- `eval_hermiteBiehlerPolynomial`
-- `not_hermiteBiehlerForwardStatement`
-- `HermiteBiehlerStableToHurwitzOddEvenStatement`
-- `hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair`
-- `hurwitzStableToMatrixTotallyNonnegativeStatement_iff_minors`
-- `HurwitzMatrixCriterionStatement`
+Catalog context:
+[symmetric decompositions](https://www.symmetricfunctions.com/realRootedInterlacing.htm#symmetricDecompInterlacing).
 
-Veronese bridge wrappers:
+- `isIdDecomposition_formula` and `idDecompositionExistsUnique`: existence,
+  formula, and uniqueness of the symmetric `I_d`-decomposition.
+- `isRdDecomposition_formula` and `rdDecompositionExistsUnique`: analogous
+  facts for the `R_d`-decomposition.
+- `isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs`: the
+  `h -> f` transform preserves real-rootedness in the nonnegative setting.
+- `prec_iff_prec_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs`:
+  interlacing transfer through the transform under the minimal-degree
+  hypotheses used by the decomposition machinery.
 
-- `pfPrecToFullyInterlacingPair_of_hermiteBiehlerHurwitzMatrix`
-- `nonnegPrecToFullyInterlacingPair_of_hermiteBiehlerHurwitzMatrix`
-- `prec0_veroneseSectionPolynomial_of_hermiteBiehlerHurwitzMatrix`
-- `prec_veroneseSectionPolynomial_of_hermiteBiehlerHurwitzMatrix`
-- `prec0_veronesePairSectionPolynomial_fin_of_hermiteBiehlerHurwitzMatrix`
-- `prec_veronesePairSectionPolynomial_fin_of_hermiteBiehlerHurwitzMatrix`
-- `prec0_veroneseSectionPolynomial_of_nonneg_hermiteBiehlerHurwitzMatrix`
-- `prec_veroneseSectionPolynomial_of_nonneg_hermiteBiehlerHurwitzMatrix`
-- `prec0_veronesePairSectionPolynomial_fin_of_nonneg_hermiteBiehlerHurwitzMatrix`
-- `prec_veronesePairSectionPolynomial_fin_of_nonneg_hermiteBiehlerHurwitzMatrix`
+**Polya Frequency And Veronese Sections**
 
-Concrete regression and counterexample declarations:
+- `nonneg_of_isPolyaFrequencySequence` and
+  `hasNonnegCoeffs_of_isPolyaFrequencySequence_coeff`: basic PF consequences.
+- `isPolyaFrequencySequence_veroneseSectionSeq`: fixed-residue subsequences of
+  a PF sequence are PF.
+- `isPolyaFrequencySequence_veroneseSectionPolynomial_coeff` and
+  `isPolyaFrequencySequence_veroneseSectionPolynomial_of_realRooted_nonneg`:
+  PF certificates for Veronese sections of polynomials.
+- `isRealRooted_veroneseSectionPolynomial_of_realRooted_nonneg`: a
+  real-rooted polynomial with nonnegative coefficients has real-rooted Veronese
+  section polynomials.
+- `VeronesePairFullyInterlacing.section`,
+  `VeronesePairFullyInterlacing.sectionPair`, and
+  `VeronesePairFullyInterlacing.sectionPair_fin`: Veronese sections preserve
+  the two-row fully interlacing pair interface.
 
-- `scaledLinearFamily_pairwiseCompatible_iff_familyCompatible`
-- `not_posComboNoCommonAffineFamilyStatement`
-- `not_posComboNoCommonBoundaryRightPairOrientationStatement`
-- `not_posComboNoCommonSameDegreeShiftedPairOrientationStatement`
-- `not_posComboNoCommonSameDegreeOrientationNonnegStatement`
-- `not_posComboNoCommonSuccDegreeOrientationNonnegStatement`
+**Permutation And Word Examples**
+
+Catalog context:
+[real-rooted words](https://www.symmetricfunctions.com/realRootedWords.htm#realRootedWords),
+[Eulerian variations](https://www.symmetricfunctions.com/realRootedWords.htm#sturmEulerian),
+[permutation statistics](https://www.symmetricfunctions.com/realRootedWords.htm#sturmPermutations),
+and [Stirling permutations](https://www.symmetricfunctions.com/realRootedWords.htm#sturmOther).
+
+- `isRealRooted_eulerianTilde`, `interlaces_eulerianTilde_succ`, and
+  `isSturmSeq_eulerianTildePrefix`.
+- `isRealRooted_typeBEulerian`, `interlaces_typeBEulerian_succ`, and
+  `isSturmSeq_typeBEulerianPrefix`.
+- `isRealRooted_simsun`, `interlaces_simsun_succ_of_odd`, and
+  `isGeneralizedSturmSeq_simsunPrefix`.
+- `isRealRooted_sturmDerangementsExc`, `interlaces_sturmDerangementsExc_succ`,
+  and `isSturmSeq_sturmDerangementsExcPrefix`.
+- `isRealRooted_stirlingPermutations`, `interlaces_stirlingPermutations_succ`,
+  and `isSturmSeq_stirlingPermutationsPrefix`.
+
+**Set-Partition Examples**
+
+Catalog context:
+[set partitions](https://www.symmetricfunctions.com/realRootedWords.htm#sturmSetPartitions).
+
+- `isRealRooted_touchard`, `interlaces_touchard_succ`, and
+  `isSturmSeq_touchardPrefix`.
+- `isRealRooted_singletonFreeSetPartitions`,
+  `interlaces_singletonFreeSetPartitions_succ_of_odd`, and
+  `isGeneralizedSturmSeq_singletonFreeSetPartitionsPrefix`.
+- `isRealRooted_coloredSetPartitions`,
+  `interlaces_coloredSetPartitions_succ`, and
+  `isSturmSeq_coloredSetPartitionsPrefix`.
+- `isRealRooted_typeBSetPartitions` and
+  `interlaces_typeBSetPartitions_succ`.
+- `oneDescentGamma_one_isRealRooted` and
+  `oneDescentQ_one_isRealRooted`.
+
+**Catalan-Family Examples**
+
+Catalog context:
+[real-rooted Catalan families](https://www.symmetricfunctions.com/realRootedCatalan.htm#realRootedCatalan).
+
+- `isRealRooted_narayanaQuot_of_nonnegCoeffs`,
+  `interlaces_narayanaQuot_succ_of_nonnegCoeffs`, and
+  `isSturmSeq_narayanaPrefix_of_nonnegCoeffs`.
+- `isRealRooted_narayana_of_nonnegCoeffs` and
+  `interlaces_narayana_succ_of_nonnegCoeffs`.
+- `isRealRooted_motzkin`, `prec_motzkin_succ`, and
+  `isGeneralizedSturmSeq_motzkinPrefix`.
+
+**Regression And Counterexample Declarations**
+
+- `scaledLinearFamily_pairwiseCompatible_iff_familyCompatible`: concrete
+  sanity-check family for compatibility.
+- `not_hermiteBiehlerForwardStatement`: checked counterexample to an overly
+  sign-free Hermite-Biehler forward interface.
+- `not_posComboNoCommonAffineFamilyStatement`,
+  `not_posComboNoCommonBoundaryRightPairOrientationStatement`,
+  `not_posComboNoCommonSameDegreeShiftedPairOrientationStatement`,
+  `not_posComboNoCommonSameDegreeOrientationNonnegStatement`, and
+  `not_posComboNoCommonSuccDegreeOrientationNonnegStatement`: counterexamples
+  documenting false strengthening attempts.
 
 ## Current Caveats
 
