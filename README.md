@@ -142,22 +142,26 @@ Catalog context:
   interlacing transfer through the transform under the minimal-degree
   hypotheses used by the decomposition machinery.
 
-**Polya Frequency And Veronese Sections**
+**Polya Frequency And Conditional Veronese Sections**
 
 - `nonneg_of_isPolyaFrequencySequence` and
   `hasNonnegCoeffs_of_isPolyaFrequencySequence_coeff`: basic PF consequences.
 - `isPolyaFrequencySequence_veroneseSectionSeq`: fixed-residue subsequences of
   a PF sequence are PF.
 - `isPolyaFrequencySequence_veroneseSectionPolynomial_coeff` and
-  `isPolyaFrequencySequence_veroneseSectionPolynomial_of_realRooted_nonneg`:
-  PF certificates for Veronese sections of polynomials.
+  `hasNonnegCoeffs_veroneseSectionPolynomial`: coefficient-level facts for
+  Veronese section polynomials.
 - `isRealRooted_veroneseSectionPolynomial_of_realRooted_nonneg`: a
   real-rooted polynomial with nonnegative coefficients has real-rooted Veronese
-  section polynomials.
+  section polynomials, conditional on the forward and reverse
+  Aissen-Schoenberg-Whitney interfaces.
 - `VeronesePairFullyInterlacing.section`,
   `VeronesePairFullyInterlacing.sectionPair`, and
   `VeronesePairFullyInterlacing.sectionPair_fin`: Veronese sections preserve
   the two-row fully interlacing pair interface.
+- `prec_veroneseSectionPolynomial_of_prec` and the related pairwise-section
+  declarations are conditional bridge theorems: they assume polynomial-to-Lace
+  and Lace-to-polynomial interlacing interfaces.
 
 **Permutation And Word Examples**
 
@@ -228,5 +232,14 @@ Several declarations are intentionally statement-level interfaces for classical
 theorems that are not yet fully formalized here.  Recent work also found that a
 sign-free Hermite-Biehler forward interface was false as stated; the theorem
 `not_hermiteBiehlerForwardStatement` records the checked counterexample.
+
+The Veronese-section file is in this category.  It fully formalizes the
+coefficient definitions, Toeplitz-total-nonnegativity submatrix argument, and
+two-row Lace submatrix argument.  The headline polynomial consequences still
+depend on statement-level interfaces such as
+`aissenSchoenbergWhitneyForwardStatement`,
+`aissenSchoenbergWhitneyReverseStatement`,
+`FullyInterlacingPairToPrecStatement`, and
+`FullyInterlacingPairToPrec0Statement`.
 
 In short: this is a working research codebase, not a finished library API.
