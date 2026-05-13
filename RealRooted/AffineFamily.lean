@@ -16,7 +16,6 @@ import Mathlib.Algebra.QuadraticDiscriminant
 import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
 
 set_option linter.unnecessarySimpa false
-set_option linter.unreachableTactic false
 set_option linter.unusedSimpArgs false
 set_option linter.unusedTactic false
 set_option linter.unusedVariables false
@@ -452,9 +451,9 @@ private theorem isRealRooted_of_add_C_mul_right_family_of_natDegree_lt
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
     field_simp [hg_lc_ne]
   have hf₀_pos : HasPosLeadingCoeff f₀ := by
-    simpa [HasPosLeadingCoeff, hf₀_monic.leadingCoeff] using (show (0 : ℝ) < 1 by norm_num)
+    simpa [HasPosLeadingCoeff, hf₀_monic.leadingCoeff]
   have hg₀_pos : HasPosLeadingCoeff g₀ := by
-    simpa [HasPosLeadingCoeff, hg₀_monic.leadingCoeff] using (show (0 : ℝ) < 1 by norm_num)
+    simpa [HasPosLeadingCoeff, hg₀_monic.leadingCoeff]
   have hdeg₀ : f₀.natDegree < g₀.natDegree := by
     simp [f₀, g₀, natDegree_C_mul, hf_lc_ne, hg_lc_ne, hdeg]
   have hfamily₀ : ∀ {μ : ℝ}, 0 < μ → IsRealRooted (g₀ + C μ * f₀) := by
@@ -2980,7 +2979,7 @@ private theorem isRealRooted_of_sub_C_mul_right_family_of_natDegree_lt
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
     field_simp [hg_lc_ne]
   have hg₀_pos : HasPosLeadingCoeff g₀ := by
-    simpa [HasPosLeadingCoeff, hg₀_monic.leadingCoeff] using (show (0 : ℝ) < 1 by norm_num)
+    simpa [HasPosLeadingCoeff, hg₀_monic.leadingCoeff]
   have hdeg₀ : f₀.natDegree < g₀.natDegree := by
     simp [f₀, g₀, natDegree_C_mul, hf_lc_ne, hg_lc_ne, hdeg]
   -- Monic subtraction family: g₀ - C μ'' * f₀ is real-rooted for small μ'' > 0.
