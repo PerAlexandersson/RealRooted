@@ -184,6 +184,16 @@ Catalog context:
   Veronese sections under multiplication by `X` and by a linear factor
   `X + C a`.  These are the formal entry point for a possible Wagner-style
   proof avoiding the full Hurwitz/Lace route.
+- `veroneseSectionPolynomialListDesc`,
+  `veroneseLinearFactorMatrixDesc`, and
+  `matPolyAction_veroneseLinearFactorMatrixDesc`: descending-order matrix
+  form of the same recursion.  The reversed order
+  `S_{r-1}, S_{r-2}, ..., S_0` puts the cyclic `X` entry in the lower-left
+  corner, which is the order compatible with the matrix-preserver theorem.
+- `isInterlacingSeq0Nonneg_veroneseSectionPolynomialListDesc_X_add_C_mul`:
+  conditional matrix-preserver step for multiplying by `X + C a`; the remaining
+  finite obligation is `VeroneseLinearFactorMatrixDescHas2x2`, the 2-by-2
+  affine check for the cyclic matrix.
 - A direct Borcea-Branden algebraic-symbol proof would need a more refined
   stability domain than ordinary upper-half-plane stability: for the even
   section `T(a0 + a1 X + a2 X^2) = a0 + a2 X`, the degree-two symbol is

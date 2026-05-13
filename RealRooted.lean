@@ -20,6 +20,7 @@ import RealRooted.HermiteBiehler
 import RealRooted.Favard
 import RealRooted.AissenSchoenbergWhitney
 import RealRooted.VeroneseSection
+import RealRooted.VeroneseMatrix
 import RealRooted.HurwitzMatrix
 
 -- Additional modules not yet imported into the main umbrella library
