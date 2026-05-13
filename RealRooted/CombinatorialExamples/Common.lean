@@ -10,8 +10,6 @@ Shared coefficient, leading-coefficient, and elementary interlacing helpers for
 the combinatorial example files.
 -/
 
-set_option linter.unnecessarySimpa false
-
 open Polynomial
 
 noncomputable section
@@ -42,7 +40,7 @@ lemma interlaces_one_linear {p : ℝ[X]} (hp_deg : p.natDegree = 1) :
   have hp_deg' : p.degree = 1 := by
     rw [degree_eq_natDegree hp_rr.1, hp_deg]
     norm_num
-  refine ⟨hp_rr, h1_rr, by simpa [Polynomial.natDegree_one, hp_deg], ?_⟩
+  refine ⟨hp_rr, h1_rr, by simp [Polynomial.natDegree_one, hp_deg], ?_⟩
   refine ⟨[-(p.coeff 1)⁻¹ * p.coeff 0], [], by simp, by simp, ?_, by simp, by simp [ListInterlaces]⟩
   simpa [hp_deg'] using (Polynomial.roots_degree_eq_one (p := p) hp_deg').symm
 

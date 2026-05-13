@@ -7,9 +7,6 @@ import Mathlib.Tactic
 Interlacing and root-bound facts for the shifted Motzkin recurrence.
 -/
 
-set_option linter.unnecessarySimpa false
-set_option linter.unusedVariables false
-
 open Polynomial
 
 noncomputable section
@@ -53,7 +50,7 @@ lemma coeff_X_sub_C_mul (r : ℝ) (m : Nat) (p : ℝ[X]) :
       coeff p m - r * coeff p (m + 1) := by
   rw [sub_mul, coeff_sub, coeff_X_mul]
   have hC : coeff (C r * p) (m + 1) = r * coeff p (m + 1) := by
-    simpa using (coeff_C_mul (n := m + 1) (a := r) (p := p))
+    simp
   rw [hC]
 
 lemma coeff_motzkin_succ_succ (n m : Nat) :
@@ -67,15 +64,12 @@ lemma coeff_motzkin_succ_succ (n m : Nat) :
   have hA :
       coeff (C (motzkinCoeffA n) * motzkin (n + 1)) (m + 1) =
         motzkinCoeffA n * coeff (motzkin (n + 1)) (m + 1) := by
-    simpa using
-      (coeff_C_mul (n := m + 1) (a := motzkinCoeffA n) (p := motzkin (n + 1)))
+    simp
   have hB :
       coeff (C (motzkinCoeffB n) * ((X - C motzkinShift) * motzkin n)) (m + 1) =
         motzkinCoeffB n *
           coeff ((X - C motzkinShift) * motzkin n) (m + 1) := by
-    simpa using
-      (coeff_C_mul (n := m + 1) (a := motzkinCoeffB n)
-        (p := (X - C motzkinShift) * motzkin n))
+    simp
   rw [hA, hB, coeff_X_sub_C_mul]
 
 lemma coeff_motzkin_top_pos_and_above :
@@ -188,7 +182,7 @@ lemma natDegree_motzkin (n : Nat) :
 lemma motzkin_nonzero (n : Nat) :
     motzkin n ≠ 0 := by
   rcases coeff_motzkin_top_pos_and_above n with ⟨htop, _⟩
-  exact fun h0 => by simpa [h0] using htop
+  exact fun h0 => by simp [h0] at htop
 
 lemma motzkin_posLeadingCoeff (n : Nat) :
     HasPosLeadingCoeff (motzkin n) := by
@@ -217,7 +211,7 @@ lemma listInterlaces_left_le_of_right_le {ss rs : List ℝ} {c : ℝ}
   induction ss generalizing rs with
   | nil =>
       intro s hs
-      simpa using hs
+      simp at hs
   | cons s ss ih =>
       cases rs with
       | nil =>
@@ -241,7 +235,7 @@ lemma listAlternates_left_le_of_right_le {ss rs : List ℝ} {c : ℝ}
   induction ss generalizing rs with
   | nil =>
       intro s hs
-      simpa using hs
+      simp at hs
   | cons s ss ih =>
       cases rs with
       | nil =>
@@ -299,6 +293,7 @@ lemma prec_self_mul_X_sub_C_of_roots_le {r : ℝ} {f : ℝ[X]}
   exact
     (prec_iff_prec_mul_X_sub_C_of_roots_le r hf hXf hf_pos hXf_pos hf_le hXf_le hdeg).mpr hself
 
+set_option linter.unusedVariables false in
 lemma prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos {f g : ℝ[X]}
     (h : Prec g (X * f))
     (hdeg : f.natDegree = g.natDegree)
@@ -331,13 +326,13 @@ lemma prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos {f g : ℝ[X]}
   rcases hshape with ⟨hlen, hint⟩ | ⟨hlen, _⟩
   · rw [hrs_Xf_is] at hint hlen
     have hlen' : ss_g.length + 1 = (rs_f ++ [(0 : ℝ)]).length := by
-      simpa [hlen_fg] using hlen
+      simp [hlen_fg]
     have hrs_f0_nonpos : ∀ r ∈ rs_f ++ [(0 : ℝ)], r ≤ 0 := by
       intro r hr
       rcases List.mem_append.mp hr with hr | hr
       · exact hrs_f_nonpos r hr
       · simp at hr
-        simpa [hr]
+        simp [hr]
     have halt0 :
         ListAlternates (rs_f ++ [(0 : ℝ)]) (ss_g ++ [(0 : ℝ)]) :=
       listAlternates_append_zero ss_g (rs_f ++ [(0 : ℝ)]) hlen' hint hrs_f0_nonpos
@@ -355,7 +350,7 @@ lemma motzkin_bound_zero :
     ∀ r ∈ (motzkin 0).roots, r ≤ motzkinShift := by
   intro r hr
   have : False := by
-    simpa [motzkin_zero] using hr
+    simp [motzkin_zero] at hr
   exact False.elim this
 
 lemma motzkin_bound_one :
