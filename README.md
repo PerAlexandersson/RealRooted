@@ -184,6 +184,13 @@ Catalog context:
   Veronese sections under multiplication by `X` and by a linear factor
   `X + C a`.  These are the formal entry point for a possible Wagner-style
   proof avoiding the full Hurwitz/Lace route.
+- A direct Borcea-Branden algebraic-symbol proof would need a more refined
+  stability domain than ordinary upper-half-plane stability: for the even
+  section `T(a0 + a1 X + a2 X^2) = a0 + a2 X`, the degree-two symbol is
+  `X + Y^2`, which vanishes at `X = 2 * I`, `Y = -1 + I`.  Thus the raw
+  Veronese section is not a full stability-preserver in the usual finite-degree
+  symbol sense, even though it is still expected to preserve the
+  nonnegative-real-rooted cone.
 - `isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg`,
   `veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_realRooted_nonneg`,
   and `isRealRooted_veroneseSectionPolynomial_of_realRooted_nonneg`: a
