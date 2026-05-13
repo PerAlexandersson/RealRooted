@@ -28,8 +28,6 @@ import RealRooted.Wagner
 import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 import Mathlib.Tactic
 
-set_option linter.style.longLine false
-set_option linter.style.emptyLine false
 set_option linter.unnecessarySimpa false
 set_option linter.unusedSimpArgs false
 set_option linter.unusedTactic false
@@ -300,7 +298,8 @@ lemma exists_affineDeriv_root_between {f : ℝ[X]}
     · rcases le_or_gt 0 (g.eval r₂) with hg2 | hg2
       · have : g.eval r₂ = 0 := by nlinarith
         exact ⟨r₂, le_of_lt hlt, le_refl _, this⟩
-      · have h0 : (0 : ℝ) ∈ Set.Icc (g.eval r₂) (g.eval r₁) := ⟨le_of_lt hg2, le_of_lt hg1⟩
+      · have h0 : (0 : ℝ) ∈ Set.Icc (g.eval r₂) (g.eval r₁) := by
+          exact ⟨le_of_lt hg2, le_of_lt hg1⟩
         obtain ⟨s, hs, hval⟩ := intermediate_value_Icc' (le_of_lt hlt)
           g.continuous.continuousOn h0
         exact ⟨s, hs.1, hs.2, hval⟩
@@ -586,7 +585,8 @@ private lemma mkAffineInterleaving_ge (f : ℝ[X]) (c : ℝ)
       (hsorted : (r₁ :: rest).Pairwise (· ≤ ·))
       (hsub : (↑(r₁ :: rest) : Multiset ℝ) ≤ f.roots)
       (hgap : ConsecNoRoots f (r₁ :: rest)),
-    ∀ x ∈ mkAffineInterleaving f c hf hdeg hc hroots_nonpos (r₁ :: rest) hrs hsorted hsub hgap,
+    ∀ x ∈ mkAffineInterleaving f c hf hdeg hc hroots_nonpos (r₁ :: rest)
+        hrs hsorted hsub hgap,
       r₁ ≤ x
   | _, [], _, _, _, _ => by simp [mkAffineInterleaving]
   | r₁, r₂ :: rest', hrs, hsorted, hsub, hgap => by
@@ -765,7 +765,8 @@ lemma mkAffineInterleaving_sub_multiset (f : ℝ[X]) (c : ℝ)
                 · have hspec := (exists_affineDeriv_root_between_strict hf hdeg hc
                     (hrs r₁ (.head _)) (hrs r₂ (.tail _ (.head _)))
                     hlt
-                    (hroots_nonpos r₁ (Multiset.subset_of_le hsub (Multiset.mem_coe.mpr (.head _))))
+                    (hroots_nonpos r₁
+                      (Multiset.subset_of_le hsub (Multiset.mem_coe.mpr (.head _))))
                     (hroots_nonpos r₂ (Multiset.subset_of_le hsub
                       (Multiset.mem_coe.mpr (.tail _ (.head _)))))).choose_spec
                   have : r₁ < s := by
@@ -785,7 +786,8 @@ lemma mkAffineInterleaving_sub_multiset (f : ℝ[X]) (c : ℝ)
                 · have hspec := (exists_affineDeriv_root_between_strict hf hdeg hc
                     (hrs r₁ (.head _)) (hrs r₂ (.tail _ (.head _)))
                     hlt
-                    (hroots_nonpos r₁ (Multiset.subset_of_le hsub (Multiset.mem_coe.mpr (.head _))))
+                    (hroots_nonpos r₁
+                      (Multiset.subset_of_le hsub (Multiset.mem_coe.mpr (.head _))))
                     (hroots_nonpos r₂ (Multiset.subset_of_le hsub
                       (Multiset.mem_coe.mpr (.tail _ (.head _)))))).choose_spec
                   have : a < r₂ := by
@@ -809,9 +811,9 @@ lemma mkAffineInterleaving_sub_multiset (f : ℝ[X]) (c : ℝ)
                   · exfalso
                     rw [hr₁a, h] at ha2
                     exact ha2 (Multiset.mem_coe.mpr (.head _))
-                have : (↑(mkAffineInterleaving f c hf hdeg hc hroots_nonpos
-                    (r₂ :: rest) hrest hsorted_tail hsub_tail hgap.2) : Multiset ℝ).count a = 0 :=
-                  Multiset.count_eq_zero.mpr (by
+                have : (↑(mkAffineInterleaving f c hf hdeg hc hroots_nonpos (r₂ :: rest) hrest
+                    hsorted_tail hsub_tail hgap.2) : Multiset ℝ).count a = 0 := by
+                  exact Multiset.count_eq_zero.mpr (by
                     rw [Multiset.mem_coe]
                     intro hmem
                     linarith [hge_tail _ hmem])
@@ -844,7 +846,9 @@ private lemma multiset_prod_X_sub_C_ne_zero (s : Multiset ℝ) :
     (s.map (X - C ·)).prod ≠ 0 := by
   induction s using Multiset.induction_on with
   | empty => simp
-  | cons a s ih => rw [Multiset.map_cons, Multiset.prod_cons]; exact mul_ne_zero (X_sub_C_ne_zero a) ih
+  | cons a s ih =>
+      rw [Multiset.map_cons, Multiset.prod_cons]
+      exact mul_ne_zero (X_sub_C_ne_zero a) ih
 
 /-- The roots of `∏ (X - C r)` for `r ∈ s` are exactly `s`. -/
 private lemma roots_multiset_prod_X_sub_C (s : Multiset ℝ) :
@@ -1003,11 +1007,9 @@ theorem prec_affine_derivative {f : ℝ[X]}
     Prec (C c * f + (1 - X) * f.derivative) f := by
   set g := C c * f + (1 - X) * f.derivative with hg_def
   set d := f.natDegree with hd_def
-
   have hc_ne : c ≠ (d : ℝ) := ne_of_gt hc
   have hg_ne : g ≠ 0 := affineDeriv_ne_zero hf.1 (by omega) hc_ne
   have hg_deg : g.natDegree = d := natDegree_affineDeriv hf.1 (by omega) hc_ne
-
   -- Sort the roots of f
   set rs := f.roots.sort (· ≤ ·) with hrs_def
   have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
@@ -1017,7 +1019,6 @@ theorem prec_affine_derivative {f : ℝ[X]}
     intro r hr; rw [Multiset.mem_sort] at hr; rwa [mem_roots hf.1] at hr
   have hsub_rs : (↑rs : Multiset ℝ) ≤ f.roots := le_of_eq hrs_eq
   have hgap_rs : ConsecNoRoots f rs := consecNoRoots_of_sorted_eq hrs_eq hrs_sorted
-
   -- Construct d-1 inner roots of g
   set ss := mkAffineInterleaving f c hf hdeg hc hroots_nonpos rs hrs_root hrs_sorted hsub_rs
     hgap_rs
@@ -1027,7 +1028,6 @@ theorem prec_affine_derivative {f : ℝ[X]}
     rs hrs_root hrs_sorted hsub_rs hgap_rs
   have hss_roots : ∀ s ∈ ss, g.IsRoot s := hspec.1
   have hss_interlaces : ListInterlaces ss rs := hspec.2
-
   -- Inner roots are a submultiset of g.roots
   have hsub_info := mkAffineInterleaving_sub_multiset f c hf hdeg hc hroots_nonpos
     rs hrs_root hrs_sorted hsub_rs hgap_rs
@@ -1037,13 +1037,11 @@ theorem prec_affine_derivative {f : ℝ[X]}
         a ∈ (↑rs : Multiset ℝ) →
         (↑ss : Multiset ℝ).count a + 1 ≤ (↑rs : Multiset ℝ).count a :=
     hsub_info.2
-
   -- g is real-rooted: degree d with d-1 inner roots → d total roots
   have hg_rr : IsRealRooted g := by
     refine ⟨hg_ne, ?_⟩
     exact roots_card_of_sub_pred hg_ne hss_sub (by
       rw [Multiset.coe_card, hss_length, hg_deg]; omega)
-
   have hss_eq_card : (↑ss : Multiset ℝ).card + 1 = g.roots.card := by
     rw [Multiset.coe_card, hss_length, hg_rr.2, hg_deg]
     omega
@@ -1098,7 +1096,8 @@ theorem prec_affine_derivative {f : ℝ[X]}
       rw [hgmult_eq_ss] at hgmult_ge
       omega
     obtain ⟨q, hf_fact, hq_nodvd⟩ := exists_eq_pow_rootMultiplicity_mul_and_not_dvd f hf.1 r₁
-    obtain ⟨qg, hg_fact, hqg_nodvd⟩ := exists_eq_pow_rootMultiplicity_mul_and_not_dvd g hg_ne r₁
+    obtain ⟨qg, hg_fact, hqg_nodvd⟩ :=
+      exists_eq_pow_rootMultiplicity_mul_and_not_dvd g hg_ne r₁
     have hf_fact' : f = (X - C r₁) ^ m * q := by
       simpa [hm_def] using hf_fact
     have hg_fact' : g = (X - C r₁) ^ (m - 1) * qg := by
@@ -1146,9 +1145,13 @@ theorem prec_affine_derivative {f : ℝ[X]}
         exact Multiset.mem_coe.mp (by simpa [hu_roots_eq'] using ht_mem_g)
       rcases List.mem_cons.mp ht_mem_list with rfl | ht_ss
       · exact hu_gt
-      · exact lt_of_le_of_ne (listInterlaces_all_ge ss rest r₁ hss_interlaces t ht_ss) (Ne.symm ht_ne)
+      · exact
+          lt_of_le_of_ne
+            (listInterlaces_all_ge ss rest r₁ hss_interlaces t ht_ss)
+            (Ne.symm ht_ne)
     have hf_deriv_fact :
-        f.derivative = (X - C r₁) ^ (m - 1) * (C (m : ℝ) * q + (X - C r₁) * q.derivative) := by
+        f.derivative =
+          (X - C r₁) ^ (m - 1) * (C (m : ℝ) * q + (X - C r₁) * q.derivative) := by
       have hm_succ : m = (m - 1) + 1 := by
         omega
       have hm_succ' : 1 + (m - 1) = m := by
@@ -1174,7 +1177,8 @@ theorem prec_affine_derivative {f : ℝ[X]}
       simp [hm_succ', hm_pred]
       ring
     have hqg_eq :
-        qg = C c * (X - C r₁) * q + (1 - X) * (C (m : ℝ) * q + (X - C r₁) * q.derivative) := by
+        qg =
+          C c * (X - C r₁) * q + (1 - X) * (C (m : ℝ) * q + (X - C r₁) * q.derivative) := by
       apply mul_left_cancel₀ (pow_ne_zero _ (X_sub_C_ne_zero _))
       rw [← hg_fact', hg_expand]
     have hqg_eval :
@@ -1213,7 +1217,8 @@ theorem prec_affine_derivative {f : ℝ[X]}
       have hdegmul :=
           natDegree_mul (p := (X - C r₁) ^ m) (q := q)
             (pow_ne_zero _ (X_sub_C_ne_zero _)) hq_ne
-      rw [← hf_fact', ← hd_def, (monic_X_sub_C r₁).natDegree_pow, natDegree_X_sub_C] at hdegmul
+      rw [← hf_fact', ← hd_def, (monic_X_sub_C r₁).natDegree_pow,
+        natDegree_X_sub_C] at hdegmul
       omega
     have hqg_deg : qg.natDegree = d - (m - 1) := by
       have hdegmul :=
@@ -1245,7 +1250,8 @@ theorem prec_affine_derivative {f : ℝ[X]}
         nlinarith [hmulp, hsquare]
       linarith
     have hEval_nonpos : qg.eval r₁ * q.eval r₁ ≤ 0 := by
-      rw [eval_eq_leadingCoeff_mul_prod_sub hqg_rr r₁, eval_eq_leadingCoeff_mul_prod_sub hq_rr r₁,
+      rw [eval_eq_leadingCoeff_mul_prod_sub hqg_rr r₁,
+        eval_eq_leadingCoeff_mul_prod_sub hq_rr r₁,
         show (q.roots.map (r₁ - ·)).prod = Pq by rfl,
         show (qg.roots.map (r₁ - ·)).prod = Pg by rfl]
       have hlc_pos : 0 < qg.leadingCoeff * q.leadingCoeff := by
@@ -1259,7 +1265,8 @@ theorem prec_affine_derivative {f : ℝ[X]}
         exact mul_pos h1 hm_pos'
       have hsq_pos : 0 < (q.eval r₁) ^ 2 := by
         exact sq_pos_iff.mpr hq_eval_ne
-      have hrewrite : qg.eval r₁ * q.eval r₁ = ((1 - r₁) * (m : ℝ)) * (q.eval r₁) ^ 2 := by
+      have hrewrite :
+          qg.eval r₁ * q.eval r₁ = ((1 - r₁) * (m : ℝ)) * (q.eval r₁) ^ 2 := by
         rw [hqg_eval]
         ring
       rw [hrewrite]

@@ -16,10 +16,7 @@ import Mathlib.Algebra.QuadraticDiscriminant
 import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
 
 set_option linter.unnecessarySimpa false
-set_option linter.unreachableTactic false
 set_option linter.unusedSimpArgs false
-set_option linter.unusedTactic false
-set_option linter.unusedVariables false
 
 open Polynomial
 
@@ -452,9 +449,9 @@ private theorem isRealRooted_of_add_C_mul_right_family_of_natDegree_lt
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
     field_simp [hg_lc_ne]
   have hf₀_pos : HasPosLeadingCoeff f₀ := by
-    simpa [HasPosLeadingCoeff, hf₀_monic.leadingCoeff] using (show (0 : ℝ) < 1 by norm_num)
+    simpa [HasPosLeadingCoeff, hf₀_monic.leadingCoeff]
   have hg₀_pos : HasPosLeadingCoeff g₀ := by
-    simpa [HasPosLeadingCoeff, hg₀_monic.leadingCoeff] using (show (0 : ℝ) < 1 by norm_num)
+    simpa [HasPosLeadingCoeff, hg₀_monic.leadingCoeff]
   have hdeg₀ : f₀.natDegree < g₀.natDegree := by
     simp [f₀, g₀, natDegree_C_mul, hf_lc_ne, hg_lc_ne, hdeg]
   have hfamily₀ : ∀ {μ : ℝ}, 0 < μ → IsRealRooted (g₀ + C μ * f₀) := by
@@ -2980,7 +2977,7 @@ private theorem isRealRooted_of_sub_C_mul_right_family_of_natDegree_lt
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
     field_simp [hg_lc_ne]
   have hg₀_pos : HasPosLeadingCoeff g₀ := by
-    simpa [HasPosLeadingCoeff, hg₀_monic.leadingCoeff] using (show (0 : ℝ) < 1 by norm_num)
+    simpa [HasPosLeadingCoeff, hg₀_monic.leadingCoeff]
   have hdeg₀ : f₀.natDegree < g₀.natDegree := by
     simp [f₀, g₀, natDegree_C_mul, hf_lc_ne, hg_lc_ne, hdeg]
   -- Monic subtraction family: g₀ - C μ'' * f₀ is real-rooted for small μ'' > 0.
@@ -5275,6 +5272,7 @@ theorem prec_shifted_pair_of_affine_family_nonneg
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         IsRealRooted (((C s * X + C t) * f) + g)) :
     Prec f (g + X * f) := by
+  have _hg0 : g ≠ 0 := hg0
   have hshift_nonneg : HasNonnegCoeffs (g + X * f) :=
     hgnn.add (hasNonnegCoeffs_X.mul hfnn)
   have hshift_ne : g + X * f ≠ 0 :=
@@ -5390,6 +5388,7 @@ lemma hasNonnegCoeffs_affine_linear {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
 
 lemma prec0_one_affine_linear {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
     Prec0 (1 : ℝ[X]) (C a * X + C b) := by
+  have _hb : 0 < b := hb
   have hInter : Interlaces (1 : ℝ[X]) (C a * X + C b) := by
     refine interlaces_one_linear ?_
     simpa [add_comm] using (Polynomial.natDegree_linear (a := a) (b := b) ha.ne')
