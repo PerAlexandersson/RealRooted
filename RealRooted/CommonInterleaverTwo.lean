@@ -1407,9 +1407,36 @@ theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlterna
     (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement) :
     PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
-  rcases hsame hf_pos hg_pos hfnn hgnn hfg hdeg hno with hprec | hprec
-  · exact ⟨g, hprec, prec_refl hprec.2.1⟩
-  · exact ⟨f, prec_refl hprec.2.1, hprec⟩
+  have hf_rr : IsRealRooted f :=
+      PosComboRealRooted.isRealRooted_left_of_sameDegree hfg hf_pos hg_pos hdeg
+  have hg_rr : IsRealRooted g :=
+      PosComboRealRooted.isRealRooted_right_of_sameDegree hfg hf_pos hg_pos hdeg
+  have hslot :
+      ∀ j (hj : j < f.natDegree + 1),
+        (rootSlotInterval (rootSeqDesc f)
+            ⟨j, by simpa [rootSeqDesc_length hf_rr] using hj⟩ ∩
+          rootSlotInterval (rootSeqDesc g)
+            ⟨j, by
+              have : j < g.natDegree + 1 := by omega
+              simpa [rootSeqDesc_length hg_rr] using this⟩).Nonempty := by
+    rcases hsame hf_pos hg_pos hfnn hgnn hfg hdeg hno with hprec | hprec
+    · intro j hj
+      have hjg : j < g.natDegree + 1 := by omega
+      exact
+        rootSlotInterval_inter_nonempty_of_commonInterleaver hprec
+          (prec_refl hprec.2.1) j
+          (by simpa [rootSeqDesc_length hf_rr] using hj)
+          (by simpa [rootSeqDesc_length hg_rr] using hjg)
+    · intro j hj
+      have hjg : j < g.natDegree + 1 := by omega
+      exact
+        rootSlotInterval_inter_nonempty_of_commonInterleaver (prec_refl hprec.2.1) hprec
+          j
+          (by simpa [rootSeqDesc_length hf_rr] using hj)
+          (by simpa [rootSeqDesc_length hg_rr] using hjg)
+  exact
+    pairHasCommonInterleaver_of_sameDegree_slotIntersections
+      hf_rr hg_rr hdeg hslot
 
 /-- Low-degree base case for the repaired same-degree no-common target.  Through
 degree one, the common-right-interleaver conclusion is unconditional once the

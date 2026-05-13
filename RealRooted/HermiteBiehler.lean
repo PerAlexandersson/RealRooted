@@ -138,14 +138,46 @@ theorem hasNonnegCoeffs_right_of_oddEvenPolynomial {p q : ℝ[X]}
   intro n
   simpa using h (2 * n)
 
-/-- Sign-free planning stub for the forward Hermite--Biehler theorem.
 
-This exact interface is too weak without a sign normalization; see
+/-- Sign-normalized forward Hermite--Biehler bridge.
+
+This is the minimal sign-stable form used in downstream plumbing:
+positive leading coefficients on both inputs prevent the false counterexample.
+-/
+def hermiteBiehlerForwardPosStatement : Prop :=
+  ∀ {f g : ℝ[X]},
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    Prec g f →
+    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)
+
+/-- Legacy planning stub for the sign-free forward interface.
+
+This exact form is too weak without a sign normalization; see
 `not_hermiteBiehlerForwardStatement`. -/
 def hermiteBiehlerForwardStatement : Prop :=
   ∀ ⦃f g : ℝ[X]⦄,
     Prec g f →
     IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)
+
+/-- Nonnegative coefficients plus nonzeroness force a positive leading
+coefficient.  This is a small normalization helper for bridging to the
+sign-normalized Hermite--Biehler route. -/
+lemma hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero {p : ℝ[X]}
+    (hpnn : HasNonnegCoeffs p) (hp0 : p ≠ 0) :
+    HasPosLeadingCoeff p := by
+  unfold HasPosLeadingCoeff HasNonnegCoeffs at *
+  have hlead_ne : p.coeff p.natDegree ≠ 0 := by
+    simpa [Polynomial.coeff_natDegree] using (Polynomial.leadingCoeff_ne_zero).2 hp0
+  exact lt_of_le_of_ne (hpnn p.natDegree) (by simpa using hlead_ne.symm)
+
+/-- The legacy sign-free statement implies the normalized one as a
+specialization. -/
+theorem hermiteBiehlerForwardPosStatement_of_forward
+    (hHB : hermiteBiehlerForwardStatement) :
+    hermiteBiehlerForwardPosStatement := by
+  intro f g hf hg hpq
+  exact hHB hpq
 
 /-- The current sign-free forward Hermite--Biehler interface is false:
 `-1 ≪ X`, but `X - i` has the upper-half-plane root `i`. -/

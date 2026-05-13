@@ -746,6 +746,26 @@ theorem pfPrecToHurwitzOddEven_of_hermiteBiehler
   refine ⟨hasNonnegCoeffs_oddEvenPolynomial hpnn hqnn, ?_⟩
   exact hHBToHurwitz hpnn hqnn (hHB (f := q) (g := p) hpq)
 
+/-- Positive-leading-coefficient form used when zero coefficients are ruled out
+explicitly.  This avoids the sign-free Hermite--Biehler hypothesis. -/
+theorem pfPrecToHurwitzOddEven_of_hermiteBiehlerPosCoeffs
+    (hHB : hermiteBiehlerForwardPosStatement)
+    (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement) :
+    ∀ {p q : ℝ[X]},
+      HasNonnegCoeffs p →
+      HasNonnegCoeffs q →
+      p ≠ 0 →
+      q ≠ 0 →
+      Prec p q →
+      IsHurwitzStable (oddEvenPolynomial p q) := by
+  intro p q hpnn hqnn hp0 hq0 hpq
+  have hp : HasPosLeadingCoeff p :=
+    hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hpnn hp0
+  have hq : HasPosLeadingCoeff q :=
+    hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hqnn hq0
+  refine ⟨hasNonnegCoeffs_oddEvenPolynomial hpnn hqnn, ?_⟩
+  exact hHBToHurwitz hpnn hqnn (hHB (f := q) (g := p) hq hp hpq)
+
 /-- The planned Hermite--Biehler/Hurwitz route implies the PF polynomial-to-Lace
 bridge. -/
 theorem pfPrecToFullyInterlacingPair_of_hurwitzOddEven

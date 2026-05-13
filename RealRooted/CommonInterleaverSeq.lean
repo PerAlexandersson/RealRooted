@@ -1275,7 +1275,7 @@ lemma csDegree_le_natDegree_succ_of_pairwiseHasCommonInterleaver
 /-- Pairwise slot intersection for a pair of polynomials sharing a common
 interleaver on the right. This is the local input needed for the finite-Helly
 step in the Chudnovsky--Seymour proof. -/
-private lemma rootSlotInterval_inter_nonempty_of_commonInterleaver
+theorem rootSlotInterval_inter_nonempty_of_commonInterleaver
     {f g h : ℝ[X]}
     (hfh : Prec f h) (hgh : Prec g h)
     (j : ℕ)
