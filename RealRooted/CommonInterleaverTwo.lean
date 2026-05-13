@@ -2193,7 +2193,8 @@ theorem posComboOrientation_of_boundaryRightPairOrientation_and_nonnegCoeffs
 
 /-- The stronger boundary-right-pair hypothesis already contains the honest
 same-degree no-common branch in the nonnegative regime. -/
-theorem posComboNoCommonSameDegreeOrientationAlternative_of_boundaryRightPairOrientation_and_nonnegCoeffs
+theorem
+    posComboNoCommonSameDegreeOrientationAlternative_of_boundaryRightPairOrientation_and_nonnegCoeffs
     (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
     PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
@@ -2204,7 +2205,8 @@ theorem posComboNoCommonSameDegreeOrientationAlternative_of_boundaryRightPairOri
 
 /-- The stronger boundary-right-pair hypothesis also contains the corrected
 succ-degree common-interleaver branch in the nonnegative regime. -/
-theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_boundaryRightPairOrientation_and_nonnegCoeffs
+theorem
+    posComboNoCommonSuccDegreePairHasCommonInterleaver_of_boundaryRightPairOrientation_and_nonnegCoeffs
     (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
@@ -2886,7 +2888,8 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_degreeSplit_via_no
 
 /-- Pairwise upgrade after the nonnegative shift reduction, with the
 succ-degree branch discharged by the affine-family bridge. -/
-theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_sameDegreeAlternative_and_affineFamily_via_nonnegShift
+theorem
+    pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_sameDegreeAlternative_and_affineFamily_via_nonnegShift
     {fs : List ℝ[X]}
     (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
     (haffBridge : PosComboNoCommonAffineFamilyStatement)
@@ -2901,7 +2904,8 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_sameDegreeAlternat
 
 /-- Pairwise upgrade from the boundary-right-pair hypothesis after shifting
 each pair into the nonnegative regime. -/
-theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_boundaryRightPairOrientation_via_nonnegShift
+theorem
+    pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_boundaryRightPairOrientation_via_nonnegShift
     {fs : List ℝ[X]}
     (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
@@ -3527,7 +3531,8 @@ theorem pairwiseCompatible_iff_familyCompatible_of_degreeSplit_via_nonnegShift
 /-- Chudnovsky--Seymour `1 ↔ 4` specialization after the nonnegative shift
 reduction, with the succ-degree branch discharged by the affine-family bridge.
 -/
-theorem pairwiseCompatible_iff_familyCompatible_of_sameDegreeAlternative_and_affineFamily_via_nonnegShift
+theorem
+    pairwiseCompatible_iff_familyCompatible_of_sameDegreeAlternative_and_affineFamily_via_nonnegShift
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, IsRealRooted f)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)

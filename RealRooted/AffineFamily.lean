@@ -3050,7 +3050,8 @@ private theorem isRealRooted_of_sub_C_mul_right_family_of_natDegree_lt
         calc ε * (coeffSumRange f₀ / (coeffSumRange f₀ + 1))
             < ε * 1 := mul_lt_mul_of_pos_left hfrac_lt_one hε_pos
           _ = ε := by ring
-      -- Coefficient closeness: ‖(g₀ - C μ * f₀).coeff i - g₀.coeff i‖ = μ * |f₀.coeff i|
+      -- Coefficient closeness:
+      -- ‖(g₀ - C μ * f₀).coeff i - g₀.coeff i‖ = μ * |f₀.coeff i|
       have hcoeff :
           ∀ i : ℕ, ‖(g₀ - C μ * f₀).coeff i - g₀.coeff i‖ < ε := by
         intro i
@@ -3089,8 +3090,11 @@ private theorem isRealRooted_of_sub_C_mul_right_family_of_natDegree_lt
                 unfold u
                 field_simp [hR_pos.ne']
       have hdist_lt : ‖z - w‖ < δ := by
-        calc ‖z - w‖ < ((g₀.natDegree + 1) * ε) ^ ((g₀.natDegree : ℝ)⁻¹) * max ‖z‖ 1 :=
-              hw_dist
+        calc
+          ‖z - w‖ <
+              ((g₀.natDegree + 1) * ε) ^ ((g₀.natDegree : ℝ)⁻¹) * max ‖z‖ 1
+                := by
+                  exact hw_dist
           _ = δ / 2 := hbound_eq
           _ < δ := by linarith [hδ_pos]
       have him_le : |z.im| ≤ ‖z - w‖ := by

@@ -238,8 +238,12 @@ lemma derivative_sign_at_consecutive_roots {f : ℝ[X]}
   -- Combine signs: q₁(r₁)*q₂(r₂) < 0
   have : q₁.eval r₁ * q₂.eval r₂ < 0 := by
     rcases lt_or_gt_of_ne hq₁m_ne with hq₁m_neg | hq₁m_pos
-    · exact mul_neg_of_neg_of_pos (by nlinarith [hq₁_same]) (by nlinarith [hq₂_same, hprod_neg])
-    · exact mul_neg_of_pos_of_neg (by nlinarith [hq₁_same]) (by nlinarith [hq₂_same, hprod_neg])
+    · exact mul_neg_of_neg_of_pos
+        (by nlinarith [hq₁_same])
+        (by nlinarith [hq₂_same, hprod_neg])
+    · exact mul_neg_of_pos_of_neg
+        (by nlinarith [hq₁_same])
+        (by nlinarith [hq₂_same, hprod_neg])
   -- q₁(r₁) = f'(r₁), q₂(r₂) = f'(r₂)
   rw [← hq₁r₁, ← hq₂r₂]; linarith
 
@@ -1029,7 +1033,9 @@ theorem prec_affine_derivative {f : ℝ[X]}
     rs hrs_root hrs_sorted hsub_rs hgap_rs
   have hss_sub : (↑ss : Multiset ℝ) ≤ g.roots := hsub_info.1
   have hss_count_bound :
-      ∀ a, a ∈ (↑rs : Multiset ℝ) → (↑ss : Multiset ℝ).count a + 1 ≤ (↑rs : Multiset ℝ).count a :=
+      ∀ a,
+        a ∈ (↑rs : Multiset ℝ) →
+        (↑ss : Multiset ℝ).count a + 1 ≤ (↑rs : Multiset ℝ).count a :=
     hsub_info.2
 
   -- g is real-rooted: degree d with d-1 inner roots → d total roots

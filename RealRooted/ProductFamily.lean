@@ -60,7 +60,8 @@ lemma hasNonnegCoeffs_affine_mul {s t : ℝ} (hs : 0 ≤ s) (ht : 0 ≤ t)
   simpa [left_distrib, right_distrib, mul_add, mul_assoc, add_assoc,
     add_left_comm, add_comm] using hsum
 
-lemma hasNonnegCoeffs_sum : ∀ ps : List ℝ[X], (∀ p ∈ ps, HasNonnegCoeffs p) → HasNonnegCoeffs ps.sum
+lemma hasNonnegCoeffs_sum :
+    ∀ ps : List ℝ[X], (∀ p ∈ ps, HasNonnegCoeffs p) → HasNonnegCoeffs ps.sum
   | [], _ => by simpa using hasNonnegCoeffs_zero
   | p :: ps, hps => by
       have hp : HasNonnegCoeffs p := hps p (by simp)
@@ -180,8 +181,10 @@ theorem pairwiseHasCommonLeftInterleaver_zipWith_mul_reverse_of_interlacingSeqNo
     simp [List.length_zipWith, hlen, List.length_reverse]
   let i' : Fin fs.length := ⟨i.1, by simpa [hzip_len] using i.2⟩
   let j' : Fin fs.length := ⟨j.1, by simpa [hzip_len] using j.2⟩
-  let i'' : Fin gs.reverse.length := ⟨i.1, by simpa [List.length_reverse, hlen, hzip_len] using i.2⟩
-  let j'' : Fin gs.reverse.length := ⟨j.1, by simpa [List.length_reverse, hlen, hzip_len] using j.2⟩
+  let i'' : Fin gs.reverse.length :=
+    ⟨i.1, by simpa [List.length_reverse, hlen, hzip_len] using i.2⟩
+  let j'' : Fin gs.reverse.length :=
+    ⟨j.1, by simpa [List.length_reverse, hlen, hzip_len] using j.2⟩
   have hij' : i' < j' := hij
   have hij'' : i'' < j'' := hij
   let fi := fs.get i'
@@ -240,8 +243,10 @@ theorem pairwiseHasCommonInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg
     simp [List.length_zipWith, hlen, List.length_reverse]
   let i' : Fin fs.length := ⟨i.1, by simpa [hzip_len] using i.2⟩
   let j' : Fin fs.length := ⟨j.1, by simpa [hzip_len] using j.2⟩
-  let i'' : Fin gs.reverse.length := ⟨i.1, by simpa [List.length_reverse, hlen, hzip_len] using i.2⟩
-  let j'' : Fin gs.reverse.length := ⟨j.1, by simpa [List.length_reverse, hlen, hzip_len] using j.2⟩
+  let i'' : Fin gs.reverse.length :=
+    ⟨i.1, by simpa [List.length_reverse, hlen, hzip_len] using i.2⟩
+  let j'' : Fin gs.reverse.length :=
+    ⟨j.1, by simpa [List.length_reverse, hlen, hzip_len] using j.2⟩
   have hij' : i' < j' := hij
   let fi := fs.get i'
   let fj := fs.get j'

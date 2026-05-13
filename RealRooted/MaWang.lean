@@ -774,7 +774,8 @@ private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive :
           | nil =>
               simp at hbEq
               rcases hbEq with ⟨rfl, rfl⟩
-              have hint' : b ≤ s ∧ s ≤ r₁ ∧ ListInterlaces ss' (r₁ :: r₂ :: rest) := by
+              have hint' : b ≤ s ∧ s ≤ r₁ ∧
+                ListInterlaces ss' (r₁ :: r₂ :: rest) := by
                 simpa [ListInterlaces] using hint
               obtain ⟨har₁, hs_r₁, htail⟩ := hint'
               have hrs_tail : (r₁ :: r₂ :: rest).Pairwise (· ≤ ·) :=
@@ -786,9 +787,11 @@ private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive :
                   (ss'.map (fun x => r₁ - x)).prod * (ss'.map (fun x => r₂ - x)).prod ≤ 0 := by
                 exact listInterlaces_prod_mul_prod_nonpos_at_heads htail
               calc
-                ((s :: ss').map (fun x => r₁ - x)).prod * ((s :: ss').map (fun x => r₂ - x)).prod
+                ((s :: ss').map (fun x => r₁ - x)).prod *
+                    ((s :: ss').map (fun x => r₂ - x)).prod
                     = ((r₁ - s) * (r₂ - s)) *
-                        ((ss'.map (fun x => r₁ - x)).prod * (ss'.map (fun x => r₂ - x)).prod) := by
+                      ((ss'.map (fun x => r₁ - x)).prod *
+                        (ss'.map (fun x => r₂ - x)).prod) := by
                           simp [mul_assoc, mul_left_comm]
                 _ ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hs_factor_nonneg htail_nonpos
           | cons a' pre' =>
@@ -797,8 +800,8 @@ private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive :
               have hint_rs :
                   ListInterlaces (s :: ss') (b :: a' :: pre' ++ r₁ :: r₂ :: rest) := by
                 simpa [htailEq] using hint
-              have hint' :
-                  b ≤ s ∧ s ≤ a' ∧ ListInterlaces ss' (a' :: pre' ++ r₁ :: r₂ :: rest) := by
+              have hint' : b ≤ s ∧ s ≤ a' ∧
+                  ListInterlaces ss' (a' :: pre' ++ r₁ :: r₂ :: rest) := by
                 simpa [ListInterlaces] using hint_rs
               obtain ⟨_, hs_le_a', hint_tail⟩ := hint'
               have hrs_tail : (a' :: pre' ++ r₁ :: r₂ :: rest).Pairwise (· ≤ ·) :=
@@ -822,9 +825,11 @@ private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive :
                   (ss := ss') (rs := a' :: pre' ++ r₁ :: r₂ :: rest)
                   (pre := a' :: pre') (rest := rest) hrs_tail hint_tail (by simp)
               calc
-                ((s :: ss').map (fun x => r₁ - x)).prod * ((s :: ss').map (fun x => r₂ - x)).prod
+                ((s :: ss').map (fun x => r₁ - x)).prod *
+                    ((s :: ss').map (fun x => r₂ - x)).prod
                     = ((r₁ - s) * (r₂ - s)) *
-                        ((ss'.map (fun x => r₁ - x)).prod * (ss'.map (fun x => r₂ - x)).prod) := by
+                      ((ss'.map (fun x => r₁ - x)).prod *
+                        (ss'.map (fun x => r₂ - x)).prod) := by
                           simp [mul_assoc, mul_left_comm]
                 _ ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hs_factor_nonneg htail_nonpos
 

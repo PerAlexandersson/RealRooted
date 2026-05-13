@@ -273,7 +273,8 @@ lemma gammaTransform_pad_two {d : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d /
   simp
   calc
     ∑ i ∈ Finset.range (d / 2 + 1), C (γ.coeff i) * gammaBasisTerm (d + 2) i
-      = ∑ i ∈ Finset.range (d / 2 + 1), (X + 1) ^ 2 * (C (γ.coeff i) * gammaBasisTerm d i) := by
+      = ∑ i ∈ Finset.range (d / 2 + 1),
+          (X + 1) ^ 2 * (C (γ.coeff i) * gammaBasisTerm d i) := by
           apply Finset.sum_congr rfl
           intro i hi
           have hi_le : i ≤ d / 2 := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)

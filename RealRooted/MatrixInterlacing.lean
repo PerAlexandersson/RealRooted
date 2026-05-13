@@ -319,10 +319,12 @@ theorem matrix_preserves_interlacing_seq0_sparse_pair_prec0
     (hi : i₁ < i₂) (hj : j₁ < j₂)
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
     Prec0
-      (((G.get i₁).get ⟨j₁, by have := hG_rect _ (G.get_mem i₁); omega⟩)
-        + (C a * X + C b) * ((G.get i₁).get ⟨j₂, by have := hG_rect _ (G.get_mem i₁); omega⟩))
-      (((G.get i₂).get ⟨j₁, by have := hG_rect _ (G.get_mem i₂); omega⟩)
-        + (C a * X + C b) * ((G.get i₂).get ⟨j₂, by have := hG_rect _ (G.get_mem i₂); omega⟩)) := by
+      (((G.get i₁).get ⟨j₁, by have := hG_rect _ (G.get_mem i₁); omega⟩
+          + (C a * X + C b)
+            * ((G.get i₁).get ⟨j₂, by have := hG_rect _ (G.get_mem i₁); omega⟩)))
+      (((G.get i₂).get ⟨j₁, by have := hG_rect _ (G.get_mem i₂); omega⟩
+          + (C a * X + C b)
+            * ((G.get i₂).get ⟨j₂, by have := hG_rect _ (G.get_mem i₂); omega⟩))) := by
   let fs := sparseLinearPairSeq n j₁ j₂ a b
   have hfs_len : fs.length = n := by
     simp [fs]
@@ -772,7 +774,8 @@ theorem prec_zipWith_sum_pair_of_2x2
         (row₁ := row₁) (row₂ := row₂) hrow₁_nonneg hrow₂_nonneg hs ht p hp
   have hrewrite :
       ∀ {s t : ℝ},
-        ((C s * X + C t) * ((row₁.zipWith (· * ·) fs).sum)) + ((row₂.zipWith (· * ·) fs).sum)
+        (C s * X + C t) * ((row₁.zipWith (· * ·) fs).sum)
+          + ((row₂.zipWith (· * ·) fs).sum)
           = ((auxRow s t).zipWith (· * ·) fs).sum := by
     intro s t
     simpa [auxRow] using

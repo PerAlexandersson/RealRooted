@@ -6,12 +6,6 @@ import RealRooted.ProductFamily
 import RealRooted.WagnerX
 import Mathlib.Algebra.Polynomial.Reverse
 
-set_option linter.style.cdot false
-set_option linter.style.longLine false
-set_option linter.unnecessarySimpa false
-set_option linter.unusedSimpArgs false
-set_option linter.unusedVariables false
-
 /-!
 # Symmetric decompositions and real-rootedness
 
@@ -36,6 +30,12 @@ The intended first milestones are:
    transform,
 3. prove Theorem 2.6 in the current `Prec` language.
 -/
+
+set_option linter.style.cdot false
+set_option linter.style.longLine false
+set_option linter.unnecessarySimpa false
+set_option linter.unusedSimpArgs false
+set_option linter.unusedVariables false
 
 open Polynomial Finset
 
