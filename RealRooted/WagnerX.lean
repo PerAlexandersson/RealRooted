@@ -18,9 +18,6 @@ Three forms of Wagner's lemma for polynomials:
 with positive leading coefficients, then (Σ fᵢ) interlaces h.
 -/
 
-set_option linter.style.show false
-set_option linter.unusedSimpArgs false
-
 open Polynomial Filter
 
 noncomputable section
@@ -120,9 +117,9 @@ lemma listInterlaces_orderedInsert :
       ∀ a : ℝ, ListInterlaces (ss.orderedInsert (· ≤ ·) a) (rs.orderedInsert (· ≤ ·) a)
   | [], [r], hlen, hint, a => by
       by_cases har : a ≤ r
-      · simp [ListInterlaces, List.orderedInsert_cons_of_le, har]
+      · simp [ListInterlaces, har]
       · have hra : r ≤ a := le_of_not_ge har
-        simp [ListInterlaces, List.orderedInsert_of_not_le, har, hra]
+        simp [ListInterlaces, har, hra]
   | s :: ss, r₁ :: r₂ :: rs, hlen, hint, a => by
       obtain ⟨hr₁s, hsr₂, htail⟩ := hint
       by_cases har₁ : a ≤ r₁
@@ -602,7 +599,8 @@ theorem prec_iff_prec_mul_X {f g : ℝ[X]}
       have hlen' : ss_f.length + 1 = ss_g.length := by
         have : ss_g.length = g.natDegree := by rw [← Multiset.coe_card, hss_g_eq, hg.2]
         have : ss_f.length = f.natDegree := by
-          show (f.roots.sort (· ≤ ·)).length = _; rw [Multiset.length_sort, hf.2]
+          change (f.roots.sort (· ≤ ·)).length = _
+          rw [Multiset.length_sort, hf.2]
         omega
       exact ⟨hf, hg, ss_f, ss_g, hss_f_sorted, hss_g, hss_f_eq, hss_g_eq,
         Or.inl ⟨by omega, listInterlaces_of_listAlternates_append_zero ss_f ss_g hlen' halt⟩⟩

@@ -7,10 +7,6 @@ If f ≪ h and g ≪ h with positive leading coefficients, then (f + g) ≪ h.
 Generalizes to n summands by induction.
 -/
 
-set_option linter.unnecessarySimpa false
-set_option linter.unusedSimpArgs false
-set_option linter.unusedVariables false
-
 open Polynomial Filter
 
 noncomputable section
@@ -68,6 +64,7 @@ lemma exists_sign_of_prod (l : List ℝ) (h : ∀ x ∈ l, 0 ≤ x ∨ x ≤ 0) 
       have : (-1 : ℝ) ^ (k + 1) * (a * l.prod) = (-a) * ((-1 : ℝ) ^ k * l.prod) := by ring
       rw [this]; exact mul_nonneg (by linarith) hk
 
+set_option linter.unusedVariables false in
 /-- Two products with the same "sign exponent" have a non-negative product. -/
 lemma prod_mul_prod_nonneg_of_same_sign {l₁ l₂ : List ℝ}
     (h₁ : ∀ x ∈ l₁, 0 ≤ x ∨ x ≤ 0) (h₂ : ∀ x ∈ l₂, 0 ≤ x ∨ x ≤ 0)
@@ -178,7 +175,7 @@ private lemma listInterlaces_prod_mul_prod_nonneg_at_mem :
           simp at hlen
           omega
         exact prod_mul_prod_nonneg_of_forall_nonpos_of_eq_length
-          (by simpa [hlen']) hall_f hall_g
+          (by simp [hlen']) hall_f hall_g
       · have hr_ge_b : b ≤ r := by
           rcases List.mem_cons.mp hr_tail with rfl | hr_tail'
           · exact le_rfl
@@ -296,7 +293,7 @@ private lemma listInterlaces_prod_mul_prod_nonpos_at_heads :
               (List.map (fun x => r₂ - x) (s :: rest_s)).prod =
             ((r₁ - s) * (r₂ - s)) *
               ((rest_s.map (r₁ - ·)).prod * (rest_s.map (r₂ - ·)).prod) := by
-        simp [mul_assoc, mul_left_comm, mul_comm]
+        simp [mul_assoc, mul_left_comm]
       rw [hfactor]
       exact mul_nonpos_of_nonpos_of_nonneg hs_nonpos htail_nonneg
   | [], _, _, _, hint => by
@@ -322,7 +319,7 @@ private lemma listAlternates_prod_mul_prod_nonpos_at_heads :
               (List.map (fun x => r₂ - x) (s :: rest_s)).prod =
             ((r₁ - s) * (r₂ - s)) *
               ((rest_s.map (r₁ - ·)).prod * (rest_s.map (r₂ - ·)).prod) := by
-        simp [mul_assoc, mul_left_comm, mul_comm]
+        simp [mul_assoc, mul_left_comm]
       rw [hfactor]
       exact mul_nonpos_of_nonneg_of_nonpos hs_nonneg htail_nonpos
   | [], _, _, _, halt => by
@@ -438,6 +435,7 @@ lemma isRoot_of_isRoot_right_of_isRoot_add {f g h : ℝ[X]}
     nlinarith
   exact ⟨by simpa [Polynomial.IsRoot.def] using hf0, by simpa [Polynomial.IsRoot.def] using hg0⟩
 
+set_option linter.unusedVariables false in
 /-- A polynomial with roots arranged by a `ListInterlaces`/`ListAlternates`
 layout has opposite-or-zero signs at consecutive right-hand roots. -/
 private lemma eval_mul_eval_nonpos_of_roots_layout {f : ℝ[X]}
@@ -502,6 +500,7 @@ lemma exists_isRoot_between_of_eval_mul_nonpos {p : ℝ[X]} {a b : ℝ}
         obtain ⟨c, hc, hc_val⟩ := intermediate_value_Icc' (le_of_lt hab_lt) hcont h0_mem
         exact ⟨c, hc.1, hc.2, hc_val⟩
 
+set_option linter.unusedVariables false in
 /-- **Sign lemma**: Given real-rooted `f`, `g` with positive leading coefficients,
     roots `s` of `f` and `t` of `g` with `s ≤ t`, both in `[a, b]`, and the
     dichotomy conditions (all other roots of `f` resp. `g` are `≤ a` or `≥ b`,
@@ -740,11 +739,11 @@ private lemma wagner1_roots_exist (f g : ℝ[X])
     -- sf is a root of f, sg is a root of g
     have hsf_root : f.IsRoot sf := by
       have : sf ∈ f.roots := by
-        rw [← hss_f_eq]; simp [Multiset.mem_add, Multiset.mem_cons]
+        rw [← hss_f_eq]; simp [Multiset.mem_add]
       exact (mem_roots hf.1).mp this
     have hsg_root : g.IsRoot sg := by
       have : sg ∈ g.roots := by
-        rw [← hss_g_eq]; simp [Multiset.mem_add, Multiset.mem_cons]
+        rw [← hss_g_eq]; simp [Multiset.mem_add]
       exact (mem_roots hg.1).mp this
     -- Shared recursive call arguments
     have hlen_f' : rest_f.length + 1 = (b :: rest_rs).length := by
@@ -946,12 +945,12 @@ private lemma wagner1_roots_exist_of_no_common_right (f g : ℝ[X])
       have hsf_root : f.IsRoot sf := by
         have : sf ∈ f.roots := by
           rw [← hss_f_eq]
-          simp [Multiset.mem_add, Multiset.mem_cons]
+          simp [Multiset.mem_add]
         exact (mem_roots hf.1).mp this
       have hsg_root : g.IsRoot sg := by
         have : sg ∈ g.roots := by
           rw [← hss_g_eq]
-          simp [Multiset.mem_add, Multiset.mem_cons]
+          simp [Multiset.mem_add]
         exact (mem_roots hg.1).mp this
       have hlen_f' : rest_f.length + 1 = (b :: rest_rs).length := by
         simp at hlen_f ⊢
@@ -1611,7 +1610,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
           exact ne_of_gt (by
             unfold HasPosLeadingCoeff at hf_pos hg_pos
             linarith)
-        exact hcoeff_ne (by simpa [h0])
+        exact hcoeff_ne (by simp [h0])
       have hus_sub : (↑us : Multiset ℝ) ≤ (f + g).roots := by
         rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr hus_nodup)]
         intro u hu
@@ -1891,7 +1890,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
             exact ne_of_gt (by
               unfold HasPosLeadingCoeff at hf_pos hg_pos
               linarith)
-          exact hcoeff_ne (by simpa [h0])
+          exact hcoeff_ne (by simp [h0])
         have hfg_rr : IsRealRooted (f + g) := by
           refine ⟨hfg_ne, ?_⟩
           have hcard_le : (f + g).roots.card ≤ 0 := by
@@ -2018,7 +2017,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
               exact ne_of_gt (by
                 unfold HasPosLeadingCoeff at hf_pos hg_pos
                 linarith)
-            exact hcoeff_ne (by simpa [h0])
+            exact hcoeff_ne (by simp [h0])
           have hsub : (↑(c :: us) : Multiset ℝ) ≤ (f + g).roots := by
             rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr hnodup)]
             intro u hu
@@ -2093,7 +2092,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
               exact ne_of_gt (by
                 unfold HasPosLeadingCoeff at hf_pos hg_pos
                 linarith)
-            exact hcoeff_ne (by simpa [h0])
+            exact hcoeff_ne (by simp [h0])
           have hsub : (↑(c :: us) : Multiset ℝ) ≤ (f + g).roots := by
             rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr hnodup)]
             intro u hu
