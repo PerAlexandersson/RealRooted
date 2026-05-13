@@ -1,20 +1,3 @@
-/-
-# Folklore lemma: f - tg preserves interlacing
-
-If `f, g` are monic with `deg(f) = deg(g) + 1`, all roots real and ≤ 0,
-and `g ⊳ f`, then `f - X * g` is real-rooted and `g ⊳ (f - X*g) ⊳ f`.
-
-## Proof sketch
-
-At each root `r` of `f`: `(f - X*g)(r) = -r * g(r)`.
-Since `r ≤ 0`: `-r ≥ 0`, so `sign((f-Xg)(r)) = sign(g(r))`.
-The interlacing `g ⊳ f` ensures `g` alternates sign at roots of `f`.
-So `f - Xg` alternates sign at roots of `f` → IVT gives roots → interlacing.
-
-At each root `s` of `g`: `(f - X*g)(s) = f(s)`.
-The interlacing ensures `f` alternates sign at roots of `g`.
-So `f - Xg` alternates sign at roots of `g` → interlacing from the other side.
--/
 import RealRooted.Basic
 import RealRooted.Linear
 import RealRooted.Derivative
@@ -23,7 +6,17 @@ import RealRooted.ObreschkoffConverse
 import RealRooted.CombinatorialExamples.Motzkin
 -- import RealRooted.AffineDerivative  -- uncomment when AffineDerivative is built
 
-set_option linter.unnecessarySimpa false
+/-!
+# Folklore lemma for subtracting `X * g`
+
+This file studies the standard claim that, under suitable monic and
+nonpositive-root hypotheses, interlacing is preserved by the transformation
+`(f, g) ↦ f - X * g`.
+
+At a root `r` of `f`, `(f - X * g)(r) = -r * g(r)`.  Since the roots are
+nonpositive, this has the same sign as `g(r)`.  The expected interlacing
+conclusion then follows from sign alternation.
+-/
 
 open Polynomial
 
@@ -53,10 +46,10 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
     have hf : IsRealRooted f := hgf.2.1
     have hg_pos : HasPosLeadingCoeff g := by
       unfold HasPosLeadingCoeff
-      simpa [hg_monic.leadingCoeff] using (zero_lt_one : (0 : ℝ) < 1)
+      simp [hg_monic.leadingCoeff]
     have hf_pos : HasPosLeadingCoeff f := by
       unfold HasPosLeadingCoeff
-      simpa [hf_monic.leadingCoeff] using (zero_lt_one : (0 : ℝ) < 1)
+      simp [hf_monic.leadingCoeff]
     have hprec_fXg : Prec f (X * g) := by
       exact
         (prec_iff_prec_mul_X_of_roots_nonpos
@@ -119,7 +112,7 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
           _ = 1 - g.leadingCoeff := by
                 rw [coeff_natDegree]
           _ = 0 := by
-                simpa [hg_monic.leadingCoeff]
+                simp [hg_monic.leadingCoeff]
       exact hq_top_ne hq_top_zero
     have hdeg_qf : q.natDegree + 1 = f.natDegree := by
       omega
@@ -199,7 +192,7 @@ theorem prec_sub_X_mul_right {f g : ℝ[X]}
           _ = 1 - g.leadingCoeff := by
                 rw [coeff_natDegree]
           _ = 0 := by
-                simpa [hg_monic.leadingCoeff]
+                simp [hg_monic.leadingCoeff]
       exact hq_top_ne hq_top_zero
     have hclose_qf := natDegree_close_of_allComboRealRooted hall_qf hq0 hf0
     have hdeg_qf : q.natDegree + 1 = f.natDegree := by

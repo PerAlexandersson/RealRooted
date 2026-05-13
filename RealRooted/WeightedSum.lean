@@ -18,8 +18,6 @@ finite weighted sums, this is packaged below as an inductive compatibility
 predicate.
 -/
 
-set_option linter.unusedDecidableInType false
-
 open Polynomial
 
 noncomputable section
@@ -57,9 +55,10 @@ lemma weightedSum_eq_zero_of_forall_coeff_zero :
       simp [weightedSum_cons, ha, weightedSum_eq_zero_of_forall_coeff_zero l hl]
 
 /-- `HasNonnegCoeffs` is closed under finite sums. -/
-lemma hasNonnegCoeffs_finset_sum {ι : Type} [DecidableEq ι]
+lemma hasNonnegCoeffs_finset_sum {ι : Type}
     (s : Finset ι) (f : ι → ℝ[X]) (hf : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
     HasNonnegCoeffs (s.sum f) := by
+  classical
   intro n
   rw [finset_sum_coeff]
   exact Finset.sum_nonneg fun i hi => hf i hi n

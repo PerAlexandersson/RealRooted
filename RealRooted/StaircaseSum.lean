@@ -1,6 +1,11 @@
 import RealRooted.ProductFamily
 
-set_option linter.unnecessarySimpa false
+/-!
+# Staircase-weighted sums
+
+This file packages interlacing for the staircase-weighted sum
+`X * (f_0 + ... + f_{m-1}) + (f_m + ... + f_{n-1})`.
+-/
 
 open Polynomial
 
@@ -47,7 +52,7 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
       · exact hpair.rel_of_mem_take_of_mem_drop hf_mem_take hp'
     have hne : fs ≠ [] := by
       intro hnil
-      simpa [hnil] using hm
+      simp [hnil] at hm
     simpa [staircaseSum] using
       prec_sum_left_of_common_left_signed fs f hprec
         (fun p hp => hfs.posLeadingCoeff p hp) hne
@@ -74,7 +79,7 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
     have hXprefix_prec : Prec f (X * (fs.take m).sum) := by
       exact prec_mul_X_of_prec_of_nonneg hprefix_prec hprefix_nonneg hf_nonneg
     have htake_succ : fs.take (m + 1) = fs.take m ++ [f] := by
-      simpa [f] using (List.take_succ_eq_append_getElem hm)
+      simp [f]
     have hf_mem_take_succ : f ∈ fs.take (m + 1) := by
       rw [htake_succ]
       simp

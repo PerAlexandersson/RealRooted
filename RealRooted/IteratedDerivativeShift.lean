@@ -11,12 +11,6 @@ real-rootedness preservation, interlacing, and continuity facts used in the
 Obreschkoff converse route.
 -/
 
-set_option linter.style.longLine false
-set_option linter.style.show false
-set_option linter.unnecessarySimpa false
-set_option linter.unusedSimpArgs false
-set_option linter.unusedVariables false
-
 open Polynomial
 
 noncomputable section
@@ -372,7 +366,7 @@ theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
           simpa [derivative_neg, natDegree_neg] using
             hasPosLeadingCoeff_derivative_of_pos hneg_pos (by rw [natDegree_neg]; omega)
         have hrewrite_neg : TDeriv eps (-p) = C 1 * (-p) + C (-eps) * (-p).derivative := by
-          simpa [TDeriv]
+          simp [TDeriv]
         have hT_pos : HasPosLeadingCoeff (C 1 * (-p) + C (-eps) * (-p).derivative) := by
           rw [← hrewrite_neg]
           unfold HasPosLeadingCoeff
@@ -512,6 +506,7 @@ lemma prec_iterateTDeriv_succ {eps : ℝ} {p : ℝ[X]} {n : ℕ}
 
 /-! ## Main theorem -/
 
+set_option linter.unusedVariables false in
 /-- Degree is preserved by iterating T_ε. -/
 lemma natDegree_iterateTDeriv {eps : ℝ} {p : ℝ[X]} {k : ℕ}
     (hp : p ≠ 0) (hdeg : 1 ≤ p.natDegree) :
@@ -1053,7 +1048,7 @@ lemma rootMultiplicity_ge_two_of_TDeriv_ge_two
 
 /-- Factoring out a root of a real-rooted polynomial gives a real-rooted quotient. -/
 private lemma isRealRooted_div_X_sub_C {p : ℝ[X]} {r : ℝ}
-    (hp : IsRealRooted p) (hr : p.IsRoot r)
+    (hp : IsRealRooted p) (_hr : p.IsRoot r)
     {t : ℝ[X]} (hpt : p = (X - C r) * t) :
     IsRealRooted t := by
   have hp_ne := hp.1
@@ -1152,12 +1147,13 @@ lemma deriv2_mul_lt_deriv_sq_at_non_root
       have ht'_zero : t.derivative = 0 := by
         have := eq_C_of_natDegree_eq_zero ht_deg0; rw [this]; simp
       have ht'a_zero : t'a = 0 := by
-        show t.derivative.eval a = 0; rw [ht'_zero, eval_zero]
+        change t.derivative.eval a = 0
+        rw [ht'_zero, eval_zero]
       have ht''a_zero : t''a = 0 := by
-        show t.derivative.derivative.eval a = 0
+        change t.derivative.derivative.eval a = 0
         rw [ht'_zero, derivative_zero, eval_zero]
       rw [ht'a_zero, ht''a_zero]
-      simp only [zero_mul, zero_sub, sub_zero]
+      simp only [zero_mul, zero_sub]
       linarith [sq_pos_of_ne_zero ht_eval]
     · -- n ≥ 2: use IH on t
       have ht_ih := ih (n - 1) (by omega) t ht_deg ht_rr (by omega) ht_eval
@@ -1202,7 +1198,7 @@ lemma rootMultiplicity_TDeriv_le_one_of_not_isRoot
   have hcond2 : p.derivative.eval a = eps * p.derivative.derivative.eval a := by
     have := hT_deriv_root
     have hT_deriv : (TDeriv eps p).derivative = p.derivative - C eps * p.derivative.derivative := by
-      simp [TDeriv, derivative_sub, derivative_C_mul]
+      simp [TDeriv, derivative_sub]
     rw [hT_deriv] at this
     simp only [Polynomial.IsRoot, eval_sub, eval_mul, eval_C] at this
     linarith

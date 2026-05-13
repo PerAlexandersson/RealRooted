@@ -9,8 +9,6 @@ This file defines `AllComboRealRooted` and packages common-root reduction,
 derivative, and `iterateTDeriv` algebra used in the Obreschkoff converse proof.
 -/
 
-set_option linter.unusedSimpArgs false
-
 open Polynomial
 
 noncomputable section
@@ -142,13 +140,13 @@ lemma allComboRealRooted_iterate_derivative
 lemma TDeriv_add (eps : ℝ) (p q : ℝ[X]) :
     TDeriv eps (p + q) = TDeriv eps p + TDeriv eps q := by
   ext n
-  simp [TDeriv, sub_eq_add_neg, left_distrib, right_distrib]
+  simp [TDeriv, sub_eq_add_neg, left_distrib]
   ring
 
 lemma TDeriv_C_mul (eps c : ℝ) (p : ℝ[X]) :
     TDeriv eps (C c * p) = C c * TDeriv eps p := by
   ext n
-  simp [TDeriv, derivative_C_mul, sub_eq_add_neg]
+  simp [TDeriv, sub_eq_add_neg]
   ring
 
 @[simp] lemma iterateTDeriv_zero_poly (eps : ℝ) :

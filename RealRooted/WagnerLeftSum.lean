@@ -7,8 +7,6 @@ If h ≪ f and h ≪ g with positive leading coefficients, then h ≪ (f + g).
 Includes SumCompatibleLeft for recursive n-summand assembly.
 -/
 
-set_option linter.style.longLine false
-
 open Polynomial Filter
 
 noncomputable section

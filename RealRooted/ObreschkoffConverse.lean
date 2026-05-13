@@ -8,7 +8,6 @@ Wronskian orientation lemmas, the same-degree and succ-degree cases,
 and the main converse `prec_of_allComboRealRooted`.
 -/
 
-set_option linter.style.longLine false
 set_option linter.unnecessarySimpa false
 set_option linter.unusedSimpArgs false
 

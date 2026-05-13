@@ -4,7 +4,13 @@ import Mathlib.Analysis.Complex.Basic
 import Mathlib.Analysis.Complex.Polynomial.Basic
 import Mathlib.FieldTheory.IsAlgClosed.Basic
 
-set_option linter.unnecessarySimpa false
+/-!
+# Continuity bridge for positive combinations
+
+This file records the local positive-combination hypotheses used by the
+Obreschkoff continuity argument, without importing the heavier converse
+development.
+-/
 
 open Polynomial
 
@@ -236,7 +242,7 @@ theorem im_eq_zero_of_aeval_zero_of_posComboRealRooted_monic_sameDegree
     have hf_deg0 : f.natDegree = 0 := Nat.eq_zero_of_not_pos hnot
     have hf_eq_one : f = 1 := Polynomial.eq_one_of_monic_natDegree_zero hf_monic hf_deg0
     have : (1 : ℂ) = 0 := by
-      simpa [hf_eq_one] using hz
+      simp [hf_eq_one] at hz
     exact one_ne_zero this
   have hdeg_nat_ne : f.natDegree ≠ 0 := Nat.ne_of_gt hf_deg_pos
   let u : ℝ := δ / (2 * R)

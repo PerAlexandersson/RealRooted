@@ -18,7 +18,6 @@ Three forms of Wagner's lemma for polynomials:
 with positive leading coefficients, then (Σ fᵢ) interlaces h.
 -/
 
-set_option linter.style.longLine false
 set_option linter.style.show false
 set_option linter.unusedSimpArgs false
 
