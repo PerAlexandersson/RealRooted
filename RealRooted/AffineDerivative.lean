@@ -30,7 +30,6 @@ import Mathlib.Tactic
 
 set_option linter.unnecessarySimpa false
 set_option linter.unusedSimpArgs false
-set_option linter.unusedTactic false
 set_option linter.unusedVariables false
 
 open Polynomial Filter
@@ -1195,7 +1194,6 @@ theorem prec_affine_derivative {f : ℝ[X]}
         exact neg_pow_prod_nonneg_of_all_nonpos _ (by
           intro x hx
           rcases Multiset.mem_map.mp hx with ⟨t, ht, rfl⟩
-          change r₁ - t ≤ 0
           exact sub_nonpos.mpr (hq_root_gt t ht).le)
       simpa using htmp
     have hPg_nonneg : 0 ≤ (-1 : ℝ) ^ qg.roots.card * Pg := by
@@ -1205,7 +1203,6 @@ theorem prec_affine_derivative {f : ℝ[X]}
         exact neg_pow_prod_nonneg_of_all_nonpos _ (by
           intro x hx
           rcases Multiset.mem_map.mp hx with ⟨t, ht, rfl⟩
-          change r₁ - t ≤ 0
           exact sub_nonpos.mpr (hqg_root_gt t ht).le)
       simpa using htmp
     have hm_le_d : m ≤ d := by

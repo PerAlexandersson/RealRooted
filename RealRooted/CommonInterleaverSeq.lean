@@ -15,7 +15,6 @@ set_option linter.style.show false
 set_option linter.unnecessarySimpa false
 set_option linter.unreachableTactic false
 set_option linter.unusedSimpArgs false
-set_option linter.unusedTactic false
 set_option linter.unusedVariables false
 
 open Polynomial
@@ -271,8 +270,7 @@ private lemma reverse_get_zero_eq_getLast {xs : List ℝ} (hxs : xs ≠ []) :
       xs.reverse.get ⟨0, by simpa [List.length_reverse] using List.length_pos_iff_ne_nil.mpr hxs⟩ =
       xs.get ⟨xs.length - 1, by
         simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hxs) (by decide : 0 < 1))⟩ := by
-    simpa using (List.get_reverse' xs 0 (by
-      simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hxs) (by decide : 0 < 1))))
+    simpa using (List.get_reverse' xs 0)
   rw [hrev]
   simpa using (List.get_length_sub_one (l := xs) (by
     simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hxs) (by decide : 0 < 1))))
@@ -289,9 +287,7 @@ private lemma reverse_get_last_eq_get_zero {xs : List ℝ} (hxs : xs ≠ []) :
       xs.get ⟨xs.length - 1 - (xs.length - 1), by
         have hpos : 0 < xs.length := List.length_pos_iff_ne_nil.mpr hxs
         omega⟩ := by
-    simpa using (List.get_reverse' xs (xs.length - 1) (by
-      have hpos : 0 < xs.length := List.length_pos_iff_ne_nil.mpr hxs
-      omega))
+    simpa using (List.get_reverse' xs (xs.length - 1))
   rw [hrev]
   congr
   have hpos : 0 < xs.length := List.length_pos_iff_ne_nil.mpr hxs
@@ -415,7 +411,7 @@ private lemma rootSlot_upper_bound
     x ≤ rs.get ⟨j - 1, by omega⟩ := by
   by_cases hlast : j = rs.length
   · have hx_last : x ∈ rootSlotInterval rs
-        ⟨rs.length, by simpa [hlast] using (show j < rs.length + 1 by omega)⟩ := by
+        ⟨rs.length, by simpa [hlast]⟩ := by
       simpa [hlast] using hx
     have hlast_up : x ≤ rs.getLast hrs := mem_rootSlotInterval_last_upper (rs := rs) hrs hx_last
     have hlast_idx :
@@ -499,16 +495,7 @@ private lemma le_of_mem_rootSlots_of_lt
         rs.get ⟨rs.length - 1, by
           simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs_ne)
             (by decide : 0 < 1))⟩ ≤
-          rs.get ⟨i, hi_lt⟩ := by
-      refine get_le_get_of_pairwise_ge (rs := rs) hrs ?_
-      exact by
-        change
-          (⟨i, hi_lt⟩ : Fin rs.length) ≤
-            ⟨rs.length - 1, by
-              simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs_ne)
-                (by decide : 0 < 1))⟩
-        apply Fin.le_def.2
-        exact Nat.le_pred_of_lt hi_lt
+          rs.get ⟨i, hi_lt⟩ := get_le_get_of_pairwise_ge hrs (Nat.le_pred_of_lt hi_lt)
     exact le_trans (hlast_idx ▸ hy_last) (le_trans htail_le_hi hx_lower)
   · have hj_lt : j < rs.length := by omega
     have hj_pos : 0 < j := by omega
