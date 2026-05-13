@@ -190,6 +190,14 @@ Catalog context:
 - `prec_veroneseSectionPolynomial_of_prec` and the related pairwise-section
   declarations are conditional bridge theorems: they assume polynomial-to-Lace
   and Lace-to-polynomial interlacing interfaces.
+- `hermiteBiehlerForwardPosStatement`,
+  `pfPrecToFullyInterlacingPair_of_hermiteBiehlerPosHurwitzMatrix`, and
+  `nonnegPrecToFullyInterlacingPair_of_hermiteBiehlerPosHurwitzMatrix`:
+  sign-normalized replacements for the false sign-free Hermite-Biehler route.
+- `prec_veroneseSectionPolynomial_of_hermiteBiehlerPosHurwitzMatrix` and
+  `prec_veroneseSectionPolynomial_of_nonneg_hermiteBiehlerPosHurwitzMatrix`:
+  fixed-section Veronese interlacing wrappers through the corrected
+  Hermite-Biehler/Hurwitz-matrix route.
 
 **Permutation And Word Examples**
 
@@ -266,11 +274,16 @@ in this library.
 
 The Veronese-section file is in this category.  It fully formalizes the
 coefficient definitions, Toeplitz-total-nonnegativity submatrix argument, and
-two-row Lace submatrix argument.  The headline polynomial consequences still
-depend on statement-level interfaces such as
+two-row Lace submatrix argument.  The simple proof idea is exactly this:
+Veronese sectioning selects an arithmetic progression of columns in a Toeplitz
+or Lace matrix, and total nonnegativity is inherited by submatrices.  The
+headline polynomial consequences still depend on statement-level interfaces
+such as
 `aissenSchoenbergWhitneyForwardStatement`,
 `aissenSchoenbergWhitneyReverseStatement`,
 `FullyInterlacingPairToPrecStatement`, and
-`FullyInterlacingPairToPrec0Statement`.
+`FullyInterlacingPairToPrec0Statement`.  The preferred Hermite-Biehler route
+now uses the sign-normalized `hermiteBiehlerForwardPosStatement`, since the
+sign-free forward statement is false.
 
 In short: this is a working research codebase, not a finished library API.
