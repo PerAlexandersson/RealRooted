@@ -32,7 +32,6 @@ The intended first milestones are:
 -/
 
 set_option linter.style.cdot false
-set_option linter.style.longLine false
 set_option linter.unnecessarySimpa false
 set_option linter.unusedSimpArgs false
 set_option linter.unusedVariables false

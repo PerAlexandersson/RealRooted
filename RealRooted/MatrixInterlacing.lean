@@ -23,7 +23,8 @@ section
 /-- Sparse handbook test family for the converse direction: `1` at `i`,
 `α X + β` at `j`, and `0` elsewhere. -/
 def sparseLinearPairSeq (n : ℕ) (i j : Fin n) (a b : ℝ) : List ℝ[X] :=
-  List.ofFn (fun k : Fin n => if k = i then (1 : ℝ[X]) else if k = j then C a * X + C b else 0)
+  List.ofFn (fun k : Fin n =>
+    if k = i then (1 : ℝ[X]) else if k = j then C a * X + C b else 0)
 
 @[simp] lemma length_sparseLinearPairSeq (n : ℕ) (i j : Fin n) (a b : ℝ) :
     (sparseLinearPairSeq n i j a b).length = n := by

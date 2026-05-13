@@ -26,5 +26,5 @@ import RealRooted.HurwitzMatrix
 import RealRooted.ConvexCombination
 import RealRooted.StaircaseSum
 import RealRooted.RowThreshold
--- import RealRooted.FolkloreLemma
--- import RealRooted.InterlacingSequence
+import RealRooted.FolkloreLemma
+import RealRooted.InterlacingSequence

@@ -9,7 +9,6 @@ decompositions and proves real-rootedness criteria for the transformed
 polynomials.
 -/
 
-set_option linter.style.longLine false
 set_option linter.unnecessarySimpa false
 set_option linter.unusedSimpArgs false
 
@@ -315,14 +314,16 @@ lemma gammaTransform_even_succ (m : ℕ) (γ : ℝ[X]) :
         = (X + 1) * gammaTransform (2 * m + 1) γ := by
     calc
       ∑ i ∈ Finset.range (m + 1), C (γ.coeff i) * gammaBasisTerm (2 * (m + 1)) i
-      = ∑ i ∈ Finset.range (m + 1), (X + 1) * (C (γ.coeff i) * gammaBasisTerm (2 * m + 1) i) := by
+      = ∑ i ∈ Finset.range (m + 1),
+          (X + 1) * (C (γ.coeff i) * gammaBasisTerm (2 * m + 1) i) := by
           apply Finset.sum_congr rfl
           intro i hi
           have hi_le : i ≤ m := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
           have hsub : 2 * (m + 1) - 2 * i = (2 * m + 1 - 2 * i) + 1 := by omega
           rw [gammaBasisTerm, gammaBasisTerm, hsub, pow_succ]
           ring
-    _ = (X + 1) * ∑ i ∈ Finset.range (m + 1), C (γ.coeff i) * gammaBasisTerm (2 * m + 1) i := by
+    _ = (X + 1) * ∑ i ∈ Finset.range (m + 1),
+        C (γ.coeff i) * gammaBasisTerm (2 * m + 1) i := by
           rw [Finset.mul_sum]
     _ = (X + 1) * gammaTransform (2 * m + 1) γ := by
           simp [gammaTransform, hhalf_odd]

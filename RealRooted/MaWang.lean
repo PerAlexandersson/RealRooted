@@ -36,10 +36,6 @@ import Mathlib.Analysis.Normed.Field.Approximation
 import Mathlib.Analysis.Complex.Polynomial.Basic
 -- import RealRooted.AffineDerivative  -- uncomment when AffineDerivative is built
 
-set_option linter.unnecessarySimpa false
-set_option linter.unusedSimpArgs false
-set_option linter.unusedVariables false
-
 open Polynomial Filter
 
 noncomputable section
@@ -280,7 +276,7 @@ private lemma all_ge_of_countP_lt_drop
     by_contra hk
     have hk' : ts.length < k := lt_of_not_ge hk
     have hnil : ts.drop k = [] := List.drop_eq_nil_of_le hk'.le
-    simpa [hnil] using hu
+    simp [hnil] at hu
   have htake_count : (ts.take k).countP (· < s) = k := by
     rw [List.countP_eq_length_filter]
     have hfilter :
@@ -679,7 +675,7 @@ private lemma isRoot_of_mem_sorted_roots_eq
       rw [← hrs_eq]
       exact Multiset.mem_coe.mpr (by rw [hEq]; simp)
     rw [hf0] at this
-    simpa using this
+    simp at this
   exact (mem_roots hf_ne).mp <| by
     rw [← hrs_eq]
     exact Multiset.mem_coe.mpr (by rw [hEq]; simp)
@@ -784,7 +780,9 @@ private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive :
               have hs_factor_nonneg : 0 ≤ (r₁ - s) * (r₂ - s) := by
                 nlinarith
               have htail_nonpos :
-                  (ss'.map (fun x => r₁ - x)).prod * (ss'.map (fun x => r₂ - x)).prod ≤ 0 := by
+                  (ss'.map (fun x => r₁ - x)).prod *
+                    (ss'.map (fun x => r₂ - x)).prod ≤
+                  0 := by
                 exact listInterlaces_prod_mul_prod_nonpos_at_heads htail
               calc
                 ((s :: ss').map (fun x => r₁ - x)).prod *
@@ -820,7 +818,9 @@ private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive :
                   exact List.rel_of_pairwise_cons hrs_r₁r₂ (by simp)
                 nlinarith
               have htail_nonpos :
-                  (ss'.map (fun x => r₁ - x)).prod * (ss'.map (fun x => r₂ - x)).prod ≤ 0 :=
+                  (ss'.map (fun x => r₁ - x)).prod *
+                    (ss'.map (fun x => r₂ - x)).prod ≤
+                  0 :=
                 listInterlaces_prod_mul_prod_nonpos_of_consecutive
                   (ss := ss') (rs := a' :: pre' ++ r₁ :: r₂ :: rest)
                   (pre := a' :: pre') (rest := rest) hrs_tail hint_tail (by simp)
@@ -841,9 +841,12 @@ private lemma eval_mul_eval_nonpos_of_interlacing_heads {g : ℝ[X]}
     (hss_eq : (↑ss : Multiset ℝ) = g.roots)
     (hint : ListInterlaces ss (r₁ :: r₂ :: rest)) :
     g.eval r₁ * g.eval r₂ ≤ 0 := by
-  rw [eval_eq_leadingCoeff_mul_prod_sub hg r₁, eval_eq_leadingCoeff_mul_prod_sub hg r₂, ← hss_eq]
+  rw [eval_eq_leadingCoeff_mul_prod_sub hg r₁,
+      eval_eq_leadingCoeff_mul_prod_sub hg r₂, ← hss_eq]
   have hprod_nonpos :
-      (ss.map (fun x => r₁ - x)).prod * (ss.map (fun x => r₂ - x)).prod ≤ 0 :=
+      (ss.map (fun x => r₁ - x)).prod *
+        (ss.map (fun x => r₂ - x)).prod ≤
+      0 :=
     listInterlaces_prod_mul_prod_nonpos_at_heads hint
   have hlead_nonneg : 0 ≤ g.leadingCoeff * g.leadingCoeff := by
     simpa [pow_two] using sq_nonneg g.leadingCoeff
@@ -874,9 +877,12 @@ private lemma eval_mul_eval_nonpos_of_interlacing_consecutive {g : ℝ[X]}
     (hint : ListInterlaces ss rs)
     (hEq : rs = pre ++ r₁ :: r₂ :: rest) :
     g.eval r₁ * g.eval r₂ ≤ 0 := by
-  rw [eval_eq_leadingCoeff_mul_prod_sub hg r₁, eval_eq_leadingCoeff_mul_prod_sub hg r₂, ← hss_eq]
+  rw [eval_eq_leadingCoeff_mul_prod_sub hg r₁,
+      eval_eq_leadingCoeff_mul_prod_sub hg r₂, ← hss_eq]
   have hprod_nonpos :
-      (ss.map (fun x => r₁ - x)).prod * (ss.map (fun x => r₂ - x)).prod ≤ 0 :=
+      (ss.map (fun x => r₁ - x)).prod *
+        (ss.map (fun x => r₂ - x)).prod ≤
+      0 :=
     listInterlaces_prod_mul_prod_nonpos_of_consecutive hrs_sorted hint hEq
   have hlead_nonneg : 0 ≤ g.leadingCoeff * g.leadingCoeff := by
     simpa [pow_two] using sq_nonneg g.leadingCoeff
@@ -994,9 +1000,9 @@ private lemma listInterlaces_all_gt_of_lowerBound :
       ListInterlaces us rs →
       ∀ {a : ℝ}, (∀ r ∈ rs, a < r) → ∀ u ∈ us, a < u
   | [], [], hint, a, hlt, u, hu => by
-      simpa using hu
+      simp at hu
   | [], [_], hint, a, hlt, u, hu => by
-      simpa using hu
+      simp at hu
   | s :: ss, r₁ :: r₂ :: rs, hint, a, hlt, u, hu => by
       obtain ⟨hr₁s, _, htail⟩ := hint
       rcases List.mem_cons.mp hu with rfl | hu'
@@ -1014,9 +1020,9 @@ private lemma listInterlaces_all_lt_of_upperBound :
       ListInterlaces us rs →
       ∀ {a : ℝ}, (∀ r ∈ rs, r < a) → ∀ u ∈ us, u < a
   | [], [], hint, a, hlt, u, hu => by
-      simpa using hu
+      simp at hu
   | [], [_], hint, a, hlt, u, hu => by
-      simpa using hu
+      simp at hu
   | s :: ss, r₁ :: r₂ :: rs, hint, a, hlt, u, hu => by
       obtain ⟨_, hsr₂, htail⟩ := hint
       rcases List.mem_cons.mp hu with rfl | hu'
@@ -1038,7 +1044,7 @@ private lemma listInterlaces_all_le_getLast :
   | [], [], hrs_ne, _, hint, u, hu => by
       cases (hrs_ne rfl)
   | [], [_], _, _, hint, u, hu => by
-      simpa using hu
+      simp at hu
   | s :: ss, [r], _, _, hint, _, _ => by
       simp [ListInterlaces] at hint
   | s :: ss, r₁ :: r₂ :: rs, _, hrs_sorted, hint, u, hu => by
@@ -1188,10 +1194,10 @@ private lemma mul_nonpos_of_mul_nonpos_of_mul_neg {a b c d : ℝ}
     nlinarith
 
 private lemma isRoot_of_eq_max_countP_le_of_sign
-    {f g F : ℝ[X]} {rs ts : List ℝ} {off : ℕ}
+    {_f g F : ℝ[X]} {rs ts : List ℝ} {off : ℕ}
     {pre : List ℝ} {r : ℝ} {rest : List ℝ}
     (hF : IsRealRooted F) (hF_pos : HasPosLeadingCoeff F)
-    (hrs_eq : (↑rs : Multiset ℝ) = f.roots)
+    (_hrs_eq : (↑rs : Multiset ℝ) = _f.roots)
     (hts_eq : (↑ts : Multiset ℝ) = F.roots)
     (hoff : ts.length = rs.length + off)
     (hroot_nonpos : F.eval r * g.eval r ≤ 0)
@@ -1201,7 +1207,7 @@ private lemma isRoot_of_eq_max_countP_le_of_sign
     F.IsRoot r := by
   have hrs_len : rs.length = pre.length + rest.length + 1 := by
     rw [hEq]
-    simp [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm]
+    simp [Nat.add_assoc]
   have hcount_gt : ts.countP (r < ·) = rest.length := by
     have hsplit := countP_le_add_countP_gt_eq_length ts r
     rw [hcount, hoff, hrs_len] at hsplit
@@ -1219,9 +1225,9 @@ private lemma isRoot_of_eq_max_countP_le_of_sign
       (by simpa [hcount_gt] using hodd)
 
 private lemma countP_le_of_eq_max_isRoot
-    {f F : ℝ[X]} {rs ts : List ℝ} {off : ℕ}
+    {_f F : ℝ[X]} {rs ts : List ℝ} {off : ℕ}
     (hF : IsRealRooted F)
-    (hrs_sorted : rs.Pairwise (· ≤ ·))
+    (_hrs_sorted : rs.Pairwise (· ≤ ·))
     (hts_eq : (↑ts : Multiset ℝ) = F.roots)
     (hoff : ts.length = rs.length + off)
     (hstrict :
@@ -1281,7 +1287,7 @@ private lemma countP_le_of_eq_max_isRoot
         omega
 
 private lemma countP_lt_of_eq_max_isRoot
-    {f F : ℝ[X]} {rs ts : List ℝ} {off : ℕ}
+    {_f F : ℝ[X]} {rs ts : List ℝ} {off : ℕ}
     (hF : IsRealRooted F)
     (hts_eq : (↑ts : Multiset ℝ) = F.roots)
     (hcount_le :
@@ -2178,10 +2184,10 @@ private lemma common_root_reduction_data
       simp [HasPosLeadingCoeff, h0] at hF_pos
     have hqf_ne : qf ≠ 0 := by
       intro h0
-      exact hf_ne (by simpa [hqf, h0])
+      exact hf_ne (by simp [hqf, h0])
     have hFq_ne : a * qf + b * qg ≠ 0 := by
       intro h0
-      exact hF_ne (by simpa [hqf, hqg, add_mul_factor_X_sub_C, h0])
+      exact hF_ne (by simp [hqf, hqg, add_mul_factor_X_sub_C, h0])
     rw [hqf, hqg, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
       add_mul_factor_X_sub_C,
       natDegree_mul (X_sub_C_ne_zero r) hFq_ne, natDegree_X_sub_C] at hdeg_lo
@@ -2192,10 +2198,10 @@ private lemma common_root_reduction_data
       simp [HasPosLeadingCoeff, h0] at hF_pos
     have hqf_ne : qf ≠ 0 := by
       intro h0
-      exact hf_ne (by simpa [hqf, h0])
+      exact hf_ne (by simp [hqf, h0])
     have hFq_ne : a * qf + b * qg ≠ 0 := by
       intro h0
-      exact hF_ne (by simpa [hqf, hqg, add_mul_factor_X_sub_C, h0])
+      exact hF_ne (by simp [hqf, hqg, add_mul_factor_X_sub_C, h0])
     rw [hqf, hqg, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
       add_mul_factor_X_sub_C,
       natDegree_mul (X_sub_C_ne_zero r) hFq_ne, natDegree_X_sub_C] at hdeg_hi
@@ -2646,8 +2652,8 @@ theorem prec_of_interlaces_evalCoeff_nonpos_same_of_no_common
   have hF : IsRealRooted F := by
     apply isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
       hgf' hg_pos hF_pos
-    · simpa [F, hdeg] using le_rfl
-    · simpa [F, hdeg] using le_rfl
+    · simp [hdeg]
+    · simp [hdeg]
     · exact hno
     · exact hb_nonpos
   set ts := F.roots.sort (· ≤ ·)
@@ -2685,12 +2691,12 @@ theorem prec_of_interlaces_evalCoeff_nonpos_same_of_no_common
       ∀ (pre : List ℝ) {r : ℝ} {rest : List ℝ},
         rs = pre ++ r :: rest →
         ts.countP (· ≤ r) ≤ pre.length + 1 :=
-    countP_le_of_eq_max_isRoot (f := f) hF hrs_sorted hts_eq hoff hstrict hroot_on_max
+    countP_le_of_eq_max_isRoot (_f := f) hF hrs_sorted hts_eq hoff hstrict hroot_on_max
   have hlt :
       ∀ (pre : List ℝ) {r : ℝ} {rest : List ℝ},
         rs = pre ++ r :: rest →
         ts.countP (· < r) ≤ pre.length :=
-    countP_lt_of_eq_max_isRoot (f := f) (rs := rs) (off := 0)
+    countP_lt_of_eq_max_isRoot (_f := f) (rs := rs) (off := 0)
       hF hts_eq hcount_le hroot_on_max
   have hle :
       ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
@@ -2834,8 +2840,8 @@ theorem prec_of_interlaces_evalCoeff_nonpos_succ_of_no_common
   have hF : IsRealRooted F := by
     apply isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
       hgf' hg_pos hF_pos
-    · simpa [F, hdeg] using le_rfl
-    · simpa [F, hdeg] using le_rfl
+    · simp [hdeg]
+    · simp [hdeg]
     · exact hno
     · exact hb_nonpos
   set ts := F.roots.sort (· ≤ ·)
@@ -2872,12 +2878,12 @@ theorem prec_of_interlaces_evalCoeff_nonpos_succ_of_no_common
       ∀ (pre : List ℝ) {r : ℝ} {rest : List ℝ},
         rs = pre ++ r :: rest →
         ts.countP (· ≤ r) ≤ pre.length + 2 :=
-    countP_le_of_eq_max_isRoot (f := f) hF hrs_sorted hts_eq hoff hstrict hroot_on_max
+    countP_le_of_eq_max_isRoot (_f := f) hF hrs_sorted hts_eq hoff hstrict hroot_on_max
   have hlt :
       ∀ (pre : List ℝ) {r : ℝ} {rest : List ℝ},
         rs = pre ++ r :: rest →
         ts.countP (· < r) ≤ pre.length + 1 :=
-    countP_lt_of_eq_max_isRoot (f := f) (rs := rs) (off := 1)
+    countP_lt_of_eq_max_isRoot (_f := f) (rs := rs) (off := 1)
       hF hts_eq hcount_le hroot_on_max
   have hhead :
       ∀ {r : ℝ} {rest : List ℝ},
@@ -3120,12 +3126,12 @@ theorem prec_of_interlaces_eval_mul_nonpos_same_of_no_common
       ∀ (pre : List ℝ) {r : ℝ} {rest : List ℝ},
         rs = pre ++ r :: rest →
         ts.countP (· ≤ r) ≤ pre.length + 1 :=
-    countP_le_of_eq_max_isRoot (f := f) hF hrs_sorted hts_eq hoff hstrict hroot_on_max
+    countP_le_of_eq_max_isRoot (_f := f) hF hrs_sorted hts_eq hoff hstrict hroot_on_max
   have hlt :
       ∀ (pre : List ℝ) {r : ℝ} {rest : List ℝ},
         rs = pre ++ r :: rest →
         ts.countP (· < r) ≤ pre.length :=
-    countP_lt_of_eq_max_isRoot (f := f) (rs := rs) (off := 0)
+    countP_lt_of_eq_max_isRoot (_f := f) (rs := rs) (off := 0)
       hF hts_eq hcount_le hroot_on_max
   have hle :
       ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
@@ -3291,12 +3297,12 @@ theorem prec_of_interlaces_eval_mul_nonpos_succ_of_no_common
       ∀ (pre : List ℝ) {r : ℝ} {rest : List ℝ},
         rs = pre ++ r :: rest →
         ts.countP (· ≤ r) ≤ pre.length + 2 :=
-    countP_le_of_eq_max_isRoot (f := f) hF hrs_sorted hts_eq hoff hstrict hroot_on_max
+    countP_le_of_eq_max_isRoot (_f := f) hF hrs_sorted hts_eq hoff hstrict hroot_on_max
   have hlt :
       ∀ (pre : List ℝ) {r : ℝ} {rest : List ℝ},
         rs = pre ++ r :: rest →
         ts.countP (· < r) ≤ pre.length + 1 :=
-    countP_lt_of_eq_max_isRoot (f := f) (rs := rs) (off := 1)
+    countP_lt_of_eq_max_isRoot (_f := f) (rs := rs) (off := 1)
       hF hts_eq hcount_le hroot_on_max
   have hhead :
       ∀ {r : ℝ} {rest : List ℝ},

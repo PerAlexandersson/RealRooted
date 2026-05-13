@@ -7,7 +7,6 @@ families (Brändén Theorem 7.8.3).
 import RealRooted.CommonInterleaverSeq
 import RealRooted.CombinatorialExamples.Common
 
-set_option linter.unnecessarySimpa false
 set_option linter.unusedSimpArgs false
 
 open Polynomial
@@ -96,7 +95,8 @@ lemma sum_ne_zero_of_hasNonnegCoeffs_of_mem_ne_zero
     ps.sum ≠ 0 := by
   induction ps generalizing p with
   | nil =>
-      simpa using hp_mem
+      rw [List.sum_nil]
+      exact False.elim (List.not_mem_nil (a := p) hp_mem)
   | cons q ps ih =>
       simp at hp_mem
       rcases hp_mem with rfl | hp_mem
@@ -207,14 +207,14 @@ theorem pairwiseHasCommonLeftInterleaver_zipWith_mul_reverse_of_interlacingSeqNo
     simpa [fi, fj] using (List.pairwise_iff_get.mp hpair_fs i' j' hij')
   have hgj_gi : Prec gj gi := by
     rw [show gj = gs.get kj by
-      simpa [gj, kj] using (List.get_reverse' gs j'') ]
+      simp [gj, kj]]
     rw [show gi = gs.get ki by
-      simpa [gi, ki] using (List.get_reverse' gs i'')]
+      simp [gi, ki]]
     exact List.pairwise_iff_get.mp hpair_gs kj ki hkj_ki
   have hfi_rr : IsRealRooted fi := hfs.realRooted fi (List.get_mem _ _)
   have hgj_rr : IsRealRooted gj := by
     rw [show gj = gs.get kj by
-      simpa [gj, kj] using (List.get_reverse' gs j'')]
+      simp [gj, kj]]
     exact hgs.realRooted _ (List.get_mem _ _)
   have hleft_i : Prec (fi * gj) (fi * gi) := by
     simpa [fi, gi, gj, mul_comm, mul_left_comm, mul_assoc] using
@@ -268,14 +268,14 @@ theorem pairwiseHasCommonInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg
     simpa [fi, fj] using (List.pairwise_iff_get.mp hpair_fs i' j' hij')
   have hgj_gi : Prec gj gi := by
     rw [show gj = gs.get kj by
-      simpa [gj, kj] using (List.get_reverse' gs j'')]
+      simp [gj, kj]]
     rw [show gi = gs.get ki by
-      simpa [gi, ki] using (List.get_reverse' gs i'')]
+      simp [gi, ki]]
     exact List.pairwise_iff_get.mp hpair_gs kj ki hkj_ki
   have hfj_rr : IsRealRooted fj := hfs.realRooted fj (List.get_mem _ _)
   have hgi_rr : IsRealRooted gi := by
     rw [show gi = gs.get ki by
-      simpa [gi, ki] using (List.get_reverse' gs i'')]
+      simp [gi, ki]]
     exact hgs.realRooted _ (List.get_mem _ _)
   have hright_i : Prec (fi * gi) (fj * gi) := by
     simpa [fi, fj, gi, mul_comm, mul_left_comm, mul_assoc] using
