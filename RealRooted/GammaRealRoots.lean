@@ -1,6 +1,14 @@
 import RealRooted.SymmetricDecomposition
 import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
 
+/-!
+# Gamma transforms and real-rootedness
+
+This file packages the univariate gamma transform used for symmetric
+decompositions and proves real-rootedness criteria for the transformed
+polynomials.
+-/
+
 set_option linter.style.longLine false
 set_option linter.unnecessarySimpa false
 set_option linter.unusedSimpArgs false
@@ -412,7 +420,8 @@ lemma gammaTransform_even_injective :
           rw [coeff_sub, Polynomial.coeff_monomial]
           simp
         · have hk_gt : m + 1 < k := by omega
-          have hγk : γ.coeff k = 0 := Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hγ hk_gt)
+          have hγk : γ.coeff k = 0 :=
+            Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hγ hk_gt)
           have hk_ne' : m + 1 ≠ k := by
             intro hEq
             exact hk_top hEq.symm
@@ -427,7 +436,8 @@ lemma gammaTransform_even_injective :
           rw [coeff_sub, Polynomial.coeff_monomial]
           simp [hcoeff_top]
         · have hk_gt : m + 1 < k := by omega
-          have hδk : δ.coeff k = 0 := Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hδ hk_gt)
+          have hδk : δ.coeff k = 0 :=
+            Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hδ hk_gt)
           have hk_ne' : m + 1 ≠ k := by
             intro hEq
             exact hk_top hEq.symm
@@ -571,7 +581,8 @@ lemma natDegree_gammaTransform_le (d : ℕ) (γ : ℝ[X]) :
 
 @[simp] lemma coeff_zero_gammaTransform (d : ℕ) (γ : ℝ[X]) :
     (gammaTransform d γ).coeff 0 = γ.coeff 0 := by
-  rw [Polynomial.coeff_zero_eq_eval_zero, gammaTransform_eval_zero, Polynomial.coeff_zero_eq_eval_zero]
+  rw [Polynomial.coeff_zero_eq_eval_zero, gammaTransform_eval_zero,
+    Polynomial.coeff_zero_eq_eval_zero]
 
 @[simp] lemma coeff_ambient_gammaTransform (d : ℕ) (γ : ℝ[X]) :
     (gammaTransform d γ).coeff d = γ.coeff 0 := by
@@ -753,7 +764,8 @@ lemma isRealRooted_gammaQuadraticFactor {r : ℝ} (hr : r ≤ 0) :
     refine ⟨?_, ?_⟩
     · intro hzero
       have hlead := congrArg Polynomial.leadingCoeff hzero
-      rw [Polynomial.leadingCoeff_quadratic (ne_of_gt ht_pos), Polynomial.leadingCoeff_zero] at hlead
+      rw [Polynomial.leadingCoeff_quadratic (ne_of_gt ht_pos),
+        Polynomial.leadingCoeff_zero] at hlead
       exact (ne_of_gt ht_pos) hlead
     · rw [hroots, Polynomial.natDegree_quadratic (ne_of_gt ht_pos)]
       simp

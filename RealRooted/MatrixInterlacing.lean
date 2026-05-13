@@ -1,10 +1,11 @@
-/-
+import RealRooted.AffineFamily
+
+/-!
 # Matrix preservation of interlacing sequences
 
-Sparse pair machinery, matPolyAction definition, forward and backward
-matrix-preservation theorems (Brändén Theorem 7.8.5).
+Sparse pair machinery, `matPolyAction` definition, forward and backward
+matrix-preservation theorems (Brändén, Theorem 7.8.5).
 -/
-import RealRooted.AffineFamily
 
 set_option linter.style.longLine false
 set_option linter.unnecessarySimpa false
@@ -365,10 +366,18 @@ theorem matrix_preserves_interlacing_seq0_necessary_conditions
       i₁ < i₂ → j₁ < j₂ →
       ∀ {a b : ℝ}, 0 < a → 0 < b →
       Prec0
-        (((G.get i₁).get ⟨j₁, by have := hG_rect _ (G.get_mem i₁); omega⟩)
-          + (C a * X + C b) * ((G.get i₁).get ⟨j₂, by have := hG_rect _ (G.get_mem i₁); omega⟩))
-        (((G.get i₂).get ⟨j₁, by have := hG_rect _ (G.get_mem i₂); omega⟩)
-          + (C a * X + C b) * ((G.get i₂).get ⟨j₂, by have := hG_rect _ (G.get_mem i₂); omega⟩))) := by
+        (((G.get i₁).get ⟨j₁, by
+            have := hG_rect _ (G.get_mem i₁)
+            omega⟩)
+          + (C a * X + C b) * ((G.get i₁).get ⟨j₂, by
+            have := hG_rect _ (G.get_mem i₁)
+            omega⟩))
+        (((G.get i₂).get ⟨j₁, by
+            have := hG_rect _ (G.get_mem i₂)
+            omega⟩)
+          + (C a * X + C b) * ((G.get i₂).get ⟨j₂, by
+            have := hG_rect _ (G.get_mem i₂)
+            omega⟩))) := by
   refine ⟨?_, ?_⟩
   · exact matrix_preserves_interlacing_seq0_nonneg_entries (n := n) G hG_rect hpres0
   · intro i₁ i₂ j₁ j₂ hi hj a b ha hb
@@ -389,7 +398,9 @@ lemma get_rowPairAffineSeq {row₁ row₂ : List ℝ[X]}
     (hrow₁_len : row₁.length = n) (hrow₂_len : row₂.length = n)
     (i : Fin n) :
     (rowPairAffineSeq row₁ row₂ s t).get
-        ⟨i, by simpa [length_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len] using i.2⟩
+        ⟨i, by
+          simpa [length_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len
+            hrow₂_len] using i.2⟩
       =
         ((C s * X + C t) * row₁.get ⟨i, by simpa [hrow₁_len] using i.2⟩) +
           row₂.get ⟨i, by simpa [hrow₂_len] using i.2⟩ := by
@@ -411,8 +422,14 @@ lemma isInterlacingSeq0_reverse_rowPairAffineSeq
   refine (List.Pairwise.reverse ?_)
   refine List.pairwise_iff_get.2 ?_
   intro i j hij
-  let i' : Fin n := ⟨i, by simpa [length_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len] using i.2⟩
-  let j' : Fin n := ⟨j, by simpa [length_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len] using j.2⟩
+  let i' : Fin n :=
+    ⟨i, by
+      simpa [length_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len
+        hrow₂_len] using i.2⟩
+  let j' : Fin n :=
+    ⟨j, by
+      simpa [length_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len
+        hrow₂_len] using j.2⟩
   have hij' : i' < j' := by
     simpa [i', j'] using hij
   rw [get_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len i']
@@ -435,8 +452,14 @@ lemma isInterlacingSeq_reverse_rowPairAffineSeq
   refine (List.Pairwise.reverse ?_ )
   refine List.pairwise_iff_get.2 ?_
   intro i j hij
-  let i' : Fin n := ⟨i, by simpa [length_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len] using i.2⟩
-  let j' : Fin n := ⟨j, by simpa [length_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len] using j.2⟩
+  let i' : Fin n :=
+    ⟨i, by
+      simpa [length_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len
+        hrow₂_len] using i.2⟩
+  let j' : Fin n :=
+    ⟨j, by
+      simpa [length_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len
+        hrow₂_len] using j.2⟩
   have hij' : i' < j' := by
     simpa [i', j'] using hij
   rw [get_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len i']
@@ -675,7 +698,9 @@ lemma rowPairAffine_combo_eq_zipWith_sum
                     ((((C s * X + C t) * a) + b) * f) +
                       (((rowPairAffineSeq row₁ row₂ s t).zipWith (· * ·) fs).sum) := by
                           rw [ih hrows']
-                _ = ((rowPairAffineSeq (a :: row₁) (b :: row₂) s t).zipWith (· * ·) (f :: fs)).sum := by
+                _ =
+                    ((rowPairAffineSeq (a :: row₁) (b :: row₂) s t).zipWith
+                      (· * ·) (f :: fs)).sum := by
                       simp [rowPairAffineSeq]
 
 lemma zipWith_mul_sum_reverse_reverse

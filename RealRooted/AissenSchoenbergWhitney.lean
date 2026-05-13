@@ -35,7 +35,7 @@ PF sequences, but it means the strict real-rootedness conclusion in ASW must
 exclude the zero polynomial. -/
 theorem toeplitzTotallyNonnegative_zero :
     ToeplitzTotallyNonnegative (fun _ : ℕ => (0 : ℝ)) := by
-  intro n rows cols hrows hcols
+  intro n rows cols _hrows _hcols
   by_cases hn : n = 0
   · subst n
     norm_num [toeplitzMinor]
@@ -181,12 +181,8 @@ theorem not_aissenSchoenbergWhitneyForward_without_nonzero :
     intro n
     simp
   have hpf : IsPolyaFrequencySequence (fun n => (0 : ℝ[X]).coeff n) := by
-    have hcoeff :
-        (fun n => (0 : ℝ[X]).coeff n) = (fun _ : ℕ => (0 : ℝ)) := by
-      funext n
-      simp
-    rw [hcoeff]
-    exact @isPolyaFrequencySequence_zero
+    change IsPolyaFrequencySequence (fun _ : ℕ => (0 : ℝ))
+    exact isPolyaFrequencySequence_zero
   exact (h hnn hpf).1.1 rfl
 
 /-- Planning stub for the reverse Aissen--Schoenberg--Whitney theorem. -/

@@ -1,13 +1,14 @@
-/-
-# Common interleavers and Chudnovsky-Seymour theorem
-
-Root-slot interval machinery, the finite Helly lemma (listInter), csDegree,
-the Chudnovsky-Seymour pairwise → global common-interleaver upgrade, and
-the polyOfDescRoots construction.
--/
 import RealRooted.InterlacingSequenceBasic
 import RealRooted.WeightedSum
 import RealRooted.PosCombo
+
+/-!
+# Common interleavers and Chudnovsky-Seymour theorem
+
+Root-slot interval machinery, the finite Helly lemma (`listInter`), `csDegree`,
+the Chudnovsky-Seymour pairwise-to-global common-interleaver upgrade, and the
+`polyOfDescRoots` construction.
+-/
 
 set_option linter.style.longLine false
 set_option linter.style.show false
@@ -1352,7 +1353,8 @@ private lemma rootSlotInterval_inter_nonempty_of_commonInterleaver
               Nat.lt_succ_self ((rootSeqDesc f).reverse.length)⟩
         have hbase :
             rootSlotInterval ((rootSeqDesc f).reverse).reverse jfr = Set.Iic af := by
-          simpa [jfr, af] using rootSlotInterval_reverse_last (xs := (rootSeqDesc f).reverse) hrevf_ne
+          simpa [jfr, af] using
+            rootSlotInterval_reverse_last (xs := (rootSeqDesc f).reverse) hrevf_ne
         have hcongr :
             rootSlotInterval ((rootSeqDesc f).reverse).reverse jfr =
             rootSlotInterval (rootSeqDesc f) jf := by
@@ -1372,7 +1374,8 @@ private lemma rootSlotInterval_inter_nonempty_of_commonInterleaver
               Nat.lt_succ_self ((rootSeqDesc g).reverse.length)⟩
         have hbase :
             rootSlotInterval ((rootSeqDesc g).reverse).reverse jgr = Set.Iic ag := by
-          simpa [jgr, ag] using rootSlotInterval_reverse_last (xs := (rootSeqDesc g).reverse) hrevg_ne
+          simpa [jgr, ag] using
+            rootSlotInterval_reverse_last (xs := (rootSeqDesc g).reverse) hrevg_ne
         have hcongr :
             rootSlotInterval ((rootSeqDesc g).reverse).reverse jgr =
             rootSlotInterval (rootSeqDesc g) jg := by

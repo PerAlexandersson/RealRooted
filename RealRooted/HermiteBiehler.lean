@@ -99,7 +99,6 @@ lemma monomial_comp_X_sq (n : ℕ) (a : ℝ) :
 
 @[simp] lemma coeff_X_mul_comp_X_sq_odd (p : ℝ[X]) (n : ℕ) :
     (X * p.comp (X ^ 2 : ℝ[X])).coeff (2 * n + 1) = p.coeff n := by
-  rw [show 2 * n + 1 = 2 * n + 1 by rfl]
   rw [Polynomial.coeff_X_mul, coeff_comp_X_sq_even]
 
 @[simp] theorem coeff_oddEvenPolynomial_even (p q : ℝ[X]) (n : ℕ) :

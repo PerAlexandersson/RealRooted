@@ -3,6 +3,14 @@ import RealRooted.Derivative
 import RealRooted.MaWang
 import RealRooted.RootContinuity
 
+/-!
+# Iterated derivative shifts
+
+This file studies the operator `T_ε p = p - ε p'` and its iterates, including
+real-rootedness preservation, interlacing, and continuity facts used in the
+Obreschkoff converse route.
+-/
+
 set_option linter.style.longLine false
 set_option linter.style.show false
 set_option linter.unnecessarySimpa false
@@ -306,7 +314,10 @@ theorem isRealRooted_TDeriv {eps : ℝ} {p : ℝ[X]}
         ⟨neg_ne_zero.mpr hp.1, by rw [Polynomial.roots_neg, natDegree_neg]; exact hp.2⟩
       have hneg_pos : HasPosLeadingCoeff (-p) := by
         unfold HasPosLeadingCoeff; rw [leadingCoeff_neg]; linarith
-      have hT_neg := isRealRooted_TDeriv_pos heps hneg_rr hneg_pos (by rw [natDegree_neg]; exact hdeg2)
+      have hT_neg :=
+        isRealRooted_TDeriv_pos heps hneg_rr hneg_pos (by
+          rw [natDegree_neg]
+          exact hdeg2)
       -- T_ε(-p) = -T_ε(p) since T_ε is linear
       have hlin : TDeriv eps (-p) = -TDeriv eps p := by
         simp [TDeriv, derivative_neg]; ring
@@ -353,7 +364,10 @@ theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
       have hprec_neg :
           Prec (-p) (TDeriv eps (-p)) := by
         have hder : Interlaces (-p).derivative (-p) := by
-          simpa [derivative_neg] using derivative_interlaces hneg_rr (by rw [natDegree_neg]; exact hdeg2)
+          simpa [derivative_neg] using
+            derivative_interlaces hneg_rr (by
+              rw [natDegree_neg]
+              exact hdeg2)
         have hp'_pos : HasPosLeadingCoeff (-p).derivative := by
           simpa [derivative_neg, natDegree_neg] using
             hasPosLeadingCoeff_derivative_of_pos hneg_pos (by rw [natDegree_neg]; omega)
@@ -425,7 +439,9 @@ theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
           · simp [hp_eq, r]
           · simp [hp_eq, r, Polynomial.coeff_X]
       have hbase : Prec (X - C r) (X - C (r + eps)) := by
-        refine ⟨isRealRooted_X_sub_C r, isRealRooted_X_sub_C (r + eps), [r], [r + eps], ?_, ?_, ?_, ?_, ?_⟩
+        refine
+          ⟨isRealRooted_X_sub_C r, isRealRooted_X_sub_C (r + eps), [r],
+            [r + eps], ?_, ?_, ?_, ?_, ?_⟩
         · simp
         · simp
         · simp [roots_X_sub_C]

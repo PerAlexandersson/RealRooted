@@ -55,11 +55,7 @@ def HurwitzStableToHurwitzMatrixMinorsStatement : Prop :=
 theorem hurwitzStableToMatrixTotallyNonnegativeStatement_iff_minors :
     HurwitzStableToMatrixTotallyNonnegativeStatement ↔
       HurwitzStableToHurwitzMatrixMinorsStatement := by
-  constructor
-  · intro h p hp n rows cols hrows hcols
-    exact h hp rows cols hrows hcols
-  · intro h p hp n rows cols hrows hcols
-    exact h hp rows cols hrows hcols
+  rfl
 
 /-- Reverse direction of the classical total-nonnegativity criterion, kept as a
 separate interface because the current Veronese route only needs the forward
