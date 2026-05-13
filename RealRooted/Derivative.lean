@@ -12,12 +12,11 @@ The main result is that if `f` is a real-rooted polynomial of degree at least
 two, then `f.derivative` is real-rooted and interlaces `f`.
 -/
 
-set_option linter.style.multiGoal false
-set_option linter.unusedVariables false
-
 open Polynomial Set
 
 noncomputable section
+
+set_option linter.style.multiGoal false
 
 namespace RealRooted
 
@@ -99,8 +98,8 @@ so that the induction goes through when we drop the first element. -/
     Uses sub-multiset condition `≤` to handle repeated roots. -/
 lemma mkInterleaving_spec (f : ℝ[X]) :
     ∀ (rs : List ℝ) (hrs : ∀ r ∈ rs, f.IsRoot r)
-      (hsorted : rs.Pairwise (· ≤ ·))
-      (hsub : (↑rs : Multiset ℝ) ≤ f.roots),
+      (_hsorted : rs.Pairwise (· ≤ ·))
+      (_hsub : (↑rs : Multiset ℝ) ≤ f.roots),
     (∀ s ∈ mkInterleaving f rs hrs, f.derivative.IsRoot s) ∧
     ListInterlaces (mkInterleaving f rs hrs) rs
   | [], _, _, _ | [_], _, _, _ => by
@@ -128,7 +127,8 @@ lemma mkInterleaving_spec (f : ℝ[X]) :
             (hrs r₁ (.head _)) (hrs r₂ (.tail _ (.head _)))).choose_spec.2.2
         · -- r₁ = r₂, repeated root
           have heq : r₁ = r₂ := le_antisymm hr₁r₂ (not_lt.mp hlt)
-          have hcount_list : 2 ≤ Multiset.count r₁ (↑(r₁ :: r₂ :: rest) : Multiset ℝ) := by
+          have hcount_list
+              : 2 ≤ Multiset.count r₁ (↑(r₁ :: r₂ :: rest) : Multiset ℝ) := by
             simp [heq]
           have hcount : 2 ≤ Multiset.count r₁ f.roots :=
             le_trans hcount_list ((Multiset.le_iff_count.mp hsub) r₁)
@@ -182,8 +182,8 @@ lemma sorted_of_listInterlaces :
 /-- All elements of the interleaving of `r₁ :: rest` are ≥ r₁. -/
 private lemma mkInterleaving_ge (f : ℝ[X]) :
     ∀ (r₁ : ℝ) (rest : List ℝ) (hrs : ∀ r ∈ r₁ :: rest, f.IsRoot r)
-      (hsorted : (r₁ :: rest).Pairwise (· ≤ ·))
-      (hsub : (↑(r₁ :: rest) : Multiset ℝ) ≤ f.roots),
+      (_hsorted : (r₁ :: rest).Pairwise (· ≤ ·))
+      (_hsub : (↑(r₁ :: rest) : Multiset ℝ) ≤ f.roots),
     ∀ x ∈ mkInterleaving f (r₁ :: rest) hrs, r₁ ≤ x
   | _, [], _, _, _ => by simp [mkInterleaving]
   | r₁, r₂ :: rest', hrs, hsorted, hsub => by
@@ -209,8 +209,8 @@ private lemma mkInterleaving_ge (f : ℝ[X]) :
 lemma mkInterleaving_sub_multiset (f : ℝ[X])
     (hdeg : 2 ≤ f.natDegree) :
     ∀ (rs : List ℝ) (hrs : ∀ r ∈ rs, f.IsRoot r)
-      (hsorted : rs.Pairwise (· ≤ ·))
-      (hsub : (↑rs : Multiset ℝ) ≤ f.roots),
+      (_hsorted : rs.Pairwise (· ≤ ·))
+      (_hsub : (↑rs : Multiset ℝ) ≤ f.roots),
     -- (A) sub-multiset of f'.roots
     (↑(mkInterleaving f rs hrs) : Multiset ℝ) ≤ f.derivative.roots ∧
     -- (B) count bound for elements in rs

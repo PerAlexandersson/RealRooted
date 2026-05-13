@@ -64,10 +64,9 @@ lemma exists_sign_of_prod (l : List ℝ) (h : ∀ x ∈ l, 0 ≤ x ∨ x ≤ 0) 
       have : (-1 : ℝ) ^ (k + 1) * (a * l.prod) = (-a) * ((-1 : ℝ) ^ k * l.prod) := by ring
       rw [this]; exact mul_nonneg (by linarith) hk
 
-set_option linter.unusedVariables false in
 /-- Two products with the same "sign exponent" have a non-negative product. -/
 lemma prod_mul_prod_nonneg_of_same_sign {l₁ l₂ : List ℝ}
-    (h₁ : ∀ x ∈ l₁, 0 ≤ x ∨ x ≤ 0) (h₂ : ∀ x ∈ l₂, 0 ≤ x ∨ x ≤ 0)
+    (_h₁ : ∀ x ∈ l₁, 0 ≤ x ∨ x ≤ 0) (_h₂ : ∀ x ∈ l₂, 0 ≤ x ∨ x ≤ 0)
     (k : ℕ) (hk₁ : 0 ≤ (-1 : ℝ) ^ k * l₁.prod)
     (hk₂ : 0 ≤ (-1 : ℝ) ^ k * l₂.prod) :
     0 ≤ l₁.prod * l₂.prod := by
@@ -435,7 +434,6 @@ lemma isRoot_of_isRoot_right_of_isRoot_add {f g h : ℝ[X]}
     nlinarith
   exact ⟨by simpa [Polynomial.IsRoot.def] using hf0, by simpa [Polynomial.IsRoot.def] using hg0⟩
 
-set_option linter.unusedVariables false in
 /-- A polynomial with roots arranged by a `ListInterlaces`/`ListAlternates`
 layout has opposite-or-zero signs at consecutive right-hand roots. -/
 private lemma eval_mul_eval_nonpos_of_roots_layout {f : ℝ[X]}
@@ -464,7 +462,7 @@ private lemma eval_mul_eval_nonpos_of_roots_layout {f : ℝ[X]}
   rw [hprod_r₁, hprod_r₂]
   rw [hfactor]
   have hlc_nonneg : 0 ≤ f.leadingCoeff * f.leadingCoeff := by
-    nlinarith [hf_pos]
+    exact mul_nonneg (le_of_lt hf_pos) (le_of_lt hf_pos)
   exact mul_nonpos_of_nonneg_of_nonpos hlc_nonneg hprod
 
 /-- Generic IVT bridge: opposite-or-zero endpoint signs give a real root in the
@@ -500,7 +498,6 @@ lemma exists_isRoot_between_of_eval_mul_nonpos {p : ℝ[X]} {a b : ℝ}
         obtain ⟨c, hc, hc_val⟩ := intermediate_value_Icc' (le_of_lt hab_lt) hcont h0_mem
         exact ⟨c, hc.1, hc.2, hc_val⟩
 
-set_option linter.unusedVariables false in
 /-- **Sign lemma**: Given real-rooted `f`, `g` with positive leading coefficients,
     roots `s` of `f` and `t` of `g` with `s ≤ t`, both in `[a, b]`, and the
     dichotomy conditions (all other roots of `f` resp. `g` are `≤ a` or `≥ b`,
@@ -512,9 +509,9 @@ set_option linter.unusedVariables false in
 lemma opposite_sign_at_interlacing_roots {f g : ℝ[X]}
     (hf : IsRealRooted f) (hg : IsRealRooted g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    {a b s t : ℝ} (hab : a ≤ b)
+    {a b s t : ℝ} (_hab : a ≤ b)
     (has : a ≤ s) (hsb : s ≤ b) (hat : a ≤ t) (htb : t ≤ b)
-    (hst : s ≤ t) (hfs : f.IsRoot s) (hgt : g.IsRoot t)
+    (_hst : s ≤ t) (hfs : f.IsRoot s) (hgt : g.IsRoot t)
     (hf_dichotomy : ∀ r ∈ f.roots.erase s, r ≤ a ∨ b ≤ r)
     (hg_dichotomy : ∀ r ∈ g.roots.erase t, r ≤ a ∨ b ≤ r)
     (hcount_eq : (g.roots.erase t).countP (b ≤ ·) = (f.roots.erase s).countP (b ≤ ·)) :

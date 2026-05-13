@@ -13,7 +13,6 @@ noncomputable section
 
 namespace RealRooted
 
-set_option linter.flexible false in
 section
 
 /-- The right-endpoint shift in the Motzkin recurrence. -/
@@ -223,8 +222,8 @@ lemma listInterlaces_left_le_of_right_le {ss rs : List ℝ} {c : ℝ}
           | cons r₂ rs' =>
               rcases hint with ⟨_, hsr₂, htail⟩
               intro t ht
-              simp at ht
-              rcases ht with rfl | ht
+              have ht' : t = s ∨ t ∈ ss := List.mem_cons.mp ht
+              rcases ht' with rfl | ht
               · exact le_trans hsr₂ (hrs r₂ (by simp))
               · exact ih htail (fun r hr => hrs r (by simp [hr])) t ht
 
@@ -243,8 +242,8 @@ lemma listAlternates_left_le_of_right_le {ss rs : List ℝ} {c : ℝ}
       | cons r rs' =>
           rcases halt with ⟨hsr, htail⟩
           intro t ht
-          simp at ht
-          rcases ht with rfl | ht
+          have ht' : t = s ∨ t ∈ ss := List.mem_cons.mp ht
+          rcases ht' with rfl | ht
           · exact le_trans hsr (hrs r (by simp))
           · exact listInterlaces_left_le_of_right_le htail
               (fun x hx => hrs x (by simp [hx])) t ht
@@ -293,12 +292,11 @@ lemma prec_self_mul_X_sub_C_of_roots_le {r : ℝ} {f : ℝ[X]}
   exact
     (prec_iff_prec_mul_X_sub_C_of_roots_le r hf hXf hf_pos hXf_pos hf_le hXf_le hdeg).mpr hself
 
-set_option linter.unusedVariables false in
 lemma prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos {f g : ℝ[X]}
     (h : Prec g (X * f))
     (hdeg : f.natDegree = g.natDegree)
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
-    (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
+    (_hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
     Prec f g := by
   rcases h with ⟨hg, hXf, ss_g, rs_Xf, hss_g, hrs_Xf, hss_g_eq, hrs_Xf_eq, hshape⟩
   have hf : IsRealRooted f := isRealRooted_of_X_mul hXf
@@ -441,8 +439,8 @@ lemma prec_motzkin_succ_of_shifted_odd {n : Nat} (hodd : n % 2 = 1)
   set g' := (motzkin (n + 1)).comp (X + C motzkinShift)
   have hshift' : Prec g' (X * f') := by
     have htmp := (prec_comp_X_add_C hshift motzkinShift)
-    simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
-      comp_assoc, add_assoc, add_left_comm, add_comm, mul_assoc] using htmp
+    simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg, comp_assoc,
+      add_assoc, add_left_comm, add_comm, mul_assoc] using htmp
   have hf'_nonpos : ∀ s ∈ f'.roots, s ≤ 0 := by
     intro s hs
     simp only [f', roots_comp_X_add_C motzkinShift] at hs

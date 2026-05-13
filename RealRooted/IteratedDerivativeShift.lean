@@ -506,10 +506,9 @@ lemma prec_iterateTDeriv_succ {eps : ℝ} {p : ℝ[X]} {n : ℕ}
 
 /-! ## Main theorem -/
 
-set_option linter.unusedVariables false in
 /-- Degree is preserved by iterating T_ε. -/
 lemma natDegree_iterateTDeriv {eps : ℝ} {p : ℝ[X]} {k : ℕ}
-    (hp : p ≠ 0) (hdeg : 1 ≤ p.natDegree) :
+    (_hp : p ≠ 0) (hdeg : 1 ≤ p.natDegree) :
     (iterateTDeriv eps k p).natDegree = p.natDegree := by
   induction k with
   | zero => simp
