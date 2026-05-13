@@ -112,6 +112,90 @@ theorem veroneseSectionPolynomial_ne_zero_of_coeff_ne_zero
   rw [coeff_veroneseSectionPolynomial (r := r) (k := k) (p := p) hr] at hcoeff_zero
   exact hcoeff hcoeff_zero
 
+/-! ## Veronese section recurrences -/
+
+/-- Veronese sections commute with addition. -/
+theorem veroneseSectionPolynomial_add {r k : ℕ} (hr : 0 < r) (p q : ℝ[X]) :
+    veroneseSectionPolynomial r k (p + q) =
+      veroneseSectionPolynomial r k p + veroneseSectionPolynomial r k q := by
+  ext n
+  simp [coeff_veroneseSectionPolynomial (r := r) (k := k) (p := p + q) hr,
+    coeff_veroneseSectionPolynomial (r := r) (k := k) (p := p) hr,
+    coeff_veroneseSectionPolynomial (r := r) (k := k) (p := q) hr]
+
+/-- Veronese sections commute with scalar multiplication. -/
+theorem veroneseSectionPolynomial_C_mul {r k : ℕ} (hr : 0 < r)
+    (a : ℝ) (p : ℝ[X]) :
+    veroneseSectionPolynomial r k (C a * p) =
+      C a * veroneseSectionPolynomial r k p := by
+  ext n
+  simp [coeff_veroneseSectionPolynomial (r := r) (k := k) (p := C a * p) hr,
+    coeff_veroneseSectionPolynomial (r := r) (k := k) (p := p) hr,
+    Polynomial.coeff_C_mul]
+
+/-- Multiplication by `X` shifts positive Veronese sections down by one
+residue. -/
+theorem veroneseSectionPolynomial_X_mul_succ {r k : ℕ} (hk : k + 1 < r)
+    (p : ℝ[X]) :
+    veroneseSectionPolynomial r (k + 1) (X * p) =
+      veroneseSectionPolynomial r k p := by
+  have hr : 0 < r := by omega
+  ext n
+  rw [coeff_veroneseSectionPolynomial (r := r) (k := k + 1) (p := X * p) hr]
+  rw [show k + 1 + r * n = (k + r * n) + 1 by omega]
+  rw [Polynomial.coeff_X_mul]
+  rw [coeff_veroneseSectionPolynomial (r := r) (k := k) (p := p) hr]
+
+/-- Multiplication by `X` wraps the zeroth Veronese section to the last
+residue, with one extra factor of `X`. -/
+theorem veroneseSectionPolynomial_X_mul_zero {r : ℕ} (hr : 0 < r)
+    (p : ℝ[X]) :
+    veroneseSectionPolynomial r 0 (X * p) =
+      X * veroneseSectionPolynomial r (r - 1) p := by
+  ext n
+  cases n with
+  | zero =>
+      rw [coeff_veroneseSectionPolynomial (r := r) (k := 0) (p := X * p) hr]
+      simp
+  | succ n =>
+      have hidx : 0 + r * (n + 1) = (r - 1 + r * n) + 1 := by
+        calc
+          0 + r * (n + 1) = r * n + r := by rw [Nat.mul_succ, zero_add]
+          _ = (r - 1 + r * n) + 1 := by omega
+      rw [coeff_veroneseSectionPolynomial (r := r) (k := 0) (p := X * p) hr]
+      rw [hidx]
+      rw [Polynomial.coeff_X_mul]
+      rw [Polynomial.coeff_X_mul]
+      rw [coeff_veroneseSectionPolynomial (r := r) (k := r - 1) (p := p) hr]
+
+/-- The zeroth Veronese section after multiplying by a linear factor
+`X + a`.  This is the wrap-around update used in Wagner-style proofs of
+Veronese real-rootedness. -/
+theorem veroneseSectionPolynomial_X_add_C_mul_zero {r : ℕ} (hr : 0 < r)
+    (a : ℝ) (p : ℝ[X]) :
+    veroneseSectionPolynomial r 0 ((X + C a) * p) =
+      X * veroneseSectionPolynomial r (r - 1) p +
+        C a * veroneseSectionPolynomial r 0 p := by
+  have hmul : (X + C a) * p = X * p + C a * p := by ring
+  rw [hmul]
+  rw [veroneseSectionPolynomial_add hr]
+  rw [veroneseSectionPolynomial_X_mul_zero hr]
+  rw [veroneseSectionPolynomial_C_mul hr]
+
+/-- Positive-residue Veronese sections after multiplying by a linear factor
+`X + a`. -/
+theorem veroneseSectionPolynomial_X_add_C_mul_succ {r k : ℕ}
+    (hk : k + 1 < r) (a : ℝ) (p : ℝ[X]) :
+    veroneseSectionPolynomial r (k + 1) ((X + C a) * p) =
+      veroneseSectionPolynomial r k p +
+        C a * veroneseSectionPolynomial r (k + 1) p := by
+  have hr : 0 < r := by omega
+  have hmul : (X + C a) * p = X * p + C a * p := by ring
+  rw [hmul]
+  rw [veroneseSectionPolynomial_add hr]
+  rw [veroneseSectionPolynomial_X_mul_succ hk]
+  rw [veroneseSectionPolynomial_C_mul hr]
+
 /-! ## Two-row Lace matrices -/
 
 /-- The Lace matrix of a two-term sequence of coefficient sequences.

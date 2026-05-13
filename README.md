@@ -177,6 +177,13 @@ Catalog context:
   Veronese section polynomials.
 - `veroneseSectionPolynomial_ne_zero_of_coeff_ne_zero`: a selected nonzero
   coefficient gives a nonzero section.
+- `veroneseSectionPolynomial_X_mul_zero`,
+  `veroneseSectionPolynomial_X_mul_succ`,
+  `veroneseSectionPolynomial_X_add_C_mul_zero`, and
+  `veroneseSectionPolynomial_X_add_C_mul_succ`: recurrence formulas for
+  Veronese sections under multiplication by `X` and by a linear factor
+  `X + C a`.  These are the formal entry point for a possible Wagner-style
+  proof avoiding the full Hurwitz/Lace route.
 - `isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg`,
   `veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_realRooted_nonneg`,
   and `isRealRooted_veroneseSectionPolynomial_of_realRooted_nonneg`: a
@@ -285,5 +292,14 @@ such as
 `FullyInterlacingPairToPrec0Statement`.  The preferred Hermite-Biehler route
 now uses the sign-normalized `hermiteBiehlerForwardPosStatement`, since the
 sign-free forward statement is false.
+
+A plausible lighter proof route is also partly prepared.  Factoring a
+real-rooted nonnegative polynomial into linear factors `X + C a`, the new
+Veronese recurrence lemmas show that each multiplication step applies a sparse
+cyclic matrix to the list of sections.  Proving that this sparse matrix
+preserves interlacing sequences via `matrix_preserves_interlacing_seq` would
+give a Wagner/Brändén-style proof of Veronese real-rootedness and interlacing
+without invoking the full Hurwitz-matrix criterion.  The remaining work is the
+finite `2×2` affine check for that cyclic matrix.
 
 In short: this is a working research codebase, not a finished library API.
