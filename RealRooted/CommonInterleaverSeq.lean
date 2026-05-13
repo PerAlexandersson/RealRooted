@@ -10,8 +10,6 @@ the Chudnovsky-Seymour pairwise-to-global common-interleaver upgrade, and the
 `polyOfDescRoots` construction.
 -/
 
-set_option linter.style.longLine false
-set_option linter.style.show false
 set_option linter.unnecessarySimpa false
 set_option linter.unreachableTactic false
 set_option linter.unusedSimpArgs false
@@ -128,8 +126,8 @@ lemma rootSlotInterval_nonempty (rs : List ℝ) (hrs : rs.Pairwise (· ≥ ·))
       let jj : Fin rs.length := ⟨j.1, hjlt⟩
       have hpair := List.pairwise_iff_get.mp hrs
       have hlt : jm1 < jj := by
-        show j.1 - 1 < j.1
-        omega
+        change j.1 - 1 < j.1
+        lia
       simpa [jm1, jj] using hpair jm1 jj hlt
 
 lemma rootSlotInterval_ordConnected (rs : List ℝ) (j : Fin (rs.length + 1)) :

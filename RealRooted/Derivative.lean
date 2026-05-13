@@ -16,8 +16,6 @@ open Polynomial Set
 
 noncomputable section
 
-set_option linter.style.multiGoal false
-
 namespace RealRooted
 
 /-! ## Exact degree of derivative -/
@@ -306,7 +304,8 @@ lemma mkInterleaving_sub_multiset (f : ℝ[X])
       · -- a = s, a = r₁
         rw [if_pos heq, if_pos hr₁a]
         have hr_eq : r₁ = r₂ := by
-          rcases lt_or_eq_of_le hr₁r₂ with hlt | h; swap; exact h
+          rcases lt_or_eq_of_le hr₁r₂ with hlt | h; swap
+          · exact h
           -- Rolle: r₁ < s, but s = a = r₁, contradiction
           have hspec := (exists_root_derivative_between hlt
             (hrs r₁ (.head _)) (hrs r₂ (.tail _ (.head _)))).choose_spec
