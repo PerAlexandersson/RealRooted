@@ -1,22 +1,13 @@
-/- 
-# Conditional Sturm-sequence package for Narayana polynomials
-
-This file formalizes the easy Liu--Wang consequence of the three-term Narayana
-recurrence
-
-`(n+1) P_n = (2n-1) (1 + X) P_{n-1} - (n-2) (1 - X)^2 P_{n-2}`.
-
-Since every Narayana polynomial has `X` as a factor, it is cleaner to divide by
-`X` first and work with the quotient sequence `Q_n = P_n / X`. The same
-recurrence holds for `Q_n`, now with `Q_1 = 1` and `Q_2 = 1 + X`.
-
-Assuming the quotient sequence has nonnegative coefficients, the weak Liu--Wang
-theorem proves `Q_n ⊳ Q_{n+1}` for all `n ≥ 1`, hence also for the original
-Narayana polynomials after multiplying both sides by the common factor `X`.
--/
 import RealRooted.MaWang
 import RealRooted.Linear
 import Mathlib.Tactic
+
+/-!
+# Narayana Polynomials
+
+Conditional Liu--Wang/Sturm-sequence package for Narayana polynomials, proved
+through the quotient sequence obtained by removing the common `X` factor.
+-/
 
 open Polynomial
 

@@ -1,4 +1,12 @@
-/-
+import RealRooted.Basic
+import RealRooted.Linear
+import Mathlib.Analysis.Polynomial.Basic
+import Mathlib.Algebra.Polynomial.Degree.Operations
+import Mathlib.Algebra.Polynomial.Eval.Degree
+import Mathlib.Algebra.Order.BigOperators.Group.Finset
+import Mathlib.Topology.Algebra.Polynomial
+
+/-!
 # Wagner's lemma
 
 Three forms of Wagner's lemma for polynomials:
@@ -9,13 +17,6 @@ Three forms of Wagner's lemma for polynomials:
 (1) and (2) generalize to n summands: if f₁,...,fₙ all interlace h
 with positive leading coefficients, then (Σ fᵢ) interlaces h.
 -/
-import RealRooted.Basic
-import RealRooted.Linear
-import Mathlib.Analysis.Polynomial.Basic
-import Mathlib.Algebra.Polynomial.Degree.Operations
-import Mathlib.Algebra.Polynomial.Eval.Degree
-import Mathlib.Algebra.Order.BigOperators.Group.Finset
-import Mathlib.Topology.Algebra.Polynomial
 
 set_option linter.style.longLine false
 set_option linter.style.show false
@@ -231,7 +232,8 @@ private lemma listInterlaces_of_orderedInsert (a : ℝ) :
               simp only [List.length_cons] at hlen ⊢
               omega
             have htail :
-                ListInterlaces (ss.orderedInsert (· ≤ ·) a) ((r₂ :: rs).orderedInsert (· ≤ ·) a) := by
+                ListInterlaces (ss.orderedInsert (· ≤ ·) a)
+                  ((r₂ :: rs).orderedInsert (· ≤ ·) a) := by
               simpa [List.orderedInsert_cons_of_le (r := (· ≤ ·)) (l := rs) har₂] using
                 hint.2.2
             exact ⟨hint.1, le_trans hint.2.1 har₂,
@@ -244,7 +246,8 @@ private lemma listInterlaces_of_orderedInsert (a : ℝ) :
               omega
             simp [ListInterlaces] at hint
             have htail :
-                ListInterlaces (ss.orderedInsert (· ≤ ·) a) ((r₂ :: rs).orderedInsert (· ≤ ·) a) := by
+                ListInterlaces (ss.orderedInsert (· ≤ ·) a)
+                  ((r₂ :: rs).orderedInsert (· ≤ ·) a) := by
               simpa [List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := rs) har₂] using
                 hint.2.2
             exact ⟨hint.1, hint.2.1,
@@ -279,7 +282,8 @@ private lemma listAlternates_of_orderedInsert (a : ℝ) :
           have hlen' : ss.length + 1 = (r :: rs).length := by
             simpa [List.length_cons] using congrArg Nat.succ hlen
           have htail :
-              ListInterlaces (ss.orderedInsert (· ≤ ·) a) ((r :: rs).orderedInsert (· ≤ ·) a) := by
+              ListInterlaces (ss.orderedInsert (· ≤ ·) a)
+                ((r :: rs).orderedInsert (· ≤ ·) a) := by
             simpa [List.orderedInsert_cons_of_le (r := (· ≤ ·)) (l := rs) har] using hint.2
           exact ⟨le_trans hint.1 har,
             listInterlaces_of_orderedInsert a hlen' hss.of_cons hrs htail⟩
@@ -290,7 +294,8 @@ private lemma listAlternates_of_orderedInsert (a : ℝ) :
             simp only [List.length_cons] at hlen ⊢
             omega
           have htail :
-              ListInterlaces (ss.orderedInsert (· ≤ ·) a) ((r :: rs).orderedInsert (· ≤ ·) a) := by
+              ListInterlaces (ss.orderedInsert (· ≤ ·) a)
+                ((r :: rs).orderedInsert (· ≤ ·) a) := by
             simpa [List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := rs) har] using hint.2
           exact ⟨hint.1,
             listInterlaces_of_orderedInsert a hlen' hss.of_cons hrs htail⟩
@@ -732,8 +737,10 @@ theorem prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]} (h : Prec f g)
       rfl
     rw [this, hrs_eq, add_comm, hXg_roots]
   · rcases hcase with ⟨hlen, hint⟩ | ⟨hlen, halt⟩
-    · exact Or.inl ⟨by simpa using hlen, listInterlaces_append_zero_both ss rs hlen hint hrs_nonpos⟩
-    · exact Or.inr ⟨by simpa using hlen, listAlternates_append_zero_both ss rs hlen halt hrs_nonpos⟩
+    · exact Or.inl
+        ⟨by simpa using hlen, listInterlaces_append_zero_both ss rs hlen hint hrs_nonpos⟩
+    · exact Or.inr
+        ⟨by simpa using hlen, listAlternates_append_zero_both ss rs hlen halt hrs_nonpos⟩
 
 theorem prec_of_prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]}
     (h : Prec (X * f) (X * g))
@@ -874,7 +881,8 @@ theorem prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ) (h : Prec f g) :
     ss.orderedInsert (· ≤ ·) r, rs.orderedInsert (· ≤ ·) r,
     hss.orderedInsert _ _, hrs.orderedInsert _ _, ?_, ?_, ?_⟩
   · have hinsert :
-        (↑(ss.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ({r} : Multiset ℝ) + (↑ss : Multiset ℝ) := by
+        (↑(ss.orderedInsert (· ≤ ·) r) : Multiset ℝ) =
+          ({r} : Multiset ℝ) + (↑ss : Multiset ℝ) := by
         calc
           (↑(ss.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ↑(r :: ss) := by
             exact Multiset.coe_eq_coe.mpr (List.perm_orderedInsert (r := (· ≤ ·)) r ss)
@@ -886,7 +894,8 @@ theorem prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ) (h : Prec f g) :
       simpa [roots_X_sub_C] using (roots_mul (mul_ne_zero (X_sub_C_ne_zero r) hf.1)).symm
     exact hinsert.trans hroots
   · have hinsert :
-        (↑(rs.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ({r} : Multiset ℝ) + (↑rs : Multiset ℝ) := by
+        (↑(rs.orderedInsert (· ≤ ·) r) : Multiset ℝ) =
+          ({r} : Multiset ℝ) + (↑rs : Multiset ℝ) := by
         calc
           (↑(rs.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ↑(r :: rs) := by
             exact Multiset.coe_eq_coe.mpr (List.perm_orderedInsert (r := (· ≤ ·)) r rs)

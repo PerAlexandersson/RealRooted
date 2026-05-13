@@ -1,10 +1,11 @@
-/-
+import RealRooted.WagnerRightSum
+
+/-!
 # Wagner (2): Common-left addition theorems
 
 If h ≪ f and h ≪ g with positive leading coefficients, then h ≪ (f + g).
 Includes SumCompatibleLeft for recursive n-summand assembly.
 -/
-import RealRooted.WagnerRightSum
 
 set_option linter.style.longLine false
 
@@ -241,7 +242,9 @@ private lemma wagner2_roots_exist (f g : ℝ[X])
         List.pairwise_cons.mpr ⟨fun w hw => lt_of_lt_of_le hu_lt_s (hus_ge_s w hw), hus_pw⟩,
         fun v hv => (List.mem_cons.mp hv).elim
           (fun h => h ▸ le_trans (min_le_left rf rg) huf)
-          (fun h => le_trans (le_trans (min_le_left rf rg) hrfs) (le_trans (le_min hsrf2 hsrg2) (hus_lb v h)))⟩
+          (fun h =>
+            le_trans (le_trans (min_le_left rf rg) hrfs)
+              (le_trans (le_min hsrf2 hsrg2) (hus_lb v h)))⟩
     · -- rg < rf: symmetric
       have hrgrf := le_of_lt hrfrg
       have hsign := opposite_sign_at_interlacing_roots hg hf hg_pos hf_pos hab
@@ -312,7 +315,9 @@ private lemma wagner2_roots_exist (f g : ℝ[X])
         List.pairwise_cons.mpr ⟨fun w hw => lt_of_lt_of_le hu_lt_s (hus_ge_s w hw), hus_pw⟩,
         fun v hv => (List.mem_cons.mp hv).elim
           (fun h => h ▸ le_trans (min_le_right rf rg) hug)
-          (fun h => le_trans (le_trans (min_le_right rf rg) hrgs) (le_trans (le_min hsrf2 hsrg2) (hus_lb v h)))⟩
+          (fun h =>
+            le_trans (le_trans (min_le_right rf rg) hrgs)
+              (le_trans (le_min hsrf2 hsrg2) (hus_lb v h)))⟩
     /- obtain ⟨hrfs, hsrf2, hint_f_tail⟩ := hint_f
     obtain ⟨hrgs, hsrg2, hint_g_tail⟩ := hint_g
     have hrf_root : f.IsRoot rf := (mem_roots hf.1).mp (by rw [← hrs_f_eq]; simp)
@@ -518,7 +523,8 @@ private lemma wagner2_roots_exist (f g : ℝ[X])
       exact ⟨u :: us, by simp [hus_len],
         ⟨le_trans hrgs hug, le_trans huf hrfs, hus_int⟩,
         fun v hv => (List.mem_cons.mp hv).elim (fun h => h ▸ hu_root') (hus_root v),
-        List.pairwise_cons.mpr ⟨fun w hw => lt_of_lt_of_le hu_lt_s (hus_ge_s w hw), hus_pw⟩⟩ -/
+        List.pairwise_cons.mpr
+          ⟨fun w hw => lt_of_lt_of_le hu_lt_s (hus_ge_s w hw), hus_pw⟩⟩ -/
   | _, _, [], _, _ :: _, hlen_f, _, _, _, _, _, _, _, _, _ => by simp at hlen_f
   | _, _, _ :: _, [], _ :: _, _, hlen_g, _, _, _, _, _, _, _, _ => by simp at hlen_g
   | _, _, [], _ :: _, [], hlen_f, _, _, _, _, _, _, _, _, _ => by
@@ -668,7 +674,9 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
           · exact h
           · exfalso
             have hft : Polynomial.eval t f = 0 :=
-              (mem_roots hf.1).mp (hrs_f_eq ▸ Multiset.mem_coe.mpr (by rw [h]; exact List.mem_cons_self ..))
+              (mem_roots hf.1).mp
+                (hrs_f_eq ▸ Multiset.mem_coe.mpr
+                  (by rw [h]; exact List.mem_cons_self ..))
             have hgt : Polynomial.eval t g = 0 := (mem_roots hg.1).mp (hrs_g_eq ▸ ht)
             obtain ⟨p, q, hpq⟩ := hcop
             have := congr_arg (Polynomial.eval t) hpq
@@ -733,7 +741,8 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
             lt_of_lt_of_le hu₀_lt_s₁ (hus_ge_s₁ w hw), hus_pw⟩).imp le_of_lt,
           hss_h_eq, hroots_eq,
           Or.inl ⟨by simp only [List.length_cons] at hlen_f hus_len ⊢; omega,
-                   ⟨le_trans hu₀_le hrfs₁, hus_ge_s₁ u1 (List.mem_cons_self ..), hus_int⟩⟩⟩
+            ⟨le_trans hu₀_le hrfs₁,
+              hus_ge_s₁ u1 (List.mem_cons_self ..), hus_int⟩⟩⟩
   · -- f same-degree
     rcases hcase_g with ⟨hlen_g, hint_g⟩ | ⟨hlen_g_alt, halt_g⟩
     · -- f same-degree, g differ-by-1 (symmetric to f differ-by-1, g same-degree above)
@@ -878,7 +887,8 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
             lt_of_lt_of_le hu₀_lt_s₁ (hus_ge_s₁ w hw), hus_pw⟩).imp le_of_lt,
           hss_h_eq, hroots_eq,
           Or.inl ⟨by simp only [List.length_cons] at hlen_g hus_len ⊢; omega,
-                   ⟨le_trans hu₀_le hrgs₁, hus_ge_s₁ u1 (List.mem_cons_self ..), hus_int⟩⟩⟩
+            ⟨le_trans hu₀_le hrgs₁,
+              hus_ge_s₁ u1 (List.mem_cons_self ..), hus_int⟩⟩⟩
     · -- f same-degree, g same-degree
       cases ss_h with
       | nil =>

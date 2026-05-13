@@ -1,15 +1,16 @@
-/-
-# Derivative interlacing
-
-Main result: if `f` is a real-rooted polynomial of degree ≥ 2,
-then `f.derivative` is real-rooted and interlaces `f`.
--/
 import RealRooted.Basic
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Analysis.Calculus.LocalExtr.Rolle
 import Mathlib.Topology.Algebra.Polynomial
 import Mathlib.Algebra.Polynomial.FieldDivision
 import Mathlib.Data.Multiset.Sort
+
+/-!
+# Derivative interlacing
+
+The main result is that if `f` is a real-rooted polynomial of degree at least
+two, then `f.derivative` is real-rooted and interlaces `f`.
+-/
 
 set_option linter.style.multiGoal false
 set_option linter.unusedVariables false

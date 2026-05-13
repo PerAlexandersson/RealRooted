@@ -3,6 +3,13 @@ import RealRooted.Linear
 import RealRooted.Derivative
 import RealRooted.Wagner
 
+/-!
+# Common Combinatorial Example Lemmas
+
+Shared coefficient, leading-coefficient, and elementary interlacing helpers for
+the combinatorial example files.
+-/
+
 set_option linter.unnecessarySimpa false
 
 open Polynomial

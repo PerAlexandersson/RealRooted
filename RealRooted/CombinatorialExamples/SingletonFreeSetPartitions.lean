@@ -1,6 +1,13 @@
 import RealRooted.CombinatorialExamples.Common
 import Mathlib.Tactic
 
+/-!
+# Singleton-Free Set-Partition Polynomials
+
+Real-rootedness and interlacing facts for the recurrence counting set
+partitions without singleton blocks.
+-/
+
 open Polynomial
 
 noncomputable section

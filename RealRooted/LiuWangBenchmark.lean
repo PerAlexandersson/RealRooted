@@ -1,4 +1,9 @@
-/- 
+import RealRooted.MaWang
+import RealRooted.Linear
+import Mathlib.Data.Nat.Choose.Basic
+import Mathlib.Tactic
+
+/-!
 # A Liu--Wang benchmark family
 
 For a fixed parameter `d : ℕ`, define
@@ -12,10 +17,6 @@ Equivalently,
 This file develops the basic coefficient/degree/positivity facts needed to use
 the family as a benchmark for the Liu--Wang / Ma--Wang machinery.
 -/
-import RealRooted.MaWang
-import RealRooted.Linear
-import Mathlib.Data.Nat.Choose.Basic
-import Mathlib.Tactic
 
 open Polynomial Finset
 
@@ -473,7 +474,8 @@ private lemma interlaces_one_linear {p : ℝ[X]} (hp_deg : p.natDegree = 1) :
     rw [degree_eq_natDegree hp_rr.1, hp_deg]
     norm_num
   refine ⟨hp_rr, h1_rr, by simpa [Polynomial.natDegree_one, hp_deg], ?_⟩
-  refine ⟨[-(p.coeff 1)⁻¹ * p.coeff 0], [], by simp, by simp, ?_, by simp, by simp [ListInterlaces]⟩
+  refine ⟨[-(p.coeff 1)⁻¹ * p.coeff 0], [], by simp, by simp, ?_,
+    by simp, by simp [ListInterlaces]⟩
   simpa [hp_deg'] using (Polynomial.roots_degree_eq_one (p := p) hp_deg').symm
 
 lemma interlaces_liuWangRec_one_two (d : Nat) :
@@ -544,7 +546,8 @@ private lemma roots_neg_of_interlaces_of_eval_zero_pos {g f : ℝ[X]}
     linarith
   have hlast_neg : rs.getLast hrs_ne < 0 := by
     have hf_zero' := hf_zero
-    rw [h_eval, ← List.dropLast_append_getLast hrs_ne, List.map_append, List.prod_append] at hf_zero'
+    rw [h_eval, ← List.dropLast_append_getLast hrs_ne, List.map_append,
+      List.prod_append] at hf_zero'
     simp only [List.map] at hf_zero'
     simp only [List.prod_singleton, mul_assoc] at hf_zero'
     have hmid :
@@ -792,7 +795,9 @@ lemma interlaces_liuWangRec_threshold (d : Nat) :
       have hInter : Interlaces (liuWangRec (d + 1) (d + 1)) (liuWangRec (d + 1) (d + 2)) :=
         hprev.1
       have hNoCommon :
-          ∀ r, (liuWangRec (d + 1) (d + 2)).IsRoot r → ¬ (liuWangRec (d + 1) (d + 1)).IsRoot r :=
+          ∀ r,
+            (liuWangRec (d + 1) (d + 2)).IsRoot r →
+              ¬ (liuWangRec (d + 1) (d + 1)).IsRoot r :=
         hprev.2.1
       have hNeg :
           ∀ r, (liuWangRec (d + 1) (d + 2)).IsRoot r → r < 0 :=
@@ -850,7 +855,9 @@ private lemma weakPrec_liuWangRec_step (d n : Nat) (hn : 1 ≤ n)
     rw [← liuWangRec_succ_succ, natDegree_liuWangRec d (n + 1) (by omega),
       natDegree_liuWangRec d (n + 2) (by omega)]
     omega
-  have hb_nonpos : ∀ r, (liuWangRec d (n + 1)).IsRoot r → (X * (1 - X : ℝ[X])).eval r ≤ 0 := by
+  have hb_nonpos :
+      ∀ r, (liuWangRec d (n + 1)).IsRoot r →
+        (X * (1 - X : ℝ[X])).eval r ≤ 0 := by
     intro r hr
     have hr_nonpos : r ≤ 0 := hnonpos r hr
     have : r * (1 - r) ≤ 0 := by
@@ -898,7 +905,8 @@ private lemma prec_of_interlaces_X_mul_of_roots_nonpos {f g : ℝ[X]}
       exact hrs_f_nonpos a ha⟩
   have hrs_xf_is : rs_xf = rs_f ++ [(0 : ℝ)] := by
     have hmultiset_eq : (↑rs_xf : Multiset ℝ) = ↑(rs_f ++ [(0 : ℝ)]) := by
-      rw [hrs_xf_eq, roots_mul (mul_ne_zero X_ne_zero hf.1), roots_X, ← hrs_f_eq, ← Multiset.coe_add]
+      rw [hrs_xf_eq, roots_mul (mul_ne_zero X_ne_zero hf.1), roots_X,
+        ← hrs_f_eq, ← Multiset.coe_add]
       simp [add_comm]
     exact List.Perm.eq_of_pairwise' hrs_xf hrs_f0_sorted (Multiset.coe_eq_coe.mp hmultiset_eq)
   rw [hrs_xf_is] at hint
@@ -921,7 +929,9 @@ private lemma prec_of_interlaces_X_mul_of_roots_nonpos {f g : ℝ[X]}
     listAlternates_append_zero ss_g (rs_f ++ [(0 : ℝ)]) hlen hint hrs_f0_nonpos
   have halt : ListAlternates rs_f ss_g :=
     listAlternates_of_append_zero_both rs_f ss_g hlen_eq halt0
-  exact ⟨hf, hg, rs_f, ss_g, hrs_f_sorted, hss_g, hrs_f_eq, hss_g_eq, Or.inr ⟨hlen_eq, halt⟩⟩
+  exact
+    ⟨hf, hg, rs_f, ss_g, hrs_f_sorted, hss_g, hrs_f_eq, hss_g_eq,
+      Or.inr ⟨hlen_eq, halt⟩⟩
 
 private lemma prec_threshold_divX (d : Nat) :
     Prec ((liuWangRec d (d + 2)) /ₘ X) (liuWangRec d (d + 1)) := by
@@ -983,7 +993,9 @@ lemma isRealRooted_liuWangRec_of_le_threshold (d n : Nat)
   · subst hEq
     exact (interlaces_liuWangRec_threshold d).1
   rcases hn.eq_or_lt with rfl | hn_lt
-  · exact isRealRooted_of_deg_zero (liuWangRec_ne_zero d 1 hn) (by simp [natDegree_liuWangRec d 1 hn])
+  · exact
+      isRealRooted_of_deg_zero (liuWangRec_ne_zero d 1 hn)
+        (by simp)
   · have hInter :
         Interlaces (liuWangRec d (n - 1)) (liuWangRec d n) := by
       have hn_sub : 1 ≤ n - 1 := by omega
@@ -1062,7 +1074,9 @@ lemma isRealRooted_liuWangRec_of_nonnegCoeffs (d n : Nat)
     (hnonneg : ∀ m, HasNonnegCoeffs (liuWangRec d m)) :
     IsRealRooted (liuWangRec d n) := by
   rcases hn.eq_or_lt with rfl | hn_lt
-  · exact isRealRooted_of_deg_zero (liuWangRec_ne_zero d 1 hn) (by simp [natDegree_liuWangRec d 1 hn])
+  · exact
+      isRealRooted_of_deg_zero (liuWangRec_ne_zero d 1 hn)
+        (by simp)
   have hInter : Interlaces (liuWangRec d (n - 1)) (liuWangRec d n) := by
     have hn_sub : 1 ≤ n - 1 := by omega
     have hEq : n - 1 + 1 = n := Nat.sub_add_cancel hn

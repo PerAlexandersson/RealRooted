@@ -923,7 +923,7 @@ theorem roots_fPolynomial_eq_padding_map_of_isRealRooted_of_hasNonnegCoeffs
   rw [hpad, roots_mul (mul_ne_zero hpow_ne hfp_rr.1), hroots_pow,
     roots_fPolynomial_natDegree_eq_map_of_isRealRooted_of_hasNonnegCoeffs hp hpnn]
 
-private theorem isRealRooted_of_isRealRooted_fPolynomial_natDegree_of_natDegree_eq_of_roots_gt_neg_one
+private theorem isRealRooted_of_fPolynomial_natDegree_roots_gt_neg_one
     {p : ℝ[X]}
     (hfpdeg : (fPolynomial p.natDegree p).natDegree = p.natDegree)
     (hfp : IsRealRooted (fPolynomial p.natDegree p))
@@ -1063,7 +1063,8 @@ lemma root_gt_neg_one_of_mem_roots_fPolynomial_natDegree_of_isRealRooted_of_hasN
         simpa [untransformRoot] using hdiv_pos
       have hpx_pos : 0 < p.eval (untransformRoot x) :=
         eval_pos_of_hasNonnegCoeffs_of_pos hpnn hp0 hux_pos
-      rw [eval_fPolynomial_eq_mul_eval_untransform (d := p.natDegree) (p := p) le_rfl hxm1] at hx_root
+      rw [eval_fPolynomial_eq_mul_eval_untransform (d := p.natDegree) (p := p)
+        le_rfl hxm1] at hx_root
       have hpow_ne : (1 + x) ^ p.natDegree ≠ 0 := by
         exact pow_ne_zero _ (by linarith)
       exact hpx_pos.ne' ((mul_eq_zero.mp hx_root).resolve_left hpow_ne)
@@ -1085,8 +1086,7 @@ theorem isRealRooted_of_isRealRooted_fPolynomial_natDegree_of_hasNonnegCoeffs
     exact root_gt_neg_one_of_mem_roots_fPolynomial_natDegree_of_isRealRooted_of_hasNonnegCoeffs
       hfp hpnn hx
   exact
-    isRealRooted_of_isRealRooted_fPolynomial_natDegree_of_natDegree_eq_of_roots_gt_neg_one
-      hfpdeg hfp hgt
+    isRealRooted_of_fPolynomial_natDegree_roots_gt_neg_one hfpdeg hfp hgt
 
 theorem isRealRooted_of_isRealRooted_fPolynomial_of_hasNonnegCoeffs
     {d : ℕ} {p : ℝ[X]} (hpd : p.natDegree ≤ d)

@@ -1,14 +1,3 @@
-/- 
-# Sturm sequence for derangement excedance polynomials
-
-This file introduces the derangement excedance polynomial sequence over `ℝ[X]`:
-
-`P_n = t * ((n - 1) P_{n-2} + (n - 1) P_{n-1} + (1 - t) P'_{n-1})`
-
-with initial conditions `P_1 = 0` and `P_2 = t`.
-
-In Lean we use `X` for the polynomial variable `t`.
--/
 import RealRooted.Basic
 import RealRooted.Derivative
 import RealRooted.Wagner
@@ -16,6 +5,13 @@ import RealRooted.AffineDerivative
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Algebra.Polynomial.Reverse
 import Mathlib.Tactic
+
+/-!
+# Derangement Excedance Polynomials
+
+Sturm-sequence and real-rootedness facts for derangement excedance polynomials,
+using `X` for the polynomial variable.
+-/
 
 open Polynomial
 

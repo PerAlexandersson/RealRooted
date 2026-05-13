@@ -1,6 +1,12 @@
 import RealRooted.CombinatorialExamples.Common
 import Mathlib.Tactic
 
+/-!
+# Shifted Motzkin Polynomials
+
+Interlacing and root-bound facts for the shifted Motzkin recurrence.
+-/
+
 set_option linter.unnecessarySimpa false
 set_option linter.unusedVariables false
 

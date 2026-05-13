@@ -1,5 +1,9 @@
-/-
-# Convex combinations preserve interlacing
+import RealRooted.Basic
+import RealRooted.Linear
+import RealRooted.WagnerLeftSum
+
+/-!
+# Weighted sums and interlacing
 
 This file packages positive and nonnegative linear-combination consequences of
 the Wagner addition theorems.
@@ -9,13 +13,10 @@ is strong enough to handle arbitrary finite nonnegative weighted sums.
 
 On the common-left side, Wagner (2) still needs compatibility data for genuine
 two-term sums, namely real-rootedness of the resulting combination and
-coprimeness of the summands after any shared factor has been removed. For
+coprimeness of the summands after any shared factor has been removed.  For
 finite weighted sums, this is packaged below as an inductive compatibility
 predicate.
 -/
-import RealRooted.Basic
-import RealRooted.Linear
-import RealRooted.WagnerLeftSum
 
 set_option linter.unusedDecidableInType false
 

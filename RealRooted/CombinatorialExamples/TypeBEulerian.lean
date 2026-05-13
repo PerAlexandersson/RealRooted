@@ -2,6 +2,12 @@ import RealRooted.CombinatorialExamples.Common
 import RealRooted.MaWang
 import Mathlib.Tactic
 
+/-!
+# Type B Eulerian Polynomials
+
+Real-rootedness and Sturm-sequence facts for the type `B` Eulerian recurrence.
+-/
+
 open Polynomial
 
 noncomputable section

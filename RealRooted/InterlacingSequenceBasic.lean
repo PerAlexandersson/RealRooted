@@ -1,4 +1,8 @@
-/-
+import RealRooted.Basic
+import RealRooted.Linear
+import RealRooted.WagnerX
+
+/-!
 # Interlacing sequences and matrices preserving them
 
 Primary source for this file:
@@ -9,9 +13,10 @@ Primary source for this file:
 
 Relevant source landmarks in that section:
 
-- after Theorem 7.8.1: definitions of `g` being an interleaver / proper interleaver of a family
-- Lemma 7.8.4: affine-family criterion for common interleaving
-- Theorem 7.8.5: matrix characterization via the 2×2 affine test
+- after Theorem 7.8.1: definitions of `g` being an interleaver or proper
+  interleaver of a family;
+- Lemma 7.8.4: affine-family criterion for common interleaving;
+- Theorem 7.8.5: matrix characterization via the `2 × 2` affine test.
 
 ## Definitions
 
@@ -24,13 +29,12 @@ non-negative coefficients.
 ## Main theorem
 
 An `m × n` matrix `G` of polynomials maps `𝓕ₙ⁺ → 𝓕ₘ⁺` if and only if:
-1. All entries of `G` have non-negative coefficients, and
-2. For every 2×2 submatrix `[[a, b], [c, d]]` of `G` and reals `λ, μ > 0`:
+
+1. All entries of `G` have non-negative coefficients.
+2. For every `2 × 2` submatrix `[[a, b], [c, d]]` of `G` and reals
+   `λ, μ > 0`, we have
    `(λt + μ) b(t) + d(t) ⊳ (λt + μ) a(t) + c(t)`.
 -/
-import RealRooted.Basic
-import RealRooted.Linear
-import RealRooted.WagnerX
 
 open Polynomial
 

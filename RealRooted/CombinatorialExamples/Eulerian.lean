@@ -1,20 +1,16 @@
-/- 
-# Real-rootedness of the Eulerian tilde polynomials
-
-This file formalizes the recurrence
-
-`P_{n+1} = X * (C (n+2) * P_n + (1 - X) * P'_n)`
-
-with `P_0 = X`. The proof strategy is the intended human induction:
-if `P_n` is real-rooted, then the affine block preceding the outer `X`
-interlaces `P_n`, hence `P_n ≪ P_{n+1}` and `P_{n+1}` is real-rooted.
--/
 import RealRooted.Basic
 import RealRooted.Derivative
 import RealRooted.Wagner
 import RealRooted.AffineDerivative
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Tactic
+
+/-!
+# Eulerian Tilde Polynomials
+
+Real-rootedness and Sturm-sequence facts for the shifted Eulerian recurrence,
+using the affine derivative block before the outer `X` factor.
+-/
 
 open Polynomial
 

@@ -1,14 +1,16 @@
-/-
-# Real-rootedness of linear polynomials
-
-Every polynomial of the form `X - C r` is real-rooted,
-and more generally, any nonzero polynomial of degree ≤ 1.
--/
 import RealRooted.Basic
 import Mathlib.Algebra.Polynomial.Degree.Operations
 import Mathlib.Algebra.Polynomial.Degree.Lemmas
 import Mathlib.Algebra.Polynomial.FieldDivision
 import Mathlib.Data.Multiset.Sort
+
+/-!
+# Real-rootedness of linear polynomials
+
+This file proves that every polynomial of the form `X - C r` is real-rooted,
+and more generally that every nonzero polynomial of degree at most one is
+real-rooted.
+-/
 
 open Polynomial
 

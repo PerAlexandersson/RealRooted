@@ -1,10 +1,11 @@
-/-
+import RealRooted.WagnerX
+
+/-!
 # Wagner (1): Common-right addition theorems
 
 If f ≪ h and g ≪ h with positive leading coefficients, then (f + g) ≪ h.
 Generalizes to n summands by induction.
 -/
-import RealRooted.WagnerX
 
 set_option linter.style.longLine false
 set_option linter.unnecessarySimpa false
@@ -71,10 +72,13 @@ lemma exists_sign_of_prod (l : List ℝ) (h : ∀ x ∈ l, 0 ≤ x ∨ x ≤ 0) 
 /-- Two products with the same "sign exponent" have a non-negative product. -/
 lemma prod_mul_prod_nonneg_of_same_sign {l₁ l₂ : List ℝ}
     (h₁ : ∀ x ∈ l₁, 0 ≤ x ∨ x ≤ 0) (h₂ : ∀ x ∈ l₂, 0 ≤ x ∨ x ≤ 0)
-    (k : ℕ) (hk₁ : 0 ≤ (-1 : ℝ) ^ k * l₁.prod) (hk₂ : 0 ≤ (-1 : ℝ) ^ k * l₂.prod) :
+    (k : ℕ) (hk₁ : 0 ≤ (-1 : ℝ) ^ k * l₁.prod)
+    (hk₂ : 0 ≤ (-1 : ℝ) ^ k * l₂.prod) :
     0 ≤ l₁.prod * l₂.prod := by
-  have : l₁.prod * l₂.prod = ((-1 : ℝ) ^ k * l₁.prod) * ((-1 : ℝ) ^ k * l₂.prod) *
-    ((-1 : ℝ) ^ k * (-1 : ℝ) ^ k)⁻¹ := by
+  have :
+      l₁.prod * l₂.prod =
+        ((-1 : ℝ) ^ k * l₁.prod) * ((-1 : ℝ) ^ k * l₂.prod) *
+          ((-1 : ℝ) ^ k * (-1 : ℝ) ^ k)⁻¹ := by
     have h1 : ((-1 : ℝ) ^ k) ≠ 0 := pow_ne_zero _ (by norm_num)
     field_simp
   rw [this]
@@ -83,7 +87,8 @@ lemma prod_mul_prod_nonneg_of_same_sign {l₁ l₂ : List ℝ}
 
 /-- A product whose factors are ≥ 0 or ≤ 0 according to a predicate `p`
     satisfies `0 ≤ (-1)^(countP p) * prod`. -/
-private lemma sign_of_prod_countP (s : Multiset ℝ) (f : ℝ → ℝ) (p : ℝ → Prop) [DecidablePred p]
+private lemma sign_of_prod_countP (s : Multiset ℝ) (f : ℝ → ℝ) (p : ℝ → Prop)
+    [DecidablePred p]
     (hpos : ∀ x ∈ s, ¬p x → 0 ≤ f x)
     (hneg : ∀ x ∈ s, p x → f x ≤ 0) :
     0 ≤ (-1 : ℝ) ^ (s.countP p) * (s.map f).prod := by
@@ -443,7 +448,8 @@ private lemma eval_mul_eval_nonpos_of_roots_layout {f : ℝ[X]}
     (hcase : ListInterlaces ss (r₁ :: r₂ :: rest) ∨
       ListAlternates ss (r₁ :: r₂ :: rest)) :
     f.eval r₁ * f.eval r₂ ≤ 0 := by
-  rw [eval_eq_leadingCoeff_mul_prod_sub hf r₁, eval_eq_leadingCoeff_mul_prod_sub hf r₂, ← hss_eq]
+  rw [eval_eq_leadingCoeff_mul_prod_sub hf r₁,
+    eval_eq_leadingCoeff_mul_prod_sub hf r₂, ← hss_eq]
   have hprod :
       (ss.map (r₁ - ·)).prod * (ss.map (r₂ - ·)).prod ≤ 0 := by
     rcases hcase with hint | halt
@@ -1347,7 +1353,8 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
             (mem_roots hg.1).mp (by rwa [hss_g_eq] at ht)
           obtain ⟨a, b, hab⟩ := hcop
           have := congr_arg (Polynomial.eval s₁_f) hab
-          simp [eval_add, eval_mul, eval_one, (show Polynomial.eval s₁_f f = 0 from hs₁_root), hg0] at this
+          simp [eval_add, eval_mul, eval_one,
+            (show Polynomial.eval s₁_f f = 0 from hs₁_root), hg0] at this
       obtain ⟨u₀, hu₀_le, hu₀_root_gf⟩ :=
         exists_root_le_of_mixed hg hg_pos
           (by rw [show g + f = f + g from add_comm g f]; exact hfg_pos)
@@ -1442,7 +1449,8 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
         have hg_roots_erase : g.roots.erase s₁_g = ↑rest_g := by
           rw [← hss_g_eq, ← Multiset.cons_coe, Multiset.erase_cons_head]
         have hcount_eq :
-            (g.roots.erase s₁_g).countP (r₁ ≤ ·) = (f.roots.erase s₁_f).countP (r₁ ≤ ·) := by
+            (g.roots.erase s₁_g).countP (r₁ ≤ ·) =
+              (f.roots.erase s₁_f).countP (r₁ ≤ ·) := by
           rw [hf_roots_erase, hg_roots_erase]
           have hcf := Multiset.countP_eq_card.mpr (fun r hr =>
             listInterlaces_all_ge rest_f rest_rs r₁ hint_f_tail r (Multiset.mem_coe.mp hr))
@@ -1716,7 +1724,8 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
             (h ▸ hu₀_root)
       have hpw : (u₀ :: us).Pairwise (· < ·) :=
         List.pairwise_cons.mpr ⟨fun w hw =>
-          lt_of_lt_of_le hu₀_lt_r₁ (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
+          lt_of_lt_of_le hu₀_lt_r₁
+            (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
       have hnodup := (hpw.imp ne_of_lt : (u₀ :: us).Nodup)
       have hfg_ne : f + g ≠ 0 := by
         intro h0
@@ -1820,7 +1829,8 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
             (h ▸ hu₀_root)
       have hpw : (u₀ :: us).Pairwise (· < ·) :=
         List.pairwise_cons.mpr ⟨fun w hw =>
-          lt_of_lt_of_le hu₀_lt_r₁ (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
+          lt_of_lt_of_le hu₀_lt_r₁
+            (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
       have hnodup := (hpw.imp ne_of_lt : (u₀ :: us).Nodup)
       have hfg_ne : f + g ≠ 0 := by
         intro h0
@@ -1940,7 +1950,8 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
         have hg_roots_erase : g.roots.erase s₁_g = ↑rest_g := by
           rw [← hss_g_eq, ← Multiset.cons_coe, Multiset.erase_cons_head]
         have hcount_eq :
-            (g.roots.erase s₁_g).countP (r₁ ≤ ·) = (f.roots.erase s₁_f).countP (r₁ ≤ ·) := by
+            (g.roots.erase s₁_g).countP (r₁ ≤ ·) =
+              (f.roots.erase s₁_f).countP (r₁ ≤ ·) := by
           rw [hf_roots_erase, hg_roots_erase]
           have hcf := Multiset.countP_eq_card.mpr (fun r hr =>
             listInterlaces_all_ge rest_f rest_rs r₁ hint_f_tail r (Multiset.mem_coe.mp hr))
@@ -1993,7 +2004,8 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
               hno_rs_f
           have hpw : (c :: us).Pairwise (· < ·) :=
             List.pairwise_cons.mpr ⟨fun w hw =>
-              lt_of_lt_of_le hc_lt_r₁ (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
+              lt_of_lt_of_le hc_lt_r₁
+                (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
           have hnodup := (hpw.imp ne_of_lt : (c :: us).Nodup)
           have hfg_ne : f + g ≠ 0 := by
             intro h0
@@ -2067,7 +2079,8 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
               hno_rs_f
           have hpw : (c :: us).Pairwise (· < ·) :=
             List.pairwise_cons.mpr ⟨fun w hw =>
-              lt_of_lt_of_le hc_lt_r₁ (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
+              lt_of_lt_of_le hc_lt_r₁
+                (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
           have hnodup := (hpw.imp ne_of_lt : (c :: us).Nodup)
           have hfg_ne : f + g ≠ 0 := by
             intro h0

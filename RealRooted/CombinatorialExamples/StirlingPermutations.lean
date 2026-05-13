@@ -2,6 +2,13 @@ import RealRooted.CombinatorialExamples.Common
 import RealRooted.MaWang
 import Mathlib.Tactic
 
+/-!
+# Stirling-Permutation Descent Polynomials
+
+Real-rootedness and Sturm-sequence facts for Stirling-permutation descent
+polynomials.
+-/
+
 open Polynomial
 
 noncomputable section

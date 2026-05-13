@@ -2,6 +2,13 @@ import RealRooted.CombinatorialExamples.Common
 import RealRooted.MaWang
 import Mathlib.Tactic
 
+/-!
+# Touchard Polynomials
+
+Real-rootedness and Sturm-sequence facts for the Touchard polynomial
+recurrence.
+-/
+
 open Polynomial
 
 noncomputable section

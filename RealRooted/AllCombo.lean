@@ -1,12 +1,13 @@
-/-
-# AllComboRealRooted and iterateTDeriv infrastructure
-
-All-real-combinations property, common-root reduction, derivative and
-iterateTDeriv algebra for the Obreschkoff converse proof.
--/
 import RealRooted.PosCombo
 import RealRooted.IteratedDerivativeShift
 import RealRooted.ObreschkoffContinuity
+
+/-!
+# All-real-combination real-rootedness
+
+This file defines `AllComboRealRooted` and packages common-root reduction,
+derivative, and `iterateTDeriv` algebra used in the Obreschkoff converse proof.
+-/
 
 set_option linter.unusedSimpArgs false
 

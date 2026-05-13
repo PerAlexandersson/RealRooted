@@ -2,6 +2,13 @@ import RealRooted.Basic
 import RealRooted.Linear
 import Mathlib.Analysis.Normed.Field.Approximation
 
+/-!
+# Root-continuity tools
+
+This file collects coefficient and evaluation estimates used to control roots
+under small perturbations of a real polynomial.
+-/
+
 open Polynomial
 
 noncomputable section

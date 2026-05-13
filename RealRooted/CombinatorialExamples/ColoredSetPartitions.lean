@@ -2,6 +2,13 @@ import RealRooted.CombinatorialExamples.Common
 import RealRooted.MaWang
 import Mathlib.Tactic
 
+/-!
+# Colored Set-Partition Polynomials
+
+Real-rootedness and Sturm-sequence facts for the colored set-partition
+recurrence, including the type `B` specialization.
+-/
+
 open Polynomial
 
 noncomputable section

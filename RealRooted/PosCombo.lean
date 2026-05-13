@@ -1,13 +1,15 @@
-/-
-# Positive-combination real-rootedness
-
-PosComboRealRooted, family and coprimeness lemmas, common-left interleaver
-forward direction, and the convex-combination wrapper theorems.
--/
 import RealRooted.WeightedSum
 import RealRooted.MaWang
 import RealRooted.ObreschkoffContinuity
 import RealRooted.AissenSchoenbergWhitney
+
+/-!
+# Positive-combination real-rootedness
+
+This file develops `PosComboRealRooted`, family and coprimeness lemmas, the
+common-left interleaver forward direction, and convex-combination wrapper
+theorems.
+-/
 
 open Polynomial
 

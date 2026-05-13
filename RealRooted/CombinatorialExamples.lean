@@ -9,3 +9,10 @@ import RealRooted.CombinatorialExamples.Motzkin
 import RealRooted.CombinatorialExamples.OneDescentGamma
 import RealRooted.CombinatorialExamples.ColoredSetPartitions
 import RealRooted.CombinatorialExamples.StirlingPermutations
+
+/-!
+# Combinatorial Examples
+
+Collected polynomial families used as regression examples for real-rootedness,
+interlacing, and Sturm-sequence APIs.
+-/

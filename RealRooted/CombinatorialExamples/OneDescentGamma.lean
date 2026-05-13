@@ -7,6 +7,13 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Tactic
 
+/-!
+# One-Descent Gamma Family
+
+Base-case interlacing and real-rootedness facts for the normalized one-descent
+gamma polynomials.
+-/
+
 open Polynomial
 open scoped BigOperators
 

@@ -2,6 +2,12 @@ import RealRooted.CombinatorialExamples.Common
 import RealRooted.MaWang
 import Mathlib.Tactic
 
+/-!
+# Simsun Descent Polynomials
+
+Real-rootedness and Sturm-sequence facts for the simsun descent recurrence.
+-/
+
 open Polynomial
 
 noncomputable section

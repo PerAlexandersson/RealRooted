@@ -1,11 +1,12 @@
-/-
+import RealRooted.AllCombo
+import RealRooted.AffineDerivative
+
+/-!
 # Obreschkoff converse: AllComboRealRooted → Prec
 
 Wronskian orientation lemmas, the same-degree and succ-degree cases,
 and the main converse `prec_of_allComboRealRooted`.
 -/
-import RealRooted.AllCombo
-import RealRooted.AffineDerivative
 
 set_option linter.style.longLine false
 set_option linter.unnecessarySimpa false
@@ -332,7 +333,9 @@ private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive_local :
           | nil =>
               simp at hbEq
               rcases hbEq with ⟨rfl, rfl⟩
-              have hint' : b ≤ s ∧ s ≤ r₁ ∧ ListInterlaces ss' (r₁ :: r₂ :: rest) := by
+              have hint' :
+                  b ≤ s ∧ s ≤ r₁ ∧
+                    ListInterlaces ss' (r₁ :: r₂ :: rest) := by
                 simpa [ListInterlaces] using hint
               obtain ⟨hb_r₁, hs_r₁, htail⟩ := hint'
               have hrs_tail : (r₁ :: r₂ :: rest).Pairwise (· ≤ ·) :=
@@ -341,12 +344,15 @@ private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive_local :
               have hs_factor_nonneg : 0 ≤ (r₁ - s) * (r₂ - s) := by
                 nlinarith
               have htail_nonpos :
-                  (ss'.map (fun x => r₁ - x)).prod * (ss'.map (fun x => r₂ - x)).prod ≤ 0 := by
+                  (ss'.map (fun x => r₁ - x)).prod *
+                    (ss'.map (fun x => r₂ - x)).prod ≤ 0 := by
                 exact listInterlaces_prod_mul_prod_nonpos_at_heads_local htail
               calc
-                ((s :: ss').map (fun x => r₁ - x)).prod * ((s :: ss').map (fun x => r₂ - x)).prod
+                ((s :: ss').map (fun x => r₁ - x)).prod *
+                    ((s :: ss').map (fun x => r₂ - x)).prod
                     = ((r₁ - s) * (r₂ - s)) *
-                        ((ss'.map (fun x => r₁ - x)).prod * (ss'.map (fun x => r₂ - x)).prod) := by
+                        ((ss'.map (fun x => r₁ - x)).prod *
+                          (ss'.map (fun x => r₂ - x)).prod) := by
                           simp [mul_assoc, mul_left_comm]
                 _ ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hs_factor_nonneg htail_nonpos
           | cons a' pre' =>
@@ -356,7 +362,8 @@ private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive_local :
                   ListInterlaces (s :: ss') (b :: a' :: pre' ++ r₁ :: r₂ :: rest) := by
                 simpa [htailEq] using hint
               have hint' :
-                  b ≤ s ∧ s ≤ a' ∧ ListInterlaces ss' (a' :: pre' ++ r₁ :: r₂ :: rest) := by
+                  b ≤ s ∧ s ≤ a' ∧
+                    ListInterlaces ss' (a' :: pre' ++ r₁ :: r₂ :: rest) := by
                 simpa [ListInterlaces] using hint_rs
               obtain ⟨_, hs_le_a', hint_tail⟩ := hint'
               have hrs_tail : (a' :: pre' ++ r₁ :: r₂ :: rest).Pairwise (· ≤ ·) := by
@@ -380,9 +387,11 @@ private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive_local :
                   (ss := ss') (rs := a' :: pre' ++ r₁ :: r₂ :: rest)
                   (pre := a' :: pre') (rest := rest) hrs_tail hint_tail (by simp)
               calc
-                ((s :: ss').map (fun x => r₁ - x)).prod * ((s :: ss').map (fun x => r₂ - x)).prod
+                ((s :: ss').map (fun x => r₁ - x)).prod *
+                    ((s :: ss').map (fun x => r₂ - x)).prod
                     = ((r₁ - s) * (r₂ - s)) *
-                        ((ss'.map (fun x => r₁ - x)).prod * (ss'.map (fun x => r₂ - x)).prod) := by
+                        ((ss'.map (fun x => r₁ - x)).prod *
+                          (ss'.map (fun x => r₂ - x)).prod) := by
                           simp [mul_assoc, mul_left_comm]
                 _ ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hs_factor_nonneg htail_nonpos
 
@@ -397,7 +406,8 @@ private lemma eval_mul_eval_nonpos_of_interlacing_consecutive_local {g : ℝ[X]}
     (hint : ListInterlaces ss rs)
     (hEq : rs = pre ++ r₁ :: r₂ :: rest) :
     g.eval r₁ * g.eval r₂ ≤ 0 := by
-  rw [eval_eq_leadingCoeff_mul_prod_sub hg r₁, eval_eq_leadingCoeff_mul_prod_sub hg r₂, ← hss_eq]
+  rw [eval_eq_leadingCoeff_mul_prod_sub hg r₁,
+    eval_eq_leadingCoeff_mul_prod_sub hg r₂, ← hss_eq]
   have hprod_nonpos :
       (ss.map (fun x => r₁ - x)).prod * (ss.map (fun x => r₂ - x)).prod ≤ 0 :=
     listInterlaces_prod_mul_prod_nonpos_of_consecutive_local hrs_sorted hint hEq
@@ -891,7 +901,7 @@ private lemma hasSimpleRoots_combo_of_wronskian_eval_ne_zero
       exact (mul_eq_zero.mp hmul).resolve_left hβ
   exact hW_ne r hW_zero
 
-private lemma eq_zero_or_isRealRooted_and_hasSimpleRoots_of_allComboRealRooted_of_wronskian_eval_ne_zero
+private lemma combo_eq_zero_or_realRooted_simple_of_wronskian_eval_ne_zero
     {f g : ℝ[X]}
     (hall : AllComboRealRooted f g)
     (hW_ne : ∀ x : ℝ, (wronskian f g).eval x ≠ 0) :
@@ -2094,7 +2104,9 @@ private theorem isRealRooted_of_interlaces_eval_mul_neg_same_any_lc
   subst hrs0_eq_rs
   have hint : ListInterlaces ss rs := by
     simpa using hint0
-  have hgf' : Interlaces g f := ⟨hf, hg, hgdeg, rs, ss, hrs_sorted, hss_sorted, hrs_eq, hss_eq, hint⟩
+  have hgf' : Interlaces g f :=
+    ⟨hf, hg, hgdeg, rs, ss, hrs_sorted, hss_sorted, hrs_eq,
+      hss_eq, hint⟩
   have hF_natdeg_pos : 0 < F.natDegree := by
     rw [hdeg]
     omega
@@ -2997,7 +3009,7 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
           false_of_allComboRealRooted_of_double_root_and_eval_ne
             hpq_all_k hpk_mult hqk_eval_ne
       exact
-        eq_zero_or_isRealRooted_and_hasSimpleRoots_of_allComboRealRooted_of_wronskian_eval_ne_zero
+        combo_eq_zero_or_realRooted_simple_of_wronskian_eval_ne_zero
           hall hW_ne
   have htransport :
       (f.natDegree + 1 = g.natDegree → Prec f g) ∧

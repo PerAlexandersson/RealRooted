@@ -1,14 +1,16 @@
-/-
-# Real-Rootedness and Interlacing of Polynomials
-
-Foundational definitions for real-rootedness, interlacing,
-and Sturm sequences of univariate polynomials over ℝ.
--/
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Algebra.Polynomial.Div
 import Mathlib.Algebra.Polynomial.Degree.Lemmas
 import Mathlib.Analysis.SpecificLimits.Basic
 import Mathlib.Data.List.Sort
+
+/-!
+# Real-rootedness and interlacing of polynomials
+
+This file contains the foundational definitions for real-rootedness,
+interlacing, proper position, and Sturm sequences of univariate real
+polynomials.
+-/
 
 open Polynomial
 
