@@ -73,7 +73,9 @@ lemma X_dvd_liuWangRec_threshold (d : Nat) :
 
 lemma X_dvd_liuWangRec_of_ge_threshold (d n : Nat) (hn : d + 2 ≤ n) :
     X ∣ liuWangRec d n := by
-  induction' n using Nat.strong_induction_on with n ihn
+  revert hn
+  refine Nat.strong_induction_on n ?_
+  intro n ihn hn
   rcases Nat.eq_or_lt_of_le hn with rfl | hlt
   · exact X_dvd_liuWangRec_threshold d
   have htwo : 2 ≤ n := by omega
@@ -86,8 +88,7 @@ lemma X_dvd_liuWangRec_of_ge_threshold (d n : Nat) (hn : d + 2 ≤ n) :
     refine ⟨(C (((d : ℝ) - m) / (m + 1 : ℝ)) + C (2 : ℝ) * X) * q, by
       rw [hq]
       ring⟩
-  · simpa [mul_assoc] using
-      dvd_mul_of_dvd_left (dvd_refl X) ((1 - X : ℝ[X]) * liuWangRec d m)
+  · simp [mul_assoc]
 
 lemma eval_zero_liuWangRec_of_ge_threshold (d n : Nat) (hn : d + 2 ≤ n) :
     (liuWangRec d n).eval 0 = 0 := by
@@ -107,7 +108,7 @@ lemma zero_isRoot_liuWangRec_of_ge_threshold (d n : Nat) (hn : d + 2 ≤ n) :
 
 lemma coeff_liuWangPoly (d n m : Nat) :
     coeff (liuWangPoly d n) m =
-      if hm : m < n then
+      if m < n then
         ((Nat.choose n m * Nat.choose d (n - m - 1) : ℕ) : ℝ)
       else 0 := by
   rw [liuWangPoly, finset_sum_coeff]
@@ -116,7 +117,7 @@ lemma coeff_liuWangPoly (d n m : Nat) :
     · simp [hm]
     · intro k hk hkm
       simp [Polynomial.coeff_monomial, hkm]
-  · simp [hm]
+  · simp only [hm, ↓reduceIte]
     refine Finset.sum_eq_zero ?_
     intro k hk
     have hkm : k ≠ m := by
@@ -128,11 +129,11 @@ lemma coeff_liuWangPoly (d n m : Nat) :
 lemma coeff_liuWangPoly_of_lt (d n m : Nat) (hm : m < n) :
     coeff (liuWangPoly d n) m =
       ((Nat.choose n m * Nat.choose d (n - m - 1) : ℕ) : ℝ) := by
-  simpa [coeff_liuWangPoly, hm] using coeff_liuWangPoly d n m
+  simp [coeff_liuWangPoly, hm]
 
 lemma coeff_liuWangPoly_of_ge (d n m : Nat) (hm : n ≤ m) :
     coeff (liuWangPoly d n) m = 0 := by
-  simpa [coeff_liuWangPoly, hm, not_lt_of_ge hm] using coeff_liuWangPoly d n m
+  simp [coeff_liuWangPoly, not_lt_of_ge hm]
 
 lemma liuWangPoly_two (d : Nat) :
     liuWangPoly d 2 = C (d : ℝ) + C (2 : ℝ) * X := by
@@ -149,11 +150,11 @@ lemma liuWangPoly_two (d : Nat) :
       | succ m =>
           have hm : 2 ≤ m + 2 := by omega
           rw [coeff_liuWangPoly_of_ge _ _ _ hm]
-          simp [coeff_add, coeff_X]
+          simp [coeff_add]
 
 lemma coeff_zero_liuWangPoly (d n : Nat) :
     coeff (liuWangPoly d n) 0 =
-      if hn : 0 < n then ((Nat.choose d (n - 1) : ℕ) : ℝ) else 0 := by
+      if 0 < n then ((Nat.choose d (n - 1) : ℕ) : ℝ) else 0 := by
   by_cases hn : 0 < n
   · have hlt : 0 < n := hn
     simp [coeff_liuWangPoly_of_lt _ _ _ hlt, hn]
@@ -184,7 +185,7 @@ lemma natDegree_liuWangPoly (d n : Nat) (hn : 0 < n) :
 lemma liuWangPoly_ne_zero (d n : Nat) (hn : 0 < n) :
     liuWangPoly d n ≠ 0 := by
   intro hzero
-  have hcoeff : coeff (liuWangPoly d n) (n - 1) = 0 := by simpa [hzero]
+  have hcoeff : coeff (liuWangPoly d n) (n - 1) = 0 := by simp [hzero]
   rw [coeff_top_liuWangPoly d n hn] at hcoeff
   have : n = 0 := by exact_mod_cast hcoeff
   exact hn.ne' this
@@ -203,7 +204,7 @@ lemma liuWangPoly_nonnegCoeffs (d n : Nat) :
         0 ≤ ((Nat.choose n m * Nat.choose d (n - m - 1) : ℕ) : ℝ) := by
         exact_mod_cast Nat.zero_le (Nat.choose n m * Nat.choose d (n - m - 1))
     simpa [coeff_liuWangPoly, hm] using h
-  · simpa [coeff_liuWangPoly, hm]
+  · simp [coeff_liuWangPoly, hm]
 
 private lemma coeff_zero_liuWangPoly_succ_succ (d n : Nat) :
     coeff (liuWangPoly d (n + 2)) 0 =
@@ -211,7 +212,7 @@ private lemma coeff_zero_liuWangPoly_succ_succ (d n : Nat) :
   rw [coeff_zero_liuWangPoly, coeff_zero_liuWangPoly]
   have hn1 : 0 < n + 1 := by positivity
   have hn2 : 0 < n + 2 := by positivity
-  simp [hn1, hn2]
+  rw [if_pos hn2, if_pos hn1]
   by_cases hnd : n ≤ d
   · have hchoose :
         ((Nat.choose d (n + 1) : ℕ) : ℝ) * (n + 1 : ℝ) =
@@ -232,7 +233,7 @@ lemma coeff_zero_liuWangPoly_pos (d n : Nat) (hn : 1 ≤ n) (hnd : n ≤ d + 1) 
     0 < coeff (liuWangPoly d n) 0 := by
   rw [coeff_zero_liuWangPoly]
   have hn' : 0 < n := by omega
-  simp [hn']
+  rw [if_pos hn']
   have hchoose_pos : 0 < Nat.choose d (n - 1) := by
     apply Nat.choose_pos
     omega
@@ -268,9 +269,7 @@ lemma isRealRooted_liuWangPoly_two (d : Nat) :
 
 private lemma natDegree_liuWangRec_affine (d n : Nat) :
     (C (((d : ℝ) - n) / (n + 1 : ℝ)) + C (2 : ℝ) * X).natDegree = 1 := by
-  simpa [add_comm] using
-    (Polynomial.natDegree_linear (a := (2 : ℝ))
-      (b := (((d : ℝ) - n) / (n + 1 : ℝ))) (by norm_num))
+  simp
 
 private lemma leadingCoeff_liuWangRec_affine (d n : Nat) :
     (C (((d : ℝ) - n) / (n + 1 : ℝ)) + C (2 : ℝ) * X).leadingCoeff = 2 := by
@@ -361,7 +360,9 @@ private lemma natDegree_leadingCoeff_liuWangRec_step (d n : Nat) (hn : 1 ≤ n)
 private lemma natDegree_leadingCoeff_liuWangRec (d n : Nat) (hn : 1 ≤ n) :
     (liuWangRec d n).natDegree = n - 1 ∧
       (liuWangRec d n).leadingCoeff = n := by
-    induction' n using Nat.strong_induction_on with n ih
+    revert hn
+    refine Nat.strong_induction_on n ?_
+    intro n ih hn
     cases n with
     | zero =>
         omega
@@ -418,7 +419,7 @@ lemma natDegree_liuWangRec (d n : Nat) (hn : 1 ≤ n) :
 lemma liuWangRec_ne_zero (d n : Nat) (hn : 1 ≤ n) :
     liuWangRec d n ≠ 0 := by
   intro hzero
-  have hcoeff : (liuWangRec d n).leadingCoeff = 0 := by simpa [hzero]
+  have hcoeff : (liuWangRec d n).leadingCoeff = 0 := by simp [hzero]
   rw [(natDegree_leadingCoeff_liuWangRec d n hn).2] at hcoeff
   have : n = 0 := by exact_mod_cast hcoeff
   exact (Nat.ne_of_gt hn) this
@@ -435,7 +436,9 @@ lemma liuWangRec_posLeadingCoeff (d n : Nat) (hn : 1 ≤ n) :
 
 lemma eval_zero_liuWangRec_pos (d n : Nat) (hn : 1 ≤ n) (hnd : n ≤ d + 1) :
     0 < (liuWangRec d n).eval 0 := by
-  induction' n using Nat.strong_induction_on with n ih
+  revert hn hnd
+  refine Nat.strong_induction_on n ?_
+  intro n ih hn hnd
   cases n with
   | zero =>
       omega
@@ -473,7 +476,7 @@ private lemma interlaces_one_linear {p : ℝ[X]} (hp_deg : p.natDegree = 1) :
   have hp_deg' : p.degree = 1 := by
     rw [degree_eq_natDegree hp_rr.1, hp_deg]
     norm_num
-  refine ⟨hp_rr, h1_rr, by simpa [Polynomial.natDegree_one, hp_deg], ?_⟩
+  refine ⟨hp_rr, h1_rr, by simp [Polynomial.natDegree_one, hp_deg], ?_⟩
   refine ⟨[-(p.coeff 1)⁻¹ * p.coeff 0], [], by simp, by simp, ?_,
     by simp, by simp [ListInterlaces]⟩
   simpa [hp_deg'] using (Polynomial.roots_degree_eq_one (p := p) hp_deg').symm
@@ -549,7 +552,7 @@ private lemma roots_neg_of_interlaces_of_eval_zero_pos {g f : ℝ[X]}
     rw [h_eval, ← List.dropLast_append_getLast hrs_ne, List.map_append,
       List.prod_append] at hf_zero'
     simp only [List.map] at hf_zero'
-    simp only [List.prod_singleton, mul_assoc] at hf_zero'
+    simp only [List.prod_singleton] at hf_zero'
     have hmid :
         0 < (rs.dropLast.map (0 - ·)).prod * (0 - rs.getLast hrs_ne) := by
       exact (mul_pos_iff_of_pos_left hf_pos).mp hf_zero'
@@ -692,7 +695,7 @@ private lemma roots_nonpos_of_interlaces_of_zero_root_of_roots_neg {g f : ℝ[X]
     exact (mem_roots hf.1).mpr hzero
   have hrs_ne : rs ≠ [] := by
     intro hrs_nil
-    simpa [hrs_nil] using hzero_mem
+    simp [hrs_nil] at hzero_mem
   have hss_neg : ∀ s ∈ ss, s < 0 := by
     intro s hs
     have hs_root : g.IsRoot s := by
@@ -716,7 +719,7 @@ private lemma roots_nonpos_of_interlaces_of_zero_root_of_roots_neg {g f : ℝ[X]
     rw [hrs_eq]
     exact (mem_roots hf.1).mpr hr
   by_cases hr_last : r = rs.getLast hrs_ne
-  · simpa [hr_last, hlast_zero]
+  · simp [hr_last, hlast_zero]
   · have hr_drop : r ∈ rs.dropLast := by
       exact List.mem_dropLast_of_mem_of_ne_getLast hr_mem hr_last
     exact le_of_lt (hrs_drop_neg r hr_drop)
@@ -886,8 +889,7 @@ lemma interlaces_liuWangRec_threshold_succ (d : Nat) :
 
 private lemma prec_of_interlaces_X_mul_of_roots_nonpos {f g : ℝ[X]}
     (h : Interlaces g (X * f))
-    (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
-    (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
+    (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
     Prec f g := by
   obtain ⟨hXf, hg, _, rs_xf, ss_g, hrs_xf, hss_g, hrs_xf_eq, hss_g_eq, hint⟩ := h
   have hf : IsRealRooted f := isRealRooted_of_X_mul hXf
@@ -964,11 +966,7 @@ private lemma prec_threshold_divX (d : Nat) :
         _ = r * q.eval r := by rw [eval_mul, eval_X]
         _ = 0 := by rw [hq0, mul_zero]
     exact roots_nonpos_liuWangRec_threshold d r hr_root_p
-  have hg_nonpos : ∀ r ∈ (liuWangRec d (d + 1)).roots, r ≤ 0 := by
-    intro r hr
-    exact le_of_lt (roots_neg_liuWangRec_of_lt_threshold d (d + 1) (by omega) (by omega) r
-      ((mem_roots (liuWangRec_ne_zero d (d + 1) (by omega))).mp hr))
-  simpa [q] using prec_of_interlaces_X_mul_of_roots_nonpos hInter hq_nonpos hg_nonpos
+  simpa [q] using prec_of_interlaces_X_mul_of_roots_nonpos hInter hq_nonpos
 
 private lemma roots_neg_threshold_divX (d : Nat) :
     ∀ r, (((liuWangRec d (d + 2)) /ₘ X)).IsRoot r → r < 0 := by
