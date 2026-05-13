@@ -71,6 +71,19 @@ def veroneseLinearFactorMatrixDesc (r : ℕ) (a : ℝ) : List (List ℝ[X]) :=
       veroneseLinearFactorRowDesc r a i := by
   simp [veroneseLinearFactorMatrixDesc]
 
+theorem get_veroneseLinearFactorRowDesc
+    {r : ℕ} (a : ℝ) (i j : Fin r) :
+    (veroneseLinearFactorRowDesc r a i).get
+        ⟨j.1, by simp [length_veroneseLinearFactorRowDesc]⟩ =
+      C a * (if j = i then (1 : ℝ[X]) else 0) +
+        (if hi : i.1 + 1 < r then
+          (if j = ⟨i.1 + 1, hi⟩ then (1 : ℝ[X]) else 0)
+        else
+          (if j = ⟨0, by omega⟩ then X else 0)) := by
+  by_cases hi : i.1 + 1 < r
+  · simp [veroneseLinearFactorRowDesc, hi, oneSupportSeq]
+  · simp [veroneseLinearFactorRowDesc, hi, oneSupportSeq]
+
 /-! ## Small list-sum helpers -/
 
 lemma zipWith_mul_sum_comm (xs ys : List ℝ[X]) :
@@ -106,6 +119,102 @@ lemma zipWith_mul_oneSupportSeq_left_sum_eq_get
     (((oneSupportSeq fs.length i).zipWith (· * ·) fs).sum) = fs.get i := by
   rw [zipWith_mul_sum_comm]
   exact zipWith_mul_oneSupportSeq_sum_eq_get fs i
+
+/-! ## Elementary affine interlacing helpers -/
+
+lemma prec0_C_C (a b : ℝ) : Prec0 (C a : ℝ[X]) (C b : ℝ[X]) := by
+  by_cases ha : a = 0
+  · left
+    simp [ha]
+  by_cases hb : b = 0
+  · right
+    left
+    simp [hb]
+  right
+  right
+  have hCa : (C a : ℝ[X]) ≠ 0 := C_ne_zero.mpr ha
+  have hCb : (C b : ℝ[X]) ≠ 0 := C_ne_zero.mpr hb
+  have hrr_a : IsRealRooted (C a : ℝ[X]) := isRealRooted_of_deg_zero hCa (by simp)
+  have hrr_b : IsRealRooted (C b : ℝ[X]) := isRealRooted_of_deg_zero hCb (by simp)
+  refine ⟨hrr_a, hrr_b, [], [], by simp, by simp, ?_, ?_, ?_⟩
+  · exact (Polynomial.roots_C a).symm
+  · exact (Polynomial.roots_C b).symm
+  · exact Or.inr ⟨by simp, by simp [ListAlternates]⟩
+
+lemma prec0_C_affine_linear {c u v : ℝ} (hu : 0 < u) :
+    Prec0 (C c : ℝ[X]) (C u * X + C v) := by
+  by_cases hc : c = 0
+  · left
+    simp [hc]
+  right
+  right
+  have hC : (C c : ℝ[X]) ≠ 0 := C_ne_zero.mpr hc
+  have hlin_rr : IsRealRooted (C u * X + C v : ℝ[X]) :=
+    isRealRooted_affine_factor (s := u) (t := v) hu
+  have hlin_nat : (C u * X + C v : ℝ[X]).natDegree = 1 := by
+    simpa [add_comm] using Polynomial.natDegree_linear (a := u) (b := v) hu.ne'
+  have hlin_deg : (C u * X + C v : ℝ[X]).degree = 1 := by
+    rw [degree_eq_natDegree hlin_rr.1, hlin_nat]
+    norm_num
+  have hC_rr : IsRealRooted (C c : ℝ[X]) := isRealRooted_of_deg_zero hC (by simp)
+  refine ⟨hC_rr, hlin_rr, [], [-(u⁻¹ * v)], by simp, by simp, ?_, ?_, ?_⟩
+  · exact (Polynomial.roots_C c).symm
+  · simpa [hlin_deg] using
+      (Polynomial.roots_degree_eq_one (p := (C u * X + C v : ℝ[X])) hlin_deg).symm
+  · exact Or.inl ⟨by simp, by simp [ListInterlaces]⟩
+
+lemma affineLinear_root_le_of_cross {u v U V : ℝ}
+    (hu : 0 < u) (hU : 0 < U) (hcross : u * V ≤ U * v) :
+    -(u⁻¹ * v) ≤ -(U⁻¹ * V) := by
+  rw [neg_le_neg_iff]
+  rw [← div_eq_inv_mul, ← div_eq_inv_mul]
+  rw [div_le_div_iff₀ hU hu]
+  simpa [mul_comm, mul_left_comm, mul_assoc] using hcross
+
+lemma prec_affine_linear_affine_linear_of_cross
+    {u v U V : ℝ} (hu : 0 < u) (hU : 0 < U)
+    (hcross : u * V ≤ U * v) :
+    Prec (C u * X + C v) (C U * X + C V) := by
+  have hroot : -(u⁻¹ * v) ≤ -(U⁻¹ * V) :=
+    affineLinear_root_le_of_cross hu hU hcross
+  have hp_nat : (C u * X + C v : ℝ[X]).natDegree = 1 := by
+    simpa [add_comm] using Polynomial.natDegree_linear (a := u) (b := v) hu.ne'
+  have hq_nat : (C U * X + C V : ℝ[X]).natDegree = 1 := by
+    simpa [add_comm] using Polynomial.natDegree_linear (a := U) (b := V) hU.ne'
+  have hp_rr : IsRealRooted (C u * X + C v : ℝ[X]) :=
+    isRealRooted_affine_factor (s := u) (t := v) hu
+  have hq_rr : IsRealRooted (C U * X + C V : ℝ[X]) :=
+    isRealRooted_affine_factor (s := U) (t := V) hU
+  have hp_deg : (C u * X + C v : ℝ[X]).degree = 1 := by
+    rw [degree_eq_natDegree hp_rr.1, hp_nat]
+    norm_num
+  have hq_deg : (C U * X + C V : ℝ[X]).degree = 1 := by
+    rw [degree_eq_natDegree hq_rr.1, hq_nat]
+    norm_num
+  refine ⟨hp_rr, hq_rr, [-(u⁻¹ * v)], [-(U⁻¹ * V)], by simp, by simp, ?_, ?_, ?_⟩
+  · simpa [hp_deg] using
+      (Polynomial.roots_degree_eq_one (p := (C u * X + C v : ℝ[X])) hp_deg).symm
+  · simpa [hq_deg] using
+      (Polynomial.roots_degree_eq_one (p := (C U * X + C V : ℝ[X])) hq_deg).symm
+  · exact Or.inr ⟨by simp, by simpa [ListAlternates, ListInterlaces] using hroot⟩
+
+lemma prec0_affine_linear_affine_linear_of_cross
+    {u v U V : ℝ} (hu : 0 < u) (hU : 0 < U)
+    (hcross : u * V ≤ U * v) :
+    Prec0 (C u * X + C v) (C U * X + C V) :=
+  (prec_affine_linear_affine_linear_of_cross hu hU hcross).toPrec0
+
+lemma prec0_C_mul_affine_linear_X_mul_affine_linear
+    {a u v : ℝ} (hu : 0 < u) (hv : 0 ≤ v) :
+    Prec0 (C a * (C u * X + C v)) (X * (C u * X + C v)) := by
+  by_cases ha0 : a = 0
+  · left
+    simp [ha0]
+  have hf : IsRealRooted (C u * X + C v : ℝ[X]) :=
+    isRealRooted_affine_factor (s := u) (t := v) hu
+  have hfnn : HasNonnegCoeffs (C u * X + C v : ℝ[X]) :=
+    hasNonnegCoeffs_affine_linear hu.le hv
+  exact (prec_C_mul_left (prec_self_mul_X_of_nonneg hf hfnn) ha0).toPrec0
 
 /-! ## Matrix action formula -/
 
