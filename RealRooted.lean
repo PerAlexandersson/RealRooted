@@ -22,9 +22,37 @@ import RealRooted.AissenSchoenbergWhitney
 import RealRooted.VeroneseSection
 import RealRooted.HurwitzMatrix
 
--- Additional modules not yet imported into the main umbrella library
+-- Additional modules
+import RealRooted.AffineFamily
+import RealRooted.AllCombo
+import RealRooted.CombinatorialExamples.ColoredSetPartitions
+import RealRooted.CombinatorialExamples.Common
+import RealRooted.CombinatorialExamples.Eulerian
+import RealRooted.CombinatorialExamples.Motzkin
+import RealRooted.CombinatorialExamples.Narayana
+import RealRooted.CombinatorialExamples.OneDescentGamma
+import RealRooted.CombinatorialExamples.Simsun
+import RealRooted.CombinatorialExamples.SingletonFreeSetPartitions
+import RealRooted.CombinatorialExamples.StirlingPermutations
+import RealRooted.CombinatorialExamples.SturmDerangementsExc
+import RealRooted.CombinatorialExamples.Touchard
+import RealRooted.CombinatorialExamples.TypeBEulerian
+import RealRooted.CommonInterleaverSeq
 import RealRooted.ConvexCombination
-import RealRooted.StaircaseSum
-import RealRooted.RowThreshold
+import RealRooted.Derivative
 import RealRooted.FolkloreLemma
 import RealRooted.InterlacingSequence
+import RealRooted.InterlacingSequenceBasic
+import RealRooted.LiuWangBenchmark
+import RealRooted.MatrixInterlacing
+import RealRooted.ObreschkoffContinuity
+import RealRooted.ObreschkoffConverse
+import RealRooted.PosCombo
+import RealRooted.ProductFamily
+import RealRooted.RootContinuity
+import RealRooted.RowThreshold
+import RealRooted.StaircaseSum
+import RealRooted.WagnerLeftSum
+import RealRooted.WagnerRightSum
+import RealRooted.WagnerX
+import RealRooted.WeightedSum
