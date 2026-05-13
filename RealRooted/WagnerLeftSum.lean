@@ -13,7 +13,6 @@ noncomputable section
 
 namespace RealRooted
 
-set_option linter.flexible false in
 section
 
 /-- Core of Wagner (2): given h's roots (ss) interlacing into both f's roots (rs_f)
@@ -79,18 +78,28 @@ private lemma wagner2_roots_exist (f g : ℝ[X])
     · have hsign := opposite_sign_at_interlacing_roots hf hg hf_pos hg_pos hab
         has hsb hat htb hrfrg hrf_root hrg_root hf_dich hg_dich hcount_eq
       obtain ⟨u, huf, hug, hu_root⟩ := sum_has_root_between hrfrg hrf_root hrg_root hsign
-      exact ⟨[u], rfl, trivial, fun v hv => by simp at hv; rw [hv]; exact hu_root,
+      exact ⟨[u], rfl, trivial, fun v hv => by
+        simp only [List.mem_cons, List.not_mem_nil, or_false] at hv; rw [hv]; exact hu_root,
         List.pairwise_singleton _ _,
-        fun v hv => by simp at hv; rw [hv]; exact le_trans (min_le_left rf rg) huf⟩
+        fun v hv => by
+          simp only [List.mem_cons, List.not_mem_nil, or_false] at hv
+          rw [hv]
+          exact le_trans (min_le_left rf rg) huf⟩
     · have hrgrf := le_of_lt hrfrg
       have hsign := opposite_sign_at_interlacing_roots hg hf hg_pos hf_pos hab
         hat htb has hsb hrgrf hrg_root hrf_root hg_dich hf_dich hcount_eq.symm
       obtain ⟨u, hug, huf, hu_root⟩ := sum_has_root_between hrgrf hrg_root hrf_root
         (by linarith [mul_comm (Polynomial.eval rf g) (Polynomial.eval rg f)])
       have hu_root' : (f + g).IsRoot u := by rwa [add_comm]
-      exact ⟨[u], rfl, trivial, fun v hv => by simp at hv; rw [hv]; exact hu_root',
+      exact ⟨[u], rfl, trivial, fun v hv => by
+        simp only [List.mem_cons, List.not_mem_nil, or_false] at hv
+        rw [hv]
+        exact hu_root',
         List.pairwise_singleton _ _,
-        fun v hv => by simp at hv; rw [hv]; exact le_trans (min_le_right rf rg) hug⟩
+        fun v hv => by
+          simp only [List.mem_cons, List.not_mem_nil, or_false] at hv
+          rw [hv]
+          exact le_trans (min_le_right rf rg) hug⟩
   | rf, rg, rf2 :: rest_f, rg2 :: rest_g, s :: rest_ss,
     hlen_f, hlen_g, hint_f, hint_g, hrs_f_eq, hrs_g_eq,
     hcons_f, hcons_g, hcons_f2, hcons_g2 => by
@@ -627,7 +636,9 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
         have hfg_eq : (↑[u] : Multiset ℝ) = (f + g).roots := by
           apply Multiset.eq_of_le_of_card_le
           · rw [Multiset.le_iff_subset (by simp)]
-            intro w hw; simp at hw; rwa [hw]
+            intro w hw
+            simp only [Multiset.coe_singleton, Multiset.mem_singleton] at hw
+            rwa [hw]
           · simp [hcard1]
         exact ⟨hh, hfg_rr, [], [u], List.Pairwise.nil, List.pairwise_singleton _ _,
           hss_h_eq, hfg_eq, Or.inl ⟨by simp, trivial⟩⟩
@@ -697,9 +708,17 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
           wagner2_roots_exist f g hf hg hf_pos hg_pos hcop ↑[rf] 0
             rf2 r₁_g rest_f' rest_g rest_ss hlen_f' hlen_g'
             hint_f_tail hint_g_tail hrs_f_eq' (by simp [hrs_g_eq])
-            (by intro r hr; simp at hr; subst hr; exact le_trans hrfs₁ hs₁rf2)
+            (by
+               intro r hr
+               simp only [Multiset.coe_singleton, Multiset.mem_singleton] at hr
+               subst hr
+               exact le_trans hrfs₁ hs₁rf2)
             (by simp)
-            (by intro r hr; simp at hr; subst hr; exact le_trans hrfs₁ hs₁_r₁g)
+            (by
+               intro r hr
+               simp only [Multiset.coe_singleton, Multiset.mem_singleton] at hr
+               subst hr
+               exact le_trans hrfs₁ hs₁_r₁g)
             (by simp)
         -- u₀ < s₁ (coprimality)
         have hu₀_lt_s₁ : u₀ < s₁ := by
@@ -774,7 +793,9 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
         have hfg_eq : (↑[u] : Multiset ℝ) = (f + g).roots := by
           apply Multiset.eq_of_le_of_card_le
           · rw [Multiset.le_iff_subset (by simp)]
-            intro w hw; simp at hw; rwa [hw]
+            intro w hw
+            simp only [Multiset.coe_singleton, Multiset.mem_singleton] at hw
+            rwa [hw]
           · simp [hcard1]
         exact ⟨hh, hfg_rr, [], [u], List.Pairwise.nil, List.pairwise_singleton _ _,
           hss_h_eq, hfg_eq, Or.inl ⟨by simp, trivial⟩⟩
@@ -843,9 +864,17 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
             r₁_f rg2 rest_f rest_g' rest_ss hlen_f' hlen_g'
             hint_f_tail hint_g_tail (by simp [hrs_f_eq]) hrs_g_eq'
             (by simp)
-            (by intro r hr; simp at hr; subst hr; exact le_trans hrgs₁ hs₁rg2)
+            (by
+               intro r hr
+               simp only [Multiset.coe_singleton, Multiset.mem_singleton] at hr
+               subst hr
+               exact le_trans hrgs₁ hs₁rg2)
             (by simp)
-            (by intro r hr; simp at hr; subst hr; exact le_trans hrgs₁ hs₁_r₁f)
+            (by
+               intro r hr
+               simp only [Multiset.coe_singleton, Multiset.mem_singleton] at hr
+               subst hr
+               exact le_trans hrgs₁ hs₁_r₁f)
         -- u₀ < s₁ (coprimality)
         have hu₀_lt_s₁ : u₀ < s₁ := by
           rcases lt_or_eq_of_le (le_trans hu₀_le hrgs₁) with h | h

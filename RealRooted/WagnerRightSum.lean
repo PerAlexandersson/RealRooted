@@ -13,7 +13,6 @@ noncomputable section
 
 namespace RealRooted
 
-set_option linter.flexible false in
 section
 
 /-! ## Wagner (1) & (2): Common interlacing under addition
@@ -149,7 +148,7 @@ private lemma listInterlaces_prod_mul_prod_nonneg_at_mem :
       ∀ r, r ∈ rs →
         0 ≤ (ss_f.map (r - ·)).prod * (ss_g.map (r - ·)).prod
   | [], [], [a], hlen, hint_f, hint_g, r, hr => by
-      simp at hr
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hr
       subst hr
       simp
   | sf :: rest_f, sg :: rest_g, a :: b :: rest_rs, hlen, hint_f, hint_g, r, hr => by
@@ -1280,7 +1279,11 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
         wagner1_roots_exist f g hf hg hf_pos hg_pos hcop 0 ↑[s₁_g]
           ss_f rest_g (r₁ :: rest_rs) hlen_f hlen_g_rest hint_f hint_g_tail
           (by simp [hss_f_eq]) hss_g_eq' (by simp)
-          (by intro r hr; simp at hr; subst hr; exact hs₁_le)
+          (by
+             intro r hr
+             simp only [Multiset.coe_singleton, Multiset.mem_singleton] at hr
+             subst hr
+             exact hs₁_le)
       -- u₀ < r₁ (IsCoprime prevents u₀ = s₁_g = r₁)
       have hu₀_lt_r₁ : u₀ < r₁ := by
         rcases lt_or_eq_of_le (le_trans hu₀_le hs₁_le) with h | h
@@ -1290,7 +1293,8 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
           have hgr₁ : Polynomial.eval r₁ g = 0 := by rw [← hs_eq]; exact hs₁_root
           have hfr₁ : Polynomial.eval r₁ f = 0 := by
             have := (show (f + g).IsRoot r₁ from h ▸ hu₀_root)
-            simp [IsRoot.def, eval_add, hgr₁] at this; exact this
+            simp only [IsRoot.def, eval_add, hgr₁, add_zero] at this
+            exact this
           obtain ⟨a, b, hab⟩ := hcop
           have := congr_arg (Polynomial.eval r₁) hab
           simp [eval_add, eval_mul, eval_one, hfr₁, hgr₁] at this
@@ -1365,7 +1369,10 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
         wagner1_roots_exist f g hf hg hf_pos hg_pos hcop ↑[s₁_f] 0
           rest_f ss_g (r₁ :: rest_rs) hlen_f_rest hlen_g hint_f_tail hint_g
           hss_f_eq' (by simp [hss_g_eq])
-          (by intro r hr; simp at hr; subst hr; exact hs₁_le) (by simp)
+          (by
+             intro r hr
+             simp only [Multiset.coe_singleton, Multiset.mem_singleton] at hr
+             subst hr; exact hs₁_le) (by simp)
       have hu₀_lt_r₁ : u₀ < r₁ := by
         rcases lt_or_eq_of_le (le_trans hu₀_le hs₁_le) with h | h
         · exact h
@@ -1374,7 +1381,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
           have hfr₁ : Polynomial.eval r₁ f = 0 := by rw [← hs_eq]; exact hs₁_root
           have hgr₁ : Polynomial.eval r₁ g = 0 := by
             have := (show (f + g).IsRoot r₁ from h ▸ hu₀_root)
-            simp [IsRoot.def, eval_add, hfr₁] at this; exact this
+            simp only [IsRoot.def, eval_add, hfr₁, zero_add] at this; exact this
           obtain ⟨a, b, hab⟩ := hcop
           have := congr_arg (Polynomial.eval r₁) hab
           simp [eval_add, eval_mul, eval_one, hfr₁, hgr₁] at this
@@ -1483,7 +1490,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
               have hgr₁ : Polynomial.eval r₁ g = 0 := by rw [← this]; exact hs₁g_root
               have hfr₁ : Polynomial.eval r₁ f = 0 := by
                 have := (show (f + g).IsRoot r₁ from h ▸ hc_root)
-                simp [IsRoot.def, eval_add, hgr₁] at this; exact this
+                simp only [IsRoot.def, eval_add, hgr₁, add_zero] at this; exact this
               obtain ⟨a, b, hab⟩ := hcop
               have := congr_arg (Polynomial.eval r₁) hab
               simp [eval_add, eval_mul, eval_one, hfr₁, hgr₁] at this
@@ -1491,8 +1498,16 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
             wagner1_roots_exist f g hf hg hf_pos hg_pos hcop ↑[s₁_f] ↑[s₁_g]
               rest_f rest_g (r₁ :: rest_rs) hlen_f_rest hlen_g_rest
               hint_f_tail hint_g_tail hss_f_eq' hss_g_eq'
-              (by intro r hr; simp at hr; subst hr; exact hs₁f_le)
-              (by intro r hr; simp at hr; subst hr; exact hs₁g_le)
+              (by
+                 intro r hr
+                 simp only [Multiset.coe_singleton, Multiset.mem_singleton] at hr
+                 subst hr
+                 exact hs₁f_le)
+              (by
+                 intro r hr
+                 simp only [Multiset.coe_singleton, Multiset.mem_singleton] at hr
+                 subst hr
+                 exact hs₁g_le)
           have hpw : (c :: us).Pairwise (· < ·) :=
             List.pairwise_cons.mpr ⟨fun w hw => lt_of_lt_of_le hc_lt_r₁
               (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
@@ -1533,7 +1548,8 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
               have hfr₁ : Polynomial.eval r₁ f = 0 := by rw [← this]; exact hs₁f_root
               have hgr₁ : Polynomial.eval r₁ g = 0 := by
                 have := (show (f + g).IsRoot r₁ from h ▸ hc_root)
-                simp [IsRoot.def, eval_add, hfr₁] at this; exact this
+                simp only [IsRoot.def, eval_add, hfr₁, zero_add] at this
+                exact this
               obtain ⟨a, b, hab⟩ := hcop
               have := congr_arg (Polynomial.eval r₁) hab
               simp [eval_add, eval_mul, eval_one, hfr₁, hgr₁] at this
@@ -1541,8 +1557,16 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
             wagner1_roots_exist f g hf hg hf_pos hg_pos hcop ↑[s₁_f] ↑[s₁_g]
               rest_f rest_g (r₁ :: rest_rs) hlen_f_rest hlen_g_rest
               hint_f_tail hint_g_tail hss_f_eq' hss_g_eq'
-              (by intro r hr; simp at hr; subst hr; exact hs₁f_le)
-              (by intro r hr; simp at hr; subst hr; exact hs₁g_le)
+              (by
+                intro r hr
+                simp only [Multiset.coe_singleton, Multiset.mem_singleton] at hr
+                subst hr
+                exact hs₁f_le)
+              (by
+                intro r hr
+                simp only [Multiset.coe_singleton, Multiset.mem_singleton] at hr
+                subst hr
+                exact hs₁g_le)
           have hpw : (c :: us).Pairwise (· < ·) :=
             List.pairwise_cons.mpr ⟨fun w hw => lt_of_lt_of_le hc_lt_r₁
               (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
@@ -1709,7 +1733,11 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
         wagner1_roots_exist_of_no_common_right f g hf hg hf_pos hg_pos 0 ↑[s₁_g]
           ss_f rest_g (r₁ :: rest_rs) hlen_f hlen_g_rest hint_f hint_g_tail
           (by simp [hss_f_eq]) hss_g_eq' (by simp)
-          (by intro r hr; simp at hr; subst hr; exact hs₁_le)
+          (by
+             intro r hr
+             simp only [Multiset.coe_singleton, Multiset.mem_singleton] at hr
+             subst hr
+             exact hs₁_le)
           hno_rs_f
       have hu₀_lt_r₁ : u₀ < r₁ := by
         rcases lt_or_eq_of_le (le_trans hu₀_le hs₁_le) with h | h
@@ -1814,7 +1842,11 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
         wagner1_roots_exist_of_no_common_right f g hf hg hf_pos hg_pos ↑[s₁_f] 0
           rest_f ss_g (r₁ :: rest_rs) hlen_f_rest hlen_g hint_f_tail hint_g
           hss_f_eq' (by simp [hss_g_eq])
-          (by intro r hr; simp at hr; subst hr; exact hs₁_le) (by simp)
+          (by
+             intro r hr
+             simp only [Multiset.coe_singleton, Multiset.mem_singleton] at hr
+             subst hr
+             exact hs₁_le) (by simp)
           hno_rs_f
       have hu₀_lt_r₁ : u₀ < r₁ := by
         rcases lt_or_eq_of_le (le_trans hu₀_le hs₁_le) with h | h
@@ -1994,8 +2026,16 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
             wagner1_roots_exist_of_no_common_right f g hf hg hf_pos hg_pos ↑[s₁_f] ↑[s₁_g]
               rest_f rest_g (r₁ :: rest_rs) hlen_f_rest hlen_g_rest
               hint_f_tail hint_g_tail hss_f_eq' hss_g_eq'
-              (by intro r hr; simp at hr; subst hr; exact hs₁f_le)
-              (by intro r hr; simp at hr; subst hr; exact hs₁g_le)
+              (by
+                 intro r hr
+                 simp only [Multiset.coe_singleton, Multiset.mem_singleton] at hr
+                 subst hr
+                 exact hs₁f_le)
+              (by
+                 intro r hr
+                 simp only [Multiset.coe_singleton, Multiset.mem_singleton] at hr
+                 subst hr
+                 exact hs₁g_le)
               hno_rs_f
           have hpw : (c :: us).Pairwise (· < ·) :=
             List.pairwise_cons.mpr ⟨fun w hw =>
@@ -2069,8 +2109,16 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
             wagner1_roots_exist_of_no_common_right f g hf hg hf_pos hg_pos ↑[s₁_f] ↑[s₁_g]
               rest_f rest_g (r₁ :: rest_rs) hlen_f_rest hlen_g_rest
               hint_f_tail hint_g_tail hss_f_eq' hss_g_eq'
-              (by intro r hr; simp at hr; subst hr; exact hs₁f_le)
-              (by intro r hr; simp at hr; subst hr; exact hs₁g_le)
+              (by
+                 intro r hr
+                 simp only [Multiset.coe_singleton, Multiset.mem_singleton] at hr
+                 subst hr
+                 exact hs₁f_le)
+              (by
+                 intro r hr
+                 simp only [Multiset.coe_singleton, Multiset.mem_singleton] at hr
+                 subst hr
+                 exact hs₁g_le)
               hno_rs_f
           have hpw : (c :: us).Pairwise (· < ·) :=
             List.pairwise_cons.mpr ⟨fun w hw =>
@@ -2289,7 +2337,7 @@ theorem prec_add_of_prec_right_mixed_of_natDegree {f g h : ℝ[X]}
           (by simp [hss_f_eq]) hss_g_eq' (by simp)
           (by
             intro r hr
-            simp at hr
+            simp only [Multiset.coe_singleton, Multiset.mem_singleton] at hr
             subst hr
             exact hs₁_le)
       have hu₀_lt_r₁ : u₀ < r₁ := by
@@ -2302,7 +2350,7 @@ theorem prec_add_of_prec_right_mixed_of_natDegree {f g h : ℝ[X]}
             exact hs₁_root
           have hfr₁ : Polynomial.eval r₁ f = 0 := by
             have : (f + g).IsRoot r₁ := h ▸ hu₀_root
-            simp [IsRoot.def, eval_add, hgr₁] at this
+            simp only [IsRoot.def, eval_add, hgr₁, add_zero] at this
             exact this
           obtain ⟨a, b, hab⟩ := hcop
           have := congr_arg (Polynomial.eval r₁) hab
@@ -2427,7 +2475,7 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right {f g h : �
           (by simp [hss_f_eq]) hss_g_eq' (by simp)
           (by
             intro r hr
-            simp at hr
+            simp only [Multiset.coe_singleton, Multiset.mem_singleton] at hr
             subst hr
             exact hs₁_le)
           hno_rs_f

@@ -46,7 +46,6 @@ noncomputable section
 
 namespace RealRooted
 
-set_option linter.flexible false in
 section
 
 /-- Core interval-root construction: if a polynomial has opposite-or-zero signs at
@@ -599,7 +598,7 @@ private lemma exists_mem_between_of_listInterlaces_consecutive :
             | nil => simp at hEq
             | cons b rs' =>
                 have hbEq : b :: rs' = (a :: pre) ++ r₁ :: r₂ :: rest := hEq
-                simp at hbEq
+                simp only [List.cons_append, List.cons.injEq] at hbEq
                 rcases hbEq with ⟨rfl, htailEq⟩
                 have htail : ListInterlaces ss' (pre ++ r₁ :: r₂ :: rest) := by
                   have hint' := hint
@@ -772,7 +771,7 @@ private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive :
           have hbEq : b :: rs' = (a :: pre) ++ r₁ :: r₂ :: rest := hEq
           cases pre with
           | nil =>
-              simp at hbEq
+              simp only [List.cons_append, List.nil_append, List.cons.injEq] at hbEq
               rcases hbEq with ⟨rfl, rfl⟩
               have hint' : b ≤ s ∧ s ≤ r₁ ∧
                 ListInterlaces ss' (r₁ :: r₂ :: rest) := by
@@ -795,7 +794,7 @@ private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive :
                           simp [mul_assoc, mul_left_comm]
                 _ ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hs_factor_nonneg htail_nonpos
           | cons a' pre' =>
-              simp at hbEq
+              simp only [List.cons_append, List.cons.injEq] at hbEq
               rcases hbEq with ⟨rfl, htailEq⟩
               have hint_rs :
                   ListInterlaces (s :: ss') (b :: a' :: pre' ++ r₁ :: r₂ :: rest) := by
@@ -1258,7 +1257,7 @@ private lemma countP_le_of_eq_max_isRoot
       · have hmono : ts.countP (· ≤ r) ≤ ts.countP (· ≤ r₂) := by
           exact List.countP_mono_left <| by
             intro x _ hx
-            simp at hx ⊢
+            simp only [decide_eq_true_eq] at hx ⊢
             exact le_trans hx (le_of_lt hr_lt_r₂)
         exact le_trans hmono hsmall
       · have heq : ts.countP (· ≤ r₂) = pre.length + off + 2 := by
@@ -1273,7 +1272,7 @@ private lemma countP_le_of_eq_max_isRoot
         have hlt : ts.countP (· ≤ r) < ts.countP (· ≤ r₂) := by
           apply countP_lt_countP_of_exists
           · intro x hx
-            simp at hx ⊢
+            simp only [decide_eq_true_eq] at hx ⊢
             exact le_trans hx (le_of_lt hr_lt_r₂)
           · exact hr₂_mem
           · simp [not_le_of_gt hr_lt_r₂]
@@ -1302,7 +1301,7 @@ private lemma countP_lt_of_eq_max_isRoot
   · have hmono : ts.countP (· < r) ≤ ts.countP (· ≤ r) := by
       exact List.countP_mono_left <| by
         intro x _ hx
-        simp at hx ⊢
+        simp only [decide_eq_true_eq] at hx ⊢
         exact le_of_lt hx
     exact le_trans hmono hsmall
   · have heq : ts.countP (· ≤ r) = pre.length + off + 1 := by
@@ -1315,7 +1314,7 @@ private lemma countP_lt_of_eq_max_isRoot
     have hlt : ts.countP (· < r) < ts.countP (· ≤ r) := by
       apply countP_lt_countP_of_exists
       · intro x hx
-        simp at hx ⊢
+        simp only [decide_eq_true_eq] at hx ⊢
         exact le_of_lt hx
       · exact hr_mem
       · simp
@@ -1493,7 +1492,7 @@ private lemma listInterlaces_with_outer :
       have hR_tail : ∀ r ∈ r₂ :: rs, r ≤ uR := by
         intro r hr
         exact hR r (by simp [hr])
-      simp [ListInterlaces, hL r₁ (by simp), hr₁s]
+      simp only [List.cons_append, ListInterlaces, hL r₁ (by simp), hr₁s, true_and]
       exact listInterlaces_with_outer hrs_tail_ne hrs_tail htail hL_tail hR_tail
 
 /-- Assemble a differ-by-1 `Prec` statement from strict sign changes on a sorted
@@ -2760,7 +2759,7 @@ theorem prec_of_interlaces_evalCoeff_nonpos_same_of_no_common
           have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) := by
             exact List.countP_mono_left <| by
               intro x _ hx
-              simp at hx ⊢
+              simp only [decide_eq_true_eq] at hx ⊢
               exact le_trans hx (le_of_lt hr₁_lt_r₂)
           have hcount_r₁ : ts.countP (· ≤ r₁) = pre.length + 1 := by
             omega
@@ -2809,7 +2808,7 @@ theorem prec_of_interlaces_evalCoeff_nonpos_same_of_no_common
           have hcount_strict : ts.countP (· ≤ r₁) < ts.countP (· ≤ r₂) := by
             apply countP_lt_countP_of_exists
             · intro x hx
-              simp at hx ⊢
+              simp only [decide_eq_true_eq] at hx ⊢
               exact le_trans hx (le_of_lt hr₁_lt_r₂)
             · exact hr₂_mem
             · simp [not_le_of_gt hr₁_lt_r₂]
@@ -2948,7 +2947,7 @@ theorem prec_of_interlaces_evalCoeff_nonpos_succ_of_no_common
         have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) := by
           exact List.countP_mono_left <| by
             intro y _ hy
-            simp at hy ⊢
+            simp only [decide_eq_true_eq] at hy ⊢
             exact le_trans hy (le_of_lt hr₁_lt_r₂)
         have hcount_r₁ : ts.countP (· ≤ r₁) = 1 := by
           omega
@@ -2997,7 +2996,7 @@ theorem prec_of_interlaces_evalCoeff_nonpos_succ_of_no_common
         have hcount_strict : ts.countP (· ≤ r₁) < ts.countP (· ≤ r₂) := by
           apply countP_lt_countP_of_exists
           · intro y hy
-            simp at hy ⊢
+            simp only [decide_eq_true_eq] at hy ⊢
             exact le_trans hy (le_of_lt hr₁_lt_r₂)
           · exact hr₂_mem
           · simp [not_le_of_gt hr₁_lt_r₂]
@@ -3015,7 +3014,7 @@ theorem prec_of_interlaces_evalCoeff_nonpos_succ_of_no_common
         have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) := by
           exact List.countP_mono_left <| by
             intro y _ hy
-            simp at hy ⊢
+            simp only [decide_eq_true_eq] at hy ⊢
             exact le_trans hy (le_of_lt hr₁_lt_r₂)
         have hbad : ts.countP (· ≤ r₂) ≤ pre.length + 2 := by
           simpa [hlen_pre] using (Nat.not_lt.mp hgood)
@@ -3066,7 +3065,7 @@ theorem prec_of_interlaces_evalCoeff_nonpos_succ_of_no_common
         have hcount_strict : ts.countP (· ≤ r₁) < ts.countP (· ≤ r₂) := by
           apply countP_lt_countP_of_exists
           · intro y hy
-            simp at hy ⊢
+            simp only [decide_eq_true_eq] at hy ⊢
             exact le_trans hy (le_of_lt hr₁_lt_r₂)
           · exact hr₂_mem
           · simp [not_le_of_gt hr₁_lt_r₂]
@@ -3192,7 +3191,7 @@ theorem prec_of_interlaces_eval_mul_nonpos_same_of_no_common
           have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) := by
             exact List.countP_mono_left <| by
               intro x _ hx
-              simp at hx ⊢
+              simp only [decide_eq_true_eq] at hx ⊢
               exact le_trans hx (le_of_lt hr₁_lt_r₂)
           have hcount_r₁ : ts.countP (· ≤ r₁) = pre.length + 1 := by
             omega
@@ -3238,7 +3237,7 @@ theorem prec_of_interlaces_eval_mul_nonpos_same_of_no_common
           have hcount_strict : ts.countP (· ≤ r₁) < ts.countP (· ≤ r₂) := by
             apply countP_lt_countP_of_exists
             · intro x hx
-              simp at hx ⊢
+              simp only [decide_eq_true_eq] at hx ⊢
               exact le_trans hx (le_of_lt hr₁_lt_r₂)
             · exact hr₂_mem
             · simp [not_le_of_gt hr₁_lt_r₂]
@@ -3364,7 +3363,7 @@ theorem prec_of_interlaces_eval_mul_nonpos_succ_of_no_common
         have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) := by
           exact List.countP_mono_left <| by
             intro y _ hy
-            simp at hy ⊢
+            simp only [decide_eq_true_eq] at hy ⊢
             exact le_trans hy (le_of_lt hr₁_lt_r₂)
         have hcount_r₁ : ts.countP (· ≤ r₁) = 1 := by
           omega
@@ -3410,7 +3409,7 @@ theorem prec_of_interlaces_eval_mul_nonpos_succ_of_no_common
         have hcount_strict : ts.countP (· ≤ r₁) < ts.countP (· ≤ r₂) := by
           apply countP_lt_countP_of_exists
           · intro y hy
-            simp at hy ⊢
+            simp only [decide_eq_true_eq] at hy ⊢
             exact le_trans hy (le_of_lt hr₁_lt_r₂)
           · exact hr₂_mem
           · simp [not_le_of_gt hr₁_lt_r₂]
@@ -3428,7 +3427,7 @@ theorem prec_of_interlaces_eval_mul_nonpos_succ_of_no_common
         have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) := by
           exact List.countP_mono_left <| by
             intro y _ hy
-            simp at hy ⊢
+            simp only [decide_eq_true_eq] at hy ⊢
             exact le_trans hy (le_of_lt hr₁_lt_r₂)
         have hbad : ts.countP (· ≤ r₂) ≤ pre.length + 2 := by
           simpa [hlen_pre] using (Nat.not_lt.mp hgood)
@@ -3476,7 +3475,7 @@ theorem prec_of_interlaces_eval_mul_nonpos_succ_of_no_common
         have hcount_strict : ts.countP (· ≤ r₁) < ts.countP (· ≤ r₂) := by
           apply countP_lt_countP_of_exists
           · intro y hy
-            simp at hy ⊢
+            simp only [decide_eq_true_eq] at hy ⊢
             exact le_trans hy (le_of_lt hr₁_lt_r₂)
           · exact hr₂_mem
           · simp [not_le_of_gt hr₁_lt_r₂]

@@ -24,7 +24,6 @@ noncomputable section
 
 namespace RealRooted
 
-set_option linter.flexible false in
 section
 
 /-! ## List-level lemmas for interlacing -/
@@ -203,7 +202,7 @@ private lemma listInterlaces_of_orderedInsert (a : ℝ) :
       · by_cases has : a ≤ s
         · rw [List.orderedInsert_cons_of_le (r := (· ≤ ·)) (l := ss) has,
             List.orderedInsert_cons_of_le (r := (· ≤ ·)) (l := r₂ :: rs) har₁] at hint
-          simp [ListInterlaces] at hint
+          simp only [ListInterlaces, Std.le_refl, true_and] at hint
           exact ⟨hint.2.1, hint.2.2.1, hint.2.2.2⟩
         · rw [List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := ss) has,
             List.orderedInsert_cons_of_le (r := (· ≤ ·)) (l := r₂ :: rs) har₁] at hint
@@ -213,7 +212,7 @@ private lemma listInterlaces_of_orderedInsert (a : ℝ) :
           · rw [List.orderedInsert_cons_of_le (r := (· ≤ ·)) (l := ss) has,
               List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := r₂ :: rs) har₁,
               List.orderedInsert_cons_of_le (r := (· ≤ ·)) (l := rs) har₂] at hint
-            simp [ListInterlaces] at hint
+            simp only [ListInterlaces, Std.le_refl, true_and] at hint
             exact ⟨le_trans hint.1 hint.2.1, hint.2.2.1, hint.2.2.2⟩
           · rw [List.orderedInsert_cons_of_le (r := (· ≤ ·)) (l := ss) has,
               List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := r₂ :: rs) har₁,
@@ -223,7 +222,8 @@ private lemma listInterlaces_of_orderedInsert (a : ℝ) :
           · rw [List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := ss) has,
               List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := r₂ :: rs) har₁,
               List.orderedInsert_cons_of_le (r := (· ≤ ·)) (l := rs) har₂] at hint
-            simp [ListInterlaces] at hint
+            simp only [ListInterlaces, reduceCtorEq, imp_self, implies_true, List.cons.injEq,
+              and_false] at hint
             have hlen' : ss.length + 1 = (r₂ :: rs).length := by
               simp only [List.length_cons] at hlen ⊢
               omega
@@ -240,7 +240,7 @@ private lemma listInterlaces_of_orderedInsert (a : ℝ) :
             have hlen' : ss.length + 1 = (r₂ :: rs).length := by
               simp only [List.length_cons] at hlen ⊢
               omega
-            simp [ListInterlaces] at hint
+            simp only [ListInterlaces, reduceCtorEq, imp_self, implies_true] at hint
             have htail :
                 ListInterlaces (ss.orderedInsert (· ≤ ·) a)
                   ((r₂ :: rs).orderedInsert (· ≤ ·) a) := by
@@ -274,7 +274,7 @@ private lemma listAlternates_of_orderedInsert (a : ℝ) :
       · by_cases har : a ≤ r
         · rw [List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := ss) has,
             List.orderedInsert_cons_of_le (r := (· ≤ ·)) (l := rs) har] at hint
-          simp [ListAlternates] at hint
+          simp only [ListAlternates] at hint
           have hlen' : ss.length + 1 = (r :: rs).length := by
             simpa [List.length_cons] using congrArg Nat.succ hlen
           have htail :
@@ -285,7 +285,7 @@ private lemma listAlternates_of_orderedInsert (a : ℝ) :
             listInterlaces_of_orderedInsert a hlen' hss.of_cons hrs htail⟩
         · rw [List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := ss) has,
             List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := rs) har] at hint
-          simp [ListAlternates] at hint
+          simp only [ListAlternates] at hint
           have hlen' : ss.length + 1 = (r :: rs).length := by
             simp only [List.length_cons] at hlen ⊢
             omega
@@ -362,7 +362,7 @@ lemma listInterlaces_append_zero_both :
   | _ :: _, [_], hlen, _, _ => by simp at hlen
   | s :: ss', r₁ :: r₂ :: rs', hlen, hint, hrs => by
       obtain ⟨hr₁s, hsr₂, htail⟩ := hint
-      simp [ListInterlaces, hr₁s, hsr₂]
+      simp only [List.cons_append, ListInterlaces, hr₁s, hsr₂, true_and]
       have hrs_tail : ∀ r ∈ r₂ :: rs', r ≤ 0 := fun r hr => hrs r (.tail _ hr)
       have hlen_tail : ss'.length + 1 = (r₂ :: rs').length := by
         simp only [List.length_cons] at hlen ⊢
@@ -380,7 +380,7 @@ lemma listAlternates_append_zero_both :
   | [], [], _, _, _ => by simp [ListAlternates, ListInterlaces]
   | s :: ss', r :: rs', hlen, halt, hrs => by
       obtain ⟨hsr, htail⟩ := halt
-      simp [ListAlternates, hsr]
+      simp only [ListAlternates, List.cons_append, hsr, true_and]
       have hlen_tail : ss'.length + 1 = (r :: rs').length := by
         simp only [List.length_cons] at hlen ⊢
         omega

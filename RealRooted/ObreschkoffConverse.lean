@@ -17,7 +17,6 @@ noncomputable section
 
 namespace RealRooted
 
-set_option linter.flexible false in
 section
 
 private def wronskian (f g : ℝ[X]) : ℝ[X] :=
@@ -200,7 +199,7 @@ private lemma listInterlaces_left_le_of_right_le_local {ss rs : List ℝ} {c : �
           | cons r₂ rs'' =>
               rcases hint with ⟨hr₁s, hs_r₂, htail⟩
               intro t ht
-              simp at ht
+              simp only [List.mem_cons] at ht
               rcases ht with rfl | ht
               · exact le_trans hs_r₂ (hrs r₂ (by simp))
               · exact ih htail (fun r hr => hrs r (by simp [hr])) t ht
@@ -220,7 +219,7 @@ private lemma listAlternates_left_le_of_right_le_local {ss rs : List ℝ} {c : �
       | cons r rs' =>
           rcases halt with ⟨hsr, htail⟩
           intro t ht
-          simp at ht
+          simp only [List.mem_cons] at ht
           rcases ht with rfl | ht
           · exact le_trans hsr (hrs r (by simp))
           · exact listInterlaces_left_le_of_right_le_local htail
@@ -330,7 +329,7 @@ private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive_local :
           have hbEq : b :: rs' = (a :: pre) ++ r₁ :: r₂ :: rest := hEq
           cases pre with
           | nil =>
-              simp at hbEq
+              simp only [List.cons_append, List.nil_append, List.cons.injEq] at hbEq
               rcases hbEq with ⟨rfl, rfl⟩
               have hint' :
                   b ≤ s ∧ s ≤ r₁ ∧
@@ -355,7 +354,7 @@ private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive_local :
                           simp [mul_assoc, mul_left_comm]
                 _ ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hs_factor_nonneg htail_nonpos
           | cons a' pre' =>
-              simp at hbEq
+              simp only [List.cons_append, List.cons.injEq] at hbEq
               rcases hbEq with ⟨rfl, htailEq⟩
               have hint_rs :
                   ListInterlaces (s :: ss') (b :: a' :: pre' ++ r₁ :: r₂ :: rest) := by
@@ -805,7 +804,7 @@ private lemma wronskian_eval_ne_zero_of_eq_zero_or_simple_combo
       have hscalar : f = C (f.eval x / g.eval x) * g := by
         ext n
         have hcoeff := congrArg (fun q : ℝ[X] => q.coeff n) hEq1
-        simp [coeff_C_mul]
+        simp only [coeff_C_mul]
         apply (mul_left_cancel₀ hgx0)
         calc
           g.eval x * f.coeff n = f.eval x * g.coeff n := by
@@ -1196,7 +1195,7 @@ private lemma no_nontrivial_linear_relation_of_no_common_root
   have hscalar : f = C ((-β) / α) * g := by
     ext n
     have hcoeff := congrArg (fun q : ℝ[X] => q.coeff n) hEq
-    simp [coeff_C_mul] at hcoeff ⊢
+    simp only [coeff_C_mul, map_neg, neg_mul, coeff_neg] at hcoeff ⊢
     apply (mul_left_cancel₀ hα)
     calc
       α * f.coeff n = (-β) * g.coeff n := by simpa using hcoeff
@@ -2935,7 +2934,7 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
                   have hscalar : f = C (f.eval x / g.eval x) * g := by
                     ext n
                     have hcoeff := congrArg (fun q : ℝ[X] => q.coeff n) hEq
-                    simp [coeff_C_mul] at hcoeff ⊢
+                    simp only [coeff_C_mul] at hcoeff ⊢
                     apply (mul_left_cancel₀ hgx_ne)
                     calc
                       g.eval x * f.coeff n = f.eval x * g.coeff n := by

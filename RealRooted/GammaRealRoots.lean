@@ -20,7 +20,6 @@ noncomputable section
 
 namespace RealRooted
 
-set_option linter.flexible false in
 section
 
 /-- The basis term `x^i (1+x)^(d-2i)` in the gamma expansion of a symmetric
@@ -270,7 +269,7 @@ lemma gammaTransform_pad_two {d : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d /
   have htop : γ.coeff (d / 2 + 1) = 0 := by
     exact Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hγ (Nat.lt_succ_self _))
   rw [htop]
-  simp
+  simp only [map_zero, zero_mul, add_zero]
   calc
     ∑ i ∈ Finset.range (d / 2 + 1), C (γ.coeff i) * gammaBasisTerm (d + 2) i
       = ∑ i ∈ Finset.range (d / 2 + 1),
