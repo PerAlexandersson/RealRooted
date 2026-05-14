@@ -34,7 +34,6 @@ The intended first milestones are:
 set_option linter.style.cdot false
 set_option linter.unnecessarySimpa false
 set_option linter.unusedSimpArgs false
-set_option linter.unusedVariables false
 
 open Polynomial Finset
 
@@ -3020,7 +3019,7 @@ private lemma interlaces_of_prec_sameDegree_rightmost_factor
 
 private theorem prec_b_component_of_prec_left_top_of_sameDegree
     {d : ℕ} {p a b : ℝ[X]}
-    (hd : p.natDegree ≤ d)
+    (_hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
     (ha_nonneg : HasNonnegCoeffs a)
     (hb_nonneg : HasNonnegCoeffs b)
@@ -3623,8 +3622,8 @@ theorem hasNonnegCoeffs_pair_of_isRdDecomposition {d : ℕ} {p a b : ℝ[X]}
   exact ⟨hp_nonneg, hR_nonneg⟩
 
 theorem hasNonnegCoeffs_transformed_components_of_isIdDecomposition {d : ℕ} {p a b : ℝ[X]}
-    (hd : p.natDegree ≤ d)
-    (hid : IsIdDecomposition d p a b)
+    (_hd : p.natDegree ≤ d)
+    (_hid : IsIdDecomposition d p a b)
     (ha_nonneg : HasNonnegCoeffs a)
     (hb_nonneg : HasNonnegCoeffs b) :
     HasNonnegCoeffs (fPolynomial d a) ∧ HasNonnegCoeffs (fPolynomial (d - 1) b) := by

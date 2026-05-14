@@ -16,7 +16,6 @@ set_option linter.unnecessarySimpa false
 set_option linter.unreachableTactic false
 set_option linter.unusedSimpArgs false
 set_option linter.unusedTactic false
-set_option linter.unusedVariables false
 
 open Polynomial
 
@@ -734,8 +733,8 @@ private lemma listAlternates_get_upper
 
 private lemma mem_rootSlotInterval_reverse_of_listInterlaces_interior
     {ss rs : List ℝ}
-    (hss : ss.Pairwise (· ≤ ·))
-    (hrs : rs.Pairwise (· ≤ ·))
+    (_hss : ss.Pairwise (· ≤ ·))
+    (_hrs : rs.Pairwise (· ≤ ·))
     (hlen : ss.length + 1 = rs.length)
     (hint : ListInterlaces ss rs)
     {j : Fin rs.length}
@@ -827,8 +826,8 @@ private lemma mem_rootSlotInterval_reverse_of_listInterlaces_zero
 
 private lemma mem_rootSlotInterval_reverse_of_listInterlaces_last
     {ss rs : List ℝ}
-    (hss : ss.Pairwise (· ≤ ·))
-    (hrs : rs.Pairwise (· ≤ ·))
+    (_hss : ss.Pairwise (· ≤ ·))
+    (_hrs : rs.Pairwise (· ≤ ·))
     (hlen : ss.length + 1 = rs.length)
     (hint : ListInterlaces ss rs)
     (hss_ne : ss ≠ []) :
@@ -900,8 +899,8 @@ private lemma mem_rootSlotInterval_reverse_of_listInterlaces
 
 private lemma mem_rootSlotInterval_reverse_of_listAlternates_interior
     {ss rs : List ℝ}
-    (hss : ss.Pairwise (· ≤ ·))
-    (hrs : rs.Pairwise (· ≤ ·))
+    (_hss : ss.Pairwise (· ≤ ·))
+    (_hrs : rs.Pairwise (· ≤ ·))
     (hlen : ss.length = rs.length)
     (halt : ListAlternates ss rs)
     {j : Fin rs.length}
@@ -1044,7 +1043,7 @@ private lemma mem_rootSlotInterval_of_prec_witness
 private lemma mem_rootSlotInterval_of_prec
     {f g : ℝ[X]} (hfg : Prec f g) (j : Fin g.natDegree) :
     (rootSeqDesc g).get ⟨j.1, by
-      rcases hfg with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
+      rcases hfg with ⟨_, hg, ss, rs, _, _, _, hrs_eq, _⟩
       simpa [rootSeqDesc, hg.2, hrs_eq] using j.2⟩ ∈ rootSlotInterval (rootSeqDesc f)
       ⟨j.1, by
         rcases hfg with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
@@ -1431,7 +1430,7 @@ finite Helly property for intervals on `ℝ`. -/
 theorem hasCommonInterleaverSeq_of_pairwiseHasCommonInterleaver
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, IsRealRooted f)
-    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (_hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseHasCommonInterleaver fs) :
     HasCommonInterleaverSeq fs := by
   intro j
@@ -2044,7 +2043,7 @@ in the `j`th admissible slot of the left polynomial. -/
 theorem mem_rootSlotInterval_of_prec_desc
     {f g : ℝ[X]} (hfg : Prec f g) (j : Fin g.natDegree) :
     (rootSeqDesc g).get ⟨j.1, by
-      rcases hfg with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
+      rcases hfg with ⟨_, hg, ss, rs, _, _, _, hrs_eq, _⟩
       simpa [rootSeqDesc, hg.2, hrs_eq] using j.2⟩ ∈ rootSlotInterval (rootSeqDesc f)
       ⟨j.1, by
         rcases hfg with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
