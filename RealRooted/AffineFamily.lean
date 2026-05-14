@@ -16,7 +16,6 @@ import Mathlib.Algebra.QuadraticDiscriminant
 import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
 
 set_option linter.unnecessarySimpa false
-set_option linter.unusedSimpArgs false
 
 open Polynomial
 
@@ -470,7 +469,7 @@ private theorem isRealRooted_of_add_C_mul_right_family_of_natDegree_lt
             (g + C (μ * g.leadingCoeff / f.leadingCoeff) * f) =
           g₀ + C μ * f₀ := by
       ext n
-      simp [g₀, f₀, mul_assoc]
+      simp [g₀, f₀]
       field_simp [hf_lc_ne, hg_lc_ne]
     simpa [hEq] using hscaled
   have hg₀_rr : IsRealRooted g₀ := by
@@ -864,7 +863,7 @@ private lemma iterate_derivative_C_mul (a : ℝ) :
       (derivative^[n]) (C a * p) = C a * (derivative^[n]) p
   | 0, p => by simp
   | n + 1, p => by
-      simp [Function.iterate_succ_apply', derivative_C_mul, iterate_derivative_C_mul]
+      simp [Function.iterate_succ_apply', iterate_derivative_C_mul]
 
 private lemma hasNonnegCoeffs_iterate_derivative {p : ℝ[X]} :
     ∀ n : ℕ, HasNonnegCoeffs p → HasNonnegCoeffs ((derivative^[n]) p)
@@ -1713,7 +1712,7 @@ private theorem not_degree_gap_ge_two_of_add_left_family_nonneg
         _ = C μ * (derivative^[n]) f + (derivative^[n]) g := by
               rw [iterate_derivative_C_mul]
         _ = gN + C μ * fN := by
-              simp [fN, gN, add_comm, add_left_comm, add_assoc]
+              simp [fN, gN, add_comm]
     rw [hEq] at hder
     exact hder
   have hfN_deg : fN.natDegree = 0 := by
@@ -2220,7 +2219,7 @@ private lemma prec_degree_zero_degree_zero
   refine ⟨hf, hg, [], [], by simp, by simp, ?_, ?_, ?_⟩
   · simpa [hroots_f]
   · simpa [hroots_g]
-  · exact Or.inr ⟨by simp, by simp [ListAlternates, ListInterlaces]⟩
+  · exact Or.inr ⟨by simp, by simp [ListAlternates]⟩
 
 /-- Constant-vs-linear endpoint case for the affine converse. -/
 private lemma prec_degree_zero_right_of_degree_one_local
@@ -2388,14 +2387,14 @@ private lemma eval_nonpos_at_root_of_degree_one_of_affine_family
             conv_lhs => rw [hf_eq]
       _ = C a * (X + C r) + C (f.coeff 0) := by simp
       _ = C a * X + C (a * r + f.coeff 0) := by
-            simp [mul_add, add_assoc, add_left_comm, add_comm, C_mul]
+            simp [mul_add, add_left_comm, add_comm, C_mul]
       _ = C a * X := by simp [hroot_rel]
   have hlin_comp :
       (C s * X + C t).comp (X + C r) = C s * X + C (s * r + t) := by
     calc
       (C s * X + C t).comp (X + C r) = C s * (X + C r) + C t := by simp
       _ = C s * X + C (s * r + t) := by
-            simp [mul_add, add_assoc, add_left_comm, add_comm, C_mul]
+            simp [mul_add, add_assoc, C_mul]
   have hsrt : s * r + t = 1 := by
     dsimp [t]
     ring
@@ -2615,7 +2614,7 @@ private lemma isRealRooted_X_mul_of_affine_family
               rw [add_mul, mul_add]
         _ = (X * f + C μ * f) + C μ * g := by
               rw [hmain]
-              simp [mul_assoc]
+              simp
         _ = X * f + C μ * (f + g) := by
               rw [mul_add]
               ac_rfl
@@ -2865,7 +2864,7 @@ private lemma prec_of_prec_shifted_pair_sameDegree
   have hEq_sub : C a * (g + X * f) - X * (C a * f) = C a * g := by
     have hCXf : C a * (X * f) = X * (C a * f) := by
       ext n
-      cases n <;> simp [coeff_X_mul, C_mul, mul_assoc]
+      cases n <;> simp [coeff_X_mul]
     calc
       C a * (g + X * f) - X * (C a * f)
           = C a * g + C a * (X * f) - X * (C a * f) := by
@@ -2997,7 +2996,7 @@ private theorem isRealRooted_of_sub_C_mul_right_family_of_natDegree_lt
             (g - C (μ * g.leadingCoeff / f.leadingCoeff) * f) =
           g₀ - C μ * f₀ := by
       ext n
-      simp [g₀, f₀, mul_assoc, mul_sub]
+      simp [g₀, f₀, mul_sub]
       field_simp [hf_lc_ne, hg_lc_ne]
     simpa [hEq] using hscaled
   -- Now: g₀ - C μ * f₀ is real-rooted, monic, same degree as g₀, and
@@ -3241,7 +3240,7 @@ private lemma false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
   have hineq : A < β * B := by
     dsimp [A, B, pp, qx, qp, qq]
     have hineq' := hineq_raw
-    simp [hp_eval0, hp_der_eval0, derivative_add, derivative_C_mul] at hineq'
+    simp [hp_eval0, hp_der_eval0, derivative_add] at hineq'
     nlinarith [hβ_pos]
   have hβB_lt : β * |B| < A := by
     calc
@@ -4262,12 +4261,12 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
     have hmid_right :
         g.eval m * (X * f).eval m < 0 := by
       rw [eval_mul]
-      simp only [eval_X, one_mul]
+      simp only [eval_X]
       nlinarith
     have hden_nonzero_Xf : ∀ x ∈ Set.Icc r₁ r₂, (X * f).eval x ≠ 0 := by
       intro x hx hxf
       rw [eval_mul] at hxf
-      simp only [eval_X, one_mul] at hxf
+      simp only [eval_X] at hxf
       have hx_neg : x < 0 := by
         rcases eq_or_lt_of_le hx.1 with rfl | hx₁
         · exact hr₁_neg
@@ -4323,7 +4322,7 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
                 simpa [Polynomial.IsRoot.def] using hfx
               exact hexists x hx₁ hx₂ hroot
             rw [eval_mul]
-            simp only [eval_X, one_mul]
+            simp only [eval_X]
             exact mul_ne_zero hx_ne hfx_ne
           simpa [eval_mul] using mul_ne_zero hgx_ne hXfx_ne
         have hsame :
@@ -4356,7 +4355,7 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
                 simpa [Polynomial.IsRoot.def] using hfx
               exact hexists x hx₁ hx₂ hroot
             rw [eval_mul]
-            simp only [eval_X, one_mul]
+            simp only [eval_X]
             exact mul_ne_zero hx_ne hfx_ne
           simpa [eval_mul] using mul_ne_zero hgx_ne hXfx_ne
         have hsame :

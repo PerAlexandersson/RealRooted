@@ -14,7 +14,6 @@ set_option linter.style.longLine false
 set_option linter.style.show false
 set_option linter.unnecessarySimpa false
 set_option linter.unreachableTactic false
-set_option linter.unusedSimpArgs false
 set_option linter.unusedTactic false
 set_option linter.unusedVariables false
 
@@ -109,7 +108,7 @@ lemma rootSlotInterval_nonempty (rs : List ℝ) (hrs : rs.Pairwise (· ≥ ·))
   by_cases h0 : j.1 = 0
   · cases rs with
     | nil =>
-        simp [h0]
+        simp
     | cons r rs =>
         exact ⟨r, by simp [h0]⟩
   · by_cases hj : j.1 = rs.length
@@ -119,7 +118,7 @@ lemma rootSlotInterval_nonempty (rs : List ℝ) (hrs : rs.Pairwise (· ≥ ·))
       · obtain ⟨r, tl, hrev⟩ := List.exists_cons_of_ne_nil
           ((List.reverse_ne_nil_iff.mpr hrs_nil))
         refine ⟨r, ?_⟩
-        simp [h0, hj, hrev, hrs_nil]
+        simp [hj, hrev, hrs_nil]
     · refine ⟨rs.get ⟨j.1, by omega⟩, ?_⟩
       simp [h0, hj]
       have hjlt : j.1 < rs.length := by
@@ -777,24 +776,24 @@ private lemma mem_rootSlotInterval_reverse_of_listInterlaces_interior
     simp [rootSlotInterval, h0, hnot_last, List.length_reverse]
   rw [hslot, hrs_rev, hss_rev_lo, hss_rev_hi]
   have hklow_succ_lt : klow.1 + 1 < rs.length := by
-    simp [klow, hlen]
+    simp [klow]
     omega
   have hb_low := listInterlaces_get_bounds hint klow.2 hklow_succ_lt
   have hidx_low :
       (⟨klow.1 + 1, hklow_succ_lt⟩ : Fin rs.length) = k := by
     apply Fin.ext
-    simp [klow, k, hlen]
+    simp [klow, k]
     omega
   have hlower : ss.get klow ≤ rs.get k := by
     simpa [hidx_low] using hb_low.2
   have hkhigh_succ_lt : khigh.1 + 1 < rs.length := by
-    simp [khigh, hlen]
+    simp [khigh]
     omega
   have hb_high := listInterlaces_get_bounds hint khigh.2 hkhigh_succ_lt
   have hidx_high :
       (⟨khigh.1, lt_trans (Nat.lt_succ_self khigh.1) hkhigh_succ_lt⟩ : Fin rs.length) = k := by
     apply Fin.ext
-    simp [khigh, k, hlen]
+    simp [khigh, k]
     omega
   have hupper : rs.get k ≤ ss.get khigh := by
     simpa [hidx_high] using hb_high.1

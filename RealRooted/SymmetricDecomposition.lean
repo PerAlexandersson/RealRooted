@@ -33,7 +33,6 @@ The intended first milestones are:
 
 set_option linter.style.cdot false
 set_option linter.unnecessarySimpa false
-set_option linter.unusedSimpArgs false
 set_option linter.unusedVariables false
 
 open Polynomial Finset
@@ -377,7 +376,7 @@ lemma fPolynomial_pad_by_X_add_one_pow {m d : ℕ} {p : ℝ[X]}
         have hm' : p.natDegree ≤ m + n := le_trans hm (Nat.le_add_right _ _)
         rw [show m + n.succ = (m + n) + 1 by omega]
         rw [fPolynomial_succ_of_natDegree_le hm', ih]
-        simp [pow_succ, mul_assoc, mul_left_comm, mul_comm]
+        simp [pow_succ, mul_assoc, mul_comm]
   rcases Nat.exists_eq_add_of_le hmd with ⟨n, rfl⟩
   simpa [Nat.add_comm] using hpad n
 
@@ -841,7 +840,7 @@ theorem roots_fPolynomial_natDegree_eq_map_of_isRealRooted_of_hasNonnegCoeffs
             rw [hpC, h0] at hp
             exact hp.1 (by simp)
           rw [hpC]
-          simp [fPolynomial, hcoeff0_ne]
+          simp [fPolynomial]
         · have hroots_pos : 0 < p.roots.card := by
             rw [hp.2, hpdeg]
             omega
@@ -1006,11 +1005,11 @@ private theorem isRealRooted_of_fPolynomial_natDegree_roots_gt_neg_one
         have hfu0 : fPolynomial u.natDegree u ≠ 0 := by
           intro hzero
           apply hscaled_ne
-          simp [hzero, h1r_ne]
+          simp [hzero]
         have hfu_rr : IsRealRooted (fPolynomial u.natDegree u) := by
           apply isRealRooted_of_dvd hscaled_rr hfu0
           refine ⟨C (1 - r), ?_⟩
-          simp [mul_assoc, mul_left_comm, mul_comm]
+          simp [mul_comm]
         have hfu_deg : (fPolynomial u.natDegree u).natDegree = u.natDegree := by
           have htmp : n = 1 + (C (1 - r) * fPolynomial u.natDegree u).natDegree := by
             rw [← hqdeg, hq_fac, natDegree_mul (X_sub_C_ne_zero x) hscaled_ne, natDegree_X_sub_C]
@@ -2632,7 +2631,7 @@ private theorem prec_b_component_of_prec_sum_of_leadingCoeff_eq
           exact hb_nonpos r (by simpa [roots_C_mul _ hc_ne] using hr))
   have hXC : C c * (X * b) = X * (C c * b) := by
     ext n
-    cases n <;> simp [Polynomial.coeff_X_mul, Polynomial.C_mul, mul_assoc]
+    cases n <;> simp [Polynomial.coeff_X_mul]
   have hsub_eq : C c * p - X * (C c * b) = C c * a := by
     calc
       C c * p - X * (C c * b)
@@ -3295,7 +3294,7 @@ private theorem prec_b_component_of_prec_Id_top_of_right_top
       p = a + X * b := hp_eq
       _ = (a + b) + (X - C (1 : ℝ)) * b := by
             rw [sub_mul]
-            simp [sub_eq_add_neg, add_assoc, add_left_comm, add_comm]
+            simp [sub_eq_add_neg, add_assoc, add_comm]
       _ = h + (X - C (1 : ℝ)) * b := by rw [hId_eq]
   have hall_hp : AllComboRealRooted h p := allComboRealRooted_of_prec hIdp
   have hall_ht : AllComboRealRooted h t := by
@@ -3460,7 +3459,7 @@ theorem brandenSolusTheorem26_third_converse_of_top_degree
       p = a + X * b := hp_eq
       _ = (a + b) + (X - C (1 : ℝ)) * b := by
         rw [sub_mul]
-        simp [sub_eq_add_neg, add_assoc, add_left_comm, add_comm]
+        simp [sub_eq_add_neg, add_assoc, add_comm]
       _ = h + (X - C (1 : ℝ)) * b := by rw [hId_eq]
   have hall_hp : AllComboRealRooted h p := allComboRealRooted_of_prec hIdp
   have hall_ht : AllComboRealRooted h t := by
@@ -4023,7 +4022,7 @@ theorem brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
       p = a + X * b := hp_eq
       _ = (a + b) + (X - C (1 : ℝ)) * b := by
         rw [sub_mul]
-        simp [sub_eq_add_neg, add_assoc, add_left_comm, add_comm]
+        simp [sub_eq_add_neg, add_assoc, add_comm]
       _ = h + (X - C (1 : ℝ)) * b := by rw [hId_eq]
   have hall_hp : AllComboRealRooted h p := allComboRealRooted_of_prec hIdp
   have hall_ht : AllComboRealRooted h t := by
