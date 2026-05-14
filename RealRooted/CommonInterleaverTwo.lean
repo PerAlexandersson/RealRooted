@@ -16,7 +16,6 @@ import RealRooted.AffineFamily
 import RealRooted.GammaRealRoots
 
 set_option linter.style.longLine false
-set_option linter.unnecessarySimpa false
 set_option linter.unusedVariables false
 
 open Polynomial
@@ -87,7 +86,7 @@ private lemma listInterlaces_all_le_getLast_local :
   | [], [], hrs_ne, _, _, s, hs => by
       cases (hrs_ne rfl)
   | [], [_], _, _, _, s, hs => by
-      simpa using hs
+      simp at hs
   | _ :: _, [_], _, _, hint, _, _ => by
       simp [ListInterlaces] at hint
   | _ :: ss, r₁ :: r₂ :: rs, _, hrs_sorted, hint, t, ht => by

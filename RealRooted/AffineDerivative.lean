@@ -28,7 +28,6 @@ import RealRooted.Wagner
 import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 import Mathlib.Tactic
 
-set_option linter.unnecessarySimpa false
 set_option linter.unusedSimpArgs false
 set_option linter.unusedTactic false
 set_option linter.unusedVariables false
@@ -991,7 +990,7 @@ private lemma prec_of_extra_root_left {f g : ℝ[X]}
     exact List.pairwise_cons.mpr ⟨hu_le_all, hss_sorted⟩
   have hlen : ss.length = rest.length := listInterlaces_cons_length_eq hint
   exact ⟨hg, hf, u :: ss, r₁ :: rest, hug_sorted, hrs_sorted, hss_eq, hrs_eq,
-    Or.inr ⟨by simpa [hlen], ⟨hu, hint⟩⟩⟩
+    Or.inr ⟨by simp [hlen], ⟨hu, hint⟩⟩⟩
 
 /-! ## Main theorem -/
 
@@ -1059,7 +1058,7 @@ theorem prec_affine_derivative {f : ℝ[X]}
     simpa using hu_roots_eq.symm
   rw [hrs_cons] at hrs_sorted hrs_eq hss_interlaces
   have hr₁_root : f.IsRoot r₁ := by
-    exact hrs_root r₁ (by simpa [hrs_cons])
+    exact hrs_root r₁ (by simp [hrs_cons])
   have hr₁_mem_f : r₁ ∈ f.roots := (mem_roots hf.1).mpr hr₁_root
   have hr₁_nonpos : r₁ ≤ 0 := hroots_nonpos r₁ hr₁_mem_f
   have hc_pos : 0 < c := by
@@ -1082,7 +1081,7 @@ theorem prec_affine_derivative {f : ℝ[X]}
       rw [hrs_eq, hm_def, count_roots]
     have hss_count_r₁_le : (↑ss : Multiset ℝ).count r₁ + 1 ≤ m := by
       have hr₁_mem_rs : r₁ ∈ (↑rs : Multiset ℝ) := by
-        simpa [hrs_cons] using (Multiset.mem_coe.mpr (List.mem_cons_self r₁ rest))
+        simp [hrs_cons]
       have := hss_count_bound r₁ hr₁_mem_rs
       simpa [hrs_cons, hrs_count_r₁] using this
     have h_u_ne : u ≠ r₁ := ne_of_gt hu_gt
@@ -1107,7 +1106,7 @@ theorem prec_affine_derivative {f : ℝ[X]}
       simpa [hf_fact', hq] using hf.1
     have hqg_ne : qg ≠ 0 := by
       intro hqg
-      simpa [hg_fact', hqg] using hg_ne
+      simp [hg_fact', hqg] at hg_ne
     have hq_rr : IsRealRooted q := by
       exact isRealRooted_of_pow_X_sub_C_mul (by simpa [hf_fact'] using hf)
     have hqg_rr : IsRealRooted qg := by

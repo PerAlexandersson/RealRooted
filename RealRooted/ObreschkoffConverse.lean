@@ -8,7 +8,6 @@ Wronskian orientation lemmas, the same-degree and succ-degree cases,
 and the main converse `prec_of_allComboRealRooted`.
 -/
 
-set_option linter.unnecessarySimpa false
 set_option linter.unusedSimpArgs false
 
 open Polynomial
@@ -188,7 +187,7 @@ private lemma listInterlaces_left_le_of_right_le_local {ss rs : List ℝ} {c : �
   induction ss generalizing rs with
   | nil =>
       intro s hs
-      simpa using hs
+      simp at hs
   | cons s ss ih =>
       cases rs with
       | nil =>
@@ -212,7 +211,7 @@ private lemma listAlternates_left_le_of_right_le_local {ss rs : List ℝ} {c : �
   induction ss generalizing rs with
   | nil =>
       intro s hs
-      simpa using hs
+      simp at hs
   | cons s ss ih =>
       cases rs with
       | nil =>
@@ -633,7 +632,7 @@ private lemma posComboRealRooted_of_allComboRealRooted_of_natDegree_le
           hdeg hf_pos hg_pos hlam hμ
     exfalso
     have : 0 < (0 : ℝ) := by
-      simpa [HasPosLeadingCoeff, hzero] using hcomb_pos
+      simp [HasPosLeadingCoeff, hzero] at hcomb_pos
     exact lt_irrefl 0 this
   · exact hrr
 
@@ -1001,10 +1000,10 @@ private lemma eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
     (hmult : p.rootMultiplicity x = 2) :
     p.derivative.derivative.eval x ≠ 0 := by
   have hp_root : p.IsRoot x := by
-    exact (rootMultiplicity_pos hp0).mp (by simpa [hmult])
+    exact (rootMultiplicity_pos hp0).mp (by simp [hmult])
   have hp_deg_ge2 : 2 ≤ p.natDegree := by
     calc
-      2 = p.rootMultiplicity x := by simpa [hmult]
+      2 = p.rootMultiplicity x := by simp [hmult]
       _ = p.roots.count x := (count_roots p).symm
       _ ≤ p.roots.card := p.roots.count_le_card x
       _ ≤ p.natDegree := card_roots' p
@@ -1013,7 +1012,7 @@ private lemma eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
     rw [derivative_rootMultiplicity_of_root hp_root, hmult]
   intro hder2
   have hpd_root : p.derivative.IsRoot x := by
-    exact (rootMultiplicity_pos hpd_ne).mp (by simpa [hpd_rootmult])
+    exact (rootMultiplicity_pos hpd_ne).mp (by simp [hpd_rootmult])
   have hpd_der_root : p.derivative.derivative.IsRoot x := by
     simpa [Polynomial.IsRoot.def] using hder2
   have hmult_gt : 1 < p.derivative.rootMultiplicity x := by
@@ -1039,9 +1038,9 @@ private lemma false_of_allComboRealRooted_of_double_root_and_eval_ne_of_pos
     intro hp0
     simp [hp0] at hp_mult
   have hp_root : p.IsRoot x := by
-    exact (rootMultiplicity_pos hp0).mp (by simpa [hp_mult])
+    exact (rootMultiplicity_pos hp0).mp (by simp [hp_mult])
   have hp_der_root : p.derivative.IsRoot x := by
-    exact isRoot_derivative_of_rootMultiplicity_ge_two (by simpa [hp_mult])
+    exact isRoot_derivative_of_rootMultiplicity_ge_two (by simp [hp_mult])
   have hp_eval0 : p.eval x = 0 := by
     simpa [Polynomial.IsRoot.def] using hp_root
   have hp_der_eval0 : p.derivative.eval x = 0 := by
@@ -1383,8 +1382,8 @@ private theorem prec_or_revPrec_of_eq_zero_or_simple_combo_sameDegree
       rw [hg.2, hgdeg0]
     left
     refine ⟨hf, hg, [], [], by simp, by simp, ?_, ?_, ?_⟩
-    · simpa [hroots_f]
-    · simpa [hroots_g]
+    · simp [hroots_f]
+    · simp [hroots_g]
     · exact Or.inr ⟨by simp, by simp [ListAlternates, ListInterlaces]⟩
   by_cases hdeg1 : f.natDegree = 1
   · exact PosComboRealRooted.prec_or_revPrec_of_same_degree_one hdeg hdeg1
@@ -1466,8 +1465,8 @@ private lemma prec_degree_zero_right_of_degree_one
     apply Multiset.card_eq_zero.mp
     rw [hf.2, hf_deg0]
   refine ⟨hf, hg, [], [r], by simp, List.pairwise_singleton _ _, ?_, ?_, ?_⟩
-  · simpa [hroots_f]
-  · simpa [hr_eq]
+  · simp [hroots_f]
+  · simp [hr_eq]
   · exact Or.inl ⟨by simp, by simp [ListInterlaces]⟩
 
 private lemma interlaces_derivative_of_degree_pos
@@ -1480,7 +1479,7 @@ private lemma interlaces_derivative_of_degree_pos
       hasPosLeadingCoeff_derivative_of_pos hf_pos hdeg
     have hf'_ne : f.derivative ≠ 0 := by
       intro h0
-      simpa [HasPosLeadingCoeff, h0] using hf'_pos
+      simp [HasPosLeadingCoeff, h0] at hf'_pos
     have hf'_deg0 : f.derivative.natDegree = 0 := by
       simpa [hdeg1] using natDegree_derivative_eq hdeg
     have hf'_rr : IsRealRooted f.derivative :=
@@ -1876,7 +1875,7 @@ private lemma listInterlaces_all_le_getLast_local :
   | [], [], hrs_ne, _, hint, s, hs => by
       cases (hrs_ne rfl)
   | [], [_], _, _, hint, s, hs => by
-      simpa using hs
+      simp at hs
   | s :: ss, [r], _, _, hint, _, _ => by
       simp [ListInterlaces] at hint
   | s :: ss, r₁ :: r₂ :: rs, _, hrs_sorted, hint, t, ht => by
@@ -1932,7 +1931,7 @@ private theorem isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
       | nil => cases (hrs_ne h)
       | cons r₀ rs' =>
           refine ⟨r₀, rs', ?_⟩
-          simpa using h.symm
+          simp
     have hr₀_root : f.IsRoot r₀ := by
       apply (mem_roots hf.1).mp
       rw [← hrs_eq, hrs_cons]
@@ -2126,7 +2125,7 @@ private theorem isRealRooted_of_interlaces_eval_mul_neg_same_any_lc
     cases h : rs with
     | nil => cases (hrs_ne h)
     | cons r₀ rs' =>
-        exact ⟨r₀, rs', by simpa using h.symm⟩
+        exact ⟨r₀, rs', by simp⟩
   have hint_cons : ListInterlaces ss (r₀ :: rs') := by
     simpa [hrs_cons] using hint
   have hhead_eq : rs.head! = r₀ := by
@@ -2360,7 +2359,7 @@ private lemma iterate_derivative_ne_zero_of_le_natDegree
     exact mul_ne_zero
       (Nat.cast_ne_zero.mpr (Nat.descFactorial_pos.mpr hk).ne')
       (leadingCoeff_ne_zero.mpr hp0)
-  simpa [hk0] using hcoeff
+  simp [hk0] at hcoeff
 
 /-- A positive-leading real-rooted polynomial of degree at least `2` is
 nonpositive at its rightmost critical point. The point is chosen as the
@@ -3311,7 +3310,7 @@ private lemma interlaces_of_prec_sameDegree_rightmost_factor
     exact right_ne_zero_of_mul (by simpa [hgq] using hg.1)
   have hq : IsRealRooted q := by
     apply isRealRooted_of_dvd hg hq_ne
-    exact ⟨X - C uR, by simpa [hgq, mul_comm]⟩
+    exact ⟨X - C uR, by simp [hgq, mul_comm]⟩
   have hq_deg_g : q.natDegree + 1 = g.natDegree := by
     rw [hgq, natDegree_mul (X_sub_C_ne_zero uR) hq_ne, natDegree_X_sub_C]
     omega

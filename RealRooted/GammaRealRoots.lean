@@ -9,7 +9,6 @@ decompositions and proves real-rootedness criteria for the transformed
 polynomials.
 -/
 
-set_option linter.unnecessarySimpa false
 set_option linter.unusedSimpArgs false
 
 open Polynomial Finset
@@ -902,7 +901,7 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
       intro r hr
       have : False := by
         rw [hδC] at hr
-        simpa [hc] using hr
+        simp at hr
       exact this.elim
     · by_cases hcoeff0 : δ.coeff 0 = 0
       · have hXdvd : X ∣ δ := Polynomial.X_dvd_iff.mpr hcoeff0
@@ -1129,7 +1128,7 @@ lemma gammaTransform_even_shift (m k : ℕ) (γ : ℝ[X]) (hγ : γ.natDegree �
         calc
           γ.natDegree ≤ m := hγ
           _ ≤ m + k := Nat.le_add_right _ _
-          _ = (2 * (m + k)) / 2 := by simpa [hhalf]
+          _ = (2 * (m + k)) / 2 := by simp [hhalf]
       calc
         gammaTransform (2 * (m + k.succ)) γ
             = gammaTransform (2 * (m + k) + 2) γ := by
@@ -1156,7 +1155,7 @@ lemma gammaTransform_pad_to_minimal {d : ℕ} {γ : ℝ[X]}
       gammaTransform (2 * n) γ =
         (X + 1) ^ (2 * (n - m)) * gammaTransform (2 * m) γ := by
     have hshift' :=
-      gammaTransform_even_shift (m := m) (k := n - m) (γ := γ) (by simpa [m] using hm)
+      gammaTransform_even_shift (m := m) (k := n - m) (γ := γ) (by simp [m])
     simpa [show m + (n - m) = n by omega] using hshift'
   rcases Nat.mod_two_eq_zero_or_one d with hd_even | hd_odd
   · have hd : d = 2 * n := by omega
@@ -1164,7 +1163,7 @@ lemma gammaTransform_pad_to_minimal {d : ℕ} {γ : ℝ[X]}
       rw [hd]
       omega
     calc
-      gammaTransform d γ = gammaTransform (2 * n) γ := by simpa [hd]
+      gammaTransform d γ = gammaTransform (2 * n) γ := by simp [hd]
       _ = (X + 1) ^ (2 * (n - m)) * gammaTransform (2 * m) γ := hshift
       _ = (X + 1) ^ (d - 2 * m) * gammaTransform (2 * m) γ := by
             rw [hpow]
@@ -1175,7 +1174,7 @@ lemma gammaTransform_pad_to_minimal {d : ℕ} {γ : ℝ[X]}
       rw [hd]
       omega
     calc
-      gammaTransform d γ = gammaTransform (2 * n + 1) γ := by simpa [hd]
+      gammaTransform d γ = gammaTransform (2 * n + 1) γ := by simp [hd]
       _ = (X + 1) * gammaTransform (2 * n) γ := gammaTransform_odd n γ
       _ = (X + 1) * ((X + 1) ^ (2 * (n - m)) * gammaTransform (2 * m) γ) := by
             rw [hshift]
@@ -1213,7 +1212,7 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_of_natDeg
       exact (gammaTransform_eq_zero_iff_of_natDegree_le
         (d := 2 * γ.natDegree) (γ := γ) (by omega)).mp (by simpa [q] using hq_zero)
     have hzero : gammaTransform d γ = 0 := by
-      simpa [hγ0] using (gammaTransform_zero d : gammaTransform d (0 : ℝ[X]) = 0)
+      simp [hγ0]
     exact hp.1 hzero
   have hqdvd : q ∣ gammaTransform d γ := by
     simpa [q] using gammaTransform_minimal_dvd (d := d) (γ := γ) hγdeg
