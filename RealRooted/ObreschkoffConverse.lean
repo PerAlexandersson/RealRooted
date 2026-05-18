@@ -1379,8 +1379,8 @@ private theorem prec_or_revPrec_of_eq_zero_or_simple_combo_sameDegree
       rw [hg.2, hgdeg0]
     left
     refine ⟨hf, hg, [], [], by simp, by simp, ?_, ?_, ?_⟩
-    · simpa [hroots_f]
-    · simpa [hroots_g]
+    · simp [hroots_f]
+    · simp [hroots_g]
     · exact Or.inr ⟨by simp, by simp [ListAlternates]⟩
   by_cases hdeg1 : f.natDegree = 1
   · exact PosComboRealRooted.prec_or_revPrec_of_same_degree_one hdeg hdeg1

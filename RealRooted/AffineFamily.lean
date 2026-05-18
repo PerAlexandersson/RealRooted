@@ -2215,8 +2215,8 @@ private lemma prec_degree_zero_degree_zero
     apply Multiset.card_eq_zero.mp
     rw [hg.2, hg_deg0]
   refine ⟨hf, hg, [], [], by simp, by simp, ?_, ?_, ?_⟩
-  · simpa [hroots_f]
-  · simpa [hroots_g]
+  · simp [hroots_f]
+  · simp [hroots_g]
   · exact Or.inr ⟨by simp, by simp [ListAlternates]⟩
 
 /-- Constant-vs-linear endpoint case for the affine converse. -/

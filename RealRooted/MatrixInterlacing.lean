@@ -400,8 +400,8 @@ lemma get_rowPairAffineSeq {row₁ row₂ : List ℝ[X]}
           simp [length_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len
             hrow₂_len]⟩
       =
-        ((C s * X + C t) * row₁.get ⟨i, by simpa [hrow₁_len] using i.2⟩) +
-          row₂.get ⟨i, by simpa [hrow₂_len] using i.2⟩ := by
+        ((C s * X + C t) * row₁.get ⟨i, by simp [hrow₁_len]⟩) +
+          row₂.get ⟨i, by simp [hrow₂_len]⟩ := by
   simp [rowPairAffineSeq, List.get_eq_getElem]
 
 lemma isInterlacingSeq0_reverse_rowPairAffineSeq

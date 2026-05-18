@@ -1023,8 +1023,8 @@ private lemma mem_rootSlotInterval_of_prec_witness
 private lemma mem_rootSlotInterval_of_prec
     {f g : ℝ[X]} (hfg : Prec f g) (j : Fin g.natDegree) :
     (rootSeqDesc g).get ⟨j.1, by
-      rcases hfg with ⟨_, hg, ss, rs, _, _, _, hrs_eq, _⟩
-      simpa [rootSeqDesc, hg.2, hrs_eq] using j.2⟩ ∈ rootSlotInterval (rootSeqDesc f)
+      rcases hfg with ⟨_, hg, _, _, _, _, _, _, _⟩
+      simp [rootSeqDesc, hg.2]⟩ ∈ rootSlotInterval (rootSeqDesc f)
       ⟨j.1, by
         rcases hfg with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
         have hdeg := (natDegree_bounds_of_prec ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩).2
@@ -1039,7 +1039,7 @@ private lemma mem_rootSlotInterval_of_prec
   have hrs_len : rs.length = g.natDegree := by
     rw [← Multiset.coe_card, hrs_eq, hg.2]
   let jg_desc : Fin (rootSeqDesc g).length := ⟨j.1, by
-    simp [rootSeqDesc, hg.2, hrs_eq]⟩
+    simp [rootSeqDesc, hg.2]⟩
   let jg_rev : Fin rs.reverse.length := ⟨j.1, by
     simp [List.length_reverse, hrs_len]⟩
   let jf_desc : Fin ((rootSeqDesc f).length + 1) := ⟨j.1, by
@@ -2021,8 +2021,8 @@ in the `j`th admissible slot of the left polynomial. -/
 theorem mem_rootSlotInterval_of_prec_desc
     {f g : ℝ[X]} (hfg : Prec f g) (j : Fin g.natDegree) :
     (rootSeqDesc g).get ⟨j.1, by
-      rcases hfg with ⟨_, hg, ss, rs, _, _, _, hrs_eq, _⟩
-      simpa [rootSeqDesc, hg.2, hrs_eq] using j.2⟩ ∈ rootSlotInterval (rootSeqDesc f)
+      rcases hfg with ⟨_, hg, _, _, _, _, _, _, _⟩
+      simp [rootSeqDesc, hg.2]⟩ ∈ rootSlotInterval (rootSeqDesc f)
       ⟨j.1, by
         rcases hfg with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
         have hdeg := (natDegree_bounds_of_prec
