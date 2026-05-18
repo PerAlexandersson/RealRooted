@@ -15,8 +15,6 @@ import RealRooted.CommonInterleaverSeq
 import RealRooted.AffineFamily
 import RealRooted.GammaRealRoots
 
-set_option linter.unusedVariables false
-
 open Polynomial
 
 noncomputable section
@@ -1074,8 +1072,8 @@ theorem prec_sum_left_of_prec_right_family_forward_sameDegree_nonneg
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
+    (_hfnn : HasNonnegCoeffs f)
+    (_hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g)
     (hdeg : g.natDegree = f.natDegree)
     (hdeg_pos : 1 ≤ g.natDegree)

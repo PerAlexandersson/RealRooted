@@ -29,7 +29,6 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 import Mathlib.Tactic
 
 set_option linter.unusedSimpArgs false
-set_option linter.unusedVariables false
 
 open Polynomial Filter
 
@@ -251,11 +250,11 @@ Between consecutive roots `r₁ ≤ r₂` of `f`, we show `g` has a root in `[r�
   hence `g(r₁)` and `g(r₂)` have opposite signs. IVT gives a root. -/
 
 lemma exists_affineDeriv_root_between {f : ℝ[X]}
-    (hf : IsRealRooted f) (hdeg : 2 ≤ f.natDegree)
-    {c : ℝ} (hc : (f.natDegree : ℝ) < c)
+    (hf : IsRealRooted f) (_hdeg : 2 ≤ f.natDegree)
+    {c : ℝ} (_eq_mul_of_hasProd_itehc : (f.natDegree : ℝ) < c)
     {r₁ r₂ : ℝ} (hr₁ : f.IsRoot r₁) (hr₂ : f.IsRoot r₂)
     (hle : r₁ ≤ r₂)
-    (hr₁_nonpos : r₁ ≤ 0) (hr₂_nonpos : r₂ ≤ 0)
+    (_hr₁_nonpos : r₁ ≤ 0) (hr₂_nonpos : r₂ ≤ 0)
     (hsub : (↑[r₁, r₂] : Multiset ℝ) ≤ f.roots)
     (hno_between : ∀ r ∈ f.roots, ¬(r₁ < r ∧ r < r₂)) :
     ∃ s, r₁ ≤ s ∧ s ≤ r₂ ∧ (C c * f + (1 - X) * f.derivative).IsRoot s := by
@@ -304,11 +303,11 @@ lemma exists_affineDeriv_root_between {f : ℝ[X]}
 
 /-- In the distinct-root case, the affine derivative has a root strictly between the endpoints. -/
 private lemma exists_affineDeriv_root_between_strict {f : ℝ[X]}
-    (hf : IsRealRooted f) (hdeg : 2 ≤ f.natDegree)
+    (_hf : IsRealRooted f) (_hdeg : 2 ≤ f.natDegree)
     {c : ℝ} (hc : (f.natDegree : ℝ) < c)
     {r₁ r₂ : ℝ} (hr₁ : f.IsRoot r₁) (hr₂ : f.IsRoot r₂)
     (hlt : r₁ < r₂)
-    (hr₁_nonpos : r₁ ≤ 0) (hr₂_nonpos : r₂ ≤ 0) :
+    (_hr₁_nonpos : r₁ ≤ 0) (hr₂_nonpos : r₂ ≤ 0) :
     ∃ s, r₁ < s ∧ s < r₂ ∧ (C c * f + (1 - X) * f.derivative).IsRoot s := by
   let φ : ℝ → ℝ := fun x => f.eval x * (1 - x) ^ (-c)
   have hfa_eval :
@@ -616,7 +615,7 @@ private lemma mkAffineInterleaving_ge (f : ℝ[X]) (c : ℝ)
 /-- Root multiplicity of `g = C c * f + (1 - X) * f'` at a nonpositive point
     is at least `f.rootMultiplicity a - 1`, provided `g ≠ 0`. -/
 private lemma rootMultiplicity_sub_one_le_affineDeriv
-    {f : ℝ[X]} {c : ℝ} (hc_pos : 0 < c) (a : ℝ) (ha : a ≤ 0)
+    {f : ℝ[X]} {c : ℝ} (_hc_pos : 0 < c) (a : ℝ) (_ha : a ≤ 0)
     (hg_ne : C c * f + (1 - X) * f.derivative ≠ 0) :
     f.rootMultiplicity a - 1 ≤
       (C c * f + (1 - X) * f.derivative).rootMultiplicity a := by
@@ -930,7 +929,7 @@ private lemma isRealRooted_of_pow_X_sub_C_mul {r : ℝ} {m : ℕ} {q : ℝ[X]}
   omega
 
 private lemma pos_leadingCoeff_of_pow_X_sub_C_mul {r : ℝ} {m : ℕ} {q : ℝ[X]}
-    (hp_pos : HasPosLeadingCoeff ((X - C r) ^ m * q)) (hq_ne : q ≠ 0) :
+    (hp_pos : HasPosLeadingCoeff ((X - C r) ^ m * q)) (_hq_ne : q ≠ 0) :
     HasPosLeadingCoeff q := by
   have hpow_ne : ((X - C r) ^ m : ℝ[X]) ≠ 0 := pow_ne_zero _ (X_sub_C_ne_zero _)
   unfold HasPosLeadingCoeff at hp_pos ⊢
