@@ -1,6 +1,7 @@
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Algebra.Polynomial.Div
 import Mathlib.Algebra.Polynomial.Degree.Lemmas
+import Mathlib.Algebra.Polynomial.Splits
 import Mathlib.Analysis.SpecificLimits.Basic
 import Mathlib.Data.List.Sort
 
@@ -23,11 +24,18 @@ namespace RealRooted
 def IsRealRooted (p : ℝ[X]) : Prop :=
   p ≠ 0 ∧ p.roots.card = p.natDegree
 
+lemma isRealRooted_iff_ne_zero_and_splits (p : ℝ[X]) : IsRealRooted p ↔ p ≠ 0 ∧ p.Splits := by
+  grind [IsRealRooted, splits_iff_card_roots]
+
 /-- Zero-aware real-rootedness.  This is the convention often used for
 closure statements, while `IsRealRooted` remains the strict nonzero predicate
 used by root-list and interlacing proofs. -/
 def IsRealRootedOrZero (p : ℝ[X]) : Prop :=
   p = 0 ∨ IsRealRooted p
+
+lemma isRealRootedOrZero_iff_eq_zero_or_splits (p : ℝ[X]) :
+    IsRealRootedOrZero p ↔ p = 0 ∨ p.Splits := by
+  grind [IsRealRootedOrZero, isRealRooted_iff_ne_zero_and_splits]
 
 lemma IsRealRooted.toOrZero {p : ℝ[X]} (hp : IsRealRooted p) :
     IsRealRootedOrZero p :=
