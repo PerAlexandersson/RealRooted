@@ -11,7 +11,6 @@ the Chudnovsky-Seymour pairwise-to-global common-interleaver upgrade, and the
 -/
 
 set_option linter.unnecessarySimpa false
-set_option linter.unreachableTactic false
 set_option linter.unusedSimpArgs false
 set_option linter.unusedVariables false
 
