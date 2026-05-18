@@ -7,8 +7,6 @@ Sparse pair machinery, `matPolyAction` definition, forward and backward
 matrix-preservation theorems (Brändén, Theorem 7.8.5).
 -/
 
-set_option linter.unusedSimpArgs false
-
 open Polynomial
 
 noncomputable section
@@ -31,7 +29,7 @@ lemma get_sparseLinearPairSeq {n : ℕ} (i j : Fin n) (a b : ℝ) (k : Fin n) :
     (sparseLinearPairSeq n i j a b).get
         ⟨k, by simp [length_sparseLinearPairSeq]⟩ =
       (if k = i then (1 : ℝ[X]) else if k = j then C a * X + C b else 0) := by
-  simp [sparseLinearPairSeq, List.get_ofFn]
+  simp [sparseLinearPairSeq]
 
 lemma isInterlacingSeq0Nonneg_sparseLinearPairSeq
     {n : ℕ} {i j : Fin n} (hij : i < j) {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
@@ -67,7 +65,7 @@ lemma isInterlacingSeq0Nonneg_sparseLinearPairSeq
           intro hq
           have : j < j := by simp [hpj, hq] at hpq'
           exact (lt_irrefl _ this).elim
-        simp [hpi, hpj, hq_ne_i, hq_ne_j, prec0_zero_right]
+        simp [hpj, hq_ne_i, hq_ne_j, prec0_zero_right]
       · simp [hpi, hpj, prec0_zero_left]
   · rw [List.forall_mem_iff_get]
     intro k
@@ -82,7 +80,7 @@ lemma isInterlacingSeq0Nonneg_sparseLinearPairSeq
           intro hji
           apply hki
           simpa [hkj] using hji
-        simp [hki, hkj, hji, hasNonnegCoeffs_affine_linear ha.le hb.le]
+        simp [hkj, hji, hasNonnegCoeffs_affine_linear ha.le hb.le]
       · simp [hki, hkj, hasNonnegCoeffs_zero]
 
 /-- Single-support weak test family for the converse: `1` at `i` and `0`
@@ -98,7 +96,7 @@ lemma get_oneSupportSeq {n : ℕ} (i k : Fin n) :
     (oneSupportSeq n i).get
         ⟨k, by simp [length_oneSupportSeq]⟩ =
       (if k = i then (1 : ℝ[X]) else 0) := by
-  simp [oneSupportSeq, List.get_ofFn]
+  simp [oneSupportSeq]
 
 lemma isInterlacingSeq0Nonneg_oneSupportSeq {n : ℕ} (i : Fin n) :
     IsInterlacingSeq0Nonneg (oneSupportSeq n i) := by
@@ -197,7 +195,7 @@ lemma zipWith_mul_sum_zipWith_add_right
               simp at hgs_len
           | cons g gs =>
               simp only [List.length_cons, Nat.succ.injEq] at hfs_len hgs_len
-              simp [mul_add, ih _ _ hfs_len hgs_len, add_assoc, add_left_comm, add_comm]
+              simp [mul_add, ih _ _ hfs_len hgs_len, add_assoc, add_left_comm]
 
 lemma zipWith_mul_sum_map_mul_right
     (c : ℝ[X]) (row fs : List ℝ[X]) :
@@ -211,7 +209,7 @@ lemma zipWith_mul_sum_map_mul_right
       | nil =>
           simp
       | cons f fs =>
-          simp [ih, mul_add, mul_assoc, mul_left_comm, add_assoc]
+          simp [ih, mul_add, mul_left_comm]
 
 lemma sparseLinearPairSeq_eq_zipWith_oneSupport
     {n : ℕ} (i j : Fin n) (hij : i ≠ j) (a b : ℝ) :
@@ -246,12 +244,12 @@ lemma sparseLinearPairSeq_eq_zipWith_oneSupport
       have hij' : i ≠ j := by
         intro hij'
         exact hkj (hki.trans hij')
-      simp [hki, hkj, hij']
+      simp [hki, hij']
     · by_cases hkj : k' = j
       · have hji : j ≠ i := by
           intro hji
           exact hki (hkj.trans hji)
-        simp [hki, hkj, hji]
+        simp [hkj, hji]
       · simp [hki, hkj]
 
 lemma zipWith_mul_sparseLinearPairSeq_sum_eq
@@ -402,9 +400,9 @@ lemma get_rowPairAffineSeq {row₁ row₂ : List ℝ[X]}
           simp [length_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len
             hrow₂_len]⟩
       =
-        ((C s * X + C t) * row₁.get ⟨i, by simp [hrow₁_len]⟩) +
-          row₂.get ⟨i, by simp [hrow₂_len]⟩ := by
-  simp [rowPairAffineSeq, List.get_eq_getElem, hrow₁_len, hrow₂_len]
+        ((C s * X + C t) * row₁.get ⟨i, by simpa [hrow₁_len] using i.2⟩) +
+          row₂.get ⟨i, by simpa [hrow₂_len] using i.2⟩ := by
+  simp [rowPairAffineSeq, List.get_eq_getElem]
 
 lemma isInterlacingSeq0_reverse_rowPairAffineSeq
     {row₁ row₂ : List ℝ[X]}

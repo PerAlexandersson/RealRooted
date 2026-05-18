@@ -28,8 +28,6 @@ import RealRooted.Wagner
 import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 import Mathlib.Tactic
 
-set_option linter.unusedSimpArgs false
-
 open Polynomial Filter
 
 noncomputable section
@@ -1158,7 +1156,7 @@ theorem prec_affine_derivative {f : ℝ[X]}
       rw [hf_fact', derivative_mul, derivative_pow, derivative_sub, derivative_X, derivative_C,
         sub_zero]
       rw [hm_succ, pow_succ']
-      simp [hm_succ', hm_pred]
+      simp
       ring_nf
     have hg_expand :
         g = (X - C r₁) ^ (m - 1) *
@@ -1171,7 +1169,7 @@ theorem prec_affine_derivative {f : ℝ[X]}
         omega
       rw [hg_def, hf_deriv_fact, hf_fact']
       rw [hm_succ, pow_succ']
-      simp [hm_succ', hm_pred]
+      simp
       ring
     have hqg_eq :
         qg =

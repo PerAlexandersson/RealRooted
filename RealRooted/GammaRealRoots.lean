@@ -9,8 +9,6 @@ decompositions and proves real-rootedness criteria for the transformed
 polynomials.
 -/
 
-set_option linter.unusedSimpArgs false
-
 open Polynomial Finset
 open scoped BigOperators
 
@@ -155,7 +153,7 @@ lemma IdTransform_X_add_one_pow (n : ℕ) :
   ext k
   by_cases hk : k ≤ n
   · rw [IdTransform, Polynomial.coeff_reflect, Polynomial.revAt_le hk]
-    simp [Polynomial.coeff_X_add_one_pow, hk, Nat.choose_symm hk]
+    simp [Polynomial.coeff_X_add_one_pow, Nat.choose_symm hk]
   · have hkn : n < k := lt_of_not_ge hk
     rw [IdTransform, Polynomial.coeff_reflect, Polynomial.revAt_eq_self_of_lt hkn]
 
@@ -253,11 +251,11 @@ lemma gammaTransform_X_mul_two (d : ℕ) (γ : ℝ[X]) :
     by_cases h : n ≤ d / 2
     · have hs : n + 1 ≤ (d + 2) / 2 := by
         omega
-      simp [Polynomial.X_mul_monomial, gammaTransform_monomial, h, hs,
-        gammaBasisTerm_succ_succ, mul_assoc, mul_left_comm, mul_comm]
+      simp [Polynomial.X_mul_monomial, gammaTransform_monomial, h,
+        gammaBasisTerm_succ_succ, mul_assoc, mul_comm]
     · have hs : ¬ n + 1 ≤ (d + 2) / 2 := by
         omega
-      simp [Polynomial.X_mul_monomial, gammaTransform_monomial, h, hs]
+      simp [Polynomial.X_mul_monomial, gammaTransform_monomial, h]
 
 lemma gammaTransform_pad_two {d : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) :
     gammaTransform (d + 2) γ = (X + 1) ^ 2 * gammaTransform d γ := by
@@ -450,7 +448,7 @@ lemma gammaTransform_even_injective :
         rw [show -(Polynomial.monomial (m + 1) (γ.coeff (m + 1))) =
               C (-1) * Polynomial.monomial (m + 1) (γ.coeff (m + 1)) by simp]
         rw [gammaTransform_C_mul]
-        simp [gammaTransform_monomial, show ¬ (m + 1 ≤ (2 * m) / 2) by omega]
+        simp [gammaTransform_monomial]
       have hδsmall :
           gammaTransform (2 * m) δ' = gammaTransform (2 * m) δ := by
         dsimp [δ', c]
@@ -458,7 +456,7 @@ lemma gammaTransform_even_injective :
         rw [show -(Polynomial.monomial (m + 1) (γ.coeff (m + 1))) =
               C (-1) * Polynomial.monomial (m + 1) (γ.coeff (m + 1)) by simp]
         rw [gammaTransform_C_mul]
-        simp [gammaTransform_monomial, show ¬ (m + 1 ≤ (2 * m) / 2) by omega]
+        simp [gammaTransform_monomial]
       have hodd :
           gammaTransform (2 * m + 1) γ = gammaTransform (2 * m + 1) δ := by
         have hX1 : (X + 1 : ℝ[X]) ≠ 0 := by
@@ -575,7 +573,7 @@ lemma natDegree_gammaTransform_le (d : ℕ) (γ : ℝ[X]) :
   · simp [gammaBasisTerm]
   · intro i hi hi0
     have hi_pos : 0 < i := Nat.pos_of_ne_zero hi0
-    simp [gammaBasisTerm, hi0, hi_pos.ne']
+    simp [gammaBasisTerm, hi0]
   · intro h0
     exact (h0 (by simp)).elim
 
@@ -740,7 +738,7 @@ lemma isRealRooted_gammaQuadraticFactor {r : ℝ} (hr : r ≤ 0) :
                   have hpow0 : (((X + 1 : ℝ[X]) ^ 2).coeff (n + 3)) = 0 := by
                     apply Polynomial.coeff_eq_zero_of_natDegree_lt
                     exact lt_of_le_of_lt (natDegree_X_add_one_pow_le 2) (by omega)
-                  simp [Polynomial.coeff_X_add_one_pow, coeff_X, coeff_one, hpow0]
+                  simp [coeff_X, coeff_one, hpow0]
     have hroots :
         (C t * X ^ 2 + C (2 * t + 1) * X + C t).roots =
           {(-(2 * t + 1) - Real.sqrt (t * 4 + 1)) / (2 * t),

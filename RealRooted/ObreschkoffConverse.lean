@@ -8,8 +8,6 @@ Wronskian orientation lemmas, the same-degree and succ-degree cases,
 and the main converse `prec_of_allComboRealRooted`.
 -/
 
-set_option linter.unusedSimpArgs false
-
 open Polynomial
 
 noncomputable section
@@ -1381,9 +1379,9 @@ private theorem prec_or_revPrec_of_eq_zero_or_simple_combo_sameDegree
       rw [hg.2, hgdeg0]
     left
     refine ⟨hf, hg, [], [], by simp, by simp, ?_, ?_, ?_⟩
-    · simp [hroots_f]
-    · simp [hroots_g]
-    · exact Or.inr ⟨by simp, by simp [ListAlternates, ListInterlaces]⟩
+    · simpa [hroots_f]
+    · simpa [hroots_g]
+    · exact Or.inr ⟨by simp, by simp [ListAlternates]⟩
   by_cases hdeg1 : f.natDegree = 1
   · exact PosComboRealRooted.prec_or_revPrec_of_same_degree_one hdeg hdeg1
   have hdeg_ge2 : 2 ≤ f.natDegree := by omega
@@ -2869,7 +2867,7 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
         have hnat0 :
             (C α * C (f.coeff 0) + C β * C (g.coeff 0)).natDegree = 0 := by
           rw [hsum_eq]
-          simp [hcoeff_ne]
+          simp
         right
         refine ⟨?_, ?_⟩
         · exact isRealRooted_of_deg_zero hcomb hnat0

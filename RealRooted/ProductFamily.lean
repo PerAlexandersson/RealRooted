@@ -7,8 +7,6 @@ families (Brändén Theorem 7.8.3).
 import RealRooted.CommonInterleaverSeq
 import RealRooted.CombinatorialExamples.Common
 
-set_option linter.unusedSimpArgs false
-
 open Polynomial
 
 noncomputable section
@@ -134,7 +132,7 @@ lemma mem_zipWith_mul_get {row fs : List ℝ[X]}
     row.get i * fs.get ⟨i.1, by simpa [hlen] using i.2⟩ ∈ row.zipWith (· * ·) fs := by
   refine List.mem_iff_get.2 ?_
   refine ⟨⟨i.1, by simpa [List.length_zipWith, hlen] using i.2⟩, ?_⟩
-  simp [List.get_eq_getElem, hlen]
+  simp [List.get_eq_getElem]
 
 lemma hasNonnegCoeffs_zipWith_mul_sum {row fs : List ℝ[X]}
     (hrow : ∀ p ∈ row, HasNonnegCoeffs p)
