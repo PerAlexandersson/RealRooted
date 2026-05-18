@@ -31,7 +31,6 @@ The intended first milestones are:
 3. prove Theorem 2.6 in the current `Prec` language.
 -/
 
-set_option linter.unnecessarySimpa false
 set_option linter.unusedSimpArgs false
 set_option linter.unusedVariables false
 
@@ -384,7 +383,7 @@ lemma fPolynomial_X_sub_C_mul_succ (d : ℕ) (r : ℝ) {p : ℝ[X]}
     fPolynomial (d + 1) ((X - C r) * p) =
       (C (1 - r) * X - C r) * fPolynomial d p := by
   have hmul : (X - C r) * p = X * p + C (-r) * p := by
-    simpa [sub_eq_add_neg, add_mul]
+    simp [sub_eq_add_neg, add_mul]
   calc
     fPolynomial (d + 1) ((X - C r) * p)
       = fPolynomial (d + 1) (X * p + C (-r) * p) := by
@@ -407,7 +406,7 @@ lemma fPolynomial_X_sub_C_mul_succ (d : ℕ) (r : ℝ) {p : ℝ[X]}
           calc
             X * fPolynomial d p + C (-r) * ((X + 1) * fPolynomial d p)
               = X * fPolynomial d p - C r * ((X + 1) * fPolynomial d p) := by
-                  simpa [sub_eq_add_neg]
+                  simp [sub_eq_add_neg]
             _ = X * fPolynomial d p - (C r * (X + 1)) * fPolynomial d p := by
                   rw [mul_assoc]
             _ = (X - C r * (X + 1)) * fPolynomial d p := by
@@ -952,7 +951,7 @@ private theorem isRealRooted_of_fPolynomial_natDegree_roots_gt_neg_one
         have hr_root : p.IsRoot r := by
           rw [Polynomial.IsRoot.def] at hx_root ⊢
           rw [eval_fPolynomial_eq_mul_eval_untransform (d := n) (p := p)
-            (by simpa [hpdeg] using le_rfl) hx_ne] at hx_root
+            (by simp [hpdeg]) hx_ne] at hx_root
           have hpow_ne : (1 + x) ^ n ≠ 0 := by
             exact pow_ne_zero _ (by linarith)
           exact (mul_eq_zero.mp hx_root).resolve_left hpow_ne
@@ -1111,8 +1110,8 @@ theorem prec_fPolynomial_of_prec_of_hasNonnegCoeffs_of_minimal
     Prec (fPolynomial d u) (fPolynomial d v) := by
   let φ := fun r : ℝ => r / (1 - r)
   rcases h with ⟨hu_rr, hv_rr, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩
-  have hud : u.natDegree ≤ d := by simpa [hd] using le_max_left u.natDegree v.natDegree
-  have hvd : v.natDegree ≤ d := by simpa [hd] using le_max_right u.natDegree v.natDegree
+  have hud : u.natDegree ≤ d := by simp [hd]
+  have hvd : v.natDegree ≤ d := by simp [hd]
   have hfu_rr : IsRealRooted (fPolynomial d u) :=
     isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs hud hu_rr hu_nonneg
   have hfv_rr : IsRealRooted (fPolynomial d v) :=
@@ -1186,7 +1185,7 @@ theorem prec_fPolynomial_of_prec_of_hasNonnegCoeffs_of_minimal
                     hvd hv_rr hv_nonneg
         refine ⟨hfu_rr, hfv_rr, (-1) :: ss.map φ, (r₁ :: rest).map φ,
           hleft_sorted, hrs_map_sorted, hleft_eq, hright_eq, Or.inr ?_⟩
-        refine ⟨by simpa [hlen], ?_⟩
+        refine ⟨by simp [hlen], ?_⟩
         simpa [φ] using
           listAlternates_neg_one_cons_map_of_listInterlaces_of_nonpos
             (ss := ss) (r₁ := r₁) (rs := rest) hint hrs_nonpos
@@ -1214,7 +1213,7 @@ theorem prec_fPolynomial_of_prec_of_hasNonnegCoeffs_of_minimal
                 hvd hv_rr hv_nonneg
     refine ⟨hfu_rr, hfv_rr, ss.map φ, rs.map φ,
       hss_map_sorted, hrs_map_sorted, hleft_eq, hright_eq, Or.inr ?_⟩
-    refine ⟨by simpa [hlen], ?_⟩
+    refine ⟨by simp [hlen], ?_⟩
     simpa [φ] using listAlternates_map_transformedRoot_of_nonpos halt hrs_nonpos
 
 theorem prec_of_prec_fPolynomial_of_sameDegree_of_isRealRooted_of_hasNonnegCoeffs
@@ -1226,8 +1225,8 @@ theorem prec_of_prec_fPolynomial_of_sameDegree_of_isRealRooted_of_hasNonnegCoeff
     Prec u v := by
   let φ := fun r : ℝ => r / (1 - r)
   rcases h with ⟨hfu_rr, hfv_rr, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩
-  have hud_le : u.natDegree ≤ d := by simpa [hud]
-  have hvd_le : v.natDegree ≤ d := by simpa [hvd]
+  have hud_le : u.natDegree ≤ d := by simp [hud]
+  have hvd_le : v.natDegree ≤ d := by simp [hvd]
   have hfu_deg : (fPolynomial d u).natDegree = d := by
     exact fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero hud_le hu_nonneg hu_rr.1
   have hfv_deg : (fPolynomial d v).natDegree = d := by
@@ -1318,7 +1317,7 @@ theorem prec_of_prec_fPolynomial_of_succDegree_of_isRealRooted_of_hasNonnegCoeff
   let φ := fun r : ℝ => r / (1 - r)
   rcases h with ⟨hfu_rr, hfv_rr, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩
   have hud_le : u.natDegree ≤ d := by omega
-  have hvd_le : v.natDegree ≤ d := by simpa [hvd]
+  have hvd_le : v.natDegree ≤ d := by simp [hvd]
   have hud_pad : d - u.natDegree = 1 := by omega
   have hvd_pad : d - v.natDegree = 0 := by omega
   have hd_pos : 0 < d := by
@@ -1455,7 +1454,7 @@ private theorem not_prec_fPolynomial_of_right_degree_lt_of_sameDegree_left
   let φ := fun r : ℝ => r / (1 - r)
   intro h
   rcases h with ⟨hfu_rr, hfv_rr, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩
-  have hud_le : u.natDegree ≤ d := by simpa [hud]
+  have hud_le : u.natDegree ≤ d := by simp [hud]
   have hvd_le : v.natDegree ≤ d := le_of_lt hvd
   have hd_pos : 0 < d := by omega
   have hfu_deg : (fPolynomial d u).natDegree = d := by
@@ -1537,7 +1536,7 @@ private theorem not_prec_fPolynomial_of_left_degree_le_sub_two_of_right_full
   intro h
   rcases h with ⟨hfu_rr, hfv_rr, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩
   have hud_le : u.natDegree ≤ d := by omega
-  have hvd_le : v.natDegree ≤ d := by simpa [hvd]
+  have hvd_le : v.natDegree ≤ d := by simp [hvd]
   have hd_pos : 0 < d := by omega
   have hfu_deg : (fPolynomial d u).natDegree = d := by
     exact fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero hud_le hu_nonneg hu_rr.1
@@ -1645,8 +1644,8 @@ theorem prec_of_prec_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
     (h : Prec (fPolynomial d u) (fPolynomial d v))
     (hu_nonneg : HasNonnegCoeffs u) (hv_nonneg : HasNonnegCoeffs v) :
     Prec u v := by
-  have hud : u.natDegree ≤ d := by simpa [hd] using le_max_left u.natDegree v.natDegree
-  have hvd : v.natDegree ≤ d := by simpa [hd] using le_max_right u.natDegree v.natDegree
+  have hud : u.natDegree ≤ d := by simp [hd]
+  have hvd : v.natDegree ≤ d := by simp [hd]
   by_cases hv_eq : v.natDegree = d
   · by_cases hu_eq : u.natDegree = d
     · exact prec_of_prec_fPolynomial_of_sameDegree_of_isRealRooted_of_hasNonnegCoeffs
@@ -1811,7 +1810,7 @@ lemma exists_eq_X_mul_of_IdTransform_fixed_of_natDegree_lt {d : ℕ} {p : ℝ[X]
               _ = 0 := by
                     simp [coeff_zero_eq_zero_of_IdTransform_fixed_of_natDegree_lt hfix hdeg]
           refine ⟨0, ?_, by simp [IdTransform]⟩
-          simpa [hp0]
+          simp [hp0]
       | succ n =>
           have hroot0 : p.IsRoot 0 :=
             isRoot_zero_of_IdTransform_fixed_of_natDegree_lt hfix hdeg
@@ -2556,7 +2555,7 @@ private lemma leadingCoeff_add_X_mul_eq_of_natDegree_le
     _ = b.coeff b.natDegree := by
       rw [ha_top, zero_add, Polynomial.coeff_X_mul]
     _ = b.leadingCoeff := by
-      simpa using (Polynomial.coeff_natDegree (p := b))
+      simp
 
 private lemma natDegree_right_of_prec_to_sum
     {a b p : ℝ[X]}
@@ -2910,7 +2909,7 @@ private lemma exists_root_upper_bound_lt_zero_of_hasNonnegCoeffs_of_not_isRoot_z
     have hs' : s ∈ rs := by
       have : s ∈ (↑rs : Multiset ℝ) := by simpa [hrs_eq] using hs
       exact Multiset.mem_coe.mp this
-    simpa [hrs_nil] using hs'
+    simp [hrs_nil] at hs'
   · refine ⟨rs.getLast hrs_nil, ?_, ?_⟩
     · intro s hs
       have hs' : s ∈ rs := by
@@ -2967,7 +2966,7 @@ private lemma interlaces_of_prec_sameDegree_rightmost_factor
     exact right_ne_zero_of_mul (by simpa [hgq] using hg.1)
   have hq : IsRealRooted q := by
     apply isRealRooted_of_dvd hg hq_ne
-    exact ⟨X - C uR, by simpa [hgq, mul_comm]⟩
+    exact ⟨X - C uR, by simp [hgq, mul_comm]⟩
   have hq_deg_g : q.natDegree + 1 = g.natDegree := by
     rw [hgq, natDegree_mul (X_sub_C_ne_zero uR) hq_ne, natDegree_X_sub_C]
     omega
@@ -3675,9 +3674,9 @@ theorem precFPolynomialTransportMinimal : precFPolynomialTransportMinimalStateme
   constructor
   · intro h
     have hud : u.natDegree ≤ d := by
-      simpa [hd] using le_max_left u.natDegree v.natDegree
+      simp [hd]
     have hvd : v.natDegree ≤ d := by
-      simpa [hd] using le_max_right u.natDegree v.natDegree
+      simp [hd]
     have hu_rr : IsRealRooted u :=
       isRealRooted_of_isRealRooted_fPolynomial_of_hasNonnegCoeffs hud h.1 hu_nonneg
     have hv_rr : IsRealRooted v :=
