@@ -7,7 +7,6 @@ Sparse pair machinery, `matPolyAction` definition, forward and backward
 matrix-preservation theorems (Brändén, Theorem 7.8.5).
 -/
 
-set_option linter.style.longLine false
 set_option linter.unnecessarySimpa false
 set_option linter.unusedSimpArgs false
 

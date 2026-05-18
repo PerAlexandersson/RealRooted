@@ -31,7 +31,6 @@ The intended first milestones are:
 3. prove Theorem 2.6 in the current `Prec` language.
 -/
 
-set_option linter.style.cdot false
 set_option linter.unnecessarySimpa false
 set_option linter.unusedSimpArgs false
 set_option linter.unusedVariables false
@@ -2978,8 +2977,7 @@ private lemma interlaces_of_prec_sameDegree_rightmost_factor
   rcases hshape with ⟨hlen, _⟩ | ⟨_hlen, halt⟩
   · exfalso
     omega
-  ·
-    let qs := q.roots.sort (· ≤ ·)
+  · let qs := q.roots.sort (· ≤ ·)
     have hqs_eq : (↑qs : Multiset ℝ) = q.roots := Multiset.sort_eq ..
     have hqs_sorted : qs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
     have hqs_len : qs.length = q.natDegree := by
@@ -3355,8 +3353,7 @@ private theorem prec_b_component_of_prec_Id_top_of_right_top
     rcases Multiset.mem_add.mp hr with hr | hr
     · rcases Multiset.mem_singleton.mp hr with rfl
       norm_num
-    ·
-      have hr0 : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hb_rr hb_nonneg r hr
+    · have hr0 : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hb_rr hb_nonneg r hr
       linarith
   have hbh : Prec b h := by
     exact
@@ -3513,8 +3510,7 @@ theorem brandenSolusTheorem26_third_converse_of_top_degree
       linarith
     rcases hprec_or with hth | hht
     · exact False.elim (hnot_th hth)
-    ·
-      have hbound : h.natDegree ≤ t.natDegree := (natDegree_bounds_of_prec hht).1
+    · have hbound : h.natDegree ≤ t.natDegree := (natDegree_bounds_of_prec hht).1
       have hbound' : d ≤ b.natDegree + 1 := by
         dsimp [t] at hbound
         rw [hh_deg, natDegree_mul (X_sub_C_ne_zero (1 : ℝ)) hb0, natDegree_X_sub_C] at hbound
