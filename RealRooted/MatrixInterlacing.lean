@@ -16,7 +16,6 @@ noncomputable section
 
 namespace RealRooted
 
-set_option linter.flexible false in
 section
 
 /-- Sparse handbook test family for the converse direction: `1` at `i`,
@@ -552,7 +551,7 @@ lemma hasNonnegCoeffs_rowPairAffineSeq
           simp [rowPairAffineSeq] at hp
       | cons b row₂ =>
           intro p hp
-          simp [rowPairAffineSeq] at hp
+          simp only [rowPairAffineSeq, List.zipWith_cons_cons, List.mem_cons] at hp
           rcases hp with rfl | hp
           · have ha : HasNonnegCoeffs a := hrow₁_nonneg a (by simp)
             have hb : HasNonnegCoeffs b := hrow₂_nonneg b (by simp)

@@ -15,7 +15,6 @@ noncomputable section
 
 namespace RealRooted
 
-set_option linter.flexible false in
 section
 
 /-! ## Matrix action on polynomial sequences -/
@@ -98,7 +97,7 @@ lemma sum_ne_zero_of_hasNonnegCoeffs_of_mem_ne_zero
       rw [List.sum_nil]
       exact False.elim (List.not_mem_nil (a := p) hp_mem)
   | cons q ps ih =>
-      simp at hp_mem
+      simp only [List.mem_cons] at hp_mem
       rcases hp_mem with rfl | hp_mem
       · have htail_nonneg : HasNonnegCoeffs ps.sum :=
           hasNonnegCoeffs_sum ps (fun r hr => hps r (by simp [hr]))
@@ -124,7 +123,7 @@ lemma mem_zipWith_mul {row fs : List ℝ[X]} {p : ℝ[X]}
       | nil =>
           simp at hp
       | cons b fs =>
-          simp at hp
+          simp only [List.zipWith_cons_cons, List.mem_cons] at hp
           rcases hp with rfl | hp
           · exact ⟨a, by simp, b, by simp, rfl⟩
           · rcases ih hp with ⟨a', ha', b', hb', rfl⟩
@@ -345,7 +344,7 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
     have hlen_ps : ps.length = fs.length := by
       simp [ps, List.length_zipWith, hlen, List.length_reverse]
     rw [hnil] at hlen_ps
-    simp at hlen_ps
+    simp only [List.length_nil] at hlen_ps
     cases fs with
     | nil =>
         contradiction

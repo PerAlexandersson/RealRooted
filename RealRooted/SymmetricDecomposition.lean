@@ -41,7 +41,6 @@ noncomputable section
 
 namespace RealRooted
 
-set_option linter.flexible false in
 section
 
 /-- Brändén--Solus `I_d(p) = x^d p(1/x)`, implemented using Mathlib's bounded
@@ -144,7 +143,7 @@ lemma fPolynomial_succ_of_natDegree_le {d : ℕ} {p : ℝ[X]}
   have htop : p.coeff (d + 1) = 0 := by
     exact Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hp (Nat.lt_succ_self d))
   rw [htop]
-  simp
+  simp only [map_zero, zero_mul, tsub_self, pow_zero, mul_one, add_zero]
   calc
     ∑ k ∈ Finset.range (d + 1),
         C (p.coeff k) * X ^ k * (X + 1) ^ (d + 1 - k)
@@ -2687,12 +2686,12 @@ theorem brandenSolusTheorem26_forward_of_prec_b_a {d : ℕ} {p a b : ℝ[X]}
     have hprec0 : Prec0 a ([a, X * b].sum) := by
       refine prec0_sum_left_of_common_left_of_nonneg [a, X * b] a ?_ ?_
       · intro q hq
-        simp at hq
+        simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
         rcases hq with rfl | rfl
         · exact (prec_refl ha_rr).toPrec0
         · exact haxb.toPrec0
       · intro q hq
-        simp at hq
+        simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
         rcases hq with rfl | rfl
         · exact ha_nonneg
         · exact hXb_nonneg
@@ -2703,12 +2702,12 @@ theorem brandenSolusTheorem26_forward_of_prec_b_a {d : ℕ} {p a b : ℝ[X]}
     have hprec0 : Prec0 b ([a, X * b].sum) := by
       refine prec0_sum_left_of_common_left_of_nonneg [a, X * b] b ?_ ?_
       · intro q hq
-        simp at hq
+        simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
         rcases hq with rfl | rfl
         · exact hba.toPrec0
         · exact hbXb.toPrec0
       · intro q hq
-        simp at hq
+        simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
         rcases hq with rfl | rfl
         · exact ha_nonneg
         · exact hXb_nonneg
@@ -3371,12 +3370,12 @@ private theorem prec_b_component_of_prec_Id_top_of_right_top
   have hbp_sum : Prec b [h, t].sum := by
     refine prec_sum_left_of_common_left [h, t] b ?_ hb_pos ?_ ?_
     · intro q hq
-      simp at hq
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
       rcases hq with rfl | rfl
       · exact hbh
       · exact hbt
     · intro q hq
-      simp at hq
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
       rcases hq with rfl | rfl
       · exact hh_pos
       · exact ht_pos
@@ -4081,12 +4080,12 @@ theorem brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
   have hbp_sum : Prec b [h, t].sum := by
     refine prec_sum_left_of_common_left [h, t] b ?_ hb_pos ?_ ?_
     · intro q hq
-      simp at hq
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
       rcases hq with rfl | rfl
       · exact hbh
       · exact hbt
     · intro q hq
-      simp at hq
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
       rcases hq with rfl | rfl
       · exact hh_pos
       · exact ht_pos

@@ -21,7 +21,6 @@ noncomputable section
 
 namespace RealRooted
 
-set_option linter.flexible false in
 section
 
 /-- A list of polynomials has a common interleaver if all of its members
@@ -118,7 +117,7 @@ lemma rootSlotInterval_nonempty (rs : List ℝ) (hrs : rs.Pairwise (· ≥ ·))
         refine ⟨r, ?_⟩
         simp [h0, hj, hrev, hrs_nil]
     · refine ⟨rs.get ⟨j.1, by omega⟩, ?_⟩
-      simp [h0, hj]
+      simp only [h0, ↓reduceDIte, hj, List.get_eq_getElem, Set.mem_Icc, Std.le_refl, true_and]
       have hjlt : j.1 < rs.length := by
         omega
       let jm1 : Fin rs.length := ⟨j.1 - 1, by omega⟩
@@ -189,7 +188,7 @@ private lemma listInterlaces_left_le_of_right_le {ss rs : List ℝ} {c : ℝ}
           | cons r₂ rs'' =>
               rcases hint with ⟨_, hs_r₂, htail⟩
               intro t ht
-              simp at ht
+              simp only [List.mem_cons] at ht
               rcases ht with rfl | ht
               · exact le_trans hs_r₂ (hrs r₂ (by simp))
               · exact ih htail (fun r hr => hrs r (by simp [hr])) t ht
@@ -209,7 +208,7 @@ private lemma listAlternates_left_le_of_right_le {ss rs : List ℝ} {c : ℝ}
       | cons r rs' =>
           rcases halt with ⟨hsr, htail⟩
           intro t ht
-          simp at ht
+          simp only [List.mem_cons] at ht
           rcases ht with rfl | ht
           · exact le_trans hsr (hrs r (by simp))
           · exact listInterlaces_left_le_of_right_le htail
@@ -959,7 +958,7 @@ private lemma mem_rootSlotInterval_reverse_of_listAlternates_zero
           simpa [List.length_reverse] using this⟩ := by
   cases ss with
   | nil =>
-      simp at hlen
+      simp only [List.length_nil] at hlen
       cases rs with
       | nil =>
           simp [rootSlotInterval]

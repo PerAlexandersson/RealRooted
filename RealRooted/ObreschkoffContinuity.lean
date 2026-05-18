@@ -18,7 +18,6 @@ noncomputable section
 
 namespace RealRooted
 
-set_option linter.flexible false in
 section
 
 /-- Local hypothesis form of positive-combination real-rootedness used by the
@@ -111,7 +110,7 @@ theorem exists_root_near_right_family
       ‖a - b‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖a‖ 1 := by
   let t : ℝ := μ⁻¹
   have ht : 0 < t := by
-    simp [t]
+    simp only [inv_pos, t]
     positivity
   have hμ_ne : μ ≠ 0 := ne_of_gt hμ
   have hμ1_ne : μ + 1 ≠ 0 := by linarith
@@ -153,7 +152,7 @@ theorem exists_complex_aroot_near_right_family
       ‖z - w‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖z‖ 1 := by
   let t : ℝ := μ⁻¹
   have ht : 0 < t := by
-    simp [t]
+    simp only [inv_pos, t]
     positivity
   have hμ_ne : μ ≠ 0 := ne_of_gt hμ
   have hμ1_ne : μ + 1 ≠ 0 := by linarith
