@@ -18,9 +18,10 @@ lake exe cache get
 lake build
 ```
 
-For a quicker check of recent Veronese/Hurwitz work:
+For a quicker check of recent Veronese and Hurwitz-related work:
 
 ```bash
+lake build RealRooted.VeroneseMatrix
 lake build RealRooted.VeroneseSection
 lake build RealRooted.HurwitzMatrix
 ```
@@ -56,6 +57,13 @@ is organized around these pages and anchors:
   set-partition, colored set-partition, and Stirling-permutation examples.
 - [Sturm sequences: Catalan families](https://www.symmetricfunctions.com/realRootedCatalan.htm#realRootedCatalan):
   Narayana and Motzkin polynomial examples.
+- Athanasiadis--Wagner,
+  [*Veronese sections and interlacing matrices of polynomials and formal power
+  series*](https://doi.org/10.48550/arXiv.2404.12989):
+  the main reference for fully interlacing matrices and Veronese sections.  In
+  this repository, the Athanasiadis--Wagner material is treated as reference
+  context; the completed Veronese real-rootedness theorem below uses a separate
+  cyclic-matrix/interlacing-preserver proof.
 
 Combinatorial sequence modules are collected under
 `RealRooted/CombinatorialExamples/`.
@@ -159,7 +167,40 @@ Catalog context:
   interlacing transfer through the transform under the minimal-degree
   hypotheses used by the decomposition machinery.
 
-**Polya Frequency And Conditional Veronese Sections**
+**Veronese Sections**
+
+Reference context: Athanasiadis--Wagner,
+[*Veronese sections and interlacing matrices of polynomials and formal power
+series*](https://doi.org/10.48550/arXiv.2404.12989), especially the Veronese
+section preservation results around Corollary 5.6.  The fully interlacing
+matrix theorem from that paper is not packaged here as one final theorem; the
+library instead contains coefficient-level submatrix statements, conditional
+interfaces for the fully interlacing route, and a completed cyclic-matrix proof
+of the real-rootedness consequence.
+
+- `veroneseSectionPolynomial r k p`: the fixed residue section of `p`.
+- `veroneseSectionPolynomialListDesc`,
+  `veroneseLinearFactorMatrixDesc`, and
+  `matPolyAction_veroneseLinearFactorMatrixDesc`: descending-order matrix
+  form of the linear-factor recursion.  The order
+  `S_{r-1}, S_{r-2}, ..., S_0` puts the cyclic `X` entry in the lower-left
+  corner, which matches the matrix-preserver theorem.
+- `veroneseLinearFactorMatrixDesc_has2x2`: the finite 2-by-2 affine check for
+  the cyclic matrix attached to multiplication by `X + C a`, for `a ≥ 0`.
+- `isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_X_add_C_mul`:
+  the iterable linear-factor step.  If the current descending Veronese sections
+  are weakly interlacing, have nonnegative coefficients, and all nonzero
+  sections are real-rooted, then the same package holds after multiplying by
+  `X + C a`.
+- `isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_of_realRooted_nonneg`:
+  a real-rooted polynomial with nonnegative coefficients has weakly interlacing
+  descending Veronese sections, and every nonzero section is real-rooted.
+- `isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg_matrix`:
+  the main zero-aware Veronese real-rootedness corollary from the matrix proof.
+  This is the completed theorem corresponding to the Veronese idea that
+  motivated the recent formalization pass.
+
+**Polya Frequency And Fully Interlacing Background**
 
 - `nonneg_of_isPolyaFrequencySequence` and
   `hasNonnegCoeffs_of_isPolyaFrequencySequence_coeff`: basic PF consequences.
@@ -171,7 +212,8 @@ Catalog context:
   `aissenSchoenbergWhitneyForward_iff_orZero`: zero-aware and strict forward
   ASW interfaces are equivalent.
 - `isPolyaFrequencySequence_veroneseSectionSeq`: fixed-residue subsequences of
-  a PF sequence are PF.
+  a PF sequence are PF.  This is the Toeplitz submatrix version of the
+  Veronese-section idea.
 - `isPolyaFrequencySequence_veroneseSectionPolynomial_coeff` and
   `hasNonnegCoeffs_veroneseSectionPolynomial`: coefficient-level facts for
   Veronese section polynomials.
@@ -182,18 +224,7 @@ Catalog context:
   `veroneseSectionPolynomial_X_add_C_mul_zero`, and
   `veroneseSectionPolynomial_X_add_C_mul_succ`: recurrence formulas for
   Veronese sections under multiplication by `X` and by a linear factor
-  `X + C a`.  These are the formal entry point for a possible Wagner-style
-  proof avoiding the full Hurwitz/Lace route.
-- `veroneseSectionPolynomialListDesc`,
-  `veroneseLinearFactorMatrixDesc`, and
-  `matPolyAction_veroneseLinearFactorMatrixDesc`: descending-order matrix
-  form of the same recursion.  The reversed order
-  `S_{r-1}, S_{r-2}, ..., S_0` puts the cyclic `X` entry in the lower-left
-  corner, which is the order compatible with the matrix-preserver theorem.
-- `isInterlacingSeq0Nonneg_veroneseSectionPolynomialListDesc_X_add_C_mul`:
-  conditional matrix-preserver step for multiplying by `X + C a`; the remaining
-  finite obligation is `VeroneseLinearFactorMatrixDescHas2x2`, the 2-by-2
-  affine check for the cyclic matrix.
+  `X + C a`.
 - A direct Borcea-Branden algebraic-symbol proof would need a more refined
   stability domain than ordinary upper-half-plane stability: for the even
   section `T(a0 + a1 X + a2 X^2) = a0 + a2 X`, the degree-two symbol is
@@ -310,13 +341,12 @@ such as
 now uses the sign-normalized `hermiteBiehlerForwardPosStatement`, since the
 sign-free forward statement is false.
 
-A plausible lighter proof route is also partly prepared.  Factoring a
-real-rooted nonnegative polynomial into linear factors `X + C a`, the new
-Veronese recurrence lemmas show that each multiplication step applies a sparse
-cyclic matrix to the list of sections.  Proving that this sparse matrix
-preserves interlacing sequences via `matrix_preserves_interlacing_seq` would
-give a Wagner/Brändén-style proof of Veronese real-rootedness and interlacing
-without invoking the full Hurwitz-matrix criterion.  The remaining work is the
-finite `2×2` affine check for that cyclic matrix.
+The separate cyclic-matrix route in `RealRooted.VeroneseMatrix` is no longer
+only a plan.  It proves the finite `2×2` affine check for the sparse cyclic
+matrix, iterates the linear-factor step, and derives the zero-aware theorem
+`isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg_matrix`.
+This proves the Veronese real-rootedness consequence for real-rooted
+polynomials with nonnegative coefficients without invoking the full
+Athanasiadis--Wagner fully interlacing matrix machinery.
 
 In short: this is a working research codebase, not a finished library API.

@@ -425,6 +425,97 @@ lemma zipWith_mul_sum_filterLeftNonzero_eq
           · simp [filterLeftNonzero, filterRightByLeftNonzero, filterLeftNonzeroPairs, hf]
             simpa [filterLeftNonzero, filterRightByLeftNonzero, filterLeftNonzeroPairs] using ih gs
 
+def filterProductNonzeroPairs (fs gs : List ℝ[X]) : List (ℝ[X] × ℝ[X]) :=
+  (fs.zip gs).filter fun p => p.1 ≠ 0 ∧ p.2 ≠ 0
+
+def filterProductLeftNonzero (fs gs : List ℝ[X]) : List ℝ[X] :=
+  (filterProductNonzeroPairs fs gs).map Prod.fst
+
+def filterProductRightNonzero (fs gs : List ℝ[X]) : List ℝ[X] :=
+  (filterProductNonzeroPairs fs gs).map Prod.snd
+
+lemma length_filterProductLeftNonzero_eq_filterProductRightNonzero
+    (fs gs : List ℝ[X]) :
+    (filterProductLeftNonzero fs gs).length =
+      (filterProductRightNonzero fs gs).length := by
+  simp [filterProductLeftNonzero, filterProductRightNonzero]
+
+lemma filterProductLeftNonzero_sublist_left (fs gs : List ℝ[X]) :
+    (filterProductLeftNonzero fs gs).Sublist fs := by
+  induction fs generalizing gs with
+  | nil =>
+      cases gs <;> simp [filterProductLeftNonzero, filterProductNonzeroPairs]
+  | cons f fs ih =>
+      cases gs with
+      | nil =>
+          simp [filterProductLeftNonzero, filterProductNonzeroPairs]
+      | cons g gs =>
+          by_cases hfg : f ≠ 0 ∧ g ≠ 0
+          · simp [filterProductLeftNonzero, filterProductNonzeroPairs, hfg]
+            simpa [filterProductLeftNonzero, filterProductNonzeroPairs] using ih gs
+          · simp [filterProductLeftNonzero, filterProductNonzeroPairs, hfg]
+            simpa [filterProductLeftNonzero, filterProductNonzeroPairs] using
+              (ih gs).cons f
+
+lemma filterProductRightNonzero_sublist_right (fs gs : List ℝ[X]) :
+    (filterProductRightNonzero fs gs).Sublist gs := by
+  induction fs generalizing gs with
+  | nil =>
+      cases gs <;> simp [filterProductRightNonzero, filterProductNonzeroPairs]
+  | cons f fs ih =>
+      cases gs with
+      | nil =>
+          simp [filterProductRightNonzero, filterProductNonzeroPairs]
+      | cons g gs =>
+          by_cases hfg : f ≠ 0 ∧ g ≠ 0
+          · simp [filterProductRightNonzero, filterProductNonzeroPairs, hfg]
+            simpa [filterProductRightNonzero, filterProductNonzeroPairs] using ih gs
+          · simp [filterProductRightNonzero, filterProductNonzeroPairs, hfg]
+            simpa [filterProductRightNonzero, filterProductNonzeroPairs] using
+              (ih gs).cons g
+
+lemma mem_filterProductLeftNonzero_ne_zero {fs gs : List ℝ[X]} {f : ℝ[X]}
+    (hf : f ∈ filterProductLeftNonzero fs gs) : f ≠ 0 := by
+  rcases List.mem_map.1 hf with ⟨p, hp, rfl⟩
+  exact (of_decide_eq_true (List.mem_filter.1 hp).2).1
+
+lemma mem_filterProductRightNonzero_ne_zero {fs gs : List ℝ[X]} {g : ℝ[X]}
+    (hg : g ∈ filterProductRightNonzero fs gs) : g ≠ 0 := by
+  rcases List.mem_map.1 hg with ⟨p, hp, rfl⟩
+  exact (of_decide_eq_true (List.mem_filter.1 hp).2).2
+
+lemma zipWith_mul_sum_filterProductNonzero_eq
+    (fs gs : List ℝ[X]) :
+    ((filterProductLeftNonzero fs gs).zipWith (· * ·)
+      (filterProductRightNonzero fs gs)).sum =
+      (fs.zipWith (· * ·) gs).sum := by
+  induction fs generalizing gs with
+  | nil =>
+      cases gs <;> simp [filterProductLeftNonzero, filterProductRightNonzero,
+        filterProductNonzeroPairs]
+  | cons f fs ih =>
+      cases gs with
+      | nil =>
+          simp [filterProductLeftNonzero, filterProductRightNonzero,
+            filterProductNonzeroPairs]
+      | cons g gs =>
+          by_cases hfg : f ≠ 0 ∧ g ≠ 0
+          · simp [filterProductLeftNonzero, filterProductRightNonzero,
+              filterProductNonzeroPairs, hfg]
+            simpa [filterProductLeftNonzero, filterProductRightNonzero,
+              filterProductNonzeroPairs] using ih gs
+          · have hprod : f * g = 0 := by
+              by_cases hf : f = 0
+              · simp [hf]
+              · have hg : g = 0 := by
+                  by_contra hg
+                  exact hfg ⟨hf, hg⟩
+                simp [hg]
+            simp [filterProductLeftNonzero, filterProductRightNonzero,
+              filterProductNonzeroPairs, hfg, hprod]
+            simpa [filterProductLeftNonzero, filterProductRightNonzero,
+              filterProductNonzeroPairs] using ih gs
+
 /-- Weak zero-aware product-sum theorem. If the left family is weakly
 interlacing, its nonzero members are real-rooted, and the paired product sum is
 nonzero, then filtering out zero left factors lets us reuse Brändén's strict
@@ -457,6 +548,55 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg
   have hsum_eq :
       (fs'.zipWith (· * ·) gs').sum = (fs.zipWith (· * ·) gs.reverse).sum := by
     simpa [fs', gs'] using zipWith_mul_sum_filterLeftNonzero_eq fs gs.reverse
+  have hfs'_ne : fs' ≠ [] := by
+    intro hnil
+    have hsum0 : (fs'.zipWith (· * ·) gs').sum = 0 := by
+      simp [hnil]
+    exact hsum_ne (by rw [← hsum_eq, hsum0])
+  have hrr :
+      IsRealRooted ((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum) := by
+    exact
+      isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
+        (fs := fs') (gs := gs'.reverse)
+        hfs'_ne
+        (by simpa [List.length_reverse] using hlen')
+        hfs'
+        hgs'_rev
+  simpa [hsum_eq] using hrr
+
+/-- Two-sided weak zero-aware product-sum theorem. Zero factors on either side
+are removed pairwise before applying Brändén's strict product-sum theorem. -/
+theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg_both
+    {fs gs : List ℝ[X]}
+    (_hlen : fs.length = gs.length)
+    (hfs : IsInterlacingSeq0Nonneg fs)
+    (hfs_real : ∀ f ∈ fs, f ≠ 0 → IsRealRooted f)
+    (hgs : IsInterlacingSeq0Nonneg gs)
+    (hgs_real : ∀ g ∈ gs, g ≠ 0 → IsRealRooted g)
+    (hsum_ne : (fs.zipWith (· * ·) gs.reverse).sum ≠ 0) :
+    IsRealRooted (fs.zipWith (· * ·) gs.reverse).sum := by
+  let fs' := filterProductLeftNonzero fs gs.reverse
+  let gs' := filterProductRightNonzero fs gs.reverse
+  have hfs_sub : fs'.Sublist fs := by
+    simpa [fs'] using filterProductLeftNonzero_sublist_left fs gs.reverse
+  have hgs_sub_rev : gs'.reverse.Sublist gs := by
+    have hsub : gs'.Sublist gs.reverse := by
+      simpa [gs'] using filterProductRightNonzero_sublist_right fs gs.reverse
+    simpa using hsub.reverse
+  have hfs' : IsInterlacingSeqNonneg fs' := by
+    exact hfs.sublist_of_realRooted_of_ne hfs_sub hfs_real
+      (fun f hf => mem_filterProductLeftNonzero_ne_zero (fs := fs) (gs := gs.reverse) hf)
+  have hgs'_rev : IsInterlacingSeqNonneg gs'.reverse := by
+    exact hgs.sublist_of_realRooted_of_ne hgs_sub_rev hgs_real
+      (fun g hg =>
+        mem_filterProductRightNonzero_ne_zero
+          (fs := fs) (gs := gs.reverse) (by simpa using List.mem_reverse.1 hg))
+  have hlen' : fs'.length = gs'.length := by
+    simpa [fs', gs'] using length_filterProductLeftNonzero_eq_filterProductRightNonzero
+      fs gs.reverse
+  have hsum_eq :
+      (fs'.zipWith (· * ·) gs').sum = (fs.zipWith (· * ·) gs.reverse).sum := by
+    simpa [fs', gs'] using zipWith_mul_sum_filterProductNonzero_eq fs gs.reverse
   have hfs'_ne : fs' ≠ [] := by
     intro hnil
     have hsum0 : (fs'.zipWith (· * ·) gs').sum = 0 := by

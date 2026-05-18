@@ -13,9 +13,18 @@ namespace RealRooted
 # Veronese sections
 
 This file starts the formalization of Athanasiadis--Wagner's Veronese-section
-results.  The first target is the coefficient-level core: Veronese subsequences
-preserve Toeplitz total nonnegativity, by identifying each Toeplitz minor with a
-subminor of the original Toeplitz matrix.
+results.  It contains the coefficient-level core: Veronese subsequences
+preserve Toeplitz total nonnegativity, by identifying each Toeplitz minor with
+a subminor of the original Toeplitz matrix.  It also records the two-row Lace
+submatrix statements and conditional polynomial wrappers around
+Aissen--Schoenberg--Whitney, Hermite--Biehler, and Hurwitz-matrix interfaces.
+
+The unconditional real-rootedness theorem for Veronese sections of
+real-rooted polynomials with nonnegative coefficients is proved separately in
+`RealRooted.VeroneseMatrix`, using a cyclic matrix and interlacing-preserver
+argument.  This file should therefore be read as the Athanasiadis--Wagner
+background and conditional fully-interlacing route, not as the final matrix
+proof of that real-rootedness consequence.
 -/
 
 /-- A finite minor of an infinite matrix with natural-numbered rows and

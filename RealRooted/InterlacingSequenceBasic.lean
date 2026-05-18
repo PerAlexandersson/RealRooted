@@ -198,6 +198,38 @@ lemma IsInterlacingSeqNonneg.sublist {fs gs : List ℝ[X]}
     exact hfs.1 p (hgs.subset hp)
   · exact hfs.2.sublist hgs
 
+lemma IsInterlacingSeq0.sublist {fs gs : List ℝ[X]}
+    (hfs : IsInterlacingSeq0 fs) (hgs : gs.Sublist fs) :
+    IsInterlacingSeq0 gs := by
+  rw [isInterlacingSeq0_iff_pairwise] at hfs ⊢
+  induction hgs with
+  | slnil =>
+      exact List.Pairwise.nil
+  | cons _ _ ih =>
+      exact ih (List.pairwise_cons.1 hfs).2
+  | cons₂ a hsub ih =>
+      exact List.pairwise_cons.2 ⟨
+        fun b hb => (List.pairwise_cons.1 hfs).1 _ (hsub.subset hb),
+        ih (List.pairwise_cons.1 hfs).2
+      ⟩
+
+lemma IsInterlacingSeq0Nonneg.sublist_of_realRooted_of_ne
+    {fs gs : List ℝ[X]}
+    (hfs : IsInterlacingSeq0Nonneg fs) (hgs : gs.Sublist fs)
+    (hreal : ∀ f ∈ fs, f ≠ 0 → IsRealRooted f)
+    (hne : ∀ f ∈ gs, f ≠ 0) :
+    IsInterlacingSeqNonneg gs := by
+  refine ⟨?_, ?_⟩
+  · intro p hp
+    exact ⟨hreal p (hgs.subset hp) (hne p hp), hfs.2 p (hgs.subset hp)⟩
+  · have hgs0 : IsInterlacingSeq0 gs := hfs.1.sublist hgs
+    rw [isInterlacingSeq_iff_pairwise]
+    refine List.pairwise_iff_get.2 ?_
+    intro i j hij
+    have hprec0 := hgs0.prec0 (i := i) (j := j) hij
+    exact hprec0.toPrec_of_ne
+      (hne _ (List.get_mem _ _)) (hne _ (List.get_mem _ _))
+
 /-- Concatenating two interlacing sequences that are compatible
     (every element of the first interlaces every element of the second). -/
 lemma IsInterlacingSeq.append {fs gs : List ℝ[X]}
