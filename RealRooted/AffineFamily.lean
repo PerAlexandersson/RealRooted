@@ -57,7 +57,7 @@ lemma ne_zero_of_self_2x2 (p : ℝ[X])
         (((C (1 : ℝ) * X + C (1 : ℝ)) * p) + p) :=
     hdiag 1 1 zero_lt_one zero_lt_one
   intro hp0
-  exact hself.1.1 (by simp [hp0])
+  exact hself.1.1 (by grind)
 
 lemma isRealRooted_of_self_2x2 (p : ℝ[X])
     (hdiag : Has2x2InterlacingProperty p p p p) :
@@ -72,13 +72,7 @@ lemma isRealRooted_of_self_2x2 (p : ℝ[X])
     hself.1
   have hp0 : p ≠ 0 := ne_zero_of_self_2x2 p hdiag
   have hdiv : p ∣ (((C (1 : ℝ) * X + C (1 : ℝ)) * p) + p) := by
-    refine ⟨(C (1 : ℝ) * X + C (1 : ℝ)) + 1, ?_⟩
-    calc
-      ((C (1 : ℝ) * X + C (1 : ℝ)) * p) + p
-          = p * (C (1 : ℝ) * X + C (1 : ℝ)) + p := by
-              simp [mul_comm]
-      _ = p * ((C (1 : ℝ) * X + C (1 : ℝ)) + 1) := by
-            simp [mul_add, add_comm]
+    simp
   exact isRealRooted_of_dvd hcombo_rr hp0 hdiv
 
 lemma prec_self_mul_X_of_nonneg {f : ℝ[X]}
@@ -91,14 +85,11 @@ lemma prec_self_mul_X_of_nonneg {f : ℝ[X]}
     intro r hr
     rw [roots_mul (mul_ne_zero X_ne_zero hf.1), roots_X] at hr
     rcases Multiset.mem_add.mp hr with hr0 | hrf
-    · have hr0' : r = 0 := by
-        simpa [Multiset.mem_singleton] using hr0
-      linarith
+    · simp_all
     · exact hf_nonpos r hrf
   have hXf_pos : HasPosLeadingCoeff (X * f) := by
     unfold HasPosLeadingCoeff at hf_pos ⊢
-    rw [leadingCoeff_mul, leadingCoeff_X]
-    simpa using hf_pos
+    simp_all
   have hdeg : f.natDegree + 1 = (X * f).natDegree := by
     rw [natDegree_X_mul hf.1]
   have hself : Prec (X * f) (X * f) := prec_refl hXf
@@ -118,7 +109,7 @@ lemma prec_to_prec_mul_X_of_nonneg {f g : ℝ[X]}
     rw [← Multiset.coe_card, hrs_eq, hg.2]
   rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩
   · have hdeg : f.natDegree + 1 = g.natDegree := by
-      omega
+      lia
     exact
       (prec_iff_prec_mul_X_of_roots_nonpos
         (f := f) (g := g)
@@ -126,7 +117,7 @@ lemma prec_to_prec_mul_X_of_nonneg {f g : ℝ[X]}
         hf_nonpos hg_nonpos hdeg).mp
         ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, Or.inl ⟨hlen, by assumption⟩⟩
   · have hdeg : f.natDegree = g.natDegree := by
-      omega
+      lia
     exact
       prec_sameDegree_to_prec_mul_X_of_roots_nonpos
         ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, Or.inr ⟨hlen, by assumption⟩⟩
@@ -136,7 +127,7 @@ private lemma hasPosLeadingCoeff_of_X_sub_C_mul_local {q : ℝ[X]} {r : ℝ}
     (h : HasPosLeadingCoeff ((X - C r) * q)) :
     HasPosLeadingCoeff q := by
   unfold HasPosLeadingCoeff at h ⊢
-  simpa [Polynomial.leadingCoeff_mul, leadingCoeff_X_sub_C] using h
+  simp_all
 
 private lemma hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
     {p q : ℝ[X]}
@@ -180,9 +171,9 @@ private lemma affine_family_common_root_reduction_data
   have hqg_ne : qg ≠ 0 := by
     exact right_ne_zero_of_mul (by simpa [hqg] using hg.1)
   have hqf_rr : IsRealRooted qf := by
-    exact isRealRooted_of_dvd hf hqf_ne ⟨X - C r, by simpa [mul_comm] using hqf⟩
+    exact isRealRooted_of_dvd hf hqf_ne ⟨X - C r, by grind⟩
   have hqg_rr : IsRealRooted qg := by
-    exact isRealRooted_of_dvd hg hqg_ne ⟨X - C r, by simpa [mul_comm] using hqg⟩
+    exact isRealRooted_of_dvd hg hqg_ne ⟨X - C r, by grind⟩
   have hqf_pos : HasPosLeadingCoeff qf := by
     exact hasPosLeadingCoeff_of_X_sub_C_mul_local (by simpa [hqf] using hf_pos)
   have hqg_pos : HasPosLeadingCoeff qg := by
@@ -190,38 +181,28 @@ private lemma affine_family_common_root_reduction_data
   have hqf_nonneg : HasNonnegCoeffs qf := by
     exact
       hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
-        hf hfnn hqf_rr hqf_pos ⟨X - C r, by simpa [mul_comm] using hqf⟩
+        hf hfnn hqf_rr hqf_pos ⟨X - C r, by grind⟩
   have hqg_nonneg : HasNonnegCoeffs qg := by
     exact
       hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
-        hg hgnn hqg_rr hqg_pos ⟨X - C r, by simpa [mul_comm] using hqg⟩
+        hg hgnn hqg_rr hqg_pos ⟨X - C r, by grind⟩
   refine ⟨qf, qg, hqf, hqg, hqf_nonneg, hqg_nonneg, hqf_ne, hqg_ne, hqf_pos, hqg_pos, ?_⟩
   intro s t hs ht
   have hbase : IsRealRooted (((C s * X + C t) * ((X - C r) * qf)) + ((X - C r) * qg)) := by
-    simpa [hqf, hqg] using haff hs ht
+    simp_all
   have hEq :
       (((C s * X + C t) * ((X - C r) * qf)) + ((X - C r) * qg))
         = (X - C r) * (((C s * X + C t) * qf) + qg) := by
-    calc
-      (((C s * X + C t) * ((X - C r) * qf)) + ((X - C r) * qg))
-          = (X - C r) * ((C s * X + C t) * qf) + (X - C r) * qg := by
-              ac_rfl
-      _ = (X - C r) * (((C s * X + C t) * qf) + qg) := by
-            rw [mul_add]
+    grind
   have hsum_ne : (((C s * X + C t) * qf) + qg) ≠ 0 := by
     intro hsum0
     have : (((C s * X + C t) * ((X - C r) * qf)) + ((X - C r) * qg)) = 0 := by
-      rw [hEq, hsum0]
-      simp
+      simp_all
     exact hbase.1 this
   exact
     isRealRooted_of_dvd hbase hsum_ne
       ⟨X - C r, by
-        calc
-          (((C s * X + C t) * ((X - C r) * qf)) + ((X - C r) * qg))
-              = (X - C r) * (((C s * X + C t) * qf) + qg) := hEq
-          _ = (((C s * X + C t) * qf) + qg) * (X - C r) := by
-                rw [mul_comm]
+        grind
       ⟩
 
 private lemma prec_right_pair_of_common_root_factor
@@ -232,11 +213,7 @@ private lemma prec_right_pair_of_common_root_factor
     Prec g (X * f) := by
   have hprec_mul : Prec ((X - C r) * qg) ((X - C r) * (X * qf)) :=
     prec_mul_common_factor (isRealRooted_X_sub_C r) hprec_q
-  have hXf_eq : X * f = (X - C r) * (X * qf) := by
-    calc
-      X * f = X * ((X - C r) * qf) := by simp [hf]
-      _ = (X - C r) * (X * qf) := by ring
-  simpa [hg, hXf_eq] using hprec_mul
+  grind
 
 private lemma prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos_local {f g : ℝ[X]}
     (h : Prec g (X * f))
@@ -252,11 +229,7 @@ private lemma prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos_local {f g : ℝ[
     intro r hr
     exact hf_nonpos r (by rw [← hrs_f_eq]; exact Multiset.mem_coe.mpr hr)
   have hrs_f0 : (rs_f ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by
-    rw [List.pairwise_append]
-    exact ⟨hrs_f, List.pairwise_singleton _ _, fun a ha b hb => by
-      simp only [List.mem_singleton] at hb
-      rw [hb]
-      exact hrs_f_nonpos a ha⟩
+    grind
   have hXf_roots : (X * f).roots = {0} + f.roots := by
     rw [roots_mul (mul_ne_zero X_ne_zero hf.1), roots_X]
   have hrs_Xf_is : rs_Xf = rs_f ++ [(0 : ℝ)] := by
@@ -269,25 +242,16 @@ private lemma prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos_local {f g : ℝ[
   rcases hshape with ⟨hlen, hint⟩ | ⟨hlen, _⟩
   · rw [hrs_Xf_is] at hint hlen
     have hlen' : ss_g.length + 1 = (rs_f ++ [(0 : ℝ)]).length := by
-      simp [hlen_fg]
+      lia
     have hrs_f0_nonpos : ∀ r ∈ rs_f ++ [(0 : ℝ)], r ≤ 0 := by
-      intro r hr
-      rcases List.mem_append.mp hr with hr | hr
-      · exact hrs_f_nonpos r hr
-      · simp at hr
-        simp [hr]
+      grind
     have halt0 :
         ListAlternates (rs_f ++ [(0 : ℝ)]) (ss_g ++ [(0 : ℝ)]) :=
       listAlternates_append_zero ss_g (rs_f ++ [(0 : ℝ)]) hlen' hint hrs_f0_nonpos
     have halt : ListAlternates rs_f ss_g :=
       listAlternates_of_append_zero_both rs_f ss_g hlen_fg halt0
     exact ⟨hf, hg, rs_f, ss_g, hrs_f, hss_g, hrs_f_eq, hss_g_eq, Or.inr ⟨hlen_fg, halt⟩⟩
-  · have hss_len : ss_g.length = g.natDegree := by
-      rw [← Multiset.coe_card, hss_g_eq, hg.2]
-    have hrs_len : rs_Xf.length = (X * f).natDegree := by
-      rw [← Multiset.coe_card, hrs_Xf_eq, hXf.2]
-    rw [natDegree_X_mul hf.1] at hrs_len
-    omega
+  · simp_all
 
 /-- Backward Wagner wrapper used in the affine-family endgame:
 once the right-hand pair `(g, X * f)` is oriented, nonnegative coefficients
@@ -308,7 +272,7 @@ lemma prec_of_prec_mul_X_of_nonneg {f g : ℝ[X]}
       rw [← Multiset.coe_card, hrs_eq, hXf.2]
     have hdeg : f.natDegree = g.natDegree := by
       rw [natDegree_X_mul hf.1] at hrs_len
-      omega
+      lia
     exact
       prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos_local
         h hdeg hf_nonpos
@@ -318,7 +282,7 @@ lemma prec_of_prec_mul_X_of_nonneg {f g : ℝ[X]}
       rw [← Multiset.coe_card, hrs_eq, hXf.2]
     have hdeg : f.natDegree + 1 = g.natDegree := by
       rw [natDegree_X_mul hf.1] at hrs_len
-      omega
+      lia
     exact
       (prec_iff_prec_mul_X_of_roots_nonpos
         (f := f) (g := g)
@@ -375,24 +339,13 @@ theorem posComboRealRooted_of_affine_family {f g : ℝ[X]}
     have hmain : C lam * ((C (μ / lam) * X) * f) = C μ * (X * f) := by
       calc
         C lam * ((C (μ / lam) * X) * f)
-            = C lam * (C (μ / lam) * (X * f)) := by rw [mul_assoc]
-        _ = (C lam * C (μ / lam)) * (X * f) := by rw [mul_assoc]
-        _ = C (lam * (μ / lam)) * (X * f) := by rw [C_mul]
+            = C lam * (C (μ / lam) * (X * f)) := by grind
+        _ = (C lam * C (μ / lam)) * (X * f) := by grind
+        _ = C (lam * (μ / lam)) * (X * f) := by simp
         _ = C μ * (X * f) := by
-              congr 1
-              field_simp [hlam.ne']
-    calc
-      C lam * ((((C (μ / lam) * X + C t) * f) + g))
-          = C lam * (((C (μ / lam) * X + C t) * f) ) + C lam * g := by
-              rw [mul_add]
-      _ = (C lam * ((C (μ / lam) * X) * f) + C lam * (C t * f)) + C lam * g := by
-            rw [add_mul, mul_add]
-      _ = (C μ * (X * f) + C lam * (C t * f)) + C lam * g := by
-            rw [hmain]
-      _ = C lam * (C t * f + g) + C μ * (X * f) := by
-            rw [mul_add]
-            ac_rfl
-  simpa [hEq] using hscaled
+              grind
+    grind
+  simp_all
 
 private lemma affine_family_pair_data {f g : ℝ[X]}
     (hfnn : HasNonnegCoeffs f)
@@ -440,11 +393,11 @@ private theorem isRealRooted_of_add_C_mul_right_family_of_natDegree_lt
   have hf₀_monic : f₀.Monic := by
     unfold f₀
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
-    field_simp [hf_lc_ne]
+    simp_all
   have hg₀_monic : g₀.Monic := by
     unfold g₀
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
-    field_simp [hg_lc_ne]
+    simp_all
   have hf₀_pos : HasPosLeadingCoeff f₀ := by
     simp [HasPosLeadingCoeff, hf₀_monic.leadingCoeff]
   have hg₀_pos : HasPosLeadingCoeff g₀ := by
@@ -468,8 +421,8 @@ private theorem isRealRooted_of_add_C_mul_right_family_of_natDegree_lt
           g₀ + C μ * f₀ := by
       ext n
       simp [g₀, f₀]
-      field_simp [hf_lc_ne, hg_lc_ne]
-    simpa [hEq] using hscaled
+      grind
+    simp_all
   have hg₀_rr : IsRealRooted g₀ := by
     have hroots_real :
         ∀ z ∈ (g₀.map (algebraMap ℝ ℂ)).roots, z ∈ (algebraMap ℝ ℂ).range := by
@@ -481,9 +434,7 @@ private theorem isRealRooted_of_add_C_mul_right_family_of_natDegree_lt
       have hz_root : (g₀.map (algebraMap ℝ ℂ)).IsRoot z :=
         (Polynomial.mem_roots hmap_ne).1 hz_mem
       have hz_aeval : g₀.aeval z = 0 := by
-        have hz_eval_map : (g₀.map (algebraMap ℝ ℂ)).eval z = 0 := by
-          simpa [Polynomial.IsRoot.def] using hz_root
-        simpa [eval₂_at_apply] using hz_eval_map
+        simp_all
       by_contra hz_range
       have hz_im_ne : z.im ≠ 0 := by
         intro hz_im
@@ -493,11 +444,9 @@ private theorem isRealRooted_of_add_C_mul_right_family_of_natDegree_lt
       let δ : ℝ := |z.im| / 2
       let R : ℝ := max ‖z‖ 1
       have hδ_pos : 0 < δ := by
-        unfold δ
-        exact half_pos (abs_pos.mpr hz_im_ne)
+        grind
       have hR_pos : 0 < R := by
-        unfold R
-        exact lt_of_lt_of_le zero_lt_one (le_max_right _ _)
+        grind
       have hg₀_deg_pos : 0 < g₀.natDegree := lt_of_le_of_lt (Nat.zero_le _) hdeg₀
       have hdeg_nat_ne : g₀.natDegree ≠ 0 := Nat.ne_of_gt hg₀_deg_pos
       let u : ℝ := δ / (2 * R)
@@ -528,12 +477,8 @@ private theorem isRealRooted_of_add_C_mul_right_family_of_natDegree_lt
         have hcalc :
             (ε / (coeffSumRange f₀ + 1)) * coeffSumRange f₀ =
               ε * (coeffSumRange f₀ / (coeffSumRange f₀ + 1)) := by
-          field_simp [show (coeffSumRange f₀ + 1 : ℝ) ≠ 0 by linarith]
-        rw [hcalc]
-        calc
-          ε * (coeffSumRange f₀ / (coeffSumRange f₀ + 1)) < ε * 1 :=
-            mul_lt_mul_of_pos_left hfrac_lt_one hε_pos
-          _ = ε := by ring
+          grind
+        simp_all
       have hcoeff :
           ∀ i : ℕ, ‖(g₀ + C μ * f₀).coeff i - g₀.coeff i‖ < ε := by
         intro i
@@ -559,28 +504,18 @@ private theorem isRealRooted_of_add_C_mul_right_family_of_natDegree_lt
           ((g₀.natDegree + 1) * ε) ^ ((g₀.natDegree : ℝ)⁻¹) * R = δ / 2 := by
         have hmul :
             ((g₀.natDegree + 1 : ℝ) * ε) = u ^ g₀.natDegree := by
-          unfold ε
-          field_simp
+          grind
         calc
           ((g₀.natDegree + 1) * ε) ^ ((g₀.natDegree : ℝ)⁻¹) * R
-              = (u ^ g₀.natDegree) ^ ((g₀.natDegree : ℝ)⁻¹) * R := by rw [hmul]
+              = (u ^ g₀.natDegree) ^ ((g₀.natDegree : ℝ)⁻¹) * R := by simp_all
           _ = u * R := by rw [Real.pow_rpow_inv_natCast hu_nonneg hdeg_nat_ne]
           _ = δ / 2 := by
-                unfold u
-                field_simp [hR_pos.ne']
+                grind
       have hdist_lt_delta : ‖z - w‖ < δ := by
-        calc
-          ‖z - w‖ <
-              ((g₀.natDegree + 1) * ε) ^ ((g₀.natDegree : ℝ)⁻¹) * max ‖z‖ 1 := hw_dist
-          _ = ((g₀.natDegree + 1) * ε) ^ ((g₀.natDegree : ℝ)⁻¹) * R := by simp [R]
-          _ = δ / 2 := hbound_eq
-          _ < δ := by linarith [hδ_pos]
+        grind
       have him_le : |z.im| ≤ ‖z - w‖ := by
         simpa [Complex.sub_im, hw_im_zero] using (Complex.abs_im_le_norm (z - w))
-      have him_lt : |z.im| < δ := lt_of_le_of_lt him_le hdist_lt_delta
-      have hhalf : |z.im| < |z.im| / 2 := by
-        simpa [δ] using him_lt
-      nlinarith [abs_pos.mpr hz_im_ne, hhalf]
+      grind
     have hsplit : g₀.Splits := by
       exact
         Polynomial.Splits.of_splits_map (i := algebraMap ℝ ℂ)
@@ -589,10 +524,10 @@ private theorem isRealRooted_of_add_C_mul_right_family_of_natDegree_lt
   have hg_scale : C g.leadingCoeff * g₀ = g := by
     unfold g₀
     ext n
-    simp [hg_lc_ne]
+    simp_all
   have hg_rr_scaled : IsRealRooted (C g.leadingCoeff * g₀) :=
     isRealRooted_C_mul hg₀_rr hg_lc_ne
-  simpa [hg_scale] using hg_rr_scaled
+  simp_all
 
 /-- Boundary closure for a right family `g + μ f` when the perturbation has no
 higher degree than the base polynomial. The equal-degree case is exactly the
@@ -611,8 +546,7 @@ private theorem isRealRooted_of_add_C_mul_right_family_of_natDegree_le
         hfamily hf_pos hg_pos hlt
   · have hcombo : PosComboRealRooted g f := by
       rw [PosComboRealRooted.iff_add_right]
-      intro μ hμ
-      simpa [add_comm] using hfamily hμ
+      simp_all
     exact
       PosComboRealRooted.isRealRooted_left_of_sameDegree
         (f := g) (g := f) hcombo hg_pos hf_pos heq
@@ -639,7 +573,7 @@ private lemma isRealRooted_add_left_of_affine_family_of_natDegree_succ_le
       rw [natDegree_C_mul ht.ne']
     exact
       natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
-        (by rw [hCt_deg]; omega)
+        (by simp_all)
         (hgnn.pos_leadingCoeff hg0)
   apply isRealRooted_of_add_C_mul_right_family_of_natDegree_le
   · intro s hs
@@ -647,8 +581,7 @@ private lemma isRealRooted_add_left_of_affine_family_of_natDegree_succ_le
       haff hs ht
   · exact hXf_pos
   · exact hsum_pos
-  · rw [natDegree_mul X_ne_zero hf0, natDegree_X, hsum_deg]
-    omega
+  · simp_all
 
 /-- In the degree-dominating branch `deg g ≥ deg f + 1`, the affine-family
 hypothesis already forces `g` to be real-rooted by first passing to the
@@ -670,7 +603,7 @@ private lemma isRealRooted_right_of_affine_family_of_natDegree_succ_le
         hf0 hg0 hfnn hgnn haff hdeg ht
   · exact hfnn.pos_leadingCoeff hf0
   · exact hgnn.pos_leadingCoeff hg0
-  · omega
+  · lia
 
 private lemma isRealRooted_pair_of_affine_family_succDegree
     {f g : ℝ[X]}
@@ -690,13 +623,12 @@ private lemma isRealRooted_pair_of_affine_family_succDegree
       rw [natDegree_C_mul ht.ne']
     exact
       natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
-        (by rw [hCt_deg]; omega)
+        (by lia)
         (hgnn.pos_leadingCoeff hg0)
   have hXf_deg : (X * f).natDegree = g.natDegree := by
-    rw [natDegree_mul X_ne_zero hf0, natDegree_X]
-    omega
+    simp_all
   have hdeg_same : (X * f).natDegree = (C t * f + g).natDegree := by
-    rw [hXf_deg, hsum_deg]
+    simp_all
   have hsum_rr :
       IsRealRooted (C t * f + g) :=
     PosComboRealRooted.isRealRooted_left_of_sameDegree
@@ -719,7 +651,7 @@ private lemma isRealRooted_right_of_affine_family_succDegree
     IsRealRooted g := by
   exact
     isRealRooted_right_of_affine_family_of_natDegree_succ_le
-      hf0 hg0 hfnn hgnn haff (by omega)
+      hf0 hg0 hfnn hgnn haff (by lia)
 
 /-- Fix `s > 0`. Passing `t → 0` in the affine family shows that the boundary
 member `g + s X f` is already real-rooted. This is the natural right-family
@@ -771,24 +703,19 @@ private lemma isRealRooted_add_X_mul_right_of_affine_family
           natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
             (by simpa [natDegree_C_mul hs.ne'] using hdeg) hCsXf_pos
       rw [hsum_deg, natDegree_C_mul hs.ne', natDegree_mul X_ne_zero hf0, natDegree_X]
-      omega
+      lia
     · have hsum_deg : (g + C s * (X * f)).natDegree = g.natDegree := by
         exact natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff
           (by simpa [natDegree_C_mul hs.ne'] using hdeg) hg_pos hCsXf_pos
-      rw [hsum_deg]
-      have hXf_deg : (X * f).natDegree = f.natDegree + 1 := by
-        simpa [Nat.add_comm] using (natDegree_mul X_ne_zero hf0).trans (by simp [natDegree_X])
-      rw [hXf_deg] at hdeg
-      omega
+      simp_all
     · have hsum_deg : (g + C s * (X * f)).natDegree = g.natDegree := by
         exact
           natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff
             (by simpa [natDegree_C_mul hs.ne'] using hdeg) hg_pos
       rw [hsum_deg]
       have hXf_deg : (X * f).natDegree = f.natDegree + 1 := by
-        simpa [Nat.add_comm] using (natDegree_mul X_ne_zero hf0).trans (by simp [natDegree_X])
-      rw [hXf_deg] at hdeg
-      omega
+        simp_all
+      lia
   apply isRealRooted_of_add_C_mul_right_family_of_natDegree_le
   · intro t ht
     simpa [add_assoc, add_left_comm, add_comm, mul_assoc, left_distrib, right_distrib] using
@@ -854,14 +781,14 @@ private lemma iterate_derivative_add :
       (derivative^[n]) (p + q) = (derivative^[n]) p + (derivative^[n]) q
   | 0, p, q => by simp
   | n + 1, p, q => by
-      simp [Function.iterate_succ_apply', derivative_add, iterate_derivative_add]
+      simp
 
 private lemma iterate_derivative_C_mul (a : ℝ) :
     ∀ (n : ℕ) (p : ℝ[X]),
       (derivative^[n]) (C a * p) = C a * (derivative^[n]) p
   | 0, p => by simp
   | n + 1, p => by
-      simp [Function.iterate_succ_apply', iterate_derivative_C_mul]
+      simp
 
 private lemma hasNonnegCoeffs_iterate_derivative {p : ℝ[X]} :
     ∀ n : ℕ, HasNonnegCoeffs p → HasNonnegCoeffs ((derivative^[n]) p)
@@ -878,14 +805,14 @@ private lemma derivative_eq_zero_or_isRealRooted_local {p : ℝ[X]}
   · right
     by_cases hdeg : 2 ≤ p.natDegree
     · exact (derivative_interlaces hp hdeg).2.1
-    · have hpdeg_le : p.natDegree ≤ 1 := by omega
+    · have hpdeg_le : p.natDegree ≤ 1 := by lia
       have hpdeg_pos : 1 ≤ p.natDegree := by
         by_contra hpdeg0
-        have hdeg0 : p.natDegree = 0 := by omega
+        have hdeg0 : p.natDegree = 0 := by lia
         have : p.derivative = 0 := by
           rw [eq_C_of_natDegree_eq_zero hdeg0, derivative_C]
         exact h0 this
-      have hpdeg_eq : p.natDegree = 1 := by omega
+      have hpdeg_eq : p.natDegree = 1 := by lia
       have hder_deg : p.derivative.natDegree = 0 := by
         rw [natDegree_derivative_eq hpdeg_pos, hpdeg_eq]
       exact isRealRooted_of_deg_zero h0 hder_deg
@@ -952,7 +879,7 @@ private lemma listInterlaces_all_le_getLast_local :
       rcases List.mem_cons.mp ht with rfl | ht
       · exact
           le_trans hs_r₂
-            (List.Pairwise.rel_getLast hrs_sorted (by simp [List.mem_cons]))
+            (List.Pairwise.rel_getLast hrs_sorted (by grind))
       · exact
           listInterlaces_all_le_getLast_local (rs := r₂ :: rs) (by simp)
             ((List.pairwise_cons.mp hrs_sorted).2) htail t ht
@@ -978,9 +905,7 @@ private lemma listInterlaces_of_listAlternates_append_right_local
       (qs.map (· - uR)) (ss.map (· - uR)) hlen0 halt0
   have hfun :
       ((fun x : ℝ => x + uR) ∘ fun x => x - uR) = fun x => x := by
-    funext x
-    change (x - uR) + uR = x
-    ring_nf
+    grind
   simpa [List.map_map, Function.comp, hfun] using
     listInterlaces_map_sub_const hint0 (-uR)
 
@@ -997,9 +922,7 @@ private lemma exists_rightmost_root_of_isRealRooted
   have hrs_len : rs.length = p.natDegree := by
     rw [show rs = p.roots.sort (· ≤ ·) by rfl, Multiset.length_sort, hp.2]
   have hrs_ne : rs ≠ [] := by
-    intro hrs_nil
-    simp [hrs_nil] at hrs_len
-    omega
+    grind
   refine ⟨rs.getLast hrs_ne, ?_, ?_⟩
   · have hr_mem : rs.getLast hrs_ne ∈ rs := List.getLast_mem hrs_ne
     have : rs.getLast hrs_ne ∈ p.roots := by
@@ -1009,7 +932,7 @@ private lemma exists_rightmost_root_of_isRealRooted
   · intro s hs
     have hs_mem : s ∈ rs := by
       apply Multiset.mem_coe.mp
-      rwa [hrs_eq]
+      simp_all
     exact hrs_sorted.rel_getLast hs_mem
 
 /-- In the same-degree `Prec` case, removing a rightmost root of the right-hand
@@ -1033,15 +956,14 @@ private lemma interlaces_of_prec_sameDegree_rightmost_factor_local
     exact right_ne_zero_of_mul (by simpa [hgq] using hg.1)
   have hq : IsRealRooted q := by
     apply isRealRooted_of_dvd hg hq_ne
-    exact ⟨X - C uR, by simp [hgq, mul_comm]⟩
+    simp_all
   have hq_deg_g : q.natDegree + 1 = g.natDegree := by
     rw [hgq, natDegree_mul (X_sub_C_ne_zero uR) hq_ne, natDegree_X_sub_C]
-    omega
+    lia
   have hq_deg : q.natDegree + 1 = f.natDegree := by
-    omega
+    lia
   rcases hshape with ⟨hlen, _hint⟩ | ⟨_hlen, halt⟩
-  · exfalso
-    omega
+  · simp_all
   · let qs := q.roots.sort (· ≤ ·)
     have hqs_eq : (↑qs : Multiset ℝ) = q.roots := Multiset.sort_eq ..
     have hqs_sorted : qs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
@@ -1056,12 +978,7 @@ private lemma interlaces_of_prec_sameDegree_rightmost_factor_local
         rw [← hqs_eq]
         exact Multiset.mem_coe.mpr hr)
     have hqs_sorted_right : (qs ++ [uR]).Pairwise (· ≤ ·) := by
-      rw [List.pairwise_append]
-      refine ⟨hqs_sorted, List.pairwise_singleton _ _, ?_⟩
-      intro a ha b hb
-      simp only [List.mem_singleton] at hb
-      subst hb
-      exact hqs_le_uR a ha
+      grind
     have hrs_eq_right : rs = qs ++ [uR] := by
       apply List.Perm.eq_of_pairwise' hrs_sorted hqs_sorted_right
       apply Multiset.coe_eq_coe.mp
@@ -1069,14 +986,14 @@ private lemma interlaces_of_prec_sameDegree_rightmost_factor_local
         (↑rs : Multiset ℝ) = g.roots := hrs_eq
         _ = ({uR} : Multiset ℝ) + q.roots := by
               rw [hgq, roots_mul (mul_ne_zero (X_sub_C_ne_zero uR) hq_ne), roots_X_sub_C]
-        _ = q.roots + ({uR} : Multiset ℝ) := by rw [add_comm]
+        _ = q.roots + ({uR} : Multiset ℝ) := by grind
         _ = q.roots + ↑[uR] := by simp
-        _ = (↑qs : Multiset ℝ) + ↑[uR] := by rw [hqs_eq]
+        _ = (↑qs : Multiset ℝ) + ↑[uR] := by simp_all
         _ = (↑(qs ++ [uR]) : Multiset ℝ) := by rw [Multiset.coe_add]
     have hlen_qs : qs.length + 1 = ss.length := by
-      rw [hqs_len, hss_len, hq_deg]
+      simp_all
     have halt_right : ListAlternates ss (qs ++ [uR]) := by
-      simpa [hrs_eq_right] using halt
+      simp_all
     have hshape_qs_rs : ListInterlaces qs ss :=
       listInterlaces_of_listAlternates_append_right_local hlen_qs halt_right
     exact ⟨hf, hq, hq_deg, ss, qs, hss_sorted, hqs_sorted, hss_eq, hqs_eq, hshape_qs_rs⟩
@@ -1117,27 +1034,21 @@ private lemma exists_strict_root_upper_bound_of_nonneg_of_not_isRoot_zero
     have hroots0 : p.roots = 0 := by
       apply Multiset.card_eq_zero.mp
       rw [hp.2, hdeg0]
-    exact False.elim (by simp [hroots0] at hr)
-  · have hdeg_pos : 1 ≤ p.natDegree := by omega
+    simp_all
+  · have hdeg_pos : 1 ≤ p.natDegree := by lia
     obtain ⟨c, hc_root, hc_top⟩ :=
       exists_rightmost_root_of_isRealRooted hp hdeg_pos
     have hc_le0 : c ≤ 0 :=
       roots_nonpos_of_nonneg_coeffs hp hpnn c ((mem_roots hp.1).mpr hc_root)
     have hc_ne0 : c ≠ 0 := by
-      intro hc0
-      exact hnot0 (hc0 ▸ hc_root)
+      lia
     exact ⟨c, hc_top, lt_of_le_of_ne hc_le0 hc_ne0⟩
 
 private lemma isRoot_of_X_mul_of_ne_zero
     {f : ℝ[X]} {r : ℝ}
     (hr : r ≠ 0) (hX : (X * f).IsRoot r) :
     f.IsRoot r := by
-  have hX_eval : (X * f).eval r = 0 := by
-    simpa [Polynomial.IsRoot.def] using hX
-  have hf_eval : f.eval r = 0 := by
-    have hx_eval : r * f.eval r = 0 := by simpa [eval_mul, eval_X] using hX_eval
-    exact (mul_eq_zero.mp hx_eval).resolve_left hr
-  simpa [Polynomial.IsRoot.def] using hf_eval
+  simp_all
 
 private lemma no_common_right_pair_of_no_common_of_not_isRoot_zero
     {f g : ℝ[X]}
@@ -1145,17 +1056,14 @@ private lemma no_common_right_pair_of_no_common_of_not_isRoot_zero
     (hg0 : ¬ g.IsRoot 0) :
     ∀ r, g.IsRoot r → ¬ (X * f).IsRoot r := by
   intro r hgr hXr
-  by_cases hr0 : r = 0
-  · exact hg0 (hr0 ▸ hgr)
-  · exact hno_fg r hgr (isRoot_of_X_mul_of_ne_zero hr0 hXr)
+  simp_all
 
 private lemma eq_zero_of_common_right_pair_of_no_common
     {f g : ℝ[X]} {r : ℝ}
     (hno_fg : ∀ x, g.IsRoot x → ¬ f.IsRoot x)
     (hgr : g.IsRoot r) (hXr : (X * f).IsRoot r) :
     r = 0 := by
-  by_contra hr0
-  exact hno_fg r hgr (isRoot_of_X_mul_of_ne_zero hr0 hXr)
+  simp_all
 
 private lemma common_right_pair_iff_root_zero_or_common_fg
     {f g : ℝ[X]} :
@@ -1165,8 +1073,7 @@ private lemma common_right_pair_iff_root_zero_or_common_fg
   · intro h
     rcases h with ⟨r, hgr, hXr⟩
     by_cases hr0 : r = 0
-    · left
-      simpa [hr0] using hgr
+    · simp_all
     · right
       exact ⟨r, hgr, isRoot_of_X_mul_of_ne_zero hr0 hXr⟩
   · intro h
@@ -1174,20 +1081,14 @@ private lemma common_right_pair_iff_root_zero_or_common_fg
     · exact ⟨0, hg0, by simp [Polynomial.IsRoot.def]⟩
     · rcases hcommon with ⟨r, hgr, hfr⟩
       refine ⟨r, hgr, ?_⟩
-      have hf_eval : f.eval r = 0 := by simpa [Polynomial.IsRoot.def] using hfr
-      simp [Polynomial.IsRoot.def, eval_mul, eval_X, hf_eval]
+      simp_all
 
 private lemma no_common_of_right_pair_root_zero_reduction
     {f g qg : ℝ[X]}
     (hg : g = X * qg)
     (hno_fg : ∀ r, g.IsRoot r → ¬ f.IsRoot r) :
     ∀ r, qg.IsRoot r → ¬ f.IsRoot r := by
-  intro r hqgr hfr
-  have hqg_eval : qg.eval r = 0 := by
-    simpa [Polynomial.IsRoot.def] using hqgr
-  have hg_eval : g.eval r = 0 := by
-    simp [hg, eval_mul, eval_X, hqg_eval]
-  exact hno_fg r (by simpa [Polynomial.IsRoot.def] using hg_eval) hfr
+  simp_all
 
 private lemma roots_strictly_neg_of_nonneg_of_no_common_right_pair
     {f g : ℝ[X]}
@@ -1198,8 +1099,7 @@ private lemma roots_strictly_neg_of_nonneg_of_no_common_right_pair
   have hr_le : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hg hgnn r hr
   have hr_root : g.IsRoot r := (mem_roots hg.1).mp hr
   have hr_ne : r ≠ 0 := by
-    intro hr0
-    exact hno 0 (by simpa [hr0] using hr_root) (by simp [Polynomial.IsRoot.def])
+    simp_all
   exact lt_of_le_of_ne hr_le hr_ne
 
 private lemma exists_strict_right_root_of_X_mul_of_no_common
@@ -1275,18 +1175,14 @@ private lemma no_common_root_right_family_one_two_of_no_common
     ∀ r, (f + g).IsRoot r → ¬ (f + C (2 : ℝ) * g).IsRoot r := by
   intro r hfg_root hfg2_root
   have hfg_eval : (f + g).eval r = 0 := by
-    simpa [Polynomial.IsRoot.def] using hfg_root
+    simp_all
   have hfg2_eval : (f + C (2 : ℝ) * g).eval r = 0 := by
-    simpa [Polynomial.IsRoot.def] using hfg2_root
+    simp_all
   rw [Polynomial.eval_add] at hfg_eval
   rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C] at hfg2_eval
   have hg_eval : g.eval r = 0 := by
     linarith
-  have hf_eval : f.eval r = 0 := by
-    linarith
-  exact hno r
-    (by simpa [Polynomial.IsRoot.def] using hf_eval)
-    (by simpa [Polynomial.IsRoot.def] using hg_eval)
+  simp_all
 
 /-- A common root of the left-family pair `(f + g, 2f + g)` is already a
 common root of `(f, g)`. This is the shifted-pair analogue of the right-family
@@ -1297,18 +1193,14 @@ private lemma no_common_root_left_family_one_two_of_no_common
     ∀ r, (f + g).IsRoot r → ¬ (C (2 : ℝ) * f + g).IsRoot r := by
   intro r hfg_root h2fg_root
   have hfg_eval : (f + g).eval r = 0 := by
-    simpa [Polynomial.IsRoot.def] using hfg_root
+    simp_all
   have h2fg_eval : (C (2 : ℝ) * f + g).eval r = 0 := by
-    simpa [Polynomial.IsRoot.def] using h2fg_root
+    simp_all
   rw [Polynomial.eval_add] at hfg_eval
   rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C] at h2fg_eval
   have hf_eval : f.eval r = 0 := by
     linarith
-  have hg_eval : g.eval r = 0 := by
-    linarith
-  exact hno r
-    (by simpa [Polynomial.IsRoot.def] using hf_eval)
-    (by simpa [Polynomial.IsRoot.def] using hg_eval)
+  simp_all
 
 /-- Degree and leading-coefficient bookkeeping for the right-family pair
 `(f + g, f + 2g)` when the right summand dominates the degree. -/
@@ -1402,25 +1294,15 @@ private lemma eval_mul_right_family_one_neg_at_root_two_of_no_common
     ∀ r, (f + C (2 : ℝ) * g).IsRoot r → (f + g).eval r * g.eval r < 0 := by
   intro r hroot
   have hq_eval : (f + C (2 : ℝ) * g).eval r = 0 := by
-    simpa [Polynomial.IsRoot.def] using hroot
+    simp_all
   rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C] at hq_eval
   have hp_eval : (f + g).eval r = -g.eval r := by
     rw [Polynomial.eval_add]
     linarith
   have hg_ne : g.eval r ≠ 0 := by
     intro hg0
-    have hf0 : f.eval r = 0 := by
-      linarith
-    exact hno r
-      (by simpa [Polynomial.IsRoot.def] using hf0)
-      (by simpa [Polynomial.IsRoot.def] using hg0)
-  calc
-    (f + g).eval r * g.eval r = -(g.eval r) ^ 2 := by
-      rw [hp_eval]
-      ring
-    _ < 0 := by
-      have hsq : 0 < (g.eval r) ^ 2 := sq_pos_iff.mpr hg_ne
-      nlinarith
+    simp_all
+  simp_all
 
 /-- At a root of `f + g`, the companion family member `f + 2g` has the
 opposite sign of `f`; no-common-roots makes this strict. -/
@@ -1430,25 +1312,15 @@ private lemma eval_mul_right_family_two_neg_at_root_one_of_no_common
     ∀ r, (f + g).IsRoot r → (f + C (2 : ℝ) * g).eval r * f.eval r < 0 := by
   intro r hroot
   have hp_eval0 : (f + g).eval r = 0 := by
-    simpa [Polynomial.IsRoot.def] using hroot
+    simp_all
   rw [Polynomial.eval_add] at hp_eval0
   have hq_eval : (f + C (2 : ℝ) * g).eval r = -f.eval r := by
     rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C]
     linarith
   have hf_ne : f.eval r ≠ 0 := by
     intro hf0
-    have hg0 : g.eval r = 0 := by
-      linarith
-    exact hno r
-      (by simpa [Polynomial.IsRoot.def] using hf0)
-      (by simpa [Polynomial.IsRoot.def] using hg0)
-  calc
-    (f + C (2 : ℝ) * g).eval r * f.eval r = -(f.eval r) ^ 2 := by
-      rw [hq_eval]
-      ring
-    _ < 0 := by
-      have hsq : 0 < (f.eval r) ^ 2 := sq_pos_iff.mpr hf_ne
-      nlinarith
+    simp_all
+  simp_all
 
 /-- At a root of `2f + g`, the companion family member `f + g` has the
 opposite sign of `f`; no-common-roots makes this strict. -/
@@ -1458,25 +1330,15 @@ private lemma eval_mul_left_family_one_neg_at_root_two_of_no_common
     ∀ r, (C (2 : ℝ) * f + g).IsRoot r → (f + g).eval r * f.eval r < 0 := by
   intro r hroot
   have hq_eval : (C (2 : ℝ) * f + g).eval r = 0 := by
-    simpa [Polynomial.IsRoot.def] using hroot
+    simp_all
   rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C] at hq_eval
   have hp_eval : (f + g).eval r = -f.eval r := by
     rw [Polynomial.eval_add]
     linarith
   have hf_ne : f.eval r ≠ 0 := by
     intro hf0
-    have hg0 : g.eval r = 0 := by
-      linarith
-    exact hno r
-      (by simpa [Polynomial.IsRoot.def] using hf0)
-      (by simpa [Polynomial.IsRoot.def] using hg0)
-  calc
-    (f + g).eval r * f.eval r = -(f.eval r) ^ 2 := by
-      rw [hp_eval]
-      ring
-    _ < 0 := by
-      have hsq : 0 < (f.eval r) ^ 2 := sq_pos_iff.mpr hf_ne
-      nlinarith
+    simp_all
+  simp_all
 
 /-- At a root of `f + g`, the companion family member `2f + g` has the
 opposite sign of `g`; no-common-roots makes this strict. -/
@@ -1486,25 +1348,15 @@ private lemma eval_mul_left_family_two_neg_at_root_one_of_no_common
     ∀ r, (f + g).IsRoot r → (C (2 : ℝ) * f + g).eval r * g.eval r < 0 := by
   intro r hroot
   have hp_eval0 : (f + g).eval r = 0 := by
-    simpa [Polynomial.IsRoot.def] using hroot
+    simp_all
   rw [Polynomial.eval_add] at hp_eval0
   have hq_eval : (C (2 : ℝ) * f + g).eval r = -g.eval r := by
     rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C]
     linarith
   have hg_ne : g.eval r ≠ 0 := by
     intro hg0
-    have hf0 : f.eval r = 0 := by
-      linarith
-    exact hno r
-      (by simpa [Polynomial.IsRoot.def] using hf0)
-      (by simpa [Polynomial.IsRoot.def] using hg0)
-  calc
-    (C (2 : ℝ) * f + g).eval r * g.eval r = -(g.eval r) ^ 2 := by
-      rw [hq_eval]
-      ring
-    _ < 0 := by
-      have hsq : 0 < (g.eval r) ^ 2 := sq_pos_iff.mpr hg_ne
-      nlinarith
+    simp_all
+  simp_all
 
 private lemma eval_pos_of_all_roots_lt_local {p : ℝ[X]} {r : ℝ}
     (hp : IsRealRooted p) (hp_pos : HasPosLeadingCoeff p)
@@ -1528,8 +1380,7 @@ private lemma strictMonoOn_eval_Ici_of_derivative_roots_le
   intro x hx
   have hx' : c < x := by simpa using hx
   have hlt : ∀ t ∈ p.derivative.roots, t < x := by
-    intro t ht
-    exact lt_of_le_of_lt (hroots_le t ht) hx'
+    grind
   have hpos_eval : 0 < p.derivative.eval x :=
     eval_pos_of_all_roots_lt_local hp' hp'_pos hlt
   simpa using hpos_eval
@@ -1543,9 +1394,7 @@ private lemma exists_root_ge_of_derivative_root
   have hrs_len : rs.length = p.natDegree := by
     rw [← Multiset.coe_card, hrs_eq, hp_rr.2]
   have hrs_ne : rs ≠ [] := by
-    intro hrs_nil
-    simp [hrs_nil] at hrs_len
-    omega
+    grind
   have hc_mem : c ∈ ss := by
     apply Multiset.mem_coe.mp
     rw [hss_eq]
@@ -1566,11 +1415,11 @@ private lemma exists_rightmost_derivative_root_with_eval_nonpos
       p.eval c ≤ 0 := by
   have hp' : IsRealRooted p.derivative := (derivative_interlaces hp hdeg).2.1
   have hp'_pos : HasPosLeadingCoeff p.derivative :=
-    hasPosLeadingCoeff_derivative hp_pos (by omega)
+    hasPosLeadingCoeff_derivative hp_pos (by lia)
   have hp'_deg : p.derivative.natDegree = p.natDegree - 1 :=
-    natDegree_derivative_eq (by omega)
+    natDegree_derivative_eq (by lia)
   obtain ⟨c, hc_root, hc_top⟩ :=
-    exists_rightmost_root_of_isRealRooted hp' (by rw [hp'_deg]; omega)
+    exists_rightmost_root_of_isRealRooted hp' (by lia)
   by_cases hpc : 0 < p.eval c
   · have hmono :
       StrictMonoOn (fun x => p.eval x) (Set.Ici c) := by
@@ -1581,11 +1430,10 @@ private lemma exists_rightmost_derivative_root_with_eval_nonpos
     obtain ⟨r, hr_root, hcr_le⟩ := exists_root_ge_of_derivative_root hp hdeg hc_root
     have hcr_ne : c ≠ r := by
       intro hcr
-      have : p.eval c = 0 := by simpa [Polynomial.IsRoot.def, hcr] using hr_root
-      linarith
+      simp_all
     have hcr_lt : c < r := lt_of_le_of_ne hcr_le hcr_ne
     have hlt_eval : p.eval c < p.eval r := hmono (by simp) (by exact hcr_le) hcr_lt
-    have : p.eval r = 0 := by simpa [Polynomial.IsRoot.def] using hr_root
+    have : p.eval r = 0 := by simp_all
     linarith
   · exact ⟨c, hc_root, hc_top, le_of_not_gt hpc⟩
 
@@ -1602,27 +1450,20 @@ private lemma exists_pos_shift_not_isRealRooted_of_nonneg_of_natDegree_ge_two
     exists_rightmost_derivative_root_with_eval_nonpos hp hp_pos hdeg
   let t : ℝ := 1 - p.eval c
   have ht_pos : 0 < t := by
-    unfold t
-    linarith
+    grind
   refine ⟨t, ht_pos, ?_⟩
   intro hq
   have hqdeg : 2 ≤ (C t + p).natDegree := by
-    rw [natDegree_add_eq_right_of_natDegree_lt (by
-      rw [natDegree_C]
-      omega)]
-    exact hdeg
+    simp_all
   have hq'_rr : IsRealRooted (C t + p).derivative := (derivative_interlaces hq hqdeg).2.1
   have hmono :
       StrictMonoOn (fun x => (C t + p).eval x) (Set.Ici c) := by
     have hder_eq : (C t + p).derivative = p.derivative := by
       simp
     refine strictMonoOn_eval_Ici_of_derivative_roots_le ?_ ?_ ?_
-    · simpa [hder_eq] using hq'_rr
-    · simpa [hder_eq] using hasPosLeadingCoeff_derivative hp_pos (by omega)
-    · intro s hs
-      have hs' : s ∈ p.derivative.roots := by
-        simpa [hder_eq] using hs
-      exact hc_top s hs'
+    · simp_all
+    · simpa [hder_eq] using hasPosLeadingCoeff_derivative hp_pos (by lia)
+    · simp_all
   have hqc_pos : 0 < (C t + p).eval c := by
     have : (C t + p).eval c = 1 := by
       simp [t]
@@ -1630,14 +1471,12 @@ private lemma exists_pos_shift_not_isRealRooted_of_nonneg_of_natDegree_ge_two
   obtain ⟨r, hr_root, hcr_le⟩ := exists_root_ge_of_derivative_root hq hqdeg (by
     simpa using hc_root)
   by_cases hcr : c = r
-  · have : (C t + p).eval c = 0 := by
-      simpa [Polynomial.IsRoot.def, hcr] using hr_root
-    linarith
+  · simp_all
   · have hcr_lt : c < r := lt_of_le_of_ne hcr_le hcr
     have hlt_eval :
         (C t + p).eval c < (C t + p).eval r := hmono (by simp) (by exact hcr_le) hcr_lt
     have : (C t + p).eval r = 0 := by
-      simpa [Polynomial.IsRoot.def] using hr_root
+      simp_all
     linarith
 
 /-- A positive constant cannot remain on the right of a degree-`≥ 2`
@@ -1658,11 +1497,10 @@ private theorem not_posComboRealRooted_right_const_of_natDegree_ge_two
       exact div_pos ht hc)
   have hrewrite : p + C (t / c) * C c = p + C t := by
     calc
-      p + C (t / c) * C c = p + C ((t / c) * c) := by simp [C_mul]
+      p + C (t / c) * C c = p + C ((t / c) * c) := by simp
       _ = p + C t := by
-            congr 1
-            field_simp [hc.ne']
-  exact hbad (by simpa [hrewrite, add_comm] using hcombo_t)
+            grind
+  grind
 
 /-- A degree gap of at least `2` is incompatible with a positive left family
 `C μ * f + g` once both summands have nonnegative coefficients. -/
@@ -1688,16 +1526,13 @@ private theorem not_degree_gap_ge_two_of_add_left_family_nonneg
       have hμf_deg : (C μ * f).natDegree = f.natDegree := by
         rw [natDegree_C_mul hμ.ne']
       have hμf_lt : (C μ * f).natDegree < g.natDegree := by
-        rw [hμf_deg]
-        omega
+        lia
       exact
         natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
           hμf_lt
           hg_pos
     have hn_lt : n < (C μ * f + g).natDegree := by
-      rw [hbase_deg]
-      dsimp [n]
-      omega
+      lia
     have hder :
         IsRealRooted ((derivative^[n]) (C μ * f + g)) :=
       isRealRooted_iterate_derivative_of_lt_natDegree hbase hn_lt
@@ -1706,13 +1541,12 @@ private theorem not_degree_gap_ge_two_of_add_left_family_nonneg
       calc
         (derivative^[n]) (C μ * f + g)
             = (derivative^[n]) (C μ * f) + (derivative^[n]) g := by
-                rw [iterate_derivative_add]
+                simp
         _ = C μ * (derivative^[n]) f + (derivative^[n]) g := by
-              rw [iterate_derivative_C_mul]
+              simp
         _ = gN + C μ * fN := by
-              simp [fN, gN, add_comm]
-    rw [hEq] at hder
-    exact hder
+              grind
+    simp_all
   have hfN_deg : fN.natDegree = 0 := by
     dsimp [fN, n]
     simpa using natDegree_iterate_derivative_eq_sub hf0 (le_rfl : f.natDegree ≤ f.natDegree)
@@ -1732,19 +1566,16 @@ private theorem not_degree_gap_ge_two_of_add_left_family_nonneg
     exact hasNonnegCoeffs_iterate_derivative n hgnn
   have hgN_deg : gN.natDegree = g.natDegree - n := by
     dsimp [gN, n]
-    exact natDegree_iterate_derivative_eq_sub hg0 (by omega)
+    exact natDegree_iterate_derivative_eq_sub hg0 (by lia)
   have hgN_deg_ge2 : 2 ≤ gN.natDegree := by
-    rw [hgN_deg]
-    dsimp [n]
-    omega
+    lia
   have hgN_ne : gN ≠ 0 := by
     dsimp [gN, n]
-    exact iterate_derivative_ne_zero_of_le_natDegree hg0 (by omega)
+    exact iterate_derivative_ne_zero_of_le_natDegree hg0 (by lia)
   have hgN_pos : HasPosLeadingCoeff gN := hgN_nonneg.pos_leadingCoeff hgN_ne
   have hgN_rr : IsRealRooted gN := by
     have hdegN : fN.natDegree < gN.natDegree := by
-      rw [hfN_deg]
-      omega
+      lia
     apply isRealRooted_of_add_C_mul_right_family_of_natDegree_lt
     · intro μ hμ
       simpa [add_comm] using hfamilyN hμ
@@ -1754,8 +1585,7 @@ private theorem not_degree_gap_ge_two_of_add_left_family_nonneg
   have hposComboN : PosComboRealRooted gN fN := by
     exact PosComboRealRooted.of_add_right hfamilyN
   have hposComboC : PosComboRealRooted gN (C (fN.coeff 0)) := by
-    rw [hfN_C] at hposComboN
-    exact hposComboN
+    lia
   exact
     not_posComboRealRooted_right_const_of_natDegree_ge_two
       (p := gN) (c := fN.coeff 0) hfN_coeff_pos hgN_rr hgN_nonneg hgN_deg_ge2
@@ -1778,7 +1608,7 @@ private theorem not_degree_gap_ge_two_of_affine_family
   intro μ hμ
   exact
     isRealRooted_add_left_of_affine_family_of_natDegree_succ_le
-      hf0 hg0 hfnn hgnn haff (by omega) hμ
+      hf0 hg0 hfnn hgnn haff (by lia) hμ
 
 /-- Degree control for Brändén's affine-family converse. -/
 private theorem natDegree_right_le_succ_of_affine_family
@@ -1793,7 +1623,7 @@ private theorem natDegree_right_le_succ_of_affine_family
   by_contra hdeg
   exact
     not_degree_gap_ge_two_of_affine_family
-      hf0 hg0 hfnn hgnn haff (by omega)
+      hf0 hg0 hfnn hgnn haff (by lia)
 
 /-- Positive-combination degree control with nonnegative coefficients. This is
 the fixed-pair version of the same constant-vs-degree-`≥ 2` obstruction and is
@@ -1808,7 +1638,7 @@ private theorem natDegree_right_le_succ_of_posComboRealRooted_nonneg
   by_contra hdeg
   refine
     not_degree_gap_ge_two_of_add_left_family_nonneg
-      hf0 hg0 hfnn hgnn ?_ (by omega)
+      hf0 hg0 hfnn hgnn ?_ (by lia)
   intro μ hμ
   exact PosComboRealRooted.isRealRooted_add_left hfg hμ
 
@@ -1839,7 +1669,7 @@ private lemma natDegree_cases_of_affine_family
     natDegree_right_le_succ_of_posComboRealRooted_nonneg
       hpos_pair hg_ne_pair hXf_ne_pair hg_nonneg_pair hXf_nonneg_pair
   rw [natDegree_mul X_ne_zero hf0, natDegree_X] at hdeg_pair_hi
-  omega
+  lia
 
 private lemma natDegree_cases_right_pair_of_affine_family
     {f g : ℝ[X]}
@@ -1866,12 +1696,11 @@ private lemma natDegree_cases_right_pair_of_affine_family
   have hdeg_right : g.natDegree ≤ f.natDegree + 1 :=
     natDegree_right_le_succ_of_affine_family hf0 hg0 hfnn hgnn haff
   have hdeg_pair_lo : g.natDegree ≤ (X * f).natDegree := by
-    rw [natDegree_mul X_ne_zero hf0, natDegree_X]
-    simpa [Nat.add_comm] using hdeg_right
+    simp_all
   have hdeg_pair_hi : (X * f).natDegree ≤ g.natDegree + 1 :=
     natDegree_right_le_succ_of_posComboRealRooted_nonneg
       hpos_pair hg_ne_pair hXf_ne_pair hg_nonneg_pair hXf_nonneg_pair
-  omega
+  lia
 
 private lemma right_pair_root_zero_reduction_data
     {f g : ℝ[X]}
@@ -1906,17 +1735,15 @@ private lemma right_pair_root_zero_reduction_data
   have hqg : g = X * qg := by
     simpa using hqg₀
   have hqg_ne : qg ≠ 0 := by
-    intro hqg0
-    exact hg_ne_pair (by simp [hqg, hqg0])
+    simp_all
   have hqg_nonneg : HasNonnegCoeffs qg := by
     intro n
     have hcoeff := hg_nonneg_pair (n + 1)
-    simpa [hqg, coeff_X_mul, Nat.succ_ne_zero] using hcoeff
+    simp_all
   have hqg_pos : HasPosLeadingCoeff qg := hqg_nonneg.pos_leadingCoeff hqg_ne
   have hpos_q : PosComboRealRooted qg f := by
     have hX_pair : PosComboRealRooted (X * qg) (X * f) := by
-      intro lam μ hlam hμ
-      simpa [hqg] using hpos_pair hlam hμ
+      simp_all
     intro lam μ hlam hμ
     have hEq :
         C lam * (X * qg) + C μ * (X * f) = X * (C lam * qg + C μ * f) := by
@@ -1925,19 +1752,16 @@ private lemma right_pair_root_zero_reduction_data
       simpa [hEq] using hX_pair hlam hμ
     have hcombo_ne : C lam * qg + C μ * f ≠ 0 := by
       exact right_ne_zero_of_mul hrr.1
-    exact isRealRooted_of_dvd hrr hcombo_ne ⟨X, by rw [mul_comm]⟩
+    exact isRealRooted_of_dvd hrr hcombo_ne ⟨X, by grind⟩
   have hdeg_right : g.natDegree ≤ f.natDegree + 1 :=
     natDegree_right_le_succ_of_affine_family hf0 hg0 hfnn hgnn haff
   have hdeg_q_lo : qg.natDegree ≤ f.natDegree := by
-    rw [hqg, natDegree_mul X_ne_zero hqg_ne, natDegree_X] at hdeg_right
-    omega
+    simp_all
   have hdeg_q_hi : f.natDegree ≤ qg.natDegree + 1 := by
     have hdeg_pair_hi : (X * f).natDegree ≤ g.natDegree + 1 :=
       natDegree_right_le_succ_of_posComboRealRooted_nonneg
         hpos_pair hg_ne_pair hXf_ne_pair hg_nonneg_pair hXf_nonneg_pair
-    rw [natDegree_mul X_ne_zero hf0, natDegree_X,
-      hqg, natDegree_mul X_ne_zero hqg_ne, natDegree_X] at hdeg_pair_hi
-    omega
+    simp_all
   exact ⟨qg, hqg, hqg_nonneg, hqg_ne, hqg_pos, hpos_q, hdeg_q_lo, hdeg_q_hi⟩
 
 private lemma right_pair_root_zero_affine_line_data
@@ -1962,21 +1786,7 @@ private lemma right_pair_root_zero_affine_line_data
   obtain ⟨qg, hqg, hqg_nonneg, hqg_ne, hqg_pos, hpos_q, hdeg_q_lo, hdeg_q_hi⟩ :=
     right_pair_root_zero_reduction_data hf0 hg0 hfnn hgnn haff hg_root0
   refine ⟨qg, hqg, hqg_nonneg, hqg_ne, hqg_pos, hpos_q, hdeg_q_lo, hdeg_q_hi, ?_⟩
-  intro s t hs ht
-  have hbase :
-      IsRealRooted (((C s * X + C t) * f) + g) := haff hs ht
-  have hEq :
-      (((C s * X + C t) * f) + g) = X * (C s * f + qg) + C t * f := by
-    calc
-      (((C s * X + C t) * f) + g)
-          = (C s * X) * f + C t * f + X * qg := by
-              rw [hqg, add_mul]
-      _ = X * (C s * f) + C t * f + X * qg := by
-            ac_rfl
-      _ = X * (C s * f + qg) + C t * f := by
-            rw [mul_add]
-            ac_rfl
-  simpa [hEq] using hbase
+  grind
 
 /-- If `r < 0` is a root of the succ-degree affine right-hand polynomial `g`,
 specializing the affine family to the line `t = -s r` factors out `X - C r`
@@ -2004,15 +1814,15 @@ private lemma neg_root_quotient_posCombo_data_of_affine_family_succDegree
   have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff hg0
   obtain ⟨qg, hqg⟩ := dvd_iff_isRoot.mpr hgr
   have hqg_ne : qg ≠ 0 := by
-    exact right_ne_zero_of_mul (by simpa [hqg] using hg_rr.1)
+    simp_all
   have hqg_rr : IsRealRooted qg := by
     apply isRealRooted_of_dvd hg_rr hqg_ne
-    exact ⟨X - C r, by simp [hqg, mul_comm]⟩
+    simp_all
   have hqg_pos : HasPosLeadingCoeff qg := by
     exact hasPosLeadingCoeff_of_X_sub_C_mul_local (by simpa [hqg] using hg_pos)
   have hqg_deg : qg.natDegree = f.natDegree := by
     rw [hqg, natDegree_mul (X_sub_C_ne_zero r) hqg_ne, natDegree_X_sub_C] at hsucc
-    omega
+    lia
   have hpos_q_left : PosComboRealRooted f qg := by
     refine PosComboRealRooted.of_add_left ?_
     intro s hs
@@ -2020,36 +1830,20 @@ private lemma neg_root_quotient_posCombo_data_of_affine_family_succDegree
         IsRealRooted (((C s * X + C (-s * r)) * f) + g) :=
       haff hs (by nlinarith)
     have hlin : C s * (X - C r) = C s * X + C (-s * r) := by
-      calc
-        C s * (X - C r) = C s * X - C s * C r := by
-          rw [mul_sub]
-        _ = C s * X - C (s * r) := by
-          rw [C_mul]
-        _ = C s * X + C (-s * r) := by
-          simp [sub_eq_add_neg]
+      grind
     have hEq :
         (((C s * X + C (-s * r)) * f) + g) =
           (X - C r) * (C s * f + qg) := by
-      calc
-        (((C s * X + C (-s * r)) * f) + g)
-            = (C s * (X - C r)) * f + (X - C r) * qg := by
-                rw [hqg, ← hlin]
-        _ = (X - C r) * (C s * f) + (X - C r) * qg := by
-              ring
-        _ = (X - C r) * (C s * f + qg) := by
-              rw [mul_add]
+      grind
     have hcombo_ne : C s * f + qg ≠ 0 := by
       intro hzero
       have hpoly_zero : (((C s * X + C (-s * r)) * f) + g) = 0 := by
-        rw [hEq, hzero]
-        simp
+        simp_all
       exact hbase.1 hpoly_zero
     exact
       isRealRooted_of_dvd hbase hcombo_ne
         ⟨X - C r, by
-          calc
-            ((C s * X + C (-s * r)) * f + g) = (X - C r) * (C s * f + qg) := hEq
-            _ = (C s * f + qg) * (X - C r) := by rw [mul_comm]
+          grind
         ⟩
   exact ⟨qg, hqg, hqg_ne, hqg_rr, hqg_pos, hqg_deg, hpos_q_left.comm⟩
 
@@ -2080,24 +1874,17 @@ private lemma rightmost_neg_root_quotient_posCombo_data_of_affine_family_succDeg
     isRealRooted_right_of_affine_family_succDegree
       hf0 hg0 hfnn hgnn haff hsucc.symm
   have hdeg_pos : 1 ≤ g.natDegree := by
-    omega
+    lia
   obtain ⟨r, hgr, hr_top⟩ := exists_rightmost_root_of_isRealRooted hg_rr hdeg_pos
   have hr_le : r ≤ 0 := by
     exact roots_nonpos_of_nonneg_coeffs hg_rr hgnn r ((mem_roots hg_rr.1).mpr hgr)
   have hr_neg : r < 0 := by
-    have hr_ne : r ≠ 0 := by
-      intro hr0
-      exact hg_root0 (by simpa [hr0] using hgr)
-    exact lt_of_le_of_ne hr_le hr_ne
+    grind
   obtain ⟨qg, hqg, hqg_ne, hqg_rr, hqg_pos, hqg_deg, hpos_q⟩ :=
     neg_root_quotient_posCombo_data_of_affine_family_succDegree
       hf0 hg0 hfnn hgnn haff hsucc hgr hr_neg
   have hqg_le : ∀ u ∈ qg.roots, u ≤ r := by
-    intro u hu
-    have hug : u ∈ g.roots := by
-      rw [hqg, roots_mul (mul_ne_zero (X_sub_C_ne_zero r) hqg_ne), roots_X_sub_C]
-      exact Multiset.mem_add.mpr (Or.inr hu)
-    exact hr_top u hug
+    simp_all
   exact ⟨r, qg, hgr, hr_neg, hqg, hqg_ne, hqg_rr, hqg_pos, hqg_deg, hqg_le, hpos_q⟩
 
 private lemma prec_right_pair_sameDegree_of_sign_data
@@ -2138,10 +1925,9 @@ private lemma prec_right_pair_succDegree_no_common_of_sign_data
         (X * f).eval r₁ * (X * f).eval r₂ < 0) :
     Prec g (X * f) := by
   have hdeg : (X * f).natDegree = g.natDegree := by
-    rw [natDegree_mul X_ne_zero hf0, natDegree_X]
-    omega
+    simp_all
   have hdeg_pos : 1 ≤ g.natDegree := by
-    omega
+    lia
   exact
     prec_right_pair_sameDegree_of_sign_data
       hg hgnn hXf_pos hdeg hdeg_pos
@@ -2177,29 +1963,26 @@ private lemma prec_right_pair_sameDegree_no_common_of_end_sign_data
   have hn : 1 ≤ rs.length := by
     have hrs_len : rs.length = g.natDegree := by
       rw [show rs = g.roots.sort (· ≤ ·) by rfl, Multiset.length_sort, hg.2]
-    rw [hrs_len]
-    exact hdeg_pos
+    simp_all
   have hrs_ne : rs ≠ [] := by
-    intro hrs_nil
-    simp [hrs_nil] at hn
+    grind
   have hdeg : (X * f).natDegree = g.natDegree + 1 := by
-    rw [natDegree_mul X_ne_zero hf0, natDegree_X, hsame]
-    ring
+    simp_all
   rcases hparity with ⟨hpar, hleft_sign⟩ | ⟨hpar, hleft_sign⟩
   · exact
       prec_of_strict_signs_of_endSigns_even
         (f := g) (F := X * f) (rs := rs)
         hg hXf_pos hrs_sorted hrs_eq hdeg hn hpar
-        (by simpa [rs] using hsign)
-        (by simpa [rs] using hleft_sign)
-        (by simpa [rs] using hright_sign hrs_ne)
+        (by grind)
+        (by lia)
+        (by lia)
   · exact
       prec_of_strict_signs_of_endSigns_odd
         (f := g) (F := X * f) (rs := rs)
         hg hXf_pos hrs_sorted hrs_eq hdeg hn hpar
-        (by simpa [rs] using hsign)
-        (by simpa [rs] using hleft_sign)
-        (by simpa [rs] using hright_sign hrs_ne)
+        (by grind)
+        (by lia)
+        (by lia)
 
 /-- Two nonzero constants satisfy `Prec` trivially because both root lists are
 empty. -/
@@ -2243,33 +2026,12 @@ with positive leading coefficient and negative discriminant, contradicting the
 real-rooted affine hypothesis. -/
 private lemma mul_C_mul_X_mul_C_mul_X (s a : ℝ) :
     (C s * X) * (C a * X) = C (s * a) * X ^ 2 := by
-  calc
-    (C s * X) * (C a * X) = C s * (X * (C a * X)) := by
-      rw [mul_assoc]
-    _ = C s * (X * C a * X) := by
-      congr 1
-      rw [← mul_assoc]
-    _ = C s * ((C a * X) * X) := by
-      congr 1
-      rw [mul_comm X (C a)]
-    _ = C s * (C a * (X * X)) := by
-      rw [mul_assoc]
-    _ = (C s * C a) * (X * X) := by
-      rw [← mul_assoc]
-    _ = C (s * a) * X ^ 2 := by
-      rw [C_mul, pow_two]
+  grind
 
 private lemma add_quadratic_quadratic (u v w z c : ℝ) :
     C u * X ^ 2 + C v * X + (C w * X ^ 2 + C z * X + C c)
       = C (u + w) * X ^ 2 + C (v + z) * X + C c := by
-  calc
-    C u * X ^ 2 + C v * X + (C w * X ^ 2 + C z * X + C c)
-        = C u * X ^ 2 + C w * X ^ 2 + (C v * X + C z * X) + C c := by
-            ac_rfl
-    _ = (C u + C w) * X ^ 2 + (C v + C z) * X + C c := by
-          rw [← add_mul, ← add_mul]
-    _ = C (u + w) * X ^ 2 + C (v + z) * X + C c := by
-          rw [← C_add, ← C_add]
+  grind
 
 set_option maxHeartbeats 800000 in
 -- The translated-quadratic contradiction proof below expands several explicit
@@ -2294,15 +2056,13 @@ private lemma eval_nonpos_at_root_of_degree_one_of_affine_family
   by_contra hgr_pos
   have hdeg_cases : g.natDegree = 1 ∨ g.natDegree = 2 := by
     rcases natDegree_cases_of_affine_family hf0 hg0 hfnn hgnn haff with hgdeg | hgdeg
-    · left
-      simpa [hf_deg1] using hgdeg
-    · right
-      simpa [hf_deg1] using hgdeg
+    · simp_all
+    · simp_all
   let a : ℝ := f.coeff 1
   have ha_pos : 0 < a := by
     unfold HasPosLeadingCoeff at hf_pos
     rw [leadingCoeff, hf_deg1] at hf_pos
-    simpa [a] using hf_pos
+    lia
   have hf_deg_le_one : f.degree ≤ 1 := by
     rw [degree_eq_natDegree hf0, hf_deg1]
     norm_num
@@ -2322,7 +2082,7 @@ private lemma eval_nonpos_at_root_of_degree_one_of_affine_family
     rw [coeff_zero_eq_eval_zero, eval_comp]
     simp
   have hc_pos : 0 < c := by
-    simpa [hc_eq] using hgr_pos
+    grind
   have hg'_nonzero : g' ≠ 0 := by
     exact (Polynomial.comp_X_add_C_ne_zero_iff).2 hg0
   have hg'_natDegree : g'.natDegree = g.natDegree := by
@@ -2339,14 +2099,14 @@ private lemma eval_nonpos_at_root_of_degree_one_of_affine_family
   have hA_nonneg : 0 ≤ A := by
     rcases hdeg_cases with hgdeg | hgdeg
     · have hg'_deg1 : g'.natDegree = 1 := by
-        rw [hg'_natDegree, hgdeg]
+        lia
       have hA_zero : A = 0 := by
         dsimp [A]
         apply coeff_eq_zero_of_natDegree_lt
-        omega
+        lia
       linarith
     · have hg'_deg2 : g'.natDegree = 2 := by
-        rw [hg'_natDegree, hgdeg]
+        lia
       have hg'_pos : HasPosLeadingCoeff g' := by
         unfold HasPosLeadingCoeff at hg_pos ⊢
         dsimp [g']
@@ -2382,53 +2142,42 @@ private lemma eval_nonpos_at_root_of_degree_one_of_affine_family
   have hf_comp : f.comp (X + C r) = C a * X := by
     calc
       f.comp (X + C r) = (C a * X + C (f.coeff 0)).comp (X + C r) := by
-            conv_lhs => rw [hf_eq]
+            lia
       _ = C a * (X + C r) + C (f.coeff 0) := by simp
       _ = C a * X + C (a * r + f.coeff 0) := by
-            simp [mul_add, add_left_comm, add_comm, C_mul]
-      _ = C a * X := by simp [hroot_rel]
+            grind
+      _ = C a * X := by grind
   have hlin_comp :
       (C s * X + C t).comp (X + C r) = C s * X + C (s * r + t) := by
     calc
       (C s * X + C t).comp (X + C r) = C s * (X + C r) + C t := by simp
       _ = C s * X + C (s * r + t) := by
-            simp [mul_add, add_assoc, C_mul]
+            grind
   have hsrt : s * r + t = 1 := by
-    dsimp [t]
-    ring
+    grind
   have hq_eq :
       q = C (s * a + A) * X ^ 2 + C (a + B) * X + C c := by
     calc
       q = ((C s * X + C t).comp (X + C r)) * (f.comp (X + C r)) + g' := by
             dsimp [q, p, g']
-            rw [add_comp, mul_comp]
+            simp
       _ = (C s * X + C (s * r + t)) * (C a * X) + g' := by
-            rw [hlin_comp, hf_comp]
+            lia
       _ = (C s * X + C (1 : ℝ)) * (C a * X) + g' := by
-            rw [hsrt]
+            lia
       _ = (C s * X) * (C a * X) + C a * X + g' := by
-            rw [add_mul]
-            rw [show C (1 : ℝ) * (C a * X) = C a * X by simp]
+            grind
       _ = C (s * a) * X ^ 2 + C a * X + g' := by
-            rw [mul_C_mul_X_mul_C_mul_X]
+            grind
       _ = C (s * a) * X ^ 2 + C a * X + (C A * X ^ 2 + C B * X + C c) := by
-            rw [hg'_eq]
+            lia
       _ = C (s * a + A) * X ^ 2 + C (a + B) * X + C c := by
             exact add_quadratic_quadratic (u := s * a) (v := a) (w := A) (z := B) (c := c)
   have hsa_pos : 0 < s * a := mul_pos hs_pos ha_pos
   have hquad_pos : 0 < s * a + A := by
     linarith
   have hs_formula : 4 * (s * a) * c = (a + B) ^ 2 + 4 * c := by
-    have hden_ne : (4 * a * c) ≠ 0 := by
-      have hden_pos : 0 < 4 * a * c := by
-        nlinarith
-      exact hden_pos.ne'
-    calc
-      4 * (s * a) * c = s * (4 * a * c) := by ring
-      _ = (((a + B) ^ 2 + 4 * c) / (4 * a * c)) * (4 * a * c) := by
-            rfl
-      _ = (a + B) ^ 2 + 4 * c := by
-            field_simp [hden_ne]
+    grind
   have hdiscrim_neg : discrim (s * a + A) (a + B) c < 0 := by
     have hmain : (a + B) ^ 2 < 4 * (s * a + A) * c := by
       nlinarith [hs_formula, hA_nonneg, hc_pos]
@@ -2442,7 +2191,7 @@ private lemma eval_nonpos_at_root_of_degree_one_of_affine_family
         (s * a + A) * (x * x) + (a + B) * x + c = 0 := by
       have hq_eval_zero' :
           (C (s * a + A) * X ^ 2 + C (a + B) * X + C c).eval x = 0 := by
-        simpa [hq_eq] using hq_eval_zero
+        lia
       simpa [eval_add, eval_mul, eval_C, eval_X, eval_pow, pow_two] using hq_eval_zero'
     have hdisc_sq :
         discrim (s * a + A) (a + B) c = (2 * (s * a + A) * x + (a + B)) ^ 2 :=
@@ -2497,13 +2246,11 @@ private lemma prec_of_affine_family_nonneg_degree_one
       eval_nonpos_at_root_of_degree_one_of_affine_family
         hf0 hg0 hfnn hgnn haff hdegf1 r hfr
     have hf_eval : f.eval r = 0 := by
-      simpa [Polynomial.IsRoot.def] using hfr
+      simp_all
     have hdivmod_eval :
         (((g / f) * f + g % f).eval r) = g.eval r := by
       exact congrArg (fun p : ℝ[X] => p.eval r) (EuclideanDomain.div_add_mod' g f)
-    have hmod_eval : (g % f).eval r = g.eval r := by
-      simpa [eval_add, eval_mul, hf_eval] using hdivmod_eval
-    simpa [hmod_eval] using hgr_nonpos
+    simp_all
   have hprec_lin :
       Prec f (((g / f) * f) + (g % f) * (1 : ℝ[X])) :=
     prec_of_interlaces_evalCoeff_nonpos
@@ -2554,7 +2301,7 @@ private lemma prec_right_pair_of_root_zero_factor
     Prec g (X * f) := by
   have hprec_mul : Prec (X * qg) (X * f) :=
     prec_mul_common_factor isRealRooted_X hprec_q
-  simpa [hg, mul_comm] using hprec_mul
+  simp_all
 
 /-- A second boundary closure hidden in the affine family: after rescaling the
 slice `((C s * X + 1) * f) + g`, one gets `X * f + μ * (f + g)` for every
@@ -2580,11 +2327,10 @@ private lemma isRealRooted_X_mul_of_affine_family
   have hXf_pos : HasPosLeadingCoeff (X * f) := hXf_nonneg.pos_leadingCoeff hXf_ne
   have hdeg_fg : (f + g).natDegree ≤ (X * f).natDegree := by
     have hmax : max f.natDegree g.natDegree ≤ f.natDegree + 1 := by
-      refine max_le ?_ hdeg_right
-      omega
+      simp_all
     have hadd : (f + g).natDegree ≤ max f.natDegree g.natDegree := natDegree_add_le f g
     rw [natDegree_mul X_ne_zero hf0, natDegree_X]
-    omega
+    lia
   apply isRealRooted_of_add_C_mul_right_family_of_natDegree_le
   · intro μ hμ
     have hbase :
@@ -2595,27 +2341,11 @@ private lemma isRealRooted_X_mul_of_affine_family
           (C μ * ((((C μ⁻¹ * X + C (1 : ℝ)) * f) + g))) :=
       isRealRooted_C_mul hbase hμ.ne'
     have hmain : C μ * ((C μ⁻¹ * X) * f) = X * f := by
-      calc
-        C μ * ((C μ⁻¹ * X) * f)
-            = C μ * (C μ⁻¹ * (X * f)) := by rw [mul_assoc]
-        _ = (C μ * C μ⁻¹) * (X * f) := by rw [mul_assoc]
-        _ = C (μ * μ⁻¹) * (X * f) := by rw [C_mul]
-        _ = X * f := by simp [hμ.ne']
+      grind
     have hEq :
         C μ * ((((C μ⁻¹ * X + C (1 : ℝ)) * f) + g))
           = X * f + C μ * (f + g) := by
-      calc
-        C μ * ((((C μ⁻¹ * X + C (1 : ℝ)) * f) + g))
-            = C μ * (((C μ⁻¹ * X + C (1 : ℝ)) * f) ) + C μ * g := by
-                rw [mul_add]
-        _ = (C μ * ((C μ⁻¹ * X) * f) + C μ * (C (1 : ℝ) * f)) + C μ * g := by
-              rw [add_mul, mul_add]
-        _ = (X * f + C μ * f) + C μ * g := by
-              rw [hmain]
-              simp
-        _ = X * f + C μ * (f + g) := by
-              rw [mul_add]
-              ac_rfl
+      grind
     rw [hEq] at hscaled
     simpa using hscaled
   · exact hfg_pos
@@ -2640,31 +2370,7 @@ private lemma posComboRealRooted_shifted_pair_of_affine_family
       IsRealRooted
         (C lam * ((((C (1 : ℝ) * X + C (μ / lam)) * f) + g))) :=
     isRealRooted_C_mul hbase hlam.ne'
-  have hmain : C lam * (C (μ / lam) * f) = C μ * f := by
-    calc
-      C lam * (C (μ / lam) * f) = (C lam * C (μ / lam)) * f := by
-        rw [mul_assoc]
-      _ = C (lam * (μ / lam)) * f := by rw [C_mul]
-      _ = C μ * f := by
-            congr 1
-            field_simp [hlam.ne']
-  have hEq :
-      C lam * (((X + C (μ / lam)) * f) + g)
-        = C lam * (g + X * f) + C μ * f := by
-    calc
-      C lam * (((X + C (μ / lam)) * f) + g)
-          = C lam * ((X + C (μ / lam)) * f) + C lam * g := by
-              rw [mul_add]
-      _ = C lam * (X * f + C (μ / lam) * f) + C lam * g := by
-            rw [add_mul]
-      _ = (C lam * (X * f) + C lam * (C (μ / lam) * f)) + C lam * g := by
-            rw [mul_add]
-      _ = (C lam * (X * f) + C μ * f) + C lam * g := by
-            rw [hmain]
-      _ = C lam * (g + X * f) + C μ * f := by
-            rw [mul_add]
-            ac_rfl
-  simpa [hEq] using hscaled
+  grind
 
 /-- Degree bookkeeping for the shifted affine pair `(g + X * f, f)`: the left
 member always has exact succ-degree over `f`. -/
@@ -2686,23 +2392,19 @@ private lemma natDegree_shifted_pair_eq_succ_of_affine_family
   have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff hg0
   rcases lt_or_eq_of_le hdeg_right with hlt | heq
   · have hg_lt : g.natDegree < (X * f).natDegree := by
-      rw [natDegree_mul X_ne_zero hf0, natDegree_X]
-      omega
+      simp_all
     have hsum_deg : (g + X * f).natDegree = (X * f).natDegree := by
       exact
         natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
           hg_lt hXf_pos
-    rw [hsum_deg, natDegree_mul X_ne_zero hf0, natDegree_X]
-    omega
+    simp_all
   · have hg_eq : g.natDegree = (X * f).natDegree := by
-      rw [natDegree_mul X_ne_zero hf0, natDegree_X]
-      omega
+      simp_all
     have hsum_deg : (g + X * f).natDegree = (X * f).natDegree := by
       exact
         natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff
           hg_eq hg_pos hXf_pos |>.trans hg_eq
-    rw [hsum_deg, natDegree_mul X_ne_zero hf0, natDegree_X]
-    omega
+    simp_all
 
 /-- Data package for the shifted affine pair `(g + X * f, f)`. This isolates
 the clean succ-degree positive-family reformulation of the affine converse. -/
@@ -2743,18 +2445,18 @@ private lemma common_shifted_pair_iff_common_fg
   · intro h
     rcases h with ⟨r, hshift, hfr⟩
     have hf_eval : f.eval r = 0 := by
-      simpa [Polynomial.IsRoot.def] using hfr
+      simp_all
     have hshift_eval : (g + X * f).eval r = 0 := by
-      simpa [Polynomial.IsRoot.def] using hshift
+      simp_all
     have hg_eval : g.eval r = 0 := by
-      simpa [eval_add, eval_mul, eval_X, hf_eval] using hshift_eval
-    exact ⟨r, by simpa [Polynomial.IsRoot.def] using hg_eval, hfr⟩
+      simp_all
+    exact ⟨r, by simp_all, hfr⟩
   · intro h
     rcases h with ⟨r, hgr, hfr⟩
     have hf_eval : f.eval r = 0 := by
-      simpa [Polynomial.IsRoot.def] using hfr
+      simp_all
     have hg_eval : g.eval r = 0 := by
-      simpa [Polynomial.IsRoot.def] using hgr
+      simp_all
     refine ⟨r, ?_, hfr⟩
     simp [Polynomial.IsRoot.def, eval_add, eval_mul, eval_X, hf_eval, hg_eval]
 
@@ -2762,14 +2464,7 @@ private lemma no_common_shifted_pair_of_no_common
     {f g : ℝ[X]}
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     ∀ r, f.IsRoot r → ¬ (g + X * f).IsRoot r := by
-  intro r hfr hshift
-  have hf_eval : f.eval r = 0 := by
-    simpa [Polynomial.IsRoot.def] using hfr
-  have hshift_eval : (g + X * f).eval r = 0 := by
-    simpa [Polynomial.IsRoot.def] using hshift
-  have hg_eval : g.eval r = 0 := by
-    simpa [eval_add, eval_mul, eval_X, hf_eval] using hshift_eval
-  exact hno r hfr (by simpa [Polynomial.IsRoot.def] using hg_eval)
+  simp_all
 
 private lemma not_revPrec_of_shifted_pair_succDegree
     {f s : ℝ[X]}
@@ -2811,35 +2506,32 @@ private lemma prec_of_prec_shifted_pair_sameDegree
     hshift_nonneg.pos_leadingCoeff hshift_ne
   have hshift_deg : (g + X * f).natDegree = f.natDegree + 1 := by
     have hXf_deg : (X * f).natDegree = f.natDegree + 1 := by
-      simpa [Nat.add_comm] using (natDegree_mul X_ne_zero hf0).trans (by simp [natDegree_X])
+      simp_all
     have hXf_pos : HasPosLeadingCoeff (X * f) :=
       (hasNonnegCoeffs_X.mul hfnn).pos_leadingCoeff (mul_ne_zero X_ne_zero hf0)
     have hg_lt : g.natDegree < (X * f).natDegree := by
-      rw [hdeg, hXf_deg]
-      omega
+      simp_all
     have hsum_deg : (g + X * f).natDegree = (X * f).natDegree := by
       exact
         natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
           hg_lt hXf_pos
-    rw [hsum_deg, hXf_deg]
+    simp_all
   let a : ℝ := f.leadingCoeff⁻¹
   have ha_ne : a ≠ 0 := inv_ne_zero (ne_of_gt hf_pos)
   have hf_monic : (C a * f).Monic := by
     unfold a
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
-    field_simp [ne_of_gt hf_pos]
+    simp_all
   have hshift_lc : (g + X * f).leadingCoeff = f.leadingCoeff := by
     have hg_top_zero : g.coeff (f.natDegree + 1) = 0 := by
       apply coeff_eq_zero_of_natDegree_lt
-      rw [hdeg]
-      omega
+      simp_all
     rw [leadingCoeff, hshift_deg, coeff_add, coeff_X_mul]
     simp [hg_top_zero]
   have hshift_monic : (C a * (g + X * f)).Monic := by
     unfold a
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
-    rw [hshift_lc]
-    field_simp [ne_of_gt hf_pos]
+    simp_all
   have hscaled : Prec (C a * f) (C a * (g + X * f)) :=
     prec_C_mul_right (prec_C_mul_left h ha_ne) ha_ne
   have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hf hfnn
@@ -2854,22 +2546,11 @@ private lemma prec_of_prec_shifted_pair_sameDegree
         (f := C a * (g + X * f)) (g := C a * f)
         hscaled hshift_monic hf_monic hdeg_scaled
         (by
-          intro r hr
-          exact hshift_nonpos r (by simpa [roots_C_mul _ ha_ne] using hr))
+          simp_all)
         (by
-          intro r hr
-          exact hf_nonpos r (by simpa [roots_C_mul _ ha_ne] using hr))
+          simp_all)
   have hEq_sub : C a * (g + X * f) - X * (C a * f) = C a * g := by
-    have hCXf : C a * (X * f) = X * (C a * f) := by
-      ext n
-      cases n <;> simp [coeff_X_mul]
-    calc
-      C a * (g + X * f) - X * (C a * f)
-          = C a * g + C a * (X * f) - X * (C a * f) := by
-              rw [mul_add]
-      _ = C a * g := by
-            rw [hCXf]
-            simp
+    grind
   have hprec_scaled : Prec (C a * f) (C a * g) := by
     rw [hEq_sub] at hprec0
     have hCa_f_ne : C a * f ≠ 0 := mul_ne_zero (C_ne_zero.mpr ha_ne) hf0
@@ -2885,13 +2566,13 @@ private lemma prec_of_prec_shifted_pair_sameDegree
       (inv_ne_zero ha_ne)
   have hcancel_f : C a⁻¹ * (C a * f) = f := by
     calc
-      C a⁻¹ * (C a * f) = C (a⁻¹ * a) * f := by rw [C_mul, mul_assoc]
-      _ = f := by simp [ha_ne]
+      C a⁻¹ * (C a * f) = C (a⁻¹ * a) * f := by grind
+      _ = f := by simp_all
   have hcancel_g : C a⁻¹ * (C a * g) = g := by
     calc
-      C a⁻¹ * (C a * g) = C (a⁻¹ * a) * g := by rw [C_mul, mul_assoc]
-      _ = g := by simp [ha_ne]
-  simpa [hcancel_f, hcancel_g] using hprec_back
+      C a⁻¹ * (C a * g) = C (a⁻¹ * a) * g := by grind
+      _ = g := by simp_all
+  simp_all
 
 private lemma prec_right_pair_of_prec_shifted_pair_sameDegree
     {f g : ℝ[X]}
@@ -2918,30 +2599,7 @@ private lemma shifted_affine_family_of_affine_family
   have hbase :
       IsRealRooted (((C (s + 1) * X + C t) * f) + g) :=
     haff (by linarith) ht
-  have hEq :
-      (((C s * X + C t) * f) + (g + X * f)) =
-        (((C (s + 1) * X + C t) * f) + g) := by
-    calc
-      (((C s * X + C t) * f) + (g + X * f))
-          = ((C s * X + C t) * f) + g + X * f := by
-              ac_rfl
-      _ = (C s * X) * f + C t * f + g + X * f := by
-            rw [add_mul]
-      _ = C s * (X * f) + C t * f + g + X * f := by
-            rw [mul_assoc]
-      _ = (C s * (X * f) + X * f) + C t * f + g := by
-            ac_rfl
-      _ = (C s * (X * f) + C (1 : ℝ) * (X * f)) + C t * f + g := by
-            simp
-      _ = ((C s + C (1 : ℝ)) * (X * f)) + C t * f + g := by
-            rw [← add_mul]
-      _ = (C (s + 1) * (X * f)) + C t * f + g := by
-            rw [← C_add]
-      _ = ((C (s + 1) * X) * f) + C t * f + g := by
-            rw [mul_assoc]
-      _ = (((C (s + 1) * X + C t) * f) + g) := by
-            rw [add_mul]
-  simpa [hEq] using hbase
+  grind
 
 /-- Downward boundary closure: if `g - C μ * f` is real-rooted for all
 sufficiently small `μ > 0`, and `f.natDegree < g.natDegree` with both
@@ -2968,11 +2626,11 @@ private theorem isRealRooted_of_sub_C_mul_right_family_of_natDegree_lt
   have hf₀_monic : f₀.Monic := by
     unfold f₀
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
-    field_simp [hf_lc_ne]
+    simp_all
   have hg₀_monic : g₀.Monic := by
     unfold g₀
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
-    field_simp [hg_lc_ne]
+    simp_all
   have hg₀_pos : HasPosLeadingCoeff g₀ := by
     simp [HasPosLeadingCoeff, hg₀_monic.leadingCoeff]
   have hdeg₀ : f₀.natDegree < g₀.natDegree := by
@@ -2995,8 +2653,8 @@ private theorem isRealRooted_of_sub_C_mul_right_family_of_natDegree_lt
           g₀ - C μ * f₀ := by
       ext n
       simp [g₀, f₀, mul_sub]
-      field_simp [hf_lc_ne, hg_lc_ne]
-    simpa [hEq] using hscaled
+      grind
+    simp_all
   -- Now: g₀ - C μ * f₀ is real-rooted, monic, same degree as g₀, and
   -- its coefficients converge to those of g₀ as μ → 0⁺.
   -- Use the same complex-root continuity argument to show g₀ is real-rooted.
@@ -3010,9 +2668,7 @@ private theorem isRealRooted_of_sub_C_mul_right_family_of_natDegree_lt
       have hz_root : (g₀.map (algebraMap ℝ ℂ)).IsRoot z :=
         (Polynomial.mem_roots hmap_ne).1 hz_mem
       have hz_aeval : g₀.aeval z = 0 := by
-        have hz_eval_map : (g₀.map (algebraMap ℝ ℂ)).eval z = 0 := by
-          simpa [Polynomial.IsRoot.def] using hz_root
-        simpa [eval₂_at_apply] using hz_eval_map
+        simp_all
       by_contra hz_range
       have hz_im_ne : z.im ≠ 0 := by
         intro hz_im; apply hz_range; exact ⟨z.re, Complex.ext_iff.2 (by simp [hz_im])⟩
@@ -3039,11 +2695,8 @@ private theorem isRealRooted_of_sub_C_mul_right_family_of_natDegree_lt
         have hcalc :
             (ε / (coeffSumRange f₀ + 1)) * coeffSumRange f₀ =
               ε * (coeffSumRange f₀ / (coeffSumRange f₀ + 1)) := by
-          field_simp [show (coeffSumRange f₀ + 1 : ℝ) ≠ 0 by linarith]
-        rw [hcalc]
-        calc ε * (coeffSumRange f₀ / (coeffSumRange f₀ + 1))
-            < ε * 1 := mul_lt_mul_of_pos_left hfrac_lt_one hε_pos
-          _ = ε := by ring
+          grind
+        simp_all
       -- Coefficient closeness:
       -- ‖(g₀ - C μ * f₀).coeff i - g₀.coeff i‖ = μ * |f₀.coeff i|
       have hcoeff :
@@ -3062,7 +2715,7 @@ private theorem isRealRooted_of_sub_C_mul_right_family_of_natDegree_lt
       have hdiff_deg : (g₀ - C μ * f₀).natDegree = g₀.natDegree := by
         rw [sub_eq_add_neg, ← neg_mul]
         exact natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff
-          (by simpa [natDegree_neg, natDegree_C_mul hμ_pos.ne'] using hdeg₀) hg₀_pos
+          (by simp_all) hg₀_pos
       have hdiff_monic : (g₀ - C μ * f₀).Monic := by
         unfold Polynomial.Monic Polynomial.leadingCoeff
         rw [hdiff_deg, coeff_sub, coeff_eq_zero_of_natDegree_lt hμf_deg_lt,
@@ -3078,29 +2731,20 @@ private theorem isRealRooted_of_sub_C_mul_right_family_of_natDegree_lt
         have hmul : ((g₀.natDegree + 1 : ℝ) * ε) = u ^ g₀.natDegree := by
           unfold ε; field_simp
         calc ((g₀.natDegree + 1) * ε) ^ ((g₀.natDegree : ℝ)⁻¹) * R
-            = (u ^ g₀.natDegree) ^ ((g₀.natDegree : ℝ)⁻¹) * R := by rw [hmul]
+            = (u ^ g₀.natDegree) ^ ((g₀.natDegree : ℝ)⁻¹) * R := by simp_all
           _ = u * R := by rw [Real.pow_rpow_inv_natCast hu_nonneg hdeg_nat_ne]
           _ = δ / 2 := by
-                unfold u
-                field_simp [hR_pos.ne']
+                grind
       have hdist_lt : ‖z - w‖ < δ := by
-        calc
-          ‖z - w‖ <
-              ((g₀.natDegree + 1) * ε) ^ ((g₀.natDegree : ℝ)⁻¹) * max ‖z‖ 1
-                := by
-                  exact hw_dist
-          _ = δ / 2 := hbound_eq
-          _ < δ := by linarith [hδ_pos]
+        grind
       have him_le : |z.im| ≤ ‖z - w‖ := by
         simpa [Complex.sub_im, hw_im_zero] using (Complex.abs_im_le_norm (z - w))
-      have him_lt : |z.im| < δ := lt_of_le_of_lt him_le hdist_lt
-      have hhalf : |z.im| < |z.im| / 2 := by simpa [δ] using him_lt
-      nlinarith [abs_pos.mpr hz_im_ne]
+      grind
     have hsplit : g₀.Splits :=
       Polynomial.Splits.of_splits_map (i := algebraMap ℝ ℂ)
         (IsAlgClosed.splits _) hroots_real
     exact ⟨hg₀_monic.ne_zero, (Polynomial.splits_iff_card_roots).1 hsplit⟩
-  simpa [show C g.leadingCoeff * g₀ = g from by ext n; simp [g₀, hg_lc_ne]] using
+  simpa [show C g.leadingCoeff * g₀ = g from by ext n; grind] using
     isRealRooted_C_mul hg₀_rr hg_lc_ne
 
 /-- An exact double root has nonvanishing second derivative. This is the local
@@ -3111,10 +2755,10 @@ private lemma eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two_loca
     (hmult : p.rootMultiplicity x = 2) :
     p.derivative.derivative.eval x ≠ 0 := by
   have hp_root : p.IsRoot x := by
-    exact (rootMultiplicity_pos hp0).mp (by simp [hmult])
+    exact (rootMultiplicity_pos hp0).mp (by lia)
   have hp_deg_ge2 : 2 ≤ p.natDegree := by
     calc
-      2 = p.rootMultiplicity x := by simp [hmult]
+      2 = p.rootMultiplicity x := by lia
       _ = p.roots.count x := (count_roots p).symm
       _ ≤ p.roots.card := p.roots.count_le_card x
       _ ≤ p.natDegree := card_roots' p
@@ -3123,13 +2767,12 @@ private lemma eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two_loca
     rw [derivative_rootMultiplicity_of_root hp_root, hmult]
   intro hder2
   have hpd_root : p.derivative.IsRoot x := by
-    exact (rootMultiplicity_pos hpd_ne).mp (by simp [hpd_rootmult])
+    exact (rootMultiplicity_pos hpd_ne).mp (by lia)
   have hpd_der_root : p.derivative.derivative.IsRoot x := by
-    simpa [Polynomial.IsRoot.def] using hder2
+    simp_all
   have hmult_gt : 1 < p.derivative.rootMultiplicity x := by
     exact (one_lt_rootMultiplicity_iff_isRoot hpd_ne).2 ⟨hpd_root, hpd_der_root⟩
-  rw [hpd_rootmult] at hmult_gt
-  omega
+  simp_all
 
 /-- Local bounded right-family double-root obstruction.
 
@@ -3150,23 +2793,21 @@ private lemma false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
     intro hp0
     simp [hp0] at hp_mult
   have hp_root : p.IsRoot x := by
-    exact (rootMultiplicity_pos hp0).mp (by simp [hp_mult])
+    exact (rootMultiplicity_pos hp0).mp (by lia)
   have hp_der_root : p.derivative.IsRoot x := by
-    exact isRoot_derivative_of_rootMultiplicity_ge_two (by simp [hp_mult])
+    exact isRoot_derivative_of_rootMultiplicity_ge_two (by lia)
   have hp_eval0 : p.eval x = 0 := by
-    simpa [Polynomial.IsRoot.def] using hp_root
+    simp_all
   have hp_der_eval0 : p.derivative.eval x = 0 := by
-    simpa [Polynomial.IsRoot.def] using hp_der_root
+    simp_all
   let pp : ℝ := p.derivative.derivative.eval x
   let qx : ℝ := q.eval x
   let qp : ℝ := q.derivative.eval x
   let qq : ℝ := q.derivative.derivative.eval x
   have hpp_ne : pp ≠ 0 := by
-    have hprod_ne : p.derivative.derivative.eval x * q.eval x ≠ 0 := ne_of_gt hprod_pos
-    dsimp [pp]
-    exact (mul_ne_zero_iff.mp hprod_ne).1
+    grind
   have hqx_ne : qx ≠ 0 := by
-    simpa [qx] using hq_eval_ne
+    lia
   let A : ℝ := pp * qx
   let B : ℝ := qp ^ 2 - qq * qx
   let δ₁ : ℝ := A / (2 * (|B| + 1))
@@ -3174,7 +2815,7 @@ private lemma false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
   let β₀ : ℝ := min δ₁ δ₂
   let β : ℝ := min β₀ βmax
   have hA_pos : 0 < A := by
-    simpa [A, pp, qx] using hprod_pos
+    lia
   have hβ_pos : 0 < β := by
     dsimp [β, β₀, δ₁, δ₂, A, B]
     positivity
@@ -3189,52 +2830,38 @@ private lemma false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
     calc
       |β * qq| = β * |qq| := by
         rw [abs_mul, abs_of_nonneg (le_of_lt hβ_pos)]
-      _ ≤ β * (|qq| + 1) := by nlinarith [hβ_pos, abs_nonneg qq]
+      _ ≤ β * (|qq| + 1) := by simp_all
       _ ≤ δ₂ * (|qq| + 1) := by
         gcongr
       _ = |pp| / 2 := by
-        dsimp [δ₂]
-        field_simp
+        grind
   have hcombo_der2_ne :
       (p.derivative.derivative.eval x + β * q.derivative.derivative.eval x) ≠ 0 := by
-    intro hsum
-    have hEq : pp = -(β * qq) := by
-      linarith [hsum]
-    have habs_eq : |pp| = |β * qq| := by
-      rw [hEq, abs_neg]
-    have hpp_abs_pos : 0 < |pp| := abs_pos.mpr hpp_ne
-    rw [habs_eq] at hpp_abs_pos
-    linarith
+    grind
   have hcombo_nonzero :
       p + C β * q ≠ 0 := by
     intro hzero
     have heval := congrArg (fun r : ℝ[X] => r.eval x) hzero
     have heval0 : p.eval x + β * q.eval x = 0 := by
       simpa using heval
-    have : β * q.eval x = 0 := by
-      simpa [hp_eval0] using heval0
-    exact hq_eval_ne ((mul_eq_zero.mp this).resolve_left hβ_ne)
+    simp_all
   have hcombo_rr : IsRealRooted (p + C β * q) := hfamily hβ_pos hβ_le_max
   have hcombo_eval_ne :
       (p + C β * q).eval x ≠ 0 := by
-    have heval :
-        (p + C β * q).eval x = β * q.eval x := by
-      simp [hp_eval0]
-    rw [heval]
-    exact mul_ne_zero hβ_ne hq_eval_ne
+    simp_all
   have hcombo_deg_ge2 : 2 ≤ (p + C β * q).natDegree := by
     by_contra hlt
-    have hdeg_lt2 : (p + C β * q).natDegree < 2 := by omega
+    have hdeg_lt2 : (p + C β * q).natDegree < 2 := by lia
     have hder2_zero : (derivative^[2]) (p + C β * q) = 0 :=
       iterate_derivative_eq_zero hdeg_lt2
     have hder2_eval_zero :
         (p + C β * q).derivative.derivative.eval x = 0 := by
-      simpa [Function.iterate_succ_apply'] using congrArg (fun r : ℝ[X] => r.eval x) hder2_zero
+      simp_all
     have : p.derivative.derivative.eval x + β * q.derivative.derivative.eval x = 0 := by
       simpa [derivative_add, derivative_C_mul] using hder2_eval_zero
     exact hcombo_der2_ne this
   have hineq_raw :=
-    deriv2_mul_lt_deriv_sq_at_non_root hcombo_rr (by omega) hcombo_eval_ne
+    deriv2_mul_lt_deriv_sq_at_non_root hcombo_rr (by lia) hcombo_eval_ne
   have hineq : A < β * B := by
     dsimp [A, B, pp, qx, qp, qq]
     have hineq' := hineq_raw
@@ -3243,16 +2870,15 @@ private lemma false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
   have hβB_lt : β * |B| < A := by
     calc
       β * |B| ≤ β * (|B| + 1) := by
-        nlinarith [hβ_pos, abs_nonneg B]
+        simp_all
       _ ≤ δ₁ * (|B| + 1) := by
         gcongr
       _ = A / 2 := by
-        dsimp [δ₁]
-        field_simp
+        grind
       _ < A := by linarith
   have hineq_le : β * B ≤ β * |B| := by
     have hB_le : B ≤ |B| := le_abs_self B
-    nlinarith [hβ_pos, hB_le]
+    simp_all
   exact (lt_irrefl A) (lt_of_lt_of_le hineq (le_trans hineq_le (le_of_lt hβB_lt)))
 
 /-- Affine-family endpoint obstruction for an exact double root of `g`.
@@ -3288,40 +2914,18 @@ private lemma false_of_affine_family_double_root
       have hEq :
           g + C β * q =
             (((C β * X + C (β * (1 - r))) * f) + g) := by
-        calc
-          g + C β * q
-              = g + C β * ((X - C r + C (1 : ℝ)) * f) := by rfl
-          _ = g + ((C β * X + C (β * (1 - r))) * f) := by
-                rw [show C β * ((X - C r + C (1 : ℝ)) * f) =
-                    ((C β * X + C (β * (1 - r))) * f) by
-                      calc
-                        C β * ((X - C r + C (1 : ℝ)) * f)
-                            = (C β * (X - C r + C (1 : ℝ))) * f := by rw [mul_assoc]
-                        _ = (C β * X + C (β * (1 - r))) * f := by
-                              ext n
-                              simp [sub_eq_add_neg]
-                              ring_nf]
-          _ = (((C β * X + C (β * (1 - r))) * f) + g) := by
-                rw [add_comm]
+        grind
       have hβt_pos : 0 < β * (1 - r) := by
         have : 0 < 1 - r := by linarith
         positivity
       exact hEq ▸ haff hβ hβt_pos
     have hq_eval_ne : q.eval r ≠ 0 := by
       dsimp [q]
-      rw [eval_mul]
-      have hlin : (X - C r + C (1 : ℝ)).eval r = 1 := by
-        simp
-      rw [hlin, one_mul]
-      exact hf_eval_ne
+      simp_all
     have hprod_pos :
         0 < g.derivative.derivative.eval r * q.eval r := by
       dsimp [q, G] at hG_pos ⊢
-      rw [eval_mul]
-      have hlin : (X - C r + C (1 : ℝ)).eval r = 1 := by
-        simp
-      rw [hlin, one_mul]
-      simpa using hG_pos
+      simp_all
     exact
       false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
         (p := g) (q := q) (x := r) (βmax := 1)
@@ -3329,43 +2933,25 @@ private lemma false_of_affine_family_double_root
   · let c : ℝ := r / 2
     let q : ℝ[X] := (X - C r + C c) * f
     have hc_gt_r : r < c := by
-      dsimp [c]
-      linarith
+      grind
     have hc_neg : c < 0 := by
-      dsimp [c]
-      linarith
+      grind
     have hfamily :
         ∀ {β : ℝ}, 0 < β → β ≤ 1 → IsRealRooted (g + C β * q) := by
       intro β hβ _hβ_le
       have hEq :
           g + C β * q =
             (((C β * X + C (β * (c - r))) * f) + g) := by
-        calc
-          g + C β * q
-              = g + C β * ((X - C r + C c) * f) := by rfl
-          _ = g + ((C β * X + C (β * (c - r))) * f) := by
-                rw [show C β * ((X - C r + C c) * f) =
-                    ((C β * X + C (β * (c - r))) * f) by
-                      calc
-                        C β * ((X - C r + C c) * f)
-                            = (C β * (X - C r + C c)) * f := by rw [mul_assoc]
-                        _ = (C β * X + C (β * (c - r))) * f := by
-                              ext n
-                              simp [sub_eq_add_neg]
-                              ring_nf]
-          _ = (((C β * X + C (β * (c - r))) * f) + g) := by
-                rw [add_comm]
+        grind
       have hβt_pos : 0 < β * (c - r) := by
-        have : 0 < c - r := by linarith
-        positivity
+        simp_all
       exact hEq ▸ haff hβ hβt_pos
     have hq_eval_ne : q.eval r ≠ 0 := by
       dsimp [q, c]
       rw [eval_mul]
       have hlin : (X - C r + C (r / 2)).eval r = r / 2 := by
         simp
-      rw [hlin]
-      exact mul_ne_zero (by linarith) hf_eval_ne
+      grind
     have hG_neg :
         G < 0 := by
       exact lt_of_le_of_ne (le_of_not_gt hG_pos) hG_ne
@@ -3378,8 +2964,7 @@ private lemma false_of_affine_family_double_root
       rw [eval_mul]
       have hlin : (X - C r + C (r / 2)).eval r = r / 2 := by
         simp
-      rw [hlin]
-      simpa [G, mul_assoc, mul_left_comm, mul_comm] using hcG_pos
+      grind
     exact
       false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
         (p := g) (q := q) (x := r) (βmax := 1)
@@ -3418,39 +3003,28 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
   have hmult_pos : 0 < g.rootMultiplicity r := by
     exact (rootMultiplicity_pos hg0).mpr hgr
   have hmult_ge2 : 2 ≤ g.rootMultiplicity r := by
-    have hmult_ge1 : 1 ≤ g.rootMultiplicity r := Nat.succ_le_of_lt hmult_pos
-    have hmult_not1 : g.rootMultiplicity r ≠ 1 := by
-      simpa using hmult_ne
-    omega
+    lia
   have hr_mem : r ∈ g.roots := (mem_roots hg_rr.1).mpr hgr
   have hr_neg : r < 0 :=
     roots_strictly_neg_of_nonneg_of_no_common_right_pair
       hg_rr hgnn hno_right r hr_mem
   have hf_not_root : ¬ f.IsRoot r := hno r hgr
   have hf_eval_ne : f.eval r ≠ 0 := by
-    simpa [Polynomial.IsRoot.def] using hf_not_root
+    simp_all
   let m : ℕ := g.rootMultiplicity r
   let k : ℕ := m - 2
   let qPos : ℝ[X] := (X - C r + C (1 : ℝ)) * f
   let qNeg : ℝ[X] := (X - C r + C (r / 2)) * f
   have hqPos_eval : qPos.eval r = f.eval r := by
     dsimp [qPos]
-    rw [eval_mul]
-    have hlin : (X - C r + C (1 : ℝ)).eval r = 1 := by
-      simp
-    rw [hlin, one_mul]
+    simp
   have hqNeg_eval : qNeg.eval r = (r / 2) * f.eval r := by
     dsimp [qNeg]
-    rw [eval_mul]
-    have hlin : (X - C r + C (r / 2)).eval r = r / 2 := by
-      simp
-    rw [hlin]
+    simp
   have hqPos_eval_ne : qPos.eval r ≠ 0 := by
-    rw [hqPos_eval]
-    exact hf_eval_ne
+    simp_all
   have hqNeg_eval_ne : qNeg.eval r ≠ 0 := by
-    rw [hqNeg_eval]
-    exact mul_ne_zero (by linarith) hf_eval_ne
+    simp_all
   obtain ⟨δPos, hδPos, hqPos_keep⟩ :=
     exists_delta_eval_mul_pos_iterateTDeriv_at_zero k
       (p := qPos) (x := r) hqPos_eval_ne
@@ -3459,38 +3033,27 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
       (p := qNeg) (x := r) hqNeg_eval_ne
   let η : ℝ := min δPos δNeg / 2
   have hη_pos : 0 < η := by
-    dsimp [η]
-    positivity
+    grind
   have hη_smallPos : ‖η‖ < δPos := by
     have hη_norm : ‖η‖ = min δPos δNeg / 2 := by
       rw [Real.norm_eq_abs, show η = min δPos δNeg / 2 by rfl, abs_of_pos hη_pos]
-    rw [hη_norm]
-    have hmin_pos : 0 < min δPos δNeg := lt_min hδPos hδNeg
-    have hhalf_lt : min δPos δNeg / 2 < min δPos δNeg := by
-      nlinarith
-    exact lt_of_lt_of_le hhalf_lt (min_le_left _ _)
+    grind
   have hη_smallNeg : ‖η‖ < δNeg := by
     have hη_norm : ‖η‖ = min δPos δNeg / 2 := by
       rw [Real.norm_eq_abs, show η = min δPos δNeg / 2 by rfl, abs_of_pos hη_pos]
-    rw [hη_norm]
-    have hmin_pos : 0 < min δPos δNeg := lt_min hδPos hδNeg
-    have hhalf_lt : min δPos δNeg / 2 < min δPos δNeg := by
-      nlinarith
-    exact lt_of_lt_of_le hhalf_lt (min_le_right _ _)
+    grind
   let pη : ℝ[X] := iterateTDeriv η k g
   let qPosη : ℝ[X] := iterateTDeriv η k qPos
   let qNegη : ℝ[X] := iterateTDeriv η k qNeg
   have hk_le : k ≤ g.rootMultiplicity r := by
-    dsimp [k, m]
-    omega
+    lia
   have hpη_mult : pη.rootMultiplicity r = 2 := by
     calc
       pη.rootMultiplicity r = g.rootMultiplicity r - k := by
         dsimp [pη]
         exact rootMultiplicity_iterateTDeriv_eq_tsub hη_pos hg_rr hk_le
       _ = 2 := by
-        dsimp [k, m]
-        omega
+        lia
   have hpη_rr : IsRealRooted pη := by
     dsimp [pη]
     exact isRealRooted_iterateTDeriv hη_pos hg_rr
@@ -3501,23 +3064,19 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
         hpη_ne hpη_mult
   have hqPosη_keep :
       0 < qPosη.eval r * qPos.eval r := by
-    dsimp [qPosη]
-    exact hqPos_keep hη_smallPos
+    grind
   have hqNegη_keep :
       0 < qNegη.eval r * qNeg.eval r := by
-    dsimp [qNegη]
-    exact hqNeg_keep hη_smallNeg
+    grind
   have hqPosη_eval_ne : qPosη.eval r ≠ 0 := by
-    have : qPosη.eval r * qPos.eval r ≠ 0 := ne_of_gt hqPosη_keep
-    exact (mul_ne_zero_iff.mp this).1
+    grind
   have hqNegη_eval_ne : qNegη.eval r ≠ 0 := by
-    have : qNegη.eval r * qNeg.eval r ≠ 0 := ne_of_gt hqNegη_keep
-    exact (mul_ne_zero_iff.mp this).1
+    grind
   have hqOpp :
       qPosη.eval r * qNegη.eval r < 0 := by
     by_cases hqPos_pos : 0 < qPos.eval r
     · have hqPosη_pos : 0 < qPosη.eval r := by
-        nlinarith [hqPosη_keep, hqPos_pos]
+        simp_all
       have hqNeg_neg : qNeg.eval r < 0 := by
         rw [hqNeg_eval, hqPos_eval] at *
         nlinarith [hr_neg, hqPos_pos]
@@ -3532,7 +3091,7 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
         rw [hqNeg_eval, hqPos_eval] at *
         nlinarith [hr_neg, hqPos_neg]
       have hqNegη_pos : 0 < qNegη.eval r := by
-        nlinarith [hqNegη_keep, hqNeg_pos]
+        simp_all
       exact mul_neg_of_neg_of_pos hqPosη_neg hqNegη_pos
   have hfamilyPos :
       ∀ {β : ℝ}, 0 < β → β ≤ 1 → IsRealRooted (g + C β * qPos) := by
@@ -3540,21 +3099,7 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
     have hEq :
         g + C β * qPos =
           (((C β * X + C (β * (1 - r))) * f) + g) := by
-      calc
-        g + C β * qPos
-            = g + C β * ((X - C r + C (1 : ℝ)) * f) := by rfl
-        _ = g + ((C β * X + C (β * (1 - r))) * f) := by
-              rw [show C β * ((X - C r + C (1 : ℝ)) * f) =
-                  ((C β * X + C (β * (1 - r))) * f) by
-                    calc
-                      C β * ((X - C r + C (1 : ℝ)) * f)
-                          = (C β * (X - C r + C (1 : ℝ))) * f := by rw [mul_assoc]
-                      _ = (C β * X + C (β * (1 - r))) * f := by
-                            ext n
-                            simp [sub_eq_add_neg]
-                            ring_nf]
-        _ = (((C β * X + C (β * (1 - r))) * f) + g) := by
-              rw [add_comm]
+      grind
     have hβt_pos : 0 < β * (1 - r) := by
       have : 0 < 1 - r := by linarith
       positivity
@@ -3565,21 +3110,7 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
     have hEq :
         g + C β * qNeg =
           (((C β * X + C (β * (r / 2 - r))) * f) + g) := by
-      calc
-        g + C β * qNeg
-            = g + C β * ((X - C r + C (r / 2)) * f) := by rfl
-        _ = g + ((C β * X + C (β * (r / 2 - r))) * f) := by
-              rw [show C β * ((X - C r + C (r / 2)) * f) =
-                  ((C β * X + C (β * (r / 2 - r))) * f) by
-                    calc
-                      C β * ((X - C r + C (r / 2)) * f)
-                          = (C β * (X - C r + C (r / 2))) * f := by rw [mul_assoc]
-                      _ = (C β * X + C (β * (r / 2 - r))) * f := by
-                            ext n
-                            simp [sub_eq_add_neg]
-                            ring_nf]
-        _ = (((C β * X + C (β * (r / 2 - r))) * f) + g) := by
-              rw [add_comm]
+      grind
     have hβt_pos : 0 < β * (r / 2 - r) := by
       have : 0 < r / 2 - r := by linarith
       positivity
@@ -3643,7 +3174,7 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
         have hqNegη_not_neg : ¬ qNegη.eval r < 0 := by
           intro hqNegη_neg
           exact (not_lt_of_ge (le_of_lt hqOpp)) (mul_pos_of_neg_of_neg hqPosη_neg hqNegη_neg)
-        exact lt_of_le_of_ne (le_of_not_gt hqNegη_not_neg) (by simpa [eq_comm] using hqNegη_ne)
+        grind
       have hpp_pos : 0 < pη.derivative.derivative.eval r := by
         nlinarith [hprodPos_neg, hqPosη_neg]
       have hprodNeg_pos :
@@ -3663,10 +3194,8 @@ private lemma roots_nodup_of_hasSimpleRoots
   by_cases hr : p.IsRoot r
   · simp [hsimple r hr]
   · have hmult0 : p.rootMultiplicity r = 0 := by
-      apply Nat.eq_zero_of_not_pos
-      intro hpos
-      exact hr ((rootMultiplicity_pos hp0).mp hpos)
-    simp [hmult0]
+      simp_all
+    lia
 
 private lemma roots_sort_sortedLT_of_hasSimpleRoots
     {p : ℝ[X]} (hp0 : p ≠ 0) (hsimple : HasSimpleRoots p) :
@@ -3691,17 +3220,10 @@ private lemma rootMultiplicity_ne_two_add_right_of_posComboRealRooted
   intro hmult
   have hp_root : (f + C μ * g).IsRoot x := by
     exact (rootMultiplicity_pos (show f + C μ * g ≠ 0 from
-      (PosComboRealRooted.isRealRooted_add_right hfg hμ).1)).mp (by simp [hmult])
+      (PosComboRealRooted.isRealRooted_add_right hfg hμ).1)).mp (by lia)
   have hg_eval_ne : g.eval x ≠ 0 := by
     intro hg0
-    have hp_eval0 : (f + C μ * g).eval x = 0 := by
-      simpa [Polynomial.IsRoot.def] using hp_root
-    have hf0 : f.eval x = 0 := by
-      simp [eval_add, eval_mul, hg0] at hp_eval0
-      linarith
-    exact hno x
-      (by simpa [Polynomial.IsRoot.def] using hf0)
-      (by simpa [Polynomial.IsRoot.def] using hg0)
+    simp_all
   by_cases hprod_pos :
       0 < (f + C μ * g).derivative.derivative.eval x * g.eval x
   · exact
@@ -3711,15 +3233,7 @@ private lemma rootMultiplicity_ne_two_add_right_of_posComboRealRooted
           intro β hβ hβ_le
           have hμβ : 0 < μ + β := by linarith
           have hrr := PosComboRealRooted.isRealRooted_add_right hfg hμβ
-          have hEq : (f + C μ * g) + C β * g = f + C (μ + β) * g := by
-            calc
-              (f + C μ * g) + C β * g = f + (C μ * g + C β * g) := by
-                simp [add_assoc]
-              _ = f + (C μ + C β) * g := by
-                rw [← add_mul]
-              _ = f + C (μ + β) * g := by
-                rw [← C_add]
-          simpa [hEq] using hrr)
+          grind)
         zero_lt_one hmult hg_eval_ne hprod_pos
   · have hpp_ne :
         (f + C μ * g).derivative.derivative.eval x ≠ 0 := by
@@ -3734,10 +3248,10 @@ private lemma rootMultiplicity_ne_two_add_right_of_posComboRealRooted
         (f + C μ * g).derivative.derivative.eval x * g.eval x < 0 := by
       exact lt_of_le_of_ne (le_of_not_gt hprod_pos) hprod_ne
     have hneg_eval_ne : (-g).eval x ≠ 0 := by
-      simpa [Polynomial.eval_neg] using neg_ne_zero.mpr hg_eval_ne
+      simp_all
     have hneg_pos :
         0 < (f + C μ * g).derivative.derivative.eval x * (-g).eval x := by
-      simpa [Polynomial.eval_neg] using neg_pos.mpr hprod_neg
+      simp_all
     exact
       false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
         (p := f + C μ * g) (q := -g) (x := x) (βmax := μ / 2)
@@ -3745,17 +3259,7 @@ private lemma rootMultiplicity_ne_two_add_right_of_posComboRealRooted
           intro β hβ hβ_le
           have hμβ : 0 < μ - β := by linarith
           have hrr := PosComboRealRooted.isRealRooted_add_right hfg hμβ
-          have hEq : (f + C μ * g) + C β * (-g) = f + (C μ - C β) * g := by
-            calc
-              (f + C μ * g) + C β * (-g) = f + (C μ * g + C β * (-g)) := by
-                simp [add_assoc]
-              _ = f + (C μ * g - C β * g) := by
-                simp [sub_eq_add_neg]
-              _ = f + (C μ - C β) * g := by
-                rw [← sub_mul]
-          have hrr' : IsRealRooted (f + (C μ - C β) * g) := by
-            simpa [C_sub] using hrr
-          exact hEq ▸ hrr')
+          grind)
         (by positivity) hmult hneg_eval_ne hneg_pos
 
 /-- Every interior positive combination of a no-common positive-combination
@@ -3780,48 +3284,35 @@ private lemma hasSimpleRoots_add_right_of_posComboRealRooted
   intro x hx
   by_contra hmult_ne
   have hmult_pos : 0 < p.rootMultiplicity x := by
-    exact (rootMultiplicity_pos hp_ne).mpr (by simpa [p] using hx)
+    exact (rootMultiplicity_pos hp_ne).mpr (by lia)
   have hmult_gt : 1 < p.rootMultiplicity x := by
     exact Nat.lt_of_le_of_ne (Nat.succ_le_of_lt hmult_pos) (Ne.symm hmult_ne)
   have hg_not_root : ¬ g.IsRoot x := by
     intro hgx
-    have hp_eval0 : p.eval x = 0 := by
-      simpa [p, Polynomial.IsRoot.def] using hx
-    have hg_eval0 : g.eval x = 0 := by
-      simpa [Polynomial.IsRoot.def] using hgx
-    have hf_eval0 : f.eval x = 0 := by
-      simp [p, eval_add, eval_mul, hg_eval0] at hp_eval0
-      linarith
-    exact hno x
-      (by simpa [Polynomial.IsRoot.def] using hf_eval0)
-      hgx
+    simp_all
   let m : ℕ := p.rootMultiplicity x
   let k : ℕ := m - 2
   obtain ⟨δ, hδ, hgk_not_root⟩ :=
     exists_delta_not_isRoot_iterateTDeriv_at_point k hg_not_root
   let η : ℝ := δ / 2
   have hη_pos : 0 < η := by
-    dsimp [η]
-    linarith
+    grind
   have hη_small : ‖η‖ < δ := by
     have hη_norm : ‖η‖ = δ / 2 := by
       rw [Real.norm_eq_abs, show η = δ / 2 by rfl, abs_of_pos hη_pos]
-    rw [hη_norm]
-    linarith
+    simp_all
   have hgk_not_root_x : ¬ (iterateTDeriv η k g).IsRoot x := hgk_not_root hη_small
   have hgk_eval_ne : (iterateTDeriv η k g).eval x ≠ 0 := by
-    simpa [Polynomial.IsRoot.def] using hgk_not_root_x
+    simp_all
   have hk_le : k ≤ p.rootMultiplicity x := by
-    dsimp [k, m]
-    omega
+    lia
   have hpk_mult :
       (iterateTDeriv η k p).rootMultiplicity x = 2 := by
     calc
       (iterateTDeriv η k p).rootMultiplicity x = p.rootMultiplicity x - k := by
         exact rootMultiplicity_iterateTDeriv_eq_tsub hη_pos hp_rr hk_le
       _ = 2 := by
-        dsimp [k, m]
-        omega
+        lia
   let pη : ℝ[X] := iterateTDeriv η k p
   let gη : ℝ[X] := iterateTDeriv η k g
   have hpη_eq :
@@ -3844,13 +3335,13 @@ private lemma hasSimpleRoots_add_right_of_posComboRealRooted
             calc
               pη + C β * gη
                   = (iterateTDeriv η k f + C μ * gη) + C β * gη := by
-                      rw [hpη_eq]
+                      simp_all
               _ = iterateTDeriv η k f + (C μ * gη + C β * gη) := by
-                    simp [add_assoc]
+                    grind
               _ = iterateTDeriv η k f + (C μ + C β) * gη := by
-                    rw [← add_mul]
+                    grind
               _ = iterateTDeriv η k f + C (μ + β) * gη := by
-                    rw [← C_add]
+                    simp
               _ = iterateTDeriv η k (f + C (μ + β) * g) := by
                     rw [iterateTDeriv_add, iterateTDeriv_C_mul]
           exact hEq ▸ hiter)
@@ -3858,7 +3349,7 @@ private lemma hasSimpleRoots_add_right_of_posComboRealRooted
   · have hpη_rr : IsRealRooted pη := by
       exact
         isRealRooted_iterateTDeriv (eps := η) (k := k) hη_pos
-          (by simpa [p] using PosComboRealRooted.isRealRooted_add_right hfg hμ)
+          (by simp_all)
     have hpη_ne : pη ≠ 0 := hpη_rr.1
     have hpηpp_ne :
         pη.derivative.derivative.eval x ≠ 0 := by
@@ -3872,10 +3363,10 @@ private lemma hasSimpleRoots_add_right_of_posComboRealRooted
         pη.derivative.derivative.eval x * gη.eval x < 0 := by
       exact lt_of_le_of_ne (le_of_not_gt hprod_pos) hprod_ne
     have hneg_eval_ne : (-gη).eval x ≠ 0 := by
-      simpa [Polynomial.eval_neg] using neg_ne_zero.mpr hgk_eval_ne
+      simp_all
     have hneg_pos :
         0 < pη.derivative.derivative.eval x * (-gη).eval x := by
-      simpa [Polynomial.eval_neg] using neg_pos.mpr hprod_neg
+      simp_all
     exact
       false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
         (p := pη) (q := -gη) (x := x) (βmax := μ / 2)
@@ -3890,15 +3381,15 @@ private lemma hasSimpleRoots_add_right_of_posComboRealRooted
             calc
               pη + C β * (-gη)
                   = (iterateTDeriv η k f + C μ * gη) + C β * (-gη) := by
-                      rw [hpη_eq]
+                      simp_all
               _ = iterateTDeriv η k f + (C μ * gη + C β * (-gη)) := by
-                    simp [add_assoc]
+                    grind
               _ = iterateTDeriv η k f + (C μ * gη - C β * gη) := by
-                    simp [sub_eq_add_neg]
+                    grind
               _ = iterateTDeriv η k f + (C μ - C β) * gη := by
-                    rw [← sub_mul]
+                    grind
               _ = iterateTDeriv η k f + C (μ - β) * gη := by
-                    rw [C_sub]
+                    simp
               _ = iterateTDeriv η k (f + C (μ - β) * g) := by
                     rw [iterateTDeriv_add, iterateTDeriv_C_mul]
           exact hEq ▸ hiter)
@@ -3915,50 +3406,40 @@ private lemma wronskian_eval_ne_zero_of_add_left_family_of_no_common
     (hopp : g.eval x * f.eval x < 0) :
     f.derivative.eval x * g.eval x - f.eval x * g.derivative.eval x ≠ 0 := by
   have hf_eval_ne : f.eval x ≠ 0 := by
-    exact fun hfx => by simpa [hfx] using hopp.ne
+    exact fun hfx => by simp_all
   have hg_eval_ne : g.eval x ≠ 0 := by
-    exact fun hgx => by simpa [hgx] using hopp.ne
+    exact fun hgx => by simp_all
   let t : ℝ := -(g.eval x / f.eval x)
   have ht_pos : 0 < t := by
     have hnum_pos : 0 < -(g.eval x * f.eval x) := by
       linarith
     have hmul_pos : 0 < t * (f.eval x) ^ 2 := by
-      dsimp [t]
-      have hcalc :
-          -(g.eval x / f.eval x) * (f.eval x) ^ 2 = -(g.eval x * f.eval x) := by
-        field_simp [hf_eval_ne]
-      simpa [hcalc]
-        using hnum_pos
+      grind
     have hsq_nonneg : 0 ≤ (f.eval x) ^ 2 := sq_nonneg _
     nlinarith
   have hcombo : PosComboRealRooted g f := by
     rw [PosComboRealRooted.iff_add_right]
-    intro μ hμ
-    simpa [add_comm] using hfamily hμ
+    grind
   have hsimple : HasSimpleRoots (g + C t * f) := by
     exact
       hasSimpleRoots_add_right_of_posComboRealRooted
         hcombo hno ht_pos
   have hp_rr : IsRealRooted (g + C t * f) := by
-    simpa [add_comm] using hfamily ht_pos
+    grind
   have hp_root : (g + C t * f).IsRoot x := by
     rw [Polynomial.IsRoot.def, eval_add, eval_mul, eval_C]
-    dsimp [t]
-    field_simp [hf_eval_ne]
-    ring
+    grind
   intro hW
   have hp_der_root : (g + C t * f).derivative.IsRoot x := by
     rw [Polynomial.IsRoot.def, derivative_add, derivative_C_mul,
       eval_add, eval_mul, eval_C]
-    dsimp [t]
-    field_simp [hf_eval_ne]
-    nlinarith [hW]
+    grind
   have hp_ne : g + C t * f ≠ 0 := hp_rr.1
   have hmult :
       1 < (g + C t * f).rootMultiplicity x := by
     exact (one_lt_rootMultiplicity_iff_isRoot hp_ne).2 ⟨hp_root, hp_der_root⟩
   rw [hsimple x hp_root] at hmult
-  omega
+  lia
 
 /-- Derivative of the boundary ratio `x ↦ -g(x) / f(x)` at a point where
 `f(x) ≠ 0`, rewritten in the Wronskian form natural for the affine-family
@@ -3988,8 +3469,7 @@ private lemma wronskian_eq_zero_of_localExtr_neg_eval_div_eval
     f.derivative.eval x * g.eval x - f.eval x * g.derivative.eval x = 0 := by
   have hderiv := hasDerivAt_neg_eval_div_eval (f := f) (g := g) hf_eval_ne
   have hzero := hlocal.hasDerivAt_eq_zero hderiv
-  field_simp [hf_eval_ne] at hzero
-  linarith
+  simp_all
 
 /-- In a one-parameter affine boundary family, the positive ratio
 `x ↦ -g(x) / f(x)` cannot have an interior local extremum: that would force a
@@ -4010,7 +3490,7 @@ private lemma false_of_localExtr_neg_eval_div_eval_pos_of_add_left_family_of_no_
     have hsq_pos : 0 < (f.eval x)^2 := sq_pos_of_ne_zero hf_eval_ne
     have hcalc :
         (-(g.eval x / f.eval x)) * (f.eval x)^2 = -(g.eval x * f.eval x) := by
-      field_simp [hf_eval_ne]
+      grind
     have hnum_pos : 0 < -(g.eval x * f.eval x) := by
       simpa [hcalc] using mul_pos hpos hsq_pos
     nlinarith
@@ -4022,8 +3502,7 @@ private lemma pairwise_suffix {α : Type*} {R : α → α → Prop} :
     ∀ pre suf : List α, (pre ++ suf).Pairwise R → suf.Pairwise R
   | [], suf, h => by simpa using h
   | _ :: pre, suf, h => by
-      simpa [List.cons_append] using
-        pairwise_suffix pre suf (List.Pairwise.tail h)
+      grind
 
 private lemma consecNoRoots_tail {p : ℝ[X]} {a : ℝ} {l : List ℝ} :
     ConsecNoRoots p (a :: l) → ConsecNoRoots p l := by
@@ -4047,11 +3526,11 @@ private lemma pos_neg_div_of_mul_neg {a b : ℝ}
     0 < -(a / b) := by
   have hsq_pos : 0 < b ^ 2 := sq_pos_of_ne_zero hb
   have hcalc : (-(a / b)) * b ^ 2 = -(a * b) := by
-    field_simp [hb]
+    grind
   have hnum_pos : 0 < -(a * b) := by
     nlinarith
   have hmul_pos : 0 < (-(a / b)) * b ^ 2 := by
-    simpa [hcalc] using hnum_pos
+    simp_all
   nlinarith
 
 /-- Recursive root-picker: if a polynomial `F` has a root strictly between each
@@ -4085,19 +3564,14 @@ private theorem exists_roots_strictly_interlacing_of_consecutive_exists {F : ℝ
         exists_roots_strictly_interlacing_of_consecutive_exists
           (F := F) (r₂ :: rest) htail_sorted
           (fun pre {a b tail} hEq => by
-            have hEq' : r₁ :: r₂ :: rest = (r₁ :: pre) ++ a :: b :: tail := by
-              simp [List.cons_append, hEq]
-            simpa using hexists (r₁ :: pre) hEq')
+            grind)
       have hu_lt_all : ∀ w ∈ us, u < w := by
         intro w hw
         exact lt_of_lt_of_le hu₂ (listInterlaces_all_ge us rest r₂ hus_int w hw)
       refine ⟨u :: us, ?_, ?_, ?_, ?_⟩
-      · simp [hus_len]
+      · simp_all
       · exact ⟨le_of_lt hu₁, le_of_lt hu₂, hus_int⟩
-      · intro v hv
-        rcases List.mem_cons.mp hv with rfl | hv'
-        · exact hu_root
-        · exact hus_roots v hv'
+      · simp_all
       · exact List.pairwise_cons.mpr ⟨hu_lt_all, hus_pw⟩
 
 /-- In the hard succ-degree affine branch with `g(0) ≠ 0`, every open interval
@@ -4140,8 +3614,7 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
       hg_rr hgnn hno_right r₂ hr₂_mem
   let m : ℝ := (r₁ + r₂) / 2
   have hm_mem : m ∈ Set.Ioo r₁ r₂ := by
-    dsimp [m]
-    constructor <;> nlinarith
+    grind
   by_contra hexists
   push_neg at hexists
   have hg_mid_ne : g.eval m ≠ 0 := by
@@ -4160,20 +3633,12 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
       intro t ht
       simpa [add_comm] using
         isRealRooted_add_left_of_affine_family_of_natDegree_succ_le
-          hf0 hg0 hfnn hgnn haff (by omega) ht
+          hf0 hg0 hfnn hgnn haff (by lia) ht
     have hden_nonzero_f : ∀ x ∈ Set.Icc r₁ r₂, f.eval x ≠ 0 := by
       intro x hx hfx
       have hroot : f.IsRoot x := by
         simpa [Polynomial.IsRoot.def] using hfx
-      rcases eq_or_lt_of_le hx.1 with hxr₁ | hx₁
-      · have hroot₁ : f.IsRoot r₁ := by
-          simpa [hxr₁] using hroot
-        exact hno r₁ hr₁ hroot₁
-      rcases eq_or_lt_of_le hx.2 with hxr₂ | hx₂
-      · have hroot₂ : f.IsRoot r₂ := by
-          simpa [hxr₂] using hroot
-        exact hno r₂ hr₂ hroot₂
-      · exact hexists x hx₁ hx₂ hroot
+      grind
     have hratio_cont :
         ContinuousOn (fun y : ℝ => -(g.eval y / f.eval y)) (Set.Icc r₁ r₂) := by
       exact (g.continuous.continuousOn.div f.continuous.continuousOn hden_nonzero_f).neg
@@ -4184,7 +3649,7 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
         simpa [Polynomial.IsRoot.def] using hr₁
       have hg₂_eval : g.eval r₂ = 0 := by
         simpa [Polynomial.IsRoot.def] using hr₂
-      simp [hg₁_eval, hg₂_eval]
+      grind
     obtain ⟨c, hc_mem, hlocal⟩ :=
       exists_isLocalExtr_Ioo hr₁r₂ hratio_cont hratio_eq
     have hprod_c_neg : g.eval c * f.eval c < 0 := by
@@ -4200,22 +3665,19 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
               simpa [Polynomial.IsRoot.def] using hgx
             exact hno_between_g x ((mem_roots hg0).mpr hroot) ⟨hx₁, hx₂⟩
           have hfx_ne : f.eval x ≠ 0 := by
-            intro hfx
-            have hroot : f.IsRoot x := by
-              simpa [Polynomial.IsRoot.def] using hfx
-            exact hexists x hx₁ hx₂ hroot
+            grind
           simpa [eval_mul] using mul_ne_zero hgx_ne hfx_ne
         have hsame :
             0 < (g * f).eval m * (g * f).eval c :=
           eval_same_sign_of_no_roots (p := g * f) hmc hno_mul
         have hprod_c : (g * f).eval c < 0 := by
           have hsame' : 0 < (g.eval m * f.eval m) * (g.eval c * f.eval c) := by
-            simpa [eval_mul] using hsame
+            simp_all
           have hmid_prod' : g.eval m * f.eval m < 0 := hmid_opp
           have hprod_c' : g.eval c * f.eval c < 0 := by
             nlinarith
-          simpa [eval_mul] using hprod_c'
-        simpa [eval_mul] using hprod_c
+          simp_all
+        simp_all
       · have hcm : c ≤ m := le_of_not_ge hmc
         have hno_mul :
             ∀ x, c ≤ x → x ≤ m → (g * f).eval x ≠ 0 := by
@@ -4225,25 +3687,20 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
           have hgx_ne : g.eval x ≠ 0 := by
             intro hgx
             have hroot : g.IsRoot x := by
-              simpa [Polynomial.IsRoot.def] using hgx
+              simp_all
             exact hno_between_g x ((mem_roots hg0).mpr hroot) ⟨hx₁, hx₂⟩
-          have hfx_ne : f.eval x ≠ 0 := by
-            intro hfx
-            have hroot : f.IsRoot x := by
-              simpa [Polynomial.IsRoot.def] using hfx
-            exact hexists x hx₁ hx₂ hroot
-          simpa [eval_mul] using mul_ne_zero hgx_ne hfx_ne
+          simp_all
         have hsame :
             0 < (g * f).eval c * (g * f).eval m :=
           eval_same_sign_of_no_roots (p := g * f) hcm hno_mul
         have hprod_c : (g * f).eval c < 0 := by
           have hsame' : 0 < (g.eval c * f.eval c) * (g.eval m * f.eval m) := by
-            simpa [eval_mul] using hsame
+            simp_all
           have hmid_prod' : g.eval m * f.eval m < 0 := hmid_opp
           have hprod_c' : g.eval c * f.eval c < 0 := by
             nlinarith
-          simpa [eval_mul] using hprod_c'
-        simpa [eval_mul] using hprod_c
+          simp_all
+        simp_all
     have hf_c_ne : f.eval c ≠ 0 :=
       hden_nonzero_f c (Set.mem_Icc.mpr ⟨le_of_lt hc_mem.1, le_of_lt hc_mem.2⟩)
     have hpos_c : 0 < -(g.eval c / f.eval c) :=
@@ -4254,8 +3711,7 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
   · have hmid_pos : 0 < g.eval m * f.eval m := by
       exact lt_of_le_of_ne (le_of_not_gt hmid_opp) (mul_ne_zero hg_mid_ne hf_mid_ne).symm
     have hm_neg : m < 0 := by
-      dsimp [m]
-      nlinarith
+      grind
     have hmid_right :
         g.eval m * (X * f).eval m < 0 := by
       rw [eval_mul]
@@ -4266,23 +3722,13 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
       rw [eval_mul] at hxf
       simp only [eval_X] at hxf
       have hx_neg : x < 0 := by
-        rcases eq_or_lt_of_le hx.1 with rfl | hx₁
-        · exact hr₁_neg
-        exact lt_of_le_of_lt hx.2 hr₂_neg
+        grind
       have hx_ne : x ≠ 0 := ne_of_lt hx_neg
       have hfx_ne : f.eval x ≠ 0 := by
         intro hfx
         have hroot : f.IsRoot x := by
-          simpa [Polynomial.IsRoot.def] using hfx
-        rcases eq_or_lt_of_le hx.1 with hxr₁ | hx₁
-        · have hroot₁ : f.IsRoot r₁ := by
-            simpa [hxr₁] using hroot
-          exact hno r₁ hr₁ hroot₁
-        rcases eq_or_lt_of_le hx.2 with hxr₂ | hx₂
-        · have hroot₂ : f.IsRoot r₂ := by
-            simpa [hxr₂] using hroot
-          exact hno r₂ hr₂ hroot₂
-        · exact hexists x hx₁ hx₂ hroot
+          simp_all
+        grind
       exact (mul_eq_zero.mp hxf).elim hx_ne hfx_ne
     have hratio_cont :
         ContinuousOn (fun y : ℝ => -(g.eval y / (X * f).eval y)) (Set.Icc r₁ r₂) := by
@@ -4291,11 +3737,7 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
     have hratio_eq :
         (fun y : ℝ => -(g.eval y / (X * f).eval y)) r₁ =
           (fun y : ℝ => -(g.eval y / (X * f).eval y)) r₂ := by
-      have hg₁_eval : g.eval r₁ = 0 := by
-        simpa [Polynomial.IsRoot.def] using hr₁
-      have hg₂_eval : g.eval r₂ = 0 := by
-        simpa [Polynomial.IsRoot.def] using hr₂
-      simp [hg₁_eval, hg₂_eval]
+      simp_all
     obtain ⟨c, hc_mem, hlocal⟩ :=
       exists_isLocalExtr_Ioo hr₁r₂ hratio_cont hratio_eq
     have hprod_c_neg :
@@ -4309,19 +3751,10 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
           have hgx_ne : g.eval x ≠ 0 := by
             intro hgx
             have hroot : g.IsRoot x := by
-              simpa [Polynomial.IsRoot.def] using hgx
+              simp_all
             exact hno_between_g x ((mem_roots hg0).mpr hroot) ⟨hx₁, hx₂⟩
           have hXfx_ne : (X * f).eval x ≠ 0 := by
-            have hx_neg : x < 0 := lt_trans hx₂ hr₂_neg
-            have hx_ne : x ≠ 0 := ne_of_lt hx_neg
-            have hfx_ne : f.eval x ≠ 0 := by
-              intro hfx
-              have hroot : f.IsRoot x := by
-                simpa [Polynomial.IsRoot.def] using hfx
-              exact hexists x hx₁ hx₂ hroot
-            rw [eval_mul]
-            simp only [eval_X]
-            exact mul_ne_zero hx_ne hfx_ne
+            grind
           simpa [eval_mul] using mul_ne_zero hgx_ne hXfx_ne
         have hsame :
             0 < (g * (X * f)).eval m * (g * (X * f)).eval c :=
@@ -4332,7 +3765,7 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
         have hmid_prod' : g.eval m * (X * f).eval m < 0 := hmid_right
         have hprod_c' : g.eval c * (X * f).eval c < 0 := by
           nlinarith
-        simpa [eval_mul] using hprod_c'
+        lia
       · have hcm : c ≤ m := le_of_not_ge hmc
         have hno_mul :
             ∀ x, c ≤ x → x ≤ m → (g * (X * f)).eval x ≠ 0 := by
@@ -4345,16 +3778,7 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
               simpa [Polynomial.IsRoot.def] using hgx
             exact hno_between_g x ((mem_roots hg0).mpr hroot) ⟨hx₁, hx₂⟩
           have hXfx_ne : (X * f).eval x ≠ 0 := by
-            have hx_neg : x < 0 := lt_trans hx₂ hr₂_neg
-            have hx_ne : x ≠ 0 := ne_of_lt hx_neg
-            have hfx_ne : f.eval x ≠ 0 := by
-              intro hfx
-              have hroot : f.IsRoot x := by
-                simpa [Polynomial.IsRoot.def] using hfx
-              exact hexists x hx₁ hx₂ hroot
-            rw [eval_mul]
-            simp only [eval_X]
-            exact mul_ne_zero hx_ne hfx_ne
+            grind
           simpa [eval_mul] using mul_ne_zero hgx_ne hXfx_ne
         have hsame :
             0 < (g * (X * f)).eval c * (g * (X * f)).eval m :=
@@ -4365,7 +3789,7 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
         have hmid_prod' : g.eval m * (X * f).eval m < 0 := hmid_right
         have hprod_c' : g.eval c * (X * f).eval c < 0 := by
           nlinarith
-        simpa [eval_mul] using hprod_c'
+        lia
     have hXf_c_ne : (X * f).eval c ≠ 0 :=
       hden_nonzero_Xf c (Set.mem_Icc.mpr ⟨le_of_lt hc_mem.1, le_of_lt hc_mem.2⟩)
     have hpos_c : 0 < -(g.eval c / (X * f).eval c) :=
@@ -4419,58 +3843,30 @@ private lemma right_boundary_pair_sameDegree_data_of_affine_family_succDegree_no
     have hrr :
         IsRealRooted (C (lam + ν) * g + C (ν * μ) * (X * f)) :=
       hposcombo (lam := lam + ν) (μ := ν * μ) (by positivity) (by positivity)
-    have hEq :
-        C lam * g + C ν * (g + C μ * (X * f)) =
-          C (lam + ν) * g + C (ν * μ) * (X * f) := by
-      calc
-        C lam * g + C ν * (g + C μ * (X * f))
-            = C lam * g + (C ν * g + C ν * (C μ * (X * f))) := by
-                rw [mul_add]
-        _ = (C lam * g + C ν * g) + C ν * (C μ * (X * f)) := by
-              ac_rfl
-        _ = (C lam + C ν) * g + (C ν * C μ) * (X * f) := by
-              rw [← add_mul, mul_assoc]
-        _ = (C lam + C ν) * g + C (ν * μ) * (X * f) := by
-              rw [C_mul]
-        _ = C (lam + ν) * g + C (ν * μ) * (X * f) := by
-              rw [← C_add]
-    exact hEq ▸ hrr
+    grind
   have hμ_rr : IsRealRooted (g + C μ * (X * f)) :=
     PosComboRealRooted.isRealRooted_add_right hposcombo hμ
   have hμ_simple : HasSimpleRoots (g + C μ * (X * f)) :=
     hasSimpleRoots_add_right_of_posComboRealRooted hposcombo hno_right hμ
   have hμ_pos : HasPosLeadingCoeff (g + C μ * (X * f)) := by
     have hdeg : g.natDegree ≤ (X * f).natDegree := by
-      rw [natDegree_mul X_ne_zero hf0, natDegree_X]
-      omega
+      simp_all
     have hsum_nonneg : HasNonnegCoeffs (g + C μ * (X * f)) :=
       hgnn.add (nonnegCoeffs_C_mul hμ.le (hasNonnegCoeffs_X.mul hfnn))
     have hsum_ne : g + C μ * (X * f) ≠ 0 := hμ_rr.1
     exact hsum_nonneg.pos_leadingCoeff hsum_ne
   have hμ_deg : (g + C μ * (X * f)).natDegree = g.natDegree := by
     have hdeg : g.natDegree ≤ (X * f).natDegree := by
-      rw [natDegree_mul X_ne_zero hf0, natDegree_X]
-      omega
+      simp_all
     calc
       (g + C μ * (X * f)).natDegree = (X * f).natDegree :=
         PosComboRealRooted.family_natDegree_right hdeg hg_pos hXf_pos hμ
       _ = g.natDegree := by
-        rw [natDegree_mul X_ne_zero hf0, natDegree_X]
-        omega
+        simp_all
   have hno_boundary :
       ∀ r, g.IsRoot r → ¬ (g + C μ * (X * f)).IsRoot r := by
     intro r hgr hboundary
-    have hg_eval : g.eval r = 0 := by
-      simpa [Polynomial.IsRoot.def] using hgr
-    have hboundary_eval : (g + C μ * (X * f)).eval r = 0 := by
-      simpa [Polynomial.IsRoot.def] using hboundary
-    have hXf_eval : (X * f).eval r = 0 := by
-      rw [eval_add, hg_eval] at hboundary_eval
-      simp only [zero_add] at hboundary_eval
-      have hμ_ne : μ ≠ 0 := ne_of_gt hμ
-      rw [eval_mul, eval_C] at hboundary_eval
-      exact mul_eq_zero.mp hboundary_eval |>.resolve_left hμ_ne
-    exact hno_right r hgr (by simpa [Polynomial.IsRoot.def] using hXf_eval)
+    simp_all
   exact ⟨hpair, hμ_rr, hμ_simple, hμ_pos, hμ_deg, hno_boundary⟩
 
 /-- The affine family `(C s * X + C t) * f + g` being real-rooted for all `s, t > 0`
@@ -4516,20 +3912,18 @@ private lemma allComboRealRooted_of_affine_family_succDegree_not_isRoot_zero
         ∃ u, r₁ < u ∧ u < r₂ ∧ f.IsRoot u := by
     intro pre r₁ r₂ rest hEq
     have hpair_full : (pre ++ r₁ :: r₂ :: rest).Pairwise (· < ·) := by
-      simpa [hEq] using hrs_sortedLT
+      simp_all
     have hsuf_sortedLT : (r₁ :: r₂ :: rest).Pairwise (· < ·) :=
       pairwise_suffix pre (r₁ :: r₂ :: rest) hpair_full
     have hgap_full : ConsecNoRoots g (pre ++ r₁ :: r₂ :: rest) := by
-      simpa [hEq] using hgap_rs
+      simp_all
     have hsuf_gap : ConsecNoRoots g (r₁ :: r₂ :: rest) :=
       consecNoRoots_suffix pre (r₁ :: r₂ :: rest) hgap_full
     have hr₁r₂ : r₁ < r₂ := List.rel_of_pairwise_cons hsuf_sortedLT (.head _)
     have hr₁_mem_rs : r₁ ∈ rs := by
-      rw [hEq]
-      simp
+      simp_all
     have hr₂_mem_rs : r₂ ∈ rs := by
-      rw [hEq]
-      simp
+      simp_all
     have hr₁_root : g.IsRoot r₁ := by
       have : r₁ ∈ (↑rs : Multiset ℝ) := Multiset.mem_coe.mpr hr₁_mem_rs
       exact (mem_roots hg0).mp (hrs_eq ▸ this)
@@ -4552,15 +3946,14 @@ private lemma allComboRealRooted_of_affine_family_succDegree_not_isRoot_zero
     apply Multiset.eq_of_le_of_card_le hus_sub
     calc
       f.roots.card = f.natDegree := hf_rr.2
-      _ = g.natDegree - 1 := by omega
-      _ = rs.length - 1 := by rw [hrs_len]
+      _ = g.natDegree - 1 := by lia
+      _ = rs.length - 1 := by simp_all
       _ = us.length := hus_len.symm
       _ = (↑us : Multiset ℝ).card := (Multiset.coe_card us).symm
       _ ≤ (↑us : Multiset ℝ).card := le_rfl
   have hprec_fg : Prec f g := by
     refine ⟨hf_rr, hg_rr, us, rs, hus_pw.imp le_of_lt, hrs_sorted, hus_eq, hrs_eq, ?_⟩
-    left
-    exact ⟨by omega, hus_int⟩
+    simp_all
   have hall_fg : AllComboRealRooted f g :=
     allComboRealRooted_of_prec hprec_fg
   exact allComboRealRooted_comm hall_fg
@@ -4582,7 +3975,7 @@ private lemma allComboRealRooted_of_affine_family_succDegree
     have hshift_ne : g + f ≠ 0 :=
       add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero hgnn hfnn hf0
     have hshift_succ : (g + f).natDegree = f.natDegree + 1 := by
-      have hdeg_lt : f.natDegree < g.natDegree := by omega
+      have hdeg_lt : f.natDegree < g.natDegree := by lia
       calc
         (g + f).natDegree = g.natDegree :=
           natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff
@@ -4595,44 +3988,12 @@ private lemma allComboRealRooted_of_affine_family_succDegree
       have hbase :
           IsRealRooted (((C s * X + C (t + 1)) * f) + g) :=
         haff hs (by linarith)
-      have hEq :
-          (((C s * X + C t) * f) + (g + f)) =
-            (((C s * X + C (t + 1)) * f) + g) := by
-        calc
-          (((C s * X + C t) * f) + (g + f))
-              = ((C s * X + C t) * f) + g + f := by
-                  ac_rfl
-          _ = (C s * X) * f + C t * f + g + f := by
-                rw [add_mul]
-          _ = (C s * X) * f + (C t * f + C (1 : ℝ) * f) + g := by
-                ac_rfl
-          _ = (C s * X) * f + (C t + C (1 : ℝ)) * f + g := by
-                rw [← add_mul]
-          _ = (C s * X) * f + C (t + 1) * f + g := by
-                rw [← C_add]
-          _ = (((C s * X + C (t + 1)) * f) + g) := by
-                rw [add_mul]
-      simpa [hEq] using hbase
+      grind
     have hshift_no : ∀ r, (g + f).IsRoot r → ¬ f.IsRoot r := by
       intro r hshift_root hfr
-      have hshift_eval : (g + f).eval r = 0 := by
-        simpa [Polynomial.IsRoot.def] using hshift_root
-      have hf_eval : f.eval r = 0 := by
-        simpa [Polynomial.IsRoot.def] using hfr
-      have hg_eval : g.eval r = 0 := by
-        rw [eval_add, hf_eval] at hshift_eval
-        simpa [Polynomial.IsRoot.def] using hshift_eval
-      exact hno r (by simpa [Polynomial.IsRoot.def] using hg_eval) hfr
+      simp_all
     have hshift_root0_false : ¬ (g + f).IsRoot 0 := by
-      intro hshift_root0
-      have hshift_eval : (g + f).eval 0 = 0 := by
-        simpa [Polynomial.IsRoot.def] using hshift_root0
-      have hg_eval : g.eval 0 = 0 := by
-        simpa [Polynomial.IsRoot.def] using hg_root0
-      have hf_eval : f.eval 0 = 0 := by
-        rw [eval_add, hg_eval] at hshift_eval
-        simpa [Polynomial.IsRoot.def] using hshift_eval
-      exact hf_root0_false (by simpa [Polynomial.IsRoot.def] using hf_eval)
+      simp_all
     have hall_shift : AllComboRealRooted (g + f) f :=
       allComboRealRooted_of_affine_family_succDegree_not_isRoot_zero
         hf0 hshift_ne hfnn hshift_nonneg hshift_aff hshift_succ hshift_no hshift_root0_false
@@ -4640,19 +4001,7 @@ private lemma allComboRealRooted_of_affine_family_succDegree
     have hEq :
         C α * g + C β * f =
           C α * (g + f) + C (β - α) * f := by
-      have hC : C β = C α + C (β - α) := by
-        rw [← C_add]
-        congr 1
-        ring
-      calc
-        C α * g + C β * f
-            = C α * g + (C α + C (β - α)) * f := by rw [hC]
-        _ = C α * g + (C α * f + C (β - α) * f) := by
-              rw [add_mul]
-        _ = C α * g + C α * f + C (β - α) * f := by
-              ac_rfl
-        _ = C α * (g + f) + C (β - α) * f := by
-              rw [mul_add]
+      grind
     simpa [hEq] using hall_shift α (β - α)
   · exact
       allComboRealRooted_of_affine_family_succDegree_not_isRoot_zero
@@ -4704,9 +4053,7 @@ private lemma prec_right_pair_of_affine_family_high_degree_core
         (shifted_affine_family_of_affine_family haff) hshift_deg.symm
     have hno_shift : ∀ r, (g + X * f).IsRoot r → ¬ f.IsRoot r := by
       intro r hshift_r hfr
-      have hcommon_fg : ∃ r', g.IsRoot r' ∧ f.IsRoot r' :=
-        (common_shifted_pair_iff_common_fg).mp ⟨r, hshift_r, hfr⟩
-      exact hno_common_fg hcommon_fg
+      simp_all
     have hall_shift : AllComboRealRooted (g + X * f) f :=
       allComboRealRooted_of_affine_family_succDegree
         hf0 hshift_ne hfnn hshift_nonneg
@@ -4721,7 +4068,7 @@ private lemma prec_right_pair_of_affine_family_high_degree_core
       · -- Prec (g+X*f) f impossible: (g+X*f).natDegree = f.natDegree + 1
         -- but Prec requires (g+X*f).natDegree ≤ f.natDegree.
         exact absurd (natDegree_bounds_of_prec hbad).1
-          (by omega)
+          (by lia)
     exact
       prec_right_pair_of_prec_shifted_pair_sameDegree
         hprec_f_shift hf0 hg0 hfnn hgnn hsame
@@ -4730,8 +4077,7 @@ private lemma prec_right_pair_of_affine_family_high_degree_core
       isRealRooted_right_of_affine_family_succDegree
         hf0 hg0 hfnn hgnn haff hsucc.symm
     have hno_fg_fun : ∀ r, g.IsRoot r → ¬ f.IsRoot r := by
-      intro r hgr hfr
-      exact hno_common_fg ⟨r, hgr, hfr⟩
+      simp_all
     have hall : AllComboRealRooted g f :=
       allComboRealRooted_of_affine_family_succDegree
         hf0 hg0 hfnn hgnn haff hsucc hno_fg_fun
@@ -4744,7 +4090,7 @@ private lemma prec_right_pair_of_affine_family_high_degree_core
       · -- Prec g f impossible: g.natDegree = f.natDegree + 1
         -- but Prec requires g.natDegree ≤ f.natDegree.
         exact absurd (natDegree_bounds_of_prec hbad).1
-          (by omega)
+          (by lia)
     exact prec_to_prec_mul_X_of_nonneg hprec_fg hfnn hgnn
 
 /-- Wrapper matching the original high-degree target. The only genuinely hard
@@ -4820,10 +4166,7 @@ private lemma prec_right_pair_of_affine_family_high_degree
           (shifted_affine_family_of_affine_family haff) hshift_deg.symm
       -- The common root of (f, g) is also a root of the shifted pair.
       have hshift_root : (g + X * f).IsRoot r := by
-        simp only [Polynomial.IsRoot.def, eval_add, eval_mul, eval_X]
-        have hgr0 : g.eval r = 0 := by simpa [Polynomial.IsRoot.def] using hgr
-        have hfr0 : f.eval r = 0 := by simpa [Polynomial.IsRoot.def] using hfr
-        rw [hgr0, hfr0, mul_zero, add_zero]
+        simp_all
       -- Factor out the common root from the shifted pair using the
       -- standard reduction machinery.
       obtain ⟨qf, q_shift, hqf, hq_shift, hqf_nonneg, hq_shift_nonneg,
@@ -4834,25 +4177,22 @@ private lemma prec_right_pair_of_affine_family_high_degree
       have hqf_deg_lt : qf.natDegree < n := by
         rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne,
           natDegree_X_sub_C]
-        omega
+        lia
       have hqf_deg_pos : 1 ≤ qf.natDegree := by
         rw [hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne,
           natDegree_X_sub_C] at hdegf2
-        omega
+        lia
       -- By induction, the quotient pair satisfies Prec q_shift (X * qf).
       have hprec_q : Prec q_shift (X * qf) := by
         by_cases hqf_deg1 : qf.natDegree = 1
         · exact
             prec_right_pair_of_affine_family_degree_one
               hqf_ne hq_shift_ne hqf_nonneg hq_shift_nonneg hq_aff hqf_deg1
-        · exact
-            ih qf.natDegree hqf_deg_lt rfl
-              hqf_ne hq_shift_ne hqf_nonneg hq_shift_nonneg hq_aff (by omega)
+        · grind
       -- Lift: Prec (g + X * f) (X * f) from Prec q_shift (X * qf).
       have hprec_shift : Prec (g + X * f) (X * f) := by
         have hXf_eq : X * f = (X - C r) * (X * qf) := by
-          calc X * f = X * ((X - C r) * qf) := by rw [hqf]
-            _ = (X - C r) * (X * qf) := by ring
+          grind
         have hshift_eq : g + X * f = (X - C r) * q_shift := hq_shift
         rw [hshift_eq, hXf_eq]
         exact prec_mul_common_factor (isRealRooted_X_sub_C r) hprec_q
@@ -4874,20 +4214,16 @@ private lemma prec_right_pair_of_affine_family_high_degree
           hf_rr hg_rr hfnn hgnn hf_pos hg_pos haff hfr hgr
       have hqf_deg_lt : qf.natDegree < n := by
         rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C]
-        omega
+        lia
       have hqf_deg_pos : 1 ≤ qf.natDegree := by
         rw [hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C] at hdegf2
-        omega
+        lia
       have hprec_q : Prec qg (X * qf) := by
         by_cases hqf_deg1 : qf.natDegree = 1
         · exact
             prec_right_pair_of_affine_family_degree_one
               hqf_ne hqg_ne hqf_nonneg hqg_nonneg hqaff hqf_deg1
-        · have hqf_deg2 : 2 ≤ qf.natDegree := by
-            omega
-          exact
-            ih qf.natDegree hqf_deg_lt rfl
-              hqf_ne hqg_ne hqf_nonneg hqg_nonneg hqaff hqf_deg2
+        · grind
       exact prec_right_pair_of_common_root_factor hqf hqg hprec_q
   · exact
       prec_right_pair_of_affine_family_high_degree_remaining
@@ -4915,15 +4251,15 @@ theorem prec_of_affine_family_nonneg
   have hf_rr : IsRealRooted f := isRealRooted_of_X_mul hXf_rr
   by_cases hdegf0 : f.natDegree = 0
   · rcases hdeg_cases with hgdeg | hgdeg
-    · have hg_deg0 : g.natDegree = 0 := by simpa [hdegf0] using hgdeg
+    · have hg_deg0 : g.natDegree = 0 := by simp_all
       have hg_rr : IsRealRooted g := isRealRooted_of_deg_zero hg0 hg_deg0
       exact prec_degree_zero_degree_zero hf_rr hg_rr hdegf0 hg_deg0
-    · have hg_deg1 : g.natDegree = 1 := by simpa [hdegf0] using hgdeg
+    · have hg_deg1 : g.natDegree = 1 := by simp_all
       have hg_rr : IsRealRooted g := isRealRooted_of_degree_one hg_deg1
       exact prec_degree_zero_right_of_degree_one_local hf_rr hg_rr hdegf0 hg_deg1
   by_cases hdegf1 : f.natDegree = 1
   · exact prec_of_affine_family_nonneg_degree_one hf0 hg0 hfnn hgnn haff hdegf1
-  have hdegf2 : 2 ≤ f.natDegree := by omega
+  have hdegf2 : 2 ≤ f.natDegree := by lia
   have hprec_pair : Prec g (X * f) :=
     prec_right_pair_of_affine_family_high_degree hf0 hg0 hfnn hgnn haff hdegf2
   exact prec_of_prec_mul_X_of_nonneg hprec_pair hfnn hgnn
@@ -4979,14 +4315,7 @@ theorem prec_of_affine_segment_endpoints_nonneg
           C β * (((C s * X + C t) * P1) + H1)) :=
     PosComboRealRooted.isRealRooted_closed_segment
       (hendpoint hs ht) (hleft hs ht) (hright hs ht) hβ0 hβ1
-  have hEq :
-      ((C s * X + C t) * (C (1 - β) * P0 + C β * P1)) +
-          (C (1 - β) * H0 + C β * H1) =
-        C (1 - β) * (((C s * X + C t) * P0) + H0) +
-          C β * (((C s * X + C t) * P1) + H1) := by
-    ring
-  rw [hEq]
-  exact hseg
+  grind
 
 /-- Variant of `prec_of_affine_segment_endpoints_nonneg` where endpoint
 real-rootedness is recovered from positive-combination real-rootedness plus
@@ -5022,14 +4351,7 @@ theorem prec_of_affine_segment_endpoints_sameDegree_nonneg
           C β * (((C s * X + C t) * P1) + H1)) :=
     PosComboRealRooted.isRealRooted_closed_segment_of_sameDegree
       (hendpoint hs ht) (hleft_pos hs ht) (hright_pos hs ht) (hdeg hs ht) hβ0 hβ1
-  have hEq :
-      ((C s * X + C t) * (C (1 - β) * P0 + C β * P1)) +
-          (C (1 - β) * H0 + C β * H1) =
-        C (1 - β) * (((C s * X + C t) * P0) + H0) +
-          C β * (((C s * X + C t) * P1) + H1) := by
-    ring
-  rw [hEq]
-  exact hseg
+  grind
 
 /--
 ASW/PF version of `prec_of_affine_segment_endpoints_nonneg`.
@@ -5351,20 +4673,18 @@ lemma isRealRooted_affine_factor {s t : ℝ} (hs : 0 < s) :
   have hEq : C s * (X - C (-t / s)) = C s * X + C t := by
     calc
       C s * (X - C (-t / s))
-          = C s * X - C s * C (-t / s) := by rw [mul_sub]
-      _ = C s * X - C (s * (-t / s)) := by rw [C_mul]
+          = C s * X - C s * C (-t / s) := by grind
+      _ = C s * X - C (s * (-t / s)) := by simp
       _ = C s * X - C (-t) := by
-            congr 1
-            field_simp [hs.ne']
-      _ = C s * X + C t := by rw [sub_eq_add_neg, C_neg, neg_neg]
+            grind
+      _ = C s * X + C t := by simp
   rw [← hEq]
   exact isRealRooted_C_mul (isRealRooted_X_sub_C (-t / s)) hs.ne'
 
 lemma affine_family_of_zero_left {g : ℝ[X]} (hg : IsRealRooted g) :
     ∀ {s t : ℝ}, 0 < s → 0 < t →
       IsRealRooted (((C s * X + C t) * (0 : ℝ[X])) + g) := by
-  intro s t hs ht
-  simpa using hg
+  simp_all
 
 lemma affine_family_of_zero_right {f : ℝ[X]} (hf : IsRealRooted f) :
     ∀ {s t : ℝ}, 0 < s → 0 < t →
