@@ -3549,7 +3549,7 @@ theorem prec_of_interlaces_evalCoeff_nonpos
     · exact
         prec_of_interlaces_evalCoeff_nonpos_succ_of_no_common
           hgf hg_pos hF_pos hsucc hno hb_nonpos
-  · push_neg at hno
+  · push Not at hno
     rcases hno with ⟨r, hrf, hrg⟩
     obtain ⟨qf, qg, hqf, hqg, hqinter, hqg_pos, hqF_pos, hqdeg_lo, hqdeg_hi, hq_nonpos⟩ :=
       common_root_reduction_data hgf hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos hrf hrg

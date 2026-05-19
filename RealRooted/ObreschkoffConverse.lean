@@ -869,7 +869,7 @@ private lemma hasSimpleRoots_combo_of_wronskian_eval_ne_zero
     simpa [p, derivative_add, derivative_C_mul, eval_add, eval_mul, eval_C] using hp_der_eval
   have hαβ_ne : α ≠ 0 ∨ β ≠ 0 := by
     by_contra h
-    push_neg at h
+    push Not at h
     rcases h with ⟨hα0, hβ0⟩
     have : p = 0 := by
       simp [p, hα0, hβ0]
@@ -2615,7 +2615,7 @@ private theorem prec_of_allComboRealRooted_of_no_common
   intro n ih f g hfdeg hf hg hall hdeg
   by_cases hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r
   · exact hstep hf hg hall hdeg hno
-  · push_neg at hno
+  · push Not at hno
     rcases hno with ⟨r, hrf, hrg⟩
     obtain ⟨qf, hqf⟩ := dvd_iff_isRoot.mpr hrf
     obtain ⟨qg, hqg⟩ := dvd_iff_isRoot.mpr hrg
@@ -3260,7 +3260,7 @@ private theorem allComboRealRooted_of_prec_sameDegree_of_no_common
   intro n ih f g hfdeg hfg hdeg
   by_cases hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r
   · exact hstep hfg hdeg hno
-  · push_neg at hno
+  · push Not at hno
     rcases hno with ⟨r, hrf, hrg⟩
     obtain ⟨qf, hqf⟩ := dvd_iff_isRoot.mpr hrf
     obtain ⟨qg, hqg⟩ := dvd_iff_isRoot.mpr hrg

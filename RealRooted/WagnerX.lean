@@ -492,7 +492,7 @@ lemma HasNonnegCoeffs.pos_leadingCoeff {p : ℝ[X]} (hp : HasNonnegCoeffs p) (hp
 lemma roots_nonpos_of_nonneg_coeffs {p : ℝ[X]} (hp : IsRealRooted p)
     (hnn : HasNonnegCoeffs p) : ∀ r ∈ p.roots, r ≤ 0 := by
   intro r hr
-  by_contra hgt; push_neg at hgt
+  by_contra hgt; push Not at hgt
   have hlc_pos : 0 < p.leadingCoeff := by
     exact hnn.pos_leadingCoeff hp.1
   have heval_pos : 0 < p.eval r := by

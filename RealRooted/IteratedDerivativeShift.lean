@@ -325,7 +325,7 @@ theorem isRealRooted_TDeriv {eps : ℝ} {p : ℝ[X]}
       rwa [Polynomial.roots_neg, natDegree_neg] at this
     · exact isRealRooted_TDeriv_pos heps hp hpos hdeg2
   · -- degree ≤ 1: T_ε(p) has same degree as p
-    push_neg at hdeg2
+    push Not at hdeg2
     -- p.natDegree < 2, so natDegree is 0 or 1
     have hdeg01 : p.natDegree = 0 ∨ p.natDegree = 1 := by omega
     rcases hdeg01 with h0 | h1
@@ -411,7 +411,7 @@ theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
         linarith
       rw [hrewrite]
       exact prec_of_interlaces_evalCoeff_nonpos hder hp'_pos hT_pos hdeg_lo hdeg_hi hb_nonpos
-  · push_neg at hdeg2
+  · push Not at hdeg2
     have hdeg01 : p.natDegree = 0 ∨ p.natDegree = 1 := by
       omega
     rcases hdeg01 with h0 | h1
@@ -1037,7 +1037,7 @@ lemma rootMultiplicity_ge_two_of_TDeriv_ge_two
     (hm : 2 ≤ (TDeriv eps p).rootMultiplicity a) :
     2 ≤ p.rootMultiplicity a := by
   by_contra h
-  push_neg at h
+  push Not at h
   have h1 : p.rootMultiplicity a = 1 := by omega
   have hroot_a : p.IsRoot a := (rootMultiplicity_pos hp_ne).mp (by omega)
   have hnotroot := not_isRoot_TDeriv_of_simple_root (ne_of_gt heps) hp_ne hroot_a h1
@@ -1175,7 +1175,7 @@ lemma rootMultiplicity_TDeriv_le_one_of_not_isRoot
     (ha : ¬ p.IsRoot a) :
     (TDeriv eps p).rootMultiplicity a ≤ 1 := by
   by_contra h
-  push_neg at h
+  push Not at h
   -- rootMultiplicity ≥ 2 means (TDeriv eps p)(a) = 0 and (TDeriv eps p)'(a) = 0
   have hT_ne : TDeriv eps p ≠ 0 := TDeriv_ne_zero hp.1 hdeg
   have hT_root : (TDeriv eps p).IsRoot a :=
@@ -1226,7 +1226,7 @@ lemma rootMultiplicity_eq_succ_of_TDeriv_ge_two
   -- rootMultiplicity a p can't be 1 (simple root vanishes)
   have h2 : 2 ≤ p.rootMultiplicity a := by
     have h1 := (rootMultiplicity_pos hp.1).mpr hroot
-    by_contra hlt; push_neg at hlt
+    by_contra hlt; push Not at hlt
     have h1eq : p.rootMultiplicity a = 1 := by omega
     have := not_isRoot_TDeriv_of_simple_root (ne_of_gt heps) hp.1 hroot h1eq
     exact this ((rootMultiplicity_pos (TDeriv_ne_zero hp.1 hdeg)).mp (by omega))
@@ -1299,7 +1299,7 @@ theorem isRealRooted_and_hasSimpleRoots_iterateTDeriv
     IsRealRooted (iterateTDeriv eps n f) ∧ HasSimpleRoots (iterateTDeriv eps n f) := by
   refine ⟨isRealRooted_iterateTDeriv heps hf, ?_⟩
   intro a ha
-  by_contra hmult; push_neg at hmult
+  by_contra hmult; push Not at hmult
   have hne : iterateTDeriv eps n f ≠ 0 := (isRealRooted_iterateTDeriv heps hf).1
   have hge2 : 2 ≤ (iterateTDeriv eps n f).rootMultiplicity a := by
     have := (rootMultiplicity_pos hne).mpr ha; omega

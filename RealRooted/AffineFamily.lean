@@ -4143,7 +4143,7 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
     dsimp [m]
     constructor <;> nlinarith
   by_contra hexists
-  push_neg at hexists
+  push Not at hexists
   have hg_mid_ne : g.eval m ≠ 0 := by
     intro hgm
     have hroot : g.IsRoot m := by
