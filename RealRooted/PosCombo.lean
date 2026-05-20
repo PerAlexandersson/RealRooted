@@ -1072,7 +1072,7 @@ theorem prec_or_revPrec_of_posComboRealRooted_of_no_common
   intro n ih f g hfdeg hfg hf_pos hg_pos hdeg_lo hdeg_hi
   by_cases hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r
   · exact hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno
-  · push_neg at hno
+  · push Not at hno
     rcases hno with ⟨r, hrf, hrg⟩
     obtain ⟨qf, qg, hqf, hqg, hqfg, hqf_pos, hqg_pos, hqdeg_lo, hqdeg_hi⟩ :=
       common_root_reduction_data hfg hf_pos hg_pos hdeg_lo hdeg_hi hrf hrg

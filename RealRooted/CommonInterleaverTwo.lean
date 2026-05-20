@@ -1875,7 +1875,7 @@ private theorem posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
   · exact
       posComboNoCommonPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
         hsame hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
-  · push_neg at hno
+  · push Not at hno
     rcases hno with ⟨r, hrf, hrg⟩
     obtain ⟨qf, qg, hqf, hqg, hqfg, hqf_nn, hqg_nn, hqf0, hqg0,
       hqf_pos, hqg_pos, hqdeg_lo, hqdeg_hi⟩ :=
@@ -1923,7 +1923,7 @@ private theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCo
   · exact
       posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
         hsame hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
-  · push_neg at hno
+  · push Not at hno
     rcases hno with ⟨r, hrf, hrg⟩
     obtain ⟨qf, qg, hqf, hqg, hqfg, hqf_nn, hqg_nn, hqf0, hqg0,
       hqf_pos, hqg_pos, hqdeg_lo, hqdeg_hi⟩ :=
@@ -1971,7 +1971,7 @@ private theorem allComboRealRooted_of_degreeSplit_and_nonnegCoeffs_ordered
   · exact
       allComboRealRooted_of_degreeSplit_and_nonnegCoeffs
         hsame hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
-  · push_neg at hno
+  · push Not at hno
     rcases hno with ⟨r, hrf, hrg⟩
     obtain ⟨qf, qg, hqf, hqg, hqfg, hqf_nn, hqg_nn, hqf0, hqg0,
       hqf_pos, hqg_pos, hqdeg_lo, hqdeg_hi⟩ :=
@@ -2091,7 +2091,7 @@ private theorem allComboRealRooted_of_affineFamilyBridge_and_nonnegCoeffs_ordere
   · exact
       allComboRealRooted_of_affineFamilyBridge_and_nonnegCoeffs
         haffBridge hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
-  · push_neg at hno
+  · push Not at hno
     rcases hno with ⟨r, hrf, hrg⟩
     obtain ⟨qf, qg, hqf, hqg, hqfg, hqf_nn, hqg_nn, hqf0, hqg0,
       hqf_pos, hqg_pos, hqdeg_lo, hqdeg_hi⟩ :=

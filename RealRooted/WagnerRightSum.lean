@@ -535,11 +535,11 @@ lemma opposite_sign_at_interlacing_roots {f g : ℝ[X]}
   -- sign(Pg) = (-1)^k, sign(Pf) = (-1)^k, so Pg * Pf has sign (-1)^{2k} ≥ 0.
   have hrest_nonneg : 0 ≤ Pg * Pf := by
     apply prod_mul_prod_nonneg_of_same_neg_count (p := (b ≤ ·))
-    · intro r hr hnp; push_neg at hnp
+    · intro r hr hnp; push Not at hnp
       rcases hg_dichotomy r hr with h | h <;> linarith
     · intro r hr hp
       rcases hg_dichotomy r hr with h | h <;> linarith
-    · intro r hr hnp; push_neg at hnp
+    · intro r hr hnp; push Not at hnp
       rcases hf_dichotomy r hr with h | h <;> linarith
     · intro r hr hp
       rcases hf_dichotomy r hr with h | h <;> linarith
