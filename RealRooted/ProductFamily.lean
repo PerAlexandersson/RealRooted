@@ -5,7 +5,6 @@ zip-with-product constructions, common-interleaver outputs for product
 families (Brändén Theorem 7.8.3).
 -/
 import RealRooted.CommonInterleaverSeq
-import RealRooted.CombinatorialExamples.Common
 
 open Polynomial
 

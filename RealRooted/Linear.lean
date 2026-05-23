@@ -100,6 +100,19 @@ lemma isRealRooted_of_degree_one {p : ℝ[X]} (hp : p.natDegree = 1) :
   have hdeg : p.degree = 1 := by rw [degree_eq_natDegree hne]; exact_mod_cast hp
   exact ⟨hne, by rw [roots_degree_eq_one hdeg, Multiset.card_singleton, hp]⟩
 
+lemma interlaces_one_linear {p : ℝ[X]} (hp_deg : p.natDegree = 1) :
+    Interlaces (1 : ℝ[X]) p := by
+  have h1_rr : IsRealRooted (1 : ℝ[X]) := by
+    simpa using isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)
+  have hp_rr : IsRealRooted p := isRealRooted_of_degree_one hp_deg
+  have hp_deg' : p.degree = 1 := by
+    rw [degree_eq_natDegree hp_rr.1, hp_deg]
+    norm_num
+  refine ⟨hp_rr, h1_rr, by simp [Polynomial.natDegree_one, hp_deg], ?_⟩
+  refine ⟨[-(p.coeff 1)⁻¹ * p.coeff 0], [], by simp, by simp, ?_, by simp,
+    by simp [ListInterlaces]⟩
+  simpa [hp_deg'] using (Polynomial.roots_degree_eq_one (p := p) hp_deg').symm
+
 /-- If a list is sorted, then its tail interlaces into it. -/
 lemma listInterlaces_tail_of_pairwise :
     ∀ rs : List ℝ, rs.Pairwise (· ≤ ·) → ListInterlaces rs.tail rs
