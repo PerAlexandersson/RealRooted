@@ -87,7 +87,7 @@ def veroneseSectionPolynomial (r k : ℕ) (p : ℝ[X]) : ℝ[X] :=
           have hrpos : 0 < r := Nat.pos_of_ne_zero hr0
           by_contra hmem
           have hnotlt : ¬ n < p.natDegree + 1 := by
-            simpa [Finset.mem_range] using hmem
+            simp_all
           have hle : p.natDegree + 1 ≤ n := Nat.le_of_not_gt hnotlt
           have hpn : p.natDegree < n := Nat.lt_of_succ_le hle
           have hn_le_mul : n ≤ r * n := by
@@ -116,8 +116,7 @@ theorem veroneseSectionPolynomial_ne_zero_of_coeff_ne_zero
     veroneseSectionPolynomial r k p ≠ 0 := by
   intro hzero
   have hcoeff_zero : (veroneseSectionPolynomial r k p).coeff n = 0 := by
-    rw [hzero]
-    simp
+    simp_all
   rw [coeff_veroneseSectionPolynomial (r := r) (k := k) (p := p) hr] at hcoeff_zero
   exact hcoeff hcoeff_zero
 
@@ -128,9 +127,7 @@ theorem veroneseSectionPolynomial_add {r k : ℕ} (hr : 0 < r) (p q : ℝ[X]) :
     veroneseSectionPolynomial r k (p + q) =
       veroneseSectionPolynomial r k p + veroneseSectionPolynomial r k q := by
   ext n
-  simp [coeff_veroneseSectionPolynomial (r := r) (k := k) (p := p + q) hr,
-    coeff_veroneseSectionPolynomial (r := r) (k := k) (p := p) hr,
-    coeff_veroneseSectionPolynomial (r := r) (k := k) (p := q) hr]
+  simp_all
 
 /-- Veronese sections commute with scalar multiplication. -/
 theorem veroneseSectionPolynomial_C_mul {r k : ℕ} (hr : 0 < r)
@@ -138,9 +135,7 @@ theorem veroneseSectionPolynomial_C_mul {r k : ℕ} (hr : 0 < r)
     veroneseSectionPolynomial r k (C a * p) =
       C a * veroneseSectionPolynomial r k p := by
   ext n
-  simp [coeff_veroneseSectionPolynomial (r := r) (k := k) (p := C a * p) hr,
-    coeff_veroneseSectionPolynomial (r := r) (k := k) (p := p) hr,
-    Polynomial.coeff_C_mul]
+  simp_all
 
 /-- Multiplication by `X` shifts positive Veronese sections down by one
 residue. -/
@@ -148,12 +143,11 @@ theorem veroneseSectionPolynomial_X_mul_succ {r k : ℕ} (hk : k + 1 < r)
     (p : ℝ[X]) :
     veroneseSectionPolynomial r (k + 1) (X * p) =
       veroneseSectionPolynomial r k p := by
-  have hr : 0 < r := by omega
+  have hr : 0 < r := by lia
   ext n
   rw [coeff_veroneseSectionPolynomial (r := r) (k := k + 1) (p := X * p) hr]
-  rw [show k + 1 + r * n = (k + r * n) + 1 by omega]
-  rw [Polynomial.coeff_X_mul]
-  rw [coeff_veroneseSectionPolynomial (r := r) (k := k) (p := p) hr]
+  rw [show k + 1 + r * n = (k + r * n) + 1 by lia]
+  simp_all
 
 /-- Multiplication by `X` wraps the zeroth Veronese section to the last
 residue, with one extra factor of `X`. -/
@@ -164,18 +158,11 @@ theorem veroneseSectionPolynomial_X_mul_zero {r : ℕ} (hr : 0 < r)
   ext n
   cases n with
   | zero =>
-      rw [coeff_veroneseSectionPolynomial (r := r) (k := 0) (p := X * p) hr]
-      simp
+      simp_all
   | succ n =>
       have hidx : 0 + r * (n + 1) = (r - 1 + r * n) + 1 := by
-        calc
-          0 + r * (n + 1) = r * n + r := by rw [Nat.mul_succ, zero_add]
-          _ = (r - 1 + r * n) + 1 := by omega
-      rw [coeff_veroneseSectionPolynomial (r := r) (k := 0) (p := X * p) hr]
-      rw [hidx]
-      rw [Polynomial.coeff_X_mul]
-      rw [Polynomial.coeff_X_mul]
-      rw [coeff_veroneseSectionPolynomial (r := r) (k := r - 1) (p := p) hr]
+        lia
+      simp_all
 
 /-- The zeroth Veronese section after multiplying by a linear factor
 `X + a`.  This is the wrap-around update used in Wagner-style proofs of
@@ -198,7 +185,7 @@ theorem veroneseSectionPolynomial_X_add_C_mul_succ {r k : ℕ}
     veroneseSectionPolynomial r (k + 1) ((X + C a) * p) =
       veroneseSectionPolynomial r k p +
         C a * veroneseSectionPolynomial r (k + 1) p := by
-  have hr : 0 < r := by omega
+  have hr : 0 < r := by lia
   have hmul : (X + C a) * p = X * p + C a * p := by ring
   rw [hmul]
   rw [veroneseSectionPolynomial_add hr]
@@ -242,9 +229,7 @@ def HurwitzMatrixTotallyNonnegative (p : ℝ[X]) : Prop :=
     hurwitzEntry (fun n => (oddEvenPolynomial p q).coeff n) row col =
       lacePairEntry (fun n => p.coeff n) (fun n => q.coeff n) row col := by
   unfold hurwitzEntry lacePairEntry toeplitzEntry
-  by_cases hrow : row % 2 = 0
-  · simp [hrow]
-  · simp [hrow]
+  simp
 
 /-- For odd/even polynomials, Hurwitz total nonnegativity is exactly the
 two-row Lace total nonnegativity condition. -/
@@ -261,7 +246,7 @@ theorem hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPa
         lacePairEntry (fun n => p.coeff n) (fun n => q.coeff n) := by
     funext row col
     exact hurwitzEntry_oddEvenPolynomial p q row col
-  rw [hentry]
+  simp_all
 
 /-- The Lace matrix of the interleaved Veronese sections
 `S_0 a, S_0 b, S_1 a, S_1 b, ...`, encoded as the column submatrix of the
@@ -311,28 +296,18 @@ theorem veronesePairLaceEntry_even {a b : ℕ → ℝ} {r k n c : ℕ} (hk : k <
     have hc' : ¬ r * c ≤ k + r * n := by
       have hsucc : n + 1 ≤ c := Nat.succ_le_of_lt hlt
       have hmul : r * (n + 1) ≤ r * c := Nat.mul_le_mul_left r hsucc
-      have hkadd : k + r * n < r + r * n := Nat.add_lt_add_right hk (r * n)
-      have hstep : k + r * n < r * (n + 1) := by
-        simpa [Nat.mul_succ, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc]
-          using hkadd
-      exact not_le_of_gt (lt_of_lt_of_le hstep hmul)
-    rw [if_neg hc, if_neg hc']
+      lia
+    lia
 
 /-- Odd rows of `veronesePairLaceEntry` are Toeplitz rows for the sections of
 the second sequence. -/
 theorem veronesePairLaceEntry_odd {a b : ℕ → ℝ} {r k n c : ℕ} (hk : k < r) :
     veronesePairLaceEntry r a b (2 * (k + r * n) + 1) c =
       toeplitzEntry (veroneseSectionSeq r k b) n c := by
-  have hmod : (2 * (k + r * n) + 1) % 2 = 1 := by
-    rw [Nat.add_comm]
-    rw [Nat.add_mul_mod_self_left]
   have hmod_ne : ¬ (2 * (k + r * n) + 1) % 2 = 0 := by
-    rw [hmod]
-    norm_num
+    simp
   have hdiv : (2 * (k + r * n) + 1) / 2 = k + r * n := by
-    rw [Nat.add_comm]
-    rw [Nat.add_mul_div_left (H := by norm_num)]
-    norm_num
+    lia
   dsimp [veronesePairLaceEntry, lacePairEntry]
   rw [if_neg hmod_ne, hdiv]
   dsimp [toeplitzEntry, veroneseSectionSeq]
@@ -350,12 +325,8 @@ theorem veronesePairLaceEntry_odd {a b : ℕ → ℝ} {r k n c : ℕ} (hk : k < 
     have hc' : ¬ r * c ≤ k + r * n := by
       have hsucc : n + 1 ≤ c := Nat.succ_le_of_lt hlt
       have hmul : r * (n + 1) ≤ r * c := Nat.mul_le_mul_left r hsucc
-      have hkadd : k + r * n < r + r * n := Nat.add_lt_add_right hk (r * n)
-      have hstep : k + r * n < r * (n + 1) := by
-        simpa [Nat.mul_succ, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc]
-          using hkadd
-      exact not_le_of_gt (lt_of_lt_of_le hstep hmul)
-    rw [if_neg hc, if_neg hc']
+      lia
+    lia
 
 /-- The first row family of a fully interlacing pair is Toeplitz totally
 nonnegative. -/
@@ -391,8 +362,7 @@ theorem FullyInterlacingPair.right_tnn {a b : ℕ → ℝ}
         infiniteMatrixMinor (lacePairEntry a b) rows' cols := by
     ext i j
     have hdiv : (2 * rows i + 1) / 2 = rows i := by
-      rw [Nat.add_comm, Nat.add_mul_div_left (H := by norm_num)]
-      norm_num
+      lia
     simp [toeplitzMinor, infiniteMatrixMinor, rows', lacePairEntry, hdiv]
   rw [hminor]
   exact h rows' cols hrows' hcols
@@ -421,30 +391,13 @@ theorem strictMono_veronesePairSectionRowMap {r k : ℕ} (hr : 0 < r) :
   intro m n hmn
   unfold veronesePairSectionRowMap
   by_cases hq : m / 2 = n / 2
-  · have hmod_ne : m % 2 ≠ n % 2 := by
-      intro hmod
-      have hmdec : 2 * (m / 2) + m % 2 = m := Nat.div_add_mod m 2
-      have hndec : 2 * (n / 2) + n % 2 = n := Nat.div_add_mod n 2
-      omega
-    have hmod_le : m % 2 ≤ n % 2 := by
-      have hmdec : 2 * (m / 2) + m % 2 = m := Nat.div_add_mod m 2
-      have hndec : 2 * (n / 2) + n % 2 = n := Nat.div_add_mod n 2
-      omega
-    have hmod_lt : m % 2 < n % 2 := lt_of_le_of_ne hmod_le hmod_ne
-    rw [hq]
-    exact Nat.add_lt_add_left hmod_lt (2 * (k + r * (n / 2)))
+  · lia
   · have hqle : m / 2 ≤ n / 2 := Nat.div_le_div_right (le_of_lt hmn)
     have hqlt : m / 2 < n / 2 := lt_of_le_of_ne hqle hq
     have hqsucc : m / 2 + 1 ≤ n / 2 := Nat.succ_le_of_lt hqlt
     have hmul : r * (m / 2 + 1) ≤ r * (n / 2) :=
       Nat.mul_le_mul_left r hqsucc
-    have hstep : r * (m / 2) + 1 ≤ r * (m / 2 + 1) := by
-      rw [Nat.mul_succ]
-      omega
-    have hbase : r * (m / 2) + 1 ≤ r * (n / 2) := le_trans hstep hmul
-    have hm2 : m % 2 < 2 := Nat.mod_lt m (by norm_num)
-    have hn2 : n % 2 < 2 := Nat.mod_lt n (by norm_num)
-    omega
+    lia
 
 theorem lacePairEntry_veroneseSectionSeq {a b : ℕ → ℝ} {r k row col : ℕ}
     (hk : k < r) :
@@ -456,13 +409,12 @@ theorem lacePairEntry_veroneseSectionSeq {a b : ℕ → ℝ} {r k row col : ℕ}
     have hrowmap :
         2 * (k + r * (row / 2)) + row % 2 =
           2 * (k + r * (row / 2)) := by
-      omega
+      lia
     rw [hrowmap]
     exact (veronesePairLaceEntry_even (a := a) (b := b) (r := r) (k := k)
       (n := row / 2) (c := col) hk).symm
   · rw [if_neg heven]
-    have hmod_lt : row % 2 < 2 := Nat.mod_lt row (by norm_num)
-    have hmod : row % 2 = 1 := by omega
+    have hmod : row % 2 = 1 := by lia
     rw [hmod]
     exact (veronesePairLaceEntry_odd (a := a) (b := b) (r := r) (k := k)
       (n := row / 2) (c := col) hk).symm
@@ -512,7 +464,7 @@ def veronesePairSelectRowMap (r i j : ℕ) (row : ℕ) : ℕ :=
     j + (2 * r) * (row / 2)
 
 theorem div_two_lt_of_lt_two_mul {i r : ℕ} (hi : i < 2 * r) : i / 2 < r := by
-  omega
+  lia
 
 theorem strictMono_veronesePairSelectRowMap {r i j : ℕ}
     (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
@@ -520,55 +472,25 @@ theorem strictMono_veronesePairSelectRowMap {r i j : ℕ}
   intro m n hmn
   unfold veronesePairSelectRowMap
   by_cases hq : m / 2 = n / 2
-  · have hmod_ne : m % 2 ≠ n % 2 := by
-      intro hmod
-      have hmdec : 2 * (m / 2) + m % 2 = m := Nat.div_add_mod m 2
-      have hndec : 2 * (n / 2) + n % 2 = n := Nat.div_add_mod n 2
-      omega
-    have hmod_le : m % 2 ≤ n % 2 := by
-      have hmdec : 2 * (m / 2) + m % 2 = m := Nat.div_add_mod m 2
-      have hndec : 2 * (n / 2) + n % 2 = n := Nat.div_add_mod n 2
-      omega
-    have hmod_lt : m % 2 < n % 2 := lt_of_le_of_ne hmod_le hmod_ne
-    have hm0 : m % 2 = 0 := by
-      have hm2 : m % 2 < 2 := Nat.mod_lt m (by norm_num)
-      have hn2 : n % 2 < 2 := Nat.mod_lt n (by norm_num)
-      omega
-    have hn1 : n % 2 ≠ 0 := by omega
-    rw [hm0, if_pos rfl, if_neg hn1, hq]
-    exact Nat.add_lt_add_right hij ((2 * r) * (n / 2))
+  · lia
   · have hqle : m / 2 ≤ n / 2 := Nat.div_le_div_right (le_of_lt hmn)
     have hqlt : m / 2 < n / 2 := lt_of_le_of_ne hqle hq
     have hqsucc : m / 2 + 1 ≤ n / 2 := Nat.succ_le_of_lt hqlt
     by_cases hm0 : m % 2 = 0
     · rw [if_pos hm0]
       by_cases hn0 : n % 2 = 0
-      · rw [if_pos hn0]
-        exact Nat.add_lt_add_left
-          (Nat.mul_lt_mul_of_pos_left hqlt (by omega)) i
+      · simp_all
       · rw [if_neg hn0]
         have hblock : (2 * r) * (m / 2 + 1) ≤ (2 * r) * (n / 2) :=
           Nat.mul_le_mul_left (2 * r) hqsucc
-        have hprev : i + (2 * r) * (m / 2) < (2 * r) * (m / 2 + 1) := by
-          rw [Nat.mul_succ]
-          omega
-        have hnext : (2 * r) * (m / 2 + 1) ≤ j + (2 * r) * (n / 2) :=
-          le_trans hblock (Nat.le_add_left ((2 * r) * (n / 2)) j)
-        exact lt_of_lt_of_le hprev hnext
+        lia
     · rw [if_neg hm0]
       by_cases hn0 : n % 2 = 0
       · rw [if_pos hn0]
         have hblock : (2 * r) * (m / 2 + 1) ≤ (2 * r) * (n / 2) :=
           Nat.mul_le_mul_left (2 * r) hqsucc
-        have hprev : j + (2 * r) * (m / 2) < (2 * r) * (m / 2 + 1) := by
-          rw [Nat.mul_succ]
-          omega
-        have hnext : (2 * r) * (m / 2 + 1) ≤ i + (2 * r) * (n / 2) :=
-          le_trans hblock (Nat.le_add_left ((2 * r) * (n / 2)) i)
-        exact lt_of_lt_of_le hprev hnext
-      · rw [if_neg hn0]
-        exact Nat.add_lt_add_left
-          (Nat.mul_lt_mul_of_pos_left hqlt (by omega)) j
+        lia
+      · simp_all
 
 theorem lacePairEntry_veronesePairSectionSeq {a b : ℕ → ℝ} {r i j row col : ℕ}
     (hi : i < 2 * r) (hj : j < 2 * r) :
@@ -581,28 +503,19 @@ theorem lacePairEntry_veronesePairSectionSeq {a b : ℕ → ℝ} {r i j row col 
     by_cases hi_even : i % 2 = 0
     · rw [if_pos hi_even]
       have hik : i / 2 < r := div_two_lt_of_lt_two_mul hi
-      have idec : i = 2 * (i / 2) := by
-        have h := Nat.div_add_mod i 2
-        omega
-      have hmul : (2 * r) * (row / 2) = 2 * (r * (row / 2)) := by ring
       have hmap :
           i + (2 * r) * (row / 2) =
             2 * (i / 2 + r * (row / 2)) := by
-        omega
+        lia
       rw [if_pos hrow, hmap]
       exact (veronesePairLaceEntry_even (a := a) (b := b) (r := r)
         (k := i / 2) (n := row / 2) (c := col) hik).symm
     · rw [if_neg hi_even]
       have hik : i / 2 < r := div_two_lt_of_lt_two_mul hi
-      have idec : i = 2 * (i / 2) + 1 := by
-        have h := Nat.div_add_mod i 2
-        have himod_lt : i % 2 < 2 := Nat.mod_lt i (by norm_num)
-        omega
-      have hmul : (2 * r) * (row / 2) = 2 * (r * (row / 2)) := by ring
       have hmap :
           i + (2 * r) * (row / 2) =
             2 * (i / 2 + r * (row / 2)) + 1 := by
-        omega
+        lia
       rw [if_pos hrow, hmap]
       exact (veronesePairLaceEntry_odd (a := a) (b := b) (r := r)
         (k := i / 2) (n := row / 2) (c := col) hik).symm
@@ -610,28 +523,19 @@ theorem lacePairEntry_veronesePairSectionSeq {a b : ℕ → ℝ} {r i j row col 
     by_cases hj_even : j % 2 = 0
     · rw [if_pos hj_even]
       have hjk : j / 2 < r := div_two_lt_of_lt_two_mul hj
-      have jdec : j = 2 * (j / 2) := by
-        have h := Nat.div_add_mod j 2
-        omega
-      have hmul : (2 * r) * (row / 2) = 2 * (r * (row / 2)) := by ring
       have hmap :
           j + (2 * r) * (row / 2) =
             2 * (j / 2 + r * (row / 2)) := by
-        omega
+        lia
       rw [if_neg hrow, hmap]
       exact (veronesePairLaceEntry_even (a := a) (b := b) (r := r)
         (k := j / 2) (n := row / 2) (c := col) hjk).symm
     · rw [if_neg hj_even]
       have hjk : j / 2 < r := div_two_lt_of_lt_two_mul hj
-      have jdec : j = 2 * (j / 2) + 1 := by
-        have h := Nat.div_add_mod j 2
-        have hjmod_lt : j % 2 < 2 := Nat.mod_lt j (by norm_num)
-        omega
-      have hmul : (2 * r) * (row / 2) = 2 * (r * (row / 2)) := by ring
       have hmap :
           j + (2 * r) * (row / 2) =
             2 * (j / 2 + r * (row / 2)) + 1 := by
-        omega
+        lia
       rw [if_neg hrow, hmap]
       exact (veronesePairLaceEntry_odd (a := a) (b := b) (r := r)
         (k := j / 2) (n := row / 2) (c := col) hjk).symm
@@ -720,9 +624,7 @@ theorem coeff_function_veronesePairSectionPolynomial {r i : ℕ} {p q : ℝ[X]}
     (hr : 0 < r) :
     (fun n => (veronesePairSectionPolynomial r p q i).coeff n) =
       veronesePairSectionSeq r (fun n => p.coeff n) (fun n => q.coeff n) i := by
-  funext n
-  exact coeff_veronesePairSectionPolynomial
-    (r := r) (i := i) (p := p) (q := q) hr
+  simp_all
 
 theorem fullyInterlacingPair_veroneseSectionPolynomial_coeff
     {p q : ℝ[X]} {r k : ℕ}
@@ -1630,13 +1532,8 @@ theorem toeplitzTotallyNonnegative_veroneseSectionSeq {a : ℕ → ℝ}
         have hsucc : rows i + 1 ≤ cols j := Nat.succ_le_of_lt hlt
         have hmul : r * (rows i + 1) ≤ r * cols j :=
           Nat.mul_le_mul_left r hsucc
-        have hkadd : k + r * rows i < r + r * rows i :=
-          Nat.add_lt_add_right hk (r * rows i)
-        have hstep : k + r * rows i < r * (rows i + 1) := by
-          simpa [Nat.mul_succ, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc]
-            using hkadd
-        exact not_le_of_gt (lt_of_lt_of_le hstep hmul)
-      rw [if_neg hle, if_neg hnot]
+        lia
+      lia
   rw [hminor]
   exact ha rows' cols' hrows' hcols'
 
