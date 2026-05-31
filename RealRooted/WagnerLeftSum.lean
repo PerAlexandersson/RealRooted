@@ -1007,11 +1007,9 @@ theorem prec_add_of_prec_left_of_common_factor {d f g h : ℝ[X]}
     (hfg'_rr : IsRealRooted (f' + g'))
     (hcop : IsCoprime f' g') :
     Prec h (f + g) := by
-  subst hf_def hg_def hh_def
-  have hsum : Prec h' (f' + g') :=
-    prec_add_of_prec_left hhf hhg hf'_pos hg'_pos hfg'_rr hcop
-  have hmul : Prec (d * h') (d * (f' + g')) := prec_mul_common_factor hd hsum
-  simpa [left_distrib, right_distrib, mul_add, add_comm, add_left_comm, add_assoc] using hmul
+  simpa [hf_def, hg_def, hh_def, mul_add] using
+    (prec_mul_common_factor hd
+      (prec_add_of_prec_left hhf hhg hf'_pos hg'_pos hfg'_rr hcop))
 
 /-- Recursive compatibility data for iterating Wagner (2) along a nonempty
 list. Each new head term must precede the same left bound, have positive

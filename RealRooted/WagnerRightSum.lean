@@ -2179,11 +2179,9 @@ theorem prec_add_of_prec_right_of_common_factor {d f g h : ℝ[X]}
     (hfg'_rr : IsRealRooted (f' + g'))
     (hcop : IsCoprime f' g') :
     Prec (f + g) h := by
-  subst hf_def hg_def hh_def
-  have hsum : Prec (f' + g') h' :=
-    prec_add_of_prec_right hfh hgh hf'_pos hg'_pos hfg'_rr hcop
-  have hmul : Prec (d * (f' + g')) (d * h') := prec_mul_common_factor hd hsum
-  simpa [left_distrib, right_distrib, mul_add, add_comm, add_left_comm, add_assoc] using hmul
+  simpa [hf_def, hg_def, hh_def, mul_add] using
+    (prec_mul_common_factor hd
+      (prec_add_of_prec_right hfh hgh hf'_pos hg'_pos hfg'_rr hcop))
 
 /-- A common-factor version of the no-common-right Wagner theorem. This is the
 factor-out-the-shared-part form of the boundary-collision argument. -/
@@ -2195,11 +2193,9 @@ theorem prec_add_of_prec_right_of_common_factor_of_no_common_right {d f g h : �
     (hf'_pos : HasPosLeadingCoeff f') (hg'_pos : HasPosLeadingCoeff g')
     (hno : ∀ r : ℝ, h'.IsRoot r → ¬ (f' + g').IsRoot r) :
     Prec (f + g) h := by
-  subst hf_def hg_def hh_def
-  have hsum : Prec (f' + g') h' :=
-    prec_add_of_prec_right_of_no_common_right hfh hgh hf'_pos hg'_pos hno
-  have hmul : Prec (d * (f' + g')) (d * h') := prec_mul_common_factor hd hsum
-  simpa [left_distrib, right_distrib, mul_add, add_comm, add_left_comm, add_assoc] using hmul
+  simpa [hf_def, hg_def, hh_def, mul_add] using
+    (prec_mul_common_factor hd
+      (prec_add_of_prec_right_of_no_common_right hfh hgh hf'_pos hg'_pos hno))
 
 /-- Wagner (1) without a coprimeness hypothesis: positive leading coefficients
 and a common right-hand interlacing bound already force `f + g` to precede `h`.
@@ -2536,11 +2532,10 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_common_factor {d f g h : �
     (hgh_deg : g'.natDegree = h'.natDegree)
     (hcop : IsCoprime f' g') :
     Prec (f + g) h := by
-  subst hf_def hg_def hh_def
-  have hsum : Prec (f' + g') h' :=
-    prec_add_of_prec_right_mixed_of_natDegree hfh hgh hf'_pos hg'_pos hfh_deg hgh_deg hcop
-  have hmul : Prec (d * (f' + g')) (d * h') := prec_mul_common_factor hd hsum
-  simpa [left_distrib, right_distrib, mul_add, add_comm, add_left_comm, add_assoc] using hmul
+  simpa [hf_def, hg_def, hh_def, mul_add] using
+    (prec_mul_common_factor hd
+      (prec_add_of_prec_right_mixed_of_natDegree
+        hfh hgh hf'_pos hg'_pos hfh_deg hgh_deg hcop))
 
 /-- A common-factor version of the mixed-degree no-common-right Wagner theorem. -/
 theorem prec_add_of_prec_right_mixed_of_natDegree_of_common_factor_of_no_common_right
@@ -2554,12 +2549,10 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_common_factor_of_no_common_
     (hgh_deg : g'.natDegree = h'.natDegree)
     (hno : ∀ r : ℝ, h'.IsRoot r → ¬ (f' + g').IsRoot r) :
     Prec (f + g) h := by
-  subst hf_def hg_def hh_def
-  have hsum : Prec (f' + g') h' :=
-    prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right
-      hfh hgh hf'_pos hg'_pos hfh_deg hgh_deg hno
-  have hmul : Prec (d * (f' + g')) (d * h') := prec_mul_common_factor hd hsum
-  simpa [left_distrib, right_distrib, mul_add, add_comm, add_left_comm, add_assoc] using hmul
+  simpa [hf_def, hg_def, hh_def, mul_add] using
+    (prec_mul_common_factor hd
+      (prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right
+        hfh hgh hf'_pos hg'_pos hfh_deg hgh_deg hno))
 
 
 end
