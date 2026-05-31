@@ -1734,8 +1734,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
         exists_root_le_of_mixed hf hf_pos hfg_pos hs₁_root hsmaller_gt (by
           rw [hfg_deg, hg_deg])
       have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by
-        simp [List.length_cons] at hlen_g_alt ⊢
-        omega
+        simpa [List.length_cons] using hlen_g_alt
       have hss_g_eq' : (↑rest_g : Multiset ℝ) + ↑[s₁_g] = g.roots := by
         rw [← hss_g_eq, Multiset.coe_add]
         exact Multiset.coe_eq_coe.mpr List.perm_append_comm
@@ -2287,44 +2286,49 @@ private theorem prec_add_of_prec_right_mixed_of_natDegree_no_common_core {f g h 
             subst hr
             exact hs₁_le)
           hno_rs_f
-      have hu₀_lt_r₁ : u₀ < r₁ := by
-        rcases lt_or_eq_of_le (le_trans hu₀_le hs₁_le) with h | h
-        · exact h
-        · exfalso
-          exact hno r₁ ((mem_roots hh.1).mp (by rw [← hrs_f_eq]; simp))
-            (h ▸ hu₀_root)
-      have hpw : (u₀ :: us).Pairwise (· < ·) :=
-        List.pairwise_cons.mpr ⟨fun w hw => lt_of_lt_of_le hu₀_lt_r₁
-          (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
-      have hnodup : (u₀ :: us).Nodup := hpw.imp ne_of_lt
-      have hfg_ne : f + g ≠ 0 := by
-        intro h0
-        simp [HasPosLeadingCoeff, h0] at hfg_pos
-      have hsub : (↑(u₀ :: us) : Multiset ℝ) ≤ (f + g).roots := by
-        rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr hnodup)]
-        intro u hu
-        exact (mem_roots hfg_ne).mpr
-          ((List.mem_cons.mp (Multiset.mem_coe.mp hu)).elim (· ▸ hu₀_root) (hus_root u))
-      have hroots_eq : (↑(u₀ :: us) : Multiset ℝ) = (f + g).roots := by
-        apply Multiset.eq_of_le_of_card_le hsub
-        have hcard_le' : (f + g).roots.card ≤ us.length + 1 := by
-          calc
-            (f + g).roots.card ≤ (f + g).natDegree := card_roots' (f + g)
-            _ = g.natDegree := hfg_deg
-            _ = f.natDegree + 1 := hg_deg
-            _ = us.length + 1 := by rw [hus_len, hf_deg]
-        rw [Multiset.coe_card]
-        simpa using hcard_le'
-      have hfg_rr : IsRealRooted (f + g) := by
-        refine ⟨hfg_ne, ?_⟩
-        rw [← hroots_eq, Multiset.coe_card]
-        simp only [List.length_cons]
-        rw [hfg_deg]
-        omega
-      exact ⟨hfg_rr, hh, u₀ :: us, r₁ :: rest_rs,
-        hpw.imp le_of_lt, hrs_f_sorted, hroots_eq, hrs_f_eq,
-        Or.inr ⟨by simp only [List.length_cons] at hlen_f ⊢; omega,
-          ⟨le_trans hu₀_le hs₁_le, hus_int⟩⟩⟩
+      have finish_from_mixed :
+          ∀ {u₀ : ℝ}, u₀ ≤ s₁_g → (f + g).IsRoot u₀ → Prec (f + g) h := by
+        intro u₀ hu₀_le hu₀_root
+        have hu₀_lt_r₁ : u₀ < r₁ := by
+          rcases lt_or_eq_of_le (le_trans hu₀_le hs₁_le) with h | h
+          · exact h
+          · exfalso
+            exact hno r₁ ((mem_roots hh.1).mp (by rw [← hrs_f_eq]; simp))
+              (h ▸ hu₀_root)
+        have hpw : (u₀ :: us).Pairwise (· < ·) :=
+          List.pairwise_cons.mpr ⟨fun w hw => lt_of_lt_of_le hu₀_lt_r₁
+            (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
+        have hnodup : (u₀ :: us).Nodup := hpw.imp ne_of_lt
+        have hfg_ne : f + g ≠ 0 := by
+          intro h0
+          simp [HasPosLeadingCoeff, h0] at hfg_pos
+        have hsub : (↑(u₀ :: us) : Multiset ℝ) ≤ (f + g).roots := by
+          rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr hnodup)]
+          intro u hu
+          exact (mem_roots hfg_ne).mpr
+            ((List.mem_cons.mp (Multiset.mem_coe.mp hu)).elim (· ▸ hu₀_root) (hus_root u))
+        have hroots_eq : (↑(u₀ :: us) : Multiset ℝ) = (f + g).roots := by
+          apply Multiset.eq_of_le_of_card_le hsub
+          have hcard_le' : (f + g).roots.card ≤ us.length + 1 := by
+            calc
+              (f + g).roots.card ≤ (f + g).natDegree := card_roots' (f + g)
+              _ = g.natDegree := hfg_deg
+              _ = f.natDegree + 1 := hg_deg
+              _ = us.length + 1 := by rw [hus_len, hf_deg]
+          rw [Multiset.coe_card]
+          simpa using hcard_le'
+        have hfg_rr : IsRealRooted (f + g) := by
+          refine ⟨hfg_ne, ?_⟩
+          rw [← hroots_eq, Multiset.coe_card]
+          simp only [List.length_cons]
+          rw [hfg_deg]
+          omega
+        exact ⟨hfg_rr, hh, u₀ :: us, r₁ :: rest_rs,
+          hpw.imp le_of_lt, hrs_f_sorted, hroots_eq, hrs_f_eq,
+          Or.inr ⟨by
+            simpa [List.length_cons, hus_len] using hlen_f,
+            ⟨le_trans hu₀_le hs₁_le, hus_int⟩⟩⟩
+      exact finish_from_mixed hu₀_le hu₀_root
   · have hf_deg' : f.natDegree = h.natDegree := by
       have hss_len : ss_f.length = f.natDegree := by
         rw [← Multiset.coe_card, hss_f_eq, hf.2]
