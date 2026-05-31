@@ -179,16 +179,7 @@ lemma IsInterlacingSeq.sublist {fs gs : List ℝ[X]}
     (hfs : IsInterlacingSeq fs) (hgs : gs.Sublist fs) :
     IsInterlacingSeq gs := by
   rw [isInterlacingSeq_iff_pairwise] at hfs ⊢
-  induction hgs with
-  | slnil =>
-      exact List.Pairwise.nil
-  | cons _ _ ih =>
-      exact ih (List.pairwise_cons.1 hfs).2
-  | cons_cons a hsub ih =>
-      exact List.pairwise_cons.2 ⟨
-        fun b hb => (List.pairwise_cons.1 hfs).1 _ (hsub.subset hb),
-        ih (List.pairwise_cons.1 hfs).2
-      ⟩
+  exact hfs.sublist hgs
 
 lemma IsInterlacingSeqNonneg.sublist {fs gs : List ℝ[X]}
     (hfs : IsInterlacingSeqNonneg fs) (hgs : gs.Sublist fs) :
@@ -202,16 +193,7 @@ lemma IsInterlacingSeq0.sublist {fs gs : List ℝ[X]}
     (hfs : IsInterlacingSeq0 fs) (hgs : gs.Sublist fs) :
     IsInterlacingSeq0 gs := by
   rw [isInterlacingSeq0_iff_pairwise] at hfs ⊢
-  induction hgs with
-  | slnil =>
-      exact List.Pairwise.nil
-  | cons _ _ ih =>
-      exact ih (List.pairwise_cons.1 hfs).2
-  | cons_cons a hsub ih =>
-      exact List.pairwise_cons.2 ⟨
-        fun b hb => (List.pairwise_cons.1 hfs).1 _ (hsub.subset hb),
-        ih (List.pairwise_cons.1 hfs).2
-      ⟩
+  exact hfs.sublist hgs
 
 lemma IsInterlacingSeq0Nonneg.sublist_of_realRooted_of_ne
     {fs gs : List ℝ[X]}

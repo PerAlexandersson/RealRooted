@@ -524,15 +524,9 @@ private lemma isRoot_of_eval_nonneg_of_odd_countP_gt
   rcases hodd with ⟨k, hk⟩
   have hnorm := nonneg_normalized_eval_of_countP_gt hF hF_pos hts_eq s
   rw [hk] at hnorm
-  norm_num at hnorm
   rw [Polynomial.IsRoot.def]
   have hsign : ((-1 : ℝ) ^ (2 * k + 1)) = -1 := by
-    calc
-      ((-1 : ℝ) ^ (2 * k + 1)) = ((-1 : ℝ) ^ (2 * k)) * (-1 : ℝ) := by
-        rw [pow_add, pow_one]
-      _ = (((-1 : ℝ) ^ 2) ^ k) * (-1 : ℝ) := by
-        rw [pow_mul]
-      _ = -1 := by norm_num
+    simp [pow_add, pow_one, pow_mul]
   nlinarith [hnorm, hs, hsign]
 
 /-- A strictly negative value occurs only when an odd number of roots lie
