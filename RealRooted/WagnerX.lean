@@ -918,13 +918,9 @@ theorem prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ) (h : Prec f g) :
   · exact orderedInsert_roots_X_sub_C_mul_eq r hg hrs_eq
   · rcases hcase with ⟨hlen, hint⟩ | ⟨hlen, halt⟩
     · refine Or.inl ⟨?_, listInterlaces_orderedInsert hlen hint r⟩
-      rw [List.orderedInsert_length (r := (· ≤ ·)) ss r,
-        List.orderedInsert_length (r := (· ≤ ·)) rs r]
-      omega
+      simpa [List.orderedInsert_length] using congrArg Nat.succ hlen
     · exact Or.inr ⟨by
-        rw [List.orderedInsert_length (r := (· ≤ ·)) ss r,
-          List.orderedInsert_length (r := (· ≤ ·)) rs r]
-        omega,
+        simpa [List.orderedInsert_length] using congrArg Nat.succ hlen,
         listAlternates_orderedInsert hlen halt r⟩
 
 /-- Reverse direction of the unconditional `r`-insertion transport step from
@@ -963,13 +959,11 @@ theorem prec_of_prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ)
   rcases hcase with ⟨hlen, hint⟩ | ⟨hlen, halt⟩
   · rw [hss_mul_is, hrs_mul_is] at hint hlen
     have hlen' : ss.length + 1 = rs.length := by
-      simp only [List.orderedInsert_length] at hlen
-      omega
+      simpa [List.orderedInsert_length] using hlen
     exact Or.inl ⟨hlen', listInterlaces_of_orderedInsert r hlen' hss_sorted hrs_sorted hint⟩
   · rw [hss_mul_is, hrs_mul_is] at halt hlen
     have hlen' : ss.length = rs.length := by
-      simp only [List.orderedInsert_length] at hlen
-      omega
+      simpa [List.orderedInsert_length] using hlen
     exact Or.inr ⟨hlen', listAlternates_of_orderedInsert r hlen' hss_sorted hrs_sorted halt⟩
 
 /-- Common-factor closure obtained by iterating the Wagner (1992, Section 3)

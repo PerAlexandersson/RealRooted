@@ -2354,8 +2354,7 @@ theorem prec_add_of_prec_right_mixed_of_natDegree {f g h : ℝ[X]}
   have hf0 : Polynomial.eval r f = 0 := hfrg.1
   have hg0 : Polynomial.eval r g = 0 := hfrg.2
   have h10 : (1 : ℝ) = 0 := by
-    have htmp := heval
-    simp [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_one, hf0, hg0] at htmp
+    grind [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_one]
   exact (one_ne_zero h10).elim
 
 /-- A sign-based mixed-degree Wagner theorem: if `f` precedes `h` with degree
@@ -2370,7 +2369,7 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right {f g h : �
     (hgh_deg : g.natDegree = h.natDegree)
     (hno : ∀ r : ℝ, h.IsRoot r → ¬ (f + g).IsRoot r) :
     Prec (f + g) h := by
-  exact prec_add_of_prec_right_mixed_of_natDegree_no_common_core
+  simpa using prec_add_of_prec_right_mixed_of_natDegree_no_common_core
     hfh hgh hf_pos hg_pos hfh_deg hgh_deg hno
 
 /-- A common-factor version of the mixed-degree Wagner addition theorem. -/
