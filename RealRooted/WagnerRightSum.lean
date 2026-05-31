@@ -152,6 +152,26 @@ private lemma ne_zero_of_hasPosLeadingCoeff {p : ℝ[X]} (hp : HasPosLeadingCoef
   intro h0
   simp [HasPosLeadingCoeff, h0] at hp
 
+/-- If we have a strictly increasing candidate root list for `p`, and all its
+elements are roots, then cardinality control upgrades subset to equality. -/
+private lemma roots_eq_of_cons_roots_of_isRealRooted
+    {p : ℝ[X]} {u₀ : ℝ} {us : List ℝ}
+    (hp : IsRealRooted p)
+    (hpw : (u₀ :: us).Pairwise (· < ·))
+    (hu₀_root : p.IsRoot u₀)
+    (hus_root : ∀ u, u ∈ us → p.IsRoot u)
+    (hcard : p.roots.card ≤ us.length + 1) :
+    (↑(u₀ :: us) : Multiset ℝ) = p.roots := by
+  have hnodup : (u₀ :: us).Nodup := hpw.imp ne_of_lt
+  have hsub : (↑(u₀ :: us) : Multiset ℝ) ≤ p.roots := by
+    rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr hnodup)]
+    intro u hu
+    exact (mem_roots hp.1).mpr
+      ((List.mem_cons.mp (Multiset.mem_coe.mp hu)).elim (· ▸ hu₀_root) (hus_root u))
+  apply Multiset.eq_of_le_of_card_le hsub
+  rw [Multiset.coe_card]
+  exact hcard
+
 /-- At every root of the common right-hand list, two interlacing left-hand lists
 have the same sign pattern. -/
 private lemma listInterlaces_prod_mul_prod_nonneg_at_mem :
@@ -1315,16 +1335,12 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
       have hpw : (u₀ :: us).Pairwise (· < ·) :=
         List.pairwise_cons.mpr ⟨fun w hw => lt_of_lt_of_le hu₀_lt_r₁
           (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
-      have hnodup := (hpw.imp ne_of_lt : (u₀ :: us).Nodup)
-      have hsub : (↑(u₀ :: us) : Multiset ℝ) ≤ (f + g).roots := by
-        rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr hnodup)]
-        intro u hu
-        exact (mem_roots hfg_rr.1).mpr
-          ((List.mem_cons.mp (Multiset.mem_coe.mp hu)).elim (· ▸ hu₀_root) (hus_root u))
       have hroots_eq : (↑(u₀ :: us) : Multiset ℝ) = (f + g).roots :=
-        Multiset.eq_of_le_of_card_le hsub (by
-          rw [Multiset.coe_card]; simp only [List.length_cons]
-          have h1 := hfg_rr.2; rw [hfg_deg, hg_deg] at h1; omega)
+        roots_eq_of_cons_roots_of_isRealRooted hfg_rr hpw hu₀_root
+          (fun u hu => hus_root u hu) (by
+            have h1 := hfg_rr.2
+            rw [hfg_deg, hg_deg] at h1
+            omega)
       exact ⟨hfg_rr, hh, u₀ :: us, r₁ :: rest_rs,
         hpw.imp le_of_lt, hrs_f_sorted, hroots_eq, hrs_f_eq,
         Or.inr ⟨by simp only [List.length_cons] at hlen_f ⊢; omega,
@@ -1401,16 +1417,12 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
       have hpw : (u₀ :: us).Pairwise (· < ·) :=
         List.pairwise_cons.mpr ⟨fun w hw => lt_of_lt_of_le hu₀_lt_r₁
           (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
-      have hnodup := (hpw.imp ne_of_lt : (u₀ :: us).Nodup)
-      have hsub : (↑(u₀ :: us) : Multiset ℝ) ≤ (f + g).roots := by
-        rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr hnodup)]
-        intro u hu
-        exact (mem_roots hfg_rr.1).mpr
-          ((List.mem_cons.mp (Multiset.mem_coe.mp hu)).elim (· ▸ hu₀_root) (hus_root u))
       have hroots_eq : (↑(u₀ :: us) : Multiset ℝ) = (f + g).roots :=
-        Multiset.eq_of_le_of_card_le hsub (by
-          rw [Multiset.coe_card]; simp only [List.length_cons]
-          have h1 := hfg_rr.2; rw [hfg_deg, hf_deg] at h1; omega)
+        roots_eq_of_cons_roots_of_isRealRooted hfg_rr hpw hu₀_root
+          (fun u hu => hus_root u hu) (by
+            have h1 := hfg_rr.2
+            rw [hfg_deg, hf_deg] at h1
+            omega)
       exact ⟨hfg_rr, hh, u₀ :: us, r₁ :: rest_rs,
         hpw.imp le_of_lt, hrs_f_sorted, hroots_eq, hrs_f_eq,
         Or.inr ⟨by simp only [List.length_cons] at hlen_f_alt ⊢; omega,
@@ -1524,17 +1536,13 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
           have hpw : (c :: us).Pairwise (· < ·) :=
             List.pairwise_cons.mpr ⟨fun w hw => lt_of_lt_of_le hc_lt_r₁
               (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
-          have hnodup := (hpw.imp ne_of_lt : (c :: us).Nodup)
-          have hsub : (↑(c :: us) : Multiset ℝ) ≤ (f + g).roots := by
-            rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr hnodup)]
-            intro u hu
-            exact (mem_roots hfg_rr.1).mpr
-              ((List.mem_cons.mp (Multiset.mem_coe.mp hu)).elim (· ▸ hc_root) (hus_root u))
           have hroots_eq : (↑(c :: us) : Multiset ℝ) = (f + g).roots :=
-            Multiset.eq_of_le_of_card_le hsub (by
-              rw [Multiset.coe_card]; simp only [List.length_cons]
-              simp only [List.length_cons] at hf_deg
-              have h1 := hfg_rr.2; rw [hfg_deg] at h1; omega)
+            roots_eq_of_cons_roots_of_isRealRooted hfg_rr hpw hc_root
+              (fun u hu => hus_root u hu) (by
+                have h1 := hfg_rr.2
+                rw [hfg_deg] at h1
+                simp only [List.length_cons] at hf_deg
+                omega)
           exact ⟨hfg_rr, hh, c :: us, r₁ :: rest_rs,
             hpw.imp le_of_lt, hrs_f_sorted, hroots_eq, hrs_f_eq,
             Or.inr ⟨by simp only [List.length_cons] at hlen_f_alt ⊢; omega,
@@ -1583,17 +1591,13 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
           have hpw : (c :: us).Pairwise (· < ·) :=
             List.pairwise_cons.mpr ⟨fun w hw => lt_of_lt_of_le hc_lt_r₁
               (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
-          have hnodup := (hpw.imp ne_of_lt : (c :: us).Nodup)
-          have hsub : (↑(c :: us) : Multiset ℝ) ≤ (f + g).roots := by
-            rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr hnodup)]
-            intro u hu
-            exact (mem_roots hfg_rr.1).mpr
-              ((List.mem_cons.mp (Multiset.mem_coe.mp hu)).elim (· ▸ hc_root) (hus_root u))
           have hroots_eq : (↑(c :: us) : Multiset ℝ) = (f + g).roots :=
-            Multiset.eq_of_le_of_card_le hsub (by
-              rw [Multiset.coe_card]; simp only [List.length_cons]
-              simp only [List.length_cons] at hf_deg
-              have h1 := hfg_rr.2; rw [hfg_deg] at h1; omega)
+            roots_eq_of_cons_roots_of_isRealRooted hfg_rr hpw hc_root
+              (fun u hu => hus_root u hu) (by
+                have h1 := hfg_rr.2
+                rw [hfg_deg] at h1
+                simp only [List.length_cons] at hf_deg
+                omega)
           exact ⟨hfg_rr, hh, c :: us, r₁ :: rest_rs,
             hpw.imp le_of_lt, hrs_f_sorted, hroots_eq, hrs_f_eq,
             Or.inr ⟨by simp only [List.length_cons] at hlen_f_alt ⊢; omega,
