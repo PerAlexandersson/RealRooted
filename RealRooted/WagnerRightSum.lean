@@ -146,6 +146,12 @@ private lemma prod_mul_prod_nonneg_of_forall_nonpos_of_eq_length
     (hg_neg := by intro x hx _; exact h₂ x (Multiset.mem_coe.mp hx))
     (hcount := by simp [hlen])
 
+/-- A polynomial with positive leading coefficient is nonzero. -/
+private lemma ne_zero_of_hasPosLeadingCoeff {p : ℝ[X]} (hp : HasPosLeadingCoeff p) :
+    p ≠ 0 := by
+  intro h0
+  simp [HasPosLeadingCoeff, h0] at hp
+
 /-- At every root of the common right-hand list, two interlacing left-hand lists
 have the same sign pattern. -/
 private lemma listInterlaces_prod_mul_prod_nonneg_at_mem :
@@ -1114,9 +1120,7 @@ lemma exists_root_le_of_mixed {smaller bigger : ℝ[X]}
     (hsmaller_gt : ∀ t ∈ smaller.roots, p < t)
     (hdeg : smaller.natDegree + 1 = (smaller + bigger).natDegree) :
     ∃ u₀ : ℝ, u₀ ≤ p ∧ (smaller + bigger).IsRoot u₀ := by
-  have hsum_ne : smaller + bigger ≠ 0 := by
-    intro h0
-    simp [HasPosLeadingCoeff, h0] at hsum_pos
+  have hsum_ne : smaller + bigger ≠ 0 := ne_zero_of_hasPosLeadingCoeff hsum_pos
   have hbig0 : bigger.eval p = 0 := hbigp
   have hsum_eval : (smaller + bigger).eval p = smaller.eval p := by
     rw [eval_add, hbig0, add_zero]
@@ -1280,7 +1284,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
           rw [hfg_deg, hg_deg])
       -- Main roots via recursive helper
       have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by
-        simp [List.length_cons] at hlen_g_alt ⊢; omega
+        simpa [List.length_cons] using hlen_g_alt
       have hss_g_eq' : (↑rest_g : Multiset ℝ) + ↑[s₁_g] = g.roots := by
         rw [← hss_g_eq, Multiset.coe_add]
         exact Multiset.coe_eq_coe.mpr List.perm_append_comm
@@ -1370,7 +1374,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
             rw [show g + f = f + g from add_comm g f, hfg_deg, hf_deg])
       have hu₀_root : (f + g).IsRoot u₀ := by rwa [add_comm] at hu₀_root_gf
       have hlen_f_rest : rest_f.length + 1 = (r₁ :: rest_rs).length := by
-        simp [List.length_cons] at hlen_f_alt ⊢; omega
+        simpa [List.length_cons] using hlen_f_alt
       have hss_f_eq' : (↑rest_f : Multiset ℝ) + ↑[s₁_f] = f.roots := by
         rw [← hss_f_eq, Multiset.coe_add]
         exact Multiset.coe_eq_coe.mpr List.perm_append_comm
@@ -1470,9 +1474,9 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
           rw [hcg, hcf]; simp only [Multiset.coe_card]
           simp [List.length_cons] at hlen_f_alt hlen_g_alt; omega
         have hlen_f_rest : rest_f.length + 1 = (r₁ :: rest_rs).length := by
-          simp [List.length_cons] at hlen_f_alt ⊢; omega
+          simpa [List.length_cons] using hlen_f_alt
         have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by
-          simp [List.length_cons] at hlen_g_alt ⊢; omega
+          simpa [List.length_cons] using hlen_g_alt
         have hss_f_eq' : (↑rest_f : Multiset ℝ) + ↑[s₁_f] = f.roots := by
           rw [← hss_f_eq, Multiset.coe_add]
           exact Multiset.coe_eq_coe.mpr List.perm_append_comm
@@ -1759,9 +1763,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
           lt_of_lt_of_le hu₀_lt_r₁
             (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
       have hnodup := (hpw.imp ne_of_lt : (u₀ :: us).Nodup)
-      have hfg_ne : f + g ≠ 0 := by
-        intro h0
-        simp [HasPosLeadingCoeff, h0] at hfg_pos
+      have hfg_ne : f + g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hfg_pos
       have hsub : (↑(u₀ :: us) : Multiset ℝ) ≤ (f + g).roots := by
         rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr hnodup)]
         intro u hu
@@ -1870,9 +1872,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
             lt_of_lt_of_le hu₀_lt_r₁
               (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
         have hnodup := (hpw.imp ne_of_lt : (u₀ :: us).Nodup)
-        have hfg_ne : f + g ≠ 0 := by
-          intro h0
-          simp [HasPosLeadingCoeff, h0] at hfg_pos
+        have hfg_ne : f + g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hfg_pos
         have hsub : (↑(u₀ :: us) : Multiset ℝ) ≤ (f + g).roots := by
           rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr hnodup)]
           intro u hu
@@ -2001,11 +2001,9 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
           simp [List.length_cons] at hlen_f_alt hlen_g_alt
           omega
         have hlen_f_rest : rest_f.length + 1 = (r₁ :: rest_rs).length := by
-          simp [List.length_cons] at hlen_f_alt ⊢
-          omega
+          simpa [List.length_cons] using hlen_f_alt
         have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by
-          simp [List.length_cons] at hlen_g_alt ⊢
-          omega
+          simpa [List.length_cons] using hlen_g_alt
         have hss_f_eq' : (↑rest_f : Multiset ℝ) + ↑[s₁_f] = f.roots := by
           rw [← hss_f_eq, Multiset.coe_add]
           exact Multiset.coe_eq_coe.mpr List.perm_append_comm
@@ -2275,8 +2273,7 @@ private theorem prec_add_of_prec_right_mixed_of_natDegree_no_common_core {f g h 
         exists_root_le_of_mixed hf hf_pos hfg_pos hs₁_root hsmaller_gt (by
           rw [hfg_deg, hg_deg])
       have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by
-        simp [List.length_cons] at hlen_g_alt ⊢
-        omega
+        simpa [List.length_cons] using hlen_g_alt
       have hss_g_eq' : (↑rest_g : Multiset ℝ) + ↑[s₁_g] = g.roots := by
         rw [← hss_g_eq, Multiset.coe_add]
         exact Multiset.coe_eq_coe.mpr List.perm_append_comm
@@ -2303,9 +2300,7 @@ private theorem prec_add_of_prec_right_mixed_of_natDegree_no_common_core {f g h 
           List.pairwise_cons.mpr ⟨fun w hw => lt_of_lt_of_le hu₀_lt_r₁
             (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
         have hnodup : (u₀ :: us).Nodup := hpw.imp ne_of_lt
-        have hfg_ne : f + g ≠ 0 := by
-          intro h0
-          simp [HasPosLeadingCoeff, h0] at hfg_pos
+        have hfg_ne : f + g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hfg_pos
         have hsub : (↑(u₀ :: us) : Multiset ℝ) ≤ (f + g).roots := by
           rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr hnodup)]
           intro u hu
