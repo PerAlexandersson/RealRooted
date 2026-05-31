@@ -708,6 +708,8 @@ theorem prec0_mul_X_of_prec0 {f g : ℝ[X]}
   · simpa using prec0_zero_left (X * f)
   · simpa using (prec_mul_X_of_prec_of_nonneg hfg hfnn hgnn).toPrec0
 
+/-- Wagner (1992, Section 3): inserting the shared root `0` on both sides
+preserves `Prec` when both root sets are nonpositive. -/
 theorem prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]} (h : Prec f g)
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
@@ -750,6 +752,8 @@ theorem prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]} (h : Prec f g)
     · exact Or.inr
         ⟨by simpa using hlen, listAlternates_append_zero_both ss rs hlen halt hrs_nonpos⟩
 
+/-- Reverse direction of the shared-root insertion step from Wagner (1992,
+Section 3). -/
 theorem prec_of_prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]}
     (h : Prec (X * f) (X * g))
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
@@ -808,6 +812,8 @@ theorem prec_of_prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]}
     exact ⟨hf, hg, ss_f, rs_g, hss_f_sorted, hrs_g_sorted, hss_f_eq, hrs_g_eq,
       Or.inr ⟨hlen', listAlternates_of_append_zero_both ss_f rs_g hlen' halt⟩⟩
 
+/-- Equivalence form of the shared-root insertion step in Wagner (1992,
+Section 3). -/
 theorem prec_iff_prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]}
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
@@ -815,6 +821,27 @@ theorem prec_iff_prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]}
   exact ⟨(fun h => prec_mul_X_both_of_roots_nonpos h hf_nonpos hg_nonpos),
     (fun h => prec_of_prec_mul_X_both_of_roots_nonpos h hf_nonpos hg_nonpos)⟩
 
+private lemma orderedInsert_roots_X_sub_C_mul_eq
+    {p : ℝ[X]} {s : List ℝ} (r : ℝ) (hp : IsRealRooted p)
+    (hs_eq : (↑s : Multiset ℝ) = p.roots) :
+    (↑(s.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ((X - C r) * p).roots := by
+  have hinsert :
+      (↑(s.orderedInsert (· ≤ ·) r) : Multiset ℝ) =
+        ({r} : Multiset ℝ) + (↑s : Multiset ℝ) := by
+    calc
+      (↑(s.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ↑(r :: s) := by
+        exact Multiset.coe_eq_coe.mpr (List.perm_orderedInsert (r := (· ≤ ·)) r s)
+      _ = ({r} : Multiset ℝ) + (↑s : Multiset ℝ) := by
+        rfl
+  have hroots :
+      ({r} : Multiset ℝ) + (↑s : Multiset ℝ) = ((X - C r) * p).roots := by
+    rw [hs_eq]
+    simpa [roots_X_sub_C] using (roots_mul (mul_ne_zero (X_sub_C_ne_zero r) hp.1)).symm
+  exact hinsert.trans hroots
+
+/-- Shifted insertion form of Wagner (1992, Section 3): if every root of `f`
+and `g` is at most `r`, then multiplying both sides by `(X - C r)` preserves
+`Prec`. -/
 theorem prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ) (h : Prec f g)
     (hf_le : ∀ s ∈ f.roots, s ≤ r)
     (hg_le : ∀ s ∈ g.roots, s ≤ r) :
@@ -841,6 +868,8 @@ theorem prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ) (h : Prec f g
       comp_assoc, add_assoc, add_left_comm, add_comm] using hX'
   exact (prec_comp_X_add_C_iff (f := (X - C r) * f) (g := (X - C r) * g) r).1 htranslated
 
+/-- Reverse direction of the shifted insertion step from Wagner (1992,
+Section 3). -/
 theorem prec_of_prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ)
     (h : Prec ((X - C r) * f) ((X - C r) * g))
     (hf_le : ∀ s ∈ f.roots, s ≤ r)
@@ -868,6 +897,7 @@ theorem prec_of_prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ)
     exact prec_of_prec_mul_X_both_of_roots_nonpos hX' hf'_nonpos hg'_nonpos
   exact (prec_comp_X_add_C_iff (f := f) (g := g) r).1 (by simpa [f', g'] using hfg')
 
+/-- Equivalence form of shifted insertion in Wagner (1992, Section 3). -/
 theorem prec_iff_prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ)
     (hf_le : ∀ s ∈ f.roots, s ≤ r)
     (hg_le : ∀ s ∈ g.roots, s ≤ r) :
@@ -875,6 +905,8 @@ theorem prec_iff_prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ)
   exact ⟨(fun h => prec_mul_X_sub_C_both_of_roots_le r h hf_le hg_le),
     (fun h => prec_of_prec_mul_X_sub_C_both_of_roots_le r h hf_le hg_le)⟩
 
+/-- Unconditional insertion of the shared root `r` in the Wagner (1992,
+Section 3) transport step. -/
 theorem prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ) (h : Prec f g) :
     Prec ((X - C r) * f) ((X - C r) * g) := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hcase⟩
@@ -882,32 +914,8 @@ theorem prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ) (h : Prec f g) :
     isRealRooted_mul (isRealRooted_X_sub_C r) hg,
     ss.orderedInsert (· ≤ ·) r, rs.orderedInsert (· ≤ ·) r,
     hss.orderedInsert _ _, hrs.orderedInsert _ _, ?_, ?_, ?_⟩
-  · have hinsert :
-        (↑(ss.orderedInsert (· ≤ ·) r) : Multiset ℝ) =
-          ({r} : Multiset ℝ) + (↑ss : Multiset ℝ) := by
-        calc
-          (↑(ss.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ↑(r :: ss) := by
-            exact Multiset.coe_eq_coe.mpr (List.perm_orderedInsert (r := (· ≤ ·)) r ss)
-          _ = ({r} : Multiset ℝ) + (↑ss : Multiset ℝ) := by
-            rfl
-    have hroots :
-        ({r} : Multiset ℝ) + (↑ss : Multiset ℝ) = ((X - C r) * f).roots := by
-      rw [hss_eq]
-      simpa [roots_X_sub_C] using (roots_mul (mul_ne_zero (X_sub_C_ne_zero r) hf.1)).symm
-    exact hinsert.trans hroots
-  · have hinsert :
-        (↑(rs.orderedInsert (· ≤ ·) r) : Multiset ℝ) =
-          ({r} : Multiset ℝ) + (↑rs : Multiset ℝ) := by
-        calc
-          (↑(rs.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ↑(r :: rs) := by
-            exact Multiset.coe_eq_coe.mpr (List.perm_orderedInsert (r := (· ≤ ·)) r rs)
-          _ = ({r} : Multiset ℝ) + (↑rs : Multiset ℝ) := by
-            rfl
-    have hroots :
-        ({r} : Multiset ℝ) + (↑rs : Multiset ℝ) = ((X - C r) * g).roots := by
-      rw [hrs_eq]
-      simpa [roots_X_sub_C] using (roots_mul (mul_ne_zero (X_sub_C_ne_zero r) hg.1)).symm
-    exact hinsert.trans hroots
+  · exact orderedInsert_roots_X_sub_C_mul_eq r hf hss_eq
+  · exact orderedInsert_roots_X_sub_C_mul_eq r hg hrs_eq
   · rcases hcase with ⟨hlen, hint⟩ | ⟨hlen, halt⟩
     · refine Or.inl ⟨?_, listInterlaces_orderedInsert hlen hint r⟩
       rw [List.orderedInsert_length (r := (· ≤ ·)) ss r,
@@ -919,6 +927,8 @@ theorem prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ) (h : Prec f g) :
         omega,
         listAlternates_orderedInsert hlen halt r⟩
 
+/-- Reverse direction of the unconditional `r`-insertion transport step from
+Wagner (1992, Section 3). -/
 theorem prec_of_prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ)
     (h : Prec ((X - C r) * f) ((X - C r) * g)) :
     Prec f g := by
@@ -938,29 +948,11 @@ theorem prec_of_prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ)
   have hss_sorted : ss.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hss_insert_eq :
-      (↑(ss.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ((X - C r) * f).roots := by
-    rw [show (↑(ss.orderedInsert (· ≤ ·) r) : Multiset ℝ) =
-        ({r} : Multiset ℝ) + (↑ss : Multiset ℝ) by
-          calc
-            (↑(ss.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ↑(r :: ss) := by
-              exact Multiset.coe_eq_coe.mpr (List.perm_orderedInsert (r := (· ≤ ·)) r ss)
-            _ = ({r} : Multiset ℝ) + (↑ss : Multiset ℝ) := by
-              rfl]
-    rw [hss_eq]
-    symm
-    rw [roots_mul (mul_ne_zero (X_sub_C_ne_zero r) hf.1), roots_X_sub_C]
+      (↑(ss.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ((X - C r) * f).roots :=
+    orderedInsert_roots_X_sub_C_mul_eq r hf hss_eq
   have hrs_insert_eq :
-      (↑(rs.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ((X - C r) * g).roots := by
-    rw [show (↑(rs.orderedInsert (· ≤ ·) r) : Multiset ℝ) =
-        ({r} : Multiset ℝ) + (↑rs : Multiset ℝ) by
-          calc
-            (↑(rs.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ↑(r :: rs) := by
-              exact Multiset.coe_eq_coe.mpr (List.perm_orderedInsert (r := (· ≤ ·)) r rs)
-            _ = ({r} : Multiset ℝ) + (↑rs : Multiset ℝ) := by
-              rfl]
-    rw [hrs_eq]
-    symm
-    rw [roots_mul (mul_ne_zero (X_sub_C_ne_zero r) hg.1), roots_X_sub_C]
+      (↑(rs.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ((X - C r) * g).roots :=
+    orderedInsert_roots_X_sub_C_mul_eq r hg hrs_eq
   have hss_mul_is : ss_mul = ss.orderedInsert (· ≤ ·) r := by
     exact List.Perm.eq_of_pairwise' hss_mul (hss_sorted.orderedInsert _ _)
       (Multiset.coe_eq_coe.mp (hss_mul_eq.trans hss_insert_eq.symm))
@@ -980,6 +972,8 @@ theorem prec_of_prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ)
       omega
     exact Or.inr ⟨hlen', listAlternates_of_orderedInsert r hlen' hss_sorted hrs_sorted halt⟩
 
+/-- Common-factor closure obtained by iterating the Wagner (1992, Section 3)
+insertion step over the roots of `d`. -/
 theorem prec_mul_common_factor {d f g : ℝ[X]} (hd : IsRealRooted d) (h : Prec f g) :
     Prec (d * f) (d * g) := by
   have hprod : Prec (((d.roots.map fun a => X - C a).prod) * f)
@@ -999,6 +993,8 @@ theorem prec_mul_common_factor {d f g : ℝ[X]} (hd : IsRealRooted d) (h : Prec 
     simpa [mul_assoc, mul_left_comm, mul_comm] using hboth
   simpa [C_leadingCoeff_mul_prod_multiset_X_sub_C hd.2, mul_assoc] using hscaled
 
+/-- One-sided shifted form of Wagner (1992, Section 3):
+`f ≪ g ↔ g ≪ (X - C r) * f` under the usual root and degree hypotheses. -/
 theorem prec_iff_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
     (hf : IsRealRooted f) (hg : IsRealRooted g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)

@@ -2009,24 +2009,11 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
         have hss_g_eq' : (↑rest_g : Multiset ℝ) + ↑[s₁_g] = g.roots := by
           rw [← hss_g_eq, Multiset.coe_add]
           exact Multiset.coe_eq_coe.mpr List.perm_append_comm
-        rcases le_or_gt s₁_f s₁_g with hsfsg | hsfsg
-        · have hf_dich : ∀ r ∈ f.roots.erase s₁_f, r ≤ s₁_f ∨ r₁ ≤ r := by
-            rw [hf_roots_erase]
-            intro r hr
-            right
-            exact listInterlaces_all_ge rest_f rest_rs r₁ hint_f_tail r (Multiset.mem_coe.mp hr)
-          have hg_dich : ∀ r ∈ g.roots.erase s₁_g, r ≤ s₁_f ∨ r₁ ≤ r := by
-            rw [hg_roots_erase]
-            intro r hr
-            right
-            exact listInterlaces_all_ge rest_g rest_rs r₁ hint_g_tail r (Multiset.mem_coe.mp hr)
-          have hsign := opposite_sign_at_interlacing_roots hf hg hf_pos hg_pos
-            hs₁f_le (le_refl _) hs₁f_le hsfsg hs₁g_le hsfsg
-            hs₁f_root hs₁g_root hf_dich hg_dich hcount_eq
-          obtain ⟨c, hcf, hcg, hc_root⟩ :=
-            sum_has_root_between hsfsg hs₁f_root hs₁g_root hsign
+        have finish_from_split :
+            ∀ {c : ℝ}, c ≤ r₁ → (f + g).IsRoot c → Prec (f + g) h := by
+          intro c hc_le hc_root
           have hc_lt_r₁ : c < r₁ := by
-            rcases lt_or_eq_of_le (le_trans hcg hs₁g_le) with h | h
+            rcases lt_or_eq_of_le hc_le with h | h
             · exact h
             · exfalso
               exact hno r₁ ((mem_roots hh.1).mp (by rw [← hrs_f_eq]; simp))
@@ -2089,7 +2076,24 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
           exact ⟨hfg_rr, hh, c :: us, r₁ :: rest_rs,
             hpw.imp le_of_lt, hrs_f_sorted, hroots_eq, hrs_f_eq,
             Or.inr ⟨by simp only [List.length_cons] at hlen_f_alt ⊢; omega,
-                     ⟨le_trans hcg hs₁g_le, hus_int⟩⟩⟩
+                     ⟨hc_le, hus_int⟩⟩⟩
+        rcases le_or_gt s₁_f s₁_g with hsfsg | hsfsg
+        · have hf_dich : ∀ r ∈ f.roots.erase s₁_f, r ≤ s₁_f ∨ r₁ ≤ r := by
+            rw [hf_roots_erase]
+            intro r hr
+            right
+            exact listInterlaces_all_ge rest_f rest_rs r₁ hint_f_tail r (Multiset.mem_coe.mp hr)
+          have hg_dich : ∀ r ∈ g.roots.erase s₁_g, r ≤ s₁_f ∨ r₁ ≤ r := by
+            rw [hg_roots_erase]
+            intro r hr
+            right
+            exact listInterlaces_all_ge rest_g rest_rs r₁ hint_g_tail r (Multiset.mem_coe.mp hr)
+          have hsign := opposite_sign_at_interlacing_roots hf hg hf_pos hg_pos
+            hs₁f_le (le_refl _) hs₁f_le hsfsg hs₁g_le hsfsg
+            hs₁f_root hs₁g_root hf_dich hg_dich hcount_eq
+          obtain ⟨c, hcf, hcg, hc_root⟩ :=
+            sum_has_root_between hsfsg hs₁f_root hs₁g_root hsign
+          exact finish_from_split (c := c) (le_trans hcg hs₁g_le) hc_root
         · have hsgf := le_of_lt hsfsg
           have hg_dich : ∀ r ∈ g.roots.erase s₁_g, r ≤ s₁_g ∨ r₁ ≤ r := by
             rw [hg_roots_erase]
@@ -2108,71 +2112,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
             sum_has_root_between hsgf hs₁g_root hs₁f_root
               (by linarith [mul_comm (Polynomial.eval s₁_f g) (Polynomial.eval s₁_g f)])
           have hc_root : (f + g).IsRoot c := by rwa [add_comm] at hc_root_gf
-          have hc_lt_r₁ : c < r₁ := by
-            rcases lt_or_eq_of_le (le_trans hcf hs₁f_le) with h | h
-            · exact h
-            · exfalso
-              exact hno r₁ ((mem_roots hh.1).mp (by rw [← hrs_f_eq]; simp))
-                (h ▸ hc_root)
-          obtain ⟨us, hus_len, hus_int, hus_root, hus_pw⟩ :=
-            wagner1_roots_exist_of_no_common_right f g hf hg hf_pos hg_pos ↑[s₁_f] ↑[s₁_g]
-              rest_f rest_g (r₁ :: rest_rs) hlen_f_rest hlen_g_rest
-              hint_f_tail hint_g_tail hss_f_eq' hss_g_eq'
-              (by
-                 intro r hr
-                 simp only [Multiset.coe_singleton, Multiset.mem_singleton] at hr
-                 subst hr
-                 exact hs₁f_le)
-              (by
-                 intro r hr
-                 simp only [Multiset.coe_singleton, Multiset.mem_singleton] at hr
-                 subst hr
-                 exact hs₁g_le)
-              hno_rs_f
-          have hpw : (c :: us).Pairwise (· < ·) :=
-            List.pairwise_cons.mpr ⟨fun w hw =>
-              lt_of_lt_of_le hc_lt_r₁
-                (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
-          have hnodup := (hpw.imp ne_of_lt : (c :: us).Nodup)
-          have hfg_ne : f + g ≠ 0 := by
-            intro h0
-            have hcoeff_ne : (f + g).coeff f.natDegree ≠ 0 := by
-              rw [coeff_add]
-              have hfc : f.coeff f.natDegree = f.leadingCoeff := rfl
-              have hgc : g.coeff f.natDegree = g.leadingCoeff := by
-                unfold leadingCoeff
-                rw [← hdeg_eq]
-              rw [hfc, hgc]
-              exact ne_of_gt (by
-                unfold HasPosLeadingCoeff at hf_pos hg_pos
-                linarith)
-            exact hcoeff_ne (by simp [h0])
-          have hsub : (↑(c :: us) : Multiset ℝ) ≤ (f + g).roots := by
-            rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr hnodup)]
-            intro u hu
-            exact (mem_roots hfg_ne).mpr
-              ((List.mem_cons.mp (Multiset.mem_coe.mp hu)).elim (· ▸ hc_root) (hus_root u))
-          have hroots_eq : (↑(c :: us) : Multiset ℝ) = (f + g).roots := by
-            apply Multiset.eq_of_le_of_card_le hsub
-            rw [Multiset.coe_card]
-            have hcard_le' : (f + g).roots.card ≤ us.length + 1 := by
-              calc
-                (f + g).roots.card ≤ (f + g).natDegree := card_roots' (f + g)
-                _ = f.natDegree := hfg_deg
-                _ = us.length + 1 := by
-                  simp only [List.length_cons] at hf_deg
-                  rw [hus_len, hf_deg]
-            simpa using hcard_le'
-          have hfg_rr : IsRealRooted (f + g) := by
-            refine ⟨hfg_ne, ?_⟩
-            rw [← hroots_eq, Multiset.coe_card]
-            simp only [List.length_cons]
-            simp only [List.length_cons] at hf_deg
-            rw [hfg_deg, hus_len, hf_deg]
-          exact ⟨hfg_rr, hh, c :: us, r₁ :: rest_rs,
-            hpw.imp le_of_lt, hrs_f_sorted, hroots_eq, hrs_f_eq,
-            Or.inr ⟨by simp only [List.length_cons] at hlen_f_alt ⊢; omega,
-                     ⟨le_trans hcf hs₁f_le, hus_int⟩⟩⟩
+          exact finish_from_split (c := c) (le_trans hcf hs₁f_le) hc_root
 
 /-- A common-factor version of Wagner (1): if `d` is real-rooted and the reduced
     summands satisfy the usual coprime addition theorem, then the original
