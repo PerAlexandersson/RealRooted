@@ -2259,144 +2259,7 @@ theorem prec_add_of_prec_right_of_posLeadingCoeff {f g h : ℝ[X]}
           exact prec_add_of_prec_right_of_no_common_right hfh hgh hf_pos hg_pos hno)
   exact hP h.natDegree f g h rfl hfh hgh hf_pos hg_pos
 
-/-- A mixed-degree version of Wagner (1): if `f` precedes `h` with degree one less,
-    `g` precedes `h` with the same degree, and `f` and `g` are coprime, then
-    `f + g` precedes `h`. This packages the branch needed for the derangement
-    recurrence, avoiding a separate `IsRealRooted (f + g)` hypothesis. -/
-theorem prec_add_of_prec_right_mixed_of_natDegree {f g h : ℝ[X]}
-    (hfh : Prec f h) (hgh : Prec g h)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfh_deg : f.natDegree + 1 = h.natDegree)
-    (hgh_deg : g.natDegree = h.natDegree)
-    (hcop : IsCoprime f g) :
-    Prec (f + g) h := by
-  obtain ⟨hf, hh, ss_f, rs_f, hss_f_sorted, hrs_f_sorted, hss_f_eq, hrs_f_eq, hcase_f⟩ := hfh
-  obtain ⟨hg, _, ss_g, rs_g, hss_g_sorted, hrs_g_sorted, hss_g_eq, hrs_g_eq, hcase_g⟩ := hgh
-  rcases hcase_f with ⟨hlen_f, hint_f⟩ | ⟨hlen_f_alt, halt_f⟩
-  · rcases hcase_g with ⟨hlen_g, hint_g⟩ | ⟨hlen_g_alt, halt_g⟩
-    · have hg_deg' : g.natDegree + 1 = h.natDegree := by
-        have hss_len : ss_g.length = g.natDegree := by
-          rw [← Multiset.coe_card, hss_g_eq, hg.2]
-        have hrs_len : rs_g.length = h.natDegree := by
-          rw [← Multiset.coe_card, hrs_g_eq, hh.2]
-        omega
-      omega
-    · have hrs_eq : rs_f = rs_g := by
-        apply List.Perm.eq_of_pairwise' hrs_f_sorted hrs_g_sorted
-        exact Multiset.coe_eq_coe.mp (hrs_f_eq.trans hrs_g_eq.symm)
-      subst hrs_eq
-      obtain ⟨r₁, rest_rs, rfl⟩ : ∃ a l, rs_f = a :: l := by
-        cases rs_f with | nil => simp at hlen_f | cons r rs => exact ⟨r, rs, rfl⟩
-      obtain ⟨s₁_g, rest_g, rfl⟩ : ∃ a l, ss_g = a :: l := by
-        cases ss_g with | nil => simp at hlen_g_alt | cons s rest => exact ⟨s, rest, rfl⟩
-      obtain ⟨hs₁_le, hint_g_tail⟩ := halt_g
-      have hs₁_root : g.IsRoot s₁_g :=
-        (mem_roots hg.1).mp (by rw [← hss_g_eq]; simp)
-      have hf_deg : ss_f.length = f.natDegree := by
-        rw [← Multiset.coe_card, hss_f_eq, hf.2]
-      have hg_deg : g.natDegree = f.natDegree + 1 := by
-        have hss_len : (s₁_g :: rest_g).length = g.natDegree := by
-          rw [← Multiset.coe_card, hss_g_eq, hg.2]
-        omega
-      have hdeg_lt : f.natDegree < g.natDegree := by omega
-      have hfg_deg : (f + g).natDegree = g.natDegree :=
-        natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hdeg_lt hg_pos
-      have hfg_pos : HasPosLeadingCoeff (f + g) :=
-        hasPosLeadingCoeff_add_of_natDegree_lt_right hdeg_lt hg_pos
-      have hsmaller_gt : ∀ t ∈ f.roots, s₁_g < t := by
-        intro t ht
-        rw [← hss_f_eq] at ht
-        have ht_ge : r₁ ≤ t :=
-          listInterlaces_all_ge ss_f rest_rs r₁ hint_f t (Multiset.mem_coe.mp ht)
-        rcases lt_or_eq_of_le (le_trans hs₁_le ht_ge) with h | h
-        · exact h
-        · exfalso
-          subst h
-          have hf0 : Polynomial.eval s₁_g f = 0 :=
-            (mem_roots hf.1).mp (by rwa [hss_f_eq] at ht)
-          have hg0 : Polynomial.eval s₁_g g = 0 := hs₁_root
-          obtain ⟨a, b, hab⟩ := hcop
-          have := congr_arg (Polynomial.eval s₁_g) hab
-          simp [eval_add, eval_mul, eval_one, hf0, hg0] at this
-      obtain ⟨u₀, hu₀_le, hu₀_root⟩ :=
-        exists_root_le_of_mixed hf hf_pos hfg_pos hs₁_root hsmaller_gt (by
-          rw [hfg_deg, hg_deg])
-      have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by
-        simp [List.length_cons] at hlen_g_alt ⊢
-        omega
-      have hss_g_eq' : (↑rest_g : Multiset ℝ) + ↑[s₁_g] = g.roots := by
-        rw [← hss_g_eq, Multiset.coe_add]
-        exact Multiset.coe_eq_coe.mpr List.perm_append_comm
-      obtain ⟨us, hus_len, hus_int, hus_root, hus_pw⟩ :=
-        wagner1_roots_exist f g hf hg hf_pos hg_pos hcop 0 ↑[s₁_g]
-          ss_f rest_g (r₁ :: rest_rs) hlen_f hlen_g_rest hint_f hint_g_tail
-          (by simp [hss_f_eq]) hss_g_eq' (by simp)
-          (by
-            intro r hr
-            simp only [Multiset.coe_singleton, Multiset.mem_singleton] at hr
-            subst hr
-            exact hs₁_le)
-      have hu₀_lt_r₁ : u₀ < r₁ := by
-        rcases lt_or_eq_of_le (le_trans hu₀_le hs₁_le) with h | h
-        · exact h
-        · exfalso
-          have hs_eq : s₁_g = r₁ := le_antisymm hs₁_le (h ▸ hu₀_le)
-          have hgr₁ : Polynomial.eval r₁ g = 0 := by
-            rw [← hs_eq]
-            exact hs₁_root
-          have hfr₁ : Polynomial.eval r₁ f = 0 := by
-            have : (f + g).IsRoot r₁ := h ▸ hu₀_root
-            simp only [IsRoot.def, eval_add, hgr₁, add_zero] at this
-            exact this
-          obtain ⟨a, b, hab⟩ := hcop
-          have := congr_arg (Polynomial.eval r₁) hab
-          simp [eval_add, eval_mul, eval_one, hfr₁, hgr₁] at this
-      have hpw : (u₀ :: us).Pairwise (· < ·) :=
-        List.pairwise_cons.mpr ⟨fun w hw => lt_of_lt_of_le hu₀_lt_r₁
-          (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
-      have hnodup : (u₀ :: us).Nodup := hpw.imp ne_of_lt
-      have hfg_ne : f + g ≠ 0 := by
-        intro h0
-        simp [HasPosLeadingCoeff, h0] at hfg_pos
-      have hsub : (↑(u₀ :: us) : Multiset ℝ) ≤ (f + g).roots := by
-        rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr hnodup)]
-        intro u hu
-        exact (mem_roots hfg_ne).mpr
-          ((List.mem_cons.mp (Multiset.mem_coe.mp hu)).elim (· ▸ hu₀_root) (hus_root u))
-      have hroots_eq : (↑(u₀ :: us) : Multiset ℝ) = (f + g).roots := by
-        apply Multiset.eq_of_le_of_card_le hsub
-        have hcard_le' : (f + g).roots.card ≤ us.length + 1 := by
-          calc
-            (f + g).roots.card ≤ (f + g).natDegree := card_roots' (f + g)
-            _ = g.natDegree := hfg_deg
-            _ = f.natDegree + 1 := hg_deg
-            _ = us.length + 1 := by rw [hus_len, hf_deg]
-        rw [Multiset.coe_card]
-        simpa using hcard_le'
-      have hfg_rr : IsRealRooted (f + g) := by
-        refine ⟨hfg_ne, ?_⟩
-        rw [← hroots_eq, Multiset.coe_card]
-        simp only [List.length_cons]
-        rw [hfg_deg]
-        omega
-      exact ⟨hfg_rr, hh, u₀ :: us, r₁ :: rest_rs,
-        hpw.imp le_of_lt, hrs_f_sorted, hroots_eq, hrs_f_eq,
-        Or.inr ⟨by simp only [List.length_cons] at hlen_f ⊢; omega,
-          ⟨le_trans hu₀_le hs₁_le, hus_int⟩⟩⟩
-  · have hf_deg' : f.natDegree = h.natDegree := by
-      have hss_len : ss_f.length = f.natDegree := by
-        rw [← Multiset.coe_card, hss_f_eq, hf.2]
-      have hrs_len : rs_f.length = h.natDegree := by
-        rw [← Multiset.coe_card, hrs_f_eq, hh.2]
-      omega
-    omega
-
-/-- A sign-based mixed-degree Wagner theorem: if `f` precedes `h` with degree
-one less, `g` precedes `h` with the same degree, and the sum `f + g` has no
-root in common with `h`, then `f + g` also precedes `h`. This removes the
-artificial `IsCoprime f g` restriction from the mixed branch actually used in
-recurrences like the derangement-excedance sequence. -/
-theorem prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right {f g h : ℝ[X]}
+private theorem prec_add_of_prec_right_mixed_of_natDegree_no_common_core {f g h : ℝ[X]}
     (hfh : Prec f h) (hgh : Prec g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfh_deg : f.natDegree + 1 = h.natDegree)
@@ -2520,6 +2383,46 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right {f g h : �
         rw [← Multiset.coe_card, hrs_f_eq, hh.2]
       omega
     omega
+
+/-- A mixed-degree version of Wagner (1): if `f` precedes `h` with degree one less,
+    `g` precedes `h` with the same degree, and `f` and `g` are coprime, then
+    `f + g` precedes `h`. This packages the branch needed for the derangement
+    recurrence, avoiding a separate `IsRealRooted (f + g)` hypothesis. -/
+theorem prec_add_of_prec_right_mixed_of_natDegree {f g h : ℝ[X]}
+    (hfh : Prec f h) (hgh : Prec g h)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfh_deg : f.natDegree + 1 = h.natDegree)
+    (hgh_deg : g.natDegree = h.natDegree)
+    (hcop : IsCoprime f g) :
+    Prec (f + g) h := by
+  refine prec_add_of_prec_right_mixed_of_natDegree_no_common_core
+    hfh hgh hf_pos hg_pos hfh_deg hgh_deg ?_
+  intro r hrh hrfg
+  have hfrg : f.IsRoot r ∧ g.IsRoot r :=
+    isRoot_of_isRoot_right_of_isRoot_add hfh hgh hf_pos hg_pos hrh hrfg
+  obtain ⟨a, b, hab⟩ := hcop
+  have heval := congr_arg (Polynomial.eval r) hab
+  have hf0 : Polynomial.eval r f = 0 := hfrg.1
+  have hg0 : Polynomial.eval r g = 0 := hfrg.2
+  have h10 : (1 : ℝ) = 0 := by
+    have htmp := heval
+    simp [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_one, hf0, hg0] at htmp
+  exact (one_ne_zero h10).elim
+
+/-- A sign-based mixed-degree Wagner theorem: if `f` precedes `h` with degree
+one less, `g` precedes `h` with the same degree, and the sum `f + g` has no
+root in common with `h`, then `f + g` also precedes `h`. This removes the
+artificial `IsCoprime f g` restriction from the mixed branch actually used in
+recurrences like the derangement-excedance sequence. -/
+theorem prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right {f g h : ℝ[X]}
+    (hfh : Prec f h) (hgh : Prec g h)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfh_deg : f.natDegree + 1 = h.natDegree)
+    (hgh_deg : g.natDegree = h.natDegree)
+    (hno : ∀ r : ℝ, h.IsRoot r → ¬ (f + g).IsRoot r) :
+    Prec (f + g) h := by
+  exact prec_add_of_prec_right_mixed_of_natDegree_no_common_core
+    hfh hgh hf_pos hg_pos hfh_deg hgh_deg hno
 
 /-- A common-factor version of the mixed-degree Wagner addition theorem. -/
 theorem prec_add_of_prec_right_mixed_of_natDegree_of_common_factor {d f g h : ℝ[X]}
