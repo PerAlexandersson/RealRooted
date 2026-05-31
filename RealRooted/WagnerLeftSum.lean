@@ -1044,7 +1044,8 @@ lemma prec_sum {h : ℝ[X]} :
   | _, singleton hprec _ => by
       simpa
   | _, @cons _ p l hprec hpos hl hrr hcop => by
-      exact prec_add_of_prec_left hprec (prec_sum hl) hpos (hasPosLeadingCoeff_sum hl) hrr hcop
+      simpa [List.sum_cons] using
+        prec_add_of_prec_left hprec (prec_sum hl) hpos (hasPosLeadingCoeff_sum hl) hrr hcop
 
 end SumCompatibleLeft
 

@@ -652,7 +652,7 @@ theorem prec_iff_prec_mul_X_of_roots_nonpos {f g : ℝ[X]}
     ⟨hf_pos, hf_nonpos⟩
   have hgnn := (hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hg).mpr
     ⟨hg_pos, hg_nonpos⟩
-  exact prec_iff_prec_mul_X hfnn hgnn hf hg hdeg
+  simpa using prec_iff_prec_mul_X hfnn hgnn hf hg hdeg
 
 /-- Nonnegative-coefficients form of Wagner (3): if `f ≪ g` and both
 polynomials have nonnegative coefficients, then `g ≪ X * f`. This packages
@@ -801,11 +801,8 @@ theorem prec_iff_prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]}
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
     Prec f g ↔ Prec (X * f) (X * g) := by
-  constructor
-  · intro h
-    exact prec_mul_X_both_of_roots_nonpos h hf_nonpos hg_nonpos
-  · intro h
-    exact prec_of_prec_mul_X_both_of_roots_nonpos h hf_nonpos hg_nonpos
+  exact ⟨(fun h => prec_mul_X_both_of_roots_nonpos h hf_nonpos hg_nonpos),
+    (fun h => prec_of_prec_mul_X_both_of_roots_nonpos h hf_nonpos hg_nonpos)⟩
 
 theorem prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ) (h : Prec f g)
     (hf_le : ∀ s ∈ f.roots, s ≤ r)
@@ -864,11 +861,8 @@ theorem prec_iff_prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ)
     (hf_le : ∀ s ∈ f.roots, s ≤ r)
     (hg_le : ∀ s ∈ g.roots, s ≤ r) :
     Prec f g ↔ Prec ((X - C r) * f) ((X - C r) * g) := by
-  constructor
-  · intro h
-    exact prec_mul_X_sub_C_both_of_roots_le r h hf_le hg_le
-  · intro h
-    exact prec_of_prec_mul_X_sub_C_both_of_roots_le r h hf_le hg_le
+  exact ⟨(fun h => prec_mul_X_sub_C_both_of_roots_le r h hf_le hg_le),
+    (fun h => prec_of_prec_mul_X_sub_C_both_of_roots_le r h hf_le hg_le)⟩
 
 theorem prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ) (h : Prec f g) :
     Prec ((X - C r) * f) ((X - C r) * g) := by
