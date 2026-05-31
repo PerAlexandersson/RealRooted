@@ -526,7 +526,14 @@ private lemma isRoot_of_eval_nonneg_of_odd_countP_gt
   rw [hk] at hnorm
   norm_num at hnorm
   rw [Polynomial.IsRoot.def]
-  linarith
+  have hsign : ((-1 : ℝ) ^ (2 * k + 1)) = -1 := by
+    calc
+      ((-1 : ℝ) ^ (2 * k + 1)) = ((-1 : ℝ) ^ (2 * k)) * (-1 : ℝ) := by
+        rw [pow_add, pow_one]
+      _ = (((-1 : ℝ) ^ 2) ^ k) * (-1 : ℝ) := by
+        rw [pow_mul]
+      _ = -1 := by norm_num
+  nlinarith [hnorm, hs, hsign]
 
 /-- A strictly negative value occurs only when an odd number of roots lie
 strictly to the right. -/

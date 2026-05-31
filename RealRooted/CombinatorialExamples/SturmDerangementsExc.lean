@@ -404,7 +404,7 @@ lemma sturmDerangementsExc_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (sturmDer
                 coeff (sturmDerangementsExc (n + 3)) (m + 1) := by
             have h := coeff_sturmDerangementsExc_succ (n + 1) m
             ring_nf at h
-            simpa [add_assoc, add_left_comm, add_comm] using h
+            simpa [add_assoc, add_left_comm, add_comm, sub_eq_add_neg] using h
           rw [hcoeff]
           by_cases hm : m ≤ n + 2
           · have h₁ : 0 ≤ coeff (sturmDerangementsExc (n + 2)) m :=
