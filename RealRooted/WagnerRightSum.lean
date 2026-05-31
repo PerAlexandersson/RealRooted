@@ -5,6 +5,14 @@ import RealRooted.WagnerX
 
 If f ≪ h and g ≪ h with positive leading coefficients, then (f + g) ≪ h.
 Generalizes to n summands by induction.
+
+Reference:
+
+D. G. Wagner, *Total positivity of Hadamard products*,
+J. Math. Anal. Appl. 163 (1992), no. 2, 459-483.
+DOI: 10.1016/0022-247X(92)90261-B
+
+The common-right addition implication corresponds to Section 3.
 -/
 
 open Polynomial Filter
@@ -1163,8 +1171,9 @@ lemma exists_root_le_of_mixed {smaller bigger : ℝ[X]}
         (tendsto_eval_atBot_atTop_of_posLeadingCoeff_even hsum_pos hsum_deg_pos hsum_even)
     exact ⟨u, hu_le, hu_root⟩
 
-/-- Wagner (1): If f and g both precede h with positive leading coefficients,
-    and f + g is real-rooted, then (f + g) precedes h. -/
+/-- Wagner (1): if `f` and `g` both precede `h` with positive leading
+coefficients, and `f + g` is real-rooted, then `(f + g)` precedes `h`.
+This is the common-right addition implication from Wagner (1992), Section 3. -/
 theorem prec_add_of_prec_right {f g h : ℝ[X]}
     (hfh : Prec f h) (hgh : Prec g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
@@ -1589,7 +1598,8 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
 /-- A high-level sign-based version of Wagner (1): the only obstruction to the
     interval proof is a root of `f + g` landing exactly on a root of the common
     right-hand polynomial. If that does not happen, then common factors between
-    `f` and `g` do not matter. -/
+    `f` and `g` do not matter. This is the same Wagner (1) implication,
+    reformulated in a no-common-right-root form (Wagner 1992, Section 3). -/
 theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
     (hfh : Prec f h) (hgh : Prec g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)

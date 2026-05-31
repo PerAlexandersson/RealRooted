@@ -5,6 +5,14 @@ import RealRooted.WagnerRightSum
 
 If h ≪ f and h ≪ g with positive leading coefficients, then h ≪ (f + g).
 Includes SumCompatibleLeft for recursive n-summand assembly.
+
+Reference:
+
+D. G. Wagner, *Total positivity of Hadamard products*,
+J. Math. Anal. Appl. 163 (1992), no. 2, 459-483.
+DOI: 10.1016/0022-247X(92)90261-B
+
+The common-left addition implication corresponds to Section 3.
 -/
 
 open Polynomial Filter
@@ -541,8 +549,9 @@ private lemma wagner2_roots_exist (f g : ℝ[X])
   | _, _, _ :: _, _ :: _, [], hlen_f, _, _, _, _, _, _, _, _, _ => by
     have := hlen_f; simp_all
 
-/-- Wagner (2): If h precedes both f and g with positive leading coefficients,
-    and f, g are coprime, then h precedes their sum. -/
+/-- Wagner (2): if `h` precedes both `f` and `g` with positive leading
+coefficients, and `f, g` are coprime, then `h` precedes their sum.
+This is the common-left addition implication from Wagner (1992), Section 3. -/
 theorem prec_add_of_prec_left {f g h : ℝ[X]}
     (hhf : Prec h f) (hhg : Prec h g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)

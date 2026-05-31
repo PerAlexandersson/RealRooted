@@ -16,6 +16,14 @@ Three forms of Wagner's lemma for polynomials:
 
 (1) and (2) generalize to n summands: if f₁,...,fₙ all interlace h
 with positive leading coefficients, then (Σ fᵢ) interlaces h.
+
+Reference:
+
+D. G. Wagner, *Total positivity of Hadamard products*,
+J. Math. Anal. Appl. 163 (1992), no. 2, 459-483.
+DOI: 10.1016/0022-247X(92)90261-B
+
+The interlacing implications formalized here are from Section 3.
 -/
 
 open Polynomial Filter
@@ -641,6 +649,9 @@ theorem prec_sameDegree_to_prec_mul_X_of_roots_nonpos {f g : ℝ[X]}
     · intro r hr
       exact hg_nonpos r (by rw [← hrs_eq]; exact Multiset.mem_coe.mpr hr)
 
+/-- Wagner (3) in the nonpositive-root regime:
+`f ≪ g ↔ g ≪ X * f`. This is the root-transport equivalence from
+Wagner (1992), Section 3. -/
 theorem prec_iff_prec_mul_X_of_roots_nonpos {f g : ℝ[X]}
     (hf : IsRealRooted f) (hg : IsRealRooted g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
@@ -694,8 +705,8 @@ theorem prec0_mul_X_of_prec0 {f g : ℝ[X]}
     Prec0 g (X * f) := by
   rcases h with rfl | rfl | hfg
   · simpa using prec0_zero_right g
-  · exact prec0_zero_left (X * f)
-  · exact (prec_mul_X_of_prec_of_nonneg hfg hfnn hgnn).toPrec0
+  · simpa using prec0_zero_left (X * f)
+  · simpa using (prec_mul_X_of_prec_of_nonneg hfg hfnn hgnn).toPrec0
 
 theorem prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]} (h : Prec f g)
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
