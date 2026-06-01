@@ -524,9 +524,10 @@ private lemma isRoot_of_eval_nonneg_of_odd_countP_gt
   rcases hodd with ⟨k, hk⟩
   have hnorm := nonneg_normalized_eval_of_countP_gt hF hF_pos hts_eq s
   rw [hk] at hnorm
-  norm_num at hnorm
+  have hnorm' : 0 ≤ -F.eval s := by
+    simpa [pow_add, pow_mul] using hnorm
   rw [Polynomial.IsRoot.def]
-  linarith
+  linarith [hs, hnorm']
 
 /-- A strictly negative value occurs only when an odd number of roots lie
 strictly to the right. -/
