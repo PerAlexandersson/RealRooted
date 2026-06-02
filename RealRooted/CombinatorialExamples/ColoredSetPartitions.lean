@@ -159,7 +159,7 @@ lemma coloredSetPartitions_nonnegCoeffs :
 
 lemma roots_nonpos_coloredSetPartitions_of_isRealRooted {c m n : Nat}
     (hrr : (coloredSetPartitions c m n) ≠ 0 ∧
-      (coloredSetPartitions c m n).roots.card = (coloredSetPartitions c m n).natDegree) :
+      (coloredSetPartitions c m n).Splits) :
     ∀ r ∈ (coloredSetPartitions c m n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs hrr (coloredSetPartitions_nonnegCoeffs c m n)
 
@@ -181,8 +181,7 @@ lemma prec_coloredSetPartitions_one_two (c m : Nat) :
   have hdeg : (coloredSetPartitions c m 1).natDegree = 1 := by
     simpa using natDegree_coloredSetPartitions c m 1
   have hf : ((coloredSetPartitions c m 1) ≠ 0 ∧
-    (coloredSetPartitions c m 1).roots.card =
-      (coloredSetPartitions c m 1).natDegree) := isRealRooted_of_degree_one hdeg
+    (coloredSetPartitions c m 1).Splits) := isRealRooted_of_degree_one hdeg
   have hInter :
       Interlaces (coloredSetPartitions c m 1).derivative (coloredSetPartitions c m 1) := by
     simpa [coloredSetPartitions_one] using
@@ -241,8 +240,7 @@ theorem prec_coloredSetPartitions_succ (c m : Nat) :
           (coloredSetPartitions c m (n + 2)) :=
         prec_coloredSetPartitions_succ c m (n + 1)
       have hf : ((coloredSetPartitions c m (n + 2)) ≠ 0 ∧
-        (coloredSetPartitions c m (n + 2)).roots.card =
-          (coloredSetPartitions c m (n + 2)).natDegree) := hprev.2.1
+        (coloredSetPartitions c m (n + 2)).Splits) := hprev.2.1
       have hdegf : 2 ≤ (coloredSetPartitions c m (n + 2)).natDegree := by
         rw [natDegree_coloredSetPartitions]
         lia
@@ -303,7 +301,7 @@ theorem interlaces_coloredSetPartitions_succ (c m n : Nat) :
 
 theorem isRealRooted_coloredSetPartitions (c m : Nat) :
     ∀ n : Nat, ((coloredSetPartitions c m n) ≠ 0 ∧
-      (coloredSetPartitions c m n).roots.card = (coloredSetPartitions c m n).natDegree)
+      (coloredSetPartitions c m n).Splits)
   | 0 => by simp
   | n + 1 => (prec_coloredSetPartitions_succ c m n).2.1
 
@@ -346,7 +344,7 @@ theorem interlaces_typeBSetPartitions_succ (n : Nat) :
 
 theorem isRealRooted_typeBSetPartitions (n : Nat) :
     ((typeBSetPartitions n) ≠ 0 ∧
-      (typeBSetPartitions n).roots.card = (typeBSetPartitions n).natDegree) :=
+      (typeBSetPartitions n).Splits) :=
   isRealRooted_coloredSetPartitions 1 2 n
 
 end RealRooted

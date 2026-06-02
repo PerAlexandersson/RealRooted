@@ -248,7 +248,7 @@ Between consecutive roots `r₁ ≤ r₂` of `f`, we show `g` has a root in `[r�
   hence `g(r₁)` and `g(r₂)` have opposite signs. IVT gives a root. -/
 
 lemma exists_affineDeriv_root_between {f : ℝ[X]}
-    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (_hdeg : 2 ≤ f.natDegree)
+    (hf : f ≠ 0 ∧ f.Splits) (_hdeg : 2 ≤ f.natDegree)
     {c : ℝ} (_eq_mul_of_hasProd_itehc : (f.natDegree : ℝ) < c)
     {r₁ r₂ : ℝ} (hr₁ : f.IsRoot r₁) (hr₂ : f.IsRoot r₂)
     (hle : r₁ ≤ r₂)
@@ -301,7 +301,7 @@ lemma exists_affineDeriv_root_between {f : ℝ[X]}
 
 /-- In the distinct-root case, the affine derivative has a root strictly between the endpoints. -/
 private lemma exists_affineDeriv_root_between_strict {f : ℝ[X]}
-    (_hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (_hdeg : 2 ≤ f.natDegree)
+    (_hf : f ≠ 0 ∧ f.Splits) (_hdeg : 2 ≤ f.natDegree)
     {c : ℝ} (hc : (f.natDegree : ℝ) < c)
     {r₁ r₂ : ℝ} (hr₁ : f.IsRoot r₁) (hr₂ : f.IsRoot r₂)
     (hlt : r₁ < r₂)
@@ -446,7 +446,7 @@ lemma consecNoRoots_of_sorted_eq {f : ℝ[X]} {rs : List ℝ}
     When `r₁ < r₂`, uses the IVT root from `exists_affineDeriv_root_between`.
     When `r₁ = r₂` (repeated root), uses `r₁` itself. -/
 noncomputable def mkAffineInterleaving (f : ℝ[X]) (c : ℝ)
-    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hdeg : 2 ≤ f.natDegree)
+    (hf : f ≠ 0 ∧ f.Splits) (hdeg : 2 ≤ f.natDegree)
     (hc : (f.natDegree : ℝ) < c)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
     (rs : List ℝ) → (hrs : ∀ r ∈ rs, f.IsRoot r) →
@@ -475,7 +475,7 @@ noncomputable def mkAffineInterleaving (f : ℝ[X]) (c : ℝ)
       (r₂ :: rest) hrest hsorted_tail hsub_tail hgap.2
 
 lemma mkAffineInterleaving_length (f : ℝ[X]) (c : ℝ)
-    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hdeg : 2 ≤ f.natDegree)
+    (hf : f ≠ 0 ∧ f.Splits) (hdeg : 2 ≤ f.natDegree)
     (hc : (f.natDegree : ℝ) < c)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
     ∀ (rs : List ℝ) (hrs : ∀ r ∈ rs, f.IsRoot r)
@@ -500,7 +500,7 @@ lemma mkAffineInterleaving_length (f : ℝ[X]) (c : ℝ)
 /-- Each element of the affine interleaving is a root of `g` and satisfies
     the interlacing bounds. -/
 lemma mkAffineInterleaving_spec (f : ℝ[X]) (c : ℝ)
-    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hdeg : 2 ≤ f.natDegree)
+    (hf : f ≠ 0 ∧ f.Splits) (hdeg : 2 ≤ f.natDegree)
     (hc : (f.natDegree : ℝ) < c)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
     ∀ (rs : List ℝ) (hrs : ∀ r ∈ rs, f.IsRoot r)
@@ -573,7 +573,7 @@ always has a root). Hence `roots.card = d`, i.e., `g` is real-rooted. -/
 
 /-- All elements of the affine interleaving of `r₁ :: rest` are ≥ r₁. -/
 private lemma mkAffineInterleaving_ge (f : ℝ[X]) (c : ℝ)
-    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hdeg : 2 ≤ f.natDegree)
+    (hf : f ≠ 0 ∧ f.Splits) (hdeg : 2 ≤ f.natDegree)
     (hc : (f.natDegree : ℝ) < c)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
     ∀ (r₁ : ℝ) (rest : List ℝ) (hrs : ∀ r ∈ r₁ :: rest, f.IsRoot r)
@@ -638,7 +638,7 @@ private lemma rootMultiplicity_sub_one_le_affineDeriv
 /-- Inner roots of the affine interleaving form a submultiset of `g.roots`, with the
 expected multiplicity bound on repeated roots. -/
 lemma mkAffineInterleaving_sub_multiset (f : ℝ[X]) (c : ℝ)
-    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hdeg : 2 ≤ f.natDegree)
+    (hf : f ≠ 0 ∧ f.Splits) (hdeg : 2 ≤ f.natDegree)
     (hc : (f.natDegree : ℝ) < c)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
     ∀ (rs : List ℝ) (hrs : ∀ r ∈ rs, f.IsRoot r)
@@ -822,7 +822,7 @@ lemma mkAffineInterleaving_sub_multiset (f : ℝ[X]) (c : ℝ)
 
 /-- Inner roots are a submultiset of `g.roots`. -/
 lemma mkAffineInterleaving_sub_roots (f : ℝ[X]) (c : ℝ)
-    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hdeg : 2 ≤ f.natDegree)
+    (hf : f ≠ 0 ∧ f.Splits) (hdeg : 2 ≤ f.natDegree)
     (hc : (f.natDegree : ℝ) < c)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
     ∀ (rs : List ℝ) (hrs : ∀ r ∈ rs, f.IsRoot r)
@@ -861,10 +861,13 @@ private lemma roots_multiset_prod_X_sub_C (s : Multiset ℝ) :
 lemma roots_card_of_sub_pred {p : ℝ[X]} (hp : p ≠ 0)
     {S : Multiset ℝ} (hle : S ≤ p.roots)
     (hcard : S.card + 1 = p.natDegree) :
-    p.roots.card = p.natDegree := by
+    p.Splits := by
   by_contra hne
   have h1 : p.roots.card ≤ p.natDegree := card_roots' p
   have h2 : S.card ≤ p.roots.card := Multiset.card_le_card hle
+  have hne_card : p.roots.card ≠ p.natDegree := by
+    intro h
+    exact hne (splits_of_card_roots h)
   -- p.roots.card = natDegree - 1
   have hrc : p.roots.card = p.natDegree - 1 := by lia
   -- Factor p = rprod * q where rprod = ∏(X - C r) for r ∈ p.roots
@@ -889,9 +892,10 @@ lemma roots_card_of_sub_pred {p : ℝ[X]} (hp : p ≠ 0)
     have h3 := natDegree_mul hrprod_ne hq_ne
     rw [natDegree_multiset_prod_X_sub_C_eq_card, hrc, ← hpq] at h3
     lia
-  have := (isRealRooted_of_degree_one hq_deg).2
-  rw [hq_empty, Multiset.card_zero, hq_deg] at this
-  exact absurd this (by norm_num)
+  have hq_split := (isRealRooted_of_degree_one hq_deg).2
+  have hq_card := card_roots_of_splits hq_split
+  rw [hq_empty, Multiset.card_zero, hq_deg] at hq_card
+  exact absurd hq_card (by norm_num)
 
 /-- A submultiset whose cardinality is exactly one smaller differs by a singleton. -/
 private lemma exists_cons_of_card_succ {α : Type*} {s t : Multiset α}
@@ -906,7 +910,7 @@ private lemma exists_cons_of_card_succ {α : Type*} {s t : Multiset α}
   simpa using (Multiset.add_comm s ({a} : Multiset α))
 
 private lemma isRealRooted_pow_X_sub_C (r : ℝ) :
-    ∀ m : ℕ, (((X - C r) ^ m) ≠ 0 ∧ ((X - C r) ^ m).roots.card = ((X - C r) ^ m).natDegree)
+    ∀ m : ℕ, (((X - C r) ^ m) ≠ 0 ∧ ((X - C r) ^ m).Splits)
   | 0 => isRealRooted_of_deg_zero (by simp) (by simp)
   | m + 1 => by
       simpa [pow_succ, mul_comm] using
@@ -914,18 +918,18 @@ private lemma isRealRooted_pow_X_sub_C (r : ℝ) :
 
 private lemma isRealRooted_of_pow_X_sub_C_mul {r : ℝ} {m : ℕ} {q : ℝ[X]}
     (hp : ((X - C r) ^ m * q) ≠ 0 ∧
-      ((X - C r) ^ m * q).roots.card = ((X - C r) ^ m * q).natDegree) :
-    (q ≠ 0 ∧ q.roots.card = q.natDegree) := by
+      ((X - C r) ^ m * q).Splits) :
+    (q ≠ 0 ∧ q.Splits) := by
   have hpow_ne : ((X - C r) ^ m : ℝ[X]) ≠ 0 := pow_ne_zero _ (X_sub_C_ne_zero _)
   have hq_ne : q ≠ 0 := by
     intro hq
     simpa [hq] using hp.1
   refine ⟨hq_ne, ?_⟩
-  have hcard := hp.2
+  have hcard := card_roots_of_splits hp.2
   rw [roots_mul (mul_ne_zero hpow_ne hq_ne), roots_pow, roots_X_sub_C, Multiset.card_add,
     Multiset.card_nsmul, Multiset.card_singleton, natDegree_mul hpow_ne hq_ne,
     (monic_X_sub_C r).natDegree_pow, natDegree_X_sub_C] at hcard
-  lia
+  exact splits_of_card_roots (by lia)
 
 private lemma pos_leadingCoeff_of_pow_X_sub_C_mul {r : ℝ} {m : ℕ} {q : ℝ[X]}
     (hp_pos : HasPosLeadingCoeff ((X - C r) ^ m * q)) (_hq_ne : q ≠ 0) :
@@ -970,7 +974,7 @@ private lemma listInterlaces_cons_length_eq :
 /-- Package a same-degree interlacing witness once the extra root on the `g` side
     is known to lie to the left of the first root of `f`. -/
 private lemma prec_of_extra_root_left {f g : ℝ[X]}
-    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hg : g ≠ 0 ∧ g.roots.card = g.natDegree)
+    (hf : f ≠ 0 ∧ f.Splits) (hg : g ≠ 0 ∧ g.Splits)
     {u r₁ : ℝ} {ss rest : List ℝ}
     (hrs_sorted : (r₁ :: rest).Pairwise (· ≤ ·))
     (hrs_eq : (↑(r₁ :: rest) : Multiset ℝ) = f.roots)
@@ -995,7 +999,7 @@ private lemma prec_of_extra_root_left {f g : ℝ[X]}
     positive leading coefficient, degree ≥ 2, and `c > natDegree f`, then
     `C c * f + (1 - X) * f.derivative` interlaces `f` (same-degree `Prec`). -/
 theorem prec_affine_derivative {f : ℝ[X]}
-    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree)
+    (hf : f ≠ 0 ∧ f.Splits)
     (hdeg : 2 ≤ f.natDegree)
     (hf_pos : HasPosLeadingCoeff f)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0)
@@ -1010,7 +1014,8 @@ theorem prec_affine_derivative {f : ℝ[X]}
   set rs := f.roots.sort (· ≤ ·) with hrs_def
   have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hrs_eq : (↑rs : Multiset ℝ) = f.roots := Multiset.sort_eq ..
-  have hrs_length : rs.length = d := by rw [hrs_def, Multiset.length_sort, hf.2]
+  have hrs_length : rs.length = d := by
+    rw [hrs_def, Multiset.length_sort, card_roots_of_splits hf.2]
   have hrs_root : ∀ r ∈ rs, f.IsRoot r := by
     intro r hr; rw [Multiset.mem_sort] at hr; rwa [mem_roots hf.1] at hr
   have hsub_rs : (↑rs : Multiset ℝ) ≤ f.roots := le_of_eq hrs_eq
@@ -1034,12 +1039,12 @@ theorem prec_affine_derivative {f : ℝ[X]}
         (↑ss : Multiset ℝ).count a + 1 ≤ (↑rs : Multiset ℝ).count a :=
     hsub_info.2
   -- g is real-rooted: degree d with d-1 inner roots → d total roots
-  have hg_rr : (g ≠ 0 ∧ g.roots.card = g.natDegree) := by
+  have hg_rr : (g ≠ 0 ∧ g.Splits) := by
     refine ⟨hg_ne, ?_⟩
     exact roots_card_of_sub_pred hg_ne hss_sub (by
       rw [Multiset.coe_card, hss_length, hg_deg]; lia)
   have hss_eq_card : (↑ss : Multiset ℝ).card + 1 = g.roots.card := by
-    rw [Multiset.coe_card, hss_length, hg_rr.2, hg_deg]
+    rw [Multiset.coe_card, hss_length, card_roots_of_splits hg_rr.2, hg_deg]
     lia
   obtain ⟨r₁, rest, hrs_cons⟩ : ∃ r₁ rest, rs = r₁ :: rest := by
     cases h : rs with
@@ -1104,9 +1109,9 @@ theorem prec_affine_derivative {f : ℝ[X]}
     have hqg_ne : qg ≠ 0 := by
       intro hqg
       simp [hg_fact', hqg] at hg_ne
-    have hq_rr : (q ≠ 0 ∧ q.roots.card = q.natDegree) := by
+    have hq_rr : (q ≠ 0 ∧ q.Splits) := by
       exact isRealRooted_of_pow_X_sub_C_mul (by simpa [hf_fact', hd_def] using hf)
-    have hqg_rr : (qg ≠ 0 ∧ qg.roots.card = qg.natDegree) := by
+    have hqg_rr : (qg ≠ 0 ∧ qg.Splits) := by
       exact isRealRooted_of_pow_X_sub_C_mul (by simpa [hg_fact', hd_def] using hg_rr)
     have hq_pos : HasPosLeadingCoeff q := by
       exact pos_leadingCoeff_of_pow_X_sub_C_mul (by simpa [hf_fact'] using hf_pos) hq_ne
@@ -1206,7 +1211,7 @@ theorem prec_affine_derivative {f : ℝ[X]}
       calc
         m = f.roots.count r₁ := by rw [hm_def, ← count_roots]
         _ ≤ f.roots.card := Multiset.count_le_card _ _
-        _ = d := by rw [hf.2, hd_def]
+        _ = d := by rw [card_roots_of_splits hf.2, hd_def]
     have hq_deg : q.natDegree = d - m := by
       have hdegmul :=
           natDegree_mul (p := (X - C r₁) ^ m) (q := q)
@@ -1222,7 +1227,7 @@ theorem prec_affine_derivative {f : ℝ[X]}
       lia
     have hcard_step : qg.roots.card = q.roots.card + 1 := by
       calc
-        qg.roots.card = qg.natDegree := hqg_rr.2
+        qg.roots.card = qg.natDegree := card_roots_of_splits hqg_rr.2
         _ = d - (m - 1) := hqg_deg
         _ = d - m + 1 := by
           have hm_ge : 1 ≤ m := Nat.succ_le_of_lt hm_pos
@@ -1230,7 +1235,7 @@ theorem prec_affine_derivative {f : ℝ[X]}
           have := hm_le_d
           lia
         _ = q.natDegree + 1 := by rw [hq_deg]
-        _ = q.roots.card + 1 := by rw [← hq_rr.2]
+        _ = q.roots.card + 1 := by rw [← card_roots_of_splits hq_rr.2]
     have hPg_nonneg' : 0 ≤ -(((-1 : ℝ) ^ q.roots.card) * Pg) := by
       rw [hcard_step, pow_add, pow_one, mul_neg_one] at hPg_nonneg
       simpa [neg_mul, mul_assoc] using hPg_nonneg
@@ -1269,7 +1274,7 @@ theorem prec_affine_derivative {f : ℝ[X]}
 
 /-- Degree 1 version: both `g` and `f` have degree 1, and `g`'s root is left of `f`'s. -/
 theorem prec_affine_derivative_deg_one {f : ℝ[X]}
-    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree)
+    (hf : f ≠ 0 ∧ f.Splits)
     (hdeg : f.natDegree = 1)
     (hf_pos : HasPosLeadingCoeff f)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0)
@@ -1280,13 +1285,15 @@ theorem prec_affine_derivative_deg_one {f : ℝ[X]}
   have hc_ne : c ≠ (f.natDegree : ℝ) := ne_of_gt hc
   have hg_ne : g ≠ 0 := affineDeriv_ne_zero hf.1 (by lia) hc_ne
   have hg_deg : g.natDegree = 1 := by rw [natDegree_affineDeriv hf.1 (by lia) hc_ne, hdeg]
-  have hg_rr : (g ≠ 0 ∧ g.roots.card = g.natDegree) := isRealRooted_of_degree_one hg_deg
+  have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_degree_one hg_deg
   have hg_lc_pos : 0 < g.leadingCoeff := by
     rw [leadingCoeff_affineDeriv hf.1 (by lia) hc_ne, hdeg]
     exact mul_pos (by push_cast; linarith) hf_pos
   -- f and g each have exactly one root
-  obtain ⟨r, hr_eq⟩ := Multiset.card_eq_one.mp (show f.roots.card = 1 by rw [hf.2, hdeg])
-  obtain ⟨s, hs_eq⟩ := Multiset.card_eq_one.mp (show g.roots.card = 1 by rw [hg_rr.2, hg_deg])
+  obtain ⟨r, hr_eq⟩ :=
+    Multiset.card_eq_one.mp (show f.roots.card = 1 by rw [card_roots_of_splits hf.2, hdeg])
+  obtain ⟨s, hs_eq⟩ :=
+    Multiset.card_eq_one.mp (show g.roots.card = 1 by rw [card_roots_of_splits hg_rr.2, hg_deg])
   have hr_root : f.IsRoot r := (mem_roots hf.1).mp (hr_eq ▸ Multiset.mem_singleton_self r)
   have hr_nonpos : r ≤ 0 := hroots_nonpos r (hr_eq ▸ Multiset.mem_singleton_self r)
   -- g(r) = (1-r)*f'(r) > 0
@@ -1315,7 +1322,7 @@ theorem prec_affine_derivative_deg_one {f : ℝ[X]}
 
 /-- Combined version for degree ≥ 1. -/
 theorem prec_affine_derivative' {f : ℝ[X]}
-    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree)
+    (hf : f ≠ 0 ∧ f.Splits)
     (hdeg : 1 ≤ f.natDegree)
     (hf_pos : HasPosLeadingCoeff f)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0)

@@ -343,7 +343,7 @@ lemma simsun_posLeadingCoeff (n : Nat) :
   exact (coeff_simsun_top_pos_and_above n).1
 
 lemma roots_nonpos_simsun_of_isRealRooted {n : Nat}
-    (hrr : (simsun n) ≠ 0 ∧ (simsun n).roots.card = (simsun n).natDegree) :
+    (hrr : (simsun n) ≠ 0 ∧ (simsun n).Splits) :
     ∀ r ∈ (simsun n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs hrr (simsun_nonnegCoeffs n)
 
@@ -360,7 +360,7 @@ lemma interlaces_simsun_one_two :
         (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by norm_num)))
 
 lemma interlaces_derivative_simsun :
-    ∀ n : Nat, 2 ≤ n → ((simsun n) ≠ 0 ∧ (simsun n).roots.card = (simsun n).natDegree) →
+    ∀ n : Nat, 2 ≤ n → ((simsun n) ≠ 0 ∧ (simsun n).Splits) →
       Interlaces (simsun n).derivative (simsun n)
   | 0, hn, _ => by
       lia
@@ -392,7 +392,7 @@ theorem prec_simsun_succ : ∀ n : Nat, Prec (simsun n) (simsun (n + 1))
   | 1 => interlaces_simsun_one_two.toPrec
   | n + 2 => by
       have hf : ((simsun (n + 2)) ≠ 0 ∧
-        (simsun (n + 2)).roots.card = (simsun (n + 2)).natDegree) := (prec_simsun_succ (n + 1)).2.1
+        (simsun (n + 2)).Splits) := (prec_simsun_succ (n + 1)).2.1
       have hInter :
           Interlaces (simsun (n + 2)).derivative (simsun (n + 2)) :=
         interlaces_derivative_simsun (n + 2) (by lia) hf
@@ -440,7 +440,7 @@ theorem prec_simsun_succ : ∀ n : Nat, Prec (simsun n) (simsun (n + 1))
           hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
 
 theorem isRealRooted_simsun : ∀ n : Nat, ((simsun n) ≠ 0 ∧
-  (simsun n).roots.card = (simsun n).natDegree)
+  (simsun n).Splits)
   | 0 => by simp
   | n + 1 => (prec_simsun_succ n).2.1
 

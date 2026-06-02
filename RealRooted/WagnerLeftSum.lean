@@ -19,7 +19,7 @@ section
     and g's roots (rs_g), find roots us of f+g with ListInterlaces ss us.
     The consumed multisets track roots already processed. -/
 private lemma wagner2_roots_exist (f g : ℝ[X])
-    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hg : g ≠ 0 ∧ g.roots.card = g.natDegree)
+    (hf : f ≠ 0 ∧ f.Splits) (hg : g ≠ 0 ∧ g.Splits)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hcop : IsCoprime f g)
     (consumed_f consumed_g : Multiset ℝ) :
@@ -546,7 +546,7 @@ private lemma wagner2_roots_exist (f g : ℝ[X])
 theorem prec_add_of_prec_left {f g h : ℝ[X]}
     (hhf : Prec h f) (hhg : Prec h g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfg_rr : (f + g) ≠ 0 ∧ (f + g).roots.card = (f + g).natDegree)
+    (hfg_rr : (f + g) ≠ 0 ∧ (f + g).Splits)
     (hcop : IsCoprime f g) :
     Prec h (f + g) := by
   -- For now, handle the both differ-by-1 case
@@ -581,9 +581,9 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
         exact (mem_roots hfg_rr.1).mpr (hus_root u (Multiset.mem_coe.mp hu))
       have hfg_deg : (f + g).natDegree = f.natDegree := by
         have hf_deg : (rf :: rest_f).length = f.natDegree := by
-          have := hf.2; rw [← hrs_f_eq, Multiset.coe_card] at this; exact this
+          rw [← Multiset.coe_card, hrs_f_eq, card_roots_of_splits hf.2]
         have hg_deg : (rg :: rest_g).length = g.natDegree := by
-          have := hg.2; rw [← hrs_g_eq, Multiset.coe_card] at this; exact this
+          rw [← Multiset.coe_card, hrs_g_eq, card_roots_of_splits hg.2]
         have hdeg_eq : f.natDegree = g.natDegree := by
           simp [List.length_cons] at hf_deg hg_deg hlen_f hlen_g; lia
         apply le_antisymm
@@ -596,11 +596,12 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
           exact ne_of_gt (by unfold HasPosLeadingCoeff at hf_pos hg_pos; linarith)
       have hfg_natDeg : (f + g).natDegree = us.length := by
         rw [hus_len, hfg_deg]
-        have := hf.2; rw [← hrs_f_eq, Multiset.coe_card] at this
+        have := card_roots_of_splits hf.2
+        rw [← hrs_f_eq, Multiset.coe_card] at this
         simp [List.length_cons] at this ⊢; lia
       have hus_eq : (↑us : Multiset ℝ) = (f + g).roots :=
         Multiset.eq_of_le_of_card_le hus_sub (by
-          rw [Multiset.coe_card, hfg_rr.2]; lia)
+          rw [Multiset.coe_card, card_roots_of_splits hfg_rr.2]; lia)
       exact ⟨hh, hfg_rr, ss_h, us,
         hss_h_sorted, hus_pw.imp le_of_lt, hss_h_eq, hus_eq,
         Or.inl ⟨by lia, hus_int⟩⟩
@@ -622,16 +623,21 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
             subst this; exact ⟨a, rfl⟩
         -- f+g has exactly 1 root
         have hfnd : f.natDegree = 1 := by
-          have := hf.2; rw [← hrs_f_eq, Multiset.coe_card] at this; lia
+          have := card_roots_of_splits hf.2
+          rw [← hrs_f_eq, Multiset.coe_card] at this
+          lia
         have hgnd : g.natDegree = 0 := by
-          have := hg.2; rw [← hrs_g_eq, Multiset.coe_card] at this; lia
+          have := card_roots_of_splits hg.2
+          rw [← hrs_g_eq, Multiset.coe_card] at this
+          lia
         have hfgnd : (f + g).natDegree = 1 := by
           apply le_antisymm
           · have := natDegree_add_le f g; rw [hfnd, hgnd] at this; simpa using this
           · rw [← hfnd]; apply le_natDegree_of_ne_zero; rw [coeff_add]
             have : g.coeff f.natDegree = 0 := coeff_eq_zero_of_natDegree_lt (by lia)
             rw [this, add_zero]; exact ne_of_gt hf_pos
-        have hcard1 : (f + g).roots.card = 1 := by rw [hfg_rr.2, hfgnd]
+        have hcard1 : (f + g).roots.card = 1 := by
+          rw [card_roots_of_splits hfg_rr.2, hfgnd]
         obtain ⟨u, hu⟩ := Multiset.card_pos_iff_exists_mem.mp (by lia : 0 < (f+g).roots.card)
         have hfg_eq : (↑[u] : Multiset ℝ) = (f + g).roots := by
           apply Multiset.eq_of_le_of_card_le
@@ -660,9 +666,9 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
           (mem_roots hg.1).mp (by rw [← hrs_g_eq]; simp)
         -- Degrees
         have hf_deg : (rf :: rf2 :: rest_f').length = f.natDegree := by
-          have := hf.2; rw [← hrs_f_eq, Multiset.coe_card] at this; exact this
+          rw [← Multiset.coe_card, hrs_f_eq, card_roots_of_splits hf.2]
         have hg_deg : (r₁_g :: rest_g).length = g.natDegree := by
-          have := hg.2; rw [← hrs_g_eq, Multiset.coe_card] at this; exact this
+          rw [← Multiset.coe_card, hrs_g_eq, card_roots_of_splits hg.2]
         have hdeg : g.natDegree + 1 = f.natDegree := by
           simp [List.length_cons] at hf_deg hg_deg hlen_f hlen_g_alt; lia
         have hdeg_lt : g.natDegree < f.natDegree := by lia
@@ -751,7 +757,8 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
         have hroots_eq : (↑(u₀ :: u1 :: us_tail) : Multiset ℝ) = (f + g).roots :=
           Multiset.eq_of_le_of_card_le hsub (by
             rw [Multiset.coe_card]; simp only [List.length_cons]
-            have h1 := hfg_rr.2; rw [hfg_deg] at h1
+            have h1 := card_roots_of_splits hfg_rr.2
+            rw [hfg_deg] at h1
             simp [List.length_cons] at hf_deg hus_len; lia)
         exact ⟨hh, hfg_rr, s₁ :: rest_ss, u₀ :: u1 :: us_tail,
           hss_h_sorted, (List.pairwise_cons.mpr ⟨fun w hw =>
@@ -779,16 +786,21 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
             have : t = [] := by cases t <;> simp_all
             subst this; exact ⟨a, rfl⟩
         have hfnd : f.natDegree = 0 := by
-          have := hf.2; rw [← hrs_f_eq, Multiset.coe_card] at this; lia
+          have := card_roots_of_splits hf.2
+          rw [← hrs_f_eq, Multiset.coe_card] at this
+          lia
         have hgnd : g.natDegree = 1 := by
-          have := hg.2; rw [← hrs_g_eq, Multiset.coe_card] at this; lia
+          have := card_roots_of_splits hg.2
+          rw [← hrs_g_eq, Multiset.coe_card] at this
+          lia
         have hfgnd : (f + g).natDegree = 1 := by
           apply le_antisymm
           · have := natDegree_add_le f g; rw [hfnd, hgnd] at this; simpa using this
           · rw [← hgnd]; apply le_natDegree_of_ne_zero; rw [coeff_add]
             have : f.coeff g.natDegree = 0 := coeff_eq_zero_of_natDegree_lt (by lia)
             rw [this, zero_add]; exact ne_of_gt hg_pos
-        have hcard1 : (f + g).roots.card = 1 := by rw [hfg_rr.2, hfgnd]
+        have hcard1 : (f + g).roots.card = 1 := by
+          rw [card_roots_of_splits hfg_rr.2, hfgnd]
         obtain ⟨u, hu⟩ := Multiset.card_pos_iff_exists_mem.mp (by lia : 0 < (f+g).roots.card)
         have hfg_eq : (↑[u] : Multiset ℝ) = (f + g).roots := by
           apply Multiset.eq_of_le_of_card_le
@@ -818,9 +830,9 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
           (mem_roots hg.1).mp (by rw [← hrs_g_eq]; simp)
         -- Degrees
         have hf_deg : (r₁_f :: rest_f).length = f.natDegree := by
-          have := hf.2; rw [← hrs_f_eq, Multiset.coe_card] at this; exact this
+          rw [← Multiset.coe_card, hrs_f_eq, card_roots_of_splits hf.2]
         have hg_deg : (rg :: rg2 :: rest_g').length = g.natDegree := by
-          have := hg.2; rw [← hrs_g_eq, Multiset.coe_card] at this; exact this
+          rw [← Multiset.coe_card, hrs_g_eq, card_roots_of_splits hg.2]
         have hdeg : f.natDegree + 1 = g.natDegree := by
           simp [List.length_cons] at hf_deg hg_deg hlen_f_alt hlen_g; lia
         have hdeg_lt : f.natDegree < g.natDegree := by lia
@@ -907,7 +919,8 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
         have hroots_eq : (↑(u₀ :: u1 :: us_tail) : Multiset ℝ) = (f + g).roots :=
           Multiset.eq_of_le_of_card_le hsub (by
             rw [Multiset.coe_card]; simp only [List.length_cons]
-            have h1 := hfg_rr.2; rw [hfg_deg] at h1
+            have h1 := card_roots_of_splits hfg_rr.2
+            rw [hfg_deg] at h1
             simp [List.length_cons] at hg_deg hus_len; lia)
         exact ⟨hh, hfg_rr, s₁ :: rest_ss, u₀ :: u1 :: us_tail,
           hss_h_sorted, (List.pairwise_cons.mpr ⟨fun w hw =>
@@ -927,12 +940,17 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
           cases rs_g with | nil => rfl | cons _ _ => simp at hlen_g_alt
         subst hrf_nil; subst hrg_nil
         have hfnd : f.natDegree = 0 := by
-          have := hf.2; rw [← hrs_f_eq, Multiset.coe_card] at this; lia
+          have := card_roots_of_splits hf.2
+          rw [← hrs_f_eq, Multiset.coe_card] at this
+          lia
         have hgnd : g.natDegree = 0 := by
-          have := hg.2; rw [← hrs_g_eq, Multiset.coe_card] at this; lia
+          have := card_roots_of_splits hg.2
+          rw [← hrs_g_eq, Multiset.coe_card] at this
+          lia
         have hfgnd : (f + g).natDegree = 0 := by grind [natDegree_add_le f g]
         have hfg_roots_eq : (↑([] : List ℝ) : Multiset ℝ) = (f + g).roots := by
-          have h := hfg_rr.2; rw [hfgnd] at h
+          have h := card_roots_of_splits hfg_rr.2
+          rw [hfgnd] at h
           exact (Multiset.card_eq_zero.mp h).symm
         exact ⟨hh, hfg_rr, [], [], List.Pairwise.nil, List.Pairwise.nil,
           hss_h_eq, hfg_roots_eq, Or.inr ⟨rfl, trivial⟩⟩
@@ -954,9 +972,9 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
           simp only [List.length_cons] at hlen_g_alt; lia
         -- Degrees
         have hf_deg : (r₁_f :: rest_f).length = f.natDegree := by
-          have := hf.2; rw [← hrs_f_eq, Multiset.coe_card] at this; exact this
+          rw [← Multiset.coe_card, hrs_f_eq, card_roots_of_splits hf.2]
         have hg_deg : (r₁_g :: rest_g).length = g.natDegree := by
-          have := hg.2; rw [← hrs_g_eq, Multiset.coe_card] at this; exact this
+          rw [← Multiset.coe_card, hrs_g_eq, card_roots_of_splits hg.2]
         have hdeg_eq : f.natDegree = g.natDegree := by
           simp [List.length_cons] at hf_deg hg_deg hlen_f_alt hlen_g_alt; lia
         have hfg_deg : (f + g).natDegree = f.natDegree := by
@@ -982,7 +1000,7 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
           exact (mem_roots hfg_rr.1).mpr (hus_root u (Multiset.mem_coe.mp hu))
         have hus_eq : (↑us : Multiset ℝ) = (f + g).roots :=
           Multiset.eq_of_le_of_card_le hus_sub (by
-            rw [Multiset.coe_card, hfg_rr.2, hfg_deg]
+            rw [Multiset.coe_card, card_roots_of_splits hfg_rr.2, hfg_deg]
             simp [List.length_cons] at hf_deg hus_len; lia)
         -- Extract head of us for ListAlternates
         obtain ⟨u1, us_tail, rfl⟩ : ∃ a l, us = a :: l := by
@@ -998,12 +1016,12 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
 left-hand addition theorem, then multiplying the whole picture by a common
 real-rooted factor preserves the conclusion. -/
 theorem prec_add_of_prec_left_of_common_factor {d f g h : ℝ[X]}
-    (hd : d ≠ 0 ∧ d.roots.card = d.natDegree)
+    (hd : d ≠ 0 ∧ d.Splits)
     {f' g' h' : ℝ[X]}
     (hf_def : f = d * f') (hg_def : g = d * g') (hh_def : h = d * h')
     (hhf : Prec h' f') (hhg : Prec h' g')
     (hf'_pos : HasPosLeadingCoeff f') (hg'_pos : HasPosLeadingCoeff g')
-    (hfg'_rr : (f' + g') ≠ 0 ∧ (f' + g').roots.card = (f' + g').natDegree)
+    (hfg'_rr : (f' + g') ≠ 0 ∧ (f' + g').Splits)
     (hcop : IsCoprime f' g') :
     Prec h (f + g) := by
   subst hf_def hg_def hh_def
@@ -1023,7 +1041,7 @@ inductive SumCompatibleLeft (h : ℝ[X]) : List ℝ[X] → Prop
   | cons {p : ℝ[X]} {l : List ℝ[X]}
       (hprec : Prec h p) (hpos : HasPosLeadingCoeff p)
       (hl : SumCompatibleLeft h l)
-      (hrr : (p + l.sum) ≠ 0 ∧ (p + l.sum).roots.card = (p + l.sum).natDegree)
+      (hrr : (p + l.sum) ≠ 0 ∧ (p + l.sum).Splits)
       (hcop : IsCoprime p l.sum) :
       SumCompatibleLeft h (p :: l)
 

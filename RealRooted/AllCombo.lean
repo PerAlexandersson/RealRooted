@@ -67,7 +67,7 @@ lemma allComboRealRooted_C_mul_right
 `AllComboRealRooted`. This is the multiplication-back step for common-root
 reductions in Obreschkoff-style arguments. -/
 lemma allComboRealRooted_mul_common_factor
-    {d f g : ℝ[X]} (hd : d ≠ 0 ∧ d.roots.card = d.natDegree) (hall : AllComboRealRooted f g) :
+    {d f g : ℝ[X]} (hd : d ≠ 0 ∧ d.Splits) (hall : AllComboRealRooted f g) :
     AllComboRealRooted (d * f) (d * g) := by
   intro α β
   have hcomb :
@@ -91,8 +91,8 @@ lemma allComboRealRooted_mul_common_factor
     exact isRealRooted_mul hd hrr
 
 lemma derivative_eq_zero_or_isRealRooted {p : ℝ[X]}
-    (hp : p ≠ 0 ∧ p.roots.card = p.natDegree) :
-    p.derivative = 0 ∨ (p.derivative ≠ 0 ∧ p.derivative.roots.card = p.derivative.natDegree) := by
+    (hp : p ≠ 0 ∧ p.Splits) :
+    p.derivative = 0 ∨ (p.derivative ≠ 0 ∧ p.derivative.Splits) := by
   by_cases hdeg0 : p.natDegree = 0
   · left
     rw [eq_C_of_natDegree_eq_zero hdeg0, derivative_C]
@@ -183,7 +183,7 @@ lemma iterateTDeriv_eq_of_natDegree_zero (eps : ℝ) {p : ℝ[X]}
 
 lemma natDegree_iterateTDeriv_of_isRealRooted
     {eps : ℝ} {p : ℝ[X]} {n : ℕ}
-    (hp : p ≠ 0 ∧ p.roots.card = p.natDegree) :
+    (hp : p ≠ 0 ∧ p.Splits) :
     (iterateTDeriv eps n p).natDegree = p.natDegree := by
   by_cases hdeg0 : p.natDegree = 0
   · rw [iterateTDeriv_eq_of_natDegree_zero eps hdeg0, hdeg0]
@@ -246,7 +246,7 @@ lemma allComboRealRooted_iterateTDeriv
 lemma hasSimpleRoots_TDeriv_of_hasSimpleRoots
     {eps : ℝ} {p : ℝ[X]}
     (heps : 0 < eps)
-    (hp : p ≠ 0 ∧ p.roots.card = p.natDegree)
+    (hp : p ≠ 0 ∧ p.Splits)
     (hsimple : HasSimpleRoots p) :
     HasSimpleRoots (TDeriv eps p) := by
   intro a ha
@@ -273,7 +273,7 @@ lemma hasSimpleRoots_TDeriv_of_hasSimpleRoots
       not_isRoot_TDeriv_of_simple_root
         (ne_of_gt heps) hp.1 hp_root (hsimple a hp_root) ha
   have hT_rr : ((TDeriv eps p) ≠ 0 ∧
-    (TDeriv eps p).roots.card = (TDeriv eps p).natDegree) := isRealRooted_TDeriv heps hp
+    (TDeriv eps p).Splits) := isRealRooted_TDeriv heps hp
   have hmult_pos : 1 ≤ (TDeriv eps p).rootMultiplicity a := by
     exact (rootMultiplicity_pos hT_rr.1).mpr ha
   have hmult_le : (TDeriv eps p).rootMultiplicity a ≤ 1 :=
@@ -283,7 +283,7 @@ lemma hasSimpleRoots_TDeriv_of_hasSimpleRoots
 lemma hasSimpleRoots_iterateTDeriv_of_hasSimpleRoots
     {eps : ℝ} {p : ℝ[X]} {n : ℕ}
     (heps : 0 < eps)
-    (hp : p ≠ 0 ∧ p.roots.card = p.natDegree)
+    (hp : p ≠ 0 ∧ p.Splits)
     (hsimple : HasSimpleRoots p) :
     HasSimpleRoots (iterateTDeriv eps n p) := by
   induction n generalizing p with
@@ -303,7 +303,7 @@ lemma iterateTDeriv_add_index (eps : ℝ) (m n : ℕ) (p : ℝ[X]) :
 lemma hasSimpleRoots_iterateTDeriv_of_natDegree_le
     {eps : ℝ} {p : ℝ[X]} {n : ℕ}
     (heps : 0 < eps)
-    (hp : p ≠ 0 ∧ p.roots.card = p.natDegree)
+    (hp : p ≠ 0 ∧ p.Splits)
     (hdeg : p.natDegree ≤ n) :
     HasSimpleRoots (iterateTDeriv eps n p) := by
   let m := n - p.natDegree
@@ -318,16 +318,16 @@ lemma hasSimpleRoots_iterateTDeriv_of_natDegree_le
 
 lemma simple_pair_of_allComboRealRooted_iterateTDeriv
     {f g : ℝ[X]}
-    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hg : g ≠ 0 ∧ g.roots.card = g.natDegree)
+    (hf : f ≠ 0 ∧ f.Splits) (hg : g ≠ 0 ∧ g.Splits)
     (hall : AllComboRealRooted f g)
     (hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree)
     {eps : ℝ} (heps : 0 < eps) :
     let n := max f.natDegree g.natDegree
     AllComboRealRooted (iterateTDeriv eps n f) (iterateTDeriv eps n g) ∧
       ((iterateTDeriv eps n f) ≠ 0 ∧
-        (iterateTDeriv eps n f).roots.card = (iterateTDeriv eps n f).natDegree) ∧
+        (iterateTDeriv eps n f).Splits) ∧
       ((iterateTDeriv eps n g) ≠ 0 ∧
-        (iterateTDeriv eps n g).roots.card = (iterateTDeriv eps n g).natDegree) ∧
+        (iterateTDeriv eps n g).Splits) ∧
       HasSimpleRoots (iterateTDeriv eps n f) ∧
       HasSimpleRoots (iterateTDeriv eps n g) ∧
       ((iterateTDeriv eps n f).natDegree + 1 = (iterateTDeriv eps n g).natDegree ∨
@@ -354,8 +354,7 @@ lemma allComboRealRooted_eq_zero_or_isRealRooted_and_hasSimpleRoots_iterateTDeri
     ∀ α β : ℝ,
       C α * iterateTDeriv eps n f + C β * iterateTDeriv eps n g = 0 ∨
         (((C α * iterateTDeriv eps n f + C β * iterateTDeriv eps n g) ≠ 0 ∧
-          (C α * iterateTDeriv eps n f + C β * iterateTDeriv eps n g).roots.card =
-            (C α * iterateTDeriv eps n f + C β * iterateTDeriv eps n g).natDegree) ∧
+          (C α * iterateTDeriv eps n f + C β * iterateTDeriv eps n g).Splits) ∧
           HasSimpleRoots (C α * iterateTDeriv eps n f + C β * iterateTDeriv eps n g)) := by
   dsimp
   intro α β

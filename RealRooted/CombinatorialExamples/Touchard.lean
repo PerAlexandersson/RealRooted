@@ -106,7 +106,7 @@ lemma touchard_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (touchard n)
             (mul_nonneg (by positivity) (touchard_nonnegCoeffs n (m + 1)))
 
 lemma roots_nonpos_touchard_of_isRealRooted {n : Nat}
-    (hrr : (touchard n) ≠ 0 ∧ (touchard n).roots.card = (touchard n).natDegree) :
+    (hrr : (touchard n) ≠ 0 ∧ (touchard n).Splits) :
     ∀ r ∈ (touchard n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs hrr (touchard_nonnegCoeffs n)
 
@@ -156,7 +156,7 @@ theorem prec_touchard_succ : ∀ n : Nat, Prec (touchard n) (touchard (n + 1))
       have hprev : Prec (touchard (n + 1)) (touchard (n + 2)) :=
         prec_touchard_succ (n + 1)
       have hf : ((touchard (n + 2)) ≠ 0 ∧
-        (touchard (n + 2)).roots.card = (touchard (n + 2)).natDegree) := hprev.2.1
+        (touchard (n + 2)).Splits) := hprev.2.1
       have hdegf : 2 ≤ (touchard (n + 2)).natDegree := by
         rw [natDegree_touchard]
         lia
@@ -204,7 +204,7 @@ theorem interlaces_touchard_succ (n : Nat) :
   simp [natDegree_touchard]
 
 theorem isRealRooted_touchard : ∀ n : Nat, ((touchard n) ≠ 0 ∧
-  (touchard n).roots.card = (touchard n).natDegree)
+  (touchard n).Splits)
   | 0 => by simp
   | n + 1 => (prec_touchard_succ n).2.1
 

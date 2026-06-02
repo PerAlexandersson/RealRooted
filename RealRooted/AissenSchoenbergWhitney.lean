@@ -95,7 +95,7 @@ def aissenSchoenbergWhitneyForwardStatement : Prop :=
     p ≠ 0 →
     HasNonnegCoeffs p →
     IsPolyaFrequencySequence (fun n => p.coeff n) →
-    (p ≠ 0 ∧ p.roots.card = p.natDegree) ∧ ∀ r ∈ p.roots, r ≤ 0
+    (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0
 
 /-- Zero-aware forward ASW interface.  This is often the most convenient
 closure form: a PF coefficient sequence gives either the zero polynomial or a
@@ -112,7 +112,7 @@ def aissenSchoenbergWhitneyForwardNoNonnegStatement : Prop :=
   ∀ ⦃p : ℝ[X]⦄,
     p ≠ 0 →
     IsPolyaFrequencySequence (fun n => p.coeff n) →
-    (p ≠ 0 ∧ p.roots.card = p.natDegree) ∧ ∀ r ∈ p.roots, r ≤ 0
+    (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0
 
 /-- The current forward ASW statement implies the no-extra-nonnegativity
 formulation, since PF coefficients are already nonnegative. -/
@@ -170,12 +170,12 @@ theorem aissenSchoenbergWhitneyForward_iff_orZero :
 
 /-- Without a nonzero hypothesis, the forward ASW interface would force the
 zero polynomial to be real-rooted, contrary to the strict local definition of
-`(`. ≠ 0 ∧ `..roots.card = `..natDegree) -/
+`(`. ≠ 0 ∧ `..Splits) -/
 theorem not_aissenSchoenbergWhitneyForward_without_nonzero :
     ¬ (∀ ⦃p : ℝ[X]⦄,
       HasNonnegCoeffs p →
       IsPolyaFrequencySequence (fun n => p.coeff n) →
-      (p ≠ 0 ∧ p.roots.card = p.natDegree) ∧ ∀ r ∈ p.roots, r ≤ 0) := by
+      (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) := by
   intro h
   have hnn : HasNonnegCoeffs (0 : ℝ[X]) := by
     intro n
@@ -189,7 +189,7 @@ theorem not_aissenSchoenbergWhitneyForward_without_nonzero :
 def aissenSchoenbergWhitneyReverseStatement : Prop :=
   ∀ ⦃p : ℝ[X]⦄,
     HasNonnegCoeffs p →
-    (p ≠ 0 ∧ p.roots.card = p.natDegree) →
+    (p ≠ 0 ∧ p.Splits) →
     (∀ r ∈ p.roots, r ≤ 0) →
     IsPolyaFrequencySequence (fun n => p.coeff n)
 

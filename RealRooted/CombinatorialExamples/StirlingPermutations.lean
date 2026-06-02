@@ -203,7 +203,7 @@ lemma stirlingPermutations_nonnegCoeffs :
 
 lemma roots_nonpos_stirlingPermutations_of_isRealRooted {n : Nat}
     (hrr : (stirlingPermutations n) ≠ 0 ∧
-      (stirlingPermutations n).roots.card = (stirlingPermutations n).natDegree) :
+      (stirlingPermutations n).Splits) :
     ∀ r ∈ (stirlingPermutations n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs hrr (stirlingPermutations_nonnegCoeffs n)
 
@@ -225,8 +225,7 @@ lemma prec_stirlingPermutations_one_two :
   have hdeg : (stirlingPermutations 1).natDegree = 1 := by
     simpa using natDegree_stirlingPermutations 1
   have hf : ((stirlingPermutations 1) ≠ 0 ∧
-    (stirlingPermutations 1).roots.card =
-      (stirlingPermutations 1).natDegree) := isRealRooted_of_degree_one hdeg
+    (stirlingPermutations 1).Splits) := isRealRooted_of_degree_one hdeg
   have hInter :
       Interlaces (stirlingPermutations 1).derivative (stirlingPermutations 1) := by
     simpa [stirlingPermutations_one] using
@@ -280,7 +279,7 @@ theorem prec_stirlingPermutations_succ :
   | 1 => prec_stirlingPermutations_one_two
   | n + 2 => by
       have hf : ((stirlingPermutations (n + 2)) ≠ 0 ∧
-        (stirlingPermutations (n + 2)).roots.card = (stirlingPermutations (n + 2)).natDegree) :=
+        (stirlingPermutations (n + 2)).Splits) :=
         (prec_stirlingPermutations_succ (n + 1)).2.1
       have hInter :
           Interlaces (stirlingPermutations (n + 2)).derivative
@@ -340,7 +339,7 @@ theorem interlaces_stirlingPermutations_succ (n : Nat) :
 
 theorem isRealRooted_stirlingPermutations :
     ∀ n : Nat, ((stirlingPermutations n) ≠ 0 ∧
-      (stirlingPermutations n).roots.card = (stirlingPermutations n).natDegree)
+      (stirlingPermutations n).Splits)
   | 0 => by simp
   | n + 1 => (prec_stirlingPermutations_succ n).2.1
 

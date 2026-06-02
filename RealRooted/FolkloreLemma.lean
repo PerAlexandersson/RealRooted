@@ -41,8 +41,8 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
   set q : ℝ[X] := f - X * g
   by_cases hq0 : q = 0
   · simpa [q, hq0] using prec0_zero_left f
-  · have hg : (g ≠ 0 ∧ g.roots.card = g.natDegree) := hgf.1
-    have hf : (f ≠ 0 ∧ f.roots.card = f.natDegree) := hgf.2.1
+  · have hg : (g ≠ 0 ∧ g.Splits) := hgf.1
+    have hf : (f ≠ 0 ∧ f.Splits) := hgf.2.1
     have hg_pos : HasPosLeadingCoeff g := by
       unfold HasPosLeadingCoeff
       simp [hg_monic.leadingCoeff]
@@ -79,7 +79,7 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
                         rw [hcf, coeff_add, coeff_C_mul, coeff_C_mul]
                         ring
       simpa [hrew] using hall_fXg (α + β) (-α)
-    have hq : (q ≠ 0 ∧ q.roots.card = q.natDegree) := by
+    have hq : (q ≠ 0 ∧ q.Splits) := by
       rcases hall_qf 1 0 with hzero | hrr
       · exact False.elim (hq0 (by simpa [q] using hzero))
       · simpa using hrr
@@ -121,9 +121,9 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
       intro hfq
       rcases hfq with ⟨_, _, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
       have hss_len : ss.length = f.natDegree := by
-        rw [← Multiset.coe_card, hss_eq, hf.2]
+        rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
       have hrs_len : rs.length = q.natDegree := by
-        rw [← Multiset.coe_card, hrs_eq, hq.2]
+        rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hq.2]
       rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩ <;> lia
     rcases hprec_or with hqf | hfq
     · exact hqf.toPrec0
@@ -162,10 +162,10 @@ theorem prec_sub_X_mul_right {f g : ℝ[X]}
         rw [coeff_add, coeff_C_mul, coeff_C_mul, coeff_add, coeff_C_mul, coeff_C_mul, hqcoeff]
         ring
       simpa [hrew] using hall_qf (α - β) β
-    have hq : (q ≠ 0 ∧ q.roots.card = q.natDegree) := hqf.1
-    have hg : (g ≠ 0 ∧ g.roots.card = g.natDegree) := hgf.1
+    have hq : (q ≠ 0 ∧ q.Splits) := hqf.1
+    have hg : (g ≠ 0 ∧ g.Splits) := hgf.1
     have hXg : ((X * g) ≠ 0 ∧
-      (X * g).roots.card = (X * g).natDegree) := isRealRooted_mul isRealRooted_X hg
+      (X * g).Splits) := isRealRooted_mul isRealRooted_X hg
     have hq_lt : q.natDegree < f.natDegree := by
       have hq_le : q.natDegree ≤ f.natDegree := by
         have hXg_le : (X * g).natDegree ≤ f.natDegree := by
@@ -206,9 +206,9 @@ theorem prec_sub_X_mul_right {f g : ℝ[X]}
       intro hXgq
       rcases hXgq with ⟨_, _, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
       have hss_len : ss.length = (X * g).natDegree := by
-        rw [← Multiset.coe_card, hss_eq, hXg.2]
+        rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hXg.2]
       have hrs_len : rs.length = q.natDegree := by
-        rw [← Multiset.coe_card, hrs_eq, hq.2]
+        rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hq.2]
       rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩ <;> lia
     have hprec_qXg : Prec q (X * g) := by
       rcases hprec_or with hqXg | hXgq

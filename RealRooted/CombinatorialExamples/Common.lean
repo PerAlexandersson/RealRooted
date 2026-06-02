@@ -25,8 +25,8 @@ lemma nonnegCoeffs_C_mul {a : ℝ} (ha : 0 ≤ a) {p : ℝ[X]}
 
 lemma interlaces_one_linear {p : ℝ[X]} (hp_deg : p.natDegree = 1) :
     Interlaces (1 : ℝ[X]) p := by
-  have h1_rr : ((1 : ℝ[X]) ≠ 0 ∧ (1 : ℝ[X]).roots.card = (1 : ℝ[X]).natDegree) := by simp
-  have hp_rr : (p ≠ 0 ∧ p.roots.card = p.natDegree) := isRealRooted_of_degree_one hp_deg
+  have h1_rr : ((1 : ℝ[X]) ≠ 0 ∧ (1 : ℝ[X]).Splits) := by simp
+  have hp_rr : (p ≠ 0 ∧ p.Splits) := isRealRooted_of_degree_one hp_deg
   have hp_deg' : p.degree = 1 := by
     rw [degree_eq_natDegree hp_rr.1, hp_deg]
     norm_num
@@ -35,7 +35,7 @@ lemma interlaces_one_linear {p : ℝ[X]} (hp_deg : p.natDegree = 1) :
   simpa [hp_deg'] using (Polynomial.roots_degree_eq_one (p := p) hp_deg').symm
 
 lemma roots_neg_of_nonnegCoeffs_of_eval_zero_pos {p : ℝ[X]}
-    (hrr : p ≠ 0 ∧ p.roots.card = p.natDegree) (hnn : HasNonnegCoeffs p) (hzero : 0 < p.eval 0) :
+    (hrr : p ≠ 0 ∧ p.Splits) (hnn : HasNonnegCoeffs p) (hzero : 0 < p.eval 0) :
     ∀ r ∈ p.roots, r < 0 := by
   intro r hr
   have hr_nonpos : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hrr hnn r hr

@@ -9,7 +9,7 @@ namespace RealRooted
 /-- A linear operator preserves real-rootedness up to the natural zero escape
 that can occur for non-injective operators. -/
 def PreservesRealRootedOrZero (T : ℝ[X] →ₗ[ℝ] ℝ[X]) : Prop :=
-  ∀ p : ℝ[X], (p ≠ 0 ∧ p.roots.card = p.natDegree) → IsRealRootedOrZero (T p)
+  ∀ p : ℝ[X], (p ≠ 0 ∧ p.Splits) → IsRealRootedOrZero (T p)
 
 /-- Strong oriented target notion for interlacing preservation by a linear
 operator. This is intentionally stronger than the theorem proved below: with the
@@ -70,11 +70,11 @@ theorem preservesInterlacingPairsUpToOrder0_of_preservesRealRootedOrZero
   · exact Or.inl (hfT0 ▸ prec0_zero_left (T g))
   by_cases hgT0 : T g = 0
   · exact Or.inl (hgT0 ▸ prec0_zero_right (T f))
-  have hfT : ((T f) ≠ 0 ∧ (T f).roots.card = (T f).natDegree) := by
+  have hfT : ((T f) ≠ 0 ∧ (T f).Splits) := by
     rcases hallT 1 0 with hzero | hrr
     · exact False.elim (hfT0 (by simpa using hzero))
     · simpa using hrr
-  have hgT : ((T g) ≠ 0 ∧ (T g).roots.card = (T g).natDegree) := by
+  have hgT : ((T g) ≠ 0 ∧ (T g).Splits) := by
     rcases hallT 0 1 with hzero | hrr
     · exact False.elim (hgT0 (by simpa [add_comm] using hzero))
     · simpa [add_comm] using hrr

@@ -46,9 +46,9 @@ def PairwiseHasCommonLeftInterleaver (fs : List ℝ[X]) : Prop :=
 def rootSeqDesc (f : ℝ[X]) : List ℝ :=
   (f.roots.sort (· ≤ ·)).reverse
 
-lemma rootSeqDesc_length {f : ℝ[X]} (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) :
+lemma rootSeqDesc_length {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits) :
     (rootSeqDesc f).length = f.natDegree := by
-  simp [rootSeqDesc, hf.2]
+  simp [rootSeqDesc, card_roots_of_splits hf.2]
 
 lemma rootSeqDesc_pairwise {f : ℝ[X]} :
     (rootSeqDesc f).Pairwise (· ≥ ·) := by
@@ -70,9 +70,9 @@ lemma natDegree_bounds_of_prec {f g : ℝ[X]} (hfg : Prec f g) :
     f.natDegree ≤ g.natDegree ∧ g.natDegree ≤ f.natDegree + 1 := by
   rcases hfg with ⟨hf, hg, ss, rs, _hss, _hrs, hss_eq, hrs_eq, hshape⟩
   have hss_len : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, hf.2]
+    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
   have hrs_len : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, hg.2]
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
   rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩ <;> lia
 
 /-- The `j`th Chudnovsky--Seymour interval attached to a descending root
@@ -942,7 +942,7 @@ Chudnovsky--Seymour interval language. This is the core bridge needed to turn
 pairwise common interleavers into pairwise-intersecting slot intervals. -/
 private lemma mem_rootSlotInterval_of_prec_witness
     {f g : ℝ[X]} {ss rs : List ℝ}
-    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hg : g ≠ 0 ∧ g.roots.card = g.natDegree)
+    (hf : f ≠ 0 ∧ f.Splits) (hg : g ≠ 0 ∧ g.Splits)
     (hss : ss.Pairwise (· ≤ ·)) (hrs : rs.Pairwise (· ≤ ·))
     (hss_eq : (↑ss : Multiset ℝ) = f.roots)
     (hrs_eq : (↑rs : Multiset ℝ) = g.roots)
@@ -955,9 +955,9 @@ private lemma mem_rootSlotInterval_of_prec_witness
           have hdeg : f.natDegree ≤ g.natDegree ∧ g.natDegree ≤ f.natDegree + 1 := by
             exact natDegree_bounds_of_prec ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
           have hss_len : ss.length = f.natDegree := by
-            rw [← Multiset.coe_card, hss_eq, hf.2]
+            rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
           have hrs_len : rs.length = g.natDegree := by
-            rw [← Multiset.coe_card, hrs_eq, hg.2]
+            rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
           have hdeg' : rs.length ≤ ss.length + 1 := by
             simpa [hss_len, hrs_len] using hdeg.2
           have : j.1 < ss.reverse.length + 1 := by
@@ -971,7 +971,7 @@ private lemma mem_rootSlotInterval_of_prec
     {f g : ℝ[X]} (hfg : Prec f g) (j : Fin g.natDegree) :
     (rootSeqDesc g).get ⟨j.1, by
       rcases hfg with ⟨_, hg, _, _, _, _, _, _, _⟩
-      simp [rootSeqDesc, hg.2]⟩ ∈ rootSlotInterval (rootSeqDesc f)
+      simp [rootSeqDesc, card_roots_of_splits hg.2]⟩ ∈ rootSlotInterval (rootSeqDesc f)
       ⟨j.1, by
         rcases hfg with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
         have hdeg := (natDegree_bounds_of_prec ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩).2
@@ -982,11 +982,11 @@ private lemma mem_rootSlotInterval_of_prec
   have hrs_desc : rootSeqDesc g = rs.reverse := rootSeqDesc_eq_reverse_of_pairwise hrs hrs_eq
   have hdeg := (natDegree_bounds_of_prec ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩).2
   have hss_len : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, hf.2]
+    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
   have hrs_len : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, hg.2]
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
   let jg_desc : Fin (rootSeqDesc g).length := ⟨j.1, by
-    simp [rootSeqDesc, hg.2]⟩
+    simp [rootSeqDesc, card_roots_of_splits hg.2]⟩
   let jg_rev : Fin rs.reverse.length := ⟨j.1, by
     simp [List.length_reverse, hrs_len]⟩
   let jf_desc : Fin ((rootSeqDesc f).length + 1) := ⟨j.1, by
@@ -1221,7 +1221,7 @@ theorem rootSlotInterval_inter_nonempty_of_commonInterleaver
     natDegree_bounds_of_prec hfh
   have hdeg_gh : g.natDegree ≤ h.natDegree ∧ h.natDegree ≤ g.natDegree + 1 :=
     natDegree_bounds_of_prec hgh
-  have hh_rr : (h ≠ 0 ∧ h.roots.card = h.natDegree) := hfh.2.1
+  have hh_rr : (h ≠ 0 ∧ h.Splits) := hfh.2.1
   by_cases hjh : j < h.natDegree
   · let jh : Fin h.natDegree := ⟨j, hjh⟩
     let x : ℝ := (rootSeqDesc h).get ⟨j, by
@@ -1354,7 +1354,7 @@ interleaving sequence. The intended proof follows the reference in
 finite Helly property for intervals on `ℝ`. -/
 theorem hasCommonInterleaverSeq_of_pairwiseHasCommonInterleaver
     {fs : List ℝ[X]}
-    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.roots.card = f.natDegree))
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (_hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseHasCommonInterleaver fs) :
     HasCommonInterleaverSeq fs := by
@@ -1382,8 +1382,8 @@ theorem hasCommonInterleaverSeq_of_pairwiseHasCommonInterleaver
     have hget_k : ss.get k = slotSetAt j fk := by
       simp [ss, k', fk, List.get_eq_getElem]
     rw [hget_i, hget_k]
-    have hfi_rr : (fi ≠ 0 ∧ fi.roots.card = fi.natDegree) := hrr fi (List.get_mem _ _)
-    have hfk_rr : (fk ≠ 0 ∧ fk.roots.card = fk.natDegree) := hrr fk (List.get_mem _ _)
+    have hfi_rr : (fi ≠ 0 ∧ fi.Splits) := hrr fi (List.get_mem _ _)
+    have hfk_rr : (fk ≠ 0 ∧ fk.Splits) := hrr fk (List.get_mem _ _)
     by_cases hjfi : j < (rootSeqDesc fi).length + 1
     · by_cases hjfk : j < (rootSeqDesc fk).length + 1
       · have hjfi' : j < fi.natDegree + 1 := by
@@ -1410,7 +1410,7 @@ theorem hasCommonInterleaverSeq_of_pairwiseHasCommonInterleaver
 private lemma pairwise_ge_of_commonInterleaverSeq
     {fs : List ℝ[X]}
     (hseq : HasCommonInterleaverSeq fs)
-    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.roots.card = f.natDegree))
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hfs_ne : fs ≠ []) :
     let d := csDegree fs
     let xs : Fin d → ℝ := fun j => Classical.choose (hseq j.1)
@@ -1419,7 +1419,7 @@ private lemma pairwise_ge_of_commonInterleaverSeq
   let d := csDegree fs
   let xs : Fin d → ℝ := fun j => Classical.choose (hseq j.1)
   obtain ⟨fmax, hfmax_mem, hfmax_deg⟩ := exists_mem_csDegree_of_ne_nil (fs := fs) hfs_ne
-  have hfmax_rr : (fmax ≠ 0 ∧ fmax.roots.card = fmax.natDegree) := hrr fmax hfmax_mem
+  have hfmax_rr : (fmax ≠ 0 ∧ fmax.Splits) := hrr fmax hfmax_mem
   refine List.pairwise_ofFn.2 ?_
   intro i j hij
   have hd_pos : 0 < d := by
@@ -1476,7 +1476,7 @@ private lemma roots_polyOfDescRoots (xs : List ℝ) :
 
 private lemma isRealRooted_polyOfDescRoots (xs : List ℝ) :
     ((polyOfDescRoots xs) ≠ 0 ∧
-      (polyOfDescRoots xs).roots.card = (polyOfDescRoots xs).natDegree) := by
+      (polyOfDescRoots xs).Splits) := by
   unfold polyOfDescRoots
   induction xs with
   | nil =>
@@ -1489,8 +1489,7 @@ private lemma rootSeqDesc_polyOfDescRoots_eq
     {xs : List ℝ} (hxs : xs.Pairwise (· ≥ ·)) :
     rootSeqDesc (polyOfDescRoots xs) = xs := by
   have hrr : ((polyOfDescRoots xs) ≠ 0 ∧
-    (polyOfDescRoots xs).roots.card =
-      (polyOfDescRoots xs).natDegree) := isRealRooted_polyOfDescRoots xs
+    (polyOfDescRoots xs).Splits) := isRealRooted_polyOfDescRoots xs
   have hroots : (↑xs.reverse : Multiset ℝ) = (polyOfDescRoots xs).roots := by
     rw [roots_polyOfDescRoots]
     simp
@@ -1504,7 +1503,7 @@ private lemma rootSeqDesc_polyOfDescRoots_eq
 
 private lemma prec_of_slots_polyOfDescRoots
     {f : ℝ[X]} {xs : List ℝ}
-    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree)
+    (hf : f ≠ 0 ∧ f.Splits)
     (hxs : xs.Pairwise (· ≥ ·))
     (hdeg_lo : f.natDegree ≤ xs.length)
     (hdeg_hi : xs.length ≤ f.natDegree + 1)
@@ -1525,8 +1524,7 @@ private lemma prec_of_slots_polyOfDescRoots
   have hrs_eq : (↑rs : Multiset ℝ) = (polyOfDescRoots xs).roots := by
     simp [rs, roots_polyOfDescRoots]
   have hpoly_rr : ((polyOfDescRoots xs) ≠ 0 ∧
-    (polyOfDescRoots xs).roots.card =
-      (polyOfDescRoots xs).natDegree) := isRealRooted_polyOfDescRoots xs
+    (polyOfDescRoots xs).Splits) := isRealRooted_polyOfDescRoots xs
   have hlen_cases : xs.length = f.natDegree ∨ xs.length = f.natDegree + 1 := by
     lia
   refine ⟨hf, hpoly_rr, ss, rs, hss_pair, hrs_pair, hss_eq, hrs_eq, ?_⟩
@@ -1813,7 +1811,7 @@ right interleaver. The intended route is through
 `hasCommonInterleaverSeq_of_pairwiseHasCommonInterleaver`. -/
 private theorem hasCommonInterleaver_of_pairwiseHasCommonInterleaver_ge_two
     {f g : ℝ[X]} {fs : List ℝ[X]}
-    (hrr : ∀ p ∈ f :: g :: fs, (p ≠ 0 ∧ p.roots.card = p.natDegree))
+    (hrr : ∀ p ∈ f :: g :: fs, (p ≠ 0 ∧ p.Splits))
     (hpos : ∀ p ∈ f :: g :: fs, HasPosLeadingCoeff p)
     (hpair : PairwiseHasCommonInterleaver (f :: g :: fs)) :
     HasCommonInterleaver (f :: g :: fs) := by
@@ -1823,7 +1821,7 @@ private theorem hasCommonInterleaver_of_pairwiseHasCommonInterleaver_ge_two
   family has length at least `2`.
   -/
   let ps : List ℝ[X] := f :: g :: fs
-  have hrr_ps : ∀ p ∈ ps, (p ≠ 0 ∧ p.roots.card = p.natDegree) := by
+  have hrr_ps : ∀ p ∈ ps, (p ≠ 0 ∧ p.Splits) := by
     intro p hp
     exact hrr p (by simpa [ps] using hp)
   have hpos_ps : ∀ p ∈ ps, HasPosLeadingCoeff p := by
@@ -1847,7 +1845,7 @@ private theorem hasCommonInterleaver_of_pairwiseHasCommonInterleaver_ge_two
   refine ⟨h, ?_⟩
   intro p hp
   have hp_mem : p ∈ ps := by simpa [ps] using hp
-  have hp_rr : (p ≠ 0 ∧ p.roots.card = p.natDegree) := hrr_ps p hp_mem
+  have hp_rr : (p ≠ 0 ∧ p.Splits) := hrr_ps p hp_mem
   have hp_deg_lo : p.natDegree ≤ xlist.length := by
     have : p.natDegree ≤ csDegree ps := natDegree_le_csDegree (fs := ps) hp_mem
     simpa [xlist, d]
@@ -1881,7 +1879,7 @@ private theorem hasCommonInterleaver_of_pairwiseHasCommonInterleaver_ge_two
 
 theorem hasCommonInterleaver_of_pairwiseHasCommonInterleaver
     {fs : List ℝ[X]}
-    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.roots.card = f.natDegree))
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseHasCommonInterleaver fs) :
     HasCommonInterleaver fs := by
@@ -1909,7 +1907,7 @@ theorem isRealRooted_sum_of_commonInterleaver
     (hcommon : HasCommonInterleaver fs)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hne : fs ≠ []) :
-    (fs.sum ≠ 0 ∧ fs.sum.roots.card = fs.sum.natDegree) := by
+    (fs.sum ≠ 0 ∧ fs.sum.Splits) := by
   rcases hcommon with ⟨h, hprec⟩
   exact (prec_sum_right fs h hprec hpos hne).1
 
@@ -1923,7 +1921,7 @@ theorem isRealRooted_sum_of_commonLeftInterleaver
     (hcommon : HasCommonLeftInterleaver fs)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hne : fs ≠ []) :
-    (fs.sum ≠ 0 ∧ fs.sum.roots.card = fs.sum.natDegree) := by
+    (fs.sum ≠ 0 ∧ fs.sum.Splits) := by
   rcases hcommon with ⟨h, hprec⟩
   exact (prec_sum_left_of_common_left_signed fs h hprec hpos hne).2.1
 
@@ -1974,7 +1972,7 @@ theorem mem_rootSlotInterval_of_prec_desc
     {f g : ℝ[X]} (hfg : Prec f g) (j : Fin g.natDegree) :
     (rootSeqDesc g).get ⟨j.1, by
       rcases hfg with ⟨_, hg, _, _, _, _, _, _, _⟩
-      simp [rootSeqDesc, hg.2]⟩ ∈ rootSlotInterval (rootSeqDesc f)
+      simp [rootSeqDesc, card_roots_of_splits hg.2]⟩ ∈ rootSlotInterval (rootSeqDesc f)
       ⟨j.1, by
         rcases hfg with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
         have hdeg := (natDegree_bounds_of_prec
@@ -1987,7 +1985,7 @@ theorem mem_rootSlotInterval_of_prec_desc
 descending-root polynomial built from those slot choices. -/
 theorem prec_of_slots_polyOfDescRootsDesc
     {f : ℝ[X]} {xs : List ℝ}
-    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree)
+    (hf : f ≠ 0 ∧ f.Splits)
     (hxs : xs.Pairwise (· ≥ ·))
     (hdeg_lo : f.natDegree ≤ xs.length)
     (hdeg_hi : xs.length ≤ f.natDegree + 1)
@@ -2007,8 +2005,8 @@ part of the same-degree Chudnovsky--Seymour gap from the remaining
 mathematical slot-intersection theorem. -/
 theorem pairHasCommonInterleaver_of_sameDegree_slotIntersections
     {f g : ℝ[X]}
-    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree)
-    (hg : g ≠ 0 ∧ g.roots.card = g.natDegree)
+    (hf : f ≠ 0 ∧ f.Splits)
+    (hg : g ≠ 0 ∧ g.Splits)
     (hdeg : g.natDegree = f.natDegree)
     (hslot :
       ∀ j (hj : j < f.natDegree + 1),

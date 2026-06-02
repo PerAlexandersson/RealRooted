@@ -136,7 +136,7 @@ inductive WeightedCompatibleLeft (h : ℝ[X]) : List (ℝ × ℝ[X]) → Prop
       (ha : 0 < a) (hprec : Prec h p) (hpos : HasPosLeadingCoeff p)
       (hl : WeightedCompatibleLeft h l)
       (hrr : (C a * p + weightedSum l) ≠ 0 ∧
-        (C a * p + weightedSum l).roots.card = (C a * p + weightedSum l).natDegree)
+        (C a * p + weightedSum l).Splits)
       (hcop : IsCoprime (C a * p) (weightedSum l)) :
       WeightedCompatibleLeft h ((a, p) :: l)
 
@@ -230,7 +230,7 @@ lemma toSumCompatibleLeft_map_one {h : ℝ[X]} :
           have htail' : SumCompatibleLeft h (q :: l) :=
             toSumCompatibleLeft_map_one htail
           have hrr' : ((p + (q :: l).sum) ≠ 0 ∧
-            (p + (q :: l).sum).roots.card = (p + (q :: l).sum).natDegree) := by
+            (p + (q :: l).sum).Splits) := by
             simpa [weightedSum_map_one] using hrr
           have hcop' : IsCoprime p (q :: l).sum := by
             simpa [weightedSum_map_one] using hcop

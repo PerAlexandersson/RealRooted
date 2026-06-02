@@ -476,7 +476,7 @@ lemma isRealRooted_mem_rowPairAffineSeq
         (row₂.get ⟨j, by simp [hrow₂_len]⟩))
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t)
     (p : ℝ[X]) (hp : p ∈ (rowPairAffineSeq row₁ row₂ s t).reverse) :
-    (p ≠ 0 ∧ p.roots.card = p.natDegree) := by
+    (p ≠ 0 ∧ p.Splits) := by
   have hp' : p ∈ rowPairAffineSeq row₁ row₂ s t := by
     simpa using List.mem_reverse.1 hp
   obtain ⟨j, rfl⟩ := List.mem_iff_get.1 hp'
@@ -505,7 +505,7 @@ lemma isRealRooted_mem_rowPairAffineSeq_of_ne
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t)
     (p : ℝ[X]) (hp : p ∈ (rowPairAffineSeq row₁ row₂ s t).reverse)
     (hp_ne : p ≠ 0) :
-    (p ≠ 0 ∧ p.roots.card = p.natDegree) := by
+    (p ≠ 0 ∧ p.Splits) := by
   have hp' : p ∈ rowPairAffineSeq row₁ row₂ s t := by
     simpa using List.mem_reverse.1 hp
   obtain ⟨j, rfl⟩ := List.mem_iff_get.1 hp'
@@ -789,8 +789,7 @@ theorem prec_zipWith_sum_pair_of_2x2
   have haux_rr :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((auxRow s t).zipWith (· * ·) fs).sum) ≠ 0 ∧
-          (((auxRow s t).zipWith (· * ·) fs).sum).roots.card =
-            (((auxRow s t).zipWith (· * ·) fs).sum).natDegree) := by
+          (((auxRow s t).zipWith (· * ·) fs).sum).Splits) := by
     intro s t hs ht
     have haux :
         IsInterlacingSeqNonneg ((auxRow s t).reverse) := by
@@ -799,8 +798,7 @@ theorem prec_zipWith_sum_pair_of_2x2
           (n := n) hrow₁_len hrow₂_len hrow₁_nonneg hrow₂_nonneg h2x2 hs ht
     have hrr_rev :
         (((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum) ≠ 0 ∧
-          ((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum).roots.card =
-            ((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum).natDegree) := by
+          ((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum).Splits) := by
       exact
         isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
           (fs := (auxRow s t).reverse) (gs := fs)
@@ -820,7 +818,7 @@ theorem prec_zipWith_sum_pair_of_2x2
   have haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * F) + G) ≠ 0 ∧
-          (((C s * X + C t) * F) + G).roots.card = (((C s * X + C t) * F) + G).natDegree) := by
+          (((C s * X + C t) * F) + G).Splits) := by
     intro s t hs ht
     simpa [F, G, hrewrite (s := s) (t := t)] using haux_rr (s := s) (t := t) hs ht
   have hposCombo :
@@ -908,8 +906,7 @@ theorem prec0_zipWith_sum_pair_of_2x2
   have haux_rr :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((auxRow s t).zipWith (· * ·) fs).sum) ≠ 0 ∧
-          (((auxRow s t).zipWith (· * ·) fs).sum).roots.card =
-            (((auxRow s t).zipWith (· * ·) fs).sum).natDegree) := by
+          (((auxRow s t).zipWith (· * ·) fs).sum).Splits) := by
     intro s t hs ht
     have haux0 :
         IsInterlacingSeq0Nonneg ((auxRow s t).reverse) := by
@@ -919,7 +916,7 @@ theorem prec0_zipWith_sum_pair_of_2x2
           hrow₁_len hrow₂_len hrow₁_nonneg hrow₂_nonneg
           (fun j₁ j₂ hj => h2x2 j₁ j₂ (le_of_lt hj)) hs ht
     have haux_real :
-        ∀ p ∈ (auxRow s t).reverse, p ≠ 0 → (p ≠ 0 ∧ p.roots.card = p.natDegree) := by
+        ∀ p ∈ (auxRow s t).reverse, p ≠ 0 → (p ≠ 0 ∧ p.Splits) := by
       intro p hp hp_ne
       exact
         isRealRooted_mem_rowPairAffineSeq_of_ne
@@ -941,8 +938,7 @@ theorem prec0_zipWith_sum_pair_of_2x2
       exact hsum0
     have hrr_rev :
         (((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum) ≠ 0 ∧
-          ((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum).roots.card =
-            ((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum).natDegree) := by
+          ((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum).Splits) := by
       exact
         isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg
           (fs := (auxRow s t).reverse) (gs := fs)
@@ -953,7 +949,7 @@ theorem prec0_zipWith_sum_pair_of_2x2
   have haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * F) + G) ≠ 0 ∧
-          (((C s * X + C t) * F) + G).roots.card = (((C s * X + C t) * F) + G).natDegree) := by
+          (((C s * X + C t) * F) + G).Splits) := by
     intro s t hs ht
     simpa [hrewrite (s := s) (t := t)] using haux_rr (s := s) (t := t) hs ht
   have hFG : Prec F G :=
@@ -978,7 +974,7 @@ theorem prec0_zipWith_sum_pair_of_2x2_weak
         (row₂.get ⟨j₂, by simp [hrow₂_len]⟩))
     (hfs_len : fs.length = n)
     (hfs : IsInterlacingSeq0Nonneg fs)
-    (hfs_real : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.roots.card = f.natDegree)) :
+    (hfs_real : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits)) :
     Prec0 ((row₁.zipWith (· * ·) fs).sum) ((row₂.zipWith (· * ·) fs).sum) := by
   let F : ℝ[X] := ((row₁.zipWith (· * ·) fs).sum)
   let G : ℝ[X] := ((row₂.zipWith (· * ·) fs).sum)
@@ -1011,8 +1007,7 @@ theorem prec0_zipWith_sum_pair_of_2x2_weak
   have haux_rr :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((auxRow s t).zipWith (· * ·) fs).sum) ≠ 0 ∧
-          (((auxRow s t).zipWith (· * ·) fs).sum).roots.card =
-            (((auxRow s t).zipWith (· * ·) fs).sum).natDegree) := by
+          (((auxRow s t).zipWith (· * ·) fs).sum).Splits) := by
     intro s t hs ht
     have haux0 :
         IsInterlacingSeq0Nonneg ((auxRow s t).reverse) := by
@@ -1022,7 +1017,7 @@ theorem prec0_zipWith_sum_pair_of_2x2_weak
           hrow₁_len hrow₂_len hrow₁_nonneg hrow₂_nonneg
           (fun j₁ j₂ hj => h2x2 j₁ j₂ (le_of_lt hj)) hs ht
     have haux_real :
-        ∀ p ∈ (auxRow s t).reverse, p ≠ 0 → (p ≠ 0 ∧ p.roots.card = p.natDegree) := by
+        ∀ p ∈ (auxRow s t).reverse, p ≠ 0 → (p ≠ 0 ∧ p.Splits) := by
       intro p hp hp_ne
       exact
         isRealRooted_mem_rowPairAffineSeq_of_ne
@@ -1044,8 +1039,7 @@ theorem prec0_zipWith_sum_pair_of_2x2_weak
       exact hsum0
     have hrr_rev :
         (((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum) ≠ 0 ∧
-          ((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum).roots.card =
-            ((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum).natDegree) := by
+          ((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum).Splits) := by
       exact
         isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg_both
           (fs := (auxRow s t).reverse) (gs := fs)
@@ -1056,7 +1050,7 @@ theorem prec0_zipWith_sum_pair_of_2x2_weak
   have haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * F) + G) ≠ 0 ∧
-          (((C s * X + C t) * F) + G).roots.card = (((C s * X + C t) * F) + G).natDegree) := by
+          (((C s * X + C t) * F) + G).Splits) := by
     intro s t hs ht
     simpa [hrewrite (s := s) (t := t)] using haux_rr (s := s) (t := t) hs ht
   have hFG : Prec F G :=
@@ -1250,9 +1244,9 @@ theorem matrix_preserves_interlacing_seq0_of_2x2_weak
         ((G.get i₂).get ⟨j₂, by have := hG_rect _ (G.get_mem i₂); lia⟩))
     (fs : List ℝ[X]) (hfs_len : fs.length = n)
     (hfs : IsInterlacingSeq0Nonneg fs)
-    (hfs_real : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.roots.card = f.natDegree)) :
+    (hfs_real : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits)) :
     IsInterlacingSeq0Nonneg (matPolyAction G fs) ∧
-      ∀ f ∈ matPolyAction G fs, f ≠ 0 → (f ≠ 0 ∧ f.roots.card = f.natDegree) := by
+      ∀ f ∈ matPolyAction G fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits) := by
   refine ⟨?_, ?_⟩
   · refine ⟨?_, ?_⟩
     · rw [isInterlacingSeq0_iff_pairwise]

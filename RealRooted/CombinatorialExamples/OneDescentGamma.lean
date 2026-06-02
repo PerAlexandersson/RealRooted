@@ -79,10 +79,7 @@ lemma oneDescent_hasNonnegCoeffs_X : HasNonnegCoeffs (X : ℝ[X]) := by
           simp [coeff_X]
 
 lemma isRealRooted_X_pow : ∀ n : Nat, (((X : ℝ[X]) ^ n) ≠ 0 ∧
-  ((X : ℝ[X]) ^ n).roots.card = ((X : ℝ[X]) ^ n).natDegree)
-  | 0 => by simp
-  | n + 1 => by
-      simpa [pow_succ, mul_comm] using isRealRooted_X_mul (isRealRooted_X_pow n)
+  ((X : ℝ[X]) ^ n).Splits) := by simp
 
 lemma prec_X_add_C_to_X_mul_X_add_C {a b : ℝ}
     (ha : 0 ≤ a) (hab : a ≤ b) :
@@ -94,11 +91,11 @@ lemma prec_X_add_C_to_X_mul_X_add_C {a b : ℝ}
     rw [show X + C b = C (1 : ℝ) * X + C b by simp]
     exact Polynomial.natDegree_linear (a := (1 : ℝ)) (b := b) one_ne_zero
   have hrr_a : ((X + C a) ≠ 0 ∧
-    (X + C a).roots.card = (X + C a).natDegree) := isRealRooted_of_degree_one hdeg_a
+    (X + C a).Splits) := isRealRooted_of_degree_one hdeg_a
   have hrr_b : ((X + C b) ≠ 0 ∧
-    (X + C b).roots.card = (X + C b).natDegree) := isRealRooted_of_degree_one hdeg_b
+    (X + C b).Splits) := isRealRooted_of_degree_one hdeg_b
   have hrr_q : ((X * (X + C b)) ≠ 0 ∧
-    (X * (X + C b)).roots.card = (X * (X + C b)).natDegree) := isRealRooted_X_mul hrr_b
+    (X * (X + C b)).Splits) := isRealRooted_X_mul hrr_b
   have hdeg_q : (X * (X + C b)).natDegree = 2 := by
     rw [natDegree_mul X_ne_zero hrr_b.1, hdeg_b]
     norm_num
@@ -333,8 +330,7 @@ lemma oneDescent_prec_gamma_one_adjacent
         (C ((Nat.choose m j : Nat) : ℝ) * (X * (X + C b))) := by
     exact prec_C_mul_right (prec_C_mul_left hbase hleft_ne) hright_ne
   have hpow_rr : (((X : ℝ[X]) ^ (m - j - 2)) ≠ 0 ∧
-    ((X : ℝ[X]) ^ (m - j - 2)).roots.card =
-      ((X : ℝ[X]) ^ (m - j - 2)).natDegree) := isRealRooted_X_pow (m - j - 2)
+    ((X : ℝ[X]) ^ (m - j - 2)).Splits) := isRealRooted_X_pow (m - j - 2)
   rw [oneDescentGamma_one m (j + 1) hj, oneDescentGamma_one m j hjm, hsub_left, hpow]
   simpa [a, b, mul_assoc, mul_left_comm, mul_comm] using
     (prec_mul_common_factor hpow_rr hscaled)
@@ -365,8 +361,7 @@ lemma oneDescent_prec_gamma_one_terminal (m : Nat) (hm : 1 < m) :
         (X * (X + C b)) := by
     exact prec_C_mul_left hbase hchoose_ne
   have hpow_rr : (((X : ℝ[X]) ^ (m - 2)) ≠ 0 ∧
-    ((X : ℝ[X]) ^ (m - 2)).roots.card =
-      ((X : ℝ[X]) ^ (m - 2)).natDegree) := isRealRooted_X_pow (m - 2)
+    ((X : ℝ[X]) ^ (m - 2)).Splits) := isRealRooted_X_pow (m - 2)
   rw [oneDescentGamma_one m 1 hm, oneDescentQ_one m hm_pos, hpow]
   simpa [a, b, Nat.choose_one_right, mul_assoc, mul_left_comm, mul_comm] using
     (prec_mul_common_factor hpow_rr hscaled)
@@ -401,7 +396,7 @@ theorem oneDescent_prec_gamma_one_terminal_chain
 theorem oneDescentGamma_one_isRealRooted
     (m j : Nat) (hj : j ≤ m) :
     ((oneDescentGamma 1 m j) ≠ 0 ∧
-      (oneDescentGamma 1 m j).roots.card = (oneDescentGamma 1 m j).natDegree) := by
+      (oneDescentGamma 1 m j).Splits) := by
   by_cases htop : j = m
   · subst htop
     simp
@@ -411,10 +406,10 @@ theorem oneDescentGamma_one_isRealRooted
     have hlin_deg : (X + C a).natDegree = 1 := by
       simp
     have hlin_rr : ((X + C a) ≠ 0 ∧
-      (X + C a).roots.card = (X + C a).natDegree) := isRealRooted_of_degree_one hlin_deg
+      (X + C a).Splits) := isRealRooted_of_degree_one hlin_deg
     have hprod_rr :
         ((X ^ (m - j - 1) * (X + C a)) ≠ 0 ∧
-          (X ^ (m - j - 1) * (X + C a)).roots.card = (X ^ (m - j - 1) * (X + C a)).natDegree) :=
+          (X ^ (m - j - 1) * (X + C a)).Splits) :=
       isRealRooted_mul (isRealRooted_X_pow (m - j - 1)) hlin_rr
     have hchoose_ne : (((Nat.choose m j : Nat) : ℝ)) ≠ 0 := by
       exact_mod_cast Nat.choose_ne_zero hj
@@ -424,13 +419,13 @@ theorem oneDescentGamma_one_isRealRooted
 /-- The base `d = 1` normalized one-descent polynomial is real-rooted. -/
 theorem oneDescentQ_one_isRealRooted
     (m : Nat) (hm : 0 < m) :
-    ((oneDescentQ 1 m) ≠ 0 ∧ (oneDescentQ 1 m).roots.card = (oneDescentQ 1 m).natDegree) := by
+    ((oneDescentQ 1 m) ≠ 0 ∧ (oneDescentQ 1 m).Splits) := by
   rw [oneDescentQ_one m hm]
   let a : ℝ := ((m - 1 : Nat) : ℝ)
   have hlin_deg : (X + C a).natDegree = 1 := by
     simp
   have hlin_rr : ((X + C a) ≠ 0 ∧
-    (X + C a).roots.card = (X + C a).natDegree) := isRealRooted_of_degree_one hlin_deg
+    (X + C a).Splits) := isRealRooted_of_degree_one hlin_deg
   simpa [a] using
     isRealRooted_mul (isRealRooted_X_pow (m - 1)) hlin_rr
 
