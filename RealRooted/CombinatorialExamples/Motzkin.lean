@@ -360,9 +360,7 @@ theorem roots_le_motzkinShift_motzkin (n : Nat) :
 
 theorem isRealRooted_motzkin : ∀ n : Nat, ((motzkin n) ≠ 0 ∧
   (motzkin n).roots.card = (motzkin n).natDegree)
-  | 0 => by
-      simpa [motzkin_zero] using
-        isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)
+  | 0 => by simp
   | n + 1 => (prec_motzkin_succ n).2.1
 
 theorem interlaces_motzkin_succ_of_even {n : Nat} (heven : n % 2 = 0) :

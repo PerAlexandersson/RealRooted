@@ -311,9 +311,7 @@ theorem interlaces_typeBEulerian_succ (n : Nat) :
 
 theorem isRealRooted_typeBEulerian : ∀ n : Nat, ((typeBEulerian n) ≠ 0 ∧
   (typeBEulerian n).roots.card = (typeBEulerian n).natDegree)
-  | 0 => by
-      simpa [typeBEulerian_zero] using
-        isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)
+  | 0 => by simp
   | n + 1 => (prec_typeBEulerian_succ n).2.1
 
 /-- The descending prefix `[P_n, P_{n-1}, ..., P_0]` of the type `B` Eulerian sequence. -/

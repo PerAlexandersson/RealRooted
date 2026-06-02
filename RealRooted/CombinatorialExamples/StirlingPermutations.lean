@@ -341,9 +341,7 @@ theorem interlaces_stirlingPermutations_succ (n : Nat) :
 theorem isRealRooted_stirlingPermutations :
     ∀ n : Nat, ((stirlingPermutations n) ≠ 0 ∧
       (stirlingPermutations n).roots.card = (stirlingPermutations n).natDegree)
-  | 0 => by
-      simpa [stirlingPermutations_zero] using
-        isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)
+  | 0 => by simp
   | n + 1 => (prec_stirlingPermutations_succ n).2.1
 
 /-- The descending prefix `[P_n, P_{n-1}, ..., P_0]` of the Stirling-permutation

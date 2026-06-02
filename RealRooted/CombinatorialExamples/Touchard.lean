@@ -205,9 +205,7 @@ theorem interlaces_touchard_succ (n : Nat) :
 
 theorem isRealRooted_touchard : ∀ n : Nat, ((touchard n) ≠ 0 ∧
   (touchard n).roots.card = (touchard n).natDegree)
-  | 0 => by
-      simpa [touchard_zero] using
-        isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)
+  | 0 => by simp
   | n + 1 => (prec_touchard_succ n).2.1
 
 /-- The descending prefix `[T_n, T_{n-1}, ..., T_0]` of the Touchard sequence. -/

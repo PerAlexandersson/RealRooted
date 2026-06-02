@@ -25,8 +25,7 @@ lemma nonnegCoeffs_C_mul {a : ℝ} (ha : 0 ≤ a) {p : ℝ[X]}
 
 lemma interlaces_one_linear {p : ℝ[X]} (hp_deg : p.natDegree = 1) :
     Interlaces (1 : ℝ[X]) p := by
-  have h1_rr : ((1 : ℝ[X]) ≠ 0 ∧ (1 : ℝ[X]).roots.card = (1 : ℝ[X]).natDegree) := by
-    simpa using isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)
+  have h1_rr : ((1 : ℝ[X]) ≠ 0 ∧ (1 : ℝ[X]).roots.card = (1 : ℝ[X]).natDegree) := by simp
   have hp_rr : (p ≠ 0 ∧ p.roots.card = p.natDegree) := isRealRooted_of_degree_one hp_deg
   have hp_deg' : p.degree = 1 := by
     rw [degree_eq_natDegree hp_rr.1, hp_deg]

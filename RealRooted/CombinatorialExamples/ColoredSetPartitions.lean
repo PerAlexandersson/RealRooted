@@ -304,9 +304,7 @@ theorem interlaces_coloredSetPartitions_succ (c m n : Nat) :
 theorem isRealRooted_coloredSetPartitions (c m : Nat) :
     ∀ n : Nat, ((coloredSetPartitions c m n) ≠ 0 ∧
       (coloredSetPartitions c m n).roots.card = (coloredSetPartitions c m n).natDegree)
-  | 0 => by
-      simpa [coloredSetPartitions_zero] using
-        isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)
+  | 0 => by simp
   | n + 1 => (prec_coloredSetPartitions_succ c m n).2.1
 
 /-- The descending prefix `[T_n, T_{n-1}, ..., T_0]` of the colored

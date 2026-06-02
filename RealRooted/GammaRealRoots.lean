@@ -228,8 +228,7 @@ lemma hasNonnegCoeffs_gammaTransform {d : ℕ} {γ : ℝ[X]} (hγ : HasNonnegCoe
 
 lemma isRealRooted_X_add_one_pow : ∀ n : ℕ, ((((X + 1 : ℝ[X]) ^ n)) ≠ 0 ∧
   (((X + 1 : ℝ[X]) ^ n)).roots.card = (((X + 1 : ℝ[X]) ^ n)).natDegree)
-  | 0 => by
-      simpa using isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)
+  | 0 => by simp
   | n + 1 => by
       simpa [pow_succ, mul_comm] using
         isRealRooted_mul (isRealRooted_X_sub_C (-1 : ℝ)) (isRealRooted_X_add_one_pow n)
@@ -714,7 +713,7 @@ lemma isRealRooted_gammaQuadraticFactor {r : ℝ} (hr : r ≤ 0) :
       (X - C r * (X + 1) ^ 2).roots.card = (X - C r * (X + 1) ^ 2).natDegree) := by
   by_cases hr0 : r = 0
   · subst hr0
-    simpa using isRealRooted_X
+    simp
   · set t : ℝ := -r with ht_def
     have hrlt : r < 0 := lt_of_le_of_ne hr hr0
     have ht_pos : 0 < t := by

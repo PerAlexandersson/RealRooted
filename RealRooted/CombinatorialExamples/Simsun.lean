@@ -350,9 +350,7 @@ lemma roots_nonpos_simsun_of_isRealRooted {n : Nat}
 lemma interlaces_simsun_zero_one :
     Prec (simsun 0) (simsun 1) := by
   simpa [simsun_zero, simsun_one] using
-    prec_refl (f := (1 : ℝ[X])) (by
-      simpa [simsun_zero] using
-        isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp))
+    prec_refl (f := (1 : ℝ[X])) (by simp)
 
 lemma interlaces_simsun_one_two :
     Interlaces (simsun 1) (simsun 2) := by
@@ -443,9 +441,7 @@ theorem prec_simsun_succ : ∀ n : Nat, Prec (simsun n) (simsun (n + 1))
 
 theorem isRealRooted_simsun : ∀ n : Nat, ((simsun n) ≠ 0 ∧
   (simsun n).roots.card = (simsun n).natDegree)
-  | 0 => by
-      simpa [simsun_zero] using
-        isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)
+  | 0 => by simp
   | n + 1 => (prec_simsun_succ n).2.1
 
 theorem interlaces_simsun_succ_of_odd {n : Nat} (hodd : n % 2 = 1) :

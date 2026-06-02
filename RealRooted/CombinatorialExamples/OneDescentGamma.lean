@@ -80,8 +80,7 @@ lemma oneDescent_hasNonnegCoeffs_X : HasNonnegCoeffs (X : ℝ[X]) := by
 
 lemma isRealRooted_X_pow : ∀ n : Nat, (((X : ℝ[X]) ^ n) ≠ 0 ∧
   ((X : ℝ[X]) ^ n).roots.card = ((X : ℝ[X]) ^ n).natDegree)
-  | 0 => by
-      simpa using isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)
+  | 0 => by simp
   | n + 1 => by
       simpa [pow_succ, mul_comm] using isRealRooted_X_mul (isRealRooted_X_pow n)
 
@@ -405,8 +404,7 @@ theorem oneDescentGamma_one_isRealRooted
       (oneDescentGamma 1 m j).roots.card = (oneDescentGamma 1 m j).natDegree) := by
   by_cases htop : j = m
   · subst htop
-    rw [oneDescentGamma_diag]
-    simpa using isRealRooted_X_pow 0
+    simp
   · have hjm : j < m := lt_of_le_of_ne hj htop
     rw [oneDescentGamma_one m j hjm]
     let a : ℝ := (((m - j : Nat) : ℝ) / ((j + 1 : Nat) : ℝ))
