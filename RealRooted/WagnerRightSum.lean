@@ -1894,8 +1894,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
         exact Multiset.coe_eq_coe.mp (hrs_f_eq.trans hrs_g_eq.symm)
       subst hrs_eq
       rcases rs_f with _ | ⟨r₁, rest_rs⟩
-      ·
-        simp only [List.length_nil] at hlen_f_alt hlen_g_alt
+      · simp only [List.length_nil] at hlen_f_alt hlen_g_alt
         have hfnd : f.natDegree = 0 := by
           have := hf.2
           rw [← hss_f_eq, Multiset.coe_card] at this

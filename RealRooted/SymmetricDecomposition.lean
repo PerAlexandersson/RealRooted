@@ -235,7 +235,7 @@ lemma fPolynomial_natDegree_le (d : ℕ) (h : ℝ[X]) :
 lemma coeff_fPolynomial_top (d : ℕ) (h : ℝ[X]) :
     (fPolynomial d h).coeff d = ∑ k ∈ Finset.range (d + 1), h.coeff k := by
   unfold fPolynomial
-  rw [Polynomial.finset_sum_coeff]
+  rw [Polynomial.finsetSum_coeff]
   refine Finset.sum_congr rfl ?_
   intro k hk
   have hk_le : k ≤ d := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
@@ -260,7 +260,7 @@ lemma coeff_fPolynomial_top_eq_eval_one {d : ℕ} {h : ℝ[X]}
 lemma eval_neg_one_fPolynomial (d : ℕ) (h : ℝ[X]) :
     (fPolynomial d h).eval (-1) = h.coeff d * (-1) ^ d := by
   unfold fPolynomial
-  rw [Polynomial.eval_finset_sum]
+  rw [Polynomial.eval_finsetSum]
   rw [Finset.sum_eq_single d]
   · simp
   · intro k hk hkd
@@ -414,7 +414,7 @@ lemma eval_fPolynomial_eq_mul_eval_untransform {d : ℕ} {p : ℝ[X]}
   have h1x_ne : 1 + x ≠ 0 := by
     grind
   unfold fPolynomial
-  rw [Polynomial.eval_finset_sum, Polynomial.eval_eq_sum_range' (Nat.lt_succ_iff.mpr hd)]
+  rw [Polynomial.eval_finsetSum, Polynomial.eval_eq_sum_range' (Nat.lt_succ_iff.mpr hd)]
   rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro k hk
@@ -2517,7 +2517,7 @@ theorem brandenSolusTheorem26_forward_of_prec_b_a {d : ℕ} {p a b : ℝ[X]}
         (Or.inl (by positivity)))
   have hIdp : Prec (IdTransform d p) p := by
     have hprec0 : Prec0 (∑ t ∈ (Finset.univ : Finset Bool), cond t b a) p := by
-      refine prec0_finset_sum_right_of_nonneg (s := (Finset.univ : Finset Bool))
+      refine prec0_finsetSum_right_of_nonneg (s := (Finset.univ : Finset Bool))
         (f := fun t => cond t b a) (h := p) ?_ ?_
       · intro t ht
         cases t <;> simp [hap.toPrec0, hbp.toPrec0]
