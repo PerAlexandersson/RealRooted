@@ -89,7 +89,7 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
       have hq_le : q.natDegree ≤ f.natDegree := by
         have hXg_le : (X * g).natDegree ≤ f.natDegree := by
           rw [natDegree_X_mul hg.1]
-          omega
+          lia
         have hsub : (f - X * g).natDegree ≤ f.natDegree :=
           (natDegree_sub_le_iff_left hXg_le).mpr le_rfl
         simpa [q] using hsub
@@ -114,7 +114,7 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
                 simp [hg_monic.leadingCoeff]
       exact hq_top_ne hq_top_zero
     have hdeg_qf : q.natDegree + 1 = f.natDegree := by
-      omega
+      lia
     have hprec_or : Prec q f ∨ Prec f q :=
       prec_of_allComboRealRooted hq hf hall_qf (Or.inl hdeg_qf)
     have hnot_prec_fq : ¬ Prec f q := by
@@ -124,7 +124,7 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
         rw [← Multiset.coe_card, hss_eq, hf.2]
       have hrs_len : rs.length = q.natDegree := by
         rw [← Multiset.coe_card, hrs_eq, hq.2]
-      rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩ <;> omega
+      rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩ <;> lia
     rcases hprec_or with hqf | hfq
     · exact hqf.toPrec0
     · exact False.elim (hnot_prec_fq hfq)
@@ -169,7 +169,7 @@ theorem prec_sub_X_mul_right {f g : ℝ[X]}
       have hq_le : q.natDegree ≤ f.natDegree := by
         have hXg_le : (X * g).natDegree ≤ f.natDegree := by
           rw [natDegree_X_mul hg.1]
-          omega
+          lia
         have hsub : (f - X * g).natDegree ≤ f.natDegree :=
           (natDegree_sub_le_iff_left hXg_le).mpr le_rfl
         simpa [q] using hsub
@@ -195,10 +195,10 @@ theorem prec_sub_X_mul_right {f g : ℝ[X]}
       exact hq_top_ne hq_top_zero
     have hclose_qf := natDegree_close_of_allComboRealRooted hall_qf hq0 hf0
     have hdeg_qf : q.natDegree + 1 = f.natDegree := by
-      omega
+      lia
     have hdeg_qXg : q.natDegree + 1 = (X * g).natDegree := by
       rw [natDegree_X_mul hg.1]
-      omega
+      lia
     have hprec_or : Prec q (X * g) ∨ Prec (X * g) q :=
       prec_of_allComboRealRooted hq hXg hall_qXg (Or.inl hdeg_qXg)
     have hnot_prec_Xgq : ¬ Prec (X * g) q := by
@@ -208,17 +208,15 @@ theorem prec_sub_X_mul_right {f g : ℝ[X]}
         rw [← Multiset.coe_card, hss_eq, hXg.2]
       have hrs_len : rs.length = q.natDegree := by
         rw [← Multiset.coe_card, hrs_eq, hq.2]
-      rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩ <;> omega
+      rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩ <;> lia
     have hprec_qXg : Prec q (X * g) := by
       rcases hprec_or with hqXg | hXgq
       · exact hqXg
       · exact False.elim (hnot_prec_Xgq hXgq)
-    have hq_nonpos : ∀ r ∈ q.roots, r ≤ 0 :=
-      roots_le_of_prec_right hqf hf_nonpos
     have hdeg_gq : g.natDegree = q.natDegree := by
-      omega
+      lia
     exact
-      (prec_of_prec_mul_X_sameDegree_of_roots_nonpos
-        (f := g) (g := q) hprec_qXg hdeg_gq hg_nonpos hq_nonpos).toPrec0
+      (prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos
+        (f := g) (g := q) hprec_qXg hdeg_gq hg_nonpos).toPrec0
 
 end RealRooted

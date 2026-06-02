@@ -134,19 +134,19 @@ lemma not_pow_dvd_TDeriv_of_multiple
     calc m = p.roots.count a := (count_roots p).symm
     _ ≤ p.roots.card := p.roots.count_le_card a
     _ ≤ p.natDegree := card_roots' p
-  have hp'_ne : p.derivative ≠ 0 := derivative_ne_zero (by omega)
+  have hp'_ne : p.derivative ≠ 0 := derivative_ne_zero (by lia)
   -- (X-a)^{m} ∤ p' since rootMultiplicity a p' = m - 1 (exact, in char 0)
-  have hroot : p.IsRoot a := (rootMultiplicity_pos hp_ne).mp (by omega)
+  have hroot : p.IsRoot a := (rootMultiplicity_pos hp_ne).mp (by lia)
   -- In char 0: (m : ℝ) ≠ 0, so it's in nonZeroDivisors
   have hm_nzd : (↑m : ℝ) ∈ nonZeroDivisors ℝ :=
     IsRegular.mem_nonZeroDivisors
-      (IsRegular.of_ne_zero (Nat.cast_ne_zero.mpr (by omega)))
+      (IsRegular.of_ne_zero (Nat.cast_ne_zero.mpr (by lia)))
   have hp'_mult : p.derivative.rootMultiplicity a = m - 1 :=
     derivative_rootMultiplicity_of_root_of_mem_nonZeroDivisors hroot hm_nzd
   -- (X-a)^m ∣ p' means m ≤ rootMultiplicity a p' = m - 1. Contradiction.
   have : m ≤ p.derivative.rootMultiplicity a :=
     (le_rootMultiplicity_iff hp'_ne).mpr hdvd_p'
-  omega
+  lia
 
 /-- Exact multiplicity of T_ε at a multiple root. -/
 lemma rootMultiplicity_TDeriv_of_multiple
@@ -161,7 +161,7 @@ lemma rootMultiplicity_TDeriv_of_multiple
   · -- rootMultiplicity ≤ m - 1 means ¬ (X-a)^{m-1+1} ∣ T_ε(p)
     rw [Polynomial.rootMultiplicity_le_iff hT_ne]
     -- m - 1 + 1 = m since m ≥ 2
-    have hm_eq : m - 1 + 1 = m := by omega
+    have hm_eq : m - 1 + 1 = m := by lia
     rw [hm_eq]
     exact not_pow_dvd_TDeriv_of_multiple heps hp_ne hm2
   · exact rootMultiplicity_sub_one_le_rootMultiplicity_TDeriv a hT_ne
@@ -176,8 +176,8 @@ lemma natDegree_TDeriv {eps : ℝ} {p : ℝ[X]} (_hp : p ≠ 0) (hdeg : 1 ≤ p.
     calc (C eps * p.derivative).natDegree
       _ ≤ (C eps).natDegree + p.derivative.natDegree := natDegree_mul_le
       _ = p.derivative.natDegree := by simp [natDegree_C]
-      _ = p.natDegree - 1 := natDegree_derivative_eq (by omega)
-      _ < p.natDegree := Nat.sub_lt (by omega) one_pos
+      _ = p.natDegree - 1 := natDegree_derivative_eq (by lia)
+      _ < p.natDegree := Nat.sub_lt (by lia) one_pos
   rw [natDegree_sub_eq_left_of_natDegree_lt hp'_deg]
 
 /-- `T_ε` keeps the top coefficient unchanged because the derivative term has
@@ -193,7 +193,7 @@ lemma leadingCoeff_TDeriv {eps : ℝ} {p : ℝ[X]} (hp : p ≠ 0) (hdeg : 1 ≤ 
           ≤ (C eps).natDegree + p.derivative.natDegree := natDegree_mul_le
       _ = p.derivative.natDegree := by simp [natDegree_C]
       _ = p.natDegree - 1 := natDegree_derivative_eq hdeg
-      _ < p.natDegree := Nat.sub_lt (by omega) one_pos
+      _ < p.natDegree := Nat.sub_lt (by lia) one_pos
   rw [Polynomial.coeff_eq_zero_of_natDegree_lt hp'_deg, sub_zero, Polynomial.leadingCoeff]
 
 /-- T_ε of a nonzero polynomial with degree ≥ 1 is nonzero. -/
@@ -202,17 +202,7 @@ lemma TDeriv_ne_zero {eps : ℝ} {p : ℝ[X]} (hp : p ≠ 0) (hdeg : 1 ≤ p.nat
   intro h
   have := @natDegree_TDeriv eps p hp hdeg
   rw [h, natDegree_zero] at this
-  omega
-
-private lemma hasPosLeadingCoeff_derivative_of_pos
-    {p : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (hdeg : 1 ≤ p.natDegree) :
-    HasPosLeadingCoeff p.derivative := by
-  unfold HasPosLeadingCoeff at hp_pos ⊢
-  rw [leadingCoeff, natDegree_derivative_eq hdeg, coeff_derivative]
-  rw [Nat.sub_add_cancel hdeg, coeff_natDegree] at *
-  have hdeg_pos : 0 < (p.natDegree : ℝ) := by
-    exact_mod_cast hdeg
-  nlinarith
+  lia
 
 /-- T_ε preserves real-rootedness when ε > 0.
     Proof: T_ε(p) = 1·p + (-C ε)·p'. Since p' interlaces p (derivative interlacing)
@@ -231,18 +221,18 @@ private lemma isRealRooted_TDeriv_pos {eps : ℝ} {p : ℝ[X]}
   have hder : Interlaces p.derivative p := derivative_interlaces hp hdeg2
   -- HasPosLeadingCoeff of p'
   have hp'_pos : HasPosLeadingCoeff p.derivative := by
-    exact hasPosLeadingCoeff_derivative_of_pos hp_pos (by omega)
+    exact hasPosLeadingCoeff_derivative hp_pos (by lia)
   -- HasPosLeadingCoeff of T_ε(p) (same leading coeff as p)
   have hT_pos : HasPosLeadingCoeff (C 1 * p + C (-eps) * p.derivative) := by
     rw [← hrewrite]
     unfold HasPosLeadingCoeff
-    rw [leadingCoeff_TDeriv hp.1 (by omega)]
+    rw [leadingCoeff_TDeriv hp.1 (by lia)]
     exact hp_pos
   -- degree bounds
   have hdeg_lo : p.natDegree ≤ (C 1 * p + C (-eps) * p.derivative).natDegree := by
-    rw [← hrewrite, @natDegree_TDeriv eps p hp.1 (by omega)]
+    rw [← hrewrite, @natDegree_TDeriv eps p hp.1 (by lia)]
   have hdeg_hi : (C 1 * p + C (-eps) * p.derivative).natDegree ≤ p.natDegree + 1 := by
-    rw [← hrewrite, @natDegree_TDeriv eps p hp.1 (by omega)]; omega
+    rw [← hrewrite, @natDegree_TDeriv eps p hp.1 (by lia)]; lia
   -- sign condition: b = C(-eps), b.eval r = -eps ≤ 0 for all r
   have hb_nonpos : ∀ r, p.IsRoot r → (C (-eps)).eval r ≤ 0 := by
     intro r _; simp [eval_C]; linarith
@@ -327,14 +317,14 @@ theorem isRealRooted_TDeriv {eps : ℝ} {p : ℝ[X]}
   · -- degree ≤ 1: T_ε(p) has same degree as p
     push Not at hdeg2
     -- p.natDegree < 2, so natDegree is 0 or 1
-    have hdeg01 : p.natDegree = 0 ∨ p.natDegree = 1 := by omega
+    have hdeg01 : p.natDegree = 0 ∨ p.natDegree = 1 := by lia
     rcases hdeg01 with h0 | h1
     · -- degree 0: p is constant, derivative is 0, TDeriv eps p = p
       have hpc := eq_C_of_natDegree_eq_zero h0
       have : TDeriv eps p = p := by unfold TDeriv; rw [hpc, derivative_C]; ring
       rw [this]; exact hp
     · -- degree 1: TDeriv preserves degree, so result has degree 1
-      exact isRealRooted_of_degree_one (by rw [natDegree_TDeriv hp.1 (by omega)]; exact h1)
+      exact isRealRooted_of_degree_one (by rw [natDegree_TDeriv hp.1 (by lia)]; exact h1)
 
 /-- For positive `eps`, `T_ε p` sits immediately to the right of `p` in the
 weak interlacing order. This is the interlacing content hidden inside the
@@ -364,20 +354,20 @@ theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
               exact hdeg2)
         have hp'_pos : HasPosLeadingCoeff (-p).derivative := by
           simpa [derivative_neg, natDegree_neg] using
-            hasPosLeadingCoeff_derivative_of_pos hneg_pos (by rw [natDegree_neg]; omega)
+            hasPosLeadingCoeff_derivative hneg_pos (by rw [natDegree_neg]; lia)
         have hrewrite_neg : TDeriv eps (-p) = C 1 * (-p) + C (-eps) * (-p).derivative := by
           simp [TDeriv]
         have hT_pos : HasPosLeadingCoeff (C 1 * (-p) + C (-eps) * (-p).derivative) := by
           rw [← hrewrite_neg]
           unfold HasPosLeadingCoeff
-          rw [leadingCoeff_TDeriv hneg_rr.1 (by rw [natDegree_neg]; omega)]
+          rw [leadingCoeff_TDeriv hneg_rr.1 (by rw [natDegree_neg]; lia)]
           exact hneg_pos
         have hdeg_lo : (-p).natDegree ≤ (C 1 * (-p) + C (-eps) * (-p).derivative).natDegree := by
-          rw [← hrewrite_neg, @natDegree_TDeriv eps (-p) hneg_rr.1 (by rw [natDegree_neg]; omega)]
+          rw [← hrewrite_neg, @natDegree_TDeriv eps (-p) hneg_rr.1 (by rw [natDegree_neg]; lia)]
         have hdeg_hi :
             (C 1 * (-p) + C (-eps) * (-p).derivative).natDegree ≤ (-p).natDegree + 1 := by
-          rw [← hrewrite_neg, @natDegree_TDeriv eps (-p) hneg_rr.1 (by rw [natDegree_neg]; omega)]
-          omega
+          rw [← hrewrite_neg, @natDegree_TDeriv eps (-p) hneg_rr.1 (by rw [natDegree_neg]; lia)]
+          lia
         have hb_nonpos : ∀ r, (-p).IsRoot r → (C (-eps)).eval r ≤ 0 := by
           intro r _
           simp [eval_C]
@@ -391,20 +381,20 @@ theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
       exact hboth
     · have hder : Interlaces p.derivative p := derivative_interlaces hp hdeg2
       have hp'_pos : HasPosLeadingCoeff p.derivative := by
-        exact hasPosLeadingCoeff_derivative_of_pos hpos (by omega)
+        exact hasPosLeadingCoeff_derivative hpos (by lia)
       have hrewrite : TDeriv eps p = C 1 * p + C (-eps) * p.derivative := by
         simp [TDeriv]
         ring
       have hT_pos : HasPosLeadingCoeff (C 1 * p + C (-eps) * p.derivative) := by
         rw [← hrewrite]
         unfold HasPosLeadingCoeff
-        rw [leadingCoeff_TDeriv hp.1 (by omega)]
+        rw [leadingCoeff_TDeriv hp.1 (by lia)]
         exact hpos
       have hdeg_lo : p.natDegree ≤ (C 1 * p + C (-eps) * p.derivative).natDegree := by
-        rw [← hrewrite, @natDegree_TDeriv eps p hp.1 (by omega)]
+        rw [← hrewrite, @natDegree_TDeriv eps p hp.1 (by lia)]
       have hdeg_hi : (C 1 * p + C (-eps) * p.derivative).natDegree ≤ p.natDegree + 1 := by
-        rw [← hrewrite, @natDegree_TDeriv eps p hp.1 (by omega)]
-        omega
+        rw [← hrewrite, @natDegree_TDeriv eps p hp.1 (by lia)]
+        lia
       have hb_nonpos : ∀ r, p.IsRoot r → (C (-eps)).eval r ≤ 0 := by
         intro r _
         simp [eval_C]
@@ -413,7 +403,7 @@ theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
       exact prec_of_interlaces_evalCoeff_nonpos hder hp'_pos hT_pos hdeg_lo hdeg_hi hb_nonpos
   · push Not at hdeg2
     have hdeg01 : p.natDegree = 0 ∨ p.natDegree = 1 := by
-      omega
+      lia
     rcases hdeg01 with h0 | h1
     · have hconst : TDeriv eps p = p := by
         rw [eq_C_of_natDegree_eq_zero h0, TDeriv, derivative_C]
@@ -515,8 +505,8 @@ lemma natDegree_iterateTDeriv {eps : ℝ} {p : ℝ[X]} {k : ℕ}
   | succ n ih =>
     rw [iterateTDeriv_succ]
     have hne : iterateTDeriv eps n p ≠ 0 := by
-      intro h; have := ih; rw [h, natDegree_zero] at this; omega
-    rw [natDegree_TDeriv hne (by omega), ih]
+      intro h; have := ih; rw [h, natDegree_zero] at this; lia
+    rw [natDegree_TDeriv hne (by lia), ih]
 
 /-- The iterate T_ε^[k] of a nonzero polynomial with degree ≥ 1 is nonzero. -/
 lemma iterateTDeriv_ne_zero {eps : ℝ} {p : ℝ[X]} {k : ℕ}
@@ -524,7 +514,7 @@ lemma iterateTDeriv_ne_zero {eps : ℝ} {p : ℝ[X]} {k : ℕ}
     iterateTDeriv eps k p ≠ 0 := by
   intro h
   have := natDegree_iterateTDeriv hp hdeg (eps := eps) (k := k)
-  rw [h, natDegree_zero] at this; omega
+  rw [h, natDegree_zero] at this; lia
 
 /-- Iterating `T_ε` preserves the leading coefficient as well. -/
 lemma leadingCoeff_iterateTDeriv {eps : ℝ} {p : ℝ[X]} {k : ℕ}
@@ -642,7 +632,7 @@ lemma continuous_eval_iterateTDeriv (n : ℕ) (p : ℝ[X]) (x : ℝ) :
     rw [Polynomial.eval_eq_sum_range]
     rw [natDegree_iterateTDeriv_eq eps n p]
   rw [hrewrite]
-  exact continuous_finset_sum _ fun i _ =>
+  exact continuous_finsetSum _ fun i _ =>
     (continuous_coeff_iterateTDeriv n p i).mul continuous_const
 
 /-- Evaluation at a fixed real point is continuous at `eps = 0` along the
@@ -667,7 +657,7 @@ lemma continuous_eval_iterateTDeriv_joint (n : ℕ) (p : ℝ[X]) :
     rw [Polynomial.eval_eq_sum_range]
     rw [natDegree_iterateTDeriv_eq z.1 n p]
   rw [hrewrite]
-  exact continuous_finset_sum _ fun i _ =>
+  exact continuous_finsetSum _ fun i _ =>
     ((continuous_coeff_iterateTDeriv n p i).comp continuous_fst).mul
       (continuous_snd.pow i)
 
@@ -1038,11 +1028,11 @@ lemma rootMultiplicity_ge_two_of_TDeriv_ge_two
     2 ≤ p.rootMultiplicity a := by
   by_contra h
   push Not at h
-  have h1 : p.rootMultiplicity a = 1 := by omega
-  have hroot_a : p.IsRoot a := (rootMultiplicity_pos hp_ne).mp (by omega)
+  have h1 : p.rootMultiplicity a = 1 := by lia
+  have hroot_a : p.IsRoot a := (rootMultiplicity_pos hp_ne).mp (by lia)
   have hnotroot := not_isRoot_TDeriv_of_simple_root (ne_of_gt heps) hp_ne hroot_a h1
   have hroot2 : (TDeriv eps p).IsRoot a :=
-    (rootMultiplicity_pos (TDeriv_ne_zero hp_ne hdeg)).mp (by omega)
+    (rootMultiplicity_pos (TDeriv_ne_zero hp_ne hdeg)).mp (by lia)
   exact hnotroot hroot2
 
 /-- Factoring out a root of a real-rooted polynomial gives a real-rooted quotient. -/
@@ -1064,7 +1054,7 @@ private lemma isRealRooted_div_X_sub_C {p : ℝ[X]} {r : ℝ}
     simp
   have hle : t.roots.card ≤ t.natDegree := card_roots' t
   have := hp.2
-  omega
+  lia
 
 lemma deriv2_mul_lt_deriv_sq_at_non_root
     {p : ℝ[X]} {a : ℝ}
@@ -1081,7 +1071,7 @@ lemma deriv2_mul_lt_deriv_sq_at_non_root
     intro q hq_deg hq_rr hq_deg_pos hq_eval
     -- Get a root r of q (exists since degree ≥ 1 and real-rooted)
     have hq_ne := hq_rr.1
-    have hroots_pos : 0 < q.roots.card := by rw [hq_rr.2]; omega
+    have hroots_pos : 0 < q.roots.card := by rw [hq_rr.2]; lia
     obtain ⟨r, hr⟩ := Multiset.card_pos_iff_exists_mem.mp hroots_pos
     have hr_root : q.IsRoot r := (mem_roots hq_ne).mp hr
     -- Factor: q = (X - C r) * t
@@ -1090,7 +1080,7 @@ lemma deriv2_mul_lt_deriv_sq_at_non_root
     have ht_deg : t.natDegree = n - 1 := by
       have := congr_arg natDegree hqt
       rw [natDegree_mul (X_sub_C_ne_zero r) ht_ne, natDegree_X_sub_C] at this
-      omega
+      lia
     -- t is real-rooted
     have ht_rr : IsRealRooted t := isRealRooted_div_X_sub_C hq_rr hr_root hqt
     -- a ≠ r (since q(a) ≠ 0 but q(r) = 0)
@@ -1142,7 +1132,7 @@ lemma deriv2_mul_lt_deriv_sq_at_non_root
     -- Two cases: n = 1 (t is constant) or n ≥ 2 (use IH)
     by_cases hn1 : n = 1
     · -- n = 1: t has degree 0, t' = t'' = 0
-      have ht_deg0 : t.natDegree = 0 := by omega
+      have ht_deg0 : t.natDegree = 0 := by lia
       have ht'_zero : t.derivative = 0 := by
         have := eq_C_of_natDegree_eq_zero ht_deg0; rw [this]; simp
       have ht'a_zero : t'a = 0 := by
@@ -1155,7 +1145,7 @@ lemma deriv2_mul_lt_deriv_sq_at_non_root
       simp only [zero_mul, zero_sub]
       linarith [sq_pos_of_ne_zero ht_eval]
     · -- n ≥ 2: use IH on t
-      have ht_ih := ih (n - 1) (by omega) t ht_deg ht_rr (by omega) ht_eval
+      have ht_ih := ih (n - 1) (by lia) t ht_deg ht_rr (by lia) ht_eval
       have h_neg : t''a * ta - t'a ^ 2 < 0 := by linarith
       have h1 : ar ^ 2 * (t''a * ta - t'a ^ 2) ≤ 0 :=
         mul_nonpos_of_nonneg_of_nonpos (sq_nonneg ar) (le_of_lt h_neg)
@@ -1179,9 +1169,9 @@ lemma rootMultiplicity_TDeriv_le_one_of_not_isRoot
   -- rootMultiplicity ≥ 2 means (TDeriv eps p)(a) = 0 and (TDeriv eps p)'(a) = 0
   have hT_ne : TDeriv eps p ≠ 0 := TDeriv_ne_zero hp.1 hdeg
   have hT_root : (TDeriv eps p).IsRoot a :=
-    (rootMultiplicity_pos hT_ne).mp (by omega)
+    (rootMultiplicity_pos hT_ne).mp (by lia)
   have hT_deriv_root : (TDeriv eps p).derivative.IsRoot a := by
-    have h2 : 2 ≤ (TDeriv eps p).rootMultiplicity a := by omega
+    have h2 : 2 ≤ (TDeriv eps p).rootMultiplicity a := by lia
     have hdvd := pow_rootMultiplicity_dvd (TDeriv eps p) a
     have hdvd2 : (X - C a) ^ 2 ∣ TDeriv eps p := (pow_dvd_pow _ h2).trans hdvd
     have hdvd1 : (X - C a) ^ 1 ∣ (TDeriv eps p).derivative :=
@@ -1222,18 +1212,18 @@ lemma rootMultiplicity_eq_succ_of_TDeriv_ge_two
   have hroot : p.IsRoot a := by
     by_contra ha
     have := rootMultiplicity_TDeriv_le_one_of_not_isRoot heps hp hdeg ha
-    omega
+    lia
   -- rootMultiplicity a p can't be 1 (simple root vanishes)
   have h2 : 2 ≤ p.rootMultiplicity a := by
     have h1 := (rootMultiplicity_pos hp.1).mpr hroot
     by_contra hlt; push Not at hlt
-    have h1eq : p.rootMultiplicity a = 1 := by omega
+    have h1eq : p.rootMultiplicity a = 1 := by lia
     have := not_isRoot_TDeriv_of_simple_root (ne_of_gt heps) hp.1 hroot h1eq
-    exact this ((rootMultiplicity_pos (TDeriv_ne_zero hp.1 hdeg)).mp (by omega))
+    exact this ((rootMultiplicity_pos (TDeriv_ne_zero hp.1 hdeg)).mp (by lia))
   -- Exact formula from rootMultiplicity_TDeriv_of_multiple
   rw [rootMultiplicity_TDeriv_of_multiple (ne_of_gt heps) hp.1 h2
       (TDeriv_ne_zero hp.1 hdeg)]
-  omega
+  lia
 
 /-- Exact multiplicity transport along the `iterateTDeriv` chain as long as the
 root has not yet vanished. This is the algebraic core behind the
@@ -1258,9 +1248,9 @@ lemma rootMultiplicity_iterateTDeriv_eq_tsub
         simpa [q] using ih hp hn'
       have hq_mult_pos : 1 ≤ q.rootMultiplicity a := by
         rw [hq_mult]
-        omega
+        lia
       have hq_root : q.IsRoot a := by
-        exact (rootMultiplicity_pos hq_rr.1).mp (by omega)
+        exact (rootMultiplicity_pos hq_rr.1).mp (by lia)
       by_cases hq_simple : q.rootMultiplicity a = 1
       · have hnot_root : ¬ (TDeriv eps q).IsRoot a :=
           not_isRoot_TDeriv_of_simple_root
@@ -1270,8 +1260,8 @@ lemma rootMultiplicity_iterateTDeriv_eq_tsub
         have hmult_eq_one : p.rootMultiplicity a - n = 1 := by
           simpa [hq_mult] using hq_simple
         rw [hrootmult_zero]
-        omega
-      · have hq_mult_ge2 : 2 ≤ q.rootMultiplicity a := by omega
+        lia
+      · have hq_mult_ge2 : 2 ≤ q.rootMultiplicity a := by lia
         have hq_deg : 1 ≤ q.natDegree := by
           calc
             1 ≤ q.rootMultiplicity a := hq_mult_pos
@@ -1281,7 +1271,7 @@ lemma rootMultiplicity_iterateTDeriv_eq_tsub
         have hT_ne : TDeriv eps q ≠ 0 := TDeriv_ne_zero hq_rr.1 hq_deg
         rw [rootMultiplicity_TDeriv_of_multiple (ne_of_gt heps) hq_rr.1 hq_mult_ge2 hT_ne,
           hq_mult]
-        omega
+        lia
 
 /--
 Chudnovsky--Seymour style iterate (Ryder, Lemma 6.4): for `ε > 0` and `deg f = n`,
@@ -1302,7 +1292,7 @@ theorem isRealRooted_and_hasSimpleRoots_iterateTDeriv
   by_contra hmult; push Not at hmult
   have hne : iterateTDeriv eps n f ≠ 0 := (isRealRooted_iterateTDeriv heps hf).1
   have hge2 : 2 ≤ (iterateTDeriv eps n f).rootMultiplicity a := by
-    have := (rootMultiplicity_pos hne).mpr ha; omega
+    have := (rootMultiplicity_pos hne).mpr ha; lia
   -- Backward induction: mult at step k ≥ 2 + (n - k)
   -- We prove this by induction on j = n - k (distance from the end)
   have step : ∀ j, j ≤ n →
@@ -1312,17 +1302,17 @@ theorem isRealRooted_and_hasSimpleRoots_iterateTDeriv
     | zero => intro _; simpa using hge2
     | succ j ih =>
       intro hj
-      have hprev := ih (by omega)
+      have hprev := ih (by lia)
       -- At step n - j: mult ≥ 2 + j ≥ 2
       -- iterateTDeriv eps (n - j) f = TDeriv eps (iterateTDeriv eps (n - j - 1) f)
-      have hstep : n - j = (n - (j + 1)) + 1 := by omega
+      have hstep : n - j = (n - (j + 1)) + 1 := by lia
       rw [hstep, iterateTDeriv_succ] at hprev
       have hp_rr := isRealRooted_iterateTDeriv (eps := eps) (k := n - (j + 1)) heps hf
       have hp_deg : 1 ≤ (iterateTDeriv eps (n - (j + 1)) f).natDegree := by
-        rw [natDegree_iterateTDeriv hf.1 (by omega)]; omega
+        rw [natDegree_iterateTDeriv hf.1 (by lia)]; lia
       have := rootMultiplicity_eq_succ_of_TDeriv_ge_two heps hp_rr hp_deg
         (by linarith)
-      omega
+      lia
   -- At j = n (step 0): rootMultiplicity a f ≥ 2 + n
   have h0 := step n le_rfl
   simp at h0
@@ -1333,6 +1323,6 @@ theorem isRealRooted_and_hasSimpleRoots_iterateTDeriv
       _ ≤ f.roots.card := f.roots.count_le_card a
       _ ≤ f.natDegree := card_roots' f
       _ = n := hdeg
-  omega
+  lia
 
 end RealRooted

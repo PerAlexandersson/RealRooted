@@ -149,7 +149,7 @@ private lemma natDegree_bounds_of_prec_local {f g : ℝ[X]} (hfg : Prec f g) :
     rw [← Multiset.coe_card, hss_eq, hf.2]
   have hrs_len : rs.length = g.natDegree := by
     rw [← Multiset.coe_card, hrs_eq, hg.2]
-  rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩ <;> omega
+  rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩ <;> lia
 
 /-- Translation-invariant form of
 `listInterlaces_of_listAlternates_append_zero`: if a same-degree alternating
@@ -520,9 +520,9 @@ private theorem interlaces_of_consecutive_signs_of_natDegree_lt
   have hus_len_f : us.length = f.natDegree - 1 := by
     rwa [hrs_len] at hus_len
   have hdeg : F.natDegree + 1 = f.natDegree := by
-    omega
+    lia
   have hus_len_deg : us.length = F.natDegree := by
-    omega
+    lia
   have hus_eq : (↑us : Multiset ℝ) = F.roots :=
     Multiset.eq_of_le_of_card_le hus_sub (by
       calc
@@ -839,7 +839,7 @@ private lemma wronskian_eval_ne_zero_of_eq_zero_or_simple_combo
       exact (one_lt_rootMultiplicity_iff_isRoot hp_ne).2 ⟨hp_root, hp_der_root⟩
     have hsimple := hp_simple x hp_root
     rw [hsimple] at hmult
-    omega
+    lia
 
 private lemma hasSimpleRoots_combo_of_wronskian_eval_ne_zero
     {f g : ℝ[X]} {α β : ℝ}
@@ -856,7 +856,7 @@ private lemma hasSimpleRoots_combo_of_wronskian_eval_ne_zero
     have hmult_ge1 : 1 ≤ p.rootMultiplicity r := Nat.succ_le_of_lt hmult_pos
     have hmult_not1 : p.rootMultiplicity r ≠ 1 := by
       simpa using hmult_ne
-    omega
+    lia
   have hder_root : p.derivative.IsRoot r :=
     isRoot_derivative_of_rootMultiplicity_ge_two hmult_ge2
   have hp_eval : p.eval r = 0 := by
@@ -986,7 +986,7 @@ private lemma eval_derivative_ne_zero_of_hasSimpleRoots
   have hmult : 1 < p.rootMultiplicity r := by
     exact (one_lt_rootMultiplicity_iff_isRoot hp0).2 ⟨hr, hder_root⟩
   rw [hsimple r hr] at hmult
-  omega
+  lia
 
 /-- An exact double root has nonvanishing second derivative. This is the local
 algebraic fact used to turn the final converse obstruction into a quantified
@@ -1015,7 +1015,7 @@ private lemma eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
   have hmult_gt : 1 < p.derivative.rootMultiplicity x := by
     exact (one_lt_rootMultiplicity_iff_isRoot hpd_ne).2 ⟨hpd_root, hpd_der_root⟩
   rw [hpd_rootmult] at hmult_gt
-  omega
+  lia
 
 /-- Local double-root obstruction in the positive-sign case.
 
@@ -1112,7 +1112,7 @@ private lemma false_of_allComboRealRooted_of_double_root_and_eval_ne_of_pos
     exact mul_ne_zero hβ_ne hq_eval_ne
   have hcombo_deg_ge2 : 2 ≤ (C 1 * p + C β * q).natDegree := by
     by_contra hlt
-    have hdeg_lt2 : (C 1 * p + C β * q).natDegree < 2 := by omega
+    have hdeg_lt2 : (C 1 * p + C β * q).natDegree < 2 := by lia
     have hder2_zero : (derivative^[2]) (C 1 * p + C β * q) = 0 :=
       iterate_derivative_eq_zero hdeg_lt2
     have hder2_eval_zero :
@@ -1122,7 +1122,7 @@ private lemma false_of_allComboRealRooted_of_double_root_and_eval_ne_of_pos
       simpa using hder2_eval_zero
     exact hcombo_der2_ne this
   have hineq_raw :=
-    deriv2_mul_lt_deriv_sq_at_non_root hcombo_rr (by omega) hcombo_eval_ne
+    deriv2_mul_lt_deriv_sq_at_non_root hcombo_rr (by lia) hcombo_eval_ne
   have hineq : A < β * B := by
     dsimp [A, B, pp, qx, qp, qq]
     have hineq' := hineq_raw
@@ -1276,7 +1276,7 @@ private lemma no_common_root_iterateTDeriv_of_allComboRealRooted
             C β * iterateTDeriv eps (max f.natDegree g.natDegree) g).rootMultiplicity r := by
       exact (one_lt_rootMultiplicity_iff_isRoot hp_ne).2 ⟨hp_root, hp_der_root⟩
     rw [hp_simple r hp_root] at hmult
-    omega
+    lia
 
 private lemma derivative_sign_at_consecutive_simple_roots
     {f : ℝ[X]} (hf : IsRealRooted f) (hsimple : HasSimpleRoots f)
@@ -1312,16 +1312,6 @@ private lemma wronskian_eval_mul_pos_of_le_of_eq_zero_or_simple_combo
   exact
     (wronskian_eval_ne_zero_of_eq_zero_or_simple_combo
       hf hg hcombo hdeg_pos hno (x := z)) hz_eval0
-
-private lemma hasPosLeadingCoeff_derivative_of_pos
-    {f : ℝ[X]} (hf_pos : HasPosLeadingCoeff f) (hdeg : 1 ≤ f.natDegree) :
-    HasPosLeadingCoeff f.derivative := by
-  unfold HasPosLeadingCoeff at hf_pos ⊢
-  rw [leadingCoeff, natDegree_derivative_eq hdeg, coeff_derivative]
-  rw [Nat.sub_add_cancel hdeg, coeff_natDegree] at *
-  have hdeg_pos : 0 < (f.natDegree : ℝ) := by
-    exact_mod_cast hdeg
-  nlinarith
 
 private lemma hasSimpleRoots_of_eq_zero_or_isRealRooted_and_hasSimpleRoots_left
     {f g : ℝ[X]}
@@ -1384,31 +1374,17 @@ private theorem prec_or_revPrec_of_eq_zero_or_simple_combo_sameDegree
     · exact Or.inr ⟨by simp, by simp [ListAlternates]⟩
   by_cases hdeg1 : f.natDegree = 1
   · exact PosComboRealRooted.prec_or_revPrec_of_same_degree_one hdeg hdeg1
-  have hdeg_ge2 : 2 ≤ f.natDegree := by omega
+  have hdeg_ge2 : 2 ≤ f.natDegree := by lia
   have hgdeg_ge2 : 2 ≤ g.natDegree := by rw [hdeg]; exact hdeg_ge2
-  have hW_ne : ∀ x : ℝ, (wronskian f g).eval x ≠ 0 := by
-    intro x
-    have hdeg_pos : 0 < max f.natDegree g.natDegree := by
-      rw [hdeg]
-      omega
-    exact
-      wronskian_eval_ne_zero_of_eq_zero_or_simple_combo
-        hf hg hcombo hdeg_pos hno (x := x)
-  have hW_prod :
-      ∀ {x y : ℝ}, x ≤ y → 0 < (wronskian f g).eval x * (wronskian f g).eval y := by
-    intro x y hxy
-    have hdeg_pos : 0 < max f.natDegree g.natDegree := by
-      rw [hdeg]
-      omega
-    exact
-      wronskian_eval_mul_pos_of_le_of_eq_zero_or_simple_combo
-        hf hg hcombo hdeg_pos hno hxy
-  have hf'_pos :
-      HasPosLeadingCoeff f.derivative :=
-    hasPosLeadingCoeff_derivative_of_pos hf_pos (by omega)
+  have hW_ne x : (wronskian f g).eval x ≠ 0 :=
+    wronskian_eval_ne_zero_of_eq_zero_or_simple_combo hf hg hcombo (by grind) hno (x := x)
+  have hW_prod {x y : ℝ} : x ≤ y → 0 < (wronskian f g).eval x * (wronskian f g).eval y :=
+    wronskian_eval_mul_pos_of_le_of_eq_zero_or_simple_combo hf hg hcombo (by grind) hno
+  have hf'_pos : HasPosLeadingCoeff f.derivative :=
+    hasPosLeadingCoeff_derivative hf_pos (by lia)
   have hg'_pos :
       HasPosLeadingCoeff g.derivative :=
-    hasPosLeadingCoeff_derivative_of_pos hg_pos (by omega)
+    hasPosLeadingCoeff_derivative hg_pos (by lia)
   by_cases hWneg0 : (wronskian f g).eval 0 < 0
   · have hWneg : ∀ x : ℝ, (wronskian f g).eval x < 0 := by
       intro x
@@ -1473,7 +1449,7 @@ private lemma interlaces_derivative_of_degree_pos
     Interlaces f.derivative f := by
   by_cases hdeg1 : f.natDegree = 1
   · have hf'_pos : HasPosLeadingCoeff f.derivative :=
-      hasPosLeadingCoeff_derivative_of_pos hf_pos hdeg
+      hasPosLeadingCoeff_derivative hf_pos hdeg
     have hf'_ne : f.derivative ≠ 0 := by
       intro h0
       simp [HasPosLeadingCoeff, h0] at hf'_pos
@@ -1484,7 +1460,7 @@ private lemma interlaces_derivative_of_degree_pos
     exact
       (prec_degree_zero_right_of_degree_one hf'_rr hf hf'_deg0 hdeg1).toInterlaces
         (by rw [hf'_deg0, hdeg1])
-  · have hdeg_ge2 : 2 ≤ f.natDegree := by omega
+  · have hdeg_ge2 : 2 ≤ f.natDegree := by lia
     exact derivative_interlaces hf hdeg_ge2
 
 private lemma wronskian_coeff_top_succ
@@ -1495,7 +1471,7 @@ private lemma wronskian_coeff_top_succ
   have hf'_deg : f.derivative.natDegree = f.natDegree - 1 :=
     natDegree_derivative_eq hf_deg_pos
   have hg'_deg : g.derivative.natDegree = g.natDegree - 1 :=
-    natDegree_derivative_eq (by omega)
+    natDegree_derivative_eq (by lia)
   have hf'_lc : f.derivative.leadingCoeff = (f.natDegree : ℝ) * f.leadingCoeff := by
     unfold Polynomial.leadingCoeff
     rw [hf'_deg, coeff_derivative, Nat.sub_add_cancel hf_deg_pos, coeff_natDegree]
@@ -1509,11 +1485,11 @@ private lemma wronskian_coeff_top_succ
       _ = (f.natDegree : ℝ) * f.leadingCoeff := by ring
   have hg'_lc : g.derivative.leadingCoeff = (g.natDegree : ℝ) * g.leadingCoeff := by
     unfold Polynomial.leadingCoeff
-    rw [hg'_deg, coeff_derivative, Nat.sub_add_cancel (by omega), coeff_natDegree]
+    rw [hg'_deg, coeff_derivative, Nat.sub_add_cancel (by lia), coeff_natDegree]
     have hnat : (↑(g.natDegree - 1) : ℝ) + 1 = g.natDegree := by
       simpa [add_comm] using
         (show (((g.natDegree - 1 : ℕ) : ℝ) + 1 = g.natDegree) by
-          exact_mod_cast Nat.sub_add_cancel (show 1 ≤ g.natDegree by omega))
+          exact_mod_cast Nat.sub_add_cancel (show 1 ≤ g.natDegree by lia))
     calc
       g.leadingCoeff * (↑(g.natDegree - 1) + 1)
           = g.leadingCoeff * g.natDegree := by rw [hnat]
@@ -1522,13 +1498,13 @@ private lemma wronskian_coeff_top_succ
       (g * f.derivative).coeff (2 * f.natDegree) = g.leadingCoeff * f.derivative.leadingCoeff := by
     have htop : g.natDegree + f.derivative.natDegree = 2 * f.natDegree := by
       rw [hf'_deg, hdeg]
-      omega
+      lia
     simpa [htop] using coeff_mul_degree_add_degree g f.derivative
   have hcoeff_fg' :
       (f * g.derivative).coeff (2 * f.natDegree) = f.leadingCoeff * g.derivative.leadingCoeff := by
     have htop : f.natDegree + g.derivative.natDegree = 2 * f.natDegree := by
       rw [hg'_deg, hdeg]
-      omega
+      lia
     simpa [htop] using coeff_mul_degree_add_degree f g.derivative
   have hdegR : (g.natDegree : ℝ) = f.natDegree + 1 := by
     exact_mod_cast hdeg
@@ -1551,13 +1527,13 @@ private lemma wronskian_natDegree_succ
       (g * f.derivative).natDegree ≤ g.natDegree + f.derivative.natDegree := natDegree_mul_le
       _ = 2 * f.natDegree := by
         rw [natDegree_derivative_eq hf_deg_pos, hdeg]
-        omega
+        lia
   have hfg'_le : (f * g.derivative).natDegree ≤ 2 * f.natDegree := by
     calc
       (f * g.derivative).natDegree ≤ f.natDegree + g.derivative.natDegree := natDegree_mul_le
       _ = 2 * f.natDegree := by
-        rw [natDegree_derivative_eq (by omega), hdeg]
-        omega
+        rw [natDegree_derivative_eq (by lia), hdeg]
+        lia
   have hW_le : (wronskian f g).natDegree ≤ 2 * f.natDegree := by
     unfold wronskian
     calc
@@ -1592,24 +1568,11 @@ private theorem prec_of_eq_zero_or_simple_combo_succDegree
   by_cases hdeg0 : f.natDegree = 0
   · have hgdeg1 : g.natDegree = 1 := by simpa [hdeg0] using hdeg
     exact prec_degree_zero_right_of_degree_one hf hg hdeg0 hgdeg1
-  have hf_deg_pos : 1 ≤ f.natDegree := by omega
-  have hW_ne : ∀ x : ℝ, (wronskian f g).eval x ≠ 0 := by
-    intro x
-    have hdeg_pos : 0 < max f.natDegree g.natDegree := by
-      rw [hdeg]
-      omega
-    exact
-      wronskian_eval_ne_zero_of_eq_zero_or_simple_combo
-        hf hg hcombo hdeg_pos hno (x := x)
-  have hW_prod :
-      ∀ {x y : ℝ}, x ≤ y → 0 < (wronskian f g).eval x * (wronskian f g).eval y := by
-    intro x y hxy
-    have hdeg_pos : 0 < max f.natDegree g.natDegree := by
-      rw [hdeg]
-      omega
-    exact
-      wronskian_eval_mul_pos_of_le_of_eq_zero_or_simple_combo
-        hf hg hcombo hdeg_pos hno hxy
+  have hf_deg_pos : 1 ≤ f.natDegree := by lia
+  have hW_ne x : (wronskian f g).eval x ≠ 0 :=
+    wronskian_eval_ne_zero_of_eq_zero_or_simple_combo hf hg hcombo (by grind) hno
+  have hW_prod {x y : ℝ} : x ≤ y → 0 < (wronskian f g).eval x * (wronskian f g).eval y :=
+    wronskian_eval_mul_pos_of_le_of_eq_zero_or_simple_combo hf hg hcombo (by grind) hno
   have hq_pos : HasPosLeadingCoeff (-wronskian f g) := by
     unfold HasPosLeadingCoeff
     rw [leadingCoeff_neg, leadingCoeff_wronskian_succ hdeg hf_pos hg_pos hf_deg_pos]
@@ -1617,7 +1580,7 @@ private theorem prec_of_eq_zero_or_simple_combo_succDegree
   have hq_deg_pos : 0 < (-wronskian f g).degree := by
     have hnat : 0 < (-wronskian f g).natDegree := by
       rw [natDegree_neg, wronskian_natDegree_succ hdeg hf_pos hg_pos hf_deg_pos]
-      omega
+      lia
     exact natDegree_pos_iff_degree_pos.mp hnat
   have hq_even : Even (-wronskian f g).natDegree := by
     rw [natDegree_neg, wronskian_natDegree_succ hdeg hf_pos hg_pos hf_deg_pos]
@@ -1638,7 +1601,7 @@ private theorem prec_of_eq_zero_or_simple_combo_succDegree
       have hprod := hW_prod hx₀x
       nlinarith
   have hf'_pos : HasPosLeadingCoeff f.derivative :=
-    hasPosLeadingCoeff_derivative_of_pos hf_pos hf_deg_pos
+    hasPosLeadingCoeff_derivative hf_pos hf_deg_pos
   have hder : Interlaces f.derivative f :=
     interlaces_derivative_of_degree_pos hf hf_pos hf_deg_pos
   have hroot_sign :
@@ -1855,7 +1818,7 @@ private theorem prec_iterateTDeriv_of_allComboRealRooted_succ_of_no_common
   rcases hprec_iter with hfg | hgf
   · exact hfg
   · have hbounds := natDegree_bounds_of_prec_local hgf
-    omega
+    lia
 
 /-- Every element of the left-hand list is bounded by the rightmost element of
 the right-hand list in a nonempty `ListInterlaces` layout.
@@ -1915,13 +1878,13 @@ private theorem isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
   have hrs_ne : rs ≠ [] := by
     intro hrs_nil
     simp [hrs_nil] at hrs_len
-    omega
+    lia
   have hus_sub : (↑us : Multiset ℝ) ≤ F.roots := by
     rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr (hus_pw.imp ne_of_lt))]
     intro x hx
     exact (mem_roots hF_ne).mpr (hus_roots x (Multiset.mem_coe.mp hx))
   have hus_len_deg : us.length = F.natDegree - 1 := by
-    omega
+    lia
   rcases houter with ⟨uL, huL_root, huL_lt⟩ | ⟨uR, huR_root, huR_lt⟩
   · obtain ⟨r₀, rs', hrs_cons⟩ : ∃ r₀ rs', rs = r₀ :: rs' := by
       cases h : rs with
@@ -1952,7 +1915,7 @@ private theorem isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
     have hws_len : (uL :: us).length = F.natDegree := by
       calc
         (uL :: us).length = us.length + 1 := by simp
-        _ = F.natDegree := by omega
+        _ = F.natDegree := by lia
     have hws_eq : (↑(uL :: us) : Multiset ℝ) = F.roots :=
       Multiset.eq_of_le_of_card_le hws_sub (by
         calc
@@ -1989,7 +1952,7 @@ private theorem isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
     have hws_len : (us ++ [uR]).length = F.natDegree := by
       calc
         (us ++ [uR]).length = us.length + 1 := by simp
-        _ = F.natDegree := by omega
+        _ = F.natDegree := by lia
     have hws_eq : (↑(us ++ [uR]) : Multiset ℝ) = F.roots :=
       Multiset.eq_of_le_of_card_le hws_sub (by
         calc
@@ -2011,7 +1974,7 @@ private lemma exists_rightmost_root_of_isRealRooted
   have hrs_ne : rs ≠ [] := by
     intro hrs_nil
     simp [hrs_nil] at hrs_len
-    omega
+    lia
   refine ⟨rs.getLast hrs_ne, ?_, ?_⟩
   · have hr_mem : rs.getLast hrs_ne ∈ rs := List.getLast_mem hrs_ne
     have : rs.getLast hrs_ne ∈ p.roots := by
@@ -2104,7 +2067,7 @@ private theorem isRealRooted_of_interlaces_eval_mul_neg_same_any_lc
       hss_eq, hint⟩
   have hF_natdeg_pos : 0 < F.natDegree := by
     rw [hdeg]
-    omega
+    lia
   have hF_ne : F ≠ 0 := by
     intro h0
     simp [h0] at hF_natdeg_pos
@@ -2117,7 +2080,7 @@ private theorem isRealRooted_of_interlaces_eval_mul_neg_same_any_lc
   have hrs_ne : rs ≠ [] := by
     intro hrs_nil
     simp [hrs_nil] at hrs_len
-    omega
+    lia
   obtain ⟨r₀, rs', hrs_cons⟩ : ∃ r₀ rs', rs = r₀ :: rs' := by
     cases h : rs with
     | nil => cases (hrs_ne h)
@@ -2179,11 +2142,11 @@ private theorem isRealRooted_of_interlaces_eval_mul_neg_same_any_lc
     rw [natDegree_C_mul (by norm_num : (-1 : ℝ) ≠ 0), hdeg]
   have hnegF_natdeg_pos : 0 < (C (-1 : ℝ) * F).natDegree := by
     rw [hnegF_deg]
-    omega
+    lia
   have hnegF_deg_pos : 0 < (C (-1 : ℝ) * F).degree :=
     natDegree_pos_iff_degree_pos.mp hnegF_natdeg_pos
   have hg_natdeg_pos : 1 ≤ g.natDegree := by
-    omega
+    lia
   have hg_deg_pos : 0 < g.degree := natDegree_pos_iff_degree_pos.mp hg_natdeg_pos
   have hleft :
       ∃ uL, F.IsRoot uL ∧ ∀ r, f.IsRoot r → uL < r := by
@@ -2191,9 +2154,9 @@ private theorem isRealRooted_of_interlaces_eval_mul_neg_same_any_lc
     · have hg_odd : Odd g.natDegree := by
         rcases hf_even with ⟨k, hk⟩
         have hk_pos : 0 < k := by
-          omega
+          lia
         refine ⟨k - 1, ?_⟩
-        omega
+        lia
       have hg_left_neg : g.eval r₀ < 0 :=
         eval_neg_of_all_roots_gt_of_odd_local hg hg_pos hg_deg_pos hg_odd hhead_lt_roots_g
       have hF_left_pos : 0 < F.eval r₀ := by
@@ -2236,7 +2199,7 @@ private theorem isRealRooted_of_interlaces_eval_mul_neg_same_any_lc
     · have hg_even : Even g.natDegree := by
         rcases hf_odd with ⟨k, hk⟩
         refine ⟨k, ?_⟩
-        omega
+        lia
       have hg_left_pos : 0 < g.eval r₀ :=
         eval_pos_of_all_roots_gt_of_even_local hg hg_pos hg_deg_pos hg_even hhead_lt_roots_g
       have hF_left_neg : F.eval r₀ < 0 := by
@@ -2278,7 +2241,7 @@ private theorem isRealRooted_of_interlaces_eval_mul_neg_same_any_lc
       exact lt_of_lt_of_le huL_lt_r₀ hr₀_le_r
   exact
     isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
-      hf hF_ne hdeg (by omega) hsign (Or.inl hleft)
+      hf hF_ne hdeg (by lia) hsign (Or.inl hleft)
 
 /-- If all roots of `p'` are at most `c`, then `p.eval` is strictly increasing
 on `[c, +∞)`. This is the analytic core of the degree-gap argument: once the
@@ -2315,7 +2278,7 @@ private lemma exists_root_ge_of_derivative_root
   have hrs_ne : rs ≠ [] := by
     intro hrs_nil
     simp [hrs_nil] at hrs_len
-    omega
+    lia
   have hc_mem : c ∈ ss := by
     apply Multiset.mem_coe.mp
     rw [hss_eq]
@@ -2372,11 +2335,11 @@ private lemma exists_rightmost_derivative_root_with_eval_nonpos
       p.eval c ≤ 0 := by
   have hp' : IsRealRooted p.derivative := (derivative_interlaces hp hdeg).2.1
   have hp'_pos : HasPosLeadingCoeff p.derivative :=
-    hasPosLeadingCoeff_derivative_of_pos hp_pos (by omega)
+    hasPosLeadingCoeff_derivative hp_pos (by lia)
   have hp'_deg : p.derivative.natDegree = p.natDegree - 1 :=
-    natDegree_derivative_eq (by omega)
+    natDegree_derivative_eq (by lia)
   obtain ⟨c, hc_root, hc_top⟩ :=
-    exists_rightmost_root_of_isRealRooted hp' (by rw [hp'_deg]; omega)
+    exists_rightmost_root_of_isRealRooted hp' (by rw [hp'_deg]; lia)
   have hnonpos : p.eval c ≤ 0 := by
     by_contra hpc
     have hmono :
@@ -2412,7 +2375,7 @@ private lemma exists_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
   have hqdeg : 2 ≤ (C t + p).natDegree := by
     rw [natDegree_add_eq_right_of_natDegree_lt (by
       rw [natDegree_C]
-      omega)]
+      lia)]
     exact hdeg
   have hq'_rr : IsRealRooted (C t + p).derivative := (derivative_interlaces hq hqdeg).2.1
   have hmono :
@@ -2421,7 +2384,7 @@ private lemma exists_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
       simp
     refine strictMonoOn_eval_Ici_of_derivative_roots_le ?_ ?_ ?_
     · simpa [hder_eq] using hq'_rr
-    · simpa [hder_eq] using hasPosLeadingCoeff_derivative_of_pos hp_pos (by omega)
+    · simpa [hder_eq] using hasPosLeadingCoeff_derivative hp_pos (by lia)
     · intro s hs
       have hs' : s ∈ p.derivative.roots := by
         simpa [hder_eq] using hs
@@ -2470,7 +2433,7 @@ private theorem not_allComboRealRooted_const_left_of_natDegree_ge_two_of_pos
         p = -C t + (C t + p) := by ring
         _ = -C t := by simp [hzero]
     rw [hp_const, natDegree_neg, natDegree_C] at hdeg
-    omega
+    lia
   · exact ht hrr
 
 /-- Sign-normalized version of the constant-vs-degree-`≥ 2` obstruction.
@@ -2539,14 +2502,14 @@ private theorem not_degree_gap_ge_two_of_allComboRealRooted
     exact hfN_C
   have hgN_deg : gN.natDegree = g.natDegree - n := by
     dsimp [gN, n]
-    exact natDegree_iterate_derivative_eq_sub hg0 (by omega)
+    exact natDegree_iterate_derivative_eq_sub hg0 (by lia)
   have hgN_deg_ge2 : 2 ≤ gN.natDegree := by
     rw [hgN_deg]
     dsimp [n]
-    omega
+    lia
   have hgN_ne : gN ≠ 0 := by
     dsimp [gN, n]
-    exact iterate_derivative_ne_zero_of_le_natDegree hg0 (by omega)
+    exact iterate_derivative_ne_zero_of_le_natDegree hg0 (by lia)
   have hgN_rr : IsRealRooted gN := by
     rcases hallN 0 1 with hzero | hrr
     · exact False.elim (hgN_ne (by simpa [fN, gN, add_comm] using hzero))
@@ -2572,9 +2535,9 @@ theorem natDegree_close_of_allComboRealRooted
   · by_contra hfg
     exact
       not_degree_gap_ge_two_of_allComboRealRooted
-        (f := g) (g := f) (allComboRealRooted_comm hall) hg0 hf0 (by omega)
+        (f := g) (g := f) (allComboRealRooted_comm hall) hg0 hf0 (by lia)
   · by_contra hgf
-    exact not_degree_gap_ge_two_of_allComboRealRooted hall hf0 hg0 (by omega)
+    exact not_degree_gap_ge_two_of_allComboRealRooted hall hf0 hg0 (by lia)
 
 /-- Equivalent trichotomy form of `natDegree_close_of_allComboRealRooted`. -/
 theorem natDegree_eq_or_succ_or_revSucc_of_allComboRealRooted
@@ -2585,7 +2548,7 @@ theorem natDegree_eq_or_succ_or_revSucc_of_allComboRealRooted
       f.natDegree + 1 = g.natDegree ∨
       g.natDegree + 1 = f.natDegree := by
   rcases natDegree_close_of_allComboRealRooted hall hf0 hg0 with ⟨hfg, hgf⟩
-  omega
+  lia
 
 private theorem prec_of_allComboRealRooted_of_no_common
     (hstep :
@@ -2634,14 +2597,14 @@ private theorem prec_of_allComboRealRooted_of_no_common
       · left
         rw [hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
           hqg, natDegree_mul (X_sub_C_ne_zero r) hqg_ne, natDegree_X_sub_C] at hsucc
-        omega
+        lia
       · right
         rw [hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
           hqg, natDegree_mul (X_sub_C_ne_zero r) hqg_ne, natDegree_X_sub_C] at hsame
-        omega
+        lia
     have hqf_deg_lt : qf.natDegree < n := by
       rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C]
-      omega
+      lia
     have hprec_q : Prec qf qg ∨ Prec qg qf :=
       ih qf.natDegree hqf_deg_lt rfl hqf_rr hqg_rr hqhall hqdeg
     rcases hprec_q with hprec_q | hprec_q
@@ -2842,8 +2805,8 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
           (IsRealRooted (C α * f + C β * g) ∧
             HasSimpleRoots (C α * f + C β * g)) := by
     by_cases hmax0 : max f.natDegree g.natDegree = 0
-    · have hfdeg0 : f.natDegree = 0 := by omega
-      have hgdeg0 : g.natDegree = 0 := by omega
+    · have hfdeg0 : f.natDegree = 0 := by grind
+      have hgdeg0 : g.natDegree = 0 := by grind
       have hfC : f = C (f.coeff 0) := eq_C_of_natDegree_eq_zero hfdeg0
       have hgC : g = C (g.coeff 0) := eq_C_of_natDegree_eq_zero hgdeg0
       intro α β
@@ -2940,8 +2903,8 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
                             field_simp [hgx_ne]
                   have hdeg_eq : f.natDegree = g.natDegree := by
                     rw [hscalar, natDegree_C_mul (div_ne_zero hfx0 hgx_ne)]
-                  omega
-                · have hgdeg0 : g.natDegree = 0 := by omega
+                  lia
+                · have hgdeg0 : g.natDegree = 0 := by lia
                   have hmax0' : max f.natDegree g.natDegree = 0 := by
                     simp [hfdeg0, hgdeg0]
                   exact (Nat.ne_of_gt hmax_pos) hmax0'
@@ -2953,7 +2916,7 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
           simpa [Polynomial.IsRoot.def] using hq_eval_ne
         have hp_mult_gt : 1 < p.rootMultiplicity x := by
           exact (one_lt_rootMultiplicity_iff_isRoot hp0).2 ⟨hp_root, hp_der_root⟩
-        have hp_mult_ge2 : 2 ≤ p.rootMultiplicity x := by omega
+        have hp_mult_ge2 : 2 ≤ p.rootMultiplicity x := by lia
         /-
         Final local contradiction.
 
@@ -2988,7 +2951,7 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
           simpa [Polynomial.IsRoot.def] using hqk_not_root_x
         have hk_le : k ≤ p.rootMultiplicity x := by
           dsimp [k, m]
-          omega
+          lia
         have hpk_mult :
             (iterateTDeriv η k p).rootMultiplicity x = 2 := by
           calc
@@ -2996,7 +2959,7 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
               exact rootMultiplicity_iterateTDeriv_eq_tsub hη_pos hp_rr hk_le
             _ = 2 := by
               dsimp [k, m]
-              omega
+              lia
         have hpq_all_k :
             AllComboRealRooted (iterateTDeriv η k p) (iterateTDeriv η k q) :=
           allComboRealRooted_iterateTDeriv hpq_all hη_pos k
@@ -3018,7 +2981,7 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
       rcases hprec_or with hfg | hgf
       · exact hfg
       · have hbounds := natDegree_bounds_of_prec_local hgf
-        omega
+        lia
     · intro hsame
       exact
         prec_of_eq_zero_or_simple_combo_of_no_common
@@ -3070,7 +3033,7 @@ private theorem allComboRealRooted_of_prec_succDegree_pos
               (C (-α) * f).natDegree < (C (-β) * g).natDegree := by
             rw [natDegree_C_mul (show -α ≠ 0 by linarith),
               natDegree_C_mul (show -β ≠ 0 by linarith)]
-            omega
+            lia
           exact
             hasPosLeadingCoeff_add_of_natDegree_lt_left
               hdeg_scaled
@@ -3081,7 +3044,7 @@ private theorem allComboRealRooted_of_prec_succDegree_pos
               (C (-α) * f).natDegree < (C (-β) * g).natDegree := by
             rw [natDegree_C_mul (show -α ≠ 0 by linarith),
               natDegree_C_mul (show -β ≠ 0 by linarith)]
-            omega
+            lia
           calc
             (C (-β) * g + C (-α) * f).natDegree = (C (-β) * g).natDegree := by
               exact natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff hdeg_scaled
@@ -3093,7 +3056,7 @@ private theorem allComboRealRooted_of_prec_succDegree_pos
             rw [hmix_deg]
           have hmix_hi : (C (-β) * g + C (-α) * f).natDegree ≤ g.natDegree + 1 := by
             rw [hmix_deg]
-            omega
+            lia
           have hprec_mix :
               Prec g (C (-β) * g + C (-α) * f) :=
             prec_of_interlaces_evalCoeff_nonpos
@@ -3130,7 +3093,7 @@ private theorem allComboRealRooted_of_prec_succDegree_pos
           have hdeg_scaled :
               (C α * f).natDegree < (C β * g).natDegree := by
             rw [natDegree_C_mul (show α ≠ 0 by linarith), natDegree_C_mul hβ0]
-            omega
+            lia
           exact
             hasPosLeadingCoeff_add_of_natDegree_lt_left
               hdeg_scaled
@@ -3140,7 +3103,7 @@ private theorem allComboRealRooted_of_prec_succDegree_pos
           have hdeg_scaled :
               (C α * f).natDegree < (C β * g).natDegree := by
             rw [natDegree_C_mul (show α ≠ 0 by linarith), natDegree_C_mul hβ0]
-            omega
+            lia
           calc
             (C β * g + C α * f).natDegree = (C β * g).natDegree := by
               exact natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff hdeg_scaled
@@ -3150,7 +3113,7 @@ private theorem allComboRealRooted_of_prec_succDegree_pos
           rw [hmix_deg]
         have hmix_hi : (C β * g + C α * f).natDegree ≤ g.natDegree + 1 := by
           rw [hmix_deg]
-          omega
+          lia
         have hprec_mix :
             Prec g (C β * g + C α * f) :=
           prec_of_interlaces_evalCoeff_nonpos
@@ -3271,10 +3234,10 @@ private theorem allComboRealRooted_of_prec_sameDegree_of_no_common
     have hqdeg : qf.natDegree = qg.natDegree := by
       rw [hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
         hqg, natDegree_mul (X_sub_C_ne_zero r) hqg_ne, natDegree_X_sub_C] at hdeg
-      omega
+      lia
     have hqf_deg_lt : qf.natDegree < n := by
       rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C]
-      omega
+      lia
     have hprec_q : Prec qf qg := by
       apply prec_of_prec_mul_X_sub_C_both r
       simpa [hqf, hqg] using hfg
@@ -3310,12 +3273,12 @@ private lemma interlaces_of_prec_sameDegree_rightmost_factor
     exact ⟨X - C uR, by simp [hgq, mul_comm]⟩
   have hq_deg_g : q.natDegree + 1 = g.natDegree := by
     rw [hgq, natDegree_mul (X_sub_C_ne_zero uR) hq_ne, natDegree_X_sub_C]
-    omega
+    lia
   have hq_deg : q.natDegree + 1 = f.natDegree := by
-    omega
+    lia
   rcases hshape with ⟨hlen, _hint⟩ | ⟨_hlen, halt⟩
   · exfalso
-    omega
+    lia
   · let qs := q.roots.sort (· ≤ ·)
     have hqs_eq : (↑qs : Multiset ℝ) = q.roots := Multiset.sort_eq ..
     have hqs_sorted : qs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
@@ -3349,7 +3312,7 @@ private lemma interlaces_of_prec_sameDegree_rightmost_factor
         _ = (↑(qs ++ [uR]) : Multiset ℝ) := by rw [Multiset.coe_add]
     have hlen_qs : qs.length + 1 = ss.length := by
       rw [hqs_len, hss_len]
-      omega
+      lia
     have hint_qs : ListInterlaces qs ss := by
       have halt_right : ListAlternates ss (qs ++ [uR]) := by
         simpa [hrs_eq_right] using halt
@@ -3420,7 +3383,7 @@ private lemma prec_of_right_factor_combo_of_natDegree_ge
         natDegree_C, natDegree_X_sub_C]
       simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using hqf.2.2.1
     rw [hbeta_term_eq]
-    exact (le_trans hsum_le (max_le hscaled_le (le_of_eq hbeta_term_deg))).trans <| by omega
+    exact (le_trans hsum_le (max_le hscaled_le (le_of_eq hbeta_term_deg))).trans <| by lia
   have hb_neg : ∀ r, f.IsRoot r → (C β * (X - C uR)).eval r < 0 := by
     intro r hr
     rw [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_sub,
@@ -3513,11 +3476,11 @@ private theorem isRealRooted_of_right_factor_combo_posβ
     simpa using hsign_core
   by_cases hdeg_lt : F.natDegree < f.natDegree
   · exact (interlaces_of_consecutive_signs_of_natDegree_lt hf hF_ne' hdeg_lt hsign).2.1
-  · have hdeg_eq : F.natDegree = f.natDegree := by omega
+  · have hdeg_eq : F.natDegree = f.natDegree := by lia
     by_cases hdeg_one : f.natDegree = 1
-    · have hF_deg_one : F.natDegree = 1 := by omega
+    · have hF_deg_one : F.natDegree = 1 := by lia
       exact isRealRooted_of_degree_one hF_deg_one
-    · have hdeg_two : 2 ≤ f.natDegree := by omega
+    · have hdeg_two : 2 ≤ f.natDegree := by lia
       exact
         isRealRooted_of_interlaces_eval_mul_neg_same_any_lc
           hqf hq_pos hdeg_eq hdeg_two hroot_sign
@@ -3541,7 +3504,7 @@ private theorem allComboRealRooted_of_prec_sameDegree_pos_of_no_common
   · intro α β
     by_cases hcomb : C α * f + C β * g = 0
     · exact Or.inl hcomb
-    · have hgdeg0 : g.natDegree = 0 := by omega
+    · have hgdeg0 : g.natDegree = 0 := by lia
       have hfC : f = C (f.coeff 0) := eq_C_of_natDegree_eq_zero hdeg0
       have hgC : g = C (g.coeff 0) := eq_C_of_natDegree_eq_zero hgdeg0
       rw [hfC, hgC] at hcomb ⊢
@@ -3564,7 +3527,7 @@ private theorem allComboRealRooted_of_prec_sameDegree_pos_of_no_common
         exact congrArg natDegree hsum_eq
       rw [hroots_eq, hnat_eq, roots_C, natDegree_C]
       simp
-  have hdeg_pos : 1 ≤ f.natDegree := by omega
+  have hdeg_pos : 1 ≤ f.natDegree := by lia
   obtain ⟨uR, huR_root, huR_max⟩ :=
     exists_rightmost_root_of_isRealRooted hg (by rw [← hdeg]; exact hdeg_pos)
   obtain ⟨qg, hqg⟩ := dvd_iff_isRoot.mpr huR_root
@@ -3746,7 +3709,7 @@ theorem allComboRealRooted_of_prec {f g : ℝ[X]}
   have hdeg_bounds := natDegree_bounds_of_prec_local hfg
   have hdeg :
       f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by
-    omega
+    lia
   rcases hdeg with hsucc | hsame
   · exact allComboRealRooted_of_prec_succDegree hfg hsucc
   · exact allComboRealRooted_of_prec_sameDegree hfg hsame

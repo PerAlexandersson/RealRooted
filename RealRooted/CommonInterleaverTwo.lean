@@ -35,16 +35,6 @@ private lemma hasPosLeadingCoeff_of_X_sub_C_mul_local {q : ℝ[X]} {r : ℝ}
   unfold HasPosLeadingCoeff at h ⊢
   simpa [Polynomial.leadingCoeff_mul, leadingCoeff_X_sub_C] using h
 
-private lemma hasPosLeadingCoeff_derivative_of_pos_local {f : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hdeg : 1 ≤ f.natDegree) :
-    HasPosLeadingCoeff f.derivative := by
-  unfold HasPosLeadingCoeff at hf_pos ⊢
-  rw [leadingCoeff, natDegree_derivative_eq hdeg, coeff_derivative]
-  rw [Nat.sub_add_cancel hdeg, coeff_natDegree] at *
-  have hdeg_pos : 0 < (f.natDegree : ℝ) := by
-    exact_mod_cast hdeg
-  nlinarith
-
 private lemma eval_pos_of_all_roots_lt_local {p : ℝ[X]} {r : ℝ}
     (hp : IsRealRooted p) (hp_pos : HasPosLeadingCoeff p)
     (hlt : ∀ t ∈ p.roots, t < r) :
@@ -107,7 +97,7 @@ private lemma exists_rightmost_root_of_isRealRooted_local
   have hrs_ne : rs ≠ [] := by
     intro hrs_nil
     simp [hrs_nil] at hrs_len
-    omega
+    lia
   refine ⟨rs.getLast hrs_ne, ?_, ?_⟩
   · have hr_mem : rs.getLast hrs_ne ∈ rs := List.getLast_mem hrs_ne
     have : rs.getLast hrs_ne ∈ p.roots := by
@@ -131,7 +121,7 @@ private lemma exists_root_ge_of_derivative_root_local
   have hrs_ne : rs ≠ [] := by
     intro hrs_nil
     simp [hrs_nil] at hrs_len
-    omega
+    lia
   have hc_mem : c ∈ ss := by
     apply Multiset.mem_coe.mp
     rw [hss_eq]
@@ -185,11 +175,11 @@ private lemma exists_rightmost_derivative_root_with_eval_nonpos_local
       p.eval c ≤ 0 := by
   have hp' : IsRealRooted p.derivative := (derivative_interlaces hp hdeg).2.1
   have hp'_pos : HasPosLeadingCoeff p.derivative :=
-    hasPosLeadingCoeff_derivative_of_pos_local hp_pos (by omega)
+    hasPosLeadingCoeff_derivative hp_pos (by lia)
   have hp'_deg : p.derivative.natDegree = p.natDegree - 1 :=
-    natDegree_derivative_eq (by omega)
+    natDegree_derivative_eq (by lia)
   obtain ⟨c, hc_root, hc_top⟩ :=
-    exists_rightmost_root_of_isRealRooted_local hp' (by rw [hp'_deg]; omega)
+    exists_rightmost_root_of_isRealRooted_local hp' (by rw [hp'_deg]; lia)
   by_cases hpc : 0 < p.eval c
   · have hmono :
       StrictMonoOn (fun x => p.eval x) (Set.Ici c) := by
@@ -225,7 +215,7 @@ private lemma exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_
   have hqdeg : 2 ≤ (C t + p).natDegree := by
     rw [natDegree_add_eq_right_of_natDegree_lt (by
       rw [natDegree_C]
-      omega)]
+      lia)]
     exact hdeg
   have hq'_rr : IsRealRooted (C t + p).derivative := (derivative_interlaces hq hqdeg).2.1
   have hmono :
@@ -235,7 +225,7 @@ private lemma exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_
     refine strictMonoOn_eval_Ici_of_derivative_roots_le_local ?_ ?_ ?_
     · simpa [hder_eq] using hq'_rr
     · simpa [hder_eq] using
-        hasPosLeadingCoeff_derivative_of_pos_local hp_pos (by omega)
+        hasPosLeadingCoeff_derivative hp_pos (by lia)
     · intro s hs
       have hs' : s ∈ p.derivative.roots := by
         simpa [hder_eq] using hs
@@ -420,7 +410,7 @@ private lemma natDegree_le_one_of_const_left
     g.natDegree ≤ 1 := by
   by_cases hdeg : g.natDegree ≤ 1
   · exact hdeg
-  have hg_deg2 : 2 ≤ g.natDegree := by omega
+  have hg_deg2 : 2 ≤ g.natDegree := by lia
   have hg_rr : IsRealRooted g := isRealRooted_right hcg hg_pos
   obtain ⟨t, ht_pos, ht_bad⟩ :=
     exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two_local
@@ -442,7 +432,7 @@ private lemma natDegree_le_one_of_const_left
         g = -C t + (C t + g) := by ring
         _ = -C t := by simp [hzero']
     rw [hg_const, natDegree_neg, natDegree_C] at hg_deg2
-    omega
+    lia
   · exact False.elim <| ht_bad (by simpa [hrewrite] using hrr)
 
 /-- Article 3.2, one-sided form: in a positive-leading compatible pair, the
@@ -481,13 +471,13 @@ theorem natDegree_right_le_succ
       natDegree_le_one_of_const_left hc hg_pos hfg_const
     simpa [hf_deg0] using hbound
   · by_cases hg_deg0 : g.natDegree = 0
-    · omega
-    · have hf_deg1 : 1 ≤ f.natDegree := by omega
-      have hg_deg1 : 1 ≤ g.natDegree := by omega
+    · lia
+    · have hf_deg1 : 1 ≤ f.natDegree := by lia
+      have hg_deg1 : 1 ≤ g.natDegree := by lia
       have hf'_pos : HasPosLeadingCoeff f.derivative :=
-        hasPosLeadingCoeff_derivative_of_pos_local hf_pos hf_deg1
+        hasPosLeadingCoeff_derivative hf_pos hf_deg1
       have hg'_pos : HasPosLeadingCoeff g.derivative :=
-        hasPosLeadingCoeff_derivative_of_pos_local hg_pos hg_deg1
+        hasPosLeadingCoeff_derivative hg_pos hg_deg1
       have hfg' : Compatible f.derivative g.derivative := derivative hfg
       have hf'_deg : f.derivative.natDegree = f.natDegree - 1 :=
         natDegree_derivative_eq hf_deg1
@@ -495,11 +485,11 @@ theorem natDegree_right_le_succ
         natDegree_derivative_eq hg_deg1
       have hlt : f.derivative.natDegree < n := by
         rw [hf'_deg, ← hfdeg]
-        omega
+        lia
       have hrec :
           g.derivative.natDegree ≤ f.derivative.natDegree + 1 :=
         ih f.derivative.natDegree hlt rfl hfg' hf'_pos hg'_pos
-      omega
+      lia
 
 /-- Article 3.2: a positive-leading compatible pair has degree gap at most
 one. -/
@@ -768,13 +758,13 @@ theorem compatiblePairHasCommonInterleaver_of_degreeSplit
   have hclose := Compatible.natDegree_close hfg hf_pos hg_pos
   by_cases hdeg : f.natDegree ≤ g.natDegree
   · have hcases : g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 := by
-      omega
+      lia
     rcases hcases with hsame_deg | hsucc_deg
     · exact hsame hf_pos hg_pos hfg hsame_deg
     · exact hsucc hf_pos hg_pos hfg hsucc_deg
   · have hdeg' : g.natDegree ≤ f.natDegree := le_of_not_ge hdeg
     have hcases : f.natDegree = g.natDegree ∨ f.natDegree = g.natDegree + 1 := by
-      omega
+      lia
     rcases hcases with hsame_deg | hsucc_deg
     · rcases hsame hg_pos hf_pos hfg.comm hsame_deg with ⟨h, hg_prec, hf_prec⟩
       exact ⟨h, hf_prec, hg_prec⟩
@@ -989,12 +979,12 @@ theorem prec_boundary_right_pair_of_orientation_succDegree_nonneg
     {t : ℝ} (ht : 0 < t) :
     Prec (C t * f + g) (X * f) := by
   have hprec_or : Prec f g ∨ Prec g f := by
-    exact horient hfg hf_pos hg_pos (by omega) (by omega) hno
+    exact horient hfg hf_pos hg_pos (by lia) (by lia) hno
   have hprec_fg : Prec f g := by
     rcases hprec_or with hprec | hprec
     · exact hprec
     · have hbounds := natDegree_bounds_of_prec hprec
-      omega
+      lia
   exact prec_boundary_right_pair_of_prec_nonneg hprec_fg hfnn hgnn ht
 
 /-- Orienting each boundary pair `(C t * f + g, X * f)` is already enough to
@@ -1084,7 +1074,7 @@ theorem prec_sum_left_of_prec_right_family_forward_sameDegree_nonneg
   let G : ℝ[X] := f + C (2 : ℝ) * g
   rcases
       PosComboRealRooted.family_pair_data_right_one_two
-        (f := f) (g := g) hfg (by omega) hf_pos hg_pos hno with
+        (f := f) (g := g) hfg (by lia) hf_pos hg_pos hno with
     ⟨_, hF_pos, hG_pos, hF_deg, hG_deg, _⟩
   have hF_deg' : F.natDegree = g.natDegree := by
     simpa [F] using hF_deg
@@ -1165,7 +1155,7 @@ theorem prec_sum_left_of_prec_left_family_forward_sameDegree_nonneg
     intro r hgr hfr
     exact hno r hfr hgr
   have hf_deg_pos : 1 ≤ f.natDegree := by
-    omega
+    lia
   simpa [add_comm, add_left_comm, add_assoc, mul_comm, mul_left_comm, mul_assoc] using
     prec_sum_left_of_prec_right_family_forward_sameDegree_nonneg
       (f := g) (g := f)
@@ -1293,16 +1283,16 @@ theorem prec_or_revPrec_of_natDegree_le_one
     by_cases hg_deg0 : g.natDegree = 0
     · have hg_rr : IsRealRooted g := isRealRooted_of_deg_zero hg0 hg_deg0
       exact Or.inl (prec_degree_zero_degree_zero_local hf_rr hg_rr hf_deg0 hg_deg0)
-    · have hg_deg1 : g.natDegree = 1 := by omega
+    · have hg_deg1 : g.natDegree = 1 := by lia
       have hg_rr : IsRealRooted g := isRealRooted_of_degree_one hg_deg1
       exact Or.inl (prec_degree_zero_right_of_degree_one_local hf_rr hg_rr hf_deg0 hg_deg1)
-  · have hf_deg1 : f.natDegree = 1 := by omega
+  · have hf_deg1 : f.natDegree = 1 := by lia
     by_cases hg_deg0 : g.natDegree = 0
     · have hg_rr : IsRealRooted g := isRealRooted_of_deg_zero hg0 hg_deg0
       have hf_rr : IsRealRooted f := isRealRooted_of_degree_one hf_deg1
       exact Or.inr (prec_degree_zero_right_of_degree_one_local hg_rr hf_rr hg_deg0 hf_deg1)
-    · have hg_deg1 : g.natDegree = 1 := by omega
-      exact PosComboRealRooted.prec_or_revPrec_of_same_degree_one (by omega) hf_deg1
+    · have hg_deg1 : g.natDegree = 1 := by lia
+      exact PosComboRealRooted.prec_or_revPrec_of_same_degree_one (by lia) hf_deg1
 
 /-- Therefore every positive-leading pair of degree at most one already
 satisfies the all-combinations conclusion. -/
@@ -1356,7 +1346,7 @@ theorem pairHasCommonInterleaver_of_sameDegree_natDegree_le_one
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
   exact
     pairHasCommonInterleaver_of_natDegree_le_one
-      hf_pos hg_pos hf_deg_le_one (by omega)
+      hf_pos hg_pos hf_deg_le_one (by lia)
 
 /-- Compatibility-level version of the low-degree common-interleaver endpoint.
 In degree at most one the common interleaver exists without using the
@@ -1385,7 +1375,7 @@ theorem posComboNoCommonSameDegreeOrientationAlternative_of_degree_le_one
     Prec f g ∨ Prec g f := by
   exact
     prec_or_revPrec_of_natDegree_le_one
-      hf_pos hg_pos hf_deg_le_one (by omega)
+      hf_pos hg_pos hf_deg_le_one (by lia)
 
 /-- Degree-one base case for the honest same-degree branch: equal-degree linear
 pairs automatically satisfy the Obreschkoff alternative. This is a reusable
@@ -1413,18 +1403,18 @@ theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlterna
             ⟨j, by simpa [rootSeqDesc_length hf_rr] using hj⟩ ∩
           rootSlotInterval (rootSeqDesc g)
             ⟨j, by
-              have : j < g.natDegree + 1 := by omega
+              have : j < g.natDegree + 1 := by lia
               simpa [rootSeqDesc_length hg_rr] using this⟩).Nonempty := by
     rcases hsame hf_pos hg_pos hfnn hgnn hfg hdeg hno with hprec | hprec
     · intro j hj
-      have hjg : j < g.natDegree + 1 := by omega
+      have hjg : j < g.natDegree + 1 := by lia
       exact
         rootSlotInterval_inter_nonempty_of_commonInterleaver hprec
           (prec_refl hprec.2.1) j
           (by simpa [rootSeqDesc_length hf_rr] using hj)
           (by simpa [rootSeqDesc_length hg_rr] using hjg)
     · intro j hj
-      have hjg : j < g.natDegree + 1 := by omega
+      have hjg : j < g.natDegree + 1 := by lia
       exact
         rootSlotInterval_inter_nonempty_of_commonInterleaver (prec_refl hprec.2.1) hprec
           j
@@ -1464,7 +1454,7 @@ theorem posComboNoCommonSuccDegreeOrientation_of_degree_zero
   have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
   have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
   have hf_rr : IsRealRooted f := isRealRooted_of_deg_zero hf0 hf_deg0
-  have hg_deg1 : g.natDegree = 1 := by omega
+  have hg_deg1 : g.natDegree = 1 := by lia
   have hg_rr : IsRealRooted g := isRealRooted_of_degree_one hg_deg1
   exact prec_degree_zero_right_of_degree_one_local hf_rr hg_rr hf_deg0 hg_deg1
 
@@ -1514,7 +1504,7 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily_degre
         IsRealRooted (((C s * X + C t) * f) + g) := by
     intro s t hs ht
     exact
-      haffBridge hf_pos hg_pos hfnn hgnn hfg (by omega) (by omega) hno hs ht
+      haffBridge hf_pos hg_pos hfnn hgnn hfg (by lia) (by lia) hno hs ht
   have hright : Prec g (X * f) :=
     prec_right_pair_of_affine_family_nonneg_degree_one
       hf0 hg0 hfnn hgnn haff hf_deg1
@@ -1534,7 +1524,7 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily
         IsRealRooted (((C s * X + C t) * f) + g) := by
     intro s t hs ht
     exact
-      haffBridge hf_pos hg_pos hfnn hgnn hfg (by omega) (by omega) hno hs ht
+      haffBridge hf_pos hg_pos hfnn hgnn hfg (by lia) (by lia) hno hs ht
   have hright : Prec g (X * f) :=
     prec_right_pair_of_affine_family_nonneg
       hf0 hg0 hfnn hgnn haff
@@ -1547,7 +1537,7 @@ theorem posComboNoCommonSameDegreeOrientationAlternative_of_noCommonOrientation
     (hstep : PosComboNoCommonOrientationStatement) :
     PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement := by
   intro f g hf_pos hg_pos _hfnn _hgnn hfg hdeg hno
-  exact hstep hfg hf_pos hg_pos (by omega) (by omega) hno
+  exact hstep hfg hf_pos hg_pos (by lia) (by lia) hno
 
 /-- In the succ-degree branch, any no-common orientation core automatically
 forces the forward orientation by degree, so it also packages the honest
@@ -1557,11 +1547,11 @@ theorem posComboNoCommonSuccDegreeOrientation_of_noCommonOrientation
     PosComboNoCommonSuccDegreeOrientationNonnegStatement := by
   intro f g hf_pos hg_pos _hfnn _hgnn hfg hsucc hno
   have hprec_or : Prec f g ∨ Prec g f := by
-    exact hstep hfg hf_pos hg_pos (by omega) (by omega) hno
+    exact hstep hfg hf_pos hg_pos (by lia) (by lia) hno
   rcases hprec_or with hprec | hprec
   · exact hprec
   · have hbounds := natDegree_bounds_of_prec hprec
-    omega
+    lia
 
 /-- Consequently, any proof of the older no-common orientation core can be fed
 directly into the corrected succ-degree common-interleaver bridge. -/
@@ -1589,7 +1579,7 @@ theorem posComboNoCommonOrientation_of_degreeSplit_and_nonnegCoeffs
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     Prec f g ∨ Prec g f := by
   have hdeg : g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 := by
-    omega
+    lia
   rcases hdeg with hsame_deg | hsucc_deg
   · exact hsame hf_pos hg_pos hfnn hgnn hfg hsame_deg hno
   · exact Or.inl (hsucc hf_pos hg_pos hfnn hgnn hfg hsucc_deg hno)
@@ -1671,7 +1661,7 @@ theorem posComboNoCommonOrientation_of_affineFamilyBridge_and_nonnegCoeffs
     · exact False.elim (hg0 (by simpa using hzero))
     · simpa using hrr
   have hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by
-    omega
+    lia
   exact prec_of_allComboRealRooted hf_rr hg_rr hall hdeg
 
 private lemma hasNonnegCoeffs_quotient_add_right_of_common_root
@@ -1766,11 +1756,11 @@ private lemma common_root_reduction_data_of_posCombo_nonneg
   have hqdeg_lo : qf.natDegree ≤ qg.natDegree := by
     rw [hqf, hqg, natDegree_mul (X_sub_C_ne_zero r) hqf0, natDegree_X_sub_C,
       natDegree_mul (X_sub_C_ne_zero r) hqg0, natDegree_X_sub_C] at hdeg_lo
-    omega
+    lia
   have hqdeg_hi : qg.natDegree ≤ qf.natDegree + 1 := by
     rw [hqf, hqg, natDegree_mul (X_sub_C_ne_zero r) hqf0, natDegree_X_sub_C,
       natDegree_mul (X_sub_C_ne_zero r) hqg0, natDegree_X_sub_C] at hdeg_hi
-    omega
+    lia
   exact
     ⟨qf, qg, hqf, hqg, hqfg, hqf_nn, hqg_nn, hqf0, hqg0,
       hqf_pos, hqg_pos, hqdeg_lo, hqdeg_hi⟩
@@ -1793,7 +1783,7 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
   have hdeg : g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 := by
-    omega
+    lia
   rcases hdeg with hsame_deg | hsucc_deg
   · rcases hsame hf_pos hg_pos hfnn hgnn hfg hsame_deg hno with hprec | hprec
     · exact ⟨g, hprec, prec_refl hprec.2.1⟩
@@ -1817,7 +1807,7 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCo
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
   have hdeg : g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 := by
-    omega
+    lia
   rcases hdeg with hsame_deg | hsucc_deg
   · exact hsame hf_pos hg_pos hfnn hgnn hfg hsame_deg hno
   · exact hsucc hf_pos hg_pos hfnn hgnn hfg hsucc_deg hno
@@ -1883,7 +1873,7 @@ private theorem posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
         hfg hf_pos hg_pos hfnn hgnn hdeg_lo hdeg_hi hrf hrg
     have hqf_deg_lt : qf.natDegree < n := by
       rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf0, natDegree_X_sub_C]
-      omega
+      lia
     rcases
         ih qf.natDegree hqf_deg_lt rfl
           hqf_pos hqg_pos hqf_nn hqg_nn hqfg hqdeg_lo hqdeg_hi with
@@ -1931,7 +1921,7 @@ private theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCo
         hfg hf_pos hg_pos hfnn hgnn hdeg_lo hdeg_hi hrf hrg
     have hqf_deg_lt : qf.natDegree < n := by
       rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf0, natDegree_X_sub_C]
-      omega
+      lia
     rcases
         ih qf.natDegree hqf_deg_lt rfl
           hqf_pos hqg_pos hqf_nn hqg_nn hqfg hqdeg_lo hqdeg_hi with
@@ -1979,7 +1969,7 @@ private theorem allComboRealRooted_of_degreeSplit_and_nonnegCoeffs_ordered
         hfg hf_pos hg_pos hfnn hgnn hdeg_lo hdeg_hi hrf hrg
     have hqf_deg_lt : qf.natDegree < n := by
       rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf0, natDegree_X_sub_C]
-      omega
+      lia
     have hall_q : AllComboRealRooted qf qg :=
       ih qf.natDegree hqf_deg_lt rfl
         hqf_pos hqg_pos hqf_nn hqg_nn hqfg hqdeg_lo hqdeg_hi
@@ -2052,11 +2042,11 @@ theorem posComboOrientation_of_posCombo_and_degreeSplit_and_nonnegCoeffs
       hfg hf0 hg0 hfnn hgnn
   by_cases hdeg : f.natDegree ≤ g.natDegree
   · have hdeg' : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by
-      omega
+      lia
     exact prec_of_allComboRealRooted hf_rr hg_rr hall hdeg'
   · have hdeg' : g.natDegree ≤ f.natDegree := le_of_not_ge hdeg
     have hdeg'' : g.natDegree + 1 = f.natDegree ∨ g.natDegree = f.natDegree := by
-      omega
+      lia
     have hprec' : Prec g f ∨ Prec f g :=
       prec_of_allComboRealRooted hg_rr hf_rr (allComboRealRooted_comm hall) hdeg''
     simpa [or_comm] using hprec'
@@ -2099,7 +2089,7 @@ private theorem allComboRealRooted_of_affineFamilyBridge_and_nonnegCoeffs_ordere
         hfg hf_pos hg_pos hfnn hgnn hdeg_lo hdeg_hi hrf hrg
     have hqf_deg_lt : qf.natDegree < n := by
       rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf0, natDegree_X_sub_C]
-      omega
+      lia
     have hall_q : AllComboRealRooted qf qg :=
       ih qf.natDegree hqf_deg_lt rfl
         hqf_pos hqg_pos hqf_nn hqg_nn hqfg hqdeg_lo hqdeg_hi
@@ -2170,11 +2160,11 @@ theorem posComboOrientation_of_affineFamilyBridge_and_nonnegCoeffs
       hfg hf0 hg0 hfnn hgnn
   by_cases hdeg : f.natDegree ≤ g.natDegree
   · have hdeg' : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by
-      omega
+      lia
     exact prec_of_allComboRealRooted hf_rr hg_rr hall hdeg'
   · have hdeg' : g.natDegree ≤ f.natDegree := le_of_not_ge hdeg
     have hdeg'' : g.natDegree + 1 = f.natDegree ∨ g.natDegree = f.natDegree := by
-      omega
+      lia
     have hprec' : Prec g f ∨ Prec f g :=
       prec_of_allComboRealRooted hg_rr hf_rr (allComboRealRooted_comm hall) hdeg''
     simpa [or_comm] using hprec'
@@ -2224,7 +2214,7 @@ theorem
   exact
     posComboNoCommonOrientation_of_affineFamilyBridge_and_nonnegCoeffs
       (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
-      hf_pos hg_pos hfnn hgnn hfg (by omega) (by omega) hno
+      hf_pos hg_pos hfnn hgnn hfg (by lia) (by lia) hno
 
 /-- The stronger boundary-right-pair hypothesis also contains the corrected
 succ-degree common-interleaver branch in the nonnegative regime. -/
@@ -2238,12 +2228,12 @@ theorem
     exact
       posComboNoCommonOrientation_of_affineFamilyBridge_and_nonnegCoeffs
         (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
-        hf_pos hg_pos hfnn hgnn hfg (by omega) (by omega) hno
+        hf_pos hg_pos hfnn hgnn hfg (by lia) (by lia) hno
   have hprec_fg : Prec f g := by
     rcases hprec_or with hprec | hprec
     · exact hprec
     · have hbounds := natDegree_bounds_of_prec hprec
-      omega
+      lia
   exact ⟨g, hprec_fg, prec_refl hprec_fg.2.1⟩
 
 /-- Reduction of no-common orientation to the all-combinations bridge plus
@@ -2265,7 +2255,7 @@ theorem posComboNoCommonOrientation_of_allComboBridge
     · exact False.elim (hg0 (by simpa using hzero))
     · simpa using hrr
   have hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by
-    omega
+    lia
   exact prec_of_allComboRealRooted hf_rr hg_rr hall hdeg
 
 /-- Converse reduction: the no-common orientation core immediately yields the
@@ -3693,7 +3683,7 @@ private theorem isRealRooted_of_natDegree_le_one_of_hasPosLeadingCoeff
   have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
   by_cases hf_deg0 : f.natDegree = 0
   · exact isRealRooted_of_deg_zero hf0 hf_deg0
-  · have hf_deg1 : f.natDegree = 1 := by omega
+  · have hf_deg1 : f.natDegree = 1 := by lia
     exact isRealRooted_of_degree_one hf_deg1
 
 /-- In the degree-`≤ 1` regime, every pair already has a common right

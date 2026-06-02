@@ -22,6 +22,23 @@ namespace RealRooted
 lemma isRealRooted_X_sub_C (r : ℝ) : IsRealRooted (X - C r) :=
   ⟨X_sub_C_ne_zero r, by rw [roots_X_sub_C, Multiset.card_singleton, natDegree_X_sub_C]⟩
 
+lemma hasPosLeadingCoeff_X_sub_C_mul {r : ℝ} {p : ℝ[X]}
+    (hp : HasPosLeadingCoeff p) :
+    HasPosLeadingCoeff ((X - C r) * p) := by
+  unfold HasPosLeadingCoeff at hp ⊢
+  simpa [Polynomial.leadingCoeff_mul, leadingCoeff_X_sub_C] using hp
+
+lemma roots_le_X_sub_C_mul {r : ℝ} {f : ℝ[X]}
+    (hf : IsRealRooted f)
+    (hf_le : ∀ s ∈ f.roots, s ≤ r) :
+    ∀ s ∈ ((X - C r) * f).roots, s ≤ r := by
+  intro s hs
+  rw [roots_mul (mul_ne_zero (X_sub_C_ne_zero r) hf.1), roots_X_sub_C] at hs
+  rcases Multiset.mem_add.mp hs with hs | hs
+  · have hs' : s = r := by simpa [Multiset.mem_singleton] using hs
+    rw [hs']
+  · exact hf_le s hs
+
 /-- A nonzero scalar multiple of a real-rooted polynomial is real-rooted. -/
 lemma isRealRooted_C_mul {p : ℝ[X]} (hp : IsRealRooted p) {a : ℝ} (ha : a ≠ 0) :
     IsRealRooted (C a * p) :=
@@ -39,7 +56,7 @@ lemma isRealRooted_of_dvd {p q : ℝ[X]} (hp : IsRealRooted p) (hq0 : q ≠ 0) (
   rw [natDegree_mul hq0 hr0] at hsum
   have hq_le : q.roots.card ≤ q.natDegree := card_roots' q
   have hr_le : r.roots.card ≤ r.natDegree := card_roots' r
-  omega
+  lia
 
 /-- A root of a divisor is a root of the dividend. -/
 lemma IsRoot.of_dvd {p q : ℝ[X]} (hpq : p ∣ q) {x : ℝ} (hx : p.IsRoot x) :
@@ -267,7 +284,7 @@ lemma natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff {p q : ℝ[X]}
     simp [hq] at hq_pos
   apply le_antisymm
   · have h := natDegree_add_le p q
-    rwa [max_eq_left (by omega)] at h
+    rwa [max_eq_left (by lia)] at h
   · apply le_natDegree_of_ne_zero
     have hqcoeff : q.coeff p.natDegree = q.leadingCoeff := by
       rw [hdeg]

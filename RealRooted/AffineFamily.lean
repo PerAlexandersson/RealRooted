@@ -2235,7 +2235,7 @@ private lemma prec_of_affine_family_nonneg_degree_one
     simpa [EuclideanDomain.div_add_mod'] using hg_pos_local
   have hdeg_lo : f.natDegree ≤ ((g / f) * f + (g % f) * (1 : ℝ[X])).natDegree := by
     rcases hdeg_cases with hgdeg | hgdeg <;>
-      simpa [EuclideanDomain.div_add_mod'] using (show f.natDegree ≤ g.natDegree by omega)
+      simpa [EuclideanDomain.div_add_mod'] using (show f.natDegree ≤ g.natDegree by lia)
   have hdeg_hi :
       ((g / f) * f + (g % f) * (1 : ℝ[X])).natDegree ≤ f.natDegree + 1 := by
     simpa [EuclideanDomain.div_add_mod'] using hdeg_right_local
@@ -2476,7 +2476,7 @@ private lemma not_revPrec_of_shifted_pair_succDegree
     rw [← Multiset.coe_card, hss_eq, hs.2]
   have hrs_len : rs.length = f.natDegree := by
     rw [← Multiset.coe_card, hrs_eq, hf.2]
-  rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩ <;> omega
+  rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩ <;> lia
 
 private lemma prec_shifted_pair_of_prec_or_revPrec
     {f g : ℝ[X]}

@@ -50,18 +50,18 @@ lemma coeff_touchard_top_and_above :
   | n + 1 => by
       rcases coeff_touchard_top_and_above n with ⟨htop, habove⟩
       constructor
-      · rw [show n + 1 = n + 0 + 1 by omega, coeff_touchard_succ]
-        have hzero : coeff (touchard n) (n + 1) = 0 := habove (n + 1) (by omega)
+      · rw [show n + 1 = n + 0 + 1 by lia, coeff_touchard_succ]
+        have hzero : coeff (touchard n) (n + 1) = 0 := habove (n + 1) (by lia)
         simp [htop, hzero]
       · intro m hm
         cases m with
         | zero =>
-            omega
+            lia
         | succ k =>
             have hk0 : n + 1 < k + 1 := hm
-            rw [show k + 1 = k + 0 + 1 by omega, coeff_touchard_succ]
-            have hk : n < k := by omega
-            have hk1 : n < k + 1 := by omega
+            rw [show k + 1 = k + 0 + 1 by lia, coeff_touchard_succ]
+            have hk : n < k := by lia
+            have hk1 : n < k + 1 := by lia
             simp [habove k hk, habove (k + 1) hk1]
 
 lemma natDegree_touchard (n : Nat) :
@@ -129,7 +129,7 @@ lemma prec_touchard_one_two :
       (touchard 1).natDegree ≤
         (X * touchard 1 + X * touchard 0).natDegree := by
     rw [hF_eq, natDegree_touchard, natDegree_touchard]
-    omega
+    lia
   have hdeg_hi :
       (X * touchard 1 + X * touchard 0).natDegree ≤
         (touchard 1).natDegree + 1 := by
@@ -158,14 +158,14 @@ theorem prec_touchard_succ : ∀ n : Nat, Prec (touchard n) (touchard (n + 1))
       have hf : IsRealRooted (touchard (n + 2)) := hprev.2.1
       have hdegf : 2 ≤ (touchard (n + 2)).natDegree := by
         rw [natDegree_touchard]
-        omega
+        lia
       have hInter :
           Interlaces (touchard (n + 2)).derivative (touchard (n + 2)) :=
         derivative_interlaces hf hdegf
       have hg_pos : HasPosLeadingCoeff (touchard (n + 2)).derivative :=
         hasPosLeadingCoeff_derivative (touchard_posLeadingCoeff (n + 2)) (by
           rw [natDegree_touchard]
-          omega)
+          lia)
       have hNext_eq :
           X * touchard (n + 2) + X * (touchard (n + 2)).derivative = touchard (n + 3) := by
         exact (touchard_succ (n + 2)).symm
@@ -178,7 +178,7 @@ theorem prec_touchard_succ : ∀ n : Nat, Prec (touchard n) (touchard (n + 1))
           (touchard (n + 2)).natDegree ≤
             (X * touchard (n + 2) + X * (touchard (n + 2)).derivative).natDegree := by
         rw [hNext_eq, natDegree_touchard, natDegree_touchard]
-        omega
+        lia
       have hdeg_hi :
           (X * touchard (n + 2) + X * (touchard (n + 2)).derivative).natDegree ≤
             (touchard (n + 2)).natDegree + 1 := by

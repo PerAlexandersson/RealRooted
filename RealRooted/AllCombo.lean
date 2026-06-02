@@ -99,7 +99,7 @@ lemma derivative_eq_zero_or_isRealRooted {p : ℝ[X]}
   · by_cases hdeg1 : p.natDegree = 1
     · right
       have hder_deg0 : p.derivative.natDegree = 0 := by
-        rw [natDegree_derivative_eq (by omega), hdeg1]
+        rw [natDegree_derivative_eq (by lia), hdeg1]
       have hder_ne : p.derivative ≠ 0 := by
         intro h0
         have hcoeff : p.derivative.coeff 0 = p.leadingCoeff := by
@@ -113,7 +113,7 @@ lemma derivative_eq_zero_or_isRealRooted {p : ℝ[X]}
         exact (leadingCoeff_ne_zero.mpr hp.1) hlc0
       exact isRealRooted_of_deg_zero hder_ne hder_deg0
     · right
-      exact (derivative_interlaces hp (by omega)).2.1
+      exact (derivative_interlaces hp (by lia)).2.1
 
 lemma allComboRealRooted_derivative
     {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
@@ -277,7 +277,7 @@ lemma hasSimpleRoots_TDeriv_of_hasSimpleRoots
     exact (rootMultiplicity_pos hT_rr.1).mpr ha
   have hmult_le : (TDeriv eps p).rootMultiplicity a ≤ 1 :=
     rootMultiplicity_TDeriv_le_one_of_not_isRoot heps hp hdeg hp_not_root
-  omega
+  lia
 
 lemma hasSimpleRoots_iterateTDeriv_of_hasSimpleRoots
     {eps : ℝ} {p : ℝ[X]} {n : ℕ}
@@ -308,7 +308,7 @@ lemma hasSimpleRoots_iterateTDeriv_of_natDegree_le
   let m := n - p.natDegree
   have hm : n = m + p.natDegree := by
     unfold m
-    omega
+    lia
   obtain ⟨hp_cut_rr, hp_cut_simple⟩ :=
     isRealRooted_and_hasSimpleRoots_iterateTDeriv
       (eps := eps) (f := p) (n := p.natDegree) heps hp rfl

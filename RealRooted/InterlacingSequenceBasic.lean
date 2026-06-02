@@ -184,7 +184,7 @@ lemma IsInterlacingSeq.sublist {fs gs : List ℝ[X]}
       exact List.Pairwise.nil
   | cons _ _ ih =>
       exact ih (List.pairwise_cons.1 hfs).2
-  | cons₂ a hsub ih =>
+  | cons_cons a hsub ih =>
       exact List.pairwise_cons.2 ⟨
         fun b hb => (List.pairwise_cons.1 hfs).1 _ (hsub.subset hb),
         ih (List.pairwise_cons.1 hfs).2
@@ -207,7 +207,7 @@ lemma IsInterlacingSeq0.sublist {fs gs : List ℝ[X]}
       exact List.Pairwise.nil
   | cons _ _ ih =>
       exact ih (List.pairwise_cons.1 hfs).2
-  | cons₂ a hsub ih =>
+  | cons_cons a hsub ih =>
       exact List.pairwise_cons.2 ⟨
         fun b hb => (List.pairwise_cons.1 hfs).1 _ (hsub.subset hb),
         ih (List.pairwise_cons.1 hfs).2

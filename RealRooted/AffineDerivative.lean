@@ -70,7 +70,7 @@ lemma coeff_affineDeriv {f : ℝ[X]} (hdeg : 1 ≤ f.natDegree) (c : ℝ) :
   rw [hrw, coeff_add, coeff_sub, coeff_C_mul]
   -- coeff f' d = 0 (degree d-1 < d)
   have hf'd : f.derivative.coeff d = 0 :=
-    coeff_eq_zero_of_natDegree_lt (by have := natDegree_derivative_le f; omega)
+    coeff_eq_zero_of_natDegree_lt (by have := natDegree_derivative_le f; lia)
   -- coeff (X*f') d = coeff f' (d-1) (X shifts by 1)
   have hXf'd : (X * f.derivative).coeff d = f.derivative.coeff (d - 1) := by
     conv_lhs => rw [← hd1]; rw [coeff_X_mul]
@@ -105,7 +105,7 @@ lemma natDegree_affineDeriv {f : ℝ[X]} (hf : f ≠ 0) (hdeg : 1 ≤ f.natDegre
                         ≤ max (1 : ℝ[X]).natDegree X.natDegree := natDegree_sub_le _ _
                       _ = 1 := by simp [natDegree_one, natDegree_X]
                   · exact natDegree_derivative_le f
-              _ = f.natDegree := by omega
+              _ = f.natDegree := by lia
       _ = f.natDegree := max_self _
   · -- Lower bound: the coefficient at degree d is (c - d) * lc(f) ≠ 0
     apply Polynomial.le_natDegree_of_ne_zero
@@ -125,7 +125,7 @@ lemma affineDeriv_ne_zero {f : ℝ[X]} (hf : f ≠ 0) (hdeg : 1 ≤ f.natDegree)
     C c * f + (1 - X) * f.derivative ≠ 0 := by
   intro h
   have := natDegree_affineDeriv hf hdeg hc
-  rw [h, natDegree_zero] at this; omega
+  rw [h, natDegree_zero] at this; lia
 
 /-! ## IVT contrapositive and sign analysis -/
 
@@ -495,7 +495,7 @@ lemma mkAffineInterleaving_length (f : ℝ[X]) (c : ℝ)
       simp [Multiset.le_iff_count, Multiset.coe_count, List.count_cons]
     rw [mkAffineInterleaving_length f c hf hdeg hc hroots_nonpos
       (r₂ :: rest) hrest hsorted_tail hsub_tail hgap.2]
-    simp only [List.length_cons]; omega
+    simp only [List.length_cons]; lia
 
 /-- Each element of the affine interleaving is a root of `g` and satisfies
     the interlacing bounds. -/
@@ -670,7 +670,7 @@ lemma mkAffineInterleaving_sub_multiset (f : ℝ[X]) (c : ℝ)
           have ih := ih hrest hsorted_tail hsub_tail hgap.2
           have hc_ne : c ≠ (f.natDegree : ℝ) := ne_of_gt hc
           have hg_ne : C c * f + (1 - X) * f.derivative ≠ 0 :=
-            affineDeriv_ne_zero hf.1 (by omega) hc_ne
+            affineDeriv_ne_zero hf.1 (by lia) hc_ne
           have hge_tail : ∀ x ∈ mkAffineInterleaving f c hf hdeg hc hroots_nonpos
               (r₂ :: rest) hrest hsorted_tail hsub_tail hgap.2, r₂ ≤ x :=
             mkAffineInterleaving_ge f c hf hdeg hc hroots_nonpos
@@ -743,7 +743,7 @@ lemma mkAffineInterleaving_sub_multiset (f : ℝ[X]) (c : ℝ)
                     (Multiset.mem_coe.mpr (.head _)))
                 have hmult := rootMultiplicity_sub_one_le_affineDeriv hc_pos a ha_nonpos hg_ne
                 simp only [count_roots] at *
-                omega
+                lia
               · simp only [add_zero]
                 exact Multiset.count_le_of_le a ih.1
           · intro a ha
@@ -772,7 +772,7 @@ lemma mkAffineInterleaving_sub_multiset (f : ℝ[X]) (c : ℝ)
               have ih_B := ih.2 a (by
                 rw [heq, show s = r₁ from dif_neg (not_lt.mpr (ge_of_eq hr_eq)), hr_eq]
                 exact Multiset.mem_coe.mpr (.head _))
-              omega
+              lia
             · rw [if_pos heq, if_neg hr₁a]
               exfalso
               rcases ha with rfl | ha_tail
@@ -799,7 +799,7 @@ lemma mkAffineInterleaving_sub_multiset (f : ℝ[X]) (c : ℝ)
             · rw [if_neg heq, if_pos hr₁a]
               by_cases ha2 : a ∈ (↑(r₂ :: rest) : Multiset ℝ)
               · have ih_B := ih.2 a ha2
-                omega
+                lia
               · have hlt : r₁ < r₂ := by
                   rcases lt_or_eq_of_le hr₁r₂ with h | h
                   · exact h
@@ -813,12 +813,12 @@ lemma mkAffineInterleaving_sub_multiset (f : ℝ[X]) (c : ℝ)
                     intro hmem
                     linarith [hge_tail _ hmem])
                 rw [this]
-                omega
+                lia
             · rw [if_neg heq, if_neg hr₁a]
               rcases ha with rfl | ha_tail
               · exact absurd rfl hr₁a
               · have ih_B := ih.2 a ha_tail
-                omega
+                lia
 
 /-- Inner roots are a submultiset of `g.roots`. -/
 lemma mkAffineInterleaving_sub_roots (f : ℝ[X]) (c : ℝ)
@@ -866,7 +866,7 @@ lemma roots_card_of_sub_pred {p : ℝ[X]} (hp : p ≠ 0)
   have h1 : p.roots.card ≤ p.natDegree := card_roots' p
   have h2 : S.card ≤ p.roots.card := Multiset.card_le_card hle
   -- p.roots.card = natDegree - 1
-  have hrc : p.roots.card = p.natDegree - 1 := by omega
+  have hrc : p.roots.card = p.natDegree - 1 := by lia
   -- Factor p = rprod * q where rprod = ∏(X - C r) for r ∈ p.roots
   set rprod := (p.roots.map (X - C ·)).prod with hrprod_def
   obtain ⟨q, hpq⟩ := prod_multiset_X_sub_C_dvd p
@@ -883,12 +883,12 @@ lemma roots_card_of_sub_pred {p : ℝ[X]} (hp : p ≠ 0)
     -- hroots : p.roots = p.roots + q.roots
     have hcard_eq := congr_arg Multiset.card hroots
     rw [Multiset.card_add] at hcard_eq
-    exact Multiset.card_eq_zero.mp (by omega)
+    exact Multiset.card_eq_zero.mp (by lia)
   -- But q has degree 1, so q.roots.card = 1 — contradiction
   have hq_deg : q.natDegree = 1 := by
     have h3 := natDegree_mul hrprod_ne hq_ne
     rw [natDegree_multiset_prod_X_sub_C_eq_card, hrc, ← hpq] at h3
-    omega
+    lia
   have := (isRealRooted_of_degree_one hq_deg).2
   rw [hq_empty, Multiset.card_zero, hq_deg] at this
   exact absurd this (by norm_num)
@@ -900,7 +900,7 @@ private lemma exists_cons_of_card_succ {α : Type*} {s t : Multiset α}
   rcases Multiset.le_iff_exists_add.mp hsub with ⟨u, rfl⟩
   have hu_card : u.card = 1 := by
     rw [Multiset.card_add] at hcard
-    omega
+    lia
   rcases Multiset.card_eq_one.mp hu_card with ⟨a, rfl⟩
   refine ⟨a, ?_⟩
   simpa using (Multiset.add_comm s ({a} : Multiset α))
@@ -924,7 +924,7 @@ private lemma isRealRooted_of_pow_X_sub_C_mul {r : ℝ} {m : ℕ} {q : ℝ[X]}
   rw [roots_mul (mul_ne_zero hpow_ne hq_ne), roots_pow, roots_X_sub_C, Multiset.card_add,
     Multiset.card_nsmul, Multiset.card_singleton, natDegree_mul hpow_ne hq_ne,
     (monic_X_sub_C r).natDegree_pow, natDegree_X_sub_C] at hcard
-  omega
+  lia
 
 private lemma pos_leadingCoeff_of_pow_X_sub_C_mul {r : ℝ} {m : ℕ} {q : ℝ[X]}
     (hp_pos : HasPosLeadingCoeff ((X - C r) ^ m * q)) (_hq_ne : q ≠ 0) :
@@ -1003,8 +1003,8 @@ theorem prec_affine_derivative {f : ℝ[X]}
   set g := C c * f + (1 - X) * f.derivative with hg_def
   set d := f.natDegree with hd_def
   have hc_ne : c ≠ (d : ℝ) := ne_of_gt hc
-  have hg_ne : g ≠ 0 := affineDeriv_ne_zero hf.1 (by omega) hc_ne
-  have hg_deg : g.natDegree = d := natDegree_affineDeriv hf.1 (by omega) hc_ne
+  have hg_ne : g ≠ 0 := affineDeriv_ne_zero hf.1 (by lia) hc_ne
+  have hg_deg : g.natDegree = d := natDegree_affineDeriv hf.1 (by lia) hc_ne
   -- Sort the roots of f
   set rs := f.roots.sort (· ≤ ·) with hrs_def
   have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
@@ -1018,7 +1018,7 @@ theorem prec_affine_derivative {f : ℝ[X]}
   set ss := mkAffineInterleaving f c hf hdeg hc hroots_nonpos rs hrs_root hrs_sorted hsub_rs
     hgap_rs
   have hss_length : ss.length = d - 1 := by
-    rw [mkAffineInterleaving_length]; omega
+    rw [mkAffineInterleaving_length]; lia
   have hspec := mkAffineInterleaving_spec f c hf hdeg hc hroots_nonpos
     rs hrs_root hrs_sorted hsub_rs hgap_rs
   have hss_roots : ∀ s ∈ ss, g.IsRoot s := hspec.1
@@ -1036,16 +1036,16 @@ theorem prec_affine_derivative {f : ℝ[X]}
   have hg_rr : IsRealRooted g := by
     refine ⟨hg_ne, ?_⟩
     exact roots_card_of_sub_pred hg_ne hss_sub (by
-      rw [Multiset.coe_card, hss_length, hg_deg]; omega)
+      rw [Multiset.coe_card, hss_length, hg_deg]; lia)
   have hss_eq_card : (↑ss : Multiset ℝ).card + 1 = g.roots.card := by
     rw [Multiset.coe_card, hss_length, hg_rr.2, hg_deg]
-    omega
+    lia
   obtain ⟨r₁, rest, hrs_cons⟩ : ∃ r₁ rest, rs = r₁ :: rest := by
     cases h : rs with
     | nil =>
         rw [h] at hrs_length
         simp at hrs_length
-        omega
+        lia
     | cons r rest =>
         exact ⟨r, rest, rfl⟩
   obtain ⟨u, hu_roots_eq⟩ : ∃ u, g.roots = u ::ₘ (↑ss : Multiset ℝ) :=
@@ -1064,7 +1064,7 @@ theorem prec_affine_derivative {f : ℝ[X]}
   have hg_pos : HasPosLeadingCoeff g := by
     unfold HasPosLeadingCoeff at hf_pos ⊢
     have hc' : (f.natDegree : ℝ) < c := by simpa [hd_def] using hc
-    rw [hg_def, leadingCoeff_affineDeriv hf.1 (by omega) hc_ne]
+    rw [hg_def, leadingCoeff_affineDeriv hf.1 (by lia) hc_ne]
     exact mul_pos (sub_pos.mpr hc') hf_pos
   by_cases hu : u ≤ r₁
   · exact prec_of_extra_root_left hf hg_rr hrs_sorted hrs_eq hu_roots_eq' hss_interlaces hu
@@ -1089,7 +1089,7 @@ theorem prec_affine_derivative {f : ℝ[X]}
       exact rootMultiplicity_sub_one_le_affineDeriv hc_pos r₁ hr₁_nonpos hg_ne
     have hgmult_eq : g.rootMultiplicity r₁ = m - 1 := by
       rw [hgmult_eq_ss] at hgmult_ge
-      omega
+      lia
     obtain ⟨q, hf_fact, hq_nodvd⟩ := exists_eq_pow_rootMultiplicity_mul_and_not_dvd f hf.1 r₁
     obtain ⟨qg, hg_fact, hqg_nodvd⟩ :=
       exists_eq_pow_rootMultiplicity_mul_and_not_dvd g hg_ne r₁
@@ -1148,11 +1148,11 @@ theorem prec_affine_derivative {f : ℝ[X]}
         f.derivative =
           (X - C r₁) ^ (m - 1) * (C (m : ℝ) * q + (X - C r₁) * q.derivative) := by
       have hm_succ : m = (m - 1) + 1 := by
-        omega
+        lia
       have hm_succ' : 1 + (m - 1) = m := by
-        omega
+        lia
       have hm_pred : 1 + (m - 1) - 1 = m - 1 := by
-        omega
+        lia
       rw [hf_fact', derivative_mul, derivative_pow, derivative_sub, derivative_X, derivative_C,
         sub_zero]
       rw [hm_succ, pow_succ']
@@ -1162,11 +1162,11 @@ theorem prec_affine_derivative {f : ℝ[X]}
         g = (X - C r₁) ^ (m - 1) *
           (C c * (X - C r₁) * q + (1 - X) * (C (m : ℝ) * q + (X - C r₁) * q.derivative)) := by
       have hm_succ : m = (m - 1) + 1 := by
-        omega
+        lia
       have hm_succ' : 1 + (m - 1) = m := by
-        omega
+        lia
       have hm_pred : 1 + (m - 1) - 1 = m - 1 := by
-        omega
+        lia
       rw [hg_def, hf_deriv_fact, hf_fact']
       rw [hm_succ, pow_succ']
       simp
@@ -1212,13 +1212,13 @@ theorem prec_affine_derivative {f : ℝ[X]}
             (pow_ne_zero _ (X_sub_C_ne_zero _)) hq_ne
       rw [← hf_fact', ← hd_def, (monic_X_sub_C r₁).natDegree_pow,
         natDegree_X_sub_C] at hdegmul
-      omega
+      lia
     have hqg_deg : qg.natDegree = d - (m - 1) := by
       have hdegmul :=
           natDegree_mul (p := (X - C r₁) ^ (m - 1)) (q := qg)
             (pow_ne_zero _ (X_sub_C_ne_zero _)) hqg_ne
       rw [← hg_fact', hg_deg, (monic_X_sub_C r₁).natDegree_pow, natDegree_X_sub_C] at hdegmul
-      omega
+      lia
     have hcard_step : qg.roots.card = q.roots.card + 1 := by
       calc
         qg.roots.card = qg.natDegree := hqg_rr.2
@@ -1227,7 +1227,7 @@ theorem prec_affine_derivative {f : ℝ[X]}
           have hm_ge : 1 ≤ m := Nat.succ_le_of_lt hm_pos
           have hm_sub : m - 1 + 1 = m := Nat.sub_add_cancel hm_ge
           have := hm_le_d
-          omega
+          lia
         _ = q.natDegree + 1 := by rw [hq_deg]
         _ = q.roots.card + 1 := by rw [← hq_rr.2]
     have hPg_nonneg' : 0 ≤ -(((-1 : ℝ) ^ q.roots.card) * Pg) := by
@@ -1277,11 +1277,11 @@ theorem prec_affine_derivative_deg_one {f : ℝ[X]}
   set g := C c * f + (1 - X) * f.derivative with hg_def
   have hc1 : (1 : ℝ) < c := by have := hc; rw [hdeg] at this; exact_mod_cast this
   have hc_ne : c ≠ (f.natDegree : ℝ) := ne_of_gt hc
-  have hg_ne : g ≠ 0 := affineDeriv_ne_zero hf.1 (by omega) hc_ne
-  have hg_deg : g.natDegree = 1 := by rw [natDegree_affineDeriv hf.1 (by omega) hc_ne, hdeg]
+  have hg_ne : g ≠ 0 := affineDeriv_ne_zero hf.1 (by lia) hc_ne
+  have hg_deg : g.natDegree = 1 := by rw [natDegree_affineDeriv hf.1 (by lia) hc_ne, hdeg]
   have hg_rr : IsRealRooted g := isRealRooted_of_degree_one hg_deg
   have hg_lc_pos : 0 < g.leadingCoeff := by
-    rw [leadingCoeff_affineDeriv hf.1 (by omega) hc_ne, hdeg]
+    rw [leadingCoeff_affineDeriv hf.1 (by lia) hc_ne, hdeg]
     exact mul_pos (by push_cast; linarith) hf_pos
   -- f and g each have exactly one root
   obtain ⟨r, hr_eq⟩ := Multiset.card_eq_one.mp (show f.roots.card = 1 by rw [hf.2, hdeg])
@@ -1293,7 +1293,7 @@ theorem prec_affine_derivative_deg_one {f : ℝ[X]}
     rw [eval_affineDeriv_at_root hr_root c]
     apply mul_pos (by linarith)
     -- f has degree 1, so f' is a positive constant
-    have hdeg0 : f.derivative.natDegree = 0 := by have := natDegree_derivative_le f; omega
+    have hdeg0 : f.derivative.natDegree = 0 := by have := natDegree_derivative_le f; lia
     have hc0 : f.derivative.coeff 0 = f.leadingCoeff := by
       rw [coeff_derivative]; simp [Polynomial.leadingCoeff, hdeg]
     rw [eq_C_of_natDegree_eq_zero hdeg0, eval_C, hc0]; exact hf_pos

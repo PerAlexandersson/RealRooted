@@ -50,17 +50,6 @@ lemma eulerianTilde_succ_eq_X_mul_affineEulerianTilde (n : Nat) :
     eulerianTilde (n + 1) = X * affineEulerianTilde n := by
   rw [eulerianTilde_recurrence, affineEulerianTilde]
 
-lemma coeff_one_sub_X_mul_derivative (p : ℝ[X]) (m : Nat) :
-    coeff ((1 - X) * p.derivative) m =
-      ((m + 1 : ℝ) * coeff p (m + 1)) - ((m : ℝ) * coeff p m) := by
-  cases m with
-  | zero =>
-      simp [coeff_derivative]
-  | succ m =>
-      rw [sub_mul, one_mul, coeff_sub, coeff_X_mul, coeff_derivative, coeff_derivative]
-      norm_num
-      ring
-
 lemma coeff_eulerianTilde_succ (n m : Nat) :
     coeff (eulerianTilde (n + 1)) (m + 1) =
       ((n + 2 : ℝ) - m) * coeff (eulerianTilde n) m +
@@ -92,20 +81,20 @@ lemma coeff_eulerianTilde_top_and_above :
       constructor
       · rw [coeff_eulerianTilde_succ n (n + 1)]
         have hzero : coeff (eulerianTilde n) (n + 2) = 0 :=
-          habove (n + 2) (by omega)
+          habove (n + 2) (by lia)
         rw [hzero, htop]
         norm_num
       · intro m hm
         cases m with
         | zero =>
-            omega
+            lia
         | succ m =>
             have hzero₁ : coeff (eulerianTilde n) m = 0 := by
               apply habove
-              omega
+              lia
             have hzero₂ : coeff (eulerianTilde n) (m + 1) = 0 := by
               apply habove
-              omega
+              lia
             rw [coeff_eulerianTilde_succ n m]
             simp [hzero₁, hzero₂]
 
@@ -163,10 +152,10 @@ lemma eulerianTilde_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (eulerianTilde n
             rcases coeff_eulerianTilde_top_and_above n with ⟨_, habove⟩
             have hcoeff_m : coeff (eulerianTilde n) m = 0 := by
               apply habove
-              omega
+              lia
             have hcoeff_succ : coeff (eulerianTilde n) (m + 1) = 0 := by
               apply habove
-              omega
+              lia
             simp [hcoeff_m, hcoeff_succ]
 
 lemma roots_nonpos_eulerianTilde_of_isRealRooted {n : Nat}
@@ -178,7 +167,7 @@ lemma prec_affineEulerianTilde {n : Nat}
     (hrr : IsRealRooted (eulerianTilde n)) :
     Prec (affineEulerianTilde n) (eulerianTilde n) := by
   rw [affineEulerianTilde]
-  exact prec_affine_derivative' hrr (by rw [natDegree_eulerianTilde]; omega)
+  exact prec_affine_derivative' hrr (by rw [natDegree_eulerianTilde]; lia)
     (eulerianTilde_posLeadingCoeff n)
     (roots_nonpos_eulerianTilde_of_isRealRooted hrr)
     (by
@@ -210,10 +199,10 @@ lemma affineEulerianTilde_nonnegCoeffs (n : Nat) :
     rcases coeff_eulerianTilde_top_and_above n with ⟨_, habove⟩
     have hcoeff_m : coeff (eulerianTilde n) m = 0 := by
       apply habove
-      omega
+      lia
     have hcoeff_succ : coeff (eulerianTilde n) (m + 1) = 0 := by
       apply habove
-      omega
+      lia
     simp [hcoeff_m, hcoeff_succ]
 
 lemma roots_nonpos_affineEulerianTilde_of_isRealRooted {n : Nat}
@@ -227,7 +216,7 @@ lemma natDegree_affineEulerianTilde (n : Nat) :
   rw [affineEulerianTilde]
   refine natDegree_affineDeriv (eulerianTilde_ne_zero n) ?_ ?_
   · rw [natDegree_eulerianTilde]
-    omega
+    lia
   · rw [natDegree_eulerianTilde]
     norm_num
 

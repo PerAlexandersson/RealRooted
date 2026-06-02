@@ -315,12 +315,12 @@ theorem matrix_preserves_interlacing_seq0_sparse_pair_prec0
     (hi : i₁ < i₂) (hj : j₁ < j₂)
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
     Prec0
-      (((G.get i₁).get ⟨j₁, by have := hG_rect _ (G.get_mem i₁); omega⟩
+      (((G.get i₁).get ⟨j₁, by have := hG_rect _ (G.get_mem i₁); lia⟩
           + (C a * X + C b)
-            * ((G.get i₁).get ⟨j₂, by have := hG_rect _ (G.get_mem i₁); omega⟩)))
-      (((G.get i₂).get ⟨j₁, by have := hG_rect _ (G.get_mem i₂); omega⟩
+            * ((G.get i₁).get ⟨j₂, by have := hG_rect _ (G.get_mem i₁); lia⟩)))
+      (((G.get i₂).get ⟨j₁, by have := hG_rect _ (G.get_mem i₂); lia⟩
           + (C a * X + C b)
-            * ((G.get i₂).get ⟨j₂, by have := hG_rect _ (G.get_mem i₂); omega⟩))) := by
+            * ((G.get i₂).get ⟨j₂, by have := hG_rect _ (G.get_mem i₂); lia⟩))) := by
   let fs := sparseLinearPairSeq n j₁ j₂ a b
   have hfs_len : fs.length = n := by
     simp [fs]
@@ -328,11 +328,11 @@ theorem matrix_preserves_interlacing_seq0_sparse_pair_prec0
     simpa [fs] using isInterlacingSeq0Nonneg_sparseLinearPairSeq hj ha hb
   have himage : IsInterlacingSeq0Nonneg (matPolyAction G fs) := hpres0 fs hfs_len hfs
   let iG : Fin (matPolyAction G fs).length := ⟨i₁, by simp [matPolyAction]⟩
-  let iRowJ₁ : Fin (G.get i₁).length := ⟨j₁, by have := hG_rect _ (G.get_mem i₁); omega⟩
-  let iRowJ₂ : Fin (G.get i₁).length := ⟨j₂, by have := hG_rect _ (G.get_mem i₁); omega⟩
+  let iRowJ₁ : Fin (G.get i₁).length := ⟨j₁, by have := hG_rect _ (G.get_mem i₁); lia⟩
+  let iRowJ₂ : Fin (G.get i₁).length := ⟨j₂, by have := hG_rect _ (G.get_mem i₁); lia⟩
   let jG : Fin (matPolyAction G fs).length := ⟨i₂, by simp [matPolyAction]⟩
-  let jRowJ₁ : Fin (G.get i₂).length := ⟨j₁, by have := hG_rect _ (G.get_mem i₂); omega⟩
-  let jRowJ₂ : Fin (G.get i₂).length := ⟨j₂, by have := hG_rect _ (G.get_mem i₂); omega⟩
+  let jRowJ₁ : Fin (G.get i₂).length := ⟨j₁, by have := hG_rect _ (G.get_mem i₂); lia⟩
+  let jRowJ₂ : Fin (G.get i₂).length := ⟨j₂, by have := hG_rect _ (G.get_mem i₂); lia⟩
   have hpair : Prec0 ((matPolyAction G fs).get iG) ((matPolyAction G fs).get jG) := by
     exact himage.1.prec0 (i := iG) (j := jG) (by simpa [iG, jG] using hi)
   have hleft :
@@ -366,16 +366,16 @@ theorem matrix_preserves_interlacing_seq0_necessary_conditions
       Prec0
         (((G.get i₁).get ⟨j₁, by
             have := hG_rect _ (G.get_mem i₁)
-            omega⟩)
+            lia⟩)
           + (C a * X + C b) * ((G.get i₁).get ⟨j₂, by
             have := hG_rect _ (G.get_mem i₁)
-            omega⟩))
+            lia⟩))
         (((G.get i₂).get ⟨j₁, by
             have := hG_rect _ (G.get_mem i₂)
-            omega⟩)
+            lia⟩)
           + (C a * X + C b) * ((G.get i₂).get ⟨j₂, by
             have := hG_rect _ (G.get_mem i₂)
-            omega⟩))) := by
+            lia⟩))) := by
   refine ⟨?_, ?_⟩
   · exact matrix_preserves_interlacing_seq0_nonneg_entries (n := n) G hG_rect hpres0
   · intro i₁ i₂ j₁ j₂ hi hj a b ha hb
@@ -785,7 +785,7 @@ theorem prec_zipWith_sum_pair_of_2x2
     intro hnil
     rw [hnil] at hfs_len
     simp at hfs_len
-    omega
+    lia
   have haux_rr :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         IsRealRooted (((auxRow s t).zipWith (· * ·) fs).sum) := by
@@ -806,7 +806,7 @@ theorem prec_zipWith_sum_pair_of_2x2
             have : n = 0 := by
               rw [← haux_len (s := s) (t := t), hnil']
               simp
-            omega)
+            lia)
           (by simp [haux_len, hfs_len])
           haux hfs_all
     simpa [zipWith_mul_sum_reverse_reverse (row := auxRow s t) (fs := fs)
@@ -1062,10 +1062,10 @@ theorem matrix_preserves_interlacing_seq
     (hG_affine : ∀ (i₁ i₂ : Fin G.length) (j₁ j₂ : Fin n),
       i₁ ≤ i₂ → j₁ ≤ j₂ →
       Has2x2InterlacingProperty
-        ((G.get i₁).get ⟨j₁, by have := hG_rect _ (G.get_mem i₁); omega⟩)
-        ((G.get i₁).get ⟨j₂, by have := hG_rect _ (G.get_mem i₁); omega⟩)
-        ((G.get i₂).get ⟨j₁, by have := hG_rect _ (G.get_mem i₂); omega⟩)
-        ((G.get i₂).get ⟨j₂, by have := hG_rect _ (G.get_mem i₂); omega⟩))
+        ((G.get i₁).get ⟨j₁, by have := hG_rect _ (G.get_mem i₁); lia⟩)
+        ((G.get i₁).get ⟨j₂, by have := hG_rect _ (G.get_mem i₁); lia⟩)
+        ((G.get i₂).get ⟨j₁, by have := hG_rect _ (G.get_mem i₂); lia⟩)
+        ((G.get i₂).get ⟨j₂, by have := hG_rect _ (G.get_mem i₂); lia⟩))
     (fs : List ℝ[X]) (hfs_len : fs.length = n)
     (hfs : IsInterlacingSeqNonneg fs) :
     IsInterlacingSeqNonneg (matPolyAction G fs) := by
@@ -1097,17 +1097,17 @@ theorem matrix_preserves_interlacing_seq
   have hentry_head_ne (iG : Fin G.length) :
       (G.get iG).get ⟨0, by
         have hleni : (G.get iG).length = n := hG_rect _ (G.get_mem iG)
-        omega⟩ ≠ 0 := by
+        lia⟩ ≠ 0 := by
     have hdiag :
         Has2x2InterlacingProperty
-          ((G.get iG).get ⟨j0, by have := hG_rect _ (G.get_mem iG); omega⟩)
-          ((G.get iG).get ⟨j0, by have := hG_rect _ (G.get_mem iG); omega⟩)
-          ((G.get iG).get ⟨j0, by have := hG_rect _ (G.get_mem iG); omega⟩)
-          ((G.get iG).get ⟨j0, by have := hG_rect _ (G.get_mem iG); omega⟩) := by
+          ((G.get iG).get ⟨j0, by have := hG_rect _ (G.get_mem iG); lia⟩)
+          ((G.get iG).get ⟨j0, by have := hG_rect _ (G.get_mem iG); lia⟩)
+          ((G.get iG).get ⟨j0, by have := hG_rect _ (G.get_mem iG); lia⟩)
+          ((G.get iG).get ⟨j0, by have := hG_rect _ (G.get_mem iG); lia⟩) := by
       simpa [j0] using hG_affine iG iG j0 j0 le_rfl le_rfl
     exact
       ne_zero_of_self_2x2
-        ((G.get iG).get ⟨j0, by have := hG_rect _ (G.get_mem iG); omega⟩)
+        ((G.get iG).get ⟨j0, by have := hG_rect _ (G.get_mem iG); lia⟩)
         hdiag
   constructor
   · intro p hp
@@ -1178,10 +1178,10 @@ theorem matrix_preserves_interlacing_seq0_of_2x2
     (hG_affine : ∀ (i₁ i₂ : Fin G.length) (j₁ j₂ : Fin n),
       i₁ ≤ i₂ → j₁ ≤ j₂ →
       Has2x2InterlacingProperty0
-        ((G.get i₁).get ⟨j₁, by have := hG_rect _ (G.get_mem i₁); omega⟩)
-        ((G.get i₁).get ⟨j₂, by have := hG_rect _ (G.get_mem i₁); omega⟩)
-        ((G.get i₂).get ⟨j₁, by have := hG_rect _ (G.get_mem i₂); omega⟩)
-        ((G.get i₂).get ⟨j₂, by have := hG_rect _ (G.get_mem i₂); omega⟩))
+        ((G.get i₁).get ⟨j₁, by have := hG_rect _ (G.get_mem i₁); lia⟩)
+        ((G.get i₁).get ⟨j₂, by have := hG_rect _ (G.get_mem i₁); lia⟩)
+        ((G.get i₂).get ⟨j₁, by have := hG_rect _ (G.get_mem i₂); lia⟩)
+        ((G.get i₂).get ⟨j₂, by have := hG_rect _ (G.get_mem i₂); lia⟩))
     (fs : List ℝ[X]) (hfs_len : fs.length = n)
     (hfs : IsInterlacingSeqNonneg fs) :
     IsInterlacingSeq0Nonneg (matPolyAction G fs) := by
@@ -1229,10 +1229,10 @@ theorem matrix_preserves_interlacing_seq0_of_2x2_weak
     (hG_affine : ∀ (i₁ i₂ : Fin G.length) (j₁ j₂ : Fin n),
       i₁ ≤ i₂ → j₁ ≤ j₂ →
       Has2x2InterlacingProperty0
-        ((G.get i₁).get ⟨j₁, by have := hG_rect _ (G.get_mem i₁); omega⟩)
-        ((G.get i₁).get ⟨j₂, by have := hG_rect _ (G.get_mem i₁); omega⟩)
-        ((G.get i₂).get ⟨j₁, by have := hG_rect _ (G.get_mem i₂); omega⟩)
-        ((G.get i₂).get ⟨j₂, by have := hG_rect _ (G.get_mem i₂); omega⟩))
+        ((G.get i₁).get ⟨j₁, by have := hG_rect _ (G.get_mem i₁); lia⟩)
+        ((G.get i₁).get ⟨j₂, by have := hG_rect _ (G.get_mem i₁); lia⟩)
+        ((G.get i₂).get ⟨j₁, by have := hG_rect _ (G.get_mem i₂); lia⟩)
+        ((G.get i₂).get ⟨j₂, by have := hG_rect _ (G.get_mem i₂); lia⟩))
     (fs : List ℝ[X]) (hfs_len : fs.length = n)
     (hfs : IsInterlacingSeq0Nonneg fs)
     (hfs_real : ∀ f ∈ fs, f ≠ 0 → IsRealRooted f) :

@@ -8,6 +8,8 @@ interactively with AI assistance, exploratory theorem packaging, and frequent
 Lean feedback.  It is not a polished mathlib contribution.  The useful part is
 that the statements below are checked Lean declarations, and the project gives
 a searchable playground for real-rootedness and interlacing arguments.
+The long-term goal is to extract the stable, reusable core and upstream those
+parts to mathlib.
 
 ## Build
 
@@ -25,6 +27,12 @@ lake build RealRooted.VeroneseMatrix
 lake build RealRooted.VeroneseSection
 lake build RealRooted.HurwitzMatrix
 ```
+
+## Contributors
+
+- Per Alexandersson
+- Yaël Dillies
+- √2 (`sqrt-of-2`)
 
 ## Lean Style
 
@@ -57,6 +65,11 @@ is organized around these pages and anchors:
   set-partition, colored set-partition, and Stirling-permutation examples.
 - [Sturm sequences: Catalan families](https://www.symmetricfunctions.com/realRootedCatalan.htm#realRootedCatalan):
   Narayana and Motzkin polynomial examples.
+- [Real-rooted and stable polynomials (overview)](https://www.symmetricfunctions.com/realRooted.htm):
+  top-level map for interlacing, PF sequences, and real-rootedness techniques.
+- [Real-rooted polynomials: tableaux and polytopes](https://www.symmetricfunctions.com/realRootedTableaux.htm):
+  Sturm-sequence examples adjacent to the combinatorial families formalized
+  here.
 - Athanasiadis--Wagner,
   [*Veronese sections and interlacing matrices of polynomials and formal power
   series*](https://doi.org/10.48550/arXiv.2404.12989):
@@ -64,6 +77,22 @@ is organized around these pages and anchors:
   this repository, the Athanasiadis--Wagner material is treated as reference
   context; the completed Veronese real-rootedness theorem below uses a separate
   cyclic-matrix/interlacing-preserver proof.
+
+Useful statement-level jump points in SymCat:
+
+- [Sturm sequences](https://www.symmetricfunctions.com/realRootedInterlacing.htm#sturmSequence):
+  context for `prec_ma_wang`, `generalizedLiuWangCriterion`, and Sturm-family
+  combinatorial files.
+- [Matrices preserving interlacing sequences](https://www.symmetricfunctions.com/realRootedInterlacing.htm#realMatrixRecursion):
+  context for `matrix_preserves_interlacing_seq`,
+  `matrix_preserves_interlacing_seq0_of_2x2`, and row-threshold variants.
+- [Compatible polynomials (Chudnovsky-Seymour)](https://www.symmetricfunctions.com/realRootedInterlacing.htm#compatiblePolynomials):
+  context for the four-way compatibility wrappers and common-interleaver theorems.
+- [Operators preserving real-rootedness](https://www.symmetricfunctions.com/realRootedInterlacing.htm#realRootedPreservers):
+  context for `operatorPreservesInterlacingPairsUpToOrder`.
+- [Symmetric decompositions](https://www.symmetricfunctions.com/realRootedInterlacing.htm#symmetricDecompInterlacing):
+  context for `idDecompositionExistsUnique`, `rdDecompositionExistsUnique`, and
+  gamma/`h -> f` transfer declarations.
 
 Combinatorial sequence modules are collected under
 `RealRooted/CombinatorialExamples/`.

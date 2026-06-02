@@ -26,9 +26,9 @@ private lemma natDegree_eq_or_succ_of_prec {f g : ℝ[X]} (h : Prec f g) :
     rw [← Multiset.coe_card, hrs_eq, hg.2]
   rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩
   · right
-    omega
+    lia
   · left
-    omega
+    lia
 
 private lemma exists_root_upper_bound (p : ℝ[X]) :
     ∃ c, ∀ r ∈ p.roots, r ≤ c := by
@@ -66,86 +66,6 @@ private lemma exists_common_root_upper_bound (h : ℝ[X]) (l : List (ℝ × ℝ[
         rcases List.mem_cons.mp hap' with rfl | hap'
         · exact le_trans (hc₂ r hr) (le_max_right _ _)
         · exact le_trans (hl₁ ap' hap' r hr) (le_max_left _ _)
-
-private lemma hasPosLeadingCoeff_X_sub_C_mul {r : ℝ} {p : ℝ[X]}
-    (hp : HasPosLeadingCoeff p) :
-    HasPosLeadingCoeff ((X - C r) * p) := by
-  unfold HasPosLeadingCoeff at hp ⊢
-  simpa [Polynomial.leadingCoeff_mul, leadingCoeff_X_sub_C] using hp
-
-private lemma roots_le_X_sub_C_mul {r : ℝ} {f : ℝ[X]}
-    (hf : IsRealRooted f)
-    (hf_le : ∀ s ∈ f.roots, s ≤ r) :
-    ∀ s ∈ ((X - C r) * f).roots, s ≤ r := by
-  intro s hs
-  rw [roots_mul (mul_ne_zero (X_sub_C_ne_zero r) hf.1), roots_X_sub_C] at hs
-  rcases Multiset.mem_add.mp hs with hs | hs
-  · have hs' : s = r := by simpa [Multiset.mem_singleton] using hs
-    rw [hs']
-  · exact hf_le s hs
-
-private lemma listInterlaces_left_le_of_right_le_local {ss rs : List ℝ} {c : ℝ}
-    (hint : ListInterlaces ss rs)
-    (hrs : ∀ r ∈ rs, r ≤ c) :
-    ∀ s ∈ ss, s ≤ c := by
-  induction ss generalizing rs with
-  | nil =>
-      intro s hs
-      simp at hs
-  | cons s ss ih =>
-      cases rs with
-      | nil =>
-          simp [ListInterlaces] at hint
-      | cons r₁ rs' =>
-          cases rs' with
-          | nil =>
-              simp [ListInterlaces] at hint
-          | cons r₂ rs'' =>
-              rcases hint with ⟨hr₁s, hs_r₂, htail⟩
-              intro t ht
-              rw [List.mem_cons] at ht
-              rcases ht with rfl | ht
-              · exact le_trans hs_r₂ (hrs r₂ (by simp))
-              · exact ih htail (fun r hr => hrs r (by simp [hr])) t ht
-
-private lemma listAlternates_left_le_of_right_le_local {ss rs : List ℝ} {c : ℝ}
-    (halt : ListAlternates ss rs)
-    (hrs : ∀ r ∈ rs, r ≤ c) :
-    ∀ s ∈ ss, s ≤ c := by
-  induction ss generalizing rs with
-  | nil =>
-      intro s hs
-      simp at hs
-  | cons s ss ih =>
-      cases rs with
-      | nil =>
-          simp [ListAlternates] at halt
-      | cons r rs' =>
-          rcases halt with ⟨hsr, htail⟩
-          intro t ht
-          rw [List.mem_cons] at ht
-          rcases ht with rfl | ht
-          · exact le_trans hsr (hrs r (by simp))
-          · exact listInterlaces_left_le_of_right_le_local htail
-              (fun x hx => hrs x (by simp [hx])) t ht
-
-/-- Every root of the left-hand polynomial is bounded by any common upper bound
-for the roots of the right-hand polynomial in a `Prec` witness. -/
-theorem roots_le_of_prec_right {f g : ℝ[X]} {c : ℝ}
-    (h : Prec f g)
-    (hg_le : ∀ r ∈ g.roots, r ≤ c) :
-    ∀ r ∈ f.roots, r ≤ c := by
-  rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
-  have hrs_le : ∀ r ∈ rs, r ≤ c := by
-    intro r hr
-    exact hg_le r (by rw [← hrs_eq]; exact Multiset.mem_coe.mpr hr)
-  intro r hr
-  have hr' : r ∈ ss := by
-    have : r ∈ (↑ss : Multiset ℝ) := by simpa [hss_eq] using hr
-    exact Multiset.mem_coe.mp this
-  rcases hshape with ⟨_, hint⟩ | ⟨_, halt⟩
-  · exact listInterlaces_left_le_of_right_le_local hint hrs_le r hr'
-  · exact listAlternates_left_le_of_right_le_local halt hrs_le r hr'
 
 lemma prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
     (h : Prec f g)
@@ -269,7 +189,7 @@ interlaced on the left by `h`. -/
     hasPosLeadingCoeff_weightedSum l hnonneg hpoly_pos hex0
   have hH_deg : H.natDegree = h.natDegree + 1 := by
     rw [show H = (X - C r) * h by rfl, natDegree_mul (X_sub_C_ne_zero r) hh.1, natDegree_X_sub_C]
-    omega
+    lia
   have hH_le : ∀ s ∈ H.roots, s ≤ r := roots_le_X_sub_C_mul hh hh_le
   have hweighted_le : ∀ s ∈ (weightedSum l).roots, s ≤ r :=
     roots_le_of_prec_right hweighted_right hH_le
@@ -281,7 +201,7 @@ interlaced on the left by `h`. -/
       (prec_iff_prec_mul_X_sub_C_of_roots_le r hh hweighted_right.1 hpos hweighted_pos
         hh_le hweighted_le hdeg).mpr hweighted_right
   · have hdeg : h.natDegree = (weightedSum l).natDegree := by
-      omega
+      lia
     exact
       prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le r hweighted_right hdeg
         hpos hweighted_pos hh_le hweighted_le
@@ -390,7 +310,7 @@ theorem prec0_sum_left_of_common_left_of_nonneg
     exact Or.inr <| Or.inr <| by simpa [hsum] using hstrict
 
 /-- Right cone for `Prec0` over finite sums of nonnegative-coefficient polynomials. -/
-lemma prec0_finset_sum_right_of_nonneg {ι : Type}
+lemma prec0_finsetSum_right_of_nonneg {ι : Type}
     (s : Finset ι) (f : ι → ℝ[X]) (h : ℝ[X])
     (hprec : ∀ i ∈ s, Prec0 (f i) h)
     (hnn : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
@@ -422,7 +342,7 @@ lemma prec0_finset_sum_right_of_nonneg {ι : Type}
       · contradiction
       · exact (hh0 hh0').elim
       have hs_pos : HasPosLeadingCoeff (s.sum f) :=
-        (hasNonnegCoeffs_finset_sum s f hnn_s).pos_leadingCoeff hs0
+        (hasNonnegCoeffs_finsetSum s f hnn_s).pos_leadingCoeff hs0
       have hfa_pos : HasPosLeadingCoeff (f a) := hnn_a.pos_leadingCoeff hfa0
       have hsum_strict : Prec (f a + s.sum f) h :=
         prec_add_of_prec_right_of_posLeadingCoeff
@@ -430,7 +350,7 @@ lemma prec0_finset_sum_right_of_nonneg {ι : Type}
       simpa [Finset.sum_insert, ha] using hsum_strict.toPrec0
 
 /-- Left cone for `Prec0` over finite sums of nonnegative-coefficient polynomials. -/
-lemma prec0_finset_sum_left_of_nonneg {ι : Type}
+lemma prec0_finsetSum_left_of_nonneg {ι : Type}
     (h : ℝ[X]) (s : Finset ι) (f : ι → ℝ[X])
     (hprec : ∀ i ∈ s, Prec0 h (f i))
     (hnn : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
@@ -458,7 +378,7 @@ lemma prec0_finset_sum_left_of_nonneg {ι : Type}
           simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
           rcases hp with rfl | rfl
           · exact hnn a (by simp)
-          · exact hasNonnegCoeffs_finset_sum s f hnn_s
+          · exact hasNonnegCoeffs_finsetSum s f hnn_s
       simpa [Finset.sum_insert, ha] using hpair
 
 /-- Same-degree shift on the left: if `f ≪ g`, both have positive leading
@@ -970,7 +890,7 @@ private lemma common_root_reduction_data
       exact right_ne_zero_of_mul (by simpa [hqg] using hg_ne)
     rw [hqf, hqg, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
       natDegree_mul (X_sub_C_ne_zero r) hqg_ne, natDegree_X_sub_C] at hdeg_lo
-    omega
+    lia
   · have hf_ne : f ≠ 0 := by
       intro h0
       simp [HasPosLeadingCoeff, h0] at hf_pos
@@ -983,7 +903,7 @@ private lemma common_root_reduction_data
       exact right_ne_zero_of_mul (by simpa [hqg] using hg_ne)
     rw [hqf, hqg, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
       natDegree_mul (X_sub_C_ne_zero r) hqg_ne, natDegree_X_sub_C] at hdeg_hi
-    omega
+    lia
 
 /-- To prove the restricted Obreschkoff converse, it is enough to handle the
 no-common-roots case. Shared roots can be factored out recursively.
@@ -1032,7 +952,7 @@ theorem prec_or_revPrec_of_posComboRealRooted_of_no_common
       exact right_ne_zero_of_mul (by simpa [hqf] using hf_ne)
     have hqf_deg_lt : qf.natDegree < n := by
       rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C]
-      omega
+      lia
     have hprec_q : Prec qf qg ∨ Prec qg qf :=
       ih qf.natDegree hqf_deg_lt rfl hqfg hqf_pos hqg_pos hqdeg_lo hqdeg_hi
     rcases hprec_q with hprec_q | hprec_q
@@ -1502,67 +1422,6 @@ theorem prec_same_of_root_sign_data
       (by simpa [rs] using hsign)
       (by simpa [rs] using hright)
 
-private lemma listInterlaces_left_le_of_right_le {ss rs : List ℝ} {c : ℝ}
-    (hint : ListInterlaces ss rs)
-    (hrs : ∀ r ∈ rs, r ≤ c) :
-    ∀ s ∈ ss, s ≤ c := by
-  induction ss generalizing rs with
-  | nil =>
-      intro s hs
-      simp at hs
-  | cons s ss ih =>
-      cases rs with
-      | nil =>
-          simp [ListInterlaces] at hint
-      | cons r₁ rs' =>
-          cases rs' with
-          | nil =>
-              simp [ListInterlaces] at hint
-          | cons r₂ rs'' =>
-              rcases hint with ⟨hr₁s, hs_r₂, htail⟩
-              intro t ht
-              rw [List.mem_cons] at ht
-              rcases ht with rfl | ht
-              · exact le_trans hs_r₂ (hrs r₂ (by simp))
-              · exact ih htail (fun r hr => hrs r (by simp [hr])) t ht
-
-private lemma listAlternates_left_le_of_right_le {ss rs : List ℝ} {c : ℝ}
-    (halt : ListAlternates ss rs)
-    (hrs : ∀ r ∈ rs, r ≤ c) :
-    ∀ s ∈ ss, s ≤ c := by
-  induction ss generalizing rs with
-  | nil =>
-      intro s hs
-      simp at hs
-  | cons s ss ih =>
-      cases rs with
-      | nil =>
-          simp [ListAlternates] at halt
-      | cons r rs' =>
-          rcases halt with ⟨hsr, htail⟩
-          intro t ht
-          rw [List.mem_cons] at ht
-          rcases ht with rfl | ht
-          · exact le_trans hsr (hrs r (by simp))
-          · exact listInterlaces_left_le_of_right_le htail
-              (fun x hx => hrs x (by simp [hx])) t ht
-
-private lemma roots_le_of_prec_right {f g : ℝ[X]} {c : ℝ}
-    (h : Prec f g)
-    (hg_le : ∀ r ∈ g.roots, r ≤ c) :
-    ∀ r ∈ f.roots, r ≤ c := by
-  rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
-  have hrs_le : ∀ r ∈ rs, r ≤ c := by
-    intro r hr
-    exact hg_le r (by rw [← hrs_eq]; exact Multiset.mem_coe.mpr hr)
-  intro r hr
-  have hr' : r ∈ ss := by
-    have : r ∈ (↑ss : Multiset ℝ) := by simpa [hss_eq] using hr
-    exact Multiset.mem_coe.mp this
-  rcases hshape with ⟨_, hint⟩ | ⟨_, halt⟩
-  · exact listInterlaces_left_le_of_right_le hint hrs_le r hr'
-  · exact listAlternates_left_le_of_right_le halt hrs_le r hr'
-
 /-- An equal-degree Obreschkoff alternative can be oriented once we know that
 `f` has a root strictly to the right of an upper bound for all roots of `g`. -/
 theorem prec_of_prec_or_revPrec_of_root_asymmetry
@@ -1601,13 +1460,13 @@ theorem prec_or_revPrec_of_same_degree_one
   have hf_rr : IsRealRooted f := isRealRooted_of_degree_one hf_deg1
   have hg_rr : IsRealRooted g := by
     apply isRealRooted_of_degree_one
-    omega
+    lia
   obtain ⟨rf, hrf_eq⟩ : ∃ rf, f.roots = {rf} := by
     apply Multiset.card_eq_one.mp
     simpa [hf_deg1] using hf_rr.2
   obtain ⟨rg, hrg_eq⟩ : ∃ rg, g.roots = {rg} := by
     apply Multiset.card_eq_one.mp
-    have : g.natDegree = 1 := by omega
+    have : g.natDegree = 1 := by lia
     simpa [this] using hg_rr.2
   by_cases hle : rf ≤ rg
   · left
