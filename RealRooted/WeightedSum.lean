@@ -55,12 +55,12 @@ lemma weightedSum_eq_zero_of_forall_coeff_zero :
       simp [weightedSum_cons, ha, weightedSum_eq_zero_of_forall_coeff_zero l hl]
 
 /-- `HasNonnegCoeffs` is closed under finite sums. -/
-lemma hasNonnegCoeffs_finset_sum {ι : Type}
+lemma hasNonnegCoeffs_finsetSum {ι : Type}
     (s : Finset ι) (f : ι → ℝ[X]) (hf : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
     HasNonnegCoeffs (s.sum f) := by
   classical
   intro n
-  rw [finset_sum_coeff]
+  rw [finsetSum_coeff]
   exact Finset.sum_nonneg fun i hi => hf i hi n
 
 lemma hasPosLeadingCoeff_C_mul {a : ℝ} {p : ℝ[X]}

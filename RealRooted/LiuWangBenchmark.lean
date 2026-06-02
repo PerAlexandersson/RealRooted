@@ -111,7 +111,7 @@ lemma coeff_liuWangPoly (d n m : Nat) :
       if m < n then
         ((Nat.choose n m * Nat.choose d (n - m - 1) : ℕ) : ℝ)
       else 0 := by
-  rw [liuWangPoly, finset_sum_coeff]
+  rw [liuWangPoly, finsetSum_coeff]
   by_cases hm : m < n
   · rw [Finset.sum_eq_single_of_mem m (Finset.mem_range.mpr hm)]
     · simp [hm]
@@ -505,7 +505,7 @@ private lemma listInterlaces_dropLast_lt_zero_of_forall_lt_zero :
   | [], [_], _, _, _, hr => by simp at hr
   | s :: ss, r₁ :: r₂ :: rs, hint, hss, r, hr => by
       obtain ⟨hr₁s, _, htail⟩ := hint
-      rw [List.dropLast_cons₂] at hr
+      rw [List.dropLast_cons_cons] at hr
       rcases List.mem_cons.mp hr with rfl | hr'
       · exact lt_of_le_of_lt hr₁s (hss s (by simp))
       · exact listInterlaces_dropLast_lt_zero_of_forall_lt_zero htail

@@ -441,7 +441,7 @@ theorem prec0_sum_left_of_common_left_of_nonneg
     exact Or.inr <| Or.inr <| by simpa [hsum] using hstrict
 
 /-- Right cone for `Prec0` over finite sums of nonnegative-coefficient polynomials. -/
-lemma prec0_finset_sum_right_of_nonneg {ι : Type}
+lemma prec0_finsetSum_right_of_nonneg {ι : Type}
     (s : Finset ι) (f : ι → ℝ[X]) (h : ℝ[X])
     (hprec : ∀ i ∈ s, Prec0 (f i) h)
     (hnn : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
@@ -473,7 +473,7 @@ lemma prec0_finset_sum_right_of_nonneg {ι : Type}
       · contradiction
       · exact (hh0 hh0').elim
       have hs_pos : HasPosLeadingCoeff (s.sum f) :=
-        (hasNonnegCoeffs_finset_sum s f hnn_s).pos_leadingCoeff hs0
+        (hasNonnegCoeffs_finsetSum s f hnn_s).pos_leadingCoeff hs0
       have hfa_pos : HasPosLeadingCoeff (f a) := hnn_a.pos_leadingCoeff hfa0
       have hsum_strict : Prec (f a + s.sum f) h :=
         prec_add_of_prec_right_of_posLeadingCoeff
@@ -481,7 +481,7 @@ lemma prec0_finset_sum_right_of_nonneg {ι : Type}
       simpa [Finset.sum_insert, ha] using hsum_strict.toPrec0
 
 /-- Left cone for `Prec0` over finite sums of nonnegative-coefficient polynomials. -/
-lemma prec0_finset_sum_left_of_nonneg {ι : Type}
+lemma prec0_finsetSum_left_of_nonneg {ι : Type}
     (h : ℝ[X]) (s : Finset ι) (f : ι → ℝ[X])
     (hprec : ∀ i ∈ s, Prec0 h (f i))
     (hnn : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
@@ -509,7 +509,7 @@ lemma prec0_finset_sum_left_of_nonneg {ι : Type}
           simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
           rcases hp with rfl | rfl
           · exact hnn a (by simp)
-          · exact hasNonnegCoeffs_finset_sum s f hnn_s
+          · exact hasNonnegCoeffs_finsetSum s f hnn_s
       simpa [Finset.sum_insert, ha] using hpair
 
 /-- Same-degree shift on the left: if `f ≪ g`, both have positive leading

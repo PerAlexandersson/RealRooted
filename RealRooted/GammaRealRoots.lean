@@ -186,7 +186,7 @@ lemma IdTransform_gammaBasisTerm (d i : ℕ) (hi : 2 * i ≤ d) :
     _ = X ^ i * ((X + 1 : ℝ[X]) ^ n) := by rw [IdTransform_X_add_one_pow]
     _ = gammaBasisTerm d i := by simp [gammaBasisTerm, n]
 
-lemma IdTransform_finset_sum {ι : Type} (d : ℕ) (s : Finset ι)
+lemma IdTransform_finsetSum {ι : Type} (d : ℕ) (s : Finset ι)
     (f : ι → ℝ[X]) :
     IdTransform d (∑ i ∈ s, f i) = ∑ i ∈ s, IdTransform d (f i) := by
   classical
@@ -200,7 +200,7 @@ lemma gammaTransform_fixed (d : ℕ) (γ : ℝ[X]) :
     IdTransform d (gammaTransform d γ) = gammaTransform d γ := by
   classical
   unfold gammaTransform
-  rw [IdTransform_finset_sum]
+  rw [IdTransform_finsetSum]
   apply Finset.sum_congr rfl
   intro i hi
   have hi_le : i ≤ d / 2 := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
@@ -342,7 +342,7 @@ lemma gammaTransform_even_eval_neg_one (m : ℕ) (γ : ℝ[X]) :
   unfold gammaTransform
   have hhalf_even : (2 * m) / 2 = m := by omega
   rw [hhalf_even]
-  rw [Polynomial.eval_finset_sum]
+  rw [Polynomial.eval_finsetSum]
   rw [Finset.sum_eq_single m]
   · simp [gammaBasisTerm]
   · intro i hi him
@@ -555,7 +555,7 @@ lemma natDegree_gammaTransform_le (d : ℕ) (γ : ℝ[X]) :
   refine Polynomial.natDegree_le_iff_coeff_eq_zero.mpr ?_
   intro n hn
   unfold gammaTransform
-  rw [Polynomial.finset_sum_coeff]
+  rw [Polynomial.finsetSum_coeff]
   refine Finset.sum_eq_zero ?_
   intro i hi
   have hi_le : i ≤ d / 2 := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
@@ -569,7 +569,7 @@ lemma natDegree_gammaTransform_le (d : ℕ) (γ : ℝ[X]) :
 @[simp] lemma gammaTransform_eval_zero (d : ℕ) (γ : ℝ[X]) :
     (gammaTransform d γ).eval 0 = γ.coeff 0 := by
   unfold gammaTransform
-  rw [Polynomial.eval_finset_sum, Finset.sum_eq_single 0]
+  rw [Polynomial.eval_finsetSum, Finset.sum_eq_single 0]
   · simp [gammaBasisTerm]
   · intro i hi hi0
     have hi_pos : 0 < i := Nat.pos_of_ne_zero hi0
@@ -596,7 +596,7 @@ lemma eval_gammaTransform_eq_mul_eval_gammaUntransform {d : ℕ} {γ : ℝ[X]}
     apply hx
     linarith
   unfold gammaTransform
-  rw [Polynomial.eval_finset_sum, Polynomial.eval_eq_sum_range' (Nat.lt_succ_iff.mpr hγdeg)]
+  rw [Polynomial.eval_finsetSum, Polynomial.eval_eq_sum_range' (Nat.lt_succ_iff.mpr hγdeg)]
   rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro k hk

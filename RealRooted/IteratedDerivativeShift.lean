@@ -642,7 +642,7 @@ lemma continuous_eval_iterateTDeriv (n : ℕ) (p : ℝ[X]) (x : ℝ) :
     rw [Polynomial.eval_eq_sum_range]
     rw [natDegree_iterateTDeriv_eq eps n p]
   rw [hrewrite]
-  exact continuous_finset_sum _ fun i _ =>
+  exact continuous_finsetSum _ fun i _ =>
     (continuous_coeff_iterateTDeriv n p i).mul continuous_const
 
 /-- Evaluation at a fixed real point is continuous at `eps = 0` along the
@@ -667,7 +667,7 @@ lemma continuous_eval_iterateTDeriv_joint (n : ℕ) (p : ℝ[X]) :
     rw [Polynomial.eval_eq_sum_range]
     rw [natDegree_iterateTDeriv_eq z.1 n p]
   rw [hrewrite]
-  exact continuous_finset_sum _ fun i _ =>
+  exact continuous_finsetSum _ fun i _ =>
     ((continuous_coeff_iterateTDeriv n p i).comp continuous_fst).mul
       (continuous_snd.pow i)
 
