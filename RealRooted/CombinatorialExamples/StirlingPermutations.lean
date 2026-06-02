@@ -89,11 +89,11 @@ lemma coeff_stirlingPermutationsCoeffB_mul_derivative (k : Nat) (p : ℝ[X]) :
           _ = (((k + 1 : Nat) : ℝ) + 1) * coeff p (k + 1 + 1) := by
                 rw [coeff_derivative, mul_comm]
           _ = (((k + 1 : Nat) : ℝ) + 1) * coeff p (k + 2) := by
-                have hidx : k + 1 + 1 = k + 2 := by omega
+                have hidx : k + 1 + 1 = k + 2 := by lia
                 rw [hidx]
           _ = (k + 2 : ℝ) * coeff p (k + 2) := by
                 have hcast : (((k + 1 : Nat) : ℝ) + 1) = (k + 2 : ℝ) := by
-                  exact_mod_cast (show k + 1 + 1 = k + 2 by omega)
+                  exact_mod_cast (show k + 1 + 1 = k + 2 by lia)
                 rw [hcast]
       have h₂ : coeff (X * X * p.derivative) (k + 2) =
           (k + 1 : ℝ) * coeff p (k + 1) := by
@@ -133,20 +133,20 @@ lemma coeff_stirlingPermutations_top_pos_and_above :
   | n + 1 => by
       rcases coeff_stirlingPermutations_top_pos_and_above n with ⟨htop, habove⟩
       constructor
-      · rw [show n + 1 = n + 0 + 1 by omega, coeff_stirlingPermutations_succ]
+      · rw [show n + 1 = n + 0 + 1 by lia, coeff_stirlingPermutations_succ]
         have hzero : coeff (stirlingPermutations n) (n + 1) = 0 :=
-          habove (n + 1) (by omega)
+          habove (n + 1) (by lia)
         have hscale : 0 < ((2 * n + 1 : ℝ) - n) := by
           nlinarith
         simpa [hzero] using mul_pos hscale htop
       · intro k hk
         cases k with
         | zero =>
-            omega
+            lia
         | succ j =>
-            rw [show j + 1 = j + 0 + 1 by omega, coeff_stirlingPermutations_succ]
-            have hj : n < j := by omega
-            have hj' : n < j + 1 := by omega
+            rw [show j + 1 = j + 0 + 1 by lia, coeff_stirlingPermutations_succ]
+            have hj : n < j := by lia
+            have hj' : n < j + 1 := by lia
             simp [habove j hj, habove (j + 1) hj']
 
 lemma natDegree_stirlingPermutations (n : Nat) :
@@ -198,7 +198,7 @@ lemma stirlingPermutations_nonnegCoeffs :
             rcases coeff_stirlingPermutations_top_pos_and_above n with ⟨_, habove⟩
             have hcoeff_j : coeff (stirlingPermutations n) j = 0 := habove j hj'
             have hcoeff_j1 : coeff (stirlingPermutations n) (j + 1) = 0 := by
-              exact habove (j + 1) (by omega)
+              exact habove (j + 1) (by lia)
             simp [hcoeff_j, hcoeff_j1]
 
 lemma roots_nonpos_stirlingPermutations_of_isRealRooted {n : Nat}
@@ -248,7 +248,7 @@ lemma prec_stirlingPermutations_one_two :
         (stirlingPermutationsCoeffA 1 * stirlingPermutations 1 +
           stirlingPermutationsCoeffB * (stirlingPermutations 1).derivative).natDegree := by
     rw [hNext_eq, natDegree_stirlingPermutations, natDegree_stirlingPermutations]
-    omega
+    lia
   have hdeg_hi :
       (stirlingPermutationsCoeffA 1 * stirlingPermutations 1 +
           stirlingPermutationsCoeffB * (stirlingPermutations 1).derivative).natDegree ≤
@@ -283,12 +283,12 @@ theorem prec_stirlingPermutations_succ :
             (stirlingPermutations (n + 2)) :=
         derivative_interlaces hf (by
           rw [natDegree_stirlingPermutations]
-          omega)
+          lia)
       have hg_pos :
           HasPosLeadingCoeff (stirlingPermutations (n + 2)).derivative :=
         hasPosLeadingCoeff_derivative (stirlingPermutations_posLeadingCoeff (n + 2)) (by
           rw [natDegree_stirlingPermutations]
-          omega)
+          lia)
       have hNext_eq :
           stirlingPermutationsCoeffA (n + 2) * stirlingPermutations (n + 2) +
               stirlingPermutationsCoeffB * (stirlingPermutations (n + 2)).derivative =
@@ -306,7 +306,7 @@ theorem prec_stirlingPermutations_succ :
               stirlingPermutationsCoeffB *
                 (stirlingPermutations (n + 2)).derivative).natDegree := by
         rw [hNext_eq, natDegree_stirlingPermutations, natDegree_stirlingPermutations]
-        omega
+        lia
       have hdeg_hi :
           (stirlingPermutationsCoeffA (n + 2) * stirlingPermutations (n + 2) +
               stirlingPermutationsCoeffB * (stirlingPermutations (n + 2)).derivative).natDegree ≤

@@ -59,7 +59,7 @@ theorem prec_shift_of_interlaces
 private lemma natDegree_X_sub_one_mul {h : ℝ[X]} (hh_ne : h ≠ 0) :
     ((X - C 1) * h).natDegree = h.natDegree + 1 := by
   rw [natDegree_mul (X_sub_C_ne_zero 1) hh_ne, natDegree_X_sub_C]
-  omega
+  lia
 
 /-- Multiplication by the monic polynomial `X - 1` preserves positive leading coefficient. -/
 private lemma hasPosLeadingCoeff_X_sub_one_mul {h : ℝ[X]}
@@ -95,7 +95,7 @@ lemma shift_natDegree_of_same_degree {f h : ℝ[X]}
   have hXh_deg : ((X - C 1) * h).natDegree = f.natDegree + 1 := by
     rw [natDegree_X_sub_one_mul hh_ne, hdeg]
   have hXh_pos := hasPosLeadingCoeff_X_sub_one_mul hh_pos
-  have hlt : f.natDegree < ((X - C 1) * h).natDegree := by omega
+  have hlt : f.natDegree < ((X - C 1) * h).natDegree := by lia
   constructor
   · exact natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hlt hXh_pos ▸ hXh_deg
   · exact hasPosLeadingCoeff_add_of_natDegree_lt_right hlt hXh_pos
@@ -191,15 +191,15 @@ theorem prec_shift
   have hrs_len : rs.length = f.natDegree := by
     rw [← Multiset.coe_card, hrs_eq, hf.2]
   rcases hshape with ⟨hdiffby1, hint⟩ | ⟨hsamedeg, halt⟩
-  · have hdeg : h.natDegree + 1 = f.natDegree := by omega
+  · have hdeg : h.natDegree + 1 = f.natDegree := by lia
     have hh_ne : h ≠ 0 := hh.1
     have hinterl : Interlaces h f :=
       Prec.toInterlaces ⟨hh, hf, ss, rs, hss_sorted, hrs_sorted,
         hss_eq, hrs_eq, Or.inl ⟨hdiffby1, hint⟩⟩ hdeg
     obtain ⟨hndeg, hpos⟩ := shift_natDegree_of_interlaces hf_pos hh_pos hdeg hh_ne
     exact prec_shift_of_interlaces hinterl hf_pos hh_pos hf_nonpos hpos
-      (by omega) (by omega)
-  · have hdeg : h.natDegree = f.natDegree := by omega
+      (by lia) (by lia)
+  · have hdeg : h.natDegree = f.natDegree := by lia
     exact prec_shift_of_same_degree
       ⟨hh, hf, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, Or.inr ⟨hsamedeg, halt⟩⟩
       hdeg hf_pos hh_pos hf_nonpos hh_nonpos heval

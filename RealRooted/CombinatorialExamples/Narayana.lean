@@ -167,7 +167,7 @@ private lemma natDegree_leadingCoeff_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
   have hA_natDegree : A.natDegree = n + 1 := by
     dsimp [A]
     rw [natDegree_mul' hA_lc_ne, narayanaCoeffA_natDegree, hdeg_succ]
-    omega
+    lia
   have hA_leadingCoeff : A.leadingCoeff = ((2 * n + 3 : ℝ) / (n + 3 : ℝ)) := by
     dsimp [A]
     rw [leadingCoeff_mul' hA_lc_ne, narayanaCoeffA_leadingCoeff, hlc_succ]
@@ -181,7 +181,7 @@ private lemma natDegree_leadingCoeff_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
   have hB_natDegree : B.natDegree = n + 1 := by
     dsimp [B]
     rw [natDegree_mul' hB_lc_ne, narayanaCoeffB_natDegree n hn, hdeg]
-    omega
+    lia
   have hB_leadingCoeff : B.leadingCoeff = ((-(n : ℝ)) / (n + 3 : ℝ)) := by
     dsimp [B]
     rw [leadingCoeff_mul' hB_lc_ne, narayanaCoeffB_leadingCoeff n hn, hlc]
@@ -222,7 +222,7 @@ private lemma natDegree_leadingCoeff_narayanaQuot :
       (narayanaQuot n).natDegree = n - 1 ∧
         (narayanaQuot n).leadingCoeff = 1
   | 0, hn => by
-      omega
+      lia
   | 1, _ => by
       simp [narayanaQuot]
   | 2, _ => by
@@ -233,10 +233,10 @@ private lemma natDegree_leadingCoeff_narayanaQuot :
       · simpa [add_comm] using
           (Polynomial.leadingCoeff_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by norm_num))
   | n + 3, _ => by
-      have hprev_succ := natDegree_leadingCoeff_narayanaQuot (n + 2) (by omega)
-      have hprev := natDegree_leadingCoeff_narayanaQuot (n + 1) (by omega)
+      have hprev_succ := natDegree_leadingCoeff_narayanaQuot (n + 2) (by lia)
+      have hprev := natDegree_leadingCoeff_narayanaQuot (n + 1) (by lia)
       have hstep :=
-        natDegree_leadingCoeff_narayanaQuot_step (n + 1) (by omega)
+        natDegree_leadingCoeff_narayanaQuot_step (n + 1) (by lia)
           hprev_succ.1 hprev_succ.2 hprev.1 hprev.2
       simpa [Nat.add_assoc] using hstep
 
@@ -268,7 +268,7 @@ lemma natDegree_narayana (n : Nat) (hn : 1 ≤ n) :
     rw [leadingCoeff_X, leadingCoeff_narayanaQuot n hn]
     norm_num
   rw [natDegree_mul' hmul_ne, natDegree_X, natDegree_narayanaQuot n hn]
-  omega
+  lia
 
 lemma narayanaQuot_one_two_interlaces :
     Interlaces (narayanaQuot 1) (narayanaQuot 2) := by
@@ -284,21 +284,21 @@ private lemma prec_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
   have hg_pos : HasPosLeadingCoeff (narayanaQuot n) :=
     narayanaQuot_posLeadingCoeff n hn
   have hF_pos : HasPosLeadingCoeff (narayanaQuot (n + 2)) :=
-    narayanaQuot_posLeadingCoeff (n + 2) (by omega)
+    narayanaQuot_posLeadingCoeff (n + 2) (by lia)
   have hdeg_lo :
       (narayanaQuot (n + 1)).natDegree ≤
         (narayanaCoeffA n * narayanaQuot (n + 1) +
           narayanaCoeffB n * narayanaQuot n).natDegree := by
-    rw [← narayanaQuot_succ_succ, natDegree_narayanaQuot (n + 1) (by omega),
-      natDegree_narayanaQuot (n + 2) (by omega)]
-    omega
+    rw [← narayanaQuot_succ_succ, natDegree_narayanaQuot (n + 1) (by lia),
+      natDegree_narayanaQuot (n + 2) (by lia)]
+    lia
   have hdeg_hi :
       (narayanaCoeffA n * narayanaQuot (n + 1) +
           narayanaCoeffB n * narayanaQuot n).natDegree ≤
         (narayanaQuot (n + 1)).natDegree + 1 := by
-    rw [← narayanaQuot_succ_succ, natDegree_narayanaQuot (n + 1) (by omega),
-      natDegree_narayanaQuot (n + 2) (by omega)]
-    omega
+    rw [← narayanaQuot_succ_succ, natDegree_narayanaQuot (n + 1) (by lia),
+      natDegree_narayanaQuot (n + 2) (by lia)]
+    lia
   have hb_nonpos :
       ∀ r, (narayanaQuot (n + 1)).IsRoot r → (narayanaCoeffB n).eval r ≤ 0 := by
     intro r hr
@@ -330,24 +330,24 @@ theorem prec_narayanaQuot_succ_of_nonnegCoeffs :
       (∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) →
       Prec (narayanaQuot n) (narayanaQuot (n + 1))
   | 0, hn, _ => by
-      omega
+      lia
   | 1, _, _ => by
       exact narayanaQuot_one_two_interlaces.toPrec
   | n + 2, _, hnonneg => by
       have hprev : Prec (narayanaQuot (n + 1)) (narayanaQuot (n + 2)) :=
-        prec_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by omega) hnonneg
+        prec_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg
       have hInter : Interlaces (narayanaQuot (n + 1)) (narayanaQuot (n + 2)) := by
         apply hprev.toInterlaces
-        rw [natDegree_narayanaQuot (n + 2) (by omega), natDegree_narayanaQuot (n + 1) (by omega)]
-        omega
-      exact prec_narayanaQuot_step (n + 1) (by omega) hInter (hnonneg (n + 2))
+        rw [natDegree_narayanaQuot (n + 2) (by lia), natDegree_narayanaQuot (n + 1) (by lia)]
+        lia
+      exact prec_narayanaQuot_step (n + 1) (by lia) hInter (hnonneg (n + 2))
 
 theorem interlaces_narayanaQuot_succ_of_nonnegCoeffs (n : Nat) (hn : 1 ≤ n)
     (hnonneg : ∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) :
     Interlaces (narayanaQuot n) (narayanaQuot (n + 1)) := by
   apply (prec_narayanaQuot_succ_of_nonnegCoeffs n hn hnonneg).toInterlaces
-  rw [natDegree_narayanaQuot (n + 1) (by omega), natDegree_narayanaQuot n hn]
-  omega
+  rw [natDegree_narayanaQuot (n + 1) (by lia), natDegree_narayanaQuot n hn]
+  lia
 
 /-- Conditional real-rootedness of the quotient Narayana sequence. -/
 theorem isRealRooted_narayanaQuot_of_nonnegCoeffs :
@@ -355,12 +355,12 @@ theorem isRealRooted_narayanaQuot_of_nonnegCoeffs :
       (∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) →
       IsRealRooted (narayanaQuot n)
   | 0, hn, _ => by
-      omega
+      lia
   | 1, _, _ => by
       simpa [narayanaQuot_one] using
         isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)
   | n + 2, _, hnonneg => by
-      exact (prec_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by omega) hnonneg).2.1
+      exact (prec_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg).2.1
 
 /-- Conditional interlacing for the original Narayana sequence. This is just
 the quotient result with the common `X` factor reattached on both sides. -/
@@ -377,7 +377,7 @@ theorem interlaces_narayana_succ_of_nonnegCoeffs (n : Nat) (hn : 1 ≤ n)
     simpa [narayana] using
       prec_mul_X_both_of_roots_nonpos hprecQ hq_nonpos hq_succ_nonpos
   exact hprec.toInterlaces (by
-    rw [natDegree_narayana (n + 1) (by omega), natDegree_narayana n hn])
+    rw [natDegree_narayana (n + 1) (by lia), natDegree_narayana n hn])
 
 /-- Conditional real-rootedness of the original Narayana sequence. -/
 theorem isRealRooted_narayana_of_nonnegCoeffs :
@@ -385,11 +385,11 @@ theorem isRealRooted_narayana_of_nonnegCoeffs :
       (∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) →
       IsRealRooted (narayana n)
   | 0, hn, _ => by
-      omega
+      lia
   | 1, _, _ => by
       simpa using isRealRooted_of_degree_one (by simp)
   | n + 2, _, hnonneg => by
-      exact (interlaces_narayana_succ_of_nonnegCoeffs (n + 1) (by omega) hnonneg).1
+      exact (interlaces_narayana_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg).1
 
 /-- The descending prefix `[P_{n+1}, P_n, ..., P_1]` of the original Narayana
 sequence. -/
@@ -417,6 +417,6 @@ theorem isSturmSeq_narayanaPrefix_of_nonnegCoeffs
             interlaces_narayana_succ_of_nonnegCoeffs 1 (by norm_num) hnonneg
       | succ n =>
           simpa [narayanaPrefix, IsSturmSeq] using
-            And.intro (interlaces_narayana_succ_of_nonnegCoeffs (n + 2) (by omega) hnonneg) ih
+            And.intro (interlaces_narayana_succ_of_nonnegCoeffs (n + 2) (by lia) hnonneg) ih
 
 end RealRooted

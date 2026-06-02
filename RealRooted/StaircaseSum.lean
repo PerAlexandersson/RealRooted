@@ -60,7 +60,7 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
       intro hnil
       have hlen : (fs.take m).length = 0 := by simp [hnil]
       rw [List.length_take, Nat.min_eq_left (Nat.le_of_lt hm)] at hlen
-      omega
+      lia
     have hf_mem_drop : f ∈ fs.drop m := by
       rw [List.mem_iff_getElem?]
       refine ⟨0, ?_⟩

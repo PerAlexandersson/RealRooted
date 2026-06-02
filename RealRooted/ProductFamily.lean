@@ -193,12 +193,12 @@ theorem pairwiseHasCommonLeftInterleaver_zipWith_mul_reverse_of_interlacingSeqNo
   have hj'' : j''.1 < gs.length := by
     simpa [List.length_reverse] using j''.2
   let ki : Fin gs.length := ⟨gs.length - 1 - i''.1, by
-    omega⟩
+    lia⟩
   let kj : Fin gs.length := ⟨gs.length - 1 - j''.1, by
-    omega⟩
+    lia⟩
   have hkj_ki : kj < ki := by
     have hrev_idx : gs.length - 1 - j''.1 < gs.length - 1 - i''.1 := by
-      omega
+      lia
     simpa [kj, ki] using hrev_idx
   have hfi_fj : Prec fi fj := by
     simpa [fi, fj] using (List.pairwise_iff_get.mp hpair_fs i' j' hij')
@@ -254,12 +254,12 @@ theorem pairwiseHasCommonInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg
   have hj'' : j''.1 < gs.length := by
     simpa [List.length_reverse] using j''.2
   let ki : Fin gs.length := ⟨gs.length - 1 - i''.1, by
-    omega⟩
+    lia⟩
   let kj : Fin gs.length := ⟨gs.length - 1 - j''.1, by
-    omega⟩
+    lia⟩
   have hkj_ki : kj < ki := by
     have hrev_idx : gs.length - 1 - j''.1 < gs.length - 1 - i''.1 := by
-      omega
+      lia
     simpa [kj, ki] using hrev_idx
   have hfi_fj : Prec fi fj := by
     simpa [fi, fj] using (List.pairwise_iff_get.mp hpair_fs i' j' hij')

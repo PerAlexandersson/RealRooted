@@ -67,7 +67,7 @@ theorem favardInterlacing :
         have hAf_deg : (aPoly * f).natDegree = f.natDegree + 1 := by
           dsimp [aPoly]
           rw [natDegree_mul (X_sub_C_ne_zero (α (n + 1))) hf_ne, natDegree_X_sub_C]
-          omega
+          lia
         have hAf_pos : HasPosLeadingCoeff (aPoly * f) := by
           dsimp [aPoly]
           unfold HasPosLeadingCoeff at hPos_n1 ⊢
@@ -76,11 +76,11 @@ theorem favardInterlacing :
           have hBg_le : (bPoly * g).natDegree ≤ g.natDegree := by
             dsimp [bPoly]
             exact Polynomial.natDegree_C_mul_le _ _
-          have hg_lt : g.natDegree < f.natDegree := by omega
+          have hg_lt : g.natDegree < f.natDegree := by lia
           calc
             (bPoly * g).natDegree ≤ g.natDegree := hBg_le
             _ < f.natDegree := hg_lt
-            _ < f.natDegree + 1 := by omega
+            _ < f.natDegree + 1 := by lia
             _ = (aPoly * f).natDegree := hAf_deg.symm
         have hF_pos_aux : HasPosLeadingCoeff (bPoly * g + aPoly * f) :=
           hasPosLeadingCoeff_add_of_natDegree_lt_right hBg_lt_Af hAf_pos
@@ -93,9 +93,9 @@ theorem favardInterlacing :
             natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hBg_lt_Af hAf_pos
           simpa [add_comm, hAf_deg] using hdeg_aux
         have hdeg_lo : f.natDegree ≤ (aPoly * f + bPoly * g).natDegree := by
-          omega
+          lia
         have hdeg_hi : (aPoly * f + bPoly * g).natDegree ≤ f.natDegree + 1 := by
-          omega
+          lia
         have hb_nonpos : ∀ r, f.IsRoot r → bPoly.eval r ≤ 0 := by
           intro r _hr
           have hb_le : 0 ≤ β (n + 1) := (hβ n).le

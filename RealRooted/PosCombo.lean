@@ -26,9 +26,9 @@ private lemma natDegree_eq_or_succ_of_prec {f g : ℝ[X]} (h : Prec f g) :
     rw [← Multiset.coe_card, hrs_eq, hg.2]
   rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩
   · right
-    omega
+    lia
   · left
-    omega
+    lia
 
 private lemma exists_root_upper_bound (p : ℝ[X]) :
     ∃ c, ∀ r ∈ p.roots, r ≤ c := by
@@ -196,7 +196,7 @@ private lemma prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos {f g : ℝ[X]}
     have hrs_len : rs_Xf.length = (X * f).natDegree := by
       rw [← Multiset.coe_card, hrs_Xf_eq, hXf.2]
     rw [natDegree_X_mul hf.1] at hrs_len
-    omega
+    lia
 
 lemma prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
     (h : Prec f g)
@@ -320,7 +320,7 @@ interlaced on the left by `h`. -/
     hasPosLeadingCoeff_weightedSum l hnonneg hpoly_pos hex0
   have hH_deg : H.natDegree = h.natDegree + 1 := by
     rw [show H = (X - C r) * h by rfl, natDegree_mul (X_sub_C_ne_zero r) hh.1, natDegree_X_sub_C]
-    omega
+    lia
   have hH_le : ∀ s ∈ H.roots, s ≤ r := roots_le_X_sub_C_mul hh hh_le
   have hweighted_le : ∀ s ∈ (weightedSum l).roots, s ≤ r :=
     roots_le_of_prec_right hweighted_right hH_le
@@ -332,7 +332,7 @@ interlaced on the left by `h`. -/
       (prec_iff_prec_mul_X_sub_C_of_roots_le r hh hweighted_right.1 hpos hweighted_pos
         hh_le hweighted_le hdeg).mpr hweighted_right
   · have hdeg : h.natDegree = (weightedSum l).natDegree := by
-      omega
+      lia
     exact
       prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le r hweighted_right hdeg
         hpos hweighted_pos hh_le hweighted_le
@@ -1021,7 +1021,7 @@ private lemma common_root_reduction_data
       exact right_ne_zero_of_mul (by simpa [hqg] using hg_ne)
     rw [hqf, hqg, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
       natDegree_mul (X_sub_C_ne_zero r) hqg_ne, natDegree_X_sub_C] at hdeg_lo
-    omega
+    lia
   · have hf_ne : f ≠ 0 := by
       intro h0
       simp [HasPosLeadingCoeff, h0] at hf_pos
@@ -1034,7 +1034,7 @@ private lemma common_root_reduction_data
       exact right_ne_zero_of_mul (by simpa [hqg] using hg_ne)
     rw [hqf, hqg, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
       natDegree_mul (X_sub_C_ne_zero r) hqg_ne, natDegree_X_sub_C] at hdeg_hi
-    omega
+    lia
 
 /-- To prove the restricted Obreschkoff converse, it is enough to handle the
 no-common-roots case. Shared roots can be factored out recursively.
@@ -1083,7 +1083,7 @@ theorem prec_or_revPrec_of_posComboRealRooted_of_no_common
       exact right_ne_zero_of_mul (by simpa [hqf] using hf_ne)
     have hqf_deg_lt : qf.natDegree < n := by
       rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C]
-      omega
+      lia
     have hprec_q : Prec qf qg ∨ Prec qg qf :=
       ih qf.natDegree hqf_deg_lt rfl hqfg hqf_pos hqg_pos hqdeg_lo hqdeg_hi
     rcases hprec_q with hprec_q | hprec_q
@@ -1652,13 +1652,13 @@ theorem prec_or_revPrec_of_same_degree_one
   have hf_rr : IsRealRooted f := isRealRooted_of_degree_one hf_deg1
   have hg_rr : IsRealRooted g := by
     apply isRealRooted_of_degree_one
-    omega
+    lia
   obtain ⟨rf, hrf_eq⟩ : ∃ rf, f.roots = {rf} := by
     apply Multiset.card_eq_one.mp
     simpa [hf_deg1] using hf_rr.2
   obtain ⟨rg, hrg_eq⟩ : ∃ rg, g.roots = {rg} := by
     apply Multiset.card_eq_one.mp
-    have : g.natDegree = 1 := by omega
+    have : g.natDegree = 1 := by lia
     simpa [this] using hg_rr.2
   by_cases hle : rf ≤ rg
   · left

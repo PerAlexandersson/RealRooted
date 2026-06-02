@@ -31,13 +31,13 @@ lemma natDegree_derivative_eq {p : ℝ[X]} (hp : 1 ≤ p.natDegree) :
   rw [hcast]
   exact mul_ne_zero
     (leadingCoeff_ne_zero.mpr (by intro h; simp [h] at hp))
-    (Nat.cast_ne_zero.mpr (by omega))
+    (Nat.cast_ne_zero.mpr (by lia))
 
 lemma derivative_ne_zero {f : ℝ[X]} (hdeg : 2 ≤ f.natDegree) :
     f.derivative ≠ 0 := by
   intro h
-  have := natDegree_derivative_eq (show 1 ≤ f.natDegree by omega)
-  rw [h, natDegree_zero] at this; omega
+  have := natDegree_derivative_eq (show 1 ≤ f.natDegree by lia)
+  rw [h, natDegree_zero] at this; lia
 
 /-! ## Rolle's theorem for polynomials -/
 
@@ -85,7 +85,7 @@ lemma mkInterleaving_length (f : ℝ[X]) :
   | _ :: r₂ :: rest, hrs => by
     simp only [mkInterleaving, List.length_cons]
     rw [mkInterleaving_length f (r₂ :: rest)]
-    simp only [List.length_cons]; omega
+    simp only [List.length_cons]; lia
 
 /-! ## Properties of the construction
 
@@ -289,8 +289,8 @@ lemma mkInterleaving_sub_multiset (f : ℝ[X])
           rw [this] at hcount_full
           have hmult := rootMultiplicity_sub_one_le_derivative_rootMultiplicity_of_ne_zero
             f a hf'_ne
-          -- Goal involves Multiset.count and rootMultiplicity — close with omega
-          simp only [count_roots] at *; omega
+          -- Goal involves Multiset.count and rootMultiplicity — close with lia
+          simp only [count_roots] at *; lia
         · -- s ≠ a: use IH directly
           simp only [add_zero]; exact Multiset.count_le_of_le a ih.1
     · -- (B): count bound: ∀ a ∈ ↑rs, count a ss + 1 ≤ count a rs
@@ -314,7 +314,7 @@ lemma mkInterleaving_sub_multiset (f : ℝ[X])
         have ih_B := ih.2 a (by
           rw [heq, show s = r₁ from dif_neg (not_lt.mpr (ge_of_eq hr_eq)), hr_eq]
           exact Multiset.mem_coe.mpr (.head _))
-        omega
+        lia
       · -- a = s, a ≠ r₁: vacuous
         rw [if_pos heq, if_neg hr₁a]; exfalso
         rcases ha with rfl | ha_tail
@@ -335,19 +335,19 @@ lemma mkInterleaving_sub_multiset (f : ℝ[X])
       · -- a ≠ s, a = r₁
         rw [if_neg heq, if_pos hr₁a]
         by_cases ha2 : a ∈ (↑(r₂ :: rest) : Multiset ℝ)
-        · have ih_B := ih.2 a ha2; omega
+        · have ih_B := ih.2 a ha2; lia
         · have hlt : r₁ < r₂ := by
             rcases lt_or_eq_of_le hr₁r₂ with h | h; · exact h
             · exfalso; rw [hr₁a, h] at ha2; exact ha2 (Multiset.mem_coe.mpr (.head _))
           have : (↑(mkInterleaving f (r₂ :: rest) hrest) : Multiset ℝ).count a = 0 :=
             Multiset.count_eq_zero.mpr (by
               rw [Multiset.mem_coe]; intro hmem; linarith [hge_tail _ hmem])
-          rw [this]; omega
+          rw [this]; lia
       · -- a ≠ s, a ≠ r₁
         rw [if_neg heq, if_neg hr₁a]
         rcases ha with rfl | ha_tail
         · exact absurd rfl hr₁a
-        · have ih_B := ih.2 a ha_tail; omega
+        · have ih_B := ih.2 a ha_tail; lia
 
 /-! ## Main theorem -/
 
@@ -367,7 +367,7 @@ theorem derivative_interlaces {f : ℝ[X]} (hf : IsRealRooted f)
   -- Construct interleaving
   set ss := mkInterleaving f rs hrs_root
   have hss_length : ss.length = f.natDegree - 1 := by
-    rw [mkInterleaving_length]; omega
+    rw [mkInterleaving_length]; lia
   -- Properties from the construction
   have hsub_rs : (↑rs : Multiset ℝ) ≤ f.roots := le_of_eq hrs_multiset
   have hspec := mkInterleaving_spec f rs hrs_root hrs_sorted hsub_rs
@@ -379,7 +379,7 @@ theorem derivative_interlaces {f : ℝ[X]} (hf : IsRealRooted f)
   -- Degree and cardinality → f' is real-rooted
   have hf'_ne : f.derivative ≠ 0 := derivative_ne_zero hdeg
   have hf'_deg : f.derivative.natDegree = f.natDegree - 1 :=
-    natDegree_derivative_eq (by omega)
+    natDegree_derivative_eq (by lia)
   have hf'_card : f.derivative.roots.card = f.derivative.natDegree := by
     apply le_antisymm (card_roots' _)
     calc f.derivative.natDegree
@@ -395,7 +395,7 @@ theorem derivative_interlaces {f : ℝ[X]} (hf : IsRealRooted f)
   have hss_sorted : ss.Pairwise (· ≤ ·) :=
     sorted_of_listInterlaces ss rs hrs_sorted hss_interlaces
   -- Assemble
-  exact ⟨hf, hf'_rr, by omega,
+  exact ⟨hf, hf'_rr, by lia,
     rs, ss, hrs_sorted, hss_sorted, hrs_multiset, hss_eq, hss_interlaces⟩
 
 end RealRooted

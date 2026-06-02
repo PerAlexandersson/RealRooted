@@ -171,7 +171,7 @@ private lemma listInterlaces_prod_mul_prod_nonneg_at_mem :
           linarith
         have hlen' : rest_f.length = rest_g.length := by
           simp at hlen
-          omega
+          lia
         exact prod_mul_prod_nonneg_of_forall_nonpos_of_eq_length
           (by simp [hlen']) hall_f hall_g
       · have hr_ge_b : b ≤ r := by
@@ -184,7 +184,7 @@ private lemma listInterlaces_prod_mul_prod_nonneg_at_mem :
             0 ≤ (rest_f.map (r - ·)).prod * (rest_g.map (r - ·)).prod :=
           listInterlaces_prod_mul_prod_nonneg_at_mem
             (ss_f := rest_f) (ss_g := rest_g) (rs := b :: rest_rs)
-            (by simp at hlen ⊢; omega) hint_f_tail hint_g_tail r (by simp [hr_tail])
+            (by simp at hlen ⊢; lia) hint_f_tail hint_g_tail r (by simp [hr_tail])
         simpa [List.map, List.prod_cons, mul_assoc, mul_left_comm, mul_comm] using
           mul_nonneg (mul_nonneg hsf_nonneg hsg_nonneg) htail
   | [], [], [], hlen, hint_f, _, _, hr => by
@@ -223,7 +223,7 @@ private lemma listAlternates_prod_mul_prod_nonneg_at_mem :
           0 ≤ (rest_f.map (r - ·)).prod * (rest_g.map (r - ·)).prod :=
         listInterlaces_prod_mul_prod_nonneg_at_mem
           (ss_f := rest_f) (ss_g := rest_g) (rs := r₁ :: rest_rs)
-          (by simp at hlen ⊢; omega) hint_f hint_g r hr
+          (by simp at hlen ⊢; lia) hint_f hint_g r hr
       simpa [List.map, List.prod_cons, mul_assoc, mul_left_comm, mul_comm] using
         mul_nonneg (mul_nonneg hsf_nonneg hsg_nonneg) htail
   | [], _ :: _, _, hlen, _, _, _, _ => by
@@ -251,7 +251,7 @@ private lemma listInterlaces_listAlternates_prod_mul_prod_nonneg_at_mem :
       have hsg_nonneg : 0 ≤ r - sg := by linarith
       have hlen' : ss_f.length = rest_g.length := by
         simp only [List.length_cons] at hlen
-        omega
+        lia
       have hbase :
           0 ≤ (ss_f.map (r - ·)).prod * (rest_g.map (r - ·)).prod :=
         listInterlaces_prod_mul_prod_nonneg_at_mem hlen' hint_f hint_g r hr
@@ -372,17 +372,17 @@ lemma eval_mul_eval_nonneg_of_prec_right {f g h : ℝ[X]}
       0 ≤ (ss_f.map (r - ·)).prod * (ss_g.map (r - ·)).prod := by
     rcases hcase_f with ⟨hlen_f, hint_f⟩ | ⟨hlen_f, halt_f⟩
     · rcases hcase_g with ⟨hlen_g, hint_g⟩ | ⟨hlen_g, halt_g⟩
-      · have hlen : ss_f.length = ss_g.length := by omega
+      · have hlen : ss_f.length = ss_g.length := by lia
         exact listInterlaces_prod_mul_prod_nonneg_at_mem hlen hint_f hint_g r hr_mem_rs
-      · have hlen : ss_f.length + 1 = ss_g.length := by omega
+      · have hlen : ss_f.length + 1 = ss_g.length := by lia
         exact listInterlaces_listAlternates_prod_mul_prod_nonneg_at_mem
           hlen hint_f halt_g r hr_mem_rs
     · rcases hcase_g with ⟨hlen_g, hint_g⟩ | ⟨hlen_g, halt_g⟩
-      · have hlen : ss_g.length + 1 = ss_f.length := by omega
+      · have hlen : ss_g.length + 1 = ss_f.length := by lia
         simpa [mul_comm] using
           (listInterlaces_listAlternates_prod_mul_prod_nonneg_at_mem
             hlen hint_g halt_f r hr_mem_rs)
-      · have hlen : ss_f.length = ss_g.length := by omega
+      · have hlen : ss_f.length = ss_g.length := by lia
         exact listAlternates_prod_mul_prod_nonneg_at_mem hlen halt_f halt_g r hr_mem_rs
   have hlead : 0 ≤ f.leadingCoeff * g.leadingCoeff := mul_nonneg hf_pos.le hg_pos.le
   rw [hprod_f, hprod_g]
@@ -603,7 +603,7 @@ lemma tendsto_eval_atBot_atTop_of_posLeadingCoeff_even {p : ℝ[X]}
     rw [comp_neg_X_leadingCoeff_eq]
     have hpow : (-1 : ℝ) ^ p.natDegree = 1 := by
       rcases hpar with ⟨k, hk⟩
-      have hk' : p.natDegree = 2 * k := by omega
+      have hk' : p.natDegree = 2 * k := by lia
       rw [hk', pow_mul]
       norm_num
     unfold HasPosLeadingCoeff at hp_pos
@@ -743,9 +743,9 @@ private lemma wagner1_roots_exist (f g : ℝ[X])
       exact (mem_roots hg.1).mp this
     -- Shared recursive call arguments
     have hlen_f' : rest_f.length + 1 = (b :: rest_rs).length := by
-      simp at hlen_f ⊢; omega
+      simp at hlen_f ⊢; lia
     have hlen_g' : rest_g.length + 1 = (b :: rest_rs).length := by
-      simp at hlen_g ⊢; omega
+      simp at hlen_g ⊢; lia
     have hss_f_eq' : (↑rest_f : Multiset ℝ) + (sf ::ₘ consumed_f) = f.roots :=
       calc (↑rest_f : Multiset ℝ) + (sf ::ₘ consumed_f)
           = sf ::ₘ consumed_f + ↑rest_f := add_comm _ _
@@ -808,9 +808,9 @@ private lemma wagner1_roots_exist (f g : ℝ[X])
           Multiset.countP_eq_zero.mpr (fun r hr => not_le.mpr
             (lt_of_le_of_lt (hcons_g_le r hr) hab_lt))
         have hlens : rest_f.length = rest_g.length := by
-          simp only [List.length_cons] at hlen_f hlen_g; omega
+          simp only [List.length_cons] at hlen_f hlen_g; lia
         rw [hcg_rest, hcf_rest, hcg_cons, hcf_cons]
-        simp only [Multiset.coe_card]; omega
+        simp only [Multiset.coe_card]; lia
       -- Sign lemma + IVT
       rcases le_or_gt sf sg with hsfsg | hsfsg
       · have hsign := opposite_sign_at_interlacing_roots hf hg hf_pos hg_pos hab
@@ -883,17 +883,17 @@ private lemma wagner1_roots_exist (f g : ℝ[X])
           hus_pw'⟩
   -- All remaining arms are impossible: contradictory length hypotheses.
   | [], [], [], hlen_f, _, _, _, _, _, _, _ => by
-      simp only [List.length_nil] at hlen_f; omega
+      simp only [List.length_nil] at hlen_f; lia
   | [], [], _ :: _ :: _, hlen_f, _, _, _, _, _, _, _ => by
-      simp only [List.length_nil, List.length_cons] at hlen_f; omega
+      simp only [List.length_nil, List.length_cons] at hlen_f; lia
   | [], _ :: _, _, hlen_f, hlen_g, _, _, _, _, _, _ => by
-      simp only [List.length_nil, List.length_cons] at hlen_f hlen_g; omega
+      simp only [List.length_nil, List.length_cons] at hlen_f hlen_g; lia
   | _ :: _, [], _, hlen_f, hlen_g, _, _, _, _, _, _ => by
-      simp only [List.length_nil, List.length_cons] at hlen_f hlen_g; omega
+      simp only [List.length_nil, List.length_cons] at hlen_f hlen_g; lia
   | _ :: _, _ :: _, [], hlen_f, _, _, _, _, _, _, _ => by
-      simp only [List.length_nil, List.length_cons] at hlen_f; omega
+      simp only [List.length_nil, List.length_cons] at hlen_f; lia
   | _ :: _, _ :: _, [_], hlen_f, _, _, _, _, _, _, _ => by
-      simp only [List.length_nil, List.length_cons] at hlen_f; omega
+      simp only [List.length_nil, List.length_cons] at hlen_f; lia
 
 /-- A sign-based version of the Wagner (1) root-production helper: if the
     common right-hand roots are not roots of `f + g`, then we can produce the
@@ -950,10 +950,10 @@ private lemma wagner1_roots_exist_of_no_common_right (f g : ℝ[X])
         exact (mem_roots hg.1).mp this
       have hlen_f' : rest_f.length + 1 = (b :: rest_rs).length := by
         simp at hlen_f ⊢
-        omega
+        lia
       have hlen_g' : rest_g.length + 1 = (b :: rest_rs).length := by
         simp at hlen_g ⊢
-        omega
+        lia
       have hss_f_eq' : (↑rest_f : Multiset ℝ) + (sf ::ₘ consumed_f) = f.roots :=
         calc
           (↑rest_f : Multiset ℝ) + (sf ::ₘ consumed_f)
@@ -1023,10 +1023,10 @@ private lemma wagner1_roots_exist_of_no_common_right (f g : ℝ[X])
               not_le.mpr (lt_of_le_of_lt (hcons_g_le r hr) hab_lt))
           have hlens : rest_f.length = rest_g.length := by
             simp only [List.length_cons] at hlen_f hlen_g
-            omega
+            lia
           rw [hcg_rest, hcf_rest, hcg_cons, hcf_cons]
           simp only [Multiset.coe_card]
-          omega
+          lia
         rcases le_or_gt sf sg with hsfsg | hsfsg
         · have hsign := opposite_sign_at_interlacing_roots hf hg hf_pos hg_pos hab
             hasf hsfb hasg hsgb hsfsg hsf_root hsg_root hf_dichotomy hg_dichotomy hcount_eq
@@ -1078,22 +1078,22 @@ private lemma wagner1_roots_exist_of_no_common_right (f g : ℝ[X])
             hus_pw'⟩
   | [], [], [], hlen_f, _, _, _, _, _, _, _, _ => by
       simp only [List.length_nil] at hlen_f
-      omega
+      lia
   | [], [], _ :: _ :: _, hlen_f, _, _, _, _, _, _, _, _ => by
       simp only [List.length_nil, List.length_cons] at hlen_f
-      omega
+      lia
   | [], _ :: _, _, hlen_f, hlen_g, _, _, _, _, _, _, _ => by
       simp only [List.length_nil, List.length_cons] at hlen_f hlen_g
-      omega
+      lia
   | _ :: _, [], _, hlen_f, hlen_g, _, _, _, _, _, _, _ => by
       simp only [List.length_nil, List.length_cons] at hlen_f hlen_g
-      omega
+      lia
   | _ :: _, _ :: _, [], hlen_f, _, _, _, _, _, _, _, _ => by
       simp only [List.length_nil, List.length_cons] at hlen_f
-      omega
+      lia
   | _ :: _, _ :: _, [_], hlen_f, _, _, _, _, _, _, _, _ => by
       simp only [List.length_nil, List.length_cons] at hlen_f
-      omega
+      lia
 
 /-- If `bigger` has a root `p` below all roots of `smaller`, and `smaller + bigger`
     and `smaller + bigger` has degree one more than `smaller`, then
@@ -1127,13 +1127,13 @@ lemma exists_root_le_of_mixed {smaller bigger : ℝ[X]}
       rw [degree_eq_natDegree hsum_ne]
       have : 0 < (smaller + bigger).natDegree := by
         rw [← hdeg]
-        omega
+        lia
       exact_mod_cast this
     have hsum_odd : Odd (smaller + bigger).natDegree := by
       rcases hpar with ⟨k, hk⟩
       refine ⟨k, ?_⟩
       rw [← hdeg, hk]
-      omega
+      lia
     obtain ⟨u, hu_le, hu_root⟩ :=
       exists_isRoot_le_of_eval_pos_of_tendsto_atBot_atBot
         (hsum_eval ▸ hsmaller_pos_eval)
@@ -1150,13 +1150,13 @@ lemma exists_root_le_of_mixed {smaller bigger : ℝ[X]}
       rw [degree_eq_natDegree hsum_ne]
       have : 0 < (smaller + bigger).natDegree := by
         rw [← hdeg]
-        omega
+        lia
       exact_mod_cast this
     have hsum_even : Even (smaller + bigger).natDegree := by
       rcases hpar with ⟨k, hk⟩
       refine ⟨k + 1, ?_⟩
       rw [← hdeg, hk]
-      omega
+      lia
     obtain ⟨u, hu_le, hu_root⟩ :=
       exists_isRoot_le_of_eval_neg_of_tendsto_atBot_atTop
         (hsum_eval ▸ hsmaller_neg_eval)
@@ -1201,7 +1201,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
         have hfg_deg : (f + g).natDegree = f.natDegree := by
           have hg_natDeg : ss_g.length = g.natDegree := by
             rw [← hg.2, ← Multiset.coe_card, hss_g_eq]
-          have hdeg_eq : f.natDegree = g.natDegree := by omega
+          have hdeg_eq : f.natDegree = g.natDegree := by lia
           have hup : (f + g).natDegree ≤ f.natDegree := by
             have h := natDegree_add_le f g
             rw [max_eq_left hdeg_eq.symm.le] at h; exact h
@@ -1214,17 +1214,17 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
             rw [hfc, hgc]
             exact ne_of_gt (by unfold HasPosLeadingCoeff at hf_pos hg_pos; linarith)
           exact le_antisymm hup hdown
-        omega
+        lia
       -- us exhausts all roots of f+g (since |us| = deg(f+g))
       have hus_eq : (↑us : Multiset ℝ) = (f + g).roots := by
         apply Multiset.eq_of_le_of_card_le hus_sub
         rw [Multiset.coe_card]
         have h1 := hfg_rr.2  -- (f+g).roots.card = (f+g).natDegree
-        omega  -- using h1 and hfg_natDeg
+        lia  -- using h1 and hfg_natDeg
       -- Build the Prec witness
       exact ⟨hfg_rr, hh, us, rs_f,
         pairwise_le_of_listInterlaces us rs_f hus_int, hrs_f_sorted, hus_eq, hrs_f_eq,
-        Or.inl ⟨by rw [hus_len]; have := hlen_f; simp at this ⊢; omega, hus_int⟩⟩
+        Or.inl ⟨by rw [hus_len]; have := hlen_f; simp at this ⊢; lia, hus_int⟩⟩
     · -- Case A: f differ-by-1, g same-degree
       have hrs_eq : rs_f = rs_g := by
         apply List.Perm.eq_of_pairwise' hrs_f_sorted hrs_g_sorted
@@ -1243,8 +1243,8 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
       have hg_deg : g.natDegree = f.natDegree + 1 := by
         have : (s₁_g :: rest_g).length = g.natDegree := by
           have := hg.2; rw [← hss_g_eq, Multiset.coe_card] at this; exact this
-        simp [List.length_cons] at this hlen_f hlen_g_alt; omega
-      have hdeg_lt : f.natDegree < g.natDegree := by omega
+        simp [List.length_cons] at this hlen_f hlen_g_alt; lia
+      have hdeg_lt : f.natDegree < g.natDegree := by lia
       have hfg_deg : (f + g).natDegree = g.natDegree :=
         natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hdeg_lt hg_pos
       have hfg_lc : (f + g).leadingCoeff = g.leadingCoeff := by
@@ -1271,7 +1271,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
           rw [hfg_deg, hg_deg])
       -- Main roots via recursive helper
       have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by
-        simp [List.length_cons] at hlen_g_alt ⊢; omega
+        simp [List.length_cons] at hlen_g_alt ⊢; lia
       have hss_g_eq' : (↑rest_g : Multiset ℝ) + ↑[s₁_g] = g.roots := by
         rw [← hss_g_eq, Multiset.coe_add]
         exact Multiset.coe_eq_coe.mpr List.perm_append_comm
@@ -1311,10 +1311,10 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
       have hroots_eq : (↑(u₀ :: us) : Multiset ℝ) = (f + g).roots :=
         Multiset.eq_of_le_of_card_le hsub (by
           rw [Multiset.coe_card]; simp only [List.length_cons]
-          have h1 := hfg_rr.2; rw [hfg_deg, hg_deg] at h1; omega)
+          have h1 := hfg_rr.2; rw [hfg_deg, hg_deg] at h1; lia)
       exact ⟨hfg_rr, hh, u₀ :: us, r₁ :: rest_rs,
         hpw.imp le_of_lt, hrs_f_sorted, hroots_eq, hrs_f_eq,
-        Or.inr ⟨by simp only [List.length_cons] at hlen_f ⊢; omega,
+        Or.inr ⟨by simp only [List.length_cons] at hlen_f ⊢; lia,
                  ⟨le_trans hu₀_le hs₁_le, hus_int⟩⟩⟩
   · -- Case B: f same-degree
     rcases hcase_g with ⟨hlen_g, hint_g⟩ | ⟨hlen_g_alt, halt_g⟩
@@ -1335,8 +1335,8 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
       have hf_deg : f.natDegree = g.natDegree + 1 := by
         have : (s₁_f :: rest_f).length = f.natDegree := by
           have := hf.2; rw [← hss_f_eq, Multiset.coe_card] at this; exact this
-        simp [List.length_cons] at this hlen_g hlen_f_alt; omega
-      have hdeg_lt : g.natDegree < f.natDegree := by omega
+        simp [List.length_cons] at this hlen_g hlen_f_alt; lia
+      have hdeg_lt : g.natDegree < f.natDegree := by lia
       have hfg_deg : (f + g).natDegree = f.natDegree :=
         natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff hdeg_lt hf_pos
       have hfg_pos : HasPosLeadingCoeff (f + g) :=
@@ -1361,7 +1361,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
             rw [show g + f = f + g from add_comm g f, hfg_deg, hf_deg])
       have hu₀_root : (f + g).IsRoot u₀ := by rwa [add_comm] at hu₀_root_gf
       have hlen_f_rest : rest_f.length + 1 = (r₁ :: rest_rs).length := by
-        simp [List.length_cons] at hlen_f_alt ⊢; omega
+        simp [List.length_cons] at hlen_f_alt ⊢; lia
       have hss_f_eq' : (↑rest_f : Multiset ℝ) + ↑[s₁_f] = f.roots := by
         rw [← hss_f_eq, Multiset.coe_add]
         exact Multiset.coe_eq_coe.mpr List.perm_append_comm
@@ -1397,10 +1397,10 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
       have hroots_eq : (↑(u₀ :: us) : Multiset ℝ) = (f + g).roots :=
         Multiset.eq_of_le_of_card_le hsub (by
           rw [Multiset.coe_card]; simp only [List.length_cons]
-          have h1 := hfg_rr.2; rw [hfg_deg, hf_deg] at h1; omega)
+          have h1 := hfg_rr.2; rw [hfg_deg, hf_deg] at h1; lia)
       exact ⟨hfg_rr, hh, u₀ :: us, r₁ :: rest_rs,
         hpw.imp le_of_lt, hrs_f_sorted, hroots_eq, hrs_f_eq,
-        Or.inr ⟨by simp only [List.length_cons] at hlen_f_alt ⊢; omega,
+        Or.inr ⟨by simp only [List.length_cons] at hlen_f_alt ⊢; lia,
                  ⟨le_trans hu₀_le hs₁_le, hus_int⟩⟩⟩
     · -- Case B.2: both same-degree
       have hrs_eq : rs_f = rs_g := by
@@ -1413,11 +1413,10 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
           hrs_f_eq, Or.inr ⟨rfl, trivial⟩⟩
         simp only [List.length_nil] at hlen_f_alt hlen_g_alt
         have hfnd : f.natDegree = 0 := by
-          have := hf.2; rw [← hss_f_eq, Multiset.coe_card] at this; omega
+          have := hf.2; rw [← hss_f_eq, Multiset.coe_card] at this; lia
         have hgnd : g.natDegree = 0 := by
-          have := hg.2; rw [← hss_g_eq, Multiset.coe_card] at this; omega
-        have hfgnd : (f + g).natDegree = 0 := by
-          have := natDegree_add_le f g; omega
+          have := hg.2; rw [← hss_g_eq, Multiset.coe_card] at this; lia
+        have hfgnd : (f + g).natDegree = 0 := by grind [natDegree_add_le f g]
         have h := hfg_rr.2; rw [hfgnd] at h
         exact (Multiset.card_eq_zero.mp h).symm
       · -- rs_f = r₁ :: rest_rs
@@ -1436,7 +1435,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
         have hg_deg : (s₁_g :: rest_g).length = g.natDegree := by
           have := hg.2; rw [← hss_g_eq, Multiset.coe_card] at this; exact this
         have hdeg_eq : f.natDegree = g.natDegree := by
-          simp [List.length_cons] at hf_deg hg_deg hlen_f_alt hlen_g_alt; omega
+          simp [List.length_cons] at hf_deg hg_deg hlen_f_alt hlen_g_alt; lia
         have hfg_deg : (f + g).natDegree = f.natDegree := by
           apply le_antisymm
           · have h := natDegree_add_le f g; rw [max_eq_left hdeg_eq.symm.le] at h; exact h
@@ -1459,11 +1458,11 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
           have hcg := Multiset.countP_eq_card.mpr (fun r hr =>
             listInterlaces_all_ge rest_g rest_rs r₁ hint_g_tail r (Multiset.mem_coe.mp hr))
           rw [hcg, hcf]; simp only [Multiset.coe_card]
-          simp [List.length_cons] at hlen_f_alt hlen_g_alt; omega
+          simp [List.length_cons] at hlen_f_alt hlen_g_alt; lia
         have hlen_f_rest : rest_f.length + 1 = (r₁ :: rest_rs).length := by
-          simp [List.length_cons] at hlen_f_alt ⊢; omega
+          simp [List.length_cons] at hlen_f_alt ⊢; lia
         have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by
-          simp [List.length_cons] at hlen_g_alt ⊢; omega
+          simp [List.length_cons] at hlen_g_alt ⊢; lia
         have hss_f_eq' : (↑rest_f : Multiset ℝ) + ↑[s₁_f] = f.roots := by
           rw [← hss_f_eq, Multiset.coe_add]
           exact Multiset.coe_eq_coe.mpr List.perm_append_comm
@@ -1521,10 +1520,10 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
             Multiset.eq_of_le_of_card_le hsub (by
               rw [Multiset.coe_card]; simp only [List.length_cons]
               simp only [List.length_cons] at hf_deg
-              have h1 := hfg_rr.2; rw [hfg_deg] at h1; omega)
+              have h1 := hfg_rr.2; rw [hfg_deg] at h1; lia)
           exact ⟨hfg_rr, hh, c :: us, r₁ :: rest_rs,
             hpw.imp le_of_lt, hrs_f_sorted, hroots_eq, hrs_f_eq,
-            Or.inr ⟨by simp only [List.length_cons] at hlen_f_alt ⊢; omega,
+            Or.inr ⟨by simp only [List.length_cons] at hlen_f_alt ⊢; lia,
                      ⟨le_trans hcg hs₁g_le, hus_int⟩⟩⟩
         · -- s₁_f > s₁_g
           have hsgf := le_of_lt hsfsg
@@ -1580,10 +1579,10 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
             Multiset.eq_of_le_of_card_le hsub (by
               rw [Multiset.coe_card]; simp only [List.length_cons]
               simp only [List.length_cons] at hf_deg
-              have h1 := hfg_rr.2; rw [hfg_deg] at h1; omega)
+              have h1 := hfg_rr.2; rw [hfg_deg] at h1; lia)
           exact ⟨hfg_rr, hh, c :: us, r₁ :: rest_rs,
             hpw.imp le_of_lt, hrs_f_sorted, hroots_eq, hrs_f_eq,
-            Or.inr ⟨by simp only [List.length_cons] at hlen_f_alt ⊢; omega,
+            Or.inr ⟨by simp only [List.length_cons] at hlen_f_alt ⊢; lia,
           ⟨le_trans hcf hs₁f_le, hus_int⟩⟩⟩
 
 /-- A high-level sign-based version of Wagner (1): the only obstruction to the
@@ -1620,7 +1619,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
         have hdeg_eq : f.natDegree = g.natDegree := by
           have hf_natDeg : ss_f.length = f.natDegree := by
             rw [← hf.2, ← Multiset.coe_card, hss_f_eq]
-          omega
+          lia
         have hcoeff_ne : (f + g).coeff f.natDegree ≠ 0 := by
           rw [coeff_add]
           have hfc : f.coeff f.natDegree = f.leadingCoeff := rfl
@@ -1643,7 +1642,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
         have hfg_deg : (f + g).natDegree = f.natDegree := by
           have hg_natDeg : ss_g.length = g.natDegree := by
             rw [← hg.2, ← Multiset.coe_card, hss_g_eq]
-          have hdeg_eq : f.natDegree = g.natDegree := by omega
+          have hdeg_eq : f.natDegree = g.natDegree := by lia
           have hup : (f + g).natDegree ≤ f.natDegree := by
             have h := natDegree_add_le f g
             rw [max_eq_left hdeg_eq.symm.le] at h
@@ -1660,7 +1659,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
               unfold HasPosLeadingCoeff at hf_pos hg_pos
               linarith)
           exact le_antisymm hup hdown
-        omega
+        lia
       have hus_eq : (↑us : Multiset ℝ) = (f + g).roots := by
         apply Multiset.eq_of_le_of_card_le hus_sub
         rw [Multiset.coe_card]
@@ -1672,7 +1671,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
         rw [← hus_eq, Multiset.coe_card, hfg_natDeg]
       exact ⟨hfg_rr, hh, us, rs_f,
         pairwise_le_of_listInterlaces us rs_f hus_int, hrs_f_sorted, hus_eq, hrs_f_eq,
-        Or.inl ⟨by rw [hus_len]; have := hlen_f; simp at this ⊢; omega, hus_int⟩⟩
+        Or.inl ⟨by rw [hus_len]; have := hlen_f; simp at this ⊢; lia, hus_int⟩⟩
     · have hrs_eq : rs_f = rs_g := by
         apply List.Perm.eq_of_pairwise' hrs_f_sorted hrs_g_sorted
         exact Multiset.coe_eq_coe.mp (hrs_f_eq.trans hrs_g_eq.symm)
@@ -1698,8 +1697,8 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
           rw [← hss_g_eq, Multiset.coe_card] at this
           exact this
         simp [List.length_cons] at this hlen_f hlen_g_alt
-        omega
-      have hdeg_lt : f.natDegree < g.natDegree := by omega
+        lia
+      have hdeg_lt : f.natDegree < g.natDegree := by lia
       have hfg_deg : (f + g).natDegree = g.natDegree :=
         natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hdeg_lt hg_pos
       have hfg_pos : HasPosLeadingCoeff (f + g) :=
@@ -1725,7 +1724,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
           rw [hfg_deg, hg_deg])
       have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by
         simp [List.length_cons] at hlen_g_alt ⊢
-        omega
+        lia
       have hss_g_eq' : (↑rest_g : Multiset ℝ) + ↑[s₁_g] = g.roots := by
         rw [← hss_g_eq, Multiset.coe_add]
         exact Multiset.coe_eq_coe.mpr List.perm_append_comm
@@ -1773,10 +1772,10 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
         rw [← hroots_eq, Multiset.coe_card]
         simp only [List.length_cons]
         rw [hfg_deg, hg_deg, hus_len]
-        omega
+        lia
       exact ⟨hfg_rr, hh, u₀ :: us, r₁ :: rest_rs,
         hpw.imp le_of_lt, hrs_f_sorted, hroots_eq, hrs_f_eq,
-        Or.inr ⟨by simp only [List.length_cons] at hlen_f ⊢; omega,
+        Or.inr ⟨by simp only [List.length_cons] at hlen_f ⊢; lia,
                  ⟨le_trans hu₀_le hs₁_le, hus_int⟩⟩⟩
   · rcases hcase_g with ⟨hlen_g, hint_g⟩ | ⟨hlen_g_alt, halt_g⟩
     · have hrs_eq : rs_f = rs_g := by
@@ -1804,8 +1803,8 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
           rw [← hss_f_eq, Multiset.coe_card] at this
           exact this
         simp [List.length_cons] at this hlen_g hlen_f_alt
-        omega
-      have hdeg_lt : g.natDegree < f.natDegree := by omega
+        lia
+      have hdeg_lt : g.natDegree < f.natDegree := by lia
       have hfg_deg : (f + g).natDegree = f.natDegree :=
         natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff hdeg_lt hf_pos
       have hfg_pos : HasPosLeadingCoeff (f + g) :=
@@ -1834,7 +1833,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
       have hu₀_root : (f + g).IsRoot u₀ := by rwa [add_comm] at hu₀_root_gf
       have hlen_f_rest : rest_f.length + 1 = (r₁ :: rest_rs).length := by
         simp [List.length_cons] at hlen_f_alt ⊢
-        omega
+        lia
       have hss_f_eq' : (↑rest_f : Multiset ℝ) + ↑[s₁_f] = f.roots := by
         rw [← hss_f_eq, Multiset.coe_add]
         exact Multiset.coe_eq_coe.mpr List.perm_append_comm
@@ -1877,17 +1876,17 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
             _ = g.natDegree + 1 := hf_deg
             _ = us.length + 1 := by
               rw [← hg_deg, hus_len]
-              omega
+              lia
         simpa using hcard_le'
       have hfg_rr : IsRealRooted (f + g) := by
         refine ⟨hfg_ne, ?_⟩
         rw [← hroots_eq, Multiset.coe_card]
         simp only [List.length_cons]
         rw [hfg_deg, hf_deg, hus_len]
-        omega
+        lia
       exact ⟨hfg_rr, hh, u₀ :: us, r₁ :: rest_rs,
         hpw.imp le_of_lt, hrs_f_sorted, hroots_eq, hrs_f_eq,
-        Or.inr ⟨by simp only [List.length_cons] at hlen_f_alt ⊢; omega,
+        Or.inr ⟨by simp only [List.length_cons] at hlen_f_alt ⊢; lia,
                  ⟨le_trans hu₀_le hs₁_le, hus_int⟩⟩⟩
     · have hrs_eq : rs_f = rs_g := by
         apply List.Perm.eq_of_pairwise' hrs_f_sorted hrs_g_sorted
@@ -1898,14 +1897,12 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
         have hfnd : f.natDegree = 0 := by
           have := hf.2
           rw [← hss_f_eq, Multiset.coe_card] at this
-          omega
+          lia
         have hgnd : g.natDegree = 0 := by
           have := hg.2
           rw [← hss_g_eq, Multiset.coe_card] at this
-          omega
-        have hfgnd : (f + g).natDegree = 0 := by
-          have := natDegree_add_le f g
-          omega
+          lia
+        have hfgnd : (f + g).natDegree = 0 := by grind [natDegree_add_le f g]
         have hfg_ne : f + g ≠ 0 := by
           intro h0
           have hcoeff_ne : (f + g).coeff 0 ≠ 0 := by
@@ -1925,7 +1922,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
             calc
               (f + g).roots.card ≤ (f + g).natDegree := card_roots' (f + g)
               _ = 0 := hfgnd
-          omega
+          lia
         refine ⟨hfg_rr, hh, [], [], List.Pairwise.nil, List.Pairwise.nil, ?_,
           hrs_f_eq, Or.inr ⟨rfl, trivial⟩⟩
         have hroots0 : (f + g).roots.card = 0 := by
@@ -1957,7 +1954,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
           exact this
         have hdeg_eq : f.natDegree = g.natDegree := by
           simp [List.length_cons] at hf_deg hg_deg hlen_f_alt hlen_g_alt
-          omega
+          lia
         have hfg_deg : (f + g).natDegree = f.natDegree := by
           apply le_antisymm
           · have h := natDegree_add_le f g
@@ -1986,13 +1983,13 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
           rw [hcg, hcf]
           simp only [Multiset.coe_card]
           simp [List.length_cons] at hlen_f_alt hlen_g_alt
-          omega
+          lia
         have hlen_f_rest : rest_f.length + 1 = (r₁ :: rest_rs).length := by
           simp [List.length_cons] at hlen_f_alt ⊢
-          omega
+          lia
         have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by
           simp [List.length_cons] at hlen_g_alt ⊢
-          omega
+          lia
         have hss_f_eq' : (↑rest_f : Multiset ℝ) + ↑[s₁_f] = f.roots := by
           rw [← hss_f_eq, Multiset.coe_add]
           exact Multiset.coe_eq_coe.mpr List.perm_append_comm
@@ -2078,7 +2075,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
             rw [hfg_deg, hus_len, hf_deg]
           exact ⟨hfg_rr, hh, c :: us, r₁ :: rest_rs,
             hpw.imp le_of_lt, hrs_f_sorted, hroots_eq, hrs_f_eq,
-            Or.inr ⟨by simp only [List.length_cons] at hlen_f_alt ⊢; omega,
+            Or.inr ⟨by simp only [List.length_cons] at hlen_f_alt ⊢; lia,
                      ⟨le_trans hcg hs₁g_le, hus_int⟩⟩⟩
         · have hsgf := le_of_lt hsfsg
           have hg_dich : ∀ r ∈ g.roots.erase s₁_g, r ≤ s₁_g ∨ r₁ ≤ r := by
@@ -2161,7 +2158,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
             rw [hfg_deg, hus_len, hf_deg]
           exact ⟨hfg_rr, hh, c :: us, r₁ :: rest_rs,
             hpw.imp le_of_lt, hrs_f_sorted, hroots_eq, hrs_f_eq,
-            Or.inr ⟨by simp only [List.length_cons] at hlen_f_alt ⊢; omega,
+            Or.inr ⟨by simp only [List.length_cons] at hlen_f_alt ⊢; lia,
                      ⟨le_trans hcf hs₁f_le, hus_int⟩⟩⟩
 
 /-- A common-factor version of Wagner (1): if `d` is real-rooted and the reduced
@@ -2247,9 +2244,9 @@ theorem prec_add_of_prec_right_of_posLeadingCoeff {f g h : ℝ[X]}
           have hqh_lt : qh.natDegree < n := by
             have hqh_succ : qh.natDegree + 1 = h.natDegree := by
               rw [hqh, natDegree_mul (X_sub_C_ne_zero r) hqh_ne, natDegree_X_sub_C]
-              omega
+              lia
             rw [hn] at hqh_succ
-            omega
+            lia
           have hsum' : Prec (qf + qg) qh := by
             exact ih qh.natDegree hqh_lt qf qg qh rfl hfh' hgh' hqf_pos hqg_pos
           have hmul : Prec ((X - C r) * (qf + qg)) ((X - C r) * qh) :=
@@ -2282,8 +2279,8 @@ theorem prec_add_of_prec_right_mixed_of_natDegree {f g h : ℝ[X]}
           rw [← Multiset.coe_card, hss_g_eq, hg.2]
         have hrs_len : rs_g.length = h.natDegree := by
           rw [← Multiset.coe_card, hrs_g_eq, hh.2]
-        omega
-      omega
+        lia
+      lia
     · have hrs_eq : rs_f = rs_g := by
         apply List.Perm.eq_of_pairwise' hrs_f_sorted hrs_g_sorted
         exact Multiset.coe_eq_coe.mp (hrs_f_eq.trans hrs_g_eq.symm)
@@ -2300,8 +2297,8 @@ theorem prec_add_of_prec_right_mixed_of_natDegree {f g h : ℝ[X]}
       have hg_deg : g.natDegree = f.natDegree + 1 := by
         have hss_len : (s₁_g :: rest_g).length = g.natDegree := by
           rw [← Multiset.coe_card, hss_g_eq, hg.2]
-        omega
-      have hdeg_lt : f.natDegree < g.natDegree := by omega
+        lia
+      have hdeg_lt : f.natDegree < g.natDegree := by lia
       have hfg_deg : (f + g).natDegree = g.natDegree :=
         natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hdeg_lt hg_pos
       have hfg_pos : HasPosLeadingCoeff (f + g) :=
@@ -2326,7 +2323,7 @@ theorem prec_add_of_prec_right_mixed_of_natDegree {f g h : ℝ[X]}
           rw [hfg_deg, hg_deg])
       have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by
         simp [List.length_cons] at hlen_g_alt ⊢
-        omega
+        lia
       have hss_g_eq' : (↑rest_g : Multiset ℝ) + ↑[s₁_g] = g.roots := by
         rw [← hss_g_eq, Multiset.coe_add]
         exact Multiset.coe_eq_coe.mpr List.perm_append_comm
@@ -2381,18 +2378,18 @@ theorem prec_add_of_prec_right_mixed_of_natDegree {f g h : ℝ[X]}
         rw [← hroots_eq, Multiset.coe_card]
         simp only [List.length_cons]
         rw [hfg_deg]
-        omega
+        lia
       exact ⟨hfg_rr, hh, u₀ :: us, r₁ :: rest_rs,
         hpw.imp le_of_lt, hrs_f_sorted, hroots_eq, hrs_f_eq,
-        Or.inr ⟨by simp only [List.length_cons] at hlen_f ⊢; omega,
+        Or.inr ⟨by simp only [List.length_cons] at hlen_f ⊢; lia,
           ⟨le_trans hu₀_le hs₁_le, hus_int⟩⟩⟩
   · have hf_deg' : f.natDegree = h.natDegree := by
       have hss_len : ss_f.length = f.natDegree := by
         rw [← Multiset.coe_card, hss_f_eq, hf.2]
       have hrs_len : rs_f.length = h.natDegree := by
         rw [← Multiset.coe_card, hrs_f_eq, hh.2]
-      omega
-    omega
+      lia
+    lia
 
 /-- A sign-based mixed-degree Wagner theorem: if `f` precedes `h` with degree
 one less, `g` precedes `h` with the same degree, and the sum `f + g` has no
@@ -2419,8 +2416,8 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right {f g h : �
           rw [← Multiset.coe_card, hss_g_eq, hg.2]
         have hrs_len : rs_g.length = h.natDegree := by
           rw [← Multiset.coe_card, hrs_g_eq, hh.2]
-        omega
-      omega
+        lia
+      lia
     · have hrs_eq : rs_f = rs_g := by
         apply List.Perm.eq_of_pairwise' hrs_f_sorted hrs_g_sorted
         exact Multiset.coe_eq_coe.mp (hrs_f_eq.trans hrs_g_eq.symm)
@@ -2437,8 +2434,8 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right {f g h : �
       have hg_deg : g.natDegree = f.natDegree + 1 := by
         have hss_len : (s₁_g :: rest_g).length = g.natDegree := by
           rw [← Multiset.coe_card, hss_g_eq, hg.2]
-        omega
-      have hdeg_lt : f.natDegree < g.natDegree := by omega
+        lia
+      have hdeg_lt : f.natDegree < g.natDegree := by lia
       have hfg_deg : (f + g).natDegree = g.natDegree :=
         natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hdeg_lt hg_pos
       have hfg_pos : HasPosLeadingCoeff (f + g) :=
@@ -2464,7 +2461,7 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right {f g h : �
           rw [hfg_deg, hg_deg])
       have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by
         simp [List.length_cons] at hlen_g_alt ⊢
-        omega
+        lia
       have hss_g_eq' : (↑rest_g : Multiset ℝ) + ↑[s₁_g] = g.roots := by
         rw [← hss_g_eq, Multiset.coe_add]
         exact Multiset.coe_eq_coe.mpr List.perm_append_comm
@@ -2511,18 +2508,18 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right {f g h : �
         rw [← hroots_eq, Multiset.coe_card]
         simp only [List.length_cons]
         rw [hfg_deg]
-        omega
+        lia
       exact ⟨hfg_rr, hh, u₀ :: us, r₁ :: rest_rs,
         hpw.imp le_of_lt, hrs_f_sorted, hroots_eq, hrs_f_eq,
-        Or.inr ⟨by simp only [List.length_cons] at hlen_f ⊢; omega,
+        Or.inr ⟨by simp only [List.length_cons] at hlen_f ⊢; lia,
           ⟨le_trans hu₀_le hs₁_le, hus_int⟩⟩⟩
   · have hf_deg' : f.natDegree = h.natDegree := by
       have hss_len : ss_f.length = f.natDegree := by
         rw [← Multiset.coe_card, hss_f_eq, hf.2]
       have hrs_len : rs_f.length = h.natDegree := by
         rw [← Multiset.coe_card, hrs_f_eq, hh.2]
-      omega
-    omega
+      lia
+    lia
 
 /-- A common-factor version of the mixed-degree Wagner addition theorem. -/
 theorem prec_add_of_prec_right_mixed_of_natDegree_of_common_factor {d f g h : ℝ[X]}

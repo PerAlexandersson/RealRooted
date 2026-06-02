@@ -190,7 +190,7 @@ theorem prec_generalizedLiuWang_strict
   have hcases :
       (a * f + polynomialWeightedSum ((b, g) :: l)).natDegree = f.natDegree ∨
         (a * f + polynomialWeightedSum ((b, g) :: l)).natDegree = f.natDegree + 1 := by
-    omega
+    lia
   rcases hcases with hsame | hsucc
   · exact
       prec_generalizedLiuWang_strict_same

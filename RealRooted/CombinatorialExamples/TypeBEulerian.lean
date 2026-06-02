@@ -92,7 +92,7 @@ lemma coeff_typeBEulerianCoeffB_mul_derivative (m : Nat) (p : ℝ[X]) :
           _ = (2 : ℝ) * coeff p.derivative (m + 1) := by rw [coeff_X_mul]
           _ = (2 : ℝ) * (coeff p (m + 2) * ((m : ℝ) + 2)) := by
               rw [coeff_derivative]
-              have hidx : m + 1 + 1 = m + 2 := by omega
+              have hidx : m + 1 + 1 = m + 2 := by lia
               have hcast : (((m + 1 : Nat) : ℝ) + 1) = (m : ℝ) + 2 := by
                 calc
                   (((m + 1 : Nat) : ℝ) + 1) = ((m : ℝ) + 1) + 1 := by simp
@@ -115,7 +115,7 @@ lemma coeff_typeBEulerianCoeffB_mul_derivative (m : Nat) (p : ℝ[X]) :
               rw [hcast]
               ring
       rw [h₁, h₂]
-      have hidx : m + 1 + 1 = m + 2 := by omega
+      have hidx : m + 1 + 1 = m + 2 := by lia
       have hcast₁ : ((m + 1 : Nat) : ℝ) = (m : ℝ) + 1 := by
         simp
       rw [hidx, hcast₁]
@@ -148,17 +148,17 @@ lemma coeff_typeBEulerian_top_and_above :
   | n + 1 => by
       rcases coeff_typeBEulerian_top_and_above n with ⟨htop, habove⟩
       constructor
-      · rw [show n + 1 = n + 0 + 1 by omega, coeff_typeBEulerian_succ]
-        have hzero : coeff (typeBEulerian n) (n + 1) = 0 := habove (n + 1) (by omega)
+      · rw [show n + 1 = n + 0 + 1 by lia, coeff_typeBEulerian_succ]
+        have hzero : coeff (typeBEulerian n) (n + 1) = 0 := habove (n + 1) (by lia)
         simp [htop, hzero]
       · intro m hm
         cases m with
         | zero =>
-            omega
+            lia
         | succ k =>
-            rw [show k + 1 = k + 0 + 1 by omega, coeff_typeBEulerian_succ]
-            have hk : n < k := by omega
-            have hk1 : n < k + 1 := by omega
+            rw [show k + 1 = k + 0 + 1 by lia, coeff_typeBEulerian_succ]
+            have hk : n < k := by lia
+            have hk1 : n < k + 1 := by lia
             simp [habove k hk, habove (k + 1) hk1]
 
 lemma natDegree_typeBEulerian (n : Nat) :
@@ -215,7 +215,7 @@ lemma typeBEulerian_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (typeBEulerian n
             have hcoeff_m : coeff (typeBEulerian n) m = 0 := by
               exact habove m hm'
             have hcoeff_succ : coeff (typeBEulerian n) (m + 1) = 0 := by
-              exact habove (m + 1) (by omega)
+              exact habove (m + 1) (by lia)
             simp [hcoeff_m, hcoeff_succ]
 
 lemma roots_nonpos_typeBEulerian_of_isRealRooted {n : Nat}
@@ -234,7 +234,7 @@ lemma interlaces_derivative_typeBEulerian :
     ∀ n : Nat, 1 ≤ n → IsRealRooted (typeBEulerian n) →
       Interlaces (typeBEulerian n).derivative (typeBEulerian n)
   | 0, hn, _ => by
-      omega
+      lia
   | 1, _, _ => by
       simpa [typeBEulerian_one] using
         interlaces_one_linear (p := (1 + X : ℝ[X])) (by
@@ -243,7 +243,7 @@ lemma interlaces_derivative_typeBEulerian :
   | n + 2, _, hrr => by
       apply derivative_interlaces hrr
       rw [natDegree_typeBEulerian]
-      omega
+      lia
 
 lemma eval_typeBEulerianCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
     typeBEulerianCoeffB.eval r ≤ 0 := by
@@ -258,11 +258,11 @@ theorem prec_typeBEulerian_succ : ∀ n : Nat, Prec (typeBEulerian n) (typeBEule
       have hf : IsRealRooted (typeBEulerian (n + 1)) := (prec_typeBEulerian_succ n).2.1
       have hInter :
           Interlaces (typeBEulerian (n + 1)).derivative (typeBEulerian (n + 1)) :=
-        interlaces_derivative_typeBEulerian (n + 1) (by omega) hf
+        interlaces_derivative_typeBEulerian (n + 1) (by lia) hf
       have hg_pos : HasPosLeadingCoeff (typeBEulerian (n + 1)).derivative :=
         hasPosLeadingCoeff_derivative (typeBEulerian_posLeadingCoeff (n + 1)) (by
           rw [natDegree_typeBEulerian]
-          omega)
+          lia)
       have hNext_eq :
           typeBEulerianCoeffA (n + 1) * typeBEulerian (n + 1) +
             typeBEulerianCoeffB * (typeBEulerian (n + 1)).derivative =
@@ -279,7 +279,7 @@ theorem prec_typeBEulerian_succ : ∀ n : Nat, Prec (typeBEulerian n) (typeBEule
             (typeBEulerianCoeffA (n + 1) * typeBEulerian (n + 1) +
               typeBEulerianCoeffB * (typeBEulerian (n + 1)).derivative).natDegree := by
         rw [hNext_eq, natDegree_typeBEulerian, natDegree_typeBEulerian]
-        omega
+        lia
       have hdeg_hi :
           (typeBEulerianCoeffA (n + 1) * typeBEulerian (n + 1) +
               typeBEulerianCoeffB * (typeBEulerian (n + 1)).derivative).natDegree ≤

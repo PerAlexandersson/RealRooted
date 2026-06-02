@@ -104,10 +104,10 @@ theorem rowThreshold_matrix_preserves_interlacing_seq_of_2x2
     (hG_affine : ∀ (i₁ i₂ : Fin G.length) (j₁ j₂ : Fin n),
       i₁ ≤ i₂ → j₁ ≤ j₂ →
       Has2x2InterlacingProperty
-        ((G.get i₁).get ⟨j₁, by have := hG_rect _ (G.get_mem i₁); omega⟩)
-        ((G.get i₁).get ⟨j₂, by have := hG_rect _ (G.get_mem i₁); omega⟩)
-        ((G.get i₂).get ⟨j₁, by have := hG_rect _ (G.get_mem i₂); omega⟩)
-        ((G.get i₂).get ⟨j₂, by have := hG_rect _ (G.get_mem i₂); omega⟩))
+        ((G.get i₁).get ⟨j₁, by have := hG_rect _ (G.get_mem i₁); lia⟩)
+        ((G.get i₁).get ⟨j₂, by have := hG_rect _ (G.get_mem i₁); lia⟩)
+        ((G.get i₂).get ⟨j₁, by have := hG_rect _ (G.get_mem i₂); lia⟩)
+        ((G.get i₂).get ⟨j₂, by have := hG_rect _ (G.get_mem i₂); lia⟩))
     (fs : List ℝ[X]) (hfs_len : fs.length = n)
     (hfs : IsInterlacingSeqNonneg fs) :
     IsInterlacingSeqNonneg (matPolyAction G fs) :=
@@ -125,10 +125,10 @@ theorem rowThreshold_matrix_preserves_interlacing_seq0_of_2x2
     (hG_affine : ∀ (i₁ i₂ : Fin G.length) (j₁ j₂ : Fin n),
       i₁ ≤ i₂ → j₁ ≤ j₂ →
       Has2x2InterlacingProperty0
-        ((G.get i₁).get ⟨j₁, by have := hG_rect _ (G.get_mem i₁); omega⟩)
-        ((G.get i₁).get ⟨j₂, by have := hG_rect _ (G.get_mem i₁); omega⟩)
-        ((G.get i₂).get ⟨j₁, by have := hG_rect _ (G.get_mem i₂); omega⟩)
-        ((G.get i₂).get ⟨j₂, by have := hG_rect _ (G.get_mem i₂); omega⟩))
+        ((G.get i₁).get ⟨j₁, by have := hG_rect _ (G.get_mem i₁); lia⟩)
+        ((G.get i₁).get ⟨j₂, by have := hG_rect _ (G.get_mem i₁); lia⟩)
+        ((G.get i₂).get ⟨j₁, by have := hG_rect _ (G.get_mem i₂); lia⟩)
+        ((G.get i₂).get ⟨j₂, by have := hG_rect _ (G.get_mem i₂); lia⟩))
     (fs : List ℝ[X]) (hfs_len : fs.length = n)
     (hfs : IsInterlacingSeqNonneg fs) :
     IsInterlacingSeq0Nonneg (matPolyAction G fs) :=

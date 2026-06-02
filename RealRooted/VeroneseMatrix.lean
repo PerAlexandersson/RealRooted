@@ -52,14 +52,14 @@ def veroneseSectionPolynomialListDesc (r : ℕ) (p : ℝ[X]) : List ℝ[X] :=
 theorem mem_veroneseSectionPolynomialListDesc
     {r k : ℕ} (p : ℝ[X]) (hk : k < r) :
     veroneseSectionPolynomial r k p ∈ veroneseSectionPolynomialListDesc r p := by
-  let i : Fin r := ⟨r - 1 - k, by omega⟩
+  let i : Fin r := ⟨r - 1 - k, by lia⟩
   have hget :
       (veroneseSectionPolynomialListDesc r p).get
           ⟨i.1, by simp [length_veroneseSectionPolynomialListDesc]⟩ =
         veroneseSectionPolynomial r k p := by
     have hidx : r - 1 - i.1 = k := by
       simp [i]
-      omega
+      lia
     simpa [hidx] using get_veroneseSectionPolynomialListDesc (r := r) (p := p) i
   rw [← hget]
   exact
@@ -78,7 +78,7 @@ def veroneseLinearFactorRowDesc (r : ℕ) (a : ℝ) (i : Fin r) : List ℝ[X] :=
     (if hi : i.1 + 1 < r then
       oneSupportSeq r ⟨i.1 + 1, hi⟩
     else
-      (oneSupportSeq r ⟨0, by omega⟩).map fun q => X * q)
+      (oneSupportSeq r ⟨0, by lia⟩).map fun q => X * q)
 
 /-- The descending-order cyclic matrix for multiplication by `X + a`. -/
 def veroneseLinearFactorMatrixDesc (r : ℕ) (a : ℝ) : List (List ℝ[X]) :=
@@ -110,7 +110,7 @@ theorem get_veroneseLinearFactorRowDesc
         (if hi : i.1 + 1 < r then
           (if j = ⟨i.1 + 1, hi⟩ then (1 : ℝ[X]) else 0)
         else
-          (if j = ⟨0, by omega⟩ then X else 0)) := by
+          (if j = ⟨0, by lia⟩ then X else 0)) := by
   by_cases hi : i.1 + 1 < r
   · simp [veroneseLinearFactorRowDesc, hi, oneSupportSeq]
   · simp [veroneseLinearFactorRowDesc, hi, oneSupportSeq]
@@ -409,8 +409,8 @@ theorem zipWith_mul_veroneseLinearFactorRowDesc_sum_eq_of_succ
     {r : ℕ} (a : ℝ) (i : Fin r) (hi : i.1 + 1 < r)
     (fs : List ℝ[X]) (hfs : fs.length = r) :
     ((veroneseLinearFactorRowDesc r a i).zipWith (· * ·) fs).sum =
-      C a * fs.get ⟨i.1, by omega⟩ +
-        fs.get ⟨i.1 + 1, by omega⟩ := by
+      C a * fs.get ⟨i.1, by lia⟩ +
+        fs.get ⟨i.1 + 1, by lia⟩ := by
   subst r
   rw [veroneseLinearFactorRowDesc]
   rw [dif_pos hi]
@@ -432,8 +432,8 @@ theorem zipWith_mul_veroneseLinearFactorRowDesc_sum_eq_of_last
     {r : ℕ} (a : ℝ) (i : Fin r) (hi : ¬ i.1 + 1 < r)
     (fs : List ℝ[X]) (hfs : fs.length = r) :
     ((veroneseLinearFactorRowDesc r a i).zipWith (· * ·) fs).sum =
-      C a * fs.get ⟨i.1, by omega⟩ +
-        X * fs.get ⟨0, by omega⟩ := by
+      C a * fs.get ⟨i.1, by lia⟩ +
+        X * fs.get ⟨0, by lia⟩ := by
   subst r
   rw [veroneseLinearFactorRowDesc]
   rw [dif_neg hi]
@@ -444,10 +444,10 @@ theorem zipWith_mul_veroneseLinearFactorRowDesc_sum_eq_of_last
           C a * fs.get i := by
       exact zipWith_mul_scaled_oneSupportSeq_sum_eq_get fs i (C a)
     have hsupport :
-        ((((oneSupportSeq fs.length ⟨0, by omega⟩).map fun q => X * q).zipWith
+        ((((oneSupportSeq fs.length ⟨0, by lia⟩).map fun q => X * q).zipWith
             (· * ·) fs).sum) =
-          X * fs.get ⟨0, by omega⟩ := by
-      exact zipWith_mul_scaled_oneSupportSeq_sum_eq_get fs ⟨0, by omega⟩ X
+          X * fs.get ⟨0, by lia⟩ := by
+      exact zipWith_mul_scaled_oneSupportSeq_sum_eq_get fs ⟨0, by lia⟩ X
     simpa using congrArg₂ (fun x y => x + y) hscaled hsupport
   · simp
   · simp
@@ -470,28 +470,28 @@ theorem matPolyAction_veroneseLinearFactorMatrixDesc
         zipWith_mul_veroneseLinearFactorRowDesc_sum_eq_of_succ
           (r := r) a i hi (veroneseSectionPolynomialListDesc r p)
           (length_veroneseSectionPolynomialListDesc r p)
-      have hk_succ : r - 1 - i.1 = (r - 1 - (i.1 + 1)) + 1 := by omega
-      have hk_lt : (r - 1 - (i.1 + 1)) + 1 < r := by omega
+      have hk_succ : r - 1 - i.1 = (r - 1 - (i.1 + 1)) + 1 := by lia
+      have hk_lt : (r - 1 - (i.1 + 1)) + 1 < r := by lia
       have hrec :=
         veroneseSectionPolynomial_X_add_C_mul_succ
           (r := r) (k := r - 1 - (i.1 + 1)) hk_lt a p
       simp [matPolyAction, veroneseLinearFactorMatrixDesc,
         veroneseSectionPolynomialListDesc, i] at hrow ⊢
       rw [hrow]
-      rw [show r - 1 - n = (r - 1 - (n + 1)) + 1 by omega]
+      rw [show r - 1 - n = (r - 1 - (n + 1)) + 1 by lia]
       rw [hrec]
       ac_rfl
     · have hrow :=
         zipWith_mul_veroneseLinearFactorRowDesc_sum_eq_of_last
           (r := r) a i hi (veroneseSectionPolynomialListDesc r p)
           (length_veroneseSectionPolynomialListDesc r p)
-      have hi_last : i.1 = r - 1 := by omega
+      have hi_last : i.1 = r - 1 := by lia
       have hrec := veroneseSectionPolynomial_X_add_C_mul_zero (r := r) hr a p
       simp [matPolyAction, veroneseLinearFactorMatrixDesc,
         veroneseSectionPolynomialListDesc, i] at hrow ⊢
       have hn_last : n = r - 1 := by simpa [i] using hi_last
       rw [hrow]
-      rw [show r - 1 - n = 0 by omega]
+      rw [show r - 1 - n = 0 by lia]
       rw [hrec]
       ac_rfl
 
@@ -572,7 +572,7 @@ lemma veroneseLinearFactorConstEntry_det_nonneg
   have hi_nat : i₁.1 ≤ i₂.1 := by simpa using hi
   have hj_nat : j₁.1 ≤ j₂.1 := by simpa using hj
   unfold veroneseLinearFactorConstEntry
-  split_ifs <;> try omega
+  split_ifs <;> try lia
   all_goals nlinarith [ha, sq_nonneg a]
 
 theorem veroneseLinearFactorMatrixDesc_has2x2_nonlast
@@ -611,8 +611,8 @@ lemma get_veroneseLinearFactorRowDesc_of_last
     (veroneseLinearFactorRowDesc r a i).get
         ⟨j.1, by simp [length_veroneseLinearFactorRowDesc]⟩ =
       if j.1 = 0 then X else C (veroneseLinearFactorLastConstEntry a j) := by
-  have hilast : i.1 = r - 1 := by omega
-  have hlast_ne_zero : r - 1 ≠ 0 := by omega
+  have hilast : i.1 = r - 1 := by lia
+  have hlast_ne_zero : r - 1 ≠ 0 := by lia
   rw [get_veroneseLinearFactorRowDesc]
   unfold veroneseLinearFactorLastConstEntry
   simp [hilast, Fin.ext_iff]
@@ -641,7 +641,7 @@ lemma veroneseLinearFactorConstLastEntry_det_nonneg
         veroneseLinearFactorLastConstEntry a j₂ := by
   have hj_nat : j₁.1 ≤ j₂.1 := by simpa using hj
   unfold veroneseLinearFactorConstEntry veroneseLinearFactorLastConstEntry
-  split_ifs <;> try omega
+  split_ifs <;> try lia
   all_goals nlinarith [ha, sq_nonneg a]
 
 set_option linter.flexible false in
@@ -668,7 +668,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_mixed
   · by_cases hj₂0 : j₂.1 = 0
     · have hj_eq : j₁ = j₂ := by
         ext
-        omega
+        lia
       subst j₂
       simp [hj₁0]
       exact
@@ -682,7 +682,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_mixed
           (veroneseLinearFactorConstEntry_nonneg ha i₁ j₂)
           (veroneseLinearFactorLastConstEntry_nonneg ha j₂)
           hs ht.le
-  · have hj₂0 : ¬ j₂.1 = 0 := by omega
+  · have hj₂0 : ¬ j₂.1 = 0 := by lia
     simp [hj₁0, hj₂0]
     exact
       prec0_const_entries_affine_of_det_nonneg
@@ -708,7 +708,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_last_last
       ((veroneseLinearFactorRowDesc r a i₂).get
         ⟨j₂.1, by simp [length_veroneseLinearFactorRowDesc]⟩) := by
   intro s t hs _ht
-  have hlast_ne_zero : r - 1 ≠ 0 := by omega
+  have hlast_ne_zero : r - 1 ≠ 0 := by lia
   have hj_nat : j₁.1 ≤ j₂.1 := by simpa using hj
   rw [get_veroneseLinearFactorRowDesc_of_last hr2 (hi := hrow₁)]
   rw [get_veroneseLinearFactorRowDesc_of_last hr2 (hi := hrow₁)]
@@ -728,7 +728,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_last_last
       · simp [hj₁0, hj₂0, hj₂last,
           veroneseLinearFactorLastConstEntry, prec0_zero_left]
   · simp [hj₁0]
-    have hj₂0 : ¬ j₂.1 = 0 := by omega
+    have hj₂0 : ¬ j₂.1 = 0 := by lia
     simp [hj₂0]
     exact
       prec0_const_entries_affine_of_det_nonneg
@@ -746,11 +746,11 @@ theorem veroneseLinearFactorMatrixDesc_has2x2
   by_cases hr1 : r = 1
   · subst r
     exact veroneseLinearFactorMatrixDesc_has2x2_one a i₁ i₂ j₁ j₂ hi hj
-  · have hr2 : 2 ≤ r := by omega
+  · have hr2 : 2 ≤ r := by lia
     by_cases hrow₂ : i₂.1 + 1 < r
     · have hrow₁ : i₁.1 + 1 < r := by
         have hi_nat : i₁.1 ≤ i₂.1 := by simpa using hi
-        omega
+        lia
       exact veroneseLinearFactorMatrixDesc_has2x2_nonlast
         ha hi hj hrow₁ hrow₂
     · by_cases hrow₁ : i₁.1 + 1 < r
@@ -806,7 +806,7 @@ theorem hasNonnegCoeffs_veroneseLinearFactorRowDesc_entry
       intro q hq
       rcases List.mem_map.1 hq with ⟨q', hq', rfl⟩
       exact nonnegCoeffs_C_mul ha (hone (i := i) hq')
-    have hr : 0 < r := by omega
+    have hr : 0 < r := by lia
     have hright :
         ∀ q ∈ (oneSupportSeq r ⟨0, hr⟩).map (fun q => X * q), HasNonnegCoeffs q := by
       intro q hq
@@ -933,12 +933,12 @@ lemma veroneseSectionPolynomial_one_of_pos {r k : ℕ} (hr : 0 < r) (hk : 0 < k)
   ext n
   rw [coeff_veroneseSectionPolynomial (r := r) (k := k) (p := (1 : ℝ[X])) hr]
   simp [Polynomial.coeff_one]
-  omega
+  lia
 
 lemma veroneseSectionPolynomialListDesc_one_eq_oneSupportSeq
     {r : ℕ} (hr : 0 < r) :
     veroneseSectionPolynomialListDesc r (1 : ℝ[X]) =
-      oneSupportSeq r ⟨r - 1, by omega⟩ := by
+      oneSupportSeq r ⟨r - 1, by lia⟩ := by
   apply List.ext_get
   · simp [veroneseSectionPolynomialListDesc, oneSupportSeq]
   · intro n hn₁ hn₂
@@ -947,7 +947,7 @@ lemma veroneseSectionPolynomialListDesc_one_eq_oneSupportSeq
         veroneseSectionPolynomial r (r - 1 - i.1) (1 : ℝ[X]) by
       simpa [i] using get_veroneseSectionPolynomialListDesc
         (r := r) (p := (1 : ℝ[X])) i]
-    rw [show (oneSupportSeq r ⟨r - 1, by omega⟩).get ⟨n, hn₂⟩ =
+    rw [show (oneSupportSeq r ⟨r - 1, by lia⟩).get ⟨n, hn₂⟩ =
         (if n = r - 1 then (1 : ℝ[X]) else 0) by
       simp [oneSupportSeq, Fin.ext_iff]]
     by_cases hlast : n = r - 1
@@ -956,7 +956,7 @@ lemma veroneseSectionPolynomialListDesc_one_eq_oneSupportSeq
     · have hk : 0 < r - 1 - i.1 := by
         have hnlt : n < r := i.2
         simp [i]
-        omega
+        lia
       simp [hlast, veroneseSectionPolynomial_one_of_pos hr hk]
 
 theorem isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_one
@@ -965,7 +965,7 @@ theorem isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_one
       ∀ f ∈ veroneseSectionPolynomialListDesc r (1 : ℝ[X]),
         f ≠ 0 → IsRealRooted f := by
   have hlist := veroneseSectionPolynomialListDesc_one_eq_oneSupportSeq (r := r) hr
-  let last : Fin r := ⟨r - 1, by omega⟩
+  let last : Fin r := ⟨r - 1, by lia⟩
   refine ⟨?_, ?_⟩
   · rw [hlist]
     exact isInterlacingSeq0Nonneg_oneSupportSeq last

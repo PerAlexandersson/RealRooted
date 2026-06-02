@@ -134,7 +134,7 @@ lemma oneDescentGammaTerm_succ
       oneDescentGammaTerm d m j r + oneDescentGammaTerm d m (j + 1) r := by
   unfold oneDescentGammaTerm
   have hrj : r - j = (r - (j + 1)) + 1 := by
-    omega
+    lia
   rw [hrj, Nat.choose_succ_succ', Nat.mul_add]
   rw [Nat.cast_add, Nat.cast_mul, Nat.cast_mul]
   rw [C_add, add_mul]
@@ -199,12 +199,12 @@ lemma oneDescentGamma_one
   rw [oneDescentGamma_recurrence 0 m j hjm_le]
   rw [oneDescentGamma_zero m j hjm_le, oneDescentGamma_zero m (j + 1) hj1m_le]
   have hsub1 : m - (j + 1) = m - j - 1 := by
-    omega
+    lia
   rw [hsub1]
   have hpow : (X : ℝ[X]) ^ (m - j) = X ^ (m - j - 1) * X := by
     have hpred : Nat.succ (m - j - 1) - 1 = m - j - 1 := by
       simp
-    rw [show m - j = Nat.succ (m - j - 1) by omega, pow_succ, hpred]
+    rw [show m - j = Nat.succ (m - j - 1) by lia, pow_succ, hpred]
   rw [hpow]
   have hchoose :
       C ((Nat.choose m (j + 1) : Nat) : ℝ) =
@@ -246,7 +246,7 @@ lemma oneDescentQ_one_succ (m : Nat) :
     rw [pow_succ']
   rw [oneDescentCorrection_succ m, hpow]
   have hexp : m + 1 - 1 = m := by
-    omega
+    lia
   rw [hexp]
   have hchoose : C ((Nat.choose (m + 1) 1 : Nat) : ℝ) = C ((m + 1 : Nat) : ℝ) := by
     rw [Nat.choose_one_right, Nat.cast_add, Nat.cast_one]
@@ -278,19 +278,19 @@ lemma oneDescentGamma_adjacent_linearShift_le
   have hj2_pos : 0 < ((j + 2 : Nat) : ℝ) := by
     positivity
   have hstep : ((m - j : Nat) : ℝ) = ((m - (j + 1) : Nat) : ℝ) + 1 := by
-    exact_mod_cast (show m - j = m - (j + 1) + 1 by omega)
+    exact_mod_cast (show m - j = m - (j + 1) + 1 by lia)
   have hsucc : ((j + 2 : Nat) : ℝ) = ((j + 1 : Nat) : ℝ) + 1 := by
-    exact_mod_cast (show j + 2 = (j + 1) + 1 by omega)
+    exact_mod_cast (show j + 2 = (j + 1) + 1 by lia)
   field_simp [hj1_pos.ne', hj2_pos.ne']
   nlinarith [hstep, hsucc]
 
 lemma oneDescent_prec_gamma_one_top (m : Nat) (hm : 0 < m) :
     Prec (oneDescentGamma 1 m m) (oneDescentGamma 1 m (m - 1)) := by
   have hpred_lt : m - 1 < m := by
-    omega
+    lia
   rw [oneDescentGamma_diag, oneDescentGamma_one m (m - 1) hpred_lt]
   have hpow0 : m - (m - 1) - 1 = 0 := by
-    omega
+    lia
   rw [hpow0, pow_zero]
   have hchoose_ne : (((Nat.choose m (m - 1) : Nat) : ℝ)) ≠ 0 := by
     exact_mod_cast Nat.choose_ne_zero (Nat.sub_le m 1)
@@ -304,11 +304,11 @@ lemma oneDescent_prec_gamma_one_adjacent
     (m j : Nat) (hj : j + 1 < m) :
     Prec (oneDescentGamma 1 m (j + 1)) (oneDescentGamma 1 m j) := by
   have hjm : j < m := by
-    omega
+    lia
   have hsub_left : m - (j + 1) - 1 = m - j - 2 := by
-    omega
+    lia
   have hpow : (X : ℝ[X]) ^ (m - j - 1) = X ^ (m - j - 2) * X := by
-    rw [show m - j - 1 = Nat.succ (m - j - 2) by omega, pow_succ]
+    rw [show m - j - 1 = Nat.succ (m - j - 2) by lia, pow_succ]
   let a : ℝ := (((m - (j + 1) : Nat) : ℝ) / ((((j + 1) + 1 : Nat) : ℝ)))
   let b : ℝ := (((m - j : Nat) : ℝ) / ((j + 1 : Nat) : ℝ))
   have ha : 0 ≤ a := by
@@ -337,9 +337,9 @@ lemma oneDescent_prec_gamma_one_adjacent
 lemma oneDescent_prec_gamma_one_terminal (m : Nat) (hm : 1 < m) :
     Prec (oneDescentGamma 1 m 1) (oneDescentQ 1 m) := by
   have hm_pos : 0 < m := by
-    omega
+    lia
   have hpow : (X : ℝ[X]) ^ (m - 1) = X ^ (m - 2) * X := by
-    rw [show m - 1 = Nat.succ (m - 2) by omega, pow_succ]
+    rw [show m - 1 = Nat.succ (m - 2) by lia, pow_succ]
   let a : ℝ := (((m - 1 : Nat) : ℝ) / (((1 + 1 : Nat) : ℝ)))
   let b : ℝ := ((m - 1 : Nat) : ℝ)
   have ha : 0 ≤ a := by
@@ -353,7 +353,7 @@ lemma oneDescent_prec_gamma_one_terminal (m : Nat) (hm : 1 < m) :
   have hbase : Prec (X + C a) (X * (X + C b)) := by
     exact prec_X_add_C_to_X_mul_X_add_C ha hab
   have hchoose_ne : (((Nat.choose m 1 : Nat) : ℝ)) ≠ 0 := by
-    exact_mod_cast Nat.choose_ne_zero (show 1 ≤ m by omega)
+    exact_mod_cast Nat.choose_ne_zero (show 1 ≤ m by lia)
   have hscaled :
       Prec
         (C ((Nat.choose m 1 : Nat) : ℝ) * (X + C a))
@@ -370,11 +370,11 @@ theorem oneDescent_prec_gamma_one_adjacent_chain
     (m j : Nat) (hj : j < m) :
     Prec (oneDescentGamma 1 m (j + 1)) (oneDescentGamma 1 m j) := by
   by_cases htop : j + 1 = m
-  · have hm_pos : 0 < m := by omega
-    have hj_eq : j = m - 1 := by omega
+  · have hm_pos : 0 < m := by lia
+    have hj_eq : j = m - 1 := by lia
     rw [htop, hj_eq]
     exact oneDescent_prec_gamma_one_top m hm_pos
-  · have hj_strict : j + 1 < m := by omega
+  · have hj_strict : j + 1 < m := by lia
     exact oneDescent_prec_gamma_one_adjacent m j hj_strict
 
 /-- Terminal comparison in the base `d = 1` Gamma chain:
@@ -384,7 +384,7 @@ theorem oneDescent_prec_gamma_one_terminal_chain
     Prec (oneDescentGamma 1 m 1) (oneDescentQ 1 m) := by
   by_cases hm_large : 1 < m
   · exact oneDescent_prec_gamma_one_terminal m hm_large
-  · have hm_eq : m = 1 := by omega
+  · have hm_eq : m = 1 := by lia
     subst hm_eq
     rw [oneDescentGamma_diag, oneDescentQ_one]
     · simpa using prec_one_X_add_C (0 : ℝ)
