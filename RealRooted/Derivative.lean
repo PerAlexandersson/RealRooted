@@ -39,6 +39,17 @@ lemma derivative_ne_zero {f : ℝ[X]} (hdeg : 2 ≤ f.natDegree) :
   have := natDegree_derivative_eq (show 1 ≤ f.natDegree by lia)
   rw [h, natDegree_zero] at this; lia
 
+lemma coeff_one_sub_X_mul_derivative (p : ℝ[X]) (m : Nat) :
+    ((1 - X) * p.derivative).coeff m =
+      ((m + 1 : ℝ) * p.coeff (m + 1)) - ((m : ℝ) * p.coeff m) := by
+  cases m with
+  | zero =>
+      simp [coeff_derivative]
+  | succ m =>
+      rw [sub_mul, one_mul, coeff_sub, coeff_X_mul, coeff_derivative, coeff_derivative]
+      norm_num
+      ring
+
 /-! ## Rolle's theorem for polynomials -/
 
 theorem exists_root_derivative_between {p : ℝ[X]} {a b : ℝ} (hab : a < b)

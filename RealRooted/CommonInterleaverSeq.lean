@@ -164,51 +164,6 @@ lemma mem_rootSlotInterval_congr
     x ∈ rootSlotInterval xs jx ↔ x ∈ rootSlotInterval ys jy := by
   rw [rootSlotInterval_congr hxy hji]
 
-private lemma listInterlaces_left_le_of_right_le {ss rs : List ℝ} {c : ℝ}
-    (hint : ListInterlaces ss rs)
-    (hrs : ∀ r ∈ rs, r ≤ c) :
-    ∀ s ∈ ss, s ≤ c := by
-  induction ss generalizing rs with
-  | nil =>
-      intro s hs
-      simp at hs
-  | cons s ss ih =>
-      cases rs with
-      | nil =>
-          simp [ListInterlaces] at hint
-      | cons r₁ rs' =>
-          cases rs' with
-          | nil =>
-              simp [ListInterlaces] at hint
-          | cons r₂ rs'' =>
-              rcases hint with ⟨_, hs_r₂, htail⟩
-              intro t ht
-              simp only [List.mem_cons] at ht
-              rcases ht with rfl | ht
-              · exact le_trans hs_r₂ (hrs r₂ (by simp))
-              · exact ih htail (fun r hr => hrs r (by simp [hr])) t ht
-
-private lemma listAlternates_left_le_of_right_le {ss rs : List ℝ} {c : ℝ}
-    (halt : ListAlternates ss rs)
-    (hrs : ∀ r ∈ rs, r ≤ c) :
-    ∀ s ∈ ss, s ≤ c := by
-  induction ss generalizing rs with
-  | nil =>
-      intro s hs
-      simp at hs
-  | cons s ss ih =>
-      cases rs with
-      | nil =>
-          simp [ListAlternates] at halt
-      | cons r rs' =>
-          rcases halt with ⟨hsr, htail⟩
-          intro t ht
-          simp only [List.mem_cons] at ht
-          rcases ht with rfl | ht
-          · exact le_trans hsr (hrs r (by simp))
-          · exact listInterlaces_left_le_of_right_le htail
-              (fun x hx => hrs x (by simp [hx])) t ht
-
 private lemma listInterlaces_all_le_getLast
     {ss rs : List ℝ}
     (hrs_ne : rs ≠ [])

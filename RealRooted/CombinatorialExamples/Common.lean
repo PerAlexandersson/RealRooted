@@ -22,6 +22,13 @@ lemma nonnegCoeffs_derivative {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
   rw [coeff_derivative]
   exact mul_nonneg (hp (n + 1)) (by positivity)
 
+lemma nonnegCoeffs_C_mul {a : ℝ} (ha : 0 ≤ a) {p : ℝ[X]}
+    (hp : HasNonnegCoeffs p) :
+    HasNonnegCoeffs (C a * p) := by
+  intro n
+  rw [coeff_C_mul]
+  exact mul_nonneg ha (hp n)
+
 lemma hasPosLeadingCoeff_derivative {f : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hdeg : 1 ≤ f.natDegree) :
     HasPosLeadingCoeff f.derivative := by

@@ -21,12 +21,6 @@ lemma hasNonnegCoeffs_zero : HasNonnegCoeffs (0 : ℝ[X]) := by
   intro n
   simp
 
-lemma nonnegCoeffs_C_mul {a : ℝ} (ha : 0 ≤ a) {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
-    HasNonnegCoeffs (C a * p) := by
-  intro n
-  rw [coeff_C_mul]
-  exact mul_nonneg ha (hp n)
-
 lemma hasNonnegCoeffs_X : HasNonnegCoeffs (X : ℝ[X]) := by
   intro n
   cases n with

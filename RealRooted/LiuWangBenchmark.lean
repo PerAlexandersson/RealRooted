@@ -1,5 +1,6 @@
 import RealRooted.MaWang
 import RealRooted.Linear
+import RealRooted.CombinatorialExamples.Common
 import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Tactic
 
@@ -467,19 +468,6 @@ lemma zero_not_isRoot_liuWangRec (d n : Nat) (hn : 1 ≤ n) (hnd : n ≤ d + 1) 
   have : (liuWangRec d n).eval 0 = 0 := by
     simpa [Polynomial.IsRoot.def] using hroot
   linarith
-
-private lemma interlaces_one_linear {p : ℝ[X]} (hp_deg : p.natDegree = 1) :
-    Interlaces (1 : ℝ[X]) p := by
-  have h1_rr : IsRealRooted (1 : ℝ[X]) := by
-    simpa using isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)
-  have hp_rr : IsRealRooted p := isRealRooted_of_degree_one hp_deg
-  have hp_deg' : p.degree = 1 := by
-    rw [degree_eq_natDegree hp_rr.1, hp_deg]
-    norm_num
-  refine ⟨hp_rr, h1_rr, by simp [Polynomial.natDegree_one, hp_deg], ?_⟩
-  refine ⟨[-(p.coeff 1)⁻¹ * p.coeff 0], [], by simp, by simp, ?_,
-    by simp, by simp [ListInterlaces]⟩
-  simpa [hp_deg'] using (Polynomial.roots_degree_eq_one (p := p) hp_deg').symm
 
 lemma interlaces_liuWangRec_one_two (d : Nat) :
     Interlaces (liuWangRec d 1) (liuWangRec d 2) := by

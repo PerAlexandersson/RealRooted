@@ -22,6 +22,23 @@ namespace RealRooted
 lemma isRealRooted_X_sub_C (r : ℝ) : IsRealRooted (X - C r) :=
   ⟨X_sub_C_ne_zero r, by rw [roots_X_sub_C, Multiset.card_singleton, natDegree_X_sub_C]⟩
 
+lemma hasPosLeadingCoeff_X_sub_C_mul {r : ℝ} {p : ℝ[X]}
+    (hp : HasPosLeadingCoeff p) :
+    HasPosLeadingCoeff ((X - C r) * p) := by
+  unfold HasPosLeadingCoeff at hp ⊢
+  simpa [Polynomial.leadingCoeff_mul, leadingCoeff_X_sub_C] using hp
+
+lemma roots_le_X_sub_C_mul {r : ℝ} {f : ℝ[X]}
+    (hf : IsRealRooted f)
+    (hf_le : ∀ s ∈ f.roots, s ≤ r) :
+    ∀ s ∈ ((X - C r) * f).roots, s ≤ r := by
+  intro s hs
+  rw [roots_mul (mul_ne_zero (X_sub_C_ne_zero r) hf.1), roots_X_sub_C] at hs
+  rcases Multiset.mem_add.mp hs with hs | hs
+  · have hs' : s = r := by simpa [Multiset.mem_singleton] using hs
+    rw [hs']
+  · exact hf_le s hs
+
 /-- A nonzero scalar multiple of a real-rooted polynomial is real-rooted. -/
 lemma isRealRooted_C_mul {p : ℝ[X]} (hp : IsRealRooted p) {a : ℝ} (ha : a ≠ 0) :
     IsRealRooted (C a * p) :=

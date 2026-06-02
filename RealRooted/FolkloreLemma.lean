@@ -3,7 +3,6 @@ import RealRooted.Linear
 import RealRooted.Derivative
 import RealRooted.Wagner
 import RealRooted.ObreschkoffConverse
-import RealRooted.CombinatorialExamples.Motzkin
 -- import RealRooted.AffineDerivative  -- uncomment when AffineDerivative is built
 
 /-!
@@ -214,12 +213,10 @@ theorem prec_sub_X_mul_right {f g : ℝ[X]}
       rcases hprec_or with hqXg | hXgq
       · exact hqXg
       · exact False.elim (hnot_prec_Xgq hXgq)
-    have hq_nonpos : ∀ r ∈ q.roots, r ≤ 0 :=
-      roots_le_of_prec_right hqf hf_nonpos
     have hdeg_gq : g.natDegree = q.natDegree := by
       lia
     exact
       (prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos
-        (f := g) (g := q) hprec_qXg hdeg_gq hg_nonpos hq_nonpos).toPrec0
+        (f := g) (g := q) hprec_qXg hdeg_gq hg_nonpos).toPrec0
 
 end RealRooted

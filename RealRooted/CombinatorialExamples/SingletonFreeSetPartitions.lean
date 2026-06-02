@@ -81,12 +81,6 @@ lemma singletonFreeSetPartitions_nonnegCoeffs :
             (mul_nonneg (by positivity)
               (singletonFreeSetPartitions_nonnegCoeffs (n + 1) (m + 1)))
 
-lemma nonnegCoeffs_C_mul {a : ℝ} (ha : 0 ≤ a) {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
-    HasNonnegCoeffs (C a * p) := by
-  intro n
-  rw [coeff_C_mul]
-  exact mul_nonneg ha (hp n)
-
 lemma coeff_singletonFreeSetPartitions_top_pos_and_above :
     ∀ n : Nat, 2 ≤ n →
       0 < coeff (singletonFreeSetPartitions n) (n / 2) ∧
