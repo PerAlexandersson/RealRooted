@@ -6,10 +6,10 @@ import Mathlib.Analysis.Matrix.PosDef
 /-!
 # Bezout matrices and interlacing
 
-This file records the planned Bezout-matrix characterization of the relation
-`Prec P Q`.  The main theorem at the bottom is left as a `sorry` on purpose:
-it is a breadcrumb for a future formalization pass, not yet the final theorem
-shape.
+This file records the planned Bezout-matrix characterization of strict
+same-degree interlacing.  The main theorem at the bottom is left as a `sorry`
+on purpose: it is a breadcrumb for a future formalization pass, not yet a
+completed proof.
 
 For polynomials
 
@@ -23,25 +23,14 @@ The coefficient of `X^i Y^j` is
 
 `∑ k ≤ min i j, a_{i+j+1-k} b_k - b_{i+j+1-k} a_k`.
 
-The matrix below uses this coefficient formula directly.  With the current
-`Prec P Q` convention, the expected positive-semidefinite orientation is
-`bezoutMatrix n Q P`, not `bezoutMatrix n P Q`.
+The matrix below uses this coefficient formula directly.  With the current root
+orientation convention, strict same-degree alternation of `p` by `q` should be
+detected by positive definiteness of `bezoutMatrix n q p`, not
+`bezoutMatrix n p q`.
 
-The eventual theorem should not be treated as a single context-free statement.
-The safe target has separate hypotheses for the degree shape and root behavior:
-
-* same degree: `Prec p q` is oriented alternation, detected by
-  `bezoutMatrix n q p`;
-* degree difference one: the smaller-degree polynomial interlaces the larger
-  one, with the corresponding Bezoutian orientation;
-* common factors: the semidefinite statement needs either prior
-  real-rootedness of the common factor or a theorem formulated after reducing
-  by the gcd.  Positive semidefiniteness alone does not rule out a non-real
-  common factor.
-
-For now, the low-degree route below proves model cases under explicit
-`IsRealRooted` and `HasPosLeadingCoeff` assumptions before we replace the
-provisional scaffold theorem.
+The positive-semidefinite weak theorem is deliberately not the main target here:
+common factors and multiple roots introduce rank defects and gcd bookkeeping.
+The primary theorem for this file is the strict `PosDef` version.
 
 The reusable theorem `prec_iff_sorted_roots` below normalizes `Prec` to the
 canonical sorted root lists, so future Bezoutian work can avoid arbitrary
@@ -138,6 +127,26 @@ lemma prec_iff_sorted_roots_interlaces {p q : ℝ[X]}
       exact Nat.succ_ne_self sp.length hlen
   · intro hint
     exact Or.inl ⟨hlen, hint⟩
+
+/-- Strict differ-by-one interlacing on sorted root lists:
+`r₁ < s₁ < r₂ < ... < sₙ₋₁ < rₙ`. -/
+def ListStrictInterlaces : List ℝ → List ℝ → Prop
+  | [], [] => True
+  | [], [_] => True
+  | s :: ss, r₁ :: r₂ :: rs => r₁ < s ∧ s < r₂ ∧ ListStrictInterlaces ss (r₂ :: rs)
+  | _, _ => False
+
+/-- Strict same-degree alternation on sorted root lists:
+`s₁ < r₁ < s₂ < r₂ < ... < sₙ < rₙ`. -/
+def ListStrictAlternates : List ℝ → List ℝ → Prop
+  | [], [] => True
+  | s :: ss, r :: rs => s < r ∧ ListStrictInterlaces ss (r :: rs)
+  | _, _ => False
+
+/-- Strict same-degree proper position, stated on canonical sorted root lists. -/
+def StrictPrecSameDegree (p q : ℝ[X]) : Prop :=
+  IsRealRooted p ∧ IsRealRooted q ∧ p.natDegree = q.natDegree ∧
+    ListStrictAlternates (p.roots.sort (· ≤ ·)) (q.roots.sort (· ≤ ·))
 
 /-- The `(i,j)` coefficient of the Bezoutian
 `(p(X) q(Y) - p(Y) q(X)) / (X - Y)`.
@@ -815,30 +824,18 @@ lemma prec_quadratic_nonCommon_example :
   exact prec_quadratic_of_const_interleaves (by norm_num) (by norm_num) (by norm_num)
 
 /--
-Provisional Bezoutian characterization of weak interlacing/proper position.
+Strict same-degree Bezoutian characterization.
 
-The matrix-size parameter `n` should be at least the degrees of both
-polynomials.  The orientation is chosen so that, for example,
-`Prec (X + 2) (X + 1)` corresponds to the positive semidefinite matrix
-`bezoutMatrix n (X + 1) (X + 2)`.
-
-This theorem is intentionally left as a future formalization target.  Before
-removing the `sorry`, split it into degree-specific statements and account for
-the common-factor caveat described in the module docstring.
-
-The immediate prerequisite is the root-list conversion recorded in the module
-docstring: prove `Prec` equivalent to the `ListAlternates`/`ListInterlaces`
-condition on `p.roots.sort (· ≤ ·)` and `q.roots.sort (· ≤ ·)`, then state the
-same-degree and degree-difference-one Bezoutian theorems against those
-canonical lists.
+The orientation is chosen so that `StrictPrecSameDegree p q` corresponds to
+positive definiteness of `bezoutMatrix n q p`.  This is the intended main
+Bezoutian theorem: it avoids the common-factor and multiple-root degeneracies
+that belong to a separate positive-semidefinite/gcd-reduced generalization.
 -/
-theorem prec_iff_bezoutMatrix_posSemidef
+theorem strictPrecSameDegree_iff_bezoutMatrix_posDef
     {p q : ℝ[X]} {n : ℕ}
-    (_hp_pos : HasPosLeadingCoeff p)
-    (_hq_pos : HasPosLeadingCoeff q)
-    (_hp_deg : p.natDegree ≤ n)
-    (_hq_deg : q.natDegree ≤ n) :
-    Prec p q ↔ (bezoutMatrix n q p).PosSemidef := by
+    (_hp_pos : HasPosLeadingCoeff p) (_hq_pos : HasPosLeadingCoeff q)
+    (_hp_deg : p.natDegree = n) (_hq_deg : q.natDegree = n) :
+    StrictPrecSameDegree p q ↔ (bezoutMatrix n q p).PosDef := by
   sorry
 
 end RealRooted

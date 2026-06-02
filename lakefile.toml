@@ -2,6 +2,8 @@ name = "RealRooted"
 version = "0.1.0"
 keywords = ["math"]
 defaultTargets = ["RealRooted"]
+packagesDir = "/lake-cache/ai-projects/packages"
+buildDir = "/lake-cache/ai-projects/build/RealRooted"
 
 [leanOptions]
 pp.unicode.fun = true # pretty-prints `fun a ↦ b`

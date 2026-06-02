@@ -453,6 +453,13 @@ lemma hasNonnegCoeffs_C {a : ℝ} (ha : 0 ≤ a) : HasNonnegCoeffs (C a) := by
   | succ n =>
       rw [coeff_C_succ]
 
+lemma nonnegCoeffs_C_mul {a : ℝ} (ha : 0 ≤ a) {p : ℝ[X]}
+    (hp : HasNonnegCoeffs p) :
+    HasNonnegCoeffs (C a * p) := by
+  intro n
+  rw [coeff_C_mul]
+  exact mul_nonneg ha (hp n)
+
 lemma HasNonnegCoeffs.mul {p q : ℝ[X]} (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q) :
     HasNonnegCoeffs (p * q) := by
   intro n
