@@ -35,16 +35,6 @@ private lemma hasPosLeadingCoeff_of_X_sub_C_mul_local {q : ℝ[X]} {r : ℝ}
   unfold HasPosLeadingCoeff at h ⊢
   simpa [Polynomial.leadingCoeff_mul, leadingCoeff_X_sub_C] using h
 
-private lemma hasPosLeadingCoeff_derivative_of_pos_local {f : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hdeg : 1 ≤ f.natDegree) :
-    HasPosLeadingCoeff f.derivative := by
-  unfold HasPosLeadingCoeff at hf_pos ⊢
-  rw [leadingCoeff, natDegree_derivative_eq hdeg, coeff_derivative]
-  rw [Nat.sub_add_cancel hdeg, coeff_natDegree] at *
-  have hdeg_pos : 0 < (f.natDegree : ℝ) := by
-    exact_mod_cast hdeg
-  nlinarith
-
 private lemma eval_pos_of_all_roots_lt_local {p : ℝ[X]} {r : ℝ}
     (hp : IsRealRooted p) (hp_pos : HasPosLeadingCoeff p)
     (hlt : ∀ t ∈ p.roots, t < r) :
@@ -185,7 +175,7 @@ private lemma exists_rightmost_derivative_root_with_eval_nonpos_local
       p.eval c ≤ 0 := by
   have hp' : IsRealRooted p.derivative := (derivative_interlaces hp hdeg).2.1
   have hp'_pos : HasPosLeadingCoeff p.derivative :=
-    hasPosLeadingCoeff_derivative_of_pos_local hp_pos (by lia)
+    hasPosLeadingCoeff_derivative hp_pos (by lia)
   have hp'_deg : p.derivative.natDegree = p.natDegree - 1 :=
     natDegree_derivative_eq (by lia)
   obtain ⟨c, hc_root, hc_top⟩ :=
@@ -235,7 +225,7 @@ private lemma exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_
     refine strictMonoOn_eval_Ici_of_derivative_roots_le_local ?_ ?_ ?_
     · simpa [hder_eq] using hq'_rr
     · simpa [hder_eq] using
-        hasPosLeadingCoeff_derivative_of_pos_local hp_pos (by lia)
+        hasPosLeadingCoeff_derivative hp_pos (by lia)
     · intro s hs
       have hs' : s ∈ p.derivative.roots := by
         simpa [hder_eq] using hs
@@ -485,9 +475,9 @@ theorem natDegree_right_le_succ
     · have hf_deg1 : 1 ≤ f.natDegree := by lia
       have hg_deg1 : 1 ≤ g.natDegree := by lia
       have hf'_pos : HasPosLeadingCoeff f.derivative :=
-        hasPosLeadingCoeff_derivative_of_pos_local hf_pos hf_deg1
+        hasPosLeadingCoeff_derivative hf_pos hf_deg1
       have hg'_pos : HasPosLeadingCoeff g.derivative :=
-        hasPosLeadingCoeff_derivative_of_pos_local hg_pos hg_deg1
+        hasPosLeadingCoeff_derivative hg_pos hg_deg1
       have hfg' : Compatible f.derivative g.derivative := derivative hfg
       have hf'_deg : f.derivative.natDegree = f.natDegree - 1 :=
         natDegree_derivative_eq hf_deg1

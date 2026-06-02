@@ -16,28 +16,12 @@ noncomputable section
 
 namespace RealRooted
 
-lemma nonnegCoeffs_derivative {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
-    HasNonnegCoeffs p.derivative := by
-  intro n
-  rw [coeff_derivative]
-  exact mul_nonneg (hp (n + 1)) (by positivity)
-
 lemma nonnegCoeffs_C_mul {a : ℝ} (ha : 0 ≤ a) {p : ℝ[X]}
     (hp : HasNonnegCoeffs p) :
     HasNonnegCoeffs (C a * p) := by
   intro n
   rw [coeff_C_mul]
   exact mul_nonneg ha (hp n)
-
-lemma hasPosLeadingCoeff_derivative {f : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hdeg : 1 ≤ f.natDegree) :
-    HasPosLeadingCoeff f.derivative := by
-  unfold HasPosLeadingCoeff at hf_pos ⊢
-  rw [leadingCoeff, natDegree_derivative_eq hdeg, coeff_derivative]
-  rw [Nat.sub_add_cancel hdeg, coeff_natDegree] at *
-  have hdeg_pos : 0 < (f.natDegree : ℝ) := by
-    exact_mod_cast hdeg
-  nlinarith
 
 lemma interlaces_one_linear {p : ℝ[X]} (hp_deg : p.natDegree = 1) :
     Interlaces (1 : ℝ[X]) p := by

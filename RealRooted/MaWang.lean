@@ -1992,16 +1992,6 @@ theorem prec_of_interlaces_eval_mul_neg_same {f g F : ℝ[X]}
     exact lt_of_le_of_lt (hrs_sorted.rel_getLast hr) hlast_lt_uR
   exact prec_same_of_strict_signs_of_right_root hf hF_ne hrs_sorted hrs_eq hdeg hn hsign hright
 
-private lemma hasPosLeadingCoeff_derivative {f : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hdeg : 1 ≤ f.natDegree) :
-    HasPosLeadingCoeff f.derivative := by
-  unfold HasPosLeadingCoeff at hf_pos ⊢
-  rw [leadingCoeff, natDegree_derivative_eq hdeg, coeff_derivative]
-  rw [Nat.sub_add_cancel hdeg, coeff_natDegree] at *
-  have hdeg_pos : 0 < (f.natDegree : ℝ) := by
-    exact_mod_cast hdeg
-  nlinarith
-
 private lemma eval_mul_derivative_eq_of_isRoot {f u v : ℝ[X]} {r : ℝ}
     (hr : f.IsRoot r) :
     (u * f + v * f.derivative).eval r * f.derivative.eval r =

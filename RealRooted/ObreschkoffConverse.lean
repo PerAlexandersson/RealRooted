@@ -1313,16 +1313,6 @@ private lemma wronskian_eval_mul_pos_of_le_of_eq_zero_or_simple_combo
     (wronskian_eval_ne_zero_of_eq_zero_or_simple_combo
       hf hg hcombo hdeg_pos hno (x := z)) hz_eval0
 
-private lemma hasPosLeadingCoeff_derivative_of_pos
-    {f : ℝ[X]} (hf_pos : HasPosLeadingCoeff f) (hdeg : 1 ≤ f.natDegree) :
-    HasPosLeadingCoeff f.derivative := by
-  unfold HasPosLeadingCoeff at hf_pos ⊢
-  rw [leadingCoeff, natDegree_derivative_eq hdeg, coeff_derivative]
-  rw [Nat.sub_add_cancel hdeg, coeff_natDegree] at *
-  have hdeg_pos : 0 < (f.natDegree : ℝ) := by
-    exact_mod_cast hdeg
-  nlinarith
-
 private lemma hasSimpleRoots_of_eq_zero_or_isRealRooted_and_hasSimpleRoots_left
     {f g : ℝ[X]}
     (hf : IsRealRooted f)
@@ -1391,10 +1381,10 @@ private theorem prec_or_revPrec_of_eq_zero_or_simple_combo_sameDegree
   have hW_prod {x y : ℝ} : x ≤ y → 0 < (wronskian f g).eval x * (wronskian f g).eval y :=
     wronskian_eval_mul_pos_of_le_of_eq_zero_or_simple_combo hf hg hcombo (by grind) hno
   have hf'_pos : HasPosLeadingCoeff f.derivative :=
-    hasPosLeadingCoeff_derivative_of_pos hf_pos (by lia)
+    hasPosLeadingCoeff_derivative hf_pos (by lia)
   have hg'_pos :
       HasPosLeadingCoeff g.derivative :=
-    hasPosLeadingCoeff_derivative_of_pos hg_pos (by lia)
+    hasPosLeadingCoeff_derivative hg_pos (by lia)
   by_cases hWneg0 : (wronskian f g).eval 0 < 0
   · have hWneg : ∀ x : ℝ, (wronskian f g).eval x < 0 := by
       intro x
@@ -1459,7 +1449,7 @@ private lemma interlaces_derivative_of_degree_pos
     Interlaces f.derivative f := by
   by_cases hdeg1 : f.natDegree = 1
   · have hf'_pos : HasPosLeadingCoeff f.derivative :=
-      hasPosLeadingCoeff_derivative_of_pos hf_pos hdeg
+      hasPosLeadingCoeff_derivative hf_pos hdeg
     have hf'_ne : f.derivative ≠ 0 := by
       intro h0
       simp [HasPosLeadingCoeff, h0] at hf'_pos
@@ -1611,7 +1601,7 @@ private theorem prec_of_eq_zero_or_simple_combo_succDegree
       have hprod := hW_prod hx₀x
       nlinarith
   have hf'_pos : HasPosLeadingCoeff f.derivative :=
-    hasPosLeadingCoeff_derivative_of_pos hf_pos hf_deg_pos
+    hasPosLeadingCoeff_derivative hf_pos hf_deg_pos
   have hder : Interlaces f.derivative f :=
     interlaces_derivative_of_degree_pos hf hf_pos hf_deg_pos
   have hroot_sign :
@@ -2345,7 +2335,7 @@ private lemma exists_rightmost_derivative_root_with_eval_nonpos
       p.eval c ≤ 0 := by
   have hp' : IsRealRooted p.derivative := (derivative_interlaces hp hdeg).2.1
   have hp'_pos : HasPosLeadingCoeff p.derivative :=
-    hasPosLeadingCoeff_derivative_of_pos hp_pos (by lia)
+    hasPosLeadingCoeff_derivative hp_pos (by lia)
   have hp'_deg : p.derivative.natDegree = p.natDegree - 1 :=
     natDegree_derivative_eq (by lia)
   obtain ⟨c, hc_root, hc_top⟩ :=
@@ -2394,7 +2384,7 @@ private lemma exists_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
       simp
     refine strictMonoOn_eval_Ici_of_derivative_roots_le ?_ ?_ ?_
     · simpa [hder_eq] using hq'_rr
-    · simpa [hder_eq] using hasPosLeadingCoeff_derivative_of_pos hp_pos (by lia)
+    · simpa [hder_eq] using hasPosLeadingCoeff_derivative hp_pos (by lia)
     · intro s hs
       have hs' : s ∈ p.derivative.roots := by
         simpa [hder_eq] using hs

@@ -39,6 +39,26 @@ lemma derivative_ne_zero {f : ℝ[X]} (hdeg : 2 ≤ f.natDegree) :
   have := natDegree_derivative_eq (show 1 ≤ f.natDegree by lia)
   rw [h, natDegree_zero] at this; lia
 
+lemma HasNonnegCoeffs.derivative {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
+    HasNonnegCoeffs p.derivative := by
+  intro n
+  rw [coeff_derivative]
+  exact mul_nonneg (hp (n + 1)) (by positivity)
+
+lemma nonnegCoeffs_derivative {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
+    HasNonnegCoeffs p.derivative :=
+  hp.derivative
+
+lemma hasPosLeadingCoeff_derivative {f : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hdeg : 1 ≤ f.natDegree) :
+    HasPosLeadingCoeff f.derivative := by
+  unfold HasPosLeadingCoeff at hf_pos ⊢
+  rw [leadingCoeff, natDegree_derivative_eq hdeg, coeff_derivative]
+  rw [Nat.sub_add_cancel hdeg, coeff_natDegree] at *
+  have hdeg_pos : 0 < (f.natDegree : ℝ) := by
+    exact_mod_cast hdeg
+  nlinarith
+
 lemma coeff_one_sub_X_mul_derivative (p : ℝ[X]) (m : Nat) :
     ((1 - X) * p.derivative).coeff m =
       ((m + 1 : ℝ) * p.coeff (m + 1)) - ((m : ℝ) * p.coeff m) := by

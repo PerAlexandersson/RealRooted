@@ -56,12 +56,6 @@ lemma sturmDerangementsExc_succ_eq_X_mul_recurrenceCore (n : Nat) (hn : 2 ≤ n)
   simpa [recurrenceCoreSturmDerangementsExc, affineSturmDerangementsExc,
     add_assoc, add_left_comm, add_comm] using sturmDerangementsExc_recurrence k
 
-lemma HasNonnegCoeffs.derivative {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
-    HasNonnegCoeffs p.derivative := by
-  intro n
-  rw [coeff_derivative]
-  exact mul_nonneg (hp (n + 1)) (by positivity)
-
 /-- If `f` is real-rooted with nonnegative coefficients, then the derivative term
 `(1 - X) * f'` sits on the "right" of `f` in the oriented `Prec` relation. -/
 lemma prec_one_sub_X_derivative_right {f : ℝ[X]}

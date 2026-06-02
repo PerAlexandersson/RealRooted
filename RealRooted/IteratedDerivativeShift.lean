@@ -204,16 +204,6 @@ lemma TDeriv_ne_zero {eps : ℝ} {p : ℝ[X]} (hp : p ≠ 0) (hdeg : 1 ≤ p.nat
   rw [h, natDegree_zero] at this
   lia
 
-private lemma hasPosLeadingCoeff_derivative_of_pos
-    {p : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (hdeg : 1 ≤ p.natDegree) :
-    HasPosLeadingCoeff p.derivative := by
-  unfold HasPosLeadingCoeff at hp_pos ⊢
-  rw [leadingCoeff, natDegree_derivative_eq hdeg, coeff_derivative]
-  rw [Nat.sub_add_cancel hdeg, coeff_natDegree] at *
-  have hdeg_pos : 0 < (p.natDegree : ℝ) := by
-    exact_mod_cast hdeg
-  nlinarith
-
 /-- T_ε preserves real-rootedness when ε > 0.
     Proof: T_ε(p) = 1·p + (-C ε)·p'. Since p' interlaces p (derivative interlacing)
     and (-C ε) evaluates to -ε ≤ 0 at every point, the Ma-Wang theorem gives
@@ -231,7 +221,7 @@ private lemma isRealRooted_TDeriv_pos {eps : ℝ} {p : ℝ[X]}
   have hder : Interlaces p.derivative p := derivative_interlaces hp hdeg2
   -- HasPosLeadingCoeff of p'
   have hp'_pos : HasPosLeadingCoeff p.derivative := by
-    exact hasPosLeadingCoeff_derivative_of_pos hp_pos (by lia)
+    exact hasPosLeadingCoeff_derivative hp_pos (by lia)
   -- HasPosLeadingCoeff of T_ε(p) (same leading coeff as p)
   have hT_pos : HasPosLeadingCoeff (C 1 * p + C (-eps) * p.derivative) := by
     rw [← hrewrite]
@@ -364,7 +354,7 @@ theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
               exact hdeg2)
         have hp'_pos : HasPosLeadingCoeff (-p).derivative := by
           simpa [derivative_neg, natDegree_neg] using
-            hasPosLeadingCoeff_derivative_of_pos hneg_pos (by rw [natDegree_neg]; lia)
+            hasPosLeadingCoeff_derivative hneg_pos (by rw [natDegree_neg]; lia)
         have hrewrite_neg : TDeriv eps (-p) = C 1 * (-p) + C (-eps) * (-p).derivative := by
           simp [TDeriv]
         have hT_pos : HasPosLeadingCoeff (C 1 * (-p) + C (-eps) * (-p).derivative) := by
@@ -391,7 +381,7 @@ theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
       exact hboth
     · have hder : Interlaces p.derivative p := derivative_interlaces hp hdeg2
       have hp'_pos : HasPosLeadingCoeff p.derivative := by
-        exact hasPosLeadingCoeff_derivative_of_pos hpos (by lia)
+        exact hasPosLeadingCoeff_derivative hpos (by lia)
       have hrewrite : TDeriv eps p = C 1 * p + C (-eps) * p.derivative := by
         simp [TDeriv]
         ring
