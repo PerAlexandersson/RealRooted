@@ -113,7 +113,7 @@ lemma coeff_simsunCoeffB_mul_derivative (m : Nat) (p : ℝ[X]) :
               rw [coeff_derivative]
               ring
           _ = (m + 2 : ℝ) * coeff p (m + 2) := by
-              have hidx : m + 1 + 1 = m + 2 := by omega
+              have hidx : m + 1 + 1 = m + 2 := by lia
               have hcast : (((m + 1 : Nat) : ℝ) + 1) = (m : ℝ) + 2 := by
                 calc
                   (((m + 1 : Nat) : ℝ) + 1) = ((m : ℝ) + 1) + 1 := by simp
@@ -132,7 +132,7 @@ lemma coeff_simsunCoeffB_mul_derivative (m : Nat) (p : ℝ[X]) :
               ring
           _ = (2 * (m + 1) : ℝ) * coeff p (m + 1) := by ring
       rw [h₁, h₂]
-      have hidx : m + 1 + 1 = m + 2 := by omega
+      have hidx : m + 1 + 1 = m + 2 := by lia
       have hcast₁ : (((m + 1 : Nat) : ℝ) + 1) = (m : ℝ) + 2 := by
         calc
           (((m + 1 : Nat) : ℝ) + 1) = ((m : ℝ) + 1) + 1 := by simp
@@ -197,7 +197,7 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
             rw [coeff_simsun_succ]
             by_cases hm : m ≤ (n + 1) / 2
             · have hm' : (2 : ℝ) * (m : ℝ) ≤ ((n + 1 : Nat) : ℝ) := by
-                exact_mod_cast (show 2 * m ≤ n + 1 by omega)
+                exact_mod_cast (show 2 * m ≤ n + 1 by lia)
               have hscale : 0 ≤ (((n + 1 : Nat) : ℝ) - 2 * (m : ℝ)) := by
                 nlinarith
               exact add_nonneg
@@ -206,24 +206,24 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
             · have hm' : (n + 1) / 2 < m := lt_of_not_ge hm
               have hm_zero : coeff (simsun (n + 1)) m = 0 := hprev_above m hm'
               have hm_succ_zero : coeff (simsun (n + 1)) (m + 1) = 0 := by
-                exact hprev_above (m + 1) (by omega)
+                exact hprev_above (m + 1) (by lia)
               simp [hm_zero, hm_succ_zero]
       · set k : Nat := (n + 2) / 2 - 1
         have hk_succ : k + 1 = (n + 2) / 2 := by
-          omega
+          lia
         rw [show (n + 2) / 2 = k + 1 by simp [hk_succ], coeff_simsun_succ]
         rcases Nat.mod_two_eq_zero_or_one n with hpar | hpar
         · have hk_eq : k = n / 2 := by
-            omega
+            lia
           have hprev_idx : (n + 1) / 2 = n / 2 := by
-            omega
+            lia
           have hprev_pos : 0 < coeff (simsun (n + 1)) k := by
             simpa [hk_eq, hprev_idx] using hprev_top
           have hprev_zero : coeff (simsun (n + 1)) (k + 1) = 0 := by
             rw [hk_succ]
-            exact hprev_above ((n + 2) / 2) (by omega)
+            exact hprev_above ((n + 2) / 2) (by lia)
           have hdouble : (2 : ℝ) * (k : ℝ) = (n : ℝ) := by
-            exact_mod_cast (show 2 * k = n by omega)
+            exact_mod_cast (show 2 * k = n by lia)
           have hcast :
               (((n + 1 : Nat) : ℝ) - 2 * (k : ℝ)) = (n : ℝ) + 1 - 2 * (k : ℝ) := by
             norm_num [Nat.cast_add]
@@ -238,15 +238,15 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
                   ((k : ℝ) + 2) * coeff (simsun (n + 1)) (k + 1) := by
                     simp
         · have hk_eq : k = n / 2 := by
-            omega
+            lia
           have hk_top : k + 1 = (n + 1) / 2 := by
-            omega
+            lia
           have hprev_nonneg_k : 0 ≤ coeff (simsun (n + 1)) k :=
             hprev_nonneg k
           have hprev_pos : 0 < coeff (simsun (n + 1)) (k + 1) := by
             simpa [hk_top] using hprev_top
           have hdouble : (2 : ℝ) * (k : ℝ) + 1 = (n : ℝ) := by
-            exact_mod_cast (show 2 * k + 1 = n by omega)
+            exact_mod_cast (show 2 * k + 1 = n by lia)
           have hcast :
               (((n + 1 : Nat) : ℝ) - 2 * (k : ℝ)) = (n : ℝ) + 1 - 2 * (k : ℝ) := by
             norm_num [Nat.cast_add]
@@ -270,21 +270,21 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
       · intro m hm
         cases m with
         | zero =>
-            omega
+            lia
         | succ k =>
             rw [show k + 1 = k + 1 by rfl, coeff_simsun_succ]
             have hk_succ_zero : coeff (simsun (n + 1)) (k + 1) = 0 := by
-              exact hprev_above (k + 1) (by omega)
+              exact hprev_above (k + 1) (by lia)
             by_cases hk : (n + 1) / 2 < k
             · have hk_zero : coeff (simsun (n + 1)) k = 0 := hprev_above k hk
               simp [hk_zero, hk_succ_zero]
             · have hk_le : k ≤ (n + 1) / 2 := le_of_not_gt hk
               have hk_ge : (n + 2) / 2 ≤ k := by
-                omega
+                lia
               have hk_eq : k = (n + 1) / 2 := by
-                omega
+                lia
               have hdouble : (2 : ℝ) * (k : ℝ) = (((n + 1 : Nat) : ℝ)) := by
-                exact_mod_cast (show 2 * k = n + 1 by omega)
+                exact_mod_cast (show 2 * k = n + 1 by lia)
               have hcast :
                   (((n + 1 : Nat) : ℝ) - 2 * (k : ℝ)) = (n : ℝ) + 1 - 2 * (k : ℝ) := by
                 norm_num [Nat.cast_add]
@@ -365,9 +365,9 @@ lemma interlaces_derivative_simsun :
     ∀ n : Nat, 2 ≤ n → IsRealRooted (simsun n) →
       Interlaces (simsun n).derivative (simsun n)
   | 0, hn, _ => by
-      omega
+      lia
   | 1, hn, _ => by
-      omega
+      lia
   | 2, _, _ => by
       simpa [simsun_two] using
         interlaces_one_linear (p := (1 + X : ℝ[X])) (by
@@ -378,7 +378,7 @@ lemma interlaces_derivative_simsun :
   | n + 4, _, hrr => by
       apply derivative_interlaces hrr
       rw [natDegree_simsun]
-      omega
+      lia
 
 lemma eval_simsunCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
     simsunCoeffB.eval r ≤ 0 := by
@@ -396,11 +396,11 @@ theorem prec_simsun_succ : ∀ n : Nat, Prec (simsun n) (simsun (n + 1))
       have hf : IsRealRooted (simsun (n + 2)) := (prec_simsun_succ (n + 1)).2.1
       have hInter :
           Interlaces (simsun (n + 2)).derivative (simsun (n + 2)) :=
-        interlaces_derivative_simsun (n + 2) (by omega) hf
+        interlaces_derivative_simsun (n + 2) (by lia) hf
       have hg_pos : HasPosLeadingCoeff (simsun (n + 2)).derivative :=
         hasPosLeadingCoeff_derivative (simsun_posLeadingCoeff (n + 2)) (by
           rw [natDegree_simsun]
-          omega)
+          lia)
       have hNext_eq :
           simsunCoeffA (n + 2) * simsun (n + 2) +
             simsunCoeffB * (simsun (n + 2)).derivative =
@@ -417,13 +417,13 @@ theorem prec_simsun_succ : ∀ n : Nat, Prec (simsun n) (simsun (n + 1))
             (simsunCoeffA (n + 2) * simsun (n + 2) +
               simsunCoeffB * (simsun (n + 2)).derivative).natDegree := by
         rw [hNext_eq, natDegree_simsun, natDegree_simsun]
-        omega
+        lia
       have hdeg_hi :
           (simsunCoeffA (n + 2) * simsun (n + 2) +
               simsunCoeffB * (simsun (n + 2)).derivative).natDegree ≤
             (simsun (n + 2)).natDegree + 1 := by
         rw [hNext_eq, natDegree_simsun, natDegree_simsun]
-        omega
+        lia
       have hb_nonpos :
           ∀ r, (simsun (n + 2)).IsRoot r → simsunCoeffB.eval r ≤ 0 := by
         intro r hr
@@ -450,7 +450,7 @@ theorem interlaces_simsun_succ_of_odd {n : Nat} (hodd : n % 2 = 1) :
     Interlaces (simsun n) (simsun (n + 1)) := by
   apply (prec_simsun_succ n).toInterlaces
   rw [natDegree_simsun, natDegree_simsun]
-  omega
+  lia
 
 /-- The descending prefix `[P_n, P_{n-1}, ..., P_0]` of the simsun sequence. -/
 def simsunPrefix : Nat → List ℝ[X]

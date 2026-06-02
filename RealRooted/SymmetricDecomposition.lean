@@ -1036,7 +1036,7 @@ theorem prec_fPolynomial_of_prec_of_hasNonnegCoeffs_of_minimal
           rw [← Multiset.coe_card, hss_eq, hu_rr.2]
         have hlen_deg_v : (r₁ :: rest).length = v.natDegree := by
           rw [← Multiset.coe_card, hrs_eq, hv_rr.2]
-        have hud_pad : d - u.natDegree = 1 := by omega
+        have hud_pad : d - u.natDegree = 1 := by grind
         have hvd_pad : d - v.natDegree = 0 := by lia
         have hleft_all : ∀ t ∈ ss.map φ, -1 ≤ t := by
           intro t ht
@@ -1083,7 +1083,7 @@ theorem prec_fPolynomial_of_prec_of_hasNonnegCoeffs_of_minimal
       rw [← Multiset.coe_card, hss_eq, hu_rr.2]
     have hlen_deg_v : rs.length = v.natDegree := by
       rw [← Multiset.coe_card, hrs_eq, hv_rr.2]
-    have hud_pad : d - u.natDegree = 0 := by omega
+    have hud_pad : d - u.natDegree = 0 := by grind
     have hvd_pad : d - v.natDegree = 0 := by lia
     have hleft_eq : (↑(ss.map φ) : Multiset ℝ) = (fPolynomial d u).roots := by
       calc
@@ -1534,7 +1534,7 @@ theorem prec_of_prec_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
           not_prec_fPolynomial_of_left_degree_le_sub_two_of_right_full
             hu_two hv_eq hu_rr hv_rr hu_nonneg hv_nonneg h
   · have hv_lt : v.natDegree < d := lt_of_le_of_ne hvd hv_eq
-    have hu_eq : u.natDegree = d := by omega
+    have hu_eq : u.natDegree = d := by grind
     exact False.elim <|
       not_prec_fPolynomial_of_right_degree_lt_of_sameDegree_left
         hu_eq hv_lt hu_rr hv_rr hu_nonneg hv_nonneg h
@@ -2389,7 +2389,7 @@ private lemma natDegree_right_of_prec_to_sum
       rw [← Multiset.coe_card, hss_eq, hb_rr.2]
     have hrs_len : rs.length = p.natDegree := by
       rw [← Multiset.coe_card, hrs_eq, hp_rr.2]
-    rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩ <;> omega
+    rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩ <;> lia
   lia
 
 /-- Converse branch for the Brändén--Solus decomposition theorem: if the right

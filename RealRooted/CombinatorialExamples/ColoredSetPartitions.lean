@@ -84,18 +84,18 @@ lemma coeff_coloredSetPartitions_top_and_above :
   | c, m, n + 1 => by
       rcases coeff_coloredSetPartitions_top_and_above c m n with ⟨htop, habove⟩
       constructor
-      · rw [show n + 1 = n + 0 + 1 by omega, coeff_coloredSetPartitions_succ]
+      · rw [show n + 1 = n + 0 + 1 by lia, coeff_coloredSetPartitions_succ]
         have hzero : coeff (coloredSetPartitions c m n) (n + 1) = 0 :=
-          habove (n + 1) (by omega)
+          habove (n + 1) (by lia)
         simp [htop, hzero]
       · intro k hk
         cases k with
         | zero =>
-            omega
+            lia
         | succ j =>
-            rw [show j + 1 = j + 0 + 1 by omega, coeff_coloredSetPartitions_succ]
-            have hj : n < j := by omega
-            have hj' : n < j + 1 := by omega
+            rw [show j + 1 = j + 0 + 1 by lia, coeff_coloredSetPartitions_succ]
+            have hj : n < j := by lia
+            have hj' : n < j + 1 := by lia
             simp [habove j hj, habove (j + 1) hj']
 
 lemma natDegree_coloredSetPartitions (c m n : Nat) :
@@ -204,7 +204,7 @@ lemma prec_coloredSetPartitions_one_two (c m : Nat) :
         (coloredSetPartitionsCoeffA c * coloredSetPartitions c m 1 +
           coloredSetPartitionsCoeffB m * (coloredSetPartitions c m 1).derivative).natDegree := by
     rw [hNext_eq, natDegree_coloredSetPartitions, natDegree_coloredSetPartitions]
-    omega
+    lia
   have hdeg_hi :
       (coloredSetPartitionsCoeffA c * coloredSetPartitions c m 1 +
           coloredSetPartitionsCoeffB m * (coloredSetPartitions c m 1).derivative).natDegree ≤
@@ -240,7 +240,7 @@ theorem prec_coloredSetPartitions_succ (c m : Nat) :
       have hf : IsRealRooted (coloredSetPartitions c m (n + 2)) := hprev.2.1
       have hdegf : 2 ≤ (coloredSetPartitions c m (n + 2)).natDegree := by
         rw [natDegree_coloredSetPartitions]
-        omega
+        lia
       have hInter :
           Interlaces (coloredSetPartitions c m (n + 2)).derivative
             (coloredSetPartitions c m (n + 2)) :=
@@ -249,7 +249,7 @@ theorem prec_coloredSetPartitions_succ (c m : Nat) :
           HasPosLeadingCoeff (coloredSetPartitions c m (n + 2)).derivative :=
         hasPosLeadingCoeff_derivative (coloredSetPartitions_posLeadingCoeff c m (n + 2)) (by
           rw [natDegree_coloredSetPartitions]
-          omega)
+          lia)
       have hNext_eq :
           coloredSetPartitionsCoeffA c * coloredSetPartitions c m (n + 2) +
               coloredSetPartitionsCoeffB m * (coloredSetPartitions c m (n + 2)).derivative =
@@ -267,7 +267,7 @@ theorem prec_coloredSetPartitions_succ (c m : Nat) :
               coloredSetPartitionsCoeffB m *
                 (coloredSetPartitions c m (n + 2)).derivative).natDegree := by
         rw [hNext_eq, natDegree_coloredSetPartitions, natDegree_coloredSetPartitions]
-        omega
+        lia
       have hdeg_hi :
           (coloredSetPartitionsCoeffA c * coloredSetPartitions c m (n + 2) +
               coloredSetPartitionsCoeffB m *

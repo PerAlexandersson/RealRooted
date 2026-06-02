@@ -79,8 +79,8 @@ lemma prec_one_sub_X_derivative_right {f : ℝ[X]}
     intro s hs
     linarith [roots_nonpos_of_nonneg_coeffs hf' hnn' s hs]
   have hdeg' : f.derivative.natDegree + 1 = f.natDegree := by
-    rw [natDegree_derivative_eq (by omega)]
-    omega
+    rw [natDegree_derivative_eq (by lia)]
+    lia
   have hmain : Prec f ((X - C 1) * f.derivative) :=
     (prec_iff_prec_mul_X_sub_C_of_roots_le 1 hf' hf hf'_pos hf_pos hf'_le1 hf_le1 hdeg').mp hder
   have hscaled : Prec f (C (-1) * ((X - C 1) * f.derivative)) :=
@@ -174,8 +174,8 @@ lemma coeff_sturmDerangementsExc_top_and_above :
     ∀ n : Nat, 2 ≤ n →
       coeff (sturmDerangementsExc n) (n - 1) = 1 ∧
       ∀ m > n - 1, coeff (sturmDerangementsExc n) m = 0
-  | 0, h => by omega
-  | 1, h => by omega
+  | 0, h => by lia
+  | 1, h => by lia
   | 2, _ => by
       constructor
       · simp [sturmDerangementsExc_two]
@@ -191,22 +191,22 @@ lemma coeff_sturmDerangementsExc_top_and_above :
         have hm' : 2 < m := by simpa using hm
         rw [sturmDerangementsExc_three]
         have hX2 : coeff (X ^ 2 : ℝ[X]) m = 0 := by
-          have hm2 : m ≠ 2 := by omega
+          have hm2 : m ≠ 2 := by lia
           simp [coeff_X_pow, hm2]
         have hX : coeff (X : ℝ[X]) m = 0 := by
-          have hm1 : m ≠ 1 := by omega
+          have hm1 : m ≠ 1 := by lia
           have hm1' : ¬1 = m := by simpa [eq_comm] using hm1
           simp [coeff_X, hm1']
         simp [hX2, hX]
   | n + 4, _ => by
-      rcases coeff_sturmDerangementsExc_top_and_above (n + 2) (by omega) with
+      rcases coeff_sturmDerangementsExc_top_and_above (n + 2) (by lia) with
         ⟨hsmall_top, hsmall_hi⟩
-      rcases coeff_sturmDerangementsExc_top_and_above (n + 3) (by omega) with ⟨hbig_top, hbig_hi⟩
+      rcases coeff_sturmDerangementsExc_top_and_above (n + 3) (by lia) with ⟨hbig_top, hbig_hi⟩
       constructor
       · have hsmall_zero : coeff (sturmDerangementsExc (n + 2)) (n + 2) = 0 :=
-          hsmall_hi (n + 2) (by omega)
+          hsmall_hi (n + 2) (by lia)
         have hbig_zero : coeff (sturmDerangementsExc (n + 3)) (n + 3) = 0 :=
-          hbig_hi (n + 3) (by omega)
+          hbig_hi (n + 3) (by lia)
         have hbig_top' : coeff (sturmDerangementsExc (n + 3)) (n + 2) = 1 := by
           simpa using hbig_top
         have htop :
@@ -217,58 +217,58 @@ lemma coeff_sturmDerangementsExc_top_and_above :
       · intro m hm
         cases m with
         | zero =>
-            omega
+            lia
         | succ m =>
             have hsmall_zero : coeff (sturmDerangementsExc (n + 2)) m = 0 := by
               apply hsmall_hi
-              omega
+              lia
             have hbig_zero₁ : coeff (sturmDerangementsExc (n + 3)) m = 0 := by
               apply hbig_hi
-              omega
+              lia
             have hbig_zero₂ : coeff (sturmDerangementsExc (n + 3)) (m + 1) = 0 := by
               apply hbig_hi
-              omega
+              lia
             rw [coeff_sturmDerangementsExc_succ (n + 1) m]
             simp [hsmall_zero, hbig_zero₁, hbig_zero₂]
 
 lemma coeff_sturmDerangementsExc_symm :
     ∀ n : Nat, ∀ m ≤ n, coeff (sturmDerangementsExc n) m = coeff (sturmDerangementsExc n) (n - m)
   | 0, m, hm => by
-      have hm0 : m = 0 := by omega
+      have hm0 : m = 0 := by lia
       subst hm0
       simp [sturmDerangementsExc_zero]
   | 1, m, hm => by
-      have hm0 : m = 0 ∨ m = 1 := by omega
+      have hm0 : m = 0 ∨ m = 1 := by lia
       rcases hm0 with rfl | rfl <;> simp [sturmDerangementsExc_one]
   | 2, m, hm => by
-      have hm0 : m = 0 ∨ m = 1 ∨ m = 2 := by omega
+      have hm0 : m = 0 ∨ m = 1 ∨ m = 2 := by lia
       rcases hm0 with rfl | rfl | rfl <;> simp [sturmDerangementsExc_two, coeff_X]
   | n + 3, 0, hm => by
       have hcoeff0 : coeff (sturmDerangementsExc (n + 3)) 0 = 0 := by
         rcases X_dvd_sturmDerangementsExc (n + 3) with ⟨q, hq⟩
         simp [hq]
       have hcoeff_hi : coeff (sturmDerangementsExc (n + 3)) (n + 3) = 0 := by
-        rcases coeff_sturmDerangementsExc_top_and_above (n + 3) (by omega) with ⟨_, habove⟩
-        exact habove (n + 3) (by omega)
+        rcases coeff_sturmDerangementsExc_top_and_above (n + 3) (by lia) with ⟨_, habove⟩
+        exact habove (n + 3) (by lia)
       exact hcoeff0.trans hcoeff_hi.symm
   | n + 3, m + 1, hm => by
       by_cases htop : m + 1 = n + 3
       · have hcoeff_hi : coeff (sturmDerangementsExc (n + 3)) (m + 1) = 0 := by
-          rcases coeff_sturmDerangementsExc_top_and_above (n + 3) (by omega) with ⟨_, habove⟩
-          exact habove (m + 1) (by omega)
+          rcases coeff_sturmDerangementsExc_top_and_above (n + 3) (by lia) with ⟨_, habove⟩
+          exact habove (m + 1) (by lia)
         have hcoeff0 : coeff (sturmDerangementsExc (n + 3)) 0 = 0 := by
           rcases X_dvd_sturmDerangementsExc (n + 3) with ⟨q, hq⟩
           simp [hq]
         simpa [htop] using hcoeff_hi.trans hcoeff0.symm
-      · have hm_le : m ≤ n + 1 := by omega
-        have hm_succ_le : m + 1 ≤ n + 2 := by omega
-        have hsub : n + 2 - (m + 1) = n + 1 - m := by omega
-        have hidx : (n + 1 - m) + 1 = n + 2 - m := by omega
-        have hgoal : n + 3 - (m + 1) = n + 2 - m := by omega
+      · have hm_le : m ≤ n + 1 := by lia
+        have hm_succ_le : m + 1 ≤ n + 2 := by lia
+        have hsub : n + 2 - (m + 1) = n + 1 - m := by lia
+        have hidx : (n + 1 - m) + 1 = n + 2 - m := by lia
+        have hgoal : n + 3 - (m + 1) = n + 2 - m := by lia
         have hs1 :=
           coeff_sturmDerangementsExc_symm (n + 1) m hm_le
         have hs2m :=
-          coeff_sturmDerangementsExc_symm (n + 2) m (by omega)
+          coeff_sturmDerangementsExc_symm (n + 2) m (by lia)
         have hs2m1 :
             coeff (sturmDerangementsExc (n + 2)) (m + 1) =
               coeff (sturmDerangementsExc (n + 2)) (n + 1 - m) := by
@@ -331,8 +331,8 @@ lemma natDegree_le_sturmDerangementsExc (n : Nat) :
       | zero =>
           simp [sturmDerangementsExc_one]
       | succ n =>
-          rw [natDegree_sturmDerangementsExc (by omega)]
-          omega
+          rw [natDegree_sturmDerangementsExc (by lia)]
+          lia
 
 lemma reflect_sturmDerangementsExc (n : Nat) :
     Polynomial.reflect n (sturmDerangementsExc n) = sturmDerangementsExc n := by
@@ -420,14 +420,14 @@ lemma sturmDerangementsExc_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (sturmDer
               linarith
             nlinarith
           · have hm' : n + 2 < m := lt_of_not_ge hm
-            rcases coeff_sturmDerangementsExc_top_and_above (n + 2) (by omega) with ⟨_, hsmall_hi⟩
-            rcases coeff_sturmDerangementsExc_top_and_above (n + 3) (by omega) with ⟨_, hbig_hi⟩
+            rcases coeff_sturmDerangementsExc_top_and_above (n + 2) (by lia) with ⟨_, hsmall_hi⟩
+            rcases coeff_sturmDerangementsExc_top_and_above (n + 3) (by lia) with ⟨_, hbig_hi⟩
             have hsmall_zero : coeff (sturmDerangementsExc (n + 2)) m = 0 :=
-              hsmall_hi m (by omega)
+              hsmall_hi m (by lia)
             have hbig_zero₁ : coeff (sturmDerangementsExc (n + 3)) m = 0 :=
-              hbig_hi m (by omega)
+              hbig_hi m (by lia)
             have hbig_zero₂ : coeff (sturmDerangementsExc (n + 3)) (m + 1) = 0 :=
-              hbig_hi (m + 1) (by omega)
+              hbig_hi (m + 1) (by lia)
             simp [hsmall_zero, hbig_zero₁, hbig_zero₂]
 
 lemma roots_nonpos_sturmDerangementsExc_of_isRealRooted {n : Nat} (_hn : 2 ≤ n)
@@ -439,7 +439,7 @@ lemma prec_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
     (hprec : Prec (sturmDerangementsExc (n - 1)) (sturmDerangementsExc n)) :
     Prec (C (n : ℝ) * sturmDerangementsExc (n - 1)) (sturmDerangementsExc n) := by
   apply prec_C_mul_left hprec
-  exact_mod_cast (show n ≠ 0 by omega)
+  exact_mod_cast (show n ≠ 0 by lia)
 
 lemma prec_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
     (hrr : IsRealRooted (sturmDerangementsExc n)) :
@@ -447,21 +447,21 @@ lemma prec_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
   apply prec_affine_derivative'
   · exact hrr
   · rw [natDegree_sturmDerangementsExc hn]
-    omega
+    lia
   · exact sturmDerangementsExc_posLeadingCoeff hn
   · exact roots_nonpos_sturmDerangementsExc_of_isRealRooted hn hrr
   · rw [natDegree_sturmDerangementsExc hn]
-    exact_mod_cast (Nat.sub_lt (by omega) (by omega))
+    exact_mod_cast (Nat.sub_lt (by lia) (by lia))
 
 lemma natDegree_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n) :
     (affineSturmDerangementsExc n).natDegree = (sturmDerangementsExc n).natDegree := by
   refine natDegree_affineDeriv (sturmDerangementsExc_ne_zero hn) ?_ ?_
   · rw [natDegree_sturmDerangementsExc hn]
-    omega
+    lia
   · rw [natDegree_sturmDerangementsExc hn]
-    have hn0 : 0 < n := by omega
+    have hn0 : 0 < n := by lia
     have hlt : ((n - 1 : Nat) : ℝ) < n := by
-      exact_mod_cast (Nat.sub_lt hn0 (by omega))
+      exact_mod_cast (Nat.sub_lt hn0 (by lia))
     linarith
 
 lemma affine_sturmDerangementsExc_nonnegCoeffs {n : Nat} (hn : 2 ≤ n) :
@@ -487,10 +487,10 @@ lemma affine_sturmDerangementsExc_nonnegCoeffs {n : Nat} (hn : 2 ≤ n) :
     rcases coeff_sturmDerangementsExc_top_and_above n hn with ⟨_, habove⟩
     have hcoeff_m : coeff (sturmDerangementsExc n) m = 0 := by
       apply habove
-      omega
+      lia
     have hcoeff_succ : coeff (sturmDerangementsExc n) (m + 1) = 0 := by
       apply habove
-      omega
+      lia
     simp [hcoeff_m, hcoeff_succ]
 
 lemma affine_sturmDerangementsExc_isRoot_neg_one_of_even {n : Nat}
@@ -498,18 +498,18 @@ lemma affine_sturmDerangementsExc_isRoot_neg_one_of_even {n : Nat}
     (affineSturmDerangementsExc n).IsRoot (-1) := by
   rw [Polynomial.IsRoot.def]
   rcases hn with ⟨k, rfl⟩
-  have hk : 1 ≤ k := by omega
+  have hk : 1 ≤ k := by lia
   set A : ℝ[X] := affineSturmDerangementsExc (k + k)
   change A.eval (-1) = 0
-  have hprev_odd : Odd ((k + k) - 1) := ⟨k - 1, by omega⟩
-  have hnext_odd : Odd (k + k + 1) := ⟨k, by omega⟩
+  have hprev_odd : Odd ((k + k) - 1) := ⟨k - 1, by lia⟩
+  have hnext_odd : Odd (k + k + 1) := ⟨k, by lia⟩
   have hprev0 : (sturmDerangementsExc (k + k - 1)).eval (-1) = 0 := by
     exact Polynomial.IsRoot.def.mp (sturmDerangementsExc_isRoot_neg_one_of_odd hprev_odd)
   have hnext0 : (sturmDerangementsExc (k + k + 1)).eval (-1) = 0 := by
     exact Polynomial.IsRoot.def.mp (sturmDerangementsExc_isRoot_neg_one_of_odd hnext_odd)
-  have hk1 : k + k - 2 + 1 = k + k - 1 := by omega
-  have hk2 : k + k - 2 + 2 = k + k := by omega
-  have hk3 : k + k - 2 + 3 = k + k + 1 := by omega
+  have hk1 : k + k - 2 + 1 = k + k - 1 := by lia
+  have hk2 : k + k - 2 + 2 = k + k := by lia
+  have hk3 : k + k - 2 + 3 = k + k + 1 := by lia
   have hrec_eval :
       0 =
         -(((↑(k + k - 2) : ℝ) + 2) * (sturmDerangementsExc (k + k)).eval (-1) +
@@ -549,8 +549,8 @@ lemma X_add_one_dvd_recurrenceCoreSturmDerangementsExc_of_even {n : Nat}
   apply dvd_add
   · have hodd : Odd (n - 1) := by
       rcases hn with ⟨k, rfl⟩
-      have hk : 1 ≤ k := by omega
-      refine ⟨k - 1, by omega⟩
+      have hk : 1 ≤ k := by lia
+      refine ⟨k - 1, by lia⟩
     exact dvd_mul_of_dvd_right (X_add_one_dvd_sturmDerangementsExc_of_odd hodd) (C (n : ℝ))
   · exact X_add_one_dvd_affine_sturmDerangementsExc_of_even hn h2
 
@@ -573,7 +573,7 @@ lemma recurrenceCoreSturmDerangementsExc_nonnegCoeffs {n : Nat} (hn : 2 ≤ n) :
 lemma recurrenceCoreSturmDerangementsExc_ne_zero {n : Nat} (hn : 2 ≤ n) :
     recurrenceCoreSturmDerangementsExc n ≠ 0 := by
   have hsucc_ne : sturmDerangementsExc (n + 1) ≠ 0 :=
-    sturmDerangementsExc_ne_zero (by omega)
+    sturmDerangementsExc_ne_zero (by lia)
   rw [sturmDerangementsExc_succ_eq_X_mul_recurrenceCore n hn] at hsucc_ne
   exact right_ne_zero_of_mul hsucc_ne
 
@@ -583,8 +583,8 @@ lemma natDegree_recurrenceCoreSturmDerangementsExc {n : Nat} (hn : 2 ≤ n) :
     recurrenceCoreSturmDerangementsExc_ne_zero hn
   have hdeg :=
     congrArg Polynomial.natDegree (sturmDerangementsExc_succ_eq_X_mul_recurrenceCore n hn)
-  rw [natDegree_sturmDerangementsExc (by omega), natDegree_X_mul hcore_ne] at hdeg
-  omega
+  rw [natDegree_sturmDerangementsExc (by lia), natDegree_X_mul hcore_ne] at hdeg
+  lia
 
 lemma roots_nonpos_affine_sturmDerangementsExc_of_isRealRooted {n : Nat} (hn : 2 ≤ n)
     (hrr : IsRealRooted (sturmDerangementsExc n)) :
@@ -596,7 +596,7 @@ lemma roots_nonpos_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
     (hprec : Prec (sturmDerangementsExc (n - 1)) (sturmDerangementsExc n)) :
     ∀ r ∈ (C (n : ℝ) * sturmDerangementsExc (n - 1)).roots, r ≤ 0 := by
   have hn_cast : (n : ℝ) ≠ 0 := by
-    exact_mod_cast (show n ≠ 0 by omega)
+    exact_mod_cast (show n ≠ 0 by lia)
   intro r hr
   rw [roots_C_mul _ hn_cast] at hr
   exact roots_nonpos_of_nonneg_coeffs hprec.1
@@ -626,10 +626,10 @@ lemma prec_X_mul_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
       (X * sturmDerangementsExc n) := by
   have hlower : Prec (C (n : ℝ) * sturmDerangementsExc (n - 1))
       (sturmDerangementsExc n) := by
-    exact prec_lowerTerm_sturmDerangementsExc (by omega) hprec
+    exact prec_lowerTerm_sturmDerangementsExc (by lia) hprec
   exact prec_mul_X_both_of_roots_nonpos hlower
     (roots_nonpos_lowerTerm_sturmDerangementsExc hn hprec)
-    (roots_nonpos_sturmDerangementsExc_of_isRealRooted (by omega) hprec.2.1)
+    (roots_nonpos_sturmDerangementsExc_of_isRealRooted (by lia) hprec.2.1)
 
 /-- The two inner summands in the derangement recurrence both precede `X * P_n`.
 This matches the main induction-step input in the human proof. -/
@@ -638,7 +638,7 @@ lemma prec_X_mul_recurrenceSummands_sturmDerangementsExc {n : Nat} (hn : 3 ≤ n
     Prec (X * (C (n : ℝ) * sturmDerangementsExc (n - 1))) (X * sturmDerangementsExc n) ∧
       Prec (X * affineSturmDerangementsExc n) (X * sturmDerangementsExc n) := by
   refine ⟨prec_X_mul_lowerTerm_sturmDerangementsExc hn hprec, ?_⟩
-  exact prec_X_mul_affine_sturmDerangementsExc (by omega) hprec.2.1
+  exact prec_X_mul_affine_sturmDerangementsExc (by lia) hprec.2.1
 
 /-- The recurrence core
 `n * P_{n-1} + (n * P_n + (1 - X) P'_n)` precedes `P_n` once `P_{n-1} ≪ P_n`.
@@ -648,17 +648,17 @@ lemma prec_recurrenceCoreSturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
     Prec (recurrenceCoreSturmDerangementsExc n) (sturmDerangementsExc n) := by
   rw [recurrenceCoreSturmDerangementsExc]
   have hlower : Prec (C (n : ℝ) * sturmDerangementsExc (n - 1)) (sturmDerangementsExc n) :=
-    prec_lowerTerm_sturmDerangementsExc (by omega) hprec
+    prec_lowerTerm_sturmDerangementsExc (by lia) hprec
   have haff : Prec (affineSturmDerangementsExc n) (sturmDerangementsExc n) :=
-    prec_affine_sturmDerangementsExc (by omega) hprec.2.1
+    prec_affine_sturmDerangementsExc (by lia) hprec.2.1
   have hlower_pos : HasPosLeadingCoeff (C (n : ℝ) * sturmDerangementsExc (n - 1)) := by
     have hn0 : (n : ℝ) ≠ 0 := by
-      exact_mod_cast (show n ≠ 0 by omega)
+      exact_mod_cast (show n ≠ 0 by lia)
     unfold HasPosLeadingCoeff
     rw [leadingCoeff_C_mul_of_isUnit (isUnit_iff_ne_zero.mpr hn0)]
-    exact mul_pos (by positivity) (sturmDerangementsExc_posLeadingCoeff (by omega))
+    exact mul_pos (by positivity) (sturmDerangementsExc_posLeadingCoeff (by lia))
   have haff_pos : HasPosLeadingCoeff (affineSturmDerangementsExc n) := by
-    exact (affine_sturmDerangementsExc_nonnegCoeffs (by omega)).pos_leadingCoeff haff.1.1
+    exact (affine_sturmDerangementsExc_nonnegCoeffs (by lia)).pos_leadingCoeff haff.1.1
   exact prec_add_of_prec_right_of_posLeadingCoeff hlower haff hlower_pos haff_pos
 
 /-- Once the recurrence core is known to precede `P_n`, the actual Sturm step
@@ -684,42 +684,42 @@ lemma prec_sturmDerangementsExc_succ_of_prec_recurrenceCore {n : Nat} (hn : 2 �
 `Prec` sense: `P_n ≪ P_{n+1}` for every `n ≥ 2`. -/
 theorem prec_sturmDerangementsExc_succ : ∀ n : Nat, 2 ≤ n →
     Prec (sturmDerangementsExc n) (sturmDerangementsExc (n + 1))
-  | 0, hn => by omega
-  | 1, hn => by omega
+  | 0, hn => by lia
+  | 1, hn => by lia
   | 2, _ => by
       have hrr2 : IsRealRooted (sturmDerangementsExc 2) := by
         apply isRealRooted_of_degree_one
         simp [sturmDerangementsExc_two]
       have hcore : Prec (recurrenceCoreSturmDerangementsExc 2) (sturmDerangementsExc 2) := by
         simpa [recurrenceCoreSturmDerangementsExc, affineSturmDerangementsExc]
-          using prec_affine_sturmDerangementsExc (n := 2) (by omega) hrr2
-      exact prec_sturmDerangementsExc_succ_of_prec_recurrenceCore (n := 2) (by omega) hcore
+          using prec_affine_sturmDerangementsExc (n := 2) (by lia) hrr2
+      exact prec_sturmDerangementsExc_succ_of_prec_recurrenceCore (n := 2) (by lia) hcore
   | n + 3, _ => by
       have hprev : Prec (sturmDerangementsExc (n + 2)) (sturmDerangementsExc (n + 3)) :=
-        prec_sturmDerangementsExc_succ (n + 2) (by omega)
+        prec_sturmDerangementsExc_succ (n + 2) (by lia)
       have hcore : Prec (recurrenceCoreSturmDerangementsExc (n + 3))
           (sturmDerangementsExc (n + 3)) :=
-        prec_recurrenceCoreSturmDerangementsExc (n := n + 3) (by omega) hprev
-      exact prec_sturmDerangementsExc_succ_of_prec_recurrenceCore (n := n + 3) (by omega) hcore
+        prec_recurrenceCoreSturmDerangementsExc (n := n + 3) (by lia) hprev
+      exact prec_sturmDerangementsExc_succ_of_prec_recurrenceCore (n := n + 3) (by lia) hcore
 
 /-- In particular, every nontrivial derangement excedance polynomial is real-rooted. -/
 theorem isRealRooted_sturmDerangementsExc : ∀ n : Nat, 2 ≤ n →
     IsRealRooted (sturmDerangementsExc n)
-  | 0, hn => by omega
-  | 1, hn => by omega
+  | 0, hn => by lia
+  | 1, hn => by lia
   | 2, _ => by
       apply isRealRooted_of_degree_one
       simp [sturmDerangementsExc_two]
   | n + 3, _ => by
-      exact (prec_sturmDerangementsExc_succ (n + 2) (by omega)).2.1
+      exact (prec_sturmDerangementsExc_succ (n + 2) (by lia)).2.1
 
 /-- Consecutive derangement excedance polynomials form a genuine differ-by-1
 interlacing pair, not just an abstract `Prec` pair. -/
 theorem interlaces_sturmDerangementsExc_succ {n : Nat} (hn : 2 ≤ n) :
     Interlaces (sturmDerangementsExc n) (sturmDerangementsExc (n + 1)) := by
   apply (prec_sturmDerangementsExc_succ n hn).toInterlaces
-  rw [natDegree_sturmDerangementsExc hn, natDegree_sturmDerangementsExc (by omega)]
-  omega
+  rw [natDegree_sturmDerangementsExc hn, natDegree_sturmDerangementsExc (by lia)]
+  lia
 
 /-- The descending prefix `[P_{n+1}, P_n, ..., P_2]` of the derangement
 excedance sequence. This is the natural finite list for `IsSturmSeq`. -/
@@ -748,7 +748,7 @@ theorem isSturmSeq_sturmDerangementsExcPrefix :
           simp [sturmDerangementsExcPrefix, IsSturmSeq]
       | succ n =>
           simpa [sturmDerangementsExcPrefix, IsSturmSeq] using
-            And.intro (interlaces_sturmDerangementsExc_succ (n := n + 2) (by omega)) ih
+            And.intro (interlaces_sturmDerangementsExc_succ (n := n + 2) (by lia)) ih
 
 /-- Backward-compatible alias while the project transitions away from the old name. -/
 abbrev warmupP := sturmDerangementsExc

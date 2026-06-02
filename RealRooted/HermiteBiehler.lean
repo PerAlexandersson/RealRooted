@@ -74,7 +74,7 @@ lemma monomial_comp_X_sq (n : ℕ) (a : ℝ) :
     by_cases hmn : m = n
     · subst hmn
       simp
-    · have h2 : 2 * m ≠ 2 * n := by omega
+    · have h2 : 2 * m ≠ 2 * n := by lia
       rw [Polynomial.coeff_monomial, Polynomial.coeff_monomial]
       simp [hmn, h2]
 
@@ -85,7 +85,7 @@ lemma monomial_comp_X_sq (n : ℕ) (a : ℝ) :
     simp [hp, hq]
   · intro m a
     rw [monomial_comp_X_sq]
-    have h2 : 2 * m ≠ 2 * n + 1 := by omega
+    have h2 : 2 * m ≠ 2 * n + 1 := by lia
     simp [Polynomial.coeff_monomial, h2]
 
 @[simp] lemma coeff_X_mul_comp_X_sq_even (p : ℝ[X]) (n : ℕ) :
@@ -94,7 +94,7 @@ lemma monomial_comp_X_sq (n : ℕ) (a : ℝ) :
   | zero =>
       simp
   | succ n =>
-      rw [show 2 * (n + 1) = 2 * n + 1 + 1 by omega]
+      rw [show 2 * (n + 1) = 2 * n + 1 + 1 by lia]
       rw [Polynomial.coeff_X_mul, coeff_comp_X_sq_odd]
 
 @[simp] lemma coeff_X_mul_comp_X_sq_odd (p : ℝ[X]) (n : ℕ) :
@@ -116,13 +116,13 @@ theorem hasNonnegCoeffs_oddEvenPolynomial {p q : ℝ[X]}
   by_cases hmod : n % 2 = 0
   · have hn : n = 2 * (n / 2) := by
       have hdiv := Nat.div_add_mod n 2
-      omega
+      lia
     rw [hn, coeff_oddEvenPolynomial_even]
     exact hq (n / 2)
   · have hn : n = 2 * (n / 2) + 1 := by
       have hdiv := Nat.div_add_mod n 2
       have hlt : n % 2 < 2 := Nat.mod_lt n (by norm_num)
-      omega
+      lia
     rw [hn, coeff_oddEvenPolynomial_odd]
     exact hp (n / 2)
 
