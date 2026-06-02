@@ -790,13 +790,6 @@ private lemma iterate_derivative_C_mul (a : ℝ) :
   | n + 1, p => by
       simp
 
-private lemma hasNonnegCoeffs_iterate_derivative {p : ℝ[X]} :
-    ∀ n : ℕ, HasNonnegCoeffs p → HasNonnegCoeffs ((derivative^[n]) p)
-  | 0, hp => by simpa
-  | n + 1, hp => by
-      rw [Function.iterate_succ_apply']
-      exact nonnegCoeffs_derivative (hasNonnegCoeffs_iterate_derivative n hp)
-
 private lemma derivative_eq_zero_or_isRealRooted_local {p : ℝ[X]}
     (hp : IsRealRooted p) :
     p.derivative = 0 ∨ IsRealRooted p.derivative := by
@@ -808,13 +801,11 @@ private lemma derivative_eq_zero_or_isRealRooted_local {p : ℝ[X]}
     · have hpdeg_le : p.natDegree ≤ 1 := by lia
       have hpdeg_pos : 1 ≤ p.natDegree := by
         by_contra hpdeg0
-        have hdeg0 : p.natDegree = 0 := by lia
-        have : p.derivative = 0 := by
-          rw [eq_C_of_natDegree_eq_zero hdeg0, derivative_C]
+        have : p.derivative = 0 := by simp; lia
         exact h0 this
       have hpdeg_eq : p.natDegree = 1 := by lia
       have hder_deg : p.derivative.natDegree = 0 := by
-        rw [natDegree_derivative_eq hpdeg_pos, hpdeg_eq]
+        rw [natDegree_derivative (by lia), hpdeg_eq]
       exact isRealRooted_of_deg_zero h0 hder_deg
 
 private lemma natDegree_iterate_derivative_eq_sub
@@ -1415,9 +1406,9 @@ private lemma exists_rightmost_derivative_root_with_eval_nonpos
       p.eval c ≤ 0 := by
   have hp' : IsRealRooted p.derivative := (derivative_interlaces hp hdeg).2.1
   have hp'_pos : HasPosLeadingCoeff p.derivative :=
-    hasPosLeadingCoeff_derivative hp_pos (by lia)
+    hp_pos.derivative (by lia)
   have hp'_deg : p.derivative.natDegree = p.natDegree - 1 :=
-    natDegree_derivative_eq (by lia)
+    natDegree_derivative (by lia)
   obtain ⟨c, hc_root, hc_top⟩ :=
     exists_rightmost_root_of_isRealRooted hp' (by lia)
   by_cases hpc : 0 < p.eval c
@@ -1462,7 +1453,7 @@ private lemma exists_pos_shift_not_isRealRooted_of_nonneg_of_natDegree_ge_two
       simp
     refine strictMonoOn_eval_Ici_of_derivative_roots_le ?_ ?_ ?_
     · simp_all
-    · simpa [hder_eq] using hasPosLeadingCoeff_derivative hp_pos (by lia)
+    · simpa [hder_eq] using hp_pos.derivative (by lia)
     · simp_all
   have hqc_pos : 0 < (C t + p).eval c := by
     have : (C t + p).eval c = 1 := by
@@ -1555,7 +1546,7 @@ private theorem not_degree_gap_ge_two_of_add_left_family_nonneg
     exact iterate_derivative_ne_zero_of_le_natDegree hf0 (le_rfl : f.natDegree ≤ f.natDegree)
   have hfN_nonneg : HasNonnegCoeffs fN := by
     dsimp [fN, n]
-    exact hasNonnegCoeffs_iterate_derivative n hfnn
+    exact hfnn.iterate_derivative n
   have hfN_C : fN = C (fN.coeff 0) := eq_C_of_natDegree_eq_zero hfN_deg
   have hfN_coeff_pos : 0 < fN.coeff 0 := by
     have hfN_pos : 0 < fN.leadingCoeff := hfN_nonneg.pos_leadingCoeff hfN_ne
@@ -1563,7 +1554,7 @@ private theorem not_degree_gap_ge_two_of_add_left_family_nonneg
     simpa using hfN_pos
   have hgN_nonneg : HasNonnegCoeffs gN := by
     dsimp [gN, n]
-    exact hasNonnegCoeffs_iterate_derivative n hgnn
+    exact hgnn.iterate_derivative n
   have hgN_deg : gN.natDegree = g.natDegree - n := by
     dsimp [gN, n]
     exact natDegree_iterate_derivative_eq_sub hg0 (by lia)
@@ -2762,7 +2753,7 @@ private lemma eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two_loca
       _ = p.roots.count x := (count_roots p).symm
       _ ≤ p.roots.card := p.roots.count_le_card x
       _ ≤ p.natDegree := card_roots' p
-  have hpd_ne : p.derivative ≠ 0 := derivative_ne_zero hp_deg_ge2
+  have hpd_ne : p.derivative ≠ 0 := by simp; lia
   have hpd_rootmult : p.derivative.rootMultiplicity x = 1 := by
     rw [derivative_rootMultiplicity_of_root hp_root, hmult]
   intro hder2

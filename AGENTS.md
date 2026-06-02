@@ -10,10 +10,14 @@ workspace Lean guide in `/workspace/lean/AGENTS.md`.
   wrapper.
 - Put upstreamable compatibility lemmas in `RealRooted/Mathlib/...` using the
   corresponding Mathlib namespace and typeclass generality when practical.
+  Lemmas in `RealRooted.Mathlib.X` are meant to be upstreamed to file `Mathlib.X` in Mathlib.
 - Import the shim and use the upstream-shaped theorem instead of re-proving a
   local `RealRooted` copy.
 - Avoid adding private duplicate helper lemmas across files.  If the same proof
   is needed twice, centralize it in the lowest sensible module.
+- Prefer `n ≠ 0` over `1 ≤ n` when `n : Nat`.
+- Mark declaration `Foo.bar` as `protected` if it is more auxiliary than another declaration named
+  `Baz.bar`.
 
 ## Polynomial Derivatives
 

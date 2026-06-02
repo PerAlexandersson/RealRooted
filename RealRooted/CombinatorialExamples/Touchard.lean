@@ -163,7 +163,7 @@ theorem prec_touchard_succ : ∀ n : Nat, Prec (touchard n) (touchard (n + 1))
           Interlaces (touchard (n + 2)).derivative (touchard (n + 2)) :=
         derivative_interlaces hf hdegf
       have hg_pos : HasPosLeadingCoeff (touchard (n + 2)).derivative :=
-        hasPosLeadingCoeff_derivative (touchard_posLeadingCoeff (n + 2)) (by
+        (touchard_posLeadingCoeff (n + 2)).derivative (by
           rw [natDegree_touchard]
           lia)
       have hNext_eq :

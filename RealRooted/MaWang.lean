@@ -1,4 +1,12 @@
-/-
+import RealRooted.Basic
+import RealRooted.Linear
+import RealRooted.Derivative
+import RealRooted.Wagner
+import Mathlib.Analysis.Normed.Field.Approximation
+import Mathlib.Analysis.Complex.Polynomial.Basic
+-- import RealRooted.AffineDerivative  -- uncomment when AffineDerivative is built
+
+/-!
 # Ma–Wang theorem (2008)
 
 If `F(x) = u(x) f(x) + v(x) f'(x)` with `deg(f) ≤ deg(F) ≤ deg(f) + 1`,
@@ -28,13 +36,7 @@ This generalizes:
 - Derivative interlacing: `u = 0`, `v = 1` (i.e., `F = f'`)
 - Many other classical real-rootedness results
 -/
-import RealRooted.Basic
-import RealRooted.Linear
-import RealRooted.Derivative
-import RealRooted.Wagner
-import Mathlib.Analysis.Normed.Field.Approximation
-import Mathlib.Analysis.Complex.Polynomial.Basic
--- import RealRooted.AffineDerivative  -- uncomment when AffineDerivative is built
+
 
 open Polynomial Filter
 
@@ -3569,8 +3571,7 @@ theorem prec_ma_wang_succ {f u v : ℝ[X]}
     (hroot_sign : ∀ r, f.IsRoot r → v.eval r * (f.derivative.eval r) ^ 2 < 0) :
     Prec f (u * f + v * f.derivative) := by
   have hder : Interlaces f.derivative f := derivative_interlaces hf hdegf
-  have hf'_pos : HasPosLeadingCoeff f.derivative :=
-    hasPosLeadingCoeff_derivative hf_pos (by lia)
+  have hf'_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
   refine prec_of_interlaces_eval_mul_neg_succ hder hf'_pos hF_pos hdeg ?_
   intro r hr
   rw [eval_mul_derivative_eq_of_isRoot hr]
@@ -3588,8 +3589,7 @@ theorem prec_ma_wang_same {f u v : ℝ[X]}
     (hroot_sign : ∀ r, f.IsRoot r → v.eval r * (f.derivative.eval r) ^ 2 < 0) :
     Prec f (u * f + v * f.derivative) := by
   have hder : Interlaces f.derivative f := derivative_interlaces hf hdegf
-  have hf'_pos : HasPosLeadingCoeff f.derivative :=
-    hasPosLeadingCoeff_derivative hf_pos (by lia)
+  have hf'_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
   refine prec_of_interlaces_eval_mul_neg_same hder hf'_pos hF_pos hdeg ?_
   intro r hr
   rw [eval_mul_derivative_eq_of_isRoot hr]

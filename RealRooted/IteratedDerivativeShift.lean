@@ -134,7 +134,7 @@ lemma not_pow_dvd_TDeriv_of_multiple
     calc m = p.roots.count a := (count_roots p).symm
     _ ≤ p.roots.card := p.roots.count_le_card a
     _ ≤ p.natDegree := card_roots' p
-  have hp'_ne : p.derivative ≠ 0 := derivative_ne_zero (by lia)
+  have hp'_ne : p.derivative ≠ 0 := by simp; lia
   -- (X-a)^{m} ∤ p' since rootMultiplicity a p' = m - 1 (exact, in char 0)
   have hroot : p.IsRoot a := (rootMultiplicity_pos hp_ne).mp (by lia)
   -- In char 0: (m : ℝ) ≠ 0, so it's in nonZeroDivisors
@@ -176,7 +176,7 @@ lemma natDegree_TDeriv {eps : ℝ} {p : ℝ[X]} (_hp : p ≠ 0) (hdeg : 1 ≤ p.
     calc (C eps * p.derivative).natDegree
       _ ≤ (C eps).natDegree + p.derivative.natDegree := natDegree_mul_le
       _ = p.derivative.natDegree := by simp [natDegree_C]
-      _ = p.natDegree - 1 := natDegree_derivative_eq (by lia)
+      _ = p.natDegree - 1 := natDegree_derivative (by lia)
       _ < p.natDegree := Nat.sub_lt (by lia) one_pos
   rw [natDegree_sub_eq_left_of_natDegree_lt hp'_deg]
 
@@ -192,7 +192,7 @@ lemma leadingCoeff_TDeriv {eps : ℝ} {p : ℝ[X]} (hp : p ≠ 0) (hdeg : 1 ≤ 
       (C eps * p.derivative).natDegree
           ≤ (C eps).natDegree + p.derivative.natDegree := natDegree_mul_le
       _ = p.derivative.natDegree := by simp [natDegree_C]
-      _ = p.natDegree - 1 := natDegree_derivative_eq hdeg
+      _ = p.natDegree - 1 := natDegree_derivative (by lia)
       _ < p.natDegree := Nat.sub_lt (by lia) one_pos
   rw [Polynomial.coeff_eq_zero_of_natDegree_lt hp'_deg, sub_zero, Polynomial.leadingCoeff]
 
@@ -221,7 +221,7 @@ private lemma isRealRooted_TDeriv_pos {eps : ℝ} {p : ℝ[X]}
   have hder : Interlaces p.derivative p := derivative_interlaces hp hdeg2
   -- HasPosLeadingCoeff of p'
   have hp'_pos : HasPosLeadingCoeff p.derivative := by
-    exact hasPosLeadingCoeff_derivative hp_pos (by lia)
+    exact hp_pos.derivative (by lia)
   -- HasPosLeadingCoeff of T_ε(p) (same leading coeff as p)
   have hT_pos : HasPosLeadingCoeff (C 1 * p + C (-eps) * p.derivative) := by
     rw [← hrewrite]
@@ -335,7 +335,7 @@ theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
     (hp : IsRealRooted p) :
     Prec p (TDeriv eps p) := by
   by_cases hdeg2 : 2 ≤ p.natDegree
-  · rcases lt_or_gt_of_ne (leadingCoeff_ne_zero.mpr hp.1) with hneg | hpos
+  · rcases lt_or_gt_of_ne (leadingCoeff_ne_zero.mpr hp.1) with hneg | (hpos : HasPosLeadingCoeff p)
     · have hneg_rr : IsRealRooted (-p) :=
         ⟨neg_ne_zero.mpr hp.1, by rw [Polynomial.roots_neg, natDegree_neg]; exact hp.2⟩
       have hneg_pos : HasPosLeadingCoeff (-p) := by
@@ -354,7 +354,7 @@ theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
               exact hdeg2)
         have hp'_pos : HasPosLeadingCoeff (-p).derivative := by
           simpa [derivative_neg, natDegree_neg] using
-            hasPosLeadingCoeff_derivative hneg_pos (by rw [natDegree_neg]; lia)
+            hneg_pos.derivative (by rw [natDegree_neg]; lia)
         have hrewrite_neg : TDeriv eps (-p) = C 1 * (-p) + C (-eps) * (-p).derivative := by
           simp [TDeriv]
         have hT_pos : HasPosLeadingCoeff (C 1 * (-p) + C (-eps) * (-p).derivative) := by
@@ -380,8 +380,7 @@ theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
         simpa [hrewrite] using prec_C_mul_right hleft (by norm_num : (-1 : ℝ) ≠ 0)
       exact hboth
     · have hder : Interlaces p.derivative p := derivative_interlaces hp hdeg2
-      have hp'_pos : HasPosLeadingCoeff p.derivative := by
-        exact hasPosLeadingCoeff_derivative hpos (by lia)
+      have hp'_pos : HasPosLeadingCoeff p.derivative := hpos.derivative (by lia)
       have hrewrite : TDeriv eps p = C 1 * p + C (-eps) * p.derivative := by
         simp [TDeriv]
         ring

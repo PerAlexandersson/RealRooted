@@ -4,6 +4,7 @@ import Mathlib.Analysis.Calculus.LocalExtr.Rolle
 import Mathlib.Topology.Algebra.Polynomial
 import Mathlib.Algebra.Polynomial.FieldDivision
 import Mathlib.Data.Multiset.Sort
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 
 /-!
 # Derivative interlacing
@@ -20,44 +21,24 @@ namespace RealRooted
 
 /-! ## Exact degree of derivative -/
 
-lemma natDegree_derivative_eq {p : ℝ[X]} (hp : 1 ≤ p.natDegree) :
-    p.derivative.natDegree = p.natDegree - 1 := by
-  apply le_antisymm (natDegree_derivative_le p)
-  apply Polynomial.le_natDegree_of_ne_zero
-  have h1 : p.natDegree - 1 + 1 = p.natDegree := Nat.sub_add_cancel hp
-  rw [coeff_derivative, h1]
-  have hcast : (↑(p.natDegree - 1) : ℝ) + 1 = ↑p.natDegree := by
-    rw [Nat.cast_sub hp]; ring
-  rw [hcast]
-  exact mul_ne_zero
-    (leadingCoeff_ne_zero.mpr (by intro h; simp [h] at hp))
-    (Nat.cast_ne_zero.mpr (by lia))
-
-lemma derivative_ne_zero {f : ℝ[X]} (hdeg : 2 ≤ f.natDegree) :
-    f.derivative ≠ 0 := by
-  intro h
-  have := natDegree_derivative_eq (show 1 ≤ f.natDegree by lia)
-  rw [h, natDegree_zero] at this; lia
-
-lemma HasNonnegCoeffs.derivative {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
+protected lemma HasNonnegCoeffs.derivative {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
     HasNonnegCoeffs p.derivative := by
   intro n
   rw [coeff_derivative]
   exact mul_nonneg (hp (n + 1)) (by positivity)
 
-lemma nonnegCoeffs_derivative {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
-    HasNonnegCoeffs p.derivative :=
-  hp.derivative
-
-lemma hasPosLeadingCoeff_derivative {f : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hdeg : 1 ≤ f.natDegree) :
+protected lemma HasPosLeadingCoeff.derivative {f : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hdeg : f.natDegree ≠ 0) :
     HasPosLeadingCoeff f.derivative := by
   unfold HasPosLeadingCoeff at hf_pos ⊢
-  rw [leadingCoeff, natDegree_derivative_eq hdeg, coeff_derivative]
-  rw [Nat.sub_add_cancel hdeg, coeff_natDegree] at *
-  have hdeg_pos : 0 < (f.natDegree : ℝ) := by
-    exact_mod_cast hdeg
+  rw [leadingCoeff, natDegree_derivative hdeg, coeff_derivative]
+  rw [Nat.sub_add_cancel (by lia), coeff_natDegree] at *
   nlinarith
+
+lemma HasNonnegCoeffs.iterate_derivative {p : ℝ[X]} :
+    ∀ n : ℕ, HasNonnegCoeffs p → HasNonnegCoeffs ((derivative^[n]) p)
+  | 0, hp => by simpa
+  | n + 1, hp => by rw [Function.iterate_succ_apply']; exact (hp.iterate_derivative n).derivative
 
 lemma coeff_one_sub_X_mul_derivative (p : ℝ[X]) (m : Nat) :
     ((1 - X) * p.derivative).coeff m =
@@ -255,7 +236,7 @@ lemma mkInterleaving_sub_multiset (f : ℝ[X])
       change (↑(r₂ :: rest) : Multiset ℝ) ≤ (↑(r₁ :: r₂ :: rest) : Multiset ℝ)
       simp [Multiset.le_iff_count, Multiset.coe_count, List.count_cons]
     have ih := mkInterleaving_sub_multiset f hdeg (r₂ :: rest) hrest hsorted_tail hsub_tail
-    have hf'_ne : f.derivative ≠ 0 := derivative_ne_zero hdeg
+    have hf'_ne : f.derivative ≠ 0 := by simp; lia
     have hge_tail : ∀ x ∈ mkInterleaving f (r₂ :: rest) hrest, r₂ ≤ x :=
       mkInterleaving_ge f r₂ rest hrest hsorted_tail hsub_tail
     -- Definitionally unfold mkInterleaving via let + rfl
@@ -408,9 +389,9 @@ theorem derivative_interlaces {f : ℝ[X]} (hf : IsRealRooted f)
   have hsub : (↑ss : Multiset ℝ) ≤ f.derivative.roots :=
     (mkInterleaving_sub_multiset f hdeg rs hrs_root hrs_sorted hsub_rs).1
   -- Degree and cardinality → f' is real-rooted
-  have hf'_ne : f.derivative ≠ 0 := derivative_ne_zero hdeg
+  have hf'_ne : f.derivative ≠ 0 := by simp; lia
   have hf'_deg : f.derivative.natDegree = f.natDegree - 1 :=
-    natDegree_derivative_eq (by lia)
+    natDegree_derivative (by lia)
   have hf'_card : f.derivative.roots.card = f.derivative.natDegree := by
     apply le_antisymm (card_roots' _)
     calc f.derivative.natDegree
