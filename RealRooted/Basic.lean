@@ -23,11 +23,11 @@ namespace RealRooted
 
 /-- A nonzero polynomial `p ∈ ℝ[X]` is **real-rooted** if
     the number of real roots (counted with multiplicity) equals its degree. -/
-def IsRealRooted (p : ℝ[X]) : Prop :=
+abbrev IsRealRooted (p : ℝ[X]) : Prop :=
   p ≠ 0 ∧ p.roots.card = p.natDegree
 
 lemma isRealRooted_iff_ne_zero_and_splits (p : ℝ[X]) : IsRealRooted p ↔ p ≠ 0 ∧ p.Splits := by
-  grind [IsRealRooted, splits_iff_card_roots]
+  grind [splits_iff_card_roots]
 
 /-- Zero-aware real-rootedness.  This is the convention often used for
 closure statements, while `IsRealRooted` remains the strict nonzero predicate
@@ -313,7 +313,7 @@ lemma prec0_zero_zero : Prec0 (0 : ℝ[X]) 0 :=
 /-- The product of two real-rooted polynomials is real-rooted. -/
 lemma isRealRooted_mul {p q : ℝ[X]} (hp : IsRealRooted p) (hq : IsRealRooted q) :
     IsRealRooted (p * q) := ⟨mul_ne_zero hp.1 hq.1,
-      by grind [natDegree_mul, roots_mul (mul_ne_zero hp.1 _), Multiset.card_add, IsRealRooted]⟩
+      by grind [natDegree_mul, roots_mul (mul_ne_zero hp.1 _), Multiset.card_add]⟩
 
 /-- Non-negative coefficients. -/
 def HasNonnegCoeffs (p : ℝ[X]) : Prop := ∀ n, 0 ≤ p.coeff n

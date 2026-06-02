@@ -602,7 +602,7 @@ lemma fPolynomial_natDegree_factor_of_isRoot
   have hq' : p = (X - C r) * q := by
     simp_all
   have hq_ne : q ≠ 0 := by
-    simp_all
+    grind
   have hr_mem : r ∈ p.roots := (mem_roots hp.1).mpr hr
   have hr_nonpos : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hp hpnn r hr_mem
   have hdeg_eq : p.natDegree = q.natDegree + 1 := by
@@ -714,7 +714,7 @@ theorem isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs
           simp_all
         have hq_dvd : q ∣ p := ⟨X - C r, by grind⟩
         have hq_ne : q ≠ 0 := by
-          simp_all
+          grind
         have hq_rr : IsRealRooted q := isRealRooted_of_dvd hp hq_ne hq_dvd
         have hp_pos : HasPosLeadingCoeff p := hpnn.pos_leadingCoeff hp.1
         have hq_pos : HasPosLeadingCoeff q := by
@@ -764,7 +764,7 @@ theorem roots_fPolynomial_natDegree_eq_map_of_isRealRooted_of_hasNonnegCoeffs
           obtain ⟨q, hq', hfac⟩ := fPolynomial_natDegree_factor_of_isRoot hp hpnn hr_root
           have hq_dvd : q ∣ p := ⟨X - C r, by grind⟩
           have hq_ne : q ≠ 0 := by
-            simp_all
+            grind
           have hr_nonpos : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hp hpnn r hr_mem
           have hq_rr : IsRealRooted q := isRealRooted_of_dvd hp hq_ne hq_dvd
           have hp_pos : HasPosLeadingCoeff p := hpnn.pos_leadingCoeff hp.1
@@ -905,7 +905,7 @@ private theorem isRealRooted_of_fPolynomial_natDegree_roots_gt_neg_one
             _ = (X - C x) * (C (1 - r) * fPolynomial u.natDegree u) := by
                   ac_rfl
         have hscaled_ne : C (1 - r) * fPolynomial u.natDegree u ≠ 0 := by
-          simp_all
+          grind
         have hscaled_rr : IsRealRooted (C (1 - r) * fPolynomial u.natDegree u) := by
           apply isRealRooted_of_dvd hq_rr hscaled_ne
           simp_all
@@ -3048,7 +3048,7 @@ private theorem prec_b_component_of_prec_Id_top_of_right_top
   have ht_rr : IsRealRooted t := by
     rcases hall_ht 0 1 with hzero | hrr
     · simp_all
-    · simp_all
+    · grind
   have ht_pos : HasPosLeadingCoeff t := by
     dsimp [t]
     unfold HasPosLeadingCoeff at hb_pos ⊢
@@ -3186,7 +3186,7 @@ theorem brandenSolusTheorem26_third_converse_of_top_degree
   have ht_rr : IsRealRooted t := by
     rcases hall_ht 0 1 with hzero | hrr
     · simp_all
-    · simp_all
+    · grind
   have ht_root1 : t.IsRoot 1 := by
     dsimp [t]
     simp
@@ -3698,7 +3698,7 @@ theorem brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
   have ht_rr : IsRealRooted t := by
     rcases hall_ht 0 1 with hzero | hrr
     · simp_all
-    · simp_all
+    · grind
   have hb_rr : IsRealRooted b := by
     apply isRealRooted_of_dvd ht_rr hb0
     refine ⟨X - C (1 : ℝ), ?_⟩

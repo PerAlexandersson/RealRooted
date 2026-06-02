@@ -189,7 +189,7 @@ private lemma affine_family_common_root_reduction_data
   refine ⟨qf, qg, hqf, hqg, hqf_nonneg, hqg_nonneg, hqf_ne, hqg_ne, hqf_pos, hqg_pos, ?_⟩
   intro s t hs ht
   have hbase : IsRealRooted (((C s * X + C t) * ((X - C r) * qf)) + ((X - C r) * qg)) := by
-    simp_all
+    grind
   have hEq :
       (((C s * X + C t) * ((X - C r) * qf)) + ((X - C r) * qg))
         = (X - C r) * (((C s * X + C t) * qf) + qg) := by
@@ -345,7 +345,7 @@ theorem posComboRealRooted_of_affine_family {f g : ℝ[X]}
         _ = C μ * (X * f) := by
               grind
     grind
-  simp_all
+  grind
 
 private lemma affine_family_pair_data {f g : ℝ[X]}
     (hfnn : HasNonnegCoeffs f)
@@ -422,7 +422,7 @@ private theorem isRealRooted_of_add_C_mul_right_family_of_natDegree_lt
       ext n
       simp [g₀, f₀]
       grind
-    simp_all
+    grind
   have hg₀_rr : IsRealRooted g₀ := by
     have hroots_real :
         ∀ z ∈ (g₀.map (algebraMap ℝ ℂ)).roots, z ∈ (algebraMap ℝ ℂ).range := by
@@ -527,7 +527,7 @@ private theorem isRealRooted_of_add_C_mul_right_family_of_natDegree_lt
     simp_all
   have hg_rr_scaled : IsRealRooted (C g.leadingCoeff * g₀) :=
     isRealRooted_C_mul hg₀_rr hg_lc_ne
-  simp_all
+  grind
 
 /-- Boundary closure for a right family `g + μ f` when the perturbation has no
 higher degree than the base polynomial. The equal-degree case is exactly the
@@ -546,7 +546,7 @@ private theorem isRealRooted_of_add_C_mul_right_family_of_natDegree_le
         hfamily hf_pos hg_pos hlt
   · have hcombo : PosComboRealRooted g f := by
       rw [PosComboRealRooted.iff_add_right]
-      simp_all
+      grind
     exact
       PosComboRealRooted.isRealRooted_left_of_sameDegree
         (f := g) (g := f) hcombo hg_pos hf_pos heq
@@ -1461,7 +1461,7 @@ private lemma exists_pos_shift_not_isRealRooted_of_nonneg_of_natDegree_ge_two
     have hder_eq : (C t + p).derivative = p.derivative := by
       simp
     refine strictMonoOn_eval_Ici_of_derivative_roots_le ?_ ?_ ?_
-    · simp_all
+    · grind
     · simpa [hder_eq] using hasPosLeadingCoeff_derivative hp_pos (by lia)
     · simp_all
   have hqc_pos : 0 < (C t + p).eval c := by
@@ -1546,7 +1546,7 @@ private theorem not_degree_gap_ge_two_of_add_left_family_nonneg
               simp
         _ = gN + C μ * fN := by
               grind
-    simp_all
+    grind
   have hfN_deg : fN.natDegree = 0 := by
     dsimp [fN, n]
     simpa using natDegree_iterate_derivative_eq_sub hf0 (le_rfl : f.natDegree ≤ f.natDegree)
@@ -2654,7 +2654,7 @@ private theorem isRealRooted_of_sub_C_mul_right_family_of_natDegree_lt
       ext n
       simp [g₀, f₀, mul_sub]
       grind
-    simp_all
+    grind
   -- Now: g₀ - C μ * f₀ is real-rooted, monic, same degree as g₀, and
   -- its coefficients converge to those of g₀ as μ → 0⁺.
   -- Use the same complex-root continuity argument to show g₀ is real-rooted.
@@ -3033,15 +3033,15 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
       (p := qNeg) (x := r) hqNeg_eval_ne
   let η : ℝ := min δPos δNeg / 2
   have hη_pos : 0 < η := by
-    grind
+    grind only [min_def]
   have hη_smallPos : ‖η‖ < δPos := by
     have hη_norm : ‖η‖ = min δPos δNeg / 2 := by
       rw [Real.norm_eq_abs, show η = min δPos δNeg / 2 by rfl, abs_of_pos hη_pos]
-    grind
+    grind only [min_def]
   have hη_smallNeg : ‖η‖ < δNeg := by
     have hη_norm : ‖η‖ = min δPos δNeg / 2 := by
       rw [Real.norm_eq_abs, show η = min δPos δNeg / 2 by rfl, abs_of_pos hη_pos]
-    grind
+    grind only [min_def]
   let pη : ℝ[X] := iterateTDeriv η k g
   let qPosη : ℝ[X] := iterateTDeriv η k qPos
   let qNegη : ℝ[X] := iterateTDeriv η k qNeg
@@ -3064,14 +3064,14 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
         hpη_ne hpη_mult
   have hqPosη_keep :
       0 < qPosη.eval r * qPos.eval r := by
-    grind
+    grind only
   have hqNegη_keep :
       0 < qNegη.eval r * qNeg.eval r := by
-    grind
+    grind only
   have hqPosη_eval_ne : qPosη.eval r ≠ 0 := by
-    grind
+    grind only [!C_injective, map_mul, map_zero]
   have hqNegη_eval_ne : qNegη.eval r ≠ 0 := by
-    grind
+    grind only [!C_injective, map_mul, map_zero]
   have hqOpp :
       qPosη.eval r * qNegη.eval r < 0 := by
     by_cases hqPos_pos : 0 < qPos.eval r
@@ -3099,7 +3099,7 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
     have hEq :
         g + C β * qPos =
           (((C β * X + C (β * (1 - r))) * f) + g) := by
-      grind
+      grind only [map_mul, map_one, map_sub]
     have hβt_pos : 0 < β * (1 - r) := by
       have : 0 < 1 - r := by linarith
       positivity
@@ -3110,7 +3110,7 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
     have hEq :
         g + C β * qNeg =
           (((C β * X + C (β * (r / 2 - r))) * f) + g) := by
-      grind
+      grind only [map_mul, map_sub]
     have hβt_pos : 0 < β * (r / 2 - r) := by
       have : 0 < r / 2 - r := by linarith
       positivity
@@ -3158,8 +3158,8 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
           intro hqNegη_pos
           exact (not_lt_of_ge (le_of_lt hqOpp)) (mul_pos hqPosη_pos hqNegη_pos)
         exact lt_of_le_of_ne (le_of_not_gt hqNegη_not_pos) hqNegη_ne
-      have hpp_neg : pη.derivative.derivative.eval r < 0 := by
-        nlinarith [hprodPos_neg, hqPosη_pos]
+      have hpp_neg : pη.derivative.derivative.eval r < 0 :=
+        (neg_iff_pos_of_mul_neg hprodPos_neg).mpr hqPosη_pos
       have hprodNeg_pos :
           0 < pη.derivative.derivative.eval r * qNegη.eval r := by
         exact mul_pos_of_neg_of_neg hpp_neg hqNegη_neg
@@ -3174,9 +3174,9 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
         have hqNegη_not_neg : ¬ qNegη.eval r < 0 := by
           intro hqNegη_neg
           exact (not_lt_of_ge (le_of_lt hqOpp)) (mul_pos_of_neg_of_neg hqPosη_neg hqNegη_neg)
-        grind
-      have hpp_pos : 0 < pη.derivative.derivative.eval r := by
-        nlinarith [hprodPos_neg, hqPosη_neg]
+        grind only
+      have hpp_pos : 0 < pη.derivative.derivative.eval r :=
+        (pos_iff_neg_of_mul_neg hprodPos_neg).mpr hqPosη_neg
       have hprodNeg_pos :
           0 < pη.derivative.derivative.eval r * qNegη.eval r := by
         exact mul_pos hpp_pos hqNegη_pos
@@ -3349,7 +3349,7 @@ private lemma hasSimpleRoots_add_right_of_posComboRealRooted
   · have hpη_rr : IsRealRooted pη := by
       exact
         isRealRooted_iterateTDeriv (eps := η) (k := k) hη_pos
-          (by simp_all)
+          (by grind)
     have hpη_ne : pη ≠ 0 := hpη_rr.1
     have hpηpp_ne :
         pη.derivative.derivative.eval x ≠ 0 := by
@@ -4684,7 +4684,7 @@ lemma isRealRooted_affine_factor {s t : ℝ} (hs : 0 < s) :
 lemma affine_family_of_zero_left {g : ℝ[X]} (hg : IsRealRooted g) :
     ∀ {s t : ℝ}, 0 < s → 0 < t →
       IsRealRooted (((C s * X + C t) * (0 : ℝ[X])) + g) := by
-  simp_all
+  simp [IsRealRooted, *]
 
 lemma affine_family_of_zero_right {f : ℝ[X]} (hf : IsRealRooted f) :
     ∀ {s t : ℝ}, 0 < s → 0 < t →
