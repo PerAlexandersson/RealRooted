@@ -21,12 +21,6 @@ noncomputable section
 
 namespace RealRooted
 
-/-- A nonzero polynomial `p ∈ ℝ[X]` is **real-rooted** if
-    the number of real roots (counted with multiplicity) equals its degree. -/
-lemma isRealRooted_iff_ne_zero_and_splits (p : ℝ[X]) :
-    (p ≠ 0 ∧ p.roots.card = p.natDegree) ↔ p ≠ 0 ∧ p.Splits := by
-  grind [splits_iff_card_roots]
-
 /-- Zero-aware real-rootedness.  This is the convention often used for
 closure statements, while `p ≠ 0 ∧ p.roots.card = p.natDegree` remains the
 strict nonzero predicate
@@ -36,7 +30,7 @@ def IsRealRootedOrZero (p : ℝ[X]) : Prop :=
 
 lemma isRealRootedOrZero_iff_eq_zero_or_splits (p : ℝ[X]) :
     IsRealRootedOrZero p ↔ p = 0 ∨ p.Splits := by
-  grind [IsRealRootedOrZero, isRealRooted_iff_ne_zero_and_splits]
+  grind [IsRealRootedOrZero, splits_iff_card_roots]
 
 namespace IsRealRooted
 
