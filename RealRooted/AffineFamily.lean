@@ -3056,6 +3056,8 @@ private lemma false_of_affine_family_double_root
         (p := g) (q := q) (x := r) (βmax := 1)
         hfamily zero_lt_one hg_mult hq_eval_ne hprod_pos
 
+set_option maxHeartbeats 800000 in
+-- proof repair
 /-- In the succ-degree affine branch with `g(0) ≠ 0`, the endpoint polynomial
 `g` itself has simple roots.
 
@@ -3184,19 +3186,7 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
       ∀ {β : ℝ}, 0 < β → β ≤ 1 → ((g + C β * qPos) ≠ 0 ∧
         (g + C β * qPos).roots.card = (g + C β * qPos).natDegree) := by
     intro β hβ _hβ_le
-    have hfac : C β * (X - C r + C (1 : ℝ)) = C β * X + C (β * (1 - r)) := by
-      ext n
-      cases n with
-      | zero =>
-          ring_nf
-          sorry
-      | succ n =>
-          cases n with
-          | zero =>
-              simp [Polynomial.coeff_X, Polynomial.coeff_C, sub_eq_add_neg]
-              sorry
-          | succ n =>
-              simp [Polynomial.coeff_X, sub_eq_add_neg]
+    have hfac : C β * (X - C r + C (1 : ℝ)) = C β * X + C (β * (1 - r)) := by grind
     have hEq :
         g + C β * qPos =
           (((C β * X + C (β * (1 - r))) * f) + g) := by
@@ -3206,25 +3196,12 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
           rw [mul_assoc]
         _ = g + (C β * X + C (β * (1 - r))) * f := by rw [hfac]
         _ = (((C β * X + C (β * (1 - r))) * f) + g) := by rw [add_comm]
-    have hβt_pos : 0 < β * (1 - r) := by
-      nlinarith [hβ, hr_neg]
-    exact hEq ▸ haff hβ hβt_pos
+    have hβt_pos : 0 < β * (1 - r) := by nlinarith
+    grind
   have hfamilyNeg :
       ∀ {β : ℝ}, 0 < β → β ≤ 1 → ((g + C β * qNeg) ≠ 0 ∧
         (g + C β * qNeg).roots.card = (g + C β * qNeg).natDegree) := by
     intro β hβ _hβ_le
-    have hfac : C β * (X - C r + C (r / 2)) = C β * X + C (β * (r / 2 - r)) := by
-      ext n
-      cases n with
-      | zero =>
-          ring_nf
-          sorry
-      | succ n =>
-          cases n with
-          | zero =>
-              simp [Polynomial.coeff_X, Polynomial.coeff_C, sub_eq_add_neg]
-          | succ n =>
-              simp [Polynomial.coeff_X, sub_eq_add_neg]
     have hEq :
         g + C β * qNeg =
           (((C β * X + C (β * (r / 2 - r))) * f) + g) := by
@@ -3232,13 +3209,10 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
         g + C β * qNeg = g + (C β * (X - C r + C (r / 2))) * f := by
           dsimp [qNeg]
           rw [mul_assoc]
-        _ = g + (C β * X + C (β * (r / 2 - r))) * f := by rw [hfac]
+        _ = g + (C β * X + C (β * (r / 2 - r))) * f := by grind
         _ = (((C β * X + C (β * (r / 2 - r))) * f) + g) := by rw [add_comm]
-    have hβt_pos : 0 < β * (r / 2 - r) := by
-      -- nlinarith [hβ, hr_neg]
-      sorry
-    -- exact hEq ▸ haff hβ hβt_pos
-    sorry
+    have hβt_pos : 0 < β * (r / 2 - r) := by nlinarith
+    grind
   have hfamilyPosη :
       ∀ {β : ℝ}, 0 < β → β ≤ 1 → ((pη + C β * qPosη) ≠ 0 ∧
         (pη + C β * qPosη).roots.card = (pη + C β * qPosη).natDegree) := by
