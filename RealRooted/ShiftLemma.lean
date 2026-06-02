@@ -123,9 +123,9 @@ theorem prec_shift_of_same_degree
   have hft : Prec f t := by
     let h' := h.comp (X + C 1)
     let f' := f.comp (X + C 1)
-    have hh' : IsRealRooted h' := by
+    have hh' : (h' ≠ 0 ∧ h'.roots.card = h'.natDegree) := by
       simpa [h'] using isRealRooted_comp_X_add_C hprec.1 1
-    have hf' : IsRealRooted f' := by
+    have hf' : (f' ≠ 0 ∧ f'.roots.card = f'.natDegree) := by
       simpa [f'] using isRealRooted_comp_X_add_C hprec.2.1 1
     have hh'_nonpos : ∀ s ∈ h'.roots, s ≤ 0 := by
       intro s hs
@@ -176,8 +176,8 @@ coefficients, `h ≪ f`, and `h(0) ≤ f(0)`, then
 -/
 theorem prec_shift
     {f h : ℝ[X]}
-    (hf : IsRealRooted f)
-    (hh : IsRealRooted h)
+    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree)
+    (hh : h ≠ 0 ∧ h.roots.card = h.natDegree)
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     (hh_nonpos : ∀ r ∈ h.roots, r ≤ 0)
     (hf_pos : HasPosLeadingCoeff f)
@@ -206,8 +206,8 @@ theorem prec_shift
 
 /-- Shift lemma with variables named for applications. -/
 theorem prec_shift' {F H : ℝ[X]}
-    (hF : IsRealRooted F)
-    (hH : IsRealRooted H)
+    (hF : F ≠ 0 ∧ F.roots.card = F.natDegree)
+    (hH : H ≠ 0 ∧ H.roots.card = H.natDegree)
     (hF_nonpos : ∀ r ∈ F.roots, r ≤ 0)
     (hH_nonpos : ∀ r ∈ H.roots, r ≤ 0)
     (hF_pos : HasPosLeadingCoeff F)

@@ -99,8 +99,6 @@ Combinatorial sequence modules are collected under
 
 ## Main Definitions
 
-- `IsRealRooted p`: a nonzero real polynomial whose multiset of real roots has
-  cardinality equal to `p.natDegree`.
 - `IsRealRootedOrZero p`: the zero-aware wrapper used for closure statements
   where the zero polynomial is a natural exceptional case.
 - `Interlaces f g`, `Prec f g`, and `Prec0 f g`: the main interlacing

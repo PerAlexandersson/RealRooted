@@ -185,10 +185,10 @@ theorem not_hermiteBiehlerForwardStatement :
     ¬ hermiteBiehlerForwardStatement := by
   intro h
   have hprec : Prec (-(1 : ℝ[X])) (X : ℝ[X]) := by
-    have hX : IsRealRooted (X : ℝ[X]) := by
+    have hX : ((X : ℝ[X]) ≠ 0 ∧ (X : ℝ[X]).roots.card = (X : ℝ[X]).natDegree) := by
       refine ⟨X_ne_zero, ?_⟩
       rw [roots_X, Multiset.card_singleton, natDegree_X]
-    have hneg : IsRealRooted (-(1 : ℝ[X])) := by
+    have hneg : ((-(1 : ℝ[X])) ≠ 0 ∧ (-(1 : ℝ[X])).roots.card = (-(1 : ℝ[X])).natDegree) := by
       refine isRealRooted_of_deg_zero ?_ ?_
       · norm_num
       · simp

@@ -219,7 +219,7 @@ lemma typeBEulerian_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (typeBEulerian n
             simp [hcoeff_m, hcoeff_succ]
 
 lemma roots_nonpos_typeBEulerian_of_isRealRooted {n : Nat}
-    (hrr : IsRealRooted (typeBEulerian n)) :
+    (hrr : (typeBEulerian n) ≠ 0 ∧ (typeBEulerian n).roots.card = (typeBEulerian n).natDegree) :
     ∀ r ∈ (typeBEulerian n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs hrr (typeBEulerian_nonnegCoeffs n)
 
@@ -231,7 +231,7 @@ lemma interlaces_typeBEulerian_zero_one :
         (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by norm_num)))
 
 lemma interlaces_derivative_typeBEulerian :
-    ∀ n : Nat, 1 ≤ n → IsRealRooted (typeBEulerian n) →
+    ∀ n : Nat, 1 ≤ n → ((typeBEulerian n) ≠ 0 ∧ (typeBEulerian n).roots.card = (typeBEulerian n).natDegree) →
       Interlaces (typeBEulerian n).derivative (typeBEulerian n)
   | 0, hn, _ => by
       lia
@@ -255,7 +255,7 @@ lemma eval_typeBEulerianCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
 theorem prec_typeBEulerian_succ : ∀ n : Nat, Prec (typeBEulerian n) (typeBEulerian (n + 1))
   | 0 => interlaces_typeBEulerian_zero_one.toPrec
   | n + 1 => by
-      have hf : IsRealRooted (typeBEulerian (n + 1)) := (prec_typeBEulerian_succ n).2.1
+      have hf : ((typeBEulerian (n + 1)) ≠ 0 ∧ (typeBEulerian (n + 1)).roots.card = (typeBEulerian (n + 1)).natDegree) := (prec_typeBEulerian_succ n).2.1
       have hInter :
           Interlaces (typeBEulerian (n + 1)).derivative (typeBEulerian (n + 1)) :=
         interlaces_derivative_typeBEulerian (n + 1) (by lia) hf
@@ -306,7 +306,7 @@ theorem interlaces_typeBEulerian_succ (n : Nat) :
   apply (prec_typeBEulerian_succ n).toInterlaces
   simp [natDegree_typeBEulerian]
 
-theorem isRealRooted_typeBEulerian : ∀ n : Nat, IsRealRooted (typeBEulerian n)
+theorem isRealRooted_typeBEulerian : ∀ n : Nat, ((typeBEulerian n) ≠ 0 ∧ (typeBEulerian n).roots.card = (typeBEulerian n).natDegree)
   | 0 => by
       simpa [typeBEulerian_zero] using
         isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)

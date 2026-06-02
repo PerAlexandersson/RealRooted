@@ -248,7 +248,7 @@ Between consecutive roots `r₁ ≤ r₂` of `f`, we show `g` has a root in `[r�
   hence `g(r₁)` and `g(r₂)` have opposite signs. IVT gives a root. -/
 
 lemma exists_affineDeriv_root_between {f : ℝ[X]}
-    (hf : IsRealRooted f) (_hdeg : 2 ≤ f.natDegree)
+    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (_hdeg : 2 ≤ f.natDegree)
     {c : ℝ} (_eq_mul_of_hasProd_itehc : (f.natDegree : ℝ) < c)
     {r₁ r₂ : ℝ} (hr₁ : f.IsRoot r₁) (hr₂ : f.IsRoot r₂)
     (hle : r₁ ≤ r₂)
@@ -301,7 +301,7 @@ lemma exists_affineDeriv_root_between {f : ℝ[X]}
 
 /-- In the distinct-root case, the affine derivative has a root strictly between the endpoints. -/
 private lemma exists_affineDeriv_root_between_strict {f : ℝ[X]}
-    (_hf : IsRealRooted f) (_hdeg : 2 ≤ f.natDegree)
+    (_hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (_hdeg : 2 ≤ f.natDegree)
     {c : ℝ} (hc : (f.natDegree : ℝ) < c)
     {r₁ r₂ : ℝ} (hr₁ : f.IsRoot r₁) (hr₂ : f.IsRoot r₂)
     (hlt : r₁ < r₂)
@@ -446,7 +446,7 @@ lemma consecNoRoots_of_sorted_eq {f : ℝ[X]} {rs : List ℝ}
     When `r₁ < r₂`, uses the IVT root from `exists_affineDeriv_root_between`.
     When `r₁ = r₂` (repeated root), uses `r₁` itself. -/
 noncomputable def mkAffineInterleaving (f : ℝ[X]) (c : ℝ)
-    (hf : IsRealRooted f) (hdeg : 2 ≤ f.natDegree)
+    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hdeg : 2 ≤ f.natDegree)
     (hc : (f.natDegree : ℝ) < c)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
     (rs : List ℝ) → (hrs : ∀ r ∈ rs, f.IsRoot r) →
@@ -475,7 +475,7 @@ noncomputable def mkAffineInterleaving (f : ℝ[X]) (c : ℝ)
       (r₂ :: rest) hrest hsorted_tail hsub_tail hgap.2
 
 lemma mkAffineInterleaving_length (f : ℝ[X]) (c : ℝ)
-    (hf : IsRealRooted f) (hdeg : 2 ≤ f.natDegree)
+    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hdeg : 2 ≤ f.natDegree)
     (hc : (f.natDegree : ℝ) < c)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
     ∀ (rs : List ℝ) (hrs : ∀ r ∈ rs, f.IsRoot r)
@@ -500,7 +500,7 @@ lemma mkAffineInterleaving_length (f : ℝ[X]) (c : ℝ)
 /-- Each element of the affine interleaving is a root of `g` and satisfies
     the interlacing bounds. -/
 lemma mkAffineInterleaving_spec (f : ℝ[X]) (c : ℝ)
-    (hf : IsRealRooted f) (hdeg : 2 ≤ f.natDegree)
+    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hdeg : 2 ≤ f.natDegree)
     (hc : (f.natDegree : ℝ) < c)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
     ∀ (rs : List ℝ) (hrs : ∀ r ∈ rs, f.IsRoot r)
@@ -573,7 +573,7 @@ always has a root). Hence `roots.card = d`, i.e., `g` is real-rooted. -/
 
 /-- All elements of the affine interleaving of `r₁ :: rest` are ≥ r₁. -/
 private lemma mkAffineInterleaving_ge (f : ℝ[X]) (c : ℝ)
-    (hf : IsRealRooted f) (hdeg : 2 ≤ f.natDegree)
+    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hdeg : 2 ≤ f.natDegree)
     (hc : (f.natDegree : ℝ) < c)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
     ∀ (r₁ : ℝ) (rest : List ℝ) (hrs : ∀ r ∈ r₁ :: rest, f.IsRoot r)
@@ -638,7 +638,7 @@ private lemma rootMultiplicity_sub_one_le_affineDeriv
 /-- Inner roots of the affine interleaving form a submultiset of `g.roots`, with the
 expected multiplicity bound on repeated roots. -/
 lemma mkAffineInterleaving_sub_multiset (f : ℝ[X]) (c : ℝ)
-    (hf : IsRealRooted f) (hdeg : 2 ≤ f.natDegree)
+    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hdeg : 2 ≤ f.natDegree)
     (hc : (f.natDegree : ℝ) < c)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
     ∀ (rs : List ℝ) (hrs : ∀ r ∈ rs, f.IsRoot r)
@@ -822,7 +822,7 @@ lemma mkAffineInterleaving_sub_multiset (f : ℝ[X]) (c : ℝ)
 
 /-- Inner roots are a submultiset of `g.roots`. -/
 lemma mkAffineInterleaving_sub_roots (f : ℝ[X]) (c : ℝ)
-    (hf : IsRealRooted f) (hdeg : 2 ≤ f.natDegree)
+    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hdeg : 2 ≤ f.natDegree)
     (hc : (f.natDegree : ℝ) < c)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
     ∀ (rs : List ℝ) (hrs : ∀ r ∈ rs, f.IsRoot r)
@@ -906,15 +906,15 @@ private lemma exists_cons_of_card_succ {α : Type*} {s t : Multiset α}
   simpa using (Multiset.add_comm s ({a} : Multiset α))
 
 private lemma isRealRooted_pow_X_sub_C (r : ℝ) :
-    ∀ m : ℕ, IsRealRooted ((X - C r) ^ m)
+    ∀ m : ℕ, (((X - C r) ^ m) ≠ 0 ∧ ((X - C r) ^ m).roots.card = ((X - C r) ^ m).natDegree)
   | 0 => isRealRooted_of_deg_zero (by simp) (by simp)
   | m + 1 => by
       simpa [pow_succ, mul_comm] using
         isRealRooted_mul (isRealRooted_X_sub_C r) (isRealRooted_pow_X_sub_C r m)
 
 private lemma isRealRooted_of_pow_X_sub_C_mul {r : ℝ} {m : ℕ} {q : ℝ[X]}
-    (hp : IsRealRooted ((X - C r) ^ m * q)) :
-    IsRealRooted q := by
+    (hp : ((X - C r) ^ m * q) ≠ 0 ∧ ((X - C r) ^ m * q).roots.card = ((X - C r) ^ m * q).natDegree) :
+    (q ≠ 0 ∧ q.roots.card = q.natDegree) := by
   have hpow_ne : ((X - C r) ^ m : ℝ[X]) ≠ 0 := pow_ne_zero _ (X_sub_C_ne_zero _)
   have hq_ne : q ≠ 0 := by
     intro hq
@@ -969,7 +969,7 @@ private lemma listInterlaces_cons_length_eq :
 /-- Package a same-degree interlacing witness once the extra root on the `g` side
     is known to lie to the left of the first root of `f`. -/
 private lemma prec_of_extra_root_left {f g : ℝ[X]}
-    (hf : IsRealRooted f) (hg : IsRealRooted g)
+    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hg : g ≠ 0 ∧ g.roots.card = g.natDegree)
     {u r₁ : ℝ} {ss rest : List ℝ}
     (hrs_sorted : (r₁ :: rest).Pairwise (· ≤ ·))
     (hrs_eq : (↑(r₁ :: rest) : Multiset ℝ) = f.roots)
@@ -994,7 +994,7 @@ private lemma prec_of_extra_root_left {f g : ℝ[X]}
     positive leading coefficient, degree ≥ 2, and `c > natDegree f`, then
     `C c * f + (1 - X) * f.derivative` interlaces `f` (same-degree `Prec`). -/
 theorem prec_affine_derivative {f : ℝ[X]}
-    (hf : IsRealRooted f)
+    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree)
     (hdeg : 2 ≤ f.natDegree)
     (hf_pos : HasPosLeadingCoeff f)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0)
@@ -1033,7 +1033,7 @@ theorem prec_affine_derivative {f : ℝ[X]}
         (↑ss : Multiset ℝ).count a + 1 ≤ (↑rs : Multiset ℝ).count a :=
     hsub_info.2
   -- g is real-rooted: degree d with d-1 inner roots → d total roots
-  have hg_rr : IsRealRooted g := by
+  have hg_rr : (g ≠ 0 ∧ g.roots.card = g.natDegree) := by
     refine ⟨hg_ne, ?_⟩
     exact roots_card_of_sub_pred hg_ne hss_sub (by
       rw [Multiset.coe_card, hss_length, hg_deg]; lia)
@@ -1103,10 +1103,10 @@ theorem prec_affine_derivative {f : ℝ[X]}
     have hqg_ne : qg ≠ 0 := by
       intro hqg
       simp [hg_fact', hqg] at hg_ne
-    have hq_rr : IsRealRooted q := by
-      exact isRealRooted_of_pow_X_sub_C_mul (by simpa [hf_fact'] using hf)
-    have hqg_rr : IsRealRooted qg := by
-      exact isRealRooted_of_pow_X_sub_C_mul (by simpa [hg_fact'] using hg_rr)
+    have hq_rr : (q ≠ 0 ∧ q.roots.card = q.natDegree) := by
+      exact isRealRooted_of_pow_X_sub_C_mul (by simpa [hf_fact', hd_def] using hf)
+    have hqg_rr : (qg ≠ 0 ∧ qg.roots.card = qg.natDegree) := by
+      exact isRealRooted_of_pow_X_sub_C_mul (by simpa [hg_fact', hd_def] using hg_rr)
     have hq_pos : HasPosLeadingCoeff q := by
       exact pos_leadingCoeff_of_pow_X_sub_C_mul (by simpa [hf_fact'] using hf_pos) hq_ne
     have hqg_pos : HasPosLeadingCoeff qg := by
@@ -1268,7 +1268,7 @@ theorem prec_affine_derivative {f : ℝ[X]}
 
 /-- Degree 1 version: both `g` and `f` have degree 1, and `g`'s root is left of `f`'s. -/
 theorem prec_affine_derivative_deg_one {f : ℝ[X]}
-    (hf : IsRealRooted f)
+    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree)
     (hdeg : f.natDegree = 1)
     (hf_pos : HasPosLeadingCoeff f)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0)
@@ -1279,7 +1279,7 @@ theorem prec_affine_derivative_deg_one {f : ℝ[X]}
   have hc_ne : c ≠ (f.natDegree : ℝ) := ne_of_gt hc
   have hg_ne : g ≠ 0 := affineDeriv_ne_zero hf.1 (by lia) hc_ne
   have hg_deg : g.natDegree = 1 := by rw [natDegree_affineDeriv hf.1 (by lia) hc_ne, hdeg]
-  have hg_rr : IsRealRooted g := isRealRooted_of_degree_one hg_deg
+  have hg_rr : (g ≠ 0 ∧ g.roots.card = g.natDegree) := isRealRooted_of_degree_one hg_deg
   have hg_lc_pos : 0 < g.leadingCoeff := by
     rw [leadingCoeff_affineDeriv hf.1 (by lia) hc_ne, hdeg]
     exact mul_pos (by push_cast; linarith) hf_pos
@@ -1314,7 +1314,7 @@ theorem prec_affine_derivative_deg_one {f : ℝ[X]}
 
 /-- Combined version for degree ≥ 1. -/
 theorem prec_affine_derivative' {f : ℝ[X]}
-    (hf : IsRealRooted f)
+    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree)
     (hdeg : 1 ≤ f.natDegree)
     (hf_pos : HasPosLeadingCoeff f)
     (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0)

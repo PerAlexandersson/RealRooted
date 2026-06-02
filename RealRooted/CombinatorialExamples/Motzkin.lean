@@ -197,10 +197,10 @@ lemma hasPosLeadingCoeff_C_mul_motzkin {a : ℝ} (ha : 0 < a) {p : ℝ[X]}
   exact mul_pos ha hp
 
 lemma prec_self_mul_X_sub_C_of_roots_le {r : ℝ} {f : ℝ[X]}
-    (hf : IsRealRooted f) (hf_pos : HasPosLeadingCoeff f)
+    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hf_pos : HasPosLeadingCoeff f)
     (hf_le : ∀ s ∈ f.roots, s ≤ r) :
     Prec f ((X - C r) * f) := by
-  have hXf : IsRealRooted ((X - C r) * f) := by
+  have hXf : (((X - C r) * f) ≠ 0 ∧ ((X - C r) * f).roots.card = ((X - C r) * f).natDegree) := by
     exact isRealRooted_mul (isRealRooted_X_sub_C r) hf
   have hXf_pos : HasPosLeadingCoeff ((X - C r) * f) :=
     hasPosLeadingCoeff_X_sub_C_mul hf_pos
@@ -286,11 +286,11 @@ lemma prec_motzkin_succ_of_shifted_even {n : Nat} (heven : n % 2 = 0)
     (hle_n : ∀ r ∈ (motzkin n).roots, r ≤ motzkinShift)
     (hle_succ : ∀ r ∈ (motzkin (n + 1)).roots, r ≤ motzkinShift) :
     Prec (motzkin n) (motzkin (n + 1)) := by
-  have hf : IsRealRooted (motzkin n) := by
+  have hf : ((motzkin n) ≠ 0 ∧ (motzkin n).roots.card = (motzkin n).natDegree) := by
     exact
       isRealRooted_of_dvd hshift.2.1 (motzkin_nonzero n)
         ⟨X - C motzkinShift, by rw [mul_comm]⟩
-  have hg : IsRealRooted (motzkin (n + 1)) := hshift.1
+  have hg : ((motzkin (n + 1)) ≠ 0 ∧ (motzkin (n + 1)).roots.card = (motzkin (n + 1)).natDegree) := hshift.1
   have hdeg : (motzkin n).natDegree + 1 = (motzkin (n + 1)).natDegree := by
     rw [natDegree_motzkin, natDegree_motzkin]
     lia
@@ -357,7 +357,7 @@ theorem roots_le_motzkinShift_motzkin (n : Nat) :
     ∀ r ∈ (motzkin n).roots, r ≤ motzkinShift :=
   (prec_motzkin_succ_and_roots_le n).2.1
 
-theorem isRealRooted_motzkin : ∀ n : Nat, IsRealRooted (motzkin n)
+theorem isRealRooted_motzkin : ∀ n : Nat, ((motzkin n) ≠ 0 ∧ (motzkin n).roots.card = (motzkin n).natDegree)
   | 0 => by
       simpa [motzkin_zero] using
         isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)

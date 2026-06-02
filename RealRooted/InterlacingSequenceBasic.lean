@@ -58,7 +58,7 @@ def IsInterlacingSeq : List ℝ[X] → Prop
 non-negative coefficients, and the list is pairwise interlacing. The
 elementwise clause is needed so singleton lists are treated correctly. -/
 def IsInterlacingSeqNonneg (fs : List ℝ[X]) : Prop :=
-  (∀ f ∈ fs, IsRealRooted f ∧ HasNonnegCoeffs f) ∧
+  (∀ f ∈ fs, (f ≠ 0 ∧ f.roots.card = f.natDegree) ∧ HasNonnegCoeffs f) ∧
   IsInterlacingSeq fs
 
 /-- Weak zero-aware version of `IsInterlacingSeq`, using `Prec0` instead of the
@@ -216,7 +216,7 @@ lemma IsInterlacingSeq0.sublist {fs gs : List ℝ[X]}
 lemma IsInterlacingSeq0Nonneg.sublist_of_realRooted_of_ne
     {fs gs : List ℝ[X]}
     (hfs : IsInterlacingSeq0Nonneg fs) (hgs : gs.Sublist fs)
-    (hreal : ∀ f ∈ fs, f ≠ 0 → IsRealRooted f)
+    (hreal : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.roots.card = f.natDegree))
     (hne : ∀ f ∈ gs, f ≠ 0) :
     IsInterlacingSeqNonneg gs := by
   refine ⟨?_, ?_⟩
@@ -256,7 +256,7 @@ lemma IsInterlacingSeq0.reverse {fs : List ℝ[X]} (hfs : IsInterlacingSeq0 fs) 
 the same structure. -/
 lemma IsInterlacingSeqNonneg.reverse {fs : List ℝ[X]}
     (hfs : IsInterlacingSeqNonneg fs) :
-    (∀ f ∈ fs.reverse, IsRealRooted f ∧ HasNonnegCoeffs f) ∧
+    (∀ f ∈ fs.reverse, (f ≠ 0 ∧ f.roots.card = f.natDegree) ∧ HasNonnegCoeffs f) ∧
     fs.reverse.Pairwise (fun f g => Prec g f) := by
   rcases hfs with ⟨hmem, hint⟩
   refine ⟨?_, hint.reverse⟩
@@ -265,7 +265,7 @@ lemma IsInterlacingSeqNonneg.reverse {fs : List ℝ[X]}
 
 lemma IsInterlacingSeqNonneg.realRooted {fs : List ℝ[X]}
     (hfs : IsInterlacingSeqNonneg fs) :
-    ∀ f ∈ fs, IsRealRooted f := by
+    ∀ f ∈ fs, (f ≠ 0 ∧ f.roots.card = f.natDegree) := by
   intro f hf
   exact (hfs.1 f hf).1
 
@@ -284,7 +284,7 @@ lemma IsInterlacingSeqNonneg.nonnegCoeffs {fs : List ℝ[X]}
 lemma IsInterlacingSeq0Nonneg.filter_ne_zero_of_realRooted
     {fs : List ℝ[X]}
     (hfs : IsInterlacingSeq0Nonneg fs)
-    (hreal : ∀ f ∈ fs, f ≠ 0 → IsRealRooted f) :
+    (hreal : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.roots.card = f.natDegree)) :
     IsInterlacingSeqNonneg (fs.filter (· ≠ 0)) := by
   rcases hfs with ⟨hint0, hnonneg⟩
   have hpair0 : fs.Pairwise Prec0 := isInterlacingSeq0_iff_pairwise.mp hint0

@@ -384,7 +384,7 @@ lemma mkInterleaving_sub_multiset (f : ℝ[X])
 
 /-- **Derivative interlacing**: if `f` is real-rooted of degree ≥ 2,
     then `f.derivative` interlaces `f`. -/
-theorem derivative_interlaces {f : ℝ[X]} (hf : IsRealRooted f)
+theorem derivative_interlaces {f : ℝ[X]} (hf : f ≠ 0 ∧ f.roots.card = f.natDegree)
     (hdeg : 2 ≤ f.natDegree) :
     Interlaces f.derivative f := by
   -- Sort the roots of f
@@ -418,7 +418,7 @@ theorem derivative_interlaces {f : ℝ[X]} (hf : IsRealRooted f)
       _ = ss.length := hss_length.symm
       _ = (↑ss : Multiset ℝ).card := (Multiset.coe_card ss).symm
       _ ≤ f.derivative.roots.card := Multiset.card_le_card hsub
-  have hf'_rr : IsRealRooted f.derivative := ⟨hf'_ne, hf'_card⟩
+  have hf'_rr : (f.derivative ≠ 0 ∧ f.derivative.roots.card = f.derivative.natDegree) := ⟨hf'_ne, hf'_card⟩
   -- Multiset equality (sub-multiset + same cardinality)
   have hss_eq : (↑ss : Multiset ℝ) = f.derivative.roots :=
     Multiset.eq_of_le_of_card_le hsub (by rw [Multiset.coe_card, hss_length, hf'_card, hf'_deg])

@@ -342,7 +342,7 @@ theorem interlaces_narayanaQuot_succ_of_nonnegCoeffs (n : Nat) (hn : 1 ≤ n)
 theorem isRealRooted_narayanaQuot_of_nonnegCoeffs :
     ∀ n : Nat, 1 ≤ n →
       (∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) →
-      IsRealRooted (narayanaQuot n)
+      ((narayanaQuot n) ≠ 0 ∧ (narayanaQuot n).roots.card = (narayanaQuot n).natDegree)
   | 0, hn, _ => by
       lia
   | 1, _, _ => by
@@ -372,7 +372,7 @@ theorem interlaces_narayana_succ_of_nonnegCoeffs (n : Nat) (hn : 1 ≤ n)
 theorem isRealRooted_narayana_of_nonnegCoeffs :
     ∀ n : Nat, 1 ≤ n →
       (∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) →
-      IsRealRooted (narayana n)
+      ((narayana n) ≠ 0 ∧ (narayana n).roots.card = (narayana n).natDegree)
   | 0, hn, _ => by
       lia
   | 1, _, _ => by

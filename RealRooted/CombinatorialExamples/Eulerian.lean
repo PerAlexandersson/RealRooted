@@ -159,12 +159,12 @@ lemma eulerianTilde_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (eulerianTilde n
             simp [hcoeff_m, hcoeff_succ]
 
 lemma roots_nonpos_eulerianTilde_of_isRealRooted {n : Nat}
-    (hrr : IsRealRooted (eulerianTilde n)) :
+    (hrr : (eulerianTilde n) ≠ 0 ∧ (eulerianTilde n).roots.card = (eulerianTilde n).natDegree) :
     ∀ r ∈ (eulerianTilde n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs hrr (eulerianTilde_nonnegCoeffs n)
 
 lemma prec_affineEulerianTilde {n : Nat}
-    (hrr : IsRealRooted (eulerianTilde n)) :
+    (hrr : (eulerianTilde n) ≠ 0 ∧ (eulerianTilde n).roots.card = (eulerianTilde n).natDegree) :
     Prec (affineEulerianTilde n) (eulerianTilde n) := by
   rw [affineEulerianTilde]
   exact prec_affine_derivative' hrr (by rw [natDegree_eulerianTilde]; lia)
@@ -206,7 +206,7 @@ lemma affineEulerianTilde_nonnegCoeffs (n : Nat) :
     simp [hcoeff_m, hcoeff_succ]
 
 lemma roots_nonpos_affineEulerianTilde_of_isRealRooted {n : Nat}
-    (hrr : IsRealRooted (eulerianTilde n)) :
+    (hrr : (eulerianTilde n) ≠ 0 ∧ (eulerianTilde n).roots.card = (eulerianTilde n).natDegree) :
     ∀ r ∈ (affineEulerianTilde n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs (prec_affineEulerianTilde hrr).1
     (affineEulerianTilde_nonnegCoeffs n)
@@ -243,7 +243,7 @@ the oriented `Prec` sense. The induction hypothesis supplies real-rootedness of
 theorem prec_eulerianTilde_succ : ∀ n : Nat,
     Prec (eulerianTilde n) (eulerianTilde (n + 1))
   | 0 => by
-      have hrr0 : IsRealRooted (eulerianTilde 0) := by
+      have hrr0 : ((eulerianTilde 0) ≠ 0 ∧ (eulerianTilde 0).roots.card = (eulerianTilde 0).natDegree) := by
         apply isRealRooted_of_degree_one
         simp [eulerianTilde_zero]
       exact prec_eulerianTilde_succ_of_prec_affine
@@ -257,7 +257,7 @@ theorem prec_eulerianTilde_succ : ∀ n : Nat,
 /-- Every Eulerian tilde polynomial is real-rooted, obtained as the
 right-hand component of the interlacing induction. -/
 theorem isRealRooted_eulerianTilde : ∀ n : Nat,
-    IsRealRooted (eulerianTilde n)
+    ((eulerianTilde n) ≠ 0 ∧ (eulerianTilde n).roots.card = (eulerianTilde n).natDegree)
   | 0 => by
       apply isRealRooted_of_degree_one
       simp [eulerianTilde_zero]

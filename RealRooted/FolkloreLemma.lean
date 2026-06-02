@@ -41,8 +41,8 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
   set q : ℝ[X] := f - X * g
   by_cases hq0 : q = 0
   · simpa [q, hq0] using prec0_zero_left f
-  · have hg : IsRealRooted g := hgf.1
-    have hf : IsRealRooted f := hgf.2.1
+  · have hg : (g ≠ 0 ∧ g.roots.card = g.natDegree) := hgf.1
+    have hf : (f ≠ 0 ∧ f.roots.card = f.natDegree) := hgf.2.1
     have hg_pos : HasPosLeadingCoeff g := by
       unfold HasPosLeadingCoeff
       simp [hg_monic.leadingCoeff]
@@ -79,7 +79,7 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
                         rw [hcf, coeff_add, coeff_C_mul, coeff_C_mul]
                         ring
       simpa [hrew] using hall_fXg (α + β) (-α)
-    have hq : IsRealRooted q := by
+    have hq : (q ≠ 0 ∧ q.roots.card = q.natDegree) := by
       rcases hall_qf 1 0 with hzero | hrr
       · exact False.elim (hq0 (by simpa [q] using hzero))
       · simpa using hrr
@@ -162,9 +162,9 @@ theorem prec_sub_X_mul_right {f g : ℝ[X]}
         rw [coeff_add, coeff_C_mul, coeff_C_mul, coeff_add, coeff_C_mul, coeff_C_mul, hqcoeff]
         ring
       simpa [hrew] using hall_qf (α - β) β
-    have hq : IsRealRooted q := hqf.1
-    have hg : IsRealRooted g := hgf.1
-    have hXg : IsRealRooted (X * g) := isRealRooted_mul isRealRooted_X hg
+    have hq : (q ≠ 0 ∧ q.roots.card = q.natDegree) := hqf.1
+    have hg : (g ≠ 0 ∧ g.roots.card = g.natDegree) := hgf.1
+    have hXg : ((X * g) ≠ 0 ∧ (X * g).roots.card = (X * g).natDegree) := isRealRooted_mul isRealRooted_X hg
     have hq_lt : q.natDegree < f.natDegree := by
       have hq_le : q.natDegree ≤ f.natDegree := by
         have hXg_le : (X * g).natDegree ≤ f.natDegree := by

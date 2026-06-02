@@ -251,7 +251,7 @@ lemma zero_not_isRoot_liuWangPoly (d n : Nat) (hn : 1 ≤ n) (hnd : n ≤ d + 1)
   linarith
 
 lemma roots_neg_liuWangPoly_of_isRealRooted {d n : Nat}
-    (hrr : IsRealRooted (liuWangPoly d n))
+    (hrr : (liuWangPoly d n) ≠ 0 ∧ (liuWangPoly d n).roots.card = (liuWangPoly d n).natDegree)
     (hn : 1 ≤ n) (hnd : n ≤ d + 1) :
     ∀ r ∈ (liuWangPoly d n).roots, r < 0 := by
   intro r hr
@@ -265,7 +265,7 @@ lemma roots_neg_liuWangPoly_of_isRealRooted {d n : Nat}
 
 /-- The degree-`1` base case is immediate. -/
 lemma isRealRooted_liuWangPoly_two (d : Nat) :
-    IsRealRooted (liuWangPoly d 2) := by
+    ((liuWangPoly d 2) ≠ 0 ∧ (liuWangPoly d 2).roots.card = (liuWangPoly d 2).natDegree) := by
   exact isRealRooted_of_degree_one (natDegree_liuWangPoly d 2 (by norm_num))
 
 private lemma natDegree_liuWangRec_affine (d n : Nat) :
@@ -880,7 +880,7 @@ private lemma prec_of_interlaces_X_mul_of_roots_nonpos {f g : ℝ[X]}
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
     Prec f g := by
   obtain ⟨hXf, hg, _, rs_xf, ss_g, hrs_xf, hss_g, hrs_xf_eq, hss_g_eq, hint⟩ := h
-  have hf : IsRealRooted f := isRealRooted_of_X_mul hXf
+  have hf : (f ≠ 0 ∧ f.roots.card = f.natDegree) := isRealRooted_of_X_mul hXf
   set rs_f := f.roots.sort (· ≤ ·)
   have hrs_f_eq : (↑rs_f : Multiset ℝ) = f.roots := Multiset.sort_eq ..
   have hrs_f_sorted : rs_f.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
@@ -974,7 +974,7 @@ private lemma roots_neg_threshold_divX (d : Nat) :
 `1 ≤ n ≤ d + 1`, and also at the threshold step `n = d + 2`. -/
 lemma isRealRooted_liuWangRec_of_le_threshold (d n : Nat)
     (hn : 1 ≤ n) (hnd : n ≤ d + 2) :
-    IsRealRooted (liuWangRec d n) := by
+    ((liuWangRec d n) ≠ 0 ∧ (liuWangRec d n).roots.card = (liuWangRec d n).natDegree) := by
   rcases Nat.eq_or_lt_of_le hnd with hEq | hlt
   · subst hEq
     exact (interlaces_liuWangRec_threshold d).1
@@ -1058,7 +1058,7 @@ lemma interlaces_liuWangRec_of_nonnegCoeffs (d n : Nat)
 lemma isRealRooted_liuWangRec_of_nonnegCoeffs (d n : Nat)
     (hn : 1 ≤ n)
     (hnonneg : ∀ m, HasNonnegCoeffs (liuWangRec d m)) :
-    IsRealRooted (liuWangRec d n) := by
+    ((liuWangRec d n) ≠ 0 ∧ (liuWangRec d n).roots.card = (liuWangRec d n).natDegree) := by
   rcases hn.eq_or_lt with rfl | hn_lt
   · exact
       isRealRooted_of_deg_zero (liuWangRec_ne_zero d 1 hn)

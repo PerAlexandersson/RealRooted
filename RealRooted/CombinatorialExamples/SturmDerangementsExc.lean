@@ -59,10 +59,10 @@ lemma sturmDerangementsExc_succ_eq_X_mul_recurrenceCore (n : Nat) (hn : 2 ≤ n)
 /-- If `f` is real-rooted with nonnegative coefficients, then the derivative term
 `(1 - X) * f'` sits on the "right" of `f` in the oriented `Prec` relation. -/
 lemma prec_one_sub_X_derivative_right {f : ℝ[X]}
-    (hf : IsRealRooted f) (hdeg : 2 ≤ f.natDegree) (hnn : HasNonnegCoeffs f) :
+    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hdeg : 2 ≤ f.natDegree) (hnn : HasNonnegCoeffs f) :
     Prec f ((1 - X) * f.derivative) := by
   have hder : Prec f.derivative f := (derivative_interlaces hf hdeg).toPrec
-  have hf' : IsRealRooted f.derivative := hder.1
+  have hf' : (f.derivative ≠ 0 ∧ f.derivative.roots.card = f.derivative.natDegree) := hder.1
   have hnn' : HasNonnegCoeffs f.derivative := hnn.derivative
   have hf'_pos : HasPosLeadingCoeff f.derivative := hnn'.pos_leadingCoeff hf'.1
   have hf_pos : HasPosLeadingCoeff f := hnn.pos_leadingCoeff hf.1
@@ -414,7 +414,7 @@ lemma sturmDerangementsExc_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (sturmDer
             simp [hsmall_zero, hbig_zero₁, hbig_zero₂]
 
 lemma roots_nonpos_sturmDerangementsExc_of_isRealRooted {n : Nat} (_hn : 2 ≤ n)
-    (hrr : IsRealRooted (sturmDerangementsExc n)) :
+    (hrr : (sturmDerangementsExc n) ≠ 0 ∧ (sturmDerangementsExc n).roots.card = (sturmDerangementsExc n).natDegree) :
     ∀ r ∈ (sturmDerangementsExc n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs hrr (sturmDerangementsExc_nonnegCoeffs n)
 
@@ -425,7 +425,7 @@ lemma prec_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
   exact_mod_cast (show n ≠ 0 by lia)
 
 lemma prec_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
-    (hrr : IsRealRooted (sturmDerangementsExc n)) :
+    (hrr : (sturmDerangementsExc n) ≠ 0 ∧ (sturmDerangementsExc n).roots.card = (sturmDerangementsExc n).natDegree) :
     Prec (affineSturmDerangementsExc n) (sturmDerangementsExc n) := by
   apply prec_affine_derivative'
   · exact hrr
@@ -570,7 +570,7 @@ lemma natDegree_recurrenceCoreSturmDerangementsExc {n : Nat} (hn : 2 ≤ n) :
   lia
 
 lemma roots_nonpos_affine_sturmDerangementsExc_of_isRealRooted {n : Nat} (hn : 2 ≤ n)
-    (hrr : IsRealRooted (sturmDerangementsExc n)) :
+    (hrr : (sturmDerangementsExc n) ≠ 0 ∧ (sturmDerangementsExc n).roots.card = (sturmDerangementsExc n).natDegree) :
     ∀ r ∈ (affineSturmDerangementsExc n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs (prec_affine_sturmDerangementsExc hn hrr).1
     (affine_sturmDerangementsExc_nonnegCoeffs hn)
@@ -586,7 +586,7 @@ lemma roots_nonpos_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
     (sturmDerangementsExc_nonnegCoeffs (n - 1)) r hr
 
 lemma prec_sturmDerangementsExc_affine_mul_X {n : Nat} (hn : 2 ≤ n)
-    (hrr : IsRealRooted (sturmDerangementsExc n)) :
+    (hrr : (sturmDerangementsExc n) ≠ 0 ∧ (sturmDerangementsExc n).roots.card = (sturmDerangementsExc n).natDegree) :
     Prec (sturmDerangementsExc n)
       (X * affineSturmDerangementsExc n) := by
   exact prec_sameDegree_to_prec_mul_X_of_roots_nonpos
@@ -596,7 +596,7 @@ lemma prec_sturmDerangementsExc_affine_mul_X {n : Nat} (hn : 2 ≤ n)
     (roots_nonpos_sturmDerangementsExc_of_isRealRooted hn hrr)
 
 lemma prec_X_mul_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
-    (hrr : IsRealRooted (sturmDerangementsExc n)) :
+    (hrr : (sturmDerangementsExc n) ≠ 0 ∧ (sturmDerangementsExc n).roots.card = (sturmDerangementsExc n).natDegree) :
     Prec (X * affineSturmDerangementsExc n) (X * sturmDerangementsExc n) := by
   exact prec_mul_X_both_of_roots_nonpos
     (prec_affine_sturmDerangementsExc hn hrr)
@@ -670,7 +670,7 @@ theorem prec_sturmDerangementsExc_succ : ∀ n : Nat, 2 ≤ n →
   | 0, hn => by lia
   | 1, hn => by lia
   | 2, _ => by
-      have hrr2 : IsRealRooted (sturmDerangementsExc 2) := by
+      have hrr2 : ((sturmDerangementsExc 2) ≠ 0 ∧ (sturmDerangementsExc 2).roots.card = (sturmDerangementsExc 2).natDegree) := by
         apply isRealRooted_of_degree_one
         simp [sturmDerangementsExc_two]
       have hcore : Prec (recurrenceCoreSturmDerangementsExc 2) (sturmDerangementsExc 2) := by
@@ -687,7 +687,7 @@ theorem prec_sturmDerangementsExc_succ : ∀ n : Nat, 2 ≤ n →
 
 /-- In particular, every nontrivial derangement excedance polynomial is real-rooted. -/
 theorem isRealRooted_sturmDerangementsExc : ∀ n : Nat, 2 ≤ n →
-    IsRealRooted (sturmDerangementsExc n)
+    ((sturmDerangementsExc n) ≠ 0 ∧ (sturmDerangementsExc n).roots.card = (sturmDerangementsExc n).natDegree)
   | 0, hn => by lia
   | 1, hn => by lia
   | 2, _ => by

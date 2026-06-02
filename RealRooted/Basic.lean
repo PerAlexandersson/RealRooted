@@ -23,32 +23,35 @@ namespace RealRooted
 
 /-- A nonzero polynomial `p ∈ ℝ[X]` is **real-rooted** if
     the number of real roots (counted with multiplicity) equals its degree. -/
-abbrev IsRealRooted (p : ℝ[X]) : Prop :=
-  p ≠ 0 ∧ p.roots.card = p.natDegree
-
-lemma isRealRooted_iff_ne_zero_and_splits (p : ℝ[X]) : IsRealRooted p ↔ p ≠ 0 ∧ p.Splits := by
+lemma isRealRooted_iff_ne_zero_and_splits (p : ℝ[X]) :
+    (p ≠ 0 ∧ p.roots.card = p.natDegree) ↔ p ≠ 0 ∧ p.Splits := by
   grind [splits_iff_card_roots]
 
 /-- Zero-aware real-rootedness.  This is the convention often used for
-closure statements, while `IsRealRooted` remains the strict nonzero predicate
+closure statements, while `p ≠ 0 ∧ p.roots.card = p.natDegree` remains the
+strict nonzero predicate
 used by root-list and interlacing proofs. -/
 def IsRealRootedOrZero (p : ℝ[X]) : Prop :=
-  p = 0 ∨ IsRealRooted p
+  p = 0 ∨ (p ≠ 0 ∧ p.roots.card = p.natDegree)
 
 lemma isRealRootedOrZero_iff_eq_zero_or_splits (p : ℝ[X]) :
     IsRealRootedOrZero p ↔ p = 0 ∨ p.Splits := by
   grind [IsRealRootedOrZero, isRealRooted_iff_ne_zero_and_splits]
 
-lemma IsRealRooted.toOrZero {p : ℝ[X]} (hp : IsRealRooted p) :
+namespace IsRealRooted
+
+lemma toOrZero {p : ℝ[X]} (hp : p ≠ 0 ∧ p.roots.card = p.natDegree) :
     IsRealRootedOrZero p :=
   Or.inr hp
+
+end IsRealRooted
 
 lemma isRealRootedOrZero_zero : IsRealRootedOrZero (0 : ℝ[X]) :=
   Or.inl rfl
 
 lemma IsRealRootedOrZero.of_ne_zero {p : ℝ[X]}
     (hp : IsRealRootedOrZero p) (hp0 : p ≠ 0) :
-    IsRealRooted p :=
+    p ≠ 0 ∧ p.roots.card = p.natDegree :=
   Or.resolve_left hp hp0
 
 /-! ## Root interleaving predicates on sorted lists -/
@@ -203,7 +206,7 @@ lemma listAlternates_left_le_of_right_le {ss rs : List ℝ} {c : ℝ}
 
     Notation: we write `Prec f g` for `f ≪ g`. -/
 def Prec (f g : ℝ[X]) : Prop :=
-  IsRealRooted f ∧ IsRealRooted g ∧
+  (f ≠ 0 ∧ f.roots.card = f.natDegree) ∧ (g ≠ 0 ∧ g.roots.card = g.natDegree) ∧
   ∃ (ss rs : List ℝ),
     ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧
     (↑ss : Multiset ℝ) = f.roots ∧ (↑rs : Multiset ℝ) = g.roots ∧
@@ -236,7 +239,7 @@ def Prec0 (f g : ℝ[X]) : Prop :=
 
 /-- Backward-compatible alias: differ-by-1 interlacing. -/
 def Interlaces (g f : ℝ[X]) : Prop :=
-  IsRealRooted f ∧ IsRealRooted g ∧
+  (f ≠ 0 ∧ f.roots.card = f.natDegree) ∧ (g ≠ 0 ∧ g.roots.card = g.natDegree) ∧
   g.natDegree + 1 = f.natDegree ∧
   ∃ (rs ss : List ℝ),
     rs.Pairwise (· ≤ ·) ∧ ss.Pairwise (· ≤ ·) ∧
@@ -291,7 +294,7 @@ lemma IsSturmSeq.toGeneralizedSturmSeq {ps : List ℝ[X]} (h : IsSturmSeq ps) :
 -- ============================================================
 
 lemma isRealRooted_of_deg_zero {p : ℝ[X]} (hp : p ≠ 0) (hdeg : p.natDegree = 0) :
-    IsRealRooted p := ⟨hp, by grind [card_roots']⟩
+    (p ≠ 0 ∧ p.roots.card = p.natDegree) := ⟨hp, by grind [card_roots']⟩
 
 lemma Prec.toPrec0 {f g : ℝ[X]} (h : Prec f g) : Prec0 f g :=
   Or.inr (Or.inr h)
@@ -311,8 +314,8 @@ lemma prec0_zero_zero : Prec0 (0 : ℝ[X]) 0 :=
   prec0_zero_left 0
 
 /-- The product of two real-rooted polynomials is real-rooted. -/
-lemma isRealRooted_mul {p q : ℝ[X]} (hp : IsRealRooted p) (hq : IsRealRooted q) :
-    IsRealRooted (p * q) := ⟨mul_ne_zero hp.1 hq.1,
+lemma isRealRooted_mul {p q : ℝ[X]} (hp : p ≠ 0 ∧ p.roots.card = p.natDegree) (hq : q ≠ 0 ∧ q.roots.card = q.natDegree) :
+    ((p * q) ≠ 0 ∧ (p * q).roots.card = (p * q).natDegree) := ⟨mul_ne_zero hp.1 hq.1,
       by grind [natDegree_mul, roots_mul (mul_ne_zero hp.1 _), Multiset.card_add]⟩
 
 /-- Non-negative coefficients. -/

@@ -337,7 +337,7 @@ This holds because:
 The count equality (3) follows from the interlacing giving one root per interval. -/
 
 /-- Evaluation of a real-rooted polynomial via its factorization. -/
-lemma eval_eq_leadingCoeff_mul_prod_sub {p : ℝ[X]} (hp : IsRealRooted p) (x : ℝ) :
+lemma eval_eq_leadingCoeff_mul_prod_sub {p : ℝ[X]} (hp : p ≠ 0 ∧ p.roots.card = p.natDegree) (x : ℝ) :
     p.eval x = p.leadingCoeff * (p.roots.map (x - ·)).prod := by
   have hfact := C_leadingCoeff_mul_prod_multiset_X_sub_C hp.2
   conv_lhs => rw [← hfact]
@@ -436,7 +436,7 @@ lemma isRoot_of_isRoot_right_of_isRoot_add {f g h : ℝ[X]}
 /-- A polynomial with roots arranged by a `ListInterlaces`/`ListAlternates`
 layout has opposite-or-zero signs at consecutive right-hand roots. -/
 private lemma eval_mul_eval_nonpos_of_roots_layout {f : ℝ[X]}
-    (hf : IsRealRooted f) (hf_pos : HasPosLeadingCoeff f)
+    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hf_pos : HasPosLeadingCoeff f)
     {ss : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ}
     (hss_eq : (↑ss : Multiset ℝ) = f.roots)
     (hcase : ListInterlaces ss (r₁ :: r₂ :: rest) ∨
@@ -506,7 +506,7 @@ lemma exists_isRoot_between_of_eval_mul_nonpos {p : ℝ[X]} {a b : ℝ}
     roots in the interlacing (one root of f and g per h-interval [rⱼ, rⱼ₊₁]).
     They are supplied as hypotheses so callers can verify the pairing. -/
 lemma opposite_sign_at_interlacing_roots {f g : ℝ[X]}
-    (hf : IsRealRooted f) (hg : IsRealRooted g)
+    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hg : g ≠ 0 ∧ g.roots.card = g.natDegree)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {a b s t : ℝ} (_hab : a ≤ b)
     (has : a ≤ s) (hsb : s ≤ b) (hat : a ≤ t) (htb : t ≤ b)
@@ -661,7 +661,7 @@ lemma exists_isRoot_le_of_eval_neg_of_tendsto_atBot_atTop {p : ℝ[X]} {r : ℝ}
   exact ⟨u, hu.2, hu_root⟩
 
 private lemma eval_pos_of_all_roots_gt_of_even {p : ℝ[X]} {r : ℝ}
-    (hp : IsRealRooted p) (hp_pos : HasPosLeadingCoeff p)
+    (hp : p ≠ 0 ∧ p.roots.card = p.natDegree) (hp_pos : HasPosLeadingCoeff p)
     (hdeg : 0 < p.degree) (hpar : Even p.natDegree)
     (hgt : ∀ t ∈ p.roots, r < t) :
     0 < p.eval r := by
@@ -675,7 +675,7 @@ private lemma eval_pos_of_all_roots_gt_of_even {p : ℝ[X]} {r : ℝ}
     exact not_lt_of_ge hu_le (hgt u ((mem_roots hp.1).mpr hu_root))
 
 private lemma eval_neg_of_all_roots_gt_of_odd {p : ℝ[X]} {r : ℝ}
-    (hp : IsRealRooted p) (hp_pos : HasPosLeadingCoeff p)
+    (hp : p ≠ 0 ∧ p.roots.card = p.natDegree) (hp_pos : HasPosLeadingCoeff p)
     (hdeg : 0 < p.degree) (hpar : Odd p.natDegree)
     (hgt : ∀ t ∈ p.roots, r < t) :
     p.eval r < 0 := by
@@ -693,7 +693,7 @@ private lemma eval_neg_of_all_roots_gt_of_odd {p : ℝ[X]} {r : ℝ}
     The `consumed_f/consumed_g` multisets track roots already processed in prior
     intervals; they satisfy `↑ss_f + consumed = f.roots` and are all `≤ rs.head`. -/
 private lemma wagner1_roots_exist (f g : ℝ[X])
-    (hf : IsRealRooted f) (hg : IsRealRooted g)
+    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hg : g ≠ 0 ∧ g.roots.card = g.natDegree)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hcop : IsCoprime f g)
     (consumed_f consumed_g : Multiset ℝ) :
@@ -901,7 +901,7 @@ private lemma wagner1_roots_exist (f g : ℝ[X])
     coprime. This is the more human-style hypothesis actually used in the
     interval argument. -/
 private lemma wagner1_roots_exist_of_no_common_right (f g : ℝ[X])
-    (hf : IsRealRooted f) (hg : IsRealRooted g)
+    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hg : g ≠ 0 ∧ g.roots.card = g.natDegree)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (consumed_f consumed_g : Multiset ℝ) :
     ∀ (ss_f ss_g rs : List ℝ),
@@ -1099,7 +1099,7 @@ private lemma wagner1_roots_exist_of_no_common_right (f g : ℝ[X])
     and `smaller + bigger` has degree one more than `smaller`, then
     `smaller + bigger` has a root ≤ p. Used for the mixed-degree cases in Wagner (1). -/
 lemma exists_root_le_of_mixed {smaller bigger : ℝ[X]}
-    (hsmaller : IsRealRooted smaller)
+    (hsmaller : smaller ≠ 0 ∧ smaller.roots.card = smaller.natDegree)
     (hsmaller_pos : HasPosLeadingCoeff smaller)
     (hsum_pos : HasPosLeadingCoeff (smaller + bigger))
     {p : ℝ} (hbigp : bigger.IsRoot p)
@@ -1168,7 +1168,7 @@ lemma exists_root_le_of_mixed {smaller bigger : ℝ[X]}
 theorem prec_add_of_prec_right {f g h : ℝ[X]}
     (hfh : Prec f h) (hgh : Prec g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfg_rr : IsRealRooted (f + g))
+    (hfg_rr : (f + g) ≠ 0 ∧ (f + g).roots.card = (f + g).natDegree)
     (hcop : IsCoprime f g) :
     Prec (f + g) h := by
   obtain ⟨hf, hh, ss_f, rs_f, hss_f_sorted, hrs_f_sorted, hss_f_eq, hrs_f_eq, hcase_f⟩ := hfh
@@ -1666,7 +1666,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
         calc
           (f + g).roots.card ≤ (f + g).natDegree := card_roots' (f + g)
           _ = us.length := hfg_natDeg
-      have hfg_rr : IsRealRooted (f + g) := by
+      have hfg_rr : ((f + g) ≠ 0 ∧ (f + g).roots.card = (f + g).natDegree) := by
         refine ⟨hfg_ne, ?_⟩
         rw [← hus_eq, Multiset.coe_card, hfg_natDeg]
       exact ⟨hfg_rr, hh, us, rs_f,
@@ -1767,7 +1767,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
             _ = f.natDegree + 1 := hg_deg
             _ = us.length + 1 := by rw [hus_len, hf_deg]
         simpa using hcard_le'
-      have hfg_rr : IsRealRooted (f + g) := by
+      have hfg_rr : ((f + g) ≠ 0 ∧ (f + g).roots.card = (f + g).natDegree) := by
         refine ⟨hfg_ne, ?_⟩
         rw [← hroots_eq, Multiset.coe_card]
         simp only [List.length_cons]
@@ -1878,7 +1878,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
               rw [← hg_deg, hus_len]
               lia
         simpa using hcard_le'
-      have hfg_rr : IsRealRooted (f + g) := by
+      have hfg_rr : ((f + g) ≠ 0 ∧ (f + g).roots.card = (f + g).natDegree) := by
         refine ⟨hfg_ne, ?_⟩
         rw [← hroots_eq, Multiset.coe_card]
         simp only [List.length_cons]
@@ -1916,7 +1916,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
               unfold HasPosLeadingCoeff at hf_pos hg_pos
               linarith)
           exact hcoeff_ne (by simp [h0])
-        have hfg_rr : IsRealRooted (f + g) := by
+        have hfg_rr : ((f + g) ≠ 0 ∧ (f + g).roots.card = (f + g).natDegree) := by
           refine ⟨hfg_ne, ?_⟩
           have hcard_le : (f + g).roots.card ≤ 0 := by
             calc
@@ -2067,7 +2067,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
                   simp only [List.length_cons] at hf_deg
                   rw [hus_len, hf_deg]
             simpa using hcard_le'
-          have hfg_rr : IsRealRooted (f + g) := by
+          have hfg_rr : ((f + g) ≠ 0 ∧ (f + g).roots.card = (f + g).natDegree) := by
             refine ⟨hfg_ne, ?_⟩
             rw [← hroots_eq, Multiset.coe_card]
             simp only [List.length_cons]
@@ -2150,7 +2150,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
                   simp only [List.length_cons] at hf_deg
                   rw [hus_len, hf_deg]
             simpa using hcard_le'
-          have hfg_rr : IsRealRooted (f + g) := by
+          have hfg_rr : ((f + g) ≠ 0 ∧ (f + g).roots.card = (f + g).natDegree) := by
             refine ⟨hfg_ne, ?_⟩
             rw [← hroots_eq, Multiset.coe_card]
             simp only [List.length_cons]
@@ -2167,12 +2167,12 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
     high-level proof closer to the human argument "factor out the shared part,
     add the quotients, then multiply back". -/
 theorem prec_add_of_prec_right_of_common_factor {d f g h : ℝ[X]}
-    (hd : IsRealRooted d)
+    (hd : d ≠ 0 ∧ d.roots.card = d.natDegree)
     {f' g' h' : ℝ[X]}
     (hf_def : f = d * f') (hg_def : g = d * g') (hh_def : h = d * h')
     (hfh : Prec f' h') (hgh : Prec g' h')
     (hf'_pos : HasPosLeadingCoeff f') (hg'_pos : HasPosLeadingCoeff g')
-    (hfg'_rr : IsRealRooted (f' + g'))
+    (hfg'_rr : (f' + g') ≠ 0 ∧ (f' + g').roots.card = (f' + g').natDegree)
     (hcop : IsCoprime f' g') :
     Prec (f + g) h := by
   subst hf_def hg_def hh_def
@@ -2184,7 +2184,7 @@ theorem prec_add_of_prec_right_of_common_factor {d f g h : ℝ[X]}
 /-- A common-factor version of the no-common-right Wagner theorem. This is the
 factor-out-the-shared-part form of the boundary-collision argument. -/
 theorem prec_add_of_prec_right_of_common_factor_of_no_common_right {d f g h : ℝ[X]}
-    (hd : IsRealRooted d)
+    (hd : d ≠ 0 ∧ d.roots.card = d.natDegree)
     {f' g' h' : ℝ[X]}
     (hf_def : f = d * f') (hg_def : g = d * g') (hh_def : h = d * h')
     (hfh : Prec f' h') (hgh : Prec g' h')
@@ -2262,7 +2262,7 @@ theorem prec_add_of_prec_right_of_posLeadingCoeff {f g h : ℝ[X]}
 /-- A mixed-degree version of Wagner (1): if `f` precedes `h` with degree one less,
     `g` precedes `h` with the same degree, and `f` and `g` are coprime, then
     `f + g` precedes `h`. This packages the branch needed for the derangement
-    recurrence, avoiding a separate `IsRealRooted (f + g)` hypothesis. -/
+    recurrence, avoiding a separate `((f + g) ≠ 0 ∧ (f + g).roots.card = (f + g).natDegree)` hypothesis. -/
 theorem prec_add_of_prec_right_mixed_of_natDegree {f g h : ℝ[X]}
     (hfh : Prec f h) (hgh : Prec g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
@@ -2373,7 +2373,7 @@ theorem prec_add_of_prec_right_mixed_of_natDegree {f g h : ℝ[X]}
             _ = us.length + 1 := by rw [hus_len, hf_deg]
         rw [Multiset.coe_card]
         simpa using hcard_le'
-      have hfg_rr : IsRealRooted (f + g) := by
+      have hfg_rr : ((f + g) ≠ 0 ∧ (f + g).roots.card = (f + g).natDegree) := by
         refine ⟨hfg_ne, ?_⟩
         rw [← hroots_eq, Multiset.coe_card]
         simp only [List.length_cons]
@@ -2503,7 +2503,7 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right {f g h : �
             _ = us.length + 1 := by rw [hus_len, hf_deg]
         rw [Multiset.coe_card]
         simpa using hcard_le'
-      have hfg_rr : IsRealRooted (f + g) := by
+      have hfg_rr : ((f + g) ≠ 0 ∧ (f + g).roots.card = (f + g).natDegree) := by
         refine ⟨hfg_ne, ?_⟩
         rw [← hroots_eq, Multiset.coe_card]
         simp only [List.length_cons]
@@ -2523,7 +2523,7 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right {f g h : �
 
 /-- A common-factor version of the mixed-degree Wagner addition theorem. -/
 theorem prec_add_of_prec_right_mixed_of_natDegree_of_common_factor {d f g h : ℝ[X]}
-    (hd : IsRealRooted d)
+    (hd : d ≠ 0 ∧ d.roots.card = d.natDegree)
     {f' g' h' : ℝ[X]}
     (hf_def : f = d * f') (hg_def : g = d * g') (hh_def : h = d * h')
     (hfh : Prec f' h') (hgh : Prec g' h')
@@ -2541,7 +2541,7 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_common_factor {d f g h : �
 /-- A common-factor version of the mixed-degree no-common-right Wagner theorem. -/
 theorem prec_add_of_prec_right_mixed_of_natDegree_of_common_factor_of_no_common_right
     {d f g h : ℝ[X]}
-    (hd : IsRealRooted d)
+    (hd : d ≠ 0 ∧ d.roots.card = d.natDegree)
     {f' g' h' : ℝ[X]}
     (hf_def : f = d * f') (hg_def : g = d * g') (hh_def : h = d * h')
     (hfh : Prec f' h') (hgh : Prec g' h')

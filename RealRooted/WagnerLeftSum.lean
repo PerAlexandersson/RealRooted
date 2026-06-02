@@ -19,7 +19,7 @@ section
     and g's roots (rs_g), find roots us of f+g with ListInterlaces ss us.
     The consumed multisets track roots already processed. -/
 private lemma wagner2_roots_exist (f g : ℝ[X])
-    (hf : IsRealRooted f) (hg : IsRealRooted g)
+    (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hg : g ≠ 0 ∧ g.roots.card = g.natDegree)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hcop : IsCoprime f g)
     (consumed_f consumed_g : Multiset ℝ) :
@@ -546,7 +546,7 @@ private lemma wagner2_roots_exist (f g : ℝ[X])
 theorem prec_add_of_prec_left {f g h : ℝ[X]}
     (hhf : Prec h f) (hhg : Prec h g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfg_rr : IsRealRooted (f + g))
+    (hfg_rr : (f + g) ≠ 0 ∧ (f + g).roots.card = (f + g).natDegree)
     (hcop : IsCoprime f g) :
     Prec h (f + g) := by
   -- For now, handle the both differ-by-1 case
@@ -998,12 +998,12 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
 left-hand addition theorem, then multiplying the whole picture by a common
 real-rooted factor preserves the conclusion. -/
 theorem prec_add_of_prec_left_of_common_factor {d f g h : ℝ[X]}
-    (hd : IsRealRooted d)
+    (hd : d ≠ 0 ∧ d.roots.card = d.natDegree)
     {f' g' h' : ℝ[X]}
     (hf_def : f = d * f') (hg_def : g = d * g') (hh_def : h = d * h')
     (hhf : Prec h' f') (hhg : Prec h' g')
     (hf'_pos : HasPosLeadingCoeff f') (hg'_pos : HasPosLeadingCoeff g')
-    (hfg'_rr : IsRealRooted (f' + g'))
+    (hfg'_rr : (f' + g') ≠ 0 ∧ (f' + g').roots.card = (f' + g').natDegree)
     (hcop : IsCoprime f' g') :
     Prec h (f + g) := by
   subst hf_def hg_def hh_def
@@ -1023,7 +1023,7 @@ inductive SumCompatibleLeft (h : ℝ[X]) : List ℝ[X] → Prop
   | cons {p : ℝ[X]} {l : List ℝ[X]}
       (hprec : Prec h p) (hpos : HasPosLeadingCoeff p)
       (hl : SumCompatibleLeft h l)
-      (hrr : IsRealRooted (p + l.sum))
+      (hrr : (p + l.sum) ≠ 0 ∧ (p + l.sum).roots.card = (p + l.sum).natDegree)
       (hcop : IsCoprime p l.sum) :
       SumCompatibleLeft h (p :: l)
 
