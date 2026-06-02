@@ -337,7 +337,8 @@ This holds because:
 The count equality (3) follows from the interlacing giving one root per interval. -/
 
 /-- Evaluation of a real-rooted polynomial via its factorization. -/
-lemma eval_eq_leadingCoeff_mul_prod_sub {p : ℝ[X]} (hp : p ≠ 0 ∧ p.roots.card = p.natDegree) (x : ℝ) :
+lemma eval_eq_leadingCoeff_mul_prod_sub {p : ℝ[X]} (hp : p ≠ 0 ∧
+  p.roots.card = p.natDegree) (x : ℝ) :
     p.eval x = p.leadingCoeff * (p.roots.map (x - ·)).prod := by
   have hfact := C_leadingCoeff_mul_prod_multiset_X_sub_C hp.2
   conv_lhs => rw [← hfact]
@@ -2262,7 +2263,8 @@ theorem prec_add_of_prec_right_of_posLeadingCoeff {f g h : ℝ[X]}
 /-- A mixed-degree version of Wagner (1): if `f` precedes `h` with degree one less,
     `g` precedes `h` with the same degree, and `f` and `g` are coprime, then
     `f + g` precedes `h`. This packages the branch needed for the derangement
-    recurrence, avoiding a separate `((f + g) ≠ 0 ∧ (f + g).roots.card = (f + g).natDegree)` hypothesis. -/
+    recurrence, avoiding a separate `((f + g) ≠ 0 ∧
+      (f + g).roots.card = (f + g).natDegree)` hypothesis. -/
 theorem prec_add_of_prec_right_mixed_of_natDegree {f g h : ℝ[X]}
     (hfh : Prec f h) (hgh : Prec g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)

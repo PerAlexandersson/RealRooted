@@ -290,7 +290,8 @@ lemma prec_motzkin_succ_of_shifted_even {n : Nat} (heven : n % 2 = 0)
     exact
       isRealRooted_of_dvd hshift.2.1 (motzkin_nonzero n)
         ⟨X - C motzkinShift, by rw [mul_comm]⟩
-  have hg : ((motzkin (n + 1)) ≠ 0 ∧ (motzkin (n + 1)).roots.card = (motzkin (n + 1)).natDegree) := hshift.1
+  have hg : ((motzkin (n + 1)) ≠ 0 ∧
+    (motzkin (n + 1)).roots.card = (motzkin (n + 1)).natDegree) := hshift.1
   have hdeg : (motzkin n).natDegree + 1 = (motzkin (n + 1)).natDegree := by
     rw [natDegree_motzkin, natDegree_motzkin]
     lia
@@ -357,7 +358,8 @@ theorem roots_le_motzkinShift_motzkin (n : Nat) :
     ∀ r ∈ (motzkin n).roots, r ≤ motzkinShift :=
   (prec_motzkin_succ_and_roots_le n).2.1
 
-theorem isRealRooted_motzkin : ∀ n : Nat, ((motzkin n) ≠ 0 ∧ (motzkin n).roots.card = (motzkin n).natDegree)
+theorem isRealRooted_motzkin : ∀ n : Nat, ((motzkin n) ≠ 0 ∧
+  (motzkin n).roots.card = (motzkin n).natDegree)
   | 0 => by
       simpa [motzkin_zero] using
         isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)

@@ -255,7 +255,9 @@ theorem prec_generalizedLiuWang_of_no_common
           Prec f (a * f + polynomialWeightedSum (((b - C δ), g) :: l)) :=
         prec_generalizedLiuWang_strict hgf hg_pos hl_inter hl_pos hl_nonpos
           hFδ_pos hFδ_lo hFδ_hi hno hbδ_neg
-      have hrrδ : ((a * f + ((b - C δ) * g + polynomialWeightedSum l)) ≠ 0 ∧ (a * f + ((b - C δ) * g + polynomialWeightedSum l)).roots.card = (a * f + ((b - C δ) * g + polynomialWeightedSum l)).natDegree) := by
+      have hrrδ : ((a * f + ((b - C δ) * g + polynomialWeightedSum l)) ≠ 0 ∧
+        (a * f + ((b - C δ) * g + polynomialWeightedSum l)).roots.card =
+          (a * f + ((b - C δ) * g + polynomialWeightedSum l)).natDegree) := by
         simpa [polynomialWeightedSum_cons] using hprecδ.2.1
       have hFδ_eq' : a * f + ((b - C δ) * g + polynomialWeightedSum l) = F - C δ * g := by
         simpa [polynomialWeightedSum_cons] using hFδ_eq

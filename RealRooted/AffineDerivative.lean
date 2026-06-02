@@ -913,7 +913,8 @@ private lemma isRealRooted_pow_X_sub_C (r : ℝ) :
         isRealRooted_mul (isRealRooted_X_sub_C r) (isRealRooted_pow_X_sub_C r m)
 
 private lemma isRealRooted_of_pow_X_sub_C_mul {r : ℝ} {m : ℕ} {q : ℝ[X]}
-    (hp : ((X - C r) ^ m * q) ≠ 0 ∧ ((X - C r) ^ m * q).roots.card = ((X - C r) ^ m * q).natDegree) :
+    (hp : ((X - C r) ^ m * q) ≠ 0 ∧
+      ((X - C r) ^ m * q).roots.card = ((X - C r) ^ m * q).natDegree) :
     (q ≠ 0 ∧ q.roots.card = q.natDegree) := by
   have hpow_ne : ((X - C r) ^ m : ℝ[X]) ≠ 0 := pow_ne_zero _ (X_sub_C_ne_zero _)
   have hq_ne : q ≠ 0 := by

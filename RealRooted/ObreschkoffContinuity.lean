@@ -24,7 +24,8 @@ section
 continuity bridge file. This avoids importing the converse-development file and
 keeps dependencies acyclic. -/
 abbrev PosComboHyp (f g : ℝ[X]) : Prop :=
-  ∀ {lam μ : ℝ}, 0 < lam → 0 < μ → ((C lam * f + C μ * g) ≠ 0 ∧ (C lam * f + C μ * g).roots.card = (C lam * f + C μ * g).natDegree)
+  ∀ {lam μ : ℝ}, 0 < lam → 0 < μ → ((C lam * f + C μ * g) ≠ 0 ∧
+    (C lam * f + C μ * g).roots.card = (C lam * f + C μ * g).natDegree)
 
 namespace PosComboHyp
 
@@ -371,7 +372,8 @@ theorem isRealRooted_left_of_posComboRealRooted_sameDegree
     unfold f₀
     ext n
     simp [hf_lc_ne]
-  have hf_rr_scaled : ((C f.leadingCoeff * f₀) ≠ 0 ∧ (C f.leadingCoeff * f₀).roots.card = (C f.leadingCoeff * f₀).natDegree) :=
+  have hf_rr_scaled : ((C f.leadingCoeff * f₀) ≠ 0 ∧
+    (C f.leadingCoeff * f₀).roots.card = (C f.leadingCoeff * f₀).natDegree) :=
     isRealRooted_C_mul hf₀_rr hf_lc_ne
   simpa [hf_scale] using hf_rr_scaled
 

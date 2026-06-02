@@ -77,8 +77,10 @@ lemma prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
     Prec g ((X - C r) * f) := by
   set f' := f.comp (X + C r)
   set g' := g.comp (X + C r)
-  have hf' : (f' ≠ 0 ∧ f'.roots.card = f'.natDegree) := by simpa [f'] using isRealRooted_comp_X_add_C h.1 r
-  have hg' : (g' ≠ 0 ∧ g'.roots.card = g'.natDegree) := by simpa [g'] using isRealRooted_comp_X_add_C h.2.1 r
+  have hf' : (f' ≠ 0 ∧
+    f'.roots.card = f'.natDegree) := by simpa [f'] using isRealRooted_comp_X_add_C h.1 r
+  have hg' : (g' ≠ 0 ∧
+    g'.roots.card = g'.natDegree) := by simpa [g'] using isRealRooted_comp_X_add_C h.2.1 r
   have hf'_pos : HasPosLeadingCoeff f' := by
     unfold HasPosLeadingCoeff f'
     rw [leadingCoeff_comp (by simp), leadingCoeff_X_add_C, one_pow, mul_one]
@@ -123,8 +125,10 @@ lemma prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]} (r : ℝ
   have hf : (f ≠ 0 ∧ f.roots.card = f.natDegree) := by
     apply isRealRooted_of_dvd hXf hf0
     exact ⟨X - C r, by rw [mul_comm]⟩
-  have hf' : (f' ≠ 0 ∧ f'.roots.card = f'.natDegree) := by simpa [f'] using isRealRooted_comp_X_add_C hf r
-  have hg' : (g' ≠ 0 ∧ g'.roots.card = g'.natDegree) := by simpa [g'] using isRealRooted_comp_X_add_C h.1 r
+  have hf' : (f' ≠ 0 ∧
+    f'.roots.card = f'.natDegree) := by simpa [f'] using isRealRooted_comp_X_add_C hf r
+  have hg' : (g' ≠ 0 ∧
+    g'.roots.card = g'.natDegree) := by simpa [g'] using isRealRooted_comp_X_add_C h.1 r
   have hf'_pos : HasPosLeadingCoeff f' := by
     unfold HasPosLeadingCoeff f'
     rw [leadingCoeff_comp (by simp), leadingCoeff_X_add_C, one_pow, mul_one]
@@ -476,7 +480,8 @@ theorem isRealRooted_pos_combo_of_prec {f g : ℝ[X]}
 restricted Obreschkoff converse: every strictly positive linear combination of
 `f` and `g` is real-rooted. -/
 def PosComboRealRooted (f g : ℝ[X]) : Prop :=
-  ∀ {lam μ : ℝ}, 0 < lam → 0 < μ → ((C lam * f + C μ * g) ≠ 0 ∧ (C lam * f + C μ * g).roots.card = (C lam * f + C μ * g).natDegree)
+  ∀ {lam μ : ℝ}, 0 < lam → 0 < μ → ((C lam * f + C μ * g) ≠ 0 ∧
+    (C lam * f + C μ * g).roots.card = (C lam * f + C μ * g).natDegree)
 
 namespace PosComboRealRooted
 
@@ -511,13 +516,17 @@ lemma of_prec {f g : ℝ[X]} (hfg : Prec f g)
   exact isRealRooted_pos_combo_of_prec hfg hf_pos hg_pos hlam hμ
 
 lemma iff_add_right {f g : ℝ[X]} :
-    PosComboRealRooted f g ↔ ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).roots.card = (f + C μ * g).natDegree) := by
+    PosComboRealRooted f g ↔ ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧
+      (f + C μ * g).roots.card = (f + C μ * g).natDegree) := by
   constructor
   · intro h μ hμ
     simpa [one_mul, add_comm] using h (lam := 1) (μ := μ) zero_lt_one hμ
   · intro h lam μ hlam hμ
-    have hbase : ((f + C (μ / lam) * g) ≠ 0 ∧ (f + C (μ / lam) * g).roots.card = (f + C (μ / lam) * g).natDegree) := h (μ := μ / lam) (by positivity)
-    have hscaled : ((C lam * (f + C (μ / lam) * g)) ≠ 0 ∧ (C lam * (f + C (μ / lam) * g)).roots.card = (C lam * (f + C (μ / lam) * g)).natDegree) :=
+    have hbase : ((f + C (μ / lam) * g) ≠ 0 ∧
+      (f + C (μ / lam) * g).roots.card =
+        (f + C (μ / lam) * g).natDegree) := h (μ := μ / lam) (by positivity)
+    have hscaled : ((C lam * (f + C (μ / lam) * g)) ≠ 0 ∧
+      (C lam * (f + C (μ / lam) * g)).roots.card = (C lam * (f + C (μ / lam) * g)).natDegree) :=
       isRealRooted_C_mul hbase hlam.ne'
     have hEq : C lam * (f + C (μ / lam) * g) = C lam * f + C μ * g := by
       rw [mul_add]
@@ -531,13 +540,17 @@ lemma iff_add_right {f g : ℝ[X]} :
     simpa [hEq] using hscaled
 
 lemma iff_add_left {f g : ℝ[X]} :
-    PosComboRealRooted f g ↔ ∀ {lam : ℝ}, 0 < lam → ((C lam * f + g) ≠ 0 ∧ (C lam * f + g).roots.card = (C lam * f + g).natDegree) := by
+    PosComboRealRooted f g ↔ ∀ {lam : ℝ}, 0 < lam → ((C lam * f + g) ≠ 0 ∧
+      (C lam * f + g).roots.card = (C lam * f + g).natDegree) := by
   constructor
   · intro h lam hlam
     simpa [one_mul] using h (lam := lam) (μ := 1) hlam zero_lt_one
   · intro h lam μ hlam hμ
-    have hbase : ((C (lam / μ) * f + g) ≠ 0 ∧ (C (lam / μ) * f + g).roots.card = (C (lam / μ) * f + g).natDegree) := h (lam := lam / μ) (by positivity)
-    have hscaled : ((C μ * (C (lam / μ) * f + g)) ≠ 0 ∧ (C μ * (C (lam / μ) * f + g)).roots.card = (C μ * (C (lam / μ) * f + g)).natDegree) :=
+    have hbase : ((C (lam / μ) * f + g) ≠ 0 ∧
+      (C (lam / μ) * f + g).roots.card =
+        (C (lam / μ) * f + g).natDegree) := h (lam := lam / μ) (by positivity)
+    have hscaled : ((C μ * (C (lam / μ) * f + g)) ≠ 0 ∧
+      (C μ * (C (lam / μ) * f + g)).roots.card = (C μ * (C (lam / μ) * f + g)).natDegree) :=
       isRealRooted_C_mul hbase hμ.ne'
     have hEq : C μ * (C (lam / μ) * f + g) = C lam * f + C μ * g := by
       rw [mul_add]
@@ -552,12 +565,14 @@ lemma iff_add_left {f g : ℝ[X]} :
     simpa [hEq] using hscaled
 
 lemma of_add_right {f g : ℝ[X]}
-    (h : ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).roots.card = (f + C μ * g).natDegree)) :
+    (h : ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧
+      (f + C μ * g).roots.card = (f + C μ * g).natDegree)) :
     PosComboRealRooted f g :=
   (iff_add_right (f := f) (g := g)).2 h
 
 lemma of_add_left {f g : ℝ[X]}
-    (h : ∀ {lam : ℝ}, 0 < lam → ((C lam * f + g) ≠ 0 ∧ (C lam * f + g).roots.card = (C lam * f + g).natDegree)) :
+    (h : ∀ {lam : ℝ}, 0 < lam → ((C lam * f + g) ≠ 0 ∧
+      (C lam * f + g).roots.card = (C lam * f + g).natDegree)) :
     PosComboRealRooted f g :=
   (iff_add_left (f := f) (g := g)).2 h
 
@@ -617,7 +632,8 @@ line segment once the two endpoints are known to be real-rooted. -/
 lemma isRealRooted_closed_segment {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
     (hf : f ≠ 0 ∧ f.roots.card = f.natDegree) (hg : g ≠ 0 ∧ g.roots.card = g.natDegree)
     {β : ℝ} (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1) :
-    ((C (1 - β) * f + C β * g) ≠ 0 ∧ (C (1 - β) * f + C β * g).roots.card = (C (1 - β) * f + C β * g).natDegree) := by
+    ((C (1 - β) * f + C β * g) ≠ 0 ∧
+      (C (1 - β) * f + C β * g).roots.card = (C (1 - β) * f + C β * g).natDegree) := by
   rcases lt_or_eq_of_le hβ0 with hβ_pos | hβ_zero
   · rcases lt_or_eq_of_le hβ1 with hβ_lt | hβ_one
     · exact hfg (sub_pos.mpr hβ_lt) hβ_pos
@@ -634,7 +650,8 @@ lemma isRealRooted_closed_segment_of_sameDegree {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree = f.natDegree)
     {β : ℝ} (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1) :
-    ((C (1 - β) * f + C β * g) ≠ 0 ∧ (C (1 - β) * f + C β * g).roots.card = (C (1 - β) * f + C β * g).natDegree) :=
+    ((C (1 - β) * f + C β * g) ≠ 0 ∧
+      (C (1 - β) * f + C β * g).roots.card = (C (1 - β) * f + C β * g).natDegree) :=
   hfg.isRealRooted_closed_segment
     (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg)
     (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg)
@@ -659,7 +676,8 @@ theorem of_aissenSchoenbergWhitney_right_pencil
   intro a b ha hb
   let z : ℝ := b / a
   have hz : 0 ≤ z := div_nonneg hb.le ha.le
-  have hp_rr : ((f + C z * g) ≠ 0 ∧ (f + C z * g).roots.card = (f + C z * g).natDegree) := (hASW (hne hz) (hnn hz) (hpf hz)).1
+  have hp_rr : ((f + C z * g) ≠ 0 ∧
+    (f + C z * g).roots.card = (f + C z * g).natDegree) := (hASW (hne hz) (hnn hz) (hpf hz)).1
   have haz : a * z = b := by
     dsimp [z]
     exact mul_div_cancel₀ b ha.ne'
@@ -704,7 +722,9 @@ lemma family_pair_right {f g : ℝ[X]} (h : PosComboRealRooted f g)
   have hsum_pos : 0 < lam + μ := add_pos hlam hμ
   have hcomb_pos : 0 < lam * μ₁ + μ * μ₂ := by
     positivity
-  have hbase : ((C (lam + μ) * f + C (lam * μ₁ + μ * μ₂) * g) ≠ 0 ∧ (C (lam + μ) * f + C (lam * μ₁ + μ * μ₂) * g).roots.card = (C (lam + μ) * f + C (lam * μ₁ + μ * μ₂) * g).natDegree) :=
+  have hbase : ((C (lam + μ) * f + C (lam * μ₁ + μ * μ₂) * g) ≠ 0 ∧
+    (C (lam + μ) * f + C (lam * μ₁ + μ * μ₂) * g).roots.card =
+      (C (lam + μ) * f + C (lam * μ₁ + μ * μ₂) * g).natDegree) :=
     h hsum_pos hcomb_pos
   have hEq :
       C lam * (f + C μ₁ * g) + C μ * (f + C μ₂ * g)
@@ -738,7 +758,9 @@ lemma family_pair_left {f g : ℝ[X]} (h : PosComboRealRooted f g)
   have hcomb_pos : 0 < lam * lam₁ + μ * lam₂ := by
     positivity
   have hsum_pos : 0 < lam + μ := add_pos hlam hμ
-  have hbase : ((C (lam * lam₁ + μ * lam₂) * f + C (lam + μ) * g) ≠ 0 ∧ (C (lam * lam₁ + μ * lam₂) * f + C (lam + μ) * g).roots.card = (C (lam * lam₁ + μ * lam₂) * f + C (lam + μ) * g).natDegree) :=
+  have hbase : ((C (lam * lam₁ + μ * lam₂) * f + C (lam + μ) * g) ≠ 0 ∧
+    (C (lam * lam₁ + μ * lam₂) * f + C (lam + μ) * g).roots.card =
+      (C (lam * lam₁ + μ * lam₂) * f + C (lam + μ) * g).natDegree) :=
     h hcomb_pos hsum_pos
   have hEq :
       C lam * (C lam₁ * f + g) + C μ * (C lam₂ * f + g)
@@ -837,7 +859,8 @@ lemma of_mul_common_factor {d f g : ℝ[X]}
   have hEq :
       C lam * (d * f) + C μ * (d * g) = d * (C lam * f + C μ * g) := by
     ring
-  have hrr : ((d * (C lam * f + C μ * g)) ≠ 0 ∧ (d * (C lam * f + C μ * g)).roots.card = (d * (C lam * f + C μ * g)).natDegree) := by
+  have hrr : ((d * (C lam * f + C μ * g)) ≠ 0 ∧
+    (d * (C lam * f + C μ * g)).roots.card = (d * (C lam * f + C μ * g)).natDegree) := by
     simpa [hEq] using h hlam hμ
   have hcombo_ne : C lam * f + C μ * g ≠ 0 := right_ne_zero_of_mul hrr.1
   exact isRealRooted_of_dvd hrr hcombo_ne ⟨d, by rw [mul_comm]⟩
@@ -1511,7 +1534,8 @@ theorem prec_convex_right {f g : ℝ[X]}
     (hfg : Prec f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b)
-    (_hfg_rr : (C a * f + C b * g) ≠ 0 ∧ (C a * f + C b * g).roots.card = (C a * f + C b * g).natDegree)
+    (_hfg_rr : (C a * f + C b * g) ≠ 0 ∧
+      (C a * f + C b * g).roots.card = (C a * f + C b * g).natDegree)
     (_hcop : IsCoprime (C a * f) (C b * g)) :
     Prec (C a * f + C b * g) g := by
   exact prec_nonneg_combo_right hfg hf_pos hg_pos ha.le hb.le (Or.inl ha)
@@ -1524,7 +1548,8 @@ theorem prec_nonneg_combo_left {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
     (hab : 0 < a ∨ 0 < b)
-    (hfg_rr : (C a * f + C b * g) ≠ 0 ∧ (C a * f + C b * g).roots.card = (C a * f + C b * g).natDegree)
+    (hfg_rr : (C a * f + C b * g) ≠ 0 ∧
+      (C a * f + C b * g).roots.card = (C a * f + C b * g).natDegree)
     (hcop : IsCoprime (C a * f) (C b * g)) :
     Prec f (C a * f + C b * g) := by
   rcases hab with ha_pos | hb_pos
@@ -1558,7 +1583,8 @@ theorem prec_convex_left {f g : ℝ[X]}
     (hfg : Prec f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b)
-    (hfg_rr : (C a * f + C b * g) ≠ 0 ∧ (C a * f + C b * g).roots.card = (C a * f + C b * g).natDegree)
+    (hfg_rr : (C a * f + C b * g) ≠ 0 ∧
+      (C a * f + C b * g).roots.card = (C a * f + C b * g).natDegree)
     (hcop : IsCoprime (C a * f) (C b * g)) :
     Prec f (C a * f + C b * g) := by
   have hCa_pos : HasPosLeadingCoeff (C a * f) := hasPosLeadingCoeff_C_mul ha hf_pos
@@ -1578,7 +1604,8 @@ theorem prec_convex_left_of_common_factor {d f g : ℝ[X]}
     (hfg : Prec f' g')
     (hf'_pos : HasPosLeadingCoeff f') (hg'_pos : HasPosLeadingCoeff g')
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b)
-    (hfg'_rr : (C a * f' + C b * g') ≠ 0 ∧ (C a * f' + C b * g').roots.card = (C a * f' + C b * g').natDegree)
+    (hfg'_rr : (C a * f' + C b * g') ≠ 0 ∧
+      (C a * f' + C b * g').roots.card = (C a * f' + C b * g').natDegree)
     (hcop : IsCoprime (C a * f') (C b * g')) :
     Prec f (C a * f + C b * g) := by
   subst hf_def hg_def

@@ -2283,7 +2283,8 @@ theorem isRealRooted_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0)
     {δ : ℝ} (hδ : 0 < δ) :
-    (((a * f + b * g) - C δ * g) ≠ 0 ∧ ((a * f + b * g) - C δ * g).roots.card = ((a * f + b * g) - C δ * g).natDegree) :=
+    (((a * f + b * g) - C δ * g) ≠ 0 ∧
+      ((a * f + b * g) - C δ * g).roots.card = ((a * f + b * g) - C δ * g).natDegree) :=
   (prec_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
     hgf hg_pos hF_pos hdeg_lo hdeg_hi hno hb_nonpos hδ).2.1
 
@@ -2303,7 +2304,8 @@ private lemma coeff_norm_le_coeffSumRange (p : ℝ[X]) (i : ℕ) :
       exact Finset.sum_nonneg fun _ _ => norm_nonneg _
     simpa using hnonneg
 
-private lemma mem_range_of_mem_aroots_of_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.roots.card = p.natDegree)
+private lemma mem_range_of_mem_aroots_of_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧
+  p.roots.card = p.natDegree)
     {z : ℂ} (hz : z ∈ p.aroots ℂ) :
     z ∈ (algebraMap ℝ ℂ).range := by
   have hmap :
@@ -2484,7 +2486,8 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
     (hgf : Interlaces g f)
     (hF_pos : HasPosLeadingCoeff F)
     (hdeg_lo : f.natDegree ≤ F.natDegree)
-    (hsub_rr : ∀ {δ : ℝ}, 0 < δ → ((F - C δ * g) ≠ 0 ∧ (F - C δ * g).roots.card = (F - C δ * g).natDegree)) :
+    (hsub_rr : ∀ {δ : ℝ}, 0 < δ → ((F - C δ * g) ≠ 0 ∧
+      (F - C δ * g).roots.card = (F - C δ * g).natDegree)) :
     (F ≠ 0 ∧ F.roots.card = F.natDegree) := by
   have hF_ne : F ≠ 0 := by
     intro h0
@@ -2578,7 +2581,8 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
       Polynomial.exists_aroots_norm_sub_lt_of_norm_coeff_sub_lt
         (f := q) (g := qδ) hη_pos hz_aeval hq_monic hqδ_monic hqδ_deg hqδ_coeff
         (IsAlgClosed.splits _)
-    have hFδ_rr : ((F - C δ * g) ≠ 0 ∧ (F - C δ * g).roots.card = (F - C δ * g).natDegree) := hsub_rr hδ_pos
+    have hFδ_rr : ((F - C δ * g) ≠ 0 ∧
+      (F - C δ * g).roots.card = (F - C δ * g).natDegree) := hsub_rr hδ_pos
     have hqδ_rr : (qδ ≠ 0 ∧ qδ.roots.card = qδ.natDegree) :=
       isRealRooted_C_mul hFδ_rr (inv_ne_zero hlc_ne)
     rcases mem_range_of_mem_aroots_of_isRealRooted hqδ_rr hw_mem with ⟨x, rfl⟩

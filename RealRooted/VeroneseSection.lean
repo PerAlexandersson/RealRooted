@@ -1567,7 +1567,9 @@ theorem isRealRooted_veroneseSectionPolynomial_of_pf {p : ℝ[X]}
     (hp : IsPolyaFrequencySequence (fun n => p.coeff n)) {r k : ℕ}
     (hr : 0 < r) (hk : k < r)
     (hsec0 : veroneseSectionPolynomial r k p ≠ 0) :
-    ((veroneseSectionPolynomial r k p) ≠ 0 ∧ (veroneseSectionPolynomial r k p).roots.card = (veroneseSectionPolynomial r k p).natDegree) := by
+    ((veroneseSectionPolynomial r k p) ≠ 0 ∧
+      (veroneseSectionPolynomial r k p).roots.card =
+        (veroneseSectionPolynomial r k p).natDegree) := by
   have hpf : IsPolyaFrequencySequence
       (fun n => (veroneseSectionPolynomial r k p).coeff n) :=
     isPolyaFrequencySequence_veroneseSectionPolynomial_coeff (p := p) hp hr hk
@@ -1618,7 +1620,9 @@ theorem isRealRooted_veroneseSectionPolynomial_of_realRooted_nonneg {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hprr : p ≠ 0 ∧ p.roots.card = p.natDegree) {r k : ℕ}
     (hr : 0 < r) (hk : k < r)
     (hsec0 : veroneseSectionPolynomial r k p ≠ 0) :
-    ((veroneseSectionPolynomial r k p) ≠ 0 ∧ (veroneseSectionPolynomial r k p).roots.card = (veroneseSectionPolynomial r k p).natDegree) := by
+    ((veroneseSectionPolynomial r k p) ≠ 0 ∧
+      (veroneseSectionPolynomial r k p).roots.card =
+        (veroneseSectionPolynomial r k p).natDegree) := by
   have hpf : IsPolyaFrequencySequence
       (fun n => (veroneseSectionPolynomial r k p).coeff n) :=
     isPolyaFrequencySequence_veroneseSectionPolynomial_of_realRooted_nonneg

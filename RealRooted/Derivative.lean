@@ -418,7 +418,8 @@ theorem derivative_interlaces {f : ℝ[X]} (hf : f ≠ 0 ∧ f.roots.card = f.na
       _ = ss.length := hss_length.symm
       _ = (↑ss : Multiset ℝ).card := (Multiset.coe_card ss).symm
       _ ≤ f.derivative.roots.card := Multiset.card_le_card hsub
-  have hf'_rr : (f.derivative ≠ 0 ∧ f.derivative.roots.card = f.derivative.natDegree) := ⟨hf'_ne, hf'_card⟩
+  have hf'_rr : (f.derivative ≠ 0 ∧
+    f.derivative.roots.card = f.derivative.natDegree) := ⟨hf'_ne, hf'_card⟩
   -- Multiset equality (sub-multiset + same cardinality)
   have hss_eq : (↑ss : Multiset ℝ) = f.derivative.roots :=
     Multiset.eq_of_le_of_card_le hsub (by rw [Multiset.coe_card, hss_length, hf'_card, hf'_deg])

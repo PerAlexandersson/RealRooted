@@ -159,7 +159,8 @@ private lemma hasNonnegCoeffs_comp_X_add_C_of_roots_le_local
     {p : ℝ[X]} (hp : p ≠ 0 ∧ p.roots.card = p.natDegree) (hp_pos : HasPosLeadingCoeff p)
     {r : ℝ} (hbound : ∀ s ∈ p.roots, s ≤ r) :
     HasNonnegCoeffs (p.comp (X + C r)) := by
-  have hp' : ((p.comp (X + C r)) ≠ 0 ∧ (p.comp (X + C r)).roots.card = (p.comp (X + C r)).natDegree) := isRealRooted_comp_X_add_C hp r
+  have hp' : ((p.comp (X + C r)) ≠ 0 ∧
+    (p.comp (X + C r)).roots.card = (p.comp (X + C r)).natDegree) := isRealRooted_comp_X_add_C hp r
   refine (hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hp').2 ?_
   refine ⟨hasPosLeadingCoeff_comp_X_add_C_local hp_pos r, ?_⟩
   intro s hs
@@ -173,7 +174,8 @@ private lemma exists_rightmost_derivative_root_with_eval_nonpos_local
     ∃ c, p.derivative.IsRoot c ∧
       (∀ s ∈ p.derivative.roots, s ≤ c) ∧
       p.eval c ≤ 0 := by
-  have hp' : (p.derivative ≠ 0 ∧ p.derivative.roots.card = p.derivative.natDegree) := (derivative_interlaces hp hdeg).2.1
+  have hp' : (p.derivative ≠ 0 ∧
+    p.derivative.roots.card = p.derivative.natDegree) := (derivative_interlaces hp hdeg).2.1
   have hp'_pos : HasPosLeadingCoeff p.derivative :=
     hasPosLeadingCoeff_derivative hp_pos (by lia)
   have hp'_deg : p.derivative.natDegree = p.natDegree - 1 :=
@@ -340,7 +342,8 @@ combination is real-rooted, allowing the zero polynomial in the degenerate
 `α = β = 0` case. -/
 def Compatible (f g : ℝ[X]) : Prop :=
   ∀ α β : ℝ, 0 ≤ α → 0 ≤ β →
-    C α * f + C β * g = 0 ∨ ((C α * f + C β * g) ≠ 0 ∧ (C α * f + C β * g).roots.card = (C α * f + C β * g).natDegree)
+    C α * f + C β * g = 0 ∨ ((C α * f + C β * g) ≠ 0 ∧
+      (C α * f + C β * g).roots.card = (C α * f + C β * g).natDegree)
 
 /-- Pairwise compatibility on a finite family, in the Chudnovsky--Seymour
 sense from `INTERLACING.md`. -/
@@ -353,7 +356,8 @@ def FamilyCompatible (fs : List ℝ[X]) : Prop :=
   ∀ l : List (ℝ × ℝ[X]),
     (∀ ap ∈ l, ap.2 ∈ fs) →
     (∀ ap ∈ l, 0 ≤ ap.1) →
-    weightedSum l = 0 ∨ ((weightedSum l) ≠ 0 ∧ (weightedSum l).roots.card = (weightedSum l).natDegree)
+    weightedSum l = 0 ∨ ((weightedSum l) ≠ 0 ∧
+      (weightedSum l).roots.card = (weightedSum l).natDegree)
 
 namespace Compatible
 
@@ -418,7 +422,8 @@ private lemma natDegree_le_one_of_const_left
     exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two_local
       hg_rr hg_pos hg_deg2
   have hcombo :
-      C (t / c) * C c + g = 0 ∨ ((C (t / c) * C c + g) ≠ 0 ∧ (C (t / c) * C c + g).roots.card = (C (t / c) * C c + g).natDegree) := by
+      C (t / c) * C c + g = 0 ∨ ((C (t / c) * C c + g) ≠ 0 ∧
+        (C (t / c) * C c + g).roots.card = (C (t / c) * C c + g).natDegree) := by
     simpa using hcg (t / c) 1 (by positivity) (by positivity)
   have hrewrite :
       C (t / c) * C c + g = C t + g := by
@@ -831,7 +836,8 @@ def PosComboNoCommonAffineFamilyStatement : Prop :=
     g.natDegree ≤ f.natDegree + 1 →
     (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
     ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
-      ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).roots.card = (((C s * X + C t) * f) + g).natDegree)
+      ((((C s * X + C t) * f) + g) ≠ 0 ∧
+        (((C s * X + C t) * f) + g).roots.card = (((C s * X + C t) * f) + g).natDegree)
 
 /-- Stronger boundary-right-pair hypothesis in the nonnegative no-common
 regime: for each boundary member `C t * f + g`, orient the right-hand pair
@@ -1018,7 +1024,8 @@ theorem posComboNoCommonAffineFamily_of_boundaryRightPairOrientation
     prec_right_pair_of_prec_or_revPrec_of_no_common_nonneg
       hprec_or hp_rr hp_nn hno_right
   have hcombo_rr :
-      ((C (1 : ℝ) * p + C s * (X * f)) ≠ 0 ∧ (C (1 : ℝ) * p + C s * (X * f)).roots.card = (C (1 : ℝ) * p + C s * (X * f)).natDegree) :=
+      ((C (1 : ℝ) * p + C s * (X * f)) ≠ 0 ∧
+        (C (1 : ℝ) * p + C s * (X * f)).roots.card = (C (1 : ℝ) * p + C s * (X * f)).natDegree) :=
     isRealRooted_nonneg_combo_of_prec
       hprec hp_pos hXf_pos (by positivity) hs.le (Or.inl zero_lt_one)
   simpa [p, add_assoc, add_left_comm, add_comm, mul_assoc, left_distrib, right_distrib]
@@ -1503,7 +1510,8 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily_degre
   have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
   have haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).roots.card = (((C s * X + C t) * f) + g).natDegree) := by
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧
+          (((C s * X + C t) * f) + g).roots.card = (((C s * X + C t) * f) + g).natDegree) := by
     intro s t hs ht
     exact
       haffBridge hf_pos hg_pos hfnn hgnn hfg (by lia) (by lia) hno hs ht
@@ -1523,7 +1531,8 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily
   have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
   have haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).roots.card = (((C s * X + C t) * f) + g).natDegree) := by
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧
+          (((C s * X + C t) * f) + g).roots.card = (((C s * X + C t) * f) + g).natDegree) := by
     intro s t hs ht
     exact
       haffBridge hf_pos hg_pos hfnn hgnn hfg (by lia) (by lia) hno hs ht
@@ -1627,7 +1636,8 @@ theorem allComboRealRooted_of_affineFamilyBridge_and_nonnegCoeffs
   have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
   have haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).roots.card = (((C s * X + C t) * f) + g).natDegree) := by
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧
+          (((C s * X + C t) * f) + g).roots.card = (((C s * X + C t) * f) + g).natDegree) := by
     intro s t hs ht
     exact haffBridge hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hs ht
   exact
@@ -3100,7 +3110,9 @@ theorem pairwiseCompatible_of_familyCompatible
   let fj : ℝ[X] := fs.get j
   have hpair :
       weightedSum [(α, fi), (β, fj)] = 0 ∨
-        ((weightedSum [(α, fi), (β, fj)]) ≠ 0 ∧ (weightedSum [(α, fi), (β, fj)]).roots.card = (weightedSum [(α, fi), (β, fj)]).natDegree) := by
+        ((weightedSum [(α, fi), (β, fj)]) ≠ 0 ∧
+          (weightedSum [(α, fi), (β, fj)]).roots.card =
+            (weightedSum [(α, fi), (β, fj)]).natDegree) := by
     exact hfull [(α, fi), (β, fj)]
       (by
         intro ap hap

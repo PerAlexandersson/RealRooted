@@ -306,7 +306,8 @@ theorem isRealRooted_TDeriv {eps : ℝ} {p : ℝ[X]}
       have hlin : TDeriv eps (-p) = -TDeriv eps p := by
         simp [TDeriv, derivative_neg]; ring
       rw [hlin] at hT_neg
-      -- hT_neg : ((-(TDeriv eps p)) ≠ 0 ∧ (-(TDeriv eps p)).roots.card = (-(TDeriv eps p)).natDegree)
+      -- hT_neg : ((-(TDeriv eps p)) ≠ 0 ∧
+      --   (-(TDeriv eps p)).roots.card = (-(TDeriv eps p)).natDegree)
       -- i.e., -(TDeriv eps p) ≠ 0 ∧ (-(TDeriv eps p)).roots.card = (-(TDeriv eps p)).natDegree
       have hne : TDeriv eps p ≠ 0 := by
         intro h; exact hT_neg.1 (by rw [h, neg_zero])
@@ -477,7 +478,8 @@ lemma not_isRoot_TDeriv_of_simple_root
 lemma isRealRooted_iterateTDeriv {eps : ℝ} {p : ℝ[X]} {k : ℕ}
     (heps : 0 < eps)
     (hp : p ≠ 0 ∧ p.roots.card = p.natDegree) :
-    ((iterateTDeriv eps k p) ≠ 0 ∧ (iterateTDeriv eps k p).roots.card = (iterateTDeriv eps k p).natDegree) := by
+    ((iterateTDeriv eps k p) ≠ 0 ∧
+      (iterateTDeriv eps k p).roots.card = (iterateTDeriv eps k p).natDegree) := by
   induction k with
   | zero => simpa using hp
   | succ n ih =>
@@ -981,7 +983,8 @@ order `k` persists as a nearby derivative root of the regularized family. -/
 theorem exists_delta_and_real_root_near_iterateTDeriv_of_isRealRooted_iterate_derivative
     (n k : ℕ) {p : ℝ[X]} {a ε : ℝ}
     (ha : ((derivative^[k]) p).IsRoot a)
-    (hp : ((derivative^[k]) p) ≠ 0 ∧ ((derivative^[k]) p).roots.card = ((derivative^[k]) p).natDegree)
+    (hp : ((derivative^[k]) p) ≠ 0 ∧
+      ((derivative^[k]) p).roots.card = ((derivative^[k]) p).natDegree)
     (hε : 0 < ε) :
     ∃ δ > 0, ∀ ⦃eps : ℝ⦄, 0 < eps → ‖eps‖ < δ →
       ∃ b : ℝ, ((derivative^[k]) (iterateTDeriv eps n p)).IsRoot b ∧
@@ -1003,7 +1006,8 @@ If `k < rootMultiplicity a p`, then the `k`-th derivative already vanishes at
 theorem exists_delta_and_real_root_near_iterateTDeriv_of_lt_rootMultiplicity
     (n k : ℕ) {p : ℝ[X]} {a ε : ℝ}
     (ha : k < p.rootMultiplicity a)
-    (hp : ((derivative^[k]) p) ≠ 0 ∧ ((derivative^[k]) p).roots.card = ((derivative^[k]) p).natDegree)
+    (hp : ((derivative^[k]) p) ≠ 0 ∧
+      ((derivative^[k]) p).roots.card = ((derivative^[k]) p).natDegree)
     (hε : 0 < ε) :
     ∃ δ > 0, ∀ ⦃eps : ℝ⦄, 0 < eps → ‖eps‖ < δ →
       ∃ b : ℝ, ((derivative^[k]) (iterateTDeriv eps n p)).IsRoot b ∧
@@ -1286,7 +1290,9 @@ theorem isRealRooted_and_hasSimpleRoots_iterateTDeriv
     (heps : 0 < eps)
     (hf : f ≠ 0 ∧ f.roots.card = f.natDegree)
     (hdeg : f.natDegree = n) :
-    ((iterateTDeriv eps n f) ≠ 0 ∧ (iterateTDeriv eps n f).roots.card = (iterateTDeriv eps n f).natDegree) ∧ HasSimpleRoots (iterateTDeriv eps n f) := by
+    ((iterateTDeriv eps n f) ≠ 0 ∧
+      (iterateTDeriv eps n f).roots.card = (iterateTDeriv eps n f).natDegree) ∧
+      HasSimpleRoots (iterateTDeriv eps n f) := by
   refine ⟨isRealRooted_iterateTDeriv heps hf, ?_⟩
   intro a ha
   by_contra hmult; push Not at hmult

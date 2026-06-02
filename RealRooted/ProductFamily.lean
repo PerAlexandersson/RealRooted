@@ -321,7 +321,9 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
     (hlen : fs.length = gs.length)
     (hfs : IsInterlacingSeqNonneg fs)
     (hgs : IsInterlacingSeqNonneg gs) :
-    (((fs.zipWith (· * ·) gs.reverse).sum) ≠ 0 ∧ ((fs.zipWith (· * ·) gs.reverse).sum).roots.card = ((fs.zipWith (· * ·) gs.reverse).sum).natDegree) := by
+    (((fs.zipWith (· * ·) gs.reverse).sum) ≠ 0 ∧
+      ((fs.zipWith (· * ·) gs.reverse).sum).roots.card =
+        ((fs.zipWith (· * ·) gs.reverse).sum).natDegree) := by
   let ps := fs.zipWith (· * ·) gs.reverse
   have hpos : ∀ p ∈ ps, HasPosLeadingCoeff p := by
     intro p hp
@@ -549,7 +551,9 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg
       simp [hnil]
     exact hsum_ne (by rw [← hsum_eq, hsum0])
   have hrr :
-      (((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum) ≠ 0 ∧ ((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum).roots.card = ((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum).natDegree) := by
+      (((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum) ≠ 0 ∧
+        ((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum).roots.card =
+          ((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum).natDegree) := by
     exact
       isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
         (fs := fs') (gs := gs'.reverse)
@@ -600,7 +604,9 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg_both
       simp [hnil]
     exact hsum_ne (by rw [← hsum_eq, hsum0])
   have hrr :
-      (((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum) ≠ 0 ∧ ((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum).roots.card = ((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum).natDegree) := by
+      (((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum) ≠ 0 ∧
+        ((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum).roots.card =
+          ((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum).natDegree) := by
     exact
       isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
         (fs := fs') (gs := gs'.reverse)

@@ -165,8 +165,10 @@ lemma prec0_C_C (a b : ℝ) : Prec0 (C a : ℝ[X]) (C b : ℝ[X]) := by
   right
   have hCa : (C a : ℝ[X]) ≠ 0 := C_ne_zero.mpr ha
   have hCb : (C b : ℝ[X]) ≠ 0 := C_ne_zero.mpr hb
-  have hrr_a : ((C a : ℝ[X]) ≠ 0 ∧ (C a : ℝ[X]).roots.card = (C a : ℝ[X]).natDegree) := isRealRooted_of_deg_zero hCa (by simp)
-  have hrr_b : ((C b : ℝ[X]) ≠ 0 ∧ (C b : ℝ[X]).roots.card = (C b : ℝ[X]).natDegree) := isRealRooted_of_deg_zero hCb (by simp)
+  have hrr_a : ((C a : ℝ[X]) ≠ 0 ∧
+    (C a : ℝ[X]).roots.card = (C a : ℝ[X]).natDegree) := isRealRooted_of_deg_zero hCa (by simp)
+  have hrr_b : ((C b : ℝ[X]) ≠ 0 ∧
+    (C b : ℝ[X]).roots.card = (C b : ℝ[X]).natDegree) := isRealRooted_of_deg_zero hCb (by simp)
   refine ⟨hrr_a, hrr_b, [], [], by simp, by simp, ?_, ?_, ?_⟩
   · exact (Polynomial.roots_C a).symm
   · exact (Polynomial.roots_C b).symm
@@ -180,14 +182,16 @@ lemma prec0_C_affine_linear {c u v : ℝ} (hu : 0 < u) :
   right
   right
   have hC : (C c : ℝ[X]) ≠ 0 := C_ne_zero.mpr hc
-  have hlin_rr : ((C u * X + C v : ℝ[X]) ≠ 0 ∧ (C u * X + C v : ℝ[X]).roots.card = (C u * X + C v : ℝ[X]).natDegree) :=
+  have hlin_rr : ((C u * X + C v : ℝ[X]) ≠ 0 ∧
+    (C u * X + C v : ℝ[X]).roots.card = (C u * X + C v : ℝ[X]).natDegree) :=
     isRealRooted_affine_factor (s := u) (t := v) hu
   have hlin_nat : (C u * X + C v : ℝ[X]).natDegree = 1 := by
     simpa [add_comm] using Polynomial.natDegree_linear (a := u) (b := v) hu.ne'
   have hlin_deg : (C u * X + C v : ℝ[X]).degree = 1 := by
     rw [degree_eq_natDegree hlin_rr.1, hlin_nat]
     norm_num
-  have hC_rr : ((C c : ℝ[X]) ≠ 0 ∧ (C c : ℝ[X]).roots.card = (C c : ℝ[X]).natDegree) := isRealRooted_of_deg_zero hC (by simp)
+  have hC_rr : ((C c : ℝ[X]) ≠ 0 ∧
+    (C c : ℝ[X]).roots.card = (C c : ℝ[X]).natDegree) := isRealRooted_of_deg_zero hC (by simp)
   refine ⟨hC_rr, hlin_rr, [], [-(u⁻¹ * v)], by simp, by simp, ?_, ?_, ?_⟩
   · exact (Polynomial.roots_C c).symm
   · simpa [hlin_deg] using
@@ -247,7 +251,9 @@ lemma affine_mul_X_add_X_eq (s t : ℝ) :
           abel
 
 lemma isRealRooted_affine_mul_X_add_X {s t : ℝ} (hs : 0 < s) :
-    (((C s * X + C t) * X + X : ℝ[X]) ≠ 0 ∧ ((C s * X + C t) * X + X : ℝ[X]).roots.card = ((C s * X + C t) * X + X : ℝ[X]).natDegree) := by
+    (((C s * X + C t) * X + X : ℝ[X]) ≠ 0 ∧
+      ((C s * X + C t) * X + X : ℝ[X]).roots.card =
+        ((C s * X + C t) * X + X : ℝ[X]).natDegree) := by
   rw [affine_mul_X_add_X_eq]
   exact
     isRealRooted_mul isRealRooted_X
@@ -255,7 +261,9 @@ lemma isRealRooted_affine_mul_X_add_X {s t : ℝ} (hs : 0 < s) :
 
 lemma isRealRooted_affine_mul_C_add_X
     {A s t : ℝ} (hA : 0 ≤ A) (hs : 0 < s) :
-    (((C s * X + C t) * C A + X : ℝ[X]) ≠ 0 ∧ ((C s * X + C t) * C A + X : ℝ[X]).roots.card = ((C s * X + C t) * C A + X : ℝ[X]).natDegree) := by
+    (((C s * X + C t) * C A + X : ℝ[X]) ≠ 0 ∧
+      ((C s * X + C t) * C A + X : ℝ[X]).roots.card =
+        ((C s * X + C t) * C A + X : ℝ[X]).natDegree) := by
   rw [affine_mul_C_add_X]
   exact isRealRooted_affine_factor (s := s * A + 1) (t := t * A) (by positivity)
 
@@ -292,9 +300,11 @@ lemma prec_affine_linear_affine_linear_of_cross
     simpa [add_comm] using Polynomial.natDegree_linear (a := u) (b := v) hu.ne'
   have hq_nat : (C U * X + C V : ℝ[X]).natDegree = 1 := by
     simpa [add_comm] using Polynomial.natDegree_linear (a := U) (b := V) hU.ne'
-  have hp_rr : ((C u * X + C v : ℝ[X]) ≠ 0 ∧ (C u * X + C v : ℝ[X]).roots.card = (C u * X + C v : ℝ[X]).natDegree) :=
+  have hp_rr : ((C u * X + C v : ℝ[X]) ≠ 0 ∧
+    (C u * X + C v : ℝ[X]).roots.card = (C u * X + C v : ℝ[X]).natDegree) :=
     isRealRooted_affine_factor (s := u) (t := v) hu
-  have hq_rr : ((C U * X + C V : ℝ[X]) ≠ 0 ∧ (C U * X + C V : ℝ[X]).roots.card = (C U * X + C V : ℝ[X]).natDegree) :=
+  have hq_rr : ((C U * X + C V : ℝ[X]) ≠ 0 ∧
+    (C U * X + C V : ℝ[X]).roots.card = (C U * X + C V : ℝ[X]).natDegree) :=
     isRealRooted_affine_factor (s := U) (t := V) hU
   have hp_deg : (C u * X + C v : ℝ[X]).degree = 1 := by
     rw [degree_eq_natDegree hp_rr.1, hp_nat]
@@ -397,7 +407,8 @@ lemma prec0_C_mul_affine_linear_X_mul_affine_linear
   by_cases ha0 : a = 0
   · left
     simp [ha0]
-  have hf : ((C u * X + C v : ℝ[X]) ≠ 0 ∧ (C u * X + C v : ℝ[X]).roots.card = (C u * X + C v : ℝ[X]).natDegree) :=
+  have hf : ((C u * X + C v : ℝ[X]) ≠ 0 ∧
+    (C u * X + C v : ℝ[X]).roots.card = (C u * X + C v : ℝ[X]).natDegree) :=
     isRealRooted_affine_factor (s := u) (t := v) hu
   have hfnn : HasNonnegCoeffs (C u * X + C v : ℝ[X]) :=
     hasNonnegCoeffs_affine_linear hu.le hv
@@ -520,11 +531,15 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_one (a : ℝ) :
   fin_cases j₁
   fin_cases j₂
   simp [veroneseLinearFactorRowDesc, oneSupportSeq]
-  have hlin : ((C s * X + C (t + 1) : ℝ[X]) ≠ 0 ∧ (C s * X + C (t + 1) : ℝ[X]).roots.card = (C s * X + C (t + 1) : ℝ[X]).natDegree) :=
+  have hlin : ((C s * X + C (t + 1) : ℝ[X]) ≠ 0 ∧
+    (C s * X + C (t + 1) : ℝ[X]).roots.card = (C s * X + C (t + 1) : ℝ[X]).natDegree) :=
     isRealRooted_affine_factor (s := s) (t := t + 1) hs
-  have hxpa : ((X + C a : ℝ[X]) ≠ 0 ∧ (X + C a : ℝ[X]).roots.card = (X + C a : ℝ[X]).natDegree) := by
+  have hxpa : ((X + C a : ℝ[X]) ≠ 0 ∧
+    (X + C a : ℝ[X]).roots.card = (X + C a : ℝ[X]).natDegree) := by
     simpa using isRealRooted_affine_factor (s := 1) (t := a) zero_lt_one
-  have hrr : (((C s * X + C (t + 1)) * (X + C a) : ℝ[X]) ≠ 0 ∧ ((C s * X + C (t + 1)) * (X + C a) : ℝ[X]).roots.card = ((C s * X + C (t + 1)) * (X + C a) : ℝ[X]).natDegree) :=
+  have hrr : (((C s * X + C (t + 1)) * (X + C a) : ℝ[X]) ≠ 0 ∧
+    ((C s * X + C (t + 1)) * (X + C a) : ℝ[X]).roots.card =
+      ((C s * X + C (t + 1)) * (X + C a) : ℝ[X]).natDegree) :=
     isRealRooted_mul hlin hxpa
   have hsum : (C s * X + C t : ℝ[X]) + 1 = C s * X + C (t + 1) := by
     ext n
@@ -1088,7 +1103,8 @@ theorem isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_of_re
     {r : ℕ} (hr : 0 < r) {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hprr : p ≠ 0 ∧ p.roots.card = p.natDegree) :
     IsInterlacingSeq0Nonneg (veroneseSectionPolynomialListDesc r p) ∧
-      ∀ f ∈ veroneseSectionPolynomialListDesc r p, f ≠ 0 → (f ≠ 0 ∧ f.roots.card = f.natDegree) := by
+      ∀ f ∈ veroneseSectionPolynomialListDesc r p, f ≠ 0 → (f ≠ 0 ∧
+        f.roots.card = f.natDegree) := by
   let as := p.roots.toList.map fun x => -x
   have has : ∀ a ∈ as, 0 ≤ a := by
     intro a ha

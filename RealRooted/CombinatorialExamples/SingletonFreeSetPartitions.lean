@@ -227,12 +227,15 @@ lemma natDegree_singletonFreeSetPartitionsCore (n : Nat) :
   lia
 
 lemma roots_nonpos_singletonFreeSetPartitions_of_isRealRooted {n : Nat}
-    (hrr : (singletonFreeSetPartitions n) ≠ 0 ∧ (singletonFreeSetPartitions n).roots.card = (singletonFreeSetPartitions n).natDegree) :
+    (hrr : (singletonFreeSetPartitions n) ≠ 0 ∧
+      (singletonFreeSetPartitions n).roots.card = (singletonFreeSetPartitions n).natDegree) :
     ∀ r ∈ (singletonFreeSetPartitions n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs hrr (singletonFreeSetPartitions_nonnegCoeffs n)
 
 lemma roots_nonpos_singletonFreeSetPartitionsCore_of_isRealRooted {n : Nat}
-    (hrr : (singletonFreeSetPartitionsCore n) ≠ 0 ∧ (singletonFreeSetPartitionsCore n).roots.card = (singletonFreeSetPartitionsCore n).natDegree) :
+    (hrr : (singletonFreeSetPartitionsCore n) ≠ 0 ∧
+      (singletonFreeSetPartitionsCore n).roots.card =
+        (singletonFreeSetPartitionsCore n).natDegree) :
     ∀ r ∈ (singletonFreeSetPartitionsCore n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs hrr (singletonFreeSetPartitionsCore_nonnegCoeffs n)
 
@@ -246,7 +249,9 @@ lemma prec_singletonFreeSetPartitionsCore_of_prec {n : Nat} (hn : 3 ≤ n)
       Prec (C (n + 1 : ℝ) * singletonFreeSetPartitions n)
         (singletonFreeSetPartitions (n + 1)) := by
     exact prec_C_mul_left hprev hscalar_ne
-  have hf : ((singletonFreeSetPartitions (n + 1)) ≠ 0 ∧ (singletonFreeSetPartitions (n + 1)).roots.card = (singletonFreeSetPartitions (n + 1)).natDegree) := hprev.2.1
+  have hf : ((singletonFreeSetPartitions (n + 1)) ≠ 0 ∧
+    (singletonFreeSetPartitions (n + 1)).roots.card =
+      (singletonFreeSetPartitions (n + 1)).natDegree) := hprev.2.1
   have hder :
       Interlaces (singletonFreeSetPartitions (n + 1)).derivative
         (singletonFreeSetPartitions (n + 1)) := by
@@ -389,7 +394,8 @@ theorem prec_singletonFreeSetPartitions_succ :
           (n := n + 3) (by lia) hcore
 
 theorem isRealRooted_singletonFreeSetPartitions :
-    ∀ n : Nat, 2 ≤ n → ((singletonFreeSetPartitions n) ≠ 0 ∧ (singletonFreeSetPartitions n).roots.card = (singletonFreeSetPartitions n).natDegree)
+    ∀ n : Nat, 2 ≤ n → ((singletonFreeSetPartitions n) ≠ 0 ∧
+      (singletonFreeSetPartitions n).roots.card = (singletonFreeSetPartitions n).natDegree)
   | 0, hn => by
       lia
   | 1, hn => by

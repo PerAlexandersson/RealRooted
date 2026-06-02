@@ -1475,7 +1475,8 @@ private lemma roots_polyOfDescRoots (xs : List ℝ) :
       simp
 
 private lemma isRealRooted_polyOfDescRoots (xs : List ℝ) :
-    ((polyOfDescRoots xs) ≠ 0 ∧ (polyOfDescRoots xs).roots.card = (polyOfDescRoots xs).natDegree) := by
+    ((polyOfDescRoots xs) ≠ 0 ∧
+      (polyOfDescRoots xs).roots.card = (polyOfDescRoots xs).natDegree) := by
   unfold polyOfDescRoots
   induction xs with
   | nil =>
@@ -1487,7 +1488,9 @@ private lemma isRealRooted_polyOfDescRoots (xs : List ℝ) :
 private lemma rootSeqDesc_polyOfDescRoots_eq
     {xs : List ℝ} (hxs : xs.Pairwise (· ≥ ·)) :
     rootSeqDesc (polyOfDescRoots xs) = xs := by
-  have hrr : ((polyOfDescRoots xs) ≠ 0 ∧ (polyOfDescRoots xs).roots.card = (polyOfDescRoots xs).natDegree) := isRealRooted_polyOfDescRoots xs
+  have hrr : ((polyOfDescRoots xs) ≠ 0 ∧
+    (polyOfDescRoots xs).roots.card =
+      (polyOfDescRoots xs).natDegree) := isRealRooted_polyOfDescRoots xs
   have hroots : (↑xs.reverse : Multiset ℝ) = (polyOfDescRoots xs).roots := by
     rw [roots_polyOfDescRoots]
     simp
@@ -1521,7 +1524,9 @@ private lemma prec_of_slots_polyOfDescRoots
     simp [ss, rootSeqDesc, Multiset.sort_eq]
   have hrs_eq : (↑rs : Multiset ℝ) = (polyOfDescRoots xs).roots := by
     simp [rs, roots_polyOfDescRoots]
-  have hpoly_rr : ((polyOfDescRoots xs) ≠ 0 ∧ (polyOfDescRoots xs).roots.card = (polyOfDescRoots xs).natDegree) := isRealRooted_polyOfDescRoots xs
+  have hpoly_rr : ((polyOfDescRoots xs) ≠ 0 ∧
+    (polyOfDescRoots xs).roots.card =
+      (polyOfDescRoots xs).natDegree) := isRealRooted_polyOfDescRoots xs
   have hlen_cases : xs.length = f.natDegree ∨ xs.length = f.natDegree + 1 := by
     lia
   refine ⟨hf, hpoly_rr, ss, rs, hss_pair, hrs_pair, hss_eq, hrs_eq, ?_⟩

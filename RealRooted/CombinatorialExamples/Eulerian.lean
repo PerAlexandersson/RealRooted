@@ -243,7 +243,8 @@ the oriented `Prec` sense. The induction hypothesis supplies real-rootedness of
 theorem prec_eulerianTilde_succ : ∀ n : Nat,
     Prec (eulerianTilde n) (eulerianTilde (n + 1))
   | 0 => by
-      have hrr0 : ((eulerianTilde 0) ≠ 0 ∧ (eulerianTilde 0).roots.card = (eulerianTilde 0).natDegree) := by
+      have hrr0 : ((eulerianTilde 0) ≠ 0 ∧
+        (eulerianTilde 0).roots.card = (eulerianTilde 0).natDegree) := by
         apply isRealRooted_of_degree_one
         simp [eulerianTilde_zero]
       exact prec_eulerianTilde_succ_of_prec_affine

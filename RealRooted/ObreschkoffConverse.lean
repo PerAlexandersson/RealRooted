@@ -765,7 +765,8 @@ private lemma wronskian_eval_ne_zero_of_eq_zero_or_simple_combo
     (hcombo :
       ∀ α β : ℝ,
         C α * f + C β * g = 0 ∨
-          (((C α * f + C β * g) ≠ 0 ∧ (C α * f + C β * g).roots.card = (C α * f + C β * g).natDegree) ∧
+          (((C α * f + C β * g) ≠ 0 ∧
+            (C α * f + C β * g).roots.card = (C α * f + C β * g).natDegree) ∧
             HasSimpleRoots (C α * f + C β * g)))
     (hdeg_pos : 0 < max f.natDegree g.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
@@ -902,7 +903,8 @@ private lemma combo_eq_zero_or_realRooted_simple_of_wronskian_eval_ne_zero
     (hW_ne : ∀ x : ℝ, (wronskian f g).eval x ≠ 0) :
     ∀ α β : ℝ,
       C α * f + C β * g = 0 ∨
-        (((C α * f + C β * g) ≠ 0 ∧ (C α * f + C β * g).roots.card = (C α * f + C β * g).natDegree) ∧
+        (((C α * f + C β * g) ≠ 0 ∧
+          (C α * f + C β * g).roots.card = (C α * f + C β * g).natDegree) ∧
           HasSimpleRoots (C α * f + C β * g)) := by
   intro α β
   rcases hall α β with hzero | hrr
@@ -1099,7 +1101,8 @@ private lemma false_of_allComboRealRooted_of_double_root_and_eval_ne_of_pos
       simpa [hp_eval0] using heval0
     exact hq_eval_ne ((mul_eq_zero.mp this).resolve_left hβ_ne)
   have hcombo_rr :
-      ((C 1 * p + C β * q) ≠ 0 ∧ (C 1 * p + C β * q).roots.card = (C 1 * p + C β * q).natDegree) := by
+      ((C 1 * p + C β * q) ≠ 0 ∧
+        (C 1 * p + C β * q).roots.card = (C 1 * p + C β * q).natDegree) := by
     rcases hall 1 β with hzero | hrr
     · exact False.elim (hcombo_nonzero (by simpa using hzero))
     · simpa using hrr
@@ -1298,7 +1301,8 @@ private lemma wronskian_eval_mul_pos_of_le_of_eq_zero_or_simple_combo
     (hcombo :
       ∀ α β : ℝ,
         C α * f + C β * g = 0 ∨
-          (((C α * f + C β * g) ≠ 0 ∧ (C α * f + C β * g).roots.card = (C α * f + C β * g).natDegree) ∧
+          (((C α * f + C β * g) ≠ 0 ∧
+            (C α * f + C β * g).roots.card = (C α * f + C β * g).natDegree) ∧
             HasSimpleRoots (C α * f + C β * g)))
     (hdeg_pos : 0 < max f.natDegree g.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
@@ -1319,7 +1323,8 @@ private lemma hasSimpleRoots_of_eq_zero_or_isRealRooted_and_hasSimpleRoots_left
     (hcombo :
       ∀ α β : ℝ,
         C α * f + C β * g = 0 ∨
-          (((C α * f + C β * g) ≠ 0 ∧ (C α * f + C β * g).roots.card = (C α * f + C β * g).natDegree) ∧
+          (((C α * f + C β * g) ≠ 0 ∧
+            (C α * f + C β * g).roots.card = (C α * f + C β * g).natDegree) ∧
             HasSimpleRoots (C α * f + C β * g))) :
     HasSimpleRoots f := by
   rcases hcombo 1 0 with hzero | ⟨_, hsimple⟩
@@ -1333,7 +1338,8 @@ private lemma hasSimpleRoots_of_eq_zero_or_isRealRooted_and_hasSimpleRoots_right
     (hcombo :
       ∀ α β : ℝ,
         C α * f + C β * g = 0 ∨
-          (((C α * f + C β * g) ≠ 0 ∧ (C α * f + C β * g).roots.card = (C α * f + C β * g).natDegree) ∧
+          (((C α * f + C β * g) ≠ 0 ∧
+            (C α * f + C β * g).roots.card = (C α * f + C β * g).natDegree) ∧
             HasSimpleRoots (C α * f + C β * g))) :
     HasSimpleRoots g := by
   rcases hcombo 0 1 with hzero | ⟨_, hsimple⟩
@@ -1347,7 +1353,8 @@ private theorem prec_or_revPrec_of_eq_zero_or_simple_combo_sameDegree
     (hcombo :
       ∀ α β : ℝ,
         C α * f + C β * g = 0 ∨
-          (((C α * f + C β * g) ≠ 0 ∧ (C α * f + C β * g).roots.card = (C α * f + C β * g).natDegree) ∧
+          (((C α * f + C β * g) ≠ 0 ∧
+            (C α * f + C β * g).roots.card = (C α * f + C β * g).natDegree) ∧
             HasSimpleRoots (C α * f + C β * g)))
     (hdeg : g.natDegree = f.natDegree)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
@@ -1559,7 +1566,8 @@ private theorem prec_of_eq_zero_or_simple_combo_succDegree
     (hcombo :
       ∀ α β : ℝ,
         C α * f + C β * g = 0 ∨
-          (((C α * f + C β * g) ≠ 0 ∧ (C α * f + C β * g).roots.card = (C α * f + C β * g).natDegree) ∧
+          (((C α * f + C β * g) ≠ 0 ∧
+            (C α * f + C β * g).roots.card = (C α * f + C β * g).natDegree) ∧
             HasSimpleRoots (C α * f + C β * g)))
     (hdeg : g.natDegree = f.natDegree + 1)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
@@ -1631,7 +1639,8 @@ private theorem prec_of_eq_zero_or_simple_combo_of_no_common
     (hcombo :
       ∀ α β : ℝ,
         C α * f + C β * g = 0 ∨
-          (((C α * f + C β * g) ≠ 0 ∧ (C α * f + C β * g).roots.card = (C α * f + C β * g).natDegree) ∧
+          (((C α * f + C β * g) ≠ 0 ∧
+            (C α * f + C β * g).roots.card = (C α * f + C β * g).natDegree) ∧
             HasSimpleRoots (C α * f + C β * g)))
     (hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
@@ -1675,7 +1684,8 @@ private theorem prec_of_eq_zero_or_simple_combo_of_no_common
   have hcombo₀ :
       ∀ α β : ℝ,
         C α * f₀ + C β * g₀ = 0 ∨
-          (((C α * f₀ + C β * g₀) ≠ 0 ∧ (C α * f₀ + C β * g₀).roots.card = (C α * f₀ + C β * g₀).natDegree) ∧
+          (((C α * f₀ + C β * g₀) ≠ 0 ∧
+            (C α * f₀ + C β * g₀).roots.card = (C α * f₀ + C β * g₀).natDegree) ∧
             HasSimpleRoots (C α * f₀ + C β * g₀)) := by
     intro α β
     simpa [f₀, g₀, C_mul, mul_assoc, mul_left_comm, mul_comm] using
@@ -1754,8 +1764,12 @@ private theorem prec_or_revPrec_iterateTDeriv_of_allComboRealRooted_of_no_common
   have hsimple_data :
       AllComboRealRooted (iterateTDeriv eps (max f.natDegree g.natDegree) f)
           (iterateTDeriv eps (max f.natDegree g.natDegree) g) ∧
-        ((iterateTDeriv eps (max f.natDegree g.natDegree) f) ≠ 0 ∧ (iterateTDeriv eps (max f.natDegree g.natDegree) f).roots.card = (iterateTDeriv eps (max f.natDegree g.natDegree) f).natDegree) ∧
-        ((iterateTDeriv eps (max f.natDegree g.natDegree) g) ≠ 0 ∧ (iterateTDeriv eps (max f.natDegree g.natDegree) g).roots.card = (iterateTDeriv eps (max f.natDegree g.natDegree) g).natDegree) ∧
+        ((iterateTDeriv eps (max f.natDegree g.natDegree) f) ≠ 0 ∧
+          (iterateTDeriv eps (max f.natDegree g.natDegree) f).roots.card =
+            (iterateTDeriv eps (max f.natDegree g.natDegree) f).natDegree) ∧
+        ((iterateTDeriv eps (max f.natDegree g.natDegree) g) ≠ 0 ∧
+          (iterateTDeriv eps (max f.natDegree g.natDegree) g).roots.card =
+            (iterateTDeriv eps (max f.natDegree g.natDegree) g).natDegree) ∧
         HasSimpleRoots (iterateTDeriv eps (max f.natDegree g.natDegree) f) ∧
         HasSimpleRoots (iterateTDeriv eps (max f.natDegree g.natDegree) g) ∧
         ((iterateTDeriv eps (max f.natDegree g.natDegree) f).natDegree + 1 =
@@ -2336,7 +2350,8 @@ private lemma exists_rightmost_derivative_root_with_eval_nonpos
     ∃ c, p.derivative.IsRoot c ∧
       (∀ s ∈ p.derivative.roots, s ≤ c) ∧
       p.eval c ≤ 0 := by
-  have hp' : (p.derivative ≠ 0 ∧ p.derivative.roots.card = p.derivative.natDegree) := (derivative_interlaces hp hdeg).2.1
+  have hp' : (p.derivative ≠ 0 ∧
+    p.derivative.roots.card = p.derivative.natDegree) := (derivative_interlaces hp hdeg).2.1
   have hp'_pos : HasPosLeadingCoeff p.derivative :=
     hasPosLeadingCoeff_derivative hp_pos (by lia)
   have hp'_deg : p.derivative.natDegree = p.natDegree - 1 :=
@@ -2642,8 +2657,10 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
   let n : ℕ := max f.natDegree g.natDegree
   have hsimple_data :
       AllComboRealRooted (iterateTDeriv eps n f) (iterateTDeriv eps n g) ∧
-        ((iterateTDeriv eps n f) ≠ 0 ∧ (iterateTDeriv eps n f).roots.card = (iterateTDeriv eps n f).natDegree) ∧
-        ((iterateTDeriv eps n g) ≠ 0 ∧ (iterateTDeriv eps n g).roots.card = (iterateTDeriv eps n g).natDegree) ∧
+        ((iterateTDeriv eps n f) ≠ 0 ∧
+          (iterateTDeriv eps n f).roots.card = (iterateTDeriv eps n f).natDegree) ∧
+        ((iterateTDeriv eps n g) ≠ 0 ∧
+          (iterateTDeriv eps n g).roots.card = (iterateTDeriv eps n g).natDegree) ∧
         HasSimpleRoots (iterateTDeriv eps n f) ∧
         HasSimpleRoots (iterateTDeriv eps n g) ∧
         ((iterateTDeriv eps n f).natDegree + 1 = (iterateTDeriv eps n g).natDegree ∨
@@ -2708,7 +2725,8 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
   --    concretely, the target lemma is
   --    `∀ α β : ℝ,
   --        C α * f + C β * g = 0 ∨
-  --          (((C α * f + C β * g) ≠ 0 ∧ (C α * f + C β * g).roots.card = (C α * f + C β * g).natDegree) ∧
+  --          (((C α * f + C β * g) ≠ 0 ∧
+  --            (C α * f + C β * g).roots.card = (C α * f + C β * g).natDegree) ∧
   --            HasSimpleRoots (C α * f + C β * g))`.
   --    Once this is available, the endgame is exactly
   --    `prec_of_eq_zero_or_simple_combo_of_no_common hf hg hcombo_original hdeg hno`.
@@ -2807,7 +2825,8 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
   have hcombo_original :
       ∀ α β : ℝ,
         C α * f + C β * g = 0 ∨
-          (((C α * f + C β * g) ≠ 0 ∧ (C α * f + C β * g).roots.card = (C α * f + C β * g).natDegree) ∧
+          (((C α * f + C β * g) ≠ 0 ∧
+            (C α * f + C β * g).roots.card = (C α * f + C β * g).natDegree) ∧
             HasSimpleRoots (C α * f + C β * g)) := by
     by_cases hmax0 : max f.natDegree g.natDegree = 0
     · have hfdeg0 : f.natDegree = 0 := by grind
@@ -3010,13 +3029,15 @@ private theorem allComboRealRooted_of_prec_succDegree_pos
     · left
       simp [hα0, hβ0]
     · right
-      have hrr : ((C α * f) ≠ 0 ∧ (C α * f).roots.card = (C α * f).natDegree) := isRealRooted_C_mul hfg.1 hα0
+      have hrr : ((C α * f) ≠ 0 ∧
+        (C α * f).roots.card = (C α * f).natDegree) := isRealRooted_C_mul hfg.1 hα0
       simpa [hβ0] using hrr
   · rcases lt_or_gt_of_ne hβ0 with hβneg | hβpos
     · by_cases hα_nonpos : α ≤ 0
       · right
         have hrr_neg :
-            ((C (-α) * f + C (-β) * g) ≠ 0 ∧ (C (-α) * f + C (-β) * g).roots.card = (C (-α) * f + C (-β) * g).natDegree) :=
+            ((C (-α) * f + C (-β) * g) ≠ 0 ∧
+              (C (-α) * f + C (-β) * g).roots.card = (C (-α) * f + C (-β) * g).natDegree) :=
           isRealRooted_nonneg_combo_of_prec
             hfg hf_pos hg_pos
             (by linarith) (by linarith) (Or.inr (by linarith))
@@ -3090,7 +3111,8 @@ private theorem allComboRealRooted_of_prec_succDegree_pos
     · by_cases hα_nonneg : 0 ≤ α
       · by_cases hα0 : α = 0
         · right
-          have hrr : ((C β * g) ≠ 0 ∧ (C β * g).roots.card = (C β * g).natDegree) := isRealRooted_C_mul hfg.2.1 hβ0
+          have hrr : ((C β * g) ≠ 0 ∧
+            (C β * g).roots.card = (C β * g).natDegree) := isRealRooted_C_mul hfg.2.1 hβ0
           simpa [hα0, add_comm] using hrr
         · right
           exact
@@ -3426,7 +3448,9 @@ private theorem isRealRooted_of_right_factor_combo_posβ
     (hβ : 0 < β)
     (hF_ne : C α * f + C β * ((X - C uR) * q) ≠ 0)
     (hdeg_pos : 1 ≤ f.natDegree) :
-    ((C α * f + C β * ((X - C uR) * q)) ≠ 0 ∧ (C α * f + C β * ((X - C uR) * q)).roots.card = (C α * f + C β * ((X - C uR) * q)).natDegree) := by
+    ((C α * f + C β * ((X - C uR) * q)) ≠ 0 ∧
+      (C α * f + C β * ((X - C uR) * q)).roots.card =
+        (C α * f + C β * ((X - C uR) * q)).natDegree) := by
   let F : ℝ[X] := C α * f + C β * ((X - C uR) * q)
   have hf : (f ≠ 0 ∧ f.roots.card = f.natDegree) := hqf.1
   have hq : (q ≠ 0 ∧ q.roots.card = q.natDegree) := hqf.2.1
@@ -3560,12 +3584,14 @@ private theorem allComboRealRooted_of_prec_sameDegree_pos_of_no_common
         intro hα0
         apply hcomb
         simp [hα0, hβ0]
-      have hrr : ((C α * f) ≠ 0 ∧ (C α * f).roots.card = (C α * f).natDegree) := isRealRooted_C_mul hf hα0
+      have hrr : ((C α * f) ≠ 0 ∧
+        (C α * f).roots.card = (C α * f).natDegree) := isRealRooted_C_mul hf hα0
       simpa [hβ0] using hrr
     · rcases lt_or_gt_of_ne hβ0 with hβneg | hβpos
       · by_cases hα_nonpos : α ≤ 0
         · have hrr_neg :
-            ((C (-α) * f + C (-β) * g) ≠ 0 ∧ (C (-α) * f + C (-β) * g).roots.card = (C (-α) * f + C (-β) * g).natDegree) :=
+            ((C (-α) * f + C (-β) * g) ≠ 0 ∧
+              (C (-α) * f + C (-β) * g).roots.card = (C (-α) * f + C (-β) * g).natDegree) :=
           isRealRooted_nonneg_combo_of_prec
             hfg hf_pos hg_pos (by linarith) (by linarith) (Or.inr (by linarith))
           have hrr :
@@ -3593,7 +3619,8 @@ private theorem allComboRealRooted_of_prec_sameDegree_pos_of_no_common
             rw [← hEq, h0]
             simp
           have hrr_neg :
-              ((C (-α) * f + C (-β) * g) ≠ 0 ∧ (C (-α) * f + C (-β) * g).roots.card = (C (-α) * f + C (-β) * g).natDegree) := by
+              ((C (-α) * f + C (-β) * g) ≠ 0 ∧
+                (C (-α) * f + C (-β) * g).roots.card = (C (-α) * f + C (-β) * g).natDegree) := by
             simpa [hqg] using
               isRealRooted_of_right_factor_combo_posβ
                 (f := f) (q := qg) (uR := uR) (α := -α) (β := -β)

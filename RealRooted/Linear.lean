@@ -46,7 +46,8 @@ lemma isRealRooted_C_mul {p : ℝ[X]} (hp : p ≠ 0 ∧ p.roots.card = p.natDegr
    by rw [roots_C_mul _ ha, natDegree_C_mul ha]; exact hp.2⟩
 
 /-- A nonzero divisor of a real-rooted polynomial is real-rooted. -/
-lemma isRealRooted_of_dvd {p q : ℝ[X]} (hp : p ≠ 0 ∧ p.roots.card = p.natDegree) (hq0 : q ≠ 0) (hqp : q ∣ p) :
+lemma isRealRooted_of_dvd {p q : ℝ[X]} (hp : p ≠ 0 ∧
+  p.roots.card = p.natDegree) (hq0 : q ≠ 0) (hqp : q ∣ p) :
     (q ≠ 0 ∧ q.roots.card = q.natDegree) := by
   rcases hqp with ⟨r, rfl⟩
   have hr0 : r ≠ 0 := right_ne_zero_of_mul hp.1
@@ -84,7 +85,8 @@ lemma min_rootMultiplicity_le_rootMultiplicity_add {p q : ℝ[X]} {r : ℝ}
   simpa using (Polynomial.rootMultiplicity_add (p := p) (q := q) r hpq)
 
 /-- A nonunit real-rooted polynomial has a real root. -/
-lemma exists_isRoot_of_isRealRooted_of_not_isUnit {p : ℝ[X]} (hp : p ≠ 0 ∧ p.roots.card = p.natDegree)
+lemma exists_isRoot_of_isRealRooted_of_not_isUnit {p : ℝ[X]} (hp : p ≠ 0 ∧
+  p.roots.card = p.natDegree)
     (hu : ¬ IsUnit p) : ∃ r : ℝ, p.IsRoot r := by
   have hdeg : 0 < p.natDegree := by
     rw [natDegree_pos_iff_degree_pos]

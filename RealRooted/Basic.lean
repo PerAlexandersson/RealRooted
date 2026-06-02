@@ -314,7 +314,9 @@ lemma prec0_zero_zero : Prec0 (0 : ℝ[X]) 0 :=
   prec0_zero_left 0
 
 /-- The product of two real-rooted polynomials is real-rooted. -/
-lemma isRealRooted_mul {p q : ℝ[X]} (hp : p ≠ 0 ∧ p.roots.card = p.natDegree) (hq : q ≠ 0 ∧ q.roots.card = q.natDegree) :
+lemma isRealRooted_mul {p q : ℝ[X]} (hp : p ≠ 0 ∧
+  p.roots.card = p.natDegree) (hq : q ≠ 0 ∧
+  q.roots.card = q.natDegree) :
     ((p * q) ≠ 0 ∧ (p * q).roots.card = (p * q).natDegree) := ⟨mul_ne_zero hp.1 hq.1,
       by grind [natDegree_mul, roots_mul (mul_ne_zero hp.1 _), Multiset.card_add]⟩
 

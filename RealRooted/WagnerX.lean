@@ -511,7 +511,8 @@ lemma roots_nonpos_of_nonneg_coeffs {p : ℝ[X]} (hp : p ≠ 0 ∧ p.roots.card 
   have : p.eval r = 0 := (mem_roots hp.1).mp hr
   linarith
 
-lemma hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos {p : ℝ[X]} (hp : p ≠ 0 ∧ p.roots.card = p.natDegree) :
+lemma hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos {p : ℝ[X]} (hp : p ≠ 0 ∧
+  p.roots.card = p.natDegree) :
     HasNonnegCoeffs p ↔ HasPosLeadingCoeff p ∧ ∀ r ∈ p.roots, r ≤ 0 := by
   constructor
   · intro hnn
@@ -1087,7 +1088,8 @@ theorem prec_of_prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ)
       lia
     exact Or.inr ⟨hlen', listAlternates_of_orderedInsert r hlen' hss_sorted hrs_sorted halt⟩
 
-theorem prec_mul_common_factor {d f g : ℝ[X]} (hd : d ≠ 0 ∧ d.roots.card = d.natDegree) (h : Prec f g) :
+theorem prec_mul_common_factor {d f g : ℝ[X]} (hd : d ≠ 0 ∧
+  d.roots.card = d.natDegree) (h : Prec f g) :
     Prec (d * f) (d * g) := by
   have hprod : Prec (((d.roots.map fun a => X - C a).prod) * f)
       (((d.roots.map fun a => X - C a).prod) * g) := by
@@ -1115,8 +1117,10 @@ theorem prec_iff_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
     Prec f g ↔ Prec g ((X - C r) * f) := by
   set f' := f.comp (X + C r)
   set g' := g.comp (X + C r)
-  have hf' : (f' ≠ 0 ∧ f'.roots.card = f'.natDegree) := by simpa [f'] using isRealRooted_comp_X_add_C hf r
-  have hg' : (g' ≠ 0 ∧ g'.roots.card = g'.natDegree) := by simpa [g'] using isRealRooted_comp_X_add_C hg r
+  have hf' : (f' ≠ 0 ∧
+    f'.roots.card = f'.natDegree) := by simpa [f'] using isRealRooted_comp_X_add_C hf r
+  have hg' : (g' ≠ 0 ∧
+    g'.roots.card = g'.natDegree) := by simpa [g'] using isRealRooted_comp_X_add_C hg r
   have hf'_pos : HasPosLeadingCoeff f' := by
     unfold HasPosLeadingCoeff f'
     rw [leadingCoeff_comp (by simp), leadingCoeff_X_add_C, one_pow, mul_one]

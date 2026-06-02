@@ -393,7 +393,8 @@ theorem prec_simsun_succ : ∀ n : Nat, Prec (simsun n) (simsun (n + 1))
   | 0 => interlaces_simsun_zero_one
   | 1 => interlaces_simsun_one_two.toPrec
   | n + 2 => by
-      have hf : ((simsun (n + 2)) ≠ 0 ∧ (simsun (n + 2)).roots.card = (simsun (n + 2)).natDegree) := (prec_simsun_succ (n + 1)).2.1
+      have hf : ((simsun (n + 2)) ≠ 0 ∧
+        (simsun (n + 2)).roots.card = (simsun (n + 2)).natDegree) := (prec_simsun_succ (n + 1)).2.1
       have hInter :
           Interlaces (simsun (n + 2)).derivative (simsun (n + 2)) :=
         interlaces_derivative_simsun (n + 2) (by lia) hf
@@ -440,7 +441,8 @@ theorem prec_simsun_succ : ∀ n : Nat, Prec (simsun n) (simsun (n + 1))
           (b := simsunCoeffB)
           hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
 
-theorem isRealRooted_simsun : ∀ n : Nat, ((simsun n) ≠ 0 ∧ (simsun n).roots.card = (simsun n).natDegree)
+theorem isRealRooted_simsun : ∀ n : Nat, ((simsun n) ≠ 0 ∧
+  (simsun n).roots.card = (simsun n).natDegree)
   | 0 => by
       simpa [simsun_zero] using
         isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)
