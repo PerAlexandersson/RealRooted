@@ -3,6 +3,7 @@ import Mathlib.Algebra.Polynomial.Div
 import Mathlib.Algebra.Polynomial.Degree.Lemmas
 import Mathlib.Algebra.Polynomial.Splits
 import Mathlib.Analysis.SpecificLimits.Basic
+import Mathlib.Data.List.Interleave
 import Mathlib.Data.List.Sort
 import Mathlib.Data.Real.Basic
 
@@ -68,6 +69,85 @@ def ListAlternates : List ℝ → List ℝ → Prop
   | [], [] => True
   | s :: ss, r :: rs => s ≤ r ∧ ListInterlaces ss (r :: rs)
   | _, _ => False
+
+lemma listInterlaces_iff_interleaves_of_length :
+    ∀ {ss rs : List ℝ}, ss.length + 1 = rs.length →
+      (ListInterlaces ss rs ↔ List.Interleaves (fun x y : ℝ => x ≤ y) ss rs)
+  | [], [], h => by simp at h
+  | [], [_], _ => by simp [ListInterlaces]
+  | [], _ :: _ :: _, h => by simp at h
+  | _ :: _, [], h => by simp at h
+  | _ :: _, [_], h => by simp at h
+  | s :: ss, r₁ :: r₂ :: rs, h => by
+      have htail : ss.length + 1 = (r₂ :: rs).length := by
+        simpa using Nat.succ.inj h
+      constructor
+      · rintro ⟨hr₁s, hsr₂, htail_old⟩
+        exact List.Interleaves.cons_symm
+          (List.Interleaves.cons_symm
+            ((listInterlaces_iff_interleaves_of_length htail).1 htail_old) hsr₂)
+          hr₁s
+      · intro hnew
+        rw [List.interleaves_iff] at hnew
+        rcases hnew with hbad | hbad | ⟨l₁, l₂, b, hmid, a, hab, hleft, hright⟩
+        · simp at hbad
+        · simp at hbad
+        · simp only [List.cons.injEq] at hleft hright
+          rcases hleft with ⟨rfl, rfl⟩
+          rcases hright with ⟨rfl, rfl⟩
+          rw [List.interleaves_iff] at hmid
+          rcases hmid with hbad | hbad | ⟨l₁, l₂, b, htail_new, a, hsr₂, hleft, hright⟩
+          · simp at hbad
+          · simp at hbad
+          · simp only [List.cons.injEq] at hleft hright
+            rcases hleft with ⟨rfl, rfl⟩
+            rcases hright with ⟨rfl, rfl⟩
+            exact ⟨hab, hsr₂, (listInterlaces_iff_interleaves_of_length htail).2 htail_new⟩
+
+lemma listAlternates_iff_interleaves_of_length :
+    ∀ {ss rs : List ℝ}, ss.length = rs.length →
+      (ListAlternates ss rs ↔ List.Interleaves (fun x y : ℝ => x ≤ y) rs ss)
+  | [], [], _ => by simp [ListAlternates]
+  | [], _ :: _, h => by simp at h
+  | _ :: _, [], h => by simp at h
+  | s :: ss, r :: rs, h => by
+      have htail : ss.length + 1 = (r :: rs).length := by
+        simpa using Nat.succ.inj h
+      constructor
+      · rintro ⟨hsr, htail_old⟩
+        exact List.Interleaves.cons_symm
+          ((listInterlaces_iff_interleaves_of_length htail).1 htail_old) hsr
+      · intro hnew
+        rw [List.interleaves_iff] at hnew
+        rcases hnew with hbad | hbad | ⟨l₁, l₂, b, htail_new, a, hsr, hleft, hright⟩
+        · simp at hbad
+        · simp at hbad
+        · simp only [List.cons.injEq] at hleft hright
+          rcases hleft with ⟨rfl, rfl⟩
+          rcases hright with ⟨rfl, rfl⟩
+          exact ⟨hsr, (listInterlaces_iff_interleaves_of_length htail).2 htail_new⟩
+
+lemma listInterlaces_of_interleaves_of_length {ss rs : List ℝ}
+    (hlen : ss.length + 1 = rs.length)
+    (h : List.Interleaves (fun x y : ℝ => x ≤ y) ss rs) :
+    ListInterlaces ss rs :=
+  (listInterlaces_iff_interleaves_of_length hlen).2 h
+
+lemma interleaves_of_listInterlaces_of_length {ss rs : List ℝ}
+    (hlen : ss.length + 1 = rs.length) (h : ListInterlaces ss rs) :
+    List.Interleaves (fun x y : ℝ => x ≤ y) ss rs :=
+  (listInterlaces_iff_interleaves_of_length hlen).1 h
+
+lemma listAlternates_of_interleaves_of_length {ss rs : List ℝ}
+    (hlen : ss.length = rs.length)
+    (h : List.Interleaves (fun x y : ℝ => x ≤ y) rs ss) :
+    ListAlternates ss rs :=
+  (listAlternates_iff_interleaves_of_length hlen).2 h
+
+lemma interleaves_of_listAlternates_of_length {ss rs : List ℝ}
+    (hlen : ss.length = rs.length) (h : ListAlternates ss rs) :
+    List.Interleaves (fun x y : ℝ => x ≤ y) rs ss :=
+  (listAlternates_iff_interleaves_of_length hlen).1 h
 
 /-! ## Polynomial interlacing -/
 
