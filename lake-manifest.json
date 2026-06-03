@@ -1,5 +1,5 @@
 {"version": "1.2.0",
- "packagesDir": "/lake-cache/ai-projects/packages",
+ "packagesDir": ".lake/packages",
  "packages":
  [{"url": "https://github.com/YaelDillies/mathlib4.git",
    "type": "git",
