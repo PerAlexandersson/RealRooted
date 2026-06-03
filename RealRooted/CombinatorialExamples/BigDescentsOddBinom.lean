@@ -43,19 +43,15 @@ lemma coeff_one_sub_X_pow (n k : ℕ) :
 lemma coeff_oddBinomAuxReal_even (n k : ℕ) :
     (oddBinomAuxReal n).coeff (2 * k) =
       (n.choose (2 * k + 1) : ℝ) := by
-  simp [oddBinomAuxReal]
+  simp only [oddBinomAuxReal, map_natCast, finsetSum_coeff, coeff_natCast_mul, coeff_X_pow,
+    mul_eq_mul_left_iff, OfNat.ofNat_ne_zero, or_false, mul_ite, mul_one, mul_zero,
+    Finset.sum_ite_eq, ite_eq_left_iff]
   intro h
-  rw [Nat.choose_eq_zero_of_lt]
-  · simp
-  · omega
+  rw [Nat.choose_eq_zero_of_lt] <;> grind
 
 lemma coeff_oddBinomAuxReal_odd (n k : ℕ) :
     (oddBinomAuxReal n).coeff (2 * k + 1) = 0 := by
-  simp [oddBinomAuxReal]
-  apply Finset.sum_eq_zero
-  intro x _hx
-  have hne : 2 * k + 1 ≠ 2 * x := by omega
-  simp [hne]
+  grind [oddBinomAuxReal, finsetSum_coeff, Finset.sum_eq_zero]
 
 theorem oddBinomAuxReal_identity (n : ℕ) :
     (2 : ℝ[X]) * X * oddBinomAuxReal n =
@@ -126,11 +122,10 @@ lemma map_oddBinomPolyReal (n : ℕ) :
 
 lemma coeff_oddBinomPolyReal (n k : ℕ) :
     (oddBinomPolyReal n).coeff k = (n.choose (2 * k + 1) : ℝ) := by
-  simp [oddBinomPolyReal]
+  simp only [oddBinomPolyReal, map_natCast, finsetSum_coeff, coeff_natCast_mul, coeff_X_pow,
+    mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_range, ite_eq_left_iff]
   intro h
-  rw [Nat.choose_eq_zero_of_lt]
-  · simp
-  · omega
+  rw [Nat.choose_eq_zero_of_lt] <;> grind
 
 lemma oddBinomPolyReal_natDegree (n : ℕ) (hn : 0 < n) :
     (oddBinomPolyReal n).natDegree = (n - 1) / 2 := by
@@ -150,14 +145,13 @@ lemma oddBinomPolyReal_ne_zero (n : ℕ) (hn : 0 < n) :
   have hcoeff := congrArg (fun p : ℝ[X] => p.coeff ((n - 1) / 2)) hp
   change (oddBinomPolyReal n).coeff ((n - 1) / 2) = 0 at hcoeff
   rw [coeff_oddBinomPolyReal] at hcoeff
-  simp at hcoeff
   exact Nat.choose_ne_zero (by omega :
     2 * ((n - 1) / 2) + 1 ≤ n) (by exact_mod_cast hcoeff)
 
 lemma oddBinom_eval_sq_eq_aux (n : ℕ) (y : ℂ) :
     (oddBinomPoly n).eval (y ^ 2) = (oddBinomAux n).eval y := by
   rw [oddBinomPoly, oddBinomAux,
-    Polynomial.eval_finset_sum, Polynomial.eval_finset_sum]
+    Polynomial.eval_finsetSum, Polynomial.eval_finsetSum]
   apply Finset.sum_congr rfl
   intro k _hk
   simp [pow_mul]
@@ -255,9 +249,7 @@ lemma cayley_I_tan_eq_exp_two_mul_I (theta : ℝ)
       simp
       have hpi_pos : (0 : ℝ) < Real.pi := Real.pi_pos
       linarith
-    have h2 : (theta : ℂ).re ≤ ↑Real.pi / 2 := by
-      simp
-      exact le_of_lt hθlt
+    have h2 : (theta : ℂ).re ≤ ↑Real.pi / 2 := by simp [le_of_lt hθlt]
     have h := Complex.arctan_tan h0 h1 h2
     simpa [Complex.ofReal_tan] using h
   rw [harctan] at hkey
