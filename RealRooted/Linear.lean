@@ -50,8 +50,7 @@ lemma isRealRooted_C_mul {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) {a : ℝ} (ha 
 
 /-- A nonzero divisor of a real-rooted polynomial is real-rooted. -/
 lemma isRealRooted_of_dvd {p q : ℝ[X]} (hp : p ≠ 0 ∧
-  p.Splits) (hq0 : q ≠ 0) (hqp : q ∣ p) :
-    (q ≠ 0 ∧ q.Splits) := by
+  p.Splits) (hq0 : q ≠ 0) (hqp : q ∣ p) : (q ≠ 0 ∧ q.Splits) := by
   rcases hqp with ⟨r, rfl⟩
   have hr0 : r ≠ 0 := right_ne_zero_of_mul hp.1
   refine ⟨hq0, ?_⟩
@@ -117,8 +116,7 @@ lemma isCoprime_of_no_common_real_root_of_isRealRooted {f g : ℝ[X]}
     exact hno r hfr hgr
 
 /-- Any nonzero degree-1 polynomial is real-rooted. -/
-lemma isRealRooted_of_degree_one {p : ℝ[X]} (hp : p.natDegree = 1) :
-    (p ≠ 0 ∧ p.Splits) := by
+lemma isRealRooted_of_degree_one {p : ℝ[X]} (hp : p.natDegree = 1) : (p ≠ 0 ∧ p.Splits) := by
   have hne : p ≠ 0 := by intro h; simp [h] at hp
   have hdeg : p.degree = 1 := by rw [degree_eq_natDegree hne]; exact_mod_cast hp
   refine ⟨hne, splits_of_card_roots ?_⟩

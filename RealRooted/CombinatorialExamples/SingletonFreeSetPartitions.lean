@@ -227,14 +227,12 @@ lemma natDegree_singletonFreeSetPartitionsCore (n : Nat) :
   lia
 
 lemma roots_nonpos_singletonFreeSetPartitions_of_isRealRooted {n : Nat}
-    (hrr : (singletonFreeSetPartitions n) ≠ 0 ∧
-      (singletonFreeSetPartitions n).Splits) :
+    (hrr : (singletonFreeSetPartitions n) ≠ 0 ∧ (singletonFreeSetPartitions n).Splits) :
     ∀ r ∈ (singletonFreeSetPartitions n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs hrr (singletonFreeSetPartitions_nonnegCoeffs n)
 
 lemma roots_nonpos_singletonFreeSetPartitionsCore_of_isRealRooted {n : Nat}
-    (hrr : (singletonFreeSetPartitionsCore n) ≠ 0 ∧
-      (singletonFreeSetPartitionsCore n).Splits) :
+    (hrr : (singletonFreeSetPartitionsCore n) ≠ 0 ∧ (singletonFreeSetPartitionsCore n).Splits) :
     ∀ r ∈ (singletonFreeSetPartitionsCore n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs hrr (singletonFreeSetPartitionsCore_nonnegCoeffs n)
 
@@ -392,8 +390,7 @@ theorem prec_singletonFreeSetPartitions_succ :
           (n := n + 3) (by lia) hcore
 
 theorem isRealRooted_singletonFreeSetPartitions :
-    ∀ n : Nat, 2 ≤ n → ((singletonFreeSetPartitions n) ≠ 0 ∧
-      (singletonFreeSetPartitions n).Splits)
+    ∀ n : Nat, 2 ≤ n → ((singletonFreeSetPartitions n) ≠ 0 ∧ (singletonFreeSetPartitions n).Splits)
   | 2, _ => by simp [singletonFreeSetPartitions_two]
   | n + 3, _ => by exact (prec_singletonFreeSetPartitions_succ (n + 2) (by lia)).2.1
 

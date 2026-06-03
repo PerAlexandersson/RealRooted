@@ -391,8 +391,7 @@ theorem prec_simsun_succ : ∀ n : Nat, Prec (simsun n) (simsun (n + 1))
   | 0 => interlaces_simsun_zero_one
   | 1 => interlaces_simsun_one_two.toPrec
   | n + 2 => by
-      have hf : ((simsun (n + 2)) ≠ 0 ∧
-        (simsun (n + 2)).Splits) := (prec_simsun_succ (n + 1)).2.1
+      have hf : ((simsun (n + 2)) ≠ 0 ∧ (simsun (n + 2)).Splits) := (prec_simsun_succ (n + 1)).2.1
       have hInter :
           Interlaces (simsun (n + 2)).derivative (simsun (n + 2)) :=
         interlaces_derivative_simsun (n + 2) (by lia) hf
@@ -439,8 +438,7 @@ theorem prec_simsun_succ : ∀ n : Nat, Prec (simsun n) (simsun (n + 1))
           (b := simsunCoeffB)
           hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
 
-theorem isRealRooted_simsun : ∀ n : Nat, ((simsun n) ≠ 0 ∧
-  (simsun n).Splits)
+theorem isRealRooted_simsun : ∀ n : Nat, ((simsun n) ≠ 0 ∧ (simsun n).Splits)
   | 0 => by simp
   | n + 1 => (prec_simsun_succ n).2.1
 

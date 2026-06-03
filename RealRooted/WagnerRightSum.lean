@@ -2262,8 +2262,7 @@ theorem prec_add_of_prec_right_of_posLeadingCoeff {f g h : ℝ[X]}
 /-- A mixed-degree version of Wagner (1): if `f` precedes `h` with degree one less,
     `g` precedes `h` with the same degree, and `f` and `g` are coprime, then
     `f + g` precedes `h`. This packages the branch needed for the derangement
-    recurrence, avoiding a separate `((f + g) ≠ 0 ∧
-      (f + g).Splits)` hypothesis. -/
+    recurrence, avoiding a separate `((f + g) ≠ 0 ∧ (f + g).Splits)` hypothesis. -/
 theorem prec_add_of_prec_right_mixed_of_natDegree {f g h : ℝ[X]}
     (hfh : Prec f h) (hgh : Prec g h)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)

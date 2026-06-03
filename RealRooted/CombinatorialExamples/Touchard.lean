@@ -155,8 +155,7 @@ theorem prec_touchard_succ : ∀ n : Nat, Prec (touchard n) (touchard (n + 1))
   | n + 2 => by
       have hprev : Prec (touchard (n + 1)) (touchard (n + 2)) :=
         prec_touchard_succ (n + 1)
-      have hf : ((touchard (n + 2)) ≠ 0 ∧
-        (touchard (n + 2)).Splits) := hprev.2.1
+      have hf : ((touchard (n + 2)) ≠ 0 ∧ (touchard (n + 2)).Splits) := hprev.2.1
       have hdegf : 2 ≤ (touchard (n + 2)).natDegree := by
         rw [natDegree_touchard]
         lia
@@ -203,8 +202,7 @@ theorem interlaces_touchard_succ (n : Nat) :
   apply (prec_touchard_succ n).toInterlaces
   simp [natDegree_touchard]
 
-theorem isRealRooted_touchard : ∀ n : Nat, ((touchard n) ≠ 0 ∧
-  (touchard n).Splits)
+theorem isRealRooted_touchard : ∀ n : Nat, ((touchard n) ≠ 0 ∧ (touchard n).Splits)
   | 0 => by simp
   | n + 1 => (prec_touchard_succ n).2.1
 

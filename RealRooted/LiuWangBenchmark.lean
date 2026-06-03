@@ -973,8 +973,7 @@ private lemma roots_neg_threshold_divX (d : Nat) :
 /-- The recurrence family is real-rooted throughout the strict range
 `1 ≤ n ≤ d + 1`, and also at the threshold step `n = d + 2`. -/
 lemma isRealRooted_liuWangRec_of_le_threshold (d n : Nat)
-    (hn : 1 ≤ n) (hnd : n ≤ d + 2) :
-    ((liuWangRec d n) ≠ 0 ∧ (liuWangRec d n).Splits) := by
+    (hn : 1 ≤ n) (hnd : n ≤ d + 2) : ((liuWangRec d n) ≠ 0 ∧ (liuWangRec d n).Splits) := by
   rcases Nat.eq_or_lt_of_le hnd with hEq | hlt
   · subst hEq
     exact (interlaces_liuWangRec_threshold d).1

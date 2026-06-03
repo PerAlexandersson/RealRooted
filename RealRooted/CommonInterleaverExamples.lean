@@ -14,8 +14,7 @@ same linear polynomial, so a common interleaver is completely explicit. -/
 def scaledLinearFamily : List ℝ[X] :=
   [X + 1, C (2 : ℝ) * (X + 1), C (3 : ℝ) * (X + 1)]
 
-private lemma xAddOne_isRealRooted : ((X + 1 : ℝ[X]) ≠ 0 ∧
-  (X + 1 : ℝ[X]).Splits) := by
+private lemma xAddOne_isRealRooted : ((X + 1 : ℝ[X]) ≠ 0 ∧ (X + 1 : ℝ[X]).Splits) := by
   simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-1 : ℝ)
 
 private lemma xAddOne_hasNonnegCoeffs : HasNonnegCoeffs (X + 1 : ℝ[X]) := by
@@ -25,13 +24,11 @@ private lemma xAddOne_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 1 : ℝ[X]) :
   exact xAddOne_hasNonnegCoeffs.pos_leadingCoeff xAddOne_isRealRooted.1
 
 private lemma twoMul_xAddOne_isRealRooted :
-    ((C (2 : ℝ) * (X + 1)) ≠ 0 ∧
-      (C (2 : ℝ) * (X + 1)).Splits) := by
+    ((C (2 : ℝ) * (X + 1)) ≠ 0 ∧ (C (2 : ℝ) * (X + 1)).Splits) := by
   exact isRealRooted_C_mul xAddOne_isRealRooted (by norm_num)
 
 private lemma threeMul_xAddOne_isRealRooted :
-    ((C (3 : ℝ) * (X + 1)) ≠ 0 ∧
-      (C (3 : ℝ) * (X + 1)).Splits) := by
+    ((C (3 : ℝ) * (X + 1)) ≠ 0 ∧ (C (3 : ℝ) * (X + 1)).Splits) := by
   exact isRealRooted_C_mul xAddOne_isRealRooted (by norm_num)
 
 private lemma twoMul_xAddOne_hasPosLeadingCoeff :
@@ -171,8 +168,7 @@ private lemma xAddTwo_natDegree :
   rw [hpoly]
   exact Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (2 : ℝ)) (by norm_num)
 
-private lemma xAddTwo_isRealRooted : ((X + 2 : ℝ[X]) ≠ 0 ∧
-  (X + 2 : ℝ[X]).Splits) := by
+private lemma xAddTwo_isRealRooted : ((X + 2 : ℝ[X]) ≠ 0 ∧ (X + 2 : ℝ[X]).Splits) := by
   exact isRealRooted_of_degree_one xAddTwo_natDegree
 
 private lemma xAddTwo_hasNonnegCoeffs : HasNonnegCoeffs (X + 2 : ℝ[X]) := by
@@ -195,10 +191,8 @@ private lemma xAddThree_natDegree :
   change ((X + C (3 : ℝ) : ℝ[X]).natDegree = 1)
   simp
 
-private lemma xAddThree_isRealRooted : ((X + 3 : ℝ[X]) ≠ 0 ∧
-  (X + 3 : ℝ[X]).Splits) := by
-  change ((X + C (3 : ℝ) : ℝ[X]) ≠ 0 ∧
-    (X + C (3 : ℝ) : ℝ[X]).Splits)
+private lemma xAddThree_isRealRooted : ((X + 3 : ℝ[X]) ≠ 0 ∧ (X + 3 : ℝ[X]).Splits) := by
+  change ((X + C (3 : ℝ) : ℝ[X]) ≠ 0 ∧ (X + C (3 : ℝ) : ℝ[X]).Splits)
   simpa [sub_eq_add_neg, add_comm] using isRealRooted_X_sub_C (-3 : ℝ)
 
 private lemma xAddThree_hasNonnegCoeffs : HasNonnegCoeffs (X + 3 : ℝ[X]) := by
@@ -213,8 +207,7 @@ private lemma xAddThree_roots :
   simp
 
 private lemma xAddFiveHalves_isRealRooted :
-    ((X + C (5 / 2 : ℝ) : ℝ[X]) ≠ 0 ∧
-      (X + C (5 / 2 : ℝ) : ℝ[X]).Splits) := by
+    ((X + C (5 / 2 : ℝ) : ℝ[X]) ≠ 0 ∧ (X + C (5 / 2 : ℝ) : ℝ[X]).Splits) := by
   simpa [sub_eq_add_neg, add_comm] using isRealRooted_X_sub_C (-(5 / 2 : ℝ))
 
 private lemma xAddFiveHalves_roots :
@@ -222,8 +215,7 @@ private lemma xAddFiveHalves_roots :
   simp
 
 private lemma xSq_add_fiveX_add_six_isRealRooted :
-    ((((X + 2) * (X + 3)) : ℝ[X]) ≠ 0 ∧
-      (((X + 2) * (X + 3)) : ℝ[X]).Splits) := by
+    ((((X + 2) * (X + 3)) : ℝ[X]) ≠ 0 ∧ (((X + 2) * (X + 3)) : ℝ[X]).Splits) := by
   exact isRealRooted_mul xAddTwo_isRealRooted xAddThree_isRealRooted
 
 private lemma xSq_add_fiveX_add_six_hasNonnegCoeffs :

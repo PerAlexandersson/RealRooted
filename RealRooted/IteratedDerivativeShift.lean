@@ -212,8 +212,7 @@ private lemma isRealRooted_TDeriv_pos {eps : ℝ} {p : ℝ[X]}
     (heps : 0 < eps)
     (hp : p ≠ 0 ∧ p.Splits)
     (hp_pos : HasPosLeadingCoeff p)
-    (hdeg2 : 2 ≤ p.natDegree) :
-    ((TDeriv eps p) ≠ 0 ∧ (TDeriv eps p).Splits) := by
+    (hdeg2 : 2 ≤ p.natDegree) : ((TDeriv eps p) ≠ 0 ∧ (TDeriv eps p).Splits) := by
   -- Write T_ε(p) = C 1 * p + C (-eps) * p'
   have hrewrite : TDeriv eps p = C 1 * p + C (-eps) * p.derivative := by
     simp [TDeriv]; ring
@@ -287,8 +286,7 @@ lemma iterate_derivative_iterateTDeriv (eps : ℝ) (n k : ℕ) (p : ℝ[X]) :
 
 theorem isRealRooted_TDeriv {eps : ℝ} {p : ℝ[X]}
     (heps : 0 < eps)
-    (hp : p ≠ 0 ∧ p.Splits) :
-    ((TDeriv eps p) ≠ 0 ∧ (TDeriv eps p).Splits) := by
+    (hp : p ≠ 0 ∧ p.Splits) : ((TDeriv eps p) ≠ 0 ∧ (TDeriv eps p).Splits) := by
   by_cases hdeg2 : 2 ≤ p.natDegree
   · -- degree ≥ 2: use Ma-Wang
     rcases lt_or_gt_of_ne (fun h => hp.1 (leadingCoeff_eq_zero.mp h))
@@ -477,8 +475,7 @@ lemma not_isRoot_TDeriv_of_simple_root
 lemma isRealRooted_iterateTDeriv {eps : ℝ} {p : ℝ[X]} {k : ℕ}
     (heps : 0 < eps)
     (hp : p ≠ 0 ∧ p.Splits) :
-    ((iterateTDeriv eps k p) ≠ 0 ∧
-      (iterateTDeriv eps k p).Splits) := by
+    ((iterateTDeriv eps k p) ≠ 0 ∧ (iterateTDeriv eps k p).Splits) := by
   induction k with
   | zero => simpa using hp
   | succ n ih =>
@@ -982,8 +979,7 @@ order `k` persists as a nearby derivative root of the regularized family. -/
 theorem exists_delta_and_real_root_near_iterateTDeriv_of_isRealRooted_iterate_derivative
     (n k : ℕ) {p : ℝ[X]} {a ε : ℝ}
     (ha : ((derivative^[k]) p).IsRoot a)
-    (hp : ((derivative^[k]) p) ≠ 0 ∧
-      ((derivative^[k]) p).Splits)
+    (hp : ((derivative^[k]) p) ≠ 0 ∧ ((derivative^[k]) p).Splits)
     (hε : 0 < ε) :
     ∃ δ > 0, ∀ ⦃eps : ℝ⦄, 0 < eps → ‖eps‖ < δ →
       ∃ b : ℝ, ((derivative^[k]) (iterateTDeriv eps n p)).IsRoot b ∧
@@ -1005,8 +1001,7 @@ If `k < rootMultiplicity a p`, then the `k`-th derivative already vanishes at
 theorem exists_delta_and_real_root_near_iterateTDeriv_of_lt_rootMultiplicity
     (n k : ℕ) {p : ℝ[X]} {a ε : ℝ}
     (ha : k < p.rootMultiplicity a)
-    (hp : ((derivative^[k]) p) ≠ 0 ∧
-      ((derivative^[k]) p).Splits)
+    (hp : ((derivative^[k]) p) ≠ 0 ∧ ((derivative^[k]) p).Splits)
     (hε : 0 < ε) :
     ∃ δ > 0, ∀ ⦃eps : ℝ⦄, 0 < eps → ‖eps‖ < δ →
       ∃ b : ℝ, ((derivative^[k]) (iterateTDeriv eps n p)).IsRoot b ∧
@@ -1041,8 +1036,7 @@ lemma rootMultiplicity_ge_two_of_TDeriv_ge_two
 /-- Factoring out a root of a real-rooted polynomial gives a real-rooted quotient. -/
 private lemma isRealRooted_div_X_sub_C {p : ℝ[X]} {r : ℝ}
     (hp : p ≠ 0 ∧ p.Splits) (_hr : p.IsRoot r)
-    {t : ℝ[X]} (hpt : p = (X - C r) * t) :
-    (t ≠ 0 ∧ t.Splits) := by
+    {t : ℝ[X]} (hpt : p = (X - C r) * t) : (t ≠ 0 ∧ t.Splits) := by
   have hp_ne := hp.1
   have ht_ne : t ≠ 0 := right_ne_zero_of_mul (hpt ▸ hp_ne)
   refine ⟨ht_ne, ?_⟩
@@ -1293,8 +1287,7 @@ theorem isRealRooted_and_hasSimpleRoots_iterateTDeriv
     (heps : 0 < eps)
     (hf : f ≠ 0 ∧ f.Splits)
     (hdeg : f.natDegree = n) :
-    ((iterateTDeriv eps n f) ≠ 0 ∧
-      (iterateTDeriv eps n f).Splits) ∧
+    ((iterateTDeriv eps n f) ≠ 0 ∧ (iterateTDeriv eps n f).Splits) ∧
       HasSimpleRoots (iterateTDeriv eps n f) := by
   refine ⟨isRealRooted_iterateTDeriv heps hf, ?_⟩
   intro a ha

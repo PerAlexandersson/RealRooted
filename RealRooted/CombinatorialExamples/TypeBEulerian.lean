@@ -231,8 +231,7 @@ lemma interlaces_typeBEulerian_zero_one :
         (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by norm_num)))
 
 lemma interlaces_derivative_typeBEulerian :
-    ∀ n : Nat, 1 ≤ n → ((typeBEulerian n) ≠ 0 ∧
-      (typeBEulerian n).Splits) →
+    ∀ n : Nat, 1 ≤ n → ((typeBEulerian n) ≠ 0 ∧ (typeBEulerian n).Splits) →
       Interlaces (typeBEulerian n).derivative (typeBEulerian n)
   | 0, hn, _ => by
       lia
@@ -308,8 +307,7 @@ theorem interlaces_typeBEulerian_succ (n : Nat) :
   apply (prec_typeBEulerian_succ n).toInterlaces
   simp [natDegree_typeBEulerian]
 
-theorem isRealRooted_typeBEulerian : ∀ n : Nat, ((typeBEulerian n) ≠ 0 ∧
-  (typeBEulerian n).Splits)
+theorem isRealRooted_typeBEulerian : ∀ n : Nat, ((typeBEulerian n) ≠ 0 ∧ (typeBEulerian n).Splits)
   | 0 => by simp
   | n + 1 => (prec_typeBEulerian_succ n).2.1
 

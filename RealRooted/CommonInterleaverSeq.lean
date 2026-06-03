@@ -1475,8 +1475,7 @@ private lemma roots_polyOfDescRoots (xs : List ℝ) :
       simp
 
 private lemma isRealRooted_polyOfDescRoots (xs : List ℝ) :
-    ((polyOfDescRoots xs) ≠ 0 ∧
-      (polyOfDescRoots xs).Splits) := by
+    ((polyOfDescRoots xs) ≠ 0 ∧ (polyOfDescRoots xs).Splits) := by
   unfold polyOfDescRoots
   induction xs with
   | nil =>
@@ -1906,8 +1905,7 @@ theorem isRealRooted_sum_of_commonInterleaver
     {fs : List ℝ[X]}
     (hcommon : HasCommonInterleaver fs)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hne : fs ≠ []) :
-    (fs.sum ≠ 0 ∧ fs.sum.Splits) := by
+    (hne : fs ≠ []) : (fs.sum ≠ 0 ∧ fs.sum.Splits) := by
   rcases hcommon with ⟨h, hprec⟩
   exact (prec_sum_right fs h hprec hpos hne).1
 
@@ -1920,8 +1918,7 @@ theorem isRealRooted_sum_of_commonLeftInterleaver
     {fs : List ℝ[X]}
     (hcommon : HasCommonLeftInterleaver fs)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hne : fs ≠ []) :
-    (fs.sum ≠ 0 ∧ fs.sum.Splits) := by
+    (hne : fs ≠ []) : (fs.sum ≠ 0 ∧ fs.sum.Splits) := by
   rcases hcommon with ⟨h, hprec⟩
   exact (prec_sum_left_of_common_left_signed fs h hprec hpos hne).2.1
 
@@ -2005,8 +2002,7 @@ part of the same-degree Chudnovsky--Seymour gap from the remaining
 mathematical slot-intersection theorem. -/
 theorem pairHasCommonInterleaver_of_sameDegree_slotIntersections
     {f g : ℝ[X]}
-    (hf : f ≠ 0 ∧ f.Splits)
-    (hg : g ≠ 0 ∧ g.Splits)
+    (hf : f ≠ 0 ∧ f.Splits) (hg : g ≠ 0 ∧ g.Splits)
     (hdeg : g.natDegree = f.natDegree)
     (hslot :
       ∀ j (hj : j < f.natDegree + 1),

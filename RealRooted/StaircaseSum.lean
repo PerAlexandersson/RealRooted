@@ -106,8 +106,7 @@ sequence with nonnegative coefficients. -/
 theorem isRealRooted_staircaseSum_of_isInterlacingSeqNonneg
     {fs : List ℝ[X]} {m : Nat}
     (hfs : IsInterlacingSeqNonneg fs)
-    (hm : m < fs.length) :
-    ((staircaseSum fs m) ≠ 0 ∧ (staircaseSum fs m).Splits) :=
+    (hm : m < fs.length) : ((staircaseSum fs m) ≠ 0 ∧ (staircaseSum fs m).Splits) :=
   (prec_get_staircaseSum_of_isInterlacingSeqNonneg hfs hm).2.1
 
 end RealRooted

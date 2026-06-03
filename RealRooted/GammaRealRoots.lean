@@ -392,16 +392,13 @@ lemma gammaTransform_even_injective :
       rw [hγC, hδC, hcoeff]
   | m + 1, γ, δ, hγ, hδ, hEq => by
       have hcoeff_top : γ.coeff (m + 1) = δ.coeff (m + 1) := by
-        have heval :
-            (gammaTransform (2 * (m + 1)) γ).eval (-1) =
+        have heval : (gammaTransform (2 * (m + 1)) γ).eval (-1) =
               (gammaTransform (2 * (m + 1)) δ).eval (-1) := by
           simpa using congrArg (fun p : ℝ[X] => p.eval (-1)) hEq
-        have hγeval :
-            (gammaTransform (2 * (m + 1)) γ).eval (-1) =
+        have hγeval : (gammaTransform (2 * (m + 1)) γ).eval (-1) =
               γ.coeff (m + 1) * (-1) ^ (m + 1) := by
           simpa using gammaTransform_even_eval_neg_one (m + 1) γ
-        have hδeval :
-            (gammaTransform (2 * (m + 1)) δ).eval (-1) =
+        have hδeval : (gammaTransform (2 * (m + 1)) δ).eval (-1) =
               δ.coeff (m + 1) * (-1) ^ (m + 1) := by
           simpa using gammaTransform_even_eval_neg_one (m + 1) δ
         rw [hγeval, hδeval] at heval
@@ -549,8 +546,7 @@ lemma natDegree_gammaBasisTerm_le (d i : ℕ) (hi : i ≤ d / 2) :
     _ ≤ i + (d - 2 * i) := Nat.add_le_add_left hX1 i
     _ ≤ d := by lia
 
-lemma natDegree_gammaTransform_le (d : ℕ) (γ : ℝ[X]) :
-    (gammaTransform d γ).natDegree ≤ d := by
+lemma natDegree_gammaTransform_le (d : ℕ) (γ : ℝ[X]) : (gammaTransform d γ).natDegree ≤ d := by
   classical
   refine Polynomial.natDegree_le_iff_coeff_eq_zero.mpr ?_
   intro n hn
@@ -709,8 +705,7 @@ lemma hasNonnegCoeffs_gammaQuadraticFactor {r : ℝ} (hr : r ≤ 0) :
       (nonnegCoeffs_C_mul hneg (HasNonnegCoeffs.pow hasNonnegCoeffs_X_add_one 2))
 
 lemma isRealRooted_gammaQuadraticFactor {r : ℝ} (hr : r ≤ 0) :
-    ((X - C r * (X + 1) ^ 2) ≠ 0 ∧
-      (X - C r * (X + 1) ^ 2).Splits) := by
+    ((X - C r * (X + 1) ^ 2) ≠ 0 ∧ (X - C r * (X + 1) ^ 2).Splits) := by
   by_cases hr0 : r = 0
   · subst hr0
     simp
@@ -793,8 +788,7 @@ lemma hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
 inputs whose degree fits the ambient floor `d / 2`. -/
 theorem isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
     {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2)
-    (hγ : (γ ≠ 0 ∧ γ.Splits)) (hγnn : HasNonnegCoeffs γ) :
-    ((gammaTransform d γ) ≠ 0 ∧
+    (hγ : (γ ≠ 0 ∧ γ.Splits)) (hγnn : HasNonnegCoeffs γ) : ((gammaTransform d γ) ≠ 0 ∧
       (gammaTransform d γ).Splits) := by
   let P : ℕ → Prop := fun n =>
     ∀ d : ℕ, ∀ γ : ℝ[X],
@@ -871,15 +865,13 @@ theorem hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
 
 theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
     {γ : ℝ[X]}
-    (hp : (gammaTransform (2 * γ.natDegree) γ) ≠ 0 ∧
-      (gammaTransform (2 * γ.natDegree) γ).Splits)
+    (hp : (gammaTransform (2 * γ.natDegree) γ) ≠ 0 ∧ (gammaTransform (2 * γ.natDegree) γ).Splits)
     (hp_nonpos : HasRootsNonpos (gammaTransform (2 * γ.natDegree) γ)) :
     (γ ≠ 0 ∧ γ.Splits) ∧ HasRootsNonpos γ := by
   let P : ℕ → Prop := fun n =>
     ∀ γ : ℝ[X],
       γ.natDegree = n →
-      ((gammaTransform (2 * n) γ) ≠ 0 ∧
-        (gammaTransform (2 * n) γ).Splits) →
+      ((gammaTransform (2 * n) γ) ≠ 0 ∧ (gammaTransform (2 * n) γ).Splits) →
       HasRootsNonpos (gammaTransform (2 * n) γ) →
       (γ ≠ 0 ∧ γ.Splits) ∧ HasRootsNonpos γ
   have hP : ∀ n : ℕ, P n := by
@@ -1026,16 +1018,13 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
 
 theorem isRealRooted_of_isRealRooted_gammaTransform_minimal
     {γ : ℝ[X]}
-    (hp : (gammaTransform (2 * γ.natDegree) γ) ≠ 0 ∧
-      (gammaTransform (2 * γ.natDegree) γ).Splits)
-    (hp_nonpos : HasRootsNonpos (gammaTransform (2 * γ.natDegree) γ)) :
-    (γ ≠ 0 ∧ γ.Splits) :=
+    (hp : (gammaTransform (2 * γ.natDegree) γ) ≠ 0 ∧ (gammaTransform (2 * γ.natDegree) γ).Splits)
+    (hp_nonpos : HasRootsNonpos (gammaTransform (2 * γ.natDegree) γ)) : (γ ≠ 0 ∧ γ.Splits) :=
   (isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal hp hp_nonpos).1
 
 theorem hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
     {γ : ℝ[X]}
-    (hp : (gammaTransform (2 * γ.natDegree) γ) ≠ 0 ∧
-      (gammaTransform (2 * γ.natDegree) γ).Splits)
+    (hp : (gammaTransform (2 * γ.natDegree) γ) ≠ 0 ∧ (gammaTransform (2 * γ.natDegree) γ).Splits)
     (hp_nonpos : HasRootsNonpos (gammaTransform (2 * γ.natDegree) γ)) :
     HasRootsNonpos γ :=
   (isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal hp hp_nonpos).2
@@ -1050,8 +1039,7 @@ lemma hasRootsNonpos_gammaQuadraticFactor {r : ℝ} (hr : r ≤ 0) :
 
 theorem isRealRooted_and_hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasRootsNonpos
     {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2)
-    (hγ : (γ ≠ 0 ∧ γ.Splits)) (hγ_nonpos : HasRootsNonpos γ) :
-    ((gammaTransform d γ) ≠ 0 ∧
+    (hγ : (γ ≠ 0 ∧ γ.Splits)) (hγ_nonpos : HasRootsNonpos γ) : ((gammaTransform d γ) ≠ 0 ∧
       (gammaTransform d γ).Splits) ∧
       HasRootsNonpos (gammaTransform d γ) := by
   let P : ℕ → Prop := fun n =>
@@ -1060,8 +1048,7 @@ theorem isRealRooted_and_hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasRoo
       γ.natDegree ≤ d / 2 →
       (γ ≠ 0 ∧ γ.Splits) →
       HasRootsNonpos γ →
-      ((gammaTransform d γ) ≠ 0 ∧
-        (gammaTransform d γ).Splits) ∧
+      ((gammaTransform d γ) ≠ 0 ∧ (gammaTransform d γ).Splits) ∧
         HasRootsNonpos (gammaTransform d γ)
   have hP : ∀ n : ℕ, P n := by
     intro n
@@ -1115,8 +1102,7 @@ theorem isRealRooted_and_hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasRoo
           lia
         lia
       have hd : d = (d - 2) + 2 := by lia
-      have ihq :
-          ((gammaTransform (d - 2) q) ≠ 0 ∧
+      have ihq : ((gammaTransform (d - 2) q) ≠ 0 ∧
             (gammaTransform (d - 2) q).Splits) ∧
             HasRootsNonpos (gammaTransform (d - 2) q) :=
         ih q.natDegree hqdeg_lt (d - 2) q rfl hqbound hq_rr hq_nonpos
@@ -1213,10 +1199,8 @@ lemma gammaTransform_minimal_dvd {d : ℕ} {γ : ℝ[X]}
 
 theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_of_natDegree_le
     {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2)
-    (hp : (gammaTransform d γ) ≠ 0 ∧
-      (gammaTransform d γ).Splits)
-    (hp_nonpos : HasRootsNonpos (gammaTransform d γ)) :
-    (γ ≠ 0 ∧ γ.Splits) ∧ HasRootsNonpos γ := by
+    (hp : (gammaTransform d γ) ≠ 0 ∧ (gammaTransform d γ).Splits)
+    (hp_nonpos : HasRootsNonpos (gammaTransform d γ)) : (γ ≠ 0 ∧ γ.Splits) ∧ HasRootsNonpos γ := by
   let q : ℝ[X] := gammaTransform (2 * γ.natDegree) γ
   have hq0 : q ≠ 0 := by
     intro hq_zero
@@ -1247,8 +1231,7 @@ def gammaRealRootedIffPolynomialRealRootedNonposStatement : Prop :=
     p.natDegree ≤ d →
     IdTransform d p = p →
     IsGammaExpansion d p γ →
-    (((γ ≠ 0 ∧ γ.Splits) ∧ HasRootsNonpos γ) ↔
-      ((p ≠ 0 ∧ p.Splits) ∧ HasRootsNonpos p))
+    (((γ ≠ 0 ∧ γ.Splits) ∧ HasRootsNonpos γ) ↔ ((p ≠ 0 ∧ p.Splits) ∧ HasRootsNonpos p))
 
 theorem gammaRealRootedIffPolynomialRealRootedNonpos :
     gammaRealRootedIffPolynomialRealRootedNonposStatement := by

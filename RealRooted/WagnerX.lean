@@ -522,8 +522,7 @@ lemma hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos {p : ℝ[X]} (hp : p
     exact (hasNonnegCoeffs_C hlc_pos.le).mul
       (hasNonnegCoeffs_multiset_prod_X_sub_C p.roots hroots_nonpos)
 
-lemma isRealRooted_hasNonnegCoeffs_iff {p : ℝ[X]} :
-    (p ≠ 0 ∧ p.Splits) ∧ HasNonnegCoeffs p ↔
+lemma isRealRooted_hasNonnegCoeffs_iff {p : ℝ[X]} : (p ≠ 0 ∧ p.Splits) ∧ HasNonnegCoeffs p ↔
       (p ≠ 0 ∧ p.Splits) ∧ HasPosLeadingCoeff p ∧ ∀ r ∈ p.roots, r ≤ 0 := by
   constructor
   · rintro ⟨hp, hnn⟩

@@ -224,8 +224,7 @@ lemma listAlternates_left_le_of_right_le {ss rs : List ℝ} {c : ℝ}
     - **same-degree**: `deg f = deg g`, roots satisfy `ListAlternates`
 
     Notation: we write `Prec f g` for `f ≪ g`. -/
-def Prec (f g : ℝ[X]) : Prop :=
-  (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits) ∧
+def Prec (f g : ℝ[X]) : Prop := (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits) ∧
   ∃ (ss rs : List ℝ),
     ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧
     (↑ss : Multiset ℝ) = f.roots ∧ (↑rs : Multiset ℝ) = g.roots ∧
@@ -257,8 +256,7 @@ def Prec0 (f g : ℝ[X]) : Prop :=
   f = 0 ∨ g = 0 ∨ Prec f g
 
 /-- Backward-compatible alias: differ-by-1 interlacing. -/
-def Interlaces (g f : ℝ[X]) : Prop :=
-  (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits) ∧
+def Interlaces (g f : ℝ[X]) : Prop := (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits) ∧
   g.natDegree + 1 = f.natDegree ∧
   ∃ (rs ss : List ℝ),
     rs.Pairwise (· ≤ ·) ∧ ss.Pairwise (· ≤ ·) ∧
@@ -338,8 +336,7 @@ lemma prec0_zero_zero : Prec0 (0 : ℝ[X]) 0 :=
 /-- The product of two real-rooted polynomials is real-rooted. -/
 lemma isRealRooted_mul {p q : ℝ[X]} (hp : p ≠ 0 ∧
   p.Splits) (hq : q ≠ 0 ∧
-  q.Splits) :
-    (p * q ≠ 0 ∧ (p * q).Splits) := by
+  q.Splits) : (p * q ≠ 0 ∧ (p * q).Splits) := by
   refine ⟨mul_ne_zero hp.1 hq.1, ?_⟩
   apply splits_of_card_roots
   have hp' := card_roots_of_splits hp.2

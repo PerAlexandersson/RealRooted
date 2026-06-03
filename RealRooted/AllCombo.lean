@@ -272,8 +272,7 @@ lemma hasSimpleRoots_TDeriv_of_hasSimpleRoots
     exact
       not_isRoot_TDeriv_of_simple_root
         (ne_of_gt heps) hp.1 hp_root (hsimple a hp_root) ha
-  have hT_rr : ((TDeriv eps p) ≠ 0 ∧
-    (TDeriv eps p).Splits) := isRealRooted_TDeriv heps hp
+  have hT_rr : ((TDeriv eps p) ≠ 0 ∧ (TDeriv eps p).Splits) := isRealRooted_TDeriv heps hp
   have hmult_pos : 1 ≤ (TDeriv eps p).rootMultiplicity a := by
     exact (rootMultiplicity_pos hT_rr.1).mpr ha
   have hmult_le : (TDeriv eps p).rootMultiplicity a ≤ 1 :=
@@ -324,10 +323,8 @@ lemma simple_pair_of_allComboRealRooted_iterateTDeriv
     {eps : ℝ} (heps : 0 < eps) :
     let n := max f.natDegree g.natDegree
     AllComboRealRooted (iterateTDeriv eps n f) (iterateTDeriv eps n g) ∧
-      ((iterateTDeriv eps n f) ≠ 0 ∧
-        (iterateTDeriv eps n f).Splits) ∧
-      ((iterateTDeriv eps n g) ≠ 0 ∧
-        (iterateTDeriv eps n g).Splits) ∧
+      ((iterateTDeriv eps n f) ≠ 0 ∧ (iterateTDeriv eps n f).Splits) ∧
+      ((iterateTDeriv eps n g) ≠ 0 ∧ (iterateTDeriv eps n g).Splits) ∧
       HasSimpleRoots (iterateTDeriv eps n f) ∧
       HasSimpleRoots (iterateTDeriv eps n g) ∧
       ((iterateTDeriv eps n f).natDegree + 1 = (iterateTDeriv eps n g).natDegree ∨

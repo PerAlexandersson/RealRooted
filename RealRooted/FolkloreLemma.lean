@@ -164,8 +164,7 @@ theorem prec_sub_X_mul_right {f g : ℝ[X]}
       simpa [hrew] using hall_qf (α - β) β
     have hq : (q ≠ 0 ∧ q.Splits) := hqf.1
     have hg : (g ≠ 0 ∧ g.Splits) := hgf.1
-    have hXg : ((X * g) ≠ 0 ∧
-      (X * g).Splits) := isRealRooted_mul isRealRooted_X hg
+    have hXg : ((X * g) ≠ 0 ∧ (X * g).Splits) := isRealRooted_mul isRealRooted_X hg
     have hq_lt : q.natDegree < f.natDegree := by
       have hq_le : q.natDegree ≤ f.natDegree := by
         have hXg_le : (X * g).natDegree ≤ f.natDegree := by

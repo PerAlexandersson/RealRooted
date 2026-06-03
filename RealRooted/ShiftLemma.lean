@@ -176,8 +176,7 @@ coefficients, `h ≪ f`, and `h(0) ≤ f(0)`, then
 -/
 theorem prec_shift
     {f h : ℝ[X]}
-    (hf : f ≠ 0 ∧ f.Splits)
-    (hh : h ≠ 0 ∧ h.Splits)
+    (hf : f ≠ 0 ∧ f.Splits) (hh : h ≠ 0 ∧ h.Splits)
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     (hh_nonpos : ∀ r ∈ h.roots, r ≤ 0)
     (hf_pos : HasPosLeadingCoeff f)
@@ -206,8 +205,7 @@ theorem prec_shift
 
 /-- Shift lemma with variables named for applications. -/
 theorem prec_shift' {F H : ℝ[X]}
-    (hF : F ≠ 0 ∧ F.Splits)
-    (hH : H ≠ 0 ∧ H.Splits)
+    (hF : F ≠ 0 ∧ F.Splits) (hH : H ≠ 0 ∧ H.Splits)
     (hF_nonpos : ∀ r ∈ F.roots, r ≤ 0)
     (hH_nonpos : ∀ r ∈ H.roots, r ≤ 0)
     (hF_pos : HasPosLeadingCoeff F)

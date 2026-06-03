@@ -321,8 +321,7 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
     (hlen : fs.length = gs.length)
     (hfs : IsInterlacingSeqNonneg fs)
     (hgs : IsInterlacingSeqNonneg gs) :
-    (((fs.zipWith (· * ·) gs.reverse).sum) ≠ 0 ∧
-      ((fs.zipWith (· * ·) gs.reverse).sum).Splits) := by
+    (((fs.zipWith (· * ·) gs.reverse).sum) ≠ 0 ∧ ((fs.zipWith (· * ·) gs.reverse).sum).Splits) := by
   let ps := fs.zipWith (· * ·) gs.reverse
   have hpos : ∀ p ∈ ps, HasPosLeadingCoeff p := by
     intro p hp
@@ -521,8 +520,7 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg
     (hfs_real : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits))
     (hgs : IsInterlacingSeqNonneg gs)
     (hsum_ne : (fs.zipWith (· * ·) gs.reverse).sum ≠ 0) :
-    (((fs.zipWith (· * ·) gs.reverse).sum) ≠ 0 ∧
-      ((fs.zipWith (· * ·) gs.reverse).sum).Splits) := by
+    (((fs.zipWith (· * ·) gs.reverse).sum) ≠ 0 ∧ ((fs.zipWith (· * ·) gs.reverse).sum).Splits) := by
   let fs' := filterLeftNonzero fs gs.reverse
   let gs' := filterRightByLeftNonzero fs gs.reverse
   have hfs'_eq : fs' = fs.filter (· ≠ 0) := by
@@ -570,8 +568,7 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg_both
     (hgs : IsInterlacingSeq0Nonneg gs)
     (hgs_real : ∀ g ∈ gs, g ≠ 0 → (g ≠ 0 ∧ g.Splits))
     (hsum_ne : (fs.zipWith (· * ·) gs.reverse).sum ≠ 0) :
-    (((fs.zipWith (· * ·) gs.reverse).sum) ≠ 0 ∧
-      ((fs.zipWith (· * ·) gs.reverse).sum).Splits) := by
+    (((fs.zipWith (· * ·) gs.reverse).sum) ≠ 0 ∧ ((fs.zipWith (· * ·) gs.reverse).sum).Splits) := by
   let fs' := filterProductLeftNonzero fs gs.reverse
   let gs' := filterProductRightNonzero fs gs.reverse
   have hfs_sub : fs'.Sublist fs := by

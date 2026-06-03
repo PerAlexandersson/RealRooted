@@ -60,8 +60,7 @@ lemma ne_zero_of_self_2x2 (p : ℝ[X])
   exact hself.1.1 (by grind)
 
 lemma isRealRooted_of_self_2x2 (p : ℝ[X])
-    (hdiag : Has2x2InterlacingProperty p p p p) :
-    (p ≠ 0 ∧ p.Splits) := by
+    (hdiag : Has2x2InterlacingProperty p p p p) : (p ≠ 0 ∧ p.Splits) := by
   have hself :
       Prec
         (((C (1 : ℝ) * X + C (1 : ℝ)) * p) + p)
@@ -152,8 +151,7 @@ private lemma affine_family_common_root_reduction_data
     (hg_pos : HasPosLeadingCoeff g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hrf : f.IsRoot r) (hrg : g.IsRoot r) :
     ∃ qf qg,
       f = (X - C r) * qf ∧
@@ -165,8 +163,7 @@ private lemma affine_family_common_root_reduction_data
       HasPosLeadingCoeff qf ∧
       HasPosLeadingCoeff qg ∧
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * qf) + qg) ≠ 0 ∧
-          (((C s * X + C t) * qf) + qg).Splits) := by
+        ((((C s * X + C t) * qf) + qg) ≠ 0 ∧ (((C s * X + C t) * qf) + qg).Splits) := by
   obtain ⟨qf, hqf⟩ := dvd_iff_isRoot.mpr hrf
   obtain ⟨qg, hqg⟩ := dvd_iff_isRoot.mpr hrg
   have hqf_ne : qf ≠ 0 := by
@@ -297,8 +294,7 @@ lemma prec_of_prec_mul_X_of_nonneg {f g : ℝ[X]}
 theorem isRealRooted_affine_combo_of_prec_nonneg {f g : ℝ[X]}
     (h : Prec f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    ((((C s * X + C t) * f) + g) ≠ 0 ∧
-      (((C s * X + C t) * f) + g).Splits) := by
+    ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits) := by
   have hf : (f ≠ 0 ∧ f.Splits) := h.1
   have hg : (g ≠ 0 ∧ g.Splits) := h.2.1
   have hXf : ((X * f) ≠ 0 ∧ (X * f).Splits) := isRealRooted_X_mul hf
@@ -329,14 +325,12 @@ theorem isRealRooted_affine_combo_of_prec_nonneg {f g : ℝ[X]}
 theorem posComboRealRooted_of_affine_family {f g : ℝ[X]}
     (h :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     {t : ℝ} (ht : 0 < t) :
     PosComboRealRooted (C t * f + g) (X * f) := by
   intro lam μ hlam hμ
   have hbase :
-      ((((C (μ / lam) * X + C t) * f) + g) ≠ 0 ∧
-        (((C (μ / lam) * X + C t) * f) + g).Splits) :=
+      ((((C (μ / lam) * X + C t) * f) + g) ≠ 0 ∧ (((C (μ / lam) * X + C t) * f) + g).Splits) :=
     h (by positivity) ht
   have hscaled :
       ((C lam * ((((C (μ / lam) * X + C t) * f) + g))) ≠ 0 ∧
@@ -362,8 +356,7 @@ private lemma affine_family_pair_data {f g : ℝ[X]}
     (hf0 : f ≠ 0) (hg0 : g ≠ 0)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     {t : ℝ} (ht : 0 < t) :
     PosComboRealRooted (C t * f + g) (X * f) ∧
     HasNonnegCoeffs (C t * f + g) ∧
@@ -391,12 +384,10 @@ is already real-rooted. This is the clean boundary-`μ → 0` step that the
 succ-degree affine-family branch needs. -/
 private theorem isRealRooted_of_add_C_mul_right_family_of_natDegree_lt
     {f g : ℝ[X]}
-    (hfamily : ∀ {μ : ℝ}, 0 < μ → ((g + C μ * f) ≠ 0 ∧
-      (g + C μ * f).Splits))
+    (hfamily : ∀ {μ : ℝ}, 0 < μ → ((g + C μ * f) ≠ 0 ∧ (g + C μ * f).Splits))
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : f.natDegree < g.natDegree) :
-    (g ≠ 0 ∧ g.Splits) := by
+    (hdeg : f.natDegree < g.natDegree) : (g ≠ 0 ∧ g.Splits) := by
   let f₀ : ℝ[X] := C f.leadingCoeff⁻¹ * f
   let g₀ : ℝ[X] := C g.leadingCoeff⁻¹ * g
   have hf_lc_ne : f.leadingCoeff ≠ 0 := ne_of_gt hf_pos
@@ -415,8 +406,7 @@ private theorem isRealRooted_of_add_C_mul_right_family_of_natDegree_lt
     simp [HasPosLeadingCoeff, hg₀_monic.leadingCoeff]
   have hdeg₀ : f₀.natDegree < g₀.natDegree := by
     simp [f₀, g₀, natDegree_C_mul, hf_lc_ne, hg_lc_ne, hdeg]
-  have hfamily₀ : ∀ {μ : ℝ}, 0 < μ → ((g₀ + C μ * f₀) ≠ 0 ∧
-    (g₀ + C μ * f₀).Splits) := by
+  have hfamily₀ : ∀ {μ : ℝ}, 0 < μ → ((g₀ + C μ * f₀) ≠ 0 ∧ (g₀ + C μ * f₀).Splits) := by
     intro μ hμ
     have hμ' : 0 < μ * g.leadingCoeff / f.leadingCoeff := by
       exact div_pos (mul_pos hμ hg_pos) hf_pos
@@ -539,8 +529,7 @@ private theorem isRealRooted_of_add_C_mul_right_family_of_natDegree_lt
     unfold g₀
     ext n
     simp_all
-  have hg_rr_scaled : ((C g.leadingCoeff * g₀) ≠ 0 ∧
-    (C g.leadingCoeff * g₀).Splits) :=
+  have hg_rr_scaled : ((C g.leadingCoeff * g₀) ≠ 0 ∧ (C g.leadingCoeff * g₀).Splits) :=
     isRealRooted_C_mul hg₀_rr hg_lc_ne
   grind
 
@@ -550,12 +539,10 @@ existing positive-combination continuity theorem; the strict case is the new
 lower-degree closure lemma above. -/
 private theorem isRealRooted_of_add_C_mul_right_family_of_natDegree_le
     {f g : ℝ[X]}
-    (hfamily : ∀ {μ : ℝ}, 0 < μ → ((g + C μ * f) ≠ 0 ∧
-      (g + C μ * f).Splits))
+    (hfamily : ∀ {μ : ℝ}, 0 < μ → ((g + C μ * f) ≠ 0 ∧ (g + C μ * f).Splits))
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : f.natDegree ≤ g.natDegree) :
-    (g ≠ 0 ∧ g.Splits) := by
+    (hdeg : f.natDegree ≤ g.natDegree) : (g ≠ 0 ∧ g.Splits) := by
   rcases lt_or_eq_of_le hdeg with hlt | heq
   · exact
       isRealRooted_of_add_C_mul_right_family_of_natDegree_lt
@@ -578,11 +565,9 @@ private lemma isRealRooted_add_left_of_affine_family_of_natDegree_succ_le
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hdeg : f.natDegree + 1 ≤ g.natDegree)
-    {t : ℝ} (ht : 0 < t) :
-    ((C t * f + g) ≠ 0 ∧ (C t * f + g).Splits) := by
+    {t : ℝ} (ht : 0 < t) : ((C t * f + g) ≠ 0 ∧ (C t * f + g).Splits) := by
   obtain ⟨_, _, _, _, _, hsum_pos, hXf_pos⟩ :=
     affine_family_pair_data hfnn hgnn hf0 hg0 haff ht
   have hsum_deg : (C t * f + g).natDegree = g.natDegree := by
@@ -610,10 +595,8 @@ private lemma isRealRooted_right_of_affine_family_of_natDegree_succ_le
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
-    (hdeg : f.natDegree + 1 ≤ g.natDegree) :
-    (g ≠ 0 ∧ g.Splits) := by
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
+    (hdeg : f.natDegree + 1 ≤ g.natDegree) : (g ≠ 0 ∧ g.Splits) := by
   apply isRealRooted_of_add_C_mul_right_family_of_natDegree_le
   · intro t ht
     simpa [add_comm] using
@@ -630,12 +613,10 @@ private lemma isRealRooted_pair_of_affine_family_succDegree
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hsucc : f.natDegree + 1 = g.natDegree)
     {t : ℝ} (ht : 0 < t) :
-    ((C t * f + g) ≠ 0 ∧
-      (C t * f + g).Splits) ∧
+    ((C t * f + g) ≠ 0 ∧ (C t * f + g).Splits) ∧
       (f ≠ 0 ∧
       f.Splits) := by
   obtain ⟨hcombo, _, _, _, _, hsum_pos, hXf_pos⟩ :=
@@ -651,12 +632,10 @@ private lemma isRealRooted_pair_of_affine_family_succDegree
     simp_all
   have hdeg_same : (X * f).natDegree = (C t * f + g).natDegree := by
     simp_all
-  have hsum_rr :
-      ((C t * f + g) ≠ 0 ∧ (C t * f + g).Splits) :=
+  have hsum_rr : ((C t * f + g) ≠ 0 ∧ (C t * f + g).Splits) :=
     PosComboRealRooted.isRealRooted_left_of_sameDegree
       hcombo hsum_pos hXf_pos hdeg_same
-  have hXf_rr :
-      ((X * f) ≠ 0 ∧ (X * f).Splits) :=
+  have hXf_rr : ((X * f) ≠ 0 ∧ (X * f).Splits) :=
     PosComboRealRooted.isRealRooted_right_of_sameDegree
       hcombo hsum_pos hXf_pos hdeg_same
   exact ⟨hsum_rr, isRealRooted_of_X_mul hXf_rr⟩
@@ -668,10 +647,8 @@ private lemma isRealRooted_right_of_affine_family_succDegree
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
-    (hsucc : f.natDegree + 1 = g.natDegree) :
-    (g ≠ 0 ∧ g.Splits) := by
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
+    (hsucc : f.natDegree + 1 = g.natDegree) : (g ≠ 0 ∧ g.Splits) := by
   exact
     isRealRooted_right_of_affine_family_of_natDegree_succ_le
       hf0 hg0 hfnn hgnn haff (by lia)
@@ -689,10 +666,8 @@ private lemma isRealRooted_add_X_mul_right_of_affine_family
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
-    {s : ℝ} (hs : 0 < s) :
-    ((g + C s * (X * f)) ≠ 0 ∧ (g + C s * (X * f)).Splits) := by
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
+    {s : ℝ} (hs : 0 < s) : ((g + C s * (X * f)) ≠ 0 ∧ (g + C s * (X * f)).Splits) := by
   have hf_pos : HasPosLeadingCoeff f := hfnn.pos_leadingCoeff hf0
   have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff hg0
   have hXf_nonneg : HasNonnegCoeffs (X * f) := hasNonnegCoeffs_X.mul hfnn
@@ -759,8 +734,7 @@ private lemma posComboRealRooted_right_of_affine_family
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits)) :
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
     PosComboRealRooted g (X * f) := by
   refine PosComboRealRooted.of_add_right ?_
   intro s hs
@@ -777,8 +751,7 @@ private lemma affine_family_right_pair_data {f g : ℝ[X]}
     (hf0 : f ≠ 0) (hg0 : g ≠ 0)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits)) :
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
     PosComboRealRooted g (X * f) ∧
     HasNonnegCoeffs g ∧
     HasNonnegCoeffs (X * f) ∧
@@ -872,13 +845,11 @@ private lemma iterate_derivative_ne_zero_of_le_natDegree
 
 private lemma isRealRooted_iterate_derivative_of_lt_natDegree
     {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
-    ∀ {n : ℕ}, n < p.natDegree → (((derivative^[n]) p) ≠ 0 ∧
-      ((derivative^[n]) p).Splits)
+    ∀ {n : ℕ}, n < p.natDegree → (((derivative^[n]) p) ≠ 0 ∧ ((derivative^[n]) p).Splits)
   | 0, _ => by simpa
   | n + 1, hn => by
       rw [Function.iterate_succ_apply']
-      have hprev : (((derivative^[n]) p) ≠ 0 ∧
-        ((derivative^[n]) p).Splits) :=
+      have hprev : (((derivative^[n]) p) ≠ 0 ∧ ((derivative^[n]) p).Splits) :=
         isRealRooted_iterate_derivative_of_lt_natDegree hp (Nat.lt_of_succ_lt hn)
       have hnonzero :
           derivative ((derivative^[n]) p) ≠ 0 := by
@@ -1486,8 +1457,7 @@ private lemma exists_pos_shift_not_isRealRooted_of_nonneg_of_natDegree_ge_two
   intro hq
   have hqdeg : 2 ≤ (C t + p).natDegree := by
     simp_all
-  have hq'_rr : ((C t + p).derivative ≠ 0 ∧
-      (C t + p).derivative.Splits) :=
+  have hq'_rr : ((C t + p).derivative ≠ 0 ∧ (C t + p).derivative.Splits) :=
     (derivative_interlaces hq hqdeg).2.1
   have hmono :
       StrictMonoOn (fun x => (C t + p).eval x) (Set.Ici c) := by
@@ -1525,8 +1495,7 @@ private theorem not_posComboRealRooted_right_const_of_natDegree_ge_two
   intro hpc
   obtain ⟨t, ht, hbad⟩ :=
     exists_pos_shift_not_isRealRooted_of_nonneg_of_natDegree_ge_two hp hpnn hdeg
-  have hcombo_t : ((p + C (t / c) * C c) ≠ 0 ∧
-    (p + C (t / c) * C c).Splits) := by
+  have hcombo_t : ((p + C (t / c) * C c) ≠ 0 ∧ (p + C (t / c) * C c).Splits) := by
     exact PosComboRealRooted.isRealRooted_add_right hpc (by
       exact div_pos ht hc)
   have hrewrite : p + C (t / c) * C c = p + C t := by
@@ -1553,11 +1522,9 @@ private theorem not_degree_gap_ge_two_of_add_left_family_nonneg
   have hf_pos : HasPosLeadingCoeff f := hfnn.pos_leadingCoeff hf0
   have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff hg0
   have hfamilyN :
-      ∀ {μ : ℝ}, 0 < μ → ((gN + C μ * fN) ≠ 0 ∧
-        (gN + C μ * fN).Splits) := by
+      ∀ {μ : ℝ}, 0 < μ → ((gN + C μ * fN) ≠ 0 ∧ (gN + C μ * fN).Splits) := by
     intro μ hμ
-    have hbase : ((C μ * f + g) ≠ 0 ∧
-      (C μ * f + g).Splits) := hfamily hμ
+    have hbase : ((C μ * f + g) ≠ 0 ∧ (C μ * f + g).Splits) := hfamily hμ
     have hbase_deg : (C μ * f + g).natDegree = g.natDegree := by
       have hμf_deg : (C μ * f).natDegree = f.natDegree := by
         rw [natDegree_C_mul hμ.ne']
@@ -1570,8 +1537,7 @@ private theorem not_degree_gap_ge_two_of_add_left_family_nonneg
     have hn_lt : n < (C μ * f + g).natDegree := by
       lia
     have hder :
-        (((derivative^[n]) (C μ * f + g)) ≠ 0 ∧
-          ((derivative^[n]) (C μ * f + g)).Splits) :=
+        (((derivative^[n]) (C μ * f + g)) ≠ 0 ∧ ((derivative^[n]) (C μ * f + g)).Splits) :=
       isRealRooted_iterate_derivative_of_lt_natDegree hbase hn_lt
     have hEq :
         (derivative^[n]) (C μ * f + g) = gN + C μ * fN := by
@@ -1636,8 +1602,7 @@ private theorem not_degree_gap_ge_two_of_affine_family
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hgap : f.natDegree + 2 ≤ g.natDegree) :
     False := by
   refine
@@ -1656,8 +1621,7 @@ private theorem natDegree_right_le_succ_of_affine_family
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits)) :
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
     g.natDegree ≤ f.natDegree + 1 := by
   by_contra hdeg
   exact
@@ -1688,8 +1652,7 @@ private lemma natDegree_cases_of_affine_family
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits)) :
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
     g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 := by
   have hdeg_right : g.natDegree ≤ f.natDegree + 1 :=
     natDegree_right_le_succ_of_affine_family hf0 hg0 hfnn hgnn haff
@@ -1718,8 +1681,7 @@ private lemma natDegree_cases_right_pair_of_affine_family
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits)) :
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
     g.natDegree = (X * f).natDegree ∨
       (X * f).natDegree = g.natDegree + 1 := by
   have hpair₀ :
@@ -1750,8 +1712,7 @@ private lemma right_pair_root_zero_reduction_data
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hg_root0 : g.IsRoot 0) :
     ∃ qg,
       g = X * qg ∧
@@ -1790,8 +1751,7 @@ private lemma right_pair_root_zero_reduction_data
     have hEq :
         C lam * (X * qg) + C μ * (X * f) = X * (C lam * qg + C μ * f) := by
       ring
-    have hrr : ((X * (C lam * qg + C μ * f)) ≠ 0 ∧
-      (X * (C lam * qg + C μ * f)).Splits) := by
+    have hrr : ((X * (C lam * qg + C μ * f)) ≠ 0 ∧ (X * (C lam * qg + C μ * f)).Splits) := by
       simpa [hEq] using hX_pair hlam hμ
     have hcombo_ne : C lam * qg + C μ * f ≠ 0 := by
       exact right_ne_zero_of_mul hrr.1
@@ -1814,8 +1774,7 @@ private lemma right_pair_root_zero_affine_line_data
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hg_root0 : g.IsRoot 0) :
     ∃ qg,
       g = X * qg ∧
@@ -1826,8 +1785,7 @@ private lemma right_pair_root_zero_affine_line_data
       qg.natDegree ≤ f.natDegree ∧
       f.natDegree ≤ qg.natDegree + 1 ∧
       (∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((X * (C s * f + qg) + C t * f) ≠ 0 ∧
-          (X * (C s * f + qg) + C t * f).Splits)) := by
+        ((X * (C s * f + qg) + C t * f) ≠ 0 ∧ (X * (C s * f + qg) + C t * f).Splits)) := by
   obtain ⟨qg, hqg, hqg_nonneg, hqg_ne, hqg_pos, hpos_q, hdeg_q_lo, hdeg_q_hi⟩ :=
     right_pair_root_zero_reduction_data hf0 hg0 hfnn hgnn haff hg_root0
   refine ⟨qg, hqg, hqg_nonneg, hqg_ne, hqg_pos, hpos_q, hdeg_q_lo, hdeg_q_hi, ?_⟩
@@ -1843,14 +1801,12 @@ private lemma neg_root_quotient_posCombo_data_of_affine_family_succDegree
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hsucc : g.natDegree = f.natDegree + 1)
     (hgr : g.IsRoot r) (hr_neg : r < 0) :
     ∃ qg,
       g = (X - C r) * qg ∧
-      qg ≠ 0 ∧
-      (qg ≠ 0 ∧ qg.Splits) ∧
+      qg ≠ 0 ∧ (qg ≠ 0 ∧ qg.Splits) ∧
       HasPosLeadingCoeff qg ∧
       qg.natDegree = f.natDegree ∧
       PosComboRealRooted qg f := by
@@ -1873,8 +1829,7 @@ private lemma neg_root_quotient_posCombo_data_of_affine_family_succDegree
     refine PosComboRealRooted.of_add_left ?_
     intro s hs
     have hbase :
-        ((((C s * X + C (-s * r)) * f) + g) ≠ 0 ∧
-          (((C s * X + C (-s * r)) * f) + g).Splits) :=
+        ((((C s * X + C (-s * r)) * f) + g) ≠ 0 ∧ (((C s * X + C (-s * r)) * f) + g).Splits) :=
       haff hs (by nlinarith)
     have hlin : C s * (X - C r) = C s * X + C (-s * r) := by
       grind
@@ -1904,16 +1859,14 @@ private lemma rightmost_neg_root_quotient_posCombo_data_of_affine_family_succDeg
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hsucc : g.natDegree = f.natDegree + 1)
     (hg_root0 : ¬ g.IsRoot 0) :
     ∃ r qg,
       g.IsRoot r ∧
       r < 0 ∧
       g = (X - C r) * qg ∧
-      qg ≠ 0 ∧
-      (qg ≠ 0 ∧ qg.Splits) ∧
+      qg ≠ 0 ∧ (qg ≠ 0 ∧ qg.Splits) ∧
       HasPosLeadingCoeff qg ∧
       qg.natDegree = f.natDegree ∧
       (∀ u ∈ qg.roots, u ≤ r) ∧
@@ -2093,8 +2046,7 @@ private lemma eval_nonpos_at_root_of_degree_one_of_affine_family
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hf_deg1 : f.natDegree = 1) :
     ∀ r, f.IsRoot r → g.eval r ≤ 0 := by
   intro r hfr
@@ -2269,8 +2221,7 @@ private lemma prec_of_affine_family_nonneg_degree_one
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hdegf1 : f.natDegree = 1) :
     Prec f g := by
   have hdeg_cases : g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 :=
@@ -2318,8 +2269,7 @@ private lemma prec_right_pair_of_affine_family_degree_one
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hdegf1 : f.natDegree = 1) :
     Prec g (X * f) := by
   exact
@@ -2337,8 +2287,7 @@ theorem prec_right_pair_of_affine_family_nonneg_degree_one
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hdegf1 : f.natDegree = 1) :
     Prec g (X * f) :=
   prec_right_pair_of_affine_family_degree_one
@@ -2367,8 +2316,7 @@ private lemma isRealRooted_X_mul_of_affine_family
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits)) :
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
     ((X * f) ≠ 0 ∧ (X * f).Splits) := by
   have hdeg_right : g.natDegree ≤ f.natDegree + 1 :=
     natDegree_right_le_succ_of_affine_family hf0 hg0 hfnn hgnn haff
@@ -2388,8 +2336,7 @@ private lemma isRealRooted_X_mul_of_affine_family
   apply isRealRooted_of_add_C_mul_right_family_of_natDegree_le
   · intro μ hμ
     have hbase :
-        ((((C μ⁻¹ * X + C (1 : ℝ)) * f) + g) ≠ 0 ∧
-          (((C μ⁻¹ * X + C (1 : ℝ)) * f) + g).Splits) :=
+        ((((C μ⁻¹ * X + C (1 : ℝ)) * f) + g) ≠ 0 ∧ (((C μ⁻¹ * X + C (1 : ℝ)) * f) + g).Splits) :=
       haff (by positivity) zero_lt_one
     have hscaled :
         ((C μ * ((((C μ⁻¹ * X + C (1 : ℝ)) * f) + g))) ≠ 0 ∧
@@ -2415,8 +2362,7 @@ private lemma posComboRealRooted_shifted_pair_of_affine_family
     {f g : ℝ[X]}
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits)) :
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
     PosComboRealRooted (g + X * f) f := by
   intro lam μ hlam hμ
   have hbase :
@@ -2438,8 +2384,7 @@ private lemma natDegree_shifted_pair_eq_succ_of_affine_family
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits)) :
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
     (g + X * f).natDegree = f.natDegree + 1 := by
   have hdeg_right : g.natDegree ≤ f.natDegree + 1 :=
     natDegree_right_le_succ_of_affine_family hf0 hg0 hfnn hgnn haff
@@ -2473,8 +2418,7 @@ private lemma affine_family_shifted_pair_data
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits)) :
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
     PosComboRealRooted (g + X * f) f ∧
     HasNonnegCoeffs (g + X * f) ∧
     HasNonnegCoeffs f ∧
@@ -2651,15 +2595,13 @@ private lemma shifted_affine_family_of_affine_family
     {f g : ℝ[X]}
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits)) :
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
     ∀ {s t : ℝ}, 0 < s → 0 < t →
       ((((C s * X + C t) * f) + (g + X * f)) ≠ 0 ∧
         (((C s * X + C t) * f) + (g + X * f)).Splits) := by
   intro s t hs ht
   have hbase :
-      ((((C (s + 1) * X + C t) * f) + g) ≠ 0 ∧
-        (((C (s + 1) * X + C t) * f) + g).Splits) :=
+      ((((C (s + 1) * X + C t) * f) + g) ≠ 0 ∧ (((C (s + 1) * X + C t) * f) + g).Splits) :=
     haff (by linarith) ht
   grind
 
@@ -2672,12 +2614,10 @@ The proof is the same complex-root continuity argument as
 `-f` as the perturbation (the sign doesn't affect coefficient convergence). -/
 private theorem isRealRooted_of_sub_C_mul_right_family_of_natDegree_lt
     {f g : ℝ[X]}
-    (hfamily : ∀ {μ : ℝ}, 0 < μ → ((g - C μ * f) ≠ 0 ∧
-      (g - C μ * f).Splits))
+    (hfamily : ∀ {μ : ℝ}, 0 < μ → ((g - C μ * f) ≠ 0 ∧ (g - C μ * f).Splits))
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : f.natDegree < g.natDegree) :
-    (g ≠ 0 ∧ g.Splits) := by
+    (hdeg : f.natDegree < g.natDegree) : (g ≠ 0 ∧ g.Splits) := by
   -- Reduce to the upward-closure lemma by replacing f with -f.
   -- Note: g - C μ * f = g + C μ * (-f) and (-f).natDegree = f.natDegree.
   -- We need HasPosLeadingCoeff (-f) which fails, so we bypass and work
@@ -2699,8 +2639,7 @@ private theorem isRealRooted_of_sub_C_mul_right_family_of_natDegree_lt
   have hdeg₀ : f₀.natDegree < g₀.natDegree := by
     simp [f₀, g₀, natDegree_C_mul, hf_lc_ne, hg_lc_ne, hdeg]
   -- Monic subtraction family: g₀ - C μ'' * f₀ is real-rooted for small μ'' > 0.
-  have hfamily₀ : ∀ {μ : ℝ}, 0 < μ → ((g₀ - C μ * f₀) ≠ 0 ∧
-    (g₀ - C μ * f₀).Splits) := by
+  have hfamily₀ : ∀ {μ : ℝ}, 0 < μ → ((g₀ - C μ * f₀) ≠ 0 ∧ (g₀ - C μ * f₀).Splits) := by
     intro μ hμ
     have hμ' : 0 < μ * g.leadingCoeff / f.leadingCoeff := by
       exact div_pos (mul_pos hμ hg_pos) hf_pos
@@ -2849,8 +2788,7 @@ the positive-sign case `p''(x) * q(x) > 0`. -/
 private lemma false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
     {p q : ℝ[X]} {x βmax : ℝ}
     (hfamily :
-      ∀ {β : ℝ}, 0 < β → β ≤ βmax → ((p + C β * q) ≠ 0 ∧
-        (p + C β * q).Splits))
+      ∀ {β : ℝ}, 0 < β → β ≤ βmax → ((p + C β * q) ≠ 0 ∧ (p + C β * q).Splits))
     (hβmax : 0 < βmax)
     (hp_mult : p.rootMultiplicity x = 2)
     (hq_eval_ne : q.eval x ≠ 0)
@@ -2912,8 +2850,7 @@ private lemma false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
     have heval0 : p.eval x + β * q.eval x = 0 := by
       simpa using heval
     simp_all
-  have hcombo_rr : ((p + C β * q) ≠ 0 ∧
-    (p + C β * q).Splits) := hfamily hβ_pos hβ_le_max
+  have hcombo_rr : ((p + C β * q) ≠ 0 ∧ (p + C β * q).Splits) := hfamily hβ_pos hβ_le_max
   have hcombo_eval_ne :
       (p + C β * q).eval x ≠ 0 := by
     simp_all
@@ -2960,8 +2897,7 @@ private lemma false_of_affine_family_double_root
     {f g : ℝ[X]} {r : ℝ}
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hr_neg : r < 0)
     (hg_mult : g.rootMultiplicity r = 2)
     (hf_eval_ne : f.eval r ≠ 0) :
@@ -2978,8 +2914,7 @@ private lemma false_of_affine_family_double_root
   by_cases hG_pos : 0 < G
   · let q : ℝ[X] := (X - C r + C (1 : ℝ)) * f
     have hfamily :
-        ∀ {β : ℝ}, 0 < β → β ≤ 1 → ((g + C β * q) ≠ 0 ∧
-          (g + C β * q).Splits) := by
+        ∀ {β : ℝ}, 0 < β → β ≤ 1 → ((g + C β * q) ≠ 0 ∧ (g + C β * q).Splits) := by
       intro β hβ _hβ_le
       have hEq :
           g + C β * q =
@@ -3007,8 +2942,7 @@ private lemma false_of_affine_family_double_root
     have hc_neg : c < 0 := by
       grind
     have hfamily :
-        ∀ {β : ℝ}, 0 < β → β ≤ 1 → ((g + C β * q) ≠ 0 ∧
-          (g + C β * q).Splits) := by
+        ∀ {β : ℝ}, 0 < β → β ≤ 1 → ((g + C β * q) ≠ 0 ∧ (g + C β * q).Splits) := by
       intro β hβ _hβ_le
       have hEq :
           g + C β * q =
@@ -3061,8 +2995,7 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hsucc : g.natDegree = f.natDegree + 1)
     (hno : ∀ r, g.IsRoot r → ¬ f.IsRoot r)
     (hg_root0 : ¬ g.IsRoot 0) :
@@ -3168,8 +3101,7 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
         simp_all
       exact mul_neg_of_neg_of_pos hqPosη_neg hqNegη_pos
   have hfamilyPos :
-      ∀ {β : ℝ}, 0 < β → β ≤ 1 → ((g + C β * qPos) ≠ 0 ∧
-        (g + C β * qPos).Splits) := by
+      ∀ {β : ℝ}, 0 < β → β ≤ 1 → ((g + C β * qPos) ≠ 0 ∧ (g + C β * qPos).Splits) := by
     intro β hβ _hβ_le
     have hfac : C β * (X - C r + C (1 : ℝ)) = C β * X + C (β * (1 - r)) := by grind
     have hEq :
@@ -3184,8 +3116,7 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
     have hβt_pos : 0 < β * (1 - r) := by nlinarith
     grind
   have hfamilyNeg :
-      ∀ {β : ℝ}, 0 < β → β ≤ 1 → ((g + C β * qNeg) ≠ 0 ∧
-        (g + C β * qNeg).Splits) := by
+      ∀ {β : ℝ}, 0 < β → β ≤ 1 → ((g + C β * qNeg) ≠ 0 ∧ (g + C β * qNeg).Splits) := by
     intro β hβ _hβ_le
     have hEq :
         g + C β * qNeg =
@@ -3199,11 +3130,9 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
     have hβt_pos : 0 < β * (r / 2 - r) := by nlinarith
     grind
   have hfamilyPosη :
-      ∀ {β : ℝ}, 0 < β → β ≤ 1 → ((pη + C β * qPosη) ≠ 0 ∧
-        (pη + C β * qPosη).Splits) := by
+      ∀ {β : ℝ}, 0 < β → β ≤ 1 → ((pη + C β * qPosη) ≠ 0 ∧ (pη + C β * qPosη).Splits) := by
     intro β hβ hβ_le
-    have hrr : ((g + C β * qPos) ≠ 0 ∧
-      (g + C β * qPos).Splits) := hfamilyPos hβ hβ_le
+    have hrr : ((g + C β * qPos) ≠ 0 ∧ (g + C β * qPos).Splits) := hfamilyPos hβ hβ_le
     have hiter :
         ((iterateTDeriv η k (g + C β * qPos)) ≠ 0 ∧
           (iterateTDeriv η k (g + C β * qPos)).Splits) := by
@@ -3214,11 +3143,9 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
       rw [iterateTDeriv_add, iterateTDeriv_C_mul]
     exact hEq ▸ hiter
   have hfamilyNegη :
-      ∀ {β : ℝ}, 0 < β → β ≤ 1 → ((pη + C β * qNegη) ≠ 0 ∧
-        (pη + C β * qNegη).Splits) := by
+      ∀ {β : ℝ}, 0 < β → β ≤ 1 → ((pη + C β * qNegη) ≠ 0 ∧ (pη + C β * qNegη).Splits) := by
     intro β hβ hβ_le
-    have hrr : ((g + C β * qNeg) ≠ 0 ∧
-      (g + C β * qNeg).Splits) := hfamilyNeg hβ hβ_le
+    have hrr : ((g + C β * qNeg) ≠ 0 ∧ (g + C β * qNeg).Splits) := hfamilyNeg hβ hβ_le
     have hiter :
         ((iterateTDeriv η k (g + C β * qNeg)) ≠ 0 ∧
           (iterateTDeriv η k (g + C β * qNeg)).Splits) := by
@@ -3492,8 +3419,7 @@ private lemma hasSimpleRoots_add_right_of_posComboRealRooted
 Wronskian cannot vanish on the positive-level set of the ratio `-g / f`. -/
 private lemma wronskian_eval_ne_zero_of_add_left_family_of_no_common
     {f g : ℝ[X]}
-    (hfamily : ∀ {t : ℝ}, 0 < t → ((C t * f + g) ≠ 0 ∧
-      (C t * f + g).Splits))
+    (hfamily : ∀ {t : ℝ}, 0 < t → ((C t * f + g) ≠ 0 ∧ (C t * f + g).Splits))
     (hno : ∀ r, g.IsRoot r → ¬ f.IsRoot r)
     {x : ℝ}
     (hopp : g.eval x * f.eval x < 0) :
@@ -3570,8 +3496,7 @@ Wronskian zero at a point where `g(x)` and `f(x)` already have opposite signs,
 contradicting `wronskian_eval_ne_zero_of_add_left_family_of_no_common`. -/
 private lemma false_of_localExtr_neg_eval_div_eval_pos_of_add_left_family_of_no_common
     {f g : ℝ[X]}
-    (hfamily : ∀ {t : ℝ}, 0 < t → ((C t * f + g) ≠ 0 ∧
-      (C t * f + g).Splits))
+    (hfamily : ∀ {t : ℝ}, 0 < t → ((C t * f + g) ≠ 0 ∧ (C t * f + g).Splits))
     (hno : ∀ r, g.IsRoot r → ¬ f.IsRoot r)
     {x : ℝ}
     (hlocal : IsLocalExtr (fun y : ℝ => -(g.eval y / f.eval y)) x)
@@ -3680,8 +3605,7 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hsucc : g.natDegree = f.natDegree + 1)
     (hno : ∀ r, g.IsRoot r → ¬ f.IsRoot r)
     (hg_root0 : ¬ g.IsRoot 0)
@@ -3724,8 +3648,7 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
     exact hexists m hm_mem.1 hm_mem.2 hroot
   by_cases hmid_opp : g.eval m * f.eval m < 0
   · have hfamily_f :
-        ∀ {t : ℝ}, 0 < t → ((C t * f + g) ≠ 0 ∧
-          (C t * f + g).Splits) := by
+        ∀ {t : ℝ}, 0 < t → ((C t * f + g) ≠ 0 ∧ (C t * f + g).Splits) := by
       intro t ht
       simpa [add_comm] using
         isRealRooted_add_left_of_affine_family_of_natDegree_succ_le
@@ -3911,8 +3834,7 @@ private lemma right_boundary_pair_sameDegree_data_of_affine_family_succDegree_no
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hsucc : g.natDegree = f.natDegree + 1)
     (hno : ∀ r, g.IsRoot r → ¬ f.IsRoot r)
     (hg_root0 : ¬ g.IsRoot 0)
@@ -3942,8 +3864,7 @@ private lemma right_boundary_pair_sameDegree_data_of_affine_family_succDegree_no
           (C (lam + ν) * g + C (ν * μ) * (X * f)).Splits) :=
       hposcombo (lam := lam + ν) (μ := ν * μ) (by positivity) (by positivity)
     grind
-  have hμ_rr : ((g + C μ * (X * f)) ≠ 0 ∧
-    (g + C μ * (X * f)).Splits) :=
+  have hμ_rr : ((g + C μ * (X * f)) ≠ 0 ∧ (g + C μ * (X * f)).Splits) :=
     PosComboRealRooted.isRealRooted_add_right hposcombo hμ
   have hμ_simple : HasSimpleRoots (g + C μ * (X * f)) :=
     hasSimpleRoots_add_right_of_posComboRealRooted hposcombo hno_right hμ
@@ -3984,8 +3905,7 @@ private lemma allComboRealRooted_of_affine_family_succDegree_not_isRoot_zero
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hsucc : g.natDegree = f.natDegree + 1)
     (hno : ∀ r, g.IsRoot r → ¬ f.IsRoot r)
     (hg_root0 : ¬ g.IsRoot 0) :
@@ -4066,8 +3986,7 @@ private lemma allComboRealRooted_of_affine_family_succDegree
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hsucc : g.natDegree = f.natDegree + 1)
     (hno : ∀ r, g.IsRoot r → ¬ f.IsRoot r) :
     AllComboRealRooted g f := by
@@ -4085,12 +4004,10 @@ private lemma allComboRealRooted_of_affine_family_succDegree
         _ = f.natDegree + 1 := hsucc
     have hshift_aff :
         ∀ {s t : ℝ}, 0 < s → 0 < t →
-          ((((C s * X + C t) * f) + (g + f)) ≠ 0 ∧
-            (((C s * X + C t) * f) + (g + f)).Splits) := by
+          ((((C s * X + C t) * f) + (g + f)) ≠ 0 ∧ (((C s * X + C t) * f) + (g + f)).Splits) := by
       intro s t hs ht
       have hbase :
-          ((((C s * X + C (t + 1)) * f) + g) ≠ 0 ∧
-            (((C s * X + C (t + 1)) * f) + g).Splits) :=
+          ((((C s * X + C (t + 1)) * f) + g) ≠ 0 ∧ (((C s * X + C (t + 1)) * f) + g).Splits) :=
         haff hs (by linarith)
       grind
     have hshift_no : ∀ r, (g + f).IsRoot r → ¬ f.IsRoot r := by
@@ -4129,8 +4046,7 @@ private lemma prec_right_pair_of_affine_family_high_degree_core
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (_hdegf2 : 2 ≤ f.natDegree)
     (hno_common_fg : ¬ ∃ r, g.IsRoot r ∧ f.IsRoot r) :
     Prec g (X * f) := by
@@ -4209,8 +4125,7 @@ private lemma prec_right_pair_of_affine_family_high_degree_remaining
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hdegf2 : 2 ≤ f.natDegree)
     (hno_common_fg : ¬ ∃ r, g.IsRoot r ∧ f.IsRoot r) :
     Prec g (X * f) := by
@@ -4225,8 +4140,7 @@ private lemma prec_right_pair_of_affine_family_high_degree
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (_hdegf2 : 2 ≤ f.natDegree) :
     Prec g (X * f) := by
   refine
@@ -4239,8 +4153,7 @@ private lemma prec_right_pair_of_affine_family_high_degree
           HasNonnegCoeffs f →
           HasNonnegCoeffs g →
           (∀ {s t : ℝ}, 0 < s → 0 < t →
-            ((((C s * X + C t) * f) + g) ≠ 0 ∧
-              (((C s * X + C t) * f) + g).Splits)) →
+            ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) →
           2 ≤ f.natDegree →
           Prec g (X * f))
       f.natDegree ?_ rfl hf0 hg0 hfnn hgnn haff _hdegf2
@@ -4349,8 +4262,7 @@ theorem prec_of_affine_family_nonneg
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     :
     Prec f g := by
   have hdeg_cases : g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 :=
@@ -4383,8 +4295,7 @@ theorem prec_right_pair_of_affine_family_nonneg
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits)) :
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
     Prec g (X * f) :=
   prec_to_prec_mul_X_of_nonneg
     (prec_of_affine_family_nonneg hf0 hg0 hfnn hgnn haff)
@@ -4412,12 +4323,10 @@ theorem prec_of_affine_segment_endpoints_nonneg
           (((C s * X + C t) * P1) + H1))
     (hleft :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * P0) + H0) ≠ 0 ∧
-          (((C s * X + C t) * P0) + H0).Splits))
+        ((((C s * X + C t) * P0) + H0) ≠ 0 ∧ (((C s * X + C t) * P0) + H0).Splits))
     (hright :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * P1) + H1) ≠ 0 ∧
-          (((C s * X + C t) * P1) + H1).Splits)) :
+        ((((C s * X + C t) * P1) + H1) ≠ 0 ∧ (((C s * X + C t) * P1) + H1).Splits)) :
     Prec (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) := by
   refine prec_of_affine_family_nonneg hPβ0 hHβ0 hPβnn hHβnn ?_
   intro s t hs ht
@@ -4501,12 +4410,10 @@ theorem prec_of_affine_segment_endpoint_pf_nonneg
               C z * (((C s * X + C t) * P1) + H1)).coeff n))
     (hleft :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * P0) + H0) ≠ 0 ∧
-          (((C s * X + C t) * P0) + H0).Splits))
+        ((((C s * X + C t) * P0) + H0) ≠ 0 ∧ (((C s * X + C t) * P0) + H0).Splits))
     (hright :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * P1) + H1) ≠ 0 ∧
-          (((C s * X + C t) * P1) + H1).Splits)) :
+        ((((C s * X + C t) * P1) + H1) ≠ 0 ∧ (((C s * X + C t) * P1) + H1).Splits)) :
     Prec (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) := by
   refine prec_of_affine_segment_endpoints_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn hHβnn ?_
     hleft hright
@@ -4552,12 +4459,10 @@ theorem prec_of_affine_segment_endpoint_tnn_nonneg
               C z * (((C s * X + C t) * P1) + H1)).coeff n))
     (hleft :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * P0) + H0) ≠ 0 ∧
-          (((C s * X + C t) * P0) + H0).Splits))
+        ((((C s * X + C t) * P0) + H0) ≠ 0 ∧ (((C s * X + C t) * P0) + H0).Splits))
     (hright :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * P1) + H1) ≠ 0 ∧
-          (((C s * X + C t) * P1) + H1).Splits)) :
+        ((((C s * X + C t) * P1) + H1) ≠ 0 ∧ (((C s * X + C t) * P1) + H1).Splits)) :
     Prec (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) := by
   exact
     prec_of_affine_segment_endpoint_pf_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn hHβnn hASW
@@ -4669,8 +4574,7 @@ theorem allComboRealRooted_of_affine_family_nonneg
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits)) :
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
     AllComboRealRooted f g := by
   exact
     allComboRealRooted_of_prec
@@ -4687,8 +4591,7 @@ theorem shifted_pair_data_of_affine_family_nonneg
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits)) :
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
     PosComboRealRooted (g + X * f) f ∧
     HasNonnegCoeffs (g + X * f) ∧
     HasNonnegCoeffs f ∧
@@ -4709,8 +4612,7 @@ theorem prec_shifted_pair_of_affine_family_nonneg
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits)) :
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
     Prec f (g + X * f) := by
   have _hg0 : g ≠ 0 := hg0
   have hshift_nonneg : HasNonnegCoeffs (g + X * f) :=
@@ -4733,8 +4635,7 @@ theorem prec_right_pair_of_affine_family_nonneg_sameDegree
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧
-          (((C s * X + C t) * f) + g).Splits))
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hdeg : g.natDegree = f.natDegree) :
     Prec g (X * f) := by
   exact
@@ -4805,14 +4706,12 @@ lemma isRealRooted_affine_factor {s t : ℝ} (hs : 0 < s) :
 
 lemma affine_family_of_zero_left {g : ℝ[X]} (hg : g ≠ 0 ∧ g.Splits) :
     ∀ {s t : ℝ}, 0 < s → 0 < t →
-      ((((C s * X + C t) * (0 : ℝ[X])) + g) ≠ 0 ∧
-        (((C s * X + C t) * (0 : ℝ[X])) + g).Splits) := by
+      ((((C s * X + C t) * (0 : ℝ[X])) + g) ≠ 0 ∧ (((C s * X + C t) * (0 : ℝ[X])) + g).Splits) := by
   simp [*]
 
 lemma affine_family_of_zero_right {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits) :
     ∀ {s t : ℝ}, 0 < s → 0 < t →
-      ((((C s * X + C t) * f) + (0 : ℝ[X])) ≠ 0 ∧
-        (((C s * X + C t) * f) + (0 : ℝ[X])).Splits) := by
+      ((((C s * X + C t) * f) + (0 : ℝ[X])) ≠ 0 ∧ (((C s * X + C t) * f) + (0 : ℝ[X])).Splits) := by
   intro s t hs ht
   simpa using isRealRooted_mul (isRealRooted_affine_factor (t := t) hs) hf
 

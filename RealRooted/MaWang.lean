@@ -2283,8 +2283,7 @@ theorem isRealRooted_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0)
     {δ : ℝ} (hδ : 0 < δ) :
-    (((a * f + b * g) - C δ * g) ≠ 0 ∧
-      ((a * f + b * g) - C δ * g).Splits) :=
+    (((a * f + b * g) - C δ * g) ≠ 0 ∧ ((a * f + b * g) - C δ * g).Splits) :=
   (prec_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
     hgf hg_pos hF_pos hdeg_lo hdeg_hi hno hb_nonpos hδ).2.1
 
@@ -2487,8 +2486,7 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
     (hgf : Interlaces g f)
     (hF_pos : HasPosLeadingCoeff F)
     (hdeg_lo : f.natDegree ≤ F.natDegree)
-    (hsub_rr : ∀ {δ : ℝ}, 0 < δ → ((F - C δ * g) ≠ 0 ∧
-      (F - C δ * g).Splits)) :
+    (hsub_rr : ∀ {δ : ℝ}, 0 < δ → ((F - C δ * g) ≠ 0 ∧ (F - C δ * g).Splits)) :
     (F ≠ 0 ∧ F.Splits) := by
   have hF_ne : F ≠ 0 := by
     intro h0
@@ -2582,8 +2580,7 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
       Polynomial.exists_aroots_norm_sub_lt_of_norm_coeff_sub_lt
         (f := q) (g := qδ) hη_pos hz_aeval hq_monic hqδ_monic hqδ_deg hqδ_coeff
         (IsAlgClosed.splits _)
-    have hFδ_rr : ((F - C δ * g) ≠ 0 ∧
-      (F - C δ * g).Splits) := hsub_rr hδ_pos
+    have hFδ_rr : ((F - C δ * g) ≠ 0 ∧ (F - C δ * g).Splits) := hsub_rr hδ_pos
     have hqδ_rr : (qδ ≠ 0 ∧ qδ.Splits) :=
       isRealRooted_C_mul hFδ_rr (inv_ne_zero hlc_ne)
     rcases mem_range_of_mem_aroots_of_isRealRooted hqδ_rr hw_mem with ⟨x, rfl⟩

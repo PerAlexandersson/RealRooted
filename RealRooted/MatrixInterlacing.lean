@@ -475,8 +475,7 @@ lemma isRealRooted_mem_rowPairAffineSeq
         (row₂.get ⟨j, by simp [hrow₂_len]⟩)
         (row₂.get ⟨j, by simp [hrow₂_len]⟩))
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t)
-    (p : ℝ[X]) (hp : p ∈ (rowPairAffineSeq row₁ row₂ s t).reverse) :
-    (p ≠ 0 ∧ p.Splits) := by
+    (p : ℝ[X]) (hp : p ∈ (rowPairAffineSeq row₁ row₂ s t).reverse) : (p ≠ 0 ∧ p.Splits) := by
   have hp' : p ∈ rowPairAffineSeq row₁ row₂ s t := by
     simpa using List.mem_reverse.1 hp
   obtain ⟨j, rfl⟩ := List.mem_iff_get.1 hp'
@@ -504,8 +503,7 @@ lemma isRealRooted_mem_rowPairAffineSeq_of_ne
         (row₂.get ⟨j, by simp [hrow₂_len]⟩))
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t)
     (p : ℝ[X]) (hp : p ∈ (rowPairAffineSeq row₁ row₂ s t).reverse)
-    (hp_ne : p ≠ 0) :
-    (p ≠ 0 ∧ p.Splits) := by
+    (hp_ne : p ≠ 0) : (p ≠ 0 ∧ p.Splits) := by
   have hp' : p ∈ rowPairAffineSeq row₁ row₂ s t := by
     simpa using List.mem_reverse.1 hp
   obtain ⟨j, rfl⟩ := List.mem_iff_get.1 hp'
@@ -817,8 +815,7 @@ theorem prec_zipWith_sum_pair_of_2x2
   let G : ℝ[X] := ((row₂.zipWith (· * ·) fs).sum)
   have haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * F) + G) ≠ 0 ∧
-          (((C s * X + C t) * F) + G).Splits) := by
+        ((((C s * X + C t) * F) + G) ≠ 0 ∧ (((C s * X + C t) * F) + G).Splits) := by
     intro s t hs ht
     simpa [F, G, hrewrite (s := s) (t := t)] using haux_rr (s := s) (t := t) hs ht
   have hposCombo :
@@ -948,8 +945,7 @@ theorem prec0_zipWith_sum_pair_of_2x2
       (haux_len.trans hfs_len.symm)] using hrr_rev
   have haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * F) + G) ≠ 0 ∧
-          (((C s * X + C t) * F) + G).Splits) := by
+        ((((C s * X + C t) * F) + G) ≠ 0 ∧ (((C s * X + C t) * F) + G).Splits) := by
     intro s t hs ht
     simpa [hrewrite (s := s) (t := t)] using haux_rr (s := s) (t := t) hs ht
   have hFG : Prec F G :=
@@ -1049,8 +1045,7 @@ theorem prec0_zipWith_sum_pair_of_2x2_weak
       (haux_len.trans hfs_len.symm)] using hrr_rev
   have haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * F) + G) ≠ 0 ∧
-          (((C s * X + C t) * F) + G).Splits) := by
+        ((((C s * X + C t) * F) + G) ≠ 0 ∧ (((C s * X + C t) * F) + G).Splits) := by
     intro s t hs ht
     simpa [hrewrite (s := s) (t := t)] using haux_rr (s := s) (t := t) hs ht
   have hFG : Prec F G :=

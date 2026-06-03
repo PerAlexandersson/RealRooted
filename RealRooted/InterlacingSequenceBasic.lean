@@ -255,8 +255,7 @@ lemma IsInterlacingSeq0.reverse {fs : List ℝ[X]} (hfs : IsInterlacingSeq0 fs) 
 /-- Reversing an interlacing sequence with nonnegative coefficients preserves
 the same structure. -/
 lemma IsInterlacingSeqNonneg.reverse {fs : List ℝ[X]}
-    (hfs : IsInterlacingSeqNonneg fs) :
-    (∀ f ∈ fs.reverse, (f ≠ 0 ∧ f.Splits) ∧ HasNonnegCoeffs f) ∧
+    (hfs : IsInterlacingSeqNonneg fs) : (∀ f ∈ fs.reverse, (f ≠ 0 ∧ f.Splits) ∧ HasNonnegCoeffs f) ∧
     fs.reverse.Pairwise (fun f g => Prec g f) := by
   rcases hfs with ⟨hmem, hint⟩
   refine ⟨?_, hint.reverse⟩

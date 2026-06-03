@@ -24,8 +24,7 @@ section
 continuity bridge file. This avoids importing the converse-development file and
 keeps dependencies acyclic. -/
 abbrev PosComboHyp (f g : ℝ[X]) : Prop :=
-  ∀ {lam μ : ℝ}, 0 < lam → 0 < μ → ((C lam * f + C μ * g) ≠ 0 ∧
-    (C lam * f + C μ * g).Splits)
+  ∀ {lam μ : ℝ}, 0 < lam → 0 < μ → ((C lam * f + C μ * g) ≠ 0 ∧ (C lam * f + C μ * g).Splits)
 
 namespace PosComboHyp
 
@@ -34,13 +33,11 @@ lemma comm {f g : ℝ[X]} (hfg : PosComboHyp f g) : PosComboHyp g f := by
   simpa [add_comm, mul_comm, mul_left_comm, mul_assoc] using hfg hμ hlam
 
 lemma isRealRooted_add_left {f g : ℝ[X]} (hfg : PosComboHyp f g)
-    {lam : ℝ} (hlam : 0 < lam) :
-    ((C lam * f + g) ≠ 0 ∧ (C lam * f + g).Splits) := by
+    {lam : ℝ} (hlam : 0 < lam) : ((C lam * f + g) ≠ 0 ∧ (C lam * f + g).Splits) := by
   simpa [one_mul] using hfg (lam := lam) (μ := 1) hlam zero_lt_one
 
 lemma isRealRooted_add_right {f g : ℝ[X]} (hfg : PosComboHyp f g)
-    {μ : ℝ} (hμ : 0 < μ) :
-    ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits) := by
+    {μ : ℝ} (hμ : 0 < μ) : ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits) := by
   simpa [one_mul, add_comm] using hfg (lam := 1) (μ := μ) zero_lt_one hμ
 
 /-- Root-continuity bridge for the left affine family under positive-combination
@@ -295,8 +292,7 @@ real-rooted. -/
 theorem isRealRooted_left_of_posComboRealRooted_monic_sameDegree
     {f g : ℝ[X]} (hfg : PosComboHyp f g)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
-    (hdeg : g.natDegree = f.natDegree) :
-    (f ≠ 0 ∧ f.Splits) := by
+    (hdeg : g.natDegree = f.natDegree) : (f ≠ 0 ∧ f.Splits) := by
   have hf_ne : f ≠ 0 := hf_monic.ne_zero
   have hroots_real :
       ∀ z ∈ (f.map (algebraMap ℝ ℂ)).roots, z ∈ (algebraMap ℝ ℂ).range := by
@@ -327,8 +323,7 @@ theorem isRealRooted_left_of_posComboRealRooted_monic_sameDegree
 theorem isRealRooted_right_of_posComboRealRooted_monic_sameDegree
     {f g : ℝ[X]} (hfg : PosComboHyp f g)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
-    (hdeg : g.natDegree = f.natDegree) :
-    (g ≠ 0 ∧ g.Splits) := by
+    (hdeg : g.natDegree = f.natDegree) : (g ≠ 0 ∧ g.Splits) := by
   simpa [eq_comm] using
     isRealRooted_left_of_posComboRealRooted_monic_sameDegree
       (hfg := hfg.comm) hg_monic hf_monic hdeg.symm
@@ -338,8 +333,7 @@ real-rooted (without monicity assumptions). -/
 theorem isRealRooted_left_of_posComboRealRooted_sameDegree
     {f g : ℝ[X]} (hfg : PosComboHyp f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree) :
-    (f ≠ 0 ∧ f.Splits) := by
+    (hdeg : g.natDegree = f.natDegree) : (f ≠ 0 ∧ f.Splits) := by
   let f₀ : ℝ[X] := C f.leadingCoeff⁻¹ * f
   let g₀ : ℝ[X] := C g.leadingCoeff⁻¹ * g
   have hf_lc_ne : f.leadingCoeff ≠ 0 := ne_of_gt hf_pos
@@ -372,8 +366,7 @@ theorem isRealRooted_left_of_posComboRealRooted_sameDegree
     unfold f₀
     ext n
     simp [hf_lc_ne]
-  have hf_rr_scaled : ((C f.leadingCoeff * f₀) ≠ 0 ∧
-    (C f.leadingCoeff * f₀).Splits) :=
+  have hf_rr_scaled : ((C f.leadingCoeff * f₀) ≠ 0 ∧ (C f.leadingCoeff * f₀).Splits) :=
     isRealRooted_C_mul hf₀_rr hf_lc_ne
   simpa [hf_scale] using hf_rr_scaled
 
@@ -382,8 +375,7 @@ theorem isRealRooted_left_of_posComboRealRooted_sameDegree
 theorem isRealRooted_right_of_posComboRealRooted_sameDegree
     {f g : ℝ[X]} (hfg : PosComboHyp f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree) :
-    (g ≠ 0 ∧ g.Splits) := by
+    (hdeg : g.natDegree = f.natDegree) : (g ≠ 0 ∧ g.Splits) := by
   simpa [eq_comm] using
     isRealRooted_left_of_posComboRealRooted_sameDegree
       (hfg := hfg.comm) hg_pos hf_pos hdeg.symm
