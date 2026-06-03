@@ -648,12 +648,6 @@ lemma not_isRoot_neg_one_fPolynomial_of_natDegree_eq_of_hasNonnegCoeffs
     simp_all
   simp_all
 
-private lemma hasPosLeadingCoeff_of_X_sub_C_mul {q : ℝ[X]} {r : ℝ}
-    (h : HasPosLeadingCoeff ((X - C r) * q)) :
-    HasPosLeadingCoeff q := by
-  unfold HasPosLeadingCoeff at h ⊢
-  simp_all
-
 private lemma hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
     {p q : ℝ[X]}
     (hp : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p)
@@ -2687,26 +2681,6 @@ private lemma exists_root_upper_bound_lt_zero_of_hasNonnegCoeffs_of_not_isRoot_z
         roots_nonpos_of_nonneg_coeffs hp_rr hp_nonneg (rs.getLast hrs_nil) <|
           (mem_roots hp_rr.1).mpr hc_root
       grind
-
-private lemma listInterlaces_of_listAlternates_append_right
-    {ss qs : List ℝ} {uR : ℝ}
-    (hlen : qs.length + 1 = ss.length)
-    (halt : ListAlternates ss (qs ++ [uR])) :
-    ListInterlaces qs ss := by
-  have halt0 :
-      ListAlternates (ss.map (· - uR)) ((qs.map (· - uR)) ++ [0]) := by
-    simpa [List.map_append] using listAlternates_map_sub_const halt uR
-  have hlen0 : (qs.map (· - uR)).length + 1 = (ss.map (· - uR)).length := by
-    simpa using hlen
-  have hint0 :
-      ListInterlaces (qs.map (· - uR)) (ss.map (· - uR)) :=
-    listInterlaces_of_listAlternates_append_zero
-      (qs.map (· - uR)) (ss.map (· - uR)) hlen0 halt0
-  have hfun :
-      ((fun x : ℝ => x + uR) ∘ fun x => x - uR) = fun x => x := by
-    grind
-  simpa [List.map_map, Function.comp, hfun] using
-    listInterlaces_map_sub_const hint0 (-uR)
 
 private lemma interlaces_of_prec_sameDegree_rightmost_factor
     {f g q : ℝ[X]} {uR : ℝ}

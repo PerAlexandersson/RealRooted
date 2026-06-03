@@ -351,6 +351,28 @@ lemma listInterlaces_of_listAlternates_append_zero :
         simp only [List.length_cons] at hlen ⊢; lia
       exact listInterlaces_of_listAlternates_append_zero (s' :: ss'') (r₂ :: rs'') hlen' halt'
 
+lemma listInterlaces_of_listAlternates_append_right
+    {ss qs : List ℝ} {uR : ℝ}
+    (hlen : qs.length + 1 = ss.length)
+    (halt : ListAlternates ss (qs ++ [uR])) :
+    ListInterlaces qs ss := by
+  have halt0 :
+      ListAlternates (ss.map (· - uR)) ((qs.map (· - uR)) ++ [0]) := by
+    simpa [List.map_append] using listAlternates_map_sub_const halt uR
+  have hlen0 : (qs.map (· - uR)).length + 1 = (ss.map (· - uR)).length := by
+    simpa using hlen
+  have hint0 :
+      ListInterlaces (qs.map (· - uR)) (ss.map (· - uR)) :=
+    listInterlaces_of_listAlternates_append_zero
+      (qs.map (· - uR)) (ss.map (· - uR)) hlen0 halt0
+  have hfun :
+      ((fun x : ℝ => x + uR) ∘ fun x => x - uR) = fun x => x := by
+    funext x
+    change (x - uR) + uR = x
+    ring_nf
+  simpa [List.map_map, Function.comp, hfun] using
+    listInterlaces_map_sub_const hint0 (-uR)
+
 lemma listInterlaces_append_zero_both :
     ∀ (ss rs : List ℝ),
     ss.length + 1 = rs.length →
@@ -758,7 +780,7 @@ theorem prec_of_prec_mul_X_sameDegree_of_roots_nonpos {f g : ℝ[X]}
     have hrs_len : rs_Xf.length = (X * f).natDegree := by
       rw [← Multiset.coe_card, hrs_Xf_eq, card_roots_of_splits hXf.2]
     rw [natDegree_X_mul hf.1] at hrs_len
-    omega
+    lia
 
 theorem prec_iff_prec_mul_X_of_roots_nonpos {f g : ℝ[X]}
     (hf : f ≠ 0 ∧ f.Splits) (hg : g ≠ 0 ∧ g.Splits)

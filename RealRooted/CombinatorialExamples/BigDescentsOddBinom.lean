@@ -33,7 +33,7 @@ lemma coeff_one_sub_X_pow (n k : ℕ) :
       rw [pow_add]
       rw [mul_assoc]
       rw [← pow_add]
-      have hEven : Even ((n - k) + (n - k)) := ⟨n - k, by omega⟩
+      have hEven : Even ((n - k) + (n - k)) := ⟨n - k, by lia⟩
       rw [hEven.neg_one_pow]
       simp
     rw [← mul_assoc, hsign]
@@ -77,14 +77,14 @@ theorem oddBinomAuxReal_identity (n : ℕ) :
       --       - (-1) ^ (d + 1) * ↑(n.choose (d + 1))
       rcases Nat.even_or_odd d with hd | hd
       · rcases hd with ⟨k, hk⟩
-        have hd2 : d = 2 * k := by omega
+        have hd2 : d = 2 * k := by lia
         rw [hd2, coeff_oddBinomAuxReal_even]
         have hodd : Odd (2 * k + 1) := ⟨k, rfl⟩
         rw [hodd.neg_one_pow]
         ring
       · rcases hd with ⟨k, hk⟩
         rw [hk, coeff_oddBinomAuxReal_odd]
-        have heven : Even (2 * k + 1 + 1) := ⟨k + 1, by omega⟩
+        have heven : Even (2 * k + 1 + 1) := ⟨k + 1, by lia⟩
         rw [heven.neg_one_pow]
         ring
 
@@ -134,9 +134,9 @@ lemma oddBinomPolyReal_natDegree (n : ℕ) (hn : 0 < n) :
       rw [coeff_oddBinomPolyReal]
       rw [Nat.choose_eq_zero_of_lt]
       · simp
-      · omega)
+      · lia)
   · rw [coeff_oddBinomPolyReal]
-    exact_mod_cast Nat.choose_ne_zero (by omega :
+    exact_mod_cast Nat.choose_ne_zero (by lia :
       2 * ((n - 1) / 2) + 1 ≤ n)
 
 lemma oddBinomPolyReal_ne_zero (n : ℕ) (hn : 0 < n) :
@@ -145,7 +145,7 @@ lemma oddBinomPolyReal_ne_zero (n : ℕ) (hn : 0 < n) :
   have hcoeff := congrArg (fun p : ℝ[X] => p.coeff ((n - 1) / 2)) hp
   change (oddBinomPolyReal n).coeff ((n - 1) / 2) = 0 at hcoeff
   rw [coeff_oddBinomPolyReal] at hcoeff
-  exact Nat.choose_ne_zero (by omega :
+  exact Nat.choose_ne_zero (by lia :
     2 * ((n - 1) / 2) + 1 ≤ n) (by exact_mod_cast hcoeff)
 
 lemma oddBinom_eval_sq_eq_aux (n : ℕ) (y : ℂ) :
@@ -193,11 +193,11 @@ lemma oddBinom_root_sq_iff_cayley_pow_eq_one
 lemma angle_mem_Ioo_zero_pi_div_two (n j : ℕ) (hj0 : 0 < j) (hjn : 2 * j < n) :
     Real.pi * (j : ℝ) / (n : ℝ) ∈ Set.Ioo (0 : ℝ) (Real.pi / 2) := by
   constructor
-  · have hnpos_nat : 0 < n := by omega
+  · have hnpos_nat : 0 < n := by lia
     have hjpos : (0 : ℝ) < j := by exact_mod_cast hj0
     have hnpos : (0 : ℝ) < n := by exact_mod_cast hnpos_nat
     positivity
-  · have hnpos_nat : 0 < n := by omega
+  · have hnpos_nat : 0 < n := by lia
     have hnpos : (0 : ℝ) < n := by exact_mod_cast hnpos_nat
     have hratio : (j : ℝ) / (n : ℝ) < 1 / 2 := by
       rw [div_lt_iff₀ hnpos]
@@ -289,7 +289,7 @@ lemma oddBinom_tangent_eval_eq_zero (n j : ℕ) (hj0 : 0 < j) (hjn : 2 * j < n) 
   let theta : ℝ := Real.pi * (j : ℝ) / (n : ℝ)
   let y : ℂ := Complex.I * (Real.tan theta : ℂ)
   have htheta := angle_mem_Ioo_zero_pi_div_two n j hj0 hjn
-  have hnpos : 0 < n := by omega
+  have hnpos : 0 < n := by lia
   have hy0 : y ≠ 0 := I_mul_tan_ne_zero htheta.1 htheta.2
   have hy1 : 1 - y ≠ 0 := one_sub_I_mul_tan_ne_zero theta
   have hpow : ((1 + y) / (1 - y)) ^ n = 1 := by
@@ -314,7 +314,7 @@ lemma oddBinom_tangent_eval_eq_zero (n j : ℕ) (hj0 : 0 < j) (hjn : 2 * j < n) 
 lemma two_mul_lt_of_pos_le_pred_div_two {n j : ℕ} (hj0 : 0 < j)
     (hjle : j ≤ (n - 1) / 2) :
     2 * j < n := by
-  omega
+  lia
 
 lemma oddBinom_tangent_eval_eq_zero_of_le_pred_div_two
     (n j : ℕ) (hj0 : 0 < j) (hjle : j ≤ (n - 1) / 2) :
@@ -340,11 +340,11 @@ lemma tangentRoot_neg (n j : ℕ) (hj0 : 0 < j) (hjn : 2 * j < n) :
 lemma tangentRoot_strictAnti {n i j : ℕ} (hi0 : 0 < i) (hij : i < j)
     (hjn : 2 * j < n) :
     tangentRoot n j < tangentRoot n i := by
-  have hijn : 2 * i < n := by omega
-  have hj0 : 0 < j := by omega
+  have hijn : 2 * i < n := by lia
+  have hj0 : 0 < j := by lia
   have hthetai := angle_mem_Ioo_zero_pi_div_two n i hi0 hijn
   have hthetaj := angle_mem_Ioo_zero_pi_div_two n j hj0 hjn
-  have hnpos_nat : 0 < n := by omega
+  have hnpos_nat : 0 < n := by lia
   have hnpos : (0 : ℝ) < n := by exact_mod_cast hnpos_nat
   have hijR : (i : ℝ) < j := by exact_mod_cast hij
   have hratio : (i : ℝ) / (n : ℝ) < (j : ℝ) / (n : ℝ) :=
@@ -396,17 +396,17 @@ lemma tangentRoot_injOn_Icc (n : ℕ) :
   intro i hi j hj hroot
   rw [Finset.mem_coe, Finset.mem_Icc] at hi hj
   by_cases hij : i < j
-  · have hlt := tangentRoot_strictAnti (by omega : 0 < i) hij
-      (two_mul_lt_of_pos_le_pred_div_two (by omega : 0 < j) (by omega : j ≤ (n - 1) / 2))
+  · have hlt := tangentRoot_strictAnti (by lia : 0 < i) hij
+      (two_mul_lt_of_pos_le_pred_div_two (by lia : 0 < j) (by lia : j ≤ (n - 1) / 2))
     rw [hroot] at hlt
     linarith
   · by_cases hji : j < i
-    · have hlt := tangentRoot_strictAnti (by omega : 0 < j) hji
-        (two_mul_lt_of_pos_le_pred_div_two (by omega : 0 < i)
-          (by omega : i ≤ (n - 1) / 2))
+    · have hlt := tangentRoot_strictAnti (by lia : 0 < j) hji
+        (two_mul_lt_of_pos_le_pred_div_two (by lia : 0 < i)
+          (by lia : i ≤ (n - 1) / 2))
       rw [hroot] at hlt
       linarith
-    · omega
+    · lia
 
 lemma tangentRootFinset_card (n : ℕ) :
     (tangentRootFinset n).card = (n - 1) / 2 := by
@@ -419,7 +419,7 @@ lemma oddBinomPolyReal_eval_eq_zero_of_mem_tangentRootFinset (n : ℕ) :
   rw [tangentRootFinset] at hx
   rcases Finset.mem_image.mp hx with ⟨j, hj, rfl⟩
   rw [Finset.mem_Icc] at hj
-  exact oddBinomPolyReal_tangentRoot_eval_eq_zero n j (by omega) (by omega)
+  exact oddBinomPolyReal_tangentRoot_eval_eq_zero n j (by lia) (by lia)
 
 lemma oddBinomPolyReal_roots_eq_tangentRootFinset (n : ℕ) (hn : 0 < n) :
     (oddBinomPolyReal n).roots = (tangentRootFinset n).val := by

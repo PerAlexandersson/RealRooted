@@ -852,12 +852,6 @@ lemma of_mul_X_sub_C {f g : ℝ[X]} {r : ℝ}
     PosComboRealRooted f g :=
   of_mul_common_factor h
 
-private lemma hasPosLeadingCoeff_of_X_sub_C_mul {q : ℝ[X]} {r : ℝ}
-    (h : HasPosLeadingCoeff ((X - C r) * q)) :
-    HasPosLeadingCoeff q := by
-  unfold HasPosLeadingCoeff at h ⊢
-  simpa [Polynomial.leadingCoeff_mul, leadingCoeff_X_sub_C] using h
-
 private lemma common_root_reduction_data
     {f g : ℝ[X]} {r : ℝ}
     (hfg : PosComboRealRooted f g)

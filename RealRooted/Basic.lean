@@ -195,6 +195,14 @@ lemma listInterlaces_left_le_of_right_le {ss rs : List ℝ} {c : ℝ}
               · exact le_trans hs_r₂ (hrs r₂ (by simp))
               · exact ih htail (fun r hr => hrs r (by simp [hr])) t ht
 
+lemma listInterlaces_all_le_getLast {ss rs : List ℝ}
+    (hrs_ne : rs ≠ [])
+    (hrs : rs.Pairwise (· ≤ ·))
+    (hint : ListInterlaces ss rs) :
+    ∀ s ∈ ss, s ≤ rs.getLast hrs_ne :=
+  listInterlaces_left_le_of_right_le hint
+    (fun _ hr => List.Pairwise.rel_getLast hrs hr)
+
 lemma listAlternates_left_le_of_right_le {ss rs : List ℝ} {c : ℝ}
     (halt : ListAlternates ss rs)
     (hrs : ∀ r ∈ rs, r ≤ c) :

@@ -123,12 +123,6 @@ lemma prec_to_prec_mul_X_of_nonneg {f g : ℝ[X]}
         ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, Or.inr ⟨hlen, by assumption⟩⟩
         hdeg hf_nonpos hg_nonpos
 
-private lemma hasPosLeadingCoeff_of_X_sub_C_mul_local {q : ℝ[X]} {r : ℝ}
-    (h : HasPosLeadingCoeff ((X - C r) * q)) :
-    HasPosLeadingCoeff q := by
-  unfold HasPosLeadingCoeff at h ⊢
-  simp_all
-
 private lemma hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
     {p q : ℝ[X]}
     (hp : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p)
@@ -175,9 +169,9 @@ private lemma affine_family_common_root_reduction_data
   have hqg_rr : (qg ≠ 0 ∧ qg.Splits) := by
     exact isRealRooted_of_dvd hg hqg_ne ⟨X - C r, by grind⟩
   have hqf_pos : HasPosLeadingCoeff qf := by
-    exact hasPosLeadingCoeff_of_X_sub_C_mul_local (by simpa [hqf] using hf_pos)
+    exact hasPosLeadingCoeff_of_X_sub_C_mul (by simpa [hqf] using hf_pos)
   have hqg_pos : HasPosLeadingCoeff qg := by
-    exact hasPosLeadingCoeff_of_X_sub_C_mul_local (by simpa [hqg] using hg_pos)
+    exact hasPosLeadingCoeff_of_X_sub_C_mul (by simpa [hqg] using hg_pos)
   have hqf_nonneg : HasNonnegCoeffs qf := by
     exact
       hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
@@ -852,53 +846,6 @@ private lemma isRealRooted_iterate_derivative_of_lt_natDegree
           (fun h0 => False.elim (hnonzero h0))
           id
 
-private lemma listInterlaces_all_le_getLast_local :
-    ∀ {ss rs : List ℝ},
-      (hrs_ne : rs ≠ []) →
-      rs.Pairwise (· ≤ ·) →
-      ListInterlaces ss rs →
-      ∀ s ∈ ss, s ≤ rs.getLast hrs_ne
-  | [], [], hrs_ne, _, hint, s, hs => by
-      cases (hrs_ne rfl)
-  | [], [_], _, _, hint, s, hs => by
-      simp at hs
-  | s :: ss, [r], _, _, hint, _, _ => by
-      simp [ListInterlaces] at hint
-  | s :: ss, r₁ :: r₂ :: rs, _, hrs_sorted, hint, t, ht => by
-      obtain ⟨_, hs_r₂, htail⟩ := hint
-      rcases List.mem_cons.mp ht with rfl | ht
-      · exact
-          le_trans hs_r₂
-            (List.Pairwise.rel_getLast hrs_sorted (by grind))
-      · exact
-          listInterlaces_all_le_getLast_local (rs := r₂ :: rs) (by simp)
-            ((List.pairwise_cons.mp hrs_sorted).2) htail t ht
-
-/-- Translation-invariant form of
-`listInterlaces_of_listAlternates_append_zero`: if a same-degree alternating
-layout ends with one extra rightmost point `uR`, then deleting that endpoint
-produces a genuine `ListInterlaces` layout. This local copy is used in the
-same-degree rightmost-factor reduction below. -/
-private lemma listInterlaces_of_listAlternates_append_right_local
-    {ss qs : List ℝ} {uR : ℝ}
-    (hlen : qs.length + 1 = ss.length)
-    (halt : ListAlternates ss (qs ++ [uR])) :
-    ListInterlaces qs ss := by
-  have halt0 :
-      ListAlternates (ss.map (· - uR)) ((qs.map (· - uR)) ++ [0]) := by
-    simpa [List.map_append] using listAlternates_map_sub_const halt uR
-  have hlen0 : (qs.map (· - uR)).length + 1 = (ss.map (· - uR)).length := by
-    simpa using hlen
-  have hint0 :
-      ListInterlaces (qs.map (· - uR)) (ss.map (· - uR)) :=
-    listInterlaces_of_listAlternates_append_zero
-      (qs.map (· - uR)) (ss.map (· - uR)) hlen0 halt0
-  have hfun :
-      ((fun x : ℝ => x + uR) ∘ fun x => x - uR) = fun x => x := by
-    grind
-  simpa [List.map_map, Function.comp, hfun] using
-    listInterlaces_map_sub_const hint0 (-uR)
-
 /-- A positive-leading real-rooted polynomial of degree at least `2` is
 nonpositive at its rightmost critical point. This is the same local obstruction
 used in the Obreschkoff degree-gap proof, now recorded here because the affine
@@ -987,7 +934,7 @@ private lemma interlaces_of_prec_sameDegree_rightmost_factor_local
     have halt_right : ListAlternates ss (qs ++ [uR]) := by
       simp_all
     have hshape_qs_rs : ListInterlaces qs ss :=
-      listInterlaces_of_listAlternates_append_right_local hlen_qs halt_right
+      listInterlaces_of_listAlternates_append_right hlen_qs halt_right
     exact ⟨hf, hq, hq_deg, ss, qs, hss_sorted, hqs_sorted, hss_eq, hqs_eq, hshape_qs_rs⟩
 
 /-- Packaged same-degree rightmost-factor reduction for later sign arguments:
@@ -1350,18 +1297,6 @@ private lemma eval_mul_left_family_two_neg_at_root_one_of_no_common
     simp_all
   simp_all
 
-private lemma eval_pos_of_all_roots_lt_local {p : ℝ[X]} {r : ℝ}
-    (hp : p ≠ 0 ∧ p.Splits) (hp_pos : HasPosLeadingCoeff p)
-    (hlt : ∀ t ∈ p.roots, t < r) :
-    0 < p.eval r := by
-  rw [eval_eq_leadingCoeff_mul_prod_sub hp r]
-  have hprod : 0 < (p.roots.map (r - ·)).prod := by
-    refine Multiset.prod_pos ?_
-    intro y hy
-    rcases Multiset.mem_map.mp hy with ⟨t, ht, rfl⟩
-    exact sub_pos.mpr (hlt t ht)
-  exact mul_pos hp_pos hprod
-
 private lemma strictMonoOn_eval_Ici_of_derivative_roots_le
     {p : ℝ[X]} {c : ℝ}
     (hp' : p.derivative ≠ 0 ∧ p.derivative.Splits)
@@ -1374,7 +1309,7 @@ private lemma strictMonoOn_eval_Ici_of_derivative_roots_le
   have hlt : ∀ t ∈ p.derivative.roots, t < x := by
     grind
   have hpos_eval : 0 < p.derivative.eval x :=
-    eval_pos_of_all_roots_lt_local hp' hp'_pos hlt
+    eval_pos_of_all_roots_lt hp' hp'_pos hlt
   simpa using hpos_eval
 
 private lemma exists_root_ge_of_derivative_root
@@ -1397,7 +1332,7 @@ private lemma exists_root_ge_of_derivative_root
       rw [← hrs_eq]
       exact Multiset.mem_coe.mpr hr_mem
     exact (mem_roots hp_rr.1).mp this
-  · exact listInterlaces_all_le_getLast_local hrs_ne hrs_sorted hint c hc_mem
+  · exact listInterlaces_all_le_getLast hrs_ne hrs_sorted hint c hc_mem
 
 private lemma exists_rightmost_derivative_root_with_eval_nonpos
     {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hp_pos : HasPosLeadingCoeff p)
@@ -1812,7 +1747,7 @@ private lemma neg_root_quotient_posCombo_data_of_affine_family_succDegree
     apply isRealRooted_of_dvd hg_rr hqg_ne
     simp_all
   have hqg_pos : HasPosLeadingCoeff qg := by
-    exact hasPosLeadingCoeff_of_X_sub_C_mul_local (by simpa [hqg] using hg_pos)
+    exact hasPosLeadingCoeff_of_X_sub_C_mul (by simpa [hqg] using hg_pos)
   have hqg_deg : qg.natDegree = f.natDegree := by
     rw [hqg, natDegree_mul (X_sub_C_ne_zero r) hqg_ne, natDegree_X_sub_C] at hsucc
     lia

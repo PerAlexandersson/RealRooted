@@ -29,6 +29,12 @@ lemma hasPosLeadingCoeff_X_sub_C_mul {r : ℝ} {p : ℝ[X]}
   unfold HasPosLeadingCoeff at hp ⊢
   simpa [Polynomial.leadingCoeff_mul, leadingCoeff_X_sub_C] using hp
 
+lemma hasPosLeadingCoeff_of_X_sub_C_mul {q : ℝ[X]} {r : ℝ}
+    (h : HasPosLeadingCoeff ((X - C r) * q)) :
+    HasPosLeadingCoeff q := by
+  unfold HasPosLeadingCoeff at h ⊢
+  simpa [Polynomial.leadingCoeff_mul, leadingCoeff_X_sub_C] using h
+
 lemma roots_le_X_sub_C_mul {r : ℝ} {f : ℝ[X]}
     (hf : f ≠ 0 ∧ f.Splits)
     (hf_le : ∀ s ∈ f.roots, s ≤ r) :

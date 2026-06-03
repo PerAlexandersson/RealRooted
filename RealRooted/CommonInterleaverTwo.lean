@@ -29,24 +29,6 @@ private lemma ne_zero_of_hasPosLeadingCoeff {f : ℝ[X]}
     simp [HasPosLeadingCoeff, h0] at hf_pos'
   exact (lt_irrefl (0 : ℝ)) hfalse
 
-private lemma hasPosLeadingCoeff_of_X_sub_C_mul_local {q : ℝ[X]} {r : ℝ}
-    (h : HasPosLeadingCoeff ((X - C r) * q)) :
-    HasPosLeadingCoeff q := by
-  unfold HasPosLeadingCoeff at h ⊢
-  simpa [Polynomial.leadingCoeff_mul, leadingCoeff_X_sub_C] using h
-
-private lemma eval_pos_of_all_roots_lt_local {p : ℝ[X]} {r : ℝ}
-    (hp : p ≠ 0 ∧ p.Splits) (hp_pos : HasPosLeadingCoeff p)
-    (hlt : ∀ t ∈ p.roots, t < r) :
-    0 < p.eval r := by
-  rw [eval_eq_leadingCoeff_mul_prod_sub hp r]
-  have hprod : 0 < (p.roots.map (r - ·)).prod := by
-    refine Multiset.prod_pos ?_
-    intro y hy
-    rcases Multiset.mem_map.mp hy with ⟨t, ht, rfl⟩
-    exact sub_pos.mpr (hlt t ht)
-  exact mul_pos hp_pos hprod
-
 private lemma strictMonoOn_eval_Ici_of_derivative_roots_le_local
     {p : ℝ[X]} {c : ℝ}
     (hp' : p.derivative ≠ 0 ∧ p.derivative.Splits)
@@ -61,30 +43,8 @@ private lemma strictMonoOn_eval_Ici_of_derivative_roots_le_local
     intro t ht
     exact lt_of_le_of_lt (hroots_le t ht) hx'
   have hpos_eval : 0 < p.derivative.eval x :=
-    eval_pos_of_all_roots_lt_local hp' hp'_pos hlt
+    eval_pos_of_all_roots_lt hp' hp'_pos hlt
   simpa using hpos_eval
-
-private lemma listInterlaces_all_le_getLast_local :
-    ∀ {ss rs : List ℝ},
-      (hrs_ne : rs ≠ []) →
-      rs.Pairwise (· ≤ ·) →
-      ListInterlaces ss rs →
-      ∀ s ∈ ss, s ≤ rs.getLast hrs_ne
-  | [], [], hrs_ne, _, _, s, hs => by
-      cases (hrs_ne rfl)
-  | [], [_], _, _, _, s, hs => by
-      simp at hs
-  | _ :: _, [_], _, _, hint, _, _ => by
-      simp [ListInterlaces] at hint
-  | _ :: ss, r₁ :: r₂ :: rs, _, hrs_sorted, hint, t, ht => by
-      obtain ⟨_, hs_r₂, htail⟩ := hint
-      rcases List.mem_cons.mp ht with rfl | ht
-      · exact
-          le_trans hs_r₂
-            (List.Pairwise.rel_getLast hrs_sorted (by simp [List.mem_cons]))
-      · exact
-          listInterlaces_all_le_getLast_local (rs := r₂ :: rs) (by simp)
-            ((List.pairwise_cons.mp hrs_sorted).2) htail t ht
 
 private lemma exists_rightmost_root_of_isRealRooted_local
     {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hdeg : 1 ≤ p.natDegree) :
@@ -133,7 +93,7 @@ private lemma exists_root_ge_of_derivative_root_local
       rw [← hrs_eq]
       exact Multiset.mem_coe.mpr hr_mem
     exact (mem_roots hp_rr.1).mp this
-  · exact listInterlaces_all_le_getLast_local hrs_ne hrs_sorted hint c hc_mem
+  · exact listInterlaces_all_le_getLast hrs_ne hrs_sorted hint c hc_mem
 
 private lemma exists_root_upper_bound_of_isRealRooted_local
     {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
@@ -1089,7 +1049,7 @@ theorem prec_sum_left_of_prec_right_family_forward_sameDegree_nonneg
     exists_rightmost_factor_interlaces_of_prec_sameDegree
       (f := F) (g := G) hpair hFG_deg hG_deg_pos
   have hq_pos : HasPosLeadingCoeff q :=
-    hasPosLeadingCoeff_of_X_sub_C_mul_local (by simpa [G, hGq] using hG_pos)
+    hasPosLeadingCoeff_of_X_sub_C_mul (by simpa [G, hGq] using hG_pos)
   have hFq_no : ∀ r, F.IsRoot r → ¬ q.IsRoot r := by
     intro r hFr hqr
     have hGr : G.IsRoot r := by
@@ -1693,7 +1653,7 @@ private lemma hasNonnegCoeffs_quotient_add_right_of_common_root
         ⟨X - C r, by simpa [mul_comm] using hp_eq⟩
   have hp_pos : HasPosLeadingCoeff p := hp_nn.pos_leadingCoeff hp_rr.1
   have hq_pos : HasPosLeadingCoeff (qf + C μ * qg) := by
-    exact hasPosLeadingCoeff_of_X_sub_C_mul_local (by simpa [hp_eq] using hp_pos)
+    exact hasPosLeadingCoeff_of_X_sub_C_mul (by simpa [hp_eq] using hp_pos)
   exact
     hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
       hp_rr hp_nn hq_rr hq_pos

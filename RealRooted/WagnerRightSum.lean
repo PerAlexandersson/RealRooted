@@ -345,6 +345,18 @@ lemma eval_eq_leadingCoeff_mul_prod_sub {p : ℝ[X]} (hp : p ≠ 0 ∧
   simp only [eval_C_mul, eval_multiset_prod, Multiset.map_map, Function.comp,
     eval_sub, eval_X, eval_C]
 
+lemma eval_pos_of_all_roots_lt {p : ℝ[X]} {r : ℝ}
+    (hp : p ≠ 0 ∧ p.Splits) (hp_pos : HasPosLeadingCoeff p)
+    (hlt : ∀ t ∈ p.roots, t < r) :
+    0 < p.eval r := by
+  rw [eval_eq_leadingCoeff_mul_prod_sub hp r]
+  have hprod : 0 < (p.roots.map (r - ·)).prod := by
+    refine Multiset.prod_pos ?_
+    intro y hy
+    rcases Multiset.mem_map.mp hy with ⟨t, ht, rfl⟩
+    exact sub_pos.mpr (hlt t ht)
+  exact mul_pos hp_pos hprod
+
 /-- If two polynomials both precede the same right-hand polynomial with positive
 leading coefficients, then they have the same sign at every root of that common
 right-hand polynomial. -/
@@ -661,25 +673,34 @@ lemma exists_isRoot_le_of_eval_neg_of_tendsto_atBot_atTop {p : ℝ[X]} {r : ℝ}
     intermediate_value_Icc' (le_of_lt hx_lt_r) p.continuous.continuousOn h0
   exact ⟨u, hu.2, hu_root⟩
 
-private lemma eval_pos_of_all_roots_gt_of_even {p : ℝ[X]} {r : ℝ}
+lemma eval_pos_of_all_roots_gt_of_even {p : ℝ[X]} {r : ℝ}
     (hp : p ≠ 0 ∧ p.Splits) (hp_pos : HasPosLeadingCoeff p)
-    (hdeg : 0 < p.degree) (hpar : Even p.natDegree)
+    (hpar : Even p.natDegree)
     (hgt : ∀ t ∈ p.roots, r < t) :
     0 < p.eval r := by
-  have ht : Tendsto (fun x => p.eval x) atBot atTop :=
-    tendsto_eval_atBot_atTop_of_posLeadingCoeff_even hp_pos hdeg hpar
-  by_contra hnonpos
-  rcases eq_or_lt_of_le (le_of_not_gt hnonpos) with hzero | hneg
-  · have hr_root : p.IsRoot r := by simpa [Polynomial.IsRoot.def] using hzero
-    exact lt_irrefl r (hgt r ((mem_roots hp.1).mpr hr_root))
-  · obtain ⟨u, hu_le, hu_root⟩ := exists_isRoot_le_of_eval_neg_of_tendsto_atBot_atTop hneg ht
-    exact not_lt_of_ge hu_le (hgt u ((mem_roots hp.1).mpr hu_root))
+  by_cases hdeg0 : p.natDegree = 0
+  · rw [eq_C_of_natDegree_eq_zero hdeg0] at hp_pos ⊢
+    simpa [HasPosLeadingCoeff] using hp_pos
+  · have hdeg : 0 < p.degree := natDegree_pos_iff_degree_pos.mp (Nat.pos_of_ne_zero hdeg0)
+    have ht : Tendsto (fun x => p.eval x) atBot atTop :=
+      tendsto_eval_atBot_atTop_of_posLeadingCoeff_even hp_pos hdeg hpar
+    by_contra hnonpos
+    rcases eq_or_lt_of_le (le_of_not_gt hnonpos) with hzero | hneg
+    · have hr_root : p.IsRoot r := by simpa [Polynomial.IsRoot.def] using hzero
+      exact lt_irrefl r (hgt r ((mem_roots hp.1).mpr hr_root))
+    · obtain ⟨u, hu_le, hu_root⟩ := exists_isRoot_le_of_eval_neg_of_tendsto_atBot_atTop hneg ht
+      exact not_lt_of_ge hu_le (hgt u ((mem_roots hp.1).mpr hu_root))
 
-private lemma eval_neg_of_all_roots_gt_of_odd {p : ℝ[X]} {r : ℝ}
+lemma eval_neg_of_all_roots_gt_of_odd {p : ℝ[X]} {r : ℝ}
     (hp : p ≠ 0 ∧ p.Splits) (hp_pos : HasPosLeadingCoeff p)
-    (hdeg : 0 < p.degree) (hpar : Odd p.natDegree)
+    (hpar : Odd p.natDegree)
     (hgt : ∀ t ∈ p.roots, r < t) :
     p.eval r < 0 := by
+  have hdeg : 0 < p.degree := by
+    have hnatdeg : 0 < p.natDegree := by
+      rcases hpar with ⟨k, hk⟩
+      lia
+    exact natDegree_pos_iff_degree_pos.mp hnatdeg
   have ht : Tendsto (fun x => p.eval x) atBot atBot :=
     tendsto_eval_atBot_atBot_of_posLeadingCoeff_odd hp_pos hdeg hpar
   by_contra hnonneg
@@ -1114,16 +1135,8 @@ lemma exists_root_le_of_mixed {smaller bigger : ℝ[X]}
   have hsum_eval : (smaller + bigger).eval p = smaller.eval p := by
     rw [eval_add, hbig0, add_zero]
   rcases Nat.even_or_odd smaller.natDegree with hpar | hpar
-  · have hsmaller_pos_eval : 0 < smaller.eval p := by
-      by_cases hdeg0 : smaller.natDegree = 0
-      · rw [eq_C_of_natDegree_eq_zero hdeg0, eval_C]
-        have hcoeff0_eq : smaller.coeff 0 = smaller.leadingCoeff := by
-          rw [Polynomial.leadingCoeff, hdeg0]
-        rwa [hcoeff0_eq]
-      · have hdeg_pos : 0 < smaller.degree := by
-          rw [degree_eq_natDegree hsmaller.1]
-          exact_mod_cast Nat.pos_of_ne_zero hdeg0
-        exact eval_pos_of_all_roots_gt_of_even hsmaller hsmaller_pos hdeg_pos hpar hsmaller_gt
+  · have hsmaller_pos_eval : 0 < smaller.eval p :=
+      eval_pos_of_all_roots_gt_of_even hsmaller hsmaller_pos hpar hsmaller_gt
     have hsum_deg_pos : 0 < (smaller + bigger).degree := by
       rw [degree_eq_natDegree hsum_ne]
       have : 0 < (smaller + bigger).natDegree := by
@@ -1140,13 +1153,8 @@ lemma exists_root_le_of_mixed {smaller bigger : ℝ[X]}
         (hsum_eval ▸ hsmaller_pos_eval)
         (tendsto_eval_atBot_atBot_of_posLeadingCoeff_odd hsum_pos hsum_deg_pos hsum_odd)
     exact ⟨u, hu_le, hu_root⟩
-  · have hsmaller_neg_eval : smaller.eval p < 0 := by
-      have hdeg_pos : 0 < smaller.degree := by
-        rw [degree_eq_natDegree hsmaller.1]
-        rcases hpar with ⟨k, hk⟩
-        rw [hk]
-        positivity
-      exact eval_neg_of_all_roots_gt_of_odd hsmaller hsmaller_pos hdeg_pos hpar hsmaller_gt
+  · have hsmaller_neg_eval : smaller.eval p < 0 :=
+      eval_neg_of_all_roots_gt_of_odd hsmaller hsmaller_pos hpar hsmaller_gt
     have hsum_deg_pos : 0 < (smaller + bigger).degree := by
       rw [degree_eq_natDegree hsum_ne]
       have : 0 < (smaller + bigger).natDegree := by

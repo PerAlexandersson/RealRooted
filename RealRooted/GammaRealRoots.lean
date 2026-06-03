@@ -765,12 +765,6 @@ lemma isRealRooted_gammaQuadraticFactor {r : ℝ} (hr : r ≤ 0) :
         Polynomial.natDegree_quadratic (ne_of_gt ht_pos)]
       simp
 
-lemma hasPosLeadingCoeff_of_X_sub_C_mul {q : ℝ[X]} {r : ℝ}
-    (h : HasPosLeadingCoeff ((X - C r) * q)) :
-    HasPosLeadingCoeff q := by
-  unfold HasPosLeadingCoeff at h ⊢
-  simpa [Polynomial.leadingCoeff_mul, leadingCoeff_X_sub_C] using h
-
 lemma hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
     {p q : ℝ[X]}
     (hp : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p)

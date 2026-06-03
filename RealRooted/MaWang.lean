@@ -1035,76 +1035,6 @@ private lemma listInterlaces_all_lt_of_upperBound :
   | _ :: _, [], hint, _, _, _, _ => by simp [ListInterlaces] at hint
   | _ :: _, [_], hint, _, _, _, _ => by simp [ListInterlaces] at hint
 
-/-- Every element of the left-hand list is at most the last element of a
-nonempty sorted right-hand list in a `ListInterlaces` layout. -/
-private lemma listInterlaces_all_le_getLast :
-    ∀ {us rs : List ℝ},
-      (hrs_ne : rs ≠ []) →
-      rs.Pairwise (· ≤ ·) →
-      ListInterlaces us rs →
-      ∀ u ∈ us, u ≤ rs.getLast hrs_ne
-  | [], [], hrs_ne, _, hint, u, hu => by
-      cases (hrs_ne rfl)
-  | [], [_], _, _, hint, u, hu => by
-      simp at hu
-  | s :: ss, [r], _, _, hint, _, _ => by
-      simp [ListInterlaces] at hint
-  | s :: ss, r₁ :: r₂ :: rs, _, hrs_sorted, hint, u, hu => by
-      obtain ⟨_, hs_r₂, htail⟩ := hint
-      rcases List.mem_cons.mp hu with rfl | hu'
-      · exact le_trans hs_r₂ (List.Pairwise.rel_getLast hrs_sorted (by simp [List.mem_cons]))
-      · exact listInterlaces_all_le_getLast (rs := r₂ :: rs) (by simp)
-          ((List.pairwise_cons.mp hrs_sorted).2) htail u hu'
-
-private lemma eval_pos_of_all_roots_lt {p : ℝ[X]} {r : ℝ}
-    (hp : p ≠ 0 ∧ p.Splits) (hp_pos : HasPosLeadingCoeff p)
-    (hlt : ∀ t ∈ p.roots, t < r) :
-    0 < p.eval r := by
-  rw [eval_eq_leadingCoeff_mul_prod_sub hp r]
-  have hprod : 0 < (p.roots.map (r - ·)).prod := by
-    refine Multiset.prod_pos ?_
-    intro y hy
-    rcases Multiset.mem_map.mp hy with ⟨t, ht, rfl⟩
-    exact sub_pos.mpr (hlt t ht)
-  exact mul_pos hp_pos hprod
-
-private lemma eval_pos_of_all_roots_gt_of_even {p : ℝ[X]} {r : ℝ}
-    (hp : p ≠ 0 ∧ p.Splits) (hp_pos : HasPosLeadingCoeff p)
-    (hpar : Even p.natDegree)
-    (hgt : ∀ t ∈ p.roots, r < t) :
-    0 < p.eval r := by
-  by_cases hdeg0 : p.natDegree = 0
-  · rw [eq_C_of_natDegree_eq_zero hdeg0] at hp_pos ⊢
-    simpa [HasPosLeadingCoeff] using hp_pos
-  · have hdeg : 0 < p.degree := natDegree_pos_iff_degree_pos.mp (Nat.pos_of_ne_zero hdeg0)
-    have ht : Tendsto (fun x => p.eval x) atBot atTop :=
-      tendsto_eval_atBot_atTop_of_posLeadingCoeff_even hp_pos hdeg hpar
-    by_contra hnonpos
-    rcases eq_or_lt_of_le (le_of_not_gt hnonpos) with hzero | hneg
-    · have hr_root : p.IsRoot r := by simpa [Polynomial.IsRoot.def] using hzero
-      exact lt_irrefl r (hgt r ((mem_roots hp.1).mpr hr_root))
-    · obtain ⟨u, hu_le, hu_root⟩ := exists_isRoot_le_of_eval_neg_of_tendsto_atBot_atTop hneg ht
-      exact not_lt_of_ge hu_le (hgt u ((mem_roots hp.1).mpr hu_root))
-
-private lemma eval_neg_of_all_roots_gt_of_odd {p : ℝ[X]} {r : ℝ}
-    (hp : p ≠ 0 ∧ p.Splits) (hp_pos : HasPosLeadingCoeff p)
-    (hpar : Odd p.natDegree)
-    (hgt : ∀ t ∈ p.roots, r < t) :
-    p.eval r < 0 := by
-  have hdeg : 0 < p.degree := by
-    have hnatdeg : 0 < p.natDegree := by
-      rcases hpar with ⟨k, hk⟩
-      lia
-    exact natDegree_pos_iff_degree_pos.mp hnatdeg
-  have ht : Tendsto (fun x => p.eval x) atBot atBot :=
-    tendsto_eval_atBot_atBot_of_posLeadingCoeff_odd hp_pos hdeg hpar
-  by_contra hnonneg
-  rcases eq_or_lt_of_le (le_of_not_gt hnonneg) with hzero | hpos
-  · have hr_root : p.IsRoot r := by simpa [eq_comm, Polynomial.IsRoot.def] using hzero
-    exact lt_irrefl r (hgt r ((mem_roots hp.1).mpr hr_root))
-  · obtain ⟨u, hu_le, hu_root⟩ := exists_isRoot_le_of_eval_pos_of_tendsto_atBot_atBot hpos ht
-    exact not_lt_of_ge hu_le (hgt u ((mem_roots hp.1).mpr hu_root))
-
 private lemma eval_sign_of_interlaces_root
     {f g : ℝ[X]} {rs ss : List ℝ}
     (hg : g ≠ 0 ∧ g.Splits) (hg_pos : HasPosLeadingCoeff g)
@@ -2092,12 +2022,6 @@ theorem prec_of_interlaces_evalCoeff_neg
   rcases hcases with hsame | hsucc
   · exact prec_of_interlaces_evalCoeff_neg_same hgf hg_pos hF_pos hsame hno hb_neg
   · exact prec_of_interlaces_evalCoeff_neg_succ hgf hg_pos hF_pos hsucc hno hb_neg
-
-private lemma hasPosLeadingCoeff_of_X_sub_C_mul {q : ℝ[X]} {r : ℝ}
-    (h : HasPosLeadingCoeff ((X - C r) * q)) :
-    HasPosLeadingCoeff q := by
-  unfold HasPosLeadingCoeff at h ⊢
-  simpa [Polynomial.leadingCoeff_mul, leadingCoeff_X_sub_C] using h
 
 private lemma interlaces_of_interlaces_X_sub_C_mul {f g : ℝ[X]} {r : ℝ}
     (h : Interlaces ((X - C r) * g) ((X - C r) * f)) :

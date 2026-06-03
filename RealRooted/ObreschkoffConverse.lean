@@ -151,32 +151,6 @@ private lemma natDegree_bounds_of_prec_local {f g : ℝ[X]} (hfg : Prec f g) :
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
   rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩ <;> lia
 
-/-- Translation-invariant form of
-`listInterlaces_of_listAlternates_append_zero`: if a same-degree alternating
-layout ends with one extra rightmost point `uR`, then deleting that endpoint
-produces a genuine `ListInterlaces` layout. -/
-private lemma listInterlaces_of_listAlternates_append_right
-    {ss qs : List ℝ} {uR : ℝ}
-    (hlen : qs.length + 1 = ss.length)
-    (halt : ListAlternates ss (qs ++ [uR])) :
-    ListInterlaces qs ss := by
-  have halt0 :
-      ListAlternates (ss.map (· - uR)) ((qs.map (· - uR)) ++ [0]) := by
-    simpa [List.map_append] using listAlternates_map_sub_const halt uR
-  have hlen0 : (qs.map (· - uR)).length + 1 = (ss.map (· - uR)).length := by
-    simpa using hlen
-  have hint0 :
-      ListInterlaces (qs.map (· - uR)) (ss.map (· - uR)) :=
-    listInterlaces_of_listAlternates_append_zero
-      (qs.map (· - uR)) (ss.map (· - uR)) hlen0 halt0
-  have hfun :
-      ((fun x : ℝ => x + uR) ∘ fun x => x - uR) = fun x => x := by
-    funext x
-    change (x - uR) + uR = x
-    ring_nf
-  simpa [List.map_map, Function.comp, hfun] using
-    listInterlaces_map_sub_const hint0 (-uR)
-
 private lemma listInterlaces_left_le_of_right_le_local {ss rs : List ℝ} {c : ℝ}
     (hint : ListInterlaces ss rs)
     (hrs : ∀ r ∈ rs, r ≤ c) :
@@ -1822,34 +1796,6 @@ private theorem prec_iterateTDeriv_of_allComboRealRooted_succ_of_no_common
   · have hbounds := natDegree_bounds_of_prec_local hgf
     lia
 
-/-- Every element of the left-hand list is bounded by the rightmost element of
-the right-hand list in a nonempty `ListInterlaces` layout.
-
-This tiny list lemma is the bookkeeping bridge behind the degree-gap reduction
-below: once we know a point is a root of `p'`, interlacing lets us push it to a
-root of `p` on its right. -/
-private lemma listInterlaces_all_le_getLast_local :
-    ∀ {ss rs : List ℝ},
-      (hrs_ne : rs ≠ []) →
-      rs.Pairwise (· ≤ ·) →
-      ListInterlaces ss rs →
-      ∀ s ∈ ss, s ≤ rs.getLast hrs_ne
-  | [], [], hrs_ne, _, hint, s, hs => by
-      cases (hrs_ne rfl)
-  | [], [_], _, _, hint, s, hs => by
-      simp at hs
-  | s :: ss, [r], _, _, hint, _, _ => by
-      simp [ListInterlaces] at hint
-  | s :: ss, r₁ :: r₂ :: rs, _, hrs_sorted, hint, t, ht => by
-      obtain ⟨_, hs_r₂, htail⟩ := hint
-      rcases List.mem_cons.mp ht with rfl | ht
-      · exact
-          le_trans hs_r₂
-            (List.Pairwise.rel_getLast hrs_sorted (by simp [List.mem_cons]))
-      · exact
-          listInterlaces_all_le_getLast_local (rs := r₂ :: rs) (by simp)
-            ((List.pairwise_cons.mp hrs_sorted).2) htail t ht
-
 /-- Same-degree companion to
 `interlaces_of_consecutive_signs_of_natDegree_lt`: if a nonzero polynomial `F`
 has strict sign changes on consecutive roots of a real-rooted polynomial `f`,
@@ -1933,7 +1879,7 @@ private theorem isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
     have hus_lt_all_uR : ∀ u ∈ us, u < uR := by
       intro u hu
       exact lt_of_le_of_lt
-        (listInterlaces_all_le_getLast_local hrs_ne hrs_sorted hus_int u hu)
+        (listInterlaces_all_le_getLast hrs_ne hrs_sorted hus_int u hu)
         (huR_lt _ hu_root)
     have hws_pw : (us ++ [uR]).Pairwise (· < ·) := by
       rw [List.pairwise_append]
@@ -1987,52 +1933,6 @@ private lemma exists_rightmost_root_of_isRealRooted
       apply Multiset.mem_coe.mp
       rwa [hrs_eq]
     exact hrs_sorted.rel_getLast hs_mem
-
-/-- If every root of `p` lies strictly to the left of `r`, then `p(r) > 0`
-for positive leading coefficient. This local copy is exactly the sign input
-needed to make the rightmost-critical-point argument compile in this file,
-without depending on Ma-Wang's private helper namespace. -/
-private lemma eval_pos_of_all_roots_lt_local {p : ℝ[X]} {r : ℝ}
-    (hp : p ≠ 0 ∧ p.Splits) (hp_pos : HasPosLeadingCoeff p)
-    (hlt : ∀ t ∈ p.roots, t < r) :
-    0 < p.eval r := by
-  rw [eval_eq_leadingCoeff_mul_prod_sub hp r]
-  have hprod : 0 < (p.roots.map (r - ·)).prod := by
-    refine Multiset.prod_pos ?_
-    intro y hy
-    rcases Multiset.mem_map.mp hy with ⟨t, ht, rfl⟩
-    exact sub_pos.mpr (hlt t ht)
-  exact mul_pos hp_pos hprod
-
-private lemma eval_pos_of_all_roots_gt_of_even_local {p : ℝ[X]} {r : ℝ}
-    (hp : p ≠ 0 ∧ p.Splits) (hp_pos : HasPosLeadingCoeff p)
-    (hdeg : 0 < p.degree) (hpar : Even p.natDegree)
-    (hgt : ∀ t ∈ p.roots, r < t) :
-    0 < p.eval r := by
-  have ht : Filter.Tendsto (fun x => p.eval x) Filter.atBot Filter.atTop :=
-    tendsto_eval_atBot_atTop_of_posLeadingCoeff_even hp_pos hdeg hpar
-  by_contra hnonpos
-  rcases eq_or_lt_of_le (le_of_not_gt hnonpos) with hzero | hneg
-  · have hr_root : p.IsRoot r := by
-      simpa [Polynomial.IsRoot.def] using hzero
-    exact lt_irrefl r (hgt r ((mem_roots hp.1).mpr hr_root))
-  · obtain ⟨u, hu_le, hu_root⟩ := exists_isRoot_le_of_eval_neg_of_tendsto_atBot_atTop hneg ht
-    exact not_lt_of_ge hu_le (hgt u ((mem_roots hp.1).mpr hu_root))
-
-private lemma eval_neg_of_all_roots_gt_of_odd_local {p : ℝ[X]} {r : ℝ}
-    (hp : p ≠ 0 ∧ p.Splits) (hp_pos : HasPosLeadingCoeff p)
-    (hdeg : 0 < p.degree) (hpar : Odd p.natDegree)
-    (hgt : ∀ t ∈ p.roots, r < t) :
-    p.eval r < 0 := by
-  have ht : Filter.Tendsto (fun x => p.eval x) Filter.atBot Filter.atBot :=
-    tendsto_eval_atBot_atBot_of_posLeadingCoeff_odd hp_pos hdeg hpar
-  by_contra hnonneg
-  rcases eq_or_lt_of_le (le_of_not_gt hnonneg) with hzero | hpos
-  · have hr_root : p.IsRoot r := by
-      simpa [eq_comm, Polynomial.IsRoot.def] using hzero
-    exact lt_irrefl r (hgt r ((mem_roots hp.1).mpr hr_root))
-  · obtain ⟨u, hu_le, hu_root⟩ := exists_isRoot_le_of_eval_pos_of_tendsto_atBot_atBot hpos ht
-    exact not_lt_of_ge hu_le (hgt u ((mem_roots hp.1).mpr hu_root))
 
 /-- Same-degree `hroot_sign` real-rootedness without assuming the target has
 positive leading coefficient.
@@ -2145,9 +2045,6 @@ private theorem isRealRooted_of_interlaces_eval_mul_neg_same_any_lc
     lia
   have hnegF_deg_pos : 0 < (C (-1 : ℝ) * F).degree :=
     natDegree_pos_iff_degree_pos.mp hnegF_natdeg_pos
-  have hg_natdeg_pos : 1 ≤ g.natDegree := by
-    lia
-  have hg_deg_pos : 0 < g.degree := natDegree_pos_iff_degree_pos.mp hg_natdeg_pos
   have hleft :
       ∃ uL, F.IsRoot uL ∧ ∀ r, f.IsRoot r → uL < r := by
     rcases Nat.even_or_odd f.natDegree with hf_even | hf_odd
@@ -2158,7 +2055,7 @@ private theorem isRealRooted_of_interlaces_eval_mul_neg_same_any_lc
         refine ⟨k - 1, ?_⟩
         lia
       have hg_left_neg : g.eval r₀ < 0 :=
-        eval_neg_of_all_roots_gt_of_odd_local hg hg_pos hg_deg_pos hg_odd hhead_lt_roots_g
+        eval_neg_of_all_roots_gt_of_odd hg hg_pos hg_odd hhead_lt_roots_g
       have hF_left_pos : 0 < F.eval r₀ := by
         have hprod := hroot_sign r₀ hr₀_root
         nlinarith
@@ -2201,7 +2098,7 @@ private theorem isRealRooted_of_interlaces_eval_mul_neg_same_any_lc
         refine ⟨k, ?_⟩
         lia
       have hg_left_pos : 0 < g.eval r₀ :=
-        eval_pos_of_all_roots_gt_of_even_local hg hg_pos hg_deg_pos hg_even hhead_lt_roots_g
+        eval_pos_of_all_roots_gt_of_even hg hg_pos hg_even hhead_lt_roots_g
       have hF_left_neg : F.eval r₀ < 0 := by
         have hprod := hroot_sign r₀ hr₀_root
         nlinarith
@@ -2259,7 +2156,7 @@ private lemma strictMonoOn_eval_Ici_of_derivative_roots_le
     intro t ht
     exact lt_of_le_of_lt (hroots_le t ht) hx'
   have hpos_eval : 0 < p.derivative.eval x :=
-    eval_pos_of_all_roots_lt_local hp' hp'_pos hlt
+    eval_pos_of_all_roots_lt hp' hp'_pos hlt
   simpa using hpos_eval
 
 /-- A root of `p'` always has a root of `p` weakly to its right. We package the
@@ -2289,7 +2186,7 @@ private lemma exists_root_ge_of_derivative_root
       rw [← hrs_eq]
       exact Multiset.mem_coe.mpr hr_mem
     exact (mem_roots hp_rr.1).mp this
-  · exact listInterlaces_all_le_getLast_local hrs_ne hrs_sorted hint c hc_mem
+  · exact listInterlaces_all_le_getLast hrs_ne hrs_sorted hint c hc_mem
 
 /-- Exact degree bookkeeping for iterated derivatives. We use this in the
 degree-gap reduction to show that differentiating the smaller polynomial down to
