@@ -57,3 +57,6 @@ import RealRooted.WagnerLeftSum
 import RealRooted.WagnerRightSum
 import RealRooted.WagnerX
 import RealRooted.WeightedSum
+
+-- Local Mathlib extensions
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
