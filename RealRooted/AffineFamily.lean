@@ -82,16 +82,12 @@ lemma prec_self_mul_X_of_nonneg {f : ℝ[X]}
   have hXf : ((X * f) ≠ 0 ∧ (X * f).Splits) := isRealRooted_X_mul hf
   have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hf hfnn
   have hXf_nonpos : ∀ r ∈ (X * f).roots, r ≤ 0 := by
-    intro r hr
-    rw [roots_mul (mul_ne_zero X_ne_zero hf.1), roots_X] at hr
-    rcases Multiset.mem_add.mp hr with hr0 | hrf
-    · simp_all
-    · grind
+    simp_all
   have hXf_pos : HasPosLeadingCoeff (X * f) := by
     unfold HasPosLeadingCoeff at hf_pos ⊢
     simp_all
   have hdeg : f.natDegree + 1 = (X * f).natDegree := by
-    rw [natDegree_X_mul hf.1]
+    simp_all
   have hself : Prec (X * f) (X * f) := prec_refl hXf
   exact
     (prec_iff_prec_mul_X_of_roots_nonpos
@@ -264,8 +260,7 @@ lemma prec_of_prec_mul_X_of_nonneg {f g : ℝ[X]}
     have hrs_len : rs.length = (X * f).natDegree := by
       rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hXf.2]
     have hdeg : f.natDegree = g.natDegree := by
-      rw [natDegree_X_mul hf.1] at hrs_len
-      lia
+      simp_all
     exact
       prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos_local
         h hdeg hf_nonpos
@@ -274,8 +269,7 @@ lemma prec_of_prec_mul_X_of_nonneg {f g : ℝ[X]}
     have hrs_len : rs.length = (X * f).natDegree := by
       rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hXf.2]
     have hdeg : f.natDegree + 1 = g.natDegree := by
-      rw [natDegree_X_mul hf.1] at hrs_len
-      lia
+      simp_all
     exact
       (prec_iff_prec_mul_X_of_roots_nonpos
         (f := f) (g := g)
@@ -423,9 +417,7 @@ private theorem isRealRooted_of_add_C_mul_right_family_of_natDegree_lt
         ∀ z ∈ (g₀.map (algebraMap ℝ ℂ)).roots, z ∈ (algebraMap ℝ ℂ).range := by
       intro z hz_mem
       have hmap_ne : g₀.map (algebraMap ℝ ℂ) ≠ 0 := by
-        exact
-          (Polynomial.map_ne_zero_iff (RingHom.injective (algebraMap ℝ ℂ))).2
-            hg₀_monic.ne_zero
+        simp_all
       have hz_root : (g₀.map (algebraMap ℝ ℂ)).IsRoot z :=
         (Polynomial.mem_roots hmap_ne).1 hz_mem
       have hz_aeval : g₀.aeval z = 0 := by
@@ -788,9 +780,7 @@ private lemma natDegree_iterate_derivative_eq_sub
   have hcoeff :
       (derivative^[k] p).coeff (p.natDegree - k) ≠ 0 := by
     rw [coeff_iterate_derivative, Nat.sub_add_cancel hk, nsmul_eq_mul, coeff_natDegree]
-    exact mul_ne_zero
-      (Nat.cast_ne_zero.mpr (Nat.descFactorial_pos.mpr hk).ne')
-      (leadingCoeff_ne_zero.mpr hp0)
+    simp_all
   lia
 
 /-- Iterated derivatives stay nonzero as long as we do not differentiate past
@@ -802,15 +792,13 @@ private lemma iterate_derivative_ne_zero_of_le_natDegree
   have hcoeff :
       (derivative^[k] p).coeff (p.natDegree - k) ≠ 0 := by
     rw [coeff_iterate_derivative, Nat.sub_add_cancel hk, nsmul_eq_mul, coeff_natDegree]
-    exact mul_ne_zero
-      (Nat.cast_ne_zero.mpr (Nat.descFactorial_pos.mpr hk).ne')
-      (leadingCoeff_ne_zero.mpr hp0)
+    simp_all
   simp [hk0] at hcoeff
 
 private lemma isRealRooted_iterate_derivative_of_lt_natDegree
     {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
     ∀ {n : ℕ}, n < p.natDegree → (((derivative^[n]) p) ≠ 0 ∧ ((derivative^[n]) p).Splits)
-  | 0, _ => by simpa
+  | 0, _ => by simp_all
   | n + 1, hn => by
       rw [Function.iterate_succ_apply']
       have hprev : (((derivative^[n]) p) ≠ 0 ∧ ((derivative^[n]) p).Splits) :=
@@ -845,7 +833,7 @@ private lemma exists_rightmost_root_of_isRealRooted
     have : rs.getLast hrs_ne ∈ p.roots := by
       rw [← hrs_eq]
       simp
-    exact (mem_roots hp.1).mp this
+    simp_all
   · intro s hs
     have hs_mem : s ∈ rs := by
       apply Multiset.mem_coe.mp
@@ -1284,12 +1272,12 @@ private lemma strictMonoOn_eval_Ici_of_derivative_roots_le
     StrictMonoOn (fun x => p.eval x) (Set.Ici c) := by
   refine strictMonoOn_of_deriv_pos (convex_Ici c) p.continuous.continuousOn ?_
   intro x hx
-  have hx' : c < x := by simpa using hx
+  have hx' : c < x := by simp_all
   have hlt : ∀ t ∈ p.derivative.roots, t < x := by
     grind
   have hpos_eval : 0 < p.derivative.eval x :=
     eval_pos_of_all_roots_lt hp' hp'_pos hlt
-  simpa using hpos_eval
+  simp_all
 
 private lemma exists_root_ge_of_derivative_root
     {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hdeg : 2 ≤ p.natDegree)
@@ -1303,14 +1291,13 @@ private lemma exists_root_ge_of_derivative_root
     grind
   have hc_mem : c ∈ ss := by
     apply Multiset.mem_coe.mp
-    rw [hss_eq]
-    exact (mem_roots hp'_rr.1).mpr hc
+    simp_all
   refine ⟨rs.getLast hrs_ne, ?_, ?_⟩
   · have hr_mem : rs.getLast hrs_ne ∈ rs := List.getLast_mem hrs_ne
     have : rs.getLast hrs_ne ∈ p.roots := by
       rw [← hrs_eq]
       simp
-    exact (mem_roots hp_rr.1).mp this
+    simp_all
   · exact listInterlaces_all_le_getLast hrs_ne hrs_sorted hint c hc_mem
 
 private lemma exists_rightmost_derivative_root_with_eval_nonpos
@@ -1402,7 +1389,7 @@ private theorem not_posComboRealRooted_right_const_of_natDegree_ge_two
     exists_pos_shift_not_isRealRooted_of_nonneg_of_natDegree_ge_two hp hpnn hdeg
   have hcombo_t : ((p + C (t / c) * C c) ≠ 0 ∧ (p + C (t / c) * C c).Splits) := by
     exact PosComboRealRooted.isRealRooted_add_right hpc (by
-      exact div_pos ht hc)
+      simp_all)
   have hrewrite : p + C (t / c) * C c = p + C t := by
     calc
       p + C (t / c) * C c = p + C ((t / c) * c) := by simp
@@ -2889,7 +2876,7 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
   intro r hgr
   by_contra hmult_ne
   have hmult_pos : 0 < g.rootMultiplicity r := by
-    exact (rootMultiplicity_pos hg0).mpr hgr
+    simp_all
   have hmult_ge2 : 2 ≤ g.rootMultiplicity r := by
     lia
   have hr_mem : r ∈ g.roots := (mem_roots hg_rr.1).mpr hgr
@@ -3066,7 +3053,7 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
         (pos_iff_neg_of_mul_neg hprodPos_neg).mpr hqPosη_neg
       have hprodNeg_pos :
           0 < pη.derivative.derivative.eval r * qNegη.eval r := by
-        exact mul_pos hpp_pos hqNegη_pos
+        simp_all
       exact
         false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
           (p := pη) (q := qNegη) (x := r) (βmax := 1)
@@ -3461,7 +3448,7 @@ private theorem exists_roots_strictly_interlacing_of_consecutive_exists {F : ℝ
       · simp_all
       · exact ⟨le_of_lt hu₁, le_of_lt hu₂, hus_int⟩
       · simp_all
-      · exact List.pairwise_cons.mpr ⟨hu_lt_all, hus_pw⟩
+      · simp_all
 
 /-- In the hard succ-degree affine branch with `g(0) ≠ 0`, every open interval
 between consecutive roots of `g` contains a root of `f`. The proof uses the
@@ -3816,10 +3803,10 @@ private lemma allComboRealRooted_of_affine_family_succDegree_not_isRoot_zero
       simp_all
     have hr₁_root : g.IsRoot r₁ := by
       have : r₁ ∈ (↑rs : Multiset ℝ) := Multiset.mem_coe.mpr hr₁_mem_rs
-      exact (mem_roots hg0).mp (hrs_eq ▸ this)
+      simp_all
     have hr₂_root : g.IsRoot r₂ := by
       have : r₂ ∈ (↑rs : Multiset ℝ) := Multiset.mem_coe.mpr hr₂_mem_rs
-      exact (mem_roots hg0).mp (hrs_eq ▸ this)
+      simp_all
     exact
       exists_f_root_between_consecutive_g_roots_of_affine_family_succDegree_not_isRoot_zero
         hf0 hg0 hfnn hgnn haff hsucc hno hg_root0
@@ -3829,7 +3816,7 @@ private lemma allComboRealRooted_of_affine_family_succDegree_not_isRoot_zero
   have hus_sub : (↑us : Multiset ℝ) ≤ f.roots := by
     rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr (hus_pw.imp ne_of_lt))]
     intro x hx
-    exact (mem_roots hf0).mpr (hus_roots x (Multiset.mem_coe.mp hx))
+    simp_all
   have hrs_len : rs.length = g.natDegree := by
     rw [show rs = g.roots.sort (· ≤ ·) by lia, Multiset.length_sort,
       card_roots_of_splits hg_rr.2]
