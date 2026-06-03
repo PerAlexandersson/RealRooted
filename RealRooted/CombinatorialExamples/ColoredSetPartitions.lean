@@ -184,10 +184,8 @@ lemma prec_coloredSetPartitions_one_two (c m : Nat) :
       Interlaces (coloredSetPartitions c m 1).derivative (coloredSetPartitions c m 1) := by
     simpa [coloredSetPartitions_one] using
       interlaces_one_linear (p := coloredSetPartitions c m 1) hdeg
-  have hg_pos :
-      HasPosLeadingCoeff (coloredSetPartitions c m 1).derivative :=
-    hasPosLeadingCoeff_derivative (coloredSetPartitions_posLeadingCoeff c m 1) (by
-      simp [hdeg])
+  have hg_pos : HasPosLeadingCoeff (coloredSetPartitions c m 1).derivative :=
+    (coloredSetPartitions_posLeadingCoeff c m 1).derivative (by simp [hdeg])
   have hNext_eq :
       coloredSetPartitionsCoeffA c * coloredSetPartitions c m 1 +
           coloredSetPartitionsCoeffB m * (coloredSetPartitions c m 1).derivative =
@@ -247,7 +245,7 @@ theorem prec_coloredSetPartitions_succ (c m : Nat) :
         derivative_interlaces hf hdegf
       have hg_pos :
           HasPosLeadingCoeff (coloredSetPartitions c m (n + 2)).derivative :=
-        hasPosLeadingCoeff_derivative (coloredSetPartitions_posLeadingCoeff c m (n + 2)) (by
+        (coloredSetPartitions_posLeadingCoeff c m (n + 2)).derivative (by
           rw [natDegree_coloredSetPartitions]
           lia)
       have hNext_eq :

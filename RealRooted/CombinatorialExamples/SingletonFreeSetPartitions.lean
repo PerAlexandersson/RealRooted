@@ -207,7 +207,7 @@ lemma singletonFreeSetPartitionsCore_nonnegCoeffs (n : Nat) :
   rw [singletonFreeSetPartitionsCore, coeff_add, coeff_C_mul]
   exact add_nonneg
     (mul_nonneg (by positivity) (singletonFreeSetPartitions_nonnegCoeffs n m))
-    (nonnegCoeffs_derivative (singletonFreeSetPartitions_nonnegCoeffs (n + 1)) m)
+    ((singletonFreeSetPartitions_nonnegCoeffs (n + 1)).derivative m)
 
 lemma singletonFreeSetPartitionsCore_ne_zero (n : Nat) :
     singletonFreeSetPartitionsCore n ≠ 0 := by
@@ -260,8 +260,7 @@ lemma prec_singletonFreeSetPartitionsCore_of_prec {n : Nat} (hn : 3 ≤ n)
     exact mul_pos (by positivity) (singletonFreeSetPartitions_posLeadingCoeff n (by lia))
   have hder_pos :
       HasPosLeadingCoeff (singletonFreeSetPartitions (n + 1)).derivative :=
-    hasPosLeadingCoeff_derivative
-      (singletonFreeSetPartitions_posLeadingCoeff (n + 1) (by lia)) (by
+      (singletonFreeSetPartitions_posLeadingCoeff (n + 1) (by lia)).derivative (by
         rw [natDegree_singletonFreeSetPartitions (n + 1) (by lia)]
         lia)
   exact

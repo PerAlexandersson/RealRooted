@@ -228,10 +228,8 @@ lemma prec_stirlingPermutations_one_two :
       Interlaces (stirlingPermutations 1).derivative (stirlingPermutations 1) := by
     simpa [stirlingPermutations_one] using
       interlaces_one_linear (p := stirlingPermutations 1) hdeg
-  have hg_pos :
-      HasPosLeadingCoeff (stirlingPermutations 1).derivative :=
-    hasPosLeadingCoeff_derivative (stirlingPermutations_posLeadingCoeff 1) (by
-      simp [hdeg])
+  have hg_pos : HasPosLeadingCoeff (stirlingPermutations 1).derivative :=
+    (stirlingPermutations_posLeadingCoeff 1).derivative (by simp [hdeg])
   have hNext_eq :
       stirlingPermutationsCoeffA 1 * stirlingPermutations 1 +
           stirlingPermutationsCoeffB * (stirlingPermutations 1).derivative =
@@ -284,9 +282,8 @@ theorem prec_stirlingPermutations_succ :
         derivative_interlaces hf (by
           rw [natDegree_stirlingPermutations]
           lia)
-      have hg_pos :
-          HasPosLeadingCoeff (stirlingPermutations (n + 2)).derivative :=
-        hasPosLeadingCoeff_derivative (stirlingPermutations_posLeadingCoeff (n + 2)) (by
+      have hg_pos : HasPosLeadingCoeff (stirlingPermutations (n + 2)).derivative :=
+        (stirlingPermutations_posLeadingCoeff (n + 2)).derivative (by
           rw [natDegree_stirlingPermutations]
           lia)
       have hNext_eq :

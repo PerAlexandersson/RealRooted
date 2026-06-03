@@ -175,9 +175,9 @@ private lemma exists_rightmost_derivative_root_with_eval_nonpos_local
       p.eval c ≤ 0 := by
   have hp' : IsRealRooted p.derivative := (derivative_interlaces hp hdeg).2.1
   have hp'_pos : HasPosLeadingCoeff p.derivative :=
-    hasPosLeadingCoeff_derivative hp_pos (by lia)
+    hp_pos.derivative (by lia)
   have hp'_deg : p.derivative.natDegree = p.natDegree - 1 :=
-    natDegree_derivative_eq (by lia)
+    natDegree_derivative (by lia)
   obtain ⟨c, hc_root, hc_top⟩ :=
     exists_rightmost_root_of_isRealRooted_local hp' (by rw [hp'_deg]; lia)
   by_cases hpc : 0 < p.eval c
@@ -225,7 +225,7 @@ private lemma exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_
     refine strictMonoOn_eval_Ici_of_derivative_roots_le_local ?_ ?_ ?_
     · simpa [hder_eq] using hq'_rr
     · simpa [hder_eq] using
-        hasPosLeadingCoeff_derivative hp_pos (by lia)
+        hp_pos.derivative (by lia)
     · intro s hs
       have hs' : s ∈ p.derivative.roots := by
         simpa [hder_eq] using hs
@@ -474,18 +474,12 @@ theorem natDegree_right_le_succ
     · lia
     · have hf_deg1 : 1 ≤ f.natDegree := by lia
       have hg_deg1 : 1 ≤ g.natDegree := by lia
-      have hf'_pos : HasPosLeadingCoeff f.derivative :=
-        hasPosLeadingCoeff_derivative hf_pos hf_deg1
-      have hg'_pos : HasPosLeadingCoeff g.derivative :=
-        hasPosLeadingCoeff_derivative hg_pos hg_deg1
+      have hf'_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
+      have hg'_pos : HasPosLeadingCoeff g.derivative := hg_pos.derivative (by lia)
       have hfg' : Compatible f.derivative g.derivative := derivative hfg
-      have hf'_deg : f.derivative.natDegree = f.natDegree - 1 :=
-        natDegree_derivative_eq hf_deg1
-      have hg'_deg : g.derivative.natDegree = g.natDegree - 1 :=
-        natDegree_derivative_eq hg_deg1
-      have hlt : f.derivative.natDegree < n := by
-        rw [hf'_deg, ← hfdeg]
-        lia
+      have hf'_deg : f.derivative.natDegree = f.natDegree - 1 := natDegree_derivative (by lia)
+      have hg'_deg : g.derivative.natDegree = g.natDegree - 1 := natDegree_derivative (by lia)
+      have hlt : f.derivative.natDegree < n := by lia
       have hrec :
           g.derivative.natDegree ≤ f.derivative.natDegree + 1 :=
         ih f.derivative.natDegree hlt rfl hfg' hf'_pos hg'_pos

@@ -260,9 +260,7 @@ theorem prec_typeBEulerian_succ : ∀ n : Nat, Prec (typeBEulerian n) (typeBEule
           Interlaces (typeBEulerian (n + 1)).derivative (typeBEulerian (n + 1)) :=
         interlaces_derivative_typeBEulerian (n + 1) (by lia) hf
       have hg_pos : HasPosLeadingCoeff (typeBEulerian (n + 1)).derivative :=
-        hasPosLeadingCoeff_derivative (typeBEulerian_posLeadingCoeff (n + 1)) (by
-          rw [natDegree_typeBEulerian]
-          lia)
+        (typeBEulerian_posLeadingCoeff (n + 1)).derivative (by rw [natDegree_typeBEulerian]; lia)
       have hNext_eq :
           typeBEulerianCoeffA (n + 1) * typeBEulerian (n + 1) +
             typeBEulerianCoeffB * (typeBEulerian (n + 1)).derivative =

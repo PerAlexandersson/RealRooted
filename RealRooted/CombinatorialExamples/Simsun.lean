@@ -398,9 +398,7 @@ theorem prec_simsun_succ : ∀ n : Nat, Prec (simsun n) (simsun (n + 1))
           Interlaces (simsun (n + 2)).derivative (simsun (n + 2)) :=
         interlaces_derivative_simsun (n + 2) (by lia) hf
       have hg_pos : HasPosLeadingCoeff (simsun (n + 2)).derivative :=
-        hasPosLeadingCoeff_derivative (simsun_posLeadingCoeff (n + 2)) (by
-          rw [natDegree_simsun]
-          lia)
+        (simsun_posLeadingCoeff (n + 2)).derivative (by rw [natDegree_simsun]; lia)
       have hNext_eq :
           simsunCoeffA (n + 2) * simsun (n + 2) +
             simsunCoeffB * (simsun (n + 2)).derivative =

@@ -99,7 +99,7 @@ lemma derivative_eq_zero_or_isRealRooted {p : ℝ[X]}
   · by_cases hdeg1 : p.natDegree = 1
     · right
       have hder_deg0 : p.derivative.natDegree = 0 := by
-        rw [natDegree_derivative_eq (by lia), hdeg1]
+        rw [natDegree_derivative (by lia), hdeg1]
       have hder_ne : p.derivative ≠ 0 := by
         intro h0
         have hcoeff : p.derivative.coeff 0 = p.leadingCoeff := by
