@@ -1401,7 +1401,7 @@ private theorem prec_or_revPrec_of_eq_zero_or_simple_combo_sameDegree
     right
     exact prec_of_interlaces_eval_mul_neg_same hder hg'_pos hf_pos hdeg.symm hroot_sign
 
-private lemma prec_degree_zero_right_of_degree_one
+lemma prec_degree_zero_right_of_degree_one
     {f g : ℝ[X]}
     (hf : f ≠ 0 ∧ f.Splits) (hg : g ≠ 0 ∧ g.Splits)
     (hf_deg0 : f.natDegree = 0) (hg_deg1 : g.natDegree = 1) :
@@ -1443,9 +1443,9 @@ private lemma wronskian_coeff_top_succ
     (hf_deg_pos : 1 ≤ f.natDegree) :
     (wronskian f g).coeff (2 * f.natDegree) = -(f.leadingCoeff * g.leadingCoeff) := by
   have hf'_deg : f.derivative.natDegree = f.natDegree - 1 :=
-    natDegree_derivative (by lia)
+    f.natDegree_derivative (by lia)
   have hg'_deg : g.derivative.natDegree = g.natDegree - 1 :=
-    natDegree_derivative (by lia)
+    g.natDegree_derivative (by lia)
   have hf'_lc : f.derivative.leadingCoeff = (f.natDegree : ℝ) * f.leadingCoeff := by
     unfold Polynomial.leadingCoeff
     rw [hf'_deg, coeff_derivative, Nat.sub_add_cancel hf_deg_pos, coeff_natDegree]
@@ -1500,13 +1500,13 @@ private lemma wronskian_natDegree_succ
     calc
       (g * f.derivative).natDegree ≤ g.natDegree + f.derivative.natDegree := natDegree_mul_le
       _ = 2 * f.natDegree := by
-        rw [natDegree_derivative (by lia), hdeg]
+        rw [f.natDegree_derivative (by lia), hdeg]
         lia
   have hfg'_le : (f * g.derivative).natDegree ≤ 2 * f.natDegree := by
     calc
       (f * g.derivative).natDegree ≤ f.natDegree + g.derivative.natDegree := natDegree_mul_le
       _ = 2 * f.natDegree := by
-        rw [natDegree_derivative (by lia), hdeg]
+        rw [g.natDegree_derivative (by lia), hdeg]
         lia
   have hW_le : (wronskian f g).natDegree ≤ 2 * f.natDegree := by
     unfold wronskian
@@ -2235,7 +2235,7 @@ private lemma exists_rightmost_derivative_root_with_eval_nonpos
   have hp'_pos : HasPosLeadingCoeff p.derivative :=
     hp_pos.derivative (by lia)
   have hp'_deg : p.derivative.natDegree = p.natDegree - 1 :=
-    natDegree_derivative (by lia)
+    p.natDegree_derivative (by lia)
   obtain ⟨c, hc_root, hc_top⟩ :=
     exists_rightmost_root_of_isRealRooted hp' (by rw [hp'_deg]; lia)
   have hnonpos : p.eval c ≤ 0 := by

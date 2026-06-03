@@ -31,7 +31,7 @@ protected lemma HasPosLeadingCoeff.derivative {f : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hdeg : f.natDegree ≠ 0) :
     HasPosLeadingCoeff f.derivative := by
   unfold HasPosLeadingCoeff at hf_pos ⊢
-  rw [leadingCoeff, natDegree_derivative hdeg, coeff_derivative]
+  rw [leadingCoeff, f.natDegree_derivative hdeg, coeff_derivative]
   rw [Nat.sub_add_cancel (by lia), coeff_natDegree] at *
   nlinarith
 
@@ -391,7 +391,7 @@ theorem derivative_interlaces {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits)
   -- Degree and cardinality → f' is real-rooted
   have hf'_ne : f.derivative ≠ 0 := by simp; lia
   have hf'_deg : f.derivative.natDegree = f.natDegree - 1 :=
-    natDegree_derivative (by lia)
+    f.natDegree_derivative (by lia)
   have hf'_card : f.derivative.roots.card = f.derivative.natDegree := by
     apply le_antisymm (card_roots' _)
     calc f.derivative.natDegree

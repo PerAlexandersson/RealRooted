@@ -99,7 +99,7 @@ lemma derivative_eq_zero_or_isRealRooted {p : ℝ[X]}
   · by_cases hdeg1 : p.natDegree = 1
     · right
       have hder_deg0 : p.derivative.natDegree = 0 := by
-        rw [natDegree_derivative (by lia), hdeg1]
+        rw [p.natDegree_derivative (by lia), hdeg1]
       have hder_ne : p.derivative ≠ 0 := by
         intro h0
         have hcoeff : p.derivative.coeff 0 = p.leadingCoeff := by
@@ -136,50 +136,6 @@ lemma allComboRealRooted_iterate_derivative
       rw [Function.iterate_succ_apply', Function.iterate_succ_apply']
       exact allComboRealRooted_derivative
         (allComboRealRooted_iterate_derivative hall n)
-
-lemma TDeriv_add (eps : ℝ) (p q : ℝ[X]) :
-    TDeriv eps (p + q) = TDeriv eps p + TDeriv eps q := by
-  ext n
-  simp [TDeriv, sub_eq_add_neg, left_distrib]
-  ring
-
-lemma TDeriv_C_mul (eps c : ℝ) (p : ℝ[X]) :
-    TDeriv eps (C c * p) = C c * TDeriv eps p := by
-  ext n
-  simp [TDeriv, sub_eq_add_neg]
-  ring
-
-@[simp] lemma iterateTDeriv_zero_poly (eps : ℝ) :
-    ∀ n : ℕ, iterateTDeriv eps n (0 : ℝ[X]) = 0
-  | 0 => rfl
-  | n + 1 => by
-      rw [iterateTDeriv_succ, iterateTDeriv_zero_poly]
-      simp [TDeriv]
-
-lemma iterateTDeriv_add (eps : ℝ) :
-    ∀ (n : ℕ) (p q : ℝ[X]),
-      iterateTDeriv eps n (p + q) = iterateTDeriv eps n p + iterateTDeriv eps n q
-  | 0, p, q => by simp [iterateTDeriv]
-  | n + 1, p, q => by
-      rw [iterateTDeriv_succ, iterateTDeriv_succ, iterateTDeriv_succ, iterateTDeriv_add]
-      exact TDeriv_add eps _ _
-
-lemma iterateTDeriv_C_mul (eps c : ℝ) :
-    ∀ (n : ℕ) (p : ℝ[X]),
-      iterateTDeriv eps n (C c * p) = C c * iterateTDeriv eps n p
-  | 0, p => by simp [iterateTDeriv]
-  | n + 1, p => by
-      rw [iterateTDeriv_succ, iterateTDeriv_succ, iterateTDeriv_C_mul]
-      exact TDeriv_C_mul eps c _
-
-lemma iterateTDeriv_eq_of_natDegree_zero (eps : ℝ) {p : ℝ[X]}
-    (hdeg : p.natDegree = 0) :
-    ∀ n : ℕ, iterateTDeriv eps n p = p
-  | 0 => rfl
-  | n + 1 => by
-      rw [iterateTDeriv_succ, iterateTDeriv_eq_of_natDegree_zero eps hdeg n]
-      rw [eq_C_of_natDegree_eq_zero hdeg, TDeriv, derivative_C]
-      ring
 
 lemma natDegree_iterateTDeriv_of_isRealRooted
     {eps : ℝ} {p : ℝ[X]} {n : ℕ}

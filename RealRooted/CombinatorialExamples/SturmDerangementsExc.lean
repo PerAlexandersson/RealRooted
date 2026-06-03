@@ -73,7 +73,7 @@ lemma prec_one_sub_X_derivative_right {f : ℝ[X]}
     intro s hs
     linarith [roots_nonpos_of_nonneg_coeffs hf' hnn' s hs]
   have hdeg' : f.derivative.natDegree + 1 = f.natDegree := by
-    rw [natDegree_derivative (by lia)]
+    rw [f.natDegree_derivative (by lia)]
     lia
   have hmain : Prec f ((X - C 1) * f.derivative) :=
     (prec_iff_prec_mul_X_sub_C_of_roots_le 1 hf' hf hf'_pos hf_pos hf'_le1 hf_le1 hdeg').mp hder

@@ -37,11 +37,11 @@ def HasSimpleRoots (p : ℝ[X]) : Prop :=
     iterateTDeriv eps (n + 1) p = TDeriv eps (iterateTDeriv eps n p) := by
   simpa [iterateTDeriv] using (Function.iterate_succ_apply' (TDeriv eps) n p)
 
-@[simp] private lemma iterateTDeriv_zero_poly_local (eps : ℝ) :
+@[simp] lemma iterateTDeriv_zero_poly (eps : ℝ) :
     ∀ n : ℕ, iterateTDeriv eps n (0 : ℝ[X]) = 0
   | 0 => by simp
   | n + 1 => by
-      rw [iterateTDeriv_succ, iterateTDeriv_zero_poly_local eps n, TDeriv]
+      rw [iterateTDeriv_succ, iterateTDeriv_zero_poly eps n, TDeriv]
       simp
 
 @[simp] lemma TDeriv_zero_eps (p : ℝ[X]) :
@@ -56,12 +56,12 @@ def HasSimpleRoots (p : ℝ[X]) : Prop :=
   | succ n ih =>
       rw [iterateTDeriv_succ, ih, TDeriv_zero_eps]
 
-private lemma iterateTDeriv_eq_of_natDegree_zero_local (eps : ℝ) {p : ℝ[X]}
+lemma iterateTDeriv_eq_of_natDegree_zero (eps : ℝ) {p : ℝ[X]}
     (hdeg : p.natDegree = 0) :
     ∀ n : ℕ, iterateTDeriv eps n p = p
   | 0 => by simp
   | n + 1 => by
-      rw [iterateTDeriv_succ, iterateTDeriv_eq_of_natDegree_zero_local eps hdeg n]
+      rw [iterateTDeriv_succ, iterateTDeriv_eq_of_natDegree_zero eps hdeg n]
       have hp_eq : p = C (p.coeff 0) := by
         simpa using eq_C_of_natDegree_eq_zero hdeg
       rw [hp_eq, TDeriv, derivative_C]
@@ -176,7 +176,7 @@ lemma natDegree_TDeriv {eps : ℝ} {p : ℝ[X]} (_hp : p ≠ 0) (hdeg : 1 ≤ p.
     calc (C eps * p.derivative).natDegree
       _ ≤ (C eps).natDegree + p.derivative.natDegree := natDegree_mul_le
       _ = p.derivative.natDegree := by simp [natDegree_C]
-      _ = p.natDegree - 1 := natDegree_derivative (by lia)
+      _ = p.natDegree - 1 := p.natDegree_derivative (by lia)
       _ < p.natDegree := Nat.sub_lt (by lia) one_pos
   rw [natDegree_sub_eq_left_of_natDegree_lt hp'_deg]
 
@@ -192,7 +192,7 @@ lemma leadingCoeff_TDeriv {eps : ℝ} {p : ℝ[X]} (hp : p ≠ 0) (hdeg : 1 ≤ 
       (C eps * p.derivative).natDegree
           ≤ (C eps).natDegree + p.derivative.natDegree := natDegree_mul_le
       _ = p.derivative.natDegree := by simp [natDegree_C]
-      _ = p.natDegree - 1 := natDegree_derivative (by lia)
+      _ = p.natDegree - 1 := p.natDegree_derivative (by lia)
       _ < p.natDegree := Nat.sub_lt (by lia) one_pos
   rw [Polynomial.coeff_eq_zero_of_natDegree_lt hp'_deg, sub_zero, Polynomial.leadingCoeff]
 
@@ -239,17 +239,32 @@ private lemma isRealRooted_TDeriv_pos {eps : ℝ} {p : ℝ[X]}
   rw [hrewrite]
   exact (prec_of_interlaces_evalCoeff_nonpos hder hp'_pos hT_pos hdeg_lo hdeg_hi hb_nonpos).2.1
 
+/-- T_ε is additive. -/
+lemma TDeriv_add (eps : ℝ) (p q : ℝ[X]) :
+    TDeriv eps (p + q) = TDeriv eps p + TDeriv eps q := by
+  ext n
+  simp [TDeriv, sub_eq_add_neg, left_distrib]
+  ring
+
 /-- T_ε is linear: T_ε(c·p) = c·T_ε(p). -/
-private lemma TDeriv_C_mul (eps c : ℝ) (p : ℝ[X]) :
+lemma TDeriv_C_mul (eps c : ℝ) (p : ℝ[X]) :
     TDeriv eps (C c * p) = C c * TDeriv eps p := by
   simp [TDeriv, mul_sub, mul_left_comm]
 
-private lemma iterateTDeriv_C_mul_local (eps c : ℝ) :
+lemma iterateTDeriv_add (eps : ℝ) :
+    ∀ (n : ℕ) (p q : ℝ[X]),
+      iterateTDeriv eps n (p + q) = iterateTDeriv eps n p + iterateTDeriv eps n q
+  | 0, p, q => by simp [iterateTDeriv]
+  | n + 1, p, q => by
+      rw [iterateTDeriv_succ, iterateTDeriv_succ, iterateTDeriv_succ, iterateTDeriv_add]
+      exact TDeriv_add eps _ _
+
+lemma iterateTDeriv_C_mul (eps c : ℝ) :
     ∀ (n : ℕ) (p : ℝ[X]),
       iterateTDeriv eps n (C c * p) = C c * iterateTDeriv eps n p
   | 0, p => by simp [iterateTDeriv]
   | n + 1, p => by
-      rw [iterateTDeriv_succ, iterateTDeriv_succ, iterateTDeriv_C_mul_local]
+      rw [iterateTDeriv_succ, iterateTDeriv_succ, iterateTDeriv_C_mul]
       exact TDeriv_C_mul eps c _
 
 private lemma TDeriv_X_sub_C (eps r : ℝ) :
@@ -534,9 +549,9 @@ lemma natDegree_iterateTDeriv_eq (eps : ℝ) (n : ℕ) (p : ℝ[X]) :
     (iterateTDeriv eps n p).natDegree = p.natDegree := by
   by_cases hp : p = 0
   · subst hp
-    simp [iterateTDeriv_zero_poly_local]
+    simp [iterateTDeriv_zero_poly]
   by_cases hdeg0 : p.natDegree = 0
-  · rw [iterateTDeriv_eq_of_natDegree_zero_local eps hdeg0 n]
+  · rw [iterateTDeriv_eq_of_natDegree_zero eps hdeg0 n]
   · exact natDegree_iterateTDeriv hp (Nat.succ_le_of_lt (Nat.pos_of_ne_zero hdeg0))
 
 /-- In particular, a real-rooted polynomial and all of its `iterateTDeriv`
@@ -962,7 +977,7 @@ theorem exists_delta_and_real_root_near_iterateTDeriv_of_isRealRooted
   have hb_eval₀ : (iterateTDeriv eps n p₀).eval b = 0 := by
     simpa [Polynomial.IsRoot.def] using hb_root₀
   have hb_eval_scaled : (C c * iterateTDeriv eps n p).eval b = 0 := by
-    simpa [p₀, iterateTDeriv_C_mul_local] using hb_eval₀
+    simpa [p₀, iterateTDeriv_C_mul] using hb_eval₀
   rw [Polynomial.eval_mul, Polynomial.eval_C] at hb_eval_scaled
   have hb_eval : (iterateTDeriv eps n p).eval b = 0 := by
     rcases mul_eq_zero.mp hb_eval_scaled with hc | hb

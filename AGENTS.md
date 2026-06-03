@@ -8,16 +8,27 @@ workspace Lean guide in `/workspace/lean/AGENTS.md`.
 - The long-term goal is to upstream reusable pieces to Mathlib.  When a lemma is
   generally useful, prefer a Mathlib-shaped statement over a project-specific
   wrapper.
+- Before adding a reusable lemma, ask where it would live in Mathlib, what its
+  namespace-qualified name should be, and how general the statement can be
+  without making the proof brittle.
 - Put upstreamable compatibility lemmas in `RealRooted/Mathlib/...` using the
   corresponding Mathlib namespace and typeclass generality when practical.
-  Lemmas in `RealRooted.Mathlib.X` are meant to be upstreamed to file `Mathlib.X` in Mathlib.
+  Lemmas in `RealRooted.Mathlib.X` are meant to be upstreamed to file
+  `Mathlib.X` in Mathlib.
 - Import the shim and use the upstream-shaped theorem instead of re-proving a
   local `RealRooted` copy.
+- Prefer the owning namespace and receiver-style use, for example
+  `p.natDegree_derivative h`, over bare project-local helper names.
+- Prefer canonical `↔` and `[simp]` lemmas when both directions are useful, and
+  derive negated forms such as `_ne_zero` from them when possible.
+- Prefer weaker natural hypotheses, such as `p.natDegree ≠ 0`, over stronger
+  arithmetic wrappers such as `1 ≤ p.natDegree` when the weaker form is the real
+  condition.
 - Avoid adding private duplicate helper lemmas across files.  If the same proof
   is needed twice, centralize it in the lowest sensible module.
 - Prefer `n ≠ 0` over `1 ≤ n` when `n : Nat`.
-- Mark declaration `Foo.bar` as `protected` if it is more auxiliary than another declaration named
-  `Baz.bar`.
+- Mark declaration `Foo.bar` as `protected` if it is more auxiliary than
+  another declaration named `Baz.bar`.
 
 ## Polynomial Derivatives
 
@@ -29,7 +40,8 @@ open derivative-refactor PR.
   `RealRooted.Mathlib.Algebra.Polynomial.Derivative`, where
   `h : p.natDegree ≠ 0`.
 - Once the upstream-shaped shim is available, prefer
-  `p.derivative_ne_zero h`, where `h : 2 ≤ p.natDegree`.
+  `(p.derivative_ne_zero).mpr h`, where `h : p.natDegree ≠ 0`; derive `h`
+  with `by lia` from stronger degree assumptions when needed.
 - Do not reintroduce new local copies of the old
   `RealRooted.natDegree_derivative_eq`; migrate touched code toward the
   `Polynomial` namespace API when the PR is merged or checked out.

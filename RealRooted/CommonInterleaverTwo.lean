@@ -139,7 +139,7 @@ private lemma exists_rightmost_derivative_root_with_eval_nonpos_local
   have hp'_pos : HasPosLeadingCoeff p.derivative :=
     hp_pos.derivative (by lia)
   have hp'_deg : p.derivative.natDegree = p.natDegree - 1 :=
-    natDegree_derivative (by lia)
+    p.natDegree_derivative (by lia)
   obtain ⟨c, hc_root, hc_top⟩ :=
     exists_rightmost_root_of_isRealRooted_local hp' (by rw [hp'_deg]; lia)
   by_cases hpc : 0 < p.eval c
@@ -440,8 +440,8 @@ theorem natDegree_right_le_succ
       have hf'_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
       have hg'_pos : HasPosLeadingCoeff g.derivative := hg_pos.derivative (by lia)
       have hfg' : Compatible f.derivative g.derivative := derivative hfg
-      have hf'_deg : f.derivative.natDegree = f.natDegree - 1 := natDegree_derivative (by lia)
-      have hg'_deg : g.derivative.natDegree = g.natDegree - 1 := natDegree_derivative (by lia)
+      have hf'_deg : f.derivative.natDegree = f.natDegree - 1 := f.natDegree_derivative (by lia)
+      have hg'_deg : g.derivative.natDegree = g.natDegree - 1 := g.natDegree_derivative (by lia)
       have hlt : f.derivative.natDegree < n := by lia
       have hrec :
           g.derivative.natDegree ≤ f.derivative.natDegree + 1 :=
@@ -1206,23 +1206,6 @@ private lemma prec_degree_zero_degree_zero_local
   · simp [hroots_g]
   · exact Or.inr ⟨by simp, by simp [ListAlternates]⟩
 
-/-- Constant-vs-linear endpoint case for the low-degree Obreschkoff package. -/
-private lemma prec_degree_zero_right_of_degree_one_local
-    {f g : ℝ[X]}
-    (hf : f ≠ 0 ∧ f.Splits) (hg : g ≠ 0 ∧ g.Splits)
-    (hf_deg0 : f.natDegree = 0) (hg_deg1 : g.natDegree = 1) :
-    Prec f g := by
-  obtain ⟨r, hr_eq⟩ : ∃ r, g.roots = {r} := by
-    apply Multiset.card_eq_one.mp
-    simpa [hg_deg1] using card_roots_of_splits hg.2
-  have hroots_f : f.roots = 0 := by
-    apply Multiset.card_eq_zero.mp
-    rw [card_roots_of_splits hf.2, hf_deg0]
-  refine ⟨hf, hg, [], [r], by simp, List.pairwise_singleton _ _, ?_, ?_, ?_⟩
-  · simp [hroots_f]
-  · simp [hr_eq]
-  · exact Or.inl ⟨by simp, by simp [ListInterlaces]⟩
-
 /-- Any two positive-leading polynomials of degree at most one already satisfy
 the Obreschkoff alternative. This is the unconditional low-degree endpoint for
 the current bridge search. -/
@@ -1242,12 +1225,12 @@ theorem prec_or_revPrec_of_natDegree_le_one
       exact Or.inl (prec_degree_zero_degree_zero_local hf_rr hg_rr hf_deg0 hg_deg0)
     · have hg_deg1 : g.natDegree = 1 := by lia
       have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_degree_one hg_deg1
-      exact Or.inl (prec_degree_zero_right_of_degree_one_local hf_rr hg_rr hf_deg0 hg_deg1)
+      exact Or.inl (prec_degree_zero_right_of_degree_one hf_rr hg_rr hf_deg0 hg_deg1)
   · have hf_deg1 : f.natDegree = 1 := by lia
     by_cases hg_deg0 : g.natDegree = 0
     · have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_deg_zero hg0 hg_deg0
       have hf_rr : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_degree_one hf_deg1
-      exact Or.inr (prec_degree_zero_right_of_degree_one_local hg_rr hf_rr hg_deg0 hf_deg1)
+      exact Or.inr (prec_degree_zero_right_of_degree_one hg_rr hf_rr hg_deg0 hf_deg1)
     · have hg_deg1 : g.natDegree = 1 := by lia
       exact PosComboRealRooted.prec_or_revPrec_of_same_degree_one (by lia) hf_deg1
 
@@ -1413,7 +1396,7 @@ theorem posComboNoCommonSuccDegreeOrientation_of_degree_zero
   have hf_rr : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_deg_zero hf0 hf_deg0
   have hg_deg1 : g.natDegree = 1 := by lia
   have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_degree_one hg_deg1
-  exact prec_degree_zero_right_of_degree_one_local hf_rr hg_rr hf_deg0 hg_deg1
+  exact prec_degree_zero_right_of_degree_one hf_rr hg_rr hf_deg0 hg_deg1
 
 /-- Any proof of the stronger fixed-orientation succ-degree statement can be
 used immediately as input for the corrected succ-degree pair bridge. -/

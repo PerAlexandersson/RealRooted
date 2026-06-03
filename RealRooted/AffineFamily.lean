@@ -783,24 +783,6 @@ private lemma iterate_derivative_C_mul (a : ℝ) :
   | n + 1, p => by
       simp
 
-private lemma derivative_eq_zero_or_isRealRooted_local {p : ℝ[X]}
-    (hp : p ≠ 0 ∧ p.Splits) :
-    p.derivative = 0 ∨ (p.derivative ≠ 0 ∧ p.derivative.Splits) := by
-  by_cases h0 : p.derivative = 0
-  · exact Or.inl h0
-  · right
-    by_cases hdeg : 2 ≤ p.natDegree
-    · exact (derivative_interlaces hp hdeg).2.1
-    · have hpdeg_le : p.natDegree ≤ 1 := by lia
-      have hpdeg_pos : 1 ≤ p.natDegree := by
-        by_contra hpdeg0
-        have : p.derivative = 0 := by simp; lia
-        exact h0 this
-      have hpdeg_eq : p.natDegree = 1 := by lia
-      have hder_deg : p.derivative.natDegree = 0 := by
-        rw [natDegree_derivative (by lia), hpdeg_eq]
-      exact isRealRooted_of_deg_zero h0 hder_deg
-
 private lemma natDegree_iterate_derivative_eq_sub
     {p : ℝ[X]} {k : ℕ} (hp0 : p ≠ 0) (hk : k ≤ p.natDegree) :
     (derivative^[k] p).natDegree = p.natDegree - k := by
@@ -842,7 +824,7 @@ private lemma isRealRooted_iterate_derivative_of_lt_natDegree
           (iterate_derivative_ne_zero_of_le_natDegree
             (p := p) (k := n + 1) hp.1 (Nat.le_of_lt hn))
       exact
-        (derivative_eq_zero_or_isRealRooted_local hprev).elim
+        (derivative_eq_zero_or_isRealRooted hprev).elim
           (fun h0 => False.elim (hnonzero h0))
           id
 
@@ -1345,7 +1327,7 @@ private lemma exists_rightmost_derivative_root_with_eval_nonpos
   have hp'_pos : HasPosLeadingCoeff p.derivative :=
     hp_pos.derivative (by lia)
   have hp'_deg : p.derivative.natDegree = p.natDegree - 1 :=
-    natDegree_derivative (by lia)
+    p.natDegree_derivative (by lia)
   obtain ⟨c, hc_root, hc_top⟩ :=
     exists_rightmost_root_of_isRealRooted hp' (by lia)
   by_cases hpc : 0 < p.eval c
@@ -1929,23 +1911,6 @@ private lemma prec_degree_zero_degree_zero
   · simp [hroots_f]
   · simp [hroots_g]
   · exact Or.inr ⟨by simp, by simp [ListAlternates]⟩
-
-/-- Constant-vs-linear endpoint case for the affine converse. -/
-private lemma prec_degree_zero_right_of_degree_one_local
-    {f g : ℝ[X]}
-    (hf : f ≠ 0 ∧ f.Splits) (hg : g ≠ 0 ∧ g.Splits)
-    (hf_deg0 : f.natDegree = 0) (hg_deg1 : g.natDegree = 1) :
-    Prec f g := by
-  obtain ⟨r, hr_eq⟩ : ∃ r, g.roots = {r} := by
-    apply Multiset.card_eq_one.mp
-    simpa [hg_deg1] using card_roots_of_splits hg.2
-  have hroots_f : f.roots = 0 := by
-    apply Multiset.card_eq_zero.mp
-    rw [card_roots_of_splits hf.2, hf_deg0]
-  refine ⟨hf, hg, [], [r], by simp, List.pairwise_singleton _ _, ?_, ?_, ?_⟩
-  · simp [hroots_f]
-  · simp [hr_eq]
-  · exact Or.inl ⟨by simp, by simp [ListInterlaces]⟩
 
 /-- In the linear left-hand branch of the affine converse, the right polynomial
 must be nonpositive at the unique root of `f`. Otherwise, after translating
@@ -4203,7 +4168,7 @@ theorem prec_of_affine_family_nonneg
       exact prec_degree_zero_degree_zero hf_rr hg_rr hdegf0 hg_deg0
     · have hg_deg1 : g.natDegree = 1 := by simp_all
       have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_degree_one hg_deg1
-      exact prec_degree_zero_right_of_degree_one_local hf_rr hg_rr hdegf0 hg_deg1
+      exact prec_degree_zero_right_of_degree_one hf_rr hg_rr hdegf0 hg_deg1
   by_cases hdegf1 : f.natDegree = 1
   · exact prec_of_affine_family_nonneg_degree_one hf0 hg0 hfnn hgnn haff hdegf1
   have hdegf2 : 2 ≤ f.natDegree := by lia
