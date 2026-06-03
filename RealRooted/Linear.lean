@@ -124,9 +124,9 @@ lemma isRealRooted_of_degree_one {p : ℝ[X]} (hp : p.natDegree = 1) : (p ≠ 0 
 
 lemma interlaces_one_linear {p : ℝ[X]} (hp_deg : p.natDegree = 1) :
     Interlaces (1 : ℝ[X]) p := by
-  have h1_rr : IsRealRooted (1 : ℝ[X]) := by
-    simpa using isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)
-  have hp_rr : IsRealRooted p := isRealRooted_of_degree_one hp_deg
+  have h1_rr : ((1 : ℝ[X]) ≠ 0 ∧ (1 : ℝ[X]).Splits) := by
+    exact isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)
+  have hp_rr : (p ≠ 0 ∧ p.Splits) := isRealRooted_of_degree_one hp_deg
   have hp_deg' : p.degree = 1 := by
     rw [degree_eq_natDegree hp_rr.1, hp_deg]
     norm_num

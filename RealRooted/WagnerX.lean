@@ -713,7 +713,7 @@ theorem prec_of_prec_mul_X_sameDegree_of_roots_nonpos {f g : ℝ[X]}
     Prec f g := by
   rcases h with
     ⟨hg, hXf, ss_g, rs_Xf, hss_g, hrs_Xf, hss_g_eq, hrs_Xf_eq, hshape⟩
-  have hf : IsRealRooted f := isRealRooted_of_X_mul hXf
+  have hf : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_X_mul hXf
   set rs_f := f.roots.sort (· ≤ ·)
   have hrs_f_eq : (↑rs_f : Multiset ℝ) = f.roots := Multiset.sort_eq ..
   have hrs_f : rs_f.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
@@ -734,7 +734,8 @@ theorem prec_of_prec_mul_X_sameDegree_of_roots_nonpos {f g : ℝ[X]}
       simp [add_comm]
     exact List.Perm.eq_of_pairwise' hrs_Xf hrs_f0 (Multiset.coe_eq_coe.mp hmultiset_eq)
   have hlen_fg : rs_f.length = ss_g.length := by
-    rw [← Multiset.coe_card, hrs_f_eq, hf.2, ← Multiset.coe_card, hss_g_eq, hg.2, hdeg]
+    rw [← Multiset.coe_card, hrs_f_eq, card_roots_of_splits hf.2,
+      ← Multiset.coe_card, hss_g_eq, card_roots_of_splits hg.2, hdeg]
   rcases hshape with ⟨hlen, hint⟩ | ⟨hlen, _⟩
   · rw [hrs_Xf_is] at hint hlen
     have hlen' : ss_g.length + 1 = (rs_f ++ [(0 : ℝ)]).length := by
@@ -753,9 +754,9 @@ theorem prec_of_prec_mul_X_sameDegree_of_roots_nonpos {f g : ℝ[X]}
     exact ⟨hf, hg, rs_f, ss_g, hrs_f, hss_g, hrs_f_eq, hss_g_eq,
       Or.inr ⟨hlen_fg, halt⟩⟩
   · have hss_len : ss_g.length = g.natDegree := by
-      rw [← Multiset.coe_card, hss_g_eq, hg.2]
+      rw [← Multiset.coe_card, hss_g_eq, card_roots_of_splits hg.2]
     have hrs_len : rs_Xf.length = (X * f).natDegree := by
-      rw [← Multiset.coe_card, hrs_Xf_eq, hXf.2]
+      rw [← Multiset.coe_card, hrs_Xf_eq, card_roots_of_splits hXf.2]
     rw [natDegree_X_mul hf.1] at hrs_len
     omega
 
