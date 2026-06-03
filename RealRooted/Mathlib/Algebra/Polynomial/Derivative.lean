@@ -1,8 +1,11 @@
 module
 
 public import Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Data.Real.Basic
 
 public section
+
+open Polynomial
 
 lemma natDegree_derivative_eq {p : ℝ[X]} (hp : 1 ≤ p.natDegree) :
     p.derivative.natDegree = p.natDegree - 1 := by
