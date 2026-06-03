@@ -28,7 +28,7 @@ lemma hasNonnegCoeffs_X : HasNonnegCoeffs (X : ℝ[X]) := by
   | succ n =>
       cases n with
       | zero =>
-          simp [coeff_X]
+          simp
       | succ n =>
           simp [coeff_X]
 
@@ -46,8 +46,7 @@ lemma hasNonnegCoeffs_affine_mul {s t : ℝ} (hs : 0 ≤ s) (ht : 0 ≤ t)
   have htp : HasNonnegCoeffs (C t * p) :=
     nonnegCoeffs_C_mul ht hp
   have hsum : HasNonnegCoeffs (C s * (X * p) + C t * p) := hsXp.add htp
-  simpa [left_distrib, right_distrib, mul_add, mul_assoc, add_assoc,
-    add_left_comm, add_comm] using hsum
+  grind
 
 lemma hasNonnegCoeffs_sum :
     ∀ ps : List ℝ[X], (∀ p ∈ ps, HasNonnegCoeffs p) → HasNonnegCoeffs ps.sum
@@ -73,8 +72,7 @@ lemma add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
     simpa [d] using hq_lc
   intro hsum0
   have hcoeff0 : (p + q).coeff d = 0 := by
-    rw [hsum0]
-    simp
+    simp_all
   rw [coeff_add] at hcoeff0
   linarith
 
@@ -85,8 +83,7 @@ lemma sum_ne_zero_of_hasNonnegCoeffs_of_mem_ne_zero
     ps.sum ≠ 0 := by
   induction ps generalizing p with
   | nil =>
-      rw [List.sum_nil]
-      exact False.elim (List.not_mem_nil (a := p) hp_mem)
+      simp_all
   | cons q ps ih =>
       simp only [List.mem_cons] at hp_mem
       rcases hp_mem with rfl | hp_mem
@@ -108,7 +105,7 @@ lemma mem_zipWith_mul {row fs : List ℝ[X]} {p : ℝ[X]}
     ∃ a ∈ row, ∃ b ∈ fs, p = a * b := by
   induction row generalizing fs with
   | nil =>
-      cases fs <;> simp at hp
+      simp_all
   | cons a row ih =>
       cases fs with
       | nil =>
@@ -116,15 +113,14 @@ lemma mem_zipWith_mul {row fs : List ℝ[X]} {p : ℝ[X]}
       | cons b fs =>
           simp only [List.zipWith_cons_cons, List.mem_cons] at hp
           rcases hp with rfl | hp
-          · exact ⟨a, by simp, b, by simp, rfl⟩
-          · rcases ih hp with ⟨a', ha', b', hb', rfl⟩
-            exact ⟨a', by simp [ha'], b', by simp [hb'], rfl⟩
+          · simp
+          · grind
 
 lemma mem_zipWith_mul_get {row fs : List ℝ[X]}
     (hlen : row.length = fs.length) (i : Fin row.length) :
-    row.get i * fs.get ⟨i.1, by simpa [hlen] using i.2⟩ ∈ row.zipWith (· * ·) fs := by
+    row.get i * fs.get ⟨i.1, by lia⟩ ∈ row.zipWith (· * ·) fs := by
   refine List.mem_iff_get.2 ?_
-  refine ⟨⟨i.1, by simpa [List.length_zipWith, hlen] using i.2⟩, ?_⟩
+  refine ⟨⟨i.1, by grind⟩, ?_⟩
   simp [List.get_eq_getElem]
 
 lemma hasNonnegCoeffs_zipWith_mul_sum {row fs : List ℝ[X]}
@@ -169,12 +165,12 @@ theorem pairwiseHasCommonLeftInterleaver_zipWith_mul_reverse_of_interlacingSeqNo
   intro i j hij
   have hzip_len : (fs.zipWith (· * ·) gs.reverse).length = fs.length := by
     simp [List.length_zipWith, hlen, List.length_reverse]
-  let i' : Fin fs.length := ⟨i.1, by simpa [hzip_len] using i.2⟩
-  let j' : Fin fs.length := ⟨j.1, by simpa [hzip_len] using j.2⟩
+  let i' : Fin fs.length := ⟨i.1, by lia⟩
+  let j' : Fin fs.length := ⟨j.1, by lia⟩
   let i'' : Fin gs.reverse.length :=
-    ⟨i.1, by simpa [List.length_reverse, hlen, hzip_len] using i.2⟩
+    ⟨i.1, by grind⟩
   let j'' : Fin gs.reverse.length :=
-    ⟨j.1, by simpa [List.length_reverse, hlen, hzip_len] using j.2⟩
+    ⟨j.1, by grind⟩
   have hij' : i' < j' := hij
   have hij'' : i'' < j'' := hij
   let fi := fs.get i'
@@ -182,9 +178,9 @@ theorem pairwiseHasCommonLeftInterleaver_zipWith_mul_reverse_of_interlacingSeqNo
   let gi := gs.reverse.get i''
   let gj := gs.reverse.get j''
   have hi'' : i''.1 < gs.length := by
-    simpa [List.length_reverse] using i''.2
+    lia
   have hj'' : j''.1 < gs.length := by
-    simpa [List.length_reverse] using j''.2
+    lia
   let ki : Fin gs.length := ⟨gs.length - 1 - i''.1, by
     lia⟩
   let kj : Fin gs.length := ⟨gs.length - 1 - j''.1, by
@@ -231,29 +227,27 @@ theorem pairwiseHasCommonInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg
   intro i j hij
   have hzip_len : (fs.zipWith (· * ·) gs.reverse).length = fs.length := by
     simp [List.length_zipWith, hlen, List.length_reverse]
-  let i' : Fin fs.length := ⟨i.1, by simpa [hzip_len] using i.2⟩
-  let j' : Fin fs.length := ⟨j.1, by simpa [hzip_len] using j.2⟩
+  let i' : Fin fs.length := ⟨i.1, by lia⟩
+  let j' : Fin fs.length := ⟨j.1, by lia⟩
   let i'' : Fin gs.reverse.length :=
-    ⟨i.1, by simpa [List.length_reverse, hlen, hzip_len] using i.2⟩
+    ⟨i.1, by grind⟩
   let j'' : Fin gs.reverse.length :=
-    ⟨j.1, by simpa [List.length_reverse, hlen, hzip_len] using j.2⟩
+    ⟨j.1, by grind⟩
   have hij' : i' < j' := hij
   let fi := fs.get i'
   let fj := fs.get j'
   let gi := gs.reverse.get i''
   let gj := gs.reverse.get j''
   have hi'' : i''.1 < gs.length := by
-    simpa [List.length_reverse] using i''.2
+    lia
   have hj'' : j''.1 < gs.length := by
-    simpa [List.length_reverse] using j''.2
+    lia
   let ki : Fin gs.length := ⟨gs.length - 1 - i''.1, by
     lia⟩
   let kj : Fin gs.length := ⟨gs.length - 1 - j''.1, by
     lia⟩
   have hkj_ki : kj < ki := by
-    have hrev_idx : gs.length - 1 - j''.1 < gs.length - 1 - i''.1 := by
-      lia
-    simpa [kj, ki] using hrev_idx
+    grind
   have hfi_fj : Prec fi fj := by
     simpa [fi, fj] using (List.pairwise_iff_get.mp hpair_fs i' j' hij')
   have hgj_gi : Prec gj gi := by
@@ -273,9 +267,7 @@ theorem pairwiseHasCommonInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg
   have hright_j : Prec (fj * gj) (fj * gi) := by
     simpa [fj, gi, gj, mul_comm, mul_left_comm, mul_assoc] using
       (prec_mul_common_factor hfj_rr hgj_gi)
-  refine ⟨fj * gi, ?_, ?_⟩
-  · simpa [List.get_eq_getElem, fi, fj, gi, i', hzip_len] using hright_i
-  · simpa [List.get_eq_getElem, fj, gi, gj, j', hzip_len] using hright_j
+  grind
 
 /-- The reversed product family has a common interleaver once one upgrades the
 pairwise witnesses via Chudnovsky--Seymour. This isolates the exact remaining
@@ -289,10 +281,10 @@ theorem hasCommonInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg
   let ps := fs.zipWith (· * ·) gs.reverse
   have hgs_rr_rev : ∀ p ∈ gs.reverse, (p ≠ 0 ∧ p.Splits) := by
     intro p hp
-    exact hgs.realRooted p (by simpa using List.mem_reverse.1 hp)
+    exact hgs.realRooted p (by simp_all)
   have hgs_pos_rev : ∀ p ∈ gs.reverse, HasPosLeadingCoeff p := by
     intro p hp
-    exact hgs.posLeadingCoeff p (by simpa using List.mem_reverse.1 hp)
+    exact hgs.posLeadingCoeff p (by simp_all)
   have hpair : PairwiseHasCommonInterleaver ps := by
     simpa [ps] using
       pairwiseHasCommonInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg
@@ -327,20 +319,14 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
     intro p hp
     rcases mem_zipWith_mul hp with ⟨f, hf, g, hg, rfl⟩
     have hg_pos_rev : HasPosLeadingCoeff g := by
-      exact hgs.posLeadingCoeff g (by simpa using List.mem_reverse.1 hg)
+      exact hgs.posLeadingCoeff g (by simp_all)
     rw [HasPosLeadingCoeff, leadingCoeff_mul]
     exact mul_pos (hfs.posLeadingCoeff f hf) hg_pos_rev
   have hps_ne : ps ≠ [] := by
     intro hnil
     have hlen_ps : ps.length = fs.length := by
       simp [ps, List.length_zipWith, hlen, List.length_reverse]
-    rw [hnil] at hlen_ps
-    simp only [List.length_nil] at hlen_ps
-    cases fs with
-    | nil =>
-        contradiction
-    | cons f fs =>
-        simp at hlen_ps
+    grind
   exact
     isRealRooted_sum_of_commonInterleaver
       (by
@@ -498,12 +484,7 @@ lemma zipWith_mul_sum_filterProductNonzero_eq
             simpa [filterProductLeftNonzero, filterProductRightNonzero,
               filterProductNonzeroPairs] using ih gs
           · have hprod : f * g = 0 := by
-              by_cases hf : f = 0
-              · simp [hf]
-              · have hg : g = 0 := by
-                  by_contra hg
-                  exact hfg ⟨hf, hg⟩
-                simp [hg]
+              grind
             simp [filterProductLeftNonzero, filterProductRightNonzero,
               filterProductNonzeroPairs, hfg, hprod]
             simpa [filterProductLeftNonzero, filterProductRightNonzero,
@@ -526,7 +507,7 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg
   have hfs'_eq : fs' = fs.filter (· ≠ 0) := by
     simpa [fs'] using
       filterLeftNonzero_eq_filter_ne_zero
-        (fs := fs) (gs := gs.reverse) (by simpa [List.length_reverse] using hlen)
+        (fs := fs) (gs := gs.reverse) (by simp_all)
   have hfs' : IsInterlacingSeqNonneg fs' := by
     rw [hfs'_eq]
     exact IsInterlacingSeq0Nonneg.filter_ne_zero_of_realRooted hfs hfs_real
@@ -534,7 +515,7 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg
     have hsub : gs'.Sublist gs.reverse := by
       simpa [gs'] using filterRightByLeftNonzero_sublist_right fs gs.reverse
     have hsub_rev : gs'.reverse.Sublist gs := by
-      simpa using hsub.reverse
+      grind
     exact IsInterlacingSeqNonneg.sublist hgs hsub_rev
   have hlen' : fs'.length = gs'.length := by
     simpa [fs', gs'] using length_filterLeftNonzero_eq_filterRightByLeftNonzero fs gs.reverse
@@ -543,9 +524,7 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg
     simpa [fs', gs'] using zipWith_mul_sum_filterLeftNonzero_eq fs gs.reverse
   have hfs'_ne : fs' ≠ [] := by
     intro hnil
-    have hsum0 : (fs'.zipWith (· * ·) gs').sum = 0 := by
-      simp [hnil]
-    exact hsum_ne (by rw [← hsum_eq, hsum0])
+    simp_all
   have hrr :
       (((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum) ≠ 0 ∧
         ((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum).Splits) := by
@@ -553,10 +532,10 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg
       isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
         (fs := fs') (gs := gs'.reverse)
         hfs'_ne
-        (by simpa [List.length_reverse] using hlen')
+        (by simp_all)
         hfs'
         hgs'_rev
-  simpa [hsum_eq] using hrr
+  simp_all
 
 /-- Two-sided weak zero-aware product-sum theorem. Zero factors on either side
 are removed pairwise before applying Brändén's strict product-sum theorem. -/
@@ -576,7 +555,7 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg_both
   have hgs_sub_rev : gs'.reverse.Sublist gs := by
     have hsub : gs'.Sublist gs.reverse := by
       simpa [gs'] using filterProductRightNonzero_sublist_right fs gs.reverse
-    simpa using hsub.reverse
+    grind
   have hfs' : IsInterlacingSeqNonneg fs' := by
     exact hfs.sublist_of_realRooted_of_ne hfs_sub hfs_real
       (fun f hf => mem_filterProductLeftNonzero_ne_zero (fs := fs) (gs := gs.reverse) hf)
@@ -584,7 +563,7 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg_both
     exact hgs.sublist_of_realRooted_of_ne hgs_sub_rev hgs_real
       (fun g hg =>
         mem_filterProductRightNonzero_ne_zero
-          (fs := fs) (gs := gs.reverse) (by simpa using List.mem_reverse.1 hg))
+          (fs := fs) (gs := gs.reverse) (by grind))
   have hlen' : fs'.length = gs'.length := by
     simpa [fs', gs'] using length_filterProductLeftNonzero_eq_filterProductRightNonzero
       fs gs.reverse
@@ -593,9 +572,7 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg_both
     simpa [fs', gs'] using zipWith_mul_sum_filterProductNonzero_eq fs gs.reverse
   have hfs'_ne : fs' ≠ [] := by
     intro hnil
-    have hsum0 : (fs'.zipWith (· * ·) gs').sum = 0 := by
-      simp [hnil]
-    exact hsum_ne (by rw [← hsum_eq, hsum0])
+    simp_all
   have hrr :
       (((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum) ≠ 0 ∧
         ((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum).Splits) := by
@@ -603,10 +580,10 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg_both
       isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
         (fs := fs') (gs := gs'.reverse)
         hfs'_ne
-        (by simpa [List.length_reverse] using hlen')
+        (by simp_all)
         hfs'
         hgs'_rev
-  simpa [hsum_eq] using hrr
+  simp_all
 
 end
 end RealRooted

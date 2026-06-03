@@ -45,9 +45,9 @@ theorem prec_shift_of_interlaces
     simp [map_one]
   rw [hrewrite]
   apply prec_of_interlaces_evalCoeff_nonpos hinterl hh_pos
-  · rwa [← hrewrite]
-  · rwa [← hrewrite]
-  · rwa [← hrewrite]
+  · lia
+  · lia
+  · lia
   · intro r hr
     simp [eval_sub, eval_X]
     have hf_ne : f ≠ 0 := hinterl.1.1
@@ -67,7 +67,7 @@ private lemma hasPosLeadingCoeff_X_sub_one_mul {h : ℝ[X]}
     HasPosLeadingCoeff ((X - C 1) * h) := by
   unfold HasPosLeadingCoeff at hh_pos ⊢
   rw [leadingCoeff_monic_mul (monic_X_sub_C (1 : ℝ))]
-  exact hh_pos
+  lia
 
 lemma shift_natDegree_of_interlaces {f h : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
@@ -78,7 +78,7 @@ lemma shift_natDegree_of_interlaces {f h : ℝ[X]}
     HasPosLeadingCoeff (f + (X - C 1) * h) := by
   have hXh_deg : ((X - C 1) * h).natDegree = f.natDegree := by
     rw [natDegree_X_sub_one_mul hh_ne]
-    exact hdeg
+    lia
   constructor
   · exact natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff
       hXh_deg.symm hf_pos (hasPosLeadingCoeff_X_sub_one_mul hh_pos)
@@ -115,11 +115,9 @@ theorem prec_shift_of_same_degree
     Prec f (f + (X - C 1) * h) := by
   let t : ℝ[X] := (X - C 1) * h
   have hf_le_one : ∀ r ∈ f.roots, r ≤ (1 : ℝ) := by
-    intro r hr
-    linarith [hf_nonpos r hr]
+    grind
   have hh_le_one : ∀ r ∈ h.roots, r ≤ (1 : ℝ) := by
-    intro r hr
-    linarith [hh_nonpos r hr]
+    grind
   have hft : Prec f t := by
     let h' := h.comp (X + C 1)
     let f' := f.comp (X + C 1)
@@ -131,12 +129,12 @@ theorem prec_shift_of_same_degree
       intro s hs
       simp only [h', roots_comp_X_add_C 1] at hs
       rcases Multiset.mem_map.mp hs with ⟨u, hu, rfl⟩
-      linarith [hh_le_one u hu]
+      simp_all
     have hf'_nonpos : ∀ s ∈ f'.roots, s ≤ 0 := by
       intro s hs
       simp only [f', roots_comp_X_add_C 1] at hs
       rcases Multiset.mem_map.mp hs with ⟨u, hu, rfl⟩
-      linarith [hf_le_one u hu]
+      simp_all
     have hdeg' : h'.natDegree = f'.natDegree := by
       have hdeg_mul :=
         congrArg (fun n => n * (X + C (1 : ℝ)).natDegree) hdeg
@@ -149,22 +147,18 @@ theorem prec_shift_of_same_degree
       simpa [t, h', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
         comp_assoc, add_assoc, add_left_comm, add_comm] using hfX'
     exact (prec_comp_X_add_C_iff (f := f) (g := t) 1).1 <| by
-      simpa [f'] using htranslated
+      lia
   have ht_pos : HasPosLeadingCoeff t := hasPosLeadingCoeff_X_sub_one_mul hh_pos
   have hsum : Prec f ([f, t].sum) := by
     apply prec_sum_left_of_common_left_signed
     · intro p hp
-      have hp' : p = f ∨ p = t := by simpa using hp
+      have hp' : p = f ∨ p = t := by simp_all
       rcases hp' with rfl | rfl
       · exact prec_refl hprec.2.1
-      · exact hft
-    · intro p hp
-      have hp' : p = f ∨ p = t := by simpa using hp
-      rcases hp' with rfl | rfl
-      · exact hf_pos
-      · exact ht_pos
-    · simp
-  simpa [t] using hsum
+      · lia
+    · simp_all
+    · lia
+  grind
 
 /-! ## Main shift lemma -/
 

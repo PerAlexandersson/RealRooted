@@ -20,9 +20,7 @@ lemma coeff_one_sub_X_pow (n k : ℕ) :
     (((1 : ℝ[X]) - X) ^ n).coeff k =
       (-1 : ℝ) ^ k * (n.choose k : ℝ) := by
   rw [show (1 : ℝ[X]) - X = -(X + C (-1 : ℝ)) by
-    rw [sub_eq_add_neg]
-    rw [map_neg, C_1]
-    abel]
+    grind]
   rw [neg_pow]
   rw [show ((-1 : ℝ[X]) ^ n) = C ((-1 : ℝ) ^ n) by simp]
   rw [coeff_C_mul]
@@ -33,10 +31,8 @@ lemma coeff_one_sub_X_pow (n k : ℕ) :
       rw [pow_add]
       rw [mul_assoc]
       rw [← pow_add]
-      have hEven : Even ((n - k) + (n - k)) := ⟨n - k, by lia⟩
-      rw [hEven.neg_one_pow]
       simp
-    rw [← mul_assoc, hsign]
+    grind
   · have hchoose : n.choose k = 0 := Nat.choose_eq_zero_of_lt (Nat.lt_of_not_ge hk)
     simp [hchoose]
 
@@ -85,8 +81,7 @@ theorem oddBinomAuxReal_identity (n : ℕ) :
       · rcases hd with ⟨k, hk⟩
         rw [hk, coeff_oddBinomAuxReal_odd]
         have heven : Even (2 * k + 1 + 1) := ⟨k + 1, by lia⟩
-        rw [heven.neg_one_pow]
-        ring
+        simp_all
 
 noncomputable def oddBinomAux (n : ℕ) : ℂ[X] :=
   ∑ k ∈ Finset.range ((n + 1) / 2),
@@ -133,7 +128,7 @@ lemma oddBinomPolyReal_natDegree (n : ℕ) (hn : 0 < n) :
   · exact natDegree_le_iff_coeff_eq_zero.mpr (fun k hk => by
       rw [coeff_oddBinomPolyReal]
       rw [Nat.choose_eq_zero_of_lt]
-      · simp
+      · lia
       · lia)
   · rw [coeff_oddBinomPolyReal]
     exact_mod_cast Nat.choose_ne_zero (by lia :
@@ -146,7 +141,7 @@ lemma oddBinomPolyReal_ne_zero (n : ℕ) (hn : 0 < n) :
   change (oddBinomPolyReal n).coeff ((n - 1) / 2) = 0 at hcoeff
   rw [coeff_oddBinomPolyReal] at hcoeff
   exact Nat.choose_ne_zero (by lia :
-    2 * ((n - 1) / 2) + 1 ≤ n) (by exact_mod_cast hcoeff)
+    2 * ((n - 1) / 2) + 1 ≤ n) (by simp_all)
 
 lemma oddBinom_eval_sq_eq_aux (n : ℕ) (y : ℂ) :
     (oddBinomPoly n).eval (y ^ 2) = (oddBinomAux n).eval y := by
@@ -169,15 +164,11 @@ lemma oddBinom_eval_sq_eq_zero_iff_pow_eq (n : ℕ) {y : ℂ} (hy : y ≠ 0) :
     have hleft : (2 : ℂ) * y * (oddBinomPoly n).eval (y ^ 2) = 0 := by
       simp [hzero]
     rw [oddBinom_eval_sq_identity] at hleft
-    exact sub_eq_zero.mp hleft
+    grind
   · intro hpow
     have hleft : (2 : ℂ) * y * (oddBinomPoly n).eval (y ^ 2) = 0 := by
       rw [oddBinom_eval_sq_identity, hpow, sub_self]
-    have hcoeff : (2 : ℂ) * y ≠ 0 := by
-      exact mul_ne_zero (by norm_num) hy
-    have hleft' : ((2 : ℂ) * y) * (oddBinomPoly n).eval (y ^ 2) = 0 := by
-      simpa [mul_assoc] using hleft
-    exact (mul_eq_zero.mp hleft').resolve_left hcoeff
+    simp_all
 
 lemma div_pow_eq_one_iff_pow_eq (n : ℕ) {a b : ℂ} (hb : b ≠ 0) :
     (a / b) ^ n = 1 ↔ a ^ n = b ^ n := by
@@ -194,11 +185,11 @@ lemma angle_mem_Ioo_zero_pi_div_two (n j : ℕ) (hj0 : 0 < j) (hjn : 2 * j < n) 
     Real.pi * (j : ℝ) / (n : ℝ) ∈ Set.Ioo (0 : ℝ) (Real.pi / 2) := by
   constructor
   · have hnpos_nat : 0 < n := by lia
-    have hjpos : (0 : ℝ) < j := by exact_mod_cast hj0
-    have hnpos : (0 : ℝ) < n := by exact_mod_cast hnpos_nat
+    have hjpos : (0 : ℝ) < j := by simp_all
+    have hnpos : (0 : ℝ) < n := by simp_all
     positivity
   · have hnpos_nat : 0 < n := by lia
-    have hnpos : (0 : ℝ) < n := by exact_mod_cast hnpos_nat
+    have hnpos : (0 : ℝ) < n := by simp_all
     have hratio : (j : ℝ) / (n : ℝ) < 1 / 2 := by
       rw [div_lt_iff₀ hnpos]
       norm_num
@@ -207,9 +198,9 @@ lemma angle_mem_Ioo_zero_pi_div_two (n j : ℕ) (hj0 : 0 < j) (hjn : 2 * j < n) 
     have hpi_pos : (0 : ℝ) < Real.pi := Real.pi_pos
     calc
       Real.pi * (j : ℝ) / (n : ℝ) =
-          Real.pi * ((j : ℝ) / (n : ℝ)) := by ring
+          Real.pi * ((j : ℝ) / (n : ℝ)) := by grind
       _ < Real.pi * (1 / 2 : ℝ) := mul_lt_mul_of_pos_left hratio hpi_pos
-      _ = Real.pi / 2 := by ring
+      _ = Real.pi / 2 := by lia
 
 lemma exp_two_mul_arctan_mul_I (z : ℂ) (h₁ : 1 + z * Complex.I ≠ 0)
     (h₂ : 1 - z * Complex.I ≠ 0) :
@@ -218,7 +209,7 @@ lemma exp_two_mul_arctan_mul_I (z : ℂ) (h₁ : 1 + z * Complex.I ≠ 0)
   rw [Complex.arctan, ← mul_rotate, ← mul_assoc,
     show 2 * (Complex.I * (-Complex.I / 2)) = 1 by simp [field], one_mul,
     Complex.exp_log]
-  exact div_ne_zero h₁ h₂
+  simp_all
 
 lemma one_add_tan_mul_I_ne_zero (theta : ℝ) :
     1 + (Real.tan theta : ℂ) * Complex.I ≠ 0 := by
@@ -247,29 +238,27 @@ lemma cayley_I_tan_eq_exp_two_mul_I (theta : ℝ)
       linarith
     have h1 : -(↑Real.pi / 2) < (theta : ℂ).re := by
       simp
-      have hpi_pos : (0 : ℝ) < Real.pi := Real.pi_pos
-      linarith
+      grind
     have h2 : (theta : ℂ).re ≤ ↑Real.pi / 2 := by simp [le_of_lt hθlt]
     have h := Complex.arctan_tan h0 h1 h2
-    simpa [Complex.ofReal_tan] using h
+    simp_all
   rw [harctan] at hkey
   rw [show 2 * ((theta : ℂ) * Complex.I) =
-      ((2 * theta : ℝ) : ℂ) * Complex.I by norm_num; ring] at hkey
-  simpa [mul_comm, mul_left_comm, mul_assoc] using hkey.symm
+      ((2 * theta : ℝ) : ℂ) * Complex.I by norm_num; grind] at hkey
+  grind
 
 lemma exp_two_pi_mul_nat_div_pow_eq_one (n j : ℕ) (hn : 0 < n) :
     (Complex.exp (((2 * (Real.pi * (j : ℝ) / (n : ℝ)) : ℝ) : ℂ) *
       Complex.I)) ^ n = 1 := by
   rw [← Complex.exp_nat_mul]
   have hnreal : (n : ℝ) ≠ 0 := by exact_mod_cast (ne_of_gt hn)
-  have hnC : (n : ℂ) ≠ 0 := by exact_mod_cast (ne_of_gt hn)
+  have hnC : (n : ℂ) ≠ 0 := by simp_all
   have harg : (n : ℂ) *
       (((2 * (Real.pi * (j : ℝ) / (n : ℝ)) : ℝ) : ℂ) * Complex.I) =
       (j : ℂ) * (2 * (Real.pi : ℂ) * Complex.I) := by
     norm_num
-    field_simp [hnreal, hnC]
-  rw [harg]
-  exact Complex.exp_nat_mul_two_pi_mul_I j
+    grind
+  simp_all
 
 lemma one_sub_I_mul_tan_ne_zero (theta : ℝ) :
     1 - Complex.I * (Real.tan theta : ℂ) ≠ 0 := by
@@ -295,21 +284,16 @@ lemma oddBinom_tangent_eval_eq_zero (n j : ℕ) (hj0 : 0 < j) (hjn : 2 * j < n) 
   have hpow : ((1 + y) / (1 - y)) ^ n = 1 := by
     have hcayley := cayley_I_tan_eq_exp_two_mul_I theta htheta.1 htheta.2
     have hexp := exp_two_pi_mul_nat_div_pow_eq_one n j hnpos
-    change ((1 + Complex.I * (Real.tan theta : ℂ)) /
-      (1 - Complex.I * (Real.tan theta : ℂ))) ^ n = 1
-    rw [hcayley]
-    simpa [theta] using hexp
+    lia
   have hroot : (oddBinomPoly n).eval (y ^ 2) = 0 :=
     (oddBinom_root_sq_iff_cayley_pow_eq_one n hy0 hy1).mpr hpow
   have hy_sq : y ^ 2 = -((Real.tan theta : ℂ) ^ 2) := by
     change (Complex.I * (Real.tan theta : ℂ)) ^ 2 =
       -((Real.tan theta : ℂ) ^ 2)
     rw [show (Complex.I * (Real.tan theta : ℂ)) ^ 2 =
-        Complex.I ^ 2 * (Real.tan theta : ℂ) ^ 2 by ring]
-    rw [show Complex.I ^ 2 = (-1 : ℂ) by simp [pow_two, Complex.I_mul_I]]
-    ring
-  rw [hy_sq] at hroot
-  simpa [theta] using hroot
+        Complex.I ^ 2 * (Real.tan theta : ℂ) ^ 2 by grind]
+    simp
+  lia
 
 lemma two_mul_lt_of_pos_le_pred_div_two {n j : ℕ} (hj0 : 0 < j)
     (hjle : j ≤ (n - 1) / 2) :
@@ -335,7 +319,7 @@ lemma tangentRoot_neg (n j : ℕ) (hj0 : 0 < j) (hjn : 2 * j < n) :
   have htan_pos : 0 < Real.tan (Real.pi * (j : ℝ) / (n : ℝ)) :=
     Real.tan_pos_of_pos_of_lt_pi_div_two htheta.1 htheta.2
   rw [tangentRoot]
-  exact neg_neg_of_pos (sq_pos_of_pos htan_pos)
+  simp_all
 
 lemma tangentRoot_strictAnti {n i j : ℕ} (hi0 : 0 < i) (hij : i < j)
     (hjn : 2 * j < n) :
@@ -345,18 +329,18 @@ lemma tangentRoot_strictAnti {n i j : ℕ} (hi0 : 0 < i) (hij : i < j)
   have hthetai := angle_mem_Ioo_zero_pi_div_two n i hi0 hijn
   have hthetaj := angle_mem_Ioo_zero_pi_div_two n j hj0 hjn
   have hnpos_nat : 0 < n := by lia
-  have hnpos : (0 : ℝ) < n := by exact_mod_cast hnpos_nat
-  have hijR : (i : ℝ) < j := by exact_mod_cast hij
+  have hnpos : (0 : ℝ) < n := by simp_all
+  have hijR : (i : ℝ) < j := by simp_all
   have hratio : (i : ℝ) / (n : ℝ) < (j : ℝ) / (n : ℝ) :=
     div_lt_div_of_pos_right hijR hnpos
   have htheta_lt :
       Real.pi * (i : ℝ) / (n : ℝ) < Real.pi * (j : ℝ) / (n : ℝ) := by
     calc
       Real.pi * (i : ℝ) / (n : ℝ) =
-          Real.pi * ((i : ℝ) / (n : ℝ)) := by ring
+          Real.pi * ((i : ℝ) / (n : ℝ)) := by grind
       _ < Real.pi * ((j : ℝ) / (n : ℝ)) :=
           mul_lt_mul_of_pos_left hratio Real.pi_pos
-      _ = Real.pi * (j : ℝ) / (n : ℝ) := by ring
+      _ = Real.pi * (j : ℝ) / (n : ℝ) := by grind
   have htan_lt :
       Real.tan (Real.pi * (i : ℝ) / (n : ℝ)) <
         Real.tan (Real.pi * (j : ℝ) / (n : ℝ)) :=
@@ -385,8 +369,8 @@ lemma oddBinomPolyReal_tangentRoot_eval_eq_zero
     change ((oddBinomPolyReal n).map (algebraMap ℝ ℂ)).eval
       ((algebraMap ℝ ℂ) (tangentRoot n j)) = 0 at hmap
     rw [Polynomial.eval_map_apply] at hmap
-    exact hmap
-  exact Complex.ofReal_eq_zero.mp hcast
+    lia
+  simp_all
 
 noncomputable def tangentRootFinset (n : ℕ) : Finset ℝ :=
   (Finset.Icc 1 ((n - 1) / 2)).image (tangentRoot n)
@@ -398,14 +382,12 @@ lemma tangentRoot_injOn_Icc (n : ℕ) :
   by_cases hij : i < j
   · have hlt := tangentRoot_strictAnti (by lia : 0 < i) hij
       (two_mul_lt_of_pos_le_pred_div_two (by lia : 0 < j) (by lia : j ≤ (n - 1) / 2))
-    rw [hroot] at hlt
-    linarith
+    simp_all
   · by_cases hji : j < i
     · have hlt := tangentRoot_strictAnti (by lia : 0 < j) hji
         (two_mul_lt_of_pos_le_pred_div_two (by lia : 0 < i)
           (by lia : i ≤ (n - 1) / 2))
-      rw [hroot] at hlt
-      linarith
+      simp_all
     · lia
 
 lemma tangentRootFinset_card (n : ℕ) :

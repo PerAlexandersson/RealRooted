@@ -63,7 +63,7 @@ lemma rootSeqDesc_eq_reverse_of_pairwise
     ⟨fun _ _ hab hba => le_antisymm hba hab⟩
   apply (List.Perm.eq_of_pairwise' (r := ((· ≥ ·) : ℝ → ℝ → Prop)))
   · simpa [rootSeqDesc] using (Multiset.pairwise_sort (s := f.roots) (r := (· ≤ ·))).reverse
-  · simpa using hrs.reverse
+  · grind
   · exact Multiset.coe_eq_coe.mp (by simp [rootSeqDesc, hrs_eq, Multiset.sort_eq])
 
 lemma natDegree_bounds_of_prec {f g : ℝ[X]} (hfg : Prec f g) :
@@ -73,7 +73,7 @@ lemma natDegree_bounds_of_prec {f g : ℝ[X]} (hfg : Prec f g) :
     rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
   have hrs_len : rs.length = g.natDegree := by
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
-  rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩ <;> lia
+  lia
 
 /-- The `j`th Chudnovsky--Seymour interval attached to a descending root
 sequence `rs = [r₁, ..., r_d]`.
@@ -102,15 +102,13 @@ lemma rootSlotInterval_nonempty (rs : List ℝ) (hrs : rs.Pairwise (· ≥ ·))
     | nil =>
         simp
     | cons r rs =>
-        exact ⟨r, by simp [h0]⟩
+        simp_all
   · by_cases hj : j.1 = rs.length
     · by_cases hrs_nil : rs = []
-      · have : j.1 = 0 := by simpa [hrs_nil] using hj
-        exact (h0 this).elim
+      · simp_all
       · obtain ⟨r, tl, hrev⟩ := List.exists_cons_of_ne_nil
           ((List.reverse_ne_nil_iff.mpr hrs_nil))
-        refine ⟨r, ?_⟩
-        simp [hj, hrev, hrs_nil]
+        simp_all
     · refine ⟨rs.get ⟨j.1, by lia⟩, ?_⟩
       simp only [h0, ↓reduceDIte, hj, List.get_eq_getElem, Set.mem_Icc, Std.le_refl, true_and]
       have hjlt : j.1 < rs.length := by
@@ -119,9 +117,8 @@ lemma rootSlotInterval_nonempty (rs : List ℝ) (hrs : rs.Pairwise (· ≥ ·))
       let jj : Fin rs.length := ⟨j.1, hjlt⟩
       have hpair := List.pairwise_iff_get.mp hrs
       have hlt : jm1 < jj := by
-        change j.1 - 1 < j.1
-        lia
-      simpa [jm1, jj] using hpair jm1 jj hlt
+        grind
+      grind
 
 lemma rootSlotInterval_ordConnected (rs : List ℝ) (j : Fin (rs.length + 1)) :
     Set.OrdConnected (rootSlotInterval rs j) := by
@@ -134,8 +131,7 @@ lemma rootSlotInterval_ordConnected (rs : List ℝ) (j : Fin (rs.length + 1)) :
         simpa [h0] using (Set.ordConnected_Ici : Set.OrdConnected (Set.Ici r))
   · by_cases hj : j.1 = rs.length
     · by_cases hrs_nil : rs = []
-      · have : j.1 = 0 := by simpa [hrs_nil] using hj
-        exact (h0 this).elim
+      · simp_all
       · obtain ⟨r, tl, hrev⟩ := List.exists_cons_of_ne_nil
           ((List.reverse_ne_nil_iff.mpr hrs_nil))
         simpa [h0, hj, hrev, hrs_nil] using (Set.ordConnected_Iic : Set.OrdConnected (Set.Iic r))
@@ -151,9 +147,7 @@ lemma rootSlotInterval_congr
     (hji : jx.1 = jy.1) :
     rootSlotInterval xs jx = rootSlotInterval ys jy := by
   subst hxy
-  have : jx = jy := Fin.ext hji
-  subst this
-  rfl
+  lia
 
 lemma mem_rootSlotInterval_congr
     {xs ys : List ℝ} {x : ℝ}
@@ -172,70 +166,51 @@ private lemma listAlternates_all_le_getLast
     ∀ s ∈ ss, s ≤ rs.getLast hrs_ne := by
   induction ss generalizing rs with
   | nil =>
-      intro s hs
-      simp at hs
+      simp
   | cons s ss ih =>
       cases rs with
       | nil =>
-          cases (hrs_ne rfl)
+          lia
       | cons r rs' =>
           rcases halt with ⟨hsr, htail⟩
           intro t ht
           rcases List.mem_cons.mp ht with rfl | ht
           · exact le_trans hsr (List.Pairwise.rel_getLast hrs (by simp [List.mem_cons]))
-          · exact listInterlaces_all_le_getLast (rs := r :: rs') (by simp) hrs htail t ht
+          · exact listInterlaces_all_le_getLast (rs := r :: rs') (by lia) hrs htail t ht
 
 private lemma reverse_get_zero_eq_getLast {xs : List ℝ} (hxs : xs ≠ []) :
-    xs.reverse.get ⟨0, by simpa [List.length_reverse] using List.length_pos_iff_ne_nil.mpr hxs⟩ =
+    xs.reverse.get ⟨0, by grind⟩ =
       xs.getLast hxs := by
-  have hrev :
-      xs.reverse.get ⟨0, by simpa [List.length_reverse] using List.length_pos_iff_ne_nil.mpr hxs⟩ =
-      xs.get ⟨xs.length - 1, by
-        simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hxs) (by decide : 0 < 1))⟩ := by
-    simp
-  rw [hrev]
-  simpa using (List.get_length_sub_one (l := xs) (by
-    simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hxs) (by decide : 0 < 1))))
+  grind
 
 private lemma reverse_get_last_eq_get_zero {xs : List ℝ} (hxs : xs ≠ []) :
     xs.reverse.get ⟨xs.length - 1, by
       simpa [List.length_reverse] using
-        (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hxs) (by decide : 0 < 1))⟩ =
+        (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hxs) (by lia : 0 < 1))⟩ =
       xs.get ⟨0, List.length_pos_iff_ne_nil.mpr hxs⟩ := by
-  have hrev :
-      xs.reverse.get ⟨xs.length - 1, by
-        simpa [List.length_reverse] using
-          (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hxs) (by decide : 0 < 1))⟩ =
-      xs.get ⟨xs.length - 1 - (xs.length - 1), by
-        have hpos : 0 < xs.length := List.length_pos_iff_ne_nil.mpr hxs
-        lia⟩ := by
-    simp
-  rw [hrev]
-  congr
-  have hpos : 0 < xs.length := List.length_pos_iff_ne_nil.mpr hxs
-  lia
+  simp
 
 private lemma get_reverse_eq_get_sub {xs : List ℝ} {k : ℕ} (hk : k < xs.length) :
-    xs.reverse.get ⟨k, by simpa [List.length_reverse] using hk⟩ =
+    xs.reverse.get ⟨k, by simp_all⟩ =
       xs.get ⟨xs.length - 1 - k, by lia⟩ := by
   simp
 
 private lemma rootSlotInterval_zero_of_ne_nil {rs : List ℝ} (hrs : rs ≠ []) :
     rootSlotInterval rs
-      ⟨0, by simp⟩ =
+      ⟨0, by lia⟩ =
       Set.Ici (rs.get ⟨0, List.length_pos_iff_ne_nil.mpr hrs⟩) := by
   cases rs with
   | nil =>
-      cases hrs rfl
+      lia
   | cons r rs =>
       simp [rootSlotInterval]
 
 private lemma rootSlotInterval_reverse_zero {xs : List ℝ} (hxs : xs ≠ []) :
     rootSlotInterval xs.reverse
-      ⟨0, by simp⟩ =
+      ⟨0, by lia⟩ =
       Set.Ici (xs.getLast hxs) := by
   rw [rootSlotInterval_zero_of_ne_nil (List.reverse_ne_nil_iff.mpr hxs)]
-  simpa using congrArg Set.Ici (reverse_get_zero_eq_getLast hxs)
+  grind
 
 private lemma rootSlotInterval_reverse_last {xs : List ℝ} (hxs : xs ≠ []) :
     rootSlotInterval xs.reverse
@@ -243,21 +218,20 @@ private lemma rootSlotInterval_reverse_last {xs : List ℝ} (hxs : xs ≠ []) :
       Set.Iic (xs.get ⟨0, List.length_pos_iff_ne_nil.mpr hxs⟩) := by
   cases xs with
   | nil =>
-      cases hxs rfl
+      lia
   | cons x xs =>
       have hsimp :
           rootSlotInterval (x :: xs).reverse
             ⟨(x :: xs).length, by simp [List.length_reverse]⟩ =
             Set.Iic (((x :: xs).reverse.reverse).get ⟨0, by simp⟩) := by
         simp [rootSlotInterval]
-      rw [hsimp]
-      simp
+      simp_all
 
 private lemma rootSlotInterval_last_of_ne_nil {rs : List ℝ} (hrs : rs ≠ []) :
     rootSlotInterval rs
-      ⟨rs.length, by simp⟩ =
+      ⟨rs.length, by lia⟩ =
       Set.Iic (rs.get ⟨rs.length - 1, by
-        simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs) (by decide : 0 < 1))⟩) := by
+        simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs) (by lia : 0 < 1))⟩) := by
   have h := rootSlotInterval_reverse_last (xs := rs.reverse)
     (List.reverse_ne_nil_iff.mpr hrs)
   have hcongr :
@@ -265,41 +239,40 @@ private lemma rootSlotInterval_last_of_ne_nil {rs : List ℝ} (hrs : rs ≠ []) 
         ⟨rs.length, by simp⟩
         =
       rootSlotInterval rs
-        ⟨rs.length, by simp⟩ := by
+        ⟨rs.length, by lia⟩ := by
     apply rootSlotInterval_congr
     · simp
-    · rfl
+    · lia
   calc
     rootSlotInterval rs
-        ⟨rs.length, by simp⟩
+        ⟨rs.length, by lia⟩
         =
       rootSlotInterval rs.reverse.reverse
         ⟨rs.length, by simp⟩ := by
-          simpa using hcongr.symm
+          lia
     _ = Set.Iic (rs.get ⟨rs.length - 1, by
           simpa using
-            (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs) (by decide : 0 < 1))⟩) := by
+            (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs) (by lia : 0 < 1))⟩) := by
           simpa [List.length_reverse] using h
 
 private lemma mem_rootSlotInterval_zero_lower {rs : List ℝ} (hrs : rs ≠ []) {x : ℝ}
     (hx : x ∈ rootSlotInterval rs
-      ⟨0, by simp⟩) :
+      ⟨0, by lia⟩) :
     rs.get ⟨0, List.length_pos_iff_ne_nil.mpr hrs⟩ ≤ x := by
   rw [rootSlotInterval_zero_of_ne_nil hrs] at hx
-  exact Set.mem_Ici.mp hx
+  simp_all
 
 private lemma mem_rootSlotInterval_last_upper {rs : List ℝ} (hrs : rs ≠ []) {x : ℝ}
     (hx : x ∈ rootSlotInterval rs
-      ⟨rs.length, by simp⟩) :
+      ⟨rs.length, by lia⟩) :
     x ≤ rs.getLast hrs := by
   have hlast :
       rs.get ⟨rs.length - 1, by
-        simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs) (by decide : 0 < 1))⟩
+        simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs) (by lia : 0 < 1))⟩
         = rs.getLast hrs := by
-    simpa using (List.get_length_sub_one (l := rs) (by
-      simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs) (by decide : 0 < 1))))
+    grind
   rw [rootSlotInterval_last_of_ne_nil hrs] at hx
-  exact hlast ▸ Set.mem_Iic.mp hx
+  simp_all
 
 private lemma mem_rootSlotInterval_interior_bounds
     {rs : List ℝ} {j : ℕ} (hj0 : 0 < j) (hj : j < rs.length) {x : ℝ}
@@ -313,9 +286,8 @@ private lemma mem_rootSlotInterval_interior_bounds
 private lemma getLast_eq_get_lastIndex {rs : List ℝ} (hrs : rs ≠ []) :
     rs.getLast hrs =
       rs.get ⟨rs.length - 1, by
-        simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs) (by decide : 0 < 1))⟩ := by
-  simpa using (List.get_length_sub_one (l := rs) (by
-    simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs) (by decide : 0 < 1)))).symm
+        simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs) (by lia : 0 < 1))⟩ := by
+  grind
 
 private lemma rootSlot_lower_bound
     {rs : List ℝ} (hrs : rs ≠ []) {j : ℕ} (hj : j < rs.length) {x : ℝ}
@@ -334,19 +306,17 @@ private lemma rootSlot_upper_bound
   by_cases hlast : j = rs.length
   · have hx_last : x ∈ rootSlotInterval rs
         ⟨rs.length, by simp⟩ := by
-      simpa [hlast] using hx
+      simp_all
     have hlast_up : x ≤ rs.getLast hrs := mem_rootSlotInterval_last_upper (rs := rs) hrs hx_last
     have hlast_idx :
         rs.getLast hrs = rs.get ⟨j - 1, by lia⟩ := by
       calc
         rs.getLast hrs = rs.get ⟨rs.length - 1, by
-          simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs) (by decide : 0 < 1))⟩ :=
+          simp_all⟩ :=
             getLast_eq_get_lastIndex (rs := rs) hrs
         _ = rs.get ⟨j - 1, by lia⟩ := by
-            apply congrArg (fun i => rs.get i)
-            apply Fin.ext
-            simp [hlast]
-    exact hlast_idx ▸ hlast_up
+            simp_all
+    simp_all
   · have hj_lt : j < rs.length := lt_of_le_of_ne hj hlast
     exact (mem_rootSlotInterval_interior_bounds (rs := rs) (j := j) hj0 hj_lt hx).2
 
@@ -369,12 +339,10 @@ private lemma le_of_mem_adjacent_rootSlots
       have hlastIdx : j = rs.length - 1 := by lia
       calc
         rs.getLast hrs = rs.get ⟨rs.length - 1, by
-          simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs) (by decide : 0 < 1))⟩ :=
+          simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs) (by simp : 0 < 1))⟩ :=
             getLast_eq_get_lastIndex (rs := rs) hrs
         _ = rs.get ⟨j, hj_lt⟩ := by
-            apply congrArg (fun i => rs.get i)
-            apply Fin.ext
-            simp [hlastIdx]
+            simp_all
     exact le_trans (hidx ▸ hy_last) hx_lower
   · have hj1_lt : j + 1 < rs.length := by lia
     have hy_bounds :=
@@ -389,7 +357,7 @@ private lemma get_le_get_of_pairwise_ge
     rs.get j ≤ rs.get i := by
   rcases lt_or_eq_of_le hij with hij' | rfl
   · simpa using (List.pairwise_iff_get.mp hrs i j hij')
-  · rfl
+  · simp
 
 private lemma le_of_mem_rootSlots_of_lt
     {rs : List ℝ} (hrs_ne : rs ≠ []) (hrs : rs.Pairwise (· ≥ ·))
@@ -411,12 +379,12 @@ private lemma le_of_mem_rootSlots_of_lt
         rs.getLast hrs_ne =
           rs.get ⟨rs.length - 1, by
             simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs_ne)
-              (by decide : 0 < 1))⟩ :=
+              (by simp : 0 < 1))⟩ :=
       getLast_eq_get_lastIndex (rs := rs) hrs_ne
     have htail_le_hi :
         rs.get ⟨rs.length - 1, by
           simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs_ne)
-            (by decide : 0 < 1))⟩ ≤
+            (by simp : 0 < 1))⟩ ≤
           rs.get ⟨i, hi_lt⟩ := get_le_get_of_pairwise_ge hrs (Nat.le_pred_of_lt hi_lt)
     exact le_trans (hlast_idx ▸ hy_last) (le_trans htail_le_hi hx_lower)
   · have hj_lt : j < rs.length := by lia
@@ -438,44 +406,34 @@ private lemma listInterlaces_get_bounds
     ss.get ⟨k, hks⟩ ≤ rs.get ⟨k + 1, hkr⟩ := by
   induction ss generalizing rs k with
   | nil =>
-      cases hks
+      grind
   | cons s ss ih =>
       cases rs with
       | nil =>
-          cases hint
+          grind
       | cons r₁ rs' =>
           cases rs' with
           | nil =>
-              cases hint
+              grind
           | cons r₂ rs'' =>
               rcases hint with ⟨hr₁s, hsr₂, htail⟩
-              cases k with
-              | zero =>
-                  simpa using And.intro hr₁s hsr₂
-              | succ k =>
-                  have hks' : k < ss.length := by
-                    simpa using hks
-                  have hkr' : k + 1 < (r₂ :: rs'').length := by
-                    simpa using hkr
-                  simpa using ih htail hks' hkr'
+              grind
 
 private lemma listInterlaces_of_index_bounds
     {ss rs : List ℝ}
     (hlen : ss.length + 1 = rs.length)
     (hlower : ∀ k (hk : k < ss.length),
       rs.get ⟨k, by
-        have : k < ss.length + 1 := lt_trans hk (Nat.lt_succ_self ss.length)
-        simpa [hlen] using this⟩ ≤ ss.get ⟨k, hk⟩)
+        lia⟩ ≤ ss.get ⟨k, hk⟩)
     (hupper : ∀ k (hk : k < ss.length),
       ss.get ⟨k, hk⟩ ≤ rs.get ⟨k + 1, by
-        have : k + 1 < ss.length + 1 := Nat.succ_lt_succ hk
-        simpa [hlen] using this⟩) :
+        lia⟩) :
     ListInterlaces ss rs := by
   induction ss generalizing rs with
   | nil =>
       cases rs with
       | nil =>
-          simp at hlen
+          lia
       | cons r rs =>
           cases rs with
           | nil =>
@@ -499,16 +457,14 @@ private lemma listInterlaces_of_index_bounds
                 simpa using hupper 0 (by simp)
               have hlower' : ∀ k (hk : k < ss.length),
                   (r₂ :: rs').get ⟨k, by
-                    have : k < ss.length + 1 := lt_trans hk (Nat.lt_succ_self ss.length)
-                    simpa [hlen'] using this⟩ ≤ ss.get ⟨k, hk⟩ := by
+                    lia⟩ ≤ ss.get ⟨k, hk⟩ := by
                 intro k hk
                 have hk' : k + 1 < (s :: ss).length := by
                   simpa using Nat.succ_lt_succ hk
                 simpa using hlower (k + 1) hk'
               have hupper' : ∀ k (hk : k < ss.length),
                   ss.get ⟨k, hk⟩ ≤ (r₂ :: rs').get ⟨k + 1, by
-                    have : k + 1 < ss.length + 1 := Nat.succ_lt_succ hk
-                    simpa [hlen'] using this⟩ := by
+                    lia⟩ := by
                 intro k hk
                 have hk' : k + 1 < (s :: ss).length := by
                   simpa using Nat.succ_lt_succ hk
@@ -520,11 +476,10 @@ private lemma listAlternates_of_index_bounds
     {ss rs : List ℝ}
     (hlen : ss.length = rs.length)
     (hlower : ∀ k (hk : k < ss.length),
-      ss.get ⟨k, hk⟩ ≤ rs.get ⟨k, by simpa [hlen] using hk⟩)
+      ss.get ⟨k, hk⟩ ≤ rs.get ⟨k, by lia⟩)
     (hupper : ∀ k (hk : k + 1 < ss.length),
       rs.get ⟨k, by
-        have : k < ss.length := lt_trans (Nat.lt_succ_self k) hk
-        simpa [hlen] using this⟩ ≤ ss.get ⟨k + 1, hk⟩) :
+        lia⟩ ≤ ss.get ⟨k + 1, hk⟩) :
     ListAlternates ss rs := by
   induction ss generalizing rs with
   | nil =>
@@ -565,23 +520,23 @@ private lemma listAlternates_get_lower
     ss.get ⟨k, hks⟩ ≤ rs.get ⟨k, hkr⟩ := by
   induction ss generalizing rs k with
   | nil =>
-      cases hks
+      grind
   | cons s ss ih =>
       cases rs with
       | nil =>
-          cases hkr
+          grind
       | cons r rs' =>
           rcases halt with ⟨hsr, htail⟩
           cases k with
           | zero =>
-              simpa using hsr
+              simp_all
           | succ k =>
               have hks' : k < ss.length := by
-                simpa using hks
+                simp_all
               have hkr' : k < rs'.length := by
-                simpa using hkr
+                simp_all
               simpa using (listInterlaces_get_bounds htail hks'
-                (by simpa using Nat.succ_lt_succ hkr')).2
+                (by lia)).2
 
 private lemma listAlternates_get_upper
     {ss rs : List ℝ}
@@ -592,46 +547,38 @@ private lemma listAlternates_get_upper
     rs.get ⟨k, hkr⟩ ≤ ss.get ⟨k + 1, hk⟩ := by
   induction ss generalizing rs k with
   | nil =>
-      cases hk
+      grind
   | cons s ss ih =>
       cases rs with
       | nil =>
-          cases hkr
+          grind
       | cons r rs' =>
           rcases halt with ⟨hsr, htail⟩
           cases k with
           | zero =>
               cases ss with
               | nil =>
-                  have : False := by
-                    simp at hk
-                  exact this.elim
+                  grind
               | cons s₂ ss₂ =>
                   cases rs' with
                   | nil =>
                       cases htail
                   | cons r₂ rs₂ =>
                       rcases htail with ⟨hr_s₂, hs₂_r₂, htail'⟩
-                      simpa using hr_s₂
+                      simp_all
           | succ k =>
               cases ss with
               | nil =>
-                  have : False := by
-                    simp at hk
-                  exact this.elim
+                  grind
               | cons s₂ ss₂ =>
                   cases rs' with
                   | nil =>
-                      cases htail
+                      grind
                   | cons r₂ rs₂ =>
                       rcases htail with ⟨hr_s₂, hs₂_r₂, htail'⟩
                       have halt' : ListAlternates (s₂ :: ss₂) (r₂ :: rs₂) := by
                         exact ⟨hs₂_r₂, htail'⟩
-                      have hk' : k + 1 < (s₂ :: ss₂).length := by
-                        simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using hk
-                      have hkr' : k < (r₂ :: rs₂).length := by
-                        simpa using hkr
-                      simpa using ih halt' hk' hkr'
+                      grind
 
 private lemma mem_rootSlotInterval_reverse_of_listInterlaces_interior
     {ss rs : List ℝ}
@@ -655,12 +602,12 @@ private lemma mem_rootSlotInterval_reverse_of_listInterlaces_interior
       rs.reverse.get ⟨j.1, by simp [List.length_reverse]⟩ = rs.get k := by
     simp [k]
   have hss_rev_lo :
-      ss.reverse.get ⟨j.1, by simpa [List.length_reverse] using hjss⟩ = ss.get klow := by
+      ss.reverse.get ⟨j.1, by simp_all⟩ = ss.get klow := by
     simp [klow]
   have hpred' : j.1 - 1 < ss.length := by
     lia
   have hpred : j.1 - 1 < ss.reverse.length := by
-    simpa [List.length_reverse] using hpred'
+    simp_all
   let kupper : Fin ss.length := ⟨ss.length - 1 - (j.1 - 1), by lia⟩
   have hkupper_eq : kupper = khigh := by
     apply Fin.ext
@@ -673,7 +620,7 @@ private lemma mem_rootSlotInterval_reverse_of_listInterlaces_interior
   have hslot :
       rootSlotInterval ss.reverse
         ⟨j.1, by simp [List.length_reverse, hlen]⟩ =
-        Set.Icc (ss.reverse.get ⟨j.1, by simpa [List.length_reverse] using hjss⟩)
+        Set.Icc (ss.reverse.get ⟨j.1, by simp_all⟩)
           (ss.reverse.get ⟨j.1 - 1, hpred⟩) := by
     simp [rootSlotInterval, h0, hnot_last, List.length_reverse]
   rw [hslot, hrs_rev, hss_rev_lo, hss_rev_hi]
@@ -687,7 +634,7 @@ private lemma mem_rootSlotInterval_reverse_of_listInterlaces_interior
     simp [klow, k]
     lia
   have hlower : ss.get klow ≤ rs.get k := by
-    simpa [hidx_low] using hb_low.2
+    simp_all
   have hkhigh_succ_lt : khigh.1 + 1 < rs.length := by
     simp [khigh]
     lia
@@ -697,9 +644,7 @@ private lemma mem_rootSlotInterval_reverse_of_listInterlaces_interior
     apply Fin.ext
     simp [khigh, k]
     lia
-  have hupper : rs.get k ≤ ss.get khigh := by
-    simpa [hidx_high] using hb_high.1
-  exact ⟨hlower, hupper⟩
+  simp_all
 
 private lemma mem_rootSlotInterval_reverse_of_listInterlaces_zero
     {ss rs : List ℝ}
@@ -708,17 +653,15 @@ private lemma mem_rootSlotInterval_reverse_of_listInterlaces_zero
     (hlen : ss.length + 1 = rs.length)
     (hint : ListInterlaces ss rs) :
     rs.reverse.get ⟨0, by
-      have : 0 < rs.length := by lia
-      simpa [List.length_reverse] using this⟩ ∈
+      grind⟩ ∈
       rootSlotInterval ss.reverse
         ⟨0, by
-          have : 0 < ss.reverse.length + 1 := by simp
-          simp [List.length_reverse]⟩ := by
+          lia⟩ := by
   cases ss with
   | nil =>
       simp [rootSlotInterval] at hlen ⊢
   | cons s ss =>
-      have hss_ne : (s :: ss) ≠ [] := by simp
+      have hss_ne : (s :: ss) ≠ [] := by lia
       have hrs_pos : 0 < rs.length := by lia
       have hrs_ne : rs ≠ [] := List.length_pos_iff_ne_nil.mp hrs_pos
       rw [rootSlotInterval_reverse_zero hss_ne]
@@ -734,36 +677,30 @@ private lemma mem_rootSlotInterval_reverse_of_listInterlaces_last
     (hint : ListInterlaces ss rs)
     (hss_ne : ss ≠ []) :
     rs.reverse.get ⟨ss.length, by
-      have : ss.length < rs.length := by lia
-      simpa [List.length_reverse] using this⟩ ∈
+      grind⟩ ∈
       rootSlotInterval ss.reverse
         ⟨ss.length, by
-          have : ss.length < ss.reverse.length + 1 := by
-            simp [List.length_reverse]
-          simp [List.length_reverse]⟩ := by
+          simp⟩ := by
   have hrs_pos : 0 < rs.length := by lia
   have hrs_ne : rs ≠ [] := List.length_pos_iff_ne_nil.mp hrs_pos
   rw [rootSlotInterval_reverse_last hss_ne]
   have hidx :
       (⟨ss.length, by
-        have : ss.length < rs.length := by lia
-        simpa [List.length_reverse] using this⟩ : Fin rs.reverse.length) =
+        grind⟩ : Fin rs.reverse.length) =
       ⟨rs.length - 1, by
-        simpa [List.length_reverse] using
-          (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs_ne) (by decide : 0 < 1))⟩ := by
+        simp_all⟩ := by
     have hsub : ss.length = rs.length - 1 := by
       lia
-    apply Fin.ext
-    simp [hsub]
+    simp_all
   rw [hidx]
   rw [reverse_get_last_eq_get_zero hrs_ne]
   apply Set.mem_Iic.mpr
   have hss_pos : 0 < ss.length := List.length_pos_iff_ne_nil.mpr hss_ne
   have hb :=
     listInterlaces_get_bounds hint (k := 0)
-      (by simpa using hss_pos)
-      (by simpa [hlen] using Nat.succ_lt_succ hss_pos)
-  simpa using hb.1
+      (by simp_all)
+      (by simp_all)
+  simp_all
 
 private lemma mem_rootSlotInterval_reverse_of_listInterlaces
     {ss rs : List ℝ}
@@ -777,23 +714,16 @@ private lemma mem_rootSlotInterval_reverse_of_listInterlaces
   by_cases h0 : j.1 = 0
   · have hj :
         j = ⟨0, by
-          have : 0 < rs.length := by
-            simpa [h0] using j.2
-          simpa [h0] using this⟩ := by
-      apply Fin.ext
-      simp [h0]
+          lia⟩ := by
+      grind
     simpa [hj] using mem_rootSlotInterval_reverse_of_listInterlaces_zero hss hrs hlen hint
   · by_cases hlast : j.1 = ss.length
     · have hss_ne : ss ≠ [] := by
-        intro hnil
-        have : j.1 = 0 := by simpa [hnil] using hlast
-        exact h0 this
+        simp_all
       have hj :
           j = ⟨ss.length, by
-            have : ss.length < rs.length := by lia
-            simpa [hlast] using this⟩ := by
-        apply Fin.ext
-        simp [hlast]
+            lia⟩ := by
+        grind
       simpa [hj] using
         mem_rootSlotInterval_reverse_of_listInterlaces_last hss hrs hlen hint hss_ne
     · exact
@@ -809,7 +739,7 @@ private lemma mem_rootSlotInterval_reverse_of_listAlternates_interior
     (h0 : j.1 ≠ 0) :
     rs.reverse.get ⟨j.1, by simp [List.length_reverse]⟩ ∈ rootSlotInterval ss.reverse
       ⟨j.1, by simp [List.length_reverse, hlen]⟩ := by
-  have hjss : j.1 < ss.length := by simp [hlen]
+  have hjss : j.1 < ss.length := by lia
   have hnot_last : ¬ j.1 = ss.length := ne_of_lt hjss
   let k : Fin ss.length := ⟨ss.length - 1 - j.1, by lia⟩
   have hk_succ : k.1 + 1 < ss.length := by
@@ -831,7 +761,7 @@ private lemma mem_rootSlotInterval_reverse_of_listAlternates_interior
   have hpred' : j.1 - 1 < ss.length := by
     lia
   have hpred : j.1 - 1 < ss.reverse.length := by
-    simpa [List.length_reverse] using hpred'
+    simp_all
   let kupper : Fin ss.length := ⟨ss.length - 1 - (j.1 - 1), by
     lia⟩
   have hkupper_eq : kupper = ks := by
@@ -851,13 +781,13 @@ private lemma mem_rootSlotInterval_reverse_of_listAlternates_interior
   rw [hslot, hrs_rev, hss_rev_lo, hss_rev_hi]
   rw [show kr = ⟨k.1, by simpa [hkr_eq] using kr.2⟩ by
     apply Fin.ext
-    exact hkr_eq]
+    simp_all]
   have hk_lower : ss.get k ≤ rs.get ⟨k.1, by simpa [hkr_eq] using kr.2⟩ := by
     exact listAlternates_get_lower halt k.2 (by simpa [hkr_eq] using kr.2)
   have hk_upper : rs.get ⟨k.1, by simpa [hkr_eq] using kr.2⟩ ≤ ss.get ks := by
     have hk_rs : k.1 < rs.length := by simpa [hkr_eq] using kr.2
     simpa [ks] using listAlternates_get_upper halt hk_succ hk_rs
-  exact ⟨hk_lower, hk_upper⟩
+  simp_all
 
 private lemma mem_rootSlotInterval_reverse_of_listAlternates_zero
     {ss rs : List ℝ}
@@ -867,26 +797,17 @@ private lemma mem_rootSlotInterval_reverse_of_listAlternates_zero
     (halt : ListAlternates ss rs)
     (hrs_ne : rs ≠ []) :
     rs.reverse.get ⟨0, by
-      have : 0 < rs.length := List.length_pos_iff_ne_nil.mpr hrs_ne
-      simpa [List.length_reverse] using this⟩ ∈
+      grind⟩ ∈
       rootSlotInterval ss.reverse
         ⟨0, by
-          have : 0 < ss.reverse.length + 1 := by simp
-          simp [List.length_reverse]⟩ := by
+          lia⟩ := by
   cases ss with
   | nil =>
-      simp only [List.length_nil] at hlen
-      cases rs with
-      | nil =>
-          simp [rootSlotInterval]
-      | cons r rs' =>
-          cases hlen
+      grind
   | cons s ss =>
-      have hss_ne : (s :: ss) ≠ [] := by simp
+      have hss_ne : (s :: ss) ≠ [] := by lia
       have hrs_ne : rs ≠ [] := by
-        apply List.length_pos_iff_ne_nil.mp
-        have : 0 < (s :: ss).length := by simp
-        simpa [hlen] using this
+        lia
       rw [rootSlotInterval_reverse_zero hss_ne]
       rw [reverse_get_zero_eq_getLast hrs_ne]
       exact Set.mem_Ici.mpr <|
@@ -904,14 +825,14 @@ private lemma mem_rootSlotInterval_reverse_of_listAlternates
   by_cases h0 : j.1 = 0
   · have hj :
         j = ⟨0, by
-          have : 0 < rs.length := by simpa [h0] using j.2
-          simpa [h0] using this⟩ := by
+          lia⟩ := by
       apply Fin.ext
-      simp [h0]
-    have hrs_ne : rs ≠ [] := List.length_pos_iff_ne_nil.mp (by simpa [h0] using j.2)
+      lia
+    have hrs_ne : rs ≠ [] := List.length_pos_iff_ne_nil.mp (by lia)
     simpa [hj] using mem_rootSlotInterval_reverse_of_listAlternates_zero hss hrs hlen halt hrs_ne
   · exact mem_rootSlotInterval_reverse_of_listAlternates_interior hss hrs hlen halt h0
 
+set_option linter.unusedVariables false in
 /-- Slot transport from an ascending `Prec` witness to the descending
 Chudnovsky--Seymour interval language. This is the core bridge needed to turn
 pairwise common interleavers into pairwise-intersecting slot intervals. -/
@@ -927,17 +848,7 @@ private lemma mem_rootSlotInterval_of_prec_witness
     rs.reverse.get ⟨j.1, by simp [List.length_reverse]⟩ ∈
       rootSlotInterval ss.reverse
         ⟨j.1, by
-          have hdeg : f.natDegree ≤ g.natDegree ∧ g.natDegree ≤ f.natDegree + 1 := by
-            exact natDegree_bounds_of_prec ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
-          have hss_len : ss.length = f.natDegree := by
-            rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
-          have hrs_len : rs.length = g.natDegree := by
-            rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
-          have hdeg' : rs.length ≤ ss.length + 1 := by
-            simpa [hss_len, hrs_len] using hdeg.2
-          have : j.1 < ss.reverse.length + 1 := by
-            simpa [List.length_reverse] using lt_of_lt_of_le j.2 hdeg'
-          exact this⟩ := by
+          grind⟩ := by
   rcases hshape with ⟨hlen, hint⟩ | ⟨hlen, halt⟩
   · simpa using mem_rootSlotInterval_reverse_of_listInterlaces hss hrs hlen hint j
   · simpa using mem_rootSlotInterval_reverse_of_listAlternates hss hrs hlen halt j
@@ -965,21 +876,13 @@ private lemma mem_rootSlotInterval_of_prec
   let jg_rev : Fin rs.reverse.length := ⟨j.1, by
     simp [List.length_reverse, hrs_len]⟩
   let jf_desc : Fin ((rootSeqDesc f).length + 1) := ⟨j.1, by
-    simpa [rootSeqDesc_length hf, rootSeqDesc_length hg] using lt_of_lt_of_le j.2 hdeg⟩
+    grind⟩
   let jf_rev : Fin (ss.reverse.length + 1) := ⟨j.1, by
-    simpa [List.length_reverse, hss_len, hrs_len] using lt_of_lt_of_le j.2 hdeg⟩
+    grind⟩
   have hmem_rev : rs.reverse.get jg_rev ∈ rootSlotInterval ss.reverse jf_rev :=
     mem_rootSlotInterval_of_prec_witness hf hg hss hrs hss_eq hrs_eq hshape
-      ⟨j.1, by simp [hrs_len]⟩
-  have hmem_desc : rs.reverse.get jg_rev ∈ rootSlotInterval (rootSeqDesc f) jf_desc := by
-    exact (mem_rootSlotInterval_congr (x := rs.reverse.get jg_rev)
-      (jx := jf_rev) (jy := jf_desc) hss_desc.symm rfl).mp hmem_rev
-  have hget : (rootSeqDesc g).get jg_desc = rs.reverse.get jg_rev := by
-    simp [jg_desc, jg_rev, hrs_desc]
-  have hgoal : (rootSeqDesc g).get jg_desc ∈ rootSlotInterval (rootSeqDesc f) jf_desc := by
-    rw [hget]
-    exact hmem_desc
-  simpa [jg_desc, jf_desc] using hgoal
+      ⟨j.1, by lia⟩
+  lia
 
 /-- Finite intersection of a list of sets. -/
 def listInter : List (Set ℝ) → Set ℝ
@@ -1015,12 +918,7 @@ lemma listInter_nonempty_of_pairwise_ordConnected
           have htail : (t :: ts).Pairwise fun s t => (s ∩ t).Nonempty :=
             (List.pairwise_cons.mp hpair).2
           have htail_ne : (listInter (t :: ts)).Nonempty := by
-            apply ih
-            · intro u hu
-              exact hne u (by simp [hu])
-            · intro u hu
-              exact hconn u (by simp [hu])
-            · exact htail
+            simp_all
           rcases htail_ne with ⟨x, hx⟩
           by_cases hxs : x ∈ s
           · exact ⟨x, by simpa [listInter, hxs] using hx⟩
@@ -1029,20 +927,14 @@ lemma listInter_nonempty_of_pairwise_ordConnected
             have hys_pos : 0 < ys.length := by
               simp [ys]
             have hy_mem_s : ∀ y ∈ ys, y ∈ s := by
-              intro y hy
-              rcases List.mem_map.mp hy with ⟨u, hu, rfl⟩
-              exact (Classical.choose_spec (hhead u.1 u.2)).1
+              grind
             have hx_mem : ∀ u ∈ t :: ts, x ∈ u := by
               intro u hu
               exact (mem_listInter.mp hx) u hu
             let y0 : ℝ := Classical.choose (hhead t (by simp))
             have hy0s : y0 ∈ s := (Classical.choose_spec (hhead t (by simp))).1
             have hy0_side : y0 < x ∨ x < y0 := by
-              have hy0_ne : y0 ≠ x := by
-                intro hyx
-                apply hxs
-                simpa [y0, hyx] using hy0s
-              exact lt_or_gt_of_ne hy0_ne
+              grind
             rcases hy0_side with hy0lt | hxy0
             · let y : ℝ := ys.maximum_of_length_pos hys_pos
               have hy_mem : y ∈ ys := List.maximum_of_length_pos_mem hys_pos
@@ -1051,32 +943,27 @@ lemma listInter_nonempty_of_pairwise_ordConnected
                 intro z hz
                 have hzs : z ∈ s := hy_mem_s z hz
                 by_cases hzx : z < x
-                · exact hzx
+                · lia
                 · have hxz : x < z := by
-                    have hxle : x ≤ z := le_of_not_gt hzx
-                    have hne_xz : x ≠ z := by
-                      intro hxz_eq
-                      apply hxs
-                      simpa [hxz_eq] using hzs
-                    exact lt_of_le_of_ne hxle hne_xz
+                    grind
                   have hx_in_s : x ∈ s := (hconn s (by simp)).out hy0s hzs ⟨hy0lt.le, hxz.le⟩
-                  exact (hxs hx_in_s).elim
+                  lia
               refine ⟨y, ?_⟩
               rw [mem_listInter]
               intro u hu
-              have hu' : u = s ∨ u ∈ t :: ts := by simpa using hu
+              have hu' : u = s ∨ u ∈ t :: ts := by simp_all
               rcases hu' with rfl | hu
-              · exact hys
+              · lia
               · let yu : ℝ := Classical.choose (hhead u hu)
                 have hyu_mem : yu ∈ ys := by
                   have hmem_attach : (⟨u, hu⟩ : {v // v ∈ t :: ts}) ∈ (t :: ts).attach := by
-                    exact List.mem_attach _ _
-                  exact List.mem_map.mpr ⟨⟨u, hu⟩, hmem_attach, rfl⟩
+                    grind
+                  grind
                 have hyu_le : yu ≤ y := List.le_maximum_of_length_pos_of_mem hyu_mem hys_pos
                 have hy_lt : y < x := hall_lt y hy_mem
                 have hyu_u : yu ∈ u := (Classical.choose_spec (hhead u hu)).2
                 have hx_u : x ∈ u := hx_mem u hu
-                exact (hconn u (by simp [hu])).out hyu_u hx_u ⟨hyu_le, hy_lt.le⟩
+                exact (hconn u (by lia)).out hyu_u hx_u ⟨hyu_le, hy_lt.le⟩
             · let y : ℝ := ys.minimum_of_length_pos hys_pos
               have hy_mem : y ∈ ys := List.minimum_of_length_pos_mem hys_pos
               have hys : y ∈ s := hy_mem_s y hy_mem
@@ -1084,32 +971,27 @@ lemma listInter_nonempty_of_pairwise_ordConnected
                 intro z hz
                 have hzs : z ∈ s := hy_mem_s z hz
                 by_cases hxz : x < z
-                · exact hxz
+                · lia
                 · have hzx : z < x := by
-                    have hzle : z ≤ x := le_of_not_gt hxz
-                    have hne_zx : z ≠ x := by
-                      intro hzx_eq
-                      apply hxs
-                      simpa [hzx_eq] using hzs
-                    exact lt_of_le_of_ne hzle hne_zx
+                    grind
                   have hx_in_s : x ∈ s := (hconn s (by simp)).out hzs hy0s ⟨hzx.le, hxy0.le⟩
-                  exact (hxs hx_in_s).elim
+                  lia
               refine ⟨y, ?_⟩
               rw [mem_listInter]
               intro u hu
-              have hu' : u = s ∨ u ∈ t :: ts := by simpa using hu
+              have hu' : u = s ∨ u ∈ t :: ts := by simp_all
               rcases hu' with rfl | hu
-              · exact hys
+              · lia
               · let yu : ℝ := Classical.choose (hhead u hu)
                 have hyu_mem : yu ∈ ys := by
                   have hmem_attach : (⟨u, hu⟩ : {v // v ∈ t :: ts}) ∈ (t :: ts).attach := by
-                    exact List.mem_attach _ _
-                  exact List.mem_map.mpr ⟨⟨u, hu⟩, hmem_attach, rfl⟩
+                    grind
+                  grind
                 have hle_yu : y ≤ yu := List.minimum_of_length_pos_le_of_mem hyu_mem hys_pos
                 have hx_lt : x < y := hall_gt y hy_mem
                 have hyu_u : yu ∈ u := (Classical.choose_spec (hhead u hu)).2
                 have hx_u : x ∈ u := hx_mem u hu
-                exact (hconn u (by simp [hu])).out hx_u hyu_u ⟨hx_lt.le, hle_yu⟩
+                exact (hconn u (by lia)).out hx_u hyu_u ⟨hx_lt.le, hle_yu⟩
 
 /-- The target length `d` in the Chudnovsky--Seymour construction: the maximum
 degree occurring in the family. -/
@@ -1119,7 +1001,7 @@ def csDegree (fs : List ℝ[X]) : ℕ :=
 lemma natDegree_le_csDegree {fs : List ℝ[X]} {f : ℝ[X]} (hf : f ∈ fs) :
     f.natDegree ≤ csDegree fs := by
   unfold csDegree
-  exact List.le_max_of_le (by simpa using List.mem_map.mpr ⟨f, hf, rfl⟩) le_rfl
+  exact List.le_max_of_le (by grind) le_rfl
 
 lemma csDegree_eq_zero_of_nil : csDegree ([] : List ℝ[X]) = 0 := by
   simp [csDegree]
@@ -1128,7 +1010,7 @@ lemma exists_mem_csDegree_of_ne_nil {fs : List ℝ[X]} (hfs : fs ≠ []) :
     ∃ f ∈ fs, f.natDegree = csDegree fs := by
   induction fs with
   | nil =>
-      contradiction
+      lia
   | cons f fs ih =>
       cases fs with
       | nil =>
@@ -1137,7 +1019,7 @@ lemma exists_mem_csDegree_of_ne_nil {fs : List ℝ[X]} (hfs : fs ≠ []) :
           by_cases htail : csDegree (g :: gs) ≤ f.natDegree
           · refine ⟨f, by simp, ?_⟩
             simpa [csDegree] using htail
-          · have hne_tail : g :: gs ≠ [] := by simp
+          · have hne_tail : g :: gs ≠ [] := by lia
             obtain ⟨p, hp, hpdeg⟩ := ih hne_tail
             refine ⟨p, by simp [hp], ?_⟩
             have hltail : f.natDegree ≤ csDegree (g :: gs) := by lia
@@ -1155,8 +1037,7 @@ lemma natDegree_ge_csDegree_sub_one_of_pairwiseHasCommonInterleaver
   · obtain ⟨h, hfh, hgh⟩ := hpair i j hij
     rw [← hgj]
     exact le_trans (natDegree_bounds_of_prec hfh).1 (natDegree_bounds_of_prec hgh).2
-  · rw [← hgj]
-    exact Nat.le_succ (fs.get i).natDegree
+  · lia
   · obtain ⟨h, hgh, hfh⟩ := hpair j i hji
     rw [← hgj]
     exact le_trans (natDegree_bounds_of_prec hfh).1 (natDegree_bounds_of_prec hgh).2
@@ -1170,8 +1051,7 @@ lemma csDegree_le_natDegree_succ_of_pairwiseHasCommonInterleaver
   obtain ⟨g, hg, hgmax⟩ := exists_mem_csDegree_of_ne_nil hfs
   have hbound :=
     natDegree_ge_csDegree_sub_one_of_pairwiseHasCommonInterleaver (f := g) (g := f) hg hf hpair
-  rw [hgmax] at hbound
-  exact hbound
+  lia
 
 /-- Pairwise slot intersection for a pair of polynomials sharing a common
 interleaver on the right. This is the local input needed for the finite-Helly
@@ -1217,17 +1097,17 @@ theorem rootSlotInterval_inter_nonempty_of_commonInterleaver
         simpa [hf0] using rootSeqDesc_length hfh.1
       have hg_len0 : (rootSeqDesc g).length = 0 := by
         simpa [hg0] using rootSeqDesc_length hgh.1
-      let j0nil : Fin (([] : List ℝ).length + 1) := ⟨0, by simp⟩
+      let j0nil : Fin (([] : List ℝ).length + 1) := ⟨0, by lia⟩
       have hslot_f :
           rootSlotInterval (rootSeqDesc f) jf = rootSlotInterval [] j0nil := by
         apply rootSlotInterval_congr
-        · exact List.length_eq_zero_iff.mp hf_len0
-        · simp [jf, j0nil, hj0]
+        · simp_all
+        · lia
       have hslot_g :
           rootSlotInterval (rootSeqDesc g) jg = rootSlotInterval [] j0nil := by
         apply rootSlotInterval_congr
-        · exact List.length_eq_zero_iff.mp hg_len0
-        · simp [jg, j0nil, hj0]
+        · simp_all
+        · lia
       refine ⟨0, ?_⟩
       refine ⟨?_, ?_⟩
       · rw [hslot_f]
@@ -1243,9 +1123,9 @@ theorem rootSlotInterval_inter_nonempty_of_commonInterleaver
         apply List.ne_nil_of_length_pos
         simpa [List.length_reverse, rootSeqDesc_length hgh.1] using hg_pos
       let af : ℝ := ((rootSeqDesc f).reverse).get
-        ⟨0, by simpa [List.length_reverse, rootSeqDesc_length hfh.1] using hf_pos⟩
+        ⟨0, by grind⟩
       let ag : ℝ := ((rootSeqDesc g).reverse).get
-        ⟨0, by simpa [List.length_reverse, rootSeqDesc_length hgh.1] using hg_pos⟩
+        ⟨0, by grind⟩
       have hslot_f :
           rootSlotInterval (rootSeqDesc f) jf = Set.Iic af := by
         let jfr : Fin ((((rootSeqDesc f).reverse).reverse).length + 1) :=
@@ -1261,11 +1141,7 @@ theorem rootSlotInterval_inter_nonempty_of_commonInterleaver
           apply rootSlotInterval_congr
           · simp
           · simp [jfr, jf, hj_eq_h, hf_eq_h, rootSeqDesc_length hfh.1, List.length_reverse]
-        calc
-          rootSlotInterval (rootSeqDesc f) jf
-              = rootSlotInterval ((rootSeqDesc f).reverse).reverse jfr := by
-                  simpa using hcongr.symm
-          _ = Set.Iic af := hbase
+        lia
       have hslot_g :
           rootSlotInterval (rootSeqDesc g) jg = Set.Iic ag := by
         let jgr : Fin ((((rootSeqDesc g).reverse).reverse).length + 1) :=
@@ -1281,17 +1157,8 @@ theorem rootSlotInterval_inter_nonempty_of_commonInterleaver
           apply rootSlotInterval_congr
           · simp
           · simp [jgr, jg, hj_eq_h, hg_eq_h, rootSeqDesc_length hgh.1, List.length_reverse]
-        calc
-          rootSlotInterval (rootSeqDesc g) jg
-              = rootSlotInterval ((rootSeqDesc g).reverse).reverse jgr := by
-                  simpa using hcongr.symm
-          _ = Set.Iic ag := hbase
-      refine ⟨min af ag, ?_⟩
-      refine ⟨?_, ?_⟩
-      · rw [hslot_f]
-        exact Set.mem_Iic.mpr (min_le_left _ _)
-      · rw [hslot_g]
-        exact Set.mem_Iic.mpr (min_le_right _ _)
+        lia
+      simp_all
 
 /-- Root-sequence common interleaver used for the Chudnovsky--Seymour proof.
 The sequence `ps` is written in descending order and its `j`th entry lies in the
@@ -1347,8 +1214,8 @@ theorem hasCommonInterleaverSeq_of_pairwiseHasCommonInterleaver
   have hpair_sets : ss.Pairwise (fun s t => (s ∩ t).Nonempty) := by
     refine List.pairwise_iff_get.2 ?_
     intro i k hik
-    let i' : Fin fs.length := ⟨i.1, by simpa [hss_len] using i.2⟩
-    let k' : Fin fs.length := ⟨k.1, by simpa [hss_len] using k.2⟩
+    let i' : Fin fs.length := ⟨i.1, by lia⟩
+    let k' : Fin fs.length := ⟨k.1, by lia⟩
     have hik' : i' < k' := by simpa [i', k'] using hik
     let fi : ℝ[X] := fs.get i'
     let fk : ℝ[X] := fs.get k'
@@ -1379,7 +1246,7 @@ theorem hasCommonInterleaverSeq_of_pairwiseHasCommonInterleaver
   intro f hf hjf
   have hx_all := (mem_listInter.mp hx)
   have hmem_slot : x ∈ slotSetAt j f := by
-    exact hx_all (slotSetAt j f) (List.mem_map.mpr ⟨f, hf, rfl⟩)
+    grind
   simpa [slotSetAt, hjf] using hmem_slot
 
 private lemma pairwise_ge_of_commonInterleaverSeq
@@ -1398,17 +1265,17 @@ private lemma pairwise_ge_of_commonInterleaverSeq
   refine List.pairwise_ofFn.2 ?_
   intro i j hij
   have hd_pos : 0 < d := by
-    exact Nat.zero_lt_of_lt j.2
+    lia
   have hroot_ne : rootSeqDesc fmax ≠ [] := by
     apply List.ne_nil_of_length_pos
     rw [rootSeqDesc_length hfmax_rr, hfmax_deg]
-    exact hd_pos
+    lia
   have hi_slot : i.1 < (rootSeqDesc fmax).length + 1 := by
     rw [rootSeqDesc_length hfmax_rr, hfmax_deg]
-    exact Nat.lt_succ_of_lt i.2
+    lia
   have hj_slot : j.1 < (rootSeqDesc fmax).length + 1 := by
     rw [rootSeqDesc_length hfmax_rr, hfmax_deg]
-    exact Nat.lt_succ_of_lt j.2
+    lia
   have hxi :
       xs i ∈ rootSlotInterval (rootSeqDesc fmax) ⟨i.1, hi_slot⟩ :=
     (Classical.choose_spec (hseq i.1)) fmax hfmax_mem hi_slot
@@ -1421,8 +1288,8 @@ private lemma pairwise_ge_of_commonInterleaverSeq
       hroot_ne
       rootSeqDesc_pairwise
       (i := i.1) (j := j.1)
-      (by simpa using hij)
-      (by simpa using hj_slot)
+      (by lia)
+      (by lia)
       hxi hxj
 
 private def polyOfDescRoots (xs : List ℝ) : ℝ[X] :=
@@ -1454,7 +1321,7 @@ private lemma isRealRooted_polyOfDescRoots (xs : List ℝ) :
   unfold polyOfDescRoots
   induction xs with
   | nil =>
-      exact ⟨one_ne_zero, by simp⟩
+      simp
   | cons x xs ih =>
       simpa [List.map_cons, List.prod_cons] using
         isRealRooted_mul (isRealRooted_X_sub_C x) ih
@@ -1471,9 +1338,9 @@ private lemma rootSeqDesc_polyOfDescRoots_eq
     rootSeqDesc_eq_reverse_of_pairwise
       (f := polyOfDescRoots xs)
       (rs := xs.reverse)
-      (by simpa using hxs.reverse)
+      (by grind)
       hroots
-  simpa using hdesc
+  simp_all
 
 private lemma prec_of_slots_polyOfDescRoots
     {f : ℝ[X]} {xs : List ℝ}
@@ -1492,7 +1359,7 @@ private lemma prec_of_slots_polyOfDescRoots
   have hss_pair : ss.Pairwise (· ≤ ·) := by
     simpa [ss] using (rootSeqDesc_pairwise (f := f)).reverse
   have hrs_pair : rs.Pairwise (· ≤ ·) := by
-    simpa [rs] using hxs.reverse
+    grind
   have hss_eq : (↑ss : Multiset ℝ) = f.roots := by
     simp [ss, rootSeqDesc, Multiset.sort_eq]
   have hrs_eq : (↑rs : Multiset ℝ) = (polyOfDescRoots xs).roots := by
@@ -1513,22 +1380,15 @@ private lemma prec_of_slots_polyOfDescRoots
           simpa [ss, rootSeqDesc_length hf] using hk
         let j : ℕ := f.natDegree - 1 - k
         have hjx : j < xs.length := by
-          dsimp [j]
           lia
         have hjf : j < (rootSeqDesc f).length + 1 := by
-          have : j < f.natDegree + 1 := by
-            dsimp [j]
-            lia
-          simpa [rootSeqDesc_length hf] using this
+          grind
         have hmem : xs.get ⟨j, hjx⟩ ∈ rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ := by
-          simpa using hslot j hjx
+          grind
         have hroot_ne : rootSeqDesc f ≠ [] := by
-          apply List.ne_nil_of_length_pos
-          rw [rootSeqDesc_length hf]
-          lia
+          grind
         have hj_root : j < (rootSeqDesc f).length := by
           rw [rootSeqDesc_length hf]
-          dsimp [j]
           lia
         have hlow :
             (rootSeqDesc f).get ⟨j, hj_root⟩ ≤ xs.get ⟨j, hjx⟩ := by
@@ -1536,62 +1396,28 @@ private lemma prec_of_slots_polyOfDescRoots
         have hss_get :
             ss.get ⟨k, hk⟩ = (rootSeqDesc f).get ⟨j, hj_root⟩ := by
           have hk_root : k < (rootSeqDesc f).length := by
-            simpa [ss, rootSeqDesc_length hf] using hk
+            grind
           have hget :=
             get_reverse_eq_get_sub (xs := rootSeqDesc f) (k := k) hk_root
           have hidx : (rootSeqDesc f).length - 1 - k = j := by
             rw [rootSeqDesc_length hf]
-          calc
-            ss.get ⟨k, hk⟩
-                = (rootSeqDesc f).get ⟨(rootSeqDesc f).length - 1 - k, by lia⟩ := by
-                    simp [ss]
-            _ = (rootSeqDesc f).get ⟨j, hj_root⟩ := by
-                  apply congrArg (fun i => (rootSeqDesc f).get i)
-                  apply Fin.ext
-                  exact hidx
-        have hrs_get :
-            rs.get ⟨k, by simpa [ss, rs, hlen, rootSeqDesc_length hf] using hk⟩
-              = xs.get ⟨j, hjx⟩ := by
-          have hk_xs : k < xs.length := by
-            lia
-          have hget := get_reverse_eq_get_sub (xs := xs) (k := k) hk_xs
-          have hidx : xs.length - 1 - k = j := by
-            dsimp [j]
-            lia
-          calc
-            rs.get ⟨k, by simpa [ss, rs, hlen, rootSeqDesc_length hf] using hk⟩
-                = xs.get ⟨xs.length - 1 - k, by lia⟩ := by
-                    simp [rs]
-            _ = xs.get ⟨j, hjx⟩ := by
-                  apply congrArg (fun i => xs.get i)
-                  apply Fin.ext
-                  exact hidx
-        rw [hss_get, hrs_get]
-        exact hlow
+          lia
+        grind
       · intro k hk
         have hk_deg : k + 1 < f.natDegree := by
           simpa [ss, rootSeqDesc_length hf] using hk
         let j : ℕ := f.natDegree - 1 - k
         have hj_pos : 0 < j := by
-          dsimp [j]
           lia
         have hjx : j < xs.length := by
-          dsimp [j]
           lia
         have hjf : j < (rootSeqDesc f).length + 1 := by
-          have : j < f.natDegree + 1 := by
-            dsimp [j]
-            lia
-          simpa [rootSeqDesc_length hf] using this
+          grind
         have hmem : xs.get ⟨j, hjx⟩ ∈ rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ := by
-          simpa using hslot j hjx
+          grind
         have hroot_ne : rootSeqDesc f ≠ [] := by
-          apply List.ne_nil_of_length_pos
-          rw [rootSeqDesc_length hf]
-          lia
+          grind
         have hj_le : j ≤ (rootSeqDesc f).length := by
-          rw [rootSeqDesc_length hf]
-          dsimp [j]
           lia
         have hup :
             xs.get ⟨j, hjx⟩ ≤ (rootSeqDesc f).get ⟨j - 1, by lia⟩ := by
@@ -1648,25 +1474,16 @@ private lemma prec_of_slots_polyOfDescRoots
           simpa [ss, rootSeqDesc_length hf] using hk
         let j : ℕ := f.natDegree - k
         have hj_pos : 0 < j := by
-          dsimp [j]
           lia
         have hjx : j < xs.length := by
-          dsimp [j]
           lia
         have hjf : j < (rootSeqDesc f).length + 1 := by
-          have : j < f.natDegree + 1 := by
-            dsimp [j]
-            lia
-          simpa [rootSeqDesc_length hf] using this
+          grind
         have hmem : xs.get ⟨j, hjx⟩ ∈ rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ := by
-          simpa using hslot j hjx
+          grind
         have hroot_ne : rootSeqDesc f ≠ [] := by
-          apply List.ne_nil_of_length_pos
-          rw [rootSeqDesc_length hf]
-          lia
+          grind
         have hj_le : j ≤ (rootSeqDesc f).length := by
-          rw [rootSeqDesc_length hf]
-          dsimp [j]
           lia
         have hup :
             xs.get ⟨j, hjx⟩ ≤ (rootSeqDesc f).get ⟨j - 1, by lia⟩ := by
@@ -1718,66 +1535,28 @@ private lemma prec_of_slots_polyOfDescRoots
           simpa [ss, rootSeqDesc_length hf] using hk
         let j : ℕ := f.natDegree - 1 - k
         have hjx : j < xs.length := by
-          dsimp [j]
           lia
         have hjf : j < (rootSeqDesc f).length + 1 := by
-          have : j < f.natDegree + 1 := by
-            dsimp [j]
-            lia
-          simpa [rootSeqDesc_length hf] using this
+          grind
         have hmem : xs.get ⟨j, hjx⟩ ∈ rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ := by
-          simpa using hslot j hjx
+          grind
         have hroot_ne : rootSeqDesc f ≠ [] := by
-          apply List.ne_nil_of_length_pos
-          rw [rootSeqDesc_length hf]
-          lia
+          grind
         have hj_root : j < (rootSeqDesc f).length := by
-          rw [rootSeqDesc_length hf]
-          dsimp [j]
-          lia
+          grind
         have hlow :
             (rootSeqDesc f).get ⟨j, hj_root⟩ ≤ xs.get ⟨j, hjx⟩ := by
           exact rootSlot_lower_bound (rs := rootSeqDesc f) hroot_ne hj_root hmem
         have hss_get :
             ss.get ⟨k, hk⟩ = (rootSeqDesc f).get ⟨j, hj_root⟩ := by
           have hk_root : k < (rootSeqDesc f).length := by
-            simpa [ss, rootSeqDesc_length hf] using hk
+            grind
           have hget :=
             get_reverse_eq_get_sub (xs := rootSeqDesc f) (k := k) hk_root
           have hidx : (rootSeqDesc f).length - 1 - k = j := by
             rw [rootSeqDesc_length hf]
-          calc
-            ss.get ⟨k, hk⟩
-                = (rootSeqDesc f).get ⟨(rootSeqDesc f).length - 1 - k, by lia⟩ := by
-                    simp [ss]
-            _ = (rootSeqDesc f).get ⟨j, hj_root⟩ := by
-                  apply congrArg (fun i => (rootSeqDesc f).get i)
-                  apply Fin.ext
-                  exact hidx
-        have hrs_get :
-            rs.get ⟨k + 1, by
-              have : k + 1 < f.natDegree + 1 := Nat.succ_lt_succ hk_deg
-              simpa [ss, rs, hlen, rootSeqDesc_length hf] using this⟩
-              = xs.get ⟨j, hjx⟩ := by
-          have hk1_xs : k + 1 < xs.length := by
-            dsimp [j]
-            lia
-          have hget := get_reverse_eq_get_sub (xs := xs) (k := k + 1) hk1_xs
-          have hidx : xs.length - 1 - (k + 1) = j := by
-            dsimp [j]
-            lia
-          calc
-            rs.get ⟨k + 1, by
-                have : k + 1 < f.natDegree + 1 := Nat.succ_lt_succ hk_deg
-                simpa [ss, rs, hlen, rootSeqDesc_length hf] using this⟩
-                = xs.get ⟨xs.length - 1 - (k + 1), by lia⟩ := by
-                    simp [rs]
-            _ = xs.get ⟨j, hjx⟩ := by
-                  apply congrArg (fun i => xs.get i)
-                  apply Fin.ext
-                  exact hidx
-        rw [hss_get, hrs_get]
-        exact hlow
+          lia
+        grind
 
 /-- Chudnovsky--Seymour `2 ⇒ 3` in the polynomial language used elsewhere in
 this file: pairwise common interleavers can be upgraded to a single common
@@ -1796,19 +1575,17 @@ private theorem hasCommonInterleaver_of_pairwiseHasCommonInterleaver_ge_two
   -/
   let ps : List ℝ[X] := f :: g :: fs
   have hrr_ps : ∀ p ∈ ps, (p ≠ 0 ∧ p.Splits) := by
-    intro p hp
-    exact hrr p (by simpa [ps] using hp)
+    grind
   have hpos_ps : ∀ p ∈ ps, HasPosLeadingCoeff p := by
-    intro p hp
-    exact hpos p (by simpa [ps] using hp)
+    grind
   have hpair_ps : PairwiseHasCommonInterleaver ps := by
-    simpa [ps] using hpair
+    lia
   have hseq :
       HasCommonInterleaverSeq ps :=
     hasCommonInterleaverSeq_of_pairwiseHasCommonInterleaver
       (fs := ps) hrr_ps hpos_ps hpair_ps
   have hps_ne : ps ≠ [] := by
-    simp [ps]
+    lia
   let d : ℕ := csDegree ps
   let xs : Fin d → ℝ := fun j => Classical.choose (hseq j.1)
   let xlist : List ℝ := List.ofFn xs
@@ -1818,38 +1595,28 @@ private theorem hasCommonInterleaver_of_pairwiseHasCommonInterleaver_ge_two
   let h : ℝ[X] := polyOfDescRoots xlist
   refine ⟨h, ?_⟩
   intro p hp
-  have hp_mem : p ∈ ps := by simpa [ps] using hp
+  have hp_mem : p ∈ ps := by lia
   have hp_rr : (p ≠ 0 ∧ p.Splits) := hrr_ps p hp_mem
   have hp_deg_lo : p.natDegree ≤ xlist.length := by
     have : p.natDegree ≤ csDegree ps := natDegree_le_csDegree (fs := ps) hp_mem
-    simpa [xlist, d]
-      using this
+    grind
   have hp_deg_hi : xlist.length ≤ p.natDegree + 1 := by
     have : csDegree ps ≤ p.natDegree + 1 :=
       csDegree_le_natDegree_succ_of_pairwiseHasCommonInterleaver
         (fs := ps) (f := p) hps_ne hp_mem hpair_ps
-    simpa [xlist, d]
-      using this
+    grind
   have hslot :
       ∀ j (hj : j < xlist.length),
         xlist.get ⟨j, hj⟩ ∈ rootSlotInterval (rootSeqDesc p)
           ⟨j, by
             have : j < p.natDegree + 1 := lt_of_lt_of_le hj hp_deg_hi
             simpa [rootSeqDesc_length hp_rr] using this⟩ := by
-    intro j hj
-    have hjp : j < p.natDegree + 1 := lt_of_lt_of_le hj hp_deg_hi
-    have hjf : j < (rootSeqDesc p).length + 1 := by
-      simpa [rootSeqDesc_length hp_rr] using hjp
-    have hslot_raw :
-        Classical.choose (hseq j) ∈ rootSlotInterval (rootSeqDesc p)
-          ⟨j, hjf⟩ := by
-      exact (Classical.choose_spec (hseq j)) p hp_mem hjf
-    simpa [xlist, xs, d] using hslot_raw
+    grind
   have hp_prec :
       Prec p (polyOfDescRoots xlist) :=
     prec_of_slots_polyOfDescRoots
       (f := p) (xs := xlist) hp_rr hx_pair hp_deg_lo hp_deg_hi hslot
-  simpa [h] using hp_prec
+  lia
 
 theorem hasCommonInterleaver_of_pairwiseHasCommonInterleaver
     {fs : List ℝ[X]}
@@ -1860,15 +1627,14 @@ theorem hasCommonInterleaver_of_pairwiseHasCommonInterleaver
   cases fs with
   | nil =>
       refine ⟨1, ?_⟩
-      intro f hf
-      simp at hf
+      simp
   | cons f fs =>
       cases fs with
       | nil =>
           refine ⟨f, ?_⟩
           intro p hp
           rcases List.mem_singleton.mp hp with rfl
-          simpa using prec_refl (hrr p (by simp))
+          simpa using prec_refl (hrr p (by lia))
       | cons g fs =>
           exact
             hasCommonInterleaver_of_pairwiseHasCommonInterleaver_ge_two
@@ -2021,16 +1787,15 @@ theorem pairHasCommonInterleaver_of_sameDegree_slotIntersections
         hroot_ne
         rootSeqDesc_pairwise
         (i := i.1) (j := j.1)
-        (by simpa using hij)
-        (by simpa using hj_slot)
+        (by simp_all)
+        (by simp_all)
         hxi hxj
   let h : ℝ[X] := polyOfDescRootsDesc xs
   refine ⟨h, ?_, ?_⟩
   · have hdeg_lo : f.natDegree ≤ xs.length := by
-      rw [hxs_len]
-      lia
+      simp_all
     have hdeg_hi : xs.length ≤ f.natDegree + 1 := by
-      rw [hxs_len]
+      simp_all
     have hslot_f :
         ∀ j (hj : j < xs.length),
           xs.get ⟨j, hj⟩ ∈ rootSlotInterval (rootSeqDesc f)
@@ -2040,7 +1805,7 @@ theorem pairHasCommonInterleaver_of_sameDegree_slotIntersections
       intro j hj
       have hjn : j < n := by
         simpa [n, hxs_len] using hj
-      have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hjn))).1
+      have hraw := (Classical.choose_spec (hslot j (by simp_all))).1
       convert hraw using 1
       · change (List.ofFn x)[j] = x ⟨j, hjn⟩
         convert (List.getElem_ofFn (f := x) (i := j) (by simpa [xs] using hj)) using 2
@@ -2048,10 +1813,9 @@ theorem pairHasCommonInterleaver_of_sameDegree_slotIntersections
       prec_of_slots_polyOfDescRootsDesc
         (f := f) (xs := xs) hf hxs_pair hdeg_lo hdeg_hi hslot_f
   · have hdeg_lo : g.natDegree ≤ xs.length := by
-      rw [hxs_len, hdeg]
-      lia
+      simp_all
     have hdeg_hi : xs.length ≤ g.natDegree + 1 := by
-      rw [hxs_len, hdeg]
+      simp_all
     have hslot_g :
         ∀ j (hj : j < xs.length),
           xs.get ⟨j, hj⟩ ∈ rootSlotInterval (rootSeqDesc g)
@@ -2061,7 +1825,7 @@ theorem pairHasCommonInterleaver_of_sameDegree_slotIntersections
       intro j hj
       have hjn : j < n := by
         simpa [n, hxs_len] using hj
-      have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hjn))).2
+      have hraw := (Classical.choose_spec (hslot j (by simp_all))).2
       convert hraw using 1
       · change (List.ofFn x)[j] = x ⟨j, hjn⟩
         convert (List.getElem_ofFn (f := x) (i := j) (by simpa [xs] using hj)) using 2
@@ -2077,8 +1841,7 @@ lemma IsInterlacingSeq0Nonneg.reverse {fs : List ℝ[X]}
     ∀ f ∈ fs.reverse, HasNonnegCoeffs f := by
   rcases hfs with ⟨hint, hnonneg⟩
   refine ⟨hint.reverse, ?_⟩
-  intro p hp
-  exact hnonneg p (by simpa using List.mem_reverse.2 hp)
+  simp_all
 
 
 end

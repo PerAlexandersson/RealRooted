@@ -53,8 +53,7 @@ def oddEvenPolynomial (p q : ℝ[X]) : ℝ[X] :=
 @[simp] theorem eval_complexify_oddEvenPolynomial (p q : ℝ[X]) (z : ℂ) :
     (complexify (oddEvenPolynomial p q)).eval z =
       (complexify q).eval (z ^ 2) + z * (complexify p).eval (z ^ 2) := by
-  rw [complexify_oddEvenPolynomial]
-  simp [Polynomial.eval_comp]
+  simp
 
 lemma monomial_comp_X_sq (n : ℕ) (a : ℝ) :
     (Polynomial.monomial n a).comp (X ^ 2 : ℝ[X]) =
@@ -67,22 +66,19 @@ lemma monomial_comp_X_sq (n : ℕ) (a : ℝ) :
 @[simp] lemma coeff_comp_X_sq_even (p : ℝ[X]) (n : ℕ) :
     (p.comp (X ^ 2 : ℝ[X])).coeff (2 * n) = p.coeff n := by
   refine Polynomial.induction_on' p ?_ ?_
-  · intro p q hp hq
-    simp [hp, hq]
+  · simp_all
   · intro m a
     rw [monomial_comp_X_sq]
     by_cases hmn : m = n
-    · subst hmn
-      simp
+    · simp_all
     · have h2 : 2 * m ≠ 2 * n := by lia
       rw [Polynomial.coeff_monomial, Polynomial.coeff_monomial]
-      simp [hmn, h2]
+      lia
 
 @[simp] lemma coeff_comp_X_sq_odd (p : ℝ[X]) (n : ℕ) :
     (p.comp (X ^ 2 : ℝ[X])).coeff (2 * n + 1) = 0 := by
   refine Polynomial.induction_on' p ?_ ?_
-  · intro p q hp hq
-    simp [hp, hq]
+  · simp_all
   · intro m a
     rw [monomial_comp_X_sq]
     have h2 : 2 * m ≠ 2 * n + 1 := by lia
@@ -95,11 +91,11 @@ lemma monomial_comp_X_sq (n : ℕ) (a : ℝ) :
       simp
   | succ n =>
       rw [show 2 * (n + 1) = 2 * n + 1 + 1 by lia]
-      rw [Polynomial.coeff_X_mul, coeff_comp_X_sq_odd]
+      simp
 
 @[simp] lemma coeff_X_mul_comp_X_sq_odd (p : ℝ[X]) (n : ℕ) :
     (X * p.comp (X ^ 2 : ℝ[X])).coeff (2 * n + 1) = p.coeff n := by
-  rw [Polynomial.coeff_X_mul, coeff_comp_X_sq_even]
+  simp
 
 @[simp] theorem coeff_oddEvenPolynomial_even (p q : ℝ[X]) (n : ℕ) :
     (oddEvenPolynomial p q).coeff (2 * n) = q.coeff n := by
@@ -115,13 +111,10 @@ theorem hasNonnegCoeffs_oddEvenPolynomial {p q : ℝ[X]}
   intro n
   by_cases hmod : n % 2 = 0
   · have hn : n = 2 * (n / 2) := by
-      have hdiv := Nat.div_add_mod n 2
       lia
     rw [hn, coeff_oddEvenPolynomial_even]
     exact hq (n / 2)
   · have hn : n = 2 * (n / 2) + 1 := by
-      have hdiv := Nat.div_add_mod n 2
-      have hlt : n % 2 < 2 := Nat.mod_lt n (by norm_num)
       lia
     rw [hn, coeff_oddEvenPolynomial_odd]
     exact hp (n / 2)
@@ -168,7 +161,7 @@ lemma hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero {p : ℝ[X]}
     HasPosLeadingCoeff p := by
   unfold HasPosLeadingCoeff HasNonnegCoeffs at *
   have hlead_ne : p.coeff p.natDegree ≠ 0 := by
-    simpa [Polynomial.coeff_natDegree] using (Polynomial.leadingCoeff_ne_zero).2 hp0
+    simp_all
   exact lt_of_le_of_ne (hpnn p.natDegree) (by simpa using hlead_ne.symm)
 
 /-- The legacy sign-free statement implies the normalized one as a
@@ -186,13 +179,9 @@ theorem not_hermiteBiehlerForwardStatement :
   intro h
   have hprec : Prec (-(1 : ℝ[X])) (X : ℝ[X]) := by
     have hX : ((X : ℝ[X]) ≠ 0 ∧ (X : ℝ[X]).Splits) := by
-      refine ⟨X_ne_zero, ?_⟩
-      exact splits_of_card_roots <| by
-        rw [roots_X, Multiset.card_singleton, natDegree_X]
+      simp
     have hneg : ((-(1 : ℝ[X])) ≠ 0 ∧ (-(1 : ℝ[X])).Splits) := by
-      refine isRealRooted_of_deg_zero ?_ ?_
-      · norm_num
-      · simp
+      simp
     apply Interlaces.toPrec
     refine ⟨hX, hneg, ?_, [0], [], ?_, ?_, ?_, ?_, ?_⟩
     · simp

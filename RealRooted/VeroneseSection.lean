@@ -118,7 +118,7 @@ theorem veroneseSectionPolynomial_ne_zero_of_coeff_ne_zero
   have hcoeff_zero : (veroneseSectionPolynomial r k p).coeff n = 0 := by
     simp_all
   rw [coeff_veroneseSectionPolynomial (r := r) (k := k) (p := p) hr] at hcoeff_zero
-  exact hcoeff hcoeff_zero
+  lia
 
 /-! ## Veronese section recurrences -/
 
@@ -172,7 +172,7 @@ theorem veroneseSectionPolynomial_X_add_C_mul_zero {r : ℕ} (hr : 0 < r)
     veroneseSectionPolynomial r 0 ((X + C a) * p) =
       X * veroneseSectionPolynomial r (r - 1) p +
         C a * veroneseSectionPolynomial r 0 p := by
-  have hmul : (X + C a) * p = X * p + C a * p := by ring
+  have hmul : (X + C a) * p = X * p + C a * p := by grind
   rw [hmul]
   rw [veroneseSectionPolynomial_add hr]
   rw [veroneseSectionPolynomial_X_mul_zero hr]
@@ -186,7 +186,7 @@ theorem veroneseSectionPolynomial_X_add_C_mul_succ {r k : ℕ}
       veroneseSectionPolynomial r k p +
         C a * veroneseSectionPolynomial r (k + 1) p := by
   have hr : 0 < r := by lia
-  have hmul : (X + C a) * p = X * p + C a * p := by ring
+  have hmul : (X + C a) * p = X * p + C a * p := by grind
   rw [hmul]
   rw [veroneseSectionPolynomial_add hr]
   rw [veroneseSectionPolynomial_X_mul_succ hk]
@@ -245,8 +245,8 @@ theorem hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPa
       (hurwitzEntry fun n => (oddEvenPolynomial p q).coeff n) =
         lacePairEntry (fun n => p.coeff n) (fun n => q.coeff n) := by
     funext row col
-    exact hurwitzEntry_oddEvenPolynomial p q row col
-  simp_all
+    simp
+  lia
 
 /-- The Lace matrix of the interleaved Veronese sections
 `S_0 a, S_0 b, S_1 a, S_1 b, ...`, encoded as the column submatrix of the
@@ -267,7 +267,7 @@ theorem fullyInterlacingPair_veronesePair {a b : ℕ → ℝ}
     VeronesePairFullyInterlacing r a b := by
   have hcol : StrictMono (fun col => r * col) := by
     intro i j hij
-    exact Nat.mul_lt_mul_of_pos_left hij hr
+    simp_all
   change InfiniteMatrixTotallyNonnegative (fun i j => lacePairEntry a b i (r * j))
   exact h.submatrix strictMono_id hcol
 
@@ -278,7 +278,7 @@ theorem veronesePairLaceEntry_even {a b : ℕ → ℝ} {r k n c : ℕ} (hk : k <
       toeplitzEntry (veroneseSectionSeq r k a) n c := by
   have hmod : 2 * (k + r * n) % 2 = 0 := Nat.mul_mod_right 2 (k + r * n)
   have hdiv : 2 * (k + r * n) / 2 = k + r * n :=
-    Nat.mul_div_right (k + r * n) (by norm_num)
+    Nat.mul_div_right (k + r * n) (by lia)
   dsimp [veronesePairLaceEntry, lacePairEntry]
   rw [if_pos hmod, hdiv]
   dsimp [toeplitzEntry, veroneseSectionSeq]
@@ -305,7 +305,7 @@ theorem veronesePairLaceEntry_odd {a b : ℕ → ℝ} {r k n c : ℕ} (hk : k < 
     veronesePairLaceEntry r a b (2 * (k + r * n) + 1) c =
       toeplitzEntry (veroneseSectionSeq r k b) n c := by
   have hmod_ne : ¬ (2 * (k + r * n) + 1) % 2 = 0 := by
-    simp
+    lia
   have hdiv : (2 * (k + r * n) + 1) / 2 = k + r * n := by
     lia
   dsimp [veronesePairLaceEntry, lacePairEntry]
@@ -337,7 +337,7 @@ theorem FullyInterlacingPair.left_tnn {a b : ℕ → ℝ}
   let rows' : Fin n → ℕ := fun i => 2 * rows i
   have hrows' : StrictMono rows' := by
     intro i j hij
-    exact Nat.mul_lt_mul_of_pos_left (hrows hij) (by norm_num)
+    exact Nat.mul_lt_mul_of_pos_left (hrows hij) (by lia)
   have hminor :
       toeplitzMinor a rows cols =
         infiniteMatrixMinor (lacePairEntry a b) rows' cols := by
@@ -356,7 +356,7 @@ theorem FullyInterlacingPair.right_tnn {a b : ℕ → ℝ}
   have hrows' : StrictMono rows' := by
     intro i j hij
     exact Nat.add_lt_add_right
-      (Nat.mul_lt_mul_of_pos_left (hrows hij) (by norm_num)) 1
+      (Nat.mul_lt_mul_of_pos_left (hrows hij) (by lia)) 1
   have hminor :
       toeplitzMinor b rows cols =
         infiniteMatrixMinor (lacePairEntry a b) rows' cols := by

@@ -47,9 +47,9 @@ lemma coeff_typeBEulerianCoeffA_mul (n m : Nat) (p : ℝ[X]) :
       (2 * n + 1 : ℝ) * coeff p m := by
     calc
       coeff (C (2 * n + 1 : ℝ) * X * p) (m + 1)
-          = coeff (C (2 * n + 1 : ℝ) * (X * p)) (m + 1) := by rw [mul_assoc]
-      _ = (2 * n + 1 : ℝ) * coeff (X * p) (m + 1) := by rw [coeff_C_mul]
-      _ = (2 * n + 1 : ℝ) * coeff p m := by rw [coeff_X_mul]
+          = coeff (C (2 * n + 1 : ℝ) * (X * p)) (m + 1) := by grind
+      _ = (2 * n + 1 : ℝ) * coeff (X * p) (m + 1) := by grind
+      _ = (2 * n + 1 : ℝ) * coeff p m := by simp
   rw [typeBEulerianCoeffA, add_mul, one_mul, coeff_add, hCX]
 
 lemma coeff_typeBEulerianCoeffB_mul_derivative (m : Nat) (p : ℝ[X]) :
@@ -66,60 +66,46 @@ lemma coeff_typeBEulerianCoeffB_mul_derivative (m : Nat) (p : ℝ[X]) :
       have h₁ : coeff (C (2 : ℝ) * X * p.derivative) 1 = (2 : ℝ) * coeff p 1 := by
         calc
           coeff (C (2 : ℝ) * X * p.derivative) 1
-              = coeff (C (2 : ℝ) * (X * p.derivative)) 1 := by rw [mul_assoc]
-          _ = (2 : ℝ) * coeff (X * p.derivative) 1 := by rw [coeff_C_mul]
-          _ = (2 : ℝ) * coeff p.derivative 0 := by rw [coeff_X_mul]
+              = coeff (C (2 : ℝ) * (X * p.derivative)) 1 := by grind
+          _ = (2 : ℝ) * coeff (X * p.derivative) 1 := by simp
+          _ = (2 : ℝ) * coeff p.derivative 0 := by simp
           _ = (2 : ℝ) * coeff p 1 := by
               rw [coeff_derivative]
               ring
       have h₂ : coeff (C (2 : ℝ) * X * X * p.derivative) 1 = 0 := by
         calc
           coeff (C (2 : ℝ) * X * X * p.derivative) 1
-              = coeff (C (2 : ℝ) * (X * (X * p.derivative))) 1 := by rw [mul_assoc, mul_assoc]
-          _ = (2 : ℝ) * coeff (X * (X * p.derivative)) 1 := by rw [coeff_C_mul]
-          _ = (2 : ℝ) * coeff (X * p.derivative) 0 := by rw [coeff_X_mul]
-          _ = 0 := by rw [coeff_X_mul_zero]; simp
-      rw [h₁, h₂]
-      ring
+              = coeff (C (2 : ℝ) * (X * (X * p.derivative))) 1 := by grind
+          _ = (2 : ℝ) * coeff (X * (X * p.derivative)) 1 := by simp
+          _ = (2 : ℝ) * coeff (X * p.derivative) 0 := by simp
+          _ = 0 := by simp
+      simp_all
   | succ m =>
       rw [hB, coeff_sub]
       have h₁ : coeff (C (2 : ℝ) * X * p.derivative) (m + 2) =
           (2 * (m + 2) : ℝ) * coeff p (m + 2) := by
         calc
           coeff (C (2 : ℝ) * X * p.derivative) (m + 2)
-              = coeff (C (2 : ℝ) * (X * p.derivative)) (m + 2) := by rw [mul_assoc]
-          _ = (2 : ℝ) * coeff (X * p.derivative) (m + 2) := by rw [coeff_C_mul]
-          _ = (2 : ℝ) * coeff p.derivative (m + 1) := by rw [coeff_X_mul]
+              = coeff (C (2 : ℝ) * (X * p.derivative)) (m + 2) := by grind
+          _ = (2 : ℝ) * coeff (X * p.derivative) (m + 2) := by simp
+          _ = (2 : ℝ) * coeff p.derivative (m + 1) := by simp
           _ = (2 : ℝ) * (coeff p (m + 2) * ((m : ℝ) + 2)) := by
               rw [coeff_derivative]
-              have hidx : m + 1 + 1 = m + 2 := by lia
-              have hcast : (((m + 1 : Nat) : ℝ) + 1) = (m : ℝ) + 2 := by
-                calc
-                  (((m + 1 : Nat) : ℝ) + 1) = ((m : ℝ) + 1) + 1 := by simp
-                  _ = (m : ℝ) + 2 := by ring
-              rw [hidx, hcast]
-          _ = (2 * (m + 2) : ℝ) * coeff p (m + 2) := by ring
+              grind
+          _ = (2 * (m + 2) : ℝ) * coeff p (m + 2) := by grind
       have h₂ : coeff (C (2 : ℝ) * X * X * p.derivative) (m + 2) =
           (2 * (m + 1) : ℝ) * coeff p (m + 1) := by
         calc
           coeff (C (2 : ℝ) * X * X * p.derivative) (m + 2)
               = coeff (C (2 : ℝ) * (X * (X * p.derivative))) (m + 2) := by
-                  rw [mul_assoc, mul_assoc]
-          _ = (2 : ℝ) * coeff (X * (X * p.derivative)) (m + 2) := by rw [coeff_C_mul]
-          _ = (2 : ℝ) * coeff (X * p.derivative) (m + 1) := by rw [coeff_X_mul]
-          _ = (2 : ℝ) * coeff p.derivative m := by rw [coeff_X_mul]
+                  grind
+          _ = (2 : ℝ) * coeff (X * (X * p.derivative)) (m + 2) := by simp
+          _ = (2 : ℝ) * coeff (X * p.derivative) (m + 1) := by simp
+          _ = (2 : ℝ) * coeff p.derivative m := by simp
           _ = (2 * (m + 1) : ℝ) * coeff p (m + 1) := by
               rw [coeff_derivative]
-              have hcast : ((m : ℝ) + 1) = ((m + 1 : Nat) : ℝ) := by
-                simp
-              rw [hcast]
-              ring
-      rw [h₁, h₂]
-      have hidx : m + 1 + 1 = m + 2 := by lia
-      have hcast₁ : ((m + 1 : Nat) : ℝ) = (m : ℝ) + 1 := by
-        simp
-      rw [hidx, hcast₁]
-      ring
+              grind
+      grind
 
 lemma coeff_typeBEulerian_succ (n m : Nat) :
     coeff (typeBEulerian (n + 1)) (m + 1) =
@@ -144,22 +130,19 @@ lemma coeff_typeBEulerian_top_and_above :
       · simp [typeBEulerian_zero]
       · intro m hm
         rw [typeBEulerian_zero, coeff_one]
-        simp [hm.ne']
+        lia
   | n + 1 => by
       rcases coeff_typeBEulerian_top_and_above n with ⟨htop, habove⟩
       constructor
       · rw [show n + 1 = n + 0 + 1 by lia, coeff_typeBEulerian_succ]
-        have hzero : coeff (typeBEulerian n) (n + 1) = 0 := habove (n + 1) (by lia)
-        simp [htop, hzero]
+        simp_all
       · intro m hm
         cases m with
         | zero =>
             lia
         | succ k =>
             rw [show k + 1 = k + 0 + 1 by lia, coeff_typeBEulerian_succ]
-            have hk : n < k := by lia
-            have hk1 : n < k + 1 := by lia
-            simp [habove k hk, habove (k + 1) hk1]
+            grind
 
 lemma natDegree_typeBEulerian (n : Nat) :
     (typeBEulerian n).natDegree = n := by
@@ -172,7 +155,7 @@ lemma monic_typeBEulerian (n : Nat) :
     (typeBEulerian n).Monic := by
   rcases coeff_typeBEulerian_top_and_above n with ⟨htop, _⟩
   rw [Monic.def, leadingCoeff, natDegree_typeBEulerian]
-  simpa using htop
+  lia
 
 lemma typeBEulerian_ne_zero (n : Nat) :
     typeBEulerian n ≠ 0 :=
@@ -206,16 +189,16 @@ lemma typeBEulerian_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (typeBEulerian n
             have hcoeff_succ : 0 ≤ coeff (typeBEulerian n) (m + 1) :=
               typeBEulerian_nonnegCoeffs n (m + 1)
             have hnm : 0 ≤ ((2 * n + 1 : ℝ) - 2 * m) := by
-              have hm' : (m : ℝ) ≤ n := by exact_mod_cast hm
+              have hm' : (m : ℝ) ≤ n := by simp_all
               nlinarith
             exact add_nonneg (mul_nonneg hnm hcoeff_m)
-              (mul_nonneg (by positivity) hcoeff_succ)
+              (mul_nonneg (by grind) hcoeff_succ)
           · have hm' : n < m := lt_of_not_ge hm
             rcases coeff_typeBEulerian_top_and_above n with ⟨_, habove⟩
             have hcoeff_m : coeff (typeBEulerian n) m = 0 := by
-              exact habove m hm'
+              simp_all
             have hcoeff_succ : coeff (typeBEulerian n) (m + 1) = 0 := by
-              exact habove (m + 1) (by lia)
+              grind
             simp [hcoeff_m, hcoeff_succ]
 
 lemma roots_nonpos_typeBEulerian_of_isRealRooted {n : Nat}
@@ -228,7 +211,7 @@ lemma interlaces_typeBEulerian_zero_one :
   simpa [typeBEulerian_zero, typeBEulerian_one] using
     interlaces_one_linear (p := (1 + X : ℝ[X])) (by
       simpa [add_comm] using
-        (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by norm_num)))
+        (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp)))
 
 lemma interlaces_derivative_typeBEulerian :
     ∀ n : Nat, 1 ≤ n → ((typeBEulerian n) ≠ 0 ∧ (typeBEulerian n).Splits) →
@@ -239,7 +222,7 @@ lemma interlaces_derivative_typeBEulerian :
       simpa [typeBEulerian_one] using
         interlaces_one_linear (p := (1 + X : ℝ[X])) (by
           simpa [add_comm] using
-            (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by norm_num)))
+            (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp)))
   | n + 2, _, hrr => by
       apply derivative_interlaces hrr
       rw [natDegree_typeBEulerian]
@@ -249,7 +232,7 @@ lemma eval_typeBEulerianCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
     typeBEulerianCoeffB.eval r ≤ 0 := by
   unfold typeBEulerianCoeffB
   rw [eval_mul, eval_mul, eval_C, eval_X, eval_sub, eval_one, eval_X]
-  have h1r : 0 ≤ 1 - r := by linarith
+  have h1r : 0 ≤ 1 - r := by grind
   nlinarith
 
 theorem prec_typeBEulerian_succ : ∀ n : Nat, Prec (typeBEulerian n) (typeBEulerian (n + 1))

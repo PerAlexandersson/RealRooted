@@ -91,7 +91,7 @@ theorem exists_t_and_root_near_left_family
   obtain ⟨b, hb_root, hb_dist⟩ :=
     exists_root_near_left_family
       (hfg := hfg) (ha := ha) hf_monic hg_monic hdeg ht hcoeff_bound
-  exact ⟨t, ht, b, hb_root, hb_dist⟩
+  grind
 
 /-- Root-continuity bridge for the right affine family under positive-combination
 real-rootedness. This is the `μ`-small perturbation form used when one studies
@@ -109,15 +109,13 @@ theorem exists_root_near_right_family
   let t : ℝ := μ⁻¹
   have ht : 0 < t := by
     simp only [inv_pos, t]
-    positivity
+    lia
   have hμ_ne : μ ≠ 0 := ne_of_gt hμ
-  have hμ1_ne : μ + 1 ≠ 0 := by linarith
+  have hμ1_ne : μ + 1 ≠ 0 := by grind
   have hcoeff_bound_left : (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) < ε := by
     have hcalc : (t + 1)⁻¹ = μ / (μ + 1) := by
-      unfold t
-      field_simp [hμ_ne, hμ1_ne]
-      ring
-    simpa [hcalc] using hcoeff_bound
+      grind
+    lia
   obtain ⟨b, hb_left_root, hb_dist⟩ :=
     exists_root_near_left_family
       (hfg := hfg) (ha := ha) hf_monic hg_monic hdeg ht hcoeff_bound_left
@@ -125,15 +123,10 @@ theorem exists_root_near_right_family
       f + C μ * g = C μ * (C t * f + g) := by
     ext n
     simp [t]
-    field_simp [hμ_ne]
+    grind
   have hb_right_root : (f + C μ * g).IsRoot b := by
-    have hb_eval_left : (C t * f + g).eval b = 0 := by
-      simpa [Polynomial.IsRoot.def] using hb_left_root
-    have hb_eval_right : (f + C μ * g).eval b = 0 := by
-      rw [hscale, eval_mul, eval_C]
-      simp [hb_eval_left]
-    simpa [Polynomial.IsRoot.def] using hb_eval_right
-  exact ⟨b, hb_right_root, hb_dist⟩
+    simp_all
+  grind
 
 /-- Complex-root continuity bridge for the right affine family under
 positive-combination real-rootedness. This is the `μ`-small perturbation form
@@ -151,15 +144,13 @@ theorem exists_complex_aroot_near_right_family
   let t : ℝ := μ⁻¹
   have ht : 0 < t := by
     simp only [inv_pos, t]
-    positivity
+    lia
   have hμ_ne : μ ≠ 0 := ne_of_gt hμ
-  have hμ1_ne : μ + 1 ≠ 0 := by linarith
+  have hμ1_ne : μ + 1 ≠ 0 := by grind
   have hcoeff_bound_left : (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) < ε := by
     have hcalc : (t + 1)⁻¹ = μ / (μ + 1) := by
-      unfold t
-      field_simp [hμ_ne, hμ1_ne]
-      ring
-    simpa [hcalc] using hcoeff_bound
+      grind
+    lia
   obtain ⟨w, hw_left_root, hw_dist⟩ :=
     exists_complex_aroot_near_left_family
       (hfg := hfg) (hz := hz) hf_monic hg_monic hdeg ht hcoeff_bound_left
@@ -167,10 +158,10 @@ theorem exists_complex_aroot_near_right_family
       f + C μ * g = C μ * (C t * f + g) := by
     ext n
     simp [t]
-    field_simp [hμ_ne]
+    grind
   have hw_right_root : w ∈ (f + C μ * g).aroots ℂ := by
-    simpa [hscale, Polynomial.aroots_C_mul _ hμ_ne] using hw_left_root
-  exact ⟨w, hw_right_root, hw_dist⟩
+    simp_all
+  grind
 
 /-- Root continuity in the right affine family with an automatically chosen
 positive parameter. Given `ε > 0`, this returns `μ > 0` and a root of
@@ -187,19 +178,14 @@ theorem exists_mu_and_root_near_right_family
   obtain ⟨t, ht, b, hb_left_root, hb_dist⟩ :=
     exists_t_and_root_near_left_family
       (hfg := hfg) (ha := ha) hf_monic hg_monic hdeg hε
-  refine ⟨t⁻¹, by positivity, b, ?_, hb_dist⟩
+  refine ⟨t⁻¹, by simp_all, b, ?_, hb_dist⟩
   have ht_ne : t ≠ 0 := ne_of_gt ht
   have hscale :
       f + C (t⁻¹) * g = C (t⁻¹) * (C t * f + g) := by
     ext n
     simp
-    field_simp [ht_ne]
-  have hb_eval_left : (C t * f + g).eval b = 0 := by
-    simpa [Polynomial.IsRoot.def] using hb_left_root
-  have hb_eval_right : (f + C (t⁻¹) * g).eval b = 0 := by
-    rw [hscale, eval_mul, eval_C]
-    simp [hb_eval_left]
-  simpa [Polynomial.IsRoot.def] using hb_eval_right
+    grind
+  simp_all
 
 /-- Right-family coefficient smallness can be achieved by choosing `μ > 0`
 small enough. -/
@@ -209,12 +195,11 @@ theorem exists_mu_pos_with_normalized_right_family_bound
       (μ / (μ + 1)) * (coeffSumRange f + coeffSumRange g) < ε := by
   obtain ⟨t, ht, hbound⟩ :=
     exists_t_pos_with_normalized_left_family_bound (f := f) (g := g) hε
-  refine ⟨t⁻¹, by positivity, ?_⟩
+  refine ⟨t⁻¹, by simp_all, ?_⟩
   have ht_ne : t ≠ 0 := ne_of_gt ht
   have hcalc : t⁻¹ / (t⁻¹ + 1) = (t + 1)⁻¹ := by
-    field_simp [ht_ne]
-    ring
-  simpa [hcalc] using hbound
+    grind
+  lia
 
 /-- In the equal-degree monic setting, positive-combination real-rootedness
 forces every complex root of `f` to be real. -/
@@ -229,18 +214,12 @@ theorem im_eq_zero_of_aeval_zero_of_posComboRealRooted_monic_sameDegree
   let δ : ℝ := |z.im| / 2
   let R : ℝ := max ‖z‖ 1
   have hδ_pos : 0 < δ := by
-    unfold δ
-    exact half_pos (abs_pos.mpr hz_im_ne)
+    grind
   have hR_pos : 0 < R := by
-    unfold R
-    exact lt_of_lt_of_le zero_lt_one (le_max_right _ _)
+    grind
   have hf_deg_pos : 0 < f.natDegree := by
     by_contra hnot
-    have hf_deg0 : f.natDegree = 0 := Nat.eq_zero_of_not_pos hnot
-    have hf_eq_one : f = 1 := Polynomial.eq_one_of_monic_natDegree_zero hf_monic hf_deg0
-    have : (1 : ℂ) = 0 := by
-      simp [hf_eq_one] at hz
-    exact one_ne_zero this
+    simp_all
   have hdeg_nat_ne : f.natDegree ≠ 0 := Nat.ne_of_gt hf_deg_pos
   let u : ℝ := δ / (2 * R)
   let ε : ℝ := (u ^ f.natDegree) / (f.natDegree + 1)
@@ -265,27 +244,18 @@ theorem im_eq_zero_of_aeval_zero_of_posComboRealRooted_monic_sameDegree
       ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * R = δ / 2 := by
     have hmul :
         ((f.natDegree + 1 : ℝ) * ε) = u ^ f.natDegree := by
-      unfold ε
-      field_simp
+      grind
     calc
       ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * R
-          = (u ^ f.natDegree) ^ ((f.natDegree : ℝ)⁻¹) * R := by rw [hmul]
+          = (u ^ f.natDegree) ^ ((f.natDegree : ℝ)⁻¹) * R := by lia
       _ = u * R := by rw [Real.pow_rpow_inv_natCast hu_nonneg hdeg_nat_ne]
       _ = δ / 2 := by
-            unfold u
-            field_simp [hR_pos.ne']
+            grind
   have hdist_lt_delta : ‖z - w‖ < δ := by
-    calc
-      ‖z - w‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖z‖ 1 := hw_dist
-      _ = ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * R := by simp [R]
-      _ = δ / 2 := hbound_eq
-      _ < δ := by linarith [hδ_pos]
+    grind
   have him_le : |z.im| ≤ ‖z - w‖ := by
     simpa [Complex.sub_im, hw_im_zero] using (Complex.abs_im_le_norm (z - w))
-  have him_lt : |z.im| < δ := lt_of_le_of_lt him_le hdist_lt_delta
-  have hhalf : |z.im| < |z.im| / 2 := by
-    simpa [δ] using him_lt
-  nlinarith [abs_pos.mpr hz_im_ne, hhalf]
+  grind
 
 /-- Equal-degree monic positive-combination real-rootedness implies `f` is
 real-rooted. -/
@@ -298,14 +268,11 @@ theorem isRealRooted_left_of_posComboRealRooted_monic_sameDegree
       ∀ z ∈ (f.map (algebraMap ℝ ℂ)).roots, z ∈ (algebraMap ℝ ℂ).range := by
     intro z hz_mem
     have hmap_ne : f.map (algebraMap ℝ ℂ) ≠ 0 := by
-      exact
-        (Polynomial.map_ne_zero_iff (RingHom.injective (algebraMap ℝ ℂ))).2 hf_ne
+      simp_all
     have hz_root : (f.map (algebraMap ℝ ℂ)).IsRoot z :=
       (Polynomial.mem_roots hmap_ne).1 hz_mem
     have hz_aeval : f.aeval z = 0 := by
-      have hz_eval_map : (f.map (algebraMap ℝ ℂ)).eval z = 0 := by
-        simpa [Polynomial.IsRoot.def] using hz_root
-      simpa [eval₂_at_apply] using hz_eval_map
+      simp_all
     have hz_im :
         z.im = 0 :=
       im_eq_zero_of_aeval_zero_of_posComboRealRooted_monic_sameDegree
@@ -316,7 +283,7 @@ theorem isRealRooted_left_of_posComboRealRooted_monic_sameDegree
     exact
       Polynomial.Splits.of_splits_map (i := algebraMap ℝ ℂ)
         (IsAlgClosed.splits _) hroots_real
-  exact ⟨hf_ne, hsplit⟩
+  lia
 
 /-- Symmetric right-side version of
 `isRealRooted_left_of_posComboRealRooted_monic_sameDegree`. -/
@@ -341,11 +308,11 @@ theorem isRealRooted_left_of_posComboRealRooted_sameDegree
   have hf₀_monic : f₀.Monic := by
     unfold f₀
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
-    field_simp [hf_lc_ne]
+    simp_all
   have hg₀_monic : g₀.Monic := by
     unfold g₀
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
-    field_simp [hg_lc_ne]
+    simp_all
   have hdeg₀ : g₀.natDegree = f₀.natDegree := by
     unfold f₀ g₀
     rw [natDegree_C_mul (inv_ne_zero hf_lc_ne),
@@ -356,9 +323,7 @@ theorem isRealRooted_left_of_posComboRealRooted_sameDegree
       exact mul_pos hlam (inv_pos.mpr hf_pos)
     have hμ' : 0 < μ * g.leadingCoeff⁻¹ := by
       exact mul_pos hμ (inv_pos.mpr hg_pos)
-    have hbase :=
-      hfg (lam := lam * f.leadingCoeff⁻¹) (μ := μ * g.leadingCoeff⁻¹) hlam' hμ'
-    simpa [f₀, g₀, mul_assoc, mul_left_comm, mul_comm] using hbase
+    grind
   have hf₀_rr : (f₀ ≠ 0 ∧ f₀.Splits) :=
     isRealRooted_left_of_posComboRealRooted_monic_sameDegree
       (hfg := hfg₀) hf₀_monic hg₀_monic hdeg₀
@@ -368,7 +333,7 @@ theorem isRealRooted_left_of_posComboRealRooted_sameDegree
     simp [hf_lc_ne]
   have hf_rr_scaled : ((C f.leadingCoeff * f₀) ≠ 0 ∧ (C f.leadingCoeff * f₀).Splits) :=
     isRealRooted_C_mul hf₀_rr hf_lc_ne
-  simpa [hf_scale] using hf_rr_scaled
+  lia
 
 /-- Symmetric right-side version of
 `isRealRooted_left_of_posComboRealRooted_sameDegree`. -/

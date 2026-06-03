@@ -38,7 +38,7 @@ theorem toeplitzTotallyNonnegative_zero :
   intro n rows cols _hrows _hcols
   by_cases hn : n = 0
   · subst n
-    norm_num [toeplitzMinor]
+    simp
   · have hnpos : 0 < n := Nat.pos_of_ne_zero hn
     have hmatrix :
         toeplitzMinor (fun _ : ℕ => (0 : ℝ)) rows cols = 0 := by
@@ -68,14 +68,10 @@ theorem nonneg_of_isPolyaFrequencySequence
       (fun _ : Fin 1 => 0)
       (by
         intro i j hij
-        fin_cases i
-        fin_cases j
-        simp at hij)
+        lia)
       (by
         intro i j hij
-        fin_cases i
-        fin_cases j
-        simp at hij)
+        lia)
   simpa [toeplitzMinor, toeplitzEntry] using hminor
 
 /-- Toeplitz total nonnegativity of the coefficient sequence already implies
@@ -145,9 +141,7 @@ theorem aissenSchoenbergWhitneyForwardOrZero_of_forward
   intro p hnn hpf
   by_cases hp0 : p = 0
   · refine ⟨Or.inl hp0, ?_⟩
-    intro r hr
-    subst p
-    simp at hr
+    simp_all
   · rcases hASW hp0 hnn hpf with ⟨hrr, hroots⟩
     exact ⟨Or.inr hrr, hroots⟩
 
@@ -183,7 +177,7 @@ theorem not_aissenSchoenbergWhitneyForward_without_nonzero :
   have hpf : IsPolyaFrequencySequence (fun n => (0 : ℝ[X]).coeff n) := by
     change IsPolyaFrequencySequence (fun _ : ℕ => (0 : ℝ))
     exact isPolyaFrequencySequence_zero
-  exact (h hnn hpf).1.1 rfl
+  lia
 
 /-- Planning stub for the reverse Aissen--Schoenberg--Whitney theorem. -/
 def aissenSchoenbergWhitneyReverseStatement : Prop :=

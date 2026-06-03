@@ -22,11 +22,11 @@ lemma isNonnegLinearForm_zero : IsNonnegLinearForm (0 : ℝ[X]) := by
   simp
 
 lemma isNonnegLinearForm_one : IsNonnegLinearForm (1 : ℝ[X]) := by
-  refine ⟨1, 0, by positivity, le_rfl, ?_⟩
+  refine ⟨1, 0, by simp, le_rfl, ?_⟩
   simp
 
 lemma isNonnegLinearForm_X : IsNonnegLinearForm (X : ℝ[X]) := by
-  refine ⟨0, 1, le_rfl, by positivity, ?_⟩
+  refine ⟨0, 1, le_rfl, by simp, ?_⟩
   simp
 
 /-- Zero-based row-threshold condition: the `X`-coefficient can be positive
@@ -104,10 +104,10 @@ theorem rowThreshold_matrix_preserves_interlacing_seq_of_2x2
     (hG_affine : ∀ (i₁ i₂ : Fin G.length) (j₁ j₂ : Fin n),
       i₁ ≤ i₂ → j₁ ≤ j₂ →
       Has2x2InterlacingProperty
-        ((G.get i₁).get ⟨j₁, by have := hG_rect _ (G.get_mem i₁); lia⟩)
-        ((G.get i₁).get ⟨j₂, by have := hG_rect _ (G.get_mem i₁); lia⟩)
-        ((G.get i₂).get ⟨j₁, by have := hG_rect _ (G.get_mem i₂); lia⟩)
-        ((G.get i₂).get ⟨j₂, by have := hG_rect _ (G.get_mem i₂); lia⟩))
+        ((G.get i₁).get ⟨j₁, by simp_all⟩)
+        ((G.get i₁).get ⟨j₂, by simp_all⟩)
+        ((G.get i₂).get ⟨j₁, by simp_all⟩)
+        ((G.get i₂).get ⟨j₂, by simp_all⟩))
     (fs : List ℝ[X]) (hfs_len : fs.length = n)
     (hfs : IsInterlacingSeqNonneg fs) :
     IsInterlacingSeqNonneg (matPolyAction G fs) :=
@@ -125,10 +125,10 @@ theorem rowThreshold_matrix_preserves_interlacing_seq0_of_2x2
     (hG_affine : ∀ (i₁ i₂ : Fin G.length) (j₁ j₂ : Fin n),
       i₁ ≤ i₂ → j₁ ≤ j₂ →
       Has2x2InterlacingProperty0
-        ((G.get i₁).get ⟨j₁, by have := hG_rect _ (G.get_mem i₁); lia⟩)
-        ((G.get i₁).get ⟨j₂, by have := hG_rect _ (G.get_mem i₁); lia⟩)
-        ((G.get i₂).get ⟨j₁, by have := hG_rect _ (G.get_mem i₂); lia⟩)
-        ((G.get i₂).get ⟨j₂, by have := hG_rect _ (G.get_mem i₂); lia⟩))
+        ((G.get i₁).get ⟨j₁, by simp_all⟩)
+        ((G.get i₁).get ⟨j₂, by simp_all⟩)
+        ((G.get i₂).get ⟨j₁, by simp_all⟩)
+        ((G.get i₂).get ⟨j₂, by simp_all⟩))
     (fs : List ℝ[X]) (hfs_len : fs.length = n)
     (hfs : IsInterlacingSeqNonneg fs) :
     IsInterlacingSeq0Nonneg (matPolyAction G fs) :=

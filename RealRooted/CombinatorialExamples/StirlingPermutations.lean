@@ -51,9 +51,9 @@ lemma coeff_stirlingPermutationsCoeffA_mul (n k : Nat) (p : ℝ[X]) :
         = coeff (C (2 * n + 1 : ℝ) * (X * p)) (k + 1) := by
             rw [stirlingPermutationsCoeffA, mul_assoc]
     _ = (2 * n + 1 : ℝ) * coeff (X * p) (k + 1) := by
-          rw [coeff_C_mul]
+          grind
     _ = (2 * n + 1 : ℝ) * coeff p k := by
-          rw [coeff_X_mul]
+          simp
 
 lemma coeff_stirlingPermutationsCoeffB_mul_derivative (k : Nat) (p : ℝ[X]) :
     coeff (stirlingPermutationsCoeffB * p.derivative) (k + 1) =
@@ -68,16 +68,16 @@ lemma coeff_stirlingPermutationsCoeffB_mul_derivative (k : Nat) (p : ℝ[X]) :
       rw [hB, coeff_sub]
       have h₁ : coeff (X * p.derivative) 1 = coeff p 1 := by
         calc
-          coeff (X * p.derivative) 1 = coeff p.derivative 0 := by rw [coeff_X_mul]
+          coeff (X * p.derivative) 1 = coeff p.derivative 0 := by simp
           _ = coeff p 1 := by
                 rw [coeff_derivative]
                 ring
       have h₂ : coeff (X * X * p.derivative) 1 = 0 := by
         calc
           coeff (X * X * p.derivative) 1 = coeff (X * (X * p.derivative)) 1 := by
-            rw [mul_assoc]
-          _ = coeff (X * p.derivative) 0 := by rw [coeff_X_mul]
-          _ = 0 := by rw [coeff_X_mul_zero]
+            grind
+          _ = coeff (X * p.derivative) 0 := by simp
+          _ = 0 := by simp
       simp [h₁, h₂]
   | succ k =>
       rw [hB, coeff_sub]
@@ -85,33 +85,26 @@ lemma coeff_stirlingPermutationsCoeffB_mul_derivative (k : Nat) (p : ℝ[X]) :
           (k + 2 : ℝ) * coeff p (k + 2) := by
         calc
           coeff (X * p.derivative) (k + 2) = coeff p.derivative (k + 1) := by
-            rw [coeff_X_mul]
+            simp
           _ = (((k + 1 : Nat) : ℝ) + 1) * coeff p (k + 1 + 1) := by
                 rw [coeff_derivative, mul_comm]
           _ = (((k + 1 : Nat) : ℝ) + 1) * coeff p (k + 2) := by
-                have hidx : k + 1 + 1 = k + 2 := by lia
-                rw [hidx]
+                lia
           _ = (k + 2 : ℝ) * coeff p (k + 2) := by
-                have hcast : (((k + 1 : Nat) : ℝ) + 1) = (k + 2 : ℝ) := by
-                  exact_mod_cast (show k + 1 + 1 = k + 2 by lia)
-                rw [hcast]
+                grind
       have h₂ : coeff (X * X * p.derivative) (k + 2) =
           (k + 1 : ℝ) * coeff p (k + 1) := by
         calc
           coeff (X * X * p.derivative) (k + 2) = coeff (X * (X * p.derivative)) (k + 2) := by
-            rw [mul_assoc]
+            grind
           _ = coeff (X * p.derivative) (k + 1) := by
-                rw [coeff_X_mul]
+                simp
           _ = coeff p.derivative k := by
-                rw [coeff_X_mul]
+                simp
           _ = (k + 1 : ℝ) * coeff p (k + 1) := by
                 rw [coeff_derivative]
-                ring
-      rw [h₁, h₂]
-      have hcast : ((k + 1 : Nat) : ℝ) = (k : ℝ) + 1 := by
-        norm_num
-      rw [hcast]
-      ring
+                grind
+      grind
 
 lemma coeff_stirlingPermutations_succ (n k : Nat) :
     coeff (stirlingPermutations (n + 1)) (k + 1) =
@@ -138,23 +131,21 @@ lemma coeff_stirlingPermutations_top_pos_and_above :
           habove (n + 1) (by lia)
         have hscale : 0 < ((2 * n + 1 : ℝ) - n) := by
           nlinarith
-        simpa [hzero] using mul_pos hscale htop
+        simp_all
       · intro k hk
         cases k with
         | zero =>
             lia
         | succ j =>
             rw [show j + 1 = j + 0 + 1 by lia, coeff_stirlingPermutations_succ]
-            have hj : n < j := by lia
-            have hj' : n < j + 1 := by lia
-            simp [habove j hj, habove (j + 1) hj']
+            grind
 
 lemma natDegree_stirlingPermutations (n : Nat) :
     (stirlingPermutations n).natDegree = n := by
   rcases coeff_stirlingPermutations_top_pos_and_above n with ⟨htop, habove⟩
   apply natDegree_eq_of_le_of_coeff_ne_zero
   · exact natDegree_le_iff_coeff_eq_zero.mpr (fun k hk => habove k hk)
-  · exact ne_of_gt htop
+  · grind
 
 lemma stirlingPermutations_ne_zero (n : Nat) :
     stirlingPermutations n ≠ 0 := by
@@ -190,15 +181,15 @@ lemma stirlingPermutations_nonnegCoeffs :
             have hcoeff_j1 : 0 ≤ coeff (stirlingPermutations n) (j + 1) :=
               stirlingPermutations_nonnegCoeffs n (j + 1)
             have hscale : 0 ≤ ((2 * n + 1 : ℝ) - j) := by
-              have hj' : (j : ℝ) ≤ n := by exact_mod_cast hj
+              have hj' : (j : ℝ) ≤ n := by simp_all
               nlinarith
             exact add_nonneg (mul_nonneg hscale hcoeff_j)
-              (mul_nonneg (by positivity) hcoeff_j1)
+              (mul_nonneg (by grind) hcoeff_j1)
           · have hj' : n < j := lt_of_not_ge hj
             rcases coeff_stirlingPermutations_top_pos_and_above n with ⟨_, habove⟩
             have hcoeff_j : coeff (stirlingPermutations n) j = 0 := habove j hj'
             have hcoeff_j1 : coeff (stirlingPermutations n) (j + 1) = 0 := by
-              exact habove (j + 1) (by lia)
+              grind
             simp [hcoeff_j, hcoeff_j1]
 
 lemma roots_nonpos_stirlingPermutations_of_isRealRooted {n : Nat}
@@ -230,7 +221,7 @@ lemma prec_stirlingPermutations_one_two :
     simpa [stirlingPermutations_one] using
       interlaces_one_linear (p := stirlingPermutations 1) hdeg
   have hg_pos : HasPosLeadingCoeff (stirlingPermutations 1).derivative :=
-    (stirlingPermutations_posLeadingCoeff 1).derivative (by simp [hdeg])
+    (stirlingPermutations_posLeadingCoeff 1).derivative (by lia)
   have hNext_eq :
       stirlingPermutationsCoeffA 1 * stirlingPermutations 1 +
           stirlingPermutationsCoeffB * (stirlingPermutations 1).derivative =

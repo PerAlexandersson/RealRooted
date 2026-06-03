@@ -56,13 +56,13 @@ lemma coeff_coloredSetPartitionsCoeffB_mul_derivative (m k : Nat) (p : ℝ[X]) :
         = coeff (C (m : ℝ) * (X * p.derivative)) (k + 1) := by
             rw [coloredSetPartitionsCoeffB, mul_assoc]
     _ = (m : ℝ) * coeff (X * p.derivative) (k + 1) := by
-          rw [coeff_C_mul]
+          simp
     _ = (m : ℝ) * coeff p.derivative k := by
-          rw [coeff_X_mul]
+          simp
     _ = (m : ℝ) * ((k + 1 : ℝ) * coeff p (k + 1)) := by
           rw [coeff_derivative]
           ring
-    _ = ((m : ℝ) * (k + 1 : ℝ)) * coeff p (k + 1) := by ring
+    _ = ((m : ℝ) * (k + 1 : ℝ)) * coeff p (k + 1) := by grind
 
 lemma coeff_coloredSetPartitions_succ (c m n k : Nat) :
     coeff (coloredSetPartitions c m (n + 1)) (k + 1) =
@@ -85,18 +85,14 @@ lemma coeff_coloredSetPartitions_top_and_above :
       rcases coeff_coloredSetPartitions_top_and_above c m n with ⟨htop, habove⟩
       constructor
       · rw [show n + 1 = n + 0 + 1 by lia, coeff_coloredSetPartitions_succ]
-        have hzero : coeff (coloredSetPartitions c m n) (n + 1) = 0 :=
-          habove (n + 1) (by lia)
-        simp [htop, hzero]
+        simp_all
       · intro k hk
         cases k with
         | zero =>
             lia
         | succ j =>
             rw [show j + 1 = j + 0 + 1 by lia, coeff_coloredSetPartitions_succ]
-            have hj : n < j := by lia
-            have hj' : n < j + 1 := by lia
-            simp [habove j hj, habove (j + 1) hj']
+            grind
 
 lemma natDegree_coloredSetPartitions (c m n : Nat) :
     (coloredSetPartitions c m n).natDegree = n := by
@@ -109,7 +105,7 @@ lemma monic_coloredSetPartitions (c m n : Nat) :
     (coloredSetPartitions c m n).Monic := by
   rcases coeff_coloredSetPartitions_top_and_above c m n with ⟨htop, _⟩
   rw [Monic.def, leadingCoeff, natDegree_coloredSetPartitions]
-  simpa using htop
+  lia
 
 lemma coloredSetPartitions_ne_zero (c m n : Nat) :
     coloredSetPartitions c m n ≠ 0 :=
@@ -140,14 +136,14 @@ lemma coloredSetPartitions_nonnegCoeffs :
           have hC_zero :
               coeff (C (c : ℝ) * coloredSetPartitions c m n) 0 =
                 (c : ℝ) * coeff (coloredSetPartitions c m n) 0 := by
-            rw [coeff_C_mul]
+            simp
           have hB_zero :
               coeff (coloredSetPartitionsCoeffB m *
                 (coloredSetPartitions c m n).derivative) 0 = 0 := by
             simp [coloredSetPartitionsCoeffB]
           rw [coloredSetPartitions_succ, coeff_add, coloredSetPartitionsCoeffA, add_mul, coeff_add,
             hX_zero, hC_zero, hB_zero]
-          have hc_nonneg : 0 ≤ (c : ℝ) := by positivity
+          have hc_nonneg : 0 ≤ (c : ℝ) := by simp
           simpa using mul_nonneg hc_nonneg (coloredSetPartitions_nonnegCoeffs c m n 0)
       | succ j =>
           rw [coeff_coloredSetPartitions_succ]
@@ -173,7 +169,7 @@ lemma eval_coloredSetPartitionsCoeffB_nonpos_of_nonpos (m : Nat) {r : ℝ} (hr :
     (coloredSetPartitionsCoeffB m).eval r ≤ 0 := by
   unfold coloredSetPartitionsCoeffB
   rw [eval_mul, eval_C, eval_X]
-  exact mul_nonpos_of_nonneg_of_nonpos (by positivity) hr
+  exact mul_nonpos_of_nonneg_of_nonpos (by simp) hr
 
 lemma prec_coloredSetPartitions_one_two (c m : Nat) :
     Prec (coloredSetPartitions c m 1) (coloredSetPartitions c m 2) := by
@@ -186,7 +182,7 @@ lemma prec_coloredSetPartitions_one_two (c m : Nat) :
     simpa [coloredSetPartitions_one] using
       interlaces_one_linear (p := coloredSetPartitions c m 1) hdeg
   have hg_pos : HasPosLeadingCoeff (coloredSetPartitions c m 1).derivative :=
-    (coloredSetPartitions_posLeadingCoeff c m 1).derivative (by simp [hdeg])
+    (coloredSetPartitions_posLeadingCoeff c m 1).derivative (by lia)
   have hNext_eq :
       coloredSetPartitionsCoeffA c * coloredSetPartitions c m 1 +
           coloredSetPartitionsCoeffB m * (coloredSetPartitions c m 1).derivative =
@@ -248,7 +244,6 @@ theorem prec_coloredSetPartitions_succ (c m : Nat) :
       have hg_pos :
           HasPosLeadingCoeff (coloredSetPartitions c m (n + 2)).derivative :=
         (coloredSetPartitions_posLeadingCoeff c m (n + 2)).derivative (by
-          rw [natDegree_coloredSetPartitions]
           lia)
       have hNext_eq :
           coloredSetPartitionsCoeffA c * coloredSetPartitions c m (n + 2) +

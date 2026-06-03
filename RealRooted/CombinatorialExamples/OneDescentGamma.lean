@@ -52,7 +52,7 @@ lemma choose_cast_succ_eq_ratio (m j : Nat) :
     ((Nat.choose m (j + 1) : Nat) : ℝ) =
       ((Nat.choose m j : Nat) : ℝ) * (((m - j : Nat) : ℝ) / ((j + 1 : Nat) : ℝ)) := by
   have hj1_ne : ((j + 1 : Nat) : ℝ) ≠ 0 := by
-    exact_mod_cast (Nat.succ_ne_zero j)
+    grind
   rw [← mul_div_assoc]
   apply (eq_div_iff hj1_ne).2
   exact_mod_cast (Nat.choose_succ_right_eq m j)
@@ -64,7 +64,7 @@ lemma oneDescentGamma_linearShift_nonneg (m j : Nat) :
 lemma hasNonnegCoeffs_X_add_C {t : ℝ} (ht : 0 ≤ t) :
     HasNonnegCoeffs (X + C t) := by
   simpa [sub_eq_add_neg] using
-    (hasNonnegCoeffs_X_sub_C (r := -t) (by linarith : -t ≤ 0))
+    (hasNonnegCoeffs_X_sub_C (r := -t) (by simp_all : -t ≤ 0))
 
 lemma oneDescent_hasNonnegCoeffs_X : HasNonnegCoeffs (X : ℝ[X]) := by
   intro n
@@ -74,7 +74,7 @@ lemma oneDescent_hasNonnegCoeffs_X : HasNonnegCoeffs (X : ℝ[X]) := by
   | succ n =>
       cases n with
       | zero =>
-          simp [coeff_X]
+          simp
       | succ n =>
           simp [coeff_X]
 
@@ -85,17 +85,14 @@ lemma prec_X_add_C_to_X_mul_X_add_C {a b : ℝ}
     (ha : 0 ≤ a) (hab : a ≤ b) :
     Prec (X + C a) (X * (X + C b)) := by
   have hdeg_a : (X + C a).natDegree = 1 := by
-    rw [show X + C a = C (1 : ℝ) * X + C a by simp]
-    exact Polynomial.natDegree_linear (a := (1 : ℝ)) (b := a) one_ne_zero
+    simp
   have hdeg_b : (X + C b).natDegree = 1 := by
-    rw [show X + C b = C (1 : ℝ) * X + C b by simp]
-    exact Polynomial.natDegree_linear (a := (1 : ℝ)) (b := b) one_ne_zero
+    simp
   have hrr_a : ((X + C a) ≠ 0 ∧ (X + C a).Splits) := isRealRooted_of_degree_one hdeg_a
   have hrr_b : ((X + C b) ≠ 0 ∧ (X + C b).Splits) := isRealRooted_of_degree_one hdeg_b
   have hrr_q : ((X * (X + C b)) ≠ 0 ∧ (X * (X + C b)).Splits) := isRealRooted_X_mul hrr_b
   have hdeg_q : (X * (X + C b)).natDegree = 2 := by
-    rw [natDegree_mul X_ne_zero hrr_b.1, hdeg_b]
-    norm_num
+    simp_all
   have hb_nonneg : 0 ≤ b := by
     linarith
   have hrs_sorted : ([-b, (0 : ℝ)] : List ℝ).Pairwise (· ≤ ·) := by
@@ -105,25 +102,20 @@ lemma prec_X_add_C_to_X_mul_X_add_C {a b : ℝ}
   have hrs_eq : (↑([-b, (0 : ℝ)] : List ℝ) : Multiset ℝ) = (X * (X + C b)).roots := by
     rw [roots_mul (mul_ne_zero X_ne_zero hrr_b.1), roots_X]
     have hlin_roots : (X + C b).roots = {(-b : ℝ)} := by
-      rw [show X + C b = X - C (-b) by simp [sub_eq_add_neg], roots_X_sub_C]
+      simp
     rw [hlin_roots]
     rw [Multiset.add_comm]
     rfl
   have hss_eq : (↑([-a] : List ℝ) : Multiset ℝ) = (X + C a).roots := by
-    rw [show X + C a = X - C (-a) by simp [sub_eq_add_neg], roots_X_sub_C]
-    rfl
+    simp
   have hint : ListInterlaces ([-a] : List ℝ) [-b, (0 : ℝ)] := by
     change -b ≤ -a ∧ -a ≤ (0 : ℝ) ∧ True
-    constructor
-    · linarith
-    constructor
-    · linarith
-    · trivial
+    simp_all
   exact
     (show Interlaces (X + C a) (X * (X + C b)) by
       refine ⟨hrr_q, hrr_a, ?_, ?_⟩
-      · simp [hdeg_a, hdeg_q]
-      · exact ⟨[-b, (0 : ℝ)], [-a], hrs_sorted, hss_sorted, hrs_eq, hss_eq, hint⟩).toPrec
+      · lia
+      · grind).toPrec
 
 lemma oneDescentGammaTerm_succ
     (d m j r : Nat) (hjr : j < r) :
@@ -133,9 +125,7 @@ lemma oneDescentGammaTerm_succ
   have hrj : r - j = (r - (j + 1)) + 1 := by
     lia
   rw [hrj, Nat.choose_succ_succ', Nat.mul_add]
-  rw [Nat.cast_add, Nat.cast_mul, Nat.cast_mul]
-  rw [C_add, add_mul]
-  simp [add_comm]
+  grind
 
 lemma oneDescentGamma_zero
     (m j : Nat) (hjm : j ≤ m) :
@@ -149,7 +139,7 @@ lemma oneDescentGamma_zero
     unfold oneDescentGammaTerm
     have hjr : j < r := lt_of_le_of_ne (Finset.mem_Icc.mp hr).1 (Ne.symm hrj)
     have hchoose : Nat.choose 0 (r - j) = 0 := by
-      exact Nat.choose_eq_zero_of_lt (Nat.sub_pos_of_lt hjr)
+      grind
     simp [hchoose]
 
 lemma oneDescentGamma_recurrence
@@ -162,7 +152,7 @@ lemma oneDescentGamma_recurrence
   conv_rhs =>
     rw [Finset.Icc_eq_cons_Ioc hjm, Finset.sum_cons]
   have hsucc : Finset.Icc (j + 1) m = Finset.Ioc j m := by
-    simpa [Nat.succ_eq_add_one] using (Finset.Icc_succ_left_eq_Ioc j m)
+    grind
   have hhead :
       oneDescentGammaTerm (d + 1) m j j = oneDescentGammaTerm d m j j := by
     unfold oneDescentGammaTerm
@@ -200,7 +190,7 @@ lemma oneDescentGamma_one
   rw [hsub1]
   have hpow : (X : ℝ[X]) ^ (m - j) = X ^ (m - j - 1) * X := by
     have hpred : Nat.succ (m - j - 1) - 1 = m - j - 1 := by
-      simp
+      lia
     rw [show m - j = Nat.succ (m - j - 1) by lia, pow_succ, hpred]
   rw [hpow]
   have hchoose :
@@ -208,19 +198,7 @@ lemma oneDescentGamma_one
         C ((Nat.choose m j : Nat) : ℝ) *
           C ((((m - j : Nat) : ℝ) / ((j + 1 : Nat) : ℝ))) := by
     rw [choose_cast_succ_eq_ratio, C_mul]
-  calc
-    C ((Nat.choose m j : Nat) : ℝ) * (X ^ (m - j - 1) * X) +
-        C ((Nat.choose m (j + 1) : Nat) : ℝ) * X ^ (m - j - 1)
-      = C ((Nat.choose m j : Nat) : ℝ) * X ^ (m - j - 1) * X +
-          C ((Nat.choose m (j + 1) : Nat) : ℝ) * X ^ (m - j - 1) := by
-            ring
-    _ = C ((Nat.choose m j : Nat) : ℝ) * X ^ (m - j - 1) * X +
-          (C ((Nat.choose m j : Nat) : ℝ) *
-            C ((((m - j : Nat) : ℝ) / ((j + 1 : Nat) : ℝ)))) * X ^ (m - j - 1) := by
-            rw [hchoose]
-    _ = C ((Nat.choose m j : Nat) : ℝ) * X ^ (m - j - 1) *
-          (X + C (((m - j : Nat) : ℝ) / ((j + 1 : Nat) : ℝ))) := by
-            ring
+  grind
 
 lemma oneDescentQ_zero (m : Nat) :
     oneDescentQ 0 m = X ^ m - oneDescentCorrection m := by
@@ -240,29 +218,26 @@ lemma oneDescentQ_one_succ (m : Nat) :
   rw [oneDescentQ_recurrence 0 (m + 1), oneDescentQ_zero (m + 1),
     oneDescentGamma_zero (m + 1) 1 (Nat.succ_le_succ (Nat.zero_le m))]
   have hpow : (X : ℝ[X]) ^ (m + 1) = X * X ^ m := by
-    rw [pow_succ']
+    grind
   rw [oneDescentCorrection_succ m, hpow]
   have hexp : m + 1 - 1 = m := by
     lia
   rw [hexp]
   have hchoose : C ((Nat.choose (m + 1) 1 : Nat) : ℝ) = C ((m + 1 : Nat) : ℝ) := by
-    rw [Nat.choose_one_right, Nat.cast_add, Nat.cast_one]
-  rw [hchoose]
-  rw [Nat.cast_add, Nat.cast_one, C_add, C_1]
-  ring
+    simp
+  grind
 
 lemma prec_one_X_add_C (a : ℝ) :
     Prec (1 : ℝ[X]) (X + C a) := by
   have hdeg : (X + C a).natDegree = 1 := by
-    rw [show X + C a = C (1 : ℝ) * X + C a by simp]
-    exact Polynomial.natDegree_linear (a := (1 : ℝ)) (b := a) one_ne_zero
+    simp
   exact (interlaces_one_linear (p := X + C a) hdeg).toPrec
 
 lemma oneDescentQ_one (m : Nat) (hm : 0 < m) :
     oneDescentQ 1 m = X ^ (m - 1) * (X + C ((m - 1 : Nat) : ℝ)) := by
   cases m with
   | zero =>
-      cases hm
+      lia
   | succ n =>
       simpa using oneDescentQ_one_succ n
 
@@ -277,7 +252,7 @@ lemma oneDescentGamma_adjacent_linearShift_le
   have hstep : ((m - j : Nat) : ℝ) = ((m - (j + 1) : Nat) : ℝ) + 1 := by
     exact_mod_cast (show m - j = m - (j + 1) + 1 by lia)
   have hsucc : ((j + 2 : Nat) : ℝ) = ((j + 1 : Nat) : ℝ) + 1 := by
-    exact_mod_cast (show j + 2 = (j + 1) + 1 by lia)
+    grind
   field_simp [hj1_pos.ne', hj2_pos.ne']
   nlinarith [hstep, hsucc]
 
@@ -295,7 +270,7 @@ lemma oneDescent_prec_gamma_one_top (m : Nat) (hm : 0 < m) :
     prec_C_mul_right
       (prec_one_X_add_C ((((m - (m - 1) : Nat) : ℝ) / (((m - 1) + 1 : Nat) : ℝ))))
       hchoose_ne
-  simpa [pow_zero, mul_assoc, mul_left_comm, mul_comm] using hprec
+  lia
 
 lemma oneDescent_prec_gamma_one_adjacent
     (m j : Nat) (hj : j + 1 < m) :
@@ -341,13 +316,9 @@ lemma oneDescent_prec_gamma_one_terminal (m : Nat) (hm : 1 < m) :
   let a : ℝ := (((m - 1 : Nat) : ℝ) / (((1 + 1 : Nat) : ℝ)))
   let b : ℝ := ((m - 1 : Nat) : ℝ)
   have ha : 0 ≤ a := by
-    dsimp [a]
-    positivity
+    grind
   have hab : a ≤ b := by
-    dsimp [a, b]
-    have hm1_nonneg : 0 ≤ ((m - 1 : Nat) : ℝ) := by
-      positivity
-    nlinarith
+    grind
   have hbase : Prec (X + C a) (X * (X + C b)) := by
     exact prec_X_add_C_to_X_mul_X_add_C ha hab
   have hchoose_ne : (((Nat.choose m 1 : Nat) : ℝ)) ≠ 0 := by
@@ -387,14 +358,13 @@ theorem oneDescent_prec_gamma_one_terminal_chain
     subst hm_eq
     rw [oneDescentGamma_diag, oneDescentQ_one]
     · simpa using prec_one_X_add_C (0 : ℝ)
-    · norm_num
+    · lia
 
 /-- Every polynomial in the base `d = 1` Gamma family is real-rooted. -/
 theorem oneDescentGamma_one_isRealRooted
     (m j : Nat) (hj : j ≤ m) : ((oneDescentGamma 1 m j) ≠ 0 ∧ (oneDescentGamma 1 m j).Splits) := by
   by_cases htop : j = m
-  · subst htop
-    simp
+  · simp_all
   · have hjm : j < m := lt_of_le_of_ne hj htop
     rw [oneDescentGamma_one m j hjm]
     let a : ℝ := (((m - j : Nat) : ℝ) / ((j + 1 : Nat) : ℝ))

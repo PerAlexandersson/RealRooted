@@ -76,22 +76,17 @@ theorem favardInterlacing :
           have hBg_le : (bPoly * g).natDegree ≤ g.natDegree := by
             dsimp [bPoly]
             exact Polynomial.natDegree_C_mul_le _ _
-          have hg_lt : g.natDegree < f.natDegree := by lia
-          calc
-            (bPoly * g).natDegree ≤ g.natDegree := hBg_le
-            _ < f.natDegree := hg_lt
-            _ < f.natDegree + 1 := by lia
-            _ = (aPoly * f).natDegree := hAf_deg.symm
+          lia
         have hF_pos_aux : HasPosLeadingCoeff (bPoly * g + aPoly * f) :=
           hasPosLeadingCoeff_add_of_natDegree_lt_right hBg_lt_Af hAf_pos
         have hF_pos : HasPosLeadingCoeff (aPoly * f + bPoly * g) := by
-          simpa [add_comm] using hF_pos_aux
+          grind
         have hF_deg :
             (aPoly * f + bPoly * g).natDegree = f.natDegree + 1 := by
           have hdeg_aux :
               (bPoly * g + aPoly * f).natDegree = (aPoly * f).natDegree :=
             natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hBg_lt_Af hAf_pos
-          simpa [add_comm, hAf_deg] using hdeg_aux
+          grind
         have hdeg_lo : f.natDegree ≤ (aPoly * f + bPoly * g).natDegree := by
           lia
         have hdeg_hi : (aPoly * f + bPoly * g).natDegree ≤ f.natDegree + 1 := by
@@ -105,15 +100,8 @@ theorem favardInterlacing :
             (f := f) (g := g) (a := aPoly) (b := bPoly)
             hInter hPos_n hF_pos hdeg_lo hdeg_hi hb_nonpos
         have hInter_step : Interlaces f (aPoly * f + bPoly * g) := by
-          exact hPrec_step.toInterlaces (by simp [hF_deg])
-        have hP2 :
-            P (n + 2) = aPoly * f + bPoly * g := by
-          dsimp [aPoly, bPoly, f, g]
-          simpa [sub_eq_add_neg, add_assoc, add_left_comm, add_comm] using hstep n
-        refine ⟨?_, ?_, ?_⟩
-        · simpa [f, hP2] using hInter_step
-        · exact hPos_n1
-        · simpa [f, g, hP2] using hF_pos
+          exact hPrec_step.toInterlaces (by lia)
+        grind
   intro n
   exact (hQ n).1.toPrec
 
@@ -155,7 +143,7 @@ theorem isGeneralizedSturmSeq_reverse_range_map_of_favard
         rw [List.range_succ, List.reverse_append, List.reverse_singleton]
         simp
       have ih' : IsGeneralizedSturmSeq (P n :: ((List.range n).reverse.map P)) := by
-        simpa [hcons2] using ih
+        lia
       rw [hcons1, hcons2]
       simpa [IsGeneralizedSturmSeq] using And.intro hprec ih'
 

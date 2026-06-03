@@ -41,19 +41,19 @@ theorem preservesAllComboPairs_of_preservesRealRootedOrZero
       C α * T f + C β * T g
           = α • T f + β • T g := by simp [Polynomial.smul_eq_C_mul]
       _ = T (α • f) + T (β • g) := by
-            rw [← T.map_smul, ← T.map_smul]
+            simp
       _ = T (α • f + β • g) := by
-            rw [← T.map_add]
+            simp
       _ = T (C α * f + C β * g) := by
             simp [Polynomial.smul_eq_C_mul]
   rcases hall α β with hzero | hrr
   · left
-    simpa [hmap] using congrArg T hzero
+    simp_all
   · rcases hT (C α * f + C β * g) hrr with hzeroT | hrrT
     · left
-      simpa [hmap] using hzeroT
+      lia
     · right
-      simpa [hmap] using hrrT
+      lia
 
 /-- Real-rootedness-preserving linear operators preserve interlacing up to the
 order ambiguity built into the current oriented `Prec` predicate. Zero images
@@ -72,12 +72,12 @@ theorem preservesInterlacingPairsUpToOrder0_of_preservesRealRootedOrZero
   · exact Or.inl (hgT0 ▸ prec0_zero_right (T f))
   have hfT : ((T f) ≠ 0 ∧ (T f).Splits) := by
     rcases hallT 1 0 with hzero | hrr
-    · exact False.elim (hfT0 (by simpa using hzero))
-    · simpa using hrr
+    · simp_all
+    · simp_all
   have hgT : ((T g) ≠ 0 ∧ (T g).Splits) := by
     rcases hallT 0 1 with hzero | hrr
-    · exact False.elim (hgT0 (by simpa [add_comm] using hzero))
-    · simpa [add_comm] using hrr
+    · simp_all
+    · simp_all
   rcases natDegree_eq_or_succ_or_revSucc_of_allComboRealRooted hallT hfT0 hgT0 with
     hsame | hsucc | hrevsucc
   · rcases prec_of_allComboRealRooted hfT hgT hallT (Or.inr hsame) with hprec | hprec

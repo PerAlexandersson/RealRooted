@@ -39,8 +39,7 @@ lemma eulerianTilde_one : eulerianTilde 1 = X + X ^ 2 := by
     ext n
     cases n <;> simp
   simp only [CharP.cast_eq_zero, zero_add, eulerianTilde_zero, derivative_X, mul_one]
-  rw [htwo]
-  ring
+  grind
 
 /-- The affine derivative block appearing in the Eulerian recurrence. -/
 def affineEulerianTilde (n : Nat) : ℝ[X] :=
@@ -59,12 +58,10 @@ lemma coeff_eulerianTilde_succ (n m : Nat) :
   have hC :
       (C (n + 2 : ℝ) * eulerianTilde n).coeff m =
         (n + 2 : ℝ) * (eulerianTilde n).coeff m := by
-    simpa using
-      (coeff_C_mul (n := m) (a := (n + 2 : ℝ)) (p := eulerianTilde n))
+    grind
   have hCpoly : ((n : ℝ[X]) + C 2) = C (n + 2 : ℝ) := by
     simp
-  rw [hCpoly, hC]
-  ring
+  grind
 
 lemma coeff_eulerianTilde_top_and_above :
     ∀ n : Nat,
@@ -72,29 +69,24 @@ lemma coeff_eulerianTilde_top_and_above :
       ∀ m > n + 1, coeff (eulerianTilde n) m = 0
   | 0 => by
       constructor
-      · simp [eulerianTilde_zero, coeff_X]
+      · simp
       · intro m hm
-        have hm1 : 1 < m := by simpa using hm
+        have hm1 : 1 < m := by lia
         simp [eulerianTilde_zero, coeff_X, Nat.ne_of_lt hm1]
   | n + 1 => by
       rcases coeff_eulerianTilde_top_and_above n with ⟨htop, habove⟩
       constructor
       · rw [coeff_eulerianTilde_succ n (n + 1)]
-        have hzero : coeff (eulerianTilde n) (n + 2) = 0 :=
-          habove (n + 2) (by lia)
-        rw [hzero, htop]
-        norm_num
+        grind
       · intro m hm
         cases m with
         | zero =>
             lia
         | succ m =>
             have hzero₁ : coeff (eulerianTilde n) m = 0 := by
-              apply habove
-              lia
+              simp_all
             have hzero₂ : coeff (eulerianTilde n) (m + 1) = 0 := by
-              apply habove
-              lia
+              grind
             rw [coeff_eulerianTilde_succ n m]
             simp [hzero₁, hzero₂]
 
@@ -103,14 +95,13 @@ lemma natDegree_eulerianTilde (n : Nat) :
   rcases coeff_eulerianTilde_top_and_above n with ⟨htop, habove⟩
   apply natDegree_eq_of_le_of_coeff_ne_zero
   · exact natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm)
-  · rw [htop]
-    norm_num
+  · simp_all
 
 lemma monic_eulerianTilde (n : Nat) :
     (eulerianTilde n).Monic := by
   rcases coeff_eulerianTilde_top_and_above n with ⟨htop, _⟩
   rw [Monic.def, leadingCoeff, natDegree_eulerianTilde]
-  exact htop
+  lia
 
 lemma eulerianTilde_ne_zero (n : Nat) :
     eulerianTilde n ≠ 0 :=
@@ -126,9 +117,8 @@ lemma eulerianTilde_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (eulerianTilde n
   | 0 => by
       intro m
       by_cases hm : m = 1
-      · subst hm
-        simp [eulerianTilde_zero, coeff_X]
-      · have hm' : 1 ≠ m := by simpa [eq_comm] using hm
+      · simp_all
+      · have hm' : 1 ≠ m := by lia
         simp [eulerianTilde_zero, coeff_X, hm']
   | n + 1 => by
       intro m
@@ -147,15 +137,13 @@ lemma eulerianTilde_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (eulerianTilde n
               have hm' : (m : ℝ) ≤ n + 2 := by
                 exact_mod_cast (Nat.le_trans hm (Nat.le_succ _))
               linarith
-            exact add_nonneg (mul_nonneg hnm hcoeff_m) (mul_nonneg (by positivity) hcoeff_succ)
+            exact add_nonneg (mul_nonneg hnm hcoeff_m) (mul_nonneg (by grind) hcoeff_succ)
           · have hm' : n + 1 < m := lt_of_not_ge hm
             rcases coeff_eulerianTilde_top_and_above n with ⟨_, habove⟩
             have hcoeff_m : coeff (eulerianTilde n) m = 0 := by
-              apply habove
-              lia
+              simp_all
             have hcoeff_succ : coeff (eulerianTilde n) (m + 1) = 0 := by
-              apply habove
-              lia
+              grind
             simp [hcoeff_m, hcoeff_succ]
 
 lemma roots_nonpos_eulerianTilde_of_isRealRooted {n : Nat}
@@ -173,8 +161,8 @@ lemma prec_affineEulerianTilde {n : Nat}
     (by
       have hlt : (((eulerianTilde n).natDegree : ℝ)) < n + 2 := by
         rw [natDegree_eulerianTilde]
-        exact_mod_cast (Nat.lt_succ_self (n + 1))
-      exact hlt)
+        simp
+      lia)
 
 lemma affineEulerianTilde_nonnegCoeffs (n : Nat) :
     HasNonnegCoeffs (affineEulerianTilde n) := by
@@ -182,8 +170,7 @@ lemma affineEulerianTilde_nonnegCoeffs (n : Nat) :
   rw [affineEulerianTilde, coeff_add]
   rw [show coeff (C (n + 2 : ℝ) * eulerianTilde n) m =
       (n + 2 : ℝ) * coeff (eulerianTilde n) m by
-      simpa using
-        (coeff_C_mul (n := m) (a := (n + 2 : ℝ)) (p := eulerianTilde n))]
+      grind]
   rw [coeff_one_sub_X_mul_derivative]
   by_cases hm : m ≤ n + 1
   · have hcoeff_m : 0 ≤ coeff (eulerianTilde n) m :=
@@ -198,11 +185,9 @@ lemma affineEulerianTilde_nonnegCoeffs (n : Nat) :
   · have hm' : n + 1 < m := lt_of_not_ge hm
     rcases coeff_eulerianTilde_top_and_above n with ⟨_, habove⟩
     have hcoeff_m : coeff (eulerianTilde n) m = 0 := by
-      apply habove
-      lia
+      simp_all
     have hcoeff_succ : coeff (eulerianTilde n) (m + 1) = 0 := by
-      apply habove
-      lia
+      grind
     simp [hcoeff_m, hcoeff_succ]
 
 lemma roots_nonpos_affineEulerianTilde_of_isRealRooted {n : Nat}
@@ -244,8 +229,7 @@ theorem prec_eulerianTilde_succ : ∀ n : Nat,
     Prec (eulerianTilde n) (eulerianTilde (n + 1))
   | 0 => by
       have hrr0 : ((eulerianTilde 0) ≠ 0 ∧ (eulerianTilde 0).Splits) := by
-        apply isRealRooted_of_degree_one
-        simp [eulerianTilde_zero]
+        simp
       exact prec_eulerianTilde_succ_of_prec_affine
         (n := 0) (prec_affineEulerianTilde (n := 0) hrr0)
   | n + 1 => by
@@ -259,8 +243,7 @@ right-hand component of the interlacing induction. -/
 theorem isRealRooted_eulerianTilde : ∀ n : Nat,
     ((eulerianTilde n) ≠ 0 ∧ (eulerianTilde n).Splits)
   | 0 => by
-      apply isRealRooted_of_degree_one
-      simp [eulerianTilde_zero]
+      simp
   | n + 1 => by
       exact (prec_eulerianTilde_succ n).2.1
 
