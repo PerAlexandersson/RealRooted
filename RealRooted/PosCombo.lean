@@ -21,9 +21,9 @@ private lemma natDegree_eq_or_succ_of_prec {f g : ℝ[X]} (h : Prec f g) :
     g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 := by
   rcases h with ⟨hf, hg, ss, rs, _hss, _hrs, hss_eq, hrs_eq, hshape⟩
   have hss_len : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, hf.2]
+    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
   have hrs_len : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, hg.2]
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
   rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩
   · right
     lia
@@ -77,8 +77,10 @@ lemma prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
     Prec g ((X - C r) * f) := by
   set f' := f.comp (X + C r)
   set g' := g.comp (X + C r)
-  have hf' : IsRealRooted f' := by simpa [f'] using isRealRooted_comp_X_add_C h.1 r
-  have hg' : IsRealRooted g' := by simpa [g'] using isRealRooted_comp_X_add_C h.2.1 r
+  have hf' : (f' ≠ 0 ∧
+    f'.Splits) := by simpa [f'] using isRealRooted_comp_X_add_C h.1 r
+  have hg' : (g' ≠ 0 ∧
+    g'.Splits) := by simpa [g'] using isRealRooted_comp_X_add_C h.2.1 r
   have hf'_pos : HasPosLeadingCoeff f' := by
     unfold HasPosLeadingCoeff f'
     rw [leadingCoeff_comp (by simp), leadingCoeff_X_add_C, one_pow, mul_one]
@@ -118,13 +120,15 @@ lemma prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]} (r : ℝ
     Prec f g := by
   set f' := f.comp (X + C r)
   set g' := g.comp (X + C r)
-  have hXf : IsRealRooted ((X - C r) * f) := h.2.1
+  have hXf : (((X - C r) * f) ≠ 0 ∧ ((X - C r) * f).Splits) := h.2.1
   have hf0 : f ≠ 0 := right_ne_zero_of_mul hXf.1
-  have hf : IsRealRooted f := by
+  have hf : (f ≠ 0 ∧ f.Splits) := by
     apply isRealRooted_of_dvd hXf hf0
     exact ⟨X - C r, by rw [mul_comm]⟩
-  have hf' : IsRealRooted f' := by simpa [f'] using isRealRooted_comp_X_add_C hf r
-  have hg' : IsRealRooted g' := by simpa [g'] using isRealRooted_comp_X_add_C h.1 r
+  have hf' : (f' ≠ 0 ∧
+    f'.Splits) := by simpa [f'] using isRealRooted_comp_X_add_C hf r
+  have hg' : (g' ≠ 0 ∧
+    g'.Splits) := by simpa [g'] using isRealRooted_comp_X_add_C h.1 r
   have hf'_pos : HasPosLeadingCoeff f' := by
     unfold HasPosLeadingCoeff f'
     rw [leadingCoeff_comp (by simp), leadingCoeff_X_add_C, one_pow, mul_one]
@@ -169,7 +173,7 @@ interlaced on the left by `h`. -/
     Prec h (weightedSum l) := by
   rcases hex with ⟨ap0, hap0, ha0_pos⟩
   have hex0 : ∃ ap ∈ l, 0 < ap.1 := ⟨ap0, hap0, ha0_pos⟩
-  have hh : IsRealRooted h := (hprec ap0 hap0).1
+  have hh : (h ≠ 0 ∧ h.Splits) := (hprec ap0 hap0).1
   rcases exists_common_root_upper_bound h l with ⟨r, hh_le, hl_le⟩
   let H := (X - C r) * h
   have hH_pos : HasPosLeadingCoeff H := hasPosLeadingCoeff_X_sub_C_mul hpos
@@ -243,7 +247,7 @@ theorem prec_sum_left_of_common_left_signed
     (hne : l ≠ []) :
     Prec h l.sum := by
   rcases List.exists_mem_of_ne_nil l hne with ⟨p0, hp0⟩
-  have hh : IsRealRooted h := (hprec p0 hp0).1
+  have hh : (h ≠ 0 ∧ h.Splits) := (hprec p0 hp0).1
   have hlc_ne : h.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hh.1
   rcases lt_or_gt_of_ne hlc_ne with hneg | hpos
   · let h' : ℝ[X] := C (-1 : ℝ) * h
@@ -303,7 +307,7 @@ theorem prec0_sum_left_of_common_left_of_nonneg
       have hp_mem : p ∈ l := List.mem_of_mem_filter hp
       have hp_ne : p ≠ 0 := by
         simpa using (List.mem_filter.mp hp).2
-      have hp_rr : IsRealRooted p := (hprec' p hp).2.1
+      have hp_rr : (p ≠ 0 ∧ p.Splits) := (hprec' p hp).2.1
       exact (hnn p hp_mem).pos_leadingCoeff hp_ne
     have hstrict : Prec h l'.sum :=
       prec_sum_left_of_common_left_signed l' h hprec' hpos' hl'
@@ -459,8 +463,7 @@ theorem isRealRooted_nonneg_combo_of_prec {f g : ℝ[X]}
     (hfg : Prec f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
-    (hab : 0 < a ∨ 0 < b) :
-    IsRealRooted (C a * f + C b * g) :=
+    (hab : 0 < a ∨ 0 < b) : ((C a * f + C b * g) ≠ 0 ∧ (C a * f + C b * g).Splits) :=
   (prec_nonneg_combo_right hfg hf_pos hg_pos ha hb hab).1
 
 /-- Forward Obreschkoff direction, positive-coefficient special case:
@@ -468,15 +471,14 @@ theorem isRealRooted_nonneg_combo_of_prec {f g : ℝ[X]}
 theorem isRealRooted_pos_combo_of_prec {f g : ℝ[X]}
     (hfg : Prec f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
-    IsRealRooted (C a * f + C b * g) :=
+    {a b : ℝ} (ha : 0 < a) (hb : 0 < b) : ((C a * f + C b * g) ≠ 0 ∧ (C a * f + C b * g).Splits) :=
   isRealRooted_nonneg_combo_of_prec hfg hf_pos hg_pos ha.le hb.le (Or.inl ha)
 
 /-- A packaging of the positive-combination hypothesis that appears in the
 restricted Obreschkoff converse: every strictly positive linear combination of
 `f` and `g` is real-rooted. -/
 def PosComboRealRooted (f g : ℝ[X]) : Prop :=
-  ∀ {lam μ : ℝ}, 0 < lam → 0 < μ → IsRealRooted (C lam * f + C μ * g)
+  ∀ {lam μ : ℝ}, 0 < lam → 0 < μ → ((C lam * f + C μ * g) ≠ 0 ∧ (C lam * f + C μ * g).Splits)
 
 namespace PosComboRealRooted
 
@@ -491,17 +493,15 @@ lemma comm {f g : ℝ[X]} (h : PosComboRealRooted f g) :
   simpa [add_comm, mul_comm, mul_left_comm, mul_assoc] using h hμ hlam
 
 lemma isRealRooted_add {f g : ℝ[X]} (h : PosComboRealRooted f g) :
-    IsRealRooted (f + g) := by
+    ((f + g) ≠ 0 ∧ (f + g).Splits) := by
   simpa using h zero_lt_one zero_lt_one
 
 lemma isRealRooted_add_right {f g : ℝ[X]} (h : PosComboRealRooted f g)
-    {μ : ℝ} (hμ : 0 < μ) :
-    IsRealRooted (f + C μ * g) := by
+    {μ : ℝ} (hμ : 0 < μ) : ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits) := by
   simpa [one_mul, add_comm] using h zero_lt_one hμ
 
 lemma isRealRooted_add_left {f g : ℝ[X]} (h : PosComboRealRooted f g)
-    {lam : ℝ} (hlam : 0 < lam) :
-    IsRealRooted (C lam * f + g) := by
+    {lam : ℝ} (hlam : 0 < lam) : ((C lam * f + g) ≠ 0 ∧ (C lam * f + g).Splits) := by
   simpa [one_mul] using h hlam zero_lt_one
 
 lemma of_prec {f g : ℝ[X]} (hfg : Prec f g)
@@ -511,13 +511,14 @@ lemma of_prec {f g : ℝ[X]} (hfg : Prec f g)
   exact isRealRooted_pos_combo_of_prec hfg hf_pos hg_pos hlam hμ
 
 lemma iff_add_right {f g : ℝ[X]} :
-    PosComboRealRooted f g ↔ ∀ {μ : ℝ}, 0 < μ → IsRealRooted (f + C μ * g) := by
+    PosComboRealRooted f g ↔ ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits) := by
   constructor
   · intro h μ hμ
     simpa [one_mul, add_comm] using h (lam := 1) (μ := μ) zero_lt_one hμ
   · intro h lam μ hlam hμ
-    have hbase : IsRealRooted (f + C (μ / lam) * g) := h (μ := μ / lam) (by positivity)
-    have hscaled : IsRealRooted (C lam * (f + C (μ / lam) * g)) :=
+    have hbase : ((f + C (μ / lam) * g) ≠ 0 ∧
+      (f + C (μ / lam) * g).Splits) := h (μ := μ / lam) (by positivity)
+    have hscaled : ((C lam * (f + C (μ / lam) * g)) ≠ 0 ∧ (C lam * (f + C (μ / lam) * g)).Splits) :=
       isRealRooted_C_mul hbase hlam.ne'
     have hEq : C lam * (f + C (μ / lam) * g) = C lam * f + C μ * g := by
       rw [mul_add]
@@ -531,13 +532,15 @@ lemma iff_add_right {f g : ℝ[X]} :
     simpa [hEq] using hscaled
 
 lemma iff_add_left {f g : ℝ[X]} :
-    PosComboRealRooted f g ↔ ∀ {lam : ℝ}, 0 < lam → IsRealRooted (C lam * f + g) := by
+    PosComboRealRooted f g ↔ ∀ {lam : ℝ}, 0 < lam → ((C lam * f + g) ≠ 0 ∧
+      (C lam * f + g).Splits) := by
   constructor
   · intro h lam hlam
     simpa [one_mul] using h (lam := lam) (μ := 1) hlam zero_lt_one
   · intro h lam μ hlam hμ
-    have hbase : IsRealRooted (C (lam / μ) * f + g) := h (lam := lam / μ) (by positivity)
-    have hscaled : IsRealRooted (C μ * (C (lam / μ) * f + g)) :=
+    have hbase : ((C (lam / μ) * f + g) ≠ 0 ∧
+      (C (lam / μ) * f + g).Splits) := h (lam := lam / μ) (by positivity)
+    have hscaled : ((C μ * (C (lam / μ) * f + g)) ≠ 0 ∧ (C μ * (C (lam / μ) * f + g)).Splits) :=
       isRealRooted_C_mul hbase hμ.ne'
     have hEq : C μ * (C (lam / μ) * f + g) = C lam * f + C μ * g := by
       rw [mul_add]
@@ -552,12 +555,12 @@ lemma iff_add_left {f g : ℝ[X]} :
     simpa [hEq] using hscaled
 
 lemma of_add_right {f g : ℝ[X]}
-    (h : ∀ {μ : ℝ}, 0 < μ → IsRealRooted (f + C μ * g)) :
+    (h : ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits)) :
     PosComboRealRooted f g :=
   (iff_add_right (f := f) (g := g)).2 h
 
 lemma of_add_left {f g : ℝ[X]}
-    (h : ∀ {lam : ℝ}, 0 < lam → IsRealRooted (C lam * f + g)) :
+    (h : ∀ {lam : ℝ}, 0 < lam → ((C lam * f + g) ≠ 0 ∧ (C lam * f + g).Splits)) :
     PosComboRealRooted f g :=
   (iff_add_left (f := f) (g := g)).2 h
 
@@ -595,8 +598,7 @@ to be real-rooted. -/
 lemma isRealRooted_left_of_sameDegree {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree) :
-    IsRealRooted f := by
+    (hdeg : g.natDegree = f.natDegree) : (f ≠ 0 ∧ f.Splits) := by
   exact
     RealRooted.PosComboHyp.isRealRooted_left_of_posComboRealRooted_sameDegree
       (hfg := toPosComboHyp hfg) hf_pos hg_pos hdeg
@@ -606,8 +608,7 @@ to be real-rooted. -/
 lemma isRealRooted_right_of_sameDegree {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree) :
-    IsRealRooted g := by
+    (hdeg : g.natDegree = f.natDegree) : (g ≠ 0 ∧ g.Splits) := by
   exact
     RealRooted.PosComboHyp.isRealRooted_right_of_posComboRealRooted_sameDegree
       (hfg := toPosComboHyp hfg) hf_pos hg_pos hdeg
@@ -615,9 +616,9 @@ lemma isRealRooted_right_of_sameDegree {f g : ℝ[X]}
 /-- Positive-combination real-rootedness gives real-rootedness on the closed
 line segment once the two endpoints are known to be real-rooted. -/
 lemma isRealRooted_closed_segment {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
-    (hf : IsRealRooted f) (hg : IsRealRooted g)
+    (hf : f ≠ 0 ∧ f.Splits) (hg : g ≠ 0 ∧ g.Splits)
     {β : ℝ} (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1) :
-    IsRealRooted (C (1 - β) * f + C β * g) := by
+    ((C (1 - β) * f + C β * g) ≠ 0 ∧ (C (1 - β) * f + C β * g).Splits) := by
   rcases lt_or_eq_of_le hβ0 with hβ_pos | hβ_zero
   · rcases lt_or_eq_of_le hβ1 with hβ_lt | hβ_one
     · exact hfg (sub_pos.mpr hβ_lt) hβ_pos
@@ -634,7 +635,7 @@ lemma isRealRooted_closed_segment_of_sameDegree {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree = f.natDegree)
     {β : ℝ} (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1) :
-    IsRealRooted (C (1 - β) * f + C β * g) :=
+    ((C (1 - β) * f + C β * g) ≠ 0 ∧ (C (1 - β) * f + C β * g).Splits) :=
   hfg.isRealRooted_closed_segment
     (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg)
     (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg)
@@ -659,7 +660,7 @@ theorem of_aissenSchoenbergWhitney_right_pencil
   intro a b ha hb
   let z : ℝ := b / a
   have hz : 0 ≤ z := div_nonneg hb.le ha.le
-  have hp_rr : IsRealRooted (f + C z * g) := (hASW (hne hz) (hnn hz) (hpf hz)).1
+  have hp_rr : ((f + C z * g) ≠ 0 ∧ (f + C z * g).Splits) := (hASW (hne hz) (hnn hz) (hpf hz)).1
   have haz : a * z = b := by
     dsimp [z]
     exact mul_div_cancel₀ b ha.ne'
@@ -704,7 +705,8 @@ lemma family_pair_right {f g : ℝ[X]} (h : PosComboRealRooted f g)
   have hsum_pos : 0 < lam + μ := add_pos hlam hμ
   have hcomb_pos : 0 < lam * μ₁ + μ * μ₂ := by
     positivity
-  have hbase : IsRealRooted (C (lam + μ) * f + C (lam * μ₁ + μ * μ₂) * g) :=
+  have hbase : ((C (lam + μ) * f + C (lam * μ₁ + μ * μ₂) * g) ≠ 0 ∧
+    (C (lam + μ) * f + C (lam * μ₁ + μ * μ₂) * g).Splits) :=
     h hsum_pos hcomb_pos
   have hEq :
       C lam * (f + C μ₁ * g) + C μ * (f + C μ₂ * g)
@@ -738,7 +740,8 @@ lemma family_pair_left {f g : ℝ[X]} (h : PosComboRealRooted f g)
   have hcomb_pos : 0 < lam * lam₁ + μ * lam₂ := by
     positivity
   have hsum_pos : 0 < lam + μ := add_pos hlam hμ
-  have hbase : IsRealRooted (C (lam * lam₁ + μ * lam₂) * f + C (lam + μ) * g) :=
+  have hbase : ((C (lam * lam₁ + μ * lam₂) * f + C (lam + μ) * g) ≠ 0 ∧
+    (C (lam * lam₁ + μ * lam₂) * f + C (lam + μ) * g).Splits) :=
     h hcomb_pos hsum_pos
   have hEq :
       C lam * (C lam₁ * f + g) + C μ * (C lam₂ * f + g)
@@ -837,7 +840,7 @@ lemma of_mul_common_factor {d f g : ℝ[X]}
   have hEq :
       C lam * (d * f) + C μ * (d * g) = d * (C lam * f + C μ * g) := by
     ring
-  have hrr : IsRealRooted (d * (C lam * f + C μ * g)) := by
+  have hrr : ((d * (C lam * f + C μ * g)) ≠ 0 ∧ (d * (C lam * f + C μ * g)).Splits) := by
     simpa [hEq] using h hlam hμ
   have hcombo_ne : C lam * f + C μ * g ≠ 0 := right_ne_zero_of_mul hrr.1
   exact isRealRooted_of_dvd hrr hcombo_ne ⟨d, by rw [mul_comm]⟩
@@ -1392,7 +1395,7 @@ roots of `f`. This repackages the final Ma--Wang assembly step in the form
 needed by the same-degree Obreschkoff converse. -/
 theorem prec_same_of_root_sign_data
     {f g : ℝ[X]}
-    (hf : IsRealRooted f)
+    (hf : f ≠ 0 ∧ f.Splits)
     (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree = f.natDegree)
     (hdeg_pos : 1 ≤ f.natDegree)
@@ -1409,7 +1412,7 @@ theorem prec_same_of_root_sign_data
   have hrs_eq : (↑rs : Multiset ℝ) = f.roots := Multiset.sort_eq ..
   have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hlen : rs.length = f.natDegree := by
-    rw [show rs = f.roots.sort (· ≤ ·) by rfl, Multiset.length_sort, hf.2]
+    rw [show rs = f.roots.sort (· ≤ ·) by rfl, Multiset.length_sort, card_roots_of_splits hf.2]
   have hn : 1 ≤ rs.length := by
     rw [hlen]
     exact hdeg_pos
@@ -1457,17 +1460,17 @@ theorem prec_or_revPrec_of_same_degree_one
     (hdeg : g.natDegree = f.natDegree)
     (hf_deg1 : f.natDegree = 1) :
     Prec f g ∨ Prec g f := by
-  have hf_rr : IsRealRooted f := isRealRooted_of_degree_one hf_deg1
-  have hg_rr : IsRealRooted g := by
+  have hf_rr : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_degree_one hf_deg1
+  have hg_rr : (g ≠ 0 ∧ g.Splits) := by
     apply isRealRooted_of_degree_one
     lia
   obtain ⟨rf, hrf_eq⟩ : ∃ rf, f.roots = {rf} := by
     apply Multiset.card_eq_one.mp
-    simpa [hf_deg1] using hf_rr.2
+    simpa [hf_deg1] using card_roots_of_splits hf_rr.2
   obtain ⟨rg, hrg_eq⟩ : ∃ rg, g.roots = {rg} := by
     apply Multiset.card_eq_one.mp
     have : g.natDegree = 1 := by lia
-    simpa [this] using hg_rr.2
+    simpa [this] using card_roots_of_splits hg_rr.2
   by_cases hle : rf ≤ rg
   · left
     refine
@@ -1511,7 +1514,7 @@ theorem prec_convex_right {f g : ℝ[X]}
     (hfg : Prec f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b)
-    (_hfg_rr : IsRealRooted (C a * f + C b * g))
+    (_hfg_rr : (C a * f + C b * g) ≠ 0 ∧ (C a * f + C b * g).Splits)
     (_hcop : IsCoprime (C a * f) (C b * g)) :
     Prec (C a * f + C b * g) g := by
   exact prec_nonneg_combo_right hfg hf_pos hg_pos ha.le hb.le (Or.inl ha)
@@ -1524,7 +1527,7 @@ theorem prec_nonneg_combo_left {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
     (hab : 0 < a ∨ 0 < b)
-    (hfg_rr : IsRealRooted (C a * f + C b * g))
+    (hfg_rr : (C a * f + C b * g) ≠ 0 ∧ (C a * f + C b * g).Splits)
     (hcop : IsCoprime (C a * f) (C b * g)) :
     Prec f (C a * f + C b * g) := by
   rcases hab with ha_pos | hb_pos
@@ -1558,7 +1561,7 @@ theorem prec_convex_left {f g : ℝ[X]}
     (hfg : Prec f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b)
-    (hfg_rr : IsRealRooted (C a * f + C b * g))
+    (hfg_rr : (C a * f + C b * g) ≠ 0 ∧ (C a * f + C b * g).Splits)
     (hcop : IsCoprime (C a * f) (C b * g)) :
     Prec f (C a * f + C b * g) := by
   have hCa_pos : HasPosLeadingCoeff (C a * f) := hasPosLeadingCoeff_C_mul ha hf_pos
@@ -1572,13 +1575,13 @@ theorem prec_convex_left {f g : ℝ[X]}
 real-rooted factor `d`, it is enough to verify the Wagner-2 hypotheses after
 factoring out `d`. -/
 theorem prec_convex_left_of_common_factor {d f g : ℝ[X]}
-    (hd : IsRealRooted d)
+    (hd : d ≠ 0 ∧ d.Splits)
     {f' g' : ℝ[X]}
     (hf_def : f = d * f') (hg_def : g = d * g')
     (hfg : Prec f' g')
     (hf'_pos : HasPosLeadingCoeff f') (hg'_pos : HasPosLeadingCoeff g')
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b)
-    (hfg'_rr : IsRealRooted (C a * f' + C b * g'))
+    (hfg'_rr : (C a * f' + C b * g') ≠ 0 ∧ (C a * f' + C b * g').Splits)
     (hcop : IsCoprime (C a * f') (C b * g')) :
     Prec f (C a * f + C b * g) := by
   subst hf_def hg_def

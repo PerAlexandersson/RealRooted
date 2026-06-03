@@ -1567,7 +1567,7 @@ theorem isRealRooted_veroneseSectionPolynomial_of_pf {p : ℝ[X]}
     (hp : IsPolyaFrequencySequence (fun n => p.coeff n)) {r k : ℕ}
     (hr : 0 < r) (hk : k < r)
     (hsec0 : veroneseSectionPolynomial r k p ≠ 0) :
-    IsRealRooted (veroneseSectionPolynomial r k p) := by
+    ((veroneseSectionPolynomial r k p) ≠ 0 ∧ (veroneseSectionPolynomial r k p).Splits) := by
   have hpf : IsPolyaFrequencySequence
       (fun n => (veroneseSectionPolynomial r k p).coeff n) :=
     isPolyaFrequencySequence_veroneseSectionPolynomial_coeff (p := p) hp hr hk
@@ -1600,7 +1600,7 @@ nonnegative-coefficient polynomials, using the reverse ASW theorem. -/
 theorem isPolyaFrequencySequence_veroneseSectionPolynomial_of_realRooted_nonneg
     {p : ℝ[X]}
     (hASWrev : aissenSchoenbergWhitneyReverseStatement)
-    (hpnn : HasNonnegCoeffs p) (hprr : IsRealRooted p) {r k : ℕ}
+    (hpnn : HasNonnegCoeffs p) (hprr : p ≠ 0 ∧ p.Splits) {r k : ℕ}
     (hr : 0 < r) (hk : k < r) :
     IsPolyaFrequencySequence
       (fun n => (veroneseSectionPolynomial r k p).coeff n) := by
@@ -1615,10 +1615,10 @@ nonnegative-coefficient polynomials, assuming both directions of ASW. -/
 theorem isRealRooted_veroneseSectionPolynomial_of_realRooted_nonneg {p : ℝ[X]}
     (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hASWrev : aissenSchoenbergWhitneyReverseStatement)
-    (hpnn : HasNonnegCoeffs p) (hprr : IsRealRooted p) {r k : ℕ}
+    (hpnn : HasNonnegCoeffs p) (hprr : p ≠ 0 ∧ p.Splits) {r k : ℕ}
     (hr : 0 < r) (hk : k < r)
     (hsec0 : veroneseSectionPolynomial r k p ≠ 0) :
-    IsRealRooted (veroneseSectionPolynomial r k p) := by
+    ((veroneseSectionPolynomial r k p) ≠ 0 ∧ (veroneseSectionPolynomial r k p).Splits) := by
   have hpf : IsPolyaFrequencySequence
       (fun n => (veroneseSectionPolynomial r k p).coeff n) :=
     isPolyaFrequencySequence_veroneseSectionPolynomial_of_realRooted_nonneg
@@ -1632,7 +1632,7 @@ theorem isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg
     {p : ℝ[X]}
     (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
     (hASWrev : aissenSchoenbergWhitneyReverseStatement)
-    (hpnn : HasNonnegCoeffs p) (hprr : IsRealRooted p) {r k : ℕ}
+    (hpnn : HasNonnegCoeffs p) (hprr : p ≠ 0 ∧ p.Splits) {r k : ℕ}
     (hr : 0 < r) (hk : k < r) :
     IsRealRootedOrZero (veroneseSectionPolynomial r k p) := by
   have hpf : IsPolyaFrequencySequence
@@ -1647,7 +1647,7 @@ theorem veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_realRooted_nonneg
     {p : ℝ[X]}
     (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hASWrev : aissenSchoenbergWhitneyReverseStatement)
-    (hpnn : HasNonnegCoeffs p) (hprr : IsRealRooted p) {r k : ℕ}
+    (hpnn : HasNonnegCoeffs p) (hprr : p ≠ 0 ∧ p.Splits) {r k : ℕ}
     (hr : 0 < r) (hk : k < r) :
     IsRealRootedOrZero (veroneseSectionPolynomial r k p) :=
   isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg

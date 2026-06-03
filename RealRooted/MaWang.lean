@@ -396,7 +396,7 @@ theorem listAlternates_of_count_bounds
 inequalities against explicit sorted root lists. -/
 theorem prec_of_count_bounds_succ
     {f F : ℝ[X]} {rs ts : List ℝ}
-    (hf : IsRealRooted f) (hF : IsRealRooted F)
+    (hf : f ≠ 0 ∧ f.Splits) (hF : F ≠ 0 ∧ F.Splits)
     (hrs_sorted : rs.Pairwise (· ≤ ·))
     (hts_sorted : ts.Pairwise (· ≤ ·))
     (hrs_eq : (↑rs : Multiset ℝ) = f.roots)
@@ -416,9 +416,9 @@ theorem prec_of_count_bounds_succ
         pre.length + 1 < ts.countP (· ≤ s₂)) :
     Prec f F := by
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, hf.2]
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
   have hts_len : ts.length = F.natDegree := by
-    rw [← Multiset.coe_card, hts_eq, hF.2]
+    rw [← Multiset.coe_card, hts_eq, card_roots_of_splits hF.2]
   have hlen : rs.length + 1 = ts.length := by
     rw [hrs_len, hts_len, hdeg]
   exact ⟨hf, hF, rs, ts, hrs_sorted, hts_sorted, hrs_eq, hts_eq,
@@ -428,7 +428,7 @@ theorem prec_of_count_bounds_succ
 inequalities against explicit sorted root lists. -/
 theorem prec_of_count_bounds_same
     {f F : ℝ[X]} {rs ts : List ℝ}
-    (hf : IsRealRooted f) (hF : IsRealRooted F)
+    (hf : f ≠ 0 ∧ f.Splits) (hF : F ≠ 0 ∧ F.Splits)
     (hrs_sorted : rs.Pairwise (· ≤ ·))
     (hts_sorted : ts.Pairwise (· ≤ ·))
     (hrs_eq : (↑rs : Multiset ℝ) = f.roots)
@@ -444,9 +444,9 @@ theorem prec_of_count_bounds_same
         pre.length < ts.countP (· ≤ s₂)) :
     Prec f F := by
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, hf.2]
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
   have hts_len : ts.length = F.natDegree := by
-    rw [← Multiset.coe_card, hts_eq, hF.2]
+    rw [← Multiset.coe_card, hts_eq, card_roots_of_splits hF.2]
   have hlen : rs.length = ts.length := by
     rw [hrs_len, hts_len, hdeg]
   exact ⟨hf, hF, rs, ts, hrs_sorted, hts_sorted, hrs_eq, hts_eq,
@@ -483,7 +483,7 @@ private lemma nonneg_normalized_prod_sub_countP :
 `F.eval s` is controlled by the parity of the number of roots strictly to the
 right of `s`. -/
 private lemma nonneg_normalized_eval_of_countP_gt
-    {F : ℝ[X]} (hF : IsRealRooted F) (hF_pos : HasPosLeadingCoeff F)
+    {F : ℝ[X]} (hF : F ≠ 0 ∧ F.Splits) (hF_pos : HasPosLeadingCoeff F)
     {ts : List ℝ} (hts_eq : (↑ts : Multiset ℝ) = F.roots) (s : ℝ) :
     0 ≤ (-1 : ℝ) ^ (ts.countP (s < ·)) * F.eval s := by
   have hprod := nonneg_normalized_prod_sub_countP ts s
@@ -505,7 +505,7 @@ private lemma nonneg_normalized_eval_of_countP_gt
 /-- If the parity predicted by the root count would force a positive sign, then
 an assumed nonpositive value must actually be a root. -/
 private lemma isRoot_of_eval_nonpos_of_even_countP_gt
-    {F : ℝ[X]} (hF : IsRealRooted F) (hF_pos : HasPosLeadingCoeff F)
+    {F : ℝ[X]} (hF : F ≠ 0 ∧ F.Splits) (hF_pos : HasPosLeadingCoeff F)
     {ts : List ℝ} (hts_eq : (↑ts : Multiset ℝ) = F.roots) {s : ℝ}
     (hs : F.eval s ≤ 0) (heven : Even (ts.countP (s < ·))) :
     F.IsRoot s := by
@@ -519,7 +519,7 @@ private lemma isRoot_of_eval_nonpos_of_even_countP_gt
 /-- If the parity predicted by the root count would force a negative sign, then
 an assumed nonnegative value must actually be a root. -/
 private lemma isRoot_of_eval_nonneg_of_odd_countP_gt
-    {F : ℝ[X]} (hF : IsRealRooted F) (hF_pos : HasPosLeadingCoeff F)
+    {F : ℝ[X]} (hF : F ≠ 0 ∧ F.Splits) (hF_pos : HasPosLeadingCoeff F)
     {ts : List ℝ} (hts_eq : (↑ts : Multiset ℝ) = F.roots) {s : ℝ}
     (hs : 0 ≤ F.eval s) (hodd : Odd (ts.countP (s < ·))) :
     F.IsRoot s := by
@@ -534,7 +534,7 @@ private lemma isRoot_of_eval_nonneg_of_odd_countP_gt
 /-- A strictly negative value occurs only when an odd number of roots lie
 strictly to the right. -/
 private lemma odd_countP_gt_of_eval_neg
-    {F : ℝ[X]} (hF : IsRealRooted F) (hF_pos : HasPosLeadingCoeff F)
+    {F : ℝ[X]} (hF : F ≠ 0 ∧ F.Splits) (hF_pos : HasPosLeadingCoeff F)
     {ts : List ℝ} (hts_eq : (↑ts : Multiset ℝ) = F.roots) {s : ℝ}
     (hs : F.eval s < 0) :
     Odd (ts.countP (s < ·)) := by
@@ -550,7 +550,7 @@ private lemma odd_countP_gt_of_eval_neg
 /-- A strictly positive value occurs only when an even number of roots lie
 strictly to the right. -/
 private lemma even_countP_gt_of_eval_pos
-    {F : ℝ[X]} (hF : IsRealRooted F) (hF_pos : HasPosLeadingCoeff F)
+    {F : ℝ[X]} (hF : F ≠ 0 ∧ F.Splits) (hF_pos : HasPosLeadingCoeff F)
     {ts : List ℝ} (hts_eq : (↑ts : Multiset ℝ) = F.roots) {s : ℝ}
     (hs : 0 < F.eval s) :
     Even (ts.countP (s < ·)) := by
@@ -616,7 +616,7 @@ private lemma exists_mem_between_of_listInterlaces_consecutive :
 are strictly increasing. -/
 private lemma lt_of_consecutive_of_interlaces_of_no_common
     {f g : ℝ[X]} {rs ss pre : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ}
-    (hf : IsRealRooted f) (hg : IsRealRooted g)
+    (hf : f ≠ 0 ∧ f.Splits) (hg : g ≠ 0 ∧ g.Splits)
     (hrs_eq : (↑rs : Multiset ℝ) = f.roots)
     (hss_eq : (↑ss : Multiset ℝ) = g.roots)
     (hint : ListInterlaces ss rs)
@@ -838,7 +838,7 @@ private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive :
 /-- At consecutive roots of the right-hand polynomial in an interlacing layout,
 the interlacing polynomial has opposite-or-zero signs. -/
 private lemma eval_mul_eval_nonpos_of_interlacing_heads {g : ℝ[X]}
-    (hg : IsRealRooted g) (_hg_pos : HasPosLeadingCoeff g)
+    (hg : g ≠ 0 ∧ g.Splits) (_hg_pos : HasPosLeadingCoeff g)
     {ss : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ}
     (hss_eq : (↑ss : Multiset ℝ) = g.roots)
     (hint : ListInterlaces ss (r₁ :: r₂ :: rest)) :
@@ -872,7 +872,7 @@ private lemma eval_mul_eval_nonpos_of_interlacing_heads {g : ℝ[X]}
 /-- At any consecutive pair in a sorted interlacing layout, the interlacing
 polynomial has opposite-or-zero signs. -/
 private lemma eval_mul_eval_nonpos_of_interlacing_consecutive {g : ℝ[X]}
-    (hg : IsRealRooted g)
+    (hg : g ≠ 0 ∧ g.Splits)
     {ss rs pre : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ}
     (hrs_sorted : rs.Pairwise (· ≤ ·))
     (hss_eq : (↑ss : Multiset ℝ) = g.roots)
@@ -1057,7 +1057,7 @@ private lemma listInterlaces_all_le_getLast :
           ((List.pairwise_cons.mp hrs_sorted).2) htail u hu'
 
 private lemma eval_pos_of_all_roots_lt {p : ℝ[X]} {r : ℝ}
-    (hp : IsRealRooted p) (hp_pos : HasPosLeadingCoeff p)
+    (hp : p ≠ 0 ∧ p.Splits) (hp_pos : HasPosLeadingCoeff p)
     (hlt : ∀ t ∈ p.roots, t < r) :
     0 < p.eval r := by
   rw [eval_eq_leadingCoeff_mul_prod_sub hp r]
@@ -1069,7 +1069,7 @@ private lemma eval_pos_of_all_roots_lt {p : ℝ[X]} {r : ℝ}
   exact mul_pos hp_pos hprod
 
 private lemma eval_pos_of_all_roots_gt_of_even {p : ℝ[X]} {r : ℝ}
-    (hp : IsRealRooted p) (hp_pos : HasPosLeadingCoeff p)
+    (hp : p ≠ 0 ∧ p.Splits) (hp_pos : HasPosLeadingCoeff p)
     (hpar : Even p.natDegree)
     (hgt : ∀ t ∈ p.roots, r < t) :
     0 < p.eval r := by
@@ -1087,7 +1087,7 @@ private lemma eval_pos_of_all_roots_gt_of_even {p : ℝ[X]} {r : ℝ}
       exact not_lt_of_ge hu_le (hgt u ((mem_roots hp.1).mpr hu_root))
 
 private lemma eval_neg_of_all_roots_gt_of_odd {p : ℝ[X]} {r : ℝ}
-    (hp : IsRealRooted p) (hp_pos : HasPosLeadingCoeff p)
+    (hp : p ≠ 0 ∧ p.Splits) (hp_pos : HasPosLeadingCoeff p)
     (hpar : Odd p.natDegree)
     (hgt : ∀ t ∈ p.roots, r < t) :
     p.eval r < 0 := by
@@ -1107,7 +1107,7 @@ private lemma eval_neg_of_all_roots_gt_of_odd {p : ℝ[X]} {r : ℝ}
 
 private lemma eval_sign_of_interlaces_root
     {f g : ℝ[X]} {rs ss : List ℝ}
-    (hg : IsRealRooted g) (hg_pos : HasPosLeadingCoeff g)
+    (hg : g ≠ 0 ∧ g.Splits) (hg_pos : HasPosLeadingCoeff g)
     (hrs_sorted : rs.Pairwise (· ≤ ·))
     (hrs_eq : (↑rs : Multiset ℝ) = f.roots)
     (hss_eq : (↑ss : Multiset ℝ) = g.roots)
@@ -1198,7 +1198,7 @@ private lemma mul_nonpos_of_mul_nonpos_of_mul_neg {a b c d : ℝ}
 private lemma isRoot_of_eq_max_countP_le_of_sign
     {_f g F : ℝ[X]} {rs ts : List ℝ} {off : ℕ}
     {pre : List ℝ} {r : ℝ} {rest : List ℝ}
-    (hF : IsRealRooted F) (hF_pos : HasPosLeadingCoeff F)
+    (hF : F ≠ 0 ∧ F.Splits) (hF_pos : HasPosLeadingCoeff F)
     (_hrs_eq : (↑rs : Multiset ℝ) = _f.roots)
     (hts_eq : (↑ts : Multiset ℝ) = F.roots)
     (hoff : ts.length = rs.length + off)
@@ -1228,7 +1228,7 @@ private lemma isRoot_of_eq_max_countP_le_of_sign
 
 private lemma countP_le_of_eq_max_isRoot
     {_f F : ℝ[X]} {rs ts : List ℝ} {off : ℕ}
-    (hF : IsRealRooted F)
+    (hF : F ≠ 0 ∧ F.Splits)
     (_hrs_sorted : rs.Pairwise (· ≤ ·))
     (hts_eq : (↑ts : Multiset ℝ) = F.roots)
     (hoff : ts.length = rs.length + off)
@@ -1290,7 +1290,7 @@ private lemma countP_le_of_eq_max_isRoot
 
 private lemma countP_lt_of_eq_max_isRoot
     {_f F : ℝ[X]} {rs ts : List ℝ} {off : ℕ}
-    (hF : IsRealRooted F)
+    (hF : F ≠ 0 ∧ F.Splits)
     (hts_eq : (↑ts : Multiset ℝ) = F.roots)
     (hcount_le :
       ∀ (pre : List ℝ) {r : ℝ} {rest : List ℝ},
@@ -1383,7 +1383,7 @@ produce inner roots of `F`; if one additional root of `F` lies strictly to the
 right of all roots of `f`, then `f ≺ F` in the same-degree sense. -/
 theorem prec_same_of_strict_signs_of_right_root
     {f F : ℝ[X]} {rs : List ℝ}
-    (hf : IsRealRooted f) (hF_ne : F ≠ 0)
+    (hf : f ≠ 0 ∧ f.Splits) (hF_ne : F ≠ 0)
     (hrs_sorted : rs.Pairwise (· ≤ ·))
     (hrs_eq : (↑rs : Multiset ℝ) = f.roots)
     (hdeg : F.natDegree = f.natDegree)
@@ -1398,7 +1398,7 @@ theorem prec_same_of_strict_signs_of_right_root
   obtain ⟨us, hus_len, hus_int, hus_roots, hus_pw⟩ :=
     exists_roots_strictly_interlacing_of_consecutive_signs (F := F) hrs_sorted hsign
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, hf.2]
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
   have hrs_ne : rs ≠ [] := by
     intro h
     simp [h] at hn
@@ -1435,8 +1435,8 @@ theorem prec_same_of_strict_signs_of_right_root
         F.roots.card ≤ F.natDegree := card_roots' F
         _ = (us ++ [uR]).length := hws_len.symm
         _ = (↑(us ++ [uR]) : Multiset ℝ).card := (Multiset.coe_card _).symm)
-  have hF : IsRealRooted F := by
-    refine ⟨hF_ne, ?_⟩
+  have hF : (F ≠ 0 ∧ F.Splits) := by
+    refine ⟨hF_ne, splits_of_card_roots ?_⟩
     rw [← hws_eq, Multiset.coe_card, hws_len]
   have hws_sorted : (us ++ [uR]).Pairwise (· ≤ ·) := hws_pw.imp le_of_lt
   have hshape : ListAlternates (r :: rs') (us ++ [uR]) := by
@@ -1508,7 +1508,7 @@ private lemma listInterlaces_with_outer :
 root list together with one strict outer root on each side. -/
 theorem prec_of_strict_signs_of_strict_outer_roots
     {f F : ℝ[X]} {rs : List ℝ}
-    (hf : IsRealRooted f) (hF_ne : F ≠ 0)
+    (hf : f ≠ 0 ∧ f.Splits) (hF_ne : F ≠ 0)
     (hrs_sorted : rs.Pairwise (· ≤ ·))
     (hrs_eq : (↑rs : Multiset ℝ) = f.roots)
     (hdeg : F.natDegree = f.natDegree + 1)
@@ -1525,7 +1525,7 @@ theorem prec_of_strict_signs_of_strict_outer_roots
   obtain ⟨us, hus_len, hus_int, hus_roots, hus_pw⟩ :=
     exists_roots_strictly_interlacing_of_consecutive_signs (F := F) hrs_sorted hsign
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, hf.2]
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
   have hrs_ne : rs ≠ [] := by
     intro h
     simp [h] at hn
@@ -1576,8 +1576,8 @@ theorem prec_of_strict_signs_of_strict_outer_roots
         F.roots.card ≤ F.natDegree := card_roots' F
         _ = (uL :: us ++ [uR]).length := hws_len.symm
         _ = (↑(uL :: us ++ [uR]) : Multiset ℝ).card := (Multiset.coe_card _).symm)
-  have hF : IsRealRooted F := by
-    refine ⟨hF_ne, ?_⟩
+  have hF : (F ≠ 0 ∧ F.Splits) := by
+    refine ⟨hF_ne, splits_of_card_roots ?_⟩
     rw [← hws_eq, Multiset.coe_card, hws_len]
   have hws_sorted : (uL :: us ++ [uR]).Pairwise (· ≤ ·) := hws_pw.imp le_of_lt
   have hshape : ListInterlaces (r :: rs') (uL :: us ++ [uR]) := by
@@ -1633,7 +1633,7 @@ consecutive `f`-roots, is positive at the leftmost `f`-root, and negative at
 the rightmost `f`-root, then `f ⊳ F`. -/
 theorem prec_of_strict_signs_of_endSigns_even
     {f F : ℝ[X]} {rs : List ℝ}
-    (hf : IsRealRooted f)
+    (hf : f ≠ 0 ∧ f.Splits)
     (hF_pos : HasPosLeadingCoeff F)
     (hrs_sorted : rs.Pairwise (· ≤ ·))
     (hrs_eq : (↑rs : Multiset ℝ) = f.roots)
@@ -1702,7 +1702,7 @@ consecutive `f`-roots, and is negative at both extreme `f`-roots, then
 `f ⊳ F`. -/
 theorem prec_of_strict_signs_of_endSigns_odd
     {f F : ℝ[X]} {rs : List ℝ}
-    (hf : IsRealRooted f)
+    (hf : f ≠ 0 ∧ f.Splits)
     (hF_pos : HasPosLeadingCoeff F)
     (hrs_sorted : rs.Pairwise (· ≤ ·))
     (hrs_eq : (↑rs : Multiset ℝ) = f.roots)
@@ -1776,7 +1776,7 @@ theorem prec_of_interlaces_eval_mul_neg_succ {f g F : ℝ[X]}
     Prec f F := by
   obtain ⟨hf, hg, hgdeg, rs, ss, hrs_sorted, hss_sorted, hrs_eq, hss_eq, hint⟩ := hgf
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, hf.2]
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
   have hn : 1 ≤ rs.length := by
     rw [hrs_len]
     lia
@@ -1903,7 +1903,7 @@ theorem prec_of_interlaces_eval_mul_neg_same {f g F : ℝ[X]}
     Prec f F := by
   obtain ⟨hf, hg, hgdeg, rs, ss, hrs_sorted, hss_sorted, hrs_eq, hss_eq, hint⟩ := hgf
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, hf.2]
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
   have hn : 1 ≤ rs.length := by
     rw [hrs_len]
     lia
@@ -2285,7 +2285,7 @@ theorem isRealRooted_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0)
     {δ : ℝ} (hδ : 0 < δ) :
-    IsRealRooted ((a * f + b * g) - C δ * g) :=
+    (((a * f + b * g) - C δ * g) ≠ 0 ∧ ((a * f + b * g) - C δ * g).Splits) :=
   (prec_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
     hgf hg_pos hF_pos hdeg_lo hdeg_hi hno hb_nonpos hδ).2.1
 
@@ -2305,14 +2305,16 @@ private lemma coeff_norm_le_coeffSumRange (p : ℝ[X]) (i : ℕ) :
       exact Finset.sum_nonneg fun _ _ => norm_nonneg _
     simpa using hnonneg
 
-private lemma mem_range_of_mem_aroots_of_isRealRooted {p : ℝ[X]} (hp : IsRealRooted p)
+private lemma mem_range_of_mem_aroots_of_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧
+  p.Splits)
     {z : ℂ} (hz : z ∈ p.aroots ℂ) :
     z ∈ (algebraMap ℝ ℂ).range := by
   have hmap :
       p.roots.map (algebraMap ℝ ℂ) = p.aroots ℂ := by
     simpa [Polynomial.aroots_def] using
       roots_map_of_injective_of_card_eq_natDegree
-        (p := p) (f := algebraMap ℝ ℂ) (algebraMap ℝ ℂ).injective hp.2
+        (p := p) (f := algebraMap ℝ ℂ) (algebraMap ℝ ℂ).injective
+        (card_roots_of_splits hp.2)
   rw [← hmap] at hz
   rcases Multiset.mem_map.mp hz with ⟨x, _, rfl⟩
   exact ⟨x, rfl⟩
@@ -2327,7 +2329,7 @@ theorem isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
     (hdeg_hi : (a * f + b * g).natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0) :
-    IsRealRooted (a * f + b * g) := by
+    ((a * f + b * g) ≠ 0 ∧ (a * f + b * g).Splits) := by
   let F : ℝ[X] := a * f + b * g
   have hF_ne : F ≠ 0 := by
     intro h0
@@ -2426,10 +2428,10 @@ theorem isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
       Polynomial.exists_aroots_norm_sub_lt_of_norm_coeff_sub_lt
         (f := q) (g := qδ) hη_pos hz_aeval hq_monic hqδ_monic hqδ_deg hqδ_coeff
         (IsAlgClosed.splits _)
-    have hFδ_rr : IsRealRooted (F - C δ * g) :=
+    have hFδ_rr : ((F - C δ * g) ≠ 0 ∧ (F - C δ * g).Splits) :=
       isRealRooted_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
         hgf hg_pos hF_pos hdeg_lo hdeg_hi hno hb_nonpos hδ_pos
-    have hqδ_rr : IsRealRooted qδ :=
+    have hqδ_rr : (qδ ≠ 0 ∧ qδ.Splits) :=
       isRealRooted_C_mul hFδ_rr (inv_ne_zero hlc_ne)
     rcases mem_range_of_mem_aroots_of_isRealRooted hqδ_rr hw_mem with ⟨x, rfl⟩
     have him_le : eps0 ≤ ‖z - x‖ := by
@@ -2464,8 +2466,8 @@ theorem isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
   have hq_split : q.Splits := by
     exact Polynomial.Splits.of_splits_map (i := algebraMap ℝ ℂ)
       (IsAlgClosed.splits _) hroots_real
-  have hq_rr : IsRealRooted q := by
-    exact ⟨hq_ne, splits_iff_card_roots.mp hq_split⟩
+  have hq_rr : (q ≠ 0 ∧ q.Splits) := by
+    exact ⟨hq_ne, hq_split⟩
   have hF_eq : C F.leadingCoeff * q = F := by
     unfold q
     calc
@@ -2473,7 +2475,7 @@ theorem isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
           = (C F.leadingCoeff * C F.leadingCoeff⁻¹) * F := by rw [mul_assoc]
       _ = C (F.leadingCoeff * F.leadingCoeff⁻¹) * F := by rw [C_mul]
       _ = F := by simp [hlc_ne]
-  have hF_rr : IsRealRooted F := by
+  have hF_rr : (F ≠ 0 ∧ F.Splits) := by
     rw [← hF_eq]
     exact isRealRooted_C_mul hq_rr hlc_ne
   simpa [F] using hF_rr
@@ -2486,8 +2488,8 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
     (hgf : Interlaces g f)
     (hF_pos : HasPosLeadingCoeff F)
     (hdeg_lo : f.natDegree ≤ F.natDegree)
-    (hsub_rr : ∀ {δ : ℝ}, 0 < δ → IsRealRooted (F - C δ * g)) :
-    IsRealRooted F := by
+    (hsub_rr : ∀ {δ : ℝ}, 0 < δ → ((F - C δ * g) ≠ 0 ∧ (F - C δ * g).Splits)) :
+    (F ≠ 0 ∧ F.Splits) := by
   have hF_ne : F ≠ 0 := by
     intro h0
     simp [HasPosLeadingCoeff, h0] at hF_pos
@@ -2580,8 +2582,8 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
       Polynomial.exists_aroots_norm_sub_lt_of_norm_coeff_sub_lt
         (f := q) (g := qδ) hη_pos hz_aeval hq_monic hqδ_monic hqδ_deg hqδ_coeff
         (IsAlgClosed.splits _)
-    have hFδ_rr : IsRealRooted (F - C δ * g) := hsub_rr hδ_pos
-    have hqδ_rr : IsRealRooted qδ :=
+    have hFδ_rr : ((F - C δ * g) ≠ 0 ∧ (F - C δ * g).Splits) := hsub_rr hδ_pos
+    have hqδ_rr : (qδ ≠ 0 ∧ qδ.Splits) :=
       isRealRooted_C_mul hFδ_rr (inv_ne_zero hlc_ne)
     rcases mem_range_of_mem_aroots_of_isRealRooted hqδ_rr hw_mem with ⟨x, rfl⟩
     have him_le : eps0 ≤ ‖z - x‖ := by
@@ -2616,8 +2618,8 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
   have hq_split : q.Splits := by
     exact Polynomial.Splits.of_splits_map (i := algebraMap ℝ ℂ)
       (IsAlgClosed.splits _) hroots_real
-  have hq_rr : IsRealRooted q := by
-    exact ⟨hq_ne, splits_iff_card_roots.mp hq_split⟩
+  have hq_rr : (q ≠ 0 ∧ q.Splits) := by
+    exact ⟨hq_ne, hq_split⟩
   have hF_eq : C F.leadingCoeff * q = F := by
     unfold q
     calc
@@ -2641,7 +2643,7 @@ theorem prec_of_interlaces_evalCoeff_nonpos_same_of_no_common
   let F : ℝ[X] := a * f + b * g
   have hgf' : Interlaces g f := hgf
   obtain ⟨hf, hg, _, rs, ss, hrs_sorted, _, hrs_eq, hss_eq, hint⟩ := hgf
-  have hF : IsRealRooted F := by
+  have hF : (F ≠ 0 ∧ F.Splits) := by
     apply isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
       hgf' hg_pos hF_pos
     · simp [hdeg]
@@ -2652,9 +2654,9 @@ theorem prec_of_interlaces_evalCoeff_nonpos_same_of_no_common
   have hts_eq : (↑ts : Multiset ℝ) = F.roots := Multiset.sort_eq ..
   have hts_sorted : ts.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, hf.2]
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
   have hts_len : ts.length = F.natDegree := by
-    rw [show ts = F.roots.sort (· ≤ ·) by rfl, Multiset.length_sort, hF.2]
+    rw [show ts = F.roots.sort (· ≤ ·) by rfl, Multiset.length_sort, card_roots_of_splits hF.2]
   have hoff : ts.length = rs.length + 0 := by
     rw [hts_len, hrs_len, hdeg]
     simp
@@ -2829,7 +2831,7 @@ theorem prec_of_interlaces_evalCoeff_nonpos_succ_of_no_common
   let F : ℝ[X] := a * f + b * g
   have hgf' : Interlaces g f := hgf
   obtain ⟨hf, hg, _, rs, ss, hrs_sorted, _, hrs_eq, hss_eq, hint⟩ := hgf
-  have hF : IsRealRooted F := by
+  have hF : (F ≠ 0 ∧ F.Splits) := by
     apply isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
       hgf' hg_pos hF_pos
     · simp [hdeg]
@@ -2840,9 +2842,9 @@ theorem prec_of_interlaces_evalCoeff_nonpos_succ_of_no_common
   have hts_eq : (↑ts : Multiset ℝ) = F.roots := Multiset.sort_eq ..
   have hts_sorted : ts.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, hf.2]
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
   have hts_len : ts.length = F.natDegree := by
-    rw [show ts = F.roots.sort (· ≤ ·) by rfl, Multiset.length_sort, hF.2]
+    rw [show ts = F.roots.sort (· ≤ ·) by rfl, Multiset.length_sort, card_roots_of_splits hF.2]
   have hoff : ts.length = rs.length + 1 := by
     rw [hts_len, hrs_len, hdeg]
   have hstrict :
@@ -3080,7 +3082,7 @@ theorem prec_of_interlaces_eval_mul_nonpos_same_of_no_common
     {f g F : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
-    (hF : IsRealRooted F)
+    (hF : F ≠ 0 ∧ F.Splits)
     (hF_pos : HasPosLeadingCoeff F)
     (hdeg : F.natDegree = f.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
@@ -3091,9 +3093,9 @@ theorem prec_of_interlaces_eval_mul_nonpos_same_of_no_common
   have hts_eq : (↑ts : Multiset ℝ) = F.roots := Multiset.sort_eq ..
   have hts_sorted : ts.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, hf.2]
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
   have hts_len : ts.length = F.natDegree := by
-    rw [show ts = F.roots.sort (· ≤ ·) by rfl, Multiset.length_sort, hF.2]
+    rw [show ts = F.roots.sort (· ≤ ·) by rfl, Multiset.length_sort, card_roots_of_splits hF.2]
   have hoff : ts.length = rs.length + 0 := by
     rw [hts_len, hrs_len, hdeg]
     simp
@@ -3252,7 +3254,7 @@ theorem prec_of_interlaces_eval_mul_nonpos_succ_of_no_common
     {f g F : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
-    (hF : IsRealRooted F)
+    (hF : F ≠ 0 ∧ F.Splits)
     (hF_pos : HasPosLeadingCoeff F)
     (hdeg : F.natDegree = f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
@@ -3263,9 +3265,9 @@ theorem prec_of_interlaces_eval_mul_nonpos_succ_of_no_common
   have hts_eq : (↑ts : Multiset ℝ) = F.roots := Multiset.sort_eq ..
   have hts_sorted : ts.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, hf.2]
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
   have hts_len : ts.length = F.natDegree := by
-    rw [show ts = F.roots.sort (· ≤ ·) by rfl, Multiset.length_sort, hF.2]
+    rw [show ts = F.roots.sort (· ≤ ·) by rfl, Multiset.length_sort, card_roots_of_splits hF.2]
   have hoff : ts.length = rs.length + 1 := by
     rw [hts_len, hrs_len, hdeg]
   have hstrict :
@@ -3488,7 +3490,7 @@ theorem prec_of_interlaces_eval_mul_nonpos_of_no_common
     {f g F : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
-    (hF : IsRealRooted F)
+    (hF : F ≠ 0 ∧ F.Splits)
     (hF_pos : HasPosLeadingCoeff F)
     (hdeg_lo : f.natDegree ≤ F.natDegree)
     (hdeg_hi : F.natDegree ≤ f.natDegree + 1)
@@ -3563,7 +3565,7 @@ theorem prec_of_interlaces_evalCoeff_nonpos
 case. The hypothesis is the strict root-sign condition naturally obtained from
 `F(r) = v(r) f'(r)`. -/
 theorem prec_ma_wang_succ {f u v : ℝ[X]}
-    (hf : IsRealRooted f)
+    (hf : f ≠ 0 ∧ f.Splits)
     (hdegf : 2 ≤ f.natDegree)
     (hdeg : (u * f + v * f.derivative).natDegree = f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
@@ -3581,7 +3583,7 @@ theorem prec_ma_wang_succ {f u v : ℝ[X]}
 case. The hypothesis is the strict root-sign condition naturally obtained from
 `F(r) = v(r) f'(r)`. -/
 theorem prec_ma_wang_same {f u v : ℝ[X]}
-    (hf : IsRealRooted f)
+    (hf : f ≠ 0 ∧ f.Splits)
     (hdegf : 2 ≤ f.natDegree)
     (hdeg : (u * f + v * f.derivative).natDegree = f.natDegree)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
@@ -3598,7 +3600,7 @@ theorem prec_ma_wang_same {f u v : ℝ[X]}
 /-- Derivative specialization of the Liu--Wang mixed theorem allowing either the
 same-degree or degree `+1` outcome. -/
 theorem prec_ma_wang {f u v : ℝ[X]}
-    (hf : IsRealRooted f)
+    (hf : f ≠ 0 ∧ f.Splits)
     (hdegf : 2 ≤ f.natDegree)
     (hdeg_lo : f.natDegree ≤ (u * f + v * f.derivative).natDegree)
     (hdeg_hi : (u * f + v * f.derivative).natDegree ≤ f.natDegree + 1)

@@ -592,7 +592,7 @@ lemma fPolynomial_X_sub_C_mul_succ_of_ne_one (d : ℕ) {r : ℝ} (hr1 : r ≠ 1)
   rw [fPolynomial_X_sub_C_mul_succ d r hp, transformedLinearFactor_eq h1r_ne]
 
 lemma fPolynomial_natDegree_factor_of_isRoot
-    {p : ℝ[X]} (hp : IsRealRooted p) (hpnn : HasNonnegCoeffs p) {r : ℝ}
+    {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p) {r : ℝ}
     (hr : p.IsRoot r) :
     ∃ q, p = (X - C r) * q ∧
       fPolynomial p.natDegree p =
@@ -602,7 +602,7 @@ lemma fPolynomial_natDegree_factor_of_isRoot
   have hq' : p = (X - C r) * q := by
     simp_all
   have hq_ne : q ≠ 0 := by
-    simp_all
+    grind
   have hr_mem : r ∈ p.roots := (mem_roots hp.1).mpr hr
   have hr_nonpos : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hp hpnn r hr_mem
   have hdeg_eq : p.natDegree = q.natDegree + 1 := by
@@ -614,7 +614,7 @@ lemma fPolynomial_natDegree_factor_of_isRoot
   simpa using fPolynomial_X_sub_C_mul_succ' q.natDegree hr_nonpos (p := q) le_rfl
 
 lemma isRoot_transformedRoot_fPolynomial_natDegree_of_isRoot
-    {p : ℝ[X]} (hp : IsRealRooted p) (hpnn : HasNonnegCoeffs p) {r : ℝ}
+    {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p) {r : ℝ}
     (hr : p.IsRoot r) :
     (fPolynomial p.natDegree p).IsRoot (r / (1 - r)) := by
   rcases fPolynomial_natDegree_factor_of_isRoot hp hpnn hr with ⟨q, _hq, hfac⟩
@@ -622,7 +622,7 @@ lemma isRoot_transformedRoot_fPolynomial_natDegree_of_isRoot
 
 lemma isRoot_transformedRoot_fPolynomial_of_isRoot
     {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d)
-    (hp : IsRealRooted p) (hpnn : HasNonnegCoeffs p) {r : ℝ}
+    (hp : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p) {r : ℝ}
     (hr : p.IsRoot r) :
     (fPolynomial d p).IsRoot (r / (1 - r)) := by
   have hroot_min :
@@ -656,8 +656,8 @@ private lemma hasPosLeadingCoeff_of_X_sub_C_mul {q : ℝ[X]} {r : ℝ}
 
 private lemma hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
     {p q : ℝ[X]}
-    (hp : IsRealRooted p) (hpnn : HasNonnegCoeffs p)
-    (hq : IsRealRooted q) (hq_pos : HasPosLeadingCoeff q)
+    (hp : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p)
+    (hq : q ≠ 0 ∧ q.Splits) (hq_pos : HasPosLeadingCoeff q)
     (hqp : q ∣ p) :
     HasNonnegCoeffs q := by
   refine (hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hq).mpr ?_
@@ -668,7 +668,7 @@ private lemma hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
   exact roots_nonpos_of_nonneg_coeffs hp hpnn r ((mem_roots hp.1).mpr hrp)
 
 private lemma isRealRooted_transformed_linear {r : ℝ} (hr : r ≤ 0) :
-    IsRealRooted (C (1 - r) * X - C r) := by
+    ((C (1 - r) * X - C r) ≠ 0 ∧ (C (1 - r) * X - C r).Splits) := by
   have h1r_pos : 0 < 1 - r := by linarith
   have h1r_ne : 1 - r ≠ 0 := ne_of_gt h1r_pos
   have hmul : (1 - r) * (r / (1 - r)) = r := by
@@ -684,8 +684,8 @@ private lemma isRealRooted_transformed_linear {r : ℝ} (hr : r ≤ 0) :
 nonnegative-coefficient inputs of degree at most `d`. -/
 theorem isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs
     {d : ℕ} {p : ℝ[X]} (hpdeg : p.natDegree ≤ d)
-    (hp : IsRealRooted p) (hpnn : HasNonnegCoeffs p) :
-    IsRealRooted (fPolynomial d p) := by
+    (hp : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p) :
+    ((fPolynomial d p) ≠ 0 ∧ (fPolynomial d p).Splits) := by
   induction d generalizing p with
   | zero =>
       have hpC : p = C (p.coeff 0) := by
@@ -697,13 +697,13 @@ theorem isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs
   | succ d ih =>
       by_cases hpd : p.natDegree ≤ d
       · rw [fPolynomial_succ_of_natDegree_le hpd]
-        have hX1 : IsRealRooted (X + 1 : ℝ[X]) := by
+        have hX1 : ((X + 1 : ℝ[X]) ≠ 0 ∧ (X + 1 : ℝ[X]).Splits) := by
           simpa using (isRealRooted_X_sub_C (-1 : ℝ))
         exact isRealRooted_mul hX1 (ih hpd hp hpnn)
       · have hpdeg_eq : p.natDegree = d + 1 := by
           lia
         have hroots_pos : 0 < p.roots.card := by
-          rw [hp.2, hpdeg_eq]
+          rw [card_roots_of_splits hp.2, hpdeg_eq]
           exact Nat.succ_pos d
         obtain ⟨r, hr_mem⟩ := Multiset.card_pos_iff_exists_mem.mp hroots_pos
         have hr_root : p.IsRoot r := (mem_roots hp.1).mp hr_mem
@@ -714,8 +714,8 @@ theorem isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs
           simp_all
         have hq_dvd : q ∣ p := ⟨X - C r, by grind⟩
         have hq_ne : q ≠ 0 := by
-          simp_all
-        have hq_rr : IsRealRooted q := isRealRooted_of_dvd hp hq_ne hq_dvd
+          grind
+        have hq_rr : (q ≠ 0 ∧ q.Splits) := isRealRooted_of_dvd hp hq_ne hq_dvd
         have hp_pos : HasPosLeadingCoeff p := hpnn.pos_leadingCoeff hp.1
         have hq_pos : HasPosLeadingCoeff q := by
           apply hasPosLeadingCoeff_of_X_sub_C_mul (r := r)
@@ -732,16 +732,17 @@ theorem isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs
           (ih hqdeg hq_rr hq_nonneg)
 
 theorem roots_fPolynomial_natDegree_eq_map_of_isRealRooted_of_hasNonnegCoeffs
-    {p : ℝ[X]} (hp : IsRealRooted p) (hpnn : HasNonnegCoeffs p) :
+    {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p) :
     (fPolynomial p.natDegree p).roots =
       p.roots.map (fun r : ℝ => r / (1 - r)) := by
   have hP :
-      ∀ n (p : ℝ[X]), p.natDegree = n → IsRealRooted p → HasNonnegCoeffs p →
+      ∀ n (p : ℝ[X]), p.natDegree = n → (p ≠ 0 ∧ p.Splits) → HasNonnegCoeffs p →
         (fPolynomial p.natDegree p).roots =
           p.roots.map (fun r : ℝ => r / (1 - r)) := by
     intro n
     exact Nat.strong_induction_on n (fun n ih =>
-      show ∀ (p : ℝ[X]), p.natDegree = n → IsRealRooted p → HasNonnegCoeffs p →
+      show ∀ (p : ℝ[X]), p.natDegree = n → (p ≠ 0 ∧
+        p.Splits) → HasNonnegCoeffs p →
         (fPolynomial p.natDegree p).roots =
           p.roots.map (fun r : ℝ => r / (1 - r)) from by
         intro p hpdeg hp hpnn
@@ -757,16 +758,16 @@ theorem roots_fPolynomial_natDegree_eq_map_of_isRealRooted_of_hasNonnegCoeffs
           rw [hpC]
           simp [fPolynomial]
         · have hroots_pos : 0 < p.roots.card := by
-            rw [hp.2, hpdeg]
+            rw [card_roots_of_splits hp.2, hpdeg]
             lia
           obtain ⟨r, hr_mem⟩ := Multiset.card_pos_iff_exists_mem.mp hroots_pos
           have hr_root : p.IsRoot r := (mem_roots hp.1).mp hr_mem
           obtain ⟨q, hq', hfac⟩ := fPolynomial_natDegree_factor_of_isRoot hp hpnn hr_root
           have hq_dvd : q ∣ p := ⟨X - C r, by grind⟩
           have hq_ne : q ≠ 0 := by
-            simp_all
+            grind
           have hr_nonpos : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hp hpnn r hr_mem
-          have hq_rr : IsRealRooted q := isRealRooted_of_dvd hp hq_ne hq_dvd
+          have hq_rr : (q ≠ 0 ∧ q.Splits) := isRealRooted_of_dvd hp hq_ne hq_dvd
           have hp_pos : HasPosLeadingCoeff p := hpnn.pos_leadingCoeff hp.1
           have hq_pos : HasPosLeadingCoeff q := by
             apply hasPosLeadingCoeff_of_X_sub_C_mul (r := r)
@@ -786,7 +787,7 @@ theorem roots_fPolynomial_natDegree_eq_map_of_isRealRooted_of_hasNonnegCoeffs
             ih q.natDegree hqdeg_lt q rfl hq_rr hq_nonneg
           have h1r_ne : 1 - r ≠ 0 := by linarith
           have hqf_rr :
-              IsRealRooted (fPolynomial q.natDegree q) :=
+              ((fPolynomial q.natDegree q) ≠ 0 ∧ (fPolynomial q.natDegree q).Splits) :=
             isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs le_rfl hq_rr hq_nonneg
           have hroots_f :
               (fPolynomial p.natDegree p).roots =
@@ -811,15 +812,14 @@ theorem roots_fPolynomial_natDegree_eq_map_of_isRealRooted_of_hasNonnegCoeffs
 
 theorem roots_fPolynomial_eq_padding_map_of_isRealRooted_of_hasNonnegCoeffs
     {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d)
-    (hp : IsRealRooted p) (hpnn : HasNonnegCoeffs p) :
+    (hp : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p) :
     (fPolynomial d p).roots =
       Multiset.replicate (d - p.natDegree) (-1) +
         p.roots.map (fun r : ℝ => r / (1 - r)) := by
   let n := p.natDegree
   have hpad : fPolynomial d p = (X + 1) ^ (d - n) * fPolynomial n p := by
     simpa [n] using fPolynomial_pad_by_X_add_one_pow (m := n) (p := p) le_rfl hd
-  have hfp_rr :
-      IsRealRooted (fPolynomial n p) :=
+  have hfp_rr : ((fPolynomial n p) ≠ 0 ∧ (fPolynomial n p).Splits) :=
     isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs le_rfl hp hpnn
   have hpow_ne : (X + 1 : ℝ[X]) ^ (d - n) ≠ 0 := by
     exact pow_ne_zero _ (by simpa [sub_eq_add_neg, add_comm] using (X_sub_C_ne_zero (-1 : ℝ)))
@@ -837,16 +837,15 @@ theorem roots_fPolynomial_eq_padding_map_of_isRealRooted_of_hasNonnegCoeffs
 private theorem isRealRooted_of_fPolynomial_natDegree_roots_gt_neg_one
     {p : ℝ[X]}
     (hfpdeg : (fPolynomial p.natDegree p).natDegree = p.natDegree)
-    (hfp : IsRealRooted (fPolynomial p.natDegree p))
-    (hgt : ∀ x ∈ (fPolynomial p.natDegree p).roots, -1 < x) :
-    IsRealRooted p := by
+    (hfp : (fPolynomial p.natDegree p) ≠ 0 ∧ (fPolynomial p.natDegree p).Splits)
+    (hgt : ∀ x ∈ (fPolynomial p.natDegree p).roots, -1 < x) : (p ≠ 0 ∧ p.Splits) := by
   have hP :
       ∀ n : ℕ, ∀ p : ℝ[X],
         p.natDegree = n →
         (fPolynomial n p).natDegree = n →
-        IsRealRooted (fPolynomial n p) →
+        ((fPolynomial n p) ≠ 0 ∧ (fPolynomial n p).Splits) →
         (∀ x ∈ (fPolynomial n p).roots, -1 < x) →
-        IsRealRooted p := by
+        (p ≠ 0 ∧ p.Splits) := by
     intro n
     exact Nat.strong_induction_on n (fun n ih p hpdeg hqdeg hq_rr hq_gt => by
       have hp0 : p ≠ 0 := by
@@ -856,7 +855,7 @@ private theorem isRealRooted_of_fPolynomial_natDegree_roots_gt_neg_one
       by_cases hn : n = 0
       · exact isRealRooted_of_deg_zero hp0 (by simp_all)
       · have hroots_pos : 0 < (fPolynomial n p).roots.card := by
-          rw [hq_rr.2, hqdeg]
+          rw [card_roots_of_splits hq_rr.2, hqdeg]
           lia
         obtain ⟨x, hx_mem⟩ := Multiset.card_pos_iff_exists_mem.mp hroots_pos
         have hx_root : (fPolynomial n p).IsRoot x := (mem_roots hq_rr.1).mp hx_mem
@@ -905,13 +904,14 @@ private theorem isRealRooted_of_fPolynomial_natDegree_roots_gt_neg_one
             _ = (X - C x) * (C (1 - r) * fPolynomial u.natDegree u) := by
                   ac_rfl
         have hscaled_ne : C (1 - r) * fPolynomial u.natDegree u ≠ 0 := by
-          simp_all
-        have hscaled_rr : IsRealRooted (C (1 - r) * fPolynomial u.natDegree u) := by
+          grind
+        have hscaled_rr : ((C (1 - r) * fPolynomial u.natDegree u) ≠ 0 ∧
+          (C (1 - r) * fPolynomial u.natDegree u).Splits) := by
           apply isRealRooted_of_dvd hq_rr hscaled_ne
           simp_all
         have hfu0 : fPolynomial u.natDegree u ≠ 0 := by
           simp_all
-        have hfu_rr : IsRealRooted (fPolynomial u.natDegree u) := by
+        have hfu_rr : ((fPolynomial u.natDegree u) ≠ 0 ∧ (fPolynomial u.natDegree u).Splits) := by
           apply isRealRooted_of_dvd hscaled_rr hfu0
           simp
         have hfu_deg : (fPolynomial u.natDegree u).natDegree = u.natDegree := by
@@ -921,14 +921,14 @@ private theorem isRealRooted_of_fPolynomial_natDegree_roots_gt_neg_one
           lia
         have hgt_u : ∀ y ∈ (fPolynomial u.natDegree u).roots, -1 < y := by
           simp_all
-        have hu_rr : IsRealRooted u :=
+        have hu_rr : (u ≠ 0 ∧ u.Splits) :=
           ih u.natDegree hu_lt u rfl hfu_deg hfu_rr hgt_u
         rw [hpu]
         exact isRealRooted_mul (isRealRooted_X_sub_C r) hu_rr)
   exact hP p.natDegree p rfl hfpdeg hfp hgt
 
 lemma root_gt_neg_one_of_mem_roots_fPolynomial_natDegree_of_isRealRooted_of_hasNonnegCoeffs
-    {p : ℝ[X]} (hfp : IsRealRooted (fPolynomial p.natDegree p))
+    {p : ℝ[X]} (hfp : (fPolynomial p.natDegree p) ≠ 0 ∧ (fPolynomial p.natDegree p).Splits)
     (hpnn : HasNonnegCoeffs p)
     {x : ℝ} (hx : x ∈ (fPolynomial p.natDegree p).roots) :
     -1 < x := by
@@ -959,9 +959,8 @@ lemma root_gt_neg_one_of_mem_roots_fPolynomial_natDegree_of_isRealRooted_of_hasN
     · grind
 
 theorem isRealRooted_of_isRealRooted_fPolynomial_natDegree_of_hasNonnegCoeffs
-    {p : ℝ[X]} (hfp : IsRealRooted (fPolynomial p.natDegree p))
-    (hpnn : HasNonnegCoeffs p) :
-    IsRealRooted p := by
+    {p : ℝ[X]} (hfp : (fPolynomial p.natDegree p) ≠ 0 ∧ (fPolynomial p.natDegree p).Splits)
+    (hpnn : HasNonnegCoeffs p) : (p ≠ 0 ∧ p.Splits) := by
   have hp0 : p ≠ 0 := by
     intro hpz
     rw [hpz, fPolynomial_zero] at hfp
@@ -977,9 +976,8 @@ theorem isRealRooted_of_isRealRooted_fPolynomial_natDegree_of_hasNonnegCoeffs
 
 theorem isRealRooted_of_isRealRooted_fPolynomial_of_hasNonnegCoeffs
     {d : ℕ} {p : ℝ[X]} (hpd : p.natDegree ≤ d)
-    (hfp : IsRealRooted (fPolynomial d p))
-    (hpnn : HasNonnegCoeffs p) :
-    IsRealRooted p := by
+    (hfp : (fPolynomial d p) ≠ 0 ∧ (fPolynomial d p).Splits)
+    (hpnn : HasNonnegCoeffs p) : (p ≠ 0 ∧ p.Splits) := by
   have hmin0 : fPolynomial p.natDegree p ≠ 0 := by
     intro hzero
     apply hfp.1
@@ -988,7 +986,7 @@ theorem isRealRooted_of_isRealRooted_fPolynomial_of_hasNonnegCoeffs
     refine ⟨(X + 1) ^ (d - p.natDegree), ?_⟩
     rw [fPolynomial_pad_by_X_add_one_pow (m := p.natDegree) (p := p) le_rfl hpd]
     ac_rfl
-  have hmin_rr : IsRealRooted (fPolynomial p.natDegree p) :=
+  have hmin_rr : ((fPolynomial p.natDegree p) ≠ 0 ∧ (fPolynomial p.natDegree p).Splits) :=
     isRealRooted_of_dvd hfp hmin0 hdiv
   exact isRealRooted_of_isRealRooted_fPolynomial_natDegree_of_hasNonnegCoeffs hmin_rr hpnn
 
@@ -1003,9 +1001,9 @@ theorem prec_fPolynomial_of_prec_of_hasNonnegCoeffs_of_minimal
   rcases h with ⟨hu_rr, hv_rr, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩
   have hud : u.natDegree ≤ d := by grind
   have hvd : v.natDegree ≤ d := by grind
-  have hfu_rr : IsRealRooted (fPolynomial d u) :=
+  have hfu_rr : ((fPolynomial d u) ≠ 0 ∧ (fPolynomial d u).Splits) :=
     isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs hud hu_rr hu_nonneg
-  have hfv_rr : IsRealRooted (fPolynomial d v) :=
+  have hfv_rr : ((fPolynomial d v) ≠ 0 ∧ (fPolynomial d v).Splits) :=
     isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs hvd hv_rr hv_nonneg
   have hss_nonpos : ∀ s ∈ ss, s ≤ 0 := by
     intro s hs
@@ -1033,9 +1031,9 @@ theorem prec_fPolynomial_of_prec_of_hasNonnegCoeffs_of_minimal
         simp at hlen
     | cons r₁ rest =>
         have hlen_deg_u : ss.length = u.natDegree := by
-          rw [← Multiset.coe_card, hss_eq, hu_rr.2]
+          rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hu_rr.2]
         have hlen_deg_v : (r₁ :: rest).length = v.natDegree := by
-          rw [← Multiset.coe_card, hrs_eq, hv_rr.2]
+          rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hv_rr.2]
         have hud_pad : d - u.natDegree = 1 := by grind
         have hvd_pad : d - v.natDegree = 0 := by lia
         have hleft_all : ∀ t ∈ ss.map φ, -1 ≤ t := by
@@ -1080,9 +1078,9 @@ theorem prec_fPolynomial_of_prec_of_hasNonnegCoeffs_of_minimal
           listAlternates_neg_one_cons_map_of_listInterlaces_of_nonpos
             (ss := ss) (r₁ := r₁) (rs := rest) hint hrs_nonpos
   · have hlen_deg_u : ss.length = u.natDegree := by
-      rw [← Multiset.coe_card, hss_eq, hu_rr.2]
+      rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hu_rr.2]
     have hlen_deg_v : rs.length = v.natDegree := by
-      rw [← Multiset.coe_card, hrs_eq, hv_rr.2]
+      rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hv_rr.2]
     have hud_pad : d - u.natDegree = 0 := by grind
     have hvd_pad : d - v.natDegree = 0 := by lia
     have hleft_eq : (↑(ss.map φ) : Multiset ℝ) = (fPolynomial d u).roots := by
@@ -1109,7 +1107,7 @@ theorem prec_fPolynomial_of_prec_of_hasNonnegCoeffs_of_minimal
 theorem prec_of_prec_fPolynomial_of_sameDegree_of_isRealRooted_of_hasNonnegCoeffs
     {d : ℕ} {u v : ℝ[X]}
     (hud : u.natDegree = d) (hvd : v.natDegree = d)
-    (hu_rr : IsRealRooted u) (hv_rr : IsRealRooted v)
+    (hu_rr : u ≠ 0 ∧ u.Splits) (hv_rr : v ≠ 0 ∧ v.Splits)
     (h : Prec (fPolynomial d u) (fPolynomial d v))
     (hu_nonneg : HasNonnegCoeffs u) (hv_nonneg : HasNonnegCoeffs v) :
     Prec u v := by
@@ -1122,9 +1120,9 @@ theorem prec_of_prec_fPolynomial_of_sameDegree_of_isRealRooted_of_hasNonnegCoeff
   have hfv_deg : (fPolynomial d v).natDegree = d := by
     exact fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero hvd_le hv_nonneg hv_rr.1
   have hss_len : ss.length = d := by
-    rw [← Multiset.coe_card, hss_eq, hfu_rr.2, hfu_deg]
+    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hfu_rr.2, hfu_deg]
   have hrs_len : rs.length = d := by
-    rw [← Multiset.coe_card, hrs_eq, hfv_rr.2, hfv_deg]
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hfv_rr.2, hfv_deg]
   have hfu_roots :
       (fPolynomial d u).roots = u.roots.map φ := by
     simpa [φ, hud] using
@@ -1199,7 +1197,7 @@ theorem prec_of_prec_fPolynomial_of_sameDegree_of_isRealRooted_of_hasNonnegCoeff
 theorem prec_of_prec_fPolynomial_of_succDegree_of_isRealRooted_of_hasNonnegCoeffs
     {d : ℕ} {u v : ℝ[X]}
     (hud : u.natDegree + 1 = d) (hvd : v.natDegree = d)
-    (hu_rr : IsRealRooted u) (hv_rr : IsRealRooted v)
+    (hu_rr : u ≠ 0 ∧ u.Splits) (hv_rr : v ≠ 0 ∧ v.Splits)
     (h : Prec (fPolynomial d u) (fPolynomial d v))
     (hu_nonneg : HasNonnegCoeffs u) (hv_nonneg : HasNonnegCoeffs v) :
     Prec u v := by
@@ -1216,9 +1214,9 @@ theorem prec_of_prec_fPolynomial_of_succDegree_of_isRealRooted_of_hasNonnegCoeff
   have hfv_deg : (fPolynomial d v).natDegree = d := by
     exact fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero hvd_le hv_nonneg hv_rr.1
   have hss_len : ss.length = d := by
-    rw [← Multiset.coe_card, hss_eq, hfu_rr.2, hfu_deg]
+    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hfu_rr.2, hfu_deg]
   have hrs_len : rs.length = d := by
-    rw [← Multiset.coe_card, hrs_eq, hfv_rr.2, hfv_deg]
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hfv_rr.2, hfv_deg]
   have hfu_roots :
       (fPolynomial d u).roots = ({-1} : Multiset ℝ) + u.roots.map φ := by
     simpa [φ, hud_pad] using
@@ -1329,7 +1327,7 @@ theorem prec_of_prec_fPolynomial_of_succDegree_of_isRealRooted_of_hasNonnegCoeff
 private theorem not_prec_fPolynomial_of_right_degree_lt_of_sameDegree_left
     {d : ℕ} {u v : ℝ[X]}
     (hud : u.natDegree = d) (hvd : v.natDegree < d)
-    (hu_rr : IsRealRooted u) (hv_rr : IsRealRooted v)
+    (hu_rr : u ≠ 0 ∧ u.Splits) (hv_rr : v ≠ 0 ∧ v.Splits)
     (hu_nonneg : HasNonnegCoeffs u) (hv_nonneg : HasNonnegCoeffs v) :
     ¬ Prec (fPolynomial d u) (fPolynomial d v) := by
   let φ := fun r : ℝ => r / (1 - r)
@@ -1343,9 +1341,9 @@ private theorem not_prec_fPolynomial_of_right_degree_lt_of_sameDegree_left
   have hfv_deg : (fPolynomial d v).natDegree = d := by
     exact fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero hvd_le hv_nonneg hv_rr.1
   have hss_len : ss.length = d := by
-    rw [← Multiset.coe_card, hss_eq, hfu_rr.2, hfu_deg]
+    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hfu_rr.2, hfu_deg]
   have hrs_len : rs.length = d := by
-    rw [← Multiset.coe_card, hrs_eq, hfv_rr.2, hfv_deg]
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hfv_rr.2, hfv_deg]
   have hud_pad : d - u.natDegree = 0 := by lia
   have hfu_roots :
       (fPolynomial d u).roots = u.roots.map φ := by
@@ -1407,7 +1405,7 @@ private theorem not_prec_fPolynomial_of_right_degree_lt_of_sameDegree_left
 private theorem not_prec_fPolynomial_of_left_degree_le_sub_two_of_right_full
     {d : ℕ} {u v : ℝ[X]}
     (hud : u.natDegree + 2 ≤ d) (hvd : v.natDegree = d)
-    (hu_rr : IsRealRooted u) (hv_rr : IsRealRooted v)
+    (hu_rr : u ≠ 0 ∧ u.Splits) (hv_rr : v ≠ 0 ∧ v.Splits)
     (hu_nonneg : HasNonnegCoeffs u) (hv_nonneg : HasNonnegCoeffs v) :
     ¬ Prec (fPolynomial d u) (fPolynomial d v) := by
   let φ := fun r : ℝ => r / (1 - r)
@@ -1421,9 +1419,9 @@ private theorem not_prec_fPolynomial_of_left_degree_le_sub_two_of_right_full
   have hfv_deg : (fPolynomial d v).natDegree = d := by
     exact fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero hvd_le hv_nonneg hv_rr.1
   have hss_len : ss.length = d := by
-    rw [← Multiset.coe_card, hss_eq, hfu_rr.2, hfu_deg]
+    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hfu_rr.2, hfu_deg]
   have hrs_len : rs.length = d := by
-    rw [← Multiset.coe_card, hrs_eq, hfv_rr.2, hfv_deg]
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hfv_rr.2, hfv_deg]
   have hud_pad_two : 2 ≤ d - u.natDegree := by lia
   have hfu_roots :
       (fPolynomial d u).roots =
@@ -1515,7 +1513,7 @@ private theorem not_prec_fPolynomial_of_left_degree_le_sub_two_of_right_full
 theorem prec_of_prec_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
     {d : ℕ} {u v : ℝ[X]}
     (hd : d = max u.natDegree v.natDegree)
-    (hu_rr : IsRealRooted u) (hv_rr : IsRealRooted v)
+    (hu_rr : u ≠ 0 ∧ u.Splits) (hv_rr : v ≠ 0 ∧ v.Splits)
     (h : Prec (fPolynomial d u) (fPolynomial d v))
     (hu_nonneg : HasNonnegCoeffs u) (hv_nonneg : HasNonnegCoeffs v) :
     Prec u v := by
@@ -1542,7 +1540,7 @@ theorem prec_of_prec_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
 theorem prec_iff_prec_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
     {d : ℕ} {u v : ℝ[X]}
     (hd : d = max u.natDegree v.natDegree)
-    (hu_rr : IsRealRooted u) (hv_rr : IsRealRooted v)
+    (hu_rr : u ≠ 0 ∧ u.Splits) (hv_rr : v ≠ 0 ∧ v.Splits)
     (hu_nonneg : HasNonnegCoeffs u) (hv_nonneg : HasNonnegCoeffs v) :
     (Prec (fPolynomial d u) (fPolynomial d v) ↔ Prec u v) := by
   constructor
@@ -1563,7 +1561,7 @@ theorem posComboRealRooted_fPolynomial_of_prec
   have hu_pos : HasPosLeadingCoeff u := hu_nonneg.pos_leadingCoeff h.1.1
   have hv_pos : HasPosLeadingCoeff v := hv_nonneg.pos_leadingCoeff h.2.1.1
   intro lam μ hlam hμ
-  have hcombo_rr : IsRealRooted (C lam * u + C μ * v) :=
+  have hcombo_rr : ((C lam * u + C μ * v) ≠ 0 ∧ (C lam * u + C μ * v).Splits) :=
     PosComboRealRooted.of_prec h hu_pos hv_pos hlam hμ
   have hcombo_nonneg : HasNonnegCoeffs (C lam * u + C μ * v) := by
     exact (nonnegCoeffs_C_mul hlam.le hu_nonneg).add (nonnegCoeffs_C_mul hμ.le hv_nonneg)
@@ -1755,8 +1753,8 @@ theorem prec_iff_prec_mul_X_both_of_hasNonnegCoeffs {f g : ℝ[X]}
     have hg_nonpos : ∀ r ∈ g.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs h.2.1 hgnn
     exact (prec_iff_prec_mul_X_both_of_roots_nonpos hf_nonpos hg_nonpos).1 h
   · intro h
-    have hf_rr : IsRealRooted f := isRealRooted_of_X_mul h.1
-    have hg_rr : IsRealRooted g := isRealRooted_of_X_mul h.2.1
+    have hf_rr : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_X_mul h.1
+    have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_X_mul h.2.1
     have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hf_rr hfnn
     have hg_nonpos : ∀ r ∈ g.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hg_rr hgnn
     exact (prec_iff_prec_mul_X_both_of_roots_nonpos hf_nonpos hg_nonpos).2 h
@@ -2386,9 +2384,9 @@ private lemma natDegree_right_of_prec_to_sum
   have hdeg_hi : p.natDegree ≤ b.natDegree + 1 := by
     rcases hbp with ⟨hb_rr, hp_rr, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩
     have hss_len : ss.length = b.natDegree := by
-      rw [← Multiset.coe_card, hss_eq, hb_rr.2]
+      rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hb_rr.2]
     have hrs_len : rs.length = p.natDegree := by
-      rw [← Multiset.coe_card, hrs_eq, hp_rr.2]
+      rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hp_rr.2]
     rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩ <;> lia
   lia
 
@@ -2473,8 +2471,8 @@ theorem brandenSolusTheorem26_forward_of_prec_b_a {d : ℕ} {p a b : ℝ[X]}
   have hp_eq : p = a + X * b := hid.1
   have hId_eq : IdTransform d p = a + b :=
     idTransform_eq_add_of_isIdDecomposition hd hid
-  have hb_rr : IsRealRooted b := hba.1
-  have ha_rr : IsRealRooted a := hba.2.1
+  have hb_rr : (b ≠ 0 ∧ b.Splits) := hba.1
+  have ha_rr : (a ≠ 0 ∧ a.Splits) := hba.2.1
   have hb_pos : HasPosLeadingCoeff b := hb_nonneg.pos_leadingCoeff hb_rr.1
   have ha_pos : HasPosLeadingCoeff a := ha_nonneg.pos_leadingCoeff ha_rr.1
   have hXb_nonneg : HasNonnegCoeffs (X * b) := hasNonnegCoeffs_X.mul hb_nonneg
@@ -2595,7 +2593,7 @@ private theorem prec_b_component_of_prec_left_of_natDegree_le
     lia
   have hall_aXb : AllComboRealRooted a (X * b) :=
     allComboRealRooted_left_X_mul_component_of_prec_left hp_eq hap
-  have hXb_rr : IsRealRooted (X * b) := by
+  have hXb_rr : ((X * b) ≠ 0 ∧ (X * b).Splits) := by
     rcases hall_aXb 0 1 with hzero | hrr
     · simp_all
     · simpa using hrr
@@ -2661,7 +2659,7 @@ private lemma not_isRoot_zero_of_IdTransform_fixed_top_of_hasNonnegCoeffs
 
 private lemma exists_root_upper_bound_lt_zero_of_hasNonnegCoeffs_of_not_isRoot_zero
     {p : ℝ[X]}
-    (hp_rr : IsRealRooted p)
+    (hp_rr : p ≠ 0 ∧ p.Splits)
     (hp_nonneg : HasNonnegCoeffs p)
     (hp0_root : ¬ p.IsRoot 0) :
     ∃ c : ℝ, (∀ s ∈ p.roots, s ≤ c) ∧ c < 0 := by
@@ -2719,12 +2717,12 @@ private lemma interlaces_of_prec_sameDegree_rightmost_factor
     Interlaces q f := by
   obtain ⟨hf, hg, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩ := hfg
   have hss_len : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, hf.2]
+    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
   have hrs_len : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, hg.2]
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
   have hq_ne : q ≠ 0 := by
     exact right_ne_zero_of_mul (by simpa [hgq] using hg.1)
-  have hq : IsRealRooted q := by
+  have hq : (q ≠ 0 ∧ q.Splits) := by
     apply isRealRooted_of_dvd hg hq_ne
     simp_all
   have hq_deg_g : q.natDegree + 1 = g.natDegree := by
@@ -2738,7 +2736,8 @@ private lemma interlaces_of_prec_sameDegree_rightmost_factor
     have hqs_eq : (↑qs : Multiset ℝ) = q.roots := Multiset.sort_eq ..
     have hqs_sorted : qs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
     have hqs_len : qs.length = q.natDegree := by
-      rw [show qs = q.roots.sort (· ≤ ·) by rfl, Multiset.length_sort, hq.2]
+      rw [show qs = q.roots.sort (· ≤ ·) by rfl, Multiset.length_sort,
+        card_roots_of_splits hq.2]
     have hqs_le_uR : ∀ r ∈ qs, r ≤ uR := by
       intro r hr
       exact hright r (by
@@ -2783,7 +2782,7 @@ private theorem prec_b_component_of_prec_left_top_of_sameDegree
   have hp_eq : p = a + X * b := hid.1
   have hall_aXb : AllComboRealRooted a (X * b) :=
     allComboRealRooted_left_X_mul_component_of_prec_left hp_eq hap
-  have hXb_rr : IsRealRooted (X * b) := by
+  have hXb_rr : ((X * b) ≠ 0 ∧ (X * b).Splits) := by
     rcases hall_aXb 0 1 with hzero | hrr
     · simp_all
     · simpa using hrr
@@ -2832,7 +2831,7 @@ private theorem prec_b_component_of_prec_left_top
   · exfalso
     have hall_aXb : AllComboRealRooted a (X * b) :=
       allComboRealRooted_left_X_mul_component_of_prec_left hp_eq hap
-    have hXb_rr : IsRealRooted (X * b) := by
+    have hXb_rr : ((X * b) ≠ 0 ∧ (X * b).Splits) := by
       rcases hall_aXb 0 1 with hzero | hrr
       · simp_all
       · simpa using hrr
@@ -2878,7 +2877,7 @@ private theorem prec_b_component_of_prec_right_top
   have hpxb : Prec p (X * b) := prec_mul_X_of_prec_of_nonneg hbp hb_nonneg hp_nonneg
   have hall_aXb : AllComboRealRooted a (X * b) :=
     allComboRealRooted_left_X_mul_component_of_prec_right hp_eq hpxb
-  have ha_rr : IsRealRooted a := by
+  have ha_rr : (a ≠ 0 ∧ a.Splits) := by
     rcases hall_aXb 1 0 with hzero | hrr
     · exact False.elim (ha0 (by simpa using hzero))
     · simpa using hrr
@@ -3045,16 +3044,16 @@ private theorem prec_b_component_of_prec_Id_top_of_right_top
     simpa [hrew] using hall_hp (α - β) β
   have ht_ne : t ≠ 0 := by
     exact mul_ne_zero (X_sub_C_ne_zero (1 : ℝ)) hb0
-  have ht_rr : IsRealRooted t := by
+  have ht_rr : (t ≠ 0 ∧ t.Splits) := by
     rcases hall_ht 0 1 with hzero | hrr
     · simp_all
-    · simp_all
+    · grind
   have ht_pos : HasPosLeadingCoeff t := by
     dsimp [t]
     unfold HasPosLeadingCoeff at hb_pos ⊢
     rw [leadingCoeff_mul, leadingCoeff_X_sub_C, one_mul]
     exact hb_pos
-  have hb_rr : IsRealRooted b := by
+  have hb_rr : (b ≠ 0 ∧ b.Splits) := by
     apply isRealRooted_of_dvd ht_rr hb0
     refine ⟨X - C (1 : ℝ), ?_⟩
     grind
@@ -3183,10 +3182,10 @@ theorem brandenSolusTheorem26_third_converse_of_top_degree
     simpa [hrew] using hall_hp (α - β) β
   have ht_ne : t ≠ 0 := by
     exact mul_ne_zero (X_sub_C_ne_zero (1 : ℝ)) hb0
-  have ht_rr : IsRealRooted t := by
+  have ht_rr : (t ≠ 0 ∧ t.Splits) := by
     rcases hall_ht 0 1 with hzero | hrr
     · simp_all
-    · simp_all
+    · grind
   have ht_root1 : t.IsRoot 1 := by
     dsimp [t]
     simp
@@ -3377,9 +3376,9 @@ theorem precFPolynomialTransportMinimal : precFPolynomialTransportMinimalStateme
       grind
     have hvd : v.natDegree ≤ d := by
       grind
-    have hu_rr : IsRealRooted u :=
+    have hu_rr : (u ≠ 0 ∧ u.Splits) :=
       isRealRooted_of_isRealRooted_fPolynomial_of_hasNonnegCoeffs hud h.1 hu_nonneg
-    have hv_rr : IsRealRooted v :=
+    have hv_rr : (v ≠ 0 ∧ v.Splits) :=
       isRealRooted_of_isRealRooted_fPolynomial_of_hasNonnegCoeffs hvd h.2.1 hv_nonneg
     exact prec_of_prec_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
       hd hu_rr hv_rr h hu_nonneg hv_nonneg
@@ -3659,9 +3658,9 @@ theorem brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
   have hp_nonneg : HasNonnegCoeffs p := hpair_nonneg.1
   have hh_nonneg : HasNonnegCoeffs h := by
     lia
-  have hh_rr : IsRealRooted h := by
+  have hh_rr : (h ≠ 0 ∧ h.Splits) := by
     simpa [h] using hIdp.1
-  have hp_rr : IsRealRooted p := hIdp.2.1
+  have hp_rr : (p ≠ 0 ∧ p.Splits) := hIdp.2.1
   have ha_pos : HasPosLeadingCoeff a := ha_nonneg.pos_leadingCoeff ha0
   have hb_pos : HasPosLeadingCoeff b := hb_nonneg.pos_leadingCoeff hb0
   have hh_deg : h.natDegree = b.natDegree := by
@@ -3695,11 +3694,11 @@ theorem brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
           C (α - β) * h + C β * p := by
       grind
     simpa [hrew] using hall_hp (α - β) β
-  have ht_rr : IsRealRooted t := by
+  have ht_rr : (t ≠ 0 ∧ t.Splits) := by
     rcases hall_ht 0 1 with hzero | hrr
     · simp_all
-    · simp_all
-  have hb_rr : IsRealRooted b := by
+    · grind
+  have hb_rr : (b ≠ 0 ∧ b.Splits) := by
     apply isRealRooted_of_dvd ht_rr hb0
     refine ⟨X - C (1 : ℝ), ?_⟩
     grind

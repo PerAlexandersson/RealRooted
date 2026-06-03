@@ -342,12 +342,9 @@ theorem interlaces_narayanaQuot_succ_of_nonnegCoeffs (n : Nat) (hn : 1 ≤ n)
 theorem isRealRooted_narayanaQuot_of_nonnegCoeffs :
     ∀ n : Nat, 1 ≤ n →
       (∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) →
-      IsRealRooted (narayanaQuot n)
-  | 0, hn, _ => by
-      lia
-  | 1, _, _ => by
-      simpa [narayanaQuot_one] using
-        isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)
+      ((narayanaQuot n) ≠ 0 ∧ (narayanaQuot n).Splits)
+  | 0, hn, _ => by lia
+  | 1, _, _ => by simp
   | n + 2, _, hnonneg => by
       exact (prec_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg).2.1
 
@@ -372,11 +369,9 @@ theorem interlaces_narayana_succ_of_nonnegCoeffs (n : Nat) (hn : 1 ≤ n)
 theorem isRealRooted_narayana_of_nonnegCoeffs :
     ∀ n : Nat, 1 ≤ n →
       (∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) →
-      IsRealRooted (narayana n)
-  | 0, hn, _ => by
-      lia
-  | 1, _, _ => by
-      simpa using isRealRooted_of_degree_one (by simp)
+      ((narayana n) ≠ 0 ∧ (narayana n).Splits)
+  | 0, hn, _ => by lia
+  | 1, _, _ => by simp
   | n + 2, _, hnonneg => by
       exact (interlaces_narayana_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg).1
 

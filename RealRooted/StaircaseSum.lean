@@ -35,7 +35,7 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
     Prec (fs.get ⟨m, hm⟩) (staircaseSum fs m) := by
   let f : ℝ[X] := fs.get ⟨m, hm⟩
   have hpair : fs.Pairwise Prec := (isInterlacingSeq_iff_pairwise.mp hfs.2)
-  have hf_rr : IsRealRooted f := hfs.realRooted f (List.get_mem _ _)
+  have hf_rr : (f ≠ 0 ∧ f.Splits) := hfs.realRooted f (List.get_mem _ _)
   have hf_nonneg : HasNonnegCoeffs f := hfs.nonnegCoeffs f (List.get_mem _ _)
   by_cases hm0 : m = 0
   · subst hm0
@@ -106,8 +106,7 @@ sequence with nonnegative coefficients. -/
 theorem isRealRooted_staircaseSum_of_isInterlacingSeqNonneg
     {fs : List ℝ[X]} {m : Nat}
     (hfs : IsInterlacingSeqNonneg fs)
-    (hm : m < fs.length) :
-    IsRealRooted (staircaseSum fs m) :=
+    (hm : m < fs.length) : ((staircaseSum fs m) ≠ 0 ∧ (staircaseSum fs m).Splits) :=
   (prec_get_staircaseSum_of_isInterlacingSeqNonneg hfs hm).2.1
 
 end RealRooted

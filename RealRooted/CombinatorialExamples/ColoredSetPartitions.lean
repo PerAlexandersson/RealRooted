@@ -158,7 +158,7 @@ lemma coloredSetPartitions_nonnegCoeffs :
               (coloredSetPartitions_nonnegCoeffs c m n (j + 1)))
 
 lemma roots_nonpos_coloredSetPartitions_of_isRealRooted {c m n : Nat}
-    (hrr : IsRealRooted (coloredSetPartitions c m n)) :
+    (hrr : (coloredSetPartitions c m n) ≠ 0 ∧ (coloredSetPartitions c m n).Splits) :
     ∀ r ∈ (coloredSetPartitions c m n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs hrr (coloredSetPartitions_nonnegCoeffs c m n)
 
@@ -179,7 +179,8 @@ lemma prec_coloredSetPartitions_one_two (c m : Nat) :
     Prec (coloredSetPartitions c m 1) (coloredSetPartitions c m 2) := by
   have hdeg : (coloredSetPartitions c m 1).natDegree = 1 := by
     simpa using natDegree_coloredSetPartitions c m 1
-  have hf : IsRealRooted (coloredSetPartitions c m 1) := isRealRooted_of_degree_one hdeg
+  have hf : ((coloredSetPartitions c m 1) ≠ 0 ∧
+    (coloredSetPartitions c m 1).Splits) := isRealRooted_of_degree_one hdeg
   have hInter :
       Interlaces (coloredSetPartitions c m 1).derivative (coloredSetPartitions c m 1) := by
     simpa [coloredSetPartitions_one] using
@@ -235,7 +236,8 @@ theorem prec_coloredSetPartitions_succ (c m : Nat) :
       have hprev : Prec (coloredSetPartitions c m (n + 1))
           (coloredSetPartitions c m (n + 2)) :=
         prec_coloredSetPartitions_succ c m (n + 1)
-      have hf : IsRealRooted (coloredSetPartitions c m (n + 2)) := hprev.2.1
+      have hf : ((coloredSetPartitions c m (n + 2)) ≠ 0 ∧
+        (coloredSetPartitions c m (n + 2)).Splits) := hprev.2.1
       have hdegf : 2 ≤ (coloredSetPartitions c m (n + 2)).natDegree := by
         rw [natDegree_coloredSetPartitions]
         lia
@@ -295,10 +297,8 @@ theorem interlaces_coloredSetPartitions_succ (c m n : Nat) :
   simp [natDegree_coloredSetPartitions]
 
 theorem isRealRooted_coloredSetPartitions (c m : Nat) :
-    ∀ n : Nat, IsRealRooted (coloredSetPartitions c m n)
-  | 0 => by
-      simpa [coloredSetPartitions_zero] using
-        isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)
+    ∀ n : Nat, ((coloredSetPartitions c m n) ≠ 0 ∧ (coloredSetPartitions c m n).Splits)
+  | 0 => by simp
   | n + 1 => (prec_coloredSetPartitions_succ c m n).2.1
 
 /-- The descending prefix `[T_n, T_{n-1}, ..., T_0]` of the colored
@@ -339,7 +339,7 @@ theorem interlaces_typeBSetPartitions_succ (n : Nat) :
   interlaces_coloredSetPartitions_succ 1 2 n
 
 theorem isRealRooted_typeBSetPartitions (n : Nat) :
-    IsRealRooted (typeBSetPartitions n) :=
+    ((typeBSetPartitions n) ≠ 0 ∧ (typeBSetPartitions n).Splits) :=
   isRealRooted_coloredSetPartitions 1 2 n
 
 end RealRooted

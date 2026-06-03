@@ -429,9 +429,9 @@ lemma oddBinomPolyReal_roots_eq_tangentRootFinset (n : ℕ) (hn : 0 < n) :
   · exact oddBinomPolyReal_ne_zero n hn
 
 theorem oddBinomPolyReal_isRealRooted (n : ℕ) (hn : 0 < n) :
-    RealRooted.IsRealRooted (oddBinomPolyReal n) := by
+    (oddBinomPolyReal n) ≠ 0 ∧ (oddBinomPolyReal n).Splits := by
   refine ⟨oddBinomPolyReal_ne_zero n hn, ?_⟩
-  rw [oddBinomPolyReal_roots_eq_tangentRootFinset n hn]
+  rw [Polynomial.splits_iff_card_roots, oddBinomPolyReal_roots_eq_tangentRootFinset n hn]
   simp [tangentRootFinset_card n, oddBinomPolyReal_natDegree n hn]
 
 end BigDescents

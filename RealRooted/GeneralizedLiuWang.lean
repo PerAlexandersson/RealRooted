@@ -219,7 +219,7 @@ theorem prec_generalizedLiuWang_of_no_common
     (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0) :
     Prec f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
   let F : ℝ[X] := a * f + polynomialWeightedSum ((b, g) :: l)
-  have hF_rr : IsRealRooted F := by
+  have hF_rr : (F ≠ 0 ∧ F.Splits) := by
     apply isRealRooted_of_interlaces_sub_C_mul_of_forall_pos hgf
     · simpa [F] using hF_pos
     · simpa [F] using hdeg_lo
@@ -255,7 +255,8 @@ theorem prec_generalizedLiuWang_of_no_common
           Prec f (a * f + polynomialWeightedSum (((b - C δ), g) :: l)) :=
         prec_generalizedLiuWang_strict hgf hg_pos hl_inter hl_pos hl_nonpos
           hFδ_pos hFδ_lo hFδ_hi hno hbδ_neg
-      have hrrδ : IsRealRooted (a * f + ((b - C δ) * g + polynomialWeightedSum l)) := by
+      have hrrδ : ((a * f + ((b - C δ) * g + polynomialWeightedSum l)) ≠ 0 ∧
+        (a * f + ((b - C δ) * g + polynomialWeightedSum l)).Splits) := by
         simpa [polynomialWeightedSum_cons] using hprecδ.2.1
       have hFδ_eq' : a * f + ((b - C δ) * g + polynomialWeightedSum l) = F - C δ * g := by
         simpa [polynomialWeightedSum_cons] using hFδ_eq

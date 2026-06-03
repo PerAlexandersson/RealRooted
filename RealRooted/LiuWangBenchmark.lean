@@ -251,7 +251,7 @@ lemma zero_not_isRoot_liuWangPoly (d n : Nat) (hn : 1 ≤ n) (hnd : n ≤ d + 1)
   linarith
 
 lemma roots_neg_liuWangPoly_of_isRealRooted {d n : Nat}
-    (hrr : IsRealRooted (liuWangPoly d n))
+    (hrr : (liuWangPoly d n) ≠ 0 ∧ (liuWangPoly d n).Splits)
     (hn : 1 ≤ n) (hnd : n ≤ d + 1) :
     ∀ r ∈ (liuWangPoly d n).roots, r < 0 := by
   intro r hr
@@ -265,7 +265,7 @@ lemma roots_neg_liuWangPoly_of_isRealRooted {d n : Nat}
 
 /-- The degree-`1` base case is immediate. -/
 lemma isRealRooted_liuWangPoly_two (d : Nat) :
-    IsRealRooted (liuWangPoly d 2) := by
+    ((liuWangPoly d 2) ≠ 0 ∧ (liuWangPoly d 2).Splits) := by
   exact isRealRooted_of_degree_one (natDegree_liuWangPoly d 2 (by norm_num))
 
 private lemma natDegree_liuWangRec_affine (d n : Nat) :
@@ -510,7 +510,7 @@ private lemma roots_neg_of_interlaces_of_eval_zero_pos {g f : ℝ[X]}
     ∀ r, f.IsRoot r → r < 0 := by
   obtain ⟨hf, hg, hdeg, rs, ss, hrs_sorted, _, hrs_eq, hss_eq, hint⟩ := hgf
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, hf.2]
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
   have hrs_ne : rs ≠ [] := by
     have hrs_len_pos : 0 < rs.length := by
       rw [hrs_len, ← hdeg]
@@ -756,9 +756,9 @@ private lemma roots_neg_of_prec_same_of_roots_neg {g f : ℝ[X]}
     ∀ r, g.IsRoot r → r < 0 := by
   obtain ⟨hg, hf, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩ := hgf
   have hss_len : ss.length = g.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, hg.2]
+    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hg.2]
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, hf.2]
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
   rcases hshape with ⟨_, hint⟩ | ⟨_, halt⟩
   · exfalso
     lia
@@ -880,7 +880,7 @@ private lemma prec_of_interlaces_X_mul_of_roots_nonpos {f g : ℝ[X]}
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
     Prec f g := by
   obtain ⟨hXf, hg, _, rs_xf, ss_g, hrs_xf, hss_g, hrs_xf_eq, hss_g_eq, hint⟩ := h
-  have hf : IsRealRooted f := isRealRooted_of_X_mul hXf
+  have hf : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_X_mul hXf
   set rs_f := f.roots.sort (· ≤ ·)
   have hrs_f_eq : (↑rs_f : Multiset ℝ) = f.roots := Multiset.sort_eq ..
   have hrs_f_sorted : rs_f.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
@@ -902,9 +902,9 @@ private lemma prec_of_interlaces_X_mul_of_roots_nonpos {f g : ℝ[X]}
   rw [hrs_xf_is] at hint
   have hlen : ss_g.length + 1 = (rs_f ++ [(0 : ℝ)]).length := by
     have hss_len : ss_g.length = g.natDegree := by
-      rw [← Multiset.coe_card, hss_g_eq, hg.2]
+      rw [← Multiset.coe_card, hss_g_eq, card_roots_of_splits hg.2]
     have hrs_len : (rs_f ++ [(0 : ℝ)]).length = (X * f).natDegree := by
-      rw [← hrs_xf_is, ← Multiset.coe_card, hrs_xf_eq, hXf.2]
+      rw [← hrs_xf_is, ← Multiset.coe_card, hrs_xf_eq, card_roots_of_splits hXf.2]
     lia
   have hlen_eq : rs_f.length = ss_g.length := by
     simp only [List.length_append, List.length] at hlen
@@ -973,8 +973,7 @@ private lemma roots_neg_threshold_divX (d : Nat) :
 /-- The recurrence family is real-rooted throughout the strict range
 `1 ≤ n ≤ d + 1`, and also at the threshold step `n = d + 2`. -/
 lemma isRealRooted_liuWangRec_of_le_threshold (d n : Nat)
-    (hn : 1 ≤ n) (hnd : n ≤ d + 2) :
-    IsRealRooted (liuWangRec d n) := by
+    (hn : 1 ≤ n) (hnd : n ≤ d + 2) : ((liuWangRec d n) ≠ 0 ∧ (liuWangRec d n).Splits) := by
   rcases Nat.eq_or_lt_of_le hnd with hEq | hlt
   · subst hEq
     exact (interlaces_liuWangRec_threshold d).1
@@ -1058,7 +1057,7 @@ lemma interlaces_liuWangRec_of_nonnegCoeffs (d n : Nat)
 lemma isRealRooted_liuWangRec_of_nonnegCoeffs (d n : Nat)
     (hn : 1 ≤ n)
     (hnonneg : ∀ m, HasNonnegCoeffs (liuWangRec d m)) :
-    IsRealRooted (liuWangRec d n) := by
+    ((liuWangRec d n) ≠ 0 ∧ (liuWangRec d n).Splits) := by
   rcases hn.eq_or_lt with rfl | hn_lt
   · exact
       isRealRooted_of_deg_zero (liuWangRec_ne_zero d 1 hn)

@@ -123,9 +123,9 @@ theorem prec_shift_of_same_degree
   have hft : Prec f t := by
     let h' := h.comp (X + C 1)
     let f' := f.comp (X + C 1)
-    have hh' : IsRealRooted h' := by
+    have hh' : (h' ≠ 0 ∧ h'.Splits) := by
       simpa [h'] using isRealRooted_comp_X_add_C hprec.1 1
-    have hf' : IsRealRooted f' := by
+    have hf' : (f' ≠ 0 ∧ f'.Splits) := by
       simpa [f'] using isRealRooted_comp_X_add_C hprec.2.1 1
     have hh'_nonpos : ∀ s ∈ h'.roots, s ≤ 0 := by
       intro s hs
@@ -176,8 +176,7 @@ coefficients, `h ≪ f`, and `h(0) ≤ f(0)`, then
 -/
 theorem prec_shift
     {f h : ℝ[X]}
-    (hf : IsRealRooted f)
-    (hh : IsRealRooted h)
+    (hf : f ≠ 0 ∧ f.Splits) (hh : h ≠ 0 ∧ h.Splits)
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     (hh_nonpos : ∀ r ∈ h.roots, r ≤ 0)
     (hf_pos : HasPosLeadingCoeff f)
@@ -187,9 +186,9 @@ theorem prec_shift
     Prec f (f + (X - C 1) * h) := by
   obtain ⟨_, _, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩ := hprec
   have hss_len : ss.length = h.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, hh.2]
+    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hh.2]
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, hf.2]
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
   rcases hshape with ⟨hdiffby1, hint⟩ | ⟨hsamedeg, halt⟩
   · have hdeg : h.natDegree + 1 = f.natDegree := by lia
     have hh_ne : h ≠ 0 := hh.1
@@ -206,8 +205,7 @@ theorem prec_shift
 
 /-- Shift lemma with variables named for applications. -/
 theorem prec_shift' {F H : ℝ[X]}
-    (hF : IsRealRooted F)
-    (hH : IsRealRooted H)
+    (hF : F ≠ 0 ∧ F.Splits) (hH : H ≠ 0 ∧ H.Splits)
     (hF_nonpos : ∀ r ∈ F.roots, r ≤ 0)
     (hH_nonpos : ∀ r ∈ H.roots, r ≤ 0)
     (hF_pos : HasPosLeadingCoeff F)

@@ -14,7 +14,7 @@ same linear polynomial, so a common interleaver is completely explicit. -/
 def scaledLinearFamily : List ℝ[X] :=
   [X + 1, C (2 : ℝ) * (X + 1), C (3 : ℝ) * (X + 1)]
 
-private lemma xAddOne_isRealRooted : IsRealRooted (X + 1 : ℝ[X]) := by
+private lemma xAddOne_isRealRooted : ((X + 1 : ℝ[X]) ≠ 0 ∧ (X + 1 : ℝ[X]).Splits) := by
   simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-1 : ℝ)
 
 private lemma xAddOne_hasNonnegCoeffs : HasNonnegCoeffs (X + 1 : ℝ[X]) := by
@@ -24,11 +24,11 @@ private lemma xAddOne_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 1 : ℝ[X]) :
   exact xAddOne_hasNonnegCoeffs.pos_leadingCoeff xAddOne_isRealRooted.1
 
 private lemma twoMul_xAddOne_isRealRooted :
-    IsRealRooted (C (2 : ℝ) * (X + 1)) := by
+    ((C (2 : ℝ) * (X + 1)) ≠ 0 ∧ (C (2 : ℝ) * (X + 1)).Splits) := by
   exact isRealRooted_C_mul xAddOne_isRealRooted (by norm_num)
 
 private lemma threeMul_xAddOne_isRealRooted :
-    IsRealRooted (C (3 : ℝ) * (X + 1)) := by
+    ((C (3 : ℝ) * (X + 1)) ≠ 0 ∧ (C (3 : ℝ) * (X + 1)).Splits) := by
   exact isRealRooted_C_mul xAddOne_isRealRooted (by norm_num)
 
 private lemma twoMul_xAddOne_hasPosLeadingCoeff :
@@ -48,7 +48,7 @@ private lemma threeMul_xAddOne_hasNonnegCoeffs :
   exact nonnegCoeffs_C_mul (by norm_num) xAddOne_hasNonnegCoeffs
 
 lemma scaledLinearFamily_isRealRooted :
-    ∀ f ∈ scaledLinearFamily, IsRealRooted f := by
+    ∀ f ∈ scaledLinearFamily, (f ≠ 0 ∧ f.Splits) := by
   intro f hf
   simp only [scaledLinearFamily, List.mem_cons] at hf
   rcases hf with rfl | hf
@@ -168,7 +168,7 @@ private lemma xAddTwo_natDegree :
   rw [hpoly]
   exact Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (2 : ℝ)) (by norm_num)
 
-private lemma xAddTwo_isRealRooted : IsRealRooted (X + 2 : ℝ[X]) := by
+private lemma xAddTwo_isRealRooted : ((X + 2 : ℝ[X]) ≠ 0 ∧ (X + 2 : ℝ[X]).Splits) := by
   exact isRealRooted_of_degree_one xAddTwo_natDegree
 
 private lemma xAddTwo_hasNonnegCoeffs : HasNonnegCoeffs (X + 2 : ℝ[X]) := by
@@ -191,8 +191,8 @@ private lemma xAddThree_natDegree :
   change ((X + C (3 : ℝ) : ℝ[X]).natDegree = 1)
   simp
 
-private lemma xAddThree_isRealRooted : IsRealRooted (X + 3 : ℝ[X]) := by
-  change IsRealRooted (X + C (3 : ℝ) : ℝ[X])
+private lemma xAddThree_isRealRooted : ((X + 3 : ℝ[X]) ≠ 0 ∧ (X + 3 : ℝ[X]).Splits) := by
+  change ((X + C (3 : ℝ) : ℝ[X]) ≠ 0 ∧ (X + C (3 : ℝ) : ℝ[X]).Splits)
   simpa [sub_eq_add_neg, add_comm] using isRealRooted_X_sub_C (-3 : ℝ)
 
 private lemma xAddThree_hasNonnegCoeffs : HasNonnegCoeffs (X + 3 : ℝ[X]) := by
@@ -207,7 +207,7 @@ private lemma xAddThree_roots :
   simp
 
 private lemma xAddFiveHalves_isRealRooted :
-    IsRealRooted (X + C (5 / 2 : ℝ) : ℝ[X]) := by
+    ((X + C (5 / 2 : ℝ) : ℝ[X]) ≠ 0 ∧ (X + C (5 / 2 : ℝ) : ℝ[X]).Splits) := by
   simpa [sub_eq_add_neg, add_comm] using isRealRooted_X_sub_C (-(5 / 2 : ℝ))
 
 private lemma xAddFiveHalves_roots :
@@ -215,7 +215,7 @@ private lemma xAddFiveHalves_roots :
   simp
 
 private lemma xSq_add_fiveX_add_six_isRealRooted :
-    IsRealRooted (((X + 2) * (X + 3)) : ℝ[X]) := by
+    ((((X + 2) * (X + 3)) : ℝ[X]) ≠ 0 ∧ (((X + 2) * (X + 3)) : ℝ[X]).Splits) := by
   exact isRealRooted_mul xAddTwo_isRealRooted xAddThree_isRealRooted
 
 private lemma xSq_add_fiveX_add_six_hasNonnegCoeffs :
@@ -292,9 +292,9 @@ private lemma xAddOne_xSq_add_fiveX_add_six_not_prec :
   intro hprec
   rcases hprec with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
   have hss_card : (X + 1 : ℝ[X]).roots.card = 1 := by
-    simpa [xAddOne_natDegree] using hf.2
+    simpa [xAddOne_natDegree] using card_roots_of_splits hf.2
   have hrs_card : (((X + 2) * (X + 3)) : ℝ[X]).roots.card = 2 := by
-    simpa [xSq_add_fiveX_add_six_natDegree] using hg.2
+    simpa [xSq_add_fiveX_add_six_natDegree] using card_roots_of_splits hg.2
   have hss_len : ss.length = 1 := by
     rw [← Multiset.coe_card, hss_eq, hss_card]
   have hrs_len : rs.length = 2 := by
@@ -446,7 +446,8 @@ private lemma xAddOne_xAddTwo_badAffineSlice_eq :
                   coeff_X, coeff_one]
 
 private lemma xSq_add_threeX_add_three_not_isRealRooted :
-    ¬ IsRealRooted (X ^ 2 + C (3 : ℝ) * X + C (3 : ℝ) : ℝ[X]) := by
+    ¬ ((X ^ 2 + C (3 : ℝ) * X + C (3 : ℝ) : ℝ[X]) ≠ 0 ∧
+      (X ^ 2 + C (3 : ℝ) * X + C (3 : ℝ) : ℝ[X]).Splits) := by
   intro hrr
   have hdeg : (X ^ 2 + C (3 : ℝ) * X + C (3 : ℝ) : ℝ[X]).natDegree = 2 := by
     simpa using
@@ -491,7 +492,8 @@ private lemma xAddOne_xAddTwo_badShiftedPair_eq :
                   coeff_X, coeff_one]
 
 private lemma xSq_add_twoX_add_two_not_isRealRooted :
-    ¬ IsRealRooted (X ^ 2 + C (2 : ℝ) * X + C (2 : ℝ) : ℝ[X]) := by
+    ¬ ((X ^ 2 + C (2 : ℝ) * X + C (2 : ℝ) : ℝ[X]) ≠ 0 ∧
+      (X ^ 2 + C (2 : ℝ) * X + C (2 : ℝ) : ℝ[X]).Splits) := by
   intro hrr
   have hdeg : (X ^ 2 + C (2 : ℝ) * X + C (2 : ℝ) : ℝ[X]).natDegree = 2 := by
     simpa using
@@ -516,9 +518,9 @@ private lemma xAddOne_xAddTwo_not_prec :
   intro hprec
   rcases hprec with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
   have hss_card : (X + 1 : ℝ[X]).roots.card = 1 := by
-    simpa [xAddOne_natDegree] using hf.2
+    simpa [xAddOne_natDegree] using card_roots_of_splits hf.2
   have hrs_card : (X + 2 : ℝ[X]).roots.card = 1 := by
-    simpa [xAddTwo_natDegree] using hg.2
+    simpa [xAddTwo_natDegree] using card_roots_of_splits hg.2
   have hss_len : ss.length = 1 := by
     rw [← Multiset.coe_card, hss_eq, hss_card]
   have hrs_len : rs.length = 1 := by
@@ -574,7 +576,8 @@ lemma not_posComboNoCommonAffineFamilyStatement :
     ¬ PosComboNoCommonAffineFamilyStatement := by
   intro haff
   have hrr :
-      IsRealRooted ((((C (1 : ℝ) * X + C (1 : ℝ)) * (X + 1)) + (X + 2)) : ℝ[X]) := by
+      (((((C (1 : ℝ) * X + C (1 : ℝ)) * (X + 1)) + (X + 2)) : ℝ[X]) ≠ 0 ∧
+        ((((C (1 : ℝ) * X + C (1 : ℝ)) * (X + 1)) + (X + 2)) : ℝ[X]).Splits) := by
     exact
       haff
         xAddOne_hasPosLeadingCoeff
@@ -585,8 +588,8 @@ lemma not_posComboNoCommonAffineFamilyStatement :
         (by simp [xAddOne_natDegree, xAddTwo_natDegree])
         (by simp [xAddOne_natDegree, xAddTwo_natDegree])
         xAddOne_xAddTwo_noCommon
-        (by norm_num)
-        (by norm_num)
+        (show 0 < (1 : ℝ) by norm_num)
+        (show 0 < (1 : ℝ) by norm_num)
   rw [xAddOne_xAddTwo_badAffineSlice_eq] at hrr
   exact xSq_add_threeX_add_three_not_isRealRooted hrr
 
@@ -615,7 +618,8 @@ lemma not_posComboNoCommonSameDegreeShiftedPairOrientationStatement :
         xAddOne_xAddTwo_posComboRealRooted
         (by simp [xAddOne_natDegree, xAddTwo_natDegree])
         xAddOne_xAddTwo_noCommon
-  have hrr : IsRealRooted (((X + 2) + X * (X + 1)) : ℝ[X]) := hprec.2.1
+  have hrr : ((((X + 2) + X * (X + 1)) : ℝ[X]) ≠ 0 ∧
+    (((X + 2) + X * (X + 1)) : ℝ[X]).Splits) := hprec.2.1
   rw [xAddOne_xAddTwo_badShiftedPair_eq] at hrr
   exact xSq_add_twoX_add_two_not_isRealRooted hrr
 

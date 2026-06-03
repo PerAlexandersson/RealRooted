@@ -121,7 +121,7 @@ theorem isRealRooted_of_favard
     {P : Nat → ℝ[X]} {α β : Nat → ℝ}
     (hrec : SatisfiesFavardRecurrence P α β)
     (hβ : ∀ n : Nat, 0 < β (n + 1)) :
-    ∀ n : Nat, IsRealRooted (P n) := by
+    ∀ n : Nat, ((P n) ≠ 0 ∧ (P n).Splits) := by
   intro n
   exact (favardInterlacing hrec hβ n).1
 

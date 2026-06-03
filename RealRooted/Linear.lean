@@ -19,8 +19,9 @@ noncomputable section
 namespace RealRooted
 
 /-- `X - C r` is real-rooted: it has exactly one root, namely `r`. -/
-lemma isRealRooted_X_sub_C (r : ℝ) : IsRealRooted (X - C r) :=
-  ⟨X_sub_C_ne_zero r, by rw [roots_X_sub_C, Multiset.card_singleton, natDegree_X_sub_C]⟩
+lemma isRealRooted_X_sub_C (r : ℝ) : ((X - C r) ≠ 0 ∧ (X - C r).Splits) :=
+  ⟨X_sub_C_ne_zero r, splits_of_card_roots <| by
+    rw [roots_X_sub_C, Multiset.card_singleton, natDegree_X_sub_C]⟩
 
 lemma hasPosLeadingCoeff_X_sub_C_mul {r : ℝ} {p : ℝ[X]}
     (hp : HasPosLeadingCoeff p) :
@@ -29,7 +30,7 @@ lemma hasPosLeadingCoeff_X_sub_C_mul {r : ℝ} {p : ℝ[X]}
   simpa [Polynomial.leadingCoeff_mul, leadingCoeff_X_sub_C] using hp
 
 lemma roots_le_X_sub_C_mul {r : ℝ} {f : ℝ[X]}
-    (hf : IsRealRooted f)
+    (hf : f ≠ 0 ∧ f.Splits)
     (hf_le : ∀ s ∈ f.roots, s ≤ r) :
     ∀ s ∈ ((X - C r) * f).roots, s ≤ r := by
   intro s hs
@@ -40,22 +41,25 @@ lemma roots_le_X_sub_C_mul {r : ℝ} {f : ℝ[X]}
   · exact hf_le s hs
 
 /-- A nonzero scalar multiple of a real-rooted polynomial is real-rooted. -/
-lemma isRealRooted_C_mul {p : ℝ[X]} (hp : IsRealRooted p) {a : ℝ} (ha : a ≠ 0) :
-    IsRealRooted (C a * p) :=
-  ⟨mul_ne_zero (C_ne_zero.mpr ha) hp.1,
-   by rw [roots_C_mul _ ha, natDegree_C_mul ha]; exact hp.2⟩
+lemma isRealRooted_C_mul {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) {a : ℝ} (ha : a ≠ 0) :
+    (C a * p ≠ 0 ∧ (C a * p).Splits) := by
+  refine ⟨mul_ne_zero (C_ne_zero.mpr ha) hp.1, ?_⟩
+  apply splits_of_card_roots
+  rw [roots_C_mul _ ha, natDegree_C_mul ha]
+  exact card_roots_of_splits hp.2
 
 /-- A nonzero divisor of a real-rooted polynomial is real-rooted. -/
-lemma isRealRooted_of_dvd {p q : ℝ[X]} (hp : IsRealRooted p) (hq0 : q ≠ 0) (hqp : q ∣ p) :
-    IsRealRooted q := by
+lemma isRealRooted_of_dvd {p q : ℝ[X]} (hp : p ≠ 0 ∧
+  p.Splits) (hq0 : q ≠ 0) (hqp : q ∣ p) : (q ≠ 0 ∧ q.Splits) := by
   rcases hqp with ⟨r, rfl⟩
   have hr0 : r ≠ 0 := right_ne_zero_of_mul hp.1
   refine ⟨hq0, ?_⟩
   have hsum : q.roots.card + r.roots.card = (q * r).natDegree := by
-    rw [← hp.2, roots_mul hp.1, Multiset.card_add]
+    rw [← card_roots_of_splits hp.2, roots_mul hp.1, Multiset.card_add]
   rw [natDegree_mul hq0 hr0] at hsum
   have hq_le : q.roots.card ≤ q.natDegree := card_roots' q
   have hr_le : r.roots.card ≤ r.natDegree := card_roots' r
+  apply splits_of_card_roots
   lia
 
 /-- A root of a divisor is a root of the dividend. -/
@@ -84,19 +88,20 @@ lemma min_rootMultiplicity_le_rootMultiplicity_add {p q : ℝ[X]} {r : ℝ}
   simpa using (Polynomial.rootMultiplicity_add (p := p) (q := q) r hpq)
 
 /-- A nonunit real-rooted polynomial has a real root. -/
-lemma exists_isRoot_of_isRealRooted_of_not_isUnit {p : ℝ[X]} (hp : IsRealRooted p)
+lemma exists_isRoot_of_isRealRooted_of_not_isUnit {p : ℝ[X]} (hp : p ≠ 0 ∧
+  p.Splits)
     (hu : ¬ IsUnit p) : ∃ r : ℝ, p.IsRoot r := by
   have hdeg : 0 < p.natDegree := by
     rw [natDegree_pos_iff_degree_pos]
     exact degree_pos_of_ne_zero_of_nonunit hp.1 hu
   have hcard : 0 < p.roots.card := by
-    rwa [hp.2]
+    rwa [card_roots_of_splits hp.2]
   obtain ⟨r, hr⟩ := Multiset.card_pos_iff_exists_mem.mp hcard
   exact ⟨r, (mem_roots hp.1).mp hr⟩
 
 /-- If two real-rooted polynomials have no common real root, then they are coprime. -/
 lemma isCoprime_of_no_common_real_root_of_isRealRooted {f g : ℝ[X]}
-    (hf : IsRealRooted f) (_hg : IsRealRooted g)
+    (hf : f ≠ 0 ∧ f.Splits) (_hg : g ≠ 0 ∧ g.Splits)
     (hno : ∀ r : ℝ, f.IsRoot r → ¬ g.IsRoot r) :
     IsCoprime f g := by
   apply EuclideanDomain.isCoprime_of_dvd
@@ -104,24 +109,24 @@ lemma isCoprime_of_no_common_real_root_of_isRealRooted {f g : ℝ[X]}
   · intro z hz_nonunit hz0 hzf hzg
     have hz_notunit : ¬ IsUnit z := by
       simpa [Set.mem_setOf_eq] using hz_nonunit
-    have hz_rr : IsRealRooted z := isRealRooted_of_dvd hf hz0 hzf
+    have hz_rr : (z ≠ 0 ∧ z.Splits) := isRealRooted_of_dvd hf hz0 hzf
     obtain ⟨r, hzr⟩ := exists_isRoot_of_isRealRooted_of_not_isUnit hz_rr hz_notunit
     have hfr : f.IsRoot r := IsRoot.of_dvd hzf hzr
     have hgr : g.IsRoot r := IsRoot.of_dvd hzg hzr
     exact hno r hfr hgr
 
 /-- Any nonzero degree-1 polynomial is real-rooted. -/
-lemma isRealRooted_of_degree_one {p : ℝ[X]} (hp : p.natDegree = 1) :
-    IsRealRooted p := by
+lemma isRealRooted_of_degree_one {p : ℝ[X]} (hp : p.natDegree = 1) : (p ≠ 0 ∧ p.Splits) := by
   have hne : p ≠ 0 := by intro h; simp [h] at hp
   have hdeg : p.degree = 1 := by rw [degree_eq_natDegree hne]; exact_mod_cast hp
-  exact ⟨hne, by rw [roots_degree_eq_one hdeg, Multiset.card_singleton, hp]⟩
+  refine ⟨hne, splits_of_card_roots ?_⟩
+  rw [roots_degree_eq_one hdeg, Multiset.card_singleton, hp]
 
 lemma interlaces_one_linear {p : ℝ[X]} (hp_deg : p.natDegree = 1) :
     Interlaces (1 : ℝ[X]) p := by
-  have h1_rr : IsRealRooted (1 : ℝ[X]) := by
-    simpa using isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)
-  have hp_rr : IsRealRooted p := isRealRooted_of_degree_one hp_deg
+  have h1_rr : ((1 : ℝ[X]) ≠ 0 ∧ (1 : ℝ[X]).Splits) := by
+    exact isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)
+  have hp_rr : (p ≠ 0 ∧ p.Splits) := isRealRooted_of_degree_one hp_deg
   have hp_deg' : p.degree = 1 := by
     rw [degree_eq_natDegree hp_rr.1, hp_deg]
     norm_num
@@ -203,10 +208,12 @@ lemma roots_comp_X_add_C {p : ℝ[X]} (r : ℝ) :
     (Multiset.count_map_eq_count' (fun y : ℝ => y - r) p.roots
       (fun a b hab => by linarith) (x + r)).symm
 
-lemma isRealRooted_comp_X_add_C {p : ℝ[X]} (hp : IsRealRooted p) (r : ℝ) :
-    IsRealRooted (p.comp (X + C r)) := by
+lemma isRealRooted_comp_X_add_C {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (r : ℝ) :
+    (p.comp (X + C r) ≠ 0 ∧ (p.comp (X + C r)).Splits) := by
   refine ⟨(Polynomial.comp_X_add_C_ne_zero_iff).2 hp.1, ?_⟩
-  rw [roots_comp_X_add_C r, Multiset.card_map, natDegree_comp, natDegree_X_add_C, hp.2, mul_one]
+  apply splits_of_card_roots
+  rw [roots_comp_X_add_C r, Multiset.card_map, natDegree_comp, natDegree_X_add_C,
+    card_roots_of_splits hp.2, mul_one]
 
 /-- Translation by `r` preserves `Prec`: roots are shifted left by `r`,
 so the relative order is unchanged. -/
@@ -240,7 +247,7 @@ lemma prec_comp_X_add_C_iff {f g : ℝ[X]} (r : ℝ) :
     exact prec_comp_X_add_C h r
 
 /-- A real-rooted polynomial interlaces with itself in the same-degree sense. -/
-lemma prec_refl {f : ℝ[X]} (hf : IsRealRooted f) : Prec f f := by
+lemma prec_refl {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits) : Prec f f := by
   set rs := f.roots.sort (· ≤ ·)
   have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hrs_eq : (↑rs : Multiset ℝ) = f.roots := Multiset.sort_eq ..
@@ -265,7 +272,7 @@ lemma prec_C_mul_right {f g : ℝ[X]} (h : Prec f g) {a : ℝ} (ha : a ≠ 0) :
 
 /-- In particular, a nonzero scalar multiple of a real-rooted polynomial
 interlaces the original polynomial. -/
-lemma prec_C_mul_self {f : ℝ[X]} (hf : IsRealRooted f) {a : ℝ} (ha : a ≠ 0) :
+lemma prec_C_mul_self {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits) {a : ℝ} (ha : a ≠ 0) :
     Prec (C a * f) f :=
   prec_C_mul_left (prec_refl hf) ha
 
