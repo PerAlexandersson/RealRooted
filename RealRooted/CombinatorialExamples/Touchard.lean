@@ -51,8 +51,7 @@ lemma coeff_touchard_top_and_above :
       rcases coeff_touchard_top_and_above n with ⟨htop, habove⟩
       constructor
       · rw [show n + 1 = n + 0 + 1 by lia, coeff_touchard_succ]
-        have hzero : coeff (touchard n) (n + 1) = 0 := habove (n + 1) (by lia)
-        simp [htop, hzero]
+        simp_all
       · intro m hm
         cases m with
         | zero =>
@@ -60,9 +59,7 @@ lemma coeff_touchard_top_and_above :
         | succ k =>
             have hk0 : n + 1 < k + 1 := hm
             rw [show k + 1 = k + 0 + 1 by lia, coeff_touchard_succ]
-            have hk : n < k := by lia
-            have hk1 : n < k + 1 := by lia
-            simp [habove k hk, habove (k + 1) hk1]
+            grind
 
 lemma natDegree_touchard (n : Nat) :
     (touchard n).natDegree = n := by
@@ -75,7 +72,7 @@ lemma monic_touchard (n : Nat) :
     (touchard n).Monic := by
   rcases coeff_touchard_top_and_above n with ⟨htop, _⟩
   rw [Monic.def, leadingCoeff, natDegree_touchard]
-  simpa using htop
+  lia
 
 lemma touchard_ne_zero (n : Nat) :
     touchard n ≠ 0 :=
@@ -103,7 +100,7 @@ lemma touchard_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (touchard n)
       | succ m =>
           rw [coeff_touchard_succ]
           exact add_nonneg (touchard_nonnegCoeffs n m)
-            (mul_nonneg (by positivity) (touchard_nonnegCoeffs n (m + 1)))
+            (mul_nonneg (by grind) (touchard_nonnegCoeffs n (m + 1)))
 
 lemma roots_nonpos_touchard_of_isRealRooted {n : Nat}
     (hrr : (touchard n) ≠ 0 ∧ (touchard n).Splits) :
@@ -164,7 +161,6 @@ theorem prec_touchard_succ : ∀ n : Nat, Prec (touchard n) (touchard (n + 1))
         derivative_interlaces hf hdegf
       have hg_pos : HasPosLeadingCoeff (touchard (n + 2)).derivative :=
         (touchard_posLeadingCoeff (n + 2)).derivative (by
-          rw [natDegree_touchard]
           lia)
       have hNext_eq :
           X * touchard (n + 2) + X * (touchard (n + 2)).derivative = touchard (n + 3) := by
@@ -187,7 +183,7 @@ theorem prec_touchard_succ : ∀ n : Nat, Prec (touchard n) (touchard (n + 1))
         intro r hr
         have hr_nonpos :
             r ≤ 0 := roots_nonpos_touchard_of_isRealRooted hf r ((mem_roots hf.1).mpr hr)
-        simpa using hr_nonpos
+        simp_all
       rw [← hNext_eq]
       exact
         prec_of_interlaces_evalCoeff_nonpos

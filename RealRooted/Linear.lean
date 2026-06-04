@@ -21,19 +21,19 @@ namespace RealRooted
 /-- `X - C r` is real-rooted: it has exactly one root, namely `r`. -/
 lemma isRealRooted_X_sub_C (r : ℝ) : ((X - C r) ≠ 0 ∧ (X - C r).Splits) :=
   ⟨X_sub_C_ne_zero r, splits_of_card_roots <| by
-    rw [roots_X_sub_C, Multiset.card_singleton, natDegree_X_sub_C]⟩
+    simp⟩
 
 lemma hasPosLeadingCoeff_X_sub_C_mul {r : ℝ} {p : ℝ[X]}
     (hp : HasPosLeadingCoeff p) :
     HasPosLeadingCoeff ((X - C r) * p) := by
   unfold HasPosLeadingCoeff at hp ⊢
-  simpa [Polynomial.leadingCoeff_mul, leadingCoeff_X_sub_C] using hp
+  simp_all
 
 lemma hasPosLeadingCoeff_of_X_sub_C_mul {q : ℝ[X]} {r : ℝ}
     (h : HasPosLeadingCoeff ((X - C r) * q)) :
     HasPosLeadingCoeff q := by
   unfold HasPosLeadingCoeff at h ⊢
-  simpa [Polynomial.leadingCoeff_mul, leadingCoeff_X_sub_C] using h
+  simp_all
 
 lemma roots_le_X_sub_C_mul {r : ℝ} {f : ℝ[X]}
     (hf : f ≠ 0 ∧ f.Splits)
@@ -42,17 +42,13 @@ lemma roots_le_X_sub_C_mul {r : ℝ} {f : ℝ[X]}
   intro s hs
   rw [roots_mul (mul_ne_zero (X_sub_C_ne_zero r) hf.1), roots_X_sub_C] at hs
   rcases Multiset.mem_add.mp hs with hs | hs
-  · have hs' : s = r := by simpa [Multiset.mem_singleton] using hs
-    rw [hs']
-  · exact hf_le s hs
+  · simp_all
+  · simp_all
 
 /-- A nonzero scalar multiple of a real-rooted polynomial is real-rooted. -/
 lemma isRealRooted_C_mul {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) {a : ℝ} (ha : a ≠ 0) :
     (C a * p ≠ 0 ∧ (C a * p).Splits) := by
-  refine ⟨mul_ne_zero (C_ne_zero.mpr ha) hp.1, ?_⟩
-  apply splits_of_card_roots
-  rw [roots_C_mul _ ha, natDegree_C_mul ha]
-  exact card_roots_of_splits hp.2
+  simp_all
 
 /-- A nonzero divisor of a real-rooted polynomial is real-rooted. -/
 lemma isRealRooted_of_dvd {p q : ℝ[X]} (hp : p ≠ 0 ∧
@@ -72,13 +68,12 @@ lemma isRealRooted_of_dvd {p q : ℝ[X]} (hp : p ≠ 0 ∧
 lemma IsRoot.of_dvd {p q : ℝ[X]} (hpq : p ∣ q) {x : ℝ} (hx : p.IsRoot x) :
     q.IsRoot x := by
   rcases hpq with ⟨r, rfl⟩
-  rw [Polynomial.IsRoot.def, eval_mul, Polynomial.IsRoot.def.mp hx, zero_mul]
+  simp_all
 
 /-- A common root of two polynomials is also a root of their sum. -/
 lemma IsRoot.add {p q : ℝ[X]} {x : ℝ} (hp : p.IsRoot x) (hq : q.IsRoot x) :
     (p + q).IsRoot x := by
-  rw [Polynomial.IsRoot.def, eval_add, Polynomial.IsRoot.def.mp hp, Polynomial.IsRoot.def.mp hq]
-  ring
+  simp_all
 
 /-- If `(X - C r)^m` divides both summands, then it divides their sum. -/
 lemma pow_X_sub_C_dvd_add {p q : ℝ[X]} {r : ℝ} {m : ℕ}
@@ -111,31 +106,31 @@ lemma isCoprime_of_no_common_real_root_of_isRealRooted {f g : ℝ[X]}
     (hno : ∀ r : ℝ, f.IsRoot r → ¬ g.IsRoot r) :
     IsCoprime f g := by
   apply EuclideanDomain.isCoprime_of_dvd
-  · exact fun hfg => hf.1 (hfg.1)
+  · lia
   · intro z hz_nonunit hz0 hzf hzg
     have hz_notunit : ¬ IsUnit z := by
-      simpa [Set.mem_setOf_eq] using hz_nonunit
+      simp_all
     have hz_rr : (z ≠ 0 ∧ z.Splits) := isRealRooted_of_dvd hf hz0 hzf
     obtain ⟨r, hzr⟩ := exists_isRoot_of_isRealRooted_of_not_isUnit hz_rr hz_notunit
     have hfr : f.IsRoot r := IsRoot.of_dvd hzf hzr
     have hgr : g.IsRoot r := IsRoot.of_dvd hzg hzr
-    exact hno r hfr hgr
+    simp_all
 
 /-- Any nonzero degree-1 polynomial is real-rooted. -/
 lemma isRealRooted_of_degree_one {p : ℝ[X]} (hp : p.natDegree = 1) : (p ≠ 0 ∧ p.Splits) := by
   have hne : p ≠ 0 := by intro h; simp [h] at hp
-  have hdeg : p.degree = 1 := by rw [degree_eq_natDegree hne]; exact_mod_cast hp
+  have hdeg : p.degree = 1 := by rw [degree_eq_natDegree hne]; simp_all
   refine ⟨hne, splits_of_card_roots ?_⟩
   rw [roots_degree_eq_one hdeg, Multiset.card_singleton, hp]
 
 lemma interlaces_one_linear {p : ℝ[X]} (hp_deg : p.natDegree = 1) :
     Interlaces (1 : ℝ[X]) p := by
   have h1_rr : ((1 : ℝ[X]) ≠ 0 ∧ (1 : ℝ[X]).Splits) := by
-    exact isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp)
+    simp
   have hp_rr : (p ≠ 0 ∧ p.Splits) := isRealRooted_of_degree_one hp_deg
   have hp_deg' : p.degree = 1 := by
     rw [degree_eq_natDegree hp_rr.1, hp_deg]
-    norm_num
+    lia
   refine ⟨hp_rr, h1_rr, by simp [Polynomial.natDegree_one, hp_deg], ?_⟩
   refine ⟨[-(p.coeff 1)⁻¹ * p.coeff 0], [], by simp, by simp, ?_, by simp,
     by simp [ListInterlaces]⟩
@@ -164,13 +159,7 @@ lemma pairwise_map_sub_const :
     ∀ {rs : List ℝ}, rs.Pairwise (· ≤ ·) → ∀ r : ℝ, (rs.map (· - r)).Pairwise (· ≤ ·)
   | [], _, _ => by simp
   | x :: xs, h, r => by
-      rw [List.pairwise_cons] at h
-      rw [List.map, List.pairwise_cons]
-      constructor
-      · intro y hy
-        rcases List.mem_map.mp hy with ⟨z, hz, rfl⟩
-        exact sub_le_sub_right (h.1 z hz) r
-      · simpa [List.map] using pairwise_map_sub_const h.2 r
+      grind
 
 lemma listInterlaces_map_sub_const :
     ∀ {ss rs : List ℝ}, ListInterlaces ss rs →
@@ -212,7 +201,7 @@ lemma roots_comp_X_add_C {p : ℝ[X]} (r : ℝ) :
   rw [count_roots, rootMultiplicity_comp_X_add_C]
   simpa [count_roots, add_comm, add_left_comm, add_assoc] using
     (Multiset.count_map_eq_count' (fun y : ℝ => y - r) p.roots
-      (fun a b hab => by linarith) (x + r)).symm
+      (fun a b hab => by simp_all) (x + r)).symm
 
 lemma isRealRooted_comp_X_add_C {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (r : ℝ) :
     (p.comp (X + C r) ≠ 0 ∧ (p.comp (X + C r)).Splits) := by
@@ -228,19 +217,19 @@ lemma prec_comp_X_add_C {f g : ℝ[X]} (h : Prec f g) (r : ℝ) :
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hcase⟩
   refine ⟨isRealRooted_comp_X_add_C hf r, isRealRooted_comp_X_add_C hg r,
     ss.map (· - r), rs.map (· - r), ?_, ?_, ?_, ?_, ?_⟩
-  · exact pairwise_map_sub_const hss r
-  · exact pairwise_map_sub_const hrs r
+  · grind
+  · grind
   · calc
       (↑(ss.map (· - r)) : Multiset ℝ) = (↑ss : Multiset ℝ).map (fun x => x - r) := rfl
-      _ = f.roots.map (fun x => x - r) := by rw [hss_eq]
+      _ = f.roots.map (fun x => x - r) := by lia
       _ = (f.comp (X + C r)).roots := (roots_comp_X_add_C r).symm
   · calc
       (↑(rs.map (· - r)) : Multiset ℝ) = (↑rs : Multiset ℝ).map (fun x => x - r) := rfl
-      _ = g.roots.map (fun x => x - r) := by rw [hrs_eq]
+      _ = g.roots.map (fun x => x - r) := by lia
       _ = (g.comp (X + C r)).roots := (roots_comp_X_add_C r).symm
   · rcases hcase with ⟨hlen, hint⟩ | ⟨hlen, halt⟩
-    · exact Or.inl ⟨by simpa using hlen, listInterlaces_map_sub_const hint r⟩
-    · exact Or.inr ⟨by simpa using hlen, listAlternates_map_sub_const halt r⟩
+    · exact Or.inl ⟨by simp_all, listInterlaces_map_sub_const hint r⟩
+    · exact Or.inr ⟨by simp_all, listAlternates_map_sub_const halt r⟩
 
 /-- Translation by `r` is an equivalence on `Prec`. -/
 lemma prec_comp_X_add_C_iff {f g : ℝ[X]} (r : ℝ) :
@@ -258,7 +247,7 @@ lemma prec_refl {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits) : Prec f f := by
   have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hrs_eq : (↑rs : Multiset ℝ) = f.roots := Multiset.sort_eq ..
   exact ⟨hf, hf, rs, rs, hrs_sorted, hrs_sorted, hrs_eq, hrs_eq,
-    Or.inr ⟨by simp, listAlternates_self_of_pairwise rs hrs_sorted⟩⟩
+    Or.inr ⟨by lia, listAlternates_self_of_pairwise rs hrs_sorted⟩⟩
 
 /-- Multiplying the left polynomial in a `Prec` relation by a nonzero scalar
 preserves interlacing, since it does not change the roots. -/
@@ -266,7 +255,7 @@ lemma prec_C_mul_left {f g : ℝ[X]} (h : Prec f g) {a : ℝ} (ha : a ≠ 0) :
     Prec (C a * f) g := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hcase⟩
   exact ⟨isRealRooted_C_mul hf ha, hg, ss, rs, hss, hrs, by
-    rw [roots_C_mul _ ha, hss_eq], hrs_eq, hcase⟩
+    simp_all, hrs_eq, hcase⟩
 
 /-- Multiplying the right polynomial in a `Prec` relation by a nonzero scalar
 preserves interlacing, since it does not change the roots. -/
@@ -274,7 +263,7 @@ lemma prec_C_mul_right {f g : ℝ[X]} (h : Prec f g) {a : ℝ} (ha : a ≠ 0) :
     Prec f (C a * g) := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hcase⟩
   exact ⟨hf, isRealRooted_C_mul hg ha, ss, rs, hss, hrs, hss_eq, by
-    rw [roots_C_mul _ ha, hrs_eq], hcase⟩
+    simp_all, hcase⟩
 
 /-- In particular, a nonzero scalar multiple of a real-rooted polynomial
 interlaces the original polynomial. -/
@@ -297,15 +286,13 @@ lemma natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff {p q : ℝ[X]}
     simp [hq] at hq_pos
   apply le_antisymm
   · have h := natDegree_add_le p q
-    rwa [max_eq_left (by lia)] at h
+    simp_all
   · apply le_natDegree_of_ne_zero
     have hqcoeff : q.coeff p.natDegree = q.leadingCoeff := by
-      rw [hdeg]
-      rfl
+      simp_all
     rw [coeff_add]
-    rw [show p.coeff p.natDegree = p.leadingCoeff by rfl]
-    rw [hqcoeff]
-    nlinarith [hp_pos, hq_pos]
+    rw [show p.coeff p.natDegree = p.leadingCoeff by simp]
+    grind
 
 /-- If the right summand has strictly larger degree and positive leading coefficient,
 then the sum keeps that degree. -/
@@ -314,7 +301,7 @@ lemma natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff {p q : ℝ[X]}
     (p + q).natDegree = q.natDegree := by
   apply le_antisymm
   · have h := natDegree_add_le p q
-    rwa [max_eq_right hdeg.le] at h
+    grind
   · apply le_natDegree_of_ne_zero
     rw [coeff_add, coeff_eq_zero_of_natDegree_lt hdeg, zero_add]
     exact ne_of_gt hq_pos
@@ -326,7 +313,7 @@ lemma natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff {p q : ℝ[X]}
     (p + q).natDegree = p.natDegree := by
   apply le_antisymm
   · have h := natDegree_add_le p q
-    rwa [max_eq_left hdeg.le] at h
+    grind
   · apply le_natDegree_of_ne_zero
     rw [coeff_add, coeff_eq_zero_of_natDegree_lt hdeg, add_zero]
     exact ne_of_gt hp_pos
@@ -339,13 +326,11 @@ lemma hasPosLeadingCoeff_add_of_same_natDegree {p q : ℝ[X]}
     HasPosLeadingCoeff (p + q) := by
   unfold HasPosLeadingCoeff at hp_pos hq_pos ⊢
   have hqcoeff : q.coeff p.natDegree = q.leadingCoeff := by
-    rw [hdeg]
-    rfl
+    simp_all
   unfold Polynomial.leadingCoeff
   rw [natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff hdeg hp_pos hq_pos, coeff_add]
-  rw [show p.coeff p.natDegree = p.leadingCoeff by rfl]
-  rw [hqcoeff]
-  nlinarith [hp_pos, hq_pos]
+  rw [show p.coeff p.natDegree = p.leadingCoeff by simp]
+  grind
 
 /-- If the right summand has strictly larger degree and positive leading coefficient,
 then the sum also has positive leading coefficient. -/

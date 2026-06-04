@@ -48,9 +48,7 @@ lemma coeff_X_sub_C_mul (r : ℝ) (m : Nat) (p : ℝ[X]) :
     coeff ((X - C r) * p) (m + 1) =
       coeff p m - r * coeff p (m + 1) := by
   rw [sub_mul, coeff_sub, coeff_X_mul]
-  have hC : coeff (C r * p) (m + 1) = r * coeff p (m + 1) := by
-    simp
-  rw [hC]
+  simp
 
 lemma coeff_motzkin_succ_succ (n m : Nat) :
     coeff (motzkin (n + 2)) (m + 1) =
@@ -59,7 +57,7 @@ lemma coeff_motzkin_succ_succ (n m : Nat) :
           (coeff (motzkin n) m - motzkinShift * coeff (motzkin n) (m + 1)) := by
   rw [motzkin_succ_succ, coeff_add]
   rw [show C (motzkinCoeffB n) * (X - C motzkinShift) * motzkin n =
-      C (motzkinCoeffB n) * ((X - C motzkinShift) * motzkin n) by rw [mul_assoc]]
+      C (motzkinCoeffB n) * ((X - C motzkinShift) * motzkin n) by grind]
   have hA :
       coeff (C (motzkinCoeffA n) * motzkin (n + 1)) (m + 1) =
         motzkinCoeffA n * coeff (motzkin (n + 1)) (m + 1) := by
@@ -103,18 +101,13 @@ lemma coeff_motzkin_top_pos_and_above :
         rcases Nat.mod_two_eq_zero_or_one n with hpar | hpar
         · have hprev_pos :
               0 < coeff (motzkin (n + 1)) ((n + 3) / 2) := by
-            have hprev_top' := hprev_top
-            rw [show (n + 1 + 1) / 2 = (n + 3) / 2 by lia] at hprev_top'
-            exact hprev_top'
+            lia
           have hlow_pos :
               0 < coeff (motzkin n) ((n + 3) / 2 - 1) := by
-            have hlow_top' := hlow_top
-            rw [show (n + 1) / 2 = (n + 3) / 2 - 1 by lia] at hlow_top'
-            exact hlow_top'
+            lia
           have hlow_zero :
               coeff (motzkin n) ((n + 3) / 2) = 0 := by
-            apply hlow_above
-            lia
+            grind
           have hcoeff_eq :
               ((n + 3) / 2 - 1 + 1 : Nat) = (n + 3) / 2 := by
             lia
@@ -131,15 +124,13 @@ lemma coeff_motzkin_top_pos_and_above :
           nlinarith
         · have hprev_zero :
               coeff (motzkin (n + 1)) ((n + 3) / 2) = 0 := by
-            apply hprev_above
-            lia
+            grind
           have hlow_pos :
               0 < coeff (motzkin n) ((n + 3) / 2 - 1) := by
-            simpa [show (n + 3) / 2 - 1 = (n + 1) / 2 by lia] using hlow_top
+            lia
           have hlow_zero :
               coeff (motzkin n) ((n + 3) / 2) = 0 := by
-            apply hlow_above
-            lia
+            grind
           have hcoeff_eq :
               ((n + 3) / 2 - 1 + 1 : Nat) = (n + 3) / 2 := by
             lia
@@ -147,36 +138,21 @@ lemma coeff_motzkin_top_pos_and_above :
           have hB_pos : 0 < motzkinCoeffB n := by
             unfold motzkinCoeffB
             positivity
-          have hshift_nonneg : 0 ≤ motzkinShift := by
-            unfold motzkinShift
-            positivity
-          nlinarith
+          simp_all
       · intro m hm
         cases m with
         | zero =>
             lia
         | succ k =>
             rw [show k + 1 = k + 0 + 1 by lia, coeff_motzkin_succ_succ]
-            have hprev_zero :
-                coeff (motzkin (n + 1)) (k + 1) = 0 := by
-              apply hprev_above
-              lia
-            have hlow_zero :
-                coeff (motzkin n) k = 0 := by
-              apply hlow_above
-              lia
-            have hlow_succ_zero :
-                coeff (motzkin n) (k + 1) = 0 := by
-              apply hlow_above
-              lia
-            simp [hprev_zero, hlow_zero, hlow_succ_zero]
+            grind
 
 lemma natDegree_motzkin (n : Nat) :
     (motzkin n).natDegree = (n + 1) / 2 := by
   rcases coeff_motzkin_top_pos_and_above n with ⟨htop, habove⟩
   apply natDegree_eq_of_le_of_coeff_ne_zero
   · exact natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm)
-  · exact ne_of_gt htop
+  · grind
 
 lemma motzkin_nonzero (n : Nat) :
     motzkin n ≠ 0 := by
@@ -193,8 +169,7 @@ lemma hasPosLeadingCoeff_C_mul_motzkin {a : ℝ} (ha : 0 < a) {p : ℝ[X]}
     (hp : HasPosLeadingCoeff p) :
     HasPosLeadingCoeff (C a * p) := by
   unfold HasPosLeadingCoeff at hp ⊢
-  rw [leadingCoeff_C_mul_of_isUnit (isUnit_iff_ne_zero.mpr ha.ne')]
-  exact mul_pos ha hp
+  simp_all
 
 lemma prec_self_mul_X_sub_C_of_roots_le {r : ℝ} {f : ℝ[X]}
     (hf : f ≠ 0 ∧ f.Splits) (hf_pos : HasPosLeadingCoeff f)
@@ -215,16 +190,13 @@ lemma prec_self_mul_X_sub_C_of_roots_le {r : ℝ} {f : ℝ[X]}
 
 lemma motzkin_bound_zero :
     ∀ r ∈ (motzkin 0).roots, r ≤ motzkinShift := by
-  intro r hr
-  have : False := by
-    simp [motzkin_zero] at hr
-  exact False.elim this
+  simp
 
 lemma motzkin_bound_one :
     ∀ r ∈ (motzkin 1).roots, r ≤ motzkinShift := by
   intro r hr
   have hr_root : (1 + X : ℝ[X]).IsRoot r := by
-    simpa [motzkin_one] using (mem_roots (motzkin_nonzero 1)).mp hr
+    simp_all
   have hr_eq : r = -1 := by
     rw [Polynomial.IsRoot.def, eval_add, eval_one, eval_X] at hr_root
     linarith
@@ -236,7 +208,7 @@ lemma prec_motzkin_zero_one :
   simpa [motzkin_zero, motzkin_one] using
     (interlaces_one_linear (p := (1 + X : ℝ[X])) (by
       simpa [add_comm] using
-        (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by norm_num)))).toPrec
+        (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp)))).toPrec
 
 lemma prec_motzkin_shifted_succ {n : Nat}
     (hprev : Prec (motzkin n) (motzkin (n + 1)))
@@ -289,7 +261,7 @@ lemma prec_motzkin_succ_of_shifted_even {n : Nat} (heven : n % 2 = 0)
   have hf : ((motzkin n) ≠ 0 ∧ (motzkin n).Splits) := by
     exact
       isRealRooted_of_dvd hshift.2.1 (motzkin_nonzero n)
-        ⟨X - C motzkinShift, by rw [mul_comm]⟩
+        ⟨X - C motzkinShift, by grind⟩
   have hg : ((motzkin (n + 1)) ≠ 0 ∧ (motzkin (n + 1)).Splits) := hshift.1
   have hdeg : (motzkin n).natDegree + 1 = (motzkin (n + 1)).natDegree := by
     rw [natDegree_motzkin, natDegree_motzkin]
@@ -313,10 +285,10 @@ lemma prec_motzkin_succ_of_shifted_odd {n : Nat} (hodd : n % 2 = 1)
     intro s hs
     simp only [f', roots_comp_X_add_C motzkinShift] at hs
     rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
-    linarith [hle_n t ht]
+    simp_all
   have hdeg' : f'.natDegree = g'.natDegree := by
-    rw [show f' = (motzkin n).comp (X + C motzkinShift) by rfl,
-      show g' = (motzkin (n + 1)).comp (X + C motzkinShift) by rfl]
+    rw [show f' = (motzkin n).comp (X + C motzkinShift) by lia,
+      show g' = (motzkin (n + 1)).comp (X + C motzkinShift) by lia]
     simp [natDegree_comp, natDegree_motzkin]
     lia
   have hprec' :
@@ -347,7 +319,7 @@ theorem prec_motzkin_succ_and_roots_le :
         rcases Nat.mod_two_eq_zero_or_one (n + 1) with hpar | hpar
         · exact prec_motzkin_succ_of_shifted_even hpar hshift hle_succ hle_next
         · exact prec_motzkin_succ_of_shifted_odd hpar hshift hle_succ
-      exact ⟨hnext, hle_succ, hle_next⟩
+      lia
 
 theorem prec_motzkin_succ (n : Nat) :
     Prec (motzkin n) (motzkin (n + 1)) :=

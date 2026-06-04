@@ -52,8 +52,7 @@ lemma coeff_singletonFreeSetPartitions_succ_succ (n m : Nat) :
   have hC :
       coeff (C (n + 1 : ℝ) * singletonFreeSetPartitions n) m =
         (n + 1 : ℝ) * coeff (singletonFreeSetPartitions n) m := by
-    simpa using
-      (coeff_C_mul (n := m) (a := (n + 1 : ℝ)) (p := singletonFreeSetPartitions n))
+    grind
   rw [hC, coeff_derivative]
   ring
 
@@ -77,8 +76,8 @@ lemma singletonFreeSetPartitions_nonnegCoeffs :
       | succ m =>
           rw [coeff_singletonFreeSetPartitions_succ_succ]
           exact add_nonneg
-            (mul_nonneg (by positivity) (singletonFreeSetPartitions_nonnegCoeffs n m))
-            (mul_nonneg (by positivity)
+            (mul_nonneg (by grind) (singletonFreeSetPartitions_nonnegCoeffs n m))
+            (mul_nonneg (by grind)
               (singletonFreeSetPartitions_nonnegCoeffs (n + 1) (m + 1)))
 
 lemma coeff_singletonFreeSetPartitions_top_pos_and_above :
@@ -112,73 +111,54 @@ lemma coeff_singletonFreeSetPartitions_top_pos_and_above :
         rcases Nat.mod_two_eq_zero_or_one n with hpar | hpar
         · have hsmall_pos :
               0 < coeff (singletonFreeSetPartitions (n + 2)) ((n + 4) / 2 - 1) := by
-            simpa [show (n + 4) / 2 - 1 = (n + 2) / 2 by lia] using hsmall_top
+            lia
           have hbig_zero :
               coeff (singletonFreeSetPartitions (n + 3)) ((n + 4) / 2) = 0 := by
-            apply hbig_hi
-            lia
+            grind
           have hidx : ((n + 4) / 2 - 1) + 1 = (n + 4) / 2 := by
             lia
           have hscale_eq : (((n + 2 : Nat) : ℝ) + 1) = (n + 3 : ℝ) := by
-            exact_mod_cast (show n + 2 + 1 = n + 3 by lia)
+            grind
           have hcoeff_eq :
               ((((n + 4) / 2 - 1 : Nat) : ℝ) + 1) = (((n + 4) / 2 : Nat) : ℝ) := by
-            exact_mod_cast hidx
+            simp
           rw [hidx, hscale_eq, hcoeff_eq, hbig_zero]
           have hscale : 0 < (n + 3 : ℝ) := by
             positivity
           nlinarith
         · have hsmall_pos :
               0 < coeff (singletonFreeSetPartitions (n + 2)) ((n + 4) / 2 - 1) := by
-            simpa [show (n + 4) / 2 - 1 = (n + 2) / 2 by lia] using hsmall_top
+            lia
           have hbig_pos :
               0 < coeff (singletonFreeSetPartitions (n + 3)) ((n + 4) / 2) := by
-            simpa [show (n + 4) / 2 = (n + 3) / 2 by lia] using hbig_top
+            lia
           have hidx : ((n + 4) / 2 - 1) + 1 = (n + 4) / 2 := by
             lia
           have hscale_eq : (((n + 2 : Nat) : ℝ) + 1) = (n + 3 : ℝ) := by
-            exact_mod_cast (show n + 2 + 1 = n + 3 by lia)
+            grind
           have hcoeff_eq :
               ((((n + 4) / 2 - 1 : Nat) : ℝ) + 1) = (((n + 4) / 2 : Nat) : ℝ) := by
-            exact_mod_cast hidx
+            simp
           rw [hidx, hscale_eq, hcoeff_eq]
           have hscale₁ : 0 < (n + 3 : ℝ) := by
             positivity
           have hscale₂ : 0 < (((n + 4) / 2 : Nat) : ℝ) := by
-            exact_mod_cast (show 0 < (n + 4) / 2 by lia)
+            simp
           nlinarith
       · intro m hm
         cases m with
         | zero =>
             lia
         | succ k =>
-            rw [show k + 1 = k + 1 by rfl, coeff_singletonFreeSetPartitions_succ_succ]
-            rcases Nat.mod_two_eq_zero_or_one n with hpar | hpar
-            · have hsmall_zero :
-                  coeff (singletonFreeSetPartitions (n + 2)) k = 0 := by
-                apply hsmall_hi
-                lia
-              have hbig_zero :
-                  coeff (singletonFreeSetPartitions (n + 3)) (k + 1) = 0 := by
-                apply hbig_hi
-                lia
-              simp [hsmall_zero, hbig_zero]
-            · have hsmall_zero :
-                  coeff (singletonFreeSetPartitions (n + 2)) k = 0 := by
-                apply hsmall_hi
-                lia
-              have hbig_zero :
-                  coeff (singletonFreeSetPartitions (n + 3)) (k + 1) = 0 := by
-                apply hbig_hi
-                lia
-              simp [hsmall_zero, hbig_zero]
+            rw [show k + 1 = k + 1 by lia, coeff_singletonFreeSetPartitions_succ_succ]
+            grind
 
 lemma natDegree_singletonFreeSetPartitions (n : Nat) (hn : 2 ≤ n) :
     (singletonFreeSetPartitions n).natDegree = n / 2 := by
   rcases coeff_singletonFreeSetPartitions_top_pos_and_above n hn with ⟨htop, habove⟩
   apply natDegree_eq_of_le_of_coeff_ne_zero
   · exact natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm)
-  · exact ne_of_gt htop
+  · grind
 
 lemma singletonFreeSetPartitions_nonzero (n : Nat) (hn : 2 ≤ n) :
     singletonFreeSetPartitions n ≠ 0 := by
@@ -206,7 +186,7 @@ lemma singletonFreeSetPartitionsCore_nonnegCoeffs (n : Nat) :
   intro m
   rw [singletonFreeSetPartitionsCore, coeff_add, coeff_C_mul]
   exact add_nonneg
-    (mul_nonneg (by positivity) (singletonFreeSetPartitions_nonnegCoeffs n m))
+    (mul_nonneg (by grind) (singletonFreeSetPartitions_nonnegCoeffs n m))
     ((singletonFreeSetPartitions_nonnegCoeffs (n + 1)).derivative m)
 
 lemma singletonFreeSetPartitionsCore_ne_zero (n : Nat) :
@@ -214,7 +194,7 @@ lemma singletonFreeSetPartitionsCore_ne_zero (n : Nat) :
   have hsucc_ne : singletonFreeSetPartitions (n + 2) ≠ 0 :=
     singletonFreeSetPartitions_nonzero (n + 2) (by lia)
   rw [singletonFreeSetPartitions_succ_succ_eq_X_mul_core n] at hsucc_ne
-  exact right_ne_zero_of_mul hsucc_ne
+  simp_all
 
 lemma natDegree_singletonFreeSetPartitionsCore (n : Nat) :
     (singletonFreeSetPartitionsCore n).natDegree = (n + 2) / 2 - 1 := by
@@ -241,7 +221,7 @@ lemma prec_singletonFreeSetPartitionsCore_of_prec {n : Nat} (hn : 3 ≤ n)
     Prec (singletonFreeSetPartitionsCore n) (singletonFreeSetPartitions (n + 1)) := by
   rw [singletonFreeSetPartitionsCore]
   have hscalar_ne : (n + 1 : ℝ) ≠ 0 := by
-    exact_mod_cast (show n + 1 ≠ 0 by lia)
+    grind
   have hlower :
       Prec (C (n + 1 : ℝ) * singletonFreeSetPartitions n)
         (singletonFreeSetPartitions (n + 1)) := by
@@ -258,7 +238,7 @@ lemma prec_singletonFreeSetPartitionsCore_of_prec {n : Nat} (hn : 3 ≤ n)
       HasPosLeadingCoeff (C (n + 1 : ℝ) * singletonFreeSetPartitions n) := by
     unfold HasPosLeadingCoeff
     rw [leadingCoeff_C_mul_of_isUnit (isUnit_iff_ne_zero.mpr hscalar_ne)]
-    exact mul_pos (by positivity) (singletonFreeSetPartitions_posLeadingCoeff n (by lia))
+    exact mul_pos (by grind) (singletonFreeSetPartitions_posLeadingCoeff n (by lia))
   have hder_pos :
       HasPosLeadingCoeff (singletonFreeSetPartitions (n + 1)).derivative :=
       (singletonFreeSetPartitions_posLeadingCoeff (n + 1) (by lia)).derivative (by
@@ -278,13 +258,10 @@ lemma prec_singletonFreeSetPartitions_three_four :
   have hlin : Interlaces (1 : ℝ[X]) (1 + C (3 : ℝ) * X) := by
     refine interlaces_one_linear ?_
     simpa [add_comm] using
-      (Polynomial.natDegree_linear (a := (3 : ℝ)) (b := (1 : ℝ)) (by norm_num))
+      (Polynomial.natDegree_linear (a := (3 : ℝ)) (b := (1 : ℝ)) (by simp))
   have hprec : Prec (1 : ℝ[X]) (1 + C (3 : ℝ) * X) := hlin.toPrec
   have hone_nonpos : ∀ r ∈ (1 : ℝ[X]).roots, r ≤ 0 := by
-    intro r hr
-    have : False := by
-      simp at hr
-    exact False.elim this
+    simp
   have hlin_nonneg : HasNonnegCoeffs (1 + C (3 : ℝ) * X) := by
     have hX_nonneg : HasNonnegCoeffs (X : ℝ[X]) := by
       intro m
@@ -298,7 +275,7 @@ lemma prec_singletonFreeSetPartitions_three_four :
           | succ m =>
               simp [coeff_X]
     have hCX_nonneg : HasNonnegCoeffs (C (3 : ℝ) * X) :=
-      nonnegCoeffs_C_mul (by positivity) hX_nonneg
+      nonnegCoeffs_C_mul (by simp) hX_nonneg
     intro m
     exact add_nonneg (hasNonnegCoeffs_one m) (hCX_nonneg m)
   have hlin_nonpos : ∀ r ∈ (1 + C (3 : ℝ) * X).roots, r ≤ 0 :=
@@ -319,11 +296,7 @@ lemma prec_singletonFreeSetPartitions_three_four :
       | succ m =>
           rw [coeff_add, coeff_C, coeff_one]
           simp
-    calc
-      (C (2 : ℝ) + 1) * X + 1 = C (3 : ℝ) * X + 1 := by
-        rw [hC]
-      _ = 1 + C (3 : ℝ) * X := by
-        ring
+    grind
   simpa [singletonFreeSetPartitions_three, hfour] using hmul
 
 lemma prec_singletonFreeSetPartitions_succ_of_prec_core {n : Nat} (hn : 3 ≤ n)

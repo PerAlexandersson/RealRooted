@@ -50,8 +50,7 @@ lemma weightedSum_eq_zero_of_forall_coeff_zero :
   | (a, p) :: l, hzero => by
       have ha : a = 0 := hzero (a, p) (by simp)
       have hl : ∀ ap ∈ l, ap.1 = 0 := by
-        intro ap hap
-        exact hzero ap (by simp [hap])
+        grind
       simp [weightedSum_cons, ha, weightedSum_eq_zero_of_forall_coeff_zero l hl]
 
 /-- `HasNonnegCoeffs` is closed under finite sums. -/
@@ -67,8 +66,7 @@ lemma hasPosLeadingCoeff_C_mul {a : ℝ} {p : ℝ[X]}
     (ha : 0 < a) (hp : HasPosLeadingCoeff p) :
     HasPosLeadingCoeff (C a * p) := by
   unfold HasPosLeadingCoeff at hp ⊢
-  rw [leadingCoeff_C_mul_of_isUnit (isUnit_iff_ne_zero.mpr ha.ne') p]
-  exact mul_pos ha hp
+  simp_all
 
 lemma natDegree_C_mul' {a : ℝ} {p : ℝ[X]} (ha : a ≠ 0) :
     (C a * p).natDegree = p.natDegree := by
@@ -80,7 +78,7 @@ lemma hasPosLeadingCoeff_weightedSum :
       (∀ ap ∈ l, HasPosLeadingCoeff ap.2) →
       (∃ ap ∈ l, 0 < ap.1) →
       HasPosLeadingCoeff (weightedSum l)
-  | [], _, _, hex => by rcases hex with ⟨_, hmem, _⟩; simp at hmem
+  | [], _, _, hex => by simp_all
   | (a, p) :: l, hnonneg, hpos, hex => by
       have hnonneg_a : 0 ≤ a := hnonneg (a, p) (by simp)
       rcases lt_or_eq_of_le hnonneg_a with ha | rfl
@@ -101,20 +99,11 @@ lemma hasPosLeadingCoeff_weightedSum :
               hasPosLeadingCoeff_add_of_natDegree_lt_left hgt hCp_pos
         · have hzero_tail : weightedSum l = 0 := by
             apply weightedSum_eq_zero_of_forall_coeff_zero
-            intro ap hap
-            have h_ap_nonneg : 0 ≤ ap.1 := hnonneg ap (by simp [hap])
-            have h_ap_not_pos : ¬ 0 < ap.1 := by
-              intro hapos
-              exact htail ⟨ap, hap, hapos⟩
-            linarith
+            grind
           simpa [weightedSum_cons, hzero_tail] using
             hasPosLeadingCoeff_C_mul ha (hpos (a, p) (by simp))
       · have htail : ∃ ap ∈ l, 0 < ap.1 := by
-          rcases hex with ⟨ap, hap, hapos⟩
-          rcases List.mem_cons.mp hap with hhead | htail
-          · cases hhead
-            simpa using hapos.ne'
-          · exact ⟨ap, htail, hapos⟩
+          simp_all
         simpa [weightedSum_cons] using
           hasPosLeadingCoeff_weightedSum l
             (fun ap hap => hnonneg ap (by simp [hap]))
@@ -144,10 +133,7 @@ namespace WeightedCompatibleLeft
 lemma nonneg {h : ℝ[X]} :
     ∀ {l : List (ℝ × ℝ[X])}, WeightedCompatibleLeft h l → ∀ ap ∈ l, 0 ≤ ap.1
   | _, @singleton _ a p ha _ _ => by
-      intro ap hap
-      have hap' : ap = (a, p) := by simpa using hap
-      subst hap'
-      exact le_of_lt ha
+      grind
   | _, cons_zero ha _ _ hl => by
       intro ap hap
       rcases List.mem_cons.mp hap with rfl | hap
@@ -156,38 +142,35 @@ lemma nonneg {h : ℝ[X]} :
   | _, cons_pos ha _ _ hl _ _ => by
       intro ap hap
       rcases List.mem_cons.mp hap with rfl | hap
-      · exact le_of_lt ha
+      · grind
       · exact nonneg hl ap hap
 
 lemma pos {h : ℝ[X]} :
     ∀ {l : List (ℝ × ℝ[X])}, WeightedCompatibleLeft h l →
       ∀ ap ∈ l, HasPosLeadingCoeff ap.2
   | _, @singleton _ a p _ _ hpos => by
-      intro ap hap
-      have hap' : ap = (a, p) := by simpa using hap
-      subst hap'
-      exact hpos
+      simp_all
   | _, cons_zero _ _ hpos hl => by
       intro ap hap
       rcases List.mem_cons.mp hap with rfl | hap
-      · exact hpos
+      · lia
       · exact pos hl ap hap
   | _, cons_pos _ _ hpos hl _ _ => by
       intro ap hap
       rcases List.mem_cons.mp hap with rfl | hap
-      · exact hpos
+      · lia
       · exact pos hl ap hap
 
 lemma exists_pos {h : ℝ[X]} :
     ∀ {l : List (ℝ × ℝ[X])}, WeightedCompatibleLeft h l →
       ∃ ap ∈ l, 0 < ap.1
   | _, @singleton _ a p ha _ _ => by
-      exact ⟨(a, p), by simp, ha⟩
+      simp_all
   | _, cons_zero _ _ _ hl => by
       rcases exists_pos hl with ⟨ap, hap, hapos⟩
-      exact ⟨ap, by simp [hap], hapos⟩
+      grind
   | _, @cons_pos _ a p l ha _ _ _ _ _ => by
-      exact ⟨(a, p), by simp, ha⟩
+      simp_all
 
 lemma hasPosLeadingCoeff {h : ℝ[X]} {l : List (ℝ × ℝ[X])}
     (hl : WeightedCompatibleLeft h l) :
@@ -218,20 +201,20 @@ lemma toSumCompatibleLeft_map_one {h : ℝ[X]} :
       | singleton _ hprec hpos =>
           simpa using SumCompatibleLeft.singleton hprec hpos
       | cons_zero ha _ _ _ =>
-          norm_num at ha
+          simp_all
       | cons_pos _ _ _ hl _ _ =>
           cases hl
   | p :: q :: l, hl => by
       cases hl with
       | cons_zero ha _ _ _ =>
-          norm_num at ha
+          simp_all
       | cons_pos _ hprec hpos htail hrr hcop =>
           have htail' : SumCompatibleLeft h (q :: l) :=
             toSumCompatibleLeft_map_one htail
           have hrr' : ((p + (q :: l).sum) ≠ 0 ∧ (p + (q :: l).sum).Splits) := by
-            simpa [weightedSum_map_one] using hrr
+            simp_all
           have hcop' : IsCoprime p (q :: l).sum := by
-            simpa [weightedSum_map_one] using hcop
+            simp_all
           exact SumCompatibleLeft.cons hprec hpos htail' hrr' hcop'
 
 end WeightedCompatibleLeft
@@ -261,7 +244,7 @@ theorem prec_weightedSum_right :
       (∀ ap ∈ l, HasPosLeadingCoeff ap.2) →
       (∃ ap ∈ l, 0 < ap.1) →
       Prec (weightedSum l) h
-  | [], _, _, _, _, hex => by rcases hex with ⟨_, hmem, _⟩; simp at hmem
+  | [], _, _, _, _, hex => by simp_all
   | (a, p) :: l, h, hnonneg, hprec, hpos, hex => by
       have hnonneg_a : 0 ≤ a := hnonneg (a, p) (by simp)
       rcases lt_or_eq_of_le hnonneg_a with ha | rfl
@@ -285,20 +268,11 @@ theorem prec_weightedSum_right :
             prec_add_of_prec_right_of_posLeadingCoeff hCp_prec htail_prec hCp_pos htail_pos
         · have hzero_tail : weightedSum l = 0 := by
             apply weightedSum_eq_zero_of_forall_coeff_zero
-            intro ap hap
-            have h_ap_nonneg : 0 ≤ ap.1 := hnonneg ap (by simp [hap])
-            have h_ap_not_pos : ¬ 0 < ap.1 := by
-              intro hapos
-              exact htail ⟨ap, hap, hapos⟩
-            linarith
+            grind
           simpa [weightedSum_cons, hzero_tail] using
             prec_C_mul_left (hprec (a, p) (by simp)) ha.ne'
       · have htail : ∃ ap ∈ l, 0 < ap.1 := by
-          rcases hex with ⟨ap, hap, hapos⟩
-          rcases List.mem_cons.mp hap with hhead | htail
-          · cases hhead
-            simpa using hapos.ne'
-          · exact ⟨ap, htail, hapos⟩
+          simp_all
         simpa [weightedSum_cons] using
           prec_weightedSum_right l h
             (fun ap hap => hnonneg ap (by simp [hap]))
@@ -315,20 +289,13 @@ theorem prec_sum_right
     Prec l.sum h := by
   rw [← weightedSum_map_one l]
   apply prec_weightedSum_right (l.map (fun p => ((1 : ℝ), p))) h
-  · intro ap hap
-    rcases List.mem_map.mp hap with ⟨p, hp, rfl⟩
-    norm_num
-  · intro ap hap
-    rcases List.mem_map.mp hap with ⟨p, hp, rfl⟩
-    exact hprec p hp
-  · intro ap hap
-    rcases List.mem_map.mp hap with ⟨p, hp, rfl⟩
-    exact hpos p hp
+  · simp
+  · simp_all
+  · simp_all
   · cases l with
     | nil =>
-        contradiction
+        lia
     | cons p l =>
-        refine ⟨((1 : ℝ), p), ?_, by norm_num⟩
         simp
 
 

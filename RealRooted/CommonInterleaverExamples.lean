@@ -25,27 +25,27 @@ private lemma xAddOne_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 1 : ℝ[X]) :
 
 private lemma twoMul_xAddOne_isRealRooted :
     ((C (2 : ℝ) * (X + 1)) ≠ 0 ∧ (C (2 : ℝ) * (X + 1)).Splits) := by
-  exact isRealRooted_C_mul xAddOne_isRealRooted (by norm_num)
+  exact isRealRooted_C_mul xAddOne_isRealRooted (by simp)
 
 private lemma threeMul_xAddOne_isRealRooted :
     ((C (3 : ℝ) * (X + 1)) ≠ 0 ∧ (C (3 : ℝ) * (X + 1)).Splits) := by
-  exact isRealRooted_C_mul xAddOne_isRealRooted (by norm_num)
+  exact isRealRooted_C_mul xAddOne_isRealRooted (by simp)
 
 private lemma twoMul_xAddOne_hasPosLeadingCoeff :
     HasPosLeadingCoeff (C (2 : ℝ) * (X + 1)) := by
-  exact hasPosLeadingCoeff_C_mul (by norm_num) xAddOne_hasPosLeadingCoeff
+  exact hasPosLeadingCoeff_C_mul (by simp) xAddOne_hasPosLeadingCoeff
 
 private lemma threeMul_xAddOne_hasPosLeadingCoeff :
     HasPosLeadingCoeff (C (3 : ℝ) * (X + 1)) := by
-  exact hasPosLeadingCoeff_C_mul (by norm_num) xAddOne_hasPosLeadingCoeff
+  exact hasPosLeadingCoeff_C_mul (by simp) xAddOne_hasPosLeadingCoeff
 
 private lemma twoMul_xAddOne_hasNonnegCoeffs :
     HasNonnegCoeffs (C (2 : ℝ) * (X + 1)) := by
-  exact nonnegCoeffs_C_mul (by norm_num) xAddOne_hasNonnegCoeffs
+  exact nonnegCoeffs_C_mul (by simp) xAddOne_hasNonnegCoeffs
 
 private lemma threeMul_xAddOne_hasNonnegCoeffs :
     HasNonnegCoeffs (C (3 : ℝ) * (X + 1)) := by
-  exact nonnegCoeffs_C_mul (by norm_num) xAddOne_hasNonnegCoeffs
+  exact nonnegCoeffs_C_mul (by simp) xAddOne_hasNonnegCoeffs
 
 lemma scaledLinearFamily_isRealRooted :
     ∀ f ∈ scaledLinearFamily, (f ≠ 0 ∧ f.Splits) := by
@@ -57,7 +57,7 @@ lemma scaledLinearFamily_isRealRooted :
   · exact twoMul_xAddOne_isRealRooted
   rcases hf with rfl | hf
   · exact threeMul_xAddOne_isRealRooted
-  · cases hf
+  · simp_all
 
 lemma scaledLinearFamily_hasPosLeadingCoeff :
     ∀ f ∈ scaledLinearFamily, HasPosLeadingCoeff f := by
@@ -69,7 +69,7 @@ lemma scaledLinearFamily_hasPosLeadingCoeff :
   · exact twoMul_xAddOne_hasPosLeadingCoeff
   rcases hf with rfl | hf
   · exact threeMul_xAddOne_hasPosLeadingCoeff
-  · cases hf
+  · simp_all
 
 lemma scaledLinearFamily_hasNonnegCoeffs :
     ∀ f ∈ scaledLinearFamily, HasNonnegCoeffs f := by
@@ -81,7 +81,7 @@ lemma scaledLinearFamily_hasNonnegCoeffs :
   · exact twoMul_xAddOne_hasNonnegCoeffs
   rcases hf with rfl | hf
   · exact threeMul_xAddOne_hasNonnegCoeffs
-  · cases hf
+  · simp_all
 
 /-- The common interleaver is just `X + 1` itself. -/
 lemma scaledLinearFamily_commonInterleaver :
@@ -92,10 +92,10 @@ lemma scaledLinearFamily_commonInterleaver :
   rcases hf with rfl | hf
   · exact prec_refl xAddOne_isRealRooted
   rcases hf with rfl | hf
-  · exact prec_C_mul_self xAddOne_isRealRooted (by norm_num)
+  · exact prec_C_mul_self xAddOne_isRealRooted (by simp)
   rcases hf with rfl | hf
-  · exact prec_C_mul_self xAddOne_isRealRooted (by norm_num)
-  · cases hf
+  · exact prec_C_mul_self xAddOne_isRealRooted (by simp)
+  · simp_all
 
 lemma scaledLinearFamily_pairwiseCompatible :
     PairwiseCompatible scaledLinearFamily := by
@@ -139,18 +139,8 @@ lemma scaledLinearFamily_pairwiseCompatible_iff_familyCompatible_of_allComboBrid
 private lemma xAddOne_natDegree :
     (X + 1 : ℝ[X]).natDegree = 1 := by
   have hpoly : (X + 1 : ℝ[X]) = C (1 : ℝ) * X + C (1 : ℝ) := by
-    ext n
-    cases n with
-    | zero =>
-        norm_num [coeff_X, coeff_one]
-    | succ n =>
-        cases n with
-        | zero =>
-            norm_num [coeff_X, coeff_one]
-        | succ n =>
-            norm_num [coeff_X, coeff_one]
-  rw [hpoly]
-  exact Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by norm_num)
+    simp
+  grind
 
 private lemma xAddTwo_natDegree :
     (X + 2 : ℝ[X]).natDegree = 1 := by
@@ -158,21 +148,16 @@ private lemma xAddTwo_natDegree :
     ext n
     cases n with
     | zero =>
-        norm_num [coeff_X, coeff_one]
+        simp
     | succ n =>
-        cases n with
-        | zero =>
-            norm_num [coeff_X, coeff_one]
-        | succ n =>
-            norm_num [coeff_X, coeff_one]
-  rw [hpoly]
-  exact Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (2 : ℝ)) (by norm_num)
+        simp
+  simp_all
 
 private lemma xAddTwo_isRealRooted : ((X + 2 : ℝ[X]) ≠ 0 ∧ (X + 2 : ℝ[X]).Splits) := by
   exact isRealRooted_of_degree_one xAddTwo_natDegree
 
 private lemma xAddTwo_hasNonnegCoeffs : HasNonnegCoeffs (X + 2 : ℝ[X]) := by
-  simpa using hasNonnegCoeffs_X.add (hasNonnegCoeffs_C (by norm_num : (0 : ℝ) ≤ 2))
+  simpa using hasNonnegCoeffs_X.add (hasNonnegCoeffs_C (by simp : (0 : ℝ) ≤ 2))
 
 private lemma xAddTwo_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 2 : ℝ[X]) := by
   exact xAddTwo_hasNonnegCoeffs.pos_leadingCoeff xAddTwo_isRealRooted.1
@@ -196,7 +181,7 @@ private lemma xAddThree_isRealRooted : ((X + 3 : ℝ[X]) ≠ 0 ∧ (X + 3 : ℝ[
   simpa [sub_eq_add_neg, add_comm] using isRealRooted_X_sub_C (-3 : ℝ)
 
 private lemma xAddThree_hasNonnegCoeffs : HasNonnegCoeffs (X + 3 : ℝ[X]) := by
-  simpa using hasNonnegCoeffs_X.add (hasNonnegCoeffs_C (by norm_num : (0 : ℝ) ≤ 3))
+  simpa using hasNonnegCoeffs_X.add (hasNonnegCoeffs_C (by simp : (0 : ℝ) ≤ 3))
 
 private lemma xAddThree_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 3 : ℝ[X]) := by
   exact xAddThree_hasNonnegCoeffs.pos_leadingCoeff xAddThree_isRealRooted.1
@@ -237,7 +222,7 @@ private lemma xSq_add_fiveX_add_six_roots :
     (((X + 2) * (X + 3)) : ℝ[X]).roots = {(-3 : ℝ)} + {(-2 : ℝ)} := by
   rw [roots_mul (mul_ne_zero xAddTwo_isRealRooted.1 xAddThree_isRealRooted.1)]
   rw [xAddTwo_roots, xAddThree_roots]
-  rw [Multiset.add_comm]
+  grind
 
 private lemma xAddFiveHalves_prec_xAddOne :
     Prec (X + C (5 / 2 : ℝ) : ℝ[X]) (X + 1) := by
@@ -282,10 +267,10 @@ private lemma xAddOne_xSq_add_fiveX_add_six_noCommon :
     ∀ r, (X + 1 : ℝ[X]).IsRoot r → ¬ (((X + 2) * (X + 3)) : ℝ[X]).IsRoot r := by
   intro r hroot1 hroot2
   have hr1 : r + 1 = 0 := by
-    simpa [Polynomial.IsRoot.def, eval_add, eval_X] using hroot1
+    simp_all
   have hprod : (r + 2) * (r + 3) = 0 := by
-    simpa [Polynomial.IsRoot.def, eval_mul, eval_add, eval_C, eval_X] using hroot2
-  rcases mul_eq_zero.mp hprod with hr2 | hr3 <;> linarith
+    simp_all
+  grind
 
 private lemma xAddOne_xSq_add_fiveX_add_six_not_prec :
     ¬ Prec (X + 1 : ℝ[X]) (((X + 2) * (X + 3)) : ℝ[X]) := by
@@ -317,56 +302,42 @@ private lemma xAddOne_xSq_add_fiveX_add_six_not_prec :
                   | nil =>
                       have hs_eq : s = -1 := by
                         have hs_mem : (-1 : ℝ) ∈ (X + 1 : ℝ[X]).roots := by
-                          rw [xAddOne_roots]
-                          simp
+                          simp_all
                         have hs_mem' :
                             (-1 : ℝ) ∈ (([s] : List ℝ) : Multiset ℝ) := by
-                          simpa [hss_eq] using hs_mem
+                          lia
                         have hs_mem'' : (-1 : ℝ) ∈ ([s] : List ℝ) :=
                           Multiset.mem_coe.mp hs_mem'
-                        simpa [eq_comm] using hs_mem''
+                        simp_all
                       have hr_negThree_mem : (-3 : ℝ) ∈ (((X + 2) * (X + 3)) : ℝ[X]).roots := by
-                        rw [xSq_add_fiveX_add_six_roots]
-                        simp
+                        simp_all
                       have hr_negTwo_mem : (-2 : ℝ) ∈ (((X + 2) * (X + 3)) : ℝ[X]).roots := by
-                        rw [xSq_add_fiveX_add_six_roots]
-                        simp
+                        simp_all
                       have hr_negThree_mem' :
                           (-3 : ℝ) ∈ (([r₁, r₂] : List ℝ) : Multiset ℝ) := by
-                        simpa [hrs_eq] using hr_negThree_mem
+                        lia
                       have hr_negTwo_mem' :
                           (-2 : ℝ) ∈ (([r₁, r₂] : List ℝ) : Multiset ℝ) := by
-                        simpa [hrs_eq] using hr_negTwo_mem
+                        lia
                       have hr1_or_hr2_negThree : r₁ = -3 ∨ r₂ = -3 := by
                         have hr_negThree_mem'' : (-3 : ℝ) ∈ ([r₁, r₂] : List ℝ) :=
                           Multiset.mem_coe.mp hr_negThree_mem'
-                        simpa [eq_comm] using hr_negThree_mem''
+                        grind
                       have hr1_or_hr2_negTwo : r₁ = -2 ∨ r₂ = -2 := by
                         have hr_negTwo_mem'' : (-2 : ℝ) ∈ ([r₁, r₂] : List ℝ) :=
                           Multiset.mem_coe.mp hr_negTwo_mem'
-                        simpa [eq_comm] using hr_negTwo_mem''
+                        grind
                       have hr1_le_r2 : r₁ ≤ r₂ := by
-                        exact List.rel_of_pairwise_cons hrs (by simp)
+                        simp_all
                       have hr1_eq : r₁ = -3 := by
-                        rcases hr1_or_hr2_negThree with hr1_eq | hr2_eq
-                        · exact hr1_eq
-                        · rcases hr1_or_hr2_negTwo with hr1_eq | hr2_eq'
-                          · have : ¬ ((-2 : ℝ) ≤ -3) := by norm_num
-                            exact False.elim (this (by simpa [hr1_eq, hr2_eq] using hr1_le_r2))
-                          · linarith
+                        grind
                       have hr2_eq : r₂ = -2 := by
-                        rcases hr1_or_hr2_negTwo with hr1_eq | hr2_eq
-                        · linarith
-                        · exact hr2_eq
+                        simp_all
                       have hinter : ListInterlaces [s] [r₁, r₂] := by
-                        rcases hshape with hshort | hsame
-                        · simpa using hshort.2
-                        · have : False := by
-                            simpa [hss_len, hrs_len] using hsame.1
-                          exact False.elim this
+                        lia
                       have : False := by
                         simp [hs_eq, hr1_eq, hr2_eq, ListInterlaces] at hinter
-                      exact False.elim this
+                      lia
                   | cons r₃ rs''' =>
                       simp at hrs_len
       | cons s₂ ss'' =>
@@ -377,7 +348,7 @@ private lemma xAddOne_xAddTwo_linear_combo_eq {lam : ℝ} :
   ext n
   cases n with
   | zero =>
-      norm_num [mul_add, add_assoc, add_left_comm, add_comm, coeff_X, coeff_one]
+      simp
   | succ n =>
       cases n with
       | zero =>
@@ -393,16 +364,16 @@ private lemma xAddOne_xAddTwo_posComboRealRooted :
   have hdeg : (X * C (lam + 1) + C (lam + 2) : ℝ[X]).natDegree = 1 := by
     simpa [mul_comm] using
       (Polynomial.natDegree_linear (a := lam + 1) (b := lam + 2)
-        (by linarith : (lam + 1) ≠ 0))
+        (by grind : (lam + 1) ≠ 0))
   exact isRealRooted_of_degree_one hdeg
 
 private lemma xAddOne_xAddTwo_noCommon :
     ∀ r, (X + 1 : ℝ[X]).IsRoot r → ¬ (X + 2 : ℝ[X]).IsRoot r := by
   intro r hroot1 hroot2
   have hr1 : r + 1 = 0 := by
-    simpa [Polynomial.IsRoot.def, eval_add, eval_X] using hroot1
+    simp_all
   have hr2 : r + 2 = 0 := by
-    simpa [Polynomial.IsRoot.def, eval_add, eval_X] using hroot2
+    simp_all
   linarith
 
 /-- The linear pair used in the counterexamples still satisfies the true
@@ -452,12 +423,12 @@ private lemma xSq_add_threeX_add_three_not_isRealRooted :
   have hdeg : (X ^ 2 + C (3 : ℝ) * X + C (3 : ℝ) : ℝ[X]).natDegree = 2 := by
     simpa using
       (Polynomial.natDegree_quadratic (a := (1 : ℝ)) (b := (3 : ℝ)) (c := (3 : ℝ))
-        (by norm_num))
+        (by simp))
   obtain ⟨x, hx⟩ :=
     exists_isRoot_of_isRealRooted_of_not_isUnit hrr
-      (not_isUnit_of_natDegree_pos _ (by rw [hdeg]; norm_num))
+      (not_isUnit_of_natDegree_pos _ (by lia))
   have hx_eval : (X ^ 2 + C (3 : ℝ) * X + C (3 : ℝ) : ℝ[X]).eval x = 0 := by
-    simpa [Polynomial.IsRoot.def] using hx
+    simp_all
   have hquad : (1 : ℝ) * (x * x) + 3 * x + 3 = 0 := by
     simpa [eval_add, eval_mul, eval_C, eval_X, eval_pow, pow_two] using hx_eval
   have hdisc_sq : discrim (1 : ℝ) 3 3 = (2 * (1 : ℝ) * x + 3) ^ 2 :=
@@ -473,8 +444,7 @@ private lemma xAddOne_xAddTwo_badShiftedPair_eq :
   ext n
   cases n with
   | zero =>
-      norm_num
-        [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm, coeff_X, coeff_one]
+      simp
   | succ n =>
       cases n with
       | zero =>
@@ -498,12 +468,12 @@ private lemma xSq_add_twoX_add_two_not_isRealRooted :
   have hdeg : (X ^ 2 + C (2 : ℝ) * X + C (2 : ℝ) : ℝ[X]).natDegree = 2 := by
     simpa using
       (Polynomial.natDegree_quadratic (a := (1 : ℝ)) (b := (2 : ℝ)) (c := (2 : ℝ))
-        (by norm_num))
+        (by simp))
   obtain ⟨x, hx⟩ :=
     exists_isRoot_of_isRealRooted_of_not_isUnit hrr
-      (not_isUnit_of_natDegree_pos _ (by rw [hdeg]; norm_num))
+      (not_isUnit_of_natDegree_pos _ (by lia))
   have hx_eval : (X ^ 2 + C (2 : ℝ) * X + C (2 : ℝ) : ℝ[X]).eval x = 0 := by
-    simpa [Polynomial.IsRoot.def] using hx
+    simp_all
   have hquad : (1 : ℝ) * (x * x) + 2 * x + 2 = 0 := by
     simpa [eval_add, eval_mul, eval_C, eval_X, eval_pow, pow_two] using hx_eval
   have hdisc_sq : discrim (1 : ℝ) 2 2 = (2 * (1 : ℝ) * x + 2) ^ 2 :=
@@ -549,18 +519,14 @@ private lemma xAddOne_xAddTwo_not_prec :
                     (Polynomial.mem_roots hg.1).mp hr_mem
                   have hs_eq : s = -1 := by
                     have hs_eval : s + 1 = 0 := by
-                      simpa [Polynomial.IsRoot.def, eval_add, eval_X] using hs_root
+                      simp_all
                     linarith
                   have hr_eq : r = -2 := by
                     have hr_eval : r + 2 = 0 := by
-                      simpa [Polynomial.IsRoot.def, eval_add, eval_X] using hr_root
+                      simp_all
                     linarith
                   have hsame_alt : ListAlternates [s] [r] := by
-                    rcases hshape with hshort | hsame
-                    · have : False := by
-                        simpa using hshort.1
-                      exact False.elim this
-                    · simpa using hsame.2
+                    lia
                   have hs_le_r : s ≤ r := by
                     simpa [ListAlternates, ListInterlaces] using hsame_alt
                   linarith
@@ -588,8 +554,8 @@ lemma not_posComboNoCommonAffineFamilyStatement :
         (by simp [xAddOne_natDegree, xAddTwo_natDegree])
         (by simp [xAddOne_natDegree, xAddTwo_natDegree])
         xAddOne_xAddTwo_noCommon
-        (show 0 < (1 : ℝ) by norm_num)
-        (show 0 < (1 : ℝ) by norm_num)
+        (show 0 < (1 : ℝ) by simp)
+        (show 0 < (1 : ℝ) by simp)
   rw [xAddOne_xAddTwo_badAffineSlice_eq] at hrr
   exact xSq_add_threeX_add_three_not_isRealRooted hrr
 

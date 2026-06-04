@@ -60,10 +60,9 @@ lemma simsun_three : simsun 3 = 1 + C (4 : ℝ) * X := by
           have hC4 : (C (4 : ℝ) : ℝ[X]) = 4 := by
             ext n
             cases n <;> simp
-          rw [hC2, hC4]
-          ring
+          grind
     _ = 1 + C (4 : ℝ) * X := by
-          rw [mul_comm]
+          simp
 
 lemma coeff_simsunCoeffA_mul (n m : Nat) (p : ℝ[X]) :
     coeff (simsunCoeffA n * p) (m + 1) =
@@ -73,8 +72,8 @@ lemma coeff_simsunCoeffA_mul (n m : Nat) (p : ℝ[X]) :
     calc
       coeff (C (n : ℝ) * X * p) (m + 1)
           = coeff (C (n : ℝ) * (X * p)) (m + 1) := by rw [mul_assoc]
-      _ = (n : ℝ) * coeff (X * p) (m + 1) := by rw [coeff_C_mul]
-      _ = (n : ℝ) * coeff p m := by rw [coeff_X_mul]
+      _ = (n : ℝ) * coeff (X * p) (m + 1) := by simp
+      _ = (n : ℝ) * coeff p m := by simp
   rw [simsunCoeffA, add_mul, one_mul, coeff_add, hCX]
 
 lemma coeff_simsunCoeffB_mul_derivative (m : Nat) (p : ℝ[X]) :
@@ -90,7 +89,7 @@ lemma coeff_simsunCoeffB_mul_derivative (m : Nat) (p : ℝ[X]) :
       rw [hB, coeff_sub]
       have h₁ : coeff (X * p.derivative) 1 = coeff p 1 := by
         calc
-          coeff (X * p.derivative) 1 = coeff p.derivative 0 := by rw [coeff_X_mul]
+          coeff (X * p.derivative) 1 = coeff p.derivative 0 := by simp
           _ = coeff p 1 := by
               rw [coeff_derivative]
               ring
@@ -99,47 +98,33 @@ lemma coeff_simsunCoeffB_mul_derivative (m : Nat) (p : ℝ[X]) :
           coeff (C (2 : ℝ) * X * X * p.derivative) 1
               = (2 : ℝ) * coeff (X * (X * p.derivative)) 1 := by
                   rw [mul_assoc, mul_assoc, coeff_C_mul]
-          _ = (2 : ℝ) * coeff (X * p.derivative) 0 := by rw [coeff_X_mul]
-          _ = 0 := by rw [coeff_X_mul_zero]; simp
-      rw [h₁, h₂]
-      ring
+          _ = (2 : ℝ) * coeff (X * p.derivative) 0 := by simp
+          _ = 0 := by simp
+      simp_all
   | succ m =>
       rw [hB, coeff_sub]
       have h₁ : coeff (X * p.derivative) (m + 2) =
           (m + 2 : ℝ) * coeff p (m + 2) := by
         calc
-          coeff (X * p.derivative) (m + 2) = coeff p.derivative (m + 1) := by rw [coeff_X_mul]
+          coeff (X * p.derivative) (m + 2) = coeff p.derivative (m + 1) := by simp
           _ = (((m + 1 : Nat) : ℝ) + 1) * coeff p (m + 1 + 1) := by
               rw [coeff_derivative]
               ring
           _ = (m + 2 : ℝ) * coeff p (m + 2) := by
-              have hidx : m + 1 + 1 = m + 2 := by lia
-              have hcast : (((m + 1 : Nat) : ℝ) + 1) = (m : ℝ) + 2 := by
-                calc
-                  (((m + 1 : Nat) : ℝ) + 1) = ((m : ℝ) + 1) + 1 := by simp
-                  _ = (m : ℝ) + 2 := by ring
-              rw [hidx, hcast]
+              grind
       have h₂ : coeff (C (2 : ℝ) * X * X * p.derivative) (m + 2) =
           (2 * (m + 1) : ℝ) * coeff p (m + 1) := by
         calc
           coeff (C (2 : ℝ) * X * X * p.derivative) (m + 2)
               = (2 : ℝ) * coeff (X * (X * p.derivative)) (m + 2) := by
                   rw [mul_assoc, mul_assoc, coeff_C_mul]
-          _ = (2 : ℝ) * coeff (X * p.derivative) (m + 1) := by rw [coeff_X_mul]
-          _ = (2 : ℝ) * coeff p.derivative m := by rw [coeff_X_mul]
+          _ = (2 : ℝ) * coeff (X * p.derivative) (m + 1) := by simp
+          _ = (2 : ℝ) * coeff p.derivative m := by simp
           _ = (2 : ℝ) * (((m : Nat) : ℝ) + 1) * coeff p (m + 1) := by
               rw [coeff_derivative]
-              ring
-          _ = (2 * (m + 1) : ℝ) * coeff p (m + 1) := by ring
-      rw [h₁, h₂]
-      have hidx : m + 1 + 1 = m + 2 := by lia
-      have hcast₁ : (((m + 1 : Nat) : ℝ) + 1) = (m : ℝ) + 2 := by
-        calc
-          (((m + 1 : Nat) : ℝ) + 1) = ((m : ℝ) + 1) + 1 := by simp
-          _ = (m : ℝ) + 2 := by ring
-      have hcast₂ : ((m + 1 : Nat) : ℝ) = (m : ℝ) + 1 := by
-        simp [Nat.cast_add]
-      rw [hidx, hcast₁, hcast₂]
+              grind
+          _ = (2 * (m + 1) : ℝ) * coeff p (m + 1) := by lia
+      grind
 
 lemma coeff_simsun_succ (n m : Nat) :
     coeff (simsun (n + 1)) (m + 1) =
@@ -171,7 +156,7 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
       · simp [simsun_zero]
       · intro m hm
         rw [simsun_zero, coeff_one]
-        simp [hm.ne']
+        lia
   | 1 => by
       refine ⟨?_, ?_, ?_⟩
       · intro m
@@ -183,7 +168,7 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
       · simp [simsun_one]
       · intro m hm
         rw [simsun_one, coeff_one]
-        simp [hm.ne']
+        lia
   | n + 2 => by
       rcases simsun_nonnegCoeffs_top_pos_and_above (n + 1) with
         ⟨hprev_nonneg, hprev_top, hprev_above⟩
@@ -201,42 +186,29 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
               have hscale : 0 ≤ (((n + 1 : Nat) : ℝ) - 2 * (m : ℝ)) := by
                 nlinarith
               exact add_nonneg
-                (mul_nonneg (by simpa using hscale) (hprev_nonneg m))
-                (mul_nonneg (by positivity) (hprev_nonneg (m + 1)))
+                (mul_nonneg (by lia) (hprev_nonneg m))
+                (mul_nonneg (by grind) (hprev_nonneg (m + 1)))
             · have hm' : (n + 1) / 2 < m := lt_of_not_ge hm
               have hm_zero : coeff (simsun (n + 1)) m = 0 := hprev_above m hm'
               have hm_succ_zero : coeff (simsun (n + 1)) (m + 1) = 0 := by
-                exact hprev_above (m + 1) (by lia)
+                grind
               simp [hm_zero, hm_succ_zero]
       · set k : Nat := (n + 2) / 2 - 1
         have hk_succ : k + 1 = (n + 2) / 2 := by
           lia
-        rw [show (n + 2) / 2 = k + 1 by simp [hk_succ], coeff_simsun_succ]
+        rw [show (n + 2) / 2 = k + 1 by lia, coeff_simsun_succ]
         rcases Nat.mod_two_eq_zero_or_one n with hpar | hpar
         · have hk_eq : k = n / 2 := by
             lia
           have hprev_idx : (n + 1) / 2 = n / 2 := by
             lia
           have hprev_pos : 0 < coeff (simsun (n + 1)) k := by
-            simpa [hk_eq, hprev_idx] using hprev_top
+            lia
           have hprev_zero : coeff (simsun (n + 1)) (k + 1) = 0 := by
-            rw [hk_succ]
-            exact hprev_above ((n + 2) / 2) (by lia)
+            simp_all
           have hdouble : (2 : ℝ) * (k : ℝ) = (n : ℝ) := by
             exact_mod_cast (show 2 * k = n by lia)
-          have hcast :
-              (((n + 1 : Nat) : ℝ) - 2 * (k : ℝ)) = (n : ℝ) + 1 - 2 * (k : ℝ) := by
-            norm_num [Nat.cast_add]
-          have hscale_eq : (n : ℝ) + 1 - 2 * (k : ℝ) = 1 := by
-            nlinarith
-          calc
-            0 < coeff (simsun (n + 1)) k := hprev_pos
-            _ = ((n : ℝ) + 1 - 2 * (k : ℝ)) * coeff (simsun (n + 1)) k +
-                  ((k : ℝ) + 2) * coeff (simsun (n + 1)) (k + 1) := by
-                    simp [hprev_zero, hscale_eq]
-            _ = (((n + 1 : Nat) : ℝ) - 2 * (k : ℝ)) * coeff (simsun (n + 1)) k +
-                  ((k : ℝ) + 2) * coeff (simsun (n + 1)) (k + 1) := by
-                    simp
+          simp_all
         · have hk_eq : k = n / 2 := by
             lia
           have hk_top : k + 1 = (n + 1) / 2 := by
@@ -244,40 +216,33 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
           have hprev_nonneg_k : 0 ≤ coeff (simsun (n + 1)) k :=
             hprev_nonneg k
           have hprev_pos : 0 < coeff (simsun (n + 1)) (k + 1) := by
-            simpa [hk_top] using hprev_top
+            lia
           have hdouble : (2 : ℝ) * (k : ℝ) + 1 = (n : ℝ) := by
             exact_mod_cast (show 2 * k + 1 = n by lia)
           have hcast :
               (((n + 1 : Nat) : ℝ) - 2 * (k : ℝ)) = (n : ℝ) + 1 - 2 * (k : ℝ) := by
-            norm_num [Nat.cast_add]
+            lia
           have hscale_eq : (n : ℝ) + 1 - 2 * (k : ℝ) = 2 := by
             nlinarith
           have hlead_pos :
               0 < ((k : ℝ) + 2) * coeff (simsun (n + 1)) (k + 1) := by
-            have hscale : 0 < (k : ℝ) + 2 := by positivity
-            exact mul_pos hscale hprev_pos
+            have hscale : 0 < (k : ℝ) + 2 := by grind
+            simp_all
           have hsmall_nonneg :
               0 ≤ (((n + 1 : Nat) : ℝ) - 2 * (k : ℝ)) *
                 coeff (simsun (n + 1)) k := by
-            nlinarith [hcast, hscale_eq, hprev_nonneg_k]
-          have hsum :
-              0 <
-                ((((n + 1 : Nat) : ℝ) - 2 * (k : ℝ)) *
-                    coeff (simsun (n + 1)) k +
-                  ((k : ℝ) + 2) * coeff (simsun (n + 1)) (k + 1)) := by
-            exact add_pos_of_nonneg_of_pos hsmall_nonneg hlead_pos
-          simpa [hk_eq, hk_succ, hcast] using hsum
+            simp_all
+          grind
       · intro m hm
         cases m with
         | zero =>
             lia
         | succ k =>
-            rw [show k + 1 = k + 1 by rfl, coeff_simsun_succ]
+            rw [show k + 1 = k + 1 by lia, coeff_simsun_succ]
             have hk_succ_zero : coeff (simsun (n + 1)) (k + 1) = 0 := by
-              exact hprev_above (k + 1) (by lia)
+              grind
             by_cases hk : (n + 1) / 2 < k
-            · have hk_zero : coeff (simsun (n + 1)) k = 0 := hprev_above k hk
-              simp [hk_zero, hk_succ_zero]
+            · simp_all
             · have hk_le : k ≤ (n + 1) / 2 := le_of_not_gt hk
               have hk_ge : (n + 2) / 2 ≤ k := by
                 lia
@@ -285,19 +250,7 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
                 lia
               have hdouble : (2 : ℝ) * (k : ℝ) = (((n + 1 : Nat) : ℝ)) := by
                 exact_mod_cast (show 2 * k = n + 1 by lia)
-              have hcast :
-                  (((n + 1 : Nat) : ℝ) - 2 * (k : ℝ)) = (n : ℝ) + 1 - 2 * (k : ℝ) := by
-                norm_num [Nat.cast_add]
-              have hscale_eq : (n : ℝ) + 1 - 2 * (k : ℝ) = 0 := by
-                nlinarith
-              calc
-                (((n + 1 : Nat) : ℝ) - 2 * (k : ℝ)) * coeff (simsun (n + 1)) k +
-                    ((k : ℝ) + 2) * coeff (simsun (n + 1)) (k + 1)
-                    =
-                    ((n : ℝ) + 1 - 2 * (k : ℝ)) * coeff (simsun (n + 1)) k +
-                      ((k : ℝ) + 2) * coeff (simsun (n + 1)) (k + 1) := by
-                        simp
-                _ = 0 := by simp [hk_succ_zero, hscale_eq]
+              simp_all
 
 lemma simsun_nonnegCoeffs (n : Nat) :
     HasNonnegCoeffs (simsun n) :=
@@ -314,7 +267,7 @@ lemma natDegree_simsun (n : Nat) :
   rcases coeff_simsun_top_pos_and_above n with ⟨htop, habove⟩
   apply natDegree_eq_of_le_of_coeff_ne_zero
   · exact natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm)
-  · exact ne_of_gt htop
+  · grind
 
 lemma simsun_nonzero (n : Nat) :
     simsun n ≠ 0 := by
@@ -326,14 +279,14 @@ lemma interlaces_derivative_simsun_three :
   have hlin : Interlaces (1 : ℝ[X]) (1 + C (4 : ℝ) * X) := by
     refine interlaces_one_linear ?_
     simpa [add_comm] using
-      (Polynomial.natDegree_linear (a := (4 : ℝ)) (b := (1 : ℝ)) (by norm_num))
+      (Polynomial.natDegree_linear (a := (4 : ℝ)) (b := (1 : ℝ)) (by simp))
   have hprec : Prec (1 : ℝ[X]) (1 + C (4 : ℝ) * X) := hlin.toPrec
   have hprecC : Prec (C (4 : ℝ) * (1 : ℝ[X])) (1 + C (4 : ℝ) * X) := by
-    exact prec_C_mul_left hprec (by norm_num)
+    exact prec_C_mul_left hprec (by simp)
   have hInter : Interlaces (C (4 : ℝ) * (1 : ℝ[X])) (1 + C (4 : ℝ) * X) := by
     exact hprecC.toInterlaces (by
       simpa [add_comm] using
-        (Polynomial.natDegree_linear (a := (4 : ℝ)) (b := (1 : ℝ)) (by norm_num)).symm)
+        (Polynomial.natDegree_linear (a := (4 : ℝ)) (b := (1 : ℝ)) (by simp)).symm)
   simpa [simsun_three] using hInter
 
 lemma simsun_posLeadingCoeff (n : Nat) :
@@ -357,7 +310,7 @@ lemma interlaces_simsun_one_two :
   simpa [simsun_one, simsun_two] using
     interlaces_one_linear (p := (1 + X : ℝ[X])) (by
       simpa [add_comm] using
-        (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by norm_num)))
+        (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp)))
 
 lemma interlaces_derivative_simsun :
     ∀ n : Nat, 2 ≤ n → ((simsun n) ≠ 0 ∧ (simsun n).Splits) →
@@ -370,7 +323,7 @@ lemma interlaces_derivative_simsun :
       simpa [simsun_two] using
         interlaces_one_linear (p := (1 + X : ℝ[X])) (by
           simpa [add_comm] using
-            (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by norm_num)))
+            (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp)))
   | 3, _, _ => by
       simpa using interlaces_derivative_simsun_three
   | n + 4, _, hrr => by

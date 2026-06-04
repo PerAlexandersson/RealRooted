@@ -91,11 +91,11 @@ lemma isInterlacingSeq_iff_pairwise {fs : List ℝ[X]} :
   · intro h
     cases fs with
     | nil =>
-        exact List.Pairwise.nil
+        simp
     | cons f fs =>
         cases fs with
         | nil =>
-            exact List.pairwise_singleton _ _
+            simp
         | cons g gs =>
             exact List.pairwise_iff_get.2 (by simpa [IsInterlacingSeq] using h)
   · intro h
@@ -116,11 +116,11 @@ lemma isInterlacingSeq0_iff_pairwise {fs : List ℝ[X]} :
   · intro h
     cases fs with
     | nil =>
-        exact List.Pairwise.nil
+        simp
     | cons f fs =>
         cases fs with
         | nil =>
-            exact List.pairwise_singleton _ _
+            simp
         | cons g gs =>
             exact List.pairwise_iff_get.2 (by simpa [IsInterlacingSeq0] using h)
   · intro h
@@ -148,13 +148,11 @@ lemma IsInterlacingSeq.prec {fs : List ℝ[X]} (h : IsInterlacingSeq fs)
     Prec (fs.get i) (fs.get j) := by
   cases fs with
   | nil =>
-      exact (Nat.not_lt_zero _ i.2).elim
+      grind
   | cons f fs =>
       cases fs with
       | nil =>
-          fin_cases i
-          fin_cases j
-          exact (lt_irrefl (0 : Fin 1) hij).elim
+          grind
       | cons g gs =>
           simpa [IsInterlacingSeq] using h i j hij
 
@@ -164,13 +162,11 @@ lemma IsInterlacingSeq0.prec0 {fs : List ℝ[X]} (h : IsInterlacingSeq0 fs)
     Prec0 (fs.get i) (fs.get j) := by
   cases fs with
   | nil =>
-      exact (Nat.not_lt_zero _ i.2).elim
+      grind
   | cons f fs =>
       cases fs with
       | nil =>
-          fin_cases i
-          fin_cases j
-          exact (lt_irrefl (0 : Fin 1) hij).elim
+          grind
       | cons g gs =>
           simpa [IsInterlacingSeq0] using h i j hij
 
@@ -179,16 +175,7 @@ lemma IsInterlacingSeq.sublist {fs gs : List ℝ[X]}
     (hfs : IsInterlacingSeq fs) (hgs : gs.Sublist fs) :
     IsInterlacingSeq gs := by
   rw [isInterlacingSeq_iff_pairwise] at hfs ⊢
-  induction hgs with
-  | slnil =>
-      exact List.Pairwise.nil
-  | cons _ _ ih =>
-      exact ih (List.pairwise_cons.1 hfs).2
-  | cons_cons a hsub ih =>
-      exact List.pairwise_cons.2 ⟨
-        fun b hb => (List.pairwise_cons.1 hfs).1 _ (hsub.subset hb),
-        ih (List.pairwise_cons.1 hfs).2
-      ⟩
+  grind
 
 lemma IsInterlacingSeqNonneg.sublist {fs gs : List ℝ[X]}
     (hfs : IsInterlacingSeqNonneg fs) (hgs : gs.Sublist fs) :
@@ -202,16 +189,7 @@ lemma IsInterlacingSeq0.sublist {fs gs : List ℝ[X]}
     (hfs : IsInterlacingSeq0 fs) (hgs : gs.Sublist fs) :
     IsInterlacingSeq0 gs := by
   rw [isInterlacingSeq0_iff_pairwise] at hfs ⊢
-  induction hgs with
-  | slnil =>
-      exact List.Pairwise.nil
-  | cons _ _ ih =>
-      exact ih (List.pairwise_cons.1 hfs).2
-  | cons_cons a hsub ih =>
-      exact List.pairwise_cons.2 ⟨
-        fun b hb => (List.pairwise_cons.1 hfs).1 _ (hsub.subset hb),
-        ih (List.pairwise_cons.1 hfs).2
-      ⟩
+  grind
 
 lemma IsInterlacingSeq0Nonneg.sublist_of_realRooted_of_ne
     {fs gs : List ℝ[X]}
@@ -237,20 +215,20 @@ lemma IsInterlacingSeq.append {fs gs : List ℝ[X]}
     (hfg : ∀ f ∈ fs, ∀ g ∈ gs, Prec f g) :
     IsInterlacingSeq (fs ++ gs) := by
   rw [isInterlacingSeq_iff_pairwise] at hfs hgs ⊢
-  exact List.pairwise_append.2 ⟨hfs, hgs, hfg⟩
+  grind
 
 /-- Reversing an interlacing sequence preserves pairwise interlacing. -/
 lemma IsInterlacingSeq.reverse {fs : List ℝ[X]} (hfs : IsInterlacingSeq fs) :
     fs.reverse.Pairwise (fun f g => Prec g f) := by
   rw [isInterlacingSeq_iff_pairwise] at hfs
-  simpa using (List.Pairwise.reverse hfs)
+  grind
 
 /-- Reversing a weak zero-aware interlacing sequence preserves pairwise
 interlacing. -/
 lemma IsInterlacingSeq0.reverse {fs : List ℝ[X]} (hfs : IsInterlacingSeq0 fs) :
     fs.reverse.Pairwise (fun f g => Prec0 g f) := by
   rw [isInterlacingSeq0_iff_pairwise] at hfs
-  simpa using (List.Pairwise.reverse hfs)
+  grind
 
 /-- Reversing an interlacing sequence with nonnegative coefficients preserves
 the same structure. -/
@@ -259,8 +237,7 @@ lemma IsInterlacingSeqNonneg.reverse {fs : List ℝ[X]}
     fs.reverse.Pairwise (fun f g => Prec g f) := by
   rcases hfs with ⟨hmem, hint⟩
   refine ⟨?_, hint.reverse⟩
-  intro p hp
-  exact hmem p (by simpa using List.mem_reverse.2 hp)
+  simp_all
 
 lemma IsInterlacingSeqNonneg.realRooted {fs : List ℝ[X]}
     (hfs : IsInterlacingSeqNonneg fs) :
@@ -288,10 +265,7 @@ lemma IsInterlacingSeq0Nonneg.filter_ne_zero_of_realRooted
   rcases hfs with ⟨hint0, hnonneg⟩
   have hpair0 : fs.Pairwise Prec0 := isInterlacingSeq0_iff_pairwise.mp hint0
   refine ⟨?_, ?_⟩
-  · intro f hf
-    have hf_mem : f ∈ fs := List.mem_of_mem_filter hf
-    have hf_ne : f ≠ 0 := of_decide_eq_true (List.mem_filter.mp hf).2
-    exact ⟨hreal f hf_mem hf_ne, hnonneg f hf_mem⟩
+  · simp_all
   · rw [isInterlacingSeq_iff_pairwise]
     have hpair_filter0 : (fs.filter (· ≠ 0)).Pairwise Prec0 := hpair0.filter _
     refine List.pairwise_iff_get.2 ?_

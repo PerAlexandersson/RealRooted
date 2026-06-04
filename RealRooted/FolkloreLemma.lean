@@ -60,59 +60,41 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
       have hrew :
           C α * q + C β * f =
             C (α + β) * f + C (-α) * (X * g) := by
-        calc
-          C α * q + C β * f
-              = C α * (f - X * g) + C β * f := by simp [q]
-          _ = (C α * f - C α * (X * g)) + C β * f := by simp [mul_sub]
-          _ = C (α + β) * f + C (-α) * (X * g) := by
-                ext n
-                have hcf : (C α * f + C β * f).coeff n = α * f.coeff n + β * f.coeff n := by
-                  rw [coeff_add, coeff_C_mul, coeff_C_mul]
-                calc
-                  (C α * f - C α * (X * g) + C β * f).coeff n
-                      = α * f.coeff n - α * (X * g).coeff n + β * f.coeff n := by
-                          rw [coeff_add, coeff_sub, coeff_C_mul, coeff_C_mul, coeff_C_mul]
-                  _ = -(α * (X * g).coeff n) + (α * f.coeff n + β * f.coeff n) := by ring
-                  _ = -(α * (X * g).coeff n) + (C α * f + C β * f).coeff n := by
-                        rw [hcf]
-                  _ = (C (α + β) * f + C (-α) * (X * g)).coeff n := by
-                        rw [hcf, coeff_add, coeff_C_mul, coeff_C_mul]
-                        ring
+        grind
       simpa [hrew] using hall_fXg (α + β) (-α)
     have hq : (q ≠ 0 ∧ q.Splits) := by
       rcases hall_qf 1 0 with hzero | hrr
-      · exact False.elim (hq0 (by simpa [q] using hzero))
-      · simpa using hrr
+      · simp_all
+      · simp_all
     have hf0 : f ≠ 0 := hf.1
     have hclose := natDegree_close_of_allComboRealRooted hall_qf hq0 hf0
     have hq_lt : q.natDegree < f.natDegree := by
       have hq_le : q.natDegree ≤ f.natDegree := by
         have hXg_le : (X * g).natDegree ≤ f.natDegree := by
-          rw [natDegree_X_mul hg.1]
-          lia
+          simp_all
         have hsub : (f - X * g).natDegree ≤ f.natDegree :=
           (natDegree_sub_le_iff_left hXg_le).mpr le_rfl
-        simpa [q] using hsub
+        lia
       by_contra hnot
       have hf_le_q : f.natDegree ≤ q.natDegree := le_of_not_gt hnot
       have hq_eq : q.natDegree = f.natDegree := le_antisymm hq_le hf_le_q
       have hq_top_ne : q.coeff f.natDegree ≠ 0 := by
         rw [← hq_eq, coeff_natDegree]
-        exact leadingCoeff_ne_zero.mpr hq0
+        simp_all
       have hq_top_zero : q.coeff f.natDegree = 0 := by
         calc
           q.coeff f.natDegree
               = f.coeff f.natDegree - (X * g).coeff f.natDegree := by
                   simp [q, coeff_sub]
           _ = 1 - (X * g).coeff f.natDegree := by
-                simpa using hf_monic.coeff_natDegree
+                simp_all
           _ = 1 - g.coeff g.natDegree := by
                 rw [← hdeg, coeff_X_mul]
           _ = 1 - g.leadingCoeff := by
-                rw [coeff_natDegree]
+                simp
           _ = 0 := by
                 simp [hg_monic.leadingCoeff]
-      exact hq_top_ne hq_top_zero
+      lia
     have hdeg_qf : q.natDegree + 1 = f.natDegree := by
       lia
     have hprec_or : Prec q f ∨ Prec f q :=
@@ -124,10 +106,10 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
         rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
       have hrs_len : rs.length = q.natDegree := by
         rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hq.2]
-      rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩ <;> lia
+      lia
     rcases hprec_or with hqf | hfq
     · exact hqf.toPrec0
-    · exact False.elim (hnot_prec_fq hfq)
+    · lia
 
 /-- If `g ⊳ f` (differ-by-1), monic, all roots ≤ 0, then `g ≪₀ (f - X*g)`.
 This zero-aware form is the right endpoint behavior when cancellation
@@ -147,20 +129,16 @@ theorem prec_sub_X_mul_right {f g : ℝ[X]}
     have hf0 : f ≠ 0 := hgf.2.1.1
     have hqf : Prec q f := by
       rcases hleft0 with hqz | hfz | hqf
-      · exact False.elim (hq0 hqz)
-      · exact False.elim (hf0 hfz)
-      · exact hqf
+      · lia
+      · lia
+      · lia
     have hall_qf : AllComboRealRooted q f := allComboRealRooted_of_prec hqf
     have hall_qXg : AllComboRealRooted q (X * g) := by
       intro α β
       have hrew :
           C α * q + C β * (X * g) =
             C (α - β) * q + C β * f := by
-        ext n
-        have hqcoeff : q.coeff n = f.coeff n - (X * g).coeff n := by
-          simp [q, coeff_sub]
-        rw [coeff_add, coeff_C_mul, coeff_C_mul, coeff_add, coeff_C_mul, coeff_C_mul, hqcoeff]
-        ring
+        grind
       simpa [hrew] using hall_qf (α - β) β
     have hq : (q ≠ 0 ∧ q.Splits) := hqf.1
     have hg : (g ≠ 0 ∧ g.Splits) := hgf.1
@@ -168,37 +146,35 @@ theorem prec_sub_X_mul_right {f g : ℝ[X]}
     have hq_lt : q.natDegree < f.natDegree := by
       have hq_le : q.natDegree ≤ f.natDegree := by
         have hXg_le : (X * g).natDegree ≤ f.natDegree := by
-          rw [natDegree_X_mul hg.1]
-          lia
+          simp_all
         have hsub : (f - X * g).natDegree ≤ f.natDegree :=
           (natDegree_sub_le_iff_left hXg_le).mpr le_rfl
-        simpa [q] using hsub
+        lia
       by_contra hnot
       have hf_le_q : f.natDegree ≤ q.natDegree := le_of_not_gt hnot
       have hq_eq : q.natDegree = f.natDegree := le_antisymm hq_le hf_le_q
       have hq_top_ne : q.coeff f.natDegree ≠ 0 := by
         rw [← hq_eq, coeff_natDegree]
-        exact leadingCoeff_ne_zero.mpr hq0
+        simp_all
       have hq_top_zero : q.coeff f.natDegree = 0 := by
         calc
           q.coeff f.natDegree
               = f.coeff f.natDegree - (X * g).coeff f.natDegree := by
                   simp [q, coeff_sub]
           _ = 1 - (X * g).coeff f.natDegree := by
-                simpa using hf_monic.coeff_natDegree
+                simp_all
           _ = 1 - g.coeff g.natDegree := by
                 rw [← hdeg, coeff_X_mul]
           _ = 1 - g.leadingCoeff := by
-                rw [coeff_natDegree]
+                simp
           _ = 0 := by
                 simp [hg_monic.leadingCoeff]
-      exact hq_top_ne hq_top_zero
+      lia
     have hclose_qf := natDegree_close_of_allComboRealRooted hall_qf hq0 hf0
     have hdeg_qf : q.natDegree + 1 = f.natDegree := by
       lia
     have hdeg_qXg : q.natDegree + 1 = (X * g).natDegree := by
-      rw [natDegree_X_mul hg.1]
-      lia
+      simp_all
     have hprec_or : Prec q (X * g) ∨ Prec (X * g) q :=
       prec_of_allComboRealRooted hq hXg hall_qXg (Or.inl hdeg_qXg)
     have hnot_prec_Xgq : ¬ Prec (X * g) q := by
@@ -208,11 +184,9 @@ theorem prec_sub_X_mul_right {f g : ℝ[X]}
         rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hXg.2]
       have hrs_len : rs.length = q.natDegree := by
         rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hq.2]
-      rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩ <;> lia
+      lia
     have hprec_qXg : Prec q (X * g) := by
-      rcases hprec_or with hqXg | hXgq
-      · exact hqXg
-      · exact False.elim (hnot_prec_Xgq hXgq)
+      lia
     have hdeg_gq : g.natDegree = q.natDegree := by
       lia
     exact

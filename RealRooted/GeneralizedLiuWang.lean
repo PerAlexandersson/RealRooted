@@ -47,15 +47,12 @@ lemma polynomialWeightedSum_eval_mul_eval_nonpos_of_common_right
                   ring
           _ ≤ 0 := mul_nonpos_of_nonpos_of_nonneg hb_nonpos hgg_nonneg
       have htail_prec : ∀ bg ∈ l, Prec bg.2 f := by
-        intro bg hmem
-        exact hprec bg (by simp [hmem])
+        grind
       have htail_pos : ∀ bg ∈ l, HasPosLeadingCoeff bg.2 := by
-        intro bg hmem
-        exact hpos bg (by simp [hmem])
+        grind
       have htail_coeff :
           ∀ bg ∈ l, ∀ x : ℝ, f.IsRoot x → bg.1.eval x ≤ 0 := by
-        intro bg hmem x hx
-        exact hcoeff bg (by simp [hmem]) x hx
+        grind
       have htail_nonpos :
           (polynomialWeightedSum l).eval r * g₀.eval r ≤ 0 :=
         polynomialWeightedSum_eval_mul_eval_nonpos_of_common_right
@@ -65,9 +62,8 @@ lemma polynomialWeightedSum_eval_mul_eval_nonpos_of_common_right
             = (b * g).eval r * g₀.eval r
                 + (polynomialWeightedSum l).eval r * g₀.eval r := by
         simp [polynomialWeightedSum_cons, Polynomial.eval_add]
-        ring
-      rw [hsum]
-      nlinarith
+        grind
+      grind
 
 /-- If the distinguished head term is strictly negative at roots of `f`, while
 the remaining terms are only nonpositive there, then the whole weighted sum has
@@ -85,8 +81,7 @@ lemma polynomialWeightedSum_cons_eval_mul_eval_neg_of_common_right
       (polynomialWeightedSum ((b, g) :: l)).eval r * g.eval r < 0 := by
   intro r hr
   have hg_eval_ne : g.eval r ≠ 0 := by
-    intro hgr
-    exact hno r hr (by simpa [Polynomial.IsRoot.def] using hgr)
+    simp_all
   have hhead_neg : (b * g).eval r * g.eval r < 0 := by
     have hsq_pos : 0 < (g.eval r) ^ 2 := sq_pos_iff.mpr hg_eval_ne
     calc
@@ -103,9 +98,8 @@ lemma polynomialWeightedSum_cons_eval_mul_eval_neg_of_common_right
         = (b * g).eval r * g.eval r
             + (polynomialWeightedSum l).eval r * g.eval r := by
     simp [polynomialWeightedSum_cons, Polynomial.eval_add]
-    ring
-  rw [hsum]
-  nlinarith
+    grind
+  grind
 
 /-- Strict finite-family Liu--Wang theorem in the same-degree case. One
 distinguished interlacer `g` supplies the orientation, while the remaining
@@ -125,7 +119,7 @@ theorem prec_generalizedLiuWang_strict_same
   refine prec_of_interlaces_eval_mul_neg_same hgf hg_pos hF_pos hdeg ?_
   intro r hr
   have hf_eval : f.eval r = 0 := by
-    simpa [Polynomial.IsRoot.def] using hr
+    simp_all
   have hl_prec : ∀ bg ∈ l, Prec bg.2 f := by
     intro bg hmem
     exact (hl_inter bg hmem).toPrec
@@ -133,11 +127,7 @@ theorem prec_generalizedLiuWang_strict_same
       (polynomialWeightedSum ((b, g) :: l)).eval r * g.eval r < 0 :=
     polynomialWeightedSum_cons_eval_mul_eval_neg_of_common_right
       hgf.toPrec hg_pos hno hb_neg hl_prec hl_pos hl_nonpos r hr
-  calc
-    (a * f + polynomialWeightedSum ((b, g) :: l)).eval r * g.eval r
-        = (polynomialWeightedSum ((b, g) :: l)).eval r * g.eval r := by
-            simp [Polynomial.eval_add, Polynomial.eval_mul, hf_eval]
-    _ < 0 := hsum_sign
+  simp_all
 
 /-- Strict finite-family Liu--Wang theorem in the differ-by-1 case. -/
 theorem prec_generalizedLiuWang_strict_succ
@@ -155,7 +145,7 @@ theorem prec_generalizedLiuWang_strict_succ
   refine prec_of_interlaces_eval_mul_neg_succ hgf hg_pos hF_pos hdeg ?_
   intro r hr
   have hf_eval : f.eval r = 0 := by
-    simpa [Polynomial.IsRoot.def] using hr
+    simp_all
   have hl_prec : ∀ bg ∈ l, Prec bg.2 f := by
     intro bg hmem
     exact (hl_inter bg hmem).toPrec
@@ -163,11 +153,7 @@ theorem prec_generalizedLiuWang_strict_succ
       (polynomialWeightedSum ((b, g) :: l)).eval r * g.eval r < 0 :=
     polynomialWeightedSum_cons_eval_mul_eval_neg_of_common_right
       hgf.toPrec hg_pos hno hb_neg hl_prec hl_pos hl_nonpos r hr
-  calc
-    (a * f + polynomialWeightedSum ((b, g) :: l)).eval r * g.eval r
-        = (polynomialWeightedSum ((b, g) :: l)).eval r * g.eval r := by
-            simp [Polynomial.eval_add, Polynomial.eval_mul, hf_eval]
-    _ < 0 := hsum_sign
+  simp_all
 
 /-- Degree-bounded strict finite-family Liu--Wang theorem. This is the first
 reusable multi-interlacer version: one distinguished head term is strictly
@@ -221,8 +207,8 @@ theorem prec_generalizedLiuWang_of_no_common
   let F : ℝ[X] := a * f + polynomialWeightedSum ((b, g) :: l)
   have hF_rr : (F ≠ 0 ∧ F.Splits) := by
     apply isRealRooted_of_interlaces_sub_C_mul_of_forall_pos hgf
-    · simpa [F] using hF_pos
-    · simpa [F] using hdeg_lo
+    · lia
+    · lia
     · intro δ hδ
       have hFδ_eq :
           a * f + polynomialWeightedSum (((b - C δ), g) :: l) = F - C δ * g := by
@@ -240,12 +226,10 @@ theorem prec_generalizedLiuWang_of_no_common
         exact natDegree_sub_C_mul_eq_of_interlaces_degree_lower_bound hgf hdeg_lo δ
       have hFδ_lo :
           f.natDegree ≤ (a * f + polynomialWeightedSum (((b - C δ), g) :: l)).natDegree := by
-        rw [hFδ_natdeg]
-        simpa [F] using hdeg_lo
+        lia
       have hFδ_hi :
           (a * f + polynomialWeightedSum (((b - C δ), g) :: l)).natDegree ≤ f.natDegree + 1 := by
-        rw [hFδ_natdeg]
-        simpa [F] using hdeg_hi
+        lia
       have hbδ_neg : ∀ r, f.IsRoot r → (b - C δ).eval r < 0 := by
         intro r hr
         have hb_le : b.eval r ≤ 0 := hb_nonpos r hr
@@ -258,31 +242,22 @@ theorem prec_generalizedLiuWang_of_no_common
       have hrrδ : ((a * f + ((b - C δ) * g + polynomialWeightedSum l)) ≠ 0 ∧
         (a * f + ((b - C δ) * g + polynomialWeightedSum l)).Splits) := by
         simpa [polynomialWeightedSum_cons] using hprecδ.2.1
-      have hFδ_eq' : a * f + ((b - C δ) * g + polynomialWeightedSum l) = F - C δ * g := by
-        simpa [polynomialWeightedSum_cons] using hFδ_eq
-      rw [← hFδ_eq']
-      exact hrrδ
+      simp_all
   have hroot_nonpos :
       ∀ r, f.IsRoot r → F.eval r * g.eval r ≤ 0 := by
     intro r hr
     have hf_eval : f.eval r = 0 := by
-      simpa [Polynomial.IsRoot.def] using hr
+      simp_all
     have hprec_all : ∀ bg ∈ ((b, g) :: l), Prec bg.2 f := by
       intro bg hmem
       rcases List.mem_cons.mp hmem with rfl | hmem'
       · exact hgf.toPrec
       · exact (hl_inter bg hmem').toPrec
     have hpos_all : ∀ bg ∈ ((b, g) :: l), HasPosLeadingCoeff bg.2 := by
-      intro bg hmem
-      rcases List.mem_cons.mp hmem with rfl | hmem'
-      · exact hg_pos
-      · exact hl_pos bg hmem'
+      grind
     have hcoeff_all :
         ∀ bg ∈ ((b, g) :: l), ∀ x : ℝ, f.IsRoot x → bg.1.eval x ≤ 0 := by
-      intro bg hmem x hx
-      rcases List.mem_cons.mp hmem with rfl | hmem'
-      · exact hb_nonpos x hx
-      · exact hl_nonpos bg hmem' x hx
+      grind
     calc
       F.eval r * g.eval r
           = (polynomialWeightedSum ((b, g) :: l)).eval r * g.eval r := by

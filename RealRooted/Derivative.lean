@@ -25,7 +25,7 @@ protected lemma HasNonnegCoeffs.derivative {p : ℝ[X]} (hp : HasNonnegCoeffs p)
     HasNonnegCoeffs p.derivative := by
   intro n
   rw [coeff_derivative]
-  exact mul_nonneg (hp (n + 1)) (by positivity)
+  exact mul_nonneg (hp (n + 1)) (by grind)
 
 protected lemma HasPosLeadingCoeff.derivative {f : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hdeg : f.natDegree ≠ 0) :
@@ -37,7 +37,7 @@ protected lemma HasPosLeadingCoeff.derivative {f : ℝ[X]}
 
 lemma HasNonnegCoeffs.iterate_derivative {p : ℝ[X]} :
     ∀ n : ℕ, HasNonnegCoeffs p → HasNonnegCoeffs ((derivative^[n]) p)
-  | 0, hp => by simpa
+  | 0, hp => by simp_all
   | n + 1, hp => by rw [Function.iterate_succ_apply']; exact (hp.iterate_derivative n).derivative
 
 lemma coeff_one_sub_X_mul_derivative (p : ℝ[X]) (m : Nat) :
@@ -48,8 +48,7 @@ lemma coeff_one_sub_X_mul_derivative (p : ℝ[X]) (m : Nat) :
       simp [coeff_derivative]
   | succ m =>
       rw [sub_mul, one_mul, coeff_sub, coeff_X_mul, coeff_derivative, coeff_derivative]
-      norm_num
-      ring
+      grind
 
 /-! ## Rolle's theorem for polynomials -/
 
@@ -59,7 +58,7 @@ theorem exists_root_derivative_between {p : ℝ[X]} {a b : ℝ} (hab : a < b)
   have hcont : ContinuousOn (fun x => p.eval x) (Icc a b) :=
     p.continuous.continuousOn
   have hfab : p.eval a = p.eval b := by
-    simp only [IsRoot.def] at ha hb; rw [ha, hb]
+    simp_all
   have hderiv : ∀ x ∈ Ioo a b, HasDerivAt (fun x => p.eval x) (p.derivative.eval x) x :=
     fun x _ => p.hasDerivAt x
   obtain ⟨c, hc_mem, hc_eq⟩ := exists_hasDerivAt_eq_zero hab hcont hfab hderiv
@@ -97,7 +96,7 @@ lemma mkInterleaving_length (f : ℝ[X]) :
   | _ :: r₂ :: rest, hrs => by
     simp only [mkInterleaving, List.length_cons]
     rw [mkInterleaving_length f (r₂ :: rest)]
-    simp only [List.length_cons]; lia
+    simp
 
 /-! ## Properties of the construction
 
@@ -133,8 +132,7 @@ lemma mkInterleaving_spec (f : ℝ[X]) :
       rcases hs with rfl | hs
       · -- First element: Rolle or multiplicity
         split_ifs with hlt
-        · exact (exists_root_derivative_between hlt
-            (hrs r₁ (.head _)) (hrs r₂ (.tail _ (.head _)))).choose_spec.2.2
+        · grind
         · -- r₁ = r₂, repeated root
           have heq : r₁ = r₂ := le_antisymm hr₁r₂ (not_lt.mp hlt)
           have hcount_list
@@ -144,19 +142,13 @@ lemma mkInterleaving_spec (f : ℝ[X]) :
             le_trans hcount_list ((Multiset.le_iff_count.mp hsub) r₁)
           rw [count_roots] at hcount
           exact isRoot_derivative_of_rootMultiplicity_ge_two hcount
-      · exact ih.1 s hs
+      · simp_all
     · -- ListInterlaces
       refine ⟨?_, ?_, ih.2⟩
       · -- r₁ ≤ s
-        split_ifs with hlt
-        · exact le_of_lt (exists_root_derivative_between hlt
-            (hrs r₁ (.head _)) (hrs r₂ (.tail _ (.head _)))).choose_spec.1
-        · exact le_refl _
+        grind
       · -- s ≤ r₂
-        split_ifs with hlt
-        · exact le_of_lt (exists_root_derivative_between hlt
-            (hrs r₁ (.head _)) (hrs r₂ (.tail _ (.head _)))).choose_spec.2.1
-        · exact hr₁r₂
+        grind
 
 /-! ## Sortedness from interleaving -/
 
@@ -177,10 +169,7 @@ lemma sorted_of_listInterlaces :
     have hrs_tail : (r₂ :: r₃ :: rs').Pairwise (· ≤ ·) :=
       (List.pairwise_cons.mp hrs).2
     have ih := sorted_of_listInterlaces (s₂ :: ss') (r₂ :: r₃ :: rs') hrs_tail hint_tail
-    exact List.pairwise_cons.mpr ⟨fun x hx => by
-      rcases List.mem_cons.mp hx with rfl | hx'
-      · exact hs₁s₂
-      · exact le_trans hs₁s₂ (List.rel_of_pairwise_cons ih hx'), ih⟩
+    grind
   | _ :: _ :: _, _ :: _ :: [], _, hint => by
     -- rs has exactly 2 elements, ss has ≥ 2 — impossible by ListInterlaces structure
     simp [ListInterlaces] at hint
@@ -202,10 +191,7 @@ private lemma mkInterleaving_ge (f : ℝ[X]) :
     have hr₁r₂ : r₁ ≤ r₂ := List.rel_of_pairwise_cons hsorted (.head _)
     rcases hx with rfl | hx
     · -- x is the head element
-      split_ifs with hlt
-      · exact le_of_lt (exists_root_derivative_between hlt
-          (hrs r₁ (.head _)) (hrs r₂ (.tail _ (.head _)))).choose_spec.1
-      · exact le_refl _
+      grind
     · -- x is in the recursive tail
       have hrest := fun r hr => hrs r (.tail _ hr)
       have hsorted_tail := (List.pairwise_cons.mp hsorted).2
@@ -254,27 +240,23 @@ lemma mkInterleaving_sub_multiset (f : ℝ[X])
           (exists_root_derivative_between hlt (hrs r₁ (.head _))
             (hrs r₂ (.tail _ (.head _)))).choose = 0 :=
       Multiset.count_eq_zero.mpr (by
-        rw [Multiset.mem_coe]; intro hmem
-        linarith [(exists_root_derivative_between hlt (hrs r₁ (.head _))
-          (hrs r₂ (.tail _ (.head _)))).choose_spec.2.1, hge_tail _ hmem])
+        rw [Multiset.mem_coe]; grind)
     constructor
     · -- (A): s ::ₘ ↑ss' ≤ f'.roots
       change s ::ₘ ↑(mkInterleaving f (r₂ :: rest) hrest) ≤ f.derivative.roots
       -- s is a root of f' (proved in mkInterleaving_spec)
       have hs_root : f.derivative.IsRoot s :=
         (mkInterleaving_spec f (r₁ :: r₂ :: rest) hrs hsorted
-          (le_of_eq rfl |>.trans hsub)).1 s (by rw [hunfold]; exact .head _)
+          (le_of_eq rfl |>.trans hsub)).1 s (by simp_all)
       have hs_mem : s ∈ f.derivative.roots := (mem_roots hf'_ne).mpr hs_root
       by_cases hlt : r₁ < r₂
       · -- Rolle: s ∉ ↑ss' (all tail ≥ r₂ > s), use cons_le_of_notMem
         have hspec := (exists_root_derivative_between hlt
           (hrs r₁ (.head _)) (hrs r₂ (.tail _ (.head _)))).choose_spec
         have hs_notin : s ∉ (↑(mkInterleaving f (r₂ :: rest) hrest) : Multiset ℝ) := by
-          rw [Multiset.mem_coe]; intro hmem
-          have : s = _ := dif_pos hlt
-          linarith [hge_tail _ hmem, (this ▸ hspec).2.1]
+          rw [Multiset.mem_coe]; grind
         rw [Multiset.cons_le_of_notMem hs_notin]
-        exact ⟨hs_mem, ih.1⟩
+        lia
       · -- Multiplicity: s = r₁ = r₂, use count argument via IH(B)
         have hr_eq : r₁ = r₂ := le_antisymm hr₁r₂ (not_lt.mp hlt)
         have hs : s = r₁ := dif_neg hlt
@@ -284,8 +266,7 @@ lemma mkInterleaving_sub_multiset (f : ℝ[X])
         · -- s = a: use IH(B) + multiplicity chain
           -- heq : s = a (or a = s depending on count_cons)
           have ih_B := ih.2 a (by
-            have : a = r₂ := by rw [heq, hs, hr_eq]
-            rw [this]; exact Multiset.mem_coe.mpr (.head _))
+            simp_all)
           -- count a (r₁ :: r₂ :: rest) ≤ rootMultiplicity a f
           have hcount_full : (↑(r₁ :: r₂ :: rest) : Multiset ℝ).count a ≤
             f.rootMultiplicity a := by
@@ -293,11 +274,7 @@ lemma mkInterleaving_sub_multiset (f : ℝ[X])
           -- (r₁ :: r₂ :: rest).count a = 1 + (r₂ :: rest).count a since r₁ = s = a
           have : (↑(r₁ :: r₂ :: rest) : Multiset ℝ).count a =
             (↑(r₂ :: rest) : Multiset ℝ).count a + 1 := by
-            change (r₁ ::ₘ ↑(r₂ :: rest)).count a = _
-            rw [Multiset.count_cons]
-            split_ifs with h
-            · ring
-            · exfalso; exact h (show a = r₁ by rw [heq, hs])
+            simp_all
           rw [this] at hcount_full
           have hmult := rootMultiplicity_sub_one_le_derivative_rootMultiplicity_of_ne_zero
             f a hf'_ne
@@ -316,50 +293,37 @@ lemma mkInterleaving_sub_multiset (f : ℝ[X])
       · -- a = s, a = r₁
         rw [if_pos heq, if_pos hr₁a]
         have hr_eq : r₁ = r₂ := by
-          rcases lt_or_eq_of_le hr₁r₂ with hlt | h; swap
-          · exact h
-          -- Rolle: r₁ < s, but s = a = r₁, contradiction
-          have hspec := (exists_root_derivative_between hlt
-            (hrs r₁ (.head _)) (hrs r₂ (.tail _ (.head _)))).choose_spec
-          have : r₁ < s := by rw [show s = _ from dif_pos hlt]; exact hspec.1
-          linarith [show s = r₁ from by rw [← heq, hr₁a]]
-        have ih_B := ih.2 a (by
-          rw [heq, show s = r₁ from dif_neg (not_lt.mpr (ge_of_eq hr_eq)), hr_eq]
-          exact Multiset.mem_coe.mpr (.head _))
-        lia
+          grind
+        simp_all
       · -- a = s, a ≠ r₁: vacuous
         rw [if_pos heq, if_neg hr₁a]; exfalso
         rcases ha with rfl | ha_tail
-        · exact hr₁a rfl
+        · lia
         · by_cases hlt : r₁ < r₂
           · -- Rolle: s < r₂ ≤ all tail elements, so s ∉ tail
             have hspec := (exists_root_derivative_between hlt
               (hrs r₁ (.head _)) (hrs r₂ (.tail _ (.head _)))).choose_spec
             have : a < r₂ := by
-              have : s = _ := dif_pos hlt; rw [heq, this]; exact hspec.2.1
+              lia
             have : r₂ ≤ a := by
               have hmem := Multiset.mem_coe.mp ha_tail
               rcases List.mem_cons.mp hmem with h | h
-              · exact h ▸ le_refl _
-              · exact List.rel_of_pairwise_cons hsorted_tail h
+              · simp_all
+              · simp_all
             linarith
-          · exact hr₁a (show a = r₁ by rw [heq]; exact dif_neg hlt)
+          · lia
       · -- a ≠ s, a = r₁
         rw [if_neg heq, if_pos hr₁a]
         by_cases ha2 : a ∈ (↑(r₂ :: rest) : Multiset ℝ)
-        · have ih_B := ih.2 a ha2; lia
+        · grind
         · have hlt : r₁ < r₂ := by
-            rcases lt_or_eq_of_le hr₁r₂ with h | h; · exact h
-            · exfalso; rw [hr₁a, h] at ha2; exact ha2 (Multiset.mem_coe.mpr (.head _))
+            lia
           have : (↑(mkInterleaving f (r₂ :: rest) hrest) : Multiset ℝ).count a = 0 :=
             Multiset.count_eq_zero.mpr (by
-              rw [Multiset.mem_coe]; intro hmem; linarith [hge_tail _ hmem])
-          rw [this]; lia
+              rw [Multiset.mem_coe]; grind)
+          lia
       · -- a ≠ s, a ≠ r₁
-        rw [if_neg heq, if_neg hr₁a]
-        rcases ha with rfl | ha_tail
-        · exact absurd rfl hr₁a
-        · have ih_B := ih.2 a ha_tail; lia
+        grind
 
 /-! ## Main theorem -/
 
@@ -375,7 +339,7 @@ theorem derivative_interlaces {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits)
   have hrs_length : rs.length = f.natDegree := by
     rw [hrs_def, Multiset.length_sort, card_roots_of_splits hf.2]
   have hrs_root : ∀ r ∈ rs, f.IsRoot r := by
-    intro r hr; rw [Multiset.mem_sort] at hr; rwa [mem_roots hf.1] at hr
+    simp_all
   -- Construct interleaving
   set ss := mkInterleaving f rs hrs_root
   have hss_length : ss.length = f.natDegree - 1 := by
@@ -403,7 +367,7 @@ theorem derivative_interlaces {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits)
     ⟨hf'_ne, splits_of_card_roots hf'_card⟩
   -- Multiset equality (sub-multiset + same cardinality)
   have hss_eq : (↑ss : Multiset ℝ) = f.derivative.roots :=
-    Multiset.eq_of_le_of_card_le hsub (by rw [Multiset.coe_card, hss_length, hf'_card, hf'_deg])
+    Multiset.eq_of_le_of_card_le hsub (by simp_all)
   -- Sortedness from interleaving
   have hss_sorted : ss.Pairwise (· ≤ ·) :=
     sorted_of_listInterlaces ss rs hrs_sorted hss_interlaces

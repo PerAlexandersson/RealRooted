@@ -89,12 +89,12 @@ private lemma narayanaCoeffA_leadingCoeff (n : Nat) :
 private lemma natDegree_one_sub_X :
     ((1 - X : ℝ[X])).natDegree = 1 := by
   simpa [sub_eq_add_neg, add_comm] using
-    (Polynomial.natDegree_linear (a := (-1 : ℝ)) (b := (1 : ℝ)) (by norm_num))
+    (Polynomial.natDegree_linear (a := (-1 : ℝ)) (b := (1 : ℝ)) (by simp))
 
 private lemma leadingCoeff_one_sub_X :
     ((1 - X : ℝ[X])).leadingCoeff = -1 := by
   simpa [sub_eq_add_neg, add_comm] using
-    (Polynomial.leadingCoeff_linear (a := (-1 : ℝ)) (b := (1 : ℝ)) (by norm_num))
+    (Polynomial.leadingCoeff_linear (a := (-1 : ℝ)) (b := (1 : ℝ)) (by simp))
 
 private lemma natDegree_one_sub_X_sq :
     ((1 - X : ℝ[X]) ^ 2).natDegree = 2 := by
@@ -124,7 +124,7 @@ private lemma narayanaCoeffB_natDegree (n : Nat) (hn : 1 ≤ n) :
   have hmul_ne :
       (C ((-(n : ℝ)) / (n + 3 : ℝ))).leadingCoeff * ((1 - X : ℝ[X]) ^ 2).leadingCoeff ≠ 0 := by
     rw [leadingCoeff_C, leadingCoeff_one_sub_X_sq]
-    exact mul_ne_zero hcoeff_ne one_ne_zero
+    lia
   rw [natDegree_mul' hmul_ne, natDegree_C, natDegree_one_sub_X_sq]
 
 private lemma narayanaCoeffB_leadingCoeff (n : Nat) (hn : 1 ≤ n) :
@@ -137,9 +137,9 @@ private lemma narayanaCoeffB_leadingCoeff (n : Nat) (hn : 1 ≤ n) :
   have hmul_ne :
       (C ((-(n : ℝ)) / (n + 3 : ℝ))).leadingCoeff * ((1 - X : ℝ[X]) ^ 2).leadingCoeff ≠ 0 := by
     rw [leadingCoeff_C, leadingCoeff_one_sub_X_sq]
-    exact mul_ne_zero hcoeff_ne one_ne_zero
+    lia
   rw [leadingCoeff_mul' hmul_ne, leadingCoeff_C, leadingCoeff_one_sub_X_sq]
-  ring
+  lia
 
 private lemma natDegree_leadingCoeff_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
     (hdeg_succ : (narayanaQuot (n + 1)).natDegree = n)
@@ -160,7 +160,7 @@ private lemma natDegree_leadingCoeff_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
   have hA_leadingCoeff : A.leadingCoeff = ((2 * n + 3 : ℝ) / (n + 3 : ℝ)) := by
     dsimp [A]
     rw [leadingCoeff_mul' hA_lc_ne, narayanaCoeffA_leadingCoeff, hlc_succ]
-    ring
+    lia
   have hB_lc_ne : (narayanaCoeffB n).leadingCoeff * (narayanaQuot n).leadingCoeff ≠ 0 := by
     rw [narayanaCoeffB_leadingCoeff n hn, hlc]
     refine mul_ne_zero ?_ one_ne_zero
@@ -174,7 +174,7 @@ private lemma natDegree_leadingCoeff_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
   have hB_leadingCoeff : B.leadingCoeff = ((-(n : ℝ)) / (n + 3 : ℝ)) := by
     dsimp [B]
     rw [leadingCoeff_mul' hB_lc_ne, narayanaCoeffB_leadingCoeff n hn, hlc]
-    ring
+    lia
   have hA_ne : A ≠ 0 := leadingCoeff_ne_zero.mp (by rw [hA_leadingCoeff]; positivity)
   have hB_ne : B ≠ 0 := by
     apply leadingCoeff_ne_zero.mp
@@ -184,18 +184,15 @@ private lemma natDegree_leadingCoeff_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
     · positivity
   have hA_degree : A.degree = n + 1 := by
     rw [degree_eq_natDegree hA_ne, hA_natDegree]
-    simp
+    lia
   have hB_degree : B.degree = n + 1 := by
     rw [degree_eq_natDegree hB_ne, hB_natDegree]
-    simp
+    lia
   have hsum_lc :
       A.leadingCoeff + B.leadingCoeff = 1 := by
-    rw [hA_leadingCoeff, hB_leadingCoeff]
-    field_simp
-    ring
+    grind
   have hsum_lc_ne : A.leadingCoeff + B.leadingCoeff ≠ 0 := by
-    rw [hsum_lc]
-    norm_num
+    simp_all
   have hsum_degree : (A + B).degree = n + 1 := by
     rw [Polynomial.degree_add_eq_of_leadingCoeff_add_ne_zero hsum_lc_ne, hA_degree, hB_degree,
       max_eq_left le_rfl]
@@ -203,7 +200,7 @@ private lemma natDegree_leadingCoeff_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
     natDegree_eq_of_degree_eq_some hsum_degree
   have hsum_leadingCoeff : (A + B).leadingCoeff = 1 := by
     rw [Polynomial.leadingCoeff_add_of_degree_eq (hA_degree.trans hB_degree.symm) hsum_lc_ne]
-    rw [hsum_lc]
+    lia
   simpa [narayanaQuot_succ_succ, A, B] using ⟨hsum_natDegree, hsum_leadingCoeff⟩
 
 private lemma natDegree_leadingCoeff_narayanaQuot :
@@ -218,16 +215,16 @@ private lemma natDegree_leadingCoeff_narayanaQuot :
       rw [narayanaQuot_two]
       constructor
       · simpa [add_comm] using
-          (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by norm_num))
+          (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp))
       · simpa [add_comm] using
-          (Polynomial.leadingCoeff_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by norm_num))
+          (Polynomial.leadingCoeff_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp))
   | n + 3, _ => by
       have hprev_succ := natDegree_leadingCoeff_narayanaQuot (n + 2) (by lia)
       have hprev := natDegree_leadingCoeff_narayanaQuot (n + 1) (by lia)
       have hstep :=
         natDegree_leadingCoeff_narayanaQuot_step (n + 1) (by lia)
           hprev_succ.1 hprev_succ.2 hprev.1 hprev.2
-      simpa [Nat.add_assoc] using hstep
+      lia
 
 lemma natDegree_narayanaQuot (n : Nat) (hn : 1 ≤ n) :
     (narayanaQuot n).natDegree = n - 1 := by
@@ -242,7 +239,7 @@ lemma narayanaQuot_ne_zero (n : Nat) (hn : 1 ≤ n) :
   intro hzero
   have hcoeff : (narayanaQuot n).leadingCoeff = 0 := by simp [hzero]
   rw [leadingCoeff_narayanaQuot n hn] at hcoeff
-  norm_num at hcoeff
+  simp_all
 
 lemma narayanaQuot_posLeadingCoeff (n : Nat) (hn : 1 ≤ n) :
     HasPosLeadingCoeff (narayanaQuot n) := by
@@ -264,7 +261,7 @@ lemma narayanaQuot_one_two_interlaces :
   rw [narayanaQuot_one, narayanaQuot_two]
   refine interlaces_one_linear ?_
   simpa [add_comm] using
-    (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by norm_num))
+    (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp))
 
 private lemma prec_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
     (hInter : Interlaces (narayanaQuot n) (narayanaQuot (n + 1)))
@@ -296,8 +293,8 @@ private lemma prec_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
           ((mem_roots hInter.1.1).mpr hr)
     have hcoef_nonpos : (((-(n : ℝ)) / (n + 3 : ℝ)) : ℝ) ≤ 0 := by
       have hnum : (-(n : ℝ)) ≤ 0 := by
-        exact neg_nonpos.mpr (by positivity)
-      have hden : 0 ≤ (n + 3 : ℝ) := by positivity
+        simp
+      have hden : 0 ≤ (n + 3 : ℝ) := by grind
       exact div_nonpos_of_nonpos_of_nonneg hnum hden
     have hsq_nonneg : 0 ≤ (1 - r) ^ 2 := sq_nonneg (1 - r)
     have : (((-(n : ℝ)) / (n + 3 : ℝ)) : ℝ) * (1 - r) ^ 2 ≤ 0 :=
@@ -398,7 +395,7 @@ theorem isSturmSeq_narayanaPrefix_of_nonnegCoeffs
       cases n with
       | zero =>
           simpa [narayanaPrefix, IsSturmSeq] using
-            interlaces_narayana_succ_of_nonnegCoeffs 1 (by norm_num) hnonneg
+            interlaces_narayana_succ_of_nonnegCoeffs 1 (by lia) hnonneg
       | succ n =>
           simpa [narayanaPrefix, IsSturmSeq] using
             And.intro (interlaces_narayana_succ_of_nonnegCoeffs (n + 2) (by lia) hnonneg) ih

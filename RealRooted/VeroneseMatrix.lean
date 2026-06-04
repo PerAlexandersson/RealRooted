@@ -62,9 +62,7 @@ theorem mem_veroneseSectionPolynomialListDesc
       lia
     simpa [hidx] using get_veroneseSectionPolynomialListDesc (r := r) (p := p) i
   rw [← hget]
-  exact
-    List.get_mem (veroneseSectionPolynomialListDesc r p)
-      ⟨i.1, by simp [length_veroneseSectionPolynomialListDesc]⟩
+  simp
 
 /-- The row of the descending-order cyclic matrix for multiplication by
 `X + a`.
@@ -121,7 +119,7 @@ lemma zipWith_mul_sum_comm (xs ys : List ℝ[X]) :
     (xs.zipWith (· * ·) ys).sum = (ys.zipWith (· * ·) xs).sum := by
   induction xs generalizing ys with
   | nil =>
-      cases ys <;> simp
+      simp
   | cons x xs ih =>
       cases ys with
       | nil => simp
@@ -159,8 +157,7 @@ lemma prec0_C_C (a b : ℝ) : Prec0 (C a : ℝ[X]) (C b : ℝ[X]) := by
     simp [ha]
   by_cases hb : b = 0
   · right
-    left
-    simp [hb]
+    simp_all
   right
   right
   have hCa : (C a : ℝ[X]) ≠ 0 := C_ne_zero.mpr ha
@@ -168,9 +165,9 @@ lemma prec0_C_C (a b : ℝ) : Prec0 (C a : ℝ[X]) (C b : ℝ[X]) := by
   have hrr_a : ((C a : ℝ[X]) ≠ 0 ∧ (C a : ℝ[X]).Splits) := isRealRooted_of_deg_zero hCa (by simp)
   have hrr_b : ((C b : ℝ[X]) ≠ 0 ∧ (C b : ℝ[X]).Splits) := isRealRooted_of_deg_zero hCb (by simp)
   refine ⟨hrr_a, hrr_b, [], [], by simp, by simp, ?_, ?_, ?_⟩
-  · exact (Polynomial.roots_C a).symm
-  · exact (Polynomial.roots_C b).symm
-  · exact Or.inr ⟨by simp, by simp [ListAlternates]⟩
+  · simp
+  · simp
+  · exact Or.inr ⟨by lia, by simp [ListAlternates]⟩
 
 lemma prec0_C_affine_linear {c u v : ℝ} (hu : 0 < u) :
     Prec0 (C c : ℝ[X]) (C u * X + C v) := by
@@ -183,68 +180,35 @@ lemma prec0_C_affine_linear {c u v : ℝ} (hu : 0 < u) :
   have hlin_rr : ((C u * X + C v : ℝ[X]) ≠ 0 ∧ (C u * X + C v : ℝ[X]).Splits) :=
     isRealRooted_affine_factor (s := u) (t := v) hu
   have hlin_nat : (C u * X + C v : ℝ[X]).natDegree = 1 := by
-    simpa [add_comm] using Polynomial.natDegree_linear (a := u) (b := v) hu.ne'
+    grind
   have hlin_deg : (C u * X + C v : ℝ[X]).degree = 1 := by
     rw [degree_eq_natDegree hlin_rr.1, hlin_nat]
-    norm_num
+    lia
   have hC_rr : ((C c : ℝ[X]) ≠ 0 ∧ (C c : ℝ[X]).Splits) := isRealRooted_of_deg_zero hC (by simp)
   refine ⟨hC_rr, hlin_rr, [], [-(u⁻¹ * v)], by simp, by simp, ?_, ?_, ?_⟩
-  · exact (Polynomial.roots_C c).symm
+  · simp
   · simpa [hlin_deg] using
       (Polynomial.roots_degree_eq_one (p := (C u * X + C v : ℝ[X])) hlin_deg).symm
   · exact Or.inl ⟨by simp, by simp [ListInterlaces]⟩
 
 lemma prec0_congr {p q p' q' : ℝ[X]} (hp : p = p') (hq : q = q')
     (h : Prec0 p' q') : Prec0 p q := by
-  rw [hp, hq]
-  exact h
+  lia
 
 lemma affine_mul_C_add_C (s t b d : ℝ) :
     ((C s * X + C t) * C b + C d : ℝ[X]) =
       C (s * b) * X + C (t * b + d) := by
-  calc
-    ((C s * X + C t) * C b + C d : ℝ[X])
-        = (C s * X) * C b + C t * C b + C d := by
-          rw [add_mul, add_assoc]
-    _ = (C s * C b) * X + (C t * C b + C d) := by
-          rw [add_assoc, mul_assoc (C s) X (C b), mul_comm X (C b),
-            ← mul_assoc (C s) (C b) X]
-    _ = C (s * b) * X + (C (t * b) + C d) := by
-          rw [← C_mul, ← C_mul]
-    _ = C (s * b) * X + C (t * b + d) := by rw [C_add]
+  grind
 
 lemma affine_mul_C_add_X (s t b : ℝ) :
     ((C s * X + C t) * C b + X : ℝ[X]) =
       C (s * b + 1) * X + C (t * b) := by
-  calc
-    ((C s * X + C t) * C b + X : ℝ[X])
-        = (C s * X) * C b + C t * C b + X := by
-          rw [add_mul, add_assoc]
-    _ = (C s * C b) * X + C (t * b) + X := by
-          rw [mul_assoc (C s) X (C b), mul_comm X (C b),
-            ← mul_assoc (C s) (C b) X, ← C_mul, ← C_mul]
-    _ = C (s * b) * X + C (t * b) + X := by
-          rw [← C_mul]
-    _ = C (s * b) * X + X + C (t * b) := by abel
-    _ = (C (s * b) + C 1) * X + C (t * b) := by
-          rw [add_mul]
-          simp
-    _ = C (s * b + 1) * X + C (t * b) := by
-          rw [C_add]
+  grind
 
 lemma affine_mul_X_add_X_eq (s t : ℝ) :
     ((C s * X + C t) * X + X : ℝ[X]) =
       X * (C s * X + C (t + 1)) := by
-  calc
-    ((C s * X + C t) * X + X : ℝ[X])
-        = C s * X * X + C t * X + X := by rw [add_mul]
-    _ = X * (C s * X) + X * C t + X := by
-          rw [mul_comm (C s * X) X, mul_comm (C t) X]
-    _ = X * (C s * X + C t + 1) := by rw [mul_add, mul_add, mul_one]
-    _ = X * (C s * X + C (t + 1)) := by
-          congr 1
-          rw [C_add]
-          abel
+  grind
 
 lemma isRealRooted_affine_mul_X_add_X {s t : ℝ} (hs : 0 < s) :
     (((C s * X + C t) * X + X : ℝ[X]) ≠ 0 ∧ ((C s * X + C t) * X + X : ℝ[X]).Splits) := by
@@ -262,17 +226,7 @@ lemma isRealRooted_affine_mul_C_add_X
 lemma affine_mul_C_add_same_eq (s t a : ℝ) :
     ((C s * X + C t) * C a + C a : ℝ[X]) =
       C a * (C s * X + C (t + 1)) := by
-  rw [affine_mul_C_add_C]
-  calc
-    (C (s * a) * X + C (t * a + a) : ℝ[X])
-        = C (a * s) * X + C (a * (t + 1)) := by
-          ring_nf
-    _ = (C a * C s) * X + C a * C (t + 1) := by
-          rw [← C_mul, ← C_mul]
-    _ = C a * (C s * X) + C a * C (t + 1) := by
-          rw [mul_assoc]
-    _ = C a * (C s * X + C (t + 1)) := by
-          rw [mul_add]
+  grind
 
 lemma affineLinear_root_le_of_cross {u v U V : ℝ}
     (hu : 0 < u) (hU : 0 < U) (hcross : u * V ≤ U * v) :
@@ -280,7 +234,7 @@ lemma affineLinear_root_le_of_cross {u v U V : ℝ}
   rw [neg_le_neg_iff]
   rw [← div_eq_inv_mul, ← div_eq_inv_mul]
   rw [div_le_div_iff₀ hU hu]
-  simpa [mul_comm, mul_left_comm, mul_assoc] using hcross
+  grind
 
 lemma prec_affine_linear_affine_linear_of_cross
     {u v U V : ℝ} (hu : 0 < u) (hU : 0 < U)
@@ -289,19 +243,19 @@ lemma prec_affine_linear_affine_linear_of_cross
   have hroot : -(u⁻¹ * v) ≤ -(U⁻¹ * V) :=
     affineLinear_root_le_of_cross hu hU hcross
   have hp_nat : (C u * X + C v : ℝ[X]).natDegree = 1 := by
-    simpa [add_comm] using Polynomial.natDegree_linear (a := u) (b := v) hu.ne'
+    grind
   have hq_nat : (C U * X + C V : ℝ[X]).natDegree = 1 := by
-    simpa [add_comm] using Polynomial.natDegree_linear (a := U) (b := V) hU.ne'
+    grind
   have hp_rr : ((C u * X + C v : ℝ[X]) ≠ 0 ∧ (C u * X + C v : ℝ[X]).Splits) :=
     isRealRooted_affine_factor (s := u) (t := v) hu
   have hq_rr : ((C U * X + C V : ℝ[X]) ≠ 0 ∧ (C U * X + C V : ℝ[X]).Splits) :=
     isRealRooted_affine_factor (s := U) (t := V) hU
   have hp_deg : (C u * X + C v : ℝ[X]).degree = 1 := by
     rw [degree_eq_natDegree hp_rr.1, hp_nat]
-    norm_num
+    lia
   have hq_deg : (C U * X + C V : ℝ[X]).degree = 1 := by
     rw [degree_eq_natDegree hq_rr.1, hq_nat]
-    norm_num
+    lia
   refine ⟨hp_rr, hq_rr, [-(u⁻¹ * v)], [-(U⁻¹ * V)], by simp, by simp, ?_, ?_, ?_⟩
   · simpa [hp_deg] using
       (Polynomial.roots_degree_eq_one (p := (C u * X + C v : ℝ[X])) hp_deg).symm
@@ -333,16 +287,15 @@ lemma prec0_const_entries_affine_of_det_nonneg
         prec0_congr (p' := C d)
           (q' := C (s * A) * X + C (t * A + c)) ?_ ?_ ?_
       · simp [hb0]
-      · exact affine_mul_C_add_C s t A c
+      · grind
       · exact
           prec0_C_affine_linear (c := d) (u := s * A) (v := t * A + c)
-            (by positivity)
+            (by simp_all)
   · have hbpos : 0 < b := lt_of_le_of_ne hb (Ne.symm hb0)
     by_cases hA0 : A = 0
     · have hc0 : c = 0 := by nlinarith [hdet, hbpos, hc]
       refine prec0_congr (q' := 0) rfl ?_ (prec0_zero_right _)
-      rw [hA0, hc0]
-      simp
+      simp_all
     · have hApos : 0 < A := lt_of_le_of_ne hA (Ne.symm hA0)
       have hcross : (b * s) * (A * t + c) ≤ (A * s) * (b * t + d) := by
         nlinarith [hdet, hs]
@@ -350,14 +303,12 @@ lemma prec0_const_entries_affine_of_det_nonneg
         prec0_congr
           (p' := C (b * s) * X + C (b * t + d))
           (q' := C (A * s) * X + C (A * t + c)) ?_ ?_ ?_
-      · rw [affine_mul_C_add_C]
-        ring_nf
-      · rw [affine_mul_C_add_C]
-        ring_nf
+      · grind
+      · grind
       · exact
           prec0_affine_linear_affine_linear_of_cross
             (u := b * s) (v := b * t + d) (U := A * s) (V := A * t + c)
-            (by positivity) (by positivity) hcross
+            (by simp_all) (by simp_all) hcross
 
 lemma prec0_const_entry_affine_plus_const_to_affine_plus_X
     {A b d s t : ℝ}
@@ -370,7 +321,7 @@ lemma prec0_const_entry_affine_plus_const_to_affine_plus_X
       prec0_congr (p' := C d)
         (q' := C (s * A + 1) * X + C (t * A)) ?_ ?_ ?_
     · simp [hb0]
-    · exact affine_mul_C_add_X s t A
+    · grind
     · exact
         prec0_C_affine_linear (c := d) (u := s * A + 1) (v := t * A)
           (by positivity)
@@ -382,14 +333,12 @@ lemma prec0_const_entry_affine_plus_const_to_affine_plus_X
       prec0_congr
         (p' := C (b * s) * X + C (b * t + d))
         (q' := C (A * s + 1) * X + C (A * t)) ?_ ?_ ?_
-    · rw [affine_mul_C_add_C]
-      ring_nf
-    · rw [affine_mul_C_add_X]
-      ring_nf
+    · grind
+    · grind
     · exact
         prec0_affine_linear_affine_linear_of_cross
           (u := b * s) (v := b * t + d) (U := A * s + 1) (V := A * t)
-          (by positivity) (by positivity) hcross
+          (by simp_all) (by positivity) hcross
 
 lemma prec0_C_mul_affine_linear_X_mul_affine_linear
     {a u v : ℝ} (hu : 0 < u) (hv : 0 ≤ v) :
@@ -464,7 +413,7 @@ theorem matPolyAction_veroneseLinearFactorMatrixDesc
   apply List.ext_get
   · simp [matPolyAction]
   · intro n hn₁ hn₂
-    let i : Fin r := ⟨n, by simpa [matPolyAction] using hn₁⟩
+    let i : Fin r := ⟨n, by simp_all⟩
     by_cases hi : i.1 + 1 < r
     · have hrow :=
         zipWith_mul_veroneseLinearFactorRowDesc_sum_eq_of_succ
@@ -477,10 +426,7 @@ theorem matPolyAction_veroneseLinearFactorMatrixDesc
           (r := r) (k := r - 1 - (i.1 + 1)) hk_lt a p
       simp [matPolyAction, veroneseLinearFactorMatrixDesc,
         veroneseSectionPolynomialListDesc, i] at hrow ⊢
-      rw [hrow]
-      rw [show r - 1 - n = (r - 1 - (n + 1)) + 1 by lia]
-      rw [hrec]
-      ac_rfl
+      grind
     · have hrow :=
         zipWith_mul_veroneseLinearFactorRowDesc_sum_eq_of_last
           (r := r) a i hi (veroneseSectionPolynomialListDesc r p)
@@ -489,11 +435,7 @@ theorem matPolyAction_veroneseLinearFactorMatrixDesc
       have hrec := veroneseSectionPolynomial_X_add_C_mul_zero (r := r) hr a p
       simp [matPolyAction, veroneseLinearFactorMatrixDesc,
         veroneseSectionPolynomialListDesc, i] at hrow ⊢
-      have hn_last : n = r - 1 := by simpa [i] using hi_last
-      rw [hrow]
-      rw [show r - 1 - n = 0 by lia]
-      rw [hrec]
-      ac_rfl
+      grind
 
 /-! ## Cyclic matrix 2-by-2 check and preserver step -/
 
@@ -528,18 +470,11 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_one (a : ℝ) :
     ((C s * X + C (t + 1)) * (X + C a) : ℝ[X]).Splits) :=
     isRealRooted_mul hlin hxpa
   have hsum : (C s * X + C t : ℝ[X]) + 1 = C s * X + C (t + 1) := by
-    ext n
-    cases n with
-    | zero => simp [add_comm, add_assoc]
-    | succ n =>
-        cases n with
-        | zero => simp
-        | succ n => simp
+    grind
   have hfactor :
       ((C s * X + C t) * (C a + X) + (C a + X) : ℝ[X]) =
         (C s * X + C (t + 1)) * (X + C a) := by
-    rw [← hsum]
-    ring
+    grind
   rw [hfactor]
   exact (prec_refl hrr).toPrec0
 
@@ -553,14 +488,13 @@ lemma get_veroneseLinearFactorRowDesc_of_nonlast
       C (veroneseLinearFactorConstEntry a i j) := by
   rw [get_veroneseLinearFactorRowDesc]
   unfold veroneseLinearFactorConstEntry
-  simp [hi, Fin.ext_iff]
-  split_ifs <;> simp_all
+  grind
 
 lemma veroneseLinearFactorConstEntry_nonneg
     {r : ℕ} {a : ℝ} (ha : 0 ≤ a) (i j : Fin r) :
     0 ≤ veroneseLinearFactorConstEntry a i j := by
   unfold veroneseLinearFactorConstEntry
-  split_ifs <;> positivity
+  grind
 
 lemma veroneseLinearFactorConstEntry_det_nonneg
     {r : ℕ} {a : ℝ} (ha : 0 ≤ a)
@@ -570,8 +504,8 @@ lemma veroneseLinearFactorConstEntry_det_nonneg
         veroneseLinearFactorConstEntry a i₂ j₁ ≤
       veroneseLinearFactorConstEntry a i₁ j₁ *
         veroneseLinearFactorConstEntry a i₂ j₂ := by
-  have hi_nat : i₁.1 ≤ i₂.1 := by simpa using hi
-  have hj_nat : j₁.1 ≤ j₂.1 := by simpa using hj
+  have hi_nat : i₁.1 ≤ i₂.1 := by lia
+  have hj_nat : j₁.1 ≤ j₂.1 := by lia
   unfold veroneseLinearFactorConstEntry
   split_ifs <;> try lia
   all_goals nlinarith [ha, sq_nonneg a]
@@ -616,14 +550,13 @@ lemma get_veroneseLinearFactorRowDesc_of_last
   have hlast_ne_zero : r - 1 ≠ 0 := by lia
   rw [get_veroneseLinearFactorRowDesc]
   unfold veroneseLinearFactorLastConstEntry
-  simp [hilast, Fin.ext_iff]
-  split_ifs <;> simp_all
+  grind
 
 lemma veroneseLinearFactorLastConstEntry_nonneg
     {r : ℕ} {a : ℝ} (ha : 0 ≤ a) (j : Fin r) :
     0 ≤ veroneseLinearFactorLastConstEntry a j := by
   unfold veroneseLinearFactorLastConstEntry
-  split_ifs <;> positivity
+  grind
 
 lemma veroneseLinearFactorLastConstEntry_det_nonneg
     {r : ℕ} {a : ℝ} (_ha : 0 ≤ a) {j₁ j₂ : Fin r} :
@@ -631,7 +564,7 @@ lemma veroneseLinearFactorLastConstEntry_det_nonneg
         veroneseLinearFactorLastConstEntry a j₁ ≤
       veroneseLinearFactorLastConstEntry a j₁ *
         veroneseLinearFactorLastConstEntry a j₂ := by
-  rw [mul_comm]
+  grind
 
 lemma veroneseLinearFactorConstLastEntry_det_nonneg
     {r : ℕ} {a : ℝ} (ha : 0 ≤ a)
@@ -640,7 +573,7 @@ lemma veroneseLinearFactorConstLastEntry_det_nonneg
         veroneseLinearFactorLastConstEntry a j₁ ≤
       veroneseLinearFactorConstEntry a i j₁ *
         veroneseLinearFactorLastConstEntry a j₂ := by
-  have hj_nat : j₁.1 ≤ j₂.1 := by simpa using hj
+  have hj_nat : j₁.1 ≤ j₂.1 := by lia
   unfold veroneseLinearFactorConstEntry veroneseLinearFactorLastConstEntry
   split_ifs <;> try lia
   all_goals nlinarith [ha, sq_nonneg a]
@@ -660,7 +593,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_mixed
       ((veroneseLinearFactorRowDesc r a i₂).get
         ⟨j₂.1, by simp [length_veroneseLinearFactorRowDesc]⟩) := by
   intro s t hs ht
-  have hj_nat : j₁.1 ≤ j₂.1 := by simpa using hj
+  have hj_nat : j₁.1 ≤ j₂.1 := by lia
   rw [get_veroneseLinearFactorRowDesc_of_nonlast (hi := hrow₁)]
   rw [get_veroneseLinearFactorRowDesc_of_nonlast (hi := hrow₁)]
   rw [get_veroneseLinearFactorRowDesc_of_last hr2 (hi := hrow₂)]
@@ -668,7 +601,6 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_mixed
   by_cases hj₁0 : j₁.1 = 0
   · by_cases hj₂0 : j₂.1 = 0
     · have hj_eq : j₁ = j₂ := by
-        ext
         lia
       subst j₂
       simp [hj₁0]
@@ -710,7 +642,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_last_last
         ⟨j₂.1, by simp [length_veroneseLinearFactorRowDesc]⟩) := by
   intro s t hs _ht
   have hlast_ne_zero : r - 1 ≠ 0 := by lia
-  have hj_nat : j₁.1 ≤ j₂.1 := by simpa using hj
+  have hj_nat : j₁.1 ≤ j₂.1 := by lia
   rw [get_veroneseLinearFactorRowDesc_of_last hr2 (hi := hrow₁)]
   rw [get_veroneseLinearFactorRowDesc_of_last hr2 (hi := hrow₁)]
   rw [get_veroneseLinearFactorRowDesc_of_last hr2 (hi := hrow₂)]
@@ -725,7 +657,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_last_last
         rw [affine_mul_C_add_same_eq, affine_mul_X_add_X_eq]
         exact
           prec0_C_mul_affine_linear_X_mul_affine_linear
-            (a := a) (u := s) (v := t + 1) hs (by positivity)
+            (a := a) (u := s) (v := t + 1) hs (by grind)
       · simp [hj₁0, hj₂0, hj₂last,
           veroneseLinearFactorLastConstEntry, prec0_zero_left]
   · simp [hj₁0]
@@ -750,7 +682,6 @@ theorem veroneseLinearFactorMatrixDesc_has2x2
   · have hr2 : 2 ≤ r := by lia
     by_cases hrow₂ : i₂.1 + 1 < r
     · have hrow₁ : i₁.1 + 1 < r := by
-        have hi_nat : i₁.1 ≤ i₂.1 := by simpa using hi
         lia
       exact veroneseLinearFactorMatrixDesc_has2x2_nonlast
         ha hi hj hrow₁ hrow₂
@@ -782,8 +713,7 @@ theorem hasNonnegCoeffs_veroneseLinearFactorRowDesc_entry
     intro xs
     induction xs with
     | nil =>
-        intro ys hxs hys q hq
-        simp at hq
+        simp
     | cons x xs ih =>
         intro ys hxs hys q hq
         cases ys with
@@ -793,15 +723,14 @@ theorem hasNonnegCoeffs_veroneseLinearFactorRowDesc_entry
             simp at hq
             rcases hq with rfl | hq
             · exact (hxs x (by simp)).add (hys y (by simp))
-            · exact ih (fun q hq => hxs q (by simp [hq]))
-                (fun q hq => hys q (by simp [hq])) q hq
+            · grind
   rw [veroneseLinearFactorRowDesc] at hq
   by_cases hi : i.1 + 1 < r
   · exact hzip
       (fun q hq => by
         rcases List.mem_map.1 hq with ⟨q', hq', rfl⟩
         exact nonnegCoeffs_C_mul ha (hone (i := i) hq'))
-      (fun q hq => hone (i := ⟨i.1 + 1, hi⟩) hq) q (by simpa [hi] using hq)
+      (fun q hq => hone (i := ⟨i.1 + 1, hi⟩) hq) q (by lia)
   · have hleft :
         ∀ q ∈ (oneSupportSeq r i).map (fun q => C a * q), HasNonnegCoeffs q := by
       intro q hq
@@ -813,7 +742,7 @@ theorem hasNonnegCoeffs_veroneseLinearFactorRowDesc_entry
       intro q hq
       rcases List.mem_map.1 hq with ⟨q', hq', rfl⟩
       exact hasNonnegCoeffs_X.mul (hone (n := r) (i := ⟨0, hr⟩) hq')
-    exact hzip hleft hright q (by simpa [hi, hr] using hq)
+    grind
 
 /-- Conditional linear-factor step for the matrix route.  The only remaining
 mathematical obligation is the finite 2-by-2 condition for
@@ -848,7 +777,7 @@ theorem isInterlacingSeq0Nonneg_veroneseSectionPolynomialListDesc_X_add_C_mul
   · intro i₁ i₂ j₁ j₂ hi hij
     let i₁' : Fin r := ⟨i₁.1, by simpa [veroneseLinearFactorMatrixDesc] using i₁.2⟩
     let i₂' : Fin r := ⟨i₂.1, by simpa [veroneseLinearFactorMatrixDesc] using i₂.2⟩
-    have hi' : i₁' ≤ i₂' := by simpa [i₁', i₂'] using hi
+    have hi' : i₁' ≤ i₂' := by grind
     have h := h2x2 i₁' i₂' j₁ j₂ hi' hij
     simpa [VeroneseLinearFactorMatrixDescHas2x2, veroneseLinearFactorMatrixDesc,
       i₁', i₂'] using h
@@ -901,7 +830,7 @@ theorem isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_X_add
   · intro i₁ i₂ j₁ j₂ hi hij
     let i₁' : Fin r := ⟨i₁.1, by simpa [veroneseLinearFactorMatrixDesc] using i₁.2⟩
     let i₂' : Fin r := ⟨i₂.1, by simpa [veroneseLinearFactorMatrixDesc] using i₂.2⟩
-    have hi' : i₁' ≤ i₂' := by simpa [i₁', i₂'] using hi
+    have hi' : i₁' ≤ i₂' := by grind
     have h := veroneseLinearFactorMatrixDesc_has2x2 ha i₁' i₂' j₁ j₂ hi' hij
     simpa [VeroneseLinearFactorMatrixDescHas2x2, veroneseLinearFactorMatrixDesc,
       i₁', i₂'] using h
@@ -924,7 +853,7 @@ lemma veroneseSectionPolynomial_one_of_zero {r : ℕ} (hr : 0 < r) :
   rw [coeff_veroneseSectionPolynomial (r := r) (k := 0) (p := (1 : ℝ[X])) hr]
   cases n with
   | zero =>
-      simp
+      lia
   | succ n =>
       have hpos : 0 < r * (n + 1) := Nat.mul_pos hr (Nat.succ_pos n)
       simp [Polynomial.coeff_one, Nat.ne_of_gt hpos]
@@ -980,14 +909,9 @@ theorem isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_one
       simpa [j, last] using get_oneSupportSeq last j
     by_cases hidx : j = last
     · have hf_eq : f = 1 := by
-        rw [← hi, hget]
-        simp [hidx]
-      rw [hf_eq]
-      exact isRealRooted_of_deg_zero one_ne_zero (by simp)
-    · exfalso
-      apply hf0
-      rw [← hi, hget]
-      simp [hidx]
+        lia
+      simp_all
+    · lia
 
 /-- General monic product case for the matrix route: for any product of
 linear factors `X + a` with `a ≥ 0`, the descending Veronese sections are
@@ -1007,8 +931,7 @@ theorem isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_linea
   | cons a as ih =>
       have ha : 0 ≤ a := has a (by simp)
       have has_tail : ∀ b ∈ as, 0 ≤ b := by
-        intro b hb
-        exact has b (by simp [hb])
+        simp_all
       have htail := ih has_tail
       simpa [linearFactorProduct] using
         isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_X_add_C_mul
@@ -1018,23 +941,16 @@ lemma linearFactorProduct_neg_roots_eq_rootsProduct (p : ℝ[X]) :
     linearFactorProduct (p.roots.toList.map fun x => -x) =
       (p.roots.map fun x => X - C x).prod := by
   unfold linearFactorProduct
-  simp only [List.map_map]
-  rw [← Multiset.prod_coe]
-  change (Multiset.map (fun x : ℝ => X + C (-x)) (↑p.roots.toList)).prod =
-    (p.roots.map fun x => X - C x).prod
-  rw [Multiset.coe_toList]
-  congr 1
-  ext x
-  simp [sub_eq_add_neg]
+  grind
 
 lemma veroneseSectionPolynomialListDesc_C_mul
     {r : ℕ} (hr : 0 < r) (c : ℝ) (p : ℝ[X]) :
     veroneseSectionPolynomialListDesc r (C c * p) =
       (veroneseSectionPolynomialListDesc r p).map (fun q => C c * q) := by
   apply List.ext_get
-  · simp [veroneseSectionPolynomialListDesc]
+  · simp
   · intro n hn₁ hn₂
-    let i : Fin r := ⟨n, by simpa [veroneseSectionPolynomialListDesc] using hn₁⟩
+    let i : Fin r := ⟨n, by simp_all⟩
     rw [show (veroneseSectionPolynomialListDesc r (C c * p)).get ⟨n, hn₁⟩ =
         veroneseSectionPolynomial r (r - 1 - i.1) (C c * p) by
       simpa [i] using get_veroneseSectionPolynomialListDesc (r := r) (p := C c * p) i]
@@ -1050,8 +966,7 @@ lemma prec0_C_mul_both {c : ℝ} (hc : c ≠ 0) {f g : ℝ[X]}
   · left
     simp [hf]
   · right
-    left
-    simp [hg]
+    simp_all
   · exact Or.inr (Or.inr (prec_C_mul_right (prec_C_mul_left hprec hc) hc))
 
 lemma isInterlacingSeq0Nonneg_map_C_mul
@@ -1062,9 +977,9 @@ lemma isInterlacingSeq0Nonneg_map_C_mul
   · rw [isInterlacingSeq0_iff_pairwise]
     refine List.pairwise_iff_get.2 ?_
     intro i j hij
-    let i' : Fin fs.length := ⟨i.1, by simpa using i.2⟩
-    let j' : Fin fs.length := ⟨j.1, by simpa using j.2⟩
-    have hij' : i' < j' := by simpa [i', j'] using hij
+    let i' : Fin fs.length := ⟨i.1, by grind⟩
+    let j' : Fin fs.length := ⟨j.1, by grind⟩
+    have hij' : i' < j' := by grind
     have hprec0 := hfs.1.prec0 (i := i') (j := j') hij'
     simpa [i', j'] using prec0_C_mul_both hc hprec0
   · intro p hp
@@ -1075,13 +990,7 @@ lemma realRooted_mem_map_C_mul_of_realRooted
     {c : ℝ} (hc : c ≠ 0) {fs : List ℝ[X]}
     (hreal : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits)) :
     ∀ f ∈ fs.map (fun q => C c * q), f ≠ 0 → (f ≠ 0 ∧ f.Splits) := by
-  intro f hf hf0
-  rcases List.mem_map.1 hf with ⟨q, hq, rfl⟩
-  have hq0 : q ≠ 0 := by
-    intro hzero
-    apply hf0
-    simp [hzero]
-  exact isRealRooted_C_mul (hreal q hq hq0) hc
+  simp_all
 
 /-- General real-rooted nonnegative-coefficient case: the descending Veronese
 sections are weakly interlacing, and every nonzero section is real-rooted. -/
@@ -1116,15 +1025,14 @@ theorem isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_of_re
       veroneseSectionPolynomialListDesc r p =
           veroneseSectionPolynomialListDesc r
             (C p.leadingCoeff * linearFactorProduct as) := by
-            rw [hfac]
+            lia
       _ = (veroneseSectionPolynomialListDesc r (linearFactorProduct as)).map
           (fun q => C p.leadingCoeff * q) :=
             veroneseSectionPolynomialListDesc_C_mul hr p.leadingCoeff (linearFactorProduct as)
   refine ⟨?_, ?_⟩
   · rw [hlist]
     exact isInterlacingSeq0Nonneg_map_C_mul hlead_pos.le hlead_ne hpkg.1
-  · rw [hlist]
-    exact realRooted_mem_map_C_mul_of_realRooted hlead_ne hpkg.2
+  · simp_all
 
 /-- In particular, each Veronese section of a real-rooted polynomial with
 nonnegative coefficients is real-rooted, allowing the section to vanish. -/

@@ -36,20 +36,16 @@ lemma allComboRealRooted_common_root_reduction
   · right
     have hcomb :
         C α * f + C β * g = (X - C r) * (C α * qf + C β * qg) := by
-      rw [hf_def, hg_def, mul_add]
-      congr 1
-      · rw [← mul_assoc, mul_comm (C α) (X - C r), mul_assoc]
-      · rw [← mul_assoc, mul_comm (C β) (X - C r), mul_assoc]
+      grind
     have hsum_ne : C α * f + C β * g ≠ 0 := by
       rw [hcomb]
       exact mul_ne_zero (X_sub_C_ne_zero r) hq
     rcases hall α β with hzero | hrr
-    · exact False.elim (hsum_ne hzero)
+    · lia
     · exact
         isRealRooted_of_dvd hrr hq
           ⟨X - C r, by
-            rw [hcomb]
-            ring⟩
+            grind⟩
 
 lemma allComboRealRooted_C_mul_left
     {f g : ℝ[X]} {c : ℝ} (hall : AllComboRealRooted f g) :
@@ -73,44 +69,24 @@ lemma allComboRealRooted_mul_common_factor
   have hcomb :
       C α * (d * f) + C β * (d * g) =
         d * (C α * f + C β * g) := by
-    calc
-      C α * (d * f) + C β * (d * g)
-          = (C α * d) * f + (C β * d) * g := by
-              simp [mul_assoc]
-      _ = (d * C α) * f + (d * C β) * g := by
-            rw [mul_comm (C α) d, mul_comm (C β) d]
-      _ = d * (C α * f) + d * (C β * g) := by
-            simp [mul_assoc]
-      _ = d * (C α * f + C β * g) := by
-            rw [mul_add]
+    grind
   rcases hall α β with hzero | hrr
   · left
-    rw [hcomb, hzero, mul_zero]
+    simp_all
   · right
-    rw [hcomb]
-    exact isRealRooted_mul hd hrr
+    simp_all
 
 lemma derivative_eq_zero_or_isRealRooted {p : ℝ[X]}
     (hp : p ≠ 0 ∧ p.Splits) :
     p.derivative = 0 ∨ (p.derivative ≠ 0 ∧ p.derivative.Splits) := by
   by_cases hdeg0 : p.natDegree = 0
-  · left
-    rw [eq_C_of_natDegree_eq_zero hdeg0, derivative_C]
+  · simp_all
   · by_cases hdeg1 : p.natDegree = 1
     · right
       have hder_deg0 : p.derivative.natDegree = 0 := by
         rw [p.natDegree_derivative (by lia), hdeg1]
       have hder_ne : p.derivative ≠ 0 := by
-        intro h0
-        have hcoeff : p.derivative.coeff 0 = p.leadingCoeff := by
-          rw [coeff_derivative]
-          simp [Polynomial.leadingCoeff, hdeg1]
-        have hlc0 : p.leadingCoeff = 0 := by
-          have hcoeff0 : p.derivative.coeff 0 = 0 := by
-            simp [h0]
-          rw [hcoeff] at hcoeff0
-          simpa using hcoeff0
-        exact (leadingCoeff_ne_zero.mpr hp.1) hlc0
+        simp_all
       exact isRealRooted_of_deg_zero hder_ne hder_deg0
     · right
       exact (derivative_interlaces hp (by lia)).2.1
@@ -124,14 +100,14 @@ lemma allComboRealRooted_derivative
     simpa [derivative_add, derivative_C_mul] using congrArg derivative hzero
   · rcases derivative_eq_zero_or_isRealRooted hrr with hder_zero | hder_rr
     · left
-      simpa [derivative_add, derivative_C_mul] using hder_zero
+      simp_all
     · right
-      simpa [derivative_add, derivative_C_mul] using hder_rr
+      simp_all
 
 lemma allComboRealRooted_iterate_derivative
     {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
     ∀ n : ℕ, AllComboRealRooted ((derivative^[n]) f) ((derivative^[n]) g)
-  | 0 => by simpa using hall
+  | 0 => by simp_all
   | n + 1 => by
       rw [Function.iterate_succ_apply', Function.iterate_succ_apply']
       exact allComboRealRooted_derivative
@@ -157,13 +133,12 @@ lemma TDeriv_eq_zero_iff (eps : ℝ) {p : ℝ[X]} :
   constructor
   · intro hT
     by_cases hp0 : p = 0
-    · exact hp0
+    · lia
     · by_cases hdeg0 : p.natDegree = 0
       · have hconst : TDeriv eps p = p := by
           rw [eq_C_of_natDegree_eq_zero hdeg0, TDeriv, derivative_C]
-          ring
-        rw [hconst] at hT
-        exact hT
+          simp
+        lia
       · exact False.elim <|
           TDeriv_ne_zero hp0 (Nat.succ_le_of_lt (Nat.pos_of_ne_zero hdeg0)) hT
   · intro hp0
@@ -180,7 +155,7 @@ lemma iterateTDeriv_injective (eps : ℝ) :
     ∀ n : ℕ, Function.Injective (iterateTDeriv eps n)
   | 0 => by
       intro p q hpq
-      simpa using hpq
+      simp_all
   | n + 1 => by
       intro p q hpq
       rw [iterateTDeriv_succ, iterateTDeriv_succ] at hpq
@@ -214,15 +189,12 @@ lemma hasSimpleRoots_TDeriv_of_hasSimpleRoots
         rw [hp_eq, TDeriv, derivative_C]
         ring
       have hp_root : p.IsRoot a := by
-        simpa [hT_eq] using ha
+        lia
       have hcoeff0 : p.coeff 0 = 0 := by
         rw [hp_eq, Polynomial.IsRoot.def, eval_C] at hp_root
-        exact hp_root
-      have hp_zero : p = 0 := by
-        rw [hp_eq, hcoeff0]
-        simp
-      exact False.elim (hp.1 hp_zero)
-    · exact Nat.succ_le_of_lt (Nat.pos_of_ne_zero h0)
+        lia
+      grind
+    · lia
   have hp_not_root : ¬ p.IsRoot a := by
     intro hp_root
     exact
@@ -243,7 +215,7 @@ lemma hasSimpleRoots_iterateTDeriv_of_hasSimpleRoots
     HasSimpleRoots (iterateTDeriv eps n p) := by
   induction n generalizing p with
   | zero =>
-      simpa using hsimple
+      simp_all
   | succ n ih =>
       rw [iterateTDeriv_succ]
       exact
@@ -263,7 +235,6 @@ lemma hasSimpleRoots_iterateTDeriv_of_natDegree_le
     HasSimpleRoots (iterateTDeriv eps n p) := by
   let m := n - p.natDegree
   have hm : n = m + p.natDegree := by
-    unfold m
     lia
   obtain ⟨hp_cut_rr, hp_cut_simple⟩ :=
     isRealRooted_and_hasSimpleRoots_iterateTDeriv

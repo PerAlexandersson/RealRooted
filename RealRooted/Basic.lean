@@ -40,11 +40,11 @@ lemma eq_zero_or_ne_zero_and_splits_iff_eq_zero_or_ne_zero_and_card_roots (p : �
   constructor
   · intro h
     rcases h with rfl | h
-    · exact Or.inl rfl
+    · lia
     · exact Or.inr (ne_zero_and_card_roots_of_ne_zero_and_splits h)
   · intro h
     rcases h with rfl | h
-    · exact Or.inl rfl
+    · lia
     · exact Or.inr (ne_zero_and_splits_of_ne_zero_and_card_roots h)
 
 /-- Zero-aware real-rootedness.  This is the convention often used for
@@ -95,14 +95,14 @@ def ListAlternates : List ℝ → List ℝ → Prop
 lemma listInterlaces_iff_interleaves_of_length :
     ∀ {ss rs : List ℝ}, ss.length + 1 = rs.length →
       (ListInterlaces ss rs ↔ List.Interleaves (fun x y : ℝ => x ≤ y) ss rs)
-  | [], [], h => by simp at h
+  | [], [], h => by lia
   | [], [_], _ => by simp [ListInterlaces]
   | [], _ :: _ :: _, h => by simp at h
   | _ :: _, [], h => by simp at h
   | _ :: _, [_], h => by simp at h
   | s :: ss, r₁ :: r₂ :: rs, h => by
       have htail : ss.length + 1 = (r₂ :: rs).length := by
-        simpa using Nat.succ.inj h
+        simp_all
       constructor
       · rintro ⟨hr₁s, hsr₂, htail_old⟩
         exact List.Interleaves.cons_symm
@@ -112,15 +112,15 @@ lemma listInterlaces_iff_interleaves_of_length :
       · intro hnew
         rw [List.interleaves_iff] at hnew
         rcases hnew with hbad | hbad | ⟨l₁, l₂, b, hmid, a, hab, hleft, hright⟩
-        · simp at hbad
-        · simp at hbad
+        · lia
+        · lia
         · simp only [List.cons.injEq] at hleft hright
           rcases hleft with ⟨rfl, rfl⟩
           rcases hright with ⟨rfl, rfl⟩
           rw [List.interleaves_iff] at hmid
           rcases hmid with hbad | hbad | ⟨l₁, l₂, b, htail_new, a, hsr₂, hleft, hright⟩
-          · simp at hbad
-          · simp at hbad
+          · lia
+          · lia
           · simp only [List.cons.injEq] at hleft hright
             rcases hleft with ⟨rfl, rfl⟩
             rcases hright with ⟨rfl, rfl⟩
@@ -134,7 +134,7 @@ lemma listAlternates_iff_interleaves_of_length :
   | _ :: _, [], h => by simp at h
   | s :: ss, r :: rs, h => by
       have htail : ss.length + 1 = (r :: rs).length := by
-        simpa using Nat.succ.inj h
+        simp_all
       constructor
       · rintro ⟨hsr, htail_old⟩
         exact List.Interleaves.cons_symm
@@ -142,8 +142,8 @@ lemma listAlternates_iff_interleaves_of_length :
       · intro hnew
         rw [List.interleaves_iff] at hnew
         rcases hnew with hbad | hbad | ⟨l₁, l₂, b, htail_new, a, hsr, hleft, hright⟩
-        · simp at hbad
-        · simp at hbad
+        · lia
+        · lia
         · simp only [List.cons.injEq] at hleft hright
           rcases hleft with ⟨rfl, rfl⟩
           rcases hright with ⟨rfl, rfl⟩
@@ -177,8 +177,7 @@ lemma listInterlaces_left_le_of_right_le {ss rs : List ℝ} {c : ℝ}
     ∀ s ∈ ss, s ≤ c := by
   induction ss generalizing rs with
   | nil =>
-      intro s hs
-      simp at hs
+      simp
   | cons s ss ih =>
       cases rs with
       | nil =>
@@ -193,7 +192,7 @@ lemma listInterlaces_left_le_of_right_le {ss rs : List ℝ} {c : ℝ}
               simp only [List.mem_cons] at ht
               rcases ht with rfl | ht
               · exact le_trans hs_r₂ (hrs r₂ (by simp))
-              · exact ih htail (fun r hr => hrs r (by simp [hr])) t ht
+              · grind
 
 lemma listInterlaces_all_le_getLast {ss rs : List ℝ}
     (hrs_ne : rs ≠ [])
@@ -209,8 +208,7 @@ lemma listAlternates_left_le_of_right_le {ss rs : List ℝ} {c : ℝ}
     ∀ s ∈ ss, s ≤ c := by
   induction ss generalizing rs with
   | nil =>
-      intro s hs
-      simp at hs
+      simp
   | cons s ss ih =>
       cases rs with
       | nil =>
@@ -222,7 +220,7 @@ lemma listAlternates_left_le_of_right_le {ss rs : List ℝ} {c : ℝ}
           rcases ht with rfl | ht
           · exact le_trans hsr (hrs r (by simp))
           · exact listInterlaces_left_le_of_right_le htail
-              (fun x hx => hrs x (by simp [hx])) t ht
+              (fun x hx => hrs x (by lia)) t ht
 
 /-! ## Polynomial interlacing -/
 
@@ -251,7 +249,7 @@ theorem roots_le_of_prec_right {f g : ℝ[X]} {c : ℝ}
     exact hg_le r (by rw [← hrs_eq]; exact Multiset.mem_coe.mpr hr)
   intro r hr
   have hr' : r ∈ ss := by
-    have : r ∈ (↑ss : Multiset ℝ) := by simpa [hss_eq] using hr
+    have : r ∈ (↑ss : Multiset ℝ) := by lia
     exact Multiset.mem_coe.mp this
   rcases hshape with ⟨_, hint⟩ | ⟨_, halt⟩
   · exact listInterlaces_left_le_of_right_le hint hrs_le r hr'
@@ -345,11 +343,7 @@ lemma prec0_zero_zero : Prec0 (0 : ℝ[X]) 0 :=
 lemma isRealRooted_mul {p q : ℝ[X]} (hp : p ≠ 0 ∧
   p.Splits) (hq : q ≠ 0 ∧
   q.Splits) : (p * q ≠ 0 ∧ (p * q).Splits) := by
-  refine ⟨mul_ne_zero hp.1 hq.1, ?_⟩
-  apply splits_of_card_roots
-  have hp' := card_roots_of_splits hp.2
-  have hq' := card_roots_of_splits hq.2
-  grind [natDegree_mul, roots_mul (mul_ne_zero hp.1 hq.1), Multiset.card_add]
+  simp_all
 
 /-- Non-negative coefficients. -/
 def HasNonnegCoeffs (p : ℝ[X]) : Prop := ∀ n, 0 ≤ p.coeff n
@@ -373,7 +367,7 @@ lemma quadratic_nonneg_on_unit_interval_of_endpoint_nonneg_of_c_nonneg
     0 ≤ A + B * β + C * β ^ 2 := by
   by_cases hB : 0 ≤ B
   · exact quadratic_nonneg_on_unit_interval_of_coeffs_nonneg hβ0 hA hB hC
-  · have hEnd' : 0 ≤ A + B := by grind
+  · have hEnd' : 0 ≤ A + B := by simp_all
     have : 0 ≤ (1 - β) * A + β * (A + B) :=
       add_nonneg (mul_nonneg (sub_nonneg_of_le hβ1) hA) (mul_nonneg hβ0 hEnd')
     have : A + B * β + C * β ^ 2 = (1 - β) * A + β * (A + B) := by grind
