@@ -43,7 +43,10 @@ and
 The most relevant local conventions are: keep lines at or below 100 characters,
 use two-space indentation, keep top-level declarations flush-left, prefer
 explicit declaration types, put `:= by` on the theorem statement line for tactic
-proofs, and use mathlib-style declaration names.
+proofs, and use mathlib-style declaration names.  Every Lean module in the
+project should be imported, directly or indirectly, by the root file
+`RealRooted.lean`. Avoid orphan modules that are not covered by the umbrella
+build.
 
 ## Catalog References
 
