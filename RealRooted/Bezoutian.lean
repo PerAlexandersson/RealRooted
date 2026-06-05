@@ -7,8 +7,8 @@ import Mathlib.Analysis.Matrix.PosDef
 # Bezout matrices and interlacing
 
 This file records the planned Bezout-matrix characterization of strict
-same-degree interlacing.  The main theorem at the bottom is left as a `sorry`
-on purpose: it is a breadcrumb for a future formalization pass, not yet a
+same-degree interlacing.  The main theorem at the bottom uses `proof_wanted`,
+not `sorry`: it is a breadcrumb for a future formalization pass, not yet a
 completed proof.
 
 For polynomials
@@ -833,6 +833,7 @@ The orientation is chosen so that `StrictPrecSameDegree p q` corresponds to
 positive definiteness of `bezoutMatrix n q p`.  This is the intended main
 Bezoutian theorem: it avoids the common-factor and multiple-root degeneracies
 that belong to a separate positive-semidefinite/gcd-reduced generalization.
+It is recorded with `proof_wanted` instead of `sorry`.
 -/
 proof_wanted strictPrecSameDegree_iff_bezoutMatrix_posDef
     {p q : ℝ[X]} {n : ℕ}

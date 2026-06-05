@@ -376,4 +376,12 @@ This proves the Veronese real-rootedness consequence for real-rooted
 polynomials with nonnegative coefficients without invoking the full
 Athanasiadis--Wagner fully interlacing matrix machinery.
 
+### `proof_wanted`
+
+Use `proof_wanted` for intentionally recorded future theorem targets instead of
+ending a theorem proof with `sorry`.  Current instances:
+
+- `strictPrecSameDegree_iff_bezoutMatrix_posDef` in `RealRooted.Bezoutian`:
+  the planned strict same-degree Bezoutian characterization.
+
 In short: this is a working research codebase, not a finished library API.
