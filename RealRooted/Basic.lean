@@ -50,12 +50,12 @@ lemma eq_zero_or_ne_zero_and_splits_iff_eq_zero_or_ne_zero_and_card_roots (p : �
 /-- Zero-aware real-rootedness.  This is the convention often used for
 closure statements, while `p ≠ 0 ∧ p.Splits` remains the
 strict nonzero predicate used by root-list and interlacing proofs. -/
-def IsRealRootedOrZero (p : ℝ[X]) : Prop :=
+abbrev IsRealRootedOrZero (p : ℝ[X]) : Prop :=
   p = 0 ∨ (p ≠ 0 ∧ p.Splits)
 
 lemma isRealRootedOrZero_iff_eq_zero_or_splits (p : ℝ[X]) :
     IsRealRootedOrZero p ↔ p = 0 ∨ p.Splits := by
-  grind [IsRealRootedOrZero]
+  grind
 
 namespace IsRealRooted
 
