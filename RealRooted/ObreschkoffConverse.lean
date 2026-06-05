@@ -1505,15 +1505,12 @@ private theorem prec_of_eq_zero_or_simple_combo_of_no_common
   have hg_scale : C sg⁻¹ * g₀ = g := by
     grind
   rcases hprec₀ with hfg₀ | hgf₀
-  · left
-    have hscaled : Prec (C sf⁻¹ * f₀) (C sg⁻¹ * g₀) :=
+  · have hscaled : Prec (C sf⁻¹ * f₀) (C sg⁻¹ * g₀) :=
       prec_C_mul_right (prec_C_mul_left hfg₀ hsf_inv_ne) hsg_inv_ne
     lia
-  · right
-    have hscaled : Prec (C sg⁻¹ * g₀) (C sf⁻¹ * f₀) :=
+  · have hscaled : Prec (C sg⁻¹ * g₀) (C sf⁻¹ * f₀) :=
       prec_C_mul_right (prec_C_mul_left hgf₀ hsg_inv_ne) hsf_inv_ne
     lia
-
 /-- Regularized no-common-root converse step for the `iterateTDeriv` pair.
 
 This packages the exact simple-pair/Wronskian endgame that the main converse
@@ -2211,12 +2208,10 @@ private theorem prec_of_allComboRealRooted_of_no_common
       allComboRealRooted_common_root_reduction hqf hqg hall
     have hqdeg : qf.natDegree + 1 = qg.natDegree ∨ qf.natDegree = qg.natDegree := by
       rcases hdeg with hsucc | hsame
-      · left
-        rw [hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
+      · rw [hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
           hqg, natDegree_mul (X_sub_C_ne_zero r) hqg_ne, natDegree_X_sub_C] at hsucc
         lia
-      · right
-        rw [hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
+      · rw [hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
           hqg, natDegree_mul (X_sub_C_ne_zero r) hqg_ne, natDegree_X_sub_C] at hsame
         lia
     have hqf_deg_lt : qf.natDegree < n := by
@@ -2225,15 +2220,12 @@ private theorem prec_of_allComboRealRooted_of_no_common
     have hprec_q : Prec qf qg ∨ Prec qg qf :=
       ih qf.natDegree hqf_deg_lt rfl hqf_rr hqg_rr hqhall hqdeg
     rcases hprec_q with hprec_q | hprec_q
-    · left
-      have hprec_mul : Prec ((X - C r) * qf) ((X - C r) * qg) :=
+    · have hprec_mul : Prec ((X - C r) * qf) ((X - C r) * qg) :=
         prec_mul_common_factor (isRealRooted_X_sub_C r) hprec_q
       lia
-    · right
-      have hprec_mul : Prec ((X - C r) * qg) ((X - C r) * qf) :=
+    · have hprec_mul : Prec ((X - C r) * qg) ((X - C r) * qf) :=
         prec_mul_common_factor (isRealRooted_X_sub_C r) hprec_q
       lia
-
 /-- **Obreschkoff's theorem** (Brändén, Theorem 7.7.3): `f` and `g` interlace
 if and only if every polynomial in the real linear span `{αf + βg : α, β ∈ ℝ}`
 is real-rooted (or zero).
