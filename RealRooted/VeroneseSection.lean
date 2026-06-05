@@ -1579,7 +1579,8 @@ theorem isRealRootedOrZero_veroneseSectionPolynomial_of_pf {p : ℝ[X]}
     (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
     (hp : IsPolyaFrequencySequence (fun n => p.coeff n)) {r k : ℕ}
     (hr : 0 < r) (hk : k < r) :
-    IsRealRootedOrZero (veroneseSectionPolynomial r k p) := by
+    veroneseSectionPolynomial r k p = 0 ∨
+      (veroneseSectionPolynomial r k p).Splits := by
   have hpf : IsPolyaFrequencySequence
       (fun n => (veroneseSectionPolynomial r k p).coeff n) :=
     isPolyaFrequencySequence_veroneseSectionPolynomial_coeff (p := p) hp hr hk
@@ -1591,7 +1592,8 @@ theorem veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_pf {p : ℝ[X]}
     (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hp : IsPolyaFrequencySequence (fun n => p.coeff n)) {r k : ℕ}
     (hr : 0 < r) (hk : k < r) :
-    IsRealRootedOrZero (veroneseSectionPolynomial r k p) :=
+    veroneseSectionPolynomial r k p = 0 ∨
+      (veroneseSectionPolynomial r k p).Splits :=
   isRealRootedOrZero_veroneseSectionPolynomial_of_pf
     (aissenSchoenbergWhitneyForwardOrZero_of_forward hASW) hp hr hk
 
@@ -1634,7 +1636,8 @@ theorem isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg
     (hASWrev : aissenSchoenbergWhitneyReverseStatement)
     (hpnn : HasNonnegCoeffs p) (hprr : p ≠ 0 ∧ p.Splits) {r k : ℕ}
     (hr : 0 < r) (hk : k < r) :
-    IsRealRootedOrZero (veroneseSectionPolynomial r k p) := by
+    veroneseSectionPolynomial r k p = 0 ∨
+      (veroneseSectionPolynomial r k p).Splits := by
   have hpf : IsPolyaFrequencySequence
       (fun n => (veroneseSectionPolynomial r k p).coeff n) :=
     isPolyaFrequencySequence_veroneseSectionPolynomial_of_realRooted_nonneg
@@ -1649,7 +1652,8 @@ theorem veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_realRooted_nonneg
     (hASWrev : aissenSchoenbergWhitneyReverseStatement)
     (hpnn : HasNonnegCoeffs p) (hprr : p ≠ 0 ∧ p.Splits) {r k : ℕ}
     (hr : 0 < r) (hk : k < r) :
-    IsRealRootedOrZero (veroneseSectionPolynomial r k p) :=
+    veroneseSectionPolynomial r k p = 0 ∨
+      (veroneseSectionPolynomial r k p).Splits :=
   isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg
     (aissenSchoenbergWhitneyForwardOrZero_of_forward hASW)
     hASWrev hpnn hprr hr hk

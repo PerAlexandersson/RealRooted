@@ -564,7 +564,13 @@ private lemma posComboRealRooted_of_allComboRealRooted_of_natDegree_le
     have : 0 < (0 : ℝ) := by
       simp [HasPosLeadingCoeff, hzero] at hcomb_pos
     simp_all
-  · lia
+  · have hcomb_ne : C lam * f + C μ * g ≠ 0 := by
+      intro hzero
+      have hcomb_pos : HasPosLeadingCoeff (C lam * f + C μ * g) :=
+        hasPosLeadingCoeff_pos_combo_of_natDegree_le_right
+          hdeg hf_pos hg_pos hlam hμ
+      simp [HasPosLeadingCoeff, hzero] at hcomb_pos
+    exact ⟨hcomb_ne, hrr⟩
 
 /-- At a root of `f + 2g`, the companion family member `f + g` has the
 opposite sign of `g`. Under the no-common-root hypothesis this sign is strict,
@@ -761,7 +767,8 @@ private lemma combo_eq_zero_or_realRooted_simple_of_wronskian_eval_ne_zero
   intro α β
   rcases hall α β with hzero | hrr
   · lia
-  · exact Or.inr ⟨hrr, hasSimpleRoots_combo_of_wronskian_eval_ne_zero hrr hW_ne⟩
+  · by_cases hcombo0 : C α * f + C β * g = 0 <;>
+      grind [hasSimpleRoots_combo_of_wronskian_eval_ne_zero]
 
 /-- If the Wronskian vanishes at `x`, then inside the same `AllComboRealRooted`
 plane we can choose a special basis `(p, q)` such that:
@@ -1598,7 +1605,7 @@ private theorem prec_iterateTDeriv_of_allComboRealRooted_succ_of_no_common
         (eps := eps) (n := max f.natDegree g.natDegree) hg] using hsucc
   dsimp
   rcases hprec_iter with hfg | hgf
-  · lia
+  · exact hfg
   · have hbounds := natDegree_bounds_of_prec_local hgf
     lia
 
@@ -2048,7 +2055,7 @@ private theorem not_allComboRealRooted_const_left_of_natDegree_ge_two_of_pos
   intro hall
   obtain ⟨t, ht⟩ :=
     exists_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two hp hp_pos hdeg
-  have hcombo_t : IsRealRootedOrZero (C t + p) := by
+  have hcombo_t : C t + p = 0 ∨ (C t + p).Splits := by
     have hrewrite : C (t / c) * C c + p = C t + p := by
       calc
         C (t / c) * C c + p = C ((t / c) * c) + p := by
@@ -2060,7 +2067,10 @@ private theorem not_allComboRealRooted_const_left_of_natDegree_ge_two_of_pos
   · have hp_const : p = -C t := by
       grind
     simp_all
-  · lia
+  · by_cases hzero : C t + p = 0
+    · have : p = -C t := by grind
+      simp_all
+    · exact ht ⟨hzero, hrr⟩
 
 /-- Sign-normalized version of the constant-vs-degree-`≥ 2` obstruction.
 
@@ -2501,9 +2511,7 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
                   lia
                 · simp_all
         have hp_rr : (p ≠ 0 ∧ p.Splits) := by
-          rcases hpq_all 1 0 with hp_zero | hp_rr
-          · simp_all
-          · simp_all
+          rcases hpq_all 1 0 with hp_zero | hp_rr <;> simp_all
         have hq_not_root : ¬ q.IsRoot x := by
           simp_all
         have hp_mult_gt : 1 < p.rootMultiplicity x := by
@@ -2658,9 +2666,9 @@ private theorem allComboRealRooted_of_prec_succDegree_pos
           simp_all
         · right
           exact
-            isRealRooted_nonneg_combo_of_prec
+            (isRealRooted_nonneg_combo_of_prec
               hfg hf_pos hg_pos hα_nonneg (le_of_lt hβpos)
-              (Or.inr hβpos)
+              (Or.inr hβpos)).2
       · have hαneg : α < 0 := lt_of_not_ge hα_nonneg
         right
         have hmix_pos : HasPosLeadingCoeff (C β * g + C α * f) := by
@@ -2697,7 +2705,7 @@ private theorem allComboRealRooted_of_prec_succDegree_pos
               intro r _
               simp
               grind)
-        simpa [add_comm, add_left_comm, add_assoc] using hprec_mix.2.1
+        simpa [add_comm, add_left_comm, add_assoc] using hprec_mix.2.1.2
 
 private theorem allComboRealRooted_of_prec_succDegree
     {f g : ℝ[X]}
@@ -3048,7 +3056,6 @@ private theorem allComboRealRooted_of_prec_sameDegree_pos_of_no_common
             C (α * f.coeff 0 + β * g.coeff 0) := by
         simp
       right
-      refine ⟨hcomb, ?_⟩
       have hroots_eq :
           (C α * C (f.coeff 0) + C β * C (g.coeff 0)).roots =
             (C (α * f.coeff 0 + β * g.coeff 0)).roots := by
@@ -3107,14 +3114,14 @@ private theorem allComboRealRooted_of_prec_sameDegree_pos_of_no_common
           grind
       · by_cases hα_nonneg : 0 ≤ α
         · exact
-            isRealRooted_nonneg_combo_of_prec
+            (isRealRooted_nonneg_combo_of_prec
               hfg hf_pos hg_pos hα_nonneg (le_of_lt hβpos)
-              (Or.inr hβpos)
+              (Or.inr hβpos)).2
         · have hαneg : α < 0 := lt_of_not_ge hα_nonneg
           simpa [hqg] using
             isRealRooted_of_right_factor_combo_posβ
               (f := f) (q := qg) (uR := uR) (α := α) (β := β)
-              hqg_inter hqg_pos hqg_no hroot_lt hβpos (by lia) hdeg_pos
+              hqg_inter hqg_pos hqg_no hroot_lt hβpos (by lia) hdeg_pos |>.2
 
 /-- Opposite-sign right-factor combinations are real-rooted even when the top
 coefficient does not have the sign needed to orient a `Prec` witness directly.

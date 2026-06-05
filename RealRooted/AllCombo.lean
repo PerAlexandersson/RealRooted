@@ -17,7 +17,7 @@ namespace RealRooted
 
 /-- All real linear combinations of `f` and `g` are real-rooted (or zero). -/
 def AllComboRealRooted (f g : ℝ[X]) : Prop :=
-  ∀ α β : ℝ, IsRealRootedOrZero (C α * f + C β * g)
+  ∀ α β : ℝ, C α * f + C β * g = 0 ∨ (C α * f + C β * g).Splits
 
 lemma allComboRealRooted_comm {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
     AllComboRealRooted g f := by
@@ -40,12 +40,12 @@ lemma allComboRealRooted_common_root_reduction
     have hsum_ne : C α * f + C β * g ≠ 0 := by
       rw [hcomb]
       exact mul_ne_zero (X_sub_C_ne_zero r) hq
-    rcases hall α β with hzero | hrr
+    rcases hall α β with hzero | hsplits
     · lia
     · exact
-        isRealRooted_of_dvd hrr hq
+        (isRealRooted_of_dvd ⟨hsum_ne, hsplits⟩ hq
           ⟨X - C r, by
-            grind⟩
+            grind⟩).2
 
 lemma allComboRealRooted_C_mul_left
     {f g : ℝ[X]} {c : ℝ} (hall : AllComboRealRooted f g) :
@@ -70,11 +70,11 @@ lemma allComboRealRooted_mul_common_factor
       C α * (d * f) + C β * (d * g) =
         d * (C α * f + C β * g) := by
     grind
-  rcases hall α β with hzero | hrr
+  rcases hall α β with hzero | hsplits
   · left
     simp_all
   · right
-    simp_all
+    simpa [hcomb] using hd.2.mul hsplits
 
 lemma derivative_eq_zero_or_isRealRooted {p : ℝ[X]}
     (hp : p ≠ 0 ∧ p.Splits) :
@@ -95,14 +95,14 @@ lemma allComboRealRooted_derivative
     {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
     AllComboRealRooted f.derivative g.derivative := by
   intro α β
-  rcases hall α β with hzero | hrr
+  rcases hall α β with hzero | hsplits
   · left
     simpa [derivative_add, derivative_C_mul] using congrArg derivative hzero
-  · rcases derivative_eq_zero_or_isRealRooted hrr with hder_zero | hder_rr
+  · by_cases hcombo0 : C α * f + C β * g = 0
     · left
-      simp_all
-    · right
-      simp_all
+      simpa [derivative_add, derivative_C_mul] using congrArg derivative hcombo0
+    · rcases derivative_eq_zero_or_isRealRooted ⟨hcombo0, hsplits⟩ with hder_zero | hder_rr <;>
+        simp_all
 
 lemma allComboRealRooted_iterate_derivative
     {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
@@ -166,13 +166,17 @@ lemma allComboRealRooted_iterateTDeriv
     {eps : ℝ} (heps : 0 < eps) (n : ℕ) :
     AllComboRealRooted (iterateTDeriv eps n f) (iterateTDeriv eps n g) := by
   intro α β
-  rcases hall α β with hzero | hrr
+  rcases hall α β with hzero | hsplits
   · left
     have hiter := congrArg (iterateTDeriv eps n) hzero
     simpa [iterateTDeriv_linear_combo] using hiter
-  · right
-    simpa [iterateTDeriv_linear_combo] using
-      (isRealRooted_iterateTDeriv (eps := eps) (k := n) heps hrr)
+  · by_cases hcombo0 : C α * f + C β * g = 0
+    · left
+      have hiter := congrArg (iterateTDeriv eps n) hcombo0
+      simpa [iterateTDeriv_linear_combo] using hiter
+    · right
+      simpa [iterateTDeriv_linear_combo] using
+        (isRealRooted_iterateTDeriv heps ⟨hcombo0, hsplits⟩).2
 
 lemma hasSimpleRoots_TDeriv_of_hasSimpleRoots
     {eps : ℝ} {p : ℝ[X]}
@@ -220,7 +224,7 @@ lemma hasSimpleRoots_iterateTDeriv_of_hasSimpleRoots
       rw [iterateTDeriv_succ]
       exact
         hasSimpleRoots_TDeriv_of_hasSimpleRoots heps
-          (isRealRooted_iterateTDeriv (eps := eps) (k := n) heps hp)
+          (isRealRooted_iterateTDeriv heps hp)
           (ih hp hsimple)
 
 lemma iterateTDeriv_add_index (eps : ℝ) (m n : ℕ) (p : ℝ[X]) :
@@ -237,8 +241,7 @@ lemma hasSimpleRoots_iterateTDeriv_of_natDegree_le
   have hm : n = m + p.natDegree := by
     lia
   obtain ⟨hp_cut_rr, hp_cut_simple⟩ :=
-    isRealRooted_and_hasSimpleRoots_iterateTDeriv
-      (eps := eps) (f := p) (n := p.natDegree) heps hp rfl
+    isRealRooted_and_hasSimpleRoots_iterateTDeriv heps hp rfl
   rw [hm, iterateTDeriv_add_index]
   exact hasSimpleRoots_iterateTDeriv_of_hasSimpleRoots heps hp_cut_rr hp_cut_simple
 
@@ -258,18 +261,14 @@ lemma simple_pair_of_allComboRealRooted_iterateTDeriv
         (iterateTDeriv eps n f).natDegree = (iterateTDeriv eps n g).natDegree) := by
   dsimp
   refine ⟨allComboRealRooted_iterateTDeriv hall heps _, ?_, ?_, ?_, ?_, ?_⟩
-  · exact isRealRooted_iterateTDeriv (eps := eps) (k := max f.natDegree g.natDegree) heps hf
-  · exact isRealRooted_iterateTDeriv (eps := eps) (k := max f.natDegree g.natDegree) heps hg
+  · exact isRealRooted_iterateTDeriv heps hf
+  · exact isRealRooted_iterateTDeriv heps hg
   · exact
-      hasSimpleRoots_iterateTDeriv_of_natDegree_le
-        (eps := eps) (n := max f.natDegree g.natDegree) heps hf (Nat.le_max_left _ _)
+      hasSimpleRoots_iterateTDeriv_of_natDegree_le heps hf (Nat.le_max_left _ _)
   · exact
-      hasSimpleRoots_iterateTDeriv_of_natDegree_le
-        (eps := eps) (n := max f.natDegree g.natDegree) heps hg (Nat.le_max_right _ _)
-  · simpa [natDegree_iterateTDeriv_of_isRealRooted
-      (eps := eps) (n := max f.natDegree g.natDegree) hf,
-      natDegree_iterateTDeriv_of_isRealRooted
-        (eps := eps) (n := max f.natDegree g.natDegree) hg] using hdeg
+      hasSimpleRoots_iterateTDeriv_of_natDegree_le heps hg (Nat.le_max_right _ _)
+  · simpa [natDegree_iterateTDeriv_of_isRealRooted hf,
+      natDegree_iterateTDeriv_of_isRealRooted hg] using hdeg
 
 lemma allComboRealRooted_eq_zero_or_isRealRooted_and_hasSimpleRoots_iterateTDeriv
     {f g : ℝ[X]} (hall : AllComboRealRooted f g)
@@ -288,18 +287,21 @@ lemma allComboRealRooted_eq_zero_or_isRealRooted_and_hasSimpleRoots_iterateTDeri
       p.natDegree ≤ max (C α * f).natDegree (C β * g).natDegree := natDegree_add_le _ _
       _ ≤ max f.natDegree g.natDegree := by
         exact max_le_max (natDegree_C_mul_le _ _) (natDegree_C_mul_le _ _)
-  rcases hall α β with hp0 | hp_rr
+  rcases hall α β with hp0 | hp_splits
   · left
     have hiter := congrArg (iterateTDeriv eps (max f.natDegree g.natDegree)) hp0
     simpa [p, iterateTDeriv_linear_combo] using hiter
-  · right
-    refine ⟨?_, ?_⟩
-    · simpa [p, iterateTDeriv_linear_combo] using
-        (isRealRooted_iterateTDeriv
-          (eps := eps) (k := max f.natDegree g.natDegree) heps hp_rr)
-    · simpa [p, iterateTDeriv_linear_combo] using
-        (hasSimpleRoots_iterateTDeriv_of_natDegree_le
-          (eps := eps) (p := p) (n := max f.natDegree g.natDegree) heps hp_rr hpdeg)
+  · by_cases hp0 : p = 0
+    · left
+      have hiter := congrArg (iterateTDeriv eps (max f.natDegree g.natDegree)) hp0
+      simpa [p, iterateTDeriv_linear_combo] using hiter
+    · right
+      have hp_rr : p ≠ 0 ∧ p.Splits := ⟨hp0, hp_splits⟩
+      refine ⟨?_, ?_⟩
+      · simpa [p, iterateTDeriv_linear_combo] using
+          (isRealRooted_iterateTDeriv heps hp_rr)
+      · simpa [p, iterateTDeriv_linear_combo] using
+          (hasSimpleRoots_iterateTDeriv_of_natDegree_le heps hp_rr hpdeg)
 
 
 end RealRooted

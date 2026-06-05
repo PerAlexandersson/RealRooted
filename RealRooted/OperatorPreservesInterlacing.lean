@@ -9,7 +9,7 @@ namespace RealRooted
 /-- A linear operator preserves real-rootedness up to the natural zero escape
 that can occur for non-injective operators. -/
 def PreservesRealRootedOrZero (T : ℝ[X] →ₗ[ℝ] ℝ[X]) : Prop :=
-  ∀ p : ℝ[X], (p ≠ 0 ∧ p.Splits) → IsRealRootedOrZero (T p)
+  ∀ p : ℝ[X], (p ≠ 0 ∧ p.Splits) → T p = 0 ∨ (T p).Splits
 
 /-- Strong oriented target notion for interlacing preservation by a linear
 operator. This is intentionally stronger than the theorem proved below: with the
@@ -46,14 +46,7 @@ theorem preservesAllComboPairs_of_preservesRealRootedOrZero
             simp
       _ = T (C α * f + C β * g) := by
             simp [Polynomial.smul_eq_C_mul]
-  rcases hall α β with hzero | hrr
-  · left
-    simp_all
-  · rcases hT (C α * f + C β * g) hrr with hzeroT | hrrT
-    · left
-      lia
-    · right
-      lia
+  rcases hall α β with hzero | hrr <;> grind [PreservesRealRootedOrZero]
 
 /-- Real-rootedness-preserving linear operators preserve interlacing up to the
 order ambiguity built into the current oriented `Prec` predicate. Zero images
@@ -71,13 +64,9 @@ theorem preservesInterlacingPairsUpToOrder0_of_preservesRealRootedOrZero
   by_cases hgT0 : T g = 0
   · exact Or.inl (hgT0 ▸ prec0_zero_right (T f))
   have hfT : ((T f) ≠ 0 ∧ (T f).Splits) := by
-    rcases hallT 1 0 with hzero | hrr
-    · simp_all
-    · simp_all
+    rcases hallT 1 0 with hzero | hrr <;> simp_all
   have hgT : ((T g) ≠ 0 ∧ (T g).Splits) := by
-    rcases hallT 0 1 with hzero | hrr
-    · simp_all
-    · simp_all
+    rcases hallT 0 1 with hzero | hrr <;> simp_all
   rcases natDegree_eq_or_succ_or_revSucc_of_allComboRealRooted hallT hfT0 hgT0 with
     hsame | hsucc | hrevsucc
   · rcases prec_of_allComboRealRooted hfT hgT hallT (Or.inr hsame) with hprec | hprec
