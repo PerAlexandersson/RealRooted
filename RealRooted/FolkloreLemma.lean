@@ -63,9 +63,7 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
         grind
       simpa [hrew] using hall_fXg (α + β) (-α)
     have hq : (q ≠ 0 ∧ q.Splits) := by
-      rcases hall_qf 1 0 with hzero | hrr
-      · simp_all
-      · simp_all
+      rcases hall_qf 1 0 with hzero | hrr <;> simp_all
     have hf0 : f ≠ 0 := hf.1
     have hclose := natDegree_close_of_allComboRealRooted hall_qf hq0 hf0
     have hq_lt : q.natDegree < f.natDegree := by
@@ -128,10 +126,7 @@ theorem prec_sub_X_mul_right {f g : ℝ[X]}
       simpa [q] using prec_sub_X_mul_left hgf hf_monic hg_monic hdeg hf_nonpos hg_nonpos
     have hf0 : f ≠ 0 := hgf.2.1.1
     have hqf : Prec q f := by
-      rcases hleft0 with hqz | hfz | hqf
-      · lia
-      · lia
-      · lia
+      rcases hleft0 with hqz | hfz | hqf <;> lia
     have hall_qf : AllComboRealRooted q f := allComboRealRooted_of_prec hqf
     have hall_qXg : AllComboRealRooted q (X * g) := by
       intro α β

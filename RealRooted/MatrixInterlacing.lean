@@ -109,9 +109,7 @@ lemma isInterlacingSeq0Nonneg_oneSupportSeq {n : ℕ} (i : Fin n) :
     · have hqi : q' ≠ i := by
         lia
       simp [hpi, hqi, prec0_zero_right]
-    · by_cases hqi : q' = i
-      · simp [hpi, hqi, prec0_zero_left]
-      · simp [hpi, hqi, prec0_zero_left]
+    · by_cases hqi : q' = i <;> simp [hpi, hqi, prec0_zero_left]
   · rw [List.forall_mem_iff_get]
     intro k
     let k' : Fin n := ⟨k, by simpa [length_oneSupportSeq] using k.2⟩

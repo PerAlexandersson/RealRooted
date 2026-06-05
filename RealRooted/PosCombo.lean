@@ -278,10 +278,7 @@ theorem prec0_sum_left_of_common_left_of_nonneg
       have hp_mem : p ∈ l := (List.mem_of_mem_filter hp)
       have hp_ne : p ≠ 0 := by
         grind
-      rcases hprec p hp_mem with hh | hp0 | hpf
-      · lia
-      · lia
-      · lia
+      rcases hprec p hp_mem with hh | hp0 | hpf <;> lia
     have hpos' : ∀ p ∈ l', HasPosLeadingCoeff p := by
       intro p hp
       have hp_mem : p ∈ l := List.mem_of_mem_filter hp

@@ -307,9 +307,7 @@ lemma mkInterleaving_sub_multiset (f : ℝ[X])
               lia
             have : r₂ ≤ a := by
               have hmem := Multiset.mem_coe.mp ha_tail
-              rcases List.mem_cons.mp hmem with h | h
-              · simp_all
-              · simp_all
+              rcases List.mem_cons.mp hmem with h | h <;> simp_all
             linarith
           · lia
       · -- a ≠ s, a = r₁

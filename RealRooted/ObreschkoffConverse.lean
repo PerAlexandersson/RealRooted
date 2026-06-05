@@ -894,9 +894,7 @@ private lemma false_of_allComboRealRooted_of_double_root_and_eval_ne_of_pos
   have hp_der_eval0 : p.derivative.eval x = 0 := by
     simp_all
   have hp_rr : (p ≠ 0 ∧ p.Splits) := by
-    rcases hall 1 0 with hzero | hrr
-    · simp_all
-    · simp_all
+    rcases hall 1 0 with hzero | hrr <;> simp_all
   let pp : ℝ := p.derivative.derivative.eval x
   let qx : ℝ := q.eval x
   let qp : ℝ := q.derivative.eval x
@@ -940,9 +938,7 @@ private lemma false_of_allComboRealRooted_of_double_root_and_eval_ne_of_pos
     simp_all
   have hcombo_rr :
       ((C 1 * p + C β * q) ≠ 0 ∧ (C 1 * p + C β * q).Splits) := by
-    rcases hall 1 β with hzero | hrr
-    · lia
-    · lia
+    rcases hall 1 β with hzero | hrr <;> lia
   have hcombo_eval_ne :
       (C 1 * p + C β * q).eval x ≠ 0 := by
     simp_all
@@ -1657,9 +1653,7 @@ private theorem isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
     have hws_sub : (↑(uL :: us) : Multiset ℝ) ≤ F.roots := by
       rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr (hws_pw.imp ne_of_lt))]
       intro x hx
-      rcases List.mem_cons.mp (Multiset.mem_coe.mp hx) with rfl | hx'
-      · simp_all
-      · simp_all
+      rcases List.mem_cons.mp (Multiset.mem_coe.mp hx) with rfl | hx' <;> simp_all
     have hws_len : (uL :: us).length = F.natDegree := by
       simp_all
     have hws_eq : (↑(uL :: us) : Multiset ℝ) = F.roots :=
@@ -1685,9 +1679,7 @@ private theorem isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
     have hws_sub : (↑(us ++ [uR]) : Multiset ℝ) ≤ F.roots := by
       rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr (hws_pw.imp ne_of_lt))]
       intro x hx
-      rcases List.mem_append.mp (Multiset.mem_coe.mp hx) with hx_us | hx_uR
-      · simp_all
-      · simp_all
+      rcases List.mem_append.mp (Multiset.mem_coe.mp hx) with hx_us | hx_uR <;> simp_all
     have hws_len : (us ++ [uR]).length = F.natDegree := by
       simp_all
     have hws_eq : (↑(us ++ [uR]) : Multiset ℝ) = F.roots :=
@@ -2130,9 +2122,7 @@ private theorem not_degree_gap_ge_two_of_allComboRealRooted
     dsimp [gN, n]
     exact iterate_derivative_ne_zero_of_le_natDegree hg0 (by lia)
   have hgN_rr : (gN ≠ 0 ∧ gN.Splits) := by
-    rcases hallN 0 1 with hzero | hrr
-    · simp_all
-    · simp_all
+    rcases hallN 0 1 with hzero | hrr <;> simp_all
   exact
     not_allComboRealRooted_const_left_of_natDegree_ge_two
       (c := cf) (p := gN) (by lia) hgN_rr hgN_deg_ge2
@@ -2501,9 +2491,7 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
                   lia
                 · simp_all
         have hp_rr : (p ≠ 0 ∧ p.Splits) := by
-          rcases hpq_all 1 0 with hp_zero | hp_rr
-          · simp_all
-          · simp_all
+          rcases hpq_all 1 0 with hp_zero | hp_rr <;> simp_all
         have hq_not_root : ¬ q.IsRoot x := by
           simp_all
         have hp_mult_gt : 1 < p.rootMultiplicity x := by

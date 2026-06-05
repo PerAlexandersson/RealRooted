@@ -2583,9 +2583,7 @@ private theorem prec_b_component_of_prec_left_of_natDegree_le
   have hall_aXb : AllComboRealRooted a (X * b) :=
     allComboRealRooted_left_X_mul_component_of_prec_left hp_eq hap
   have hXb_rr : ((X * b) ≠ 0 ∧ (X * b).Splits) := by
-    rcases hall_aXb 0 1 with hzero | hrr
-    · simp_all
-    · simp_all
+    rcases hall_aXb 0 1 with hzero | hrr <;> simp_all
   have hdeg_aXb : a.natDegree + 1 = (X * b).natDegree := by
     simp_all
   have hprec_or : Prec a (X * b) ∨ Prec (X * b) a := by
@@ -2752,9 +2750,7 @@ private theorem prec_b_component_of_prec_left_top_of_sameDegree
   have hall_aXb : AllComboRealRooted a (X * b) :=
     allComboRealRooted_left_X_mul_component_of_prec_left hp_eq hap
   have hXb_rr : ((X * b) ≠ 0 ∧ (X * b).Splits) := by
-    rcases hall_aXb 0 1 with hzero | hrr
-    · simp_all
-    · simp_all
+    rcases hall_aXb 0 1 with hzero | hrr <;> simp_all
   have hsame : a.natDegree = (X * b).natDegree := by
     lia
   have hprec_or : Prec a (X * b) ∨ Prec (X * b) a := by
@@ -2801,9 +2797,7 @@ private theorem prec_b_component_of_prec_left_top
     have hall_aXb : AllComboRealRooted a (X * b) :=
       allComboRealRooted_left_X_mul_component_of_prec_left hp_eq hap
     have hXb_rr : ((X * b) ≠ 0 ∧ (X * b).Splits) := by
-      rcases hall_aXb 0 1 with hzero | hrr
-      · simp_all
-      · simp_all
+      rcases hall_aXb 0 1 with hzero | hrr <;> simp_all
     have hall_Xba : AllComboRealRooted (X * b) a := by
       intro α β
       simpa [add_comm, add_left_comm, add_assoc] using hall_aXb β α
@@ -2847,9 +2841,7 @@ private theorem prec_b_component_of_prec_right_top
   have hall_aXb : AllComboRealRooted a (X * b) :=
     allComboRealRooted_left_X_mul_component_of_prec_right hp_eq hpxb
   have ha_rr : (a ≠ 0 ∧ a.Splits) := by
-    rcases hall_aXb 1 0 with hzero | hrr
-    · simp_all
-    · simp_all
+    rcases hall_aXb 1 0 with hzero | hrr <;> simp_all
   have hp_deg : p.natDegree = d := by
     apply le_antisymm hd
     apply Polynomial.le_natDegree_of_ne_zero
@@ -3014,9 +3006,7 @@ private theorem prec_b_component_of_prec_Id_top_of_right_top
   have ht_ne : t ≠ 0 := by
     exact mul_ne_zero (X_sub_C_ne_zero (1 : ℝ)) hb0
   have ht_rr : (t ≠ 0 ∧ t.Splits) := by
-    rcases hall_ht 0 1 with hzero | hrr
-    · simp_all
-    · simp_all
+    rcases hall_ht 0 1 with hzero | hrr <;> simp_all
   have ht_pos : HasPosLeadingCoeff t := by
     dsimp [t]
     unfold HasPosLeadingCoeff at hb_pos ⊢
@@ -3152,9 +3142,7 @@ theorem brandenSolusTheorem26_third_converse_of_top_degree
   have ht_ne : t ≠ 0 := by
     exact mul_ne_zero (X_sub_C_ne_zero (1 : ℝ)) hb0
   have ht_rr : (t ≠ 0 ∧ t.Splits) := by
-    rcases hall_ht 0 1 with hzero | hrr
-    · simp_all
-    · simp_all
+    rcases hall_ht 0 1 with hzero | hrr <;> simp_all
   have ht_root1 : t.IsRoot 1 := by
     dsimp [t]
     simp
@@ -3664,9 +3652,7 @@ theorem brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
       grind
     simpa [hrew] using hall_hp (α - β) β
   have ht_rr : (t ≠ 0 ∧ t.Splits) := by
-    rcases hall_ht 0 1 with hzero | hrr
-    · simp_all
-    · simp_all
+    rcases hall_ht 0 1 with hzero | hrr <;> simp_all
   have hb_rr : (b ≠ 0 ∧ b.Splits) := by
     apply isRealRooted_of_dvd ht_rr hb0
     refine ⟨X - C (1 : ℝ), ?_⟩
