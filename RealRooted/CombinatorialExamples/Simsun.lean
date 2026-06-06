@@ -295,8 +295,7 @@ lemma simsun_posLeadingCoeff (n : Nat) :
   rw [leadingCoeff, natDegree_simsun]
   exact (coeff_simsun_top_pos_and_above n).1
 
-lemma roots_nonpos_simsun_of_isRealRooted {n : Nat}
-    (hrr : (simsun n) ≠ 0 ∧ (simsun n).Splits) :
+lemma roots_nonpos_simsun_of_isRealRooted {n : Nat} (hrr : (simsun n).Splits) :
     ∀ r ∈ (simsun n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs hrr (simsun_nonnegCoeffs n)
 
@@ -313,7 +312,7 @@ lemma interlaces_simsun_one_two :
         (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp)))
 
 lemma interlaces_derivative_simsun :
-    ∀ n : Nat, 2 ≤ n → ((simsun n) ≠ 0 ∧ (simsun n).Splits) →
+    ∀ n : Nat, 2 ≤ n → (simsun n).Splits →
       Interlaces (simsun n).derivative (simsun n)
   | 0, hn, _ => by
       lia
@@ -344,50 +343,49 @@ theorem prec_simsun_succ : ∀ n : Nat, Prec (simsun n) (simsun (n + 1))
   | 0 => interlaces_simsun_zero_one
   | 1 => interlaces_simsun_one_two.toPrec
   | n + 2 => by
-      have hf : ((simsun (n + 2)) ≠ 0 ∧ (simsun (n + 2)).Splits) := (prec_simsun_succ (n + 1)).2.1
-      have hInter :
-          Interlaces (simsun (n + 2)).derivative (simsun (n + 2)) :=
-        interlaces_derivative_simsun (n + 2) (by lia) hf
-      have hg_pos : HasPosLeadingCoeff (simsun (n + 2)).derivative :=
-        (simsun_posLeadingCoeff (n + 2)).derivative (by rw [natDegree_simsun]; lia)
-      have hNext_eq :
-          simsunCoeffA (n + 2) * simsun (n + 2) +
-            simsunCoeffB * (simsun (n + 2)).derivative =
-          simsun (n + 3) := by
-        exact (simsun_succ (n + 2)).symm
-      have hF_pos :
-          HasPosLeadingCoeff
-            (simsunCoeffA (n + 2) * simsun (n + 2) +
-              simsunCoeffB * (simsun (n + 2)).derivative) := by
-        rw [hNext_eq]
-        exact simsun_posLeadingCoeff (n + 3)
-      have hdeg_lo :
-          (simsun (n + 2)).natDegree ≤
-            (simsunCoeffA (n + 2) * simsun (n + 2) +
-              simsunCoeffB * (simsun (n + 2)).derivative).natDegree := by
-        rw [hNext_eq, natDegree_simsun, natDegree_simsun]
-        lia
-      have hdeg_hi :
+    have hInter :
+        Interlaces (simsun (n + 2)).derivative (simsun (n + 2)) :=
+      interlaces_derivative_simsun (n + 2) (by lia) (prec_simsun_succ (n + 1)).2.1.2
+    have hg_pos : HasPosLeadingCoeff (simsun (n + 2)).derivative :=
+      (simsun_posLeadingCoeff (n + 2)).derivative (by rw [natDegree_simsun]; lia)
+    have hNext_eq :
+        simsunCoeffA (n + 2) * simsun (n + 2) +
+          simsunCoeffB * (simsun (n + 2)).derivative =
+        simsun (n + 3) := by
+      exact (simsun_succ (n + 2)).symm
+    have hF_pos :
+        HasPosLeadingCoeff
           (simsunCoeffA (n + 2) * simsun (n + 2) +
-              simsunCoeffB * (simsun (n + 2)).derivative).natDegree ≤
-            (simsun (n + 2)).natDegree + 1 := by
-        rw [hNext_eq, natDegree_simsun, natDegree_simsun]
-        lia
-      have hb_nonpos :
-          ∀ r, (simsun (n + 2)).IsRoot r → simsunCoeffB.eval r ≤ 0 := by
-        intro r hr
-        have hr_nonpos :
-            r ≤ 0 := roots_nonpos_simsun_of_isRealRooted hf r
-              ((mem_roots hf.1).mpr hr)
-        exact eval_simsunCoeffB_nonpos_of_nonpos hr_nonpos
-      rw [← hNext_eq]
-      exact
-        prec_of_interlaces_evalCoeff_nonpos
-          (f := simsun (n + 2))
-          (g := (simsun (n + 2)).derivative)
-          (a := simsunCoeffA (n + 2))
-          (b := simsunCoeffB)
-          hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
+            simsunCoeffB * (simsun (n + 2)).derivative) := by
+      rw [hNext_eq]
+      exact simsun_posLeadingCoeff (n + 3)
+    have hdeg_lo :
+        (simsun (n + 2)).natDegree ≤
+          (simsunCoeffA (n + 2) * simsun (n + 2) +
+            simsunCoeffB * (simsun (n + 2)).derivative).natDegree := by
+      rw [hNext_eq, natDegree_simsun, natDegree_simsun]
+      lia
+    have hdeg_hi :
+        (simsunCoeffA (n + 2) * simsun (n + 2) +
+            simsunCoeffB * (simsun (n + 2)).derivative).natDegree ≤
+          (simsun (n + 2)).natDegree + 1 := by
+      rw [hNext_eq, natDegree_simsun, natDegree_simsun]
+      lia
+    have hb_nonpos :
+        ∀ r, (simsun (n + 2)).IsRoot r → simsunCoeffB.eval r ≤ 0 := by
+      intro r hr
+      have hr_nonpos :
+          r ≤ 0 := roots_nonpos_simsun_of_isRealRooted (prec_simsun_succ (n + 1)).2.1.2 r
+            ((mem_roots (prec_simsun_succ (n + 1)).2.1.1).mpr hr)
+      exact eval_simsunCoeffB_nonpos_of_nonpos hr_nonpos
+    rw [← hNext_eq]
+    exact
+      prec_of_interlaces_evalCoeff_nonpos
+        (f := simsun (n + 2))
+        (g := (simsun (n + 2)).derivative)
+        (a := simsunCoeffA (n + 2))
+        (b := simsunCoeffB)
+        hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
 
 theorem isRealRooted_simsun : ∀ n : Nat, ((simsun n) ≠ 0 ∧ (simsun n).Splits)
   | 0 => by simp

@@ -289,7 +289,7 @@ private lemma prec_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
       ∀ r, (narayanaQuot (n + 1)).IsRoot r → (narayanaCoeffB n).eval r ≤ 0 := by
     intro r hr
     have hr_nonpos :
-        r ≤ 0 := roots_nonpos_of_nonneg_coeffs hInter.1 hnonneg r
+        r ≤ 0 := roots_nonpos_of_nonneg_coeffs hInter.1.2 hnonneg r
           ((mem_roots hInter.1.1).mpr hr)
     have hcoef_nonpos : (((-(n : ℝ)) / (n + 3 : ℝ)) : ℝ) ≤ 0 := by
       have hnum : (-(n : ℝ)) ≤ 0 := by
@@ -353,9 +353,9 @@ theorem interlaces_narayana_succ_of_nonnegCoeffs (n : Nat) (hn : 1 ≤ n)
   have hprecQ : Prec (narayanaQuot n) (narayanaQuot (n + 1)) :=
     prec_narayanaQuot_succ_of_nonnegCoeffs n hn hnonneg
   have hq_nonpos : ∀ r ∈ (narayanaQuot n).roots, r ≤ 0 :=
-    roots_nonpos_of_nonneg_coeffs hprecQ.1 (hnonneg n)
+    roots_nonpos_of_nonneg_coeffs hprecQ.1.2 (hnonneg n)
   have hq_succ_nonpos : ∀ r ∈ (narayanaQuot (n + 1)).roots, r ≤ 0 :=
-    roots_nonpos_of_nonneg_coeffs hprecQ.2.1 (hnonneg (n + 1))
+    roots_nonpos_of_nonneg_coeffs hprecQ.2.1.2 (hnonneg (n + 1))
   have hprec : Prec (narayana n) (narayana (n + 1)) := by
     simpa [narayana] using
       prec_mul_X_both_of_roots_nonpos hprecQ hq_nonpos hq_succ_nonpos

@@ -555,16 +555,8 @@ private lemma posComboRealRooted_of_allComboRealRooted_of_natDegree_le
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
     PosComboRealRooted f g := by
   intro lam μ hlam hμ
-  rcases hall lam μ with hzero | hrr
-  · have hcomb_pos : HasPosLeadingCoeff (C lam * f + C μ * g) := by
-      exact
-        hasPosLeadingCoeff_pos_combo_of_natDegree_le_right
-          hdeg hf_pos hg_pos hlam hμ
-    exfalso
-    have : 0 < (0 : ℝ) := by
-      simp [HasPosLeadingCoeff, hzero] at hcomb_pos
-    simp_all
-  · lia
+  exact ⟨(hasPosLeadingCoeff_pos_combo_of_natDegree_le_right hdeg hf_pos hg_pos hlam hμ).ne_zero,
+    hall lam μ⟩
 
 /-- At a root of `f + 2g`, the companion family member `f + g` has the
 opposite sign of `g`. Under the no-common-root hypothesis this sign is strict,
@@ -750,19 +742,6 @@ private lemma hasSimpleRoots_combo_of_wronskian_eval_ne_zero
       simp_all
   simp_all
 
-private lemma combo_eq_zero_or_realRooted_simple_of_wronskian_eval_ne_zero
-    {f g : ℝ[X]}
-    (hall : AllComboRealRooted f g)
-    (hW_ne : ∀ x : ℝ, (wronskian f g).eval x ≠ 0) :
-    ∀ α β : ℝ,
-      C α * f + C β * g = 0 ∨
-        (((C α * f + C β * g) ≠ 0 ∧ (C α * f + C β * g).Splits) ∧
-          HasSimpleRoots (C α * f + C β * g)) := by
-  intro α β
-  rcases hall α β with hzero | hrr
-  · lia
-  · exact Or.inr ⟨hrr, hasSimpleRoots_combo_of_wronskian_eval_ne_zero hrr hW_ne⟩
-
 /-- If the Wronskian vanishes at `x`, then inside the same `AllComboRealRooted`
 plane we can choose a special basis `(p, q)` such that:
 - `p` has a multiple root at `x`,
@@ -893,10 +872,7 @@ private lemma false_of_allComboRealRooted_of_double_root_and_eval_ne_of_pos
     simp_all
   have hp_der_eval0 : p.derivative.eval x = 0 := by
     simp_all
-  have hp_rr : (p ≠ 0 ∧ p.Splits) := by
-    rcases hall 1 0 with hzero | hrr
-    · simp_all
-    · simp_all
+  have hp_rr : p.Splits := by simpa using hall 1 0
   let pp : ℝ := p.derivative.derivative.eval x
   let qx : ℝ := q.eval x
   let qp : ℝ := q.derivative.eval x
@@ -938,11 +914,7 @@ private lemma false_of_allComboRealRooted_of_double_root_and_eval_ne_of_pos
     have heval0 : p.eval x + β * q.eval x = 0 := by
       simpa using heval
     simp_all
-  have hcombo_rr :
-      ((C 1 * p + C β * q) ≠ 0 ∧ (C 1 * p + C β * q).Splits) := by
-    rcases hall 1 β with hzero | hrr
-    · lia
-    · lia
+  have hcombo_rr : (C 1 * p + C β * q).Splits := hall 1 β
   have hcombo_eval_ne :
       (C 1 * p + C β * q).eval x ≠ 0 := by
     simp_all
@@ -1213,7 +1185,7 @@ private theorem prec_or_revPrec_of_eq_zero_or_simple_combo_sameDegree
       · have hx' : 0 ≤ x := le_of_not_ge hx
         have hprod := hW_prod hx'
         nlinarith
-    have hder : Interlaces f.derivative f := derivative_interlaces hf hdeg_ge2
+    have hder : Interlaces f.derivative f := derivative_interlaces hf.2 hdeg_ge2
     have hroot_sign :
         ∀ r, f.IsRoot r → g.eval r * f.derivative.eval r < 0 := by
       intro r hr
@@ -1544,7 +1516,7 @@ private theorem prec_or_revPrec_iterateTDeriv_of_allComboRealRooted_of_no_common
           (iterateTDeriv eps (max f.natDegree g.natDegree) f).natDegree =
             (iterateTDeriv eps (max f.natDegree g.natDegree) g).natDegree) := by
     simpa using
-      simple_pair_of_allComboRealRooted_iterateTDeriv hf hg hall hdeg heps
+      simple_pair_of_allComboRealRooted_iterateTDeriv hf.1 hg.1 hf.2 hg.2 hall hdeg heps
   have hcombo_simple :
       ∀ α β : ℝ,
         C α * iterateTDeriv eps (max f.natDegree g.natDegree) f +
@@ -1592,10 +1564,7 @@ private theorem prec_iterateTDeriv_of_allComboRealRooted_succ_of_no_common
   have hdeg_iter_succ :
       (iterateTDeriv eps (max f.natDegree g.natDegree) f).natDegree + 1 =
         (iterateTDeriv eps (max f.natDegree g.natDegree) g).natDegree := by
-    simpa [natDegree_iterateTDeriv_of_isRealRooted
-        (eps := eps) (n := max f.natDegree g.natDegree) hf,
-      natDegree_iterateTDeriv_of_isRealRooted
-        (eps := eps) (n := max f.natDegree g.natDegree) hg] using hsucc
+    simpa [natDegree_iterateTDeriv, natDegree_iterateTDeriv] using hsucc
   dsimp
   rcases hprec_iter with hfg | hgf
   · lia
@@ -3074,47 +3043,44 @@ private theorem allComboRealRooted_of_prec_sameDegree_pos_of_no_common
     apply hasPosLeadingCoeff_of_right_factor
     simpa [hqg] using hg_pos
   intro α β
-  by_cases hcomb : C α * f + C β * g = 0
-  · exact Or.inl hcomb
-  · right
-    by_cases hβ0 : β = 0
-    · simp_all
-    · rcases lt_or_gt_of_ne hβ0 with hβneg | hβpos
-      · by_cases hα_nonpos : α ≤ 0
-        · have hrr_neg :
-            ((C (-α) * f + C (-β) * g) ≠ 0 ∧ (C (-α) * f + C (-β) * g).Splits) :=
-          isRealRooted_nonneg_combo_of_prec
-            hfg hf_pos hg_pos (by simp_all) (by grind) (Or.inr (by simp_all))
-          have hrr :
-              ((C (-1 : ℝ) * (C (-α) * f + C (-β) * g)) ≠ 0 ∧
-                (C (-1 : ℝ) * (C (-α) * f + C (-β) * g)).Splits) :=
-            isRealRooted_C_mul hrr_neg (by simp : (-1 : ℝ) ≠ 0)
+  by_cases hβ0 : β = 0
+  · simp_all
+  · rcases lt_or_gt_of_ne hβ0 with hβneg | hβpos
+    · by_cases hα_nonpos : α ≤ 0
+      · have hrr_neg :
+          ((C (-α) * f + C (-β) * g) ≠ 0 ∧ (C (-α) * f + C (-β) * g).Splits) :=
+        isRealRooted_nonneg_combo_of_prec
+          hfg hf_pos hg_pos (by simp_all) (by grind) (Or.inr (by simp_all))
+        have hrr :
+            ((C (-1 : ℝ) * (C (-α) * f + C (-β) * g)) ≠ 0 ∧
+              (C (-1 : ℝ) * (C (-α) * f + C (-β) * g)).Splits) :=
+          isRealRooted_C_mul hrr_neg (by simp : (-1 : ℝ) ≠ 0)
+        grind
+      · have hαpos : 0 < α := lt_of_not_ge hα_nonpos
+        have hcomb_neg : C (-α) * f + C (-β) * g ≠ 0 := by
           grind
-        · have hαpos : 0 < α := lt_of_not_ge hα_nonpos
-          have hcomb_neg : C (-α) * f + C (-β) * g ≠ 0 := by
-            grind
-          have hrr_neg :
-              ((C (-α) * f + C (-β) * g) ≠ 0 ∧ (C (-α) * f + C (-β) * g).Splits) := by
-            simpa [hqg] using
-              isRealRooted_of_right_factor_combo_posβ
-                (f := f) (q := qg) (uR := uR) (α := -α) (β := -β)
-                hqg_inter hqg_pos hqg_no hroot_lt (by simp_all) (by lia)
-                hdeg_pos
-          have hrr :
-              ((C (-1 : ℝ) * (C (-α) * f + C (-β) * g)) ≠ 0 ∧
-                (C (-1 : ℝ) * (C (-α) * f + C (-β) * g)).Splits) :=
-            isRealRooted_C_mul hrr_neg (by simp : (-1 : ℝ) ≠ 0)
-          grind
-      · by_cases hα_nonneg : 0 ≤ α
-        · exact
-            isRealRooted_nonneg_combo_of_prec
-              hfg hf_pos hg_pos hα_nonneg (le_of_lt hβpos)
-              (Or.inr hβpos)
-        · have hαneg : α < 0 := lt_of_not_ge hα_nonneg
+        have hrr_neg :
+            ((C (-α) * f + C (-β) * g) ≠ 0 ∧ (C (-α) * f + C (-β) * g).Splits) := by
           simpa [hqg] using
             isRealRooted_of_right_factor_combo_posβ
-              (f := f) (q := qg) (uR := uR) (α := α) (β := β)
-              hqg_inter hqg_pos hqg_no hroot_lt hβpos (by lia) hdeg_pos
+              (f := f) (q := qg) (uR := uR) (α := -α) (β := -β)
+              hqg_inter hqg_pos hqg_no hroot_lt (by simp_all) (by lia)
+              hdeg_pos
+        have hrr :
+            ((C (-1 : ℝ) * (C (-α) * f + C (-β) * g)) ≠ 0 ∧
+              (C (-1 : ℝ) * (C (-α) * f + C (-β) * g)).Splits) :=
+          isRealRooted_C_mul hrr_neg (by simp : (-1 : ℝ) ≠ 0)
+        grind
+    · by_cases hα_nonneg : 0 ≤ α
+      · exact
+          isRealRooted_nonneg_combo_of_prec
+            hfg hf_pos hg_pos hα_nonneg (le_of_lt hβpos)
+            (Or.inr hβpos)
+      · have hαneg : α < 0 := lt_of_not_ge hα_nonneg
+        simpa [hqg] using
+          isRealRooted_of_right_factor_combo_posβ
+            (f := f) (q := qg) (uR := uR) (α := α) (β := β)
+            hqg_inter hqg_pos hqg_no hroot_lt hβpos (by lia) hdeg_pos
 
 /-- Opposite-sign right-factor combinations are real-rooted even when the top
 coefficient does not have the sign needed to orient a `Prec` witness directly.

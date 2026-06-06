@@ -245,6 +245,9 @@ lemma IsInterlacingSeqNonneg.realRooted {fs : List ℝ[X]}
   intro f hf
   exact (hfs.1 f hf).1
 
+lemma IsInterlacingSeqNonneg.splits {fs : List ℝ[X]} (hfs : IsInterlacingSeqNonneg fs) {f : ℝ[X]}
+    (hf : f ∈ fs) : f.Splits := (hfs.1 f hf).1.2
+
 lemma IsInterlacingSeqNonneg.posLeadingCoeff {fs : List ℝ[X]}
     (hfs : IsInterlacingSeqNonneg fs) :
     ∀ f ∈ fs, HasPosLeadingCoeff f := by

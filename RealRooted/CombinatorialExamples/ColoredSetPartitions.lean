@@ -154,7 +154,7 @@ lemma coloredSetPartitions_nonnegCoeffs :
               (coloredSetPartitions_nonnegCoeffs c m n (j + 1)))
 
 lemma roots_nonpos_coloredSetPartitions_of_isRealRooted {c m n : Nat}
-    (hrr : (coloredSetPartitions c m n) ≠ 0 ∧ (coloredSetPartitions c m n).Splits) :
+    (hrr : (coloredSetPartitions c m n).Splits) :
     ∀ r ∈ (coloredSetPartitions c m n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs hrr (coloredSetPartitions_nonnegCoeffs c m n)
 
@@ -175,8 +175,6 @@ lemma prec_coloredSetPartitions_one_two (c m : Nat) :
     Prec (coloredSetPartitions c m 1) (coloredSetPartitions c m 2) := by
   have hdeg : (coloredSetPartitions c m 1).natDegree = 1 := by
     simpa using natDegree_coloredSetPartitions c m 1
-  have hf : ((coloredSetPartitions c m 1) ≠ 0 ∧
-    (coloredSetPartitions c m 1).Splits) := isRealRooted_of_degree_one hdeg
   have hInter :
       Interlaces (coloredSetPartitions c m 1).derivative (coloredSetPartitions c m 1) := by
     simpa [coloredSetPartitions_one] using
@@ -211,7 +209,8 @@ lemma prec_coloredSetPartitions_one_two (c m : Nat) :
     intro r hr
     have hr_nonpos :
         r ≤ 0 :=
-      roots_nonpos_coloredSetPartitions_of_isRealRooted hf r ((mem_roots hf.1).mpr hr)
+      roots_nonpos_coloredSetPartitions_of_isRealRooted (.of_natDegree_eq_one hdeg) r
+        ((mem_roots <| by rintro h; simp [h] at hdeg).mpr hr)
     exact eval_coloredSetPartitionsCoeffB_nonpos_of_nonpos m hr_nonpos
   rw [← hNext_eq]
   exact
@@ -232,15 +231,13 @@ theorem prec_coloredSetPartitions_succ (c m : Nat) :
       have hprev : Prec (coloredSetPartitions c m (n + 1))
           (coloredSetPartitions c m (n + 2)) :=
         prec_coloredSetPartitions_succ c m (n + 1)
-      have hf : ((coloredSetPartitions c m (n + 2)) ≠ 0 ∧
-        (coloredSetPartitions c m (n + 2)).Splits) := hprev.2.1
       have hdegf : 2 ≤ (coloredSetPartitions c m (n + 2)).natDegree := by
         rw [natDegree_coloredSetPartitions]
         lia
       have hInter :
           Interlaces (coloredSetPartitions c m (n + 2)).derivative
             (coloredSetPartitions c m (n + 2)) :=
-        derivative_interlaces hf hdegf
+        derivative_interlaces hprev.2.1.2 hdegf
       have hg_pos :
           HasPosLeadingCoeff (coloredSetPartitions c m (n + 2)).derivative :=
         (coloredSetPartitions_posLeadingCoeff c m (n + 2)).derivative (by
@@ -273,9 +270,9 @@ theorem prec_coloredSetPartitions_succ (c m : Nat) :
           ∀ r, (coloredSetPartitions c m (n + 2)).IsRoot r →
             (coloredSetPartitionsCoeffB m).eval r ≤ 0 := by
         intro r hr
-        have hr_nonpos :
-            r ≤ 0 :=
-          roots_nonpos_coloredSetPartitions_of_isRealRooted hf r ((mem_roots hf.1).mpr hr)
+        have hr_nonpos : r ≤ 0 :=
+          roots_nonpos_coloredSetPartitions_of_isRealRooted hprev.2.1.2 r
+            ((mem_roots hprev.2.1.1).mpr hr)
         exact eval_coloredSetPartitionsCoeffB_nonpos_of_nonpos m hr_nonpos
       rw [← hNext_eq]
       exact

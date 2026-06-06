@@ -102,8 +102,7 @@ lemma touchard_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (touchard n)
           exact add_nonneg (touchard_nonnegCoeffs n m)
             (mul_nonneg (by grind) (touchard_nonnegCoeffs n (m + 1)))
 
-lemma roots_nonpos_touchard_of_isRealRooted {n : Nat}
-    (hrr : (touchard n) ≠ 0 ∧ (touchard n).Splits) :
+lemma roots_nonpos_touchard_of_isRealRooted {n : Nat} (hrr : (touchard n).Splits) :
     ∀ r ∈ (touchard n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs hrr (touchard_nonnegCoeffs n)
 
@@ -152,13 +151,12 @@ theorem prec_touchard_succ : ∀ n : Nat, Prec (touchard n) (touchard (n + 1))
   | n + 2 => by
       have hprev : Prec (touchard (n + 1)) (touchard (n + 2)) :=
         prec_touchard_succ (n + 1)
-      have hf : ((touchard (n + 2)) ≠ 0 ∧ (touchard (n + 2)).Splits) := hprev.2.1
       have hdegf : 2 ≤ (touchard (n + 2)).natDegree := by
         rw [natDegree_touchard]
         lia
       have hInter :
           Interlaces (touchard (n + 2)).derivative (touchard (n + 2)) :=
-        derivative_interlaces hf hdegf
+        derivative_interlaces hprev.2.1.2 hdegf
       have hg_pos : HasPosLeadingCoeff (touchard (n + 2)).derivative :=
         (touchard_posLeadingCoeff (n + 2)).derivative (by
           lia)
@@ -181,8 +179,8 @@ theorem prec_touchard_succ : ∀ n : Nat, Prec (touchard n) (touchard (n + 1))
         rw [hNext_eq, natDegree_touchard, natDegree_touchard]
       have hb_nonpos : ∀ r, (touchard (n + 2)).IsRoot r → X.eval r ≤ 0 := by
         intro r hr
-        have hr_nonpos :
-            r ≤ 0 := roots_nonpos_touchard_of_isRealRooted hf r ((mem_roots hf.1).mpr hr)
+        have hr_nonpos : r ≤ 0 :=
+          roots_nonpos_touchard_of_isRealRooted hprev.2.1.2 r ((mem_roots hprev.2.1.1).mpr hr)
         simp_all
       rw [← hNext_eq]
       exact

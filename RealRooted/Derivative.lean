@@ -4,7 +4,6 @@ import Mathlib.Analysis.Calculus.LocalExtr.Rolle
 import Mathlib.Topology.Algebra.Polynomial
 import Mathlib.Algebra.Polynomial.FieldDivision
 import Mathlib.Data.Multiset.Sort
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 
 /-!
 # Derivative interlacing
@@ -31,7 +30,7 @@ protected lemma HasPosLeadingCoeff.derivative {f : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hdeg : f.natDegree ≠ 0) :
     HasPosLeadingCoeff f.derivative := by
   unfold HasPosLeadingCoeff at hf_pos ⊢
-  rw [leadingCoeff, f.natDegree_derivative hdeg, coeff_derivative]
+  rw [leadingCoeff, f.natDegree_derivative, coeff_derivative]
   rw [Nat.sub_add_cancel (by lia), coeff_natDegree] at *
   nlinarith
 
@@ -120,7 +119,6 @@ lemma mkInterleaving_spec (f : ℝ[X]) :
     -- The tail is also a sub-multiset of f.roots
     have hsub_tail : (↑(r₂ :: rest) : Multiset ℝ) ≤ f.roots := by
       apply le_trans _ hsub
-      change (↑(r₂ :: rest) : Multiset ℝ) ≤ (↑(r₁ :: r₂ :: rest) : Multiset ℝ)
       simp [Multiset.le_iff_count, Multiset.coe_count, List.count_cons]
     -- Recursive result
     have ih := mkInterleaving_spec f (r₂ :: rest) hrest hsorted_tail hsub_tail
@@ -197,7 +195,6 @@ private lemma mkInterleaving_ge (f : ℝ[X]) :
       have hsorted_tail := (List.pairwise_cons.mp hsorted).2
       have hsub_tail : (↑(r₂ :: rest') : Multiset ℝ) ≤ f.roots := by
         apply le_trans _ hsub
-        change (↑(r₂ :: rest') : Multiset ℝ) ≤ (↑(r₁ :: r₂ :: rest') : Multiset ℝ)
         simp [Multiset.le_iff_count, Multiset.coe_count, List.count_cons]
       exact le_trans hr₁r₂ (mkInterleaving_ge f r₂ rest' hrest hsorted_tail hsub_tail x hx)
 
@@ -219,7 +216,6 @@ lemma mkInterleaving_sub_multiset (f : ℝ[X])
     have hsorted_tail := (List.pairwise_cons.mp hsorted).2
     have hsub_tail : (↑(r₂ :: rest) : Multiset ℝ) ≤ f.roots := by
       apply le_trans _ hsub
-      change (↑(r₂ :: rest) : Multiset ℝ) ≤ (↑(r₁ :: r₂ :: rest) : Multiset ℝ)
       simp [Multiset.le_iff_count, Multiset.coe_count, List.count_cons]
     have ih := mkInterleaving_sub_multiset f hdeg (r₂ :: rest) hrest hsorted_tail hsub_tail
     have hf'_ne : f.derivative ≠ 0 := by simp; lia
@@ -329,15 +325,14 @@ lemma mkInterleaving_sub_multiset (f : ℝ[X])
 
 /-- **Derivative interlacing**: if `f` is real-rooted of degree ≥ 2,
     then `f.derivative` interlaces `f`. -/
-theorem derivative_interlaces {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits)
-    (hdeg : 2 ≤ f.natDegree) :
+theorem derivative_interlaces {f : ℝ[X]} (hf : f.Splits) (hdeg : 2 ≤ f.natDegree) :
     Interlaces f.derivative f := by
   -- Sort the roots of f
   set rs := f.roots.sort (· ≤ ·) with hrs_def
   have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hrs_multiset : (↑rs : Multiset ℝ) = f.roots := Multiset.sort_eq ..
   have hrs_length : rs.length = f.natDegree := by
-    rw [hrs_def, Multiset.length_sort, card_roots_of_splits hf.2]
+    rw [hrs_def, Multiset.length_sort, card_roots_of_splits hf]
   have hrs_root : ∀ r ∈ rs, f.IsRoot r := by
     simp_all
   -- Construct interleaving
@@ -354,12 +349,10 @@ theorem derivative_interlaces {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits)
     (mkInterleaving_sub_multiset f hdeg rs hrs_root hrs_sorted hsub_rs).1
   -- Degree and cardinality → f' is real-rooted
   have hf'_ne : f.derivative ≠ 0 := by simp; lia
-  have hf'_deg : f.derivative.natDegree = f.natDegree - 1 :=
-    f.natDegree_derivative (by lia)
   have hf'_card : f.derivative.roots.card = f.derivative.natDegree := by
     apply le_antisymm (card_roots' _)
     calc f.derivative.natDegree
-      _ = f.natDegree - 1 := hf'_deg
+      _ = f.natDegree - 1 := f.natDegree_derivative
       _ = ss.length := hss_length.symm
       _ = (↑ss : Multiset ℝ).card := (Multiset.coe_card ss).symm
       _ ≤ f.derivative.roots.card := Multiset.card_le_card hsub
@@ -372,7 +365,7 @@ theorem derivative_interlaces {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits)
   have hss_sorted : ss.Pairwise (· ≤ ·) :=
     sorted_of_listInterlaces ss rs hrs_sorted hss_interlaces
   -- Assemble
-  exact ⟨hf, hf'_rr, by lia,
+  exact ⟨⟨by rintro rfl; simp at hf'_ne, hf⟩, hf'_rr, by grind [f.natDegree_derivative],
     rs, ss, hrs_sorted, hss_sorted, hrs_multiset, hss_eq, hss_interlaces⟩
 
 end RealRooted

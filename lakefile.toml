@@ -13,7 +13,7 @@ maxSynthPendingDepth = 3
 [[require]]
 name = "mathlib"
 git = "https://github.com/YaelDillies/mathlib4.git"
-rev = "e2e81af06ad0d26773192ed7dc95ad4c837a81d6"
+rev = "list_interleave"
 
 [[lean_lib]]
 name = "RealRooted"
