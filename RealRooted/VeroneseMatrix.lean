@@ -1039,13 +1039,14 @@ nonnegative coefficients is real-rooted, allowing the section to vanish. -/
 theorem isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg_matrix
     {r k : ℕ} (hr : 0 < r) (hk : k < r) {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hprr : p ≠ 0 ∧ p.Splits) :
-    IsRealRootedOrZero (veroneseSectionPolynomial r k p) := by
+    veroneseSectionPolynomial r k p = 0 ∨
+      (veroneseSectionPolynomial r k p).Splits := by
   have hpkg :=
     isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_of_realRooted_nonneg
       (r := r) hr hpnn hprr
   have hmem := mem_veroneseSectionPolynomialListDesc (r := r) (k := k) p hk
   by_cases hzero : veroneseSectionPolynomial r k p = 0
   · exact Or.inl hzero
-  · exact Or.inr (hpkg.2 _ hmem hzero)
+  · exact Or.inr (hpkg.2 _ hmem hzero).2
 
 end RealRooted

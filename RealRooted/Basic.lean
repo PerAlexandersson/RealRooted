@@ -47,32 +47,6 @@ lemma eq_zero_or_ne_zero_and_splits_iff_eq_zero_or_ne_zero_and_card_roots (p : �
     · lia
     · exact Or.inr (ne_zero_and_splits_of_ne_zero_and_card_roots h)
 
-/-- Zero-aware real-rootedness.  This is the convention often used for
-closure statements, while `p ≠ 0 ∧ p.Splits` remains the
-strict nonzero predicate used by root-list and interlacing proofs. -/
-def IsRealRootedOrZero (p : ℝ[X]) : Prop :=
-  p = 0 ∨ (p ≠ 0 ∧ p.Splits)
-
-lemma isRealRootedOrZero_iff_eq_zero_or_splits (p : ℝ[X]) :
-    IsRealRootedOrZero p ↔ p = 0 ∨ p.Splits := by
-  grind [IsRealRootedOrZero]
-
-namespace IsRealRooted
-
-lemma toOrZero {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
-    IsRealRootedOrZero p :=
-  Or.inr hp
-
-end IsRealRooted
-
-lemma isRealRootedOrZero_zero : IsRealRootedOrZero (0 : ℝ[X]) :=
-  Or.inl rfl
-
-lemma IsRealRootedOrZero.of_ne_zero {p : ℝ[X]}
-    (hp : IsRealRootedOrZero p) (hp0 : p ≠ 0) :
-    p ≠ 0 ∧ p.Splits :=
-  Or.resolve_left hp hp0
-
 /-! ## Root interleaving predicates on sorted lists -/
 
 /-- **Differ-by-1 interleaving**: `ss` (length n−1) interleaves into `rs` (length n).

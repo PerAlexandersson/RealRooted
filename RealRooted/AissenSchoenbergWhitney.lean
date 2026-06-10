@@ -100,7 +100,7 @@ def aissenSchoenbergWhitneyForwardOrZeroStatement : Prop :=
   ∀ ⦃p : ℝ[X]⦄,
     HasNonnegCoeffs p →
     IsPolyaFrequencySequence (fun n => p.coeff n) →
-    IsRealRootedOrZero p ∧ ∀ r ∈ p.roots, r ≤ 0
+    (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0
 
 /-- Equivalent forward ASW statement with the redundant nonnegative-coefficient
 hypothesis removed. -/
@@ -140,10 +140,9 @@ theorem aissenSchoenbergWhitneyForwardOrZero_of_forward
     aissenSchoenbergWhitneyForwardOrZeroStatement := by
   intro p hnn hpf
   by_cases hp0 : p = 0
-  · refine ⟨Or.inl hp0, ?_⟩
-    simp_all
+  · simp_all
   · rcases hASW hp0 hnn hpf with ⟨hrr, hroots⟩
-    exact ⟨Or.inr hrr, hroots⟩
+    simp_all
 
 /-- The zero-aware forward ASW interface implies the strict nonzero one by
 discarding the zero case. -/
@@ -152,7 +151,7 @@ theorem aissenSchoenbergWhitneyForward_of_orZero
     aissenSchoenbergWhitneyForwardStatement := by
   intro p hp0 hnn hpf
   have h := hASW hnn hpf
-  exact ⟨h.1.of_ne_zero hp0, h.2⟩
+  simp_all
 
 /-- The strict and zero-aware forward ASW interfaces are equivalent. -/
 theorem aissenSchoenbergWhitneyForward_iff_orZero :

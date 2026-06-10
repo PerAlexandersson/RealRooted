@@ -99,8 +99,8 @@ Combinatorial sequence modules are collected under
 
 ## Main Definitions
 
-- `IsRealRootedOrZero p`: the zero-aware wrapper used for closure statements
-  where the zero polynomial is a natural exceptional case.
+- `p = 0 ∨ p.Splits`: the zero-aware real-rootedness convention used for
+  closure statements where the zero polynomial is a natural exceptional case.
 - `Interlaces f g`, `Prec f g`, and `Prec0 f g`: the main interlacing
   relations.  `Prec0` is the zero-aware version.
 - `IsGeneralizedSturmSeq ps`: a list-level Sturm sequence predicate using
@@ -110,7 +110,7 @@ Combinatorial sequence modules are collected under
 - `Compatible f g`, `PairwiseCompatible fs`, and `FamilyCompatible fs`:
   Chudnovsky-Seymour style compatibility predicates.
 - `AllComboRealRooted f g`: every real linear combination of `f` and `g` is
-  `IsRealRootedOrZero`.
+  zero or splits over `ℝ`.
 - `HasCommonInterleaver fs` and `PairwiseHasCommonInterleaver fs`: common
   right-interleaver predicates for finite families.
 - `IsPolyaFrequencySequence a`: total nonnegativity of the Toeplitz matrix of a
@@ -174,7 +174,7 @@ and [operators preserving real-rootedness](https://www.symmetricfunctions.com/re
   specialization of the matrix-preserver theorem.
 - `PreservesRealRootedOrZero` and
   `operatorPreservesInterlacingPairsUpToOrder`: an operator preserving
-  `IsRealRootedOrZero` on strict real-rooted inputs preserves interlacing pairs
+  zero-or-splits real-rootedness on strict real-rooted inputs preserves interlacing pairs
   up to order.
 - `gammaRealRootedIffPolynomialRealRootedNonpos`: gamma-transform
   real-rootedness criterion with nonpositive roots.
