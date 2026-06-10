@@ -26,6 +26,7 @@ import RealRooted.HurwitzMatrix
 -- Additional modules
 import RealRooted.AffineFamily
 import RealRooted.AllCombo
+import RealRooted.Bezoutian
 import RealRooted.CombinatorialExamples.ColoredSetPartitions
 import RealRooted.CombinatorialExamples.Common
 import RealRooted.CombinatorialExamples.BigDescentsOddBinom

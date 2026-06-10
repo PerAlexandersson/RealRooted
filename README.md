@@ -43,7 +43,10 @@ and
 The most relevant local conventions are: keep lines at or below 100 characters,
 use two-space indentation, keep top-level declarations flush-left, prefer
 explicit declaration types, put `:= by` on the theorem statement line for tactic
-proofs, and use mathlib-style declaration names.
+proofs, and use mathlib-style declaration names.  Every Lean module in the
+project should be imported, directly or indirectly, by the root file
+`RealRooted.lean`. Avoid orphan modules that are not covered by the umbrella
+build.
 
 ## Catalog References
 
@@ -375,5 +378,13 @@ matrix, iterates the linear-factor step, and derives the zero-aware theorem
 This proves the Veronese real-rootedness consequence for real-rooted
 polynomials with nonnegative coefficients without invoking the full
 Athanasiadis--Wagner fully interlacing matrix machinery.
+
+### `proof_wanted`
+
+Use `proof_wanted` for intentionally recorded future theorem targets instead of
+ending a theorem proof with `sorry`.  Current instances:
+
+- `strictPrecSameDegree_iff_bezoutMatrix_posDef` in `RealRooted.Bezoutian`:
+  the planned strict same-degree Bezoutian characterization.
 
 In short: this is a working research codebase, not a finished library API.

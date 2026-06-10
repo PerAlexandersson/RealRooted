@@ -7,8 +7,8 @@ import Mathlib.Analysis.Matrix.PosDef
 # Bezout matrices and interlacing
 
 This file records the planned Bezout-matrix characterization of strict
-same-degree interlacing.  The main theorem at the bottom is left as a `sorry`
-on purpose: it is a breadcrumb for a future formalization pass, not yet a
+same-degree interlacing.  The main theorem at the bottom uses `proof_wanted`,
+not `sorry`: it is a breadcrumb for a future formalization pass, not yet a
 completed proof.
 
 For polynomials
@@ -38,7 +38,7 @@ root-list witnesses.  Its statement is:
 
 ```lean
 lemma prec_iff_sorted_roots
-    {p q : ℝ[X]} (hp : IsRealRooted p) (hq : IsRealRooted q) :
+    {p q : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hq : q ≠ 0 ∧ q.Splits) :
     Prec p q ↔
       let sp := p.roots.sort (· ≤ ·)
       let sq := q.roots.sort (· ≤ ·)
@@ -57,7 +57,8 @@ noncomputable section
 namespace RealRooted
 
 /-- `Prec` can be checked on the canonical sorted root lists. -/
-lemma prec_iff_sorted_roots {p q : ℝ[X]} (hp : IsRealRooted p) (hq : IsRealRooted q) :
+lemma prec_iff_sorted_roots {p q : ℝ[X]}
+    (hp : p ≠ 0 ∧ p.Splits) (hq : q ≠ 0 ∧ q.Splits) :
     Prec p q ↔
       let sp := p.roots.sort (· ≤ ·)
       let sq := q.roots.sort (· ≤ ·)
@@ -87,7 +88,7 @@ lemma prec_iff_sorted_roots {p q : ℝ[X]} (hp : IsRealRooted p) (hq : IsRealRoo
 /-- In the same-degree case, `Prec` is the canonical sorted-root
 `ListAlternates` condition. -/
 lemma prec_iff_sorted_roots_alternates {p q : ℝ[X]}
-    (hp : IsRealRooted p) (hq : IsRealRooted q)
+    (hp : p ≠ 0 ∧ p.Splits) (hq : q ≠ 0 ∧ q.Splits)
     (hdeg : p.natDegree = q.natDegree) :
     Prec p q ↔ ListAlternates (p.roots.sort (· ≤ ·)) (q.roots.sort (· ≤ ·)) := by
   rw [prec_iff_sorted_roots hp hq]
@@ -96,7 +97,8 @@ lemma prec_iff_sorted_roots_alternates {p q : ℝ[X]}
   change ((sp.length + 1 = sq.length ∧ ListInterlaces sp sq) ∨
       (sp.length = sq.length ∧ ListAlternates sp sq)) ↔ ListAlternates sp sq
   have hlen : sp.length = sq.length := by
-    simp [sp, sq, Multiset.length_sort, hp.2, hq.2, hdeg]
+    simp [sp, sq, Multiset.length_sort, card_roots_of_splits hp.2,
+      card_roots_of_splits hq.2, hdeg]
   constructor
   · rintro (⟨hbad, _⟩ | ⟨_, halt⟩)
     · exfalso
@@ -109,7 +111,7 @@ lemma prec_iff_sorted_roots_alternates {p q : ℝ[X]}
 /-- In the degree-difference-one case, `Prec` is the canonical sorted-root
 `ListInterlaces` condition. -/
 lemma prec_iff_sorted_roots_interlaces {p q : ℝ[X]}
-    (hp : IsRealRooted p) (hq : IsRealRooted q)
+    (hp : p ≠ 0 ∧ p.Splits) (hq : q ≠ 0 ∧ q.Splits)
     (hdeg : p.natDegree + 1 = q.natDegree) :
     Prec p q ↔ ListInterlaces (p.roots.sort (· ≤ ·)) (q.roots.sort (· ≤ ·)) := by
   rw [prec_iff_sorted_roots hp hq]
@@ -118,7 +120,8 @@ lemma prec_iff_sorted_roots_interlaces {p q : ℝ[X]}
   change ((sp.length + 1 = sq.length ∧ ListInterlaces sp sq) ∨
       (sp.length = sq.length ∧ ListAlternates sp sq)) ↔ ListInterlaces sp sq
   have hlen : sp.length + 1 = sq.length := by
-    simp [sp, sq, Multiset.length_sort, hp.2, hq.2, hdeg]
+    simp [sp, sq, Multiset.length_sort, card_roots_of_splits hp.2,
+      card_roots_of_splits hq.2, hdeg]
   constructor
   · rintro (⟨_, hint⟩ | ⟨hbad, _⟩)
     · exact hint
@@ -145,7 +148,7 @@ def ListStrictAlternates : List ℝ → List ℝ → Prop
 
 /-- Strict same-degree proper position, stated on canonical sorted root lists. -/
 def StrictPrecSameDegree (p q : ℝ[X]) : Prop :=
-  IsRealRooted p ∧ IsRealRooted q ∧ p.natDegree = q.natDegree ∧
+  (p ≠ 0 ∧ p.Splits) ∧ (q ≠ 0 ∧ q.Splits) ∧ p.natDegree = q.natDegree ∧
     ListStrictAlternates (p.roots.sort (· ≤ ·)) (q.roots.sort (· ≤ ·))
 
 /-- The `(i,j)` coefficient of the Bezoutian
@@ -238,7 +241,7 @@ lemma not_bezoutMatrix_linear_posSemidef_one_swap {a b : ℝ} (hab : a < b) :
   linarith
 
 /-- Every polynomial of the form `X + C a` is real-rooted. -/
-lemma isRealRooted_X_add_C (a : ℝ) : IsRealRooted (X + C a) := by
+lemma isRealRooted_X_add_C (a : ℝ) : (X + C a : ℝ[X]) ≠ 0 ∧ (X + C a).Splits := by
   simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-a)
 
 /-- The unique root of `X + C a` is `-a`. -/
@@ -276,7 +279,7 @@ lemma prec_of_bezoutMatrix_linear_posSemidef_one {a b : ℝ}
 
 /-- The degree-zero endpoint of the Bezoutian characterization. -/
 lemma prec_iff_bezoutMatrix_posSemidef_of_isRealRooted_natDegree_zero
-    {p q : ℝ[X]} (hp : IsRealRooted p) (hq : IsRealRooted q)
+    {p q : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hq : q ≠ 0 ∧ q.Splits)
     (hp_deg : p.natDegree = 0) (hq_deg : q.natDegree = 0) :
     Prec p q ↔ (bezoutMatrix 0 q p).PosSemidef := by
   constructor
@@ -286,21 +289,21 @@ lemma prec_iff_bezoutMatrix_posSemidef_of_isRealRooted_natDegree_zero
     rw [prec_iff_sorted_roots_alternates hp hq (by rw [hp_deg, hq_deg])]
     have hp_nil : p.roots.sort (· ≤ ·) = [] := by
       apply List.length_eq_zero_iff.mp
-      simp [Multiset.length_sort, hp.2, hp_deg]
+      simp [Multiset.length_sort, card_roots_of_splits hp.2, hp_deg]
     have hq_nil : q.roots.sort (· ≤ ·) = [] := by
       apply List.length_eq_zero_iff.mp
-      simp [Multiset.length_sort, hq.2, hq_deg]
+      simp [Multiset.length_sort, card_roots_of_splits hq.2, hq_deg]
     simp [hp_nil, hq_nil, ListAlternates]
 
 /-- A real-rooted quadratic is a positive/negative scalar multiple of two
 linear factors, with the constants ordered in the `X + C a` convention used
 below. -/
 lemma exists_sorted_linearFactors_of_isRealRooted_natDegree_two {p : ℝ[X]}
-    (hp : IsRealRooted p) (hdeg : p.natDegree = 2) :
+    (hp : p ≠ 0 ∧ p.Splits) (hdeg : p.natDegree = 2) :
     ∃ a c : ℝ, a ≤ c ∧ p = C p.leadingCoeff * ((X + C a) * (X + C c)) := by
-  have hsplits : p.Splits := (isRealRooted_iff_ne_zero_and_splits p).mp hp |>.2
+  have hsplits : p.Splits := hp.2
   have hcard : p.roots.card = 2 := by
-    rw [hp.2, hdeg]
+    rw [card_roots_of_splits hp.2, hdeg]
   rcases Multiset.card_eq_two.mp hcard with ⟨r, s, hroots⟩
   by_cases hrs : r ≤ s
   · refine ⟨-s, -r, by linarith, ?_⟩
@@ -517,9 +520,9 @@ preserves the expected Bezoutian orientation in degree two. -/
 lemma prec_quadratic_commonFactor_of_le {a b c : ℝ} (hab : a ≤ b) :
     Prec (((X + C b) * (X + C c)) : ℝ[X])
       (((X + C a) * (X + C c)) : ℝ[X]) := by
-  have hb : IsRealRooted (X + C b) := isRealRooted_X_add_C b
-  have hc : IsRealRooted (X + C c) := isRealRooted_X_add_C c
-  have ha : IsRealRooted (X + C a) := isRealRooted_X_add_C a
+  have hb : (X + C b : ℝ[X]) ≠ 0 ∧ (X + C b).Splits := isRealRooted_X_add_C b
+  have hc : (X + C c : ℝ[X]) ≠ 0 ∧ (X + C c).Splits := isRealRooted_X_add_C c
+  have ha : (X + C a : ℝ[X]) ≠ 0 ∧ (X + C a).Splits := isRealRooted_X_add_C a
   by_cases hca : c ≤ a
   · refine ⟨isRealRooted_mul hb hc, isRealRooted_mul ha hc,
       [(-b : ℝ), -c], [(-a : ℝ), -c], ?_, ?_, ?_, ?_, ?_⟩
@@ -631,10 +634,10 @@ lemma prec_quadratic_of_const_interleaves {a b c d : ℝ}
     (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d) :
     Prec (((X + C b) * (X + C d)) : ℝ[X])
       (((X + C a) * (X + C c)) : ℝ[X]) := by
-  have ha : IsRealRooted (X + C a) := isRealRooted_X_add_C a
-  have hb : IsRealRooted (X + C b) := isRealRooted_X_add_C b
-  have hc : IsRealRooted (X + C c) := isRealRooted_X_add_C c
-  have hd : IsRealRooted (X + C d) := isRealRooted_X_add_C d
+  have ha : (X + C a : ℝ[X]) ≠ 0 ∧ (X + C a).Splits := isRealRooted_X_add_C a
+  have hb : (X + C b : ℝ[X]) ≠ 0 ∧ (X + C b).Splits := isRealRooted_X_add_C b
+  have hc : (X + C c : ℝ[X]) ≠ 0 ∧ (X + C c).Splits := isRealRooted_X_add_C c
+  have hd : (X + C d : ℝ[X]) ≠ 0 ∧ (X + C d).Splits := isRealRooted_X_add_C d
   refine ⟨isRealRooted_mul hb hd, isRealRooted_mul ha hc,
     [(-d : ℝ), -b], [(-c : ℝ), -a], ?_, ?_, ?_, ?_, ?_⟩
   · simp
@@ -725,7 +728,7 @@ lemma prec_of_bezoutMatrix_quadratic_posSemidef_two {a b c d : ℝ}
 real-rooted quadratics with positive leading coefficients. -/
 lemma prec_of_bezoutMatrix_posSemidef_of_isRealRooted_quadratic
     {p q : ℝ[X]}
-    (hp : IsRealRooted p) (hq : IsRealRooted q)
+    (hp : p ≠ 0 ∧ p.Splits) (hq : q ≠ 0 ∧ q.Splits)
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = 2) (hq_deg : q.natDegree = 2)
     (h : (bezoutMatrix 2 q p).PosSemidef) :
@@ -807,7 +810,7 @@ lemma bezoutMatrix_posSemidef_of_prec_quadratic
 leading coefficients. -/
 lemma prec_iff_bezoutMatrix_posSemidef_of_isRealRooted_quadratic
     {p q : ℝ[X]}
-    (hp : IsRealRooted p) (hq : IsRealRooted q)
+    (hp : p ≠ 0 ∧ p.Splits) (hq : q ≠ 0 ∧ q.Splits)
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = 2) (hq_deg : q.natDegree = 2) :
     Prec p q ↔ (bezoutMatrix 2 q p).PosSemidef := by
@@ -830,12 +833,12 @@ The orientation is chosen so that `StrictPrecSameDegree p q` corresponds to
 positive definiteness of `bezoutMatrix n q p`.  This is the intended main
 Bezoutian theorem: it avoids the common-factor and multiple-root degeneracies
 that belong to a separate positive-semidefinite/gcd-reduced generalization.
+It is recorded with `proof_wanted` instead of `sorry`.
 -/
-theorem strictPrecSameDegree_iff_bezoutMatrix_posDef
+proof_wanted strictPrecSameDegree_iff_bezoutMatrix_posDef
     {p q : ℝ[X]} {n : ℕ}
     (_hp_pos : HasPosLeadingCoeff p) (_hq_pos : HasPosLeadingCoeff q)
     (_hp_deg : p.natDegree = n) (_hq_deg : q.natDegree = n) :
-    StrictPrecSameDegree p q ↔ (bezoutMatrix n q p).PosDef := by
-  sorry
+    StrictPrecSameDegree p q ↔ (bezoutMatrix n q p).PosDef
 
 end RealRooted
