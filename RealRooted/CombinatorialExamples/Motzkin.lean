@@ -1,4 +1,5 @@
 import RealRooted.CombinatorialExamples.Common
+import RealRooted.Mathlib.Algebra.Polynomial.Basic
 import Mathlib.Tactic
 
 /-!
@@ -99,18 +100,10 @@ lemma coeff_motzkin_top_pos_and_above :
       constructor
       · rw [show (n + 3) / 2 = ((n + 3) / 2 - 1) + 1 by lia, coeff_motzkin_succ_succ]
         rcases Nat.mod_two_eq_zero_or_one n with hpar | hpar
-        · have hprev_pos :
-              0 < coeff (motzkin (n + 1)) ((n + 3) / 2) := by
-            lia
-          have hlow_pos :
-              0 < coeff (motzkin n) ((n + 3) / 2 - 1) := by
-            lia
-          have hlow_zero :
-              coeff (motzkin n) ((n + 3) / 2) = 0 := by
-            grind
-          have hcoeff_eq :
-              ((n + 3) / 2 - 1 + 1 : Nat) = (n + 3) / 2 := by
-            lia
+        · have hprev_pos : 0 < coeff (motzkin (n + 1)) ((n + 3) / 2) := by grind
+          have hlow_pos : 0 < coeff (motzkin n) ((n + 3) / 2 - 1) := by grind
+          have hlow_zero : coeff (motzkin n) ((n + 3) / 2) = 0 := by grind
+          have hcoeff_eq : ((n + 3) / 2 - 1 + 1 : ℕ) = (n + 3) / 2 := by lia
           rw [hcoeff_eq, hlow_zero]
           have hA_pos : 0 < motzkinCoeffA n := by
             unfold motzkinCoeffA
@@ -122,18 +115,10 @@ lemma coeff_motzkin_top_pos_and_above :
             unfold motzkinShift
             positivity
           nlinarith
-        · have hprev_zero :
-              coeff (motzkin (n + 1)) ((n + 3) / 2) = 0 := by
-            grind
-          have hlow_pos :
-              0 < coeff (motzkin n) ((n + 3) / 2 - 1) := by
-            lia
-          have hlow_zero :
-              coeff (motzkin n) ((n + 3) / 2) = 0 := by
-            grind
-          have hcoeff_eq :
-              ((n + 3) / 2 - 1 + 1 : Nat) = (n + 3) / 2 := by
-            lia
+        · have hprev_zero : coeff (motzkin (n + 1)) ((n + 3) / 2) = 0 := by grind
+          have hlow_pos : 0 < coeff (motzkin n) ((n + 3) / 2 - 1) := by grind
+          have hlow_zero : coeff (motzkin n) ((n + 3) / 2) = 0 := by grind
+          have hcoeff_eq : ((n + 3) / 2 - 1 + 1 : ℕ) = (n + 3) / 2 := by lia
           rw [hcoeff_eq, hprev_zero, hlow_zero]
           have hB_pos : 0 < motzkinCoeffB n := by
             unfold motzkinCoeffB
@@ -172,21 +157,19 @@ lemma hasPosLeadingCoeff_C_mul_motzkin {a : ℝ} (ha : 0 < a) {p : ℝ[X]}
   simp_all
 
 lemma prec_self_mul_X_sub_C_of_roots_le {r : ℝ} {f : ℝ[X]}
-    (hf : f ≠ 0 ∧ f.Splits) (hf_pos : HasPosLeadingCoeff f)
+    (hf : f.Splits) (hf_pos : HasPosLeadingCoeff f)
     (hf_le : ∀ s ∈ f.roots, s ≤ r) :
     Prec f ((X - C r) * f) := by
-  have hXf : (((X - C r) * f) ≠ 0 ∧ ((X - C r) * f).Splits) := by
-    exact isRealRooted_mul (isRealRooted_X_sub_C r) hf
   have hXf_pos : HasPosLeadingCoeff ((X - C r) * f) :=
     hasPosLeadingCoeff_X_sub_C_mul hf_pos
-  have hXf_le : ∀ s ∈ ((X - C r) * f).roots, s ≤ r :=
-    roots_le_X_sub_C_mul hf hf_le
+  have hXf_le : ∀ s ∈ ((X - C r) * f).roots, s ≤ r := roots_le_X_sub_C_mul hf hf_le
   have hdeg : f.natDegree + 1 = ((X - C r) * f).natDegree := by
-    rw [natDegree_mul (X_sub_C_ne_zero r) hf.1, natDegree_X_sub_C]
+    rw [natDegree_mul (X_sub_C_ne_zero r) hf_pos.ne_zero, natDegree_X_sub_C]
     lia
-  have hself : Prec ((X - C r) * f) ((X - C r) * f) := prec_refl hXf
-  exact
-    (prec_iff_prec_mul_X_sub_C_of_roots_le r hf hXf hf_pos hXf_pos hf_le hXf_le hdeg).mpr hself
+  have hself : Prec ((X - C r) * f) ((X - C r) * f) :=
+    prec_refl (by simp_all [hf_pos.ne_zero, sub_eq_zero]) (by simp_all)
+  exact (prec_iff_prec_mul_X_sub_C_of_roots_le r hf (by simp_all [hf_pos.ne_zero]) hf_pos hXf_pos
+    hf_le hXf_le hdeg).mpr hself
 
 lemma motzkin_bound_zero :
     ∀ r ∈ (motzkin 0).roots, r ≤ motzkinShift := by
@@ -227,7 +210,7 @@ lemma prec_motzkin_shifted_succ {n : Nat}
     exact
       prec_C_mul_left
         (prec_self_mul_X_sub_C_of_roots_le
-          hprev.2.1 (motzkin_posLeadingCoeff (n + 1)) hle_succ)
+          hprev.2.1.2 (motzkin_posLeadingCoeff (n + 1)) hle_succ)
         hscalarA_pos.ne'
   have hright_core :
       Prec ((X - C motzkinShift) * motzkin n)
@@ -262,13 +245,12 @@ lemma prec_motzkin_succ_of_shifted_even {n : Nat} (heven : n % 2 = 0)
     exact
       isRealRooted_of_dvd hshift.2.1 (motzkin_nonzero n)
         ⟨X - C motzkinShift, by grind⟩
-  have hg : ((motzkin (n + 1)) ≠ 0 ∧ (motzkin (n + 1)).Splits) := hshift.1
   have hdeg : (motzkin n).natDegree + 1 = (motzkin (n + 1)).natDegree := by
     rw [natDegree_motzkin, natDegree_motzkin]
     lia
   exact
     (prec_iff_prec_mul_X_sub_C_of_roots_le motzkinShift
-      hf hg (motzkin_posLeadingCoeff n) (motzkin_posLeadingCoeff (n + 1))
+      hf.2 hshift.1.2 (motzkin_posLeadingCoeff n) (motzkin_posLeadingCoeff (n + 1))
       hle_n hle_succ hdeg).mpr hshift
 
 lemma prec_motzkin_succ_of_shifted_odd {n : Nat} (hodd : n % 2 = 1)
@@ -311,7 +293,7 @@ theorem prec_motzkin_succ_and_roots_le :
         prec_motzkin_shifted_succ hprev hle_n hle_succ
       have hright_le :
           ∀ r ∈ ((X - C motzkinShift) * motzkin (n + 1)).roots, r ≤ motzkinShift :=
-        roots_le_X_sub_C_mul hprev.2.1 hle_succ
+        roots_le_X_sub_C_mul hprev.2.1.2 hle_succ
       have hle_next :
           ∀ r ∈ (motzkin (n + 2)).roots, r ≤ motzkinShift :=
         roots_le_of_prec_right hshift hright_le

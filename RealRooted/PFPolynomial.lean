@@ -58,7 +58,7 @@ theorem zero : IsPFPolynomial (0 : ℝ[X]) := by
 theorem of_realRooted_nonneg {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hprr : p ≠ 0 ∧ p.Splits) :
     IsPFPolynomial p :=
-  ⟨hpnn, Or.inr hprr.2, roots_nonpos_of_nonneg_coeffs hprr hpnn⟩
+  ⟨hpnn, Or.inr hprr.2, roots_nonpos_of_nonneg_coeffs hprr.2 hpnn⟩
 
 theorem const_mul {a : ℝ} (ha : 0 < a) {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
@@ -134,14 +134,14 @@ theorem to_sequence
   by_cases hp0 : p = 0
   · subst p
     simpa using isPolyaFrequencySequence_zero
-  · exact hASWrev hp.hasNonnegCoeffs (hp.ne_zero_and_splits hp0)
+  · exact hASWrev hp.hasNonnegCoeffs (hp.ne_zero_and_splits hp0).2
       hp.roots_nonpos
 
 theorem prec0_self {p : ℝ[X]} (hp : IsPFPolynomial p) :
     Prec0 p p := by
   by_cases hp0 : p = 0
   · exact Or.inl hp0
-  · exact Or.inr (Or.inr (prec_refl (hp.ne_zero_and_splits hp0)))
+  · exact Or.inr (Or.inr (prec_refl (hp.ne_zero_and_splits hp0).1 (hp.ne_zero_and_splits hp0).2))
 
 theorem of_prec0_self {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hpp : Prec0 p p) :

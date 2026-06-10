@@ -1,5 +1,5 @@
 import RealRooted.Basic
-import Mathlib.LinearAlgebra.Determinant
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 
 open Polynomial Matrix
 
@@ -7,72 +7,58 @@ noncomputable section
 
 namespace RealRooted
 
+variable {a : ℕ → ℝ}
+
 /-- Entry of the Toeplitz matrix attached to a sequence `a₀, a₁, ...`. -/
-def toeplitzEntry (a : ℕ → ℝ) (i j : ℕ) : ℝ :=
-  if j ≤ i then a (i - j) else 0
+def toeplitz (a : ℕ → ℝ) : Matrix ℕ ℕ ℝ :=
+  .of fun i j ↦ if j ≤ i then a (i - j) else 0
 
-/-- A finite minor of the Toeplitz matrix attached to `a`. The row and column
-selectors are packaged as strictly monotone maps from `Fin n`. -/
-def toeplitzMinor (a : ℕ → ℝ) {n : ℕ}
-    (rows cols : Fin n → ℕ) : Matrix (Fin n) (Fin n) ℝ :=
-  fun i j => toeplitzEntry a (rows i) (cols j)
+@[simp]
+lemma toeplitz_apply (a : ℕ → ℝ) (i j : ℕ) :
+    toeplitz a i j = if j ≤ i then a (i - j) else 0 :=
+  rfl
 
-/-- Total nonnegativity of the infinite Toeplitz matrix attached to `a`,
-packaged through all finite minors. This is the Polya-frequency side of the
-Aissen--Schoenberg--Whitney theorem. -/
-def ToeplitzTotallyNonnegative (a : ℕ → ℝ) : Prop :=
-  ∀ {n : ℕ} (rows cols : Fin n → ℕ),
-    StrictMono rows →
-    StrictMono cols →
-    0 ≤ Matrix.det (toeplitzMinor a rows cols)
+@[to_fun (attr := simp)]
+lemma toeplitz_zero : toeplitz 0 = 0 := by
+  ext
+  simp [toeplitz]
 
 /-- A sequence is a Polya-frequency sequence. -/
-def IsPolyaFrequencySequence (a : ℕ → ℝ) : Prop :=
-  ToeplitzTotallyNonnegative a
+def IsPolyaFreqSeq (a : ℕ → ℝ) : Prop :=
+  (toeplitz a).IsTotallyNonneg
 
-/-- The zero sequence is Toeplitz totally nonnegative.  This is harmless for
-PF sequences, but it means the strict real-rootedness conclusion in ASW must
-exclude the zero polynomial. -/
-theorem toeplitzTotallyNonnegative_zero :
-    ToeplitzTotallyNonnegative (fun _ : ℕ => (0 : ℝ)) := by
-  intro n rows cols _hrows _hcols
-  by_cases hn : n = 0
-  · subst n
-    simp
-  · have hnpos : 0 < n := Nat.pos_of_ne_zero hn
-    have hmatrix :
-        toeplitzMinor (fun _ : ℕ => (0 : ℝ)) rows cols = 0 := by
-      ext i j
-      simp [toeplitzMinor, toeplitzEntry]
-    rw [hmatrix]
-    have hne : Nonempty (Fin n) := ⟨⟨0, hnpos⟩⟩
-    rw [Matrix.det_zero hne]
+/-- Backward-compatible spelling for Toeplitz total nonnegativity. -/
+abbrev ToeplitzTotallyNonnegative (a : ℕ → ℝ) : Prop :=
+  IsPolyaFreqSeq a
 
+/-- Backward-compatible spelling for `IsPolyaFreqSeq`. -/
+abbrev IsPolyaFrequencySequence (a : ℕ → ℝ) : Prop :=
+  IsPolyaFreqSeq a
+
+/-- The zero sequence is Polya-frequency. -/
 theorem isPolyaFrequencySequence_zero :
-    IsPolyaFrequencySequence (fun _ : ℕ => (0 : ℝ)) :=
-  toeplitzTotallyNonnegative_zero
+    IsPolyaFrequencySequence (fun _ : ℕ => (0 : ℝ)) := by
+  simp [IsPolyaFrequencySequence, IsPolyaFreqSeq]
+
+/-- The zero sequence is Polya-frequency, with the shorter name. -/
+theorem IsPolyaFreqSeq_zero :
+    IsPolyaFreqSeq (fun _ : ℕ => (0 : ℝ)) :=
+  isPolyaFrequencySequence_zero
 
 /-- A Polya-frequency sequence has nonnegative entries, by its `1 × 1`
 Toeplitz minors. -/
+protected nonrec theorem IsPolyaFreqSeq.nonneg
+    (ha : IsPolyaFreqSeq a) (k : ℕ) :
+    0 ≤ a k := by
+  simpa [IsPolyaFreqSeq] using ha.nonneg k 0
+
+/-- Compatibility spelling for nonnegativity of PF sequences. -/
 theorem nonneg_of_isPolyaFrequencySequence
     {a : ℕ → ℝ}
     (hpf : IsPolyaFrequencySequence a)
     (k : ℕ) :
-    0 ≤ a k := by
-  have hminor :
-      0 ≤ Matrix.det
-        (toeplitzMinor a (n := 1)
-          (fun _ : Fin 1 => k) (fun _ : Fin 1 => 0)) := by
-    exact hpf
-      (fun _ : Fin 1 => k)
-      (fun _ : Fin 1 => 0)
-      (by
-        intro i j hij
-        lia)
-      (by
-        intro i j hij
-        lia)
-  simpa [toeplitzMinor, toeplitzEntry] using hminor
+    0 ≤ a k :=
+  IsPolyaFreqSeq.nonneg hpf k
 
 /-- Toeplitz total nonnegativity of the coefficient sequence already implies
 nonnegative coefficients. -/
@@ -88,10 +74,8 @@ Toeplitz total nonnegativity of the coefficient sequence of a nonzero
 polynomial should imply that the polynomial has only real nonpositive roots. -/
 def aissenSchoenbergWhitneyForwardStatement : Prop :=
   ∀ ⦃p : ℝ[X]⦄,
-    p ≠ 0 →
-    HasNonnegCoeffs p →
     IsPolyaFrequencySequence (fun n => p.coeff n) →
-    (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0
+    p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0
 
 /-- Zero-aware forward ASW interface.  This is often the most convenient
 closure form: a PF coefficient sequence gives either the zero polynomial or a
@@ -116,15 +100,18 @@ theorem aissenSchoenbergWhitneyForwardNoNonneg_of_forward
     (hASW : aissenSchoenbergWhitneyForwardStatement) :
     aissenSchoenbergWhitneyForwardNoNonnegStatement := by
   intro p hp0 hpf
-  exact hASW hp0 (hasNonnegCoeffs_of_isPolyaFrequencySequence_coeff hpf) hpf
+  exact ⟨⟨hp0, (hASW hpf).1⟩, (hASW hpf).2⟩
 
 /-- The no-extra-nonnegativity formulation implies the current forward ASW
 statement. -/
 theorem aissenSchoenbergWhitneyForward_of_noNonneg
     (hASW : aissenSchoenbergWhitneyForwardNoNonnegStatement) :
     aissenSchoenbergWhitneyForwardStatement := by
-  intro p hp0 _ hpf
-  exact hASW hp0 hpf
+  intro p hpf
+  by_cases hp0 : p = 0
+  · subst p
+    simp
+  · exact ⟨(hASW hp0 hpf).1.2, (hASW hp0 hpf).2⟩
 
 /-- The two forward ASW interfaces are equivalent. -/
 theorem aissenSchoenbergWhitneyForward_iff_noNonneg :
@@ -139,19 +126,21 @@ theorem aissenSchoenbergWhitneyForwardOrZero_of_forward
     (hASW : aissenSchoenbergWhitneyForwardStatement) :
     aissenSchoenbergWhitneyForwardOrZeroStatement := by
   intro p hnn hpf
-  by_cases hp0 : p = 0
-  · simp_all
-  · rcases hASW hp0 hnn hpf with ⟨hrr, hroots⟩
-    simp_all
+  exact ⟨Or.inr (hASW hpf).1, (hASW hpf).2⟩
 
 /-- The zero-aware forward ASW interface implies the strict nonzero one by
 discarding the zero case. -/
 theorem aissenSchoenbergWhitneyForward_of_orZero
     (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement) :
     aissenSchoenbergWhitneyForwardStatement := by
-  intro p hp0 hnn hpf
+  intro p hpf
+  have hnn : HasNonnegCoeffs p :=
+    hasNonnegCoeffs_of_isPolyaFrequencySequence_coeff hpf
   have h := hASW hnn hpf
-  simp_all
+  rcases h with ⟨hzero | hsplits, hroots⟩
+  · subst p
+    simp
+  · exact ⟨hsplits, hroots⟩
 
 /-- The strict and zero-aware forward ASW interfaces are equivalent. -/
 theorem aissenSchoenbergWhitneyForward_iff_orZero :
@@ -174,15 +163,15 @@ theorem not_aissenSchoenbergWhitneyForward_without_nonzero :
     intro n
     simp
   have hpf : IsPolyaFrequencySequence (fun n => (0 : ℝ[X]).coeff n) := by
-    change IsPolyaFrequencySequence (fun _ : ℕ => (0 : ℝ))
-    exact isPolyaFrequencySequence_zero
-  lia
+    simpa using isPolyaFrequencySequence_zero
+  have hbad := h hnn hpf
+  exact hbad.1.1 rfl
 
 /-- Planning stub for the reverse Aissen--Schoenberg--Whitney theorem. -/
 def aissenSchoenbergWhitneyReverseStatement : Prop :=
   ∀ ⦃p : ℝ[X]⦄,
     HasNonnegCoeffs p →
-    (p ≠ 0 ∧ p.Splits) →
+    p.Splits →
     (∀ r ∈ p.roots, r ≤ 0) →
     IsPolyaFrequencySequence (fun n => p.coeff n)
 

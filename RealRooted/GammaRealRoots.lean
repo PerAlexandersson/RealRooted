@@ -692,12 +692,12 @@ lemma hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
     (hq : q ≠ 0 ∧ q.Splits) (hq_pos : HasPosLeadingCoeff q)
     (hqp : q ∣ p) :
     HasNonnegCoeffs q := by
-  refine (hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hq).mpr ?_
+  refine ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hq.2).mpr ?_).1
   refine ⟨hq_pos, ?_⟩
   intro r hr
   have hrq : q.IsRoot r := (mem_roots hq.1).mp hr
   have hrp : p.IsRoot r := IsRoot.of_dvd hqp hrq
-  exact roots_nonpos_of_nonneg_coeffs hp hpnn r ((mem_roots hp.1).mpr hrp)
+  exact roots_nonpos_of_nonneg_coeffs hp.2 hpnn r ((mem_roots hp.1).mpr hrp)
 
 /-- The gamma transform preserves real-rootedness on nonnegative-coefficient
 inputs whose degree fits the ambient floor `d / 2`. -/
@@ -740,7 +740,7 @@ theorem isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
       have hq_dvd : q ∣ γ := ⟨X - C r, by grind⟩
       have hq_ne : q ≠ 0 := by
         simp_all
-      have hr_nonpos : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hrr hnn r hr_mem
+      have hr_nonpos : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hrr.2 hnn r hr_mem
       have hq_rr : (q ≠ 0 ∧ q.Splits) := isRealRooted_of_dvd hrr hq_ne hq_dvd
       have hγ_pos : HasPosLeadingCoeff γ := hnn.pos_leadingCoeff hrr.1
       have hq_pos : HasPosLeadingCoeff q := by
@@ -768,7 +768,7 @@ theorem hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
     HasRootsNonpos (gammaTransform d γ) := by
   intro r hr
   exact roots_nonpos_of_nonneg_coeffs
-    (isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs hγdeg hγ hγnn)
+    (isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs hγdeg hγ hγnn).2
     (hasNonnegCoeffs_gammaTransform hγnn) r hr
 
 theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
@@ -815,6 +815,7 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
           calc
             gammaTransform (2 * n) δ = gammaTransform (2 * n) (X * ζ) := by lia
             _ = gammaTransform (2 * ζ.natDegree + 2) (X * ζ) := by
+                  congr 1
                   lia
             _ = X * gammaTransform (2 * ζ.natDegree) ζ := by
                   exact gammaTransform_X_mul_two (2 * ζ.natDegree) ζ
@@ -882,6 +883,7 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
             gammaTransform (2 * n) δ = gammaTransform (2 * n) ((X - C y) * ε) := by
               lia
             _ = gammaTransform (2 * ε.natDegree + 2) ((X - C y) * ε) := by
+                  congr 1
                   lia
             _ = (X - C y * (X + 1) ^ 2) * gammaTransform (2 * ε.natDegree) ε := by
                   exact gammaTransform_X_sub_C_mul_two (γ := ε) (by lia) y
@@ -918,7 +920,7 @@ lemma hasRootsNonpos_gammaQuadraticFactor {r : ℝ} (hr : r ≤ 0) :
     HasRootsNonpos (X - C r * (X + 1) ^ 2) := by
   intro s hs
   exact roots_nonpos_of_nonneg_coeffs
-    (isRealRooted_gammaQuadraticFactor hr)
+    (isRealRooted_gammaQuadraticFactor hr).2
     (hasNonnegCoeffs_gammaQuadraticFactor hr)
     s hs
 
@@ -954,7 +956,7 @@ theorem isRealRooted_and_hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasRoo
       intro r hr
       rw [roots_C_mul _ hcoeff_ne] at hr
       exact roots_nonpos_of_nonneg_coeffs
-        (isRealRooted_X_add_one_pow d)
+        (isRealRooted_X_add_one_pow d).2
         (HasNonnegCoeffs.pow hasNonnegCoeffs_X_add_one d)
         r hr
     · have hroots_pos : 0 < δ.roots.card := by
@@ -1028,9 +1030,16 @@ lemma gammaTransform_pad_to_minimal {d : ℕ} {γ : ℝ[X]}
         (X + 1) ^ (2 * (n - m)) * gammaTransform (2 * m) γ := by
     have hshift' :=
       gammaTransform_even_shift (m := m) (k := n - m) (γ := γ) (by lia)
-    lia
+    simpa [Nat.add_sub_of_le hm] using hshift'
   rcases Nat.mod_two_eq_zero_or_one d with hd_even | hd_odd
-  · lia
+  · have hd : d = 2 * n := by
+      have h := Nat.mod_add_div d 2
+      rw [hd_even, zero_add] at h
+      exact h.symm
+    have hpow : 2 * (n - m) = 2 * n - 2 * m :=
+      Nat.mul_sub_left_distrib 2 n m
+    rw [hd]
+    simpa [m, hpow] using hshift
   · have hd : d = 2 * n + 1 := by lia
     have hpow : d - 2 * m = 1 + 2 * (n - m) := by
       lia

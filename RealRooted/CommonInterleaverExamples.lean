@@ -90,11 +90,11 @@ lemma scaledLinearFamily_commonInterleaver :
   intro f hf
   simp only [scaledLinearFamily, List.mem_cons] at hf
   rcases hf with rfl | hf
-  · exact prec_refl xAddOne_isRealRooted
+  · exact prec_refl xAddOne_isRealRooted.1 xAddOne_isRealRooted.2
   rcases hf with rfl | hf
-  · exact prec_C_mul_self xAddOne_isRealRooted (by simp)
+  · exact prec_C_mul_self xAddOne_isRealRooted.1 xAddOne_isRealRooted.2 (by simp)
   rcases hf with rfl | hf
-  · exact prec_C_mul_self xAddOne_isRealRooted (by simp)
+  · exact prec_C_mul_self xAddOne_isRealRooted.1 xAddOne_isRealRooted.2 (by simp)
   · simp_all
 
 lemma scaledLinearFamily_pairwiseCompatible :
@@ -157,7 +157,8 @@ private lemma xAddTwo_isRealRooted : ((X + 2 : ℝ[X]) ≠ 0 ∧ (X + 2 : ℝ[X]
   exact isRealRooted_of_degree_one xAddTwo_natDegree
 
 private lemma xAddTwo_hasNonnegCoeffs : HasNonnegCoeffs (X + 2 : ℝ[X]) := by
-  simpa using hasNonnegCoeffs_X.add (hasNonnegCoeffs_C (by simp : (0 : ℝ) ≤ 2))
+  change HasNonnegCoeffs (X + C (2 : ℝ) : ℝ[X])
+  exact hasNonnegCoeffs_X.add (hasNonnegCoeffs_C (by simp : (0 : ℝ) ≤ 2))
 
 private lemma xAddTwo_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 2 : ℝ[X]) := by
   exact xAddTwo_hasNonnegCoeffs.pos_leadingCoeff xAddTwo_isRealRooted.1
@@ -181,7 +182,8 @@ private lemma xAddThree_isRealRooted : ((X + 3 : ℝ[X]) ≠ 0 ∧ (X + 3 : ℝ[
   simpa [sub_eq_add_neg, add_comm] using isRealRooted_X_sub_C (-3 : ℝ)
 
 private lemma xAddThree_hasNonnegCoeffs : HasNonnegCoeffs (X + 3 : ℝ[X]) := by
-  simpa using hasNonnegCoeffs_X.add (hasNonnegCoeffs_C (by simp : (0 : ℝ) ≤ 3))
+  change HasNonnegCoeffs (X + C (3 : ℝ) : ℝ[X])
+  exact hasNonnegCoeffs_X.add (hasNonnegCoeffs_C (by simp : (0 : ℝ) ≤ 3))
 
 private lemma xAddThree_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 3 : ℝ[X]) := by
   exact xAddThree_hasNonnegCoeffs.pos_leadingCoeff xAddThree_isRealRooted.1
@@ -240,7 +242,8 @@ private lemma xAddFiveHalves_prec_xSq_add_fiveX_add_six :
       [(-3 : ℝ), (-2 : ℝ)], List.pairwise_singleton _ _, ?_, ?_, ?_, ?_⟩
   · norm_num
   · simp
-  · simpa using xSq_add_fiveX_add_six_roots.symm
+  · rw [xSq_add_fiveX_add_six_roots]
+    rfl
   · exact Or.inl ⟨by simp, by norm_num [ListInterlaces]⟩
 
 /-- A concrete common left interleaver for the linear / quadratic counterexample

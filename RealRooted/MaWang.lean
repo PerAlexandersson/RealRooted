@@ -2030,10 +2030,9 @@ theorem isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
     ((a * f + b * g) ≠ 0 ∧ (a * f + b * g).Splits) := by
   let F : ℝ[X] := a * f + b * g
   have hF_ne : F ≠ 0 := by
-    intro h0
+    rintro h0
     simp [HasPosLeadingCoeff, F, h0] at hF_pos
-  have hlc_pos : 0 < F.leadingCoeff := by
-    simpa [F] using hF_pos
+  have hlc_pos : 0 < F.leadingCoeff := by simpa [F, HasPosLeadingCoeff] using hF_pos
   have hlc_ne : F.leadingCoeff ≠ 0 := ne_of_gt hlc_pos
   let q : ℝ[X] := C F.leadingCoeff⁻¹ * F
   have hq_monic : q.Monic := by
@@ -2123,8 +2122,7 @@ theorem isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
     have hFδ_rr : ((F - C δ * g) ≠ 0 ∧ (F - C δ * g).Splits) :=
       isRealRooted_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
         hgf hg_pos hF_pos hdeg_lo hdeg_hi hno hb_nonpos hδ_pos
-    have hqδ_rr : (qδ ≠ 0 ∧ qδ.Splits) :=
-      isRealRooted_C_mul hFδ_rr (inv_ne_zero hlc_ne)
+    have hqδ_rr : (qδ ≠ 0 ∧ qδ.Splits) := by simp_all [qδ]
     rcases mem_range_of_mem_aroots_of_isRealRooted hqδ_rr hw_mem with ⟨x, rfl⟩
     have him_le : eps0 ≤ ‖z - x‖ := by
       unfold eps0
@@ -2166,7 +2164,7 @@ theorem isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
       _ = F := by simp [hlc_ne]
   have hF_rr : (F ≠ 0 ∧ F.Splits) := by
     rw [← hF_eq]
-    exact isRealRooted_C_mul hq_rr hlc_ne
+    simp_all [-hF_eq]
   lia
 
 /-- If every positive perturbation `F - C δ * g` is real-rooted, then `F` is
@@ -2178,12 +2176,11 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
     (hF_pos : HasPosLeadingCoeff F)
     (hdeg_lo : f.natDegree ≤ F.natDegree)
     (hsub_rr : ∀ {δ : ℝ}, 0 < δ → ((F - C δ * g) ≠ 0 ∧ (F - C δ * g).Splits)) :
-    (F ≠ 0 ∧ F.Splits) := by
+    F ≠ 0 ∧ F.Splits := by
   have hF_ne : F ≠ 0 := by
     intro h0
     simp [HasPosLeadingCoeff, h0] at hF_pos
-  have hlc_pos : 0 < F.leadingCoeff := by
-    simpa using hF_pos
+  have hlc_pos : 0 < F.leadingCoeff := by simpa [HasPosLeadingCoeff] using hF_pos
   have hlc_ne : F.leadingCoeff ≠ 0 := ne_of_gt hlc_pos
   let q : ℝ[X] := C F.leadingCoeff⁻¹ * F
   have hq_monic : q.Monic := by
@@ -2270,8 +2267,7 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
         (f := q) (g := qδ) hη_pos hz_aeval hq_monic hqδ_monic hqδ_deg hqδ_coeff
         (IsAlgClosed.splits _)
     have hFδ_rr : ((F - C δ * g) ≠ 0 ∧ (F - C δ * g).Splits) := hsub_rr hδ_pos
-    have hqδ_rr : (qδ ≠ 0 ∧ qδ.Splits) :=
-      isRealRooted_C_mul hFδ_rr (inv_ne_zero hlc_ne)
+    have hqδ_rr : (qδ ≠ 0 ∧ qδ.Splits) := by simp_all [qδ]
     rcases mem_range_of_mem_aroots_of_isRealRooted hqδ_rr hw_mem with ⟨x, rfl⟩
     have him_le : eps0 ≤ ‖z - x‖ := by
       unfold eps0
@@ -2312,7 +2308,7 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
       _ = C (F.leadingCoeff * F.leadingCoeff⁻¹) * F := by simp
       _ = F := by simp [hlc_ne]
   rw [← hF_eq]
-  exact isRealRooted_C_mul hq_rr hlc_ne
+  simp_all [-hF_eq]
 
 /-- Weak-sign Liu--Wang same-degree theorem in the no-common-roots regime. -/
 theorem prec_of_interlaces_evalCoeff_nonpos_same_of_no_common
@@ -3136,8 +3132,7 @@ theorem prec_of_interlaces_evalCoeff_nonpos
 /-- Derivative specialization of the Liu--Wang mixed theorem in the degree `+1`
 case. The hypothesis is the strict root-sign condition naturally obtained from
 `F(r) = v(r) f'(r)`. -/
-theorem prec_ma_wang_succ {f u v : ℝ[X]}
-    (hf : f ≠ 0 ∧ f.Splits)
+theorem prec_ma_wang_succ {f u v : ℝ[X]} (hf : f.Splits)
     (hdegf : 2 ≤ f.natDegree)
     (hdeg : (u * f + v * f.derivative).natDegree = f.natDegree + 1)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
@@ -3154,8 +3149,7 @@ theorem prec_ma_wang_succ {f u v : ℝ[X]}
 /-- Derivative specialization of the Liu--Wang mixed theorem in the same-degree
 case. The hypothesis is the strict root-sign condition naturally obtained from
 `F(r) = v(r) f'(r)`. -/
-theorem prec_ma_wang_same {f u v : ℝ[X]}
-    (hf : f ≠ 0 ∧ f.Splits)
+theorem prec_ma_wang_same {f u v : ℝ[X]} (hf : f.Splits)
     (hdegf : 2 ≤ f.natDegree)
     (hdeg : (u * f + v * f.derivative).natDegree = f.natDegree)
     (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
@@ -3171,8 +3165,7 @@ theorem prec_ma_wang_same {f u v : ℝ[X]}
 
 /-- Derivative specialization of the Liu--Wang mixed theorem allowing either the
 same-degree or degree `+1` outcome. -/
-theorem prec_ma_wang {f u v : ℝ[X]}
-    (hf : f ≠ 0 ∧ f.Splits)
+theorem prec_ma_wang {f u v : ℝ[X]} (hf : f.Splits)
     (hdegf : 2 ≤ f.natDegree)
     (hdeg_lo : f.natDegree ≤ (u * f + v * f.derivative).natDegree)
     (hdeg_hi : (u * f + v * f.derivative).natDegree ≤ f.natDegree + 1)

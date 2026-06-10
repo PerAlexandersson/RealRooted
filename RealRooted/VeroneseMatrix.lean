@@ -426,16 +426,25 @@ theorem matPolyAction_veroneseLinearFactorMatrixDesc
           (r := r) (k := r - 1 - (i.1 + 1)) hk_lt a p
       simp [matPolyAction, veroneseLinearFactorMatrixDesc,
         veroneseSectionPolynomialListDesc, i] at hrow ⊢
-      grind
+      rw [hrow]
+      simpa [i, add_comm, add_left_comm, add_assoc, hk_succ] using hrec.symm
     · have hrow :=
         zipWith_mul_veroneseLinearFactorRowDesc_sum_eq_of_last
           (r := r) a i hi (veroneseSectionPolynomialListDesc r p)
           (length_veroneseSectionPolynomialListDesc r p)
-      have hi_last : i.1 = r - 1 := by lia
+      have hi_last : i.1 = r - 1 := by
+        have hle : r ≤ i.1 + 1 := Nat.le_of_not_gt hi
+        have hle' : i.1 + 1 ≤ r := Nat.succ_le_of_lt i.2
+        have hs : i.1 + 1 = r := le_antisymm hle' hle
+        exact Nat.eq_sub_of_add_eq hs
       have hrec := veroneseSectionPolynomial_X_add_C_mul_zero (r := r) hr a p
       simp [matPolyAction, veroneseLinearFactorMatrixDesc,
         veroneseSectionPolynomialListDesc, i] at hrow ⊢
-      grind
+      rw [hrow]
+      rw [show r - 1 - n = 0 by
+        simpa [i] using congrArg (fun m => r - 1 - m) hi_last]
+      rw [hrec]
+      ring
 
 /-! ## Cyclic matrix 2-by-2 check and preserver step -/
 
@@ -476,7 +485,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_one (a : ℝ) :
         (C s * X + C (t + 1)) * (X + C a) := by
     grind
   rw [hfactor]
-  exact (prec_refl hrr).toPrec0
+  exact (prec_refl hrr.1 hrr.2).toPrec0
 
 def veroneseLinearFactorConstEntry {r : ℕ} (a : ℝ) (i j : Fin r) : ℝ :=
   if j.1 = i.1 then a else if j.1 = i.1 + 1 then 1 else 0
@@ -604,10 +613,10 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_mixed
         lia
       subst j₂
       simp [hj₁0]
-      exact
-        (prec_refl
-          (isRealRooted_affine_mul_C_add_X
-            (veroneseLinearFactorConstEntry_nonneg ha i₁ j₁) hs)).toPrec0
+      let hrr :=
+        isRealRooted_affine_mul_C_add_X
+          (t := t) (veroneseLinearFactorConstEntry_nonneg ha i₁ j₁) hs
+      exact (prec_refl hrr.1 hrr.2).toPrec0
     · simp [hj₁0, hj₂0]
       exact
         prec0_const_entry_affine_plus_const_to_affine_plus_X
@@ -650,7 +659,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_last_last
   by_cases hj₁0 : j₁.1 = 0
   · by_cases hj₂0 : j₂.1 = 0
     · simp [hj₁0, hj₂0]
-      exact (prec_refl (isRealRooted_affine_mul_X_add_X hs)).toPrec0
+      exact (prec_refl (isRealRooted_affine_mul_X_add_X hs).1 (isRealRooted_affine_mul_X_add_X hs).2).toPrec0
     · by_cases hj₂last : j₂.1 = r - 1
       · simp [hj₁0, hj₂last, hlast_ne_zero,
           veroneseLinearFactorLastConstEntry]
@@ -1005,7 +1014,7 @@ theorem isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_of_re
     intro a ha
     rcases List.mem_map.1 ha with ⟨x, hx, rfl⟩
     have hx_root : x ∈ p.roots := Multiset.mem_toList.mp hx
-    linarith [roots_nonpos_of_nonneg_coeffs hprr hpnn x hx_root]
+    linarith [roots_nonpos_of_nonneg_coeffs hprr.2 hpnn x hx_root]
   have hprod := linearFactorProduct_neg_roots_eq_rootsProduct p
   have hfac :
       C p.leadingCoeff * linearFactorProduct as = p := by

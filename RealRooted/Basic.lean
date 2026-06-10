@@ -403,12 +403,6 @@ lemma IsSturmSeq.toGeneralizedSturmSeq {ps : List ℝ[X]} (h : IsSturmSeq ps) :
 -- Basic lemmas
 -- ============================================================
 
-lemma isRealRooted_of_deg_zero {p : ℝ[X]} (hp : p ≠ 0) (hdeg : p.natDegree = 0) :
-    (p ≠ 0 ∧ p.Splits) := by
-  refine ⟨hp, ?_⟩
-  apply splits_of_card_roots
-  grind [card_roots']
-
 lemma Prec.toPrec0 {f g : ℝ[X]} (h : Prec f g) : Prec0 f g :=
   Or.inr (Or.inr h)
 
@@ -437,6 +431,12 @@ def HasNonnegCoeffs (p : ℝ[X]) : Prop := ∀ n, 0 ≤ p.coeff n
 
 /-- Positive leading coefficient. -/
 def HasPosLeadingCoeff (p : ℝ[X]) : Prop := 0 < p.leadingCoeff
+
+@[simp] lemma not_hasPosLeadingCoeff_zero : ¬ HasPosLeadingCoeff (0 : ℝ[X]) := by
+  simp [HasPosLeadingCoeff]
+
+lemma HasPosLeadingCoeff.ne_zero {p : ℝ[X]} (hp : HasPosLeadingCoeff p) : p ≠ 0 := by
+  rintro rfl; simp at hp
 
 /-! ## Elementary interval inequalities -/
 

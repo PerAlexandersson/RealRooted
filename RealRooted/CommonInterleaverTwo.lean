@@ -73,7 +73,7 @@ private lemma exists_root_ge_of_derivative_root_local
     {c : ℝ} (hc : p.derivative.IsRoot c) :
     ∃ r, p.IsRoot r ∧ c ≤ r := by
   obtain ⟨hp_rr, hp'_rr, _hdeg, rs, ss, hrs_sorted, hss_sorted, hrs_eq, hss_eq, hint⟩ :=
-    derivative_interlaces hp hdeg
+    derivative_interlaces hp.2 hdeg
   have hrs_len : rs.length = p.natDegree := by
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hp_rr.2]
   have hrs_ne : rs ≠ [] := by
@@ -115,7 +115,7 @@ private lemma hasNonnegCoeffs_comp_X_add_C_of_roots_le_local
     {r : ℝ} (hbound : ∀ s ∈ p.roots, s ≤ r) :
     HasNonnegCoeffs (p.comp (X + C r)) := by
   have hp' : ((p.comp (X + C r)) ≠ 0 ∧ (p.comp (X + C r)).Splits) := isRealRooted_comp_X_add_C hp r
-  refine (hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hp').2 ?_
+  refine ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hp'.2).2 ?_).1
   refine ⟨hasPosLeadingCoeff_comp_X_add_C_local hp_pos r, ?_⟩
   intro s hs
   simp only [roots_comp_X_add_C r] at hs
@@ -129,11 +129,11 @@ private lemma exists_rightmost_derivative_root_with_eval_nonpos_local
       (∀ s ∈ p.derivative.roots, s ≤ c) ∧
       p.eval c ≤ 0 := by
   have hp' : (p.derivative ≠ 0 ∧
-    p.derivative.Splits) := (derivative_interlaces hp hdeg).2.1
+    p.derivative.Splits) := (derivative_interlaces hp.2 hdeg).2.1
   have hp'_pos : HasPosLeadingCoeff p.derivative :=
     hp_pos.derivative (by lia)
   have hp'_deg : p.derivative.natDegree = p.natDegree - 1 :=
-    p.natDegree_derivative (by lia)
+    p.natDegree_derivative
   obtain ⟨c, hc_root, hc_top⟩ :=
     exists_rightmost_root_of_isRealRooted_local hp' (by lia)
   by_cases hpc : 0 < p.eval c
@@ -168,7 +168,7 @@ private lemma exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_
   have hqdeg : 2 ≤ (C t + p).natDegree := by
     simp_all
   have hq'_rr : ((C t + p).derivative ≠ 0 ∧ (C t + p).derivative.Splits) :=
-    (derivative_interlaces hq hqdeg).2.1
+    (derivative_interlaces hq.2 hqdeg).2.1
   have hmono :
       StrictMonoOn (fun x => (C t + p).eval x) (Set.Ici c) := by
     have hder_eq : (C t + p).derivative = p.derivative := by
@@ -304,7 +304,7 @@ lemma derivative {f g : ℝ[X]} (h : Compatible f g) :
   rcases h α β hα hβ with hzero | hrr
   · simp_all
   · rw [hcomb]
-    exact derivative_eq_zero_or_isRealRooted hrr
+    exact derivative_eq_zero_or_ne_zero_and_splits hrr
 
 private lemma isRealRooted_left
     {f g : ℝ[X]} (h : Compatible f g)
@@ -390,8 +390,8 @@ theorem natDegree_right_le_succ
       have hf'_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
       have hg'_pos : HasPosLeadingCoeff g.derivative := hg_pos.derivative (by lia)
       have hfg' : Compatible f.derivative g.derivative := derivative hfg
-      have hf'_deg : f.derivative.natDegree = f.natDegree - 1 := f.natDegree_derivative (by lia)
-      have hg'_deg : g.derivative.natDegree = g.natDegree - 1 := g.natDegree_derivative (by lia)
+      have hf'_deg : f.derivative.natDegree = f.natDegree - 1 := f.natDegree_derivative
+      have hg'_deg : g.derivative.natDegree = g.natDegree - 1 := g.natDegree_derivative
       grind
 
 /-- Article 3.2: a positive-leading compatible pair has degree gap at most
@@ -1161,8 +1161,8 @@ theorem pairHasCommonInterleaver_of_natDegree_le_one
   rcases
       prec_or_revPrec_of_natDegree_le_one
         hf_pos hg_pos hf_deg_le_one hg_deg_le_one with hprec | hprec
-  · exact ⟨g, hprec, prec_refl hprec.2.1⟩
-  · exact ⟨f, prec_refl hprec.2.1, hprec⟩
+  · exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
+  · exact ⟨f, prec_refl hprec.2.1.1 hprec.2.1.2, hprec⟩
 
 /-- A symmetric `Prec` orientation immediately gives a common right
 interleaver: use the larger polynomial in the chosen orientation as the
@@ -1173,8 +1173,8 @@ theorem pairHasCommonInterleaver_of_prec_or_revPrec
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
   intro hprec_or
   rcases hprec_or with hprec | hprec
-  · exact ⟨g, hprec, prec_refl hprec.2.1⟩
-  · exact ⟨f, prec_refl hprec.2.1, hprec⟩
+  · exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
+  · exact ⟨f, prec_refl hprec.2.1.1 hprec.2.1.2, hprec⟩
 
 /-- Same-degree specialization of the low-degree pair endpoint. -/
 theorem pairHasCommonInterleaver_of_sameDegree_natDegree_le_one
@@ -1240,29 +1240,29 @@ theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlterna
   have hslot :
       ∀ j (hj : j < f.natDegree + 1),
         (rootSlotInterval (rootSeqDesc f)
-            ⟨j, by simpa [rootSeqDesc_length hf_rr] using hj⟩ ∩
+            ⟨j, by simpa [rootSeqDesc_length hf_rr.2] using hj⟩ ∩
           rootSlotInterval (rootSeqDesc g)
             ⟨j, by
               have : j < g.natDegree + 1 := by lia
-              simpa [rootSeqDesc_length hg_rr] using this⟩).Nonempty := by
+              simpa [rootSeqDesc_length hg_rr.2] using this⟩).Nonempty := by
     rcases hsame hf_pos hg_pos hfnn hgnn hfg hdeg hno with hprec | hprec
     · intro j hj
       have hjg : j < g.natDegree + 1 := by lia
       exact
         rootSlotInterval_inter_nonempty_of_commonInterleaver hprec
-          (prec_refl hprec.2.1) j
+          (prec_refl hprec.2.1.1 hprec.2.1.2) j
           (by lia)
           (by lia)
     · intro j hj
       have hjg : j < g.natDegree + 1 := by lia
       exact
-        rootSlotInterval_inter_nonempty_of_commonInterleaver (prec_refl hprec.2.1) hprec
+        rootSlotInterval_inter_nonempty_of_commonInterleaver (prec_refl hprec.2.1.1 hprec.2.1.2) hprec
           j
           (by lia)
           (by lia)
   exact
     pairHasCommonInterleaver_of_sameDegree_slotIntersections
-      hf_rr hg_rr hdeg hslot
+      hf_rr.1 hg_rr.1 hf_rr.2 hg_rr.2 hdeg hslot
 
 /-- Low-degree base case for the repaired same-degree no-common target.  Through
 degree one, the common-right-interleaver conclusion is unconditional once the
@@ -1305,7 +1305,7 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_orientation_nonneg
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
   have hprec : Prec f g := horient hf_pos hg_pos hfnn hgnn hfg hsucc hno
-  exact ⟨g, hprec, prec_refl hprec.2.1⟩
+  exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
 
 /-- The corrected succ-degree pair bridge is already unconditional in the
 constant-vs-linear endpoint case. -/
@@ -1319,7 +1319,7 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_degree_zero
   have hprec : Prec f g :=
     posComboNoCommonSuccDegreeOrientation_of_degree_zero
       hf_pos hg_pos hf_deg0 hsucc
-  exact ⟨g, hprec, prec_refl hprec.2.1⟩
+  exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
 
 /-- Degree-one left-hand endpoint of the corrected succ-degree branch under
 the affine-family bridge.  The public affine-family degree-one lemma gives the
@@ -1493,9 +1493,9 @@ theorem posComboNoCommonOrientation_of_affineFamilyBridge_and_nonnegCoeffs
   have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
   have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
   have hf_rr : (f ≠ 0 ∧ f.Splits) := by
-    rcases hall 1 0 with hzero | hrr <;> simp_all
+    exact ⟨hf0, by simpa using hall 1 0⟩
   have hg_rr : (g ≠ 0 ∧ g.Splits) := by
-    rcases hall 0 1 with hzero | hrr <;> simp_all
+    exact ⟨hg0, by simpa using hall 0 1⟩
   have hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by
     lia
   exact prec_of_allComboRealRooted hf_rr hg_rr hall hdeg
@@ -1612,8 +1612,8 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
     lia
   rcases hdeg with hsame_deg | hsucc_deg
   · rcases hsame hf_pos hg_pos hfnn hgnn hfg hsame_deg hno with hprec | hprec
-    · exact ⟨g, hprec, prec_refl hprec.2.1⟩
-    · exact ⟨f, prec_refl hprec.2.1, hprec⟩
+    · exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
+    · exact ⟨f, prec_refl hprec.2.1.1 hprec.2.1.2, hprec⟩
   · exact hsucc hf_pos hg_pos hfnn hgnn hfg hsucc_deg hno
 
 /-- Repaired no-common degree-split reduction of the common-interleaver bridge
@@ -1800,7 +1800,7 @@ private theorem allComboRealRooted_of_degreeSplit_and_nonnegCoeffs_ordered
       ih qf.natDegree hqf_deg_lt rfl
         hqf_pos hqg_pos hqf_nn hqg_nn hqfg hqdeg_lo hqdeg_hi
     have hall_mul : AllComboRealRooted ((X - C r) * qf) ((X - C r) * qg) :=
-      allComboRealRooted_mul_common_factor (isRealRooted_X_sub_C r) hall_q
+      allComboRealRooted_mul_common_factor (isRealRooted_X_sub_C r).2 hall_q
     lia
 
 /-- Recursive upgrade of the honest degree-split no-common package to a full
@@ -1854,9 +1854,9 @@ theorem posComboOrientation_of_posCombo_and_degreeSplit_and_nonnegCoeffs
   have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
   have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
   have hf_rr : (f ≠ 0 ∧ f.Splits) := by
-    rcases hall 1 0 with hzero | hrr <;> simp_all
+    exact ⟨hf0, by simpa using hall 1 0⟩
   have hg_rr : (g ≠ 0 ∧ g.Splits) := by
-    rcases hall 0 1 with hzero | hrr <;> simp_all
+    exact ⟨hg0, by simpa using hall 0 1⟩
   have hclose :
       f.natDegree ≤ g.natDegree + 1 ∧
         g.natDegree ≤ f.natDegree + 1 :=
@@ -1916,7 +1916,7 @@ private theorem allComboRealRooted_of_affineFamilyBridge_and_nonnegCoeffs_ordere
       ih qf.natDegree hqf_deg_lt rfl
         hqf_pos hqg_pos hqf_nn hqg_nn hqfg hqdeg_lo hqdeg_hi
     have hall_mul : AllComboRealRooted ((X - C r) * qf) ((X - C r) * qg) :=
-      allComboRealRooted_mul_common_factor (isRealRooted_X_sub_C r) hall_q
+      allComboRealRooted_mul_common_factor (isRealRooted_X_sub_C r).2 hall_q
     lia
 
 /-- Recursive upgrade of the affine-family no-common bridge to a full
@@ -1968,9 +1968,9 @@ theorem posComboOrientation_of_affineFamilyBridge_and_nonnegCoeffs
   have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
   have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
   have hf_rr : (f ≠ 0 ∧ f.Splits) := by
-    rcases hall 1 0 with hzero | hrr <;> simp_all
+    exact ⟨hf0, by simpa using hall 1 0⟩
   have hg_rr : (g ≠ 0 ∧ g.Splits) := by
-    rcases hall 0 1 with hzero | hrr <;> simp_all
+    exact ⟨hg0, by simpa using hall 0 1⟩
   have hclose :
       f.natDegree ≤ g.natDegree + 1 ∧
         g.natDegree ≤ f.natDegree + 1 :=
@@ -2052,7 +2052,7 @@ theorem
     · lia
     · have hbounds := natDegree_bounds_of_prec hprec
       lia
-  exact ⟨g, hprec_fg, prec_refl hprec_fg.2.1⟩
+  exact ⟨g, hprec_fg, prec_refl hprec_fg.2.1.1 hprec_fg.2.1.2⟩
 
 /-- Reduction of no-common orientation to the all-combinations bridge plus
 Obreschkoff converse (`prec_of_allComboRealRooted`). -/
@@ -2065,9 +2065,9 @@ theorem posComboNoCommonOrientation_of_allComboBridge
   have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
   have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
   have hf_rr : (f ≠ 0 ∧ f.Splits) := by
-    rcases hall 1 0 with hzero | hrr <;> simp_all
+    exact ⟨hf0, by simpa using hall 1 0⟩
   have hg_rr : (g ≠ 0 ∧ g.Splits) := by
-    rcases hall 0 1 with hzero | hrr <;> simp_all
+    exact ⟨hg0, by simpa using hall 0 1⟩
   have hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by
     lia
   exact prec_of_allComboRealRooted hf_rr hg_rr hall hdeg
@@ -2107,8 +2107,8 @@ theorem compatiblePairHasCommonInterleaver_of_posComboOrientation
   have hposCombo : PosComboRealRooted f g :=
     Compatible.toPosComboRealRooted hfg hf_pos hg_pos
   rcases horient hf_pos hg_pos hposCombo with hprec | hprec
-  · exact ⟨g, hprec, prec_refl hprec.2.1⟩
-  · exact ⟨f, prec_refl hprec.2.1, hprec⟩
+  · exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
+  · exact ⟨f, prec_refl hprec.2.1.1 hprec.2.1.2, hprec⟩
 
 /-- Compatibility-to-common-interleaver reduction through the positive-combo
 bridge. -/
@@ -2139,8 +2139,8 @@ theorem posComboPairHasCommonInterleaver_of_noCommonOrientation_and_degreeClose
             exact hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno)
           hfg hf_pos hg_pos hfg_deg hclose.2
     rcases hprec_or with hprec | hprec
-    · exact ⟨g, hprec, prec_refl hprec.2.1⟩
-    · exact ⟨f, prec_refl hprec.2.1, hprec⟩
+    · exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
+    · exact ⟨f, prec_refl hprec.2.1.1 hprec.2.1.2, hprec⟩
   · have hgf_deg : g.natDegree ≤ f.natDegree := le_of_not_ge hfg_deg
     have hprec_or : Prec g f ∨ Prec f g := by
       exact
@@ -2150,8 +2150,8 @@ theorem posComboPairHasCommonInterleaver_of_noCommonOrientation_and_degreeClose
             exact hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno)
           (PosComboRealRooted.comm hfg) hg_pos hf_pos hgf_deg hclose.1
     rcases hprec_or with hprec | hprec
-    · exact ⟨f, prec_refl hprec.2.1, hprec⟩
-    · exact ⟨g, hprec, prec_refl hprec.2.1⟩
+    · exact ⟨f, prec_refl hprec.2.1.1 hprec.2.1.2, hprec⟩
+    · exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
 
 /-- Pair-bridge reduction through the all-combinations bridge and a separate
 degree-closeness input. -/
@@ -2210,8 +2210,8 @@ theorem posComboPairHasCommonInterleaver_of_noCommonOrientation_and_nonnegCoeffs
             exact hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno)
           hfg hf_pos hg_pos hfg_deg hclose.2
     rcases hprec_or with hprec | hprec
-    · exact ⟨g, hprec, prec_refl hprec.2.1⟩
-    · exact ⟨f, prec_refl hprec.2.1, hprec⟩
+    · exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
+    · exact ⟨f, prec_refl hprec.2.1.1 hprec.2.1.2, hprec⟩
   · have hgf_deg : g.natDegree ≤ f.natDegree := le_of_not_ge hfg_deg
     have hprec_or : Prec g f ∨ Prec f g := by
       exact
@@ -2221,8 +2221,8 @@ theorem posComboPairHasCommonInterleaver_of_noCommonOrientation_and_nonnegCoeffs
             exact hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno)
           (PosComboRealRooted.comm hfg) hg_pos hf_pos hgf_deg hclose.1
     rcases hprec_or with hprec | hprec
-    · exact ⟨f, prec_refl hprec.2.1, hprec⟩
-    · exact ⟨g, hprec, prec_refl hprec.2.1⟩
+    · exact ⟨f, prec_refl hprec.2.1.1 hprec.2.1.2, hprec⟩
+    · exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
 
 /-- In the nonnegative-coefficient regime, the all-combinations bridge implies
 the full positive-combo pair bridge. -/
@@ -2250,8 +2250,8 @@ theorem posComboPairHasCommonInterleaver_of_affineFamilyBridge_and_nonnegCoeffs
   rcases
       posComboOrientation_of_affineFamilyBridge_and_nonnegCoeffs
         haffBridge hf_pos hg_pos hfnn hgnn hfg with hprec | hprec
-  · exact ⟨g, hprec, prec_refl hprec.2.1⟩
-  · exact ⟨f, prec_refl hprec.2.1, hprec⟩
+  · exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
+  · exact ⟨f, prec_refl hprec.2.1.1 hprec.2.1.2, hprec⟩
 
 /-- The boundary-right-pair orientation statement therefore already yields the
 full positive-combo pair bridge in the nonnegative-coefficient regime. -/
@@ -2265,8 +2265,8 @@ theorem posComboPairHasCommonInterleaver_of_boundaryRightPairOrientation_and_non
   rcases
       posComboOrientation_of_boundaryRightPairOrientation_and_nonnegCoeffs
         hboundary hf_pos hg_pos hfnn hgnn hfg with hprec | hprec
-  · exact ⟨g, hprec, prec_refl hprec.2.1⟩
-  · exact ⟨f, prec_refl hprec.2.1, hprec⟩
+  · exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
+  · exact ⟨f, prec_refl hprec.2.1.1 hprec.2.1.2, hprec⟩
 
 /-- The honest degree-split package also yields the full positive-combo pair
 bridge in the nonnegative-coefficient regime. -/
@@ -2928,7 +2928,7 @@ theorem chudnovskySeymour_fourWay_of_pairBridge
       exact pairwiseCompatible_of_pairwiseHasCommonInterleaver hpair hpos
   have h23 : PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs := by
     constructor
-    · exact hasCommonInterleaver_of_pairwiseHasCommonInterleaver hrr hpos
+    · exact hasCommonInterleaver_of_pairwiseHasCommonInterleaver (fun f hf => (hrr f hf).2) hpos
     · exact pairwiseHasCommonInterleaver_of_commonInterleaver
   have h34 : HasCommonInterleaver fs ↔ FamilyCompatible fs := by
     constructor
@@ -2960,7 +2960,7 @@ theorem chudnovskySeymour_fourWay_of_pairBridgePos
       exact pairwiseCompatible_of_pairwiseHasCommonInterleaver hpair hpos
   have h23 : PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs := by
     constructor
-    · exact hasCommonInterleaver_of_pairwiseHasCommonInterleaver hrr hpos
+    · exact hasCommonInterleaver_of_pairwiseHasCommonInterleaver (fun f hf => (hrr f hf).2) hpos
     · exact pairwiseHasCommonInterleaver_of_commonInterleaver
   have h34 : HasCommonInterleaver fs ↔ FamilyCompatible fs := by
     constructor
@@ -3091,7 +3091,7 @@ theorem chudnovskySeymour_fourWay_of_noCommonOrientation_and_nonnegCoeffs
       exact pairwiseCompatible_of_pairwiseHasCommonInterleaver hpair hpos
   have h23 : PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs := by
     constructor
-    · exact hasCommonInterleaver_of_pairwiseHasCommonInterleaver hrr hpos
+    · exact hasCommonInterleaver_of_pairwiseHasCommonInterleaver (fun f hf => (hrr f hf).2) hpos
     · exact pairwiseHasCommonInterleaver_of_commonInterleaver
   have h34 : HasCommonInterleaver fs ↔ FamilyCompatible fs := by
     constructor
@@ -3126,7 +3126,7 @@ theorem chudnovskySeymour_fourWay_of_degreeSplit_and_nonnegCoeffs
       exact pairwiseCompatible_of_pairwiseHasCommonInterleaver hpair hpos
   have h23 : PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs := by
     constructor
-    · exact hasCommonInterleaver_of_pairwiseHasCommonInterleaver hrr hpos
+    · exact hasCommonInterleaver_of_pairwiseHasCommonInterleaver (fun f hf => (hrr f hf).2) hpos
     · exact pairwiseHasCommonInterleaver_of_commonInterleaver
   have h34 : HasCommonInterleaver fs ↔ FamilyCompatible fs := by
     constructor
@@ -3161,7 +3161,7 @@ theorem chudnovskySeymour_fourWay_of_pairDegreeSplit_and_nonnegCoeffs
       exact pairwiseCompatible_of_pairwiseHasCommonInterleaver hpair hpos
   have h23 : PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs := by
     constructor
-    · exact hasCommonInterleaver_of_pairwiseHasCommonInterleaver hrr hpos
+    · exact hasCommonInterleaver_of_pairwiseHasCommonInterleaver (fun f hf => (hrr f hf).2) hpos
     · exact pairwiseHasCommonInterleaver_of_commonInterleaver
   have h34 : HasCommonInterleaver fs ↔ FamilyCompatible fs := by
     constructor
@@ -3228,7 +3228,7 @@ theorem chudnovskySeymour_fourWay_of_affineFamilyBridge_and_nonnegCoeffs
       exact pairwiseCompatible_of_pairwiseHasCommonInterleaver hpair hpos
   have h23 : PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs := by
     constructor
-    · exact hasCommonInterleaver_of_pairwiseHasCommonInterleaver hrr hpos
+    · exact hasCommonInterleaver_of_pairwiseHasCommonInterleaver (fun f hf => (hrr f hf).2) hpos
     · exact pairwiseHasCommonInterleaver_of_commonInterleaver
   have h34 : HasCommonInterleaver fs ↔ FamilyCompatible fs := by
     constructor
@@ -3263,7 +3263,7 @@ theorem chudnovskySeymour_fourWay_of_boundaryRightPairOrientation_and_nonnegCoef
       exact pairwiseCompatible_of_pairwiseHasCommonInterleaver hpair hpos
   have h23 : PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs := by
     constructor
-    · exact hasCommonInterleaver_of_pairwiseHasCommonInterleaver hrr hpos
+    · exact hasCommonInterleaver_of_pairwiseHasCommonInterleaver (fun f hf => (hrr f hf).2) hpos
     · exact pairwiseHasCommonInterleaver_of_commonInterleaver
   have h34 : HasCommonInterleaver fs ↔ FamilyCompatible fs := by
     constructor
@@ -3506,7 +3506,7 @@ theorem hasCommonInterleaver_of_natDegree_le_one
         (hpos f hf) (hdeg f hf)
   exact
     hasCommonInterleaver_of_pairwiseHasCommonInterleaver
-      hrr hpos (pairwiseHasCommonInterleaver_of_natDegree_le_one hpos hdeg)
+      (fun f hf => (hrr f hf).2) hpos (pairwiseHasCommonInterleaver_of_natDegree_le_one hpos hdeg)
 
 /-- Low-degree Chudnovsky--Seymour package: if every member of the family has
 degree at most one and positive leading coefficient, then all four standard
@@ -3533,7 +3533,7 @@ theorem chudnovskySeymour_fourWay_of_natDegree_le_one
   have h23 : PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs := by
     constructor
     · intro hpair
-      exact hasCommonInterleaver_of_pairwiseHasCommonInterleaver hrr hpos hpair
+      exact hasCommonInterleaver_of_pairwiseHasCommonInterleaver (fun f hf => (hrr f hf).2) hpos hpair
     · exact pairwiseHasCommonInterleaver_of_commonInterleaver
   have h34 : HasCommonInterleaver fs ↔ FamilyCompatible fs := by
     constructor

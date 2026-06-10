@@ -224,7 +224,7 @@ theorem garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
     garloffWagnerHadamardNonnegRealRootedStatement := by
   intro p q hpnn hqnn hprr hqrr
   have hself : Prec0 (hadamardProduct p q) (hadamardProduct p q) :=
-    hGW hpnn hpnn hqnn hqnn (prec_refl hprr) (prec_refl hqrr)
+    hGW hpnn hpnn hqnn hqnn (prec_refl hprr.1 hprr.2) (prec_refl hqrr.1 hqrr.2)
   have hpf : IsPFPolynomial (hadamardProduct p q) :=
     IsPFPolynomial.of_prec0_self (hpnn.hadamardProduct hqnn) hself
   exact ⟨hpf.eq_zero_or_splits, hpf.hasNonnegCoeffs, hpf.roots_nonpos⟩

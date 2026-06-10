@@ -175,9 +175,8 @@ interlaced on the left by `h`. -/
     have hp_le : ∀ s ∈ ap.2.roots, s ≤ r := hl_le ap hap
     rcases natDegree_eq_or_succ_of_prec hp with hdeg | hdeg
     · exact prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le r hp hdeg.symm hpos hp_pos hh_le hp_le
-    · exact
-        (prec_iff_prec_mul_X_sub_C_of_roots_le r
-          hp.1 hp.2.1 hpos hp_pos hh_le hp_le hdeg.symm).mp hp
+    · exact (prec_iff_prec_mul_X_sub_C_of_roots_le r
+          hp.1.2 hp.2.1.2 hpos hp_pos hh_le hp_le hdeg.symm).mp hp
   have hweighted_right : Prec (weightedSum l) H := by
     apply prec_weightedSum_right l H hnonneg hprec_right hpoly_pos hex0
   have hweighted_pos : HasPosLeadingCoeff (weightedSum l) :=
@@ -185,15 +184,14 @@ interlaced on the left by `h`. -/
   have hH_deg : H.natDegree = h.natDegree + 1 := by
     rw [show H = (X - C r) * h by lia, natDegree_mul (X_sub_C_ne_zero r) hh.1, natDegree_X_sub_C]
     lia
-  have hH_le : ∀ s ∈ H.roots, s ≤ r := roots_le_X_sub_C_mul hh hh_le
+  have hH_le : ∀ s ∈ H.roots, s ≤ r := roots_le_X_sub_C_mul (hprec ap0 hap0).1.2 hh_le
   have hweighted_le : ∀ s ∈ (weightedSum l).roots, s ≤ r :=
     roots_le_of_prec_right hweighted_right hH_le
   rcases natDegree_eq_or_succ_of_prec hweighted_right with hcase | hcase
   · have hdeg : h.natDegree + 1 = (weightedSum l).natDegree := by
       lia
-    exact
-      (prec_iff_prec_mul_X_sub_C_of_roots_le r hh hweighted_right.1 hpos hweighted_pos
-        hh_le hweighted_le hdeg).mpr hweighted_right
+    exact (prec_iff_prec_mul_X_sub_C_of_roots_le r (hprec ap0 hap0).1.2 hweighted_right.1.2
+        hpos hweighted_pos hh_le hweighted_le hdeg).mpr hweighted_right
   · have hdeg : h.natDegree = (weightedSum l).natDegree := by
       lia
     exact
@@ -376,7 +374,7 @@ theorem prec_sameDegree_shift_left_of_roots_le
     · intro p hp
       simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
       rcases hp with rfl | rfl
-      · exact prec_refl hfg.2.1
+      · exact prec_refl hfg.2.1.1 hfg.2.1.2
       · lia
     · simp_all
     · lia
@@ -399,7 +397,7 @@ theorem prec_nonneg_combo_right {f g : ℝ[X]}
       · lia
       · rcases List.mem_cons.mp h with h | h
         · cases h
-          exact prec_refl hfg.2.1
+          exact prec_refl hfg.2.1.1 hfg.2.1.2
         · simp at h
     · simp_all
     · simp_all
@@ -487,8 +485,8 @@ lemma iff_add_left {f g : ℝ[X]} :
   · intro h lam μ hlam hμ
     have hbase : ((C (lam / μ) * f + g) ≠ 0 ∧
       (C (lam / μ) * f + g).Splits) := h (lam := lam / μ) (by simp_all)
-    have hscaled : ((C μ * (C (lam / μ) * f + g)) ≠ 0 ∧ (C μ * (C (lam / μ) * f + g)).Splits) :=
-      isRealRooted_C_mul hbase hμ.ne'
+    have hscaled : ((C μ * (C (lam / μ) * f + g)) ≠ 0 ∧ (C μ * (C (lam / μ) * f + g)).Splits) := by
+      simp_all [hμ.ne', splits_mul_iff_right]
     have hEq : C μ * (C (lam / μ) * f + g) = C lam * f + C μ * g := by
       rw [mul_add]
       have hleft : C μ * (C (lam / μ) * f) = C lam * f := by
@@ -580,8 +578,8 @@ lemma isRealRooted_closed_segment_of_sameDegree {f g : ℝ[X]}
 /--
 ASW/PF bridge for the positive-combination endpoint target.
 
-If every nonnegative right pencil `f + z g` is nonzero and has a
-Polya-frequency coefficient sequence, then ASW gives real-rootedness of
+If every right pencil `f + z g` is nonzero and has a Polya-frequency coefficient sequence,
+then ASW gives real-rootedness of
 `f + z g`; rescaling by a positive constant gives real-rootedness of every
 positive combination `a f + b g`.
 -/
@@ -589,14 +587,11 @@ theorem of_aissenSchoenbergWhitney_right_pencil
     {f g : ℝ[X]}
     (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hne : ∀ {z : ℝ}, 0 ≤ z → f + C z * g ≠ 0)
-    (hnn : ∀ {z : ℝ}, 0 ≤ z → HasNonnegCoeffs (f + C z * g))
-    (hpf : ∀ {z : ℝ}, 0 ≤ z →
-      IsPolyaFrequencySequence (fun n => (f + C z * g).coeff n)) :
+    (hpf : ∀ {z : ℝ}, 0 ≤ z → IsPolyaFreqSeq (f + C z * g).coeff) :
     PosComboRealRooted f g := by
   intro a b ha hb
   let z : ℝ := b / a
   have hz : 0 ≤ z := div_nonneg hb.le ha.le
-  have hp_rr : ((f + C z * g) ≠ 0 ∧ (f + C z * g).Splits) := (hASW (hne hz) (hnn hz) (hpf hz)).1
   have haz : a * z = b := by
     grind
   have hterm : C a * (C z * g) = C (a * z) * g := by
@@ -605,7 +600,7 @@ theorem of_aissenSchoenbergWhitney_right_pencil
       C a * (f + C z * g) = C a * f + C b * g := by
     grind
   rw [← hscale]
-  exact isRealRooted_C_mul hp_rr ha.ne'
+  exact ⟨mul_ne_zero (by simpa using ha.ne') (hne hz), .mul (.C _) <| (hASW (hpf hz)).1⟩
 
 /--
 TNN-named version of `of_aissenSchoenbergWhitney_right_pencil`.
@@ -617,11 +612,9 @@ theorem of_aissenSchoenbergWhitney_right_pencil_tnn
     {f g : ℝ[X]}
     (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hne : ∀ {z : ℝ}, 0 ≤ z → f + C z * g ≠ 0)
-    (hnn : ∀ {z : ℝ}, 0 ≤ z → HasNonnegCoeffs (f + C z * g))
-    (htnn : ∀ {z : ℝ}, 0 ≤ z →
-      ToeplitzTotallyNonnegative (fun n => (f + C z * g).coeff n)) :
+    (htnn : ∀ {z : ℝ}, 0 ≤ z → IsPolyaFreqSeq (f + C z * g).coeff) :
     PosComboRealRooted f g :=
-  PosComboRealRooted.of_aissenSchoenbergWhitney_right_pencil hASW hne hnn
+  PosComboRealRooted.of_aissenSchoenbergWhitney_right_pencil hASW hne
     (fun {z} hz => htnn (z := z) hz)
 
 /-- Any two positive combinations from the same one-parameter family again form
@@ -1335,13 +1328,13 @@ theorem prec_nonneg_combo_left {f g : ℝ[X]}
   rcases hab with ha_pos | hb_pos
   · by_cases hb0 : b = 0
     · simpa [hb0, weightedSum, weightedSum_cons] using
-        (prec_C_mul_right (prec_refl hfg.1) ha_pos.ne')
+        (prec_C_mul_right (prec_refl hfg.1.1 hfg.1.2) ha_pos.ne')
     · have hb_pos : 0 < b := by
         grind
       have hCa_pos : HasPosLeadingCoeff (C a * f) := hasPosLeadingCoeff_C_mul ha_pos hf_pos
       have hCb_pos : HasPosLeadingCoeff (C b * g) := hasPosLeadingCoeff_C_mul hb_pos hg_pos
       exact prec_add_of_prec_left
-        (prec_C_mul_right (prec_refl hfg.1) ha_pos.ne')
+        (prec_C_mul_right (prec_refl hfg.1.1 hfg.1.2) ha_pos.ne')
         (prec_C_mul_right hfg hb_pos.ne')
         hCa_pos hCb_pos hfg_rr hcop
   · by_cases ha0 : a = 0
@@ -1352,7 +1345,7 @@ theorem prec_nonneg_combo_left {f g : ℝ[X]}
       have hCa_pos : HasPosLeadingCoeff (C a * f) := hasPosLeadingCoeff_C_mul ha_pos hf_pos
       have hCb_pos : HasPosLeadingCoeff (C b * g) := hasPosLeadingCoeff_C_mul hb_pos hg_pos
       exact prec_add_of_prec_left
-        (prec_C_mul_right (prec_refl hfg.1) ha_pos.ne')
+        (prec_C_mul_right (prec_refl hfg.1.1 hfg.1.2) ha_pos.ne')
         (prec_C_mul_right hfg hb_pos.ne')
         hCa_pos hCb_pos hfg_rr hcop
 
@@ -1369,7 +1362,7 @@ theorem prec_convex_left {f g : ℝ[X]}
   have hCa_pos : HasPosLeadingCoeff (C a * f) := hasPosLeadingCoeff_C_mul ha hf_pos
   have hCb_pos : HasPosLeadingCoeff (C b * g) := hasPosLeadingCoeff_C_mul hb hg_pos
   exact prec_add_of_prec_left
-    (prec_C_mul_right (prec_refl hfg.1) ha.ne')
+    (prec_C_mul_right (prec_refl hfg.1.1 hfg.1.2) ha.ne')
     (prec_C_mul_right hfg hb.ne')
     hCa_pos hCb_pos hfg_rr hcop
 
