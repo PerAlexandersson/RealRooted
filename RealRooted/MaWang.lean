@@ -77,9 +77,7 @@ private theorem exists_signInterleaving {F : ℝ[X]} :
       obtain ⟨us, hus_len, hus_int, hus_roots⟩ :=
         exists_signInterleaving (F := F) (r₂ :: rest) htail_sorted
           (fun pre {a b tail} hEq => by
-            have hEq' : r₁ :: r₂ :: rest = (r₁ :: pre) ++ a :: b :: tail := by
-              simp [List.cons_append, hEq]
-            simpa using hsign (r₁ :: pre) hEq')
+            grind)
       refine ⟨u :: us, ?_, ?_, ?_⟩
       · simp [hus_len]
       · exact ⟨hu₁, hu₂, hus_int⟩
@@ -150,9 +148,7 @@ private theorem listInterlaces_of_drop_bounds :
               | cons s₂ ss' =>
                   have hu_le_s₂ : u ≤ s₂ := by
                     obtain ⟨w, hw_drop, hw_le⟩ := hexists [] rfl
-                    have hu_le_w : u ≤ w := by
-                      simpa using htu_sorted.head!_le hw_drop
-                    exact le_trans hu_le_w hw_le
+                    grind
                   have hleft' :
                       ∀ {s' : ℝ} {rest : List ℝ},
                         s₂ :: ss' = s' :: rest →
@@ -171,11 +167,7 @@ private theorem listInterlaces_of_drop_bounds :
                       ∀ (pre : List ℝ) {s₁ s₂' : ℝ} {rest : List ℝ},
                         s₂ :: ss' = pre ++ s₁ :: s₂' :: rest →
                         ∃ v, v ∈ (u :: us).drop (pre.length + 1) ∧ v ≤ s₂' := by
-                    intro pre s₁ s₂' rest hEq
-                    have hEq' : s :: s₂ :: ss' = (s :: pre) ++ s₁ :: s₂' :: rest := by
-                      simp [List.cons_append, hEq]
-                    simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using
-                      hexists (s :: pre) hEq'
+                    grind
                   have hlen' : (s₂ :: ss').length + 1 = (u :: us).length := by
                     simp_all
                   have hint_tail : ListInterlaces (s₂ :: ss') (u :: us) :=
@@ -219,16 +211,12 @@ private theorem listAlternates_of_drop_bounds :
             obtain ⟨u, hu_mem, hu_le⟩ := hexists [] rfl
             have ht_le_u : t ≤ u := by
               simpa using hts.head!_le hu_mem
-            exact le_trans ht_le_u hu_le
+            grind
           have hge' :
               ∀ (pre : List ℝ) {s' : ℝ} {rest : List ℝ},
                 s₂ :: ss' = pre ++ s' :: rest →
                 ∀ u ∈ (t :: ts).drop (pre.length + 1), s' ≤ u := by
-            intro pre s' rest hEq u hu
-            have hEq' : s :: s₂ :: ss' = (s :: pre) ++ s' :: rest := by
-              simp [List.cons_append, hEq]
-            simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using
-              hge (s :: pre) hEq' u hu
+            grind
           have hexists' :
               ∀ (pre : List ℝ) {s₁ s₂' : ℝ} {rest : List ℝ},
                 s₂ :: ss' = pre ++ s₁ :: s₂' :: rest →
@@ -262,7 +250,7 @@ private lemma all_ge_of_countP_lt_drop
   have htake_lt : ∀ x ∈ ts.take k, x < s := by
     intro x hx
     have hx_le_u : x ≤ u := hts.rel_of_mem_take_of_mem_drop hx hu
-    exact lt_of_le_of_lt hx_le_u hu_lt
+    grind
   have hk : k ≤ ts.length := by
     by_contra hk
     have hk' : ts.length < k := lt_of_not_ge hk
@@ -273,11 +261,9 @@ private lemma all_ge_of_countP_lt_drop
     have hfilter :
         List.filter (fun x => decide (x < s)) (ts.take k) = ts.take k := by
       simp_all
-    rw [hfilter]
-    simp [List.length_take, Nat.min_eq_left hk]
+    grind
   have hdrop_pos : 0 < (ts.drop k).countP (· < s) := by
-    rw [List.countP_eq_length_filter]
-    exact List.length_pos_of_mem <| List.mem_filter.mpr ⟨hu, by lia⟩
+    grind
   have hsplit :
       ts.countP (· < s) =
         (ts.take k).countP (· < s) + (ts.drop k).countP (· < s) := by
@@ -338,7 +324,7 @@ theorem listInterlaces_of_count_bounds
     have hu_mem : u ∈ ts := by simp_all
     have hhead_le_u : ts.head! ≤ u := by
       simpa using hts.head!_le hu_mem
-    exact le_trans hhead_le_u hu_le
+    grind
   · intro pre s rest hEq u hu
     exact all_ge_of_countP_lt_drop hts (hlt pre hEq) u hu
   · intro pre s₁ s₂ rest hEq
@@ -508,7 +494,7 @@ private lemma isRoot_of_eval_nonneg_of_odd_countP_gt
   have hnorm' : 0 ≤ -F.eval s := by
     simpa [pow_add, pow_mul] using hnorm
   rw [Polynomial.IsRoot.def]
-  linarith [hs, hnorm']
+  grind
 
 /-- A strictly negative value occurs only when an odd number of roots lie
 strictly to the right. -/
@@ -585,9 +571,7 @@ private lemma exists_mem_between_of_listInterlaces_consecutive :
                   | cons a' pre' =>
                       simp [htailEq, ListInterlaces] at hint'
                       simp_all
-                obtain ⟨t, ht_mem, hr₁t, ht_r₂⟩ :=
-                  ih (ss := ss') (rs := pre ++ r₁ :: r₂ :: rest) htail rfl
-                exact ⟨t, by simp [ht_mem], hr₁t, ht_r₂⟩
+                grind
 
 /-- If `g ⊳ f` and `f` and `g` share no roots, then consecutive roots of `f`
 are strictly increasing. -/
@@ -610,10 +594,7 @@ private lemma lt_of_consecutive_of_interlaces_of_no_common
     apply (mem_roots hg.1).mp
     rw [← hss_eq]
     exact Multiset.mem_coe.mpr hs_mem
-  by_contra hnot
-  have hr₂_le_r₁ : r₂ ≤ r₁ := le_of_not_gt hnot
-  have hs_eq : s = r₁ := le_antisymm (le_trans hs_r₂ hr₂_le_r₁) hr₁s
-  simp_all
+  grind
 
 private lemma countP_le_add_countP_gt_eq_length (ts : List ℝ) (s : ℝ) :
     ts.countP (· ≤ s) + ts.countP (s < ·) = ts.length := by
@@ -635,11 +616,8 @@ private lemma countP_lt_countP_of_exists
   have hlt :
       (ts.filter q).countP p < (ts.filter q).length := by
     rw [List.countP_lt_length_iff]
-    refine ⟨a, List.mem_filter.mpr ⟨ha, hqa⟩, hpa⟩
-  calc
-    ts.countP p = (ts.filter q).countP p := by lia
-    _ < (ts.filter q).length := hlt
-    _ = ts.countP q := by rw [List.countP_eq_length_filter]
+    grind
+  grind
 
 private lemma isRoot_of_mem_sorted_roots_eq
     {f : ℝ[X]} {rs pre : List ℝ} {r : ℝ} {rest : List ℝ}
@@ -769,11 +747,7 @@ private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive :
               have hs_factor_nonneg : 0 ≤ (r₁ - s) * (r₂ - s) := by
                 have hs_le_r₁ : s ≤ r₁ := le_trans hs_le_a' ha'_le_r₁
                 have hr₁r₂ : r₁ ≤ r₂ := by
-                  have hpre_tail : (pre' ++ r₁ :: r₂ :: rest).Pairwise (· ≤ ·) :=
-                    (List.pairwise_cons.mp hrs_tail).2
-                  have hrs_r₁r₂ : (r₁ :: r₂ :: rest).Pairwise (· ≤ ·) :=
-                    (List.pairwise_append.mp hpre_tail).2.1
-                  simp_all
+                  grind
                 nlinarith
               have htail_nonpos :
                   (ss'.map (fun x => r₁ - x)).prod *
@@ -873,7 +847,7 @@ lemma exists_isRoot_between_of_eval_mul_neg {p : ℝ[X]} {a b : ℝ}
   have hcb' : c ≠ b := by
     intro h
     simp_all
-  exact ⟨c, lt_of_le_of_ne hac (Ne.symm hca), lt_of_le_of_ne hcb hcb', hc_root⟩
+  grind
 
 /-- Strict interval-root construction: if a polynomial has strictly opposite
 signs at each consecutive pair in a sorted real list `rs`, then it has a root
@@ -906,9 +880,7 @@ private theorem exists_strictSignInterleaving {F : ℝ[X]} :
         have hr₁r₂_le : r₁ ≤ r₂ := List.rel_of_pairwise_cons hrs_sorted (by simp)
         by_contra hEq
         have : F.eval r₁ * F.eval r₂ = (F.eval r₁) ^ 2 := by
-          have : r₁ = r₂ := le_antisymm hr₁r₂_le (not_lt.mp hEq)
-          subst this
-          ring
+          grind
         nlinarith [sq_nonneg (F.eval r₁)]
       obtain ⟨u, hu₁, hu₂, hu_root⟩ :=
         exists_isRoot_between_of_eval_mul_neg hr₁r₂ (by simpa using hsign [] rfl)
@@ -917,9 +889,7 @@ private theorem exists_strictSignInterleaving {F : ℝ[X]} :
       obtain ⟨us, hus_len, hus_int, hus_roots, hus_pw⟩ :=
         exists_strictSignInterleaving (F := F) (r₂ :: rest) htail_sorted
           (fun pre {a b tail} hEq => by
-            have hEq' : r₁ :: r₂ :: rest = (r₁ :: pre) ++ a :: b :: tail := by
-              simp [List.cons_append, hEq]
-            simpa using hsign (r₁ :: pre) hEq')
+            grind)
       have hu_lt_all : ∀ w ∈ us, u < w := by
         intro w hw
         exact lt_of_lt_of_le hu₂ (listInterlaces_all_ge us rest r₂ hus_int w hw)
@@ -1009,10 +979,7 @@ private lemma eval_sign_of_interlaces_root
         have ht_le_r : t ≤ r := by
           simp_all
         have ht_root : g.IsRoot t := (mem_roots hg.1).mp ht
-        by_contra hnot
-        have hr_le_t : r ≤ t := not_lt.mp hnot
-        have ht_eq : t = r := le_antisymm ht_le_r hr_le_t
-        simp_all
+        grind
       constructor
       · intro _
         exact eval_pos_of_all_roots_lt hg hg_pos hroots_g_lt_r
@@ -1034,14 +1001,12 @@ private lemma eval_sign_of_interlaces_root
       constructor
       · intro heven
         have hodd_rest : Odd rest.length := by
-          apply Nat.not_even_iff_odd.mp
-          simpa [Nat.succ_eq_add_one] using (Nat.even_add_one.mp heven)
+          grind
         have hg₂_neg : g.eval r₂ < 0 := hnext.2 hodd_rest
         nlinarith
       · intro hodd
         have heven_rest : Even rest.length := by
-          apply Nat.not_odd_iff_even.mp
-          simpa [Nat.succ_eq_add_one] using (Nat.odd_add_one.mp hodd)
+          grind
         have hg₂_pos : 0 < g.eval r₂ := hnext.1 heven_rest
         nlinarith
 
@@ -1080,8 +1045,7 @@ private lemma isRoot_of_eq_max_countP_le_of_sign
     (hcount : ts.countP (· ≤ r) = pre.length + off + 1) :
     F.IsRoot r := by
   have hrs_len : rs.length = pre.length + rest.length + 1 := by
-    rw [hEq]
-    simp [Nat.add_assoc]
+    grind
   have hcount_gt : ts.countP (r < ·) = rest.length := by
     have hsplit := countP_le_add_countP_gt_eq_length ts r
     lia
@@ -1121,36 +1085,28 @@ private lemma countP_le_of_eq_max_isRoot
       have hcount_le :
           ts.countP (· ≤ r) ≤ ts.length :=
         List.countP_le_length (p := fun x => decide (x ≤ r)) (l := ts)
-      have hrs_len : rs.length = pre.length + 1 := by
-        simp_all
-      lia
+      grind
   | cons r₂ rest ih =>
       have hEq_next : rs = (pre ++ [r]) ++ r₂ :: rest := by
         simp_all
       have hnext : ts.countP (· ≤ r₂) ≤ pre.length + off + 2 := by
-        have hnext' := ih (pre := pre ++ [r]) (r := r₂) hEq_next
-        simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using hnext'
+        grind
       have hr_lt_r₂ : r < r₂ := hstrict pre hEq
       by_cases hsmall : ts.countP (· ≤ r₂) ≤ pre.length + off + 1
       · have hmono : ts.countP (· ≤ r) ≤ ts.countP (· ≤ r₂) := by
           exact List.countP_mono_left <| by
-            intro x _ hx
-            simp only [decide_eq_true_eq] at hx ⊢
-            exact le_trans hx (le_of_lt hr_lt_r₂)
+            grind
         lia
       · have heq : ts.countP (· ≤ r₂) = pre.length + off + 2 := by
           lia
         have hr₂_root : F.IsRoot r₂ := by
-          apply hroot_on_max (pre := pre ++ [r]) hEq_next
-          simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using heq
+          grind
         have hr₂_mem : r₂ ∈ ts := by
           apply Multiset.mem_coe.mp
           simp_all
         have hlt : ts.countP (· ≤ r) < ts.countP (· ≤ r₂) := by
           apply countP_lt_countP_of_exists
-          · intro x hx
-            simp only [decide_eq_true_eq] at hx ⊢
-            exact le_trans hx (le_of_lt hr_lt_r₂)
+          · grind
           · exact hr₂_mem
           · simp [not_le_of_gt hr_lt_r₂]
           · simp
@@ -1177,9 +1133,7 @@ private lemma countP_lt_of_eq_max_isRoot
   by_cases hsmall : ts.countP (· ≤ r) ≤ pre.length + off
   · have hmono : ts.countP (· < r) ≤ ts.countP (· ≤ r) := by
       exact List.countP_mono_left <| by
-        intro x _ hx
-        simp only [decide_eq_true_eq] at hx ⊢
-        exact le_of_lt hx
+        grind
     lia
   · have heq : ts.countP (· ≤ r) = pre.length + off + 1 := by
       lia
@@ -1189,9 +1143,7 @@ private lemma countP_lt_of_eq_max_isRoot
       simp_all
     have hlt : ts.countP (· < r) < ts.countP (· ≤ r) := by
       apply countP_lt_countP_of_exists
-      · intro x hx
-        simp only [decide_eq_true_eq] at hx ⊢
-        exact le_of_lt hx
+      · grind
       · exact hr_mem
       · simp
       · simp
@@ -1266,8 +1218,7 @@ theorem prec_same_of_strict_signs_of_right_root
   have hrs_len : rs.length = f.natDegree := by
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
   have hrs_ne : rs ≠ [] := by
-    intro h
-    simp [h] at hn
+    grind
   obtain ⟨r, rs', rfl⟩ : ∃ r rs', rs = r :: rs' := by
     cases rs with
     | nil => lia
@@ -1275,8 +1226,7 @@ theorem prec_same_of_strict_signs_of_right_root
   have hall_us_lt_uR : ∀ u ∈ us, u < uR :=
     listInterlaces_all_lt_of_upperBound hus_int huR_lt
   have hws_pw : (us ++ [uR]).Pairwise (· < ·) := by
-    rw [List.pairwise_append]
-    simp_all
+    grind
   have hws_sub : (↑(us ++ [uR]) : Multiset ℝ) ≤ F.roots := by
     rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr (hws_pw.imp ne_of_lt))]
     intro x hx
@@ -1299,10 +1249,7 @@ theorem prec_same_of_strict_signs_of_right_root
     cases us with
     | nil =>
         have hrs_single : rs' = [] := by
-          cases rs' with
-          | nil => lia
-          | cons a as =>
-              simp at hus_len
+          grind
         subst rs'
         simp [ListAlternates, ListInterlaces, le_of_lt (huR_lt r (by simp))]
     | cons s ss =>
@@ -1313,8 +1260,7 @@ theorem prec_same_of_strict_signs_of_right_root
         | cons r₂ rest =>
             obtain ⟨hrs, hs_r₂, htail⟩ := hint'
             have htail_bound : ∀ x ∈ r₂ :: rest, x ≤ uR := by
-              intro x hx
-              exact le_of_lt (huR_lt x (by simp [hx]))
+              grind
             exact ⟨hrs, listInterlaces_of_interlacing_append_right (rs := r₂ :: rest) (by lia)
               htail hs_r₂ htail_bound⟩
   have hlen_shape : (r :: rs').length = (us ++ [uR]).length := by
@@ -1379,8 +1325,7 @@ theorem prec_of_strict_signs_of_strict_outer_roots
   have hrs_len : rs.length = f.natDegree := by
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
   have hrs_ne : rs ≠ [] := by
-    intro h
-    simp [h] at hn
+    grind
   obtain ⟨r, rs', rfl⟩ : ∃ r rs', rs = r :: rs' := by
     cases rs with
     | nil => lia
@@ -1392,8 +1337,7 @@ theorem prec_of_strict_signs_of_strict_outer_roots
   have hall_us_lt_uR : ∀ u ∈ us, u < uR :=
     listInterlaces_all_lt_of_upperBound hus_int huR_lt
   have husuR_pw : (us ++ [uR]).Pairwise (· < ·) := by
-    rw [List.pairwise_append]
-    simp_all
+    grind
   have hws_pw : (uL :: us ++ [uR]).Pairwise (· < ·) := by
     refine List.pairwise_cons.mpr ⟨?_, husuR_pw⟩
     intro x hx
@@ -1483,8 +1427,7 @@ theorem prec_of_strict_signs_of_endSigns_even
         F.eval r₁ * F.eval r₂ < 0)
     (hleft_sign : 0 < F.eval rs.head!)
     (hright_sign : F.eval (rs.getLast (by
-      intro hrs_nil
-      simp [hrs_nil] at hn)) < 0) :
+      grind)) < 0) :
     Prec f F := by
   have hF_ne : F ≠ 0 := by
     intro h0
@@ -1545,8 +1488,7 @@ theorem prec_of_strict_signs_of_endSigns_odd
         F.eval r₁ * F.eval r₂ < 0)
     (hleft_sign : F.eval rs.head! < 0)
     (hright_sign : F.eval (rs.getLast (by
-      intro hrs_nil
-      simp [hrs_nil] at hn)) < 0) :
+      grind)) < 0) :
     Prec f F := by
   have hF_ne : F ≠ 0 := by
     intro h0
@@ -1603,8 +1545,7 @@ theorem prec_of_interlaces_eval_mul_neg_succ {f g F : ℝ[X]}
   have hn : 1 ≤ rs.length := by
     lia
   have hrs_ne : rs ≠ [] := by
-    intro hrs_nil
-    simp [hrs_nil] at hn
+    grind
   obtain ⟨r₀, rs', rfl⟩ : ∃ r₀ rs', rs = r₀ :: rs' := by
     cases rs with
     | nil => lia
@@ -1628,10 +1569,7 @@ theorem prec_of_interlaces_eval_mul_neg_succ {f g F : ℝ[X]}
       lia
     have hr₀_le_t : r₀ ≤ t := listInterlaces_all_ge ss rs' r₀ hint t ht_ss
     have ht_root : g.IsRoot t := (mem_roots hg.1).mp ht
-    by_contra hnot
-    have ht_le_r₀ : t ≤ r₀ := le_of_not_gt hnot
-    have hEq : t = r₀ := le_antisymm ht_le_r₀ hr₀_le_t
-    simp_all
+    grind
   have hroots_g_lt_last : ∀ t ∈ g.roots, t < (r₀ :: rs').getLast (by lia) := by
     intro t ht
     have ht_ss : t ∈ ss := by
@@ -1640,10 +1578,7 @@ theorem prec_of_interlaces_eval_mul_neg_succ {f g F : ℝ[X]}
     have ht_le_last : t ≤ (r₀ :: rs').getLast (by lia) :=
       listInterlaces_all_le_getLast (rs := r₀ :: rs') (by lia) hrs_sorted hint t ht_ss
     have ht_root : g.IsRoot t := (mem_roots hg.1).mp ht
-    by_contra hnot
-    have hlast_le_t : (r₀ :: rs').getLast (by lia) ≤ t := not_lt.mp hnot
-    have hEq : t = (r₀ :: rs').getLast (by lia) := le_antisymm ht_le_last hlast_le_t
-    simp_all
+    grind
   have hsign :
       ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
         (r₀ :: rs') = pre ++ r₁ :: r₂ :: rest →
@@ -1666,15 +1601,11 @@ theorem prec_of_interlaces_eval_mul_neg_succ {f g F : ℝ[X]}
     have hg₂_ne : g.eval r₂ ≠ 0 := by
       simp_all
     have hgg_neg : g.eval r₁ * g.eval r₂ < 0 := by
-      exact lt_of_le_of_ne hgg_nonpos (mul_ne_zero hg₁_ne hg₂_ne)
+      grind
     exact mul_neg_of_mul_neg_of_mul_neg hFg₁ hFg₂ hgg_neg
   rcases Nat.even_or_odd f.natDegree with hf_even | hf_odd
   · have hg_odd : Odd g.natDegree := by
-      rcases hf_even with ⟨k, hk⟩
-      have hk_pos : 0 < k := by
-        lia
-      refine ⟨k - 1, ?_⟩
-      lia
+      grind
     have hg_left_neg : g.eval r₀ < 0 :=
       eval_neg_of_all_roots_gt_of_odd hg hg_pos hg_odd hhead_lt_roots_g
     have hF_left_pos : 0 < F.eval r₀ := by
@@ -1688,8 +1619,7 @@ theorem prec_of_interlaces_eval_mul_neg_succ {f g F : ℝ[X]}
     exact prec_of_strict_signs_of_endSigns_even hf hF_pos hrs_sorted hrs_eq hdeg hn hf_even
       hsign hF_left_pos hF_right_neg
   · have hg_even : Even g.natDegree := by
-      rcases hf_odd with ⟨k, hk⟩
-      simp_all
+      grind
     have hg_left_pos : 0 < g.eval r₀ :=
       eval_pos_of_all_roots_gt_of_even hg hg_pos hg_even hhead_lt_roots_g
     have hF_left_neg : F.eval r₀ < 0 := by
@@ -1719,8 +1649,7 @@ theorem prec_of_interlaces_eval_mul_neg_same {f g F : ℝ[X]}
   have hn : 1 ≤ rs.length := by
     lia
   have hrs_ne : rs ≠ [] := by
-    intro hrs_nil
-    simp [hrs_nil] at hn
+    grind
   obtain ⟨r₀, rs', rfl⟩ : ∃ r₀ rs', rs = r₀ :: rs' := by
     cases rs with
     | nil => lia
@@ -1741,10 +1670,7 @@ theorem prec_of_interlaces_eval_mul_neg_same {f g F : ℝ[X]}
     have ht_le_last : t ≤ (r₀ :: rs').getLast (by lia) :=
       listInterlaces_all_le_getLast (rs := r₀ :: rs') (by lia) hrs_sorted hint t ht_ss
     have ht_root : g.IsRoot t := (mem_roots hg.1).mp ht
-    by_contra hnot
-    have hlast_le_t : (r₀ :: rs').getLast (by lia) ≤ t := not_lt.mp hnot
-    have hEq : t = (r₀ :: rs').getLast (by lia) := le_antisymm ht_le_last hlast_le_t
-    simp_all
+    grind
   have hsign :
       ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
         (r₀ :: rs') = pre ++ r₁ :: r₂ :: rest →
@@ -1767,7 +1693,7 @@ theorem prec_of_interlaces_eval_mul_neg_same {f g F : ℝ[X]}
     have hg₂_ne : g.eval r₂ ≠ 0 := by
       simp_all
     have hgg_neg : g.eval r₁ * g.eval r₂ < 0 := by
-      exact lt_of_le_of_ne hgg_nonpos (mul_ne_zero hg₁_ne hg₂_ne)
+      grind
     exact mul_neg_of_mul_neg_of_mul_neg hFg₁ hFg₂ hgg_neg
   have hg_right_pos : 0 < g.eval ((r₀ :: rs').getLast (by lia)) :=
     eval_pos_of_all_roots_lt hg hg_pos hroots_g_lt_last
@@ -1958,7 +1884,7 @@ private lemma common_root_reduction_data
   · apply hasPosLeadingCoeff_of_X_sub_C_mul (r := r)
     lia
   · apply hasPosLeadingCoeff_of_X_sub_C_mul (r := r)
-    simpa [hqf, hqg, add_mul_factor_X_sub_C, add_comm, add_left_comm, add_assoc] using hF_pos
+    grind
   · have hf_ne : f ≠ 0 := hf.1
     have hF_ne : a * f + b * g ≠ 0 := by
       intro h0
@@ -1966,8 +1892,7 @@ private lemma common_root_reduction_data
     have hqf_ne : qf ≠ 0 := by
       simp_all
     have hFq_ne : a * qf + b * qg ≠ 0 := by
-      intro h0
-      exact hF_ne (by simp [hqf, hqg, add_mul_factor_X_sub_C, h0])
+      grind
     rw [hqf, hqg, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
       add_mul_factor_X_sub_C,
       natDegree_mul (X_sub_C_ne_zero r) hFq_ne, natDegree_X_sub_C] at hdeg_lo
@@ -1979,8 +1904,7 @@ private lemma common_root_reduction_data
     have hqf_ne : qf ≠ 0 := by
       simp_all
     have hFq_ne : a * qf + b * qg ≠ 0 := by
-      intro h0
-      exact hF_ne (by simp [hqf, hqg, add_mul_factor_X_sub_C, h0])
+      grind
     rw [hqf, hqg, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
       add_mul_factor_X_sub_C,
       natDegree_mul (X_sub_C_ne_zero r) hFq_ne, natDegree_X_sub_C] at hdeg_hi
@@ -2041,7 +1965,7 @@ theorem prec_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
     intro r hr
     have hbδ : (b - C δ).eval r < 0 := by
       rw [Polynomial.eval_sub, Polynomial.eval_C]
-      linarith [hb_nonpos r hr, hδ]
+      grind
     have hEq : F - C δ * g = a * f + (b - C δ) * g := by
       simp [F, sub_eq_add_neg, add_assoc, right_distrib]
     rw [hEq]
@@ -2196,8 +2120,7 @@ theorem isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
         _ = δ * (‖F.leadingCoeff⁻¹‖ * ‖g.coeff i‖) := by ring
         _ ≤ δ * A := by simp_all
         _ = η / 2 := by
-              unfold δ
-              field_simp [A]
+              grind
         _ < η := by simp_all
     obtain ⟨w, hw_mem, hw_close⟩ :=
       Polynomial.exists_aroots_norm_sub_lt_of_norm_coeff_sub_lt
@@ -2213,8 +2136,7 @@ theorem isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
       unfold eps0
       simpa using (Complex.abs_im_le_norm (z - x))
     have hR_pos : 0 < R := by
-      unfold R
-      positivity
+      grind
     have hbound_eq :
         (((q.natDegree : ℝ) + 1) * η) ^ ((q.natDegree : ℝ)⁻¹) * R = eps0 / 2 := by
       have hdeg_ne : q.natDegree ≠ 0 := by lia
@@ -2226,18 +2148,16 @@ theorem isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
             = (((q.natDegree : ℝ) + 1) * (u ^ q.natDegree / ((q.natDegree : ℝ) + 1)))
                 ^ ((q.natDegree : ℝ)⁻¹) * R := by lia
         _ = (u ^ q.natDegree) ^ ((q.natDegree : ℝ)⁻¹) * R := by
-              congr 1
-              field_simp
+              grind
         _ = u * R := by rw [Real.pow_rpow_inv_natCast hu_nonneg hdeg_ne]
         _ = eps0 / 2 := by
-              unfold u
-              field_simp [R, hR_pos.ne']
+              grind
     have hclose_eps : ‖z - x‖ < eps0 := by
       calc
         ‖z - x‖ < (((q.natDegree : ℝ) + 1) * η) ^ ((q.natDegree : ℝ)⁻¹) * R := hw_close
         _ = eps0 / 2 := hbound_eq
         _ < eps0 := by simp_all
-    exact (not_lt_of_ge him_le) hclose_eps
+    grind
   have hq_split : q.Splits := by
     exact Polynomial.Splits.of_splits_map (i := algebraMap ℝ ℂ)
       (IsAlgClosed.splits _) hroots_real
@@ -2247,7 +2167,7 @@ theorem isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
     unfold q
     calc
       C F.leadingCoeff * (C F.leadingCoeff⁻¹ * F)
-          = (C F.leadingCoeff * C F.leadingCoeff⁻¹) * F := by rw [mul_assoc]
+          = (C F.leadingCoeff * C F.leadingCoeff⁻¹) * F := by grind
       _ = C (F.leadingCoeff * F.leadingCoeff⁻¹) * F := by simp
       _ = F := by simp [hlc_ne]
   have hF_rr : (F ≠ 0 ∧ F.Splits) := by
@@ -2349,8 +2269,7 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
         _ = δ * (‖F.leadingCoeff⁻¹‖ * ‖g.coeff i‖) := by ring
         _ ≤ δ * A := by simp_all
         _ = η / 2 := by
-              unfold δ
-              field_simp [A]
+              grind
         _ < η := by simp_all
     obtain ⟨w, hw_mem, hw_close⟩ :=
       Polynomial.exists_aroots_norm_sub_lt_of_norm_coeff_sub_lt
@@ -2364,8 +2283,7 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
       unfold eps0
       simpa using (Complex.abs_im_le_norm (z - x))
     have hR_pos : 0 < R := by
-      unfold R
-      positivity
+      grind
     have hbound_eq :
         (((q.natDegree : ℝ) + 1) * η) ^ ((q.natDegree : ℝ)⁻¹) * R = eps0 / 2 := by
       have hdeg_ne : q.natDegree ≠ 0 := by lia
@@ -2377,18 +2295,16 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
             = (((q.natDegree : ℝ) + 1) * (u ^ q.natDegree / ((q.natDegree : ℝ) + 1)))
                 ^ ((q.natDegree : ℝ)⁻¹) * R := by lia
         _ = (u ^ q.natDegree) ^ ((q.natDegree : ℝ)⁻¹) * R := by
-              congr 1
-              field_simp
+              grind
         _ = u * R := by rw [Real.pow_rpow_inv_natCast hu_nonneg hdeg_ne]
         _ = eps0 / 2 := by
-              unfold u
-              field_simp [R, hR_pos.ne']
+              grind
     have hclose_eps : ‖z - x‖ < eps0 := by
       calc
         ‖z - x‖ < (((q.natDegree : ℝ) + 1) * η) ^ ((q.natDegree : ℝ)⁻¹) * R := hw_close
         _ = eps0 / 2 := hbound_eq
         _ < eps0 := by simp_all
-    exact (not_lt_of_ge him_le) hclose_eps
+    grind
   have hq_split : q.Splits := by
     exact Polynomial.Splits.of_splits_map (i := algebraMap ℝ ℂ)
       (IsAlgClosed.splits _) hroots_real
@@ -2398,7 +2314,7 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
     unfold q
     calc
       C F.leadingCoeff * (C F.leadingCoeff⁻¹ * F)
-          = (C F.leadingCoeff * C F.leadingCoeff⁻¹) * F := by rw [mul_assoc]
+          = (C F.leadingCoeff * C F.leadingCoeff⁻¹) * F := by grind
       _ = C (F.leadingCoeff * F.leadingCoeff⁻¹) * F := by simp
       _ = F := by simp [hlc_ne]
   rw [← hF_eq]
@@ -2493,29 +2409,20 @@ theorem prec_of_interlaces_evalCoeff_nonpos_same_of_no_common
               have hg_pos' : 0 < g.eval r₂ := (hgsign [r₁] hEq_next).1 heven
               nlinarith [hFg₂_nonpos, hg_pos']
             have hcount_even : Even (ts.countP (r₂ < ·)) := by
-              rw [hcount_gt]
-              have hstep : Odd (rest.length + 1) := heven.add_odd odd_one
-              have hfinal : Even ((rest.length + 1) + 1) := hstep.add_odd odd_one
-              lia
+              grind
             exact isRoot_of_eval_nonpos_of_even_countP_gt hF hF_pos hts_eq hF_nonpos
               hcount_even
           · have hF_nonneg : 0 ≤ F.eval r₂ := by
               have hg_neg' : g.eval r₂ < 0 := (hgsign [r₁] hEq_next).2 hodd
               nlinarith [hFg₂_nonpos, hg_neg']
             have hcount_odd : Odd (ts.countP (r₂ < ·)) := by
-              rw [hcount_gt]
-              have hstep : Even (rest.length + 1) := hodd.add_odd odd_one
-              have hfinal : Odd ((rest.length + 1) + 1) := hstep.add_odd odd_one
-              lia
+              grind
             exact isRoot_of_eval_nonneg_of_odd_countP_gt hF hF_pos hts_eq hF_nonneg
               hcount_odd
         have hr₂_mem : r₂ ∈ ts := by
           apply Multiset.mem_coe.mp
           simp_all
-        have hcount_pos : 0 < ts.countP (· ≤ r₂) := by
-          rw [List.countP_eq_length_filter]
-          exact List.length_pos_of_mem <| List.mem_filter.mpr ⟨hr₂_mem, by simp⟩
-        lia
+        grind
     | append_singleton pre x ih =>
         have hEq_prev : rs = pre ++ x :: r₁ :: r₂ :: rest := by
           simp_all
@@ -2529,9 +2436,7 @@ theorem prec_of_interlaces_evalCoeff_nonpos_same_of_no_common
           have hr₁_lt_r₂ : r₁ < r₂ := hstrict (pre ++ [x]) hEq
           have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) := by
             exact List.countP_mono_left <| by
-              intro x _ hx
-              simp only [decide_eq_true_eq] at hx ⊢
-              exact le_trans hx (le_of_lt hr₁_lt_r₂)
+              grind
           have hcount_r₁ : ts.countP (· ≤ r₁) = pre.length + 1 := by
             lia
           have hcount_r₂ : ts.countP (· ≤ r₂) = pre.length + 1 := by
@@ -2544,8 +2449,7 @@ theorem prec_of_interlaces_evalCoeff_nonpos_same_of_no_common
               eval_mul_right_nonpos_of_isRoot (f := f) (g := g) (a := a) (b := b)
                 hr₂_root (hb_nonpos r₂ hr₂_root)
           have hrs_len : rs.length = pre.length + rest.length + 3 := by
-            rw [hEq]
-            simp [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm]
+            grind
           have hcount_gt : ts.countP (r₂ < ·) = rest.length + 2 := by
             have hsplit := countP_le_add_countP_gt_eq_length ts r₂
             lia
@@ -2555,20 +2459,14 @@ theorem prec_of_interlaces_evalCoeff_nonpos_same_of_no_common
                 have hg_pos' : 0 < g.eval r₂ := (hgsign ((pre ++ [x]) ++ [r₁]) hEq_next).1 heven
                 nlinarith [hFg₂_nonpos, hg_pos']
               have hcount_even : Even (ts.countP (r₂ < ·)) := by
-                rw [hcount_gt]
-                have hstep : Odd (rest.length + 1) := heven.add_odd odd_one
-                have hfinal : Even ((rest.length + 1) + 1) := hstep.add_odd odd_one
-                lia
+                grind
               exact isRoot_of_eval_nonpos_of_even_countP_gt hF hF_pos hts_eq hF_nonpos
                 hcount_even
             · have hF_nonneg : 0 ≤ F.eval r₂ := by
                 have hg_neg' : g.eval r₂ < 0 := (hgsign ((pre ++ [x]) ++ [r₁]) hEq_next).2 hodd
                 nlinarith [hFg₂_nonpos, hg_neg']
               have hcount_odd : Odd (ts.countP (r₂ < ·)) := by
-                rw [hcount_gt]
-                have hstep : Even (rest.length + 1) := hodd.add_odd odd_one
-                have hfinal : Odd ((rest.length + 1) + 1) := hstep.add_odd odd_one
-                lia
+                grind
               exact isRoot_of_eval_nonneg_of_odd_countP_gt hF hF_pos hts_eq hF_nonneg
                 hcount_odd
           have hr₂_mem : r₂ ∈ ts := by
@@ -2576,9 +2474,7 @@ theorem prec_of_interlaces_evalCoeff_nonpos_same_of_no_common
             simp_all
           have hcount_strict : ts.countP (· ≤ r₁) < ts.countP (· ≤ r₂) := by
             apply countP_lt_countP_of_exists
-            · intro x hx
-              simp only [decide_eq_true_eq] at hx ⊢
-              exact le_trans hx (le_of_lt hr₁_lt_r₂)
+            · grind
             · exact hr₂_mem
             · simp [not_le_of_gt hr₁_lt_r₂]
             · simp
@@ -2673,29 +2569,20 @@ theorem prec_of_interlaces_evalCoeff_nonpos_succ_of_no_common
           have hg_pos' : 0 < g.eval r := (hgsign [] hEq).1 heven
           nlinarith [hFg_nonpos, hg_pos']
         have hcount_even : Even (ts.countP (r < ·)) := by
-          rw [hcount_gt]
-          have hstep : Odd (rest.length + 1) := heven.add_odd odd_one
-          have hfinal : Even ((rest.length + 1) + 1) := hstep.add_odd odd_one
-          lia
+          grind
         exact isRoot_of_eval_nonpos_of_even_countP_gt hF hF_pos hts_eq hF_nonpos
           hcount_even
       · have hF_nonneg : 0 ≤ F.eval r := by
           have hg_neg' : g.eval r < 0 := (hgsign [] hEq).2 hodd
           nlinarith [hFg_nonpos, hg_neg']
         have hcount_odd : Odd (ts.countP (r < ·)) := by
-          rw [hcount_gt]
-          have hstep : Even (rest.length + 1) := hodd.add_odd odd_one
-          have hfinal : Odd ((rest.length + 1) + 1) := hstep.add_odd odd_one
-          lia
+          grind
         exact isRoot_of_eval_nonneg_of_odd_countP_gt hF hF_pos hts_eq hF_nonneg
           hcount_odd
     have hr_mem : r ∈ ts := by
       apply Multiset.mem_coe.mp
       simp_all
-    have hcount_pos : 0 < ts.countP (· ≤ r) := by
-      rw [List.countP_eq_length_filter]
-      exact List.length_pos_of_mem <| List.mem_filter.mpr ⟨hr_mem, by simp⟩
-    lia
+    grind
   have hle :
       ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
         rs = pre ++ r₁ :: r₂ :: rest →
@@ -2737,20 +2624,14 @@ theorem prec_of_interlaces_evalCoeff_nonpos_succ_of_no_common
               have hg_pos' : 0 < g.eval r₂ := (hgsign [r₁] hEq_next).1 heven
               nlinarith [hFg₂_nonpos, hg_pos']
             have hcount_even : Even (ts.countP (r₂ < ·)) := by
-              rw [hcount_gt]
-              have hstep : Odd (rest.length + 1) := heven.add_odd odd_one
-              have hfinal : Even ((rest.length + 1) + 1) := hstep.add_odd odd_one
-              lia
+              grind
             exact isRoot_of_eval_nonpos_of_even_countP_gt hF hF_pos hts_eq hF_nonpos
               hcount_even
           · have hF_nonneg : 0 ≤ F.eval r₂ := by
               have hg_neg' : g.eval r₂ < 0 := (hgsign [r₁] hEq_next).2 hodd
               nlinarith [hFg₂_nonpos, hg_neg']
             have hcount_odd : Odd (ts.countP (r₂ < ·)) := by
-              rw [hcount_gt]
-              have hstep : Even (rest.length + 1) := hodd.add_odd odd_one
-              have hfinal : Odd ((rest.length + 1) + 1) := hstep.add_odd odd_one
-              lia
+              grind
             exact isRoot_of_eval_nonneg_of_odd_countP_gt hF hF_pos hts_eq hF_nonneg
               hcount_odd
         have hr₂_mem : r₂ ∈ ts := by
@@ -2911,29 +2792,20 @@ theorem prec_of_interlaces_eval_mul_nonpos_same_of_no_common
               have hg_pos' : 0 < g.eval r₂ := (hgsign [r₁] hEq_next).1 heven
               nlinarith [hFg₂_nonpos, hg_pos']
             have hcount_even : Even (ts.countP (r₂ < ·)) := by
-              rw [hcount_gt]
-              have hstep : Odd (rest.length + 1) := heven.add_odd odd_one
-              have hfinal : Even ((rest.length + 1) + 1) := hstep.add_odd odd_one
-              lia
+              grind
             exact isRoot_of_eval_nonpos_of_even_countP_gt hF hF_pos hts_eq hF_nonpos
               hcount_even
           · have hF_nonneg : 0 ≤ F.eval r₂ := by
               have hg_neg' : g.eval r₂ < 0 := (hgsign [r₁] hEq_next).2 hodd
               nlinarith [hFg₂_nonpos, hg_neg']
             have hcount_odd : Odd (ts.countP (r₂ < ·)) := by
-              rw [hcount_gt]
-              have hstep : Even (rest.length + 1) := hodd.add_odd odd_one
-              have hfinal : Odd ((rest.length + 1) + 1) := hstep.add_odd odd_one
-              lia
+              grind
             exact isRoot_of_eval_nonneg_of_odd_countP_gt hF hF_pos hts_eq hF_nonneg
               hcount_odd
         have hr₂_mem : r₂ ∈ ts := by
           apply Multiset.mem_coe.mp
           simp_all
-        have hcount_pos : 0 < ts.countP (· ≤ r₂) := by
-          rw [List.countP_eq_length_filter]
-          exact List.length_pos_of_mem <| List.mem_filter.mpr ⟨hr₂_mem, by simp⟩
-        lia
+        grind
     | append_singleton pre x ih =>
         have hEq_prev : rs = pre ++ x :: r₁ :: r₂ :: rest := by
           simp_all
@@ -2947,9 +2819,7 @@ theorem prec_of_interlaces_eval_mul_nonpos_same_of_no_common
           have hr₁_lt_r₂ : r₁ < r₂ := hstrict (pre ++ [x]) hEq
           have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) := by
             exact List.countP_mono_left <| by
-              intro x _ hx
-              simp only [decide_eq_true_eq] at hx ⊢
-              exact le_trans hx (le_of_lt hr₁_lt_r₂)
+              grind
           have hcount_r₁ : ts.countP (· ≤ r₁) = pre.length + 1 := by
             lia
           have hcount_r₂ : ts.countP (· ≤ r₂) = pre.length + 1 := by
@@ -2959,8 +2829,7 @@ theorem prec_of_interlaces_eval_mul_nonpos_same_of_no_common
           have hr₂_root : f.IsRoot r₂ := isRoot_of_mem_sorted_roots_eq hrs_eq hEq_next
           have hFg₂_nonpos : F.eval r₂ * g.eval r₂ ≤ 0 := hroot_nonpos r₂ hr₂_root
           have hrs_len : rs.length = pre.length + rest.length + 3 := by
-            rw [hEq]
-            simp [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm]
+            grind
           have hcount_gt : ts.countP (r₂ < ·) = rest.length + 2 := by
             have hsplit := countP_le_add_countP_gt_eq_length ts r₂
             lia
@@ -2970,20 +2839,14 @@ theorem prec_of_interlaces_eval_mul_nonpos_same_of_no_common
                 have hg_pos' : 0 < g.eval r₂ := (hgsign ((pre ++ [x]) ++ [r₁]) hEq_next).1 heven
                 nlinarith [hFg₂_nonpos, hg_pos']
               have hcount_even : Even (ts.countP (r₂ < ·)) := by
-                rw [hcount_gt]
-                have hstep : Odd (rest.length + 1) := heven.add_odd odd_one
-                have hfinal : Even ((rest.length + 1) + 1) := hstep.add_odd odd_one
-                lia
+                grind
               exact isRoot_of_eval_nonpos_of_even_countP_gt hF hF_pos hts_eq hF_nonpos
                 hcount_even
             · have hF_nonneg : 0 ≤ F.eval r₂ := by
                 have hg_neg' : g.eval r₂ < 0 := (hgsign ((pre ++ [x]) ++ [r₁]) hEq_next).2 hodd
                 nlinarith [hFg₂_nonpos, hg_neg']
               have hcount_odd : Odd (ts.countP (r₂ < ·)) := by
-                rw [hcount_gt]
-                have hstep : Even (rest.length + 1) := hodd.add_odd odd_one
-                have hfinal : Odd ((rest.length + 1) + 1) := hstep.add_odd odd_one
-                lia
+                grind
               exact isRoot_of_eval_nonneg_of_odd_countP_gt hF hF_pos hts_eq hF_nonneg
                 hcount_odd
           have hr₂_mem : r₂ ∈ ts := by
@@ -2991,9 +2854,7 @@ theorem prec_of_interlaces_eval_mul_nonpos_same_of_no_common
             simp_all
           have hcount_strict : ts.countP (· ≤ r₁) < ts.countP (· ≤ r₂) := by
             apply countP_lt_countP_of_exists
-            · intro x hx
-              simp only [decide_eq_true_eq] at hx ⊢
-              exact le_trans hx (le_of_lt hr₁_lt_r₂)
+            · grind
             · exact hr₂_mem
             · simp [not_le_of_gt hr₁_lt_r₂]
             · simp
@@ -3075,29 +2936,20 @@ theorem prec_of_interlaces_eval_mul_nonpos_succ_of_no_common
           have hg_pos' : 0 < g.eval r := (hgsign [] hEq).1 heven
           nlinarith [hFg_nonpos, hg_pos']
         have hcount_even : Even (ts.countP (r < ·)) := by
-          rw [hcount_gt]
-          have hstep : Odd (rest.length + 1) := heven.add_odd odd_one
-          have hfinal : Even ((rest.length + 1) + 1) := hstep.add_odd odd_one
-          lia
+          grind
         exact isRoot_of_eval_nonpos_of_even_countP_gt hF hF_pos hts_eq hF_nonpos
           hcount_even
       · have hF_nonneg : 0 ≤ F.eval r := by
           have hg_neg' : g.eval r < 0 := (hgsign [] hEq).2 hodd
           nlinarith [hFg_nonpos, hg_neg']
         have hcount_odd : Odd (ts.countP (r < ·)) := by
-          rw [hcount_gt]
-          have hstep : Even (rest.length + 1) := hodd.add_odd odd_one
-          have hfinal : Odd ((rest.length + 1) + 1) := hstep.add_odd odd_one
-          lia
+          grind
         exact isRoot_of_eval_nonneg_of_odd_countP_gt hF hF_pos hts_eq hF_nonneg
           hcount_odd
     have hr_mem : r ∈ ts := by
       apply Multiset.mem_coe.mp
       simp_all
-    have hcount_pos : 0 < ts.countP (· ≤ r) := by
-      rw [List.countP_eq_length_filter]
-      exact List.length_pos_of_mem <| List.mem_filter.mpr ⟨hr_mem, by simp⟩
-    lia
+    grind
   have hle :
       ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
         rs = pre ++ r₁ :: r₂ :: rest →
@@ -3114,9 +2966,7 @@ theorem prec_of_interlaces_eval_mul_nonpos_succ_of_no_common
         have hr₁_lt_r₂ : r₁ < r₂ := hstrict [] hEq
         have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) := by
           exact List.countP_mono_left <| by
-            intro y _ hy
-            simp only [decide_eq_true_eq] at hy ⊢
-            exact le_trans hy (le_of_lt hr₁_lt_r₂)
+            grind
         have hcount_r₁ : ts.countP (· ≤ r₁) = 1 := by
           lia
         have hcount_r₂ : ts.countP (· ≤ r₂) = 1 := by
@@ -3136,20 +2986,14 @@ theorem prec_of_interlaces_eval_mul_nonpos_succ_of_no_common
               have hg_pos' : 0 < g.eval r₂ := (hgsign [r₁] hEq_next).1 heven
               nlinarith [hFg₂_nonpos, hg_pos']
             have hcount_even : Even (ts.countP (r₂ < ·)) := by
-              rw [hcount_gt]
-              have hstep : Odd (rest.length + 1) := heven.add_odd odd_one
-              have hfinal : Even ((rest.length + 1) + 1) := hstep.add_odd odd_one
-              lia
+              grind
             exact isRoot_of_eval_nonpos_of_even_countP_gt hF hF_pos hts_eq hF_nonpos
               hcount_even
           · have hF_nonneg : 0 ≤ F.eval r₂ := by
               have hg_neg' : g.eval r₂ < 0 := (hgsign [r₁] hEq_next).2 hodd
               nlinarith [hFg₂_nonpos, hg_neg']
             have hcount_odd : Odd (ts.countP (r₂ < ·)) := by
-              rw [hcount_gt]
-              have hstep : Even (rest.length + 1) := hodd.add_odd odd_one
-              have hfinal : Odd ((rest.length + 1) + 1) := hstep.add_odd odd_one
-              lia
+              grind
             exact isRoot_of_eval_nonneg_of_odd_countP_gt hF hF_pos hts_eq hF_nonneg
               hcount_odd
         have hr₂_mem : r₂ ∈ ts := by
@@ -3157,9 +3001,7 @@ theorem prec_of_interlaces_eval_mul_nonpos_succ_of_no_common
           simp_all
         have hcount_strict : ts.countP (· ≤ r₁) < ts.countP (· ≤ r₂) := by
           apply countP_lt_countP_of_exists
-          · intro y hy
-            simp only [decide_eq_true_eq] at hy ⊢
-            exact le_trans hy (le_of_lt hr₁_lt_r₂)
+          · grind
           · exact hr₂_mem
           · simp [not_le_of_gt hr₁_lt_r₂]
           · simp
@@ -3175,9 +3017,7 @@ theorem prec_of_interlaces_eval_mul_nonpos_succ_of_no_common
         have hr₁_lt_r₂ : r₁ < r₂ := hstrict (pre ++ [x]) hEq
         have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) := by
           exact List.countP_mono_left <| by
-            intro y _ hy
-            simp only [decide_eq_true_eq] at hy ⊢
-            exact le_trans hy (le_of_lt hr₁_lt_r₂)
+            grind
         have hbad : ts.countP (· ≤ r₂) ≤ pre.length + 2 := by
           lia
         have hcount_r₁ : ts.countP (· ≤ r₁) = pre.length + 2 := by
@@ -3200,20 +3040,14 @@ theorem prec_of_interlaces_eval_mul_nonpos_succ_of_no_common
               have hg_pos' : 0 < g.eval r₂ := (hgsign ((pre ++ [x]) ++ [r₁]) hEq_next).1 heven
               nlinarith [hFg₂_nonpos, hg_pos']
             have hcount_even : Even (ts.countP (r₂ < ·)) := by
-              rw [hcount_gt]
-              have hstep : Odd (rest.length + 1) := heven.add_odd odd_one
-              have hfinal : Even ((rest.length + 1) + 1) := hstep.add_odd odd_one
-              lia
+              grind
             exact isRoot_of_eval_nonpos_of_even_countP_gt hF hF_pos hts_eq hF_nonpos
               hcount_even
           · have hF_nonneg : 0 ≤ F.eval r₂ := by
               have hg_neg' : g.eval r₂ < 0 := (hgsign ((pre ++ [x]) ++ [r₁]) hEq_next).2 hodd
               nlinarith [hFg₂_nonpos, hg_neg']
             have hcount_odd : Odd (ts.countP (r₂ < ·)) := by
-              rw [hcount_gt]
-              have hstep : Even (rest.length + 1) := hodd.add_odd odd_one
-              have hfinal : Odd ((rest.length + 1) + 1) := hstep.add_odd odd_one
-              lia
+              grind
             exact isRoot_of_eval_nonneg_of_odd_countP_gt hF hF_pos hts_eq hF_nonneg
               hcount_odd
         have hr₂_mem : r₂ ∈ ts := by
@@ -3221,9 +3055,7 @@ theorem prec_of_interlaces_eval_mul_nonpos_succ_of_no_common
           simp_all
         have hcount_strict : ts.countP (· ≤ r₁) < ts.countP (· ≤ r₂) := by
           apply countP_lt_countP_of_exists
-          · intro y hy
-            simp only [decide_eq_true_eq] at hy ⊢
-            exact le_trans hy (le_of_lt hr₁_lt_r₂)
+          · grind
           · exact hr₂_mem
           · simp [not_le_of_gt hr₁_lt_r₂]
           · simp
@@ -3301,7 +3133,7 @@ theorem prec_of_interlaces_evalCoeff_nonpos
       rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C]
       lia
     have hprec_q : Prec qf (a * qf + b * qg) := by
-      exact ih qf.natDegree hqf_deg_lt rfl hqinter hqg_pos hqF_pos hqdeg_lo hqdeg_hi hq_nonpos
+      grind
     have hprec_mul :
         Prec ((X - C r) * qf) (a * ((X - C r) * qf) + b * ((X - C r) * qg)) :=
       prec_mul_X_sub_C_of_linearCombo_quotient (a := a) (b := b) (r := r) hprec_q
