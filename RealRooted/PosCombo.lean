@@ -824,15 +824,12 @@ theorem prec_or_revPrec_of_posComboRealRooted_of_no_common
     have hprec_q : Prec qf qg ∨ Prec qg qf :=
       ih qf.natDegree hqf_deg_lt rfl hqfg hqf_pos hqg_pos hqdeg_lo hqdeg_hi
     rcases hprec_q with hprec_q | hprec_q
-    · left
-      have hprec_mul : Prec ((X - C r) * qf) ((X - C r) * qg) :=
+    · have hprec_mul : Prec ((X - C r) * qf) ((X - C r) * qg) :=
         prec_mul_common_factor (isRealRooted_X_sub_C r) hprec_q
       lia
-    · right
-      have hprec_mul : Prec ((X - C r) * qg) ((X - C r) * qf) :=
+    · have hprec_mul : Prec ((X - C r) * qg) ((X - C r) * qf) :=
         prec_mul_common_factor (isRealRooted_X_sub_C r) hprec_q
       lia
-
 end PosComboRealRooted
 
 /-- Positive combinations keep the larger of the two degrees when the summands
