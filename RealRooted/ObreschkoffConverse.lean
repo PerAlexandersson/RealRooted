@@ -1006,8 +1006,7 @@ private lemma no_nontrivial_linear_relation_of_no_common_root
   simp_all
 
 private lemma no_common_root_iterateTDeriv_of_allComboRealRooted
-    {f g : ℝ[X]}
-    (hf : f ≠ 0 ∧ f.Splits) (hg : g ≠ 0 ∧ g.Splits)
+    {f g : ℝ[X]} (hf₀ : f ≠ 0) (hg₀ : g ≠ 0) (hf : f.Splits) (hg : g.Splits)
     (hall : AllComboRealRooted f g)
     (hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree)
     {eps : ℝ} (heps : 0 < eps)
@@ -1017,10 +1016,9 @@ private lemma no_common_root_iterateTDeriv_of_allComboRealRooted
   dsimp
   intro r hfr hgr
   obtain ⟨_, hf', hg', hf_simple, hg_simple, _⟩ :=
-    simple_pair_of_allComboRealRooted_iterateTDeriv hf hg hall hdeg heps
+    simple_pair_of_allComboRealRooted_iterateTDeriv hf₀ hg₀ hf hg hall hdeg heps
   have hcombo :=
-    allComboRealRooted_eq_zero_or_isRealRooted_and_hasSimpleRoots_iterateTDeriv
-      hall heps
+    allComboRealRooted_eq_zero_or_isRealRooted_and_hasSimpleRoots_iterateTDeriv hall heps
   let α : ℝ := (iterateTDeriv eps (max f.natDegree g.natDegree) g).derivative.eval r
   let β : ℝ := -((iterateTDeriv eps (max f.natDegree g.natDegree) f).derivative.eval r)
   have hα_ne : α ≠ 0 :=
@@ -1037,7 +1035,7 @@ private lemma no_common_root_iterateTDeriv_of_allComboRealRooted
         C β * iterateTDeriv eps (max f.natDegree g.natDegree) g).derivative.IsRoot r := by
     simp [Polynomial.IsRoot.def, α, β]
     ring
-  rcases hcombo α β with hp0 | ⟨hp_rr, hp_simple⟩
+  rcases hcombo α β with hp0 | ⟨hp_rr, hp_simplvvv⟩
   · have hlin :
         C α * f + C β * g = 0 := by
         have hiter_eq :

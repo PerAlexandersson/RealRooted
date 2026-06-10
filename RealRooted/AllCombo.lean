@@ -31,8 +31,8 @@ lemma allComboRealRooted_common_root_reduction
     (hg_def : g = (X - C r) * qg)
     (hall : AllComboRealRooted f g) :
     AllComboRealRooted qf qg :=
-  fun α β ↦ .of_dvd' (hall α β) (by simp_all [mul_left_comm (C _), ← mul_add, sub_eq_zero])
-    ⟨X - C r, by grind⟩
+  fun α β ↦ by simpa [hf_def, hg_def, mul_left_comm (C _), ← mul_add,
+    splits_mul_iff_right (X_sub_C_ne_zero _) (.X_sub_C _)] using hall α β
 
 lemma allComboRealRooted_C_mul_left
     {f g : ℝ[X]} {c : ℝ} (hall : AllComboRealRooted f g) :

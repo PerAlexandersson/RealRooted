@@ -5,7 +5,6 @@ import Mathlib.Algebra.Polynomial.Degree.Operations
 import Mathlib.Algebra.Polynomial.Eval.Degree
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Topology.Algebra.Polynomial
-import RealRooted.Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Wagner's lemma

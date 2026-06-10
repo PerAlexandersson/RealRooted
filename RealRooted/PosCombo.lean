@@ -489,7 +489,7 @@ lemma iff_add_left {f g : ℝ[X]} :
     have hbase : ((C (lam / μ) * f + g) ≠ 0 ∧
       (C (lam / μ) * f + g).Splits) := h (lam := lam / μ) (by simp_all)
     have hscaled : ((C μ * (C (lam / μ) * f + g)) ≠ 0 ∧ (C μ * (C (lam / μ) * f + g)).Splits) := by
-      simp_all [hμ.ne']
+      simp_all [hμ.ne', splits_mul_iff_right]
     have hEq : C μ * (C (lam / μ) * f + g) = C lam * f + C μ * g := by
       rw [mul_add]
       have hleft : C μ * (C (lam / μ) * f) = C lam * f := by

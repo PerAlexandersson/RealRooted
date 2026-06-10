@@ -971,7 +971,8 @@ lemma deriv2_mul_lt_deriv_sq_at_non_root {p : ℝ[X]} {a : ℝ} (hp : p.Splits) 
       rw [natDegree_mul (X_sub_C_ne_zero r) ht_ne, natDegree_X_sub_C] at this
       lia
     -- t is real-rooted
-    have ht_rr : t.Splits := hq_rr.of_dvd' (by simp_all) (by simp_all)
+    have ht_rr : t.Splits := by
+      simpa [hqt, splits_mul_iff_right (X_sub_C_ne_zero _) (.X_sub_C _)] using hq_rr
     -- a ≠ r (since q(a) ≠ 0 but q(r) = 0)
     have har : a - r ≠ 0 := by
       simp_all
