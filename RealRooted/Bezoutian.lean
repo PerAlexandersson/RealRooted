@@ -591,7 +591,7 @@ lemma bezoutEntry.wronskian (p q : ℝ[X]) (n : ℕ) (t : ℝ)
       refine HasDerivAt.fun_sum fun i _ ↦ HasDerivAt.fun_sum fun j _ ↦ ?_
       simpa [mul_assoc, mul_comm, mul_left_comm] using
         ((hasDerivAt_pow i.val t).const_mul (bezoutEntry p q i.val j.val)).mul_const (t ^ j.val)
-    simpa [sub_self, zero_mul, one_mul, mul_assoc, mul_comm, mul_left_comm] using
+    simpa [sub_self, zero_mul, one_mul, mul_assoc, mul_comm, mul_left_comm, Pi.mul_def] using
       (h_sub.mul h_sum).deriv
   have h_deriv : deriv (fun t₁ ↦ p.eval t₁ * q.eval t - p.eval t * q.eval t₁) t =
       p.derivative.eval t * q.eval t - p.eval t * q.derivative.eval t :=
@@ -1045,7 +1045,7 @@ lemma bezoutMatrix.no_complex_root_of_posDef {n : ℕ}
           simp only [Complex.sub_im, Complex.conj_im, sub_neg_eq_add, Complex.zero_im] at him
           linarith
         have hsum := (mul_eq_zero.mp h_bezoutian).resolve_left hdiff_ne
-        simpa only [map_pow] using hsum⟩
+        simpa only [bezoutMatrix, map_pow] using hsum⟩
     refine ⟨fun i ↦ (y i).re, ?_, ?_⟩
     all_goals
       simp_all only [Complex.ext_iff, Complex.zero_re, Complex.zero_im, ne_eq,
@@ -1099,12 +1099,12 @@ lemma Polynomial.splits_of_all_roots_real {p : ℝ[X]}
     · simp
     · exact IsAlgClosed.splits _
   convert h_factor using 1
-  norm_num [Polynomial.map_multiset_prod]
-  ring_nf
-  exact Or.inl (congr_arg _
-    (Multiset.map_congr rfl fun x hx ↦ by
-      rw [← Complex.re_add_im x]
-      simp [hall x (isRoot_of_mem_roots hx)]))
+  · rfl
+  · norm_num [Polynomial.map_multiset_prod]
+    exact Or.inl (congr_arg _
+      (Multiset.map_congr rfl fun x hx ↦ by
+        rw [← Complex.re_add_im x]
+        simp [hall x (isRoot_of_mem_roots hx)]))
 
 lemma bezoutMatrix.splits_of_posDef {n : ℕ}
     {p q : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
@@ -1208,13 +1208,10 @@ lemma Polynomial.roots_sort_eq_ofFn {n : ℕ} {p : ℝ[X]}
     · rw [Polynomial.splits_iff_card_roots] at hp_splits
       simp_all
   rw [h_eq_multiset, List.ofFn_eq_map]
-  convert List.mergeSort_eq_self _ _
-  · exact ⟨fun x y ↦ le_total x y⟩
-  · infer_instance
-  · exact ⟨fun x y hxy hyx ↦ le_antisymm hxy hyx⟩
-  · simp only [List.pairwise_iff_get, List.get_eq_getElem, List.getElem_map,
-      List.getElem_finRange, Fin.cast_mk]
-    exact fun i j hij ↦ hs.monotone hij.le
+  refine List.mergeSort_eq_self (· ≤ ·) ?_
+  simp only [List.pairwise_iff_get, List.get_eq_getElem, List.getElem_map,
+    List.getElem_finRange, Fin.cast_mk]
+  exact fun i j hij ↦ hs.monotone hij.le
 
 lemma List.StrictAlternates.ofFn {n : ℕ}
     (s r : Fin n → ℝ) (hs : StrictMono s) (hr : StrictMono r)
