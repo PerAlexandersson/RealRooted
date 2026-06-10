@@ -47,11 +47,13 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
       intro p hp
       rw [hfs_eq] at hp
       rcases List.mem_cons.mp hp with rfl | hp'
-      · simpa [f] using prec_refl hf_rr.1 hf_rr.2
+      · simpa [f] using prec_refl hf_rr
       · exact hpair.rel_of_mem_take_of_mem_drop hf_mem_take hp'
-    have hne : fs ≠ [] := by grind
-    simpa [staircaseSum, f] using
-      prec_sum_left_of_common_left_signed fs f hprec hfs.posLeadingCoeff hne
+    have hne : fs ≠ [] := by
+      lia
+    simpa [staircaseSum] using
+      prec_sum_left_of_common_left_signed fs f hprec
+        (fun p hp => hfs.posLeadingCoeff p hp) hne
   · have htake_ne : fs.take m ≠ [] := by
       intro hnil
       have hlen : (fs.take m).length = 0 := by simp [hnil]
@@ -82,7 +84,7 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
       · lia
       · rw [List.drop_eq_getElem_cons hm] at hp
         rcases List.mem_cons.mp hp with rfl | hp'
-        · simpa [f] using prec_refl hf_rr.1 hf_rr.2
+        · simpa [f] using prec_refl hf_rr
         · exact hpair.rel_of_mem_take_of_mem_drop hf_mem_take_succ hp'
     have hpos : ∀ p ∈ (X * (fs.take m).sum) :: fs.drop m, HasPosLeadingCoeff p := by
       intro p hp
@@ -92,7 +94,7 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
     have hsum_prec : Prec f (((X * (fs.take m).sum) :: fs.drop m).sum) := by
       exact prec_sum_left_of_common_left_signed
         ((X * (fs.take m).sum) :: fs.drop m) f hcommon_left hpos (by lia)
-    simpa [staircaseSum, f, List.sum_cons] using hsum_prec
+    simpa [staircaseSum, List.sum_cons] using hsum_prec
 
 /-- Real-rootedness corollary for staircase-weighted sums of an interlacing
 sequence with nonnegative coefficients. -/

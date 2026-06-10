@@ -279,7 +279,9 @@ theorem hasCommonInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg
     (hgs : IsInterlacingSeqNonneg gs) :
     HasCommonInterleaver (fs.zipWith (· * ·) gs.reverse) := by
   let ps := fs.zipWith (· * ·) gs.reverse
-  have hgs_rr_rev : ∀ p ∈ gs.reverse, p.Splits := fun p hp ↦ hgs.splits (by simp_all)
+  have hgs_rr_rev : ∀ p ∈ gs.reverse, (p ≠ 0 ∧ p.Splits) := by
+    intro p hp
+    exact hgs.realRooted p (by simp_all)
   have hgs_pos_rev : ∀ p ∈ gs.reverse, HasPosLeadingCoeff p := by
     intro p hp
     exact hgs.posLeadingCoeff p (by simp_all)
@@ -287,10 +289,10 @@ theorem hasCommonInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg
     simpa [ps] using
       pairwiseHasCommonInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg
         (fs := fs) (gs := gs) hlen hfs hgs
-  have hrr : ∀ p ∈ ps, p.Splits := by
+  have hrr : ∀ p ∈ ps, (p ≠ 0 ∧ p.Splits) := by
     intro p hp
     rcases mem_zipWith_mul hp with ⟨f, hf, g, hg, rfl⟩
-    exact (hfs.splits hf).mul (hgs_rr_rev g hg)
+    exact isRealRooted_mul (hfs.realRooted f hf) (hgs_rr_rev g hg)
   have hpos : ∀ p ∈ ps, HasPosLeadingCoeff p := by
     intro p hp
     rcases mem_zipWith_mul hp with ⟨f, hf, g, hg, rfl⟩

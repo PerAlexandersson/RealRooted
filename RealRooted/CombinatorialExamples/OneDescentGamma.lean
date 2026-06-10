@@ -331,7 +331,7 @@ lemma oneDescent_prec_gamma_one_terminal (m : Nat) (hm : 1 < m) :
   have hpow_rr : (((X : ℝ[X]) ^ (m - 2)) ≠ 0 ∧ ((X : ℝ[X]) ^ (m - 2)).Splits) :=
     isRealRooted_X_pow (m - 2)
   rw [oneDescentGamma_one m 1 hm, oneDescentQ_one m hm_pos, hpow]
-  simpa [a, b, Nat.choose_one_right, mul_assoc, mul_left_comm, mul_comm, tsub_tsub] using
+  simpa [a, b, Nat.choose_one_right, mul_assoc, mul_left_comm, mul_comm] using
     (prec_mul_common_factor hpow_rr hscaled)
 
 /-- Uniform adjacent comparison in the base `d = 1` Gamma chain:

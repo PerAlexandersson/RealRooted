@@ -201,7 +201,8 @@ lemma typeBEulerian_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (typeBEulerian n
               grind
             simp [hcoeff_m, hcoeff_succ]
 
-lemma roots_nonpos_typeBEulerian_of_isRealRooted {n : Nat} (hrr : (typeBEulerian n).Splits) :
+lemma roots_nonpos_typeBEulerian_of_isRealRooted {n : Nat}
+    (hrr : (typeBEulerian n) ≠ 0 ∧ (typeBEulerian n).Splits) :
     ∀ r ∈ (typeBEulerian n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs hrr (typeBEulerian_nonnegCoeffs n)
 
@@ -213,7 +214,7 @@ lemma interlaces_typeBEulerian_zero_one :
         (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp)))
 
 lemma interlaces_derivative_typeBEulerian :
-    ∀ n : Nat, 1 ≤ n → (typeBEulerian n).Splits →
+    ∀ n : Nat, 1 ≤ n → ((typeBEulerian n) ≠ 0 ∧ (typeBEulerian n).Splits) →
       Interlaces (typeBEulerian n).derivative (typeBEulerian n)
   | 0, hn, _ => by
       lia
@@ -237,9 +238,11 @@ lemma eval_typeBEulerianCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
 theorem prec_typeBEulerian_succ : ∀ n : Nat, Prec (typeBEulerian n) (typeBEulerian (n + 1))
   | 0 => interlaces_typeBEulerian_zero_one.toPrec
   | n + 1 => by
+      have hf : ((typeBEulerian (n + 1)) ≠ 0 ∧
+        (typeBEulerian (n + 1)).Splits) := (prec_typeBEulerian_succ n).2.1
       have hInter :
           Interlaces (typeBEulerian (n + 1)).derivative (typeBEulerian (n + 1)) :=
-        interlaces_derivative_typeBEulerian (n + 1) (by lia) (prec_typeBEulerian_succ n).2.1.2
+        interlaces_derivative_typeBEulerian (n + 1) (by lia) hf
       have hg_pos : HasPosLeadingCoeff (typeBEulerian (n + 1)).derivative :=
         (typeBEulerian_posLeadingCoeff (n + 1)).derivative (by rw [natDegree_typeBEulerian]; lia)
       have hNext_eq :
@@ -268,8 +271,8 @@ theorem prec_typeBEulerian_succ : ∀ n : Nat, Prec (typeBEulerian n) (typeBEule
           ∀ r, (typeBEulerian (n + 1)).IsRoot r → typeBEulerianCoeffB.eval r ≤ 0 := by
         intro r hr
         have hr_nonpos :
-            r ≤ 0 := roots_nonpos_typeBEulerian_of_isRealRooted (prec_typeBEulerian_succ n).2.1.2 r
-              ((mem_roots (prec_typeBEulerian_succ n).2.1.1).mpr hr)
+            r ≤ 0 := roots_nonpos_typeBEulerian_of_isRealRooted hf r
+              ((mem_roots hf.1).mpr hr)
         exact eval_typeBEulerianCoeffB_nonpos_of_nonpos hr_nonpos
       rw [← hNext_eq]
       exact

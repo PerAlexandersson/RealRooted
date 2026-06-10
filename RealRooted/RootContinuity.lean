@@ -52,7 +52,30 @@ lemma norm_coeff_sub_add_C_mul_le
   calc
     ‖μ * g.coeff i‖ = ‖μ‖ * ‖g.coeff i‖ := norm_mul _ _
     _ = μ * ‖g.coeff i‖ := by simp [Real.norm_of_nonneg hμ]
-    _ ≤ μ * M := mul_le_mul_of_nonneg_left (hM i) hμ
+    _ ≤ μ * M := by
+          exact mul_le_mul_of_nonneg_left (hM i) hμ
+
+/-- Root continuity specialized to real-rooted target polynomials:
+if monic `g` is coefficientwise close to monic `f`, then each root of `f` has a nearby real
+root of `g`. -/
+theorem exists_real_root_near_of_isRealRooted_of_monic_of_coeff_close
+    {f g : ℝ[X]} {a ε : ℝ}
+    (hε : 0 < ε)
+    (ha : f.IsRoot a)
+    (hf_monic : f.Monic) (hg_monic : g.Monic)
+    (hdeg : g.natDegree = f.natDegree)
+    (hcoeff : ∀ i : ℕ, ‖g.coeff i - f.coeff i‖ < ε)
+    (hg_rr : g ≠ 0 ∧ g.Splits) :
+    ∃ b : ℝ, g.IsRoot b ∧
+      ‖a - b‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖a‖ 1 := by
+  have ha_eval : f.eval a = 0 := by
+    simp_all
+  obtain ⟨b, hb_mem, hb_dist⟩ :=
+    Polynomial.exists_roots_norm_sub_lt_of_norm_coeff_sub_lt
+      (f := f) (g := g) hε ha_eval hf_monic hg_monic hdeg hcoeff
+      (IsRealRooted.splits hg_rr)
+  refine ⟨b, ?_, hb_dist⟩
+  simp_all
 
 /-- Complex-root continuity wrapper (via `aroots`): if monic `g` is
 coefficientwise close to monic `f`, then each complex root of `f` has a nearby
@@ -192,13 +215,14 @@ theorem exists_real_root_near_in_left_family
   have hq_deg : q.natDegree = f.natDegree := by
     rw [show q = C (t + 1)⁻¹ * (C t * f + g) by lia,
       natDegree_C_mul (inv_ne_zero ht1_ne), hsum_deg]
-  have hq_rr : q ≠ 0 ∧ q.Splits := by simp_all [q]
+  have hq_rr : (q ≠ 0 ∧ q.Splits) := isRealRooted_C_mul hrr (inv_ne_zero ht1_ne)
   obtain ⟨b, hb_qroot, hb_dist⟩ :=
-    exists_roots_norm_sub_lt_of_norm_coeff_sub_lt
+    exists_real_root_near_of_isRealRooted_of_monic_of_coeff_close
       (f := f) (g := q) (a := a) (ε := ε) hε ha hf_monic hq_monic hq_deg
-      (norm_coeff_sub_normalized_left_family_lt f g ht hcoeff_bound) (by simp_all [q])
+      (norm_coeff_sub_normalized_left_family_lt f g ht hcoeff_bound) hq_rr
+  have hb_qmem : b ∈ q.roots := (Polynomial.mem_roots hq_rr.1).mpr hb_qroot
   have hb_sum_mem : b ∈ (C t * f + g).roots := by
-    simpa [q, roots_C_mul _ (inv_ne_zero ht1_ne)] using hb_qroot
+    simpa [q, roots_C_mul _ (inv_ne_zero ht1_ne)] using hb_qmem
   have hb_sum_root : (C t * f + g).IsRoot b := (Polynomial.mem_roots hrr.1).mp hb_sum_mem
   grind
 
@@ -253,7 +277,7 @@ theorem exists_complex_aroot_near_in_left_family
   have hq_deg : q.natDegree = f.natDegree := by
     rw [show q = C (t + 1)⁻¹ * (C t * f + g) by lia,
       natDegree_C_mul (inv_ne_zero ht1_ne), hsum_deg]
-  have hq_rr : q ≠ 0 ∧ q.Splits := by simp_all [q]
+  have hq_rr : (q ≠ 0 ∧ q.Splits) := isRealRooted_C_mul hrr (inv_ne_zero ht1_ne)
   obtain ⟨w, hw_qroot, hw_dist⟩ :=
     exists_complex_aroot_near_of_isRealRooted_of_monic_of_coeff_close
       (f := f) (g := q) (z := z) (ε := ε) hε hz hf_monic hq_monic hq_deg

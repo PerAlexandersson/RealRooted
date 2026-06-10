@@ -2944,7 +2944,7 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
         lia
   have hpη_rr : (pη ≠ 0 ∧ pη.Splits) := by
     dsimp [pη]
-    exact splits_iterateTDeriv hη_pos hg_rr
+    exact isRealRooted_iterateTDeriv hη_pos hg_rr
   have hpη_ne : pη ≠ 0 := hpη_rr.1
   have hpp_ne : pη.derivative.derivative.eval r ≠ 0 := by
     exact
@@ -3007,7 +3007,7 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
     have hiter :
         ((iterateTDeriv η k (g + C β * qPos)) ≠ 0 ∧
           (iterateTDeriv η k (g + C β * qPos)).Splits) := by
-      exact splits_iterateTDeriv hη_pos hrr
+      exact isRealRooted_iterateTDeriv hη_pos hrr
     have hEq :
         pη + C β * qPosη = iterateTDeriv η k (g + C β * qPos) := by
       dsimp [pη, qPosη]
@@ -3020,7 +3020,7 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
     have hiter :
         ((iterateTDeriv η k (g + C β * qNeg)) ≠ 0 ∧
           (iterateTDeriv η k (g + C β * qNeg)).Splits) := by
-      exact splits_iterateTDeriv hη_pos hrr
+      exact isRealRooted_iterateTDeriv hη_pos hrr
     have hEq :
         pη + C β * qNegη = iterateTDeriv η k (g + C β * qNeg) := by
       dsimp [pη, qNegη]
@@ -3219,7 +3219,7 @@ private lemma hasSimpleRoots_add_right_of_posComboRealRooted
           have hiter :
               ((iterateTDeriv η k (f + C (μ + β) * g)) ≠ 0 ∧
                 (iterateTDeriv η k (f + C (μ + β) * g)).Splits) := by
-            exact splits_iterateTDeriv (eps := η) (k := k) hη_pos hrr
+            exact isRealRooted_iterateTDeriv (eps := η) (k := k) hη_pos hrr
           have hEq : pη + C β * gη = iterateTDeriv η k (f + C (μ + β) * g) := by
             calc
               pη + C β * gη
@@ -3237,7 +3237,7 @@ private lemma hasSimpleRoots_add_right_of_posComboRealRooted
         zero_lt_one hpk_mult hgk_eval_ne hprod_pos
   · have hpη_rr : (pη ≠ 0 ∧ pη.Splits) := by
       exact
-        splits_iterateTDeriv (eps := η) (k := k) hη_pos
+        isRealRooted_iterateTDeriv (eps := η) (k := k) hη_pos
           (by lia)
     have hpη_ne : pη ≠ 0 := hpη_rr.1
     have hpηpp_ne :
@@ -3266,7 +3266,7 @@ private lemma hasSimpleRoots_add_right_of_posComboRealRooted
           have hiter :
               ((iterateTDeriv η k (f + C (μ - β) * g)) ≠ 0 ∧
                 (iterateTDeriv η k (f + C (μ - β) * g)).Splits) := by
-            exact splits_iterateTDeriv (eps := η) (k := k) hη_pos hrr
+            exact isRealRooted_iterateTDeriv (eps := η) (k := k) hη_pos hrr
           have hEq : pη + C β * (-gη) = iterateTDeriv η k (f + C (μ - β) * g) := by
             calc
               pη + C β * (-gη)
@@ -4274,7 +4274,7 @@ theorem prec_of_affine_segment_endpoint_pf_nonneg
             C z * (((C s * X + C t) * P1) + H1)))
     (hpencil_pf :
       ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
-        IsPolyaFreqSeq
+        IsPolyaFrequencySequence
           (fun n =>
             ((((C s * X + C t) * P0) + H0) +
               C z * (((C s * X + C t) * P1) + H1)).coeff n))
@@ -4300,7 +4300,7 @@ theorem prec_of_affine_segment_endpoint_pf_nonneg
 TNN-named version of `prec_of_affine_segment_endpoint_pf_nonneg`.
 
 The LGV certificate layer naturally produces Toeplitz total nonnegativity of
-the coefficient sequence.  Since `IsPolyaFreqSeq` is the same
+the coefficient sequence.  Since `IsPolyaFrequencySequence` is the same
 predicate here, this wrapper avoids a small definitional conversion at the
 final handoff.
 -/
@@ -4364,7 +4364,7 @@ theorem prec_of_affine_segment_endpoint_pf_sameDegree_nonneg
             C z * (((C s * X + C t) * P1) + H1)))
     (hpencil_pf :
       ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
-        IsPolyaFreqSeq
+        IsPolyaFrequencySequence
           (fun n =>
             ((((C s * X + C t) * P0) + H0) +
               C z * (((C s * X + C t) * P1) + H1)).coeff n))

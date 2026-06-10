@@ -331,10 +331,8 @@ theorem isRealRooted_left_of_posComboRealRooted_sameDegree
     unfold f₀
     ext n
     simp [hf_lc_ne]
-  have hf_rr_scaled : C f.leadingCoeff * f₀ ≠ 0 ∧ (C f.leadingCoeff * f₀).Splits := by
-    simp_all only [ne_eq, leadingCoeff_eq_zero, not_false_eq_true, true_and]
-    rw [← hf_scale]
-    exact .mul (.C _) hf₀_rr.2
+  have hf_rr_scaled : ((C f.leadingCoeff * f₀) ≠ 0 ∧ (C f.leadingCoeff * f₀).Splits) :=
+    isRealRooted_C_mul hf₀_rr hf_lc_ne
   lia
 
 /-- Symmetric right-side version of

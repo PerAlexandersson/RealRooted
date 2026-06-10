@@ -1,4 +1,3 @@
-import RealRooted.Mathlib.Algebra.Polynomial.Basic
 import RealRooted.MaWang
 
 open Polynomial
@@ -28,8 +27,12 @@ def favardInterlacingStatement : Prop :=
     (∀ n : Nat, 0 < β (n + 1)) →
     ∀ n : Nat, Prec (P n) (P (n + 1))
 
-private lemma interlaces_one_X_sub_C (a : ℝ) : Interlaces (1 : ℝ[X]) (X - C a) :=
-  by simp [Interlaces, ListInterlaces, sub_eq_zero]
+private lemma interlaces_one_X_sub_C (a : ℝ) :
+    Interlaces (1 : ℝ[X]) (X - C a) := by
+  refine ⟨isRealRooted_X_sub_C a,
+    isRealRooted_of_deg_zero (p := (1 : ℝ[X])) one_ne_zero (by simp),
+    by simp,
+    [a], [], by simp, by simp, by simp, by simp, by simp [ListInterlaces]⟩
 
 theorem favardInterlacing :
     favardInterlacingStatement := by

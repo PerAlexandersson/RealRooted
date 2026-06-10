@@ -238,7 +238,8 @@ lemma zero_not_isRoot_liuWangPoly (d n : Nat) (hn : 1 ≤ n) (hnd : n ≤ d + 1)
     simp_all
   linarith
 
-lemma roots_neg_liuWangPoly_of_isRealRooted {d n : Nat} (hrr : (liuWangPoly d n).Splits)
+lemma roots_neg_liuWangPoly_of_isRealRooted {d n : Nat}
+    (hrr : (liuWangPoly d n) ≠ 0 ∧ (liuWangPoly d n).Splits)
     (hn : 1 ≤ n) (hnd : n ≤ d + 1) :
     ∀ r ∈ (liuWangPoly d n).roots, r < 0 := by
   intro r hr
@@ -825,7 +826,7 @@ private lemma prec_of_interlaces_X_mul_of_roots_nonpos {f g : ℝ[X]}
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
     Prec f g := by
   obtain ⟨hXf, hg, _, rs_xf, ss_g, hrs_xf, hss_g, hrs_xf_eq, hss_g_eq, hint⟩ := h
-  have hf : (f ≠ 0 ∧ f.Splits) := by simp_all
+  have hf : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_X_mul hXf
   set rs_f := f.roots.sort (· ≤ ·)
   have hrs_f_eq : (↑rs_f : Multiset ℝ) = f.roots := Multiset.sort_eq ..
   have hrs_f_sorted : rs_f.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
@@ -946,7 +947,7 @@ lemma interlaces_liuWangRec_of_ge_threshold_of_nonnegCoeffs (d k : Nat)
       have hnonpos :
           ∀ r, (liuWangRec d ((d + 1 + k) + 1)).IsRoot r → r ≤ 0 := by
         intro r hr
-        exact roots_nonpos_of_nonneg_coeffs hInter.1.2 (hnonneg ((d + 1 + k) + 1)) r
+        exact roots_nonpos_of_nonneg_coeffs hInter.1 (hnonneg ((d + 1 + k) + 1)) r
           ((mem_roots hInter.1.1).mpr hr)
       have hPrec :
           Prec (liuWangRec d (d + 2 + k)) (liuWangRec d (d + 3 + k)) := by

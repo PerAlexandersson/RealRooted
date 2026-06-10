@@ -109,9 +109,12 @@ lemma coeff_singletonFreeSetPartitions_top_pos_and_above :
       · rw [show (n + 4) / 2 = ((n + 4) / 2 - 1) + 1 by lia,
           coeff_singletonFreeSetPartitions_succ_succ]
         rcases Nat.mod_two_eq_zero_or_one n with hpar | hpar
-        · have hsmall_pos : 0 < coeff (singletonFreeSetPartitions (n + 2)) ((n + 4) / 2 - 1) := by
+        · have hsmall_pos :
+              0 < coeff (singletonFreeSetPartitions (n + 2)) ((n + 4) / 2 - 1) := by
+            lia
+          have hbig_zero :
+              coeff (singletonFreeSetPartitions (n + 3)) ((n + 4) / 2) = 0 := by
             grind
-          have hbig_zero : coeff (singletonFreeSetPartitions (n + 3)) ((n + 4) / 2) = 0 := by grind
           have hidx : ((n + 4) / 2 - 1) + 1 = (n + 4) / 2 := by
             lia
           have hscale_eq : (((n + 2 : Nat) : ℝ) + 1) = (n + 3 : ℝ) := by
@@ -123,9 +126,12 @@ lemma coeff_singletonFreeSetPartitions_top_pos_and_above :
           have hscale : 0 < (n + 3 : ℝ) := by
             positivity
           nlinarith
-        · have hsmall_pos : 0 < coeff (singletonFreeSetPartitions (n + 2)) ((n + 4) / 2 - 1) := by
-            grind
-          have hbig_pos : 0 < coeff (singletonFreeSetPartitions (n + 3)) ((n + 4) / 2) := by grind
+        · have hsmall_pos :
+              0 < coeff (singletonFreeSetPartitions (n + 2)) ((n + 4) / 2 - 1) := by
+            lia
+          have hbig_pos :
+              0 < coeff (singletonFreeSetPartitions (n + 3)) ((n + 4) / 2) := by
+            lia
           have hidx : ((n + 4) / 2 - 1) + 1 = (n + 4) / 2 := by
             lia
           have hscale_eq : (((n + 2 : Nat) : ℝ) + 1) = (n + 3 : ℝ) := by
@@ -201,12 +207,12 @@ lemma natDegree_singletonFreeSetPartitionsCore (n : Nat) :
   lia
 
 lemma roots_nonpos_singletonFreeSetPartitions_of_isRealRooted {n : Nat}
-    (hrr : (singletonFreeSetPartitions n).Splits) :
+    (hrr : (singletonFreeSetPartitions n) ≠ 0 ∧ (singletonFreeSetPartitions n).Splits) :
     ∀ r ∈ (singletonFreeSetPartitions n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs hrr (singletonFreeSetPartitions_nonnegCoeffs n)
 
 lemma roots_nonpos_singletonFreeSetPartitionsCore_of_isRealRooted {n : Nat}
-    (hrr : (singletonFreeSetPartitionsCore n).Splits) :
+    (hrr : (singletonFreeSetPartitionsCore n) ≠ 0 ∧ (singletonFreeSetPartitionsCore n).Splits) :
     ∀ r ∈ (singletonFreeSetPartitionsCore n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs hrr (singletonFreeSetPartitionsCore_nonnegCoeffs n)
 
@@ -220,10 +226,12 @@ lemma prec_singletonFreeSetPartitionsCore_of_prec {n : Nat} (hn : 3 ≤ n)
       Prec (C (n + 1 : ℝ) * singletonFreeSetPartitions n)
         (singletonFreeSetPartitions (n + 1)) := by
     exact prec_C_mul_left hprev hscalar_ne
+  have hf : ((singletonFreeSetPartitions (n + 1)) ≠ 0 ∧
+    (singletonFreeSetPartitions (n + 1)).Splits) := hprev.2.1
   have hder :
       Interlaces (singletonFreeSetPartitions (n + 1)).derivative
         (singletonFreeSetPartitions (n + 1)) := by
-    apply derivative_interlaces hprev.2.1.2
+    apply derivative_interlaces hf
     rw [natDegree_singletonFreeSetPartitions (n + 1) (by lia)]
     lia
   have hlower_pos :
@@ -243,7 +251,7 @@ lemma prec_singletonFreeSetPartitionsCore_of_prec {n : Nat} (hn : 3 ≤ n)
 lemma prec_singletonFreeSetPartitions_two_three :
     Prec (singletonFreeSetPartitions 2) (singletonFreeSetPartitions 3) := by
   simpa [singletonFreeSetPartitions_two, singletonFreeSetPartitions_three] using
-    prec_refl (f := X) (by simp)
+    prec_refl (f := (X : ℝ[X])) isRealRooted_X
 
 lemma prec_singletonFreeSetPartitions_three_four :
     Prec (singletonFreeSetPartitions 3) (singletonFreeSetPartitions 4) := by
@@ -271,7 +279,7 @@ lemma prec_singletonFreeSetPartitions_three_four :
     intro m
     exact add_nonneg (hasNonnegCoeffs_one m) (hCX_nonneg m)
   have hlin_nonpos : ∀ r ∈ (1 + C (3 : ℝ) * X).roots, r ≤ 0 :=
-    roots_nonpos_of_nonneg_coeffs hprec.2.1.2 hlin_nonneg
+    roots_nonpos_of_nonneg_coeffs hprec.2.1 hlin_nonneg
   have hmul :
       Prec (X * (1 : ℝ[X])) (X * (1 + C (3 : ℝ) * X)) := by
     exact prec_mul_X_both_of_roots_nonpos hprec hone_nonpos hlin_nonpos
@@ -304,10 +312,10 @@ lemma prec_singletonFreeSetPartitions_succ_of_prec_core {n : Nat} (hn : 3 ≤ n)
       lia
     have hcore_nonpos :
         ∀ r ∈ (singletonFreeSetPartitionsCore n).roots, r ≤ 0 :=
-      roots_nonpos_singletonFreeSetPartitionsCore_of_isRealRooted hcore.1.2
+      roots_nonpos_singletonFreeSetPartitionsCore_of_isRealRooted hcore.1
     have hsucc_nonpos :
         ∀ r ∈ (singletonFreeSetPartitions (n + 1)).roots, r ≤ 0 :=
-      roots_nonpos_singletonFreeSetPartitions_of_isRealRooted hcore.2.1.2
+      roots_nonpos_singletonFreeSetPartitions_of_isRealRooted hcore.2.1
     have hmain :
         Prec (singletonFreeSetPartitions (n + 1))
           (X * singletonFreeSetPartitionsCore n) :=
@@ -327,7 +335,7 @@ lemma prec_singletonFreeSetPartitions_succ_of_prec_core {n : Nat} (hn : 3 ≤ n)
         (prec_iff_prec_mul_X
           (singletonFreeSetPartitionsCore_nonnegCoeffs n)
           (singletonFreeSetPartitions_nonnegCoeffs (n + 1))
-          hcore.1.1 hcore.1.2 hcore.2.1.1 hcore.2.1.2 hdeg).mp hcore
+          hcore.1 hcore.2.1 hdeg).mp hcore
     simpa [singletonFreeSetPartitions_succ_succ_eq_X_mul_core n] using hmain
 
 /-- Consecutive singleton-free set partition polynomials satisfy `Prec`. -/
@@ -354,9 +362,9 @@ theorem prec_singletonFreeSetPartitions_succ :
           (n := n + 3) (by lia) hcore
 
 theorem isRealRooted_singletonFreeSetPartitions :
-    ∀ n : Nat, 2 ≤ n → (singletonFreeSetPartitions n).Splits
+    ∀ n : Nat, 2 ≤ n → ((singletonFreeSetPartitions n) ≠ 0 ∧ (singletonFreeSetPartitions n).Splits)
   | 2, _ => by simp [singletonFreeSetPartitions_two]
-  | n + 3, _ => by exact (prec_singletonFreeSetPartitions_succ (n + 2) (by lia)).2.1.2
+  | n + 3, _ => by exact (prec_singletonFreeSetPartitions_succ (n + 2) (by lia)).2.1
 
 theorem interlaces_singletonFreeSetPartitions_succ_of_odd {n : Nat}
     (hn : 3 ≤ n) (hodd : n % 2 = 1) :

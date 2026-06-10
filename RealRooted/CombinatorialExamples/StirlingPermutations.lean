@@ -193,7 +193,7 @@ lemma stirlingPermutations_nonnegCoeffs :
             simp [hcoeff_j, hcoeff_j1]
 
 lemma roots_nonpos_stirlingPermutations_of_isRealRooted {n : Nat}
-    (hrr : (stirlingPermutations n).Splits) :
+    (hrr : (stirlingPermutations n) ≠ 0 ∧ (stirlingPermutations n).Splits) :
     ∀ r ∈ (stirlingPermutations n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs hrr (stirlingPermutations_nonnegCoeffs n)
 
@@ -250,7 +250,7 @@ lemma prec_stirlingPermutations_one_two :
     intro r hr
     have hr_nonpos :
         r ≤ 0 :=
-      roots_nonpos_stirlingPermutations_of_isRealRooted hf.2 r ((mem_roots hf.1).mpr hr)
+      roots_nonpos_stirlingPermutations_of_isRealRooted hf r ((mem_roots hf.1).mpr hr)
     exact eval_stirlingPermutationsCoeffB_nonpos_of_nonpos hr_nonpos
   rw [← hNext_eq]
   exact
@@ -266,10 +266,12 @@ theorem prec_stirlingPermutations_succ :
   | 0 => interlaces_stirlingPermutations_zero_one.toPrec
   | 1 => prec_stirlingPermutations_one_two
   | n + 2 => by
+      have hf : ((stirlingPermutations (n + 2)) ≠ 0 ∧ (stirlingPermutations (n + 2)).Splits) :=
+        (prec_stirlingPermutations_succ (n + 1)).2.1
       have hInter :
           Interlaces (stirlingPermutations (n + 2)).derivative
             (stirlingPermutations (n + 2)) :=
-        derivative_interlaces (prec_stirlingPermutations_succ (n + 1)).2.1.2 (by
+        derivative_interlaces hf (by
           rw [natDegree_stirlingPermutations]
           lia)
       have hg_pos : HasPosLeadingCoeff (stirlingPermutations (n + 2)).derivative :=
@@ -303,10 +305,9 @@ theorem prec_stirlingPermutations_succ :
           ∀ r, (stirlingPermutations (n + 2)).IsRoot r →
             stirlingPermutationsCoeffB.eval r ≤ 0 := by
         intro r hr
-        have hr_nonpos : r ≤ 0 :=
-          roots_nonpos_stirlingPermutations_of_isRealRooted
-            (prec_stirlingPermutations_succ (n + 1)).2.1.2 r
-            ((mem_roots (prec_stirlingPermutations_succ (n + 1)).2.1.1).mpr hr)
+        have hr_nonpos :
+            r ≤ 0 :=
+          roots_nonpos_stirlingPermutations_of_isRealRooted hf r ((mem_roots hf.1).mpr hr)
         exact eval_stirlingPermutationsCoeffB_nonpos_of_nonpos hr_nonpos
       rw [← hNext_eq]
       exact
