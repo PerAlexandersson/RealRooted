@@ -36,7 +36,8 @@ lemma ne_zero_and_card_roots_of_ne_zero_and_splits {p : ℝ[X]}
   ⟨h.1, card_roots_of_splits h.2⟩
 
 lemma eq_zero_or_ne_zero_and_splits_iff_eq_zero_or_ne_zero_and_card_roots (p : ℝ[X]) :
-    (p = 0 ∨ (p ≠ 0 ∧ p.Splits)) ↔ (p = 0 ∨ (p ≠ 0 ∧ p.roots.card = p.natDegree)) := by
+    (p = 0 ∨ (p ≠ 0 ∧ p.Splits)) ↔
+      (p = 0 ∨ (p ≠ 0 ∧ p.roots.card = p.natDegree)) := by
   constructor
   · intro h
     rcases h with rfl | h
@@ -145,6 +146,62 @@ lemma interleaves_of_listAlternates_of_length {ss rs : List ℝ}
     List.Interleaves (fun x y : ℝ => x ≤ y) rs ss :=
   (listAlternates_iff_interleaves_of_length hlen).1 h
 
+/-- In a nonempty right-hand list, each left entry of a weak interlacing is at
+most the corresponding later right entry. -/
+lemma listInterlaces_forall₂_le_tail :
+    ∀ {ss rs : List ℝ} {r : ℝ}, ListInterlaces ss (r :: rs) →
+      List.Forall₂ (fun s t : ℝ => s ≤ t) ss rs
+  | [], [], _, _ => by simp
+  | [], _ :: _, _, h => by simp [ListInterlaces] at h
+  | _ :: _, [], _, h => by simp [ListInterlaces] at h
+  | s :: ss, r₂ :: rs, r₁, h => by
+      rcases h with ⟨_hr₁s, hsr₂, htail⟩
+      exact List.Forall₂.cons hsr₂ (listInterlaces_forall₂_le_tail htail)
+
+/-- Same-degree weak alternation gives pairwise coordinate inequalities. -/
+lemma listAlternates_forall₂_le :
+    ∀ {ss rs : List ℝ}, ListAlternates ss rs →
+      List.Forall₂ (fun s t : ℝ => s ≤ t) ss rs
+  | [], [], _ => by simp
+  | [], _ :: _, h => by simp [ListAlternates] at h
+  | _ :: _, [], h => by simp [ListAlternates] at h
+  | s :: ss, r :: rs, h => by
+      rcases h with ⟨hsr, htail⟩
+      exact List.Forall₂.cons hsr (listInterlaces_forall₂_le_tail htail)
+
+/-- Same-degree weak alternation orders the sums of the two root lists. -/
+lemma listAlternates_sum_le {ss rs : List ℝ} (h : ListAlternates ss rs) :
+    ss.sum ≤ rs.sum :=
+  List.Forall₂.sum_le_sum (listAlternates_forall₂_le h)
+
+/-- Coordinatewise inequalities between two real lists, together with the
+opposite inequality on sums, force the two lists to be equal. -/
+lemma list_eq_of_forall₂_le_of_sum_ge :
+    ∀ {ss rs : List ℝ}, List.Forall₂ (fun s t : ℝ => s ≤ t) ss rs →
+      rs.sum ≤ ss.sum → ss = rs
+  | [], [], _, _ => rfl
+  | s :: ss, r :: rs, hle, hsum => by
+      cases hle with
+      | cons hsr htail =>
+          simp only [List.sum_cons] at hsum
+          have htail_sum : ss.sum ≤ rs.sum := List.Forall₂.sum_le_sum htail
+          have hrs : r ≤ s := by linarith
+          have hs_eq : s = r := le_antisymm hsr hrs
+          have htail_ge : rs.sum ≤ ss.sum := by linarith
+          have htail_eq : ss = rs :=
+            list_eq_of_forall₂_le_of_sum_ge htail htail_ge
+          simp [hs_eq, htail_eq]
+
+/-- If same-degree weak alternation has the opposite inequality on sums, then
+the two lists are equal, so the alternation can be reversed. -/
+lemma listAlternates_symm_of_sum_le {ss rs : List ℝ}
+    (halt : ListAlternates ss rs) (hsum : rs.sum ≤ ss.sum) :
+    ListAlternates rs ss := by
+  have h_eq : ss = rs :=
+    list_eq_of_forall₂_le_of_sum_ge (listAlternates_forall₂_le halt) hsum
+  subst ss
+  simpa using halt
+
 lemma listInterlaces_left_le_of_right_le {ss rs : List ℝ} {c : ℝ}
     (hint : ListInterlaces ss rs)
     (hrs : ∀ r ∈ rs, r ≤ c) :
@@ -228,6 +285,62 @@ theorem roots_le_of_prec_right {f g : ℝ[X]} {c : ℝ}
   rcases hshape with ⟨_, hint⟩ | ⟨_, halt⟩
   · exact listInterlaces_left_le_of_right_le hint hrs_le r hr'
   · exact listAlternates_left_le_of_right_le halt hrs_le r hr'
+
+/-- In the same-degree case, `Prec f g` orders the sums of the roots. -/
+theorem roots_sum_le_of_prec_sameDegree {f g : ℝ[X]}
+    (h : Prec f g) (hdeg : f.natDegree = g.natDegree) :
+    f.roots.sum ≤ g.roots.sum := by
+  rcases h with ⟨hf, hg, ss, rs, _hss, _hrs, hss_eq, hrs_eq, hshape⟩
+  have hss_len : ss.length = f.natDegree := by
+    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
+  have hrs_len : rs.length = g.natDegree := by
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
+  have hsum_ss : ss.sum = f.roots.sum := by
+    rw [← Multiset.sum_coe, hss_eq]
+  have hsum_rs : rs.sum = g.roots.sum := by
+    rw [← Multiset.sum_coe, hrs_eq]
+  rcases hshape with ⟨hlen, _hint⟩ | ⟨_hlen, halt⟩
+  · exfalso
+    lia
+  · have hle : ss.sum ≤ rs.sum := listAlternates_sum_le halt
+    linarith
+
+/-- For monic polynomials in same-degree proper position, the next
+coefficients are ordered opposite to the root sums. -/
+theorem nextCoeff_le_of_prec_sameDegree_monic {f g : ℝ[X]}
+    (hf_monic : f.Monic) (hg_monic : g.Monic)
+    (h : Prec f g) (hdeg : f.natDegree = g.natDegree) :
+    g.nextCoeff ≤ f.nextCoeff := by
+  have hsum : f.roots.sum ≤ g.roots.sum :=
+    roots_sum_le_of_prec_sameDegree h hdeg
+  have hf_next : f.nextCoeff = -f.roots.sum :=
+    h.1.2.nextCoeff_eq_neg_sum_roots_of_monic hf_monic
+  have hg_next : g.nextCoeff = -g.roots.sum :=
+    h.2.1.2.nextCoeff_eq_neg_sum_roots_of_monic hg_monic
+  linarith
+
+/-- In the same-degree case, a reverse `Prec g f` can be flipped back to
+`Prec f g` once the root sums have the forward order. -/
+theorem prec_of_reverse_prec_of_roots_sum_le {f g : ℝ[X]}
+    (hgf : Prec g f) (hdeg : f.natDegree = g.natDegree)
+    (hsum : f.roots.sum ≤ g.roots.sum) :
+    Prec f g := by
+  rcases hgf with ⟨hg, hf, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
+  have hss_len : ss.length = g.natDegree := by
+    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hg.2]
+  have hrs_len : rs.length = f.natDegree := by
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
+  have hsum_ss : ss.sum = g.roots.sum := by
+    rw [← Multiset.sum_coe, hss_eq]
+  have hsum_rs : rs.sum = f.roots.sum := by
+    rw [← Multiset.sum_coe, hrs_eq]
+  rcases hshape with ⟨hlen, _hint⟩ | ⟨hlen, halt⟩
+  · exfalso
+    lia
+  · refine ⟨hf, hg, rs, ss, hrs, hss, hrs_eq, hss_eq, Or.inr ⟨?_, ?_⟩⟩
+    · lia
+    · apply listAlternates_symm_of_sum_le halt
+      linarith
 
 /-- Relaxed interlacing convention used in some recursive arguments:
 `Prec0 f g` holds if either side is zero, or if `Prec f g` holds in the

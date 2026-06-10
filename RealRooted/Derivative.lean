@@ -373,4 +373,70 @@ theorem derivative_interlaces {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits)
   exact ⟨hf, hf'_rr, by lia,
     rs, ss, hrs_sorted, hss_sorted, hrs_multiset, hss_eq, hss_interlaces⟩
 
+/-- Splitting is preserved by differentiation in the zero-aware convention. -/
+theorem eq_zero_or_splits_derivative {p : ℝ[X]}
+    (hp : p = 0 ∨ p.Splits) :
+    p.derivative = 0 ∨ p.derivative.Splits := by
+  rcases hp with rfl | hp
+  · rw [derivative_zero]
+    exact Or.inl rfl
+  by_cases hp0 : p = 0
+  · subst p
+    simp
+  by_cases hdeg0 : p.natDegree = 0
+  · have hder0 : p.derivative = 0 := Polynomial.derivative_eq_zero.mpr hdeg0
+    rw [hder0]
+    exact Or.inl rfl
+  by_cases hdeg1 : p.natDegree = 1
+  · right
+    apply Polynomial.splits_of_natDegree_eq_zero
+    rw [p.natDegree_derivative hdeg0, hdeg1]
+  · have hdeg2 : 2 ≤ p.natDegree := by grind
+    exact Or.inr (derivative_interlaces ⟨hp0, hp⟩ hdeg2).2.1.2
+
+/-- Strict real-rootedness is preserved by differentiation unless the
+derivative vanishes. -/
+theorem derivative_eq_zero_or_ne_zero_and_splits {p : ℝ[X]}
+    (hp : p ≠ 0 ∧ p.Splits) :
+    p.derivative = 0 ∨ (p.derivative ≠ 0 ∧ p.derivative.Splits) := by
+  by_cases hdeg0 : p.natDegree = 0
+  · left
+    exact Polynomial.derivative_eq_zero.mpr hdeg0
+  by_cases hdeg1 : p.natDegree = 1
+  · right
+    have hder_ne : p.derivative ≠ 0 := Polynomial.derivative_ne_zero.mpr hdeg0
+    have hder_splits : p.derivative.Splits := by
+      apply Polynomial.splits_of_natDegree_eq_zero
+      rw [p.natDegree_derivative hdeg0, hdeg1]
+    exact ⟨hder_ne, hder_splits⟩
+  · have hdeg2 : 2 ≤ p.natDegree := by grind
+    exact Or.inr (derivative_interlaces hp hdeg2).2.1
+
+/-- If all roots of a real-rooted polynomial are nonpositive, then all roots of
+its derivative are nonpositive. -/
+theorem roots_nonpos_derivative_of_roots_nonpos {p : ℝ[X]}
+    (hp : p ≠ 0 ∧ p.Splits)
+    (hroots : ∀ r ∈ p.roots, r ≤ 0) :
+    ∀ r ∈ p.derivative.roots, r ≤ 0 := by
+  by_cases hdeg0 : p.natDegree = 0
+  · have hder0 : p.derivative = 0 := Polynomial.derivative_eq_zero.mpr hdeg0
+    rw [hder0]
+    intro r hr
+    simp at hr
+  by_cases hdeg1 : p.natDegree = 1
+  · have hderdeg : p.derivative.natDegree = 0 := by
+      rw [p.natDegree_derivative hdeg0, hdeg1]
+    have hderC : p.derivative = C (p.derivative.coeff 0) :=
+      eq_C_of_natDegree_eq_zero hderdeg
+    rw [hderC]
+    intro r hr
+    simp at hr
+  · have hdeg2 : 2 ≤ p.natDegree := by grind
+    exact roots_le_of_prec_right (derivative_interlaces hp hdeg2).toPrec hroots
+
+/-- Standard Rolle--Obreschkoff input: differentiation preserves weak proper
+position in the oriented, zero-aware `Prec0` convention. -/
+def derivativePreservesPrec0Statement : Prop :=
+  ∀ {p q : ℝ[X]}, Prec0 p q → Prec0 p.derivative q.derivative
+
 end RealRooted

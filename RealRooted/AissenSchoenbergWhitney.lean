@@ -26,7 +26,7 @@ def ToeplitzTotallyNonnegative (a : ℕ → ℝ) : Prop :=
     StrictMono cols →
     0 ≤ Matrix.det (toeplitzMinor a rows cols)
 
-/-- The coefficient sequence of `p` is a Polya frequency sequence. -/
+/-- A sequence is a Polya-frequency sequence. -/
 def IsPolyaFrequencySequence (a : ℕ → ℝ) : Prop :=
   ToeplitzTotallyNonnegative a
 
@@ -163,7 +163,7 @@ theorem aissenSchoenbergWhitneyForward_iff_orZero :
 
 /-- Without a nonzero hypothesis, the forward ASW interface would force the
 zero polynomial to be real-rooted, contrary to the strict local definition of
-`(`. ≠ 0 ∧ `..Splits) -/
+`p ≠ 0 ∧ p.Splits`. -/
 theorem not_aissenSchoenbergWhitneyForward_without_nonzero :
     ¬ (∀ ⦃p : ℝ[X]⦄,
       HasNonnegCoeffs p →

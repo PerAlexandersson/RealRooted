@@ -17,6 +17,9 @@ import RealRooted.CommonInterleaverTwo
 import RealRooted.CommonInterleaverExamples
 import RealRooted.GammaRealRoots
 import RealRooted.HermiteBiehler
+import RealRooted.PFPolynomial
+import RealRooted.Hadamard
+import RealRooted.EulerOperator
 import RealRooted.Favard
 import RealRooted.AissenSchoenbergWhitney
 import RealRooted.VeroneseSection
