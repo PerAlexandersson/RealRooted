@@ -36,11 +36,13 @@ lemma hasPosLeadingCoeff_of_X_sub_C_mul {q : ℝ[X]} {r : ℝ}
   simp_all
 
 lemma roots_le_X_sub_C_mul {r : ℝ} {f : ℝ[X]}
-    (hf : f ≠ 0 ∧ f.Splits)
+    (hf : f.Splits)
     (hf_le : ∀ s ∈ f.roots, s ≤ r) :
     ∀ s ∈ ((X - C r) * f).roots, s ≤ r := by
+  obtain rfl | hf₀ := eq_or_ne f 0
+  · simp
   intro s hs
-  rw [roots_mul (mul_ne_zero (X_sub_C_ne_zero r) hf.1), roots_X_sub_C] at hs
+  rw [roots_mul (mul_ne_zero (X_sub_C_ne_zero r) hf₀), roots_X_sub_C] at hs
   rcases Multiset.mem_add.mp hs with hs | hs
   · simp_all
   · simp_all
@@ -49,6 +51,9 @@ lemma roots_le_X_sub_C_mul {r : ℝ} {f : ℝ[X]}
 lemma isRealRooted_C_mul {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) {a : ℝ} (ha : a ≠ 0) :
     (C a * p ≠ 0 ∧ (C a * p).Splits) := by
   simp_all
+
+lemma isRealRooted_X_mul {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits) :
+    ((X * f) ≠ 0 ∧ (X * f).Splits) := isRealRooted_mul (by simp) hf
 
 /-- A nonzero divisor of a real-rooted polynomial is real-rooted. -/
 lemma isRealRooted_of_dvd {p q : ℝ[X]} (hp : p ≠ 0 ∧
@@ -242,11 +247,11 @@ lemma prec_comp_X_add_C_iff {f g : ℝ[X]} (r : ℝ) :
     exact prec_comp_X_add_C h r
 
 /-- A real-rooted polynomial interlaces with itself in the same-degree sense. -/
-lemma prec_refl {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits) : Prec f f := by
+lemma prec_refl {f : ℝ[X]} (hf₀ : f ≠ 0) (hf : f.Splits) : Prec f f := by
   set rs := f.roots.sort (· ≤ ·)
   have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hrs_eq : (↑rs : Multiset ℝ) = f.roots := Multiset.sort_eq ..
-  exact ⟨hf, hf, rs, rs, hrs_sorted, hrs_sorted, hrs_eq, hrs_eq,
+  exact ⟨⟨hf₀, hf⟩, ⟨hf₀, hf⟩, rs, rs, hrs_sorted, hrs_sorted, hrs_eq, hrs_eq,
     Or.inr ⟨by lia, listAlternates_self_of_pairwise rs hrs_sorted⟩⟩
 
 /-- Multiplying the left polynomial in a `Prec` relation by a nonzero scalar
@@ -254,22 +259,20 @@ preserves interlacing, since it does not change the roots. -/
 lemma prec_C_mul_left {f g : ℝ[X]} (h : Prec f g) {a : ℝ} (ha : a ≠ 0) :
     Prec (C a * f) g := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hcase⟩
-  exact ⟨isRealRooted_C_mul hf ha, hg, ss, rs, hss, hrs, by
-    simp_all, hrs_eq, hcase⟩
+  exact ⟨by simp_all, hg, ss, rs, hss, hrs, by simp_all, hrs_eq, hcase⟩
 
 /-- Multiplying the right polynomial in a `Prec` relation by a nonzero scalar
 preserves interlacing, since it does not change the roots. -/
 lemma prec_C_mul_right {f g : ℝ[X]} (h : Prec f g) {a : ℝ} (ha : a ≠ 0) :
     Prec f (C a * g) := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hcase⟩
-  exact ⟨hf, isRealRooted_C_mul hg ha, ss, rs, hss, hrs, hss_eq, by
-    simp_all, hcase⟩
+  exact ⟨hf, by simp_all, ss, rs, hss, hrs, hss_eq, by simp_all, hcase⟩
 
 /-- In particular, a nonzero scalar multiple of a real-rooted polynomial
 interlaces the original polynomial. -/
-lemma prec_C_mul_self {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits) {a : ℝ} (ha : a ≠ 0) :
+lemma prec_C_mul_self {f : ℝ[X]} (hf₀ : f ≠ 0) (hf : f.Splits) {a : ℝ} (ha : a ≠ 0) :
     Prec (C a * f) f :=
-  prec_C_mul_left (prec_refl hf) ha
+  prec_C_mul_left (prec_refl hf₀ hf) ha
 
 /-- If two polynomials have the same degree and positive leading coefficients,
 their top coefficients cannot cancel. -/

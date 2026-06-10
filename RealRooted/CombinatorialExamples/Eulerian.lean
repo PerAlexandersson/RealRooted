@@ -146,13 +146,11 @@ lemma eulerianTilde_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (eulerianTilde n
               grind
             simp [hcoeff_m, hcoeff_succ]
 
-lemma roots_nonpos_eulerianTilde_of_isRealRooted {n : Nat}
-    (hrr : (eulerianTilde n) ≠ 0 ∧ (eulerianTilde n).Splits) :
+lemma roots_nonpos_eulerianTilde_of_isRealRooted {n : Nat} (hrr : (eulerianTilde n).Splits) :
     ∀ r ∈ (eulerianTilde n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs hrr (eulerianTilde_nonnegCoeffs n)
 
-lemma prec_affineEulerianTilde {n : Nat}
-    (hrr : (eulerianTilde n) ≠ 0 ∧ (eulerianTilde n).Splits) :
+lemma prec_affineEulerianTilde {n : Nat} (hrr : (eulerianTilde n).Splits) :
     Prec (affineEulerianTilde n) (eulerianTilde n) := by
   rw [affineEulerianTilde]
   exact prec_affine_derivative' hrr (by rw [natDegree_eulerianTilde]; lia)
@@ -190,10 +188,9 @@ lemma affineEulerianTilde_nonnegCoeffs (n : Nat) :
       grind
     simp [hcoeff_m, hcoeff_succ]
 
-lemma roots_nonpos_affineEulerianTilde_of_isRealRooted {n : Nat}
-    (hrr : (eulerianTilde n) ≠ 0 ∧ (eulerianTilde n).Splits) :
+lemma roots_nonpos_affineEulerianTilde_of_isRealRooted {n : Nat} (hrr : (eulerianTilde n).Splits) :
     ∀ r ∈ (affineEulerianTilde n).roots, r ≤ 0 :=
-  roots_nonpos_of_nonneg_coeffs (prec_affineEulerianTilde hrr).1
+  roots_nonpos_of_nonneg_coeffs (prec_affineEulerianTilde hrr).1.2
     (affineEulerianTilde_nonnegCoeffs n)
 
 lemma natDegree_affineEulerianTilde (n : Nat) :
@@ -212,10 +209,10 @@ lemma prec_eulerianTilde_succ_of_prec_affine {n : Nat}
     Prec (eulerianTilde n) (eulerianTilde (n + 1)) := by
   have haff_nonpos :
       ∀ r ∈ (affineEulerianTilde n).roots, r ≤ 0 :=
-    roots_nonpos_of_nonneg_coeffs haff.1 (affineEulerianTilde_nonnegCoeffs n)
+    roots_nonpos_of_nonneg_coeffs haff.1.2 (affineEulerianTilde_nonnegCoeffs n)
   have hp_nonpos :
       ∀ r ∈ (eulerianTilde n).roots, r ≤ 0 :=
-    roots_nonpos_of_nonneg_coeffs haff.2.1 (eulerianTilde_nonnegCoeffs n)
+    roots_nonpos_of_nonneg_coeffs haff.2.1.2 (eulerianTilde_nonnegCoeffs n)
   have hmain :
       Prec (eulerianTilde n) (X * affineEulerianTilde n) :=
     prec_sameDegree_to_prec_mul_X_of_roots_nonpos haff
@@ -227,16 +224,9 @@ the oriented `Prec` sense. The induction hypothesis supplies real-rootedness of
 `P_n` as the right-hand half of `Prec P_{n-1} P_n`. -/
 theorem prec_eulerianTilde_succ : ∀ n : Nat,
     Prec (eulerianTilde n) (eulerianTilde (n + 1))
-  | 0 => by
-      have hrr0 : ((eulerianTilde 0) ≠ 0 ∧ (eulerianTilde 0).Splits) := by
-        simp
-      exact prec_eulerianTilde_succ_of_prec_affine
-        (n := 0) (prec_affineEulerianTilde (n := 0) hrr0)
-  | n + 1 => by
-      have hprev : Prec (eulerianTilde n) (eulerianTilde (n + 1)) :=
-        prec_eulerianTilde_succ n
-      exact prec_eulerianTilde_succ_of_prec_affine
-        (n := n + 1) (prec_affineEulerianTilde (n := n + 1) hprev.2.1)
+  | 0 => prec_eulerianTilde_succ_of_prec_affine <| prec_affineEulerianTilde <| by simp
+  | n + 1 => prec_eulerianTilde_succ_of_prec_affine <| prec_affineEulerianTilde
+    (prec_eulerianTilde_succ n).2.1.2
 
 /-- Every Eulerian tilde polynomial is real-rooted, obtained as the
 right-hand component of the interlacing induction. -/
