@@ -441,9 +441,7 @@ lemma of_posComboRealRooted_sameDegree {f g : ℝ[X]}
   intro α β hα hβ
   by_cases hα0 : α = 0
   · subst hα0
-    by_cases hβ0 : β = 0
-    · simp_all
-    · simp_all
+    by_cases hβ0 : β = 0 <;> simp_all
   · by_cases hβ0 : β = 0
     · simp_all
     · right
@@ -495,11 +493,7 @@ lemma of_commonInterleaver {f g h : ℝ[X]}
       right
       have hprec :
           Prec (weightedSum [(α, f), (β, g)]) h := by
-        refine prec_weightedSum_right [(α, f), (β, g)] h ?_ ?_ ?_ ?_
-        · simp_all
-        · simp_all
-        · simp_all
-        · simp_all
+        refine prec_weightedSum_right [(α, f), (β, g)] h ?_ ?_ ?_ ?_ <;> simp_all
       simpa [weightedSum, weightedSum_cons] using hprec.1
 
 end Compatible
@@ -1499,13 +1493,9 @@ theorem posComboNoCommonOrientation_of_affineFamilyBridge_and_nonnegCoeffs
   have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
   have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
   have hf_rr : (f ≠ 0 ∧ f.Splits) := by
-    rcases hall 1 0 with hzero | hrr
-    · simp_all
-    · simp_all
+    rcases hall 1 0 with hzero | hrr <;> simp_all
   have hg_rr : (g ≠ 0 ∧ g.Splits) := by
-    rcases hall 0 1 with hzero | hrr
-    · simp_all
-    · simp_all
+    rcases hall 0 1 with hzero | hrr <;> simp_all
   have hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by
     lia
   exact prec_of_allComboRealRooted hf_rr hg_rr hall hdeg
@@ -1864,13 +1854,9 @@ theorem posComboOrientation_of_posCombo_and_degreeSplit_and_nonnegCoeffs
   have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
   have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
   have hf_rr : (f ≠ 0 ∧ f.Splits) := by
-    rcases hall 1 0 with hzero | hrr
-    · simp_all
-    · simp_all
+    rcases hall 1 0 with hzero | hrr <;> simp_all
   have hg_rr : (g ≠ 0 ∧ g.Splits) := by
-    rcases hall 0 1 with hzero | hrr
-    · simp_all
-    · simp_all
+    rcases hall 0 1 with hzero | hrr <;> simp_all
   have hclose :
       f.natDegree ≤ g.natDegree + 1 ∧
         g.natDegree ≤ f.natDegree + 1 :=
@@ -1982,13 +1968,9 @@ theorem posComboOrientation_of_affineFamilyBridge_and_nonnegCoeffs
   have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
   have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
   have hf_rr : (f ≠ 0 ∧ f.Splits) := by
-    rcases hall 1 0 with hzero | hrr
-    · simp_all
-    · simp_all
+    rcases hall 1 0 with hzero | hrr <;> simp_all
   have hg_rr : (g ≠ 0 ∧ g.Splits) := by
-    rcases hall 0 1 with hzero | hrr
-    · simp_all
-    · simp_all
+    rcases hall 0 1 with hzero | hrr <;> simp_all
   have hclose :
       f.natDegree ≤ g.natDegree + 1 ∧
         g.natDegree ≤ f.natDegree + 1 :=
@@ -2083,13 +2065,9 @@ theorem posComboNoCommonOrientation_of_allComboBridge
   have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
   have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
   have hf_rr : (f ≠ 0 ∧ f.Splits) := by
-    rcases hall 1 0 with hzero | hrr
-    · simp_all
-    · simp_all
+    rcases hall 1 0 with hzero | hrr <;> simp_all
   have hg_rr : (g ≠ 0 ∧ g.Splits) := by
-    rcases hall 0 1 with hzero | hrr
-    · simp_all
-    · simp_all
+    rcases hall 0 1 with hzero | hrr <;> simp_all
   have hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by
     lia
   exact prec_of_allComboRealRooted hf_rr hg_rr hall hdeg

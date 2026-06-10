@@ -1230,9 +1230,7 @@ theorem prec_same_of_strict_signs_of_right_root
   have hws_sub : (↑(us ++ [uR]) : Multiset ℝ) ≤ F.roots := by
     rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr (hws_pw.imp ne_of_lt))]
     intro x hx
-    rcases List.mem_append.mp (Multiset.mem_coe.mp hx) with hx_us | hx_uR
-    · simp_all
-    · simp_all
+    rcases List.mem_append.mp (Multiset.mem_coe.mp hx) with hx_us | hx_uR <;> simp_all
   have hws_len : (us ++ [uR]).length = F.natDegree := by
     simp_all
   have hws_eq : (↑(us ++ [uR]) : Multiset ℝ) = F.roots :=
@@ -1341,17 +1339,13 @@ theorem prec_of_strict_signs_of_strict_outer_roots
   have hws_pw : (uL :: us ++ [uR]).Pairwise (· < ·) := by
     refine List.pairwise_cons.mpr ⟨?_, husuR_pw⟩
     intro x hx
-    rcases List.mem_append.mp hx with hx | hx
-    · simp_all
-    · simp_all
+    rcases List.mem_append.mp hx with hx | hx <;> simp_all
   have hws_sub : (↑(uL :: us ++ [uR]) : Multiset ℝ) ≤ F.roots := by
     rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr (hws_pw.imp ne_of_lt))]
     intro x hx
     rcases List.mem_cons.mp (Multiset.mem_coe.mp hx) with rfl | hx'
     · simp_all
-    rcases List.mem_append.mp hx' with hx_us | hx_uR
-    · simp_all
-    · simp_all
+    rcases List.mem_append.mp hx' with hx_us | hx_uR <;> simp_all
   have hws_len : (uL :: us ++ [uR]).length = F.natDegree := by
     simp_all
   have hws_eq : (↑(uL :: us ++ [uR]) : Multiset ℝ) = F.roots :=

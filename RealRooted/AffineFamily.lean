@@ -1929,9 +1929,7 @@ private lemma eval_nonpos_at_root_of_degree_one_of_affine_family
     exact roots_nonpos_of_nonneg_coeffs hf_rr hfnn r ((mem_roots hf_rr.1).mpr hfr)
   by_contra hgr_pos
   have hdeg_cases : g.natDegree = 1 ∨ g.natDegree = 2 := by
-    rcases natDegree_cases_of_affine_family hf0 hg0 hfnn hgnn haff with hgdeg | hgdeg
-    · lia
-    · lia
+    rcases natDegree_cases_of_affine_family hf0 hg0 hfnn hgnn haff with hgdeg | hgdeg <;> lia
   let a : ℝ := f.coeff 1
   have ha_pos : 0 < a := by
     unfold HasPosLeadingCoeff at hf_pos
@@ -2430,10 +2428,7 @@ private lemma prec_of_prec_shifted_pair_sameDegree
     rw [hEq_sub] at hprec0
     have hCa_f_ne : C a * f ≠ 0 := mul_ne_zero (C_ne_zero.mpr ha_ne) hf0
     have hCa_g_ne : C a * g ≠ 0 := mul_ne_zero (C_ne_zero.mpr ha_ne) hg0
-    rcases hprec0 with hleft0 | hright0 | hprec
-    · lia
-    · lia
-    · lia
+    rcases hprec0 with hleft0 | hright0 | hprec <;> lia
   have hprec_back :
       Prec (C a⁻¹ * (C a * f)) (C a⁻¹ * (C a * g)) :=
     prec_C_mul_right
