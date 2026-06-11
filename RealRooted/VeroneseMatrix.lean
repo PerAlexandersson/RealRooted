@@ -659,7 +659,9 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_last_last
   by_cases hj₁0 : j₁.1 = 0
   · by_cases hj₂0 : j₂.1 = 0
     · simp [hj₁0, hj₂0]
-      exact (prec_refl (isRealRooted_affine_mul_X_add_X hs).1 (isRealRooted_affine_mul_X_add_X hs).2).toPrec0
+      exact
+        (prec_refl (isRealRooted_affine_mul_X_add_X hs).1
+          (isRealRooted_affine_mul_X_add_X hs).2).toPrec0
     · by_cases hj₂last : j₂.1 = r - 1
       · simp [hj₁0, hj₂last, hlast_ne_zero,
           veroneseLinearFactorLastConstEntry]

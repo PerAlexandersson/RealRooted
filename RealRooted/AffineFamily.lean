@@ -4255,7 +4255,7 @@ theorem prec_of_affine_segment_endpoint_pf_nonneg
       ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
         ((((C s * X + C t) * P0) + H0) +
           C z * (((C s * X + C t) * P1) + H1)) ≠ 0)
-    (hpencil_nn :
+    (_hpencil_nn :
       ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
         HasNonnegCoeffs
           ((((C s * X + C t) * P0) + H0) +
@@ -4344,7 +4344,7 @@ theorem prec_of_affine_segment_endpoint_pf_sameDegree_nonneg
       ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
         ((((C s * X + C t) * P0) + H0) +
           C z * (((C s * X + C t) * P1) + H1)) ≠ 0)
-    (hpencil_nn :
+    (_hpencil_nn :
       ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
         HasNonnegCoeffs
           ((((C s * X + C t) * P0) + H0) +

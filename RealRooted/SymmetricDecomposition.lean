@@ -219,7 +219,6 @@ lemma fPolynomial_natDegree_le (d : ℕ) (h : ℝ[X]) :
     (s := Finset.range (d + 1))
     (f := fun k => C (h.coeff k) * X ^ k * (X + 1) ^ (d - k)) ?_
   intro k hk
-  change (C (h.coeff k) * X ^ k * (X + 1) ^ (d - k)).natDegree ≤ d
   have hk_le : k ≤ d := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
   have hleft : (C (h.coeff k) * X ^ k).natDegree ≤ k := by
     exact (Polynomial.natDegree_C_mul_le _ _).trans (Polynomial.natDegree_X_pow_le k)

@@ -1254,7 +1254,7 @@ private lemma interlaces_derivative_of_degree_pos
     have hf'_ne : f.derivative ≠ 0 := by
       simp_all
     have hf'_deg0 : f.derivative.natDegree = 0 := by
-      simpa [hdeg1] using f.natDegree_derivative
+      simp [hdeg1, f.natDegree_derivative]
     have hf'_rr : (f.derivative ≠ 0 ∧ f.derivative.Splits) :=
       isRealRooted_of_deg_zero hf'_ne hf'_deg0
     exact
@@ -2246,24 +2246,16 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
         hf hg hall hdeg heps hno
   have hlead_f_iter :
       (iterateTDeriv eps n f).leadingCoeff = f.leadingCoeff := by
-    simpa [n] using
-      leadingCoeff_iterateTDeriv_of_isRealRooted
-        (eps := eps) (k := max f.natDegree g.natDegree) hf
+    simp
   have hlead_g_iter :
       (iterateTDeriv eps n g).leadingCoeff = g.leadingCoeff := by
-    simpa [n] using
-      leadingCoeff_iterateTDeriv_of_isRealRooted
-        (eps := eps) (k := max f.natDegree g.natDegree) hg
+    simp
   have hpos_f_iter :
       HasPosLeadingCoeff (iterateTDeriv eps n f) ↔ HasPosLeadingCoeff f := by
-    simpa [n] using
-      hasPosLeadingCoeff_iterateTDeriv_of_isRealRooted
-        (eps := eps) (k := max f.natDegree g.natDegree) hf
+    simp
   have hpos_g_iter :
       HasPosLeadingCoeff (iterateTDeriv eps n g) ↔ HasPosLeadingCoeff g := by
-    simpa [n] using
-      hasPosLeadingCoeff_iterateTDeriv_of_isRealRooted
-        (eps := eps) (k := max f.natDegree g.natDegree) hg
+    simp
   have hsucc_iter_forced :
       f.natDegree + 1 = g.natDegree →
         Prec (iterateTDeriv eps n f) (iterateTDeriv eps n g) := by
@@ -2563,13 +2555,11 @@ private theorem allComboRealRooted_of_prec_succDegree_pos
   by_cases hβ0 : β = 0
   · by_cases hα0 : α = 0
     · simp [hα0, hβ0]
-    ·
-      have hrr : ((C α * f) ≠ 0 ∧ (C α * f).Splits) := isRealRooted_C_mul hfg.1 hα0
+    · have hrr : ((C α * f) ≠ 0 ∧ (C α * f).Splits) := isRealRooted_C_mul hfg.1 hα0
       simp_all
   · rcases lt_or_gt_of_ne hβ0 with hβneg | hβpos
     · by_cases hα_nonpos : α ≤ 0
-      ·
-        have hrr_neg :
+      · have hrr_neg :
             ((C (-α) * f + C (-β) * g) ≠ 0 ∧ (C (-α) * f + C (-β) * g).Splits) :=
           isRealRooted_nonneg_combo_of_prec
             hfg hf_pos hg_pos
@@ -2626,8 +2616,7 @@ private theorem allComboRealRooted_of_prec_succDegree_pos
         simp_all
     · by_cases hα_nonneg : 0 ≤ α
       · by_cases hα0 : α = 0
-        ·
-          have hrr : ((C β * g) ≠ 0 ∧ (C β * g).Splits) := isRealRooted_C_mul hfg.2.1 hβ0
+        · have hrr : ((C β * g) ≠ 0 ∧ (C β * g).Splits) := isRealRooted_C_mul hfg.2.1 hβ0
           simp_all
         · exact
             (isRealRooted_nonneg_combo_of_prec
@@ -3009,7 +2998,7 @@ private theorem allComboRealRooted_of_prec_sameDegree_pos_of_no_common
   by_cases hdeg0 : f.natDegree = 0
   · intro α β
     by_cases hcomb : C α * f + C β * g = 0
-    · simpa [hcomb]
+    · simp [hcomb]
     · have hgdeg0 : g.natDegree = 0 := by lia
       have hfC : f = C (f.coeff 0) := eq_C_of_natDegree_eq_zero hdeg0
       have hgC : g = C (g.coeff 0) := eq_C_of_natDegree_eq_zero hgdeg0
