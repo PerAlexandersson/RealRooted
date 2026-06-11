@@ -297,9 +297,9 @@ products. This is finite-sequence closure packaged through coefficient
 polynomials. -/
 def polyaFrequencyHadamardCoeffStatement : Prop :=
   ∀ {p q : ℝ[X]},
-    IsPolyaFrequencySequence (fun n => p.coeff n) →
-    IsPolyaFrequencySequence (fun n => q.coeff n) →
-    IsPolyaFrequencySequence (fun n => (hadamardProduct p q).coeff n)
+    IsPolyaFreqSeq (fun n => p.coeff n) →
+    IsPolyaFreqSeq (fun n => q.coeff n) →
+    IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)
 
 theorem polyaFrequencyHadamardCoeff_of_schurPolyaWagner
     (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)

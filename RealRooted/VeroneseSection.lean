@@ -1487,7 +1487,7 @@ theorem splits_veroneseSectionPolynomial_of_pf {p : ℝ[X]}
 theorem and a PF certificate for the original polynomial. -/
 theorem veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_pf {p : ℝ[X]}
     (hASW : aissenSchoenbergWhitneyForwardStatement)
-    (hp : IsPolyaFrequencySequence (fun n => p.coeff n)) {r k : ℕ}
+    (hp : IsPolyaFreqSeq (fun n => p.coeff n)) {r k : ℕ}
     (hr : 0 < r) (hk : k < r) :
     veroneseSectionPolynomial r k p = 0 ∨
       (veroneseSectionPolynomial r k p).Splits :=

@@ -22,7 +22,7 @@ only real nonpositive roots.
 
 This is zero-aware, unlike the strict local real-rootedness predicate
 `p ≠ 0 ∧ p.Splits`.  The Toeplitz-minor side remains
-`IsPolyaFrequencySequence (fun n => p.coeff n)`.
+`IsPolyaFreqSeq (fun n => p.coeff n)`.
 -/
 def IsPFPolynomial (p : ℝ[X]) : Prop :=
   HasNonnegCoeffs p ∧ (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0
@@ -120,20 +120,20 @@ theorem derivative {p : ℝ[X]}
 theorem of_sequence
     (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
     {p : ℝ[X]}
-    (hpf : IsPolyaFrequencySequence (fun n => p.coeff n)) :
+    (hpf : IsPolyaFreqSeq (fun n => p.coeff n)) :
     IsPFPolynomial p := by
   have hpnn : HasNonnegCoeffs p :=
-    hasNonnegCoeffs_of_isPolyaFrequencySequence_coeff hpf
+    hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff hpf
   exact ⟨hpnn, hASW hpnn hpf⟩
 
 theorem to_sequence
     (hASWrev : aissenSchoenbergWhitneyReverseStatement)
     {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
-    IsPolyaFrequencySequence (fun n => p.coeff n) := by
+    IsPolyaFreqSeq (fun n => p.coeff n) := by
   by_cases hp0 : p = 0
   · subst p
-    simpa using isPolyaFrequencySequence_zero
+    simpa using IsPolyaFreqSeq_zero
   · exact hASWrev hp.hasNonnegCoeffs (hp.ne_zero_and_splits hp0).2
       hp.roots_nonpos
 
