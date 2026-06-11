@@ -690,7 +690,7 @@ lemma Polynomial.eval_derivative_prod_X_sub_C_univ_at_root {n : ℕ} (r : Fin n 
     (k : Fin n) :
     eval (r k) (derivative (∏ j : Fin n, (X - C (r j)))) =
     ∏ j ∈ Finset.univ.erase k, (r k - r j) := by
-  rw [Finset.prod_eq_mul_prod_diff_singleton_of_mem (Finset.mem_univ k)]
+  rw [Finset.prod_eq_mul_prod_sdiff_singleton_of_mem (Finset.mem_univ k)]
   simp [eval_prod, Finset.sdiff_singleton_eq_erase]
 
 lemma Polynomial.splits_eq_C_mul_prod {n : ℕ} {q : ℝ[X]}
@@ -842,7 +842,7 @@ lemma Polynomial.wronskian_at_root_pos_of_interlacing {n : ℕ}
   have h_eval : q.derivative.eval (r k) * p.eval (r k) = c₂ * c₁ * (∏ j : Fin n,
     (r k - s j)) * (∏ j ∈ Finset.univ.erase k, (r k - r j)) := by
     rw [hc₂.2, hc₁.2]
-    simp only [Finset.prod_eq_prod_diff_singleton_mul (Finset.mem_univ k),
+    simp only [Finset.prod_eq_prod_sdiff_singleton_mul (Finset.mem_univ k),
       derivative_mul, derivative_C, zero_mul, derivative_sub, derivative_X, sub_zero,
       mul_one, zero_add, eval_mul, eval_C, eval_add, eval_sub, eval_X, sub_self,
       mul_zero, eval_prod, Finset.sdiff_singleton_eq_erase]
