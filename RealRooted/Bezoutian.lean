@@ -1,6 +1,6 @@
 import RealRooted.Basic
 import RealRooted.Linear
-import Mathlib.Data.Real.StarOrdered
+import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Matrix.PosDef
 
 /-!

@@ -39,23 +39,10 @@ lemma toeplitz_zero : toeplitz 0 = 0 := by
 def IsPolyaFreqSeq (a : ℕ → ℝ) : Prop :=
   (toeplitz a).IsTotallyNonneg
 
-/-- Backward-compatible spelling for Toeplitz total nonnegativity. -/
-abbrev ToeplitzTotallyNonnegative (a : ℕ → ℝ) : Prop :=
-  IsPolyaFreqSeq a
-
-/-- Backward-compatible spelling for `IsPolyaFreqSeq`. -/
-abbrev IsPolyaFrequencySequence (a : ℕ → ℝ) : Prop :=
-  IsPolyaFreqSeq a
-
 /-- The zero sequence is Polya-frequency. -/
-theorem isPolyaFrequencySequence_zero :
-    IsPolyaFrequencySequence (fun _ : ℕ => (0 : ℝ)) := by
-  simp [IsPolyaFrequencySequence, IsPolyaFreqSeq]
-
-/-- The zero sequence is Polya-frequency, with the shorter name. -/
 theorem IsPolyaFreqSeq_zero :
-    IsPolyaFreqSeq (fun _ : ℕ => (0 : ℝ)) :=
-  isPolyaFrequencySequence_zero
+    IsPolyaFreqSeq (fun _ : ℕ => (0 : ℝ)) := by
+  simp [IsPolyaFreqSeq]
 
 /-- A Polya-frequency sequence has nonnegative entries, by its `1 × 1`
 Toeplitz minors. -/
@@ -65,28 +52,28 @@ protected nonrec theorem IsPolyaFreqSeq.nonneg
   simpa [IsPolyaFreqSeq] using ha.nonneg k 0
 
 /-- Compatibility spelling for nonnegativity of PF sequences. -/
-theorem nonneg_of_isPolyaFrequencySequence
+theorem nonneg_of_IsPolyaFreqSeq
     {a : ℕ → ℝ}
-    (hpf : IsPolyaFrequencySequence a)
+    (hpf : IsPolyaFreqSeq a)
     (k : ℕ) :
     0 ≤ a k :=
   IsPolyaFreqSeq.nonneg hpf k
 
 /-- Toeplitz total nonnegativity of the coefficient sequence already implies
 nonnegative coefficients. -/
-theorem hasNonnegCoeffs_of_isPolyaFrequencySequence_coeff
+theorem hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff
     {p : ℝ[X]}
-    (hpf : IsPolyaFrequencySequence (fun n => p.coeff n)) :
+    (hpf : IsPolyaFreqSeq (fun n => p.coeff n)) :
     HasNonnegCoeffs p := by
   intro k
-  exact nonneg_of_isPolyaFrequencySequence hpf k
+  exact nonneg_of_IsPolyaFreqSeq hpf k
 
 /-- Planning stub for the forward Aissen--Schoenberg--Whitney theorem:
 Toeplitz total nonnegativity of the coefficient sequence of a nonzero
 polynomial should imply that the polynomial has only real nonpositive roots. -/
 def aissenSchoenbergWhitneyForwardStatement : Prop :=
   ∀ ⦃p : ℝ[X]⦄,
-    IsPolyaFrequencySequence (fun n => p.coeff n) →
+    IsPolyaFreqSeq (fun n => p.coeff n) →
     p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0
 
 /-- Zero-aware forward ASW interface.  This is often the most convenient
@@ -95,7 +82,7 @@ strictly real-rooted polynomial with nonpositive roots. -/
 def aissenSchoenbergWhitneyForwardOrZeroStatement : Prop :=
   ∀ ⦃p : ℝ[X]⦄,
     HasNonnegCoeffs p →
-    IsPolyaFrequencySequence (fun n => p.coeff n) →
+    IsPolyaFreqSeq (fun n => p.coeff n) →
     (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0
 
 /-- Equivalent forward ASW statement with the redundant nonnegative-coefficient
@@ -103,7 +90,7 @@ hypothesis removed. -/
 def aissenSchoenbergWhitneyForwardNoNonnegStatement : Prop :=
   ∀ ⦃p : ℝ[X]⦄,
     p ≠ 0 →
-    IsPolyaFrequencySequence (fun n => p.coeff n) →
+    IsPolyaFreqSeq (fun n => p.coeff n) →
     (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0
 
 /-- The current forward ASW statement implies the no-extra-nonnegativity
@@ -147,7 +134,7 @@ theorem aissenSchoenbergWhitneyForward_of_orZero
     aissenSchoenbergWhitneyForwardStatement := by
   intro p hpf
   have hnn : HasNonnegCoeffs p :=
-    hasNonnegCoeffs_of_isPolyaFrequencySequence_coeff hpf
+    hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff hpf
   have h := hASW hnn hpf
   rcases h with ⟨hzero | hsplits, hroots⟩
   · subst p
@@ -168,14 +155,14 @@ zero polynomial to be real-rooted, contrary to the strict local definition of
 theorem not_aissenSchoenbergWhitneyForward_without_nonzero :
     ¬ (∀ ⦃p : ℝ[X]⦄,
       HasNonnegCoeffs p →
-      IsPolyaFrequencySequence (fun n => p.coeff n) →
+      IsPolyaFreqSeq (fun n => p.coeff n) →
       (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) := by
   intro h
   have hnn : HasNonnegCoeffs (0 : ℝ[X]) := by
     intro n
     simp
-  have hpf : IsPolyaFrequencySequence (fun n => (0 : ℝ[X]).coeff n) := by
-    simpa using isPolyaFrequencySequence_zero
+  have hpf : IsPolyaFreqSeq (fun n => (0 : ℝ[X]).coeff n) := by
+    simpa using IsPolyaFreqSeq_zero
   have hbad := h hnn hpf
   exact hbad.1.1 rfl
 
@@ -190,6 +177,6 @@ def aissenSchoenbergWhitneyReverseStatement : Prop :=
     HasNonnegCoeffs p →
     p.Splits →
     (∀ r ∈ p.roots, r ≤ 0) →
-    IsPolyaFrequencySequence (fun n => p.coeff n)
+    IsPolyaFreqSeq (fun n => p.coeff n)
 
 end RealRooted
