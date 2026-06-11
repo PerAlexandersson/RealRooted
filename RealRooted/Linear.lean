@@ -56,7 +56,7 @@ lemma isRealRooted_X_mul {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits) :
     ((X * f) ≠ 0 ∧ (X * f).Splits) := isRealRooted_mul (by simp) hf
 
 lemma isRealRooted_X : ((X : ℝ[X]) ≠ 0 ∧ (X : ℝ[X]).Splits) := by
-  simpa using isRealRooted_X_sub_C (0 : ℝ)
+  simp
 
 lemma isRealRooted_of_deg_zero {p : ℝ[X]}
     (hp : p ≠ 0) (hdeg : p.natDegree = 0) :
