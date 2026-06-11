@@ -144,8 +144,8 @@ lemma listInterlaces_orderedInsert :
               simpa [List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := rs) har₂] using
                 listInterlaces_orderedInsert hlen' htail a⟩
   | [], _ :: _ :: _, hlen, _, _ => by simp at hlen
-  | _ :: _, [], hlen, _ , _ => by simp at hlen
-  | _ :: _, [_], hlen, _ , _ => by simp at hlen
+  | _ :: _, [], hlen, _, _ => by simp at hlen
+  | _ :: _, [_], hlen, _, _ => by simp at hlen
 
 lemma listAlternates_orderedInsert :
     ∀ {ss rs : List ℝ},

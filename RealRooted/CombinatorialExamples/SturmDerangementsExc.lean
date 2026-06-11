@@ -98,19 +98,19 @@ lemma sturmDerangementsExc_isRoot_zero (n : Nat) : (sturmDerangementsExc n).IsRo
   simp_all
 
 lemma sturmDerangementsExc_three :
-    sturmDerangementsExc 3 = X^2 + X := by
+    sturmDerangementsExc 3 = X ^ 2 + X := by
   rw [sturmDerangementsExc_recurrence 0]
   simp
   grind
 
 lemma sturmDerangementsExc_four :
-    sturmDerangementsExc 4 = X^3 + 7 * X^2 + X := by
+    sturmDerangementsExc 4 = X ^ 3 + 7 * X ^ 2 + X := by
   rw [sturmDerangementsExc_recurrence 1, sturmDerangementsExc_three]
   simp
   grind
 
 lemma sturmDerangementsExc_five :
-    sturmDerangementsExc 5 = X^4 + 21 * X^3 + 21 * X^2 + X := by
+    sturmDerangementsExc 5 = X ^ 4 + 21 * X ^ 3 + 21 * X ^ 2 + X := by
   have hC2 : (C (2 : ℝ) : ℝ[X]) = 2 := by
     ext n
     cases n <;> simp
@@ -693,10 +693,10 @@ lemma X_dvd_warmupP (n : Nat) : X ∣ warmupP n :=
 lemma warmupP_isRoot_zero (n : Nat) : (warmupP n).IsRoot 0 :=
   sturmDerangementsExc_isRoot_zero n
 
-lemma warmupP_three : warmupP 3 = X^2 + X := sturmDerangementsExc_three
+lemma warmupP_three : warmupP 3 = X ^ 2 + X := sturmDerangementsExc_three
 
-lemma warmupP_four : warmupP 4 = X^3 + 7 * X^2 + X := sturmDerangementsExc_four
+lemma warmupP_four : warmupP 4 = X ^ 3 + 7 * X ^ 2 + X := sturmDerangementsExc_four
 
-lemma warmupP_five : warmupP 5 = X^4 + 21 * X^3 + 21 * X^2 + X := sturmDerangementsExc_five
+lemma warmupP_five : warmupP 5 = X ^ 4 + 21 * X ^ 3 + 21 * X ^ 2 + X := sturmDerangementsExc_five
 
 end RealRooted

@@ -266,7 +266,7 @@ def Prec (f g : ℝ[X]) : Prop := (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Spli
     ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧
     (↑ss : Multiset ℝ) = f.roots ∧ (↑rs : Multiset ℝ) = g.roots ∧
     ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
-     (ss.length = rs.length ∧ ListAlternates ss rs))
+      (ss.length = rs.length ∧ ListAlternates ss rs))
 
 /-- Every root of the left-hand polynomial is bounded by any common upper bound
 for the roots of the right-hand polynomial in a `Prec` witness. -/

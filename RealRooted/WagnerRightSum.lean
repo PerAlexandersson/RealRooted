@@ -576,7 +576,7 @@ lemma sum_has_root_between {f g : ℝ[X]}
         have hcont : ContinuousOn (fun x => (f + g).eval x) (Set.Icc s t) :=
           (f + g).continuous.continuousOn
         -- (f+g)(s) = g(s) ≤ 0 ≤ f(t) = (f+g)(t), use IVT
-        have h0_mem : (0 : ℝ) ∈ Set.Icc ((f+g).eval s) ((f+g).eval t) := by
+        have h0_mem : (0 : ℝ) ∈ Set.Icc ((f + g).eval s) ((f + g).eval t) := by
           grind
         obtain ⟨c, hc, hc_val⟩ := intermediate_value_Icc (le_of_lt hlt) hcont h0_mem
         exact ⟨c, hc.1, hc.2, hc_val⟩
@@ -591,7 +591,7 @@ lemma sum_has_root_between {f g : ℝ[X]}
         -- g(s) > 0 > f(t), so Icc goes f(t)..g(s)
         -- IVT gives Icc (eval a) (eval b), but (eval s) > 0 > (eval t)
         -- (f+g)(s) = g(s) > 0 > f(t) = (f+g)(t), use IVT'
-        have h0_mem : (0 : ℝ) ∈ Set.Icc ((f+g).eval t) ((f+g).eval s) := by
+        have h0_mem : (0 : ℝ) ∈ Set.Icc ((f + g).eval t) ((f + g).eval s) := by
           grind
         obtain ⟨c, hc, hc_val⟩ := intermediate_value_Icc' (le_of_lt hlt) hcont h0_mem
         exact ⟨c, hc.1, hc.2, hc_val⟩
@@ -1155,7 +1155,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
         apply Multiset.eq_of_le_of_card_le hus_sub
         rw [Multiset.coe_card]
         have h1 := card_roots_of_splits hfg_rr.2
-        lia  -- using h1 and hfg_natDeg
+        lia -- using h1 and hfg_natDeg
       -- Build the Prec witness
       exact ⟨hfg_rr, hh, us, rs_f,
         pairwise_le_of_listInterlaces us rs_f hus_int, hrs_f_sorted, hus_eq, hrs_f_eq,
@@ -1493,7 +1493,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
           exact ⟨hfg_rr, hh, c :: us, r₁ :: rest_rs,
             hpw.imp le_of_lt, hrs_f_sorted, hroots_eq, hrs_f_eq,
             Or.inr ⟨by grind,
-          ⟨le_trans hcf hs₁f_le, hus_int⟩⟩⟩
+            ⟨le_trans hcf hs₁f_le, hus_int⟩⟩⟩
 
 /-- A high-level sign-based version of Wagner (1): the only obstruction to the
     interval proof is a root of `f + g` landing exactly on a root of the common

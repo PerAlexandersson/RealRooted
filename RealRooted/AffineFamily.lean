@@ -3321,18 +3321,18 @@ private lemma hasDerivAt_neg_eval_div_eval
     {f g : ℝ[X]} {x : ℝ}
     (hf_eval_ne : f.eval x ≠ 0) :
     HasDerivAt (fun y : ℝ => -(g.eval y / f.eval y))
-      ((f.derivative.eval x * g.eval x - f.eval x * g.derivative.eval x) / (f.eval x)^2) x := by
+      ((f.derivative.eval x * g.eval x - f.eval x * g.derivative.eval x) / (f.eval x) ^ 2) x := by
   have hg' : HasDerivAt (fun y : ℝ => g.eval y) (g.derivative.eval x) x := by
     simpa using (g.differentiable.differentiableAt.hasDerivAt)
   have hf' : HasDerivAt (fun y : ℝ => f.eval y) (f.derivative.eval x) x := by
     simpa using (f.differentiable.differentiableAt.hasDerivAt)
   have hdiv : HasDerivAt (fun y : ℝ => g.eval y / f.eval y)
-      ((g.derivative.eval x * f.eval x - g.eval x * f.derivative.eval x) / (f.eval x)^2) x :=
+      ((g.derivative.eval x * f.eval x - g.eval x * f.derivative.eval x) / (f.eval x) ^ 2) x :=
     hg'.div hf' hf_eval_ne
   have hcoef :
-      (f.derivative.eval x * g.eval x - f.eval x * g.derivative.eval x) / (f.eval x)^2 =
+      (f.derivative.eval x * g.eval x - f.eval x * g.derivative.eval x) / (f.eval x) ^ 2 =
         -((g.derivative.eval x * f.eval x - g.eval x * f.derivative.eval x) /
-          (f.eval x)^2) := by
+          (f.eval x) ^ 2) := by
     ring_nf
   rw [hcoef]
   exact hdiv.neg
@@ -3364,9 +3364,9 @@ private lemma false_of_localExtr_neg_eval_div_eval_pos_of_add_left_family_of_no_
   have hf_eval_ne : f.eval x ≠ 0 := by
     grind
   have hopp : g.eval x * f.eval x < 0 := by
-    have hsq_pos : 0 < (f.eval x)^2 := sq_pos_of_ne_zero hf_eval_ne
+    have hsq_pos : 0 < (f.eval x) ^ 2 := sq_pos_of_ne_zero hf_eval_ne
     have hcalc :
-        (-(g.eval x / f.eval x)) * (f.eval x)^2 = -(g.eval x * f.eval x) := by
+        (-(g.eval x / f.eval x)) * (f.eval x) ^ 2 = -(g.eval x * f.eval x) := by
       grind
     have hnum_pos : 0 < -(g.eval x * f.eval x) := by
       simpa [hcalc] using mul_pos hpos hsq_pos

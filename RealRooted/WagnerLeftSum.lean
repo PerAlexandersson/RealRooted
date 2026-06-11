@@ -603,7 +603,7 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
             rw [this, add_zero]; exact ne_of_gt hf_pos
         have hcard1 : (f + g).roots.card = 1 := by
           rw [card_roots_of_splits hfg_rr.2, hfgnd]
-        obtain ⟨u, hu⟩ := Multiset.card_pos_iff_exists_mem.mp (by lia : 0 < (f+g).roots.card)
+        obtain ⟨u, hu⟩ := Multiset.card_pos_iff_exists_mem.mp (by lia : 0 < (f + g).roots.card)
         have hfg_eq : (↑[u] : Multiset ℝ) = (f + g).roots := by
           apply Multiset.eq_of_le_of_card_le
           · simp_all
@@ -755,7 +755,7 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
             rw [this, zero_add]; exact ne_of_gt hg_pos
         have hcard1 : (f + g).roots.card = 1 := by
           rw [card_roots_of_splits hfg_rr.2, hfgnd]
-        obtain ⟨u, hu⟩ := Multiset.card_pos_iff_exists_mem.mp (by lia : 0 < (f+g).roots.card)
+        obtain ⟨u, hu⟩ := Multiset.card_pos_iff_exists_mem.mp (by lia : 0 < (f + g).roots.card)
         have hfg_eq : (↑[u] : Multiset ℝ) = (f + g).roots := by
           apply Multiset.eq_of_le_of_card_le
           · simp_all
