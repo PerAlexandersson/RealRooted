@@ -357,6 +357,22 @@ forward Aissen-Schoenberg-Whitney interface is also stated for nonzero
 polynomials, since PF includes the zero sequence while `IsRealRooted` is strict
 in this library.
 
+TODO T9 is the Garloff-Wagner Hadamard proper-position theorem, currently
+recorded as `garloffWagnerHadamardNonnegPrecStatement` in
+`RealRooted.Hadamard`.  This is the remaining standard theorem input used by
+the `SuperEulerian` proof through its `StandardFacts` bundle; the implementation
+should live in RealRooted.  Reference: J. Garloff and D. G. Wagner, *Hadamard
+Products of Stable Polynomials Are Stable*, J. Math. Anal. Appl. 202 (1996),
+797--809, Theorem 4(b).
+
+TODO T10 is the reverse Aissen-Schoenberg-Whitney theorem, recorded as
+`aissenSchoenbergWhitneyReverseStatement` in
+`RealRooted.AissenSchoenbergWhitney`.  This is the useful ASW direction for
+turning real-rooted polynomials with nonnegative coefficients and nonpositive
+roots into Pólya-frequency coefficient sequences.  Reference: M. Aissen,
+I. J. Schoenberg, and A. M. Whitney, *On the generating functions of totally
+positive sequences. I*, J. Analyse Math. 2 (1952), 93--103.
+
 The Veronese-section file is in this category.  It fully formalizes the
 coefficient definitions, Toeplitz-total-nonnegativity submatrix argument, and
 two-row Lace submatrix argument.  The simple proof idea is exactly this:

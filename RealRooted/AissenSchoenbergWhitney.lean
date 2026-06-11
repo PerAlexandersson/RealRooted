@@ -7,6 +7,18 @@ noncomputable section
 
 namespace RealRooted
 
+/-!
+# Aissen--Schoenberg--Whitney interfaces
+
+This file records the Toeplitz total-nonnegativity formulation of
+Pólya-frequency sequences and statement-level interfaces for the classical
+Aissen--Schoenberg--Whitney theorem.
+
+Reference: M. Aissen, I. J. Schoenberg, and A. M. Whitney, *On the generating
+functions of totally positive sequences. I*, J. Analyse Math. 2 (1952),
+93--103.
+-/
+
 variable {a : ℕ → ℝ}
 
 /-- Entry of the Toeplitz matrix attached to a sequence `a₀, a₁, ...`. -/
@@ -167,7 +179,12 @@ theorem not_aissenSchoenbergWhitneyForward_without_nonzero :
   have hbad := h hnn hpf
   exact hbad.1.1 rfl
 
-/-- Planning stub for the reverse Aissen--Schoenberg--Whitney theorem. -/
+/-- Planning stub for the reverse Aissen--Schoenberg--Whitney theorem.
+
+TODO T10: formalize this statement in RealRooted.  This is the most useful ASW
+direction for converting real-rooted, nonnegative-coefficient polynomials with
+nonpositive roots back into Pólya-frequency coefficient sequences.
+-/
 def aissenSchoenbergWhitneyReverseStatement : Prop :=
   ∀ ⦃p : ℝ[X]⦄,
     HasNonnegCoeffs p →

@@ -155,6 +155,10 @@ if two nonnegative-coefficient real-rooted pairs are in the same
 proper-position relation, then the pair of Hadamard products is again in
 proper position.  The conclusion is zero-aware for the same support reason as
 `garloffWagnerHadamardNonnegRealRootedStatement`.
+
+TODO T9: formalize this statement in RealRooted, following Garloff--Wagner,
+Theorem 4(b).  It is the remaining standard input used by the SuperEulerian
+proof through its `StandardFacts` bundle.
 -/
 def garloffWagnerHadamardNonnegPrecStatement : Prop :=
   ∀ {f g p q : ℝ[X]},
