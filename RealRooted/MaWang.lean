@@ -532,8 +532,7 @@ private lemma exists_mem_between_of_listInterlaces_consecutive :
     ∀ {ss rs pre : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ},
       ListInterlaces ss rs →
       rs = pre ++ r₁ :: r₂ :: rest →
-      ∃ s, s ∈ ss ∧ r₁ ≤ s ∧ s ≤ r₂
-  := by
+      ∃ s, s ∈ ss ∧ r₁ ≤ s ∧ s ≤ r₂ := by
     intro ss rs pre r₁ r₂ rest hint hEq
     induction pre generalizing ss rs with
     | nil =>

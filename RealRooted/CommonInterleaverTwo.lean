@@ -1256,7 +1256,8 @@ theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlterna
     · intro j hj
       have hjg : j < g.natDegree + 1 := by lia
       exact
-        rootSlotInterval_inter_nonempty_of_commonInterleaver (prec_refl hprec.2.1.1 hprec.2.1.2) hprec
+        rootSlotInterval_inter_nonempty_of_commonInterleaver
+          (prec_refl hprec.2.1.1 hprec.2.1.2) hprec
           j
           (by lia)
           (by lia)
@@ -3533,7 +3534,9 @@ theorem chudnovskySeymour_fourWay_of_natDegree_le_one
   have h23 : PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs := by
     constructor
     · intro hpair
-      exact hasCommonInterleaver_of_pairwiseHasCommonInterleaver (fun f hf => (hrr f hf).2) hpos hpair
+      exact
+        hasCommonInterleaver_of_pairwiseHasCommonInterleaver
+          (fun f hf => (hrr f hf).2) hpos hpair
     · exact pairwiseHasCommonInterleaver_of_commonInterleaver
   have h34 : HasCommonInterleaver fs ↔ FamilyCompatible fs := by
     constructor

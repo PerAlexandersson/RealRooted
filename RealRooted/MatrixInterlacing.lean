@@ -417,7 +417,7 @@ lemma isInterlacingSeq_reverse_rowPairAffineSeq
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     IsInterlacingSeq (rowPairAffineSeq row₁ row₂ s t).reverse := by
   rw [isInterlacingSeq_iff_pairwise]
-  refine (List.Pairwise.reverse ?_ )
+  refine (List.Pairwise.reverse ?_)
   refine List.pairwise_iff_get.2 ?_
   intro i j hij
   let i' : Fin n :=

@@ -1254,7 +1254,7 @@ private lemma interlaces_derivative_of_degree_pos
     have hf'_ne : f.derivative ≠ 0 := by
       simp_all
     have hf'_deg0 : f.derivative.natDegree = 0 := by
-      simp [hdeg1, natDegree_derivative]
+      simp [hdeg1, f.natDegree_derivative]
     have hf'_rr : (f.derivative ≠ 0 ∧ f.derivative.Splits) :=
       isRealRooted_of_deg_zero hf'_ne hf'_deg0
     exact
@@ -2246,18 +2246,16 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
         hf hg hall hdeg heps hno
   have hlead_f_iter :
       (iterateTDeriv eps n f).leadingCoeff = f.leadingCoeff := by
-    simp [n, leadingCoeff_iterateTDeriv eps f (max f.natDegree g.natDegree)]
+    simp
   have hlead_g_iter :
       (iterateTDeriv eps n g).leadingCoeff = g.leadingCoeff := by
-    simp [n, leadingCoeff_iterateTDeriv eps g (max f.natDegree g.natDegree)]
+    simp
   have hpos_f_iter :
       HasPosLeadingCoeff (iterateTDeriv eps n f) ↔ HasPosLeadingCoeff f := by
-    simp [n, hasPosLeadingCoeff_iterateTDeriv (eps := eps) (p := f)
-      (k := max f.natDegree g.natDegree)]
+    simp
   have hpos_g_iter :
       HasPosLeadingCoeff (iterateTDeriv eps n g) ↔ HasPosLeadingCoeff g := by
-    simp [n, hasPosLeadingCoeff_iterateTDeriv (eps := eps) (p := g)
-      (k := max f.natDegree g.natDegree)]
+    simp
   have hsucc_iter_forced :
       f.natDegree + 1 = g.natDegree →
         Prec (iterateTDeriv eps n f) (iterateTDeriv eps n g) := by
