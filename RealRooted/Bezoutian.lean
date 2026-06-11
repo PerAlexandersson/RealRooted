@@ -1,15 +1,16 @@
+import Mathlib.Analysis.Complex.Polynomial.Basic
+import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.Analysis.Polynomial.Basic
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.LinearAlgebra.Lagrange
+import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
 import RealRooted.Basic
 import RealRooted.Linear
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Matrix.PosDef
 
 /-!
 # Bezout matrices and interlacing
 
-This file records the planned Bezout-matrix characterization of strict
-same-degree interlacing.  The main theorem at the bottom uses `proof_wanted`,
-not `sorry`: it is a breadcrumb for a future formalization pass, not yet a
-completed proof.
+This file records the Bezout-matrix characterization of strict same-degree interlacing.
 
 For polynomials
 
@@ -32,124 +33,103 @@ The positive-semidefinite weak theorem is deliberately not the main target here:
 common factors and multiple roots introduce rank defects and gcd bookkeeping.
 The primary theorem for this file is the strict `PosDef` version.
 
-The reusable theorem `prec_iff_sorted_roots` below normalizes `Prec` to the
-canonical sorted root lists, so future Bezoutian work can avoid arbitrary
-root-list witnesses.  Its statement is:
-
-```lean
-lemma prec_iff_sorted_roots
-    {p q : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hq : q ≠ 0 ∧ q.Splits) :
-    Prec p q ↔
-      let sp := p.roots.sort (· ≤ ·)
-      let sq := q.roots.sort (· ≤ ·)
-      ((sp.length + 1 = sq.length ∧ ListInterlaces sp sq) ∨
-        (sp.length = sq.length ∧ ListAlternates sp sq))
-```
-
-It should feed separate same-degree and degree-difference-one Bezoutian
-statements formulated directly on canonical sorted root lists.
 -/
 
-open Polynomial
+open Polynomial Matrix
 
 noncomputable section
 
 namespace RealRooted
 
-/-- `Prec` can be checked on the canonical sorted root lists. -/
-lemma prec_iff_sorted_roots {p q : ℝ[X]}
-    (hp : p ≠ 0 ∧ p.Splits) (hq : q ≠ 0 ∧ q.Splits) :
-    Prec p q ↔
-      let sp := p.roots.sort (· ≤ ·)
-      let sq := q.roots.sort (· ≤ ·)
-      ((sp.length + 1 = sq.length ∧ ListInterlaces sp sq) ∨
-        (sp.length = sq.length ∧ ListAlternates sp sq)) := by
-  constructor
-  · intro h
-    rcases h with ⟨_, _, ss, rs, hss_sorted, hrs_sorted, hss_roots, hrs_roots, hcase⟩
-    have hss_eq : ss = p.roots.sort (· ≤ ·) := by
-      exact List.Perm.eq_of_pairwise' hss_sorted (Multiset.pairwise_sort ..)
-        (Multiset.coe_eq_coe.mp (by simp [hss_roots]))
-    have hrs_eq : rs = q.roots.sort (· ≤ ·) := by
-      exact List.Perm.eq_of_pairwise' hrs_sorted (Multiset.pairwise_sort ..)
-        (Multiset.coe_eq_coe.mp (by simp [hrs_roots]))
-    simpa [hss_eq, hrs_eq] using hcase
-  · intro h
-    let sp := p.roots.sort (· ≤ ·)
-    let sq := q.roots.sort (· ≤ ·)
-    change ((sp.length + 1 = sq.length ∧ ListInterlaces sp sq) ∨
-      (sp.length = sq.length ∧ ListAlternates sp sq)) at h
-    refine ⟨hp, hq, sp, sq, ?_, ?_, ?_, ?_, h⟩
-    · exact Multiset.pairwise_sort ..
-    · exact Multiset.pairwise_sort ..
-    · simp [sp]
-    · simp [sq]
-
-/-- In the same-degree case, `Prec` is the canonical sorted-root
-`ListAlternates` condition. -/
-lemma prec_iff_sorted_roots_alternates {p q : ℝ[X]}
-    (hp : p ≠ 0 ∧ p.Splits) (hq : q ≠ 0 ∧ q.Splits)
-    (hdeg : p.natDegree = q.natDegree) :
-    Prec p q ↔ ListAlternates (p.roots.sort (· ≤ ·)) (q.roots.sort (· ≤ ·)) := by
-  rw [prec_iff_sorted_roots hp hq]
-  let sp := p.roots.sort (· ≤ ·)
-  let sq := q.roots.sort (· ≤ ·)
-  change ((sp.length + 1 = sq.length ∧ ListInterlaces sp sq) ∨
-      (sp.length = sq.length ∧ ListAlternates sp sq)) ↔ ListAlternates sp sq
-  have hlen : sp.length = sq.length := by
-    simp [sp, sq, Multiset.length_sort, card_roots_of_splits hp.2,
-      card_roots_of_splits hq.2, hdeg]
-  constructor
-  · rintro (⟨hbad, _⟩ | ⟨_, halt⟩)
-    · exfalso
-      rw [← hlen] at hbad
-      exact Nat.succ_ne_self sp.length hbad
-    · exact halt
-  · intro halt
-    exact Or.inr ⟨hlen, halt⟩
-
-/-- In the degree-difference-one case, `Prec` is the canonical sorted-root
-`ListInterlaces` condition. -/
-lemma prec_iff_sorted_roots_interlaces {p q : ℝ[X]}
-    (hp : p ≠ 0 ∧ p.Splits) (hq : q ≠ 0 ∧ q.Splits)
-    (hdeg : p.natDegree + 1 = q.natDegree) :
-    Prec p q ↔ ListInterlaces (p.roots.sort (· ≤ ·)) (q.roots.sort (· ≤ ·)) := by
-  rw [prec_iff_sorted_roots hp hq]
-  let sp := p.roots.sort (· ≤ ·)
-  let sq := q.roots.sort (· ≤ ·)
-  change ((sp.length + 1 = sq.length ∧ ListInterlaces sp sq) ∨
-      (sp.length = sq.length ∧ ListAlternates sp sq)) ↔ ListInterlaces sp sq
-  have hlen : sp.length + 1 = sq.length := by
-    simp [sp, sq, Multiset.length_sort, card_roots_of_splits hp.2,
-      card_roots_of_splits hq.2, hdeg]
-  constructor
-  · rintro (⟨_, hint⟩ | ⟨hbad, _⟩)
-    · exact hint
-    · exfalso
-      rw [← hbad] at hlen
-      exact Nat.succ_ne_self sp.length hlen
-  · intro hint
-    exact Or.inl ⟨hlen, hint⟩
-
 /-- Strict differ-by-one interlacing on sorted root lists:
 `r₁ < s₁ < r₂ < ... < sₙ₋₁ < rₙ`. -/
-def ListStrictInterlaces : List ℝ → List ℝ → Prop
+def List.StrictInterlaces : List ℝ → List ℝ → Prop
   | [], [] => True
   | [], [_] => True
-  | s :: ss, r₁ :: r₂ :: rs => r₁ < s ∧ s < r₂ ∧ ListStrictInterlaces ss (r₂ :: rs)
+  | s :: ss, r₁ :: r₂ :: rs => r₁ < s ∧ s < r₂ ∧ List.StrictInterlaces ss (r₂ :: rs)
   | _, _ => False
 
 /-- Strict same-degree alternation on sorted root lists:
 `s₁ < r₁ < s₂ < r₂ < ... < sₙ < rₙ`. -/
-def ListStrictAlternates : List ℝ → List ℝ → Prop
+def List.StrictAlternates : List ℝ → List ℝ → Prop
   | [], [] => True
-  | s :: ss, r :: rs => s < r ∧ ListStrictInterlaces ss (r :: rs)
+  | s :: ss, r :: rs => s < r ∧ List.StrictInterlaces ss (r :: rs)
   | _, _ => False
+
+lemma List.StrictInterlaces.head_right_lt_left :
+    ∀ {ss rs : List ℝ} {r : ℝ}, List.StrictInterlaces ss (r :: rs) →
+    ∀ s ∈ ss, r < s
+  | [], _, _, _ => by simp
+  | s :: ss, [], _, h => by simp [List.StrictInterlaces] at h
+  | s :: ss, r₂ :: rs, r, h => by
+    intro t ht
+    rcases List.mem_cons.mp ht with rfl | ht
+    · exact h.1
+    · exact lt_trans (lt_trans h.1 h.2.1)
+        (h.2.2.head_right_lt_left t ht)
+
+lemma List.StrictInterlaces.head_right_lt_right_tail :
+    ∀ {ss rs : List ℝ} {r : ℝ}, List.StrictInterlaces ss (r :: rs) →
+    ∀ r' ∈ rs, r < r'
+  | [], [], _, _ => by simp
+  | [], _ :: _, _, h => by simp [List.StrictInterlaces] at h
+  | s :: ss, [], _, h => by simp
+  | s :: ss, r₂ :: rs, r, h => by
+    intro t ht
+    rcases List.mem_cons.mp ht with rfl | ht
+    · exact lt_trans h.1 h.2.1
+    · exact lt_trans (lt_trans h.1 h.2.1)
+        (h.2.2.head_right_lt_right_tail t ht)
+
+lemma List.StrictInterlaces.pairwise_left :
+    ∀ {ss rs : List ℝ}, List.StrictInterlaces ss rs → ss.Pairwise (· < ·)
+  | [], _, _ => by simp
+  | s :: ss, [], h => by simp [List.StrictInterlaces] at h
+  | s :: ss, [_], h => by simp [List.StrictInterlaces] at h
+  | s :: ss, r₁ :: r₂ :: rs, h =>
+    List.Pairwise.cons (fun t ht ↦ lt_trans h.2.1 (h.2.2.head_right_lt_left t ht))
+      h.2.2.pairwise_left
+
+lemma List.StrictInterlaces.pairwise_right :
+    ∀ {ss rs : List ℝ}, List.StrictInterlaces ss rs → rs.Pairwise (· < ·)
+  | [], [], _ => by simp
+  | [], [_], _ => by simp
+  | s :: ss, r₁ :: r₂ :: rs, h =>
+    List.Pairwise.cons h.head_right_lt_right_tail h.2.2.pairwise_right
+
+lemma List.StrictAlternates.pairwise_left :
+    ∀ {ss rs : List ℝ}, List.StrictAlternates ss rs → ss.Pairwise (· < ·)
+  | [], [], _ => by simp
+  | s :: ss, r :: rs, h =>
+    List.Pairwise.cons (fun t ht ↦ lt_trans h.1 (h.2.head_right_lt_left t ht))
+      h.2.pairwise_left
+
+lemma List.StrictAlternates.pairwise_right :
+    ∀ {ss rs : List ℝ}, List.StrictAlternates ss rs → rs.Pairwise (· < ·)
+  | [], [], _ => by simp
+  | s :: ss, r :: rs, h => h.2.pairwise_right
 
 /-- Strict same-degree proper position, stated on canonical sorted root lists. -/
 def StrictPrecSameDegree (p q : ℝ[X]) : Prop :=
   (p ≠ 0 ∧ p.Splits) ∧ (q ≠ 0 ∧ q.Splits) ∧ p.natDegree = q.natDegree ∧
-    ListStrictAlternates (p.roots.sort (· ≤ ·)) (q.roots.sort (· ≤ ·))
+    List.StrictAlternates (p.roots.sort (· ≤ ·)) (q.roots.sort (· ≤ ·))
+
+lemma StrictPrecSameDegree.C_mul_C_mul {p q : ℝ[X]} (h : StrictPrecSameDegree p q)
+    {u v : ℝ} (hu : u ≠ 0) (hv : v ≠ 0) :
+    StrictPrecSameDegree (C u * p) (C v * q) := by
+  obtain ⟨hp, hq, hdeg, halt⟩ := h
+  refine ⟨isRealRooted_C_mul hp hu, isRealRooted_C_mul hq hv, ?_, ?_⟩
+  · exact (natDegree_C_mul hu).trans (hdeg.trans (natDegree_C_mul hv).symm)
+  · rw [roots_C_mul p hu, roots_C_mul q hv]
+    exact halt
+
+lemma StrictPrecSameDegree.C_mul_C_mul_iff {p q : ℝ[X]} {u v : ℝ}
+    (hu : u ≠ 0) (hv : v ≠ 0) :
+    StrictPrecSameDegree (C u * p) (C v * q) ↔ StrictPrecSameDegree p q := by
+  refine ⟨fun h ↦ ?_, fun h ↦ h.C_mul_C_mul hu hv⟩
+  have h_mul := h.C_mul_C_mul (inv_ne_zero hu) (inv_ne_zero hv)
+  rwa [← mul_assoc, ← C_mul, inv_mul_cancel₀ hu, C_1, one_mul,
+    ← mul_assoc, ← C_mul, inv_mul_cancel₀ hv, C_1, one_mul] at h_mul
 
 /-- The `(i,j)` coefficient of the Bezoutian
 `(p(X) q(Y) - p(Y) q(X)) / (X - Y)`.
@@ -157,279 +137,1422 @@ def StrictPrecSameDegree (p q : ℝ[X]) : Prop :=
 This definition is independent of a matrix size.  Coefficients outside the
 degrees of `p` and `q` vanish through `Polynomial.coeff`. -/
 def bezoutEntry (p q : ℝ[X]) (i j : ℕ) : ℝ :=
-  Finset.sum (Finset.range (min i j + 1)) fun k =>
+  Finset.sum (Finset.range (min i j + 1)) fun k ↦
     p.coeff (i + j + 1 - k) * q.coeff k -
       q.coeff (i + j + 1 - k) * p.coeff k
 
 /-- The `n × n` Bezout matrix attached to two polynomials. -/
 def bezoutMatrix (n : ℕ) (p q : ℝ[X]) : Matrix (Fin n) (Fin n) ℝ :=
-  fun i j => bezoutEntry p q i.1 j.1
+  fun i j ↦ bezoutEntry p q i.1 j.1
 
-lemma bezoutEntry_self (p : ℝ[X]) (i j : ℕ) :
-    bezoutEntry p p i j = 0 := by
-  simp [bezoutEntry]
+def bezoutRowPoly (n : ℕ) (p q : ℝ[X]) (i : Fin n) : ℝ[X] :=
+  ∑ j : Fin n, C (bezoutEntry p q i j) * X ^ (j : ℕ)
 
-lemma bezoutEntry_swap (p q : ℝ[X]) (i j : ℕ) :
-    bezoutEntry q p i j = -bezoutEntry p q i j := by
-  simp [bezoutEntry]
-
-lemma bezoutEntry_zero_left (p : ℝ[X]) (i j : ℕ) :
-    bezoutEntry 0 p i j = 0 := by
-  simp [bezoutEntry]
-
-lemma bezoutEntry_comm (p q : ℝ[X]) (i j : ℕ) :
+lemma bezoutEntry.comm (p q : ℝ[X]) (i j : ℕ) :
     bezoutEntry p q i j = bezoutEntry p q j i := by
   simp [bezoutEntry, Nat.add_comm, Nat.add_assoc, min_comm]
 
-lemma bezoutMatrix_self (n : ℕ) (p : ℝ[X]) :
-    bezoutMatrix n p p = 0 := by
-  ext i j
-  simp [bezoutMatrix, bezoutEntry_self]
-
-lemma bezoutMatrix_isHermitian (n : ℕ) (p q : ℝ[X]) :
+lemma bezoutMatrix.isHermitian (n : ℕ) (p q : ℝ[X]) :
     (bezoutMatrix n p q).IsHermitian := by
-  exact Matrix.IsHermitian.ext (by
-    intro i j
-    simp [bezoutMatrix, bezoutEntry_comm p q i.1 j.1])
-
-lemma bezoutMatrix_zero_posSemidef (p q : ℝ[X]) :
-    (bezoutMatrix 0 p q).PosSemidef := by
-  exact Matrix.PosSemidef.of_dotProduct_mulVec_nonneg (bezoutMatrix_isHermitian 0 p q) (by
-    intro x
-    simp [dotProduct])
-
-lemma bezoutMatrix_swap (n : ℕ) (p q : ℝ[X]) :
-    bezoutMatrix n q p = -bezoutMatrix n p q := by
   ext i j
-  change bezoutEntry q p i.1 j.1 = -bezoutEntry p q i.1 j.1
-  exact bezoutEntry_swap p q i.1 j.1
+  simp [bezoutMatrix, bezoutEntry.comm p q i.1 j.1]
 
-lemma bezoutEntry_C_mul_C_mul (u v : ℝ) (p q : ℝ[X]) (i j : ℕ) :
+lemma Matrix.PosDef.sum_pos {m : ℕ} {B : Matrix (Fin m) (Fin m) ℝ} (hB : B.PosDef)
+    {x : Fin m → ℝ} (hx : x ≠ 0) :
+    0 < ∑ i : Fin m, ∑ j : Fin m, B i j * x i * x j := by
+  have h_dot := hB.dotProduct_mulVec_pos hx
+  simp only [dotProduct, mulVec, star_trivial] at h_dot
+  have h_sum : ∑ i : Fin m, x i * ∑ j : Fin m, B i j * x j =
+      ∑ i : Fin m, ∑ j : Fin m, B i j * x i * x j := by
+    simp_rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun i _ ↦ Finset.sum_congr rfl fun j _ ↦ by ring
+  rwa [h_sum] at h_dot
+
+lemma bezoutMatrix.left_ne_zero_of_posDef_two {p q : ℝ[X]}
+    (h : (bezoutMatrix 2 p q).PosDef) :
+    p ≠ 0 := by
+  rintro rfl
+  have hdiag : 0 < bezoutMatrix 2 0 q 0 0 := h.diag_pos
+  simp [bezoutMatrix, bezoutEntry] at hdiag
+
+lemma bezoutMatrix.right_ne_zero_of_posDef_two {p q : ℝ[X]}
+    (h : (bezoutMatrix 2 p q).PosDef) :
+    q ≠ 0 := by
+  rintro rfl
+  have hdiag : 0 < bezoutMatrix 2 p 0 0 0 := h.diag_pos
+  simp [bezoutMatrix, bezoutEntry] at hdiag
+
+lemma bezoutEntry.C_mul_C_mul (u v : ℝ) (p q : ℝ[X]) (i j : ℕ) :
     bezoutEntry (C u * p) (C v * q) i j = u * v * bezoutEntry p q i j := by
-  unfold bezoutEntry
-  rw [Finset.mul_sum]
-  refine Finset.sum_congr rfl ?_
-  intro k _
-  simp [coeff_C_mul]
-  ring
+  simp only [bezoutEntry, coeff_C_mul, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun k _ ↦ by ring
 
-lemma bezoutMatrix_C_mul_C_mul (n : ℕ) (u v : ℝ) (p q : ℝ[X]) :
+lemma bezoutMatrix.C_mul_C_mul (n : ℕ) (u v : ℝ) (p q : ℝ[X]) :
     bezoutMatrix n (C u * p) (C v * q) = (u * v) • bezoutMatrix n p q := by
   ext i j
-  simp [bezoutMatrix, bezoutEntry_C_mul_C_mul]
+  simp [bezoutMatrix, bezoutEntry.C_mul_C_mul]
 
-lemma bezoutMatrix_linear_eq_diagonal (a b : ℝ) :
+lemma bezoutMatrix.C_mul_C_mul_posDef_iff {n : ℕ} {u v : ℝ} {p q : ℝ[X]}
+    (hu : 0 < u) (hv : 0 < v) :
+    (bezoutMatrix n (C u * p) (C v * q)).PosDef ↔ (bezoutMatrix n p q).PosDef := by
+  rw [bezoutMatrix.C_mul_C_mul]
+  refine ⟨fun h ↦ ?_, fun h ↦ h.smul (mul_pos hu hv)⟩
+  have hscaled := h.smul (inv_pos.mpr (mul_pos hu hv))
+  rwa [smul_smul, inv_mul_cancel₀ (mul_ne_zero hu.ne' hv.ne'), one_smul] at hscaled
+
+lemma bezoutMatrix.linear_eq_diagonal (a b : ℝ) :
     bezoutMatrix 1 (X + C a) (X + C b) =
-      Matrix.diagonal (fun _ : Fin 1 => b - a) := by
+    Matrix.diagonal (fun _ : Fin 1 ↦ b - a) := by
   ext i j
   fin_cases i
   fin_cases j
   simp [bezoutMatrix, bezoutEntry, Matrix.diagonal]
 
-lemma bezoutMatrix_linear_posSemidef_one {a b : ℝ} (hab : a ≤ b) :
-    (bezoutMatrix 1 (X + C a) (X + C b)).PosSemidef := by
-  rw [bezoutMatrix_linear_eq_diagonal]
-  exact Matrix.PosSemidef.diagonal (fun _ => sub_nonneg.mpr hab)
+lemma bezoutMatrix.linear_posDef_one {a b : ℝ} (hab : a < b) :
+    (bezoutMatrix 1 (X + C a) (X + C b)).PosDef := by
+  rw [bezoutMatrix.linear_eq_diagonal]
+  exact PosDef.diagonal fun _ ↦ sub_pos.mpr hab
 
-lemma not_bezoutMatrix_linear_posSemidef_one_swap {a b : ℝ} (hab : a < b) :
-    ¬ (bezoutMatrix 1 (X + C b) (X + C a)).PosSemidef := by
-  intro h
-  have hdiag :
-      0 ≤ (bezoutMatrix 1 (X + C b) (X + C a)) (0 : Fin 1) (0 : Fin 1) :=
-    Matrix.PosSemidef.diag_nonneg h
-  simp [bezoutMatrix, bezoutEntry] at hdiag
-  linarith
+lemma bezoutMatrix.lt_of_linear_posDef_one {a b : ℝ}
+    (h : (bezoutMatrix 1 (X + C a) (X + C b)).PosDef) :
+    a < b := by
+  have hdiag := h.diag_pos (i := 0)
+  rw [bezoutMatrix.linear_eq_diagonal] at hdiag
+  rwa [diagonal_apply_eq, sub_pos] at hdiag
+
+lemma bezoutMatrix.linear_posDef_one_iff {a b : ℝ} :
+    (bezoutMatrix 1 (X + C a) (X + C b)).PosDef ↔ a < b :=
+  ⟨bezoutMatrix.lt_of_linear_posDef_one, bezoutMatrix.linear_posDef_one⟩
 
 /-- Every polynomial of the form `X + C a` is real-rooted. -/
-lemma isRealRooted_X_add_C (a : ℝ) : (X + C a : ℝ[X]) ≠ 0 ∧ (X + C a).Splits := by
+lemma Polynomial.isRealRooted_X_add_C (a : ℝ) :
+    (X + C a : ℝ[X]) ≠ 0 ∧ (X + C a).Splits := by
   simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-a)
 
-/-- The unique root of `X + C a` is `-a`. -/
-lemma roots_X_add_C (a : ℝ) :
-    (X + C a : ℝ[X]).roots = {(-a : ℝ)} := by
-  rw [show X + C a = X - C (-a) by simp [sub_eq_add_neg], roots_X_sub_C]
-
-/-- Ordered linear factors satisfy the `Prec` orientation predicted by the
-positive-semidefinite Bezout matrix orientation. -/
-lemma prec_X_add_C_of_le {a b : ℝ} (hab : a ≤ b) :
-    Prec (X + C b) (X + C a) := by
-  refine ⟨?_, ?_, [(-b : ℝ)], [(-a : ℝ)], ?_, ?_, ?_, ?_, ?_⟩
-  · exact isRealRooted_X_add_C b
-  · exact isRealRooted_X_add_C a
+lemma Polynomial.roots_sort_mul_X_add_C_X_add_C {a c : ℝ} (hac : a ≤ c) :
+    (((X + C a) * (X + C c)) : ℝ[X]).roots.sort (· ≤ ·) = [(-c : ℝ), -a] := by
+  apply List.Perm.eq_of_pairwise' (r := (· ≤ ·))
   · simp
-  · simp
-  · rw [roots_X_add_C]
-    simp
-  · rw [roots_X_add_C]
-    simp
-  · exact Or.inr ⟨by simp, by simp [ListAlternates, ListInterlaces, hab]⟩
+  · simp [neg_le_neg hac]
+  · apply Multiset.coe_eq_coe.mp
+    rw [Multiset.sort_eq]
+    rw [roots_mul (mul_ne_zero (X_add_C_ne_zero a) (X_add_C_ne_zero c)),
+      roots_X_add_C, roots_X_add_C]
+    exact Multiset.pair_comm (-a) (-c)
 
-/-- The `1 × 1` Bezoutian positive-semidefinite sanity check implies the
-corresponding linear `Prec` orientation. -/
-lemma prec_of_bezoutMatrix_linear_posSemidef_one {a b : ℝ}
-    (h : (bezoutMatrix 1 (X + C a) (X + C b)).PosSemidef) :
-    Prec (X + C b) (X + C a) := by
-  have hdiag :
-      0 ≤ (bezoutMatrix 1 (X + C a) (X + C b)) (0 : Fin 1) (0 : Fin 1) := by
-    exact Matrix.PosSemidef.diag_nonneg h
-  rw [bezoutMatrix_linear_eq_diagonal] at hdiag
-  have hab : a ≤ b := by
-    simpa [Matrix.diagonal] using hdiag
-  exact prec_X_add_C_of_le hab
+lemma Polynomial.exists_pos_scalar_mul_X_add_C_of_natDegree_one {p : ℝ[X]}
+    (hp_pos : HasPosLeadingCoeff p) (hp_deg : p.natDegree = 1) :
+    ∃ u a : ℝ, 0 < u ∧ p = C u * (X + C a) := by
+  let u := p.coeff 1
+  have hu_pos : 0 < u := by simpa [HasPosLeadingCoeff, leadingCoeff, hp_deg, u] using hp_pos
+  refine ⟨u, p.coeff 0 / u, hu_pos, ?_⟩
+  calc
+    p = C u * X + C (p.coeff 0) := by
+      simpa [u] using Polynomial.eq_X_add_C_of_natDegree_le_one (p := p) hp_deg.le
+    _ = C u * (X + C (p.coeff 0 / u)) := by
+      rw [mul_add, ← C_mul, mul_div_cancel₀ _ hu_pos.ne']
 
-/-- The degree-zero endpoint of the Bezoutian characterization. -/
-lemma prec_iff_bezoutMatrix_posSemidef_of_isRealRooted_natDegree_zero
-    {p q : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hq : q ≠ 0 ∧ q.Splits)
-    (hp_deg : p.natDegree = 0) (hq_deg : q.natDegree = 0) :
-    Prec p q ↔ (bezoutMatrix 0 q p).PosSemidef := by
-  constructor
-  · intro _
-    exact bezoutMatrix_zero_posSemidef q p
-  · intro _
-    rw [prec_iff_sorted_roots_alternates hp hq (by rw [hp_deg, hq_deg])]
-    have hp_nil : p.roots.sort (· ≤ ·) = [] := by
-      apply List.length_eq_zero_iff.mp
-      simp [Multiset.length_sort, card_roots_of_splits hp.2, hp_deg]
-    have hq_nil : q.roots.sort (· ≤ ·) = [] := by
-      apply List.length_eq_zero_iff.mp
-      simp [Multiset.length_sort, card_roots_of_splits hq.2, hq_deg]
-    simp [hp_nil, hq_nil, ListAlternates]
+lemma StrictPrecSameDegree.X_add_C_iff {a b : ℝ} :
+    StrictPrecSameDegree (X + C b) (X + C a) ↔ a < b := by
+  have hb_roots : (X + C b).roots.sort (· ≤ ·) = [-b] := by simp
+  have ha_roots : (X + C a).roots.sort (· ≤ ·) = [-a] := by simp
+  refine ⟨fun h ↦ ?_, fun hab ↦ ?_⟩
+  · obtain ⟨_, _, _, halt⟩ := h
+    rw [hb_roots, ha_roots] at halt
+    exact neg_lt_neg_iff.mp halt.1
+  · refine ⟨Polynomial.isRealRooted_X_add_C b, Polynomial.isRealRooted_X_add_C a, by simp, ?_⟩
+    rw [hb_roots, ha_roots]
+    simp [List.StrictAlternates, List.StrictInterlaces, hab]
+
+lemma StrictPrecSameDegree.X_add_C_bezoutMatrix_posDef_iff_one {a b : ℝ} :
+    StrictPrecSameDegree (X + C b) (X + C a) ↔
+    (bezoutMatrix 1 (X + C a) (X + C b)).PosDef := by
+  rw [StrictPrecSameDegree.X_add_C_iff, bezoutMatrix.linear_posDef_one_iff]
+
+lemma Polynomial.isRealRooted_of_natDegree_two_of_isRoot {p : ℝ[X]} {x : ℝ}
+    (hdeg : p.natDegree = 2) (hx : p.IsRoot x) :
+    p ≠ 0 ∧ p.Splits := by
+  have hp_ne : p ≠ 0 := fun hp ↦ by
+    rw [hp, natDegree_zero] at hdeg
+    contradiction
+  exact ⟨hp_ne, Splits.of_natDegree_eq_two hdeg hx⟩
+
+lemma Polynomial.eq_quadratic_of_natDegree_le_two {p : ℝ[X]} (hp : p.natDegree ≤ 2) :
+    p = C (p.coeff 2) * X ^ 2 + C (p.coeff 1) * X + C (p.coeff 0) :=
+  Polynomial.eq_quadratic_of_degree_le_two (p := p) (Polynomial.degree_le_of_natDegree_le hp)
+
+lemma Polynomial.exists_quadratic_eq_zero_of_discrim_nonneg {a b c : ℝ}
+    (ha : a ≠ 0) (hdisc : 0 ≤ discrim a b c) :
+    ∃ x : ℝ, a * (x * x) + b * x + c = 0 := by
+  refine exists_quadratic_eq_zero ha
+    ⟨Real.sqrt (discrim a b c), by rw [← sq, Real.sq_sqrt hdisc]⟩
+
+lemma Polynomial.isRealRooted_of_natDegree_two_of_discrim_nonneg {p : ℝ[X]}
+    (hdeg : p.natDegree = 2)
+    (hdisc : 0 ≤ discrim (p.coeff 2) (p.coeff 1) (p.coeff 0)) :
+    p ≠ 0 ∧ p.Splits := by
+  have hp_ne : p ≠ 0 := fun hp ↦ by
+    rw [hp, natDegree_zero] at hdeg
+    contradiction
+  have hcoeff2 : p.coeff 2 ≠ 0 := hdeg.symm ▸ leadingCoeff_ne_zero.mpr hp_ne
+  rcases exists_quadratic_eq_zero_of_discrim_nonneg hcoeff2 hdisc with ⟨x, hx⟩
+  have h_root : p.IsRoot x := by
+    rw [IsRoot.def, eq_quadratic_of_natDegree_le_two hdeg.le]
+    simpa [pow_two] using hx
+  exact isRealRooted_of_natDegree_two_of_isRoot hdeg h_root
 
 /-- A real-rooted quadratic is a positive/negative scalar multiple of two
 linear factors, with the constants ordered in the `X + C a` convention used
 below. -/
-lemma exists_sorted_linearFactors_of_isRealRooted_natDegree_two {p : ℝ[X]}
+lemma Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two {p : ℝ[X]}
     (hp : p ≠ 0 ∧ p.Splits) (hdeg : p.natDegree = 2) :
     ∃ a c : ℝ, a ≤ c ∧ p = C p.leadingCoeff * ((X + C a) * (X + C c)) := by
-  have hsplits : p.Splits := hp.2
-  have hcard : p.roots.card = 2 := by
-    rw [card_roots_of_splits hp.2, hdeg]
+  obtain ⟨hp_ne, hp_splits⟩ := hp
+  have hcard : p.roots.card = 2 := by rw [hp_splits.natDegree_eq_card_roots.symm, hdeg]
   rcases Multiset.card_eq_two.mp hcard with ⟨r, s, hroots⟩
   by_cases hrs : r ≤ s
-  · refine ⟨-s, -r, by linarith, ?_⟩
-    calc
-      p = C p.leadingCoeff * (p.roots.map (X - C ·)).prod := hsplits.eq_prod_roots
-      _ = C p.leadingCoeff * ((X + C (-s)) * (X + C (-r))) := by
-        rw [hroots]
-        simp [sub_eq_add_neg, mul_comm]
-  · have hsr : s ≤ r := le_of_not_ge hrs
-    refine ⟨-r, -s, by linarith, ?_⟩
-    calc
-      p = C p.leadingCoeff * (p.roots.map (X - C ·)).prod := hsplits.eq_prod_roots
-      _ = C p.leadingCoeff * ((X + C (-r)) * (X + C (-s))) := by
-        rw [hroots]
-        simp [sub_eq_add_neg]
+  · refine ⟨-s, -r, neg_le_neg hrs, ?_⟩
+    conv_lhs => rw [hp_splits.eq_prod_roots]
+    rw [hroots]
+    simp [sub_eq_add_neg, mul_comm]
+  · refine ⟨-r, -s, neg_le_neg (not_le.mp hrs).le, ?_⟩
+    conv_lhs => rw [hp_splits.eq_prod_roots]
+    rw [hroots]
+    simp [sub_eq_add_neg]
 
-lemma bezoutMatrix_quadratic_eq_fin_two (a b c d : ℝ) :
+lemma bezoutMatrix.quadratic_eq_fin_two (a b c d : ℝ) :
     bezoutMatrix 2 ((X + C a) * (X + C c)) ((X + C b) * (X + C d)) =
-      !![(a + c) * (b * d) - (b + d) * (a * c), b * d - a * c;
-        b * d - a * c, b + d - (a + c)] := by
+    !![(a + c) * (b * d) - (b + d) * (a * c), b * d - a * c;
+    b * d - a * c, b + d - (a + c)] := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     norm_num [bezoutMatrix, bezoutEntry, coeff_add, coeff_mul, Finset.antidiagonal,
       Finset.range, coeff_X, coeff_C]
 
+lemma bezoutMatrix.fin_two_eq_coeff_of_natDegree_le_two {p q : ℝ[X]}
+    (hp_deg : p.natDegree ≤ 2) (hq_deg : q.natDegree ≤ 2) :
+    bezoutMatrix 2 q p =
+    !![q.coeff 1 * p.coeff 0 - p.coeff 1 * q.coeff 0,
+      q.coeff 2 * p.coeff 0 - p.coeff 2 * q.coeff 0;
+      q.coeff 2 * p.coeff 0 - p.coeff 2 * q.coeff 0,
+      q.coeff 2 * p.coeff 1 - p.coeff 2 * q.coeff 1] := by
+  have hp3 : p.coeff 3 = 0 := coeff_eq_zero_of_natDegree_lt (Nat.lt_succ_of_le hp_deg)
+  have hq3 : q.coeff 3 = 0 := coeff_eq_zero_of_natDegree_lt (Nat.lt_succ_of_le hq_deg)
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [bezoutMatrix, bezoutEntry, hp3, hq3, Finset.sum_range_succ]
+
+lemma bezoutMatrix.dotProduct_fin_two_coeff_discrim_right_top {p q : ℝ[X]}
+    (hp_deg : p.natDegree ≤ 2) (hq_deg : q.natDegree ≤ 2) :
+    let x : Fin 2 → ℝ := fun i ↦ if i = 0 then 2 * p.coeff 2 else -p.coeff 1
+    dotProduct (star x) (Matrix.mulVec (bezoutMatrix 2 q p) x) =
+    discrim (p.coeff 2) (p.coeff 1) (p.coeff 0) * (bezoutMatrix 2 q p 1 1) := by
+  intro x
+  rw [bezoutMatrix.fin_two_eq_coeff_of_natDegree_le_two hp_deg hq_deg]
+  norm_num [x, dotProduct, Matrix.mulVec, discrim]
+  ring
+
+lemma bezoutMatrix.discrim_pos_of_posDef_of_entry_pos_right_top {p q : ℝ[X]}
+    (hp_deg : p.natDegree ≤ 2) (hq_deg : q.natDegree ≤ 2)
+    (hp_coeff2 : p.coeff 2 ≠ 0)
+    (hentry : 0 < bezoutMatrix 2 q p 1 1)
+    (h : (bezoutMatrix 2 q p).PosDef) :
+    0 < discrim (p.coeff 2) (p.coeff 1) (p.coeff 0) := by
+  let x : Fin 2 → ℝ := fun i ↦ if i = 0 then 2 * p.coeff 2 else -p.coeff 1
+  have hx : x ≠ 0 := fun hx0 ↦ hp_coeff2 (by simpa [x] using congr_fun hx0 0)
+  have hquad : 0 < dotProduct (star x) (Matrix.mulVec (bezoutMatrix 2 q p) x) :=
+    h.dotProduct_mulVec_pos hx
+  rw [bezoutMatrix.dotProduct_fin_two_coeff_discrim_right_top hp_deg hq_deg] at hquad
+  exact pos_of_mul_pos_left hquad hentry.le
+
+lemma bezoutMatrix.right_isRealRooted_of_posDef_two_of_natDegree_two {p q : ℝ[X]}
+    (hp_deg : p.natDegree = 2) (hq_deg : q.natDegree ≤ 2)
+    (h : (bezoutMatrix 2 q p).PosDef) :
+    p ≠ 0 ∧ p.Splits := by
+  have hp_ne : p ≠ 0 := bezoutMatrix.right_ne_zero_of_posDef_two h
+  have hp_coeff2 : p.coeff 2 ≠ 0 := hp_deg.symm ▸ leadingCoeff_ne_zero.mpr hp_ne
+  have hentry := h.diag_pos (i := 1)
+  have hdisc : 0 ≤ discrim (p.coeff 2) (p.coeff 1) (p.coeff 0) :=
+    (bezoutMatrix.discrim_pos_of_posDef_of_entry_pos_right_top hp_deg.le hq_deg
+      hp_coeff2 hentry h).le
+  exact Polynomial.isRealRooted_of_natDegree_two_of_discrim_nonneg hp_deg hdisc
+
+lemma bezoutMatrix.dotProduct_fin_two_coeff_discrim_left_top {p q : ℝ[X]}
+    (hp_deg : p.natDegree ≤ 2) (hq_deg : q.natDegree ≤ 2) :
+    let x : Fin 2 → ℝ := fun i ↦ if i = 0 then 2 * q.coeff 2 else -q.coeff 1
+    dotProduct (star x) (Matrix.mulVec (bezoutMatrix 2 q p) x) =
+    discrim (q.coeff 2) (q.coeff 1) (q.coeff 0) * (bezoutMatrix 2 q p 1 1) := by
+  intro x
+  rw [bezoutMatrix.fin_two_eq_coeff_of_natDegree_le_two hp_deg hq_deg]
+  norm_num [x, dotProduct, Matrix.mulVec, discrim]
+  ring
+
+lemma bezoutMatrix.left_isRealRooted_of_posDef_two_of_natDegree_two {p q : ℝ[X]}
+    (hp_deg : p.natDegree ≤ 2) (hq_deg : q.natDegree = 2)
+    (h : (bezoutMatrix 2 q p).PosDef) :
+    q ≠ 0 ∧ q.Splits := by
+  have hq_ne : q ≠ 0 := bezoutMatrix.left_ne_zero_of_posDef_two h
+  have hq_coeff2 : q.coeff 2 ≠ 0 := hq_deg.symm ▸ leadingCoeff_ne_zero.mpr hq_ne
+  let x : Fin 2 → ℝ := fun i ↦ if i = 0 then 2 * q.coeff 2 else -q.coeff 1
+  have hx : x ≠ 0 := fun hx0 ↦ hq_coeff2 (by simpa [x] using congr_fun hx0 0)
+  have hquad : 0 < dotProduct (star x) (Matrix.mulVec (bezoutMatrix 2 q p) x) :=
+    h.dotProduct_mulVec_pos hx
+  rw [bezoutMatrix.dotProduct_fin_two_coeff_discrim_left_top hp_deg hq_deg.le] at hquad
+  have hentry := h.diag_pos (i := 1)
+  have hdisc : 0 ≤ discrim (q.coeff 2) (q.coeff 1) (q.coeff 0) :=
+    (pos_of_mul_pos_left hquad hentry.le).le
+  exact Polynomial.isRealRooted_of_natDegree_two_of_discrim_nonneg hq_deg hdisc
+
 /-- The lower-right diagonal entry gives a necessary sum inequality for a
 positive-semidefinite quadratic Bezoutian. -/
-lemma sum_le_of_bezoutMatrix_quadratic_posSemidef {a b c d : ℝ}
+lemma bezoutMatrix.sum_le_of_quadratic_posSemidef {a b c d : ℝ}
     (h : (bezoutMatrix 2 ((X + C a) * (X + C c))
-      ((X + C b) * (X + C d))).PosSemidef) :
+    ((X + C b) * (X + C d))).PosSemidef) :
     a + c ≤ b + d := by
-  have hdiag :
-      0 ≤ (bezoutMatrix 2 ((X + C a) * (X + C c))
-        ((X + C b) * (X + C d))) (1 : Fin 2) (1 : Fin 2) := by
-    exact Matrix.PosSemidef.diag_nonneg h
-  rw [bezoutMatrix_quadratic_eq_fin_two] at hdiag
-  simpa using hdiag
-
-/-- The upper-left diagonal entry gives a second necessary inequality for a
-positive-semidefinite quadratic Bezoutian. -/
-lemma weighted_const_nonneg_of_bezoutMatrix_quadratic_posSemidef {a b c d : ℝ}
-    (h : (bezoutMatrix 2 ((X + C a) * (X + C c))
-      ((X + C b) * (X + C d))).PosSemidef) :
-    0 ≤ (a + c) * (b * d) - (b + d) * (a * c) := by
-  have hdiag :
-      0 ≤ (bezoutMatrix 2 ((X + C a) * (X + C c))
-        ((X + C b) * (X + C d))) (0 : Fin 2) (0 : Fin 2) := by
-    exact Matrix.PosSemidef.diag_nonneg h
-  rw [bezoutMatrix_quadratic_eq_fin_two] at hdiag
+  have hdiag := h.diag_nonneg (i := 1)
+  rw [bezoutMatrix.quadratic_eq_fin_two] at hdiag
   simpa using hdiag
 
 /-- The determinant inequality for a positive-semidefinite `2 × 2` real matrix,
 written in entry form. -/
-lemma det_nonneg_of_posSemidef_fin_two {A : Matrix (Fin 2) (Fin 2) ℝ}
+lemma _root_.Matrix.PosSemidef.det_nonneg_fin_two {A : Matrix (Fin 2) (Fin 2) ℝ}
     (hA : A.PosSemidef) :
     0 ≤ A 0 0 * A 1 1 - A 0 1 * A 1 0 := by
-  have hdet : 0 ≤ A.det := Matrix.PosSemidef.det_nonneg hA
+  have hdet : 0 ≤ A.det := hA.det_nonneg
   simpa [Matrix.det_fin_two] using hdet
 
 /-- The determinant inequality extracted from the closed-form quadratic
 Bezoutian. -/
-lemma det_nonneg_of_bezoutMatrix_quadratic_posSemidef {a b c d : ℝ}
+lemma bezoutMatrix.det_nonneg_of_quadratic_posSemidef {a b c d : ℝ}
     (h : (bezoutMatrix 2 ((X + C a) * (X + C c))
-      ((X + C b) * (X + C d))).PosSemidef) :
+    ((X + C b) * (X + C d))).PosSemidef) :
     0 ≤ ((a + c) * (b * d) - (b + d) * (a * c)) * (b + d - (a + c)) -
-      (b * d - a * c) * (b * d - a * c) := by
-  have hdet := det_nonneg_of_posSemidef_fin_two h
-  rw [bezoutMatrix_quadratic_eq_fin_two] at hdet
+    (b * d - a * c) * (b * d - a * c) := by
+  have hdet := h.det_nonneg_fin_two
+  rw [bezoutMatrix.quadratic_eq_fin_two] at hdet
   simpa using hdet
 
 /-- The determinant obstruction for the quadratic Bezoutian in fact factors
 into the four expected endpoint gaps. -/
-lemma det_factor_nonneg_of_bezoutMatrix_quadratic_posSemidef {a b c d : ℝ}
+lemma bezoutMatrix.det_factor_nonneg_of_quadratic_posSemidef {a b c d : ℝ}
     (h : (bezoutMatrix 2 ((X + C a) * (X + C c))
-      ((X + C b) * (X + C d))).PosSemidef) :
+    ((X + C b) * (X + C d))).PosSemidef) :
     0 ≤ (a - b) * (a - d) * (b - c) * (c - d) := by
-  have hdet := det_nonneg_of_bezoutMatrix_quadratic_posSemidef h
+  have hdet := bezoutMatrix.det_nonneg_of_quadratic_posSemidef h
   convert hdet using 1
   ring
 
-/-- A `2 × 2` real symmetric matrix is positive semidefinite if its two
-diagonal entries and determinant are nonnegative. -/
-lemma posSemidef_fin_two_of_entries {A B C : ℝ}
-    (hA : 0 ≤ A) (hC : 0 ≤ C) (hdet : 0 ≤ A * C - B * B) :
-    (!![A, B; B, C] : Matrix (Fin 2) (Fin 2) ℝ).PosSemidef := by
-  refine Matrix.PosSemidef.of_dotProduct_mulVec_nonneg ?_ ?_
-  · exact Matrix.IsHermitian.ext (by intro i j; fin_cases i <;> fin_cases j <;> simp)
-  · intro x
-    by_cases hAz : A = 0
-    · have hB : B = 0 := by nlinarith [sq_nonneg B]
-      norm_num [dotProduct, Matrix.mulVec, hAz, hB]
-      nlinarith [mul_nonneg hC (sq_nonneg (x 1))]
-    · have hApos : 0 < A := lt_of_le_of_ne' hA hAz
-      have hmain :
-          0 ≤ A * (x 0 + B / A * x 1) ^ 2 + (A * C - B * B) / A * (x 1) ^ 2 := by
-        exact add_nonneg (mul_nonneg hA (sq_nonneg _))
-          (mul_nonneg (div_nonneg hdet (le_of_lt hApos)) (sq_nonneg _))
-      norm_num [dotProduct, Matrix.mulVec]
-      field_simp [ne_of_gt hApos] at hmain
+lemma _root_.Matrix.posDef_fin_two_of_entries {a b c : ℝ}
+    (ha : 0 < a) (hdet : 0 < a * c - b * b) :
+    (!![a, b; b, c] : Matrix (Fin 2) (Fin 2) ℝ).PosDef := by
+  refine Matrix.PosDef.of_dotProduct_mulVec_pos ?_ ?_
+  · exact Matrix.IsHermitian.ext (by simp)
+  · intro x hx
+    have hmain :
+        0 < a * (x 0 + b / a * x 1) ^ 2 + (a * c - b * b) / a * (x 1) ^ 2 := by
+      by_cases hx1 : x 1 = 0
+      · have hx0 : x 0 ≠ 0 := fun h0 ↦ hx <| funext fun i ↦ by fin_cases i <;> assumption
+        have hfirst : 0 < a * (x 0 + b / a * x 1) ^ 2 := by
+          simp [hx1, mul_pos ha (sq_pos_of_ne_zero hx0)]
+        simpa [hx1] using hfirst
+      · have hfirst : 0 ≤ a * (x 0 + b / a * x 1) ^ 2 :=
+          mul_nonneg ha.le (sq_nonneg _)
+        have : 0 < (a * c - b * b) / a * (x 1) ^ 2 :=
+          mul_pos (div_pos hdet ha) (sq_pos_of_ne_zero hx1)
+        linarith
+    norm_num [dotProduct, Matrix.mulVec]
+    field_simp [ne_of_gt ha] at hmain
+    nlinarith
+
+lemma bezoutEntry.eq_zero_of_le_left (p q : ℝ[X]) {n : ℕ} {i j : ℕ}
+    (hp : p.natDegree ≤ n) (hq : q.natDegree ≤ n) (hi : n ≤ i) :
+    bezoutEntry p q i j = 0 := by
+  refine Finset.sum_eq_zero fun k hk ↦ ?_
+  have hk_le : k ≤ min i j := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
+  have hj_le : k ≤ j := hk_le.trans (min_le_right i j)
+  have hp0 : p.coeff (i + j + 1 - k) = 0 := coeff_eq_zero_of_natDegree_lt (by lia)
+  have hq0 : q.coeff (i + j + 1 - k) = 0 := coeff_eq_zero_of_natDegree_lt (by lia)
+  simp [hp0, hq0]
+
+lemma bezoutEntry.eq_zero_of_le_right (p q : ℝ[X]) {n : ℕ} {i j : ℕ}
+    (hp : p.natDegree ≤ n) (hq : q.natDegree ≤ n) (hj : n ≤ j) :
+    bezoutEntry p q i j = 0 :=
+  bezoutEntry.comm p q j i ▸ bezoutEntry.eq_zero_of_le_left p q hp hq hj
+
+lemma bezoutEntry.telescoping (p q : ℝ[X]) (i j : ℕ) :
+    bezoutEntry p q i (j + 1) - bezoutEntry p q (i + 1) j =
+    p.coeff (i + 1) * q.coeff (j + 1) - p.coeff (j + 1) * q.coeff (i + 1) := by
+  rcases le_or_gt i j with hij | hij
+  · rcases eq_or_lt_of_le hij with rfl | h_lt
+    · rw [bezoutEntry.comm p q i (i + 1), sub_self]
+      ring
+    · have hmin1 : min i (j + 1) = i := min_eq_left (by lia)
+      have hmin2 : min (i + 1) j = i + 1 := min_eq_left (by lia)
+      have h_eq : i + (j + 1) + 1 = i + 1 + j + 1 := by lia
+      have h_index : i + 1 + j + 1 - (i + 1) = j + 1 := by lia
+      simp only [bezoutEntry, hmin1, hmin2, h_eq, Finset.sum_sub_distrib,
+        Finset.sum_range_succ, h_index]
+      ring
+  · have hmin1 : min i (j + 1) = j + 1 := min_eq_right (by lia)
+    have hmin2 : min (i + 1) j = j := min_eq_right (by lia)
+    have h_eq : i + (j + 1) + 1 = i + 1 + j + 1 := by lia
+    have h_index : i + 1 + j + 1 - (j + 1) = i + 1 := by lia
+    simp only [bezoutEntry, hmin1, hmin2, h_eq, Finset.sum_sub_distrib,
+      Finset.sum_range_succ, h_index]
+    ring
+
+lemma bezoutEntry.bilinear_mul_sub (p q : ℝ[X]) (n : ℕ) (t₁ t₂ : ℝ)
+    (hp : p.natDegree ≤ n) (hq : q.natDegree ≤ n) :
+    (t₁ - t₂) * ∑ i : Fin n, ∑ j : Fin n,
+    bezoutEntry p q i.val j.val * t₁ ^ i.val * t₂ ^ j.val =
+    p.eval t₁ * q.eval t₂ - p.eval t₂ * q.eval t₁ := by
+  have heq_left : ∀ i j : ℕ, n ≤ i → bezoutEntry p q i j = 0 :=
+    fun i j hi ↦ bezoutEntry.eq_zero_of_le_left p q hp hq hi
+  have heq_right : ∀ i j : ℕ, n ≤ j → bezoutEntry p q i j = 0 :=
+    fun i j hj ↦ bezoutEntry.eq_zero_of_le_right p q hp hq hj
+  have h_telescope : ∀ i j : ℕ,
+      p.coeff i * q.coeff j - p.coeff j * q.coeff i =
+        (if i ≠ 0 then bezoutEntry p q (i - 1) j else 0) -
+          (if j ≠ 0 then bezoutEntry p q i (j - 1) else 0) := by
+    intro i j
+    rcases i with (_ | i) <;> rcases j with (_ | j) <;>
+      simp only [↓reduceIte, ne_eq, not_true_eq_false, Nat.succ_ne_zero,
+        add_tsub_cancel_right, not_false_eq_true]
+    · ring
+    · simp only [bezoutEntry, min_eq_left (Nat.zero_le j)]
+      rw [Finset.range_one, Finset.sum_singleton]
+      rw [Nat.sub_zero]
+      ring_nf
+    · simp only [bezoutEntry, min_eq_right (Nat.zero_le i)]
+      rw [Finset.range_one, Finset.sum_singleton]
+      rw [Nat.sub_zero]
+      ring
+    · rw [← bezoutEntry.telescoping]
+  have h_rhs : p.eval t₁ * q.eval t₂ - p.eval t₂ * q.eval t₁ =
+      ∑ i ∈ Finset.range (n + 1), ∑ j ∈ Finset.range (n + 1),
+        (p.coeff i * q.coeff j - p.coeff j * q.coeff i) * t₁ ^ i * t₂ ^ j := by
+    have h_expand : p.eval t₁ * q.eval t₂ = ∑ i ∈ Finset.range (n + 1),
+        ∑ j ∈ Finset.range (n + 1), p.coeff i * q.coeff j * t₁ ^ i * t₂ ^ j := by
+      rw [Polynomial.eval_eq_sum_range' (Nat.lt_succ_of_le hp),
+         Polynomial.eval_eq_sum_range' (Nat.lt_succ_of_le hq), Finset.sum_mul]
+      refine Finset.sum_congr rfl fun i _ ↦ ?_
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun j _ ↦ by ring
+    have h_expand' : p.eval t₂ * q.eval t₁ = ∑ i ∈ Finset.range (n + 1),
+        ∑ j ∈ Finset.range (n + 1), p.coeff j * q.coeff i * t₁ ^ i * t₂ ^ j := by
+      rw [Polynomial.eval_eq_sum_range' (Nat.lt_succ_of_le hp),
+         Polynomial.eval_eq_sum_range' (Nat.lt_succ_of_le hq), Finset.sum_mul,
+         Finset.sum_comm]
+      refine Finset.sum_congr rfl fun i _ ↦ ?_
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun j _ ↦ by ring
+    simp only [h_expand, h_expand', sub_mul, Finset.sum_sub_distrib]
+  have h_rhs_sum :
+      ∑ i ∈ Finset.range (n + 1), ∑ j ∈ Finset.range (n + 1),
+        (p.coeff i * q.coeff j - p.coeff j * q.coeff i) * t₁ ^ i * t₂ ^ j =
+      t₁ * ∑ i ∈ Finset.range n, ∑ j ∈ Finset.range (n + 1),
+        bezoutEntry p q i j * t₁ ^ i * t₂ ^ j -
+      t₂ * ∑ i ∈ Finset.range (n + 1), ∑ j ∈ Finset.range n,
+        bezoutEntry p q i j * t₁ ^ i * t₂ ^ j := by
+    have h_telescope_sum :
+        ∑ i ∈ Finset.range (n + 1), ∑ j ∈ Finset.range (n + 1),
+          (p.coeff i * q.coeff j - p.coeff j * q.coeff i) * t₁ ^ i * t₂ ^ j =
+        ∑ i ∈ Finset.range (n + 1), ∑ j ∈ Finset.range (n + 1),
+          (if i ≠ 0 then bezoutEntry p q (i - 1) j else 0) * t₁ ^ i * t₂ ^ j -
+        ∑ i ∈ Finset.range (n + 1), ∑ j ∈ Finset.range (n + 1),
+          (if j ≠ 0 then bezoutEntry p q i (j - 1) else 0) * t₁ ^ i * t₂ ^ j := by
+      simp only [h_telescope, sub_mul, Finset.sum_sub_distrib]
+    convert h_telescope_sum using 2 <;> norm_num [Finset.sum_range_succ']
+    · simp only [pow_succ', mul_assoc, mul_add, mul_comm, mul_left_comm, Finset.mul_sum]
+    · simp only [pow_succ', mul_comm, mul_assoc, mul_left_comm, mul_add, Finset.mul_sum]
+  rw [h_rhs, h_rhs_sum]
+  simp [Finset.sum_range, Fin.sum_univ_castSucc, sub_mul, heq_left, heq_right]
+
+lemma bezoutEntry.wronskian (p q : ℝ[X]) (n : ℕ) (t : ℝ)
+    (hp : p.natDegree ≤ n) (hq : q.natDegree ≤ n) :
+    ∑ i : Fin n, ∑ j : Fin n,
+    bezoutEntry p q i.val j.val * t ^ (i.val + j.val) =
+    p.derivative.eval t * q.eval t -
+    p.eval t * q.derivative.eval t := by
+  have h_apply : deriv (fun t₁ ↦ (t₁ - t) * ∑ i : Fin n, ∑ j : Fin n,
+        bezoutEntry p q i.val j.val * t₁ ^ i.val * t ^ j.val) t =
+      deriv (fun t₁ ↦ p.eval t₁ * q.eval t - p.eval t * q.eval t₁) t :=
+    Filter.EventuallyEq.deriv_eq <| Filter.Eventually.of_forall fun t₁ ↦
+      bezoutEntry.bilinear_mul_sub p q n t₁ t hp hq
+  have h_left : deriv (fun t₁ ↦ (t₁ - t) * ∑ i : Fin n, ∑ j : Fin n,
+        bezoutEntry p q i.val j.val * t₁ ^ i.val * t ^ j.val) t =
+      ∑ i : Fin n, ∑ j : Fin n, bezoutEntry p q i.val j.val * t ^ i.val * t ^ j.val := by
+    have h_sub : HasDerivAt (fun t₁ : ℝ ↦ t₁ - t) 1 t := by
+      simpa using (hasDerivAt_id' t).sub_const t
+    have h_sum : HasDerivAt
+        (fun t₁ : ℝ ↦ ∑ i : Fin n, ∑ j : Fin n,
+          bezoutEntry p q i.val j.val * t₁ ^ i.val * t ^ j.val)
+        (∑ i : Fin n, ∑ j : Fin n,
+          ((i.val : ℝ) * t ^ (i.val - 1)) * bezoutEntry p q i.val j.val * t ^ j.val) t := by
+      refine HasDerivAt.fun_sum fun i _ ↦ HasDerivAt.fun_sum fun j _ ↦ ?_
+      simpa [mul_assoc, mul_comm, mul_left_comm] using
+        ((hasDerivAt_pow i.val t).const_mul (bezoutEntry p q i.val j.val)).mul_const (t ^ j.val)
+    simpa [sub_self, zero_mul, one_mul, mul_assoc, mul_comm, mul_left_comm, Pi.mul_def] using
+      (h_sub.mul h_sum).deriv
+  have h_deriv : deriv (fun t₁ ↦ p.eval t₁ * q.eval t - p.eval t * q.eval t₁) t =
+      p.derivative.eval t * q.eval t - p.eval t * q.derivative.eval t :=
+    HasDerivAt.deriv <| ((p.hasDerivAt t).mul_const (q.eval t)).sub
+      (HasDerivAt.const_mul (p.eval t) (q.hasDerivAt t))
+  rw [h_left, h_deriv] at h_apply
+  simp_rw [pow_add, ← mul_assoc]
+  exact h_apply
+
+lemma bezoutMatrix.vandermonde_diagonal (p q : ℝ[X]) (n : ℕ) (t : ℝ)
+    (hp : p.natDegree ≤ n) (hq : q.natDegree ≤ n) :
+    dotProduct (fun i : Fin n ↦ t ^ (i : ℕ))
+    ((bezoutMatrix n p q).mulVec (fun j : Fin n ↦ t ^ (j : ℕ))) =
+    p.derivative.eval t * q.eval t -
+    p.eval t * q.derivative.eval t := by
+  convert bezoutEntry.wronskian p q n t hp hq using 1
+  · simp only [bezoutMatrix, dotProduct, Matrix.mulVec, Finset.mul_sum, mul_assoc,
+      mul_comm, pow_add]
+
+lemma bezoutMatrix.vandermonde_off_diagonal (p q : ℝ[X]) (n : ℕ)
+    (r : Fin n → ℝ) (hp : p.natDegree ≤ n) (hq : q.natDegree ≤ n)
+    (hroots : ∀ k : Fin n, q.eval (r k) = 0)
+    (hinj : Function.Injective r)
+    (k l : Fin n) (hkl : k ≠ l) :
+    dotProduct (fun i : Fin n ↦ r k ^ (i : ℕ))
+    ((bezoutMatrix n p q).mulVec (fun j : Fin n ↦ r l ^ (j : ℕ))) = 0 := by
+  have h_bezoutian : ∑ i : Fin n, ∑ j : Fin n,
+      bezoutEntry p q i.val j.val * r k ^ i.val * r l ^ j.val = 0 := by
+    have h_mul := bezoutEntry.bilinear_mul_sub p q n (r k) (r l) hp hq
+    rw [hroots k, hroots l, mul_zero, mul_zero, sub_zero] at h_mul
+    exact (mul_eq_zero.mp h_mul).resolve_left (sub_ne_zero.mpr (hinj.ne hkl))
+  convert h_bezoutian using 1
+  · simp only [bezoutMatrix, Matrix.mulVec, dotProduct, Finset.mul_sum, mul_comm, mul_left_comm]
+
+lemma bezoutMatrix.vandermonde_eq_diagonal (p q : ℝ[X]) (n : ℕ)
+    (r : Fin n → ℝ) (hp : p.natDegree ≤ n) (hq : q.natDegree ≤ n)
+    (hroots : ∀ k : Fin n, q.eval (r k) = 0)
+    (hinj : Function.Injective r) :
+    (vandermonde r) * (bezoutMatrix n p q) * (vandermonde r)ᵀ =
+    Matrix.diagonal (fun k ↦ p.derivative.eval (r k) * q.eval (r k) -
+    p.eval (r k) * q.derivative.eval (r k)) := by
+  ext i j
+  by_cases hij : i = j
+  · subst hij
+    simp only [diagonal_apply_eq, mul_apply, vandermonde_apply, transpose_apply]
+    convert bezoutMatrix.vandermonde_diagonal p q n (r i) hp hq using 1
+    · simpa only [mul_comm, Finset.mul_sum _ _ _, dotProduct, mulVec] using
+        Finset.sum_comm.trans
+          (Finset.sum_congr rfl fun _ _ ↦ Finset.sum_congr rfl fun _ _ ↦ by ring)
+  · simp only [diagonal_apply_ne _ hij, mul_apply, vandermonde_apply, transpose_apply]
+    convert bezoutMatrix.vandermonde_off_diagonal p q n r hp hq hroots hinj i j hij using 1
+    · simpa only [mul_comm, Finset.mul_sum _ _ _, mul_left_comm, dotProduct, mulVec] using
+        Finset.sum_comm.trans
+          (Finset.sum_congr rfl fun _ _ ↦ Finset.sum_congr rfl fun _ _ ↦ by ring)
+
+lemma Matrix.PosDef.of_congruent_diagonal {n : ℕ} {V : Matrix (Fin n) (Fin n) ℝ}
+    {d : Fin n → ℝ} (hd : ∀ k, 0 < d k) (hV : V.det ≠ 0) :
+    (Vᵀ * diagonal d * V).PosDef := by
+  have h_inj : Function.Injective V.mulVec := by
+    rwa [mulVec_injective_iff_isUnit, isUnit_iff_isUnit_det, isUnit_iff_ne_zero]
+  exact PosDef.conjTranspose_mul_mul_same (PosDef.diagonal hd) h_inj
+
+lemma Matrix.PosDef.of_congruent_to_diagonal {n : ℕ}
+    {V B : Matrix (Fin n) (Fin n) ℝ}
+    {d : Fin n → ℝ} (hd : ∀ k, 0 < d k) (hV : V.det ≠ 0)
+    (heq : V * B * Vᵀ = diagonal d) :
+    B.PosDef := by
+  let W := (V⁻¹)ᵀ
+  have hW : W.det ≠ 0 := by
+    simp [W, hV]
+  have hB_eq : B = Wᵀ * diagonal d * W := by
+    rw [show B = V⁻¹ * (V * B * Vᵀ) * (Vᵀ)⁻¹ by simp [Matrix.mul_assoc, hV], heq]
+    simp [W, Matrix.transpose_nonsing_inv]
+  rw [hB_eq]
+  exact Matrix.PosDef.of_congruent_diagonal hd hW
+
+lemma StrictMono.prod_sub_mul_prod_sub_pos_of_interlacing {n : ℕ}
+    (s r : Fin n → ℝ) (hr : StrictMono r)
+    (hint : ∀ k : Fin n, s k < r k)
+    (hint' : ∀ (i j : Fin n), i < j → r i < s j)
+    (k : Fin n) :
+    0 < (∏ j : Fin n, (r k - s j)) *
+    (∏ j ∈ Finset.univ.erase k, (r k - r j)) := by
+  rw [← Finset.prod_erase_mul _ _ (Finset.mem_univ k)]
+  have h_prod : 0 < (∏ j ∈ Finset.univ.erase k, (r k - r j)) *
+      (∏ j ∈ Finset.univ.erase k, (r k - s j)) := by
+    rw [← Finset.prod_mul_distrib]
+    refine Finset.prod_pos fun x hx ↦ ?_
+    rcases lt_or_gt_of_ne (Finset.ne_of_mem_erase hx) with h | h
+    · exact mul_pos (sub_pos.mpr (hr h)) (sub_pos.mpr (lt_trans (hint x) (hr h)))
+    · exact mul_pos_of_neg_of_neg (sub_neg.mpr (hr h)) (sub_neg.mpr (hint' k x h))
+  nlinarith [hint k]
+
+lemma Polynomial.eval_derivative_prod_X_sub_C_univ_at_root {n : ℕ} (r : Fin n → ℝ)
+    (k : Fin n) :
+    eval (r k) (derivative (∏ j : Fin n, (X - C (r j)))) =
+    ∏ j ∈ Finset.univ.erase k, (r k - r j) := by
+  rw [Finset.prod_eq_mul_prod_diff_singleton_of_mem (Finset.mem_univ k)]
+  simp [eval_prod, Finset.sdiff_singleton_eq_erase]
+
+lemma Polynomial.splits_eq_C_mul_prod {n : ℕ} {q : ℝ[X]}
+    (hq_ne : q ≠ 0) (hq_deg : q.natDegree = n)
+    (r : Fin n → ℝ) (hr_roots : ∀ k, q.IsRoot (r k))
+    (hinj : Function.Injective r) :
+    q = C q.leadingCoeff * ∏ j : Fin n, (X - C (r j)) := by
+  refine eq_of_degree_sub_lt_of_eval_finset_eq (Finset.image r Finset.univ) ?_ ?_
+  · refine lt_of_lt_of_eq (degree_sub_lt ?_ hq_ne ?_) ?_
+    · rw [degree_eq_natDegree hq_ne, hq_deg, degree_mul, degree_C (leadingCoeff_ne_zero.mpr hq_ne),
+        zero_add, degree_prod]
+      simp_all [degree_X_sub_C]
+    · simp [leadingCoeff_prod]
+    · rw [degree_eq_natDegree hq_ne, hq_deg,
+        Finset.card_image_of_injective _ hinj, Finset.card_fin]
+  · simp_all [eval_prod, Finset.prod_eq_zero_iff, sub_eq_zero, hinj.eq_iff]
+
+lemma StrictPrecSameDegree.interlacing_fin {n : ℕ}
+    {p q : ℝ[X]} (h : StrictPrecSameDegree p q)
+    (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n)
+    (s : Fin n → ℝ) (hs_roots : ∀ k, p.IsRoot (s k)) (hs_sorted : StrictMono s)
+    (r : Fin n → ℝ) (hr_roots : ∀ k, q.IsRoot (r k)) (hr_sorted : StrictMono r) :
+    (∀ k : Fin n, s k < r k) ∧ (∀ (i j : Fin n), i < j → r i < s j) := by
+  obtain ⟨hp, hq, hdeg, h_interlaces⟩ := h
+  have hs_sorted_roots : p.roots.sort (· ≤ ·) = List.map s (List.finRange n) := by
+    have hp_roots_eq : p.roots = Multiset.ofList (List.map s (List.finRange n)) := by
+      have hp_eq : p = Polynomial.C p.leadingCoeff * ∏ j : Fin n,
+        (Polynomial.X - Polynomial.C (s j)) := by
+        apply Polynomial.splits_eq_C_mul_prod
+        · exact hp.1
+        · simp_all
+        · simp_all
+        · exact hs_sorted.injective
+      rw [hp_eq, Polynomial.roots_C_mul, Polynomial.roots_prod]
+      · norm_num [List.map]
+        rw [List.ofFn_eq_map]
+      · exact Finset.prod_ne_zero_iff.mpr fun i _ ↦ Polynomial.X_sub_C_ne_zero _
+      · exact mt Polynomial.leadingCoeff_eq_zero.mp (by simpa using hp.1)
+    rw [hp_roots_eq, Multiset.coe_sort]
+    rw [List.mergeSort_eq_self]
+    simp only [List.pairwise_iff_get, List.get_eq_getElem, List.getElem_map,
+      List.getElem_finRange, Fin.cast_mk, hs_sorted.le_iff_le, Fin.mk_le_mk,
+      Fin.val_fin_le]
+    exact fun i j hij ↦ hij.le
+  have hr_sorted_roots : q.roots.sort (· ≤ ·) = List.map r (List.finRange n) := by
+    have hq_roots_eq : q.roots = Multiset.ofList (List.map r (List.finRange n)) := by
+      have hq_eq : q = Polynomial.C q.leadingCoeff * ∏ k : Fin n,
+        (Polynomial.X - Polynomial.C (r k)) := by
+        apply Polynomial.splits_eq_C_mul_prod
+        · exact hq.1
+        · simp_all
+        · simp_all
+        · exact hr_sorted.injective
+      rw [hq_eq, Polynomial.roots_C_mul, Polynomial.roots_prod] <;>
+        norm_num [Finset.prod_eq_zero_iff, Polynomial.X_sub_C_ne_zero]
+      · rw [List.ofFn_eq_map]
+      · exact hq.1
+    rw [hq_roots_eq, Multiset.coe_sort]
+    rw [List.mergeSort_eq_self]
+    simp only [List.pairwise_iff_get, List.get_eq_getElem, List.getElem_map,
+      List.getElem_finRange, Fin.cast_mk, hr_sorted.le_iff_le, Fin.mk_le_mk,
+      Fin.val_fin_le]
+    exact fun i j hij ↦ hij.le
+  rcases n with (_ | n) <;>
+    simp_all only [List.finRange_zero, List.map_nil, IsRoot.def,
+      IsEmpty.forall_iff, isEmpty_Prop, not_lt, le_of_subsingleton, and_self,
+      List.finRange_succ, List.map_cons, List.map_map]
+  have h_interlaces_step : ∀ (n : ℕ) (s r : Fin n → ℝ),
+    List.StrictAlternates (List.map s (List.finRange n)) (List.map r (List.finRange n)) →
+      (∀ k : Fin n, s k < r k) ∧ (∀ i j : Fin n, i < j → r i < s j) := by
+    intro n s r h_interlaces
+    induction n with
+    | zero =>
+      simp_all
+    | succ n ih =>
+      simp_all only [List.finRange_succ, List.map_cons, List.map_map]
+      rcases h_interlaces with ⟨h₁, h₂⟩
+      rcases n with (_ | n) <;>
+        simp_all only [List.finRange_zero, List.map_nil, IsEmpty.forall_iff,
+          isEmpty_Prop, not_lt, le_of_subsingleton, implies_true, and_self,
+          Fin.isValue, Nat.reduceAdd, Fin.forall_fin_one, List.finRange_succ,
+          List.map_cons, List.map_map, Function.comp_apply, Fin.succ_zero_eq_one]
+      rcases h₂ with ⟨h₂, h₃⟩
+      specialize ih ((s ·.succ)) ((r ·.succ))
+      simp_all only [Fin.forall_fin_succ, Fin.succ_zero_eq_one, true_and,
+        not_lt_zero, IsEmpty.forall_iff, Fin.succ_pos, forall_const,
+        Fin.succ_lt_succ_iff, Fin.lt_one_iff, implies_true]
+      have h_step := ih ⟨h₃.1, h₃.2⟩
+      exact ⟨h_step.1, fun i ↦ by linarith [h_step.2.1 i], h_step.2.1, h_step.2.2⟩
+  have h_step := h_interlaces_step (n + 1) s r
+  simp only [List.finRange_succ, List.map_cons, List.map_map] at h_step
+  exact h_step h_interlaces
+
+lemma List.StrictAlternates.pairwise {l1 l2 : List ℝ} (h : List.StrictAlternates l1 l2) :
+    List.Pairwise (· < ·) l1 ∧ List.Pairwise (· < ·) l2 :=
+  ⟨h.pairwise_left, h.pairwise_right⟩
+
+lemma StrictPrecSameDegree.roots_nodup {p q : ℝ[X]}
+    (h : StrictPrecSameDegree p q) :
+    p.roots.Nodup ∧ q.roots.Nodup := by
+  obtain ⟨_, _, _, h_interlacing⟩ := h
+  constructor
+  · rw [← Multiset.sort_eq p.roots (· ≤ ·), Multiset.coe_nodup]
+    exact List.Pairwise.nodup h_interlacing.pairwise.1
+  · rw [← Multiset.sort_eq q.roots (· ≤ ·), Multiset.coe_nodup]
+    exact List.Pairwise.nodup h_interlacing.pairwise.2
+
+lemma Polynomial.exists_strictMono_roots {n : ℕ} {p : ℝ[X]}
+    (hp_splits : p.Splits) (hp_deg : p.natDegree = n)
+    (hp_nodup : p.roots.Nodup) :
+    ∃ s : Fin n → ℝ, StrictMono s ∧ ∀ k, p.IsRoot (s k) := by
+  have h_card : p.roots.toFinset.card = n := by
+    rw [Multiset.toFinset_card_of_nodup hp_nodup, ← hp_deg,
+      ← Splits.natDegree_eq_card_roots hp_splits]
+  let e := p.roots.toFinset.orderEmbOfFin h_card
+  have he : ∀ k : Fin n, e k ∈ p.roots := fun k ↦
+    Multiset.mem_toFinset.mp (Finset.orderEmbOfFin_mem p.roots.toFinset h_card k)
+  exact ⟨e, e.strictMono, fun k ↦ isRoot_of_mem_roots (he k)⟩
+
+lemma Polynomial.eval_derivative_C_mul_prod_X_sub_C_univ_at_root {n : ℕ} (c : ℝ)
+    (r : Fin n → ℝ) (k : Fin n) :
+    eval (r k) (derivative (C c * ∏ j : Fin n, (X - C (r j)))) =
+    c * ∏ j ∈ Finset.univ.erase k, (r k - r j) := by
+  simp [eval_derivative_prod_X_sub_C_univ_at_root r k]
+
+lemma Polynomial.wronskian_at_root_pos_of_interlacing {n : ℕ}
+    {p q : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
+    (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n)
+    (h : StrictPrecSameDegree p q)
+    (r : Fin n → ℝ) (hr_roots : ∀ k, q.IsRoot (r k))
+    (hr_sorted : StrictMono r)
+    (k : Fin n) :
+    0 < q.derivative.eval (r k) * p.eval (r k) := by
+  obtain ⟨hp_nodup, _⟩ := h.roots_nodup
+  have hp_splits := h.1.2
+  obtain ⟨s, hs_mono, hs_roots⟩ := exists_strictMono_roots hp_splits hp_deg hp_nodup
+  obtain ⟨c₁, hc₁⟩ :
+      ∃ c₁ : ℝ, 0 < c₁ ∧ p = C c₁ * ∏ j : Fin n, (X - C (s j)) := by
+    have hp_eq : p = C p.leadingCoeff * ∏ j : Fin n, (X - C (s j)) :=
+      splits_eq_C_mul_prod (leadingCoeff_ne_zero.mp hp_pos.ne')
+        hp_deg s hs_roots hs_mono.injective
+    exact ⟨p.leadingCoeff, hp_pos, hp_eq⟩
+  obtain ⟨c₂, hc₂⟩ :
+      ∃ c₂ : ℝ, 0 < c₂ ∧ q = C c₂ * ∏ j : Fin n, (X - C (r j)) := by
+    have hq_eq : q = C q.leadingCoeff * ∏ j : Fin n, (X - C (r j)) :=
+      splits_eq_C_mul_prod (leadingCoeff_ne_zero.mp hq_pos.ne')
+        hq_deg r hr_roots hr_sorted.injective
+    exact ⟨q.leadingCoeff, hq_pos, hq_eq⟩
+  have h_eval : q.derivative.eval (r k) * p.eval (r k) = c₂ * c₁ * (∏ j : Fin n,
+    (r k - s j)) * (∏ j ∈ Finset.univ.erase k, (r k - r j)) := by
+    rw [hc₂.2, hc₁.2]
+    simp only [Finset.prod_eq_prod_diff_singleton_mul (Finset.mem_univ k),
+      derivative_mul, derivative_C, zero_mul, derivative_sub, derivative_X, sub_zero,
+      mul_one, zero_add, eval_mul, eval_C, eval_add, eval_sub, eval_X, sub_self,
+      mul_zero, eval_prod, Finset.sdiff_singleton_eq_erase]
+    ring
+  have h_prod :
+      0 < (∏ j : Fin n, (r k - s j)) * (∏ j ∈ Finset.univ.erase k, (r k - r j)) := by
+    have h_interlacing :=
+      StrictPrecSameDegree.interlacing_fin h hp_deg hq_deg s hs_roots hs_mono r
+        hr_roots hr_sorted
+    exact StrictMono.prod_sub_mul_prod_sub_pos_of_interlacing s r hr_sorted
+      h_interlacing.1 h_interlacing.2 k
+  rw [h_eval, mul_assoc]
+  exact mul_pos (mul_pos hc₂.1 hc₁.1) h_prod
+
+
+lemma StrictPrecSameDegree.bezoutMatrix_posDef_three_le
+    {p q : ℝ[X]} {n : ℕ}
+    (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
+    (hp_deg : p.natDegree = n + 3) (hq_deg : q.natDegree = n + 3)
+    (h : StrictPrecSameDegree p q) :
+    (bezoutMatrix (n + 3) q p).PosDef := by
+  obtain ⟨_, hq_nodup⟩ := h.roots_nodup
+  have hq_splits := h.2.1.2
+  obtain ⟨s, hs_mono, hs_roots⟩ :
+      ∃ s : Fin (n + 3) → ℝ, StrictMono s ∧ ∀ k, q.IsRoot (s k) :=
+    Polynomial.exists_strictMono_roots hq_splits hq_deg hq_nodup
+  have h_v_eq : vandermonde s * bezoutMatrix (n + 3) q p * (vandermonde s)ᵀ =
+      diagonal fun k ↦ q.derivative.eval (s k) * p.eval (s k) := by
+    have h_vandermonde : ∀ k : Fin (n + 3),
+        p.derivative.eval (s k) * q.eval (s k) -
+          p.eval (s k) * q.derivative.eval (s k) =
+        q.derivative.eval (s k) * p.eval (s k) * (-1) := by
+      intro k
+      have hq_zero : q.eval (s k) = 0 := hs_roots k
+      rw [hq_zero]
+      ring
+    have h_neg : bezoutMatrix (n + 3) q p = -bezoutMatrix (n + 3) p q := by
+      ext i j
+      simp [bezoutMatrix, bezoutEntry]
+    convert congr_arg (fun x ↦ -x)
+      (bezoutMatrix.vandermonde_eq_diagonal p q (n + 3) s hp_deg.le hq_deg.le
+        (by simp_all) hs_mono.injective) using 1
+    · rw [h_neg]
+      simp
+    · ext i j
+      by_cases hij : i = j
+      · subst hij
+        simp [h_vandermonde]
+      · simp [hij]
+  refine Matrix.PosDef.of_congruent_to_diagonal ?_ ?_ h_v_eq
+  · intro k
+    convert Polynomial.wronskian_at_root_pos_of_interlacing hp_pos hq_pos
+      hp_deg hq_deg h s hs_roots hs_mono k using 1
+  · simp_all [Matrix.det_vandermonde, Finset.prod_eq_zero_iff, sub_eq_zero,
+      hs_mono.injective.eq_iff]
+
+
+lemma bezoutMatrix.wronskian_pos_of_posDef
+    {p q : ℝ[X]} {n : ℕ}
+    (hq_deg : q.natDegree ≤ n + 1) (hp_deg : p.natDegree ≤ n + 1)
+    (h : (bezoutMatrix (n + 1) q p).PosDef) (t : ℝ) :
+    0 < q.derivative.eval t * p.eval t - q.eval t * p.derivative.eval t := by
+  have hvec_ne : (fun i : Fin (n + 1) ↦ t ^ (i : ℕ)) ≠ 0 := fun hzero ↦ by
+    have h0 := congr_fun hzero 0
+    rw [Fin.val_zero, pow_zero] at h0
+    exact one_ne_zero h0
+  have h_sum_pos := Matrix.PosDef.sum_pos h hvec_ne
+  have h_sum_eq :
+      (∑ i : Fin (n + 1), ∑ j : Fin (n + 1),
+        bezoutMatrix (n + 1) q p i j * t ^ (i : ℕ) * t ^ (j : ℕ)) =
+      q.derivative.eval t * p.eval t - q.eval t * p.derivative.eval t := by
+    simp_rw [bezoutMatrix, mul_assoc, ← pow_add]
+    exact bezoutEntry.wronskian q p (n + 1) t hq_deg hp_deg
+  rwa [h_sum_eq] at h_sum_pos
+
+lemma bezoutEntry.bilinear_mul_sub_complex (p q : ℝ[X]) (n : ℕ) (z w : ℂ)
+    (hp : p.natDegree ≤ n) (hq : q.natDegree ≤ n) :
+    (z - w) * ∑ i : Fin n, ∑ j : Fin n,
+    (bezoutEntry p q i.val j.val : ℂ) * z ^ i.val * w ^ j.val =
+    (p.map Complex.ofRealHom).eval z * (q.map Complex.ofRealHom).eval w -
+    (p.map Complex.ofRealHom).eval w * (q.map Complex.ofRealHom).eval z := by
+  have heq_left : ∀ i j : ℕ, n ≤ i → (bezoutEntry p q i j : ℂ) = 0 :=
+    fun i j hi ↦ by rw [bezoutEntry.eq_zero_of_le_left p q hp hq hi, Complex.ofReal_zero]
+  have heq_right : ∀ i j : ℕ, n ≤ j → (bezoutEntry p q i j : ℂ) = 0 :=
+    fun i j hj ↦ by rw [bezoutEntry.eq_zero_of_le_right p q hp hq hj, Complex.ofReal_zero]
+  have h_telescope : ∀ i j : ℕ,
+      (p.coeff i : ℂ) * (q.coeff j : ℂ) - (p.coeff j : ℂ) * (q.coeff i : ℂ) =
+        (if i ≠ 0 then (bezoutEntry p q (i - 1) j : ℂ) else 0) -
+          (if j ≠ 0 then (bezoutEntry p q i (j - 1) : ℂ) else 0) := by
+    intro i j
+    have h_real : p.coeff i * q.coeff j - p.coeff j * q.coeff i =
+        (if i ≠ 0 then bezoutEntry p q (i - 1) j else 0) -
+          (if j ≠ 0 then bezoutEntry p q i (j - 1) else 0) := by
+      rcases i with (_ | i) <;> rcases j with (_ | j) <;>
+        simp only [↓reduceIte, ne_eq, not_true_eq_false, Nat.succ_ne_zero,
+          add_tsub_cancel_right, not_false_eq_true]
+      · ring
+      · simp only [bezoutEntry, min_eq_left (Nat.zero_le j)]
+        rw [Finset.range_one, Finset.sum_singleton]
+        rw [Nat.sub_zero]
+        ring_nf
+      · simp only [bezoutEntry, min_eq_right (Nat.zero_le i)]
+        rw [Finset.range_one, Finset.sum_singleton]
+        rw [Nat.sub_zero]
+        ring
+      · rw [← bezoutEntry.telescoping]
+    by_cases hi : i = 0
+    · by_cases hj : j = 0
+      · subst hi hj
+        norm_num
+      · subst hi
+        simp only [ne_self_iff_false, ↓reduceIte, if_pos hj] at h_real ⊢
+        norm_cast
+    · by_cases hj : j = 0
+      · subst hj
+        simp only [ne_self_iff_false, ↓reduceIte, if_pos hi] at h_real ⊢
+        norm_cast
+      · simp only [if_pos hi, if_pos hj] at h_real ⊢
+        norm_cast
+  have h_rhs : (p.map Complex.ofRealHom).eval z * (q.map Complex.ofRealHom).eval w -
+      (p.map Complex.ofRealHom).eval w * (q.map Complex.ofRealHom).eval z =
+    ∑ i ∈ Finset.range (n + 1), ∑ j ∈ Finset.range (n + 1),
+      ((p.coeff i : ℂ) * (q.coeff j : ℂ) -
+        (p.coeff j : ℂ) * (q.coeff i : ℂ)) * z ^ i * w ^ j := by
+    have h_expand : (p.map Complex.ofRealHom).eval z * (q.map Complex.ofRealHom).eval w =
+        ∑ i ∈ Finset.range (n + 1), ∑ j ∈ Finset.range (n + 1),
+          (p.coeff i : ℂ) * (q.coeff j : ℂ) * z ^ i * w ^ j := by
+      rw [Polynomial.eval_eq_sum_range' (by rw [natDegree_map]; exact Nat.lt_succ_of_le hp),
+          Polynomial.eval_eq_sum_range' (by rw [natDegree_map]; exact Nat.lt_succ_of_le hq)]
+      simp only [coeff_map, Complex.ofRealHom_eq_coe, Finset.sum_mul]
+      refine Finset.sum_congr rfl fun i _ ↦ ?_
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun j _ ↦ by ring
+    have h_expand' : (p.map Complex.ofRealHom).eval w * (q.map Complex.ofRealHom).eval z =
+        ∑ i ∈ Finset.range (n + 1), ∑ j ∈ Finset.range (n + 1),
+          (p.coeff j : ℂ) * (q.coeff i : ℂ) * z ^ i * w ^ j := by
+      rw [Polynomial.eval_eq_sum_range' (by rw [natDegree_map]; exact Nat.lt_succ_of_le hp),
+          Polynomial.eval_eq_sum_range' (by rw [natDegree_map]; exact Nat.lt_succ_of_le hq)]
+      rw [Finset.sum_comm]
+      simp only [coeff_map, Complex.ofRealHom_eq_coe, Finset.sum_mul]
+      refine Finset.sum_congr rfl fun i _ ↦ ?_
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun j _ ↦ by ring
+    simp only [h_expand, h_expand', sub_mul, Finset.sum_sub_distrib]
+  have h_rhs_sum :
+      ∑ i ∈ Finset.range (n + 1), ∑ j ∈ Finset.range (n + 1),
+        ((p.coeff i : ℂ) * (q.coeff j : ℂ) -
+          (p.coeff j : ℂ) * (q.coeff i : ℂ)) * z ^ i * w ^ j =
+      z * ∑ i ∈ Finset.range n, ∑ j ∈ Finset.range (n + 1),
+        (bezoutEntry p q i j : ℂ) * z ^ i * w ^ j -
+      w * ∑ i ∈ Finset.range (n + 1), ∑ j ∈ Finset.range n,
+        (bezoutEntry p q i j : ℂ) * z ^ i * w ^ j := by
+    have h_telescope_sum :
+        ∑ i ∈ Finset.range (n + 1), ∑ j ∈ Finset.range (n + 1),
+          ((p.coeff i : ℂ) * (q.coeff j : ℂ) -
+            (p.coeff j : ℂ) * (q.coeff i : ℂ)) * z ^ i * w ^ j =
+        ∑ i ∈ Finset.range (n + 1), ∑ j ∈ Finset.range (n + 1),
+          (if i ≠ 0 then (bezoutEntry p q (i - 1) j : ℂ) else 0) * z ^ i * w ^ j -
+        ∑ i ∈ Finset.range (n + 1), ∑ j ∈ Finset.range (n + 1),
+          (if j ≠ 0 then (bezoutEntry p q i (j - 1) : ℂ) else 0) * z ^ i * w ^ j := by
+      simp only [h_telescope, sub_mul, Finset.sum_sub_distrib]
+    convert h_telescope_sum using 2 <;> norm_num [Finset.sum_range_succ']
+    · simp only [pow_succ', mul_assoc, mul_add, mul_comm, mul_left_comm, Finset.mul_sum]
+    · simp only [pow_succ', mul_comm, mul_assoc, mul_left_comm, mul_add, Finset.mul_sum]
+  rw [h_rhs, h_rhs_sum]
+  simp [Finset.sum_range, Fin.sum_univ_castSucc, sub_mul, heq_left, heq_right]
+
+lemma _root_.Matrix.PosDef.eq_zero_of_sum_mul_mul_eq_zero {m : ℕ}
+    {B : Matrix (Fin m) (Fin m) ℝ} (hB : B.PosDef)
+    (x : Fin m → ℝ)
+    (hx : ∑ i : Fin m, ∑ j : Fin m, B i j * x i * x j = 0) :
+    x = 0 := by
+  by_contra hx_ne
+  have := Matrix.PosDef.sum_pos hB hx_ne
+  linarith
+
+lemma bezoutMatrix.no_complex_root_of_posDef {n : ℕ}
+    {p q : ℝ[X]} (hp_deg : p.natDegree ≤ n + 1) (hq_deg : q.natDegree ≤ n + 1)
+    (hB : (bezoutMatrix (n + 1) q p).PosDef)
+    (z : ℂ) (hz : 0 < z.im) (hroot : (p.map Complex.ofRealHom).eval z = 0) :
+    False := by
+  obtain ⟨x, hx⟩ : ∃ x : Fin (n + 1) → ℝ,
+      x ≠ 0 ∧ ∑ i : Fin (n + 1), ∑ j : Fin (n + 1),
+        (bezoutMatrix (n + 1) q p i j : ℝ) * (x i) * (x j) = 0 := by
+    obtain ⟨y, hy⟩ : ∃ y : Fin (n + 1) → ℂ,
+        y ≠ 0 ∧ ∑ i : Fin (n + 1), ∑ j : Fin (n + 1),
+          (bezoutMatrix (n + 1) q p i j : ℂ) * y i *
+            starRingEnd ℂ (y j) = 0 := by
+      use fun i ↦ z ^ i.val
+      have h_bezoutian : (z - starRingEnd ℂ z) * ∑ i : Fin (n + 1), ∑ j : Fin (n + 1),
+          (bezoutEntry q p i.val j.val : ℂ) * z ^ i.val * (starRingEnd ℂ z) ^ j.val = 0 := by
+        convert bezoutEntry.bilinear_mul_sub_complex q p (n + 1) z
+          (starRingEnd ℂ z) hq_deg hp_deg using 1
+        simp_all only [eval_map, mul_zero, sub_zero, zero_eq_mul]
+        exact Or.inr (by simpa [Polynomial.eval₂_eq_sum_range,
+          Complex.ext_iff] using congr_arg Star.star hroot)
+      exact ⟨fun hy_eq ↦ by simpa using congr_fun hy_eq ⟨0, by lia⟩, by
+        have hdiff_ne : z - starRingEnd ℂ z ≠ 0 := by
+          intro hdiff
+          have him := congr_arg Complex.im hdiff
+          simp only [Complex.sub_im, Complex.conj_im, sub_neg_eq_add, Complex.zero_im] at him
+          linarith
+        have hsum := (mul_eq_zero.mp h_bezoutian).resolve_left hdiff_ne
+        simpa only [bezoutMatrix, map_pow] using hsum⟩
+    refine ⟨fun i ↦ (y i).re, ?_, ?_⟩
+    all_goals
+      simp_all only [Complex.ext_iff, Complex.zero_re, Complex.zero_im, ne_eq,
+        Complex.re_sum, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul,
+        sub_zero, Complex.conj_re, Complex.mul_im, add_zero, Complex.conj_im, mul_neg,
+        sub_neg_eq_add, Finset.sum_add_distrib, Complex.im_sum, Finset.sum_neg_distrib]
+    · intro hre_zero
+      have him_ne : (fun i ↦ (y i).im) ≠ 0 := fun h ↦
+        hy.1 (funext fun i ↦ Complex.ext (congr_fun hre_zero i) (congr_fun h i))
+      have him_pos := Matrix.PosDef.sum_pos hB him_ne
+      have hre_sum :
+          ∑ i : Fin (n + 1), ∑ j : Fin (n + 1),
+            bezoutMatrix (n + 1) q p i j * (y i).re * (y j).re = 0 := by
+        simp [congr_fun hre_zero]
+      linarith
+    · have h_pos (x : Fin (n + 1) → ℝ) :
+          0 ≤ ∑ i : Fin (n + 1), ∑ j : Fin (n + 1),
+            bezoutMatrix (n + 1) q p i j * x i * x j := by
+        rcases eq_or_ne x 0 with rfl | hx
+        · simp
+        · exact (Matrix.PosDef.sum_pos hB hx).le
+      linarith [h_pos (fun i ↦ (y i).re), h_pos (fun i ↦ (y i).im)]
+  exact hx.1 (hB.eq_zero_of_sum_mul_mul_eq_zero x hx.2)
+
+lemma bezoutMatrix.no_complex_root_q_of_posDef {n : ℕ}
+    {p q : ℝ[X]} (hp_deg : p.natDegree ≤ n + 1) (hq_deg : q.natDegree ≤ n + 1)
+    (hB : (bezoutMatrix (n + 1) q p).PosDef)
+    (z : ℂ) (hz : 0 < z.im) (hroot : (q.map Complex.ofRealHom).eval z = 0) :
+    False := by
+  have h_no_complex := @bezoutMatrix.no_complex_root_of_posDef
+  contrapose! h_no_complex
+  use n, q, -p
+  refine ⟨hq_deg, ?_, ?_, z, hz, hroot, h_no_complex⟩
+  · simp_all
+  · convert hB using 1
+    ext i j
+    simp [bezoutMatrix, bezoutEntry, neg_add_eq_sub, Finset.sum_sub_distrib]
+
+lemma Polynomial.splits_of_all_roots_real {p : ℝ[X]}
+    (hall : ∀ z : ℂ, (p.map Complex.ofRealHom).eval z = 0 → z.im = 0) :
+    p.Splits := by
+  apply splits_iff_exists_multiset.mpr
+  use (p.map Complex.ofRealHom).roots.map Complex.re
+  refine map_injective (algebraMap ℝ ℂ) (Complex.ofReal_injective) ?_
+  have h_factor :
+      p.map Complex.ofRealHom =
+        C (p.leadingCoeff : ℂ) *
+          Multiset.prod (Multiset.map (fun z ↦ X - C z)
+            (p.map Complex.ofRealHom).roots) := by
+    convert Splits.eq_prod_roots _
+    · simp
+    · exact IsAlgClosed.splits _
+  convert h_factor using 1
+  · rfl
+  · norm_num [Polynomial.map_multiset_prod]
+    exact Or.inl (congr_arg _
+      (Multiset.map_congr rfl fun x hx ↦ by
+        rw [← Complex.re_add_im x]
+        simp [hall x (isRoot_of_mem_roots hx)]))
+
+lemma bezoutMatrix.splits_of_posDef {n : ℕ}
+    {p q : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
+    (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n)
+    (hB : (bezoutMatrix n q p).PosDef) :
+    p.Splits ∧ q.Splits := by
+  by_cases hn : n = 0
+  · subst hn
+    have hp : p.natDegree = 0 := hp_deg
+    have hq : q.natDegree = 0 := hq_deg
+    obtain ⟨-, hp_splits⟩ := isRealRooted_of_deg_zero (leadingCoeff_ne_zero.mp hp_pos.ne') hp
+    obtain ⟨-, hq_splits⟩ := isRealRooted_of_deg_zero (leadingCoeff_ne_zero.mp hq_pos.ne') hq
+    exact ⟨hp_splits, hq_splits⟩
+  · have hn_eq : n = n - 1 + 1 := (Nat.sub_add_cancel (Nat.pos_of_ne_zero hn)).symm
+    have hB' : (bezoutMatrix (n - 1 + 1) q p).PosDef := hn_eq ▸ hB
+    constructor
+    · apply Polynomial.splits_of_all_roots_real
+      intro z hz
+      by_contra h_im_ne_zero
+      rcases lt_or_gt_of_ne h_im_ne_zero with h_neg | h_pos
+      · have h_star_im : 0 < (starRingEnd ℂ z).im := by simp [h_neg]
+        have h_star_root : (p.map Complex.ofRealHom).eval (starRingEnd ℂ z) = 0 := by
+          simpa [eval_eq_sum_range] using congr_arg Star.star hz
+        exact bezoutMatrix.no_complex_root_of_posDef (hn_eq ▸ hp_deg.le) (hn_eq ▸ hq_deg.le)
+          hB' (starRingEnd ℂ z) h_star_im h_star_root
+      · exact bezoutMatrix.no_complex_root_of_posDef (hn_eq ▸ hp_deg.le) (hn_eq ▸ hq_deg.le)
+          hB' z h_pos hz
+    · apply Polynomial.splits_of_all_roots_real
+      intro z hz
+      by_contra h_im_ne_zero
+      rcases lt_or_gt_of_ne h_im_ne_zero with h_neg | h_pos
+      · have h_star_im : 0 < (starRingEnd ℂ z).im := by simp [h_neg]
+        have h_star_root : (q.map Complex.ofRealHom).eval (starRingEnd ℂ z) = 0 := by
+          simpa [eval_eq_sum_range] using congr_arg Star.star hz
+        exact bezoutMatrix.no_complex_root_q_of_posDef (hn_eq ▸ hp_deg.le) (hn_eq ▸ hq_deg.le)
+          hB' (starRingEnd ℂ z) h_star_im h_star_root
+      · exact bezoutMatrix.no_complex_root_q_of_posDef (hn_eq ▸ hp_deg.le) (hn_eq ▸ hq_deg.le)
+          hB' z h_pos hz
+
+lemma Polynomial.no_repeated_root_of_wronskian_pos {p q : ℝ[X]}
+    (hW : ∀ t : ℝ, 0 < q.derivative.eval t * p.eval t - q.eval t * p.derivative.eval t)
+    (r : ℝ) (hp_root : p.IsRoot r) : ¬ p.derivative.IsRoot r := by
+  intro hd
+  have := hW r
+  simp_all
+
+lemma Polynomial.roots_nodup_of_splits_and_simple {p : ℝ[X]}
+    (h_simple : ∀ r : ℝ, p.IsRoot r → ¬ p.derivative.IsRoot r) :
+    p.roots.Nodup := by
+  rw [Multiset.nodup_iff_count_le_one]
+  intro r
+  rw [count_roots]
+  by_cases hr : p.IsRoot r
+  · exact Nat.le_of_not_lt fun h ↦ h_simple r hr <| by
+      simpa [hr] using Polynomial.isRoot_iterate_derivative_of_lt_rootMultiplicity h
+  · rw [rootMultiplicity_eq_zero hr]
+    simp
+
+lemma StrictMono.fin_interlacing_of_root_between {n : ℕ}
+    (s r : Fin (n + 1) → ℝ) (hs : StrictMono s)
+    (h_root_below : s 0 < r 0)
+    (h_between : ∀ k : Fin n,
+    ∃ j : Fin (n + 1), r k.castSucc < s j ∧ s j < r k.succ) :
+    (∀ k : Fin (n + 1), s k < r k) ∧
+    (∀ (i j : Fin (n + 1)), i < j → r i < s j) := by
+  have h_second_part : ∀ i j : Fin (n + 1), i < j → r i < s j := by
+    intro i
+    refine Fin.reverseInduction ?_ ?_ i
+    · intro j hj
+      exact False.elim <| not_le.mpr hj <| Fin.le_last _
+    · intro i IH j hj
+      obtain ⟨k, hk₁, hk₂⟩ := h_between i
+      by_cases h_cases : j ≤ k
+      · contrapose! IH
+        refine ⟨k, lt_of_le_of_lt (Nat.succ_le_of_lt hj) (lt_of_le_of_ne h_cases ?_), ?_⟩
+        · rintro rfl
+          linarith
+        · linarith
+      · exact lt_of_lt_of_le hk₁ (hs.monotone (not_le.mp h_cases).le)
+  refine ⟨fun k ↦ ?_, h_second_part⟩
+  refine Fin.inductionOn k ?_ ?_
+  · simp_all
+  · intro k ih
+    obtain ⟨j, hj₁, hj₂⟩ := h_between k
+    refine lt_of_le_of_lt (hs.monotone (Nat.succ_le_of_lt ?_)) hj₂
+    by_contra hnot
+    have h_le : j ≤ k.castSucc := not_lt.mp hnot
+    have : s j ≤ s k.castSucc := hs.monotone h_le
+    linarith [hs.monotone h_le]
+
+lemma Polynomial.roots_sort_eq_ofFn {n : ℕ} {p : ℝ[X]}
+    (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hp_deg : p.natDegree = n)
+    (hp_nodup : p.roots.Nodup)
+    (s : Fin n → ℝ) (hs : StrictMono s)
+    (hs_surj : ∀ x ∈ p.roots, ∃ k, s k = x) :
+    p.roots.sort (· ≤ ·) = List.ofFn s := by
+  have h_eq_multiset : p.roots = Multiset.ofList (List.ofFn s) := by
+    refine Multiset.eq_of_le_of_card_le (Multiset.le_iff_count.mpr ?_) ?_
+    · intro x
+      by_cases hx : x ∈ p.roots <;> simp_all
+    · rw [Polynomial.splits_iff_card_roots] at hp_splits
+      simp_all
+  rw [h_eq_multiset, List.ofFn_eq_map]
+  refine List.mergeSort_eq_self (· ≤ ·) ?_
+  simp only [List.pairwise_iff_get, List.get_eq_getElem, List.getElem_map,
+    List.getElem_finRange, Fin.cast_mk]
+  exact fun i j hij ↦ hs.monotone hij.le
+
+lemma List.StrictAlternates.ofFn {n : ℕ}
+    (s r : Fin n → ℝ) (hs : StrictMono s) (hr : StrictMono r)
+    (hint : ∀ k : Fin n, s k < r k)
+    (hint' : ∀ (i j : Fin n), i < j → r i < s j) :
+    List.StrictAlternates (List.ofFn s) (List.ofFn r) := by
+  induction n with
+  | zero =>
+    trivial
+  | succ n ih =>
+    unfold List.StrictAlternates
+    specialize ih (s ·.succ) (r ·.succ)
+      (fun i j hij ↦ hs (by simpa using hij))
+      (fun i j hij ↦ hr (by simpa using hij))
+      (fun i ↦ hint _)
+      (fun i j hij ↦ hint' _ _ (by simpa using hij))
+    cases n <;> simp_all [List.StrictInterlaces]
+    cases ih
+    simp_all
+
+lemma StrictPrecSameDegree.of_fin_interlacing {n : ℕ}
+    (s r : Fin n → ℝ) (hs : StrictMono s) (hr : StrictMono r)
+    (hint : ∀ k : Fin n, s k < r k)
+    (hint' : ∀ (i j : Fin n), i < j → r i < s j)
+    (p q : ℝ[X])
+    (hp_ne : p ≠ 0) (hq_ne : q ≠ 0)
+    (hp_splits : p.Splits) (hq_splits : q.Splits)
+    (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n)
+    (hp_roots_nodup : p.roots.Nodup) (hq_roots_nodup : q.roots.Nodup)
+    (hs_surj : ∀ x ∈ p.roots, ∃ k, s k = x)
+    (hr_surj : ∀ x ∈ q.roots, ∃ k, r k = x) :
+    StrictPrecSameDegree p q := by
+  exact ⟨⟨hp_ne, hp_splits⟩, ⟨hq_ne, hq_splits⟩, hp_deg ▸ hq_deg ▸ rfl,
+    Polynomial.roots_sort_eq_ofFn hp_ne hp_splits hp_deg hp_roots_nodup s hs hs_surj ▸
+    Polynomial.roots_sort_eq_ofFn hq_ne hq_splits hq_deg hq_roots_nodup r hr hr_surj ▸
+    List.StrictAlternates.ofFn s r hs hr hint hint'⟩
+
+lemma Polynomial.has_root_between_roots_of_wronskian_pos {n : ℕ}
+    {p q : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
+    (hp_deg : p.natDegree = n + 1) (hq_deg : q.natDegree = n + 1)
+    (hW : ∀ t : ℝ, 0 < q.derivative.eval t * p.eval t -
+    q.eval t * p.derivative.eval t)
+    (r : Fin (n + 1) → ℝ) (hr_mono : StrictMono r) (hr_roots : ∀ k, q.IsRoot (r k)) :
+    (∃ x, p.IsRoot x ∧ x < r 0) ∧
+    (∀ k : Fin n, ∃ x, p.IsRoot x ∧ r k.castSucc < x ∧ x < r k.succ) := by
+  have h_sign_change_prod : ∀ k : Fin (n + 1),
+      0 < p.eval (r k) * ∏ j ∈ Finset.erase Finset.univ k, (r k - r j) := by
+    intro k
+    have h_eval_deriv :
+        q.derivative.eval (r k) =
+          q.leadingCoeff * ∏ j ∈ Finset.erase Finset.univ k, (r k - r j) := by
+      have h_eval_deriv : q = Polynomial.C q.leadingCoeff * ∏ j : Fin (n + 1),
+        (Polynomial.X - Polynomial.C (r j)) := by
+        convert Polynomial.splits_eq_C_mul_prod _ _ _ _ _
+        · exact leadingCoeff_ne_zero.mp hq_pos.ne'
+        · simp_all
+        · simp_all
+        · exact hr_mono.injective
+      conv_lhs => rw [h_eval_deriv]
+      exact Polynomial.eval_derivative_C_mul_prod_X_sub_C_univ_at_root
+        q.leadingCoeff r k
+    have := hW (r k)
+    have hq_eval : q.eval (r k) = 0 := hr_roots k
+    rw [hq_eval, zero_mul, sub_zero, h_eval_deriv, mul_assoc] at this
+    have h_prod := pos_of_mul_pos_right this hq_pos.le
+    rwa [mul_comm] at h_prod
+  have h_sign_change_pow : ∀ k : Fin (n + 1), 0 < p.eval (r k) * (-1) ^ (n - k.val) := by
+    intro k
+    have h_prod_sign : ∏ j ∈ Finset.erase (Finset.univ : Finset (Fin (n + 1))) k,
+      (r k - r j) = (-1) ^ (n - k.val) *
+        (∏ j ∈ Finset.erase (Finset.univ : Finset (Fin (n + 1))) k,
+          |r k - r j|) := by
+      have h_prod_sign_abs : ∏ j ∈ Finset.erase (Finset.univ : Finset (Fin (n + 1))) k,
+        (r k - r j) = ∏ j ∈ Finset.erase (Finset.univ : Finset (Fin (n + 1))) k,
+          (-1) ^ (if k < j then 1 else 0) * |r k - r j| := by
+        refine Finset.prod_congr rfl fun j hj ↦ ?_
+        split_ifs with hjk
+        · simp_all only [pow_one, neg_mul, one_mul]
+          rw [abs_of_neg] <;> linarith [hr_mono hjk]
+        · simp_all only [pow_zero, one_mul]
+          rw [abs_of_nonneg (sub_nonneg.mpr (hr_mono.monotone (not_lt.mp hjk)))]
+      rw [h_prod_sign_abs, Finset.prod_mul_distrib, Finset.prod_pow_eq_pow_sum]
+      simp only [Finset.sum_boole, Nat.cast_id,
+        mul_eq_mul_right_iff]
+      have h_Ioi : (Finset.univ.erase k).filter (fun x ↦ k < x) = Finset.Ioi k := by
+        ext x
+        simp only [Finset.mem_filter, Finset.mem_erase, ne_eq, Finset.mem_univ, and_true,
+          Finset.mem_Ioi, and_iff_right_iff_imp]
+        exact fun h ↦ ne_of_gt h
+      rw [h_Ioi, Finset.card_eq_sum_ones]
+      simp
+    specialize h_sign_change_prod k
+    rw [h_prod_sign] at h_sign_change_prod
+    nlinarith [show 0 < ∏ j ∈ Finset.univ.erase k, |r k - r j| from
+      Finset.prod_pos fun j hj ↦ abs_pos.mpr <| sub_ne_zero.mpr <|
+        hr_mono.injective.ne (Finset.ne_of_mem_erase hj).symm]
+  have h_sign_change_mul : ∀ k : Fin n,
+      p.eval (r (Fin.castSucc k)) * p.eval (r (Fin.succ k)) < 0 := by
+    intro k
+    have h_sign_change_k : 0 < p.eval (r (Fin.castSucc k)) * (-1) ^ (n - k.val) := by
+      exact h_sign_change_pow _
+    have h_sign_change_k_succ : 0 < p.eval (r (Fin.succ k)) * (-1) ^ (n - (k.val + 1)) := by
+      exact h_sign_change_pow _
+    rw [show n - k = n - (k + 1) + 1 by lia] at h_sign_change_k
+    let m := n - (k.val + 1)
+    change 0 < p.eval (r (Fin.castSucc k)) * (-1) ^ (m + 1) at h_sign_change_k
+    change 0 < p.eval (r (Fin.succ k)) * (-1) ^ m at h_sign_change_k_succ
+    rcases Nat.even_or_odd m with hm | hm
+    · have hm_pow : (-1 : ℝ) ^ m = 1 := hm.neg_one_pow
+      have hm_succ_pow : (-1 : ℝ) ^ (m + 1) = -1 := by simp_all
+      rw [hm_pow] at h_sign_change_k_succ
+      rw [hm_succ_pow] at h_sign_change_k
       nlinarith
+    · have hm_pow : (-1 : ℝ) ^ m = -1 := hm.neg_one_pow
+      have hm_succ_pow : (-1 : ℝ) ^ (m + 1) = 1 := by simp_all
+      rw [hm_pow] at h_sign_change_k_succ
+      rw [hm_succ_pow] at h_sign_change_k
+      nlinarith
+  constructor
+  · have h_sign_change_zero : 0 < p.eval (r 0) * (-1) ^ n := by
+      simpa using h_sign_change_pow 0
+    have h_sign_change_bot : ∃ x : ℝ, x < r 0 ∧ 0 < p.eval x * (-1) ^ (n + 1) := by
+      have h_tendsto_bot :
+          Filter.Tendsto (fun x ↦ p.eval x * (-1) ^ (n + 1)) Filter.atBot
+            Filter.atTop := by
+        have h_tendsto_neg :
+            Filter.Tendsto (fun x ↦ p.eval (-x) * (-1) ^ (n + 1))
+              Filter.atTop Filter.atTop := by
+          have h_leading :
+              0 < Polynomial.leadingCoeff (p.comp (-Polynomial.X)) *
+                (-1) ^ (n + 1) := by
+            rw [Polynomial.comp_neg_X_leadingCoeff_eq, hp_deg]
+            rcases Nat.even_or_odd (n + 1) with h | h <;>
+              rw [h.neg_one_pow] <;> norm_num <;> exact hp_pos
+          have h_tendsto_comp :
+              Filter.Tendsto
+                (fun x ↦ Polynomial.eval x
+                  (p.comp (-Polynomial.X) * Polynomial.C ((-1) ^ (n + 1))))
+                Filter.atTop Filter.atTop := by
+            rw [Polynomial.tendsto_atTop_iff_leadingCoeff_nonneg]
+            rw [Polynomial.degree_mul, Polynomial.degree_C] <;> norm_num [h_leading]
+            exact ⟨Polynomial.natDegree_pos_iff_degree_pos.mp (by lia), by
+              simpa [hp_deg] using h_leading.le⟩
+          simp_all
+        convert h_tendsto_neg.comp Filter.tendsto_neg_atBot_atTop using 2
+        simp
+      exact (Filter.Eventually.and (Filter.eventually_lt_atBot (r 0))
+        (h_tendsto_bot.eventually_gt_atTop 0)).exists
+    obtain ⟨x, hx₁, hx₂⟩ := h_sign_change_bot
+    have h_ivt : ∃ c ∈ Set.Ioo x (r 0), p.eval c = 0 := by
+      have h_cont : ContinuousOn (fun t ↦ p.eval t) (Set.Icc x (r 0)) :=
+        p.continuous.continuousOn
+      have h_sign_change_ends : p.eval x * p.eval (r 0) < 0 := by
+        by_cases h : Even n <;> simp_all [Nat.even_add_one] <;> nlinarith
+      rw [mul_neg_iff] at h_sign_change_ends
+      rcases h_sign_change_ends with h_sign_change_ends | h_sign_change_ends
+      · exact intermediate_value_Ioo' hx₁.le h_cont (by simp_all)
+      · exact intermediate_value_Ioo hx₁.le h_cont (by simp_all)
+    rcases h_ivt with ⟨c, hc_in, hc_root⟩
+    exact ⟨c, hc_root, hc_in.2⟩
+  · intro k
+    have h_ivt : ∃ x ∈ Set.Ioo (r (Fin.castSucc k)) (r (Fin.succ k)), p.eval x = 0 := by
+      have h_cont :
+          ContinuousOn (fun x ↦ p.eval x)
+            (Set.Icc (r (Fin.castSucc k)) (r (Fin.succ k))) :=
+        p.continuous.continuousOn
+      have := h_sign_change_mul k
+      rw [mul_neg_iff] at this
+      have hle : r (Fin.castSucc k) ≤ r (Fin.succ k) :=
+        hr_mono.monotone (Nat.le_succ _)
+      rcases this with h | h
+      · exact intermediate_value_Ioo'
+          (by simp_all) h_cont (by simp_all)
+      · exact intermediate_value_Ioo
+          (by simp_all) h_cont (by simp_all)
+    rcases h_ivt with ⟨c, hc_in, hc_root⟩
+    exact ⟨c, hc_root, hc_in⟩
+
+lemma StrictPrecSameDegree.of_wronskian_pos {n : ℕ}
+    {p q : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
+    (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n)
+    (hp_splits : p.Splits) (hq_splits : q.Splits)
+    (hW : ∀ t : ℝ, 0 < q.derivative.eval t * p.eval t -
+    q.eval t * p.derivative.eval t) :
+    StrictPrecSameDegree p q := by
+  rcases n with (_ | n)
+  · rw [Polynomial.eq_C_of_natDegree_eq_zero hp_deg] at hW ⊢
+    rw [Polynomial.eq_C_of_natDegree_eq_zero hq_deg] at hW ⊢
+    simp_all
+  · have h_real_roots : p.roots.Nodup ∧ q.roots.Nodup := by
+      apply And.intro
+      · apply Polynomial.roots_nodup_of_splits_and_simple
+        · exact fun r hr ↦ Polynomial.no_repeated_root_of_wronskian_pos hW r hr
+      · apply Polynomial.roots_nodup_of_splits_and_simple
+        · intro r hr hd
+          specialize hW r
+          rw [IsRoot.def] at hr hd
+          rw [hr, hd] at hW
+          norm_num at hW
+    obtain ⟨s, hs_mono, hs_roots⟩ :
+      ∃ s : Fin (n + 1) → ℝ, StrictMono s ∧ ∀ k, p.IsRoot (s k) :=
+      Polynomial.exists_strictMono_roots hp_splits hp_deg h_real_roots.1
+    obtain ⟨r, hr_mono, hr_roots⟩ :
+      ∃ r : Fin (n + 1) → ℝ, StrictMono r ∧ ∀ k, q.IsRoot (r k) :=
+      Polynomial.exists_strictMono_roots hq_splits hq_deg h_real_roots.2
+    have hs_surj : ∀ x ∈ p.roots, ∃ k, s k = x := by
+      intro x hx
+      have h_subset : Finset.image s Finset.univ ⊆ p.roots.toFinset := by
+        rw [Finset.image_subset_iff]
+        intro a _
+        rw [Multiset.mem_toFinset, mem_roots (leadingCoeff_ne_zero.mp hp_pos.ne')]
+        exact hs_roots a
+      have h_card : p.roots.toFinset.card ≤ (Finset.image s Finset.univ).card := by
+        rw [Finset.card_image_of_injective _ hs_mono.injective, Finset.card_univ,
+          Fintype.card_fin]
+        exact le_trans (Multiset.toFinset_card_le _)
+          (hp_deg.symm ▸ Polynomial.card_roots' p)
+      have h_eq := Finset.eq_of_subset_of_card_le h_subset h_card
+      have hx_in : x ∈ Finset.image s Finset.univ :=
+        h_eq.symm ▸ Multiset.mem_toFinset.mpr hx
+      rcases Finset.mem_image.mp hx_in with ⟨k, _, rfl⟩
+      exact ⟨k, rfl⟩
+    have hr_surj : ∀ x ∈ q.roots, ∃ k, r k = x := by
+      intro x hx
+      have h_subset : Finset.image r Finset.univ ⊆ q.roots.toFinset := by
+        rw [Finset.image_subset_iff]
+        intro a _
+        rw [Multiset.mem_toFinset, mem_roots (leadingCoeff_ne_zero.mp hq_pos.ne')]
+        exact hr_roots a
+      have h_card : q.roots.toFinset.card ≤ (Finset.image r Finset.univ).card := by
+        rw [Finset.card_image_of_injective _ hr_mono.injective, Finset.card_univ,
+          Fintype.card_fin]
+        exact le_trans (Multiset.toFinset_card_le _)
+          (hq_deg.symm ▸ Polynomial.card_roots' q)
+      have h_eq := Finset.eq_of_subset_of_card_le h_subset h_card
+      have hx_in : x ∈ Finset.image r Finset.univ :=
+        h_eq.symm ▸ Multiset.mem_toFinset.mpr hx
+      rcases Finset.mem_image.mp hx_in with ⟨k, _, rfl⟩
+      exact ⟨k, rfl⟩
+    have h_inter := Polynomial.has_root_between_roots_of_wronskian_pos
+      hp_pos hq_pos hp_deg hq_deg hW
+      r hr_mono hr_roots
+    have h_inter' := StrictMono.fin_interlacing_of_root_between s r hs_mono ?_ ?_
+    · exact StrictPrecSameDegree.of_fin_interlacing s r hs_mono hr_mono
+        h_inter'.1 h_inter'.2 p q (leadingCoeff_ne_zero.mp hp_pos.ne')
+        (leadingCoeff_ne_zero.mp hq_pos.ne') hp_splits hq_splits hp_deg hq_deg
+        h_real_roots.1 h_real_roots.2 hs_surj hr_surj
+    · obtain ⟨x, hx₁, hx₂⟩ := h_inter.1
+      have hx_mem : x ∈ p.roots :=
+        mem_roots'.mpr ⟨leadingCoeff_ne_zero.mp hp_pos.ne', hx₁⟩
+      obtain ⟨k, rfl⟩ := hs_surj x hx_mem
+      exact lt_of_le_of_lt (hs_mono.monotone (Nat.zero_le _)) hx₂
+    · intro k
+      obtain ⟨x, hx_root, hx_between⟩ := h_inter.2 k
+      have hx_mem : x ∈ p.roots :=
+        mem_roots'.mpr ⟨leadingCoeff_ne_zero.mp hp_pos.ne', hx_root⟩
+      obtain ⟨j, rfl⟩ := hs_surj x hx_mem
+      exact ⟨j, hx_between⟩
+
+lemma StrictPrecSameDegree.of_splits_and_posDef {n : ℕ}
+    {p q : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
+    (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n)
+    (hp_splits : p.Splits) (hq_splits : q.Splits)
+    (hB : (bezoutMatrix n q p).PosDef) :
+    StrictPrecSameDegree p q :=
+  match n with
+  | 0 =>
+    ⟨⟨leadingCoeff_ne_zero.mp hp_pos.ne', hp_splits⟩,
+      ⟨leadingCoeff_ne_zero.mp hq_pos.ne', hq_splits⟩,
+      hp_deg ▸ hq_deg ▸ rfl, by
+        have hp_roots : p.roots = 0 :=
+          Multiset.card_eq_zero.mp (hp_splits.natDegree_eq_card_roots.symm ▸ hp_deg)
+        have hq_roots : q.roots = 0 :=
+          Multiset.card_eq_zero.mp (hq_splits.natDegree_eq_card_roots.symm ▸ hq_deg)
+        simp [List.StrictAlternates, hp_roots, hq_roots]⟩
+  | m + 1 =>
+    StrictPrecSameDegree.of_wronskian_pos hp_pos hq_pos hp_deg hq_deg hp_splits hq_splits fun t ↦
+      bezoutMatrix.wronskian_pos_of_posDef hq_deg.le hp_deg.le hB t
+
+lemma StrictPrecSameDegree.of_bezoutMatrix_posDef_three_le
+    {p q : ℝ[X]} {n : ℕ}
+    (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
+    (hp_deg : p.natDegree = n + 3) (hq_deg : q.natDegree = n + 3)
+    (h : (bezoutMatrix (n + 3) q p).PosDef) :
+    StrictPrecSameDegree p q :=
+  let ⟨hp_s, hq_s⟩ := bezoutMatrix.splits_of_posDef hp_pos hq_pos hp_deg hq_deg h
+  StrictPrecSameDegree.of_splits_and_posDef hp_pos hq_pos hp_deg hq_deg hp_s hq_s h
+
+
+lemma _root_.Matrix.PosDef.det_pos_fin_two_entries {a b c : ℝ}
+    (h : (!![a, b; b, c] : Matrix (Fin 2) (Fin 2) ℝ).PosDef) :
+    0 < a * c - b * b := by
+  have hdiag : 0 < (!![a, b; b, c] : Matrix (Fin 2) (Fin 2) ℝ) 0 0 := h.diag_pos
+  have : 0 < a := by simpa using hdiag
+  have hx : ![-b, a] ≠ (0 : Fin 2 → ℝ) := by
+    intro hzero
+    simp_all
+  have hquad := h.dotProduct_mulVec_pos hx
+  norm_num [dotProduct, Matrix.mulVec] at hquad
+  nlinarith
+
+lemma bezoutMatrix.det_pos_of_quadratic_posDef {a b c d : ℝ}
+    (h : (bezoutMatrix 2 ((X + C a) * (X + C c))
+    ((X + C b) * (X + C d))).PosDef) :
+    0 < ((a + c) * (b * d) - (b + d) * (a * c)) * (b + d - (a + c)) -
+    (b * d - a * c) * (b * d - a * c) := by
+  rw [bezoutMatrix.quadratic_eq_fin_two] at h
+  exact h.det_pos_fin_two_entries
+
+lemma bezoutMatrix.det_factor_pos_of_quadratic_posDef {a b c d : ℝ}
+    (h : (bezoutMatrix 2 ((X + C a) * (X + C c))
+    ((X + C b) * (X + C d))).PosDef) :
+    0 < (a - b) * (a - d) * (b - c) * (c - d) := by
+  have hdet := bezoutMatrix.det_pos_of_quadratic_posDef h
+  convert hdet using 1
+  ring
 
 /-- For ordered quadratic factors, positive semidefiniteness of the Bezoutian
 extracts the expected interleaving inequalities on the constants. -/
-lemma const_interleaves_of_bezoutMatrix_quadratic_posSemidef {a b c d : ℝ}
+lemma bezoutMatrix.const_interleaves_of_quadratic_posSemidef {a b c d : ℝ}
     (hac : a ≤ c) (hbd : b ≤ d)
     (h : (bezoutMatrix 2 ((X + C a) * (X + C c))
-      ((X + C b) * (X + C d))).PosSemidef) :
+    ((X + C b) * (X + C d))).PosSemidef) :
     a ≤ b ∧ b ≤ c ∧ c ≤ d := by
-  have hsum := sum_le_of_bezoutMatrix_quadratic_posSemidef h
-  have hdet := det_factor_nonneg_of_bezoutMatrix_quadratic_posSemidef h
+  have h_sum := bezoutMatrix.sum_le_of_quadratic_posSemidef h
+  have h_det := bezoutMatrix.det_factor_nonneg_of_quadratic_posSemidef h
   have hab : a ≤ b := by
     by_contra hnot
-    have hba : b < a := lt_of_not_ge hnot
-    have hcd : c < d := by nlinarith
+    have hba : b < a := not_le.mp hnot
+    have hcd : c < d := by linarith
     have had : a < d := lt_of_le_of_lt hac hcd
     have hbc : b < c := lt_of_lt_of_le hba hac
     have h1 : (a - b) * (a - d) < 0 :=
       mul_neg_of_pos_of_neg (sub_pos.mpr hba) (sub_neg.mpr had)
     have h2 : 0 < (b - c) * (c - d) :=
       mul_pos_of_neg_of_neg (sub_neg.mpr hbc) (sub_neg.mpr hcd)
-    have hprod : ((a - b) * (a - d)) * ((b - c) * (c - d)) < 0 :=
-      mul_neg_of_neg_of_pos h1 h2
     nlinarith
   have hbc : b ≤ c := by
     by_contra hnot
-    have hcb : c < b := lt_of_not_ge hnot
+    have hcb : c < b := not_le.mp hnot
     have hab' : a < b := lt_of_le_of_lt hac hcb
     have hcd : c < d := lt_of_lt_of_le hcb hbd
     have had : a < d := lt_of_le_of_lt hac hcd
@@ -437,408 +1560,278 @@ lemma const_interleaves_of_bezoutMatrix_quadratic_posSemidef {a b c d : ℝ}
       mul_pos_of_neg_of_neg (sub_neg.mpr hab') (sub_neg.mpr had)
     have h2 : (b - c) * (c - d) < 0 :=
       mul_neg_of_pos_of_neg (sub_pos.mpr hcb) (sub_neg.mpr hcd)
-    have hprod : ((a - b) * (a - d)) * ((b - c) * (c - d)) < 0 :=
-      mul_neg_of_pos_of_neg h1 h2
     nlinarith
   have hcd : c ≤ d := by
     by_contra hnot
-    have hdc : d < c := lt_of_not_ge hnot
-    have hab' : a < b := by nlinarith
+    have hdc : d < c := not_le.mp hnot
+    have hab' : a < b := by linarith
     have had : a < d := lt_of_lt_of_le hab' hbd
     have hbc' : b < c := lt_of_le_of_lt hbd hdc
     have h1 : 0 < (a - b) * (a - d) :=
       mul_pos_of_neg_of_neg (sub_neg.mpr hab') (sub_neg.mpr had)
     have h2 : (b - c) * (c - d) < 0 :=
       mul_neg_of_neg_of_pos (sub_neg.mpr hbc') (sub_pos.mpr hdc)
-    have hprod : ((a - b) * (a - d)) * ((b - c) * (c - d)) < 0 :=
-      mul_neg_of_pos_of_neg h1 h2
     nlinarith
   exact ⟨hab, hbc, hcd⟩
 
 /-- Ordered constants give the positive-semidefinite quadratic Bezoutian. -/
-lemma bezoutMatrix_quadratic_posSemidef_two_of_const_interleaves {a b c d : ℝ}
-    (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d) :
+lemma bezoutMatrix.const_strictInterleaves_of_quadratic_posDef {a b c d : ℝ}
+    (hac : a ≤ c) (hbd : b ≤ d)
+    (h : (bezoutMatrix 2 ((X + C a) * (X + C c))
+    ((X + C b) * (X + C d))).PosDef) :
+    a < b ∧ b < c ∧ c < d := by
+  rcases bezoutMatrix.const_interleaves_of_quadratic_posSemidef hac hbd h.posSemidef with
+    ⟨hab_le, hbc_le, hcd_le⟩
+  have h_det := bezoutMatrix.det_factor_pos_of_quadratic_posDef h
+  have hab_ne : a ≠ b := by
+    rintro rfl
+    simp_all
+  have hbc_ne : b ≠ c := by
+    rintro rfl
+    simp_all
+  have hcd_ne : c ≠ d := by
+    rintro rfl
+    simp_all
+  exact ⟨lt_of_le_of_ne hab_le hab_ne, lt_of_le_of_ne hbc_le hbc_ne,
+    lt_of_le_of_ne hcd_le hcd_ne⟩
+
+lemma bezoutMatrix.quadratic_posDef_two_of_const_strictInterleaves {a b c d : ℝ}
+    (hab : a < b) (hbc : b < c) (hcd : c < d) :
     (bezoutMatrix 2 ((X + C a) * (X + C c))
-      ((X + C b) * (X + C d))).PosSemidef := by
-  rw [bezoutMatrix_quadratic_eq_fin_two]
-  refine posSemidef_fin_two_of_entries ?_ ?_ ?_
+    ((X + C b) * (X + C d))).PosDef := by
+  rw [bezoutMatrix.quadratic_eq_fin_two]
+  refine Matrix.posDef_fin_two_of_entries ?_ ?_
   · have hAeq : (a + c) * (b * d) - (b + d) * (a * c) =
-        (b - a) * c ^ 2 + (d - c) * (b ^ 2 + (b - a) * (c - b)) := by
-      ring
+        (b - a) * c ^ 2 + (d - c) * (b ^ 2 + (b - a) * (c - b)) := by ring
     rw [hAeq]
-    have hba : 0 ≤ b - a := sub_nonneg.mpr hab
-    have hcb : 0 ≤ c - b := sub_nonneg.mpr hbc
-    have hdc : 0 ≤ d - c := sub_nonneg.mpr hcd
-    exact add_nonneg (mul_nonneg hba (sq_nonneg c))
-      (mul_nonneg hdc (add_nonneg (sq_nonneg b) (mul_nonneg hba hcb)))
-  · nlinarith
+    have hba : 0 < b - a := sub_pos.mpr hab
+    have hcb : 0 < c - b := sub_pos.mpr hbc
+    have hdc : 0 < d - c := sub_pos.mpr hcd
+    by_cases hc0 : c = 0
+    · have hb0 : b ≠ 0 := by linarith
+      have hb_pos : 0 < b ^ 2 + (b - a) * (c - b) :=
+        add_pos_of_pos_of_nonneg (sq_pos_of_ne_zero hb0)
+          (mul_nonneg hba.le hcb.le)
+      nlinarith
+    · have hleft : 0 < (b - a) * c ^ 2 :=
+        mul_pos hba (sq_pos_of_ne_zero hc0)
+      have h_nonneg : 0 ≤ (d - c) * (b ^ 2 + (b - a) * (c - b)) :=
+        mul_nonneg hdc.le (add_nonneg (sq_nonneg b) (mul_nonneg hba.le hcb.le))
+      nlinarith
   · have hdet_eq :
         ((a + c) * (b * d) - (b + d) * (a * c)) * (b + d - (a + c)) -
           (b * d - a * c) * (b * d - a * c) =
-        (b - a) * (c - b) * (d - c) * (d - a) := by
-      ring
+        (b - a) * (c - b) * (d - c) * (d - a) := by ring
     rw [hdet_eq]
-    have hba : 0 ≤ b - a := sub_nonneg.mpr hab
-    have hcb : 0 ≤ c - b := sub_nonneg.mpr hbc
-    have hdc : 0 ≤ d - c := sub_nonneg.mpr hcd
-    have hda : 0 ≤ d - a := by linarith
-    exact mul_nonneg (mul_nonneg (mul_nonneg hba hcb) hdc) hda
+    have : 0 < d - a := by linarith
+    simp_all
 
-lemma bezoutMatrix_quadratic_commonFactor_eq_vecMulVec (a b c : ℝ) :
-    bezoutMatrix 2 ((X + C a) * (X + C c)) ((X + C b) * (X + C c)) =
-      (b - a) • Matrix.vecMulVec (fun i : Fin 2 => if i = 0 then c else 1)
-        (star (fun i : Fin 2 => if i = 0 then c else 1)) := by
-  ext i j
-  fin_cases i <;> fin_cases j <;>
-    norm_num [bezoutMatrix, bezoutEntry, Matrix.vecMulVec, coeff_add, coeff_mul,
-      Finset.antidiagonal, Finset.range, coeff_X, coeff_C]
-  all_goals ring
-
-lemma bezoutMatrix_quadratic_commonFactor_posSemidef_two {a b c : ℝ}
-    (hab : a ≤ b) :
-    (bezoutMatrix 2 ((X + C a) * (X + C c))
-      ((X + C b) * (X + C c))).PosSemidef := by
-  rw [bezoutMatrix_quadratic_commonFactor_eq_vecMulVec]
-  exact (Matrix.posSemidef_vecMulVec_self_star
-    (fun i : Fin 2 => if i = 0 then c else 1)).smul (sub_nonneg.mpr hab)
-
-lemma not_bezoutMatrix_quadratic_commonFactor_posSemidef_two_swap {a b c : ℝ}
-    (hab : a < b) :
-    ¬ (bezoutMatrix 2 ((X + C b) * (X + C c))
-      ((X + C a) * (X + C c))).PosSemidef := by
-  intro h
-  have hdiag :
-      0 ≤ (bezoutMatrix 2 ((X + C b) * (X + C c))
-        ((X + C a) * (X + C c))) (1 : Fin 2) (1 : Fin 2) :=
-    Matrix.PosSemidef.diag_nonneg h
-  rw [bezoutMatrix_quadratic_commonFactor_eq_vecMulVec] at hdiag
-  simp [Matrix.vecMulVec] at hdiag
-  linarith
-
-/-- Multiplying the ordered linear `Prec` example by a common linear factor
-preserves the expected Bezoutian orientation in degree two. -/
-lemma prec_quadratic_commonFactor_of_le {a b c : ℝ} (hab : a ≤ b) :
-    Prec (((X + C b) * (X + C c)) : ℝ[X])
-      (((X + C a) * (X + C c)) : ℝ[X]) := by
-  have hb : (X + C b : ℝ[X]) ≠ 0 ∧ (X + C b).Splits := isRealRooted_X_add_C b
-  have hc : (X + C c : ℝ[X]) ≠ 0 ∧ (X + C c).Splits := isRealRooted_X_add_C c
-  have ha : (X + C a : ℝ[X]) ≠ 0 ∧ (X + C a).Splits := isRealRooted_X_add_C a
-  by_cases hca : c ≤ a
-  · refine ⟨isRealRooted_mul hb hc, isRealRooted_mul ha hc,
-      [(-b : ℝ), -c], [(-a : ℝ), -c], ?_, ?_, ?_, ?_, ?_⟩
-    · simp
-      linarith
-    · simp
-      linarith
-    · rw [roots_mul (mul_ne_zero hb.1 hc.1), roots_X_add_C, roots_X_add_C]
-      rfl
-    · rw [roots_mul (mul_ne_zero ha.1 hc.1), roots_X_add_C, roots_X_add_C]
-      rfl
-    · exact Or.inr ⟨by simp, by
-        simp [ListAlternates, ListInterlaces]
-        constructor <;> linarith⟩
-  · by_cases hcb : c ≤ b
-    · have hac : a ≤ c := le_of_not_ge hca
-      refine ⟨isRealRooted_mul hb hc, isRealRooted_mul ha hc,
-        [(-b : ℝ), -c], [(-c : ℝ), -a], ?_, ?_, ?_, ?_, ?_⟩
-      · simp
-        linarith
-      · simp
-        linarith
-      · rw [roots_mul (mul_ne_zero hb.1 hc.1), roots_X_add_C, roots_X_add_C]
-        rfl
-      · rw [roots_mul (mul_ne_zero ha.1 hc.1), roots_X_add_C, roots_X_add_C,
-          Multiset.add_comm]
-        rfl
-      · exact Or.inr ⟨by simp, by
-          simp [ListAlternates, ListInterlaces]
-          constructor <;> linarith⟩
-    · have hbc : b ≤ c := le_of_not_ge hcb
-      refine ⟨isRealRooted_mul hb hc, isRealRooted_mul ha hc,
-        [(-c : ℝ), -b], [(-c : ℝ), -a], ?_, ?_, ?_, ?_, ?_⟩
-      · simp
-        linarith
-      · simp
-        linarith
-      · rw [roots_mul (mul_ne_zero hb.1 hc.1), roots_X_add_C, roots_X_add_C,
-          Multiset.add_comm]
-        rfl
-      · rw [roots_mul (mul_ne_zero ha.1 hc.1), roots_X_add_C, roots_X_add_C,
-          Multiset.add_comm]
-        rfl
-      · exact Or.inr ⟨by simp, by
-          simp [ListAlternates, ListInterlaces]
-          constructor <;> linarith⟩
-
-/-- The common-factor `2 × 2` Bezoutian positive-semidefinite sanity check
-implies the corresponding quadratic `Prec` orientation. -/
-lemma prec_of_bezoutMatrix_quadratic_commonFactor_posSemidef_two {a b c : ℝ}
-    (h : (bezoutMatrix 2 ((X + C a) * (X + C c))
-      ((X + C b) * (X + C c))).PosSemidef) :
-    Prec (((X + C b) * (X + C c)) : ℝ[X])
-      (((X + C a) * (X + C c)) : ℝ[X]) := by
-  have hdiag :
-      0 ≤ (bezoutMatrix 2 ((X + C a) * (X + C c))
-        ((X + C b) * (X + C c))) (1 : Fin 2) (1 : Fin 2) := by
-    exact Matrix.PosSemidef.diag_nonneg h
-  rw [bezoutMatrix_quadratic_commonFactor_eq_vecMulVec] at hdiag
-  have hab : a ≤ b := by
-    simp [Matrix.vecMulVec] at hdiag
-    linarith
-  exact prec_quadratic_commonFactor_of_le hab
-
-lemma bezoutMatrix_quadratic_nonCommon_eq_decomp :
-    bezoutMatrix 2 ((X + C (1 : ℝ)) * (X + C (3 : ℝ)))
-        ((X + C (2 : ℝ)) * (X + C (4 : ℝ))) =
-      ((1 / 2 : ℝ) • Matrix.vecMulVec (fun i : Fin 2 => if i = 0 then (5 : ℝ) else 2)
-        (star (fun i : Fin 2 => if i = 0 then (5 : ℝ) else 2))) +
-        Matrix.diagonal (fun i : Fin 2 => if i = 0 then (3 / 2 : ℝ) else 0) := by
-  ext i j
-  fin_cases i <;> fin_cases j <;>
-    norm_num [bezoutMatrix, bezoutEntry, Matrix.vecMulVec, Matrix.diagonal, coeff_add,
-      coeff_mul, Finset.antidiagonal, Finset.range, coeff_X, coeff_C, coeff_one]
-
-lemma bezoutMatrix_quadratic_nonCommon_posSemidef_two :
-    (bezoutMatrix 2 ((X + C (1 : ℝ)) * (X + C (3 : ℝ)))
-      ((X + C (2 : ℝ)) * (X + C (4 : ℝ)))).PosSemidef := by
-  rw [bezoutMatrix_quadratic_nonCommon_eq_decomp]
-  apply Matrix.PosSemidef.add
-  · exact (Matrix.posSemidef_vecMulVec_self_star
-      (fun i : Fin 2 => if i = 0 then (5 : ℝ) else 2)).smul (by norm_num)
-  · exact Matrix.PosSemidef.diagonal (by intro i; fin_cases i <;> norm_num)
-
-lemma not_bezoutMatrix_quadratic_nonCommon_posSemidef_two_swap :
-    ¬ (bezoutMatrix 2 ((X + C (2 : ℝ)) * (X + C (4 : ℝ)))
-      ((X + C (1 : ℝ)) * (X + C (3 : ℝ)))).PosSemidef := by
-  intro h
-  have hdiag :
-      0 ≤ (bezoutMatrix 2 ((X + C (2 : ℝ)) * (X + C (4 : ℝ)))
-        ((X + C (1 : ℝ)) * (X + C (3 : ℝ)))) (1 : Fin 2) (1 : Fin 2) :=
-    Matrix.PosSemidef.diag_nonneg h
-  norm_num [bezoutMatrix, bezoutEntry, coeff_add, coeff_mul, Finset.antidiagonal,
-    Finset.range, coeff_X, coeff_C, coeff_one] at hdiag
-
-/-- A nested non-common root pattern fails positive semidefiniteness; this is
-the first place where diagonal inequalities alone are not enough. -/
-lemma not_bezoutMatrix_quadratic_nested_posSemidef_two :
-    ¬ (bezoutMatrix 2 ((X + C (1 : ℝ)) * (X + C (4 : ℝ)))
-      ((X + C (2 : ℝ)) * (X + C (3 : ℝ)))).PosSemidef := by
-  intro h
-  have hquad := Matrix.PosSemidef.dotProduct_mulVec_nonneg h ![(1 : ℝ), -3]
-  rw [bezoutMatrix_quadratic_eq_fin_two] at hquad
-  norm_num [dotProduct, Matrix.mulVec] at hquad
-
-/-- If four linear-factor constants interleave as `a ≤ b ≤ c ≤ d`, then the
-corresponding quadratic factors satisfy the expected `Prec` orientation. -/
-lemma prec_quadratic_of_const_interleaves {a b c d : ℝ}
-    (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d) :
-    Prec (((X + C b) * (X + C d)) : ℝ[X])
-      (((X + C a) * (X + C c)) : ℝ[X]) := by
-  have ha : (X + C a : ℝ[X]) ≠ 0 ∧ (X + C a).Splits := isRealRooted_X_add_C a
-  have hb : (X + C b : ℝ[X]) ≠ 0 ∧ (X + C b).Splits := isRealRooted_X_add_C b
-  have hc : (X + C c : ℝ[X]) ≠ 0 ∧ (X + C c).Splits := isRealRooted_X_add_C c
-  have hd : (X + C d : ℝ[X]) ≠ 0 ∧ (X + C d).Splits := isRealRooted_X_add_C d
-  refine ⟨isRealRooted_mul hb hd, isRealRooted_mul ha hc,
-    [(-d : ℝ), -b], [(-c : ℝ), -a], ?_, ?_, ?_, ?_, ?_⟩
-  · simp
-    linarith
-  · simp
-    linarith
-  · rw [roots_mul (mul_ne_zero hb.1 hd.1), roots_X_add_C, roots_X_add_C,
-      Multiset.add_comm]
-    rfl
-  · rw [roots_mul (mul_ne_zero ha.1 hc.1), roots_X_add_C, roots_X_add_C,
-      Multiset.add_comm]
-    rfl
-  · exact Or.inr ⟨by simp, by
-      simp [ListAlternates, ListInterlaces]
-      constructor
-      · linarith
-      · constructor <;> linarith⟩
-
-/-- A sorted two-element list whose multiset is a sorted pair is the expected
-ordered list. -/
-lemma sorted_pair_eq_of_pairwise_of_multiset_eq_pair {b d x y : ℝ} (hbd : b ≤ d)
-    (hxy : [x, y].Pairwise (· ≤ ·))
-    (h : (↑[x, y] : Multiset ℝ) = ({-b, -d} : Multiset ℝ)) :
-    x = -d ∧ y = -b := by
-  have hperm : [x, y].Perm [-d, -b] := by
-    apply Multiset.coe_eq_coe.mp
-    rw [h]
-    exact Multiset.pair_comm (-b) (-d)
-  have hsorted : [-d, -b].Pairwise (· ≤ ·) := by
+lemma StrictPrecSameDegree.quadratic_of_const_strictInterleaves {a b c d : ℝ}
+    (hab : a < b) (hbc : b < c) (hcd : c < d) :
+    StrictPrecSameDegree (((X + C b) * (X + C d)) : ℝ[X])
+    (((X + C a) * (X + C c)) : ℝ[X]) := by
+  have ha : (X + C a : ℝ[X]) ≠ 0 ∧ (X + C a).Splits := Polynomial.isRealRooted_X_add_C a
+  have hb : (X + C b : ℝ[X]) ≠ 0 ∧ (X + C b).Splits := Polynomial.isRealRooted_X_add_C b
+  have hc : (X + C c : ℝ[X]) ≠ 0 ∧ (X + C c).Splits := Polynomial.isRealRooted_X_add_C c
+  have hd : (X + C d : ℝ[X]) ≠ 0 ∧ (X + C d).Splits := Polynomial.isRealRooted_X_add_C d
+  have hp_deg : (((X + C b) * (X + C d)) : ℝ[X]).natDegree = 2 := by
+    rw [natDegree_mul hb.1 hd.1]
     simp
-    linarith
-  have hlist : [x, y] = [-d, -b] := List.Perm.eq_of_pairwise' hxy hsorted hperm
-  simpa using hlist
-
-/-- For sorted quadratic linear-factor products, `Prec` is equivalent to the
-expected interleaving inequalities on the constants. -/
-lemma const_interleaves_of_prec_quadratic {a b c d : ℝ} (hac : a ≤ c) (hbd : b ≤ d)
-    (h : Prec (((X + C b) * (X + C d)) : ℝ[X])
-      (((X + C a) * (X + C c)) : ℝ[X])) :
-    a ≤ b ∧ b ≤ c ∧ c ≤ d := by
-  rcases h with ⟨_, _, ss, rs, hss_sorted, hrs_sorted, hss_roots, hrs_roots, hcase⟩
-  have hp_roots_card : (((X + C b) * (X + C d)) : ℝ[X]).roots.card = 2 := by
-    rw [roots_mul (mul_ne_zero (isRealRooted_X_add_C b).1 (isRealRooted_X_add_C d).1),
-      roots_X_add_C, roots_X_add_C]
+  have hq_deg : (((X + C a) * (X + C c)) : ℝ[X]).natDegree = 2 := by
+    rw [natDegree_mul ha.1 hc.1]
     simp
-  have hq_roots_card : (((X + C a) * (X + C c)) : ℝ[X]).roots.card = 2 := by
-    rw [roots_mul (mul_ne_zero (isRealRooted_X_add_C a).1 (isRealRooted_X_add_C c).1),
-      roots_X_add_C, roots_X_add_C]
-    simp
-  have hss_len : ss.length = 2 := by
-    have hcard := congrArg Multiset.card hss_roots
-    simpa [hp_roots_card] using hcard
-  have hrs_len : rs.length = 2 := by
-    have hcard := congrArg Multiset.card hrs_roots
-    simpa [hq_roots_card] using hcard
-  rcases List.length_eq_two.mp hss_len with ⟨x, y, rfl⟩
-  rcases List.length_eq_two.mp hrs_len with ⟨z, w, rfl⟩
-  have hss_pair : (↑[x, y] : Multiset ℝ) = ({-b, -d} : Multiset ℝ) := by
-    simpa [roots_mul (mul_ne_zero (isRealRooted_X_add_C b).1 (isRealRooted_X_add_C d).1),
-      roots_X_add_C] using hss_roots
-  have hrs_pair : (↑[z, w] : Multiset ℝ) = ({-a, -c} : Multiset ℝ) := by
-    simpa [roots_mul (mul_ne_zero (isRealRooted_X_add_C a).1 (isRealRooted_X_add_C c).1),
-      roots_X_add_C] using hrs_roots
-  rcases sorted_pair_eq_of_pairwise_of_multiset_eq_pair hbd hss_sorted hss_pair with
-    ⟨rfl, rfl⟩
-  rcases sorted_pair_eq_of_pairwise_of_multiset_eq_pair hac hrs_sorted hrs_pair with
-    ⟨rfl, rfl⟩
-  rcases hcase with ⟨hlen, _⟩ | ⟨_, halt⟩
-  · simp at hlen
-  · simp [ListAlternates, ListInterlaces] at halt
-    constructor
-    · linarith
-    · constructor <;> linarith
+  refine ⟨isRealRooted_mul hb hd, isRealRooted_mul ha hc, by simp_all, ?_⟩
+  have hbd : b ≤ d := by linarith
+  have hac : a ≤ c := by linarith
+  rw [Polynomial.roots_sort_mul_X_add_C_X_add_C hbd, Polynomial.roots_sort_mul_X_add_C_X_add_C hac]
+  simp [List.StrictAlternates, List.StrictInterlaces]
+  simp_all
 
-/-- The positive-semidefinite quadratic Bezoutian gives the expected `Prec`
-orientation for ordered non-common quadratic factors. -/
-lemma prec_of_bezoutMatrix_quadratic_posSemidef_two {a b c d : ℝ}
+lemma StrictPrecSameDegree.quadratic_iff_const_strictInterleaves {a b c d : ℝ}
+    (hac : a ≤ c) (hbd : b ≤ d) :
+    StrictPrecSameDegree (((X + C b) * (X + C d)) : ℝ[X])
+    (((X + C a) * (X + C c)) : ℝ[X]) ↔ a < b ∧ b < c ∧ c < d := by
+  constructor
+  · rintro ⟨_, _, _, halt⟩
+    rw [Polynomial.roots_sort_mul_X_add_C_X_add_C hbd,
+      Polynomial.roots_sort_mul_X_add_C_X_add_C hac] at halt
+    simp only [List.StrictAlternates, List.StrictInterlaces] at halt
+    simp_all
+  · exact fun ⟨hab, hbc, hcd⟩ ↦
+      StrictPrecSameDegree.quadratic_of_const_strictInterleaves hab hbc hcd
+
+lemma StrictPrecSameDegree.of_bezoutMatrix_quadratic_posDef {a b c d : ℝ}
     (hac : a ≤ c) (hbd : b ≤ d)
     (h : (bezoutMatrix 2 ((X + C a) * (X + C c))
-      ((X + C b) * (X + C d))).PosSemidef) :
-    Prec (((X + C b) * (X + C d)) : ℝ[X])
-      (((X + C a) * (X + C c)) : ℝ[X]) := by
-  rcases const_interleaves_of_bezoutMatrix_quadratic_posSemidef hac hbd h with
-    ⟨hab, hbc, hcd⟩
-  exact prec_quadratic_of_const_interleaves hab hbc hcd
+    ((X + C b) * (X + C d))).PosDef) :
+    StrictPrecSameDegree (((X + C b) * (X + C d)) : ℝ[X])
+    (((X + C a) * (X + C c)) : ℝ[X]) :=
+  let ⟨hab, hbc, hcd⟩ := bezoutMatrix.const_strictInterleaves_of_quadratic_posDef hac hbd h
+  StrictPrecSameDegree.quadratic_of_const_strictInterleaves hab hbc hcd
 
-/-- The degree-two case of the Bezoutian-to-`Prec` direction for arbitrary
-real-rooted quadratics with positive leading coefficients. -/
-lemma prec_of_bezoutMatrix_posSemidef_of_isRealRooted_quadratic
+lemma StrictPrecSameDegree.bezoutMatrix_quadratic_posDef {a b c d : ℝ}
+    (hac : a ≤ c) (hbd : b ≤ d)
+    (h : StrictPrecSameDegree (((X + C b) * (X + C d)) : ℝ[X])
+    (((X + C a) * (X + C c)) : ℝ[X])) :
+    (bezoutMatrix 2 ((X + C a) * (X + C c))
+    ((X + C b) * (X + C d))).PosDef :=
+  let ⟨hab, hbc, hcd⟩ :=
+    (StrictPrecSameDegree.quadratic_iff_const_strictInterleaves hac hbd).mp h
+  bezoutMatrix.quadratic_posDef_two_of_const_strictInterleaves hab hbc hcd
+
+
+lemma StrictPrecSameDegree.bezoutMatrix_posDef_quadratic
+    {p q : ℝ[X]}
+    (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
+    (hp_deg : p.natDegree = 2) (hq_deg : q.natDegree = 2)
+    (hprec : StrictPrecSameDegree p q) :
+    (bezoutMatrix 2 q p).PosDef := by
+  have hp := hprec.1
+  have hq := hprec.2.1
+  obtain ⟨b, d, hbd, hp_eq⟩ :=
+    Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two hp hp_deg
+  obtain ⟨a, c, hac, hq_eq⟩ :=
+    Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two hq hq_deg
+  let mp : ℝ[X] := (X + C b) * (X + C d)
+  let mq : ℝ[X] := (X + C a) * (X + C c)
+  let u : ℝ := q.leadingCoeff
+  let v : ℝ := p.leadingCoeff
+  have hu : 0 < u := hq_pos
+  have hv : 0 < v := hp_pos
+  have hq_eq' : q = C u * mq := hq_eq
+  have hp_eq' : p = C v * mp := hp_eq
+  have hprec_monic : StrictPrecSameDegree mp mq :=
+    (StrictPrecSameDegree.C_mul_C_mul_iff hv.ne' hu.ne').mp (by simpa [hp_eq', hq_eq'] using hprec)
+  have hmonic : (bezoutMatrix 2 mq mp).PosDef :=
+    StrictPrecSameDegree.bezoutMatrix_quadratic_posDef hac hbd hprec_monic
+  have hscaled : (bezoutMatrix 2 (C u * mq) (C v * mp)).PosDef :=
+    (bezoutMatrix.C_mul_C_mul_posDef_iff (n := 2) (u := u) (v := v) hu hv).mpr hmonic
+  simpa [hq_eq', hp_eq'] using hscaled
+
+lemma StrictPrecSameDegree.of_bezoutMatrix_posDef_of_isRealRooted_quadratic
     {p q : ℝ[X]}
     (hp : p ≠ 0 ∧ p.Splits) (hq : q ≠ 0 ∧ q.Splits)
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = 2) (hq_deg : q.natDegree = 2)
-    (h : (bezoutMatrix 2 q p).PosSemidef) :
-    Prec p q := by
+    (h : (bezoutMatrix 2 q p).PosDef) :
+    StrictPrecSameDegree p q := by
   obtain ⟨b, d, hbd, hp_eq⟩ :=
-    exists_sorted_linearFactors_of_isRealRooted_natDegree_two hp hp_deg
+    Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two hp hp_deg
   obtain ⟨a, c, hac, hq_eq⟩ :=
-    exists_sorted_linearFactors_of_isRealRooted_natDegree_two hq hq_deg
+    Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two hq hq_deg
   let mp : ℝ[X] := (X + C b) * (X + C d)
   let mq : ℝ[X] := (X + C a) * (X + C c)
   let u : ℝ := q.leadingCoeff
   let v : ℝ := p.leadingCoeff
-  have hu : 0 < u := by simpa [u, HasPosLeadingCoeff] using hq_pos
-  have hv : 0 < v := by simpa [v, HasPosLeadingCoeff] using hp_pos
-  have hq_eq' : q = C u * mq := by simpa [u, mq] using hq_eq
-  have hp_eq' : p = C v * mp := by simpa [v, mp] using hp_eq
-  have hscaled : ((u * v) • bezoutMatrix 2 mq mp).PosSemidef := by
-    have h' : (bezoutMatrix 2 (C u * mq) (C v * mp)).PosSemidef := by
-      simpa [hq_eq', hp_eq'] using h
-    simpa [bezoutMatrix_C_mul_C_mul] using h'
-  have hmonic : (bezoutMatrix 2 mq mp).PosSemidef := by
-    have huv : 0 < u * v := mul_pos hu hv
-    have hnonneg : 0 ≤ (u * v)⁻¹ := inv_nonneg.mpr (le_of_lt huv)
-    have htmp := hscaled.smul hnonneg
-    have hscalar : v⁻¹ * u⁻¹ * (u * v) = 1 := by
-      field_simp [ne_of_gt hu, ne_of_gt hv]
-    simpa [smul_smul, hscalar] using htmp
-  have hprec_monic : Prec mp mq := by
-    simpa [mp, mq] using prec_of_bezoutMatrix_quadratic_posSemidef_two hac hbd hmonic
-  have hprec_scaled : Prec (C v * mp) (C u * mq) :=
-    prec_C_mul_right (prec_C_mul_left hprec_monic (ne_of_gt hv)) (ne_of_gt hu)
+  have hu : 0 < u := hq_pos
+  have hv : 0 < v := hp_pos
+  have hq_eq' : q = C u * mq := hq_eq
+  have hp_eq' : p = C v * mp := hp_eq
+  have hscaled : (bezoutMatrix 2 (C u * mq) (C v * mp)).PosDef := hp_eq' ▸ hq_eq' ▸ h
+  have hmonic : (bezoutMatrix 2 mq mp).PosDef :=
+    (bezoutMatrix.C_mul_C_mul_posDef_iff (n := 2) (u := u) (v := v) hu hv).mp hscaled
+  have hprec_monic : StrictPrecSameDegree mp mq :=
+    StrictPrecSameDegree.of_bezoutMatrix_quadratic_posDef hac hbd hmonic
+  have hprec_scaled : StrictPrecSameDegree (C v * mp) (C u * mq) :=
+    hprec_monic.C_mul_C_mul (ne_of_gt hv) (ne_of_gt hu)
   simpa [hp_eq', hq_eq'] using hprec_scaled
 
-/-- The degree-two case of the `Prec`-to-Bezoutian direction for arbitrary
-real-rooted quadratics with positive leading coefficients. -/
-lemma bezoutMatrix_posSemidef_of_prec_quadratic
-    {p q : ℝ[X]}
-    (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
-    (hp_deg : p.natDegree = 2) (hq_deg : q.natDegree = 2)
-    (hprec : Prec p q) :
-    (bezoutMatrix 2 q p).PosSemidef := by
-  obtain ⟨b, d, hbd, hp_eq⟩ :=
-    exists_sorted_linearFactors_of_isRealRooted_natDegree_two hprec.1 hp_deg
-  obtain ⟨a, c, hac, hq_eq⟩ :=
-    exists_sorted_linearFactors_of_isRealRooted_natDegree_two hprec.2.1 hq_deg
-  let mp : ℝ[X] := (X + C b) * (X + C d)
-  let mq : ℝ[X] := (X + C a) * (X + C c)
-  let u : ℝ := q.leadingCoeff
-  let v : ℝ := p.leadingCoeff
-  have hu : 0 < u := by simpa [u, HasPosLeadingCoeff] using hq_pos
-  have hv : 0 < v := by simpa [v, HasPosLeadingCoeff] using hp_pos
-  have hq_eq' : q = C u * mq := by simpa [u, mq] using hq_eq
-  have hp_eq' : p = C v * mp := by simpa [v, mp] using hp_eq
-  have hprec_monic : Prec mp mq := by
-    have h1 : Prec (C v⁻¹ * p) q :=
-      prec_C_mul_left hprec (inv_ne_zero (ne_of_gt hv))
-    have hleft : C v⁻¹ * p = mp := by
-      rw [hp_eq']
-      rw [← mul_assoc, ← C_mul]
-      simp [inv_mul_cancel₀ (ne_of_gt hv)]
-    have h2 : Prec mp q := by
-      rwa [hleft] at h1
-    have h3 : Prec mp (C u⁻¹ * q) :=
-      prec_C_mul_right h2 (inv_ne_zero (ne_of_gt hu))
-    have hright : C u⁻¹ * q = mq := by
-      rw [hq_eq']
-      rw [← mul_assoc, ← C_mul]
-      simp [inv_mul_cancel₀ (ne_of_gt hu)]
-    rwa [hright] at h3
-  rcases const_interleaves_of_prec_quadratic hac hbd hprec_monic with ⟨hab, hbc, hcd⟩
-  have hmonic : (bezoutMatrix 2 mq mp).PosSemidef := by
-    simpa [mq, mp] using bezoutMatrix_quadratic_posSemidef_two_of_const_interleaves
-      hab hbc hcd
-  have hscaled : ((u * v) • bezoutMatrix 2 mq mp).PosSemidef :=
-    hmonic.smul (mul_nonneg (le_of_lt hu) (le_of_lt hv))
-  simpa [hq_eq', hp_eq', bezoutMatrix_C_mul_C_mul] using hscaled
-
-/-- Complete degree-two model theorem for real-rooted quadratics with positive
-leading coefficients. -/
-lemma prec_iff_bezoutMatrix_posSemidef_of_isRealRooted_quadratic
+lemma StrictPrecSameDegree.bezoutMatrix_posDef_iff_of_isRealRooted_quadratic
     {p q : ℝ[X]}
     (hp : p ≠ 0 ∧ p.Splits) (hq : q ≠ 0 ∧ q.Splits)
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = 2) (hq_deg : q.natDegree = 2) :
-    Prec p q ↔ (bezoutMatrix 2 q p).PosSemidef := by
+    StrictPrecSameDegree p q ↔ (bezoutMatrix 2 q p).PosDef := by
   constructor
-  · exact bezoutMatrix_posSemidef_of_prec_quadratic hp_pos hq_pos hp_deg hq_deg
-  · exact prec_of_bezoutMatrix_posSemidef_of_isRealRooted_quadratic
+  · exact StrictPrecSameDegree.bezoutMatrix_posDef_quadratic
+      hp_pos hq_pos hp_deg hq_deg
+  · exact StrictPrecSameDegree.of_bezoutMatrix_posDef_of_isRealRooted_quadratic
       hp hq hp_pos hq_pos hp_deg hq_deg
 
-/-- The `Prec` side of the concrete non-common-factor quadratic Bezoutian
-orientation example. -/
-lemma prec_quadratic_nonCommon_example :
-    Prec (((X + C (2 : ℝ)) * (X + C (4 : ℝ))) : ℝ[X])
-      (((X + C (1 : ℝ)) * (X + C (3 : ℝ))) : ℝ[X]) := by
-  exact prec_quadratic_of_const_interleaves (by norm_num) (by norm_num) (by norm_num)
+lemma StrictPrecSameDegree.bezoutMatrix_posDef_iff_natDegree_zero
+    {p q : ℝ[X]}
+    (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
+    (hp_deg : p.natDegree = 0) (hq_deg : q.natDegree = 0) :
+    StrictPrecSameDegree p q ↔ (bezoutMatrix 0 q p).PosDef := by
+  obtain ⟨hp_ne, hp_splits⟩ :=
+    isRealRooted_of_deg_zero (leadingCoeff_ne_zero.mp hp_pos.ne') hp_deg
+  obtain ⟨hq_ne, hq_splits⟩ :=
+    isRealRooted_of_deg_zero (leadingCoeff_ne_zero.mp hq_pos.ne') hq_deg
+  constructor
+  · intro hprec
+    refine Matrix.PosDef.of_dotProduct_mulVec_pos (bezoutMatrix.isHermitian _ _ _) ?_
+    intro x hx
+    exact False.elim (hx (funext fun i ↦ i.elim0))
+  · intro _
+    refine ⟨⟨hp_ne, hp_splits⟩, ⟨hq_ne, hq_splits⟩, hp_deg.trans hq_deg.symm, ?_⟩
+    have hp_roots : p.roots.sort (· ≤ ·) = [] := by
+      have : p.roots = 0 :=
+        Multiset.card_eq_zero.mp (hp_splits.natDegree_eq_card_roots.symm ▸ hp_deg)
+      rw [this, Multiset.sort_zero]
+    have hq_roots : q.roots.sort (· ≤ ·) = [] := by
+      have : q.roots = 0 :=
+        Multiset.card_eq_zero.mp (hq_splits.natDegree_eq_card_roots.symm ▸ hq_deg)
+      rw [this, Multiset.sort_zero]
+    rw [hp_roots, hq_roots]
+    trivial
+
+lemma StrictPrecSameDegree.bezoutMatrix_posDef_iff_natDegree_one
+    {p q : ℝ[X]}
+    (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
+    (hp_deg : p.natDegree = 1) (hq_deg : q.natDegree = 1) :
+    StrictPrecSameDegree p q ↔ (bezoutMatrix 1 q p).PosDef := by
+  rcases Polynomial.exists_pos_scalar_mul_X_add_C_of_natDegree_one hp_pos hp_deg with
+    ⟨u, a, hu, hp_eq⟩
+  rcases Polynomial.exists_pos_scalar_mul_X_add_C_of_natDegree_one hq_pos hq_deg with
+    ⟨v, b, hv, hq_eq⟩
+  rw [hp_eq, hq_eq]
+  calc
+    StrictPrecSameDegree (C u * (X + C a)) (C v * (X + C b))
+        ↔ StrictPrecSameDegree (X + C a) (X + C b) :=
+      StrictPrecSameDegree.C_mul_C_mul_iff (ne_of_gt hu) (ne_of_gt hv)
+    _ ↔ (bezoutMatrix 1 (X + C b) (X + C a)).PosDef :=
+      StrictPrecSameDegree.X_add_C_bezoutMatrix_posDef_iff_one (a := b) (b := a)
+    _ ↔ (bezoutMatrix 1 (C v * (X + C b)) (C u * (X + C a))).PosDef :=
+      (bezoutMatrix.C_mul_C_mul_posDef_iff (n := 1) (u := v) (v := u) hv hu).symm
+
+lemma StrictPrecSameDegree.bezoutMatrix_posDef_iff_natDegree_two
+    {p q : ℝ[X]}
+    (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
+    (hp_deg : p.natDegree = 2) (hq_deg : q.natDegree = 2) :
+    StrictPrecSameDegree p q ↔ (bezoutMatrix 2 q p).PosDef :=
+  ⟨StrictPrecSameDegree.bezoutMatrix_posDef_quadratic hp_pos hq_pos hp_deg hq_deg, fun h ↦
+    have hp : p ≠ 0 ∧ p.Splits :=
+      bezoutMatrix.right_isRealRooted_of_posDef_two_of_natDegree_two hp_deg hq_deg.le h
+    have hq : q ≠ 0 ∧ q.Splits :=
+      bezoutMatrix.left_isRealRooted_of_posDef_two_of_natDegree_two hp_deg.le hq_deg h
+    (StrictPrecSameDegree.bezoutMatrix_posDef_iff_of_isRealRooted_quadratic
+      hp hq hp_pos hq_pos hp_deg hq_deg).mpr h⟩
 
 /--
 Strict same-degree Bezoutian characterization.
 
 The orientation is chosen so that `StrictPrecSameDegree p q` corresponds to
-positive definiteness of `bezoutMatrix n q p`.  This is the intended main
-Bezoutian theorem: it avoids the common-factor and multiple-root degeneracies
-that belong to a separate positive-semidefinite/gcd-reduced generalization.
-It is recorded with `proof_wanted` instead of `sorry`.
+positive definiteness of `bezoutMatrix n q p`.
 -/
-proof_wanted strictPrecSameDegree_iff_bezoutMatrix_posDef
+theorem strictPrecSameDegree_iff_bezoutMatrix_posDef
     {p q : ℝ[X]} {n : ℕ}
-    (_hp_pos : HasPosLeadingCoeff p) (_hq_pos : HasPosLeadingCoeff q)
-    (_hp_deg : p.natDegree = n) (_hq_deg : q.natDegree = n) :
-    StrictPrecSameDegree p q ↔ (bezoutMatrix n q p).PosDef
+    (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
+    (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n) :
+    StrictPrecSameDegree p q ↔ (bezoutMatrix n q p).PosDef :=
+  match n, hp_deg, hq_deg with
+  | 0, hp_deg, hq_deg =>
+    StrictPrecSameDegree.bezoutMatrix_posDef_iff_natDegree_zero
+      hp_pos hq_pos hp_deg hq_deg
+  | 1, hp_deg, hq_deg =>
+    StrictPrecSameDegree.bezoutMatrix_posDef_iff_natDegree_one
+      hp_pos hq_pos hp_deg hq_deg
+  | 2, hp_deg, hq_deg =>
+    StrictPrecSameDegree.bezoutMatrix_posDef_iff_natDegree_two
+      hp_pos hq_pos hp_deg hq_deg
+  | _n + 3, hp_deg, hq_deg =>
+    ⟨StrictPrecSameDegree.bezoutMatrix_posDef_three_le
+       hp_pos hq_pos hp_deg hq_deg,
+      StrictPrecSameDegree.of_bezoutMatrix_posDef_three_le
+       hp_pos hq_pos hp_deg hq_deg⟩
 
 end RealRooted
