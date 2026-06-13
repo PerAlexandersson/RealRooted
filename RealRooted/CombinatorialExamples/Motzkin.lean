@@ -45,11 +45,6 @@ lemma motzkin_succ_succ (n : Nat) :
       C (motzkinCoeffA n) * motzkin (n + 1) +
         C (motzkinCoeffB n) * (X - C motzkinShift) * motzkin n := rfl
 
-lemma coeff_X_sub_C_mul (r : ℝ) (m : Nat) (p : ℝ[X]) :
-    coeff ((X - C r) * p) (m + 1) =
-      coeff p m - r * coeff p (m + 1) := by
-  rw [sub_mul, coeff_sub, coeff_X_mul]
-  simp
 
 lemma coeff_motzkin_succ_succ (n m : Nat) :
     coeff (motzkin (n + 2)) (m + 1) =
@@ -69,6 +64,7 @@ lemma coeff_motzkin_succ_succ (n m : Nat) :
           coeff ((X - C motzkinShift) * motzkin n) (m + 1) := by
     simp
   rw [hA, hB, coeff_X_sub_C_mul]
+  simp
 
 lemma coeff_motzkin_top_pos_and_above :
     ∀ n : Nat,

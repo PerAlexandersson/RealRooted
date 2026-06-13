@@ -365,8 +365,8 @@ should live in RealRooted.  Reference: J. Garloff and D. G. Wagner, *Hadamard
 Products of Stable Polynomials Are Stable*, J. Math. Anal. Appl. 202 (1996),
 797--809, Theorem 4(b).
 
-TODO T10 is the reverse Aissen-Schoenberg-Whitney theorem, recorded as
-`aissenSchoenbergWhitneyReverseStatement` in
+T10 is the reverse Aissen-Schoenberg-Whitney theorem, completed as
+`aissenSchoenbergWhitney_reverse` in
 `RealRooted.AissenSchoenbergWhitney`.  This is the useful ASW direction for
 turning real-rooted polynomials with nonnegative coefficients and nonpositive
 roots into Pólya-frequency coefficient sequences.  Reference: M. Aissen,
@@ -381,7 +381,7 @@ or Lace matrix, and total nonnegativity is inherited by submatrices.  The
 headline polynomial consequences still depend on statement-level interfaces
 such as
 `aissenSchoenbergWhitneyForwardStatement`,
-`aissenSchoenbergWhitneyReverseStatement`,
+`aissenSchoenbergWhitney_reverse`,
 `FullyInterlacingPairToPrecStatement`, and
 `FullyInterlacingPairToPrec0Statement`.  The preferred Hermite-Biehler route
 now uses the sign-normalized `hermiteBiehlerForwardPosStatement`, since the

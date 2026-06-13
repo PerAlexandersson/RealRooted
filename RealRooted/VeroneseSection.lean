@@ -659,13 +659,12 @@ theorem nonnegPrecToFullyInterlacingPair_of_precToFully
 because real-rooted polynomials with nonnegative coefficients have all roots
 nonpositive. -/
 theorem nonnegPrecToFullyInterlacingPair_of_pfPrec
-    (hASWrev : aissenSchoenbergWhitneyReverseStatement)
     (hPfToFull : PfPrecToFullyInterlacingPairStatement) :
     NonnegPrecToFullyInterlacingPairStatement := by
   intro p q hpnn hqnn hpq
   exact hPfToFull
-    (hASWrev hpnn hpq.1.2 (roots_nonpos_of_nonneg_coeffs hpq.1.2 hpnn))
-    (hASWrev hqnn hpq.2.1.2 (roots_nonpos_of_nonneg_coeffs hpq.2.1.2 hqnn))
+    (aissenSchoenbergWhitney_reverse hpnn hpq.1.2 (roots_nonpos_of_nonneg_coeffs hpq.1.2 hpnn))
+    (aissenSchoenbergWhitney_reverse hqnn hpq.2.1.2 (roots_nonpos_of_nonneg_coeffs hpq.2.1.2 hqnn))
     hpq
 
 /-- Hermite--Biehler forward stability plus the analytic substitution bridge
@@ -791,32 +790,29 @@ theorem pfPrecToFullyInterlacingPair_of_hermiteBiehlerPosHurwitzMatrix
 /-- Combining reverse ASW with the Hermite--Biehler/Hurwitz route gives the
 nonnegative-coefficient polynomial-to-Lace bridge. -/
 theorem nonnegPrecToFullyInterlacingPair_of_hurwitzOddEven
-    (hASWrev : aissenSchoenbergWhitneyReverseStatement)
     (hPrecToHurwitz : PfPrecToHurwitzOddEvenStatement)
     (hHurwitzToFull : HurwitzOddEvenToFullyInterlacingPairStatement) :
     NonnegPrecToFullyInterlacingPairStatement :=
-  nonnegPrecToFullyInterlacingPair_of_pfPrec hASWrev
+  nonnegPrecToFullyInterlacingPair_of_pfPrec
     (pfPrecToFullyInterlacingPair_of_hurwitzOddEven hPrecToHurwitz hHurwitzToFull)
 
 /-- Nonnegative-coefficient version using the matrix Hurwitz criterion. -/
 theorem nonnegPrecToFullyInterlacingPair_of_hurwitzMatrix
-    (hASWrev : aissenSchoenbergWhitneyReverseStatement)
     (hPrecToHurwitz : PfPrecToHurwitzOddEvenStatement)
     (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement) :
     NonnegPrecToFullyInterlacingPairStatement :=
-  nonnegPrecToFullyInterlacingPair_of_pfPrec hASWrev
+  nonnegPrecToFullyInterlacingPair_of_pfPrec
     (pfPrecToFullyInterlacingPair_of_hurwitzMatrix hPrecToHurwitz hHurwitzToMatrix)
 
 /-- Nonnegative-coefficient version using Hermite--Biehler forward stability,
 the analytic substitution bridge, reverse ASW, and the matrix Hurwitz
 criterion. -/
 theorem nonnegPrecToFullyInterlacingPair_of_hermiteBiehlerHurwitzMatrix
-    (hASWrev : aissenSchoenbergWhitneyReverseStatement)
     (hHB : hermiteBiehlerForwardStatement)
     (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
     (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement) :
     NonnegPrecToFullyInterlacingPairStatement :=
-  nonnegPrecToFullyInterlacingPair_of_pfPrec hASWrev
+  nonnegPrecToFullyInterlacingPair_of_pfPrec
     (pfPrecToFullyInterlacingPair_of_hermiteBiehlerHurwitzMatrix
       hHB hHBToHurwitz hHurwitzToMatrix)
 
@@ -1208,7 +1204,6 @@ theorem prec_veronesePairSectionPolynomial_fin_of_hermiteBiehlerPosHurwitzMatrix
 ASW and the Hermite--Biehler/Hurwitz matrix route. -/
 theorem prec0_veroneseSectionPolynomial_of_nonneg_hermiteBiehlerHurwitzMatrix
     {p q : ℝ[X]} {r k : ℕ}
-    (hASWrev : aissenSchoenbergWhitneyReverseStatement)
     (hHB : hermiteBiehlerForwardStatement)
     (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
     (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
@@ -1218,14 +1213,13 @@ theorem prec0_veroneseSectionPolynomial_of_nonneg_hermiteBiehlerHurwitzMatrix
     Prec0 (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) :=
   prec0_veroneseSectionPolynomial_of_nonneg_prec
     (nonnegPrecToFullyInterlacingPair_of_hermiteBiehlerHurwitzMatrix
-      hASWrev hHB hHBToHurwitz hHurwitzToMatrix)
+      hHB hHBToHurwitz hHurwitzToMatrix)
     hFullToPrec0 hpnn hqnn hpq hr hk
 
 /-- Strict nonnegative-coefficient fixed-section Veronese interlacing through
 reverse ASW and the Hermite--Biehler/Hurwitz matrix route. -/
 theorem prec_veroneseSectionPolynomial_of_nonneg_hermiteBiehlerHurwitzMatrix
     {p q : ℝ[X]} {r k : ℕ}
-    (hASWrev : aissenSchoenbergWhitneyReverseStatement)
     (hHB : hermiteBiehlerForwardStatement)
     (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
     (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
@@ -1235,7 +1229,7 @@ theorem prec_veroneseSectionPolynomial_of_nonneg_hermiteBiehlerHurwitzMatrix
     Prec (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) :=
   prec_veroneseSectionPolynomial_of_nonneg_prec
     (nonnegPrecToFullyInterlacingPair_of_hermiteBiehlerHurwitzMatrix
-      hASWrev hHB hHBToHurwitz hHurwitzToMatrix)
+      hHB hHBToHurwitz hHurwitzToMatrix)
     hFullToPrec hpnn hqnn hpq hr hk
 
 /-- Fin-indexed nonnegative-coefficient pairwise Veronese interlacing through
@@ -1243,7 +1237,6 @@ reverse ASW and the Hermite--Biehler/Hurwitz matrix route. -/
 theorem
     prec0_veronesePairSectionPolynomial_fin_of_nonneg_hermiteBiehlerHurwitzMatrix
     {p q : ℝ[X]} {r : ℕ}
-    (hASWrev : aissenSchoenbergWhitneyReverseStatement)
     (hHB : hermiteBiehlerForwardStatement)
     (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
     (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
@@ -1254,7 +1247,7 @@ theorem
       (veronesePairSectionPolynomial r p q j) :=
   prec0_veronesePairSectionPolynomial_fin_of_nonneg_prec
     (nonnegPrecToFullyInterlacingPair_of_hermiteBiehlerHurwitzMatrix
-      hASWrev hHB hHBToHurwitz hHurwitzToMatrix)
+      hHB hHBToHurwitz hHurwitzToMatrix)
     hFullToPrec0 hpnn hqnn hpq hr i j hij
 
 /-- Strict Fin-indexed nonnegative-coefficient pairwise Veronese interlacing
@@ -1262,7 +1255,6 @@ through reverse ASW and the Hermite--Biehler/Hurwitz matrix route. -/
 theorem
     prec_veronesePairSectionPolynomial_fin_of_nonneg_hermiteBiehlerHurwitzMatrix
     {p q : ℝ[X]} {r : ℕ}
-    (hASWrev : aissenSchoenbergWhitneyReverseStatement)
     (hHB : hermiteBiehlerForwardStatement)
     (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
     (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
@@ -1273,7 +1265,7 @@ theorem
       (veronesePairSectionPolynomial r p q j) :=
   prec_veronesePairSectionPolynomial_fin_of_nonneg_prec
     (nonnegPrecToFullyInterlacingPair_of_hermiteBiehlerHurwitzMatrix
-      hASWrev hHB hHBToHurwitz hHurwitzToMatrix)
+      hHB hHBToHurwitz hHurwitzToMatrix)
     hFullToPrec hpnn hqnn hpq hr i j hij
 
 /-- Sign-normalized nonnegative-coefficient fixed-section Veronese
@@ -1497,25 +1489,23 @@ theorem veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_pf {p : ℝ[X]}
 nonnegative-coefficient polynomials, using the reverse ASW theorem. -/
 theorem IsPolyaFreqSeq_veroneseSectionPolynomial_of_realRooted_nonneg
     {p : ℝ[X]}
-    (hASWrev : aissenSchoenbergWhitneyReverseStatement)
     (hpnn : HasNonnegCoeffs p) (hprr : p.Splits) {r k : ℕ}
     (hr : 0 < r) (hk : k < r) :
     IsPolyaFreqSeq (veroneseSectionPolynomial r k p).coeff := by
   have hpf : IsPolyaFreqSeq p.coeff :=
-    hASWrev hpnn hprr (roots_nonpos_of_nonneg_coeffs hprr hpnn)
+    aissenSchoenbergWhitney_reverse hpnn hprr (roots_nonpos_of_nonneg_coeffs hprr hpnn)
   exact IsPolyaFreqSeq_veroneseSectionPolynomial_coeff (p := p) hpf hr hk
 
 /-- Conditional real-rootedness of Veronese sections of real-rooted
 nonnegative-coefficient polynomials, assuming both directions of ASW. -/
 theorem splits_veroneseSectionPolynomial_of_splits_nonneg {p : ℝ[X]}
     (hASW : aissenSchoenbergWhitneyForwardStatement)
-    (hASWrev : aissenSchoenbergWhitneyReverseStatement)
     (hpnn : HasNonnegCoeffs p) (hprr : p.Splits) {r k : ℕ}
     (hr : 0 < r) (hk : k < r) :
     veroneseSectionPolynomial r k p = 0 ∨
       (veroneseSectionPolynomial r k p).Splits := by
   have hpf : IsPolyaFreqSeq (veroneseSectionPolynomial r k p).coeff :=
-    IsPolyaFreqSeq_veroneseSectionPolynomial_of_realRooted_nonneg hASWrev hpnn hprr hr hk
+    IsPolyaFreqSeq_veroneseSectionPolynomial_of_realRooted_nonneg hpnn hprr hr hk
   exact Or.inr (hASW hpf).1
 
 /-- Zero-aware real-rootedness of Veronese sections of real-rooted
@@ -1523,12 +1513,11 @@ nonnegative-coefficient polynomials, assuming both directions of ASW. -/
 theorem veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_realRooted_nonneg
     {p : ℝ[X]}
     (hASW : aissenSchoenbergWhitneyForwardStatement)
-    (hASWrev : aissenSchoenbergWhitneyReverseStatement)
     (hpnn : HasNonnegCoeffs p) (hprr : p ≠ 0 ∧ p.Splits) {r k : ℕ}
     (hr : 0 < r) (hk : k < r) :
     veroneseSectionPolynomial r k p = 0 ∨
       (veroneseSectionPolynomial r k p).Splits :=
   splits_veroneseSectionPolynomial_of_splits_nonneg
-    hASW hASWrev hpnn hprr.2 hr hk
+    hASW hpnn hprr.2 hr hk
 
 end RealRooted
