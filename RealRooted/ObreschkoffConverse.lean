@@ -1827,7 +1827,7 @@ private theorem isRealRooted_of_interlaces_eval_mul_neg_same_any_lc
 /-- If all roots of `p'` are at most `c`, then `p.eval` is strictly increasing
 on `[c, +∞)`. This is the analytic core of the degree-gap argument: once the
 last critical point is known, any larger real root would force a contradiction. -/
-private lemma strictMonoOn_eval_Ici_of_derivative_roots_le
+lemma strictMonoOn_eval_Ici_of_derivative_roots_le
     {p : ℝ[X]} {c : ℝ}
     (hp' : p.derivative ≠ 0 ∧ p.derivative.Splits)
     (hp'_pos : HasPosLeadingCoeff p.derivative)
@@ -1847,7 +1847,7 @@ rightmost-root extraction here because it is reused twice in the degree-gap
 reduction: first to show a real-rooted polynomial must be nonpositive at its
 last critical point, and then again to contradict real-rootedness after a
 constant shift. -/
-private lemma exists_root_ge_of_derivative_root
+lemma exists_root_ge_of_derivative_root
     {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hdeg : 2 ≤ p.natDegree)
     {c : ℝ} (hc : p.derivative.IsRoot c) :
     ∃ r, p.IsRoot r ∧ c ≤ r := by
@@ -1900,7 +1900,7 @@ rightmost root of `p'`; to the right of it the derivative is strictly
 positive, so a positive value there would prevent the real-rooted polynomial
 itself from having any root on its right, contradicting interlacing of `p'`
 with `p`. -/
-private lemma exists_rightmost_derivative_root_with_eval_nonpos
+lemma exists_rightmost_derivative_root_with_eval_nonpos
     {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hp_pos : HasPosLeadingCoeff p)
     (hdeg : 2 ≤ p.natDegree) :
     ∃ c, p.derivative.IsRoot c ∧
@@ -1935,7 +1935,7 @@ theorem below. The proof shifts the polynomial upward past its value at the
 rightmost critical point; the derivative is unchanged, so the shifted
 polynomial would still need a real root on the right by interlacing, but it is
 already strictly increasing there. -/
-private lemma exists_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
+lemma exists_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
     {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hp_pos : HasPosLeadingCoeff p)
     (hdeg : 2 ≤ p.natDegree) :
     ∃ t : ℝ, ¬ ((C t + p) ≠ 0 ∧ (C t + p).Splits) := by

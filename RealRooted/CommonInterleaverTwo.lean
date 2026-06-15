@@ -21,44 +21,6 @@ noncomputable section
 
 namespace RealRooted
 
-private lemma strictMonoOn_eval_Ici_of_derivative_roots_le_local
-    {p : ℝ[X]} {c : ℝ}
-    (hp' : p.derivative ≠ 0 ∧ p.derivative.Splits)
-    (hp'_pos : HasPosLeadingCoeff p.derivative)
-    (hroots_le : ∀ s ∈ p.derivative.roots, s ≤ c) :
-    StrictMonoOn (fun x => p.eval x) (Set.Ici c) := by
-  refine strictMonoOn_of_deriv_pos (convex_Ici c) p.continuous.continuousOn ?_
-  intro x hx
-  have hx' : c < x := by
-    simp_all
-  have hlt : ∀ t ∈ p.derivative.roots, t < x := by
-    grind
-  have hpos_eval : 0 < p.derivative.eval x :=
-    eval_pos_of_all_roots_lt hp' hp'_pos hlt
-  simp_all
-
-
-private lemma exists_root_ge_of_derivative_root_local
-    {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hdeg : 2 ≤ p.natDegree)
-    {c : ℝ} (hc : p.derivative.IsRoot c) :
-    ∃ r, p.IsRoot r ∧ c ≤ r := by
-  obtain ⟨hp_rr, hp'_rr, _hdeg, rs, ss, hrs_sorted, hss_sorted, hrs_eq, hss_eq, hint⟩ :=
-    derivative_interlaces hp.2 hdeg
-  have hrs_len : rs.length = p.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hp_rr.2]
-  have hrs_ne : rs ≠ [] := by
-    grind
-  have hc_mem : c ∈ ss := by
-    apply Multiset.mem_coe.mp
-    simp_all
-  refine ⟨rs.getLast hrs_ne, ?_, ?_⟩
-  · have hr_mem : rs.getLast hrs_ne ∈ rs := List.getLast_mem hrs_ne
-    have : rs.getLast hrs_ne ∈ p.roots := by
-      rw [← hrs_eq]
-      simp
-    simp_all
-  · exact listInterlaces_all_le_getLast hrs_ne hrs_sorted hint c hc_mem
-
 private lemma exists_root_upper_bound_of_isRealRooted_local
     {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
     ∃ r : ℝ, ∀ s ∈ p.roots, s ≤ r := by
@@ -91,45 +53,12 @@ private lemma hasNonnegCoeffs_comp_X_add_C_of_roots_le_local
   simp only [roots_comp_X_add_C r] at hs
   rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
   simp_all
-
-private lemma exists_rightmost_derivative_root_with_eval_nonpos_local
-    {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hp_pos : HasPosLeadingCoeff p)
-    (hdeg : 2 ≤ p.natDegree) :
-    ∃ c, p.derivative.IsRoot c ∧
-      (∀ s ∈ p.derivative.roots, s ≤ c) ∧
-      p.eval c ≤ 0 := by
-  have hp' : (p.derivative ≠ 0 ∧
-    p.derivative.Splits) := (derivative_interlaces hp.2 hdeg).2.1
-  have hp'_pos : HasPosLeadingCoeff p.derivative :=
-    hp_pos.derivative (by lia)
-  have hp'_deg : p.derivative.natDegree = p.natDegree - 1 :=
-    p.natDegree_derivative
-  obtain ⟨c, hc_root, hc_top⟩ :=
-    exists_rightmost_root_of_isRealRooted hp' (by lia)
-  by_cases hpc : 0 < p.eval c
-  · have hmono :
-      StrictMonoOn (fun x => p.eval x) (Set.Ici c) := by
-      refine strictMonoOn_eval_Ici_of_derivative_roots_le_local ?_ ?_ ?_
-      · lia
-      · lia
-      · simp_all
-    obtain ⟨r, hr_root, hcr_le⟩ := exists_root_ge_of_derivative_root_local hp hdeg hc_root
-    have hcr_ne : c ≠ r := by
-      intro hcr
-      simp_all
-    have hcr_lt : c < r := lt_of_le_of_ne hcr_le hcr_ne
-    have hlt_eval : p.eval c < p.eval r := hmono (by simp) (by simp_all) hcr_lt
-    have : p.eval r = 0 := by
-      simp_all
-    linarith
-  · grind
-
 private lemma exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two_local
     {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hp_pos : HasPosLeadingCoeff p)
     (hdeg : 2 ≤ p.natDegree) :
     ∃ t : ℝ, 0 < t ∧ ¬ ((C t + p) ≠ 0 ∧ (C t + p).Splits) := by
   obtain ⟨c, hc_root, hc_top, hpc_nonpos⟩ :=
-    exists_rightmost_derivative_root_with_eval_nonpos_local hp hp_pos hdeg
+    exists_rightmost_derivative_root_with_eval_nonpos hp hp_pos hdeg
   let t : ℝ := 1 - p.eval c
   have ht_pos : 0 < t := by
     grind
@@ -143,7 +72,7 @@ private lemma exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_
       StrictMonoOn (fun x => (C t + p).eval x) (Set.Ici c) := by
     have hder_eq : (C t + p).derivative = p.derivative := by
       simp
-    refine strictMonoOn_eval_Ici_of_derivative_roots_le_local ?_ ?_ ?_
+    refine strictMonoOn_eval_Ici_of_derivative_roots_le ?_ ?_ ?_
     · lia
     · simpa [hder_eq] using
         hp_pos.derivative (by lia)
@@ -152,7 +81,7 @@ private lemma exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_
     have : (C t + p).eval c = 1 := by
       simp [t]
     linarith
-  obtain ⟨r, hr_root, hcr_le⟩ := exists_root_ge_of_derivative_root_local hq hqdeg (by
+  obtain ⟨r, hr_root, hcr_le⟩ := exists_root_ge_of_derivative_root hq hqdeg (by
     simpa using hc_root)
   by_cases hcr : c = r
   · simp_all
