@@ -847,18 +847,6 @@ private lemma neg_pow_prod_nonneg_of_all_nonpos (s : Multiset ℝ)
       rw [this]
       exact mul_nonneg (by simp_all) ih'
 
-/-- For a nonempty right-hand list, `ListInterlaces` forces the expected length
-    relation. -/
-private lemma listInterlaces_cons_length_eq :
-    ∀ {ss : List ℝ} {r₁ : ℝ} {rest : List ℝ},
-      ListInterlaces ss (r₁ :: rest) → ss.length = rest.length
-  | [], _, [], _ => by lia
-  | [], _, _ :: _, h => by simp [ListInterlaces] at h
-  | _ :: _, _, [], h => by simp [ListInterlaces] at h
-  | _ :: ss, _, _ :: rest, h => by
-      rcases h with ⟨_, _, htail⟩
-      simpa using congrArg Nat.succ (listInterlaces_cons_length_eq htail)
-
 /-- Package a same-degree interlacing witness once the extra root on the `g` side
     is known to lie to the left of the first root of `f`. -/
 private lemma prec_of_extra_root_left {f g : ℝ[X]} (hf₀ : f ≠ 0) (hg₀ : g ≠ 0)

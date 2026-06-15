@@ -85,18 +85,6 @@ lemma pairwise_le_of_listInterlaces :
   | _ :: _ :: _, [], h => by simp [ListInterlaces] at h
   | _ :: _ :: _, [_], h => by simp [ListInterlaces] at h
 
-/-- For a nonempty right-hand list, `ListInterlaces` forces the expected length
-relation. -/
-private lemma listInterlaces_cons_length_eq :
-    ∀ {ss rest : List ℝ} {r : ℝ},
-      ListInterlaces ss (r :: rest) → ss.length = rest.length
-  | [], [], _, _ => by lia
-  | _ :: _, [], _, h => by simp [ListInterlaces] at h
-  | s :: ss, r₂ :: rest, r₁, h => by
-      obtain ⟨_, _, htail⟩ := h
-      simpa [List.length_cons] using
-        listInterlaces_cons_length_eq (ss := ss) (rest := rest) (r := r₂) htail
-
 lemma orderedInsert_eq_cons_of_forall_le {a : ℝ} :
     ∀ {l : List ℝ}, (∀ b ∈ l, a ≤ b) → l.orderedInsert (· ≤ ·) a = a :: l
   | [], _ => by simp

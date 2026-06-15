@@ -511,4 +511,16 @@ lemma exists_rightmost_root_of_isRealRooted
       lia
     exact hrs_sorted.rel_getLast hs_mem
 
+/-- For a nonempty right-hand list, `ListInterlaces` forces the expected length
+relation. -/
+lemma listInterlaces_cons_length_eq :
+    ∀ {ss rest : List ℝ} {r : ℝ},
+      ListInterlaces ss (r :: rest) → ss.length = rest.length
+  | [], [], _, _ => by lia
+  | _ :: _, [], _, h => by simp [ListInterlaces] at h
+  | s :: ss, r₂ :: rest, r₁, h => by
+      obtain ⟨_, _, htail⟩ := h
+      simpa [List.length_cons] using
+        listInterlaces_cons_length_eq htail
+
 end RealRooted
