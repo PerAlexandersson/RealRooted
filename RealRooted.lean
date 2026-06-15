@@ -65,5 +65,6 @@ import RealRooted.WeightedSum
 
 -- Local Mathlib extensions
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
+import RealRooted.Mathlib.Data.List.Interleave
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg

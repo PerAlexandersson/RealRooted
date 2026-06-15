@@ -3,9 +3,9 @@ import Mathlib.Algebra.Polynomial.Div
 import Mathlib.Algebra.Polynomial.Degree.Lemmas
 import Mathlib.Algebra.Polynomial.Splits
 import Mathlib.Analysis.SpecificLimits.Basic
-import Mathlib.Data.List.Interleave
 import Mathlib.Data.List.Sort
 import Mathlib.Data.Real.Basic
+import RealRooted.Mathlib.Data.List.Interleave
 
 /-!
 # Real-rootedness and interlacing of polynomials

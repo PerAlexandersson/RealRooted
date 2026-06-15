@@ -12,8 +12,7 @@ maxSynthPendingDepth = 3
 
 [[require]]
 name = "mathlib"
-git = "https://github.com/YaelDillies/mathlib4.git"
-rev = "list_interleave"
+git = "https://github.com/leanprover-community/mathlib4.git"
 
 [[lean_lib]]
 name = "RealRooted"
