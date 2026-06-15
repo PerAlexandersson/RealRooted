@@ -481,4 +481,11 @@ lemma quadratic_nonneg_on_unit_interval_of_endpoint_nonneg_of_vertex_or_discrimi
       have : 0 ≤ 4 * C * (A + B * β + C * β ^ 2) := by grind
       simp_all
 
+lemma coeff_X_sub_C_mul (r : ℝ) (q : ℝ[X]) (n : ℕ) :
+    ((X - C r) * q).coeff n = (if n = 0 then 0 else q.coeff (n - 1)) - r * q.coeff n := by
+  simp only [sub_mul, coeff_sub, coeff_C_mul]
+  cases n with
+  | zero => simp
+  | succ m => simp [coeff_X_mul]
+
 end RealRooted

@@ -307,19 +307,17 @@ def polyaFrequencyHadamardCoeffStatement : Prop :=
 
 theorem polyaFrequencyHadamardCoeff_of_schurPolyaWagner
     (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
-    (hASWrev : aissenSchoenbergWhitneyReverseStatement)
     (hSPW : schurPolyaWagnerHadamardPFStatement) :
     polyaFrequencyHadamardCoeffStatement := by
   intro p q hp hq
   exact (hSPW (IsPFPolynomial.of_sequence hASW hp)
-    (IsPFPolynomial.of_sequence hASW hq)).to_sequence hASWrev
+    (IsPFPolynomial.of_sequence hASW hq)).to_sequence
 
 theorem polyaFrequencyHadamardCoeff_of_garloffWagner_nonneg
     (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
-    (hASWrev : aissenSchoenbergWhitneyReverseStatement)
     (hGW : garloffWagnerHadamardNonnegRealRootedStatement) :
     polyaFrequencyHadamardCoeffStatement :=
-  polyaFrequencyHadamardCoeff_of_schurPolyaWagner hASW hASWrev
+  polyaFrequencyHadamardCoeff_of_schurPolyaWagner hASW
     (schurPolyaWagnerHadamardPF_of_garloffWagner_nonneg hGW)
 
 end RealRooted

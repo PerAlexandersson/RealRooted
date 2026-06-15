@@ -127,15 +127,14 @@ theorem of_sequence
   exact ⟨hpnn, hASW hpnn hpf⟩
 
 theorem to_sequence
-    (hASWrev : aissenSchoenbergWhitneyReverseStatement)
     {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
     IsPolyaFreqSeq (fun n => p.coeff n) := by
   by_cases hp0 : p = 0
   · subst p
     simpa using IsPolyaFreqSeq_zero
-  · exact hASWrev hp.hasNonnegCoeffs (hp.ne_zero_and_splits hp0).2
-      hp.roots_nonpos
+  · exact aissenSchoenbergWhitney_reverse hp.hasNonnegCoeffs
+      (hp.ne_zero_and_splits hp0).2 hp.roots_nonpos
 
 theorem prec0_self {p : ℝ[X]} (hp : IsPFPolynomial p) :
     Prec0 p p := by
