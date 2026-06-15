@@ -2,11 +2,11 @@ import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Complex.Polynomial.Basic
 import Mathlib.Analysis.Matrix.PosDef
 import Mathlib.Analysis.Polynomial.Basic
-import Mathlib.Data.List.Interleave
 import Mathlib.LinearAlgebra.Lagrange
 import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
 import RealRooted.Basic
 import RealRooted.Linear
+import RealRooted.Mathlib.Data.List.Interleave
 
 /-!
 # Bezout matrices and interlacing
@@ -42,51 +42,6 @@ noncomputable section
 
 namespace RealRooted
 
-private lemma interleave_append_singleton {α : Type*} (l₁ l₂ : List α) (s r : α)
-    (h : l₁.length = l₂.length) :
-    (l₁ ++ [s]).interleave (l₂ ++ [r]) = (l₁.interleave l₂) ++ [r, s] := by
-  induction l₁ generalizing l₂ with
-  | nil => rcases l₂ with _ | ⟨b, l₂⟩ <;> simp_all
-  | cons a l₁ ih => rcases l₂ with _ | ⟨b, l₂⟩ <;> simp_all
-
-private lemma interleave_append_singleton_left {α : Type*} (l₁ l₂ : List α) (s r : α)
-    (h : l₁.length + 1 = l₂.length) :
-    (l₁ ++ [s]).interleave (l₂ ++ [r]) = (l₁.interleave l₂) ++ [s, r] := by
-  induction l₁ generalizing l₂ with
-  | nil => rcases l₂ with _ | ⟨b, _ | ⟨c, l₂⟩⟩ <;> simp_all
-  | cons a l₁ ih => rcases l₂ with _ | ⟨b, l₂⟩ <;> simp_all
-
-private lemma interleave_append_singleton_right {α : Type*} (l₁ l₂ : List α) (r : α)
-    (h : l₁.length = l₂.length) :
-    l₁.interleave (l₂ ++ [r]) = (l₁.interleave l₂) ++ [r] := by
-  induction l₁ generalizing l₂ with
-  | nil => rcases l₂ with _ | ⟨b, l₂⟩ <;> simp_all
-  | cons a l₁ ih => rcases l₂ with _ | ⟨b, l₂⟩ <;> simp_all
-
-private lemma interleaves_cons_reverse {ss rs : List ℝ} {s r : ℝ} (h : ss.length = rs.length) :
-    List.Interleaves (· > ·) (s :: ss).reverse (r :: rs).reverse ↔
-      s < r ∧ List.Interleaves (· > ·) ss.reverse (r :: rs).reverse := by
-  rw [List.interleaves_iff_length_isChain_interleave,
-    List.interleaves_iff_length_isChain_interleave]
-  simp only [List.reverse_cons]
-  rw [interleave_append_singleton _ _ _ _ (by simp [h]),
-      interleave_append_singleton_right _ _ _ (by simp [h])]
-  grind
-
-private lemma interleaves_cons_reverse_left {ss rs : List ℝ} {s r₁ r₂ : ℝ}
-    (h : ss.length + 1 = (r₂ :: rs).length) :
-    List.Interleaves (· > ·) (s :: ss).reverse (r₁ :: r₂ :: rs).reverse ↔
-      r₁ < s ∧ s < r₂ ∧ List.Interleaves (· > ·) ss.reverse (r₂ :: rs).reverse := by
-  have h_eq : ss.length = rs.length := by simp_all
-  clear h
-  rw [List.interleaves_iff_length_isChain_interleave,
-    List.interleaves_iff_length_isChain_interleave]
-  simp only [List.reverse_cons, List.length_reverse, List.length_cons, List.length_append]
-  rw [interleave_append_singleton_left _ _ _ _ (by simp [h_eq]),
-      interleave_append_singleton_right _ _ _ (by simp [h_eq]),
-      List.isChain_append]
-  grind
-
 private lemma interleaves_reverse_of_interlaced_left :
     ∀ {ss rs : List ℝ} (h : ss.length + 1 = rs.length)
       (hint : ∀ (i : Fin ss.length) (j : Fin rs.length), i.1 + 1 = j.1 → ss[i.1] < rs[j.1])
@@ -101,25 +56,28 @@ private lemma interleaves_reverse_of_interlaced_left :
     · simp
     · simp at h
   | cons s ss ih =>
-    intro rs h hint hint'
-    rcases rs with _ | ⟨r₁, _ | ⟨r₂, rs⟩⟩
-    · simp at h
-    · simp at h
-    · have h_len : ss.length + 1 = (r₂ :: rs).length := by
-        simp only [List.length_cons] at h ⊢
-        lia
-      rw [interleaves_cons_reverse_left h_len]
-      refine ⟨hint' ⟨0, by simp⟩ ⟨0, by simp⟩ (by simp),
-              hint ⟨0, by simp⟩ ⟨1, by simp⟩ (by simp),
-              ih h_len ?_ ?_⟩
-      · intro i j hij
-        have := hint ⟨i.1 + 1, by simp⟩
-          ⟨j.1 + 1, by rw [List.length_cons (a := r₁)]; lia⟩ (by lia)
-        rwa [List.getElem_cons_succ, List.getElem_cons_succ] at this
-      · intro i j hij
-        have := hint' ⟨i.1 + 1, by rw [List.length_cons (a := r₁)]; lia⟩
-          ⟨j.1 + 1, by simp⟩ (by lia)
-        simp_all
+  intro rs h hint hint'
+  rcases rs with _ | ⟨r₁, _ | ⟨r₂, rs⟩⟩
+  · simp at h
+  · simp at h
+  have h_len : ss.length + 1 = (r₂ :: rs).length := by
+    simp only [List.length_cons] at h ⊢
+    lia
+  rw [List.reverse_cons, List.reverse_cons, List.reverse_cons,
+    List.interleaves_append_singleton_append_singleton_of_length_add_one_eq_length
+      (by simpa using h_len),
+    List.interleaves_append_singleton_append_singleton_of_length_eq_length
+      (by simpa using h_len), ← List.reverse_cons]
+  refine ⟨hint' ⟨0, by simp⟩ ⟨0, by simp⟩ (by simp), hint ⟨0, by simp⟩ ⟨1, by simp⟩ (by simp),
+    ih h_len ?_ ?_⟩
+  · intro i j hij
+    have := hint ⟨i.1 + 1, by simp⟩
+      ⟨j.1 + 1, by rw [List.length_cons (a := r₁)]; lia⟩ (by lia)
+    rwa [List.getElem_cons_succ, List.getElem_cons_succ] at this
+  · intro i j hij
+    have := hint' ⟨i.1 + 1, by rw [List.length_cons (a := r₁)]; lia⟩
+      ⟨j.1 + 1, by simp⟩ (by lia)
+    simp_all
 
 private lemma interleaves_reverse_of_interlaced :
     ∀ {ss rs : List ℝ} (h : ss.length = rs.length)
@@ -134,31 +92,33 @@ private lemma interleaves_reverse_of_interlaced :
     · simp
     · simp at h
   | cons s ss ih =>
-    intro rs h hint hint'
-    rcases rs with _ | ⟨r, rs⟩
-    · simp at h
-    · have h_len : ss.length = rs.length := by
-        simp only [List.length_cons] at h ⊢
-        lia
-      rw [interleaves_cons_reverse h_len]
-      refine ⟨hint ⟨0, by simp⟩,
-              interleaves_reverse_of_interlaced_left (by simp [h_len]) ?_ ?_⟩
-      · intro i j hij
-        rcases i with ⟨i_val, hi⟩
-        rcases j with ⟨_ | j_val, hj⟩
-        · lia
-        · have h_eq : i_val = j_val := by lia
-          subst h_eq
-          have := hint ⟨i_val + 1, by lia⟩
-          simp_all
-      · intro i j hij
-        rcases i with ⟨_ | i_val, hi⟩
-        · rcases j with ⟨j_val, hj⟩
-          exact hint' ⟨0, h.symm ▸ hi⟩
-            ⟨j_val + 1, by rw [List.length_cons]; lia⟩ (by lia)
-        · rcases j with ⟨j_val, hj⟩
-          exact hint' ⟨i_val + 1, h.symm ▸ hi⟩
-            ⟨j_val + 1, by rw [List.length_cons]; lia⟩ hij
+  intro rs h hint hint'
+  rcases rs with _ | ⟨r, rs⟩
+  · simp at h
+  have h_len : ss.length = rs.length := by
+    simp only [List.length_cons] at h ⊢
+    lia
+  rw [List.reverse_cons, List.reverse_cons,
+    List.interleaves_append_singleton_append_singleton_of_length_eq_length
+      (by simpa using h_len), ← List.reverse_cons]
+  refine ⟨hint ⟨0, by simp⟩,
+          interleaves_reverse_of_interlaced_left (by simp [h_len]) ?_ ?_⟩
+  · intro i j hij
+    rcases i with ⟨i_val, hi⟩
+    rcases j with ⟨_ | j_val, hj⟩
+    · lia
+    · have h_eq : i_val = j_val := by lia
+      subst h_eq
+      have := hint ⟨i_val + 1, by lia⟩
+      simp_all
+  · intro i j hij
+    rcases i with ⟨_ | i_val, hi⟩
+    · rcases j with ⟨j_val, hj⟩
+      exact hint' ⟨0, h.symm ▸ hi⟩
+        ⟨j_val + 1, by rw [List.length_cons]; lia⟩ (by lia)
+    · rcases j with ⟨j_val, hj⟩
+      exact hint' ⟨i_val + 1, h.symm ▸ hi⟩
+        ⟨j_val + 1, by rw [List.length_cons]; lia⟩ hij
 
 private lemma List.Interleaves.ofFn {n : ℕ}
     (s r : Fin n → ℝ) (_hs : StrictMono s) (_hr : StrictMono r)
@@ -178,36 +138,40 @@ private lemma interlaced_of_interleaves_reverse_left :
   | nil =>
     simp
   | cons s ss ih =>
-    intro rs h h_inter
-    rcases rs with _ | ⟨r₁, _ | ⟨r₂, rs⟩⟩
-    · simp
-    · simp at h
-    · have h_len : ss.length + 1 = (r₂ :: rs).length := by simp_all
-      rw [interleaves_cons_reverse_left h_len] at h_inter
-      obtain ⟨hr1s, hsr2, h_inter_tail⟩ := h_inter
-      have h_tail := ih h_len h_inter_tail
-      constructor
-      · intro i j hij
-        rcases i with ⟨_ | i_val, hi⟩
-        · grind
-        · rcases j with ⟨_ | j_val, hj⟩
-          · lia
-          · have h_hint := h_tail.1 ⟨i_val, by grind⟩
-              ⟨j_val, by rw [List.length_cons] at hj; lia⟩ (by lia)
-            simp_all
-      · intro i j hij
-        rcases i with ⟨_ | i_val, hi⟩
-        · rcases j with ⟨_ | j_val, hj⟩
-          · grind
-          · have h_hint := h_tail.2 ⟨0, by lia⟩
-              ⟨j_val, by grind⟩ (by lia)
-            simp only [List.getElem_cons_zero, List.getElem_cons_succ, gt_iff_lt] at h_hint ⊢
-            exact lt_trans hr1s (lt_trans hsr2 h_hint)
-        · rcases j with ⟨_ | j_val, hj⟩
-          · lia
-          · have h_hint := h_tail.2 ⟨i_val, by grind⟩
-              ⟨j_val, by grind⟩ (by lia)
-            simp_all
+  intro rs h h_inter
+  rcases rs with _ | ⟨r₁, _ | ⟨r₂, rs⟩⟩
+  · simp
+  · simp at h
+  have h_len : ss.length + 1 = (r₂ :: rs).length := by simp_all
+  rw [List.reverse_cons, List.reverse_cons, List.reverse_cons,
+    List.interleaves_append_singleton_append_singleton_of_length_add_one_eq_length
+      (by simpa using h_len),
+    List.interleaves_append_singleton_append_singleton_of_length_eq_length
+      (by simpa using h_len), ← List.reverse_cons] at h_inter
+  obtain ⟨hr1s, hsr2, h_inter_tail⟩ := h_inter
+  have h_tail := ih h_len h_inter_tail
+  constructor
+  · intro i j hij
+    rcases i with ⟨_ | i_val, hi⟩
+    · grind
+    · rcases j with ⟨_ | j_val, hj⟩
+      · lia
+      · have h_hint := h_tail.1 ⟨i_val, by grind⟩
+          ⟨j_val, by rw [List.length_cons] at hj; lia⟩ (by lia)
+        simp_all
+  · intro i j hij
+    rcases i with ⟨_ | i_val, hi⟩
+    · rcases j with ⟨_ | j_val, hj⟩
+      · grind
+      · have h_hint := h_tail.2 ⟨0, by lia⟩
+          ⟨j_val, by grind⟩ (by lia)
+        simp only [List.getElem_cons_zero, List.getElem_cons_succ, gt_iff_lt] at h_hint ⊢
+        exact lt_trans hr1s (lt_trans hsr2 h_hint)
+    · rcases j with ⟨_ | j_val, hj⟩
+      · lia
+      · have h_hint := h_tail.2 ⟨i_val, by grind⟩
+          ⟨j_val, by grind⟩ (by lia)
+        simp_all
 
 private lemma interlaced_of_interleaves_reverse :
     ∀ {ss rs : List ℝ} (h : ss.length = rs.length)
@@ -219,34 +183,35 @@ private lemma interlaced_of_interleaves_reverse :
   | nil =>
     simp
   | cons s ss ih =>
-    intro rs h h_inter
-    rcases rs with _ | ⟨r, rs⟩
-    · simp at h
-    · have h_len : ss.length = rs.length := by
+  intro rs h h_inter
+  rcases rs with _ | ⟨r, rs⟩
+  · simp at h
+  have h_len : ss.length = rs.length := by simp_all
+  rw [List.reverse_cons, List.reverse_cons,
+    List.interleaves_append_singleton_append_singleton_of_length_eq_length
+      (by simpa using h_len), ← List.reverse_cons] at h_inter
+  obtain ⟨hsr, h_inter_tail⟩ := h_inter
+  have h_tail := interlaced_of_interleaves_reverse_left
+    (by simp_all) h_inter_tail
+  constructor
+  · intro k
+    rcases k with ⟨_ | k_val, hk⟩
+    · grind
+    · have h_hint := h_tail.1 ⟨k_val, by simp_all⟩
+        ⟨k_val + 1, by lia⟩ (by lia)
+      simp_all
+  · intro i j hij
+    rcases i with ⟨_ | i_val, hi⟩
+    · rcases j with ⟨_ | j_val, hj⟩
+      · lia
+      · have h_hint := h_tail.2 ⟨0, by lia⟩
+          ⟨j_val, by grind⟩ (by lia)
         simp_all
-      rw [interleaves_cons_reverse h_len] at h_inter
-      obtain ⟨hsr, h_inter_tail⟩ := h_inter
-      have h_tail := interlaced_of_interleaves_reverse_left
-        (by simp_all) h_inter_tail
-      constructor
-      · intro k
-        rcases k with ⟨_ | k_val, hk⟩
-        · grind
-        · have h_hint := h_tail.1 ⟨k_val, by simp_all⟩
-            ⟨k_val + 1, by lia⟩ (by lia)
-          simp_all
-      · intro i j hij
-        rcases i with ⟨_ | i_val, hi⟩
-        · rcases j with ⟨_ | j_val, hj⟩
-          · lia
-          · have h_hint := h_tail.2 ⟨0, by lia⟩
-              ⟨j_val, by grind⟩ (by lia)
-            simp_all
-        · rcases j with ⟨_ | j_val, hj⟩
-          · lia
-          · have h_hint := h_tail.2 ⟨i_val + 1, by lia⟩
-              ⟨j_val, by grind⟩ (by lia)
-            simp_all
+    · rcases j with ⟨_ | j_val, hj⟩
+      · lia
+      · have h_hint := h_tail.2 ⟨i_val + 1, by lia⟩
+          ⟨j_val, by grind⟩ (by lia)
+        simp_all
 
 /-- Strict same-degree proper position, stated on canonical sorted root lists. -/
 def StrictPrecSameDegree (p q : ℝ[X]) : Prop :=
@@ -368,7 +333,7 @@ lemma Polynomial.isRealRooted_X_add_C (a : ℝ) :
   simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-a)
 
 lemma Polynomial.roots_sort_mul_X_add_C_X_add_C {a c : ℝ} (hac : a ≤ c) :
-    (((X + C a) * (X + C c)) : ℝ[X]).roots.sort (· ≤ ·) = [(-c : ℝ), -a] := by
+    ((X + C a) * (X + C c)).roots.sort (· ≤ ·) = [(-c : ℝ), -a] := by
   apply List.Perm.eq_of_pairwise' (r := (· ≤ ·))
   · simp
   · simp [neg_le_neg hac]
@@ -1648,8 +1613,7 @@ lemma bezoutMatrix.quadratic_posDef_two_of_const_strictInterleaves {a b c d : �
 
 lemma StrictPrecSameDegree.quadratic_of_const_strictInterleaves {a b c d : ℝ}
     (hab : a < b) (hbc : b < c) (hcd : c < d) :
-    StrictPrecSameDegree (((X + C b) * (X + C d)) : ℝ[X])
-    (((X + C a) * (X + C c)) : ℝ[X]) := by
+    StrictPrecSameDegree ((X + C b) * (X + C d)) ((X + C a) * (X + C c)) := by
   refine ⟨isRealRooted_mul (Polynomial.isRealRooted_X_add_C b)
             (Polynomial.isRealRooted_X_add_C d),
           isRealRooted_mul (Polynomial.isRealRooted_X_add_C a)
@@ -1661,19 +1625,16 @@ lemma StrictPrecSameDegree.quadratic_of_const_strictInterleaves {a b c d : ℝ}
           ?_⟩
   rw [Polynomial.roots_sort_mul_X_add_C_X_add_C (by linarith : b ≤ d),
     Polynomial.roots_sort_mul_X_add_C_X_add_C (by linarith : a ≤ c)]
-  rw [interleaves_cons_reverse (by simp), interleaves_cons_reverse_left (by simp)]
-  simp_all
+  simp [*]
 
 lemma StrictPrecSameDegree.quadratic_iff_const_strictInterleaves {a b c d : ℝ}
     (hac : a ≤ c) (hbd : b ≤ d) :
-    StrictPrecSameDegree (((X + C b) * (X + C d)) : ℝ[X])
-    (((X + C a) * (X + C c)) : ℝ[X]) ↔ a < b ∧ b < c ∧ c < d := by
+    StrictPrecSameDegree ((X + C b) * (X + C d)) ((X + C a) * (X + C c)) ↔
+      a < b ∧ b < c ∧ c < d := by
   constructor
   · rintro ⟨_, _, _, halt⟩
     rw [Polynomial.roots_sort_mul_X_add_C_X_add_C hbd,
-      Polynomial.roots_sort_mul_X_add_C_X_add_C hac,
-      interleaves_cons_reverse (by simp),
-      interleaves_cons_reverse_left (by simp)] at halt
+      Polynomial.roots_sort_mul_X_add_C_X_add_C hac] at halt
     simp_all
   · exact fun ⟨hab, hbc, hcd⟩ ↦
       StrictPrecSameDegree.quadratic_of_const_strictInterleaves hab hbc hcd
@@ -1682,15 +1643,13 @@ lemma StrictPrecSameDegree.of_bezoutMatrix_quadratic_posDef {a b c d : ℝ}
     (hac : a ≤ c) (hbd : b ≤ d)
     (h : (bezoutMatrix 2 ((X + C a) * (X + C c))
     ((X + C b) * (X + C d))).PosDef) :
-    StrictPrecSameDegree (((X + C b) * (X + C d)) : ℝ[X])
-    (((X + C a) * (X + C c)) : ℝ[X]) :=
+    StrictPrecSameDegree ((X + C b) * (X + C d)) ((X + C a) * (X + C c)) :=
   let ⟨hab, hbc, hcd⟩ := bezoutMatrix.const_strictInterleaves_of_quadratic_posDef hac hbd h
   StrictPrecSameDegree.quadratic_of_const_strictInterleaves hab hbc hcd
 
 lemma StrictPrecSameDegree.bezoutMatrix_quadratic_posDef {a b c d : ℝ}
     (hac : a ≤ c) (hbd : b ≤ d)
-    (h : StrictPrecSameDegree (((X + C b) * (X + C d)) : ℝ[X])
-    (((X + C a) * (X + C c)) : ℝ[X])) :
+    (h : StrictPrecSameDegree ((X + C b) * (X + C d)) ((X + C a) * (X + C c))) :
     (bezoutMatrix 2 ((X + C a) * (X + C c))
     ((X + C b) * (X + C d))).PosDef :=
   let ⟨hab, hbc, hcd⟩ :=
