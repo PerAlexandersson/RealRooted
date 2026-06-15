@@ -2,6 +2,7 @@ import RealRooted.Basic
 import RealRooted.Linear
 import RealRooted.Derivative
 import RealRooted.Wagner
+import RealRooted.RootContinuity
 import Mathlib.Analysis.Normed.Field.Approximation
 import Mathlib.Analysis.Complex.Polynomial.Basic
 -- import RealRooted.AffineDerivative  -- uncomment when AffineDerivative is built
@@ -1985,23 +1986,6 @@ theorem isRealRooted_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
     (((a * f + b * g) - C δ * g) ≠ 0 ∧ ((a * f + b * g) - C δ * g).Splits) :=
   (prec_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
     hgf hg_pos hF_pos hdeg_lo hdeg_hi hno hb_nonpos hδ).2.1
-
-private def coeffSumRange (p : ℝ[X]) : ℝ :=
-  Finset.sum (Finset.range (p.natDegree + 1)) fun j => ‖p.coeff j‖
-
-private lemma coeff_norm_le_coeffSumRange (p : ℝ[X]) (i : ℕ) :
-    ‖p.coeff i‖ ≤ coeffSumRange p := by
-  by_cases hi : i ∈ Finset.range (p.natDegree + 1)
-  · unfold coeffSumRange
-    exact Finset.single_le_sum (fun j _ => norm_nonneg _) hi
-  · have hlt : p.natDegree < i := by
-      simp_all
-    rw [coeff_eq_zero_of_natDegree_lt hlt, norm_zero]
-    have hnonneg : 0 ≤ coeffSumRange p := by
-      unfold coeffSumRange
-      exact Finset.sum_nonneg fun _ _ => norm_nonneg _
-    lia
-
 private lemma mem_range_of_mem_aroots_of_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧
   p.Splits)
     {z : ℂ} (hz : z ∈ p.aroots ℂ) :
