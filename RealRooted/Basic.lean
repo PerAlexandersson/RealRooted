@@ -253,6 +253,15 @@ lemma listAlternates_left_le_of_right_le {ss rs : List ℝ} {c : ℝ}
           · exact listInterlaces_left_le_of_right_le htail
               (fun x hx => hrs x (by lia)) t ht
 
+lemma listAlternates_all_le_getLast {ss rs : List ℝ}
+    (hrs_ne : rs ≠ [])
+    (hrs : rs.Pairwise (· ≤ ·))
+    (halt : ListAlternates ss rs) :
+    ∀ s ∈ ss, s ≤ rs.getLast hrs_ne :=
+  listAlternates_left_le_of_right_le halt
+    (fun _ hr => List.Pairwise.rel_getLast hrs hr)
+
+
 /-! ## Polynomial interlacing -/
 
 /-- `f ≪ g` (**f is interlaced by g**): both real-rooted, `g` has the rightmost root,
