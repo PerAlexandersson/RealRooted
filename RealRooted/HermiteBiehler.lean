@@ -131,7 +131,6 @@ theorem hasNonnegCoeffs_right_of_oddEvenPolynomial {p q : ℝ[X]}
   intro n
   simpa using h (2 * n)
 
-
 /-- Sign-normalized forward Hermite--Biehler bridge.
 
 This is the minimal sign-stable form used in downstream plumbing:

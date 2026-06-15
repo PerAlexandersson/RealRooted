@@ -26,24 +26,6 @@ private lemma natDegree_eq_or_succ_of_prec {f g : ℝ[X]} (h : Prec f g) :
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
   lia
 
-private lemma exists_root_upper_bound (p : ℝ[X]) :
-    ∃ c, ∀ r ∈ p.roots, r ≤ c := by
-  let rs := p.roots.sort (· ≤ ·)
-  by_cases hrs_nil : rs = []
-  · refine ⟨0, ?_⟩
-    intro r hr
-    have hroots_nil : p.roots = 0 := by
-      simpa [rs, hrs_nil] using (Multiset.sort_eq (s := p.roots) (r := (· ≤ ·))).symm
-    simp_all
-  · refine ⟨rs.getLast hrs_nil, ?_⟩
-    have hrs_sorted : rs.Pairwise (· ≤ ·) := by
-      simp [rs]
-    intro r hr
-    have hr_mem : r ∈ rs := by
-      apply Multiset.mem_coe.mp
-      simpa [rs] using hr
-    exact hrs_sorted.rel_getLast hr_mem
-
 private lemma exists_common_root_upper_bound (h : ℝ[X]) (l : List (ℝ × ℝ[X])) :
     ∃ c, (∀ r ∈ h.roots, r ≤ c) ∧ ∀ ap ∈ l, ∀ r ∈ ap.2.roots, r ≤ c := by
   induction l with

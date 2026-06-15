@@ -1,7 +1,8 @@
+import RealRooted.AffineDerivative
 import RealRooted.Basic
 import RealRooted.Derivative
+import RealRooted.Mathlib.Algebra.Polynomial.Basic
 import RealRooted.Wagner
-import RealRooted.AffineDerivative
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Tactic
 
@@ -35,9 +36,7 @@ lemma eulerianTilde_recurrence (n : Nat) :
 
 lemma eulerianTilde_one : eulerianTilde 1 = X + X ^ 2 := by
   rw [eulerianTilde_recurrence 0]
-  have htwo : (C (2 : ℝ) : ℝ[X]) = (2 : ℝ[X]) := by
-    ext n
-    cases n <;> simp
+  have htwo : (C (2 : ℝ) : ℝ[X]) = (2 : ℝ[X]) := (ofNat_def 2).symm
   simp only [CharP.cast_eq_zero, zero_add, eulerianTilde_zero, derivative_X, mul_one]
   grind
 

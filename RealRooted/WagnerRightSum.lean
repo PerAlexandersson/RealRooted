@@ -2351,6 +2351,5 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_common_factor_of_no_common_
   have hmul : Prec (d * (f' + g')) (d * h') := prec_mul_common_factor hd hsum
   simpa [left_distrib, right_distrib, mul_add, add_comm, add_left_comm, add_assoc] using hmul
 
-
 end
 end RealRooted

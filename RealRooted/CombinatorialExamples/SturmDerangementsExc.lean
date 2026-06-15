@@ -111,9 +111,7 @@ lemma sturmDerangementsExc_four :
 
 lemma sturmDerangementsExc_five :
     sturmDerangementsExc 5 = X ^ 4 + 21 * X ^ 3 + 21 * X ^ 2 + X := by
-  have hC2 : (C (2 : ℝ) : ℝ[X]) = 2 := by
-    ext n
-    cases n <;> simp
+  have hC2 : (C (2 : ℝ) : ℝ[X]) = 2 := (ofNat_def 2).symm
   rw [sturmDerangementsExc_recurrence 2, sturmDerangementsExc_three, sturmDerangementsExc_four]
   simp only [Nat.cast_ofNat, derivative_X_pow_succ, map_add, map_one,
     derivative_mul, derivative_ofNat, zero_mul, Nat.cast_one, pow_one, zero_add, derivative_X]

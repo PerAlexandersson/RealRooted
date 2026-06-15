@@ -253,6 +253,14 @@ lemma listAlternates_left_le_of_right_le {ss rs : List ℝ} {c : ℝ}
           · exact listInterlaces_left_le_of_right_le htail
               (fun x hx => hrs x (by lia)) t ht
 
+lemma listAlternates_all_le_getLast {ss rs : List ℝ}
+    (hrs_ne : rs ≠ [])
+    (hrs : rs.Pairwise (· ≤ ·))
+    (halt : ListAlternates ss rs) :
+    ∀ s ∈ ss, s ≤ rs.getLast hrs_ne :=
+  listAlternates_left_le_of_right_le halt
+    (fun _ hr => List.Pairwise.rel_getLast hrs hr)
+
 /-! ## Polynomial interlacing -/
 
 /-- `f ≪ g` (**f is interlaced by g**): both real-rooted, `g` has the rightmost root,
@@ -487,5 +495,59 @@ lemma coeff_X_sub_C_mul (r : ℝ) (q : ℝ[X]) (n : ℕ) :
   cases n with
   | zero => simp
   | succ m => simp [coeff_X_mul]
+
+/-- A nonconstant real-rooted polynomial has a rightmost root. -/
+lemma exists_rightmost_root_of_isRealRooted
+    {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hdeg : 1 ≤ p.natDegree) :
+    ∃ r, p.IsRoot r ∧ ∀ s ∈ p.roots, s ≤ r := by
+  let rs := p.roots.sort (· ≤ ·)
+  have hrs_eq : (↑rs : Multiset ℝ) = p.roots := Multiset.sort_eq ..
+  have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
+  have hrs_len : rs.length = p.natDegree := by
+    rw [show rs = p.roots.sort (· ≤ ·) by lia, Multiset.length_sort, card_roots_of_splits hp.2]
+  have hrs_ne : rs ≠ [] := by
+    grind
+  refine ⟨rs.getLast hrs_ne, ?_, ?_⟩
+  · have hr_mem : rs.getLast hrs_ne ∈ rs := List.getLast_mem hrs_ne
+    have : rs.getLast hrs_ne ∈ p.roots := by
+      rw [← hrs_eq]
+      simp
+    simp_all
+  · intro s hs
+    have hs_mem : s ∈ rs := by
+      apply Multiset.mem_coe.mp
+      lia
+    exact hrs_sorted.rel_getLast hs_mem
+
+/-- For a nonempty right-hand list, `ListInterlaces` forces the expected length
+relation. -/
+lemma listInterlaces_cons_length_eq :
+    ∀ {ss rest : List ℝ} {r : ℝ},
+      ListInterlaces ss (r :: rest) → ss.length = rest.length
+  | [], [], _, _ => by lia
+  | _ :: _, [], _, h => by simp [ListInterlaces] at h
+  | s :: ss, r₂ :: rest, r₁, h => by
+      obtain ⟨_, _, htail⟩ := h
+      simpa [List.length_cons] using
+          listInterlaces_cons_length_eq htail
+
+/-- Every polynomial has an upper bound for its roots. -/
+lemma exists_root_upper_bound (p : ℝ[X]) :
+    ∃ c, ∀ r ∈ p.roots, r ≤ c := by
+  let rs := p.roots.sort (· ≤ ·)
+  by_cases hrs_nil : rs = []
+  · refine ⟨0, ?_⟩
+    intro r hr
+    have hroots_nil : p.roots = 0 := by
+      simpa [rs, hrs_nil] using (Multiset.sort_eq (s := p.roots) (r := (· ≤ ·))).symm
+    simp_all
+  · refine ⟨rs.getLast hrs_nil, ?_⟩
+    have hrs_sorted : rs.Pairwise (· ≤ ·) := by
+      simp [rs]
+    intro r hr
+    have hr_mem : r ∈ rs := by
+      apply Multiset.mem_coe.mp
+      simpa [rs] using hr
+    exact hrs_sorted.rel_getLast hr_mem
 
 end RealRooted

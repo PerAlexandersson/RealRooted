@@ -397,5 +397,4 @@ theorem isGeneralizedSturmSeq_singletonFreeSetPartitionsPrefix :
               (prec_singletonFreeSetPartitions_succ (n := n + 3) (by lia))
               ih
 
-
 end RealRooted

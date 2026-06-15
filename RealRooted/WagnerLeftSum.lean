@@ -1019,6 +1019,5 @@ theorem prec_sum_of_compatible_left {h : ℝ[X]} {l : List ℝ[X]}
     Prec h l.sum :=
   hl.prec_sum
 
-
 end
 end RealRooted

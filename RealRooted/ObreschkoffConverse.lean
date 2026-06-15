@@ -524,7 +524,7 @@ The heuristic "`(f + g, f + 2g)` regularizes to the top degree" is only
 reliably true after sign-normalizing so both original leading coefficients are
 positive; otherwise the same-degree case can still cancel at the top. This
 helper records the version that is actually stable in Lean. -/
-private lemma right_family_degree_data_of_posLeadingCoeff
+lemma right_family_degree_data_of_posLeadingCoeff
     {f g : ℝ[X]}
     (hdeg : f.natDegree ≤ g.natDegree)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
@@ -558,47 +558,6 @@ private lemma posComboRealRooted_of_allComboRealRooted_of_natDegree_le
   intro lam μ hlam hμ
   exact ⟨(hasPosLeadingCoeff_pos_combo_of_natDegree_le_right hdeg hf_pos hg_pos hlam hμ).ne_zero,
     hall lam μ⟩
-
-/-- At a root of `f + 2g`, the companion family member `f + g` has the
-opposite sign of `g`. Under the no-common-root hypothesis this sign is strict,
-because `g` cannot vanish there. This is one of the Ma--Wang style transport
-inputs for pushing an orientation of the right family back toward `g`. -/
-private lemma eval_mul_right_family_one_neg_at_root_two_of_no_common
-    {f g : ℝ[X]}
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    ∀ r, (f + C (2 : ℝ) * g).IsRoot r → (f + g).eval r * g.eval r < 0 := by
-  intro r hroot
-  have hq_eval : (f + C (2 : ℝ) * g).eval r = 0 := by
-    simp_all
-  rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C] at hq_eval
-  have hp_eval : (f + g).eval r = -g.eval r := by
-    rw [Polynomial.eval_add]
-    linarith
-  have hg_ne : g.eval r ≠ 0 := by
-    intro hg0
-    simp_all
-  simp_all
-
-/-- At a root of `f + g`, the other family member `f + 2g` has the opposite
-sign of `f`. As above, the no-common-root hypothesis makes the sign strict.
-This is the symmetric Ma--Wang input when one wants to transport an orientation
-of the right family back toward `f`. -/
-private lemma eval_mul_right_family_two_neg_at_root_one_of_no_common
-    {f g : ℝ[X]}
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    ∀ r, (f + g).IsRoot r → (f + C (2 : ℝ) * g).eval r * f.eval r < 0 := by
-  intro r hroot
-  have hp_eval0 : (f + g).eval r = 0 := by
-    simp_all
-  rw [Polynomial.eval_add] at hp_eval0
-  have hq_eval : (f + C (2 : ℝ) * g).eval r = -f.eval r := by
-    rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C]
-    linarith
-  have hf_ne : f.eval r ≠ 0 := by
-    intro hf0
-    simp_all
-  simp_all
-
 /-- `AllComboRealRooted` is preserved by any linear change of basis in the
 `(f, g)`-plane. No invertibility is needed for the forward direction: every
 linear combination of the new pair is visibly a linear combination of the old
@@ -832,34 +791,6 @@ private lemma eval_derivative_ne_zero_of_hasSimpleRoots
   have hmult : 1 < p.rootMultiplicity r := by
     exact (one_lt_rootMultiplicity_iff_isRoot hp0).2 ⟨hr, hder_root⟩
   rw [hsimple r hr] at hmult
-  lia
-
-/-- An exact double root has nonvanishing second derivative. This is the local
-algebraic fact used to turn the final converse obstruction into a quantified
-second-derivative inequality, rather than another global interlacing argument. -/
-private lemma eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
-    {p : ℝ[X]} {x : ℝ}
-    (hp0 : p ≠ 0)
-    (hmult : p.rootMultiplicity x = 2) :
-    p.derivative.derivative.eval x ≠ 0 := by
-  have hp_root : p.IsRoot x := by
-    exact (rootMultiplicity_pos hp0).mp (by lia)
-  have hp_deg_ge2 : 2 ≤ p.natDegree := by
-    calc
-      2 = p.rootMultiplicity x := by lia
-      _ = p.roots.count x := (count_roots p).symm
-      _ ≤ p.roots.card := p.roots.count_le_card x
-      _ ≤ p.natDegree := card_roots' p
-  have hpd_ne : p.derivative ≠ 0 := by simp; lia
-  have hpd_rootmult : p.derivative.rootMultiplicity x = 1 := by
-    rw [derivative_rootMultiplicity_of_root hp_root, hmult]
-  intro hder2
-  have hpd_root : p.derivative.IsRoot x := by
-    exact (rootMultiplicity_pos hpd_ne).mp (by lia)
-  have hpd_der_root : p.derivative.derivative.IsRoot x := by
-    simp_all
-  have hmult_gt : 1 < p.derivative.rootMultiplicity x := by
-    exact (one_lt_rootMultiplicity_iff_isRoot hpd_ne).2 ⟨hpd_root, hpd_der_root⟩
   lia
 
 /-- Local double-root obstruction in the positive-sign case.
@@ -1683,29 +1614,6 @@ private theorem isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
     refine ⟨hF_ne, ?_⟩
     exact splits_of_card_roots (by rw [← hws_eq, Multiset.coe_card, hws_len])
 
-/-- A nonconstant real-rooted polynomial has a rightmost root. -/
-private lemma exists_rightmost_root_of_isRealRooted
-    {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hdeg : 1 ≤ p.natDegree) :
-    ∃ r, p.IsRoot r ∧ ∀ s ∈ p.roots, s ≤ r := by
-  let rs := p.roots.sort (· ≤ ·)
-  have hrs_eq : (↑rs : Multiset ℝ) = p.roots := Multiset.sort_eq ..
-  have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
-  have hrs_len : rs.length = p.natDegree := by
-    rw [show rs = p.roots.sort (· ≤ ·) by lia, Multiset.length_sort, card_roots_of_splits hp.2]
-  have hrs_ne : rs ≠ [] := by
-    grind
-  refine ⟨rs.getLast hrs_ne, ?_, ?_⟩
-  · have hr_mem : rs.getLast hrs_ne ∈ rs := List.getLast_mem hrs_ne
-    have : rs.getLast hrs_ne ∈ p.roots := by
-      rw [← hrs_eq]
-      simp
-    simp_all
-  · intro s hs
-    have hs_mem : s ∈ rs := by
-      apply Multiset.mem_coe.mp
-      lia
-    exact hrs_sorted.rel_getLast hs_mem
-
 /-- Same-degree `hroot_sign` real-rootedness without assuming the target has
 positive leading coefficient.
 
@@ -1876,7 +1784,7 @@ private theorem isRealRooted_of_interlaces_eval_mul_neg_same_any_lc
 /-- If all roots of `p'` are at most `c`, then `p.eval` is strictly increasing
 on `[c, +∞)`. This is the analytic core of the degree-gap argument: once the
 last critical point is known, any larger real root would force a contradiction. -/
-private lemma strictMonoOn_eval_Ici_of_derivative_roots_le
+lemma strictMonoOn_eval_Ici_of_derivative_roots_le
     {p : ℝ[X]} {c : ℝ}
     (hp' : p.derivative ≠ 0 ∧ p.derivative.Splits)
     (hp'_pos : HasPosLeadingCoeff p.derivative)
@@ -1896,7 +1804,7 @@ rightmost-root extraction here because it is reused twice in the degree-gap
 reduction: first to show a real-rooted polynomial must be nonpositive at its
 last critical point, and then again to contradict real-rootedness after a
 constant shift. -/
-private lemma exists_root_ge_of_derivative_root
+lemma exists_root_ge_of_derivative_root
     {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hdeg : 2 ≤ p.natDegree)
     {c : ℝ} (hc : p.derivative.IsRoot c) :
     ∃ r, p.IsRoot r ∧ c ≤ r := by
@@ -1920,7 +1828,7 @@ private lemma exists_root_ge_of_derivative_root
 /-- Exact degree bookkeeping for iterated derivatives. We use this in the
 degree-gap reduction to show that differentiating the smaller polynomial down to
 degree `0` still leaves the larger one with degree at least `2`. -/
-private lemma natDegree_iterate_derivative_eq_sub
+lemma natDegree_iterate_derivative_eq_sub
     {p : ℝ[X]} {k : ℕ} (hp0 : p ≠ 0) (hk : k ≤ p.natDegree) :
     (derivative^[k] p).natDegree = p.natDegree - k := by
   apply le_antisymm (natDegree_iterate_derivative p k)
@@ -1933,7 +1841,7 @@ private lemma natDegree_iterate_derivative_eq_sub
 
 /-- Iterated derivatives stay nonzero as long as we do not differentiate past
 the degree. -/
-private lemma iterate_derivative_ne_zero_of_le_natDegree
+lemma iterate_derivative_ne_zero_of_le_natDegree
     {p : ℝ[X]} {k : ℕ} (hp0 : p ≠ 0) (hk : k ≤ p.natDegree) :
     (derivative^[k] p) ≠ 0 := by
   intro hk0
@@ -1949,7 +1857,7 @@ rightmost root of `p'`; to the right of it the derivative is strictly
 positive, so a positive value there would prevent the real-rooted polynomial
 itself from having any root on its right, contradicting interlacing of `p'`
 with `p`. -/
-private lemma exists_rightmost_derivative_root_with_eval_nonpos
+lemma exists_rightmost_derivative_root_with_eval_nonpos
     {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hp_pos : HasPosLeadingCoeff p)
     (hdeg : 2 ≤ p.natDegree) :
     ∃ c, p.derivative.IsRoot c ∧
@@ -1984,7 +1892,7 @@ theorem below. The proof shifts the polynomial upward past its value at the
 rightmost critical point; the derivative is unchanged, so the shifted
 polynomial would still need a real root on the right by interlacing, but it is
 already strictly increasing there. -/
-private lemma exists_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
+lemma exists_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
     {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hp_pos : HasPosLeadingCoeff p)
     (hdeg : 2 ≤ p.natDegree) :
     ∃ t : ℝ, ¬ ((C t + p) ≠ 0 ∧ (C t + p).Splits) := by
@@ -3269,7 +3177,7 @@ private lemma prec0_C_mul_left_right {a b : ℝ} (ha : a ≠ 0) (hb : b ≠ 0)
   · exact (prec_C_mul_right (prec_C_mul_left hprec ha) hb).toPrec0
 
 /-- Degree-zero polynomials satisfy `Prec` in both orientations. -/
-private lemma prec_degree_zero_degree_zero
+lemma prec_degree_zero_degree_zero
     {f g : ℝ[X]}
     (hf : f ≠ 0 ∧ f.Splits) (hg : g ≠ 0 ∧ g.Splits)
     (hf_deg0 : f.natDegree = 0) (hg_deg0 : g.natDegree = 0) :
@@ -3511,7 +3419,6 @@ theorem derivativePreservesPrec0_of_sameDegree
     by_cases hdeg : f.natDegree = g.natDegree
     · exact hsame hfg' hdeg
     · exact derivative_prec0_of_prec_succDegree hfg' (by lia)
-
 
 end
 end RealRooted

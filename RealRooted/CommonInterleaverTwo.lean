@@ -21,88 +21,6 @@ noncomputable section
 
 namespace RealRooted
 
-private lemma ne_zero_of_hasPosLeadingCoeff {f : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) : f ≠ 0 := by
-  intro h0
-  have hf_pos' : HasPosLeadingCoeff f := hf_pos
-  have hfalse : (0 : ℝ) < 0 := by
-    simp [HasPosLeadingCoeff, h0] at hf_pos'
-  simp_all
-
-private lemma strictMonoOn_eval_Ici_of_derivative_roots_le_local
-    {p : ℝ[X]} {c : ℝ}
-    (hp' : p.derivative ≠ 0 ∧ p.derivative.Splits)
-    (hp'_pos : HasPosLeadingCoeff p.derivative)
-    (hroots_le : ∀ s ∈ p.derivative.roots, s ≤ c) :
-    StrictMonoOn (fun x => p.eval x) (Set.Ici c) := by
-  refine strictMonoOn_of_deriv_pos (convex_Ici c) p.continuous.continuousOn ?_
-  intro x hx
-  have hx' : c < x := by
-    simp_all
-  have hlt : ∀ t ∈ p.derivative.roots, t < x := by
-    grind
-  have hpos_eval : 0 < p.derivative.eval x :=
-    eval_pos_of_all_roots_lt hp' hp'_pos hlt
-  simp_all
-
-private lemma exists_rightmost_root_of_isRealRooted_local
-    {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hdeg : 1 ≤ p.natDegree) :
-    ∃ r, p.IsRoot r ∧ ∀ s ∈ p.roots, s ≤ r := by
-  let rs := p.roots.sort (· ≤ ·)
-  have hrs_eq : (↑rs : Multiset ℝ) = p.roots := Multiset.sort_eq ..
-  have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
-  have hrs_len : rs.length = p.natDegree := by
-    rw [show rs = p.roots.sort (· ≤ ·) by lia, Multiset.length_sort,
-      card_roots_of_splits hp.2]
-  have hrs_ne : rs ≠ [] := by
-    grind
-  refine ⟨rs.getLast hrs_ne, ?_, ?_⟩
-  · have hr_mem : rs.getLast hrs_ne ∈ rs := List.getLast_mem hrs_ne
-    have : rs.getLast hrs_ne ∈ p.roots := by
-      rw [← hrs_eq]
-      simp
-    simp_all
-  · intro s hs
-    have hs_mem : s ∈ rs := by
-      apply Multiset.mem_coe.mp
-      lia
-    exact hrs_sorted.rel_getLast hs_mem
-
-private lemma exists_root_ge_of_derivative_root_local
-    {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hdeg : 2 ≤ p.natDegree)
-    {c : ℝ} (hc : p.derivative.IsRoot c) :
-    ∃ r, p.IsRoot r ∧ c ≤ r := by
-  obtain ⟨hp_rr, hp'_rr, _hdeg, rs, ss, hrs_sorted, hss_sorted, hrs_eq, hss_eq, hint⟩ :=
-    derivative_interlaces hp.2 hdeg
-  have hrs_len : rs.length = p.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hp_rr.2]
-  have hrs_ne : rs ≠ [] := by
-    grind
-  have hc_mem : c ∈ ss := by
-    apply Multiset.mem_coe.mp
-    simp_all
-  refine ⟨rs.getLast hrs_ne, ?_, ?_⟩
-  · have hr_mem : rs.getLast hrs_ne ∈ rs := List.getLast_mem hrs_ne
-    have : rs.getLast hrs_ne ∈ p.roots := by
-      rw [← hrs_eq]
-      simp
-    simp_all
-  · exact listInterlaces_all_le_getLast hrs_ne hrs_sorted hint c hc_mem
-
-private lemma exists_root_upper_bound_of_isRealRooted_local
-    {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
-    ∃ r : ℝ, ∀ s ∈ p.roots, s ≤ r := by
-  by_cases hdeg : p.natDegree = 0
-  · refine ⟨0, ?_⟩
-    intro s hs
-    have hcard : p.roots.card = 0 := by
-      simpa [hdeg] using card_roots_of_splits hp.2
-    have hroots : p.roots = 0 := Multiset.card_eq_zero.mp hcard
-    simp [hroots] at hs
-  · obtain ⟨r, _, hr_top⟩ :=
-      exists_rightmost_root_of_isRealRooted_local hp (Nat.pos_iff_ne_zero.mpr hdeg)
-    exact ⟨r, hr_top⟩
-
 private lemma hasPosLeadingCoeff_comp_X_add_C_local
     {p : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (r : ℝ) :
     HasPosLeadingCoeff (p.comp (X + C r)) := by
@@ -121,45 +39,12 @@ private lemma hasNonnegCoeffs_comp_X_add_C_of_roots_le_local
   simp only [roots_comp_X_add_C r] at hs
   rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
   simp_all
-
-private lemma exists_rightmost_derivative_root_with_eval_nonpos_local
-    {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hp_pos : HasPosLeadingCoeff p)
-    (hdeg : 2 ≤ p.natDegree) :
-    ∃ c, p.derivative.IsRoot c ∧
-      (∀ s ∈ p.derivative.roots, s ≤ c) ∧
-      p.eval c ≤ 0 := by
-  have hp' : (p.derivative ≠ 0 ∧
-    p.derivative.Splits) := (derivative_interlaces hp.2 hdeg).2.1
-  have hp'_pos : HasPosLeadingCoeff p.derivative :=
-    hp_pos.derivative (by lia)
-  have hp'_deg : p.derivative.natDegree = p.natDegree - 1 :=
-    p.natDegree_derivative
-  obtain ⟨c, hc_root, hc_top⟩ :=
-    exists_rightmost_root_of_isRealRooted_local hp' (by lia)
-  by_cases hpc : 0 < p.eval c
-  · have hmono :
-      StrictMonoOn (fun x => p.eval x) (Set.Ici c) := by
-      refine strictMonoOn_eval_Ici_of_derivative_roots_le_local ?_ ?_ ?_
-      · lia
-      · lia
-      · simp_all
-    obtain ⟨r, hr_root, hcr_le⟩ := exists_root_ge_of_derivative_root_local hp hdeg hc_root
-    have hcr_ne : c ≠ r := by
-      intro hcr
-      simp_all
-    have hcr_lt : c < r := lt_of_le_of_ne hcr_le hcr_ne
-    have hlt_eval : p.eval c < p.eval r := hmono (by simp) (by simp_all) hcr_lt
-    have : p.eval r = 0 := by
-      simp_all
-    linarith
-  · grind
-
 private lemma exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two_local
     {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hp_pos : HasPosLeadingCoeff p)
     (hdeg : 2 ≤ p.natDegree) :
     ∃ t : ℝ, 0 < t ∧ ¬ ((C t + p) ≠ 0 ∧ (C t + p).Splits) := by
   obtain ⟨c, hc_root, hc_top, hpc_nonpos⟩ :=
-    exists_rightmost_derivative_root_with_eval_nonpos_local hp hp_pos hdeg
+    exists_rightmost_derivative_root_with_eval_nonpos hp hp_pos hdeg
   let t : ℝ := 1 - p.eval c
   have ht_pos : 0 < t := by
     grind
@@ -173,7 +58,7 @@ private lemma exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_
       StrictMonoOn (fun x => (C t + p).eval x) (Set.Ici c) := by
     have hder_eq : (C t + p).derivative = p.derivative := by
       simp
-    refine strictMonoOn_eval_Ici_of_derivative_roots_le_local ?_ ?_ ?_
+    refine strictMonoOn_eval_Ici_of_derivative_roots_le ?_ ?_ ?_
     · lia
     · simpa [hder_eq] using
         hp_pos.derivative (by lia)
@@ -182,7 +67,7 @@ private lemma exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_
     have : (C t + p).eval c = 1 := by
       simp [t]
     linarith
-  obtain ⟨r, hr_root, hcr_le⟩ := exists_root_ge_of_derivative_root_local hq hqdeg (by
+  obtain ⟨r, hr_root, hcr_le⟩ := exists_root_ge_of_derivative_root hq hqdeg (by
     simpa using hc_root)
   by_cases hcr : c = r
   · simp_all
@@ -225,11 +110,6 @@ private lemma coeff_nonneg_of_add_C_mul_nonneg_forall
   intro μ hμ
   have hμnn : HasNonnegCoeffs (f + C μ * g) := h hμ
   simpa [Polynomial.coeff_add, Polynomial.coeff_C_mul] using hμnn n
-
-private lemma isRoot_of_X_mul_of_ne_zero_local {f : ℝ[X]} {r : ℝ}
-    (hr : r ≠ 0) (hX : (X * f).IsRoot r) :
-    f.IsRoot r := by
-  simp_all
 
 private lemma no_common_boundary_right_pair_of_no_common_nonneg
     {f g : ℝ[X]} {t : ℝ}
@@ -310,14 +190,14 @@ private lemma isRealRooted_left
     {f g : ℝ[X]} (h : Compatible f g)
     (hf_pos : HasPosLeadingCoeff f) : (f ≠ 0 ∧ f.Splits) := by
   rcases h 1 0 (by simp) (by simp) with hzero | hrr
-  · exact False.elim (ne_zero_of_hasPosLeadingCoeff hf_pos (by simp_all))
+  · exact False.elim (HasPosLeadingCoeff.ne_zero hf_pos (by simp_all))
   · simp_all
 
 private lemma isRealRooted_right
     {f g : ℝ[X]} (h : Compatible f g)
     (hg_pos : HasPosLeadingCoeff g) : (g ≠ 0 ∧ g.Splits) := by
   rcases h 0 1 (by simp) (by simp) with hzero | hrr
-  · exact False.elim (ne_zero_of_hasPosLeadingCoeff hg_pos (by simp_all))
+  · exact False.elim (HasPosLeadingCoeff.ne_zero hg_pos (by simp_all))
   · simp_all
 
 private lemma natDegree_le_one_of_const_left
@@ -367,7 +247,7 @@ theorem natDegree_right_le_succ
       f.natDegree ?_ rfl h hf_pos hg_pos
   intro n ih f g hfdeg hfg hf_pos hg_pos
   by_cases hf_deg0 : f.natDegree = 0
-  · have hf_ne : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
+  · have hf_ne : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
     let c : ℝ := f.coeff 0
     have hcoeff0 : f.coeff 0 = f.leadingCoeff := by
       simpa [hf_deg0] using (Polynomial.coeff_natDegree (p := f))
@@ -878,7 +758,7 @@ theorem posComboNoCommonAffineFamily_of_boundaryRightPairOrientation
     exact (nonnegCoeffs_C_mul ht.le hfnn).add hgnn
   have hp_pos : HasPosLeadingCoeff p := hp_nn.pos_leadingCoeff hp_rr.1
   have hXf_nn : HasNonnegCoeffs (X * f) := hasNonnegCoeffs_X.mul hfnn
-  have hXf0 : X * f ≠ 0 := mul_ne_zero X_ne_zero (ne_zero_of_hasPosLeadingCoeff hf_pos)
+  have hXf0 : X * f ≠ 0 := mul_ne_zero X_ne_zero (HasPosLeadingCoeff.ne_zero hf_pos)
   have hXf_pos : HasPosLeadingCoeff (X * f) := hXf_nn.pos_leadingCoeff hXf0
   have hprec_or : Prec p (X * f) ∨ Prec (X * f) p := by
     dsimp [p]
@@ -902,8 +782,8 @@ theorem posComboNoCommonSameDegreeOrientation_of_shiftedPairOrientation_and_nonn
     (hshift : PosComboNoCommonSameDegreeShiftedPairOrientationStatement) :
     PosComboNoCommonSameDegreeOrientationNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
-  have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
-  have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
+  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
+  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
   exact
     prec_of_prec_shifted_pair_sameDegree_nonneg
       (hshift hf_pos hg_pos hfnn hgnn hfg hdeg hno)
@@ -1088,24 +968,6 @@ theorem pairHasCommonInterleaver_of_forward_oneTwoFamilies_sameDegree_nonneg
       (compatible_of_forward_oneTwoFamilies_sameDegree_nonneg
         hf_pos hg_pos hfnn hgnn hfg hdeg hdeg_pos hno hright hleft)
 
-/-- Two nonzero constants satisfy `Prec` trivially because both root lists are
-empty. -/
-private lemma prec_degree_zero_degree_zero_local
-    {f g : ℝ[X]}
-    (hf : f ≠ 0 ∧ f.Splits) (hg : g ≠ 0 ∧ g.Splits)
-    (hf_deg0 : f.natDegree = 0) (hg_deg0 : g.natDegree = 0) :
-    Prec f g := by
-  have hroots_f : f.roots = 0 := by
-    apply Multiset.card_eq_zero.mp
-    rw [card_roots_of_splits hf.2, hf_deg0]
-  have hroots_g : g.roots = 0 := by
-    apply Multiset.card_eq_zero.mp
-    rw [card_roots_of_splits hg.2, hg_deg0]
-  refine ⟨hf, hg, [], [], by simp, by simp, ?_, ?_, ?_⟩
-  · simp [hroots_f]
-  · simp [hroots_g]
-  · exact Or.inr ⟨by lia, by simp [ListAlternates]⟩
-
 /-- Any two positive-leading polynomials of degree at most one already satisfy
 the Obreschkoff alternative. This is the unconditional low-degree endpoint for
 the current bridge search. -/
@@ -1116,13 +978,13 @@ theorem prec_or_revPrec_of_natDegree_le_one
     (hf_deg_le_one : f.natDegree ≤ 1)
     (hg_deg_le_one : g.natDegree ≤ 1) :
     Prec f g ∨ Prec g f := by
-  have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
-  have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
+  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
+  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
   by_cases hf_deg0 : f.natDegree = 0
   · have hf_rr : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_deg_zero hf0 hf_deg0
     by_cases hg_deg0 : g.natDegree = 0
     · have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_deg_zero hg0 hg_deg0
-      exact Or.inl (prec_degree_zero_degree_zero_local hf_rr hg_rr hf_deg0 hg_deg0)
+      exact Or.inl (prec_degree_zero_degree_zero hf_rr hg_rr hf_deg0 hg_deg0)
     · have hg_deg1 : g.natDegree = 1 := by lia
       have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_degree_one hg_deg1
       exact Or.inl (prec_degree_zero_right_of_degree_one hf_rr hg_rr hf_deg0 hg_deg1)
@@ -1292,8 +1154,8 @@ theorem posComboNoCommonSuccDegreeOrientation_of_degree_zero
     (hf_deg0 : f.natDegree = 0)
     (hsucc : g.natDegree = f.natDegree + 1) :
     Prec f g := by
-  have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
-  have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
+  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
+  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
   have hf_rr : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_deg_zero hf0 hf_deg0
   have hg_deg1 : g.natDegree = 1 := by lia
   have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_degree_one hg_deg1
@@ -1338,8 +1200,8 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily_degre
     (hsucc : g.natDegree = f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
-  have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
+  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
+  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
   have haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits) := by
@@ -1358,8 +1220,8 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily
     (haffBridge : PosComboNoCommonAffineFamilyStatement) :
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
-  have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
-  have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
+  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
+  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
   have haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits) := by
@@ -1462,8 +1324,8 @@ theorem allComboRealRooted_of_affineFamilyBridge_and_nonnegCoeffs
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     AllComboRealRooted f g := by
-  have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
-  have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
+  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
+  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
   have haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits) := by
@@ -1491,8 +1353,8 @@ theorem posComboNoCommonOrientation_of_affineFamilyBridge_and_nonnegCoeffs
   have hall : AllComboRealRooted f g :=
     allComboRealRooted_of_affineFamilyBridge_and_nonnegCoeffs
       haffBridge hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
-  have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
-  have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
+  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
+  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
   have hf_rr : (f ≠ 0 ∧ f.Splits) := by
     exact ⟨hf0, by simpa using hall 1 0⟩
   have hg_rr : (g ≠ 0 ∧ g.Splits) := by
@@ -1561,8 +1423,8 @@ private lemma common_root_reduction_data_of_posCombo_nonneg
     exact
       PosComboRealRooted.of_mul_X_sub_C (r := r) (by
         lia)
-  have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
-  have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
+  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
+  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
   have hqf0 : qf ≠ 0 := by
     simp_all
   have hqg0 : qg ≠ 0 := by
@@ -1818,8 +1680,8 @@ theorem allComboRealRooted_of_posCombo_and_degreeSplit_and_nonnegCoeffs
     (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
     AllComboRealRooted f g := by
-  have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
-  have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
+  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
+  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
   have hclose :
       f.natDegree ≤ g.natDegree + 1 ∧
         g.natDegree ≤ f.natDegree + 1 :=
@@ -1852,8 +1714,8 @@ theorem posComboOrientation_of_posCombo_and_degreeSplit_and_nonnegCoeffs
   have hall : AllComboRealRooted f g :=
     allComboRealRooted_of_posCombo_and_degreeSplit_and_nonnegCoeffs
       hsame hsucc hf_pos hg_pos hfnn hgnn hfg
-  have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
-  have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
+  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
+  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
   have hf_rr : (f ≠ 0 ∧ f.Splits) := by
     exact ⟨hf0, by simpa using hall 1 0⟩
   have hg_rr : (g ≠ 0 ∧ g.Splits) := by
@@ -1933,8 +1795,8 @@ theorem allComboRealRooted_of_posCombo_and_affineFamilyBridge_and_nonnegCoeffs
     (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
     AllComboRealRooted f g := by
-  have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
-  have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
+  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
+  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
   have hclose :
       f.natDegree ≤ g.natDegree + 1 ∧
         g.natDegree ≤ f.natDegree + 1 :=
@@ -1966,8 +1828,8 @@ theorem posComboOrientation_of_affineFamilyBridge_and_nonnegCoeffs
   have hall : AllComboRealRooted f g :=
     allComboRealRooted_of_posCombo_and_affineFamilyBridge_and_nonnegCoeffs
       haffBridge hf_pos hg_pos hfnn hgnn hfg
-  have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
-  have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
+  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
+  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
   have hf_rr : (f ≠ 0 ∧ f.Splits) := by
     exact ⟨hf0, by simpa using hall 1 0⟩
   have hg_rr : (g ≠ 0 ∧ g.Splits) := by
@@ -2063,8 +1925,8 @@ theorem posComboNoCommonOrientation_of_allComboBridge
   intro f g hfg hf_pos hg_pos hdeg_lo hdeg_hi hno
   have hall : AllComboRealRooted f g :=
     hallBridge hf_pos hg_pos hfg hdeg_lo hdeg_hi hno
-  have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
-  have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
+  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
+  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
   have hf_rr : (f ≠ 0 ∧ f.Splits) := by
     exact ⟨hf0, by simpa using hall 1 0⟩
   have hg_rr : (g ≠ 0 ∧ g.Splits) := by
@@ -2279,8 +2141,8 @@ theorem posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
-  have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
+  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
+  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
   have hclose :
       f.natDegree ≤ g.natDegree + 1 ∧
         g.natDegree ≤ f.natDegree + 1 :=
@@ -2310,8 +2172,8 @@ theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
-  have hg0 : g ≠ 0 := ne_zero_of_hasPosLeadingCoeff hg_pos
+  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
+  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
   have hclose :
       f.natDegree ≤ g.natDegree + 1 ∧
         g.natDegree ≤ f.natDegree + 1 :=
@@ -2462,8 +2324,8 @@ theorem posComboPairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
     (hg_pos : HasPosLeadingCoeff g)
     (hfg : PosComboRealRooted f g) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  obtain ⟨rf, hrf⟩ := exists_root_upper_bound_of_isRealRooted_local hf_rr
-  obtain ⟨rg, hrg⟩ := exists_root_upper_bound_of_isRealRooted_local hg_rr
+  obtain ⟨rf, hrf⟩ := exists_root_upper_bound f
+  obtain ⟨rg, hrg⟩ := exists_root_upper_bound g
   let r : ℝ := max rf rg
   let f' : ℝ[X] := f.comp (X + C r)
   let g' : ℝ[X] := g.comp (X + C r)
@@ -2510,8 +2372,8 @@ theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
     (hg_pos : HasPosLeadingCoeff g)
     (hfg : PosComboRealRooted f g) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  obtain ⟨rf, hrf⟩ := exists_root_upper_bound_of_isRealRooted_local hf_rr
-  obtain ⟨rg, hrg⟩ := exists_root_upper_bound_of_isRealRooted_local hg_rr
+  obtain ⟨rf, hrf⟩ := exists_root_upper_bound f
+  obtain ⟨rg, hrg⟩ := exists_root_upper_bound g
   let r : ℝ := max rf rg
   let f' : ℝ[X] := f.comp (X + C r)
   let g' : ℝ[X] := g.comp (X + C r)
@@ -2556,11 +2418,11 @@ theorem compatiblePairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
   intro f g hf_pos hg_pos hfg
   have hf_rr : (f ≠ 0 ∧ f.Splits) := by
     rcases hfg 1 0 (by simp) (by simp) with hzero | hrr
-    · exact False.elim (ne_zero_of_hasPosLeadingCoeff hf_pos (by simp_all))
+    · exact False.elim (HasPosLeadingCoeff.ne_zero hf_pos (by simp_all))
     · simp_all
   have hg_rr : (g ≠ 0 ∧ g.Splits) := by
     rcases hfg 0 1 (by simp) (by simp) with hzero | hrr
-    · exact False.elim (ne_zero_of_hasPosLeadingCoeff hg_pos (by simp_all))
+    · exact False.elim (HasPosLeadingCoeff.ne_zero hg_pos (by simp_all))
     · simp_all
   exact
     posComboPairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
@@ -2576,11 +2438,11 @@ theorem compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
   intro f g hf_pos hg_pos hfg
   have hf_rr : (f ≠ 0 ∧ f.Splits) := by
     rcases hfg 1 0 (by simp) (by simp) with hzero | hrr
-    · exact False.elim (ne_zero_of_hasPosLeadingCoeff hf_pos (by simp_all))
+    · exact False.elim (HasPosLeadingCoeff.ne_zero hf_pos (by simp_all))
     · simp_all
   have hg_rr : (g ≠ 0 ∧ g.Splits) := by
     rcases hfg 0 1 (by simp) (by simp) with hzero | hrr
-    · exact False.elim (ne_zero_of_hasPosLeadingCoeff hg_pos (by simp_all))
+    · exact False.elim (HasPosLeadingCoeff.ne_zero hg_pos (by simp_all))
     · simp_all
   exact
     posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
@@ -2644,11 +2506,11 @@ theorem compatiblePairHasCommonInterleaver_of_boundaryRightPairOrientation_via_n
   intro f g hf_pos hg_pos hfg
   have hf_rr : (f ≠ 0 ∧ f.Splits) := by
     rcases hfg 1 0 (by simp) (by simp) with hzero | hrr
-    · exact False.elim (ne_zero_of_hasPosLeadingCoeff hf_pos (by simp_all))
+    · exact False.elim (HasPosLeadingCoeff.ne_zero hf_pos (by simp_all))
     · simp_all
   have hg_rr : (g ≠ 0 ∧ g.Splits) := by
     rcases hfg 0 1 (by simp) (by simp) with hzero | hrr
-    · exact False.elim (ne_zero_of_hasPosLeadingCoeff hg_pos (by simp_all))
+    · exact False.elim (HasPosLeadingCoeff.ne_zero hg_pos (by simp_all))
     · simp_all
   exact
     posComboPairHasCommonInterleaver_of_boundaryRightPairOrientation_via_nonnegShift
@@ -3470,7 +3332,7 @@ private theorem isRealRooted_of_natDegree_le_one_of_hasPosLeadingCoeff
     {f : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hf_deg_le_one : f.natDegree ≤ 1) : (f ≠ 0 ∧ f.Splits) := by
-  have hf0 : f ≠ 0 := ne_zero_of_hasPosLeadingCoeff hf_pos
+  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
   by_cases hf_deg0 : f.natDegree = 0
   · exact isRealRooted_of_deg_zero hf0 hf_deg0
   · have hf_deg1 : f.natDegree = 1 := by lia

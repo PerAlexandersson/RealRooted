@@ -161,26 +161,6 @@ lemma mem_rootSlotInterval_congr
     x ∈ rootSlotInterval xs jx ↔ x ∈ rootSlotInterval ys jy := by
   rw [rootSlotInterval_congr hxy hji]
 
-private lemma listAlternates_all_le_getLast
-    {ss rs : List ℝ}
-    (hrs_ne : rs ≠ [])
-    (hrs : rs.Pairwise (· ≤ ·))
-    (halt : ListAlternates ss rs) :
-    ∀ s ∈ ss, s ≤ rs.getLast hrs_ne := by
-  induction ss generalizing rs with
-  | nil =>
-      simp
-  | cons s ss ih =>
-      cases rs with
-      | nil =>
-          lia
-      | cons r rs' =>
-          rcases halt with ⟨hsr, htail⟩
-          intro t ht
-          rcases List.mem_cons.mp ht with rfl | ht
-          · exact le_trans hsr (List.Pairwise.rel_getLast hrs (by simp [List.mem_cons]))
-          · exact listInterlaces_all_le_getLast (rs := r :: rs') (by lia) hrs htail t ht
-
 private lemma reverse_get_zero_eq_getLast {xs : List ℝ} (hxs : xs ≠ []) :
     xs.reverse.get ⟨0, by grind⟩ =
       xs.getLast hxs := by
