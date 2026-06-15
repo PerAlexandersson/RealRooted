@@ -119,7 +119,6 @@ lemma prec_to_prec_mul_X_of_nonneg {f g : ℝ[X]}
         ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, Or.inr ⟨hlen, by lia⟩⟩
         hdeg hf_nonpos hg_nonpos
 
-
 private lemma affine_family_common_root_reduction_data
     {f g : ℝ[X]} {r : ℝ}
     (hf : f ≠ 0 ∧ f.Splits) (hg : g ≠ 0 ∧ g.Splits)
@@ -777,7 +776,6 @@ private lemma isRealRooted_iterate_derivative_of_lt_natDegree
           (fun h0 => False.elim (hnonzero h0))
           id
 
-
 /-- In the same-degree `Prec` case, removing a rightmost root of the right-hand
 polynomial turns the quotient into an honest differ-by-1 interlacer for the
 left-hand polynomial. This is the local `AffineFamily` copy of the root-list
@@ -1105,7 +1103,6 @@ private lemma left_family_pair_data_one_two
     PosComboRealRooted.family_pair_data_left
       (f := f) (g := g) hfg hdeg hf_pos hg_pos hno
       (lam₁ := 1) (lam₂ := 2) zero_lt_one (by simp) (by simp)
-
 
 /-- At a root of `2f + g`, the companion family member `f + g` has the
 opposite sign of `f`; no-common-roots makes this strict. -/
@@ -1685,7 +1682,6 @@ private lemma prec_right_pair_sameDegree_no_common_of_end_sign_data
         (by grind)
         (by lia)
         (by lia)
-
 
 /-- In the linear left-hand branch of the affine converse, the right polynomial
 must be nonpositive at the unique root of `f`. Otherwise, after translating
@@ -2412,7 +2408,6 @@ private theorem isRealRooted_of_sub_C_mul_right_family_of_natDegree_lt
     exact ⟨hg₀_monic.ne_zero, hsplit⟩
   simpa [show C g.leadingCoeff * g₀ = g from by ext n; grind] using
     isRealRooted_C_mul hg₀_rr hg_lc_ne
-
 
 /-- Local bounded right-family double-root obstruction.
 
@@ -4350,6 +4345,5 @@ lemma prec0_one_affine_linear {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
     refine interlaces_one_linear ?_
     grind
   exact hInter.toPrec.toPrec0
-
 
 end RealRooted

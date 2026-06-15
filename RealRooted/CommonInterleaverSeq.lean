@@ -161,8 +161,6 @@ lemma mem_rootSlotInterval_congr
     x ∈ rootSlotInterval xs jx ↔ x ∈ rootSlotInterval ys jy := by
   rw [rootSlotInterval_congr hxy hji]
 
-
-
 private lemma reverse_get_zero_eq_getLast {xs : List ℝ} (hxs : xs ≠ []) :
     xs.reverse.get ⟨0, by grind⟩ =
       xs.getLast hxs := by

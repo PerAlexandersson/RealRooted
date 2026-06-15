@@ -231,5 +231,4 @@ lemma allComboRealRooted_eq_zero_or_isRealRooted_and_hasSimpleRoots_iterateTDeri
   simpa [iterateTDeriv_linear_combo] using
     hasSimpleRoots_iterateTDeriv_of_natDegree_le heps hp (hall α β) hpdeg
 
-
 end RealRooted

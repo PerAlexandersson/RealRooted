@@ -793,7 +793,6 @@ private lemma eval_derivative_ne_zero_of_hasSimpleRoots
   rw [hsimple r hr] at hmult
   lia
 
-
 /-- Local double-root obstruction in the positive-sign case.
 
 If every linear combination of `p` and `q` is real-rooted, `p` has an exact
@@ -1614,7 +1613,6 @@ private theorem isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
           _ = (↑(us ++ [uR]) : Multiset ℝ).card := (Multiset.coe_card _).symm)
     refine ⟨hF_ne, ?_⟩
     exact splits_of_card_roots (by rw [← hws_eq, Multiset.coe_card, hws_len])
-
 
 /-- Same-degree `hroot_sign` real-rootedness without assuming the target has
 positive leading coefficient.
@@ -3421,7 +3419,6 @@ theorem derivativePreservesPrec0_of_sameDegree
     by_cases hdeg : f.natDegree = g.natDegree
     · exact hsame hfg' hdeg
     · exact derivative_prec0_of_prec_succDegree hfg' (by lia)
-
 
 end
 end RealRooted

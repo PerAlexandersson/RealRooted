@@ -45,7 +45,6 @@ lemma motzkin_succ_succ (n : Nat) :
       C (motzkinCoeffA n) * motzkin (n + 1) +
         C (motzkinCoeffB n) * (X - C motzkinShift) * motzkin n := rfl
 
-
 lemma coeff_motzkin_succ_succ (n m : Nat) :
     coeff (motzkin (n + 2)) (m + 1) =
       motzkinCoeffA n * coeff (motzkin (n + 1)) (m + 1) +

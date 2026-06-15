@@ -246,7 +246,6 @@ lemma zipWith_mul_sparseLinearPairSeq_sum_eq_of_length
   subst n
   simpa using zipWith_mul_sparseLinearPairSeq_sum_eq row i j hij a b
 
-
 /-- A matrix of polynomials acts on a sequence by matrix-vector multiplication. -/
 def matPolyAction (G : List (List ℝ[X])) (fs : List ℝ[X]) : List ℝ[X] :=
   G.map (fun row => (row.zipWith (· * ·) fs).sum)

@@ -26,8 +26,6 @@ private lemma natDegree_eq_or_succ_of_prec {f g : ℝ[X]} (h : Prec f g) :
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
   lia
 
-
-
 private lemma exists_common_root_upper_bound (h : ℝ[X]) (l : List (ℝ × ℝ[X])) :
     ∃ c, (∀ r ∈ h.roots, r ≤ c) ∧ ∀ ap ∈ l, ∀ r ∈ ap.2.roots, r ≤ c := by
   induction l with

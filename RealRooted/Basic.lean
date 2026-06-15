@@ -261,7 +261,6 @@ lemma listAlternates_all_le_getLast {ss rs : List ℝ}
   listAlternates_left_le_of_right_le halt
     (fun _ hr => List.Pairwise.rel_getLast hrs hr)
 
-
 /-! ## Polynomial interlacing -/
 
 /-- `f ≪ g` (**f is interlaced by g**): both real-rooted, `g` has the rightmost root,

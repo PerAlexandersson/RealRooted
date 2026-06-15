@@ -21,8 +21,6 @@ noncomputable section
 
 namespace RealRooted
 
-
-
 private lemma hasPosLeadingCoeff_comp_X_add_C_local
     {p : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (r : ℝ) :
     HasPosLeadingCoeff (p.comp (X + C r)) := by
@@ -112,8 +110,6 @@ private lemma coeff_nonneg_of_add_C_mul_nonneg_forall
   intro μ hμ
   have hμnn : HasNonnegCoeffs (f + C μ * g) := h hμ
   simpa [Polynomial.coeff_add, Polynomial.coeff_C_mul] using hμnn n
-
-
 
 private lemma no_common_boundary_right_pair_of_no_common_nonneg
     {f g : ℝ[X]} {t : ℝ}
@@ -971,7 +967,6 @@ theorem pairHasCommonInterleaver_of_forward_oneTwoFamilies_sameDegree_nonneg
     htwo hf_pos hg_pos
       (compatible_of_forward_oneTwoFamilies_sameDegree_nonneg
         hf_pos hg_pos hfnn hgnn hfg hdeg hdeg_pos hno hright hleft)
-
 
 /-- Any two positive-leading polynomials of degree at most one already satisfy
 the Obreschkoff alternative. This is the unconditional low-degree endpoint for

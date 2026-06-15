@@ -525,7 +525,6 @@ lemma hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
   have hrp : p.IsRoot r := IsRoot.of_dvd hqp hrq
   exact roots_nonpos_of_nonneg_coeffs hp.2 hpnn r ((mem_roots hp.1).mpr hrp)
 
-
 theorem prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos {f g : ℝ[X]}
     (h : Prec g (X * f))
     (hdeg : f.natDegree = g.natDegree)

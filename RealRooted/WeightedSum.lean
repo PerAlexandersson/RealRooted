@@ -298,5 +298,4 @@ theorem prec_sum_right
     | cons p l =>
         simp
 
-
 end RealRooted

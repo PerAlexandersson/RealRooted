@@ -38,7 +38,6 @@ This generalizes:
 - Many other classical real-rootedness results
 -/
 
-
 open Polynomial Filter
 
 noncomputable section
