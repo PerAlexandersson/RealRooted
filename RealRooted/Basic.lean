@@ -530,6 +530,25 @@ lemma listInterlaces_cons_length_eq :
   | s :: ss, r₂ :: rest, r₁, h => by
       obtain ⟨_, _, htail⟩ := h
       simpa [List.length_cons] using
-        listInterlaces_cons_length_eq htail
+          listInterlaces_cons_length_eq htail
+
+/-- Every polynomial has an upper bound for its roots. -/
+lemma exists_root_upper_bound (p : ℝ[X]) :
+    ∃ c, ∀ r ∈ p.roots, r ≤ c := by
+  let rs := p.roots.sort (· ≤ ·)
+  by_cases hrs_nil : rs = []
+  · refine ⟨0, ?_⟩
+    intro r hr
+    have hroots_nil : p.roots = 0 := by
+      simpa [rs, hrs_nil] using (Multiset.sort_eq (s := p.roots) (r := (· ≤ ·))).symm
+    simp_all
+  · refine ⟨rs.getLast hrs_nil, ?_⟩
+    have hrs_sorted : rs.Pairwise (· ≤ ·) := by
+      simp [rs]
+    intro r hr
+    have hr_mem : r ∈ rs := by
+      apply Multiset.mem_coe.mp
+      simpa [rs] using hr
+    exact hrs_sorted.rel_getLast hr_mem
 
 end RealRooted

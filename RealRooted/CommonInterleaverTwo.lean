@@ -21,19 +21,7 @@ noncomputable section
 
 namespace RealRooted
 
-private lemma exists_root_upper_bound_of_isRealRooted_local
-    {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
-    ∃ r : ℝ, ∀ s ∈ p.roots, s ≤ r := by
-  by_cases hdeg : p.natDegree = 0
-  · refine ⟨0, ?_⟩
-    intro s hs
-    have hcard : p.roots.card = 0 := by
-      simpa [hdeg] using card_roots_of_splits hp.2
-    have hroots : p.roots = 0 := Multiset.card_eq_zero.mp hcard
-    simp [hroots] at hs
-  · obtain ⟨r, _, hr_top⟩ :=
-      exists_rightmost_root_of_isRealRooted hp (Nat.pos_iff_ne_zero.mpr hdeg)
-    exact ⟨r, hr_top⟩
+
 
 private lemma hasPosLeadingCoeff_comp_X_add_C_local
     {p : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (r : ℝ) :
@@ -125,10 +113,7 @@ private lemma coeff_nonneg_of_add_C_mul_nonneg_forall
   have hμnn : HasNonnegCoeffs (f + C μ * g) := h hμ
   simpa [Polynomial.coeff_add, Polynomial.coeff_C_mul] using hμnn n
 
-private lemma isRoot_of_X_mul_of_ne_zero_local {f : ℝ[X]} {r : ℝ}
-    (hr : r ≠ 0) (hX : (X * f).IsRoot r) :
-    f.IsRoot r := by
-  simp_all
+
 
 private lemma no_common_boundary_right_pair_of_no_common_nonneg
     {f g : ℝ[X]} {t : ℝ}
@@ -2344,8 +2329,8 @@ theorem posComboPairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
     (hg_pos : HasPosLeadingCoeff g)
     (hfg : PosComboRealRooted f g) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  obtain ⟨rf, hrf⟩ := exists_root_upper_bound_of_isRealRooted_local hf_rr
-  obtain ⟨rg, hrg⟩ := exists_root_upper_bound_of_isRealRooted_local hg_rr
+  obtain ⟨rf, hrf⟩ := exists_root_upper_bound f
+  obtain ⟨rg, hrg⟩ := exists_root_upper_bound g
   let r : ℝ := max rf rg
   let f' : ℝ[X] := f.comp (X + C r)
   let g' : ℝ[X] := g.comp (X + C r)
@@ -2392,8 +2377,8 @@ theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
     (hg_pos : HasPosLeadingCoeff g)
     (hfg : PosComboRealRooted f g) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  obtain ⟨rf, hrf⟩ := exists_root_upper_bound_of_isRealRooted_local hf_rr
-  obtain ⟨rg, hrg⟩ := exists_root_upper_bound_of_isRealRooted_local hg_rr
+  obtain ⟨rf, hrf⟩ := exists_root_upper_bound f
+  obtain ⟨rg, hrg⟩ := exists_root_upper_bound g
   let r : ℝ := max rf rg
   let f' : ℝ[X] := f.comp (X + C r)
   let g' : ℝ[X] := g.comp (X + C r)
