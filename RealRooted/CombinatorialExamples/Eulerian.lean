@@ -1,8 +1,8 @@
+import RealRooted.AffineDerivative
 import RealRooted.Basic
 import RealRooted.Derivative
-import RealRooted.Wagner
-import RealRooted.AffineDerivative
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
+import RealRooted.Wagner
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Tactic
 
