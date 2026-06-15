@@ -488,4 +488,27 @@ lemma coeff_X_sub_C_mul (r : ℝ) (q : ℝ[X]) (n : ℕ) :
   | zero => simp
   | succ m => simp [coeff_X_mul]
 
+/-- A nonconstant real-rooted polynomial has a rightmost root. -/
+lemma exists_rightmost_root_of_isRealRooted
+    {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hdeg : 1 ≤ p.natDegree) :
+    ∃ r, p.IsRoot r ∧ ∀ s ∈ p.roots, s ≤ r := by
+  let rs := p.roots.sort (· ≤ ·)
+  have hrs_eq : (↑rs : Multiset ℝ) = p.roots := Multiset.sort_eq ..
+  have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
+  have hrs_len : rs.length = p.natDegree := by
+    rw [show rs = p.roots.sort (· ≤ ·) by lia, Multiset.length_sort, card_roots_of_splits hp.2]
+  have hrs_ne : rs ≠ [] := by
+    grind
+  refine ⟨rs.getLast hrs_ne, ?_, ?_⟩
+  · have hr_mem : rs.getLast hrs_ne ∈ rs := List.getLast_mem hrs_ne
+    have : rs.getLast hrs_ne ∈ p.roots := by
+      rw [← hrs_eq]
+      simp
+    simp_all
+  · intro s hs
+    have hs_mem : s ∈ rs := by
+      apply Multiset.mem_coe.mp
+      lia
+    exact hrs_sorted.rel_getLast hs_mem
+
 end RealRooted

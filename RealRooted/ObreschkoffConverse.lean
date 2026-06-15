@@ -834,33 +834,6 @@ private lemma eval_derivative_ne_zero_of_hasSimpleRoots
   rw [hsimple r hr] at hmult
   lia
 
-/-- An exact double root has nonvanishing second derivative. This is the local
-algebraic fact used to turn the final converse obstruction into a quantified
-second-derivative inequality, rather than another global interlacing argument. -/
-private lemma eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
-    {p : ℝ[X]} {x : ℝ}
-    (hp0 : p ≠ 0)
-    (hmult : p.rootMultiplicity x = 2) :
-    p.derivative.derivative.eval x ≠ 0 := by
-  have hp_root : p.IsRoot x := by
-    exact (rootMultiplicity_pos hp0).mp (by lia)
-  have hp_deg_ge2 : 2 ≤ p.natDegree := by
-    calc
-      2 = p.rootMultiplicity x := by lia
-      _ = p.roots.count x := (count_roots p).symm
-      _ ≤ p.roots.card := p.roots.count_le_card x
-      _ ≤ p.natDegree := card_roots' p
-  have hpd_ne : p.derivative ≠ 0 := by simp; lia
-  have hpd_rootmult : p.derivative.rootMultiplicity x = 1 := by
-    rw [derivative_rootMultiplicity_of_root hp_root, hmult]
-  intro hder2
-  have hpd_root : p.derivative.IsRoot x := by
-    exact (rootMultiplicity_pos hpd_ne).mp (by lia)
-  have hpd_der_root : p.derivative.derivative.IsRoot x := by
-    simp_all
-  have hmult_gt : 1 < p.derivative.rootMultiplicity x := by
-    exact (one_lt_rootMultiplicity_iff_isRoot hpd_ne).2 ⟨hpd_root, hpd_der_root⟩
-  lia
 
 /-- Local double-root obstruction in the positive-sign case.
 
@@ -1683,28 +1656,6 @@ private theorem isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
     refine ⟨hF_ne, ?_⟩
     exact splits_of_card_roots (by rw [← hws_eq, Multiset.coe_card, hws_len])
 
-/-- A nonconstant real-rooted polynomial has a rightmost root. -/
-private lemma exists_rightmost_root_of_isRealRooted
-    {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hdeg : 1 ≤ p.natDegree) :
-    ∃ r, p.IsRoot r ∧ ∀ s ∈ p.roots, s ≤ r := by
-  let rs := p.roots.sort (· ≤ ·)
-  have hrs_eq : (↑rs : Multiset ℝ) = p.roots := Multiset.sort_eq ..
-  have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
-  have hrs_len : rs.length = p.natDegree := by
-    rw [show rs = p.roots.sort (· ≤ ·) by lia, Multiset.length_sort, card_roots_of_splits hp.2]
-  have hrs_ne : rs ≠ [] := by
-    grind
-  refine ⟨rs.getLast hrs_ne, ?_, ?_⟩
-  · have hr_mem : rs.getLast hrs_ne ∈ rs := List.getLast_mem hrs_ne
-    have : rs.getLast hrs_ne ∈ p.roots := by
-      rw [← hrs_eq]
-      simp
-    simp_all
-  · intro s hs
-    have hs_mem : s ∈ rs := by
-      apply Multiset.mem_coe.mp
-      lia
-    exact hrs_sorted.rel_getLast hs_mem
 
 /-- Same-degree `hroot_sign` real-rootedness without assuming the target has
 positive leading coefficient.

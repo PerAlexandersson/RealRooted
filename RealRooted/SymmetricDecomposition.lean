@@ -647,19 +647,6 @@ lemma not_isRoot_neg_one_fPolynomial_of_natDegree_eq_of_hasNonnegCoeffs
     simp_all
   simp_all
 
-private lemma hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
-    {p q : ℝ[X]}
-    (hp : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p)
-    (hq : q ≠ 0 ∧ q.Splits) (hq_pos : HasPosLeadingCoeff q)
-    (hqp : q ∣ p) :
-    HasNonnegCoeffs q := by
-  refine ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hq.2).mpr ?_).1
-  refine ⟨hq_pos, ?_⟩
-  intro r hr
-  have hrq : q.IsRoot r := (mem_roots hq.1).mp hr
-  have hrp : p.IsRoot r := IsRoot.of_dvd hqp hrq
-  exact roots_nonpos_of_nonneg_coeffs hp.2 hpnn r ((mem_roots hp.1).mpr hrp)
-
 private lemma isRealRooted_transformed_linear {r : ℝ} (hr : r ≤ 0) :
     ((C (1 - r) * X - C r) ≠ 0 ∧ (C (1 - r) * X - C r).Splits) := by
   have h1r_pos : 0 < 1 - r := by grind

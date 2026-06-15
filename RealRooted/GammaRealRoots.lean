@@ -686,19 +686,6 @@ lemma isRealRooted_gammaQuadraticFactor {r : ℝ} (hr : r ≤ 0) :
         Polynomial.natDegree_quadratic (ne_of_gt ht_pos)]
       simp
 
-lemma hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
-    {p q : ℝ[X]}
-    (hp : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p)
-    (hq : q ≠ 0 ∧ q.Splits) (hq_pos : HasPosLeadingCoeff q)
-    (hqp : q ∣ p) :
-    HasNonnegCoeffs q := by
-  refine ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hq.2).mpr ?_).1
-  refine ⟨hq_pos, ?_⟩
-  intro r hr
-  have hrq : q.IsRoot r := (mem_roots hq.1).mp hr
-  have hrp : p.IsRoot r := IsRoot.of_dvd hqp hrq
-  exact roots_nonpos_of_nonneg_coeffs hp.2 hpnn r ((mem_roots hp.1).mpr hrp)
-
 /-- The gamma transform preserves real-rootedness on nonnegative-coefficient
 inputs whose degree fits the ambient floor `d / 2`. -/
 theorem isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs

@@ -119,18 +119,6 @@ lemma prec_to_prec_mul_X_of_nonneg {f g : ℝ[X]}
         ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, Or.inr ⟨hlen, by lia⟩⟩
         hdeg hf_nonpos hg_nonpos
 
-private lemma hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
-    {p q : ℝ[X]}
-    (hp : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p)
-    (hq : q ≠ 0 ∧ q.Splits) (hq_pos : HasPosLeadingCoeff q)
-    (hqp : q ∣ p) :
-    HasNonnegCoeffs q := by
-  refine ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hq.2).mpr ?_).1
-  refine ⟨hq_pos, ?_⟩
-  intro r hr
-  have hrq : q.IsRoot r := (mem_roots hq.1).mp hr
-  have hrp : p.IsRoot r := IsRoot.of_dvd hqp hrq
-  exact roots_nonpos_of_nonneg_coeffs hp.2 hpnn r ((mem_roots hp.1).mpr hrp)
 
 private lemma affine_family_common_root_reduction_data
     {f g : ℝ[X]} {r : ℝ}
@@ -813,32 +801,6 @@ private lemma isRealRooted_iterate_derivative_of_lt_natDegree
           (fun h0 => False.elim (hnonzero h0))
           id
 
-/-- A positive-leading real-rooted polynomial of degree at least `2` is
-nonpositive at its rightmost critical point. This is the same local obstruction
-used in the Obreschkoff degree-gap proof, now recorded here because the affine
-family needs the positive-shift variant below. -/
-private lemma exists_rightmost_root_of_isRealRooted
-    {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hdeg : 1 ≤ p.natDegree) :
-    ∃ r, p.IsRoot r ∧ ∀ s ∈ p.roots, s ≤ r := by
-  let rs := p.roots.sort (· ≤ ·)
-  have hrs_eq : (↑rs : Multiset ℝ) = p.roots := Multiset.sort_eq ..
-  have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
-  have hrs_len : rs.length = p.natDegree := by
-    rw [show rs = p.roots.sort (· ≤ ·) by lia, Multiset.length_sort,
-      card_roots_of_splits hp.2]
-  have hrs_ne : rs ≠ [] := by
-    grind
-  refine ⟨rs.getLast hrs_ne, ?_, ?_⟩
-  · have hr_mem : rs.getLast hrs_ne ∈ rs := List.getLast_mem hrs_ne
-    have : rs.getLast hrs_ne ∈ p.roots := by
-      rw [← hrs_eq]
-      simp
-    simp_all
-  · intro s hs
-    have hs_mem : s ∈ rs := by
-      apply Multiset.mem_coe.mp
-      lia
-    exact hrs_sorted.rel_getLast hs_mem
 
 /-- In the same-degree `Prec` case, removing a rightmost root of the right-hand
 polynomial turns the quotient into an honest differ-by-1 interlacer for the
@@ -2619,32 +2581,6 @@ private theorem isRealRooted_of_sub_C_mul_right_family_of_natDegree_lt
   simpa [show C g.leadingCoeff * g₀ = g from by ext n; grind] using
     isRealRooted_C_mul hg₀_rr hg_lc_ne
 
-/-- An exact double root has nonvanishing second derivative. This is the local
-algebraic input behind the bounded right-family double-root obstruction below. -/
-private lemma eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two_local
-    {p : ℝ[X]} {x : ℝ}
-    (hp0 : p ≠ 0)
-    (hmult : p.rootMultiplicity x = 2) :
-    p.derivative.derivative.eval x ≠ 0 := by
-  have hp_root : p.IsRoot x := by
-    exact (rootMultiplicity_pos hp0).mp (by lia)
-  have hp_deg_ge2 : 2 ≤ p.natDegree := by
-    calc
-      2 = p.rootMultiplicity x := by lia
-      _ = p.roots.count x := (count_roots p).symm
-      _ ≤ p.roots.card := p.roots.count_le_card x
-      _ ≤ p.natDegree := card_roots' p
-  have hpd_ne : p.derivative ≠ 0 := by simp; lia
-  have hpd_rootmult : p.derivative.rootMultiplicity x = 1 := by
-    rw [derivative_rootMultiplicity_of_root hp_root, hmult]
-  intro hder2
-  have hpd_root : p.derivative.IsRoot x := by
-    exact (rootMultiplicity_pos hpd_ne).mp (by lia)
-  have hpd_der_root : p.derivative.derivative.IsRoot x := by
-    simp_all
-  have hmult_gt : 1 < p.derivative.rootMultiplicity x := by
-    exact (one_lt_rootMultiplicity_iff_isRoot hpd_ne).2 ⟨hpd_root, hpd_der_root⟩
-  lia
 
 /-- Local bounded right-family double-root obstruction.
 
@@ -2772,7 +2708,7 @@ private lemma false_of_affine_family_double_root
   have hG_ne : G ≠ 0 := by
     dsimp [G]
     exact mul_ne_zero
-      (eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two_local hg0 hg_mult)
+      (eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two hg0 hg_mult)
       hf_eval_ne
   by_cases hG_pos : 0 < G
   · let q : ℝ[X] := (X - C r + C (1 : ℝ)) * f
@@ -2930,7 +2866,7 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
   have hpη_ne : pη ≠ 0 := hpη_rr.1
   have hpp_ne : pη.derivative.derivative.eval r ≠ 0 := by
     exact
-      eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two_local
+      eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
         hpη_ne hpη_mult
   have hqPosη_keep :
       0 < qPosη.eval r * qPos.eval r := by
@@ -3107,7 +3043,7 @@ private lemma rootMultiplicity_ne_two_add_right_of_posComboRealRooted
   · have hpp_ne :
         (f + C μ * g).derivative.derivative.eval x ≠ 0 := by
       exact
-        eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two_local
+        eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
           (show f + C μ * g ≠ 0 from (PosComboRealRooted.isRealRooted_add_right hfg hμ).1)
           hmult
     have hprod_ne :
@@ -3225,7 +3161,7 @@ private lemma hasSimpleRoots_add_right_of_posComboRealRooted
     have hpηpp_ne :
         pη.derivative.derivative.eval x ≠ 0 := by
       exact
-        eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two_local
+        eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
           hpη_ne hpk_mult
     have hprod_ne :
         pη.derivative.derivative.eval x * gη.eval x ≠ 0 :=

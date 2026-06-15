@@ -49,6 +49,31 @@ lemma coeff_one_sub_X_mul_derivative (p : ℝ[X]) (m : Nat) :
       rw [sub_mul, one_mul, coeff_sub, coeff_X_mul, coeff_derivative, coeff_derivative]
       grind
 
+
+/-- An exact double root has nonvanishing second derivative. -/
+lemma eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
+    {p : ℝ[X]} {x : ℝ} (hp0 : p ≠ 0) (hmult : p.rootMultiplicity x = 2) :
+    p.derivative.derivative.eval x ≠ 0 := by
+  have hp_root : p.IsRoot x := by
+    exact (rootMultiplicity_pos hp0).mp (by lia)
+  have hp_deg_ge2 : 2 ≤ p.natDegree := by
+    calc
+      2 = p.rootMultiplicity x := by lia
+      _ = p.roots.count x := (count_roots p).symm
+      _ ≤ p.roots.card := p.roots.count_le_card x
+      _ ≤ p.natDegree := card_roots' p
+  have hpd_ne : p.derivative ≠ 0 := by simp; lia
+  have hpd_rootmult : p.derivative.rootMultiplicity x = 1 := by
+    rw [derivative_rootMultiplicity_of_root hp_root, hmult]
+  intro hder2
+  have hpd_root : p.derivative.IsRoot x := by
+    exact (rootMultiplicity_pos hpd_ne).mp (by lia)
+  have hpd_der_root : p.derivative.derivative.IsRoot x := by
+    simp_all
+  have hmult_gt : 1 < p.derivative.rootMultiplicity x := by
+    exact (one_lt_rootMultiplicity_iff_isRoot hpd_ne).2 ⟨hpd_root, hpd_der_root⟩
+  lia
+
 /-! ## Rolle's theorem for polynomials -/
 
 theorem exists_root_derivative_between {p : ℝ[X]} {a b : ℝ} (hab : a < b)

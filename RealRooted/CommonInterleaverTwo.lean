@@ -45,28 +45,6 @@ private lemma strictMonoOn_eval_Ici_of_derivative_roots_le_local
     eval_pos_of_all_roots_lt hp' hp'_pos hlt
   simp_all
 
-private lemma exists_rightmost_root_of_isRealRooted_local
-    {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hdeg : 1 ≤ p.natDegree) :
-    ∃ r, p.IsRoot r ∧ ∀ s ∈ p.roots, s ≤ r := by
-  let rs := p.roots.sort (· ≤ ·)
-  have hrs_eq : (↑rs : Multiset ℝ) = p.roots := Multiset.sort_eq ..
-  have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
-  have hrs_len : rs.length = p.natDegree := by
-    rw [show rs = p.roots.sort (· ≤ ·) by lia, Multiset.length_sort,
-      card_roots_of_splits hp.2]
-  have hrs_ne : rs ≠ [] := by
-    grind
-  refine ⟨rs.getLast hrs_ne, ?_, ?_⟩
-  · have hr_mem : rs.getLast hrs_ne ∈ rs := List.getLast_mem hrs_ne
-    have : rs.getLast hrs_ne ∈ p.roots := by
-      rw [← hrs_eq]
-      simp
-    simp_all
-  · intro s hs
-    have hs_mem : s ∈ rs := by
-      apply Multiset.mem_coe.mp
-      lia
-    exact hrs_sorted.rel_getLast hs_mem
 
 private lemma exists_root_ge_of_derivative_root_local
     {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hdeg : 2 ≤ p.natDegree)
@@ -100,7 +78,7 @@ private lemma exists_root_upper_bound_of_isRealRooted_local
     have hroots : p.roots = 0 := Multiset.card_eq_zero.mp hcard
     simp [hroots] at hs
   · obtain ⟨r, _, hr_top⟩ :=
-      exists_rightmost_root_of_isRealRooted_local hp (Nat.pos_iff_ne_zero.mpr hdeg)
+      exists_rightmost_root_of_isRealRooted hp (Nat.pos_iff_ne_zero.mpr hdeg)
     exact ⟨r, hr_top⟩
 
 private lemma hasPosLeadingCoeff_comp_X_add_C_local
@@ -135,7 +113,7 @@ private lemma exists_rightmost_derivative_root_with_eval_nonpos_local
   have hp'_deg : p.derivative.natDegree = p.natDegree - 1 :=
     p.natDegree_derivative
   obtain ⟨c, hc_root, hc_top⟩ :=
-    exists_rightmost_root_of_isRealRooted_local hp' (by lia)
+    exists_rightmost_root_of_isRealRooted hp' (by lia)
   by_cases hpc : 0 < p.eval c
   · have hmono :
       StrictMonoOn (fun x => p.eval x) (Set.Ici c) := by

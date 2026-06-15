@@ -524,6 +524,20 @@ lemma hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos {p : ℝ[X]} (hp : p
     exact (hasNonnegCoeffs_C hp₀.le).mul
       (hasNonnegCoeffs_multiset_prod_X_sub_C p.roots hroots_nonpos)
 
+lemma hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
+    {p q : ℝ[X]}
+    (hp : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p)
+    (hq : q ≠ 0 ∧ q.Splits) (hq_pos : HasPosLeadingCoeff q)
+    (hqp : q ∣ p) :
+    HasNonnegCoeffs q := by
+  refine ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hq.2).mpr ?_).1
+  refine ⟨hq_pos, ?_⟩
+  intro r hr
+  have hrq : q.IsRoot r := (mem_roots hq.1).mp hr
+  have hrp : p.IsRoot r := IsRoot.of_dvd hqp hrq
+  exact roots_nonpos_of_nonneg_coeffs hp.2 hpnn r ((mem_roots hp.1).mpr hrp)
+
+
 theorem prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos {f g : ℝ[X]}
     (h : Prec g (X * f))
     (hdeg : f.natDegree = g.natDegree)
