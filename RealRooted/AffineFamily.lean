@@ -759,30 +759,6 @@ private lemma iterate_derivative_C_mul (a : ℝ) :
   | 0, p => by simp
   | n + 1, p => by
       simp
-
-private lemma natDegree_iterate_derivative_eq_sub
-    {p : ℝ[X]} {k : ℕ} (hp0 : p ≠ 0) (hk : k ≤ p.natDegree) :
-    (derivative^[k] p).natDegree = p.natDegree - k := by
-  apply le_antisymm (natDegree_iterate_derivative p k)
-  apply Polynomial.le_natDegree_of_ne_zero
-  have hcoeff :
-      (derivative^[k] p).coeff (p.natDegree - k) ≠ 0 := by
-    rw [coeff_iterate_derivative, Nat.sub_add_cancel hk, nsmul_eq_mul, coeff_natDegree]
-    simp_all
-  lia
-
-/-- Iterated derivatives stay nonzero as long as we do not differentiate past
-the degree. This keeps the constant-vs-degree-`≥ 2` contradiction honest. -/
-private lemma iterate_derivative_ne_zero_of_le_natDegree
-    {p : ℝ[X]} {k : ℕ} (hp0 : p ≠ 0) (hk : k ≤ p.natDegree) :
-    (derivative^[k] p) ≠ 0 := by
-  intro hk0
-  have hcoeff :
-      (derivative^[k] p).coeff (p.natDegree - k) ≠ 0 := by
-    rw [coeff_iterate_derivative, Nat.sub_add_cancel hk, nsmul_eq_mul, coeff_natDegree]
-    simp_all
-  simp [hk0] at hcoeff
-
 private lemma isRealRooted_iterate_derivative_of_lt_natDegree
     {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
     ∀ {n : ℕ}, n < p.natDegree → (((derivative^[n]) p) ≠ 0 ∧ ((derivative^[n]) p).Splits)

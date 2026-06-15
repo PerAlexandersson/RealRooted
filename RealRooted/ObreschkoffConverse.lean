@@ -1871,7 +1871,7 @@ lemma exists_root_ge_of_derivative_root
 /-- Exact degree bookkeeping for iterated derivatives. We use this in the
 degree-gap reduction to show that differentiating the smaller polynomial down to
 degree `0` still leaves the larger one with degree at least `2`. -/
-private lemma natDegree_iterate_derivative_eq_sub
+lemma natDegree_iterate_derivative_eq_sub
     {p : ℝ[X]} {k : ℕ} (hp0 : p ≠ 0) (hk : k ≤ p.natDegree) :
     (derivative^[k] p).natDegree = p.natDegree - k := by
   apply le_antisymm (natDegree_iterate_derivative p k)
@@ -1884,7 +1884,7 @@ private lemma natDegree_iterate_derivative_eq_sub
 
 /-- Iterated derivatives stay nonzero as long as we do not differentiate past
 the degree. -/
-private lemma iterate_derivative_ne_zero_of_le_natDegree
+lemma iterate_derivative_ne_zero_of_le_natDegree
     {p : ℝ[X]} {k : ℕ} (hp0 : p ≠ 0) (hk : k ≤ p.natDegree) :
     (derivative^[k] p) ≠ 0 := by
   intro hk0
