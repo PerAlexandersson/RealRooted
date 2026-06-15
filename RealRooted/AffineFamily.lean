@@ -3242,13 +3242,6 @@ private lemma false_of_localExtr_neg_eval_div_eval_pos_of_add_left_family_of_no_
   have hW_zero : f.derivative.eval x * g.eval x - f.eval x * g.derivative.eval x = 0 :=
     wronskian_eq_zero_of_localExtr_neg_eval_div_eval (f := f) (g := g) hlocal hf_eval_ne
   exact (wronskian_eval_ne_zero_of_add_left_family_of_no_common hfamily hno hopp) hW_zero
-
-private lemma pairwise_suffix {α : Type*} {R : α → α → Prop} :
-    ∀ pre suf : List α, (pre ++ suf).Pairwise R → suf.Pairwise R
-  | [], suf, h => by grind
-  | _ :: pre, suf, h => by
-      grind
-
 private lemma consecNoRoots_tail {p : ℝ[X]} {a : ℝ} {l : List ℝ} :
     ConsecNoRoots p (a :: l) → ConsecNoRoots p l := by
   cases l with
@@ -3660,7 +3653,7 @@ private lemma allComboRealRooted_of_affine_family_succDegree_not_isRoot_zero
     have hpair_full : (pre ++ r₁ :: r₂ :: rest).Pairwise (· < ·) := by
       lia
     have hsuf_sortedLT : (r₁ :: r₂ :: rest).Pairwise (· < ·) :=
-      pairwise_suffix pre (r₁ :: r₂ :: rest) hpair_full
+      hpair_full.sublist (List.sublist_append_right pre (r₁ :: r₂ :: rest))
     have hgap_full : ConsecNoRoots g (pre ++ r₁ :: r₂ :: rest) := by
       lia
     have hsuf_gap : ConsecNoRoots g (r₁ :: r₂ :: rest) :=
