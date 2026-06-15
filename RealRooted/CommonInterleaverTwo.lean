@@ -987,23 +987,6 @@ theorem pairHasCommonInterleaver_of_forward_oneTwoFamilies_sameDegree_nonneg
       (compatible_of_forward_oneTwoFamilies_sameDegree_nonneg
         hf_pos hg_pos hfnn hgnn hfg hdeg hdeg_pos hno hright hleft)
 
-/-- Two nonzero constants satisfy `Prec` trivially because both root lists are
-empty. -/
-private lemma prec_degree_zero_degree_zero_local
-    {f g : ℝ[X]}
-    (hf : f ≠ 0 ∧ f.Splits) (hg : g ≠ 0 ∧ g.Splits)
-    (hf_deg0 : f.natDegree = 0) (hg_deg0 : g.natDegree = 0) :
-    Prec f g := by
-  have hroots_f : f.roots = 0 := by
-    apply Multiset.card_eq_zero.mp
-    rw [card_roots_of_splits hf.2, hf_deg0]
-  have hroots_g : g.roots = 0 := by
-    apply Multiset.card_eq_zero.mp
-    rw [card_roots_of_splits hg.2, hg_deg0]
-  refine ⟨hf, hg, [], [], by simp, by simp, ?_, ?_, ?_⟩
-  · simp [hroots_f]
-  · simp [hroots_g]
-  · exact Or.inr ⟨by lia, by simp [ListAlternates]⟩
 
 /-- Any two positive-leading polynomials of degree at most one already satisfy
 the Obreschkoff alternative. This is the unconditional low-degree endpoint for
@@ -1021,7 +1004,7 @@ theorem prec_or_revPrec_of_natDegree_le_one
   · have hf_rr : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_deg_zero hf0 hf_deg0
     by_cases hg_deg0 : g.natDegree = 0
     · have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_deg_zero hg0 hg_deg0
-      exact Or.inl (prec_degree_zero_degree_zero_local hf_rr hg_rr hf_deg0 hg_deg0)
+      exact Or.inl (prec_degree_zero_degree_zero hf_rr hg_rr hf_deg0 hg_deg0)
     · have hg_deg1 : g.natDegree = 1 := by lia
       have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_degree_one hg_deg1
       exact Or.inl (prec_degree_zero_right_of_degree_one hf_rr hg_rr hf_deg0 hg_deg1)

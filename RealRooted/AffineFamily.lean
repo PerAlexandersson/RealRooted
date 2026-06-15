@@ -1046,30 +1046,6 @@ private lemma no_common_root_left_family_one_two_of_no_common
     linarith
   simp_all
 
-/-- Degree and leading-coefficient bookkeeping for the right-family pair
-`(f + g, f + 2g)` when the right summand dominates the degree. -/
-private lemma right_family_degree_data_of_posLeadingCoeff
-    {f g : ℝ[X]}
-    (hdeg : f.natDegree ≤ g.natDegree)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
-    HasPosLeadingCoeff (f + g) ∧
-      HasPosLeadingCoeff (f + C (2 : ℝ) * g) ∧
-      (f + g).natDegree = g.natDegree ∧
-      (f + C (2 : ℝ) * g).natDegree = g.natDegree := by
-  refine ⟨?_, ?_, ?_, ?_⟩
-  · simpa using
-      PosComboRealRooted.family_hasPosLeadingCoeff_right
-        (f := f) (g := g) hdeg hf_pos hg_pos (μ := 1) zero_lt_one
-  · simpa using
-      PosComboRealRooted.family_hasPosLeadingCoeff_right
-        (f := f) (g := g) hdeg hf_pos hg_pos (μ := 2) (by simp)
-  · simpa using
-      PosComboRealRooted.family_natDegree_right
-        (f := f) (g := g) hdeg hf_pos hg_pos (μ := 1) zero_lt_one
-  · simpa using
-      PosComboRealRooted.family_natDegree_right
-        (f := f) (g := g) hdeg hf_pos hg_pos (μ := 2) (by simp)
-
 /-- Degree and leading-coefficient bookkeeping for the left-family pair
 `(f + g, 2f + g)` when the left summand dominates the degree. -/
 private lemma left_family_degree_data_of_posLeadingCoeff
@@ -1130,41 +1106,6 @@ private lemma left_family_pair_data_one_two
       (f := f) (g := g) hfg hdeg hf_pos hg_pos hno
       (lam₁ := 1) (lam₂ := 2) zero_lt_one (by simp) (by simp)
 
-/-- At a root of `f + 2g`, the companion family member `f + g` has the
-opposite sign of `g`; no-common-roots makes this strict. -/
-private lemma eval_mul_right_family_one_neg_at_root_two_of_no_common
-    {f g : ℝ[X]}
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    ∀ r, (f + C (2 : ℝ) * g).IsRoot r → (f + g).eval r * g.eval r < 0 := by
-  intro r hroot
-  have hq_eval : (f + C (2 : ℝ) * g).eval r = 0 := by
-    simp_all
-  rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C] at hq_eval
-  have hp_eval : (f + g).eval r = -g.eval r := by
-    rw [Polynomial.eval_add]
-    linarith
-  have hg_ne : g.eval r ≠ 0 := by
-    intro hg0
-    simp_all
-  simp_all
-
-/-- At a root of `f + g`, the companion family member `f + 2g` has the
-opposite sign of `f`; no-common-roots makes this strict. -/
-private lemma eval_mul_right_family_two_neg_at_root_one_of_no_common
-    {f g : ℝ[X]}
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    ∀ r, (f + g).IsRoot r → (f + C (2 : ℝ) * g).eval r * f.eval r < 0 := by
-  intro r hroot
-  have hp_eval0 : (f + g).eval r = 0 := by
-    simp_all
-  rw [Polynomial.eval_add] at hp_eval0
-  have hq_eval : (f + C (2 : ℝ) * g).eval r = -f.eval r := by
-    rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C]
-    linarith
-  have hf_ne : f.eval r ≠ 0 := by
-    intro hf0
-    simp_all
-  simp_all
 
 /-- At a root of `2f + g`, the companion family member `f + g` has the
 opposite sign of `f`; no-common-roots makes this strict. -/
@@ -1745,23 +1686,6 @@ private lemma prec_right_pair_sameDegree_no_common_of_end_sign_data
         (by lia)
         (by lia)
 
-/-- Two nonzero constants satisfy `Prec` trivially because both root lists are
-empty. -/
-private lemma prec_degree_zero_degree_zero
-    {f g : ℝ[X]}
-    (hf : f ≠ 0 ∧ f.Splits) (hg : g ≠ 0 ∧ g.Splits)
-    (hf_deg0 : f.natDegree = 0) (hg_deg0 : g.natDegree = 0) :
-    Prec f g := by
-  have hroots_f : f.roots = 0 := by
-    apply Multiset.card_eq_zero.mp
-    rw [card_roots_of_splits hf.2, hf_deg0]
-  have hroots_g : g.roots = 0 := by
-    apply Multiset.card_eq_zero.mp
-    rw [card_roots_of_splits hg.2, hg_deg0]
-  refine ⟨hf, hg, [], [], by simp, by simp, ?_, ?_, ?_⟩
-  · simp [hroots_f]
-  · simp [hroots_g]
-  · exact Or.inr ⟨by lia, by simp [ListAlternates]⟩
 
 /-- In the linear left-hand branch of the affine converse, the right polynomial
 must be nonpositive at the unique root of `f`. Otherwise, after translating

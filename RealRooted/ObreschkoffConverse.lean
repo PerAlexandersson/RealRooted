@@ -524,7 +524,7 @@ The heuristic "`(f + g, f + 2g)` regularizes to the top degree" is only
 reliably true after sign-normalizing so both original leading coefficients are
 positive; otherwise the same-degree case can still cancel at the top. This
 helper records the version that is actually stable in Lean. -/
-private lemma right_family_degree_data_of_posLeadingCoeff
+lemma right_family_degree_data_of_posLeadingCoeff
     {f g : ℝ[X]}
     (hdeg : f.natDegree ≤ g.natDegree)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
@@ -558,47 +558,6 @@ private lemma posComboRealRooted_of_allComboRealRooted_of_natDegree_le
   intro lam μ hlam hμ
   exact ⟨(hasPosLeadingCoeff_pos_combo_of_natDegree_le_right hdeg hf_pos hg_pos hlam hμ).ne_zero,
     hall lam μ⟩
-
-/-- At a root of `f + 2g`, the companion family member `f + g` has the
-opposite sign of `g`. Under the no-common-root hypothesis this sign is strict,
-because `g` cannot vanish there. This is one of the Ma--Wang style transport
-inputs for pushing an orientation of the right family back toward `g`. -/
-private lemma eval_mul_right_family_one_neg_at_root_two_of_no_common
-    {f g : ℝ[X]}
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    ∀ r, (f + C (2 : ℝ) * g).IsRoot r → (f + g).eval r * g.eval r < 0 := by
-  intro r hroot
-  have hq_eval : (f + C (2 : ℝ) * g).eval r = 0 := by
-    simp_all
-  rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C] at hq_eval
-  have hp_eval : (f + g).eval r = -g.eval r := by
-    rw [Polynomial.eval_add]
-    linarith
-  have hg_ne : g.eval r ≠ 0 := by
-    intro hg0
-    simp_all
-  simp_all
-
-/-- At a root of `f + g`, the other family member `f + 2g` has the opposite
-sign of `f`. As above, the no-common-root hypothesis makes the sign strict.
-This is the symmetric Ma--Wang input when one wants to transport an orientation
-of the right family back toward `f`. -/
-private lemma eval_mul_right_family_two_neg_at_root_one_of_no_common
-    {f g : ℝ[X]}
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    ∀ r, (f + g).IsRoot r → (f + C (2 : ℝ) * g).eval r * f.eval r < 0 := by
-  intro r hroot
-  have hp_eval0 : (f + g).eval r = 0 := by
-    simp_all
-  rw [Polynomial.eval_add] at hp_eval0
-  have hq_eval : (f + C (2 : ℝ) * g).eval r = -f.eval r := by
-    rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C]
-    linarith
-  have hf_ne : f.eval r ≠ 0 := by
-    intro hf0
-    simp_all
-  simp_all
-
 /-- `AllComboRealRooted` is preserved by any linear change of basis in the
 `(f, g)`-plane. No invertibility is needed for the forward direction: every
 linear combination of the new pair is visibly a linear combination of the old
@@ -3220,7 +3179,7 @@ private lemma prec0_C_mul_left_right {a b : ℝ} (ha : a ≠ 0) (hb : b ≠ 0)
   · exact (prec_C_mul_right (prec_C_mul_left hprec ha) hb).toPrec0
 
 /-- Degree-zero polynomials satisfy `Prec` in both orientations. -/
-private lemma prec_degree_zero_degree_zero
+lemma prec_degree_zero_degree_zero
     {f g : ℝ[X]}
     (hf : f ≠ 0 ∧ f.Splits) (hg : g ≠ 0 ∧ g.Splits)
     (hf_deg0 : f.natDegree = 0) (hg_deg0 : g.natDegree = 0) :
