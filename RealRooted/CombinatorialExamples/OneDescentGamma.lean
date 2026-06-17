@@ -90,7 +90,7 @@ lemma prec_X_add_C_to_X_mul_X_add_C {a b : ℝ}
     simp
   have hrr_a : ((X + C a) ≠ 0 ∧ (X + C a).Splits) := isRealRooted_of_degree_one hdeg_a
   have hrr_b : ((X + C b) ≠ 0 ∧ (X + C b).Splits) := isRealRooted_of_degree_one hdeg_b
-  have hrr_q : ((X * (X + C b)) ≠ 0 ∧ (X * (X + C b)).Splits) := isRealRooted_X_mul hrr_b
+  have hrr_q : ((X * (X + C b)) ≠ 0 ∧ (X * (X + C b)).Splits) := isRealRooted_X_mul hrr_b.1 hrr_b.2
   have hdeg_q : (X * (X + C b)).natDegree = 2 := by
     simp_all
   have hb_nonneg : 0 ≤ b := by
@@ -305,7 +305,7 @@ lemma oneDescent_prec_gamma_one_adjacent
     isRealRooted_X_pow (m - j - 2)
   rw [oneDescentGamma_one m (j + 1) hj, oneDescentGamma_one m j hjm, hsub_left, hpow]
   simpa [a, b, mul_assoc, mul_left_comm, mul_comm] using
-    (prec_mul_common_factor hpow_rr hscaled)
+    (prec_mul_common_factor hpow_rr.1 hpow_rr.2 hscaled)
 
 lemma oneDescent_prec_gamma_one_terminal (m : Nat) (hm : 1 < m) :
     Prec (oneDescentGamma 1 m 1) (oneDescentQ 1 m) := by
@@ -332,7 +332,7 @@ lemma oneDescent_prec_gamma_one_terminal (m : Nat) (hm : 1 < m) :
     isRealRooted_X_pow (m - 2)
   rw [oneDescentGamma_one m 1 hm, oneDescentQ_one m hm_pos, hpow]
   simpa [a, b, Nat.choose_one_right, mul_assoc, mul_left_comm, mul_comm, tsub_tsub] using
-    (prec_mul_common_factor hpow_rr hscaled)
+    (prec_mul_common_factor hpow_rr.1 hpow_rr.2 hscaled)
 
 /-- Uniform adjacent comparison in the base `d = 1` Gamma chain:
 `Γ_{1,j+1}^{(m)} ≪ Γ_{1,j}^{(m)}` for every admissible `j`. -/
@@ -372,11 +372,12 @@ theorem oneDescentGamma_one_isRealRooted
       simp
     have hlin_rr : ((X + C a) ≠ 0 ∧ (X + C a).Splits) := isRealRooted_of_degree_one hlin_deg
     have hprod_rr : ((X ^ (m - j - 1) * (X + C a)) ≠ 0 ∧ (X ^ (m - j - 1) * (X + C a)).Splits) :=
-      isRealRooted_mul (isRealRooted_X_pow (m - j - 1)) hlin_rr
+      isRealRooted_mul (isRealRooted_X_pow (m - j - 1)).1 (isRealRooted_X_pow (m - j - 1)).2
+        hlin_rr.1 hlin_rr.2
     have hchoose_ne : (((Nat.choose m j : Nat) : ℝ)) ≠ 0 := by
       exact_mod_cast Nat.choose_ne_zero hj
     simpa [a, mul_assoc] using
-      isRealRooted_C_mul hprod_rr hchoose_ne
+      isRealRooted_C_mul hprod_rr.1 hprod_rr.2 hchoose_ne
 
 /-- The base `d = 1` normalized one-descent polynomial is real-rooted. -/
 theorem oneDescentQ_one_isRealRooted
@@ -387,6 +388,7 @@ theorem oneDescentQ_one_isRealRooted
     simp
   have hlin_rr : ((X + C a) ≠ 0 ∧ (X + C a).Splits) := isRealRooted_of_degree_one hlin_deg
   simpa [a] using
-    isRealRooted_mul (isRealRooted_X_pow (m - 1)) hlin_rr
+    isRealRooted_mul (isRealRooted_X_pow (m - 1)).1 (isRealRooted_X_pow (m - 1)).2
+      hlin_rr.1 hlin_rr.2
 
 end RealRooted

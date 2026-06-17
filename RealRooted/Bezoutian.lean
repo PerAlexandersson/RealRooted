@@ -222,7 +222,7 @@ lemma StrictPrecSameDegree.C_mul_C_mul {p q : ℝ[X]} (h : StrictPrecSameDegree 
     {u v : ℝ} (hu : u ≠ 0) (hv : v ≠ 0) :
     StrictPrecSameDegree (C u * p) (C v * q) := by
   obtain ⟨hp, hq, hdeg, halt⟩ := h
-  refine ⟨isRealRooted_C_mul hp hu, isRealRooted_C_mul hq hv, ?_, ?_⟩
+  refine ⟨isRealRooted_C_mul hp.1 hp.2 hu, isRealRooted_C_mul hq.1 hq.2 hv, ?_, ?_⟩
   · exact (natDegree_C_mul hu).trans (hdeg.trans (natDegree_C_mul hv).symm)
   · simp_all
 
@@ -398,9 +398,8 @@ lemma Polynomial.isRealRooted_of_natDegree_two_of_discrim_nonneg {p : ℝ[X]}
 linear factors, with the constants ordered in the `X + C a` convention used
 below. -/
 lemma Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two {p : ℝ[X]}
-    (hp : p ≠ 0 ∧ p.Splits) (hdeg : p.natDegree = 2) :
+    (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hdeg : p.natDegree = 2) :
     ∃ a c : ℝ, a ≤ c ∧ p = C p.leadingCoeff * ((X + C a) * (X + C c)) := by
-  obtain ⟨hp_ne, hp_splits⟩ := hp
   have hcard : p.roots.card = 2 := by rw [hp_splits.natDegree_eq_card_roots.symm, hdeg]
   rcases Multiset.card_eq_two.mp hcard with ⟨r, s, hroots⟩
   by_cases hrs : r ≤ s
@@ -1614,10 +1613,14 @@ lemma bezoutMatrix.quadratic_posDef_two_of_const_strictInterleaves {a b c d : �
 lemma StrictPrecSameDegree.quadratic_of_const_strictInterleaves {a b c d : ℝ}
     (hab : a < b) (hbc : b < c) (hcd : c < d) :
     StrictPrecSameDegree ((X + C b) * (X + C d)) ((X + C a) * (X + C c)) := by
-  refine ⟨isRealRooted_mul (Polynomial.isRealRooted_X_add_C b)
-            (Polynomial.isRealRooted_X_add_C d),
-          isRealRooted_mul (Polynomial.isRealRooted_X_add_C a)
-            (Polynomial.isRealRooted_X_add_C c),
+  refine ⟨isRealRooted_mul (Polynomial.isRealRooted_X_add_C b).1
+            (Polynomial.isRealRooted_X_add_C b).2
+            (Polynomial.isRealRooted_X_add_C d).1
+            (Polynomial.isRealRooted_X_add_C d).2,
+          isRealRooted_mul (Polynomial.isRealRooted_X_add_C a).1
+            (Polynomial.isRealRooted_X_add_C a).2
+            (Polynomial.isRealRooted_X_add_C c).1
+            (Polynomial.isRealRooted_X_add_C c).2,
           by rw [natDegree_mul (Polynomial.isRealRooted_X_add_C b).1
                    (Polynomial.isRealRooted_X_add_C d).1,
                  natDegree_mul (Polynomial.isRealRooted_X_add_C a).1
@@ -1662,12 +1665,12 @@ lemma StrictPrecSameDegree.bezoutMatrix_posDef_quadratic
     (hp_deg : p.natDegree = 2) (hq_deg : q.natDegree = 2)
     (hprec : StrictPrecSameDegree p q) :
     (bezoutMatrix 2 q p).PosDef := by
-  have hp := hprec.1
-  have hq := hprec.2.1
+  obtain ⟨hp_ne, hp_splits⟩ := hprec.1
+  obtain ⟨hq_ne, hq_splits⟩ := hprec.2.1
   obtain ⟨b, d, hbd, hp_eq⟩ :=
-    Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two hp hp_deg
+    Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two hp_ne hp_splits hp_deg
   obtain ⟨a, c, hac, hq_eq⟩ :=
-    Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two hq hq_deg
+    Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two hq_ne hq_splits hq_deg
   let mp : ℝ[X] := (X + C b) * (X + C d)
   let mq : ℝ[X] := (X + C a) * (X + C c)
   let u : ℝ := q.leadingCoeff
@@ -1686,15 +1689,15 @@ lemma StrictPrecSameDegree.bezoutMatrix_posDef_quadratic
 
 lemma StrictPrecSameDegree.of_bezoutMatrix_posDef_of_isRealRooted_quadratic
     {p q : ℝ[X]}
-    (hp : p ≠ 0 ∧ p.Splits) (hq : q ≠ 0 ∧ q.Splits)
+    (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hq_ne : q ≠ 0) (hq_splits : q.Splits)
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = 2) (hq_deg : q.natDegree = 2)
     (h : (bezoutMatrix 2 q p).PosDef) :
     StrictPrecSameDegree p q := by
   obtain ⟨b, d, hbd, hp_eq⟩ :=
-    Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two hp hp_deg
+    Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two hp_ne hp_splits hp_deg
   obtain ⟨a, c, hac, hq_eq⟩ :=
-    Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two hq hq_deg
+    Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two hq_ne hq_splits hq_deg
   let mp : ℝ[X] := (X + C b) * (X + C d)
   let mq : ℝ[X] := (X + C a) * (X + C c)
   let u : ℝ := q.leadingCoeff
@@ -1714,7 +1717,7 @@ lemma StrictPrecSameDegree.of_bezoutMatrix_posDef_of_isRealRooted_quadratic
 
 lemma StrictPrecSameDegree.bezoutMatrix_posDef_iff_of_isRealRooted_quadratic
     {p q : ℝ[X]}
-    (hp : p ≠ 0 ∧ p.Splits) (hq : q ≠ 0 ∧ q.Splits)
+    (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hq_ne : q ≠ 0) (hq_splits : q.Splits)
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = 2) (hq_deg : q.natDegree = 2) :
     StrictPrecSameDegree p q ↔ (bezoutMatrix 2 q p).PosDef := by
@@ -1722,7 +1725,7 @@ lemma StrictPrecSameDegree.bezoutMatrix_posDef_iff_of_isRealRooted_quadratic
   · exact StrictPrecSameDegree.bezoutMatrix_posDef_quadratic
       hp_pos hq_pos hp_deg hq_deg
   · exact StrictPrecSameDegree.of_bezoutMatrix_posDef_of_isRealRooted_quadratic
-      hp hq hp_pos hq_pos hp_deg hq_deg
+      hp_ne hp_splits hq_ne hq_splits hp_pos hq_pos hp_deg hq_deg
 
 lemma StrictPrecSameDegree.bezoutMatrix_posDef_iff_natDegree_zero
     {p q : ℝ[X]}
@@ -1771,12 +1774,12 @@ lemma StrictPrecSameDegree.bezoutMatrix_posDef_iff_natDegree_two
     (hp_deg : p.natDegree = 2) (hq_deg : q.natDegree = 2) :
     StrictPrecSameDegree p q ↔ (bezoutMatrix 2 q p).PosDef :=
   ⟨StrictPrecSameDegree.bezoutMatrix_posDef_quadratic hp_pos hq_pos hp_deg hq_deg, fun h ↦
-    have hp : p ≠ 0 ∧ p.Splits :=
+    have hp_rr : p ≠ 0 ∧ p.Splits :=
       bezoutMatrix.right_isRealRooted_of_posDef_two_of_natDegree_two hp_deg hq_deg.le h
-    have hq : q ≠ 0 ∧ q.Splits :=
+    have hq_rr : q ≠ 0 ∧ q.Splits :=
       bezoutMatrix.left_isRealRooted_of_posDef_two_of_natDegree_two hp_deg.le hq_deg h
     (StrictPrecSameDegree.bezoutMatrix_posDef_iff_of_isRealRooted_quadratic
-      hp hq hp_pos hq_pos hp_deg hq_deg).mpr h⟩
+      hp_rr.1 hp_rr.2 hq_rr.1 hq_rr.2 hp_pos hq_pos hp_deg hq_deg).mpr h⟩
 
 /--
 Strict same-degree Bezoutian characterization.

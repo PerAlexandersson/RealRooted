@@ -847,7 +847,7 @@ scaling argument at each call site. -/
 theorem exists_delta_and_real_root_near_iterateTDeriv_of_isRealRooted
     (n : ℕ) {p : ℝ[X]} {a ε : ℝ}
     (ha : p.IsRoot a)
-    (hp : p ≠ 0 ∧ p.Splits)
+    (hp_ne : p ≠ 0) (hp_splits : p.Splits)
     (hε : 0 < ε) :
     ∃ δ > 0, ∀ ⦃eps : ℝ⦄, 0 < eps → ‖eps‖ < δ →
       ∃ b : ℝ, (iterateTDeriv eps n p).IsRoot b ∧
@@ -855,7 +855,7 @@ theorem exists_delta_and_real_root_near_iterateTDeriv_of_isRealRooted
   let c : ℝ := p.leadingCoeff⁻¹
   let p₀ : ℝ[X] := C c * p
   have hc_ne : c ≠ 0 := by
-    exact inv_ne_zero (leadingCoeff_ne_zero.mpr hp.1)
+    exact inv_ne_zero (leadingCoeff_ne_zero.mpr hp_ne)
   have hp₀_monic : p₀.Monic := by
     unfold p₀ c
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
@@ -891,7 +891,7 @@ order `k` persists as a nearby derivative root of the regularized family. -/
 theorem exists_delta_and_real_root_near_iterateTDeriv_of_isRealRooted_iterate_derivative
     (n k : ℕ) {p : ℝ[X]} {a ε : ℝ}
     (ha : ((derivative^[k]) p).IsRoot a)
-    (hp : ((derivative^[k]) p) ≠ 0 ∧ ((derivative^[k]) p).Splits)
+    (hp_ne : ((derivative^[k]) p) ≠ 0) (hp_splits : ((derivative^[k]) p).Splits)
     (hε : 0 < ε) :
     ∃ δ > 0, ∀ ⦃eps : ℝ⦄, 0 < eps → ‖eps‖ < δ →
       ∃ b : ℝ, ((derivative^[k]) (iterateTDeriv eps n p)).IsRoot b ∧
@@ -900,7 +900,7 @@ theorem exists_delta_and_real_root_near_iterateTDeriv_of_isRealRooted_iterate_de
             ((((derivative^[k]) p).natDegree : ℝ)⁻¹) * max ‖a‖ 1 := by
   obtain ⟨δ, hδ, hnear⟩ :=
     exists_delta_and_real_root_near_iterateTDeriv_of_isRealRooted
-      (n := n) (p := (derivative^[k]) p) ha hp hε
+      (n := n) (p := (derivative^[k]) p) ha hp_ne hp_splits hε
   refine ⟨δ, hδ, ?_⟩
   intro eps heps_pos heps_small
   obtain ⟨b, hb_root, hb_dist⟩ := hnear heps_pos heps_small
@@ -913,7 +913,7 @@ If `k < rootMultiplicity a p`, then the `k`-th derivative already vanishes at
 theorem exists_delta_and_real_root_near_iterateTDeriv_of_lt_rootMultiplicity
     (n k : ℕ) {p : ℝ[X]} {a ε : ℝ}
     (ha : k < p.rootMultiplicity a)
-    (hp : ((derivative^[k]) p) ≠ 0 ∧ ((derivative^[k]) p).Splits)
+    (hp_ne : ((derivative^[k]) p) ≠ 0) (hp_splits : ((derivative^[k]) p).Splits)
     (hε : 0 < ε) :
     ∃ δ > 0, ∀ ⦃eps : ℝ⦄, 0 < eps → ‖eps‖ < δ →
       ∃ b : ℝ, ((derivative^[k]) (iterateTDeriv eps n p)).IsRoot b ∧
@@ -923,8 +923,9 @@ theorem exists_delta_and_real_root_near_iterateTDeriv_of_lt_rootMultiplicity
   apply exists_delta_and_real_root_near_iterateTDeriv_of_isRealRooted_iterate_derivative
     (n := n) (k := k) (p := p) (a := a) (ε := ε)
   · exact isRoot_iterate_derivative_of_lt_rootMultiplicity ha
-  · lia
-  · lia
+  · exact hp_ne
+  · exact hp_splits
+  · exact hε
 
 /-- If `rootMultiplicity a p ≥ 1` and `rootMultiplicity a (T_ε p) ≥ 2`, then
     `rootMultiplicity a p ≥ 2` and the exact formula applies. In other words,
@@ -1114,7 +1115,7 @@ double-root reduction in the Obreschkoff converse: iterating `T_ε` simply
 subtracts one from the multiplicity at each step until the root disappears. -/
 lemma rootMultiplicity_iterateTDeriv_eq_tsub
     {eps : ℝ} {p : ℝ[X]} {a : ℝ} {n : ℕ}
-    (heps : 0 < eps) (hp : p ≠ 0 ∧ p.Splits)
+    (heps : 0 < eps) (hp_ne : p ≠ 0) (hp_splits : p.Splits)
     (hn : n ≤ p.rootMultiplicity a) :
     (iterateTDeriv eps n p).rootMultiplicity a = p.rootMultiplicity a - n := by
   induction n generalizing p with
@@ -1129,11 +1130,11 @@ lemma rootMultiplicity_iterateTDeriv_eq_tsub
       have hq_mult_pos : 1 ≤ q.rootMultiplicity a := by
         lia
       have hq_root : q.IsRoot a := by
-        exact (rootMultiplicity_pos <| iterateTDeriv_ne_zero hp.1).mp (by lia)
+        exact (rootMultiplicity_pos <| iterateTDeriv_ne_zero hp_ne).mp (by lia)
       by_cases hq_simple : q.rootMultiplicity a = 1
       · have hnot_root : ¬ (TDeriv eps q).IsRoot a :=
           not_isRoot_TDeriv_of_simple_root
-            (ne_of_gt heps) (iterateTDeriv_ne_zero hp.1) hq_root hq_simple
+            (ne_of_gt heps) (iterateTDeriv_ne_zero hp_ne) hq_root hq_simple
         simp_all
       · have hq_mult_ge2 : 2 ≤ q.rootMultiplicity a := by lia
         have hq_deg : 1 ≤ q.natDegree := by
@@ -1142,8 +1143,8 @@ lemma rootMultiplicity_iterateTDeriv_eq_tsub
             _ = q.roots.count a := (count_roots q).symm
             _ ≤ q.roots.card := q.roots.count_le_card a
             _ ≤ q.natDegree := card_roots' q
-        have hT_ne : TDeriv eps q ≠ 0 := TDeriv_ne_zero (iterateTDeriv_ne_zero hp.1)
-        rw [rootMultiplicity_TDeriv_of_multiple (ne_of_gt heps) (iterateTDeriv_ne_zero hp.1)
+        have hT_ne : TDeriv eps q ≠ 0 := TDeriv_ne_zero (iterateTDeriv_ne_zero hp_ne)
+        rw [rootMultiplicity_TDeriv_of_multiple (ne_of_gt heps) (iterateTDeriv_ne_zero hp_ne)
           hq_mult_ge2 hT_ne, hq_mult]
         lia
 

@@ -514,16 +514,16 @@ lemma hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos {p : ℝ[X]} (hp : p
 
 lemma hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
     {p q : ℝ[X]}
-    (hp : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p)
-    (hq : q ≠ 0 ∧ q.Splits) (hq_pos : HasPosLeadingCoeff q)
+    (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hpnn : HasNonnegCoeffs p)
+    (hq_ne : q ≠ 0) (hq_splits : q.Splits) (hq_pos : HasPosLeadingCoeff q)
     (hqp : q ∣ p) :
     HasNonnegCoeffs q := by
-  refine ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hq.2).mpr ?_).1
+  refine ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hq_splits).mpr ?_).1
   refine ⟨hq_pos, ?_⟩
   intro r hr
-  have hrq : q.IsRoot r := (mem_roots hq.1).mp hr
+  have hrq : q.IsRoot r := (mem_roots hq_ne).mp hr
   have hrp : p.IsRoot r := IsRoot.of_dvd hqp hrq
-  exact roots_nonpos_of_nonneg_coeffs hp.2 hpnn r ((mem_roots hp.1).mpr hrp)
+  exact roots_nonpos_of_nonneg_coeffs hp_splits hpnn r ((mem_roots hp_ne).mpr hrp)
 
 theorem prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos {f g : ℝ[X]}
     (h : Prec g (X * f))
@@ -909,8 +909,8 @@ theorem prec_iff_prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ)
 theorem prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ) (h : Prec f g) :
     Prec ((X - C r) * f) ((X - C r) * g) := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hcase⟩
-  refine ⟨isRealRooted_mul (isRealRooted_X_sub_C r) hf,
-    isRealRooted_mul (isRealRooted_X_sub_C r) hg,
+  refine ⟨isRealRooted_mul (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hf.1 hf.2,
+    isRealRooted_mul (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hg.1 hg.2,
     ss.orderedInsert (· ≤ ·) r, rs.orderedInsert (· ≤ ·) r,
     hss.orderedInsert _ _, hrs.orderedInsert _ _, ?_, ?_, ?_⟩
   · have hinsert :
@@ -956,12 +956,8 @@ theorem prec_of_prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ)
   rcases h with ⟨hXf, hXg, ss_mul, rs_mul, hss_mul, hrs_mul, hss_mul_eq, hrs_mul_eq, hcase⟩
   have hf0 : f ≠ 0 := right_ne_zero_of_mul hXf.1
   have hg0 : g ≠ 0 := right_ne_zero_of_mul hXg.1
-  have hf : (f ≠ 0 ∧ f.Splits) := by
-    apply isRealRooted_of_dvd hXf hf0
-    simp
-  have hg : (g ≠ 0 ∧ g.Splits) := by
-    apply isRealRooted_of_dvd hXg hg0
-    simp
+  have hf : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_dvd hXf.1 hXf.2 hf0 (dvd_mul_left f _)
+  have hg : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_dvd hXg.1 hXg.2 hg0 (dvd_mul_left g _)
   set ss := f.roots.sort (· ≤ ·)
   set rs := g.roots.sort (· ≤ ·)
   have hss_eq : (↑ss : Multiset ℝ) = f.roots := Multiset.sort_eq ..
@@ -1011,8 +1007,8 @@ theorem prec_of_prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ)
       lia
     exact Or.inr ⟨hlen', listAlternates_of_orderedInsert r hlen' hss_sorted hrs_sorted halt⟩
 
-theorem prec_mul_common_factor {d f g : ℝ[X]} (hd : d ≠ 0 ∧
-  d.Splits) (h : Prec f g) :
+theorem prec_mul_common_factor {d f g : ℝ[X]} (hd_ne : d ≠ 0) (hd_splits : d.Splits)
+    (h : Prec f g) :
     Prec (d * f) (d * g) := by
   have hprod : Prec (((d.roots.map fun a => X - C a).prod) * f)
       (((d.roots.map fun a => X - C a).prod) * g) := by
@@ -1022,14 +1018,14 @@ theorem prec_mul_common_factor {d f g : ℝ[X]} (hd : d ≠ 0 ∧
     | @cons a s ih =>
         simpa [Multiset.map_cons, Multiset.prod_cons, mul_assoc, mul_left_comm, mul_comm] using
           prec_mul_X_sub_C_both a ih
-  have hlc0 : d.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hd.1
+  have hlc0 : d.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hd_ne
   have hscaled :
       Prec ((C d.leadingCoeff * (d.roots.map fun a => X - C a).prod) * f)
         ((C d.leadingCoeff * (d.roots.map fun a => X - C a).prod) * g) := by
     have hleft := prec_C_mul_left hprod hlc0
     have hboth := prec_C_mul_right hleft hlc0
     simpa [mul_assoc, mul_left_comm, mul_comm] using hboth
-  simpa [C_leadingCoeff_mul_prod_multiset_X_sub_C (card_roots_of_splits hd.2), mul_assoc]
+  simpa [C_leadingCoeff_mul_prod_multiset_X_sub_C (card_roots_of_splits hd_splits), mul_assoc]
     using hscaled
 
 theorem prec_iff_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
@@ -1042,9 +1038,9 @@ theorem prec_iff_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
   set f' := f.comp (X + C r)
   set g' := g.comp (X + C r)
   have hf' : f' ≠ 0 ∧ f'.Splits := by
-    simpa [f'] using isRealRooted_comp_X_add_C ⟨hf_pos.ne_zero, hf⟩ r
+    simpa [f'] using isRealRooted_comp_X_add_C hf_pos.ne_zero hf r
   have hg' : g' ≠ 0 ∧ g'.Splits := by
-    simpa [g'] using isRealRooted_comp_X_add_C ⟨hg_pos.ne_zero, hg⟩ r
+    simpa [g'] using isRealRooted_comp_X_add_C hg_pos.ne_zero hg r
   have hf'_pos : HasPosLeadingCoeff f' := by
     unfold HasPosLeadingCoeff f'
     rw [leadingCoeff_comp (by simp), leadingCoeff_X_add_C, one_pow, mul_one]

@@ -238,7 +238,7 @@ Between consecutive roots `r₁ ≤ r₂` of `f`, we show `g` has a root in `[r�
   hence `g(r₁)` and `g(r₂)` have opposite signs. IVT gives a root. -/
 
 lemma exists_affineDeriv_root_between {f : ℝ[X]}
-    (hf : f ≠ 0 ∧ f.Splits) (_hdeg : 2 ≤ f.natDegree)
+    (hf_ne : f ≠ 0) (_hf_splits : f.Splits) (_hdeg : 2 ≤ f.natDegree)
     {c : ℝ} (_eq_mul_of_hasProd_itehc : (f.natDegree : ℝ) < c)
     {r₁ r₂ : ℝ} (hr₁ : f.IsRoot r₁) (hr₂ : f.IsRoot r₂)
     (hle : r₁ ≤ r₂)
@@ -268,7 +268,7 @@ lemma exists_affineDeriv_root_between {f : ℝ[X]}
       have h2 : 0 < 1 - r₂ := by linarith
       -- f'(r₁) * f'(r₂) ≤ 0 (sign alternation at consecutive roots)
       suffices f.derivative.eval r₁ * f.derivative.eval r₂ ≤ 0 by nlinarith [mul_pos h1 h2]
-      exact derivative_sign_at_consecutive_roots hr₁ hr₂ hlt hno_between hf.1
+      exact derivative_sign_at_consecutive_roots hr₁ hr₂ hlt hno_between hf_ne
     -- IVT: g continuous on [r₁, r₂] with g(r₁)*g(r₂) ≤ 0
     rcases le_or_gt (g.eval r₁) 0 with hg1 | hg1
     · rcases le_or_gt (g.eval r₂) 0 with hg2 | hg2
@@ -807,13 +807,13 @@ private lemma exists_cons_of_card_succ {α : Type*} {s t : Multiset α}
   simpa using (Multiset.add_comm s ({a} : Multiset α))
 
 private lemma isRealRooted_of_pow_X_sub_C_mul {r : ℝ} {m : ℕ} {q : ℝ[X]}
-    (hp : ((X - C r) ^ m * q) ≠ 0 ∧ ((X - C r) ^ m * q).Splits) :
+    (hp_ne : ((X - C r) ^ m * q) ≠ 0) (hp_splits : ((X - C r) ^ m * q).Splits) :
     (q ≠ 0 ∧ q.Splits) := by
   have hpow_ne : ((X - C r) ^ m : ℝ[X]) ≠ 0 := pow_ne_zero _ (X_sub_C_ne_zero _)
   have hq_ne : q ≠ 0 := by
     simp_all
   refine ⟨hq_ne, ?_⟩
-  have hcard := card_roots_of_splits hp.2
+  have hcard := card_roots_of_splits hp_splits
   rw [roots_mul (mul_ne_zero hpow_ne hq_ne), roots_pow, roots_X_sub_C, Multiset.card_add,
     Multiset.card_nsmul, Multiset.card_singleton, natDegree_mul hpow_ne hq_ne,
     (monic_X_sub_C r).natDegree_pow, natDegree_X_sub_C] at hcard
@@ -975,10 +975,13 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
       intro hqg
       simpa [hg_fact', hqg] using hg₀.ne_zero
     have hq_rr : (q ≠ 0 ∧ q.Splits) :=
-      isRealRooted_of_pow_X_sub_C_mul (by simpa [hf_fact', hd_def] using And.intro hf₀.ne_zero hf)
+      isRealRooted_of_pow_X_sub_C_mul
+        (by simpa [hf_fact', hd_def] using hf₀.ne_zero)
+        (by simpa [hf_fact', hd_def] using hf)
     have hqg_rr : (qg ≠ 0 ∧ qg.Splits) :=
       isRealRooted_of_pow_X_sub_C_mul
-        (by simpa [hg_fact', hd_def] using And.intro hg₀.ne_zero hg_rr)
+        (by simpa [hg_fact', hd_def] using hg₀.ne_zero)
+        (by simpa [hg_fact', hd_def] using hg_rr)
     have hq_pos : HasPosLeadingCoeff q :=
       pos_leadingCoeff_of_pow_X_sub_C_mul (by simpa [hf_fact'] using hf₀) hq_ne
     have hqg_pos : HasPosLeadingCoeff qg :=
@@ -1110,8 +1113,8 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
         nlinarith [hmulp, hsquare]
       linarith
     have hEval_nonpos : qg.eval r₁ * q.eval r₁ ≤ 0 := by
-      rw [eval_eq_leadingCoeff_mul_prod_sub hqg_rr r₁,
-        eval_eq_leadingCoeff_mul_prod_sub hq_rr r₁,
+      rw [eval_eq_leadingCoeff_mul_prod_sub hqg_rr.1 hqg_rr.2 r₁,
+        eval_eq_leadingCoeff_mul_prod_sub hq_rr.1 hq_rr.2 r₁,
         show (q.roots.map (r₁ - ·)).prod = Pq by lia,
         show (qg.roots.map (r₁ - ·)).prod = Pg by lia]
       have hlc_pos : 0 < qg.leadingCoeff * q.leadingCoeff := by
@@ -1168,7 +1171,7 @@ theorem prec_affine_derivative_deg_one {f : ℝ[X]} (hf : f.Splits)
     exact hf₀
   -- g(r) = lc(g) * (r - s)
   have hgr_eq : g.eval r = g.leadingCoeff * (r - s) := by
-    rw [eval_eq_leadingCoeff_mul_prod_sub hg_rr r, hs_eq]; simp
+    rw [eval_eq_leadingCoeff_mul_prod_sub hg_rr.1 hg_rr.2 r, hs_eq]; simp
   -- s ≤ r
   have hsr : s ≤ r := by
     have : 0 < r - s := by

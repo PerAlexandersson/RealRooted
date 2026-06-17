@@ -267,7 +267,7 @@ theorem prec_generalizedLiuWang_of_no_common
           hgf.toPrec hg_pos hprec_all hpos_all hcoeff_all r hr
   simpa [F] using
     prec_of_interlaces_eval_mul_nonpos_of_no_common
-      hgf hg_pos hF_rr hF_pos hdeg_lo hdeg_hi hno hroot_nonpos
+      hgf hg_pos hF_rr.1 hF_rr.2 hF_pos hdeg_lo hdeg_hi hno hroot_nonpos
 
 /-- Finite-sum Liu--Wang criterion in the weak-sign, no-common-roots regime.
 

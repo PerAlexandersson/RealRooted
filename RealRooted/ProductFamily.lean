@@ -204,10 +204,10 @@ theorem pairwiseHasCommonLeftInterleaver_zipWith_mul_reverse_of_interlacingSeqNo
     exact hgs.realRooted _ (List.get_mem _ _)
   have hleft_i : Prec (fi * gj) (fi * gi) := by
     simpa [fi, gi, gj, mul_comm, mul_left_comm, mul_assoc] using
-      (prec_mul_common_factor hfi_rr hgj_gi)
+      (prec_mul_common_factor hfi_rr.1 hfi_rr.2 hgj_gi)
   have hleft_j : Prec (fi * gj) (fj * gj) := by
     simpa [fi, fj, gj, mul_comm, mul_left_comm, mul_assoc] using
-      (prec_mul_common_factor hgj_rr hfi_fj)
+      (prec_mul_common_factor hgj_rr.1 hgj_rr.2 hfi_fj)
   refine ⟨fi * gj, ?_, ?_⟩
   · simpa [List.get_eq_getElem, fi, gi, gj, i', hzip_len] using hleft_i
   · simpa [List.get_eq_getElem, fi, fj, gj, j', hzip_len] using hleft_j
@@ -263,10 +263,10 @@ theorem pairwiseHasCommonInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg
     exact hgs.realRooted _ (List.get_mem _ _)
   have hright_i : Prec (fi * gi) (fj * gi) := by
     simpa [fi, fj, gi, mul_comm, mul_left_comm, mul_assoc] using
-      (prec_mul_common_factor hgi_rr hfi_fj)
+      (prec_mul_common_factor hgi_rr.1 hgi_rr.2 hfi_fj)
   have hright_j : Prec (fj * gj) (fj * gi) := by
     simpa [fj, gi, gj, mul_comm, mul_left_comm, mul_assoc] using
-      (prec_mul_common_factor hfj_rr hgj_gi)
+      (prec_mul_common_factor hfj_rr.1 hfj_rr.2 hgj_gi)
   grind
 
 /-- The reversed product family has a common interleaver once one upgrades the

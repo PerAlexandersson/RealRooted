@@ -214,7 +214,8 @@ lemma isRealRooted_X_add_one_pow : ∀ n : ℕ, ((((X + 1 : ℝ[X]) ^ n)) ≠ 0 
   | 0 => by simp
   | n + 1 => by
       simpa [pow_succ, mul_comm] using
-        isRealRooted_mul (isRealRooted_X_sub_C (-1 : ℝ)) (isRealRooted_X_add_one_pow n)
+        isRealRooted_mul (isRealRooted_X_sub_C (-1 : ℝ)).1 (isRealRooted_X_sub_C (-1 : ℝ)).2
+          (isRealRooted_X_add_one_pow n).1 (isRealRooted_X_add_one_pow n).2
 
 lemma gammaBasisTerm_succ_succ (d i : ℕ) :
     gammaBasisTerm (d + 2) (i + 1) = X * gammaBasisTerm d i := by
@@ -690,7 +691,7 @@ lemma isRealRooted_gammaQuadraticFactor {r : ℝ} (hr : r ≤ 0) :
 inputs whose degree fits the ambient floor `d / 2`. -/
 theorem isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
     {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2)
-    (hγ : (γ ≠ 0 ∧ γ.Splits)) (hγnn : HasNonnegCoeffs γ) : ((gammaTransform d γ) ≠ 0 ∧
+    (hγ_ne : γ ≠ 0) (hγ_splits : γ.Splits) (hγnn : HasNonnegCoeffs γ) : ((gammaTransform d γ) ≠ 0 ∧
       (gammaTransform d γ).Splits) := by
   let P : ℕ → Prop := fun n =>
     ∀ d : ℕ, ∀ γ : ℝ[X],
@@ -715,7 +716,8 @@ theorem isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
         simpa [gammaBasisTerm_zero] using
           (gammaTransform_monomial d 0 (γ.coeff 0))
       rw [hgt]
-      exact isRealRooted_C_mul (isRealRooted_X_add_one_pow d) hcoeff_ne
+      exact isRealRooted_C_mul
+        (isRealRooted_X_add_one_pow d).1 (isRealRooted_X_add_one_pow d).2 hcoeff_ne
     · have hroots_pos : 0 < γ.roots.card := by
         rw [card_roots_of_splits hrr.2, hγdeg_eq]
         lia
@@ -728,14 +730,14 @@ theorem isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
       have hq_ne : q ≠ 0 := by
         simp_all
       have hr_nonpos : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hrr.2 hnn r hr_mem
-      have hq_rr : (q ≠ 0 ∧ q.Splits) := isRealRooted_of_dvd hrr hq_ne hq_dvd
+      have hq_rr : (q ≠ 0 ∧ q.Splits) := isRealRooted_of_dvd hrr.1 hrr.2 hq_ne hq_dvd
       have hγ_pos : HasPosLeadingCoeff γ := hnn.pos_leadingCoeff hrr.1
       have hq_pos : HasPosLeadingCoeff q := by
         apply hasPosLeadingCoeff_of_X_sub_C_mul (r := r)
         lia
       have hq_nn : HasNonnegCoeffs q :=
         hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
-          hrr hnn hq_rr hq_pos hq_dvd
+          hrr.1 hrr.2 hnn hq_rr.1 hq_rr.2 hq_pos hq_dvd
       have hqdeg_lt : q.natDegree < n := by
         have hmuldeg : γ.natDegree = q.natDegree + 1 := by
           rw [hq', natDegree_mul (X_sub_C_ne_zero r) hq_ne, natDegree_X_sub_C]
@@ -745,22 +747,24 @@ theorem isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
         lia
       have hd : d = (d - 2) + 2 := by lia
       rw [hd, hq', gammaTransform_X_sub_C_mul_two hqbound r]
-      exact isRealRooted_mul (isRealRooted_gammaQuadraticFactor hr_nonpos)
-        (ih q.natDegree hqdeg_lt (d - 2) q rfl hqbound hq_rr hq_nn)
+      have hgqf := isRealRooted_gammaQuadraticFactor hr_nonpos
+      have hih := ih q.natDegree hqdeg_lt (d - 2) q rfl hqbound hq_rr hq_nn
+      exact isRealRooted_mul hgqf.1 hgqf.2 hih.1 hih.2
   grind
 
 theorem hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
     {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2)
-    (hγ : (γ ≠ 0 ∧ γ.Splits)) (hγnn : HasNonnegCoeffs γ) :
+    (hγ_ne : γ ≠ 0) (hγ_splits : γ.Splits) (hγnn : HasNonnegCoeffs γ) :
     HasRootsNonpos (gammaTransform d γ) := by
   intro r hr
   exact roots_nonpos_of_nonneg_coeffs
-    (isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs hγdeg hγ hγnn).2
+    (isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs hγdeg hγ_ne hγ_splits hγnn).2
     (hasNonnegCoeffs_gammaTransform hγnn) r hr
 
 theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
     {γ : ℝ[X]}
-    (hp : (gammaTransform (2 * γ.natDegree) γ) ≠ 0 ∧ (gammaTransform (2 * γ.natDegree) γ).Splits)
+    (hp_ne : (gammaTransform (2 * γ.natDegree) γ) ≠ 0)
+    (hp_splits : (gammaTransform (2 * γ.natDegree) γ).Splits)
     (hp_nonpos : HasRootsNonpos (gammaTransform (2 * γ.natDegree) γ)) :
     (γ ≠ 0 ∧ γ.Splits) ∧ HasRootsNonpos γ := by
   let P : ℕ → Prop := fun n =>
@@ -812,7 +816,7 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
           simp_all
         have hq_rr : ((gammaTransform (2 * ζ.natDegree) ζ) ≠ 0 ∧
           (gammaTransform (2 * ζ.natDegree) ζ).Splits) :=
-          isRealRooted_of_dvd hpδ hq0 hq_dvd
+          isRealRooted_of_dvd hpδ.1 hpδ.2 hq0 hq_dvd
         have hq_nonpos : HasRootsNonpos (gammaTransform (2 * ζ.natDegree) ζ) :=
           hasRootsNonpos_of_dvd hpδ_nonpos hpδ.1 hq_dvd hq0
         rcases (ih ζ.natDegree hζdeg_lt) ζ rfl hq_rr hq_nonpos with ⟨hζ_rr, hζ_nonpos⟩
@@ -880,7 +884,7 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
           simp_all
         have hq_rr : ((gammaTransform (2 * ε.natDegree) ε) ≠ 0 ∧
           (gammaTransform (2 * ε.natDegree) ε).Splits) :=
-          isRealRooted_of_dvd hpδ hq0 hq_dvd
+          isRealRooted_of_dvd hpδ.1 hpδ.2 hq0 hq_dvd
         have hq_nonpos : HasRootsNonpos (gammaTransform (2 * ε.natDegree) ε) :=
           hasRootsNonpos_of_dvd hpδ_nonpos hpδ.1 hq_dvd hq0
         rcases (ih ε.natDegree hεdeg_lt) ε rfl hq_rr hq_nonpos with ⟨hε_rr, hε_nonpos⟩
@@ -892,16 +896,20 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
 
 theorem isRealRooted_of_isRealRooted_gammaTransform_minimal
     {γ : ℝ[X]}
-    (hp : (gammaTransform (2 * γ.natDegree) γ) ≠ 0 ∧ (gammaTransform (2 * γ.natDegree) γ).Splits)
+    (hp_ne : (gammaTransform (2 * γ.natDegree) γ) ≠ 0)
+    (hp_splits : (gammaTransform (2 * γ.natDegree) γ).Splits)
     (hp_nonpos : HasRootsNonpos (gammaTransform (2 * γ.natDegree) γ)) : (γ ≠ 0 ∧ γ.Splits) :=
-  (isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal hp hp_nonpos).1
+  (isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
+    hp_ne hp_splits hp_nonpos).1
 
 theorem hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
     {γ : ℝ[X]}
-    (hp : (gammaTransform (2 * γ.natDegree) γ) ≠ 0 ∧ (gammaTransform (2 * γ.natDegree) γ).Splits)
+    (hp_ne : (gammaTransform (2 * γ.natDegree) γ) ≠ 0)
+    (hp_splits : (gammaTransform (2 * γ.natDegree) γ).Splits)
     (hp_nonpos : HasRootsNonpos (gammaTransform (2 * γ.natDegree) γ)) :
     HasRootsNonpos γ :=
-  (isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal hp hp_nonpos).2
+  (isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
+    hp_ne hp_splits hp_nonpos).2
 
 lemma hasRootsNonpos_gammaQuadraticFactor {r : ℝ} (hr : r ≤ 0) :
     HasRootsNonpos (X - C r * (X + 1) ^ 2) := by
@@ -913,7 +921,8 @@ lemma hasRootsNonpos_gammaQuadraticFactor {r : ℝ} (hr : r ≤ 0) :
 
 theorem isRealRooted_and_hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasRootsNonpos
     {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2)
-    (hγ : (γ ≠ 0 ∧ γ.Splits)) (hγ_nonpos : HasRootsNonpos γ) : ((gammaTransform d γ) ≠ 0 ∧
+    (hγ_ne : γ ≠ 0) (hγ_splits : γ.Splits) (hγ_nonpos : HasRootsNonpos γ) :
+      ((gammaTransform d γ) ≠ 0 ∧
       (gammaTransform d γ).Splits) ∧
       HasRootsNonpos (gammaTransform d γ) := by
   let P : ℕ → Prop := fun n =>
@@ -939,7 +948,8 @@ theorem isRealRooted_and_hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasRoo
         simpa [gammaBasisTerm_zero] using
           (gammaTransform_monomial d 0 (δ.coeff 0))
       rw [hδC, hgt]
-      refine ⟨isRealRooted_C_mul (isRealRooted_X_add_one_pow d) hcoeff_ne, ?_⟩
+      refine ⟨isRealRooted_C_mul
+        (isRealRooted_X_add_one_pow d).1 (isRealRooted_X_add_one_pow d).2 hcoeff_ne, ?_⟩
       intro r hr
       rw [roots_C_mul _ hcoeff_ne] at hr
       exact roots_nonpos_of_nonneg_coeffs
@@ -958,7 +968,7 @@ theorem isRealRooted_and_hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasRoo
       have hq_dvd : q ∣ δ := ⟨X - C r, by grind⟩
       have hq_ne : q ≠ 0 := by
         simp_all
-      have hq_rr : (q ≠ 0 ∧ q.Splits) := isRealRooted_of_dvd hδ_rr hq_ne hq_dvd
+      have hq_rr : (q ≠ 0 ∧ q.Splits) := isRealRooted_of_dvd hδ_rr.1 hδ_rr.2 hq_ne hq_dvd
       have hq_nonpos : HasRootsNonpos q :=
         hasRootsNonpos_of_dvd hδ_nonpos hδ_rr.1 hq_dvd hq_ne
       have hqdeg_lt : q.natDegree < n := by
@@ -975,7 +985,8 @@ theorem isRealRooted_and_hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasRoo
         ih q.natDegree hqdeg_lt (d - 2) q rfl hqbound hq_rr hq_nonpos
       rw [hd, hδq, gammaTransform_X_sub_C_mul_two hqbound r]
       refine ⟨?_, ?_⟩
-      · exact isRealRooted_mul (isRealRooted_gammaQuadraticFactor hr_nonpos) ihq.1
+      · exact isRealRooted_mul (isRealRooted_gammaQuadraticFactor hr_nonpos).1
+          (isRealRooted_gammaQuadraticFactor hr_nonpos).2 ihq.1.1 ihq.1.2
       · exact (hasRootsNonpos_gammaQuadraticFactor hr_nonpos).mul ihq.2
           (isRealRooted_gammaQuadraticFactor hr_nonpos).1 ihq.1.1
   grind
@@ -1055,7 +1066,7 @@ lemma gammaTransform_minimal_dvd {d : ℕ} {γ : ℝ[X]}
 
 theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_of_natDegree_le
     {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2)
-    (hp : (gammaTransform d γ) ≠ 0 ∧ (gammaTransform d γ).Splits)
+    (hp_ne : (gammaTransform d γ) ≠ 0) (hp_splits : (gammaTransform d γ).Splits)
     (hp_nonpos : HasRootsNonpos (gammaTransform d γ)) : (γ ≠ 0 ∧ γ.Splits) ∧ HasRootsNonpos γ := by
   let q : ℝ[X] := gammaTransform (2 * γ.natDegree) γ
   have hq0 : q ≠ 0 := by
@@ -1066,11 +1077,11 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_of_natDeg
     simp_all
   have hqdvd : q ∣ gammaTransform d γ := by
     simpa [q] using gammaTransform_minimal_dvd (d := d) (γ := γ) hγdeg
-  have hq_rr : (q ≠ 0 ∧ q.Splits) := isRealRooted_of_dvd hp hq0 hqdvd
-  have hq_nonpos : HasRootsNonpos q := hasRootsNonpos_of_dvd hp_nonpos hp.1 hqdvd hq0
+  have hq_rr : (q ≠ 0 ∧ q.Splits) := isRealRooted_of_dvd hp_ne hp_splits hq0 hqdvd
+  have hq_nonpos : HasRootsNonpos q := hasRootsNonpos_of_dvd hp_nonpos hp_ne hqdvd hq0
   simpa [q] using
     (isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
-      (γ := γ) hq_rr hq_nonpos)
+      (γ := γ) hq_rr.1 hq_rr.2 hq_nonpos)
 
 /-- Planning stub for the gamma-polynomial real-rootedness criterion.
 
@@ -1095,10 +1106,10 @@ theorem gammaRealRootedIffPolynomialRealRootedNonpos :
   constructor
   · intro hγ
     exact isRealRooted_and_hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasRootsNonpos
-      (d := d) (γ := γ) hγdeg hγ.1 hγ.2
+      (d := d) (γ := γ) hγdeg hγ.1.1 hγ.1.2 hγ.2
   · intro hp
     exact isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_of_natDegree_le
-      (d := d) (γ := γ) hγdeg hp.1 hp.2
+      (d := d) (γ := γ) hγdeg hp.1.1 hp.1.2 hp.2
 
 end
 end RealRooted
