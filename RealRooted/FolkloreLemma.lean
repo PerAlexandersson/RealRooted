@@ -96,7 +96,7 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
     have hdeg_qf : q.natDegree + 1 = f.natDegree := by
       lia
     have hprec_or : Prec q f ∨ Prec f q :=
-      prec_of_allComboRealRooted hq hf hall_qf (Or.inl hdeg_qf)
+      prec_of_allComboRealRooted hq.1 hq.2 hf.1 hf.2 hall_qf (Or.inl hdeg_qf)
     have hnot_prec_fq : ¬ Prec f q := by
       intro hfq
       rcases hfq with ⟨_, _, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
@@ -137,7 +137,7 @@ theorem prec_sub_X_mul_right {f g : ℝ[X]}
       simpa [hrew] using hall_qf (α - β) β
     have hq : (q ≠ 0 ∧ q.Splits) := hqf.1
     have hg : (g ≠ 0 ∧ g.Splits) := hgf.1
-    have hXg : ((X * g) ≠ 0 ∧ (X * g).Splits) := isRealRooted_X_mul hg
+    have hXg : ((X * g) ≠ 0 ∧ (X * g).Splits) := isRealRooted_X_mul hg.1 hg.2
     have hq_lt : q.natDegree < f.natDegree := by
       have hq_le : q.natDegree ≤ f.natDegree := by
         have hXg_le : (X * g).natDegree ≤ f.natDegree := by
@@ -171,7 +171,7 @@ theorem prec_sub_X_mul_right {f g : ℝ[X]}
     have hdeg_qXg : q.natDegree + 1 = (X * g).natDegree := by
       simp_all
     have hprec_or : Prec q (X * g) ∨ Prec (X * g) q :=
-      prec_of_allComboRealRooted hq hXg hall_qXg (Or.inl hdeg_qXg)
+      prec_of_allComboRealRooted hq.1 hq.2 hXg.1 hXg.2 hall_qXg (Or.inl hdeg_qXg)
     have hnot_prec_Xgq : ¬ Prec (X * g) q := by
       intro hXgq
       rcases hXgq with ⟨_, _, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩

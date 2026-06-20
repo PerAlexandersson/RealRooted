@@ -16,8 +16,8 @@ noncomputable section
 namespace RealRooted
 
 /-- A real-rooted polynomial over `ℝ` splits over `ℝ`. -/
-lemma IsRealRooted.splits {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) : p.Splits :=
-  hp.2
+lemma IsRealRooted.splits {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) : p.Splits :=
+  hp_splits
 
 /-- Finite coefficient sup bound over the `natDegree` range. -/
 def coeffSumRange (p : ℝ[X]) : ℝ :=
@@ -65,13 +65,13 @@ theorem exists_complex_aroot_near_of_isRealRooted_of_monic_of_coeff_close
     (hf_monic : f.Monic) (hg_monic : g.Monic)
     (hdeg : g.natDegree = f.natDegree)
     (hcoeff : ∀ i : ℕ, ‖g.coeff i - f.coeff i‖ < ε)
-    (hg_rr : g ≠ 0 ∧ g.Splits) :
+    (hg_rr_ne : g ≠ 0) (hg_rr_splits : g.Splits) :
     ∃ w : ℂ, w ∈ g.aroots ℂ ∧
       ‖z - w‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖z‖ 1 := by
   obtain ⟨w, hw_mem, hw_dist⟩ :=
     Polynomial.exists_aroots_norm_sub_lt_of_norm_coeff_sub_lt
       (f := f) (g := g) (L := ℂ) hε hz hf_monic hg_monic hdeg hcoeff
-      ((IsRealRooted.splits hg_rr).map (algebraMap ℝ ℂ))
+      ((IsRealRooted.splits hg_rr_ne hg_rr_splits).map (algebraMap ℝ ℂ))
   grind
 
 /-- Uniform coefficient control for normalized left-family perturbations:
@@ -152,7 +152,7 @@ theorem exists_real_root_near_in_left_family
     (hdeg : g.natDegree = f.natDegree)
     (ht : 0 < t)
     (hcoeff_bound : (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) < ε)
-    (hrr : (C t * f + g) ≠ 0 ∧ (C t * f + g).Splits) :
+    (hrr_ne : (C t * f + g) ≠ 0) (hrr_splits : (C t * f + g).Splits) :
     ∃ b : ℝ, (C t * f + g).IsRoot b ∧
       ‖a - b‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖a‖ 1 := by
   have hsum_nonneg : 0 ≤ coeffSumRange f + coeffSumRange g := by
@@ -199,7 +199,7 @@ theorem exists_real_root_near_in_left_family
       (norm_coeff_sub_normalized_left_family_lt f g ht hcoeff_bound) (by simp_all [q])
   have hb_sum_mem : b ∈ (C t * f + g).roots := by
     simpa [q, roots_C_mul _ (inv_ne_zero ht1_ne)] using hb_qroot
-  have hb_sum_root : (C t * f + g).IsRoot b := (Polynomial.mem_roots hrr.1).mp hb_sum_mem
+  have hb_sum_root : (C t * f + g).IsRoot b := (Polynomial.mem_roots hrr_ne).mp hb_sum_mem
   grind
 
 /-- Complex-root continuity for the normalized left affine family:
@@ -213,7 +213,7 @@ theorem exists_complex_aroot_near_in_left_family
     (hdeg : g.natDegree = f.natDegree)
     (ht : 0 < t)
     (hcoeff_bound : (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) < ε)
-    (hrr : (C t * f + g) ≠ 0 ∧ (C t * f + g).Splits) :
+    (hrr_ne : (C t * f + g) ≠ 0) (hrr_splits : (C t * f + g).Splits) :
     ∃ w : ℂ, w ∈ (C t * f + g).aroots ℂ ∧
       ‖z - w‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖z‖ 1 := by
   have hsum_nonneg : 0 ≤ coeffSumRange f + coeffSumRange g := by
@@ -257,7 +257,7 @@ theorem exists_complex_aroot_near_in_left_family
   obtain ⟨w, hw_qroot, hw_dist⟩ :=
     exists_complex_aroot_near_of_isRealRooted_of_monic_of_coeff_close
       (f := f) (g := q) (z := z) (ε := ε) hε hz hf_monic hq_monic hq_deg
-      (norm_coeff_sub_normalized_left_family_lt f g ht hcoeff_bound) hq_rr
+      (norm_coeff_sub_normalized_left_family_lt f g ht hcoeff_bound) hq_rr.1 hq_rr.2
   have hw_sum_mem : w ∈ (C t * f + g).aroots ℂ := by
     simpa [q, Polynomial.aroots_C_mul _ (inv_ne_zero ht1_ne)] using hw_qroot
   grind
@@ -265,13 +265,13 @@ theorem exists_complex_aroot_near_in_left_family
 /-- Any complex algebraic root of a real-rooted polynomial over `ℝ` has zero
 imaginary part. -/
 lemma im_eq_zero_of_mem_aroots_of_isRealRooted
-    {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) {z : ℂ}
+    {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) {z : ℂ}
     (hz : z ∈ p.aroots ℂ) :
     z.im = 0 := by
   have hz_root : (p.map (algebraMap ℝ ℂ)).IsRoot z := by
     simp_all
   have hz_range : z ∈ (algebraMap ℝ ℂ).range :=
-    (IsRealRooted.splits hp).mem_range_of_isRoot hp.1 hz_root
+    (IsRealRooted.splits hp_ne hp_splits).mem_range_of_isRoot hp_ne hz_root
   rcases hz_range with ⟨r, rfl⟩
   simp
 

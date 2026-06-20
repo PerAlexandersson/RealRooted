@@ -805,7 +805,7 @@ Chudnovsky--Seymour interval language. This is the core bridge needed to turn
 pairwise common interleavers into pairwise-intersecting slot intervals. -/
 private lemma mem_rootSlotInterval_of_prec_witness
     {f g : ℝ[X]} {ss rs : List ℝ}
-    (hf : f ≠ 0 ∧ f.Splits) (hg : g ≠ 0 ∧ g.Splits)
+    (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hg_ne : g ≠ 0) (hg_splits : g.Splits)
     (hss : ss.Pairwise (· ≤ ·)) (hrs : rs.Pairwise (· ≤ ·))
     (hss_eq : (↑ss : Multiset ℝ) = f.roots)
     (hrs_eq : (↑rs : Multiset ℝ) = g.roots)
@@ -846,7 +846,7 @@ private lemma mem_rootSlotInterval_of_prec
   let jf_rev : Fin (ss.reverse.length + 1) := ⟨j.1, by
     grind⟩
   have hmem_rev : rs.reverse.get jg_rev ∈ rootSlotInterval ss.reverse jf_rev :=
-    mem_rootSlotInterval_of_prec_witness hf hg hss hrs hss_eq hrs_eq hshape
+    mem_rootSlotInterval_of_prec_witness hf.1 hf.2 hg.1 hg.2 hss hrs hss_eq hrs_eq hshape
       ⟨j.1, by lia⟩
   lia
 
@@ -1284,7 +1284,7 @@ private lemma isRealRooted_polyOfDescRoots (xs : List ℝ) :
       simp
   | cons x xs ih =>
       simpa [List.map_cons, List.prod_cons] using
-        isRealRooted_mul (isRealRooted_X_sub_C x) ih
+        isRealRooted_mul (isRealRooted_X_sub_C x).1 (isRealRooted_X_sub_C x).2 ih.1 ih.2
 
 private lemma rootSeqDesc_polyOfDescRoots_eq
     {xs : List ℝ} (hxs : xs.Pairwise (· ≥ ·)) :

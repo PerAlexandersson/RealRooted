@@ -124,7 +124,8 @@ inductive WeightedCompatibleLeft (h : ℝ[X]) : List (ℝ × ℝ[X]) → Prop
   | cons_pos {a : ℝ} {p : ℝ[X]} {l : List (ℝ × ℝ[X])}
       (ha : 0 < a) (hprec : Prec h p) (hpos : HasPosLeadingCoeff p)
       (hl : WeightedCompatibleLeft h l)
-      (hrr : (C a * p + weightedSum l) ≠ 0 ∧ (C a * p + weightedSum l).Splits)
+      (hrr_ne : (C a * p + weightedSum l) ≠ 0)
+      (hrr_splits : (C a * p + weightedSum l).Splits)
       (hcop : IsCoprime (C a * p) (weightedSum l)) :
       WeightedCompatibleLeft h ((a, p) :: l)
 
@@ -139,7 +140,7 @@ lemma nonneg {h : ℝ[X]} :
       rcases List.mem_cons.mp hap with rfl | hap
       · simp [ha]
       · exact nonneg hl ap hap
-  | _, cons_pos ha _ _ hl _ _ => by
+  | _, cons_pos ha _ _ hl _ _ _ => by
       intro ap hap
       rcases List.mem_cons.mp hap with rfl | hap
       · grind
@@ -155,7 +156,7 @@ lemma pos {h : ℝ[X]} :
       rcases List.mem_cons.mp hap with rfl | hap
       · lia
       · exact pos hl ap hap
-  | _, cons_pos _ _ hpos hl _ _ => by
+  | _, cons_pos _ _ hpos hl _ _ _ => by
       intro ap hap
       rcases List.mem_cons.mp hap with rfl | hap
       · lia
@@ -169,7 +170,7 @@ lemma exists_pos {h : ℝ[X]} :
   | _, cons_zero _ _ _ hl => by
       rcases exists_pos hl with ⟨ap, hap, hapos⟩
       grind
-  | _, @cons_pos _ a p l ha _ _ _ _ _ => by
+  | _, @cons_pos _ a p l ha _ _ _ _ _ _ => by
       simp_all
 
 lemma hasPosLeadingCoeff {h : ℝ[X]} {l : List (ℝ × ℝ[X])}
@@ -183,12 +184,12 @@ lemma prec {h : ℝ[X]} :
       simpa [weightedSum, weightedSum_cons] using prec_C_mul_right hprec ha.ne'
   | _, cons_zero ha _ _ hl => by
       simpa [weightedSum, weightedSum_cons, ha] using prec hl
-  | _, @cons_pos _ a p l ha hprec hpos hl hrr hcop => by
+  | _, @cons_pos _ a p l ha hprec hpos hl hrr_ne hrr_splits hcop => by
       have hCa_pos : HasPosLeadingCoeff (C a * p) := hasPosLeadingCoeff_C_mul ha hpos
       exact prec_add_of_prec_left
         (prec_C_mul_right hprec ha.ne')
         (prec hl)
-        hCa_pos (hasPosLeadingCoeff hl) hrr hcop
+        hCa_pos (hasPosLeadingCoeff hl) hrr_ne hrr_splits hcop
 
 lemma toSumCompatibleLeft_map_one {h : ℝ[X]} :
     ∀ {l : List ℝ[X]},
@@ -202,20 +203,20 @@ lemma toSumCompatibleLeft_map_one {h : ℝ[X]} :
           simpa using SumCompatibleLeft.singleton hprec hpos
       | cons_zero ha _ _ _ =>
           simp_all
-      | cons_pos _ _ _ hl _ _ =>
+      | cons_pos _ _ _ hl _ _ _ =>
           cases hl
   | p :: q :: l, hl => by
       cases hl with
       | cons_zero ha _ _ _ =>
           simp_all
-      | cons_pos _ hprec hpos htail hrr hcop =>
+      | cons_pos _ hprec hpos htail hrr_ne hrr_splits hcop =>
           have htail' : SumCompatibleLeft h (q :: l) :=
             toSumCompatibleLeft_map_one htail
           have hrr' : ((p + (q :: l).sum) ≠ 0 ∧ (p + (q :: l).sum).Splits) := by
             simp_all
           have hcop' : IsCoprime p (q :: l).sum := by
             simp_all
-          exact SumCompatibleLeft.cons hprec hpos htail' hrr' hcop'
+          exact SumCompatibleLeft.cons hprec hpos htail' hrr'.1 hrr'.2 hcop'
 
 end WeightedCompatibleLeft
 

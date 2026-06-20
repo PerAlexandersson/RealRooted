@@ -414,7 +414,7 @@ theorem eq_zero_or_splits_derivative {p : ℝ[X]}
 /-- Strict real-rootedness is preserved by differentiation unless the
 derivative vanishes. -/
 theorem derivative_eq_zero_or_ne_zero_and_splits {p : ℝ[X]}
-    (hp : p ≠ 0 ∧ p.Splits) :
+    (hp_ne : p ≠ 0) (hp_splits : p.Splits) :
     p.derivative = 0 ∨ (p.derivative ≠ 0 ∧ p.derivative.Splits) := by
   by_cases hdeg0 : p.natDegree = 0
   · left
@@ -427,12 +427,12 @@ theorem derivative_eq_zero_or_ne_zero_and_splits {p : ℝ[X]}
       rw [p.natDegree_derivative, hdeg1]
     exact ⟨hder_ne, hder_splits⟩
   · have hdeg2 : 2 ≤ p.natDegree := by grind
-    exact Or.inr (derivative_interlaces hp.2 hdeg2).2.1
+    exact Or.inr (derivative_interlaces hp_splits hdeg2).2.1
 
 /-- If all roots of a real-rooted polynomial are nonpositive, then all roots of
 its derivative are nonpositive. -/
 theorem roots_nonpos_derivative_of_roots_nonpos {p : ℝ[X]}
-    (hp : p ≠ 0 ∧ p.Splits)
+    (hp_ne : p ≠ 0) (hp_splits : p.Splits)
     (hroots : ∀ r ∈ p.roots, r ≤ 0) :
     ∀ r ∈ p.derivative.roots, r ≤ 0 := by
   by_cases hdeg0 : p.natDegree = 0
@@ -449,7 +449,7 @@ theorem roots_nonpos_derivative_of_roots_nonpos {p : ℝ[X]}
     intro r hr
     simp at hr
   · have hdeg2 : 2 ≤ p.natDegree := by grind
-    exact roots_le_of_prec_right (derivative_interlaces hp.2 hdeg2).toPrec hroots
+    exact roots_le_of_prec_right (derivative_interlaces hp_splits hdeg2).toPrec hroots
 
 /-- Standard Rolle--Obreschkoff input: differentiation preserves weak proper
 position in the oriented, zero-aware `Prec0` convention. -/

@@ -122,9 +122,9 @@ theorem prec_shift_of_same_degree
     let h' := h.comp (X + C 1)
     let f' := f.comp (X + C 1)
     have hh' : (h' ≠ 0 ∧ h'.Splits) := by
-      simpa [h'] using isRealRooted_comp_X_add_C hprec.1 1
+      simpa [h'] using isRealRooted_comp_X_add_C hprec.1.1 hprec.1.2 1
     have hf' : (f' ≠ 0 ∧ f'.Splits) := by
-      simpa [f'] using isRealRooted_comp_X_add_C hprec.2.1 1
+      simpa [f'] using isRealRooted_comp_X_add_C hprec.2.1.1 hprec.2.1.2 1
     have hh'_nonpos : ∀ s ∈ h'.roots, s ≤ 0 := by
       intro s hs
       simp only [h', roots_comp_X_add_C 1] at hs
@@ -170,7 +170,7 @@ coefficients, `h ≪ f`, and `h(0) ≤ f(0)`, then
 -/
 theorem prec_shift
     {f h : ℝ[X]}
-    (hf : f ≠ 0 ∧ f.Splits) (hh : h ≠ 0 ∧ h.Splits)
+    (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hh_ne : h ≠ 0) (hh_splits : h.Splits)
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     (hh_nonpos : ∀ r ∈ h.roots, r ≤ 0)
     (hf_pos : HasPosLeadingCoeff f)
@@ -180,26 +180,26 @@ theorem prec_shift
     Prec f (f + (X - C 1) * h) := by
   obtain ⟨_, _, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩ := hprec
   have hss_len : ss.length = h.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hh.2]
+    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hh_splits]
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf_splits]
   rcases hshape with ⟨hdiffby1, hint⟩ | ⟨hsamedeg, halt⟩
   · have hdeg : h.natDegree + 1 = f.natDegree := by lia
-    have hh_ne : h ≠ 0 := hh.1
     have hinterl : Interlaces h f :=
-      Prec.toInterlaces ⟨hh, hf, ss, rs, hss_sorted, hrs_sorted,
-        hss_eq, hrs_eq, Or.inl ⟨hdiffby1, hint⟩⟩ hdeg
+      Prec.toInterlaces ⟨⟨hh_ne, hh_splits⟩, ⟨hf_ne, hf_splits⟩, ss, rs, hss_sorted,
+        hrs_sorted, hss_eq, hrs_eq, Or.inl ⟨hdiffby1, hint⟩⟩ hdeg
     obtain ⟨hndeg, hpos⟩ := shift_natDegree_of_interlaces hf_pos hh_pos hdeg hh_ne
     exact prec_shift_of_interlaces hinterl hf_pos hh_pos hf_nonpos hpos
       (by lia) (by lia)
   · have hdeg : h.natDegree = f.natDegree := by lia
     exact prec_shift_of_same_degree
-      ⟨hh, hf, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, Or.inr ⟨hsamedeg, halt⟩⟩
+      ⟨⟨hh_ne, hh_splits⟩, ⟨hf_ne, hf_splits⟩, ss, rs, hss_sorted, hrs_sorted,
+        hss_eq, hrs_eq, Or.inr ⟨hsamedeg, halt⟩⟩
       hdeg hf_pos hh_pos hf_nonpos hh_nonpos heval
 
 /-- Shift lemma with variables named for applications. -/
 theorem prec_shift' {F H : ℝ[X]}
-    (hF : F ≠ 0 ∧ F.Splits) (hH : H ≠ 0 ∧ H.Splits)
+    (hF_ne : F ≠ 0) (hF_splits : F.Splits) (hH_ne : H ≠ 0) (hH_splits : H.Splits)
     (hF_nonpos : ∀ r ∈ F.roots, r ≤ 0)
     (hH_nonpos : ∀ r ∈ H.roots, r ≤ 0)
     (hF_pos : HasPosLeadingCoeff F)
@@ -207,6 +207,6 @@ theorem prec_shift' {F H : ℝ[X]}
     (hinterl : Prec H F)
     (heval : H.eval 0 ≤ F.eval 0) :
     Prec F (F + (X - C 1) * H) :=
-  prec_shift hF hH hF_nonpos hH_nonpos hF_pos hH_pos hinterl heval
+  prec_shift hF_ne hF_splits hH_ne hH_splits hF_nonpos hH_nonpos hF_pos hH_pos hinterl heval
 
 end RealRooted

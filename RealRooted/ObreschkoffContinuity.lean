@@ -56,7 +56,7 @@ theorem exists_root_near_left_family
   exact
     exists_real_root_near_in_left_family
       (ha := ha) hf_monic hg_monic hdeg ht hcoeff_bound
-      (hfg.isRealRooted_add_left ht)
+      (hfg.isRealRooted_add_left ht).1 (hfg.isRealRooted_add_left ht).2
 
 /-- Complex-root continuity bridge for the left affine family under
 positive-combination real-rootedness. -/
@@ -73,7 +73,7 @@ theorem exists_complex_aroot_near_left_family
   exact
     RealRooted.exists_complex_aroot_near_in_left_family
       (hz := hz) hf_monic hg_monic hdeg ht hcoeff_bound
-      (hfg.isRealRooted_add_left ht)
+      (hfg.isRealRooted_add_left ht).1 (hfg.isRealRooted_add_left ht).2
 
 /-- Root continuity in the left affine family with an automatically chosen positive parameter.
 Given `ε > 0`, this returns `t > 0` and a root of `C t * f + g` near the chosen root of `f`. -/
@@ -239,7 +239,7 @@ theorem im_eq_zero_of_aeval_zero_of_posComboRealRooted_monic_sameDegree
       (hfg := hfg) (hz := hz) hf_monic hg_monic hdeg hμ hcoeff_bound
   have hw_im_zero : w.im = 0 := by
     exact RealRooted.im_eq_zero_of_mem_aroots_of_isRealRooted
-      (hfg.isRealRooted_add_right hμ) hw_root
+      (hfg.isRealRooted_add_right hμ).1 (hfg.isRealRooted_add_right hμ).2 hw_root
   have hbound_eq :
       ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * R = δ / 2 := by
     have hmul :

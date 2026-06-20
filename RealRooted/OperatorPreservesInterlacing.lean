@@ -75,14 +75,17 @@ theorem preservesInterlacingPairsUpToOrder0_of_preservesRealRootedOrZero
     exact ⟨hgT0, by simpa using hallT 0 1⟩
   rcases natDegree_eq_or_succ_or_revSucc_of_allComboRealRooted hallT hfT0 hgT0 with
     hsame | hsucc | hrevsucc
-  · rcases prec_of_allComboRealRooted hfT hgT hallT (Or.inr hsame) with hprec | hprec
+  · rcases prec_of_allComboRealRooted hfT.1 hfT.2 hgT.1 hgT.2 hallT
+      (Or.inr hsame) with hprec | hprec
     · exact Or.inl hprec.toPrec0
     · exact Or.inr hprec.toPrec0
-  · rcases prec_of_allComboRealRooted hfT hgT hallT (Or.inl hsucc) with hprec | hprec
+  · rcases prec_of_allComboRealRooted hfT.1 hfT.2 hgT.1 hgT.2 hallT
+      (Or.inl hsucc) with hprec | hprec
     · exact Or.inl hprec.toPrec0
     · exact Or.inr hprec.toPrec0
   · have hallT' : AllComboRealRooted (T g) (T f) := allComboRealRooted_comm hallT
-    rcases prec_of_allComboRealRooted hgT hfT hallT' (Or.inl hrevsucc) with hprec | hprec
+    rcases prec_of_allComboRealRooted hgT.1 hgT.2 hfT.1 hfT.2 hallT'
+      (Or.inl hrevsucc) with hprec | hprec
     · exact Or.inr hprec.toPrec0
     · exact Or.inl hprec.toPrec0
 

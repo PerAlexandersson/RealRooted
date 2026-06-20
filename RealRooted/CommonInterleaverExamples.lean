@@ -25,11 +25,11 @@ private lemma xAddOne_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 1 : ℝ[X]) :
 
 private lemma twoMul_xAddOne_isRealRooted :
     ((C (2 : ℝ) * (X + 1)) ≠ 0 ∧ (C (2 : ℝ) * (X + 1)).Splits) := by
-  exact isRealRooted_C_mul xAddOne_isRealRooted (by simp)
+  exact isRealRooted_C_mul xAddOne_isRealRooted.1 xAddOne_isRealRooted.2 (by simp)
 
 private lemma threeMul_xAddOne_isRealRooted :
     ((C (3 : ℝ) * (X + 1)) ≠ 0 ∧ (C (3 : ℝ) * (X + 1)).Splits) := by
-  exact isRealRooted_C_mul xAddOne_isRealRooted (by simp)
+  exact isRealRooted_C_mul xAddOne_isRealRooted.1 xAddOne_isRealRooted.2 (by simp)
 
 private lemma twoMul_xAddOne_hasPosLeadingCoeff :
     HasPosLeadingCoeff (C (2 : ℝ) * (X + 1)) := by
@@ -203,7 +203,8 @@ private lemma xAddFiveHalves_roots :
 
 private lemma xSq_add_fiveX_add_six_isRealRooted :
     ((((X + 2) * (X + 3)) : ℝ[X]) ≠ 0 ∧ (((X + 2) * (X + 3)) : ℝ[X]).Splits) := by
-  exact isRealRooted_mul xAddTwo_isRealRooted xAddThree_isRealRooted
+  exact isRealRooted_mul xAddTwo_isRealRooted.1 xAddTwo_isRealRooted.2
+    xAddThree_isRealRooted.1 xAddThree_isRealRooted.2
 
 private lemma xSq_add_fiveX_add_six_hasNonnegCoeffs :
     HasNonnegCoeffs (((X + 2) * (X + 3)) : ℝ[X]) := by
@@ -428,7 +429,7 @@ private lemma xSq_add_threeX_add_three_not_isRealRooted :
       (Polynomial.natDegree_quadratic (a := (1 : ℝ)) (b := (3 : ℝ)) (c := (3 : ℝ))
         (by simp))
   obtain ⟨x, hx⟩ :=
-    exists_isRoot_of_isRealRooted_of_not_isUnit hrr
+    exists_isRoot_of_isRealRooted_of_not_isUnit hrr.1 hrr.2
       (not_isUnit_of_natDegree_pos _ (by lia))
   have hx_eval : (X ^ 2 + C (3 : ℝ) * X + C (3 : ℝ) : ℝ[X]).eval x = 0 := by
     simp_all
@@ -473,7 +474,7 @@ private lemma xSq_add_twoX_add_two_not_isRealRooted :
       (Polynomial.natDegree_quadratic (a := (1 : ℝ)) (b := (2 : ℝ)) (c := (2 : ℝ))
         (by simp))
   obtain ⟨x, hx⟩ :=
-    exists_isRoot_of_isRealRooted_of_not_isUnit hrr
+    exists_isRoot_of_isRealRooted_of_not_isUnit hrr.1 hrr.2
       (not_isUnit_of_natDegree_pos _ (by lia))
   have hx_eval : (X ^ 2 + C (2 : ℝ) * X + C (2 : ℝ) : ℝ[X]).eval x = 0 := by
     simp_all

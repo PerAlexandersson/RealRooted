@@ -214,8 +214,9 @@ lemma isRealRooted_affine_mul_X_add_X {s t : ℝ} (hs : 0 < s) :
     (((C s * X + C t) * X + X : ℝ[X]) ≠ 0 ∧ ((C s * X + C t) * X + X : ℝ[X]).Splits) := by
   rw [affine_mul_X_add_X_eq]
   exact
-    isRealRooted_mul isRealRooted_X
-      (isRealRooted_affine_factor (s := s) (t := t + 1) hs)
+    isRealRooted_mul isRealRooted_X.1 isRealRooted_X.2
+      (isRealRooted_affine_factor (s := s) (t := t + 1) hs).1
+      (isRealRooted_affine_factor (s := s) (t := t + 1) hs).2
 
 lemma isRealRooted_affine_mul_C_add_X
     {A s t : ℝ} (hA : 0 ≤ A) (hs : 0 < s) :
@@ -350,7 +351,7 @@ lemma prec0_C_mul_affine_linear_X_mul_affine_linear
     isRealRooted_affine_factor (s := u) (t := v) hu
   have hfnn : HasNonnegCoeffs (C u * X + C v : ℝ[X]) :=
     hasNonnegCoeffs_affine_linear hu.le hv
-  exact (prec_C_mul_left (prec_self_mul_X_of_nonneg hf hfnn) ha0).toPrec0
+  exact (prec_C_mul_left (prec_self_mul_X_of_nonneg hf.1 hf.2 hfnn) ha0).toPrec0
 
 /-! ## Matrix action formula -/
 
@@ -477,7 +478,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_one (a : ℝ) :
     simpa using isRealRooted_affine_factor (s := 1) (t := a) zero_lt_one
   have hrr : (((C s * X + C (t + 1)) * (X + C a) : ℝ[X]) ≠ 0 ∧
     ((C s * X + C (t + 1)) * (X + C a) : ℝ[X]).Splits) :=
-    isRealRooted_mul hlin hxpa
+    isRealRooted_mul hlin.1 hlin.2 hxpa.1 hxpa.2
   have hsum : (C s * X + C t : ℝ[X]) + 1 = C s * X + C (t + 1) := by
     grind
   have hfactor :
@@ -1007,7 +1008,7 @@ lemma realRooted_mem_map_C_mul_of_realRooted
 sections are weakly interlacing, and every nonzero section is real-rooted. -/
 theorem isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_of_realRooted_nonneg
     {r : ℕ} (hr : 0 < r) {p : ℝ[X]}
-    (hpnn : HasNonnegCoeffs p) (hprr : p ≠ 0 ∧ p.Splits) :
+    (hpnn : HasNonnegCoeffs p) (hprr_ne : p ≠ 0) (hprr_splits : p.Splits) :
     IsInterlacingSeq0Nonneg (veroneseSectionPolynomialListDesc r p) ∧
       ∀ f ∈ veroneseSectionPolynomialListDesc r p, f ≠ 0 → (f ≠ 0 ∧
         f.Splits) := by
@@ -1016,14 +1017,14 @@ theorem isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_of_re
     intro a ha
     rcases List.mem_map.1 ha with ⟨x, hx, rfl⟩
     have hx_root : x ∈ p.roots := Multiset.mem_toList.mp hx
-    linarith [roots_nonpos_of_nonneg_coeffs hprr.2 hpnn x hx_root]
+    linarith [roots_nonpos_of_nonneg_coeffs hprr_splits hpnn x hx_root]
   have hprod := linearFactorProduct_neg_roots_eq_rootsProduct p
   have hfac :
       C p.leadingCoeff * linearFactorProduct as = p := by
     rw [hprod]
     exact Polynomial.C_leadingCoeff_mul_prod_multiset_X_sub_C
-      (card_roots_of_splits hprr.2)
-  have hlead_pos : 0 < p.leadingCoeff := hpnn.pos_leadingCoeff hprr.1
+      (card_roots_of_splits hprr_splits)
+  have hlead_pos : 0 < p.leadingCoeff := hpnn.pos_leadingCoeff hprr_ne
   have hlead_ne : p.leadingCoeff ≠ 0 := ne_of_gt hlead_pos
   have hpkg :=
     isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_linearFactorProduct
@@ -1049,12 +1050,12 @@ theorem isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_of_re
 nonnegative coefficients is real-rooted, allowing the section to vanish. -/
 theorem isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg_matrix
     {r k : ℕ} (hr : 0 < r) (hk : k < r) {p : ℝ[X]}
-    (hpnn : HasNonnegCoeffs p) (hprr : p ≠ 0 ∧ p.Splits) :
+    (hpnn : HasNonnegCoeffs p) (hprr_ne : p ≠ 0) (hprr_splits : p.Splits) :
     veroneseSectionPolynomial r k p = 0 ∨
       (veroneseSectionPolynomial r k p).Splits := by
   have hpkg :=
     isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_of_realRooted_nonneg
-      (r := r) hr hpnn hprr
+      (r := r) hr hpnn hprr_ne hprr_splits
   have hmem := mem_veroneseSectionPolynomialListDesc (r := r) (k := k) p hk
   by_cases hzero : veroneseSectionPolynomial r k p = 0
   · exact Or.inl hzero

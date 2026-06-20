@@ -28,12 +28,12 @@ lemma splits_of_card_roots {p : ℝ[X]} (h : p.roots.card = p.natDegree) : p.Spl
   splits_iff_card_roots.mpr h
 
 lemma ne_zero_and_splits_of_ne_zero_and_card_roots {p : ℝ[X]}
-    (h : p ≠ 0 ∧ p.roots.card = p.natDegree) : p ≠ 0 ∧ p.Splits :=
-  ⟨h.1, splits_of_card_roots h.2⟩
+    (h_ne : p ≠ 0) (h_card : p.roots.card = p.natDegree) : p ≠ 0 ∧ p.Splits :=
+  ⟨h_ne, splits_of_card_roots h_card⟩
 
 lemma ne_zero_and_card_roots_of_ne_zero_and_splits {p : ℝ[X]}
-    (h : p ≠ 0 ∧ p.Splits) : p ≠ 0 ∧ p.roots.card = p.natDegree :=
-  ⟨h.1, card_roots_of_splits h.2⟩
+    (h_ne : p ≠ 0) (h_splits : p.Splits) : p ≠ 0 ∧ p.roots.card = p.natDegree :=
+  ⟨h_ne, card_roots_of_splits h_splits⟩
 
 lemma eq_zero_or_ne_zero_and_splits_iff_eq_zero_or_ne_zero_and_card_roots (p : ℝ[X]) :
     (p = 0 ∨ (p ≠ 0 ∧ p.Splits)) ↔
@@ -42,11 +42,11 @@ lemma eq_zero_or_ne_zero_and_splits_iff_eq_zero_or_ne_zero_and_card_roots (p : �
   · intro h
     rcases h with rfl | h
     · lia
-    · exact Or.inr (ne_zero_and_card_roots_of_ne_zero_and_splits h)
+    · exact Or.inr (ne_zero_and_card_roots_of_ne_zero_and_splits h.1 h.2)
   · intro h
     rcases h with rfl | h
     · lia
-    · exact Or.inr (ne_zero_and_splits_of_ne_zero_and_card_roots h)
+    · exact Or.inr (ne_zero_and_splits_of_ne_zero_and_card_roots h.1 h.2)
 
 /-! ## Root interleaving predicates on sorted lists -/
 
@@ -429,9 +429,8 @@ lemma prec0_zero_zero : Prec0 (0 : ℝ[X]) 0 :=
   prec0_zero_left 0
 
 /-- The product of two real-rooted polynomials is real-rooted. -/
-lemma isRealRooted_mul {p q : ℝ[X]} (hp : p ≠ 0 ∧
-  p.Splits) (hq : q ≠ 0 ∧
-  q.Splits) : (p * q ≠ 0 ∧ (p * q).Splits) := by
+lemma isRealRooted_mul {p q : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits)
+    (hq_ne : q ≠ 0) (hq_splits : q.Splits) : (p * q ≠ 0 ∧ (p * q).Splits) := by
   simp_all
 
 /-- Non-negative coefficients. -/
@@ -498,13 +497,13 @@ lemma coeff_X_sub_C_mul (r : ℝ) (q : ℝ[X]) (n : ℕ) :
 
 /-- A nonconstant real-rooted polynomial has a rightmost root. -/
 lemma exists_rightmost_root_of_isRealRooted
-    {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hdeg : 1 ≤ p.natDegree) :
+    {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hdeg : 1 ≤ p.natDegree) :
     ∃ r, p.IsRoot r ∧ ∀ s ∈ p.roots, s ≤ r := by
   let rs := p.roots.sort (· ≤ ·)
   have hrs_eq : (↑rs : Multiset ℝ) = p.roots := Multiset.sort_eq ..
   have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hrs_len : rs.length = p.natDegree := by
-    rw [show rs = p.roots.sort (· ≤ ·) by lia, Multiset.length_sort, card_roots_of_splits hp.2]
+    rw [show rs = p.roots.sort (· ≤ ·) by lia, Multiset.length_sort, card_roots_of_splits hp_splits]
   have hrs_ne : rs ≠ [] := by
     grind
   refine ⟨rs.getLast hrs_ne, ?_, ?_⟩

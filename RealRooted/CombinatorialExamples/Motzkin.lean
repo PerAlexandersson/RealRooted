@@ -238,7 +238,7 @@ lemma prec_motzkin_succ_of_shifted_even {n : Nat} (heven : n % 2 = 0)
     Prec (motzkin n) (motzkin (n + 1)) := by
   have hf : ((motzkin n) ≠ 0 ∧ (motzkin n).Splits) := by
     exact
-      isRealRooted_of_dvd hshift.2.1 (motzkin_nonzero n)
+      isRealRooted_of_dvd hshift.2.1.1 hshift.2.1.2 (motzkin_nonzero n)
         ⟨X - C motzkinShift, by grind⟩
   have hdeg : (motzkin n).natDegree + 1 = (motzkin (n + 1)).natDegree := by
     rw [natDegree_motzkin, natDegree_motzkin]
