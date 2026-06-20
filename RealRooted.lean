@@ -15,6 +15,7 @@ import RealRooted.OperatorPreservesInterlacing
 import RealRooted.SymmetricDecomposition
 import RealRooted.CommonInterleaverTwo
 import RealRooted.CommonInterleaverExamples
+import RealRooted.ChudnovskySeymour
 import RealRooted.GammaRealRoots
 import RealRooted.HermiteBiehler
 import RealRooted.PFPolynomial
