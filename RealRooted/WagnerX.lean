@@ -660,8 +660,7 @@ theorem prec_sameDegree_to_prec_mul_X_of_roots_nonpos {f g : ℝ[X]}
 theorem prec_of_prec_mul_X_sameDegree_of_roots_nonpos {f g : ℝ[X]}
     (h : Prec g (X * f))
     (hdeg : f.natDegree = g.natDegree)
-    (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
-    (_hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
+    (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
     Prec f g := by
   rcases h with
     ⟨hg, hXf, ss_g, rs_Xf, hss_g, hrs_Xf, hss_g_eq, hrs_Xf_eq, hshape⟩

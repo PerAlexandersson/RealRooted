@@ -637,7 +637,7 @@ lemma isRoot_neg_one_fPolynomial_of_natDegree_lt
 
 lemma not_isRoot_neg_one_fPolynomial_of_natDegree_eq_of_hasNonnegCoeffs
     {d : ℕ} {p : ℝ[X]} (hdeg : p.natDegree = d)
-    (_hpnn : HasNonnegCoeffs p) (hp0 : p ≠ 0) :
+    (hp0 : p ≠ 0) :
     ¬ (fPolynomial d p).IsRoot (-1) := by
   rw [Polynomial.IsRoot.def, eval_neg_one_fPolynomial]
   have hcoeff_ne : p.coeff d ≠ 0 := by
@@ -918,7 +918,7 @@ lemma root_gt_neg_one_of_mem_roots_fPolynomial_natDegree_of_isRealRooted_of_hasN
   by_cases hxm1 : x = -1
   · subst hxm1
     exfalso
-    exact not_isRoot_neg_one_fPolynomial_of_natDegree_eq_of_hasNonnegCoeffs rfl hpnn hp0
+    exact not_isRoot_neg_one_fPolynomial_of_natDegree_eq_of_hasNonnegCoeffs rfl hp0
       ((mem_roots hfp_ne).mp hx)
   · by_cases hxlt : x < -1
     · exfalso
@@ -2736,7 +2736,6 @@ private lemma interlaces_of_prec_sameDegree_rightmost_factor
 
 private theorem prec_b_component_of_prec_left_top_of_sameDegree
     {d : ℕ} {p a b : ℝ[X]}
-    (_hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
     (ha_nonneg : HasNonnegCoeffs a)
     (hb_nonneg : HasNonnegCoeffs b)
@@ -2792,7 +2791,7 @@ private theorem prec_b_component_of_prec_left_top
   rcases hXb_case with hXb_top | hXb_gap
   · exact
       prec_b_component_of_prec_left_top_of_sameDegree
-        hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top hXb_top hap
+        hid ha_nonneg hb_nonneg ha0 hb0 ha_top hXb_top hap
   · exfalso
     have hall_aXb : AllComboRealRooted a (X * b) :=
       allComboRealRooted_left_X_mul_component_of_prec_left hp_eq hap
@@ -3272,9 +3271,7 @@ theorem hasNonnegCoeffs_pair_of_isRdDecomposition {d : ℕ} {p a b : ℝ[X]}
     exact ha_nonneg.add (hasNonnegCoeffs_X_add_one.mul hb_nonneg)
   lia
 
-theorem hasNonnegCoeffs_transformed_components_of_isIdDecomposition {d : ℕ} {p a b : ℝ[X]}
-    (_hd : p.natDegree ≤ d)
-    (_hid : IsIdDecomposition d p a b)
+theorem hasNonnegCoeffs_transformed_components_of_isIdDecomposition {d : ℕ} {a b : ℝ[X]}
     (ha_nonneg : HasNonnegCoeffs a)
     (hb_nonneg : HasNonnegCoeffs b) :
     HasNonnegCoeffs (fPolynomial d a) ∧ HasNonnegCoeffs (fPolynomial (d - 1) b) := by

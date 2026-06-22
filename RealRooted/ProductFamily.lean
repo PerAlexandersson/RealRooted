@@ -539,7 +539,6 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg
 are removed pairwise before applying Brändén's strict product-sum theorem. -/
 theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg_both
     {fs gs : List ℝ[X]}
-    (_hlen : fs.length = gs.length)
     (hfs : IsInterlacingSeq0Nonneg fs)
     (hfs_real : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits))
     (hgs : IsInterlacingSeq0Nonneg gs)

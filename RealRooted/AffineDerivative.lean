@@ -238,11 +238,11 @@ Between consecutive roots `r₁ ≤ r₂` of `f`, we show `g` has a root in `[r�
   hence `g(r₁)` and `g(r₂)` have opposite signs. IVT gives a root. -/
 
 lemma exists_affineDeriv_root_between {f : ℝ[X]}
-    (hf_ne : f ≠ 0) (_hf_splits : f.Splits) (_hdeg : 2 ≤ f.natDegree)
-    {c : ℝ} (_eq_mul_of_hasProd_itehc : (f.natDegree : ℝ) < c)
+    (hf_ne : f ≠ 0)
+    {c : ℝ}
     {r₁ r₂ : ℝ} (hr₁ : f.IsRoot r₁) (hr₂ : f.IsRoot r₂)
     (hle : r₁ ≤ r₂)
-    (_hr₁_nonpos : r₁ ≤ 0) (hr₂_nonpos : r₂ ≤ 0)
+    (hr₂_nonpos : r₂ ≤ 0)
     (hsub : (↑[r₁, r₂] : Multiset ℝ) ≤ f.roots)
     (hno_between : ∀ r ∈ f.roots, ¬(r₁ < r ∧ r < r₂)) :
     ∃ s, r₁ ≤ s ∧ s ≤ r₂ ∧ (C c * f + (1 - X) * f.derivative).IsRoot s := by
@@ -294,7 +294,7 @@ private lemma exists_affineDeriv_root_between_strict {f : ℝ[X]}
     {c : ℝ} (hc : (f.natDegree : ℝ) < c)
     {r₁ r₂ : ℝ} (hr₁ : f.IsRoot r₁) (hr₂ : f.IsRoot r₂)
     (hlt : r₁ < r₂)
-    (_hr₁_nonpos : r₁ ≤ 0) (hr₂_nonpos : r₂ ≤ 0) :
+    (hr₂_nonpos : r₂ ≤ 0) :
     ∃ s, r₁ < s ∧ s < r₂ ∧ (C c * f + (1 - X) * f.derivative).IsRoot s := by
   let φ : ℝ → ℝ := fun x => f.eval x * (1 - x) ^ (-c)
   have hfa_eval :
@@ -438,7 +438,6 @@ noncomputable def mkAffineInterleaving (f : ℝ[X]) (c : ℝ) (hdeg : 2 ≤ f.na
       (exists_affineDeriv_root_between_strict hc
         (hrs r₁ (.head _)) (hrs r₂ (.tail _ (.head _)))
         hlt
-        (hroots_nonpos r₁ (Multiset.subset_of_le hsub (Multiset.mem_coe.mpr (.head _))))
         (hroots_nonpos r₂ (Multiset.subset_of_le hsub
           (Multiset.mem_coe.mpr (.tail _ (.head _)))))).choose
     else r₁
@@ -501,7 +500,6 @@ lemma mkAffineInterleaving_spec (f : ℝ[X]) (c : ℝ) (hdeg : 2 ≤ f.natDegree
       have hspec := (exists_affineDeriv_root_between_strict hc
         (hrs r₁ (.head _)) (hrs r₂ (.tail _ (.head _)))
         hlt
-        (hroots_nonpos r₁ (Multiset.subset_of_le hsub (Multiset.mem_coe.mpr (.head _))))
         (hroots_nonpos r₂ (Multiset.subset_of_le hsub
           (Multiset.mem_coe.mpr (.tail _ (.head _)))))).choose_spec
       constructor
@@ -559,7 +557,7 @@ private lemma mkAffineInterleaving_ge (f : ℝ[X]) (c : ℝ) (hdeg : 2 ≤ f.nat
 /-- Root multiplicity of `g = C c * f + (1 - X) * f'` at a nonpositive point
     is at least `f.rootMultiplicity a - 1`, provided `g ≠ 0`. -/
 private lemma rootMultiplicity_sub_one_le_affineDeriv
-    {f : ℝ[X]} {c : ℝ} (_hc_pos : 0 < c) (a : ℝ) (_ha : a ≤ 0)
+    {f : ℝ[X]} {c : ℝ} (a : ℝ)
     (hg_ne : C c * f + (1 - X) * f.derivative ≠ 0) :
     f.rootMultiplicity a - 1 ≤
       (C c * f + (1 - X) * f.derivative).rootMultiplicity a := by
@@ -622,7 +620,6 @@ lemma mkAffineInterleaving_sub_multiset (f : ℝ[X]) (c : ℝ) (hdeg : 2 ≤ f.n
             (exists_affineDeriv_root_between_strict hc
               (hrs r₁ (.head _)) (hrs r₂ (.tail _ (.head _)))
               hlt
-              (hroots_nonpos r₁ (Multiset.subset_of_le hsub (Multiset.mem_coe.mpr (.head _))))
               (hroots_nonpos r₂ (Multiset.subset_of_le hsub
                 (Multiset.mem_coe.mpr (.tail _ (.head _)))))).choose
           else r₁
@@ -644,7 +641,6 @@ lemma mkAffineInterleaving_sub_multiset (f : ℝ[X]) (c : ℝ) (hdeg : 2 ≤ f.n
             · have hspec := (exists_affineDeriv_root_between_strict hc
                 (hrs r₁ (.head _)) (hrs r₂ (.tail _ (.head _)))
                 hlt
-                (hroots_nonpos r₁ (Multiset.subset_of_le hsub (Multiset.mem_coe.mpr (.head _))))
                 (hroots_nonpos r₂ (Multiset.subset_of_le hsub
                   (Multiset.mem_coe.mpr (.tail _ (.head _)))))).choose_spec
               have hs_notin : s ∉ (↑(mkAffineInterleaving f c hdeg hc hroots_nonpos
@@ -674,7 +670,7 @@ lemma mkAffineInterleaving_sub_multiset (f : ℝ[X]) (c : ℝ) (hdeg : 2 ≤ f.n
                   rw [heq, hs]
                   exact hroots_nonpos r₁ (Multiset.subset_of_le hsub
                     (Multiset.mem_coe.mpr (.head _)))
-                have hmult := rootMultiplicity_sub_one_le_affineDeriv hc_pos a ha_nonpos hg_ne
+                have hmult := rootMultiplicity_sub_one_le_affineDeriv a hg_ne
                 simp only [count_roots] at *
                 lia
               · simp only [add_zero]
@@ -699,8 +695,6 @@ lemma mkAffineInterleaving_sub_multiset (f : ℝ[X]) (c : ℝ) (hdeg : 2 ≤ f.n
                 · have hspec := (exists_affineDeriv_root_between_strict hc
                     (hrs r₁ (.head _)) (hrs r₂ (.tail _ (.head _)))
                     hlt
-                    (hroots_nonpos r₁
-                      (Multiset.subset_of_le hsub (Multiset.mem_coe.mpr (.head _))))
                     (hroots_nonpos r₂ (Multiset.subset_of_le hsub
                       (Multiset.mem_coe.mpr (.tail _ (.head _)))))).choose_spec
                   have : a < r₂ := by
@@ -820,7 +814,7 @@ private lemma isRealRooted_of_pow_X_sub_C_mul {r : ℝ} {m : ℕ} {q : ℝ[X]}
   exact splits_of_card_roots (by lia)
 
 private lemma pos_leadingCoeff_of_pow_X_sub_C_mul {r : ℝ} {m : ℕ} {q : ℝ[X]}
-    (hp_pos : HasPosLeadingCoeff ((X - C r) ^ m * q)) (_hq_ne : q ≠ 0) :
+    (hp_pos : HasPosLeadingCoeff ((X - C r) ^ m * q)) :
     HasPosLeadingCoeff q := by
   have hpow_ne : ((X - C r) ^ m : ℝ[X]) ≠ 0 := pow_ne_zero _ (X_sub_C_ne_zero _)
   unfold HasPosLeadingCoeff at hp_pos ⊢
@@ -958,7 +952,7 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
       lia
     have hgmult_ge : m - 1 ≤ g.rootMultiplicity r₁ := by
       rw [hm_def]
-      exact rootMultiplicity_sub_one_le_affineDeriv hc_pos r₁ hr₁_nonpos hg₀.ne_zero
+      exact rootMultiplicity_sub_one_le_affineDeriv r₁ hg₀.ne_zero
     have hgmult_eq : g.rootMultiplicity r₁ = m - 1 := by
       lia
     obtain ⟨q, hf_fact, hq_nodvd⟩ := exists_eq_pow_rootMultiplicity_mul_and_not_dvd f hf₀.ne_zero r₁
@@ -983,9 +977,9 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
         (by simpa [hg_fact', hd_def] using hg₀.ne_zero)
         (by simpa [hg_fact', hd_def] using hg_rr)
     have hq_pos : HasPosLeadingCoeff q :=
-      pos_leadingCoeff_of_pow_X_sub_C_mul (by simpa [hf_fact'] using hf₀) hq_ne
+      pos_leadingCoeff_of_pow_X_sub_C_mul (by simpa [hf_fact'] using hf₀)
     have hqg_pos : HasPosLeadingCoeff qg :=
-      pos_leadingCoeff_of_pow_X_sub_C_mul (by simpa [hg_fact'] using hg₀) hqg_ne
+      pos_leadingCoeff_of_pow_X_sub_C_mul (by simpa [hg_fact'] using hg₀)
     have hq_root_gt : ∀ t ∈ q.roots, r₁ < t := by
       intro t ht
       have ht_root_q : q.IsRoot t := (mem_roots hq_ne).mp ht

@@ -549,8 +549,6 @@ private lemma listAlternates_get_upper
 
 private lemma mem_rootSlotInterval_reverse_of_listInterlaces_interior
     {ss rs : List ℝ}
-    (_hss : ss.Pairwise (· ≤ ·))
-    (_hrs : rs.Pairwise (· ≤ ·))
     (hlen : ss.length + 1 = rs.length)
     (hint : ListInterlaces ss rs)
     {j : Fin rs.length}
@@ -638,8 +636,6 @@ private lemma mem_rootSlotInterval_reverse_of_listInterlaces_zero
 
 private lemma mem_rootSlotInterval_reverse_of_listInterlaces_last
     {ss rs : List ℝ}
-    (_hss : ss.Pairwise (· ≤ ·))
-    (_hrs : rs.Pairwise (· ≤ ·))
     (hlen : ss.length + 1 = rs.length)
     (hint : ListInterlaces ss rs)
     (hss_ne : ss ≠ []) :
@@ -692,14 +688,12 @@ private lemma mem_rootSlotInterval_reverse_of_listInterlaces
             lia⟩ := by
         grind
       simpa [hj] using
-        mem_rootSlotInterval_reverse_of_listInterlaces_last hss hrs hlen hint hss_ne
+        mem_rootSlotInterval_reverse_of_listInterlaces_last hlen hint hss_ne
     · exact
-        mem_rootSlotInterval_reverse_of_listInterlaces_interior hss hrs hlen hint h0 hlast
+        mem_rootSlotInterval_reverse_of_listInterlaces_interior hlen hint h0 hlast
 
 private lemma mem_rootSlotInterval_reverse_of_listAlternates_interior
     {ss rs : List ℝ}
-    (_hss : ss.Pairwise (· ≤ ·))
-    (_hrs : rs.Pairwise (· ≤ ·))
     (hlen : ss.length = rs.length)
     (halt : ListAlternates ss rs)
     {j : Fin rs.length}
@@ -797,7 +791,7 @@ private lemma mem_rootSlotInterval_reverse_of_listAlternates
       lia
     have hrs_ne : rs ≠ [] := List.length_pos_iff_ne_nil.mp (by lia)
     simpa [hj] using mem_rootSlotInterval_reverse_of_listAlternates_zero hss hrs hlen halt hrs_ne
-  · exact mem_rootSlotInterval_reverse_of_listAlternates_interior hss hrs hlen halt h0
+  · exact mem_rootSlotInterval_reverse_of_listAlternates_interior hlen halt h0
 
 set_option linter.unusedVariables false in
 /-- Slot transport from an ascending `Prec` witness to the descending
@@ -1158,7 +1152,6 @@ finite Helly property for intervals on `ℝ`. -/
 theorem hasCommonInterleaverSeq_of_pairwiseHasCommonInterleaver
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, f.Splits)
-    (_hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseHasCommonInterleaver fs) :
     HasCommonInterleaverSeq fs := by
   intro j
@@ -1537,7 +1530,7 @@ private theorem hasCommonInterleaver_of_pairwiseHasCommonInterleaver_ge_two
   have hseq :
       HasCommonInterleaverSeq ps :=
     hasCommonInterleaverSeq_of_pairwiseHasCommonInterleaver
-      (fs := ps) hrr_ps hpos_ps hpair_ps
+      (fs := ps) hrr_ps hpair_ps
   have hps_ne : ps ≠ [] := by
     lia
   let d : ℕ := csDegree ps

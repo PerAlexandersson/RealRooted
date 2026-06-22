@@ -76,8 +76,8 @@ private lemma wagner2_roots_exist (f g : ℝ[X])
       lia
     rcases le_or_gt rf rg with hrfrg | hrfrg
     · have hsign :=
-        opposite_sign_at_interlacing_roots hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos hab
-        has hsb hat htb hrfrg hrf_root hrg_root hf_dich hg_dich hcount_eq
+        opposite_sign_at_interlacing_roots hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos
+        has hsb hat htb hrf_root hrg_root hf_dich hg_dich hcount_eq
       obtain ⟨u, huf, hug, hu_root⟩ := sum_has_root_between hrfrg hrf_root hrg_root hsign
       exact ⟨[u], rfl, trivial, fun v hv => by
         simp_all,
@@ -86,8 +86,8 @@ private lemma wagner2_roots_exist (f g : ℝ[X])
           simp_all⟩
     · have hrgrf := le_of_lt hrfrg
       have hsign :=
-          opposite_sign_at_interlacing_roots hg_ne hg_splits hf_ne hf_splits hg_pos hf_pos hab
-        hat htb has hsb hrgrf hrg_root hrf_root hg_dich hf_dich hcount_eq.symm
+          opposite_sign_at_interlacing_roots hg_ne hg_splits hf_ne hf_splits hg_pos hf_pos
+        hat htb has hsb hrg_root hrf_root hg_dich hf_dich hcount_eq.symm
       obtain ⟨u, hug, huf, hu_root⟩ := sum_has_root_between hrgrf hrg_root hrf_root
         (by lia)
       have hu_root' : (f + g).IsRoot u := by rwa [add_comm]
@@ -173,8 +173,8 @@ private lemma wagner2_roots_exist (f g : ℝ[X])
     have hab : min rf rg ≤ s := le_trans (min_le_left rf rg) hrfs
     rcases le_or_gt rf rg with hrfrg | hrfrg
     · have hsign :=
-        opposite_sign_at_interlacing_roots hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos hab
-        (min_le_left rf rg) hrfs (min_le_right rf rg) hrgs hrfrg
+        opposite_sign_at_interlacing_roots hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos
+        (min_le_left rf rg) hrfs (min_le_right rf rg) hrgs
         hrf_root hrg_root hf_dich hg_dich hcount_eq
       obtain ⟨u, huf, hug, hu_root⟩ := sum_has_root_between hrfrg hrf_root hrg_root hsign
       -- u < s (coprimality)
@@ -234,8 +234,8 @@ private lemma wagner2_roots_exist (f g : ℝ[X])
     · -- rg < rf: symmetric
       have hrgrf := le_of_lt hrfrg
       have hsign :=
-          opposite_sign_at_interlacing_roots hg_ne hg_splits hf_ne hf_splits hg_pos hf_pos hab
-        (min_le_right rf rg) hrgs (min_le_left rf rg) hrfs hrgrf
+          opposite_sign_at_interlacing_roots hg_ne hg_splits hf_ne hf_splits hg_pos hf_pos
+        (min_le_right rf rg) hrgs (min_le_left rf rg) hrfs
         hrg_root hrf_root hg_dich hf_dich hcount_eq.symm
       obtain ⟨u, hug, huf, hu_root⟩ := sum_has_root_between hrgrf hrg_root hrf_root
         (by lia)

@@ -34,7 +34,6 @@ lemma eval_shift_at_root {f h : ℝ[X]} {r : ℝ} (hr : f.IsRoot r) :
 theorem prec_shift_of_interlaces
     {f h : ℝ[X]}
     (hinterl : Interlaces h f)
-    (_hf_pos : HasPosLeadingCoeff f)
     (hh_pos : HasPosLeadingCoeff h)
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     (hg_pos : HasPosLeadingCoeff (f + (X - C 1) * h))
@@ -189,7 +188,7 @@ theorem prec_shift
       Prec.toInterlaces ⟨⟨hh_ne, hh_splits⟩, ⟨hf_ne, hf_splits⟩, ss, rs, hss_sorted,
         hrs_sorted, hss_eq, hrs_eq, Or.inl ⟨hdiffby1, hint⟩⟩ hdeg
     obtain ⟨hndeg, hpos⟩ := shift_natDegree_of_interlaces hf_pos hh_pos hdeg hh_ne
-    exact prec_shift_of_interlaces hinterl hf_pos hh_pos hf_nonpos hpos
+    exact prec_shift_of_interlaces hinterl hh_pos hf_nonpos hpos
       (by lia) (by lia)
   · have hdeg : h.natDegree = f.natDegree := by lia
     exact prec_shift_of_same_degree

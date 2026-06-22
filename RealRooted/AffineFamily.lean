@@ -3666,7 +3666,6 @@ private lemma prec_right_pair_of_affine_family_high_degree_core
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
-    (_hdegf2 : 2 ≤ f.natDegree)
     (hno_common_fg : ¬ ∃ r, g.IsRoot r ∧ f.IsRoot r) :
     Prec g (X * f) := by
   -- Both degree branches (same and succ) reduce to the AllCombo upgrade
@@ -3745,12 +3744,11 @@ private lemma prec_right_pair_of_affine_family_high_degree_remaining
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
-    (hdegf2 : 2 ≤ f.natDegree)
     (hno_common_fg : ¬ ∃ r, g.IsRoot r ∧ f.IsRoot r) :
     Prec g (X * f) := by
   exact
     prec_right_pair_of_affine_family_high_degree_core
-      hf0 hg0 hfnn hgnn haff hdegf2 hno_common_fg
+      hf0 hg0 hfnn hgnn haff hno_common_fg
 
 private lemma prec_right_pair_of_affine_family_high_degree
     {f g : ℝ[X]}
@@ -3760,7 +3758,7 @@ private lemma prec_right_pair_of_affine_family_high_degree
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
-    (_hdegf2 : 2 ≤ f.natDegree) :
+    (hdegf2 : 2 ≤ f.natDegree) :
     Prec g (X * f) := by
   refine
     Nat.strong_induction_on
@@ -3775,7 +3773,7 @@ private lemma prec_right_pair_of_affine_family_high_degree
             ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) →
           2 ≤ f.natDegree →
           Prec g (X * f))
-      f.natDegree ?_ rfl hf0 hg0 hfnn hgnn haff _hdegf2
+      f.natDegree ?_ rfl hf0 hg0 hfnn hgnn haff hdegf2
   intro n ih f g hfdeg hf0 hg0 hfnn hgnn haff hdegf2
   have hXf_rr : ((X * f) ≠ 0 ∧ (X * f).Splits) :=
     isRealRooted_X_mul_of_affine_family hf0 hg0 hfnn hgnn haff
@@ -3867,7 +3865,7 @@ private lemma prec_right_pair_of_affine_family_high_degree
       exact prec_right_pair_of_common_root_factor hqf hqg hprec_q
   · exact
       prec_right_pair_of_affine_family_high_degree_remaining
-        hf0 hg0 hfnn hgnn haff hdegf2 hcommon_fg
+        hf0 hg0 hfnn hgnn haff hcommon_fg
 
 /-- Converse affine-family step used in Brändén 7.8.5:
 if all positive affine combinations `((C s * X + C t) * f) + g` are real-rooted
@@ -4016,11 +4014,6 @@ theorem prec_of_affine_segment_endpoint_pf_nonneg
       ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
         ((((C s * X + C t) * P0) + H0) +
           C z * (((C s * X + C t) * P1) + H1)) ≠ 0)
-    (_hpencil_nn :
-      ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
-        HasNonnegCoeffs
-          ((((C s * X + C t) * P0) + H0) +
-            C z * (((C s * X + C t) * P1) + H1)))
     (hpencil_pf :
       ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
         IsPolyaFreqSeq
@@ -4064,11 +4057,6 @@ theorem prec_of_affine_segment_endpoint_tnn_nonneg
       ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
         ((((C s * X + C t) * P0) + H0) +
           C z * (((C s * X + C t) * P1) + H1)) ≠ 0)
-    (hpencil_nn :
-      ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
-        HasNonnegCoeffs
-          ((((C s * X + C t) * P0) + H0) +
-            C z * (((C s * X + C t) * P1) + H1)))
     (hpencil_tnn :
       ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
         IsPolyaFreqSeq
@@ -4084,7 +4072,7 @@ theorem prec_of_affine_segment_endpoint_tnn_nonneg
     Prec (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) := by
   exact
     prec_of_affine_segment_endpoint_pf_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn hHβnn hASW
-      hpencil_ne hpencil_nn
+      hpencil_ne
       (fun {s t z} hs ht hz => hpencil_tnn hs ht hz)
       hleft hright
 
@@ -4105,11 +4093,6 @@ theorem prec_of_affine_segment_endpoint_pf_sameDegree_nonneg
       ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
         ((((C s * X + C t) * P0) + H0) +
           C z * (((C s * X + C t) * P1) + H1)) ≠ 0)
-    (_hpencil_nn :
-      ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
-        HasNonnegCoeffs
-          ((((C s * X + C t) * P0) + H0) +
-            C z * (((C s * X + C t) * P1) + H1)))
     (hpencil_pf :
       ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
         IsPolyaFreqSeq
@@ -4152,11 +4135,6 @@ theorem prec_of_affine_segment_endpoint_tnn_sameDegree_nonneg
       ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
         ((((C s * X + C t) * P0) + H0) +
           C z * (((C s * X + C t) * P1) + H1)) ≠ 0)
-    (hpencil_nn :
-      ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
-        HasNonnegCoeffs
-          ((((C s * X + C t) * P0) + H0) +
-            C z * (((C s * X + C t) * P1) + H1)))
     (hpencil_tnn :
       ∀ {s t z : ℝ}, 0 < s → 0 < t → 0 ≤ z →
         IsPolyaFreqSeq
@@ -4176,7 +4154,7 @@ theorem prec_of_affine_segment_endpoint_tnn_sameDegree_nonneg
     Prec (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) := by
   exact
     prec_of_affine_segment_endpoint_pf_sameDegree_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn
-      hHβnn hASW hpencil_ne hpencil_nn
+      hHβnn hASW hpencil_ne
       (fun {s t z} hs ht hz => hpencil_tnn hs ht hz)
       hleft_pos hright_pos hdeg
 
