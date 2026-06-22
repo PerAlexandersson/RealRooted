@@ -155,7 +155,7 @@ lemma listInterlaces_forall₂_le_tail :
   | [], _ :: _, _, h => by simp [ListInterlaces] at h
   | _ :: _, [], _, h => by simp [ListInterlaces] at h
   | s :: ss, r₂ :: rs, r₁, h => by
-      rcases h with ⟨_hr₁s, hsr₂, htail⟩
+      rcases h with ⟨_, hsr₂, htail⟩
       exact List.Forall₂.cons hsr₂ (listInterlaces_forall₂_le_tail htail)
 
 /-- Same-degree weak alternation gives pairwise coordinate inequalities. -/
@@ -298,7 +298,7 @@ theorem roots_le_of_prec_right {f g : ℝ[X]} {c : ℝ}
 theorem roots_sum_le_of_prec_sameDegree {f g : ℝ[X]}
     (h : Prec f g) (hdeg : f.natDegree = g.natDegree) :
     f.roots.sum ≤ g.roots.sum := by
-  rcases h with ⟨hf, hg, ss, rs, _hss, _hrs, hss_eq, hrs_eq, hshape⟩
+  rcases h with ⟨hf, hg, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
   have hss_len : ss.length = f.natDegree := by
     rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
   have hrs_len : rs.length = g.natDegree := by
@@ -307,7 +307,7 @@ theorem roots_sum_le_of_prec_sameDegree {f g : ℝ[X]}
     rw [← Multiset.sum_coe, hss_eq]
   have hsum_rs : rs.sum = g.roots.sum := by
     rw [← Multiset.sum_coe, hrs_eq]
-  rcases hshape with ⟨hlen, _hint⟩ | ⟨_hlen, halt⟩
+  rcases hshape with ⟨hlen, _⟩ | ⟨_, halt⟩
   · exfalso
     lia
   · have hle : ss.sum ≤ rs.sum := listAlternates_sum_le halt
@@ -342,7 +342,7 @@ theorem prec_of_reverse_prec_of_roots_sum_le {f g : ℝ[X]}
     rw [← Multiset.sum_coe, hss_eq]
   have hsum_rs : rs.sum = f.roots.sum := by
     rw [← Multiset.sum_coe, hrs_eq]
-  rcases hshape with ⟨hlen, _hint⟩ | ⟨hlen, halt⟩
+  rcases hshape with ⟨hlen, _⟩ | ⟨hlen, halt⟩
   · exfalso
     lia
   · refine ⟨hf, hg, rs, ss, hrs, hss, hrs_eq, hss_eq, Or.inr ⟨?_, ?_⟩⟩

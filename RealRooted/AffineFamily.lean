@@ -240,7 +240,7 @@ lemma prec_of_prec_mul_X_of_nonneg {f g : ℝ[X]}
   have hXf : ((X * f) ≠ 0 ∧ (X * f).Splits) := h.2.1
   have hf : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_X_mul hXf.1 hXf.2
   have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hf.2 hfnn
-  rcases hprec with ⟨_, _, ss, rs, _hss, _hrs, hss_eq, hrs_eq, hshape⟩
+  rcases hprec with ⟨_, _, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
   rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩
   · have hss_len : ss.length = g.natDegree := by
       rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hg.2]
@@ -805,7 +805,7 @@ private lemma interlaces_of_prec_sameDegree_rightmost_factor_local
     lia
   have hq_deg : q.natDegree + 1 = f.natDegree := by
     lia
-  rcases hshape with ⟨hlen, _hint⟩ | ⟨_hlen, halt⟩
+  rcases hshape
   · lia
   · let qs := q.roots.sort (· ≤ ·)
     have hqs_eq : (↑qs : Multiset ℝ) = q.roots := Multiset.sort_eq ..
@@ -857,7 +857,7 @@ theorem exists_rightmost_factor_interlaces_of_prec_sameDegree
       (∀ r ∈ g.roots, r ≤ uR) ∧
       Interlaces q f := by
   have hprec_keep : Prec f g := hprec
-  obtain ⟨_hf, hg, _ss, _rs, _hss_sorted, _hrs_sorted, _hss_eq, _hrs_eq, _hshape⟩ := hprec
+  obtain ⟨_, hg, _, _, _, _, _, _, _⟩ := hprec
   obtain ⟨uR, huR_root, huR_max⟩ :=
     exists_rightmost_root_of_isRealRooted hg.1 hg.2 hdeg_pos
   obtain ⟨q, hq⟩ := dvd_iff_isRoot.mpr huR_root
@@ -1396,7 +1396,7 @@ private lemma natDegree_cases_right_pair_of_affine_family
     affine_family_right_pair_data hfnn hgnn hf0 hg0 haff
   rcases hpair₀ with
     ⟨hpos_pair, hg_nonneg_pair, hXf_nonneg_pair, hg_ne_pair,
-      hXf_ne_pair, _hg_pos_pair, _hXf_pos_pair⟩
+      hXf_ne_pair, _, _⟩
   have hdeg_right : g.natDegree ≤ f.natDegree + 1 :=
     natDegree_right_le_succ_of_affine_family hf0 hg0 hfnn hgnn haff
   have hdeg_pair_lo : g.natDegree ≤ (X * f).natDegree := by
@@ -1434,7 +1434,7 @@ private lemma right_pair_root_zero_reduction_data
     affine_family_right_pair_data hfnn hgnn hf0 hg0 haff
   rcases hpair₀ with
     ⟨hpos_pair, hg_nonneg_pair, hXf_nonneg_pair, hg_ne_pair,
-      hXf_ne_pair, _hg_pos_pair, _hXf_pos_pair⟩
+      hXf_ne_pair, _, _⟩
   obtain ⟨qg, hqg₀⟩ := dvd_iff_isRoot.mpr hg_root0
   have hqg : g = X * qg := by
     grind
@@ -2544,7 +2544,7 @@ private lemma false_of_affine_family_double_root
   · let q : ℝ[X] := (X - C r + C (1 : ℝ)) * f
     have hfamily :
         ∀ {β : ℝ}, 0 < β → β ≤ 1 → ((g + C β * q) ≠ 0 ∧ (g + C β * q).Splits) := by
-      intro β hβ _hβ_le
+      intro β hβ
       have hEq :
           g + C β * q =
             (((C β * X + C (β * (1 - r))) * f) + g) := by
@@ -2572,7 +2572,7 @@ private lemma false_of_affine_family_double_root
       grind
     have hfamily :
         ∀ {β : ℝ}, 0 < β → β ≤ 1 → ((g + C β * q) ≠ 0 ∧ (g + C β * q).Splits) := by
-      intro β hβ _hβ_le
+      intro β hβ
       have hEq :
           g + C β * q =
             (((C β * X + C (β * (c - r))) * f) + g) := by
@@ -2731,7 +2731,7 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
       exact mul_neg_of_neg_of_pos hqPosη_neg hqNegη_pos
   have hfamilyPos :
       ∀ {β : ℝ}, 0 < β → β ≤ 1 → ((g + C β * qPos) ≠ 0 ∧ (g + C β * qPos).Splits) := by
-    intro β hβ _hβ_le
+    intro β hβ
     have hfac : C β * (X - C r + C (1 : ℝ)) = C β * X + C (β * (1 - r)) := by grind
     have hEq :
         g + C β * qPos =
@@ -2741,7 +2741,7 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
     grind
   have hfamilyNeg :
       ∀ {β : ℝ}, 0 < β → β ≤ 1 → ((g + C β * qNeg) ≠ 0 ∧ (g + C β * qNeg).Splits) := by
-    intro β hβ _hβ_le
+    intro β hβ
     have hEq :
         g + C β * qNeg =
           (((C β * X + C (β * (r / 2 - r))) * f) + g) := by
@@ -2961,7 +2961,7 @@ private lemma hasSimpleRoots_add_right_of_posComboRealRooted
       false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
         (p := pη) (q := gη) (x := x) (βmax := 1)
         (by
-          intro β hβ _hβ_le
+          intro β hβ
           have hμβ : 0 < μ + β := by grind
           have hrr := PosComboRealRooted.isRealRooted_add_right hfg hμβ
           have hiter :
@@ -3432,7 +3432,7 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
       pos_neg_div_of_mul_neg hXf_c_ne hprod_c_neg
     exact
       false_of_localExtr_neg_eval_div_eval_pos_of_add_left_family_of_no_common
-        (fun {_t} ht => by
+        (fun ht => by
           simpa [add_comm] using PosComboRealRooted.isRealRooted_add_right hposcombo ht)
         hno_right hlocal hpos_c
 
@@ -3810,7 +3810,7 @@ private lemma prec_right_pair_of_affine_family_high_degree
       -- Factor out the common root from the shifted pair using the
       -- standard reduction machinery.
       obtain ⟨qf, q_shift, hqf, hq_shift, hqf_nonneg, hq_shift_nonneg,
-        hqf_ne, hq_shift_ne, _hqf_pos, _hq_shift_pos, hq_aff⟩ :=
+        hqf_ne, hq_shift_ne, _, _, hq_aff⟩ :=
         affine_family_common_root_reduction_data
           hf_rr.1 hf_rr.2 hshift_rr.1 hshift_rr.2 hfnn hshift_nonneg hf_pos hshift_pos
           (shifted_affine_family_of_affine_family haff) hfr hshift_root
@@ -3849,7 +3849,7 @@ private lemma prec_right_pair_of_affine_family_high_degree
       have hf_pos : HasPosLeadingCoeff f := hfnn.pos_leadingCoeff hf0
       have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff hg0
       obtain ⟨qf, qg, hqf, hqg, hqf_nonneg, hqg_nonneg, hqf_ne, hqg_ne,
-        _hqf_pos, _hqg_pos, hqaff⟩ :=
+        _, _, hqaff⟩ :=
         affine_family_common_root_reduction_data
           hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hfnn hgnn hf_pos hg_pos haff hfr hgr
       have hqf_deg_lt : qf.natDegree < n := by
@@ -4224,14 +4224,13 @@ theorem shifted_pair_data_of_affine_family_nonneg
 false attempt to orient every boundary pair `(C t * f + g, X * f)`. -/
 theorem prec_shifted_pair_of_affine_family_nonneg
     {f g : ℝ[X]}
-    (hf0 : f ≠ 0) (hg0 : g ≠ 0)
+    (hf0 : f ≠ 0)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
     Prec f (g + X * f) := by
-  have _hg0 : g ≠ 0 := hg0
   have hshift_nonneg : HasNonnegCoeffs (g + X * f) :=
     hgnn.add (hasNonnegCoeffs_X.mul hfnn)
   have hshift_ne : g + X * f ≠ 0 :=
@@ -4257,7 +4256,7 @@ theorem prec_right_pair_of_affine_family_nonneg_sameDegree
     Prec g (X * f) := by
   exact
     prec_right_pair_of_prec_shifted_pair_sameDegree
-      (prec_shifted_pair_of_affine_family_nonneg hf0 hg0 hfnn hgnn haff)
+      (prec_shifted_pair_of_affine_family_nonneg hf0 hfnn hgnn haff)
       hf0 hg0 hfnn hgnn hdeg
 
 /-- Public shifted-pair reduction in the same-degree nonnegative regime:
@@ -4345,9 +4344,8 @@ lemma hasNonnegCoeffs_affine_linear {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
         simp
   exact (nonnegCoeffs_C_mul ha hasNonnegCoeffs_X).add hCb
 
-lemma prec0_one_affine_linear {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
+lemma prec0_one_affine_linear {a b : ℝ} (ha : 0 < a) :
     Prec0 (1 : ℝ[X]) (C a * X + C b) := by
-  have _hb : 0 < b := hb
   have hInter : Interlaces (1 : ℝ[X]) (C a * X + C b) := by
     refine interlaces_one_linear ?_
     grind

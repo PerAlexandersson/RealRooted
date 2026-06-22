@@ -89,7 +89,7 @@ theorem favardInterlacing :
         have hdeg_hi : (aPoly * f + bPoly * g).natDegree ≤ f.natDegree + 1 := by
           lia
         have hb_nonpos : ∀ r, f.IsRoot r → bPoly.eval r ≤ 0 := by
-          intro r _hr
+          intros
           have hb_le : 0 ≤ β (n + 1) := (hβ n).le
           simpa [bPoly] using (neg_nonpos.mpr hb_le)
         have hPrec_step : Prec f (aPoly * f + bPoly * g) := by

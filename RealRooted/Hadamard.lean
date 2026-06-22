@@ -32,7 +32,7 @@ def hadamardProduct (p q : ℝ[X]) : ℝ[X] :=
   rw [Polynomial.sum_def]
   rw [Finset.sum_eq_single n]
   · simp
-  · intro b _hb hbn
+  · intro b _ hbn
     simp [hbn]
   · intro hn
     rw [(Polynomial.notMem_support_iff).mp hn]

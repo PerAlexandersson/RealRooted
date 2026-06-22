@@ -186,7 +186,7 @@ lemma hasNonnegCoeffs_fPolynomial {d : ℕ} {h : ℝ[X]} (hh : HasNonnegCoeffs h
 
 lemma fPolynomial_monomial (d n : ℕ) (a : ℝ) :
     fPolynomial d (monomial n a) =
-      if _h : n ≤ d then C a * X ^ n * (X + 1) ^ (d - n) else 0 := by
+      if n ≤ d then C a * X ^ n * (X + 1) ^ (d - n) else 0 := by
   by_cases h : n ≤ d
   · have hn : n ∈ Finset.range (d + 1) := by
       simp_all
@@ -615,7 +615,7 @@ lemma isRoot_transformedRoot_fPolynomial_natDegree_of_isRoot
     {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hpnn : HasNonnegCoeffs p) {r : ℝ}
     (hr : p.IsRoot r) :
     (fPolynomial p.natDegree p).IsRoot (r / (1 - r)) := by
-  rcases fPolynomial_natDegree_factor_of_isRoot hp_ne hp_splits hpnn hr with ⟨q, _hq, hfac⟩
+  rcases fPolynomial_natDegree_factor_of_isRoot hp_ne hp_splits hpnn hr with ⟨q, _, hfac⟩
   simp_all
 
 lemma isRoot_transformedRoot_fPolynomial_of_isRoot
@@ -2697,7 +2697,7 @@ private lemma interlaces_of_prec_sameDegree_rightmost_factor
     lia
   have hq_deg : q.natDegree + 1 = f.natDegree := by
     lia
-  rcases hshape with ⟨hlen, _⟩ | ⟨_hlen, halt⟩
+  rcases hshape with ⟨hlen, _⟩ | ⟨_, halt⟩
   · lia
   · let qs := q.roots.sort (· ≤ ·)
     have hqs_eq : (↑qs : Multiset ℝ) = q.roots := Multiset.sort_eq ..
