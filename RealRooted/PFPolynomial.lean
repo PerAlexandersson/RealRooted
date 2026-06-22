@@ -56,7 +56,7 @@ theorem zero : IsPFPolynomial (0 : ℝ[X]) := by
     simp at hr
 
 theorem of_realRooted_nonneg {p : ℝ[X]}
-    (hpnn : HasNonnegCoeffs p) (hprr_ne : p ≠ 0) (hprr_splits : p.Splits) :
+    (hpnn : HasNonnegCoeffs p) (hprr_splits : p.Splits) :
     IsPFPolynomial p :=
   ⟨hpnn, Or.inr hprr_splits, roots_nonpos_of_nonneg_coeffs hprr_splits hpnn⟩
 
@@ -88,7 +88,7 @@ theorem X_mul {p : ℝ[X]} (hp : IsPFPolynomial p) :
         rw [coeff_X_mul]
         exact hp.hasNonnegCoeffs n
   have hXp_rr := isRealRooted_X_mul (hp.ne_zero_and_splits hp0).1 (hp.ne_zero_and_splits hp0).2
-  exact IsPFPolynomial.of_realRooted_nonneg hnn hXp_rr.1 hXp_rr.2
+  exact IsPFPolynomial.of_realRooted_nonneg hnn hXp_rr.2
 
 theorem mul {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
@@ -103,7 +103,7 @@ theorem mul {p q : ℝ[X]}
     (hq.ne_zero_and_splits hq0).1 (hq.ne_zero_and_splits hq0).2
   exact IsPFPolynomial.of_realRooted_nonneg
     (hp.hasNonnegCoeffs.mul hq.hasNonnegCoeffs)
-    hpq_rr.1 hpq_rr.2
+    hpq_rr.2
 
 theorem derivative {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
@@ -113,8 +113,7 @@ theorem derivative {p : ℝ[X]}
     simpa using IsPFPolynomial.zero
   exact ⟨hp.hasNonnegCoeffs.derivative,
     eq_zero_or_splits_derivative hp.eq_zero_or_splits,
-    roots_nonpos_derivative_of_roots_nonpos (hp.ne_zero_and_splits hp0).1
-      (hp.ne_zero_and_splits hp0).2
+    roots_nonpos_derivative_of_roots_nonpos (hp.ne_zero_and_splits hp0).2
       hp.roots_nonpos⟩
 
 theorem of_sequence
@@ -150,12 +149,12 @@ theorem of_prec0_self {p : ℝ[X]}
     exact IsPFPolynomial.zero
   · subst p
     exact IsPFPolynomial.zero
-  · exact IsPFPolynomial.of_realRooted_nonneg hpnn hpp'.1.1 hpp'.1.2
+  · exact IsPFPolynomial.of_realRooted_nonneg hpnn hpp'.1.2
 
 end IsPFPolynomial
 
 theorem isPFPolynomial_one : IsPFPolynomial (1 : ℝ[X]) :=
-  IsPFPolynomial.of_realRooted_nonneg hasNonnegCoeffs_one (by simp) (by simp)
+  IsPFPolynomial.of_realRooted_nonneg hasNonnegCoeffs_one (by simp)
 
 theorem isPFPolynomial_X : IsPFPolynomial (X : ℝ[X]) := by
   simpa using isPFPolynomial_one.X_mul
@@ -175,7 +174,7 @@ theorem isPFPolynomial_X_add_C {a : ℝ} (ha : 0 ≤ a) :
     simpa [sub_eq_add_neg] using hasNonnegCoeffs_X_sub_C (r := -a) (by linarith)
   have hrr : ((X + C a : ℝ[X]) ≠ 0 ∧ (X + C a : ℝ[X]).Splits) := by
     simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-a)
-  exact IsPFPolynomial.of_realRooted_nonneg hnn hrr.1 hrr.2
+  exact IsPFPolynomial.of_realRooted_nonneg hnn hrr.2
 
 theorem reverse_X_sub_C_isPF {r : ℝ} (hr : r ≤ 0) :
     IsPFPolynomial ((X - C r : ℝ[X]).reverse) := by
@@ -376,6 +375,6 @@ theorem isPFPolynomial_mul_X_add_one {p : ℝ[X]}
       ((X + 1 : ℝ[X]) * p).Splits) :=
     isRealRooted_mul hX1rr.1 hX1rr.2 (hp.ne_zero_and_splits hp0).1 (hp.ne_zero_and_splits hp0).2
   exact IsPFPolynomial.of_realRooted_nonneg
-    (hX1nn.mul hp.hasNonnegCoeffs) hrr.1 hrr.2
+    (hX1nn.mul hp.hasNonnegCoeffs) hrr.2
 
 end RealRooted

@@ -1513,7 +1513,7 @@ nonnegative-coefficient polynomials, assuming both directions of ASW. -/
 theorem veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_realRooted_nonneg
     {p : ℝ[X]}
     (hASW : aissenSchoenbergWhitneyForwardStatement)
-    (hpnn : HasNonnegCoeffs p) (hprr_ne : p ≠ 0) (hprr_splits : p.Splits) {r k : ℕ}
+    (hpnn : HasNonnegCoeffs p) (hprr_splits : p.Splits) {r k : ℕ}
     (hr : 0 < r) (hk : k < r) :
     veroneseSectionPolynomial r k p = 0 ∨
       (veroneseSectionPolynomial r k p).Splits :=

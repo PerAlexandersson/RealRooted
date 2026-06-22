@@ -909,7 +909,6 @@ private theorem isRealRooted_of_fPolynomial_natDegree_roots_gt_neg_one
 
 lemma root_gt_neg_one_of_mem_roots_fPolynomial_natDegree_of_isRealRooted_of_hasNonnegCoeffs
     {p : ℝ[X]} (hfp_ne : (fPolynomial p.natDegree p) ≠ 0)
-    (hfp_splits : (fPolynomial p.natDegree p).Splits)
     (hpnn : HasNonnegCoeffs p)
     {x : ℝ} (hx : x ∈ (fPolynomial p.natDegree p).roots) :
     -1 < x := by
@@ -951,7 +950,7 @@ theorem isRealRooted_of_isRealRooted_fPolynomial_natDegree_of_hasNonnegCoeffs
   have hgt : ∀ x ∈ (fPolynomial p.natDegree p).roots, -1 < x := by
     intro x hx
     exact root_gt_neg_one_of_mem_roots_fPolynomial_natDegree_of_isRealRooted_of_hasNonnegCoeffs
-      hfp_ne hfp_splits hpnn hx
+      hfp_ne hpnn hx
   exact
     isRealRooted_of_fPolynomial_natDegree_roots_gt_neg_one hfpdeg hfp_ne hfp_splits hgt
 

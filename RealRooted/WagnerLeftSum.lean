@@ -666,7 +666,7 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
             have := congr_arg (Polynomial.eval t) hpq
             simp [eval_add, eval_mul, eval_one, hft, hgt] at this
         obtain ⟨u₀, hu₀_le, hu₀_root_gf⟩ :=
-          exists_root_le_of_mixed hg.1 hg.2 hg_pos
+          exists_root_le_of_mixed hg.1 hg_pos
             (by rw [show g + f = f + g from add_comm g f]; lia)
             hrf_root hg_gt_rf (by
               rw [show g + f = f + g from add_comm g f, hfg_deg, hdeg])
@@ -819,7 +819,7 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
             have := congr_arg (Polynomial.eval t) hpq
             simp [eval_add, eval_mul, eval_one, hft, hgt] at this
         obtain ⟨u₀, hu₀_le, hu₀_root⟩ :=
-          exists_root_le_of_mixed hf.1 hf.2 hf_pos hfg_pos hrg_root hf_gt_rg (by
+          exists_root_le_of_mixed hf.1 hf_pos hfg_pos hrg_root hf_gt_rg (by
             lia)
         -- Use wagner2_roots_exist on r₁_f :: rest_f and rg2 :: rest_g' with rest_ss
         have hlen_f' : rest_f.length = rest_ss.length := by

@@ -16,7 +16,7 @@ noncomputable section
 namespace RealRooted
 
 /-- A real-rooted polynomial over `ℝ` splits over `ℝ`. -/
-lemma IsRealRooted.splits {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) : p.Splits :=
+lemma IsRealRooted.splits {p : ℝ[X]} (hp_splits : p.Splits) : p.Splits :=
   hp_splits
 
 /-- Finite coefficient sup bound over the `natDegree` range. -/
@@ -65,13 +65,13 @@ theorem exists_complex_aroot_near_of_isRealRooted_of_monic_of_coeff_close
     (hf_monic : f.Monic) (hg_monic : g.Monic)
     (hdeg : g.natDegree = f.natDegree)
     (hcoeff : ∀ i : ℕ, ‖g.coeff i - f.coeff i‖ < ε)
-    (hg_rr_ne : g ≠ 0) (hg_rr_splits : g.Splits) :
+    (hg_rr_splits : g.Splits) :
     ∃ w : ℂ, w ∈ g.aroots ℂ ∧
       ‖z - w‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖z‖ 1 := by
   obtain ⟨w, hw_mem, hw_dist⟩ :=
     Polynomial.exists_aroots_norm_sub_lt_of_norm_coeff_sub_lt
       (f := f) (g := g) (L := ℂ) hε hz hf_monic hg_monic hdeg hcoeff
-      ((IsRealRooted.splits hg_rr_ne hg_rr_splits).map (algebraMap ℝ ℂ))
+      ((IsRealRooted.splits hg_rr_splits).map (algebraMap ℝ ℂ))
   grind
 
 /-- Uniform coefficient control for normalized left-family perturbations:
@@ -257,7 +257,7 @@ theorem exists_complex_aroot_near_in_left_family
   obtain ⟨w, hw_qroot, hw_dist⟩ :=
     exists_complex_aroot_near_of_isRealRooted_of_monic_of_coeff_close
       (f := f) (g := q) (z := z) (ε := ε) hε hz hf_monic hq_monic hq_deg
-      (norm_coeff_sub_normalized_left_family_lt f g ht hcoeff_bound) hq_rr.1 hq_rr.2
+      (norm_coeff_sub_normalized_left_family_lt f g ht hcoeff_bound) hq_rr.2
   have hw_sum_mem : w ∈ (C t * f + g).aroots ℂ := by
     simpa [q, Polynomial.aroots_C_mul _ (inv_ne_zero ht1_ne)] using hw_qroot
   grind
@@ -271,7 +271,7 @@ lemma im_eq_zero_of_mem_aroots_of_isRealRooted
   have hz_root : (p.map (algebraMap ℝ ℂ)).IsRoot z := by
     simp_all
   have hz_range : z ∈ (algebraMap ℝ ℂ).range :=
-    (IsRealRooted.splits hp_ne hp_splits).mem_range_of_isRoot hp_ne hz_root
+    (IsRealRooted.splits hp_splits).mem_range_of_isRoot hp_ne hz_root
   rcases hz_range with ⟨r, rfl⟩
   simp
 

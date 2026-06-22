@@ -398,7 +398,7 @@ lemma Polynomial.isRealRooted_of_natDegree_two_of_discrim_nonneg {p : ℝ[X]}
 linear factors, with the constants ordered in the `X + C a` convention used
 below. -/
 lemma Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two {p : ℝ[X]}
-    (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hdeg : p.natDegree = 2) :
+    (hp_splits : p.Splits) (hdeg : p.natDegree = 2) :
     ∃ a c : ℝ, a ≤ c ∧ p = C p.leadingCoeff * ((X + C a) * (X + C c)) := by
   have hcard : p.roots.card = 2 := by rw [hp_splits.natDegree_eq_card_roots.symm, hdeg]
   rcases Multiset.card_eq_two.mp hcard with ⟨r, s, hroots⟩
@@ -1668,9 +1668,9 @@ lemma StrictPrecSameDegree.bezoutMatrix_posDef_quadratic
   obtain ⟨hp_ne, hp_splits⟩ := hprec.1
   obtain ⟨hq_ne, hq_splits⟩ := hprec.2.1
   obtain ⟨b, d, hbd, hp_eq⟩ :=
-    Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two hp_ne hp_splits hp_deg
+    Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two hp_splits hp_deg
   obtain ⟨a, c, hac, hq_eq⟩ :=
-    Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two hq_ne hq_splits hq_deg
+    Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two hq_splits hq_deg
   let mp : ℝ[X] := (X + C b) * (X + C d)
   let mq : ℝ[X] := (X + C a) * (X + C c)
   let u : ℝ := q.leadingCoeff
@@ -1689,15 +1689,15 @@ lemma StrictPrecSameDegree.bezoutMatrix_posDef_quadratic
 
 lemma StrictPrecSameDegree.of_bezoutMatrix_posDef_of_isRealRooted_quadratic
     {p q : ℝ[X]}
-    (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hq_ne : q ≠ 0) (hq_splits : q.Splits)
+    (hp_splits : p.Splits) (hq_splits : q.Splits)
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = 2) (hq_deg : q.natDegree = 2)
     (h : (bezoutMatrix 2 q p).PosDef) :
     StrictPrecSameDegree p q := by
   obtain ⟨b, d, hbd, hp_eq⟩ :=
-    Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two hp_ne hp_splits hp_deg
+    Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two hp_splits hp_deg
   obtain ⟨a, c, hac, hq_eq⟩ :=
-    Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two hq_ne hq_splits hq_deg
+    Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two hq_splits hq_deg
   let mp : ℝ[X] := (X + C b) * (X + C d)
   let mq : ℝ[X] := (X + C a) * (X + C c)
   let u : ℝ := q.leadingCoeff
@@ -1717,7 +1717,7 @@ lemma StrictPrecSameDegree.of_bezoutMatrix_posDef_of_isRealRooted_quadratic
 
 lemma StrictPrecSameDegree.bezoutMatrix_posDef_iff_of_isRealRooted_quadratic
     {p q : ℝ[X]}
-    (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hq_ne : q ≠ 0) (hq_splits : q.Splits)
+    (hp_splits : p.Splits) (hq_splits : q.Splits)
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = 2) (hq_deg : q.natDegree = 2) :
     StrictPrecSameDegree p q ↔ (bezoutMatrix 2 q p).PosDef := by
@@ -1725,7 +1725,7 @@ lemma StrictPrecSameDegree.bezoutMatrix_posDef_iff_of_isRealRooted_quadratic
   · exact StrictPrecSameDegree.bezoutMatrix_posDef_quadratic
       hp_pos hq_pos hp_deg hq_deg
   · exact StrictPrecSameDegree.of_bezoutMatrix_posDef_of_isRealRooted_quadratic
-      hp_ne hp_splits hq_ne hq_splits hp_pos hq_pos hp_deg hq_deg
+      hp_splits hq_splits hp_pos hq_pos hp_deg hq_deg
 
 lemma StrictPrecSameDegree.bezoutMatrix_posDef_iff_natDegree_zero
     {p q : ℝ[X]}
@@ -1779,7 +1779,7 @@ lemma StrictPrecSameDegree.bezoutMatrix_posDef_iff_natDegree_two
     have hq_rr : q ≠ 0 ∧ q.Splits :=
       bezoutMatrix.left_isRealRooted_of_posDef_two_of_natDegree_two hp_deg.le hq_deg h
     (StrictPrecSameDegree.bezoutMatrix_posDef_iff_of_isRealRooted_quadratic
-      hp_rr.1 hp_rr.2 hq_rr.1 hq_rr.2 hp_pos hq_pos hp_deg hq_deg).mpr h⟩
+      hp_rr.2 hq_rr.2 hp_pos hq_pos hp_deg hq_deg).mpr h⟩
 
 /--
 Strict same-degree Bezoutian characterization.

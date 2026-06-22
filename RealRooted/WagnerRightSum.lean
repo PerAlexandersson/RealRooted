@@ -333,7 +333,7 @@ This holds because:
 The count equality (3) follows from the interlacing giving one root per interval. -/
 
 /-- Evaluation of a real-rooted polynomial via its factorization. -/
-lemma eval_eq_leadingCoeff_mul_prod_sub {p : ℝ[X]} (hp_ne : p ≠ 0)
+lemma eval_eq_leadingCoeff_mul_prod_sub {p : ℝ[X]}
   (hp_splits : p.Splits) (x : ℝ) :
     p.eval x = p.leadingCoeff * (p.roots.map (x - ·)).prod := by
   have hfact := C_leadingCoeff_mul_prod_multiset_X_sub_C (card_roots_of_splits hp_splits)
@@ -345,7 +345,7 @@ lemma eval_pos_of_all_roots_lt {p : ℝ[X]} {r : ℝ}
     (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
     (hlt : ∀ t ∈ p.roots, t < r) :
     0 < p.eval r := by
-  rw [eval_eq_leadingCoeff_mul_prod_sub hp_ne hp_splits r]
+  rw [eval_eq_leadingCoeff_mul_prod_sub hp_splits r]
   have hprod : 0 < (p.roots.map (r - ·)).prod := by
     refine Multiset.prod_pos ?_
     simp_all
@@ -368,7 +368,7 @@ lemma eval_mul_eval_nonneg_of_prec_right {f g h : ℝ[X]}
   have hr_mem_rs : r ∈ rs_f := by
     apply Multiset.mem_coe.mp
     simp_all
-  rw [eval_eq_leadingCoeff_mul_prod_sub hf.1 hf.2 r, eval_eq_leadingCoeff_mul_prod_sub hg.1 hg.2 r]
+  rw [eval_eq_leadingCoeff_mul_prod_sub hf.2 r, eval_eq_leadingCoeff_mul_prod_sub hg.2 r]
   rw [← hss_f_eq, ← hss_g_eq]
   have hprod_f :
       ((↑ss_f : Multiset ℝ).map (r - ·)).prod = (ss_f.map (r - ·)).prod := rfl
@@ -440,14 +440,14 @@ lemma isRoot_of_isRoot_right_of_isRoot_add {f g h : ℝ[X]}
 /-- A polynomial with roots arranged by a `ListInterlaces`/`ListAlternates`
 layout has opposite-or-zero signs at consecutive right-hand roots. -/
 private lemma eval_mul_eval_nonpos_of_roots_layout {f : ℝ[X]}
-    (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hf_pos : HasPosLeadingCoeff f)
+    (hf_splits : f.Splits) (hf_pos : HasPosLeadingCoeff f)
     {ss : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ}
     (hss_eq : (↑ss : Multiset ℝ) = f.roots)
     (hcase : ListInterlaces ss (r₁ :: r₂ :: rest) ∨
       ListAlternates ss (r₁ :: r₂ :: rest)) :
     f.eval r₁ * f.eval r₂ ≤ 0 := by
-  rw [eval_eq_leadingCoeff_mul_prod_sub hf_ne hf_splits r₁,
-    eval_eq_leadingCoeff_mul_prod_sub hf_ne hf_splits r₂, ← hss_eq]
+  rw [eval_eq_leadingCoeff_mul_prod_sub hf_splits r₁,
+    eval_eq_leadingCoeff_mul_prod_sub hf_splits r₂, ← hss_eq]
   have hprod :
       (ss.map (r₁ - ·)).prod * (ss.map (r₂ - ·)).prod ≤ 0 := by
     rcases hcase with hint | halt
@@ -520,8 +520,8 @@ lemma opposite_sign_at_interlacing_roots {f g : ℝ[X]}
     (hg_dichotomy : ∀ r ∈ g.roots.erase t, r ≤ a ∨ b ≤ r)
     (hcount_eq : (g.roots.erase t).countP (b ≤ ·) = (f.roots.erase s).countP (b ≤ ·)) :
     g.eval s * f.eval t ≤ 0 := by
-  rw [eval_eq_leadingCoeff_mul_prod_sub hg_ne hg_splits s,
-      eval_eq_leadingCoeff_mul_prod_sub hf_ne hf_splits t]
+  rw [eval_eq_leadingCoeff_mul_prod_sub hg_splits s,
+      eval_eq_leadingCoeff_mul_prod_sub hf_splits t]
   have hlcg := hg_pos; have hlcf := hf_pos
   unfold HasPosLeadingCoeff at hlcg hlcf
   suffices h : (g.roots.map (s - ·)).prod * (f.roots.map (t - ·)).prod ≤ 0 by
@@ -657,7 +657,7 @@ lemma exists_isRoot_le_of_eval_neg_of_tendsto_atBot_atTop {p : ℝ[X]} {r : ℝ}
   exact ⟨u, hu.2, hu_root⟩
 
 lemma eval_pos_of_all_roots_gt_of_even {p : ℝ[X]} {r : ℝ}
-    (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
+    (hp_ne : p ≠ 0) (hp_pos : HasPosLeadingCoeff p)
     (hpar : Even p.natDegree)
     (hgt : ∀ t ∈ p.roots, r < t) :
     0 < p.eval r := by
@@ -675,7 +675,7 @@ lemma eval_pos_of_all_roots_gt_of_even {p : ℝ[X]} {r : ℝ}
       exact not_lt_of_ge hu_le (hgt u ((mem_roots hp_ne).mpr hu_root))
 
 lemma eval_neg_of_all_roots_gt_of_odd {p : ℝ[X]} {r : ℝ}
-    (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
+    (hp_ne : p ≠ 0) (hp_pos : HasPosLeadingCoeff p)
     (hpar : Odd p.natDegree)
     (hgt : ∀ t ∈ p.roots, r < t) :
     p.eval r < 0 := by
@@ -1060,7 +1060,7 @@ private lemma wagner1_roots_exist_of_no_common_right (f g : ℝ[X])
     and `smaller + bigger` has degree one more than `smaller`, then
     `smaller + bigger` has a root ≤ p. Used for the mixed-degree cases in Wagner (1). -/
 lemma exists_root_le_of_mixed {smaller bigger : ℝ[X]}
-    (hsmaller_ne : smaller ≠ 0) (hsmaller_splits : smaller.Splits)
+    (hsmaller_ne : smaller ≠ 0)
     (hsmaller_pos : HasPosLeadingCoeff smaller)
     (hsum_pos : HasPosLeadingCoeff (smaller + bigger))
     {p : ℝ} (hbigp : bigger.IsRoot p)
@@ -1075,7 +1075,7 @@ lemma exists_root_le_of_mixed {smaller bigger : ℝ[X]}
     simp_all
   rcases Nat.even_or_odd smaller.natDegree with hpar | hpar
   · have hsmaller_pos_eval : 0 < smaller.eval p :=
-      eval_pos_of_all_roots_gt_of_even hsmaller_ne hsmaller_splits hsmaller_pos hpar hsmaller_gt
+      eval_pos_of_all_roots_gt_of_even hsmaller_ne hsmaller_pos hpar hsmaller_gt
     have hsum_deg_pos : 0 < (smaller + bigger).degree := by
       rw [degree_eq_natDegree hsum_ne]
       have : 0 < (smaller + bigger).natDegree := by
@@ -1089,7 +1089,7 @@ lemma exists_root_le_of_mixed {smaller bigger : ℝ[X]}
         (tendsto_eval_atBot_atBot_of_posLeadingCoeff_odd hsum_pos hsum_deg_pos hsum_odd)
     grind
   · have hsmaller_neg_eval : smaller.eval p < 0 :=
-      eval_neg_of_all_roots_gt_of_odd hsmaller_ne hsmaller_splits hsmaller_pos hpar hsmaller_gt
+      eval_neg_of_all_roots_gt_of_odd hsmaller_ne hsmaller_pos hpar hsmaller_gt
     have hsum_deg_pos : 0 < (smaller + bigger).degree := by
       rw [degree_eq_natDegree hsum_ne]
       have : 0 < (smaller + bigger).natDegree := by
@@ -1207,7 +1207,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
           have := congr_arg (Polynomial.eval s₁_g) hab
           simp [eval_add, eval_mul, eval_one, hf0, hg0] at this
       obtain ⟨u₀, hu₀_le, hu₀_root⟩ :=
-        exists_root_le_of_mixed hf.1 hf.2 hf_pos hfg_pos hs₁_root hsmaller_gt (by
+        exists_root_le_of_mixed hf.1 hf_pos hfg_pos hs₁_root hsmaller_gt (by
           lia)
       -- Main roots via recursive helper
       have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by
@@ -1290,7 +1290,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
           simp [eval_add, eval_mul, eval_one,
             (show Polynomial.eval s₁_f f = 0 from hs₁_root), hg0] at this
       obtain ⟨u₀, hu₀_le, hu₀_root_gf⟩ :=
-        exists_root_le_of_mixed hg.1 hg.2 hg_pos
+        exists_root_le_of_mixed hg.1 hg_pos
           (by rw [show g + f = f + g from add_comm g f]; lia)
           hs₁_root hsmaller_gt (by
             rw [show g + f = f + g from add_comm g f, hfg_deg, hf_deg])
@@ -1629,7 +1629,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
             simp_all
           grind
       obtain ⟨u₀, hu₀_le, hu₀_root⟩ :=
-        exists_root_le_of_mixed hf.1 hf.2 hf_pos hfg_pos hs₁_root hsmaller_gt (by
+        exists_root_le_of_mixed hf.1 hf_pos hfg_pos hs₁_root hsmaller_gt (by
           lia)
       have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by
         grind
@@ -1722,7 +1722,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
             simp_all
           grind
       obtain ⟨u₀, hu₀_le, hu₀_root_gf⟩ :=
-        exists_root_le_of_mixed hg.1 hg.2 hg_pos
+        exists_root_le_of_mixed hg.1 hg_pos
           (by rw [show g + f = f + g from add_comm g f]; lia)
           hs₁_root hsmaller_gt (by
             rw [show g + f = f + g from add_comm g f, hfg_deg, hf_deg])
@@ -2145,7 +2145,7 @@ theorem prec_add_of_prec_right_mixed_of_natDegree {f g h : ℝ[X]}
           have := congr_arg (Polynomial.eval s₁_g) hab
           simp [eval_add, eval_mul, eval_one, hf0, hg0] at this
       obtain ⟨u₀, hu₀_le, hu₀_root⟩ :=
-        exists_root_le_of_mixed hf.1 hf.2 hf_pos hfg_pos hs₁_root hsmaller_gt (by
+        exists_root_le_of_mixed hf.1 hf_pos hfg_pos hs₁_root hsmaller_gt (by
           lia)
       have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by
         grind
@@ -2269,7 +2269,7 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right {f g h : �
             simp_all
           grind
       obtain ⟨u₀, hu₀_le, hu₀_root⟩ :=
-        exists_root_le_of_mixed hf.1 hf.2 hf_pos hfg_pos hs₁_root hsmaller_gt (by
+        exists_root_le_of_mixed hf.1 hf_pos hfg_pos hs₁_root hsmaller_gt (by
           lia)
       have hlen_g_rest : rest_g.length + 1 = (r₁ :: rest_rs).length := by
         grind
