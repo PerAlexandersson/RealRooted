@@ -414,7 +414,7 @@ theorem eq_zero_or_splits_derivative {p : ℝ[X]}
 /-- Strict real-rootedness is preserved by differentiation unless the
 derivative vanishes. -/
 theorem derivative_eq_zero_or_ne_zero_and_splits {p : ℝ[X]}
-    (hp_ne : p ≠ 0) (hp_splits : p.Splits) :
+    (hp_splits : p.Splits) :
     p.derivative = 0 ∨ (p.derivative ≠ 0 ∧ p.derivative.Splits) := by
   by_cases hdeg0 : p.natDegree = 0
   · left
@@ -432,7 +432,7 @@ theorem derivative_eq_zero_or_ne_zero_and_splits {p : ℝ[X]}
 /-- If all roots of a real-rooted polynomial are nonpositive, then all roots of
 its derivative are nonpositive. -/
 theorem roots_nonpos_derivative_of_roots_nonpos {p : ℝ[X]}
-    (hp_ne : p ≠ 0) (hp_splits : p.Splits)
+    (hp_splits : p.Splits)
     (hroots : ∀ r ∈ p.roots, r ≤ 0) :
     ∀ r ∈ p.derivative.roots, r ≤ 0 := by
   by_cases hdeg0 : p.natDegree = 0

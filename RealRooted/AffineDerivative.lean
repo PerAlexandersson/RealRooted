@@ -1113,8 +1113,8 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
         nlinarith [hmulp, hsquare]
       linarith
     have hEval_nonpos : qg.eval r₁ * q.eval r₁ ≤ 0 := by
-      rw [eval_eq_leadingCoeff_mul_prod_sub hqg_rr.1 hqg_rr.2 r₁,
-        eval_eq_leadingCoeff_mul_prod_sub hq_rr.1 hq_rr.2 r₁,
+      rw [eval_eq_leadingCoeff_mul_prod_sub hqg_rr.2 r₁,
+        eval_eq_leadingCoeff_mul_prod_sub hq_rr.2 r₁,
         show (q.roots.map (r₁ - ·)).prod = Pq by lia,
         show (qg.roots.map (r₁ - ·)).prod = Pg by lia]
       have hlc_pos : 0 < qg.leadingCoeff * q.leadingCoeff := by
@@ -1171,7 +1171,7 @@ theorem prec_affine_derivative_deg_one {f : ℝ[X]} (hf : f.Splits)
     exact hf₀
   -- g(r) = lc(g) * (r - s)
   have hgr_eq : g.eval r = g.leadingCoeff * (r - s) := by
-    rw [eval_eq_leadingCoeff_mul_prod_sub hg_rr.1 hg_rr.2 r, hs_eq]; simp
+    rw [eval_eq_leadingCoeff_mul_prod_sub hg_rr.2 r, hs_eq]; simp
   -- s ≤ r
   have hsr : s ≤ r := by
     have : 0 < r - s := by

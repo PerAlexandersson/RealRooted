@@ -347,15 +347,15 @@ private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive_local :
 public-in-file replacement for the private Ma--Wang helper needed in the
 same-degree forward branch. -/
 private lemma eval_mul_eval_nonpos_of_interlacing_consecutive_local {g : ℝ[X]}
-    (hg_ne : g ≠ 0) (hg_splits : g.Splits)
+    (hg_splits : g.Splits)
     {ss rs pre : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ}
     (hrs_sorted : rs.Pairwise (· ≤ ·))
     (hss_eq : (↑ss : Multiset ℝ) = g.roots)
     (hint : ListInterlaces ss rs)
     (hEq : rs = pre ++ r₁ :: r₂ :: rest) :
     g.eval r₁ * g.eval r₂ ≤ 0 := by
-  rw [eval_eq_leadingCoeff_mul_prod_sub hg_ne hg_splits r₁,
-    eval_eq_leadingCoeff_mul_prod_sub hg_ne hg_splits r₂, ← hss_eq]
+  rw [eval_eq_leadingCoeff_mul_prod_sub hg_splits r₁,
+    eval_eq_leadingCoeff_mul_prod_sub hg_splits r₂, ← hss_eq]
   have hprod_nonpos :
       (ss.map (fun x => r₁ - x)).prod * (ss.map (fun x => r₂ - x)).prod ≤ 0 :=
     listInterlaces_prod_mul_prod_nonpos_of_consecutive_local hrs_sorted hint hEq
@@ -393,7 +393,7 @@ private lemma eval_mul_eval_neg_of_interlaces_consecutive_of_no_common
     lia
   have hnonpos :
       g.eval r₁ * g.eval r₂ ≤ 0 :=
-    eval_mul_eval_nonpos_of_interlacing_consecutive_local hg.1 hg.2 hrs_sorted hss_eq hint hEq_rs
+    eval_mul_eval_nonpos_of_interlacing_consecutive_local hg.2 hrs_sorted hss_eq hint hEq_rs
   have hr₁_root : f.IsRoot r₁ := by
     apply (mem_roots hf.1).mp
     rw [← hrs_eq]
@@ -600,7 +600,7 @@ private lemma no_common_root_linear_change
 
 private lemma wronskian_eval_ne_zero_of_eq_zero_or_simple_combo
     {f g : ℝ[X]}
-    (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hg_ne : g ≠ 0) (hg_splits : g.Splits)
+    (hf_ne : f ≠ 0) (hg_ne : g ≠ 0) (hg_splits : g.Splits)
     (hcombo :
       ∀ α β : ℝ,
         C α * f + C β * g = 0 ∨
@@ -657,7 +657,7 @@ private lemma wronskian_eval_ne_zero_of_eq_zero_or_simple_combo
 
 private lemma hasSimpleRoots_combo_of_wronskian_eval_ne_zero
     {f g : ℝ[X]} {α β : ℝ}
-    (hp_ne : (C α * f + C β * g) ≠ 0) (hp_splits : (C α * f + C β * g).Splits)
+    (hp_ne : (C α * f + C β * g) ≠ 0)
     (hW_ne : ∀ x : ℝ, (wronskian f g).eval x ≠ 0) :
     HasSimpleRoots (C α * f + C β * g) := by
   let p : ℝ[X] := C α * f + C β * g
@@ -713,7 +713,7 @@ private lemma combo_eq_zero_or_realRooted_simple_of_wronskian_eval_ne_zero
   by_cases hcombo0 : C α * f + C β * g = 0
   · exact Or.inl hcombo0
   · exact Or.inr ⟨⟨hcombo0, hall α β⟩,
-      hasSimpleRoots_combo_of_wronskian_eval_ne_zero hcombo0 (hall α β) hW_ne⟩
+      hasSimpleRoots_combo_of_wronskian_eval_ne_zero hcombo0 hW_ne⟩
 
 /-- If the Wronskian vanishes at `x`, then inside the same `AllComboRealRooted`
 plane we can choose a special basis `(p, q)` such that:
@@ -1014,7 +1014,7 @@ private lemma no_common_root_iterateTDeriv_of_allComboRealRooted
     lia
 
 private lemma derivative_sign_at_consecutive_simple_roots
-    {f : ℝ[X]} (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hsimple : HasSimpleRoots f)
+    {f : ℝ[X]} (hf_ne : f ≠ 0) (hsimple : HasSimpleRoots f)
     {r₁ r₂ : ℝ} (hr₁ : f.IsRoot r₁) (hr₂ : f.IsRoot r₂)
     (hlt : r₁ < r₂)
     (hno_between : ∀ r ∈ f.roots, ¬ (r₁ < r ∧ r < r₂)) :
@@ -1029,7 +1029,7 @@ private lemma derivative_sign_at_consecutive_simple_roots
 
 private lemma wronskian_eval_mul_pos_of_le_of_eq_zero_or_simple_combo
     {f g : ℝ[X]}
-    (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hg_ne : g ≠ 0) (hg_splits : g.Splits)
+    (hf_ne : f ≠ 0) (hg_ne : g ≠ 0) (hg_splits : g.Splits)
     (hcombo :
       ∀ α β : ℝ,
         C α * f + C β * g = 0 ∨
@@ -1046,11 +1046,11 @@ private lemma wronskian_eval_mul_pos_of_le_of_eq_zero_or_simple_combo
     simp_all
   exact
     (wronskian_eval_ne_zero_of_eq_zero_or_simple_combo
-      hf_ne hf_splits hg_ne hg_splits hcombo hdeg_pos hno (x := z)) hz_eval0
+      hf_ne hg_ne hg_splits hcombo hdeg_pos hno (x := z)) hz_eval0
 
 private lemma hasSimpleRoots_of_eq_zero_or_isRealRooted_and_hasSimpleRoots_left
     {f g : ℝ[X]}
-    (hf_ne : f ≠ 0) (hf_splits : f.Splits)
+    (hf_ne : f ≠ 0)
     (hcombo :
       ∀ α β : ℝ,
         C α * f + C β * g = 0 ∨
@@ -1063,7 +1063,7 @@ private lemma hasSimpleRoots_of_eq_zero_or_isRealRooted_and_hasSimpleRoots_left
 
 private lemma hasSimpleRoots_of_eq_zero_or_isRealRooted_and_hasSimpleRoots_right
     {f g : ℝ[X]}
-    (hg_ne : g ≠ 0) (hg_splits : g.Splits)
+    (hg_ne : g ≠ 0)
     (hcombo :
       ∀ α β : ℝ,
         C α * f + C β * g = 0 ∨
@@ -1088,10 +1088,10 @@ private theorem prec_or_revPrec_of_eq_zero_or_simple_combo_sameDegree
     Prec f g ∨ Prec g f := by
   have hf_simple :
       HasSimpleRoots f :=
-    hasSimpleRoots_of_eq_zero_or_isRealRooted_and_hasSimpleRoots_left hf_ne hf_splits hcombo
+    hasSimpleRoots_of_eq_zero_or_isRealRooted_and_hasSimpleRoots_left hf_ne hcombo
   have hg_simple :
       HasSimpleRoots g :=
-    hasSimpleRoots_of_eq_zero_or_isRealRooted_and_hasSimpleRoots_right hg_ne hg_splits hcombo
+    hasSimpleRoots_of_eq_zero_or_isRealRooted_and_hasSimpleRoots_right hg_ne hcombo
   by_cases hdeg0 : f.natDegree = 0
   · have hgdeg0 : g.natDegree = 0 := by lia
     have hroots_f : f.roots = 0 := by
@@ -1110,10 +1110,10 @@ private theorem prec_or_revPrec_of_eq_zero_or_simple_combo_sameDegree
   have hdeg_ge2 : 2 ≤ f.natDegree := by lia
   have hgdeg_ge2 : 2 ≤ g.natDegree := by lia
   have hW_ne x : (wronskian f g).eval x ≠ 0 :=
-    wronskian_eval_ne_zero_of_eq_zero_or_simple_combo hf_ne hf_splits hg_ne hg_splits
+    wronskian_eval_ne_zero_of_eq_zero_or_simple_combo hf_ne hg_ne hg_splits
       hcombo (by grind) hno (x := x)
   have hW_prod {x y : ℝ} : x ≤ y → 0 < (wronskian f g).eval x * (wronskian f g).eval y :=
-    wronskian_eval_mul_pos_of_le_of_eq_zero_or_simple_combo hf_ne hf_splits hg_ne hg_splits
+    wronskian_eval_mul_pos_of_le_of_eq_zero_or_simple_combo hf_ne hg_ne hg_splits
       hcombo (by grind) hno
   have hf'_pos : HasPosLeadingCoeff f.derivative :=
     hf_pos.derivative (by lia)
@@ -1296,10 +1296,10 @@ private theorem prec_of_eq_zero_or_simple_combo_succDegree
     exact prec_degree_zero_right_of_degree_one hf_ne hf_splits hg_ne hg_splits hdeg0 hgdeg1
   have hf_deg_pos : 1 ≤ f.natDegree := by lia
   have hW_ne x : (wronskian f g).eval x ≠ 0 :=
-    wronskian_eval_ne_zero_of_eq_zero_or_simple_combo hf_ne hf_splits hg_ne hg_splits
+    wronskian_eval_ne_zero_of_eq_zero_or_simple_combo hf_ne hg_ne hg_splits
       hcombo (by simp_all) hno
   have hW_prod {x y : ℝ} : x ≤ y → 0 < (wronskian f g).eval x * (wronskian f g).eval y :=
-    wronskian_eval_mul_pos_of_le_of_eq_zero_or_simple_combo hf_ne hf_splits hg_ne hg_splits
+    wronskian_eval_mul_pos_of_le_of_eq_zero_or_simple_combo hf_ne hg_ne hg_splits
       hcombo (by simp_all) hno
   have hq_pos : HasPosLeadingCoeff (-wronskian f g) := by
     unfold HasPosLeadingCoeff
@@ -1725,7 +1725,7 @@ private theorem isRealRooted_of_interlaces_eval_mul_neg_same_any_lc
     · have hg_odd : Odd g.natDegree := by
         grind
       have hg_left_neg : g.eval r₀ < 0 :=
-        eval_neg_of_all_roots_gt_of_odd hg.1 hg.2 hg_pos hg_odd hhead_lt_roots_g
+        eval_neg_of_all_roots_gt_of_odd hg.1 hg_pos hg_odd hhead_lt_roots_g
       have hF_left_pos : 0 < F.eval r₀ := by
         have hprod := hroot_sign r₀ hr₀_root
         nlinarith
@@ -1756,7 +1756,7 @@ private theorem isRealRooted_of_interlaces_eval_mul_neg_same_any_lc
     · have hg_even : Even g.natDegree := by
         grind
       have hg_left_pos : 0 < g.eval r₀ :=
-        eval_pos_of_all_roots_gt_of_even hg.1 hg.2 hg_pos hg_even hhead_lt_roots_g
+        eval_pos_of_all_roots_gt_of_even hg.1 hg_pos hg_even hhead_lt_roots_g
       have hF_left_neg : F.eval r₀ < 0 := by
         have hprod := hroot_sign r₀ hr₀_root
         nlinarith
@@ -1812,7 +1812,7 @@ reduction: first to show a real-rooted polynomial must be nonpositive at its
 last critical point, and then again to contradict real-rootedness after a
 constant shift. -/
 lemma exists_root_ge_of_derivative_root
-    {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hdeg : 2 ≤ p.natDegree)
+    {p : ℝ[X]} (hp_splits : p.Splits) (hdeg : 2 ≤ p.natDegree)
     {c : ℝ} (hc : p.derivative.IsRoot c) :
     ∃ r, p.IsRoot r ∧ c ≤ r := by
   obtain ⟨hp_rr, hp'_rr, _hdeg, rs, ss, hrs_sorted, hss_sorted, hrs_eq, hss_eq, hint⟩ :=
@@ -1865,7 +1865,7 @@ positive, so a positive value there would prevent the real-rooted polynomial
 itself from having any root on its right, contradicting interlacing of `p'`
 with `p`. -/
 lemma exists_rightmost_derivative_root_with_eval_nonpos
-    {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
+    {p : ℝ[X]} (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
     (hdeg : 2 ≤ p.natDegree) :
     ∃ c, p.derivative.IsRoot c ∧
       (∀ s ∈ p.derivative.roots, s ≤ c) ∧
@@ -1883,7 +1883,7 @@ lemma exists_rightmost_derivative_root_with_eval_nonpos
     have hmono :
         StrictMonoOn (fun x => p.eval x) (Set.Ici c) :=
       strictMonoOn_eval_Ici_of_derivative_roots_le hp'.1 hp'.2 hp'_pos hc_top
-    obtain ⟨r, hr_root, hcr_le⟩ := exists_root_ge_of_derivative_root hp_ne hp_splits hdeg hc_root
+    obtain ⟨r, hr_root, hcr_le⟩ := exists_root_ge_of_derivative_root hp_splits hdeg hc_root
     by_cases hcr : c = r
     · simp_all
     · have hcr_lt : c < r := lt_of_le_of_ne hcr_le hcr
@@ -1900,11 +1900,11 @@ rightmost critical point; the derivative is unchanged, so the shifted
 polynomial would still need a real root on the right by interlacing, but it is
 already strictly increasing there. -/
 lemma exists_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
-    {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
+    {p : ℝ[X]} (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
     (hdeg : 2 ≤ p.natDegree) :
     ∃ t : ℝ, ¬ ((C t + p) ≠ 0 ∧ (C t + p).Splits) := by
   obtain ⟨c, hc_root, hc_top, hpc_nonpos⟩ :=
-    exists_rightmost_derivative_root_with_eval_nonpos hp_ne hp_splits hp_pos hdeg
+    exists_rightmost_derivative_root_with_eval_nonpos hp_splits hp_pos hdeg
   let t : ℝ := 1 - p.eval c
   refine ⟨t, ?_⟩
   intro hq
@@ -1923,7 +1923,7 @@ lemma exists_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
     have : (C t + p).eval c = 1 := by
       simp [t]
     linarith
-  obtain ⟨r, hr_root, hcr_le⟩ := exists_root_ge_of_derivative_root hq.1 hq.2 hqdeg (by
+  obtain ⟨r, hr_root, hcr_le⟩ := exists_root_ge_of_derivative_root hq.2 hqdeg (by
     simpa using hc_root)
   by_cases hcr : c = r
   · simp_all
@@ -1940,12 +1940,12 @@ second polynomial fails to be real-rooted. -/
 private theorem not_allComboRealRooted_const_left_of_natDegree_ge_two_of_pos
     {c : ℝ} {p : ℝ[X]}
     (hc : c ≠ 0)
-    (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
+    (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
     (hdeg : 2 ≤ p.natDegree) :
     ¬ AllComboRealRooted (C c) p := by
   intro hall
   obtain ⟨t, ht⟩ :=
-    exists_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two hp_ne hp_splits hp_pos hdeg
+    exists_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two hp_splits hp_pos hdeg
   have hcombo_t : (C t + p).Splits := by
     have hrewrite : C (t / c) * C c + p = C t + p := by
       calc
@@ -1973,7 +1973,7 @@ private theorem not_allComboRealRooted_const_left_of_natDegree_ge_two
   by_cases hp_pos : 0 < p.leadingCoeff
   · exact
       not_allComboRealRooted_const_left_of_natDegree_ge_two_of_pos
-        hc hp_ne hp_splits hp_pos hdeg
+        hc hp_splits hp_pos hdeg
   · intro hall
     have hneg_rr : ((-p) ≠ 0 ∧ (-p).Splits) := by
       simp_all
@@ -1987,7 +1987,7 @@ private theorem not_allComboRealRooted_const_left_of_natDegree_ge_two
         (allComboRealRooted_C_mul_right (f := C c) (g := p) (c := (-1 : ℝ)) hall)
     exact
       not_allComboRealRooted_const_left_of_natDegree_ge_two_of_pos
-        hc hneg_rr.1 hneg_rr.2 hneg_pos (by simp_all) hall_neg
+        hc hneg_rr.2 hneg_pos (by simp_all) hall_neg
 
 /-- A degree gap of at least `2` is incompatible with `AllComboRealRooted`.
 
@@ -3088,10 +3088,10 @@ converse. -/
 theorem derivative_prec0_of_prec_succDegree {f g : ℝ[X]}
     (hfg : Prec f g) (hdeg : f.natDegree + 1 = g.natDegree) :
     Prec0 f.derivative g.derivative := by
-  rcases derivative_eq_zero_or_ne_zero_and_splits hfg.1.1 hfg.1.2 with hfzero | hfrr
+  rcases derivative_eq_zero_or_ne_zero_and_splits hfg.1.2 with hfzero | hfrr
   · rw [hfzero]
     exact prec0_zero_left _
-  rcases derivative_eq_zero_or_ne_zero_and_splits hfg.2.1.1 hfg.2.1.2 with hgzero | hgrr
+  rcases derivative_eq_zero_or_ne_zero_and_splits hfg.2.1.2 with hgzero | hgrr
   · rw [hgzero]
     exact prec0_zero_right _
   have hall : AllComboRealRooted f.derivative g.derivative :=
@@ -3114,11 +3114,11 @@ input below is exactly the oriented branch selection. -/
 theorem derivative_prec0_or_revPrec0_of_prec_sameDegree {f g : ℝ[X]}
     (hfg : Prec f g) (hdeg : f.natDegree = g.natDegree) :
     Prec0 f.derivative g.derivative ∨ Prec0 g.derivative f.derivative := by
-  rcases derivative_eq_zero_or_ne_zero_and_splits hfg.1.1 hfg.1.2 with hfzero | hfrr
+  rcases derivative_eq_zero_or_ne_zero_and_splits hfg.1.2 with hfzero | hfrr
   · left
     rw [hfzero]
     exact prec0_zero_left _
-  rcases derivative_eq_zero_or_ne_zero_and_splits hfg.2.1.1 hfg.2.1.2 with hgzero | hgrr
+  rcases derivative_eq_zero_or_ne_zero_and_splits hfg.2.1.2 with hgzero | hgrr
   · left
     rw [hgzero]
     exact prec0_zero_right _

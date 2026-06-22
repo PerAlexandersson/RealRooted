@@ -472,7 +472,7 @@ private theorem isRealRooted_of_add_C_mul_right_family_of_natDegree_lt
         exists_complex_aroot_near_of_isRealRooted_of_monic_of_coeff_close
           (f := g₀) (g := g₀ + C μ * f₀) (z := z) (ε := ε)
           hε_pos hz_aeval hg₀_monic hsum_monic hsum_deg hcoeff
-            (hfamily₀ hμ_pos).1 (hfamily₀ hμ_pos).2
+            (hfamily₀ hμ_pos).2
       have hw_im_zero : w.im = 0 := by
         exact RealRooted.im_eq_zero_of_mem_aroots_of_isRealRooted
           (hfamily₀ hμ_pos).1 (hfamily₀ hμ_pos).2 hw_root
@@ -774,7 +774,7 @@ private lemma isRealRooted_iterate_derivative_of_lt_natDegree
           (iterate_derivative_ne_zero_of_le_natDegree
             (p := p) (k := n + 1) hp_ne (Nat.le_of_lt hn))
       exact
-        (derivative_eq_zero_or_ne_zero_and_splits hprev.1 hprev.2).elim
+        (derivative_eq_zero_or_ne_zero_and_splits hprev.2).elim
           (fun h0 => False.elim (hnonzero h0))
           id
 
@@ -1151,7 +1151,7 @@ private lemma exists_pos_shift_not_isRealRooted_of_nonneg_of_natDegree_ge_two
     ∃ t : ℝ, 0 < t ∧ ¬ ((C t + p) ≠ 0 ∧ (C t + p).Splits) := by
   have hp_pos : HasPosLeadingCoeff p := hpnn.pos_leadingCoeff hp_ne
   obtain ⟨c, hc_root, hc_top, hpc_nonpos⟩ :=
-    exists_rightmost_derivative_root_with_eval_nonpos hp_ne hp_splits hp_pos hdeg
+    exists_rightmost_derivative_root_with_eval_nonpos hp_splits hp_pos hdeg
   let t : ℝ := 1 - p.eval c
   have ht_pos : 0 < t := by
     grind
@@ -1172,7 +1172,7 @@ private lemma exists_pos_shift_not_isRealRooted_of_nonneg_of_natDegree_ge_two
     have : (C t + p).eval c = 1 := by
       simp [t]
     linarith
-  obtain ⟨r, hr_root, hcr_le⟩ := exists_root_ge_of_derivative_root hq.1 hq.2 hqdeg (by
+  obtain ⟨r, hr_root, hcr_le⟩ := exists_root_ge_of_derivative_root hq.2 hqdeg (by
     simpa using hc_root)
   by_cases hcr : c = r
   · simp_all
@@ -2387,7 +2387,7 @@ private theorem isRealRooted_of_sub_C_mul_right_family_of_natDegree_lt
         exists_complex_aroot_near_of_isRealRooted_of_monic_of_coeff_close
           (f := g₀) (g := g₀ - C μ * f₀) (z := z) (ε := ε)
           hε_pos hz_aeval hg₀_monic hdiff_monic hdiff_deg hcoeff
-            (hfamily₀ hμ_pos).1 (hfamily₀ hμ_pos).2
+            (hfamily₀ hμ_pos).2
       have hw_im_zero : w.im = 0 :=
         RealRooted.im_eq_zero_of_mem_aroots_of_isRealRooted
           (hfamily₀ hμ_pos).1 (hfamily₀ hμ_pos).2 hw_root

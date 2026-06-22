@@ -41,11 +41,11 @@ private lemma hasNonnegCoeffs_comp_X_add_C_of_roots_le_local
   rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
   simp_all
 private lemma exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two_local
-    {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
+    {p : ℝ[X]} (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
     (hdeg : 2 ≤ p.natDegree) :
     ∃ t : ℝ, 0 < t ∧ ¬ ((C t + p) ≠ 0 ∧ (C t + p).Splits) := by
   obtain ⟨c, hc_root, hc_top, hpc_nonpos⟩ :=
-    exists_rightmost_derivative_root_with_eval_nonpos hp_ne hp_splits hp_pos hdeg
+    exists_rightmost_derivative_root_with_eval_nonpos hp_splits hp_pos hdeg
   let t : ℝ := 1 - p.eval c
   have ht_pos : 0 < t := by
     grind
@@ -67,7 +67,7 @@ private lemma exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_
     have : (C t + p).eval c = 1 := by
       simp [t]
     linarith
-  obtain ⟨r, hr_root, hcr_le⟩ := exists_root_ge_of_derivative_root hq.1 hq.2 hqdeg (by
+  obtain ⟨r, hr_root, hcr_le⟩ := exists_root_ge_of_derivative_root hq.2 hqdeg (by
     simpa using hc_root)
   by_cases hcr : c = r
   · simp_all
@@ -184,7 +184,7 @@ lemma derivative {f g : ℝ[X]} (h : Compatible f g) :
   rcases h α β hα hβ with hzero | hrr
   · simp_all
   · rw [hcomb]
-    exact derivative_eq_zero_or_ne_zero_and_splits hrr.1 hrr.2
+    exact derivative_eq_zero_or_ne_zero_and_splits hrr.2
 
 private lemma isRealRooted_left
     {f g : ℝ[X]} (h : Compatible f g)
@@ -212,7 +212,7 @@ private lemma natDegree_le_one_of_const_left
   have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_right hcg hg_pos
   obtain ⟨t, ht_pos, ht_bad⟩ :=
     exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two_local
-      hg_rr.1 hg_rr.2 hg_pos hg_deg2
+      hg_rr.2 hg_pos hg_deg2
   have hcombo :
       C (t / c) * C c + g = 0 ∨ ((C (t / c) * C c + g) ≠ 0 ∧ (C (t / c) * C c + g).Splits) := by
     simpa using hcg (t / c) 1 (by positivity) (by simp)

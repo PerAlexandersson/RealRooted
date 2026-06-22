@@ -488,7 +488,7 @@ private lemma roots_neg_of_interlaces_of_eval_zero_pos {g f : ℝ[X]}
     listInterlaces_dropLast_lt_zero_of_forall_lt_zero hint hss_neg
   have h_eval :
       f.eval 0 = f.leadingCoeff * (rs.map (0 - ·)).prod := by
-    rw [eval_eq_leadingCoeff_mul_prod_sub hf.1 hf.2 0, ← hrs_eq]
+    rw [eval_eq_leadingCoeff_mul_prod_sub hf.2 0, ← hrs_eq]
     simp
   have hrs_drop_prod_pos : 0 < (rs.dropLast.map (0 - ·)).prod := by
     apply list_prod_pos_of_forall_pos
