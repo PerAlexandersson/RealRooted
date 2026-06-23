@@ -84,7 +84,7 @@ lemma hasRowThreshold_nonneg {row : List ℝ[X]} {p : ℕ}
 lemma hasRowThresholdLinearStructure_nonneg {G : List (List ℝ[X])}
     (hG : HasRowThresholdLinearStructure G) :
     ∀ row ∈ G, ∀ p ∈ row, HasNonnegCoeffs p := by
-  rcases hG with ⟨_threshold, hrows, _hmono⟩
+  rcases hG with ⟨_, hrows, _⟩
   intro row hrow p hp
   obtain ⟨i, rfl⟩ := List.mem_iff_get.1 hrow
   exact hasRowThreshold_nonneg (hrows i) p hp

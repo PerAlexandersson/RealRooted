@@ -147,8 +147,6 @@ lemma oddBinom_eval_sq_eq_aux (n : ℕ) (y : ℂ) :
     (oddBinomPoly n).eval (y ^ 2) = (oddBinomAux n).eval y := by
   rw [oddBinomPoly, oddBinomAux,
     Polynomial.eval_finsetSum, Polynomial.eval_finsetSum]
-  apply Finset.sum_congr rfl
-  intro k _hk
   simp [pow_mul]
 
 lemma oddBinom_eval_sq_identity (n : ℕ) (y : ℂ) :

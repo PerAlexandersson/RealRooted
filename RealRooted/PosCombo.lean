@@ -19,7 +19,7 @@ namespace RealRooted
 
 private lemma natDegree_eq_or_succ_of_prec {f g : ℝ[X]} (h : Prec f g) :
     g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 := by
-  rcases h with ⟨hf, hg, ss, rs, _hss, _hrs, hss_eq, hrs_eq, hshape⟩
+  rcases h with ⟨hf, hg, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
   have hss_len : ss.length = f.natDegree := by
     rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
   have hrs_len : rs.length = g.natDegree := by

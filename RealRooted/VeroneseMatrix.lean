@@ -466,7 +466,7 @@ def VeroneseLinearFactorMatrixDescHas2x2 (r : ℕ) (a : ℝ) : Prop :=
 set_option linter.flexible false in
 theorem veroneseLinearFactorMatrixDesc_has2x2_one (a : ℝ) :
     VeroneseLinearFactorMatrixDescHas2x2 1 a := by
-  intro i₁ i₂ j₁ j₂ _hi _hij s t hs _ht
+  intro i₁ i₂ j₁ j₂ _ _ s t hs _
   fin_cases i₁
   fin_cases i₂
   fin_cases j₁
@@ -532,7 +532,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_nonlast
         ⟨j₁.1, by simp [length_veroneseLinearFactorRowDesc]⟩)
       ((veroneseLinearFactorRowDesc r a i₂).get
         ⟨j₂.1, by simp [length_veroneseLinearFactorRowDesc]⟩) := by
-  intro s t hs _ht
+  intro s t hs _
   rw [get_veroneseLinearFactorRowDesc_of_nonlast (hi := hrow₁)]
   rw [get_veroneseLinearFactorRowDesc_of_nonlast (hi := hrow₁)]
   rw [get_veroneseLinearFactorRowDesc_of_nonlast (hi := hrow₂)]
@@ -649,7 +649,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_last_last
         ⟨j₁.1, by simp [length_veroneseLinearFactorRowDesc]⟩)
       ((veroneseLinearFactorRowDesc r a i₂).get
         ⟨j₂.1, by simp [length_veroneseLinearFactorRowDesc]⟩) := by
-  intro s t hs _ht
+  intro s t hs _
   have hlast_ne_zero : r - 1 ≠ 0 := by lia
   have hj_nat : j₁.1 ≤ j₂.1 := by lia
   rw [get_veroneseLinearFactorRowDesc_of_last hr2 (hi := hrow₁)]

@@ -52,7 +52,7 @@ lemma isInterlacingSeq0Nonneg_sparseLinearPairSeq
         lia
       by_cases hqj : q' = j
       · have hji : j ≠ i := ne_of_gt hij
-        simpa [hpi, hqj, hji] using prec0_one_affine_linear ha hb
+        simpa [hpi, hqj, hji] using prec0_one_affine_linear ha
       · simp [hpi, hqj, hq_ne_i, prec0_zero_right]
     · by_cases hpj : p' = j
       · have hq_ne_i : q' ≠ i := by

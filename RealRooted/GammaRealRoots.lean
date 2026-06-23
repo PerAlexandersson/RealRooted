@@ -67,7 +67,7 @@ def HasRootsNonpos (p : ℝ[X]) : Prop :=
 
 lemma gammaTransform_monomial (d n : ℕ) (a : ℝ) :
     gammaTransform d (monomial n a) =
-      if _h : n ≤ d / 2 then C a * gammaBasisTerm d n else 0 := by
+      if n ≤ d / 2 then C a * gammaBasisTerm d n else 0 := by
   by_cases h : n ≤ d / 2
   · have hn : n ∈ Finset.range (d / 2 + 1) := by
       simp_all
@@ -1100,7 +1100,7 @@ def gammaRealRootedIffPolynomialRealRootedNonposStatement : Prop :=
 
 theorem gammaRealRootedIffPolynomialRealRootedNonpos :
     gammaRealRootedIffPolynomialRealRootedNonposStatement := by
-  intro d p γ hγdeg _hpd _hsym hGamma
+  intro d p γ hγdeg _ _ hGamma
   unfold IsGammaExpansion at hGamma
   subst p
   constructor

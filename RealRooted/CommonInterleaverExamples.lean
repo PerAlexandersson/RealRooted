@@ -117,9 +117,9 @@ needing the missing two-polynomial bridge. -/
 lemma scaledLinearFamily_pairwiseCompatible_iff_familyCompatible :
     PairwiseCompatible scaledLinearFamily ↔ FamilyCompatible scaledLinearFamily := by
   constructor
-  · intro _hpair
+  · intro
     exact scaledLinearFamily_familyCompatible
-  · intro _hfamily
+  · intro
     exact scaledLinearFamily_pairwiseCompatible
 
 /-- Concrete specialization of the packaged nonnegative `1 ↔ 4` direction.

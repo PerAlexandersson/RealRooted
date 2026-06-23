@@ -144,7 +144,7 @@ private lemma exists_delta_wronskian_iterateTDeriv_eval_mul_pos_joint_at_zero
 
 private lemma natDegree_bounds_of_prec_local {f g : ℝ[X]} (hfg : Prec f g) :
     f.natDegree ≤ g.natDegree ∧ g.natDegree ≤ f.natDegree + 1 := by
-  rcases hfg with ⟨hf, hg, ss, rs, _hss, _hrs, hss_eq, hrs_eq, hshape⟩
+  rcases hfg with ⟨hf, hg, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
   have hss_len : ss.length = f.natDegree := by
     rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
   have hrs_len : rs.length = g.natDegree := by
@@ -384,7 +384,7 @@ private lemma eval_mul_eval_neg_of_interlaces_consecutive_of_no_common
     ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
       f.roots.sort (· ≤ ·) = pre ++ r₁ :: r₂ :: rest →
       g.eval r₁ * g.eval r₂ < 0 := by
-  obtain ⟨hf, hg, _hdeg, rs, ss, hrs_sorted, hss_sorted, hrs_eq, hss_eq, hint⟩ := hgf
+  obtain ⟨hf, hg, _, rs, ss, hrs_sorted, hss_sorted, hrs_eq, hss_eq, hint⟩ := hgf
   intro pre r₁ r₂ rest hEq
   have hrs_sort : rs = f.roots.sort (· ≤ ·) := by
     apply List.Perm.eq_of_pairwise' hrs_sorted (Multiset.pairwise_sort ..)
@@ -1815,7 +1815,7 @@ lemma exists_root_ge_of_derivative_root
     {p : ℝ[X]} (hp_splits : p.Splits) (hdeg : 2 ≤ p.natDegree)
     {c : ℝ} (hc : p.derivative.IsRoot c) :
     ∃ r, p.IsRoot r ∧ c ≤ r := by
-  obtain ⟨hp_rr, hp'_rr, _hdeg, rs, ss, hrs_sorted, hss_sorted, hrs_eq, hss_eq, hint⟩ :=
+  obtain ⟨hp_rr, hp'_rr, _, rs, ss, hrs_sorted, hss_sorted, hrs_eq, hss_eq, hint⟩ :=
     derivative_interlaces hp_splits hdeg
   have hrs_len : rs.length = p.natDegree := by
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hp_rr.2]
@@ -2286,21 +2286,6 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
   -- Either route should finish this theorem without changing the Wronskian
   -- infrastructure above. Keeping `hprec_iter` explicit here should make it
   -- easier for another agent to pick up from the exact reduced goal.
-  have _hall_iter_keepalive : AllComboRealRooted (iterateTDeriv eps n f) (iterateTDeriv eps n g) :=
-    hall_iter
-  have _hf_simple_keepalive : HasSimpleRoots (iterateTDeriv eps n f) := hf_simple
-  have _hg_simple_keepalive : HasSimpleRoots (iterateTDeriv eps n g) := hg_simple
-  have _hlead_f_iter_keepalive :
-      (iterateTDeriv eps n f).leadingCoeff = f.leadingCoeff := hlead_f_iter
-  have _hlead_g_iter_keepalive :
-      (iterateTDeriv eps n g).leadingCoeff = g.leadingCoeff := hlead_g_iter
-  have _hpos_f_iter_keepalive :
-      HasPosLeadingCoeff (iterateTDeriv eps n f) ↔ HasPosLeadingCoeff f := hpos_f_iter
-  have _hpos_g_iter_keepalive :
-      HasPosLeadingCoeff (iterateTDeriv eps n g) ↔ HasPosLeadingCoeff g := hpos_g_iter
-  have _hsucc_iter_forced_keepalive :
-      f.natDegree + 1 = g.natDegree →
-        Prec (iterateTDeriv eps n f) (iterateTDeriv eps n g) := hsucc_iter_forced
   have hcombo_original :
       ∀ α β : ℝ,
         C α * f + C β * g = 0 ∨
@@ -2706,7 +2691,7 @@ private lemma interlaces_of_prec_sameDegree_rightmost_factor
     lia
   have hq_deg : q.natDegree + 1 = f.natDegree := by
     lia
-  rcases hshape with ⟨hlen, _hint⟩ | ⟨_hlen, halt⟩
+  rcases hshape
   · lia
   · let qs := q.roots.sort (· ≤ ·)
     have hqs_eq : (↑qs : Multiset ℝ) = q.roots := Multiset.sort_eq ..

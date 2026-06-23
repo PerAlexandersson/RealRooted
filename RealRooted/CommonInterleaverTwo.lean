@@ -1226,7 +1226,7 @@ equality. -/
 theorem posComboNoCommonSameDegreeOrientationAlternative_of_noCommonOrientation
     (hstep : PosComboNoCommonOrientationStatement) :
     PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement := by
-  intro f g hf_pos hg_pos _hfnn _hgnn hfg hdeg hno
+  intro f g hf_pos hg_pos _ _ hfg hdeg hno
   exact hstep hfg hf_pos hg_pos (by lia) (by lia) hno
 
 /-- In the succ-degree branch, any no-common orientation core automatically
@@ -1235,7 +1235,7 @@ succ-degree orientation statement. -/
 theorem posComboNoCommonSuccDegreeOrientation_of_noCommonOrientation
     (hstep : PosComboNoCommonOrientationStatement) :
     PosComboNoCommonSuccDegreeOrientationNonnegStatement := by
-  intro f g hf_pos hg_pos _hfnn _hgnn hfg hsucc hno
+  intro f g hf_pos hg_pos _ _ hfg hsucc hno
   have hprec_or : Prec f g ∨ Prec g f := by
     exact hstep hfg hf_pos hg_pos (by lia) (by lia) hno
   rcases hprec_or with hprec | hprec
@@ -3139,7 +3139,7 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_pairBridgePos
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (htwo : CompatiblePairHasCommonInterleaverStatement) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs := by
-  obtain ⟨h12, h23, _h34⟩ :=
+  obtain ⟨h12, h23⟩ :=
     chudnovskySeymour_fourWay_of_pairBridgePos
       (fs := fs) hrr hpos htwo
   lia
@@ -3382,7 +3382,7 @@ theorem chudnovskySeymour_fourWay_of_natDegree_le_one
         (hpos f hf) (hdeg f hf)
   have h12 : PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs := by
     constructor
-    · intro _hpair
+    · intro
       exact pairwiseHasCommonInterleaver_of_natDegree_le_one hpos hdeg
     · intro hpair
       exact pairwiseCompatible_of_pairwiseHasCommonInterleaver hpair hpos
