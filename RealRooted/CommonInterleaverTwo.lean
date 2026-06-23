@@ -815,8 +815,6 @@ theorem prec_sum_left_of_prec_right_family_forward_sameDegree_nonneg
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
-    (_hfnn : HasNonnegCoeffs f)
-    (_hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g)
     (hdeg : g.natDegree = f.natDegree)
     (hdeg_pos : 1 ≤ g.natDegree)
@@ -881,8 +879,6 @@ theorem prec_sum_left_of_prec_left_family_forward_sameDegree_nonneg
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g)
     (hdeg : g.natDegree = f.natDegree)
     (hdeg_pos : 1 ≤ g.natDegree)
@@ -896,7 +892,7 @@ theorem prec_sum_left_of_prec_left_family_forward_sameDegree_nonneg
   simpa [add_comm, add_left_comm, add_assoc, mul_comm, mul_left_comm, mul_assoc] using
     prec_sum_left_of_prec_right_family_forward_sameDegree_nonneg
       (f := g) (g := f)
-      hg_pos hf_pos hgnn hfnn (PosComboRealRooted.comm hfg) hdeg.symm hf_deg_pos
+      hg_pos hf_pos (PosComboRealRooted.comm hfg) hdeg.symm hf_deg_pos
       hno_swap
       (by
         simpa [add_comm, add_left_comm, add_assoc, mul_comm, mul_left_comm, mul_assoc]
@@ -909,8 +905,6 @@ theorem pairHasCommonLeftInterleaver_of_forward_oneTwoFamilies_sameDegree_nonneg
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g)
     (hdeg : g.natDegree = f.natDegree)
     (hdeg_pos : 1 ≤ g.natDegree)
@@ -921,10 +915,10 @@ theorem pairHasCommonLeftInterleaver_of_forward_oneTwoFamilies_sameDegree_nonneg
   refine ⟨f + g, ?_, ?_⟩
   · exact
       prec_sum_left_of_prec_left_family_forward_sameDegree_nonneg
-        hf_pos hg_pos hfnn hgnn hfg hdeg hdeg_pos hno hleft
+        hf_pos hg_pos hfg hdeg hdeg_pos hno hleft
   · exact
       prec_sum_left_of_prec_right_family_forward_sameDegree_nonneg
-        hf_pos hg_pos hfnn hgnn hfg hdeg hdeg_pos hno hright
+        hf_pos hg_pos hfg hdeg hdeg_pos hno hright
 
 /-- The same forward one-two-family hypotheses already force the original pair
 to be compatible: the common left interleaver `f + g` witnesses all
@@ -933,8 +927,6 @@ theorem compatible_of_forward_oneTwoFamilies_sameDegree_nonneg
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g)
     (hdeg : g.natDegree = f.natDegree)
     (hdeg_pos : 1 ≤ g.natDegree)
@@ -944,7 +936,7 @@ theorem compatible_of_forward_oneTwoFamilies_sameDegree_nonneg
     Compatible f g := by
   obtain ⟨h, hhf, hhg⟩ :=
     pairHasCommonLeftInterleaver_of_forward_oneTwoFamilies_sameDegree_nonneg
-      hf_pos hg_pos hfnn hgnn hfg hdeg hdeg_pos hno hright hleft
+      hf_pos hg_pos hfg hdeg hdeg_pos hno hright hleft
   exact Compatible.of_commonLeftInterleaver hhf hhg hf_pos hg_pos
 
 /-- Consequently, any generic two-polynomial compatibility bridge can consume
@@ -954,8 +946,6 @@ theorem pairHasCommonInterleaver_of_forward_oneTwoFamilies_sameDegree_nonneg
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g)
     (hdeg : g.natDegree = f.natDegree)
     (hdeg_pos : 1 ≤ g.natDegree)
@@ -966,7 +956,7 @@ theorem pairHasCommonInterleaver_of_forward_oneTwoFamilies_sameDegree_nonneg
   exact
     htwo hf_pos hg_pos
       (compatible_of_forward_oneTwoFamilies_sameDegree_nonneg
-        hf_pos hg_pos hfnn hgnn hfg hdeg hdeg_pos hno hright hleft)
+        hf_pos hg_pos hfg hdeg hdeg_pos hno hright hleft)
 
 /-- Any two positive-leading polynomials of degree at most one already satisfy
 the Obreschkoff alternative. This is the unconditional low-degree endpoint for
@@ -1060,7 +1050,6 @@ theorem compatiblePairHasCommonInterleaver_of_natDegree_le_one
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
-    (_hfg : Compatible f g)
     (hf_deg_le_one : f.natDegree ≤ 1)
     (hg_deg_le_one : g.natDegree ≤ 1) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
@@ -1136,11 +1125,7 @@ theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_degree_le_one
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
-    (_hfnn : HasNonnegCoeffs f)
-    (_hgnn : HasNonnegCoeffs g)
-    (_hfg : PosComboRealRooted f g)
     (hdeg : g.natDegree = f.natDegree)
-    (_hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hf_deg_le_one : f.natDegree ≤ 1) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
   exact

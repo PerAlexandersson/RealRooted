@@ -767,7 +767,7 @@ private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive :
 /-- At consecutive roots of the right-hand polynomial in an interlacing layout,
 the interlacing polynomial has opposite-or-zero signs. -/
 private lemma eval_mul_eval_nonpos_of_interlacing_heads {g : ℝ[X]}
-    (hg_splits : g.Splits) (_hg_pos : HasPosLeadingCoeff g)
+    (hg_splits : g.Splits)
     {ss : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ}
     (hss_eq : (↑ss : Multiset ℝ) = g.roots)
     (hint : ListInterlaces ss (r₁ :: r₂ :: rest)) :
@@ -1032,10 +1032,9 @@ private lemma mul_nonpos_of_mul_nonpos_of_mul_neg {a b c d : ℝ}
     nlinarith
 
 private lemma isRoot_of_eq_max_countP_le_of_sign
-    {_f g F : ℝ[X]} {rs ts : List ℝ} {off : ℕ}
+    {g F : ℝ[X]} {rs ts : List ℝ} {off : ℕ}
     {pre : List ℝ} {r : ℝ} {rest : List ℝ}
     (hF_splits : F.Splits) (hF_pos : HasPosLeadingCoeff F)
-    (_hrs_eq : (↑rs : Multiset ℝ) = _f.roots)
     (hts_eq : (↑ts : Multiset ℝ) = F.roots)
     (hoff : ts.length = rs.length + off)
     (hroot_nonpos : F.eval r * g.eval r ≤ 0)
@@ -1061,9 +1060,8 @@ private lemma isRoot_of_eq_max_countP_le_of_sign
       (by lia)
 
 private lemma countP_le_of_eq_max_isRoot
-    {_f F : ℝ[X]} {rs ts : List ℝ} {off : ℕ}
+    {F : ℝ[X]} {rs ts : List ℝ} {off : ℕ}
     (hF_ne : F ≠ 0)
-    (_hrs_sorted : rs.Pairwise (· ≤ ·))
     (hts_eq : (↑ts : Multiset ℝ) = F.roots)
     (hoff : ts.length = rs.length + off)
     (hstrict :
@@ -1112,7 +1110,7 @@ private lemma countP_le_of_eq_max_isRoot
         lia
 
 private lemma countP_lt_of_eq_max_isRoot
-    {_f F : ℝ[X]} {rs ts : List ℝ} {off : ℕ}
+    {F : ℝ[X]} {rs ts : List ℝ} {off : ℕ}
     (hF_ne : F ≠ 0)
     (hts_eq : (↑ts : Multiset ℝ) = F.roots)
     (hcount_le :
@@ -2342,18 +2340,18 @@ theorem prec_of_interlaces_evalCoeff_nonpos_same_of_no_common
       simpa [F] using
         eval_mul_right_nonpos_of_isRoot (f := f) (g := g) (a := a) (b := b)
           hr_root (hb_nonpos r hr_root)
-    exact isRoot_of_eq_max_countP_le_of_sign hF.2 hF_pos hrs_eq hts_eq hoff
+    exact isRoot_of_eq_max_countP_le_of_sign hF.2 hF_pos hts_eq hoff
       hroot_nonpos (hgsign pre hEq).1 (hgsign pre hEq).2 hEq hcount
   have hcount_le :
       ∀ (pre : List ℝ) {r : ℝ} {rest : List ℝ},
         rs = pre ++ r :: rest →
         ts.countP (· ≤ r) ≤ pre.length + 1 :=
-    countP_le_of_eq_max_isRoot (_f := f) hF.1 hrs_sorted hts_eq hoff hstrict hroot_on_max
+    countP_le_of_eq_max_isRoot hF.1 hts_eq hoff hstrict hroot_on_max
   have hlt :
       ∀ (pre : List ℝ) {r : ℝ} {rest : List ℝ},
         rs = pre ++ r :: rest →
         ts.countP (· < r) ≤ pre.length :=
-    countP_lt_of_eq_max_isRoot (_f := f) (rs := rs) (off := 0)
+    countP_lt_of_eq_max_isRoot (rs := rs) (off := 0)
       hF.1 hts_eq hcount_le hroot_on_max
   have hle :
       ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
@@ -2505,18 +2503,18 @@ theorem prec_of_interlaces_evalCoeff_nonpos_succ_of_no_common
       simpa [F] using
         eval_mul_right_nonpos_of_isRoot (f := f) (g := g) (a := a) (b := b)
           hr_root (hb_nonpos r hr_root)
-    exact isRoot_of_eq_max_countP_le_of_sign hF.2 hF_pos hrs_eq hts_eq hoff
+    exact isRoot_of_eq_max_countP_le_of_sign hF.2 hF_pos hts_eq hoff
       hroot_nonpos (hgsign pre hEq).1 (hgsign pre hEq).2 hEq hcount
   have hcount_le :
       ∀ (pre : List ℝ) {r : ℝ} {rest : List ℝ},
         rs = pre ++ r :: rest →
         ts.countP (· ≤ r) ≤ pre.length + 2 :=
-    countP_le_of_eq_max_isRoot (_f := f) hF.1 hrs_sorted hts_eq hoff hstrict hroot_on_max
+    countP_le_of_eq_max_isRoot hF.1 hts_eq hoff hstrict hroot_on_max
   have hlt :
       ∀ (pre : List ℝ) {r : ℝ} {rest : List ℝ},
         rs = pre ++ r :: rest →
         ts.countP (· < r) ≤ pre.length + 1 :=
-    countP_lt_of_eq_max_isRoot (_f := f) (rs := rs) (off := 1)
+    countP_lt_of_eq_max_isRoot (rs := rs) (off := 1)
       hF.1 hts_eq hcount_le hroot_on_max
   have hhead :
       ∀ {r : ℝ} {rest : List ℝ},
@@ -2731,18 +2729,18 @@ theorem prec_of_interlaces_eval_mul_nonpos_same_of_no_common
         F.IsRoot r := by
     intro pre r rest hEq hcount
     have hr_root : f.IsRoot r := isRoot_of_mem_sorted_roots_eq hrs_eq hEq
-    exact isRoot_of_eq_max_countP_le_of_sign hF_splits hF_pos hrs_eq hts_eq hoff
+    exact isRoot_of_eq_max_countP_le_of_sign hF_splits hF_pos hts_eq hoff
       (hroot_nonpos r hr_root) (hgsign pre hEq).1 (hgsign pre hEq).2 hEq hcount
   have hcount_le :
       ∀ (pre : List ℝ) {r : ℝ} {rest : List ℝ},
         rs = pre ++ r :: rest →
         ts.countP (· ≤ r) ≤ pre.length + 1 :=
-    countP_le_of_eq_max_isRoot (_f := f) hF_ne hrs_sorted hts_eq hoff hstrict hroot_on_max
+    countP_le_of_eq_max_isRoot hF_ne hts_eq hoff hstrict hroot_on_max
   have hlt :
       ∀ (pre : List ℝ) {r : ℝ} {rest : List ℝ},
         rs = pre ++ r :: rest →
         ts.countP (· < r) ≤ pre.length :=
-    countP_lt_of_eq_max_isRoot (_f := f) (rs := rs) (off := 0)
+    countP_lt_of_eq_max_isRoot (rs := rs) (off := 0)
       hF_ne hts_eq hcount_le hroot_on_max
   have hle :
       ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
@@ -2879,18 +2877,18 @@ theorem prec_of_interlaces_eval_mul_nonpos_succ_of_no_common
         F.IsRoot r := by
     intro pre r rest hEq hcount
     have hr_root : f.IsRoot r := isRoot_of_mem_sorted_roots_eq hrs_eq hEq
-    exact isRoot_of_eq_max_countP_le_of_sign hF_splits hF_pos hrs_eq hts_eq hoff
+    exact isRoot_of_eq_max_countP_le_of_sign hF_splits hF_pos hts_eq hoff
       (hroot_nonpos r hr_root) (hgsign pre hEq).1 (hgsign pre hEq).2 hEq hcount
   have hcount_le :
       ∀ (pre : List ℝ) {r : ℝ} {rest : List ℝ},
         rs = pre ++ r :: rest →
         ts.countP (· ≤ r) ≤ pre.length + 2 :=
-    countP_le_of_eq_max_isRoot (_f := f) hF_ne hrs_sorted hts_eq hoff hstrict hroot_on_max
+    countP_le_of_eq_max_isRoot hF_ne hts_eq hoff hstrict hroot_on_max
   have hlt :
       ∀ (pre : List ℝ) {r : ℝ} {rest : List ℝ},
         rs = pre ++ r :: rest →
         ts.countP (· < r) ≤ pre.length + 1 :=
-    countP_lt_of_eq_max_isRoot (_f := f) (rs := rs) (off := 1)
+    countP_lt_of_eq_max_isRoot (rs := rs) (off := 1)
       hF_ne hts_eq hcount_le hroot_on_max
   have hhead :
       ∀ {r : ℝ} {rest : List ℝ},

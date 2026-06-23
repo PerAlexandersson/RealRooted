@@ -369,7 +369,7 @@ lemma sturmDerangementsExc_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (sturmDer
             rcases coeff_sturmDerangementsExc_top_and_above (n + 3) (by lia) with ⟨_, hbig_hi⟩
             grind
 
-lemma roots_nonpos_sturmDerangementsExc_of_isRealRooted {n : Nat} (_hn : 2 ≤ n)
+lemma roots_nonpos_sturmDerangementsExc_of_isRealRooted {n : Nat}
     (hrr : (sturmDerangementsExc n).Splits) :
     ∀ r ∈ (sturmDerangementsExc n).roots, r ≤ 0 :=
   roots_nonpos_of_nonneg_coeffs hrr (sturmDerangementsExc_nonnegCoeffs n)
@@ -388,7 +388,7 @@ lemma prec_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
   · rw [natDegree_sturmDerangementsExc hn]
     lia
   · exact sturmDerangementsExc_posLeadingCoeff hn
-  · exact roots_nonpos_sturmDerangementsExc_of_isRealRooted hn hrr
+  · exact roots_nonpos_sturmDerangementsExc_of_isRealRooted hrr
   · rw [natDegree_sturmDerangementsExc hn]
     exact_mod_cast (Nat.sub_lt (by lia) (by lia))
 
@@ -534,7 +534,7 @@ lemma prec_sturmDerangementsExc_affine_mul_X {n : Nat} (hn : 2 ≤ n)
     (prec_affine_sturmDerangementsExc hn hrr)
     (natDegree_affine_sturmDerangementsExc hn)
     (roots_nonpos_affine_sturmDerangementsExc_of_isRealRooted hn hrr)
-    (roots_nonpos_sturmDerangementsExc_of_isRealRooted hn hrr)
+    (roots_nonpos_sturmDerangementsExc_of_isRealRooted hrr)
 
 lemma prec_X_mul_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
     (hrr : (sturmDerangementsExc n).Splits) :
@@ -542,7 +542,7 @@ lemma prec_X_mul_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
   exact prec_mul_X_both_of_roots_nonpos
     (prec_affine_sturmDerangementsExc hn hrr)
     (roots_nonpos_affine_sturmDerangementsExc_of_isRealRooted hn hrr)
-    (roots_nonpos_sturmDerangementsExc_of_isRealRooted hn hrr)
+    (roots_nonpos_sturmDerangementsExc_of_isRealRooted hrr)
 
 lemma prec_X_mul_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
     (hprec : Prec (sturmDerangementsExc (n - 1)) (sturmDerangementsExc n)) :
@@ -553,7 +553,7 @@ lemma prec_X_mul_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
     exact prec_lowerTerm_sturmDerangementsExc (by lia) hprec
   exact prec_mul_X_both_of_roots_nonpos hlower
     (roots_nonpos_lowerTerm_sturmDerangementsExc hn hprec)
-    (roots_nonpos_sturmDerangementsExc_of_isRealRooted (by lia) hprec.2.1.2)
+    (roots_nonpos_sturmDerangementsExc_of_isRealRooted hprec.2.1.2)
 
 /-- The two inner summands in the derangement recurrence both precede `X * P_n`.
 This matches the main induction-step input in the human proof. -/

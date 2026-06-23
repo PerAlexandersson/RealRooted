@@ -48,7 +48,7 @@ lemma interleave_cons (l₁ : List α) (a : α) (l₂ : List α) :
 
 @[simp]
 lemma interleave_append_append_of_length_eq_length :
-    ∀ {l₁ l₂ : List α} (_h₁₂ : l₁.length = l₂.length) (l₃ l₄ : List α),
+    ∀ {l₁ l₂ : List α} (_ : l₁.length = l₂.length) (l₃ l₄ : List α),
       (l₁ ++ l₃).interleave (l₂ ++ l₄) = l₁.interleave l₂ ++ l₃.interleave l₄
   | [], [], _, l₃, l₄ => by simp
   | a :: l₁, b :: l₂, _, l₃, l₄ => by simp_all [interleave_append_append_of_length_eq_length]
@@ -65,7 +65,7 @@ lemma interleave_append_right_of_length_eq_length (h₁₂ : l₁.length = l₂.
 
 @[simp]
 lemma interleave_append_append_of_length_add_one_eq_length :
-    ∀ {l₁ l₂ : List α} (_h₁₂ : l₁.length + 1 = l₂.length) (l₃ l₄ : List α),
+    ∀ {l₁ l₂ : List α} (_ : l₁.length + 1 = l₂.length) (l₃ l₄ : List α),
       (l₁ ++ l₃).interleave (l₂ ++ l₄) = l₁.interleave l₂ ++ l₄.interleave l₃
   | [], b :: l₂, _, l₃, l₄ => by simp_all
   | a :: l₁, b :: c :: l₂, _, l₃, l₄ => by simp_all [interleave_append_append_of_length_eq_length]

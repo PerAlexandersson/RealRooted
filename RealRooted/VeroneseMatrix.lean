@@ -272,7 +272,7 @@ lemma prec0_affine_linear_affine_linear_of_cross
 
 lemma prec0_const_entries_affine_of_det_nonneg
     {A b c d s t : ℝ}
-    (hA : 0 ≤ A) (hb : 0 ≤ b) (hc : 0 ≤ c) (_hd : 0 ≤ d)
+    (hA : 0 ≤ A) (hb : 0 ≤ b) (hc : 0 ≤ c) (hd : 0 ≤ d)
     (hs : 0 < s) (hdet : b * c ≤ A * d) :
     Prec0 ((C s * X + C t) * C b + C d)
       ((C s * X + C t) * C A + C c) := by
@@ -508,8 +508,7 @@ lemma veroneseLinearFactorConstEntry_nonneg
 
 lemma veroneseLinearFactorConstEntry_det_nonneg
     {r : ℕ} {a : ℝ} (ha : 0 ≤ a)
-    {i₁ i₂ j₁ j₂ : Fin r} (hi : i₁ ≤ i₂) (hj : j₁ ≤ j₂)
-    (_hrow₁ : i₁.1 + 1 < r) (_hrow₂ : i₂.1 + 1 < r) :
+    {i₁ i₂ j₁ j₂ : Fin r} (hi : i₁ ≤ i₂) (hj : j₁ ≤ j₂) :
     veroneseLinearFactorConstEntry a i₁ j₂ *
         veroneseLinearFactorConstEntry a i₂ j₁ ≤
       veroneseLinearFactorConstEntry a i₁ j₁ *
@@ -545,7 +544,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_nonlast
       (veroneseLinearFactorConstEntry_nonneg ha i₂ j₁)
       (veroneseLinearFactorConstEntry_nonneg ha i₂ j₂)
       hs
-      (veroneseLinearFactorConstEntry_det_nonneg ha hi hj hrow₁ hrow₂)
+      (veroneseLinearFactorConstEntry_det_nonneg ha hi hj)
 
 def veroneseLinearFactorLastConstEntry {r : ℕ} (a : ℝ) (j : Fin r) : ℝ :=
   if j.1 = r - 1 then a else 0
@@ -569,7 +568,7 @@ lemma veroneseLinearFactorLastConstEntry_nonneg
   grind
 
 lemma veroneseLinearFactorLastConstEntry_det_nonneg
-    {r : ℕ} {a : ℝ} (_ha : 0 ≤ a) {j₁ j₂ : Fin r} :
+    {r : ℕ} {a : ℝ} {j₁ j₂ : Fin r} :
     veroneseLinearFactorLastConstEntry a j₂ *
         veroneseLinearFactorLastConstEntry a j₁ ≤
       veroneseLinearFactorLastConstEntry a j₁ *
@@ -591,7 +590,7 @@ lemma veroneseLinearFactorConstLastEntry_det_nonneg
 set_option linter.flexible false in
 theorem veroneseLinearFactorMatrixDesc_has2x2_mixed
     {r : ℕ} {a : ℝ} (ha : 0 ≤ a) (hr2 : 2 ≤ r)
-    {i₁ i₂ j₁ j₂ : Fin r} (_hi : i₁ ≤ i₂) (hj : j₁ ≤ j₂)
+    {i₁ i₂ j₁ j₂ : Fin r} (hj : j₁ ≤ j₂)
     (hrow₁ : i₁.1 + 1 < r) (hrow₂ : ¬ i₂.1 + 1 < r) :
     Has2x2InterlacingProperty0
       ((veroneseLinearFactorRowDesc r a i₁).get
@@ -639,7 +638,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_mixed
 set_option linter.flexible false in
 theorem veroneseLinearFactorMatrixDesc_has2x2_last_last
     {r : ℕ} {a : ℝ} (ha : 0 ≤ a) (hr2 : 2 ≤ r)
-    {i₁ i₂ j₁ j₂ : Fin r} (_hi : i₁ ≤ i₂) (hj : j₁ ≤ j₂)
+    {i₁ i₂ j₁ j₂ : Fin r} (hj : j₁ ≤ j₂)
     (hrow₁ : ¬ i₁.1 + 1 < r) (hrow₂ : ¬ i₂.1 + 1 < r) :
     Has2x2InterlacingProperty0
       ((veroneseLinearFactorRowDesc r a i₁).get
@@ -682,7 +681,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_last_last
         (veroneseLinearFactorLastConstEntry_nonneg ha j₁)
         (veroneseLinearFactorLastConstEntry_nonneg ha j₂)
         hs
-        (veroneseLinearFactorLastConstEntry_det_nonneg ha)
+        veroneseLinearFactorLastConstEntry_det_nonneg
 
 theorem veroneseLinearFactorMatrixDesc_has2x2
     {r : ℕ} {a : ℝ} (ha : 0 ≤ a) :
@@ -699,9 +698,9 @@ theorem veroneseLinearFactorMatrixDesc_has2x2
         ha hi hj hrow₁ hrow₂
     · by_cases hrow₁ : i₁.1 + 1 < r
       · exact veroneseLinearFactorMatrixDesc_has2x2_mixed
-          ha hr2 hi hj hrow₁ hrow₂
+          ha hr2 hj hrow₁ hrow₂
       · exact veroneseLinearFactorMatrixDesc_has2x2_last_last
-          ha hr2 hi hj hrow₁ hrow₂
+          ha hr2 hj hrow₁ hrow₂
 
 set_option linter.flexible false in
 theorem hasNonnegCoeffs_veroneseLinearFactorRowDesc_entry

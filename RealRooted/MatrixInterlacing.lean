@@ -1004,7 +1004,6 @@ theorem prec0_zipWith_sum_pair_of_2x2_weak
       exact
         isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg_both
           (fs := (auxRow s t).reverse) (gs := fs)
-          (by simp [haux_len, hfs_len])
           haux0 haux_real hfs hfs_real hsum_ne_rev
     simpa [zipWith_mul_sum_reverse_reverse (row := auxRow s t) (fs := fs)
       (haux_len.trans hfs_len.symm)] using hrr_rev

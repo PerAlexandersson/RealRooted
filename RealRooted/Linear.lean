@@ -120,7 +120,7 @@ lemma exists_isRoot_of_isRealRooted_of_not_isUnit {p : ℝ[X]} (hp_ne : p ≠ 0)
 
 /-- If two real-rooted polynomials have no common real root, then they are coprime. -/
 lemma isCoprime_of_no_common_real_root_of_isRealRooted {f g : ℝ[X]}
-    (hf_ne : f ≠ 0) (hf_splits : f.Splits) (_hg_ne : g ≠ 0) (_hg_splits : g.Splits)
+    (hf_ne : f ≠ 0) (hf_splits : f.Splits)
     (hno : ∀ r : ℝ, f.IsRoot r → ¬ g.IsRoot r) :
     IsCoprime f g := by
   apply EuclideanDomain.isCoprime_of_dvd

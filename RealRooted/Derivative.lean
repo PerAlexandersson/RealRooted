@@ -130,8 +130,8 @@ so that the induction goes through when we drop the first element. -/
     Uses sub-multiset condition `≤` to handle repeated roots. -/
 lemma mkInterleaving_spec (f : ℝ[X]) :
     ∀ (rs : List ℝ) (hrs : ∀ r ∈ rs, f.IsRoot r)
-      (_hsorted : rs.Pairwise (· ≤ ·))
-      (_hsub : (↑rs : Multiset ℝ) ≤ f.roots),
+      (_ : rs.Pairwise (· ≤ ·))
+      (_ : (↑rs : Multiset ℝ) ≤ f.roots),
     (∀ s ∈ mkInterleaving f rs hrs, f.derivative.IsRoot s) ∧
     ListInterlaces (mkInterleaving f rs hrs) rs
   | [], _, _, _ | [_], _, _, _ => by
@@ -203,8 +203,8 @@ lemma sorted_of_listInterlaces :
 /-- All elements of the interleaving of `r₁ :: rest` are ≥ r₁. -/
 private lemma mkInterleaving_ge (f : ℝ[X]) :
     ∀ (r₁ : ℝ) (rest : List ℝ) (hrs : ∀ r ∈ r₁ :: rest, f.IsRoot r)
-      (_hsorted : (r₁ :: rest).Pairwise (· ≤ ·))
-      (_hsub : (↑(r₁ :: rest) : Multiset ℝ) ≤ f.roots),
+      (_ : (r₁ :: rest).Pairwise (· ≤ ·))
+      (_ : (↑(r₁ :: rest) : Multiset ℝ) ≤ f.roots),
     ∀ x ∈ mkInterleaving f (r₁ :: rest) hrs, r₁ ≤ x
   | _, [], _, _, _ => by simp [mkInterleaving]
   | r₁, r₂ :: rest', hrs, hsorted, hsub => by
@@ -226,8 +226,8 @@ private lemma mkInterleaving_ge (f : ℝ[X]) :
 lemma mkInterleaving_sub_multiset (f : ℝ[X])
     (hdeg : 2 ≤ f.natDegree) :
     ∀ (rs : List ℝ) (hrs : ∀ r ∈ rs, f.IsRoot r)
-      (_hsorted : rs.Pairwise (· ≤ ·))
-      (_hsub : (↑rs : Multiset ℝ) ≤ f.roots),
+      (_ : rs.Pairwise (· ≤ ·))
+      (_ : (↑rs : Multiset ℝ) ≤ f.roots),
     -- (A) sub-multiset of f'.roots
     (↑(mkInterleaving f rs hrs) : Multiset ℝ) ≤ f.derivative.roots ∧
     -- (B) count bound for elements in rs

@@ -65,7 +65,6 @@ lemma exists_sign_of_prod (l : List ℝ) (h : ∀ x ∈ l, 0 ≤ x ∨ x ≤ 0) 
 
 /-- Two products with the same "sign exponent" have a non-negative product. -/
 lemma prod_mul_prod_nonneg_of_same_sign {l₁ l₂ : List ℝ}
-    (_h₁ : ∀ x ∈ l₁, 0 ≤ x ∨ x ≤ 0) (_h₂ : ∀ x ∈ l₂, 0 ≤ x ∨ x ≤ 0)
     (k : ℕ) (hk₁ : 0 ≤ (-1 : ℝ) ^ k * l₁.prod)
     (hk₂ : 0 ≤ (-1 : ℝ) ^ k * l₂.prod) :
     0 ≤ l₁.prod * l₂.prod := by
@@ -513,9 +512,9 @@ lemma opposite_sign_at_interlacing_roots {f g : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits)
     (hg_ne : g ≠ 0) (hg_splits : g.Splits)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    {a b s t : ℝ} (_hab : a ≤ b)
+    {a b s t : ℝ}
     (has : a ≤ s) (hsb : s ≤ b) (hat : a ≤ t) (htb : t ≤ b)
-    (_hst : s ≤ t) (hfs : f.IsRoot s) (hgt : g.IsRoot t)
+    (hfs : f.IsRoot s) (hgt : g.IsRoot t)
     (hf_dichotomy : ∀ r ∈ f.roots.erase s, r ≤ a ∨ b ≤ r)
     (hg_dichotomy : ∀ r ∈ g.roots.erase t, r ≤ a ∨ b ≤ r)
     (hcount_eq : (g.roots.erase t).countP (b ≤ ·) = (f.roots.erase s).countP (b ≤ ·)) :
@@ -810,8 +809,8 @@ private lemma wagner1_roots_exist (f g : ℝ[X])
       -- Sign lemma + IVT
       rcases le_or_gt sf sg with hsfsg | hsfsg
       · have hsign :=
-          opposite_sign_at_interlacing_roots hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos hab
-          hasf hsfb hasg hsgb hsfsg hsf_root hsg_root hf_dichotomy hg_dichotomy hcount_eq
+          opposite_sign_at_interlacing_roots hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos
+          hasf hsfb hasg hsgb hsf_root hsg_root hf_dichotomy hg_dichotomy hcount_eq
         obtain ⟨u, huf, hub, hufg⟩ := sum_has_root_between hsfsg hsf_root hsg_root hsign
         obtain ⟨us, hus_len, hus_int, hus_root, hus_pw⟩ :=
           wagner1_roots_exist f g hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos hcop
@@ -842,8 +841,8 @@ private lemma wagner1_roots_exist (f g : ℝ[X])
           hus_pw'⟩
       · have hsgf := le_of_lt hsfsg
         have hsign :=
-          opposite_sign_at_interlacing_roots hg_ne hg_splits hf_ne hf_splits hg_pos hf_pos hab
-          hasg hsgb hasf hsfb hsgf hsg_root hsf_root hg_dichotomy hf_dichotomy
+          opposite_sign_at_interlacing_roots hg_ne hg_splits hf_ne hf_splits hg_pos hf_pos
+          hasg hsgb hasf hsfb hsg_root hsf_root hg_dichotomy hf_dichotomy
           (hcount_eq.symm)
         obtain ⟨u, hug, huf, hufg⟩ := sum_has_root_between hsgf hsg_root hsf_root
           (by lia)
@@ -1000,8 +999,8 @@ private lemma wagner1_roots_exist_of_no_common_right (f g : ℝ[X])
           simp_all
         rcases le_or_gt sf sg with hsfsg | hsfsg
         · have hsign :=
-            opposite_sign_at_interlacing_roots hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos hab
-            hasf hsfb hasg hsgb hsfsg hsf_root hsg_root hf_dichotomy hg_dichotomy hcount_eq
+            opposite_sign_at_interlacing_roots hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos
+            hasf hsfb hasg hsgb hsf_root hsg_root hf_dichotomy hg_dichotomy hcount_eq
           obtain ⟨u, huf, hub, hufg⟩ := sum_has_root_between hsfsg hsf_root hsg_root hsign
           obtain ⟨us, hus_len, hus_int, hus_root, hus_pw⟩ :=
             wagner1_roots_exist_of_no_common_right f g hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos
@@ -1020,8 +1019,8 @@ private lemma wagner1_roots_exist_of_no_common_right (f g : ℝ[X])
             hus_pw'⟩
         · have hsgf := le_of_lt hsfsg
           have hsign :=
-            opposite_sign_at_interlacing_roots hg_ne hg_splits hf_ne hf_splits hg_pos hf_pos hab
-            hasg hsgb hasf hsfb hsgf hsg_root hsf_root hg_dichotomy hf_dichotomy
+            opposite_sign_at_interlacing_roots hg_ne hg_splits hf_ne hf_splits hg_pos hf_pos
+            hasg hsgb hasf hsfb hsg_root hsf_root hg_dichotomy hf_dichotomy
             (hcount_eq.symm)
           obtain ⟨u, hug, huf, hufg⟩ :=
             sum_has_root_between hsgf hsg_root hsf_root
@@ -1407,7 +1406,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
             rw [hg_roots_erase]; intro r hr; right
             exact listInterlaces_all_ge rest_g rest_rs r₁ hint_g_tail r (Multiset.mem_coe.mp hr)
           have hsign := opposite_sign_at_interlacing_roots hf.1 hf.2 hg.1 hg.2 hf_pos hg_pos
-            hs₁f_le (le_refl _) hs₁f_le hsfsg hs₁g_le hsfsg
+            (le_refl _) hs₁f_le hsfsg hs₁g_le
             hs₁f_root hs₁g_root hf_dich hg_dich hcount_eq
           obtain ⟨c, hcf, hcg, hc_root⟩ :=
             sum_has_root_between hsfsg hs₁f_root hs₁g_root hsign
@@ -1457,7 +1456,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
             rw [hf_roots_erase]; intro r hr; right
             exact listInterlaces_all_ge rest_f rest_rs r₁ hint_f_tail r (Multiset.mem_coe.mp hr)
           have hsign := opposite_sign_at_interlacing_roots hg.1 hg.2 hf.1 hf.2 hg_pos hf_pos
-            hs₁g_le (le_refl _) hs₁g_le hsgf hs₁f_le hsgf
+            (le_refl _) hs₁g_le hsgf hs₁f_le
             hs₁g_root hs₁f_root hg_dich hf_dich hcount_eq.symm
           obtain ⟨c, hcg, hcf, hc_root_gf⟩ := sum_has_root_between hsgf hs₁g_root hs₁f_root
             (by lia)
@@ -1885,7 +1884,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
             right
             exact listInterlaces_all_ge rest_g rest_rs r₁ hint_g_tail r (Multiset.mem_coe.mp hr)
           have hsign := opposite_sign_at_interlacing_roots hf.1 hf.2 hg.1 hg.2 hf_pos hg_pos
-            hs₁f_le (le_refl _) hs₁f_le hsfsg hs₁g_le hsfsg
+            (le_refl _) hs₁f_le hsfsg hs₁g_le
             hs₁f_root hs₁g_root hf_dich hg_dich hcount_eq
           obtain ⟨c, hcf, hcg, hc_root⟩ :=
             sum_has_root_between hsfsg hs₁f_root hs₁g_root hsign
@@ -1944,7 +1943,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
             right
             exact listInterlaces_all_ge rest_f rest_rs r₁ hint_f_tail r (Multiset.mem_coe.mp hr)
           have hsign := opposite_sign_at_interlacing_roots hg.1 hg.2 hf.1 hf.2 hg_pos hf_pos
-            hs₁g_le (le_refl _) hs₁g_le hsgf hs₁f_le hsgf
+            (le_refl _) hs₁g_le hsgf hs₁f_le
             hs₁g_root hs₁f_root hg_dich hf_dich hcount_eq.symm
           obtain ⟨c, hcg, hcf, hc_root_gf⟩ :=
             sum_has_root_between hsgf hs₁g_root hs₁f_root

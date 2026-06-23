@@ -121,7 +121,7 @@ private lemma interleaves_reverse_of_interlaced :
         ⟨j_val + 1, by rw [List.length_cons]; lia⟩ hij
 
 private lemma List.Interleaves.ofFn {n : ℕ}
-    (s r : Fin n → ℝ) (_hs : StrictMono s) (_hr : StrictMono r)
+    (s r : Fin n → ℝ)
     (hint : ∀ k : Fin n, s k < r k)
     (hint' : ∀ (i j : Fin n), i < j → r i < s j) :
     List.Interleaves (· > ·) (List.ofFn s).reverse (List.ofFn r).reverse := by
@@ -130,7 +130,7 @@ private lemma List.Interleaves.ofFn {n : ℕ}
 
 private lemma interlaced_of_interleaves_reverse_left :
     ∀ {ss rs : List ℝ} (h : ss.length + 1 = rs.length)
-      (_h_inter : List.Interleaves (· > ·) ss.reverse rs.reverse),
+      (_ : List.Interleaves (· > ·) ss.reverse rs.reverse),
       (∀ (i : Fin ss.length) (j : Fin rs.length), i.1 + 1 = j.1 → ss[i.1] < rs[j.1]) ∧
       (∀ (i : Fin rs.length) (j : Fin ss.length), i.1 < j.1 + 1 → rs[i.1] < ss[j.1]) := by
   intro ss
@@ -175,7 +175,7 @@ private lemma interlaced_of_interleaves_reverse_left :
 
 private lemma interlaced_of_interleaves_reverse :
     ∀ {ss rs : List ℝ} (h : ss.length = rs.length)
-      (_h_inter : List.Interleaves (· > ·) ss.reverse rs.reverse),
+      (_ : List.Interleaves (· > ·) ss.reverse rs.reverse),
       (∀ (k : Fin ss.length), ss[k.1] < rs[k.1]) ∧
       (∀ (i j : Fin ss.length), i.1 < j.1 → rs[i.1] < ss[j.1]) := by
   intro ss
@@ -813,7 +813,7 @@ lemma Polynomial.roots_sort_eq_of_isRoot {n : ℕ} {p : ℝ[X]} (hp_ne : p ≠ 0
 
 lemma StrictPrecSameDegree.interlacing_fin {n : ℕ}
     {p q : ℝ[X]} (h : StrictPrecSameDegree p q)
-    (_hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n)
+    (hq_deg : q.natDegree = n)
     (s : Fin n → ℝ) (hs_roots : ∀ k, p.IsRoot (s k)) (hs_sorted : StrictMono s)
     (r : Fin n → ℝ) (hr_roots : ∀ k, q.IsRoot (r k)) (hr_sorted : StrictMono r) :
     (∀ k : Fin n, s k < r k) ∧ (∀ (i j : Fin n), i < j → r i < s j) := by
@@ -892,7 +892,7 @@ lemma Polynomial.wronskian_at_root_pos_of_interlacing {n : ℕ}
   have h_prod :
       0 < (∏ j : Fin n, (r k - s j)) * (∏ j ∈ Finset.univ.erase k, (r k - r j)) := by
     have h_interlacing :=
-      StrictPrecSameDegree.interlacing_fin h hp_deg hq_deg s hs_roots hs_mono r
+      StrictPrecSameDegree.interlacing_fin h hq_deg s hs_roots hs_mono r
         hr_roots hr_sorted
     exact StrictMono.prod_sub_mul_prod_sub_pos_of_interlacing s r hr_sorted
       h_interlacing.1 h_interlacing.2 k
@@ -1252,7 +1252,7 @@ lemma StrictPrecSameDegree.of_fin_interlacing {n : ℕ}
   exact ⟨⟨hp_ne, hp_splits⟩, ⟨hq_ne, hq_splits⟩, hp_deg ▸ hq_deg ▸ rfl,
     Polynomial.roots_sort_eq_ofFn hp_ne hp_splits hp_deg hp_roots_nodup s hs hs_surj ▸
     Polynomial.roots_sort_eq_ofFn hq_ne hq_splits hq_deg hq_roots_nodup r hr hr_surj ▸
-    List.Interleaves.ofFn s r hs hr hint hint'⟩
+    List.Interleaves.ofFn s r hint hint'⟩
 
 lemma Polynomial.has_root_between_roots_of_wronskian_pos {n : ℕ}
     {p q : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)

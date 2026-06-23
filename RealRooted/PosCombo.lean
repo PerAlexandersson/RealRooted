@@ -126,7 +126,7 @@ lemma prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]} (r : ℝ
     simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg,
       comp_assoc, add_assoc, add_left_comm, add_comm] using hgf'
   have hfg' : Prec f' g' :=
-    prec_of_prec_mul_X_sameDegree_of_roots_nonpos hgxf' hdeg' hf'_nonpos hg'_nonpos
+    prec_of_prec_mul_X_sameDegree_of_roots_nonpos hgxf' hdeg' hf'_nonpos
   exact (prec_comp_X_add_C_iff (f := f) (g := g) r).1 (by lia)
 
 /-- Borcea--Brändén left-cone lemma, weighted form:
@@ -660,25 +660,21 @@ lemma family_no_common_left {f g : ℝ[X]}
 lemma family_isCoprime_right {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    {μ₁ μ₂ : ℝ} (hμ₁ : 0 < μ₁) (hμ₂ : 0 < μ₂) (hμ : μ₁ ≠ μ₂) :
+    {μ₁ μ₂ : ℝ} (hμ₁ : 0 < μ₁) (hμ : μ₁ ≠ μ₂) :
     IsCoprime (f + C μ₁ * g) (f + C μ₂ * g) := by
   apply isCoprime_of_no_common_real_root_of_isRealRooted
   · exact (hfg.isRealRooted_add_right hμ₁).1
   · exact (hfg.isRealRooted_add_right hμ₁).2
-  · exact (hfg.isRealRooted_add_right hμ₂).1
-  · exact (hfg.isRealRooted_add_right hμ₂).2
   · exact family_no_common_right hno hμ
 
 lemma family_isCoprime_left {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    {lam₁ lam₂ : ℝ} (hlam₁ : 0 < lam₁) (hlam₂ : 0 < lam₂) (hlam : lam₁ ≠ lam₂) :
+    {lam₁ lam₂ : ℝ} (hlam₁ : 0 < lam₁) (hlam : lam₁ ≠ lam₂) :
     IsCoprime (C lam₁ * f + g) (C lam₂ * f + g) := by
   apply isCoprime_of_no_common_real_root_of_isRealRooted
   · exact (hfg.isRealRooted_add_left hlam₁).1
   · exact (hfg.isRealRooted_add_left hlam₁).2
-  · exact (hfg.isRealRooted_add_left hlam₂).1
-  · exact (hfg.isRealRooted_add_left hlam₂).2
   · exact family_no_common_left hno hlam
 
 /-- Positive-combination real-rootedness descends through a shared real-rooted
@@ -937,7 +933,7 @@ lemma family_pair_data_right {f g : ℝ[X]}
   · exact family_hasPosLeadingCoeff_right hdeg hf_pos hg_pos hμ₂
   · exact family_natDegree_right hdeg hf_pos hg_pos hμ₁
   · exact family_natDegree_right hdeg hf_pos hg_pos hμ₂
-  · exact family_isCoprime_right hfg hno hμ₁ hμ₂ hμ
+  · exact family_isCoprime_right hfg hno hμ₁ hμ
 
 lemma family_pair_data_left {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
@@ -956,7 +952,7 @@ lemma family_pair_data_left {f g : ℝ[X]}
   · exact family_hasPosLeadingCoeff_left hdeg hf_pos hg_pos hlam₂
   · exact family_natDegree_left hdeg hf_pos hg_pos hlam₁
   · exact family_natDegree_left hdeg hf_pos hg_pos hlam₂
-  · exact family_isCoprime_left hfg hno hlam₁ hlam₂ hlam
+  · exact family_isCoprime_left hfg hno hlam₁ hlam
 
 /-- Specialized `1/2` right-family package for `(f + g, f + 2g)`. This is the
 canonical positive-combination reroute used in the same-degree bridge search. -/
@@ -1294,9 +1290,7 @@ The correct Obreschkoff converse is: `PosComboRealRooted f g` implies
 theorem prec_convex_right {f g : ℝ[X]}
     (hfg : Prec f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    {a b : ℝ} (ha : 0 < a) (hb : 0 < b)
-    (_hfg_rr_ne : (C a * f + C b * g) ≠ 0) (_hfg_rr_splits : (C a * f + C b * g).Splits)
-    (_hcop : IsCoprime (C a * f) (C b * g)) :
+    {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
     Prec (C a * f + C b * g) g := by
   exact prec_nonneg_combo_right hfg hf_pos hg_pos ha.le hb.le (Or.inl ha)
 
