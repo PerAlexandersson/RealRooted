@@ -1,0 +1,19 @@
+name = "RealRootedComparator"
+
+defaultTargets = ["Challenge", "Solution"]
+
+packagesDir = "../.lake/packages"
+
+[leanOptions]
+relaxedAutoImplicit = false
+
+[[require]]
+name = "RealRooted"
+path = ".."
+
+
+[[lean_lib]]
+name = "Challenge"
+
+[[lean_lib]]
+name = "Solution"
