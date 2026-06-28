@@ -135,8 +135,9 @@ it is explicitly described as a `...Statement` interface.
 - `isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg_matrix`:
   the completed cyclic-matrix proof that Veronese sections of a real-rooted
   nonnegative-coefficient polynomial are zero or real-rooted.
-- `not_hermiteBiehlerForwardStatement`: a checked counterexample documenting
-  that the earlier sign-free Hermite-Biehler forward interface was too strong.
+- `not_isUpperHalfPlaneStable_hermiteBiehlerPolynomial_X_neg_one`: a checked
+  counterexample documenting why the Hermite-Biehler forward route is exposed
+  only in sign-normalized form.
 
 ### Combinatorial Examples
 

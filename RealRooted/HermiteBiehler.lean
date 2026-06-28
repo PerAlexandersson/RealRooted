@@ -143,15 +143,6 @@ def hermiteBiehlerForwardPosStatement : Prop :=
     Prec g f →
     IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)
 
-/-- Legacy planning stub for the sign-free forward interface.
-
-This exact form is too weak without a sign normalization; see
-`not_hermiteBiehlerForwardStatement`. -/
-def hermiteBiehlerForwardStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    Prec g f →
-    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)
-
 /-- Nonnegative coefficients plus nonzeroness force a positive leading
 coefficient.  This is a small normalization helper for bridging to the
 sign-normalized Hermite--Biehler route. -/
@@ -163,34 +154,12 @@ lemma hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero {p : ℝ[X]}
     simp_all
   exact lt_of_le_of_ne (hpnn p.natDegree) (by simpa using hlead_ne.symm)
 
-/-- The legacy sign-free statement implies the normalized one as a
-specialization. -/
-theorem hermiteBiehlerForwardPosStatement_of_forward
-    (hHB : hermiteBiehlerForwardStatement) :
-    hermiteBiehlerForwardPosStatement := by
-  intro f g hf hg hpq
-  exact hHB hpq
-
-/-- The current sign-free forward Hermite--Biehler interface is false:
-`-1 ≪ X`, but `X - i` has the upper-half-plane root `i`. -/
-theorem not_hermiteBiehlerForwardStatement :
-    ¬ hermiteBiehlerForwardStatement := by
+/-- Concrete obstruction to a sign-free forward Hermite--Biehler route:
+`X - i` has the upper-half-plane root `i`. -/
+theorem not_isUpperHalfPlaneStable_hermiteBiehlerPolynomial_X_neg_one :
+    ¬ IsUpperHalfPlaneStable (hermiteBiehlerPolynomial (X : ℝ[X]) (-(1 : ℝ[X]))) := by
   intro h
-  have hprec : Prec (-(1 : ℝ[X])) (X : ℝ[X]) := by
-    have hX : ((X : ℝ[X]) ≠ 0 ∧ (X : ℝ[X]).Splits) := by
-      simp
-    have hneg : ((-(1 : ℝ[X])) ≠ 0 ∧ (-(1 : ℝ[X])).Splits) := by
-      simp
-    apply Interlaces.toPrec
-    refine ⟨hX, hneg, ?_, [0], [], ?_, ?_, ?_, ?_, ?_⟩
-    · simp
-    · simp
-    · simp
-    · simp
-    · simp
-    · simp [ListInterlaces]
-  exact h (f := X) (g := -(1 : ℝ[X])) hprec Complex.I (by simp)
-    (by simp [hermiteBiehlerPolynomial, complexify])
+  exact h Complex.I (by simp) (by simp [hermiteBiehlerPolynomial, complexify])
 
 /-- Planning stub for the converse Hermite--Biehler theorem.
 

@@ -793,16 +793,12 @@ private lemma mem_rootSlotInterval_reverse_of_listAlternates
     simpa [hj] using mem_rootSlotInterval_reverse_of_listAlternates_zero hss hrs hlen halt hrs_ne
   · exact mem_rootSlotInterval_reverse_of_listAlternates_interior hlen halt h0
 
-set_option linter.unusedVariables false in
 /-- Slot transport from an ascending `Prec` witness to the descending
 Chudnovsky--Seymour interval language. This is the core bridge needed to turn
 pairwise common interleavers into pairwise-intersecting slot intervals. -/
 private lemma mem_rootSlotInterval_of_prec_witness
-    {f g : ℝ[X]} {ss rs : List ℝ}
-    (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hg_ne : g ≠ 0) (hg_splits : g.Splits)
+    {ss rs : List ℝ}
     (hss : ss.Pairwise (· ≤ ·)) (hrs : rs.Pairwise (· ≤ ·))
-    (hss_eq : (↑ss : Multiset ℝ) = f.roots)
-    (hrs_eq : (↑rs : Multiset ℝ) = g.roots)
     (hshape : (ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
       (ss.length = rs.length ∧ ListAlternates ss rs))
     (j : Fin rs.length) :
@@ -840,8 +836,7 @@ private lemma mem_rootSlotInterval_of_prec
   let jf_rev : Fin (ss.reverse.length + 1) := ⟨j.1, by
     grind⟩
   have hmem_rev : rs.reverse.get jg_rev ∈ rootSlotInterval ss.reverse jf_rev :=
-    mem_rootSlotInterval_of_prec_witness hf.1 hf.2 hg.1 hg.2 hss hrs hss_eq hrs_eq hshape
-      ⟨j.1, by lia⟩
+    mem_rootSlotInterval_of_prec_witness hss hrs hshape ⟨j.1, by lia⟩
   lia
 
 /-- Finite intersection of a list of sets. -/

@@ -667,20 +667,8 @@ theorem nonnegPrecToFullyInterlacingPair_of_pfPrec
     (aissenSchoenbergWhitney_reverse hqnn hpq.2.1.2 (roots_nonpos_of_nonneg_coeffs hpq.2.1.2 hqnn))
     hpq
 
-/-- Hermite--Biehler forward stability plus the analytic substitution bridge
-produce the Hurwitz odd/even target for AESW interlacing pairs. -/
-theorem pfPrecToHurwitzOddEven_of_hermiteBiehler
-    (hHB : hermiteBiehlerForwardStatement)
-    (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement) :
-    PfPrecToHurwitzOddEvenStatement := by
-  intro p q hppf hqpf hpq
-  have hpnn : HasNonnegCoeffs p := hppf.nonneg
-  have hqnn : HasNonnegCoeffs q := hqpf.nonneg
-  refine ⟨hasNonnegCoeffs_oddEvenPolynomial hpnn hqnn, ?_⟩
-  exact hHBToHurwitz hpnn hqnn (hHB (f := q) (g := p) hpq)
-
 /-- Positive-leading-coefficient form used when zero coefficients are ruled out
-explicitly.  This avoids the sign-free Hermite--Biehler hypothesis. -/
+explicitly. -/
 theorem pfPrecToHurwitzOddEven_of_hermiteBiehlerPosCoeffs
     (hHB : hermiteBiehlerForwardPosStatement)
     (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement) :
@@ -764,20 +752,8 @@ theorem nonnegPrecToFullyInterlacingPair_of_hurwitzMatrixDirect
   nonnegPrecToFullyInterlacingPair_of_hurwitzOddEvenDirect hPrecToHurwitz
     (hurwitzOddEvenToFullyInterlacingPair_of_matrixTNN hHurwitzToMatrix)
 
-/-- Hermite--Biehler forward stability, the analytic substitution bridge, and
-the matrix Hurwitz criterion imply the PF polynomial-to-Lace bridge. -/
-theorem pfPrecToFullyInterlacingPair_of_hermiteBiehlerHurwitzMatrix
-    (hHB : hermiteBiehlerForwardStatement)
-    (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
-    (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement) :
-    PfPrecToFullyInterlacingPairStatement :=
-  pfPrecToFullyInterlacingPair_of_hurwitzMatrix
-    (pfPrecToHurwitzOddEven_of_hermiteBiehler hHB hHBToHurwitz)
-    hHurwitzToMatrix
-
 /-- Sign-normalized Hermite--Biehler route to the PF polynomial-to-Lace
-bridge.  This is the corrected replacement for routes that would otherwise
-need the false sign-free forward Hermite--Biehler statement. -/
+bridge. -/
 theorem pfPrecToFullyInterlacingPair_of_hermiteBiehlerPosHurwitzMatrix
     (hHB : hermiteBiehlerForwardPosStatement)
     (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
@@ -803,18 +779,6 @@ theorem nonnegPrecToFullyInterlacingPair_of_hurwitzMatrix
     NonnegPrecToFullyInterlacingPairStatement :=
   nonnegPrecToFullyInterlacingPair_of_pfPrec
     (pfPrecToFullyInterlacingPair_of_hurwitzMatrix hPrecToHurwitz hHurwitzToMatrix)
-
-/-- Nonnegative-coefficient version using Hermite--Biehler forward stability,
-the analytic substitution bridge, reverse ASW, and the matrix Hurwitz
-criterion. -/
-theorem nonnegPrecToFullyInterlacingPair_of_hermiteBiehlerHurwitzMatrix
-    (hHB : hermiteBiehlerForwardStatement)
-    (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
-    (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement) :
-    NonnegPrecToFullyInterlacingPairStatement :=
-  nonnegPrecToFullyInterlacingPair_of_pfPrec
-    (pfPrecToFullyInterlacingPair_of_hermiteBiehlerHurwitzMatrix
-      hHB hHBToHurwitz hHurwitzToMatrix)
 
 /-- Sign-normalized Hermite--Biehler route to the nonnegative-coefficient
 polynomial-to-Lace bridge.  No reverse ASW hypothesis is needed here because
@@ -1058,77 +1022,7 @@ theorem prec_veronesePairSectionPolynomial_fin_of_nonneg_prec
   prec_veronesePairSectionPolynomial_fin_of_fullyInterlacingPair
     hFullToPrec (hNonnegToFull hpnn hqnn hpq) hr i j hij
 
-/-! ### Veronese wrappers from the Hermite--Biehler/Hurwitz route -/
-
-/-- PF/AESW fixed-section Veronese interlacing through the
-Hermite--Biehler/Hurwitz matrix route. -/
-theorem prec0_veroneseSectionPolynomial_of_hermiteBiehlerHurwitzMatrix
-    {p q : ℝ[X]} {r k : ℕ}
-    (hHB : hermiteBiehlerForwardStatement)
-    (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
-    (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
-    (hppf : IsPolyaFreqSeq p.coeff)
-    (hqpf : IsPolyaFreqSeq (fun n => q.coeff n))
-    (hpq : Prec p q) (hr : 0 < r) (hk : k < r) :
-    Prec0 (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) :=
-  prec0_veroneseSectionPolynomial_of_pf_prec
-    (pfPrecToFullyInterlacingPair_of_hermiteBiehlerHurwitzMatrix
-      hHB hHBToHurwitz hHurwitzToMatrix)
-    hFullToPrec0 hppf hqpf hpq hr hk
-
-/-- Strict PF/AESW fixed-section Veronese interlacing through the
-Hermite--Biehler/Hurwitz matrix route. -/
-theorem prec_veroneseSectionPolynomial_of_hermiteBiehlerHurwitzMatrix
-    {p q : ℝ[X]} {r k : ℕ}
-    (hHB : hermiteBiehlerForwardStatement)
-    (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
-    (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hFullToPrec : FullyInterlacingPairToPrecStatement)
-    (hppf : IsPolyaFreqSeq p.coeff)
-    (hqpf : IsPolyaFreqSeq (fun n => q.coeff n))
-    (hpq : Prec p q) (hr : 0 < r) (hk : k < r) :
-    Prec (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) :=
-  prec_veroneseSectionPolynomial_of_pf_prec
-    (pfPrecToFullyInterlacingPair_of_hermiteBiehlerHurwitzMatrix
-      hHB hHBToHurwitz hHurwitzToMatrix)
-    hFullToPrec hppf hqpf hpq hr hk
-
-/-- Fin-indexed PF/AESW pairwise Veronese interlacing through the
-Hermite--Biehler/Hurwitz matrix route. -/
-theorem prec0_veronesePairSectionPolynomial_fin_of_hermiteBiehlerHurwitzMatrix
-    {p q : ℝ[X]} {r : ℕ}
-    (hHB : hermiteBiehlerForwardStatement)
-    (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
-    (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
-    (hppf : IsPolyaFreqSeq p.coeff)
-    (hqpf : IsPolyaFreqSeq (fun n => q.coeff n))
-    (hpq : Prec p q) (hr : 0 < r) (i j : Fin (2 * r)) (hij : i < j) :
-    Prec0 (veronesePairSectionPolynomial r p q i)
-      (veronesePairSectionPolynomial r p q j) :=
-  prec0_veronesePairSectionPolynomial_fin_of_pf_prec
-    (pfPrecToFullyInterlacingPair_of_hermiteBiehlerHurwitzMatrix
-      hHB hHBToHurwitz hHurwitzToMatrix)
-    hFullToPrec0 hppf hqpf hpq hr i j hij
-
-/-- Strict Fin-indexed PF/AESW pairwise Veronese interlacing through the
-Hermite--Biehler/Hurwitz matrix route. -/
-theorem prec_veronesePairSectionPolynomial_fin_of_hermiteBiehlerHurwitzMatrix
-    {p q : ℝ[X]} {r : ℕ}
-    (hHB : hermiteBiehlerForwardStatement)
-    (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
-    (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hFullToPrec : FullyInterlacingPairToPrecStatement)
-    (hppf : IsPolyaFreqSeq p.coeff)
-    (hqpf : IsPolyaFreqSeq (fun n => q.coeff n))
-    (hpq : Prec p q) (hr : 0 < r) (i j : Fin (2 * r)) (hij : i < j) :
-    Prec (veronesePairSectionPolynomial r p q i)
-      (veronesePairSectionPolynomial r p q j) :=
-  prec_veronesePairSectionPolynomial_fin_of_pf_prec
-    (pfPrecToFullyInterlacingPair_of_hermiteBiehlerHurwitzMatrix
-      hHB hHBToHurwitz hHurwitzToMatrix)
-    hFullToPrec hppf hqpf hpq hr i j hij
+/-! ### Veronese wrappers from the sign-normalized Hermite--Biehler/Hurwitz route -/
 
 /-- Sign-normalized PF/AESW fixed-section Veronese interlacing through the
 Hermite--Biehler/Hurwitz matrix route. -/
@@ -1199,74 +1093,6 @@ theorem prec_veronesePairSectionPolynomial_fin_of_hermiteBiehlerPosHurwitzMatrix
     (pfPrecToFullyInterlacingPair_of_hermiteBiehlerPosHurwitzMatrix
       hHB hHBToHurwitz hHurwitzToMatrix)
     hFullToPrec hppf hqpf hpq hr i j hij
-
-/-- Nonnegative-coefficient fixed-section Veronese interlacing through reverse
-ASW and the Hermite--Biehler/Hurwitz matrix route. -/
-theorem prec0_veroneseSectionPolynomial_of_nonneg_hermiteBiehlerHurwitzMatrix
-    {p q : ℝ[X]} {r k : ℕ}
-    (hHB : hermiteBiehlerForwardStatement)
-    (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
-    (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
-    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
-    (hpq : Prec p q) (hr : 0 < r) (hk : k < r) :
-    Prec0 (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) :=
-  prec0_veroneseSectionPolynomial_of_nonneg_prec
-    (nonnegPrecToFullyInterlacingPair_of_hermiteBiehlerHurwitzMatrix
-      hHB hHBToHurwitz hHurwitzToMatrix)
-    hFullToPrec0 hpnn hqnn hpq hr hk
-
-/-- Strict nonnegative-coefficient fixed-section Veronese interlacing through
-reverse ASW and the Hermite--Biehler/Hurwitz matrix route. -/
-theorem prec_veroneseSectionPolynomial_of_nonneg_hermiteBiehlerHurwitzMatrix
-    {p q : ℝ[X]} {r k : ℕ}
-    (hHB : hermiteBiehlerForwardStatement)
-    (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
-    (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hFullToPrec : FullyInterlacingPairToPrecStatement)
-    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
-    (hpq : Prec p q) (hr : 0 < r) (hk : k < r) :
-    Prec (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) :=
-  prec_veroneseSectionPolynomial_of_nonneg_prec
-    (nonnegPrecToFullyInterlacingPair_of_hermiteBiehlerHurwitzMatrix
-      hHB hHBToHurwitz hHurwitzToMatrix)
-    hFullToPrec hpnn hqnn hpq hr hk
-
-/-- Fin-indexed nonnegative-coefficient pairwise Veronese interlacing through
-reverse ASW and the Hermite--Biehler/Hurwitz matrix route. -/
-theorem
-    prec0_veronesePairSectionPolynomial_fin_of_nonneg_hermiteBiehlerHurwitzMatrix
-    {p q : ℝ[X]} {r : ℕ}
-    (hHB : hermiteBiehlerForwardStatement)
-    (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
-    (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
-    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
-    (hpq : Prec p q) (hr : 0 < r) (i j : Fin (2 * r)) (hij : i < j) :
-    Prec0 (veronesePairSectionPolynomial r p q i)
-      (veronesePairSectionPolynomial r p q j) :=
-  prec0_veronesePairSectionPolynomial_fin_of_nonneg_prec
-    (nonnegPrecToFullyInterlacingPair_of_hermiteBiehlerHurwitzMatrix
-      hHB hHBToHurwitz hHurwitzToMatrix)
-    hFullToPrec0 hpnn hqnn hpq hr i j hij
-
-/-- Strict Fin-indexed nonnegative-coefficient pairwise Veronese interlacing
-through reverse ASW and the Hermite--Biehler/Hurwitz matrix route. -/
-theorem
-    prec_veronesePairSectionPolynomial_fin_of_nonneg_hermiteBiehlerHurwitzMatrix
-    {p q : ℝ[X]} {r : ℕ}
-    (hHB : hermiteBiehlerForwardStatement)
-    (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
-    (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hFullToPrec : FullyInterlacingPairToPrecStatement)
-    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
-    (hpq : Prec p q) (hr : 0 < r) (i j : Fin (2 * r)) (hij : i < j) :
-    Prec (veronesePairSectionPolynomial r p q i)
-      (veronesePairSectionPolynomial r p q j) :=
-  prec_veronesePairSectionPolynomial_fin_of_nonneg_prec
-    (nonnegPrecToFullyInterlacingPair_of_hermiteBiehlerHurwitzMatrix
-      hHB hHBToHurwitz hHurwitzToMatrix)
-    hFullToPrec hpnn hqnn hpq hr i j hij
 
 /-- Sign-normalized nonnegative-coefficient fixed-section Veronese
 interlacing through the Hermite--Biehler/Hurwitz matrix route. -/

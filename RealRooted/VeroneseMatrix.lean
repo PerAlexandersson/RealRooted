@@ -587,7 +587,6 @@ lemma veroneseLinearFactorConstLastEntry_det_nonneg
   split_ifs <;> try lia
   all_goals nlinarith [ha, sq_nonneg a]
 
-set_option linter.flexible false in
 theorem veroneseLinearFactorMatrixDesc_has2x2_mixed
     {r : ℕ} {a : ℝ} (ha : 0 ≤ a) (hr2 : 2 ≤ r)
     {i₁ i₂ j₁ j₂ : Fin r} (hj : j₁ ≤ j₂)
@@ -612,12 +611,12 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_mixed
     · have hj_eq : j₁ = j₂ := by
         lia
       subst j₂
-      simp [hj₁0]
+      rw [if_pos hj₁0]
       let hrr :=
         isRealRooted_affine_mul_C_add_X
           (t := t) (veroneseLinearFactorConstEntry_nonneg ha i₁ j₁) hs
       exact (prec_refl hrr.1 hrr.2).toPrec0
-    · simp [hj₁0, hj₂0]
+    · rw [if_pos hj₁0, if_neg hj₂0]
       exact
         prec0_const_entry_affine_plus_const_to_affine_plus_X
           (veroneseLinearFactorConstEntry_nonneg ha i₁ j₁)
@@ -625,7 +624,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_mixed
           (veroneseLinearFactorLastConstEntry_nonneg ha j₂)
           hs ht.le
   · have hj₂0 : ¬ j₂.1 = 0 := by lia
-    simp [hj₁0, hj₂0]
+    rw [if_neg hj₁0, if_neg hj₂0]
     exact
       prec0_const_entries_affine_of_det_nonneg
         (veroneseLinearFactorConstEntry_nonneg ha i₁ j₁)
@@ -635,7 +634,6 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_mixed
         hs
         (veroneseLinearFactorConstLastEntry_det_nonneg ha hj)
 
-set_option linter.flexible false in
 theorem veroneseLinearFactorMatrixDesc_has2x2_last_last
     {r : ℕ} {a : ℝ} (ha : 0 ≤ a) (hr2 : 2 ≤ r)
     {i₁ i₂ j₁ j₂ : Fin r} (hj : j₁ ≤ j₂)
@@ -658,22 +656,22 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_last_last
   rw [get_veroneseLinearFactorRowDesc_of_last hr2 (hi := hrow₂)]
   by_cases hj₁0 : j₁.1 = 0
   · by_cases hj₂0 : j₂.1 = 0
-    · simp [hj₁0, hj₂0]
+    · rw [if_pos hj₁0, if_pos hj₂0]
       exact
         (prec_refl (isRealRooted_affine_mul_X_add_X hs).1
           (isRealRooted_affine_mul_X_add_X hs).2).toPrec0
     · by_cases hj₂last : j₂.1 = r - 1
-      · simp [hj₁0, hj₂last, hlast_ne_zero,
-          veroneseLinearFactorLastConstEntry]
+      · rw [if_pos hj₁0, if_neg hj₂0]
+        simp only [veroneseLinearFactorLastConstEntry, hj₂last, if_true]
         rw [affine_mul_C_add_same_eq, affine_mul_X_add_X_eq]
         exact
           prec0_C_mul_affine_linear_X_mul_affine_linear
             (a := a) (u := s) (v := t + 1) hs (by grind)
       · simp [hj₁0, hj₂0, hj₂last,
           veroneseLinearFactorLastConstEntry, prec0_zero_left]
-  · simp [hj₁0]
+  · rw [if_neg hj₁0]
     have hj₂0 : ¬ j₂.1 = 0 := by lia
-    simp [hj₂0]
+    rw [if_neg hj₂0]
     exact
       prec0_const_entries_affine_of_det_nonneg
         (veroneseLinearFactorLastConstEntry_nonneg ha j₁)
@@ -702,7 +700,6 @@ theorem veroneseLinearFactorMatrixDesc_has2x2
       · exact veroneseLinearFactorMatrixDesc_has2x2_last_last
           ha hr2 hj hrow₁ hrow₂
 
-set_option linter.flexible false in
 theorem hasNonnegCoeffs_veroneseLinearFactorRowDesc_entry
     {r : ℕ} {a : ℝ} (ha : 0 ≤ a) (i : Fin r)
     {q : ℝ[X]} (hq : q ∈ veroneseLinearFactorRowDesc r a i) :
@@ -731,9 +728,10 @@ theorem hasNonnegCoeffs_veroneseLinearFactorRowDesc_entry
         | nil =>
             simp at hq
         | cons y ys =>
-            simp at hq
-            rcases hq with rfl | hq
-            · exact (hxs x (by simp)).add (hys y (by simp))
+            change q ∈ (x + y) :: xs.zipWith (· + ·) ys at hq
+            rcases List.mem_cons.mp hq with hq | hq
+            · subst q
+              exact (hxs x (by simp)).add (hys y (by simp))
             · grind
   rw [veroneseLinearFactorRowDesc] at hq
   by_cases hi : i.1 + 1 < r
