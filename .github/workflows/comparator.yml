@@ -1,4 +1,4 @@
-name: Comparator
+name: Comparator CI (a trustworthy judge for Lean proofs)
 
 permissions:
   contents: read
