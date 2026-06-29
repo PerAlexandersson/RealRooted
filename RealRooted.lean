@@ -1,5 +1,6 @@
 -- Core
 import RealRooted.Basic
+import RealRooted.CoefficientShape
 import RealRooted.Linear
 import RealRooted.Derivative
 import RealRooted.IteratedDerivativeShift
