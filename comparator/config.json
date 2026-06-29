@@ -1,0 +1,23 @@
+{
+  "challenge_module": "Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "Comparator.brandenSolusTheorem26",
+    "Comparator.aissenSchoenbergWhitney_reverse",
+    "Comparator.strictPrecSameDegree_iff_bezoutMatrix_posDef"
+  ],
+  "definition_names": [
+    "Comparator.HasNonnegCoeffs",
+    "Comparator.HasPosLeadingCoeff",
+    "Comparator.Prec",
+    "Comparator.StrictPrecSameDegree",
+    "Comparator.IdTransform",
+    "Comparator.RdTransform",
+    "Comparator.fPolynomial",
+    "Comparator.IsIdDecomposition",
+    "Comparator.IsPolyaFreqSeq",
+    "Comparator.bezoutMatrix"
+  ],
+  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+  "enable_nanoda": true
+}
