@@ -174,7 +174,7 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
                 exact_mod_cast (show 2 * m ≤ n + 1 by lia)]
             exact add_nonneg
               (mul_nonneg (by lia) (hprev_nonneg m))
-              (mul_nonneg (by grind) (hprev_nonneg (m + 1)))
+              (mul_nonneg (by positivity) (hprev_nonneg (m + 1)))
           · have hm' : (n + 1) / 2 < m := lt_of_not_ge hm
             have hm_zero : coeff (simsun (n + 1)) m = 0 := hprev_above m hm'
             have hm_succ_zero : coeff (simsun (n + 1)) (m + 1) = 0 := by

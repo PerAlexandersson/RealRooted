@@ -69,8 +69,8 @@ lemma singletonFreeSetPartitions_nonnegCoeffs :
       · simp [singletonFreeSetPartitions_succ_succ]
       · rw [coeff_singletonFreeSetPartitions_succ_succ]
         exact add_nonneg
-          (mul_nonneg (by grind) (singletonFreeSetPartitions_nonnegCoeffs n m))
-          (mul_nonneg (by grind)
+          (mul_nonneg (by positivity) (singletonFreeSetPartitions_nonnegCoeffs n m))
+          (mul_nonneg (by positivity)
             (singletonFreeSetPartitions_nonnegCoeffs (n + 1) (m + 1)))
 
 lemma coeff_singletonFreeSetPartitions_top_pos_and_above :
@@ -164,7 +164,7 @@ lemma singletonFreeSetPartitionsCore_nonnegCoeffs (n : Nat) :
   intro m
   rw [singletonFreeSetPartitionsCore, coeff_add, coeff_C_mul]
   exact add_nonneg
-    (mul_nonneg (by grind) (singletonFreeSetPartitions_nonnegCoeffs n m))
+    (mul_nonneg (by positivity) (singletonFreeSetPartitions_nonnegCoeffs n m))
     ((singletonFreeSetPartitions_nonnegCoeffs (n + 1)).derivative m)
 
 lemma singletonFreeSetPartitionsCore_ne_zero (n : Nat) :
