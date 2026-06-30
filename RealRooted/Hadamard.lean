@@ -309,6 +309,42 @@ theorem garloffWagnerHadamardNonnegPrec_of_oddEven
   rw [hadamardProduct_oddEvenPolynomial] at hHad
   exact hFullToPrec0 (hHurwitzToFull hHad)
 
+/-- **Garloff--Wagner two-pair theorem reduced to its irreducible classical
+inputs** (issue #34 / TODO T9).
+
+This composes the existing checked reductions for the four mid-level interfaces
+used by `garloffWagnerHadamardNonnegPrec_of_oddEven` into a single `sorry`-free
+reduction of the #34 target `garloffWagnerHadamardNonnegPrecStatement` onto six
+classical bottom-level inputs:
+
+* `hadamardPreservesRightHalfPlaneStableStatement` — the analytic core of
+  Garloff--Wagner Theorem 1;
+* `hermiteBiehlerForwardPosStatement` and
+  `HermiteBiehlerStableToHurwitzOddEvenStatement` — the forward
+  Hermite--Biehler bridge and conformal substitution;
+* `HurwitzStableToMatrixTotallyNonnegativeStatement` — the forward matrix
+  Hurwitz criterion;
+* `aissenSchoenbergWhitneyForwardStatement` and
+  `FullyInterlacingPairInterlaceStatement` — forward
+  Aissen--Schoenberg--Whitney and the combinatorial interlacing-extraction
+  core.
+
+This pins down the remaining analytic and combinatorial obligations for the
+#34 target in one place. -/
+theorem garloffWagnerHadamardNonnegPrec_of_classicalInputs
+    (hRHP : hadamardPreservesRightHalfPlaneStableStatement)
+    (hHB : hermiteBiehlerForwardPosStatement)
+    (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
+    (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
+    (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hInt : FullyInterlacingPairInterlaceStatement) :
+    garloffWagnerHadamardNonnegPrecStatement :=
+  garloffWagnerHadamardNonnegPrec_of_oddEven
+    (hadamardPreservesHurwitzStable_of_rightHalfPlane hRHP)
+    (nonnegPrecToHurwitzOddEven_of_hermiteBiehlerPos hHB hHBToHurwitz)
+    (hurwitzOddEvenToFullyInterlacingPair_of_matrixTNN hHurwitzToMatrix)
+    (fullyInterlacingPairToPrec0_of_forwardASW_interlace hASW hInt)
+
 /-- PF-polynomial wrapper around the strict Garloff--Wagner two-pair theorem. -/
 def garloffWagnerHadamardPFPrecStatement : Prop :=
   ∀ {f g p q : ℝ[X]},
