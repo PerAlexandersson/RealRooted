@@ -114,9 +114,8 @@ lemma norm_coeff_sub_normalized_left_family_lt
     (f g : ℝ[X]) {t ε : ℝ} (ht : 0 < t)
     (hbound :
       (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) < ε) :
-    ∀ i : ℕ, ‖(C (t + 1)⁻¹ * (C t * f + g)).coeff i - f.coeff i‖ < ε := by
-  intro i
-  exact lt_of_le_of_lt (norm_coeff_sub_normalized_left_family_le f g ht i) hbound
+    ∀ i : ℕ, ‖(C (t + 1)⁻¹ * (C t * f + g)).coeff i - f.coeff i‖ < ε :=
+  fun i => lt_of_le_of_lt (norm_coeff_sub_normalized_left_family_le f g ht i) hbound
 
 /-- For every target precision `ε > 0`, choosing `t` sufficiently large makes the normalized
 left-family coefficient error smaller than `ε`. -/
