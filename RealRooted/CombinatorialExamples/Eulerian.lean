@@ -120,29 +120,26 @@ lemma eulerianTilde_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (eulerianTilde n
       · have hm' : 1 ≠ m := by lia
         simp [eulerianTilde_zero, coeff_X, hm']
   | n + 1 => by
-      intro m
-      cases m with
-      | zero =>
-          rw [eulerianTilde_recurrence]
-          simp
-      | succ m =>
-          rw [coeff_eulerianTilde_succ n m]
-          by_cases hm : m ≤ n + 1
-          · have hcoeff_m : 0 ≤ coeff (eulerianTilde n) m :=
-              eulerianTilde_nonnegCoeffs n m
-            have hcoeff_succ : 0 ≤ coeff (eulerianTilde n) (m + 1) :=
-              eulerianTilde_nonnegCoeffs n (m + 1)
-            have hnm : 0 ≤ (n + 2 : ℝ) - m := by
-              nlinarith [show (m : ℝ) ≤ n + 2 by
-                exact_mod_cast Nat.le_trans hm (Nat.le_succ _)]
-            exact add_nonneg (mul_nonneg hnm hcoeff_m) (mul_nonneg (by grind) hcoeff_succ)
-          · have hm' : n + 1 < m := lt_of_not_ge hm
-            rcases coeff_eulerianTilde_top_and_above n with ⟨_, habove⟩
-            have hcoeff_m : coeff (eulerianTilde n) m = 0 := by
-              simp_all
-            have hcoeff_succ : coeff (eulerianTilde n) (m + 1) = 0 := by
-              grind
-            simp [hcoeff_m, hcoeff_succ]
+      rintro (_ | m)
+      · rw [eulerianTilde_recurrence]
+        simp
+      · rw [coeff_eulerianTilde_succ n m]
+        by_cases hm : m ≤ n + 1
+        · have hcoeff_m : 0 ≤ coeff (eulerianTilde n) m :=
+            eulerianTilde_nonnegCoeffs n m
+          have hcoeff_succ : 0 ≤ coeff (eulerianTilde n) (m + 1) :=
+            eulerianTilde_nonnegCoeffs n (m + 1)
+          have hnm : 0 ≤ (n + 2 : ℝ) - m := by
+            nlinarith [show (m : ℝ) ≤ n + 2 by
+              exact_mod_cast Nat.le_trans hm (Nat.le_succ _)]
+          exact add_nonneg (mul_nonneg hnm hcoeff_m) (mul_nonneg (by grind) hcoeff_succ)
+        · have hm' : n + 1 < m := lt_of_not_ge hm
+          rcases coeff_eulerianTilde_top_and_above n with ⟨_, habove⟩
+          have hcoeff_m : coeff (eulerianTilde n) m = 0 := by
+            simp_all
+          have hcoeff_succ : coeff (eulerianTilde n) (m + 1) = 0 := by
+            grind
+          simp [hcoeff_m, hcoeff_succ]
 
 lemma roots_nonpos_eulerianTilde_of_isRealRooted {n : Nat} (hrr : (eulerianTilde n).Splits) :
     ∀ r ∈ (eulerianTilde n).roots, r ≤ 0 :=

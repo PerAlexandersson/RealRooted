@@ -59,26 +59,20 @@ lemma coeff_singletonFreeSetPartitions_succ_succ (n m : Nat) :
 lemma singletonFreeSetPartitions_nonnegCoeffs :
     ∀ n : Nat, HasNonnegCoeffs (singletonFreeSetPartitions n)
   | 0 => by
-      intro m
-      cases m with
-      | zero =>
-          simp [singletonFreeSetPartitions_zero]
-      | succ m =>
-          rw [singletonFreeSetPartitions_zero, coeff_one, if_neg (Nat.succ_ne_zero m)]
+      rintro (_ | m)
+      · simp [singletonFreeSetPartitions_zero]
+      · rw [singletonFreeSetPartitions_zero, coeff_one, if_neg (Nat.succ_ne_zero m)]
   | 1 => by
       intro m
       simp [singletonFreeSetPartitions_one]
   | n + 2 => by
-      intro m
-      cases m with
-      | zero =>
-          simp [singletonFreeSetPartitions_succ_succ]
-      | succ m =>
-          rw [coeff_singletonFreeSetPartitions_succ_succ]
-          exact add_nonneg
-            (mul_nonneg (by grind) (singletonFreeSetPartitions_nonnegCoeffs n m))
-            (mul_nonneg (by grind)
-              (singletonFreeSetPartitions_nonnegCoeffs (n + 1) (m + 1)))
+      rintro (_ | m)
+      · simp [singletonFreeSetPartitions_succ_succ]
+      · rw [coeff_singletonFreeSetPartitions_succ_succ]
+        exact add_nonneg
+          (mul_nonneg (by grind) (singletonFreeSetPartitions_nonnegCoeffs n m))
+          (mul_nonneg (by grind)
+            (singletonFreeSetPartitions_nonnegCoeffs (n + 1) (m + 1)))
 
 lemma coeff_singletonFreeSetPartitions_top_pos_and_above :
     ∀ n : Nat, 2 ≤ n →

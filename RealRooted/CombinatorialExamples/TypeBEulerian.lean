@@ -166,37 +166,31 @@ lemma typeBEulerian_posLeadingCoeff (n : Nat) :
 
 lemma typeBEulerian_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (typeBEulerian n)
   | 0 => by
-      intro m
-      cases m with
-      | zero =>
-          simp [typeBEulerian_zero]
-      | succ m =>
-          rw [typeBEulerian_zero, coeff_one, if_neg (Nat.succ_ne_zero m)]
+      rintro (_ | m)
+      · simp [typeBEulerian_zero]
+      · rw [typeBEulerian_zero, coeff_one, if_neg (Nat.succ_ne_zero m)]
   | n + 1 => by
-      intro m
-      cases m with
-      | zero =>
-          rw [coeff_typeBEulerian_zero]
-          positivity
-      | succ m =>
-          rw [coeff_typeBEulerian_succ]
-          by_cases hm : m ≤ n
-          · have hcoeff_m : 0 ≤ coeff (typeBEulerian n) m :=
-              typeBEulerian_nonnegCoeffs n m
-            have hcoeff_succ : 0 ≤ coeff (typeBEulerian n) (m + 1) :=
-              typeBEulerian_nonnegCoeffs n (m + 1)
-            have hnm : 0 ≤ ((2 * n + 1 : ℝ) - 2 * m) := by
-              have hm' : (m : ℝ) ≤ n := by simp_all
-              nlinarith
-            exact add_nonneg (mul_nonneg hnm hcoeff_m)
-              (mul_nonneg (by grind) hcoeff_succ)
-          · have hm' : n < m := lt_of_not_ge hm
-            rcases coeff_typeBEulerian_top_and_above n with ⟨_, habove⟩
-            have hcoeff_m : coeff (typeBEulerian n) m = 0 := by
-              simp_all
-            have hcoeff_succ : coeff (typeBEulerian n) (m + 1) = 0 := by
-              grind
-            simp [hcoeff_m, hcoeff_succ]
+      rintro (_ | m)
+      · rw [coeff_typeBEulerian_zero]
+        positivity
+      · rw [coeff_typeBEulerian_succ]
+        by_cases hm : m ≤ n
+        · have hcoeff_m : 0 ≤ coeff (typeBEulerian n) m :=
+            typeBEulerian_nonnegCoeffs n m
+          have hcoeff_succ : 0 ≤ coeff (typeBEulerian n) (m + 1) :=
+            typeBEulerian_nonnegCoeffs n (m + 1)
+          have hnm : 0 ≤ ((2 * n + 1 : ℝ) - 2 * m) := by
+            have hm' : (m : ℝ) ≤ n := by simp_all
+            nlinarith
+          exact add_nonneg (mul_nonneg hnm hcoeff_m)
+            (mul_nonneg (by grind) hcoeff_succ)
+        · have hm' : n < m := lt_of_not_ge hm
+          rcases coeff_typeBEulerian_top_and_above n with ⟨_, habove⟩
+          have hcoeff_m : coeff (typeBEulerian n) m = 0 := by
+            simp_all
+          have hcoeff_succ : coeff (typeBEulerian n) (m + 1) = 0 := by
+            grind
+          simp [hcoeff_m, hcoeff_succ]
 
 lemma roots_nonpos_typeBEulerian_of_isRealRooted {n : Nat} (hrr : (typeBEulerian n).Splits) :
     ∀ r ∈ (typeBEulerian n).roots, r ≤ 0 :=

@@ -162,35 +162,29 @@ lemma stirlingPermutations_posLeadingCoeff (n : Nat) :
 lemma stirlingPermutations_nonnegCoeffs :
     ∀ n : Nat, HasNonnegCoeffs (stirlingPermutations n)
   | 0 => by
-      intro k
-      cases k with
-      | zero =>
-          simp [stirlingPermutations_zero]
-      | succ k =>
-          rw [stirlingPermutations_zero, coeff_one, if_neg (Nat.succ_ne_zero k)]
+      rintro (_ | k)
+      · simp [stirlingPermutations_zero]
+      · rw [stirlingPermutations_zero, coeff_one, if_neg (Nat.succ_ne_zero k)]
   | n + 1 => by
-      intro k
-      cases k with
-      | zero =>
-          simp [stirlingPermutations_succ, stirlingPermutationsCoeffA, stirlingPermutationsCoeffB]
-      | succ j =>
-          rw [coeff_stirlingPermutations_succ]
-          by_cases hj : j ≤ n
-          · have hcoeff_j : 0 ≤ coeff (stirlingPermutations n) j :=
-              stirlingPermutations_nonnegCoeffs n j
-            have hcoeff_j1 : 0 ≤ coeff (stirlingPermutations n) (j + 1) :=
-              stirlingPermutations_nonnegCoeffs n (j + 1)
-            have hscale : 0 ≤ ((2 * n + 1 : ℝ) - j) := by
-              have hj' : (j : ℝ) ≤ n := by simp_all
-              nlinarith
-            exact add_nonneg (mul_nonneg hscale hcoeff_j)
-              (mul_nonneg (by grind) hcoeff_j1)
-          · have hj' : n < j := lt_of_not_ge hj
-            rcases coeff_stirlingPermutations_top_pos_and_above n with ⟨_, habove⟩
-            have hcoeff_j : coeff (stirlingPermutations n) j = 0 := habove j hj'
-            have hcoeff_j1 : coeff (stirlingPermutations n) (j + 1) = 0 := by
-              grind
-            simp [hcoeff_j, hcoeff_j1]
+      rintro (_ | j)
+      · simp [stirlingPermutations_succ, stirlingPermutationsCoeffA, stirlingPermutationsCoeffB]
+      · rw [coeff_stirlingPermutations_succ]
+        by_cases hj : j ≤ n
+        · have hcoeff_j : 0 ≤ coeff (stirlingPermutations n) j :=
+            stirlingPermutations_nonnegCoeffs n j
+          have hcoeff_j1 : 0 ≤ coeff (stirlingPermutations n) (j + 1) :=
+            stirlingPermutations_nonnegCoeffs n (j + 1)
+          have hscale : 0 ≤ ((2 * n + 1 : ℝ) - j) := by
+            have hj' : (j : ℝ) ≤ n := by simp_all
+            nlinarith
+          exact add_nonneg (mul_nonneg hscale hcoeff_j)
+            (mul_nonneg (by grind) hcoeff_j1)
+        · have hj' : n < j := lt_of_not_ge hj
+          rcases coeff_stirlingPermutations_top_pos_and_above n with ⟨_, habove⟩
+          have hcoeff_j : coeff (stirlingPermutations n) j = 0 := habove j hj'
+          have hcoeff_j1 : coeff (stirlingPermutations n) (j + 1) = 0 := by
+            grind
+          simp [hcoeff_j, hcoeff_j1]
 
 lemma roots_nonpos_stirlingPermutations_of_isRealRooted {n : Nat}
     (hrr : (stirlingPermutations n).Splits) :

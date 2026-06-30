@@ -86,21 +86,15 @@ lemma touchard_posLeadingCoeff (n : Nat) :
 
 lemma touchard_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (touchard n)
   | 0 => by
-      intro m
-      cases m with
-      | zero =>
-          simp [touchard_zero]
-      | succ m =>
-          rw [touchard_zero, coeff_one, if_neg (Nat.succ_ne_zero m)]
+      rintro (_ | m)
+      · simp [touchard_zero]
+      · rw [touchard_zero, coeff_one, if_neg (Nat.succ_ne_zero m)]
   | n + 1 => by
-      intro m
-      cases m with
-      | zero =>
-          simp [touchard_succ]
-      | succ m =>
-          rw [coeff_touchard_succ]
-          exact add_nonneg (touchard_nonnegCoeffs n m)
-            (mul_nonneg (by grind) (touchard_nonnegCoeffs n (m + 1)))
+      rintro (_ | m)
+      · simp [touchard_succ]
+      · rw [coeff_touchard_succ]
+        exact add_nonneg (touchard_nonnegCoeffs n m)
+          (mul_nonneg (by grind) (touchard_nonnegCoeffs n (m + 1)))
 
 lemma roots_nonpos_touchard_of_isRealRooted {n : Nat} (hrr : (touchard n).Splits) :
     ∀ r ∈ (touchard n).roots, r ≤ 0 :=
