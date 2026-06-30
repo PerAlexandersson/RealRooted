@@ -39,6 +39,64 @@ def diagonalOperator (gamma : ℕ → ℝ) (p : ℝ[X]) : ℝ[X] :=
     rw [(Polynomial.notMem_support_iff).mp hn]
     simp
 
+@[simp] theorem diagonalOperator_zero (gamma : ℕ → ℝ) :
+    diagonalOperator gamma 0 = 0 := by
+  ext n
+  simp
+
+@[simp] theorem diagonalOperator_zero_sequence (p : ℝ[X]) :
+    diagonalOperator (fun _ => (0 : ℝ)) p = 0 := by
+  ext n
+  simp
+
+@[simp] theorem diagonalOperator_one_sequence (p : ℝ[X]) :
+    diagonalOperator (fun _ => (1 : ℝ)) p = p := by
+  ext n
+  simp
+
+theorem diagonalOperator_add (gamma : ℕ → ℝ) (p q : ℝ[X]) :
+    diagonalOperator gamma (p + q) =
+      diagonalOperator gamma p + diagonalOperator gamma q := by
+  ext n
+  simp [mul_add]
+
+theorem diagonalOperator_sub (gamma : ℕ → ℝ) (p q : ℝ[X]) :
+    diagonalOperator gamma (p - q) =
+      diagonalOperator gamma p - diagonalOperator gamma q := by
+  ext n
+  simp [mul_sub]
+
+theorem diagonalOperator_neg (gamma : ℕ → ℝ) (p : ℝ[X]) :
+    diagonalOperator gamma (-p) = -diagonalOperator gamma p := by
+  ext n
+  simp
+
+theorem diagonalOperator_C_mul (gamma : ℕ → ℝ) (a : ℝ) (p : ℝ[X]) :
+    diagonalOperator gamma (C a * p) =
+      C a * diagonalOperator gamma p := by
+  ext n
+  simp [mul_comm, mul_left_comm]
+
+theorem diagonalOperator_monomial (gamma : ℕ → ℝ) (n : ℕ) (a : ℝ) :
+    diagonalOperator gamma (monomial n a) = monomial n (gamma n * a) := by
+  ext k
+  by_cases hk : k = n
+  · subst k
+    simp
+  · simp [Polynomial.coeff_monomial, Ne.symm hk]
+
+theorem support_diagonalOperator_subset (gamma : ℕ → ℝ) (p : ℝ[X]) :
+    (diagonalOperator gamma p).support ⊆ p.support := by
+  intro n hn
+  rw [Polynomial.mem_support_iff] at hn ⊢
+  exact right_ne_zero_of_mul (by simpa using hn)
+
+theorem natDegree_diagonalOperator_le (gamma : ℕ → ℝ) (p : ℝ[X]) :
+    (diagonalOperator gamma p).natDegree ≤ p.natDegree := by
+  rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
+  intro n hn
+  rw [coeff_diagonalOperator, coeff_eq_zero_of_natDegree_lt hn, mul_zero]
+
 /-- Nonnegative diagonal coefficients preserve nonnegative coefficients. -/
 theorem HasNonnegCoeffs.diagonalOperator
     {gamma : ℕ → ℝ} {p : ℝ[X]}
@@ -50,7 +108,49 @@ theorem HasNonnegCoeffs.diagonalOperator
 /-- The degree-`n` Jensen polynomial attached to a diagonal sequence. -/
 def jensenPolynomial (n : ℕ) (gamma : ℕ → ℝ) : ℝ[X] :=
   ∑ k ∈ Finset.range (n + 1),
-    C ((Nat.choose n k : ℝ) * gamma k) * X ^ k
+    monomial k ((Nat.choose n k : ℝ) * gamma k)
+
+@[simp] theorem coeff_jensenPolynomial (n : ℕ) (gamma : ℕ → ℝ) (k : ℕ) :
+    (jensenPolynomial n gamma).coeff k =
+      if k ≤ n then (Nat.choose n k : ℝ) * gamma k else 0 := by
+  classical
+  by_cases hk : k ≤ n
+  · have hmem : k ∈ Finset.range (n + 1) := by
+      simpa [Nat.lt_succ_iff] using hk
+    rw [jensenPolynomial, Polynomial.finsetSum_coeff]
+    rw [Finset.sum_eq_single k]
+    · simp [hk]
+    · intro b hb hbk
+      simp [Polynomial.coeff_monomial, hbk]
+    · intro hnot
+      exact (hnot hmem).elim
+  · rw [jensenPolynomial, Polynomial.finsetSum_coeff]
+    rw [Finset.sum_eq_zero]
+    · simp [hk]
+    · intro b hb
+      have hb_le : b ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hb)
+      have hne : k ≠ b := by
+        intro hkb
+        subst k
+        exact hk hb_le
+      have hbk : b ≠ k := Ne.symm hne
+      simp [Polynomial.coeff_monomial, hbk]
+
+theorem hasNonnegCoeffs_jensenPolynomial
+    {n : ℕ} {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k) :
+    HasNonnegCoeffs (jensenPolynomial n gamma) := by
+  intro k
+  rw [coeff_jensenPolynomial]
+  split_ifs
+  · exact mul_nonneg (Nat.cast_nonneg _) (hgamma k)
+  · simp
+
+theorem natDegree_jensenPolynomial_le (n : ℕ) (gamma : ℕ → ℝ) :
+    (jensenPolynomial n gamma).natDegree ≤ n := by
+  rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
+  intro k hk
+  rw [coeff_jensenPolynomial]
+  simp [not_le_of_gt hk]
 
 /-- Finite multiplier sequence up to degree `n`: the diagonal operator
 preserves real-rootedness, allowing the zero polynomial. -/
@@ -67,6 +167,18 @@ def IsFinitePFMultiplierSequence (n : ℕ) (gamma : ℕ → ℝ) : Prop :=
     IsPFPolynomial p →
     p.natDegree ≤ n →
     IsPFPolynomial (diagonalOperator gamma p)
+
+theorem IsFiniteMultiplierSequence.mono {m n : ℕ} {gamma : ℕ → ℝ}
+    (hmn : m ≤ n) (h : IsFiniteMultiplierSequence n gamma) :
+    IsFiniteMultiplierSequence m gamma := by
+  intro p hp hsplit
+  exact h (hp.trans hmn) hsplit
+
+theorem IsFinitePFMultiplierSequence.mono {m n : ℕ} {gamma : ℕ → ℝ}
+    (hmn : m ≤ n) (h : IsFinitePFMultiplierSequence n gamma) :
+    IsFinitePFMultiplierSequence m gamma := by
+  intro p hp hdeg
+  exact h hp (hdeg.trans hmn)
 
 /-- The finite Polya--Schur theorem in the nonnegative-coefficient convention:
 a nonnegative diagonal sequence preserves real-rootedness up to degree `n` if
