@@ -59,9 +59,8 @@ lemma coeff_singletonFreeSetPartitions_succ_succ (n m : Nat) :
 lemma singletonFreeSetPartitions_nonnegCoeffs :
     ∀ n : Nat, HasNonnegCoeffs (singletonFreeSetPartitions n)
   | 0 => by
-      rintro (_ | m)
-      · simp [singletonFreeSetPartitions_zero]
-      · rw [singletonFreeSetPartitions_zero, coeff_one, if_neg (Nat.succ_ne_zero m)]
+      intro m
+      cases m <;> simp [singletonFreeSetPartitions_zero, coeff_one]
   | 1 => by
       intro m
       simp [singletonFreeSetPartitions_one]

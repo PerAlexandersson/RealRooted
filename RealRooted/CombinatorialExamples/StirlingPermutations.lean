@@ -159,9 +159,8 @@ lemma stirlingPermutations_posLeadingCoeff (n : Nat) :
 lemma stirlingPermutations_nonnegCoeffs :
     ∀ n : Nat, HasNonnegCoeffs (stirlingPermutations n)
   | 0 => by
-      rintro (_ | k)
-      · simp [stirlingPermutations_zero]
-      · rw [stirlingPermutations_zero, coeff_one, if_neg (Nat.succ_ne_zero k)]
+      intro k
+      cases k <;> simp [stirlingPermutations_zero, coeff_one]
   | n + 1 => by
       rintro (_ | j)
       · simp [stirlingPermutations_succ, stirlingPermutationsCoeffA, stirlingPermutationsCoeffB]

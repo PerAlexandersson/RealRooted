@@ -79,9 +79,8 @@ lemma touchard_posLeadingCoeff (n : Nat) :
 
 lemma touchard_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (touchard n)
   | 0 => by
-      rintro (_ | m)
-      · simp [touchard_zero]
-      · rw [touchard_zero, coeff_one, if_neg (Nat.succ_ne_zero m)]
+      intro m
+      cases m <;> simp [touchard_zero, coeff_one]
   | n + 1 => by
       rintro (_ | m)
       · simp [touchard_succ]

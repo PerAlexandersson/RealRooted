@@ -161,9 +161,8 @@ lemma typeBEulerian_posLeadingCoeff (n : Nat) :
 
 lemma typeBEulerian_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (typeBEulerian n)
   | 0 => by
-      rintro (_ | m)
-      · simp [typeBEulerian_zero]
-      · rw [typeBEulerian_zero, coeff_one, if_neg (Nat.succ_ne_zero m)]
+      intro m
+      cases m <;> simp [typeBEulerian_zero, coeff_one]
   | n + 1 => by
       rintro (_ | m)
       · rw [coeff_typeBEulerian_zero]
