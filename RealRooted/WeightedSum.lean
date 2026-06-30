@@ -65,8 +65,8 @@ lemma hasPosLeadingCoeff_C_mul {a : ℝ} {p : ℝ[X]}
   simp_all
 
 lemma natDegree_C_mul' {a : ℝ} {p : ℝ[X]} (ha : a ≠ 0) :
-    (C a * p).natDegree = p.natDegree := by
-  rw [natDegree_C_mul ha]
+    (C a * p).natDegree = p.natDegree :=
+  natDegree_C_mul ha
 
 lemma hasPosLeadingCoeff_weightedSum :
     ∀ l : List (ℝ × ℝ[X]),

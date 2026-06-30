@@ -23,10 +23,8 @@ lemma hasNonnegCoeffs_X : HasNonnegCoeffs (X : ℝ[X]) := by
   rintro (_ | _ | n) <;> simp [coeff_X]
 
 lemma HasNonnegCoeffs.add {p q : ℝ[X]} (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q) :
-    HasNonnegCoeffs (p + q) := by
-  intro n
-  rw [coeff_add]
-  exact add_nonneg (hp n) (hq n)
+    HasNonnegCoeffs (p + q) := fun n => by
+  simpa [coeff_add] using add_nonneg (hp n) (hq n)
 
 lemma hasNonnegCoeffs_affine_mul {s t : ℝ} (hs : 0 ≤ s) (ht : 0 ≤ t)
     {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
