@@ -114,10 +114,9 @@ theorem aissenSchoenbergWhitneyForward_of_noNonneg
 /-- The two forward ASW interfaces are equivalent. -/
 theorem aissenSchoenbergWhitneyForward_iff_noNonneg :
     aissenSchoenbergWhitneyForwardStatement ↔
-      aissenSchoenbergWhitneyForwardNoNonnegStatement := by
-  constructor
-  · exact aissenSchoenbergWhitneyForwardNoNonneg_of_forward
-  · exact aissenSchoenbergWhitneyForward_of_noNonneg
+      aissenSchoenbergWhitneyForwardNoNonnegStatement :=
+  ⟨aissenSchoenbergWhitneyForwardNoNonneg_of_forward,
+    aissenSchoenbergWhitneyForward_of_noNonneg⟩
 
 /-- The strict nonzero forward ASW interface implies the zero-aware one. -/
 theorem aissenSchoenbergWhitneyForwardOrZero_of_forward
@@ -142,10 +141,9 @@ theorem aissenSchoenbergWhitneyForward_of_orZero
 /-- The strict and zero-aware forward ASW interfaces are equivalent. -/
 theorem aissenSchoenbergWhitneyForward_iff_orZero :
     aissenSchoenbergWhitneyForwardStatement ↔
-      aissenSchoenbergWhitneyForwardOrZeroStatement := by
-  constructor
-  · exact aissenSchoenbergWhitneyForwardOrZero_of_forward
-  · exact aissenSchoenbergWhitneyForward_of_orZero
+      aissenSchoenbergWhitneyForwardOrZeroStatement :=
+  ⟨aissenSchoenbergWhitneyForwardOrZero_of_forward,
+    aissenSchoenbergWhitneyForward_of_orZero⟩
 
 /-- Without a nonzero hypothesis, the forward ASW interface would force the
 zero polynomial to be real-rooted, contrary to the strict local definition of
@@ -157,8 +155,7 @@ theorem not_aissenSchoenbergWhitneyForward_without_nonzero :
       (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) := by
   intro h
   have hnn : HasNonnegCoeffs (0 : ℝ[X]) := by
-    intro n
-    simp
+    simp [HasNonnegCoeffs]
   have hpf : IsPolyaFreqSeq (fun n => (0 : ℝ[X]).coeff n) := by
     simpa using IsPolyaFreqSeq_zero
   have hbad := h hnn hpf
@@ -171,8 +168,7 @@ lemma toeplitz_one_coeff : toeplitz (fun n ↦ (1 : ℝ[X]).coeff n) = 1 := by
 
 lemma IsPolyaFreqSeq.one :
     IsPolyaFreqSeq (fun n ↦ (1 : ℝ[X]).coeff n) := by
-  rw [IsPolyaFreqSeq, toeplitz_one_coeff]
-  exact IsTotallyNonneg.one
+  simpa [IsPolyaFreqSeq, toeplitz_one_coeff] using IsTotallyNonneg.one
 
 def bidiagonal (a : ℝ) : Matrix ℕ ℕ ℝ :=
   .of fun i j ↦ if i = j then a else if i = j + 1 then 1 else 0
@@ -254,21 +250,18 @@ theorem bidiagonal_isTotallyNonneg (a : ℝ) (ha : 0 ≤ a) :
           rw [det_succ_row_zero S]
           simp_all
 
-lemma toeplitz_const_coeff (c : ℝ) : toeplitz (fun n ↦ (C c : ℝ[X]).coeff n) = c • 1 := by
+lemma toeplitz_const_coeff (c : ℝ) :
+    toeplitz (fun n ↦ (C c : ℝ[X]).coeff n) = c • 1 := by
   ext i j
   simp only [toeplitz_apply, coeff_C, Matrix.smul_apply, Matrix.one_apply]
   split_ifs
-  · simp
-  · lia
-  · lia
-  · simp
-  · lia
-  · simp
+  any_goals simp_all
+  all_goals lia
 
 lemma IsPolyaFreqSeq.const (c : ℝ) (hc : 0 ≤ c) :
     IsPolyaFreqSeq (fun n ↦ (C c : ℝ[X]).coeff n) := by
-  rw [IsPolyaFreqSeq, toeplitz_const_coeff]
-  exact IsTotallyNonneg.smul IsTotallyNonneg.one c hc
+  simpa [IsPolyaFreqSeq, toeplitz_const_coeff] using
+    IsTotallyNonneg.smul IsTotallyNonneg.one c hc
 
 lemma toeplitz_const_mul (c : ℝ) (q : ℝ[X]) :
     toeplitz (fun n ↦ (C c * q).coeff n) = c • toeplitz (fun n ↦ q.coeff n) := by
@@ -278,8 +271,10 @@ lemma toeplitz_const_mul (c : ℝ) (q : ℝ[X]) :
 lemma IsPolyaFreqSeq.const_mul (c : ℝ) (hc : 0 ≤ c) {q : ℝ[X]}
     (hq : IsPolyaFreqSeq (fun n ↦ q.coeff n)) :
     IsPolyaFreqSeq (fun n ↦ (C c * q).coeff n) := by
-  rw [IsPolyaFreqSeq, toeplitz_const_mul]
-  exact IsTotallyNonneg.smul hq c hc
+  rw [IsPolyaFreqSeq]
+  convert IsTotallyNonneg.smul hq c hc using 1
+  ext i j
+  simp [toeplitz_apply]
 
 lemma toeplitz_linear_coeff (r : ℝ) :
     toeplitz (fun n ↦ (X - C r : ℝ[X]).coeff n) = bidiagonal (-r) := by

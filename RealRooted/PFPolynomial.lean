@@ -47,11 +47,7 @@ theorem ne_zero_and_splits {p : ℝ[X]}
   grind [IsPFPolynomial.eq_zero_or_splits]
 
 theorem zero : IsPFPolynomial (0 : ℝ[X]) := by
-  refine ⟨?_, Or.inl rfl, ?_⟩
-  · intro n
-    simp
-  · intro r hr
-    simp at hr
+  exact ⟨by simp [HasNonnegCoeffs], Or.inl rfl, by simp⟩
 
 theorem of_realRooted_nonneg {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hprr_splits : p.Splits) :
@@ -120,10 +116,9 @@ theorem of_sequence
     (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
     {p : ℝ[X]}
     (hpf : IsPolyaFreqSeq (fun n => p.coeff n)) :
-    IsPFPolynomial p := by
-  have hpnn : HasNonnegCoeffs p :=
-    hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff hpf
-  exact ⟨hpnn, hASW hpnn hpf⟩
+    IsPFPolynomial p :=
+  let hpnn := hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff hpf
+  ⟨hpnn, hASW hpnn hpf⟩
 
 theorem to_sequence
     {p : ℝ[X]}
@@ -272,21 +267,11 @@ theorem prec0_add_right_of_common_left_of_nonneg {p q r : ℝ[X]}
   simpa using
     prec0_sum_left_of_common_left_of_nonneg [q, r] p
       (by
-        intro s hs
-        simp only [List.mem_cons, List.not_mem_nil, or_false] at hs
-        rcases hs with hs | hs
-        · subst s
-          exact hpq
-        · subst s
-          exact hpr)
+        simp only [List.mem_cons, List.not_mem_nil, or_false]
+        rintro s (rfl | rfl) <;> assumption)
       (by
-        intro s hs
-        simp only [List.mem_cons, List.not_mem_nil, or_false] at hs
-        rcases hs with hs | hs
-        · subst s
-          exact hq
-        · subst s
-          exact hr)
+        simp only [List.mem_cons, List.not_mem_nil, or_false]
+        rintro s (rfl | rfl) <;> assumption)
 
 /-- Fixed-left cone closure for two nonnegative scalar multiples. -/
 theorem prec0_nonneg_combo_right_of_common_left_of_nonneg {p q r : ℝ[X]}

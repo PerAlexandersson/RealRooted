@@ -17,17 +17,14 @@ with `a, b ≥ 0`. -/
 def IsNonnegLinearForm (p : ℝ[X]) : Prop :=
   ∃ a b : ℝ, 0 ≤ a ∧ 0 ≤ b ∧ p = C a + C b * X
 
-lemma isNonnegLinearForm_zero : IsNonnegLinearForm (0 : ℝ[X]) := by
-  refine ⟨0, 0, le_rfl, le_rfl, ?_⟩
-  simp
+lemma isNonnegLinearForm_zero : IsNonnegLinearForm (0 : ℝ[X]) :=
+  ⟨0, 0, le_rfl, le_rfl, by simp⟩
 
-lemma isNonnegLinearForm_one : IsNonnegLinearForm (1 : ℝ[X]) := by
-  refine ⟨1, 0, by simp, le_rfl, ?_⟩
-  simp
+lemma isNonnegLinearForm_one : IsNonnegLinearForm (1 : ℝ[X]) :=
+  ⟨1, 0, by simp, le_rfl, by simp⟩
 
-lemma isNonnegLinearForm_X : IsNonnegLinearForm (X : ℝ[X]) := by
-  refine ⟨0, 1, le_rfl, by simp, ?_⟩
-  simp
+lemma isNonnegLinearForm_X : IsNonnegLinearForm (X : ℝ[X]) :=
+  ⟨0, 1, le_rfl, by simp, by simp⟩
 
 /-- Zero-based row-threshold condition: the `X`-coefficient can be positive
 only before position `p`, and the constant term can be positive only from
@@ -63,16 +60,7 @@ lemma isNonnegLinearForm_hasNonnegCoeffs {p : ℝ[X]}
     (hp : IsNonnegLinearForm p) :
     HasNonnegCoeffs p := by
   rcases hp with ⟨a, b, ha, hb, rfl⟩
-  intro n
-  cases n with
-  | zero =>
-      simp [ha]
-  | succ n =>
-      cases n with
-      | zero =>
-          simp [hb]
-      | succ _ =>
-          simp
+  rintro (_ | _ | n) <;> simp [ha, hb]
 
 lemma hasRowThreshold_nonneg {row : List ℝ[X]} {p : ℕ}
     (hrow : HasRowThreshold row p) :
