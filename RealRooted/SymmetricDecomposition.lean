@@ -2891,10 +2891,9 @@ theorem brandenSolusTheorem26_forward_of_prec_a_p_top_degree
     (ha_top : a.natDegree = d) :
     Prec a p → Prec b p ∧ Prec (IdTransform d p) p := by
   intro hap
-  have hba : Prec b a := by
-    exact
-      (brandenSolusTheorem26_first_equiv_of_top_degree
-        hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top).2 hap
+  have hba : Prec b a :=
+    (brandenSolusTheorem26_first_equiv_of_top_degree
+      hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top).2 hap
   exact (brandenSolusTheorem26_forward_of_prec_b_a hd hid ha_nonneg hb_nonneg hba).2
 
 theorem brandenSolusTheorem26_second_equiv_of_top_degree
@@ -2913,10 +2912,9 @@ theorem brandenSolusTheorem26_second_equiv_of_top_degree
       (brandenSolusTheorem26_forward_of_prec_a_p_top_degree
         hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top hap).1
   · intro hbp
-    have hba : Prec b a := by
-      exact
-        prec_b_component_of_prec_right_top
-          hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top hbp
+    have hba : Prec b a :=
+      prec_b_component_of_prec_right_top
+        hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top hbp
     exact (brandenSolusTheorem26_forward_of_prec_b_a hd hid ha_nonneg hb_nonneg hba).1
 
 theorem brandenSolusTheorem26_third_forward_of_top_degree
@@ -2930,10 +2928,9 @@ theorem brandenSolusTheorem26_third_forward_of_top_degree
     (ha_top : a.natDegree = d) :
     Prec b p → Prec (IdTransform d p) p := by
   intro hbp
-  have hba : Prec b a := by
-    exact
-      prec_b_component_of_prec_right_top
-        hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top hbp
+  have hba : Prec b a :=
+    prec_b_component_of_prec_right_top
+      hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top hbp
   exact (brandenSolusTheorem26_forward_of_prec_b_a hd hid ha_nonneg hb_nonneg hba).2.2
 
 private theorem prec_b_component_of_prec_Id_top_of_right_top
@@ -3565,10 +3562,9 @@ theorem brandenSolusTheorem26_ordered_bridge_forward_of_natDegree_le
     (hb0 : b ≠ 0) :
     Prec b p → Prec (IdTransform d p) p := by
   intro hbp
-  have hba : Prec b a := by
-    exact
-      (brandenSolusTheorem26_third_equiv_of_natDegree_le
-        hd hid ha_nonneg hb_nonneg ha_le ha0 hb0).2 hbp
+  have hba : Prec b a :=
+    (brandenSolusTheorem26_third_equiv_of_natDegree_le
+      hd hid ha_nonneg hb_nonneg ha_le ha0 hb0).2 hbp
   exact (brandenSolusTheorem26_forward_of_prec_b_a hd hid ha_nonneg hb_nonneg hba).2.2
 
 /-- Ordered-degree converse bridge: if `a.natDegree ≤ b.natDegree` and

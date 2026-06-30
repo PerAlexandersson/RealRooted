@@ -1360,13 +1360,12 @@ private lemma hasNonnegCoeffs_quotient_add_right_of_common_root
     grind
   have hq_ne : qf + C μ * qg ≠ 0 := by
     simp_all
-  have hq_rr : ((qf + C μ * qg) ≠ 0 ∧ (qf + C μ * qg).Splits) := by
-    exact
-      isRealRooted_of_dvd hp_rr.1 hp_rr.2 hq_ne
-        ⟨X - C r, by grind⟩
+  have hq_rr : ((qf + C μ * qg) ≠ 0 ∧ (qf + C μ * qg).Splits) :=
+    isRealRooted_of_dvd hp_rr.1 hp_rr.2 hq_ne
+      ⟨X - C r, by grind⟩
   have hp_pos : HasPosLeadingCoeff p := hp_nn.pos_leadingCoeff hp_rr.1
-  have hq_pos : HasPosLeadingCoeff (qf + C μ * qg) := by
-    exact hasPosLeadingCoeff_of_X_sub_C_mul (by simpa [hp_eq] using hp_pos)
+  have hq_pos : HasPosLeadingCoeff (qf + C μ * qg) :=
+    hasPosLeadingCoeff_of_X_sub_C_mul (by simpa [hp_eq] using hp_pos)
   exact
     hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
       hp_rr.1 hp_rr.2 hp_nn hq_rr.1 hq_rr.2 hq_pos
@@ -1397,10 +1396,8 @@ private lemma common_root_reduction_data_of_posCombo_nonneg
       qg.natDegree ≤ qf.natDegree + 1 := by
   obtain ⟨qf, hqf⟩ := dvd_iff_isRoot.mpr hrf
   obtain ⟨qg, hqg⟩ := dvd_iff_isRoot.mpr hrg
-  have hqfg : PosComboRealRooted qf qg := by
-    exact
-      PosComboRealRooted.of_mul_X_sub_C (r := r) (by
-        lia)
+  have hqfg : PosComboRealRooted qf qg :=
+    PosComboRealRooted.of_mul_X_sub_C (r := r) (by lia)
   have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
   have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
   have hqf0 : qf ≠ 0 := by
@@ -3042,10 +3039,9 @@ theorem chudnovskySeymour_fourWay_of_boundaryRightPairOrientation_and_nonnegCoef
   have h12 : PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs := by
     constructor
     · intro hpair
-      have hpairwise : PairwiseHasCommonInterleaver fs := by
-        exact
-          pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_boundaryRightPairOrientation_nonneg
-            hboundary hpos hnn hpair
+      have hpairwise : PairwiseHasCommonInterleaver fs :=
+        pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_boundaryRightPairOrientation_nonneg
+          hboundary hpos hnn hpair
       lia
     · intro hpair
       exact pairwiseCompatible_of_pairwiseHasCommonInterleaver hpair hpos
