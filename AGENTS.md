@@ -59,6 +59,9 @@ open derivative-refactor PR.
 
 ## Automation
 
+- For proof-golfing and cleanup passes, follow `LEAN_GOLF.md` as the local
+  rulebook.  It summarizes the project-specific patterns from prior Yael and
+  sqrt-of-2 cleanup PRs.
 - Do not use `omega`; use `lia` for linear arithmetic.
 - Use `grind`, `simp_all`, and `positivity` for routine local plumbing when they
   keep the proof shorter and stable.
