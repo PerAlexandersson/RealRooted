@@ -158,10 +158,7 @@ lemma prec_affineEulerianTilde {n : Nat} (hrr : (eulerianTilde n).Splits) :
 lemma affineEulerianTilde_nonnegCoeffs (n : Nat) :
     HasNonnegCoeffs (affineEulerianTilde n) := by
   intro m
-  rw [affineEulerianTilde, coeff_add]
-  rw [show coeff (C (n + 2 : ℝ) * eulerianTilde n) m =
-      (n + 2 : ℝ) * coeff (eulerianTilde n) m by
-      grind]
+  rw [affineEulerianTilde, coeff_add, coeff_C_mul]
   rw [coeff_one_sub_X_mul_derivative]
   by_cases hm : m ≤ n + 1
   · have hcoeff_m : 0 ≤ coeff (eulerianTilde n) m :=

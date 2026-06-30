@@ -476,8 +476,7 @@ lemma recurrenceCoreSturmDerangementsExc_nonnegCoeffs {n : Nat} (hn : 2 ≤ n) :
   intro m
   have hscalar :
       0 ≤ (C (n : ℝ) * sturmDerangementsExc (n - 1)).coeff m := by
-    rw [coeff_C_mul]
-    exact mul_nonneg (by simp) (sturmDerangementsExc_nonnegCoeffs (n - 1) m)
+    simpa [coeff_C_mul] using mul_nonneg (by simp) (sturmDerangementsExc_nonnegCoeffs (n - 1) m)
   exact add_nonneg hscalar (affine_sturmDerangementsExc_nonnegCoeffs hn m)
 
 lemma recurrenceCoreSturmDerangementsExc_ne_zero {n : Nat} (hn : 2 ≤ n) :
