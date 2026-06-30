@@ -46,8 +46,8 @@ theorem ne_zero_and_splits {p : ℝ[X]}
     p ≠ 0 ∧ p.Splits := by
   grind [IsPFPolynomial.eq_zero_or_splits]
 
-theorem zero : IsPFPolynomial (0 : ℝ[X]) := by
-  exact ⟨by simp [HasNonnegCoeffs], Or.inl rfl, by simp⟩
+theorem zero : IsPFPolynomial (0 : ℝ[X]) :=
+  ⟨by simp [HasNonnegCoeffs], Or.inl rfl, by simp⟩
 
 theorem of_realRooted_nonneg {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hprr_splits : p.Splits) :
@@ -219,9 +219,7 @@ theorem isPFPolynomial_reverse_prod_X_sub_C
     IsPFPolynomial ((s.map fun r => X - C r).prod.reverse) := by
   induction s using Multiset.induction_on with
   | empty =>
-      change IsPFPolynomial ((1 : ℝ[X]).reverse)
-      rw [Polynomial.reverse, natDegree_one]
-      simpa using isPFPolynomial_one
+      simpa [Polynomial.reverse, natDegree_one] using isPFPolynomial_one
   | cons r s ih =>
       rw [Multiset.map_cons, Multiset.prod_cons]
       rw [Polynomial.reverse_mul_of_domain]
