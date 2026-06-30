@@ -111,10 +111,10 @@ theorem derivative {p : ℝ[X]}
   by_cases hp0 : p = 0
   · subst p
     simpa using IsPFPolynomial.zero
+  have hprr := hp.ne_zero_and_splits hp0
   exact ⟨hp.hasNonnegCoeffs.derivative,
     eq_zero_or_splits_derivative hp.eq_zero_or_splits,
-    roots_nonpos_derivative_of_roots_nonpos (hp.ne_zero_and_splits hp0).2
-      hp.roots_nonpos⟩
+    roots_nonpos_derivative_of_roots_nonpos hprr.2 hp.roots_nonpos⟩
 
 theorem of_sequence
     (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
@@ -132,8 +132,8 @@ theorem to_sequence
   by_cases hp0 : p = 0
   · subst p
     simpa using IsPolyaFreqSeq_zero
-  · exact aissenSchoenbergWhitney_reverse hp.hasNonnegCoeffs
-      (hp.ne_zero_and_splits hp0).2 hp.roots_nonpos
+  · have hprr := hp.ne_zero_and_splits hp0
+    exact aissenSchoenbergWhitney_reverse hp.hasNonnegCoeffs hprr.2 hp.roots_nonpos
 
 theorem prec0_self {p : ℝ[X]} (hp : IsPFPolynomial p) :
     Prec0 p p := by

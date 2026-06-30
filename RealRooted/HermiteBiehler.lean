@@ -26,6 +26,18 @@ combinatorial convention used here. -/
 def IsHurwitzStable (p : ℝ[X]) : Prop :=
   HasNonnegCoeffs p ∧ IsRightHalfPlaneStable (complexify p)
 
+namespace IsHurwitzStable
+
+theorem hasNonnegCoeffs {p : ℝ[X]} (hp : IsHurwitzStable p) :
+    HasNonnegCoeffs p :=
+  hp.1
+
+theorem rightHalfPlaneStable {p : ℝ[X]} (hp : IsHurwitzStable p) :
+    IsRightHalfPlaneStable (complexify p) :=
+  hp.2
+
+end IsHurwitzStable
+
 /-- The classical Hermite--Biehler combination `f + i g`. -/
 def hermiteBiehlerPolynomial (f g : ℝ[X]) : ℂ[X] :=
   complexify f + C Complex.I * complexify g
