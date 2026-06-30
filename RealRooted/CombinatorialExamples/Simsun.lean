@@ -294,7 +294,7 @@ lemma interlaces_simsun_one_two :
   simpa [simsun_one, simsun_two] using
     interlaces_one_linear (p := (1 + X : ℝ[X])) (by
       simpa [add_comm] using
-        (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp)))
+        Polynomial.natDegree_X_add_C (x := (1 : ℝ)))
 
 lemma interlaces_derivative_simsun :
     ∀ n : Nat, 2 ≤ n → (simsun n).Splits →
@@ -307,7 +307,7 @@ lemma interlaces_derivative_simsun :
       simpa [simsun_two] using
         interlaces_one_linear (p := (1 + X : ℝ[X])) (by
           simpa [add_comm] using
-            (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp)))
+            Polynomial.natDegree_X_add_C (x := (1 : ℝ)))
   | 3, _, _ => by
       simpa using interlaces_derivative_simsun_three
   | n + 4, _, hrr =>

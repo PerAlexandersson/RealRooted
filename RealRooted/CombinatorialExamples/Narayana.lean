@@ -204,7 +204,7 @@ private lemma natDegree_leadingCoeff_narayanaQuot :
       rw [narayanaQuot_two]
       constructor
       · simpa [add_comm] using
-          (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp))
+          Polynomial.natDegree_X_add_C (x := (1 : ℝ))
       · simpa [add_comm] using
           (Polynomial.leadingCoeff_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp))
   | n + 3, _ => by
@@ -247,7 +247,7 @@ lemma narayanaQuot_one_two_interlaces :
   rw [narayanaQuot_one, narayanaQuot_two]
   refine interlaces_one_linear ?_
   simpa [add_comm] using
-    (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp))
+    Polynomial.natDegree_X_add_C (x := (1 : ℝ))
 
 private lemma prec_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
     (hInter : Interlaces (narayanaQuot n) (narayanaQuot (n + 1)))

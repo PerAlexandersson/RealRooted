@@ -176,7 +176,7 @@ lemma prec_motzkin_zero_one :
   simpa [motzkin_zero, motzkin_one] using
     (interlaces_one_linear (p := (1 + X : ℝ[X])) (by
       simpa [add_comm] using
-        (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp)))).toPrec
+        Polynomial.natDegree_X_add_C (x := (1 : ℝ)))).toPrec
 
 lemma prec_motzkin_shifted_succ {n : Nat}
     (hprev : Prec (motzkin n) (motzkin (n + 1)))
