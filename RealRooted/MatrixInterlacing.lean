@@ -430,9 +430,7 @@ lemma isRealRooted_mem_rowPairAffineSeq
         (row₂.get ⟨j, by lia⟩))
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t)
     (p : ℝ[X]) (hp : p ∈ (rowPairAffineSeq row₁ row₂ s t).reverse) : (p ≠ 0 ∧ p.Splits) := by
-  have hp' : p ∈ rowPairAffineSeq row₁ row₂ s t := by
-    simp_all
-  obtain ⟨j, rfl⟩ := List.mem_iff_get.1 hp'
+  obtain ⟨j, rfl⟩ := List.mem_iff_get.1 (by simpa using hp)
   let j' : Fin n := ⟨j, by
     simpa [length_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len] using j.2⟩
   let j₁' : Fin row₁.length := ⟨j', by simp [hrow₁_len]⟩
@@ -458,9 +456,7 @@ lemma isRealRooted_mem_rowPairAffineSeq_of_ne
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t)
     (p : ℝ[X]) (hp : p ∈ (rowPairAffineSeq row₁ row₂ s t).reverse)
     (hp_ne : p ≠ 0) : (p ≠ 0 ∧ p.Splits) := by
-  have hp' : p ∈ rowPairAffineSeq row₁ row₂ s t := by
-    simp_all
-  obtain ⟨j, rfl⟩ := List.mem_iff_get.1 hp'
+  obtain ⟨j, rfl⟩ := List.mem_iff_get.1 (by simpa using hp)
   let j' : Fin n := ⟨j, by
     simpa [length_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len] using j.2⟩
   let j₁' : Fin row₁.length := ⟨j', by simp [hrow₁_len]⟩
