@@ -85,7 +85,7 @@ lemma touchard_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (touchard n)
       · simp [touchard_succ]
       · rw [coeff_touchard_succ]
         exact add_nonneg (touchard_nonnegCoeffs n m)
-          (mul_nonneg (by grind) (touchard_nonnegCoeffs n (m + 1)))
+          (mul_nonneg (by positivity) (touchard_nonnegCoeffs n (m + 1)))
 
 lemma roots_nonpos_touchard_of_isRealRooted {n : Nat} (hrr : (touchard n).Splits) :
     ∀ r ∈ (touchard n).roots, r ≤ 0 :=

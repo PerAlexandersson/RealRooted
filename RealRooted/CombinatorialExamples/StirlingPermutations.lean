@@ -173,7 +173,7 @@ lemma stirlingPermutations_nonnegCoeffs :
             have hj' : (j : ℝ) ≤ n := by simp_all
             nlinarith
           exact add_nonneg (mul_nonneg hscale hcoeff_j)
-            (mul_nonneg (by grind) hcoeff_j1)
+            (mul_nonneg (by positivity) hcoeff_j1)
         · have hj' : n < j := lt_of_not_ge hj
           rcases coeff_stirlingPermutations_top_pos_and_above n with ⟨_, habove⟩
           have hcoeff_j : coeff (stirlingPermutations n) j = 0 := habove j hj'

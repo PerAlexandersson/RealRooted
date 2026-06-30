@@ -126,7 +126,7 @@ lemma eulerianTilde_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (eulerianTilde n
           have hnm : 0 ≤ (n + 2 : ℝ) - m := by
             nlinarith [show (m : ℝ) ≤ n + 2 by
               exact_mod_cast Nat.le_trans hm (Nat.le_succ _)]
-          exact add_nonneg (mul_nonneg hnm hcoeff_m) (mul_nonneg (by grind) hcoeff_succ)
+          exact add_nonneg (mul_nonneg hnm hcoeff_m) (mul_nonneg (by positivity) hcoeff_succ)
         · have hm' : n + 1 < m := lt_of_not_ge hm
           rcases coeff_eulerianTilde_top_and_above n with ⟨_, habove⟩
           have hcoeff_m : coeff (eulerianTilde n) m = 0 := by
