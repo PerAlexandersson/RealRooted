@@ -1248,8 +1248,8 @@ lemma StrictPrecSameDegree.of_fin_interlacing {n : ℕ}
     (hp_roots_nodup : p.roots.Nodup) (hq_roots_nodup : q.roots.Nodup)
     (hs_surj : ∀ x ∈ p.roots, ∃ k, s k = x)
     (hr_surj : ∀ x ∈ q.roots, ∃ k, r k = x) :
-    StrictPrecSameDegree p q := by
-  exact ⟨⟨hp_ne, hp_splits⟩, ⟨hq_ne, hq_splits⟩, hp_deg ▸ hq_deg ▸ rfl,
+    StrictPrecSameDegree p q :=
+  ⟨⟨hp_ne, hp_splits⟩, ⟨hq_ne, hq_splits⟩, hp_deg ▸ hq_deg ▸ rfl,
     Polynomial.roots_sort_eq_ofFn hp_ne hp_splits hp_deg hp_roots_nodup s hs hs_surj ▸
     Polynomial.roots_sort_eq_ofFn hq_ne hq_splits hq_deg hq_roots_nodup r hr hr_surj ▸
     List.Interleaves.ofFn s r hint hint'⟩

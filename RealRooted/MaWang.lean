@@ -1911,11 +1911,10 @@ private lemma natDegree_lt_of_interlaces_degree_lower_bound {f g F : ℝ[X]}
 
 lemma natDegree_sub_C_mul_eq_of_interlaces_degree_lower_bound
     {f g F : ℝ[X]} (hgf : Interlaces g f) (hdeg_lo : f.natDegree ≤ F.natDegree) (c : ℝ) :
-    (F - C c * g).natDegree = F.natDegree := by
-  have hlt : (C c * g).natDegree < F.natDegree := by
-    exact (natDegree_C_mul_le c g).trans_lt
-      (natDegree_lt_of_interlaces_degree_lower_bound hgf hdeg_lo)
-  exact natDegree_sub_eq_left_of_natDegree_lt hlt
+    (F - C c * g).natDegree = F.natDegree :=
+  natDegree_sub_eq_left_of_natDegree_lt
+    ((natDegree_C_mul_le c g).trans_lt
+      (natDegree_lt_of_interlaces_degree_lower_bound hgf hdeg_lo))
 
 lemma hasPosLeadingCoeff_sub_C_mul_of_interlaces_degree_lower_bound
     {f g F : ℝ[X]} (hgf : Interlaces g f) (hdeg_lo : f.natDegree ≤ F.natDegree)
