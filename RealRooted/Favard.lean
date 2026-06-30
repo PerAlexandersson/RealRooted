@@ -92,12 +92,12 @@ theorem favardInterlacing :
           intros
           have hb_le : 0 ≤ β (n + 1) := (hβ n).le
           simpa [bPoly] using (neg_nonpos.mpr hb_le)
-        have hPrec_step : Prec f (aPoly * f + bPoly * g) := by
-          exact prec_of_interlaces_evalCoeff_nonpos
+        have hPrec_step : Prec f (aPoly * f + bPoly * g) :=
+          prec_of_interlaces_evalCoeff_nonpos
             (f := f) (g := g) (a := aPoly) (b := bPoly)
             hInter hPos_n hF_pos hdeg_lo hdeg_hi hb_nonpos
-        have hInter_step : Interlaces f (aPoly * f + bPoly * g) := by
-          exact hPrec_step.toInterlaces (by lia)
+        have hInter_step : Interlaces f (aPoly * f + bPoly * g) :=
+          hPrec_step.toInterlaces (by lia)
         grind
   intro n
   exact (hQ n).1.toPrec

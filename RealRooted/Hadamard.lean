@@ -63,15 +63,13 @@ theorem hadamardProduct_add_left (p q r : ℝ[X]) :
     hadamardProduct (p + q) r =
       hadamardProduct p r + hadamardProduct q r := by
   ext n
-  simp
-  grind
+  simp [add_mul]
 
 theorem hadamardProduct_add_right (p q r : ℝ[X]) :
     hadamardProduct p (q + r) =
       hadamardProduct p q + hadamardProduct p r := by
   ext n
-  simp
-  grind
+  simp [mul_add]
 
 theorem hadamardProduct_C_mul_left (a : ℝ) (p q : ℝ[X]) :
     hadamardProduct (C a * p) q =
@@ -83,8 +81,7 @@ theorem hadamardProduct_C_mul_right (a : ℝ) (p q : ℝ[X]) :
     hadamardProduct p (C a * q) =
       C a * hadamardProduct p q := by
   ext n
-  simp
-  grind
+  simp [mul_comm, mul_left_comm]
 
 /-- Nonnegative coefficients are preserved by coefficientwise Hadamard
 products. -/

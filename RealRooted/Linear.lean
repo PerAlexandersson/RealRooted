@@ -97,8 +97,8 @@ lemma IsRoot.add {p q : ℝ[X]} {x : ℝ} (hp : p.IsRoot x) (hq : q.IsRoot x) :
 /-- If `(X - C r)^m` divides both summands, then it divides their sum. -/
 lemma pow_X_sub_C_dvd_add {p q : ℝ[X]} {r : ℝ} {m : ℕ}
     (hp : (X - C r) ^ m ∣ p) (hq : (X - C r) ^ m ∣ q) :
-    (X - C r) ^ m ∣ p + q := by
-  exact dvd_add hp hq
+    (X - C r) ^ m ∣ p + q :=
+  dvd_add hp hq
 
 /-- The root multiplicity in a sum is at least the minimum multiplicity
 of the two summands. -/

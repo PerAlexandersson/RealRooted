@@ -225,8 +225,8 @@ lemma prec_stirlingPermutations_one_two :
   have hNext_eq :
       stirlingPermutationsCoeffA 1 * stirlingPermutations 1 +
           stirlingPermutationsCoeffB * (stirlingPermutations 1).derivative =
-        stirlingPermutations 2 := by
-    exact (stirlingPermutations_succ 1).symm
+        stirlingPermutations 2 :=
+    (stirlingPermutations_succ 1).symm
   have hF_pos :
       HasPosLeadingCoeff
         (stirlingPermutationsCoeffA 1 * stirlingPermutations 1 +
@@ -279,8 +279,8 @@ theorem prec_stirlingPermutations_succ :
       have hNext_eq :
           stirlingPermutationsCoeffA (n + 2) * stirlingPermutations (n + 2) +
               stirlingPermutationsCoeffB * (stirlingPermutations (n + 2)).derivative =
-            stirlingPermutations (n + 3) := by
-        exact (stirlingPermutations_succ (n + 2)).symm
+            stirlingPermutations (n + 3) :=
+        (stirlingPermutations_succ (n + 2)).symm
       have hF_pos :
           HasPosLeadingCoeff
             (stirlingPermutationsCoeffA (n + 2) * stirlingPermutations (n + 2) +

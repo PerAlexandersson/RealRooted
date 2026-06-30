@@ -438,10 +438,10 @@ lemma affine_sturmDerangementsExc_isRoot_neg_one_of_even {n : Nat}
   change A.eval (-1) = 0
   have hprev_odd : Odd ((k + k) - 1) := ⟨k - 1, by lia⟩
   have hnext_odd : Odd (k + k + 1) := ⟨k, by lia⟩
-  have hprev0 : (sturmDerangementsExc (k + k - 1)).eval (-1) = 0 := by
-    exact Polynomial.IsRoot.def.mp (sturmDerangementsExc_isRoot_neg_one_of_odd hprev_odd)
-  have hnext0 : (sturmDerangementsExc (k + k + 1)).eval (-1) = 0 := by
-    exact Polynomial.IsRoot.def.mp (sturmDerangementsExc_isRoot_neg_one_of_odd hnext_odd)
+  have hprev0 : (sturmDerangementsExc (k + k - 1)).eval (-1) = 0 :=
+    Polynomial.IsRoot.def.mp (sturmDerangementsExc_isRoot_neg_one_of_odd hprev_odd)
+  have hnext0 : (sturmDerangementsExc (k + k + 1)).eval (-1) = 0 :=
+    Polynomial.IsRoot.def.mp (sturmDerangementsExc_isRoot_neg_one_of_odd hnext_odd)
   have hk1 : k + k - 2 + 1 = k + k - 1 := by lia
   have hk2 : k + k - 2 + 2 = k + k := by lia
   have hk3 : k + k - 2 + 3 = k + k + 1 := by lia
@@ -529,8 +529,8 @@ lemma roots_nonpos_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
 lemma prec_sturmDerangementsExc_affine_mul_X {n : Nat} (hn : 2 ≤ n)
     (hrr : (sturmDerangementsExc n).Splits) :
     Prec (sturmDerangementsExc n)
-      (X * affineSturmDerangementsExc n) := by
-  exact prec_sameDegree_to_prec_mul_X_of_roots_nonpos
+      (X * affineSturmDerangementsExc n) :=
+  prec_sameDegree_to_prec_mul_X_of_roots_nonpos
     (prec_affine_sturmDerangementsExc hn hrr)
     (natDegree_affine_sturmDerangementsExc hn)
     (roots_nonpos_affine_sturmDerangementsExc_of_isRealRooted hn hrr)
@@ -538,8 +538,8 @@ lemma prec_sturmDerangementsExc_affine_mul_X {n : Nat} (hn : 2 ≤ n)
 
 lemma prec_X_mul_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
     (hrr : (sturmDerangementsExc n).Splits) :
-    Prec (X * affineSturmDerangementsExc n) (X * sturmDerangementsExc n) := by
-  exact prec_mul_X_both_of_roots_nonpos
+    Prec (X * affineSturmDerangementsExc n) (X * sturmDerangementsExc n) :=
+  prec_mul_X_both_of_roots_nonpos
     (prec_affine_sturmDerangementsExc hn hrr)
     (roots_nonpos_affine_sturmDerangementsExc_of_isRealRooted hn hrr)
     (roots_nonpos_sturmDerangementsExc_of_isRealRooted hrr)
@@ -549,8 +549,8 @@ lemma prec_X_mul_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
     Prec (X * (C (n : ℝ) * sturmDerangementsExc (n - 1)))
       (X * sturmDerangementsExc n) := by
   have hlower : Prec (C (n : ℝ) * sturmDerangementsExc (n - 1))
-      (sturmDerangementsExc n) := by
-    exact prec_lowerTerm_sturmDerangementsExc (by lia) hprec
+      (sturmDerangementsExc n) :=
+    prec_lowerTerm_sturmDerangementsExc (by lia) hprec
   exact prec_mul_X_both_of_roots_nonpos hlower
     (roots_nonpos_lowerTerm_sturmDerangementsExc hn hprec)
     (roots_nonpos_sturmDerangementsExc_of_isRealRooted hprec.2.1.2)
@@ -581,8 +581,8 @@ lemma prec_recurrenceCoreSturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
     unfold HasPosLeadingCoeff
     rw [leadingCoeff_C_mul_of_isUnit (isUnit_iff_ne_zero.mpr hn0)]
     exact mul_pos (by grind) (sturmDerangementsExc_posLeadingCoeff (by lia))
-  have haff_pos : HasPosLeadingCoeff (affineSturmDerangementsExc n) := by
-    exact (affine_sturmDerangementsExc_nonnegCoeffs (by lia)).pos_leadingCoeff haff.1.1
+  have haff_pos : HasPosLeadingCoeff (affineSturmDerangementsExc n) :=
+    (affine_sturmDerangementsExc_nonnegCoeffs (by lia)).pos_leadingCoeff haff.1.1
   exact prec_add_of_prec_right_of_posLeadingCoeff hlower haff hlower_pos haff_pos
 
 /-- Once the recurrence core is known to precede `P_n`, the actual Sturm step

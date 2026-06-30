@@ -218,8 +218,8 @@ lemma prec_singletonFreeSetPartitionsCore_of_prec {n : Nat} (hn : 3 ≤ n)
     grind
   have hlower :
       Prec (C (n + 1 : ℝ) * singletonFreeSetPartitions n)
-        (singletonFreeSetPartitions (n + 1)) := by
-    exact prec_C_mul_left hprev hscalar_ne
+        (singletonFreeSetPartitions (n + 1)) :=
+    prec_C_mul_left hprev hscalar_ne
   have hder :
       Interlaces (singletonFreeSetPartitions (n + 1)).derivative
         (singletonFreeSetPartitions (n + 1)) := by
@@ -273,8 +273,8 @@ lemma prec_singletonFreeSetPartitions_three_four :
   have hlin_nonpos : ∀ r ∈ (1 + C (3 : ℝ) * X).roots, r ≤ 0 :=
     roots_nonpos_of_nonneg_coeffs hprec.2.1.2 hlin_nonneg
   have hmul :
-      Prec (X * (1 : ℝ[X])) (X * (1 + C (3 : ℝ) * X)) := by
-    exact prec_mul_X_both_of_roots_nonpos hprec hone_nonpos hlin_nonpos
+      Prec (X * (1 : ℝ[X])) (X * (1 + C (3 : ℝ) * X)) :=
+    prec_mul_X_both_of_roots_nonpos hprec hone_nonpos hlin_nonpos
   have hfour : singletonFreeSetPartitions 4 = X * (1 + C (3 : ℝ) * X) := by
     rw [singletonFreeSetPartitions_succ_succ_eq_X_mul_core, singletonFreeSetPartitionsCore,
       singletonFreeSetPartitions_two, singletonFreeSetPartitions_three]
@@ -322,12 +322,11 @@ lemma prec_singletonFreeSetPartitions_succ_of_prec_core {n : Nat} (hn : 3 ≤ n)
       lia
     have hmain :
         Prec (singletonFreeSetPartitions (n + 1))
-          (X * singletonFreeSetPartitionsCore n) := by
-      exact
-        (prec_iff_prec_mul_X
-          (singletonFreeSetPartitionsCore_nonnegCoeffs n)
-          (singletonFreeSetPartitions_nonnegCoeffs (n + 1))
-          hcore.1.1 hcore.1.2 hcore.2.1.1 hcore.2.1.2 hdeg).mp hcore
+          (X * singletonFreeSetPartitionsCore n) :=
+      (prec_iff_prec_mul_X
+        (singletonFreeSetPartitionsCore_nonnegCoeffs n)
+        (singletonFreeSetPartitions_nonnegCoeffs (n + 1))
+        hcore.1.1 hcore.1.2 hcore.2.1.1 hcore.2.1.2 hdeg).mp hcore
     simpa [singletonFreeSetPartitions_succ_succ_eq_X_mul_core n] using hmain
 
 /-- Consecutive singleton-free set partition polynomials satisfy `Prec`. -/

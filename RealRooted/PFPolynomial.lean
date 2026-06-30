@@ -44,9 +44,7 @@ theorem roots_nonpos {p : ℝ[X]} (hp : IsPFPolynomial p) :
 theorem ne_zero_and_splits {p : ℝ[X]}
     (hp : IsPFPolynomial p) (hp0 : p ≠ 0) :
     p ≠ 0 ∧ p.Splits := by
-  rcases hp.eq_zero_or_splits with hzero | hsplits
-  · contradiction
-  · exact ⟨hp0, hsplits⟩
+  grind [IsPFPolynomial.eq_zero_or_splits]
 
 theorem zero : IsPFPolynomial (0 : ℝ[X]) := by
   refine ⟨?_, Or.inl rfl, ?_⟩
@@ -139,7 +137,7 @@ theorem prec0_self {p : ℝ[X]} (hp : IsPFPolynomial p) :
     Prec0 p p := by
   by_cases hp0 : p = 0
   · exact Or.inl hp0
-  · exact Or.inr (Or.inr (prec_refl (hp.ne_zero_and_splits hp0).1 (hp.ne_zero_and_splits hp0).2))
+  · grind [Prec.toPrec0, prec_refl, IsPFPolynomial.ne_zero_and_splits]
 
 theorem of_prec0_self {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hpp : Prec0 p p) :
@@ -240,8 +238,8 @@ theorem IsPFPolynomial.reverse {p : ℝ[X]} (hp : IsPFPolynomial p) :
   · subst p
     simpa using IsPFPolynomial.zero
   have hprr : p ≠ 0 ∧ p.Splits := hp.ne_zero_and_splits hp0
-  have hp_eq : p = C p.leadingCoeff * (p.roots.map fun r => X - C r).prod := by
-    exact (C_leadingCoeff_mul_prod_multiset_X_sub_C
+  have hp_eq : p = C p.leadingCoeff * (p.roots.map fun r => X - C r).prod :=
+    (C_leadingCoeff_mul_prod_multiset_X_sub_C
       (card_roots_of_splits hprr.2)).symm
   rw [hp_eq]
   rw [Polynomial.reverse_mul_of_domain]

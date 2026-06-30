@@ -161,8 +161,8 @@ theorem exists_real_root_near_in_left_family
       exact Finset.sum_nonneg fun _ _ => norm_nonneg _
     · unfold coeffSumRange
       exact Finset.sum_nonneg fun _ _ => norm_nonneg _
-  have hcoeff_nonneg : 0 ≤ (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) := by
-    exact mul_nonneg (by positivity) hsum_nonneg
+  have hcoeff_nonneg : 0 ≤ (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) :=
+    mul_nonneg (by positivity) hsum_nonneg
   have hε : 0 < ε := lt_of_le_of_lt hcoeff_nonneg hcoeff_bound
   let q : ℝ[X] := C (t + 1)⁻¹ * (C t * f + g)
   have ht_ne : t ≠ 0 := ne_of_gt ht
@@ -222,8 +222,8 @@ theorem exists_complex_aroot_near_in_left_family
       exact Finset.sum_nonneg fun _ _ => norm_nonneg _
     · unfold coeffSumRange
       exact Finset.sum_nonneg fun _ _ => norm_nonneg _
-  have hcoeff_nonneg : 0 ≤ (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) := by
-    exact mul_nonneg (by positivity) hsum_nonneg
+  have hcoeff_nonneg : 0 ≤ (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) :=
+    mul_nonneg (by positivity) hsum_nonneg
   have hε : 0 < ε := lt_of_le_of_lt hcoeff_nonneg hcoeff_bound
   let q : ℝ[X] := C (t + 1)⁻¹ * (C t * f + g)
   have ht_ne : t ≠ 0 := ne_of_gt ht

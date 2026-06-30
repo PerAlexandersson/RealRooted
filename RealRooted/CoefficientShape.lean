@@ -69,25 +69,17 @@ theorem CoeffUltraLogConcaveUpTo.logConcave {d : ℕ} {a : ℕ → ℝ}
     (hnonneg : CoeffNonnegUpTo d a) (hulc : CoeffUltraLogConcaveUpTo d a) :
     CoeffLogConcaveUpTo d a := by
   intro k hk0 hkd
-  have hk_pred_le : k - 1 ≤ d := by
-    lia
-  have hk_succ_le : k + 1 ≤ d := by
-    lia
-  have hprod_nonneg : 0 ≤ a (k - 1) * a (k + 1) := by
-    exact mul_nonneg (hnonneg (k - 1) hk_pred_le) (hnonneg (k + 1) hk_succ_le)
+  have hprod_nonneg : 0 ≤ a (k - 1) * a (k + 1) :=
+    mul_nonneg (hnonneg (k - 1) (by lia)) (hnonneg (k + 1) (by lia))
   have hk_pos_real : (0 : ℝ) < k := by
     exact_mod_cast hk0
-  have hdk_pos_nat : 0 < d - k :=
-    Nat.sub_pos_of_lt hkd
   have hdk_pos_real : (0 : ℝ) < ((d - k : ℕ) : ℝ) := by
-    exact_mod_cast hdk_pos_nat
+    exact_mod_cast Nat.sub_pos_of_lt hkd
   have hfactor_pos : 0 < (k : ℝ) * ((d - k : ℕ) : ℝ) :=
     mul_pos hk_pos_real hdk_pos_real
   have hfactor_le :
       (k : ℝ) * ((d - k : ℕ) : ℝ) ≤
         (k + 1 : ℝ) * ((d - k + 1 : ℕ) : ℝ) := by
-    have hk_nonneg : (0 : ℝ) ≤ k :=
-      le_of_lt hk_pos_real
     have hdk_nonneg : (0 : ℝ) ≤ ((d - k : ℕ) : ℝ) :=
       le_of_lt hdk_pos_real
     norm_num at hdk_nonneg ⊢
@@ -96,8 +88,8 @@ theorem CoeffUltraLogConcaveUpTo.logConcave {d : ℕ} {a : ℕ → ℝ}
   have hulc_k := hulc k hk0 hkd
   have hcombined :
       a (k - 1) * a (k + 1) * ((k : ℝ) * ((d - k : ℕ) : ℝ)) ≤
-        a k ^ 2 * ((k : ℝ) * ((d - k : ℕ) : ℝ)) := by
-    exact le_trans hmul_le hulc_k
+        a k ^ 2 * ((k : ℝ) * ((d - k : ℕ) : ℝ)) :=
+    le_trans hmul_le hulc_k
   nlinarith [hcombined, hfactor_pos]
 
 /-- If a nonnegative log-concave sequence strictly decreases at `k`, then it
@@ -108,29 +100,16 @@ lemma CoeffLogConcaveUpTo.strict_decrease_next {d : ℕ} {a : ℕ → ℝ}
     {k : ℕ} (hk : k + 2 ≤ d) (hdrop : a (k + 1) < a k)
     (hpos_next : a (k + 1) ≠ 0) :
     a (k + 2) < a (k + 1) := by
-  have hk1_pos : 0 < k + 1 := by
-    lia
-  have hk1_lt : k + 1 < d := by
-    lia
-  have hlc_k := hlc (k + 1) hk1_pos hk1_lt
-  have hprev : (k + 1) - 1 = k := by
-    lia
-  have hnext : (k + 1) + 1 = k + 2 := by
-    lia
-  rw [hprev, hnext] at hlc_k
+  have hlc_k := hlc (k + 1) (by lia) (by lia)
+  rw [show (k + 1) - 1 = k by lia,
+    show (k + 1) + 1 = k + 2 by lia] at hlc_k
   have hmid_nonneg : 0 ≤ a (k + 1) :=
     hnonneg (k + 1) (by lia)
   have hmid_pos : 0 < a (k + 1) :=
     lt_of_le_of_ne hmid_nonneg (Ne.symm hpos_next)
-  have hnext_nonneg : 0 ≤ a (k + 2) :=
-    hnonneg (k + 2) hk
   by_contra hnot
   push Not at hnot
-  have hsq_le : a (k + 1) ^ 2 ≤ a (k + 1) * a (k + 2) := by
-    nlinarith
-  have hmul_lt : a (k + 1) * a (k + 2) < a k * a (k + 2) := by
-    exact mul_lt_mul_of_pos_right hdrop (lt_of_lt_of_le hmid_pos hnot)
-  nlinarith
+  nlinarith [hlc_k, hdrop, hmid_pos, hnot]
 
 /-- If a nonnegative log-concave sequence strictly increases at `k`, then it
 strictly increases at the previous adjacent pair, provided the middle term is
@@ -140,22 +119,14 @@ lemma CoeffLogConcaveUpTo.strict_increase_prev {d : ℕ} {a : ℕ → ℝ}
     {k : ℕ} (hk0 : 0 < k) (hk : k + 1 ≤ d) (hrise : a k < a (k + 1))
     (hpos_k : a k ≠ 0) :
     a (k - 1) < a k := by
-  have hk_lt : k < d := by
-    lia
-  have hlc_k := hlc k hk0 hk_lt
+  have hlc_k := hlc k hk0 (by lia)
   have hk_nonneg : 0 ≤ a k :=
     hnonneg k (by lia)
   have hk_pos : 0 < a k :=
     lt_of_le_of_ne hk_nonneg (Ne.symm hpos_k)
-  have hprev_nonneg : 0 ≤ a (k - 1) :=
-    hnonneg (k - 1) (by lia)
   by_contra hnot
   push Not at hnot
-  have hsq_le : a k ^ 2 ≤ a (k - 1) * a k := by
-    nlinarith
-  have hmul_lt : a (k - 1) * a k < a (k - 1) * a (k + 1) := by
-    exact mul_lt_mul_of_pos_left hrise (lt_of_lt_of_le hk_pos hnot)
-  nlinarith
+  nlinarith [hlc_k, hrise, hk_pos, hnot]
 
 /-- No strict decrease can occur before a maximal coefficient of a nonnegative
 log-concave sequence with no internal zeros. -/
@@ -188,13 +159,11 @@ lemma CoeffLogConcaveUpTo.no_strict_decrease_before_max {d : ℕ} {a : ℕ → �
           lt_of_le_of_lt (hnonneg (t + 1) (by lia)) hcurr
         have ht_ne : a t ≠ 0 :=
           ne_of_gt ht_pos
-        have hmid_ne : a (t + 1) ≠ 0 := by
-          exact hnozero t (t + 1) m (by lia) (by lia) hm_le ht_ne hm_ne
+        have hmid_ne : a (t + 1) ≠ 0 :=
+          hnozero t (t + 1) m (by lia) (by lia) hm_le ht_ne hm_ne
         exact hlc.strict_decrease_next hnonneg (by lia) hcurr hmid_ne
-  have hlast := hprop (m - 1) (by lia) (by lia)
-  have hlast_eq : (m - 1) + 1 = m := by
-    lia
-  rw [hlast_eq] at hlast
+  have hlast : a m < a (m - 1) := by
+    simpa [show (m - 1) + 1 = m by lia] using hprop (m - 1) (by lia) (by lia)
   have hmax_last : a (m - 1) ≤ a m :=
     hmax (m - 1) (by lia)
   linarith
@@ -221,25 +190,20 @@ lemma CoeffLogConcaveUpTo.no_strict_increase_after_max {d : ℕ} {a : ℕ → �
       (P := fun u => m < u → u ≤ i + 1 → a (u - 1) < a u) ?step hti
       ?base hmt hti
     · intro k hk_lt htk ih hmk hki
-      have hcurr : a ((k + 1) - 1) < a (k + 1) :=
-        ih (by lia) (by lia)
-      have hkeq : (k + 1) - 1 = k := by
-        lia
-      rw [hkeq] at hcurr
+      have hcurr : a k < a (k + 1) := by
+        simpa [show (k + 1) - 1 = k by lia] using ih (by lia) (by lia)
       have hk_succ_pos : 0 < a (k + 1) :=
         lt_of_le_of_lt (hnonneg k (by lia)) hcurr
       have hk_succ_ne : a (k + 1) ≠ 0 :=
         ne_of_gt hk_succ_pos
-      have hk_ne : a k ≠ 0 := by
-        exact hnozero m k (k + 1) (by lia) (by lia) (by lia) hm_ne hk_succ_ne
+      have hk_ne : a k ≠ 0 :=
+        hnozero m k (k + 1) (by lia) (by lia) (by lia) hm_ne hk_succ_ne
       simpa [show k - 1 + 1 = k by lia] using
         hlc.strict_increase_prev hnonneg (by lia) (by lia) hcurr hk_ne
     · intro _ _
       simpa [Nat.add_sub_cancel] using hrise
-  have hfirst := hprop (m + 1) (by lia) (by lia)
-  have hfirst_eq : (m + 1) - 1 = m := by
-    lia
-  rw [hfirst_eq] at hfirst
+  have hfirst : a m < a (m + 1) := by
+    simpa using hprop (m + 1) (by lia) (by lia)
   have hmax_first : a (m + 1) ≤ a m :=
     hmax (m + 1) (by lia)
   linarith
@@ -256,9 +220,8 @@ theorem CoeffLogConcaveUpTo.unimodal {d : ℕ} {a : ℕ → ℝ}
     hmmax.prop
   have hm_le : m ≤ d :=
     Nat.lt_succ_iff.mp (Finset.mem_range.mp hm_mem)
-  have hmax : ∀ k, k ≤ d → a k ≤ a m := by
-    intro k hk
-    exact hmmax.le (Finset.mem_range.mpr (Nat.lt_succ_of_le hk))
+  have hmax : ∀ k, k ≤ d → a k ≤ a m :=
+    fun k hk => hmmax.le (Finset.mem_range.mpr (Nat.lt_succ_of_le hk))
   have hleft_adj : ∀ k, k < m → a k ≤ a (k + 1) := by
     intro k hk
     exact le_of_not_gt (hlc.no_strict_decrease_before_max hnonneg hnozero hm_le hmax k hk)
@@ -297,11 +260,9 @@ theorem IsPolyaFreqSeq.logConcaveUpTo {a : ℕ → ℝ} (hpf : IsPolyaFreqSeq a)
     (d : ℕ) :
     CoeffLogConcaveUpTo d a := by
   intro k hk0 hkd
-  have hdet : 0 ≤ ((toeplitz a).submatrix ![k, k + 1] ![0, 1]).det := by
-    exact hpf (by simp [StrictMono]) (by decide)
-  have h1k : 1 ≤ k :=
-    hk0
-  simpa [toeplitz, Matrix.det_fin_two, h1k, pow_two] using hdet
+  simpa [toeplitz, Matrix.det_fin_two, show 1 ≤ k from hk0, pow_two] using
+    (hpf (by simp [StrictMono]) (by decide) :
+      0 ≤ ((toeplitz a).submatrix ![k, k + 1] ![0, 1]).det)
 
 /-! ## Polynomial coefficient wrappers -/
 
@@ -468,9 +429,7 @@ theorem hasNoInternalCoeffZeros_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : ℝ
   · intro i j k _ _ _ hai _
     simp at hai
   · intro i j k hij hjk hkd hai _
-    have hp0 : p ≠ 0 := by
-      rintro rfl
-      simp at hai
+    have hp0 : p ≠ 0 := by rintro rfl; simp at hai
     have hlc : 0 < p.leadingCoeff := hpnn.pos_leadingCoeff hp0
     have hroots_nonpos := roots_nonpos_of_nonneg_coeffs hsplits hpnn
     have ht : ∀ x ∈ p.roots.map Neg.neg, 0 ≤ x := by

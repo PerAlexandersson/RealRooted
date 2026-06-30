@@ -26,7 +26,7 @@ lemma iterate_derivative_rr {p : ℝ[X]} (hp : Multiset.card p.roots = p.natDegr
   · by_cases h : (derivative^[k] p).natDegree = 0 <;>
       simp_all +decide [Function.iterate_succ_apply']
     · rw [Polynomial.eq_C_of_natDegree_eq_zero
-        (show (derivative^[k] p).natDegree = 0 from by lia)]
+        (show (derivative^[k] p).natDegree = 0 by lia)]
       norm_num
       lia
     · have h_roots :
@@ -36,12 +36,12 @@ lemma iterate_derivative_rr {p : ℝ[X]} (hp : Multiset.card p.roots = p.natDegr
         aesop
       have h_deg :
           (Polynomial.derivative (derivative^[k] p)).natDegree ≤
-            (derivative^[k] p).natDegree - 1 := by
-        exact Polynomial.natDegree_derivative_le _
+            (derivative^[k] p).natDegree - 1 :=
+        Polynomial.natDegree_derivative_le _
       have h_card :
           Multiset.card (Polynomial.roots (Polynomial.derivative (derivative^[k] p))) ≤
-            (Polynomial.derivative (derivative^[k] p)).natDegree := by
-        exact Polynomial.card_roots' _
+            (Polynomial.derivative (derivative^[k] p)).natDegree :=
+        Polynomial.card_roots' _
       lia
 
 set_option linter.style.induction false in
@@ -53,9 +53,8 @@ lemma reverse_rr {p : ℝ[X]} (hp : Multiset.card p.roots = p.natDegree)
   obtain ⟨rs, hrs⟩ :
       ∃ rs : Multiset ℝ,
         p = Polynomial.C p.leadingCoeff *
-          Multiset.prod (Multiset.map (fun r => Polynomial.X - Polynomial.C r) rs) := by
-    exact ⟨p.roots,
-      Polynomial.Splits.eq_prod_roots <| Polynomial.splits_iff_card_roots.mpr hp⟩
+          Multiset.prod (Multiset.map (fun r => Polynomial.X - Polynomial.C r) rs) :=
+    ⟨p.roots, Polynomial.Splits.eq_prod_roots <| Polynomial.splits_iff_card_roots.mpr hp⟩
   have h_reverse :
       p.reverse =
         Polynomial.C p.leadingCoeff *
@@ -113,8 +112,8 @@ set_option linter.unusedSimpArgs false in
 lemma quad_discrim {q : ℝ[X]} (hd : q.natDegree = 2)
     (hq : Multiset.card q.roots = q.natDegree) :
     4 * q.coeff 0 * q.coeff 2 ≤ q.coeff 1 ^ 2 := by
-  obtain ⟨x0, hx⟩ : ∃ x0, x0 ∈ q.roots := by
-    exact Multiset.card_pos_iff_exists_mem.mp (by linarith)
+  obtain ⟨x0, hx⟩ : ∃ x0, x0 ∈ q.roots :=
+    Multiset.card_pos_iff_exists_mem.mp (by linarith)
   simp_all +decide [Polynomial.eval_eq_sum_range, Finset.sum_range_succ',
     Polynomial.natDegree_eq_of_degree_eq_some]
   cases le_or_gt 0 (q.coeff 2) <;>
@@ -130,11 +129,11 @@ lemma newton_poly {g : ℝ[X]} (hg : Multiset.card g.roots = g.natDegree)
   revert j
   intro j hj0 hj
   by_contra h_neg
-  have h_pos : 0 < g.coeff (j - 1) * g.coeff (j + 1) := by
-    exact not_le.mp fun h =>
+  have h_pos : 0 < g.coeff (j - 1) * g.coeff (j + 1) :=
+    not_le.mp fun h =>
       h_neg <| by
-        exact le_trans (mul_nonpos_of_nonpos_of_nonneg h <| by positivity) <| by
-          exact mul_nonneg (sq_nonneg _) <| by positivity
+        exact le_trans (mul_nonpos_of_nonpos_of_nonneg h <| by positivity) <|
+          mul_nonneg (sq_nonneg _) <| by positivity
   set q1 := derivative^[j - 1] g
   set q2 := q1.reverse
   set q := derivative^[g.natDegree - j - 1] q2
@@ -180,9 +179,10 @@ lemma newton_poly {g : ℝ[X]} (hg : Multiset.card g.roots = g.natDegree)
         rw [show g.natDegree - (j - 1) - (g.natDegree - j - 1) = 2 by lia]
       · have := iterate_derivative_rr hg (j - 1)
         aesop
-    have hq_coeff0 : q1.coeff 2 = ((j + 1).descFactorial (j - 1)) * g.coeff (j + 1) := by
+    have hq_coeff0 :
+        q1.coeff 2 = ((j + 1).descFactorial (j - 1)) * g.coeff (j + 1) := by
       rw [Polynomial.coeff_iterate_derivative]
-      rw [show 2 + (j - 1) = j + 1 from by lia, nsmul_eq_mul]
+      rw [show 2 + (j - 1) = j + 1 by lia, nsmul_eq_mul]
     grind
   have hq_coeff1 :
       q.coeff 1 =
@@ -224,7 +224,7 @@ lemma newton_poly {g : ℝ[X]} (hg : Multiset.card g.roots = g.natDegree)
       rw [Polynomial.coeff_reverse, hq_coeff2,
         Polynomial.revAt_le
           (by lia : g.natDegree - j - 1 + 2 ≤ g.natDegree - (j - 1)),
-        show g.natDegree - (j - 1) - (g.natDegree - j - 1 + 2) = 0 from by lia]
+        show g.natDegree - (j - 1) - (g.natDegree - j - 1 + 2) = 0 by lia]
     simp_all +decide [mul_assoc, Polynomial.coeff_iterate_derivative]
     rw [Polynomial.coeff_iterate_derivative]
     aesop

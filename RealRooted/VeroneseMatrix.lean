@@ -368,12 +368,12 @@ theorem zipWith_mul_veroneseLinearFactorRowDesc_sum_eq_of_succ
   · have hscaled :
         ((((oneSupportSeq fs.length i).map fun q => C a * q).zipWith
             (· * ·) fs).sum) =
-          C a * fs.get i := by
-      exact zipWith_mul_scaled_oneSupportSeq_sum_eq_get fs i (C a)
+          C a * fs.get i :=
+        zipWith_mul_scaled_oneSupportSeq_sum_eq_get fs i (C a)
     have hsupport :
         ((oneSupportSeq fs.length ⟨i.1 + 1, hi⟩).zipWith (· * ·) fs).sum =
-          fs.get ⟨i.1 + 1, hi⟩ := by
-      exact zipWith_mul_oneSupportSeq_left_sum_eq_get fs ⟨i.1 + 1, hi⟩
+          fs.get ⟨i.1 + 1, hi⟩ :=
+        zipWith_mul_oneSupportSeq_left_sum_eq_get fs ⟨i.1 + 1, hi⟩
     simpa using congrArg₂ (fun x y => x + y) hscaled hsupport
   · simp
   · simp
@@ -391,13 +391,13 @@ theorem zipWith_mul_veroneseLinearFactorRowDesc_sum_eq_of_last
   · have hscaled :
         ((((oneSupportSeq fs.length i).map fun q => C a * q).zipWith
             (· * ·) fs).sum) =
-          C a * fs.get i := by
-      exact zipWith_mul_scaled_oneSupportSeq_sum_eq_get fs i (C a)
+          C a * fs.get i :=
+        zipWith_mul_scaled_oneSupportSeq_sum_eq_get fs i (C a)
     have hsupport :
         ((((oneSupportSeq fs.length ⟨0, by lia⟩).map fun q => X * q).zipWith
             (· * ·) fs).sum) =
-          X * fs.get ⟨0, by lia⟩ := by
-      exact zipWith_mul_scaled_oneSupportSeq_sum_eq_get fs ⟨0, by lia⟩ X
+          X * fs.get ⟨0, by lia⟩ :=
+        zipWith_mul_scaled_oneSupportSeq_sum_eq_get fs ⟨0, by lia⟩ X
     simpa using congrArg₂ (fun x y => x + y) hscaled hsupport
   · simp
   · simp

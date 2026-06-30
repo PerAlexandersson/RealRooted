@@ -227,12 +227,12 @@ private lemma natDegree_leadingCoeff_narayanaQuot :
       lia
 
 lemma natDegree_narayanaQuot (n : Nat) (hn : 1 ≤ n) :
-    (narayanaQuot n).natDegree = n - 1 := by
-  exact (natDegree_leadingCoeff_narayanaQuot n hn).1
+    (narayanaQuot n).natDegree = n - 1 :=
+  (natDegree_leadingCoeff_narayanaQuot n hn).1
 
 lemma leadingCoeff_narayanaQuot (n : Nat) (hn : 1 ≤ n) :
-    (narayanaQuot n).leadingCoeff = 1 := by
-  exact (natDegree_leadingCoeff_narayanaQuot n hn).2
+    (narayanaQuot n).leadingCoeff = 1 :=
+  (natDegree_leadingCoeff_narayanaQuot n hn).2
 
 lemma narayanaQuot_ne_zero (n : Nat) (hn : 1 ≤ n) :
     narayanaQuot n ≠ 0 := by

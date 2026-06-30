@@ -245,8 +245,8 @@ theorem prec_typeBEulerian_succ : ∀ n : Nat, Prec (typeBEulerian n) (typeBEule
       have hNext_eq :
           typeBEulerianCoeffA (n + 1) * typeBEulerian (n + 1) +
             typeBEulerianCoeffB * (typeBEulerian (n + 1)).derivative =
-          typeBEulerian (n + 2) := by
-        exact (typeBEulerian_succ (n + 1)).symm
+          typeBEulerian (n + 2) :=
+        (typeBEulerian_succ (n + 1)).symm
       have hF_pos :
           HasPosLeadingCoeff
             (typeBEulerianCoeffA (n + 1) * typeBEulerian (n + 1) +

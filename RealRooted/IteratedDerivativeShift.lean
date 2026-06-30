@@ -104,8 +104,8 @@ lemma rootMultiplicity_sub_one_le_rootMultiplicity_TDeriv
     pow_sub_one_dvd_derivative_of_pow_dvd hdvd_p
   have hdvd_p_weakened : (X - C a) ^ (m - 1) ∣ p :=
     (pow_dvd_pow _ (Nat.sub_le m 1)).trans hdvd_p
-  have hdvd_cmul : (X - C a) ^ (m - 1) ∣ C eps * p.derivative := by
-    exact dvd_mul_of_dvd_right hdvd_p' _
+  have hdvd_cmul : (X - C a) ^ (m - 1) ∣ C eps * p.derivative :=
+    dvd_mul_of_dvd_right hdvd_p' _
   have hdvd_T : (X - C a) ^ (m - 1) ∣ TDeriv eps p := by
     simpa [TDeriv] using dvd_sub hdvd_p_weakened hdvd_cmul
   exact (le_rootMultiplicity_iff hT_ne).mpr hdvd_T
@@ -231,8 +231,8 @@ private lemma isRealRooted_TDeriv_pos {eps : ℝ} {p : ℝ[X]}
   -- derivative interlaces p
   have hder : Interlaces p.derivative p := derivative_interlaces hp hdeg2
   -- HasPosLeadingCoeff of p'
-  have hp'_pos : HasPosLeadingCoeff p.derivative := by
-    exact hp_pos.derivative (by lia)
+  have hp'_pos : HasPosLeadingCoeff p.derivative :=
+    hp_pos.derivative (by lia)
   -- HasPosLeadingCoeff of T_ε(p) (same leading coeff as p)
   have hT_pos : HasPosLeadingCoeff (C 1 * p + C (-eps) * p.derivative) := by
     rw [← hrewrite]
@@ -445,8 +445,8 @@ theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
       have hbase' : Prec (X - C r) (TDeriv eps (X - C r)) := by
         simpa [TDeriv_X_sub_C] using hbase
       have hscaled :
-          Prec (C a * (X - C r)) (C a * TDeriv eps (X - C r)) := by
-        exact prec_C_mul_right (prec_C_mul_left hbase' ha_ne) ha_ne
+          Prec (C a * (X - C r)) (C a * TDeriv eps (X - C r)) :=
+        prec_C_mul_right (prec_C_mul_left hbase' ha_ne) ha_ne
       simpa [hp_factor, TDeriv_C_mul] using hscaled
 
 /-! ## Helper: simple roots vanish under T_ε -/
@@ -854,8 +854,8 @@ theorem exists_delta_and_real_root_near_iterateTDeriv_of_isRealRooted
         ‖a - b‖ < ((p.natDegree + 1) * ε) ^ ((p.natDegree : ℝ)⁻¹) * max ‖a‖ 1 := by
   let c : ℝ := p.leadingCoeff⁻¹
   let p₀ : ℝ[X] := C c * p
-  have hc_ne : c ≠ 0 := by
-    exact inv_ne_zero (leadingCoeff_ne_zero.mpr hp_ne)
+  have hc_ne : c ≠ 0 :=
+    inv_ne_zero (leadingCoeff_ne_zero.mpr hp_ne)
   have hp₀_monic : p₀.Monic := by
     unfold p₀ c
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
@@ -1129,8 +1129,8 @@ lemma rootMultiplicity_iterateTDeriv_eq_tsub
         grind
       have hq_mult_pos : 1 ≤ q.rootMultiplicity a := by
         lia
-      have hq_root : q.IsRoot a := by
-        exact (rootMultiplicity_pos <| iterateTDeriv_ne_zero hp_ne).mp (by lia)
+      have hq_root : q.IsRoot a :=
+        (rootMultiplicity_pos <| iterateTDeriv_ne_zero hp_ne).mp (by lia)
       by_cases hq_simple : q.rootMultiplicity a = 1
       · have hnot_root : ¬ (TDeriv eps q).IsRoot a :=
           not_isRoot_TDeriv_of_simple_root

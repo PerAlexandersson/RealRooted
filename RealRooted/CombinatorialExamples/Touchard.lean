@@ -161,8 +161,8 @@ theorem prec_touchard_succ : ∀ n : Nat, Prec (touchard n) (touchard (n + 1))
         (touchard_posLeadingCoeff (n + 2)).derivative (by
           lia)
       have hNext_eq :
-          X * touchard (n + 2) + X * (touchard (n + 2)).derivative = touchard (n + 3) := by
-        exact (touchard_succ (n + 2)).symm
+          X * touchard (n + 2) + X * (touchard (n + 2)).derivative = touchard (n + 3) :=
+        (touchard_succ (n + 2)).symm
       have hF_pos :
           HasPosLeadingCoeff
             (X * touchard (n + 2) + X * (touchard (n + 2)).derivative) := by

@@ -184,8 +184,8 @@ lemma prec_coloredSetPartitions_one_two (c m : Nat) :
   have hNext_eq :
       coloredSetPartitionsCoeffA c * coloredSetPartitions c m 1 +
           coloredSetPartitionsCoeffB m * (coloredSetPartitions c m 1).derivative =
-        coloredSetPartitions c m 2 := by
-    exact (coloredSetPartitions_succ c m 1).symm
+        coloredSetPartitions c m 2 :=
+    (coloredSetPartitions_succ c m 1).symm
   have hF_pos :
       HasPosLeadingCoeff
         (coloredSetPartitionsCoeffA c * coloredSetPartitions c m 1 +
@@ -245,8 +245,8 @@ theorem prec_coloredSetPartitions_succ (c m : Nat) :
       have hNext_eq :
           coloredSetPartitionsCoeffA c * coloredSetPartitions c m (n + 2) +
               coloredSetPartitionsCoeffB m * (coloredSetPartitions c m (n + 2)).derivative =
-            coloredSetPartitions c m (n + 3) := by
-        exact (coloredSetPartitions_succ c m (n + 2)).symm
+            coloredSetPartitions c m (n + 3) :=
+        (coloredSetPartitions_succ c m (n + 2)).symm
       have hF_pos :
           HasPosLeadingCoeff
             (coloredSetPartitionsCoeffA c * coloredSetPartitions c m (n + 2) +

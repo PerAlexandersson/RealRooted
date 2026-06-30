@@ -712,8 +712,8 @@ lemma mkAffineInterleaving_sub_multiset (f : ℝ[X]) (c : ℝ) (hdeg : 2 ≤ f.n
               · have hlt : r₁ < r₂ := by
                   lia
                 have : (↑(mkAffineInterleaving f c hdeg hc hroots_nonpos (r₂ :: rest) hrest
-                    hsorted_tail hsub_tail hgap.2) : Multiset ℝ).count a = 0 := by
-                  exact Multiset.count_eq_zero.mpr (by
+                    hsorted_tail hsub_tail hgap.2) : Multiset ℝ).count a = 0 :=
+                  Multiset.count_eq_zero.mpr (by
                     rw [Multiset.mem_coe]
                     grind)
                 lia
@@ -912,8 +912,8 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
     have hc' : (f.natDegree : ℝ) < c := by lia
     rw [hg_def, leadingCoeff_affineDeriv hf₀.ne_zero (by lia) hc_ne]
     simp_all [HasPosLeadingCoeff]
-  have hg_rr : g.Splits := by
-    exact roots_card_of_sub_pred hg₀.ne_zero hss_sub (by
+  have hg_rr : g.Splits :=
+    roots_card_of_sub_pred hg₀.ne_zero hss_sub (by
       rw [Multiset.coe_card, hss_length, hg_deg]; lia)
   have hss_eq_card : (↑ss : Multiset ℝ).card + 1 = g.roots.card := by
     rw [Multiset.coe_card, hss_length, card_roots_of_splits hg_rr, hg_deg]
@@ -929,8 +929,8 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
   have hu_roots_eq' : (↑(u :: ss) : Multiset ℝ) = g.roots := by
     simp_all
   rw [hrs_cons] at hrs_sorted hrs_eq hss_interlaces
-  have hr₁_root : f.IsRoot r₁ := by
-    exact hrs_root r₁ (by simp [hrs_cons])
+  have hr₁_root : f.IsRoot r₁ :=
+    hrs_root r₁ (by simp [hrs_cons])
   have hr₁_mem_f : r₁ ∈ f.roots := (mem_roots hf₀.ne_zero).mpr hr₁_root
   have hr₁_nonpos : r₁ ≤ 0 := hroots_nonpos r₁ hr₁_mem_f
   have hc_pos : 0 < c := by
@@ -990,8 +990,8 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
         rw [hf_fact', roots_mul (mul_ne_zero (pow_ne_zero _ (X_sub_C_ne_zero _)) hq_ne),
           Multiset.mem_add]
         lia
-      have ht_mem_rs : t ∈ r₁ :: rest := by
-        exact Multiset.mem_coe.mp (by lia)
+      have ht_mem_rs : t ∈ r₁ :: rest :=
+        Multiset.mem_coe.mp (by lia)
       rcases List.mem_cons.mp ht_mem_rs with rfl | ht_rest
       · lia
       · exact lt_of_le_of_ne (List.rel_of_pairwise_cons hrs_sorted ht_rest) (Ne.symm ht_ne)
@@ -1005,8 +1005,8 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
         rw [hg_fact', roots_mul (mul_ne_zero (pow_ne_zero _ (X_sub_C_ne_zero _)) hqg_ne),
           Multiset.mem_add]
         lia
-      have ht_mem_list : t ∈ u :: ss := by
-        exact Multiset.mem_coe.mp (by lia)
+      have ht_mem_list : t ∈ u :: ss :=
+        Multiset.mem_coe.mp (by lia)
       rcases List.mem_cons.mp ht_mem_list with rfl | ht_ss
       · lia
       · exact
@@ -1053,8 +1053,8 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
     have hPq_nonneg : 0 ≤ (-1 : ℝ) ^ q.roots.card * Pq := by
       unfold Pq
       have htmp :
-          0 ≤ (-1 : ℝ) ^ (q.roots.map (r₁ - ·)).card * (q.roots.map (r₁ - ·)).prod := by
-        exact neg_pow_prod_nonneg_of_all_nonpos _ (by
+          0 ≤ (-1 : ℝ) ^ (q.roots.map (r₁ - ·)).card * (q.roots.map (r₁ - ·)).prod :=
+        neg_pow_prod_nonneg_of_all_nonpos _ (by
           intro x hx
           rcases Multiset.mem_map.mp hx with ⟨t, ht, rfl⟩
           exact sub_nonpos.mpr (hq_root_gt t ht).le)
@@ -1062,8 +1062,8 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
     have hPg_nonneg : 0 ≤ (-1 : ℝ) ^ qg.roots.card * Pg := by
       unfold Pg
       have htmp :
-          0 ≤ (-1 : ℝ) ^ (qg.roots.map (r₁ - ·)).card * (qg.roots.map (r₁ - ·)).prod := by
-        exact neg_pow_prod_nonneg_of_all_nonpos _ (by
+          0 ≤ (-1 : ℝ) ^ (qg.roots.map (r₁ - ·)).card * (qg.roots.map (r₁ - ·)).prod :=
+        neg_pow_prod_nonneg_of_all_nonpos _ (by
           intro x hx
           rcases Multiset.mem_map.mp hx with ⟨t, ht, rfl⟩
           exact sub_nonpos.mpr (hqg_root_gt t ht).le)
@@ -1111,8 +1111,8 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
         eval_eq_leadingCoeff_mul_prod_sub hq_rr.2 r₁,
         show (q.roots.map (r₁ - ·)).prod = Pq by lia,
         show (qg.roots.map (r₁ - ·)).prod = Pg by lia]
-      have hlc_pos : 0 < qg.leadingCoeff * q.leadingCoeff := by
-        exact mul_pos hqg_pos hq_pos
+      have hlc_pos : 0 < qg.leadingCoeff * q.leadingCoeff :=
+        mul_pos hqg_pos hq_pos
       nlinarith
     have hq_eval_ne : q.eval r₁ ≠ 0 := eval_ne_zero_of_not_dvd_X_sub_C hq_nodvd
     have hEval_pos : 0 < qg.eval r₁ * q.eval r₁ := by
@@ -1120,8 +1120,8 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
         have hm_pos' : 0 < (m : ℝ) := by exact_mod_cast hm_pos
         have h1 : 0 < 1 - r₁ := by linarith
         exact mul_pos h1 hm_pos'
-      have hsq_pos : 0 < (q.eval r₁) ^ 2 := by
-        exact sq_pos_iff.mpr hq_eval_ne
+      have hsq_pos : 0 < (q.eval r₁) ^ 2 :=
+        sq_pos_iff.mpr hq_eval_ne
       have hrewrite :
           qg.eval r₁ * q.eval r₁ = ((1 - r₁) * (m : ℝ)) * (q.eval r₁) ^ 2 := by
         rw [hqg_eval]

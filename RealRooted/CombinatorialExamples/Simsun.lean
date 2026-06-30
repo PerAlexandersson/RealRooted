@@ -278,10 +278,10 @@ lemma interlaces_derivative_simsun_three :
     simpa [add_comm] using
       (Polynomial.natDegree_linear (a := (4 : ℝ)) (b := (1 : ℝ)) (by simp))
   have hprec : Prec (1 : ℝ[X]) (1 + C (4 : ℝ) * X) := hlin.toPrec
-  have hprecC : Prec (C (4 : ℝ) * (1 : ℝ[X])) (1 + C (4 : ℝ) * X) := by
-    exact prec_C_mul_left hprec (by simp)
-  have hInter : Interlaces (C (4 : ℝ) * (1 : ℝ[X])) (1 + C (4 : ℝ) * X) := by
-    exact hprecC.toInterlaces (by
+  have hprecC : Prec (C (4 : ℝ) * (1 : ℝ[X])) (1 + C (4 : ℝ) * X) :=
+    prec_C_mul_left hprec (by simp)
+  have hInter : Interlaces (C (4 : ℝ) * (1 : ℝ[X])) (1 + C (4 : ℝ) * X) :=
+    hprecC.toInterlaces (by
       simpa [add_comm] using
         (Polynomial.natDegree_linear (a := (4 : ℝ)) (b := (1 : ℝ)) (by simp)).symm)
   simpa [simsun_three] using hInter
@@ -348,8 +348,8 @@ theorem prec_simsun_succ : ∀ n : Nat, Prec (simsun n) (simsun (n + 1))
     have hNext_eq :
         simsunCoeffA (n + 2) * simsun (n + 2) +
           simsunCoeffB * (simsun (n + 2)).derivative =
-        simsun (n + 3) := by
-      exact (simsun_succ (n + 2)).symm
+        simsun (n + 3) :=
+      (simsun_succ (n + 2)).symm
     have hF_pos :
         HasPosLeadingCoeff
           (simsunCoeffA (n + 2) * simsun (n + 2) +

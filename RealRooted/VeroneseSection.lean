@@ -240,8 +240,8 @@ theorem veronesePairLace_even {a b : ℕ → ℝ} {r k n c : ℕ} (hk : k < r) :
     rw [if_pos hc, if_pos hc']
     congr 1
     calc
-      k + r * n - r * c = k + (r * n - r * c) := by
-        exact Nat.add_sub_assoc (Nat.mul_le_mul_left r hc) k
+      k + r * n - r * c = k + (r * n - r * c) :=
+        Nat.add_sub_assoc (Nat.mul_le_mul_left r hc) k
       _ = k + r * (n - c) := by
         rw [← Nat.mul_sub_left_distrib]
   · have hlt : n < c := Nat.lt_of_not_ge hc
@@ -269,8 +269,8 @@ theorem veronesePairLace_odd {a b : ℕ → ℝ} {r k n c : ℕ} (hk : k < r) :
     rw [if_pos hc, if_pos hc']
     congr 1
     calc
-      k + r * n - r * c = k + (r * n - r * c) := by
-        exact Nat.add_sub_assoc (Nat.mul_le_mul_left r hc) k
+      k + r * n - r * c = k + (r * n - r * c) :=
+        Nat.add_sub_assoc (Nat.mul_le_mul_left r hc) k
       _ = k + r * (n - c) := by
         rw [← Nat.mul_sub_left_distrib]
   · have hlt : n < c := Nat.lt_of_not_ge hc
@@ -644,25 +644,23 @@ def HurwitzStableToMatrixTotallyNonnegativeStatement : Prop :=
 /-- The legacy strong interface implies the PF interface. -/
 theorem pfPrecToFullyInterlacingPair_of_precToFully
     (h : PrecToFullyInterlacingPairStatement) :
-    PfPrecToFullyInterlacingPairStatement := by
-  intro p q _ _ hpq
-  exact h hpq
+    PfPrecToFullyInterlacingPairStatement :=
+  fun {p q} _ _ hpq => h (p := p) (q := q) hpq
 
 /-- The legacy strong interface implies the nonnegative-coefficient interface. -/
 theorem nonnegPrecToFullyInterlacingPair_of_precToFully
     (h : PrecToFullyInterlacingPairStatement) :
-    NonnegPrecToFullyInterlacingPairStatement := by
-  intro p q _ _ hpq
-  exact h hpq
+    NonnegPrecToFullyInterlacingPairStatement :=
+  fun {p q} _ _ hpq => h (p := p) (q := q) hpq
 
 /-- Reverse ASW turns the PF bridge into the nonnegative-coefficient bridge,
 because real-rooted polynomials with nonnegative coefficients have all roots
 nonpositive. -/
 theorem nonnegPrecToFullyInterlacingPair_of_pfPrec
     (hPfToFull : PfPrecToFullyInterlacingPairStatement) :
-    NonnegPrecToFullyInterlacingPairStatement := by
-  intro p q hpnn hqnn hpq
-  exact hPfToFull
+    NonnegPrecToFullyInterlacingPairStatement :=
+  fun {_ _} hpnn hqnn hpq =>
+    hPfToFull
     (aissenSchoenbergWhitney_reverse hpnn hpq.1.2 (roots_nonpos_of_nonneg_coeffs hpq.1.2 hpnn))
     (aissenSchoenbergWhitney_reverse hqnn hpq.2.1.2 (roots_nonpos_of_nonneg_coeffs hpq.2.1.2 hqnn))
     hpq
@@ -692,9 +690,8 @@ Hurwitz odd/even bridge. -/
 theorem nonnegPrecToHurwitzOddEven_of_hermiteBiehlerPos
     (hHB : hermiteBiehlerForwardPosStatement)
     (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement) :
-    NonnegPrecToHurwitzOddEvenStatement := by
-  intro p q hpnn hqnn hpq
-  exact
+    NonnegPrecToHurwitzOddEvenStatement :=
+  fun {_ _} hpnn hqnn hpq =>
     pfPrecToHurwitzOddEven_of_hermiteBiehlerPosCoeffs hHB hHBToHurwitz
       hpnn hqnn hpq.1.1 hpq.2.1.1 hpq
 
@@ -703,35 +700,33 @@ bridge, since PF coefficients are nonnegative. -/
 theorem pfPrecToHurwitzOddEven_of_hermiteBiehlerPos
     (hHB : hermiteBiehlerForwardPosStatement)
     (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement) :
-    PfPrecToHurwitzOddEvenStatement := by
-  intro p q hppf hqpf
-  exact nonnegPrecToHurwitzOddEven_of_hermiteBiehlerPos hHB hHBToHurwitz hppf.nonneg hqpf.nonneg
+    PfPrecToHurwitzOddEvenStatement :=
+  fun {_ _} hppf hqpf =>
+    nonnegPrecToHurwitzOddEven_of_hermiteBiehlerPos hHB hHBToHurwitz hppf.nonneg hqpf.nonneg
 
 /-- The planned Hermite--Biehler/Hurwitz route implies the PF polynomial-to-Lace
 bridge. -/
 theorem pfPrecToFullyInterlacingPair_of_hurwitzOddEven
     (hPrecToHurwitz : PfPrecToHurwitzOddEvenStatement)
     (hHurwitzToFull : HurwitzOddEvenToFullyInterlacingPairStatement) :
-    PfPrecToFullyInterlacingPairStatement := by
-  intro p q hppf hqpf hpq
-  exact hHurwitzToFull (hPrecToHurwitz hppf hqpf hpq)
+    PfPrecToFullyInterlacingPairStatement :=
+  fun {_ _} hppf hqpf hpq => hHurwitzToFull (hPrecToHurwitz hppf hqpf hpq)
 
 /-- The nonnegative-coefficient Hurwitz odd/even bridge implies the
 nonnegative-coefficient polynomial-to-Lace bridge. -/
 theorem nonnegPrecToFullyInterlacingPair_of_hurwitzOddEvenDirect
     (hPrecToHurwitz : NonnegPrecToHurwitzOddEvenStatement)
     (hHurwitzToFull : HurwitzOddEvenToFullyInterlacingPairStatement) :
-    NonnegPrecToFullyInterlacingPairStatement := by
-  intro p q hpnn hqnn hpq
-  exact hHurwitzToFull (hPrecToHurwitz hpnn hqnn hpq)
+    NonnegPrecToFullyInterlacingPairStatement :=
+  fun {_ _} hpnn hqnn hpq => hHurwitzToFull (hPrecToHurwitz hpnn hqnn hpq)
 
 /-- The matrix form of the Hurwitz criterion gives the Hurwitz-to-Lace bridge
 for odd/even polynomials by the explicit matrix identity above. -/
 theorem hurwitzOddEvenToFullyInterlacingPair_of_matrixTNN
     (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement) :
-    HurwitzOddEvenToFullyInterlacingPairStatement := by
-  intro p q hhur
-  exact (hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair p q).1
+    HurwitzOddEvenToFullyInterlacingPairStatement :=
+  fun {p q} hhur =>
+    (hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair p q).1
     (hHurwitzToMatrix hhur)
 
 /-- Hermite--Biehler/Hurwitz plus the matrix Hurwitz criterion imply the PF
@@ -814,9 +809,8 @@ theorem prec0_veroneseSectionPolynomial_of_fullyInterlacingPair
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
     (hfull : FullyInterlacingPair p.coeff (fun n => q.coeff n))
     (hr : 0 < r) (hk : k < r) :
-    Prec0 (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) := by
-  exact hFullToPrec0
-    (fullyInterlacingPair_veroneseSectionPolynomial_coeff hfull hr hk)
+    Prec0 (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) :=
+  hFullToPrec0 (fullyInterlacingPair_veroneseSectionPolynomial_coeff hfull hr hk)
 
 /-- Strict version of
 `prec0_veroneseSectionPolynomial_of_fullyInterlacingPair`. -/
@@ -825,9 +819,8 @@ theorem prec_veroneseSectionPolynomial_of_fullyInterlacingPair
     (hFullToPrec : FullyInterlacingPairToPrecStatement)
     (hfull : FullyInterlacingPair p.coeff (fun n => q.coeff n))
     (hr : 0 < r) (hk : k < r) :
-    Prec (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) := by
-  exact hFullToPrec
-    (fullyInterlacingPair_veroneseSectionPolynomial_coeff hfull hr hk)
+    Prec (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) :=
+  hFullToPrec (fullyInterlacingPair_veroneseSectionPolynomial_coeff hfull hr hk)
 
 /-- Lace-certificate version of the pairwise Veronese polynomial theorem. -/
 theorem prec0_veronesePairSectionPolynomial_of_fullyInterlacingPair
@@ -836,8 +829,8 @@ theorem prec0_veronesePairSectionPolynomial_of_fullyInterlacingPair
     (hfull : FullyInterlacingPair p.coeff (fun n => q.coeff n))
     (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
     Prec0 (veronesePairSectionPolynomial r p q i)
-      (veronesePairSectionPolynomial r p q j) := by
-  exact hFullToPrec0
+      (veronesePairSectionPolynomial r p q j) :=
+  hFullToPrec0
     (fullyInterlacingPair_veronesePairSectionPolynomial_coeff hfull hr hij hj)
 
 /-- Strict lace-certificate version of the pairwise Veronese polynomial
@@ -848,8 +841,8 @@ theorem prec_veronesePairSectionPolynomial_of_fullyInterlacingPair
     (hfull : FullyInterlacingPair p.coeff (fun n => q.coeff n))
     (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
     Prec (veronesePairSectionPolynomial r p q i)
-      (veronesePairSectionPolynomial r p q j) := by
-  exact hFullToPrec
+      (veronesePairSectionPolynomial r p q j) :=
+  hFullToPrec
     (fullyInterlacingPair_veronesePairSectionPolynomial_coeff hfull hr hij hj)
 
 /-- Fin-indexed zero-aware lace-certificate version. -/
@@ -1170,8 +1163,8 @@ theorem prec0_veroneseSectionPolynomial_of_prec {p q : ℝ[X]} {r k : ℕ}
     (hPrecToFull : PrecToFullyInterlacingPairStatement)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
     (hpq : Prec p q) (hr : 0 < r) (hk : k < r) :
-    Prec0 (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) := by
-  exact prec0_veroneseSectionPolynomial_of_fullyInterlacingPair
+    Prec0 (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) :=
+  prec0_veroneseSectionPolynomial_of_fullyInterlacingPair
     hFullToPrec0 (hPrecToFull hpq) hr hk
 
 /-- Strict version of `prec0_veroneseSectionPolynomial_of_prec`, for
@@ -1181,8 +1174,8 @@ theorem prec_veroneseSectionPolynomial_of_prec {p q : ℝ[X]} {r k : ℕ}
     (hPrecToFull : PrecToFullyInterlacingPairStatement)
     (hFullToPrec : FullyInterlacingPairToPrecStatement)
     (hpq : Prec p q) (hr : 0 < r) (hk : k < r) :
-    Prec (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) := by
-  exact prec_veroneseSectionPolynomial_of_fullyInterlacingPair
+    Prec (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) :=
+  prec_veroneseSectionPolynomial_of_fullyInterlacingPair
     hFullToPrec (hPrecToFull hpq) hr hk
 
 /-- Conditional polynomial version of the pairwise form of
@@ -1194,8 +1187,8 @@ theorem prec0_veronesePairSectionPolynomial_of_prec {p q : ℝ[X]} {r i j : ℕ}
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
     (hpq : Prec p q) (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
     Prec0 (veronesePairSectionPolynomial r p q i)
-      (veronesePairSectionPolynomial r p q j) := by
-  exact prec0_veronesePairSectionPolynomial_of_fullyInterlacingPair
+      (veronesePairSectionPolynomial r p q j) :=
+  prec0_veronesePairSectionPolynomial_of_fullyInterlacingPair
     hFullToPrec0 (hPrecToFull hpq) hr hij hj
 
 /-- Strict version of `prec0_veronesePairSectionPolynomial_of_prec`, for
@@ -1206,8 +1199,8 @@ theorem prec_veronesePairSectionPolynomial_of_prec {p q : ℝ[X]} {r i j : ℕ}
     (hFullToPrec : FullyInterlacingPairToPrecStatement)
     (hpq : Prec p q) (hr : 0 < r) (hij : i < j) (hj : j < 2 * r) :
     Prec (veronesePairSectionPolynomial r p q i)
-      (veronesePairSectionPolynomial r p q j) := by
-  exact prec_veronesePairSectionPolynomial_of_fullyInterlacingPair
+      (veronesePairSectionPolynomial r p q j) :=
+  prec_veronesePairSectionPolynomial_of_fullyInterlacingPair
     hFullToPrec (hPrecToFull hpq) hr hij hj
 
 /-- Fin-indexed version of
@@ -1266,8 +1259,8 @@ protected theorem IsPolyaFreqSeq.veroneseSectionSeq {a : ℕ → ℝ}
         k + r * (rows i - cols j) =
             k + (r * rows i - r * cols j) := by
           rw [Nat.mul_sub_left_distrib]
-        _ = k + r * rows i - r * cols j := by
-          exact (Nat.add_sub_assoc (Nat.mul_le_mul_left r hle) k).symm
+        _ = k + r * rows i - r * cols j :=
+          (Nat.add_sub_assoc (Nat.mul_le_mul_left r hle) k).symm
     · have hlt : rows i < cols j := Nat.lt_of_not_ge hle
       have hnot : ¬ r * cols j ≤ k + r * rows i := by
         have hsucc : rows i + 1 ≤ cols j := Nat.succ_le_of_lt hlt

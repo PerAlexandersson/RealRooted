@@ -137,8 +137,8 @@ private theorem listInterlaces_of_drop_bounds :
                 (List.pairwise_cons.mp hts).2
               have ht_le_s : t ≤ s := by
                 simp_all
-              have hs_le_u : s ≤ u := by
-                exact hge [] rfl u (by simp)
+              have hs_le_u : s ≤ u :=
+                hge [] rfl u (by simp)
               cases ss with
               | nil =>
                   have hus_nil : us = [] := by
@@ -197,8 +197,8 @@ private theorem listAlternates_of_drop_bounds :
   | [], _ :: _, _, _, hlen, _, _ => by simp at hlen
   | _ :: _, [], _, _, hlen, _, _ => by simp at hlen
   | s :: ss, t :: ts, hss, hts, hlen, hge, hexists => by
-      have hs_le_t : s ≤ t := by
-        exact hge [] rfl t (by simp)
+      have hs_le_t : s ≤ t :=
+        hge [] rfl t (by simp)
       cases ss with
       | nil =>
           cases ts with
@@ -663,8 +663,8 @@ private lemma listInterlaces_prod_mul_prod_nonpos_at_heads
   have hs_head_nonpos : (r₁ - s) * (r₂ - s) ≤ 0 := by
     nlinarith
   have htail_nonneg :
-      0 ≤ ((ss'.map fun x => (r₁ - x) * (r₂ - x))).prod := by
-    exact listInterlaces_tail_pair_prod_nonneg hr₁r₂ htail
+      0 ≤ ((ss'.map fun x => (r₁ - x) * (r₂ - x))).prod :=
+    listInterlaces_tail_pair_prod_nonneg hr₁r₂ htail
   have htail_nonneg' :
       0 ≤ (ss'.map (fun x => r₁ - x)).prod * (ss'.map (fun x => r₂ - x)).prod := by
     simp_all
@@ -717,8 +717,8 @@ private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive :
               have htail_nonpos :
                   (ss'.map (fun x => r₁ - x)).prod *
                     (ss'.map (fun x => r₂ - x)).prod ≤
-                  0 := by
-                exact listInterlaces_prod_mul_prod_nonpos_at_heads htail
+                  0 :=
+                listInterlaces_prod_mul_prod_nonpos_at_heads htail
               calc
                 ((s :: ss').map (fun x => r₁ - x)).prod *
                     ((s :: ss').map (fun x => r₂ - x)).prod
@@ -995,8 +995,8 @@ private lemma eval_sign_of_interlaces_root
         simp_all
       have hg_r₂_ne : g.eval r₂ ≠ 0 := by
         simp_all
-      have hgg_neg : g.eval r * g.eval r₂ < 0 := by
-        exact lt_of_le_of_ne hgg_nonpos (mul_ne_zero hg_r_ne hg_r₂_ne)
+      have hgg_neg : g.eval r * g.eval r₂ < 0 :=
+        lt_of_le_of_ne hgg_nonpos (mul_ne_zero hg_r_ne hg_r₂_ne)
       constructor
       · intro heven
         have hodd_rest : Odd rest.length := by
@@ -1188,8 +1188,8 @@ private lemma listInterlaces_of_interlacing_append_right :
       obtain ⟨hr₁s₂, hs₂r₂, htail⟩ := hint
       have htail_bound : ∀ r ∈ r₂ :: rs, r ≤ uR := by
         simp_all
-      have htail_inter : ListInterlaces (r₂ :: rs) (s₂ :: ss ++ [uR]) := by
-        exact listInterlaces_of_interlacing_append_right (rs := r₂ :: rs) (by lia)
+      have htail_inter : ListInterlaces (r₂ :: rs) (s₂ :: ss ++ [uR]) :=
+        listInterlaces_of_interlacing_append_right (rs := r₂ :: rs) (by lia)
           htail hs₂r₂ htail_bound
       exact ⟨hs, hr₁s₂, htail_inter⟩
 
@@ -1355,8 +1355,8 @@ theorem prec_of_strict_signs_of_strict_outer_roots
     refine ⟨hF_ne, splits_of_card_roots ?_⟩
     rw [← hws_eq, Multiset.coe_card, hws_len]
   have hws_sorted : (uL :: us ++ [uR]).Pairwise (· ≤ ·) := hws_pw.imp le_of_lt
-  have hshape : ListInterlaces (r :: rs') (uL :: us ++ [uR]) := by
-    exact listInterlaces_with_outer hrs_ne hrs_sorted hus_int
+  have hshape : ListInterlaces (r :: rs') (uL :: us ++ [uR]) :=
+    listInterlaces_with_outer hrs_ne hrs_sorted hus_int
       (fun r hr => le_of_lt (huL_lt r hr))
       (fun r hr => le_of_lt (huR_lt r hr))
   have hlen_shape : (r :: rs').length + 1 = (uL :: us ++ [uR]).length := by
@@ -1753,8 +1753,8 @@ private lemma eval_mul_right_neg_of_isRoot_of_eval_neg_of_not_isRoot
   rw [eval_mul_right_eq_of_isRoot hr]
   have hg_ne : g.eval r ≠ 0 := by
     simp_all
-  have hsq : 0 < (g.eval r) ^ 2 := by
-    exact sq_pos_iff.mpr hg_ne
+  have hsq : 0 < (g.eval r) ^ 2 :=
+    sq_pos_iff.mpr hg_ne
   exact mul_neg_of_neg_of_pos hb hsq
 
 /-- Structured Liu--Wang differ-by-1 theorem: if `g ⊳ f`, the combination
@@ -2019,8 +2019,8 @@ theorem isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
   have hq_monic : q.Monic := by
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
     simp_all
-  have hq_ne : q ≠ 0 := by
-    exact mul_ne_zero (by simp [hlc_ne]) hF_ne
+  have hq_ne : q ≠ 0 :=
+    mul_ne_zero (by simp [hlc_ne]) hF_ne
   have hf_deg_pos : 0 < f.natDegree := by
     obtain ⟨_, _, hdeg, _, _, _, _, _, _, _⟩ := hgf
     lia
@@ -2131,8 +2131,8 @@ theorem isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
         _ = eps0 / 2 := hbound_eq
         _ < eps0 := by simp_all
     grind
-  have hq_split : q.Splits := by
-    exact Polynomial.Splits.of_splits_map (i := algebraMap ℝ ℂ)
+  have hq_split : q.Splits :=
+    Polynomial.Splits.of_splits_map (i := algebraMap ℝ ℂ)
       (IsAlgClosed.splits _) hroots_real
   have hq_rr : (q ≠ 0 ∧ q.Splits) := by
     lia
@@ -2167,8 +2167,8 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
   have hq_monic : q.Monic := by
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
     simp_all
-  have hq_ne : q ≠ 0 := by
-    exact mul_ne_zero (by simp [hlc_ne]) hF_ne
+  have hq_ne : q ≠ 0 :=
+    mul_ne_zero (by simp [hlc_ne]) hF_ne
   have hq_deg_pos : 0 < q.natDegree := by
     rw [show q = C F.leadingCoeff⁻¹ * F by lia, natDegree_C_mul (inv_ne_zero hlc_ne)]
     have hF_deg_pos : 0 < F.natDegree := by
@@ -2276,8 +2276,8 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
         _ = eps0 / 2 := hbound_eq
         _ < eps0 := by simp_all
     grind
-  have hq_split : q.Splits := by
-    exact Polynomial.Splits.of_splits_map (i := algebraMap ℝ ℂ)
+  have hq_split : q.Splits :=
+    Polynomial.Splits.of_splits_map (i := algebraMap ℝ ℂ)
       (IsAlgClosed.splits _) hroots_real
   have hq_rr : (q ≠ 0 ∧ q.Splits) := by
     lia

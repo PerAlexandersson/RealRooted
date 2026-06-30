@@ -49,10 +49,9 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
     have hf_pos : HasPosLeadingCoeff f := by
       unfold HasPosLeadingCoeff
       simp [hf_monic.leadingCoeff]
-    have hprec_fXg : Prec f (X * g) := by
-      exact
-        (prec_iff_prec_mul_X_of_roots_nonpos
-          (f := g) (g := f) hg.2 hf.2 hg_pos hf_pos hg_nonpos hf_nonpos hdeg).mp hgf
+    have hprec_fXg : Prec f (X * g) :=
+      (prec_iff_prec_mul_X_of_roots_nonpos
+        (f := g) (g := f) hg.2 hf.2 hg_pos hf_pos hg_nonpos hf_nonpos hdeg).mp hgf
     have hall_fXg : AllComboRealRooted f (X * g) :=
       allComboRealRooted_of_prec hprec_fXg
     have hall_qf : AllComboRealRooted q f := by
@@ -62,8 +61,8 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
             C (α + β) * f + C (-α) * (X * g) := by
         grind
       simpa [hrew] using hall_fXg (α + β) (-α)
-    have hq : (q ≠ 0 ∧ q.Splits) := by
-      exact ⟨hq0, by simpa using hall_qf 1 0⟩
+    have hq : (q ≠ 0 ∧ q.Splits) :=
+      ⟨hq0, by simpa using hall_qf 1 0⟩
     have hf0 : f ≠ 0 := hf.1
     have hclose := natDegree_close_of_allComboRealRooted hall_qf hq0 hf0
     have hq_lt : q.natDegree < f.natDegree := by

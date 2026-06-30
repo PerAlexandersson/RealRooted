@@ -299,8 +299,8 @@ lemma oneDescent_prec_gamma_one_adjacent
   have hscaled :
       Prec
         (C ((Nat.choose m (j + 1) : Nat) : ℝ) * (X + C a))
-        (C ((Nat.choose m j : Nat) : ℝ) * (X * (X + C b))) := by
-    exact prec_C_mul_right (prec_C_mul_left hbase hleft_ne) hright_ne
+        (C ((Nat.choose m j : Nat) : ℝ) * (X * (X + C b))) :=
+    prec_C_mul_right (prec_C_mul_left hbase hleft_ne) hright_ne
   have hpow_rr : (((X : ℝ[X]) ^ (m - j - 2)) ≠ 0 ∧ ((X : ℝ[X]) ^ (m - j - 2)).Splits) :=
     isRealRooted_X_pow (m - j - 2)
   rw [oneDescentGamma_one m (j + 1) hj, oneDescentGamma_one m j hjm, hsub_left, hpow]
@@ -319,15 +319,15 @@ lemma oneDescent_prec_gamma_one_terminal (m : Nat) (hm : 1 < m) :
     grind
   have hab : a ≤ b := by
     grind
-  have hbase : Prec (X + C a) (X * (X + C b)) := by
-    exact prec_X_add_C_to_X_mul_X_add_C ha hab
+  have hbase : Prec (X + C a) (X * (X + C b)) :=
+    prec_X_add_C_to_X_mul_X_add_C ha hab
   have hchoose_ne : (((Nat.choose m 1 : Nat) : ℝ)) ≠ 0 := by
     exact_mod_cast Nat.choose_ne_zero (show 1 ≤ m by lia)
   have hscaled :
       Prec
         (C ((Nat.choose m 1 : Nat) : ℝ) * (X + C a))
-        (X * (X + C b)) := by
-    exact prec_C_mul_left hbase hchoose_ne
+        (X * (X + C b)) :=
+    prec_C_mul_left hbase hchoose_ne
   have hpow_rr : (((X : ℝ[X]) ^ (m - 2)) ≠ 0 ∧ ((X : ℝ[X]) ^ (m - 2)).Splits) :=
     isRealRooted_X_pow (m - 2)
   rw [oneDescentGamma_one m 1 hm, oneDescentQ_one m hm_pos, hpow]

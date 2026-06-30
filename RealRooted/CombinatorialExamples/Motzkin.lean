@@ -201,20 +201,19 @@ lemma prec_motzkin_shifted_succ {n : Nat}
     positivity
   have hleft :
       Prec (C (motzkinCoeffA n) * motzkin (n + 1))
-        ((X - C motzkinShift) * motzkin (n + 1)) := by
-    exact
-      prec_C_mul_left
-        (prec_self_mul_X_sub_C_of_roots_le
-          hprev.2.1.2 (motzkin_posLeadingCoeff (n + 1)) hle_succ)
-        hscalarA_pos.ne'
+        ((X - C motzkinShift) * motzkin (n + 1)) :=
+    prec_C_mul_left
+      (prec_self_mul_X_sub_C_of_roots_le
+        hprev.2.1.2 (motzkin_posLeadingCoeff (n + 1)) hle_succ)
+      hscalarA_pos.ne'
   have hright_core :
       Prec ((X - C motzkinShift) * motzkin n)
-        ((X - C motzkinShift) * motzkin (n + 1)) := by
-    exact prec_mul_X_sub_C_both_of_roots_le motzkinShift hprev hle_n hle_succ
+        ((X - C motzkinShift) * motzkin (n + 1)) :=
+    prec_mul_X_sub_C_both_of_roots_le motzkinShift hprev hle_n hle_succ
   have hright :
       Prec (C (motzkinCoeffB n) * ((X - C motzkinShift) * motzkin n))
-        ((X - C motzkinShift) * motzkin (n + 1)) := by
-    exact prec_C_mul_left hright_core hscalarB_pos.ne'
+        ((X - C motzkinShift) * motzkin (n + 1)) :=
+    prec_C_mul_left hright_core hscalarB_pos.ne'
   have hleft_pos :
       HasPosLeadingCoeff (C (motzkinCoeffA n) * motzkin (n + 1)) :=
     hasPosLeadingCoeff_C_mul_motzkin hscalarA_pos (motzkin_posLeadingCoeff (n + 1))
@@ -236,10 +235,9 @@ lemma prec_motzkin_succ_of_shifted_even {n : Nat} (heven : n % 2 = 0)
     (hle_n : ∀ r ∈ (motzkin n).roots, r ≤ motzkinShift)
     (hle_succ : ∀ r ∈ (motzkin (n + 1)).roots, r ≤ motzkinShift) :
     Prec (motzkin n) (motzkin (n + 1)) := by
-  have hf : ((motzkin n) ≠ 0 ∧ (motzkin n).Splits) := by
-    exact
-      isRealRooted_of_dvd hshift.2.1.1 hshift.2.1.2 (motzkin_nonzero n)
-        ⟨X - C motzkinShift, by grind⟩
+  have hf : ((motzkin n) ≠ 0 ∧ (motzkin n).Splits) :=
+    isRealRooted_of_dvd hshift.2.1.1 hshift.2.1.2 (motzkin_nonzero n)
+      ⟨X - C motzkinShift, by grind⟩
   have hdeg : (motzkin n).natDegree + 1 = (motzkin (n + 1)).natDegree := by
     rw [natDegree_motzkin, natDegree_motzkin]
     lia
