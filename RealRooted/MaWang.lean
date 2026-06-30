@@ -587,12 +587,10 @@ private lemma lt_of_consecutive_of_interlaces_of_no_common
     exists_mem_between_of_listInterlaces_consecutive hint hEq
   have hr₁_root : f.IsRoot r₁ := by
     apply (mem_roots hf_ne).mp
-    rw [← hrs_eq]
-    exact Multiset.mem_coe.mpr (by simp_all)
+    simpa [hrs_eq] using Multiset.mem_coe.mpr (by simp_all : r₁ ∈ rs)
   have hs_root : g.IsRoot s := by
     apply (mem_roots hg_ne).mp
-    rw [← hss_eq]
-    exact Multiset.mem_coe.mpr hs_mem
+    simpa [hss_eq] using Multiset.mem_coe.mpr hs_mem
   grind
 
 private lemma countP_le_add_countP_gt_eq_length (ts : List ℝ) (s : ℝ) :
@@ -627,8 +625,7 @@ private lemma isRoot_of_mem_sorted_roots_eq
     intro hf0
     simp_all
   exact (mem_roots hf_ne).mp <| by
-    rw [← hrs_eq]
-    exact Multiset.mem_coe.mpr (by simp_all)
+    simpa [hrs_eq] using Multiset.mem_coe.mpr (by simp_all : r ∈ rs)
 
 private lemma listInterlaces_tail_pair_prod_nonneg :
     ∀ {ss : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ},
@@ -1577,12 +1574,10 @@ theorem prec_of_interlaces_eval_mul_neg_succ {f g F : ℝ[X]}
     intro pre r₁ r₂ rest hEq
     have hr₁_root : f.IsRoot r₁ := by
       apply (mem_roots hf.1).mp
-      rw [← hrs_eq]
-      exact Multiset.mem_coe.mpr (by simp_all)
+      simpa [hrs_eq] using Multiset.mem_coe.mpr (by simp_all : r₁ ∈ r₀ :: rs')
     have hr₂_root : f.IsRoot r₂ := by
       apply (mem_roots hf.1).mp
-      rw [← hrs_eq]
-      exact Multiset.mem_coe.mpr (by simp_all)
+      simpa [hrs_eq] using Multiset.mem_coe.mpr (by simp_all : r₂ ∈ r₀ :: rs')
     have hFg₁ : F.eval r₁ * g.eval r₁ < 0 := hroot_sign r₁ hr₁_root
     have hFg₂ : F.eval r₂ * g.eval r₂ < 0 := hroot_sign r₂ hr₂_root
     have hgg_nonpos : g.eval r₁ * g.eval r₂ ≤ 0 :=
@@ -1669,12 +1664,10 @@ theorem prec_of_interlaces_eval_mul_neg_same {f g F : ℝ[X]}
     intro pre r₁ r₂ rest hEq
     have hr₁_root : f.IsRoot r₁ := by
       apply (mem_roots hf.1).mp
-      rw [← hrs_eq]
-      exact Multiset.mem_coe.mpr (by simp_all)
+      simpa [hrs_eq] using Multiset.mem_coe.mpr (by simp_all : r₁ ∈ r₀ :: rs')
     have hr₂_root : f.IsRoot r₂ := by
       apply (mem_roots hf.1).mp
-      rw [← hrs_eq]
-      exact Multiset.mem_coe.mpr (by simp_all)
+      simpa [hrs_eq] using Multiset.mem_coe.mpr (by simp_all : r₂ ∈ r₀ :: rs')
     have hFg₁ : F.eval r₁ * g.eval r₁ < 0 := hroot_sign r₁ hr₁_root
     have hFg₂ : F.eval r₂ * g.eval r₂ < 0 := hroot_sign r₂ hr₂_root
     have hgg_nonpos : g.eval r₁ * g.eval r₂ ≤ 0 :=
