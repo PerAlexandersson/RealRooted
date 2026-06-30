@@ -64,9 +64,9 @@ lemma coeff_touchard_top_and_above :
 lemma natDegree_touchard (n : Nat) :
     (touchard n).natDegree = n := by
   rcases coeff_touchard_top_and_above n with ⟨htop, habove⟩
-  apply natDegree_eq_of_le_of_coeff_ne_zero
-  · exact natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm)
-  · simp [htop]
+  exact natDegree_eq_of_le_of_coeff_ne_zero
+    (natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm))
+    (by simp [htop])
 
 lemma monic_touchard (n : Nat) :
     (touchard n).Monic := by

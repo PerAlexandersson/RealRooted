@@ -150,9 +150,9 @@ lemma coeff_singletonFreeSetPartitions_top_pos_and_above :
 lemma natDegree_singletonFreeSetPartitions (n : Nat) (hn : 2 ≤ n) :
     (singletonFreeSetPartitions n).natDegree = n / 2 := by
   rcases coeff_singletonFreeSetPartitions_top_pos_and_above n hn with ⟨htop, habove⟩
-  apply natDegree_eq_of_le_of_coeff_ne_zero
-  · exact natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm)
-  · grind
+  exact natDegree_eq_of_le_of_coeff_ne_zero
+    (natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm))
+    (by grind)
 
 lemma singletonFreeSetPartitions_nonzero (n : Nat) (hn : 2 ≤ n) :
     singletonFreeSetPartitions n ≠ 0 := by

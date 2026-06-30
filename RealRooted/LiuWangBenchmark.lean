@@ -168,12 +168,13 @@ lemma coeff_above_liuWangPoly (d n m : Nat) (hm : n ≤ m) :
   coeff_liuWangPoly_of_ge d n m hm
 
 lemma natDegree_liuWangPoly (d n : Nat) (hn : 0 < n) :
-    (liuWangPoly d n).natDegree = n - 1 := by
-  apply natDegree_eq_of_le_of_coeff_ne_zero
-  · exact natDegree_le_iff_coeff_eq_zero.mpr (fun m hm =>
-      coeff_above_liuWangPoly d n m (by lia))
-  · rw [coeff_top_liuWangPoly d n hn]
-    exact_mod_cast hn.ne'
+    (liuWangPoly d n).natDegree = n - 1 :=
+  natDegree_eq_of_le_of_coeff_ne_zero
+    (natDegree_le_iff_coeff_eq_zero.mpr (fun m hm =>
+      coeff_above_liuWangPoly d n m (by lia)))
+    (by
+      rw [coeff_top_liuWangPoly d n hn]
+      exact_mod_cast hn.ne')
 
 lemma liuWangPoly_ne_zero (d n : Nat) (hn : 0 < n) :
     liuWangPoly d n ≠ 0 := by

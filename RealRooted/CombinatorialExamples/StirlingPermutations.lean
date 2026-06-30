@@ -143,9 +143,9 @@ lemma coeff_stirlingPermutations_top_pos_and_above :
 lemma natDegree_stirlingPermutations (n : Nat) :
     (stirlingPermutations n).natDegree = n := by
   rcases coeff_stirlingPermutations_top_pos_and_above n with ⟨htop, habove⟩
-  apply natDegree_eq_of_le_of_coeff_ne_zero
-  · exact natDegree_le_iff_coeff_eq_zero.mpr (fun k hk => habove k hk)
-  · grind
+  exact natDegree_eq_of_le_of_coeff_ne_zero
+    (natDegree_le_iff_coeff_eq_zero.mpr (fun k hk => habove k hk))
+    (by grind)
 
 lemma stirlingPermutations_ne_zero (n : Nat) :
     stirlingPermutations n ≠ 0 := by

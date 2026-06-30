@@ -248,9 +248,9 @@ lemma coeff_sturmDerangementsExc_symm :
 lemma natDegree_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n) :
     (sturmDerangementsExc n).natDegree = n - 1 := by
   rcases coeff_sturmDerangementsExc_top_and_above n hn with ⟨htop, habove⟩
-  apply natDegree_eq_of_le_of_coeff_ne_zero
-  · exact natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm)
-  · simp_all
+  exact natDegree_eq_of_le_of_coeff_ne_zero
+    (natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm))
+    (by simp_all)
 
 lemma monic_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n) :
     (sturmDerangementsExc n).Monic := by

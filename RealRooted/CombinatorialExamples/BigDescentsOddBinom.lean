@@ -123,16 +123,17 @@ lemma coeff_oddBinomPolyReal (n k : ℕ) :
   rw [Nat.choose_eq_zero_of_lt] <;> grind
 
 lemma oddBinomPolyReal_natDegree (n : ℕ) (hn : 0 < n) :
-    (oddBinomPolyReal n).natDegree = (n - 1) / 2 := by
-  apply natDegree_eq_of_le_of_coeff_ne_zero
-  · exact natDegree_le_iff_coeff_eq_zero.mpr (fun k hk => by
+    (oddBinomPolyReal n).natDegree = (n - 1) / 2 :=
+  natDegree_eq_of_le_of_coeff_ne_zero
+    (natDegree_le_iff_coeff_eq_zero.mpr (fun k hk => by
       rw [coeff_oddBinomPolyReal]
       rw [Nat.choose_eq_zero_of_lt]
       · lia
-      · lia)
-  · rw [coeff_oddBinomPolyReal]
-    exact_mod_cast Nat.choose_ne_zero (by lia :
-      2 * ((n - 1) / 2) + 1 ≤ n)
+      · lia))
+    (by
+      rw [coeff_oddBinomPolyReal]
+      exact_mod_cast Nat.choose_ne_zero (by lia :
+        2 * ((n - 1) / 2) + 1 ≤ n))
 
 lemma oddBinomPolyReal_ne_zero (n : ℕ) (hn : 0 < n) :
     oddBinomPolyReal n ≠ 0 := by
@@ -401,11 +402,11 @@ lemma oddBinomPolyReal_eval_eq_zero_of_mem_tangentRootFinset (n : ℕ) :
   exact oddBinomPolyReal_tangentRoot_eval_eq_zero n j (by lia) (by lia)
 
 lemma oddBinomPolyReal_roots_eq_tangentRootFinset (n : ℕ) (hn : 0 < n) :
-    (oddBinomPolyReal n).roots = (tangentRootFinset n).val := by
-  apply Polynomial.roots_eq_of_natDegree_le_card_of_ne_zero
-  · exact oddBinomPolyReal_eval_eq_zero_of_mem_tangentRootFinset n
-  · rw [oddBinomPolyReal_natDegree n hn, tangentRootFinset_card n]
-  · exact oddBinomPolyReal_ne_zero n hn
+    (oddBinomPolyReal n).roots = (tangentRootFinset n).val :=
+  Polynomial.roots_eq_of_natDegree_le_card_of_ne_zero
+    (oddBinomPolyReal_eval_eq_zero_of_mem_tangentRootFinset n)
+    (by rw [oddBinomPolyReal_natDegree n hn, tangentRootFinset_card n])
+    (oddBinomPolyReal_ne_zero n hn)
 
 theorem oddBinomPolyReal_isRealRooted (n : ℕ) (hn : 0 < n) :
     (oddBinomPolyReal n) ≠ 0 ∧ (oddBinomPolyReal n).Splits := by

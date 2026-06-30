@@ -92,9 +92,9 @@ lemma coeff_eulerianTilde_top_and_above :
 lemma natDegree_eulerianTilde (n : Nat) :
     (eulerianTilde n).natDegree = n + 1 := by
   rcases coeff_eulerianTilde_top_and_above n with ⟨htop, habove⟩
-  apply natDegree_eq_of_le_of_coeff_ne_zero
-  · exact natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm)
-  · simp_all
+  exact natDegree_eq_of_le_of_coeff_ne_zero
+    (natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm))
+    (by simp_all)
 
 lemma monic_eulerianTilde (n : Nat) :
     (eulerianTilde n).Monic := by
