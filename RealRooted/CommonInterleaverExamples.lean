@@ -125,14 +125,8 @@ private lemma xAddOne_natDegree :
 
 private lemma xAddTwo_natDegree :
     (X + 2 : ℝ[X]).natDegree = 1 := by
-  have hpoly : (X + 2 : ℝ[X]) = C (1 : ℝ) * X + C (2 : ℝ) := by
-    ext n
-    cases n with
-    | zero =>
-        simp
-    | succ n =>
-        simp
-  simp_all
+  change ((X + C (2 : ℝ) : ℝ[X]).natDegree = 1)
+  simp
 
 private lemma xAddTwo_isRealRooted : ((X + 2 : ℝ[X]) ≠ 0 ∧ (X + 2 : ℝ[X]).Splits) :=
   isRealRooted_of_degree_one xAddTwo_natDegree
@@ -203,8 +197,8 @@ private lemma xSq_add_fiveX_add_six_natDegree :
 
 private lemma xSq_add_fiveX_add_six_roots :
     (((X + 2) * (X + 3)) : ℝ[X]).roots = {(-3 : ℝ)} + {(-2 : ℝ)} := by
-  rw [roots_mul (mul_ne_zero xAddTwo_isRealRooted.1 xAddThree_isRealRooted.1)]
-  rw [xAddTwo_roots, xAddThree_roots]
+  rw [roots_mul (mul_ne_zero xAddTwo_isRealRooted.1 xAddThree_isRealRooted.1),
+    xAddTwo_roots, xAddThree_roots]
   grind
 
 private lemma xAddFiveHalves_prec_xAddOne :

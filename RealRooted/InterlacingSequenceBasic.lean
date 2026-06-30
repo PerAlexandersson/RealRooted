@@ -130,29 +130,15 @@ lemma IsInterlacingSeq.toIsInterlacingSeq0 {fs : List ℝ[X]} (h : IsInterlacing
 lemma IsInterlacingSeq.prec {fs : List ℝ[X]} (h : IsInterlacingSeq fs)
     {i j : Fin fs.length} (hij : i < j) :
     Prec (fs.get i) (fs.get j) := by
-  cases fs with
-  | nil =>
-      grind
-  | cons f fs =>
-      cases fs with
-      | nil =>
-          grind
-      | cons g gs =>
-          simpa [IsInterlacingSeq] using h i j hij
+  rw [isInterlacingSeq_iff_pairwise] at h
+  exact List.pairwise_iff_get.1 h i j hij
 
 /-- Any pair in a weak zero-aware interlacing sequence satisfies `Prec0`. -/
 lemma IsInterlacingSeq0.prec0 {fs : List ℝ[X]} (h : IsInterlacingSeq0 fs)
     {i j : Fin fs.length} (hij : i < j) :
     Prec0 (fs.get i) (fs.get j) := by
-  cases fs with
-  | nil =>
-      grind
-  | cons f fs =>
-      cases fs with
-      | nil =>
-          grind
-      | cons g gs =>
-          simpa [IsInterlacingSeq0] using h i j hij
+  rw [isInterlacingSeq0_iff_pairwise] at h
+  exact List.pairwise_iff_get.1 h i j hij
 
 /-- A subsequence of an interlacing sequence is interlacing. -/
 lemma IsInterlacingSeq.sublist {fs gs : List ℝ[X]}
@@ -205,14 +191,14 @@ lemma IsInterlacingSeq.append {fs gs : List ℝ[X]}
 lemma IsInterlacingSeq.reverse {fs : List ℝ[X]} (hfs : IsInterlacingSeq fs) :
     fs.reverse.Pairwise (fun f g => Prec g f) := by
   rw [isInterlacingSeq_iff_pairwise] at hfs
-  grind
+  exact hfs.reverse
 
 /-- Reversing a weak zero-aware interlacing sequence preserves pairwise
 interlacing. -/
 lemma IsInterlacingSeq0.reverse {fs : List ℝ[X]} (hfs : IsInterlacingSeq0 fs) :
     fs.reverse.Pairwise (fun f g => Prec0 g f) := by
   rw [isInterlacingSeq0_iff_pairwise] at hfs
-  grind
+  exact hfs.reverse
 
 /-- Reversing an interlacing sequence with nonnegative coefficients preserves
 the same structure. -/
