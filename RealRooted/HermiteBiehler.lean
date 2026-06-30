@@ -254,6 +254,129 @@ def HermiteBiehlerStableToHurwitzOddEvenStatement : Prop :=
     IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) →
     IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q))
 
+/-! ## Reduction of the forward Hermite--Biehler/Hurwitz bridge to a
+first-quadrant conformal-substitution interface -/
+
+/-- Conjugation symmetry of the complexification: a real polynomial commutes
+with complex conjugation under evaluation. -/
+theorem eval_complexify_conj (p : ℝ[X]) (z : ℂ) :
+    (complexify p).eval (starRingEnd ℂ z) =
+      starRingEnd ℂ ((complexify p).eval z) := by
+  have hcomp : (starRingEnd ℂ).comp Complex.ofRealHom = Complex.ofRealHom := by
+    ext r
+    simp
+  rw [complexify, Polynomial.eval_map, Polynomial.eval_map, Polynomial.hom_eval₂, hcomp]
+
+/-- Value of a complexified real polynomial at a real point. -/
+theorem eval_complexify_ofReal (p : ℝ[X]) (t : ℝ) :
+    (complexify p).eval (t : ℂ) = ((p.eval t : ℝ) : ℂ) := by
+  rw [complexify]
+  exact Polynomial.eval_map_apply (f := Complex.ofRealHom) (p := p) t
+
+/-- A nonzero polynomial with nonnegative coefficients is strictly positive at
+every strictly positive real argument. -/
+theorem eval_pos_of_hasNonnegCoeffs {f : ℝ[X]} (hf : HasNonnegCoeffs f)
+    (hf0 : f ≠ 0) {t : ℝ} (ht : 0 < t) : 0 < f.eval t := by
+  rw [Polynomial.eval_eq_sum, Polynomial.sum_def]
+  apply Finset.sum_pos
+  · intro n hn
+    have hcoeff : 0 < f.coeff n :=
+      lt_of_le_of_ne (hf n) (Ne.symm (Polynomial.mem_support_iff.mp hn))
+    positivity
+  · exact Polynomial.support_nonempty.mpr hf0
+
+/-- First-quadrant form of the forward Hermite--Biehler/Hurwitz conformal
+substitution: it suffices to exclude roots of `q(x²) + x p(x²)` in the open
+first quadrant `{Re > 0, Im > 0}`. -/
+def HermiteBiehlerStableToHurwitzOddEvenFirstQuadrantStatement : Prop :=
+  ∀ ⦃p q : ℝ[X]⦄,
+    HasNonnegCoeffs p →
+    HasNonnegCoeffs q →
+    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) →
+    ∀ z : ℂ, 0 < z.re → 0 < z.im →
+      (complexify (oddEvenPolynomial p q)).eval z ≠ 0
+
+/-- Upper-half-plane substitution form of the forward Hermite--Biehler/Hurwitz
+bridge: for any upper-half-plane point `w` with a right-half-plane square root
+`z`, the Hurwitz combination `q(w) + z·p(w)` is nonzero.
+
+This is the genuinely analytic conformal-substitution core: the quadratic map
+`z ↦ z²` sends the open first quadrant onto the open upper half-plane, so this
+interface and the first-quadrant interface above carry exactly the same
+content. -/
+def HermiteBiehlerStableToHurwitzOddEvenUpperHalfSubstitutionStatement : Prop :=
+  ∀ ⦃p q : ℝ[X]⦄,
+    HasNonnegCoeffs p →
+    HasNonnegCoeffs q →
+    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) →
+    ∀ ⦃w z : ℂ⦄, 0 < w.im → z ^ 2 = w → 0 < z.re →
+      (complexify q).eval w + z * (complexify p).eval w ≠ 0
+
+/-- The first-quadrant interface follows from the upper-half-plane substitution
+interface: for `z` in the open first quadrant, `w = z²` lies in the open upper
+half-plane and `z` is a right-half-plane square root of `w`. -/
+theorem hermiteBiehlerStableToHurwitzOddEvenFirstQuadrant_of_upperHalfSubstitution
+    (h : HermiteBiehlerStableToHurwitzOddEvenUpperHalfSubstitutionStatement) :
+    HermiteBiehlerStableToHurwitzOddEvenFirstQuadrantStatement := by
+  intro p q hp hq hstable z hzre hzim
+  rw [eval_complexify_oddEvenPolynomial]
+  have hw : 0 < (z ^ 2).im := by
+    rw [pow_two, Complex.mul_im]
+    positivity
+  exact h hp hq hstable hw rfl hzre
+
+/-- Checked reduction of the forward Hermite--Biehler/Hurwitz odd/even bridge to
+its first-quadrant conformal-substitution core.
+
+`HermiteBiehlerStableToHurwitzOddEvenStatement` follows from
+`HermiteBiehlerStableToHurwitzOddEvenFirstQuadrantStatement`: the real-axis case
+`Im z = 0` is handled by positivity of the nonnegative-coefficient polynomial
+`q(x²) + x p(x²)`, and the lower half-plane case `Im z < 0` is reduced to the
+first quadrant by complex conjugation. -/
+theorem hermiteBiehlerStableToHurwitzOddEven_of_firstQuadrant
+    (h : HermiteBiehlerStableToHurwitzOddEvenFirstQuadrantStatement) :
+    HermiteBiehlerStableToHurwitzOddEvenStatement := by
+  intro p q hp hq hstable z hzre
+  -- The odd/even polynomial is nonzero, otherwise the stability hypothesis fails.
+  have hfne : oddEvenPolynomial p q ≠ 0 := by
+    intro h0
+    rw [oddEvenPolynomial_eq_zero_iff] at h0
+    obtain ⟨hp0, hq0⟩ := h0
+    have hI := hstable Complex.I (by rw [Complex.I_im]; norm_num)
+    apply hI
+    simp [hermiteBiehlerPolynomial, complexify, hp0, hq0]
+  rcases lt_trichotomy z.im 0 with him | him | him
+  · -- Lower half-plane: reduce to the first quadrant by conjugation.
+    have hconj := eval_complexify_conj (oddEvenPolynomial p q) z
+    have hre : 0 < (starRingEnd ℂ z).re := by
+      rw [Complex.conj_re]
+      exact hzre
+    have hci : 0 < (starRingEnd ℂ z).im := by
+      rw [Complex.conj_im]
+      linarith
+    have hne : (complexify (oddEvenPolynomial p q)).eval (starRingEnd ℂ z) ≠ 0 :=
+      h hp hq hstable (starRingEnd ℂ z) hre hci
+    intro h0
+    apply hne
+    rw [hconj, h0, map_zero]
+  · -- Real axis: positivity of the nonnegative-coefficient polynomial.
+    have hz : z = ((z.re : ℝ) : ℂ) := by
+      apply Complex.ext <;> simp [him]
+    rw [hz, eval_complexify_ofReal]
+    have hpos : 0 < (oddEvenPolynomial p q).eval z.re :=
+      eval_pos_of_hasNonnegCoeffs (hasNonnegCoeffs_oddEvenPolynomial hp hq) hfne hzre
+    simpa using hpos.ne'
+  · -- First quadrant: the interface applies directly.
+    exact h hp hq hstable z hzre him
+
+/-- Composite reduction: the forward Hermite--Biehler/Hurwitz odd/even bridge
+follows from the upper-half-plane substitution interface. -/
+theorem hermiteBiehlerStableToHurwitzOddEven_of_upperHalfSubstitution
+    (h : HermiteBiehlerStableToHurwitzOddEvenUpperHalfSubstitutionStatement) :
+    HermiteBiehlerStableToHurwitzOddEvenStatement :=
+  hermiteBiehlerStableToHurwitzOddEven_of_firstQuadrant
+    (hermiteBiehlerStableToHurwitzOddEvenFirstQuadrant_of_upperHalfSubstitution h)
+
 /-- Packaging form of the analytic Hermite--Biehler-to-Hurwitz odd/even
 bridge, including the coefficient half of `IsHurwitzStable`. -/
 theorem isHurwitzStable_oddEvenPolynomial_of_hermiteBiehlerStableToHurwitz
