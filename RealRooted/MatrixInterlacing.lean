@@ -116,9 +116,7 @@ lemma isInterlacingSeq0Nonneg_oneSupportSeq {n : ℕ} (i : Fin n) :
     rw [show (oneSupportSeq n i).get k =
           (if k' = i then (1 : ℝ[X]) else 0) by
           simpa [k'] using get_oneSupportSeq i k']
-    by_cases hki : k' = i
-    · simp [hki, hasNonnegCoeffs_one]
-    · simp [hki, hasNonnegCoeffs_zero]
+    by_cases hki : k' = i <;> simp [hki, hasNonnegCoeffs_one, hasNonnegCoeffs_zero]
 
 lemma zipWith_mul_replicate_zero_sum_eq_zero (row : List ℝ[X]) :
     ((row.zipWith (· * ·) (List.replicate row.length (0 : ℝ[X]))).sum) = 0 := by
@@ -264,13 +262,13 @@ theorem matrix_preserves_interlacing_seq0_nonneg_entries
   have hfs : IsInterlacingSeq0Nonneg fs := by
     simpa [fs] using isInterlacingSeq0Nonneg_oneSupportSeq i
   have himage : IsInterlacingSeq0Nonneg (matPolyAction G fs) := hpres0 fs hfs_len hfs
-  have himage_nonneg : ∀ q ∈ matPolyAction G fs, HasNonnegCoeffs q := himage.2
   have hrow_eval :
       (row.zipWith (· * ·) fs).sum = row.get i := by
     simpa [fs] using zipWith_mul_oneSupportSeq_sum_eq_get row i
   have hmem_eval : (row.zipWith (· * ·) fs).sum ∈ matPolyAction G fs :=
     List.mem_map.2 ⟨row, hrow, rfl⟩
-  simp_all
+  rw [← hrow_eval]
+  exact himage.2 _ hmem_eval
 
 theorem matrix_preserves_interlacing_seq0_sparse_pair_prec0
     (G : List (List ℝ[X]))
@@ -392,8 +390,8 @@ lemma isInterlacingSeq0_reverse_rowPairAffineSeq
         hrow₂_len] using j.2⟩
   have hij' : i' < j' := by
     grind
-  rw [get_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len i']
-  rw [get_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len j']
+  rw [get_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len i',
+    get_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len j']
   exact h2x2 i' j' hij' s t hs ht
 
 lemma isInterlacingSeq_reverse_rowPairAffineSeq
@@ -422,8 +420,8 @@ lemma isInterlacingSeq_reverse_rowPairAffineSeq
         hrow₂_len] using j.2⟩
   have hij' : i' < j' := by
     grind
-  rw [get_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len i']
-  rw [get_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len j']
+  rw [get_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len i',
+    get_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len j']
   exact h2x2 i' j' hij' s t hs ht
 
 lemma isRealRooted_mem_rowPairAffineSeq
