@@ -4299,12 +4299,7 @@ lemma affine_family_of_zero_right {f : ℝ[X]} (hf_ne : f ≠ 0) (hf_splits : f.
 lemma hasNonnegCoeffs_affine_linear {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
     HasNonnegCoeffs (C a * X + C b) := by
   have hCb : HasNonnegCoeffs (C b) := by
-    intro n
-    cases n with
-    | zero =>
-        simp [hb]
-    | succ n =>
-        simp
+    rintro (_ | n) <;> simp [hb]
   exact (nonnegCoeffs_C_mul ha hasNonnegCoeffs_X).add hCb
 
 lemma prec0_one_affine_linear {a b : ℝ} (ha : 0 < a) :
