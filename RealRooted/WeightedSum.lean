@@ -204,13 +204,9 @@ lemma toSumCompatibleLeft_map_one {h : ℝ[X]} :
       | cons_zero ha _ _ _ =>
           simp_all
       | cons_pos _ hprec hpos htail hrr_ne hrr_splits hcop =>
-          have htail' : SumCompatibleLeft h (q :: l) :=
-            toSumCompatibleLeft_map_one htail
-          have hrr' : ((p + (q :: l).sum) ≠ 0 ∧ (p + (q :: l).sum).Splits) := by
-            simp_all
-          have hcop' : IsCoprime p (q :: l).sum := by
-            simp_all
-          exact SumCompatibleLeft.cons hprec hpos htail' hrr'.1 hrr'.2 hcop'
+          exact SumCompatibleLeft.cons hprec hpos
+            (toSumCompatibleLeft_map_one htail)
+            (by simp_all) (by simp_all) (by simp_all)
 
 end WeightedCompatibleLeft
 
@@ -286,10 +282,6 @@ theorem prec_sum_right
   · simp
   · simp_all
   · simp_all
-  · cases l with
-    | nil =>
-        lia
-    | cons p l =>
-        simp
+  · cases l <;> simp_all
 
 end RealRooted

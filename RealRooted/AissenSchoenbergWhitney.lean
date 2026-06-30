@@ -98,7 +98,7 @@ formulation, since PF coefficients are already nonnegative. -/
 theorem aissenSchoenbergWhitneyForwardNoNonneg_of_forward
     (hASW : aissenSchoenbergWhitneyForwardStatement) :
     aissenSchoenbergWhitneyForwardNoNonnegStatement :=
-  fun {_ : ℝ[X]} hp0 hpf => ⟨⟨hp0, (hASW hpf).1⟩, (hASW hpf).2⟩
+  fun {_} hp0 hpf => ⟨⟨hp0, (hASW hpf).1⟩, (hASW hpf).2⟩
 
 /-- The no-extra-nonnegativity formulation implies the current forward ASW
 statement. -/
@@ -122,7 +122,7 @@ theorem aissenSchoenbergWhitneyForward_iff_noNonneg :
 theorem aissenSchoenbergWhitneyForwardOrZero_of_forward
     (hASW : aissenSchoenbergWhitneyForwardStatement) :
     aissenSchoenbergWhitneyForwardOrZeroStatement :=
-  fun {_ : ℝ[X]} _ hpf => ⟨Or.inr (hASW hpf).1, (hASW hpf).2⟩
+  fun {_} _ hpf => ⟨Or.inr (hASW hpf).1, (hASW hpf).2⟩
 
 /-- The zero-aware forward ASW interface implies the strict nonzero one by
 discarding the zero case. -/

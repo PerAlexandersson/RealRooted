@@ -159,7 +159,7 @@ def schurPolyaWagnerHadamardPFStatement : Prop :=
 theorem schurPolyaWagnerHadamardPF_of_garloffWagner_nonneg
     (hGW : garloffWagnerHadamardNonnegRealRootedStatement) :
     schurPolyaWagnerHadamardPFStatement :=
-  fun {_ : ℝ[X]} {_ : ℝ[X]} hp hq => hp.hadamardProduct hGW hq
+  fun {_ _} hp hq => hp.hadamardProduct hGW hq
 
 /-- Nonnegative-coefficient Garloff--Wagner interlacing interface for
 coefficientwise Hadamard products.
@@ -261,8 +261,7 @@ def garloffWagnerHadamardPFPrecStatement : Prop :=
 theorem garloffWagnerHadamardPFPrec_of_nonnegPrec
     (hGW : garloffWagnerHadamardNonnegPrecStatement) :
     garloffWagnerHadamardPFPrecStatement :=
-  fun {_ : ℝ[X]} {_ : ℝ[X]} {_ : ℝ[X]} {_ : ℝ[X]}
-      hf hg hp hq hfg hpq =>
+  fun {_ _ _ _} hf hg hp hq hfg hpq =>
     hGW hf.hasNonnegCoeffs hg.hasNonnegCoeffs
       hp.hasNonnegCoeffs hq.hasNonnegCoeffs hfg hpq
 
@@ -377,7 +376,7 @@ theorem polyaFrequencyHadamardCoeff_of_schurPolyaWagner
     (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
     (hSPW : schurPolyaWagnerHadamardPFStatement) :
     polyaFrequencyHadamardCoeffStatement :=
-  fun {_ : ℝ[X]} {_ : ℝ[X]} hp hq =>
+  fun {_ _} hp hq =>
     (hSPW (IsPFPolynomial.of_sequence hASW hp)
       (IsPFPolynomial.of_sequence hASW hq)).to_sequence
 
