@@ -52,7 +52,7 @@ lemma choose_cast_succ_eq_ratio (m j : Nat) :
     ((Nat.choose m (j + 1) : Nat) : ℝ) =
       ((Nat.choose m j : Nat) : ℝ) * (((m - j : Nat) : ℝ) / ((j + 1 : Nat) : ℝ)) := by
   have hj1_ne : ((j + 1 : Nat) : ℝ) ≠ 0 := by
-    grind
+    positivity
   rw [← mul_div_assoc]
   apply (eq_div_iff hj1_ne).2
   exact_mod_cast (Nat.choose_succ_right_eq m j)
