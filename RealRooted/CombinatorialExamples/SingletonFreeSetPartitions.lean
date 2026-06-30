@@ -231,10 +231,10 @@ lemma prec_singletonFreeSetPartitions_two_three :
 
 lemma prec_singletonFreeSetPartitions_three_four :
     Prec (singletonFreeSetPartitions 3) (singletonFreeSetPartitions 4) := by
-  have hlin : Interlaces (1 : ℝ[X]) (1 + C (3 : ℝ) * X) := by
-    refine interlaces_one_linear ?_
-    simpa [add_comm] using
-      (Polynomial.natDegree_linear (a := (3 : ℝ)) (b := (1 : ℝ)) (by simp))
+  have hlin : Interlaces (1 : ℝ[X]) (1 + C (3 : ℝ) * X) :=
+    interlaces_one_linear (by
+      simpa [add_comm] using
+        (Polynomial.natDegree_linear (a := (3 : ℝ)) (b := (1 : ℝ)) (by simp)))
   have hprec : Prec (1 : ℝ[X]) (1 + C (3 : ℝ) * X) := hlin.toPrec
   have hone_nonpos : ∀ r ∈ (1 : ℝ[X]).roots, r ≤ 0 := by
     simp
