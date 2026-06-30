@@ -77,8 +77,7 @@ lemma coeff_coloredSetPartitions_top_and_above :
       coeff (coloredSetPartitions c m n) n = 1 ∧
         ∀ k > n, coeff (coloredSetPartitions c m n) k = 0
   | c, m, 0 => by
-      constructor <;> simp [coloredSetPartitions_zero, coeff_one]
-      lia
+      grind [coloredSetPartitions_zero, coeff_one]
   | c, m, n + 1 => by
       rcases coeff_coloredSetPartitions_top_and_above c m n with ⟨htop, habove⟩
       constructor

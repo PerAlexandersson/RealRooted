@@ -70,8 +70,7 @@ lemma coeff_motzkin_top_pos_and_above :
       0 < coeff (motzkin n) ((n + 1) / 2) ∧
       ∀ m > (n + 1) / 2, coeff (motzkin n) m = 0
   | 0 => by
-      constructor <;> simp [motzkin_zero, coeff_one]
-      lia
+      grind [motzkin_zero, coeff_one]
   | 1 => by
       constructor
       · rw [motzkin_one, coeff_add, coeff_one, coeff_X]

@@ -143,8 +143,7 @@ lemma coeff_sturmDerangementsExc_top_and_above :
   | 0, h => by lia
   | 1, h => by lia
   | 2, _ => by
-      constructor <;> simp [sturmDerangementsExc_two, coeff_X]
-      lia
+      grind [sturmDerangementsExc_two, coeff_X]
   | 3, _ => by
       constructor
       · rw [sturmDerangementsExc_three]

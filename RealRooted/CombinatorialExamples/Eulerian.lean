@@ -67,8 +67,7 @@ lemma coeff_eulerianTilde_top_and_above :
       coeff (eulerianTilde n) (n + 1) = 1 ∧
       ∀ m > n + 1, coeff (eulerianTilde n) m = 0
   | 0 => by
-      constructor <;> simp [eulerianTilde_zero, coeff_X]
-      lia
+      grind [eulerianTilde_zero, coeff_X]
   | n + 1 => by
       rcases coeff_eulerianTilde_top_and_above n with ⟨htop, habove⟩
       constructor
