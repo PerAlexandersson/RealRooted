@@ -214,7 +214,7 @@ lemma prec_singletonFreeSetPartitionsCore_of_prec {n : Nat} (hn : 3 ≤ n)
       HasPosLeadingCoeff (C (n + 1 : ℝ) * singletonFreeSetPartitions n) := by
     unfold HasPosLeadingCoeff
     rw [leadingCoeff_C_mul_of_isUnit (isUnit_iff_ne_zero.mpr hscalar_ne)]
-    exact mul_pos (by grind) (singletonFreeSetPartitions_posLeadingCoeff n (by lia))
+    exact mul_pos (by positivity) (singletonFreeSetPartitions_posLeadingCoeff n (by lia))
   have hder_pos :
       HasPosLeadingCoeff (singletonFreeSetPartitions (n + 1)).derivative :=
       (singletonFreeSetPartitions_posLeadingCoeff (n + 1) (by lia)).derivative (by
