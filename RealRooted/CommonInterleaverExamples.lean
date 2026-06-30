@@ -357,16 +357,12 @@ all-combinations conclusion for a simpler reason: every combination remains
 linear. -/
 lemma xAddOne_xAddTwo_allComboRealRooted :
     AllComboRealRooted (X + 1 : ℝ[X]) (X + 2) := by
-  have hx1_deg_le_one : (X + 1 : ℝ[X]).natDegree ≤ 1 := by
-    rw [xAddOne_natDegree]
-  have hx2_deg_le_one : (X + 2 : ℝ[X]).natDegree ≤ 1 := by
-    rw [xAddTwo_natDegree]
   exact
     allComboRealRooted_of_natDegree_le_one
       xAddOne_hasPosLeadingCoeff
       xAddTwo_hasPosLeadingCoeff
-      hx1_deg_le_one
-      hx2_deg_le_one
+      (by simp [xAddOne_natDegree])
+      (by simp [xAddTwo_natDegree])
 
 private lemma xAddOne_xAddTwo_badAffineSlice_eq :
     ((((C (1 : ℝ) * X + C (1 : ℝ)) * (X + 1)) + (X + 2)) : ℝ[X]) =
