@@ -504,8 +504,8 @@ of `prec_TDeriv` in the exact form needed for chain arguments. -/
 lemma prec_iterateTDeriv_succ {eps : ℝ} {p : ℝ[X]} {n : ℕ} (heps : 0 < eps) (hp₀ : p ≠ 0)
     (hp : p.Splits) :
     Prec (iterateTDeriv eps n p) (iterateTDeriv eps (n + 1) p) := by
-  rw [iterateTDeriv_succ]
-  exact prec_TDeriv heps (iterateTDeriv_ne_zero hp₀) (splits_iterateTDeriv heps hp)
+  simpa [iterateTDeriv_succ] using
+    prec_TDeriv heps (iterateTDeriv_ne_zero hp₀) (splits_iterateTDeriv heps hp)
 
 /-! ## Main theorem -/
 

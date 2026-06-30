@@ -213,16 +213,15 @@ lemma affine_mul_X_add_X_eq (s t : ℝ) :
 lemma isRealRooted_affine_mul_X_add_X {s t : ℝ} (hs : 0 < s) :
     (((C s * X + C t) * X + X : ℝ[X]) ≠ 0 ∧ ((C s * X + C t) * X + X : ℝ[X]).Splits) := by
   rw [affine_mul_X_add_X_eq]
-  exact
-    isRealRooted_mul isRealRooted_X.1 isRealRooted_X.2
-      (isRealRooted_affine_factor (s := s) (t := t + 1) hs).1
-      (isRealRooted_affine_factor (s := s) (t := t + 1) hs).2
+  exact isRealRooted_X_mul
+    (isRealRooted_affine_factor (s := s) (t := t + 1) hs).1
+    (isRealRooted_affine_factor (s := s) (t := t + 1) hs).2
 
 lemma isRealRooted_affine_mul_C_add_X
     {A s t : ℝ} (hA : 0 ≤ A) (hs : 0 < s) :
     (((C s * X + C t) * C A + X : ℝ[X]) ≠ 0 ∧ ((C s * X + C t) * C A + X : ℝ[X]).Splits) := by
-  rw [affine_mul_C_add_X]
-  exact isRealRooted_affine_factor (s := s * A + 1) (t := t * A) (by positivity)
+  simpa [affine_mul_C_add_X] using
+    isRealRooted_affine_factor (s := s * A + 1) (t := t * A) (by positivity)
 
 lemma affine_mul_C_add_same_eq (s t a : ℝ) :
     ((C s * X + C t) * C a + C a : ℝ[X]) =
