@@ -77,10 +77,8 @@ lemma prec_X_add_C_to_X_mul_X_add_C {a b : ℝ}
     Prec (X + C a) (X * (X + C b)) := by
   have hdeg_a : (X + C a).natDegree = 1 := by
     simp
-  have hdeg_b : (X + C b).natDegree = 1 := by
-    simp
   have hrr_a : ((X + C a) ≠ 0 ∧ (X + C a).Splits) := isRealRooted_of_degree_one hdeg_a
-  have hrr_b : ((X + C b) ≠ 0 ∧ (X + C b).Splits) := isRealRooted_of_degree_one hdeg_b
+  have hrr_b : ((X + C b) ≠ 0 ∧ (X + C b).Splits) := isRealRooted_of_degree_one (by simp)
   have hrr_q : ((X * (X + C b)) ≠ 0 ∧ (X * (X + C b)).Splits) := isRealRooted_X_mul hrr_b.1 hrr_b.2
   have hdeg_q : (X * (X + C b)).natDegree = 2 := by
     simp_all
