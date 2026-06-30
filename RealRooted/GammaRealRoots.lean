@@ -668,9 +668,9 @@ lemma isRealRooted_gammaQuadraticFactor {r : ℝ} (hr : r ≤ 0) :
               | zero =>
                   simp [Polynomial.coeff_X_add_one_pow, coeff_X, coeff_one]
               | succ n =>
-                  have hpow0 : (((X + 1 : ℝ[X]) ^ 2).coeff (n + 3)) = 0 := by
-                    apply Polynomial.coeff_eq_zero_of_natDegree_lt
-                    exact lt_of_le_of_lt (natDegree_X_add_one_pow_le 2) (by lia)
+                  have hpow0 : (((X + 1 : ℝ[X]) ^ 2).coeff (n + 3)) = 0 :=
+                    Polynomial.coeff_eq_zero_of_natDegree_lt
+                      (lt_of_le_of_lt (natDegree_X_add_one_pow_le 2) (by lia))
                   simp [coeff_X, coeff_one, hpow0]
     have hroots :
         (C t * X ^ 2 + C (2 * t + 1) * X + C t).roots =
@@ -732,9 +732,8 @@ theorem isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
       have hr_nonpos : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hrr.2 hnn r hr_mem
       have hq_rr : (q ≠ 0 ∧ q.Splits) := isRealRooted_of_dvd hrr.1 hrr.2 hq_ne hq_dvd
       have hγ_pos : HasPosLeadingCoeff γ := hnn.pos_leadingCoeff hrr.1
-      have hq_pos : HasPosLeadingCoeff q := by
-        apply hasPosLeadingCoeff_of_X_sub_C_mul (r := r)
-        lia
+      have hq_pos : HasPosLeadingCoeff q :=
+        hasPosLeadingCoeff_of_X_sub_C_mul (r := r) (by simpa [← hq'] using hγ_pos)
       have hq_nn : HasNonnegCoeffs q :=
         hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
           hrr.1 hrr.2 hnn hq_rr.1 hq_rr.2 hq_pos hq_dvd
@@ -831,10 +830,10 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
             rw [Polynomial.coeff_natDegree]
             simp_all
           lia
-        have htop_deg : (gammaTransform (2 * n) δ).natDegree = 2 * n := by
-          apply Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
+        have htop_deg : (gammaTransform (2 * n) δ).natDegree = 2 * n :=
+          Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
             (natDegree_gammaTransform_le (2 * n) δ)
-          simp_all
+            (by simp_all)
         have hroots_pos : 0 < (gammaTransform (2 * n) δ).roots.card := by
           rw [card_roots_of_splits hpδ.2, htop_deg]
           lia
