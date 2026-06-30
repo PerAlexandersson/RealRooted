@@ -428,13 +428,10 @@ lemma listAlternates_of_append_zero_both :
 /-! ## Roots of nonneg-coefficient polynomials are ≤ 0 -/
 
 lemma hasNonnegCoeffs_one : HasNonnegCoeffs (1 : ℝ[X]) := by
-  intro n
-  cases n with
-  | zero =>
-      simp
-  | succ n =>
-      rw [coeff_one]
-      simp
+  rintro (_ | n)
+  · simp
+  · rw [coeff_one]
+    simp
 
 lemma hasNonnegCoeffs_C {a : ℝ} (ha : 0 ≤ a) : HasNonnegCoeffs (C a) := by
   rintro (_ | n) <;> simp [ha]
@@ -453,17 +450,11 @@ lemma HasNonnegCoeffs.mul {p q : ℝ[X]} (hp : HasNonnegCoeffs p) (hq : HasNonne
   exact Finset.sum_nonneg fun ij _ => mul_nonneg (hp ij.1) (hq ij.2)
 
 lemma hasNonnegCoeffs_X_sub_C {r : ℝ} (hr : r ≤ 0) : HasNonnegCoeffs (X - C r) := by
-  intro n
-  cases n with
-  | zero =>
-      simp [coeff_sub, hr]
-  | succ n =>
-      cases n with
-      | zero =>
-          simp [coeff_sub]
-      | succ n =>
-          rw [coeff_sub, coeff_X_of_ne_one (by lia), coeff_C_succ]
-          simp
+  rintro (_ | _ | n)
+  · simp [coeff_sub, hr]
+  · simp [coeff_sub]
+  · rw [coeff_sub, coeff_X_of_ne_one (by lia), coeff_C_succ]
+    simp
 
 lemma hasNonnegCoeffs_multiset_prod_X_sub_C :
     ∀ s : Multiset ℝ, (∀ r ∈ s, r ≤ 0) → HasNonnegCoeffs ((s.map (X - C ·)).prod) := by
