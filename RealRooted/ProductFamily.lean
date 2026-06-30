@@ -316,8 +316,8 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
   have hpos : ∀ p ∈ ps, HasPosLeadingCoeff p := by
     intro p hp
     rcases mem_zipWith_mul hp with ⟨f, hf, g, hg, rfl⟩
-    have hg_pos_rev : HasPosLeadingCoeff g := by
-      exact hgs.posLeadingCoeff g (by simp_all)
+    have hg_pos_rev : HasPosLeadingCoeff g :=
+      hgs.posLeadingCoeff g (by simp_all)
     rw [HasPosLeadingCoeff, leadingCoeff_mul]
     exact mul_pos (hfs.posLeadingCoeff f hf) hg_pos_rev
   have hps_ne : ps ≠ [] := by
@@ -553,11 +553,11 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg_both
     have hsub : gs'.Sublist gs.reverse := by
       simpa [gs'] using filterProductRightNonzero_sublist_right fs gs.reverse
     grind
-  have hfs' : IsInterlacingSeqNonneg fs' := by
-    exact hfs.sublist_of_realRooted_of_ne hfs_sub hfs_real
+  have hfs' : IsInterlacingSeqNonneg fs' :=
+    hfs.sublist_of_realRooted_of_ne hfs_sub hfs_real
       (fun f hf => mem_filterProductLeftNonzero_ne_zero (fs := fs) (gs := gs.reverse) hf)
-  have hgs'_rev : IsInterlacingSeqNonneg gs'.reverse := by
-    exact hgs.sublist_of_realRooted_of_ne hgs_sub_rev hgs_real
+  have hgs'_rev : IsInterlacingSeqNonneg gs'.reverse :=
+    hgs.sublist_of_realRooted_of_ne hgs_sub_rev hgs_real
       (fun g hg =>
         mem_filterProductRightNonzero_ne_zero
           (fs := fs) (gs := gs.reverse) (by grind))

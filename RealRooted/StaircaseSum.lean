@@ -67,11 +67,11 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
       · intro p hp
         exact hfs.posLeadingCoeff p (List.mem_of_mem_take hp)
       · lia
-    have hprefix_nonneg : HasNonnegCoeffs (fs.take m).sum := by
-      exact hasNonnegCoeffs_sum (fs.take m)
+    have hprefix_nonneg : HasNonnegCoeffs (fs.take m).sum :=
+      hasNonnegCoeffs_sum (fs.take m)
         (fun p hp => hfs.nonnegCoeffs p (List.mem_of_mem_take hp))
-    have hXprefix_prec : Prec f (X * (fs.take m).sum) := by
-      exact prec_mul_X_of_prec_of_nonneg hprefix_prec hprefix_nonneg hf_nonneg
+    have hXprefix_prec : Prec f (X * (fs.take m).sum) :=
+      prec_mul_X_of_prec_of_nonneg hprefix_prec hprefix_nonneg hf_nonneg
     have htake_succ : fs.take (m + 1) = fs.take m ++ [f] := by
       simp [f]
     have hf_mem_take_succ : f ∈ fs.take (m + 1) := by
@@ -89,8 +89,8 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
       rcases List.mem_cons.mp hp with rfl | hp
       · exact (hasNonnegCoeffs_X.mul hprefix_nonneg).pos_leadingCoeff hXprefix_prec.2.1.1
       · exact hfs.posLeadingCoeff p (List.mem_of_mem_drop hp)
-    have hsum_prec : Prec f (((X * (fs.take m).sum) :: fs.drop m).sum) := by
-      exact prec_sum_left_of_common_left_signed
+    have hsum_prec : Prec f (((X * (fs.take m).sum) :: fs.drop m).sum) :=
+      prec_sum_left_of_common_left_signed
         ((X * (fs.take m).sum) :: fs.drop m) f hcommon_left hpos (by lia)
     simpa [staircaseSum, f, List.sum_cons] using hsum_prec
 

@@ -145,8 +145,8 @@ lemma hasSimpleRoots_tderiv
     exact
       not_isRoot_TDeriv_of_simple_root
         (ne_of_gt heps) hsimple.ne_zero hp_root (hsimple a hp_root) ha
-  have hmult_pos : 1 ≤ (TDeriv eps p).rootMultiplicity a := by
-    exact (rootMultiplicity_pos <| TDeriv_ne_zero hsimple.ne_zero).mpr ha
+  have hmult_pos : 1 ≤ (TDeriv eps p).rootMultiplicity a :=
+    (rootMultiplicity_pos <| TDeriv_ne_zero hsimple.ne_zero).mpr ha
   have hmult_le : (TDeriv eps p).rootMultiplicity a ≤ 1 :=
     rootMultiplicity_TDeriv_le_one_of_not_isRoot heps hp hp_not_root
   lia
@@ -219,8 +219,8 @@ lemma allComboRealRooted_eq_zero_or_isRealRooted_and_hasSimpleRoots_iterateTDeri
     calc
       (C α * f + C β * g).natDegree ≤ max (C α * f).natDegree (C β * g).natDegree :=
         natDegree_add_le ..
-      _ ≤ max f.natDegree g.natDegree := by
-        exact max_le_max (natDegree_C_mul_le _ _) (natDegree_C_mul_le _ _)
+      _ ≤ max f.natDegree g.natDegree :=
+        max_le_max (natDegree_C_mul_le _ _) (natDegree_C_mul_le _ _)
   refine ⟨?_, ?_⟩
   · simpa [iterateTDeriv_linear_combo] using
       (splits_iterateTDeriv

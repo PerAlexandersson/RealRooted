@@ -191,7 +191,7 @@ theorem isHurwitzStable_oddEvenPolynomial_of_hermiteBiehlerStableToHurwitz
     (h : HermiteBiehlerStableToHurwitzOddEvenStatement) {p q : ℝ[X]}
     (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
     (hstable : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p)) :
-    IsHurwitzStable (oddEvenPolynomial p q) := by
-  exact ⟨hasNonnegCoeffs_oddEvenPolynomial hp hq, h hp hq hstable⟩
+    IsHurwitzStable (oddEvenPolynomial p q) :=
+  ⟨hasNonnegCoeffs_oddEvenPolynomial hp hq, h hp hq hstable⟩
 
 end RealRooted

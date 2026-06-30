@@ -69,10 +69,10 @@ theorem preservesInterlacingPairsUpToOrder0_of_preservesRealRootedOrZero
   · exact Or.inl (hfT0 ▸ prec0_zero_left (T g))
   by_cases hgT0 : T g = 0
   · exact Or.inl (hgT0 ▸ prec0_zero_right (T f))
-  have hfT : ((T f) ≠ 0 ∧ (T f).Splits) := by
-    exact ⟨hfT0, by simpa using hallT 1 0⟩
-  have hgT : ((T g) ≠ 0 ∧ (T g).Splits) := by
-    exact ⟨hgT0, by simpa using hallT 0 1⟩
+  have hfT : ((T f) ≠ 0 ∧ (T f).Splits) :=
+    ⟨hfT0, by simpa using hallT 1 0⟩
+  have hgT : ((T g) ≠ 0 ∧ (T g).Splits) :=
+    ⟨hgT0, by simpa using hallT 0 1⟩
   rcases natDegree_eq_or_succ_or_revSucc_of_allComboRealRooted hallT hfT0 hgT0 with
     hsame | hsucc | hrevsucc
   · rcases prec_of_allComboRealRooted hfT.1 hfT.2 hgT.1 hgT.2 hallT

@@ -463,8 +463,8 @@ private lemma eval_mul_eval_nonpos_of_roots_layout {f : ℝ[X]}
     ring
   rw [hprod_r₁, hprod_r₂]
   rw [hfactor]
-  have hlc_nonneg : 0 ≤ f.leadingCoeff * f.leadingCoeff := by
-    exact mul_nonneg (le_of_lt hf_pos) (le_of_lt hf_pos)
+  have hlc_nonneg : 0 ≤ f.leadingCoeff * f.leadingCoeff :=
+    mul_nonneg (le_of_lt hf_pos) (le_of_lt hf_pos)
   exact mul_nonpos_of_nonneg_of_nonpos hlc_nonneg hprod
 
 /-- Generic IVT bridge: opposite-or-zero endpoint signs give a real root in the

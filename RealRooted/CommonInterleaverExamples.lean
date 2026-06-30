@@ -20,32 +20,32 @@ private lemma xAddOne_isRealRooted : ((X + 1 : ℝ[X]) ≠ 0 ∧ (X + 1 : ℝ[X]
 private lemma xAddOne_hasNonnegCoeffs : HasNonnegCoeffs (X + 1 : ℝ[X]) := by
   simpa using hasNonnegCoeffs_X.add hasNonnegCoeffs_one
 
-private lemma xAddOne_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 1 : ℝ[X]) := by
-  exact xAddOne_hasNonnegCoeffs.pos_leadingCoeff xAddOne_isRealRooted.1
+private lemma xAddOne_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 1 : ℝ[X]) :=
+  xAddOne_hasNonnegCoeffs.pos_leadingCoeff xAddOne_isRealRooted.1
 
 private lemma twoMul_xAddOne_isRealRooted :
-    ((C (2 : ℝ) * (X + 1)) ≠ 0 ∧ (C (2 : ℝ) * (X + 1)).Splits) := by
-  exact isRealRooted_C_mul xAddOne_isRealRooted.1 xAddOne_isRealRooted.2 (by simp)
+    ((C (2 : ℝ) * (X + 1)) ≠ 0 ∧ (C (2 : ℝ) * (X + 1)).Splits) :=
+  isRealRooted_C_mul xAddOne_isRealRooted.1 xAddOne_isRealRooted.2 (by simp)
 
 private lemma threeMul_xAddOne_isRealRooted :
-    ((C (3 : ℝ) * (X + 1)) ≠ 0 ∧ (C (3 : ℝ) * (X + 1)).Splits) := by
-  exact isRealRooted_C_mul xAddOne_isRealRooted.1 xAddOne_isRealRooted.2 (by simp)
+    ((C (3 : ℝ) * (X + 1)) ≠ 0 ∧ (C (3 : ℝ) * (X + 1)).Splits) :=
+  isRealRooted_C_mul xAddOne_isRealRooted.1 xAddOne_isRealRooted.2 (by simp)
 
 private lemma twoMul_xAddOne_hasPosLeadingCoeff :
-    HasPosLeadingCoeff (C (2 : ℝ) * (X + 1)) := by
-  exact hasPosLeadingCoeff_C_mul (by simp) xAddOne_hasPosLeadingCoeff
+    HasPosLeadingCoeff (C (2 : ℝ) * (X + 1)) :=
+  hasPosLeadingCoeff_C_mul (by simp) xAddOne_hasPosLeadingCoeff
 
 private lemma threeMul_xAddOne_hasPosLeadingCoeff :
-    HasPosLeadingCoeff (C (3 : ℝ) * (X + 1)) := by
-  exact hasPosLeadingCoeff_C_mul (by simp) xAddOne_hasPosLeadingCoeff
+    HasPosLeadingCoeff (C (3 : ℝ) * (X + 1)) :=
+  hasPosLeadingCoeff_C_mul (by simp) xAddOne_hasPosLeadingCoeff
 
 private lemma twoMul_xAddOne_hasNonnegCoeffs :
-    HasNonnegCoeffs (C (2 : ℝ) * (X + 1)) := by
-  exact nonnegCoeffs_C_mul (by simp) xAddOne_hasNonnegCoeffs
+    HasNonnegCoeffs (C (2 : ℝ) * (X + 1)) :=
+  nonnegCoeffs_C_mul (by simp) xAddOne_hasNonnegCoeffs
 
 private lemma threeMul_xAddOne_hasNonnegCoeffs :
-    HasNonnegCoeffs (C (3 : ℝ) * (X + 1)) := by
-  exact nonnegCoeffs_C_mul (by simp) xAddOne_hasNonnegCoeffs
+    HasNonnegCoeffs (C (3 : ℝ) * (X + 1)) :=
+  nonnegCoeffs_C_mul (by simp) xAddOne_hasNonnegCoeffs
 
 lemma scaledLinearFamily_isRealRooted :
     ∀ f ∈ scaledLinearFamily, (f ≠ 0 ∧ f.Splits) := by
@@ -153,15 +153,15 @@ private lemma xAddTwo_natDegree :
         simp
   simp_all
 
-private lemma xAddTwo_isRealRooted : ((X + 2 : ℝ[X]) ≠ 0 ∧ (X + 2 : ℝ[X]).Splits) := by
-  exact isRealRooted_of_degree_one xAddTwo_natDegree
+private lemma xAddTwo_isRealRooted : ((X + 2 : ℝ[X]) ≠ 0 ∧ (X + 2 : ℝ[X]).Splits) :=
+  isRealRooted_of_degree_one xAddTwo_natDegree
 
 private lemma xAddTwo_hasNonnegCoeffs : HasNonnegCoeffs (X + 2 : ℝ[X]) := by
   change HasNonnegCoeffs (X + C (2 : ℝ) : ℝ[X])
   exact hasNonnegCoeffs_X.add (hasNonnegCoeffs_C (by simp : (0 : ℝ) ≤ 2))
 
-private lemma xAddTwo_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 2 : ℝ[X]) := by
-  exact xAddTwo_hasNonnegCoeffs.pos_leadingCoeff xAddTwo_isRealRooted.1
+private lemma xAddTwo_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 2 : ℝ[X]) :=
+  xAddTwo_hasNonnegCoeffs.pos_leadingCoeff xAddTwo_isRealRooted.1
 
 private lemma xAddOne_roots :
     (X + 1 : ℝ[X]).roots = {(-1 : ℝ)} := by
@@ -185,8 +185,8 @@ private lemma xAddThree_hasNonnegCoeffs : HasNonnegCoeffs (X + 3 : ℝ[X]) := by
   change HasNonnegCoeffs (X + C (3 : ℝ) : ℝ[X])
   exact hasNonnegCoeffs_X.add (hasNonnegCoeffs_C (by simp : (0 : ℝ) ≤ 3))
 
-private lemma xAddThree_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 3 : ℝ[X]) := by
-  exact xAddThree_hasNonnegCoeffs.pos_leadingCoeff xAddThree_isRealRooted.1
+private lemma xAddThree_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 3 : ℝ[X]) :=
+  xAddThree_hasNonnegCoeffs.pos_leadingCoeff xAddThree_isRealRooted.1
 
 private lemma xAddThree_roots :
     (X + 3 : ℝ[X]).roots = {(-3 : ℝ)} := by
@@ -202,13 +202,13 @@ private lemma xAddFiveHalves_roots :
   simp
 
 private lemma xSq_add_fiveX_add_six_isRealRooted :
-    ((((X + 2) * (X + 3)) : ℝ[X]) ≠ 0 ∧ (((X + 2) * (X + 3)) : ℝ[X]).Splits) := by
-  exact isRealRooted_mul xAddTwo_isRealRooted.1 xAddTwo_isRealRooted.2
+    ((((X + 2) * (X + 3)) : ℝ[X]) ≠ 0 ∧ (((X + 2) * (X + 3)) : ℝ[X]).Splits) :=
+  isRealRooted_mul xAddTwo_isRealRooted.1 xAddTwo_isRealRooted.2
     xAddThree_isRealRooted.1 xAddThree_isRealRooted.2
 
 private lemma xSq_add_fiveX_add_six_hasNonnegCoeffs :
-    HasNonnegCoeffs (((X + 2) * (X + 3)) : ℝ[X]) := by
-  exact xAddTwo_hasNonnegCoeffs.mul xAddThree_hasNonnegCoeffs
+    HasNonnegCoeffs (((X + 2) * (X + 3)) : ℝ[X]) :=
+  xAddTwo_hasNonnegCoeffs.mul xAddThree_hasNonnegCoeffs
 
 private lemma xSq_add_fiveX_add_six_hasPosLeadingCoeff :
     HasPosLeadingCoeff (((X + 2) * (X + 3)) : ℝ[X]) := by
@@ -250,20 +250,18 @@ private lemma xAddFiveHalves_prec_xSq_add_fiveX_add_six :
 /-- A concrete common left interleaver for the linear / quadratic counterexample
 to the naive succ-degree orientation target. -/
 lemma xAddOne_xSq_add_fiveX_add_six_commonLeftInterleaver :
-    ∃ h : ℝ[X], Prec h (X + 1) ∧ Prec h (((X + 2) * (X + 3)) : ℝ[X]) := by
-  exact
-    ⟨X + C (5 / 2 : ℝ), xAddFiveHalves_prec_xAddOne,
-      xAddFiveHalves_prec_xSq_add_fiveX_add_six⟩
+    ∃ h : ℝ[X], Prec h (X + 1) ∧ Prec h (((X + 2) * (X + 3)) : ℝ[X]) :=
+  ⟨X + C (5 / 2 : ℝ), xAddFiveHalves_prec_xAddOne,
+    xAddFiveHalves_prec_xSq_add_fiveX_add_six⟩
 
 /-- The quadratic pair `(X + 1, (X + 2)(X + 3))` still satisfies the positive-
 combination hypothesis: the common left interleaver `X + 5/2` witnesses the
 restricted Obreschkoff condition directly. -/
 lemma xAddOne_xSq_add_fiveX_add_six_posComboRealRooted :
-    PosComboRealRooted (X + 1 : ℝ[X]) (((X + 2) * (X + 3)) : ℝ[X]) := by
-  exact
-    PosComboRealRooted.of_commonLeftInterleaver
-      xAddFiveHalves_prec_xAddOne
-      xAddFiveHalves_prec_xSq_add_fiveX_add_six
+    PosComboRealRooted (X + 1 : ℝ[X]) (((X + 2) * (X + 3)) : ℝ[X]) :=
+  PosComboRealRooted.of_commonLeftInterleaver
+    xAddFiveHalves_prec_xAddOne
+    xAddFiveHalves_prec_xSq_add_fiveX_add_six
       xAddOne_hasPosLeadingCoeff
       xSq_add_fiveX_add_six_hasPosLeadingCoeff
 

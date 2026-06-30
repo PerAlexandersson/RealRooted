@@ -743,8 +743,8 @@ private lemma mem_rootSlotInterval_reverse_of_listAlternates_interior
   rw [show kr = ⟨k.1, by simpa [hkr_eq] using kr.2⟩ by
     apply Fin.ext
     simp_all]
-  have hk_lower : ss.get k ≤ rs.get ⟨k.1, by simpa [hkr_eq] using kr.2⟩ := by
-    exact listAlternates_get_lower halt k.2 (by simpa [hkr_eq] using kr.2)
+  have hk_lower : ss.get k ≤ rs.get ⟨k.1, by simpa [hkr_eq] using kr.2⟩ :=
+    listAlternates_get_lower halt k.2 (by simpa [hkr_eq] using kr.2)
   have hk_upper : rs.get ⟨k.1, by simpa [hkr_eq] using kr.2⟩ ≤ ss.get ks := by
     have hk_rs : k.1 < rs.length := by simpa [hkr_eq] using kr.2
     simpa [ks] using listAlternates_get_upper halt hk_succ hk_rs
@@ -1337,8 +1337,8 @@ private lemma prec_of_slots_polyOfDescRoots {f : ℝ[X]} {xs : List ℝ} (hf₀ 
           rw [rootSeqDesc_length hf]
           lia
         have hlow :
-            (rootSeqDesc f).get ⟨j, hj_root⟩ ≤ xs.get ⟨j, hjx⟩ := by
-          exact rootSlot_lower_bound (rs := rootSeqDesc f) hroot_ne hj_root hmem
+            (rootSeqDesc f).get ⟨j, hj_root⟩ ≤ xs.get ⟨j, hjx⟩ :=
+          rootSlot_lower_bound (rs := rootSeqDesc f) hroot_ne hj_root hmem
         have hss_get :
             ss.get ⟨k, hk⟩ = (rootSeqDesc f).get ⟨j, hj_root⟩ := by
           have hk_root : k < (rootSeqDesc f).length := by
@@ -1366,8 +1366,8 @@ private lemma prec_of_slots_polyOfDescRoots {f : ℝ[X]} {xs : List ℝ} (hf₀ 
         have hj_le : j ≤ (rootSeqDesc f).length := by
           lia
         have hup :
-            xs.get ⟨j, hjx⟩ ≤ (rootSeqDesc f).get ⟨j - 1, by lia⟩ := by
-          exact rootSlot_upper_bound (rs := rootSeqDesc f) hroot_ne hj_pos hj_le hmem
+            xs.get ⟨j, hjx⟩ ≤ (rootSeqDesc f).get ⟨j - 1, by lia⟩ :=
+          rootSlot_upper_bound (rs := rootSeqDesc f) hroot_ne hj_pos hj_le hmem
         have hrs_get :
             rs.get ⟨k, by
               have : k < f.natDegree := by lia
@@ -1430,8 +1430,8 @@ private lemma prec_of_slots_polyOfDescRoots {f : ℝ[X]} {xs : List ℝ} (hf₀ 
         have hj_le : j ≤ (rootSeqDesc f).length := by
           lia
         have hup :
-            xs.get ⟨j, hjx⟩ ≤ (rootSeqDesc f).get ⟨j - 1, by lia⟩ := by
-          exact rootSlot_upper_bound (rs := rootSeqDesc f) hroot_ne hj_pos hj_le hmem
+            xs.get ⟨j, hjx⟩ ≤ (rootSeqDesc f).get ⟨j - 1, by lia⟩ :=
+          rootSlot_upper_bound (rs := rootSeqDesc f) hroot_ne hj_pos hj_le hmem
         have hrs_get :
             rs.get ⟨k, by
               have : k < f.natDegree + 1 := Nat.lt_succ_of_lt hk_deg
@@ -1487,8 +1487,8 @@ private lemma prec_of_slots_polyOfDescRoots {f : ℝ[X]} {xs : List ℝ} (hf₀ 
         have hj_root : j < (rootSeqDesc f).length := by
           grind
         have hlow :
-            (rootSeqDesc f).get ⟨j, hj_root⟩ ≤ xs.get ⟨j, hjx⟩ := by
-          exact rootSlot_lower_bound (rs := rootSeqDesc f) hroot_ne hj_root hmem
+            (rootSeqDesc f).get ⟨j, hj_root⟩ ≤ xs.get ⟨j, hjx⟩ :=
+          rootSlot_lower_bound (rs := rootSeqDesc f) hroot_ne hj_root hmem
         have hss_get :
             ss.get ⟨k, hk⟩ = (rootSeqDesc f).get ⟨j, hj_root⟩ := by
           have hk_root : k < (rootSeqDesc f).length := by
@@ -1621,16 +1621,16 @@ def polyOfDescRootsDesc (xs : List ℝ) : ℝ[X] :=
 theorem rootSlot_lower_bound_of_mem
     {rs : List ℝ} (hrs : rs ≠ []) {j : ℕ} (hj : j < rs.length) {x : ℝ}
     (hx : x ∈ rootSlotInterval rs ⟨j, by lia⟩) :
-    rs.get ⟨j, hj⟩ ≤ x := by
-  exact rootSlot_lower_bound hrs hj hx
+    rs.get ⟨j, hj⟩ ≤ x :=
+  rootSlot_lower_bound hrs hj hx
 
 /-- Public upper-bound wrapper for a point lying in a root slot. -/
 theorem rootSlot_upper_bound_of_mem
     {rs : List ℝ} (hrs : rs ≠ []) {j : ℕ} (hj0 : 0 < j) (hj : j ≤ rs.length)
     {x : ℝ}
     (hx : x ∈ rootSlotInterval rs ⟨j, by lia⟩) :
-    x ≤ rs.get ⟨j - 1, by lia⟩ := by
-  exact rootSlot_upper_bound hrs hj0 hj hx
+    x ≤ rs.get ⟨j - 1, by lia⟩ :=
+  rootSlot_upper_bound hrs hj0 hj hx
 
 /-- Points in later root slots are weakly below points in earlier root slots.
 This public wrapper exposes the monotonicity fact used in the slot-based
@@ -1641,8 +1641,8 @@ theorem le_of_mem_rootSlotInterval_of_lt
     {x y : ℝ}
     (hx : x ∈ rootSlotInterval rs ⟨i, by lia⟩)
     (hy : y ∈ rootSlotInterval rs ⟨j, hj⟩) :
-    y ≤ x := by
-  exact le_of_mem_rootSlots_of_lt hrs_ne hrs hij hj hx hy
+    y ≤ x :=
+  le_of_mem_rootSlots_of_lt hrs_ne hrs hij hj hx hy
 
 /-- In a `Prec` witness, the `j`th descending root of the right polynomial lies
 in the `j`th admissible slot of the left polynomial. -/
@@ -1655,8 +1655,8 @@ theorem mem_rootSlotInterval_of_prec_desc
         rcases hfg with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
         have hdeg := (natDegree_bounds_of_prec
           ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩).2
-        simpa [hf, hg] using lt_of_lt_of_le j.2 hdeg⟩ := by
-  exact mem_rootSlotInterval_of_prec hfg j
+        simpa [hf, hg] using lt_of_lt_of_le j.2 hdeg⟩ :=
+  mem_rootSlotInterval_of_prec hfg j
 
 /-- Slot data against `rootSeqDesc f` reconstructs a `Prec` witness with the
 descending-root polynomial built from those slot choices. -/

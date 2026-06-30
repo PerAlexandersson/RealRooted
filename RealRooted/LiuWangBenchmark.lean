@@ -252,8 +252,8 @@ lemma roots_neg_liuWangPoly_of_isRealRooted {d n : Nat} (hrr : (liuWangPoly d n)
 
 /-- The degree-`1` base case is immediate. -/
 lemma isRealRooted_liuWangPoly_two (d : Nat) :
-    ((liuWangPoly d 2) ≠ 0 ∧ (liuWangPoly d 2).Splits) := by
-  exact isRealRooted_of_degree_one (natDegree_liuWangPoly d 2 (by lia))
+    ((liuWangPoly d 2) ≠ 0 ∧ (liuWangPoly d 2).Splits) :=
+  isRealRooted_of_degree_one (natDegree_liuWangPoly d 2 (by lia))
 
 private lemma natDegree_liuWangRec_affine (d n : Nat) :
     (C (((d : ℝ) - n) / (n + 1 : ℝ)) + C (2 : ℝ) * X).natDegree = 1 := by
@@ -316,8 +316,8 @@ private lemma natDegree_leadingCoeff_liuWangRec_step (d n : Nat) (hn : 1 ≤ n)
     dsimp [B]
     rw [leadingCoeff_mul' hB_lc_nz, leadingCoeff_liuWangRec_X_one_sub_X, hlc]
     ring
-  have hA_ne : A ≠ 0 := by
-    exact leadingCoeff_ne_zero.mp (by simp_all)
+  have hA_ne : A ≠ 0 :=
+    leadingCoeff_ne_zero.mp (by simp_all)
   have hB_ne : B ≠ 0 := by
     apply leadingCoeff_ne_zero.mp
     simp_all
@@ -383,8 +383,8 @@ private lemma natDegree_leadingCoeff_liuWangRec (d n : Nat) (hn : 1 ≤ n) :
                 grind
 
 lemma natDegree_liuWangRec (d n : Nat) (hn : 1 ≤ n) :
-    (liuWangRec d n).natDegree = n - 1 := by
-  exact (natDegree_leadingCoeff_liuWangRec d n hn).1
+    (liuWangRec d n).natDegree = n - 1 :=
+  (natDegree_leadingCoeff_liuWangRec d n hn).1
 
 lemma liuWangRec_ne_zero (d n : Nat) (hn : 1 ≤ n) :
     liuWangRec d n ≠ 0 := by
@@ -394,8 +394,8 @@ lemma liuWangRec_ne_zero (d n : Nat) (hn : 1 ≤ n) :
   simp_all
 
 lemma liuWangRec_leadingCoeff (d n : Nat) (hn : 1 ≤ n) :
-    (liuWangRec d n).leadingCoeff = n := by
-  exact (natDegree_leadingCoeff_liuWangRec d n hn).2
+    (liuWangRec d n).leadingCoeff = n :=
+  (natDegree_leadingCoeff_liuWangRec d n hn).2
 
 lemma liuWangRec_posLeadingCoeff (d n : Nat) (hn : 1 ≤ n) :
     HasPosLeadingCoeff (liuWangRec d n) := by
@@ -500,11 +500,11 @@ private lemma roots_neg_of_interlaces_of_eval_zero_pos {g f : ℝ[X]}
     simp only [List.map] at hf_zero'
     simp only [List.prod_singleton] at hf_zero'
     have hmid :
-        0 < (rs.dropLast.map (0 - ·)).prod * (0 - rs.getLast hrs_ne) := by
-      exact (mul_pos_iff_of_pos_left hf_pos).mp hf_zero'
+        0 < (rs.dropLast.map (0 - ·)).prod * (0 - rs.getLast hrs_ne) :=
+      (mul_pos_iff_of_pos_left hf_pos).mp hf_zero'
     have hfactor :
-        0 < 0 - rs.getLast hrs_ne := by
-      exact (mul_pos_iff_of_pos_left hrs_drop_prod_pos).mp hmid
+        0 < 0 - rs.getLast hrs_ne :=
+      (mul_pos_iff_of_pos_left hrs_drop_prod_pos).mp hmid
     linarith
   intro r hr
   have hr_mem : r ∈ rs := by
@@ -512,8 +512,8 @@ private lemma roots_neg_of_interlaces_of_eval_zero_pos {g f : ℝ[X]}
     simp_all
   by_cases hr_last : r = rs.getLast hrs_ne
   · lia
-  · have hr_drop : r ∈ rs.dropLast := by
-      exact List.mem_dropLast_of_mem_of_ne_getLast hr_mem hr_last
+  · have hr_drop : r ∈ rs.dropLast :=
+      List.mem_dropLast_of_mem_of_ne_getLast hr_mem hr_last
     simp_all
 
 private lemma eval_liuWangRec_mul_prev_of_isRoot {d n : Nat} {r : ℝ}
@@ -549,8 +549,8 @@ private theorem strictData_liuWangRec (d : Nat) :
         simp
       have hNoCommon : ∀ r, (liuWangRec d 2).IsRoot r → ¬ (liuWangRec d 1).IsRoot r := by
         simp
-      have hNeg : ∀ r, (liuWangRec d 2).IsRoot r → r < 0 := by
-        exact roots_neg_of_interlaces_of_eval_zero_pos hInter
+      have hNeg : ∀ r, (liuWangRec d 2).IsRoot r → r < 0 :=
+        roots_neg_of_interlaces_of_eval_zero_pos hInter
           (liuWangRec_posLeadingCoeff d 2 (by lia))
           (eval_zero_liuWangRec_pos d 2 (by lia) hnd)
           (fun r hr => False.elim ((hOne_no_root r) hr))
@@ -589,16 +589,16 @@ private theorem strictData_liuWangRec (d : Nat) :
             nlinarith
           have hg_ne : (liuWangRec d (n + 1)).eval r ≠ 0 := by
             simp_all
-          have hsq_pos : 0 < ((liuWangRec d (n + 1)).eval r) ^ 2 := by
-            exact sq_pos_iff.mpr hg_ne
+          have hsq_pos : 0 < ((liuWangRec d (n + 1)).eval r) ^ 2 :=
+            sq_pos_iff.mpr hg_ne
           rw [eval_liuWangRec_mul_prev_of_isRoot hrootf]
           exact mul_neg_of_neg_of_pos hcoeff_neg hsq_pos
         have hEq : (liuWangRec d (n + 3)).eval r = 0 := by
           simp_all
         grind
       have hNeg' :
-          ∀ r, (liuWangRec d (n + 3)).IsRoot r → r < 0 := by
-        exact roots_neg_of_interlaces_of_eval_zero_pos hInter'
+          ∀ r, (liuWangRec d (n + 3)).IsRoot r → r < 0 :=
+        roots_neg_of_interlaces_of_eval_zero_pos hInter'
           (liuWangRec_posLeadingCoeff d (n + 3) (by lia))
           (eval_zero_liuWangRec_pos d (n + 3) (by lia) hnd)
           hNeg
@@ -896,8 +896,8 @@ private lemma roots_neg_threshold_divX (d : Nat) :
       natDegree_liuWangRec d (d + 1) (by lia)]
     simp
   have hneg :
-      ∀ r, (liuWangRec d (d + 1)).IsRoot r → r < 0 := by
-    exact roots_neg_liuWangRec_of_lt_threshold d (d + 1) (by lia) (by lia)
+      ∀ r, (liuWangRec d (d + 1)).IsRoot r → r < 0 :=
+    roots_neg_liuWangRec_of_lt_threshold d (d + 1) (by lia) (by lia)
   exact roots_neg_of_prec_same_of_roots_neg hPrec hdeg hneg
 
 /-- The recurrence family is real-rooted throughout the strict range
