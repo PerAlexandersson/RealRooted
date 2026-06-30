@@ -23,8 +23,7 @@ namespace RealRooted
 protected lemma HasNonnegCoeffs.derivative {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
     HasNonnegCoeffs p.derivative := by
   intro n
-  rw [coeff_derivative]
-  exact mul_nonneg (hp (n + 1)) (by grind)
+  simpa [coeff_derivative] using mul_nonneg (hp (n + 1)) (by grind)
 
 protected lemma HasPosLeadingCoeff.derivative {f : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hdeg : f.natDegree ≠ 0) :

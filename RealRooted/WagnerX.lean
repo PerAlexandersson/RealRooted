@@ -440,14 +440,12 @@ lemma nonnegCoeffs_C_mul {a : ℝ} (ha : 0 ≤ a) {p : ℝ[X]}
     (hp : HasNonnegCoeffs p) :
     HasNonnegCoeffs (C a * p) := by
   intro n
-  rw [coeff_C_mul]
-  exact mul_nonneg ha (hp n)
+  simpa [coeff_C_mul] using mul_nonneg ha (hp n)
 
 lemma HasNonnegCoeffs.mul {p q : ℝ[X]} (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q) :
     HasNonnegCoeffs (p * q) := by
   intro n
-  rw [coeff_mul]
-  exact Finset.sum_nonneg fun ij _ => mul_nonneg (hp ij.1) (hq ij.2)
+  simpa [coeff_mul] using Finset.sum_nonneg fun ij _ => mul_nonneg (hp ij.1) (hq ij.2)
 
 lemma hasNonnegCoeffs_X_sub_C {r : ℝ} (hr : r ≤ 0) : HasNonnegCoeffs (X - C r) := by
   rintro (_ | _ | n)

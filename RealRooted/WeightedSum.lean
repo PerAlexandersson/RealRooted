@@ -55,8 +55,7 @@ lemma hasNonnegCoeffs_finsetSum {ι : Type}
     HasNonnegCoeffs (s.sum f) := by
   classical
   intro n
-  rw [finsetSum_coeff]
-  exact Finset.sum_nonneg fun i hi => hf i hi n
+  simpa [finsetSum_coeff] using Finset.sum_nonneg fun i hi => hf i hi n
 
 lemma hasPosLeadingCoeff_C_mul {a : ℝ} {p : ℝ[X]}
     (ha : 0 < a) (hp : HasPosLeadingCoeff p) :
