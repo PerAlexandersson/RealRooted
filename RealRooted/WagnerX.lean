@@ -437,11 +437,7 @@ lemma hasNonnegCoeffs_one : HasNonnegCoeffs (1 : ℝ[X]) := by
       simp
 
 lemma hasNonnegCoeffs_C {a : ℝ} (ha : 0 ≤ a) : HasNonnegCoeffs (C a) := by
-  intro n
-  cases n with
-  | zero => simp [ha]
-  | succ n =>
-      simp
+  rintro (_ | n) <;> simp [ha]
 
 lemma nonnegCoeffs_C_mul {a : ℝ} (ha : 0 ≤ a) {p : ℝ[X]}
     (hp : HasNonnegCoeffs p) :
