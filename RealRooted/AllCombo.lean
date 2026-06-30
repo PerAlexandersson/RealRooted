@@ -85,12 +85,12 @@ lemma TDeriv_eq_zero_iff (eps : ℝ) {p : ℝ[X]} :
   constructor
   · intro hT
     by_cases hp0 : p = 0
-    · lia
+    · exact hp0
     · by_cases hdeg0 : p.natDegree = 0
       · have hconst : TDeriv eps p = p := by
           rw [eq_C_of_natDegree_eq_zero hdeg0, TDeriv, derivative_C]
           simp
-        lia
+        exact hconst.symm.trans hT
       · cases TDeriv_ne_zero hp0 hT
   · intro hp0
     simp [hp0, TDeriv]
