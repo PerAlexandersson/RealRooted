@@ -413,21 +413,22 @@ theorem isRealRooted_nonneg_combo_of_prec {f g : ℝ[X]}
 theorem isRealRooted_pos_combo_of_prec {f g : ℝ[X]}
     (hfg : Prec f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    {a b : ℝ} (ha : 0 < a) (hb : 0 < b) : ((C a * f + C b * g) ≠ 0 ∧ (C a * f + C b * g).Splits) :=
+    {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
+    ((C a * f + C b * g) ≠ 0 ∧ (C a * f + C b * g).Splits) :=
   isRealRooted_nonneg_combo_of_prec hfg hf_pos hg_pos ha.le hb.le (Or.inl ha)
 
 /-- A packaging of the positive-combination hypothesis that appears in the
 restricted Obreschkoff converse: every strictly positive linear combination of
 `f` and `g` is real-rooted. -/
 def PosComboRealRooted (f g : ℝ[X]) : Prop :=
-  ∀ {lam μ : ℝ}, 0 < lam → 0 < μ → ((C lam * f + C μ * g) ≠ 0 ∧ (C lam * f + C μ * g).Splits)
+  ∀ {lam μ : ℝ}, 0 < lam → 0 < μ →
+    ((C lam * f + C μ * g) ≠ 0 ∧ (C lam * f + C μ * g).Splits)
 
 namespace PosComboRealRooted
 
 private lemma toPosComboHyp {f g : ℝ[X]} (hfg : PosComboRealRooted f g) :
-    RealRooted.PosComboHyp f g := by
-  intro lam μ hlam hμ
-  exact hfg hlam hμ
+    RealRooted.PosComboHyp f g :=
+  hfg
 
 lemma comm {f g : ℝ[X]} (h : PosComboRealRooted f g) :
     PosComboRealRooted g f := by
@@ -448,19 +449,22 @@ lemma isRealRooted_add_left {f g : ℝ[X]} (h : PosComboRealRooted f g)
 
 lemma of_prec {f g : ℝ[X]} (hfg : Prec f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
-    PosComboRealRooted f g := by
-  intro lam μ hlam hμ
-  exact isRealRooted_pos_combo_of_prec hfg hf_pos hg_pos hlam hμ
+    PosComboRealRooted f g :=
+  fun {_ : ℝ} {_ : ℝ} hlam hμ =>
+    isRealRooted_pos_combo_of_prec hfg hf_pos hg_pos hlam hμ
 
 lemma iff_add_right {f g : ℝ[X]} :
-    PosComboRealRooted f g ↔ ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits) := by
+    PosComboRealRooted f g ↔
+      ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits) := by
   constructor
   · intro h μ hμ
     simpa [one_mul, add_comm] using h (lam := 1) (μ := μ) zero_lt_one hμ
   · intro h lam μ hlam hμ
     have hbase : ((f + C (μ / lam) * g) ≠ 0 ∧
       (f + C (μ / lam) * g).Splits) := h (μ := μ / lam) (by simp_all)
-    have hscaled : ((C lam * (f + C (μ / lam) * g)) ≠ 0 ∧ (C lam * (f + C (μ / lam) * g)).Splits) :=
+    have hscaled :
+        ((C lam * (f + C (μ / lam) * g)) ≠ 0 ∧
+          (C lam * (f + C (μ / lam) * g)).Splits) :=
       isRealRooted_C_mul hbase.1 hbase.2 hlam.ne'
     have hEq : C lam * (f + C (μ / lam) * g) = C lam * f + C μ * g := by
       rw [mul_add]
@@ -481,7 +485,9 @@ lemma iff_add_left {f g : ℝ[X]} :
   · intro h lam μ hlam hμ
     have hbase : ((C (lam / μ) * f + g) ≠ 0 ∧
       (C (lam / μ) * f + g).Splits) := h (lam := lam / μ) (by simp_all)
-    have hscaled : ((C μ * (C (lam / μ) * f + g)) ≠ 0 ∧ (C μ * (C (lam / μ) * f + g)).Splits) := by
+    have hscaled :
+        ((C μ * (C (lam / μ) * f + g)) ≠ 0 ∧
+          (C μ * (C (lam / μ) * f + g)).Splits) := by
       simp_all [hμ.ne', splits_mul_iff_right]
     have hEq : C μ * (C (lam / μ) * f + g) = C lam * f + C μ * g := by
       rw [mul_add]

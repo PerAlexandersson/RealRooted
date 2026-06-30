@@ -65,9 +65,8 @@ nonnegative coefficients. -/
 theorem hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff
     {p : ℝ[X]}
     (hpf : IsPolyaFreqSeq (fun n => p.coeff n)) :
-    HasNonnegCoeffs p := by
-  intro k
-  exact nonneg_of_IsPolyaFreqSeq hpf k
+    HasNonnegCoeffs p :=
+  fun k => nonneg_of_IsPolyaFreqSeq hpf k
 
 /-- Planning stub for the forward Aissen--Schoenberg--Whitney theorem:
 Toeplitz total nonnegativity of the coefficient sequence of a nonzero
@@ -98,9 +97,8 @@ def aissenSchoenbergWhitneyForwardNoNonnegStatement : Prop :=
 formulation, since PF coefficients are already nonnegative. -/
 theorem aissenSchoenbergWhitneyForwardNoNonneg_of_forward
     (hASW : aissenSchoenbergWhitneyForwardStatement) :
-    aissenSchoenbergWhitneyForwardNoNonnegStatement := by
-  intro p hp0 hpf
-  exact ⟨⟨hp0, (hASW hpf).1⟩, (hASW hpf).2⟩
+    aissenSchoenbergWhitneyForwardNoNonnegStatement :=
+  fun {_ : ℝ[X]} hp0 hpf => ⟨⟨hp0, (hASW hpf).1⟩, (hASW hpf).2⟩
 
 /-- The no-extra-nonnegativity formulation implies the current forward ASW
 statement. -/
@@ -124,9 +122,8 @@ theorem aissenSchoenbergWhitneyForward_iff_noNonneg :
 /-- The strict nonzero forward ASW interface implies the zero-aware one. -/
 theorem aissenSchoenbergWhitneyForwardOrZero_of_forward
     (hASW : aissenSchoenbergWhitneyForwardStatement) :
-    aissenSchoenbergWhitneyForwardOrZeroStatement := by
-  intro p hnn hpf
-  exact ⟨Or.inr (hASW hpf).1, (hASW hpf).2⟩
+    aissenSchoenbergWhitneyForwardOrZeroStatement :=
+  fun {_ : ℝ[X]} _ hpf => ⟨Or.inr (hASW hpf).1, (hASW hpf).2⟩
 
 /-- The zero-aware forward ASW interface implies the strict nonzero one by
 discarding the zero case. -/

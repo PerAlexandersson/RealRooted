@@ -158,9 +158,8 @@ def schurPolyaWagnerHadamardPFStatement : Prop :=
 
 theorem schurPolyaWagnerHadamardPF_of_garloffWagner_nonneg
     (hGW : garloffWagnerHadamardNonnegRealRootedStatement) :
-    schurPolyaWagnerHadamardPFStatement := by
-  intro p q hp hq
-  exact hp.hadamardProduct hGW hq
+    schurPolyaWagnerHadamardPFStatement :=
+  fun {_ : ℝ[X]} {_ : ℝ[X]} hp hq => hp.hadamardProduct hGW hq
 
 /-- Nonnegative-coefficient Garloff--Wagner interlacing interface for
 coefficientwise Hadamard products.
@@ -261,10 +260,11 @@ def garloffWagnerHadamardPFPrecStatement : Prop :=
 
 theorem garloffWagnerHadamardPFPrec_of_nonnegPrec
     (hGW : garloffWagnerHadamardNonnegPrecStatement) :
-    garloffWagnerHadamardPFPrecStatement := by
-  intro f g p q hf hg hp hq hfg hpq
-  exact hGW hf.hasNonnegCoeffs hg.hasNonnegCoeffs
-    hp.hasNonnegCoeffs hq.hasNonnegCoeffs hfg hpq
+    garloffWagnerHadamardPFPrecStatement :=
+  fun {_ : ℝ[X]} {_ : ℝ[X]} {_ : ℝ[X]} {_ : ℝ[X]}
+      hf hg hp hq hfg hpq =>
+    hGW hf.hasNonnegCoeffs hg.hasNonnegCoeffs
+      hp.hasNonnegCoeffs hq.hasNonnegCoeffs hfg hpq
 
 /-- Zero-aware PF-polynomial wrapper around the Garloff--Wagner two-pair
 theorem. This is the form most convenient for recursive arguments where a
@@ -386,10 +386,10 @@ def polyaFrequencyHadamardCoeffStatement : Prop :=
 theorem polyaFrequencyHadamardCoeff_of_schurPolyaWagner
     (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
     (hSPW : schurPolyaWagnerHadamardPFStatement) :
-    polyaFrequencyHadamardCoeffStatement := by
-  intro p q hp hq
-  exact (hSPW (IsPFPolynomial.of_sequence hASW hp)
-    (IsPFPolynomial.of_sequence hASW hq)).to_sequence
+    polyaFrequencyHadamardCoeffStatement :=
+  fun {_ : ℝ[X]} {_ : ℝ[X]} hp hq =>
+    (hSPW (IsPFPolynomial.of_sequence hASW hp)
+      (IsPFPolynomial.of_sequence hASW hq)).to_sequence
 
 theorem polyaFrequencyHadamardCoeff_of_garloffWagner_nonneg
     (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)

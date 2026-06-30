@@ -101,8 +101,7 @@ def operatorPreservesInterlacingPairsUpToOrderStatement : Prop :=
     PreservesInterlacingPairsUpToOrder0 T
 
 theorem operatorPreservesInterlacingPairsUpToOrder :
-    operatorPreservesInterlacingPairsUpToOrderStatement := by
-  intro T hT
-  exact preservesInterlacingPairsUpToOrder0_of_preservesRealRootedOrZero hT
+    operatorPreservesInterlacingPairsUpToOrderStatement :=
+  fun _ hT => preservesInterlacingPairsUpToOrder0_of_preservesRealRootedOrZero hT
 
 end RealRooted

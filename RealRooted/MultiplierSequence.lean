@@ -207,15 +207,13 @@ def IsFinitePFMultiplierSequence (n : ℕ) (gamma : ℕ → ℝ) : Prop :=
 
 theorem IsFiniteMultiplierSequence.mono {m n : ℕ} {gamma : ℕ → ℝ}
     (hmn : m ≤ n) (h : IsFiniteMultiplierSequence n gamma) :
-    IsFiniteMultiplierSequence m gamma := by
-  intro p hp hsplit
-  exact h (hp.trans hmn) hsplit
+    IsFiniteMultiplierSequence m gamma :=
+  fun {_ : ℝ[X]} hp hsplit => h (hp.trans hmn) hsplit
 
 theorem IsFinitePFMultiplierSequence.mono {m n : ℕ} {gamma : ℕ → ℝ}
     (hmn : m ≤ n) (h : IsFinitePFMultiplierSequence n gamma) :
-    IsFinitePFMultiplierSequence m gamma := by
-  intro p hp hdeg
-  exact h hp (hdeg.trans hmn)
+    IsFinitePFMultiplierSequence m gamma :=
+  fun {_ : ℝ[X]} hp hdeg => h hp (hdeg.trans hmn)
 
 /-- The finite Polya--Schur theorem in the nonnegative-coefficient convention:
 a nonnegative diagonal sequence preserves real-rootedness up to degree `n` if

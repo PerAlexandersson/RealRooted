@@ -117,9 +117,8 @@ def thetaPreservesPFStatement : Prop :=
 
 theorem thetaPreservesPF_of_realRootedOrZero
     (hθ : thetaPreservesRealRootedOrZeroStatement) :
-    thetaPreservesPFStatement := by
-  intro p hp
-  exact ⟨hp.hasNonnegCoeffs.theta, (hθ hp).1, (hθ hp).2⟩
+    thetaPreservesPFStatement :=
+  fun {_ : ℝ[X]} hp => ⟨hp.hasNonnegCoeffs.theta, (hθ hp).1, (hθ hp).2⟩
 
 /-- Classical Rolle input: `theta` preserves weak proper position on the
 polynomial PF cone. -/
@@ -144,9 +143,8 @@ def thetaPlusOnePreservesPFStatement : Prop :=
 
 theorem thetaPlusOnePreservesPF_of_realRootedOrZero
     (hθ : thetaPlusOnePreservesRealRootedOrZeroStatement) :
-    thetaPlusOnePreservesPFStatement := by
-  intro p hp
-  exact ⟨hp.hasNonnegCoeffs.thetaPlusOne, (hθ hp).1, (hθ hp).2⟩
+    thetaPlusOnePreservesPFStatement :=
+  fun {_ : ℝ[X]} hp => ⟨hp.hasNonnegCoeffs.thetaPlusOne, (hθ hp).1, (hθ hp).2⟩
 
 theorem thetaPlusOne_preserves_pf : thetaPlusOnePreservesPFStatement := by
   intro p hp
@@ -253,9 +251,9 @@ theorem polarTheta_preserves_pf : polarThetaPreservesPFStatement := by
 
 theorem polarThetaPreservesPF_of_realRootedOrZero
     (hNθ : polarThetaPreservesRealRootedOrZeroStatement) :
-    polarThetaPreservesPFStatement := by
-  intro N p hp hdeg
-  exact ⟨hp.hasNonnegCoeffs.polarTheta hdeg, (hNθ hp hdeg).1, (hNθ hp hdeg).2⟩
+    polarThetaPreservesPFStatement :=
+  fun {_ : ℕ} {_ : ℝ[X]} hp hdeg =>
+    ⟨hp.hasNonnegCoeffs.polarTheta hdeg, (hNθ hp hdeg).1, (hNθ hp hdeg).2⟩
 
 /-- Classical polar-derivative input: `N - theta` preserves weak proper position
 on the bounded-degree part of the polynomial PF cone. -/
