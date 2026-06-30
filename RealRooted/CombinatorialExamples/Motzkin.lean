@@ -141,8 +141,8 @@ lemma motzkin_posLeadingCoeff (n : Nat) :
 lemma hasPosLeadingCoeff_C_mul_motzkin {a : ℝ} (ha : 0 < a) {p : ℝ[X]}
     (hp : HasPosLeadingCoeff p) :
     HasPosLeadingCoeff (C a * p) := by
-  unfold HasPosLeadingCoeff at hp ⊢
-  simp_all
+  simpa [HasPosLeadingCoeff, leadingCoeff_C_mul_of_isUnit (isUnit_iff_ne_zero.mpr ha.ne')]
+    using mul_pos ha hp
 
 lemma prec_self_mul_X_sub_C_of_roots_le {r : ℝ} {f : ℝ[X]}
     (hf : f.Splits) (hf_pos : HasPosLeadingCoeff f)
