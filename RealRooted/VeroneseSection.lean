@@ -801,6 +801,58 @@ def FullyInterlacingPairToPrecStatement : Prop :=
   ∀ {p q : ℝ[X]},
     FullyInterlacingPair p.coeff (fun n => q.coeff n) → Prec p q
 
+/-- Interlacing-extraction interface for the converse lace-to-polynomial
+bridge.  Given two nonzero polynomials whose coefficient sequences form a
+fully interlacing pair, the two-row Lace total-nonnegativity certificate should
+produce sorted root lists witnessing the proper-position root configuration of
+`Prec`.
+
+This isolates the genuinely combinatorial heart of the converse direction:
+total nonnegativity of the cross `2 × 2` Lace minors forces the roots of the
+two polynomials to interlace.  Real-rootedness itself, the `Splits` part of
+`Prec`, is supplied separately by the forward Aissen--Schoenberg--Whitney
+theorem, so this statement only asks for the interlacing data. -/
+def FullyInterlacingPairInterlaceStatement : Prop :=
+  ∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 →
+    FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+    ∃ ss rs : List ℝ,
+      ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧
+      (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧
+        ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+          (ss.length = rs.length ∧ ListAlternates ss rs))
+
+/-- Checked reduction for the converse lace-to-interlacing bridge.
+
+The zero-aware target `FullyInterlacingPairToPrec0Statement` follows from two
+classical inputs:
+
+* the forward Aissen--Schoenberg--Whitney theorem
+  `aissenSchoenbergWhitneyForwardStatement`, which turns the two
+  Pólya-frequency coefficient rows (`FullyInterlacingPair.left_pf` and
+  `FullyInterlacingPair.right_pf`) into real-rootedness of each polynomial; and
+* the interlacing-extraction interface `FullyInterlacingPairInterlaceStatement`,
+  which supplies the proper-position root data from the cross Lace minors.
+
+The zero polynomial cases are discharged directly by `prec0_zero_left` and
+`prec0_zero_right`. -/
+theorem fullyInterlacingPairToPrec0_of_forwardASW_interlace
+    (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hInt : FullyInterlacingPairInterlaceStatement) :
+    FullyInterlacingPairToPrec0Statement := by
+  intro p q hfull
+  rcases eq_or_ne p 0 with rfl | hp0
+  · exact prec0_zero_left q
+  rcases eq_or_ne q 0 with rfl | hq0
+  · exact prec0_zero_right p
+  refine Or.inr (Or.inr ?_)
+  have hp_pf : IsPolyaFreqSeq p.coeff := hfull.left_pf
+  have hq_pf : IsPolyaFreqSeq (fun n => q.coeff n) := hfull.right_pf
+  obtain ⟨hp_split, _⟩ := hASW hp_pf
+  obtain ⟨hq_split, _⟩ := hASW hq_pf
+  obtain ⟨ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩ := hInt hp0 hq0 hfull
+  exact ⟨⟨hp0, hp_split⟩, ⟨hq0, hq_split⟩, ss, rs, hss, hrs,
+    hss_eq, hrs_eq, hshape⟩
+
 /-- Once a two-row Lace certificate is available, fixed Veronese sections
 preserve polynomial interlacing in the zero-aware sense, assuming the
 lace-to-polynomial bridge. -/
