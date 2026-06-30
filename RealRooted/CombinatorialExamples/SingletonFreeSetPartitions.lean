@@ -222,10 +222,10 @@ lemma prec_singletonFreeSetPartitionsCore_of_prec {n : Nat} (hn : 3 ≤ n)
     prec_C_mul_left hprev hscalar_ne
   have hder :
       Interlaces (singletonFreeSetPartitions (n + 1)).derivative
-        (singletonFreeSetPartitions (n + 1)) := by
-    apply derivative_interlaces hprev.2.1.2
-    rw [natDegree_singletonFreeSetPartitions (n + 1) (by lia)]
-    lia
+        (singletonFreeSetPartitions (n + 1)) :=
+    derivative_interlaces hprev.2.1.2 <| by
+      rw [natDegree_singletonFreeSetPartitions (n + 1) (by lia)]
+      lia
   have hlower_pos :
       HasPosLeadingCoeff (C (n + 1 : ℝ) * singletonFreeSetPartitions n) := by
     unfold HasPosLeadingCoeff
