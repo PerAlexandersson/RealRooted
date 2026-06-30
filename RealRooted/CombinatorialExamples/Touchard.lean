@@ -103,8 +103,7 @@ lemma prec_touchard_one_two :
     rw [touchard_two, touchard_one, touchard_zero]
     ring
   have hF_pos : HasPosLeadingCoeff (X * touchard 1 + X * touchard 0) := by
-    rw [hF_eq]
-    exact touchard_posLeadingCoeff 2
+    simpa [← hF_eq] using touchard_posLeadingCoeff 2
   have hdeg_lo :
       (touchard 1).natDegree ≤
         (X * touchard 1 + X * touchard 0).natDegree := by
