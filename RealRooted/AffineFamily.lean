@@ -665,20 +665,18 @@ private lemma isRealRooted_add_X_mul_right_of_affine_family
       exact hasPosLeadingCoeff_add_of_natDegree_lt_left hdeg' hg_pos
   have hbase_deg : f.natDegree ≤ (g + C s * (X * f)).natDegree := by
     rcases lt_trichotomy g.natDegree (X * f).natDegree with hdeg | hdeg | hdeg
-    · have hsum_deg : (g + C s * (X * f)).natDegree = (C s * (X * f)).natDegree := by
-        exact
-          natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
-            (by simpa [natDegree_C_mul hs.ne'] using hdeg) hCsXf_pos
+    · have hsum_deg : (g + C s * (X * f)).natDegree = (C s * (X * f)).natDegree :=
+        natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
+          (by simpa [natDegree_C_mul hs.ne'] using hdeg) hCsXf_pos
       rw [hsum_deg, natDegree_C_mul hs.ne', natDegree_mul X_ne_zero hf0, natDegree_X]
       lia
-    · have hsum_deg : (g + C s * (X * f)).natDegree = g.natDegree := by
-        exact natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff
+    · have hsum_deg : (g + C s * (X * f)).natDegree = g.natDegree :=
+        natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff
           (by simpa [natDegree_C_mul hs.ne'] using hdeg) hg_pos hCsXf_pos
       simp_all
-    · have hsum_deg : (g + C s * (X * f)).natDegree = g.natDegree := by
-        exact
-          natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff
-            (by simpa [natDegree_C_mul hs.ne'] using hdeg) hg_pos
+    · have hsum_deg : (g + C s * (X * f)).natDegree = g.natDegree :=
+        natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff
+          (by simpa [natDegree_C_mul hs.ne'] using hdeg) hg_pos
       rw [hsum_deg]
       have hXf_deg : (X * f).natDegree = f.natDegree + 1 := by
         simp_all
@@ -1189,9 +1187,8 @@ private theorem not_posComboRealRooted_right_const_of_natDegree_ge_two
   intro hpc
   obtain ⟨t, ht, hbad⟩ :=
     exists_pos_shift_not_isRealRooted_of_nonneg_of_natDegree_ge_two hp_ne hp_splits hpnn hdeg
-  have hcombo_t : ((p + C (t / c) * C c) ≠ 0 ∧ (p + C (t / c) * C c).Splits) := by
-    exact PosComboRealRooted.isRealRooted_add_right hpc (by
-      simp_all)
+  have hcombo_t : ((p + C (t / c) * C c) ≠ 0 ∧ (p + C (t / c) * C c).Splits) :=
+    PosComboRealRooted.isRealRooted_add_right hpc (by simp_all)
   have hrewrite : p + C (t / c) * C c = p + C t := by
     calc
       p + C (t / c) * C c = p + C ((t / c) * c) := by simp
@@ -1279,8 +1276,8 @@ private theorem not_degree_gap_ge_two_of_add_left_family_nonneg
     · exact hfN_nonneg.pos_leadingCoeff hfN_ne
     · lia
     · lia
-  have hposComboN : PosComboRealRooted gN fN := by
-    exact PosComboRealRooted.of_add_right hfamilyN
+  have hposComboN : PosComboRealRooted gN fN :=
+    PosComboRealRooted.of_add_right hfamilyN
   have hposComboC : PosComboRealRooted gN (C (fN.coeff 0)) := by
     lia
   exact

@@ -1335,10 +1335,8 @@ theorem posComboNoCommonOrientation_of_affineFamilyBridge_and_nonnegCoeffs
       haffBridge hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
   have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
   have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
-  have hf_rr : (f ≠ 0 ∧ f.Splits) := by
-    exact ⟨hf0, by simpa using hall 1 0⟩
-  have hg_rr : (g ≠ 0 ∧ g.Splits) := by
-    exact ⟨hg0, by simpa using hall 0 1⟩
+  have hf_rr : (f ≠ 0 ∧ f.Splits) := ⟨hf0, by simpa using hall 1 0⟩
+  have hg_rr : (g ≠ 0 ∧ g.Splits) := ⟨hg0, by simpa using hall 0 1⟩
   have hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by
     lia
   exact prec_of_allComboRealRooted hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hall hdeg
@@ -1699,10 +1697,8 @@ theorem posComboOrientation_of_posCombo_and_degreeSplit_and_nonnegCoeffs
       hsame hsucc hf_pos hg_pos hfnn hgnn hfg
   have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
   have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
-  have hf_rr : (f ≠ 0 ∧ f.Splits) := by
-    exact ⟨hf0, by simpa using hall 1 0⟩
-  have hg_rr : (g ≠ 0 ∧ g.Splits) := by
-    exact ⟨hg0, by simpa using hall 0 1⟩
+  have hf_rr : (f ≠ 0 ∧ f.Splits) := ⟨hf0, by simpa using hall 1 0⟩
+  have hg_rr : (g ≠ 0 ∧ g.Splits) := ⟨hg0, by simpa using hall 0 1⟩
   have hclose :
       f.natDegree ≤ g.natDegree + 1 ∧
         g.natDegree ≤ f.natDegree + 1 :=
@@ -1814,10 +1810,8 @@ theorem posComboOrientation_of_affineFamilyBridge_and_nonnegCoeffs
       haffBridge hf_pos hg_pos hfnn hgnn hfg
   have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
   have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
-  have hf_rr : (f ≠ 0 ∧ f.Splits) := by
-    exact ⟨hf0, by simpa using hall 1 0⟩
-  have hg_rr : (g ≠ 0 ∧ g.Splits) := by
-    exact ⟨hg0, by simpa using hall 0 1⟩
+  have hf_rr : (f ≠ 0 ∧ f.Splits) := ⟨hf0, by simpa using hall 1 0⟩
+  have hg_rr : (g ≠ 0 ∧ g.Splits) := ⟨hg0, by simpa using hall 0 1⟩
   have hclose :
       f.natDegree ≤ g.natDegree + 1 ∧
         g.natDegree ≤ f.natDegree + 1 :=

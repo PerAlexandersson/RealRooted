@@ -2391,8 +2391,8 @@ private theorem prec_b_component_of_prec_sum_of_leadingCoeff_eq
   have hdeg : b.natDegree + 1 = p.natDegree :=
     natDegree_right_of_prec_to_sum hp_eq ha_nonneg hb_nonneg hb0 hbp
   let c : ℝ := p.leadingCoeff⁻¹
-  have hc_ne : c ≠ 0 := by
-    exact inv_ne_zero (ne_of_gt (hp_nonneg.pos_leadingCoeff hp0))
+  have hc_ne : c ≠ 0 :=
+    inv_ne_zero (ne_of_gt (hp_nonneg.pos_leadingCoeff hp0))
   have hp_monic : (C c * p).Monic := by
     unfold c
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
@@ -2827,8 +2827,7 @@ private theorem prec_b_component_of_prec_right_top
   have hpxb : Prec p (X * b) := prec_mul_X_of_prec_of_nonneg hbp hb_nonneg hp_nonneg
   have hall_aXb : AllComboRealRooted a (X * b) :=
     allComboRealRooted_left_X_mul_component_of_prec_right hp_eq hpxb
-  have ha_rr : (a ≠ 0 ∧ a.Splits) := by
-    exact ⟨ha0, by simpa using hall_aXb 1 0⟩
+  have ha_rr : (a ≠ 0 ∧ a.Splits) := ⟨ha0, by simpa using hall_aXb 1 0⟩
   have hp_deg : p.natDegree = d := by
     apply le_antisymm hd
     apply Polynomial.le_natDegree_of_ne_zero

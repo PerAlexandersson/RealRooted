@@ -235,8 +235,8 @@ theorem im_eq_zero_of_aeval_zero_of_posComboRealRooted_monic_sameDegree
   obtain ⟨w, hw_root, hw_dist⟩ :=
     exists_complex_aroot_near_right_family
       (hfg := hfg) (hz := hz) hf_monic hg_monic hdeg hμ hcoeff_bound
-  have hw_im_zero : w.im = 0 := by
-    exact RealRooted.im_eq_zero_of_mem_aroots_of_isRealRooted
+  have hw_im_zero : w.im = 0 :=
+    RealRooted.im_eq_zero_of_mem_aroots_of_isRealRooted
       (hfg.isRealRooted_add_right hμ).1 (hfg.isRealRooted_add_right hμ).2 hw_root
   have hbound_eq :
       ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * R = δ / 2 := by
@@ -317,10 +317,10 @@ theorem isRealRooted_left_of_posComboRealRooted_sameDegree
       natDegree_C_mul (inv_ne_zero hg_lc_ne), hdeg]
   have hfg₀ : PosComboHyp f₀ g₀ := by
     intro lam μ hlam hμ
-    have hlam' : 0 < lam * f.leadingCoeff⁻¹ := by
-      exact mul_pos hlam (inv_pos.mpr hf_pos)
-    have hμ' : 0 < μ * g.leadingCoeff⁻¹ := by
-      exact mul_pos hμ (inv_pos.mpr hg_pos)
+    have hlam' : 0 < lam * f.leadingCoeff⁻¹ :=
+      mul_pos hlam (inv_pos.mpr hf_pos)
+    have hμ' : 0 < μ * g.leadingCoeff⁻¹ :=
+      mul_pos hμ (inv_pos.mpr hg_pos)
     grind
   have hf₀_rr : (f₀ ≠ 0 ∧ f₀.Splits) :=
     isRealRooted_left_of_posComboRealRooted_monic_sameDegree
