@@ -193,11 +193,8 @@ lemma interlaces_stirlingPermutations_zero_one :
 
 lemma eval_stirlingPermutationsCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
     stirlingPermutationsCoeffB.eval r ≤ 0 := by
-  unfold stirlingPermutationsCoeffB
-  rw [eval_mul, eval_X, eval_sub, eval_one, eval_X]
-  have h1r : 0 ≤ 1 - r := by
-    linarith
-  exact mul_nonpos_of_nonpos_of_nonneg hr h1r
+  simp [stirlingPermutationsCoeffB]
+  nlinarith
 
 lemma prec_stirlingPermutations_one_two :
     Prec (stirlingPermutations 1) (stirlingPermutations 2) := by

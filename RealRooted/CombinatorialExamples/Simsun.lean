@@ -315,10 +315,7 @@ lemma interlaces_derivative_simsun :
 
 lemma eval_simsunCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
     simsunCoeffB.eval r ≤ 0 := by
-  unfold simsunCoeffB
-  rw [eval_mul, eval_X, eval_sub, eval_one, eval_mul, eval_C, eval_X]
-  have hfac : 0 ≤ 1 - 2 * r := by
-    linarith
+  simp [simsunCoeffB]
   nlinarith
 
 /-- Consecutive simsun descent polynomials satisfy `Prec`. -/

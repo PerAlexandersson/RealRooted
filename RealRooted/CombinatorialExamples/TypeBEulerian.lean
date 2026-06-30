@@ -211,9 +211,7 @@ lemma interlaces_derivative_typeBEulerian :
 
 lemma eval_typeBEulerianCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
     typeBEulerianCoeffB.eval r ≤ 0 := by
-  unfold typeBEulerianCoeffB
-  rw [eval_mul, eval_mul, eval_C, eval_X, eval_sub, eval_one, eval_X]
-  have h1r : 0 ≤ 1 - r := by grind
+  simp [typeBEulerianCoeffB]
   nlinarith
 
 theorem prec_typeBEulerian_succ : ∀ n : Nat, Prec (typeBEulerian n) (typeBEulerian (n + 1))

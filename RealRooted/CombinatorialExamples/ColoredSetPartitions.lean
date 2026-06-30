@@ -153,9 +153,8 @@ lemma interlaces_coloredSetPartitions_zero_one (c m : Nat) :
 
 lemma eval_coloredSetPartitionsCoeffB_nonpos_of_nonpos (m : Nat) {r : ℝ} (hr : r ≤ 0) :
     (coloredSetPartitionsCoeffB m).eval r ≤ 0 := by
-  unfold coloredSetPartitionsCoeffB
-  rw [eval_mul, eval_C, eval_X]
-  exact mul_nonpos_of_nonneg_of_nonpos (by simp) hr
+  simpa only [coloredSetPartitionsCoeffB, eval_mul, eval_C, eval_X] using
+    mul_nonpos_of_nonneg_of_nonpos (by positivity : 0 ≤ (m : ℝ)) hr
 
 lemma prec_coloredSetPartitions_one_two (c m : Nat) :
     Prec (coloredSetPartitions c m 1) (coloredSetPartitions c m 2) := by
