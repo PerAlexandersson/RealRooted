@@ -514,20 +514,18 @@ to be real-rooted. -/
 lemma isRealRooted_left_of_sameDegree {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree) : (f ≠ 0 ∧ f.Splits) := by
-  exact
-    RealRooted.PosComboHyp.isRealRooted_left_of_posComboRealRooted_sameDegree
-      (hfg := toPosComboHyp hfg) hf_pos hg_pos hdeg
+    (hdeg : g.natDegree = f.natDegree) : (f ≠ 0 ∧ f.Splits) :=
+  RealRooted.PosComboHyp.isRealRooted_left_of_posComboRealRooted_sameDegree
+    (hfg := toPosComboHyp hfg) hf_pos hg_pos hdeg
 
 /-- Equal-degree positive-combination real-rootedness forces the right summand
 to be real-rooted. -/
 lemma isRealRooted_right_of_sameDegree {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree) : (g ≠ 0 ∧ g.Splits) := by
-  exact
-    RealRooted.PosComboHyp.isRealRooted_right_of_posComboRealRooted_sameDegree
-      (hfg := toPosComboHyp hfg) hf_pos hg_pos hdeg
+    (hdeg : g.natDegree = f.natDegree) : (g ≠ 0 ∧ g.Splits) :=
+  RealRooted.PosComboHyp.isRealRooted_right_of_posComboRealRooted_sameDegree
+    (hfg := toPosComboHyp hfg) hf_pos hg_pos hdeg
 
 /-- Positive-combination real-rootedness gives real-rootedness on the closed
 line segment once the two endpoints are known to be real-rooted. -/
@@ -966,11 +964,10 @@ lemma family_pair_data_right_one_two {f g : ℝ[X]}
     HasPosLeadingCoeff (f + C (2 : ℝ) * g) ∧
     (f + C (1 : ℝ) * g).natDegree = g.natDegree ∧
     (f + C (2 : ℝ) * g).natDegree = g.natDegree ∧
-    IsCoprime (f + C (1 : ℝ) * g) (f + C (2 : ℝ) * g) := by
-  exact
-    family_pair_data_right
-      (f := f) (g := g) hfg hdeg hf_pos hg_pos hno zero_lt_one (by simp)
-      (by simp)
+    IsCoprime (f + C (1 : ℝ) * g) (f + C (2 : ℝ) * g) :=
+  family_pair_data_right
+    (f := f) (g := g) hfg hdeg hf_pos hg_pos hno zero_lt_one (by simp)
+    (by simp)
 
 /-- Symmetric `1/2` left-family package for `(f + g, 2f + g)`. -/
 lemma family_pair_data_left_one_two {f g : ℝ[X]}
@@ -983,11 +980,10 @@ lemma family_pair_data_left_one_two {f g : ℝ[X]}
     HasPosLeadingCoeff (C (2 : ℝ) * f + g) ∧
     (C (1 : ℝ) * f + g).natDegree = f.natDegree ∧
     (C (2 : ℝ) * f + g).natDegree = f.natDegree ∧
-    IsCoprime (C (1 : ℝ) * f + g) (C (2 : ℝ) * f + g) := by
-  exact
-    family_pair_data_left
-      (f := f) (g := g) hfg hdeg hf_pos hg_pos hno zero_lt_one (by simp)
-      (by simp)
+    IsCoprime (C (1 : ℝ) * f + g) (C (2 : ℝ) * f + g) :=
+  family_pair_data_left
+    (f := f) (g := g) hfg hdeg hf_pos hg_pos hno zero_lt_one (by simp)
+    (by simp)
 
 private lemma sub_family_left_one_two {f g : ℝ[X]} :
     (C (2 : ℝ) * f + g) - (C (1 : ℝ) * f + g) = f := by
@@ -1225,11 +1221,10 @@ theorem revPrec_of_prec_or_revPrec_of_root_asymmetry
     (hf_le : ∀ s ∈ f.roots, s ≤ c)
     (hgr : g.IsRoot r)
     (hc_lt : c < r) :
-    Prec f g := by
-  exact
-    prec_of_prec_or_revPrec_of_root_asymmetry
-      (f := g) (g := f) (c := c) (r := r) (by lia)
-      hf_le hgr hc_lt
+    Prec f g :=
+  prec_of_prec_or_revPrec_of_root_asymmetry
+    (f := g) (g := f) (c := c) (r := r) (by lia)
+    hf_le hgr hc_lt
 
 /-- Linear equal-degree case of the same-degree Obreschkoff alternative. -/
 theorem prec_or_revPrec_of_same_degree_one
@@ -1291,8 +1286,8 @@ theorem prec_convex_right {f g : ℝ[X]}
     (hfg : Prec f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
-    Prec (C a * f + C b * g) g := by
-  exact prec_nonneg_combo_right hfg hf_pos hg_pos ha.le hb.le (Or.inl ha)
+    Prec (C a * f + C b * g) g :=
+  prec_nonneg_combo_right hfg hf_pos hg_pos ha.le hb.le (Or.inl ha)
 
 /-- If `f ⊳ g` with positive leading coefficients and non-negative `a, b`,
     not both zero, then `f` interlaces `a·f + b·g` from the right provided

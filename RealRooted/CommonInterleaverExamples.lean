@@ -98,43 +98,36 @@ lemma scaledLinearFamily_commonInterleaver :
   · simp_all
 
 lemma scaledLinearFamily_pairwiseCompatible :
-    PairwiseCompatible scaledLinearFamily := by
-  exact
-    pairwiseCompatible_of_commonInterleaver
-      scaledLinearFamily_commonInterleaver
-      scaledLinearFamily_hasPosLeadingCoeff
+    PairwiseCompatible scaledLinearFamily :=
+  pairwiseCompatible_of_commonInterleaver
+    scaledLinearFamily_commonInterleaver
+    scaledLinearFamily_hasPosLeadingCoeff
 
 lemma scaledLinearFamily_familyCompatible :
-    FamilyCompatible scaledLinearFamily := by
-  exact
-    familyCompatible_of_commonInterleaver
-      scaledLinearFamily_commonInterleaver
-      scaledLinearFamily_hasPosLeadingCoeff
+    FamilyCompatible scaledLinearFamily :=
+  familyCompatible_of_commonInterleaver
+    scaledLinearFamily_commonInterleaver
+    scaledLinearFamily_hasPosLeadingCoeff
 
 /-- Unconditional toy-family regression: this concrete family already has a
 global common interleaver, so pairwise and full compatibility coincide without
 needing the missing two-polynomial bridge. -/
 lemma scaledLinearFamily_pairwiseCompatible_iff_familyCompatible :
-    PairwiseCompatible scaledLinearFamily ↔ FamilyCompatible scaledLinearFamily := by
-  constructor
-  · intro
-    exact scaledLinearFamily_familyCompatible
-  · intro
-    exact scaledLinearFamily_pairwiseCompatible
+    PairwiseCompatible scaledLinearFamily ↔ FamilyCompatible scaledLinearFamily :=
+  ⟨fun _ => scaledLinearFamily_familyCompatible, fun _ => scaledLinearFamily_pairwiseCompatible⟩
 
 /-- Concrete specialization of the packaged nonnegative `1 ↔ 4` direction.
 Once the outstanding two-polynomial all-combinations bridge is discharged, this
 family becomes an immediate end-to-end Chudnovsky--Seymour regression. -/
 lemma scaledLinearFamily_pairwiseCompatible_iff_familyCompatible_of_allComboBridge
     (hallBridge : PosComboNoCommonToAllComboBridgeStatement) :
-    PairwiseCompatible scaledLinearFamily ↔ FamilyCompatible scaledLinearFamily := by
-  exact
-    pairwiseCompatible_iff_familyCompatible_of_allComboBridge_and_nonnegCoeffs
-      (fs := scaledLinearFamily)
-      scaledLinearFamily_isRealRooted
-      scaledLinearFamily_hasPosLeadingCoeff
-      scaledLinearFamily_hasNonnegCoeffs
-      hallBridge
+    PairwiseCompatible scaledLinearFamily ↔ FamilyCompatible scaledLinearFamily :=
+  pairwiseCompatible_iff_familyCompatible_of_allComboBridge_and_nonnegCoeffs
+    (fs := scaledLinearFamily)
+    scaledLinearFamily_isRealRooted
+    scaledLinearFamily_hasPosLeadingCoeff
+    scaledLinearFamily_hasNonnegCoeffs
+    hallBridge
 
 private lemma xAddOne_natDegree :
     (X + 1 : ℝ[X]).natDegree = 1 := by
@@ -211,10 +204,9 @@ private lemma xSq_add_fiveX_add_six_hasNonnegCoeffs :
   xAddTwo_hasNonnegCoeffs.mul xAddThree_hasNonnegCoeffs
 
 private lemma xSq_add_fiveX_add_six_hasPosLeadingCoeff :
-    HasPosLeadingCoeff (((X + 2) * (X + 3)) : ℝ[X]) := by
-  exact
-    xSq_add_fiveX_add_six_hasNonnegCoeffs.pos_leadingCoeff
-      xSq_add_fiveX_add_six_isRealRooted.1
+    HasPosLeadingCoeff (((X + 2) * (X + 3)) : ℝ[X]) :=
+  xSq_add_fiveX_add_six_hasNonnegCoeffs.pos_leadingCoeff
+    xSq_add_fiveX_add_six_isRealRooted.1
 
 private lemma xSq_add_fiveX_add_six_natDegree :
     (((X + 2) * (X + 3)) : ℝ[X]).natDegree = 2 := by
@@ -545,8 +537,7 @@ lemma not_posComboNoCommonAffineFamilyStatement :
   intro haff
   have hrr :
       (((((C (1 : ℝ) * X + C (1 : ℝ)) * (X + 1)) + (X + 2)) : ℝ[X]) ≠ 0 ∧
-        ((((C (1 : ℝ) * X + C (1 : ℝ)) * (X + 1)) + (X + 2)) : ℝ[X]).Splits) := by
-    exact
+        ((((C (1 : ℝ) * X + C (1 : ℝ)) * (X + 1)) + (X + 2)) : ℝ[X]).Splits) :=
       haff
         xAddOne_hasPosLeadingCoeff
         xAddTwo_hasPosLeadingCoeff
@@ -564,9 +555,8 @@ lemma not_posComboNoCommonAffineFamilyStatement :
 /-- The sharper boundary-right-pair target is also false, because it implies
 the affine-family target already refuted above. -/
 lemma not_posComboNoCommonBoundaryRightPairOrientationStatement :
-    ¬ PosComboNoCommonBoundaryRightPairOrientationStatement := by
-  intro hboundary
-  exact
+    ¬ PosComboNoCommonBoundaryRightPairOrientationStatement :=
+  fun hboundary =>
     not_posComboNoCommonAffineFamilyStatement
       (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
 
@@ -576,8 +566,7 @@ lemma not_posComboNoCommonBoundaryRightPairOrientationStatement :
 lemma not_posComboNoCommonSameDegreeShiftedPairOrientationStatement :
     ¬ PosComboNoCommonSameDegreeShiftedPairOrientationStatement := by
   intro hshift
-  have hprec : Prec (X + 1 : ℝ[X]) ((X + 2) + X * (X + 1)) := by
-    exact
+  have hprec : Prec (X + 1 : ℝ[X]) ((X + 2) + X * (X + 1)) :=
       hshift
         xAddOne_hasPosLeadingCoeff
         xAddTwo_hasPosLeadingCoeff
@@ -594,9 +583,8 @@ lemma not_posComboNoCommonSameDegreeShiftedPairOrientationStatement :
 /-- The fixed-order same-degree orientation target is false as well: on the
 same linear example, the correct orientation is not `Prec (X + 1) (X + 2)`. -/
 lemma not_posComboNoCommonSameDegreeOrientationNonnegStatement :
-    ¬ PosComboNoCommonSameDegreeOrientationNonnegStatement := by
-  intro hsame
-  exact
+    ¬ PosComboNoCommonSameDegreeOrientationNonnegStatement :=
+  fun hsame =>
     xAddOne_xAddTwo_not_prec
       (hsame
         xAddOne_hasPosLeadingCoeff
@@ -612,9 +600,8 @@ lemma not_posComboNoCommonSameDegreeOrientationNonnegStatement :
 even has a concrete common interleaver `X + 5/2`, but both quadratic roots lie
 strictly to the left of `-1`, so `Prec (X + 1) ((X + 2)(X + 3))` fails. -/
 lemma not_posComboNoCommonSuccDegreeOrientationNonnegStatement :
-    ¬ PosComboNoCommonSuccDegreeOrientationNonnegStatement := by
-  intro hsucc
-  exact
+    ¬ PosComboNoCommonSuccDegreeOrientationNonnegStatement :=
+  fun hsucc =>
     xAddOne_xSq_add_fiveX_add_six_not_prec
       (hsucc
         xAddOne_hasPosLeadingCoeff

@@ -801,11 +801,10 @@ theorem allComboRealRooted_of_sameDegreeShiftedPairOrientation_and_nonnegCoeffs
     (hfg : PosComboRealRooted f g)
     (hdeg : g.natDegree = f.natDegree)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    AllComboRealRooted f g := by
-  exact
-    allComboRealRooted_of_prec
-      ((posComboNoCommonSameDegreeOrientation_of_shiftedPairOrientation_and_nonnegCoeffs
-          hshift) hf_pos hg_pos hfnn hgnn hfg hdeg hno)
+    AllComboRealRooted f g :=
+  allComboRealRooted_of_prec
+    ((posComboNoCommonSameDegreeOrientation_of_shiftedPairOrientation_and_nonnegCoeffs
+        hshift) hf_pos hg_pos hfnn hgnn hfg hdeg hno)
 
 /-- Forward orientation of the right-family pair `(f + g, f + 2g)` already
 forces the sum `f + g` to interlace `g` on the left in the high-degree
@@ -952,11 +951,10 @@ theorem pairHasCommonInterleaver_of_forward_oneTwoFamilies_sameDegree_nonneg
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hright : Prec (f + g) (f + C (2 : ℝ) * g))
     (hleft : Prec (f + g) (C (2 : ℝ) * f + g)) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  exact
-    htwo hf_pos hg_pos
-      (compatible_of_forward_oneTwoFamilies_sameDegree_nonneg
-        hf_pos hg_pos hfg hdeg hdeg_pos hno hright hleft)
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  htwo hf_pos hg_pos
+    (compatible_of_forward_oneTwoFamilies_sameDegree_nonneg
+      hf_pos hg_pos hfg hdeg hdeg_pos hno hright hleft)
 
 /-- Any two positive-leading polynomials of degree at most one already satisfy
 the Obreschkoff alternative. This is the unconditional low-degree endpoint for
@@ -1037,10 +1035,9 @@ theorem pairHasCommonInterleaver_of_sameDegree_natDegree_le_one
     (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree = f.natDegree)
     (hf_deg_le_one : f.natDegree ≤ 1) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  exact
-    pairHasCommonInterleaver_of_natDegree_le_one
-      hf_pos hg_pos hf_deg_le_one (by lia)
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  pairHasCommonInterleaver_of_natDegree_le_one
+    hf_pos hg_pos hf_deg_le_one (by lia)
 
 /-- Compatibility-level version of the low-degree common-interleaver endpoint.
 In degree at most one the common interleaver exists without using the
@@ -1052,10 +1049,9 @@ theorem compatiblePairHasCommonInterleaver_of_natDegree_le_one
     (hg_pos : HasPosLeadingCoeff g)
     (hf_deg_le_one : f.natDegree ≤ 1)
     (hg_deg_le_one : g.natDegree ≤ 1) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  exact
-    pairHasCommonInterleaver_of_natDegree_le_one
-      hf_pos hg_pos hf_deg_le_one hg_deg_le_one
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  pairHasCommonInterleaver_of_natDegree_le_one
+    hf_pos hg_pos hf_deg_le_one hg_deg_le_one
 
 /-- Same-degree branch of the honest no-common target is already unconditional
 through degree one. -/
@@ -1127,10 +1123,9 @@ theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_degree_le_one
     (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree = f.natDegree)
     (hf_deg_le_one : f.natDegree ≤ 1) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  exact
-    pairHasCommonInterleaver_of_sameDegree_natDegree_le_one
-      hf_pos hg_pos hdeg hf_deg_le_one
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  pairHasCommonInterleaver_of_sameDegree_natDegree_le_one
+    hf_pos hg_pos hdeg hf_deg_le_one
 
 /-- Succ-degree branch of the honest no-common target is already unconditional
 in the constant-vs-linear endpoint case. -/
@@ -1247,10 +1242,9 @@ theorem posComboNoCommonSuccDegreeOrientation_of_noCommonOrientation
 directly into the corrected succ-degree common-interleaver bridge. -/
 theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_noCommonOrientation
     (hstep : PosComboNoCommonOrientationStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
-  exact
-    posComboNoCommonSuccDegreePairHasCommonInterleaver_of_orientation_nonneg
-      (posComboNoCommonSuccDegreeOrientation_of_noCommonOrientation hstep)
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+  posComboNoCommonSuccDegreePairHasCommonInterleaver_of_orientation_nonneg
+    (posComboNoCommonSuccDegreeOrientation_of_noCommonOrientation hstep)
 
 /-- Honest nonnegative degree-split reduction of the no-common orientation
 problem: it is enough to solve the same-degree branch up to orientation
@@ -1503,12 +1497,11 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_sameDegreePair_and_affineFam
     (hdeg_lo : f.natDegree ≤ g.natDegree)
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  exact
-    posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-      hsame
-      (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
-      hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
+    hsame
+    (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
+    hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
 
 private theorem posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs_ordered
     (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
