@@ -88,3 +88,30 @@ fullyInterlacingPairToHurwitzOddEvenStable_of_matrixTNN :
 Thus the remaining analytic target for the Lace-to-`Prec` route is
 `HurwitzStableOddEvenToPrecStatement`, modulo the existing global Hurwitz matrix
 criterion interface.
+
+## Update: rotation reduction of the Hurwitz/Hermite-Biehler bridge
+
+Aristotle task `b15beadb-26b9-4d01-b750-3f2c85d13836` did not close
+`HurwitzOddEvenToHermiteBiehlerStableStatement` unconditionally.  It identified
+the target as the classical converse Hermite-Biehler/Hurwitz substitution and
+split off the elementary half-plane rotation part.
+
+The checked additions are:
+
+```lean
+isUpperHalfPlaneStable_iff_isRightHalfPlaneStable_comp :
+  IsUpperHalfPlaneStable P <->
+  IsRightHalfPlaneStable (P.comp (C Complex.I * X))
+
+HurwitzOddEvenToHermiteBiehlerRotatedStatement
+
+hurwitzOddEvenToHermiteBiehlerStable_of_rotated :
+  HurwitzOddEvenToHermiteBiehlerRotatedStatement ->
+  HurwitzOddEvenToHermiteBiehlerStableStatement
+```
+
+Thus the remaining obstruction for this part of the chain is the rotated
+right-half-plane interface
+`HurwitzOddEvenToHermiteBiehlerRotatedStatement`: right-half-plane stability of
+`complexify (oddEvenPolynomial p q)` should imply right-half-plane stability of
+`(hermiteBiehlerPolynomial q p).comp (C Complex.I * X)`.

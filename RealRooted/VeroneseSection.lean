@@ -896,6 +896,62 @@ def HurwitzOddEvenToHermiteBiehlerStableStatement : Prop :=
     IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q)) →
     IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p)
 
+/-- The conformal rotation `z ↦ i * z` maps the open right half-plane onto the
+open upper half-plane.
+
+Consequently, a complex polynomial `P` is upper-half-plane stable exactly when
+its rotation `P(i * z)`, implemented by substituting `X ↦ C Complex.I * X`, is
+right-half-plane stable.  This elementary equivalence isolates the remaining
+analytic content of the converse Hurwitz/Hermite--Biehler bridge below. -/
+theorem isUpperHalfPlaneStable_iff_isRightHalfPlaneStable_comp (P : ℂ[X]) :
+    IsUpperHalfPlaneStable P ↔
+      IsRightHalfPlaneStable (P.comp (C Complex.I * X)) := by
+  constructor
+  · intro h z hz
+    rw [Polynomial.eval_comp]
+    simp only [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_X]
+    apply h
+    have him : (Complex.I * z).im = z.re := by
+      simp [Complex.mul_im]
+    rw [him]
+    exact hz
+  · intro h w hw
+    have key : P.eval w = (P.comp (C Complex.I * X)).eval (-Complex.I * w) := by
+      rw [Polynomial.eval_comp]
+      simp only [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_X]
+      ring_nf
+      simp [Complex.I_sq]
+    rw [key]
+    apply h
+    have hre : (-Complex.I * w).re = w.im := by
+      simp [Complex.mul_re]
+    rw [hre]
+    exact hw
+
+/-- Minimal conformal-substitution interface for the converse Hurwitz/
+Hermite--Biehler bridge.
+
+This is the remaining analytic input after the elementary half-plane rotation:
+right-half-plane stability of the odd/even Hurwitz polynomial `q(x^2)+x p(x^2)`
+forces right-half-plane stability of the rotated Hermite--Biehler combination
+`(q + i p)(i * z)`. -/
+def HurwitzOddEvenToHermiteBiehlerRotatedStatement : Prop :=
+  ∀ ⦃p q : ℝ[X]⦄,
+    HasNonnegCoeffs p →
+    HasNonnegCoeffs q →
+    IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q)) →
+    IsRightHalfPlaneStable
+      ((hermiteBiehlerPolynomial q p).comp (C Complex.I * X))
+
+/-- Checked reduction of the converse analytic-substitution interface to the
+rotated right-half-plane version. -/
+theorem hurwitzOddEvenToHermiteBiehlerStable_of_rotated
+    (hRot : HurwitzOddEvenToHermiteBiehlerRotatedStatement) :
+    HurwitzOddEvenToHermiteBiehlerStableStatement := by
+  intro p q hp hq hrhp
+  rw [isUpperHalfPlaneStable_iff_isRightHalfPlaneStable_comp]
+  exact hRot hp hq hrhp
+
 /-- Oriented converse Hermite--Biehler interface (oriented converse of
 `hermiteBiehlerForwardPosStatement`).
 
