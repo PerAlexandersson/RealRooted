@@ -277,10 +277,9 @@ theorem isRealRooted_left_of_posComboRealRooted_monic_sameDegree
         (hfg := hfg) (z := z) hz_aeval hf_monic hg_monic hdeg
     refine ⟨z.re, Complex.ext_iff.2 ?_⟩
     simp [hz_im]
-  have hsplit : f.Splits := by
-    exact
-      Polynomial.Splits.of_splits_map (i := algebraMap ℝ ℂ)
-        (IsAlgClosed.splits _) hroots_real
+  have hsplit : f.Splits :=
+    Polynomial.Splits.of_splits_map (i := algebraMap ℝ ℂ)
+      (IsAlgClosed.splits _) hroots_real
   lia
 
 /-- Symmetric right-side version of

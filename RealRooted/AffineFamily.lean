@@ -2045,17 +2045,15 @@ private lemma natDegree_shifted_pair_eq_succ_of_affine_family
   rcases lt_or_eq_of_le hdeg_right with hlt | heq
   · have hg_lt : g.natDegree < (X * f).natDegree := by
       simp_all
-    have hsum_deg : (g + X * f).natDegree = (X * f).natDegree := by
-      exact
-        natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
-          hg_lt hXf_pos
+    have hsum_deg : (g + X * f).natDegree = (X * f).natDegree :=
+      natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
+        hg_lt hXf_pos
     simp_all
   · have hg_eq : g.natDegree = (X * f).natDegree := by
       simp_all
-    have hsum_deg : (g + X * f).natDegree = (X * f).natDegree := by
-      exact
-        natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff
-          hg_eq hg_pos hXf_pos |>.trans hg_eq
+    have hsum_deg : (g + X * f).natDegree = (X * f).natDegree :=
+      natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff
+        hg_eq hg_pos hXf_pos |>.trans hg_eq
     lia
 
 /-- Data package for the shifted affine pair `(g + X * f, f)`. This isolates
@@ -2078,10 +2076,9 @@ private lemma affine_family_shifted_pair_data
     (g + X * f).natDegree = f.natDegree + 1 := by
   have hshift_nonneg : HasNonnegCoeffs (g + X * f) :=
     hgnn.add (hasNonnegCoeffs_X.mul hfnn)
-  have hshift_ne : g + X * f ≠ 0 := by
-    exact
-      add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
-        hgnn (hasNonnegCoeffs_X.mul hfnn) (mul_ne_zero X_ne_zero hf0)
+  have hshift_ne : g + X * f ≠ 0 :=
+    add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
+      hgnn (hasNonnegCoeffs_X.mul hfnn) (mul_ne_zero X_ne_zero hf0)
   refine
     ⟨posComboRealRooted_shifted_pair_of_affine_family haff,
       hshift_nonneg, hfnn, hshift_ne, hf0,
@@ -2163,10 +2160,9 @@ private lemma prec_of_prec_shifted_pair_sameDegree
       (hasNonnegCoeffs_X.mul hfnn).pos_leadingCoeff (mul_ne_zero X_ne_zero hf0)
     have hg_lt : g.natDegree < (X * f).natDegree := by
       lia
-    have hsum_deg : (g + X * f).natDegree = (X * f).natDegree := by
-      exact
-        natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
-          hg_lt hXf_pos
+    have hsum_deg : (g + X * f).natDegree = (X * f).natDegree :=
+      natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
+        hg_lt hXf_pos
     lia
   let a : ℝ := f.leadingCoeff⁻¹
   have ha_ne : a ≠ 0 := inv_ne_zero (ne_of_gt hf_pos)
@@ -2681,10 +2677,9 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
     dsimp [pη]
     exact ⟨iterateTDeriv_ne_zero hg_rr.1, splits_iterateTDeriv hη_pos hg_rr.2⟩
   have hpη_ne : pη ≠ 0 := hpη_rr.1
-  have hpp_ne : pη.derivative.derivative.eval r ≠ 0 := by
-    exact
-      eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
-        hpη_ne hpη_mult
+  have hpp_ne : pη.derivative.derivative.eval r ≠ 0 :=
+    eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
+      hpη_ne hpη_mult
   have hqPosη_keep :
       0 < qPosη.eval r * qPos.eval r := by
     grind
@@ -3046,10 +3041,9 @@ private lemma wronskian_eval_ne_zero_of_add_left_family_of_no_common
   have hcombo : PosComboRealRooted g f := by
     rw [PosComboRealRooted.iff_add_right]
     grind
-  have hsimple : HasSimpleRoots (g + C t * f) := by
-    exact
-      hasSimpleRoots_add_right_of_posComboRealRooted
-        hcombo hno ht_pos
+  have hsimple : HasSimpleRoots (g + C t * f) :=
+    hasSimpleRoots_add_right_of_posComboRealRooted
+      hcombo hno ht_pos
   have hp_rr : ((g + C t * f) ≠ 0 ∧ (g + C t * f).Splits) := by
     grind
   have hp_root : (g + C t * f).IsRoot x := by
