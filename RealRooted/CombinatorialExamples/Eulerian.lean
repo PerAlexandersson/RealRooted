@@ -63,15 +63,12 @@ lemma coeff_eulerianTilde_succ (n m : Nat) :
   grind
 
 lemma coeff_eulerianTilde_top_and_above :
-    ∀ n : Nat,
+  ∀ n : Nat,
       coeff (eulerianTilde n) (n + 1) = 1 ∧
       ∀ m > n + 1, coeff (eulerianTilde n) m = 0
   | 0 => by
-      constructor
-      · simp
-      · intro m hm
-        have hm1 : 1 < m := by lia
-        simp [eulerianTilde_zero, coeff_X, Nat.ne_of_lt hm1]
+      constructor <;> simp [eulerianTilde_zero, coeff_X]
+      lia
   | n + 1 => by
       rcases coeff_eulerianTilde_top_and_above n with ⟨htop, habove⟩
       constructor

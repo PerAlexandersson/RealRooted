@@ -83,15 +83,11 @@ lemma coeff_singletonFreeSetPartitions_top_pos_and_above :
   | 1, h => by
       lia
   | 2, _ => by
-      constructor
-      · simp [singletonFreeSetPartitions_two]
-      · intro m hm
-        simp [singletonFreeSetPartitions_two, coeff_X, show ¬1 = m by lia]
+      constructor <;> simp [singletonFreeSetPartitions_two, coeff_X]
+      lia
   | 3, _ => by
-      constructor
-      · simp [singletonFreeSetPartitions_three]
-      · intro m hm
-        simp [singletonFreeSetPartitions_three, coeff_X, show ¬1 = m by lia]
+      constructor <;> simp [singletonFreeSetPartitions_three, coeff_X]
+      lia
   | n + 4, _ => by
       rcases coeff_singletonFreeSetPartitions_top_pos_and_above (n + 2) (by lia) with
         ⟨hsmall_top, hsmall_hi⟩
