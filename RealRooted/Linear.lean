@@ -106,8 +106,8 @@ lemma pow_X_sub_C_dvd_add {p q : ℝ[X]} {r : ℝ} {m : ℕ}
 of the two summands. -/
 lemma min_rootMultiplicity_le_rootMultiplicity_add {p q : ℝ[X]} {r : ℝ}
     (hpq : p + q ≠ 0) :
-    min (p.rootMultiplicity r) (q.rootMultiplicity r) ≤ (p + q).rootMultiplicity r := by
-  simpa using (Polynomial.rootMultiplicity_add (p := p) (q := q) r hpq)
+    min (p.rootMultiplicity r) (q.rootMultiplicity r) ≤ (p + q).rootMultiplicity r :=
+  Polynomial.rootMultiplicity_add (p := p) (q := q) r hpq
 
 /-- A nonunit real-rooted polynomial has a real root. -/
 lemma exists_isRoot_of_isRealRooted_of_not_isUnit {p : ℝ[X]} (hp_ne : p ≠ 0)
