@@ -853,6 +853,58 @@ theorem fullyInterlacingPairToPrec0_of_forwardASW_interlace
   exact ⟨⟨hp0, hp_split⟩, ⟨hq0, hq_split⟩, ss, rs, hss, hrs,
     hss_eq, hrs_eq, hshape⟩
 
+/-- Converse Hurwitz-matrix interface specialized to the odd/even polynomial.
+
+This is the orientation of the classical total-nonnegativity criterion needed
+for the converse Lace bridge: total nonnegativity of the two-row Lace matrix of
+`p` and `q`, equivalently of the Hurwitz matrix of `q(x^2) + x p(x^2)`, forces
+Hurwitz stability of `q(x^2) + x p(x^2)`. It is the exact converse of the
+forward interface `HurwitzOddEvenToFullyInterlacingPairStatement` and follows
+from the matrix Hurwitz criterion
+`HurwitzMatrixTotallyNonnegativeToStableStatement` via
+`hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair`. -/
+def FullyInterlacingPairToHurwitzOddEvenStableStatement : Prop :=
+  ∀ ⦃p q : ℝ[X]⦄,
+    FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+    IsHurwitzStable (oddEvenPolynomial p q)
+
+/-- Analytic converse interface (converse Hermite--Biehler / Hurwitz step).
+
+Hurwitz stability of the odd/even polynomial `q(x^2) + x p(x^2)` of two nonzero
+polynomials forces proper position `Prec p q`. This isolates the genuinely
+analytic heart of the converse direction: once the two-row Lace certificate has
+been turned into Hurwitz stability of `q(x^2) + x p(x^2)`, the roots of `p` and
+`q` interlace in the `p ≪ q` orientation. Real-rootedness (`Splits`) is part of
+`Prec`, so it is supplied here as well. -/
+def HurwitzStableOddEvenToPrecStatement : Prop :=
+  ∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 →
+    IsHurwitzStable (oddEvenPolynomial p q) → Prec p q
+
+/-- Checked reduction of the interlacing-extraction interface.
+
+`FullyInterlacingPairInterlaceStatement` follows from two named, strictly
+smaller classical inputs, both natural converses of forward interfaces already
+in the project:
+
+* `FullyInterlacingPairToHurwitzOddEvenStableStatement`, the converse Hurwitz
+  matrix criterion specialized to the odd/even polynomial, which turns the
+  two-row Lace total-nonnegativity certificate into Hurwitz stability of
+  `q(x^2) + x p(x^2)`; and
+* `HurwitzStableOddEvenToPrecStatement`, the analytic converse
+  Hermite--Biehler/Hurwitz step, which turns that Hurwitz stability into the
+  proper-position relation `Prec p q`.
+
+The interlacing list data demanded by `FullyInterlacingPairInterlaceStatement`
+is then read off directly from the `Prec p q` witness. -/
+theorem fullyInterlacingPairInterlace_of_oddEvenStableToPrec
+    (hStable : FullyInterlacingPairToHurwitzOddEvenStableStatement)
+    (hPrec : HurwitzStableOddEvenToPrecStatement) :
+    FullyInterlacingPairInterlaceStatement := by
+  intro p q hp hq hfull
+  have hstable : IsHurwitzStable (oddEvenPolynomial p q) := hStable hfull
+  obtain ⟨_, _, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩ := hPrec hp hq hstable
+  exact ⟨ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
+
 /-- Once a two-row Lace certificate is available, fixed Veronese sections
 preserve polynomial interlacing in the zero-aware sense, assuming the
 lace-to-polynomial bridge. -/

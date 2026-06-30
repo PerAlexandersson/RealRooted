@@ -44,3 +44,35 @@ It discharges the zero-polynomial cases directly and assembles the strict
 
 The second item is a good next Aristotle target: it is narrower than the full
 zero-aware bridge and no longer includes the ASW real-rootedness component.
+
+## Update: reduction of `FullyInterlacingPairInterlaceStatement`
+
+Aristotle task `269b8b59-f0e5-4d6c-8af4-910647389f54` reduced the
+interlacing-extraction interface `FullyInterlacingPairInterlaceStatement` to two
+strictly smaller named classical inputs, both natural converses of forward
+interfaces already in the project.
+
+* `FullyInterlacingPairToHurwitzOddEvenStableStatement` is the converse Hurwitz
+  matrix criterion specialized to the odd/even polynomial: total nonnegativity
+  of the two-row Lace matrix of `p`, `q`, equivalently of the Hurwitz matrix of
+  `q(x^2) + x p(x^2)`, forces
+  `IsHurwitzStable (oddEvenPolynomial p q)`. This is the converse of
+  `HurwitzOddEvenToFullyInterlacingPairStatement`.
+* `HurwitzStableOddEvenToPrecStatement` is the analytic converse
+  Hermite-Biehler/Hurwitz step: for nonzero `p`, `q`, Hurwitz stability of
+  `q(x^2) + x p(x^2)` forces the proper-position relation `Prec p q`.
+
+The checked reduction is
+
+```lean
+fullyInterlacingPairInterlace_of_oddEvenStableToPrec :
+  FullyInterlacingPairToHurwitzOddEvenStableStatement ->
+  HurwitzStableOddEvenToPrecStatement ->
+  FullyInterlacingPairInterlaceStatement
+```
+
+It factors the converse Lace bridge through `IsHurwitzStable (oddEvenPolynomial
+p q)`, then reads the interlacing list data off the `Prec p q` witness.
+`FullyInterlacingPairInterlaceStatement` is therefore not closed
+unconditionally, but is reduced to the two named inputs above with no new
+unconditional `sorry`s.
