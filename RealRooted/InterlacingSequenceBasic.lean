@@ -149,11 +149,8 @@ lemma IsInterlacingSeq.sublist {fs gs : List ℝ[X]}
 
 lemma IsInterlacingSeqNonneg.sublist {fs gs : List ℝ[X]}
     (hfs : IsInterlacingSeqNonneg fs) (hgs : gs.Sublist fs) :
-    IsInterlacingSeqNonneg gs := by
-  refine ⟨?_, ?_⟩
-  · intro p hp
-    exact hfs.1 p (hgs.subset hp)
-  · exact hfs.2.sublist hgs
+    IsInterlacingSeqNonneg gs :=
+  ⟨fun p hp => hfs.1 p (hgs.subset hp), hfs.2.sublist hgs⟩
 
 lemma IsInterlacingSeq0.sublist {fs gs : List ℝ[X]}
     (hfs : IsInterlacingSeq0 fs) (hgs : gs.Sublist fs) :
@@ -205,10 +202,8 @@ the same structure. -/
 lemma IsInterlacingSeqNonneg.reverse {fs : List ℝ[X]}
     (hfs : IsInterlacingSeqNonneg fs) :
     (∀ f ∈ fs.reverse, (f ≠ 0 ∧ f.Splits) ∧ HasNonnegCoeffs f) ∧
-      fs.reverse.Pairwise (fun f g => Prec g f) := by
-  rcases hfs with ⟨hmem, hint⟩
-  refine ⟨?_, hint.reverse⟩
-  simp_all
+      fs.reverse.Pairwise (fun f g => Prec g f) :=
+  ⟨fun f hf => hfs.1 f (by simpa using hf), hfs.2.reverse⟩
 
 lemma IsInterlacingSeqNonneg.realRooted {fs : List ℝ[X]}
     (hfs : IsInterlacingSeqNonneg fs) :
@@ -222,9 +217,8 @@ lemma IsInterlacingSeqNonneg.splits {fs : List ℝ[X]}
 
 lemma IsInterlacingSeqNonneg.posLeadingCoeff {fs : List ℝ[X]}
     (hfs : IsInterlacingSeqNonneg fs) :
-    ∀ f ∈ fs, HasPosLeadingCoeff f := by
-  intro f hf
-  exact ((hfs.1 f hf).2).pos_leadingCoeff (hfs.realRooted f hf).1
+    ∀ f ∈ fs, HasPosLeadingCoeff f :=
+  fun f hf => ((hfs.1 f hf).2).pos_leadingCoeff (hfs.realRooted f hf).1
 
 lemma IsInterlacingSeqNonneg.nonnegCoeffs {fs : List ℝ[X]}
     (hfs : IsInterlacingSeqNonneg fs) :
