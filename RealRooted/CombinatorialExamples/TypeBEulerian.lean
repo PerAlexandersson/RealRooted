@@ -238,8 +238,7 @@ theorem prec_typeBEulerian_succ : ∀ n : Nat, Prec (typeBEulerian n) (typeBEule
           HasPosLeadingCoeff
             (typeBEulerianCoeffA (n + 1) * typeBEulerian (n + 1) +
               typeBEulerianCoeffB * (typeBEulerian (n + 1)).derivative) := by
-        rw [hNext_eq]
-        exact typeBEulerian_posLeadingCoeff (n + 2)
+        simpa [hNext_eq] using typeBEulerian_posLeadingCoeff (n + 2)
       have hdeg_lo :
           (typeBEulerian (n + 1)).natDegree ≤
             (typeBEulerianCoeffA (n + 1) * typeBEulerian (n + 1) +
@@ -258,8 +257,7 @@ theorem prec_typeBEulerian_succ : ∀ n : Nat, Prec (typeBEulerian n) (typeBEule
             r ≤ 0 := roots_nonpos_typeBEulerian_of_isRealRooted (prec_typeBEulerian_succ n).2.1.2 r
               ((mem_roots (prec_typeBEulerian_succ n).2.1.1).mpr hr)
         exact eval_typeBEulerianCoeffB_nonpos_of_nonpos hr_nonpos
-      rw [← hNext_eq]
-      exact
+      simpa [hNext_eq] using
         prec_of_interlaces_evalCoeff_nonpos
           (f := typeBEulerian (n + 1))
           (g := (typeBEulerian (n + 1)).derivative)

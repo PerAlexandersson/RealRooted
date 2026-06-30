@@ -224,8 +224,7 @@ lemma prec_stirlingPermutations_one_two :
       HasPosLeadingCoeff
         (stirlingPermutationsCoeffA 1 * stirlingPermutations 1 +
           stirlingPermutationsCoeffB * (stirlingPermutations 1).derivative) := by
-    rw [hNext_eq]
-    exact stirlingPermutations_posLeadingCoeff 2
+    simpa [hNext_eq] using stirlingPermutations_posLeadingCoeff 2
   have hdeg_lo :
       (stirlingPermutations 1).natDegree ≤
         (stirlingPermutationsCoeffA 1 * stirlingPermutations 1 +
@@ -245,8 +244,7 @@ lemma prec_stirlingPermutations_one_two :
         r ≤ 0 :=
       roots_nonpos_stirlingPermutations_of_isRealRooted hf.2 r ((mem_roots hf.1).mpr hr)
     exact eval_stirlingPermutationsCoeffB_nonpos_of_nonpos hr_nonpos
-  rw [← hNext_eq]
-  exact
+  simpa [hNext_eq] using
     prec_of_interlaces_evalCoeff_nonpos
       (f := stirlingPermutations 1)
       (g := (stirlingPermutations 1).derivative)
@@ -278,8 +276,7 @@ theorem prec_stirlingPermutations_succ :
           HasPosLeadingCoeff
             (stirlingPermutationsCoeffA (n + 2) * stirlingPermutations (n + 2) +
               stirlingPermutationsCoeffB * (stirlingPermutations (n + 2)).derivative) := by
-        rw [hNext_eq]
-        exact stirlingPermutations_posLeadingCoeff (n + 3)
+        simpa [hNext_eq] using stirlingPermutations_posLeadingCoeff (n + 3)
       have hdeg_lo :
           (stirlingPermutations (n + 2)).natDegree ≤
             (stirlingPermutationsCoeffA (n + 2) * stirlingPermutations (n + 2) +
@@ -301,8 +298,7 @@ theorem prec_stirlingPermutations_succ :
             (prec_stirlingPermutations_succ (n + 1)).2.1.2 r
             ((mem_roots (prec_stirlingPermutations_succ (n + 1)).2.1.1).mpr hr)
         exact eval_stirlingPermutationsCoeffB_nonpos_of_nonpos hr_nonpos
-      rw [← hNext_eq]
-      exact
+      simpa [hNext_eq] using
         prec_of_interlaces_evalCoeff_nonpos
           (f := stirlingPermutations (n + 2))
           (g := (stirlingPermutations (n + 2)).derivative)

@@ -179,8 +179,7 @@ lemma prec_coloredSetPartitions_one_two (c m : Nat) :
       HasPosLeadingCoeff
         (coloredSetPartitionsCoeffA c * coloredSetPartitions c m 1 +
           coloredSetPartitionsCoeffB m * (coloredSetPartitions c m 1).derivative) := by
-    rw [hNext_eq]
-    exact coloredSetPartitions_posLeadingCoeff c m 2
+    simpa [hNext_eq] using coloredSetPartitions_posLeadingCoeff c m 2
   have hdeg_lo :
       (coloredSetPartitions c m 1).natDegree ≤
         (coloredSetPartitionsCoeffA c * coloredSetPartitions c m 1 +
@@ -201,8 +200,7 @@ lemma prec_coloredSetPartitions_one_two (c m : Nat) :
       roots_nonpos_coloredSetPartitions_of_isRealRooted (.of_natDegree_eq_one hdeg) r
         ((mem_roots <| by rintro h; simp [h] at hdeg).mpr hr)
     exact eval_coloredSetPartitionsCoeffB_nonpos_of_nonpos m hr_nonpos
-  rw [← hNext_eq]
-  exact
+  simpa [hNext_eq] using
     prec_of_interlaces_evalCoeff_nonpos
       (f := coloredSetPartitions c m 1)
       (g := (coloredSetPartitions c m 1).derivative)
@@ -240,8 +238,7 @@ theorem prec_coloredSetPartitions_succ (c m : Nat) :
           HasPosLeadingCoeff
             (coloredSetPartitionsCoeffA c * coloredSetPartitions c m (n + 2) +
               coloredSetPartitionsCoeffB m * (coloredSetPartitions c m (n + 2)).derivative) := by
-        rw [hNext_eq]
-        exact coloredSetPartitions_posLeadingCoeff c m (n + 3)
+        simpa [hNext_eq] using coloredSetPartitions_posLeadingCoeff c m (n + 3)
       have hdeg_lo :
           (coloredSetPartitions c m (n + 2)).natDegree ≤
             (coloredSetPartitionsCoeffA c * coloredSetPartitions c m (n + 2) +
@@ -263,8 +260,7 @@ theorem prec_coloredSetPartitions_succ (c m : Nat) :
           roots_nonpos_coloredSetPartitions_of_isRealRooted hprev.2.1.2 r
             ((mem_roots hprev.2.1.1).mpr hr)
         exact eval_coloredSetPartitionsCoeffB_nonpos_of_nonpos m hr_nonpos
-      rw [← hNext_eq]
-      exact
+      simpa [hNext_eq] using
         prec_of_interlaces_evalCoeff_nonpos
           (f := coloredSetPartitions c m (n + 2))
           (g := (coloredSetPartitions c m (n + 2)).derivative)

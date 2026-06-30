@@ -154,8 +154,7 @@ theorem prec_touchard_succ : ∀ n : Nat, Prec (touchard n) (touchard (n + 1))
       have hF_pos :
           HasPosLeadingCoeff
             (X * touchard (n + 2) + X * (touchard (n + 2)).derivative) := by
-        rw [hNext_eq]
-        exact touchard_posLeadingCoeff (n + 3)
+        simpa [hNext_eq] using touchard_posLeadingCoeff (n + 3)
       have hdeg_lo :
           (touchard (n + 2)).natDegree ≤
             (X * touchard (n + 2) + X * (touchard (n + 2)).derivative).natDegree := by
@@ -170,8 +169,7 @@ theorem prec_touchard_succ : ∀ n : Nat, Prec (touchard n) (touchard (n + 1))
         have hr_nonpos : r ≤ 0 :=
           roots_nonpos_touchard_of_isRealRooted hprev.2.1.2 r ((mem_roots hprev.2.1.1).mpr hr)
         simp_all
-      rw [← hNext_eq]
-      exact
+      simpa [hNext_eq] using
         prec_of_interlaces_evalCoeff_nonpos
           (f := touchard (n + 2))
           (g := (touchard (n + 2)).derivative)

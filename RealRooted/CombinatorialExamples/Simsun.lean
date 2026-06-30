@@ -340,8 +340,7 @@ theorem prec_simsun_succ : ∀ n : Nat, Prec (simsun n) (simsun (n + 1))
         HasPosLeadingCoeff
           (simsunCoeffA (n + 2) * simsun (n + 2) +
             simsunCoeffB * (simsun (n + 2)).derivative) := by
-      rw [hNext_eq]
-      exact simsun_posLeadingCoeff (n + 3)
+      simpa [hNext_eq] using simsun_posLeadingCoeff (n + 3)
     have hdeg_lo :
         (simsun (n + 2)).natDegree ≤
           (simsunCoeffA (n + 2) * simsun (n + 2) +
@@ -361,8 +360,7 @@ theorem prec_simsun_succ : ∀ n : Nat, Prec (simsun n) (simsun (n + 1))
           r ≤ 0 := roots_nonpos_simsun_of_isRealRooted (prec_simsun_succ (n + 1)).2.1.2 r
             ((mem_roots (prec_simsun_succ (n + 1)).2.1.1).mpr hr)
       exact eval_simsunCoeffB_nonpos_of_nonpos hr_nonpos
-    rw [← hNext_eq]
-    exact
+    simpa [hNext_eq] using
       prec_of_interlaces_evalCoeff_nonpos
         (f := simsun (n + 2))
         (g := (simsun (n + 2)).derivative)
