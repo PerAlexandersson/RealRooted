@@ -40,10 +40,7 @@ theorem preservesAllComboPairs_of_preservesRealRootedOrZero
     calc
       C α * T f + C β * T g
           = α • T f + β • T g := by simp [Polynomial.smul_eq_C_mul]
-      _ = T (α • f) + T (β • g) := by
-            simp
-      _ = T (α • f + β • g) := by
-            simp
+      _ = T (α • f + β • g) := by simp
       _ = T (C α * f + C β * g) := by
             simp [Polynomial.smul_eq_C_mul]
   by_cases hzero : C α * f + C β * g = 0
