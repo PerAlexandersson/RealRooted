@@ -490,10 +490,9 @@ private theorem isRealRooted_of_add_C_mul_right_family_of_natDegree_lt
       have him_le : |z.im| ≤ ‖z - w‖ := by
         simpa [Complex.sub_im, hw_im_zero] using (Complex.abs_im_le_norm (z - w))
       grind
-    have hsplit : g₀.Splits := by
-      exact
-        Polynomial.Splits.of_splits_map (i := algebraMap ℝ ℂ)
-          (IsAlgClosed.splits _) hroots_real
+    have hsplit : g₀.Splits :=
+      Polynomial.Splits.of_splits_map (i := algebraMap ℝ ℂ)
+        (IsAlgClosed.splits _) hroots_real
     exact ⟨hg₀_monic.ne_zero, hsplit⟩
   have hg_scale : C g.leadingCoeff * g₀ = g := by
     unfold g₀
@@ -567,14 +566,15 @@ private lemma isRealRooted_right_of_affine_family_of_natDegree_succ_le
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hdeg : f.natDegree + 1 ≤ g.natDegree) : (g ≠ 0 ∧ g.Splits) := by
-  apply isRealRooted_of_add_C_mul_right_family_of_natDegree_le
-  · intro t ht
-    simpa [add_comm] using
-      isRealRooted_add_left_of_affine_family_of_natDegree_succ_le
-        hf0 hg0 hfnn hgnn haff hdeg ht
-  · exact hfnn.pos_leadingCoeff hf0
-  · exact hgnn.pos_leadingCoeff hg0
-  · lia
+  exact isRealRooted_of_add_C_mul_right_family_of_natDegree_le
+    (by
+      intro t ht
+      simpa [add_comm] using
+        isRealRooted_add_left_of_affine_family_of_natDegree_succ_le
+          hf0 hg0 hfnn hgnn haff hdeg ht)
+    (hfnn.pos_leadingCoeff hf0)
+    (hgnn.pos_leadingCoeff hg0)
+    (by lia)
 
 private lemma isRealRooted_pair_of_affine_family_succDegree
     {f g : ℝ[X]}
@@ -618,10 +618,9 @@ private lemma isRealRooted_right_of_affine_family_succDegree
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
-    (hsucc : f.natDegree + 1 = g.natDegree) : (g ≠ 0 ∧ g.Splits) := by
-  exact
-    isRealRooted_right_of_affine_family_of_natDegree_succ_le
-      hf0 hg0 hfnn hgnn haff (by lia)
+    (hsucc : f.natDegree + 1 = g.natDegree) : (g ≠ 0 ∧ g.Splits) :=
+  isRealRooted_right_of_affine_family_of_natDegree_succ_le
+    hf0 hg0 hfnn hgnn haff (by lia)
 
 /-- Fix `s > 0`. Passing `t → 0` in the affine family shows that the boundary
 member `g + s X f` is already real-rooted. This is the natural right-family
@@ -795,9 +794,8 @@ private lemma interlaces_of_prec_sameDegree_rightmost_factor_local
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
   have hq_ne : q ≠ 0 := by
     grind
-  have hq : (q ≠ 0 ∧ q.Splits) := by
-    apply isRealRooted_of_dvd hg.1 hg.2 hq_ne
-    simp_all
+  have hq : (q ≠ 0 ∧ q.Splits) :=
+    isRealRooted_of_dvd hg.1 hg.2 hq_ne (by simp_all)
   have hq_deg_g : q.natDegree + 1 = g.natDegree := by
     rw [hgq, natDegree_mul (X_sub_C_ne_zero uR) hq_ne, natDegree_X_sub_C]
     lia
@@ -1516,9 +1514,8 @@ private lemma neg_root_quotient_posCombo_data_of_affine_family_succDegree
   obtain ⟨qg, hqg⟩ := dvd_iff_isRoot.mpr hgr
   have hqg_ne : qg ≠ 0 := by
     simp_all
-  have hqg_rr : (qg ≠ 0 ∧ qg.Splits) := by
-    apply isRealRooted_of_dvd hg_rr.1 hg_rr.2 hqg_ne
-    simp_all
+  have hqg_rr : (qg ≠ 0 ∧ qg.Splits) :=
+    isRealRooted_of_dvd hg_rr.1 hg_rr.2 hqg_ne (by simp_all)
   have hqg_pos : HasPosLeadingCoeff qg :=
     hasPosLeadingCoeff_of_X_sub_C_mul (by simpa [hqg] using hg_pos)
   have hqg_deg : qg.natDegree = f.natDegree := by
