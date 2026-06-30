@@ -157,8 +157,8 @@ interlaced on the left by `h`. -/
     · exact prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le r hp hdeg.symm hpos hp_pos hh_le hp_le
     · exact (prec_iff_prec_mul_X_sub_C_of_roots_le r
           hp.1.2 hp.2.1.2 hpos hp_pos hh_le hp_le hdeg.symm).mp hp
-  have hweighted_right : Prec (weightedSum l) H := by
-    apply prec_weightedSum_right l H hnonneg hprec_right hpoly_pos hex0
+  have hweighted_right : Prec (weightedSum l) H :=
+    prec_weightedSum_right l H hnonneg hprec_right hpoly_pos hex0
   have hweighted_pos : HasPosLeadingCoeff (weightedSum l) :=
     hasPosLeadingCoeff_weightedSum l hnonneg hpoly_pos hex0
   have hH_deg : H.natDegree = h.natDegree + 1 := by
@@ -675,21 +675,21 @@ lemma family_isCoprime_right {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     {μ₁ μ₂ : ℝ} (hμ₁ : 0 < μ₁) (hμ : μ₁ ≠ μ₂) :
-    IsCoprime (f + C μ₁ * g) (f + C μ₂ * g) := by
-  apply isCoprime_of_no_common_real_root_of_isRealRooted
-  · exact (hfg.isRealRooted_add_right hμ₁).1
-  · exact (hfg.isRealRooted_add_right hμ₁).2
-  · exact family_no_common_right hno hμ
+    IsCoprime (f + C μ₁ * g) (f + C μ₂ * g) :=
+  isCoprime_of_no_common_real_root_of_isRealRooted
+    (hfg.isRealRooted_add_right hμ₁).1
+    (hfg.isRealRooted_add_right hμ₁).2
+    (family_no_common_right hno hμ)
 
 lemma family_isCoprime_left {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     {lam₁ lam₂ : ℝ} (hlam₁ : 0 < lam₁) (hlam : lam₁ ≠ lam₂) :
-    IsCoprime (C lam₁ * f + g) (C lam₂ * f + g) := by
-  apply isCoprime_of_no_common_real_root_of_isRealRooted
-  · exact (hfg.isRealRooted_add_left hlam₁).1
-  · exact (hfg.isRealRooted_add_left hlam₁).2
-  · exact family_no_common_left hno hlam
+    IsCoprime (C lam₁ * f + g) (C lam₂ * f + g) :=
+  isCoprime_of_no_common_real_root_of_isRealRooted
+    (hfg.isRealRooted_add_left hlam₁).1
+    (hfg.isRealRooted_add_left hlam₁).2
+    (family_no_common_left hno hlam)
 
 /-- Positive-combination real-rootedness descends through a shared real-rooted
 factor. This is the common-factor reduction step needed for converse
@@ -1249,16 +1249,13 @@ theorem prec_or_revPrec_of_same_degree_one
     (hf_deg1 : f.natDegree = 1) :
     Prec f g ∨ Prec g f := by
   have hf_rr : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_degree_one hf_deg1
-  have hg_rr : (g ≠ 0 ∧ g.Splits) := by
-    apply isRealRooted_of_degree_one
-    lia
-  obtain ⟨rf, hrf_eq⟩ : ∃ rf, f.roots = {rf} := by
-    apply Multiset.card_eq_one.mp
-    simpa [hf_deg1] using card_roots_of_splits hf_rr.2
-  obtain ⟨rg, hrg_eq⟩ : ∃ rg, g.roots = {rg} := by
-    apply Multiset.card_eq_one.mp
+  have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_degree_one (by lia)
+  obtain ⟨rf, hrf_eq⟩ : ∃ rf, f.roots = {rf} :=
+    Multiset.card_eq_one.mp (by simpa [hf_deg1] using card_roots_of_splits hf_rr.2)
+  obtain ⟨rg, hrg_eq⟩ : ∃ rg, g.roots = {rg} :=
+    Multiset.card_eq_one.mp (by
     have : g.natDegree = 1 := by lia
-    simpa [this] using card_roots_of_splits hg_rr.2
+    simpa [this] using card_roots_of_splits hg_rr.2)
   by_cases hle : rf ≤ rg
   · left
     refine

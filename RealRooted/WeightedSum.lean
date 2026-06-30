@@ -97,9 +97,8 @@ lemma hasPosLeadingCoeff_weightedSum :
               hasPosLeadingCoeff_add_of_same_natDegree heq hCp_pos htail_pos
           · simpa [weightedSum_cons] using
               hasPosLeadingCoeff_add_of_natDegree_lt_left hgt hCp_pos
-        · have hzero_tail : weightedSum l = 0 := by
-            apply weightedSum_eq_zero_of_forall_coeff_zero
-            grind
+        · have hzero_tail : weightedSum l = 0 :=
+            weightedSum_eq_zero_of_forall_coeff_zero l (by grind)
           simpa [weightedSum_cons, hzero_tail] using
             hasPosLeadingCoeff_C_mul ha (hpos (a, p) (by simp))
       · have htail : ∃ ap ∈ l, 0 < ap.1 := by
@@ -267,9 +266,8 @@ theorem prec_weightedSum_right :
               htail
           simpa [weightedSum_cons] using
             prec_add_of_prec_right_of_posLeadingCoeff hCp_prec htail_prec hCp_pos htail_pos
-        · have hzero_tail : weightedSum l = 0 := by
-            apply weightedSum_eq_zero_of_forall_coeff_zero
-            grind
+        · have hzero_tail : weightedSum l = 0 :=
+            weightedSum_eq_zero_of_forall_coeff_zero l (by grind)
           simpa [weightedSum_cons, hzero_tail] using
             prec_C_mul_left (hprec (a, p) (by simp)) ha.ne'
       · have htail : ∃ ap ∈ l, 0 < ap.1 := by

@@ -140,15 +140,14 @@ lemma zipWith_mul_sum_ne_zero_of_mem_ne_zero
     (hfs : ∀ q ∈ fs, HasNonnegCoeffs q)
     (hp_mem : p ∈ row.zipWith (· * ·) fs)
     (hp_ne : p ≠ 0) :
-    ((row.zipWith (· * ·) fs).sum) ≠ 0 := by
-  exact
-    sum_ne_zero_of_hasNonnegCoeffs_of_mem_ne_zero
-      (ps := row.zipWith (· * ·) fs)
-      (p := p)
-      (fun q hq =>
-        let ⟨a, ha, b, hb, hq_def⟩ := mem_zipWith_mul hq
-        hq_def ▸ (hrow a ha).mul (hfs b hb))
-      hp_mem hp_ne
+    ((row.zipWith (· * ·) fs).sum) ≠ 0 :=
+  sum_ne_zero_of_hasNonnegCoeffs_of_mem_ne_zero
+    (ps := row.zipWith (· * ·) fs)
+    (p := p)
+    (fun _ hq =>
+      let ⟨a, ha, b, hb, hq_def⟩ := mem_zipWith_mul hq
+      hq_def ▸ (hrow a ha).mul (hfs b hb))
+    hp_mem hp_ne
 
 /-- Product-family pairwise left common interleaver from two interlacing
 sequences: for `i < j`, the mixed product in the reversed family is interlaced
@@ -525,14 +524,13 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg
     simp_all
   have hrr :
       (((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum) ≠ 0 ∧
-        ((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum).Splits) := by
-    exact
-      isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
-        (fs := fs') (gs := gs'.reverse)
-        hfs'_ne
-        (by simp_all)
-        hfs'
-        hgs'_rev
+        ((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum).Splits) :=
+    isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
+      (fs := fs') (gs := gs'.reverse)
+      hfs'_ne
+      (by simp_all)
+      hfs'
+      hgs'_rev
   simp_all
 
 /-- Two-sided weak zero-aware product-sum theorem. Zero factors on either side
@@ -572,14 +570,13 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg_both
     simp_all
   have hrr :
       (((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum) ≠ 0 ∧
-        ((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum).Splits) := by
-    exact
-      isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
-        (fs := fs') (gs := gs'.reverse)
-        hfs'_ne
-        (by simp_all)
-        hfs'
-        hgs'_rev
+        ((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum).Splits) :=
+    isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
+      (fs := fs') (gs := gs'.reverse)
+      hfs'_ne
+      (by simp_all)
+      hfs'
+      hgs'_rev
   simp_all
 
 end
