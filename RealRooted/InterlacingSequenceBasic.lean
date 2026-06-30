@@ -233,20 +233,22 @@ lemma IsInterlacingSeq0.reverse {fs : List ℝ[X]} (hfs : IsInterlacingSeq0 fs) 
 /-- Reversing an interlacing sequence with nonnegative coefficients preserves
 the same structure. -/
 lemma IsInterlacingSeqNonneg.reverse {fs : List ℝ[X]}
-    (hfs : IsInterlacingSeqNonneg fs) : (∀ f ∈ fs.reverse, (f ≠ 0 ∧ f.Splits) ∧ HasNonnegCoeffs f) ∧
-    fs.reverse.Pairwise (fun f g => Prec g f) := by
+    (hfs : IsInterlacingSeqNonneg fs) :
+    (∀ f ∈ fs.reverse, (f ≠ 0 ∧ f.Splits) ∧ HasNonnegCoeffs f) ∧
+      fs.reverse.Pairwise (fun f g => Prec g f) := by
   rcases hfs with ⟨hmem, hint⟩
   refine ⟨?_, hint.reverse⟩
   simp_all
 
 lemma IsInterlacingSeqNonneg.realRooted {fs : List ℝ[X]}
     (hfs : IsInterlacingSeqNonneg fs) :
-    ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits) := by
-  intro f hf
-  exact (hfs.1 f hf).1
+    ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits) :=
+  fun f hf => (hfs.1 f hf).1
 
-lemma IsInterlacingSeqNonneg.splits {fs : List ℝ[X]} (hfs : IsInterlacingSeqNonneg fs) {f : ℝ[X]}
-    (hf : f ∈ fs) : f.Splits := (hfs.1 f hf).1.2
+lemma IsInterlacingSeqNonneg.splits {fs : List ℝ[X]}
+    (hfs : IsInterlacingSeqNonneg fs) {f : ℝ[X]} (hf : f ∈ fs) :
+    f.Splits :=
+  (hfs.1 f hf).1.2
 
 lemma IsInterlacingSeqNonneg.posLeadingCoeff {fs : List ℝ[X]}
     (hfs : IsInterlacingSeqNonneg fs) :
@@ -256,9 +258,8 @@ lemma IsInterlacingSeqNonneg.posLeadingCoeff {fs : List ℝ[X]}
 
 lemma IsInterlacingSeqNonneg.nonnegCoeffs {fs : List ℝ[X]}
     (hfs : IsInterlacingSeqNonneg fs) :
-    ∀ f ∈ fs, HasNonnegCoeffs f := by
-  intro f hf
-  exact (hfs.1 f hf).2
+    ∀ f ∈ fs, HasNonnegCoeffs f :=
+  fun f hf => (hfs.1 f hf).2
 
 lemma IsInterlacingSeq0Nonneg.filter_ne_zero_of_realRooted
     {fs : List ℝ[X]}

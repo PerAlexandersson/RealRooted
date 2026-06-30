@@ -48,12 +48,14 @@ lemma roots_le_X_sub_C_mul {r : ℝ} {f : ℝ[X]}
   · simp_all
 
 /-- A nonzero scalar multiple of a real-rooted polynomial is real-rooted. -/
-lemma isRealRooted_C_mul {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) {a : ℝ} (ha : a ≠ 0) :
+lemma isRealRooted_C_mul {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits)
+    {a : ℝ} (ha : a ≠ 0) :
     (C a * p ≠ 0 ∧ (C a * p).Splits) := by
   simp_all
 
 lemma isRealRooted_X_mul {f : ℝ[X]} (hf_ne : f ≠ 0) (hf_splits : f.Splits) :
-    ((X * f) ≠ 0 ∧ (X * f).Splits) := isRealRooted_mul (by simp) (by simp) hf_ne hf_splits
+    ((X * f) ≠ 0 ∧ (X * f).Splits) :=
+  isRealRooted_mul (by simp) (by simp) hf_ne hf_splits
 
 lemma isRealRooted_X : ((X : ℝ[X]) ≠ 0 ∧ (X : ℝ[X]).Splits) := by
   simp
@@ -174,7 +176,8 @@ lemma listAlternates_self_of_pairwise :
       simpa [List.tail] using listInterlaces_tail_of_pairwise (r :: rs) hrs
 
 lemma pairwise_map_sub_const :
-    ∀ {rs : List ℝ}, rs.Pairwise (· ≤ ·) → ∀ r : ℝ, (rs.map (· - r)).Pairwise (· ≤ ·)
+    ∀ {rs : List ℝ}, rs.Pairwise (· ≤ ·) →
+      ∀ r : ℝ, (rs.map (· - r)).Pairwise (· ≤ ·)
   | [], _, _ => by simp
   | x :: xs, h, r => by
       grind
@@ -221,7 +224,8 @@ lemma roots_comp_X_add_C {p : ℝ[X]} (r : ℝ) :
     (Multiset.count_map_eq_count' (fun y : ℝ => y - r) p.roots
       (fun a b hab => by simp_all) (x + r)).symm
 
-lemma isRealRooted_comp_X_add_C {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) (r : ℝ) :
+lemma isRealRooted_comp_X_add_C
+    {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) (r : ℝ) :
     (p.comp (X + C r) ≠ 0 ∧ (p.comp (X + C r)).Splits) := by
   refine ⟨(Polynomial.comp_X_add_C_ne_zero_iff).2 hp_ne, ?_⟩
   apply splits_of_card_roots

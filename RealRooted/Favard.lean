@@ -28,8 +28,9 @@ def favardInterlacingStatement : Prop :=
     (∀ n : Nat, 0 < β (n + 1)) →
     ∀ n : Nat, Prec (P n) (P (n + 1))
 
-private lemma interlaces_one_X_sub_C (a : ℝ) : Interlaces (1 : ℝ[X]) (X - C a) :=
-  by simp [Interlaces, ListInterlaces, sub_eq_zero]
+private lemma interlaces_one_X_sub_C (a : ℝ) :
+    Interlaces (1 : ℝ[X]) (X - C a) := by
+  simp [Interlaces, ListInterlaces, sub_eq_zero]
 
 theorem favardInterlacing :
     favardInterlacingStatement := by
@@ -106,17 +107,15 @@ theorem isRealRooted_of_favard
     {P : Nat → ℝ[X]} {α β : Nat → ℝ}
     (hrec : SatisfiesFavardRecurrence P α β)
     (hβ : ∀ n : Nat, 0 < β (n + 1)) :
-    ∀ n : Nat, ((P n) ≠ 0 ∧ (P n).Splits) := by
-  intro n
-  exact (favardInterlacing hrec hβ n).1
+    ∀ n : Nat, ((P n) ≠ 0 ∧ (P n).Splits) :=
+  fun n => (favardInterlacing hrec hβ n).1
 
 theorem nonzero_of_favard
     {P : Nat → ℝ[X]} {α β : Nat → ℝ}
     (hrec : SatisfiesFavardRecurrence P α β)
     (hβ : ∀ n : Nat, 0 < β (n + 1)) :
-    ∀ n : Nat, P n ≠ 0 := by
-  intro n
-  exact (isRealRooted_of_favard hrec hβ n).1
+    ∀ n : Nat, P n ≠ 0 :=
+  fun n => (isRealRooted_of_favard hrec hβ n).1
 
 theorem isGeneralizedSturmSeq_reverse_range_map_of_favard
     {P : Nat → ℝ[X]} {α β : Nat → ℝ}
