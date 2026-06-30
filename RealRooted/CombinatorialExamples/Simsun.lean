@@ -120,7 +120,7 @@ lemma coeff_simsunCoeffB_mul_derivative (m : Nat) (p : ℝ[X]) :
           _ = (2 : ℝ) * (((m : Nat) : ℝ) + 1) * coeff p (m + 1) := by
               rw [coeff_derivative]
               grind
-          _ = (2 * (m + 1) : ℝ) * coeff p (m + 1) := by lia
+          _ = (2 * (m + 1) : ℝ) * coeff p (m + 1) := by ring
       grind
 
 lemma coeff_simsun_succ (n m : Nat) :
@@ -173,7 +173,7 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
               nlinarith [show (2 : ℝ) * (m : ℝ) ≤ ((n + 1 : Nat) : ℝ) by
                 exact_mod_cast (show 2 * m ≤ n + 1 by lia)]
             exact add_nonneg
-              (mul_nonneg (by lia) (hprev_nonneg m))
+              (mul_nonneg hscale (hprev_nonneg m))
               (mul_nonneg (by positivity) (hprev_nonneg (m + 1)))
           · have hm' : (n + 1) / 2 < m := lt_of_not_ge hm
             have hm_zero : coeff (simsun (n + 1)) m = 0 := hprev_above m hm'
@@ -225,7 +225,7 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
         | zero =>
             lia
         | succ k =>
-            rw [show k + 1 = k + 1 by lia, coeff_simsun_succ]
+            rw [coeff_simsun_succ]
             have hk_succ_zero : coeff (simsun (n + 1)) (k + 1) = 0 := by
               grind
             by_cases hk : (n + 1) / 2 < k
@@ -323,7 +323,7 @@ theorem prec_simsun_succ : ∀ n : Nat, Prec (simsun n) (simsun (n + 1))
   | n + 2 => by
     have hInter :
         Interlaces (simsun (n + 2)).derivative (simsun (n + 2)) :=
-      interlaces_derivative_simsun (n + 2) (by lia) (prec_simsun_succ (n + 1)).2.1.2
+      interlaces_derivative_simsun (n + 2) (by simp) (prec_simsun_succ (n + 1)).2.1.2
     have hg_pos : HasPosLeadingCoeff (simsun (n + 2)).derivative :=
       (simsun_posLeadingCoeff (n + 2)).derivative (by simp [natDegree_simsun])
     have hNext_eq :
