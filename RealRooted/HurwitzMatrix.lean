@@ -51,6 +51,16 @@ direction. -/
 def HurwitzMatrixTotallyNonnegativeToStableStatement : Prop :=
   ∀ ⦃p : ℝ[X]⦄, (hurwitz p.coeff).IsTotallyNonneg → IsHurwitzStable p
 
+/-- The converse Hurwitz-matrix criterion gives the converse odd/even Lace
+bridge by the explicit Hurwitz/Lace matrix identity. -/
+theorem fullyInterlacingPairToHurwitzOddEvenStable_of_matrixTNN
+    (hMatrix : HurwitzMatrixTotallyNonnegativeToStableStatement) :
+    FullyInterlacingPairToHurwitzOddEvenStableStatement :=
+  fun {p q} hfull =>
+    hMatrix
+      ((hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair p q).2
+        hfull)
+
 /-- Full weak Hurwitz-matrix criterion in the coefficient-nonnegative
 convention used in this project. -/
 def HurwitzMatrixCriterionStatement : Prop :=
@@ -71,6 +81,12 @@ theorem hurwitzMatrixTotallyNonnegativeToStable_of_criterion
     (h : HurwitzMatrixCriterionStatement) :
     HurwitzMatrixTotallyNonnegativeToStableStatement :=
   h.2
+
+theorem fullyInterlacingPairToHurwitzOddEvenStable_of_criterion
+    (h : HurwitzMatrixCriterionStatement) :
+    FullyInterlacingPairToHurwitzOddEvenStableStatement :=
+  fullyInterlacingPairToHurwitzOddEvenStable_of_matrixTNN
+    (hurwitzMatrixTotallyNonnegativeToStable_of_criterion h)
 
 theorem hurwitzOddEvenToFullyInterlacingPair_of_matrixMinors
     (h : HurwitzStableToHurwitzMatrixMinorsStatement) :

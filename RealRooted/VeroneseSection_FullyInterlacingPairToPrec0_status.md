@@ -76,3 +76,15 @@ p q)`, then reads the interlacing list data off the `Prec p q` witness.
 `FullyInterlacingPairInterlaceStatement` is therefore not closed
 unconditionally, but is reduced to the two named inputs above with no new
 unconditional `sorry`s.
+
+The first input is now also reduced in `RealRooted/HurwitzMatrix.lean`:
+
+```lean
+fullyInterlacingPairToHurwitzOddEvenStable_of_matrixTNN :
+  HurwitzMatrixTotallyNonnegativeToStableStatement ->
+  FullyInterlacingPairToHurwitzOddEvenStableStatement
+```
+
+Thus the remaining analytic target for the Lace-to-`Prec` route is
+`HurwitzStableOddEvenToPrecStatement`, modulo the existing global Hurwitz matrix
+criterion interface.
