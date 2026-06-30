@@ -89,50 +89,34 @@ lemma isInterlacingSeq_iff_pairwise {fs : List ℝ[X]} :
     IsInterlacingSeq fs ↔ fs.Pairwise Prec := by
   constructor
   · intro h
-    cases fs with
-    | nil =>
-        simp
-    | cons f fs =>
-        cases fs with
-        | nil =>
-            simp
-        | cons g gs =>
-            exact List.pairwise_iff_get.2 (by simpa [IsInterlacingSeq] using h)
+    match fs with
+    | [] => simp
+    | [_] => simp
+    | _ :: _ :: _ =>
+        exact List.pairwise_iff_get.2 (by simpa [IsInterlacingSeq] using h)
   · intro h
-    cases fs with
-    | nil =>
-        trivial
-    | cons f fs =>
-        cases fs with
-        | nil =>
-            trivial
-        | cons g gs =>
-            simpa [IsInterlacingSeq] using (List.pairwise_iff_get.1 h)
+    match fs with
+    | [] => trivial
+    | [_] => trivial
+    | _ :: _ :: _ =>
+        simpa [IsInterlacingSeq] using (List.pairwise_iff_get.1 h)
 
 /-- `IsInterlacingSeq0` is exactly pairwise `Prec0`. -/
 lemma isInterlacingSeq0_iff_pairwise {fs : List ℝ[X]} :
     IsInterlacingSeq0 fs ↔ fs.Pairwise Prec0 := by
   constructor
   · intro h
-    cases fs with
-    | nil =>
-        simp
-    | cons f fs =>
-        cases fs with
-        | nil =>
-            simp
-        | cons g gs =>
-            exact List.pairwise_iff_get.2 (by simpa [IsInterlacingSeq0] using h)
+    match fs with
+    | [] => simp
+    | [_] => simp
+    | _ :: _ :: _ =>
+        exact List.pairwise_iff_get.2 (by simpa [IsInterlacingSeq0] using h)
   · intro h
-    cases fs with
-    | nil =>
-        trivial
-    | cons f fs =>
-        cases fs with
-        | nil =>
-            trivial
-        | cons g gs =>
-            simpa [IsInterlacingSeq0] using (List.pairwise_iff_get.1 h)
+    match fs with
+    | [] => trivial
+    | [_] => trivial
+    | _ :: _ :: _ =>
+        simpa [IsInterlacingSeq0] using (List.pairwise_iff_get.1 h)
 
 /-- A strict interlacing sequence is also interlacing in the weak `Prec0`
 sense. -/
