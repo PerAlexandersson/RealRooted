@@ -913,6 +913,40 @@ def HermiteBiehlerConverseOrientedStatement : Prop :=
     IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) →
     Prec g f
 
+/-- Orientation-selection interface for the converse Hermite--Biehler theorem.
+
+The disjunctive converse `hermiteBiehlerConverseStatement` in
+`RealRooted.HermiteBiehler` only concludes `Prec g f ∨ Prec f g`, leaving the
+orientation open.  This interface records the single remaining analytic fact
+needed to commit to the orientation matching the forward bridge
+`hermiteBiehlerForwardPosStatement`: for `f`, `g` with positive leading
+coefficients, upper-half-plane stability of `f + i g` excludes the reversed
+proper position, so the reversed branch `Prec f g` can only occur together with
+the oriented one `Prec g f`. -/
+def HermiteBiehlerOrientationStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) →
+    Prec f g → Prec g f
+
+/-- Checked reduction of the oriented converse Hermite--Biehler interface.
+
+`HermiteBiehlerConverseOrientedStatement` follows from the disjunctive converse
+Hermite--Biehler theorem `hermiteBiehlerConverseStatement` together with the
+orientation-selection input `HermiteBiehlerOrientationStatement`.  The
+disjunctive converse supplies `Prec g f ∨ Prec f g` from positive leading
+coefficients and upper-half-plane stability; the orientation input selects the
+oriented branch. -/
+theorem hermiteBiehlerConverseOriented_of_orientation
+    (hConv : hermiteBiehlerConverseStatement)
+    (hOrient : HermiteBiehlerOrientationStatement) :
+    HermiteBiehlerConverseOrientedStatement := by
+  intro f g hf hg hstable
+  rcases hConv hf hg hstable with h | h
+  · exact h
+  · exact hOrient hf hg hstable h
+
 /-- Checked reduction of the analytic converse step
 `HurwitzStableOddEvenToPrecStatement`.
 
