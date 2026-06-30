@@ -105,6 +105,47 @@ lemma monomial_comp_X_sq (n : ℕ) (a : ℝ) :
     (oddEvenPolynomial p q).coeff (2 * n + 1) = p.coeff n := by
   simp [oddEvenPolynomial]
 
+/-- The odd/even construction is injective in its two polynomial inputs. -/
+theorem oddEvenPolynomial_inj {p q r s : ℝ[X]}
+    (h : oddEvenPolynomial p q = oddEvenPolynomial r s) :
+    p = r ∧ q = s := by
+  constructor
+  · ext n
+    have hcoeff := congrArg (fun u : ℝ[X] => u.coeff (2 * n + 1)) h
+    simpa using hcoeff
+  · ext n
+    have hcoeff := congrArg (fun u : ℝ[X] => u.coeff (2 * n)) h
+    simpa using hcoeff
+
+theorem oddEvenPolynomial_eq_iff {p q r s : ℝ[X]} :
+    oddEvenPolynomial p q = oddEvenPolynomial r s ↔ p = r ∧ q = s := by
+  constructor
+  · exact oddEvenPolynomial_inj
+  · rintro ⟨rfl, rfl⟩
+    rfl
+
+@[simp] theorem oddEvenPolynomial_zero_zero :
+    oddEvenPolynomial (0 : ℝ[X]) 0 = 0 := by
+  simp [oddEvenPolynomial]
+
+@[simp] theorem oddEvenPolynomial_eq_zero_iff {p q : ℝ[X]} :
+    oddEvenPolynomial p q = 0 ↔ p = 0 ∧ q = 0 := by
+  simpa using
+    (oddEvenPolynomial_eq_iff (p := p) (q := q) (r := 0) (s := 0))
+
+theorem oddEvenPolynomial_ne_zero_iff {p q : ℝ[X]} :
+    oddEvenPolynomial p q ≠ 0 ↔ p ≠ 0 ∨ q ≠ 0 := by
+  constructor
+  · intro h
+    by_cases hp : p = 0
+    · right
+      intro hq
+      exact h (by simp [hp, hq])
+    · exact Or.inl hp
+  · rintro (hp | hq) hzero
+    · exact hp (oddEvenPolynomial_eq_zero_iff.mp hzero).1
+    · exact hq (oddEvenPolynomial_eq_zero_iff.mp hzero).2
+
 theorem hasNonnegCoeffs_oddEvenPolynomial {p q : ℝ[X]}
     (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q) :
     HasNonnegCoeffs (oddEvenPolynomial p q) := by
