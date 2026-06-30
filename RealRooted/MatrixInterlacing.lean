@@ -146,15 +146,9 @@ lemma zipWith_mul_sum_ne_zero_of_get_ne_zero
     (hrowi_ne : row.get i ≠ 0)
     (hfsi_ne : fs.get ⟨i.1, by lia⟩ ≠ 0) :
     ((row.zipWith (· * ·) fs).sum) ≠ 0 := by
-  have hmem :
-      row.get i * fs.get ⟨i.1, by lia⟩ ∈ row.zipWith (· * ·) fs :=
-    mem_zipWith_mul_get hlen i
-  have hprod_ne :
-      row.get i * fs.get ⟨i.1, by lia⟩ ≠ 0 :=
-    mul_ne_zero hrowi_ne hfsi_ne
   exact
     zipWith_mul_sum_ne_zero_of_mem_ne_zero
-      hrow_nonneg hfs_nonneg hmem hprod_ne
+      hrow_nonneg hfs_nonneg (mem_zipWith_mul_get hlen i) (mul_ne_zero hrowi_ne hfsi_ne)
 
 lemma zipWith_mul_sum_zipWith_add_right
     (row fs gs : List ℝ[X]) :
