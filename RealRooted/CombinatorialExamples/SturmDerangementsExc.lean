@@ -396,11 +396,7 @@ lemma natDegree_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n) :
 lemma affine_sturmDerangementsExc_nonnegCoeffs {n : Nat} (hn : 2 ≤ n) :
     HasNonnegCoeffs (affineSturmDerangementsExc n) := by
   intro m
-  rw [affineSturmDerangementsExc]
-  rw [coeff_add]
-  rw [show coeff (C (n : ℝ) * sturmDerangementsExc n) m =
-      (n : ℝ) * coeff (sturmDerangementsExc n) m by
-      simp]
+  rw [affineSturmDerangementsExc, coeff_add, coeff_C_mul]
   rw [coeff_one_sub_X_mul_derivative]
   by_cases hm : m ≤ n
   · have hcoeff_m : 0 ≤ coeff (sturmDerangementsExc n) m :=
