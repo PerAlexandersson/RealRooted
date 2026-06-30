@@ -279,8 +279,8 @@ theorem hasCommonInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg
   have hpos : ∀ p ∈ ps, HasPosLeadingCoeff p := by
     intro p hp
     rcases mem_zipWith_mul hp with ⟨f, hf, g, hg, rfl⟩
-    rw [HasPosLeadingCoeff, leadingCoeff_mul]
-    exact mul_pos (hfs.posLeadingCoeff f hf) (hgs_pos_rev g hg)
+    simpa [HasPosLeadingCoeff, leadingCoeff_mul] using
+      mul_pos (hfs.posLeadingCoeff f hf) (hgs_pos_rev g hg)
   exact hasCommonInterleaver_of_pairwiseHasCommonInterleaver hrr hpos hpair
 
 /-- Brändén's Lemma 7.8.3: the reversed product-sum of two interlacing
@@ -303,8 +303,8 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
     rcases mem_zipWith_mul hp with ⟨f, hf, g, hg, rfl⟩
     have hg_pos_rev : HasPosLeadingCoeff g :=
       hgs.posLeadingCoeff g (by simp_all)
-    rw [HasPosLeadingCoeff, leadingCoeff_mul]
-    exact mul_pos (hfs.posLeadingCoeff f hf) hg_pos_rev
+    simpa [HasPosLeadingCoeff, leadingCoeff_mul] using
+      mul_pos (hfs.posLeadingCoeff f hf) hg_pos_rev
   have hps_ne : ps ≠ [] := by
     intro hnil
     have hlen_ps : ps.length = fs.length := by
