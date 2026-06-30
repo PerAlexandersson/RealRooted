@@ -322,18 +322,19 @@ theorem prec_narayanaQuot_succ_of_nonnegCoeffs :
   | n + 2, _, hnonneg => by
       have hprev : Prec (narayanaQuot (n + 1)) (narayanaQuot (n + 2)) :=
         prec_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg
-      have hInter : Interlaces (narayanaQuot (n + 1)) (narayanaQuot (n + 2)) := by
-        apply hprev.toInterlaces
-        rw [natDegree_narayanaQuot (n + 2) (by lia), natDegree_narayanaQuot (n + 1) (by lia)]
-        lia
+      have hInter : Interlaces (narayanaQuot (n + 1)) (narayanaQuot (n + 2)) :=
+        hprev.toInterlaces <| by
+          rw [natDegree_narayanaQuot (n + 2) (by lia),
+            natDegree_narayanaQuot (n + 1) (by lia)]
+          lia
       exact prec_narayanaQuot_step (n + 1) (by lia) hInter (hnonneg (n + 2))
 
 theorem interlaces_narayanaQuot_succ_of_nonnegCoeffs (n : Nat) (hn : 1 ≤ n)
     (hnonneg : ∀ m : Nat, HasNonnegCoeffs (narayanaQuot m)) :
-    Interlaces (narayanaQuot n) (narayanaQuot (n + 1)) := by
-  apply (prec_narayanaQuot_succ_of_nonnegCoeffs n hn hnonneg).toInterlaces
-  rw [natDegree_narayanaQuot (n + 1) (by lia), natDegree_narayanaQuot n hn]
-  lia
+    Interlaces (narayanaQuot n) (narayanaQuot (n + 1)) :=
+  (prec_narayanaQuot_succ_of_nonnegCoeffs n hn hnonneg).toInterlaces <| by
+    rw [natDegree_narayanaQuot (n + 1) (by lia), natDegree_narayanaQuot n hn]
+    lia
 
 /-- Conditional real-rootedness of the quotient Narayana sequence. -/
 theorem isRealRooted_narayanaQuot_of_nonnegCoeffs :

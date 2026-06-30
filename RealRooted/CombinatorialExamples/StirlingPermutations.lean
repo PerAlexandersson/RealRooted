@@ -318,9 +318,9 @@ theorem prec_stirlingPermutations_succ :
           hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
 
 theorem interlaces_stirlingPermutations_succ (n : Nat) :
-    Interlaces (stirlingPermutations n) (stirlingPermutations (n + 1)) := by
-  apply (prec_stirlingPermutations_succ n).toInterlaces
-  simp [natDegree_stirlingPermutations]
+    Interlaces (stirlingPermutations n) (stirlingPermutations (n + 1)) :=
+  (prec_stirlingPermutations_succ n).toInterlaces
+    (by simp [natDegree_stirlingPermutations])
 
 theorem isRealRooted_stirlingPermutations :
     ∀ n : Nat, ((stirlingPermutations n) ≠ 0 ∧ (stirlingPermutations n).Splits)

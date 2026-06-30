@@ -309,10 +309,9 @@ theorem isRealRooted_motzkin : ∀ n : Nat, ((motzkin n) ≠ 0 ∧ (motzkin n).S
   | n + 1 => (prec_motzkin_succ n).2.1
 
 theorem interlaces_motzkin_succ_of_even {n : Nat} (heven : n % 2 = 0) :
-    Interlaces (motzkin n) (motzkin (n + 1)) := by
-  apply (prec_motzkin_succ n).toInterlaces
-  rw [natDegree_motzkin, natDegree_motzkin]
-  lia
+    Interlaces (motzkin n) (motzkin (n + 1)) :=
+  (prec_motzkin_succ n).toInterlaces
+    (by rw [natDegree_motzkin, natDegree_motzkin]; lia)
 
 /-- The descending prefix `[M_n, M_{n-1}, ..., M_1]` of the shifted Motzkin sequence. -/
 def motzkinPrefix : Nat → List ℝ[X]

@@ -233,13 +233,12 @@ theorem isRealRooted_eulerianTilde : ∀ n : Nat,
     ((eulerianTilde n) ≠ 0 ∧ (eulerianTilde n).Splits)
   | 0 => by
       simp
-  | n + 1 => by
-      exact (prec_eulerianTilde_succ n).2.1
+  | n + 1 => (prec_eulerianTilde_succ n).2.1
 
 theorem interlaces_eulerianTilde_succ (n : Nat) :
-    Interlaces (eulerianTilde n) (eulerianTilde (n + 1)) := by
-  apply (prec_eulerianTilde_succ n).toInterlaces
-  rw [natDegree_eulerianTilde, natDegree_eulerianTilde]
+    Interlaces (eulerianTilde n) (eulerianTilde (n + 1)) :=
+  (prec_eulerianTilde_succ n).toInterlaces
+    (by simp [natDegree_eulerianTilde])
 
 /-- The descending prefix `[P_n, P_{n-1}, ..., P_0]` of the Eulerian tilde
 sequence. -/

@@ -359,11 +359,11 @@ theorem isRealRooted_singletonFreeSetPartitions :
 
 theorem interlaces_singletonFreeSetPartitions_succ_of_odd {n : Nat}
     (hn : 3 ≤ n) (hodd : n % 2 = 1) :
-    Interlaces (singletonFreeSetPartitions n) (singletonFreeSetPartitions (n + 1)) := by
-  apply (prec_singletonFreeSetPartitions_succ n (by lia)).toInterlaces
-  rw [natDegree_singletonFreeSetPartitions n (by lia),
-    natDegree_singletonFreeSetPartitions (n + 1) (by lia)]
-  lia
+    Interlaces (singletonFreeSetPartitions n) (singletonFreeSetPartitions (n + 1)) :=
+  (prec_singletonFreeSetPartitions_succ n (by lia)).toInterlaces <| by
+    rw [natDegree_singletonFreeSetPartitions n (by lia),
+      natDegree_singletonFreeSetPartitions (n + 1) (by lia)]
+    lia
 
 /-- The descending prefix `[D_{n+2}, D_{n+1}, ..., D_2]` of the nonzero
 singleton-free set partition sequence. -/

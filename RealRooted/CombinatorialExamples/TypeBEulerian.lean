@@ -281,9 +281,8 @@ theorem prec_typeBEulerian_succ : ∀ n : Nat, Prec (typeBEulerian n) (typeBEule
           hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
 
 theorem interlaces_typeBEulerian_succ (n : Nat) :
-    Interlaces (typeBEulerian n) (typeBEulerian (n + 1)) := by
-  apply (prec_typeBEulerian_succ n).toInterlaces
-  simp [natDegree_typeBEulerian]
+    Interlaces (typeBEulerian n) (typeBEulerian (n + 1)) :=
+  (prec_typeBEulerian_succ n).toInterlaces (by simp [natDegree_typeBEulerian])
 
 theorem isRealRooted_typeBEulerian : ∀ n : Nat, ((typeBEulerian n) ≠ 0 ∧ (typeBEulerian n).Splits)
   | 0 => by simp

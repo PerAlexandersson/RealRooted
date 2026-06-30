@@ -376,9 +376,8 @@ lemma roots_nonpos_sturmDerangementsExc_of_isRealRooted {n : Nat}
 
 lemma prec_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
     (hprec : Prec (sturmDerangementsExc (n - 1)) (sturmDerangementsExc n)) :
-    Prec (C (n : ℝ) * sturmDerangementsExc (n - 1)) (sturmDerangementsExc n) := by
-  apply prec_C_mul_left hprec
-  exact_mod_cast (show n ≠ 0 by lia)
+    Prec (C (n : ℝ) * sturmDerangementsExc (n - 1)) (sturmDerangementsExc n) :=
+  prec_C_mul_left hprec (by exact_mod_cast (show n ≠ 0 by lia))
 
 lemma prec_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
     (hrr : (sturmDerangementsExc n).Splits) :
@@ -519,8 +518,7 @@ lemma roots_nonpos_affine_sturmDerangementsExc_of_isRealRooted {n : Nat} (hn : 2
 lemma roots_nonpos_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
     (hprec : Prec (sturmDerangementsExc (n - 1)) (sturmDerangementsExc n)) :
     ∀ r ∈ (C (n : ℝ) * sturmDerangementsExc (n - 1)).roots, r ≤ 0 := by
-  have hn_cast : (n : ℝ) ≠ 0 := by
-    exact_mod_cast (show n ≠ 0 by lia)
+  have hn_cast : (n : ℝ) ≠ 0 := by exact_mod_cast (show n ≠ 0 by lia)
   intro r hr
   rw [roots_C_mul _ hn_cast] at hr
   exact roots_nonpos_of_nonneg_coeffs hprec.1.2
@@ -560,9 +558,9 @@ This matches the main induction-step input in the human proof. -/
 lemma prec_X_mul_recurrenceSummands_sturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
     (hprec : Prec (sturmDerangementsExc (n - 1)) (sturmDerangementsExc n)) :
     Prec (X * (C (n : ℝ) * sturmDerangementsExc (n - 1))) (X * sturmDerangementsExc n) ∧
-      Prec (X * affineSturmDerangementsExc n) (X * sturmDerangementsExc n) := by
-  refine ⟨prec_X_mul_lowerTerm_sturmDerangementsExc hn hprec, ?_⟩
-  exact prec_X_mul_affine_sturmDerangementsExc (by lia) hprec.2.1.2
+      Prec (X * affineSturmDerangementsExc n) (X * sturmDerangementsExc n) :=
+  ⟨prec_X_mul_lowerTerm_sturmDerangementsExc hn hprec,
+    prec_X_mul_affine_sturmDerangementsExc (by lia) hprec.2.1.2⟩
 
 /-- The recurrence core
 `n * P_{n-1} + (n * P_n + (1 - X) P'_n)` precedes `P_n` once `P_{n-1} ≪ P_n`.
@@ -576,8 +574,7 @@ lemma prec_recurrenceCoreSturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
   have haff : Prec (affineSturmDerangementsExc n) (sturmDerangementsExc n) :=
     prec_affine_sturmDerangementsExc (by lia) hprec.2.1.2
   have hlower_pos : HasPosLeadingCoeff (C (n : ℝ) * sturmDerangementsExc (n - 1)) := by
-    have hn0 : (n : ℝ) ≠ 0 := by
-      exact_mod_cast (show n ≠ 0 by lia)
+    have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast (show n ≠ 0 by lia)
     unfold HasPosLeadingCoeff
     rw [leadingCoeff_C_mul_of_isUnit (isUnit_iff_ne_zero.mpr hn0)]
     exact mul_pos (by grind) (sturmDerangementsExc_posLeadingCoeff (by lia))
@@ -630,16 +627,15 @@ theorem isRealRooted_sturmDerangementsExc : ∀ n : Nat, 2 ≤ n →
   | 1, hn => by lia
   | 2, _ => by
       simp
-  | n + 3, _ => by
-      exact (prec_sturmDerangementsExc_succ (n + 2) (by lia)).2.1
+  | n + 3, _ => (prec_sturmDerangementsExc_succ (n + 2) (by lia)).2.1
 
 /-- Consecutive derangement excedance polynomials form a genuine differ-by-1
 interlacing pair, not just an abstract `Prec` pair. -/
 theorem interlaces_sturmDerangementsExc_succ {n : Nat} (hn : 2 ≤ n) :
-    Interlaces (sturmDerangementsExc n) (sturmDerangementsExc (n + 1)) := by
-  apply (prec_sturmDerangementsExc_succ n hn).toInterlaces
-  rw [natDegree_sturmDerangementsExc hn, natDegree_sturmDerangementsExc (by lia)]
-  lia
+    Interlaces (sturmDerangementsExc n) (sturmDerangementsExc (n + 1)) :=
+  (prec_sturmDerangementsExc_succ n hn).toInterlaces <| by
+    rw [natDegree_sturmDerangementsExc hn, natDegree_sturmDerangementsExc (by lia)]
+    lia
 
 /-- The descending prefix `[P_{n+1}, P_n, ..., P_2]` of the derangement
 excedance sequence. This is the natural finite list for `IsSturmSeq`. -/

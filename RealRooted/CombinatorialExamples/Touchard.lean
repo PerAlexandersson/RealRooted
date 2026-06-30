@@ -192,9 +192,8 @@ theorem prec_touchard_succ : ∀ n : Nat, Prec (touchard n) (touchard (n + 1))
           hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
 
 theorem interlaces_touchard_succ (n : Nat) :
-    Interlaces (touchard n) (touchard (n + 1)) := by
-  apply (prec_touchard_succ n).toInterlaces
-  simp [natDegree_touchard]
+    Interlaces (touchard n) (touchard (n + 1)) :=
+  (prec_touchard_succ n).toInterlaces (by simp [natDegree_touchard])
 
 theorem isRealRooted_touchard : ∀ n : Nat, ((touchard n) ≠ 0 ∧ (touchard n).Splits)
   | 0 => by simp

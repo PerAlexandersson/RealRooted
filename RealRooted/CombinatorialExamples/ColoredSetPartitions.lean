@@ -284,9 +284,9 @@ theorem prec_coloredSetPartitions_succ (c m : Nat) :
           hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
 
 theorem interlaces_coloredSetPartitions_succ (c m n : Nat) :
-    Interlaces (coloredSetPartitions c m n) (coloredSetPartitions c m (n + 1)) := by
-  apply (prec_coloredSetPartitions_succ c m n).toInterlaces
-  simp [natDegree_coloredSetPartitions]
+    Interlaces (coloredSetPartitions c m n) (coloredSetPartitions c m (n + 1)) :=
+  (prec_coloredSetPartitions_succ c m n).toInterlaces
+    (by simp [natDegree_coloredSetPartitions])
 
 theorem isRealRooted_coloredSetPartitions (c m : Nat) :
     ∀ n : Nat, ((coloredSetPartitions c m n) ≠ 0 ∧ (coloredSetPartitions c m n).Splits)

@@ -389,10 +389,9 @@ theorem isRealRooted_simsun : ∀ n : Nat, ((simsun n) ≠ 0 ∧ (simsun n).Spli
   | n + 1 => (prec_simsun_succ n).2.1
 
 theorem interlaces_simsun_succ_of_odd {n : Nat} (hodd : n % 2 = 1) :
-    Interlaces (simsun n) (simsun (n + 1)) := by
-  apply (prec_simsun_succ n).toInterlaces
-  rw [natDegree_simsun, natDegree_simsun]
-  lia
+    Interlaces (simsun n) (simsun (n + 1)) :=
+  (prec_simsun_succ n).toInterlaces
+    (by rw [natDegree_simsun, natDegree_simsun]; lia)
 
 /-- The descending prefix `[P_n, P_{n-1}, ..., P_0]` of the simsun sequence. -/
 def simsunPrefix : Nat → List ℝ[X]
