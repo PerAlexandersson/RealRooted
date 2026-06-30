@@ -50,52 +50,40 @@ private lemma threeMul_xAddOne_hasNonnegCoeffs :
 lemma scaledLinearFamily_isRealRooted :
     ∀ f ∈ scaledLinearFamily, (f ≠ 0 ∧ f.Splits) := by
   intro f hf
-  simp only [scaledLinearFamily, List.mem_cons] at hf
-  rcases hf with rfl | hf
+  simp only [scaledLinearFamily, List.mem_cons, List.not_mem_nil, or_false] at hf
+  rcases hf with rfl | rfl | rfl
   · exact xAddOne_isRealRooted
-  rcases hf with rfl | hf
   · exact twoMul_xAddOne_isRealRooted
-  rcases hf with rfl | hf
   · exact threeMul_xAddOne_isRealRooted
-  · simp_all
 
 lemma scaledLinearFamily_hasPosLeadingCoeff :
     ∀ f ∈ scaledLinearFamily, HasPosLeadingCoeff f := by
   intro f hf
-  simp only [scaledLinearFamily, List.mem_cons] at hf
-  rcases hf with rfl | hf
+  simp only [scaledLinearFamily, List.mem_cons, List.not_mem_nil, or_false] at hf
+  rcases hf with rfl | rfl | rfl
   · exact xAddOne_hasPosLeadingCoeff
-  rcases hf with rfl | hf
   · exact twoMul_xAddOne_hasPosLeadingCoeff
-  rcases hf with rfl | hf
   · exact threeMul_xAddOne_hasPosLeadingCoeff
-  · simp_all
 
 lemma scaledLinearFamily_hasNonnegCoeffs :
     ∀ f ∈ scaledLinearFamily, HasNonnegCoeffs f := by
   intro f hf
-  simp only [scaledLinearFamily, List.mem_cons] at hf
-  rcases hf with rfl | hf
+  simp only [scaledLinearFamily, List.mem_cons, List.not_mem_nil, or_false] at hf
+  rcases hf with rfl | rfl | rfl
   · exact xAddOne_hasNonnegCoeffs
-  rcases hf with rfl | hf
   · exact twoMul_xAddOne_hasNonnegCoeffs
-  rcases hf with rfl | hf
   · exact threeMul_xAddOne_hasNonnegCoeffs
-  · simp_all
 
 /-- The common interleaver is just `X + 1` itself. -/
 lemma scaledLinearFamily_commonInterleaver :
     HasCommonInterleaver scaledLinearFamily := by
   refine ⟨X + 1, ?_⟩
   intro f hf
-  simp only [scaledLinearFamily, List.mem_cons] at hf
-  rcases hf with rfl | hf
+  simp only [scaledLinearFamily, List.mem_cons, List.not_mem_nil, or_false] at hf
+  rcases hf with rfl | rfl | rfl
   · exact prec_refl xAddOne_isRealRooted.1 xAddOne_isRealRooted.2
-  rcases hf with rfl | hf
   · exact prec_C_mul_self xAddOne_isRealRooted.1 xAddOne_isRealRooted.2 (by simp)
-  rcases hf with rfl | hf
   · exact prec_C_mul_self xAddOne_isRealRooted.1 xAddOne_isRealRooted.2 (by simp)
-  · simp_all
 
 lemma scaledLinearFamily_pairwiseCompatible :
     PairwiseCompatible scaledLinearFamily :=
