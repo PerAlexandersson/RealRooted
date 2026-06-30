@@ -155,9 +155,8 @@ lemma stirlingPermutations_ne_zero (n : Nat) :
 
 lemma stirlingPermutations_posLeadingCoeff (n : Nat) :
     HasPosLeadingCoeff (stirlingPermutations n) := by
-  unfold HasPosLeadingCoeff
-  rw [leadingCoeff, natDegree_stirlingPermutations]
-  exact (coeff_stirlingPermutations_top_pos_and_above n).1
+  simpa [HasPosLeadingCoeff, leadingCoeff, natDegree_stirlingPermutations] using
+    (coeff_stirlingPermutations_top_pos_and_above n).1
 
 lemma stirlingPermutations_nonnegCoeffs :
     ∀ n : Nat, HasNonnegCoeffs (stirlingPermutations n)

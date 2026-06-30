@@ -108,9 +108,7 @@ lemma eulerianTilde_ne_zero (n : Nat) :
 
 lemma eulerianTilde_posLeadingCoeff (n : Nat) :
     HasPosLeadingCoeff (eulerianTilde n) := by
-  unfold HasPosLeadingCoeff
-  rw [(monic_eulerianTilde n).leadingCoeff]
-  norm_num
+  simp [HasPosLeadingCoeff, (monic_eulerianTilde n).leadingCoeff]
 
 lemma eulerianTilde_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (eulerianTilde n)
   | 0 => by

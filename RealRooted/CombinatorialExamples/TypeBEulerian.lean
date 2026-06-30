@@ -160,9 +160,7 @@ lemma typeBEulerian_ne_zero (n : Nat) :
 
 lemma typeBEulerian_posLeadingCoeff (n : Nat) :
     HasPosLeadingCoeff (typeBEulerian n) := by
-  unfold HasPosLeadingCoeff
-  rw [(monic_typeBEulerian n).leadingCoeff]
-  norm_num
+  simp [HasPosLeadingCoeff, (monic_typeBEulerian n).leadingCoeff]
 
 lemma typeBEulerian_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (typeBEulerian n)
   | 0 => by

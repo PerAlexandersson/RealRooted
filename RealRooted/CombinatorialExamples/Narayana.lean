@@ -232,9 +232,7 @@ lemma narayanaQuot_ne_zero (n : Nat) (hn : 1 ≤ n) :
 
 lemma narayanaQuot_posLeadingCoeff (n : Nat) (hn : 1 ≤ n) :
     HasPosLeadingCoeff (narayanaQuot n) := by
-  unfold HasPosLeadingCoeff
-  rw [leadingCoeff_narayanaQuot n hn]
-  norm_num
+  simp [HasPosLeadingCoeff, leadingCoeff_narayanaQuot n hn]
 
 lemma natDegree_narayana (n : Nat) (hn : 1 ≤ n) :
     (narayana n).natDegree = n := by

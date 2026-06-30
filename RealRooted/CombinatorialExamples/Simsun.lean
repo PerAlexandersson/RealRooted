@@ -278,9 +278,8 @@ lemma interlaces_derivative_simsun_three :
 
 lemma simsun_posLeadingCoeff (n : Nat) :
     HasPosLeadingCoeff (simsun n) := by
-  unfold HasPosLeadingCoeff
-  rw [leadingCoeff, natDegree_simsun]
-  exact (coeff_simsun_top_pos_and_above n).1
+  simpa [HasPosLeadingCoeff, leadingCoeff, natDegree_simsun] using
+    (coeff_simsun_top_pos_and_above n).1
 
 lemma roots_nonpos_simsun_of_isRealRooted {n : Nat} (hrr : (simsun n).Splits) :
     ∀ r ∈ (simsun n).roots, r ≤ 0 :=

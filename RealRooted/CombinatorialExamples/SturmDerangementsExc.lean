@@ -264,9 +264,7 @@ lemma sturmDerangementsExc_ne_zero {n : Nat} (hn : 2 ≤ n) :
 
 lemma sturmDerangementsExc_posLeadingCoeff {n : Nat} (hn : 2 ≤ n) :
     HasPosLeadingCoeff (sturmDerangementsExc n) := by
-  unfold HasPosLeadingCoeff
-  rw [(monic_sturmDerangementsExc hn).leadingCoeff]
-  norm_num
+  simp [HasPosLeadingCoeff, (monic_sturmDerangementsExc hn).leadingCoeff]
 
 lemma natDegree_le_sturmDerangementsExc (n : Nat) :
     (sturmDerangementsExc n).natDegree ≤ n := by

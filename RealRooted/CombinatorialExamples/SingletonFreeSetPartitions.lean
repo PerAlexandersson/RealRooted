@@ -155,9 +155,8 @@ lemma singletonFreeSetPartitions_nonzero (n : Nat) (hn : 2 ≤ n) :
 
 lemma singletonFreeSetPartitions_posLeadingCoeff (n : Nat) (hn : 2 ≤ n) :
     HasPosLeadingCoeff (singletonFreeSetPartitions n) := by
-  unfold HasPosLeadingCoeff
-  rw [leadingCoeff, natDegree_singletonFreeSetPartitions n hn]
-  exact (coeff_singletonFreeSetPartitions_top_pos_and_above n hn).1
+  simpa [HasPosLeadingCoeff, leadingCoeff, natDegree_singletonFreeSetPartitions n hn] using
+    (coeff_singletonFreeSetPartitions_top_pos_and_above n hn).1
 
 /-- The inner recurrence core
 `(n+1) D_n(X) + D'_{n+1}(X)` for singleton-free set partitions. -/

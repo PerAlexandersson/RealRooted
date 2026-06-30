@@ -135,9 +135,8 @@ lemma motzkin_nonzero (n : Nat) :
 
 lemma motzkin_posLeadingCoeff (n : Nat) :
     HasPosLeadingCoeff (motzkin n) := by
-  unfold HasPosLeadingCoeff
-  rw [leadingCoeff, natDegree_motzkin]
-  exact (coeff_motzkin_top_pos_and_above n).1
+  simpa [HasPosLeadingCoeff, leadingCoeff, natDegree_motzkin] using
+    (coeff_motzkin_top_pos_and_above n).1
 
 lemma hasPosLeadingCoeff_C_mul_motzkin {a : ℝ} (ha : 0 < a) {p : ℝ[X]}
     (hp : HasPosLeadingCoeff p) :
