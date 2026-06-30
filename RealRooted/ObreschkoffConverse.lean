@@ -3252,7 +3252,7 @@ theorem derivativePreservesPrecSameDegree_monicPrec_of_monic
 theorem derivativePreservesPrecSameDegree_of_monicPrec
     (hmonic : derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonicPrecStatement) :
     derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonicStatement :=
-  fun {_ : ℝ[X]} {_ : ℝ[X]} hf_monic hg_monic hfg hdeg htwo =>
+  fun {_ _} hf_monic hg_monic hfg hdeg htwo =>
     (hmonic hf_monic hg_monic hfg hdeg htwo).toPrec0
 
 /-- The positive-leading-coefficient branch follows from the monic branch by

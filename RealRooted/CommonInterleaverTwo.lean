@@ -1220,7 +1220,7 @@ equality. -/
 theorem posComboNoCommonSameDegreeOrientationAlternative_of_noCommonOrientation
     (hstep : PosComboNoCommonOrientationStatement) :
     PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement :=
-  fun {_ : ℝ[X]} {_ : ℝ[X]} hf_pos hg_pos _ _ hfg hdeg hno =>
+  fun {_ _} hf_pos hg_pos _ _ hfg hdeg hno =>
     hstep hfg hf_pos hg_pos (by lia) (by lia) hno
 
 /-- In the succ-degree branch, any no-common orientation core automatically
@@ -1958,7 +1958,7 @@ bridge. -/
 theorem compatiblePairHasCommonInterleaver_of_posComboPair
     (hposCombo : PosComboPairHasCommonInterleaverStatement) :
     CompatiblePairHasCommonInterleaverStatement :=
-  fun {_ : ℝ[X]} {_ : ℝ[X]} hf_pos hg_pos hfg =>
+  fun {_ _} hf_pos hg_pos hfg =>
     hposCombo hf_pos hg_pos
       (Compatible.toPosComboRealRooted hfg hf_pos hg_pos)
 

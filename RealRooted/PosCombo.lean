@@ -450,7 +450,7 @@ lemma isRealRooted_add_left {f g : ℝ[X]} (h : PosComboRealRooted f g)
 lemma of_prec {f g : ℝ[X]} (hfg : Prec f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
     PosComboRealRooted f g :=
-  fun {_ : ℝ} {_ : ℝ} hlam hμ =>
+  fun {_ _} hlam hμ =>
     isRealRooted_pos_combo_of_prec hfg hf_pos hg_pos hlam hμ
 
 lemma iff_add_right {f g : ℝ[X]} :
