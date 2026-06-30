@@ -144,24 +144,18 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
       ∀ m > n / 2, coeff (simsun n) m = 0
   | 0 => by
       refine ⟨?_, ?_, ?_⟩
-      · intro m
-        cases m with
-        | zero =>
-            simp [simsun_zero]
-        | succ m =>
-            rw [simsun_zero, coeff_one, if_neg (Nat.succ_ne_zero m)]
+      · rintro (_ | m)
+        · simp [simsun_zero]
+        · rw [simsun_zero, coeff_one, if_neg (Nat.succ_ne_zero m)]
       · simp [simsun_zero]
       · intro m hm
         rw [simsun_zero, coeff_one]
         lia
   | 1 => by
       refine ⟨?_, ?_, ?_⟩
-      · intro m
-        cases m with
-        | zero =>
-            simp [simsun_one]
-        | succ m =>
-            rw [simsun_one, coeff_one, if_neg (Nat.succ_ne_zero m)]
+      · rintro (_ | m)
+        · simp [simsun_one]
+        · rw [simsun_one, coeff_one, if_neg (Nat.succ_ne_zero m)]
       · simp [simsun_one]
       · intro m hm
         rw [simsun_one, coeff_one]
@@ -170,25 +164,22 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
       rcases simsun_nonnegCoeffs_top_pos_and_above (n + 1) with
         ⟨hprev_nonneg, hprev_top, hprev_above⟩
       refine ⟨?_, ?_, ?_⟩
-      · intro m
-        cases m with
-        | zero =>
-            rw [coeff_simsun_zero]
-            positivity
-        | succ m =>
-            rw [coeff_simsun_succ]
-            by_cases hm : m ≤ (n + 1) / 2
-            · have hscale : 0 ≤ (((n + 1 : Nat) : ℝ) - 2 * (m : ℝ)) := by
-                nlinarith [show (2 : ℝ) * (m : ℝ) ≤ ((n + 1 : Nat) : ℝ) by
-                  exact_mod_cast (show 2 * m ≤ n + 1 by lia)]
-              exact add_nonneg
-                (mul_nonneg (by lia) (hprev_nonneg m))
-                (mul_nonneg (by grind) (hprev_nonneg (m + 1)))
-            · have hm' : (n + 1) / 2 < m := lt_of_not_ge hm
-              have hm_zero : coeff (simsun (n + 1)) m = 0 := hprev_above m hm'
-              have hm_succ_zero : coeff (simsun (n + 1)) (m + 1) = 0 := by
-                grind
-              simp [hm_zero, hm_succ_zero]
+      · rintro (_ | m)
+        · rw [coeff_simsun_zero]
+          positivity
+        · rw [coeff_simsun_succ]
+          by_cases hm : m ≤ (n + 1) / 2
+          · have hscale : 0 ≤ (((n + 1 : Nat) : ℝ) - 2 * (m : ℝ)) := by
+              nlinarith [show (2 : ℝ) * (m : ℝ) ≤ ((n + 1 : Nat) : ℝ) by
+                exact_mod_cast (show 2 * m ≤ n + 1 by lia)]
+            exact add_nonneg
+              (mul_nonneg (by lia) (hprev_nonneg m))
+              (mul_nonneg (by grind) (hprev_nonneg (m + 1)))
+          · have hm' : (n + 1) / 2 < m := lt_of_not_ge hm
+            have hm_zero : coeff (simsun (n + 1)) m = 0 := hprev_above m hm'
+            have hm_succ_zero : coeff (simsun (n + 1)) (m + 1) = 0 := by
+              grind
+            simp [hm_zero, hm_succ_zero]
       · set k : Nat := (n + 2) / 2 - 1
         have hk_succ : k + 1 = (n + 2) / 2 := by
           lia

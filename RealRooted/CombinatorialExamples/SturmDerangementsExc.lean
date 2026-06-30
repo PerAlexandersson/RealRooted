@@ -333,41 +333,38 @@ lemma sturmDerangementsExc_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (sturmDer
           have hm1' : 1 ≠ m := by lia
           simp [sturmDerangementsExc_three, coeff_X_pow, coeff_X, hm2, hm1']
   | n + 4 => by
-      intro m
-      cases m with
-      | zero =>
-          rw [sturmDerangementsExc_recurrence (n + 1)]
-          simp
-      | succ m =>
-          have hcoeff :
-              coeff (sturmDerangementsExc (n + 4)) (m + 1) =
-                (n + 1 : ℝ) * coeff (sturmDerangementsExc (n + 2)) m +
-                (n + 1 : ℝ) * coeff (sturmDerangementsExc (n + 3)) m +
-                (coeff (sturmDerangementsExc (n + 2)) m * 2 -
-                  (m : ℝ) * coeff (sturmDerangementsExc (n + 3)) m) +
-                (m : ℝ) * coeff (sturmDerangementsExc (n + 3)) (m + 1) +
-                coeff (sturmDerangementsExc (n + 3)) m * 2 +
-                coeff (sturmDerangementsExc (n + 3)) (m + 1) := by
-            have h := coeff_sturmDerangementsExc_succ (n + 1) m
-            grind
-          rw [hcoeff]
-          by_cases hm : m ≤ n + 2
-          · have h₁ : 0 ≤ coeff (sturmDerangementsExc (n + 2)) m :=
-              sturmDerangementsExc_nonnegCoeffs (n + 2) m
-            have h₂ : 0 ≤ coeff (sturmDerangementsExc (n + 3)) m :=
-              sturmDerangementsExc_nonnegCoeffs (n + 3) m
-            have h₃ : 0 ≤ coeff (sturmDerangementsExc (n + 3)) (m + 1) :=
-              sturmDerangementsExc_nonnegCoeffs (n + 3) (m + 1)
-            have hm' : (m : ℝ) ≤ n + 3 := by
-              have hmNat : m ≤ n + 3 := le_trans hm (Nat.le_succ _)
-              exact_mod_cast hmNat
-            have hcoef : 0 ≤ ((n + 3 : ℝ) - m) := by
-              linarith
-            nlinarith
-          · have hm' : n + 2 < m := lt_of_not_ge hm
-            rcases coeff_sturmDerangementsExc_top_and_above (n + 2) (by lia) with ⟨_, hsmall_hi⟩
-            rcases coeff_sturmDerangementsExc_top_and_above (n + 3) (by lia) with ⟨_, hbig_hi⟩
-            grind
+      rintro (_ | m)
+      · rw [sturmDerangementsExc_recurrence (n + 1)]
+        simp
+      · have hcoeff :
+            coeff (sturmDerangementsExc (n + 4)) (m + 1) =
+              (n + 1 : ℝ) * coeff (sturmDerangementsExc (n + 2)) m +
+              (n + 1 : ℝ) * coeff (sturmDerangementsExc (n + 3)) m +
+              (coeff (sturmDerangementsExc (n + 2)) m * 2 -
+                (m : ℝ) * coeff (sturmDerangementsExc (n + 3)) m) +
+              (m : ℝ) * coeff (sturmDerangementsExc (n + 3)) (m + 1) +
+              coeff (sturmDerangementsExc (n + 3)) m * 2 +
+              coeff (sturmDerangementsExc (n + 3)) (m + 1) := by
+          have h := coeff_sturmDerangementsExc_succ (n + 1) m
+          grind
+        rw [hcoeff]
+        by_cases hm : m ≤ n + 2
+        · have h₁ : 0 ≤ coeff (sturmDerangementsExc (n + 2)) m :=
+            sturmDerangementsExc_nonnegCoeffs (n + 2) m
+          have h₂ : 0 ≤ coeff (sturmDerangementsExc (n + 3)) m :=
+            sturmDerangementsExc_nonnegCoeffs (n + 3) m
+          have h₃ : 0 ≤ coeff (sturmDerangementsExc (n + 3)) (m + 1) :=
+            sturmDerangementsExc_nonnegCoeffs (n + 3) (m + 1)
+          have hm' : (m : ℝ) ≤ n + 3 := by
+            have hmNat : m ≤ n + 3 := le_trans hm (Nat.le_succ _)
+            exact_mod_cast hmNat
+          have hcoef : 0 ≤ ((n + 3 : ℝ) - m) := by
+            linarith
+          nlinarith
+        · have hm' : n + 2 < m := lt_of_not_ge hm
+          rcases coeff_sturmDerangementsExc_top_and_above (n + 2) (by lia) with ⟨_, hsmall_hi⟩
+          rcases coeff_sturmDerangementsExc_top_and_above (n + 3) (by lia) with ⟨_, hbig_hi⟩
+          grind
 
 lemma roots_nonpos_sturmDerangementsExc_of_isRealRooted {n : Nat}
     (hrr : (sturmDerangementsExc n).Splits) :
