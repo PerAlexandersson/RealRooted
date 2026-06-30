@@ -880,6 +880,73 @@ def HurwitzStableOddEvenToPrecStatement : Prop :=
   ∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 →
     IsHurwitzStable (oddEvenPolynomial p q) → Prec p q
 
+/-- Converse analytic substitution interface (converse of
+`HermiteBiehlerStableToHurwitzOddEvenStatement`).
+
+Right-half-plane stability of the odd/even polynomial `q(x^2) + x p(x^2)`
+forces upper-half-plane stability of the Hermite--Biehler combination
+`q + i p`.  This is the exact reverse of the classical conformal-substitution
+bridge `HermiteBiehlerStableToHurwitzOddEvenStatement`, recovering the
+Hermite--Biehler factor from the Hurwitz factor by inverting the quadratic
+substitution `z ↦ z^2`. -/
+def HurwitzOddEvenToHermiteBiehlerStableStatement : Prop :=
+  ∀ ⦃p q : ℝ[X]⦄,
+    HasNonnegCoeffs p →
+    HasNonnegCoeffs q →
+    IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q)) →
+    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p)
+
+/-- Oriented converse Hermite--Biehler interface (oriented converse of
+`hermiteBiehlerForwardPosStatement`).
+
+For polynomials `f`, `g` with positive leading coefficients, upper-half-plane
+stability of the combination `f + i g` forces the oriented proper position
+`Prec g f`.  This is strictly stronger than the disjunctive
+`hermiteBiehlerConverseStatement` already recorded in
+`RealRooted.HermiteBiehler`: it commits to the orientation matching the forward
+bridge `hermiteBiehlerForwardPosStatement`, where `Prec g f` produces
+upper-half-plane stability of `f + i g`. -/
+def HermiteBiehlerConverseOrientedStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) →
+    Prec g f
+
+/-- Checked reduction of the analytic converse step
+`HurwitzStableOddEvenToPrecStatement`.
+
+The analytic converse Hermite--Biehler/Hurwitz step factors through the
+Hermite--Biehler combination `q + i p`, via two named, strictly smaller
+classical inputs, each a converse of a forward interface already present in the
+project:
+
+* `HurwitzOddEvenToHermiteBiehlerStableStatement`, the converse analytic
+  substitution, which turns right-half-plane stability of `q(x^2) + x p(x^2)`
+  into upper-half-plane stability of `q + i p`; and
+* `HermiteBiehlerConverseOrientedStatement`, the oriented converse
+  Hermite--Biehler theorem, which turns that upper-half-plane stability into the
+  proper-position relation `Prec p q`.
+
+The nonnegativity halves of `IsHurwitzStable` supply the positive leading
+coefficients needed by the oriented Hermite--Biehler input through
+`hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero`. -/
+theorem hurwitzStableOddEvenToPrec_of_converse
+    (hSub : HurwitzOddEvenToHermiteBiehlerStableStatement)
+    (hHB : HermiteBiehlerConverseOrientedStatement) :
+    HurwitzStableOddEvenToPrecStatement := by
+  intro p q hp hq hstable
+  obtain ⟨hnn, hrhp⟩ := hstable
+  have hpnn : HasNonnegCoeffs p := hasNonnegCoeffs_left_of_oddEvenPolynomial hnn
+  have hqnn : HasNonnegCoeffs q := hasNonnegCoeffs_right_of_oddEvenPolynomial hnn
+  have hupper : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) :=
+    hSub hpnn hqnn hrhp
+  have hqpos : HasPosLeadingCoeff q :=
+    hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hqnn hq
+  have hppos : HasPosLeadingCoeff p :=
+    hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hpnn hp
+  exact hHB hqpos hppos hupper
+
 /-- Checked reduction of the interlacing-extraction interface.
 
 `FullyInterlacingPairInterlaceStatement` follows from two named, strictly
