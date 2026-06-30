@@ -167,14 +167,13 @@ lemma oddBinom_eval_sq_eq_zero_iff_pow_eq (n : ℕ) {y : ℂ} (hy : y ≠ 0) :
 
 lemma div_pow_eq_one_iff_pow_eq (n : ℕ) {a b : ℂ} (hb : b ≠ 0) :
     (a / b) ^ n = 1 ↔ a ^ n = b ^ n := by
-  rw [div_pow]
-  exact div_eq_one_iff_eq (pow_ne_zero n hb)
+  simpa [div_pow] using div_eq_one_iff_eq (pow_ne_zero n hb)
 
 lemma oddBinom_root_sq_iff_cayley_pow_eq_one
     (n : ℕ) {y : ℂ} (hy0 : y ≠ 0) (hy1 : 1 - y ≠ 0) :
     (oddBinomPoly n).eval (y ^ 2) = 0 ↔ ((1 + y) / (1 - y)) ^ n = 1 := by
-  rw [oddBinom_eval_sq_eq_zero_iff_pow_eq n hy0]
-  exact (div_pow_eq_one_iff_pow_eq n hy1).symm
+  simpa [oddBinom_eval_sq_eq_zero_iff_pow_eq n hy0] using
+    (div_pow_eq_one_iff_pow_eq n hy1).symm
 
 lemma angle_mem_Ioo_zero_pi_div_two (n j : ℕ) (hj0 : 0 < j) (hjn : 2 * j < n) :
     Real.pi * (j : ℝ) / (n : ℝ) ∈ Set.Ioo (0 : ℝ) (Real.pi / 2) := by
@@ -345,8 +344,7 @@ lemma tangentRoot_strictAnti {n i j : ℕ} (hi0 : 0 < i) (hij : i < j)
   have hsquare :
       (Real.tan (Real.pi * (i : ℝ) / (n : ℝ))) ^ 2 <
         (Real.tan (Real.pi * (j : ℝ) / (n : ℝ))) ^ 2 := by
-    rw [pow_two, pow_two]
-    exact mul_self_lt_mul_self htan_i_nonneg htan_lt
+    simpa [pow_two] using mul_self_lt_mul_self htan_i_nonneg htan_lt
   rw [tangentRoot]
   exact neg_lt_neg hsquare
 
