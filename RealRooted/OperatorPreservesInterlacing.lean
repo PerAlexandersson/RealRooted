@@ -44,11 +44,9 @@ theorem preservesAllComboPairs_of_preservesRealRootedOrZero
       _ = T (C α * f + C β * g) := by
             simp [Polynomial.smul_eq_C_mul]
   by_cases hzero : C α * f + C β * g = 0
-  · rw [hmap, hzero]
-    simp
+  · simp [hmap, hzero]
   · rcases hT (C α * f + C β * g) ⟨hzero, hall α β⟩ with hTzero | hrr
-    · rw [hmap, hTzero]
-      simp
+    · simp [hmap, hTzero]
     · simpa [hmap] using hrr
 
 /-- Real-rootedness-preserving linear operators preserve interlacing up to the
