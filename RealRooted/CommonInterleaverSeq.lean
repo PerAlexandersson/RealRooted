@@ -1768,10 +1768,8 @@ coefficients preserves the same structure. -/
 lemma IsInterlacingSeq0Nonneg.reverse {fs : List ℝ[X]}
     (hfs : IsInterlacingSeq0Nonneg fs) :
     fs.reverse.Pairwise (fun f g => Prec0 g f) ∧
-    ∀ f ∈ fs.reverse, HasNonnegCoeffs f := by
-  rcases hfs with ⟨hint, hnonneg⟩
-  refine ⟨hint.reverse, ?_⟩
-  simp_all
+    ∀ f ∈ fs.reverse, HasNonnegCoeffs f :=
+  ⟨hfs.1.reverse, fun f hf => hfs.2 f (by simpa using hf)⟩
 
 end
 end RealRooted
