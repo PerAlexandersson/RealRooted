@@ -43,10 +43,8 @@ lemma coeff_touchard_succ (n m : Nat) :
 lemma coeff_touchard_top_and_above :
     ∀ n : Nat, coeff (touchard n) n = 1 ∧ ∀ m > n, coeff (touchard n) m = 0
   | 0 => by
-      constructor
-      · simp [touchard_zero]
-      · intro m hm
-        rw [touchard_zero, coeff_one, if_neg hm.ne']
+      constructor <;> simp [touchard_zero, coeff_one]
+      lia
   | n + 1 => by
       rcases coeff_touchard_top_and_above n with ⟨htop, habove⟩
       constructor

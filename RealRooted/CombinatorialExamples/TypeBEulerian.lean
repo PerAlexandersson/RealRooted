@@ -126,11 +126,8 @@ lemma coeff_typeBEulerian_zero :
 lemma coeff_typeBEulerian_top_and_above :
     ∀ n : Nat, coeff (typeBEulerian n) n = 1 ∧ ∀ m > n, coeff (typeBEulerian n) m = 0
   | 0 => by
-      constructor
-      · simp [typeBEulerian_zero]
-      · intro m hm
-        rw [typeBEulerian_zero, coeff_one]
-        lia
+      constructor <;> simp [typeBEulerian_zero, coeff_one]
+      lia
   | n + 1 => by
       rcases coeff_typeBEulerian_top_and_above n with ⟨htop, habove⟩
       constructor

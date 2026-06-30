@@ -119,10 +119,8 @@ lemma coeff_stirlingPermutations_top_pos_and_above :
       0 < coeff (stirlingPermutations n) n ∧
         ∀ k > n, coeff (stirlingPermutations n) k = 0
   | 0 => by
-      constructor
-      · simp [stirlingPermutations_zero]
-      · intro k hk
-        rw [stirlingPermutations_zero, coeff_one, if_neg hk.ne']
+      constructor <;> simp [stirlingPermutations_zero, coeff_one]
+      lia
   | n + 1 => by
       rcases coeff_stirlingPermutations_top_pos_and_above n with ⟨htop, habove⟩
       constructor
