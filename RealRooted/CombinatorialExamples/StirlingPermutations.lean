@@ -261,12 +261,10 @@ theorem prec_stirlingPermutations_succ :
           Interlaces (stirlingPermutations (n + 2)).derivative
             (stirlingPermutations (n + 2)) :=
         derivative_interlaces (prec_stirlingPermutations_succ (n + 1)).2.1.2 (by
-          rw [natDegree_stirlingPermutations]
-          lia)
+          simp [natDegree_stirlingPermutations])
       have hg_pos : HasPosLeadingCoeff (stirlingPermutations (n + 2)).derivative :=
         (stirlingPermutations_posLeadingCoeff (n + 2)).derivative (by
-          rw [natDegree_stirlingPermutations]
-          lia)
+          simp [natDegree_stirlingPermutations])
       have hNext_eq :
           stirlingPermutationsCoeffA (n + 2) * stirlingPermutations (n + 2) +
               stirlingPermutationsCoeffB * (stirlingPermutations (n + 2)).derivative =

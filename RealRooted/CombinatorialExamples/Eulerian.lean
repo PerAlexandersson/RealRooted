@@ -146,7 +146,7 @@ lemma roots_nonpos_eulerianTilde_of_isRealRooted {n : Nat} (hrr : (eulerianTilde
 lemma prec_affineEulerianTilde {n : Nat} (hrr : (eulerianTilde n).Splits) :
     Prec (affineEulerianTilde n) (eulerianTilde n) := by
   rw [affineEulerianTilde]
-  exact prec_affine_derivative' hrr (by rw [natDegree_eulerianTilde]; lia)
+  exact prec_affine_derivative' hrr (by simp [natDegree_eulerianTilde])
     (eulerianTilde_posLeadingCoeff n)
     (roots_nonpos_eulerianTilde_of_isRealRooted hrr)
     (by

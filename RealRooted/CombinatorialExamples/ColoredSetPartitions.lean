@@ -219,8 +219,7 @@ theorem prec_coloredSetPartitions_succ (c m : Nat) :
           (coloredSetPartitions c m (n + 2)) :=
         prec_coloredSetPartitions_succ c m (n + 1)
       have hdegf : 2 ≤ (coloredSetPartitions c m (n + 2)).natDegree := by
-        rw [natDegree_coloredSetPartitions]
-        lia
+        simp [natDegree_coloredSetPartitions]
       have hInter :
           Interlaces (coloredSetPartitions c m (n + 2)).derivative
             (coloredSetPartitions c m (n + 2)) :=

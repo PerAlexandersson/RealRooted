@@ -140,8 +140,7 @@ theorem prec_touchard_succ : ∀ n : Nat, Prec (touchard n) (touchard (n + 1))
       have hprev : Prec (touchard (n + 1)) (touchard (n + 2)) :=
         prec_touchard_succ (n + 1)
       have hdegf : 2 ≤ (touchard (n + 2)).natDegree := by
-        rw [natDegree_touchard]
-        lia
+        simp [natDegree_touchard]
       have hInter :
           Interlaces (touchard (n + 2)).derivative (touchard (n + 2)) :=
         derivative_interlaces hprev.2.1.2 hdegf

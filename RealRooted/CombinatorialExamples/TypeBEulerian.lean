@@ -212,7 +212,7 @@ lemma interlaces_derivative_typeBEulerian :
           simpa [add_comm] using
             (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp)))
   | n + 2, _, hrr =>
-      derivative_interlaces hrr (by rw [natDegree_typeBEulerian]; lia)
+      derivative_interlaces hrr (by simp [natDegree_typeBEulerian])
 
 lemma eval_typeBEulerianCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
     typeBEulerianCoeffB.eval r ≤ 0 := by
@@ -228,7 +228,8 @@ theorem prec_typeBEulerian_succ : ∀ n : Nat, Prec (typeBEulerian n) (typeBEule
           Interlaces (typeBEulerian (n + 1)).derivative (typeBEulerian (n + 1)) :=
         interlaces_derivative_typeBEulerian (n + 1) (by lia) (prec_typeBEulerian_succ n).2.1.2
       have hg_pos : HasPosLeadingCoeff (typeBEulerian (n + 1)).derivative :=
-        (typeBEulerian_posLeadingCoeff (n + 1)).derivative (by rw [natDegree_typeBEulerian]; lia)
+        (typeBEulerian_posLeadingCoeff (n + 1)).derivative (by
+          simp [natDegree_typeBEulerian])
       have hNext_eq :
           typeBEulerianCoeffA (n + 1) * typeBEulerian (n + 1) +
             typeBEulerianCoeffB * (typeBEulerian (n + 1)).derivative =
