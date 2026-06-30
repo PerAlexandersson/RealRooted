@@ -169,10 +169,9 @@ lemma motzkin_bound_one :
 
 lemma prec_motzkin_zero_one :
     Prec (motzkin 0) (motzkin 1) := by
-  simpa [motzkin_zero, motzkin_one] using
-    (interlaces_one_linear (p := (1 + X : ℝ[X])) (by
-      simpa [add_comm] using
-        Polynomial.natDegree_X_add_C (x := (1 : ℝ)))).toPrec
+  simpa [motzkin_zero, motzkin_one, add_comm] using
+    (interlaces_one_linear (p := X + C (1 : ℝ))
+      (Polynomial.natDegree_X_add_C (x := (1 : ℝ)))).toPrec
 
 lemma prec_motzkin_shifted_succ {n : Nat}
     (hprev : Prec (motzkin n) (motzkin (n + 1)))
