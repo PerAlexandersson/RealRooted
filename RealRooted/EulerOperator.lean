@@ -82,23 +82,20 @@ theorem HasNonnegCoeffs.thetaPlusOne {p : ℝ[X]}
     (hp : HasNonnegCoeffs p) :
     HasNonnegCoeffs (thetaPlusOne p) := by
   intro n
-  rw [coeff_thetaPlusOne]
-  exact mul_nonneg (by positivity) (hp n)
+  simpa [coeff_thetaPlusOne] using mul_nonneg (by positivity) (hp n)
 
 theorem HasNonnegCoeffs.theta {p : ℝ[X]}
     (hp : HasNonnegCoeffs p) :
     HasNonnegCoeffs (theta p) := by
   intro n
-  rw [coeff_theta]
-  exact mul_nonneg (by positivity) (hp n)
+  simpa [coeff_theta] using mul_nonneg (by positivity) (hp n)
 
 theorem HasNonnegCoeffs.polarTheta {N : ℕ} {p : ℝ[X]}
     (hp : HasNonnegCoeffs p) (hdeg : p.natDegree ≤ N) :
     HasNonnegCoeffs (polarTheta N p) := by
   intro n
   by_cases hn : n ≤ N
-  · rw [coeff_polarTheta]
-    exact mul_nonneg (sub_nonneg.mpr (by exact_mod_cast hn)) (hp n)
+  · simpa [coeff_polarTheta] using mul_nonneg (sub_nonneg.mpr (by exact_mod_cast hn)) (hp n)
   · have hNn : N < n := Nat.lt_of_not_ge hn
     have hpcoeff : p.coeff n = 0 :=
       coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hdeg hNn)
@@ -148,8 +145,7 @@ theorem thetaPlusOnePreservesPF_of_realRootedOrZero
 
 theorem thetaPlusOne_preserves_pf : thetaPlusOnePreservesPFStatement := by
   intro p hp
-  rw [thetaPlusOne_eq_derivative_X_mul]
-  exact hp.X_mul.derivative
+  simpa [thetaPlusOne_eq_derivative_X_mul] using hp.X_mul.derivative
 
 /-- Classical Rolle input: `theta + 1` preserves weak proper position on the
 polynomial PF cone. -/
@@ -164,8 +160,7 @@ theorem thetaPlusOnePreservesPrec0_of_derivative
     (hderiv : derivativePreservesPrec0Statement) :
     thetaPlusOnePreservesPrec0Statement := by
   intro p q hp hq hpq
-  rw [thetaPlusOne_eq_derivative_X_mul, thetaPlusOne_eq_derivative_X_mul]
-  exact hderiv (prec0_X_mul_both_of_pf hp hq hpq)
+  simpa [thetaPlusOne_eq_derivative_X_mul] using hderiv (prec0_X_mul_both_of_pf hp hq hpq)
 
 /-- Classical Rolle input: a PF polynomial is in weak proper position with
 each of its iterates under `theta + 1`. -/
