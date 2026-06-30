@@ -189,16 +189,12 @@ lemma derivative {f g : ℝ[X]} (h : Compatible f g) :
 private lemma isRealRooted_left
     {f g : ℝ[X]} (h : Compatible f g)
     (hf_pos : HasPosLeadingCoeff f) : (f ≠ 0 ∧ f.Splits) := by
-  rcases h 1 0 (by simp) (by simp) with hzero | hrr
-  · exact False.elim (HasPosLeadingCoeff.ne_zero hf_pos (by simp_all))
-  · simp_all
+  rcases h 1 0 (by simp) (by simp) with hzero | hrr <;> simp_all
 
 private lemma isRealRooted_right
     {f g : ℝ[X]} (h : Compatible f g)
     (hg_pos : HasPosLeadingCoeff g) : (g ≠ 0 ∧ g.Splits) := by
-  rcases h 0 1 (by simp) (by simp) with hzero | hrr
-  · exact False.elim (HasPosLeadingCoeff.ne_zero hg_pos (by simp_all))
-  · simp_all
+  rcases h 0 1 (by simp) (by simp) with hzero | hrr <;> simp_all
 
 private lemma natDegree_le_one_of_const_left
     {c : ℝ} {g : ℝ[X]}
@@ -2358,13 +2354,9 @@ theorem compatiblePairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
     CompatiblePairHasCommonInterleaverStatement := by
   intro f g hf_pos hg_pos hfg
   have hf_rr : (f ≠ 0 ∧ f.Splits) := by
-    rcases hfg 1 0 (by simp) (by simp) with hzero | hrr
-    · exact False.elim (HasPosLeadingCoeff.ne_zero hf_pos (by simp_all))
-    · simp_all
+    rcases hfg 1 0 (by simp) (by simp) with hzero | hrr <;> simp_all
   have hg_rr : (g ≠ 0 ∧ g.Splits) := by
-    rcases hfg 0 1 (by simp) (by simp) with hzero | hrr
-    · exact False.elim (HasPosLeadingCoeff.ne_zero hg_pos (by simp_all))
-    · simp_all
+    rcases hfg 0 1 (by simp) (by simp) with hzero | hrr <;> simp_all
   exact
     posComboPairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
       hsame hsucc hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hf_pos hg_pos
@@ -2378,13 +2370,9 @@ theorem compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
     CompatiblePairHasCommonInterleaverStatement := by
   intro f g hf_pos hg_pos hfg
   have hf_rr : (f ≠ 0 ∧ f.Splits) := by
-    rcases hfg 1 0 (by simp) (by simp) with hzero | hrr
-    · exact False.elim (HasPosLeadingCoeff.ne_zero hf_pos (by simp_all))
-    · simp_all
+    rcases hfg 1 0 (by simp) (by simp) with hzero | hrr <;> simp_all
   have hg_rr : (g ≠ 0 ∧ g.Splits) := by
-    rcases hfg 0 1 (by simp) (by simp) with hzero | hrr
-    · exact False.elim (HasPosLeadingCoeff.ne_zero hg_pos (by simp_all))
-    · simp_all
+    rcases hfg 0 1 (by simp) (by simp) with hzero | hrr <;> simp_all
   exact
     posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
       hsame hsucc hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hf_pos hg_pos
@@ -2444,13 +2432,9 @@ theorem compatiblePairHasCommonInterleaver_of_boundaryRightPairOrientation_via_n
     CompatiblePairHasCommonInterleaverStatement := by
   intro f g hf_pos hg_pos hfg
   have hf_rr : (f ≠ 0 ∧ f.Splits) := by
-    rcases hfg 1 0 (by simp) (by simp) with hzero | hrr
-    · exact False.elim (HasPosLeadingCoeff.ne_zero hf_pos (by simp_all))
-    · simp_all
+    rcases hfg 1 0 (by simp) (by simp) with hzero | hrr <;> simp_all
   have hg_rr : (g ≠ 0 ∧ g.Splits) := by
-    rcases hfg 0 1 (by simp) (by simp) with hzero | hrr
-    · exact False.elim (HasPosLeadingCoeff.ne_zero hg_pos (by simp_all))
-    · simp_all
+    rcases hfg 0 1 (by simp) (by simp) with hzero | hrr <;> simp_all
   exact
     posComboPairHasCommonInterleaver_of_boundaryRightPairOrientation_via_nonnegShift
       hboundary hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hf_pos hg_pos
