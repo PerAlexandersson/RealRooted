@@ -473,8 +473,7 @@ private lemma roots_neg_of_interlaces_of_eval_zero_pos {g f : ℝ[X]}
     grind
   have hss_neg : ∀ s ∈ ss, s < 0 := by
     intro s hs
-    have hs_root : g.IsRoot s := by
-      apply (mem_roots hg.1).mp
+    have hs_root : g.IsRoot s := (mem_roots hg.1).mp <| by
       rw [← hss_eq]
       exact Multiset.mem_coe.mpr hs
     simp_all
@@ -484,9 +483,8 @@ private lemma roots_neg_of_interlaces_of_eval_zero_pos {g f : ℝ[X]}
       f.eval 0 = f.leadingCoeff * (rs.map (0 - ·)).prod := by
     rw [eval_eq_leadingCoeff_mul_prod_sub hf.2 0, ← hrs_eq]
     simp
-  have hrs_drop_prod_pos : 0 < (rs.dropLast.map (0 - ·)).prod := by
-    apply list_prod_pos_of_forall_pos
-    grind
+  have hrs_drop_prod_pos : 0 < (rs.dropLast.map (0 - ·)).prod :=
+    list_prod_pos_of_forall_pos (by grind)
   have hlast_neg : rs.getLast hrs_ne < 0 := by
     have hf_zero' := hf_zero
     rw [h_eval, ← List.dropLast_append_getLast hrs_ne, List.map_append,
@@ -501,9 +499,7 @@ private lemma roots_neg_of_interlaces_of_eval_zero_pos {g f : ℝ[X]}
       (mul_pos_iff_of_pos_left hrs_drop_prod_pos).mp hmid
     linarith
   intro r hr
-  have hr_mem : r ∈ rs := by
-    apply Multiset.mem_coe.mp
-    simp_all
+  have hr_mem : r ∈ rs := Multiset.mem_coe.mp (by simp_all)
   by_cases hr_last : r = rs.getLast hrs_ne
   · lia
   · have hr_drop : r ∈ rs.dropLast :=
@@ -623,15 +619,12 @@ private lemma roots_nonpos_of_interlaces_of_zero_root_of_roots_neg {g f : ℝ[X]
     (hg_neg : ∀ r, g.IsRoot r → r < 0) :
     ∀ r, f.IsRoot r → r ≤ 0 := by
   obtain ⟨hf, hg, _, rs, ss, _, _, hrs_eq, hss_eq, hint⟩ := hgf
-  have hzero_mem : 0 ∈ rs := by
-    apply Multiset.mem_coe.mp
-    simp_all
+  have hzero_mem : 0 ∈ rs := Multiset.mem_coe.mp (by simp_all)
   have hrs_ne : rs ≠ [] := by
     grind
   have hss_neg : ∀ s ∈ ss, s < 0 := by
     intro s hs
-    have hs_root : g.IsRoot s := by
-      apply (mem_roots hg.1).mp
+    have hs_root : g.IsRoot s := (mem_roots hg.1).mp <| by
       rw [← hss_eq]
       exact Multiset.mem_coe.mpr hs
     simp_all
@@ -639,18 +632,15 @@ private lemma roots_nonpos_of_interlaces_of_zero_root_of_roots_neg {g f : ℝ[X]
     listInterlaces_dropLast_lt_zero_of_forall_lt_zero hint hss_neg
   have hlast_zero : rs.getLast hrs_ne = 0 := by
     by_contra hlast_ne
-    have hzero_drop : 0 ∈ rs.dropLast := by
-      exact List.mem_dropLast_of_mem_of_ne_getLast hzero_mem (by
-        lia)
+    have hzero_drop : 0 ∈ rs.dropLast :=
+      List.mem_dropLast_of_mem_of_ne_getLast hzero_mem (by lia)
     grind
   intro r hr
-  have hr_mem : r ∈ rs := by
-    apply Multiset.mem_coe.mp
-    simp_all
+  have hr_mem : r ∈ rs := Multiset.mem_coe.mp (by simp_all)
   by_cases hr_last : r = rs.getLast hrs_ne
   · simp [hr_last, hlast_zero]
-  · have hr_drop : r ∈ rs.dropLast := by
-      exact List.mem_dropLast_of_mem_of_ne_getLast hr_mem hr_last
+  · have hr_drop : r ∈ rs.dropLast :=
+      List.mem_dropLast_of_mem_of_ne_getLast hr_mem hr_last
     grind
 
 private lemma listInterlaces_left_lt_of_right_lt :
