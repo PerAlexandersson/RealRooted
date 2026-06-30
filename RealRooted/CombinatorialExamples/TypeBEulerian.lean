@@ -136,13 +136,10 @@ lemma coeff_typeBEulerian_top_and_above :
       constructor
       · rw [show n + 1 = n + 0 + 1 by lia, coeff_typeBEulerian_succ]
         simp_all
-      · intro m hm
-        cases m with
-        | zero =>
-            lia
-        | succ k =>
-            rw [show k + 1 = k + 0 + 1 by lia, coeff_typeBEulerian_succ]
-            grind
+      · rintro (_ | k) hm
+        · lia
+        · rw [show k + 1 = k + 0 + 1 by lia, coeff_typeBEulerian_succ]
+          grind
 
 lemma natDegree_typeBEulerian (n : Nat) :
     (typeBEulerian n).natDegree = n := by

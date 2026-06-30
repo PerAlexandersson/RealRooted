@@ -86,13 +86,10 @@ lemma coeff_coloredSetPartitions_top_and_above :
       constructor
       · rw [show n + 1 = n + 0 + 1 by lia, coeff_coloredSetPartitions_succ]
         simp_all
-      · intro k hk
-        cases k with
-        | zero =>
-            lia
-        | succ j =>
-            rw [show j + 1 = j + 0 + 1 by lia, coeff_coloredSetPartitions_succ]
-            grind
+      · rintro (_ | j) hk
+        · lia
+        · rw [show j + 1 = j + 0 + 1 by lia, coeff_coloredSetPartitions_succ]
+          grind
 
 lemma natDegree_coloredSetPartitions (c m n : Nat) :
     (coloredSetPartitions c m n).natDegree = n := by

@@ -75,13 +75,9 @@ theorem X_mul {p : ℝ[X]} (hp : IsPFPolynomial p) :
     simpa using IsPFPolynomial.zero
   have hprr := hp.ne_zero_and_splits hp0
   have hnn : HasNonnegCoeffs (X * p) := by
-    intro n
-    cases n with
-    | zero =>
-        simp
-    | succ n =>
-        rw [coeff_X_mul]
-        exact hp.hasNonnegCoeffs n
+    rintro (_ | n)
+    · simp
+    · simpa [coeff_X_mul] using hp.hasNonnegCoeffs n
   have hXp_rr := isRealRooted_X_mul hprr.1 hprr.2
   exact IsPFPolynomial.of_realRooted_nonneg hnn hXp_rr.2
 
