@@ -191,10 +191,9 @@ lemma roots_nonpos_typeBEulerian_of_isRealRooted {n : Nat} (hrr : (typeBEulerian
 
 lemma interlaces_typeBEulerian_zero_one :
     Interlaces (typeBEulerian 0) (typeBEulerian 1) :=
-  by simpa [typeBEulerian_zero, typeBEulerian_one] using
-    interlaces_one_linear (p := (1 + X : ℝ[X])) (by
-      simpa [add_comm] using
-        Polynomial.natDegree_X_add_C (x := (1 : ℝ)))
+  by simpa [typeBEulerian_zero, typeBEulerian_one, add_comm] using
+    interlaces_one_linear (p := X + C (1 : ℝ))
+      (Polynomial.natDegree_X_add_C (x := (1 : ℝ)))
 
 lemma interlaces_derivative_typeBEulerian :
     ∀ n : Nat, 1 ≤ n → (typeBEulerian n).Splits →
@@ -202,10 +201,9 @@ lemma interlaces_derivative_typeBEulerian :
   | 0, hn, _ => by
       lia
   | 1, _, _ => by
-      simpa [typeBEulerian_one] using
-        interlaces_one_linear (p := (1 + X : ℝ[X])) (by
-          simpa [add_comm] using
-            Polynomial.natDegree_X_add_C (x := (1 : ℝ)))
+      simpa [typeBEulerian_one, add_comm] using
+        interlaces_one_linear (p := X + C (1 : ℝ))
+          (Polynomial.natDegree_X_add_C (x := (1 : ℝ)))
   | n + 2, _, hrr =>
       derivative_interlaces hrr (by simp [natDegree_typeBEulerian])
 
