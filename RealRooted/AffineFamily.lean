@@ -564,8 +564,8 @@ private lemma isRealRooted_right_of_affine_family_of_natDegree_succ_le
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
-    (hdeg : f.natDegree + 1 ≤ g.natDegree) : (g ≠ 0 ∧ g.Splits) := by
-  exact isRealRooted_of_add_C_mul_right_family_of_natDegree_le
+    (hdeg : f.natDegree + 1 ≤ g.natDegree) : (g ≠ 0 ∧ g.Splits) :=
+  isRealRooted_of_add_C_mul_right_family_of_natDegree_le
     (by
       intro t ht
       simpa [add_comm] using
@@ -955,10 +955,9 @@ private lemma exists_strict_right_root_of_X_mul_of_no_common_fg_of_not_isRoot_ze
     (hg_ne : g ≠ 0) (hg_splits : g.Splits) (hgnn : HasNonnegCoeffs g)
     (hno_fg : ∀ r, g.IsRoot r → ¬ f.IsRoot r)
     (hg0 : ¬ g.IsRoot 0) :
-    ∃ uR, (X * f).IsRoot uR ∧ ∀ r ∈ g.roots, r < uR := by
-  exact
-    exists_strict_right_root_of_X_mul_of_no_common hg_ne hg_splits hgnn
-      (no_common_right_pair_of_no_common_of_not_isRoot_zero hno_fg hg0)
+    ∃ uR, (X * f).IsRoot uR ∧ ∀ r ∈ g.roots, r < uR :=
+  exists_strict_right_root_of_X_mul_of_no_common hg_ne hg_splits hgnn
+    (no_common_right_pair_of_no_common_of_not_isRoot_zero hno_fg hg0)
 
 /-- In the no-common-roots regime for the affine right-hand pair `(g, X * f)`,
 any future Obreschkoff alternative is automatically oriented the correct way:
@@ -988,10 +987,9 @@ private lemma prec_right_pair_of_prec_or_revPrec_of_no_common_fg_of_not_isRoot_z
     (hg_ne : g ≠ 0) (hg_splits : g.Splits) (hgnn : HasNonnegCoeffs g)
     (hno_fg : ∀ r, g.IsRoot r → ¬ f.IsRoot r)
     (hg0 : ¬ g.IsRoot 0) :
-    Prec g (X * f) := by
-  exact
-    prec_right_pair_of_prec_or_revPrec_of_no_common h hg_ne hg_splits hgnn
-      (no_common_right_pair_of_no_common_of_not_isRoot_zero hno_fg hg0)
+    Prec g (X * f) :=
+  prec_right_pair_of_prec_or_revPrec_of_no_common h hg_ne hg_splits hgnn
+    (no_common_right_pair_of_no_common_of_not_isRoot_zero hno_fg hg0)
 
 /-- Public orientation selector for the right-hand pair `(g, X * f)` in the
 nonnegative-coefficient regime: if an Obreschkoff alternative is known and the
@@ -1002,8 +1000,8 @@ theorem prec_right_pair_of_prec_or_revPrec_of_no_common_nonneg
     (h : Prec g (X * f) ∨ Prec (X * f) g)
     (hg_ne : g ≠ 0) (hg_splits : g.Splits) (hgnn : HasNonnegCoeffs g)
     (hno : ∀ r, g.IsRoot r → ¬ (X * f).IsRoot r) :
-    Prec g (X * f) := by
-  exact prec_right_pair_of_prec_or_revPrec_of_no_common h hg_ne hg_splits hgnn hno
+    Prec g (X * f) :=
+  prec_right_pair_of_prec_or_revPrec_of_no_common h hg_ne hg_splits hgnn hno
 
 /-- A common root of the right-family pair `(f + g, f + 2g)` is already a
 common root of `(f, g)`. This is the elementary subtraction step behind the
@@ -1926,11 +1924,10 @@ private lemma prec_right_pair_of_affine_family_degree_one
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hdegf1 : f.natDegree = 1) :
-    Prec g (X * f) := by
-  exact
-    prec_to_prec_mul_X_of_nonneg
-      (prec_of_affine_family_nonneg_degree_one hf0 hg0 hfnn hgnn haff hdegf1)
-      hfnn hgnn
+    Prec g (X * f) :=
+  prec_to_prec_mul_X_of_nonneg
+    (prec_of_affine_family_nonneg_degree_one hf0 hg0 hfnn hgnn haff hdegf1)
+    hfnn hgnn
 
 /-- Public degree-one right-pair form of the affine-family converse.  If
 `f.natDegree = 1`, the affine-family hypothesis gives the stronger conclusion
@@ -2237,11 +2234,10 @@ private lemma prec_right_pair_of_prec_shifted_pair_sameDegree
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (hdeg : g.natDegree = f.natDegree) :
-    Prec g (X * f) := by
-  exact
-    prec_to_prec_mul_X_of_nonneg
-      (prec_of_prec_shifted_pair_sameDegree h hf0 hg0 hfnn hgnn hdeg)
-      hfnn hgnn
+    Prec g (X * f) :=
+  prec_to_prec_mul_X_of_nonneg
+    (prec_of_prec_shifted_pair_sameDegree h hf0 hg0 hfnn hgnn hdeg)
+    hfnn hgnn
 
 private lemma shifted_affine_family_of_affine_family
     {f g : ℝ[X]}
@@ -3739,10 +3735,9 @@ private lemma prec_right_pair_of_affine_family_high_degree_remaining
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hno_common_fg : ¬ ∃ r, g.IsRoot r ∧ f.IsRoot r) :
-    Prec g (X * f) := by
-  exact
-    prec_right_pair_of_affine_family_high_degree_core
-      hf0 hg0 hfnn hgnn haff hno_common_fg
+    Prec g (X * f) :=
+  prec_right_pair_of_affine_family_high_degree_core
+    hf0 hg0 hfnn hgnn haff hno_common_fg
 
 private lemma prec_right_pair_of_affine_family_high_degree
     {f g : ℝ[X]}
@@ -4164,10 +4159,9 @@ theorem allComboRealRooted_of_affine_family_nonneg
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
-    AllComboRealRooted f g := by
-  exact
-    allComboRealRooted_of_prec
-      (prec_of_affine_family_nonneg hf0 hg0 hfnn hgnn haff)
+    AllComboRealRooted f g :=
+  allComboRealRooted_of_prec
+    (prec_of_affine_family_nonneg hf0 hg0 hfnn hgnn haff)
 
 /-- Public shifted-pair package extracted from a nonnegative affine family.
 This is the corrected same-degree seam after the failed boundary-right-pair
@@ -4188,8 +4182,8 @@ theorem shifted_pair_data_of_affine_family_nonneg
     f ≠ 0 ∧
     HasPosLeadingCoeff (g + X * f) ∧
     HasPosLeadingCoeff f ∧
-    (g + X * f).natDegree = f.natDegree + 1 := by
-  exact affine_family_shifted_pair_data hf0 hg0 hfnn hgnn haff
+    (g + X * f).natDegree = f.natDegree + 1 :=
+  affine_family_shifted_pair_data hf0 hg0 hfnn hgnn haff
 
 /-- A nonnegative affine family already orients the shifted pair:
 `f ≺ g + X * f`. This is the public corrected replacement for the earlier
@@ -4225,11 +4219,10 @@ theorem prec_right_pair_of_affine_family_nonneg_sameDegree
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hdeg : g.natDegree = f.natDegree) :
-    Prec g (X * f) := by
-  exact
-    prec_right_pair_of_prec_shifted_pair_sameDegree
-      (prec_shifted_pair_of_affine_family_nonneg hf0 hfnn hgnn haff)
-      hf0 hg0 hfnn hgnn hdeg
+    Prec g (X * f) :=
+  prec_right_pair_of_prec_shifted_pair_sameDegree
+    (prec_shifted_pair_of_affine_family_nonneg hf0 hfnn hgnn haff)
+    hf0 hg0 hfnn hgnn hdeg
 
 /-- Public shifted-pair reduction in the same-degree nonnegative regime:
 once the corrected shifted pair satisfies `f ≺ g + X * f`, the original pair
@@ -4242,10 +4235,9 @@ theorem prec_of_prec_shifted_pair_sameDegree_nonneg
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (hdeg : g.natDegree = f.natDegree) :
-    Prec f g := by
-  exact
-    prec_of_prec_shifted_pair_sameDegree
-      h hf0 hg0 hfnn hgnn hdeg
+    Prec f g :=
+  prec_of_prec_shifted_pair_sameDegree
+    h hf0 hg0 hfnn hgnn hdeg
 
 /-- Public wrapper of the internal positive-family degree-gap obstruction:
 for a positive-combination real-rooted pair with nonnegative coefficients,
@@ -4256,10 +4248,9 @@ theorem natDegree_right_le_succ_of_posComboRealRooted_of_nonnegCoeffs
     (hf0 : f ≠ 0) (hg0 : g ≠ 0)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g) :
-    g.natDegree ≤ f.natDegree + 1 := by
-  exact
-    natDegree_right_le_succ_of_posComboRealRooted_nonneg
-      hfg hf0 hg0 hfnn hgnn
+    g.natDegree ≤ f.natDegree + 1 :=
+  natDegree_right_le_succ_of_posComboRealRooted_nonneg
+    hfg hf0 hg0 hfnn hgnn
 
 /-- Symmetric degree closeness for positive-combination real-rooted pairs with
 nonnegative coefficients. -/

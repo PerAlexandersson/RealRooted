@@ -52,11 +52,10 @@ theorem exists_root_near_left_family
     (ht : 0 < t)
     (hcoeff_bound : (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) < ε) :
     ∃ b : ℝ, (C t * f + g).IsRoot b ∧
-      ‖a - b‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖a‖ 1 := by
-  exact
-    exists_real_root_near_in_left_family
-      (ha := ha) hf_monic hg_monic hdeg ht hcoeff_bound
-      (hfg.isRealRooted_add_left ht).1 (hfg.isRealRooted_add_left ht).2
+      ‖a - b‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖a‖ 1 :=
+  exists_real_root_near_in_left_family
+    (ha := ha) hf_monic hg_monic hdeg ht hcoeff_bound
+    (hfg.isRealRooted_add_left ht).1 (hfg.isRealRooted_add_left ht).2
 
 /-- Complex-root continuity bridge for the left affine family under
 positive-combination real-rootedness. -/
@@ -69,11 +68,10 @@ theorem exists_complex_aroot_near_left_family
     (ht : 0 < t)
     (hcoeff_bound : (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) < ε) :
     ∃ w : ℂ, w ∈ (C t * f + g).aroots ℂ ∧
-      ‖z - w‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖z‖ 1 := by
-  exact
-    RealRooted.exists_complex_aroot_near_in_left_family
-      (hz := hz) hf_monic hg_monic hdeg ht hcoeff_bound
-      (hfg.isRealRooted_add_left ht).1 (hfg.isRealRooted_add_left ht).2
+      ‖z - w‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖z‖ 1 :=
+  RealRooted.exists_complex_aroot_near_in_left_family
+    (hz := hz) hf_monic hg_monic hdeg ht hcoeff_bound
+    (hfg.isRealRooted_add_left ht).1 (hfg.isRealRooted_add_left ht).2
 
 /-- Root continuity in the left affine family with an automatically chosen positive parameter.
 Given `ε > 0`, this returns `t > 0` and a root of `C t * f + g` near the chosen root of `f`. -/
