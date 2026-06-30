@@ -107,9 +107,8 @@ lemma roots_nonpos_touchard_of_isRealRooted {n : Nat} (hrr : (touchard n).Splits
   roots_nonpos_of_nonneg_coeffs hrr (touchard_nonnegCoeffs n)
 
 lemma interlaces_touchard_zero_one :
-    Interlaces (touchard 0) (touchard 1) := by
-  simpa [touchard_zero, touchard_one] using
-    interlaces_one_linear (p := X) (by simp)
+    Interlaces (touchard 0) (touchard 1) :=
+  by simpa [touchard_zero, touchard_one] using interlaces_one_linear (p := X) (by simp)
 
 lemma prec_touchard_one_two :
     Prec (touchard 1) (touchard 2) := by

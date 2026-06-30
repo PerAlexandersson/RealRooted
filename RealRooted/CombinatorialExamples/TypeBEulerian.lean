@@ -206,8 +206,8 @@ lemma roots_nonpos_typeBEulerian_of_isRealRooted {n : Nat} (hrr : (typeBEulerian
   roots_nonpos_of_nonneg_coeffs hrr (typeBEulerian_nonnegCoeffs n)
 
 lemma interlaces_typeBEulerian_zero_one :
-    Interlaces (typeBEulerian 0) (typeBEulerian 1) := by
-  simpa [typeBEulerian_zero, typeBEulerian_one] using
+    Interlaces (typeBEulerian 0) (typeBEulerian 1) :=
+  by simpa [typeBEulerian_zero, typeBEulerian_one] using
     interlaces_one_linear (p := (1 + X : ℝ[X])) (by
       simpa [add_comm] using
         (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp)))

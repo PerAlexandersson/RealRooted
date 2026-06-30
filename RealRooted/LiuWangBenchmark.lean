@@ -66,10 +66,8 @@ lemma eval_zero_liuWangRec_threshold (d : Nat) :
   simp
 
 lemma X_dvd_liuWangRec_threshold (d : Nat) :
-    X ∣ liuWangRec d (d + 2) := by
-  simpa using
-    ((dvd_iff_isRoot).2 (show (liuWangRec d (d + 2)).IsRoot 0 by
-      simp))
+    X ∣ liuWangRec d (d + 2) :=
+  by simpa using (dvd_iff_isRoot).2 (show (liuWangRec d (d + 2)).IsRoot 0 by simp)
 
 lemma X_dvd_liuWangRec_of_ge_threshold (d n : Nat) (hn : d + 2 ≤ n) :
     X ∣ liuWangRec d n := by
@@ -194,10 +192,9 @@ lemma liuWangPoly_nonnegCoeffs (d n : Nat) :
     HasNonnegCoeffs (liuWangPoly d n) := by
   intro m
   by_cases hm : m < n
-  · have h :
-        0 ≤ ((Nat.choose n m * Nat.choose d (n - m - 1) : ℕ) : ℝ) := by
-        exact_mod_cast Nat.zero_le (Nat.choose n m * Nat.choose d (n - m - 1))
-    simpa [coeff_liuWangPoly, hm] using h
+  · simpa [coeff_liuWangPoly, hm] using
+      (show 0 ≤ ((Nat.choose n m * Nat.choose d (n - m - 1) : ℕ) : ℝ) by
+        positivity)
   · simp [coeff_liuWangPoly, hm]
 
 private lemma coeff_zero_liuWangPoly_succ_succ (d n : Nat) :
@@ -223,9 +220,7 @@ lemma coeff_zero_liuWangPoly_pos (d n : Nat) (hn : 1 ≤ n) (hnd : n ≤ d + 1) 
   rw [coeff_zero_liuWangPoly]
   have hn' : 0 < n := by lia
   rw [if_pos hn']
-  have hchoose_pos : 0 < Nat.choose d (n - 1) := by
-    apply Nat.choose_pos
-    lia
+  have hchoose_pos : 0 < Nat.choose d (n - 1) := Nat.choose_pos (by lia)
   simp_all
 
 lemma zero_not_isRoot_liuWangPoly (d n : Nat) (hn : 1 ≤ n) (hnd : n ≤ d + 1) :
@@ -318,9 +313,8 @@ private lemma natDegree_leadingCoeff_liuWangRec_step (d n : Nat) (hn : 1 ≤ n)
     ring
   have hA_ne : A ≠ 0 :=
     leadingCoeff_ne_zero.mp (by simp_all)
-  have hB_ne : B ≠ 0 := by
-    apply leadingCoeff_ne_zero.mp
-    simp_all
+  have hB_ne : B ≠ 0 :=
+    leadingCoeff_ne_zero.mp (by simp_all)
   have hA_degree : A.degree = n + 1 := by
     rw [degree_eq_natDegree hA_ne, hA_natDegree]
     lia
@@ -944,13 +938,12 @@ lemma interlaces_liuWangRec_of_ge_threshold_of_nonnegCoeffs (d k : Nat)
           Interlaces (liuWangRec d (d + 1 + k)) (liuWangRec d ((d + 1 + k) + 1)) := by
         lia
       have hnonpos :
-          ∀ r, (liuWangRec d ((d + 1 + k) + 1)).IsRoot r → r ≤ 0 := by
-        intro r hr
-        exact roots_nonpos_of_nonneg_coeffs hInter.1.2 (hnonneg ((d + 1 + k) + 1)) r
-          ((mem_roots hInter.1.1).mpr hr)
+          ∀ r, (liuWangRec d ((d + 1 + k) + 1)).IsRoot r → r ≤ 0 :=
+        fun r hr => roots_nonpos_of_nonneg_coeffs hInter.1.2
+          (hnonneg ((d + 1 + k) + 1)) r ((mem_roots hInter.1.1).mpr hr)
       have hPrec :
-          Prec (liuWangRec d (d + 2 + k)) (liuWangRec d (d + 3 + k)) := by
-        simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using
+          Prec (liuWangRec d (d + 2 + k)) (liuWangRec d (d + 3 + k)) :=
+        by simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using
           weakPrec_liuWangRec_step d (d + 1 + k) (by lia) hInter hnonpos
       have hdeg :
           (liuWangRec d (d + 3 + k)).natDegree =

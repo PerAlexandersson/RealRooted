@@ -241,8 +241,8 @@ lemma prec_singletonFreeSetPartitionsCore_of_prec {n : Nat} (hn : 3 ≤ n)
       hlower hder.toPrec hlower_pos hder_pos
 
 lemma prec_singletonFreeSetPartitions_two_three :
-    Prec (singletonFreeSetPartitions 2) (singletonFreeSetPartitions 3) := by
-  simpa [singletonFreeSetPartitions_two, singletonFreeSetPartitions_three] using
+    Prec (singletonFreeSetPartitions 2) (singletonFreeSetPartitions 3) :=
+  by simpa [singletonFreeSetPartitions_two, singletonFreeSetPartitions_three] using
     prec_refl (f := X) (by simp)
 
 lemma prec_singletonFreeSetPartitions_three_four :
