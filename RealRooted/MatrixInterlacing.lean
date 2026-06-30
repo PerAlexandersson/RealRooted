@@ -275,8 +275,8 @@ theorem matrix_preserves_interlacing_seq0_nonneg_entries
   have hrow_eval :
       (row.zipWith (· * ·) fs).sum = row.get i := by
     simpa [fs] using zipWith_mul_oneSupportSeq_sum_eq_get row i
-  have hmem_eval : (row.zipWith (· * ·) fs).sum ∈ matPolyAction G fs := by
-    exact List.mem_map.2 ⟨row, hrow, rfl⟩
+  have hmem_eval : (row.zipWith (· * ·) fs).sum ∈ matPolyAction G fs :=
+    List.mem_map.2 ⟨row, hrow, rfl⟩
   simp_all
 
 theorem matrix_preserves_interlacing_seq0_sparse_pair_prec0
@@ -306,8 +306,8 @@ theorem matrix_preserves_interlacing_seq0_sparse_pair_prec0
   let jG : Fin (matPolyAction G fs).length := ⟨i₂, by simp [matPolyAction]⟩
   let jRowJ₁ : Fin (G.get i₂).length := ⟨j₁, by simp_all⟩
   let jRowJ₂ : Fin (G.get i₂).length := ⟨j₂, by simp_all⟩
-  have hpair : Prec0 ((matPolyAction G fs).get iG) ((matPolyAction G fs).get jG) := by
-    exact himage.1.prec0 (i := iG) (j := jG) (by grind)
+  have hpair : Prec0 ((matPolyAction G fs).get iG) ((matPolyAction G fs).get jG) :=
+    himage.1.prec0 (i := iG) (j := jG) (by grind)
   have hleft :
       (matPolyAction G fs).get iG
         = (G.get i₁).get iRowJ₁ + (C a * X + C b) * (G.get i₁).get iRowJ₂ := by
@@ -345,11 +345,11 @@ theorem matrix_preserves_interlacing_seq0_necessary_conditions
             simp_all⟩)
           + (C a * X + C b) * ((G.get i₂).get ⟨j₂, by
             simp_all⟩))) := by
-  refine ⟨?_, ?_⟩
-  · exact matrix_preserves_interlacing_seq0_nonneg_entries (n := n) G hG_rect hpres0
-  · intro i₁ i₂ j₁ j₂ hi hj a b ha hb
-    exact matrix_preserves_interlacing_seq0_sparse_pair_prec0
-      (n := n) G hG_rect hpres0 i₁ i₂ j₁ j₂ hi hj ha hb
+  exact
+    ⟨matrix_preserves_interlacing_seq0_nonneg_entries (n := n) G hG_rect hpres0,
+      fun i₁ i₂ j₁ j₂ hi hj a b ha hb =>
+        matrix_preserves_interlacing_seq0_sparse_pair_prec0
+          (n := n) G hG_rect hpres0 i₁ i₂ j₁ j₂ hi hj ha hb⟩
 
 /-- Auxiliary column family in Brändén's forward matrix proof:
 for fixed `s, t`, the `j`th entry is `((C s * X + C t) * row₁[j]) + row₂[j]`. -/
@@ -526,11 +526,10 @@ lemma hasNonnegCoeffs_rowPairAffineSeq
             have hsum : HasNonnegCoeffs (C s * (X * a) + (C t * a + b)) :=
               hsa.add (hta.add hb)
             grind
-          · exact
-              ih
-                (fun q hq => hrow₁_nonneg q (by simp [hq]))
-                (fun q hq => hrow₂_nonneg q (by simp [hq]))
-                p hp
+          · exact ih
+              (fun q hq => hrow₁_nonneg q (by simp [hq]))
+              (fun q hq => hrow₂_nonneg q (by simp [hq]))
+              p hp
 
 /-- For fixed positive `s, t`, the auxiliary affine row family coming from two
 matrix rows is an interlacing sequence whose members have nonnegative
@@ -553,18 +552,17 @@ lemma isInterlacingSeqAndNonneg_reverse_rowPairAffineSeq
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     IsInterlacingSeq ((rowPairAffineSeq row₁ row₂ s t).reverse) ∧
       ∀ p ∈ (rowPairAffineSeq row₁ row₂ s t).reverse, HasNonnegCoeffs p := by
-  refine ⟨?_, ?_⟩
-  · exact
-      isInterlacingSeq_reverse_rowPairAffineSeq
-        (n := n) (row₁ := row₁) (row₂ := row₂)
-        hrow₁_len hrow₂_len h2x2 hs ht
-  · intro p hp
-    have hp' : p ∈ rowPairAffineSeq row₁ row₂ s t := by
-      simp_all
-    exact
-      hasNonnegCoeffs_rowPairAffineSeq
-        (row₁ := row₁) (row₂ := row₂)
-        hrow₁_nonneg hrow₂_nonneg hs.le ht.le p hp'
+  refine
+    ⟨isInterlacingSeq_reverse_rowPairAffineSeq
+      (n := n) (row₁ := row₁) (row₂ := row₂)
+      hrow₁_len hrow₂_len h2x2 hs ht, ?_⟩
+  intro p hp
+  have hp' : p ∈ rowPairAffineSeq row₁ row₂ s t := by
+    simp_all
+  exact
+    hasNonnegCoeffs_rowPairAffineSeq
+      (row₁ := row₁) (row₂ := row₂)
+      hrow₁_nonneg hrow₂_nonneg hs.le ht.le p hp'
 
 lemma isInterlacingSeq0Nonneg_reverse_rowPairAffineSeq
     {row₁ row₂ : List ℝ[X]}
@@ -580,18 +578,17 @@ lemma isInterlacingSeq0Nonneg_reverse_rowPairAffineSeq
         (row₂.get ⟨j₂, by lia⟩))
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     IsInterlacingSeq0Nonneg ((rowPairAffineSeq row₁ row₂ s t).reverse) := by
-  refine ⟨?_, ?_⟩
-  · exact
-      isInterlacingSeq0_reverse_rowPairAffineSeq
-        (n := n) (row₁ := row₁) (row₂ := row₂)
-        hrow₁_len hrow₂_len h2x2 hs ht
-  · intro p hp
-    have hp' : p ∈ rowPairAffineSeq row₁ row₂ s t := by
-      simp_all
-    exact
-      hasNonnegCoeffs_rowPairAffineSeq
-        (row₁ := row₁) (row₂ := row₂)
-        hrow₁_nonneg hrow₂_nonneg hs.le ht.le p hp'
+  refine
+    ⟨isInterlacingSeq0_reverse_rowPairAffineSeq
+      (n := n) (row₁ := row₁) (row₂ := row₂)
+      hrow₁_len hrow₂_len h2x2 hs ht, ?_⟩
+  intro p hp
+  have hp' : p ∈ rowPairAffineSeq row₁ row₂ s t := by
+    simp_all
+  exact
+    hasNonnegCoeffs_rowPairAffineSeq
+      (row₁ := row₁) (row₂ := row₂)
+      hrow₁_nonneg hrow₂_nonneg hs.le ht.le p hp'
 
 lemma isInterlacingSeqNonneg_reverse_rowPairAffineSeq
     {row₁ row₂ : List ℝ[X]}
@@ -745,8 +742,8 @@ theorem prec_zipWith_sum_pair_of_2x2
         (row₁ := row₁) (row₂ := row₂) (fs := fs) (s := s) (t := t) hrows
   have hfs_all : IsInterlacingSeqNonneg fs := hfs
   rcases hfs with ⟨hfs_mem, hfs_int⟩
-  have hfs_nonneg : ∀ f ∈ fs, HasNonnegCoeffs f := by
-    exact fun f hf => (hfs_mem f hf).2
+  have hfs_nonneg : ∀ f ∈ fs, HasNonnegCoeffs f :=
+    fun f hf => (hfs_mem f hf).2
   have hfs_ne : fs ≠ [] := by
     intro hnil
     rw [hnil] at hfs_len
@@ -758,25 +755,23 @@ theorem prec_zipWith_sum_pair_of_2x2
           (((auxRow s t).zipWith (· * ·) fs).sum).Splits) := by
     intro s t hs ht
     have haux :
-        IsInterlacingSeqNonneg ((auxRow s t).reverse) := by
-      exact
-        isInterlacingSeqNonneg_reverse_rowPairAffineSeq
-          (n := n) hrow₁_len hrow₂_len hrow₁_nonneg hrow₂_nonneg h2x2 hs ht
+        IsInterlacingSeqNonneg ((auxRow s t).reverse) :=
+      isInterlacingSeqNonneg_reverse_rowPairAffineSeq
+        (n := n) hrow₁_len hrow₂_len hrow₁_nonneg hrow₂_nonneg h2x2 hs ht
     have hrr_rev :
         (((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum) ≠ 0 ∧
-          ((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum).Splits) := by
-      exact
-        isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
-          (fs := (auxRow s t).reverse) (gs := fs)
-          (by
-            intro hnil
-            have hnil' : auxRow s t = [] := by simpa using hnil
-            have : n = 0 := by
-              rw [← haux_len (s := s) (t := t), hnil']
-              simp
-            lia)
-          (by simp [haux_len, hfs_len])
-          haux hfs_all
+          ((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum).Splits) :=
+      isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
+        (fs := (auxRow s t).reverse) (gs := fs)
+        (by
+          intro hnil
+          have hnil' : auxRow s t = [] := by simpa using hnil
+          have : n = 0 := by
+            rw [← haux_len (s := s) (t := t), hnil']
+            simp
+          lia)
+        (by simp [haux_len, hfs_len])
+        haux hfs_all
     simpa [zipWith_mul_sum_reverse_reverse (row := auxRow s t) (fs := fs)
       (haux_len.trans hfs_len.symm)] using hrr_rev
   let F : ℝ[X] := ((row₁.zipWith (· * ·) fs).sum)
@@ -800,8 +795,8 @@ theorem prec_zipWith_sum_pair_of_2x2
         (hrow := hrow₂_nonneg) (hfs := hfs_nonneg)
   let j0 : Fin row₁.length := ⟨0, by lia⟩
   let k0 : Fin row₂.length := ⟨0, by lia⟩
-  have hfs0_ne : fs.get ⟨0, by lia⟩ ≠ 0 := by
-    exact (hfs_mem _ (List.get_mem _ _)).1.1
+  have hfs0_ne : fs.get ⟨0, by lia⟩ ≠ 0 :=
+    (hfs_mem _ (List.get_mem _ _)).1.1
   have hF_ne : F ≠ 0 := by
     unfold F
     exact
@@ -874,12 +869,11 @@ theorem prec0_zipWith_sum_pair_of_2x2
           (((auxRow s t).zipWith (· * ·) fs).sum).Splits) := by
     intro s t hs ht
     have haux0 :
-        IsInterlacingSeq0Nonneg ((auxRow s t).reverse) := by
-      exact
-        isInterlacingSeq0Nonneg_reverse_rowPairAffineSeq
-          (n := n) (row₁ := row₁) (row₂ := row₂)
-          hrow₁_len hrow₂_len hrow₁_nonneg hrow₂_nonneg
-          (fun j₁ j₂ hj => h2x2 j₁ j₂ (le_of_lt hj)) hs ht
+        IsInterlacingSeq0Nonneg ((auxRow s t).reverse) :=
+      isInterlacingSeq0Nonneg_reverse_rowPairAffineSeq
+        (n := n) (row₁ := row₁) (row₂ := row₂)
+        hrow₁_len hrow₂_len hrow₁_nonneg hrow₂_nonneg
+        (fun j₁ j₂ hj => h2x2 j₁ j₂ (le_of_lt hj)) hs ht
     have haux_real :
         ∀ p ∈ (auxRow s t).reverse, p ≠ 0 → (p ≠ 0 ∧ p.Splits) := by
       intro p hp hp_ne
@@ -902,12 +896,11 @@ theorem prec0_zipWith_sum_pair_of_2x2
       lia
     have hrr_rev :
         (((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum) ≠ 0 ∧
-          ((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum).Splits) := by
-      exact
-        isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg
-          (fs := (auxRow s t).reverse) (gs := fs)
-          (by simp [haux_len, hfs_len])
-          haux0 haux_real hfs_all hsum_ne_rev
+          ((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum).Splits) :=
+      isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg
+        (fs := (auxRow s t).reverse) (gs := fs)
+        (by simp [haux_len, hfs_len])
+        haux0 haux_real hfs_all hsum_ne_rev
     simpa [zipWith_mul_sum_reverse_reverse (row := auxRow s t) (fs := fs)
       (haux_len.trans hfs_len.symm)] using hrr_rev
   have haff :
@@ -972,12 +965,11 @@ theorem prec0_zipWith_sum_pair_of_2x2_weak
           (((auxRow s t).zipWith (· * ·) fs).sum).Splits) := by
     intro s t hs ht
     have haux0 :
-        IsInterlacingSeq0Nonneg ((auxRow s t).reverse) := by
-      exact
-        isInterlacingSeq0Nonneg_reverse_rowPairAffineSeq
-          (n := n) (row₁ := row₁) (row₂ := row₂)
-          hrow₁_len hrow₂_len hrow₁_nonneg hrow₂_nonneg
-          (fun j₁ j₂ hj => h2x2 j₁ j₂ (le_of_lt hj)) hs ht
+        IsInterlacingSeq0Nonneg ((auxRow s t).reverse) :=
+      isInterlacingSeq0Nonneg_reverse_rowPairAffineSeq
+        (n := n) (row₁ := row₁) (row₂ := row₂)
+        hrow₁_len hrow₂_len hrow₁_nonneg hrow₂_nonneg
+        (fun j₁ j₂ hj => h2x2 j₁ j₂ (le_of_lt hj)) hs ht
     have haux_real :
         ∀ p ∈ (auxRow s t).reverse, p ≠ 0 → (p ≠ 0 ∧ p.Splits) := by
       intro p hp hp_ne
@@ -1000,11 +992,10 @@ theorem prec0_zipWith_sum_pair_of_2x2_weak
       lia
     have hrr_rev :
         (((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum) ≠ 0 ∧
-          ((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum).Splits) := by
-      exact
-        isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg_both
-          (fs := (auxRow s t).reverse) (gs := fs)
-          haux0 haux_real hfs hfs_real hsum_ne_rev
+          ((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum).Splits) :=
+      isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg_both
+        (fs := (auxRow s t).reverse) (gs := fs)
+        haux0 haux_real hfs hfs_real hsum_ne_rev
     simpa [zipWith_mul_sum_reverse_reverse (row := auxRow s t) (fs := fs)
       (haux_len.trans hfs_len.symm)] using hrr_rev
   have haff :
@@ -1079,30 +1070,29 @@ theorem matrix_preserves_interlacing_seq
   · intro p hp
     rcases List.mem_map.mp hp with ⟨row, hrow_mem, rfl⟩
     have hrow_nonneg_sum :
-        HasNonnegCoeffs ((row.zipWith (· * ·) fs).sum) := by
-      exact hasNonnegCoeffs_zipWith_mul_sum (fun q hq => hG_nonneg row hrow_mem q hq)
+        HasNonnegCoeffs ((row.zipWith (· * ·) fs).sum) :=
+      hasNonnegCoeffs_zipWith_mul_sum (fun q hq => hG_nonneg row hrow_mem q hq)
         (fun q hq => (hfs_mem q hq).2)
     obtain ⟨i, rfl⟩ := List.mem_iff_get.1 hrow_mem
     let iG : Fin G.length := ⟨i, by lia⟩
     have hself :
-        Prec (((G.get iG).zipWith (· * ·) fs).sum) (((G.get iG).zipWith (· * ·) fs).sum) := by
-      exact
-        prec_zipWith_sum_pair_of_2x2
-          (n := n)
-          (hn := hn)
-          (row₁ := G.get iG)
-          (row₂ := G.get iG)
-          (fs := fs)
-          (hrow₁_len := hG_rect _ (G.get_mem iG))
-          (hrow₂_len := hG_rect _ (G.get_mem iG))
-          (hrow₁_head_ne := hentry_head_ne iG)
-          (hrow₂_head_ne := hentry_head_ne iG)
-          (hrow₁_nonneg := fun q hq => hG_nonneg _ (G.get_mem iG) _ hq)
-          (hrow₂_nonneg := fun q hq => hG_nonneg _ (G.get_mem iG) _ hq)
-          (h2x2 := fun j₁ j₂ hj =>
-            hG_affine iG iG j₁ j₂ le_rfl hj)
-          (hfs_len := hfs_len)
-          (hfs := ⟨hfs_mem, hfs_int⟩)
+        Prec (((G.get iG).zipWith (· * ·) fs).sum) (((G.get iG).zipWith (· * ·) fs).sum) :=
+      prec_zipWith_sum_pair_of_2x2
+        (n := n)
+        (hn := hn)
+        (row₁ := G.get iG)
+        (row₂ := G.get iG)
+        (fs := fs)
+        (hrow₁_len := hG_rect _ (G.get_mem iG))
+        (hrow₂_len := hG_rect _ (G.get_mem iG))
+        (hrow₁_head_ne := hentry_head_ne iG)
+        (hrow₂_head_ne := hentry_head_ne iG)
+        (hrow₁_nonneg := fun q hq => hG_nonneg _ (G.get_mem iG) _ hq)
+        (hrow₂_nonneg := fun q hq => hG_nonneg _ (G.get_mem iG) _ hq)
+        (h2x2 := fun j₁ j₂ hj =>
+          hG_affine iG iG j₁ j₂ le_rfl hj)
+        (hfs_len := hfs_len)
+        (hfs := ⟨hfs_mem, hfs_int⟩)
     exact ⟨hself.1, hrow_nonneg_sum⟩
   · rw [isInterlacingSeq_iff_pairwise]
     refine List.pairwise_iff_get.2 ?_
@@ -1110,25 +1100,24 @@ theorem matrix_preserves_interlacing_seq
     let iG : Fin G.length := ⟨i, by simpa [matPolyAction] using i.2⟩
     let jG : Fin G.length := ⟨j, by simpa [matPolyAction] using j.2⟩
     have hpair :
-        Prec (((G.get iG).zipWith (· * ·) fs).sum) (((G.get jG).zipWith (· * ·) fs).sum) := by
-      exact
-        prec_zipWith_sum_pair_of_2x2
-          (n := n)
-          (hn := hn)
-          (row₁ := G.get iG)
-          (row₂ := G.get jG)
-          (fs := fs)
-          (hrow₁_len := hG_rect _ (G.get_mem iG))
-          (hrow₂_len := hG_rect _ (G.get_mem jG))
-          (hrow₁_head_ne := hentry_head_ne iG)
-          (hrow₂_head_ne := hentry_head_ne jG)
-          (hrow₁_nonneg := fun p hp => hG_nonneg _ (G.get_mem iG) _ hp)
-          (hrow₂_nonneg := fun p hp => hG_nonneg _ (G.get_mem jG) _ hp)
-          (h2x2 := fun j₁ j₂ hj =>
-            by
-              grind)
-          (hfs_len := hfs_len)
-          (hfs := ⟨hfs_mem, hfs_int⟩)
+        Prec (((G.get iG).zipWith (· * ·) fs).sum) (((G.get jG).zipWith (· * ·) fs).sum) :=
+      prec_zipWith_sum_pair_of_2x2
+        (n := n)
+        (hn := hn)
+        (row₁ := G.get iG)
+        (row₂ := G.get jG)
+        (fs := fs)
+        (hrow₁_len := hG_rect _ (G.get_mem iG))
+        (hrow₂_len := hG_rect _ (G.get_mem jG))
+        (hrow₁_head_ne := hentry_head_ne iG)
+        (hrow₂_head_ne := hentry_head_ne jG)
+        (hrow₁_nonneg := fun p hp => hG_nonneg _ (G.get_mem iG) _ hp)
+        (hrow₂_nonneg := fun p hp => hG_nonneg _ (G.get_mem jG) _ hp)
+        (h2x2 := fun j₁ j₂ hj =>
+          by
+            grind)
+        (hfs_len := hfs_len)
+        (hfs := ⟨hfs_mem, hfs_int⟩)
     simpa [matPolyAction, iG, jG] using hpair
 
 /-- **Weak zero-aware forward direction**: if `G` has non-negative coefficients
@@ -1159,22 +1148,21 @@ theorem matrix_preserves_interlacing_seq0_of_2x2
     let jG : Fin G.length := ⟨j, by simpa [matPolyAction] using j.2⟩
     have hpair :
         Prec0 (((G.get iG).zipWith (· * ·) fs).sum)
-          (((G.get jG).zipWith (· * ·) fs).sum) := by
-      exact
-        prec0_zipWith_sum_pair_of_2x2
-          (n := n)
-          (row₁ := G.get iG)
-          (row₂ := G.get jG)
-          (fs := fs)
-          (hrow₁_len := hG_rect _ (G.get_mem iG))
-          (hrow₂_len := hG_rect _ (G.get_mem jG))
-          (hrow₁_nonneg := fun p hp => hG_nonneg _ (G.get_mem iG) _ hp)
-          (hrow₂_nonneg := fun p hp => hG_nonneg _ (G.get_mem jG) _ hp)
-          (h2x2 := fun j₁ j₂ hj =>
-            by
-              grind)
-          (hfs_len := hfs_len)
-          (hfs := ⟨hfs_mem, hfs_int⟩)
+          (((G.get jG).zipWith (· * ·) fs).sum) :=
+      prec0_zipWith_sum_pair_of_2x2
+        (n := n)
+        (row₁ := G.get iG)
+        (row₂ := G.get jG)
+        (fs := fs)
+        (hrow₁_len := hG_rect _ (G.get_mem iG))
+        (hrow₂_len := hG_rect _ (G.get_mem jG))
+        (hrow₁_nonneg := fun p hp => hG_nonneg _ (G.get_mem iG) _ hp)
+        (hrow₂_nonneg := fun p hp => hG_nonneg _ (G.get_mem jG) _ hp)
+        (h2x2 := fun j₁ j₂ hj =>
+          by
+            grind)
+        (hfs_len := hfs_len)
+        (hfs := ⟨hfs_mem, hfs_int⟩)
     simpa [matPolyAction, iG, jG] using hpair
   · intro p hp
     rcases List.mem_map.mp hp with ⟨row, hrow_mem, rfl⟩
@@ -1211,23 +1199,22 @@ theorem matrix_preserves_interlacing_seq0_of_2x2_weak
       let jG : Fin G.length := ⟨j, by simpa [matPolyAction] using j.2⟩
       have hpair :
           Prec0 (((G.get iG).zipWith (· * ·) fs).sum)
-            (((G.get jG).zipWith (· * ·) fs).sum) := by
-        exact
-          prec0_zipWith_sum_pair_of_2x2_weak
-            (n := n)
-            (row₁ := G.get iG)
-            (row₂ := G.get jG)
-            (fs := fs)
-            (hrow₁_len := hG_rect _ (G.get_mem iG))
-            (hrow₂_len := hG_rect _ (G.get_mem jG))
-            (hrow₁_nonneg := fun p hp => hG_nonneg _ (G.get_mem iG) _ hp)
-            (hrow₂_nonneg := fun p hp => hG_nonneg _ (G.get_mem jG) _ hp)
-            (h2x2 := fun j₁ j₂ hj =>
-              by
-                grind)
-            (hfs_len := hfs_len)
-            (hfs := hfs)
-            (hfs_real := hfs_real)
+            (((G.get jG).zipWith (· * ·) fs).sum) :=
+        prec0_zipWith_sum_pair_of_2x2_weak
+          (n := n)
+          (row₁ := G.get iG)
+          (row₂ := G.get jG)
+          (fs := fs)
+          (hrow₁_len := hG_rect _ (G.get_mem iG))
+          (hrow₂_len := hG_rect _ (G.get_mem jG))
+          (hrow₁_nonneg := fun p hp => hG_nonneg _ (G.get_mem iG) _ hp)
+          (hrow₂_nonneg := fun p hp => hG_nonneg _ (G.get_mem jG) _ hp)
+          (h2x2 := fun j₁ j₂ hj =>
+            by
+              grind)
+          (hfs_len := hfs_len)
+          (hfs := hfs)
+          (hfs_real := hfs_real)
       simpa [matPolyAction, iG, jG] using hpair
     · intro p hp
       rcases List.mem_map.mp hp with ⟨row, hrow_mem, rfl⟩
@@ -1243,21 +1230,20 @@ theorem matrix_preserves_interlacing_seq0_of_2x2_weak
       lia
     have hself0 :
         Prec0 (((G.get iG).zipWith (· * ·) fs).sum)
-          (((G.get iG).zipWith (· * ·) fs).sum) := by
-      exact
-        prec0_zipWith_sum_pair_of_2x2_weak
-          (n := n)
-          (row₁ := G.get iG)
-          (row₂ := G.get iG)
-          (fs := fs)
-          (hrow₁_len := hG_rect _ (G.get_mem iG))
-          (hrow₂_len := hG_rect _ (G.get_mem iG))
-          (hrow₁_nonneg := fun q hq => hG_nonneg _ (G.get_mem iG) _ hq)
-          (hrow₂_nonneg := fun q hq => hG_nonneg _ (G.get_mem iG) _ hq)
-          (h2x2 := fun j₁ j₂ hj => hG_affine iG iG j₁ j₂ le_rfl hj)
-          (hfs_len := hfs_len)
-          (hfs := hfs)
-          (hfs_real := hfs_real)
+          (((G.get iG).zipWith (· * ·) fs).sum) :=
+      prec0_zipWith_sum_pair_of_2x2_weak
+        (n := n)
+        (row₁ := G.get iG)
+        (row₂ := G.get iG)
+        (fs := fs)
+        (hrow₁_len := hG_rect _ (G.get_mem iG))
+        (hrow₂_len := hG_rect _ (G.get_mem iG))
+        (hrow₁_nonneg := fun q hq => hG_nonneg _ (G.get_mem iG) _ hq)
+        (hrow₂_nonneg := fun q hq => hG_nonneg _ (G.get_mem iG) _ hq)
+        (h2x2 := fun j₁ j₂ hj => hG_affine iG iG j₁ j₂ le_rfl hj)
+        (hfs_len := hfs_len)
+        (hfs := hfs)
+        (hfs_real := hfs_real)
     have hp0' : ((G.get iG).zipWith (· * ·) fs).sum ≠ 0 := by
       lia
     rw [← hsum_eq_p]
