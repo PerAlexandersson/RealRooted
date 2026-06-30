@@ -11,6 +11,22 @@ namespace RealRooted
 def complexify (p : ℝ[X]) : ℂ[X] :=
   p.map Complex.ofRealHom
 
+@[simp] theorem complexify_zero :
+    complexify 0 = 0 := by
+  simp [complexify]
+
+@[simp] theorem complexify_one :
+    complexify 1 = 1 := by
+  simp [complexify]
+
+@[simp] theorem complexify_C (a : ℝ) :
+    complexify (C a) = C (a : ℂ) := by
+  simp [complexify]
+
+@[simp] theorem complexify_X :
+    complexify X = X := by
+  simp [complexify]
+
 /-- A univariate complex polynomial is upper-half-plane stable if it has no root
 with strictly positive imaginary part. -/
 def IsUpperHalfPlaneStable (p : ℂ[X]) : Prop :=
