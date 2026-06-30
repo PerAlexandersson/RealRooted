@@ -283,21 +283,14 @@ theorem garloffWagnerHadamardPFPrec0_of_nonnegPrec
     (hGW : garloffWagnerHadamardNonnegPrecStatement) :
     garloffWagnerHadamardPFPrec0Statement := by
   intro f g p q hf hg hp hq hfg hpq
-  by_cases hf0 : f = 0
-  · subst f
-    simpa using prec0_zero_left (hadamardProduct g q)
-  by_cases hg0 : g = 0
-  · subst g
-    simpa using prec0_zero_right (hadamardProduct f p)
-  by_cases hp0 : p = 0
-  · subst p
-    simpa using prec0_zero_left (hadamardProduct g q)
-  by_cases hq0 : q = 0
-  · subst q
-    simpa using prec0_zero_right (hadamardProduct f p)
+  rcases hfg with rfl | rfl | hfg'
+  · simpa using prec0_zero_left (hadamardProduct g q)
+  · simpa using prec0_zero_right (hadamardProduct f p)
+  rcases hpq with rfl | rfl | hpq'
+  · simpa using prec0_zero_left (hadamardProduct g q)
+  · simpa using prec0_zero_right (hadamardProduct f p)
   exact hGW hf.hasNonnegCoeffs hg.hasNonnegCoeffs
-    hp.hasNonnegCoeffs hq.hasNonnegCoeffs
-    (hfg.toPrec_of_ne hf0 hg0) (hpq.toPrec_of_ne hp0 hq0)
+    hp.hasNonnegCoeffs hq.hasNonnegCoeffs hfg' hpq'
 
 /-- The two-pair Garloff--Wagner theorem implies the one-polynomial
 real-rootedness/PF Hadamard theorem by applying it to self-pairs. -/
@@ -305,21 +298,18 @@ theorem garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
     (hGW : garloffWagnerHadamardNonnegPrecStatement) :
     garloffWagnerHadamardNonnegRealRootedStatement := by
   intro p q hpnn hqnn hprr hqrr
-  have hself : Prec0 (hadamardProduct p q) (hadamardProduct p q) :=
-    hGW hpnn hpnn hqnn hqnn (prec_refl hprr.1 hprr.2) (prec_refl hqrr.1 hqrr.2)
   have hpf : IsPFPolynomial (hadamardProduct p q) :=
-    IsPFPolynomial.of_prec0_self (hpnn.hadamardProduct hqnn) hself
+    IsPFPolynomial.of_prec0_self (hpnn.hadamardProduct hqnn)
+      (hGW hpnn hpnn hqnn hqnn (prec_refl hprr.1 hprr.2) (prec_refl hqrr.1 hqrr.2))
   exact ⟨hpf.eq_zero_or_splits, hpf.hasNonnegCoeffs, hpf.roots_nonpos⟩
 
 theorem schurPolyaWagnerHadamardPF_of_garloffWagner_prec0
     (hGW : garloffWagnerHadamardPFPrec0Statement) :
     schurPolyaWagnerHadamardPFStatement := by
   intro p q hp hq
-  have hself :
-      Prec0 (hadamardProduct p q) (hadamardProduct p q) :=
-    hGW hp hp hq hq hp.prec0_self hq.prec0_self
   exact IsPFPolynomial.of_prec0_self
-    (hp.hasNonnegCoeffs.hadamardProduct hq.hasNonnegCoeffs) hself
+    (hp.hasNonnegCoeffs.hadamardProduct hq.hasNonnegCoeffs)
+    (hGW hp hp hq hq hp.prec0_self hq.prec0_self)
 
 /-- PF-polynomial closure under Hadamard product, stated directly from the
 zero-aware Garloff--Wagner PF wrapper. -/
@@ -370,9 +360,9 @@ theorem hadamardReciprocalConeClosure_of_garloffWagner
     (hGW : garloffWagnerHadamardNonnegPrecStatement) :
     hadamardReciprocalConeClosureStatement := by
   intro D p q hp hq hprec_p hprec_q
-  have h := hGW hp.hasNonnegCoeffs hp.hasNonnegCoeffs.reciprocalShift
-    hq.hasNonnegCoeffs hq.hasNonnegCoeffs.reciprocalShift hprec_p hprec_q
-  simpa [reciprocalShift_hadamardProduct] using h
+  simpa [reciprocalShift_hadamardProduct] using
+    hGW hp.hasNonnegCoeffs hp.hasNonnegCoeffs.reciprocalShift
+      hq.hasNonnegCoeffs hq.hasNonnegCoeffs.reciprocalShift hprec_p hprec_q
 
 /-- Polynomial-coefficient form of Polya-frequency closure under termwise
 products. This is finite-sequence closure packaged through coefficient
