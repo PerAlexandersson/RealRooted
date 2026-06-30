@@ -130,8 +130,8 @@ lemma coloredSetPartitions_nonnegCoeffs :
           simp [coloredSetPartitionsCoeffB]
         rw [coloredSetPartitions_succ, coeff_add, coloredSetPartitionsCoeffA, add_mul, coeff_add,
           hX_zero, hC_zero, hB_zero]
-        have hc_nonneg : 0 ≤ (c : ℝ) := by simp
-        simpa using mul_nonneg hc_nonneg (coloredSetPartitions_nonnegCoeffs c m n 0)
+        simpa using
+          mul_nonneg (by positivity : 0 ≤ (c : ℝ)) (coloredSetPartitions_nonnegCoeffs c m n 0)
       · rw [coeff_coloredSetPartitions_succ]
         exact add_nonneg
           (coloredSetPartitions_nonnegCoeffs c m n j)
