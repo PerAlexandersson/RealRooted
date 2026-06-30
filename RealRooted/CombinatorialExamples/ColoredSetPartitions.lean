@@ -165,7 +165,8 @@ lemma prec_coloredSetPartitions_one_two (c m : Nat) :
     simpa [coloredSetPartitions_one] using
       interlaces_one_linear (p := coloredSetPartitions c m 1) hdeg
   have hg_pos : HasPosLeadingCoeff (coloredSetPartitions c m 1).derivative :=
-    (coloredSetPartitions_posLeadingCoeff c m 1).derivative (by lia)
+    (coloredSetPartitions_posLeadingCoeff c m 1).derivative
+      (by simp [natDegree_coloredSetPartitions])
   have hNext_eq :
       coloredSetPartitionsCoeffA c * coloredSetPartitions c m 1 +
           coloredSetPartitionsCoeffB m * (coloredSetPartitions c m 1).derivative =
@@ -214,16 +215,14 @@ theorem prec_coloredSetPartitions_succ (c m : Nat) :
       have hprev : Prec (coloredSetPartitions c m (n + 1))
           (coloredSetPartitions c m (n + 2)) :=
         prec_coloredSetPartitions_succ c m (n + 1)
-      have hdegf : 2 ≤ (coloredSetPartitions c m (n + 2)).natDegree := by
-        simp [natDegree_coloredSetPartitions]
       have hInter :
           Interlaces (coloredSetPartitions c m (n + 2)).derivative
             (coloredSetPartitions c m (n + 2)) :=
-        derivative_interlaces hprev.2.1.2 hdegf
+        derivative_interlaces hprev.2.1.2 (by simp [natDegree_coloredSetPartitions])
       have hg_pos :
           HasPosLeadingCoeff (coloredSetPartitions c m (n + 2)).derivative :=
-        (coloredSetPartitions_posLeadingCoeff c m (n + 2)).derivative (by
-          lia)
+        (coloredSetPartitions_posLeadingCoeff c m (n + 2)).derivative
+          (by simp [natDegree_coloredSetPartitions])
       have hNext_eq :
           coloredSetPartitionsCoeffA c * coloredSetPartitions c m (n + 2) +
               coloredSetPartitionsCoeffB m * (coloredSetPartitions c m (n + 2)).derivative =

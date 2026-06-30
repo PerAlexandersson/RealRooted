@@ -132,14 +132,11 @@ theorem prec_touchard_succ : ∀ n : Nat, Prec (touchard n) (touchard (n + 1))
   | n + 2 => by
       have hprev : Prec (touchard (n + 1)) (touchard (n + 2)) :=
         prec_touchard_succ (n + 1)
-      have hdegf : 2 ≤ (touchard (n + 2)).natDegree := by
-        simp [natDegree_touchard]
       have hInter :
           Interlaces (touchard (n + 2)).derivative (touchard (n + 2)) :=
-        derivative_interlaces hprev.2.1.2 hdegf
+        derivative_interlaces hprev.2.1.2 (by simp [natDegree_touchard])
       have hg_pos : HasPosLeadingCoeff (touchard (n + 2)).derivative :=
-        (touchard_posLeadingCoeff (n + 2)).derivative (by
-          lia)
+        (touchard_posLeadingCoeff (n + 2)).derivative (by simp [natDegree_touchard])
       have hNext_eq :
           X * touchard (n + 2) + X * (touchard (n + 2)).derivative = touchard (n + 3) :=
         (touchard_succ (n + 2)).symm

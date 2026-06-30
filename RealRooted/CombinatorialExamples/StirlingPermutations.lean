@@ -207,7 +207,7 @@ lemma prec_stirlingPermutations_one_two :
     simpa [stirlingPermutations_one] using
       interlaces_one_linear (p := stirlingPermutations 1) hdeg
   have hg_pos : HasPosLeadingCoeff (stirlingPermutations 1).derivative :=
-    (stirlingPermutations_posLeadingCoeff 1).derivative (by lia)
+    (stirlingPermutations_posLeadingCoeff 1).derivative (by simp [natDegree_stirlingPermutations])
   have hNext_eq :
       stirlingPermutationsCoeffA 1 * stirlingPermutations 1 +
           stirlingPermutationsCoeffB * (stirlingPermutations 1).derivative =
