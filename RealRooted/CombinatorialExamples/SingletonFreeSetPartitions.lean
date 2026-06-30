@@ -330,7 +330,8 @@ theorem prec_singletonFreeSetPartitions_succ :
 theorem isRealRooted_singletonFreeSetPartitions :
     ∀ n : Nat, 2 ≤ n → (singletonFreeSetPartitions n).Splits
   | 2, _ => by simp [singletonFreeSetPartitions_two]
-  | n + 3, _ => by exact (prec_singletonFreeSetPartitions_succ (n + 2) (by lia)).2.1.2
+  | n + 3, _ =>
+      (prec_singletonFreeSetPartitions_succ (n + 2) (by lia)).2.1.2
 
 theorem interlaces_singletonFreeSetPartitions_succ_of_odd {n : Nat}
     (hn : 3 ≤ n) (hodd : n % 2 = 1) :
