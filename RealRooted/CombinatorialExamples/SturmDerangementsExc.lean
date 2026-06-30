@@ -363,7 +363,7 @@ lemma roots_nonpos_sturmDerangementsExc_of_isRealRooted {n : Nat}
 lemma prec_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
     (hprec : Prec (sturmDerangementsExc (n - 1)) (sturmDerangementsExc n)) :
     Prec (C (n : ℝ) * sturmDerangementsExc (n - 1)) (sturmDerangementsExc n) :=
-  prec_C_mul_left hprec (by exact_mod_cast (show n ≠ 0 by lia))
+  prec_C_mul_left hprec (by positivity)
 
 lemma prec_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
     (hrr : (sturmDerangementsExc n).Splits) :
@@ -499,7 +499,7 @@ lemma roots_nonpos_affine_sturmDerangementsExc_of_isRealRooted {n : Nat} (hn : 2
 lemma roots_nonpos_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
     (hprec : Prec (sturmDerangementsExc (n - 1)) (sturmDerangementsExc n)) :
     ∀ r ∈ (C (n : ℝ) * sturmDerangementsExc (n - 1)).roots, r ≤ 0 := by
-  have hn_cast : (n : ℝ) ≠ 0 := by exact_mod_cast (show n ≠ 0 by lia)
+  have hn_cast : (n : ℝ) ≠ 0 := by positivity
   intro r hr
   rw [roots_C_mul _ hn_cast] at hr
   exact roots_nonpos_of_nonneg_coeffs hprec.1.2
@@ -555,7 +555,7 @@ lemma prec_recurrenceCoreSturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
   have haff : Prec (affineSturmDerangementsExc n) (sturmDerangementsExc n) :=
     prec_affine_sturmDerangementsExc (by lia) hprec.2.1.2
   have hlower_pos : HasPosLeadingCoeff (C (n : ℝ) * sturmDerangementsExc (n - 1)) := by
-    have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast (show n ≠ 0 by lia)
+    have hn0 : (n : ℝ) ≠ 0 := by positivity
     unfold HasPosLeadingCoeff
     rw [leadingCoeff_C_mul_of_isUnit (isUnit_iff_ne_zero.mpr hn0)]
     exact mul_pos (by grind) (sturmDerangementsExc_posLeadingCoeff (by lia))
