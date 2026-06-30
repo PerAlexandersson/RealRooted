@@ -198,8 +198,8 @@ lemma eval_stirlingPermutationsCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) 
 
 lemma prec_stirlingPermutations_one_two :
     Prec (stirlingPermutations 1) (stirlingPermutations 2) := by
-  have hdeg : (stirlingPermutations 1).natDegree = 1 := by
-    simpa using natDegree_stirlingPermutations 1
+  have hdeg : (stirlingPermutations 1).natDegree = 1 :=
+    natDegree_stirlingPermutations 1
   have hf : ((stirlingPermutations 1) ≠ 0 ∧ (stirlingPermutations 1).Splits) :=
     isRealRooted_of_degree_one hdeg
   have hInter :

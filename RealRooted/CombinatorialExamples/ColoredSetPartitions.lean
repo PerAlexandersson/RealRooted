@@ -146,8 +146,8 @@ lemma roots_nonpos_coloredSetPartitions_of_isRealRooted {c m n : Nat}
 
 lemma interlaces_coloredSetPartitions_zero_one (c m : Nat) :
     Interlaces (coloredSetPartitions c m 0) (coloredSetPartitions c m 1) := by
-  have hdeg : (coloredSetPartitions c m 1).natDegree = 1 := by
-    simpa using natDegree_coloredSetPartitions c m 1
+  have hdeg : (coloredSetPartitions c m 1).natDegree = 1 :=
+    natDegree_coloredSetPartitions c m 1
   simpa [coloredSetPartitions_zero, coloredSetPartitions_one] using
     interlaces_one_linear (p := coloredSetPartitions c m 1) hdeg
 
@@ -158,8 +158,8 @@ lemma eval_coloredSetPartitionsCoeffB_nonpos_of_nonpos (m : Nat) {r : ℝ} (hr :
 
 lemma prec_coloredSetPartitions_one_two (c m : Nat) :
     Prec (coloredSetPartitions c m 1) (coloredSetPartitions c m 2) := by
-  have hdeg : (coloredSetPartitions c m 1).natDegree = 1 := by
-    simpa using natDegree_coloredSetPartitions c m 1
+  have hdeg : (coloredSetPartitions c m 1).natDegree = 1 :=
+    natDegree_coloredSetPartitions c m 1
   have hInter :
       Interlaces (coloredSetPartitions c m 1).derivative (coloredSetPartitions c m 1) := by
     simpa [coloredSetPartitions_one] using
