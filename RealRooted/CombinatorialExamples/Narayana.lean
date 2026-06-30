@@ -206,7 +206,7 @@ private lemma natDegree_leadingCoeff_narayanaQuot :
       · simpa [add_comm] using
           Polynomial.natDegree_X_add_C (x := (1 : ℝ))
       · simpa [add_comm] using
-          (Polynomial.leadingCoeff_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp))
+          Polynomial.leadingCoeff_X_add_C (r := (1 : ℝ))
   | n + 3, _ => by
       have hprev_succ := natDegree_leadingCoeff_narayanaQuot (n + 2) (by lia)
       have hprev := natDegree_leadingCoeff_narayanaQuot (n + 1) (by lia)
