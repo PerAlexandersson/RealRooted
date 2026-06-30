@@ -1,5 +1,6 @@
 import RealRooted.PFPolynomial
 import RealRooted.VeroneseSection
+import RealRooted.HurwitzMatrix
 
 open Polynomial
 
@@ -201,6 +202,67 @@ def hadamardPreservesHurwitzStableStatement : Prop :=
     IsHurwitzStable a →
     IsHurwitzStable b →
     IsHurwitzStable (hadamardProduct a b)
+
+/-! ### Sharper sub-interfaces for Garloff--Wagner Theorem 1
+
+The Hurwitz-stability conclusion `IsHurwitzStable (hadamardProduct a b)` unfolds
+to two parts: nonnegativity of the coefficients and right-half-plane stability
+of the complexification.  The first part is elementary
+(`HasNonnegCoeffs.hadamardProduct`); the genuinely deep content is the second
+part.  We record that split, and the faithful Hurwitz-matrix decomposition of
+Garloff--Wagner Theorem 1, as checked `sorry`-free reductions. -/
+
+/-- The deep half of Garloff--Wagner Theorem 1: the complexified coefficientwise
+Hadamard product of two right-half-plane-stable, nonnegative-coefficient
+polynomials is again right-half-plane stable. -/
+def hadamardPreservesRightHalfPlaneStableStatement : Prop :=
+  ∀ {a b : ℝ[X]},
+    HasNonnegCoeffs a →
+    HasNonnegCoeffs b →
+    IsRightHalfPlaneStable (complexify a) →
+    IsRightHalfPlaneStable (complexify b) →
+    IsRightHalfPlaneStable (complexify (hadamardProduct a b))
+
+/-- Reduction of Garloff--Wagner Theorem 1 to its deep half: the
+nonnegative-coefficient half of Hurwitz stability is discharged here, so only
+right-half-plane stability of the product remains. -/
+theorem hadamardPreservesHurwitzStable_of_rightHalfPlane
+    (h : hadamardPreservesRightHalfPlaneStableStatement) :
+    hadamardPreservesHurwitzStableStatement := by
+  intro a b ha hb
+  obtain ⟨hann, harhp⟩ := ha
+  obtain ⟨hbnn, hbrhp⟩ := hb
+  exact ⟨hann.hadamardProduct hbnn, h hann hbnn harhp hbrhp⟩
+
+/-- The analytic core is conversely implied by Garloff--Wagner Theorem 1, so the
+two interfaces are equivalent: isolating the right-half-plane half loses no
+content. -/
+theorem hadamardPreservesRightHalfPlaneStable_of_hurwitzStable
+    (h : hadamardPreservesHurwitzStableStatement) :
+    hadamardPreservesRightHalfPlaneStableStatement := by
+  intro a b hann hbnn harhp hbrhp
+  exact (h ⟨hann, harhp⟩ ⟨hbnn, hbrhp⟩).2
+
+/-- The combinatorial heart of Garloff--Wagner Theorem 1, as a pure matrix
+statement: total nonnegativity of the row-oriented Hurwitz matrix is preserved
+under coefficientwise products. -/
+def hadamardPreservesHurwitzMatrixTNStatement : Prop :=
+  ∀ {a b : ℝ[X]},
+    (hurwitz a.coeff).IsTotallyNonneg →
+    (hurwitz b.coeff).IsTotallyNonneg →
+    (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg
+
+/-- Faithful Hurwitz-matrix decomposition of Garloff--Wagner Theorem 1.
+
+This mirrors the classical proof through the Asner--Kemperman Hurwitz-matrix
+total-nonnegativity criterion: forward criterion, matrix Hadamard core, and
+converse criterion. -/
+theorem hadamardPreservesHurwitzStable_of_matrixRoute
+    (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement)
+    (hHad : hadamardPreservesHurwitzMatrixTNStatement)
+    (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement) :
+    hadamardPreservesHurwitzStableStatement :=
+  fun {_ _} ha hb => hBwd (hHad (hFwd ha) (hFwd hb))
 
 /-- **Garloff--Wagner, Theorem 4(b), reduced to its classical inputs** (TODO T9).
 

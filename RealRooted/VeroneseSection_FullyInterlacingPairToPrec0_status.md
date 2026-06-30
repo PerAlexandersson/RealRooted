@@ -115,3 +115,30 @@ right-half-plane interface
 `HurwitzOddEvenToHermiteBiehlerRotatedStatement`: right-half-plane stability of
 `complexify (oddEvenPolynomial p q)` should imply right-half-plane stability of
 `(hermiteBiehlerPolynomial q p).comp (C Complex.I * X)`.
+
+## Update: rotated bridge reduced to real-variable converse
+
+Aristotle task `a8dc3846-1cf8-4903-b8e7-8edaea179678` closed the previous
+rotated bridge interface as a reduction:
+
+```lean
+exists_rightHalfPlane_sqrt_of_im_pos
+isUpperHalfPlaneStable_hermiteBiehler_of_rhp_left_zero
+isUpperHalfPlaneStable_hermiteBiehler_of_rhp_right_zero
+
+hurwitzOddEvenToHermiteBiehlerRotated_of_hurwitzStablePrec :
+  HurwitzStableOddEvenToPrecStatement ->
+  hermiteBiehlerForwardPosStatement ->
+  HurwitzOddEvenToHermiteBiehlerRotatedStatement
+```
+
+Thus the remaining analytic obstruction on this route is again the canonical
+real-variable converse interface
+
+```lean
+HurwitzStableOddEvenToPrecStatement
+```
+
+together with the existing forward bridge
+`hermiteBiehlerForwardPosStatement`.  The degenerate `p = 0` and `q = 0` cases
+of the rotated substitution are now handled by the square-root lemmas above.

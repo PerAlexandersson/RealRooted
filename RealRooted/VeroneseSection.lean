@@ -2,6 +2,7 @@ import RealRooted.AissenSchoenbergWhitney
 import RealRooted.HermiteBiehler
 import RealRooted.WagnerX
 import Mathlib.RingTheory.PowerSeries.Basic
+import Mathlib.Analysis.Complex.Polynomial.Basic
 
 /-!
 # Veronese sections
@@ -1036,6 +1037,94 @@ theorem hurwitzStableOddEvenToPrec_of_converse
   have hppos : HasPosLeadingCoeff p :=
     hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hpnn hp
   exact hHB hqpos hppos hupper
+
+/-- Existence of a right-half-plane square root.
+
+Any complex number with strictly positive imaginary part has a square root lying
+in the open right half-plane.  This is the elementary fact powering the
+degenerate (`p = 0` or `q = 0`) cases of the converse conformal substitution. -/
+theorem exists_rightHalfPlane_sqrt_of_im_pos {w : ℂ} (hw : 0 < w.im) :
+    ∃ z : ℂ, 0 < z.re ∧ z ^ 2 = w := by
+  obtain ⟨z₀, hz₀⟩ : ∃ z : ℂ, z ^ 2 = w := by
+    obtain ⟨z, hz⟩ := Complex.exists_root (f := X ^ 2 - C w)
+      (by rw [Polynomial.degree_X_pow_sub_C (by norm_num)]; norm_num)
+    have hz' : z ^ 2 - w = 0 := by
+      simpa [Polynomial.IsRoot, eval_sub, eval_pow, eval_X, eval_C] using hz
+    exact ⟨z, sub_eq_zero.mp hz'⟩
+  have hre : z₀.re ≠ 0 := by
+    intro h0
+    have him : (z₀ ^ 2).im = 0 := by simp [pow_two, Complex.mul_im, h0]
+    rw [hz₀] at him
+    linarith
+  rcases lt_or_gt_of_ne hre with h | h
+  · refine ⟨-z₀, ?_, ?_⟩
+    · simp only [Complex.neg_re]
+      linarith
+    · rw [neg_sq]
+      exact hz₀
+  · exact ⟨z₀, h, hz₀⟩
+
+/-- Degenerate (`p = 0`) case of the converse conformal substitution. -/
+theorem isUpperHalfPlaneStable_hermiteBiehler_of_rhp_left_zero
+    {q : ℝ[X]}
+    (hrhp : IsRightHalfPlaneStable (complexify (oddEvenPolynomial 0 q))) :
+    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q 0) := by
+  intro z hz
+  obtain ⟨w, hwre, hwsq⟩ := exists_rightHalfPlane_sqrt_of_im_pos hz
+  have hc0 : complexify (0 : ℝ[X]) = 0 := by simp [complexify]
+  have h := hrhp w hwre
+  rw [eval_complexify_oddEvenPolynomial, hc0] at h
+  simp only [Polynomial.eval_zero, mul_zero, add_zero] at h
+  rw [hwsq] at h
+  rw [eval_hermiteBiehlerPolynomial, hc0]
+  simpa using h
+
+/-- Degenerate (`q = 0`) case of the converse conformal substitution. -/
+theorem isUpperHalfPlaneStable_hermiteBiehler_of_rhp_right_zero
+    {p : ℝ[X]}
+    (hrhp : IsRightHalfPlaneStable (complexify (oddEvenPolynomial p 0))) :
+    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial 0 p) := by
+  intro z hz
+  obtain ⟨w, hwre, hwsq⟩ := exists_rightHalfPlane_sqrt_of_im_pos hz
+  have hc0 : complexify (0 : ℝ[X]) = 0 := by simp [complexify]
+  have h := hrhp w hwre
+  rw [eval_complexify_oddEvenPolynomial, hc0] at h
+  simp only [Polynomial.eval_zero, zero_add] at h
+  rw [hwsq] at h
+  rw [eval_hermiteBiehlerPolynomial, hc0]
+  simp only [Polynomial.eval_zero, zero_add]
+  have hp : (complexify p).eval z ≠ 0 := by
+    intro h0
+    apply h
+    rw [h0, mul_zero]
+  exact mul_ne_zero Complex.I_ne_zero hp
+
+/-- Checked reduction of the rotated converse conformal-substitution interface.
+
+`HurwitzOddEvenToHermiteBiehlerRotatedStatement` follows from the real-variable
+converse Hurwitz/Hermite--Biehler interlacing step
+`HurwitzStableOddEvenToPrecStatement` together with the established forward
+Hermite--Biehler bridge `hermiteBiehlerForwardPosStatement`. -/
+theorem hurwitzOddEvenToHermiteBiehlerRotated_of_hurwitzStablePrec
+    (hPrec : HurwitzStableOddEvenToPrecStatement)
+    (hFwd : hermiteBiehlerForwardPosStatement) :
+    HurwitzOddEvenToHermiteBiehlerRotatedStatement := by
+  intro p q hp hq hrhp
+  rw [← isUpperHalfPlaneStable_iff_isRightHalfPlaneStable_comp]
+  by_cases hp0 : p = 0
+  · subst hp0
+    exact isUpperHalfPlaneStable_hermiteBiehler_of_rhp_left_zero hrhp
+  · by_cases hq0 : q = 0
+    · subst hq0
+      exact isUpperHalfPlaneStable_hermiteBiehler_of_rhp_right_zero hrhp
+    · have hO : IsHurwitzStable (oddEvenPolynomial p q) :=
+        ⟨hasNonnegCoeffs_oddEvenPolynomial hp hq, hrhp⟩
+      have hprec : Prec p q := hPrec hp0 hq0 hO
+      have hqpos : HasPosLeadingCoeff q :=
+        hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hq hq0
+      have hppos : HasPosLeadingCoeff p :=
+        hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hp hp0
+      exact hFwd hqpos hppos hprec
 
 /-- Checked reduction of the interlacing-extraction interface.
 
