@@ -22,8 +22,7 @@ lemma roots_neg_of_nonnegCoeffs_of_eval_zero_pos {p : ℝ[X]}
   intro r hr
   have hr_nonpos : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hrr hnn r hr
   by_contra hnot
-  have hr_zero : r = 0 := by
-    grind
+  have hr_zero : r = 0 := le_antisymm hr_nonpos (not_lt.mp hnot)
   simp_all
 
 end RealRooted
