@@ -158,8 +158,8 @@ def singletonFreeSetPartitionsCore (n : Nat) : ℝ[X] :=
     (singletonFreeSetPartitions (n + 1)).derivative
 
 lemma singletonFreeSetPartitions_succ_succ_eq_X_mul_core (n : Nat) :
-    singletonFreeSetPartitions (n + 2) = X * singletonFreeSetPartitionsCore n := by
-  rw [singletonFreeSetPartitions_succ_succ, singletonFreeSetPartitionsCore]
+    singletonFreeSetPartitions (n + 2) = X * singletonFreeSetPartitionsCore n :=
+  rfl
 
 lemma singletonFreeSetPartitionsCore_nonnegCoeffs (n : Nat) :
     HasNonnegCoeffs (singletonFreeSetPartitionsCore n) := by

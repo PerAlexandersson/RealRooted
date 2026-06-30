@@ -45,8 +45,8 @@ def affineEulerianTilde (n : Nat) : ℝ[X] :=
   C (n + 2 : ℝ) * eulerianTilde n + (1 - X) * (eulerianTilde n).derivative
 
 lemma eulerianTilde_succ_eq_X_mul_affineEulerianTilde (n : Nat) :
-    eulerianTilde (n + 1) = X * affineEulerianTilde n := by
-  rw [eulerianTilde_recurrence, affineEulerianTilde]
+    eulerianTilde (n + 1) = X * affineEulerianTilde n :=
+  rfl
 
 lemma coeff_eulerianTilde_succ (n m : Nat) :
     coeff (eulerianTilde (n + 1)) (m + 1) =
