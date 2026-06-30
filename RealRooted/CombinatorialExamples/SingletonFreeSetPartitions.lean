@@ -86,14 +86,12 @@ lemma coeff_singletonFreeSetPartitions_top_pos_and_above :
       constructor
       · simp [singletonFreeSetPartitions_two]
       · intro m hm
-        have hm1 : ¬1 = m := by lia
-        simp [singletonFreeSetPartitions_two, coeff_X, hm1]
+        simp [singletonFreeSetPartitions_two, coeff_X, show ¬1 = m by lia]
   | 3, _ => by
       constructor
       · simp [singletonFreeSetPartitions_three]
       · intro m hm
-        have hm1 : ¬1 = m := by lia
-        simp [singletonFreeSetPartitions_three, coeff_X, hm1]
+        simp [singletonFreeSetPartitions_three, coeff_X, show ¬1 = m by lia]
   | n + 4, _ => by
       rcases coeff_singletonFreeSetPartitions_top_pos_and_above (n + 2) (by lia) with
         ⟨hsmall_top, hsmall_hi⟩
@@ -138,7 +136,7 @@ lemma coeff_singletonFreeSetPartitions_top_pos_and_above :
         | zero =>
             lia
         | succ k =>
-            rw [show k + 1 = k + 1 by lia, coeff_singletonFreeSetPartitions_succ_succ]
+            rw [coeff_singletonFreeSetPartitions_succ_succ]
             grind
 
 lemma natDegree_singletonFreeSetPartitions (n : Nat) (hn : 2 ≤ n) :

@@ -159,7 +159,6 @@ lemma coeff_sturmDerangementsExc_top_and_above :
         have hX2 : coeff (X ^ 2 : ℝ[X]) m = 0 := by
           grind
         have hX : coeff (X : ℝ[X]) m = 0 := by
-          have hm1 : m ≠ 1 := by lia
           have hm1' : ¬1 = m := by lia
           simp [coeff_X, hm1']
         simp [hX2, hX]
@@ -317,8 +316,7 @@ lemma sturmDerangementsExc_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (sturmDer
       intro m
       by_cases hm : m = 1
       · simp_all
-      · have hm' : 1 ≠ m := by lia
-        simp [sturmDerangementsExc_two, coeff_X, hm']
+      · simp [sturmDerangementsExc_two, coeff_X, show 1 ≠ m by lia]
   | 3 => by
       intro m
       by_cases hm2 : m = 2
@@ -327,9 +325,7 @@ lemma sturmDerangementsExc_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (sturmDer
       · by_cases hm1 : m = 1
         · subst hm1
           norm_num [sturmDerangementsExc_three, coeff_X_pow, coeff_X, hm2]
-        · have hm2' : 2 ≠ m := by lia
-          have hm1' : 1 ≠ m := by lia
-          simp [sturmDerangementsExc_three, coeff_X_pow, coeff_X, hm2, hm1']
+        · simp [sturmDerangementsExc_three, coeff_X_pow, coeff_X, hm2, show 1 ≠ m by lia]
   | n + 4 => by
       rintro (_ | m)
       · rw [sturmDerangementsExc_recurrence (n + 1)]
