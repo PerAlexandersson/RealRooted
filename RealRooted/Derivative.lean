@@ -35,8 +35,9 @@ protected lemma HasPosLeadingCoeff.derivative {f : ℝ[X]}
 
 lemma HasNonnegCoeffs.iterate_derivative {p : ℝ[X]} :
     ∀ n : ℕ, HasNonnegCoeffs p → HasNonnegCoeffs ((derivative^[n]) p)
-  | 0, hp => by simp_all
-  | n + 1, hp => by rw [Function.iterate_succ_apply']; exact (hp.iterate_derivative n).derivative
+  | 0, hp => hp
+  | n + 1, hp => by
+      simpa [Function.iterate_succ_apply'] using (hp.iterate_derivative n).derivative
 
 lemma coeff_one_sub_X_mul_derivative (p : ℝ[X]) (m : Nat) :
     ((1 - X) * p.derivative).coeff m =
