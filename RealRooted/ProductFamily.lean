@@ -126,11 +126,10 @@ lemma mem_zipWith_mul_get {row fs : List ℝ[X]}
 lemma hasNonnegCoeffs_zipWith_mul_sum {row fs : List ℝ[X]}
     (hrow : ∀ p ∈ row, HasNonnegCoeffs p)
     (hfs : ∀ f ∈ fs, HasNonnegCoeffs f) :
-    HasNonnegCoeffs ((row.zipWith (· * ·) fs).sum) := by
-  apply hasNonnegCoeffs_sum
-  intro p hp
-  rcases mem_zipWith_mul hp with ⟨a, ha, b, hb, rfl⟩
-  exact (hrow a ha).mul (hfs b hb)
+    HasNonnegCoeffs ((row.zipWith (· * ·) fs).sum) :=
+  hasNonnegCoeffs_sum _ fun _ hp =>
+    let ⟨a, ha, b, hb, hp_eq⟩ := mem_zipWith_mul hp
+    hp_eq ▸ (hrow a ha).mul (hfs b hb)
 
 /-- A zip-with product sum of nonnegative-coefficient polynomials is nonzero as
 soon as one product term is nonzero. -/

@@ -178,10 +178,9 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
         | succ m =>
             rw [coeff_simsun_succ]
             by_cases hm : m ≤ (n + 1) / 2
-            · have hm' : (2 : ℝ) * (m : ℝ) ≤ ((n + 1 : Nat) : ℝ) := by
-                exact_mod_cast (show 2 * m ≤ n + 1 by lia)
-              have hscale : 0 ≤ (((n + 1 : Nat) : ℝ) - 2 * (m : ℝ)) := by
-                nlinarith
+            · have hscale : 0 ≤ (((n + 1 : Nat) : ℝ) - 2 * (m : ℝ)) := by
+                nlinarith [show (2 : ℝ) * (m : ℝ) ≤ ((n + 1 : Nat) : ℝ) by
+                  exact_mod_cast (show 2 * m ≤ n + 1 by lia)]
               exact add_nonneg
                 (mul_nonneg (by lia) (hprev_nonneg m))
                 (mul_nonneg (by grind) (hprev_nonneg (m + 1)))
@@ -321,10 +320,8 @@ lemma interlaces_derivative_simsun :
             (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp)))
   | 3, _, _ => by
       simpa using interlaces_derivative_simsun_three
-  | n + 4, _, hrr => by
-      apply derivative_interlaces hrr
-      rw [natDegree_simsun]
-      lia
+  | n + 4, _, hrr =>
+      derivative_interlaces hrr (by rw [natDegree_simsun]; lia)
 
 lemma eval_simsunCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
     simsunCoeffB.eval r ≤ 0 := by

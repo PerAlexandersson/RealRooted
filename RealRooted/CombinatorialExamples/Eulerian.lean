@@ -133,9 +133,8 @@ lemma eulerianTilde_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (eulerianTilde n
             have hcoeff_succ : 0 ≤ coeff (eulerianTilde n) (m + 1) :=
               eulerianTilde_nonnegCoeffs n (m + 1)
             have hnm : 0 ≤ (n + 2 : ℝ) - m := by
-              have hm' : (m : ℝ) ≤ n + 2 := by
-                exact_mod_cast (Nat.le_trans hm (Nat.le_succ _))
-              linarith
+              nlinarith [show (m : ℝ) ≤ n + 2 by
+                exact_mod_cast Nat.le_trans hm (Nat.le_succ _)]
             exact add_nonneg (mul_nonneg hnm hcoeff_m) (mul_nonneg (by grind) hcoeff_succ)
           · have hm' : n + 1 < m := lt_of_not_ge hm
             rcases coeff_eulerianTilde_top_and_above n with ⟨_, habove⟩
@@ -175,9 +174,8 @@ lemma affineEulerianTilde_nonnegCoeffs (n : Nat) :
     have hcoeff_succ : 0 ≤ coeff (eulerianTilde n) (m + 1) :=
       eulerianTilde_nonnegCoeffs n (m + 1)
     have hnm : 0 ≤ (n + 2 : ℝ) - m := by
-      have hm' : (m : ℝ) ≤ n + 2 := by
-        exact_mod_cast (Nat.le_trans hm (Nat.le_succ _))
-      linarith
+      nlinarith [show (m : ℝ) ≤ n + 2 by
+        exact_mod_cast Nat.le_trans hm (Nat.le_succ _)]
     nlinarith
   · have hm' : n + 1 < m := lt_of_not_ge hm
     rcases coeff_eulerianTilde_top_and_above n with ⟨_, habove⟩

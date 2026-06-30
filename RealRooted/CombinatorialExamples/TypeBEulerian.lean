@@ -222,10 +222,8 @@ lemma interlaces_derivative_typeBEulerian :
         interlaces_one_linear (p := (1 + X : ℝ[X])) (by
           simpa [add_comm] using
             (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp)))
-  | n + 2, _, hrr => by
-      apply derivative_interlaces hrr
-      rw [natDegree_typeBEulerian]
-      lia
+  | n + 2, _, hrr =>
+      derivative_interlaces hrr (by rw [natDegree_typeBEulerian]; lia)
 
 lemma eval_typeBEulerianCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
     typeBEulerianCoeffB.eval r ≤ 0 := by
