@@ -38,15 +38,11 @@ lemma ne_zero_and_card_roots_of_ne_zero_and_splits {p : ℝ[X]}
 lemma eq_zero_or_ne_zero_and_splits_iff_eq_zero_or_ne_zero_and_card_roots (p : ℝ[X]) :
     (p = 0 ∨ (p ≠ 0 ∧ p.Splits)) ↔
       (p = 0 ∨ (p ≠ 0 ∧ p.roots.card = p.natDegree)) := by
-  constructor
-  · intro h
-    rcases h with rfl | h
-    · lia
-    · exact Or.inr (ne_zero_and_card_roots_of_ne_zero_and_splits h.1 h.2)
-  · intro h
-    rcases h with rfl | h
-    · lia
-    · exact Or.inr (ne_zero_and_splits_of_ne_zero_and_card_roots h.1 h.2)
+  constructor <;> rintro (rfl | h)
+  · exact Or.inl rfl
+  · exact Or.inr (ne_zero_and_card_roots_of_ne_zero_and_splits h.1 h.2)
+  · exact Or.inl rfl
+  · exact Or.inr (ne_zero_and_splits_of_ne_zero_and_card_roots h.1 h.2)
 
 /-! ## Root interleaving predicates on sorted lists -/
 

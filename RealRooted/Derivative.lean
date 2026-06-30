@@ -395,8 +395,7 @@ theorem eq_zero_or_splits_derivative {p : ℝ[X]}
     (hp : p = 0 ∨ p.Splits) :
     p.derivative = 0 ∨ p.derivative.Splits := by
   rcases hp with rfl | hp
-  · rw [derivative_zero]
-    exact Or.inl rfl
+  · simp
   by_cases hp0 : p = 0
   · subst p
     simp
