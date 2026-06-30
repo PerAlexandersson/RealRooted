@@ -122,11 +122,7 @@ lemma isInterlacingSeq0Nonneg_oneSupportSeq {n : ℕ} (i : Fin n) :
 
 lemma zipWith_mul_replicate_zero_sum_eq_zero (row : List ℝ[X]) :
     ((row.zipWith (· * ·) (List.replicate row.length (0 : ℝ[X]))).sum) = 0 := by
-  induction row with
-  | nil =>
-      simp
-  | cons a row ih =>
-      simp [List.replicate, ih]
+  induction row <;> simp [List.replicate, *]
 
 lemma zipWith_mul_oneSupportSeq_sum_eq_get
     (row : List ℝ[X]) (i : Fin row.length) :
@@ -189,14 +185,11 @@ lemma zipWith_mul_sum_map_mul_right
     ((row.zipWith (· * ·) (fs.map (fun q => c * q))).sum)
       = c * ((row.zipWith (· * ·) fs).sum) := by
   induction row generalizing fs with
-  | nil =>
-      simp
+  | nil => simp
   | cons a row ih =>
-      cases fs with
-      | nil =>
-          simp
-      | cons f fs =>
-          simp [ih, mul_add, mul_left_comm]
+    cases fs with
+    | nil => simp
+    | cons f fs => simp [ih, mul_add, mul_left_comm]
 
 lemma sparseLinearPairSeq_eq_zipWith_oneSupport
     {n : ℕ} (i j : Fin n) (hij : i ≠ j) (a b : ℝ) :

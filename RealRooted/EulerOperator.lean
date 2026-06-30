@@ -274,8 +274,7 @@ theorem iterateThetaPlusOne_preserves_pf
   | zero =>
       simpa using hp
   | succ l ih =>
-      rw [iterateThetaPlusOne_succ]
-      exact hθ (ih hp)
+      simpa [iterateThetaPlusOne_succ] using hθ (ih hp)
 
 theorem iterateThetaPlusOne_preserves_prec0
     (hθpf : thetaPlusOnePreservesPFStatement)
@@ -287,8 +286,7 @@ theorem iterateThetaPlusOne_preserves_prec0
   | zero =>
       simpa using hpq
   | succ l ih =>
-      rw [iterateThetaPlusOne_succ, iterateThetaPlusOne_succ]
-      exact hθprec
+      simpa [iterateThetaPlusOne_succ] using hθprec
         (iterateThetaPlusOne_preserves_pf hθpf l hp)
         (iterateThetaPlusOne_preserves_pf hθpf l hq)
         (ih hp hq hpq)
