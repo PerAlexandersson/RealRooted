@@ -77,6 +77,7 @@ theorem X_mul {p : ℝ[X]} (hp : IsPFPolynomial p) :
   by_cases hp0 : p = 0
   · subst p
     simpa using IsPFPolynomial.zero
+  have hprr := hp.ne_zero_and_splits hp0
   have hnn : HasNonnegCoeffs (X * p) := by
     intro n
     cases n with
@@ -85,7 +86,7 @@ theorem X_mul {p : ℝ[X]} (hp : IsPFPolynomial p) :
     | succ n =>
         rw [coeff_X_mul]
         exact hp.hasNonnegCoeffs n
-  have hXp_rr := isRealRooted_X_mul (hp.ne_zero_and_splits hp0).1 (hp.ne_zero_and_splits hp0).2
+  have hXp_rr := isRealRooted_X_mul hprr.1 hprr.2
   exact IsPFPolynomial.of_realRooted_nonneg hnn hXp_rr.2
 
 theorem mul {p q : ℝ[X]}
@@ -97,8 +98,9 @@ theorem mul {p q : ℝ[X]}
   by_cases hq0 : q = 0
   · subst q
     simpa using IsPFPolynomial.zero
-  have hpq_rr := isRealRooted_mul (hp.ne_zero_and_splits hp0).1 (hp.ne_zero_and_splits hp0).2
-    (hq.ne_zero_and_splits hq0).1 (hq.ne_zero_and_splits hq0).2
+  have hprr := hp.ne_zero_and_splits hp0
+  have hqrr := hq.ne_zero_and_splits hq0
+  have hpq_rr := isRealRooted_mul hprr.1 hprr.2 hqrr.1 hqrr.2
   exact IsPFPolynomial.of_realRooted_nonneg
     (hp.hasNonnegCoeffs.mul hq.hasNonnegCoeffs)
     hpq_rr.2
@@ -369,9 +371,10 @@ theorem isPFPolynomial_mul_X_add_one {p : ℝ[X]}
     simpa using isRealRooted_X_sub_C (-1 : ℝ)
   have hX1nn : HasNonnegCoeffs (X + 1 : ℝ[X]) := by
     simpa using hasNonnegCoeffs_X_sub_C (r := -1) (by norm_num)
+  have hprr := hp.ne_zero_and_splits hp0
   have hrr : (((X + 1 : ℝ[X]) * p) ≠ 0 ∧
       ((X + 1 : ℝ[X]) * p).Splits) :=
-    isRealRooted_mul hX1rr.1 hX1rr.2 (hp.ne_zero_and_splits hp0).1 (hp.ne_zero_and_splits hp0).2
+    isRealRooted_mul hX1rr.1 hX1rr.2 hprr.1 hprr.2
   exact IsPFPolynomial.of_realRooted_nonneg
     (hX1nn.mul hp.hasNonnegCoeffs) hrr.2
 
