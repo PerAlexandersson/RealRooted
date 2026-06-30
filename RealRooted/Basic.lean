@@ -489,7 +489,8 @@ lemma quadratic_nonneg_on_unit_interval_of_endpoint_nonneg_of_vertex_or_discrimi
       simp_all
 
 lemma coeff_X_sub_C_mul (r : ℝ) (q : ℝ[X]) (n : ℕ) :
-    ((X - C r) * q).coeff n = (if n = 0 then 0 else q.coeff (n - 1)) - r * q.coeff n := by
+    ((X - C r) * q).coeff n =
+      (if n = 0 then 0 else q.coeff (n - 1)) - r * q.coeff n := by
   simp only [sub_mul, coeff_sub, coeff_C_mul]
   cases n with
   | zero => simp
@@ -503,7 +504,7 @@ lemma exists_rightmost_root_of_isRealRooted
   have hrs_eq : (↑rs : Multiset ℝ) = p.roots := Multiset.sort_eq ..
   have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hrs_len : rs.length = p.natDegree := by
-    rw [show rs = p.roots.sort (· ≤ ·) by lia, Multiset.length_sort, card_roots_of_splits hp_splits]
+    simp [rs, card_roots_of_splits hp_splits]
   have hrs_ne : rs ≠ [] := by
     grind
   refine ⟨rs.getLast hrs_ne, ?_, ?_⟩
