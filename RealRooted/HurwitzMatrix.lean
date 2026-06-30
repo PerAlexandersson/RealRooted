@@ -62,6 +62,11 @@ theorem hurwitzStableToMatrixTotallyNonnegative_of_criterion
     HurwitzStableToMatrixTotallyNonnegativeStatement :=
   h.1
 
+theorem hurwitzStableToHurwitzMatrixMinors_of_criterion
+    (h : HurwitzMatrixCriterionStatement) :
+    HurwitzStableToHurwitzMatrixMinorsStatement :=
+  hurwitzStableToMatrixTotallyNonnegativeStatement_iff_minors.1 h.1
+
 theorem hurwitzMatrixTotallyNonnegativeToStable_of_criterion
     (h : HurwitzMatrixCriterionStatement) :
     HurwitzMatrixTotallyNonnegativeToStableStatement :=
@@ -72,5 +77,11 @@ theorem hurwitzOddEvenToFullyInterlacingPair_of_matrixMinors
     HurwitzOddEvenToFullyInterlacingPairStatement :=
   hurwitzOddEvenToFullyInterlacingPair_of_matrixTNN
     (hurwitzStableToMatrixTotallyNonnegativeStatement_iff_minors.2 h)
+
+theorem hurwitzOddEvenToFullyInterlacingPair_of_criterion
+    (h : HurwitzMatrixCriterionStatement) :
+    HurwitzOddEvenToFullyInterlacingPairStatement :=
+  hurwitzOddEvenToFullyInterlacingPair_of_matrixMinors
+    (hurwitzStableToHurwitzMatrixMinors_of_criterion h)
 
 end RealRooted
