@@ -75,10 +75,12 @@ lemma isRealRooted_X_pow : ∀ n : Nat, (((X : ℝ[X]) ^ n) ≠ 0 ∧ ((X : ℝ[
 lemma prec_X_add_C_to_X_mul_X_add_C {a b : ℝ}
     (ha : 0 ≤ a) (hab : a ≤ b) :
     Prec (X + C a) (X * (X + C b)) := by
-  have hdeg_a : (X + C a).natDegree = 1 := by
-    simp
-  have hrr_a : ((X + C a) ≠ 0 ∧ (X + C a).Splits) := isRealRooted_of_degree_one hdeg_a
-  have hrr_b : ((X + C b) ≠ 0 ∧ (X + C b).Splits) := isRealRooted_of_degree_one (by simp)
+  have hdeg_a : (X + C a).natDegree = 1 :=
+    Polynomial.natDegree_X_add_C (x := a)
+  have hrr_a : ((X + C a) ≠ 0 ∧ (X + C a).Splits) :=
+    isRealRooted_of_degree_one hdeg_a
+  have hrr_b : ((X + C b) ≠ 0 ∧ (X + C b).Splits) :=
+    isRealRooted_of_degree_one (Polynomial.natDegree_X_add_C (x := b))
   have hrr_q : ((X * (X + C b)) ≠ 0 ∧ (X * (X + C b)).Splits) := isRealRooted_X_mul hrr_b.1 hrr_b.2
   have hdeg_q : (X * (X + C b)).natDegree = 2 := by
     simp_all
@@ -355,9 +357,8 @@ theorem oneDescentGamma_one_isRealRooted
   · have hjm : j < m := lt_of_le_of_ne hj htop
     rw [oneDescentGamma_one m j hjm]
     let a : ℝ := (((m - j : Nat) : ℝ) / ((j + 1 : Nat) : ℝ))
-    have hlin_deg : (X + C a).natDegree = 1 := by
-      simp
-    have hlin_rr : ((X + C a) ≠ 0 ∧ (X + C a).Splits) := isRealRooted_of_degree_one hlin_deg
+    have hlin_rr : ((X + C a) ≠ 0 ∧ (X + C a).Splits) :=
+      isRealRooted_of_degree_one (Polynomial.natDegree_X_add_C (x := a))
     have hprod_rr : ((X ^ (m - j - 1) * (X + C a)) ≠ 0 ∧ (X ^ (m - j - 1) * (X + C a)).Splits) :=
       isRealRooted_mul (isRealRooted_X_pow (m - j - 1)).1 (isRealRooted_X_pow (m - j - 1)).2
         hlin_rr.1 hlin_rr.2
@@ -371,9 +372,8 @@ theorem oneDescentQ_one_isRealRooted
     (m : Nat) (hm : 0 < m) : ((oneDescentQ 1 m) ≠ 0 ∧ (oneDescentQ 1 m).Splits) := by
   rw [oneDescentQ_one m hm]
   let a : ℝ := ((m - 1 : Nat) : ℝ)
-  have hlin_deg : (X + C a).natDegree = 1 := by
-    simp
-  have hlin_rr : ((X + C a) ≠ 0 ∧ (X + C a).Splits) := isRealRooted_of_degree_one hlin_deg
+  have hlin_rr : ((X + C a) ≠ 0 ∧ (X + C a).Splits) :=
+    isRealRooted_of_degree_one (Polynomial.natDegree_X_add_C (x := a))
   simpa [a] using
     isRealRooted_mul (isRealRooted_X_pow (m - 1)).1 (isRealRooted_X_pow (m - 1)).2
       hlin_rr.1 hlin_rr.2
