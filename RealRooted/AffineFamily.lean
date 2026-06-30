@@ -2353,8 +2353,8 @@ private theorem isRealRooted_of_sub_C_mul_right_family_of_natDegree_lt
         rw [this, norm_neg]
         calc ‖μ * f₀.coeff i‖ = μ * ‖f₀.coeff i‖ := by
               rw [norm_mul, Real.norm_of_nonneg hμ_pos.le]
-          _ ≤ μ * coeffSumRange f₀ := by
-              exact mul_le_mul_of_nonneg_left (coeff_norm_le_coeffSumRange f₀ i) hμ_pos.le
+          _ ≤ μ * coeffSumRange f₀ :=
+              mul_le_mul_of_nonneg_left (coeff_norm_le_coeffSumRange f₀ i) hμ_pos.le
           _ < ε := hμ_bound
       have hμf_deg_lt : (C μ * f₀).natDegree < g₀.natDegree := by
         simpa [natDegree_C_mul hμ_pos.ne'] using hdeg₀
@@ -2835,8 +2835,8 @@ private lemma rootMultiplicity_ne_two_add_right_of_posComboRealRooted
     (hμ : 0 < μ) :
     (f + C μ * g).rootMultiplicity x ≠ 2 := by
   intro hmult
-  have hp_root : (f + C μ * g).IsRoot x := by
-    exact (rootMultiplicity_pos (show f + C μ * g ≠ 0 from
+  have hp_root : (f + C μ * g).IsRoot x :=
+    (rootMultiplicity_pos (show f + C μ * g ≠ 0 from
       (PosComboRealRooted.isRealRooted_add_right hfg hμ).1)).mp (by lia)
   have hg_eval_ne : g.eval x ≠ 0 := by
     intro hg0
@@ -2948,8 +2948,8 @@ private lemma hasSimpleRoots_add_right_of_posComboRealRooted
           have hrr := PosComboRealRooted.isRealRooted_add_right hfg hμβ
           have hiter :
               ((iterateTDeriv η k (f + C (μ + β) * g)) ≠ 0 ∧
-                (iterateTDeriv η k (f + C (μ + β) * g)).Splits) := by
-            exact ⟨iterateTDeriv_ne_zero hrr.1,
+                (iterateTDeriv η k (f + C (μ + β) * g)).Splits) :=
+            ⟨iterateTDeriv_ne_zero hrr.1,
               splits_iterateTDeriv (eps := η) (k := k) hη_pos hrr.2⟩
           have hEq : pη + C β * gη = iterateTDeriv η k (f + C (μ + β) * g) := by
             calc
@@ -2966,8 +2966,8 @@ private lemma hasSimpleRoots_add_right_of_posComboRealRooted
                     rw [iterateTDeriv_add, iterateTDeriv_C_mul]
           lia)
         zero_lt_one hpk_mult hgk_eval_ne hprod_pos
-  · have hpη_rr : (pη ≠ 0 ∧ pη.Splits) := by
-      exact ⟨iterateTDeriv_ne_zero hp_rr.1,
+  · have hpη_rr : (pη ≠ 0 ∧ pη.Splits) :=
+      ⟨iterateTDeriv_ne_zero hp_rr.1,
         splits_iterateTDeriv (eps := η) (k := k) hη_pos hp_rr.2⟩
     have hpη_ne : pη ≠ 0 := hpη_rr.1
     have hpηpp_ne :
@@ -2995,8 +2995,8 @@ private lemma hasSimpleRoots_add_right_of_posComboRealRooted
           have hrr := PosComboRealRooted.isRealRooted_add_right hfg hμβ
           have hiter :
               ((iterateTDeriv η k (f + C (μ - β) * g)) ≠ 0 ∧
-                (iterateTDeriv η k (f + C (μ - β) * g)).Splits) := by
-            exact ⟨iterateTDeriv_ne_zero hrr.1,
+                (iterateTDeriv η k (f + C (μ - β) * g)).Splits) :=
+            ⟨iterateTDeriv_ne_zero hrr.1,
               splits_iterateTDeriv (eps := η) (k := k) hη_pos hrr.2⟩
           have hEq : pη + C β * (-gη) = iterateTDeriv η k (f + C (μ - β) * g) := by
             calc

@@ -936,8 +936,8 @@ theorem prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ) (h : Prec f g) :
         (↑(ss.orderedInsert (· ≤ ·) r) : Multiset ℝ) =
           ({r} : Multiset ℝ) + (↑ss : Multiset ℝ) := by
         calc
-          (↑(ss.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ↑(r :: ss) := by
-            exact Multiset.coe_eq_coe.mpr (List.perm_orderedInsert (r := (· ≤ ·)) r ss)
+          (↑(ss.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ↑(r :: ss) :=
+            Multiset.coe_eq_coe.mpr (List.perm_orderedInsert (r := (· ≤ ·)) r ss)
           _ = ({r} : Multiset ℝ) + (↑ss : Multiset ℝ) := by
             simp
     have hroots :
@@ -949,8 +949,8 @@ theorem prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ) (h : Prec f g) :
         (↑(rs.orderedInsert (· ≤ ·) r) : Multiset ℝ) =
           ({r} : Multiset ℝ) + (↑rs : Multiset ℝ) := by
         calc
-          (↑(rs.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ↑(r :: rs) := by
-            exact Multiset.coe_eq_coe.mpr (List.perm_orderedInsert (r := (· ≤ ·)) r rs)
+          (↑(rs.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ↑(r :: rs) :=
+            Multiset.coe_eq_coe.mpr (List.perm_orderedInsert (r := (· ≤ ·)) r rs)
           _ = ({r} : Multiset ℝ) + (↑rs : Multiset ℝ) := by
             simp
     have hroots :
@@ -988,8 +988,8 @@ theorem prec_of_prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ)
     rw [show (↑(ss.orderedInsert (· ≤ ·) r) : Multiset ℝ) =
         ({r} : Multiset ℝ) + (↑ss : Multiset ℝ) by
           calc
-            (↑(ss.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ↑(r :: ss) := by
-              exact Multiset.coe_eq_coe.mpr (List.perm_orderedInsert (r := (· ≤ ·)) r ss)
+            (↑(ss.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ↑(r :: ss) :=
+              Multiset.coe_eq_coe.mpr (List.perm_orderedInsert (r := (· ≤ ·)) r ss)
             _ = ({r} : Multiset ℝ) + (↑ss : Multiset ℝ) := by
               simp]
     rw [hss_eq]
@@ -1000,8 +1000,8 @@ theorem prec_of_prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ)
     rw [show (↑(rs.orderedInsert (· ≤ ·) r) : Multiset ℝ) =
         ({r} : Multiset ℝ) + (↑rs : Multiset ℝ) by
           calc
-            (↑(rs.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ↑(r :: rs) := by
-              exact Multiset.coe_eq_coe.mpr (List.perm_orderedInsert (r := (· ≤ ·)) r rs)
+            (↑(rs.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ↑(r :: rs) :=
+              Multiset.coe_eq_coe.mpr (List.perm_orderedInsert (r := (· ≤ ·)) r rs)
             _ = ({r} : Multiset ℝ) + (↑rs : Multiset ℝ) := by
               simp]
     rw [hrs_eq]

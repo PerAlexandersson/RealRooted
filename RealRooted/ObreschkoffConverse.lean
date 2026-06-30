@@ -2485,8 +2485,8 @@ private theorem allComboRealRooted_of_prec_succDegree_pos
               natDegree_C_mul (show -β ≠ 0 by simp_all)]
             lia
           calc
-            (C (-β) * g + C (-α) * f).natDegree = (C (-β) * g).natDegree := by
-              exact natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff hdeg_scaled
+            (C (-β) * g + C (-α) * f).natDegree = (C (-β) * g).natDegree :=
+              natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff hdeg_scaled
                 (hasPosLeadingCoeff_C_mul (by simp_all) hg_pos)
             _ = g.natDegree := by rw [natDegree_C_mul (by simp_all : (-β) ≠ 0)]
         have hrr_neg :
@@ -2537,8 +2537,8 @@ private theorem allComboRealRooted_of_prec_succDegree_pos
             rw [natDegree_C_mul (show α ≠ 0 by grind), natDegree_C_mul hβ0]
             lia
           calc
-            (C β * g + C α * f).natDegree = (C β * g).natDegree := by
-              exact natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff hdeg_scaled
+            (C β * g + C α * f).natDegree = (C β * g).natDegree :=
+              natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff hdeg_scaled
                 (hasPosLeadingCoeff_C_mul hβpos hg_pos)
             _ = g.natDegree := by rw [natDegree_C_mul hβ0]
         have hmix_lo : g.natDegree ≤ (C β * g + C α * f).natDegree := by
@@ -2737,8 +2737,8 @@ private lemma root_lt_rightmost_of_prec_sameDegree_no_common
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     ∀ r, f.IsRoot r → r < uR := by
   intro r hr
-  have hr_le : r ≤ uR := roots_le_of_prec_right_local hfg huR_max r <| by
-    exact (mem_roots hfg.1.1).mpr hr
+  have hr_le : r ≤ uR :=
+    roots_le_of_prec_right_local hfg huR_max r ((mem_roots hfg.1.1).mpr hr)
   grind
 
 private lemma hasPosLeadingCoeff_of_right_factor
