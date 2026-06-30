@@ -1,6 +1,8 @@
 import RealRooted.Basic
 import RealRooted.AissenSchoenbergWhitney
+import RealRooted.NewtonAux
 import Mathlib.Order.Preorder.Finite
+import Mathlib.RingTheory.Polynomial.Vieta
 
 /-!
 # Coefficient shape consequences of real-rootedness
@@ -345,18 +347,155 @@ theorem hasLogConcaveCoeffs_of_isPolyaFreqSeq_coeff {p : ℝ[X]}
     HasLogConcaveCoeffs p :=
   hpf.logConcaveUpTo p.natDegree
 
+/-- Elementary symmetric functions of a nonnegative multiset are nonnegative. -/
+lemma esymm_nonneg_of_forall_nonneg {s : Multiset ℝ} (hs : ∀ x ∈ s, 0 ≤ x) (n : ℕ) :
+    0 ≤ s.esymm n := by
+  rw [Multiset.esymm]
+  apply Multiset.sum_nonneg
+  intro y hy
+  rw [Multiset.mem_map] at hy
+  obtain ⟨t, ht, rfl⟩ := hy
+  rw [Multiset.mem_powersetCard] at ht
+  exact Multiset.prod_nonneg (fun x hx => hs x (Multiset.mem_of_le ht.1 hx))
+
+/-- For a nonnegative multiset, positivity of `esymm a` propagates downwards. -/
+lemma esymm_pos_mono_of_forall_nonneg {s : Multiset ℝ} (hs : ∀ x ∈ s, 0 ≤ x)
+    {a b : ℕ} (hb : b ≤ a) (ha : 0 < s.esymm a) :
+    0 < s.esymm b := by
+  rw [Multiset.esymm] at ha
+  obtain ⟨P, hP_mem, hP_pos⟩ : ∃ P ∈ s.powersetCard a, 0 < P.prod := by
+    by_contra hcon
+    push Not at hcon
+    have hzero : ((s.powersetCard a).map Multiset.prod).sum = 0 := by
+      apply Multiset.sum_eq_zero
+      intro y hy
+      rw [Multiset.mem_map] at hy
+      obtain ⟨P, hPmem, rfl⟩ := hy
+      have hge : 0 ≤ P.prod := by
+        rw [Multiset.mem_powersetCard] at hPmem
+        exact Multiset.prod_nonneg (fun x hx => hs x (Multiset.mem_of_le hPmem.1 hx))
+      have hle := hcon P hPmem
+      linarith
+    rw [hzero] at ha
+    exact lt_irrefl 0 ha
+  rw [Multiset.mem_powersetCard] at hP_mem
+  obtain ⟨hPle, hPcard⟩ := hP_mem
+  have hP_all_pos : ∀ x ∈ P, 0 < x := by
+    intro x hx
+    refine lt_of_le_of_ne (hs x (Multiset.mem_of_le hPle hx)) ?_
+    intro h
+    rw [← h] at hx
+    exact (ne_of_gt hP_pos) (Multiset.prod_eq_zero hx)
+  have hne : P.powersetCard b ≠ 0 := by
+    rw [← Multiset.card_pos, Multiset.card_powersetCard, hPcard]
+    exact Nat.choose_pos hb
+  obtain ⟨Q, hQ_mem⟩ := Multiset.exists_mem_of_ne_zero hne
+  rw [Multiset.mem_powersetCard] at hQ_mem
+  obtain ⟨hQle, hQcard⟩ := hQ_mem
+  have hQ_le_s : Q ≤ s := le_trans hQle hPle
+  have hQ_pos : 0 < Q.prod :=
+    Multiset.prod_pos (fun x hx => hP_all_pos x (Multiset.mem_of_le hQle hx))
+  rw [Multiset.esymm]
+  calc
+    0 < Q.prod := hQ_pos
+    _ ≤ ((s.powersetCard b).map Multiset.prod).sum := by
+      apply Multiset.single_le_sum
+      · intro y hy
+        rw [Multiset.mem_map] at hy
+        obtain ⟨R, hR, rfl⟩ := hy
+        rw [Multiset.mem_powersetCard] at hR
+        exact Multiset.prod_nonneg (fun x hx => hs x (Multiset.mem_of_le hR.1 hx))
+      · rw [Multiset.mem_map]
+        exact ⟨Q, Multiset.mem_powersetCard.mpr ⟨hQ_le_s, hQcard⟩, rfl⟩
+
+/-- Vieta-type formula rewriting a coefficient of a split polynomial in terms of
+the elementary symmetric function of the negated roots. -/
+lemma coeff_eq_leadingCoeff_mul_esymm_neg_roots {p : ℝ[X]} (hp : p.Splits) {k : ℕ}
+    (hk : k ≤ p.natDegree) :
+    p.coeff k = p.leadingCoeff * (p.roots.map Neg.neg).esymm (p.natDegree - k) := by
+  rw [Polynomial.coeff_eq_esymm_roots_of_splits hp hk, Multiset.esymm_neg]
+  ring
+
 /-- Newton inequalities for nonnegative real-rooted polynomials, stated as
 ultra-log-concavity of the coefficient sequence. -/
 theorem hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hrr : p = 0 ∨ p.Splits) :
     HasUltraLogConcaveCoeffs p := by
-  sorry
+  rcases hrr with rfl | hsplits
+  · intro k hk0 hkd
+    simp only [natDegree_zero] at hkd
+    lia
+  · intro k hk0 hkd
+    set t := p.roots.map Neg.neg with ht_def
+    have htcard : Multiset.card t = p.natDegree := by
+      rw [ht_def, Multiset.card_map, card_roots_of_splits hsplits]
+    have hc1 := coeff_eq_leadingCoeff_mul_esymm_neg_roots hsplits (k := k - 1) (by lia)
+    have hck := coeff_eq_leadingCoeff_mul_esymm_neg_roots hsplits (k := k) (by lia)
+    have hc2 := coeff_eq_leadingCoeff_mul_esymm_neg_roots hsplits (k := k + 1) (by lia)
+    rw [← ht_def] at hc1 hck hc2
+    have idx1 : p.natDegree - (k - 1) = p.natDegree - k + 1 := by
+      lia
+    have idx2 : p.natDegree - (k + 1) = p.natDegree - k - 1 := by
+      lia
+    rw [idx1] at hc1
+    rw [idx2] at hc2
+    have hnewton := NewtonAux.newton_esymm_ineq t (n := p.natDegree)
+      (m := p.natDegree - k) htcard (by lia) (by lia)
+    have hnm1 : p.natDegree - (p.natDegree - k) = k := by
+      lia
+    rw [hnm1] at hnewton
+    change p.coeff (k - 1) * p.coeff (k + 1) *
+        ((k + 1 : ℝ) * ((p.natDegree - k + 1 : ℕ) : ℝ)) ≤
+      p.coeff k ^ 2 * ((k : ℝ) * ((p.natDegree - k : ℕ) : ℝ))
+    rw [hc1, hck, hc2]
+    have hscaled := mul_le_mul_of_nonneg_left hnewton (sq_nonneg p.leadingCoeff)
+    have hcast1 :
+        ((p.natDegree - k + 1 : ℕ) : ℝ) = ((p.natDegree - k : ℕ) : ℝ) + 1 := by
+      push_cast
+      ring
+    have hcast2 : ((k + 1 : ℕ) : ℝ) = (k : ℝ) + 1 := by
+      push_cast
+      ring
+    rw [hcast1]
+    rw [hcast2] at hnewton hscaled
+    nlinarith [hscaled, sq_nonneg p.leadingCoeff]
 
 /-- Nonnegative real-rooted polynomials have no internal coefficient zeros. -/
 theorem hasNoInternalCoeffZeros_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hrr : p = 0 ∨ p.Splits) :
     HasNoInternalCoeffZeros p := by
-  sorry
+  rcases hrr with rfl | hsplits
+  · intro i j k _ _ _ hai _
+    simp at hai
+  · intro i j k hij hjk hkd hai _
+    have hp0 : p ≠ 0 := by
+      rintro rfl
+      simp at hai
+    have hlc : 0 < p.leadingCoeff := hpnn.pos_leadingCoeff hp0
+    have hroots_nonpos := roots_nonpos_of_nonneg_coeffs hsplits hpnn
+    have ht : ∀ x ∈ p.roots.map Neg.neg, 0 ≤ x := by
+      intro x hx
+      rw [Multiset.mem_map] at hx
+      obtain ⟨r, hr, rfl⟩ := hx
+      simpa using neg_nonneg.mpr (hroots_nonpos r hr)
+    have hid : i ≤ p.natDegree := by
+      by_contra h
+      exact hai (Polynomial.coeff_eq_zero_of_natDegree_lt (by lia))
+    have hjd : j ≤ p.natDegree := le_of_lt (lt_of_lt_of_le hjk hkd)
+    have hcoeff_i := coeff_eq_leadingCoeff_mul_esymm_neg_roots hsplits hid
+    have hei : 0 < (p.roots.map Neg.neg).esymm (p.natDegree - i) := by
+      rcases lt_or_eq_of_le
+          (esymm_nonneg_of_forall_nonneg ht (p.natDegree - i)) with h | h
+      · exact h
+      · exact absurd (show p.coeff i = 0 by rw [hcoeff_i, ← h]; ring) hai
+    have hb : p.natDegree - j ≤ p.natDegree - i := by
+      lia
+    have hej : 0 < (p.roots.map Neg.neg).esymm (p.natDegree - j) :=
+      esymm_pos_mono_of_forall_nonneg ht hb hei
+    have hcoeff_j := coeff_eq_leadingCoeff_mul_esymm_neg_roots hsplits hjd
+    change p.coeff j ≠ 0
+    rw [hcoeff_j]
+    exact ne_of_gt (mul_pos hlc hej)
 
 theorem hasLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hrr : p = 0 ∨ p.Splits) :
