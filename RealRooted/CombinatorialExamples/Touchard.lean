@@ -117,9 +117,7 @@ lemma prec_touchard_one_two :
     rw [hF_eq, natDegree_touchard, natDegree_touchard]
   have hb_nonpos : ∀ r, (touchard 1).IsRoot r → X.eval r ≤ 0 := by
     intro r hr
-    have hr_zero : r = 0 := by
-      simpa [touchard_one, Polynomial.IsRoot.def] using hr
-    simp [hr_zero]
+    simpa [touchard_one, Polynomial.IsRoot.def] using le_of_eq hr
   rw [← hF_eq]
   exact
     prec_of_interlaces_evalCoeff_nonpos
@@ -164,7 +162,7 @@ theorem prec_touchard_succ : ∀ n : Nat, Prec (touchard n) (touchard (n + 1))
         intro r hr
         have hr_nonpos : r ≤ 0 :=
           roots_nonpos_touchard_of_isRealRooted hprev.2.1.2 r ((mem_roots hprev.2.1.1).mpr hr)
-        simp_all
+        simpa using hr_nonpos
       simpa [hNext_eq] using
         prec_of_interlaces_evalCoeff_nonpos
           (f := touchard (n + 2))
