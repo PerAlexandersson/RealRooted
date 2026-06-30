@@ -52,14 +52,11 @@ lemma coeff_touchard_top_and_above :
       constructor
       · rw [show n + 1 = n + 0 + 1 by lia, coeff_touchard_succ]
         simp_all
-      · intro m hm
-        cases m with
-        | zero =>
-            lia
-        | succ k =>
-            have hk0 : n + 1 < k + 1 := hm
-            rw [show k + 1 = k + 0 + 1 by lia, coeff_touchard_succ]
-            grind
+      · rintro (_ | k) hm
+        · lia
+        · have hk0 : n + 1 < k + 1 := hm
+          rw [show k + 1 = k + 0 + 1 by lia, coeff_touchard_succ]
+          grind
 
 lemma natDegree_touchard (n : Nat) :
     (touchard n).natDegree = n := by

@@ -78,17 +78,11 @@ lemma coeff_motzkin_top_pos_and_above :
       constructor
       · rw [motzkin_one, coeff_add, coeff_one, coeff_X]
         norm_num
-      · intro m hm
-        cases m with
-        | zero =>
-            lia
-        | succ k =>
-            cases k with
-            | zero =>
-                lia
-            | succ k =>
-                rw [motzkin_one, coeff_add, coeff_one, coeff_X]
-                simp
+      · rintro (_ | _ | k) hm
+        · lia
+        · lia
+        · rw [motzkin_one, coeff_add, coeff_one, coeff_X]
+          simp
   | n + 2 => by
       rcases coeff_motzkin_top_pos_and_above n with ⟨hlow_top, hlow_above⟩
       rcases coeff_motzkin_top_pos_and_above (n + 1) with ⟨hprev_top, hprev_above⟩

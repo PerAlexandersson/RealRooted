@@ -28,9 +28,7 @@ lemma coeff_one_sub_X_pow (n k : ℕ) :
   by_cases hk : k ≤ n
   · have hsign : (-1 : ℝ) ^ n * (-1 : ℝ) ^ (n - k) = (-1 : ℝ) ^ k := by
       nth_rw 1 [← Nat.add_sub_of_le hk]
-      rw [pow_add]
-      rw [mul_assoc]
-      rw [← pow_add]
+      rw [pow_add, mul_assoc, ← pow_add]
       simp
     grind
   · have hchoose : n.choose k = 0 := Nat.choose_eq_zero_of_lt (Nat.lt_of_not_ge hk)
@@ -100,8 +98,7 @@ noncomputable def tangentRoot (n j : ℕ) : ℝ :=
 
 lemma map_oddBinomAuxReal (n : ℕ) :
     (oddBinomAuxReal n).map (algebraMap ℝ ℂ) = oddBinomAux n := by
-  rw [oddBinomAuxReal, oddBinomAux, Polynomial.map_sum]
-  simp
+  simp [oddBinomAuxReal, oddBinomAux, Polynomial.map_sum]
 
 theorem oddBinomAux_identity (n : ℕ) :
     (2 : ℂ[X]) * X * oddBinomAux n =
@@ -112,8 +109,7 @@ theorem oddBinomAux_identity (n : ℕ) :
 
 lemma map_oddBinomPolyReal (n : ℕ) :
     (oddBinomPolyReal n).map (algebraMap ℝ ℂ) = oddBinomPoly n := by
-  rw [oddBinomPolyReal, oddBinomPoly, Polynomial.map_sum]
-  simp
+  simp [oddBinomPolyReal, oddBinomPoly, Polynomial.map_sum]
 
 lemma coeff_oddBinomPolyReal (n k : ℕ) :
     (oddBinomPolyReal n).coeff k = (n.choose (2 * k + 1) : ℝ) := by
