@@ -475,8 +475,7 @@ private lemma roots_neg_of_interlaces_of_eval_zero_pos {g f : ℝ[X]}
   have hss_neg : ∀ s ∈ ss, s < 0 := by
     intro s hs
     have hs_root : g.IsRoot s := (mem_roots hg.1).mp <| by
-      rw [← hss_eq]
-      exact Multiset.mem_coe.mpr hs
+      simpa [hss_eq] using Multiset.mem_coe.mpr hs
     simp_all
   have hrs_drop_neg : ∀ r ∈ rs.dropLast, r < 0 :=
     listInterlaces_dropLast_lt_zero_of_forall_lt_zero hint hss_neg
@@ -626,8 +625,7 @@ private lemma roots_nonpos_of_interlaces_of_zero_root_of_roots_neg {g f : ℝ[X]
   have hss_neg : ∀ s ∈ ss, s < 0 := by
     intro s hs
     have hs_root : g.IsRoot s := (mem_roots hg.1).mp <| by
-      rw [← hss_eq]
-      exact Multiset.mem_coe.mpr hs
+      simpa [hss_eq] using Multiset.mem_coe.mpr hs
     simp_all
   have hrs_drop_neg : ∀ r ∈ rs.dropLast, r < 0 :=
     listInterlaces_dropLast_lt_zero_of_forall_lt_zero hint hss_neg
@@ -697,8 +695,7 @@ private lemma roots_neg_of_prec_same_of_roots_neg {g f : ℝ[X]}
       intro s hs
       apply hf_neg s
       apply (mem_roots hf.1).mp
-      rw [← hrs_eq]
-      exact Multiset.mem_coe.mpr hs
+      simpa [hrs_eq] using Multiset.mem_coe.mpr hs
     have hss_neg : ∀ s ∈ ss, s < 0 :=
       listAlternates_left_lt_of_right_lt halt hrs_neg
     intro r hr

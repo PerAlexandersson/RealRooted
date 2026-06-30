@@ -396,12 +396,10 @@ private lemma eval_mul_eval_neg_of_interlaces_consecutive_of_no_common
     eval_mul_eval_nonpos_of_interlacing_consecutive_local hg.2 hrs_sorted hss_eq hint hEq_rs
   have hr₁_root : f.IsRoot r₁ := by
     apply (mem_roots hf.1).mp
-    rw [← hrs_eq]
-    exact Multiset.mem_coe.mpr (by simp_all)
+    simpa [hrs_eq] using Multiset.mem_coe.mpr (by simp_all : r₁ ∈ rs)
   have hr₂_root : f.IsRoot r₂ := by
     apply (mem_roots hf.1).mp
-    rw [← hrs_eq]
-    exact Multiset.mem_coe.mpr (by simp_all)
+    simpa [hrs_eq] using Multiset.mem_coe.mpr (by simp_all : r₂ ∈ rs)
   have hg₁_ne : g.eval r₁ ≠ 0 := by
     simp_all
   have hg₂_ne : g.eval r₂ ≠ 0 := by
@@ -1699,12 +1697,10 @@ private theorem isRealRooted_of_interlaces_eval_mul_neg_same_any_lc
       lia
     have hr₁_root : f.IsRoot r₁ := by
       apply (mem_roots hf.1).mp
-      rw [← hrs_eq]
-      exact Multiset.mem_coe.mpr (by grind)
+      simpa [hrs_eq] using Multiset.mem_coe.mpr (by grind : r₁ ∈ rs)
     have hr₂_root : f.IsRoot r₂ := by
       apply (mem_roots hf.1).mp
-      rw [← hrs_eq]
-      exact Multiset.mem_coe.mpr (by grind)
+      simpa [hrs_eq] using Multiset.mem_coe.mpr (by grind : r₂ ∈ rs)
     have hFg₁ : F.eval r₁ * g.eval r₁ < 0 := hroot_sign r₁ hr₁_root
     have hFg₂ : F.eval r₂ * g.eval r₂ < 0 := hroot_sign r₂ hr₂_root
     have hgg : g.eval r₁ * g.eval r₂ < 0 :=
@@ -2854,12 +2850,12 @@ private theorem isRealRooted_of_right_factor_combo_posβ
     have hrs_eq : (↑(f.roots.sort (· ≤ ·)) : Multiset ℝ) = f.roots := Multiset.sort_eq ..
     have hr₁_root : f.IsRoot r₁ := by
       apply (mem_roots hf.1).mp
-      rw [← hrs_eq]
-      exact Multiset.mem_coe.mpr (by simp_all)
+      simpa [hrs_eq] using
+        Multiset.mem_coe.mpr (by simp_all : r₁ ∈ f.roots.sort (· ≤ ·))
     have hr₂_root : f.IsRoot r₂ := by
       apply (mem_roots hf.1).mp
-      rw [← hrs_eq]
-      exact Multiset.mem_coe.mpr (by simp_all)
+      simpa [hrs_eq] using
+        Multiset.mem_coe.mpr (by simp_all : r₂ ∈ f.roots.sort (· ≤ ·))
     have hFq₁ : F.eval r₁ * q.eval r₁ < 0 := hroot_sign r₁ hr₁_root
     have hFq₂ : F.eval r₂ * q.eval r₂ < 0 := hroot_sign r₂ hr₂_root
     have hqq : q.eval r₁ * q.eval r₂ < 0 :=
