@@ -43,8 +43,7 @@ def HasRootsNonpos (p : ℝ[X]) : Prop :=
 
 @[simp] lemma gammaTransform_zero (d : ℕ) :
     gammaTransform d (0 : ℝ[X]) = 0 := by
-  unfold gammaTransform
-  simp
+  simp [gammaTransform]
 
 @[simp] lemma gammaTransform_add (d : ℕ) (γ δ : ℝ[X]) :
     gammaTransform d (γ + δ) = gammaTransform d γ + gammaTransform d δ := by
