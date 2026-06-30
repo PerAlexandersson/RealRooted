@@ -298,8 +298,6 @@ lemma oneDescent_prec_gamma_one_adjacent
 
 lemma oneDescent_prec_gamma_one_terminal (m : Nat) (hm : 1 < m) :
     Prec (oneDescentGamma 1 m 1) (oneDescentQ 1 m) := by
-  have hm_pos : 0 < m := by
-    lia
   have hpow : (X : ℝ[X]) ^ (m - 1) = X ^ (m - 2) * X := by
     rw [show m - 1 = Nat.succ (m - 2) by lia, pow_succ]
   let a : ℝ := (((m - 1 : Nat) : ℝ) / (((1 + 1 : Nat) : ℝ)))
@@ -318,7 +316,7 @@ lemma oneDescent_prec_gamma_one_terminal (m : Nat) (hm : 1 < m) :
     prec_C_mul_left hbase hchoose_ne
   have hpow_rr : (((X : ℝ[X]) ^ (m - 2)) ≠ 0 ∧ ((X : ℝ[X]) ^ (m - 2)).Splits) :=
     isRealRooted_X_pow (m - 2)
-  rw [oneDescentGamma_one m 1 hm, oneDescentQ_one m hm_pos, hpow]
+  rw [oneDescentGamma_one m 1 hm, oneDescentQ_one m (by lia), hpow]
   simpa [a, b, Nat.choose_one_right, mul_assoc, mul_left_comm, mul_comm, tsub_tsub] using
     (prec_mul_common_factor hpow_rr.1 hpow_rr.2 hscaled)
 
@@ -328,10 +326,8 @@ theorem oneDescent_prec_gamma_one_adjacent_chain
     (m j : Nat) (hj : j < m) :
     Prec (oneDescentGamma 1 m (j + 1)) (oneDescentGamma 1 m j) := by
   by_cases htop : j + 1 = m
-  · have hm_pos : 0 < m := by lia
-    have hj_eq : j = m - 1 := by lia
-    rw [htop, hj_eq]
-    exact oneDescent_prec_gamma_one_top m hm_pos
+  · rw [htop, show j = m - 1 by lia]
+    exact oneDescent_prec_gamma_one_top m (by lia)
   · have hj_strict : j + 1 < m := by lia
     exact oneDescent_prec_gamma_one_adjacent m j hj_strict
 
