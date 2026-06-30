@@ -308,8 +308,7 @@ lemma oddBinom_tangent_eval_eq_zero_of_le_pred_div_two
 lemma oddBinom_tangentRoot_eval_eq_zero
     (n j : ℕ) (hj0 : 0 < j) (hjle : j ≤ (n - 1) / 2) :
     (oddBinomPoly n).eval (tangentRoot n j : ℂ) = 0 := by
-  simpa [tangentRoot] using
-    oddBinom_tangent_eval_eq_zero_of_le_pred_div_two n j hj0 hjle
+  simpa [tangentRoot] using oddBinom_tangent_eval_eq_zero_of_le_pred_div_two n j hj0 hjle
 
 lemma tangentRoot_neg (n j : ℕ) (hj0 : 0 < j) (hjn : 2 * j < n) :
     tangentRoot n j < 0 := by

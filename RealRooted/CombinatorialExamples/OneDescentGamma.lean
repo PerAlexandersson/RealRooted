@@ -228,10 +228,8 @@ lemma oneDescentQ_one_succ (m : Nat) :
   grind
 
 lemma prec_one_X_add_C (a : ℝ) :
-    Prec (1 : ℝ[X]) (X + C a) := by
-  have hdeg : (X + C a).natDegree = 1 := by
-    simp
-  exact (interlaces_one_linear (p := X + C a) hdeg).toPrec
+    Prec (1 : ℝ[X]) (X + C a) :=
+  (interlaces_one_linear (p := X + C a) (by simp)).toPrec
 
 lemma oneDescentQ_one (m : Nat) (hm : 0 < m) :
     oneDescentQ 1 m = X ^ (m - 1) * (X + C ((m - 1 : Nat) : ℝ)) := by
