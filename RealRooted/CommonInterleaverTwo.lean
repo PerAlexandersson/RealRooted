@@ -1061,10 +1061,9 @@ theorem posComboNoCommonSameDegreeOrientationAlternative_of_degree_le_one
     (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree = f.natDegree)
     (hf_deg_le_one : f.natDegree ≤ 1) :
-    Prec f g ∨ Prec g f := by
-  exact
-    prec_or_revPrec_of_natDegree_le_one
-      hf_pos hg_pos hf_deg_le_one (by lia)
+    Prec f g ∨ Prec g f :=
+  prec_or_revPrec_of_natDegree_le_one
+    hf_pos hg_pos hf_deg_le_one (by lia)
 
 /-- Degree-one base case for the honest same-degree branch: equal-degree linear
 pairs automatically satisfy the Obreschkoff alternative. This is a reusable
@@ -1073,8 +1072,8 @@ theorem posComboNoCommonSameDegreeOrientationAlternative_of_degree_one
     {f g : ℝ[X]}
     (hdeg : g.natDegree = f.natDegree)
     (hf_deg1 : f.natDegree = 1) :
-    Prec f g ∨ Prec g f := by
-  exact PosComboRealRooted.prec_or_revPrec_of_same_degree_one hdeg hf_deg1
+    Prec f g ∨ Prec g f :=
+  PosComboRealRooted.prec_or_revPrec_of_same_degree_one hdeg hf_deg1
 
 /-- The old same-degree orientation alternative, when available, still feeds
 the repaired same-degree common-interleaver target. -/
@@ -1848,11 +1847,10 @@ theorem allComboRealRooted_of_posCombo_and_boundaryRightPairOrientation_and_nonn
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
-    AllComboRealRooted f g := by
-  exact
-    allComboRealRooted_of_posCombo_and_affineFamilyBridge_and_nonnegCoeffs
-      (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
-      hf_pos hg_pos hfnn hgnn hfg
+    AllComboRealRooted f g :=
+  allComboRealRooted_of_posCombo_and_affineFamilyBridge_and_nonnegCoeffs
+    (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
+    hf_pos hg_pos hfnn hgnn hfg
 
 /-- Consequently, the same boundary-right-pair orientation input already gives
 the full Obreschkoff orientation alternative for every positive-combination
@@ -1865,11 +1863,10 @@ theorem posComboOrientation_of_boundaryRightPairOrientation_and_nonnegCoeffs
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
-    Prec f g ∨ Prec g f := by
-  exact
-    posComboOrientation_of_affineFamilyBridge_and_nonnegCoeffs
-      (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
-      hf_pos hg_pos hfnn hgnn hfg
+    Prec f g ∨ Prec g f :=
+  posComboOrientation_of_affineFamilyBridge_and_nonnegCoeffs
+    (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
+    hf_pos hg_pos hfnn hgnn hfg
 
 /-- The stronger boundary-right-pair hypothesis already contains the honest
 same-degree no-common branch in the nonnegative regime. -/
@@ -2080,11 +2077,10 @@ theorem posComboPairHasCommonInterleaver_of_allComboBridge_and_nonnegCoeffs
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  exact
-    posComboPairHasCommonInterleaver_of_noCommonOrientation_and_nonnegCoeffs
-      (posComboNoCommonOrientation_of_allComboBridge hallBridge)
-      hf_pos hg_pos hfnn hgnn hfg
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  posComboPairHasCommonInterleaver_of_noCommonOrientation_and_nonnegCoeffs
+    (posComboNoCommonOrientation_of_allComboBridge hallBridge)
+    hf_pos hg_pos hfnn hgnn hfg
 
 /-- In the nonnegative-coefficient regime, the affine-family bridge already
 implies the full positive-combo pair bridge. -/
