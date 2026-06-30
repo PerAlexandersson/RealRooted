@@ -20,6 +20,7 @@ import RealRooted.ChudnovskySeymour
 import RealRooted.GammaRealRoots
 import RealRooted.HermiteBiehler
 import RealRooted.PFPolynomial
+import RealRooted.MultiplierSequence
 import RealRooted.Hadamard
 import RealRooted.EulerOperator
 import RealRooted.Favard
