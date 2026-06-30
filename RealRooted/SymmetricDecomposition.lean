@@ -2225,10 +2225,10 @@ theorem rdDecompositionExistsUnique : rdDecompositionExistsUniqueStatement := by
 lemma eq_zero_of_natDegree_le_zero_of_eq_add_X_mul {p a b : ℝ[X]}
     (hp : p.natDegree ≤ 0) (ha : a.natDegree ≤ 0) (hb : b.natDegree ≤ 0) (h : p = a + X * b) :
     b = 0 := by
-  have hp1 : p.coeff 1 = 0 := by
-    exact Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hp (by lia))
-  have ha1 : a.coeff 1 = 0 := by
-    exact Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt ha (by lia))
+  have hp1 : p.coeff 1 = 0 :=
+    Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hp (by lia))
+  have ha1 : a.coeff 1 = 0 :=
+    Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt ha (by lia))
   rw [h, Polynomial.coeff_add, Polynomial.coeff_X_mul, ha1, zero_add] at hp1
   have hbC : b = C (b.coeff 0) := Polynomial.eq_C_of_natDegree_le_zero hb
   grind
@@ -2250,8 +2250,8 @@ theorem idTransform_eq_add_of_isIdDecomposition {d : ℕ} {p a b : ℝ[X]}
 
 theorem idDecomposition_eq_formula_of_isIdDecomposition {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d) (h : IsIdDecomposition d p a b) :
-    a = idDecompositionAFormula d p ∧ b = idDecompositionBFormula d p := by
-  exact idDecompositionFormula_eq_of_system hd h.1 <|
+    a = idDecompositionAFormula d p ∧ b = idDecompositionBFormula d p :=
+  idDecompositionFormula_eq_of_system hd h.1 <|
     idTransform_eq_add_of_isIdDecomposition hd h
 
 theorem rdTransform_eq_add_X_add_one_mul_of_isRdDecomposition {d : ℕ} {p a b : ℝ[X]}
@@ -2269,8 +2269,8 @@ theorem rdTransform_eq_add_X_add_one_mul_of_isRdDecomposition {d : ℕ} {p a b :
 
 theorem rdDecomposition_eq_formula_of_isRdDecomposition {d : ℕ} {p a b : ℝ[X]}
     (hp : p.natDegree ≤ d) (h : IsRdDecomposition d p a b) :
-    a = rdDecompositionAFormula d p ∧ b = rdDecompositionBFormula d p := by
-  exact rdDecompositionFormula_eq_of_system h.1 <|
+    a = rdDecompositionAFormula d p ∧ b = rdDecompositionBFormula d p :=
+  rdDecompositionFormula_eq_of_system h.1 <|
     rdTransform_eq_add_X_add_one_mul_of_isRdDecomposition hp h
 
 theorem isRdDecomposition_fPolynomial_of_isIdDecomposition {d : ℕ} {h a b : ℝ[X]}
@@ -2485,8 +2485,8 @@ theorem brandenSolusTheorem26_forward_of_prec_b_a {d : ℕ} {p a b : ℝ[X]}
         · exact haxb.toPrec0
       · simp_all
     exact prec_of_prec0_of_ne_zero ha_rr.1 hp0 (by simp_all)
-  have hbXb : Prec b (X * b) := by
-    exact prec_mul_X_of_prec_of_nonneg (prec_refl hb_rr.1 hb_rr.2) hb_nonneg hb_nonneg
+  have hbXb : Prec b (X * b) :=
+    prec_mul_X_of_prec_of_nonneg (prec_refl hb_rr.1 hb_rr.2) hb_nonneg hb_nonneg
   have hbp : Prec b p := by
     have hprec0 : Prec0 b ([a, X * b].sum) := by
       refine prec0_sum_left_of_common_left_of_nonneg [a, X * b] b ?_ ?_
@@ -2582,12 +2582,13 @@ private theorem prec_b_component_of_prec_left_of_natDegree_le
     lia
   have hall_aXb : AllComboRealRooted a (X * b) :=
     allComboRealRooted_left_X_mul_component_of_prec_left hp_eq hap
-  have hXb_rr : ((X * b) ≠ 0 ∧ (X * b).Splits) := by
-    exact ⟨mul_ne_zero X_ne_zero hb0, by simpa using hall_aXb 0 1⟩
+  have hXb_rr : ((X * b) ≠ 0 ∧ (X * b).Splits) :=
+    ⟨mul_ne_zero X_ne_zero hb0, by simpa using hall_aXb 0 1⟩
   have hdeg_aXb : a.natDegree + 1 = (X * b).natDegree := by
     simp_all
-  have hprec_or : Prec a (X * b) ∨ Prec (X * b) a := by
-    exact prec_of_allComboRealRooted hap.1.1 hap.1.2 hXb_rr.1 hXb_rr.2 hall_aXb (Or.inl hdeg_aXb)
+  have hprec_or : Prec a (X * b) ∨ Prec (X * b) a :=
+    prec_of_allComboRealRooted hap.1.1 hap.1.2 hXb_rr.1 hXb_rr.2 hall_aXb
+      (Or.inl hdeg_aXb)
   have hnot_rev : ¬ Prec (X * b) a := by
     intro hbad
     have hbound := (natDegree_bounds_of_prec hbad).1
@@ -2748,27 +2749,26 @@ private theorem prec_b_component_of_prec_left_top_of_sameDegree
   have hp_eq : p = a + X * b := hid.1
   have hall_aXb : AllComboRealRooted a (X * b) :=
     allComboRealRooted_left_X_mul_component_of_prec_left hp_eq hap
-  have hXb_rr : ((X * b) ≠ 0 ∧ (X * b).Splits) := by
-    exact ⟨mul_ne_zero X_ne_zero hb0, by simpa using hall_aXb 0 1⟩
+  have hXb_rr : ((X * b) ≠ 0 ∧ (X * b).Splits) :=
+    ⟨mul_ne_zero X_ne_zero hb0, by simpa using hall_aXb 0 1⟩
   have hsame : a.natDegree = (X * b).natDegree := by
     lia
-  have hprec_or : Prec a (X * b) ∨ Prec (X * b) a := by
-    exact prec_of_allComboRealRooted hap.1.1 hap.1.2 hXb_rr.1 hXb_rr.2 hall_aXb (Or.inr hsame)
-  have ha_not_root0 : ¬ a.IsRoot 0 := by
-    exact
-      not_isRoot_zero_of_IdTransform_fixed_top_of_hasNonnegCoeffs
-        hid.2.2.2.1 ha_top ha_nonneg ha0
+  have hprec_or : Prec a (X * b) ∨ Prec (X * b) a :=
+    prec_of_allComboRealRooted hap.1.1 hap.1.2 hXb_rr.1 hXb_rr.2 hall_aXb
+      (Or.inr hsame)
+  have ha_not_root0 : ¬ a.IsRoot 0 :=
+    not_isRoot_zero_of_IdTransform_fixed_top_of_hasNonnegCoeffs
+      hid.2.2.2.1 ha_top ha_nonneg ha0
   obtain ⟨c, hac_le, hc_lt0⟩ :=
     exists_root_upper_bound_lt_zero_of_hasNonnegCoeffs_of_not_isRoot_zero
       hap.1.1 hap.1.2 ha_nonneg ha_not_root0
   have hXb_root0 : (X * b).IsRoot 0 := by
     simp
-  have hprec_aXb : Prec a (X * b) := by
-    exact
-      PosComboRealRooted.prec_of_prec_or_revPrec_of_root_asymmetry
-        (f := X * b) (g := a) (c := c) (r := 0)
-        (by lia)
-        hac_le hXb_root0 hc_lt0
+  have hprec_aXb : Prec a (X * b) :=
+    PosComboRealRooted.prec_of_prec_or_revPrec_of_root_asymmetry
+      (f := X * b) (g := a) (c := c) (r := 0)
+      (by lia)
+      hac_le hXb_root0 hc_lt0
   exact prec_of_prec_mul_X_of_nonneg hprec_aXb hb_nonneg ha_nonneg
 
 private theorem prec_b_component_of_prec_left_top
@@ -2784,10 +2784,9 @@ private theorem prec_b_component_of_prec_left_top
     Prec b a := by
   have hp_eq : p = a + X * b := hid.1
   have hXb_case :
-      (X * b).natDegree = d ∨ (X * b).natDegree + 1 = d := by
-    exact
-      natDegree_X_mul_component_eq_or_succ_of_prec_left_top
-        hd hp_eq ha_nonneg hb_nonneg ha_top hb0 hap
+      (X * b).natDegree = d ∨ (X * b).natDegree + 1 = d :=
+    natDegree_X_mul_component_eq_or_succ_of_prec_left_top
+      hd hp_eq ha_nonneg hb_nonneg ha_top hb0 hap
   rcases hXb_case with hXb_top | hXb_gap
   · exact
       prec_b_component_of_prec_left_top_of_sameDegree
@@ -2795,8 +2794,8 @@ private theorem prec_b_component_of_prec_left_top
   · exfalso
     have hall_aXb : AllComboRealRooted a (X * b) :=
       allComboRealRooted_left_X_mul_component_of_prec_left hp_eq hap
-    have hXb_rr : ((X * b) ≠ 0 ∧ (X * b).Splits) := by
-      exact ⟨mul_ne_zero X_ne_zero hb0, by simpa using hall_aXb 0 1⟩
+    have hXb_rr : ((X * b) ≠ 0 ∧ (X * b).Splits) :=
+      ⟨mul_ne_zero X_ne_zero hb0, by simpa using hall_aXb 0 1⟩
     have hall_Xba : AllComboRealRooted (X * b) a := by
       intro α β
       simpa [add_comm, add_left_comm, add_assoc] using hall_aXb β α
@@ -2804,20 +2803,18 @@ private theorem prec_b_component_of_prec_left_top
       have hdeg : (X * b).natDegree + 1 = a.natDegree := by
         lia
       exact prec_of_allComboRealRooted hXb_rr.1 hXb_rr.2 hap.1.1 hap.1.2 hall_Xba (Or.inl hdeg)
-    have ha_not_root0 : ¬ a.IsRoot 0 := by
-      exact
-        not_isRoot_zero_of_IdTransform_fixed_top_of_hasNonnegCoeffs
-          hid.2.2.2.1 ha_top ha_nonneg ha0
+    have ha_not_root0 : ¬ a.IsRoot 0 :=
+      not_isRoot_zero_of_IdTransform_fixed_top_of_hasNonnegCoeffs
+        hid.2.2.2.1 ha_top ha_nonneg ha0
     obtain ⟨c, hac_le, hc_lt0⟩ :=
       exists_root_upper_bound_lt_zero_of_hasNonnegCoeffs_of_not_isRoot_zero
         hap.1.1 hap.1.2 ha_nonneg ha_not_root0
     have hXb_root0 : (X * b).IsRoot 0 := by
       simp
-    have hbad : Prec a (X * b) := by
-      exact
-        PosComboRealRooted.prec_of_prec_or_revPrec_of_root_asymmetry
-          (f := X * b) (g := a) (c := c) (r := 0)
-          hprec_or hac_le hXb_root0 hc_lt0
+    have hbad : Prec a (X * b) :=
+      PosComboRealRooted.prec_of_prec_or_revPrec_of_root_asymmetry
+        (f := X * b) (g := a) (c := c) (r := 0)
+        hprec_or hac_le hXb_root0 hc_lt0
     have hbound : a.natDegree ≤ (X * b).natDegree :=
       (natDegree_bounds_of_prec hbad).1
     lia
@@ -2857,23 +2854,22 @@ private theorem prec_b_component_of_prec_right_top
     natDegree_right_of_prec_to_sum hp_eq ha_nonneg hb_nonneg hb0 hbp
   have hsame : a.natDegree = (X * b).natDegree := by
     simp_all
-  have ha_not_root0 : ¬ a.IsRoot 0 := by
-    exact
-      not_isRoot_zero_of_IdTransform_fixed_top_of_hasNonnegCoeffs
-        hid.2.2.2.1 ha_top ha_nonneg ha0
+  have ha_not_root0 : ¬ a.IsRoot 0 :=
+    not_isRoot_zero_of_IdTransform_fixed_top_of_hasNonnegCoeffs
+      hid.2.2.2.1 ha_top ha_nonneg ha0
   obtain ⟨c, hac_le, hc_lt0⟩ :=
     exists_root_upper_bound_lt_zero_of_hasNonnegCoeffs_of_not_isRoot_zero
       ha_rr.1 ha_rr.2 ha_nonneg ha_not_root0
   have hXb_root0 : (X * b).IsRoot 0 := by
     simp
-  have hprec_or : Prec a (X * b) ∨ Prec (X * b) a := by
-    exact prec_of_allComboRealRooted ha_rr.1 ha_rr.2 hpxb.2.1.1 hpxb.2.1.2 hall_aXb (Or.inr hsame)
-  have hprec_aXb : Prec a (X * b) := by
-    exact
-      PosComboRealRooted.prec_of_prec_or_revPrec_of_root_asymmetry
-        (f := X * b) (g := a) (c := c) (r := 0)
-        (by lia)
-        hac_le hXb_root0 hc_lt0
+  have hprec_or : Prec a (X * b) ∨ Prec (X * b) a :=
+    prec_of_allComboRealRooted ha_rr.1 ha_rr.2 hpxb.2.1.1 hpxb.2.1.2 hall_aXb
+      (Or.inr hsame)
+  have hprec_aXb : Prec a (X * b) :=
+    PosComboRealRooted.prec_of_prec_or_revPrec_of_root_asymmetry
+      (f := X * b) (g := a) (c := c) (r := 0)
+      (by lia)
+      hac_le hXb_root0 hc_lt0
   exact prec_of_prec_mul_X_of_nonneg hprec_aXb hb_nonneg ha_nonneg
 
 theorem brandenSolusTheorem26_first_equiv_of_top_degree
@@ -3002,10 +2998,10 @@ private theorem prec_b_component_of_prec_Id_top_of_right_top
           C (α - β) * h + C β * p := by
       grind
     simpa [hrew] using hall_hp (α - β) β
-  have ht_ne : t ≠ 0 := by
-    exact mul_ne_zero (X_sub_C_ne_zero (1 : ℝ)) hb0
-  have ht_rr : (t ≠ 0 ∧ t.Splits) := by
-    exact ⟨ht_ne, by simpa using hall_ht 0 1⟩
+  have ht_ne : t ≠ 0 :=
+    mul_ne_zero (X_sub_C_ne_zero (1 : ℝ)) hb0
+  have ht_rr : (t ≠ 0 ∧ t.Splits) :=
+    ⟨ht_ne, by simpa using hall_ht 0 1⟩
   have ht_pos : HasPosLeadingCoeff t := by
     dsimp [t]
     unfold HasPosLeadingCoeff at hb_pos ⊢
@@ -3021,17 +3017,17 @@ private theorem prec_b_component_of_prec_Id_top_of_right_top
     dsimp [t]
     rw [hh_deg, natDegree_mul (X_sub_C_ne_zero (1 : ℝ)) hb0, natDegree_X_sub_C]
     lia
-  have hprec_or : Prec h t ∨ Prec t h := by
-    exact prec_of_allComboRealRooted hIdp.1.1 hIdp.1.2 ht_rr.1 ht_rr.2 hall_ht (Or.inr hsame)
+  have hprec_or : Prec h t ∨ Prec t h :=
+    prec_of_allComboRealRooted hIdp.1.1 hIdp.1.2 ht_rr.1 ht_rr.2 hall_ht
+      (Or.inr hsame)
   have ht_root1 : t.IsRoot 1 := by
     dsimp [t]
     simp
-  have hht : Prec h t := by
-    exact
-      PosComboRealRooted.prec_of_prec_or_revPrec_of_root_asymmetry
-        (f := t) (g := h) (c := 0) (r := 1)
-        (by lia)
-        hh_nonpos ht_root1 (by simp)
+  have hht : Prec h t :=
+    PosComboRealRooted.prec_of_prec_or_revPrec_of_root_asymmetry
+      (f := t) (g := h) (c := 0) (r := 1)
+      (by lia)
+      hh_nonpos ht_root1 (by simp)
   have ht_le_one : ∀ r ∈ t.roots, r ≤ 1 := by
     intro r hr
     dsimp [t] at hr
@@ -3040,11 +3036,10 @@ private theorem prec_b_component_of_prec_Id_top_of_right_top
     · simp_all
     · have hr0 : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hb_rr.2 hb_nonneg r hr
       linarith
-  have hbh : Prec b h := by
-    exact
-      (interlaces_of_prec_sameDegree_rightmost_factor
-        (f := h) (g := t) (q := b) (uR := 1)
-        hht hsame ht_le_one (by lia)).toPrec
+  have hbh : Prec b h :=
+    (interlaces_of_prec_sameDegree_rightmost_factor
+      (f := h) (g := t) (q := b) (uR := 1)
+      hht hsame ht_le_one (by lia)).toPrec
   have hb_le_one : ∀ r ∈ b.roots, r ≤ (1 : ℝ) := by
     intro r hr
     have hr0 : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hb_rr.2 hb_nonneg r hr
@@ -3138,10 +3133,10 @@ theorem brandenSolusTheorem26_third_converse_of_top_degree
           C (α - β) * h + C β * p := by
       grind
     simpa [hrew] using hall_hp (α - β) β
-  have ht_ne : t ≠ 0 := by
-    exact mul_ne_zero (X_sub_C_ne_zero (1 : ℝ)) hb0
-  have ht_rr : (t ≠ 0 ∧ t.Splits) := by
-    exact ⟨ht_ne, by simpa using hall_ht 0 1⟩
+  have ht_ne : t ≠ 0 :=
+    mul_ne_zero (X_sub_C_ne_zero (1 : ℝ)) hb0
+  have ht_rr : (t ≠ 0 ∧ t.Splits) :=
+    ⟨ht_ne, by simpa using hall_ht 0 1⟩
   have ht_root1 : t.IsRoot 1 := by
     dsimp [t]
     simp
@@ -3160,12 +3155,13 @@ theorem brandenSolusTheorem26_third_converse_of_top_degree
   · have hall_th : AllComboRealRooted t h := by
       intro α β
       simpa [add_comm, add_left_comm, add_assoc] using hall_ht β α
-    have hprec_or : Prec t h ∨ Prec h t := by
-      exact prec_of_allComboRealRooted ht_rr.1 ht_rr.2 hIdp.1.1 hIdp.1.2 hall_th (Or.inl hgap)
+    have hprec_or : Prec t h ∨ Prec h t :=
+      prec_of_allComboRealRooted ht_rr.1 ht_rr.2 hIdp.1.1 hIdp.1.2 hall_th
+        (Or.inl hgap)
     have hnot_th : ¬ Prec t h := by
       intro hth
-      have h1_le : (1 : ℝ) ≤ 0 := by
-        exact roots_le_of_prec_right hth hh_nonpos 1 ((mem_roots hth.1.1).mpr ht_root1)
+      have h1_le : (1 : ℝ) ≤ 0 :=
+        roots_le_of_prec_right hth hh_nonpos 1 ((mem_roots hth.1.1).mpr ht_root1)
       linarith
     rcases hprec_or with hth | hht
     · lia
@@ -3274,8 +3270,8 @@ theorem hasNonnegCoeffs_pair_of_isRdDecomposition {d : ℕ} {p a b : ℝ[X]}
 theorem hasNonnegCoeffs_transformed_components_of_isIdDecomposition {d : ℕ} {a b : ℝ[X]}
     (ha_nonneg : HasNonnegCoeffs a)
     (hb_nonneg : HasNonnegCoeffs b) :
-    HasNonnegCoeffs (fPolynomial d a) ∧ HasNonnegCoeffs (fPolynomial (d - 1) b) := by
-  exact ⟨hasNonnegCoeffs_fPolynomial ha_nonneg, hasNonnegCoeffs_fPolynomial hb_nonneg⟩
+    HasNonnegCoeffs (fPolynomial d a) ∧ HasNonnegCoeffs (fPolynomial (d - 1) b) :=
+  ⟨hasNonnegCoeffs_fPolynomial ha_nonneg, hasNonnegCoeffs_fPolynomial hb_nonneg⟩
 
 lemma prec_iff_prec_mul_X_add_one_both {f g : ℝ[X]} :
     Prec ((X + 1) * f) ((X + 1) * g) ↔ Prec f g := by
@@ -3506,8 +3502,8 @@ theorem not_brandenSolusTheorem26NaiveStatement :
     (by simpa using hasNonnegCoeffs_one)
     (by simpa using hasNonnegCoeffs_zero)
   rcases hcase with ⟨hba_iff_hap, -, -, -⟩
-  have happ : Prec (1 : ℝ[X]) (1 : ℝ[X]) := by
-    exact prec_refl (by simp) (by simp)
+  have happ : Prec (1 : ℝ[X]) (1 : ℝ[X]) :=
+    prec_refl (by simp) (by simp)
   have hnot : ¬ Prec (0 : ℝ[X]) (1 : ℝ[X]) := by
     intro h0
     exact h0.1.1 rfl
@@ -3620,8 +3616,8 @@ theorem brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
     rw [hId_eq]
     by_cases hdeg_eq : a.natDegree = b.natDegree
     · calc
-        (a + b).natDegree = a.natDegree := by
-          exact natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff hdeg_eq ha_pos hb_pos
+        (a + b).natDegree = a.natDegree :=
+          natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff hdeg_eq ha_pos hb_pos
         _ = b.natDegree := hdeg_eq
     · have hdeg_lt : a.natDegree < b.natDegree := lt_of_le_of_ne ha_le hdeg_eq
       exact natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hdeg_lt hb_pos
@@ -3630,8 +3626,8 @@ theorem brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
     by_cases hdeg_eq : a.natDegree = b.natDegree
     · exact hasPosLeadingCoeff_add_of_same_natDegree hdeg_eq ha_pos hb_pos
     · exact hasPosLeadingCoeff_add_of_natDegree_lt_right (lt_of_le_of_ne ha_le hdeg_eq) hb_pos
-  have ht_ne : t ≠ 0 := by
-    exact mul_ne_zero (X_sub_C_ne_zero (1 : ℝ)) hb0
+  have ht_ne : t ≠ 0 :=
+    mul_ne_zero (X_sub_C_ne_zero (1 : ℝ)) hb0
   have ht_pos : HasPosLeadingCoeff t := by
     dsimp [t]
     unfold HasPosLeadingCoeff at hb_pos ⊢
@@ -3647,8 +3643,8 @@ theorem brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
           C (α - β) * h + C β * p := by
       grind
     simpa [hrew] using hall_hp (α - β) β
-  have ht_rr : (t ≠ 0 ∧ t.Splits) := by
-    exact ⟨ht_ne, by simpa using hall_ht 0 1⟩
+  have ht_rr : (t ≠ 0 ∧ t.Splits) :=
+    ⟨ht_ne, by simpa using hall_ht 0 1⟩
   have hb_rr : (b ≠ 0 ∧ b.Splits) := by
     apply isRealRooted_of_dvd ht_rr.1 ht_rr.2 hb0
     refine ⟨X - C (1 : ℝ), ?_⟩
@@ -3665,19 +3661,20 @@ theorem brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
     dsimp [t]
     rw [hh_deg, natDegree_mul (X_sub_C_ne_zero (1 : ℝ)) hb0, natDegree_X_sub_C]
     lia
-  have hht_or : Prec h t ∨ Prec t h := by
-    exact prec_of_allComboRealRooted hh_rr.1 hh_rr.2 ht_rr.1 ht_rr.2 hall_ht (Or.inl ht_deg)
+  have hht_or : Prec h t ∨ Prec t h :=
+    prec_of_allComboRealRooted hh_rr.1 hh_rr.2 ht_rr.1 ht_rr.2 hall_ht
+      (Or.inl ht_deg)
   have hnot_rev : ¬ Prec t h := by
     intro hth
     have hbounds := natDegree_bounds_of_prec hth
     lia
   have hht : Prec h t := by
     lia
-  have hbh : Prec b h := by
-    exact prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le (1 : ℝ)
+  have hbh : Prec b h :=
+    prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le (1 : ℝ)
       hht hh_deg.symm hb_pos hh_pos hb_le hh_le
-  have hbt : Prec b t := by
-    exact prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le (1 : ℝ)
+  have hbt : Prec b t :=
+    prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le (1 : ℝ)
       (prec_refl hb_rr.1 hb_rr.2) rfl hb_pos hb_pos hb_le hb_le
   have hbp_sum : Prec b [h, t].sum := by
     refine prec_sum_left_of_common_left [h, t] b ?_ hb_pos ?_ ?_
