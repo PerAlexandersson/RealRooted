@@ -1,4 +1,5 @@
 import RealRooted.PFPolynomial
+import RealRooted.VeroneseSection
 
 open Polynomial
 
@@ -96,6 +97,23 @@ theorem hasNonnegCoeffs_hadamardProduct {p q : ℝ[X]}
     HasNonnegCoeffs (hadamardProduct p q) :=
   hp.hadamardProduct hq
 
+/-- **Odd/even Hadamard identity.**  The coefficientwise Hadamard product
+commutes with the odd/even construction `oddEvenPolynomial p q = q(x²) + x·p(x²)`:
+the even coefficients multiply the `q`-parts and the odd coefficients multiply
+the `p`-parts. This is the algebraic bridge that reduces the two-pair
+Garloff--Wagner interlacing theorem to the single-polynomial Hurwitz-stability
+fact through the Hermite--Biehler odd/even correspondence. -/
+theorem hadamardProduct_oddEvenPolynomial (p q p' q' : ℝ[X]) :
+    hadamardProduct (oddEvenPolynomial p q) (oddEvenPolynomial p' q') =
+      oddEvenPolynomial (hadamardProduct p p') (hadamardProduct q q') := by
+  ext n
+  rcases Nat.even_or_odd n with ⟨k, hk⟩ | ⟨k, hk⟩
+  · subst hk
+    rw [show k + k = 2 * k by ring]
+    simp
+  · subst hk
+    simp
+
 /-- Nonnegative-coefficient Schur--Polya/Garloff--Wagner real-rootedness
 interface for coefficientwise Hadamard products.
 
@@ -166,6 +184,69 @@ def garloffWagnerHadamardNonnegPrecStatement : Prop :=
     Prec f g →
     Prec p q →
     Prec0 (hadamardProduct f p) (hadamardProduct g q)
+
+/-- **Hadamard product preserves Hurwitz stability** (Garloff--Wagner,
+Theorem 1) — precise external interface.
+
+This is the main theorem of Garloff--Wagner, *Hadamard Products of Stable
+Polynomials Are Stable*: the coefficientwise Hadamard product of two
+Hurwitz-stable real polynomials is again Hurwitz stable. In the present
+`IsHurwitzStable` convention this is the genuinely deep classical input (its
+classical proofs go through Polya--Schur / total-nonnegativity machinery that is
+not available in Mathlib), recorded here as a precise interface. This is the
+only new external interface needed below; the remaining inputs are the
+Hermite--Biehler odd/even bridges already recorded in
+`RealRooted.VeroneseSection`. -/
+def hadamardPreservesHurwitzStableStatement : Prop :=
+  ∀ {a b : ℝ[X]},
+    IsHurwitzStable a →
+    IsHurwitzStable b →
+    IsHurwitzStable (hadamardProduct a b)
+
+/-- **Garloff--Wagner, Theorem 4(b), reduced to its classical inputs** (TODO T9).
+
+The two-pair interlacing form of the Garloff--Wagner Hadamard theorem follows,
+with a fully checked (`sorry`-free) reduction, from the following classical
+inputs (the latter three are pre-existing interfaces from
+`RealRooted.VeroneseSection`):
+
+* `hadamardPreservesHurwitzStableStatement` — Garloff--Wagner Theorem 1
+  (Hadamard products of Hurwitz-stable polynomials are Hurwitz stable);
+* `NonnegPrecToHurwitzOddEvenStatement` — the forward Hermite--Biehler bridge
+  from proper position `Prec f g` of nonnegative-coefficient polynomials to
+  Hurwitz stability of `oddEvenPolynomial f g = g(x²) + x·f(x²)`;
+* `HurwitzOddEvenToFullyInterlacingPairStatement` — from Hurwitz stability of
+  the odd/even polynomial to full interlacing of the coefficient rows; and
+* `FullyInterlacingPairToPrec0Statement` — the converse lace-to-interlacing
+  bridge back to zero-aware proper position.
+
+The bridge between the two-pair and single-polynomial worlds is the proven
+algebraic identity `hadamardProduct_oddEvenPolynomial`:
+`oddEvenPolynomial f g ⊙ oddEvenPolynomial p q
+   = oddEvenPolynomial (f ⊙ p) (g ⊙ q)`,
+whose even part is `g ⊙ q` and whose odd part is `f ⊙ p`.
+
+Thus all of the interlacing bookkeeping of Theorem 4(b) is discharged here.
+Note that the odd/even polynomial of an interlacing pair is Hurwitz stable, not
+real-rooted (e.g. `f = 1`, `g = X + 1` gives `X² + X + 1`), which is why the
+reduction goes through `IsHurwitzStable` (Theorem 1) rather than the
+single-polynomial real-rootedness fact
+`garloffWagnerHadamardNonnegRealRootedStatement`. -/
+theorem garloffWagnerHadamardNonnegPrec_of_oddEven
+    (hThm1 : hadamardPreservesHurwitzStableStatement)
+    (hPrecToHurwitz : NonnegPrecToHurwitzOddEvenStatement)
+    (hHurwitzToFull : HurwitzOddEvenToFullyInterlacingPairStatement)
+    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
+    garloffWagnerHadamardNonnegPrecStatement := by
+  intro f g p q hf hg hp hq hfg hpq
+  have hOE1 : IsHurwitzStable (oddEvenPolynomial f g) := hPrecToHurwitz hf hg hfg
+  have hOE2 : IsHurwitzStable (oddEvenPolynomial p q) := hPrecToHurwitz hp hq hpq
+  have hHad :
+      IsHurwitzStable
+        (hadamardProduct (oddEvenPolynomial f g) (oddEvenPolynomial p q)) :=
+    hThm1 hOE1 hOE2
+  rw [hadamardProduct_oddEvenPolynomial] at hHad
+  exact hFullToPrec0 (hHurwitzToFull hHad)
 
 /-- PF-polynomial wrapper around the strict Garloff--Wagner two-pair theorem. -/
 def garloffWagnerHadamardPFPrecStatement : Prop :=
