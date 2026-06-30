@@ -989,14 +989,12 @@ theorem prec_fPolynomial_of_prec_of_hasNonnegCoeffs_of_minimal
   have hss_nonpos : ∀ s ∈ ss, s ≤ 0 := by
     intro s hs
     have hs_mem : s ∈ u.roots := by
-      rw [← hss_eq]
-      exact hs
+      simpa [hss_eq] using Multiset.mem_coe.mpr hs
     exact roots_nonpos_of_nonneg_coeffs hu_rr.2 hu_nonneg s hs_mem
   have hrs_nonpos : ∀ r ∈ rs, r ≤ 0 := by
     intro r hr
     have hr_mem : r ∈ v.roots := by
-      rw [← hrs_eq]
-      exact hr
+      simpa [hrs_eq] using Multiset.mem_coe.mpr hr
     exact roots_nonpos_of_nonneg_coeffs hv_rr.2 hv_nonneg r hr_mem
   have hss_map_sorted : (ss.map φ).Pairwise (· ≤ ·) :=
     pairwise_map_transformedRoot_of_nonpos hss_sorted hss_nonpos
@@ -1122,16 +1120,14 @@ theorem prec_of_prec_fPolynomial_of_sameDegree_of_isRealRooted_of_hasNonnegCoeff
   have hss_gt_neg_one : ∀ s ∈ ss, -1 < s := by
     intro s hs
     have hs_mem : s ∈ (fPolynomial d u).roots := by
-      rw [← hss_eq]
-      exact hs
+      simpa [hss_eq] using Multiset.mem_coe.mpr hs
     rw [hfu_roots] at hs_mem
     rcases Multiset.mem_map.mp hs_mem with ⟨r, hr, rfl⟩
     exact neg_one_lt_transformedRoot (roots_nonpos_of_nonneg_coeffs hu_rr_splits hu_nonneg r hr)
   have hrs_gt_neg_one : ∀ r ∈ rs, -1 < r := by
     intro r hr
     have hr_mem : r ∈ (fPolynomial d v).roots := by
-      rw [← hrs_eq]
-      exact hr
+      simpa [hrs_eq] using Multiset.mem_coe.mpr hr
     rw [hfv_roots] at hr_mem
     rcases Multiset.mem_map.mp hr_mem with ⟨s, hs, rfl⟩
     exact neg_one_lt_transformedRoot (roots_nonpos_of_nonneg_coeffs hv_rr_splits hv_nonneg s hs)
@@ -1339,8 +1335,7 @@ private theorem not_prec_fPolynomial_of_right_degree_lt_of_sameDegree_left
   have hss_gt_neg_one : ∀ x ∈ ss, -1 < x := by
     intro x hx
     have hx_mem : x ∈ (fPolynomial d u).roots := by
-      rw [← hss_eq]
-      exact hx
+      simpa [hss_eq] using Multiset.mem_coe.mpr hx
     rw [hfu_roots] at hx_mem
     rcases Multiset.mem_map.mp hx_mem with ⟨r, hr, rfl⟩
     exact neg_one_lt_transformedRoot (roots_nonpos_of_nonneg_coeffs hu_rr_splits hu_nonneg r hr)
@@ -1361,8 +1356,7 @@ private theorem not_prec_fPolynomial_of_right_degree_lt_of_sameDegree_left
             hvd_le hv_rr_ne hv_rr_splits hv_nonneg
       have hr_ge_neg_one : -1 ≤ r := by
         have hr_mem : r ∈ (fPolynomial d v).roots := by
-          rw [← hrs_eq]
-          simp
+          simpa [hrs_eq] using Multiset.mem_coe.mpr (by simp : r ∈ r :: rs')
         rw [hfv_roots] at hr_mem
         rcases Multiset.mem_add.mp hr_mem with hr | hr
         · have hr' : r = -1 := (Multiset.mem_replicate.mp hr).2
@@ -1419,8 +1413,7 @@ private theorem not_prec_fPolynomial_of_left_degree_le_sub_two_of_right_full
   have hss_ge_neg_one : ∀ x ∈ ss, -1 ≤ x := by
     intro x hx
     have hx_mem : x ∈ (fPolynomial d u).roots := by
-      rw [← hss_eq]
-      exact hx
+      simpa [hss_eq] using Multiset.mem_coe.mpr hx
     rw [hfu_roots] at hx_mem
     rcases Multiset.mem_add.mp hx_mem with hx | hx
     · have hx' : x = -1 := (Multiset.mem_replicate.mp hx).2
@@ -1479,8 +1472,7 @@ private theorem not_prec_fPolynomial_of_left_degree_le_sub_two_of_right_full
       have hrs_gt_neg_one : ∀ x ∈ rs, -1 < x := by
         intro x hx
         have hx_mem : x ∈ (fPolynomial d v).roots := by
-          rw [← hrs_eq]
-          exact hx
+          simpa [hrs_eq] using Multiset.mem_coe.mpr hx
         rw [hfv_roots] at hx_mem
         rcases Multiset.mem_map.mp hx_mem with ⟨r, hr, rfl⟩
         exact neg_one_lt_transformedRoot (roots_nonpos_of_nonneg_coeffs hv_rr_splits hv_nonneg r hr)
@@ -2712,8 +2704,7 @@ private lemma interlaces_of_prec_sameDegree_rightmost_factor
         rw [hgq, roots_mul (mul_ne_zero (X_sub_C_ne_zero uR) hq_ne), roots_X_sub_C]
         apply Multiset.mem_add.mpr
         right
-        rw [← hqs_eq]
-        exact Multiset.mem_coe.mpr hr)
+        simpa [hqs_eq] using Multiset.mem_coe.mpr hr)
     have hqs_sorted_right : (qs ++ [uR]).Pairwise (· ≤ ·) := by
       grind
     have hrs_eq_right : rs = qs ++ [uR] := by
