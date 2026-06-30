@@ -268,9 +268,8 @@ theorem hasCommonInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg
     HasCommonInterleaver (fs.zipWith (· * ·) gs.reverse) := by
   let ps := fs.zipWith (· * ·) gs.reverse
   have hgs_rr_rev : ∀ p ∈ gs.reverse, p.Splits := fun p hp ↦ hgs.splits (by simp_all)
-  have hgs_pos_rev : ∀ p ∈ gs.reverse, HasPosLeadingCoeff p := by
-    intro p hp
-    exact hgs.posLeadingCoeff p (by simp_all)
+  have hgs_pos_rev : ∀ p ∈ gs.reverse, HasPosLeadingCoeff p :=
+    fun p hp => hgs.posLeadingCoeff p (by simp_all)
   have hpair : PairwiseHasCommonInterleaver ps := by
     simpa [ps] using
       pairwiseHasCommonInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg

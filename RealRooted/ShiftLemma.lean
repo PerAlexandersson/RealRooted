@@ -78,11 +78,12 @@ lemma shift_natDegree_of_interlaces {f h : ℝ[X]}
   have hXh_deg : ((X - C 1) * h).natDegree = f.natDegree := by
     rw [natDegree_X_sub_one_mul hh_ne]
     lia
+  have hXh_pos := hasPosLeadingCoeff_X_sub_one_mul hh_pos
   constructor
   · exact natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff
-      hXh_deg.symm hf_pos (hasPosLeadingCoeff_X_sub_one_mul hh_pos)
+      hXh_deg.symm hf_pos hXh_pos
   · exact hasPosLeadingCoeff_add_of_same_natDegree
-      hXh_deg.symm hf_pos (hasPosLeadingCoeff_X_sub_one_mul hh_pos)
+      hXh_deg.symm hf_pos hXh_pos
 
 /-- When `deg h = deg f`, the shift combination has degree `deg f + 1`. -/
 lemma shift_natDegree_of_same_degree {f h : ℝ[X]}
