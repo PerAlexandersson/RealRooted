@@ -199,7 +199,7 @@ lemma prec_singletonFreeSetPartitionsCore_of_prec {n : Nat} (hn : 3 ≤ n)
     Prec (singletonFreeSetPartitionsCore n) (singletonFreeSetPartitions (n + 1)) := by
   rw [singletonFreeSetPartitionsCore]
   have hscalar_ne : (n + 1 : ℝ) ≠ 0 := by
-    grind
+    positivity
   have hlower :
       Prec (C (n + 1 : ℝ) * singletonFreeSetPartitions n)
         (singletonFreeSetPartitions (n + 1)) :=
