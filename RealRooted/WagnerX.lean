@@ -820,12 +820,9 @@ theorem prec_of_prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]}
 theorem prec_iff_prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]}
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
-    Prec f g ↔ Prec (X * f) (X * g) := by
-  constructor
-  · intro h
-    exact prec_mul_X_both_of_roots_nonpos h hf_nonpos hg_nonpos
-  · intro h
-    exact prec_of_prec_mul_X_both_of_roots_nonpos h hf_nonpos hg_nonpos
+    Prec f g ↔ Prec (X * f) (X * g) :=
+  ⟨fun h => prec_mul_X_both_of_roots_nonpos h hf_nonpos hg_nonpos,
+    fun h => prec_of_prec_mul_X_both_of_roots_nonpos h hf_nonpos hg_nonpos⟩
 
 theorem prec0_mul_X_both_of_nonneg {f g : ℝ[X]}
     (h : Prec0 f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
@@ -918,12 +915,9 @@ theorem prec_of_prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ)
 theorem prec_iff_prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ)
     (hf_le : ∀ s ∈ f.roots, s ≤ r)
     (hg_le : ∀ s ∈ g.roots, s ≤ r) :
-    Prec f g ↔ Prec ((X - C r) * f) ((X - C r) * g) := by
-  constructor
-  · intro h
-    exact prec_mul_X_sub_C_both_of_roots_le r h hf_le hg_le
-  · intro h
-    exact prec_of_prec_mul_X_sub_C_both_of_roots_le r h hf_le hg_le
+    Prec f g ↔ Prec ((X - C r) * f) ((X - C r) * g) :=
+  ⟨fun h => prec_mul_X_sub_C_both_of_roots_le r h hf_le hg_le,
+    fun h => prec_of_prec_mul_X_sub_C_both_of_roots_le r h hf_le hg_le⟩
 
 theorem prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ) (h : Prec f g) :
     Prec ((X - C r) * f) ((X - C r) * g) := by

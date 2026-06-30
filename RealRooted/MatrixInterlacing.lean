@@ -775,9 +775,9 @@ theorem prec_zipWith_sum_pair_of_2x2
     intro s t hs ht
     simpa [F, G, hrewrite (s := s) (t := t)] using haux_rr (s := s) (t := t) hs ht
   have hposCombo :
-      ∀ {t : ℝ}, 0 < t → PosComboRealRooted (C t * F + G) (X * F) := by
-    intro t ht
-    exact posComboRealRooted_of_affine_family (f := F) (g := G) haff (t := t) ht
+      ∀ {t : ℝ}, 0 < t → PosComboRealRooted (C t * F + G) (X * F) :=
+    fun {t} ht =>
+      posComboRealRooted_of_affine_family (f := F) (g := G) haff (t := t) ht
   have hF_nonneg : HasNonnegCoeffs F := by
     simpa [F] using
       hasNonnegCoeffs_zipWith_mul_sum
