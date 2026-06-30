@@ -20,8 +20,8 @@ lemma nextCoeff_derivative_of_two_le_natDegree (p : R[X])
     have hidx : p.natDegree - 1 - 1 + 1 = p.natDegree - 1 := by lia
     have hcast : ((p.natDegree - 1 - 1 : ℕ) : R) + 1 =
         (p.natDegree - 1 : R) := by
-      rw [Nat.cast_sub (by show 1 ≤ p.natDegree - 1; lia)]
-      rw [Nat.cast_sub (by show 1 ≤ p.natDegree; lia)]
+      rw [Nat.cast_sub (by show 1 ≤ p.natDegree - 1; lia),
+        Nat.cast_sub (by show 1 ≤ p.natDegree; lia)]
       ring
     rw [hidx, hcast]
     ring
