@@ -44,9 +44,8 @@ def Has2x2InterlacingProperty0 (a b c d : ℝ[X]) : Prop :=
 
 lemma Has2x2InterlacingProperty.toHas2x2InterlacingProperty0
     {a b c d : ℝ[X]} (h : Has2x2InterlacingProperty a b c d) :
-    Has2x2InterlacingProperty0 a b c d := by
-  intro s t hs ht
-  exact (h s t hs ht).toPrec0
+    Has2x2InterlacingProperty0 a b c d :=
+  fun s t hs ht => (h s t hs ht).toPrec0
 
 lemma ne_zero_of_self_2x2 (p : ℝ[X])
     (hdiag : Has2x2InterlacingProperty p p p p) :

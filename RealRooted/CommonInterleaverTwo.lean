@@ -1220,9 +1220,9 @@ branch in the nonnegative regime: one simply specializes the degree bounds to
 equality. -/
 theorem posComboNoCommonSameDegreeOrientationAlternative_of_noCommonOrientation
     (hstep : PosComboNoCommonOrientationStatement) :
-    PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement := by
-  intro f g hf_pos hg_pos _ _ hfg hdeg hno
-  exact hstep hfg hf_pos hg_pos (by lia) (by lia) hno
+    PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement :=
+  fun {_ : ℝ[X]} {_ : ℝ[X]} hf_pos hg_pos _ _ hfg hdeg hno =>
+    hstep hfg hf_pos hg_pos (by lia) (by lia) hno
 
 /-- In the succ-degree branch, any no-common orientation core automatically
 forces the forward orientation by degree, so it also packages the honest
@@ -1963,10 +1963,10 @@ theorem compatiblePairHasCommonInterleaver_of_posComboOrientation
 bridge. -/
 theorem compatiblePairHasCommonInterleaver_of_posComboPair
     (hposCombo : PosComboPairHasCommonInterleaverStatement) :
-    CompatiblePairHasCommonInterleaverStatement := by
-  intro f g hf_pos hg_pos hfg
-  exact hposCombo hf_pos hg_pos
-    (Compatible.toPosComboRealRooted hfg hf_pos hg_pos)
+    CompatiblePairHasCommonInterleaverStatement :=
+  fun {_ : ℝ[X]} {_ : ℝ[X]} hf_pos hg_pos hfg =>
+    hposCombo hf_pos hg_pos
+      (Compatible.toPosComboRealRooted hfg hf_pos hg_pos)
 
 /-- If one has both the no-common-roots orientation core and degree closeness
 for `PosComboRealRooted` pairs, then every positive-leading `PosComboRealRooted`
@@ -2520,12 +2520,12 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairBridgePos
     (htwo : CompatiblePairHasCommonInterleaverStatement)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
-    PairwiseHasCommonInterleaver fs := by
-  intro i j hij
-  exact htwo
-    (hpos (fs.get i) (List.get_mem _ _))
-    (hpos (fs.get j) (List.get_mem _ _))
-    (hpair i j hij)
+    PairwiseHasCommonInterleaver fs :=
+  fun i j hij =>
+    htwo
+      (hpos (fs.get i) (List.get_mem _ _))
+      (hpos (fs.get j) (List.get_mem _ _))
+      (hpair i j hij)
 
 /-- Pairwise upgrade using the honest same-degree/succ-degree compatibility
 split. -/
@@ -2593,9 +2593,8 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_noCommonOrientatio
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (hpair : PairwiseCompatible fs) :
-    PairwiseHasCommonInterleaver fs := by
-  intro i j hij
-  exact
+    PairwiseHasCommonInterleaver fs :=
+  fun i j hij =>
     compatiblePairHasCommonInterleaver_of_noCommonOrientation_and_nonnegCoeffs
       hstep
       (hpos (fs.get i) (List.get_mem _ _))
@@ -2613,9 +2612,8 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_degreeSplit_and_no
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (hpair : PairwiseCompatible fs) :
-    PairwiseHasCommonInterleaver fs := by
-  intro i j hij
-  exact
+    PairwiseHasCommonInterleaver fs :=
+  fun i j hij =>
     compatiblePairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
       hsame hsucc
       (hpos (fs.get i) (List.get_mem _ _))
@@ -2633,9 +2631,8 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairDegreeSplit_an
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (hpair : PairwiseCompatible fs) :
-    PairwiseHasCommonInterleaver fs := by
-  intro i j hij
-  exact
+    PairwiseHasCommonInterleaver fs :=
+  fun i j hij =>
     compatiblePairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
       hsame hsucc
       (hpos (fs.get i) (List.get_mem _ _))
@@ -2653,9 +2650,8 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_sameDegreePair_and
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (hpair : PairwiseCompatible fs) :
-    PairwiseHasCommonInterleaver fs := by
-  intro i j hij
-  exact
+    PairwiseHasCommonInterleaver fs :=
+  fun i j hij =>
     compatiblePairHasCommonInterleaver_of_sameDegreePair_and_affineFamily_nonneg
       hsame haffBridge
       (hpos (fs.get i) (List.get_mem _ _))
@@ -2672,9 +2668,8 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_affineFamilyBridge
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (hpair : PairwiseCompatible fs) :
-    PairwiseHasCommonInterleaver fs := by
-  intro i j hij
-  exact
+    PairwiseHasCommonInterleaver fs :=
+  fun i j hij =>
     compatiblePairHasCommonInterleaver_of_affineFamilyBridge_and_nonnegCoeffs
       haffBridge
       (hpos (fs.get i) (List.get_mem _ _))
@@ -2692,9 +2687,8 @@ theorem
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (hpair : PairwiseCompatible fs) :
-    PairwiseHasCommonInterleaver fs := by
-  intro i j hij
-  exact
+    PairwiseHasCommonInterleaver fs :=
+  fun i j hij =>
     compatiblePairHasCommonInterleaver_of_boundaryRightPairOrientation_and_nonnegCoeffs
       hboundary
       (hpos (fs.get i) (List.get_mem _ _))

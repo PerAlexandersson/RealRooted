@@ -3255,9 +3255,9 @@ theorem derivativePreservesPrecSameDegree_monicPrec_of_monic
 /-- The zero-aware monic branch follows from the strict-`Prec` monic branch. -/
 theorem derivativePreservesPrecSameDegree_of_monicPrec
     (hmonic : derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonicPrecStatement) :
-    derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonicStatement := by
-  intro f g hf_monic hg_monic hfg hdeg htwo
-  exact (hmonic hf_monic hg_monic hfg hdeg htwo).toPrec0
+    derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonicStatement :=
+  fun {_ : ℝ[X]} {_ : ℝ[X]} hf_monic hg_monic hfg hdeg htwo =>
+    (hmonic hf_monic hg_monic hfg hdeg htwo).toPrec0
 
 /-- The positive-leading-coefficient branch follows from the monic branch by
 normalizing both polynomials by their leading coefficients. -/
