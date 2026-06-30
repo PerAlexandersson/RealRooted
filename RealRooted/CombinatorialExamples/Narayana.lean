@@ -100,18 +100,15 @@ private lemma natDegree_one_sub_X_sq :
     ((1 - X : ℝ[X]) ^ 2).natDegree = 2 := by
   have hmul_ne :
       ((1 - X : ℝ[X])).leadingCoeff * ((1 - X : ℝ[X])).leadingCoeff ≠ 0 := by
-    rw [leadingCoeff_one_sub_X]
-    norm_num
+    simp [leadingCoeff_one_sub_X]
   rw [pow_two, natDegree_mul' hmul_ne, natDegree_one_sub_X]
 
 private lemma leadingCoeff_one_sub_X_sq :
     ((1 - X : ℝ[X]) ^ 2).leadingCoeff = 1 := by
   have hmul_ne :
       ((1 - X : ℝ[X])).leadingCoeff * ((1 - X : ℝ[X])).leadingCoeff ≠ 0 := by
-    rw [leadingCoeff_one_sub_X]
-    norm_num
-  rw [pow_two, leadingCoeff_mul' hmul_ne]
-  rw [leadingCoeff_one_sub_X]
+    simp [leadingCoeff_one_sub_X]
+  rw [pow_two, leadingCoeff_mul' hmul_ne, leadingCoeff_one_sub_X]
   norm_num
 
 private lemma narayanaCoeffB_natDegree (n : Nat) (hn : 1 ≤ n) :
@@ -243,8 +240,7 @@ lemma natDegree_narayana (n : Nat) (hn : 1 ≤ n) :
     (narayana n).natDegree = n := by
   unfold narayana
   have hmul_ne : X.leadingCoeff * (narayanaQuot n).leadingCoeff ≠ 0 := by
-    rw [leadingCoeff_X, leadingCoeff_narayanaQuot n hn]
-    norm_num
+    simp [leadingCoeff_narayanaQuot n hn]
   rw [natDegree_mul' hmul_ne, natDegree_X, natDegree_narayanaQuot n hn]
   lia
 
