@@ -36,11 +36,7 @@ def weightedSum : List (ℝ × ℝ[X]) → ℝ[X]
 
 @[simp] lemma weightedSum_map_one (l : List ℝ[X]) :
     weightedSum (l.map (fun p => ((1 : ℝ), p))) = l.sum := by
-  induction l with
-  | nil =>
-      simp
-  | cons p l ih =>
-      simp [weightedSum_cons, ih]
+  induction l <;> simp [weightedSum_cons, *]
 
 lemma weightedSum_eq_zero_of_forall_coeff_zero :
     ∀ l : List (ℝ × ℝ[X]),

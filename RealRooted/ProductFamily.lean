@@ -17,20 +17,10 @@ section
 /-! ## Matrix action on polynomial sequences -/
 
 lemma hasNonnegCoeffs_zero : HasNonnegCoeffs (0 : ℝ[X]) := by
-  intro n
-  simp
+  simp [HasNonnegCoeffs]
 
 lemma hasNonnegCoeffs_X : HasNonnegCoeffs (X : ℝ[X]) := by
-  intro n
-  cases n with
-  | zero =>
-      simp [coeff_X_zero]
-  | succ n =>
-      cases n with
-      | zero =>
-          simp
-      | succ n =>
-          simp [coeff_X]
+  rintro (_ | _ | n) <;> simp [coeff_X]
 
 lemma HasNonnegCoeffs.add {p q : ℝ[X]} (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q) :
     HasNonnegCoeffs (p + q) := by
