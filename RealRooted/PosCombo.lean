@@ -332,6 +332,22 @@ lemma prec0_finsetSum_left_of_nonneg {ι : Type}
           · exact hasNonnegCoeffs_finsetSum s f hnn_s
       simp_all
 
+/-- Pairwise finite row-sum wrapper for `Prec0`: if every selected left
+summand precedes every selected right summand, and all selected summands have
+nonnegative coefficients, then the two finite sums are in `Prec0` proper
+position. -/
+lemma prec0_finsetSum_pairwise_of_nonneg {ι κ : Type}
+    (s : Finset ι) (t : Finset κ) (f : ι → ℝ[X]) (g : κ → ℝ[X])
+    (hprec : ∀ i ∈ s, ∀ j ∈ t, Prec0 (f i) (g j))
+    (hfnn : ∀ i ∈ s, HasNonnegCoeffs (f i))
+    (hgnn : ∀ j ∈ t, HasNonnegCoeffs (g j)) :
+    Prec0 (s.sum f) (t.sum g) := by
+  classical
+  have hleft : ∀ i ∈ s, Prec0 (f i) (t.sum g) := by
+    intro i hi
+    exact prec0_finsetSum_left_of_nonneg (f i) t g (hprec i hi) hgnn
+  exact prec0_finsetSum_right_of_nonneg s f (t.sum g) hleft hfnn
+
 /-- Same-degree shift on the left: if `f ≪ g`, both have positive leading
 coefficient, and all roots lie at most `r`, then `g ≪ g + (X - C r) * f`. -/
 theorem prec_sameDegree_shift_left_of_roots_le

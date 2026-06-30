@@ -842,6 +842,41 @@ theorem prec_iff_prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]}
   · intro h
     exact prec_of_prec_mul_X_both_of_roots_nonpos h hf_nonpos hg_nonpos
 
+theorem prec0_mul_X_both_of_nonneg {f g : ℝ[X]}
+    (h : Prec0 f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
+    Prec0 (X * f) (X * g) := by
+  rcases h with rfl | rfl | hfg
+  · simpa using prec0_zero_left (X * g)
+  · simpa using prec0_zero_right (X * f)
+  · exact
+      (prec_mul_X_both_of_roots_nonpos hfg
+        (roots_nonpos_of_nonneg_coeffs hfg.1.2 hfnn)
+        (roots_nonpos_of_nonneg_coeffs hfg.2.1.2 hgnn)).toPrec0
+
+theorem prec0_of_prec0_mul_X_both_of_nonneg {f g : ℝ[X]}
+    (h : Prec0 (X * f) (X * g)) (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g) :
+    Prec0 f g := by
+  by_cases hf0 : f = 0
+  · simpa [hf0] using prec0_zero_left g
+  by_cases hg0 : g = 0
+  · simpa [hg0] using prec0_zero_right f
+  have hXf0 : X * f ≠ 0 := mul_ne_zero X_ne_zero hf0
+  have hXg0 : X * g ≠ 0 := mul_ne_zero X_ne_zero hg0
+  have hstrict : Prec (X * f) (X * g) := h.toPrec_of_ne hXf0 hXg0
+  have hf : f ≠ 0 ∧ f.Splits := isRealRooted_of_X_mul hstrict.1.1 hstrict.1.2
+  have hg : g ≠ 0 ∧ g.Splits := isRealRooted_of_X_mul hstrict.2.1.1 hstrict.2.1.2
+  exact
+    (prec_of_prec_mul_X_both_of_roots_nonpos hstrict
+      (roots_nonpos_of_nonneg_coeffs hf.2 hfnn)
+      (roots_nonpos_of_nonneg_coeffs hg.2 hgnn)).toPrec0
+
+theorem prec0_iff_prec0_mul_X_both_of_nonneg {f g : ℝ[X]}
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
+    Prec0 f g ↔ Prec0 (X * f) (X * g) :=
+  ⟨fun h => prec0_mul_X_both_of_nonneg h hfnn hgnn,
+    fun h => prec0_of_prec0_mul_X_both_of_nonneg h hfnn hgnn⟩
+
 theorem prec_mul_X_sub_C_both_of_roots_le {f g : ℝ[X]} (r : ℝ) (h : Prec f g)
     (hf_le : ∀ s ∈ f.roots, s ≤ r)
     (hg_le : ∀ s ∈ g.roots, s ≤ r) :
