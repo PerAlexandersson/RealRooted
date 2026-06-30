@@ -77,6 +77,11 @@ theorem diagonalOperator_C_mul (gamma : ℕ → ℝ) (a : ℝ) (p : ℝ[X]) :
   ext n
   simp [mul_comm, mul_left_comm]
 
+@[simp] theorem diagonalOperator_C (gamma : ℕ → ℝ) (a : ℝ) :
+    diagonalOperator gamma (C a) = C (gamma 0 * a) := by
+  ext n
+  cases n <;> simp
+
 theorem diagonalOperator_monomial (gamma : ℕ → ℝ) (n : ℕ) (a : ℝ) :
     diagonalOperator gamma (monomial n a) = monomial n (gamma n * a) := by
   ext k
@@ -97,6 +102,18 @@ theorem natDegree_diagonalOperator_le (gamma : ℕ → ℝ) (p : ℝ[X]) :
   intro n hn
   rw [coeff_diagonalOperator, coeff_eq_zero_of_natDegree_lt hn, mul_zero]
 
+theorem diagonalOperator_comp (gamma delta : ℕ → ℝ) (p : ℝ[X]) :
+    diagonalOperator gamma (diagonalOperator delta p) =
+      diagonalOperator (fun n => gamma n * delta n) p := by
+  ext n
+  simp [mul_assoc]
+
+theorem diagonalOperator_comm (gamma delta : ℕ → ℝ) (p : ℝ[X]) :
+    diagonalOperator gamma (diagonalOperator delta p) =
+      diagonalOperator delta (diagonalOperator gamma p) := by
+  ext n
+  simp [mul_left_comm]
+
 /-- Nonnegative diagonal coefficients preserve nonnegative coefficients. -/
 theorem HasNonnegCoeffs.diagonalOperator
     {gamma : ℕ → ℝ} {p : ℝ[X]}
@@ -109,6 +126,16 @@ theorem HasNonnegCoeffs.diagonalOperator
 def jensenPolynomial (n : ℕ) (gamma : ℕ → ℝ) : ℝ[X] :=
   ∑ k ∈ Finset.range (n + 1),
     monomial k ((Nat.choose n k : ℝ) * gamma k)
+
+@[simp] theorem jensenPolynomial_zero_sequence (n : ℕ) :
+    jensenPolynomial n (fun _ => (0 : ℝ)) = 0 := by
+  ext k
+  simp [jensenPolynomial]
+
+@[simp] theorem jensenPolynomial_zero (gamma : ℕ → ℝ) :
+    jensenPolynomial 0 gamma = C (gamma 0) := by
+  ext k
+  cases k <;> simp [jensenPolynomial]
 
 @[simp] theorem coeff_jensenPolynomial (n : ℕ) (gamma : ℕ → ℝ) (k : ℕ) :
     (jensenPolynomial n gamma).coeff k =
@@ -151,6 +178,16 @@ theorem natDegree_jensenPolynomial_le (n : ℕ) (gamma : ℕ → ℝ) :
   intro k hk
   rw [coeff_jensenPolynomial]
   simp [not_le_of_gt hk]
+
+theorem support_jensenPolynomial_subset (n : ℕ) (gamma : ℕ → ℝ) :
+    (jensenPolynomial n gamma).support ⊆ Finset.range (n + 1) := by
+  intro k hk
+  rw [Polynomial.mem_support_iff] at hk
+  rw [coeff_jensenPolynomial] at hk
+  have hk_le : k ≤ n := by
+    by_contra hle
+    simp [hle] at hk
+  simpa [Finset.mem_range, Nat.lt_succ_iff] using hk_le
 
 /-- Finite multiplier sequence up to degree `n`: the diagonal operator
 preserves real-rootedness, allowing the zero polynomial. -/
@@ -205,14 +242,31 @@ theorem isFinitePFMultiplierSequence_of_finiteMultiplierSequence
   intro p hp hdeg
   by_cases hp0 : p = 0
   · subst p
-    rw [show diagonalOperator gamma (0 : ℝ[X]) = 0 by ext k; simp]
-    exact IsPFPolynomial.zero
+    simpa using IsPFPolynomial.zero
   have hsplit := hmult hdeg (hp.ne_zero_and_splits hp0).2
   rcases hsplit with hzero | hsplits
   · rw [hzero]
     exact IsPFPolynomial.zero
   · exact IsPFPolynomial.of_realRooted_nonneg
       (hp.hasNonnegCoeffs.diagonalOperator hgamma) hsplits
+
+/-- The finite Polya--Schur classification, used in the forward direction. -/
+theorem jensenPolynomial_isPF_of_finiteMultiplierSequence
+    (hFPS : finitePolyaSchurNonnegStatement)
+    {n : ℕ} {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k)
+    (hmult : IsFiniteMultiplierSequence n gamma) :
+    IsPFPolynomial (jensenPolynomial n gamma) :=
+  (hFPS hgamma).1 hmult
+
+/-- The finite Polya--Schur classification, used in the reverse direction. -/
+theorem isFiniteMultiplierSequence_of_jensenPolynomial
+    (hFPS : finitePolyaSchurNonnegStatement)
+    {n : ℕ} {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k)
+    (hjensen : IsPFPolynomial (jensenPolynomial n gamma)) :
+    IsFiniteMultiplierSequence n gamma :=
+  (hFPS hgamma).2 hjensen
 
 /-- PF preservation obtained from the finite Polya--Schur classification and a
 PF Jensen polynomial. -/
@@ -223,6 +277,6 @@ theorem isFinitePFMultiplierSequence_of_jensenPolynomial
     (hjensen : IsPFPolynomial (jensenPolynomial n gamma)) :
     IsFinitePFMultiplierSequence n gamma :=
   isFinitePFMultiplierSequence_of_finiteMultiplierSequence hgamma
-    ((hFPS hgamma).2 hjensen)
+    (isFiniteMultiplierSequence_of_jensenPolynomial hFPS hgamma hjensen)
 
 end RealRooted
