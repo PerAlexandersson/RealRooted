@@ -70,10 +70,8 @@ theorem thetaPlusOne_eq_derivative_X_mul (p : ℝ[X]) :
   rfl
 
 @[simp] theorem iterateThetaPlusOne_succ (l : ℕ) (p : ℝ[X]) :
-    iterateThetaPlusOne (l + 1) p =
-      thetaPlusOne (iterateThetaPlusOne l p) := by
-  simpa [iterateThetaPlusOne] using
-    Function.iterate_succ_apply' thetaPlusOne l p
+    iterateThetaPlusOne (l + 1) p = thetaPlusOne (iterateThetaPlusOne l p) :=
+  by simpa [iterateThetaPlusOne] using Function.iterate_succ_apply' thetaPlusOne l p
 
 @[simp] theorem coeff_polarTheta (N : ℕ) (p : ℝ[X]) (n : ℕ) :
     (polarTheta N p).coeff n = ((N : ℝ) - n) * p.coeff n := by

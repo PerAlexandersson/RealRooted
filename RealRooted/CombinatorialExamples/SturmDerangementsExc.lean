@@ -304,9 +304,9 @@ lemma sturmDerangementsExc_isRoot_neg_one_of_odd {n : Nat} (hn : Odd n) :
   linarith
 
 lemma X_add_one_dvd_sturmDerangementsExc_of_odd {n : Nat} (hn : Odd n) :
-    X + 1 ∣ sturmDerangementsExc n := by
-  simpa [sub_eq_add_neg, add_comm] using
-    ((dvd_iff_isRoot).2 (sturmDerangementsExc_isRoot_neg_one_of_odd hn))
+    X + 1 ∣ sturmDerangementsExc n :=
+  by simpa [sub_eq_add_neg, add_comm] using
+    (dvd_iff_isRoot).2 (sturmDerangementsExc_isRoot_neg_one_of_odd hn)
 
 lemma sturmDerangementsExc_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (sturmDerangementsExc n)
   | 0 => by
@@ -463,9 +463,9 @@ lemma affine_sturmDerangementsExc_isRoot_neg_one_of_even {n : Nat}
 
 lemma X_add_one_dvd_affine_sturmDerangementsExc_of_even {n : Nat}
     (hn : Even n) (h2 : 2 ≤ n) :
-    X + 1 ∣ affineSturmDerangementsExc n := by
-  simpa [sub_eq_add_neg, add_comm] using
-    ((dvd_iff_isRoot).2 (affine_sturmDerangementsExc_isRoot_neg_one_of_even hn h2))
+    X + 1 ∣ affineSturmDerangementsExc n :=
+  by simpa [sub_eq_add_neg, add_comm] using
+    (dvd_iff_isRoot).2 (affine_sturmDerangementsExc_isRoot_neg_one_of_even hn h2)
 
 lemma X_add_one_dvd_recurrenceCoreSturmDerangementsExc_of_even {n : Nat}
     (hn : Even n) (h2 : 2 ≤ n) :

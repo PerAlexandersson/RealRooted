@@ -71,8 +71,7 @@ theorem CoeffUltraLogConcaveUpTo.logConcave {d : ℕ} {a : ℕ → ℝ}
   intro k hk0 hkd
   have hprod_nonneg : 0 ≤ a (k - 1) * a (k + 1) :=
     mul_nonneg (hnonneg (k - 1) (by lia)) (hnonneg (k + 1) (by lia))
-  have hk_pos_real : (0 : ℝ) < k := by
-    exact_mod_cast hk0
+  have hk_pos_real : (0 : ℝ) < k := by exact_mod_cast hk0
   have hdk_pos_real : (0 : ℝ) < ((d - k : ℕ) : ℝ) := by
     exact_mod_cast Nat.sub_pos_of_lt hkd
   have hfactor_pos : 0 < (k : ℝ) * ((d - k : ℕ) : ℝ) :=
@@ -459,10 +458,10 @@ theorem hasNoInternalCoeffZeros_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : ℝ
 theorem hasLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hrr : p = 0 ∨ p.Splits) :
     HasLogConcaveCoeffs p := by
-  apply hasLogConcaveCoeffs_of_isPolyaFreqSeq_coeff
   rcases hrr with rfl | hsplits
-  · simpa using IsPolyaFreqSeq_zero
-  · exact aissenSchoenbergWhitney_reverse hpnn hsplits
+  · exact hasLogConcaveCoeffs_of_isPolyaFreqSeq_coeff (by simpa using IsPolyaFreqSeq_zero)
+  · exact hasLogConcaveCoeffs_of_isPolyaFreqSeq_coeff <|
+      aissenSchoenbergWhitney_reverse hpnn hsplits
       (roots_nonpos_of_nonneg_coeffs hsplits hpnn)
 
 theorem hasUnimodalCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : ℝ[X]}
