@@ -1038,6 +1038,161 @@ theorem hurwitzStableOddEvenToPrec_of_converse
     hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hpnn hp
   exact hHB hqpos hppos hupper
 
+/-! ## Degree-based orientation of the converse Hermite--Biehler step
+
+The oriented converse Hermite--Biehler interface
+`HermiteBiehlerConverseOrientedStatement` (and hence the analytic step
+`HurwitzStableOddEvenToPrecStatement`) is only genuinely analytic in the
+*equal-degree* regime.  Once the two factors have strictly ordered degrees, the
+orientation is forced by the elementary degree constraint carried by `Prec`, so
+the orientation-selection input is unnecessary and the *disjunctive* converse
+`hermiteBiehlerConverseStatement` already suffices.
+
+This isolates exactly where the orientation analytic content is needed: it is
+used only when the two polynomials have equal degree (equivalently, for the
+odd/even polynomial, only when its degree is odd). -/
+
+/-- The proper-position relation respects degree: `Prec f g` forces
+`f.natDegree ≤ g.natDegree`.  Both interlacing shapes (`differ-by-1` and
+`same-degree`) only increase the length of the right-hand root list. -/
+theorem Prec.natDegree_le {f g : ℝ[X]} (h : Prec f g) :
+    f.natDegree ≤ g.natDegree := by
+  obtain ⟨⟨_, hfs⟩, ⟨_, hgs⟩, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩ := h
+  have hss_len : ss.length = f.natDegree := by
+    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hfs]
+  have hrs_len : rs.length = g.natDegree := by
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hgs]
+  rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩ <;> lia
+
+/-- Elementary orientation resolution by degree.  A disjunctive proper-position
+conclusion `Prec g f ∨ Prec f g` collapses to the oriented branch `Prec g f`
+as soon as the degrees are strictly ordered `g.natDegree < f.natDegree`, since
+the reversed branch `Prec f g` would force `f.natDegree ≤ g.natDegree`. -/
+theorem prec_of_or_of_natDegree_lt {f g : ℝ[X]}
+    (h : Prec g f ∨ Prec f g) (hgf : g.natDegree < f.natDegree) : Prec g f := by
+  rcases h with h | h
+  · exact h
+  · exact absurd h.natDegree_le (by lia)
+
+/-- Degree-restricted oriented converse Hermite--Biehler step, *without* any
+orientation-selection input.
+
+For `f, g` with positive leading coefficients and strictly ordered degrees
+`g.natDegree < f.natDegree`, upper-half-plane stability of `f + i g` forces the
+oriented proper position `Prec g f`, using only the disjunctive converse
+`hermiteBiehlerConverseStatement`.  This is the part of
+`HermiteBiehlerConverseOrientedStatement` that needs no extra analytic
+orientation fact: the orientation is pinned by the degree gap.  The remaining,
+genuinely analytic, orientation content of the oriented converse is therefore
+confined to the equal-degree case. -/
+theorem hermiteBiehlerConverseOriented_of_natDegree_lt
+    (hConv : hermiteBiehlerConverseStatement) {f g : ℝ[X]}
+    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree < f.natDegree)
+    (hstable : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) :
+    Prec g f :=
+  prec_of_or_of_natDegree_lt (hConv hf hg hstable) hdeg
+
+/-- Strict-degree case of the analytic converse step
+`HurwitzStableOddEvenToPrecStatement`, *without* the oriented converse interface.
+
+When `p.natDegree < q.natDegree` (equivalently, when `oddEvenPolynomial p q` has
+even degree, see
+`natDegree_lt_iff_even_natDegree_oddEvenPolynomial`), Hurwitz stability of
+`q(x²) + x p(x²)` forces `Prec p q` using only the converse substitution
+interface `HurwitzOddEvenToHermiteBiehlerStableStatement` and the *disjunctive*
+converse Hermite--Biehler theorem `hermiteBiehlerConverseStatement`.  No
+orientation-selection input (`HermiteBiehlerOrientationStatement` /
+`HermiteBiehlerConverseOrientedStatement`) is needed: the orientation is forced
+by the degree gap.
+
+This sharpens `hurwitzStableOddEvenToPrec_of_converse`, which in general also
+needs the oriented converse, by showing the orientation input is dispensable in
+the strict-degree (even-degree) regime; only the equal-degree (odd-degree)
+regime retains genuinely analytic orientation content. -/
+theorem hurwitzStableOddEvenToPrec_of_converse_natDegree_lt
+    (hSub : HurwitzOddEvenToHermiteBiehlerStableStatement)
+    (hConv : hermiteBiehlerConverseStatement)
+    {p q : ℝ[X]} (hp : p ≠ 0) (hq : q ≠ 0)
+    (hdeg : p.natDegree < q.natDegree)
+    (hstable : IsHurwitzStable (oddEvenPolynomial p q)) : Prec p q := by
+  obtain ⟨hnn, hrhp⟩ := hstable
+  have hpnn := hasNonnegCoeffs_left_of_oddEvenPolynomial hnn
+  have hqnn := hasNonnegCoeffs_right_of_oddEvenPolynomial hnn
+  have hupper := hSub hpnn hqnn hrhp
+  have hqpos := hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hqnn hq
+  have hppos := hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hpnn hp
+  exact hermiteBiehlerConverseOriented_of_natDegree_lt hConv hqpos hppos hdeg hupper
+
+/-! ### Degree of the odd/even polynomial -/
+
+/-- Composition with `X²` is nonzero-preserving. -/
+theorem comp_X_sq_ne_zero {p : ℝ[X]} (hp : p ≠ 0) :
+    p.comp (X ^ 2 : ℝ[X]) ≠ 0 := by
+  rw [Ne, Polynomial.comp_eq_zero_iff]
+  rintro (h | ⟨_, hc⟩)
+  · exact hp h
+  · have hd :
+      (X ^ 2 : ℝ[X]).natDegree = (C ((X ^ 2 : ℝ[X]).coeff 0)).natDegree := by
+      rw [← hc]
+    simp at hd
+
+/-- The Veronese substitution `X ↦ X²` doubles the degree. -/
+theorem natDegree_comp_X_sq (q : ℝ[X]) :
+    (q.comp (X ^ 2 : ℝ[X])).natDegree = 2 * q.natDegree := by
+  rw [Polynomial.natDegree_comp]; simp; ring
+
+/-- Degree of the odd part `x · p(x²)`. -/
+theorem natDegree_X_mul_comp_X_sq {p : ℝ[X]} (hp : p ≠ 0) :
+    (X * p.comp (X ^ 2 : ℝ[X])).natDegree = 2 * p.natDegree + 1 := by
+  rw [Polynomial.natDegree_mul (by simp) (comp_X_sq_ne_zero hp), Polynomial.natDegree_X,
+    natDegree_comp_X_sq]
+  ring
+
+/-- Degree of the odd/even polynomial `q(x²) + x p(x²)`.
+
+The even part `q(x²)` has degree `2·deg q` and the odd part `x p(x²)` has degree
+`2·deg p + 1`; these have opposite parity, so there is never any leading
+cancellation and the degree is their maximum. -/
+theorem natDegree_oddEvenPolynomial {p q : ℝ[X]} (hp : p ≠ 0) :
+    (oddEvenPolynomial p q).natDegree =
+      max (2 * q.natDegree) (2 * p.natDegree + 1) := by
+  have ha : (q.comp (X ^ 2 : ℝ[X])).natDegree = 2 * q.natDegree :=
+    natDegree_comp_X_sq q
+  have hb : (X * p.comp (X ^ 2 : ℝ[X])).natDegree = 2 * p.natDegree + 1 :=
+    natDegree_X_mul_comp_X_sq hp
+  unfold oddEvenPolynomial
+  rcases lt_trichotomy (2 * q.natDegree) (2 * p.natDegree + 1) with h | h | h
+  · rw [Polynomial.natDegree_add_eq_right_of_natDegree_lt (by rw [ha, hb]; exact h), hb,
+      max_eq_right (by lia)]
+  · exfalso
+    lia
+  · rw [Polynomial.natDegree_add_eq_left_of_natDegree_lt (by rw [ha, hb]; exact h), ha,
+      max_eq_left (by lia)]
+
+/-- The strict-degree hypothesis used in
+`hurwitzStableOddEvenToPrec_of_converse_natDegree_lt` is exactly the statement
+that the odd/even polynomial has *even* degree: for `p ≠ 0`,
+`p.natDegree < q.natDegree ↔ Even (oddEvenPolynomial p q).natDegree`.
+
+Thus the orientation-free reduction covers precisely the even-degree case, and
+the genuinely analytic orientation content of the converse Hermite--Biehler step
+is confined to the odd-degree (equal-degree) case. -/
+theorem natDegree_lt_iff_even_natDegree_oddEvenPolynomial {p q : ℝ[X]}
+    (hp : p ≠ 0) :
+    p.natDegree < q.natDegree ↔ Even (oddEvenPolynomial p q).natDegree := by
+  rw [natDegree_oddEvenPolynomial hp]
+  constructor
+  · intro h
+    rw [max_eq_left (by lia)]
+    exact ⟨q.natDegree, by ring⟩
+  · intro h
+    by_contra hcon
+    have hle := Nat.not_lt.mp hcon
+    rw [max_eq_right (by lia)] at h
+    rcases h with ⟨k, hk⟩
+    lia
+
 /-- Existence of a right-half-plane square root.
 
 Any complex number with strictly positive imaginary part has a square root lying

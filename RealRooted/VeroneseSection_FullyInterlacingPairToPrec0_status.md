@@ -142,3 +142,53 @@ HurwitzStableOddEvenToPrecStatement
 together with the existing forward bridge
 `hermiteBiehlerForwardPosStatement`.  The degenerate `p = 0` and `q = 0` cases
 of the rotated substitution are now handled by the square-root lemmas above.
+
+## Update: degree-based orientation of the converse Hermite-Biehler step
+
+Aristotle task `dc81bb3d-2dcd-49b1-8f4c-69a89b0fc605` showed that the
+orientation-selection input is unnecessary in the strict-degree, even-degree
+regime of the converse Hermite-Biehler step.
+
+The new checked declarations are:
+
+```lean
+Prec.natDegree_le :
+  Prec f g -> f.natDegree <= g.natDegree
+
+prec_of_or_of_natDegree_lt :
+  (Prec g f \/ Prec f g) -> g.natDegree < f.natDegree -> Prec g f
+
+hermiteBiehlerConverseOriented_of_natDegree_lt :
+  hermiteBiehlerConverseStatement ->
+  HasPosLeadingCoeff f ->
+  HasPosLeadingCoeff g ->
+  g.natDegree < f.natDegree ->
+  IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) ->
+  Prec g f
+
+hurwitzStableOddEvenToPrec_of_converse_natDegree_lt :
+  HurwitzOddEvenToHermiteBiehlerStableStatement ->
+  hermiteBiehlerConverseStatement ->
+  p <> 0 ->
+  q <> 0 ->
+  p.natDegree < q.natDegree ->
+  IsHurwitzStable (oddEvenPolynomial p q) ->
+  Prec p q
+```
+
+The auxiliary degree facts are:
+
+```lean
+comp_X_sq_ne_zero
+natDegree_comp_X_sq
+natDegree_X_mul_comp_X_sq
+natDegree_oddEvenPolynomial
+natDegree_lt_iff_even_natDegree_oddEvenPolynomial
+```
+
+Consequently, the genuinely analytic orientation content of the converse
+Hermite-Biehler step is confined to the equal-degree case, equivalently the case
+where `oddEvenPolynomial p q` has odd degree.  The even-degree case is now
+orientation-free, assuming only the converse substitution interface
+`HurwitzOddEvenToHermiteBiehlerStableStatement` and the disjunctive converse
+`hermiteBiehlerConverseStatement`.
