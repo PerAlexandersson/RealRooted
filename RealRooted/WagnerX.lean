@@ -1007,11 +1007,11 @@ theorem prec_of_prec_mul_X_sub_C_both {f g : ℝ[X]} (r : ℝ)
     rw [hrs_eq]
     symm
     rw [roots_mul (mul_ne_zero (X_sub_C_ne_zero r) hg.1), roots_X_sub_C]
-  have hss_mul_is : ss_mul = ss.orderedInsert (· ≤ ·) r := by
-    exact List.Perm.eq_of_pairwise' hss_mul (hss_sorted.orderedInsert _ _)
+  have hss_mul_is : ss_mul = ss.orderedInsert (· ≤ ·) r :=
+    List.Perm.eq_of_pairwise' hss_mul (hss_sorted.orderedInsert _ _)
       (Multiset.coe_eq_coe.mp (hss_mul_eq.trans hss_insert_eq.symm))
-  have hrs_mul_is : rs_mul = rs.orderedInsert (· ≤ ·) r := by
-    exact List.Perm.eq_of_pairwise' hrs_mul (hrs_sorted.orderedInsert _ _)
+  have hrs_mul_is : rs_mul = rs.orderedInsert (· ≤ ·) r :=
+    List.Perm.eq_of_pairwise' hrs_mul (hrs_sorted.orderedInsert _ _)
       (Multiset.coe_eq_coe.mp (hrs_mul_eq.trans hrs_insert_eq.symm))
   refine ⟨hf, hg, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, ?_⟩
   rcases hcase with ⟨hlen, hint⟩ | ⟨hlen, halt⟩

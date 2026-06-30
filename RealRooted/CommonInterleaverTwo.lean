@@ -732,8 +732,8 @@ theorem prec_boundary_right_pair_of_orientation_succDegree_nonneg
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     {t : ℝ} (ht : 0 < t) :
     Prec (C t * f + g) (X * f) := by
-  have hprec_or : Prec f g ∨ Prec g f := by
-    exact horient hfg hf_pos hg_pos (by lia) (by lia) hno
+  have hprec_or : Prec f g ∨ Prec g f :=
+    horient hfg hf_pos hg_pos (by lia) (by lia) hno
   have hprec_fg : Prec f g := by
     rcases hprec_or with hprec | hprec
     · lia
@@ -1230,8 +1230,8 @@ theorem posComboNoCommonSuccDegreeOrientation_of_noCommonOrientation
     (hstep : PosComboNoCommonOrientationStatement) :
     PosComboNoCommonSuccDegreeOrientationNonnegStatement := by
   intro f g hf_pos hg_pos _ _ hfg hsucc hno
-  have hprec_or : Prec f g ∨ Prec g f := by
-    exact hstep hfg hf_pos hg_pos (by lia) (by lia) hno
+  have hprec_or : Prec f g ∨ Prec g f :=
+    hstep hfg hf_pos hg_pos (by lia) (by lia) hno
   rcases hprec_or with hprec | hprec
   · lia
   · have hbounds := natDegree_bounds_of_prec hprec

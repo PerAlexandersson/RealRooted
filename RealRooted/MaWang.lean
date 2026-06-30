@@ -286,10 +286,9 @@ private lemma exists_mem_drop_le_of_lt_countP
     simpa [List.take_append_drop] using
       (List.countP_append (p := fun x => decide (x ≤ s)) (l₁ := ts.take k) (l₂ := ts.drop k))
   rw [hsplit, hdrop_zero] at hcount
-  have htake_le : (ts.take k).countP (· ≤ s) ≤ k := by
-    exact
-      (List.countP_le_length (p := fun x => decide (x ≤ s)) (l := ts.take k)).trans
-        (by simp [List.length_take])
+  have htake_le : (ts.take k).countP (· ≤ s) ≤ k :=
+    (List.countP_le_length (p := fun x => decide (x ≤ s)) (l := ts.take k)).trans
+      (by simp [List.length_take])
   lia
 
 /-- Count-based ordered matching for the differ-by-1 case. If the sorted
@@ -1087,8 +1086,8 @@ private lemma countP_le_of_eq_max_isRoot
         grind
       have hr_lt_r₂ : r < r₂ := hstrict pre hEq
       by_cases hsmall : ts.countP (· ≤ r₂) ≤ pre.length + off + 1
-      · have hmono : ts.countP (· ≤ r) ≤ ts.countP (· ≤ r₂) := by
-          exact List.countP_mono_left <| by
+      · have hmono : ts.countP (· ≤ r) ≤ ts.countP (· ≤ r₂) :=
+          List.countP_mono_left <| by
             grind
         lia
       · have heq : ts.countP (· ≤ r₂) = pre.length + off + 2 := by
@@ -1125,8 +1124,8 @@ private lemma countP_lt_of_eq_max_isRoot
   intro pre r rest hEq
   have hle := hcount_le pre hEq
   by_cases hsmall : ts.countP (· ≤ r) ≤ pre.length + off
-  · have hmono : ts.countP (· < r) ≤ ts.countP (· ≤ r) := by
-      exact List.countP_mono_left <| by
+  · have hmono : ts.countP (· < r) ≤ ts.countP (· ≤ r) :=
+      List.countP_mono_left <| by
         grind
     lia
   · have heq : ts.countP (· ≤ r) = pre.length + off + 1 := by
@@ -1914,8 +1913,8 @@ lemma hasPosLeadingCoeff_sub_C_mul_of_interlaces_degree_lower_bound
     (hF_pos : HasPosLeadingCoeff F) (c : ℝ) :
     HasPosLeadingCoeff (F - C c * g) := by
   unfold HasPosLeadingCoeff at hF_pos ⊢
-  have hlt : degree (C c * g) < degree F := by
-    exact degree_lt_degree <|
+  have hlt : degree (C c * g) < degree F :=
+    degree_lt_degree <|
       (natDegree_C_mul_le c g).trans_lt
         (natDegree_lt_of_interlaces_degree_lower_bound hgf hdeg_lo)
   rw [leadingCoeff_sub_of_degree_lt hlt]
@@ -2051,8 +2050,8 @@ theorem isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
       natDegree_sub_C_mul_eq_of_interlaces_degree_lower_bound hgf
         (by lia) δ
     have hFδ_lc : (F - C δ * g).leadingCoeff = F.leadingCoeff := by
-      have hlt : degree (C δ * g) < degree F := by
-        exact degree_lt_degree <|
+      have hlt : degree (C δ * g) < degree F :=
+        degree_lt_degree <|
           (natDegree_C_mul_le δ g).trans_lt
             (natDegree_lt_of_interlaces_degree_lower_bound hgf (by lia))
       rw [leadingCoeff_sub_of_degree_lt hlt]
@@ -2067,8 +2066,8 @@ theorem isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
     have hqδ_coeff :
         ∀ i : ℕ, ‖qδ.coeff i - q.coeff i‖ < η := by
       intro i
-      have hgi_bound : ‖g.coeff i‖ ≤ M := by
-        exact (coeff_norm_le_coeffSumRange g i).trans (le_max_right _ _)
+      have hgi_bound : ‖g.coeff i‖ ≤ M :=
+        (coeff_norm_le_coeffSumRange g i).trans (le_max_right _ _)
       have hprod_bound : ‖F.leadingCoeff⁻¹‖ * ‖g.coeff i‖ ≤ A := by
         have hA : ‖F.leadingCoeff⁻¹‖ * M ≤ A := le_max_right _ _
         nlinarith [hgi_bound, norm_nonneg (F.leadingCoeff⁻¹), norm_nonneg (g.coeff i)]
@@ -2198,8 +2197,8 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
     have hFδ_natdeg : (F - C δ * g).natDegree = F.natDegree :=
       natDegree_sub_C_mul_eq_of_interlaces_degree_lower_bound hgf hdeg_lo δ
     have hFδ_lc : (F - C δ * g).leadingCoeff = F.leadingCoeff := by
-      have hlt : degree (C δ * g) < degree F := by
-        exact degree_lt_degree <|
+      have hlt : degree (C δ * g) < degree F :=
+        degree_lt_degree <|
           (natDegree_C_mul_le δ g).trans_lt
             (natDegree_lt_of_interlaces_degree_lower_bound hgf hdeg_lo)
       rw [leadingCoeff_sub_of_degree_lt hlt]
@@ -2214,8 +2213,8 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
     have hqδ_coeff :
         ∀ i : ℕ, ‖qδ.coeff i - q.coeff i‖ < η := by
       intro i
-      have hgi_bound : ‖g.coeff i‖ ≤ M := by
-        exact (coeff_norm_le_coeffSumRange g i).trans (le_max_right _ _)
+      have hgi_bound : ‖g.coeff i‖ ≤ M :=
+        (coeff_norm_le_coeffSumRange g i).trans (le_max_right _ _)
       have hprod_bound : ‖F.leadingCoeff⁻¹‖ * ‖g.coeff i‖ ≤ A := by
         have hA : ‖F.leadingCoeff⁻¹‖ * M ≤ A := le_max_right _ _
         nlinarith [hgi_bound, norm_nonneg (F.leadingCoeff⁻¹), norm_nonneg (g.coeff i)]
@@ -2398,8 +2397,8 @@ theorem prec_of_interlaces_evalCoeff_nonpos_same_of_no_common
         · have hbad : ts.countP (· ≤ r₂) ≤ pre.length + 1 := by
             lia
           have hr₁_lt_r₂ : r₁ < r₂ := hstrict (pre ++ [x]) hEq
-          have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) := by
-            exact List.countP_mono_left <| by
+          have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) :=
+            List.countP_mono_left <| by
               grind
           have hcount_r₁ : ts.countP (· ≤ r₁) = pre.length + 1 := by
             lia
@@ -2562,8 +2561,8 @@ theorem prec_of_interlaces_evalCoeff_nonpos_succ_of_no_common
         have hbad : ts.countP (· ≤ r₂) ≤ 1 := by
           simp_all
         have hr₁_lt_r₂ : r₁ < r₂ := hstrict [] hEq
-        have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) := by
-          exact List.countP_mono_left <| by
+        have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) :=
+          List.countP_mono_left <| by
             intro y _ hy
             simp only [decide_eq_true_eq] at hy ⊢
             exact le_trans hy (le_of_lt hr₁_lt_r₂)
@@ -2620,8 +2619,8 @@ theorem prec_of_interlaces_evalCoeff_nonpos_succ_of_no_common
         by_cases hgood : (pre ++ [x]).length + 1 < ts.countP (· ≤ r₂)
         · lia
         have hr₁_lt_r₂ : r₁ < r₂ := hstrict (pre ++ [x]) hEq
-        have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) := by
-          exact List.countP_mono_left <| by
+        have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) :=
+          List.countP_mono_left <| by
             intro y _ hy
             simp only [decide_eq_true_eq] at hy ⊢
             exact le_trans hy (le_of_lt hr₁_lt_r₂)
@@ -2784,8 +2783,8 @@ theorem prec_of_interlaces_eval_mul_nonpos_same_of_no_common
         · have hbad : ts.countP (· ≤ r₂) ≤ pre.length + 1 := by
             lia
           have hr₁_lt_r₂ : r₁ < r₂ := hstrict (pre ++ [x]) hEq
-          have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) := by
-            exact List.countP_mono_left <| by
+          have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) :=
+            List.countP_mono_left <| by
               grind
           have hcount_r₁ : ts.countP (· ≤ r₁) = pre.length + 1 := by
             lia
@@ -2933,8 +2932,8 @@ theorem prec_of_interlaces_eval_mul_nonpos_succ_of_no_common
         have hbad : ts.countP (· ≤ r₂) ≤ 1 := by
           simp_all
         have hr₁_lt_r₂ : r₁ < r₂ := hstrict [] hEq
-        have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) := by
-          exact List.countP_mono_left <| by
+        have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) :=
+          List.countP_mono_left <| by
             grind
         have hcount_r₁ : ts.countP (· ≤ r₁) = 1 := by
           lia
@@ -2984,8 +2983,8 @@ theorem prec_of_interlaces_eval_mul_nonpos_succ_of_no_common
         by_cases hgood : (pre ++ [x]).length + 1 < ts.countP (· ≤ r₂)
         · lia
         have hr₁_lt_r₂ : r₁ < r₂ := hstrict (pre ++ [x]) hEq
-        have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) := by
-          exact List.countP_mono_left <| by
+        have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) :=
+          List.countP_mono_left <| by
             grind
         have hbad : ts.countP (· ≤ r₂) ≤ pre.length + 2 := by
           lia
