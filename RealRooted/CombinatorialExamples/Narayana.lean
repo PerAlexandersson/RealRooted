@@ -119,7 +119,7 @@ private lemma narayanaCoeffB_natDegree (n : Nat) (hn : 1 ≤ n) :
   have hmul_ne :
       (C ((-(n : ℝ)) / (n + 3 : ℝ))).leadingCoeff * ((1 - X : ℝ[X]) ^ 2).leadingCoeff ≠ 0 := by
     rw [leadingCoeff_C, leadingCoeff_one_sub_X_sq]
-    lia
+    simpa using hcoeff_ne
   rw [natDegree_mul' hmul_ne, natDegree_C, natDegree_one_sub_X_sq]
 
 private lemma narayanaCoeffB_leadingCoeff (n : Nat) (hn : 1 ≤ n) :
@@ -130,7 +130,7 @@ private lemma narayanaCoeffB_leadingCoeff (n : Nat) (hn : 1 ≤ n) :
   have hmul_ne :
       (C ((-(n : ℝ)) / (n + 3 : ℝ))).leadingCoeff * ((1 - X : ℝ[X]) ^ 2).leadingCoeff ≠ 0 := by
     rw [leadingCoeff_C, leadingCoeff_one_sub_X_sq]
-    lia
+    simpa using hcoeff_ne
   rw [leadingCoeff_mul' hmul_ne, leadingCoeff_C, leadingCoeff_one_sub_X_sq]
   lia
 
@@ -276,13 +276,9 @@ private lemma prec_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
         r ≤ 0 := roots_nonpos_of_nonneg_coeffs hInter.1.2 hnonneg r
           ((mem_roots hInter.1.1).mpr hr)
     have hcoef_nonpos : (((-(n : ℝ)) / (n + 3 : ℝ)) : ℝ) ≤ 0 := by
-      have hnum : (-(n : ℝ)) ≤ 0 := by
-        simp
-      have hden : 0 ≤ (n + 3 : ℝ) := by positivity
-      exact div_nonpos_of_nonpos_of_nonneg hnum hden
-    have hsq_nonneg : 0 ≤ (1 - r) ^ 2 := sq_nonneg (1 - r)
+      exact div_nonpos_of_nonpos_of_nonneg (by simp) (by positivity)
     have : (((-(n : ℝ)) / (n + 3 : ℝ)) : ℝ) * (1 - r) ^ 2 ≤ 0 :=
-      mul_nonpos_of_nonpos_of_nonneg hcoef_nonpos hsq_nonneg
+      mul_nonpos_of_nonpos_of_nonneg hcoef_nonpos (sq_nonneg (1 - r))
     simpa [narayanaCoeffB, eval_mul, eval_sub, eval_one, eval_X] using this
   simpa [narayanaQuot_succ_succ] using
     (prec_of_interlaces_evalCoeff_nonpos
