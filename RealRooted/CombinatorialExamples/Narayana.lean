@@ -278,7 +278,7 @@ private lemma prec_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
     have hcoef_nonpos : (((-(n : ℝ)) / (n + 3 : ℝ)) : ℝ) ≤ 0 := by
       have hnum : (-(n : ℝ)) ≤ 0 := by
         simp
-      have hden : 0 ≤ (n + 3 : ℝ) := by grind
+      have hden : 0 ≤ (n + 3 : ℝ) := by positivity
       exact div_nonpos_of_nonpos_of_nonneg hnum hden
     have hsq_nonneg : 0 ≤ (1 - r) ^ 2 := sq_nonneg (1 - r)
     have : (((-(n : ℝ)) / (n + 3 : ℝ)) : ℝ) * (1 - r) ^ 2 ≤ 0 :=

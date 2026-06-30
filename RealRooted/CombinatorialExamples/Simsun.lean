@@ -213,7 +213,7 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
             nlinarith
           have hlead_pos :
               0 < ((k : ℝ) + 2) * coeff (simsun (n + 1)) (k + 1) := by
-            have hscale : 0 < (k : ℝ) + 2 := by grind
+            have hscale : 0 < (k : ℝ) + 2 := by positivity
             simp_all
           have hsmall_nonneg :
               0 ≤ (((n + 1 : Nat) : ℝ) - 2 * (k : ℝ)) *

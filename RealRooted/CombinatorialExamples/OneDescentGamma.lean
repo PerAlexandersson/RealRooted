@@ -304,8 +304,7 @@ lemma oneDescent_prec_gamma_one_terminal (m : Nat) (hm : 1 < m) :
     rw [show m - 1 = Nat.succ (m - 2) by lia, pow_succ]
   let a : ℝ := (((m - 1 : Nat) : ℝ) / (((1 + 1 : Nat) : ℝ)))
   let b : ℝ := ((m - 1 : Nat) : ℝ)
-  have ha : 0 ≤ a := by
-    grind
+  have ha : 0 ≤ a := oneDescentGamma_linearShift_nonneg m 1
   have hab : a ≤ b := by
     grind
   have hbase : Prec (X + C a) (X * (X + C b)) :=
