@@ -283,13 +283,10 @@ theorem finitePolyaSchur_nonneg_of_backward
   · exact isPFPolynomial_jensenPolynomial_of_finiteMultiplierSequence hgamma hmult
   · exact hBack hgamma hjensen
 
-/-- Classical finite Polya--Schur theorem.  The remaining proof obligation is
-isolated in `finitePolyaSchurNonnegBackwardStatement`. -/
-theorem finitePolyaSchur_nonneg :
-    finitePolyaSchurNonnegStatement :=
-  finitePolyaSchur_nonneg_of_backward (by
-    intro n gamma hgamma hjensen
-    sorry)
+/- The classical finite Pólya--Schur theorem `finitePolyaSchur_nonneg` is
+established in `RealRooted.Hadamard`, where the Schur--Szegő composition
+machinery (`finiteSchurSzegoComposition`) needed for the backward direction
+`finitePolyaSchurNonnegBackwardStatement` is available. -/
 
 /-- A nonnegative finite multiplier sequence preserves the PF cone on the same
 degree range. -/

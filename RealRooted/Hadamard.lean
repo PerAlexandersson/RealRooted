@@ -228,6 +228,76 @@ theorem schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le
       coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hp hk_lt)
     rw [coeff_schurSzegoComp, if_neg hk, coeff_diagonalOperator, hp_coeff, mul_zero]
 
+@[simp] theorem schurSzegoComp_zero_left (n : Nat) (p : ℝ[X]) :
+    schurSzegoComp n 0 p = 0 := by
+  ext k
+  simp [coeff_schurSzegoComp]
+
+@[simp] theorem schurSzegoComp_zero_right (n : Nat) (f : ℝ[X]) :
+    schurSzegoComp n f 0 = 0 := by
+  ext k
+  simp [coeff_schurSzegoComp]
+
+/-- **Finite Schur--Szegő composition theorem** (classical input).
+
+If `f` is a PF polynomial (only real, nonpositive zeros) of degree at most `n`
+and `p` has only real zeros, then their fixed-degree Schur--Szegő composition
+`schurSzegoComp n f p` again has only real zeros, unless it vanishes
+identically.
+
+This is the classical composition/coincidence result of Schur and Szegő; it is
+the single remaining analytic input behind the backward direction of the finite
+Pólya--Schur theorem, isolated here as a named statement. -/
+def finiteSchurSzegoCompositionStatement : Prop :=
+  ∀ {n : ℕ} {f p : ℝ[X]},
+    IsPFPolynomial f →
+    f.natDegree ≤ n →
+    p.natDegree ≤ n →
+    p.Splits →
+      schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits
+
+/-- The backward direction of the finite Pólya--Schur theorem follows, by a
+`sorry`-free reduction, from the finite Schur--Szegő composition theorem: the
+diagonal operator attached to `gamma` acting on a polynomial `p` of degree at
+most `n` is exactly the Schur--Szegő composition of the PF Jensen polynomial of
+`gamma` with `p`. -/
+theorem finitePolyaSchurNonnegBackward_of_schurSzego
+    (hSZ : finiteSchurSzegoCompositionStatement) :
+    finitePolyaSchurNonnegBackwardStatement := by
+  intro n gamma _hgamma hjensen p hp hsplit
+  have hfdeg : (jensenPolynomial n gamma).natDegree ≤ n :=
+    natDegree_jensenPolynomial_le n gamma
+  have heq :
+      schurSzegoComp n (jensenPolynomial n gamma) p = diagonalOperator gamma p :=
+    schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le hp
+  rw [← heq]
+  exact hSZ hjensen hfdeg hp hsplit
+
+/-- Finite Schur--Szegő composition theorem. The degenerate cases (`f = 0` or
+`p = 0`, where the composition vanishes) are discharged; the remaining
+obligation is the substantive case of a nonzero PF polynomial `f` composed with
+a nonzero real-rooted polynomial `p`. -/
+theorem finiteSchurSzegoComposition : finiteSchurSzegoCompositionStatement := by
+  intro n f p hf hfdeg hp hsplit
+  by_cases hf0 : f = 0
+  · exact Or.inl (by rw [hf0]; exact schurSzegoComp_zero_left n p)
+  by_cases hp0 : p = 0
+  · exact Or.inl (by rw [hp0]; exact schurSzegoComp_zero_right n f)
+  -- Substantive case: `f ≠ 0` PF (real, nonpositive zeros) and `p ≠ 0` with
+  -- only real zeros. Then `schurSzegoComp n f p` has only real zeros.
+  sorry
+
+/-- The backward direction of the finite Pólya--Schur theorem, obtained from the
+finite Schur--Szegő composition theorem. -/
+theorem finitePolyaSchurNonnegBackward : finitePolyaSchurNonnegBackwardStatement :=
+  finitePolyaSchurNonnegBackward_of_schurSzego finiteSchurSzegoComposition
+
+/-- Classical finite Pólya--Schur theorem (nonnegative-coefficient convention).
+The only remaining analytic obligation is isolated in
+`finiteSchurSzegoComposition`. -/
+theorem finitePolyaSchur_nonneg : finitePolyaSchurNonnegStatement :=
+  finitePolyaSchur_nonneg_of_backward finitePolyaSchurNonnegBackward
+
 /-- Nonnegative coefficients are preserved by coefficientwise Hadamard
 products. -/
 theorem HasNonnegCoeffs.hadamardProduct {p q : ℝ[X]}
