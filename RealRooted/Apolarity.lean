@@ -253,4 +253,27 @@ theorem apolarPairing_monomial_right {R : Type*} [CommRing R]
       exact hj this
     simp [coeff_monomial, hneq]
 
+/-- The apolar pairing of two monomials is supported exactly on complementary
+degrees. -/
+theorem apolarPairing_monomial_monomial {R : Type*} [CommRing R]
+    (n i j : Nat) (a b : R) :
+    apolarPairing n (monomial i a) (monomial j b) =
+      if i + j = n then (-1 : R) ^ i * (Nat.choose n i : R) * a * b else 0 := by
+  rw [apolarPairing_monomial_left]
+  by_cases hsum : i + j = n
+  · rw [if_pos hsum]
+    have hi : i ≤ n := by lia
+    rw [if_pos hi]
+    have hsub : n - i = j := by lia
+    simp [hsub]
+  · rw [if_neg hsum]
+    by_cases hi : i ≤ n
+    · rw [if_pos hi]
+      have hneq : j ≠ n - i := by
+        intro h
+        apply hsum
+        lia
+      simp [coeff_monomial, hneq]
+    · rw [if_neg hi]
+
 end RealRooted
