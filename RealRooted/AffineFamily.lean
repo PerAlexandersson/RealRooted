@@ -79,13 +79,11 @@ lemma prec_self_mul_X_of_nonneg {f : ℝ[X]}
   have hf_pos : HasPosLeadingCoeff f := hfnn.pos_leadingCoeff hf_ne
   have hXf : ((X * f) ≠ 0 ∧ (X * f).Splits) := isRealRooted_X_mul hf_ne hf_splits
   have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hf_splits hfnn
-  have hXf_nonpos : ∀ r ∈ (X * f).roots, r ≤ 0 := by
-    simp_all
+  have hXf_nonpos : ∀ r ∈ (X * f).roots, r ≤ 0 := by simp_all
   have hXf_pos : HasPosLeadingCoeff (X * f) := by
     unfold HasPosLeadingCoeff at hf_pos ⊢
     simp_all
-  have hdeg : f.natDegree + 1 = (X * f).natDegree := by
-    simp_all
+  have hdeg : f.natDegree + 1 = (X * f).natDegree := by simp_all
   have hself : Prec (X * f) (X * f) := prec_refl hXf.1 hXf.2
   exact
     (prec_iff_prec_mul_X_of_roots_nonpos
@@ -102,16 +100,14 @@ lemma prec_to_prec_mul_X_of_nonneg {f g : ℝ[X]}
   have hrs_len : rs.length = g.natDegree := by
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
   rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩
-  · have hdeg : f.natDegree + 1 = g.natDegree := by
-      lia
+  · have hdeg : f.natDegree + 1 = g.natDegree := by lia
     exact
       (prec_iff_prec_mul_X_of_roots_nonpos
         (f := f) (g := g)
         hf.2 hg.2 (hfnn.pos_leadingCoeff hf.1) (hgnn.pos_leadingCoeff hg.1)
         hf_nonpos hg_nonpos hdeg).mp
         ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, Or.inl ⟨hlen, by lia⟩⟩
-  · have hdeg : f.natDegree = g.natDegree := by
-      lia
+  · have hdeg : f.natDegree = g.natDegree := by lia
     exact
       prec_sameDegree_to_prec_mul_X_of_roots_nonpos
         ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, Or.inr ⟨hlen, by lia⟩⟩
@@ -141,10 +137,8 @@ private lemma affine_family_common_root_reduction_data
         ((((C s * X + C t) * qf) + qg) ≠ 0 ∧ (((C s * X + C t) * qf) + qg).Splits) := by
   obtain ⟨qf, hqf⟩ := dvd_iff_isRoot.mpr hrf
   obtain ⟨qg, hqg⟩ := dvd_iff_isRoot.mpr hrg
-  have hqf_ne : qf ≠ 0 := by
-    grind
-  have hqg_ne : qg ≠ 0 := by
-    grind
+  have hqf_ne : qf ≠ 0 := by grind
+  have hqg_ne : qg ≠ 0 := by grind
   have hqf_rr : (qf ≠ 0 ∧ qf.Splits) :=
     isRealRooted_of_dvd hf_ne hf_splits hqf_ne ⟨X - C r, by grind⟩
   have hqg_rr : (qg ≠ 0 ∧ qg.Splits) :=
@@ -168,8 +162,7 @@ private lemma affine_family_common_root_reduction_data
       (((C s * X + C t) * ((X - C r) * qf)) + ((X - C r) * qg))
         = (X - C r) * (((C s * X + C t) * qf) + qg) := by
     grind
-  have hsum_ne : (((C s * X + C t) * qf) + qg) ≠ 0 := by
-    grind
+  have hsum_ne : (((C s * X + C t) * qf) + qg) ≠ 0 := by grind
   exact
     isRealRooted_of_dvd hbase.1 hbase.2 hsum_ne
       ⟨X - C r, by
@@ -198,8 +191,7 @@ private lemma prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos_local {f g : ℝ[
   have hrs_f : rs_f.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hrs_f_nonpos : ∀ r ∈ rs_f, r ≤ 0 :=
     fun r hr => hf_nonpos r (by rw [← hrs_f_eq]; exact Multiset.mem_coe.mpr hr)
-  have hrs_f0 : (rs_f ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by
-    grind
+  have hrs_f0 : (rs_f ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by grind
   have hXf_roots : (X * f).roots = {0} + f.roots := by
     rw [roots_mul (mul_ne_zero X_ne_zero hf.1), roots_X]
   have hrs_Xf_is : rs_Xf = rs_f ++ [(0 : ℝ)] := by
@@ -212,10 +204,8 @@ private lemma prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos_local {f g : ℝ[
       ← Multiset.coe_card, hss_g_eq, card_roots_of_splits hg.2, hdeg]
   rcases hshape with ⟨hlen, hint⟩ | ⟨hlen, _⟩
   · rw [hrs_Xf_is] at hint hlen
-    have hlen' : ss_g.length + 1 = (rs_f ++ [(0 : ℝ)]).length := by
-      lia
-    have hrs_f0_nonpos : ∀ r ∈ rs_f ++ [(0 : ℝ)], r ≤ 0 := by
-      grind
+    have hlen' : ss_g.length + 1 = (rs_f ++ [(0 : ℝ)]).length := by lia
+    have hrs_f0_nonpos : ∀ r ∈ rs_f ++ [(0 : ℝ)], r ≤ 0 := by grind
     have halt0 :
         ListAlternates (rs_f ++ [(0 : ℝ)]) (ss_g ++ [(0 : ℝ)]) :=
       listAlternates_append_zero ss_g (rs_f ++ [(0 : ℝ)]) hlen' hint hrs_f0_nonpos
@@ -241,8 +231,7 @@ lemma prec_of_prec_mul_X_of_nonneg {f g : ℝ[X]}
       rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hg.2]
     have hrs_len : rs.length = (X * f).natDegree := by
       rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hXf.2]
-    have hdeg : f.natDegree = g.natDegree := by
-      simp_all
+    have hdeg : f.natDegree = g.natDegree := by simp_all
     exact
       prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos_local
         h hdeg hf_nonpos
@@ -250,8 +239,7 @@ lemma prec_of_prec_mul_X_of_nonneg {f g : ℝ[X]}
       rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hg.2]
     have hrs_len : rs.length = (X * f).natDegree := by
       rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hXf.2]
-    have hdeg : f.natDegree + 1 = g.natDegree := by
-      simp_all
+    have hdeg : f.natDegree + 1 = g.natDegree := by simp_all
     exact
       (prec_iff_prec_mul_X_of_roots_nonpos
         (f := f) (g := g)
