@@ -498,10 +498,8 @@ lemma exists_rightmost_root_of_isRealRooted
   let rs := p.roots.sort (· ≤ ·)
   have hrs_eq : (↑rs : Multiset ℝ) = p.roots := Multiset.sort_eq ..
   have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
-  have hrs_len : rs.length = p.natDegree := by
-    simp [rs, card_roots_of_splits hp_splits]
-  have hrs_ne : rs ≠ [] := by
-    grind
+  have hrs_len : rs.length = p.natDegree := by simp [rs, card_roots_of_splits hp_splits]
+  have hrs_ne : rs ≠ [] := by grind
   refine ⟨rs.getLast hrs_ne, ?_, ?_⟩
   · have hr_mem : rs.getLast hrs_ne ∈ rs := List.getLast_mem hrs_ne
     have : rs.getLast hrs_ne ∈ p.roots := by
@@ -537,8 +535,7 @@ lemma exists_root_upper_bound (p : ℝ[X]) :
       simpa [rs, hrs_nil] using (Multiset.sort_eq (s := p.roots) (r := (· ≤ ·))).symm
     simp_all
   · refine ⟨rs.getLast hrs_nil, ?_⟩
-    have hrs_sorted : rs.Pairwise (· ≤ ·) := by
-      simp [rs]
+    have hrs_sorted : rs.Pairwise (· ≤ ·) := by simp [rs]
     intro r hr
     have hr_mem : r ∈ rs := by
       apply Multiset.mem_coe.mp

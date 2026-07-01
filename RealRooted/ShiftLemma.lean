@@ -40,8 +40,7 @@ theorem prec_shift_of_interlaces
     (hdeg_lo : f.natDegree ≤ (f + (X - C 1) * h).natDegree)
     (hdeg_hi : (f + (X - C 1) * h).natDegree ≤ f.natDegree + 1) :
     Prec f (f + (X - C 1) * h) := by
-  have hrewrite : f + (X - C 1) * h = C 1 * f + (X - C 1) * h := by
-    simp [map_one]
+  have hrewrite : f + (X - C 1) * h = C 1 * f + (X - C 1) * h := by simp [map_one]
   rw [hrewrite]
   apply prec_of_interlaces_evalCoeff_nonpos hinterl hh_pos
   · lia
@@ -114,10 +113,8 @@ theorem prec_shift_of_same_degree
     (heval : h.eval 0 ≤ f.eval 0) :
     Prec f (f + (X - C 1) * h) := by
   let t : ℝ[X] := (X - C 1) * h
-  have hf_le_one : ∀ r ∈ f.roots, r ≤ (1 : ℝ) := by
-    grind
-  have hh_le_one : ∀ r ∈ h.roots, r ≤ (1 : ℝ) := by
-    grind
+  have hf_le_one : ∀ r ∈ f.roots, r ≤ (1 : ℝ) := by grind
+  have hh_le_one : ∀ r ∈ h.roots, r ≤ (1 : ℝ) := by grind
   have hft : Prec f t := by
     let h' := h.comp (X + C 1)
     let f' := f.comp (X + C 1)

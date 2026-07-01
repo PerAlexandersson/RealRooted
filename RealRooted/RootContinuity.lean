@@ -92,8 +92,7 @@ lemma norm_coeff_sub_normalized_left_family_le
               simp
       _ = (t + 1)⁻¹ * (g.coeff i - f.coeff i) := by
             grind
-  have hden_nonneg : 0 ≤ (t + 1)⁻¹ := by
-    positivity
+  have hden_nonneg : 0 ≤ (t + 1)⁻¹ := by positivity
   calc
     ‖(C (t + 1)⁻¹ * (C t * f + g)).coeff i - f.coeff i‖
         = ‖(t + 1)⁻¹ * (g.coeff i - f.coeff i)‖ := by lia
@@ -136,8 +135,7 @@ theorem exists_t_pos_with_normalized_left_family_bound
     linarith
   have hbound_div : c / (c / ε + 2) < ε := by
     rw [div_lt_iff₀ hden_pos]
-    have hceq : ε * (c / ε) = c := by
-      grind
+    have hceq : ε * (c / ε) = c := by grind
     grind
   grind
 
@@ -166,10 +164,8 @@ theorem exists_real_root_near_in_left_family
   let q : ℝ[X] := C (t + 1)⁻¹ * (C t * f + g)
   have ht_ne : t ≠ 0 := ne_of_gt ht
   have ht1_ne : t + 1 ≠ 0 := by positivity
-  have hf_pos : HasPosLeadingCoeff f := by
-    simp [HasPosLeadingCoeff, hf_monic.leadingCoeff]
-  have hg_pos : HasPosLeadingCoeff g := by
-    simp [HasPosLeadingCoeff, hg_monic.leadingCoeff]
+  have hf_pos : HasPosLeadingCoeff f := by simp [HasPosLeadingCoeff, hf_monic.leadingCoeff]
+  have hg_pos : HasPosLeadingCoeff g := by simp [HasPosLeadingCoeff, hg_monic.leadingCoeff]
   have hCt_f_pos : HasPosLeadingCoeff (C t * f) := by
     unfold HasPosLeadingCoeff
     simp_all
@@ -227,10 +223,8 @@ theorem exists_complex_aroot_near_in_left_family
   let q : ℝ[X] := C (t + 1)⁻¹ * (C t * f + g)
   have ht_ne : t ≠ 0 := ne_of_gt ht
   have ht1_ne : t + 1 ≠ 0 := by positivity
-  have hf_pos : HasPosLeadingCoeff f := by
-    simp [HasPosLeadingCoeff, hf_monic.leadingCoeff]
-  have hg_pos : HasPosLeadingCoeff g := by
-    simp [HasPosLeadingCoeff, hg_monic.leadingCoeff]
+  have hf_pos : HasPosLeadingCoeff f := by simp [HasPosLeadingCoeff, hf_monic.leadingCoeff]
+  have hg_pos : HasPosLeadingCoeff g := by simp [HasPosLeadingCoeff, hg_monic.leadingCoeff]
   have hCt_f_pos : HasPosLeadingCoeff (C t * f) := by
     unfold HasPosLeadingCoeff
     simp_all

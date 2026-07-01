@@ -152,8 +152,7 @@ theorem not_aissenSchoenbergWhitneyForward_without_nonzero :
       IsPolyaFreqSeq (fun n => p.coeff n) →
       (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) := by
   intro h
-  have hnn : HasNonnegCoeffs (0 : ℝ[X]) := by
-    simp [HasNonnegCoeffs]
+  have hnn : HasNonnegCoeffs (0 : ℝ[X]) := by simp [HasNonnegCoeffs]
   have hbad := h hnn (by simpa using IsPolyaFreqSeq_zero)
   exact hbad.1.1 rfl
 
