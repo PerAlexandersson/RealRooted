@@ -417,7 +417,8 @@ lemma isRealRooted_mem_rowPairAffineSeq
         (row₂.get ⟨j, by lia⟩)
         (row₂.get ⟨j, by lia⟩))
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t)
-    (p : ℝ[X]) (hp : p ∈ (rowPairAffineSeq row₁ row₂ s t).reverse) : (p ≠ 0 ∧ p.Splits) := by
+    (p : ℝ[X]) (hp : p ∈ (rowPairAffineSeq row₁ row₂ s t).reverse) :
+    p ≠ 0 ∧ p.Splits := by
   obtain ⟨j, rfl⟩ := List.mem_iff_get.1 (by simpa using hp)
   let j' : Fin n := ⟨j, by
     simpa [length_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len] using j.2⟩
@@ -800,9 +801,9 @@ theorem prec0_zipWith_sum_pair_of_2x2
   let F : ℝ[X] := ((row₁.zipWith (· * ·) fs).sum)
   let G : ℝ[X] := ((row₂.zipWith (· * ·) fs).sum)
   by_cases hF_zero : F = 0
-  · exact Or.inl (by lia)
+  · exact Or.inl hF_zero
   by_cases hG_zero : G = 0
-  · exact Or.inr (Or.inl (by lia))
+  · exact Or.inr (Or.inl hG_zero)
   let auxRow := rowPairAffineSeq row₁ row₂
   have hrows : row₁.length = row₂.length := by lia
   have haux_len : ∀ {s t : ℝ}, (auxRow s t).length = n := by
@@ -896,9 +897,9 @@ theorem prec0_zipWith_sum_pair_of_2x2_weak
   let F : ℝ[X] := ((row₁.zipWith (· * ·) fs).sum)
   let G : ℝ[X] := ((row₂.zipWith (· * ·) fs).sum)
   by_cases hF_zero : F = 0
-  · exact Or.inl (by lia)
+  · exact Or.inl hF_zero
   by_cases hG_zero : G = 0
-  · exact Or.inr (Or.inl (by lia))
+  · exact Or.inr (Or.inl hG_zero)
   let auxRow := rowPairAffineSeq row₁ row₂
   have hrows : row₁.length = row₂.length := by lia
   have haux_len : ∀ {s t : ℝ}, (auxRow s t).length = n := by

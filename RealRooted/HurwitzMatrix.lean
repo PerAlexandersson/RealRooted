@@ -20,8 +20,7 @@ finite-minor statement needed by the existing `VeroneseSection` route.
 
 @[simp] theorem hurwitz_coeff_odd_row (p : ℝ[X]) (i j : ℕ) :
     hurwitz (fun k => p.coeff k) (2 * i + 1) j = toeplitz (fun k => p.coeff (2 * k)) i j := by
-  have hdiv : (2 * i + 1) / 2 = i := by lia
-  simp [hurwitz, hdiv]
+  simp [hurwitz, show (2 * i + 1) / 2 = i by lia]
 
 theorem hurwitz_coeff_even_row_apply (p : ℝ[X]) (i j : ℕ) :
     hurwitz (fun k => p.coeff k) (2 * i) j = if j ≤ i then p.coeff (2 * (i - j) + 1) else 0 := by

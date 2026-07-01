@@ -241,8 +241,7 @@ lemma xAddOne_xSq_add_fiveX_add_six_posComboRealRooted :
 private lemma xAddOne_xSq_add_fiveX_add_six_noCommon :
     ∀ r, (X + 1 : ℝ[X]).IsRoot r → ¬ (((X + 2) * (X + 3)) : ℝ[X]).IsRoot r := by
   intro r hroot1 hroot2
-  have hr1 : r + 1 = 0 := by simp_all
-  have hprod : (r + 2) * (r + 3) = 0 := by simp_all
+  simp_all
   grind
 
 private lemma xAddOne_xSq_add_fiveX_add_six_not_prec :
@@ -341,8 +340,7 @@ private lemma xAddOne_xAddTwo_posComboRealRooted :
 private lemma xAddOne_xAddTwo_noCommon :
     ∀ r, (X + 1 : ℝ[X]).IsRoot r → ¬ (X + 2 : ℝ[X]).IsRoot r := by
   intro r hroot1 hroot2
-  have hr1 : r + 1 = 0 := by simp_all
-  have hr2 : r + 2 = 0 := by simp_all
+  simp_all
   linarith
 
 /-- The linear pair used in the counterexamples still satisfies the true
