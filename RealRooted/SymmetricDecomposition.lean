@@ -291,8 +291,8 @@ lemma eval_pos_of_hasNonnegCoeffs_of_pos {h : ℝ[X]}
     (hh : HasNonnegCoeffs h) (h0 : h ≠ 0) {x : ℝ} (hx : 0 < x) :
     0 < h.eval x := by
   have heval :
-      h.eval x = ∑ i ∈ Finset.range (h.natDegree + 1), h.coeff i * x ^ i := by
-    exact Polynomial.eval_eq_sum_range (p := h) (x := x)
+      h.eval x = ∑ i ∈ Finset.range (h.natDegree + 1), h.coeff i * x ^ i :=
+    Polynomial.eval_eq_sum_range (p := h) (x := x)
   rw [heval]
   have hpow_pos : 0 < x ^ h.natDegree := pow_pos hx _
   have htop_coeff : 0 < h.leadingCoeff := hh.pos_leadingCoeff h0

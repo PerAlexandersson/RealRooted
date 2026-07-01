@@ -2853,11 +2853,10 @@ private lemma rootMultiplicity_ne_two_add_right_of_posComboRealRooted
           grind)
         zero_lt_one hmult hg_eval_ne hprod_pos
   · have hpp_ne :
-        (f + C μ * g).derivative.derivative.eval x ≠ 0 := by
-      exact
-        eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
-          (show f + C μ * g ≠ 0 from (PosComboRealRooted.isRealRooted_add_right hfg hμ).1)
-          hmult
+        (f + C μ * g).derivative.derivative.eval x ≠ 0 :=
+      eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
+        (show f + C μ * g ≠ 0 from (PosComboRealRooted.isRealRooted_add_right hfg hμ).1)
+        hmult
     have hprod_ne :
         (f + C μ * g).derivative.derivative.eval x * g.eval x ≠ 0 :=
       mul_ne_zero hpp_ne hg_eval_ne
@@ -2971,10 +2970,8 @@ private lemma hasSimpleRoots_add_right_of_posComboRealRooted
         splits_iterateTDeriv (eps := η) (k := k) hη_pos hp_rr.2⟩
     have hpη_ne : pη ≠ 0 := hpη_rr.1
     have hpηpp_ne :
-        pη.derivative.derivative.eval x ≠ 0 := by
-      exact
-        eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
-          hpη_ne hpk_mult
+        pη.derivative.derivative.eval x ≠ 0 :=
+      eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two hpη_ne hpk_mult
     have hprod_ne :
         pη.derivative.derivative.eval x * gη.eval x ≠ 0 :=
       mul_ne_zero hpηpp_ne hgk_eval_ne
@@ -3056,8 +3053,8 @@ private lemma wronskian_eval_ne_zero_of_add_left_family_of_no_common
     grind
   have hp_ne : g + C t * f ≠ 0 := hp_rr.1
   have hmult :
-      1 < (g + C t * f).rootMultiplicity x := by
-    exact (one_lt_rootMultiplicity_iff_isRoot hp_ne).2 ⟨hp_root, hp_der_root⟩
+      1 < (g + C t * f).rootMultiplicity x :=
+    (one_lt_rootMultiplicity_iff_isRoot hp_ne).2 ⟨hp_root, hp_der_root⟩
   rw [hsimple x hp_root] at hmult
   lia
 
@@ -3348,9 +3345,8 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
         grind
       grind
     have hratio_cont :
-        ContinuousOn (fun y : ℝ => -(g.eval y / (X * f).eval y)) (Set.Icc r₁ r₂) := by
-      exact
-        (g.continuous.continuousOn.div (X * f).continuous.continuousOn hden_nonzero_Xf).neg
+        ContinuousOn (fun y : ℝ => -(g.eval y / (X * f).eval y)) (Set.Icc r₁ r₂) :=
+      (g.continuous.continuousOn.div (X * f).continuous.continuousOn hden_nonzero_Xf).neg
     have hratio_eq :
         (fun y : ℝ => -(g.eval y / (X * f).eval y)) r₁ =
           (fun y : ℝ => -(g.eval y / (X * f).eval y)) r₂ := by
@@ -4049,12 +4045,11 @@ theorem prec_of_affine_segment_endpoint_tnn_nonneg
     (hright :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * P1) + H1) ≠ 0 ∧ (((C s * X + C t) * P1) + H1).Splits)) :
-    Prec (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) := by
-  exact
-    prec_of_affine_segment_endpoint_pf_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn hHβnn hASW
-      hpencil_ne
-      (fun {s t z} hs ht hz => hpencil_tnn hs ht hz)
-      hleft hright
+    Prec (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) :=
+  prec_of_affine_segment_endpoint_pf_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn hHβnn hASW
+    hpencil_ne
+    (fun {_s _t _z} hs ht hz => hpencil_tnn hs ht hz)
+    hleft hright
 
 /--
 Same-degree ASW/PF endpoint wrapper.  This is the version to use when endpoint
@@ -4131,12 +4126,11 @@ theorem prec_of_affine_segment_endpoint_tnn_sameDegree_nonneg
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         (((C s * X + C t) * P1) + H1).natDegree =
           (((C s * X + C t) * P0) + H0).natDegree) :
-    Prec (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) := by
-  exact
-    prec_of_affine_segment_endpoint_pf_sameDegree_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn
-      hHβnn hASW hpencil_ne
-      (fun {s t z} hs ht hz => hpencil_tnn hs ht hz)
-      hleft_pos hright_pos hdeg
+    Prec (C (1 - β) * P0 + C β * P1) (C (1 - β) * H0 + C β * H1) :=
+  prec_of_affine_segment_endpoint_pf_sameDegree_nonneg hβ0 hβ1 hPβ0 hHβ0 hPβnn
+    hHβnn hASW hpencil_ne
+    (fun {_s _t _z} hs ht hz => hpencil_tnn hs ht hz)
+    hleft_pos hright_pos hdeg
 
 /-- Branden's affine-family converse immediately upgrades to the full
 Obreschkoff all-combinations conclusion in the nonnegative-coefficient regime:

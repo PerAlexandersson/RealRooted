@@ -260,8 +260,8 @@ theorem prec_motzkin_succ_and_roots_le :
       have hle_next :
           ∀ r ∈ (motzkin (n + 2)).roots, r ≤ motzkinShift :=
         roots_le_of_prec_right hshift hright_le
-      have hnext : Prec (motzkin (n + 1)) (motzkin (n + 2)) := by
-        exact (Nat.mod_two_eq_zero_or_one (n + 1)).elim
+      have hnext : Prec (motzkin (n + 1)) (motzkin (n + 2)) :=
+        (Nat.mod_two_eq_zero_or_one (n + 1)).elim
           (fun hpar => prec_motzkin_succ_of_shifted_even hpar hshift hle_succ hle_next)
           (fun hpar => prec_motzkin_succ_of_shifted_odd hpar hshift hle_succ)
       lia
