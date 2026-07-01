@@ -174,8 +174,8 @@ private lemma listInterlaces_prod_mul_prod_nonneg_at_mem :
           rcases List.mem_cons.mp hr_tail with rfl | hr_tail'
           · simp
           · exact listInterlaces_rs_all_ge rest_f rest_rs b hint_f_tail r hr_tail'
-        have hsf_nonneg : 0 ≤ r - sf := by grind
-        have hsg_nonneg : 0 ≤ r - sg := by grind
+        have hsf_nonneg : 0 ≤ r - sf := by linarith
+        have hsg_nonneg : 0 ≤ r - sg := by linarith
         have htail :
             0 ≤ (rest_f.map (r - ·)).prod * (rest_g.map (r - ·)).prod :=
           listInterlaces_prod_mul_prod_nonneg_at_mem
@@ -213,8 +213,8 @@ private lemma listAlternates_prod_mul_prod_nonneg_at_mem :
         rcases List.mem_cons.mp hr with rfl | hr'
         · simp
         · exact listInterlaces_rs_all_ge rest_f rest_rs r₁ hint_f r hr'
-      have hsf_nonneg : 0 ≤ r - sf := by grind
-      have hsg_nonneg : 0 ≤ r - sg := by grind
+      have hsf_nonneg : 0 ≤ r - sf := by linarith
+      have hsg_nonneg : 0 ≤ r - sg := by linarith
       have htail :
           0 ≤ (rest_f.map (r - ·)).prod * (rest_g.map (r - ·)).prod :=
         listInterlaces_prod_mul_prod_nonneg_at_mem
@@ -244,7 +244,7 @@ private lemma listInterlaces_listAlternates_prod_mul_prod_nonneg_at_mem :
         rcases List.mem_cons.mp hr with rfl | hr'
         · simp
         · exact listInterlaces_rs_all_ge ss_f rest_rs r₁ hint_f r hr'
-      have hsg_nonneg : 0 ≤ r - sg := by grind
+      have hsg_nonneg : 0 ≤ r - sg := by linarith
       have hlen' : ss_f.length = rest_g.length := by
         grind
       have hbase :

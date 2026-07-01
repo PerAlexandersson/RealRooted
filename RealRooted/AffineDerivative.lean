@@ -332,7 +332,7 @@ private lemma exists_affineDeriv_root_between_strict {f : ℝ[X]}
         HasDerivAt φ ((C c * f + (1 - X) * f.derivative).eval x * (1 - x) ^ (-c - 1)) x := by
     intro x hx
     have hx_ne : 1 - x ≠ 0 := by
-      grind
+      linarith [hx.2, hr₂_nonpos]
     have hbase : HasDerivAt (fun y : ℝ => 1 - y) (-1) x := by
       simpa [Pi.sub_def] using (hasDerivAt_const x (1 : ℝ)).sub (hasDerivAt_id x)
     have hpow :
@@ -346,7 +346,7 @@ private lemma exists_affineDeriv_root_between_strict {f : ℝ[X]}
     have htarget :
         (C c * f + (1 - X) * f.derivative).eval x * (1 - x) ^ (-c - 1) =
           f.derivative.eval x * (1 - x) ^ (-c) + f.eval x * (c * (1 - x) ^ (-c - 1)) := by
-      have hx_nonneg : 0 ≤ 1 - x := by grind
+      have hx_nonneg : 0 ≤ 1 - x := by linarith [hx.2, hr₂_nonpos]
       have hpow_shift : (1 - x) ^ (-c) = (1 - x) * (1 - x) ^ (-1 - c) := by
         rw [show (-c : ℝ) = 1 + (-1 - c) by ring]
         exact Real.rpow_one_add' hx_nonneg (by linarith)
@@ -365,8 +365,8 @@ private lemma exists_affineDeriv_root_between_strict {f : ℝ[X]}
     lia
   obtain ⟨s, hs, hs0⟩ := exists_hasDerivAt_eq_zero' hlt hfa hfb hderiv
   have hs_factor_ne : (1 - s) ^ (-c - 1) ≠ 0 := by
-    have hs_nonneg : 0 ≤ 1 - s := by grind
-    have hs_ne : 1 - s ≠ 0 := by grind
+    have hs_nonneg : 0 ≤ 1 - s := by linarith [hs.2, hr₂_nonpos]
+    have hs_ne : 1 - s ≠ 0 := by linarith [hs.2, hr₂_nonpos]
     exact (Real.rpow_ne_zero hs_nonneg (by linarith)).2 hs_ne
   have hs_root_eval : (C c * f + (1 - X) * f.derivative).eval s = 0 := by
     simp_all
