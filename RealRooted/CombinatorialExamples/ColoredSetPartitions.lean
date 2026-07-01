@@ -71,11 +71,11 @@ lemma coeff_coloredSetPartitions_top_and_above :
       rcases coeff_coloredSetPartitions_top_and_above c m n with ⟨htop, habove⟩
       constructor
       · rw [show n + 1 = n + 0 + 1 by lia, coeff_coloredSetPartitions_succ]
-        simp_all
+        simp [htop, habove (n + 1) (by lia)]
       · rintro (_ | j) hk
         · lia
         · rw [show j + 1 = j + 0 + 1 by lia, coeff_coloredSetPartitions_succ]
-          grind
+          simp [habove j (by lia), habove (j + 1) (by lia)]
 
 lemma natDegree_coloredSetPartitions (c m n : Nat) :
     (coloredSetPartitions c m n).natDegree = n := by

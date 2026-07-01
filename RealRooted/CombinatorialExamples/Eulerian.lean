@@ -67,16 +67,15 @@ lemma coeff_eulerianTilde_top_and_above :
       rcases coeff_eulerianTilde_top_and_above n with ⟨htop, habove⟩
       constructor
       · rw [coeff_eulerianTilde_succ n (n + 1)]
-        grind
+        simp [htop, habove (n + 2) (by lia)]
+        ring
       · intro m hm
         cases m with
         | zero =>
             lia
         | succ m =>
-            have hzero₁ : coeff (eulerianTilde n) m = 0 := by
-              simp_all
-            have hzero₂ : coeff (eulerianTilde n) (m + 1) = 0 := by
-              grind
+            have hzero₁ : coeff (eulerianTilde n) m = 0 := habove m (by lia)
+            have hzero₂ : coeff (eulerianTilde n) (m + 1) = 0 := habove (m + 1) (by lia)
             rw [coeff_eulerianTilde_succ n m]
             simp [hzero₁, hzero₂]
 

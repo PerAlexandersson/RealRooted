@@ -101,11 +101,11 @@ lemma coeff_typeBEulerian_top_and_above :
       rcases coeff_typeBEulerian_top_and_above n with ⟨htop, habove⟩
       constructor
       · rw [show n + 1 = n + 0 + 1 by lia, coeff_typeBEulerian_succ]
-        simp_all
+        simp [htop, habove (n + 1) (by lia)]
       · rintro (_ | k) hm
         · lia
         · rw [show k + 1 = k + 0 + 1 by lia, coeff_typeBEulerian_succ]
-          grind
+          simp [habove k (by lia), habove (k + 1) (by lia)]
 
 lemma natDegree_typeBEulerian (n : Nat) :
     (typeBEulerian n).natDegree = n := by

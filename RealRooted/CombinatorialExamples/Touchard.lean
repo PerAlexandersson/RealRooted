@@ -47,12 +47,11 @@ lemma coeff_touchard_top_and_above :
       rcases coeff_touchard_top_and_above n with ⟨htop, habove⟩
       constructor
       · rw [show n + 1 = n + 0 + 1 by lia, coeff_touchard_succ]
-        simp_all
+        simp [htop, habove (n + 1) (by lia)]
       · rintro (_ | k) hm
         · lia
-        · have hk0 : n + 1 < k + 1 := hm
-          rw [show k + 1 = k + 0 + 1 by lia, coeff_touchard_succ]
-          grind
+        · rw [show k + 1 = k + 0 + 1 by lia, coeff_touchard_succ]
+          simp [habove k (by lia), habove (k + 1) (by lia)]
 
 lemma natDegree_touchard (n : Nat) :
     (touchard n).natDegree = n := by
