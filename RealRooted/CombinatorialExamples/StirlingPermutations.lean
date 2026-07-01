@@ -46,14 +46,8 @@ lemma stirlingPermutations_one :
 lemma coeff_stirlingPermutationsCoeffA_mul (n k : Nat) (p : ℝ[X]) :
     coeff (stirlingPermutationsCoeffA n * p) (k + 1) =
       (2 * n + 1 : ℝ) * coeff p k := by
-  calc
-    coeff (stirlingPermutationsCoeffA n * p) (k + 1)
-        = coeff (C (2 * n + 1 : ℝ) * (X * p)) (k + 1) := by
-            rw [stirlingPermutationsCoeffA, mul_assoc]
-    _ = (2 * n + 1 : ℝ) * coeff (X * p) (k + 1) := by
-          grind
-    _ = (2 * n + 1 : ℝ) * coeff p k := by
-          simp
+  rw [stirlingPermutationsCoeffA, mul_assoc, coeff_C_mul]
+  simp
 
 lemma coeff_stirlingPermutationsCoeffB_mul_derivative (k : Nat) (p : ℝ[X]) :
     coeff (stirlingPermutationsCoeffB * p.derivative) (k + 1) =
@@ -67,43 +61,21 @@ lemma coeff_stirlingPermutationsCoeffB_mul_derivative (k : Nat) (p : ℝ[X]) :
   | zero =>
       rw [hB, coeff_sub]
       have h₁ : coeff (X * p.derivative) 1 = coeff p 1 := by
-        calc
-          coeff (X * p.derivative) 1 = coeff p.derivative 0 := by simp
-          _ = coeff p 1 := by
-                rw [coeff_derivative]
-                ring
+        simp [coeff_derivative]
       have h₂ : coeff (X * X * p.derivative) 1 = 0 := by
-        calc
-          coeff (X * X * p.derivative) 1 = coeff (X * (X * p.derivative)) 1 := by
-            grind
-          _ = coeff (X * p.derivative) 0 := by simp
-          _ = 0 := by simp
+        simp [mul_assoc]
       simp [h₁, h₂]
   | succ k =>
       rw [hB, coeff_sub]
       have h₁ : coeff (X * p.derivative) (k + 2) =
           (k + 2 : ℝ) * coeff p (k + 2) := by
-        calc
-          coeff (X * p.derivative) (k + 2) = coeff p.derivative (k + 1) := by
-            simp
-          _ = (((k + 1 : Nat) : ℝ) + 1) * coeff p (k + 1 + 1) := by
-                rw [coeff_derivative, mul_comm]
-          _ = (((k + 1 : Nat) : ℝ) + 1) * coeff p (k + 2) := by
-                lia
-          _ = (k + 2 : ℝ) * coeff p (k + 2) := by
-                grind
+        simp [coeff_derivative]
+        ring
       have h₂ : coeff (X * X * p.derivative) (k + 2) =
           (k + 1 : ℝ) * coeff p (k + 1) := by
-        calc
-          coeff (X * X * p.derivative) (k + 2) = coeff (X * (X * p.derivative)) (k + 2) := by
-            grind
-          _ = coeff (X * p.derivative) (k + 1) := by
-                simp
-          _ = coeff p.derivative k := by
-                simp
-          _ = (k + 1 : ℝ) * coeff p (k + 1) := by
-                rw [coeff_derivative]
-                grind
+        rw [show X * X * p.derivative = X * (X * p.derivative) by ring]
+        simp [coeff_derivative]
+        ring
       grind
 
 lemma coeff_stirlingPermutations_succ (n k : Nat) :

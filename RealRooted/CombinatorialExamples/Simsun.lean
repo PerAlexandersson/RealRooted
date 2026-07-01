@@ -64,14 +64,7 @@ lemma simsun_three : simsun 3 = 1 + C (4 : ℝ) * X := by
 lemma coeff_simsunCoeffA_mul (n m : Nat) (p : ℝ[X]) :
     coeff (simsunCoeffA n * p) (m + 1) =
       coeff p (m + 1) + (n : ℝ) * coeff p m := by
-  have hCX : coeff (C (n : ℝ) * X * p) (m + 1) =
-      (n : ℝ) * coeff p m := by
-    calc
-      coeff (C (n : ℝ) * X * p) (m + 1)
-          = coeff (C (n : ℝ) * (X * p)) (m + 1) := by rw [mul_assoc]
-      _ = (n : ℝ) * coeff (X * p) (m + 1) := by simp
-      _ = (n : ℝ) * coeff p m := by simp
-  rw [simsunCoeffA, add_mul, one_mul, coeff_add, hCX]
+  simp [simsunCoeffA, add_mul, coeff_add, mul_assoc]
 
 lemma coeff_simsunCoeffB_mul_derivative (m : Nat) (p : ℝ[X]) :
     coeff (simsunCoeffB * p.derivative) (m + 1) =
@@ -85,42 +78,22 @@ lemma coeff_simsunCoeffB_mul_derivative (m : Nat) (p : ℝ[X]) :
   | zero =>
       rw [hB, coeff_sub]
       have h₁ : coeff (X * p.derivative) 1 = coeff p 1 := by
-        calc
-          coeff (X * p.derivative) 1 = coeff p.derivative 0 := by simp
-          _ = coeff p 1 := by
-              rw [coeff_derivative]
-              ring
+        simp [coeff_derivative]
       have h₂ : coeff (C (2 : ℝ) * X * X * p.derivative) 1 = 0 := by
-        calc
-          coeff (C (2 : ℝ) * X * X * p.derivative) 1
-              = (2 : ℝ) * coeff (X * (X * p.derivative)) 1 := by
-                  rw [mul_assoc, mul_assoc, coeff_C_mul]
-          _ = (2 : ℝ) * coeff (X * p.derivative) 0 := by simp
-          _ = 0 := by simp
+        rw [mul_assoc, mul_assoc, coeff_C_mul]
+        simp
       simp_all
   | succ m =>
       rw [hB, coeff_sub]
       have h₁ : coeff (X * p.derivative) (m + 2) =
           (m + 2 : ℝ) * coeff p (m + 2) := by
-        calc
-          coeff (X * p.derivative) (m + 2) = coeff p.derivative (m + 1) := by simp
-          _ = (((m + 1 : Nat) : ℝ) + 1) * coeff p (m + 1 + 1) := by
-              rw [coeff_derivative]
-              ring
-          _ = (m + 2 : ℝ) * coeff p (m + 2) := by
-              grind
+        simp [coeff_derivative]
+        ring
       have h₂ : coeff (C (2 : ℝ) * X * X * p.derivative) (m + 2) =
           (2 * (m + 1) : ℝ) * coeff p (m + 1) := by
-        calc
-          coeff (C (2 : ℝ) * X * X * p.derivative) (m + 2)
-              = (2 : ℝ) * coeff (X * (X * p.derivative)) (m + 2) := by
-                  rw [mul_assoc, mul_assoc, coeff_C_mul]
-          _ = (2 : ℝ) * coeff (X * p.derivative) (m + 1) := by simp
-          _ = (2 : ℝ) * coeff p.derivative m := by simp
-          _ = (2 : ℝ) * (((m : Nat) : ℝ) + 1) * coeff p (m + 1) := by
-              rw [coeff_derivative]
-              grind
-          _ = (2 * (m + 1) : ℝ) * coeff p (m + 1) := by ring
+        rw [mul_assoc, mul_assoc, coeff_C_mul]
+        simp [coeff_derivative]
+        ring
       grind
 
 lemma coeff_simsun_succ (n m : Nat) :

@@ -57,47 +57,24 @@ lemma coeff_typeBEulerianCoeffB_mul_derivative (m : Nat) (p : ℝ[X]) :
   | zero =>
       rw [hB, coeff_sub]
       have h₁ : coeff (C (2 : ℝ) * X * p.derivative) 1 = (2 : ℝ) * coeff p 1 := by
-        calc
-          coeff (C (2 : ℝ) * X * p.derivative) 1
-              = coeff (C (2 : ℝ) * (X * p.derivative)) 1 := by grind
-          _ = (2 : ℝ) * coeff (X * p.derivative) 1 := by simp
-          _ = (2 : ℝ) * coeff p.derivative 0 := by simp
-          _ = (2 : ℝ) * coeff p 1 := by
-              rw [coeff_derivative]
-              ring
+        rw [mul_assoc, coeff_C_mul]
+        simp [coeff_derivative]
       have h₂ : coeff (C (2 : ℝ) * X * X * p.derivative) 1 = 0 := by
-        calc
-          coeff (C (2 : ℝ) * X * X * p.derivative) 1
-              = coeff (C (2 : ℝ) * (X * (X * p.derivative))) 1 := by grind
-          _ = (2 : ℝ) * coeff (X * (X * p.derivative)) 1 := by simp
-          _ = (2 : ℝ) * coeff (X * p.derivative) 0 := by simp
-          _ = 0 := by simp
+        rw [mul_assoc, mul_assoc, coeff_C_mul]
+        simp
       simp_all
   | succ m =>
       rw [hB, coeff_sub]
       have h₁ : coeff (C (2 : ℝ) * X * p.derivative) (m + 2) =
           (2 * (m + 2) : ℝ) * coeff p (m + 2) := by
-        calc
-          coeff (C (2 : ℝ) * X * p.derivative) (m + 2)
-              = coeff (C (2 : ℝ) * (X * p.derivative)) (m + 2) := by grind
-          _ = (2 : ℝ) * coeff (X * p.derivative) (m + 2) := by simp
-          _ = (2 : ℝ) * coeff p.derivative (m + 1) := by simp
-          _ = (2 : ℝ) * (coeff p (m + 2) * ((m : ℝ) + 2)) := by
-              rw [coeff_derivative]
-              grind
-          _ = (2 * (m + 2) : ℝ) * coeff p (m + 2) := by grind
+        rw [mul_assoc, coeff_C_mul]
+        simp [coeff_derivative]
+        ring
       have h₂ : coeff (C (2 : ℝ) * X * X * p.derivative) (m + 2) =
           (2 * (m + 1) : ℝ) * coeff p (m + 1) := by
-        calc
-          coeff (C (2 : ℝ) * X * X * p.derivative) (m + 2)
-              = coeff (C (2 : ℝ) * (X * (X * p.derivative))) (m + 2) := by
-                  grind
-          _ = (2 : ℝ) * coeff (X * (X * p.derivative)) (m + 2) := by simp
-          _ = (2 : ℝ) * coeff (X * p.derivative) (m + 1) := by simp
-          _ = (2 : ℝ) * coeff p.derivative m := by simp
-          _ = (2 * (m + 1) : ℝ) * coeff p (m + 1) := by
-              rw [coeff_derivative]
-              grind
+        rw [mul_assoc, mul_assoc, coeff_C_mul]
+        simp [coeff_derivative]
+        ring
       grind
 
 lemma coeff_typeBEulerian_succ (n m : Nat) :
