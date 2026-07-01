@@ -142,6 +142,26 @@ theorem apolarPairing_sub_right {R : Type*} [CommRing R]
       apolarPairing n f g₁ - apolarPairing n f g₂ := by
   rw [sub_eq_add_neg, apolarPairing_add_right, apolarPairing_neg_right, sub_eq_add_neg]
 
+theorem apolarPairing_sum_left {R : Type*} [CommRing R]
+    {ι : Type*} (n : Nat) (s : Finset ι) (f : ι → R[X]) (g : R[X]) :
+    apolarPairing n (Finset.sum s f) g =
+      Finset.sum s fun i => apolarPairing n (f i) g := by
+  classical
+  refine Finset.induction_on s ?_ ?_
+  · simp
+  · intro a s ha ih
+    simp [ha, apolarPairing_add_left, ih]
+
+theorem apolarPairing_sum_right {R : Type*} [CommRing R]
+    {ι : Type*} (n : Nat) (f : R[X]) (s : Finset ι) (g : ι → R[X]) :
+    apolarPairing n f (Finset.sum s g) =
+      Finset.sum s fun i => apolarPairing n f (g i) := by
+  classical
+  refine Finset.induction_on s ?_ ?_
+  · simp
+  · intro a s ha ih
+    simp [ha, apolarPairing_add_right, ih]
+
 theorem AreApolar.add_left {R : Type*} [CommRing R]
     {n : Nat} {f₁ f₂ g : R[X]}
     (h₁ : AreApolar n f₁ g) (h₂ : AreApolar n f₂ g) :
@@ -185,6 +205,20 @@ theorem AreApolar.sub_right {R : Type*} [CommRing R]
     (h₁ : AreApolar n f g₁) (h₂ : AreApolar n f g₂) :
     AreApolar n f (g₁ - g₂) := by
   rw [AreApolar, apolarPairing_sub_right, h₁, h₂, sub_self]
+
+theorem AreApolar.sum_left {R : Type*} [CommRing R]
+    {ι : Type*} {n : Nat} {s : Finset ι} {f : ι → R[X]} {g : R[X]}
+    (h : ∀ i ∈ s, AreApolar n (f i) g) :
+    AreApolar n (Finset.sum s f) g := by
+  rw [AreApolar, apolarPairing_sum_left]
+  exact Finset.sum_eq_zero fun i hi => h i hi
+
+theorem AreApolar.sum_right {R : Type*} [CommRing R]
+    {ι : Type*} {n : Nat} {f : R[X]} {s : Finset ι} {g : ι → R[X]}
+    (h : ∀ i ∈ s, AreApolar n f (g i)) :
+    AreApolar n f (Finset.sum s g) := by
+  rw [AreApolar, apolarPairing_sum_right]
+  exact Finset.sum_eq_zero fun i hi => h i hi
 
 private lemma neg_one_pow_sub_eq_mul {R : Type*} [CommRing R]
     {n k : Nat} (hk : k ≤ n) :
