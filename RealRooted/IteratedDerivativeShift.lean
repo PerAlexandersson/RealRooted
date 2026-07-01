@@ -36,7 +36,7 @@ def HasSimpleRoots (p : ℝ[X]) : Prop :=
 lemma HasSimpleRoots.ne_zero (hp : HasSimpleRoots p) : p ≠ 0 := by rintro rfl; simp at hp
 
 @[simp] lemma iterateTDeriv_zero (eps : ℝ) (p : ℝ[X]) :
-    iterateTDeriv eps 0 p = p := by
+    iterateTDeriv eps 0 p = p :=
   rfl
 
 @[simp] lemma iterateTDeriv_succ (eps : ℝ) (n : ℕ) (p : ℝ[X]) :
