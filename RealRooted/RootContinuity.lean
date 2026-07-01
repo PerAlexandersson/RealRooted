@@ -174,8 +174,7 @@ theorem exists_real_root_near_in_left_family
       (natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff
         (hCt_deg.trans hdeg.symm) hCt_f_pos hg_pos).trans hCt_deg
   have hsum_lc : (C t * f + g).leadingCoeff = t + 1 := by
-    have hg_coeff : g.coeff f.natDegree = 1 := by
-      simpa [hdeg] using hg_monic.coeff_natDegree
+    have hg_coeff : g.coeff f.natDegree = 1 := by simpa [hdeg] using hg_monic.coeff_natDegree
     unfold Polynomial.leadingCoeff
     simp_all
   have hq_monic : q.Monic := by
@@ -232,8 +231,7 @@ theorem exists_complex_aroot_near_in_left_family
       (natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff
         (hCt_deg.trans hdeg.symm) hCt_f_pos hg_pos).trans hCt_deg
   have hsum_lc : (C t * f + g).leadingCoeff = t + 1 := by
-    have hg_coeff : g.coeff f.natDegree = 1 := by
-      simpa [hdeg] using hg_monic.coeff_natDegree
+    have hg_coeff : g.coeff f.natDegree = 1 := by simpa [hdeg] using hg_monic.coeff_natDegree
     unfold Polynomial.leadingCoeff
     simp_all
   have hq_monic : q.Monic := by

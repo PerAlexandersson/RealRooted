@@ -105,9 +105,7 @@ theorem exists_root_near_right_family
     ∃ b : ℝ, (f + C μ * g).IsRoot b ∧
       ‖a - b‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖a‖ 1 := by
   let t : ℝ := μ⁻¹
-  have ht : 0 < t := by
-    simp only [inv_pos, t]
-    lia
+  have ht : 0 < t := by positivity
   have hμ_ne : μ ≠ 0 := ne_of_gt hμ
   have hμ1_ne : μ + 1 ≠ 0 := by positivity
   have hcoeff_bound_left : (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) < ε := by
@@ -138,9 +136,7 @@ theorem exists_complex_aroot_near_right_family
     ∃ w : ℂ, w ∈ (f + C μ * g).aroots ℂ ∧
       ‖z - w‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖z‖ 1 := by
   let t : ℝ := μ⁻¹
-  have ht : 0 < t := by
-    simp only [inv_pos, t]
-    lia
+  have ht : 0 < t := by positivity
   have hμ_ne : μ ≠ 0 := ne_of_gt hμ
   have hμ1_ne : μ + 1 ≠ 0 := by positivity
   have hcoeff_bound_left : (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) < ε := by
