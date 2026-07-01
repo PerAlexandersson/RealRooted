@@ -121,8 +121,7 @@ theorem prec_generalizedLiuWang_strict_same
   have hf_eval : f.eval r = 0 := by
     simp_all
   have hl_prec : ∀ bg ∈ l, Prec bg.2 f := by
-    intro bg hmem
-    exact (hl_inter bg hmem).toPrec
+    exact fun bg hmem => (hl_inter bg hmem).toPrec
   have hsum_sign :
       (polynomialWeightedSum ((b, g) :: l)).eval r * g.eval r < 0 :=
     polynomialWeightedSum_cons_eval_mul_eval_neg_of_common_right
@@ -147,8 +146,7 @@ theorem prec_generalizedLiuWang_strict_succ
   have hf_eval : f.eval r = 0 := by
     simp_all
   have hl_prec : ∀ bg ∈ l, Prec bg.2 f := by
-    intro bg hmem
-    exact (hl_inter bg hmem).toPrec
+    exact fun bg hmem => (hl_inter bg hmem).toPrec
   have hsum_sign :
       (polynomialWeightedSum ((b, g) :: l)).eval r * g.eval r < 0 :=
     polynomialWeightedSum_cons_eval_mul_eval_neg_of_common_right

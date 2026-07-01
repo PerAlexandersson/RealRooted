@@ -214,8 +214,7 @@ theorem prec_sum_left_of_common_left_signed
   rcases lt_or_gt_of_ne hlc_ne with hneg | hpos
   · let h' : ℝ[X] := C (-1 : ℝ) * h
     have hprec' : ∀ p ∈ l, Prec h' p := by
-      intro p hp
-      exact prec_C_mul_left (hprec p hp) (by simp)
+      exact fun p hp => prec_C_mul_left (hprec p hp) (by simp)
     have h'_pos : HasPosLeadingCoeff h' := by
       unfold h' HasPosLeadingCoeff
       simp_all
@@ -344,8 +343,7 @@ lemma prec0_finsetSum_pairwise_of_nonneg {ι κ : Type}
     Prec0 (s.sum f) (t.sum g) := by
   classical
   have hleft : ∀ i ∈ s, Prec0 (f i) (t.sum g) := by
-    intro i hi
-    exact prec0_finsetSum_left_of_nonneg (f i) t g (hprec i hi) hgnn
+    exact fun i hi => prec0_finsetSum_left_of_nonneg (f i) t g (hprec i hi) hgnn
   exact prec0_finsetSum_right_of_nonneg s f (t.sum g) hleft hfnn
 
 /-- Same-degree shift on the left: if `f ≪ g`, both have positive leading

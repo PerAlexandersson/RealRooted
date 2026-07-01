@@ -733,9 +733,9 @@ lemma mkAffineInterleaving_sub_roots (f : ℝ[X]) (c : ℝ) (hdeg : 2 ≤ f.natD
       (hgap : ConsecNoRoots f rs),
     let g := C c * f + (1 - X) * f.derivative
     (↑(mkAffineInterleaving f c hdeg hc hroots_nonpos rs hrs hsorted hsub hgap) :
-      Multiset ℝ) ≤ g.roots := by
-  intro rs hrs hsorted hsub hgap
-  exact (mkAffineInterleaving_sub_multiset f c hdeg hc hroots_nonpos rs hrs hsorted hsub hgap).1
+      Multiset ℝ) ≤ g.roots :=
+  fun rs hrs hsorted hsub hgap =>
+    (mkAffineInterleaving_sub_multiset f c hdeg hc hroots_nonpos rs hrs hsorted hsub hgap).1
 
 /-- The product `∏ (X - C r)` for `r ∈ s` is nonzero. -/
 private lemma multiset_prod_X_sub_C_ne_zero (s : Multiset ℝ) :
@@ -826,9 +826,8 @@ private lemma pos_leadingCoeff_of_pow_X_sub_C_mul {r : ℝ} {m : ℕ} {q : ℝ[X
 
 private lemma eval_ne_zero_of_not_dvd_X_sub_C {p : ℝ[X]} {a : ℝ}
     (h : ¬ (X - C a) ∣ p) :
-    p.eval a ≠ 0 := by
-  intro hp
-  exact h ((dvd_iff_isRoot).2 hp)
+    p.eval a ≠ 0 :=
+  fun hp => h ((dvd_iff_isRoot).2 hp)
 
 private lemma neg_pow_prod_nonneg_of_all_nonpos (s : Multiset ℝ)
     (hs : ∀ x ∈ s, x ≤ 0) :
