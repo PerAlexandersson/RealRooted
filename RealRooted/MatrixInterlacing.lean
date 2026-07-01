@@ -328,12 +328,11 @@ theorem matrix_preserves_interlacing_seq0_necessary_conditions
         (((G.get i₂).get ⟨j₁, by
             simp_all⟩)
           + (C a * X + C b) * ((G.get i₂).get ⟨j₂, by
-            simp_all⟩))) := by
-  exact
-    ⟨matrix_preserves_interlacing_seq0_nonneg_entries (n := n) G hG_rect hpres0,
-      fun i₁ i₂ j₁ j₂ hi hj a b ha hb =>
-        matrix_preserves_interlacing_seq0_sparse_pair_prec0
-          (n := n) G hG_rect hpres0 i₁ i₂ j₁ j₂ hi hj ha hb⟩
+            simp_all⟩))) :=
+  ⟨matrix_preserves_interlacing_seq0_nonneg_entries (n := n) G hG_rect hpres0,
+    fun i₁ i₂ j₁ j₂ hi hj _a _b ha hb =>
+      matrix_preserves_interlacing_seq0_sparse_pair_prec0
+        (n := n) G hG_rect hpres0 i₁ i₂ j₁ j₂ hi hj ha hb⟩
 
 /-- Auxiliary column family in Brändén's forward matrix proof:
 for fixed `s, t`, the `j`th entry is `((C s * X + C t) * row₁[j]) + row₂[j]`. -/

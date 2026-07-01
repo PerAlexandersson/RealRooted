@@ -906,13 +906,12 @@ private lemma false_of_allComboRealRooted_of_double_root_and_eval_ne
       false_of_allComboRealRooted_of_double_root_and_eval_ne_of_pos
         hall hp_mult hq_eval_ne hprod_pos
   · have hpp_ne :
-        p.derivative.derivative.eval x ≠ 0 := by
-      exact
-        eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
-          (by
-            intro hp0
-            simp [hp0] at hp_mult)
-          hp_mult
+        p.derivative.derivative.eval x ≠ 0 :=
+      eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
+        (by
+          intro hp0
+          simp [hp0] at hp_mult)
+        hp_mult
     have hprod_ne : p.derivative.derivative.eval x * q.eval x ≠ 0 :=
       mul_ne_zero hpp_ne hq_eval_ne
     have hprod_neg : p.derivative.derivative.eval x * q.eval x < 0 := by
