@@ -848,7 +848,7 @@ private theorem isRealRooted_of_fPolynomial_natDegree_roots_gt_neg_one
           rw [eval_fPolynomial_eq_mul_eval_untransform (d := n) (p := p)
             (by lia) hx_ne] at hx_root
           have hpow_ne : (1 + x) ^ n ≠ 0 :=
-            pow_ne_zero _ (by grind)
+            pow_ne_zero _ (by linarith)
           grind
         obtain ⟨u, hu_dvd⟩ := dvd_iff_isRoot.mpr hr_root
         have hpu : p = (X - C r) * u := by

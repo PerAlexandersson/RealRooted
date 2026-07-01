@@ -621,7 +621,7 @@ lemma tendsto_eval_atBot_atBot_of_posLeadingCoeff_odd {p : ℝ[X]}
     have hpow : (-1 : ℝ) ^ p.natDegree = -1 := by
       simp_all
     unfold HasPosLeadingCoeff at hp_pos
-    have hneg : -p.leadingCoeff ≤ 0 := by grind
+    have hneg : -p.leadingCoeff ≤ 0 := by linarith
     simp_all
   have htop :
       Tendsto (fun x => (p.comp (-X)).eval x) atTop atBot :=

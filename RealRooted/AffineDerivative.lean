@@ -193,8 +193,12 @@ lemma derivative_sign_at_consecutive_roots {f : ℝ[X]}
     exact hno_between x ((mem_roots hf_ne).mpr hfx) ⟨hx1, hx2⟩
   -- Midpoint m = (r₁ + r₂) / 2
   set m := (r₁ + r₂) / 2 with hm_def
-  have hm1 : r₁ < m := by grind
-  have hm2 : m < r₂ := by grind
+  have hm1 : r₁ < m := by
+    rw [hm_def]
+    linarith
+  have hm2 : m < r₂ := by
+    rw [hm_def]
+    linarith
   -- q₁ has same sign at r₁ and m (no roots in [r₁, m])
   have hq₁_same : 0 < q₁.eval r₁ * q₁.eval m :=
     eval_same_sign_of_no_roots (le_of_lt hm1) (fun x hx1 hx2 => by
