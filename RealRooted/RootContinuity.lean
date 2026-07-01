@@ -85,7 +85,7 @@ lemma norm_coeff_sub_normalized_left_family_le
   have hcoeff :
       (C (t + 1)⁻¹ * (C t * f + g)).coeff i - f.coeff i =
         (t + 1)⁻¹ * (g.coeff i - f.coeff i) := by
-    have ht1 : t + 1 ≠ 0 := by grind
+    have ht1 : t + 1 ≠ 0 := by positivity
     calc
       (C (t + 1)⁻¹ * (C t * f + g)).coeff i - f.coeff i
           = ((t + 1)⁻¹ * (t * f.coeff i + g.coeff i)) - f.coeff i := by
@@ -107,7 +107,7 @@ lemma norm_coeff_sub_normalized_left_family_le
           gcongr
           · exact coeff_norm_le_coeffSumRange g i
           · exact coeff_norm_le_coeffSumRange f i
-    _ = (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) := by grind
+    _ = (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) := by ring
 
 /-- Strict coefficient control from an explicit scalar bound. -/
 lemma norm_coeff_sub_normalized_left_family_lt
@@ -165,7 +165,7 @@ theorem exists_real_root_near_in_left_family
   have hε : 0 < ε := lt_of_le_of_lt hcoeff_nonneg hcoeff_bound
   let q : ℝ[X] := C (t + 1)⁻¹ * (C t * f + g)
   have ht_ne : t ≠ 0 := ne_of_gt ht
-  have ht1_ne : t + 1 ≠ 0 := by grind
+  have ht1_ne : t + 1 ≠ 0 := by positivity
   have hf_pos : HasPosLeadingCoeff f := by
     simp [HasPosLeadingCoeff, hf_monic.leadingCoeff]
   have hg_pos : HasPosLeadingCoeff g := by
@@ -226,7 +226,7 @@ theorem exists_complex_aroot_near_in_left_family
   have hε : 0 < ε := lt_of_le_of_lt hcoeff_nonneg hcoeff_bound
   let q : ℝ[X] := C (t + 1)⁻¹ * (C t * f + g)
   have ht_ne : t ≠ 0 := ne_of_gt ht
-  have ht1_ne : t + 1 ≠ 0 := by grind
+  have ht1_ne : t + 1 ≠ 0 := by positivity
   have hf_pos : HasPosLeadingCoeff f := by
     simp [HasPosLeadingCoeff, hf_monic.leadingCoeff]
   have hg_pos : HasPosLeadingCoeff g := by

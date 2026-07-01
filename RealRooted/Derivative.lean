@@ -383,7 +383,7 @@ theorem derivative_interlaces {f : ℝ[X]} (hf : f.Splits) (hdeg : 2 ≤ f.natDe
   have hss_sorted : ss.Pairwise (· ≤ ·) :=
     sorted_of_listInterlaces ss rs hrs_sorted hss_interlaces
   -- Assemble
-  exact ⟨⟨by rintro rfl; simp at hf'_ne, hf⟩, hf'_rr, by grind [f.natDegree_derivative],
+  exact ⟨⟨by rintro rfl; simp at hf'_ne, hf⟩, hf'_rr, by rw [f.natDegree_derivative]; lia,
     rs, ss, hrs_sorted, hss_sorted, hrs_multiset, hss_eq, hss_interlaces⟩
 
 /-- Splitting is preserved by differentiation in the zero-aware convention. -/
@@ -403,7 +403,7 @@ theorem eq_zero_or_splits_derivative {p : ℝ[X]}
   · right
     apply Polynomial.Splits.of_natDegree_eq_zero
     rw [p.natDegree_derivative, hdeg1]
-  · have hdeg2 : 2 ≤ p.natDegree := by grind
+  · have hdeg2 : 2 ≤ p.natDegree := by lia
     exact Or.inr (derivative_interlaces hp hdeg2).2.1.2
 
 /-- Strict real-rootedness is preserved by differentiation unless the
@@ -421,7 +421,7 @@ theorem derivative_eq_zero_or_ne_zero_and_splits {p : ℝ[X]}
       apply Polynomial.Splits.of_natDegree_eq_zero
       rw [p.natDegree_derivative, hdeg1]
     exact ⟨hder_ne, hder_splits⟩
-  · have hdeg2 : 2 ≤ p.natDegree := by grind
+  · have hdeg2 : 2 ≤ p.natDegree := by lia
     exact Or.inr (derivative_interlaces hp_splits hdeg2).2.1
 
 /-- If all roots of a real-rooted polynomial are nonpositive, then all roots of
@@ -443,7 +443,7 @@ theorem roots_nonpos_derivative_of_roots_nonpos {p : ℝ[X]}
     rw [hderC]
     intro r hr
     simp at hr
-  · have hdeg2 : 2 ≤ p.natDegree := by grind
+  · have hdeg2 : 2 ≤ p.natDegree := by lia
     exact roots_le_of_prec_right (derivative_interlaces hp_splits hdeg2).toPrec hroots
 
 /-- Standard Rolle--Obreschkoff input: differentiation preserves weak proper
