@@ -253,14 +253,12 @@ theorem prec0_sum_left_of_common_left_of_nonneg
   · have hprec' : ∀ p ∈ l', Prec h p := by
       intro p hp
       have hp_mem : p ∈ l := (List.mem_of_mem_filter hp)
-      have hp_ne : p ≠ 0 := by
-        grind
+      have hp_ne : p ≠ 0 := by grind
       rcases hprec p hp_mem with hh | hp0 | hpf <;> lia
     have hpos' : ∀ p ∈ l', HasPosLeadingCoeff p := by
       intro p hp
       have hp_mem : p ∈ l := List.mem_of_mem_filter hp
-      have hp_ne : p ≠ 0 := by
-        grind
+      have hp_ne : p ≠ 0 := by grind
       have hp_rr : (p ≠ 0 ∧ p.Splits) := (hprec' p hp).2.1
       exact (hnn p hp_mem).pos_leadingCoeff hp_ne
     have hstrict : Prec h l'.sum :=
@@ -279,11 +277,9 @@ lemma prec0_finsetSum_right_of_nonneg {ι : Type}
       simpa using prec0_zero_left h
   | @insert a s ha ih =>
       have hprec_a : Prec0 (f a) h := hprec a (by simp)
-      have hprec_s : ∀ i ∈ s, Prec0 (f i) h := by
-        simp_all
+      have hprec_s : ∀ i ∈ s, Prec0 (f i) h := by simp_all
       have hnn_a : HasNonnegCoeffs (f a) := hnn a (by simp)
-      have hnn_s : ∀ i ∈ s, HasNonnegCoeffs (f i) := by
-        simp_all
+      have hnn_s : ∀ i ∈ s, HasNonnegCoeffs (f i) := by simp_all
       have ih' : Prec0 (s.sum f) h := ih hprec_s hnn_s
       by_cases hfa0 : f a = 0
       · simp_all
@@ -316,10 +312,8 @@ lemma prec0_finsetSum_left_of_nonneg {ι : Type}
   | empty =>
       simpa using prec0_zero_right h
   | @insert a s ha ih =>
-      have hprec_s : ∀ i ∈ s, Prec0 h (f i) := by
-        simp_all
-      have hnn_s : ∀ i ∈ s, HasNonnegCoeffs (f i) := by
-        simp_all
+      have hprec_s : ∀ i ∈ s, Prec0 h (f i) := by simp_all
+      have hnn_s : ∀ i ∈ s, HasNonnegCoeffs (f i) := by simp_all
       have ih' : Prec0 h (s.sum f) := ih hprec_s hnn_s
       have hpair : Prec0 h ([f a, s.sum f].sum) := by
         apply prec0_sum_left_of_common_left_of_nonneg
@@ -592,10 +586,8 @@ theorem of_aissenSchoenbergWhitney_right_pencil
   intro a b ha hb
   let z : ℝ := b / a
   have hz : 0 ≤ z := div_nonneg hb.le ha.le
-  have haz : a * z = b := by
-    grind
-  have hterm : C a * (C z * g) = C (a * z) * g := by
-    grind
+  have haz : a * z = b := by grind
+  have hterm : C a * (C z * g) = C (a * z) * g := by grind
   have hscale :
       C a * (f + C z * g) = C a * f + C b * g := by
     grind
@@ -624,8 +616,7 @@ lemma family_pair_right {f g : ℝ[X]} (h : PosComboRealRooted f g)
     PosComboRealRooted (f + C μ₁ * g) (f + C μ₂ * g) := by
   intro lam μ hlam hμ
   have hsum_pos : 0 < lam + μ := add_pos hlam hμ
-  have hcomb_pos : 0 < lam * μ₁ + μ * μ₂ := by
-    positivity
+  have hcomb_pos : 0 < lam * μ₁ + μ * μ₂ := by positivity
   have hbase : ((C (lam + μ) * f + C (lam * μ₁ + μ * μ₂) * g) ≠ 0 ∧
     (C (lam + μ) * f + C (lam * μ₁ + μ * μ₂) * g).Splits) :=
     h hsum_pos hcomb_pos
@@ -637,8 +628,7 @@ lemma family_pair_left {f g : ℝ[X]} (h : PosComboRealRooted f g)
     {lam₁ lam₂ : ℝ} (hlam₁ : 0 < lam₁) (hlam₂ : 0 < lam₂) :
     PosComboRealRooted (C lam₁ * f + g) (C lam₂ * f + g) := by
   intro lam μ hlam hμ
-  have hcomb_pos : 0 < lam * lam₁ + μ * lam₂ := by
-    positivity
+  have hcomb_pos : 0 < lam * lam₁ + μ * lam₂ := by positivity
   have hsum_pos : 0 < lam + μ := add_pos hlam hμ
   have hbase : ((C (lam * lam₁ + μ * lam₂) * f + C (lam + μ) * g) ≠ 0 ∧
     (C (lam * lam₁ + μ * lam₂) * f + C (lam + μ) * g).Splits) :=
@@ -650,14 +640,10 @@ lemma family_no_common_right {f g : ℝ[X]}
     {μ₁ μ₂ : ℝ} (hμ : μ₁ ≠ μ₂) :
     ∀ r, (f + C μ₁ * g).IsRoot r → ¬ (f + C μ₂ * g).IsRoot r := by
   intro r hr₁ hr₂
-  have h₁ : f.eval r + μ₁ * g.eval r = 0 := by
-    simp_all
-  have h₂ : f.eval r + μ₂ * g.eval r = 0 := by
-    simp_all
-  have hmul : (μ₁ - μ₂) * g.eval r = 0 := by
-    grind
-  have hg0 : g.eval r = 0 := by
-    grind
+  have h₁ : f.eval r + μ₁ * g.eval r = 0 := by simp_all
+  have h₂ : f.eval r + μ₂ * g.eval r = 0 := by simp_all
+  have hmul : (μ₁ - μ₂) * g.eval r = 0 := by grind
+  have hg0 : g.eval r = 0 := by grind
   simp_all
 
 lemma family_no_common_left {f g : ℝ[X]}
@@ -665,14 +651,10 @@ lemma family_no_common_left {f g : ℝ[X]}
     {lam₁ lam₂ : ℝ} (hlam : lam₁ ≠ lam₂) :
     ∀ r, (C lam₁ * f + g).IsRoot r → ¬ (C lam₂ * f + g).IsRoot r := by
   intro r hr₁ hr₂
-  have h₁ : lam₁ * f.eval r + g.eval r = 0 := by
-    simp_all
-  have h₂ : lam₂ * f.eval r + g.eval r = 0 := by
-    simp_all
-  have hmul : (lam₁ - lam₂) * f.eval r = 0 := by
-    grind
-  have hf0 : f.eval r = 0 := by
-    grind
+  have h₁ : lam₁ * f.eval r + g.eval r = 0 := by simp_all
+  have h₂ : lam₂ * f.eval r + g.eval r = 0 := by simp_all
+  have hmul : (lam₁ - lam₂) * f.eval r = 0 := by grind
+  have hf0 : f.eval r = 0 := by grind
   simp_all
 
 lemma family_isCoprime_right {f g : ℝ[X]}
@@ -742,26 +724,22 @@ private lemma common_root_reduction_data
   · have hf_ne : f ≠ 0 := by
       intro h0
       simp [HasPosLeadingCoeff, h0] at hf_pos
-    have hqf_ne : qf ≠ 0 := by
-      simp_all
+    have hqf_ne : qf ≠ 0 := by simp_all
     have hg_ne : g ≠ 0 := by
       intro h0
       simp [HasPosLeadingCoeff, h0] at hg_pos
-    have hqg_ne : qg ≠ 0 := by
-      simp_all
+    have hqg_ne : qg ≠ 0 := by simp_all
     rw [hqf, hqg, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
       natDegree_mul (X_sub_C_ne_zero r) hqg_ne, natDegree_X_sub_C] at hdeg_lo
     lia
   · have hf_ne : f ≠ 0 := by
       intro h0
       simp [HasPosLeadingCoeff, h0] at hf_pos
-    have hqf_ne : qf ≠ 0 := by
-      simp_all
+    have hqf_ne : qf ≠ 0 := by simp_all
     have hg_ne : g ≠ 0 := by
       intro h0
       simp [HasPosLeadingCoeff, h0] at hg_pos
-    have hqg_ne : qg ≠ 0 := by
-      simp_all
+    have hqg_ne : qg ≠ 0 := by simp_all
     rw [hqf, hqg, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
       natDegree_mul (X_sub_C_ne_zero r) hqg_ne, natDegree_X_sub_C] at hdeg_hi
     lia
@@ -1034,20 +1012,16 @@ private lemma not_isRoot_right_of_isCoprime_of_sub_eq
     ∀ r, q.IsRoot r → ¬ h.IsRoot r := by
   intro r hq hh
   have hp : p.IsRoot r := by
-    have h_eval : (q - p).eval r = 0 := by
-      simp_all
-    have hq_eval : q.eval r = 0 := by
-      simp_all
+    have h_eval : (q - p).eval r = 0 := by simp_all
+    have hq_eval : q.eval r = 0 := by simp_all
     have hp_eval : p.eval r = 0 := by
       rw [eval_sub] at h_eval
       linarith
     simp_all
   obtain ⟨a, b, hab⟩ := hcop
   have h_eval := congrArg (fun t : ℝ[X] => t.eval r) hab
-  have hp_eval : p.eval r = 0 := by
-    simp_all
-  have hq_eval : q.eval r = 0 := by
-    simp_all
+  have hp_eval : p.eval r = 0 := by simp_all
+  have hq_eval : q.eval r = 0 := by simp_all
   have : (1 : ℝ) = 0 := by
     simp [eval_add, eval_mul, hp_eval, hq_eval] at h_eval
   simp_all
@@ -1057,20 +1031,16 @@ private lemma not_isRoot_left_of_isCoprime_of_add_eq
     ∀ r, p.IsRoot r → ¬ h.IsRoot r := by
   intro r hp hh
   have hq : q.IsRoot r := by
-    have hp_eval : p.eval r = 0 := by
-      simp_all
-    have hh_eval : h.eval r = 0 := by
-      simp_all
+    have hp_eval : p.eval r = 0 := by simp_all
+    have hh_eval : h.eval r = 0 := by simp_all
     have hq_eval : q.eval r = 0 := by
       rw [← hadd, eval_add]
       linarith
     simp_all
   obtain ⟨a, b, hab⟩ := hcop
   have h_eval := congrArg (fun t : ℝ[X] => t.eval r) hab
-  have hp_eval : p.eval r = 0 := by
-    simp_all
-  have hq_eval : q.eval r = 0 := by
-    simp_all
+  have hp_eval : p.eval r = 0 := by simp_all
+  have hq_eval : q.eval r = 0 := by simp_all
   have : (1 : ℝ) = 0 := by
     simp [eval_add, eval_mul, hp_eval, hq_eval] at h_eval
   simp_all
@@ -1136,13 +1106,10 @@ theorem no_common_root_right_family_one_two_of_no_common
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     ∀ r, (f + C (1 : ℝ) * g).IsRoot r → ¬ (f + C (2 : ℝ) * g).IsRoot r := by
   intro r hp hq
-  have hp_eval : (f + C (1 : ℝ) * g).eval r = 0 := by
-    simp_all
-  have hq_eval : (f + C (2 : ℝ) * g).eval r = 0 := by
-    simp_all
+  have hp_eval : (f + C (1 : ℝ) * g).eval r = 0 := by simp_all
+  have hq_eval : (f + C (2 : ℝ) * g).eval r = 0 := by simp_all
   rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C] at hp_eval hq_eval
-  have hg_eval : g.eval r = 0 := by
-    grind
+  have hg_eval : g.eval r = 0 := by grind
   simp_all
 
 /-- At a root of `f + 2g`, the companion family member `f + g` has the
@@ -1153,8 +1120,7 @@ theorem eval_mul_right_family_one_neg_at_root_two_of_no_common
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     ∀ r, (f + C (2 : ℝ) * g).IsRoot r → (f + C (1 : ℝ) * g).eval r * g.eval r < 0 := by
   intro r hroot
-  have hq_eval : (f + C (2 : ℝ) * g).eval r = 0 := by
-    simp_all
+  have hq_eval : (f + C (2 : ℝ) * g).eval r = 0 := by simp_all
   rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C] at hq_eval
   have hp_eval : (f + C (1 : ℝ) * g).eval r = -g.eval r := by
     rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C]
@@ -1170,8 +1136,7 @@ theorem eval_mul_right_family_two_neg_at_root_one_of_no_common
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     ∀ r, (f + C (1 : ℝ) * g).IsRoot r → (f + C (2 : ℝ) * g).eval r * f.eval r < 0 := by
   intro r hroot
-  have hp_eval0 : (f + C (1 : ℝ) * g).eval r = 0 := by
-    simp_all
+  have hp_eval0 : (f + C (1 : ℝ) * g).eval r = 0 := by simp_all
   rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C] at hp_eval0
   have hq_eval : (f + C (2 : ℝ) * g).eval r = -f.eval r := by
     rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C]
