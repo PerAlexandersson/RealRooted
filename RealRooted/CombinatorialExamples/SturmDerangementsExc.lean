@@ -236,7 +236,7 @@ lemma natDegree_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n) :
   rcases coeff_sturmDerangementsExc_top_and_above n hn with ⟨htop, habove⟩
   exact natDegree_eq_of_le_of_coeff_ne_zero
     (natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm))
-    (by simp_all)
+    (by rw [htop]; norm_num)
 
 lemma monic_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n) :
     (sturmDerangementsExc n).Monic := by
@@ -549,7 +549,7 @@ lemma prec_recurrenceCoreSturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
     have hn0 : (n : ℝ) ≠ 0 := by positivity
     unfold HasPosLeadingCoeff
     rw [leadingCoeff_C_mul_of_isUnit (isUnit_iff_ne_zero.mpr hn0)]
-    exact mul_pos (by grind) (sturmDerangementsExc_posLeadingCoeff (by lia))
+    exact mul_pos (by positivity) (sturmDerangementsExc_posLeadingCoeff (by lia))
   have haff_pos : HasPosLeadingCoeff (affineSturmDerangementsExc n) :=
     (affine_sturmDerangementsExc_nonnegCoeffs (by lia)).pos_leadingCoeff haff.1.1
   exact prec_add_of_prec_right_of_posLeadingCoeff hlower haff hlower_pos haff_pos

@@ -227,7 +227,7 @@ lemma natDegree_simsun (n : Nat) :
   rcases coeff_simsun_top_pos_and_above n with ⟨htop, habove⟩
   exact natDegree_eq_of_le_of_coeff_ne_zero
     (natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm))
-    (by grind)
+    htop.ne'
 
 lemma simsun_nonzero (n : Nat) :
     simsun n ≠ 0 := by
