@@ -149,8 +149,8 @@ lemma stirlingPermutations_nonnegCoeffs :
         · have hj' : n < j := lt_of_not_ge hj
           rcases coeff_stirlingPermutations_top_pos_and_above n with ⟨_, habove⟩
           have hcoeff_j : coeff (stirlingPermutations n) j = 0 := habove j hj'
-          have hcoeff_j1 : coeff (stirlingPermutations n) (j + 1) = 0 := by
-            grind
+          have hcoeff_j1 : coeff (stirlingPermutations n) (j + 1) = 0 :=
+            habove (j + 1) (by lia)
           simp [hcoeff_j, hcoeff_j1]
 
 lemma roots_nonpos_stirlingPermutations_of_isRealRooted {n : Nat}

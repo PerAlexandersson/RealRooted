@@ -150,8 +150,8 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
               (mul_nonneg (by positivity) (hprev_nonneg (m + 1)))
           · have hm' : (n + 1) / 2 < m := lt_of_not_ge hm
             have hm_zero : coeff (simsun (n + 1)) m = 0 := hprev_above m hm'
-            have hm_succ_zero : coeff (simsun (n + 1)) (m + 1) = 0 := by
-              grind
+            have hm_succ_zero : coeff (simsun (n + 1)) (m + 1) = 0 :=
+              hprev_above (m + 1) (by lia)
             simp [hm_zero, hm_succ_zero]
       · set k : Nat := (n + 2) / 2 - 1
         have hk_succ : k + 1 = (n + 2) / 2 := by
@@ -199,8 +199,8 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
             lia
         | succ k =>
             rw [coeff_simsun_succ]
-            have hk_succ_zero : coeff (simsun (n + 1)) (k + 1) = 0 := by
-              grind
+            have hk_succ_zero : coeff (simsun (n + 1)) (k + 1) = 0 :=
+              hprev_above (k + 1) (by lia)
             by_cases hk : (n + 1) / 2 < k
             · simp_all
             · have hk_le : k ≤ (n + 1) / 2 := le_of_not_gt hk

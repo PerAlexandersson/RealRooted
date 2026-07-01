@@ -101,26 +101,14 @@ lemma coloredSetPartitions_posLeadingCoeff (c m n : Nat) :
 lemma coloredSetPartitions_nonnegCoeffs :
     ∀ c m n : Nat, HasNonnegCoeffs (coloredSetPartitions c m n)
   | c, m, 0 => by
-      rintro (_ | k)
-      · simp [coloredSetPartitions_zero]
-      · rw [coloredSetPartitions_zero, coeff_one, if_neg (Nat.succ_ne_zero k)]
+      intro k
+      cases k <;> simp [coloredSetPartitions_zero, coeff_one]
   | c, m, n + 1 => by
       rintro (_ | j)
-      · have hX_zero :
-            coeff (X * coloredSetPartitions c m n) 0 = 0 := by
-          simp
-        have hC_zero :
-            coeff (C (c : ℝ) * coloredSetPartitions c m n) 0 =
-              (c : ℝ) * coeff (coloredSetPartitions c m n) 0 := by
-          simp
-        have hB_zero :
-            coeff (coloredSetPartitionsCoeffB m *
-              (coloredSetPartitions c m n).derivative) 0 = 0 := by
-          simp [coloredSetPartitionsCoeffB]
-        rw [coloredSetPartitions_succ, coeff_add, coloredSetPartitionsCoeffA, add_mul, coeff_add,
-          hX_zero, hC_zero, hB_zero]
-        simpa using
-          mul_nonneg (by positivity : 0 ≤ (c : ℝ)) (coloredSetPartitions_nonnegCoeffs c m n 0)
+      · simpa [coloredSetPartitions_succ, coloredSetPartitionsCoeffA, coloredSetPartitionsCoeffB,
+          add_mul] using
+          mul_nonneg (by positivity : 0 ≤ (c : ℝ))
+            (coloredSetPartitions_nonnegCoeffs c m n 0)
       · rw [coeff_coloredSetPartitions_succ]
         exact add_nonneg
           (coloredSetPartitions_nonnegCoeffs c m n j)

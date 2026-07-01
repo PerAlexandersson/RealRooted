@@ -149,10 +149,9 @@ lemma typeBEulerian_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (typeBEulerian n
             (mul_nonneg (by positivity) hcoeff_succ)
         · have hm' : n < m := lt_of_not_ge hm
           rcases coeff_typeBEulerian_top_and_above n with ⟨_, habove⟩
-          have hcoeff_m : coeff (typeBEulerian n) m = 0 := by
-            simp_all
-          have hcoeff_succ : coeff (typeBEulerian n) (m + 1) = 0 := by
-            grind
+          have hcoeff_m : coeff (typeBEulerian n) m = 0 := habove m hm'
+          have hcoeff_succ : coeff (typeBEulerian n) (m + 1) = 0 :=
+            habove (m + 1) (by lia)
           simp [hcoeff_m, hcoeff_succ]
 
 lemma roots_nonpos_typeBEulerian_of_isRealRooted {n : Nat} (hrr : (typeBEulerian n).Splits) :

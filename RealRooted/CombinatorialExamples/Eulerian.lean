@@ -124,10 +124,9 @@ lemma eulerianTilde_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (eulerianTilde n
           exact add_nonneg (mul_nonneg hnm hcoeff_m) (mul_nonneg (by positivity) hcoeff_succ)
         · have hm' : n + 1 < m := lt_of_not_ge hm
           rcases coeff_eulerianTilde_top_and_above n with ⟨_, habove⟩
-          have hcoeff_m : coeff (eulerianTilde n) m = 0 := by
-            simp_all
-          have hcoeff_succ : coeff (eulerianTilde n) (m + 1) = 0 := by
-            grind
+          have hcoeff_m : coeff (eulerianTilde n) m = 0 := habove m hm'
+          have hcoeff_succ : coeff (eulerianTilde n) (m + 1) = 0 :=
+            habove (m + 1) (by lia)
           simp [hcoeff_m, hcoeff_succ]
 
 lemma roots_nonpos_eulerianTilde_of_isRealRooted {n : Nat} (hrr : (eulerianTilde n).Splits) :
@@ -162,10 +161,8 @@ lemma affineEulerianTilde_nonnegCoeffs (n : Nat) :
     nlinarith
   · have hm' : n + 1 < m := lt_of_not_ge hm
     rcases coeff_eulerianTilde_top_and_above n with ⟨_, habove⟩
-    have hcoeff_m : coeff (eulerianTilde n) m = 0 := by
-      simp_all
-    have hcoeff_succ : coeff (eulerianTilde n) (m + 1) = 0 := by
-      grind
+    have hcoeff_m : coeff (eulerianTilde n) m = 0 := habove m hm'
+    have hcoeff_succ : coeff (eulerianTilde n) (m + 1) = 0 := habove (m + 1) (by lia)
     simp [hcoeff_m, hcoeff_succ]
 
 lemma roots_nonpos_affineEulerianTilde_of_isRealRooted {n : Nat} (hrr : (eulerianTilde n).Splits) :
