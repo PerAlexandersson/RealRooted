@@ -215,6 +215,50 @@ theorem IsFinitePFMultiplierSequence.mono {m n : ℕ} {gamma : ℕ → ℝ}
     IsFinitePFMultiplierSequence m gamma :=
   fun {_} hp hdeg => h hp (hdeg.trans hmn)
 
+/-- The Jensen polynomial of `gamma` is the image of `(X + 1) ^ n` under the
+diagonal operator attached to `gamma`. -/
+theorem jensenPolynomial_eq_diagonalOperator_X_add_one_pow
+    (n : ℕ) (gamma : ℕ → ℝ) :
+    jensenPolynomial n gamma = diagonalOperator gamma ((X + 1) ^ n) := by
+  ext k
+  rw [coeff_jensenPolynomial, coeff_diagonalOperator, coeff_X_add_one_pow]
+  by_cases hk : k ≤ n
+  · simp only [hk, if_true]
+    ring
+  · have hlt : n < k := Nat.lt_of_not_le hk
+    simp [hk, Nat.choose_eq_zero_of_lt hlt]
+
+theorem natDegree_X_add_one_pow_le (n : ℕ) :
+    ((X + 1 : ℝ[X]) ^ n).natDegree ≤ n := by
+  calc
+    ((X + 1 : ℝ[X]) ^ n).natDegree
+        ≤ n * (X + 1 : ℝ[X]).natDegree := Polynomial.natDegree_pow_le
+    _ = n := by
+      rw [show (X + 1 : ℝ[X]) = X + C 1 by simp, Polynomial.natDegree_X_add_C,
+        mul_one]
+
+theorem splits_X_add_one_pow (n : ℕ) :
+    ((X + 1 : ℝ[X]) ^ n).Splits := by
+  have hX1 : (X + 1 : ℝ[X]).Splits := by
+    have h := (isRealRooted_X_sub_C (-1)).2
+    simpa [sub_eq_add_neg] using h
+  exact hX1.pow n
+
+/-- The easy direction of finite Polya--Schur: a nonnegative finite multiplier
+sequence has a PF Jensen polynomial. -/
+theorem isPFPolynomial_jensenPolynomial_of_finiteMultiplierSequence
+    {n : ℕ} {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k)
+    (hmult : IsFiniteMultiplierSequence n gamma) :
+    IsPFPolynomial (jensenPolynomial n gamma) := by
+  have hd := hmult (natDegree_X_add_one_pow_le n) (splits_X_add_one_pow n)
+  rw [← jensenPolynomial_eq_diagonalOperator_X_add_one_pow] at hd
+  rcases hd with hzero | hsplits
+  · rw [hzero]
+    exact IsPFPolynomial.zero
+  · exact IsPFPolynomial.of_realRooted_nonneg
+      (hasNonnegCoeffs_jensenPolynomial hgamma) hsplits
+
 /-- The finite Polya--Schur theorem in the nonnegative-coefficient convention:
 a nonnegative diagonal sequence preserves real-rootedness up to degree `n` if
 and only if its degree-`n` Jensen polynomial is PF. -/
@@ -224,11 +268,28 @@ def finitePolyaSchurNonnegStatement : Prop :=
       (IsFiniteMultiplierSequence n gamma ↔
         IsPFPolynomial (jensenPolynomial n gamma))
 
-/-- Classical finite Polya--Schur theorem, recorded as a theorem stub so later
-work can depend on the intended API shape. -/
-theorem finitePolyaSchur_nonneg :
+/-- The remaining hard direction of the finite Polya--Schur theorem. -/
+def finitePolyaSchurNonnegBackwardStatement : Prop :=
+  ∀ {n : ℕ} {gamma : ℕ → ℝ},
+    (∀ k, 0 ≤ gamma k) →
+      IsPFPolynomial (jensenPolynomial n gamma) →
+        IsFiniteMultiplierSequence n gamma
+
+theorem finitePolyaSchur_nonneg_of_backward
+    (hBack : finitePolyaSchurNonnegBackwardStatement) :
     finitePolyaSchurNonnegStatement := by
-  sorry
+  intro n gamma hgamma
+  refine ⟨fun hmult => ?_, fun hjensen => ?_⟩
+  · exact isPFPolynomial_jensenPolynomial_of_finiteMultiplierSequence hgamma hmult
+  · exact hBack hgamma hjensen
+
+/-- Classical finite Polya--Schur theorem.  The remaining proof obligation is
+isolated in `finitePolyaSchurNonnegBackwardStatement`. -/
+theorem finitePolyaSchur_nonneg :
+    finitePolyaSchurNonnegStatement :=
+  finitePolyaSchur_nonneg_of_backward (by
+    intro n gamma hgamma hjensen
+    sorry)
 
 /-- A nonnegative finite multiplier sequence preserves the PF cone on the same
 degree range. -/
@@ -250,12 +311,12 @@ theorem isFinitePFMultiplierSequence_of_finiteMultiplierSequence
 
 /-- The finite Polya--Schur classification, used in the forward direction. -/
 theorem jensenPolynomial_isPF_of_finiteMultiplierSequence
-    (hFPS : finitePolyaSchurNonnegStatement)
+    (_hFPS : finitePolyaSchurNonnegStatement)
     {n : ℕ} {gamma : ℕ → ℝ}
     (hgamma : ∀ k, 0 ≤ gamma k)
     (hmult : IsFiniteMultiplierSequence n gamma) :
     IsPFPolynomial (jensenPolynomial n gamma) :=
-  (hFPS hgamma).1 hmult
+  isPFPolynomial_jensenPolynomial_of_finiteMultiplierSequence hgamma hmult
 
 /-- The finite Polya--Schur classification, used in the reverse direction. -/
 theorem isFiniteMultiplierSequence_of_jensenPolynomial
