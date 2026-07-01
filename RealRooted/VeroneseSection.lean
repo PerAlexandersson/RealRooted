@@ -219,9 +219,8 @@ matrix. -/
 theorem fullyInterlacingPair_veronesePair {a b : ℕ → ℝ}
     (h : FullyInterlacingPair a b) {r : ℕ} (hr : 0 < r) :
     VeronesePairFullyInterlacing r a b := by
-  have hcol : StrictMono (fun col => r * col) := by
-    intro i j hij
-    simp_all
+  have hcol : StrictMono (fun col => r * col) :=
+    fun _ _ hij => by simp_all
   exact h.submatrix strictMono_id hcol
 
 /-- Even rows of `veronesePairLace` are Toeplitz rows for the sections of

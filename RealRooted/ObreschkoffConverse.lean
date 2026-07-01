@@ -745,9 +745,7 @@ private lemma exists_special_pair_of_wronskian_zero
   have hp_der_root : p.derivative.IsRoot x := by
     simp_all
   by_cases hgx0 : g.eval x = 0
-  · have hfx_ne : f.eval x ≠ 0 := by
-      intro hfx0
-      simp_all
+  · have hfx_ne : f.eval x ≠ 0 := fun hfx0 => by simp_all
     refine ⟨p, f, rfl, Or.inl ⟨hgx0, rfl⟩, ?_, ?_, hp_root, hp_der_root, hfx_ne⟩
     · exact
         allComboRealRooted_linear_change

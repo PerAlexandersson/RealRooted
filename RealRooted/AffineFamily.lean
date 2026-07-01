@@ -1107,9 +1107,7 @@ private lemma eval_mul_left_family_one_neg_at_root_two_of_no_common
   have hp_eval : (f + g).eval r = -f.eval r := by
     rw [Polynomial.eval_add]
     linarith
-  have hf_ne : f.eval r ≠ 0 := by
-    intro hf0
-    simp_all
+  have hf_ne : f.eval r ≠ 0 := fun hf0 => by simp_all
   simp_all
 
 /-- At a root of `f + g`, the companion family member `2f + g` has the
@@ -1125,9 +1123,7 @@ private lemma eval_mul_left_family_two_neg_at_root_one_of_no_common
   have hq_eval : (C (2 : ℝ) * f + g).eval r = -g.eval r := by
     rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C]
     linarith
-  have hg_ne : g.eval r ≠ 0 := by
-    intro hg0
-    simp_all
+  have hg_ne : g.eval r ≠ 0 := fun hg0 => by simp_all
   simp_all
 /-- For a nonnegative-coefficient real-rooted polynomial of degree at least `2`,
 some positive constant shift fails to be real-rooted. The shift is positive
@@ -2835,9 +2831,7 @@ private lemma rootMultiplicity_ne_two_add_right_of_posComboRealRooted
   have hp_root : (f + C μ * g).IsRoot x :=
     (rootMultiplicity_pos (show f + C μ * g ≠ 0 from
       (PosComboRealRooted.isRealRooted_add_right hfg hμ).1)).mp (by lia)
-  have hg_eval_ne : g.eval x ≠ 0 := by
-    intro hg0
-    simp_all
+  have hg_eval_ne : g.eval x ≠ 0 := fun hg0 => by simp_all
   by_cases hprod_pos :
       0 < (f + C μ * g).derivative.derivative.eval x * g.eval x
   · exact
@@ -2901,9 +2895,7 @@ private lemma hasSimpleRoots_add_right_of_posComboRealRooted
     (rootMultiplicity_pos hp_ne).mpr (by lia)
   have hmult_gt : 1 < p.rootMultiplicity x := by
     lia
-  have hg_not_root : ¬ g.IsRoot x := by
-    intro hgx
-    simp_all
+  have hg_not_root : ¬ g.IsRoot x := fun hgx => by simp_all
   let m : ℕ := p.rootMultiplicity x
   let k : ℕ := m - 2
   obtain ⟨δ, hδ, hgk_not_root⟩ :=
@@ -3601,9 +3593,8 @@ private lemma allComboRealRooted_of_affine_family_succDegree
           ((((C s * X + C (t + 1)) * f) + g) ≠ 0 ∧ (((C s * X + C (t + 1)) * f) + g).Splits) :=
         haff hs (by grind)
       grind
-    have hshift_no : ∀ r, (g + f).IsRoot r → ¬ f.IsRoot r := by
-      intro r hshift_root hfr
-      simp_all
+    have hshift_no : ∀ r, (g + f).IsRoot r → ¬ f.IsRoot r :=
+      fun r hshift_root hfr => by simp_all
     have hshift_root0_false : ¬ (g + f).IsRoot 0 := by
       simp_all
     have hall_shift : AllComboRealRooted (g + f) f :=
@@ -3662,9 +3653,8 @@ private lemma prec_right_pair_of_affine_family_high_degree_core
       isRealRooted_right_of_affine_family_succDegree
         hf0 hshift_ne hfnn hshift_nonneg
         (shifted_affine_family_of_affine_family haff) hshift_deg.symm
-    have hno_shift : ∀ r, (g + X * f).IsRoot r → ¬ f.IsRoot r := by
-      intro r hshift_r hfr
-      simp_all
+    have hno_shift : ∀ r, (g + X * f).IsRoot r → ¬ f.IsRoot r :=
+      fun r hshift_r hfr => by simp_all
     have hall_shift : AllComboRealRooted (g + X * f) f :=
       allComboRealRooted_of_affine_family_succDegree
         hf0 hshift_ne hfnn hshift_nonneg

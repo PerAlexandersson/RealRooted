@@ -1493,9 +1493,7 @@ lemma _root_.Matrix.PosDef.det_pos_fin_two_entries {a b c : ℝ}
     0 < a * c - b * b := by
   have hdiag : 0 < (!![a, b; b, c] : Matrix (Fin 2) (Fin 2) ℝ) 0 0 := h.diag_pos
   have : 0 < a := by simpa using hdiag
-  have hx : ![-b, a] ≠ (0 : Fin 2 → ℝ) := by
-    intro hzero
-    simp_all
+  have hx : ![-b, a] ≠ (0 : Fin 2 → ℝ) := fun hzero => by simp_all
   have hquad := h.dotProduct_mulVec_pos hx
   norm_num [dotProduct, Matrix.mulVec] at hquad
   nlinarith

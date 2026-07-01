@@ -773,9 +773,7 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
     intro n
     refine Nat.strong_induction_on n ?_
     intro n ih δ hδdeg hpδ hpδ_nonpos
-    have hδ0_main : δ ≠ 0 := by
-      intro hzero
-      simp_all
+    have hδ0_main : δ ≠ 0 := fun hzero => by simp_all
     by_cases hn0 : n = 0
     · have hδC : δ = C (δ.coeff 0) := by
         simpa [hn0] using

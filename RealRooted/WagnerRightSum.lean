@@ -1905,9 +1905,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
               lt_of_lt_of_le hc_lt_r₁
                 (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
           have hnodup := (hpw.imp ne_of_lt : (c :: us).Nodup)
-          have hfg_ne : f + g ≠ 0 := by
-            intro h0
-            simp_all
+          have hfg_ne : f + g ≠ 0 := fun h0 => by simp_all
           have hsub : (↑(c :: us) : Multiset ℝ) ≤ (f + g).roots := by
             rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr hnodup)]
             intro u hu
@@ -1966,9 +1964,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
               lt_of_lt_of_le hc_lt_r₁
                 (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
           have hnodup := (hpw.imp ne_of_lt : (c :: us).Nodup)
-          have hfg_ne : f + g ≠ 0 := by
-            intro h0
-            simp_all
+          have hfg_ne : f + g ≠ 0 := fun h0 => by simp_all
           have hsub : (↑(c :: us) : Multiset ℝ) ≤ (f + g).roots := by
             rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr hnodup)]
             intro u hu
