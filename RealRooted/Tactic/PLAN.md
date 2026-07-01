@@ -128,6 +128,8 @@ The first certificate-driven layer is implemented.
 - `Attr.lean` defines tag attributes for recurrence, degree, sign, base-case,
   and matrix certificates.
 - `SideGoals.lean` defines `rr_side`, a conservative side-goal closer.
+- `Finish.lean` defines small proof-tail dispatchers that consume `Prec`
+  certificates.
 - `MaWang.lean` defines dispatchers for `prec_ma_wang`,
   `prec_ma_wang_same`, and `prec_ma_wang_succ`.
 - `Favard.lean` defines a dispatcher for the Favard interlacing and

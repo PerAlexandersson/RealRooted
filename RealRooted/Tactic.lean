@@ -1,5 +1,6 @@
 import RealRooted.Tactic.Attr
 import RealRooted.Tactic.SideGoals
+import RealRooted.Tactic.Finish
 import RealRooted.Tactic.MaWang
 import RealRooted.Tactic.Favard
 import RealRooted.Tactic.LiuWang
