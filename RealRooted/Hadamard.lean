@@ -85,6 +85,106 @@ theorem hadamardProduct_C_mul_right (a : ℝ) (p q : ℝ[X]) :
   ext n
   simp [mul_comm, mul_left_comm]
 
+/-- The support of a Hadamard product is contained in the left support. -/
+theorem support_hadamardProduct_subset_left (p q : ℝ[X]) :
+    (hadamardProduct p q).support ⊆ p.support := by
+  intro n hn
+  rw [mem_support_iff] at hn ⊢
+  rw [coeff_hadamardProduct] at hn
+  exact left_ne_zero_of_mul hn
+
+/-- The support of a Hadamard product is contained in the right support. -/
+theorem support_hadamardProduct_subset_right (p q : ℝ[X]) :
+    (hadamardProduct p q).support ⊆ q.support := by
+  intro n hn
+  rw [mem_support_iff] at hn ⊢
+  rw [coeff_hadamardProduct] at hn
+  exact right_ne_zero_of_mul hn
+
+theorem natDegree_hadamardProduct_le_left (p q : ℝ[X]) :
+    (hadamardProduct p q).natDegree ≤ p.natDegree := by
+  refine natDegree_le_iff_coeff_eq_zero.mpr ?_
+  intro n hn
+  rw [coeff_hadamardProduct, coeff_eq_zero_of_natDegree_lt hn, zero_mul]
+
+theorem natDegree_hadamardProduct_le_right (p q : ℝ[X]) :
+    (hadamardProduct p q).natDegree ≤ q.natDegree := by
+  rw [hadamardProduct_comm]
+  exact natDegree_hadamardProduct_le_left q p
+
+/-- A Hadamard product vanishes exactly when the two coefficient supports are
+disjoint. -/
+theorem hadamardProduct_eq_zero_iff_support_disjoint (p q : ℝ[X]) :
+    hadamardProduct p q = 0 ↔ Disjoint p.support q.support := by
+  constructor
+  · intro h
+    rw [Finset.disjoint_left]
+    intro n hnp hnq
+    have hzero : (hadamardProduct p q).coeff n = 0 := by
+      simp [h]
+    rw [coeff_hadamardProduct] at hzero
+    rw [mem_support_iff] at hnp hnq
+    exact (mul_ne_zero hnp hnq) hzero
+  · intro hdisj
+    ext n
+    by_cases hnp : n ∈ p.support
+    · have hnq : n ∉ q.support := Finset.disjoint_left.mp hdisj hnp
+      simp [coeff_hadamardProduct, (notMem_support_iff).mp hnq]
+    · simp [coeff_hadamardProduct, (notMem_support_iff).mp hnp]
+
+/-- Fixed-degree Schur--Szego composition.  If
+`f = ∑ binom(n,k) a_k X^k` and `g = ∑ binom(n,k) b_k X^k`, then
+`schurSzegoComp n f g = ∑ binom(n,k) a_k b_k X^k`. -/
+def schurSzegoComp (n : Nat) (f g : ℝ[X]) : ℝ[X] :=
+  Finset.sum (Finset.range (n + 1))
+    (fun k => monomial k (f.coeff k * g.coeff k / (Nat.choose n k : ℝ)))
+
+theorem coeff_schurSzegoComp (n k : Nat) (f g : ℝ[X]) :
+    (schurSzegoComp n f g).coeff k =
+      if k ≤ n then f.coeff k * g.coeff k / (Nat.choose n k : ℝ) else 0 := by
+  rw [schurSzegoComp, finsetSum_coeff]
+  by_cases hk : k ≤ n
+  · rw [if_pos hk]
+    simpa [coeff_monomial] using
+      (Finset.sum_eq_single (s := Finset.range (n + 1))
+        (f := fun b => (monomial b (f.coeff b * g.coeff b / (Nat.choose n b : ℝ))).coeff k)
+        k
+        (by
+          intro b hb hbk
+          simp [coeff_monomial, hbk])
+        (by
+          intro hnot
+          exact False.elim (hnot (Finset.mem_range.mpr (Nat.lt_succ_of_le hk)))))
+  · rw [if_neg hk]
+    refine Finset.sum_eq_zero ?_
+    intro b hb
+    have hbk : b ≠ k := by
+      intro h
+      subst b
+      exact hk (Nat.le_of_lt_succ (Finset.mem_range.mp hb))
+    simp [coeff_monomial, hbk]
+
+theorem coeff_schurSzegoComp_of_le {n k : Nat} (hk : k ≤ n) (f g : ℝ[X]) :
+    (schurSzegoComp n f g).coeff k =
+      f.coeff k * g.coeff k / (Nat.choose n k : ℝ) := by
+  simp [coeff_schurSzegoComp, hk]
+
+theorem coeff_schurSzegoComp_eq_zero_of_lt {n k : Nat} (hk : n < k) (f g : ℝ[X]) :
+    (schurSzegoComp n f g).coeff k = 0 := by
+  simp [coeff_schurSzegoComp, not_le_of_gt hk]
+
+theorem natDegree_schurSzegoComp_le (n : Nat) (f g : ℝ[X]) :
+    (schurSzegoComp n f g).natDegree ≤ n := by
+  refine natDegree_le_iff_coeff_eq_zero.mpr ?_
+  intro k hk
+  exact coeff_schurSzegoComp_eq_zero_of_lt hk f g
+
+theorem choose_mul_coeff_schurSzegoComp_of_le {n k : Nat} (hk : k ≤ n) (f g : ℝ[X]) :
+    (Nat.choose n k : ℝ) * (schurSzegoComp n f g).coeff k =
+      f.coeff k * g.coeff k := by
+  rw [coeff_schurSzegoComp_of_le hk]
+  field_simp [show (Nat.choose n k : ℝ) ≠ 0 by exact_mod_cast Nat.choose_ne_zero hk]
+
 /-- Nonnegative coefficients are preserved by coefficientwise Hadamard
 products. -/
 theorem HasNonnegCoeffs.hadamardProduct {p q : ℝ[X]}
