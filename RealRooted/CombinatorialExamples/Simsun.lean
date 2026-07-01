@@ -159,8 +159,7 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
         · have hk_eq : k = n / 2 := by lia
           have hprev_idx : (n + 1) / 2 = n / 2 := by lia
           have hprev_pos : 0 < coeff (simsun (n + 1)) k := by lia
-          have hprev_zero : coeff (simsun (n + 1)) (k + 1) = 0 := by
-            simp_all
+          have hprev_zero : coeff (simsun (n + 1)) (k + 1) = 0 := by simp_all
           have hdouble : (2 : ℝ) * (k : ℝ) = (n : ℝ) := by
             exact_mod_cast (show 2 * k = n by lia)
           simp_all

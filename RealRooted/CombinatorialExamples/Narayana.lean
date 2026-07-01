@@ -177,11 +177,8 @@ private lemma natDegree_leadingCoeff_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
   have hB_degree : B.degree = n + 1 := by
     rw [degree_eq_natDegree hB_ne, hB_natDegree]
     lia
-  have hsum_lc :
-      A.leadingCoeff + B.leadingCoeff = 1 := by
-    grind
-  have hsum_lc_ne : A.leadingCoeff + B.leadingCoeff ≠ 0 := by
-    simp_all
+  have hsum_lc : A.leadingCoeff + B.leadingCoeff = 1 := by grind
+  have hsum_lc_ne : A.leadingCoeff + B.leadingCoeff ≠ 0 := by simp_all
   have hsum_degree : (A + B).degree = n + 1 := by
     rw [Polynomial.degree_add_eq_of_leadingCoeff_add_ne_zero hsum_lc_ne, hA_degree, hB_degree,
       max_eq_left le_rfl]

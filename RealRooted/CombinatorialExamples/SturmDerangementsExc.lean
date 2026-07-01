@@ -227,8 +227,7 @@ lemma coeff_sturmDerangementsExc_symm :
               (((n + 1 - m : Nat) : ℝ) + 1) * coeff (sturmDerangementsExc (n + 2)) (n + 2 - m) := by
           simpa [hidx] using coeff_sturmDerangementsExc_succ n (n + 1 - m)
         rw [hgoal, hrec1, hrec2, hs1, hs2m, hs2m1]
-        have hcast1 : (((n + 1 - m : Nat) : ℝ)) = (n + 1 : ℝ) - m := by
-          simp_all
+        have hcast1 : (((n + 1 - m : Nat) : ℝ)) = (n + 1 : ℝ) - m := by simp_all
         grind
 
 lemma natDegree_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n) :
@@ -376,8 +375,7 @@ lemma natDegree_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n) :
     lia
   · rw [natDegree_sturmDerangementsExc hn]
     have hn0 : 0 < n := by lia
-    have hlt : ((n - 1 : Nat) : ℝ) < n := by
-      simp_all
+    have hlt : ((n - 1 : Nat) : ℝ) < n := by simp_all
     linarith
 
 lemma affine_sturmDerangementsExc_nonnegCoeffs {n : Nat} (hn : 2 ≤ n) :
@@ -390,8 +388,7 @@ lemma affine_sturmDerangementsExc_nonnegCoeffs {n : Nat} (hn : 2 ≤ n) :
       sturmDerangementsExc_nonnegCoeffs n m
     have hcoeff_succ : 0 ≤ coeff (sturmDerangementsExc n) (m + 1) :=
       sturmDerangementsExc_nonnegCoeffs n (m + 1)
-    have hnm : 0 ≤ (n : ℝ) - m := by
-      simp_all
+    have hnm : 0 ≤ (n : ℝ) - m := by simp_all
     nlinarith
   · have hm' : n < m := lt_of_not_ge hm
     rcases coeff_sturmDerangementsExc_top_and_above n hn with ⟨_, habove⟩
@@ -424,8 +421,7 @@ lemma affine_sturmDerangementsExc_isRoot_neg_one_of_even {n : Nat}
     simpa [hk1, hk2, hk3, Polynomial.eval_add, Polynomial.eval_mul, hprev0, hnext0]
       using congrArg (fun p : ℝ[X] => p.eval (-1))
         (sturmDerangementsExc_recurrence (k + k - 2))
-  have hcoef : ((↑(k + k - 2) : ℝ) + 2) = (k + k : ℝ) := by
-    simp_all
+  have hcoef : ((↑(k + k - 2) : ℝ) + 2) = (k + k : ℝ) := by simp_all
   rw [hcoef] at hrec_eval
   have hA_eval :
       A.eval (-1) =

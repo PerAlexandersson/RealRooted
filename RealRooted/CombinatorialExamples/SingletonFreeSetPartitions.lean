@@ -187,8 +187,7 @@ lemma prec_singletonFreeSetPartitionsCore_of_prec {n : Nat} (hn : 3 ≤ n)
     (hprev : Prec (singletonFreeSetPartitions n) (singletonFreeSetPartitions (n + 1))) :
     Prec (singletonFreeSetPartitionsCore n) (singletonFreeSetPartitions (n + 1)) := by
   rw [singletonFreeSetPartitionsCore]
-  have hscalar_ne : (n + 1 : ℝ) ≠ 0 := by
-    positivity
+  have hscalar_ne : (n + 1 : ℝ) ≠ 0 := by positivity
   have hlower :
       Prec (C (n + 1 : ℝ) * singletonFreeSetPartitions n)
         (singletonFreeSetPartitions (n + 1)) :=

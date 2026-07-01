@@ -147,8 +147,7 @@ lemma motzkin_bound_zero :
 lemma motzkin_bound_one :
     ∀ r ∈ (motzkin 1).roots, r ≤ motzkinShift := by
   intro r hr
-  have hr_root : (1 + X : ℝ[X]).IsRoot r := by
-    simp_all
+  have hr_root : (1 + X : ℝ[X]).IsRoot r := by simp_all
   have hr_eq : r = -1 := by
     rw [Polynomial.IsRoot.def, eval_add, eval_one, eval_X] at hr_root
     linarith

@@ -229,9 +229,7 @@ lemma cayley_I_tan_eq_exp_two_mul_I (theta : ℝ)
       have hre := congrArg Complex.re h
       simp at hre
       linarith
-    have h1 : -(↑Real.pi / 2) < (theta : ℂ).re := by
-      simp
-      grind
+    have h1 : -(↑Real.pi / 2) < (theta : ℂ).re := by simp; grind
     have h2 : (theta : ℂ).re ≤ ↑Real.pi / 2 := by simp [le_of_lt hθlt]
     have h := Complex.arctan_tan h0 h1 h2
     simp_all
