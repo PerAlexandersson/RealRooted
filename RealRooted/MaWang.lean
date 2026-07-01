@@ -885,9 +885,8 @@ private theorem exists_strictSignInterleaving {F : ℝ[X]} :
         exists_strictSignInterleaving (F := F) (r₂ :: rest) htail_sorted
           (fun pre {a b tail} hEq => by
             grind)
-      have hu_lt_all : ∀ w ∈ us, u < w := by
-        intro w hw
-        exact lt_of_lt_of_le hu₂ (listInterlaces_all_ge us rest r₂ hus_int w hw)
+      have hu_lt_all : ∀ w ∈ us, u < w :=
+        fun w hw => lt_of_lt_of_le hu₂ (listInterlaces_all_ge us rest r₂ hus_int w hw)
       refine ⟨u :: us, ?_, ?_, ?_, ?_⟩
       · simp [hus_len]
       · exact ⟨le_of_lt hu₁, le_of_lt hu₂, hus_int⟩

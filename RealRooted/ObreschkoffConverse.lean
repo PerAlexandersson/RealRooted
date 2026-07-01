@@ -199,9 +199,8 @@ private lemma roots_le_of_prec_right_local {f g : ℝ[X]} {c : ℝ}
     (hg_le : ∀ r ∈ g.roots, r ≤ c) :
     ∀ r ∈ f.roots, r ≤ c := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
-  have hrs_le : ∀ r ∈ rs, r ≤ c := by
-    intro r hr
-    exact hg_le r (by rw [← hrs_eq]; exact Multiset.mem_coe.mpr hr)
+  have hrs_le : ∀ r ∈ rs, r ≤ c :=
+    fun r hr => hg_le r (by rw [← hrs_eq]; exact Multiset.mem_coe.mpr hr)
   intro r hr
   have hr' : r ∈ ss := by
     have : r ∈ (↑ss : Multiset ℝ) := by lia
@@ -1571,10 +1570,10 @@ private theorem isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
       simp
     have hus_int' : ListInterlaces us (r₀ :: rs') := by
       lia
-    have huL_lt_all_us : ∀ u ∈ us, uL < u := by
-      intro u hu
-      exact lt_of_lt_of_le (huL_lt r₀ hr₀_root)
-        (listInterlaces_all_ge us rs' r₀ hus_int' u hu)
+    have huL_lt_all_us : ∀ u ∈ us, uL < u :=
+      fun u hu =>
+        lt_of_lt_of_le (huL_lt r₀ hr₀_root)
+          (listInterlaces_all_ge us rs' r₀ hus_int' u hu)
     have hws_pw : (uL :: us).Pairwise (· < ·) := by
       simp_all
     have hws_sub : (↑(uL :: us) : Multiset ℝ) ≤ F.roots := by
@@ -1596,11 +1595,11 @@ private theorem isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
       apply (mem_roots hf_ne).mp
       rw [← hrs_eq]
       simp
-    have hus_lt_all_uR : ∀ u ∈ us, u < uR := by
-      intro u hu
-      exact lt_of_le_of_lt
-        (listInterlaces_all_le_getLast hrs_ne hrs_sorted hus_int u hu)
-        (huR_lt _ hu_root)
+    have hus_lt_all_uR : ∀ u ∈ us, u < uR :=
+      fun u hu =>
+        lt_of_le_of_lt
+          (listInterlaces_all_le_getLast hrs_ne hrs_sorted hus_int u hu)
+          (huR_lt _ hu_root)
     have hws_pw : (us ++ [uR]).Pairwise (· < ·) := by
       grind
     have hws_sub : (↑(us ++ [uR]) : Multiset ℝ) ≤ F.roots := by
@@ -2693,9 +2692,8 @@ private lemma interlaces_of_prec_sameDegree_rightmost_factor
     have hqs_sorted : qs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
     have hqs_len : qs.length = q.natDegree := by
       rw [show qs = q.roots.sort (· ≤ ·) by lia, Multiset.length_sort, card_roots_of_splits hq.2]
-    have hqs_le_uR : ∀ r ∈ qs, r ≤ uR := by
-      intro r hr
-      exact hright r (by
+    have hqs_le_uR : ∀ r ∈ qs, r ≤ uR :=
+      fun r hr => hright r (by
         rw [hgq, roots_mul (mul_ne_zero (X_sub_C_ne_zero uR) hq_ne), roots_X_sub_C]
         apply Multiset.mem_add.mpr
         right
@@ -2943,9 +2941,8 @@ private theorem allComboRealRooted_of_prec_sameDegree_pos_of_no_common
           isRealRooted_C_mul hrr_neg.1 hrr_neg.2 (by simp : (-1 : ℝ) ≠ 0)
         grind
       · have hαpos : 0 < α := lt_of_not_ge hα_nonpos
-        have hcomb_neg : C (-α) * f + C (-β) * g ≠ 0 := by
-          intro hlin
-          exact
+        have hcomb_neg : C (-α) * f + C (-β) * g ≠ 0 :=
+          fun hlin =>
             no_nontrivial_linear_relation_of_no_common_root
               hf.1 hf.2 hno (by lia) (neg_ne_zero.mpr hαpos.ne') (neg_ne_zero.mpr hβ0) hlin
         have hrr_neg :

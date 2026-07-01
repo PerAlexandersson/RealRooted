@@ -984,9 +984,8 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
     have hq_root_gt : ∀ t ∈ q.roots, r₁ < t := by
       intro t ht
       have ht_root_q : q.IsRoot t := (mem_roots hq_ne).mp ht
-      have ht_ne : t ≠ r₁ := by
-        intro hteq
-        exact hq_nodvd ((dvd_iff_isRoot).2 (hteq ▸ ht_root_q))
+      have ht_ne : t ≠ r₁ :=
+        fun hteq => hq_nodvd ((dvd_iff_isRoot).2 (hteq ▸ ht_root_q))
       have ht_mem_f : t ∈ f.roots := by
         rw [hf_fact', roots_mul (mul_ne_zero (pow_ne_zero _ (X_sub_C_ne_zero _)) hq_ne),
           Multiset.mem_add]
@@ -999,9 +998,8 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
     have hqg_root_gt : ∀ t ∈ qg.roots, r₁ < t := by
       intro t ht
       have ht_root_qg : qg.IsRoot t := (mem_roots hqg_ne).mp ht
-      have ht_ne : t ≠ r₁ := by
-        intro hteq
-        exact hqg_nodvd ((dvd_iff_isRoot).2 (hteq ▸ ht_root_qg))
+      have ht_ne : t ≠ r₁ :=
+        fun hteq => hqg_nodvd ((dvd_iff_isRoot).2 (hteq ▸ ht_root_qg))
       have ht_mem_g : t ∈ g.roots := by
         rw [hg_fact', roots_mul (mul_ne_zero (pow_ne_zero _ (X_sub_C_ne_zero _)) hqg_ne),
           Multiset.mem_add]

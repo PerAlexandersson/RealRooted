@@ -2698,9 +2698,8 @@ private lemma interlaces_of_prec_sameDegree_rightmost_factor
     have hqs_len : qs.length = q.natDegree := by
       rw [show qs = q.roots.sort (· ≤ ·) by lia, Multiset.length_sort,
         card_roots_of_splits hq.2]
-    have hqs_le_uR : ∀ r ∈ qs, r ≤ uR := by
-      intro r hr
-      exact hright r (by
+    have hqs_le_uR : ∀ r ∈ qs, r ≤ uR :=
+      fun r hr => hright r (by
         rw [hgq, roots_mul (mul_ne_zero (X_sub_C_ne_zero uR) hq_ne), roots_X_sub_C]
         apply Multiset.mem_add.mpr
         right
