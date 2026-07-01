@@ -121,8 +121,7 @@ theorem hadamardProduct_eq_zero_iff_support_disjoint (p q : ℝ[X]) :
   · intro h
     rw [Finset.disjoint_left]
     intro n hnp hnq
-    have hzero : (hadamardProduct p q).coeff n = 0 := by
-      simp [h]
+    have hzero : (hadamardProduct p q).coeff n = 0 := by simp [h]
     rw [coeff_hadamardProduct] at hzero
     rw [mem_support_iff] at hnp hnq
     exact (mul_ne_zero hnp hnq) hzero

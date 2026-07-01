@@ -142,8 +142,7 @@ def jensenPolynomial (n : ℕ) (gamma : ℕ → ℝ) : ℝ[X] :=
       if k ≤ n then (Nat.choose n k : ℝ) * gamma k else 0 := by
   classical
   by_cases hk : k ≤ n
-  · have hmem : k ∈ Finset.range (n + 1) := by
-      simpa [Nat.lt_succ_iff] using hk
+  · have hmem : k ∈ Finset.range (n + 1) := by simpa [Nat.lt_succ_iff] using hk
     rw [jensenPolynomial, Polynomial.finsetSum_coeff]
     rw [Finset.sum_eq_single k]
     · simp [hk]

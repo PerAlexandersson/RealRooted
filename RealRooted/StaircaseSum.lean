@@ -39,10 +39,8 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
   have hf_nonneg : HasNonnegCoeffs f := hfs.nonnegCoeffs f (List.get_mem _ _)
   by_cases hm0 : m = 0
   · subst hm0
-    have hfs_eq : fs = f :: fs.drop 1 := by
-      simpa [f] using (List.drop_eq_getElem_cons hm)
-    have hf_mem_take : f ∈ fs.take 1 := by
-      grind
+    have hfs_eq : fs = f :: fs.drop 1 := by simpa [f] using (List.drop_eq_getElem_cons hm)
+    have hf_mem_take : f ∈ fs.take 1 := by grind
     have hprec : ∀ p ∈ fs, Prec f p := by
       intro p hp
       rw [hfs_eq] at hp
@@ -70,10 +68,8 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
         (fun p hp => hfs.nonnegCoeffs p (List.mem_of_mem_take hp))
     have hXprefix_prec : Prec f (X * (fs.take m).sum) :=
       prec_mul_X_of_prec_of_nonneg hprefix_prec hprefix_nonneg hf_nonneg
-    have htake_succ : fs.take (m + 1) = fs.take m ++ [f] := by
-      simp [f]
-    have hf_mem_take_succ : f ∈ fs.take (m + 1) := by
-      simp_all
+    have htake_succ : fs.take (m + 1) = fs.take m ++ [f] := by simp [f]
+    have hf_mem_take_succ : f ∈ fs.take (m + 1) := by simp_all
     have hcommon_left : ∀ p ∈ (X * (fs.take m).sum) :: fs.drop m, Prec f p := by
       intro p hp
       rcases List.mem_cons.mp hp with rfl | hp
