@@ -236,11 +236,10 @@ lemma simsun_nonzero (n : Nat) :
 
 lemma interlaces_derivative_simsun_three :
     Interlaces (simsun 3).derivative (simsun 3) := by
-  have hlin : Interlaces (1 : ℝ[X]) (1 + C (4 : ℝ) * X) :=
-    interlaces_one_linear (by
+  have hprec : Prec (1 : ℝ[X]) (1 + C (4 : ℝ) * X) :=
+    (interlaces_one_linear (by
       simpa [add_comm] using
-        (Polynomial.natDegree_linear (a := (4 : ℝ)) (b := (1 : ℝ)) (by simp)))
-  have hprec : Prec (1 : ℝ[X]) (1 + C (4 : ℝ) * X) := hlin.toPrec
+        (Polynomial.natDegree_linear (a := (4 : ℝ)) (b := (1 : ℝ)) (by simp)))).toPrec
   have hprecC : Prec (C (4 : ℝ) * (1 : ℝ[X])) (1 + C (4 : ℝ) * X) :=
     prec_C_mul_left hprec (by simp)
   have hInter : Interlaces (C (4 : ℝ) * (1 : ℝ[X])) (1 + C (4 : ℝ) * X) :=
@@ -279,8 +278,7 @@ lemma interlaces_derivative_simsun :
       simpa [simsun_two, add_comm] using
         interlaces_one_linear (p := X + C (1 : ℝ))
           (Polynomial.natDegree_X_add_C (x := (1 : ℝ)))
-  | 3, _, _ => by
-      simpa using interlaces_derivative_simsun_three
+  | 3, _, _ => interlaces_derivative_simsun_three
   | n + 4, _, hrr =>
       derivative_interlaces hrr (by rw [natDegree_simsun]; lia)
 
