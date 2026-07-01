@@ -120,6 +120,28 @@ theorem apolarPairing_C_mul_right {R : Type*} [CommRing R]
   rw [Polynomial.coeff_C_mul]
   ring_nf
 
+theorem apolarPairing_neg_left {R : Type*} [CommRing R]
+    (n : Nat) (f g : R[X]) :
+    apolarPairing n (-f) g = -apolarPairing n f g := by
+  simpa using apolarPairing_C_mul_left (n := n) (-1) f g
+
+theorem apolarPairing_neg_right {R : Type*} [CommRing R]
+    (n : Nat) (f g : R[X]) :
+    apolarPairing n f (-g) = -apolarPairing n f g := by
+  simpa using apolarPairing_C_mul_right (n := n) f g (-1)
+
+theorem apolarPairing_sub_left {R : Type*} [CommRing R]
+    (n : Nat) (f₁ f₂ g : R[X]) :
+    apolarPairing n (f₁ - f₂) g =
+      apolarPairing n f₁ g - apolarPairing n f₂ g := by
+  rw [sub_eq_add_neg, apolarPairing_add_left, apolarPairing_neg_left, sub_eq_add_neg]
+
+theorem apolarPairing_sub_right {R : Type*} [CommRing R]
+    (n : Nat) (f g₁ g₂ : R[X]) :
+    apolarPairing n f (g₁ - g₂) =
+      apolarPairing n f g₁ - apolarPairing n f g₂ := by
+  rw [sub_eq_add_neg, apolarPairing_add_right, apolarPairing_neg_right, sub_eq_add_neg]
+
 theorem AreApolar.add_left {R : Type*} [CommRing R]
     {n : Nat} {f₁ f₂ g : R[X]}
     (h₁ : AreApolar n f₁ g) (h₂ : AreApolar n f₂ g) :
@@ -141,6 +163,28 @@ theorem AreApolar.C_mul_right {R : Type*} [CommRing R]
     {n : Nat} {f g : R[X]} (a : R) (h : AreApolar n f g) :
     AreApolar n f (C a * g) := by
   rw [AreApolar, apolarPairing_C_mul_right, h, mul_zero]
+
+theorem AreApolar.neg_left {R : Type*} [CommRing R]
+    {n : Nat} {f g : R[X]} (h : AreApolar n f g) :
+    AreApolar n (-f) g := by
+  rw [AreApolar, apolarPairing_neg_left, h, neg_zero]
+
+theorem AreApolar.neg_right {R : Type*} [CommRing R]
+    {n : Nat} {f g : R[X]} (h : AreApolar n f g) :
+    AreApolar n f (-g) := by
+  rw [AreApolar, apolarPairing_neg_right, h, neg_zero]
+
+theorem AreApolar.sub_left {R : Type*} [CommRing R]
+    {n : Nat} {f₁ f₂ g : R[X]}
+    (h₁ : AreApolar n f₁ g) (h₂ : AreApolar n f₂ g) :
+    AreApolar n (f₁ - f₂) g := by
+  rw [AreApolar, apolarPairing_sub_left, h₁, h₂, sub_self]
+
+theorem AreApolar.sub_right {R : Type*} [CommRing R]
+    {n : Nat} {f g₁ g₂ : R[X]}
+    (h₁ : AreApolar n f g₁) (h₂ : AreApolar n f g₂) :
+    AreApolar n f (g₁ - g₂) := by
+  rw [AreApolar, apolarPairing_sub_right, h₁, h₂, sub_self]
 
 private lemma neg_one_pow_sub_eq_mul {R : Type*} [CommRing R]
     {n k : Nat} (hk : k ≤ n) :
