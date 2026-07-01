@@ -1,4 +1,5 @@
 import RealRooted.PFPolynomial
+import RealRooted.MultiplierSequence
 import RealRooted.VeroneseSection
 import RealRooted.HurwitzMatrix
 
@@ -184,6 +185,48 @@ theorem choose_mul_coeff_schurSzegoComp_of_le {n k : Nat} (hk : k ≤ n) (f g : 
       f.coeff k * g.coeff k := by
   rw [coeff_schurSzegoComp_of_le hk]
   field_simp [show (Nat.choose n k : ℝ) ≠ 0 by exact_mod_cast Nat.choose_ne_zero hk]
+
+theorem choose_mul_coeff_schurSzegoComp_eq_coeff_hadamardProduct_of_le
+    {n k : Nat} (hk : k ≤ n) (f g : ℝ[X]) :
+    (Nat.choose n k : ℝ) * (schurSzegoComp n f g).coeff k =
+      (hadamardProduct f g).coeff k := by
+  rw [choose_mul_coeff_schurSzegoComp_of_le hk, coeff_hadamardProduct]
+
+theorem schurSzegoComp_eq_zero_iff_hadamardProduct_eq_zero_of_left_natDegree_le
+    {n : Nat} {f g : ℝ[X]} (hf : f.natDegree ≤ n) :
+    schurSzegoComp n f g = 0 ↔ hadamardProduct f g = 0 := by
+  constructor
+  · intro h
+    ext k
+    by_cases hk : k ≤ n
+    · rw [← choose_mul_coeff_schurSzegoComp_eq_coeff_hadamardProduct_of_le hk,
+        h, coeff_zero, mul_zero]
+    · have hk_lt : n < k := Nat.lt_of_not_le hk
+      have hf_coeff : f.coeff k = 0 :=
+        coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hf hk_lt)
+      simp [coeff_hadamardProduct, hf_coeff]
+  · intro h
+    ext k
+    by_cases hk : k ≤ n
+    · have hcoeff : f.coeff k * g.coeff k = 0 := by
+        simpa [coeff_hadamardProduct] using congrArg (fun p : ℝ[X] => p.coeff k) h
+      rw [coeff_schurSzegoComp_of_le hk, hcoeff, zero_div, coeff_zero]
+    · simp [coeff_schurSzegoComp, hk]
+
+theorem schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le
+    {n : Nat} {gamma : ℕ → ℝ} {p : ℝ[X]} (hp : p.natDegree ≤ n) :
+    schurSzegoComp n (jensenPolynomial n gamma) p = diagonalOperator gamma p := by
+  ext k
+  by_cases hk : k ≤ n
+  · have hchoose : (Nat.choose n k : ℝ) ≠ 0 := by
+      exact_mod_cast Nat.choose_ne_zero hk
+    rw [coeff_schurSzegoComp_of_le hk, coeff_jensenPolynomial, coeff_diagonalOperator]
+    simp only [hk, if_true]
+    field_simp [hchoose]
+  · have hk_lt : n < k := Nat.lt_of_not_le hk
+    have hp_coeff : p.coeff k = 0 :=
+      coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hp hk_lt)
+    rw [coeff_schurSzegoComp, if_neg hk, coeff_diagonalOperator, hp_coeff, mul_zero]
 
 /-- Nonnegative coefficients are preserved by coefficientwise Hadamard
 products. -/
