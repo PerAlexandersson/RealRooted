@@ -159,9 +159,8 @@ theorem embedComplₗ_injective {n : ℕ} (i : Fin (n + 1)) :
 /-- Pushing a subspace forward along `embedComplₗ` preserves its dimension. -/
 theorem finrank_map_embedComplₗ {n : ℕ} (i : Fin (n + 1))
     (W : Submodule 𝕜 (Fin n → 𝕜)) :
-    Module.finrank 𝕜 (W.map (embedComplₗ i)) = Module.finrank 𝕜 W := by
-  exact LinearEquiv.finrank_eq
-    (Submodule.equivMapOfInjective _ (embedComplₗ_injective i) _).symm
+    Module.finrank 𝕜 (W.map (embedComplₗ i)) = Module.finrank 𝕜 W :=
+  LinearEquiv.finrank_eq (Submodule.equivMapOfInjective _ (embedComplₗ_injective i) _).symm
 
 /-- The range of `embedComplₗ i` is a hyperplane: it has dimension `n` inside
 the `(n+1)`-dimensional ambient space. -/
