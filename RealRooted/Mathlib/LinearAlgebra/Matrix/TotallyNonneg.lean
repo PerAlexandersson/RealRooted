@@ -40,7 +40,9 @@ theorem IsTotallyNonneg.one : (1 : Matrix ℕ ℕ R).IsTotallyNonneg := by
     simp
   · have hnot : ∃ i : Fin n, rows i ∉ Set.range cols := by
       by_contra! hcon
-      have : Set.range rows ⊆ Set.range cols := by grind
+      have : Set.range rows ⊆ Set.range cols := by
+        rintro _ ⟨i, rfl⟩
+        exact hcon i
       have hcard_rows : (Set.range rows).toFinset.card = n := by
         rw [Set.toFinset_card, Set.card_range_of_injective hrows.injective, Fintype.card_fin]
       have hcard_cols : (Set.range cols).toFinset.card = n := by
@@ -48,13 +50,16 @@ theorem IsTotallyNonneg.one : (1 : Matrix ℕ ℕ R).IsTotallyNonneg := by
       have heq_set : Set.range rows = Set.range cols := by
         rw [← Set.toFinset_inj]
         refine Finset.eq_of_subset_of_card_le ?_ (by simp_all)
-        grind
+        intro x hx
+        exact Set.mem_toFinset.mpr (this (Set.mem_toFinset.mp hx))
       simp_all
     rcases hnot with ⟨i, hi⟩
     have hrow : ∀ j : Fin n, ((1 : Matrix ℕ ℕ R).submatrix rows cols) i j = 0 := by
       intro j
       simp only [submatrix_apply, one_apply]
-      grind
+      split
+      · exact (hi ⟨j, ‹rows i = cols j›.symm⟩).elim
+      · rfl
     exact det_eq_zero_of_row_eq_zero i hrow |>.ge
 
 lemma IsTotallyNonneg.smul {M : Matrix ι ι R}

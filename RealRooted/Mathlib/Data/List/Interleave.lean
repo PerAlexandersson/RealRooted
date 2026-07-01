@@ -144,15 +144,20 @@ attribute [simp] Interleaves.nil_nil
 attribute [simp high] Interleaves.nil_singleton
 
 @[simp]
-lemma interleaves_nil_cons : Interleaves r [] (a :: l) ↔ l = [] := by grind [interleaves_iff]
+lemma interleaves_nil_cons : Interleaves r [] (a :: l) ↔ l = [] := by
+  rw [interleaves_iff]
+  simp
 
 @[simp]
-lemma not_interleaves_cons_nil : ¬ Interleaves r (a :: l) [] := by grind [interleaves_iff]
+lemma not_interleaves_cons_nil : ¬ Interleaves r (a :: l) [] := by
+  rw [interleaves_iff]
+  simp
 
 @[simp]
 lemma interleaves_cons_cons :
     Interleaves r (a :: l₁) (b :: l₂) ↔ r b a ∧ Interleaves r l₂ (a :: l₁) := by
-  grind [interleaves_iff]
+  rw [interleaves_iff]
+  simp [and_comm]
 
 @[simp high]
 lemma interleaves_singleton_singleton : Interleaves r [a] [b] ↔ r b a := by simp
