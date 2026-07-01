@@ -127,8 +127,7 @@ lemma isCoprime_of_no_common_real_root_of_isRealRooted {f g : ℝ[X]}
   apply EuclideanDomain.isCoprime_of_dvd
   · lia
   · intro z hz_nonunit hz0 hzf hzg
-    have hz_notunit : ¬ IsUnit z := by
-      simp_all
+    have hz_notunit : ¬ IsUnit z := by simp_all
     have hz_rr : (z ≠ 0 ∧ z.Splits) := isRealRooted_of_dvd hf_ne hf_splits hz0 hzf
     obtain ⟨r, hzr⟩ := exists_isRoot_of_isRealRooted_of_not_isUnit hz_rr.1 hz_rr.2 hz_notunit
     have hfr : f.IsRoot r := IsRoot.of_dvd hzf hzr
@@ -146,8 +145,7 @@ lemma interlaces_one_linear {p : ℝ[X]} (hp_deg : p.natDegree = 1) :
     Interlaces (1 : ℝ[X]) p := by
   have h1_rr : ((1 : ℝ[X]) ≠ 0 ∧ (1 : ℝ[X]).Splits) := by simp
   have hp_rr : (p ≠ 0 ∧ p.Splits) := isRealRooted_of_degree_one hp_deg
-  have hp_deg' : p.degree = 1 := by
-    simpa [hp_deg] using degree_eq_natDegree hp_rr.1
+  have hp_deg' : p.degree = 1 := by simpa [hp_deg] using degree_eq_natDegree hp_rr.1
   refine ⟨hp_rr, h1_rr, by simp [Polynomial.natDegree_one, hp_deg], ?_⟩
   refine ⟨[-(p.coeff 1)⁻¹ * p.coeff 0], [], by simp, by simp, ?_, by simp,
     by simp [ListInterlaces]⟩
@@ -304,8 +302,7 @@ lemma natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff {p q : ℝ[X]}
   · have h := natDegree_add_le p q
     simp_all
   · apply le_natDegree_of_ne_zero
-    have hqcoeff : q.coeff p.natDegree = q.leadingCoeff := by
-      simp_all
+    have hqcoeff : q.coeff p.natDegree = q.leadingCoeff := by simp_all
     rw [coeff_add]
     rw [show p.coeff p.natDegree = p.leadingCoeff by simp]
     grind
@@ -341,8 +338,7 @@ lemma hasPosLeadingCoeff_add_of_same_natDegree {p q : ℝ[X]}
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q) :
     HasPosLeadingCoeff (p + q) := by
   unfold HasPosLeadingCoeff at hp_pos hq_pos ⊢
-  have hqcoeff : q.coeff p.natDegree = q.leadingCoeff := by
-    simp_all
+  have hqcoeff : q.coeff p.natDegree = q.leadingCoeff := by simp_all
   unfold Polynomial.leadingCoeff
   rw [natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff hdeg hp_pos hq_pos, coeff_add]
   rw [show p.coeff p.natDegree = p.leadingCoeff by simp]
