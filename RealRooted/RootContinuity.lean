@@ -84,7 +84,6 @@ lemma norm_coeff_sub_normalized_left_family_le
   have hcoeff :
       (C (t + 1)⁻¹ * (C t * f + g)).coeff i - f.coeff i =
         (t + 1)⁻¹ * (g.coeff i - f.coeff i) := by
-    have ht1 : t + 1 ≠ 0 := by positivity
     calc
       (C (t + 1)⁻¹ * (C t * f + g)).coeff i - f.coeff i
           = ((t + 1)⁻¹ * (t * f.coeff i + g.coeff i)) - f.coeff i := by
