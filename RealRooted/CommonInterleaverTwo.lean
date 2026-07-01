@@ -2538,6 +2538,28 @@ theorem
       hboundary)
     hpos hpair
 
+private theorem pairwiseHasCommonInterleaver_of_nonnegPairBridge
+    {fs : List ℝ[X]}
+    (hbridge :
+      ∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (hpair : PairwiseCompatible fs) :
+    PairwiseHasCommonInterleaver fs :=
+  fun i j hij =>
+    hbridge
+      (hpos (fs.get i) (List.get_mem _ _))
+      (hpos (fs.get j) (List.get_mem _ _))
+      (hnn (fs.get i) (List.get_mem _ _))
+      (hnn (fs.get j) (List.get_mem _ _))
+      (hpair i j hij)
+
 /-- Pairwise upgrade in the nonnegative-coefficient regime from the
 no-common-roots orientation core. -/
 theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_noCommonOrientation_and_nonnegCoeffs
@@ -2547,14 +2569,11 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_noCommonOrientatio
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
-  fun i j hij =>
-    compatiblePairHasCommonInterleaver_of_noCommonOrientation_and_nonnegCoeffs
-      hstep
-      (hpos (fs.get i) (List.get_mem _ _))
-      (hpos (fs.get j) (List.get_mem _ _))
-      (hnn (fs.get i) (List.get_mem _ _))
-      (hnn (fs.get j) (List.get_mem _ _))
-      (hpair i j hij)
+  pairwiseHasCommonInterleaver_of_nonnegPairBridge
+    (fun {f g} hf_pos hg_pos hfnn hgnn hfg =>
+      compatiblePairHasCommonInterleaver_of_noCommonOrientation_and_nonnegCoeffs
+        hstep (f := f) (g := g) hf_pos hg_pos hfnn hgnn hfg)
+    hpos hnn hpair
 
 /-- Pairwise upgrade in the nonnegative-coefficient regime from the honest
 degree-split package. -/
@@ -2566,14 +2585,11 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_degreeSplit_and_no
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
-  fun i j hij =>
-    compatiblePairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
-      hsame hsucc
-      (hpos (fs.get i) (List.get_mem _ _))
-      (hpos (fs.get j) (List.get_mem _ _))
-      (hnn (fs.get i) (List.get_mem _ _))
-      (hnn (fs.get j) (List.get_mem _ _))
-      (hpair i j hij)
+  pairwiseHasCommonInterleaver_of_nonnegPairBridge
+    (fun {f g} hf_pos hg_pos hfnn hgnn hfg =>
+      compatiblePairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
+        hsame hsucc (f := f) (g := g) hf_pos hg_pos hfnn hgnn hfg)
+    hpos hnn hpair
 
 /-- Pairwise upgrade in the nonnegative-coefficient regime from the repaired
 degree-split package. -/
@@ -2585,14 +2601,11 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairDegreeSplit_an
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
-  fun i j hij =>
-    compatiblePairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-      hsame hsucc
-      (hpos (fs.get i) (List.get_mem _ _))
-      (hpos (fs.get j) (List.get_mem _ _))
-      (hnn (fs.get i) (List.get_mem _ _))
-      (hnn (fs.get j) (List.get_mem _ _))
-      (hpair i j hij)
+  pairwiseHasCommonInterleaver_of_nonnegPairBridge
+    (fun {f g} hf_pos hg_pos hfnn hgnn hfg =>
+      compatiblePairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
+        hsame hsucc (f := f) (g := g) hf_pos hg_pos hfnn hgnn hfg)
+    hpos hnn hpair
 
 /-- Pairwise upgrade in the nonnegative-coefficient regime, using the repaired
 same-degree branch and the affine-family bridge for the succ-degree branch. -/
@@ -2604,14 +2617,11 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_sameDegreePair_and
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
-  fun i j hij =>
-    compatiblePairHasCommonInterleaver_of_sameDegreePair_and_affineFamily_nonneg
-      hsame haffBridge
-      (hpos (fs.get i) (List.get_mem _ _))
-      (hpos (fs.get j) (List.get_mem _ _))
-      (hnn (fs.get i) (List.get_mem _ _))
-      (hnn (fs.get j) (List.get_mem _ _))
-      (hpair i j hij)
+  pairwiseHasCommonInterleaver_of_nonnegPairBridge
+    (fun {f g} hf_pos hg_pos hfnn hgnn hfg =>
+      compatiblePairHasCommonInterleaver_of_sameDegreePair_and_affineFamily_nonneg
+        hsame haffBridge (f := f) (g := g) hf_pos hg_pos hfnn hgnn hfg)
+    hpos hnn hpair
 
 /-- Pairwise upgrade in the nonnegative-coefficient regime from the
 affine-family bridge. -/
@@ -2622,14 +2632,11 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_affineFamilyBridge
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
-  fun i j hij =>
-    compatiblePairHasCommonInterleaver_of_affineFamilyBridge_and_nonnegCoeffs
-      haffBridge
-      (hpos (fs.get i) (List.get_mem _ _))
-      (hpos (fs.get j) (List.get_mem _ _))
-      (hnn (fs.get i) (List.get_mem _ _))
-      (hnn (fs.get j) (List.get_mem _ _))
-      (hpair i j hij)
+  pairwiseHasCommonInterleaver_of_nonnegPairBridge
+    (fun {f g} hf_pos hg_pos hfnn hgnn hfg =>
+      compatiblePairHasCommonInterleaver_of_affineFamilyBridge_and_nonnegCoeffs
+        haffBridge (f := f) (g := g) hf_pos hg_pos hfnn hgnn hfg)
+    hpos hnn hpair
 
 /-- Pairwise upgrade in the nonnegative-coefficient regime from the
 boundary-right-pair orientation statement. -/
@@ -2641,14 +2648,11 @@ theorem
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
-  fun i j hij =>
-    compatiblePairHasCommonInterleaver_of_boundaryRightPairOrientation_and_nonnegCoeffs
-      hboundary
-      (hpos (fs.get i) (List.get_mem _ _))
-      (hpos (fs.get j) (List.get_mem _ _))
-      (hnn (fs.get i) (List.get_mem _ _))
-      (hnn (fs.get j) (List.get_mem _ _))
-      (hpair i j hij)
+  pairwiseHasCommonInterleaver_of_nonnegPairBridge
+    (fun {f g} hf_pos hg_pos hfnn hgnn hfg =>
+      compatiblePairHasCommonInterleaver_of_boundaryRightPairOrientation_and_nonnegCoeffs
+        hboundary (f := f) (g := g) hf_pos hg_pos hfnn hgnn hfg)
+    hpos hnn hpair
 
 /-- A single common right interleaver is in particular a pairwise common right
 interleaver witness. -/
