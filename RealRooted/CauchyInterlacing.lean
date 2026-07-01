@@ -224,15 +224,11 @@ def CourantFischerStatement (𝕜 : Type*) [RCLike 𝕜] : Prop :=
     (∀ W : Submodule 𝕜 (Fin N → 𝕜), Module.finrank 𝕜 W = (k : ℕ) + 1 →
         ∃ x ∈ W, x ≠ 0 ∧ rayleigh A x ≤ sortedEigenvalues A hA k)
 
-set_option linter.flexible false in
 /-- Assuming the witnessed min-max characterization of sorted eigenvalues, the
 Cauchy interlacing theorem follows from the linear-algebra API above. -/
 theorem cauchyInterlacing_of_courantFischer
     (hCF : CourantFischerStatement 𝕜) : CauchyInterlacingStatement 𝕜 := by
-  intro n A hA i
-  have := hCF A hA
-  simp_all +decide [CourantFischerStatement]
-  intro k
+  intro n A hA i k
   constructor
   · obtain ⟨W_A, hW_A₁, hW_A₂⟩ := (hCF A hA k.succ).1
     generalize_proofs at *
