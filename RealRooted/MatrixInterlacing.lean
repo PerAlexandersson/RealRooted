@@ -48,17 +48,14 @@ lemma isInterlacingSeq0Nonneg_sparseLinearPairSeq
           (if q' = i then (1 : ℝ[X]) else if q' = j then C a * X + C b else 0) by
           simpa [q'] using get_sparseLinearPairSeq i j a b q']
     by_cases hpi : p' = i
-    · have hq_ne_i : q' ≠ i := by
-        lia
+    · have hq_ne_i : q' ≠ i := by lia
       by_cases hqj : q' = j
       · have hji : j ≠ i := ne_of_gt hij
         simpa [hpi, hqj, hji] using prec0_one_affine_linear ha
       · simp [hpi, hqj, hq_ne_i, prec0_zero_right]
     · by_cases hpj : p' = j
-      · have hq_ne_i : q' ≠ i := by
-          lia
-        have hq_ne_j : q' ≠ j := by
-          lia
+      · have hq_ne_i : q' ≠ i := by lia
+        have hq_ne_j : q' ≠ j := by lia
         simp [hpj, hq_ne_i, hq_ne_j, prec0_zero_right]
       · simp [hpi, hpj, prec0_zero_left]
   · rw [List.forall_mem_iff_get]
@@ -70,8 +67,7 @@ lemma isInterlacingSeq0Nonneg_sparseLinearPairSeq
     by_cases hki : k' = i
     · simp [hki, hasNonnegCoeffs_one]
     · by_cases hkj : k' = j
-      · have hji : j ≠ i := by
-          lia
+      · have hji : j ≠ i := by lia
         simp [hkj, hji, hasNonnegCoeffs_affine_linear ha.le hb.le]
       · simp [hki, hkj, hasNonnegCoeffs_zero]
 
@@ -133,8 +129,7 @@ lemma zipWith_mul_oneSupportSeq_sum_eq_get
       | zero =>
           simp [oneSupportSeq, List.ofFn_succ, zipWith_mul_replicate_zero_sum_eq_zero]
       | succ i =>
-          have hne : ¬ ((0 : Fin (row.length + 1)) = i.succ) := by
-            grind
+          have hne : ¬ ((0 : Fin (row.length + 1)) = i.succ) := by grind
           simpa [oneSupportSeq, List.ofFn_succ, hne] using ih i
 
 lemma zipWith_mul_sum_ne_zero_of_get_ne_zero
@@ -250,8 +245,7 @@ theorem matrix_preserves_interlacing_seq0_nonneg_entries
   intro row hrow p hp
   obtain ⟨i, rfl⟩ := List.mem_iff_get.1 hp
   let fs := oneSupportSeq row.length i
-  have hfs_len : fs.length = n := by
-    simp [fs, hG_rect _ hrow]
+  have hfs_len : fs.length = n := by simp [fs, hG_rect _ hrow]
   have hfs : IsInterlacingSeq0Nonneg fs := by
     simpa [fs] using isInterlacingSeq0Nonneg_oneSupportSeq i
   have himage : IsInterlacingSeq0Nonneg (matPolyAction G fs) := hpres0 fs hfs_len hfs
@@ -279,8 +273,7 @@ theorem matrix_preserves_interlacing_seq0_sparse_pair_prec0
           + (C a * X + C b)
             * ((G.get i₂).get ⟨j₂, by simp_all⟩))) := by
   let fs := sparseLinearPairSeq n j₁ j₂ a b
-  have hfs_len : fs.length = n := by
-    simp [fs]
+  have hfs_len : fs.length = n := by simp [fs]
   have hfs : IsInterlacingSeq0Nonneg fs := by
     simpa [fs] using isInterlacingSeq0Nonneg_sparseLinearPairSeq hj ha hb
   have himage : IsInterlacingSeq0Nonneg (matPolyAction G fs) := hpres0 fs hfs_len hfs
@@ -380,8 +373,7 @@ lemma isInterlacingSeq0_reverse_rowPairAffineSeq
     ⟨j, by
       simpa [length_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len
         hrow₂_len] using j.2⟩
-  have hij' : i' < j' := by
-    grind
+  have hij' : i' < j' := by grind
   rw [get_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len i',
     get_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len j']
   exact h2x2 i' j' hij' s t hs ht
@@ -410,8 +402,7 @@ lemma isInterlacingSeq_reverse_rowPairAffineSeq
     ⟨j, by
       simpa [length_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len
         hrow₂_len] using j.2⟩
-  have hij' : i' < j' := by
-    grind
+  have hij' : i' < j' := by grind
   rw [get_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len i',
     get_rowPairAffineSeq (n := n) (s := s) (t := t) hrow₁_len hrow₂_len j']
   exact h2x2 i' j' hij' s t hs ht
@@ -1201,8 +1192,7 @@ theorem matrix_preserves_interlacing_seq0_of_2x2_weak
     rcases List.mem_map.mp hp with ⟨row, hrow_mem, hp_eq⟩
     obtain ⟨i, hi⟩ := List.mem_iff_get.1 hrow_mem
     let iG : Fin G.length := i
-    have hsum_eq_p : ((G.get iG).zipWith (· * ·) fs).sum = p := by
-      lia
+    have hsum_eq_p : ((G.get iG).zipWith (· * ·) fs).sum = p := by lia
     have hself0 :
         Prec0 (((G.get iG).zipWith (· * ·) fs).sum)
           (((G.get iG).zipWith (· * ·) fs).sum) :=
@@ -1219,8 +1209,7 @@ theorem matrix_preserves_interlacing_seq0_of_2x2_weak
         (hfs_len := hfs_len)
         (hfs := hfs)
         (hfs_real := hfs_real)
-    have hp0' : ((G.get iG).zipWith (· * ·) fs).sum ≠ 0 := by
-      lia
+    have hp0' : ((G.get iG).zipWith (· * ·) fs).sum ≠ 0 := by lia
     rw [← hsum_eq_p]
     exact (hself0.toPrec_of_ne hp0' hp0').1
 
