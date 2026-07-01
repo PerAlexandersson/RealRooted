@@ -67,8 +67,7 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
     have hclose := natDegree_close_of_allComboRealRooted hall_qf hq0 hf0
     have hq_lt : q.natDegree < f.natDegree := by
       have hq_le : q.natDegree ≤ f.natDegree := by
-        have hXg_le : (X * g).natDegree ≤ f.natDegree := by
-          simp_all
+        have hXg_le : (X * g).natDegree ≤ f.natDegree := by simp_all
         have hsub : (f - X * g).natDegree ≤ f.natDegree :=
           (natDegree_sub_le_iff_left hXg_le).mpr le_rfl
         lia
@@ -92,8 +91,7 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
           _ = 0 := by
                 simp [hg_monic.leadingCoeff]
       lia
-    have hdeg_qf : q.natDegree + 1 = f.natDegree := by
-      lia
+    have hdeg_qf : q.natDegree + 1 = f.natDegree := by lia
     have hprec_or : Prec q f ∨ Prec f q :=
       prec_of_allComboRealRooted hq.1 hq.2 hf.1 hf.2 hall_qf (Or.inl hdeg_qf)
     have hnot_prec_fq : ¬ Prec f q := by
@@ -139,8 +137,7 @@ theorem prec_sub_X_mul_right {f g : ℝ[X]}
     have hXg : ((X * g) ≠ 0 ∧ (X * g).Splits) := isRealRooted_X_mul hg.1 hg.2
     have hq_lt : q.natDegree < f.natDegree := by
       have hq_le : q.natDegree ≤ f.natDegree := by
-        have hXg_le : (X * g).natDegree ≤ f.natDegree := by
-          simp_all
+        have hXg_le : (X * g).natDegree ≤ f.natDegree := by simp_all
         have hsub : (f - X * g).natDegree ≤ f.natDegree :=
           (natDegree_sub_le_iff_left hXg_le).mpr le_rfl
         lia
@@ -165,10 +162,8 @@ theorem prec_sub_X_mul_right {f g : ℝ[X]}
                 simp [hg_monic.leadingCoeff]
       lia
     have hclose_qf := natDegree_close_of_allComboRealRooted hall_qf hq0 hf0
-    have hdeg_qf : q.natDegree + 1 = f.natDegree := by
-      lia
-    have hdeg_qXg : q.natDegree + 1 = (X * g).natDegree := by
-      simp_all
+    have hdeg_qf : q.natDegree + 1 = f.natDegree := by lia
+    have hdeg_qXg : q.natDegree + 1 = (X * g).natDegree := by simp_all
     have hprec_or : Prec q (X * g) ∨ Prec (X * g) q :=
       prec_of_allComboRealRooted hq.1 hq.2 hXg.1 hXg.2 hall_qXg (Or.inl hdeg_qXg)
     have hnot_prec_Xgq : ¬ Prec (X * g) q := by
@@ -179,10 +174,8 @@ theorem prec_sub_X_mul_right {f g : ℝ[X]}
       have hrs_len : rs.length = q.natDegree := by
         rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hq.2]
       lia
-    have hprec_qXg : Prec q (X * g) := by
-      lia
-    have hdeg_gq : g.natDegree = q.natDegree := by
-      lia
+    have hprec_qXg : Prec q (X * g) := by lia
+    have hdeg_gq : g.natDegree = q.natDegree := by lia
     exact
       (prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos
         (f := g) (g := q) hprec_qXg hdeg_gq hg_nonpos).toPrec0

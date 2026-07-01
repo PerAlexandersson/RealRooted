@@ -150,8 +150,7 @@ lemma CoeffLogConcaveUpTo.no_strict_decrease_before_max {d : ℕ} {a : ℕ → �
     induction t, hit using Nat.le_induction with
     | base => exact hdrop
     | succ t hit ih =>
-        have ht_lt_m : t < m := by
-          lia
+        have ht_lt_m : t < m := by lia
         have hcurr : a (t + 1) < a t :=
           ih ht_lt_m
         have ht_pos : 0 < a t :=
@@ -231,15 +230,13 @@ theorem CoeffLogConcaveUpTo.unimodal {d : ℕ} {a : ℕ → ℝ}
     induction j, hij using Nat.le_induction with
     | base => exact le_rfl
     | succ j hij ih =>
-        have hj_le_m : j ≤ m := by
-          lia
+        have hj_le_m : j ≤ m := by lia
         exact le_trans (ih hj_le_m) (hleft_adj j (by lia))
   · intro i j hmi hij hjd
     induction j, hij using Nat.le_induction with
     | base => exact le_rfl
     | succ j hij ih =>
-        have hj_le_d : j ≤ d := by
-          lia
+        have hj_le_d : j ≤ d := by lia
         have hstep : a (j + 1) ≤ a j :=
           hright_adj j (by lia) (by lia)
         exact le_trans hstep (ih hj_le_d)
@@ -392,16 +389,13 @@ theorem hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : �
     have hck := coeff_eq_leadingCoeff_mul_esymm_neg_roots hsplits (k := k) (by lia)
     have hc2 := coeff_eq_leadingCoeff_mul_esymm_neg_roots hsplits (k := k + 1) (by lia)
     rw [← ht_def] at hc1 hck hc2
-    have idx1 : p.natDegree - (k - 1) = p.natDegree - k + 1 := by
-      lia
-    have idx2 : p.natDegree - (k + 1) = p.natDegree - k - 1 := by
-      lia
+    have idx1 : p.natDegree - (k - 1) = p.natDegree - k + 1 := by lia
+    have idx2 : p.natDegree - (k + 1) = p.natDegree - k - 1 := by lia
     rw [idx1] at hc1
     rw [idx2] at hc2
     have hnewton := NewtonAux.newton_esymm_ineq t (n := p.natDegree)
       (m := p.natDegree - k) htcard (by lia) (by lia)
-    have hnm1 : p.natDegree - (p.natDegree - k) = k := by
-      lia
+    have hnm1 : p.natDegree - (p.natDegree - k) = k := by lia
     rw [hnm1] at hnewton
     change p.coeff (k - 1) * p.coeff (k + 1) *
         ((k + 1 : ℝ) * ((p.natDegree - k + 1 : ℕ) : ℝ)) ≤
@@ -445,8 +439,7 @@ theorem hasNoInternalCoeffZeros_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : ℝ
           (esymm_nonneg_of_forall_nonneg ht (p.natDegree - i)) with h | h
       · exact h
       · exact absurd (show p.coeff i = 0 by rw [hcoeff_i, ← h]; ring) hai
-    have hb : p.natDegree - j ≤ p.natDegree - i := by
-      lia
+    have hb : p.natDegree - j ≤ p.natDegree - i := by lia
     have hej : 0 < (p.roots.map Neg.neg).esymm (p.natDegree - j) :=
       esymm_pos_mono_of_forall_nonneg ht hb hei
     have hcoeff_j := coeff_eq_leadingCoeff_mul_esymm_neg_roots hsplits hjd
