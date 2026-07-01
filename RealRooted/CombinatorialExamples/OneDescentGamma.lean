@@ -70,7 +70,8 @@ lemma oneDescent_hasNonnegCoeffs_X : HasNonnegCoeffs (X : ℝ[X]) := by
   simp only [coeff_X]
   split <;> norm_num
 
-lemma isRealRooted_X_pow : ∀ n : Nat, (((X : ℝ[X]) ^ n) ≠ 0 ∧ ((X : ℝ[X]) ^ n).Splits) := by
+lemma isRealRooted_X_pow :
+    ∀ n : Nat, (((X : ℝ[X]) ^ n) ≠ 0 ∧ ((X : ℝ[X]) ^ n).Splits) := by
   simp
 
 lemma prec_X_add_C_to_X_mul_X_add_C {a b : ℝ}
@@ -82,7 +83,8 @@ lemma prec_X_add_C_to_X_mul_X_add_C {a b : ℝ}
     isRealRooted_of_degree_one hdeg_a
   have hrr_b : ((X + C b) ≠ 0 ∧ (X + C b).Splits) :=
     isRealRooted_of_degree_one (Polynomial.natDegree_X_add_C (x := b))
-  have hrr_q : ((X * (X + C b)) ≠ 0 ∧ (X * (X + C b)).Splits) := isRealRooted_X_mul hrr_b.1 hrr_b.2
+  have hrr_q : ((X * (X + C b)) ≠ 0 ∧ (X * (X + C b)).Splits) :=
+    isRealRooted_X_mul hrr_b.1 hrr_b.2
   have hdeg_q : (X * (X + C b)).natDegree = 2 := by simp_all
   have hb_nonneg : 0 ≤ b := by linarith
   have hrs_sorted : ([-b, (0 : ℝ)] : List ℝ).Pairwise (· ≤ ·) := by simp [hb_nonneg]
@@ -325,7 +327,8 @@ theorem oneDescent_prec_gamma_one_terminal_chain
 
 /-- Every polynomial in the base `d = 1` Gamma family is real-rooted. -/
 theorem oneDescentGamma_one_isRealRooted
-    (m j : Nat) (hj : j ≤ m) : ((oneDescentGamma 1 m j) ≠ 0 ∧ (oneDescentGamma 1 m j).Splits) := by
+    (m j : Nat) (hj : j ≤ m) :
+    ((oneDescentGamma 1 m j) ≠ 0 ∧ (oneDescentGamma 1 m j).Splits) := by
   by_cases htop : j = m
   · simp_all
   · have hjm : j < m := lt_of_le_of_ne hj htop
@@ -333,7 +336,9 @@ theorem oneDescentGamma_one_isRealRooted
     let a : ℝ := (((m - j : Nat) : ℝ) / ((j + 1 : Nat) : ℝ))
     have hlin_rr : ((X + C a) ≠ 0 ∧ (X + C a).Splits) :=
       isRealRooted_of_degree_one (Polynomial.natDegree_X_add_C (x := a))
-    have hprod_rr : ((X ^ (m - j - 1) * (X + C a)) ≠ 0 ∧ (X ^ (m - j - 1) * (X + C a)).Splits) :=
+    have hprod_rr :
+        ((X ^ (m - j - 1) * (X + C a)) ≠ 0 ∧
+          (X ^ (m - j - 1) * (X + C a)).Splits) :=
       isRealRooted_mul (isRealRooted_X_pow (m - j - 1)).1 (isRealRooted_X_pow (m - j - 1)).2
         hlin_rr.1 hlin_rr.2
     have hchoose_ne : (((Nat.choose m j : Nat) : ℝ)) ≠ 0 := by
