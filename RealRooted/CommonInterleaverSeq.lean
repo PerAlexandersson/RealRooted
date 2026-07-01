@@ -1733,6 +1733,97 @@ theorem pairHasCommonInterleaver_of_sameDegree_slotIntersections
         convert (List.getElem_ofFn (f := x) (i := j) (by simpa [xs] using hj)) using 2
     simpa [h] using prec_of_slots_polyOfDescRootsDesc hg₀ hg hxs_pair hdeg_lo hdeg_hi hslot_g
 
+/-- Matching nonempty root-slot intersections for a succ-degree pair of
+real-rooted polynomials produce a common right interleaver.  When `g` has
+degree exactly one larger than `f`, the constructed interleaver has degree
+`g.natDegree`. -/
+theorem pairHasCommonInterleaver_of_succDegree_slotIntersections
+    {f g : ℝ[X]} (hf₀ : f ≠ 0) (hg₀ : g ≠ 0) (hf : f.Splits) (hg : g.Splits)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hslot :
+      ∀ j (hj : j < f.natDegree + 1),
+        (rootSlotInterval (rootSeqDesc f) ⟨j, by simpa [hf] using hj⟩ ∩
+          rootSlotInterval (rootSeqDesc g)
+            ⟨j, by
+              have : j < g.natDegree + 1 := by lia
+              simpa [hg] using this⟩).Nonempty) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+  classical
+  let n : ℕ := f.natDegree + 1
+  let x : Fin n → ℝ :=
+    fun j => Classical.choose (hslot j.1 (by simpa [n] using j.2))
+  let xs : List ℝ := List.ofFn x
+  have hxs_len : xs.length = f.natDegree + 1 := by
+    simp [xs, n]
+  have hxs_pair : xs.Pairwise (· ≥ ·) := by
+    refine List.pairwise_ofFn.2 ?_
+    intro i j hij
+    have hroot_ne : rootSeqDesc f ≠ [] := by
+      apply List.ne_nil_of_length_pos
+      rw [rootSeqDesc_length hf]
+      lia
+    have hi_slot : i.1 < (rootSeqDesc f).length + 1 := by
+      have : i.1 < f.natDegree + 1 := by simpa [n] using i.2
+      simpa [rootSeqDesc_length hf] using this
+    have hj_slot : j.1 < (rootSeqDesc f).length + 1 := by
+      have : j.1 < f.natDegree + 1 := by simpa [n] using j.2
+      simpa [rootSeqDesc_length hf] using this
+    have hxi :
+        x i ∈ rootSlotInterval (rootSeqDesc f) ⟨i.1, hi_slot⟩ := by
+      have hraw := (Classical.choose_spec (hslot i.1 (by simpa [n] using i.2))).1
+      simpa [x] using hraw
+    have hxj :
+        x j ∈ rootSlotInterval (rootSeqDesc f) ⟨j.1, hj_slot⟩ := by
+      have hraw := (Classical.choose_spec (hslot j.1 (by simpa [n] using j.2))).1
+      simpa [x] using hraw
+    exact
+      le_of_mem_rootSlotInterval_of_lt
+        (rs := rootSeqDesc f)
+        hroot_ne
+        rootSeqDesc_pairwise
+        (i := i.1) (j := j.1)
+        (by simp_all)
+        (by simpa using hj_slot)
+        hxi hxj
+  let h : ℝ[X] := polyOfDescRootsDesc xs
+  refine ⟨h, ?_, ?_⟩
+  · have hdeg_lo : f.natDegree ≤ xs.length := by
+      lia
+    have hdeg_hi : xs.length ≤ f.natDegree + 1 := by
+      lia
+    have hslot_f :
+        ∀ j (hj : j < xs.length),
+          xs.get ⟨j, hj⟩ ∈ rootSlotInterval (rootSeqDesc f)
+            ⟨j, by
+              have : j < f.natDegree + 1 := lt_of_lt_of_le hj hdeg_hi
+              simpa [rootSeqDesc_length hf] using this⟩ := by
+      intro j hj
+      have hjn : j < n := by
+        simpa [n, hxs_len] using hj
+      have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hjn))).1
+      convert hraw using 1
+      · change (List.ofFn x)[j] = x ⟨j, hjn⟩
+        convert (List.getElem_ofFn (f := x) (i := j) (by simpa [xs] using hj)) using 2
+    simpa [h] using prec_of_slots_polyOfDescRootsDesc hf₀ hf hxs_pair hdeg_lo hdeg_hi hslot_f
+  · have hdeg_lo : g.natDegree ≤ xs.length := by
+      lia
+    have hdeg_hi : xs.length ≤ g.natDegree + 1 := by
+      lia
+    have hslot_g :
+        ∀ j (hj : j < xs.length),
+          xs.get ⟨j, hj⟩ ∈ rootSlotInterval (rootSeqDesc g)
+            ⟨j, by
+              have : j < g.natDegree + 1 := lt_of_lt_of_le hj hdeg_hi
+              simpa [rootSeqDesc_length hg] using this⟩ := by
+      intro j hj
+      have hjn : j < n := by
+        simpa [n, hxs_len] using hj
+      have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hjn))).2
+      convert hraw using 1
+      · change (List.ofFn x)[j] = x ⟨j, hjn⟩
+        convert (List.getElem_ofFn (f := x) (i := j) (by simpa [xs] using hj)) using 2
+    simpa [h] using prec_of_slots_polyOfDescRootsDesc hg₀ hg hxs_pair hdeg_lo hdeg_hi hslot_g
+
 /-- Reversing a weak zero-aware interlacing sequence with nonnegative
 coefficients preserves the same structure. -/
 lemma IsInterlacingSeq0Nonneg.reverse {fs : List ℝ[X]}

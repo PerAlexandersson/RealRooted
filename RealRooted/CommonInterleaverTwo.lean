@@ -21,25 +21,6 @@ noncomputable section
 
 namespace RealRooted
 
-private lemma hasPosLeadingCoeff_comp_X_add_C_local
-    {p : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (r : ℝ) :
-    HasPosLeadingCoeff (p.comp (X + C r)) := by
-  unfold HasPosLeadingCoeff
-  rw [leadingCoeff_comp (by simp), leadingCoeff_X_add_C, one_pow, mul_one]
-  exact hp_pos
-
-private lemma hasNonnegCoeffs_comp_X_add_C_of_roots_le_local
-    {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
-    {r : ℝ} (hbound : ∀ s ∈ p.roots, s ≤ r) :
-    HasNonnegCoeffs (p.comp (X + C r)) := by
-  have hp' : ((p.comp (X + C r)) ≠ 0 ∧ (p.comp (X + C r)).Splits) :=
-    isRealRooted_comp_X_add_C hp_ne hp_splits r
-  refine ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hp'.2).2 ?_).1
-  refine ⟨hasPosLeadingCoeff_comp_X_add_C_local hp_pos r, ?_⟩
-  intro s hs
-  simp only [roots_comp_X_add_C r] at hs
-  rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
-  simp_all
 private lemma exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two_local
     {p : ℝ[X]} (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
     (hdeg : 2 ≤ p.natDegree) :
@@ -1237,92 +1218,49 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_noCommonOrientatio
   posComboNoCommonSuccDegreePairHasCommonInterleaver_of_orientation_nonneg
     (posComboNoCommonSuccDegreeOrientation_of_noCommonOrientation hstep)
 
-/-- Constructive slot endpoint for the succ-degree branch, mirroring
-`pairHasCommonInterleaver_of_sameDegree_slotIntersections`.  When `g` has
-degree exactly one larger than `f`, matching nonempty root-slot intersections
-(indexed over the `f.natDegree + 1` common slots) build a common right
-interleaver `h` of degree `g.natDegree`: `h` receives `f` in the differ-by-one
-position and `g` in the same-degree position. -/
-theorem pairHasCommonInterleaver_of_succDegree_slotIntersections
-    {f g : ℝ[X]} (hf₀ : f ≠ 0) (hg₀ : g ≠ 0) (hf : f.Splits) (hg : g.Splits)
-    (hdeg : g.natDegree = f.natDegree + 1)
-    (hslot :
-      ∀ j (hj : j < f.natDegree + 1),
-        (rootSlotInterval (rootSeqDesc f) ⟨j, by simpa [hf] using hj⟩ ∩
-          rootSlotInterval (rootSeqDesc g)
-            ⟨j, by
-              have : j < g.natDegree + 1 := by lia
-              simpa [hg] using this⟩).Nonempty) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  classical
-  let n : ℕ := f.natDegree + 1
-  let x : Fin n → ℝ := fun j => Classical.choose (hslot j.1 (by simpa [n] using j.2))
-  let xs : List ℝ := List.ofFn x
-  have hxs_len : xs.length = f.natDegree + 1 := by simp [xs, n]
-  have hxs_pair : xs.Pairwise (· ≥ ·) := by
-    refine List.pairwise_ofFn.2 ?_
-    intro i j hij
-    have hroot_ne : rootSeqDesc f ≠ [] := by
-      apply List.ne_nil_of_length_pos
-      rw [rootSeqDesc_length hf]
-      lia
-    have hi_slot : i.1 < (rootSeqDesc f).length + 1 := by
-      have : i.1 < f.natDegree + 1 := by simpa [n] using i.2
-      simpa [rootSeqDesc_length hf] using this
-    have hj_slot : j.1 < (rootSeqDesc f).length + 1 := by
-      have : j.1 < f.natDegree + 1 := by simpa [n] using j.2
-      simpa [rootSeqDesc_length hf] using this
-    have hxi :
-        x i ∈ rootSlotInterval (rootSeqDesc f) ⟨i.1, hi_slot⟩ := by
-      have hraw := (Classical.choose_spec (hslot i.1 (by simpa [n] using i.2))).1
-      simpa [x] using hraw
-    have hxj :
-        x j ∈ rootSlotInterval (rootSeqDesc f) ⟨j.1, hj_slot⟩ := by
-      have hraw := (Classical.choose_spec (hslot j.1 (by simpa [n] using j.2))).1
-      simpa [x] using hraw
-    exact
-      le_of_mem_rootSlotInterval_of_lt
-        (rs := rootSeqDesc f)
-        hroot_ne
-        rootSeqDesc_pairwise
-        (i := i.1) (j := j.1)
-        (by simp_all)
-        (by simpa using hj_slot)
-        hxi hxj
-  let h : ℝ[X] := polyOfDescRootsDesc xs
-  refine ⟨h, ?_, ?_⟩
-  · have hdeg_lo : f.natDegree ≤ xs.length := by lia
-    have hdeg_hi : xs.length ≤ f.natDegree + 1 := by lia
-    have hslot_f :
-        ∀ j (hj : j < xs.length),
-          xs.get ⟨j, hj⟩ ∈ rootSlotInterval (rootSeqDesc f)
-            ⟨j, by
-              have : j < f.natDegree + 1 := lt_of_lt_of_le hj hdeg_hi
-              simpa [rootSeqDesc_length hf] using this⟩ := by
-      intro j hj
-      have hjn : j < n := by
-        simpa [n, hxs_len] using hj
-      have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hjn))).1
-      convert hraw using 1
-      · change (List.ofFn x)[j] = x ⟨j, hjn⟩
-        convert (List.getElem_ofFn (f := x) (i := j) (by simpa [xs] using hj)) using 2
-    simpa [h] using prec_of_slots_polyOfDescRootsDesc hf₀ hf hxs_pair hdeg_lo hdeg_hi hslot_f
-  · have hdeg_lo : g.natDegree ≤ xs.length := by lia
-    have hdeg_hi : xs.length ≤ g.natDegree + 1 := by lia
-    have hslot_g :
-        ∀ j (hj : j < xs.length),
-          xs.get ⟨j, hj⟩ ∈ rootSlotInterval (rootSeqDesc g)
-            ⟨j, by
-              have : j < g.natDegree + 1 := lt_of_lt_of_le hj hdeg_hi
-              simpa [rootSeqDesc_length hg] using this⟩ := by
-      intro j hj
-      have hjn : j < n := by
-        simpa [n, hxs_len] using hj
-      have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hjn))).2
-      convert hraw using 1
-      · change (List.ofFn x)[j] = x ⟨j, hjn⟩
-        convert (List.getElem_ofFn (f := x) (i := j) (by simpa [xs] using hj)) using 2
-    simpa [h] using prec_of_slots_polyOfDescRootsDesc hg₀ hg hxs_pair hdeg_lo hdeg_hi hslot_g
+/-- **Honest missing root-slot boundary for milestone B1 (#41).**
+
+This is the same-degree analogue of
+`PosComboNoCommonSuccDegreeSlotDataNonnegStatement`.  For a nonnegative
+positive-combination pair with no common roots and `g.natDegree = f.natDegree`,
+it packages the remaining converse-Obreschkoff content as nonempty
+intersections of matching descending root-slot intervals.
+
+The real-rootedness of `f` and `g` is not bundled here because it is already
+available from the same-degree `PosComboRealRooted` lemmas. -/
+def PosComboNoCommonSameDegreeSlotDataNonnegStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∀ j, j < f.natDegree + 1 →
+      ∀ (hjf : j < (rootSeqDesc f).length + 1)
+        (hjg : j < (rootSeqDesc g).length + 1),
+        (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+          rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty
+
+/-- **Checked reduction of #41 to the same-degree root-slot boundary.**
+
+The repaired same-degree common-right-interleaver endpoint follows from the
+matching slot-intersection condition via the constructive slot theorem in
+`CommonInterleaverSeq`. -/
+theorem sameDegreePairHasCommonInterleaver_nonneg_of_slotData
+    (hstmt : PosComboNoCommonSameDegreeSlotDataNonnegStatement) :
+    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
+  have hf_rr : f ≠ 0 ∧ f.Splits :=
+    PosComboRealRooted.isRealRooted_left_of_sameDegree hfg hf_pos hg_pos hdeg
+  have hg_rr : g ≠ 0 ∧ g.Splits :=
+    PosComboRealRooted.isRealRooted_right_of_sameDegree hfg hf_pos hg_pos hdeg
+  refine
+    pairHasCommonInterleaver_of_sameDegree_slotIntersections
+      hf_rr.1 hg_rr.1 hf_rr.2 hg_rr.2 hdeg ?_
+  intro j hj
+  exact hstmt hf_pos hg_pos hfnn hgnn hfg hdeg hno j hj _ _
 
 /-- **Honest missing root-slot boundary for milestone B2 (#42).**
 
@@ -2377,7 +2315,8 @@ theorem posComboPairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
     (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
     {f g : ℝ[X]}
-    (hf_rr_ne : f ≠ 0) (hf_rr_splits : f.Splits) (hg_rr_ne : g ≠ 0) (hg_rr_splits : g.Splits)
+    (_hf_rr_ne : f ≠ 0) (hf_rr_splits : f.Splits)
+    (_hg_rr_ne : g ≠ 0) (hg_rr_splits : g.Splits)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
     (hfg : PosComboRealRooted f g) :
@@ -2388,14 +2327,14 @@ theorem posComboPairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
   let f' : ℝ[X] := f.comp (X + C r)
   let g' : ℝ[X] := g.comp (X + C r)
   have hf'_pos : HasPosLeadingCoeff f' := by
-    simpa [f'] using hasPosLeadingCoeff_comp_X_add_C_local hf_pos r
+    simpa [f'] using hf_pos.comp_X_add_C r
   have hg'_pos : HasPosLeadingCoeff g' := by
-    simpa [g'] using hasPosLeadingCoeff_comp_X_add_C_local hg_pos r
+    simpa [g'] using hg_pos.comp_X_add_C r
   have hfnn : HasNonnegCoeffs f' := by
-    refine hasNonnegCoeffs_comp_X_add_C_of_roots_le_local hf_rr_ne hf_rr_splits hf_pos ?_
+    refine hasNonnegCoeffs_comp_X_add_C_of_roots_le hf_pos hf_rr_splits ?_
     grind
   have hgnn : HasNonnegCoeffs g' := by
-    refine hasNonnegCoeffs_comp_X_add_C_of_roots_le_local hg_rr_ne hg_rr_splits hg_pos ?_
+    refine hasNonnegCoeffs_comp_X_add_C_of_roots_le hg_pos hg_rr_splits ?_
     grind
   have hfg' : PosComboRealRooted f' g' := by
     intro α β hα hβ
@@ -2423,7 +2362,8 @@ theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
     (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
     {f g : ℝ[X]}
-    (hf_rr_ne : f ≠ 0) (hf_rr_splits : f.Splits) (hg_rr_ne : g ≠ 0) (hg_rr_splits : g.Splits)
+    (_hf_rr_ne : f ≠ 0) (hf_rr_splits : f.Splits)
+    (_hg_rr_ne : g ≠ 0) (hg_rr_splits : g.Splits)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
     (hfg : PosComboRealRooted f g) :
@@ -2434,14 +2374,14 @@ theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
   let f' : ℝ[X] := f.comp (X + C r)
   let g' : ℝ[X] := g.comp (X + C r)
   have hf'_pos : HasPosLeadingCoeff f' := by
-    simpa [f'] using hasPosLeadingCoeff_comp_X_add_C_local hf_pos r
+    simpa [f'] using hf_pos.comp_X_add_C r
   have hg'_pos : HasPosLeadingCoeff g' := by
-    simpa [g'] using hasPosLeadingCoeff_comp_X_add_C_local hg_pos r
+    simpa [g'] using hg_pos.comp_X_add_C r
   have hfnn : HasNonnegCoeffs f' := by
-    refine hasNonnegCoeffs_comp_X_add_C_of_roots_le_local hf_rr_ne hf_rr_splits hf_pos ?_
+    refine hasNonnegCoeffs_comp_X_add_C_of_roots_le hf_pos hf_rr_splits ?_
     grind
   have hgnn : HasNonnegCoeffs g' := by
-    refine hasNonnegCoeffs_comp_X_add_C_of_roots_le_local hg_rr_ne hg_rr_splits hg_pos ?_
+    refine hasNonnegCoeffs_comp_X_add_C_of_roots_le hg_pos hg_rr_splits ?_
     grind
   have hfg' : PosComboRealRooted f' g' := by
     intro α β hα hβ
@@ -3353,19 +3293,6 @@ theorem pairwiseCompatible_iff_familyCompatible_of_boundaryRightPairOrientation_
       (fs := fs) hrr hpos hnn hboundary
   lia
 
-/-- A positive-leading polynomial of degree at most one is automatically
-real-rooted. This is the pointwise input for the low-degree
-Chudnovsky--Seymour package below. -/
-private theorem isRealRooted_of_natDegree_le_one_of_hasPosLeadingCoeff
-    {f : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hf_deg_le_one : f.natDegree ≤ 1) : (f ≠ 0 ∧ f.Splits) := by
-  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
-  by_cases hf_deg0 : f.natDegree = 0
-  · exact isRealRooted_of_deg_zero hf0 hf_deg0
-  · have hf_deg1 : f.natDegree = 1 := by lia
-    exact isRealRooted_of_degree_one hf_deg1
-
 /-- In the degree-`≤ 1` regime, every pair already has a common right
 interleaver. This is the fully packaged two-polynomial input for the
 Chudnovsky--Seymour chain in the linear/constant endpoint. -/
@@ -3391,8 +3318,8 @@ theorem hasCommonInterleaver_of_natDegree_le_one
     HasCommonInterleaver fs := by
   have hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits) :=
     fun f hf =>
-      isRealRooted_of_natDegree_le_one_of_hasPosLeadingCoeff
-        (hpos f hf) (hdeg f hf)
+      isRealRooted_of_natDegree_le_one
+        (HasPosLeadingCoeff.ne_zero (hpos f hf)) (hdeg f hf)
   exact
     hasCommonInterleaver_of_pairwiseHasCommonInterleaver
       (fun f hf => (hrr f hf).2) hpos (pairwiseHasCommonInterleaver_of_natDegree_le_one hpos hdeg)
@@ -3410,8 +3337,8 @@ theorem chudnovskySeymour_fourWay_of_natDegree_le_one
       (HasCommonInterleaver fs ↔ FamilyCompatible fs) := by
   have hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits) :=
     fun f hf =>
-      isRealRooted_of_natDegree_le_one_of_hasPosLeadingCoeff
-        (hpos f hf) (hdeg f hf)
+      isRealRooted_of_natDegree_le_one
+        (HasPosLeadingCoeff.ne_zero (hpos f hf)) (hdeg f hf)
   have h12 : PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs := by
     constructor
     · intro

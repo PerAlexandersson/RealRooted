@@ -141,6 +141,14 @@ lemma isRealRooted_of_degree_one {p : ℝ[X]} (hp : p.natDegree = 1) : (p ≠ 0 
   refine ⟨hne, splits_of_card_roots ?_⟩
   rw [roots_degree_eq_one hdeg, Multiset.card_singleton, hp]
 
+/-- Any nonzero polynomial of degree at most one is real-rooted. -/
+lemma isRealRooted_of_natDegree_le_one {p : ℝ[X]}
+    (hp : p ≠ 0) (hdeg : p.natDegree ≤ 1) : (p ≠ 0 ∧ p.Splits) := by
+  by_cases h0 : p.natDegree = 0
+  · exact isRealRooted_of_deg_zero hp h0
+  · have h1 : p.natDegree = 1 := by lia
+    exact isRealRooted_of_degree_one h1
+
 lemma interlaces_one_linear {p : ℝ[X]} (hp_deg : p.natDegree = 1) :
     Interlaces (1 : ℝ[X]) p := by
   have h1_rr : ((1 : ℝ[X]) ≠ 0 ∧ (1 : ℝ[X]).Splits) := by simp
@@ -218,6 +226,14 @@ lemma roots_comp_X_add_C {p : ℝ[X]} (r : ℝ) :
   simpa [count_roots, add_comm, add_left_comm, add_assoc] using
     (Multiset.count_map_eq_count' (fun y : ℝ => y - r) p.roots
       (fun a b hab => by simp_all) (x + r)).symm
+
+/-- Translation by `r` preserves positive leading coefficient. -/
+lemma HasPosLeadingCoeff.comp_X_add_C {p : ℝ[X]}
+    (hp : HasPosLeadingCoeff p) (r : ℝ) :
+    HasPosLeadingCoeff (p.comp (X + C r)) := by
+  unfold HasPosLeadingCoeff
+  rw [leadingCoeff_comp (by simp), leadingCoeff_X_add_C, one_pow, mul_one]
+  exact hp
 
 lemma isRealRooted_comp_X_add_C
     {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) (r : ℝ) :

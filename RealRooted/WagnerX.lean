@@ -482,6 +482,22 @@ lemma hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos {p : ℝ[X]} (hp : p
     exact (hasNonnegCoeffs_C hp₀.le).mul
       (hasNonnegCoeffs_multiset_prod_X_sub_C p.roots hroots_nonpos)
 
+/-- If all roots of a real-rooted positive-leading polynomial are at most `r`,
+then translating by `X + r` gives a polynomial with nonnegative
+coefficients. -/
+lemma hasNonnegCoeffs_comp_X_add_C_of_roots_le
+    {p : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (hp_splits : p.Splits)
+    {r : ℝ} (hbound : ∀ s ∈ p.roots, s ≤ r) :
+    HasNonnegCoeffs (p.comp (X + C r)) := by
+  have hp' : ((p.comp (X + C r)) ≠ 0 ∧ (p.comp (X + C r)).Splits) :=
+    isRealRooted_comp_X_add_C hp_pos.ne_zero hp_splits r
+  refine ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hp'.2).2 ?_).1
+  refine ⟨hp_pos.comp_X_add_C r, ?_⟩
+  intro s hs
+  simp only [roots_comp_X_add_C r] at hs
+  rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
+  simp_all
+
 lemma hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
     {p q : ℝ[X]}
     (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hpnn : HasNonnegCoeffs p)
@@ -1026,13 +1042,9 @@ theorem prec_iff_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
   have hg' : g' ≠ 0 ∧ g'.Splits := by
     simpa [g'] using isRealRooted_comp_X_add_C hg_pos.ne_zero hg r
   have hf'_pos : HasPosLeadingCoeff f' := by
-    unfold HasPosLeadingCoeff f'
-    rw [leadingCoeff_comp (by simp), leadingCoeff_X_add_C, one_pow, mul_one]
-    exact hf_pos
+    simpa [f'] using hf_pos.comp_X_add_C r
   have hg'_pos : HasPosLeadingCoeff g' := by
-    unfold HasPosLeadingCoeff g'
-    rw [leadingCoeff_comp (by simp), leadingCoeff_X_add_C, one_pow, mul_one]
-    exact hg_pos
+    simpa [g'] using hg_pos.comp_X_add_C r
   have hf'_nonpos : ∀ s ∈ f'.roots, s ≤ 0 := by
     intro s hs
     simp only [f', roots_comp_X_add_C r] at hs

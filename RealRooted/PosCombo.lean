@@ -55,13 +55,9 @@ lemma prec_sameDegree_to_prec_mul_X_sub_C_of_roots_le {f g : ℝ[X]} (r : ℝ)
   have hg' : (g' ≠ 0 ∧
     g'.Splits) := by simpa [g'] using isRealRooted_comp_X_add_C h.2.1.1 h.2.1.2 r
   have hf'_pos : HasPosLeadingCoeff f' := by
-    unfold HasPosLeadingCoeff f'
-    rw [leadingCoeff_comp (by simp), leadingCoeff_X_add_C, one_pow, mul_one]
-    exact hf_pos
+    simpa [f'] using hf_pos.comp_X_add_C r
   have hg'_pos : HasPosLeadingCoeff g' := by
-    unfold HasPosLeadingCoeff g'
-    rw [leadingCoeff_comp (by simp), leadingCoeff_X_add_C, one_pow, mul_one]
-    exact hg_pos
+    simpa [g'] using hg_pos.comp_X_add_C r
   have hf'_nonpos : ∀ s ∈ f'.roots, s ≤ 0 := by
     intro s hs
     simp only [f', roots_comp_X_add_C r] at hs
@@ -101,13 +97,9 @@ lemma prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le {f g : ℝ[X]} (r : ℝ
   have hg' : (g' ≠ 0 ∧
     g'.Splits) := by simpa [g'] using isRealRooted_comp_X_add_C h.1.1 h.1.2 r
   have hf'_pos : HasPosLeadingCoeff f' := by
-    unfold HasPosLeadingCoeff f'
-    rw [leadingCoeff_comp (by simp), leadingCoeff_X_add_C, one_pow, mul_one]
-    exact hf_pos
+    simpa [f'] using hf_pos.comp_X_add_C r
   have hg'_pos : HasPosLeadingCoeff g' := by
-    unfold HasPosLeadingCoeff g'
-    rw [leadingCoeff_comp (by simp), leadingCoeff_X_add_C, one_pow, mul_one]
-    exact hg_pos
+    simpa [g'] using hg_pos.comp_X_add_C r
   have hf'_nonpos : ∀ s ∈ f'.roots, s ≤ 0 := by
     intro s hs
     simp only [f', roots_comp_X_add_C r] at hs
