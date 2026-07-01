@@ -166,8 +166,7 @@ private lemma listInterlaces_prod_mul_prod_nonneg_at_mem :
             listInterlaces_all_ge (sg :: rest_g) (b :: rest_rs) r
               ⟨ha_sg, hsg_b, hint_g_tail⟩ y hy
           linarith
-        have hlen' : rest_f.length = rest_g.length := by
-          grind
+        have hlen' : rest_f.length = rest_g.length := by grind
         exact prod_mul_prod_nonneg_of_forall_nonpos_of_eq_length
           (by simp [hlen']) hall_f hall_g
       · have hr_ge_b : b ≤ r := by
@@ -245,8 +244,7 @@ private lemma listInterlaces_listAlternates_prod_mul_prod_nonneg_at_mem :
         · simp
         · exact listInterlaces_rs_all_ge ss_f rest_rs r₁ hint_f r hr'
       have hsg_nonneg : 0 ≤ r - sg := by linarith
-      have hlen' : ss_f.length = rest_g.length := by
-        grind
+      have hlen' : ss_f.length = rest_g.length := by grind
       have hbase :
           0 ≤ (ss_f.map (r - ·)).prod * (rest_g.map (r - ·)).prod :=
         listInterlaces_prod_mul_prod_nonneg_at_mem hlen' hint_f hint_g r hr
@@ -430,8 +428,7 @@ lemma isRoot_of_isRoot_right_of_isRoot_add {f g h : ℝ[X]}
     {r : ℝ} (hr : h.IsRoot r) (hadd : (f + g).IsRoot r) :
     f.IsRoot r ∧ g.IsRoot r := by
   have hfg_nonneg := eval_mul_eval_nonneg_of_prec_right hfh hgh hf_pos hg_pos hr
-  have hsum : f.eval r + g.eval r = 0 := by
-    simp_all
+  have hsum : f.eval r + g.eval r = 0 := by simp_all
   have hf0 : f.eval r = 0 := by
     nlinarith
   simp_all
@@ -558,8 +555,7 @@ lemma sum_has_root_between {f g : ℝ[X]}
     (hsign : g.eval s * f.eval t ≤ 0) :
     ∃ c, s ≤ c ∧ c ≤ t ∧ (f + g).IsRoot c := by
   rcases eq_or_lt_of_le hst with rfl | hlt
-  · have : (f + g).IsRoot s := by
-      simp_all
+  · have : (f + g).IsRoot s := by simp_all
     grind
   · -- (f+g)(s) = g(s), (f+g)(t) = f(t)
     -- g(s) · f(t) ≤ 0, so they have opposite signs (or one is 0)
@@ -601,8 +597,7 @@ lemma tendsto_eval_atBot_atTop_of_posLeadingCoeff_even {p : ℝ[X]}
     Tendsto (fun x => p.eval x) atBot atTop := by
   have hcomp_pos : 0 ≤ (p.comp (-X)).leadingCoeff := by
     rw [comp_neg_X_leadingCoeff_eq]
-    have hpow : (-1 : ℝ) ^ p.natDegree = 1 := by
-      simp_all
+    have hpow : (-1 : ℝ) ^ p.natDegree = 1 := by simp_all
     unfold HasPosLeadingCoeff at hp_pos
     simpa [hpow] using hp_pos.le
   have htop :
@@ -618,8 +613,7 @@ lemma tendsto_eval_atBot_atBot_of_posLeadingCoeff_odd {p : ℝ[X]}
     Tendsto (fun x => p.eval x) atBot atBot := by
   have hcomp_nonpos : (p.comp (-X)).leadingCoeff ≤ 0 := by
     rw [comp_neg_X_leadingCoeff_eq]
-    have hpow : (-1 : ℝ) ^ p.natDegree = -1 := by
-      simp_all
+    have hpow : (-1 : ℝ) ^ p.natDegree = -1 := by simp_all
     unfold HasPosLeadingCoeff at hp_pos
     have hneg : -p.leadingCoeff ≤ 0 := by linarith
     simp_all
@@ -679,8 +673,7 @@ lemma eval_neg_of_all_roots_gt_of_odd {p : ℝ[X]} {r : ℝ}
     (hgt : ∀ t ∈ p.roots, r < t) :
     p.eval r < 0 := by
   have hdeg : 0 < p.degree := by
-    have hnatdeg : 0 < p.natDegree := by
-      grind
+    have hnatdeg : 0 < p.natDegree := by grind
     exact natDegree_pos_iff_degree_pos.mp hnatdeg
   have ht : Tendsto (fun x => p.eval x) atBot atBot :=
     tendsto_eval_atBot_atBot_of_posLeadingCoeff_odd hp_pos hdeg hpar
