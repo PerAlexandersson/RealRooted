@@ -248,8 +248,7 @@ theorem prec_motzkin_succ_and_roots_le :
       Prec (motzkin n) (motzkin (n + 1)) ∧
       (∀ r ∈ (motzkin n).roots, r ≤ motzkinShift) ∧
       (∀ r ∈ (motzkin (n + 1)).roots, r ≤ motzkinShift)
-  | 0 => by
-      exact ⟨prec_motzkin_zero_one, motzkin_bound_zero, motzkin_bound_one⟩
+  | 0 => ⟨prec_motzkin_zero_one, motzkin_bound_zero, motzkin_bound_one⟩
   | n + 1 => by
       rcases prec_motzkin_succ_and_roots_le n with ⟨hprev, hle_n, hle_succ⟩
       have hshift :
@@ -262,9 +261,9 @@ theorem prec_motzkin_succ_and_roots_le :
           ∀ r ∈ (motzkin (n + 2)).roots, r ≤ motzkinShift :=
         roots_le_of_prec_right hshift hright_le
       have hnext : Prec (motzkin (n + 1)) (motzkin (n + 2)) := by
-        rcases Nat.mod_two_eq_zero_or_one (n + 1) with hpar | hpar
-        · exact prec_motzkin_succ_of_shifted_even hpar hshift hle_succ hle_next
-        · exact prec_motzkin_succ_of_shifted_odd hpar hshift hle_succ
+        exact (Nat.mod_two_eq_zero_or_one (n + 1)).elim
+          (fun hpar => prec_motzkin_succ_of_shifted_even hpar hshift hle_succ hle_next)
+          (fun hpar => prec_motzkin_succ_of_shifted_odd hpar hshift hle_succ)
       lia
 
 theorem prec_motzkin_succ (n : Nat) :
