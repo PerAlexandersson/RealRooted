@@ -46,10 +46,8 @@ lemma polynomialWeightedSum_eval_mul_eval_nonpos_of_common_right
                   simp [Polynomial.eval_mul]
                   ring
           _ ≤ 0 := mul_nonpos_of_nonpos_of_nonneg hb_nonpos hgg_nonneg
-      have htail_prec : ∀ bg ∈ l, Prec bg.2 f := by
-        grind
-      have htail_pos : ∀ bg ∈ l, HasPosLeadingCoeff bg.2 := by
-        grind
+      have htail_prec : ∀ bg ∈ l, Prec bg.2 f := by grind
+      have htail_pos : ∀ bg ∈ l, HasPosLeadingCoeff bg.2 := by grind
       have htail_coeff :
           ∀ bg ∈ l, ∀ x : ℝ, f.IsRoot x → bg.1.eval x ≤ 0 := by
         grind
@@ -80,8 +78,7 @@ lemma polynomialWeightedSum_cons_eval_mul_eval_neg_of_common_right
     ∀ r : ℝ, f.IsRoot r →
       (polynomialWeightedSum ((b, g) :: l)).eval r * g.eval r < 0 := by
   intro r hr
-  have hg_eval_ne : g.eval r ≠ 0 := by
-    simp_all
+  have hg_eval_ne : g.eval r ≠ 0 := by simp_all
   have hhead_neg : (b * g).eval r * g.eval r < 0 := by
     have hsq_pos : 0 < (g.eval r) ^ 2 := sq_pos_iff.mpr hg_eval_ne
     calc
@@ -118,8 +115,7 @@ theorem prec_generalizedLiuWang_strict_same
     Prec f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
   refine prec_of_interlaces_eval_mul_neg_same hgf hg_pos hF_pos hdeg ?_
   intro r hr
-  have hf_eval : f.eval r = 0 := by
-    simp_all
+  have hf_eval : f.eval r = 0 := by simp_all
   have hl_prec : ∀ bg ∈ l, Prec bg.2 f :=
     fun bg hmem => (hl_inter bg hmem).toPrec
   have hsum_sign :
@@ -143,8 +139,7 @@ theorem prec_generalizedLiuWang_strict_succ
     Prec f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
   refine prec_of_interlaces_eval_mul_neg_succ hgf hg_pos hF_pos hdeg ?_
   intro r hr
-  have hf_eval : f.eval r = 0 := by
-    simp_all
+  have hf_eval : f.eval r = 0 := by simp_all
   have hl_prec : ∀ bg ∈ l, Prec bg.2 f :=
     fun bg hmem => (hl_inter bg hmem).toPrec
   have hsum_sign :
@@ -244,15 +239,13 @@ theorem prec_generalizedLiuWang_of_no_common
   have hroot_nonpos :
       ∀ r, f.IsRoot r → F.eval r * g.eval r ≤ 0 := by
     intro r hr
-    have hf_eval : f.eval r = 0 := by
-      simp_all
+    have hf_eval : f.eval r = 0 := by simp_all
     have hprec_all : ∀ bg ∈ ((b, g) :: l), Prec bg.2 f := by
       intro bg hmem
       rcases List.mem_cons.mp hmem with rfl | hmem'
       · exact hgf.toPrec
       · exact (hl_inter bg hmem').toPrec
-    have hpos_all : ∀ bg ∈ ((b, g) :: l), HasPosLeadingCoeff bg.2 := by
-      grind
+    have hpos_all : ∀ bg ∈ ((b, g) :: l), HasPosLeadingCoeff bg.2 := by grind
     have hcoeff_all :
         ∀ bg ∈ ((b, g) :: l), ∀ x : ℝ, f.IsRoot x → bg.1.eval x ≤ 0 := by
       grind
