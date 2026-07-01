@@ -30,8 +30,7 @@ lemma touchard_one : touchard 1 = X := by
   simp [touchard]
 
 lemma touchard_two : touchard 2 = X + X ^ 2 := by
-  rw [touchard_succ, touchard_one]
-  simp [pow_two]
+  simp [touchard_succ, pow_two]
   ring
 
 lemma coeff_touchard_succ (n m : Nat) :

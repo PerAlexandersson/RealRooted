@@ -51,19 +51,7 @@ lemma coeff_motzkin_succ_succ (n m : Nat) :
         motzkinCoeffB n *
           (coeff (motzkin n) m - motzkinShift * coeff (motzkin n) (m + 1)) := by
   rw [motzkin_succ_succ, coeff_add]
-  rw [show C (motzkinCoeffB n) * (X - C motzkinShift) * motzkin n =
-      C (motzkinCoeffB n) * ((X - C motzkinShift) * motzkin n) by grind]
-  have hA :
-      coeff (C (motzkinCoeffA n) * motzkin (n + 1)) (m + 1) =
-        motzkinCoeffA n * coeff (motzkin (n + 1)) (m + 1) := by
-    simp
-  have hB :
-      coeff (C (motzkinCoeffB n) * ((X - C motzkinShift) * motzkin n)) (m + 1) =
-        motzkinCoeffB n *
-          coeff ((X - C motzkinShift) * motzkin n) (m + 1) := by
-    simp
-  rw [hA, hB, coeff_X_sub_C_mul]
-  simp
+  simp [mul_assoc, coeff_X_sub_C_mul]
 
 lemma coeff_motzkin_top_pos_and_above :
     ∀ n : Nat,

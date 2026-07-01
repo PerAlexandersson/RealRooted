@@ -43,14 +43,7 @@ lemma typeBEulerian_one : typeBEulerian 1 = 1 + X := by
 lemma coeff_typeBEulerianCoeffA_mul (n m : Nat) (p : ℝ[X]) :
     coeff (typeBEulerianCoeffA n * p) (m + 1) =
       coeff p (m + 1) + (2 * n + 1 : ℝ) * coeff p m := by
-  have hCX : coeff (C (2 * n + 1 : ℝ) * X * p) (m + 1) =
-      (2 * n + 1 : ℝ) * coeff p m := by
-    calc
-      coeff (C (2 * n + 1 : ℝ) * X * p) (m + 1)
-          = coeff (C (2 * n + 1 : ℝ) * (X * p)) (m + 1) := by grind
-      _ = (2 * n + 1 : ℝ) * coeff (X * p) (m + 1) := by grind
-      _ = (2 * n + 1 : ℝ) * coeff p m := by simp
-  rw [typeBEulerianCoeffA, add_mul, one_mul, coeff_add, hCX]
+  simp [typeBEulerianCoeffA, add_mul, coeff_add, mul_assoc]
 
 lemma coeff_typeBEulerianCoeffB_mul_derivative (m : Nat) (p : ℝ[X]) :
     coeff (typeBEulerianCoeffB * p.derivative) (m + 1) =

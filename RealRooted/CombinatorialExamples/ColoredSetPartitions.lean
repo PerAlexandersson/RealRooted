@@ -51,18 +51,7 @@ lemma coeff_coloredSetPartitionsCoeffA_mul (c k : Nat) (p : ℝ[X]) :
 lemma coeff_coloredSetPartitionsCoeffB_mul_derivative (m k : Nat) (p : ℝ[X]) :
     coeff (coloredSetPartitionsCoeffB m * p.derivative) (k + 1) =
       ((m : ℝ) * (k + 1 : ℝ)) * coeff p (k + 1) := by
-  calc
-    coeff (coloredSetPartitionsCoeffB m * p.derivative) (k + 1)
-        = coeff (C (m : ℝ) * (X * p.derivative)) (k + 1) := by
-            rw [coloredSetPartitionsCoeffB, mul_assoc]
-    _ = (m : ℝ) * coeff (X * p.derivative) (k + 1) := by
-          simp
-    _ = (m : ℝ) * coeff p.derivative k := by
-          simp
-    _ = (m : ℝ) * ((k + 1 : ℝ) * coeff p (k + 1)) := by
-          rw [coeff_derivative]
-          ring
-    _ = ((m : ℝ) * (k + 1 : ℝ)) * coeff p (k + 1) := by grind
+  simp [coloredSetPartitionsCoeffB, mul_assoc, coeff_derivative, mul_comm]
 
 lemma coeff_coloredSetPartitions_succ (c m n k : Nat) :
     coeff (coloredSetPartitions c m (n + 1)) (k + 1) =
