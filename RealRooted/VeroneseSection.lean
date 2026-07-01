@@ -990,9 +990,8 @@ oriented branch. -/
 theorem hermiteBiehlerConverseOriented_of_orientation
     (hConv : hermiteBiehlerConverseStatement)
     (hOrient : HermiteBiehlerOrientationStatement) :
-    HermiteBiehlerConverseOrientedStatement := by
-  intro f g hf hg hstable
-  exact (hConv hf hg hstable).elim id (hOrient hf hg hstable)
+    HermiteBiehlerConverseOrientedStatement :=
+  fun _ _ hf hg hstable => (hConv hf hg hstable).elim id (hOrient hf hg hstable)
 
 /-- Checked reduction of the analytic converse step
 `HurwitzStableOddEvenToPrecStatement`.

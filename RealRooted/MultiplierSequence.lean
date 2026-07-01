@@ -149,8 +149,7 @@ def jensenPolynomial (n : ℕ) (gamma : ℕ → ℝ) : ℝ[X] :=
     · simp [hk]
     · intro b hb hbk
       simp [Polynomial.coeff_monomial, hbk]
-    · intro hnot
-      exact (hnot hmem).elim
+    · exact fun hnot => (hnot hmem).elim
   · rw [jensenPolynomial, Polynomial.finsetSum_coeff]
     rw [Finset.sum_eq_zero]
     · simp [hk]

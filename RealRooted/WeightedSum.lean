@@ -94,9 +94,8 @@ lemma hasPosLeadingCoeff_weightedSum :
         · have hzero_tail : weightedSum l = 0 :=
             weightedSum_eq_zero_of_forall_coeff_zero l (fun ap hap => by
               have hap_nonneg : 0 ≤ ap.1 := hnonneg ap (by simp [hap])
-              have hap_not_pos : ¬ 0 < ap.1 := by
-                intro hap_pos
-                exact htail ⟨ap, hap, hap_pos⟩
+              have hap_not_pos : ¬ 0 < ap.1 :=
+                fun hap_pos => htail ⟨ap, hap, hap_pos⟩
               exact le_antisymm (not_lt.mp hap_not_pos) hap_nonneg)
           simpa [weightedSum_cons, hzero_tail] using
             hasPosLeadingCoeff_C_mul ha (hpos (a, p) (by simp))
@@ -264,9 +263,8 @@ theorem prec_weightedSum_right :
         · have hzero_tail : weightedSum l = 0 :=
             weightedSum_eq_zero_of_forall_coeff_zero l (fun ap hap => by
               have hap_nonneg : 0 ≤ ap.1 := hnonneg ap (by simp [hap])
-              have hap_not_pos : ¬ 0 < ap.1 := by
-                intro hap_pos
-                exact htail ⟨ap, hap, hap_pos⟩
+              have hap_not_pos : ¬ 0 < ap.1 :=
+                fun hap_pos => htail ⟨ap, hap, hap_pos⟩
               exact le_antisymm (not_lt.mp hap_not_pos) hap_nonneg)
           simpa [weightedSum_cons, hzero_tail] using
             prec_C_mul_left (hprec (a, p) (by simp)) ha.ne'

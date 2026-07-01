@@ -62,10 +62,8 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
       grind
     have hprefix_prec : Prec (fs.take m).sum f := by
       apply prec_sum_right (fs.take m) f
-      · intro p hp
-        exact hpair.rel_of_mem_take_of_mem_drop hp hf_mem_drop
-      · intro p hp
-        exact hfs.posLeadingCoeff p (List.mem_of_mem_take hp)
+      · exact fun _ hp => hpair.rel_of_mem_take_of_mem_drop hp hf_mem_drop
+      · exact fun p hp => hfs.posLeadingCoeff p (List.mem_of_mem_take hp)
       · lia
     have hprefix_nonneg : HasNonnegCoeffs (fs.take m).sum :=
       hasNonnegCoeffs_sum (fs.take m)
