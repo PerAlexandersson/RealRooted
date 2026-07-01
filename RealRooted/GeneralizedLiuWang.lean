@@ -75,12 +75,11 @@ lemma polynomialWeightedSum_cons_eval_mul_eval_neg_of_common_right
     (hl_prec : ∀ bg ∈ l, Prec bg.2 f)
     (hl_pos : ∀ bg ∈ l, HasPosLeadingCoeff bg.2)
     (hl_nonpos : ∀ bg ∈ l, ∀ r : ℝ, f.IsRoot r → bg.1.eval r ≤ 0) :
-    ∀ r : ℝ, f.IsRoot r →
+  ∀ r : ℝ, f.IsRoot r →
       (polynomialWeightedSum ((b, g) :: l)).eval r * g.eval r < 0 := by
   intro r hr
-  have hg_eval_ne : g.eval r ≠ 0 := by simp_all
   have hhead_neg : (b * g).eval r * g.eval r < 0 := by
-    have hsq_pos : 0 < (g.eval r) ^ 2 := sq_pos_iff.mpr hg_eval_ne
+    have hsq_pos : 0 < (g.eval r) ^ 2 := sq_pos_iff.mpr (by simp_all)
     calc
       (b * g).eval r * g.eval r = b.eval r * (g.eval r) ^ 2 := by
         simp [Polynomial.eval_mul]
@@ -115,7 +114,6 @@ theorem prec_generalizedLiuWang_strict_same
     Prec f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
   refine prec_of_interlaces_eval_mul_neg_same hgf hg_pos hF_pos hdeg ?_
   intro r hr
-  have hf_eval : f.eval r = 0 := by simp_all
   have hl_prec : ∀ bg ∈ l, Prec bg.2 f :=
     fun bg hmem => (hl_inter bg hmem).toPrec
   have hsum_sign :
@@ -139,7 +137,6 @@ theorem prec_generalizedLiuWang_strict_succ
     Prec f (a * f + polynomialWeightedSum ((b, g) :: l)) := by
   refine prec_of_interlaces_eval_mul_neg_succ hgf hg_pos hF_pos hdeg ?_
   intro r hr
-  have hf_eval : f.eval r = 0 := by simp_all
   have hl_prec : ∀ bg ∈ l, Prec bg.2 f :=
     fun bg hmem => (hl_inter bg hmem).toPrec
   have hsum_sign :
@@ -239,7 +236,6 @@ theorem prec_generalizedLiuWang_of_no_common
   have hroot_nonpos :
       ∀ r, f.IsRoot r → F.eval r * g.eval r ≤ 0 := by
     intro r hr
-    have hf_eval : f.eval r = 0 := by simp_all
     have hprec_all : ∀ bg ∈ ((b, g) :: l), Prec bg.2 f := by
       intro bg hmem
       rcases List.mem_cons.mp hmem with rfl | hmem'
@@ -252,7 +248,7 @@ theorem prec_generalizedLiuWang_of_no_common
     calc
       F.eval r * g.eval r
           = (polynomialWeightedSum ((b, g) :: l)).eval r * g.eval r := by
-              simp [F, Polynomial.eval_add, Polynomial.eval_mul, hf_eval]
+              simp_all [F, Polynomial.eval_add, Polynomial.eval_mul]
       _ ≤ 0 :=
         polynomialWeightedSum_eval_mul_eval_nonpos_of_common_right
           hgf.toPrec hg_pos hprec_all hpos_all hcoeff_all r hr
