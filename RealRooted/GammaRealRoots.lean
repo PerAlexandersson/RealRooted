@@ -74,8 +74,7 @@ lemma gammaTransform_monomial (d n : ℕ) (a : ℝ) :
     rw [Finset.sum_eq_single n]
     · simp_all
     · intro k hk hkn
-      have hcoeff : (monomial n a).coeff k = 0 := by
-        simp [coeff_monomial, mt Eq.symm hkn]
+      have hcoeff : (monomial n a).coeff k = 0 := by simp [coeff_monomial, mt Eq.symm hkn]
       simp_all
     · lia
   · unfold gammaTransform
@@ -85,10 +84,8 @@ lemma gammaTransform_monomial (d n : ℕ) (a : ℝ) :
       refine Finset.sum_eq_zero ?_
       intro k hk
       have hklt : k < d / 2 + 1 := Finset.mem_range.mp hk
-      have hkn : k ≠ n := by
-        lia
-      have hcoeff : (monomial n a).coeff k = 0 := by
-        simp [coeff_monomial, mt Eq.symm hkn]
+      have hkn : k ≠ n := by lia
+      have hcoeff : (monomial n a).coeff k = 0 := by simp [coeff_monomial, mt Eq.symm hkn]
       simp_all
     lia
 
@@ -151,8 +148,7 @@ lemma IdTransform_gammaBasisTerm (d i : ℕ) (hi : 2 * i ≤ d) :
       gammaBasisTerm d i = X ^ i * ((X + 1 : ℝ[X]) ^ n) := by
     simp [gammaBasisTerm, n]
   have hqdeg0 : ((X + 1 : ℝ[X]) ^ n).natDegree ≤ n := natDegree_X_add_one_pow_le n
-  have hqdeg : ((X + 1 : ℝ[X]) ^ n).natDegree ≤ d - i := by
-    lia
+  have hqdeg : ((X + 1 : ℝ[X]) ^ n).natDegree ≤ d - i := by lia
   calc
     IdTransform d (gammaBasisTerm d i)
         = IdTransform (i + (d - i)) (gammaBasisTerm d i) := by
@@ -461,13 +457,11 @@ theorem gammaTransform_injective_of_natDegree_le {d : ℕ} {γ δ : ℝ[X]}
     γ = δ := by
   rcases Nat.mod_two_eq_zero_or_one d with hd_even | hd_odd
   · have hd : d = 2 * (d / 2) := by lia
-    have hEq' : gammaTransform (2 * (d / 2)) γ = gammaTransform (2 * (d / 2)) δ := by
-      lia
+    have hEq' : gammaTransform (2 * (d / 2)) γ = gammaTransform (2 * (d / 2)) δ := by lia
     exact gammaTransform_even_injective (d / 2)
       hγ hδ hEq'
   · have hd : d = 2 * (d / 2) + 1 := by lia
-    have hEq' : gammaTransform (2 * (d / 2) + 1) γ = gammaTransform (2 * (d / 2) + 1) δ := by
-      lia
+    have hEq' : gammaTransform (2 * (d / 2) + 1) γ = gammaTransform (2 * (d / 2) + 1) δ := by lia
     exact gammaTransform_odd_injective (d / 2)
       hγ hδ hEq'
 
@@ -533,8 +527,7 @@ lemma natDegree_gammaTransform_le (d : ℕ) (γ : ℝ[X]) : (gammaTransform d γ
 lemma eval_gammaTransform_eq_mul_eval_gammaUntransform {d : ℕ} {γ : ℝ[X]}
     (hγdeg : γ.natDegree ≤ d / 2) {x : ℝ} (hx : x ≠ -1) :
     (gammaTransform d γ).eval x = (1 + x) ^ d * γ.eval (x / (1 + x) ^ 2) := by
-  have h1x_ne : 1 + x ≠ 0 := by
-    grind
+  have h1x_ne : 1 + x ≠ 0 := by grind
   unfold gammaTransform
   rw [Polynomial.eval_finsetSum, Polynomial.eval_eq_sum_range' (Nat.lt_succ_iff.mpr hγdeg)]
   rw [Finset.mul_sum]
@@ -568,10 +561,8 @@ lemma eval_gammaTransform_eq_mul_eval_gammaUntransform {d : ℕ} {γ : ℝ[X]}
 
 lemma gammaUntransform_nonpos {x : ℝ} (hx0 : x ≤ 0) (hx : x ≠ -1) :
     x / (1 + x) ^ 2 ≤ 0 := by
-  have h1x_ne : 1 + x ≠ 0 := by
-    grind
-  have hsq_pos : 0 < (1 + x) ^ 2 := by
-    positivity
+  have h1x_ne : 1 + x ≠ 0 := by grind
+  have hsq_pos : 0 < (1 + x) ^ 2 := by positivity
   have hinv_nonneg : 0 ≤ ((1 + x) ^ 2)⁻¹ := inv_nonneg.mpr hsq_pos.le
   simpa [div_eq_mul_inv] using mul_nonpos_of_nonpos_of_nonneg hx0 hinv_nonneg
 
@@ -606,8 +597,7 @@ lemma isRoot_gamma_of_isRoot_gammaTransform {d : ℕ} {γ : ℝ[X]}
     γ.IsRoot (x / (1 + x) ^ 2) := by
   rw [Polynomial.IsRoot.def] at hroot ⊢
   rw [eval_gammaTransform_eq_mul_eval_gammaUntransform hγdeg hx] at hroot
-  have h1x_ne : 1 + x ≠ 0 := by
-    grind
+  have h1x_ne : 1 + x ≠ 0 := by grind
   simp_all
 
 lemma rootPullback_nonpos_of_gammaTransform {x : ℝ}
@@ -619,8 +609,7 @@ lemma gammaTransform_X_sub_C_mul_two {d : ℕ} {γ : ℝ[X]}
     (hγ : γ.natDegree ≤ d / 2) (r : ℝ) :
     gammaTransform (d + 2) ((X - C r) * γ) =
       (X - C r * (X + 1) ^ 2) * gammaTransform d γ := by
-  have hmul : (X - C r) * γ = X * γ + C (-r) * γ := by
-    simp [sub_eq_add_neg, add_mul]
+  have hmul : (X - C r) * γ = X * γ + C (-r) * γ := by simp [sub_eq_add_neg, add_mul]
   calc
     gammaTransform (d + 2) ((X - C r) * γ)
       = gammaTransform (d + 2) (X * γ + C (-r) * γ) := by lia
@@ -706,8 +695,7 @@ theorem isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
         simpa [hn0] using
           (Polynomial.eq_C_of_natDegree_le_zero (show γ.natDegree ≤ 0 by lia))
       rw [hγC]
-      have hcoeff_ne : γ.coeff 0 ≠ 0 := by
-        grind
+      have hcoeff_ne : γ.coeff 0 ≠ 0 := by grind
       have hgt :
           gammaTransform d (C (γ.coeff 0)) = C (γ.coeff 0) * (X + 1) ^ d := by
         simpa [gammaBasisTerm_zero] using
@@ -721,8 +709,7 @@ theorem isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
       obtain ⟨r, hr_mem⟩ := Multiset.card_pos_iff_exists_mem.mp hroots_pos
       have hr_root : γ.IsRoot r := (mem_roots hrr.1).mp hr_mem
       obtain ⟨q, hq⟩ := dvd_iff_isRoot.mpr hr_root
-      have hq' : γ = (X - C r) * q := by
-        lia
+      have hq' : γ = (X - C r) * q := by lia
       have hq_dvd : q ∣ γ := ⟨X - C r, by grind⟩
       have hq_ne : q ≠ 0 := by
         simp_all
@@ -739,8 +726,7 @@ theorem isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
           rw [hq', natDegree_mul (X_sub_C_ne_zero r) hq_ne, natDegree_X_sub_C]
           lia
         lia
-      have hqbound : q.natDegree ≤ (d - 2) / 2 := by
-        lia
+      have hqbound : q.natDegree ≤ (d - 2) / 2 := by lia
       have hd : d = (d - 2) + 2 := by lia
       rw [hd, hq', gammaTransform_X_sub_C_mul_two hqbound r]
       have hgqf := isRealRooted_gammaQuadraticFactor hr_nonpos
@@ -778,8 +764,7 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
     · have hδC : δ = C (δ.coeff 0) := by
         simpa [hn0] using
           (Polynomial.eq_C_of_natDegree_le_zero (show δ.natDegree ≤ 0 by lia))
-      have hc : δ.coeff 0 ≠ 0 := by
-        grind
+      have hc : δ.coeff 0 ≠ 0 := by grind
       refine ⟨isRealRooted_of_deg_zero hδ0_main (by lia), ?_⟩
       intro r hr
       have : False := by
@@ -793,8 +778,7 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
           simp_all
         have hζdeg_succ : n = ζ.natDegree + 1 := by
           simp_all
-        have hζdeg_lt : ζ.natDegree < n := by
-          lia
+        have hζdeg_lt : ζ.natDegree < n := by lia
         have hq_eq :
             gammaTransform (2 * n) δ = X * gammaTransform (2 * ζ.natDegree) ζ := by
           calc
@@ -837,8 +821,7 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
         have hx_nonpos : x ≤ 0 := hpδ_nonpos x hx_mem
         have hx_ne_neg_one : x ≠ -1 := by
           intro hx_eq
-          have hx_root_neg_one : (gammaTransform (2 * n) δ).IsRoot (-1) := by
-            lia
+          have hx_root_neg_one : (gammaTransform (2 * n) δ).IsRoot (-1) := by lia
           exact htop ((gammaTransform_even_isRoot_neg_one_iff n δ).mp hx_root_neg_one)
         let y : ℝ := x / (1 + x) ^ 2
         have hy_nonpos : y ≤ 0 :=
@@ -848,8 +831,7 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
           exact isRoot_gamma_of_isRoot_gammaTransform
             (d := 2 * n) (γ := δ) (by lia) hx_ne_neg_one hx_root
         obtain ⟨ε, hγ_fac0⟩ := dvd_iff_isRoot.mpr hy_root
-        have hγ_fac : δ = (X - C y) * ε := by
-          lia
+        have hγ_fac : δ = (X - C y) * ε := by lia
         have hε0 : ε ≠ 0 := by
           simp_all
         have hεdeg_succ : n = ε.natDegree + 1 := by
@@ -859,8 +841,7 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
             _ = 1 + ε.natDegree := by
                   rw [natDegree_mul (X_sub_C_ne_zero y) hε0, natDegree_X_sub_C]
             _ = ε.natDegree + 1 := by lia
-        have hεdeg_lt : ε.natDegree < n := by
-          lia
+        have hεdeg_lt : ε.natDegree < n := by lia
         have hq_eq :
             gammaTransform (2 * n) δ =
               (X - C y * (X + 1) ^ 2) * gammaTransform (2 * ε.natDegree) ε := by
@@ -935,8 +916,7 @@ theorem isRealRooted_and_hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasRoo
     · have hδC : δ = C (δ.coeff 0) := by
         simpa [hn0] using
           (Polynomial.eq_C_of_natDegree_le_zero (show δ.natDegree ≤ 0 by lia))
-      have hcoeff_ne : δ.coeff 0 ≠ 0 := by
-        grind
+      have hcoeff_ne : δ.coeff 0 ≠ 0 := by grind
       have hgt :
           gammaTransform d (C (δ.coeff 0)) = C (δ.coeff 0) * (X + 1) ^ d := by
         simpa [gammaBasisTerm_zero] using
@@ -957,8 +937,7 @@ theorem isRealRooted_and_hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasRoo
       have hr_root : δ.IsRoot r := (mem_roots hδ_rr.1).mp hr_mem
       have hr_nonpos : r ≤ 0 := hδ_nonpos r hr_mem
       obtain ⟨q, hq⟩ := dvd_iff_isRoot.mpr hr_root
-      have hδq : δ = (X - C r) * q := by
-        lia
+      have hδq : δ = (X - C r) * q := by lia
       have hq_dvd : q ∣ δ := ⟨X - C r, by grind⟩
       have hq_ne : q ≠ 0 := by
         simp_all
@@ -970,8 +949,7 @@ theorem isRealRooted_and_hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasRoo
           rw [hδq, natDegree_mul (X_sub_C_ne_zero r) hq_ne, natDegree_X_sub_C]
           lia
         lia
-      have hqbound : q.natDegree ≤ (d - 2) / 2 := by
-        lia
+      have hqbound : q.natDegree ≤ (d - 2) / 2 := by lia
       have hd : d = (d - 2) + 2 := by lia
       have ihq : ((gammaTransform (d - 2) q) ≠ 0 ∧
             (gammaTransform (d - 2) q).Splits) ∧
@@ -993,8 +971,7 @@ lemma gammaTransform_even_shift (m k : ℕ) (γ : ℝ[X]) (hγ : γ.natDegree �
       lia
   | succ k ih =>
       have hhalf : (2 * (m + k)) / 2 = m + k := by lia
-      have hstep : γ.natDegree ≤ (2 * (m + k)) / 2 := by
-        lia
+      have hstep : γ.natDegree ≤ (2 * (m + k)) / 2 := by lia
       calc
         gammaTransform (2 * (m + k.succ)) γ
             = gammaTransform (2 * (m + k) + 2) γ := by
@@ -1033,8 +1010,7 @@ lemma gammaTransform_pad_to_minimal {d : ℕ} {γ : ℝ[X]}
     rw [hd]
     simpa [m, hpow] using hshift
   · have hd : d = 2 * n + 1 := by lia
-    have hpow : d - 2 * m = 1 + 2 * (n - m) := by
-      lia
+    have hpow : d - 2 * m = 1 + 2 * (n - m) := by lia
     calc
       gammaTransform d γ = gammaTransform (2 * n + 1) γ := by lia
       _ = (X + 1) * gammaTransform (2 * n) γ := gammaTransform_odd n γ
