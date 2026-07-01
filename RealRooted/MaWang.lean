@@ -1997,7 +1997,7 @@ theorem isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
     obtain ⟨_, _, hdeg, _, _, _, _, _, _, _⟩ := hgf
     lia
   have hq_deg_pos : 0 < q.natDegree := by
-    rw [show q = C F.leadingCoeff⁻¹ * F by lia, natDegree_C_mul (inv_ne_zero hlc_ne)]
+    rw [show q = C F.leadingCoeff⁻¹ * F by rfl, natDegree_C_mul (inv_ne_zero hlc_ne)]
     lia
   have hroots_real :
       ∀ z ∈ (q.map (algebraMap ℝ ℂ)).roots, z ∈ (algebraMap ℝ ℂ).range := by
@@ -2040,8 +2040,8 @@ theorem isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
       apply monic_C_mul_of_mul_leadingCoeff_eq_one
       simp_all
     have hqδ_deg : qδ.natDegree = q.natDegree := by
-      rw [show qδ = C F.leadingCoeff⁻¹ * (F - C δ * g) by lia,
-        show q = C F.leadingCoeff⁻¹ * F by lia,
+      rw [show qδ = C F.leadingCoeff⁻¹ * (F - C δ * g) by rfl,
+        show q = C F.leadingCoeff⁻¹ * F by rfl,
         natDegree_C_mul (inv_ne_zero hlc_ne), natDegree_C_mul (inv_ne_zero hlc_ne),
         hFδ_natdeg]
     have hqδ_coeff :
@@ -2142,7 +2142,7 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
   have hq_ne : q ≠ 0 :=
     mul_ne_zero (by simp [hlc_ne]) hF_ne
   have hq_deg_pos : 0 < q.natDegree := by
-    rw [show q = C F.leadingCoeff⁻¹ * F by lia, natDegree_C_mul (inv_ne_zero hlc_ne)]
+    rw [show q = C F.leadingCoeff⁻¹ * F by rfl, natDegree_C_mul (inv_ne_zero hlc_ne)]
     have hF_deg_pos : 0 < F.natDegree := by
       obtain ⟨_, _, hdeg, _, _, _, _, _, _, _⟩ := hgf
       lia
@@ -2187,8 +2187,8 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
       apply monic_C_mul_of_mul_leadingCoeff_eq_one
       simp_all
     have hqδ_deg : qδ.natDegree = q.natDegree := by
-      rw [show qδ = C F.leadingCoeff⁻¹ * (F - C δ * g) by lia,
-        show q = C F.leadingCoeff⁻¹ * F by lia,
+      rw [show qδ = C F.leadingCoeff⁻¹ * (F - C δ * g) by rfl,
+        show q = C F.leadingCoeff⁻¹ * F by rfl,
         natDegree_C_mul (inv_ne_zero hlc_ne), natDegree_C_mul (inv_ne_zero hlc_ne),
         hFδ_natdeg]
     have hqδ_coeff :

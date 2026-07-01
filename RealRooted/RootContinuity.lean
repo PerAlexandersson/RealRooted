@@ -182,7 +182,7 @@ theorem exists_real_root_near_in_left_family
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
     simp_all
   have hq_deg : q.natDegree = f.natDegree := by
-    rw [show q = C (t + 1)⁻¹ * (C t * f + g) by lia,
+    rw [show q = C (t + 1)⁻¹ * (C t * f + g) by rfl,
       natDegree_C_mul (inv_ne_zero ht1_ne), hsum_deg]
   have hq_rr : q ≠ 0 ∧ q.Splits := by simp_all [q]
   obtain ⟨b, hb_qroot, hb_dist⟩ :=
@@ -239,7 +239,7 @@ theorem exists_complex_aroot_near_in_left_family
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
     simp_all
   have hq_deg : q.natDegree = f.natDegree := by
-    rw [show q = C (t + 1)⁻¹ * (C t * f + g) by lia,
+    rw [show q = C (t + 1)⁻¹ * (C t * f + g) by rfl,
       natDegree_C_mul (inv_ne_zero ht1_ne), hsum_deg]
   have hq_rr : q ≠ 0 ∧ q.Splits := by simp_all [q]
   obtain ⟨w, hw_qroot, hw_dist⟩ :=
