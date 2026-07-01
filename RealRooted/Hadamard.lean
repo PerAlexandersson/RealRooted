@@ -142,24 +142,9 @@ theorem coeff_schurSzegoComp (n k : Nat) (f g : ℝ[X]) :
   rw [schurSzegoComp, finsetSum_coeff]
   by_cases hk : k ≤ n
   · rw [if_pos hk]
-    simpa [coeff_monomial] using
-      (Finset.sum_eq_single (s := Finset.range (n + 1))
-        (f := fun b => (monomial b (f.coeff b * g.coeff b / (Nat.choose n b : ℝ))).coeff k)
-        k
-        (by
-          intro b hb hbk
-          simp [coeff_monomial, hbk])
-        (by
-          intro hnot
-          exact False.elim (hnot (Finset.mem_range.mpr (Nat.lt_succ_of_le hk)))))
+    simp [coeff_monomial, hk]
   · rw [if_neg hk]
-    refine Finset.sum_eq_zero ?_
-    intro b hb
-    have hbk : b ≠ k := by
-      intro h
-      subst b
-      exact hk (Nat.le_of_lt_succ (Finset.mem_range.mp hb))
-    simp [coeff_monomial, hbk]
+    simp [coeff_monomial, Nat.not_lt.mpr (Nat.succ_le_of_lt (Nat.lt_of_not_le hk))]
 
 theorem coeff_schurSzegoComp_of_le {n k : Nat} (hk : k ≤ n) (f g : ℝ[X]) :
     (schurSzegoComp n f g).coeff k =
