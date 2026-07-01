@@ -154,8 +154,7 @@ theorem isPFPolynomial_X_pow (m : ℕ) :
   | zero =>
       exact isPFPolynomial_one
   | succ m ih =>
-      rw [pow_succ]
-      exact ih.mul isPFPolynomial_X
+      simpa [pow_succ] using ih.mul isPFPolynomial_X
 
 theorem isPFPolynomial_X_add_C {a : ℝ} (ha : 0 ≤ a) :
     IsPFPolynomial (X + C a : ℝ[X]) := by
@@ -341,18 +340,6 @@ theorem reciprocalShift_preserves_pf : reciprocalShiftPreservesPFStatement := by
 theorem isPFPolynomial_mul_X_add_one {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
     IsPFPolynomial ((X + 1) * p) := by
-  by_cases hp0 : p = 0
-  · subst p
-    simpa using IsPFPolynomial.zero
-  have hX1rr : ((X + 1 : ℝ[X]) ≠ 0 ∧ (X + 1 : ℝ[X]).Splits) := by
-    simpa using isRealRooted_X_sub_C (-1 : ℝ)
-  have hX1nn : HasNonnegCoeffs (X + 1 : ℝ[X]) := by
-    simpa using hasNonnegCoeffs_X_sub_C (r := -1) (by norm_num)
-  have hprr := hp.ne_zero_and_splits hp0
-  have hrr : (((X + 1 : ℝ[X]) * p) ≠ 0 ∧
-      ((X + 1 : ℝ[X]) * p).Splits) :=
-    isRealRooted_mul hX1rr.1 hX1rr.2 hprr.1 hprr.2
-  exact IsPFPolynomial.of_realRooted_nonneg
-    (hX1nn.mul hp.hasNonnegCoeffs) hrr.2
+  exact (isPFPolynomial_X_add_C (by norm_num : 0 ≤ (1 : ℝ))).mul hp
 
 end RealRooted
