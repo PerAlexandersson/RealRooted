@@ -125,8 +125,7 @@ lemma listInterlaces_orderedInsert :
           · rw [List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := r₂ :: rs) har₁,
               List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := ss) has,
               List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := rs) har₂]
-            have hlen' : ss.length + 1 = (r₂ :: rs).length := by
-              simp_all
+            have hlen' : ss.length + 1 = (r₂ :: rs).length := by simp_all
             exact ⟨hr₁s, hsr₂, by
               simpa [List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := rs) har₂] using
                 listInterlaces_orderedInsert hlen' htail a⟩
@@ -159,8 +158,7 @@ lemma listAlternates_orderedInsert :
           · exact ⟨le_rfl, har, hint⟩
         · rw [List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := ss) has,
             List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := rs) har]
-          have hlen' : ss.length + 1 = (r :: rs).length := by
-            simp_all
+          have hlen' : ss.length + 1 = (r :: rs).length := by simp_all
           exact ⟨hsr, by
             simpa [List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := rs) har] using
               listInterlaces_orderedInsert hlen' hint a⟩
@@ -202,8 +200,7 @@ private lemma listInterlaces_of_orderedInsert (a : ℝ) :
               List.orderedInsert_cons_of_le (r := (· ≤ ·)) (l := rs) har₂] at hint
             simp only [ListInterlaces, reduceCtorEq, imp_self, implies_true, List.cons.injEq,
               and_false] at hint
-            have hlen' : ss.length + 1 = (r₂ :: rs).length := by
-              simp_all
+            have hlen' : ss.length + 1 = (r₂ :: rs).length := by simp_all
             have htail :
                 ListInterlaces (ss.orderedInsert (· ≤ ·) a)
                   ((r₂ :: rs).orderedInsert (· ≤ ·) a) := by
@@ -213,8 +210,7 @@ private lemma listInterlaces_of_orderedInsert (a : ℝ) :
           · rw [List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := ss) has,
               List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := r₂ :: rs) har₁,
               List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := rs) har₂] at hint
-            have hlen' : ss.length + 1 = (r₂ :: rs).length := by
-              simp_all
+            have hlen' : ss.length + 1 = (r₂ :: rs).length := by simp_all
             simp only [ListInterlaces, reduceCtorEq, imp_self, implies_true] at hint
             have htail :
                 ListInterlaces (ss.orderedInsert (· ≤ ·) a)
@@ -249,8 +245,7 @@ private lemma listAlternates_of_orderedInsert (a : ℝ) :
         · rw [List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := ss) has,
             List.orderedInsert_cons_of_le (r := (· ≤ ·)) (l := rs) har] at hint
           simp only [ListAlternates] at hint
-          have hlen' : ss.length + 1 = (r :: rs).length := by
-            simp_all
+          have hlen' : ss.length + 1 = (r :: rs).length := by simp_all
           have htail :
               ListInterlaces (ss.orderedInsert (· ≤ ·) a)
                 ((r :: rs).orderedInsert (· ≤ ·) a) := by
@@ -260,8 +255,7 @@ private lemma listAlternates_of_orderedInsert (a : ℝ) :
         · rw [List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := ss) has,
             List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := rs) har] at hint
           simp only [ListAlternates] at hint
-          have hlen' : ss.length + 1 = (r :: rs).length := by
-            simp_all
+          have hlen' : ss.length + 1 = (r :: rs).length := by simp_all
           have htail :
               ListInterlaces (ss.orderedInsert (· ≤ ·) a)
                 ((r :: rs).orderedInsert (· ≤ ·) a) := by
@@ -320,8 +314,7 @@ lemma listInterlaces_of_listAlternates_append_zero :
       refine ⟨hr₁s, hsr₂, ?_⟩
       have halt' : ListAlternates (r₂ :: rs'') ((s' :: ss'') ++ [0]) := by
         simp only [ListAlternates, List.cons_append]; lia
-      have hlen' : (s' :: ss'').length + 1 = (r₂ :: rs'').length := by
-        simp_all
+      have hlen' : (s' :: ss'').length + 1 = (r₂ :: rs'').length := by simp_all
       exact listInterlaces_of_listAlternates_append_zero (s' :: ss'') (r₂ :: rs'') hlen' halt'
 
 lemma listInterlaces_of_listAlternates_append_right
@@ -332,8 +325,7 @@ lemma listInterlaces_of_listAlternates_append_right
   have halt0 :
       ListAlternates (ss.map (· - uR)) ((qs.map (· - uR)) ++ [0]) := by
     simpa [List.map_append] using listAlternates_map_sub_const halt uR
-  have hlen0 : (qs.map (· - uR)).length + 1 = (ss.map (· - uR)).length := by
-    simp_all
+  have hlen0 : (qs.map (· - uR)).length + 1 = (ss.map (· - uR)).length := by simp_all
   have hint0 :
       ListInterlaces (qs.map (· - uR)) (ss.map (· - uR)) :=
     listInterlaces_of_listAlternates_append_zero
@@ -357,8 +349,7 @@ lemma listInterlaces_append_zero_both :
       obtain ⟨hr₁s, hsr₂, htail⟩ := hint
       simp only [List.cons_append, ListInterlaces, hr₁s, hsr₂, true_and]
       have hrs_tail : ∀ r ∈ r₂ :: rs', r ≤ 0 := fun r hr => hrs r (.tail _ hr)
-      have hlen_tail : ss'.length + 1 = (r₂ :: rs').length := by
-        simp_all
+      have hlen_tail : ss'.length + 1 = (r₂ :: rs').length := by simp_all
       exact listInterlaces_append_zero_both ss' (r₂ :: rs') hlen_tail htail hrs_tail
   | [], _ :: _ :: _, hlen, _, _ => by simp at hlen
   | _ :: _, [], hlen, _, _ => by simp at hlen
@@ -373,8 +364,7 @@ lemma listAlternates_append_zero_both :
   | s :: ss', r :: rs', hlen, halt, hrs => by
       obtain ⟨hsr, htail⟩ := halt
       simp only [ListAlternates, List.cons_append, hsr, true_and]
-      have hlen_tail : ss'.length + 1 = (r :: rs').length := by
-        simp_all
+      have hlen_tail : ss'.length + 1 = (r :: rs').length := by simp_all
       exact listInterlaces_append_zero_both ss' (r :: rs') hlen_tail htail hrs
   | [], _ :: _, hlen, _, _ => by simp at hlen
   | _ :: _, [], hlen, _, _ => by simp at hlen
@@ -389,8 +379,7 @@ lemma listInterlaces_of_append_zero_both :
   | s :: ss', r₁ :: r₂ :: rs', hlen, hint => by
       simp only [List.cons_append, ListInterlaces] at hint ⊢
       refine ⟨hint.1, hint.2.1, ?_⟩
-      have hlen_tail : ss'.length + 1 = (r₂ :: rs').length := by
-        simp_all
+      have hlen_tail : ss'.length + 1 = (r₂ :: rs').length := by simp_all
       exact listInterlaces_of_append_zero_both ss' (r₂ :: rs') hlen_tail hint.2.2
   | [], _ :: _ :: _, hlen, _ => by simp at hlen
   | _ :: _, [], hlen, _ => by simp at hlen
@@ -404,8 +393,7 @@ lemma listInterlaces_right_of_listAlternates_append_zero :
   | ss, rs, hlen, halt, hrs => by
       have halt0 : ListAlternates (ss ++ [0]) (rs ++ [0]) :=
         listAlternates_append_zero_both ss rs hlen halt hrs
-      have hlen0 : rs.length + 1 = (ss ++ [0]).length := by
-        simp [hlen]
+      have hlen0 : rs.length + 1 = (ss ++ [0]).length := by simp [hlen]
       exact listInterlaces_of_listAlternates_append_zero rs (ss ++ [0]) hlen0 halt0
 
 lemma listAlternates_of_append_zero_both :
@@ -417,8 +405,7 @@ lemma listAlternates_of_append_zero_both :
   | s :: ss', r :: rs', hlen, halt => by
       simp only [List.cons_append, ListAlternates] at halt ⊢
       refine ⟨halt.1, ?_⟩
-      have hlen_tail : ss'.length + 1 = (r :: rs').length := by
-        simp_all
+      have hlen_tail : ss'.length + 1 = (r :: rs').length := by simp_all
       exact listInterlaces_of_append_zero_both ss' (r :: rs') hlen_tail halt.2
   | [], _ :: _, hlen, _ => by simp at hlen
   | _ :: _, [], hlen, _ => by simp at hlen
@@ -534,10 +521,8 @@ theorem prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos {f g : ℝ[X]}
       ← Multiset.coe_card, hss_g_eq, card_roots_of_splits hg.2, hdeg]
   rcases hshape with ⟨hlen, hint⟩ | ⟨hlen, _⟩
   · rw [hrs_Xf_is] at hint hlen
-    have hlen' : ss_g.length + 1 = (rs_f ++ [(0 : ℝ)]).length := by
-      lia
-    have hrs_f0_nonpos : ∀ r ∈ rs_f ++ [(0 : ℝ)], r ≤ 0 := by
-      grind
+    have hlen' : ss_g.length + 1 = (rs_f ++ [(0 : ℝ)]).length := by lia
+    have hrs_f0_nonpos : ∀ r ∈ rs_f ++ [(0 : ℝ)], r ≤ 0 := by grind
     have halt0 :
         ListAlternates (rs_f ++ [(0 : ℝ)]) (ss_g ++ [(0 : ℝ)]) :=
       listAlternates_append_zero ss_g (rs_f ++ [(0 : ℝ)]) hlen' hint hrs_f0_nonpos
@@ -555,8 +540,7 @@ theorem prec_iff_prec_mul_X {f g : ℝ[X]}
     Prec f g ↔ Prec g (X * f) := by
   have hXf_roots : (X * f).roots = {0} + f.roots := by
     rw [roots_mul (mul_ne_zero X_ne_zero hf₀), roots_X]
-  have hXf_deg : (X * f).natDegree = g.natDegree := by
-    simp_all
+  have hXf_deg : (X * f).natDegree = g.natDegree := by simp_all
   have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hf hfnn
   have hg_nonpos : ∀ r ∈ g.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hg hgnn
   constructor
@@ -571,8 +555,7 @@ theorem prec_iff_prec_mul_X {f g : ℝ[X]}
         grind
       have hss_nonpos : ∀ s ∈ ss, s ≤ 0 := fun s hs =>
         hf_nonpos s (by rw [← hss_eq]; exact Multiset.mem_coe.mpr hs)
-      have hss0_sorted : (ss ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by
-        grind
+      have hss0_sorted : (ss ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by grind
       exact ⟨⟨hg₀, hg⟩, by simp_all, rs, ss ++ [(0 : ℝ)], hrs, hss0_sorted, hrs_eq, hss0_eq,
         Or.inr ⟨by simp_all, listAlternates_append_zero ss rs hlen hint hrs_nonpos⟩⟩
     · have : ss.length = f.natDegree := by
@@ -602,8 +585,7 @@ theorem prec_iff_prec_mul_X {f g : ℝ[X]}
         exact List.Perm.eq_of_pairwise' hrs_xf hsorted_concat
           (Multiset.coe_eq_coe.mp hmultiset_eq)
       rw [hrs_xf_is] at halt
-      have hlen' : ss_f.length + 1 = ss_g.length := by
-        simp_all
+      have hlen' : ss_f.length + 1 = ss_g.length := by simp_all
       exact ⟨⟨hf₀, hf⟩, ⟨hg₀, hg⟩, ss_f, ss_g, hss_f_sorted, hss_g, hss_f_eq, hss_g_eq,
         Or.inl ⟨by lia, listInterlaces_of_listAlternates_append_zero ss_f ss_g hlen' halt⟩⟩
 
@@ -619,8 +601,7 @@ theorem prec_sameDegree_to_prec_mul_X_of_roots_nonpos {f g : ℝ[X]}
     rw [roots_mul (mul_ne_zero X_ne_zero hf.1), roots_X]
   have hss_nonpos : ∀ s ∈ ss, s ≤ 0 := fun s hs =>
     hf_nonpos s (by rw [← hss_eq]; exact Multiset.mem_coe.mpr hs)
-  have hss0_sorted : (ss ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by
-    grind
+  have hss0_sorted : (ss ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by grind
   have hss0_eq : (↑(ss ++ [(0 : ℝ)]) : Multiset ℝ) = (X * f).roots := by
     have : (↑(ss ++ [(0 : ℝ)]) : Multiset ℝ) = (↑ss : Multiset ℝ) + {(0 : ℝ)} := by
       rw [← Multiset.coe_add]
@@ -652,8 +633,7 @@ theorem prec_of_prec_mul_X_sameDegree_of_roots_nonpos {f g : ℝ[X]}
   have hrs_f : rs_f.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hrs_f_nonpos : ∀ r ∈ rs_f, r ≤ 0 :=
     fun r hr => hf_nonpos r (by rw [← hrs_f_eq]; exact Multiset.mem_coe.mpr hr)
-  have hrs_f0 : (rs_f ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by
-    grind
+  have hrs_f0 : (rs_f ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by grind
   have hXf_roots : (X * f).roots = {0} + f.roots := by
     rw [roots_mul (mul_ne_zero X_ne_zero hf.1), roots_X]
   have hrs_Xf_is : rs_Xf = rs_f ++ [(0 : ℝ)] := by
@@ -666,10 +646,8 @@ theorem prec_of_prec_mul_X_sameDegree_of_roots_nonpos {f g : ℝ[X]}
       ← Multiset.coe_card, hss_g_eq, card_roots_of_splits hg.2, hdeg]
   rcases hshape with ⟨hlen, hint⟩ | ⟨hlen, _⟩
   · rw [hrs_Xf_is] at hint hlen
-    have hlen' : ss_g.length + 1 = (rs_f ++ [(0 : ℝ)]).length := by
-      lia
-    have hrs_f0_nonpos : ∀ r ∈ rs_f ++ [(0 : ℝ)], r ≤ 0 := by
-      grind
+    have hlen' : ss_g.length + 1 = (rs_f ++ [(0 : ℝ)]).length := by lia
+    have hrs_f0_nonpos : ∀ r ∈ rs_f ++ [(0 : ℝ)], r ≤ 0 := by grind
     have halt0 :
         ListAlternates (rs_f ++ [(0 : ℝ)]) (ss_g ++ [(0 : ℝ)]) :=
       listAlternates_append_zero ss_g (rs_f ++ [(0 : ℝ)]) hlen' hint hrs_f0_nonpos
@@ -787,10 +765,8 @@ theorem prec_of_prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]}
     hf_nonpos s (by rw [← hss_f_eq]; exact Multiset.mem_coe.mpr hs)
   have hrs_g_nonpos : ∀ r ∈ rs_g, r ≤ 0 := fun r hr =>
     hg_nonpos r (by rw [← hrs_g_eq]; exact Multiset.mem_coe.mpr hr)
-  have hss_f0_sorted : (ss_f ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by
-    grind
-  have hrs_g0_sorted : (rs_g ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by
-    grind
+  have hss_f0_sorted : (ss_f ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by grind
+  have hrs_g0_sorted : (rs_g ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by grind
   have hss_xf_is : ss_xf = ss_f ++ [(0 : ℝ)] := by
     have hmultiset_eq : (↑ss_xf : Multiset ℝ) = ↑(ss_f ++ [(0 : ℝ)]) := by
       rw [hss_xf_eq, hXf_roots, ← hss_f_eq, ← Multiset.coe_add]
@@ -803,13 +779,11 @@ theorem prec_of_prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]}
     exact List.Perm.eq_of_pairwise' hrs_xg hrs_g0_sorted (Multiset.coe_eq_coe.mp hmultiset_eq)
   rcases hcase with ⟨hlen, hint⟩ | ⟨hlen, halt⟩
   · rw [hss_xf_is, hrs_xg_is] at hint hlen
-    have hlen' : ss_f.length + 1 = rs_g.length := by
-      simp_all
+    have hlen' : ss_f.length + 1 = rs_g.length := by simp_all
     exact ⟨hf, hg, ss_f, rs_g, hss_f_sorted, hrs_g_sorted, hss_f_eq, hrs_g_eq,
       Or.inl ⟨hlen', listInterlaces_of_append_zero_both ss_f rs_g hlen' hint⟩⟩
   · rw [hss_xf_is, hrs_xg_is] at halt hlen
-    have hlen' : ss_f.length = rs_g.length := by
-      simp_all
+    have hlen' : ss_f.length = rs_g.length := by simp_all
     exact ⟨hf, hg, ss_f, rs_g, hss_f_sorted, hrs_g_sorted, hss_f_eq, hrs_g_eq,
       Or.inr ⟨hlen', listAlternates_of_append_zero_both ss_f rs_g hlen' halt⟩⟩
 
