@@ -1,4 +1,5 @@
 import Mathlib.Algebra.Polynomial.Coeff
+import Mathlib.Algebra.Ring.Parity
 
 /-!
 # Finite apolarity
@@ -83,6 +84,70 @@ theorem apolarPairing_C_mul_right {R : Type*} [CommRing R]
   intro k _
   rw [Polynomial.coeff_C_mul]
   ring_nf
+
+theorem AreApolar.add_left {R : Type*} [CommRing R]
+    {n : Nat} {f₁ f₂ g : R[X]}
+    (h₁ : AreApolar n f₁ g) (h₂ : AreApolar n f₂ g) :
+    AreApolar n (f₁ + f₂) g := by
+  rw [AreApolar, apolarPairing_add_left, h₁, h₂, add_zero]
+
+theorem AreApolar.add_right {R : Type*} [CommRing R]
+    {n : Nat} {f g₁ g₂ : R[X]}
+    (h₁ : AreApolar n f g₁) (h₂ : AreApolar n f g₂) :
+    AreApolar n f (g₁ + g₂) := by
+  rw [AreApolar, apolarPairing_add_right, h₁, h₂, add_zero]
+
+theorem AreApolar.C_mul_left {R : Type*} [CommRing R]
+    {n : Nat} {f g : R[X]} (a : R) (h : AreApolar n f g) :
+    AreApolar n (C a * f) g := by
+  rw [AreApolar, apolarPairing_C_mul_left, h, mul_zero]
+
+theorem AreApolar.C_mul_right {R : Type*} [CommRing R]
+    {n : Nat} {f g : R[X]} (a : R) (h : AreApolar n f g) :
+    AreApolar n f (C a * g) := by
+  rw [AreApolar, apolarPairing_C_mul_right, h, mul_zero]
+
+private lemma neg_one_pow_sub_eq_mul {R : Type*} [CommRing R]
+    {n k : Nat} (hk : k ≤ n) :
+    (-1 : R) ^ (n - k) = (-1 : R) ^ n * (-1 : R) ^ k := by
+  conv_rhs =>
+    rw [← Nat.sub_add_cancel hk, pow_add]
+  rw [mul_assoc]
+  have hsq : (-1 : R) ^ k * (-1 : R) ^ k = 1 := by
+    rw [← pow_add]
+    have heven : Even (k + k) := ⟨k, rfl⟩
+    simp [heven.neg_one_pow (α := R)]
+  rw [hsq, mul_one]
+
+/-- Swapping the two arguments in the apolar pairing introduces the usual
+degree-`n` sign. -/
+theorem apolarPairing_comm_sign {R : Type*} [CommRing R]
+    (n : Nat) (f g : R[X]) :
+    apolarPairing n g f = (-1 : R) ^ n * apolarPairing n f g := by
+  rw [apolarPairing, apolarPairing]
+  conv_lhs =>
+    rw [← Finset.sum_range_reflect
+      (fun k => (-1 : R) ^ k * (Nat.choose n k : R) * g.coeff k * f.coeff (n - k))
+      (n + 1)]
+  rw [Finset.mul_sum]
+  refine Finset.sum_congr rfl ?_
+  intro k hk
+  have hk_le : k ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
+  have hsub : n - (n - k) = k := Nat.sub_sub_self hk_le
+  rw [Nat.add_sub_cancel, hsub]
+  rw [Nat.choose_symm hk_le]
+  rw [neg_one_pow_sub_eq_mul (R := R) hk_le]
+  ring_nf
+
+theorem AreApolar.symm {R : Type*} [CommRing R]
+    {n : Nat} {f g : R[X]} (h : AreApolar n f g) :
+    AreApolar n g f := by
+  rw [AreApolar, apolarPairing_comm_sign, h, mul_zero]
+
+theorem areApolar_comm {R : Type*} [CommRing R]
+    {n : Nat} {f g : R[X]} :
+    AreApolar n f g ↔ AreApolar n g f :=
+  ⟨AreApolar.symm, AreApolar.symm⟩
 
 theorem apolarPairing_monomial_left {R : Type*} [CommRing R]
     (n i : Nat) (a : R) (g : R[X]) :
