@@ -131,8 +131,7 @@ lemma hasSimpleRoots_tderiv
       have hT_eq : TDeriv eps p = p := by
         rw [hp_eq, TDeriv, derivative_C]
         ring
-      have hp_root : p.IsRoot a := by
-        lia
+      have hp_root : p.IsRoot a := by lia
       have hcoeff0 : p.coeff 0 = 0 := by
         rw [hp_eq, Polynomial.IsRoot.def, eval_C] at hp_root
         lia

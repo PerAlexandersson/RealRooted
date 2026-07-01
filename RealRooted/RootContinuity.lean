@@ -170,8 +170,7 @@ theorem exists_real_root_near_in_left_family
     unfold HasPosLeadingCoeff
     simp_all
   have hsum_deg : (C t * f + g).natDegree = f.natDegree := by
-    have hCt_deg : (C t * f).natDegree = f.natDegree := by
-      rw [natDegree_C_mul ht_ne]
+    have hCt_deg : (C t * f).natDegree = f.natDegree := by rw [natDegree_C_mul ht_ne]
     exact
       (natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff
         (hCt_deg.trans hdeg.symm) hCt_f_pos hg_pos).trans hCt_deg
@@ -229,8 +228,7 @@ theorem exists_complex_aroot_near_in_left_family
     unfold HasPosLeadingCoeff
     simp_all
   have hsum_deg : (C t * f + g).natDegree = f.natDegree := by
-    have hCt_deg : (C t * f).natDegree = f.natDegree := by
-      rw [natDegree_C_mul ht_ne]
+    have hCt_deg : (C t * f).natDegree = f.natDegree := by rw [natDegree_C_mul ht_ne]
     exact
       (natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff
         (hCt_deg.trans hdeg.symm) hCt_f_pos hg_pos).trans hCt_deg
@@ -261,8 +259,7 @@ lemma im_eq_zero_of_mem_aroots_of_isRealRooted
     {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) {z : ℂ}
     (hz : z ∈ p.aroots ℂ) :
     z.im = 0 := by
-  have hz_root : (p.map (algebraMap ℝ ℂ)).IsRoot z := by
-    simp_all
+  have hz_root : (p.map (algebraMap ℝ ℂ)).IsRoot z := by simp_all
   have hz_range : z ∈ (algebraMap ℝ ℂ).range :=
     (IsRealRooted.splits hp_splits).mem_range_of_isRoot hp_ne hz_root
   rcases hz_range with ⟨r, rfl⟩
