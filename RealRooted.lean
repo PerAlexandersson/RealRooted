@@ -54,6 +54,7 @@ import RealRooted.InterlacingSequence
 import RealRooted.InterlacingSequenceBasic
 import RealRooted.LiuWangBenchmark
 import RealRooted.MatrixInterlacing
+import RealRooted.CauchyInterlacing
 import RealRooted.ObreschkoffContinuity
 import RealRooted.ObreschkoffConverse
 import RealRooted.PosCombo
