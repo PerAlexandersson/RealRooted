@@ -1256,6 +1256,143 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_noCommonOrientatio
   posComboNoCommonSuccDegreePairHasCommonInterleaver_of_orientation_nonneg
     (posComboNoCommonSuccDegreeOrientation_of_noCommonOrientation hstep)
 
+/-- Constructive slot endpoint for the succ-degree branch, mirroring
+`pairHasCommonInterleaver_of_sameDegree_slotIntersections`.  When `g` has
+degree exactly one larger than `f`, matching nonempty root-slot intersections
+(indexed over the `f.natDegree + 1` common slots) build a common right
+interleaver `h` of degree `g.natDegree`: `h` receives `f` in the differ-by-one
+position and `g` in the same-degree position. -/
+theorem pairHasCommonInterleaver_of_succDegree_slotIntersections
+    {f g : ℝ[X]} (hf₀ : f ≠ 0) (hg₀ : g ≠ 0) (hf : f.Splits) (hg : g.Splits)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hslot :
+      ∀ j (hj : j < f.natDegree + 1),
+        (rootSlotInterval (rootSeqDesc f) ⟨j, by simpa [hf] using hj⟩ ∩
+          rootSlotInterval (rootSeqDesc g)
+            ⟨j, by
+              have : j < g.natDegree + 1 := by lia
+              simpa [hg] using this⟩).Nonempty) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+  classical
+  let n : ℕ := f.natDegree + 1
+  let x : Fin n → ℝ := fun j => Classical.choose (hslot j.1 (by simpa [n] using j.2))
+  let xs : List ℝ := List.ofFn x
+  have hxs_len : xs.length = f.natDegree + 1 := by
+    simp [xs, n]
+  have hxs_pair : xs.Pairwise (· ≥ ·) := by
+    refine List.pairwise_ofFn.2 ?_
+    intro i j hij
+    have hroot_ne : rootSeqDesc f ≠ [] := by
+      apply List.ne_nil_of_length_pos
+      rw [rootSeqDesc_length hf]
+      lia
+    have hi_slot : i.1 < (rootSeqDesc f).length + 1 := by
+      have : i.1 < f.natDegree + 1 := by simpa [n] using i.2
+      simpa [rootSeqDesc_length hf] using this
+    have hj_slot : j.1 < (rootSeqDesc f).length + 1 := by
+      have : j.1 < f.natDegree + 1 := by simpa [n] using j.2
+      simpa [rootSeqDesc_length hf] using this
+    have hxi :
+        x i ∈ rootSlotInterval (rootSeqDesc f) ⟨i.1, hi_slot⟩ := by
+      have hraw := (Classical.choose_spec (hslot i.1 (by simpa [n] using i.2))).1
+      simpa [x] using hraw
+    have hxj :
+        x j ∈ rootSlotInterval (rootSeqDesc f) ⟨j.1, hj_slot⟩ := by
+      have hraw := (Classical.choose_spec (hslot j.1 (by simpa [n] using j.2))).1
+      simpa [x] using hraw
+    exact
+      le_of_mem_rootSlotInterval_of_lt
+        (rs := rootSeqDesc f)
+        hroot_ne
+        rootSeqDesc_pairwise
+        (i := i.1) (j := j.1)
+        (by simp_all)
+        (by simpa using hj_slot)
+        hxi hxj
+  let h : ℝ[X] := polyOfDescRootsDesc xs
+  refine ⟨h, ?_, ?_⟩
+  · have hdeg_lo : f.natDegree ≤ xs.length := by lia
+    have hdeg_hi : xs.length ≤ f.natDegree + 1 := by lia
+    have hslot_f :
+        ∀ j (hj : j < xs.length),
+          xs.get ⟨j, hj⟩ ∈ rootSlotInterval (rootSeqDesc f)
+            ⟨j, by
+              have : j < f.natDegree + 1 := lt_of_lt_of_le hj hdeg_hi
+              simpa [rootSeqDesc_length hf] using this⟩ := by
+      intro j hj
+      have hjn : j < n := by
+        simpa [n, hxs_len] using hj
+      have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hjn))).1
+      convert hraw using 1
+      · change (List.ofFn x)[j] = x ⟨j, hjn⟩
+        convert (List.getElem_ofFn (f := x) (i := j) (by simpa [xs] using hj)) using 2
+    simpa [h] using prec_of_slots_polyOfDescRootsDesc hf₀ hf hxs_pair hdeg_lo hdeg_hi hslot_f
+  · have hdeg_lo : g.natDegree ≤ xs.length := by lia
+    have hdeg_hi : xs.length ≤ g.natDegree + 1 := by lia
+    have hslot_g :
+        ∀ j (hj : j < xs.length),
+          xs.get ⟨j, hj⟩ ∈ rootSlotInterval (rootSeqDesc g)
+            ⟨j, by
+              have : j < g.natDegree + 1 := lt_of_lt_of_le hj hdeg_hi
+              simpa [rootSeqDesc_length hg] using this⟩ := by
+      intro j hj
+      have hjn : j < n := by
+        simpa [n, hxs_len] using hj
+      have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hjn))).2
+      convert hraw using 1
+      · change (List.ofFn x)[j] = x ⟨j, hjn⟩
+        convert (List.getElem_ofFn (f := x) (i := j) (by simpa [xs] using hj)) using 2
+    simpa [h] using prec_of_slots_polyOfDescRootsDesc hg₀ hg hxs_pair hdeg_lo hdeg_hi hslot_g
+
+/-- **Honest missing root-slot boundary for milestone B2 (#42).**
+
+This is the succ-degree analogue of the same-degree slot-intersection input
+used for #41.  For a nonnegative positive-combination pair with no common
+roots and `g.natDegree = f.natDegree + 1`, it packages the two pieces of the
+remaining converse-Obreschkoff content:
+
+* real-rootedness of both members (`f` and `g` split), and
+* the descending root-slot intervals of `f` and `g` meet in each of the
+  `f.natDegree + 1` common slots.
+
+The `Fin` bounds are threaded as explicit hypotheses so no in-type proof
+obligations remain.  (In the same-degree case #41 the real-rootedness half was
+already available from `isRealRooted_left/right_of_posComboRealRooted_sameDegree`;
+the succ-degree real-rootedness lemma is not yet in the tree, so it is bundled
+here as part of the honest boundary.) -/
+def PosComboNoCommonSuccDegreeSlotDataNonnegStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits) ∧
+      ∀ j, j < f.natDegree + 1 →
+        ∀ (hjf : j < (rootSeqDesc f).length + 1)
+          (hjg : j < (rootSeqDesc g).length + 1),
+          (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+            rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty
+
+/-- **Checked reduction of #42 to the root-slot boundary.**
+
+The corrected succ-degree common-right-interleaver endpoint follows from the
+precise root-slot condition `PosComboNoCommonSuccDegreeSlotDataNonnegStatement`
+via the constructive slot theorem.  This mirrors the same-degree slot boundary
+route for #41. -/
+theorem succDegreePairHasCommonInterleaver_nonneg_of_slotData
+    (hstmt : PosComboNoCommonSuccDegreeSlotDataNonnegStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
+  obtain ⟨hf_rr, hg_rr, hslot⟩ := hstmt hf_pos hg_pos hfnn hgnn hfg hsucc hno
+  refine
+    pairHasCommonInterleaver_of_succDegree_slotIntersections
+      hf_rr.1 hg_rr.1 hf_rr.2 hg_rr.2 hsucc ?_
+  intro j hj
+  exact hslot j hj _ _
+
 /-- Honest nonnegative degree-split reduction of the no-common orientation
 problem: it is enough to solve the same-degree branch up to orientation
 alternative and the succ-degree branch in the forced direction. -/
