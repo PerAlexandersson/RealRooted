@@ -356,10 +356,8 @@ lemma gammaTransform_even_injective :
       gammaTransform (2 * m) γ = gammaTransform (2 * m) δ →
       γ = δ
   | 0, γ, δ, hγ, hδ, hEq => by
-      have hγC : γ = C (γ.coeff 0) := by
-        simpa using (Polynomial.eq_C_of_natDegree_le_zero hγ)
-      have hδC : δ = C (δ.coeff 0) := by
-        simpa using (Polynomial.eq_C_of_natDegree_le_zero hδ)
+      have hγC : γ = C (γ.coeff 0) := by simpa using (Polynomial.eq_C_of_natDegree_le_zero hγ)
+      have hδC : δ = C (δ.coeff 0) := by simpa using (Polynomial.eq_C_of_natDegree_le_zero hδ)
       have hcoeff : γ.coeff 0 = δ.coeff 0 := by
         have h0 := congrArg (fun p : ℝ[X] => p.coeff 0) hEq
         simpa [gammaTransform, gammaBasisTerm] using h0

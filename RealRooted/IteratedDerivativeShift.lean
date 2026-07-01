@@ -71,8 +71,7 @@ lemma iterateTDeriv_eq_of_natDegree_zero (eps : ℝ) {p : ℝ[X]}
   | 0 => by simp
   | n + 1 => by
       rw [iterateTDeriv_succ, iterateTDeriv_eq_of_natDegree_zero eps hdeg n]
-      have hp_eq : p = C (p.coeff 0) := by
-        simpa using eq_C_of_natDegree_eq_zero hdeg
+      have hp_eq : p = C (p.coeff 0) := by simpa using eq_C_of_natDegree_eq_zero hdeg
       rw [hp_eq, TDeriv, derivative_C]
       ring
 
@@ -442,8 +441,8 @@ theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
           refine ⟨by simp, ?_⟩
           simp [ListAlternates, ListInterlaces]
           linarith
-      have hbase' : Prec (X - C r) (TDeriv eps (X - C r)) := by
-        simpa [TDeriv_X_sub_C] using hbase
+      have hbase' : Prec (X - C r) (TDeriv eps (X - C r)) :=
+        by simpa [TDeriv_X_sub_C] using hbase
       have hscaled :
           Prec (C a * (X - C r)) (C a * TDeriv eps (X - C r)) :=
         prec_C_mul_right (prec_C_mul_left hbase' ha_ne) ha_ne
