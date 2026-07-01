@@ -115,8 +115,7 @@ private lemma no_common_boundary_right_pair_of_no_common_nonneg
     ∀ r, (C t * f + g).IsRoot r → ¬ (X * f).IsRoot r := by
   intro r hsum hX
   by_cases hr0 : r = 0
-  · have hsum0 : (C t * f + g).IsRoot 0 := by lia
-    have hsum_eval : (C t * f + g).eval 0 = 0 := by simp_all
+  · have hsum_eval : (C t * f + g).eval 0 = 0 := by simp_all
     have hf_eval_nonneg : 0 ≤ f.eval 0 := by
       simpa [Polynomial.coeff_zero_eq_eval_zero] using hfnn 0
     have hg_eval_nonneg : 0 ≤ g.eval 0 := by

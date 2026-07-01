@@ -727,8 +727,9 @@ lemma exists_delta_not_isRoot_iterateTDeriv_at_point
     (hx : ¬ p.IsRoot x) :
     ∃ δ > 0, ∀ ⦃eps : ℝ⦄, ‖eps‖ < δ →
       ¬ (iterateTDeriv eps n p).IsRoot x := by
-  have hx_eval : p.eval x ≠ 0 := by simp_all
-  obtain ⟨δ, hδ, hsign⟩ := exists_delta_eval_mul_pos_iterateTDeriv_at_zero n hx_eval
+  obtain ⟨δ, hδ, hsign⟩ :=
+    exists_delta_eval_mul_pos_iterateTDeriv_at_zero n
+      (show p.eval x ≠ 0 by simp_all)
   refine ⟨δ, hδ, ?_⟩
   intro eps heps hroot
   have hprod : 0 < (iterateTDeriv eps n p).eval x * p.eval x := hsign heps
@@ -743,9 +744,9 @@ lemma exists_delta_not_isRoot_iterateTDeriv_near_point
     (hx : ¬ p.IsRoot x) :
     ∃ δ > 0, ∀ ⦃z : ℝ × ℝ⦄, dist z (0, x) < δ →
       ¬ (iterateTDeriv z.1 n p).IsRoot z.2 := by
-  have hx_eval : p.eval x ≠ 0 := by simp_all
   obtain ⟨δ, hδ, hsign⟩ :=
-    exists_delta_eval_mul_pos_iterateTDeriv_joint_at_zero n hx_eval
+    exists_delta_eval_mul_pos_iterateTDeriv_joint_at_zero n
+      (show p.eval x ≠ 0 by simp_all)
   refine ⟨δ, hδ, ?_⟩
   intro z hz hroot
   have hprod : 0 < (iterateTDeriv z.1 n p).eval z.2 * p.eval x := hsign hz
