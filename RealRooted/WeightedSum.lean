@@ -45,9 +45,7 @@ lemma weightedSum_eq_zero_of_forall_coeff_zero :
   | [], _ => rfl
   | (a, p) :: l, hzero => by
       have ha : a = 0 := hzero (a, p) (by simp)
-      have hl : ∀ ap ∈ l, ap.1 = 0 := by
-        intro ap hap
-        exact hzero ap (by simp [hap])
+      have hl : ∀ ap ∈ l, ap.1 = 0 := fun ap hap => hzero ap (by simp [hap])
       simp [weightedSum_cons, ha, weightedSum_eq_zero_of_forall_coeff_zero l hl]
 
 /-- `HasNonnegCoeffs` is closed under finite sums. -/

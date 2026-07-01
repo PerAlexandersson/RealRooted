@@ -393,8 +393,7 @@ theorem eq_zero_or_splits_derivative {p : ℝ[X]}
   rcases hp with rfl | hp
   · simp
   by_cases hp0 : p = 0
-  · subst p
-    simp
+  · simp [hp0]
   by_cases hdeg0 : p.natDegree = 0
   · have hder0 : p.derivative = 0 := Polynomial.derivative_eq_zero.mpr hdeg0
     rw [hder0]
@@ -433,16 +432,14 @@ theorem roots_nonpos_derivative_of_roots_nonpos {p : ℝ[X]}
   by_cases hdeg0 : p.natDegree = 0
   · have hder0 : p.derivative = 0 := Polynomial.derivative_eq_zero.mpr hdeg0
     rw [hder0]
-    intro r hr
-    simp at hr
+    simp
   by_cases hdeg1 : p.natDegree = 1
   · have hderdeg : p.derivative.natDegree = 0 := by
       rw [p.natDegree_derivative, hdeg1]
     have hderC : p.derivative = C (p.derivative.coeff 0) :=
       eq_C_of_natDegree_eq_zero hderdeg
     rw [hderC]
-    intro r hr
-    simp at hr
+    simp
   · have hdeg2 : 2 ≤ p.natDegree := by lia
     exact roots_le_of_prec_right (derivative_interlaces hp_splits hdeg2).toPrec hroots
 

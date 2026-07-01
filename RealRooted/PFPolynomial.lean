@@ -328,7 +328,7 @@ theorem reciprocalShift_preserves_pf : reciprocalShiftPreservesPFStatement := by
 /-- Multiplication by `X + 1` preserves the polynomial PF cone. -/
 theorem isPFPolynomial_mul_X_add_one {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
-    IsPFPolynomial ((X + 1) * p) := by
-  exact (isPFPolynomial_X_add_C (by norm_num : 0 ≤ (1 : ℝ))).mul hp
+    IsPFPolynomial ((X + 1) * p) :=
+  (isPFPolynomial_X_add_C (by norm_num : 0 ≤ (1 : ℝ))).mul hp
 
 end RealRooted
