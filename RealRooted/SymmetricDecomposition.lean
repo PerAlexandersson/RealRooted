@@ -153,12 +153,12 @@ lemma fPolynomial_succ_of_natDegree_le {d : ℕ} {p : ℝ[X]}
 
 lemma HasNonnegCoeffs.pow {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
     ∀ n : ℕ, HasNonnegCoeffs (p ^ n)
-  | 0 => by simpa using hasNonnegCoeffs_one
+  | 0 => hasNonnegCoeffs_one
   | n + 1 => by
       simpa [pow_succ] using (HasNonnegCoeffs.pow hp n).mul hp
 
-lemma hasNonnegCoeffs_X_add_one : HasNonnegCoeffs (X + 1 : ℝ[X]) := by
-  simpa using hasNonnegCoeffs_X.add hasNonnegCoeffs_one
+lemma hasNonnegCoeffs_X_add_one : HasNonnegCoeffs (X + 1 : ℝ[X]) :=
+  hasNonnegCoeffs_X.add hasNonnegCoeffs_one
 
 lemma hasNonnegCoeffs_IdTransform_iff {d : ℕ} {p : ℝ[X]} :
     HasNonnegCoeffs (IdTransform d p) ↔ HasNonnegCoeffs p := by
@@ -174,7 +174,7 @@ lemma hasNonnegCoeffs_fPolynomial {d : ℕ} {h : ℝ[X]} (hh : HasNonnegCoeffs h
   classical
   unfold fPolynomial
   refine Finset.induction_on (Finset.range (d + 1)) ?base ?step
-  · simpa using hasNonnegCoeffs_zero
+  · exact hasNonnegCoeffs_zero
   · intro k s hk hs
     have hterm : HasNonnegCoeffs (C (h.coeff k) * X ^ k * (X + 1) ^ (d - k)) := by
       have hXk : HasNonnegCoeffs (X ^ k) := HasNonnegCoeffs.pow hasNonnegCoeffs_X k
@@ -292,7 +292,7 @@ lemma eval_pos_of_hasNonnegCoeffs_of_pos {h : ℝ[X]}
     0 < h.eval x := by
   have heval :
       h.eval x = ∑ i ∈ Finset.range (h.natDegree + 1), h.coeff i * x ^ i := by
-    simpa using Polynomial.eval_eq_sum_range (p := h) (x := x)
+    exact Polynomial.eval_eq_sum_range (p := h) (x := x)
   rw [heval]
   have hpow_pos : 0 < x ^ h.natDegree := pow_pos hx _
   have htop_coeff : 0 < h.leadingCoeff := hh.pos_leadingCoeff h0
@@ -3201,18 +3201,14 @@ theorem brandenSolusTheorem26_second_equiv_of_natDegree_le
     (Prec a p ↔ Prec b p) := by
   constructor
   · intro hap
-    have hba :
-        Prec b a := by
-      exact
-        (brandenSolusTheorem26_first_equiv_of_natDegree_le
-          hd hid ha_nonneg hb_nonneg ha_le hb0).2 hap
+    have hba : Prec b a :=
+      (brandenSolusTheorem26_first_equiv_of_natDegree_le
+        hd hid ha_nonneg hb_nonneg ha_le hb0).2 hap
     exact (brandenSolusTheorem26_forward_of_prec_b_a hd hid ha_nonneg hb_nonneg hba).2.1
   · intro hbp
-    have hba :
-        Prec b a := by
-      exact
-        (brandenSolusTheorem26_third_equiv_of_natDegree_le
-          hd hid ha_nonneg hb_nonneg ha_le ha0 hb0).2 hbp
+    have hba : Prec b a :=
+      (brandenSolusTheorem26_third_equiv_of_natDegree_le
+        hd hid ha_nonneg hb_nonneg ha_le ha0 hb0).2 hbp
     exact (brandenSolusTheorem26_forward_of_prec_b_a hd hid ha_nonneg hb_nonneg hba).1
 
 theorem hasNonnegCoeffs_pair_of_isIdDecomposition {d : ℕ} {p a b : ℝ[X]}
@@ -3486,8 +3482,8 @@ theorem not_brandenSolusTheorem26NaiveStatement :
     (by simp)
     (by
       refine ⟨by simp, ?_, ?_, ?_, ?_⟩ <;> simp [IdTransform])
-    (by simpa using hasNonnegCoeffs_one)
-    (by simpa using hasNonnegCoeffs_zero)
+    hasNonnegCoeffs_one
+    hasNonnegCoeffs_zero
   rcases hcase with ⟨hba_iff_hap, -, -, -⟩
   have happ : Prec (1 : ℝ[X]) (1 : ℝ[X]) :=
     prec_refl (by simp) (by simp)

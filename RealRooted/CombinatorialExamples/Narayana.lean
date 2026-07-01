@@ -297,8 +297,7 @@ theorem prec_narayanaQuot_succ_of_nonnegCoeffs :
       Prec (narayanaQuot n) (narayanaQuot (n + 1))
   | 0, hn, _ => by
       lia
-  | 1, _, _ => by
-      exact narayanaQuot_one_two_interlaces.toPrec
+  | 1, _, _ => narayanaQuot_one_two_interlaces.toPrec
   | n + 2, _, hnonneg => by
       have hprev : Prec (narayanaQuot (n + 1)) (narayanaQuot (n + 2)) :=
         prec_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg
@@ -323,8 +322,8 @@ theorem isRealRooted_narayanaQuot_of_nonnegCoeffs :
       ((narayanaQuot n) ≠ 0 ∧ (narayanaQuot n).Splits)
   | 0, hn, _ => by lia
   | 1, _, _ => by simp
-  | n + 2, _, hnonneg => by
-      exact (prec_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg).2.1
+  | n + 2, _, hnonneg =>
+      (prec_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg).2.1
 
 /-- Conditional interlacing for the original Narayana sequence. This is just
 the quotient result with the common `X` factor reattached on both sides. -/
@@ -350,8 +349,8 @@ theorem isRealRooted_narayana_of_nonnegCoeffs :
       ((narayana n) ≠ 0 ∧ (narayana n).Splits)
   | 0, hn, _ => by lia
   | 1, _, _ => by simp
-  | n + 2, _, hnonneg => by
-      exact (interlaces_narayana_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg).1
+  | n + 2, _, hnonneg =>
+      (interlaces_narayana_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg).1
 
 /-- The descending prefix `[P_{n+1}, P_n, ..., P_1]` of the original Narayana
 sequence. -/
