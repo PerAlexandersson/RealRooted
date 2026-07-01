@@ -134,14 +134,12 @@ private theorem listInterlaces_of_drop_bounds :
           | cons u us =>
               have htu_sorted : (u :: us).Pairwise (· ≤ ·) :=
                 (List.pairwise_cons.mp hts).2
-              have ht_le_s : t ≤ s := by
-                simp_all
+              have ht_le_s : t ≤ s := by simp_all
               have hs_le_u : s ≤ u :=
                 hge [] rfl u (by simp)
               cases ss with
               | nil =>
-                  have hus_nil : us = [] := by
-                    simp_all
+                  have hus_nil : us = [] := by simp_all
                   subst hus_nil
                   simp [ListInterlaces, ht_le_s, hs_le_u]
               | cons s₂ ss' =>
@@ -167,8 +165,7 @@ private theorem listInterlaces_of_drop_bounds :
                         s₂ :: ss' = pre ++ s₁ :: s₂' :: rest →
                         ∃ v, v ∈ (u :: us).drop (pre.length + 1) ∧ v ≤ s₂' := by
                     grind
-                  have hlen' : (s₂ :: ss').length + 1 = (u :: us).length := by
-                    simp_all
+                  have hlen' : (s₂ :: ss').length + 1 = (u :: us).length := by simp_all
                   have hint_tail : ListInterlaces (s₂ :: ss') (u :: us) :=
                     listInterlaces_of_drop_bounds
                       (ss := s₂ :: ss') (ts := u :: us)
@@ -224,8 +221,7 @@ private theorem listAlternates_of_drop_bounds :
               simp [List.cons_append, hEq]
             simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using
               hexists (s :: pre) hEq'
-          have hlen' : (s₂ :: ss').length + 1 = (t :: ts).length := by
-            simp_all
+          have hlen' : (s₂ :: ss').length + 1 = (t :: ts).length := by simp_all
           have hint_tail : ListInterlaces (s₂ :: ss') (t :: ts) :=
             listInterlaces_of_drop_bounds
               (ss := s₂ :: ss') (ts := t :: ts)
@@ -260,8 +256,7 @@ private lemma all_ge_of_countP_lt_drop
         List.filter (fun x => decide (x < s)) (ts.take k) = ts.take k := by
       simp_all
     grind
-  have hdrop_pos : 0 < (ts.drop k).countP (· < s) := by
-    grind
+  have hdrop_pos : 0 < (ts.drop k).countP (· < s) := by grind
   have hsplit :
       ts.countP (· < s) =
         (ts.take k).countP (· < s) + (ts.drop k).countP (· < s) := by
@@ -276,8 +271,7 @@ private lemma exists_mem_drop_le_of_lt_countP
     (hcount : k < ts.countP (· ≤ s)) :
     ∃ u, u ∈ ts.drop k ∧ u ≤ s := by
   by_contra hnot
-  have hdrop_zero : (ts.drop k).countP (· ≤ s) = 0 := by
-    simp_all
+  have hdrop_zero : (ts.drop k).countP (· ≤ s) = 0 := by simp_all
   have hsplit :
       ts.countP (· ≤ s) =
         (ts.take k).countP (· ≤ s) + (ts.drop k).countP (· ≤ s) := by
@@ -381,8 +375,7 @@ theorem prec_of_count_bounds_succ
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf_splits]
   have hts_len : ts.length = F.natDegree := by
     rw [← Multiset.coe_card, hts_eq, card_roots_of_splits hF_splits]
-  have hlen : rs.length + 1 = ts.length := by
-    lia
+  have hlen : rs.length + 1 = ts.length := by lia
   exact ⟨⟨hf_ne, hf_splits⟩, ⟨hF_ne, hF_splits⟩, rs, ts, hrs_sorted, hts_sorted, hrs_eq, hts_eq,
     Or.inl ⟨hlen, listInterlaces_of_count_bounds hrs_sorted hts_sorted hlen hhead hlt hle⟩⟩
 
@@ -409,8 +402,7 @@ theorem prec_of_count_bounds_same
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf_splits]
   have hts_len : ts.length = F.natDegree := by
     rw [← Multiset.coe_card, hts_eq, card_roots_of_splits hF_splits]
-  have hlen : rs.length = ts.length := by
-    lia
+  have hlen : rs.length = ts.length := by lia
   exact ⟨⟨hf_ne, hf_splits⟩, ⟨hF_ne, hF_splits⟩, rs, ts, hrs_sorted, hts_sorted, hrs_eq, hts_eq,
     Or.inr ⟨hlen, listAlternates_of_count_bounds hrs_sorted hts_sorted hlen hlt hle⟩⟩
 
