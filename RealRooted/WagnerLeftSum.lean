@@ -1013,8 +1013,8 @@ lemma prec_sum {h : ℝ[X]} :
     ∀ {l : List ℝ[X]}, SumCompatibleLeft h l → Prec h l.sum
   | _, singleton hprec _ => by
       simp_all
-  | _, @cons _ p l hprec hpos hl hrr_ne hrr_splits hcop => by
-      exact prec_add_of_prec_left hprec (prec_sum hl)
+  | _, @cons _ p l hprec hpos hl hrr_ne hrr_splits hcop =>
+      prec_add_of_prec_left hprec (prec_sum hl)
         hpos (hasPosLeadingCoeff_sum hl) hrr_ne hrr_splits hcop
 
 end SumCompatibleLeft

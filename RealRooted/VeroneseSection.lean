@@ -1059,8 +1059,8 @@ conclusion `Prec g f ∨ Prec f g` collapses to the oriented branch `Prec g f`
 as soon as the degrees are strictly ordered `g.natDegree < f.natDegree`, since
 the reversed branch `Prec f g` would force `f.natDegree ≤ g.natDegree`. -/
 theorem prec_of_or_of_natDegree_lt {f g : ℝ[X]}
-    (h : Prec g f ∨ Prec f g) (hgf : g.natDegree < f.natDegree) : Prec g f := by
-  exact h.elim id fun h => absurd h.natDegree_le (by lia)
+    (h : Prec g f ∨ Prec f g) (hgf : g.natDegree < f.natDegree) : Prec g f :=
+  h.elim id fun h => absurd h.natDegree_le (by lia)
 
 /-- Degree-restricted oriented converse Hermite--Biehler step, *without* any
 orientation-selection input.
