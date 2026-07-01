@@ -126,8 +126,7 @@ theorem veroneseSectionPolynomial_X_mul_zero {r : ℕ} (hr : 0 < r)
   | zero =>
       simp_all
   | succ n =>
-      have hidx : 0 + r * (n + 1) = (r - 1 + r * n) + 1 := by
-        lia
+      have hidx : 0 + r * (n + 1) = (r - 1 + r * n) + 1 := by lia
       simp_all
 
 /-- The zeroth Veronese section after multiplying by a linear factor
@@ -256,10 +255,8 @@ the second sequence. -/
 theorem veronesePairLace_odd {a b : ℕ → ℝ} {r k n c : ℕ} (hk : k < r) :
     veronesePairLace r a b (2 * (k + r * n) + 1) c =
       toeplitz (veroneseSectionSeq r k b) n c := by
-  have hmod_ne : ¬ (2 * (k + r * n) + 1) % 2 = 0 := by
-    lia
-  have hdiv : (2 * (k + r * n) + 1) / 2 = k + r * n := by
-    lia
+  have hmod_ne : ¬ (2 * (k + r * n) + 1) % 2 = 0 := by lia
+  have hdiv : (2 * (k + r * n) + 1) / 2 = k + r * n := by lia
   dsimp [veronesePairLace, lacePair]
   rw [if_neg hmod_ne, hdiv]
   dsimp [toeplitz, veroneseSectionSeq]
@@ -306,8 +303,7 @@ theorem FullyInterlacingPair.right_pf {a b : ℕ → ℝ} (h : FullyInterlacingP
       (Nat.mul_lt_mul_of_pos_left (hrows hij) (by lia)) 1
   have hminor : (toeplitz b).submatrix rows cols = submatrix (lacePair a b) rows' cols := by
     ext i j
-    have hdiv : (2 * rows i + 1) / 2 = rows i := by
-      lia
+    have hdiv : (2 * rows i + 1) / 2 = rows i := by lia
     simp [submatrix, rows', lacePair, hdiv]
   rw [hminor]
   exact h hrows' hcols

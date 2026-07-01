@@ -179,8 +179,7 @@ lemma prec0_C_affine_linear {c u v : ℝ} (hu : 0 < u) :
   have hC : (C c : ℝ[X]) ≠ 0 := C_ne_zero.mpr hc
   have hlin_rr : ((C u * X + C v : ℝ[X]) ≠ 0 ∧ (C u * X + C v : ℝ[X]).Splits) :=
     isRealRooted_affine_factor (s := u) (t := v) hu
-  have hlin_nat : (C u * X + C v : ℝ[X]).natDegree = 1 := by
-    grind
+  have hlin_nat : (C u * X + C v : ℝ[X]).natDegree = 1 := by grind
   have hlin_deg : (C u * X + C v : ℝ[X]).degree = 1 := by
     rw [degree_eq_natDegree hlin_rr.1, hlin_nat]
     lia
@@ -242,10 +241,8 @@ lemma prec_affine_linear_affine_linear_of_cross
     Prec (C u * X + C v) (C U * X + C V) := by
   have hroot : -(u⁻¹ * v) ≤ -(U⁻¹ * V) :=
     affineLinear_root_le_of_cross hu hU hcross
-  have hp_nat : (C u * X + C v : ℝ[X]).natDegree = 1 := by
-    grind
-  have hq_nat : (C U * X + C V : ℝ[X]).natDegree = 1 := by
-    grind
+  have hp_nat : (C u * X + C v : ℝ[X]).natDegree = 1 := by grind
+  have hq_nat : (C U * X + C V : ℝ[X]).natDegree = 1 := by grind
   have hp_rr : ((C u * X + C v : ℝ[X]) ≠ 0 ∧ (C u * X + C v : ℝ[X]).Splits) :=
     isRealRooted_affine_factor (s := u) (t := v) hu
   have hq_rr : ((C U * X + C V : ℝ[X]) ≠ 0 ∧ (C U * X + C V : ℝ[X]).Splits) :=
@@ -478,8 +475,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_one (a : ℝ) :
   have hrr : (((C s * X + C (t + 1)) * (X + C a) : ℝ[X]) ≠ 0 ∧
     ((C s * X + C (t + 1)) * (X + C a) : ℝ[X]).Splits) :=
     isRealRooted_mul hlin.1 hlin.2 hxpa.1 hxpa.2
-  have hsum : (C s * X + C t : ℝ[X]) + 1 = C s * X + C (t + 1) := by
-    grind
+  have hsum : (C s * X + C t : ℝ[X]) + 1 = C s * X + C (t + 1) := by grind
   have hfactor :
       ((C s * X + C t) * (C a + X) + (C a + X) : ℝ[X]) =
         (C s * X + C (t + 1)) * (X + C a) := by
@@ -607,8 +603,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_mixed
   rw [get_veroneseLinearFactorRowDesc_of_last hr2 (hi := hrow₂)]
   by_cases hj₁0 : j₁.1 = 0
   · by_cases hj₂0 : j₂.1 = 0
-    · have hj_eq : j₁ = j₂ := by
-        lia
+    · have hj_eq : j₁ = j₂ := by lia
       subst j₂
       rw [if_pos hj₁0]
       let hrr :=
@@ -689,8 +684,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2
     exact veroneseLinearFactorMatrixDesc_has2x2_one a i₁ i₂ j₁ j₂ hi hj
   · have hr2 : 2 ≤ r := by lia
     by_cases hrow₂ : i₂.1 + 1 < r
-    · have hrow₁ : i₁.1 + 1 < r := by
-        lia
+    · have hrow₁ : i₁.1 + 1 < r := by lia
       exact veroneseLinearFactorMatrixDesc_has2x2_nonlast
         ha hi hj hrow₁ hrow₂
     · by_cases hrow₁ : i₁.1 + 1 < r
@@ -916,8 +910,7 @@ theorem isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_one
           (if j = last then (1 : ℝ[X]) else 0) := by
       simpa [j, last] using get_oneSupportSeq last j
     by_cases hidx : j = last
-    · have hf_eq : f = 1 := by
-        lia
+    · have hf_eq : f = 1 := by lia
       simp_all
     · lia
 
