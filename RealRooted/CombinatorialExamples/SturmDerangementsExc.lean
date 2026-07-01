@@ -170,12 +170,12 @@ lemma coeff_sturmDerangementsExc_top_and_above :
         | zero =>
             lia
         | succ m =>
-            have hsmall_zero : coeff (sturmDerangementsExc (n + 2)) m = 0 := by
-              grind
-            have hbig_zero₁ : coeff (sturmDerangementsExc (n + 3)) m = 0 := by
-              grind
-            have hbig_zero₂ : coeff (sturmDerangementsExc (n + 3)) (m + 1) = 0 := by
-              grind
+            have hsmall_zero : coeff (sturmDerangementsExc (n + 2)) m = 0 :=
+              hsmall_hi m (by lia)
+            have hbig_zero₁ : coeff (sturmDerangementsExc (n + 3)) m = 0 :=
+              hbig_hi m (by lia)
+            have hbig_zero₂ : coeff (sturmDerangementsExc (n + 3)) (m + 1) = 0 :=
+              hbig_hi (m + 1) (by lia)
             rw [coeff_sturmDerangementsExc_succ (n + 1) m]
             simp [hsmall_zero, hbig_zero₁, hbig_zero₂]
 
@@ -194,13 +194,13 @@ lemma coeff_sturmDerangementsExc_symm :
         simp [hq]
       have hcoeff_hi : coeff (sturmDerangementsExc (n + 3)) (n + 3) = 0 := by
         rcases coeff_sturmDerangementsExc_top_and_above (n + 3) (by lia) with ⟨_, habove⟩
-        simp_all
+        exact habove (n + 3) (by lia)
       lia
   | n + 3, m + 1, hm => by
       by_cases htop : m + 1 = n + 3
       · have hcoeff_hi : coeff (sturmDerangementsExc (n + 3)) (m + 1) = 0 := by
           rcases coeff_sturmDerangementsExc_top_and_above (n + 3) (by lia) with ⟨_, habove⟩
-          simp_all
+          exact habove (m + 1) (by lia)
         have hcoeff0 : coeff (sturmDerangementsExc (n + 3)) 0 = 0 := by
           rcases X_dvd_sturmDerangementsExc (n + 3) with ⟨q, hq⟩
           simp [hq]
@@ -395,10 +395,9 @@ lemma affine_sturmDerangementsExc_nonnegCoeffs {n : Nat} (hn : 2 ≤ n) :
     nlinarith
   · have hm' : n < m := lt_of_not_ge hm
     rcases coeff_sturmDerangementsExc_top_and_above n hn with ⟨_, habove⟩
-    have hcoeff_m : coeff (sturmDerangementsExc n) m = 0 := by
-      grind
-    have hcoeff_succ : coeff (sturmDerangementsExc n) (m + 1) = 0 := by
-      grind
+    have hcoeff_m : coeff (sturmDerangementsExc n) m = 0 := habove m (by lia)
+    have hcoeff_succ : coeff (sturmDerangementsExc n) (m + 1) = 0 :=
+      habove (m + 1) (by lia)
     simp [hcoeff_m, hcoeff_succ]
 
 lemma affine_sturmDerangementsExc_isRoot_neg_one_of_even {n : Nat}

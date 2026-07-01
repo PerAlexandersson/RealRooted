@@ -42,12 +42,8 @@ lemma HasNonnegCoeffs.iterate_derivative {p : ℝ[X]} :
 lemma coeff_one_sub_X_mul_derivative (p : ℝ[X]) (m : Nat) :
     ((1 - X) * p.derivative).coeff m =
       ((m + 1 : ℝ) * p.coeff (m + 1)) - ((m : ℝ) * p.coeff m) := by
-  cases m with
-  | zero =>
-      simp [coeff_derivative]
-  | succ m =>
-      rw [sub_mul, one_mul, coeff_sub, coeff_X_mul, coeff_derivative, coeff_derivative]
-      grind
+  cases m <;> simp [sub_mul, coeff_derivative]
+  ring_nf
 
 /-- An exact double root has nonvanishing second derivative. -/
 lemma eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
