@@ -1,5 +1,7 @@
 import Mathlib.Algebra.Polynomial.Coeff
+import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Algebra.Ring.Parity
+import Mathlib.Data.Complex.Basic
 
 /-!
 # Finite apolarity
@@ -13,6 +15,39 @@ valid over any commutative ring.
 open Polynomial
 
 noncomputable section
+
+namespace Polynomial
+
+/-- All roots of `p` lie in `s`. -/
+def RootsIn {R : Type*} [Semiring R] (s : Set R) (p : R[X]) : Prop :=
+  ∀ z : R, p.IsRoot z → z ∈ s
+
+/-- The polynomial `p` has at least one root in `s`. -/
+def HasRootIn {R : Type*} [Semiring R] (s : Set R) (p : R[X]) : Prop :=
+  ∃ z : R, p.IsRoot z ∧ z ∈ s
+
+@[simp] theorem rootsIn_univ {R : Type*} [Semiring R] (p : R[X]) :
+    p.RootsIn Set.univ :=
+  fun z _ => Set.mem_univ z
+
+theorem RootsIn.mono {R : Type*} [Semiring R] {s t : Set R} {p : R[X]}
+    (hst : s ⊆ t) (h : p.RootsIn s) :
+    p.RootsIn t := by
+  intro z hz
+  exact hst (h z hz)
+
+theorem HasRootIn.mono {R : Type*} [Semiring R] {s t : Set R} {p : R[X]}
+    (hst : s ⊆ t) (h : p.HasRootIn s) :
+    p.HasRootIn t := by
+  rcases h with ⟨z, hzroot, hzs⟩
+  exact ⟨z, hzroot, hst hzs⟩
+
+theorem hasRootIn_of_isRoot {R : Type*} [Semiring R] {s : Set R} {p : R[X]} {z : R}
+    (hzroot : p.IsRoot z) (hzs : z ∈ s) :
+    p.HasRootIn s :=
+  ⟨z, hzroot, hzs⟩
+
+end Polynomial
 
 namespace RealRooted
 
@@ -148,6 +183,21 @@ theorem areApolar_comm {R : Type*} [CommRing R]
     {n : Nat} {f g : R[X]} :
     AreApolar n f g ↔ AreApolar n g f :=
   ⟨AreApolar.symm, AreApolar.symm⟩
+
+/-- Statement-level interface for Grace's apolarity theorem.
+
+The predicate `IsGraceDomain` is intentionally a parameter: later work can
+instantiate it with the chosen formal notion of circular domain, a half-plane
+specialization, or whichever root-location class is sufficient for the
+Hadamard/Schur--Szego route. -/
+def GraceApolarityStatement (IsGraceDomain : Set ℂ → Prop) : Prop :=
+  ∀ ⦃n : Nat⦄ ⦃s : Set ℂ⦄ ⦃f g : ℂ[X]⦄,
+    IsGraceDomain s →
+    f.natDegree = n →
+    g.natDegree = n →
+    AreApolar n f g →
+    f.RootsIn s →
+    g.HasRootIn s
 
 theorem apolarPairing_monomial_left {R : Type*} [CommRing R]
     (n i : Nat) (a : R) (g : R[X]) :
