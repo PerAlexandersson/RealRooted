@@ -534,6 +534,16 @@ def PosComboNoCommonAffineFamilyStatement : Prop :=
     ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
       ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)
 
+private lemma allComboRealRooted_left_rr
+    {f g : ℝ[X]} (hall : AllComboRealRooted f g) (hf0 : f ≠ 0) :
+    f ≠ 0 ∧ f.Splits :=
+  ⟨hf0, by simpa using hall 1 0⟩
+
+private lemma allComboRealRooted_right_rr
+    {f g : ℝ[X]} (hall : AllComboRealRooted f g) (hg0 : g ≠ 0) :
+    g ≠ 0 ∧ g.Splits :=
+  ⟨hg0, by simpa using hall 0 1⟩
+
 /-- Stronger boundary-right-pair hypothesis in the nonnegative no-common
 regime: for each boundary member `C t * f + g`, orient the right-hand pair
 against `X * f`.  This is a useful conditional route to the affine family, not
@@ -1368,8 +1378,8 @@ theorem posComboNoCommonOrientation_of_affineFamilyBridge_and_nonnegCoeffs
       haffBridge hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
   have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
   have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
-  have hf_rr : (f ≠ 0 ∧ f.Splits) := ⟨hf0, by simpa using hall 1 0⟩
-  have hg_rr : (g ≠ 0 ∧ g.Splits) := ⟨hg0, by simpa using hall 0 1⟩
+  have hf_rr : (f ≠ 0 ∧ f.Splits) := allComboRealRooted_left_rr hall hf0
+  have hg_rr : (g ≠ 0 ∧ g.Splits) := allComboRealRooted_right_rr hall hg0
   have hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by lia
   exact prec_of_allComboRealRooted hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hall hdeg
 
@@ -1720,8 +1730,8 @@ theorem posComboOrientation_of_posCombo_and_degreeSplit_and_nonnegCoeffs
       hsame hsucc hf_pos hg_pos hfnn hgnn hfg
   have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
   have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
-  have hf_rr : (f ≠ 0 ∧ f.Splits) := ⟨hf0, by simpa using hall 1 0⟩
-  have hg_rr : (g ≠ 0 ∧ g.Splits) := ⟨hg0, by simpa using hall 0 1⟩
+  have hf_rr : (f ≠ 0 ∧ f.Splits) := allComboRealRooted_left_rr hall hf0
+  have hg_rr : (g ≠ 0 ∧ g.Splits) := allComboRealRooted_right_rr hall hg0
   have hclose :
       f.natDegree ≤ g.natDegree + 1 ∧
         g.natDegree ≤ f.natDegree + 1 :=
@@ -1832,8 +1842,8 @@ theorem posComboOrientation_of_affineFamilyBridge_and_nonnegCoeffs
       haffBridge hf_pos hg_pos hfnn hgnn hfg
   have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
   have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
-  have hf_rr : (f ≠ 0 ∧ f.Splits) := ⟨hf0, by simpa using hall 1 0⟩
-  have hg_rr : (g ≠ 0 ∧ g.Splits) := ⟨hg0, by simpa using hall 0 1⟩
+  have hf_rr : (f ≠ 0 ∧ f.Splits) := allComboRealRooted_left_rr hall hf0
+  have hg_rr : (g ≠ 0 ∧ g.Splits) := allComboRealRooted_right_rr hall hg0
   have hclose :
       f.natDegree ≤ g.natDegree + 1 ∧
         g.natDegree ≤ f.natDegree + 1 :=
@@ -1923,10 +1933,8 @@ theorem posComboNoCommonOrientation_of_allComboBridge
     hallBridge hf_pos hg_pos hfg hdeg_lo hdeg_hi hno
   have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
   have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
-  have hf_rr : (f ≠ 0 ∧ f.Splits) :=
-    ⟨hf0, by simpa using hall 1 0⟩
-  have hg_rr : (g ≠ 0 ∧ g.Splits) :=
-    ⟨hg0, by simpa using hall 0 1⟩
+  have hf_rr : (f ≠ 0 ∧ f.Splits) := allComboRealRooted_left_rr hall hf0
+  have hg_rr : (g ≠ 0 ∧ g.Splits) := allComboRealRooted_right_rr hall hg0
   have hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by lia
   exact prec_of_allComboRealRooted hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hall hdeg
 
