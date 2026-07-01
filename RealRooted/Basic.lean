@@ -279,9 +279,8 @@ theorem roots_le_of_prec_right {f g : ℝ[X]} {c : ℝ}
     (hg_le : ∀ r ∈ g.roots, r ≤ c) :
     ∀ r ∈ f.roots, r ≤ c := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
-  have hrs_le : ∀ r ∈ rs, r ≤ c := by
-    intro r hr
-    exact hg_le r (by rw [← hrs_eq]; exact Multiset.mem_coe.mpr hr)
+  have hrs_le : ∀ r ∈ rs, r ≤ c :=
+    fun r hr => hg_le r (by rw [← hrs_eq]; exact Multiset.mem_coe.mpr hr)
   intro r hr
   have hr' : r ∈ ss := by
     have : r ∈ (↑ss : Multiset ℝ) := by lia

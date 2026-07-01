@@ -221,12 +221,12 @@ theorem CoeffLogConcaveUpTo.unimodal {d : ℕ} {a : ℕ → ℝ}
     Nat.lt_succ_iff.mp (Finset.mem_range.mp hm_mem)
   have hmax : ∀ k, k ≤ d → a k ≤ a m :=
     fun k hk => hmmax.le (Finset.mem_range.mpr (Nat.lt_succ_of_le hk))
-  have hleft_adj : ∀ k, k < m → a k ≤ a (k + 1) := by
-    intro k hk
-    exact le_of_not_gt (hlc.no_strict_decrease_before_max hnonneg hnozero hm_le hmax k hk)
-  have hright_adj : ∀ k, m ≤ k → k < d → a (k + 1) ≤ a k := by
-    intro k hmk hkd
-    exact le_of_not_gt (hlc.no_strict_increase_after_max hnonneg hnozero hm_le hmax k hmk hkd)
+  have hleft_adj : ∀ k, k < m → a k ≤ a (k + 1) :=
+    fun k hk =>
+      le_of_not_gt (hlc.no_strict_decrease_before_max hnonneg hnozero hm_le hmax k hk)
+  have hright_adj : ∀ k, m ≤ k → k < d → a (k + 1) ≤ a k :=
+    fun k hmk hkd =>
+      le_of_not_gt (hlc.no_strict_increase_after_max hnonneg hnozero hm_le hmax k hmk hkd)
   refine ⟨m, hm_le, ?_, ?_⟩
   · intro i j hij hjm
     induction j, hij using Nat.le_induction with

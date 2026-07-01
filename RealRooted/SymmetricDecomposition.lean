@@ -947,10 +947,10 @@ theorem isRealRooted_of_isRealRooted_fPolynomial_natDegree_of_hasNonnegCoeffs
     simp_all
   have hfpdeg : (fPolynomial p.natDegree p).natDegree = p.natDegree :=
     fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero le_rfl hpnn hp0
-  have hgt : ∀ x ∈ (fPolynomial p.natDegree p).roots, -1 < x := by
-    intro x hx
-    exact root_gt_neg_one_of_mem_roots_fPolynomial_natDegree_of_isRealRooted_of_hasNonnegCoeffs
-      hfp_ne hpnn hx
+  have hgt : ∀ x ∈ (fPolynomial p.natDegree p).roots, -1 < x :=
+    fun _ hx =>
+      root_gt_neg_one_of_mem_roots_fPolynomial_natDegree_of_isRealRooted_of_hasNonnegCoeffs
+        hfp_ne hpnn hx
   exact
     isRealRooted_of_fPolynomial_natDegree_roots_gt_neg_one hfpdeg hfp_ne hfp_splits hgt
 
@@ -3487,9 +3487,8 @@ theorem not_brandenSolusTheorem26NaiveStatement :
   rcases hcase with ⟨hba_iff_hap, -, -, -⟩
   have happ : Prec (1 : ℝ[X]) (1 : ℝ[X]) :=
     prec_refl (by simp) (by simp)
-  have hnot : ¬ Prec (0 : ℝ[X]) (1 : ℝ[X]) := by
-    intro h0
-    exact h0.1.1 rfl
+  have hnot : ¬ Prec (0 : ℝ[X]) (1 : ℝ[X]) :=
+    fun h0 => h0.1.1 rfl
   lia
 
 /-- Honest nondegenerate `Prec` target for Brändén--Solus Theorem 2.6.

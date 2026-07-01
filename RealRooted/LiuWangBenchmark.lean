@@ -811,9 +811,8 @@ private lemma prec_of_interlaces_X_mul_of_roots_nonpos {f g : ℝ[X]}
   set rs_f := f.roots.sort (· ≤ ·)
   have hrs_f_eq : (↑rs_f : Multiset ℝ) = f.roots := Multiset.sort_eq ..
   have hrs_f_sorted : rs_f.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
-  have hrs_f_nonpos : ∀ r ∈ rs_f, r ≤ 0 := by
-    intro r hr
-    exact hf_nonpos r (by rw [← hrs_f_eq]; exact Multiset.mem_coe.mpr hr)
+  have hrs_f_nonpos : ∀ r ∈ rs_f, r ≤ 0 :=
+    fun r hr => hf_nonpos r (by rw [← hrs_f_eq]; exact Multiset.mem_coe.mpr hr)
   have hrs_f0_sorted : (rs_f ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by
     grind
   have hrs_xf_is : rs_xf = rs_f ++ [(0 : ℝ)] := by

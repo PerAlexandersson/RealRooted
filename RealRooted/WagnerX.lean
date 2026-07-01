@@ -115,9 +115,8 @@ lemma listInterlaces_orderedInsert :
             List.orderedInsert_cons_of_le (r := (· ≤ ·)) (l := rs) har₂]
           exact ⟨le_of_not_ge har₁, le_rfl, has, hsr₂, htail⟩
         · by_cases har₂ : a ≤ r₂
-          · have htail_ge : ∀ b ∈ ss, a ≤ b := by
-              intro b hb
-              exact le_trans har₂ (listInterlaces_all_ge ss rs r₂ htail b hb)
+          · have htail_ge : ∀ b ∈ ss, a ≤ b :=
+              fun b hb => le_trans har₂ (listInterlaces_all_ge ss rs r₂ htail b hb)
             rw [List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := r₂ :: rs) har₁,
               List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := ss) has,
               List.orderedInsert_cons_of_le (r := (· ≤ ·)) (l := rs) har₂,
@@ -152,9 +151,8 @@ lemma listAlternates_orderedInsert :
       · by_cases har : a ≤ r
         · rw [List.orderedInsert_of_not_le (r := (· ≤ ·)) (l := ss) has,
             List.orderedInsert_cons_of_le (r := (· ≤ ·)) (l := rs) har]
-          have htail_ge : ∀ b ∈ ss, a ≤ b := by
-            intro b hb
-            exact le_trans har (listInterlaces_all_ge ss rs r hint b hb)
+          have htail_ge : ∀ b ∈ ss, a ≤ b :=
+            fun b hb => le_trans har (listInterlaces_all_ge ss rs r hint b hb)
           rw [orderedInsert_eq_cons_of_forall_le htail_ge]
           constructor
           · grind
@@ -520,9 +518,8 @@ theorem prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos {f g : ℝ[X]}
   set rs_f := f.roots.sort (· ≤ ·)
   have hrs_f_eq : (↑rs_f : Multiset ℝ) = f.roots := Multiset.sort_eq ..
   have hrs_f : rs_f.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
-  have hrs_f_nonpos : ∀ r ∈ rs_f, r ≤ 0 := by
-    intro r hr
-    exact hf_nonpos r (by rw [← hrs_f_eq]; exact Multiset.mem_coe.mpr hr)
+  have hrs_f_nonpos : ∀ r ∈ rs_f, r ≤ 0 :=
+    fun r hr => hf_nonpos r (by rw [← hrs_f_eq]; exact Multiset.mem_coe.mpr hr)
   have hrs_f0 : (rs_f ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by
     grind
   have hXf_roots : (X * f).roots = {0} + f.roots := by
@@ -653,9 +650,8 @@ theorem prec_of_prec_mul_X_sameDegree_of_roots_nonpos {f g : ℝ[X]}
   set rs_f := f.roots.sort (· ≤ ·)
   have hrs_f_eq : (↑rs_f : Multiset ℝ) = f.roots := Multiset.sort_eq ..
   have hrs_f : rs_f.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
-  have hrs_f_nonpos : ∀ r ∈ rs_f, r ≤ 0 := by
-    intro r hr
-    exact hf_nonpos r (by rw [← hrs_f_eq]; exact Multiset.mem_coe.mpr hr)
+  have hrs_f_nonpos : ∀ r ∈ rs_f, r ≤ 0 :=
+    fun r hr => hf_nonpos r (by rw [← hrs_f_eq]; exact Multiset.mem_coe.mpr hr)
   have hrs_f0 : (rs_f ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by
     grind
   have hXf_roots : (X * f).roots = {0} + f.roots := by

@@ -761,9 +761,8 @@ lemma roots_card_of_sub_pred {p : ℝ[X]} (hp : p ≠ 0)
   by_contra hne
   have h1 : p.roots.card ≤ p.natDegree := card_roots' p
   have h2 : S.card ≤ p.roots.card := Multiset.card_le_card hle
-  have hne_card : p.roots.card ≠ p.natDegree := by
-    intro h
-    exact hne (splits_of_card_roots h)
+  have hne_card : p.roots.card ≠ p.natDegree :=
+    fun h => hne (splits_of_card_roots h)
   -- p.roots.card = natDegree - 1
   have hrc : p.roots.card = p.natDegree - 1 := by lia
   -- Factor p = rprod * q where rprod = ∏(X - C r) for r ∈ p.roots
@@ -857,9 +856,8 @@ private lemma prec_of_extra_root_left {f g : ℝ[X]} (hf₀ : f ≠ 0) (hg₀ : 
     Prec g f := by
   have hss_sorted : ss.Pairwise (· ≤ ·) :=
     sorted_of_listInterlaces ss (r₁ :: rest) hrs_sorted hint
-  have hu_le_all : ∀ s ∈ ss, u ≤ s := by
-    intro s hs
-    exact le_trans hu (listInterlaces_all_ge ss rest r₁ hint s hs)
+  have hu_le_all : ∀ s ∈ ss, u ≤ s :=
+    fun s hs => le_trans hu (listInterlaces_all_ge ss rest r₁ hint s hs)
   have hug_sorted : (u :: ss).Pairwise (· ≤ ·) := by
     simp_all
   have hlen : ss.length = rest.length := listInterlaces_cons_length_eq hint

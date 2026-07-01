@@ -288,9 +288,8 @@ theorem FullyInterlacingPair.left_pf {a b : ℕ → ℝ}
     IsPolyaFreqSeq a := by
   intro n rows cols hrows hcols
   let rows' : Fin n → ℕ := fun i => 2 * rows i
-  have hrows' : StrictMono rows' := by
-    intro i j hij
-    exact Nat.mul_lt_mul_of_pos_left (hrows hij) (by lia)
+  have hrows' : StrictMono rows' :=
+    fun _ _ hij => Nat.mul_lt_mul_of_pos_left (hrows hij) (by lia)
   have hminor : (toeplitz a).submatrix rows cols = submatrix (lacePair a b) rows' cols := by
     ext i j
     simp [submatrix, rows', lacePair]
@@ -303,9 +302,8 @@ theorem FullyInterlacingPair.right_pf {a b : ℕ → ℝ} (h : FullyInterlacingP
     IsPolyaFreqSeq b := by
   intro n rows cols hrows hcols
   let rows' : Fin n → ℕ := fun i => 2 * rows i + 1
-  have hrows' : StrictMono rows' := by
-    intro i j hij
-    exact Nat.add_lt_add_right
+  have hrows' : StrictMono rows' :=
+    fun _ _ hij => Nat.add_lt_add_right
       (Nat.mul_lt_mul_of_pos_left (hrows hij) (by lia)) 1
   have hminor : (toeplitz b).submatrix rows cols = submatrix (lacePair a b) rows' cols := by
     ext i j
@@ -1732,12 +1730,10 @@ protected theorem IsPolyaFreqSeq.veroneseSectionSeq {a : ℕ → ℝ}
   intro n rows cols hrows hcols
   let rows' : Fin n → ℕ := fun i => k + r * rows i
   let cols' : Fin n → ℕ := fun i => r * cols i
-  have hrows' : StrictMono rows' := by
-    intro i j hij
-    exact Nat.add_lt_add_left (Nat.mul_lt_mul_of_pos_left (hrows hij) hr) k
-  have hcols' : StrictMono cols' := by
-    intro i j hij
-    exact Nat.mul_lt_mul_of_pos_left (hcols hij) hr
+  have hrows' : StrictMono rows' :=
+    fun _ _ hij => Nat.add_lt_add_left (Nat.mul_lt_mul_of_pos_left (hrows hij) hr) k
+  have hcols' : StrictMono cols' :=
+    fun _ _ hij => Nat.mul_lt_mul_of_pos_left (hcols hij) hr
   have hminor : (toeplitz (veroneseSectionSeq r k a)).submatrix rows cols =
       (toeplitz a).submatrix rows' cols' := by
     ext i j

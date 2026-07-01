@@ -140,9 +140,8 @@ lemma hasSimpleRoots_tderiv
       have := hsimple.ne_zero
       grind
     · lia
-  have hp_not_root : ¬ p.IsRoot a := by
-    intro hp_root
-    exact
+  have hp_not_root : ¬ p.IsRoot a :=
+    fun hp_root =>
       not_isRoot_TDeriv_of_simple_root
         (ne_of_gt heps) hsimple.ne_zero hp_root (hsimple a hp_root) ha
   have hmult_pos : 1 ≤ (TDeriv eps p).rootMultiplicity a :=
