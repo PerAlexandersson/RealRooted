@@ -117,8 +117,7 @@ lemma coeff_liuWangPoly (d n m : Nat) :
   · simp only [hm, ↓reduceIte]
     refine Finset.sum_eq_zero ?_
     intro k hk
-    have hkm : k ≠ m := by
-      grind
+    have hkm : k ≠ m := by grind
     simp [Polynomial.coeff_monomial, hkm]
 
 lemma coeff_liuWangPoly_of_lt (d n m : Nat) (hm : m < n) :
@@ -242,8 +241,7 @@ lemma roots_neg_liuWangPoly_of_isRealRooted {d n : Nat} (hrr : (liuWangPoly d n)
     roots_nonpos_of_nonneg_coeffs hrr (liuWangPoly_nonnegCoeffs d n) r hr
   by_contra hnot
   have hzero : r = 0 := by grind
-  have hr0 : (liuWangPoly d n).IsRoot 0 := by
-    simp_all
+  have hr0 : (liuWangPoly d n).IsRoot 0 := by simp_all
   exact zero_not_isRoot_liuWangPoly d n hn hnd hr0
 
 /-- The degree-`1` base case is immediate. -/
@@ -322,8 +320,7 @@ private lemma natDegree_leadingCoeff_liuWangRec_step (d n : Nat) (hn : 1 ≤ n)
   have hB_degree : B.degree = n + 1 := by
     rw [degree_eq_natDegree hB_ne, hB_natDegree]
     lia
-  have hsum_lc_ne : A.leadingCoeff + B.leadingCoeff ≠ 0 := by
-    grind
+  have hsum_lc_ne : A.leadingCoeff + B.leadingCoeff ≠ 0 := by grind
   have hsum_degree : (A + B).degree = n + 1 := by
     rw [Polynomial.degree_add_eq_of_leadingCoeff_add_ne_zero hsum_lc_ne, hA_degree, hB_degree,
       max_eq_left le_rfl]
@@ -414,8 +411,7 @@ lemma eval_zero_liuWangRec_pos (d n : Nat) (hn : 1 ≤ n) (hnd : n ≤ d + 1) :
           rw [eval_zero_liuWangRec_succ_succ]
           have hfactor : 0 < (((d : ℝ) - n) / (n + 1 : ℝ)) := by
             have hlt_nat : n < d := by lia
-            have hnum : 0 < ((d : ℝ) - n) := by
-              simp_all
+            have hnum : 0 < ((d : ℝ) - n) := by simp_all
             have hden : 0 < (n + 1 : ℝ) := by positivity
             simp_all
           have hprev : 0 < (liuWangRec d (n + 1)).eval 0 :=
@@ -470,8 +466,7 @@ private lemma roots_neg_of_interlaces_of_eval_zero_pos {g f : ℝ[X]}
   obtain ⟨hf, hg, hdeg, rs, ss, hrs_sorted, _, hrs_eq, hss_eq, hint⟩ := hgf
   have hrs_len : rs.length = f.natDegree := by
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
-  have hrs_ne : rs ≠ [] := by
-    grind
+  have hrs_ne : rs ≠ [] := by grind
   have hss_neg : ∀ s ∈ ss, s < 0 := by
     intro s hs
     have hs_root : g.IsRoot s := (mem_roots hg.1).mp <| by
@@ -510,8 +505,7 @@ private lemma eval_liuWangRec_mul_prev_of_isRoot {d n : Nat} {r : ℝ}
     (hr : (liuWangRec d (n + 1)).IsRoot r) :
     (liuWangRec d (n + 2)).eval r * (liuWangRec d n).eval r =
       (r * (1 - r)) * ((liuWangRec d n).eval r) ^ 2 := by
-  have hf0 : (liuWangRec d (n + 1)).eval r = 0 := by
-    simp_all
+  have hf0 : (liuWangRec d (n + 1)).eval r = 0 := by simp_all
   rw [liuWangRec_succ_succ]
   calc
     (((C (((d : ℝ) - n) / (n + 1 : ℝ)) + C (2 : ℝ) * X) * liuWangRec d (n + 1) +
@@ -535,8 +529,7 @@ private theorem strictData_liuWangRec (d : Nat) :
   | 1, _, hnd => by
       have hInter : Interlaces (liuWangRec d 1) (liuWangRec d 2) :=
         interlaces_liuWangRec_one_two d
-      have hOne_no_root : ∀ r, ¬ (liuWangRec d 1).IsRoot r := by
-        simp
+      have hOne_no_root : ∀ r, ¬ (liuWangRec d 1).IsRoot r := by simp
       have hNoCommon : ∀ r, (liuWangRec d 2).IsRoot r → ¬ (liuWangRec d 1).IsRoot r := by
         simp
       have hNeg : ∀ r, (liuWangRec d 2).IsRoot r → r < 0 :=
@@ -577,14 +570,12 @@ private theorem strictData_liuWangRec (d : Nat) :
           have hcoeff_neg : r * (1 - r) < 0 := by
             have hr_neg : r < 0 := hNeg r hrootf
             nlinarith
-          have hg_ne : (liuWangRec d (n + 1)).eval r ≠ 0 := by
-            simp_all
+          have hg_ne : (liuWangRec d (n + 1)).eval r ≠ 0 := by simp_all
           have hsq_pos : 0 < ((liuWangRec d (n + 1)).eval r) ^ 2 :=
             sq_pos_iff.mpr hg_ne
           rw [eval_liuWangRec_mul_prev_of_isRoot hrootf]
           exact mul_neg_of_neg_of_pos hcoeff_neg hsq_pos
-        have hEq : (liuWangRec d (n + 3)).eval r = 0 := by
-          simp_all
+        have hEq : (liuWangRec d (n + 3)).eval r = 0 := by simp_all
         grind
       have hNeg' :
           ∀ r, (liuWangRec d (n + 3)).IsRoot r → r < 0 :=
@@ -620,8 +611,7 @@ private lemma roots_nonpos_of_interlaces_of_zero_root_of_roots_neg {g f : ℝ[X]
     ∀ r, f.IsRoot r → r ≤ 0 := by
   obtain ⟨hf, hg, _, rs, ss, _, _, hrs_eq, hss_eq, hint⟩ := hgf
   have hzero_mem : 0 ∈ rs := Multiset.mem_coe.mp (by simp_all)
-  have hrs_ne : rs ≠ [] := by
-    grind
+  have hrs_ne : rs ≠ [] := by grind
   have hss_neg : ∀ s ∈ ss, s < 0 := by
     intro s hs
     have hs_root : g.IsRoot s := (mem_roots hg.1).mp <| by
@@ -743,8 +733,7 @@ lemma interlaces_liuWangRec_threshold (d : Nat) :
 lemma roots_nonpos_liuWangRec_threshold (d : Nat) :
     ∀ r, (liuWangRec d (d + 2)).IsRoot r → r ≤ 0 := by
   have hInter := interlaces_liuWangRec_threshold d
-  have hzero : (liuWangRec d (d + 2)).IsRoot 0 := by
-    simp
+  have hzero : (liuWangRec d (d + 2)).IsRoot 0 := by simp
   have hneg :
       ∀ r, (liuWangRec d (d + 1)).IsRoot r → r < 0 := by
     have hbound : d + 1 ≤ d + 1 := le_rfl
@@ -813,8 +802,7 @@ private lemma prec_of_interlaces_X_mul_of_roots_nonpos {f g : ℝ[X]}
   have hrs_f_sorted : rs_f.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hrs_f_nonpos : ∀ r ∈ rs_f, r ≤ 0 :=
     fun r hr => hf_nonpos r (by rw [← hrs_f_eq]; exact Multiset.mem_coe.mpr hr)
-  have hrs_f0_sorted : (rs_f ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by
-    grind
+  have hrs_f0_sorted : (rs_f ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by grind
   have hrs_xf_is : rs_xf = rs_f ++ [(0 : ℝ)] := by
     have hmultiset_eq : (↑rs_xf : Multiset ℝ) = ↑(rs_f ++ [(0 : ℝ)]) := by
       rw [hrs_xf_eq, roots_mul (mul_ne_zero X_ne_zero hf.1), roots_X,
@@ -828,10 +816,8 @@ private lemma prec_of_interlaces_X_mul_of_roots_nonpos {f g : ℝ[X]}
     have hrs_len : (rs_f ++ [(0 : ℝ)]).length = (X * f).natDegree := by
       rw [← hrs_xf_is, ← Multiset.coe_card, hrs_xf_eq, card_roots_of_splits hXf.2]
     lia
-  have hlen_eq : rs_f.length = ss_g.length := by
-    simp_all
-  have hrs_f0_nonpos : ∀ r ∈ rs_f ++ [(0 : ℝ)], r ≤ 0 := by
-    grind
+  have hlen_eq : rs_f.length = ss_g.length := by simp_all
+  have hrs_f0_nonpos : ∀ r ∈ rs_f ++ [(0 : ℝ)], r ≤ 0 := by grind
   have halt0 : ListAlternates (rs_f ++ [(0 : ℝ)]) (ss_g ++ [(0 : ℝ)]) :=
     listAlternates_append_zero ss_g (rs_f ++ [(0 : ℝ)]) hlen hint hrs_f0_nonpos
   have halt : ListAlternates rs_f ss_g :=
@@ -843,8 +829,7 @@ private lemma prec_of_interlaces_X_mul_of_roots_nonpos {f g : ℝ[X]}
 private lemma prec_threshold_divX (d : Nat) :
     Prec ((liuWangRec d (d + 2)) /ₘ X) (liuWangRec d (d + 1)) := by
   let q : ℝ[X] := (liuWangRec d (d + 2)) /ₘ X
-  have hroot0 : (liuWangRec d (d + 2)).IsRoot 0 := by
-    simp
+  have hroot0 : (liuWangRec d (d + 2)).IsRoot 0 := by simp
   have hmul : X * q = liuWangRec d (d + 2) := by
     subst q
     simpa using (mul_divByMonic_eq_iff_isRoot (p := liuWangRec d (d + 2)) (a := (0 : ℝ))).2 hroot0
@@ -853,12 +838,10 @@ private lemma prec_threshold_divX (d : Nat) :
     lia
   have hq_nonpos : ∀ r ∈ q.roots, r ≤ 0 := by
     intro r hr
-    have hq_ne : q ≠ 0 := by
-      simp_all
+    have hq_ne : q ≠ 0 := by simp_all
     have hr_root_q : q.IsRoot r := (mem_roots hq_ne).mp hr
     have hr_root_p : (liuWangRec d (d + 2)).IsRoot r := by
-      have hq0 : q.eval r = 0 := by
-        simp_all
+      have hq0 : q.eval r = 0 := by simp_all
       rw [Polynomial.IsRoot.def]
       calc
         (liuWangRec d (d + 2)).eval r = (X * q).eval r := by lia
