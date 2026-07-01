@@ -36,7 +36,7 @@ lemma touchard_two : touchard 2 = X + X ^ 2 := by
 lemma coeff_touchard_succ (n m : Nat) :
     coeff (touchard (n + 1)) (m + 1) =
       coeff (touchard n) m + (m + 1 : ℝ) * coeff (touchard n) (m + 1) := by
-  rw [touchard_succ, coeff_add, coeff_X_mul, coeff_X_mul, coeff_derivative]
+  simp [touchard_succ, coeff_derivative]
   ring
 
 lemma coeff_touchard_top_and_above :

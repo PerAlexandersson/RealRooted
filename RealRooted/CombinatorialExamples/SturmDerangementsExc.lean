@@ -124,17 +124,9 @@ lemma coeff_sturmDerangementsExc_succ (n m : Nat) :
       (m + 1 : ℝ) * coeff (sturmDerangementsExc (n + 2)) (m + 1) := by
   rw [sturmDerangementsExc_recurrence, coeff_X_mul]
   simp only [coeff_add, coeff_one_sub_X_mul_derivative]
-  have h₁ :
-      (((n + 2 : ℝ[X])) * sturmDerangementsExc (n + 1)).coeff m =
-        (n + 2 : ℝ) * (sturmDerangementsExc (n + 1)).coeff m := by
-    simpa [ofNat_def] using
-      (coeff_C_mul (n := m) (a := (n + 2 : ℝ)) (p := sturmDerangementsExc (n + 1)))
-  have h₂ :
-      (((n + 2 : ℝ[X])) * sturmDerangementsExc (n + 2)).coeff m =
-        (n + 2 : ℝ) * (sturmDerangementsExc (n + 2)).coeff m := by
-    simpa [ofNat_def] using
-      (coeff_C_mul (n := m) (a := (n + 2 : ℝ)) (p := sturmDerangementsExc (n + 2)))
-  grind
+  rw [show ((n + 2 : ℝ[X])) = C (n + 2 : ℝ) by simp [ofNat_def],
+    coeff_C_mul, coeff_C_mul]
+  ring
 
 lemma coeff_sturmDerangementsExc_top_and_above :
     ∀ n : Nat, 2 ≤ n →

@@ -49,11 +49,7 @@ lemma coeff_singletonFreeSetPartitions_succ_succ (n m : Nat) :
       (n + 1 : ℝ) * coeff (singletonFreeSetPartitions n) m +
       (m + 1 : ℝ) * coeff (singletonFreeSetPartitions (n + 1)) (m + 1) := by
   rw [singletonFreeSetPartitions_succ_succ, coeff_X_mul, coeff_add]
-  have hC :
-      coeff (C (n + 1 : ℝ) * singletonFreeSetPartitions n) m =
-        (n + 1 : ℝ) * coeff (singletonFreeSetPartitions n) m := by
-    grind
-  rw [hC, coeff_derivative]
+  rw [coeff_C_mul, coeff_derivative]
   ring
 
 lemma singletonFreeSetPartitions_nonnegCoeffs :

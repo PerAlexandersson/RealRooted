@@ -54,13 +54,8 @@ lemma coeff_eulerianTilde_succ (n m : Nat) :
       (m + 1 : ℝ) * coeff (eulerianTilde n) (m + 1) := by
   rw [eulerianTilde_recurrence, coeff_X_mul]
   simp only [map_add, map_natCast, coeff_add, coeff_one_sub_X_mul_derivative]
-  have hC :
-      (C (n + 2 : ℝ) * eulerianTilde n).coeff m =
-        (n + 2 : ℝ) * (eulerianTilde n).coeff m := by
-    grind
-  have hCpoly : ((n : ℝ[X]) + C 2) = C (n + 2 : ℝ) := by
-    simp
-  grind
+  rw [show ((n : ℝ[X]) + C 2) = C (n + 2 : ℝ) by simp, coeff_C_mul]
+  ring
 
 lemma coeff_eulerianTilde_top_and_above :
   ∀ n : Nat,
