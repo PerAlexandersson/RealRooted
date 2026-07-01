@@ -60,10 +60,8 @@ lemma coeff_stirlingPermutationsCoeffB_mul_derivative (k : Nat) (p : ℝ[X]) :
   cases k with
   | zero =>
       rw [hB, coeff_sub]
-      have h₁ : coeff (X * p.derivative) 1 = coeff p 1 := by
-        simp [coeff_derivative]
-      have h₂ : coeff (X * X * p.derivative) 1 = 0 := by
-        simp [mul_assoc]
+      have h₁ : coeff (X * p.derivative) 1 = coeff p 1 := by simp [coeff_derivative]
+      have h₂ : coeff (X * X * p.derivative) 1 = 0 := by simp [mul_assoc]
       simp [h₁, h₂]
   | succ k =>
       rw [hB, coeff_sub]

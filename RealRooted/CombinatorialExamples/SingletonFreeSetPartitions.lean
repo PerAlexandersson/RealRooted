@@ -93,32 +93,25 @@ lemma coeff_singletonFreeSetPartitions_top_pos_and_above :
         · have hsmall_pos : 0 < coeff (singletonFreeSetPartitions (n + 2)) ((n + 4) / 2 - 1) := by
             grind
           have hbig_zero : coeff (singletonFreeSetPartitions (n + 3)) ((n + 4) / 2) = 0 := by grind
-          have hidx : ((n + 4) / 2 - 1) + 1 = (n + 4) / 2 := by
-            lia
-          have hscale_eq : (((n + 2 : Nat) : ℝ) + 1) = (n + 3 : ℝ) := by
-            grind
+          have hidx : ((n + 4) / 2 - 1) + 1 = (n + 4) / 2 := by lia
+          have hscale_eq : (((n + 2 : Nat) : ℝ) + 1) = (n + 3 : ℝ) := by grind
           have hcoeff_eq :
               ((((n + 4) / 2 - 1 : Nat) : ℝ) + 1) = (((n + 4) / 2 : Nat) : ℝ) := by
             simp
           rw [hidx, hscale_eq, hcoeff_eq, hbig_zero]
-          have hscale : 0 < (n + 3 : ℝ) := by
-            positivity
+          have hscale : 0 < (n + 3 : ℝ) := by positivity
           nlinarith
         · have hsmall_pos : 0 < coeff (singletonFreeSetPartitions (n + 2)) ((n + 4) / 2 - 1) := by
             grind
           have hbig_pos : 0 < coeff (singletonFreeSetPartitions (n + 3)) ((n + 4) / 2) := by grind
-          have hidx : ((n + 4) / 2 - 1) + 1 = (n + 4) / 2 := by
-            lia
-          have hscale_eq : (((n + 2 : Nat) : ℝ) + 1) = (n + 3 : ℝ) := by
-            grind
+          have hidx : ((n + 4) / 2 - 1) + 1 = (n + 4) / 2 := by lia
+          have hscale_eq : (((n + 2 : Nat) : ℝ) + 1) = (n + 3 : ℝ) := by grind
           have hcoeff_eq :
               ((((n + 4) / 2 - 1 : Nat) : ℝ) + 1) = (((n + 4) / 2 : Nat) : ℝ) := by
             simp
           rw [hidx, hscale_eq, hcoeff_eq]
-          have hscale₁ : 0 < (n + 3 : ℝ) := by
-            positivity
-          have hscale₂ : 0 < (((n + 4) / 2 : Nat) : ℝ) := by
-            simp
+          have hscale₁ : 0 < (n + 3 : ℝ) := by positivity
+          have hscale₂ : 0 < (((n + 4) / 2 : Nat) : ℝ) := by simp
           nlinarith
       · intro m hm
         cases m with
@@ -232,8 +225,7 @@ lemma prec_singletonFreeSetPartitions_three_four :
       simpa [add_comm] using
         (Polynomial.natDegree_linear (a := (3 : ℝ)) (b := (1 : ℝ)) (by simp)))
   have hprec : Prec (1 : ℝ[X]) (1 + C (3 : ℝ) * X) := hlin.toPrec
-  have hone_nonpos : ∀ r ∈ (1 : ℝ[X]).roots, r ≤ 0 := by
-    simp
+  have hone_nonpos : ∀ r ∈ (1 : ℝ[X]).roots, r ≤ 0 := by simp
   have hlin_nonneg : HasNonnegCoeffs (1 + C (3 : ℝ) * X) := by
     have hX_nonneg : HasNonnegCoeffs (X : ℝ[X]) := by
       rintro (_ | _ | m) <;> simp [coeff_X]

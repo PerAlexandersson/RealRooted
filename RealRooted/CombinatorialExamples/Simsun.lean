@@ -77,8 +77,7 @@ lemma coeff_simsunCoeffB_mul_derivative (m : Nat) (p : ℝ[X]) :
   cases m with
   | zero =>
       rw [hB, coeff_sub]
-      have h₁ : coeff (X * p.derivative) 1 = coeff p 1 := by
-        simp [coeff_derivative]
+      have h₁ : coeff (X * p.derivative) 1 = coeff p 1 := by simp [coeff_derivative]
       have h₂ : coeff (C (2 : ℝ) * X * X * p.derivative) 1 = 0 := by
         rw [mul_assoc, mul_assoc, coeff_C_mul]
         simp
