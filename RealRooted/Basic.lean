@@ -426,8 +426,8 @@ lemma prec0_zero_zero : Prec0 (0 : ℝ[X]) 0 :=
 
 /-- The product of two real-rooted polynomials is real-rooted. -/
 lemma isRealRooted_mul {p q : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits)
-    (hq_ne : q ≠ 0) (hq_splits : q.Splits) : (p * q ≠ 0 ∧ (p * q).Splits) := by
-  exact ⟨mul_ne_zero hp_ne hq_ne, hp_splits.mul hq_splits⟩
+    (hq_ne : q ≠ 0) (hq_splits : q.Splits) : (p * q ≠ 0 ∧ (p * q).Splits) :=
+  ⟨mul_ne_zero hp_ne hq_ne, hp_splits.mul hq_splits⟩
 
 /-- Non-negative coefficients. -/
 def HasNonnegCoeffs (p : ℝ[X]) : Prop := ∀ n, 0 ≤ p.coeff n

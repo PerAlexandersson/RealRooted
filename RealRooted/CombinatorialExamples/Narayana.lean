@@ -275,8 +275,8 @@ private lemma prec_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
     have hr_nonpos :
         r ≤ 0 := roots_nonpos_of_nonneg_coeffs hInter.1.2 hnonneg r
           ((mem_roots hInter.1.1).mpr hr)
-    have hcoef_nonpos : (((-(n : ℝ)) / (n + 3 : ℝ)) : ℝ) ≤ 0 := by
-      exact div_nonpos_of_nonpos_of_nonneg (by simp) (by positivity)
+    have hcoef_nonpos : (((-(n : ℝ)) / (n + 3 : ℝ)) : ℝ) ≤ 0 :=
+      div_nonpos_of_nonpos_of_nonneg (by simp) (by positivity)
     have : (((-(n : ℝ)) / (n + 3 : ℝ)) : ℝ) * (1 - r) ^ 2 ≤ 0 :=
       mul_nonpos_of_nonpos_of_nonneg hcoef_nonpos (sq_nonneg (1 - r))
     simpa [narayanaCoeffB, eval_mul, eval_sub, eval_one, eval_X] using this
