@@ -51,8 +51,7 @@ def oneDescentQ (d m : Nat) : ℝ[X] :=
 lemma choose_cast_succ_eq_ratio (m j : Nat) :
     ((Nat.choose m (j + 1) : Nat) : ℝ) =
       ((Nat.choose m j : Nat) : ℝ) * (((m - j : Nat) : ℝ) / ((j + 1 : Nat) : ℝ)) := by
-  have hj1_ne : ((j + 1 : Nat) : ℝ) ≠ 0 := by
-    positivity
+  have hj1_ne : ((j + 1 : Nat) : ℝ) ≠ 0 := by positivity
   rw [← mul_div_assoc]
   apply (eq_div_iff hj1_ne).2
   exact_mod_cast (Nat.choose_succ_right_eq m j)
@@ -203,8 +202,7 @@ lemma oneDescentQ_one_succ (m : Nat) :
   rw [oneDescentCorrection_succ m, hpow]
   have hexp : m + 1 - 1 = m := by lia
   rw [hexp]
-  have hchoose : C ((Nat.choose (m + 1) 1 : Nat) : ℝ) = C ((m + 1 : Nat) : ℝ) := by
-    simp
+  have hchoose : C ((Nat.choose (m + 1) 1 : Nat) : ℝ) = C ((m + 1 : Nat) : ℝ) := by simp
   grind
 
 lemma prec_one_X_add_C (a : ℝ) :
@@ -223,10 +221,8 @@ lemma oneDescentGamma_adjacent_linearShift_le
     (m j : Nat) (hj : j + 1 < m) :
     (((m - (j + 1) : Nat) : ℝ) / ((j + 2 : Nat) : ℝ)) ≤
       (((m - j : Nat) : ℝ) / ((j + 1 : Nat) : ℝ)) := by
-  have hj1_pos : 0 < ((j + 1 : Nat) : ℝ) := by
-    positivity
-  have hj2_pos : 0 < ((j + 2 : Nat) : ℝ) := by
-    positivity
+  have hj1_pos : 0 < ((j + 1 : Nat) : ℝ) := by positivity
+  have hj2_pos : 0 < ((j + 2 : Nat) : ℝ) := by positivity
   have hstep : ((m - j : Nat) : ℝ) = ((m - (j + 1) : Nat) : ℝ) + 1 := by
     exact_mod_cast (show m - j = m - (j + 1) + 1 by lia)
   have hsucc : ((j + 2 : Nat) : ℝ) = ((j + 1 : Nat) : ℝ) + 1 := by grind

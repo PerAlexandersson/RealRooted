@@ -153,29 +153,22 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
               hprev_above (m + 1) (by lia)
             simp [hm_zero, hm_succ_zero]
       · set k : Nat := (n + 2) / 2 - 1
-        have hk_succ : k + 1 = (n + 2) / 2 := by
-          lia
+        have hk_succ : k + 1 = (n + 2) / 2 := by lia
         rw [show (n + 2) / 2 = k + 1 by lia, coeff_simsun_succ]
         rcases Nat.mod_two_eq_zero_or_one n with hpar | hpar
-        · have hk_eq : k = n / 2 := by
-            lia
-          have hprev_idx : (n + 1) / 2 = n / 2 := by
-            lia
-          have hprev_pos : 0 < coeff (simsun (n + 1)) k := by
-            lia
+        · have hk_eq : k = n / 2 := by lia
+          have hprev_idx : (n + 1) / 2 = n / 2 := by lia
+          have hprev_pos : 0 < coeff (simsun (n + 1)) k := by lia
           have hprev_zero : coeff (simsun (n + 1)) (k + 1) = 0 := by
             simp_all
           have hdouble : (2 : ℝ) * (k : ℝ) = (n : ℝ) := by
             exact_mod_cast (show 2 * k = n by lia)
           simp_all
-        · have hk_eq : k = n / 2 := by
-            lia
-          have hk_top : k + 1 = (n + 1) / 2 := by
-            lia
+        · have hk_eq : k = n / 2 := by lia
+          have hk_top : k + 1 = (n + 1) / 2 := by lia
           have hprev_nonneg_k : 0 ≤ coeff (simsun (n + 1)) k :=
             hprev_nonneg k
-          have hprev_pos : 0 < coeff (simsun (n + 1)) (k + 1) := by
-            lia
+          have hprev_pos : 0 < coeff (simsun (n + 1)) (k + 1) := by lia
           have hdouble : (2 : ℝ) * (k : ℝ) + 1 = (n : ℝ) := by
             exact_mod_cast (show 2 * k + 1 = n by lia)
           have hcast :
@@ -203,10 +196,8 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
             by_cases hk : (n + 1) / 2 < k
             · simp_all
             · have hk_le : k ≤ (n + 1) / 2 := le_of_not_gt hk
-              have hk_ge : (n + 2) / 2 ≤ k := by
-                lia
-              have hk_eq : k = (n + 1) / 2 := by
-                lia
+              have hk_ge : (n + 2) / 2 ≤ k := by lia
+              have hk_eq : k = (n + 1) / 2 := by lia
               have hdouble : (2 : ℝ) * (k : ℝ) = (((n + 1 : Nat) : ℝ)) := by
                 exact_mod_cast (show 2 * k = n + 1 by lia)
               simp_all

@@ -145,8 +145,7 @@ lemma coeff_sturmDerangementsExc_top_and_above :
       · intro m hm
         have hm' : 2 < m := by lia
         rw [sturmDerangementsExc_three]
-        have hX2 : coeff (X ^ 2 : ℝ[X]) m = 0 := by
-          grind
+        have hX2 : coeff (X ^ 2 : ℝ[X]) m = 0 := by grind
         have hX : coeff (X : ℝ[X]) m = 0 := by
           have hm1' : ¬1 = m := by lia
           simp [coeff_X, hm1']
@@ -160,8 +159,7 @@ lemma coeff_sturmDerangementsExc_top_and_above :
           hsmall_hi (n + 2) (by lia)
         have hbig_zero : coeff (sturmDerangementsExc (n + 3)) (n + 3) = 0 :=
           hbig_hi (n + 3) (by lia)
-        have hbig_top' : coeff (sturmDerangementsExc (n + 3)) (n + 2) = 1 := by
-          lia
+        have hbig_top' : coeff (sturmDerangementsExc (n + 3)) (n + 2) = 1 := by lia
         have htop :
             coeff (sturmDerangementsExc (n + 4)) (n + 3) = 1 := by
           rw [coeff_sturmDerangementsExc_succ (n + 1) (n + 2)]
@@ -447,8 +445,7 @@ lemma X_add_one_dvd_recurrenceCoreSturmDerangementsExc_of_even {n : Nat}
     X + 1 ∣ recurrenceCoreSturmDerangementsExc n := by
   rw [recurrenceCoreSturmDerangementsExc]
   apply dvd_add
-  · have hodd : Odd (n - 1) := by
-      grind
+  · have hodd : Odd (n - 1) := by grind
     exact dvd_mul_of_dvd_right (X_add_one_dvd_sturmDerangementsExc_of_odd hodd) (C (n : ℝ))
   · exact X_add_one_dvd_affine_sturmDerangementsExc_of_even hn h2
 

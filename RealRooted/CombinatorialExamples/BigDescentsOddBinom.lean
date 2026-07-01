@@ -156,8 +156,7 @@ lemma oddBinom_eval_sq_eq_zero_iff_pow_eq (n : ℕ) {y : ℂ} (hy : y ≠ 0) :
     (oddBinomPoly n).eval (y ^ 2) = 0 ↔ (1 + y) ^ n = (1 - y) ^ n := by
   constructor
   · intro hzero
-    have hleft : (2 : ℂ) * y * (oddBinomPoly n).eval (y ^ 2) = 0 := by
-      simp [hzero]
+    have hleft : (2 : ℂ) * y * (oddBinomPoly n).eval (y ^ 2) = 0 := by simp [hzero]
     rw [oddBinom_eval_sq_identity] at hleft
     grind
   · intro hpow
