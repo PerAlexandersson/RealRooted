@@ -196,9 +196,8 @@ private lemma prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos_local {f g : ℝ[
   set rs_f := f.roots.sort (· ≤ ·)
   have hrs_f_eq : (↑rs_f : Multiset ℝ) = f.roots := Multiset.sort_eq ..
   have hrs_f : rs_f.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
-  have hrs_f_nonpos : ∀ r ∈ rs_f, r ≤ 0 := by
-    intro r hr
-    exact hf_nonpos r (by rw [← hrs_f_eq]; exact Multiset.mem_coe.mpr hr)
+  have hrs_f_nonpos : ∀ r ∈ rs_f, r ≤ 0 :=
+    fun r hr => hf_nonpos r (by rw [← hrs_f_eq]; exact Multiset.mem_coe.mpr hr)
   have hrs_f0 : (rs_f ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by
     grind
   have hXf_roots : (X * f).roots = {0} + f.roots := by
@@ -805,9 +804,8 @@ private lemma interlaces_of_prec_sameDegree_rightmost_factor_local
     have hqs_len : qs.length = q.natDegree := by
       rw [show qs = q.roots.sort (· ≤ ·) by lia, Multiset.length_sort,
         card_roots_of_splits hq.2]
-    have hqs_le_uR : ∀ r ∈ qs, r ≤ uR := by
-      intro r hr
-      exact hright r (by
+    have hqs_le_uR : ∀ r ∈ qs, r ≤ uR :=
+      fun r hr => hright r (by
         rw [hgq, roots_mul (mul_ne_zero (X_sub_C_ne_zero uR) hq_ne), roots_X_sub_C]
         apply Multiset.mem_add.mpr
         right
@@ -2770,9 +2768,9 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
     by_cases hqPosη_pos : 0 < qPosη.eval r
     · have hqNegη_neg : qNegη.eval r < 0 := by
         have hqNegη_ne : qNegη.eval r ≠ 0 := hqNegη_eval_ne
-        have hqNegη_not_pos : ¬ 0 < qNegη.eval r := by
-          intro hqNegη_pos
-          exact (not_lt_of_ge (le_of_lt hqOpp)) (mul_pos hqPosη_pos hqNegη_pos)
+        have hqNegη_not_pos : ¬ 0 < qNegη.eval r :=
+          fun hqNegη_pos =>
+            (not_lt_of_ge (le_of_lt hqOpp)) (mul_pos hqPosη_pos hqNegη_pos)
         grind
       have hpp_neg : pη.derivative.derivative.eval r < 0 :=
         (neg_iff_pos_of_mul_neg hprodPos_neg).mpr hqPosη_pos
@@ -2787,9 +2785,9 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
         grind
       have hqNegη_pos : 0 < qNegη.eval r := by
         have hqNegη_ne : qNegη.eval r ≠ 0 := hqNegη_eval_ne
-        have hqNegη_not_neg : ¬ qNegη.eval r < 0 := by
-          intro hqNegη_neg
-          exact (not_lt_of_ge (le_of_lt hqOpp)) (mul_pos_of_neg_of_neg hqPosη_neg hqNegη_neg)
+        have hqNegη_not_neg : ¬ qNegη.eval r < 0 :=
+          fun hqNegη_neg =>
+            (not_lt_of_ge (le_of_lt hqOpp)) (mul_pos_of_neg_of_neg hqPosη_neg hqNegη_neg)
         grind
       have hpp_pos : 0 < pη.derivative.derivative.eval r :=
         (pos_iff_neg_of_mul_neg hprodPos_neg).mpr hqPosη_neg
@@ -3177,9 +3175,8 @@ private theorem exists_roots_strictly_interlacing_of_consecutive_exists {F : ℝ
           (F := F) (r₂ :: rest) htail_sorted
           (fun pre {a b tail} hEq => by
             grind)
-      have hu_lt_all : ∀ w ∈ us, u < w := by
-        intro w hw
-        exact lt_of_lt_of_le hu₂ (listInterlaces_all_ge us rest r₂ hus_int w hw)
+      have hu_lt_all : ∀ w ∈ us, u < w :=
+        fun w hw => lt_of_lt_of_le hu₂ (listInterlaces_all_ge us rest r₂ hus_int w hw)
       refine ⟨u :: us, ?_, ?_, ?_, ?_⟩
       · simp_all
       · exact ⟨le_of_lt hu₁, le_of_lt hu₂, hus_int⟩
