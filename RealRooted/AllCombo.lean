@@ -127,8 +127,7 @@ lemma hasSimpleRoots_tderiv
   intro a ha
   have hdeg : 1 ≤ p.natDegree := by
     by_cases h0 : p.natDegree = 0
-    · have hp_eq : p = C (p.coeff 0) := by
-        simpa using eq_C_of_natDegree_eq_zero h0
+    · have hp_eq : p = C (p.coeff 0) := by simpa using eq_C_of_natDegree_eq_zero h0
       have hT_eq : TDeriv eps p = p := by
         rw [hp_eq, TDeriv, derivative_C]
         ring

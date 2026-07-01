@@ -201,8 +201,7 @@ lemma CoeffLogConcaveUpTo.no_strict_increase_after_max {d : ℕ} {a : ℕ → �
         hlc.strict_increase_prev hnonneg (by lia) (by lia) hcurr hk_ne
     · intro _ _
       simpa [Nat.add_sub_cancel] using hrise
-  have hfirst : a m < a (m + 1) := by
-    simpa using hprop (m + 1) (by lia) (by lia)
+  have hfirst : a m < a (m + 1) := by simpa using hprop (m + 1) (by lia) (by lia)
   have hmax_first : a (m + 1) ≤ a m :=
     hmax (m + 1) (by lia)
   linarith

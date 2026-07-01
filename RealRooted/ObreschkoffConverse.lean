@@ -851,8 +851,7 @@ private lemma false_of_allComboRealRooted_of_double_root_and_eval_ne_of_pos
       C 1 * p + C β * q ≠ 0 := by
     intro hzero
     have heval := congrArg (fun r : ℝ[X] => r.eval x) hzero
-    have heval0 : p.eval x + β * q.eval x = 0 := by
-      simpa using heval
+    have heval0 : p.eval x + β * q.eval x = 0 := by simpa using heval
     simp_all
   have hcombo_rr : (C 1 * p + C β * q).Splits := hall 1 β
   have hcombo_eval_ne :

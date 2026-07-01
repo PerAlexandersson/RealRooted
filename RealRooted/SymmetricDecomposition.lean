@@ -668,8 +668,7 @@ theorem isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs
     ((fPolynomial d p) ≠ 0 ∧ (fPolynomial d p).Splits) := by
   induction d generalizing p with
   | zero =>
-      have hpC : p = C (p.coeff 0) := by
-        simpa using (Polynomial.eq_C_of_natDegree_le_zero hpdeg)
+      have hpC : p = C (p.coeff 0) := by simpa using (Polynomial.eq_C_of_natDegree_le_zero hpdeg)
       rw [hpC]
       have hfp : fPolynomial 0 (C (p.coeff 0)) = C (p.coeff 0) := by
         simp [fPolynomial]
