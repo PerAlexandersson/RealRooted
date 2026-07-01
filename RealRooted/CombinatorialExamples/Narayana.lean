@@ -117,7 +117,8 @@ private lemma narayanaCoeffB_natDegree (n : Nat) (hn : 1 ≤ n) :
   have hcoeff_ne : ((-(n : ℝ)) / (n + 3 : ℝ)) ≠ 0 :=
     div_ne_zero (neg_ne_zero.mpr (by exact_mod_cast Nat.ne_of_gt hn)) (by positivity)
   have hmul_ne :
-      (C ((-(n : ℝ)) / (n + 3 : ℝ))).leadingCoeff * ((1 - X : ℝ[X]) ^ 2).leadingCoeff ≠ 0 := by
+      (C ((-(n : ℝ)) / (n + 3 : ℝ))).leadingCoeff *
+        ((1 - X : ℝ[X]) ^ 2).leadingCoeff ≠ 0 := by
     rw [leadingCoeff_C, leadingCoeff_one_sub_X_sq]
     simpa using hcoeff_ne
   rw [natDegree_mul' hmul_ne, natDegree_C, natDegree_one_sub_X_sq]
@@ -128,7 +129,8 @@ private lemma narayanaCoeffB_leadingCoeff (n : Nat) (hn : 1 ≤ n) :
   have hcoeff_ne : ((-(n : ℝ)) / (n + 3 : ℝ)) ≠ 0 :=
     div_ne_zero (neg_ne_zero.mpr (by exact_mod_cast Nat.ne_of_gt hn)) (by positivity)
   have hmul_ne :
-      (C ((-(n : ℝ)) / (n + 3 : ℝ))).leadingCoeff * ((1 - X : ℝ[X]) ^ 2).leadingCoeff ≠ 0 := by
+      (C ((-(n : ℝ)) / (n + 3 : ℝ))).leadingCoeff *
+        ((1 - X : ℝ[X]) ^ 2).leadingCoeff ≠ 0 := by
     rw [leadingCoeff_C, leadingCoeff_one_sub_X_sq]
     simpa using hcoeff_ne
   rw [leadingCoeff_mul' hmul_ne, leadingCoeff_C, leadingCoeff_one_sub_X_sq]

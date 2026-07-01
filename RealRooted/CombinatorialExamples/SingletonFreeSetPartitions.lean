@@ -90,7 +90,8 @@ lemma coeff_singletonFreeSetPartitions_top_pos_and_above :
       · rw [show (n + 4) / 2 = ((n + 4) / 2 - 1) + 1 by lia,
           coeff_singletonFreeSetPartitions_succ_succ]
         rcases Nat.mod_two_eq_zero_or_one n with hpar | hpar
-        · have hsmall_pos : 0 < coeff (singletonFreeSetPartitions (n + 2)) ((n + 4) / 2 - 1) := by
+        · have hsmall_pos :
+              0 < coeff (singletonFreeSetPartitions (n + 2)) ((n + 4) / 2 - 1) := by
             grind
           have hbig_zero : coeff (singletonFreeSetPartitions (n + 3)) ((n + 4) / 2) = 0 := by grind
           have hidx : ((n + 4) / 2 - 1) + 1 = (n + 4) / 2 := by lia
@@ -101,7 +102,8 @@ lemma coeff_singletonFreeSetPartitions_top_pos_and_above :
           rw [hidx, hscale_eq, hcoeff_eq, hbig_zero]
           have hscale : 0 < (n + 3 : ℝ) := by positivity
           nlinarith
-        · have hsmall_pos : 0 < coeff (singletonFreeSetPartitions (n + 2)) ((n + 4) / 2 - 1) := by
+        · have hsmall_pos :
+              0 < coeff (singletonFreeSetPartitions (n + 2)) ((n + 4) / 2 - 1) := by
             grind
           have hbig_pos : 0 < coeff (singletonFreeSetPartitions (n + 3)) ((n + 4) / 2) := by grind
           have hidx : ((n + 4) / 2 - 1) + 1 = (n + 4) / 2 := by lia
