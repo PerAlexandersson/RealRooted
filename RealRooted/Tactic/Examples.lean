@@ -1,5 +1,6 @@
 import RealRooted.Tactic.Examples.Attr
 import RealRooted.Tactic.Examples.SideGoals
+import RealRooted.Tactic.Examples.Lookup
 import RealRooted.Tactic.Examples.Finish
 import RealRooted.Tactic.Examples.Favard
 import RealRooted.Tactic.Examples.MaWang

@@ -1,4 +1,5 @@
 import Lean
+import Batteries.Lean.TagAttribute
 
 /-!
 # Certificate attributes for RealRooted tactics
@@ -98,12 +99,7 @@ def rrCertificateAttributes : Array (Name × Lean.TagAttribute) :=
   ]
 
 private def taggedDecls (env : Environment) (attr : Lean.TagAttribute) : Array Name :=
-  Id.run do
-    let mut names := #[]
-    for (declName, _) in env.constants do
-      if attr.hasTag env declName then
-        names := names.push declName
-    return names.qsort Name.quickLt
+  (attr.getDecls env).qsort Name.quickLt
 
 private def namesString (names : Array Name) : String :=
   if names.isEmpty then

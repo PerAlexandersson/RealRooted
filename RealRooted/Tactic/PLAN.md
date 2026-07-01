@@ -128,6 +128,8 @@ The first certificate-driven layer is implemented.
 - `Attr.lean` defines tag attributes for recurrence, degree, sign, base-case,
   and matrix certificates, plus `#rr_certificates` / `rr_certificates` for
   inspecting visible tagged declarations.
+- `Lookup.lean` defines `rr_lookup`, a conservative exact lookup tactic using
+  local hypotheses first and unique tagged certificates second.
 - `SideGoals.lean` defines `rr_side`, a conservative side-goal closer.
 - `Finish.lean` defines small proof-tail dispatchers that consume `Prec`
   certificates.
