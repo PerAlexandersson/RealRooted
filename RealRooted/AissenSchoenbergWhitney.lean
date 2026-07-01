@@ -154,9 +154,7 @@ theorem not_aissenSchoenbergWhitneyForward_without_nonzero :
   intro h
   have hnn : HasNonnegCoeffs (0 : ℝ[X]) := by
     simp [HasNonnegCoeffs]
-  have hpf : IsPolyaFreqSeq (fun n => (0 : ℝ[X]).coeff n) := by
-    simpa using IsPolyaFreqSeq_zero
-  have hbad := h hnn hpf
+  have hbad := h hnn (by simpa using IsPolyaFreqSeq_zero)
   exact hbad.1.1 rfl
 
 lemma toeplitz_one_coeff : toeplitz (fun n ↦ (1 : ℝ[X]).coeff n) = 1 := by
