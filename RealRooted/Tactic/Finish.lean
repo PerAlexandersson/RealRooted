@@ -1,4 +1,5 @@
 import RealRooted.Basic
+import RealRooted.Tactic.Lookup
 import RealRooted.Tactic.SideGoals
 
 /-!
@@ -81,6 +82,7 @@ macro_rules
   | `(tactic| rr_finish) =>
       `(tactic|
         first
+          | rr_lookup
           | assumption
           | simp_all [
               RealRooted.Prec,

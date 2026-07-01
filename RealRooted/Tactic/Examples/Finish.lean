@@ -72,5 +72,11 @@ example : IsSturmSeq ([] : List ℝ[X]) := by
 example (p : ℝ[X]) : IsGeneralizedSturmSeq [p] := by
   rr_sturm_base
 
+@[rr_nonzero] theorem rr_finish_true_smoke : True := by
+  trivial
+
+example : True := by
+  rr_finish
+
 end Tactic
 end RealRooted
