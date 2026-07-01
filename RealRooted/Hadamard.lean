@@ -93,11 +93,6 @@ theorem HasNonnegCoeffs.hadamardProduct {p q : ℝ[X]}
   intro n
   simpa using mul_nonneg (hp n) (hq n)
 
-theorem hasNonnegCoeffs_hadamardProduct {p q : ℝ[X]}
-    (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q) :
-    HasNonnegCoeffs (hadamardProduct p q) :=
-  hp.hadamardProduct hq
-
 /-- **Odd/even Hadamard identity.**  The coefficientwise Hadamard product
 commutes with the odd/even construction `oddEvenPolynomial p q = q(x²) + x·p(x²)`:
 the even coefficients multiply the `q`-parts and the odd coefficients multiply
