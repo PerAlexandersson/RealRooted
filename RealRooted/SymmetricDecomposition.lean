@@ -2661,63 +2661,6 @@ private lemma exists_root_upper_bound_lt_zero_of_hasNonnegCoeffs_of_not_isRoot_z
           (mem_roots hp_rr_ne).mpr hc_root
       grind
 
-private lemma interlaces_of_prec_sameDegree_rightmost_factor
-    {f g q : ℝ[X]} {uR : ℝ}
-    (hfg : Prec f g)
-    (hdeg : f.natDegree = g.natDegree)
-    (hright : ∀ r ∈ g.roots, r ≤ uR)
-    (hgq : g = (X - C uR) * q) :
-    Interlaces q f := by
-  obtain ⟨hf, hg, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩ := hfg
-  have hss_len : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
-  have hrs_len : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
-  have hq_ne : q ≠ 0 := by
-    simp_all
-  have hq : (q ≠ 0 ∧ q.Splits) := by
-    apply isRealRooted_of_dvd hg.1 hg.2 hq_ne
-    simp_all
-  have hq_deg_g : q.natDegree + 1 = g.natDegree := by
-    rw [hgq, natDegree_mul (X_sub_C_ne_zero uR) hq_ne, natDegree_X_sub_C]
-    lia
-  have hq_deg : q.natDegree + 1 = f.natDegree := by
-    lia
-  rcases hshape with ⟨hlen, _⟩ | ⟨_, halt⟩
-  · lia
-  · let qs := q.roots.sort (· ≤ ·)
-    have hqs_eq : (↑qs : Multiset ℝ) = q.roots := Multiset.sort_eq ..
-    have hqs_sorted : qs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
-    have hqs_len : qs.length = q.natDegree := by
-      rw [show qs = q.roots.sort (· ≤ ·) by lia, Multiset.length_sort,
-        card_roots_of_splits hq.2]
-    have hqs_le_uR : ∀ r ∈ qs, r ≤ uR :=
-      fun r hr => hright r (by
-        rw [hgq, roots_mul (mul_ne_zero (X_sub_C_ne_zero uR) hq_ne), roots_X_sub_C]
-        apply Multiset.mem_add.mpr
-        right
-        simpa [hqs_eq] using Multiset.mem_coe.mpr hr)
-    have hqs_sorted_right : (qs ++ [uR]).Pairwise (· ≤ ·) := by
-      grind
-    have hrs_eq_right : rs = qs ++ [uR] := by
-      apply List.Perm.eq_of_pairwise' hrs_sorted hqs_sorted_right
-      apply Multiset.coe_eq_coe.mp
-      calc
-        (↑rs : Multiset ℝ) = g.roots := hrs_eq
-        _ = ({uR} : Multiset ℝ) + q.roots := by
-              rw [hgq, roots_mul (mul_ne_zero (X_sub_C_ne_zero uR) hq_ne), roots_X_sub_C]
-        _ = q.roots + ({uR} : Multiset ℝ) := by grind
-        _ = q.roots + ↑[uR] := by simp
-        _ = (↑qs : Multiset ℝ) + ↑[uR] := by lia
-        _ = (↑(qs ++ [uR]) : Multiset ℝ) := by rw [Multiset.coe_add]
-    have hlen_qs : qs.length + 1 = ss.length := by
-      lia
-    have halt_right : ListAlternates ss (qs ++ [uR]) := by
-      lia
-    have hshape_qs_rs : ListInterlaces qs ss :=
-      listInterlaces_of_listAlternates_append_right hlen_qs halt_right
-    exact ⟨hf, hq, hq_deg, ss, qs, hss_sorted, hqs_sorted, hss_eq, hqs_eq, hshape_qs_rs⟩
-
 private theorem prec_b_component_of_prec_left_top_of_sameDegree
     {d : ℕ} {p a b : ℝ[X]}
     (hid : IsIdDecomposition d p a b)

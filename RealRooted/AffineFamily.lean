@@ -179,41 +179,6 @@ private lemma prec_right_pair_of_common_root_factor
     prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hprec_q
   grind
 
-private lemma prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos_local {f g : ℝ[X]}
-    (h : Prec g (X * f))
-    (hdeg : f.natDegree = g.natDegree)
-    (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
-    Prec f g := by
-  rcases h with ⟨hg, hXf, ss_g, rs_Xf, hss_g, hrs_Xf, hss_g_eq, hrs_Xf_eq, hshape⟩
-  have hf : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_X_mul hXf.1 hXf.2
-  set rs_f := f.roots.sort (· ≤ ·)
-  have hrs_f_eq : (↑rs_f : Multiset ℝ) = f.roots := Multiset.sort_eq ..
-  have hrs_f : rs_f.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
-  have hrs_f_nonpos : ∀ r ∈ rs_f, r ≤ 0 :=
-    fun r hr => hf_nonpos r (by rw [← hrs_f_eq]; exact Multiset.mem_coe.mpr hr)
-  have hrs_f0 : (rs_f ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by grind
-  have hXf_roots : (X * f).roots = {0} + f.roots := by
-    rw [roots_mul (mul_ne_zero X_ne_zero hf.1), roots_X]
-  have hrs_Xf_is : rs_Xf = rs_f ++ [(0 : ℝ)] := by
-    have hmultiset_eq : (↑rs_Xf : Multiset ℝ) = ↑(rs_f ++ [(0 : ℝ)]) := by
-      rw [hrs_Xf_eq, hXf_roots, ← hrs_f_eq, ← Multiset.coe_add]
-      simp [add_comm]
-    exact List.Perm.eq_of_pairwise' hrs_Xf hrs_f0 (Multiset.coe_eq_coe.mp hmultiset_eq)
-  have hlen_fg : rs_f.length = ss_g.length := by
-    rw [← Multiset.coe_card, hrs_f_eq, card_roots_of_splits hf.2,
-      ← Multiset.coe_card, hss_g_eq, card_roots_of_splits hg.2, hdeg]
-  rcases hshape with ⟨hlen, hint⟩ | ⟨hlen, _⟩
-  · rw [hrs_Xf_is] at hint hlen
-    have hlen' : ss_g.length + 1 = (rs_f ++ [(0 : ℝ)]).length := by lia
-    have hrs_f0_nonpos : ∀ r ∈ rs_f ++ [(0 : ℝ)], r ≤ 0 := by grind
-    have halt0 :
-        ListAlternates (rs_f ++ [(0 : ℝ)]) (ss_g ++ [(0 : ℝ)]) :=
-      listAlternates_append_zero ss_g (rs_f ++ [(0 : ℝ)]) hlen' hint hrs_f0_nonpos
-    have halt : ListAlternates rs_f ss_g :=
-      listAlternates_of_append_zero_both rs_f ss_g hlen_fg halt0
-    exact ⟨hf, hg, rs_f, ss_g, hrs_f, hss_g, hrs_f_eq, hss_g_eq, Or.inr ⟨hlen_fg, halt⟩⟩
-  · simp_all
-
 /-- Backward Wagner wrapper used in the affine-family endgame:
 once the right-hand pair `(g, X * f)` is oriented, nonnegative coefficients
 recover the original conclusion `Prec f g`. -/
@@ -233,7 +198,7 @@ lemma prec_of_prec_mul_X_of_nonneg {f g : ℝ[X]}
       rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hXf.2]
     have hdeg : f.natDegree = g.natDegree := by simp_all
     exact
-      prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos_local
+      prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos
         h hdeg hf_nonpos
   · have hss_len : ss.length = g.natDegree := by
       rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hg.2]
@@ -758,68 +723,6 @@ private lemma isRealRooted_iterate_derivative_of_lt_natDegree
           (fun h0 => False.elim (hnonzero h0))
           id
 
-/-- In the same-degree `Prec` case, removing a rightmost root of the right-hand
-polynomial turns the quotient into an honest differ-by-1 interlacer for the
-left-hand polynomial. This is the local `AffineFamily` copy of the root-list
-combinatorics that will be needed in the remaining same-degree sign transport
-arguments. -/
-private lemma interlaces_of_prec_sameDegree_rightmost_factor_local
-    {f g q : ℝ[X]} {uR : ℝ}
-    (hfg : Prec f g)
-    (hdeg : f.natDegree = g.natDegree)
-    (hright : ∀ r ∈ g.roots, r ≤ uR)
-    (hgq : g = (X - C uR) * q) :
-    Interlaces q f := by
-  obtain ⟨hf, hg, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩ := hfg
-  have hss_len : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
-  have hrs_len : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
-  have hq_ne : q ≠ 0 := by
-    grind
-  have hq : (q ≠ 0 ∧ q.Splits) :=
-    isRealRooted_of_dvd hg.1 hg.2 hq_ne (by simp_all)
-  have hq_deg_g : q.natDegree + 1 = g.natDegree := by
-    rw [hgq, natDegree_mul (X_sub_C_ne_zero uR) hq_ne, natDegree_X_sub_C]
-    lia
-  have hq_deg : q.natDegree + 1 = f.natDegree := by
-    lia
-  rcases hshape
-  · lia
-  · let qs := q.roots.sort (· ≤ ·)
-    have hqs_eq : (↑qs : Multiset ℝ) = q.roots := Multiset.sort_eq ..
-    have hqs_sorted : qs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
-    have hqs_len : qs.length = q.natDegree := by
-      rw [show qs = q.roots.sort (· ≤ ·) by lia, Multiset.length_sort,
-        card_roots_of_splits hq.2]
-    have hqs_le_uR : ∀ r ∈ qs, r ≤ uR :=
-      fun r hr => hright r (by
-        rw [hgq, roots_mul (mul_ne_zero (X_sub_C_ne_zero uR) hq_ne), roots_X_sub_C]
-        apply Multiset.mem_add.mpr
-        right
-        rw [← hqs_eq]
-        exact Multiset.mem_coe.mpr hr)
-    have hqs_sorted_right : (qs ++ [uR]).Pairwise (· ≤ ·) := by
-      grind
-    have hrs_eq_right : rs = qs ++ [uR] := by
-      apply List.Perm.eq_of_pairwise' hrs_sorted hqs_sorted_right
-      apply Multiset.coe_eq_coe.mp
-      calc
-        (↑rs : Multiset ℝ) = g.roots := hrs_eq
-        _ = ({uR} : Multiset ℝ) + q.roots := by
-              rw [hgq, roots_mul (mul_ne_zero (X_sub_C_ne_zero uR) hq_ne), roots_X_sub_C]
-        _ = q.roots + ({uR} : Multiset ℝ) := by grind
-        _ = q.roots + ↑[uR] := by simp
-        _ = (↑qs : Multiset ℝ) + ↑[uR] := by lia
-        _ = (↑(qs ++ [uR]) : Multiset ℝ) := by rw [Multiset.coe_add]
-    have hlen_qs : qs.length + 1 = ss.length := by
-      lia
-    have halt_right : ListAlternates ss (qs ++ [uR]) := by
-      lia
-    have hshape_qs_rs : ListInterlaces qs ss :=
-      listInterlaces_of_listAlternates_append_right hlen_qs halt_right
-    exact ⟨hf, hq, hq_deg, ss, qs, hss_sorted, hqs_sorted, hss_eq, hqs_eq, hshape_qs_rs⟩
-
 /-- Packaged same-degree rightmost-factor reduction for later sign arguments:
 from `Prec f g`, choose the rightmost root of `g`, factor it off, and retain a
 genuine differ-by-1 `Interlaces` witness for the quotient against `f`, together
@@ -841,7 +744,7 @@ theorem exists_rightmost_factor_interlaces_of_prec_sameDegree
   obtain ⟨q, hq⟩ := dvd_iff_isRoot.mpr huR_root
   exact
     ⟨uR, q, hq, huR_root, huR_max,
-      interlaces_of_prec_sameDegree_rightmost_factor_local
+      interlaces_of_prec_sameDegree_rightmost_factor
         (f := f) (g := g) (q := q) (uR := uR)
         hprec_keep hdeg huR_max hq⟩
 
