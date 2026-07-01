@@ -69,15 +69,6 @@ lemma rootSeqDesc_eq_reverse_of_pairwise
   · grind
   · exact Multiset.coe_eq_coe.mp (by simp [rootSeqDesc, hrs_eq, Multiset.sort_eq])
 
-lemma natDegree_bounds_of_prec {f g : ℝ[X]} (hfg : Prec f g) :
-    f.natDegree ≤ g.natDegree ∧ g.natDegree ≤ f.natDegree + 1 := by
-  rcases hfg with ⟨hf, hg, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
-  have hss_len : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
-  have hrs_len : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
-  lia
-
 /-- The `j`th Chudnovsky--Seymour interval attached to a descending root
 sequence `rs = [r₁, ..., r_d]`.
 

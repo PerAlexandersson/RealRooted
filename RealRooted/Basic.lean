@@ -270,6 +270,15 @@ def Prec (f g : ℝ[X]) : Prop := (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Spli
     ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
       (ss.length = rs.length ∧ ListAlternates ss rs))
 
+lemma natDegree_bounds_of_prec {f g : ℝ[X]} (hfg : Prec f g) :
+    f.natDegree ≤ g.natDegree ∧ g.natDegree ≤ f.natDegree + 1 := by
+  rcases hfg with ⟨hf, hg, ss, rs, _, _, hss_eq, hrs_eq, _⟩
+  have hss_len : ss.length = f.natDegree := by
+    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
+  have hrs_len : rs.length = g.natDegree := by
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
+  lia
+
 /-- Every root of the left-hand polynomial is bounded by any common upper bound
 for the roots of the right-hand polynomial in a `Prec` witness. -/
 theorem roots_le_of_prec_right {f g : ℝ[X]} {c : ℝ}

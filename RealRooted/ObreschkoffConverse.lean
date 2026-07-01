@@ -142,73 +142,6 @@ private lemma exists_delta_wronskian_iterateTDeriv_eval_mul_pos_joint_at_zero
         (by simpa [Real.norm_eq_abs, abs_of_pos hx_pos] using hclose')
     simp_all
 
-private lemma natDegree_bounds_of_prec_local {f g : ℝ[X]} (hfg : Prec f g) :
-    f.natDegree ≤ g.natDegree ∧ g.natDegree ≤ f.natDegree + 1 := by
-  rcases hfg with ⟨hf, hg, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
-  have hss_len : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
-  have hrs_len : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
-  lia
-
-private lemma listInterlaces_left_le_of_right_le_local {ss rs : List ℝ} {c : ℝ}
-    (hint : ListInterlaces ss rs)
-    (hrs : ∀ r ∈ rs, r ≤ c) :
-    ∀ s ∈ ss, s ≤ c := by
-  induction ss generalizing rs with
-  | nil =>
-      simp
-  | cons s ss ih =>
-      cases rs with
-      | nil =>
-          simp [ListInterlaces] at hint
-      | cons r₁ rs' =>
-          cases rs' with
-          | nil =>
-              simp [ListInterlaces] at hint
-          | cons r₂ rs'' =>
-              rcases hint with ⟨hr₁s, hs_r₂, htail⟩
-              intro t ht
-              simp only [List.mem_cons] at ht
-              rcases ht with rfl | ht
-              · exact le_trans hs_r₂ (hrs r₂ (by simp))
-              · grind
-
-private lemma listAlternates_left_le_of_right_le_local {ss rs : List ℝ} {c : ℝ}
-    (halt : ListAlternates ss rs)
-    (hrs : ∀ r ∈ rs, r ≤ c) :
-    ∀ s ∈ ss, s ≤ c := by
-  induction ss generalizing rs with
-  | nil =>
-      simp
-  | cons s ss ih =>
-      cases rs with
-      | nil =>
-          simp [ListAlternates] at halt
-      | cons r rs' =>
-          rcases halt with ⟨hsr, htail⟩
-          intro t ht
-          simp only [List.mem_cons] at ht
-          rcases ht with rfl | ht
-          · exact le_trans hsr (hrs r (by simp))
-          · exact listInterlaces_left_le_of_right_le_local htail
-              (fun x hx => hrs x (by lia)) t ht
-
-private lemma roots_le_of_prec_right_local {f g : ℝ[X]} {c : ℝ}
-    (h : Prec f g)
-    (hg_le : ∀ r ∈ g.roots, r ≤ c) :
-    ∀ r ∈ f.roots, r ≤ c := by
-  rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
-  have hrs_le : ∀ r ∈ rs, r ≤ c :=
-    fun r hr => hg_le r (by rw [← hrs_eq]; exact Multiset.mem_coe.mpr hr)
-  intro r hr
-  have hr' : r ∈ ss := by
-    have : r ∈ (↑ss : Multiset ℝ) := by lia
-    exact Multiset.mem_coe.mp this
-  rcases hshape with ⟨_, hint⟩ | ⟨_, halt⟩
-  · exact listInterlaces_left_le_of_right_le_local hint hrs_le r hr'
-  · exact listAlternates_left_le_of_right_le_local halt hrs_le r hr'
-
 private lemma listInterlaces_tail_pair_prod_nonneg_local :
     ∀ {ss : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ},
       r₁ ≤ r₂ →
@@ -1518,7 +1451,7 @@ private theorem prec_iterateTDeriv_of_allComboRealRooted_succ_of_no_common
   dsimp
   rcases hprec_iter with hfg | hgf
   · exact hfg
-  · have hbounds := natDegree_bounds_of_prec_local hgf
+  · have hbounds := natDegree_bounds_of_prec hgf
     lia
 
 /-- Same-degree companion to
@@ -2427,7 +2360,7 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
           hf.1 hf.2 hg.1 hg.2 hcombo_original (Or.inl hsucc) hno
       rcases hprec_or with hfg | hgf
       · lia
-      · have hbounds := natDegree_bounds_of_prec_local hgf
+      · have hbounds := natDegree_bounds_of_prec hgf
         lia
     · intro hsame
       exact
@@ -2669,7 +2602,7 @@ private lemma root_lt_rightmost_of_prec_sameDegree_no_common
     ∀ r, f.IsRoot r → r < uR := by
   intro r hr
   have hr_le : r ≤ uR :=
-    roots_le_of_prec_right_local hfg huR_max r ((mem_roots hfg.1.1).mpr hr)
+    roots_le_of_prec_right hfg huR_max r ((mem_roots hfg.1.1).mpr hr)
   grind
 
 private lemma hasPosLeadingCoeff_of_right_factor
@@ -2981,7 +2914,7 @@ private theorem allComboRealRooted_of_prec_sameDegree
 theorem allComboRealRooted_of_prec {f g : ℝ[X]}
     (hfg : Prec f g) :
     AllComboRealRooted f g := by
-  have hdeg_bounds := natDegree_bounds_of_prec_local hfg
+  have hdeg_bounds := natDegree_bounds_of_prec hfg
   have hdeg :
       f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by
     lia
@@ -3017,7 +2950,7 @@ theorem derivative_prec0_of_prec_succDegree {f g : ℝ[X]}
   rcases prec_of_allComboRealRooted hfrr.1 hfrr.2 hgrr.1 hgrr.2 hall hdeg' with hprec | hrev
   · exact hprec.toPrec0
   · exfalso
-    exact absurd (natDegree_bounds_of_prec_local hrev).1 (by lia)
+    exact absurd (natDegree_bounds_of_prec hrev).1 (by lia)
 
 /-- In the same-degree case, existing Obreschkoff machinery gives the
 derivative pair in proper position up to orientation.  The remaining standard
@@ -3337,7 +3270,7 @@ theorem derivativePreservesPrec0_of_sameDegree
     exact prec0_zero_left _
   · rw [hgzero, derivative_zero]
     exact prec0_zero_right _
-  · have hbounds := natDegree_bounds_of_prec_local hfg'
+  · have hbounds := natDegree_bounds_of_prec hfg'
     by_cases hdeg : f.natDegree = g.natDegree
     · exact hsame hfg' hdeg
     · exact derivative_prec0_of_prec_succDegree hfg' (by lia)
