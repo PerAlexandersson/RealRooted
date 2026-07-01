@@ -507,8 +507,7 @@ theorem prec_of_prec_mul_X_of_sameDegree_of_roots_nonpos {f g : ℝ[X]}
   have hrs_f : rs_f.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hrs_f_nonpos : ∀ r ∈ rs_f, r ≤ 0 :=
     fun r hr => hf_nonpos r (by rw [← hrs_f_eq]; exact Multiset.mem_coe.mpr hr)
-  have hrs_f0 : (rs_f ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by
-    grind
+  have hrs_f0 : (rs_f ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by grind
   have hXf_roots : (X * f).roots = {0} + f.roots := by
     rw [roots_mul (mul_ne_zero X_ne_zero hf.1), roots_X]
   have hrs_Xf_is : rs_Xf = rs_f ++ [(0 : ℝ)] := by
@@ -556,8 +555,10 @@ theorem prec_iff_prec_mul_X {f g : ℝ[X]}
       have hss_nonpos : ∀ s ∈ ss, s ≤ 0 := fun s hs =>
         hf_nonpos s (by rw [← hss_eq]; exact Multiset.mem_coe.mpr hs)
       have hss0_sorted : (ss ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by grind
-      exact ⟨⟨hg₀, hg⟩, by simp_all, rs, ss ++ [(0 : ℝ)], hrs, hss0_sorted, hrs_eq, hss0_eq,
-        Or.inr ⟨by simp_all, listAlternates_append_zero ss rs hlen hint hrs_nonpos⟩⟩
+      exact
+        ⟨⟨hg₀, hg⟩, by simp_all, rs, ss ++ [(0 : ℝ)], hrs, hss0_sorted,
+          hrs_eq, hss0_eq,
+          Or.inr ⟨by simp_all, listAlternates_append_zero ss rs hlen hint hrs_nonpos⟩⟩
     · have : ss.length = f.natDegree := by
         rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf]
       have : rs.length = g.natDegree := by
@@ -586,8 +587,10 @@ theorem prec_iff_prec_mul_X {f g : ℝ[X]}
           (Multiset.coe_eq_coe.mp hmultiset_eq)
       rw [hrs_xf_is] at halt
       have hlen' : ss_f.length + 1 = ss_g.length := by simp_all
-      exact ⟨⟨hf₀, hf⟩, ⟨hg₀, hg⟩, ss_f, ss_g, hss_f_sorted, hss_g, hss_f_eq, hss_g_eq,
-        Or.inl ⟨by lia, listInterlaces_of_listAlternates_append_zero ss_f ss_g hlen' halt⟩⟩
+      exact
+        ⟨⟨hf₀, hf⟩, ⟨hg₀, hg⟩, ss_f, ss_g, hss_f_sorted, hss_g, hss_f_eq,
+          hss_g_eq,
+          Or.inl ⟨by lia, listInterlaces_of_listAlternates_append_zero ss_f ss_g hlen' halt⟩⟩
 
 theorem prec_sameDegree_to_prec_mul_X_of_roots_nonpos {f g : ℝ[X]}
     (h : Prec f g)
@@ -724,10 +727,8 @@ theorem prec_mul_X_both_of_roots_nonpos {f g : ℝ[X]} (h : Prec f g)
     hf_nonpos s (by rw [← hss_eq]; exact Multiset.mem_coe.mpr hs)
   have hrs_nonpos : ∀ r ∈ rs, r ≤ 0 := fun r hr =>
     hg_nonpos r (by rw [← hrs_eq]; exact Multiset.mem_coe.mpr hr)
-  have hss0_sorted : (ss ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by
-    grind
-  have hrs0_sorted : (rs ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by
-    grind
+  have hss0_sorted : (ss ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by grind
+  have hrs0_sorted : (rs ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by grind
   refine ⟨hXf, hXg, ss ++ [0], rs ++ [0], hss0_sorted, hrs0_sorted, ?_, ?_, ?_⟩
   · have : (↑(ss ++ [(0 : ℝ)]) : Multiset ℝ) = (↑ss : Multiset ℝ) + {(0 : ℝ)} := by
       rw [← Multiset.coe_add]
