@@ -184,8 +184,7 @@ theorem bidiagonal_isTotallyNonneg (a : ℝ) (ha : 0 ≤ a) :
       let S := (bidiagonal a).submatrix rows cols
       rcases lt_or_ge (cols 0) (rows 0) with hlt | hge
       · rcases eq_or_lt_of_le (Nat.succ_le_of_lt hlt) with heq | hlt_succ
-        · have h00 : S 0 0 = 1 := by
-            simp [S, heq.symm]
+        · have h00 : S 0 0 = 1 := by simp [S, heq.symm]
           have hne1 (i : Fin n) : rows i.succ ≠ cols 0 := by
             have := hrows (Fin.succ_pos i)
             lia
@@ -213,8 +212,7 @@ theorem bidiagonal_isTotallyNonneg (a : ℝ) (ha : 0 ≤ a) :
           rw [det_succ_column_zero S]
           simp_all
       · rcases eq_or_lt_of_le hge with heq | hlt
-        · have h00 : S 0 0 = a := by
-            simp [S, heq]
+        · have h00 : S 0 0 = a := by simp [S, heq]
           have hne1 (j : Fin n) : rows 0 ≠ cols j.succ := by
             have := hcols (Fin.succ_pos j)
             lia
