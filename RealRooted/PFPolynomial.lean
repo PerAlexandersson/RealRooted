@@ -58,8 +58,7 @@ theorem const_mul {a : ℝ} (ha : 0 < a) {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
     IsPFPolynomial (C a * p) := by
   by_cases hp0 : p = 0
-  · subst p
-    simpa using IsPFPolynomial.zero
+  · simpa [hp0] using IsPFPolynomial.zero
   · have hprr : p ≠ 0 ∧ p.Splits := hp.ne_zero_and_splits hp0
     refine ⟨nonnegCoeffs_C_mul ha.le hp.hasNonnegCoeffs, Or.inr ?_, ?_⟩
     · exact (isRealRooted_C_mul hprr.1 hprr.2 ha.ne').2
@@ -71,8 +70,7 @@ theorem const_mul {a : ℝ} (ha : 0 < a) {p : ℝ[X]}
 theorem X_mul {p : ℝ[X]} (hp : IsPFPolynomial p) :
     IsPFPolynomial (X * p) := by
   by_cases hp0 : p = 0
-  · subst p
-    simpa using IsPFPolynomial.zero
+  · simpa [hp0] using IsPFPolynomial.zero
   have hprr := hp.ne_zero_and_splits hp0
   have hnn : HasNonnegCoeffs (X * p) := by
     rintro (_ | n)
@@ -85,11 +83,9 @@ theorem mul {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
     IsPFPolynomial (p * q) := by
   by_cases hp0 : p = 0
-  · subst p
-    simpa using IsPFPolynomial.zero
+  · simpa [hp0] using IsPFPolynomial.zero
   by_cases hq0 : q = 0
-  · subst q
-    simpa using IsPFPolynomial.zero
+  · simpa [hq0] using IsPFPolynomial.zero
   have hprr := hp.ne_zero_and_splits hp0
   have hqrr := hq.ne_zero_and_splits hq0
   have hpq_rr := isRealRooted_mul hprr.1 hprr.2 hqrr.1 hqrr.2
@@ -101,8 +97,7 @@ theorem derivative {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
     IsPFPolynomial p.derivative := by
   by_cases hp0 : p = 0
-  · subst p
-    simpa using IsPFPolynomial.zero
+  · simpa [hp0] using IsPFPolynomial.zero
   have hprr := hp.ne_zero_and_splits hp0
   exact ⟨hp.hasNonnegCoeffs.derivative,
     eq_zero_or_splits_derivative hp.eq_zero_or_splits,
@@ -121,8 +116,7 @@ theorem to_sequence
     (hp : IsPFPolynomial p) :
     IsPolyaFreqSeq (fun n => p.coeff n) := by
   by_cases hp0 : p = 0
-  · subst p
-    simpa using IsPolyaFreqSeq_zero
+  · simpa [hp0] using IsPolyaFreqSeq_zero
   · have hprr := hp.ne_zero_and_splits hp0
     exact aissenSchoenbergWhitney_reverse hp.hasNonnegCoeffs hprr.2 hp.roots_nonpos
 
@@ -223,8 +217,7 @@ theorem isPFPolynomial_reverse_prod_X_sub_C
 theorem IsPFPolynomial.reverse {p : ℝ[X]} (hp : IsPFPolynomial p) :
     IsPFPolynomial p.reverse := by
   by_cases hp0 : p = 0
-  · subst p
-    simpa using IsPFPolynomial.zero
+  · simpa [hp0] using IsPFPolynomial.zero
   have hprr : p ≠ 0 ∧ p.Splits := hp.ne_zero_and_splits hp0
   have hp_eq : p = C p.leadingCoeff * (p.roots.map fun r => X - C r).prod :=
     (C_leadingCoeff_mul_prod_multiset_X_sub_C
@@ -242,10 +235,8 @@ theorem prec0_X_mul_both_of_pf {p q : ℝ[X]}
     (hpq : Prec0 p q) :
     Prec0 (X * p) (X * q) := by
   rcases hpq with hp0 | hq0 | hpq'
-  · subst p
-    simpa using prec0_zero_left (X * q)
-  · subst q
-    simpa using prec0_zero_right (X * p)
+  · simpa [hp0] using prec0_zero_left (X * q)
+  · simpa [hq0] using prec0_zero_right (X * p)
   · exact (prec_mul_X_both_of_roots_nonpos hpq' hp.roots_nonpos hq.roots_nonpos).toPrec0
 
 /-- Fixed-left cone closure in the two-summand form used downstream:
@@ -274,16 +265,14 @@ theorem prec0_nonneg_combo_right_of_common_left_of_nonneg {p q r : ℝ[X]}
     rcases eq_or_lt_of_le ha with rfl | ha_pos
     · simp [prec0_zero_right]
     rcases hpq with hp0 | hq0 | hpq'
-    · subst p
-      exact prec0_zero_left (C a * q)
+    · simpa [hp0] using prec0_zero_left (C a * q)
     · simp [hq0, prec0_zero_right]
     · exact (prec_C_mul_right hpq' ha_pos.ne').toPrec0
   have hpbr : Prec0 p (C b * r) := by
     rcases eq_or_lt_of_le hb with rfl | hb_pos
     · simp [prec0_zero_right]
     rcases hpr with hp0 | hr0 | hpr'
-    · subst p
-      exact prec0_zero_left (C b * r)
+    · simpa [hp0] using prec0_zero_left (C b * r)
     · simp [hr0, prec0_zero_right]
     · exact (prec_C_mul_right hpr' hb_pos.ne').toPrec0
   exact prec0_add_right_of_common_left_of_nonneg hpaq hpbr

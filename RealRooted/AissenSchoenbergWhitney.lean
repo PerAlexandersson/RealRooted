@@ -107,8 +107,7 @@ theorem aissenSchoenbergWhitneyForward_of_noNonneg
     aissenSchoenbergWhitneyForwardStatement := by
   intro p hpf
   by_cases hp0 : p = 0
-  · subst p
-    simp
+  · simp [hp0]
   · exact ⟨(hASW hp0 hpf).1.2, (hASW hp0 hpf).2⟩
 
 /-- The two forward ASW interfaces are equivalent. -/
@@ -134,8 +133,7 @@ theorem aissenSchoenbergWhitneyForward_of_orZero
     hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff hpf
   have h := hASW hnn hpf
   rcases h with ⟨hzero | hsplits, hroots⟩
-  · subst p
-    simp
+  · simp [hzero]
   · exact ⟨hsplits, hroots⟩
 
 /-- The strict and zero-aware forward ASW interfaces are equivalent. -/
@@ -418,8 +416,7 @@ lemma IsPolyaFreqSeq.prod_X_sub_C (s : Multiset ℝ) (hs : ∀ r ∈ s, r ≤ 0)
     IsPolyaFreqSeq (fun n ↦ (s.map fun r ↦ X - C r).prod.coeff n) := by
   induction s using Multiset.induction_on with
   | empty =>
-      simp only [Multiset.map_zero, Multiset.prod_zero]
-      exact IsPolyaFreqSeq.one
+      simpa using IsPolyaFreqSeq.one
   | cons r s ih =>
       rw [Multiset.map_cons, Multiset.prod_cons]
       have hs' : ∀ x ∈ s, x ≤ 0 := fun x hx ↦ hs x (Multiset.mem_cons_of_mem hx)

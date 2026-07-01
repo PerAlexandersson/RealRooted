@@ -69,7 +69,7 @@ lemma allComboRealRooted_derivative
 lemma allComboRealRooted_iterate_derivative
     {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
     ∀ n : ℕ, AllComboRealRooted ((derivative^[n]) f) ((derivative^[n]) g)
-  | 0 => by simp_all
+  | 0 => hall
   | n + 1 => by
       rw [Function.iterate_succ_apply', Function.iterate_succ_apply']
       exact allComboRealRooted_derivative
@@ -158,7 +158,7 @@ lemma hasSimpleRoots_iterateTDeriv
     (hsimple : HasSimpleRoots p) :
     HasSimpleRoots (iterateTDeriv eps n p) := by
   induction n generalizing p with
-  | zero => simp_all
+  | zero => exact hsimple
   | succ n ih =>
     rw [iterateTDeriv_succ]
     exact hasSimpleRoots_tderiv heps (splits_iterateTDeriv heps hp) (ih hp hsimple)

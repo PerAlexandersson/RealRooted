@@ -238,11 +238,9 @@ theorem natDegree_X_add_one_pow_le (n : ℕ) :
         mul_one]
 
 theorem splits_X_add_one_pow (n : ℕ) :
-    ((X + 1 : ℝ[X]) ^ n).Splits := by
-  have hX1 : (X + 1 : ℝ[X]).Splits := by
-    have h := (isRealRooted_X_sub_C (-1)).2
-    simpa [sub_eq_add_neg] using h
-  exact hX1.pow n
+    ((X + 1 : ℝ[X]) ^ n).Splits :=
+  (show (X + 1 : ℝ[X]).Splits by
+    simpa [sub_eq_add_neg] using (isRealRooted_X_sub_C (-1)).2).pow n
 
 /-- The easy direction of finite Polya--Schur: a nonnegative finite multiplier
 sequence has a PF Jensen polynomial. -/
@@ -254,8 +252,7 @@ theorem isPFPolynomial_jensenPolynomial_of_finiteMultiplierSequence
   have hd := hmult (natDegree_X_add_one_pow_le n) (splits_X_add_one_pow n)
   rw [← jensenPolynomial_eq_diagonalOperator_X_add_one_pow] at hd
   rcases hd with hzero | hsplits
-  · rw [hzero]
-    exact IsPFPolynomial.zero
+  · simpa [hzero] using IsPFPolynomial.zero
   · exact IsPFPolynomial.of_realRooted_nonneg
       (hasNonnegCoeffs_jensenPolynomial hgamma) hsplits
 
@@ -277,11 +274,9 @@ def finitePolyaSchurNonnegBackwardStatement : Prop :=
 
 theorem finitePolyaSchur_nonneg_of_backward
     (hBack : finitePolyaSchurNonnegBackwardStatement) :
-    finitePolyaSchurNonnegStatement := by
-  intro n gamma hgamma
-  refine ⟨fun hmult => ?_, fun hjensen => ?_⟩
-  · exact isPFPolynomial_jensenPolynomial_of_finiteMultiplierSequence hgamma hmult
-  · exact hBack hgamma hjensen
+    finitePolyaSchurNonnegStatement :=
+  fun hgamma => ⟨isPFPolynomial_jensenPolynomial_of_finiteMultiplierSequence hgamma,
+    hBack hgamma⟩
 
 /- The classical finite Pólya--Schur theorem `finitePolyaSchur_nonneg` is
 established in `RealRooted.Hadamard`, where the Schur--Szegő composition
@@ -297,12 +292,10 @@ theorem isFinitePFMultiplierSequence_of_finiteMultiplierSequence
     IsFinitePFMultiplierSequence n gamma := by
   intro p hp hdeg
   by_cases hp0 : p = 0
-  · subst p
-    simpa using IsPFPolynomial.zero
+  · simpa [hp0] using IsPFPolynomial.zero
   have hsplit := hmult hdeg (hp.ne_zero_and_splits hp0).2
   rcases hsplit with hzero | hsplits
-  · rw [hzero]
-    exact IsPFPolynomial.zero
+  · simpa [hzero] using IsPFPolynomial.zero
   · exact IsPFPolynomial.of_realRooted_nonneg
       (hp.hasNonnegCoeffs.diagonalOperator hgamma) hsplits
 
