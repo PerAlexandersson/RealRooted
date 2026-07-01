@@ -911,11 +911,7 @@ theorem isUpperHalfPlaneStable_iff_isRightHalfPlaneStable_comp (P : ℂ[X]) :
   · intro h z hz
     rw [Polynomial.eval_comp]
     simp only [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_X]
-    apply h
-    have him : (Complex.I * z).im = z.re := by
-      simp [Complex.mul_im]
-    rw [him]
-    exact hz
+    exact h (Complex.I * z) (by simpa [Complex.mul_im] using hz)
   · intro h w hw
     have key : P.eval w = (P.comp (C Complex.I * X)).eval (-Complex.I * w) := by
       rw [Polynomial.eval_comp]
@@ -923,11 +919,7 @@ theorem isUpperHalfPlaneStable_iff_isRightHalfPlaneStable_comp (P : ℂ[X]) :
       ring_nf
       simp [Complex.I_sq]
     rw [key]
-    apply h
-    have hre : (-Complex.I * w).re = w.im := by
-      simp [Complex.mul_re]
-    rw [hre]
-    exact hw
+    exact h (-Complex.I * w) (by simpa [Complex.mul_re] using hw)
 
 /-- Minimal conformal-substitution interface for the converse Hurwitz/
 Hermite--Biehler bridge.
@@ -1000,9 +992,7 @@ theorem hermiteBiehlerConverseOriented_of_orientation
     (hOrient : HermiteBiehlerOrientationStatement) :
     HermiteBiehlerConverseOrientedStatement := by
   intro f g hf hg hstable
-  rcases hConv hf hg hstable with h | h
-  · exact h
-  · exact hOrient hf hg hstable h
+  exact (hConv hf hg hstable).elim id (hOrient hf hg hstable)
 
 /-- Checked reduction of the analytic converse step
 `HurwitzStableOddEvenToPrecStatement`.
@@ -1070,9 +1060,7 @@ as soon as the degrees are strictly ordered `g.natDegree < f.natDegree`, since
 the reversed branch `Prec f g` would force `f.natDegree ≤ g.natDegree`. -/
 theorem prec_of_or_of_natDegree_lt {f g : ℝ[X]}
     (h : Prec g f ∨ Prec f g) (hgf : g.natDegree < f.natDegree) : Prec g f := by
-  rcases h with h | h
-  · exact h
-  · exact absurd h.natDegree_le (by lia)
+  exact h.elim id fun h => absurd h.natDegree_le (by lia)
 
 /-- Degree-restricted oriented converse Hermite--Biehler step, *without* any
 orientation-selection input.

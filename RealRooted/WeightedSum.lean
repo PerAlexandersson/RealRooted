@@ -138,12 +138,12 @@ lemma nonneg {h : ℝ[X]} :
   | _, cons_zero ha _ _ hl => by
       intro ap hap
       rcases List.mem_cons.mp hap with rfl | hap
-      · simp [ha]
+      · exact ha.symm.le
       · exact nonneg hl ap hap
   | _, cons_pos ha _ _ hl _ _ _ => by
       intro ap hap
       rcases List.mem_cons.mp hap with rfl | hap
-      · grind
+      · exact ha.le
       · exact nonneg hl ap hap
 
 lemma pos {h : ℝ[X]} :
@@ -154,12 +154,12 @@ lemma pos {h : ℝ[X]} :
   | _, cons_zero _ _ hpos hl => by
       intro ap hap
       rcases List.mem_cons.mp hap with rfl | hap
-      · lia
+      · exact hpos
       · exact pos hl ap hap
   | _, cons_pos _ _ hpos hl _ _ _ => by
       intro ap hap
       rcases List.mem_cons.mp hap with rfl | hap
-      · lia
+      · exact hpos
       · exact pos hl ap hap
 
 lemma exists_pos {h : ℝ[X]} :
