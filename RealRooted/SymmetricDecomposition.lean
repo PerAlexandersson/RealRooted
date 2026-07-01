@@ -648,7 +648,7 @@ lemma not_isRoot_neg_one_fPolynomial_of_natDegree_eq_of_hasNonnegCoeffs
 
 private lemma isRealRooted_transformed_linear {r : ℝ} (hr : r ≤ 0) :
     ((C (1 - r) * X - C r) ≠ 0 ∧ (C (1 - r) * X - C r).Splits) := by
-  have h1r_pos : 0 < 1 - r := by grind
+  have h1r_pos : 0 < 1 - r := by linarith
   have h1r_ne : 1 - r ≠ 0 := ne_of_gt h1r_pos
   have hmul : (1 - r) * (r / (1 - r)) = r := by
     grind
@@ -765,7 +765,7 @@ theorem roots_fPolynomial_natDegree_eq_map_of_isRealRooted_of_hasNonnegCoeffs
               (fPolynomial q.natDegree q).roots =
                 q.roots.map (fun s : ℝ => s / (1 - s)) :=
             ih q.natDegree hqdeg_lt q rfl hq_rr hq_nonneg
-          have h1r_ne : 1 - r ≠ 0 := by grind
+          have h1r_ne : 1 - r ≠ 0 := by linarith
           have hqf_rr :
               ((fPolynomial q.natDegree q) ≠ 0 ∧ (fPolynomial q.natDegree q).Splits) :=
             isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs le_rfl hq_rr.1 hq_rr.2
@@ -841,7 +841,7 @@ private theorem isRealRooted_of_fPolynomial_natDegree_roots_gt_neg_one
         obtain ⟨x, hx_mem⟩ := Multiset.card_pos_iff_exists_mem.mp hroots_pos
         have hx_root : (fPolynomial n p).IsRoot x := (mem_roots hq_rr.1).mp hx_mem
         have hx_gt : -1 < x := hq_gt x hx_mem
-        have hx_ne : x ≠ -1 := by grind
+        have hx_ne : x ≠ -1 := by linarith
         let r : ℝ := untransformRoot x
         have hr_root : p.IsRoot r := by
           rw [Polynomial.IsRoot.def] at hx_root ⊢
@@ -863,7 +863,7 @@ private theorem isRealRooted_of_fPolynomial_natDegree_roots_gt_neg_one
           lia
         have h1r_ne : 1 - r ≠ 0 := by
           intro hzero
-          have h1x_ne : 1 + x ≠ 0 := by grind
+          have h1x_ne : 1 + x ≠ 0 := by linarith
           dsimp [r, untransformRoot] at hzero
           grind
         have hq_fac0 :
@@ -925,8 +925,8 @@ lemma root_gt_neg_one_of_mem_roots_fPolynomial_natDegree_of_isRealRooted_of_hasN
       have hx_root : (fPolynomial p.natDegree p).IsRoot x := (mem_roots hfp_ne).mp hx
       rw [Polynomial.IsRoot.def] at hx_root
       have hux_pos : 0 < untransformRoot x := by
-        have h1x_neg : 1 + x < 0 := by grind
-        have hx_neg : x < 0 := by grind
+        have h1x_neg : 1 + x < 0 := by linarith
+        have hx_neg : x < 0 := by linarith
         have hdiv_pos : 0 < x / (1 + x) := div_pos_of_neg_of_neg hx_neg h1x_neg
         simpa [untransformRoot] using hdiv_pos
       have hpx_pos : 0 < p.eval (untransformRoot x) :=
@@ -934,7 +934,7 @@ lemma root_gt_neg_one_of_mem_roots_fPolynomial_natDegree_of_isRealRooted_of_hasN
       rw [eval_fPolynomial_eq_mul_eval_untransform (d := p.natDegree) (p := p)
         le_rfl hxm1] at hx_root
       have hpow_ne : (1 + x) ^ p.natDegree ≠ 0 :=
-        pow_ne_zero _ (by grind)
+        pow_ne_zero _ (by linarith)
       simp_all
     · grind
 

@@ -2335,7 +2335,7 @@ private theorem isRealRooted_of_sub_C_mul_right_family_of_natDegree_lt
       have hμ_pos : 0 < μ := by positivity
       have hμ_bound : μ * coeffSumRange f₀ < ε := by
         unfold μ
-        have hden_pos : 0 < coeffSumRange f₀ + 1 := by grind
+        have hden_pos : 0 < coeffSumRange f₀ + 1 := by linarith
         have hfrac_lt_one : coeffSumRange f₀ / (coeffSumRange f₀ + 1) < 1 := by
           rw [div_lt_iff₀ hden_pos]; simp
         have hcalc :
@@ -2533,7 +2533,7 @@ private lemma false_of_affine_family_double_root
             (((C β * X + C (β * (1 - r))) * f) + g) := by
         grind
       have hβt_pos : 0 < β * (1 - r) := by
-        have : 0 < 1 - r := by grind
+        have : 0 < 1 - r := by linarith
         positivity
       grind
     have hq_eval_ne : q.eval r ≠ 0 := by
@@ -2848,7 +2848,7 @@ private lemma rootMultiplicity_ne_two_add_right_of_posComboRealRooted
         (p := f + C μ * g) (q := g) (x := x) (βmax := 1)
         (by
           intro β hβ hβ_le
-          have hμβ : 0 < μ + β := by grind
+          have hμβ : 0 < μ + β := by linarith
           have hrr := PosComboRealRooted.isRealRooted_add_right hfg hμβ
           grind)
         zero_lt_one hmult hg_eval_ne hprod_pos
@@ -2874,7 +2874,7 @@ private lemma rootMultiplicity_ne_two_add_right_of_posComboRealRooted
         (p := f + C μ * g) (q := -g) (x := x) (βmax := μ / 2)
         (by
           intro β hβ hβ_le
-          have hμβ : 0 < μ - β := by grind
+          have hμβ : 0 < μ - β := by linarith
           have hrr := PosComboRealRooted.isRealRooted_add_right hfg hμβ
           grind)
         (by grind) hmult hneg_eval_ne hneg_pos
@@ -2944,7 +2944,7 @@ private lemma hasSimpleRoots_add_right_of_posComboRealRooted
         (p := pη) (q := gη) (x := x) (βmax := 1)
         (by
           intro β hβ
-          have hμβ : 0 < μ + β := by grind
+          have hμβ : 0 < μ + β := by linarith
           have hrr := PosComboRealRooted.isRealRooted_add_right hfg hμβ
           have hiter :
               ((iterateTDeriv η k (f + C (μ + β) * g)) ≠ 0 ∧
@@ -2991,7 +2991,7 @@ private lemma hasSimpleRoots_add_right_of_posComboRealRooted
         (p := pη) (q := -gη) (x := x) (βmax := μ / 2)
         (by
           intro β hβ hβ_le
-          have hμβ : 0 < μ - β := by grind
+          have hμβ : 0 < μ - β := by linarith
           have hrr := PosComboRealRooted.isRealRooted_add_right hfg hμβ
           have hiter :
               ((iterateTDeriv η k (f + C (μ - β) * g)) ≠ 0 ∧
