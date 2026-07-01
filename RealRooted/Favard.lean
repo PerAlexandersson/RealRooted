@@ -77,18 +77,15 @@ theorem favardInterlacing :
           lia
         have hF_pos_aux : HasPosLeadingCoeff (bPoly * g + aPoly * f) :=
           hasPosLeadingCoeff_add_of_natDegree_lt_right hBg_lt_Af hAf_pos
-        have hF_pos : HasPosLeadingCoeff (aPoly * f + bPoly * g) := by
-          grind
+        have hF_pos : HasPosLeadingCoeff (aPoly * f + bPoly * g) := by grind
         have hF_deg :
             (aPoly * f + bPoly * g).natDegree = f.natDegree + 1 := by
           have hdeg_aux :
               (bPoly * g + aPoly * f).natDegree = (aPoly * f).natDegree :=
             natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hBg_lt_Af hAf_pos
           grind
-        have hdeg_lo : f.natDegree ≤ (aPoly * f + bPoly * g).natDegree := by
-          lia
-        have hdeg_hi : (aPoly * f + bPoly * g).natDegree ≤ f.natDegree + 1 := by
-          lia
+        have hdeg_lo : f.natDegree ≤ (aPoly * f + bPoly * g).natDegree := by lia
+        have hdeg_hi : (aPoly * f + bPoly * g).natDegree ≤ f.natDegree + 1 := by lia
         have hb_nonpos : ∀ r, f.IsRoot r → bPoly.eval r ≤ 0 := by
           intros
           have hb_le : 0 ≤ β (n + 1) := (hβ n).le
@@ -137,8 +134,7 @@ theorem isGeneralizedSturmSeq_reverse_range_map_of_favard
             P n :: ((List.range n).reverse.map P) := by
         rw [List.range_succ, List.reverse_append, List.reverse_singleton]
         simp
-      have ih' : IsGeneralizedSturmSeq (P n :: ((List.range n).reverse.map P)) := by
-        lia
+      have ih' : IsGeneralizedSturmSeq (P n :: ((List.range n).reverse.map P)) := by lia
       rw [hcons1, hcons2]
       simpa [IsGeneralizedSturmSeq] using And.intro hprec ih'
 
