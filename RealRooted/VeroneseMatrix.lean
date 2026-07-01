@@ -162,8 +162,10 @@ lemma prec0_C_C (a b : ℝ) : Prec0 (C a : ℝ[X]) (C b : ℝ[X]) := by
   right
   have hCa : (C a : ℝ[X]) ≠ 0 := C_ne_zero.mpr ha
   have hCb : (C b : ℝ[X]) ≠ 0 := C_ne_zero.mpr hb
-  have hrr_a : ((C a : ℝ[X]) ≠ 0 ∧ (C a : ℝ[X]).Splits) := isRealRooted_of_deg_zero hCa (by simp)
-  have hrr_b : ((C b : ℝ[X]) ≠ 0 ∧ (C b : ℝ[X]).Splits) := isRealRooted_of_deg_zero hCb (by simp)
+  have hrr_a : ((C a : ℝ[X]) ≠ 0 ∧ (C a : ℝ[X]).Splits) :=
+    isRealRooted_of_deg_zero hCa (by simp)
+  have hrr_b : ((C b : ℝ[X]) ≠ 0 ∧ (C b : ℝ[X]).Splits) :=
+    isRealRooted_of_deg_zero hCb (by simp)
   refine ⟨hrr_a, hrr_b, [], [], by simp, by simp, ?_, ?_, ?_⟩
   · simp
   · simp
@@ -183,7 +185,8 @@ lemma prec0_C_affine_linear {c u v : ℝ} (hu : 0 < u) :
   have hlin_deg : (C u * X + C v : ℝ[X]).degree = 1 := by
     rw [degree_eq_natDegree hlin_rr.1, hlin_nat]
     lia
-  have hC_rr : ((C c : ℝ[X]) ≠ 0 ∧ (C c : ℝ[X]).Splits) := isRealRooted_of_deg_zero hC (by simp)
+  have hC_rr : ((C c : ℝ[X]) ≠ 0 ∧ (C c : ℝ[X]).Splits) :=
+    isRealRooted_of_deg_zero hC (by simp)
   refine ⟨hC_rr, hlin_rr, [], [-(u⁻¹ * v)], by simp, by simp, ?_, ?_, ?_⟩
   · simp
   · simpa [hlin_deg] using
@@ -218,7 +221,8 @@ lemma isRealRooted_affine_mul_X_add_X {s t : ℝ} (hs : 0 < s) :
 
 lemma isRealRooted_affine_mul_C_add_X
     {A s t : ℝ} (hA : 0 ≤ A) (hs : 0 < s) :
-    (((C s * X + C t) * C A + X : ℝ[X]) ≠ 0 ∧ ((C s * X + C t) * C A + X : ℝ[X]).Splits) := by
+    (((C s * X + C t) * C A + X : ℝ[X]) ≠ 0 ∧
+      ((C s * X + C t) * C A + X : ℝ[X]).Splits) := by
   simpa [affine_mul_C_add_X] using
     isRealRooted_affine_factor (s := s * A + 1) (t := t * A) (by positivity)
 
