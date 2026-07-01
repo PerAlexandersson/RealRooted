@@ -2371,10 +2371,8 @@ theorem compatiblePairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     CompatiblePairHasCommonInterleaverStatement := by
   intro f g hf_pos hg_pos hfg
-  have hf_rr : (f ≠ 0 ∧ f.Splits) := by
-    rcases hfg 1 0 (by simp) (by simp) with hzero | hrr <;> simp_all
-  have hg_rr : (g ≠ 0 ∧ g.Splits) := by
-    rcases hfg 0 1 (by simp) (by simp) with hzero | hrr <;> simp_all
+  have hf_rr : (f ≠ 0 ∧ f.Splits) := Compatible.isRealRooted_left hfg hf_pos
+  have hg_rr : (g ≠ 0 ∧ g.Splits) := Compatible.isRealRooted_right hfg hg_pos
   exact
     posComboPairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
       hsame hsucc hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hf_pos hg_pos
@@ -2387,10 +2385,8 @@ theorem compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     CompatiblePairHasCommonInterleaverStatement := by
   intro f g hf_pos hg_pos hfg
-  have hf_rr : (f ≠ 0 ∧ f.Splits) := by
-    rcases hfg 1 0 (by simp) (by simp) with hzero | hrr <;> simp_all
-  have hg_rr : (g ≠ 0 ∧ g.Splits) := by
-    rcases hfg 0 1 (by simp) (by simp) with hzero | hrr <;> simp_all
+  have hf_rr : (f ≠ 0 ∧ f.Splits) := Compatible.isRealRooted_left hfg hf_pos
+  have hg_rr : (g ≠ 0 ∧ g.Splits) := Compatible.isRealRooted_right hfg hg_pos
   exact
     posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
       hsame hsucc hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hf_pos hg_pos
@@ -2449,10 +2445,8 @@ theorem compatiblePairHasCommonInterleaver_of_boundaryRightPairOrientation_via_n
     (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
     CompatiblePairHasCommonInterleaverStatement := by
   intro f g hf_pos hg_pos hfg
-  have hf_rr : (f ≠ 0 ∧ f.Splits) := by
-    rcases hfg 1 0 (by simp) (by simp) with hzero | hrr <;> simp_all
-  have hg_rr : (g ≠ 0 ∧ g.Splits) := by
-    rcases hfg 0 1 (by simp) (by simp) with hzero | hrr <;> simp_all
+  have hf_rr : (f ≠ 0 ∧ f.Splits) := Compatible.isRealRooted_left hfg hf_pos
+  have hg_rr : (g ≠ 0 ∧ g.Splits) := Compatible.isRealRooted_right hfg hg_pos
   exact
     posComboPairHasCommonInterleaver_of_boundaryRightPairOrientation_via_nonnegShift
       hboundary hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hf_pos hg_pos
