@@ -14,8 +14,14 @@ namespace Tactic
 example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 := by
   rr_nonzero using hfg
 
+example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 := by
+  rr_finish
+
 example {f g : ℝ[X]} (hfg : Prec f g) : g.Splits := by
   rr_splits using hfg
+
+example {f g : ℝ[X]} (hfg : Prec f g) : g.Splits := by
+  rr_finish
 
 example {f g : ℝ[X]} (hfg : Prec f g) : g ≠ 0 ∧ g.Splits := by
   rr_realrooted using hfg
@@ -33,6 +39,9 @@ example {f g : ℝ[X]} (hfg : Prec f g)
 example {f g : ℝ[X]} (hfg : Prec f g) : Prec0 f g := by
   rr_prec0 using hfg
 
+example {f g : ℝ[X]} (hfg : Prec f g) : Prec0 f g := by
+  rr_finish
+
 example {f g : ℝ[X]} (hfg : Prec0 f g) (hf : f ≠ 0) (hg : g ≠ 0) :
     Prec f g := by
   rr_prec using hfg, hf, hg
@@ -43,9 +52,19 @@ example {p q : ℝ[X]} {rest : List ℝ[X]}
   rr_gsturm_cons using hpq, htail
 
 example {p q : ℝ[X]} {rest : List ℝ[X]}
+    (hpq : Prec q p) (htail : IsGeneralizedSturmSeq (q :: rest)) :
+    IsGeneralizedSturmSeq (p :: q :: rest) := by
+  rr_finish
+
+example {p q : ℝ[X]} {rest : List ℝ[X]}
     (hpq : Interlaces q p) (htail : IsSturmSeq (q :: rest)) :
     IsSturmSeq (p :: q :: rest) := by
   rr_sturm_cons using hpq, htail
+
+example {p q : ℝ[X]} {rest : List ℝ[X]}
+    (hpq : Interlaces q p) (htail : IsSturmSeq (q :: rest)) :
+    IsSturmSeq (p :: q :: rest) := by
+  rr_finish
 
 example : IsSturmSeq ([] : List ℝ[X]) := by
   rr_sturm_base

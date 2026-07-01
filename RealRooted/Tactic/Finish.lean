@@ -34,6 +34,8 @@ syntax (name := rr_sturm_cons)
 
 syntax (name := rr_sturm_base) "rr_sturm_base" : tactic
 
+syntax (name := rr_finish) "rr_finish" : tactic
+
 macro_rules
   | `(tactic| rr_nonzero using $h:term) =>
       `(tactic|
@@ -76,6 +78,17 @@ macro_rules
   | `(tactic| rr_sturm_base) =>
       `(tactic|
         simp [RealRooted.IsSturmSeq, RealRooted.IsGeneralizedSturmSeq])
+  | `(tactic| rr_finish) =>
+      `(tactic|
+        first
+          | assumption
+          | simp_all [
+              RealRooted.Prec,
+              RealRooted.Prec0,
+              RealRooted.Interlaces,
+              RealRooted.IsSturmSeq,
+              RealRooted.IsGeneralizedSturmSeq]
+          | rr_side)
 
 end Tactic
 end RealRooted
