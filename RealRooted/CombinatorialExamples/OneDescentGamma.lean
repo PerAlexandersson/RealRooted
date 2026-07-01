@@ -64,7 +64,7 @@ lemma oneDescentGamma_linearShift_nonneg (m j : Nat) :
 lemma hasNonnegCoeffs_X_add_C {t : ℝ} (ht : 0 ≤ t) :
     HasNonnegCoeffs (X + C t) := by
   simpa [sub_eq_add_neg] using
-    (hasNonnegCoeffs_X_sub_C (r := -t) (by simp_all : -t ≤ 0))
+    (hasNonnegCoeffs_X_sub_C (r := -t) (by linarith))
 
 lemma oneDescent_hasNonnegCoeffs_X : HasNonnegCoeffs (X : ℝ[X]) := by
   grind [HasNonnegCoeffs, coeff_X]

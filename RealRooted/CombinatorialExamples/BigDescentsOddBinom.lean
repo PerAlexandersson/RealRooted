@@ -179,11 +179,11 @@ lemma angle_mem_Ioo_zero_pi_div_two (n j : ℕ) (hj0 : 0 < j) (hjn : 2 * j < n) 
     Real.pi * (j : ℝ) / (n : ℝ) ∈ Set.Ioo (0 : ℝ) (Real.pi / 2) := by
   constructor
   · have hnpos_nat : 0 < n := by lia
-    have hjpos : (0 : ℝ) < j := by simp_all
-    have hnpos : (0 : ℝ) < n := by simp_all
+    have hjpos : (0 : ℝ) < j := by exact_mod_cast hj0
+    have hnpos : (0 : ℝ) < n := by exact_mod_cast hnpos_nat
     positivity
   · have hnpos_nat : 0 < n := by lia
-    have hnpos : (0 : ℝ) < n := by simp_all
+    have hnpos : (0 : ℝ) < n := by exact_mod_cast hnpos_nat
     have hratio : (j : ℝ) / (n : ℝ) < 1 / 2 := by
       rw [div_lt_iff₀ hnpos]
       norm_num
@@ -246,7 +246,7 @@ lemma exp_two_pi_mul_nat_div_pow_eq_one (n j : ℕ) (hn : 0 < n) :
       Complex.I)) ^ n = 1 := by
   rw [← Complex.exp_nat_mul]
   have hnreal : (n : ℝ) ≠ 0 := by exact_mod_cast (ne_of_gt hn)
-  have hnC : (n : ℂ) ≠ 0 := by simp_all
+  have hnC : (n : ℂ) ≠ 0 := by exact_mod_cast (ne_of_gt hn)
   have harg : (n : ℂ) *
       (((2 * (Real.pi * (j : ℝ) / (n : ℝ)) : ℝ) : ℂ) * Complex.I) =
       (j : ℂ) * (2 * (Real.pi : ℂ) * Complex.I) := by
@@ -322,8 +322,8 @@ lemma tangentRoot_strictAnti {n i j : ℕ} (hi0 : 0 < i) (hij : i < j)
   have hthetai := angle_mem_Ioo_zero_pi_div_two n i hi0 hijn
   have hthetaj := angle_mem_Ioo_zero_pi_div_two n j hj0 hjn
   have hnpos_nat : 0 < n := by lia
-  have hnpos : (0 : ℝ) < n := by simp_all
-  have hijR : (i : ℝ) < j := by simp_all
+  have hnpos : (0 : ℝ) < n := by exact_mod_cast hnpos_nat
+  have hijR : (i : ℝ) < j := by exact_mod_cast hij
   have hratio : (i : ℝ) / (n : ℝ) < (j : ℝ) / (n : ℝ) :=
     div_lt_div_of_pos_right hijR hnpos
   have htheta_lt :

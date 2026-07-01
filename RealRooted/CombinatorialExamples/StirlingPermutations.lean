@@ -142,7 +142,7 @@ lemma stirlingPermutations_nonnegCoeffs :
           have hcoeff_j1 : 0 ≤ coeff (stirlingPermutations n) (j + 1) :=
             stirlingPermutations_nonnegCoeffs n (j + 1)
           have hscale : 0 ≤ ((2 * n + 1 : ℝ) - j) := by
-            have hj' : (j : ℝ) ≤ n := by simp_all
+            have hj' : (j : ℝ) ≤ n := by exact_mod_cast hj
             nlinarith
           exact add_nonneg (mul_nonneg hscale hcoeff_j)
             (mul_nonneg (by positivity) hcoeff_j1)
