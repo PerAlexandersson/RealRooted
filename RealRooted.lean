@@ -65,6 +65,9 @@ import RealRooted.WagnerLeftSum
 import RealRooted.WagnerRightSum
 import RealRooted.WagnerX
 import RealRooted.WeightedSum
+import RealRooted.Challenges.AissenSchoenbergWhitney
+import RealRooted.Challenges.BrandenSolus
+import RealRooted.Challenges.ChudnovskySeymour
 
 -- Local Mathlib extensions
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
