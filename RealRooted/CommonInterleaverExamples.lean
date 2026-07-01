@@ -119,9 +119,8 @@ lemma scaledLinearFamily_pairwiseCompatible_iff_familyCompatible_of_allComboBrid
 
 private lemma xAddOne_natDegree :
     (X + 1 : ℝ[X]).natDegree = 1 := by
-  have hpoly : (X + 1 : ℝ[X]) = C (1 : ℝ) * X + C (1 : ℝ) := by
-    simp
-  grind
+  simpa using
+    (Polynomial.natDegree_linear (a := (1 : ℝ)) (b := (1 : ℝ)) (by simp))
 
 private lemma xAddTwo_natDegree :
     (X + 2 : ℝ[X]).natDegree = 1 := by
@@ -242,10 +241,8 @@ lemma xAddOne_xSq_add_fiveX_add_six_posComboRealRooted :
 private lemma xAddOne_xSq_add_fiveX_add_six_noCommon :
     ∀ r, (X + 1 : ℝ[X]).IsRoot r → ¬ (((X + 2) * (X + 3)) : ℝ[X]).IsRoot r := by
   intro r hroot1 hroot2
-  have hr1 : r + 1 = 0 := by
-    simp_all
-  have hprod : (r + 2) * (r + 3) = 0 := by
-    simp_all
+  have hr1 : r + 1 = 0 := by simp_all
+  have hprod : (r + 2) * (r + 3) = 0 := by simp_all
   grind
 
 private lemma xAddOne_xSq_add_fiveX_add_six_not_prec :
@@ -303,14 +300,10 @@ private lemma xAddOne_xSq_add_fiveX_add_six_not_prec :
                         have hr_negTwo_mem'' : (-2 : ℝ) ∈ ([r₁, r₂] : List ℝ) :=
                           Multiset.mem_coe.mp hr_negTwo_mem'
                         grind
-                      have hr1_le_r2 : r₁ ≤ r₂ := by
-                        simp_all
-                      have hr1_eq : r₁ = -3 := by
-                        grind
-                      have hr2_eq : r₂ = -2 := by
-                        simp_all
-                      have hinter : ListInterlaces [s] [r₁, r₂] := by
-                        lia
+                      have hr1_le_r2 : r₁ ≤ r₂ := by simp_all
+                      have hr1_eq : r₁ = -3 := by grind
+                      have hr2_eq : r₂ = -2 := by simp_all
+                      have hinter : ListInterlaces [s] [r₁, r₂] := by lia
                       have : False := by
                         simp [hs_eq, hr1_eq, hr2_eq, ListInterlaces] at hinter
                       lia
@@ -346,10 +339,8 @@ private lemma xAddOne_xAddTwo_posComboRealRooted :
 private lemma xAddOne_xAddTwo_noCommon :
     ∀ r, (X + 1 : ℝ[X]).IsRoot r → ¬ (X + 2 : ℝ[X]).IsRoot r := by
   intro r hroot1 hroot2
-  have hr1 : r + 1 = 0 := by
-    simp_all
-  have hr2 : r + 2 = 0 := by
-    simp_all
+  have hr1 : r + 1 = 0 := by simp_all
+  have hr2 : r + 2 = 0 := by simp_all
   linarith
 
 /-- The linear pair used in the counterexamples still satisfies the true
@@ -490,15 +481,12 @@ private lemma xAddOne_xAddTwo_not_prec :
                   have hr_root : (X + 2 : ℝ[X]).IsRoot r :=
                     (Polynomial.mem_roots hg.1).mp hr_mem
                   have hs_eq : s = -1 := by
-                    have hs_eval : s + 1 = 0 := by
-                      simp_all
+                    have hs_eval : s + 1 = 0 := by simp_all
                     linarith
                   have hr_eq : r = -2 := by
-                    have hr_eval : r + 2 = 0 := by
-                      simp_all
+                    have hr_eval : r + 2 = 0 := by simp_all
                     linarith
-                  have hsame_alt : ListAlternates [s] [r] := by
-                    lia
+                  have hsame_alt : ListAlternates [s] [r] := by lia
                   have hs_le_r : s ≤ r := by
                     simpa [ListAlternates, ListInterlaces] using hsame_alt
                   linarith
