@@ -883,9 +883,8 @@ lemma listInter_nonempty_of_pairwise_ordConnected
               simp [ys]
             have hy_mem_s : ∀ y ∈ ys, y ∈ s := by
               grind
-            have hx_mem : ∀ u ∈ t :: ts, x ∈ u := by
-              intro u hu
-              exact (mem_listInter.mp hx) u hu
+            have hx_mem : ∀ u ∈ t :: ts, x ∈ u :=
+              fun u hu => (mem_listInter.mp hx) u hu
             let y0 : ℝ := Classical.choose (hhead t (by simp))
             have hy0s : y0 ∈ s := (Classical.choose_spec (hhead t (by simp))).1
             have hy0_side : y0 < x ∨ x < y0 := by
