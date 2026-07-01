@@ -52,8 +52,7 @@ def veroneseSectionPolynomial (r k : ℕ) (p : ℝ[X]) : ℝ[X] :=
           intro n hn
           have hrpos : 0 < r := Nat.pos_of_ne_zero hr0
           by_contra hmem
-          have hnotlt : ¬ n < p.natDegree + 1 := by
-            simp_all
+          have hnotlt : ¬ n < p.natDegree + 1 := by simp_all
           have hle : p.natDegree + 1 ≤ n := Nat.le_of_not_gt hnotlt
           have hpn : p.natDegree < n := Nat.lt_of_succ_le hle
           have hn_le_mul : n ≤ r * n := by
@@ -81,8 +80,7 @@ theorem veroneseSectionPolynomial_ne_zero_of_coeff_ne_zero
     (hcoeff : p.coeff (k + r * n) ≠ 0) :
     veroneseSectionPolynomial r k p ≠ 0 := by
   intro hzero
-  have hcoeff_zero : (veroneseSectionPolynomial r k p).coeff n = 0 := by
-    simp_all
+  have hcoeff_zero : (veroneseSectionPolynomial r k p).coeff n = 0 := by simp_all
   rw [coeff_veroneseSectionPolynomial (r := r) (k := k) (p := p) hr] at hcoeff_zero
   lia
 

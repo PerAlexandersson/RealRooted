@@ -102,8 +102,7 @@ lemma isInterlacingSeq0Nonneg_oneSupportSeq {n : ℕ} (i : Fin n) :
           (if q' = i then (1 : ℝ[X]) else 0) by
           simpa [q'] using get_oneSupportSeq i q']
     by_cases hpi : p' = i
-    · have hqi : q' ≠ i := by
-        lia
+    · have hqi : q' ≠ i := by lia
       simp [hpi, hqi, prec0_zero_right]
     · by_cases hqi : q' = i <;> simp [hpi, hqi, prec0_zero_left]
   · rw [List.forall_mem_iff_get]
@@ -607,8 +606,7 @@ lemma rowPairAffine_combo_eq_zipWith_sum
       | nil =>
           simp at hrows
       | cons b row₂ =>
-          have hrows' : row₁.length = row₂.length := by
-            simp_all
+          have hrows' : row₁.length = row₂.length := by simp_all
           cases fs with
           | nil =>
               simp
@@ -818,8 +816,7 @@ theorem prec0_zipWith_sum_pair_of_2x2
       rowPairAffine_combo_eq_zipWith_sum
         (row₁ := row₁) (row₂ := row₂) (fs := fs) (s := s) (t := t) hrows
   rcases hfs with ⟨hfs_mem, hfs_int⟩
-  have hfs_nonneg : ∀ f ∈ fs, HasNonnegCoeffs f := by
-    simp_all
+  have hfs_nonneg : ∀ f ∈ fs, HasNonnegCoeffs f := by simp_all
   have hfs_all : IsInterlacingSeqNonneg fs := ⟨hfs_mem, hfs_int⟩
   have hF_nonneg : HasNonnegCoeffs F := by
     simpa [F] using
@@ -851,8 +848,7 @@ theorem prec0_zipWith_sum_pair_of_2x2
       hasNonnegCoeffs_affine_mul hs.le ht.le hF_nonneg
     have hcombo_ne : (((C s * X + C t) * F) + G) ≠ 0 :=
       add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero hleft_nonneg hG_nonneg hG_zero
-    have haux_sum_ne : ((auxRow s t).zipWith (· * ·) fs).sum ≠ 0 := by
-      simp_all
+    have haux_sum_ne : ((auxRow s t).zipWith (· * ·) fs).sum ≠ 0 := by simp_all
     have hsum_ne_rev :
         (((auxRow s t).reverse.zipWith (· * ·) fs.reverse).sum) ≠ 0 := by
       intro hsum0
@@ -947,8 +943,7 @@ theorem prec0_zipWith_sum_pair_of_2x2_weak
       hasNonnegCoeffs_affine_mul hs.le ht.le hF_nonneg
     have hcombo_ne : (((C s * X + C t) * F) + G) ≠ 0 :=
       add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero hleft_nonneg hG_nonneg hG_zero
-    have haux_sum_ne : ((auxRow s t).zipWith (· * ·) fs).sum ≠ 0 := by
-      simp_all
+    have haux_sum_ne : ((auxRow s t).zipWith (· * ·) fs).sum ≠ 0 := by simp_all
     have hsum_ne_rev :
         (((auxRow s t).reverse.zipWith (· * ·) fs.reverse).sum) ≠ 0 := by
       intro hsum0

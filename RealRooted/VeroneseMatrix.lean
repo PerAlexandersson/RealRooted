@@ -931,8 +931,7 @@ theorem isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_linea
           (r := r) hr
   | cons a as ih =>
       have ha : 0 ≤ a := has a (by simp)
-      have has_tail : ∀ b ∈ as, 0 ≤ b := by
-        simp_all
+      have has_tail : ∀ b ∈ as, 0 ≤ b := by simp_all
       have htail := ih has_tail
       simpa [linearFactorProduct] using
         isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_X_add_C_mul

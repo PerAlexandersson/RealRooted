@@ -68,8 +68,7 @@ lemma gammaTransform_monomial (d n : ℕ) (a : ℝ) :
     gammaTransform d (monomial n a) =
       if n ≤ d / 2 then C a * gammaBasisTerm d n else 0 := by
   by_cases h : n ≤ d / 2
-  · have hn : n ∈ Finset.range (d / 2 + 1) := by
-      simp_all
+  · have hn : n ∈ Finset.range (d / 2 + 1) := by simp_all
     unfold gammaTransform
     rw [Finset.sum_eq_single n]
     · simp_all
@@ -226,12 +225,10 @@ lemma gammaTransform_X_mul_two (d : ℕ) (γ : ℝ[X]) :
     ring
   · intro n a
     by_cases h : n ≤ d / 2
-    · have hs : n + 1 ≤ (d + 2) / 2 := by
-        lia
+    · have hs : n + 1 ≤ (d + 2) / 2 := by lia
       simp [Polynomial.X_mul_monomial, gammaTransform_monomial, h,
         gammaBasisTerm_succ_succ, mul_assoc, mul_comm]
-    · have hs : ¬ n + 1 ≤ (d + 2) / 2 := by
-        lia
+    · have hs : ¬ n + 1 ≤ (d + 2) / 2 := by lia
       simp [Polynomial.X_mul_monomial, gammaTransform_monomial, h]
 
 lemma gammaTransform_pad_two {d : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) :
@@ -382,8 +379,7 @@ lemma gammaTransform_even_injective :
         · have hk_gt : m + 1 < k := by lia
           have hγk : γ.coeff k = 0 :=
             Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hγ hk_gt)
-          have hk_ne' : m + 1 ≠ k := by
-            lia
+          have hk_ne' : m + 1 ≠ k := by lia
           rw [coeff_sub, hγk, Polynomial.coeff_monomial]
           simp [hk_ne']
       have hδ'_deg : δ'.natDegree ≤ m := by
@@ -395,8 +391,7 @@ lemma gammaTransform_even_injective :
         · have hk_gt : m + 1 < k := by lia
           have hδk : δ.coeff k = 0 :=
             Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hδ hk_gt)
-          have hk_ne' : m + 1 ≠ k := by
-            lia
+          have hk_ne' : m + 1 ≠ k := by lia
           rw [coeff_sub, hδk, Polynomial.coeff_monomial]
           simp [hk_ne']
       have hγsmall :
@@ -635,8 +630,7 @@ lemma isRealRooted_gammaQuadraticFactor {r : ℝ} (hr : r ≤ 0) :
   · simp_all
   · set t : ℝ := -r with ht_def
     have hrlt : r < 0 := lt_of_le_of_ne hr hr0
-    have ht_pos : 0 < t := by
-      simp_all
+    have ht_pos : 0 < t := by simp_all
     have hpoly :
         X - C r * (X + 1) ^ 2 = C t * X ^ 2 + C (2 * t + 1) * X + C t := by
       subst t
@@ -711,8 +705,7 @@ theorem isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
       obtain ⟨q, hq⟩ := dvd_iff_isRoot.mpr hr_root
       have hq' : γ = (X - C r) * q := by lia
       have hq_dvd : q ∣ γ := ⟨X - C r, by grind⟩
-      have hq_ne : q ≠ 0 := by
-        simp_all
+      have hq_ne : q ≠ 0 := by simp_all
       have hr_nonpos : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hrr.2 hnn r hr_mem
       have hq_rr : (q ≠ 0 ∧ q.Splits) := isRealRooted_of_dvd hrr.1 hrr.2 hq_ne hq_dvd
       have hγ_pos : HasPosLeadingCoeff γ := hnn.pos_leadingCoeff hrr.1
@@ -774,10 +767,8 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
     · by_cases hcoeff0 : δ.coeff 0 = 0
       · have hXdvd : X ∣ δ := Polynomial.X_dvd_iff.mpr hcoeff0
         obtain ⟨ζ, hδX⟩ := hXdvd
-        have hζ0 : ζ ≠ 0 := by
-          simp_all
-        have hζdeg_succ : n = ζ.natDegree + 1 := by
-          simp_all
+        have hζ0 : ζ ≠ 0 := by simp_all
+        have hζdeg_succ : n = ζ.natDegree + 1 := by simp_all
         have hζdeg_lt : ζ.natDegree < n := by lia
         have hq_eq :
             gammaTransform (2 * n) δ = X * gammaTransform (2 * ζ.natDegree) ζ := by
@@ -788,8 +779,7 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
                   lia
             _ = X * gammaTransform (2 * ζ.natDegree) ζ :=
                   gammaTransform_X_mul_two (2 * ζ.natDegree) ζ
-        have hq0 : gammaTransform (2 * ζ.natDegree) ζ ≠ 0 := by
-          simp_all
+        have hq0 : gammaTransform (2 * ζ.natDegree) ζ ≠ 0 := by simp_all
         have hq_dvd : gammaTransform (2 * ζ.natDegree) ζ ∣ gammaTransform (2 * n) δ := by
           simp_all
         have hq_rr : ((gammaTransform (2 * ζ.natDegree) ζ) ≠ 0 ∧
@@ -832,8 +822,7 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
             (d := 2 * n) (γ := δ) (by lia) hx_ne_neg_one hx_root
         obtain ⟨ε, hγ_fac0⟩ := dvd_iff_isRoot.mpr hy_root
         have hγ_fac : δ = (X - C y) * ε := by lia
-        have hε0 : ε ≠ 0 := by
-          simp_all
+        have hε0 : ε ≠ 0 := by simp_all
         have hεdeg_succ : n = ε.natDegree + 1 := by
           calc
             n = δ.natDegree := by lia
@@ -853,8 +842,7 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
                   lia
             _ = (X - C y * (X + 1) ^ 2) * gammaTransform (2 * ε.natDegree) ε :=
                   gammaTransform_X_sub_C_mul_two (γ := ε) (by lia) y
-        have hq0 : gammaTransform (2 * ε.natDegree) ε ≠ 0 := by
-          simp_all
+        have hq0 : gammaTransform (2 * ε.natDegree) ε ≠ 0 := by simp_all
         have hq_dvd : gammaTransform (2 * ε.natDegree) ε ∣ gammaTransform (2 * n) δ := by
           simp_all
         have hq_rr : ((gammaTransform (2 * ε.natDegree) ε) ≠ 0 ∧
@@ -939,8 +927,7 @@ theorem isRealRooted_and_hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasRoo
       obtain ⟨q, hq⟩ := dvd_iff_isRoot.mpr hr_root
       have hδq : δ = (X - C r) * q := by lia
       have hq_dvd : q ∣ δ := ⟨X - C r, by grind⟩
-      have hq_ne : q ≠ 0 := by
-        simp_all
+      have hq_ne : q ≠ 0 := by simp_all
       have hq_rr : (q ≠ 0 ∧ q.Splits) := isRealRooted_of_dvd hδ_rr.1 hδ_rr.2 hq_ne hq_dvd
       have hq_nonpos : HasRootsNonpos q :=
         hasRootsNonpos_of_dvd hδ_nonpos hδ_rr.1 hq_dvd hq_ne

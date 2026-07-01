@@ -178,12 +178,10 @@ theorem hasNonnegCoeffs_oddEvenPolynomial {p q : ℝ[X]}
     HasNonnegCoeffs (oddEvenPolynomial p q) := by
   intro n
   by_cases hmod : n % 2 = 0
-  · have hn : n = 2 * (n / 2) := by
-      lia
+  · have hn : n = 2 * (n / 2) := by lia
     rw [hn, coeff_oddEvenPolynomial_even]
     exact hq (n / 2)
-  · have hn : n = 2 * (n / 2) + 1 := by
-      lia
+  · have hn : n = 2 * (n / 2) + 1 := by lia
     rw [hn, coeff_oddEvenPolynomial_odd]
     exact hp (n / 2)
 
@@ -218,8 +216,7 @@ lemma hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hp0 : p ≠ 0) :
     HasPosLeadingCoeff p := by
   unfold HasPosLeadingCoeff HasNonnegCoeffs at *
-  have hlead_ne : p.coeff p.natDegree ≠ 0 := by
-    simp_all
+  have hlead_ne : p.coeff p.natDegree ≠ 0 := by simp_all
   exact lt_of_le_of_ne (hpnn p.natDegree) (by simpa using hlead_ne.symm)
 
 /-- Concrete obstruction to a sign-free forward Hermite--Biehler route:

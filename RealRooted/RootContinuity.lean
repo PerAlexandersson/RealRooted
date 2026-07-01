@@ -28,8 +28,7 @@ lemma coeff_norm_le_coeffSumRange (p : ℝ[X]) (i : ℕ) :
   by_cases hi : i ∈ Finset.range (p.natDegree + 1)
   · unfold coeffSumRange
     exact Finset.single_le_sum (fun j _ => norm_nonneg _) hi
-  · have hlt : p.natDegree < i := by
-      simp_all
+  · have hlt : p.natDegree < i := by simp_all
     rw [coeff_eq_zero_of_natDegree_lt hlt, norm_zero]
     have hnonneg : 0 ≤ coeffSumRange p := by
       unfold coeffSumRange
