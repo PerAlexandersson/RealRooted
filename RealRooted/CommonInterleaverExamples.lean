@@ -282,9 +282,11 @@ private lemma xAddOne_xSq_add_fiveX_add_six_not_prec :
                         have hs_mem'' : (-1 : ℝ) ∈ ([s] : List ℝ) :=
                           Multiset.mem_coe.mp hs_mem'
                         simp_all
-                      have hr_negThree_mem : (-3 : ℝ) ∈ (((X + 2) * (X + 3)) : ℝ[X]).roots := by
+                      have hr_negThree_mem :
+                          (-3 : ℝ) ∈ (((X + 2) * (X + 3)) : ℝ[X]).roots := by
                         simp_all
-                      have hr_negTwo_mem : (-2 : ℝ) ∈ (((X + 2) * (X + 3)) : ℝ[X]).roots := by
+                      have hr_negTwo_mem :
+                          (-2 : ℝ) ∈ (((X + 2) * (X + 3)) : ℝ[X]).roots := by
                         simp_all
                       have hr_negThree_mem' :
                           (-3 : ℝ) ∈ (([r₁, r₂] : List ℝ) : Multiset ℝ) := by
@@ -347,13 +349,12 @@ private lemma xAddOne_xAddTwo_noCommon :
 all-combinations conclusion for a simpler reason: every combination remains
 linear. -/
 lemma xAddOne_xAddTwo_allComboRealRooted :
-    AllComboRealRooted (X + 1 : ℝ[X]) (X + 2) := by
-  exact
-    allComboRealRooted_of_natDegree_le_one
-      xAddOne_hasPosLeadingCoeff
-      xAddTwo_hasPosLeadingCoeff
-      (by simp [xAddOne_natDegree])
-      (by simp [xAddTwo_natDegree])
+    AllComboRealRooted (X + 1 : ℝ[X]) (X + 2) :=
+  allComboRealRooted_of_natDegree_le_one
+    xAddOne_hasPosLeadingCoeff
+    xAddTwo_hasPosLeadingCoeff
+    (by simp [xAddOne_natDegree])
+    (by simp [xAddTwo_natDegree])
 
 private lemma xAddOne_xAddTwo_badAffineSlice_eq :
     ((((C (1 : ℝ) * X + C (1 : ℝ)) * (X + 1)) + (X + 2)) : ℝ[X]) =
