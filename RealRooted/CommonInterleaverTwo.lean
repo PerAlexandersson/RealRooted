@@ -455,6 +455,21 @@ theorem pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible
   intro i j hij
   simpa using htwo (hpair i j hij)
 
+/-- Reduction for the left-oriented Chudnovsky--Seymour target: the full
+`PairwiseCompatible ↔ HasCommonLeftInterleaver` statement follows from the
+two-polynomial common-left bridge and the finite-family left Helly upgrade. -/
+theorem pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
+    {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (htwo : ∀ ⦃f g : ℝ[X]⦄, Compatible f g → ∃ h : ℝ[X], Prec h f ∧ Prec h g)
+    (hglobal : PairwiseHasCommonLeftInterleaver fs → HasCommonLeftInterleaver fs) :
+    PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs := by
+  constructor
+  · intro hpair
+    exact hglobal (pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible htwo hpair)
+  · intro hcommon
+    exact pairwiseCompatible_of_commonLeftInterleaver hcommon hpos
+
 /-- Once the two-polynomial common-right-interleaver converse is available, the
 pairwise Chudnovsky--Seymour hypothesis upgrades to pairwise common right
 interleavers. -/
@@ -2636,6 +2651,18 @@ theorem pairwiseHasCommonInterleaver_of_commonInterleaver
     {fs : List ℝ[X]}
     (hcommon : HasCommonInterleaver fs) :
     PairwiseHasCommonInterleaver fs := by
+  rcases hcommon with ⟨h, hprec⟩
+  intro i j hij
+  exact ⟨h,
+    hprec (fs.get i) (List.get_mem _ _),
+    hprec (fs.get j) (List.get_mem _ _)⟩
+
+/-- A single common left interleaver is in particular a pairwise common left
+interleaver witness. -/
+theorem pairwiseHasCommonLeftInterleaver_of_commonLeftInterleaver
+    {fs : List ℝ[X]}
+    (hcommon : HasCommonLeftInterleaver fs) :
+    PairwiseHasCommonLeftInterleaver fs := by
   rcases hcommon with ⟨h, hprec⟩
   intro i j hij
   exact ⟨h,
