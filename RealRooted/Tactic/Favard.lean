@@ -26,6 +26,12 @@ namespace Tactic
 
 syntax (name := rr_favard) "rr_favard" " using " term ", " term : tactic
 
+syntax (name := rr_favard_named)
+  "rr_favard" " using "
+    "recurrence" ":=" term ","
+    "beta_pos" ":=" term :
+  tactic
+
 macro_rules
   | `(tactic| rr_favard using $hrec:term, $hbeta:term) =>
       `(tactic|
@@ -38,6 +44,12 @@ macro_rules
           | exact RealRooted.isRealRooted_of_favard $hrec $hbeta _
           | exact RealRooted.isGeneralizedSturmSeq_reverse_range_map_of_favard
               $hrec $hbeta _)
+  | `(tactic|
+      rr_favard using
+        recurrence := $hrec:term,
+        beta_pos := $hbeta:term) =>
+      `(tactic|
+        rr_favard using $hrec, $hbeta)
 
 end Tactic
 end RealRooted

@@ -175,11 +175,13 @@ Later, if lookup becomes ambiguous, introduce parametric syntax:
 
 ```lean
 rr_ma_wang using
-  recurrence := P_succ,
-  degree := natDegree_P,
-  pos_lc := P_posLeadingCoeff,
-  nonneg := P_nonnegCoeffs,
-  root_bound := roots_nonpos_P_of_isRealRooted
+  splits := P_splits,
+  degree_two := P_degree_two,
+  degree_lower := P_degree_lower,
+  degree_upper := P_degree_upper,
+  target_pos_lc := next_posLeadingCoeff,
+  source_pos_lc := P_posLeadingCoeff,
+  root_sign := root_sign_certificate
 ```
 
 The explicit form should always be available even if attribute search works.

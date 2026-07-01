@@ -20,6 +20,14 @@ example {P : Nat → ℝ[X]} {α β : Nat → ℝ}
 example {P : Nat → ℝ[X]} {α β : Nat → ℝ}
     (hrec : SatisfiesFavardRecurrence P α β)
     (hbeta : ∀ n : Nat, 0 < β (n + 1)) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_favard using
+    recurrence := hrec,
+    beta_pos := hbeta
+
+example {P : Nat → ℝ[X]} {α β : Nat → ℝ}
+    (hrec : SatisfiesFavardRecurrence P α β)
+    (hbeta : ∀ n : Nat, 0 < β (n + 1)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_favard using hrec, hbeta
 
