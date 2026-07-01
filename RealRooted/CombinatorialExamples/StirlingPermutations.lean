@@ -100,21 +100,21 @@ lemma coeff_stirlingPermutations_top_pos_and_above :
           habove (n + 1) (by lia)
         have hscale : 0 < ((2 * n + 1 : ℝ) - n) := by
           nlinarith
-        simp_all
+        simpa [hzero] using mul_pos hscale htop
       · intro k hk
         cases k with
         | zero =>
             lia
         | succ j =>
             rw [show j + 1 = j + 0 + 1 by lia, coeff_stirlingPermutations_succ]
-            grind
+            simp [habove j (by lia), habove (j + 1) (by lia)]
 
 lemma natDegree_stirlingPermutations (n : Nat) :
     (stirlingPermutations n).natDegree = n := by
   rcases coeff_stirlingPermutations_top_pos_and_above n with ⟨htop, habove⟩
   exact natDegree_eq_of_le_of_coeff_ne_zero
     (natDegree_le_iff_coeff_eq_zero.mpr (fun k hk => habove k hk))
-    (by grind)
+    (ne_of_gt htop)
 
 lemma stirlingPermutations_ne_zero (n : Nat) :
     stirlingPermutations n ≠ 0 := by
