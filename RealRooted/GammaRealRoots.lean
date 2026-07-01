@@ -593,9 +593,9 @@ lemma HasRootsNonpos.mul {p q : ℝ[X]}
   intro r hr
   have hrpq : (p * q).IsRoot r := (mem_roots (mul_ne_zero hp0 hq0)).mp hr
   rw [Polynomial.IsRoot.def, eval_mul] at hrpq
-  rcases mul_eq_zero.mp hrpq with hpr | hqr
-  · exact hp r ((mem_roots hp0).mpr hpr)
-  · exact hq r ((mem_roots hq0).mpr hqr)
+  exact (mul_eq_zero.mp hrpq).elim
+    (fun hpr => hp r ((mem_roots hp0).mpr hpr))
+    (fun hqr => hq r ((mem_roots hq0).mpr hqr))
 
 lemma hasRootsNonpos_X_sub_C {r : ℝ} (hr : r ≤ 0) :
     HasRootsNonpos (X - C r) := by

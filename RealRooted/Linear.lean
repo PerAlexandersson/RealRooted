@@ -247,9 +247,9 @@ lemma prec_comp_X_add_C {f g : ℝ[X]} (h : Prec f g) (r : ℝ) :
       (↑(rs.map (· - r)) : Multiset ℝ) = (↑rs : Multiset ℝ).map (fun x => x - r) := rfl
       _ = g.roots.map (fun x => x - r) := by lia
       _ = (g.comp (X + C r)).roots := (roots_comp_X_add_C r).symm
-  · rcases hcase with ⟨hlen, hint⟩ | ⟨hlen, halt⟩
-    · exact Or.inl ⟨by simp_all, listInterlaces_map_sub_const hint r⟩
-    · exact Or.inr ⟨by simp_all, listAlternates_map_sub_const halt r⟩
+  · exact hcase.elim
+      (fun h => Or.inl ⟨by simp_all, listInterlaces_map_sub_const h.2 r⟩)
+      (fun h => Or.inr ⟨by simp_all, listAlternates_map_sub_const h.2 r⟩)
 
 /-- Translation by `r` is an equivalence on `Prec`. -/
 lemma prec_comp_X_add_C_iff {f g : ℝ[X]} (r : ℝ) :
