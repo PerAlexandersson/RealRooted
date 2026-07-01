@@ -63,8 +63,7 @@ lemma eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
   intro hder2
   have hpd_root : p.derivative.IsRoot x :=
     (rootMultiplicity_pos hpd_ne).mp (by lia)
-  have hpd_der_root : p.derivative.derivative.IsRoot x := by
-    simp_all
+  have hpd_der_root : p.derivative.derivative.IsRoot x := by simp_all
   have hmult_gt : 1 < p.derivative.rootMultiplicity x :=
     (one_lt_rootMultiplicity_iff_isRoot hpd_ne).2 ⟨hpd_root, hpd_der_root⟩
   lia
@@ -76,8 +75,7 @@ theorem exists_root_derivative_between {p : ℝ[X]} {a b : ℝ} (hab : a < b)
     ∃ c, a < c ∧ c < b ∧ p.derivative.IsRoot c := by
   have hcont : ContinuousOn (fun x => p.eval x) (Icc a b) :=
     p.continuous.continuousOn
-  have hfab : p.eval a = p.eval b := by
-    simp_all
+  have hfab : p.eval a = p.eval b := by simp_all
   have hderiv : ∀ x ∈ Ioo a b, HasDerivAt (fun x => p.eval x) (p.derivative.eval x) x :=
     fun x _ => p.hasDerivAt x
   obtain ⟨c, hc_mem, hc_eq⟩ := exists_hasDerivAt_eq_zero hab hcont hfab hderiv
@@ -308,8 +306,7 @@ lemma mkInterleaving_sub_multiset (f : ℝ[X])
       by_cases heq : a = s <;> by_cases hr₁a : a = r₁
       · -- a = s, a = r₁
         rw [if_pos heq, if_pos hr₁a]
-        have hr_eq : r₁ = r₂ := by
-          grind
+        have hr_eq : r₁ = r₂ := by grind
         simp_all
       · -- a = s, a ≠ r₁: vacuous
         rw [if_pos heq, if_neg hr₁a]; exfalso
@@ -351,8 +348,7 @@ theorem derivative_interlaces {f : ℝ[X]} (hf : f.Splits) (hdeg : 2 ≤ f.natDe
   have hrs_multiset : (↑rs : Multiset ℝ) = f.roots := Multiset.sort_eq ..
   have hrs_length : rs.length = f.natDegree := by
     rw [hrs_def, Multiset.length_sort, card_roots_of_splits hf]
-  have hrs_root : ∀ r ∈ rs, f.IsRoot r := by
-    simp_all
+  have hrs_root : ∀ r ∈ rs, f.IsRoot r := by simp_all
   -- Construct interleaving
   set ss := mkInterleaving f rs hrs_root
   have hss_length : ss.length = f.natDegree - 1 := by
