@@ -375,7 +375,7 @@ lemma fPolynomial_X_sub_C_mul_succ (d : ℕ) (r : ℝ) {p : ℝ[X]}
 
 lemma transformedRoot_nonpos {r : ℝ} (hr : r ≤ 0) :
     r / (1 - r) ≤ 0 := by
-  have h1r_pos : 0 < 1 - r := by grind
+  have h1r_pos : 0 < 1 - r := by linarith
   have h1r_inv_nonneg : 0 ≤ (1 - r)⁻¹ := inv_nonneg.mpr h1r_pos.le
   have hmul_nonpos : r * (1 - r)⁻¹ ≤ 0 :=
     mul_nonpos_of_nonpos_of_nonneg hr h1r_inv_nonneg
@@ -386,14 +386,14 @@ def untransformRoot (x : ℝ) : ℝ := x / (1 + x)
 
 lemma untransformRoot_nonpos {x : ℝ} (hx1 : -1 < x) (hx0 : x ≤ 0) :
     untransformRoot x ≤ 0 := by
-  have h1x_pos : 0 < 1 + x := by grind
+  have h1x_pos : 0 < 1 + x := by linarith
   have h1x_inv_nonneg : 0 ≤ (1 + x)⁻¹ := inv_nonneg.mpr h1x_pos.le
   simpa [untransformRoot, div_eq_mul_inv] using
     mul_nonpos_of_nonpos_of_nonneg hx0 h1x_inv_nonneg
 
 lemma transformedRoot_untransformRoot {x : ℝ} (hx1 : -1 < x) :
     untransformRoot x / (1 - untransformRoot x) = x := by
-  have h1x_ne : 1 + x ≠ 0 := by grind
+  have h1x_ne : 1 + x ≠ 0 := by linarith
   have hden : 1 - x / (1 + x) = (1 : ℝ) / (1 + x) := by
     grind
   rw [untransformRoot, hden]
@@ -401,7 +401,7 @@ lemma transformedRoot_untransformRoot {x : ℝ} (hx1 : -1 < x) :
 
 lemma untransformRoot_transformedRoot {r : ℝ} (hr : r ≤ 0) :
     untransformRoot (r / (1 - r)) = r := by
-  have h1r_ne : 1 - r ≠ 0 := by grind
+  have h1r_ne : 1 - r ≠ 0 := by linarith
   have hden : 1 + r / (1 - r) = (1 : ℝ) / (1 - r) := by
     grind
   rw [untransformRoot, hden]
@@ -444,7 +444,7 @@ lemma eval_fPolynomial_eq_mul_eval_untransform {d : ℕ} {p : ℝ[X]}
 
 lemma neg_one_lt_transformedRoot {r : ℝ} (hr : r ≤ 0) :
     -1 < r / (1 - r) := by
-  have h1r_pos : 0 < 1 - r := by grind
+  have h1r_pos : 0 < 1 - r := by linarith
   have hmul : (-1 : ℝ) * (1 - r) < r := by simp
   exact (lt_div_iff₀ h1r_pos).2 hmul
 
@@ -452,16 +452,16 @@ lemma untransformRoot_mono_of_neg_one_lt {x y : ℝ}
     (hxy : x ≤ y) (hx1 : -1 < x) :
     untransformRoot x ≤ untransformRoot y := by
   have hy1 : -1 < y := lt_of_lt_of_le hx1 hxy
-  have h1x_pos : 0 < 1 + x := by grind
-  have h1y_pos : 0 < 1 + y := by grind
+  have h1x_pos : 0 < 1 + x := by linarith
+  have h1y_pos : 0 < 1 + y := by linarith
   rw [untransformRoot, untransformRoot, div_le_div_iff₀ h1x_pos h1y_pos]
   nlinarith
 
 lemma transformedRoot_mono_of_nonpos {r s : ℝ}
     (hrs : r ≤ s) (hs : s ≤ 0) :
     r / (1 - r) ≤ s / (1 - s) := by
-  have h1r_pos : 0 < 1 - r := by grind
-  have h1s_pos : 0 < 1 - s := by grind
+  have h1r_pos : 0 < 1 - r := by linarith
+  have h1s_pos : 0 < 1 - s := by linarith
   rw [div_le_div_iff₀ h1r_pos h1s_pos]
   nlinarith
 

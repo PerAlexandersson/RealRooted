@@ -416,7 +416,7 @@ lemma eval_zero_liuWangRec_pos (d n : Nat) (hn : 1 ≤ n) (hnd : n ≤ d + 1) :
             have hlt_nat : n < d := by lia
             have hnum : 0 < ((d : ℝ) - n) := by
               simp_all
-            have hden : 0 < (n + 1 : ℝ) := by grind
+            have hden : 0 < (n + 1 : ℝ) := by positivity
             simp_all
           have hprev : 0 < (liuWangRec d (n + 1)).eval 0 :=
             ih (n + 1) (by lia) (by lia) (by lia)

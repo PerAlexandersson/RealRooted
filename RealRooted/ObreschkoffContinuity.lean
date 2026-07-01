@@ -109,7 +109,7 @@ theorem exists_root_near_right_family
     simp only [inv_pos, t]
     lia
   have hμ_ne : μ ≠ 0 := ne_of_gt hμ
-  have hμ1_ne : μ + 1 ≠ 0 := by grind
+  have hμ1_ne : μ + 1 ≠ 0 := by positivity
   have hcoeff_bound_left : (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) < ε := by
     have hcalc : (t + 1)⁻¹ = μ / (μ + 1) := by
       grind
@@ -144,7 +144,7 @@ theorem exists_complex_aroot_near_right_family
     simp only [inv_pos, t]
     lia
   have hμ_ne : μ ≠ 0 := ne_of_gt hμ
-  have hμ1_ne : μ + 1 ≠ 0 := by grind
+  have hμ1_ne : μ + 1 ≠ 0 := by positivity
   have hcoeff_bound_left : (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) < ε := by
     have hcalc : (t + 1)⁻¹ = μ / (μ + 1) := by
       grind
