@@ -26,14 +26,12 @@ lemma isRealRooted_X_sub_C (r : ℝ) : ((X - C r) ≠ 0 ∧ (X - C r).Splits) :=
 lemma hasPosLeadingCoeff_X_sub_C_mul {r : ℝ} {p : ℝ[X]}
     (hp : HasPosLeadingCoeff p) :
     HasPosLeadingCoeff ((X - C r) * p) := by
-  unfold HasPosLeadingCoeff at hp ⊢
-  simp_all
+  simpa [HasPosLeadingCoeff] using hp
 
 lemma hasPosLeadingCoeff_of_X_sub_C_mul {q : ℝ[X]} {r : ℝ}
     (h : HasPosLeadingCoeff ((X - C r) * q)) :
     HasPosLeadingCoeff q := by
-  unfold HasPosLeadingCoeff at h ⊢
-  simp_all
+  simpa [HasPosLeadingCoeff] using h
 
 lemma roots_le_X_sub_C_mul {r : ℝ} {f : ℝ[X]}
     (hf : f.Splits)
@@ -51,7 +49,8 @@ lemma roots_le_X_sub_C_mul {r : ℝ} {f : ℝ[X]}
 lemma isRealRooted_C_mul {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits)
     {a : ℝ} (ha : a ≠ 0) :
     (C a * p ≠ 0 ∧ (C a * p).Splits) := by
-  simp_all
+  simpa using
+    isRealRooted_mul (C_ne_zero.mpr ha) (Polynomial.Splits.C (R := ℝ) a) hp_ne hp_splits
 
 lemma isRealRooted_X_mul {f : ℝ[X]} (hf_ne : f ≠ 0) (hf_splits : f.Splits) :
     ((X * f) ≠ 0 ∧ (X * f).Splits) :=
@@ -89,12 +88,12 @@ lemma isRealRooted_of_X_mul {f : ℝ[X]}
 lemma IsRoot.of_dvd {p q : ℝ[X]} (hpq : p ∣ q) {x : ℝ} (hx : p.IsRoot x) :
     q.IsRoot x := by
   rcases hpq with ⟨r, rfl⟩
-  simp_all
+  simpa [Polynomial.IsRoot.def] using congrArg (fun y => y * r.eval x) hx
 
 /-- A common root of two polynomials is also a root of their sum. -/
 lemma IsRoot.add {p q : ℝ[X]} {x : ℝ} (hp : p.IsRoot x) (hq : q.IsRoot x) :
     (p + q).IsRoot x := by
-  simp_all
+  simpa [Polynomial.IsRoot.def] using congrArg₂ (· + ·) hp hq
 
 /-- If `(X - C r)^m` divides both summands, then it divides their sum. -/
 lemma pow_X_sub_C_dvd_add {p q : ℝ[X]} {r : ℝ} {m : ℕ}
@@ -139,7 +138,7 @@ lemma isCoprime_of_no_common_real_root_of_isRealRooted {f g : ℝ[X]}
 /-- Any nonzero degree-1 polynomial is real-rooted. -/
 lemma isRealRooted_of_degree_one {p : ℝ[X]} (hp : p.natDegree = 1) : (p ≠ 0 ∧ p.Splits) := by
   have hne : p ≠ 0 := by intro h; simp [h] at hp
-  have hdeg : p.degree = 1 := by rw [degree_eq_natDegree hne]; simp_all
+  have hdeg : p.degree = 1 := by simpa [hp] using degree_eq_natDegree hne
   refine ⟨hne, splits_of_card_roots ?_⟩
   rw [roots_degree_eq_one hdeg, Multiset.card_singleton, hp]
 
@@ -149,8 +148,7 @@ lemma interlaces_one_linear {p : ℝ[X]} (hp_deg : p.natDegree = 1) :
     simp
   have hp_rr : (p ≠ 0 ∧ p.Splits) := isRealRooted_of_degree_one hp_deg
   have hp_deg' : p.degree = 1 := by
-    rw [degree_eq_natDegree hp_rr.1, hp_deg]
-    lia
+    simpa [hp_deg] using degree_eq_natDegree hp_rr.1
   refine ⟨hp_rr, h1_rr, by simp [Polynomial.natDegree_one, hp_deg], ?_⟩
   refine ⟨[-(p.coeff 1)⁻¹ * p.coeff 0], [], by simp, by simp, ?_, by simp,
     by simp [ListInterlaces]⟩
