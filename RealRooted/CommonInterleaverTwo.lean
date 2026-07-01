@@ -204,14 +204,15 @@ private lemma natDegree_le_one_of_const_left
     exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two_local
       hg_rr.2 hg_pos hg_deg2
   have hcombo :
-      C (t / c) * C c + g = 0 ∨ ((C (t / c) * C c + g) ≠ 0 ∧ (C (t / c) * C c + g).Splits) := by
+      C (t / c) * C c + g = 0 ∨
+        ((C (t / c) * C c + g) ≠ 0 ∧ (C (t / c) * C c + g).Splits) := by
     simpa using hcg (t / c) 1 (by positivity) (by simp)
   have hrewrite :
       C (t / c) * C c + g = C t + g := by
     calc
       C (t / c) * C c + g = C ((t / c) * c) + g := by simp
       _ = C t + g := by
-            grind
+        grind
   rcases hcombo with hzero | hrr
   · have hzero' : C t + g = 0 := by lia
     have hg_const : g = -C t := by grind
@@ -247,8 +248,7 @@ theorem natDegree_right_le_succ
     have hf_const : f = C c := by
       simpa [c] using eq_C_of_natDegree_eq_zero hf_deg0
     have hfg_const : Compatible (C c) g := by lia
-    have hbound :
-        g.natDegree ≤ 1 :=
+    have hbound : g.natDegree ≤ 1 :=
       natDegree_le_one_of_const_left hc hg_pos hfg_const
     lia
   · by_cases hg_deg0 : g.natDegree = 0
@@ -865,8 +865,7 @@ theorem prec_sum_left_of_prec_right_family_forward_sameDegree_nonneg
       (by lia)
       (by lia)
       hFq_no
-      (by
-        simp_all)
+      (by simp_all)
   lia
 
 /-- Swapping the roles of `f` and `g` gives the symmetric forward transport for
@@ -888,9 +887,8 @@ theorem prec_sum_left_of_prec_left_family_forward_sameDegree_nonneg
       (f := g) (g := f)
       hg_pos hf_pos (PosComboRealRooted.comm hfg) hdeg.symm hf_deg_pos
       hno_swap
-      (by
-        simpa [add_comm, add_left_comm, add_assoc, mul_comm, mul_left_comm, mul_assoc]
-          using hpair)
+      (by simpa [add_comm, add_left_comm, add_assoc, mul_comm, mul_left_comm, mul_assoc]
+        using hpair)
 
 /-- If both specialized one-step families point forward, then their common
 middle sum `f + g` is already a common left interleaver for `f` and `g`. This
@@ -2803,12 +2801,9 @@ theorem pairwiseCompatible_of_familyCompatible
   let fj : ℝ[X] := fs.get j
   have hpair :
       weightedSum [(α, fi), (β, fj)] = 0 ∨
-        ((weightedSum [(α, fi), (β, fj)]) ≠ 0 ∧ (weightedSum [(α, fi), (β, fj)]).Splits) := by
-    exact hfull [(α, fi), (β, fj)]
-      (by
-        grind)
-      (by
-        simp_all)
+        ((weightedSum [(α, fi), (β, fj)]) ≠ 0 ∧
+          (weightedSum [(α, fi), (β, fj)]).Splits) :=
+    hfull [(α, fi), (β, fj)] (by grind) (by simp_all)
   simpa [fi, fj, weightedSum, weightedSum_cons] using hpair
 
 /-- Chudnovsky--Seymour four-way package in the finite-list language used in
