@@ -1,4 +1,5 @@
 import Mathlib.Analysis.Matrix.Spectrum
+import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.LinearAlgebra.Dimension.Finrank
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.Tactic
@@ -34,7 +35,7 @@ interlacing means `λ_{k+1} ≤ μ_k ≤ λ_k` for every `k`.
 * `RealRooted.Interlace.le`, `RealRooted.Interlace.ge` — the two-sided
   classical restatement.
 * `RealRooted.cauchy_interlacing` — the Cauchy interlacing theorem itself,
-  reduced to the single classical boundary `RealRooted.courant_fischer`.
+  proved via the Courant-Fischer variational principle formalized below.
 
 ## References
 
@@ -273,13 +274,279 @@ theorem cauchyInterlacing_of_courantFischer
       exact hx₂ (by simpa [hy] using (map_zero (embedComplₗ (𝕜 := 𝕜) i)))
     · simpa only [embedComplₗ_apply, rayleigh_submatrix_embedCompl] using hx₃
 
-/-- The Courant-Fischer min-max characterization of the sorted eigenvalues of a
-Hermitian matrix. This is the remaining classical input; its proof needs the
-spectral theorem together with the variational principle, which is not yet in
-Mathlib. -/
+/-!
+### The Courant-Fischer min-max principle from an orthonormal eigenbasis
+
+The remaining classical input is the min-max characterization of the sorted
+eigenvalues.  We prove it from the spectral theorem via a reusable statement
+`courantFischer_of_eigenbasis`, which takes an arbitrary orthonormal basis of
+eigenvectors (with real, antitone eigenvalues) and produces the two-sided
+variational bounds.  It is then specialised to `Matrix.IsHermitian.eigenvectorBasis`
+to discharge `CourantFischerStatement`.
+-/
+
+/--
+Expansion of the Rayleigh **denominator** in an orthonormal basis: the
+Hermitian square norm of `x` is the sum of the squared moduli of its Fourier
+coefficients `⟪b i, x⟫`.
+-/
+theorem denom_eq_sum_sq {N : ℕ}
+    (b : OrthonormalBasis (Fin N) 𝕜 (EuclideanSpace 𝕜 (Fin N)))
+    (x : EuclideanSpace 𝕜 (Fin N)) :
+    RCLike.re (star (WithLp.ofLp x) ⬝ᵥ WithLp.ofLp x)
+      = ∑ i, ‖(inner 𝕜 (b i) x : 𝕜)‖ ^ 2 := by
+  have hxx : star (WithLp.ofLp x) ⬝ᵥ WithLp.ofLp x = (inner 𝕜 x x : 𝕜) := by
+    rw [EuclideanSpace.inner_eq_star_dotProduct, dotProduct_comm]
+  rw [hxx, inner_self_eq_norm_sq, ← b.sum_sq_norm_inner_right x]
+
+/--
+Expansion of the Rayleigh **numerator** in an orthonormal eigenbasis: if
+`A *ᵥ (b j) = μ j • (b j)` for each `j`, then the Hermitian form of `A` at `x`
+is the `μ`-weighted sum of the squared moduli of the Fourier coefficients.
+-/
+theorem num_eq_sum_sq {N : ℕ}
+    (A : Matrix (Fin N) (Fin N) 𝕜)
+    (b : OrthonormalBasis (Fin N) 𝕜 (EuclideanSpace 𝕜 (Fin N)))
+    (μ : Fin N → ℝ)
+    (hb : ∀ j, A *ᵥ WithLp.ofLp (b j) = μ j • WithLp.ofLp (b j))
+    (x : EuclideanSpace 𝕜 (Fin N)) :
+    RCLike.re (star (WithLp.ofLp x) ⬝ᵥ A.mulVec (WithLp.ofLp x))
+      = ∑ i, μ i * ‖(inner 𝕜 (b i) x : 𝕜)‖ ^ 2 := by
+  have hAx : A.mulVec (WithLp.ofLp x)
+      = WithLp.ofLp (∑ i, ((μ i : 𝕜) * inner 𝕜 (b i) x) • b i) := by
+    have hx : WithLp.ofLp x
+        = ∑ i, (inner 𝕜 (b i) x : 𝕜) • WithLp.ofLp (b i) := by
+      conv_lhs => rw [← b.sum_repr' x]
+      rw [WithLp.ofLp_sum]
+      simp only [WithLp.ofLp_smul]
+    rw [hx, Matrix.mulVec_sum, WithLp.ofLp_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [Matrix.mulVec_smul, hb i, WithLp.ofLp_smul,
+      RCLike.real_smul_eq_coe_smul (K := 𝕜), smul_smul, mul_comm]
+  have hnum : star (WithLp.ofLp x) ⬝ᵥ A.mulVec (WithLp.ofLp x)
+      = inner 𝕜 x (∑ i, ((μ i : 𝕜) * inner 𝕜 (b i) x) • b i) := by
+    rw [hAx, EuclideanSpace.inner_eq_star_dotProduct, dotProduct_comm]
+  rw [hnum, inner_sum, map_sum]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  have hconj : (inner 𝕜 x (b i) : 𝕜) = starRingEnd 𝕜 (inner 𝕜 (b i) x) :=
+    (inner_conj_symm x (b i)).symm
+  rw [inner_smul_right, hconj, mul_assoc, RCLike.mul_conj,
+    ← RCLike.ofReal_pow, ← RCLike.ofReal_mul, RCLike.ofReal_re]
+
+/--
+The Rayleigh denominator is strictly positive for a nonzero vector.
+-/
+theorem denom_pos {N : ℕ} (x : EuclideanSpace 𝕜 (Fin N)) (hx : x ≠ 0) :
+    0 < RCLike.re (star (WithLp.ofLp x) ⬝ᵥ WithLp.ofLp x) := by
+  have hnorm : RCLike.re (star (WithLp.ofLp x) ⬝ᵥ WithLp.ofLp x) = ‖x‖ ^ 2 := by
+    have hxx : star (WithLp.ofLp x) ⬝ᵥ WithLp.ofLp x = (inner 𝕜 x x : 𝕜) := by
+      rw [EuclideanSpace.inner_eq_star_dotProduct, dotProduct_comm]
+    rw [hxx, inner_self_eq_norm_sq]
+  rw [hnorm]
+  exact pow_pos (norm_pos_iff.mpr hx) 2
+
+/--
+Fourier coefficients supported on `Set.range g`: if `x` lies in the span of
+`b (g j)`, then `⟪b i, x⟫ = 0` whenever `i` is not of the form `g j`.
+-/
+theorem inner_eq_zero_of_mem_span_range {N m : ℕ}
+    (b : OrthonormalBasis (Fin N) 𝕜 (EuclideanSpace 𝕜 (Fin N)))
+    (g : Fin m → Fin N) (x : EuclideanSpace 𝕜 (Fin N))
+    (hx : x ∈ Submodule.span 𝕜
+      (Set.range (fun j => (b (g j) : EuclideanSpace 𝕜 (Fin N)))))
+    (i : Fin N) (hi : i ∉ Set.range g) :
+    (inner 𝕜 (b i) x : 𝕜) = 0 := by
+  induction hx using Submodule.span_induction with
+  | mem y hy =>
+      obtain ⟨j, rfl⟩ := hy
+      exact b.orthonormal.2 fun e => hi ⟨j, e.symm⟩
+  | zero => exact inner_zero_right _
+  | add y z _ _ ihy ihz => rw [inner_add_right, ihy, ihz, add_zero]
+  | smul a y _ ihy => rw [inner_smul_right, ihy, mul_zero]
+
+/--
+The span of an injective reindexing `b ∘ g` of the eigenbasis has dimension
+equal to the number of indices.
+-/
+theorem finrank_span_range_eigen {N m : ℕ}
+    (b : OrthonormalBasis (Fin N) 𝕜 (EuclideanSpace 𝕜 (Fin N)))
+    (g : Fin m → Fin N) (hg : Function.Injective g) :
+    Module.finrank 𝕜 (Submodule.span 𝕜
+      (Set.range (fun j => (b (g j) : EuclideanSpace 𝕜 (Fin N))))) = m := by
+  rw [finrank_span_eq_card]
+  · exact Fintype.card_fin m
+  · exact b.toBasis.linearIndependent.comp g hg
+
+/--
+Lower Rayleigh bound from the support of the Fourier coefficients: if every
+index `i` contributing to `x` satisfies `t ≤ μ i`, then `t ≤` Rayleigh quotient.
+-/
+theorem rayleigh_ge_of_support {N : ℕ}
+    (A : Matrix (Fin N) (Fin N) 𝕜)
+    (b : OrthonormalBasis (Fin N) 𝕜 (EuclideanSpace 𝕜 (Fin N)))
+    (μ : Fin N → ℝ)
+    (hb : ∀ j, A *ᵥ WithLp.ofLp (b j) = μ j • WithLp.ofLp (b j))
+    (x : EuclideanSpace 𝕜 (Fin N)) (hx : x ≠ 0) (t : ℝ)
+    (h : ∀ i, (inner 𝕜 (b i) x : 𝕜) ≠ 0 → t ≤ μ i) :
+    t ≤ rayleigh A (WithLp.ofLp x) := by
+  rw [rayleigh, le_div_iff₀ (denom_pos x hx), num_eq_sum_sq A b μ hb x,
+    denom_eq_sum_sq b x, Finset.mul_sum]
+  refine Finset.sum_le_sum fun i _ => ?_
+  rcases eq_or_ne (inner 𝕜 (b i) x : 𝕜) 0 with hi | hi
+  · simp [hi]
+  · exact mul_le_mul_of_nonneg_right (h i hi) (by positivity)
+
+/--
+Upper Rayleigh bound from the support of the Fourier coefficients: if every
+index `i` contributing to `x` satisfies `μ i ≤ t`, then Rayleigh quotient `≤ t`.
+-/
+theorem rayleigh_le_of_support {N : ℕ}
+    (A : Matrix (Fin N) (Fin N) 𝕜)
+    (b : OrthonormalBasis (Fin N) 𝕜 (EuclideanSpace 𝕜 (Fin N)))
+    (μ : Fin N → ℝ)
+    (hb : ∀ j, A *ᵥ WithLp.ofLp (b j) = μ j • WithLp.ofLp (b j))
+    (x : EuclideanSpace 𝕜 (Fin N)) (hx : x ≠ 0) (t : ℝ)
+    (h : ∀ i, (inner 𝕜 (b i) x : 𝕜) ≠ 0 → μ i ≤ t) :
+    rayleigh A (WithLp.ofLp x) ≤ t := by
+  rw [rayleigh, div_le_iff₀ (denom_pos x hx), num_eq_sum_sq A b μ hb x,
+    denom_eq_sum_sq b x, Finset.mul_sum]
+  refine Finset.sum_le_sum fun i _ => ?_
+  rcases eq_or_ne (inner 𝕜 (b i) x : 𝕜) 0 with hi | hi
+  · simp [hi]
+  · exact mul_le_mul_of_nonneg_right (h i hi) (by positivity)
+
+/--
+**Courant-Fischer min-max principle from an orthonormal eigenbasis.**
+
+Given a Hermitian action encoded by an orthonormal eigenbasis `b` with real
+eigenvalues `μ` listed in decreasing (antitone) order, the `k`-th eigenvalue
+`μ k` is the max-min of the Rayleigh quotient over `(k+1)`-dimensional
+subspaces.  This is the reusable spectral input; the matrix Courant-Fischer
+statement follows by specialising to `Matrix.IsHermitian.eigenvectorBasis`.
+-/
+theorem courantFischer_of_eigenbasis {N : ℕ}
+    (A : Matrix (Fin N) (Fin N) 𝕜)
+    (b : OrthonormalBasis (Fin N) 𝕜 (EuclideanSpace 𝕜 (Fin N)))
+    (μ : Fin N → ℝ) (hμ : Antitone μ)
+    (hb : ∀ j, A *ᵥ WithLp.ofLp (b j) = μ j • WithLp.ofLp (b j)) (k : Fin N) :
+    (∃ W : Submodule 𝕜 (EuclideanSpace 𝕜 (Fin N)),
+        Module.finrank 𝕜 W = (k : ℕ) + 1 ∧
+        ∀ x ∈ W, x ≠ 0 → μ k ≤ rayleigh A (WithLp.ofLp x)) ∧
+    (∀ W : Submodule 𝕜 (EuclideanSpace 𝕜 (Fin N)),
+        Module.finrank 𝕜 W = (k : ℕ) + 1 →
+        ∃ x ∈ W, x ≠ 0 ∧ rayleigh A (WithLp.ofLp x) ≤ μ k) := by
+  refine ⟨?_, ?_⟩
+  · have hk : (k : ℕ) + 1 ≤ N := k.isLt
+    refine ⟨Submodule.span 𝕜 (Set.range fun j : Fin ((k : ℕ) + 1) =>
+        (b (Fin.castLE hk j) : EuclideanSpace 𝕜 (Fin N))), ?_, ?_⟩
+    · exact finrank_span_range_eigen b (Fin.castLE hk) (Fin.castLE_injective hk)
+    · intro x hx hx0
+      refine rayleigh_ge_of_support A b μ hb x hx0 (μ k) fun i hi => ?_
+      have hmem : i ∈ Set.range (Fin.castLE hk) := by
+        by_contra hcon
+        exact hi (inner_eq_zero_of_mem_span_range b (Fin.castLE hk) x hx i hcon)
+      obtain ⟨j, rfl⟩ := hmem
+      refine hμ ?_
+      rw [Fin.le_def, Fin.val_castLE]
+      exact Nat.lt_succ_iff.mp j.isLt
+  · intro W hW
+    have hkN : (k : ℕ) < N := k.isLt
+    set g : Fin (N - (k : ℕ)) → Fin N :=
+      fun j => ⟨(k : ℕ) + (j : ℕ), by have := j.isLt; lia⟩ with hg
+    have hgval : ∀ j, ((g j : Fin N) : ℕ) = (k : ℕ) + (j : ℕ) := fun _ => rfl
+    have hg_inj : Function.Injective g := by
+      intro a c hac
+      have h1 : (k : ℕ) + (a : ℕ) = (k : ℕ) + (c : ℕ) := by
+        rw [← hgval a, ← hgval c]; exact congrArg Fin.val hac
+      exact Fin.ext (by lia)
+    set U : Submodule 𝕜 (EuclideanSpace 𝕜 (Fin N)) :=
+      Submodule.span 𝕜 (Set.range fun j => (b (g j) : EuclideanSpace 𝕜 (Fin N)))
+      with hU
+    have hU_dim : Module.finrank 𝕜 U = N - (k : ℕ) :=
+      finrank_span_range_eigen b g hg_inj
+    have hU_zero : ∀ x ∈ U, ∀ i : Fin N, (i : ℕ) < (k : ℕ) →
+        (inner 𝕜 (b i) x : 𝕜) = 0 := by
+      intro x hx i hi
+      refine inner_eq_zero_of_mem_span_range b g x hx i ?_
+      rintro ⟨j, rfl⟩
+      rw [hgval] at hi
+      lia
+    obtain ⟨x, hxW, hxU, hx0⟩ : ∃ x ∈ W, x ∈ U ∧ x ≠ 0 := by
+      have hpos : 0 < Module.finrank 𝕜 (W ⊓ U : Submodule 𝕜 _) := by
+        have hadd := Submodule.finrank_sup_add_finrank_inf_eq W U
+        have hsum : Module.finrank 𝕜 (W ⊔ U : Submodule 𝕜 _) ≤ N :=
+          le_trans (Submodule.finrank_le _) (le_of_eq finrank_euclideanSpace_fin)
+        rw [hW, hU_dim] at hadd
+        have hk_le : (k : ℕ) ≤ N := Nat.le_of_lt k.isLt
+        have hk_sum : (k : ℕ) + 1 + (N - (k : ℕ)) = N + 1 := by
+          rw [Nat.add_comm (k : ℕ) 1, Nat.add_assoc, Nat.add_sub_of_le hk_le,
+            Nat.add_comm 1 N]
+        have htotal : Module.finrank 𝕜 (W ⊔ U : Submodule 𝕜 _) +
+            Module.finrank 𝕜 (W ⊓ U : Submodule 𝕜 _) = N + 1 := by
+          rw [hadd, hk_sum]
+        by_contra hnonpos
+        have hinf_zero : Module.finrank 𝕜 (W ⊓ U : Submodule 𝕜 _) = 0 :=
+          Nat.eq_zero_of_le_zero (Nat.le_of_not_gt hnonpos)
+        have hle : Module.finrank 𝕜 (W ⊔ U : Submodule 𝕜 _) +
+            Module.finrank 𝕜 (W ⊓ U : Submodule 𝕜 _) ≤ N := by
+          calc
+            Module.finrank 𝕜 (W ⊔ U : Submodule 𝕜 _) +
+                Module.finrank 𝕜 (W ⊓ U : Submodule 𝕜 _)
+                = Module.finrank 𝕜 (W ⊔ U : Submodule 𝕜 _) := by
+                  rw [hinf_zero, Nat.add_zero]
+            _ ≤ N := hsum
+        have hbad : N + 1 ≤ N := by
+          rw [← htotal]
+          exact hle
+        exact (Nat.not_succ_le_self N) hbad
+      have hne : (W ⊓ U : Submodule 𝕜 _) ≠ ⊥ := fun h => by
+        rw [h] at hpos; simp at hpos
+      obtain ⟨x, hxmem, hx0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hne
+      exact ⟨x, (Submodule.mem_inf.mp hxmem).1, (Submodule.mem_inf.mp hxmem).2, hx0⟩
+    refine ⟨x, hxW, hx0,
+      rayleigh_le_of_support A b μ hb x hx0 (μ k) fun i hi => ?_⟩
+    refine hμ ?_
+    by_contra hcon
+    rw [not_le, Fin.lt_def] at hcon
+    exact hi (hU_zero x hxU i hcon)
+
+/--
+The Courant-Fischer min-max characterization of the sorted eigenvalues of a
+Hermitian matrix, obtained by specialising `courantFischer_of_eigenbasis` to the
+spectral eigenbasis `Matrix.IsHermitian.eigenvectorBasis` and transporting the
+witnessing subspaces along the (identity) linear equivalence between
+`EuclideanSpace 𝕜 (Fin N)` and `Fin N → 𝕜`.
+-/
 theorem courant_fischer (𝕜 : Type*) [RCLike 𝕜] :
     CourantFischerStatement 𝕜 := by
-  sorry
+  intro N A hA k
+  set e : Fin (Fintype.card (Fin N)) ≃ Fin N :=
+    Fintype.equivOfCardEq (by simp) with he
+  set σ : Fin N ≃ Fin N := (finCongr (Fintype.card_fin N).symm).trans e with hσ
+  set b : OrthonormalBasis (Fin N) 𝕜 (EuclideanSpace 𝕜 (Fin N)) :=
+    hA.eigenvectorBasis.reindex σ.symm with hb_def
+  have hev : ∀ j, hA.eigenvalues (σ j) = sortedEigenvalues A hA j := by
+    intro j
+    simp [hσ, he, sortedEigenvalues, Matrix.IsHermitian.eigenvalues]
+  have hbrel : ∀ j, A *ᵥ WithLp.ofLp (b j)
+      = sortedEigenvalues A hA j • WithLp.ofLp (b j) := by
+    intro j
+    simpa [hb_def, OrthonormalBasis.reindex_apply, hev j] using
+      hA.mulVec_eigenvectorBasis (σ j)
+  obtain ⟨⟨W₀, hW₀card, hW₀⟩, huniv⟩ :=
+    courantFischer_of_eigenbasis A b (sortedEigenvalues A hA)
+      (sortedEigenvalues_antitone A hA) hbrel k
+  set L := WithLp.linearEquiv 2 𝕜 (Fin N → 𝕜) with hL
+  refine ⟨⟨W₀.map L.toLinearMap, ?_, ?_⟩, ?_⟩
+  · rw [LinearEquiv.finrank_map_eq]; exact hW₀card
+  · intro x hxmem hx0
+    obtain ⟨y, hy, rfl⟩ := Submodule.mem_map.mp hxmem
+    exact hW₀ y hy fun h => hx0 (by simp [h])
+  · intro W hW
+    have hcard : Module.finrank 𝕜 (W.comap L.toLinearMap) = (k : ℕ) + 1 := by
+      rw [Submodule.comap_equiv_eq_map_symm, LinearEquiv.finrank_map_eq]; exact hW
+    obtain ⟨y, hy, hy0, hyr⟩ := huniv _ hcard
+    exact ⟨L y, Submodule.mem_comap.mp hy, fun h => hy0 (by simpa using h), hyr⟩
 
 /-- **Cauchy interlacing theorem.** The eigenvalues of a principal submatrix of
 a Hermitian matrix, obtained by deleting one row and the corresponding column,
