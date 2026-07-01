@@ -217,8 +217,7 @@ theorem schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le
     schurSzegoComp n (jensenPolynomial n gamma) p = diagonalOperator gamma p := by
   ext k
   by_cases hk : k ≤ n
-  · have hchoose : (Nat.choose n k : ℝ) ≠ 0 := by
-      exact_mod_cast Nat.choose_ne_zero hk
+  · have hchoose : (Nat.choose n k : ℝ) ≠ 0 := by exact_mod_cast Nat.choose_ne_zero hk
     rw [coeff_schurSzegoComp_of_le hk, coeff_jensenPolynomial, coeff_diagonalOperator]
     simp only [hk, if_true]
     field_simp [hchoose]
