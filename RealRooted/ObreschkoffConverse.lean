@@ -1817,20 +1817,21 @@ lemma exists_rightmost_derivative_root_with_eval_nonpos
       linarith
   grind
 
-/-- Constant shifts eventually destroy real-rootedness once the polynomial has
-degree at least `2`. This is the key obstruction used in the degree-closeness
-theorem below. The proof shifts the polynomial upward past its value at the
-rightmost critical point; the derivative is unchanged, so the shifted
-polynomial would still need a real root on the right by interlacing, but it is
-already strictly increasing there. -/
-lemma exists_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
+/-- A positive constant shift destroys real-rootedness once the polynomial has
+positive leading coefficient and degree at least `2`. The proof shifts the
+polynomial upward past its value at the rightmost critical point; the derivative
+is unchanged, so the shifted polynomial would still need a real root on the
+right by interlacing, but it is already strictly increasing there. -/
+lemma exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
     {p : ℝ[X]} (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
     (hdeg : 2 ≤ p.natDegree) :
-    ∃ t : ℝ, ¬ ((C t + p) ≠ 0 ∧ (C t + p).Splits) := by
+    ∃ t : ℝ, 0 < t ∧ ¬ ((C t + p) ≠ 0 ∧ (C t + p).Splits) := by
   obtain ⟨c, hc_root, hc_top, hpc_nonpos⟩ :=
     exists_rightmost_derivative_root_with_eval_nonpos hp_splits hp_pos hdeg
   let t : ℝ := 1 - p.eval c
-  refine ⟨t, ?_⟩
+  have ht_pos : 0 < t := by
+    grind
+  refine ⟨t, ht_pos, ?_⟩
   intro hq
   have hqdeg : 2 ≤ (C t + p).natDegree := by
     simp_all
@@ -1857,6 +1858,17 @@ lemma exists_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
     have : (C t + p).eval r = 0 := by
       simp_all
     linarith
+
+/-- Constant shifts eventually destroy real-rootedness once the polynomial has
+positive leading coefficient and degree at least `2`. -/
+lemma exists_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
+    {p : ℝ[X]} (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
+    (hdeg : 2 ≤ p.natDegree) :
+    ∃ t : ℝ, ¬ ((C t + p) ≠ 0 ∧ (C t + p).Splits) := by
+  obtain ⟨t, _, ht⟩ :=
+    exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
+      hp_splits hp_pos hdeg
+  exact ⟨t, ht⟩
 
 /-- A nonzero constant cannot form an `AllComboRealRooted` pair with a
 positive-leading degree-`≥ 2` polynomial: a suitable constant shift of the

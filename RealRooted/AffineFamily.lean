@@ -1016,48 +1016,6 @@ private lemma eval_mul_left_family_two_neg_at_root_one_of_no_common
     linarith
   have hg_ne : g.eval r ≠ 0 := fun hg0 => by simp_all
   simp_all
-/-- For a nonnegative-coefficient real-rooted polynomial of degree at least `2`,
-some positive constant shift fails to be real-rooted. The shift is positive
-because the rightmost critical value is already nonpositive in the nonnegative
-coefficient regime. -/
-private lemma exists_pos_shift_not_isRealRooted_of_nonneg_of_natDegree_ge_two
-    {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hpnn : HasNonnegCoeffs p)
-    (hdeg : 2 ≤ p.natDegree) :
-    ∃ t : ℝ, 0 < t ∧ ¬ ((C t + p) ≠ 0 ∧ (C t + p).Splits) := by
-  have hp_pos : HasPosLeadingCoeff p := hpnn.pos_leadingCoeff hp_ne
-  obtain ⟨c, hc_root, hc_top, hpc_nonpos⟩ :=
-    exists_rightmost_derivative_root_with_eval_nonpos hp_splits hp_pos hdeg
-  let t : ℝ := 1 - p.eval c
-  have ht_pos : 0 < t := by
-    grind
-  refine ⟨t, ht_pos, ?_⟩
-  intro hq
-  have hqdeg : 2 ≤ (C t + p).natDegree := by
-    simp_all
-  have hq'_rr : ((C t + p).derivative ≠ 0 ∧ (C t + p).derivative.Splits) :=
-    (derivative_interlaces hq.2 hqdeg).2.1
-  have hmono :
-      StrictMonoOn (fun x => (C t + p).eval x) (Set.Ici c) := by
-    have hder_eq : (C t + p).derivative = p.derivative := by
-      simp
-    refine strictMonoOn_eval_Ici_of_derivative_roots_le hq'_rr.1 hq'_rr.2 ?_ ?_
-    · simpa [hder_eq] using hp_pos.derivative (by lia)
-    · simp_all
-  have hqc_pos : 0 < (C t + p).eval c := by
-    have : (C t + p).eval c = 1 := by
-      simp [t]
-    linarith
-  obtain ⟨r, hr_root, hcr_le⟩ := exists_root_ge_of_derivative_root hq.2 hqdeg (by
-    simpa using hc_root)
-  by_cases hcr : c = r
-  · simp_all
-  · have hcr_lt : c < r := lt_of_le_of_ne hcr_le hcr
-    have hlt_eval :
-        (C t + p).eval c < (C t + p).eval r := hmono (by simp) (by grind) hcr_lt
-    have : (C t + p).eval r = 0 := by
-      simp_all
-    linarith
-
 /-- A positive constant cannot remain on the right of a degree-`≥ 2`
 nonnegative real-rooted polynomial in a `PosComboRealRooted` family. This is
 the affine positive-family analogue of the constant-vs-degree-gap obstruction
@@ -1070,7 +1028,8 @@ private theorem not_posComboRealRooted_right_const_of_natDegree_ge_two
     ¬ PosComboRealRooted p (C c) := by
   intro hpc
   obtain ⟨t, ht, hbad⟩ :=
-    exists_pos_shift_not_isRealRooted_of_nonneg_of_natDegree_ge_two hp_ne hp_splits hpnn hdeg
+    exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
+      hp_splits (hpnn.pos_leadingCoeff hp_ne) hdeg
   have hcombo_t : ((p + C (t / c) * C c) ≠ 0 ∧ (p + C (t / c) * C c).Splits) :=
     PosComboRealRooted.isRealRooted_add_right hpc (by simp_all)
   have hrewrite : p + C (t / c) * C c = p + C t := by

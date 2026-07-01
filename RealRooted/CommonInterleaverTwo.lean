@@ -21,39 +21,6 @@ noncomputable section
 
 namespace RealRooted
 
-private lemma exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two_local
-    {p : ℝ[X]} (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
-    (hdeg : 2 ≤ p.natDegree) :
-    ∃ t : ℝ, 0 < t ∧ ¬ ((C t + p) ≠ 0 ∧ (C t + p).Splits) := by
-  obtain ⟨c, hc_root, hc_top, hpc_nonpos⟩ :=
-    exists_rightmost_derivative_root_with_eval_nonpos hp_splits hp_pos hdeg
-  let t : ℝ := 1 - p.eval c
-  have ht_pos : 0 < t := by grind
-  refine ⟨t, ht_pos, ?_⟩
-  intro hq
-  have hqdeg : 2 ≤ (C t + p).natDegree := by simp_all
-  have hq'_rr : ((C t + p).derivative ≠ 0 ∧ (C t + p).derivative.Splits) :=
-    (derivative_interlaces hq.2 hqdeg).2.1
-  have hmono :
-      StrictMonoOn (fun x => (C t + p).eval x) (Set.Ici c) := by
-    have hder_eq : (C t + p).derivative = p.derivative := by simp
-    refine strictMonoOn_eval_Ici_of_derivative_roots_le hq'_rr.1 hq'_rr.2 ?_ ?_
-    · simpa [hder_eq] using
-        hp_pos.derivative (by lia)
-    · simp_all
-  have hqc_pos : 0 < (C t + p).eval c := by
-    have : (C t + p).eval c = 1 := by simp [t]
-    linarith
-  obtain ⟨r, hr_root, hcr_le⟩ := exists_root_ge_of_derivative_root hq.2 hqdeg (by
-    simpa using hc_root)
-  by_cases hcr : c = r
-  · simp_all
-  · have hcr_lt : c < r := lt_of_le_of_ne hcr_le hcr
-    have hlt_eval :
-        (C t + p).eval c < (C t + p).eval r := hmono (by simp) (by simp_all) hcr_lt
-    have : (C t + p).eval r = 0 := by simp_all
-    linarith
-
 private lemma nonneg_of_add_mul_pos_forall {a b : ℝ}
     (h : ∀ {μ : ℝ}, 0 < μ → 0 ≤ a + μ * b) :
     0 ≤ a := by
@@ -181,7 +148,7 @@ private lemma natDegree_le_one_of_const_left
   have hg_deg2 : 2 ≤ g.natDegree := by lia
   have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_right hcg hg_pos
   obtain ⟨t, ht_pos, ht_bad⟩ :=
-    exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two_local
+    exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
       hg_rr.2 hg_pos hg_deg2
   have hcombo :
       C (t / c) * C c + g = 0 ∨
