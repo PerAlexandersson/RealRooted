@@ -111,8 +111,7 @@ theorem exists_root_near_right_family
   have hμ_ne : μ ≠ 0 := ne_of_gt hμ
   have hμ1_ne : μ + 1 ≠ 0 := by positivity
   have hcoeff_bound_left : (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) < ε := by
-    have hcalc : (t + 1)⁻¹ = μ / (μ + 1) := by
-      grind
+    have hcalc : (t + 1)⁻¹ = μ / (μ + 1) := by grind
     lia
   obtain ⟨b, hb_left_root, hb_dist⟩ :=
     exists_root_near_left_family
@@ -122,8 +121,7 @@ theorem exists_root_near_right_family
     ext n
     simp [t]
     grind
-  have hb_right_root : (f + C μ * g).IsRoot b := by
-    simp_all
+  have hb_right_root : (f + C μ * g).IsRoot b := by simp_all
   grind
 
 /-- Complex-root continuity bridge for the right affine family under
@@ -146,8 +144,7 @@ theorem exists_complex_aroot_near_right_family
   have hμ_ne : μ ≠ 0 := ne_of_gt hμ
   have hμ1_ne : μ + 1 ≠ 0 := by positivity
   have hcoeff_bound_left : (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) < ε := by
-    have hcalc : (t + 1)⁻¹ = μ / (μ + 1) := by
-      grind
+    have hcalc : (t + 1)⁻¹ = μ / (μ + 1) := by grind
     lia
   obtain ⟨w, hw_left_root, hw_dist⟩ :=
     exists_complex_aroot_near_left_family
@@ -157,8 +154,7 @@ theorem exists_complex_aroot_near_right_family
     ext n
     simp [t]
     grind
-  have hw_right_root : w ∈ (f + C μ * g).aroots ℂ := by
-    simp_all
+  have hw_right_root : w ∈ (f + C μ * g).aroots ℂ := by simp_all
   grind
 
 /-- Root continuity in the right affine family with an automatically chosen
@@ -195,8 +191,7 @@ theorem exists_mu_pos_with_normalized_right_family_bound
     exists_t_pos_with_normalized_left_family_bound (f := f) (g := g) hε
   refine ⟨t⁻¹, by simp_all, ?_⟩
   have ht_ne : t ≠ 0 := ne_of_gt ht
-  have hcalc : t⁻¹ / (t⁻¹ + 1) = (t + 1)⁻¹ := by
-    grind
+  have hcalc : t⁻¹ / (t⁻¹ + 1) = (t + 1)⁻¹ := by grind
   lia
 
 /-- In the equal-degree monic setting, positive-combination real-rootedness
@@ -211,10 +206,8 @@ theorem im_eq_zero_of_aeval_zero_of_posComboRealRooted_monic_sameDegree
   by_contra hz_im_ne
   let δ : ℝ := |z.im| / 2
   let R : ℝ := max ‖z‖ 1
-  have hδ_pos : 0 < δ := by
-    grind
-  have hR_pos : 0 < R := by
-    grind
+  have hδ_pos : 0 < δ := by grind
+  have hR_pos : 0 < R := by grind
   have hf_deg_pos : 0 < f.natDegree := by
     by_contra hnot
     simp_all
@@ -249,8 +242,7 @@ theorem im_eq_zero_of_aeval_zero_of_posComboRealRooted_monic_sameDegree
       _ = u * R := by rw [Real.pow_rpow_inv_natCast hu_nonneg hdeg_nat_ne]
       _ = δ / 2 := by
             grind
-  have hdist_lt_delta : ‖z - w‖ < δ := by
-    grind
+  have hdist_lt_delta : ‖z - w‖ < δ := by grind
   have him_le : |z.im| ≤ ‖z - w‖ := by
     simpa [Complex.sub_im, hw_im_zero] using (Complex.abs_im_le_norm (z - w))
   grind
@@ -265,12 +257,10 @@ theorem isRealRooted_left_of_posComboRealRooted_monic_sameDegree
   have hroots_real :
       ∀ z ∈ (f.map (algebraMap ℝ ℂ)).roots, z ∈ (algebraMap ℝ ℂ).range := by
     intro z hz_mem
-    have hmap_ne : f.map (algebraMap ℝ ℂ) ≠ 0 := by
-      simp_all
+    have hmap_ne : f.map (algebraMap ℝ ℂ) ≠ 0 := by simp_all
     have hz_root : (f.map (algebraMap ℝ ℂ)).IsRoot z :=
       (Polynomial.mem_roots hmap_ne).1 hz_mem
-    have hz_aeval : f.aeval z = 0 := by
-      simp_all
+    have hz_aeval : f.aeval z = 0 := by simp_all
     have hz_im :
         z.im = 0 :=
       im_eq_zero_of_aeval_zero_of_posComboRealRooted_monic_sameDegree
