@@ -575,10 +575,9 @@ theorem prec_sturmDerangementsExc_succ : ∀ n : Nat, 2 ≤ n →
   | 0, hn => by lia
   | 1, hn => by lia
   | 2, _ => by
-      have hcore : Prec (recurrenceCoreSturmDerangementsExc 2) (sturmDerangementsExc 2) := by
+      exact prec_sturmDerangementsExc_succ_of_prec_recurrenceCore (n := 2) (by lia) <| by
         simpa [recurrenceCoreSturmDerangementsExc, affineSturmDerangementsExc]
           using prec_affine_sturmDerangementsExc (n := 2) (by lia) (by simp)
-      exact prec_sturmDerangementsExc_succ_of_prec_recurrenceCore (n := 2) (by lia) hcore
   | n + 3, _ => by
       have hprev : Prec (sturmDerangementsExc (n + 2)) (sturmDerangementsExc (n + 3)) :=
         prec_sturmDerangementsExc_succ (n + 2) (by lia)

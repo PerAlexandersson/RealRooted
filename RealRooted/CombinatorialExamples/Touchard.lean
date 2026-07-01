@@ -100,8 +100,6 @@ lemma prec_touchard_one_two :
   have hF_eq : X * touchard 1 + X * touchard 0 = touchard 2 := by
     rw [touchard_two, touchard_one, touchard_zero]
     ring
-  have hF_pos : HasPosLeadingCoeff (X * touchard 1 + X * touchard 0) := by
-    simpa [← hF_eq] using touchard_posLeadingCoeff 2
   have hdeg_lo :
       (touchard 1).natDegree ≤
         (X * touchard 1 + X * touchard 0).natDegree := by
@@ -121,7 +119,8 @@ lemma prec_touchard_one_two :
       (g := touchard 0)
       (a := X)
       (b := X)
-      hInter h0_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
+      hInter h0_pos (by simpa [← hF_eq] using touchard_posLeadingCoeff 2)
+      hdeg_lo hdeg_hi hb_nonpos
 
 /-- Consecutive Touchard polynomials satisfy `Prec`, hence are real-rooted. -/
 theorem prec_touchard_succ : ∀ n : Nat, Prec (touchard n) (touchard (n + 1))
