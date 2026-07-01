@@ -165,8 +165,7 @@ lemma IsInterlacingSeq0Nonneg.sublist_of_realRooted_of_ne
     (hne : ∀ f ∈ gs, f ≠ 0) :
     IsInterlacingSeqNonneg gs := by
   refine ⟨?_, ?_⟩
-  · intro p hp
-    exact ⟨hreal p (hgs.subset hp) (hne p hp), hfs.2 p (hgs.subset hp)⟩
+  · exact fun p hp => ⟨hreal p (hgs.subset hp) (hne p hp), hfs.2 p (hgs.subset hp)⟩
   · have hgs0 : IsInterlacingSeq0 gs := hfs.1.sublist hgs
     rw [isInterlacingSeq_iff_pairwise]
     refine List.pairwise_iff_get.2 ?_

@@ -55,8 +55,7 @@ lemma ne_zero_of_self_2x2 (p : ℝ[X])
         (((C (1 : ℝ) * X + C (1 : ℝ)) * p) + p)
         (((C (1 : ℝ) * X + C (1 : ℝ)) * p) + p) :=
     hdiag 1 1 zero_lt_one zero_lt_one
-  intro hp0
-  exact hself.1.1 (by grind)
+  exact fun hp0 => hself.1.1 (by grind)
 
 lemma isRealRooted_of_self_2x2 (p : ℝ[X])
     (hdiag : Has2x2InterlacingProperty p p p p) : (p ≠ 0 ∧ p.Splits) := by
@@ -3125,8 +3124,7 @@ private lemma consecNoRoots_tail {p : ℝ[X]} {a : ℝ} {l : List ℝ} :
       intro _
       trivial
   | cons b rest =>
-      intro h
-      exact h.2
+      exact fun h => h.2
 
 private lemma consecNoRoots_suffix {p : ℝ[X]} :
     ∀ pre suf : List ℝ, ConsecNoRoots p (pre ++ suf) → ConsecNoRoots p suf

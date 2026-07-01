@@ -167,8 +167,7 @@ theorem oddEvenPolynomial_ne_zero_iff {p q : ℝ[X]} :
   · intro h
     by_cases hp : p = 0
     · right
-      intro hq
-      exact h (by simp [hp, hq])
+      exact fun hq => h (by simp [hp, hq])
     · exact Or.inl hp
   · rintro (hp | hq) hzero
     · exact hp (oddEvenPolynomial_eq_zero_iff.mp hzero).1
@@ -226,9 +225,8 @@ lemma hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero {p : ℝ[X]}
 /-- Concrete obstruction to a sign-free forward Hermite--Biehler route:
 `X - i` has the upper-half-plane root `i`. -/
 theorem not_isUpperHalfPlaneStable_hermiteBiehlerPolynomial_X_neg_one :
-    ¬ IsUpperHalfPlaneStable (hermiteBiehlerPolynomial (X : ℝ[X]) (-(1 : ℝ[X]))) := by
-  intro h
-  exact h Complex.I (by simp) (by simp [hermiteBiehlerPolynomial, complexify])
+    ¬ IsUpperHalfPlaneStable (hermiteBiehlerPolynomial (X : ℝ[X]) (-(1 : ℝ[X]))) :=
+  fun h => h Complex.I (by simp) (by simp [hermiteBiehlerPolynomial, complexify])
 
 /-- Planning stub for the converse Hermite--Biehler theorem.
 
