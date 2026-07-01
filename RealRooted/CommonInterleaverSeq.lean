@@ -432,23 +432,19 @@ private lemma listInterlaces_of_index_bounds
           | cons r₂ rs' =>
               have hlen' : ss.length + 1 = (r₂ :: rs').length := by
                 simpa using Nat.succ.inj hlen
-              have hr₁s : r₁ ≤ s := by
-                simpa using hlower 0 (by simp)
-              have hs_r₂ : s ≤ r₂ := by
-                simpa using hupper 0 (by simp)
+              have hr₁s : r₁ ≤ s := by simpa using hlower 0 (by simp)
+              have hs_r₂ : s ≤ r₂ := by simpa using hupper 0 (by simp)
               have hlower' : ∀ k (hk : k < ss.length),
                   (r₂ :: rs').get ⟨k, by
                     lia⟩ ≤ ss.get ⟨k, hk⟩ := by
                 intro k hk
-                have hk' : k + 1 < (s :: ss).length := by
-                  simpa using Nat.succ_lt_succ hk
+                have hk' : k + 1 < (s :: ss).length := by simpa using Nat.succ_lt_succ hk
                 simpa using hlower (k + 1) hk'
               have hupper' : ∀ k (hk : k < ss.length),
                   ss.get ⟨k, hk⟩ ≤ (r₂ :: rs').get ⟨k + 1, by
                     lia⟩ := by
                 intro k hk
-                have hk' : k + 1 < (s :: ss).length := by
-                  simpa using Nat.succ_lt_succ hk
+                have hk' : k + 1 < (s :: ss).length := by simpa using Nat.succ_lt_succ hk
                 simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using
                   hupper (k + 1) hk'
               exact ⟨hr₁s, hs_r₂, ih hlen' hlower' hupper'⟩
@@ -474,20 +470,16 @@ private lemma listAlternates_of_index_bounds
       | nil =>
           simp at hlen
       | cons r rs =>
-          have hlen' : ss.length = rs.length := by
-            simpa using Nat.succ.inj hlen
-          have hs_r : s ≤ r := by
-            simpa using hlower 0 (by simp)
+          have hlen' : ss.length = rs.length := by simpa using Nat.succ.inj hlen
+          have hs_r : s ≤ r := by simpa using hlower 0 (by simp)
           have hinter : ListInterlaces ss (r :: rs) := by
             refine listInterlaces_of_index_bounds ?_ ?_ ?_
             · simpa using hlen
             · intro k hk
-              have hk' : k + 1 < (s :: ss).length := by
-                simpa using Nat.succ_lt_succ hk
+              have hk' : k + 1 < (s :: ss).length := by simpa using Nat.succ_lt_succ hk
               simpa using hupper k hk'
             · intro k hk
-              have hk' : k + 1 < (s :: ss).length := by
-                simpa using Nat.succ_lt_succ hk
+              have hk' : k + 1 < (s :: ss).length := by simpa using Nat.succ_lt_succ hk
               simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using
                 hlower (k + 1) hk'
           exact ⟨hs_r, hinter⟩

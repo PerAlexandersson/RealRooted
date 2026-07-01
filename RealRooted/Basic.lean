@@ -72,8 +72,7 @@ lemma listInterlaces_iff_interleaves_of_length :
   | _ :: _, [], h => by simp at h
   | _ :: _, [_], h => by simp at h
   | s :: ss, r₁ :: r₂ :: rs, h => by
-      have htail : ss.length + 1 = (r₂ :: rs).length := by
-        simpa using h
+      have htail : ss.length + 1 = (r₂ :: rs).length := by simpa using h
       constructor
       · rintro ⟨hr₁s, hsr₂, htail_old⟩
         exact List.Interleaves.cons_symm
@@ -104,8 +103,7 @@ lemma listAlternates_iff_interleaves_of_length :
   | [], _ :: _, h => by simp at h
   | _ :: _, [], h => by simp at h
   | s :: ss, r :: rs, h => by
-      have htail : ss.length + 1 = (r :: rs).length := by
-        simpa using h
+      have htail : ss.length + 1 = (r :: rs).length := by simpa using h
       constructor
       · rintro ⟨hsr, htail_old⟩
         exact List.Interleaves.cons_symm

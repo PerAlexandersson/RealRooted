@@ -68,8 +68,7 @@ private theorem exists_signInterleaving {F : ℝ[X]} :
       · simp
   | r₁ :: r₂ :: rest, hrs_sorted, hsign => by
       have hr₁r₂ : r₁ ≤ r₂ := List.rel_of_pairwise_cons hrs_sorted (by simp)
-      have hprod : F.eval r₁ * F.eval r₂ ≤ 0 := by
-        simpa using hsign [] rfl
+      have hprod : F.eval r₁ * F.eval r₂ ≤ 0 := by simpa using hsign [] rfl
       obtain ⟨u, hu₁, hu₂, hu_root⟩ :=
         exists_isRoot_between_of_eval_mul_nonpos hr₁r₂ hprod
       have htail_sorted : (r₂ :: rest).Pairwise (· ≤ ·) :=
@@ -209,8 +208,7 @@ private theorem listAlternates_of_drop_bounds :
       | cons s₂ ss' =>
           have ht_le_s₂ : t ≤ s₂ := by
             obtain ⟨u, hu_mem, hu_le⟩ := hexists [] rfl
-            have ht_le_u : t ≤ u := by
-              simpa using hts.head!_le hu_mem
+            have ht_le_u : t ≤ u := by simpa using hts.head!_le hu_mem
             grind
           have hge' :
               ∀ (pre : List ℝ) {s' : ℝ} {rest : List ℝ},
@@ -321,8 +319,7 @@ theorem listInterlaces_of_count_bounds
     obtain ⟨u, hu_drop, hu_le⟩ :=
       exists_mem_drop_le_of_lt_countP (ts := ts) (s := s) (k := 0) (by simp_all)
     have hu_mem : u ∈ ts := by simp_all
-    have hhead_le_u : ts.head! ≤ u := by
-      simpa using hts.head!_le hu_mem
+    have hhead_le_u : ts.head! ≤ u := by simpa using hts.head!_le hu_mem
     grind
   · intro pre s rest hEq u hu
     exact all_ge_of_countP_lt_drop hts (hlt pre hEq) u hu
@@ -870,8 +867,7 @@ private theorem exists_strictSignInterleaving {F : ℝ[X]} :
       · simp
   | r₁ :: r₂ :: rest, hrs_sorted, hsign => by
       have hr₁r₂ : r₁ < r₂ := by
-        have hprod : F.eval r₁ * F.eval r₂ < 0 := by
-          simpa using hsign [] rfl
+        have hprod : F.eval r₁ * F.eval r₂ < 0 := by simpa using hsign [] rfl
         have hr₁r₂_le : r₁ ≤ r₂ := List.rel_of_pairwise_cons hrs_sorted (by simp)
         by_contra hEq
         have : F.eval r₁ * F.eval r₂ = (F.eval r₁) ^ 2 := by
