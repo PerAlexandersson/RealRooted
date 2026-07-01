@@ -46,7 +46,8 @@ lemma weightedSum_eq_zero_of_forall_coeff_zero :
   | (a, p) :: l, hzero => by
       have ha : a = 0 := hzero (a, p) (by simp)
       have hl : ∀ ap ∈ l, ap.1 = 0 := by
-        grind
+        intro ap hap
+        exact hzero ap (by simp [hap])
       simp [weightedSum_cons, ha, weightedSum_eq_zero_of_forall_coeff_zero l hl]
 
 /-- `HasNonnegCoeffs` is closed under finite sums. -/
@@ -93,7 +94,12 @@ lemma hasPosLeadingCoeff_weightedSum :
           · simpa [weightedSum_cons] using
               hasPosLeadingCoeff_add_of_natDegree_lt_left hgt hCp_pos
         · have hzero_tail : weightedSum l = 0 :=
-            weightedSum_eq_zero_of_forall_coeff_zero l (by grind)
+            weightedSum_eq_zero_of_forall_coeff_zero l (fun ap hap => by
+              have hap_nonneg : 0 ≤ ap.1 := hnonneg ap (by simp [hap])
+              have hap_not_pos : ¬ 0 < ap.1 := by
+                intro hap_pos
+                exact htail ⟨ap, hap, hap_pos⟩
+              exact le_antisymm (not_lt.mp hap_not_pos) hap_nonneg)
           simpa [weightedSum_cons, hzero_tail] using
             hasPosLeadingCoeff_C_mul ha (hpos (a, p) (by simp))
       · have htail : ∃ ap ∈ l, 0 < ap.1 := by
@@ -258,7 +264,12 @@ theorem prec_weightedSum_right :
           simpa [weightedSum_cons] using
             prec_add_of_prec_right_of_posLeadingCoeff hCp_prec htail_prec hCp_pos htail_pos
         · have hzero_tail : weightedSum l = 0 :=
-            weightedSum_eq_zero_of_forall_coeff_zero l (by grind)
+            weightedSum_eq_zero_of_forall_coeff_zero l (fun ap hap => by
+              have hap_nonneg : 0 ≤ ap.1 := hnonneg ap (by simp [hap])
+              have hap_not_pos : ¬ 0 < ap.1 := by
+                intro hap_pos
+                exact htail ⟨ap, hap, hap_pos⟩
+              exact le_antisymm (not_lt.mp hap_not_pos) hap_nonneg)
           simpa [weightedSum_cons, hzero_tail] using
             prec_C_mul_left (hprec (a, p) (by simp)) ha.ne'
       · have htail : ∃ ap ∈ l, 0 < ap.1 := by
