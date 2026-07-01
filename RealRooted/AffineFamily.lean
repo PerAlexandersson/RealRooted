@@ -900,24 +900,6 @@ theorem prec_right_pair_of_prec_or_revPrec_of_no_common_nonneg
     Prec g (X * f) :=
   prec_right_pair_of_prec_or_revPrec_of_no_common h hg_ne hg_splits hgnn hno
 
-/-- A common root of the right-family pair `(f + g, f + 2g)` is already a
-common root of `(f, g)`. This is the elementary subtraction step behind the
-`1/2`-family reroute. -/
-private lemma no_common_root_right_family_one_two_of_no_common
-    {f g : ℝ[X]}
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    ∀ r, (f + g).IsRoot r → ¬ (f + C (2 : ℝ) * g).IsRoot r := by
-  intro r hfg_root hfg2_root
-  have hfg_eval : (f + g).eval r = 0 := by
-    simp_all
-  have hfg2_eval : (f + C (2 : ℝ) * g).eval r = 0 := by
-    simp_all
-  rw [Polynomial.eval_add] at hfg_eval
-  rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C] at hfg2_eval
-  have hg_eval : g.eval r = 0 := by
-    linarith
-  simp_all
-
 /-- A common root of the left-family pair `(f + g, 2f + g)` is already a
 common root of `(f, g)`. This is the shifted-pair analogue of the right-family
 `1/2` subtraction step. -/

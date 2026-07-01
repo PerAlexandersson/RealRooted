@@ -255,41 +255,6 @@ private lemma listInterlaces_listAlternates_prod_mul_prod_nonneg_at_mem :
   | _, _ :: _, [], hlen, hint_f, halt_g, _, _ => by
       simp [ListAlternates] at halt_g
 
-/-- In a differ-by-1 interlacing layout, evaluating at the first two right-hand
-roots gives opposite-or-zero signs. -/
-private lemma listInterlaces_prod_mul_prod_nonpos_at_heads :
-    ∀ {ss : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ},
-      ListInterlaces ss (r₁ :: r₂ :: rest) →
-        (ss.map (r₁ - ·)).prod * (ss.map (r₂ - ·)).prod ≤ 0
-  | s :: rest_s, r₁, r₂, rest, hint => by
-      obtain ⟨hr₁s, hsr₂, htail⟩ := hint
-      have hs_nonpos : (r₁ - s) * (r₂ - s) ≤ 0 := by
-        nlinarith
-      have htail_nonneg :
-          0 ≤ (rest_s.map (r₁ - ·)).prod * (rest_s.map (r₂ - ·)).prod := by
-        have hall_r₁ : ∀ x ∈ rest_s.map (r₁ - ·), x ≤ 0 := by
-          intro x hx
-          rcases List.mem_map.mp hx with ⟨y, hy, rfl⟩
-          have hr₂y : r₂ ≤ y := listInterlaces_all_ge rest_s rest r₂ htail y hy
-          linarith
-        have hall_r₂ : ∀ x ∈ rest_s.map (r₂ - ·), x ≤ 0 := by
-          intro x hx
-          rcases List.mem_map.mp hx with ⟨y, hy, rfl⟩
-          have hr₂y : r₂ ≤ y := listInterlaces_all_ge rest_s rest r₂ htail y hy
-          linarith
-        exact prod_mul_prod_nonneg_of_forall_nonpos_of_eq_length
-          (by simp) hall_r₁ hall_r₂
-      have hfactor :
-          (List.map (fun x => r₁ - x) (s :: rest_s)).prod *
-              (List.map (fun x => r₂ - x) (s :: rest_s)).prod =
-            ((r₁ - s) * (r₂ - s)) *
-              ((rest_s.map (r₁ - ·)).prod * (rest_s.map (r₂ - ·)).prod) := by
-        simp [mul_assoc, mul_left_comm]
-      rw [hfactor]
-      exact mul_nonpos_of_nonpos_of_nonneg hs_nonpos htail_nonneg
-  | [], _, _, _, hint => by
-      simp [ListInterlaces] at hint
-
 /-- In a same-degree alternating layout, evaluating at the first two right-hand
 roots also gives opposite-or-zero signs. -/
 private lemma listAlternates_prod_mul_prod_nonpos_at_heads :

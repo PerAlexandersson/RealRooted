@@ -58,6 +58,48 @@ lemma listInterlaces_rs_all_ge :
     · exact le_trans (le_trans hr hsr₂) (listInterlaces_rs_all_ge ss' rs' r₂ htail r' hr'')
   | _ :: _, [], _, hint => by simp
 
+/-- The tail factors in a differ-by-one interlacing layout are all
+nonnegative when paired against two ordered right-hand points. -/
+lemma listInterlaces_tail_pair_prod_nonneg :
+    ∀ {ss : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ},
+      r₁ ≤ r₂ →
+      ListInterlaces ss (r₂ :: rest) →
+      0 ≤ (ss.map (fun x => (r₁ - x) * (r₂ - x))).prod
+  | ss, r₁, r₂, rest, hr₁r₂, h => by
+      refine List.prod_nonneg ?_
+      intro y hy
+      rcases List.mem_map.mp hy with ⟨x, hx, rfl⟩
+      have hr₂x : r₂ ≤ x := listInterlaces_all_ge ss rest r₂ h x hx
+      have hr₁x : r₁ ≤ x := le_trans hr₁r₂ hr₂x
+      nlinarith
+
+/-- In a head-position interlacing layout, evaluating at the first two
+right-hand points gives opposite-or-zero product signs. -/
+lemma listInterlaces_prod_mul_prod_nonpos_at_heads
+    {ss : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ}
+    (hint : ListInterlaces ss (r₁ :: r₂ :: rest)) :
+    (ss.map (fun x => r₁ - x)).prod * (ss.map (fun x => r₂ - x)).prod ≤ 0 := by
+  obtain ⟨s, ss', rfl⟩ : ∃ s ss', ss = s :: ss' := by
+    cases ss with
+    | nil => simp [ListInterlaces] at hint
+    | cons s ss => exact ⟨s, ss, rfl⟩
+  obtain ⟨hr₁s, hsr₂, htail⟩ := hint
+  have hr₁r₂ : r₁ ≤ r₂ := le_trans hr₁s hsr₂
+  have hs_head_nonpos : (r₁ - s) * (r₂ - s) ≤ 0 := by
+    nlinarith
+  have htail_nonneg :
+      0 ≤ ((ss'.map fun x => (r₁ - x) * (r₂ - x))).prod :=
+    listInterlaces_tail_pair_prod_nonneg hr₁r₂ htail
+  have htail_nonneg' :
+      0 ≤ (ss'.map (fun x => r₁ - x)).prod * (ss'.map (fun x => r₂ - x)).prod := by
+    simp_all
+  calc
+    ((s :: ss').map (fun x => r₁ - x)).prod * ((s :: ss').map (fun x => r₂ - x)).prod
+        = ((r₁ - s) * (r₂ - s)) *
+            ((ss'.map (fun x => r₁ - x)).prod * (ss'.map (fun x => r₂ - x)).prod) := by
+              simp [mul_assoc, mul_left_comm]
+    _ ≤ 0 := mul_nonpos_of_nonpos_of_nonneg hs_head_nonpos htail_nonneg'
+
 /-- Every element of the tail of `ss` is `≥ b` in a ListInterlaces ss (a :: b :: rest). -/
 lemma listInterlaces_tail_ge :
     ∀ (ss : List ℝ) (a b : ℝ) (rest : List ℝ),

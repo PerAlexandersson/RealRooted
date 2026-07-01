@@ -142,53 +142,6 @@ private lemma exists_delta_wronskian_iterateTDeriv_eval_mul_pos_joint_at_zero
         (by simpa [Real.norm_eq_abs, abs_of_pos hx_pos] using hclose')
     simp_all
 
-private lemma listInterlaces_tail_pair_prod_nonneg_local :
-    ∀ {ss : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ},
-      r₁ ≤ r₂ →
-      ListInterlaces ss (r₂ :: rest) →
-      0 ≤ (ss.map (fun x => (r₁ - x) * (r₂ - x))).prod
-  | ss, r₁, r₂, rest, hr₁r₂, h => by
-      refine List.prod_nonneg ?_
-      intro y hy
-      rcases List.mem_map.mp hy with ⟨x, hx, rfl⟩
-      have hr₂x : r₂ ≤ x := listInterlaces_all_ge ss rest r₂ h x hx
-      have hr₁x : r₁ ≤ x := le_trans hr₁r₂ hr₂x
-      nlinarith
-
-private lemma prod_mul_prod_eq_prod_pairwise_local (l : List ℝ) (a b : ℝ) :
-    (l.map (fun x => a - x)).prod * (l.map (fun x => b - x)).prod =
-      (l.map fun x => (a - x) * (b - x)).prod := by
-  simp
-
-/-- Local public-in-file replacement for the private Ma--Wang product lemma:
-at consecutive points on the right-hand list of a `ListInterlaces` layout, the
-interlacing-product contribution is nonpositive. This is the exact list-level
-sign input needed later for the same-degree cancellation branch. -/
-private lemma listInterlaces_prod_mul_prod_nonpos_at_heads_local
-    {ss : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ}
-    (hint : ListInterlaces ss (r₁ :: r₂ :: rest)) :
-    (ss.map (fun x => r₁ - x)).prod * (ss.map (fun x => r₂ - x)).prod ≤ 0 := by
-  obtain ⟨s, ss', rfl⟩ : ∃ s ss', ss = s :: ss' := by
-    cases ss with
-    | nil => simp [ListInterlaces] at hint
-    | cons s ss => lia
-  obtain ⟨hr₁s, hsr₂, htail⟩ := hint
-  have hr₁r₂ : r₁ ≤ r₂ := le_trans hr₁s hsr₂
-  have hs_head_nonpos : (r₁ - s) * (r₂ - s) ≤ 0 := by
-    nlinarith
-  have htail_nonneg :
-      0 ≤ ((ss'.map fun x => (r₁ - x) * (r₂ - x))).prod :=
-    listInterlaces_tail_pair_prod_nonneg_local hr₁r₂ htail
-  have htail_nonneg' :
-      0 ≤ (ss'.map (fun x => r₁ - x)).prod * (ss'.map (fun x => r₂ - x)).prod := by
-    simp_all
-  calc
-    ((s :: ss').map (fun x => r₁ - x)).prod * ((s :: ss').map (fun x => r₂ - x)).prod
-        = ((r₁ - s) * (r₂ - s)) *
-            ((ss'.map (fun x => r₁ - x)).prod * (ss'.map (fun x => r₂ - x)).prod) := by
-              simp [mul_assoc, mul_left_comm]
-    _ ≤ 0 := mul_nonpos_of_nonpos_of_nonneg hs_head_nonpos htail_nonneg'
-
 private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive_local :
     ∀ {ss rs pre : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ},
       rs.Pairwise (· ≤ ·) →
@@ -197,7 +150,7 @@ private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive_local :
       (ss.map (fun x => r₁ - x)).prod * (ss.map (fun x => r₂ - x)).prod ≤ 0
   | ss, rs, [], r₁, r₂, rest, _, hint, hEq => by
       subst hEq
-      exact listInterlaces_prod_mul_prod_nonpos_at_heads_local hint
+      exact listInterlaces_prod_mul_prod_nonpos_at_heads hint
   | ss, rs, a :: pre, r₁, r₂, rest, hrs_sorted, hint, hEq => by
       obtain ⟨s, ss', rfl⟩ : ∃ s ss', ss = s :: ss' := by
         cases ss with
@@ -229,8 +182,8 @@ private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive_local :
                 nlinarith
               have htail_nonpos :
                   (ss'.map (fun x => r₁ - x)).prod *
-                    (ss'.map (fun x => r₂ - x)).prod ≤ 0 :=
-                listInterlaces_prod_mul_prod_nonpos_at_heads_local htail
+                      (ss'.map (fun x => r₂ - x)).prod ≤ 0 :=
+                listInterlaces_prod_mul_prod_nonpos_at_heads htail
               calc
                 ((s :: ss').map (fun x => r₁ - x)).prod *
                     ((s :: ss').map (fun x => r₂ - x)).prod
@@ -428,25 +381,6 @@ private lemma allComboRealRooted_right_family_one_two
         C (α + β) * f + C (α + 2 * β) * g := by
     grind
   simpa [hrewrite] using hall (α + β) (α + 2 * β)
-
-/-- A common root of `(f + g, f + 2g)` is already a common root of `(f, g)`.
-
-This packages the elementary subtraction argument needed if the converse is
-rerouted through the `f + g`, `f + 2g` family. -/
-private lemma no_common_root_right_family_one_two_of_no_common
-    {f g : ℝ[X]}
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    ∀ r, (f + g).IsRoot r → ¬ (f + C (2 : ℝ) * g).IsRoot r := by
-  intro r hfg_root hfg2_root
-  have hfg_eval : (f + g).eval r = 0 := by
-    simp_all
-  have hfg2_eval : (f + C (2 : ℝ) * g).eval r = 0 := by
-    simp_all
-  rw [Polynomial.eval_add] at hfg_eval
-  rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C] at hfg2_eval
-  have hg_eval : g.eval r = 0 := by
-    grind
-  simp_all
 
 /-- Safe degree/leading-coefficient packaging for the right-family reroute.
 
@@ -2217,7 +2151,7 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
   --    and
   --    `have hno_family :
   --        ∀ r, (f + g).IsRoot r → ¬ (f + C (2 : ℝ) * g).IsRoot r :=
-  --          no_common_root_right_family_one_two_of_no_common hno`.
+  --          by simpa using no_common_root_right_family_one_two_of_no_common hno`.
   --
   -- Either route should finish this theorem without changing the Wronskian
   -- infrastructure above. Keeping `hprec_iter` explicit here should make it

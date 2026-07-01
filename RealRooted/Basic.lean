@@ -44,6 +44,12 @@ lemma eq_zero_or_ne_zero_and_splits_iff_eq_zero_or_ne_zero_and_card_roots (p : �
   · exact Or.inl rfl
   · exact Or.inr (ne_zero_and_splits_of_ne_zero_and_card_roots h.1 h.2)
 
+lemma natDegree_X_add_one_pow_le (n : ℕ) :
+    ((X + 1 : ℝ[X]) ^ n).natDegree ≤ n := by
+  have hX1 : (X + 1 : ℝ[X]).natDegree ≤ 1 := by
+    rw [show (X + 1 : ℝ[X]) = X + C (1 : ℝ) by simp, Polynomial.natDegree_X_add_C]
+  simpa [one_mul] using Polynomial.natDegree_pow_le_of_le n hX1
+
 /-! ## Root interleaving predicates on sorted lists -/
 
 /-- **Differ-by-1 interleaving**: `ss` (length n−1) interleaves into `rs` (length n).

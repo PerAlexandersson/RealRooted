@@ -613,51 +613,6 @@ private lemma isRoot_of_mem_sorted_roots_eq
   exact (mem_roots hf_ne).mp <| by
     simpa [hrs_eq] using Multiset.mem_coe.mpr (by simp_all : r ∈ rs)
 
-private lemma listInterlaces_tail_pair_prod_nonneg :
-    ∀ {ss : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ},
-      r₁ ≤ r₂ →
-      ListInterlaces ss (r₂ :: rest) →
-      0 ≤ (ss.map (fun x => (r₁ - x) * (r₂ - x))).prod
-  | ss, r₁, r₂, rest, hr₁r₂, h => by
-      refine List.prod_nonneg ?_
-      intro y hy
-      rcases List.mem_map.mp hy with ⟨x, hx, rfl⟩
-      have hr₂x : r₂ ≤ x := listInterlaces_all_ge ss rest r₂ h x hx
-      have hr₁x : r₁ ≤ x := le_trans hr₁r₂ hr₂x
-      nlinarith
-
-private lemma prod_mul_prod_eq_prod_pairwise (l : List ℝ) (a b : ℝ) :
-    (l.map (fun x => a - x)).prod * (l.map (fun x => b - x)).prod =
-      (l.map fun x => (a - x) * (b - x)).prod := by
-  simp
-
-/-- In a head-position interlacing layout, the product contribution from the
-root list has opposite-or-zero signs at the first two right-hand points. -/
-private lemma listInterlaces_prod_mul_prod_nonpos_at_heads
-    {ss : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ}
-    (hint : ListInterlaces ss (r₁ :: r₂ :: rest)) :
-    (ss.map (fun x => r₁ - x)).prod * (ss.map (fun x => r₂ - x)).prod ≤ 0 := by
-  obtain ⟨s, ss', rfl⟩ : ∃ s ss', ss = s :: ss' := by
-    cases ss with
-    | nil => simp [ListInterlaces] at hint
-    | cons s ss => lia
-  obtain ⟨hr₁s, hsr₂, htail⟩ := hint
-  have hr₁r₂ : r₁ ≤ r₂ := le_trans hr₁s hsr₂
-  have hs_head_nonpos : (r₁ - s) * (r₂ - s) ≤ 0 := by
-    nlinarith
-  have htail_nonneg :
-      0 ≤ ((ss'.map fun x => (r₁ - x) * (r₂ - x))).prod :=
-    listInterlaces_tail_pair_prod_nonneg hr₁r₂ htail
-  have htail_nonneg' :
-      0 ≤ (ss'.map (fun x => r₁ - x)).prod * (ss'.map (fun x => r₂ - x)).prod := by
-    simp_all
-  calc
-    ((s :: ss').map (fun x => r₁ - x)).prod * ((s :: ss').map (fun x => r₂ - x)).prod
-        = ((r₁ - s) * (r₂ - s)) *
-            ((ss'.map (fun x => r₁ - x)).prod * (ss'.map (fun x => r₂ - x)).prod) := by
-              simp [mul_assoc, mul_left_comm]
-    _ ≤ 0 := mul_nonpos_of_nonpos_of_nonneg hs_head_nonpos htail_nonneg'
-
 /-- In a sorted interlacing layout, the polynomial-factor product has
 opposite-or-zero signs at any consecutive pair on the right-hand list. -/
 private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive :

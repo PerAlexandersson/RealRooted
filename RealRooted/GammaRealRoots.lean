@@ -92,12 +92,6 @@ lemma gammaTransform_monomial (d n : ℕ) (a : ℝ) :
     IdTransform 1 (X + 1 : ℝ[X]) = X + 1 := by
   simp [IdTransform, add_comm]
 
-lemma natDegree_X_add_one_pow_le (n : ℕ) :
-    ((X + 1 : ℝ[X]) ^ n).natDegree ≤ n := by
-  have hX1 : (X + 1 : ℝ[X]).natDegree ≤ 1 := by
-    rw [show (X + 1 : ℝ[X]) = X + C (1 : ℝ) by simp, Polynomial.natDegree_X_add_C]
-  simpa [one_mul] using (Polynomial.natDegree_pow_le_of_le n hX1)
-
 lemma IdTransform_raise {m k : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ m) :
     IdTransform (m + k) p = X ^ k * IdTransform m p := by
   induction k with

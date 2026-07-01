@@ -226,15 +226,6 @@ theorem jensenPolynomial_eq_diagonalOperator_X_add_one_pow
   · have hlt : n < k := Nat.lt_of_not_le hk
     simp [hk, Nat.choose_eq_zero_of_lt hlt]
 
-theorem natDegree_X_add_one_pow_le (n : ℕ) :
-    ((X + 1 : ℝ[X]) ^ n).natDegree ≤ n := by
-  calc
-    ((X + 1 : ℝ[X]) ^ n).natDegree
-        ≤ n * (X + 1 : ℝ[X]).natDegree := Polynomial.natDegree_pow_le
-    _ = n := by
-      rw [show (X + 1 : ℝ[X]) = X + C 1 by simp, Polynomial.natDegree_X_add_C,
-        mul_one]
-
 theorem splits_X_add_one_pow (n : ℕ) :
     ((X + 1 : ℝ[X]) ^ n).Splits :=
   (show (X + 1 : ℝ[X]).Splits by
