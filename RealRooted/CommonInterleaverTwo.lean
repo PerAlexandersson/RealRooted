@@ -2275,19 +2275,21 @@ theorem compatiblePairHasCommonInterleaver_of_sameDegreePair_and_affineFamily_no
     hsame haffBridge hf_pos hg_pos hfnn hgnn
     (Compatible.toPosComboRealRooted hfg hf_pos hg_pos)
 
-/-- Translation reduces the full positive-leading compatibility bridge to the
-nonnegative-coefficient degree-split package: shift both polynomials far enough
-to the right so all roots become nonpositive, apply the nonnegative theorem,
-then translate the common interleaver back. -/
-theorem posComboPairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+private theorem posComboPairHasCommonInterleaver_via_nonnegShift
     {f g : ℝ[X]}
     (_hf_rr_ne : f ≠ 0) (hf_rr_splits : f.Splits)
     (_hg_rr_ne : g ≠ 0) (hg_rr_splits : g.Splits)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
-    (hfg : PosComboRealRooted f g) :
+    (hfg : PosComboRealRooted f g)
+    (hNonneg :
+      ∀ {F G : ℝ[X]},
+        HasPosLeadingCoeff F →
+        HasPosLeadingCoeff G →
+        HasNonnegCoeffs F →
+        HasNonnegCoeffs G →
+        PosComboRealRooted F G →
+        ∃ h : ℝ[X], Prec F h ∧ Prec G h) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
   obtain ⟨rf, hrf⟩ := exists_root_upper_bound f
   obtain ⟨rg, hrg⟩ := exists_root_upper_bound g
@@ -2307,9 +2309,7 @@ theorem posComboPairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
   have hfg' : PosComboRealRooted f' g' := by
     intro α β hα hβ
     simpa [f', g'] using hfg.comp_X_add_C r hα hβ
-  rcases
-      posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
-        hsame hsucc hf'_pos hg'_pos hfnn hgnn hfg' with
+  rcases hNonneg hf'_pos hg'_pos hfnn hgnn hfg' with
     ⟨h', hf'h', hg'h'⟩
   let h : ℝ[X] := h'.comp (X - C r)
   have hh_comp : h.comp (X + C r) = h' := by
@@ -2321,6 +2321,26 @@ theorem posComboPairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
     have htranslated : Prec g' (h.comp (X + C r)) := by lia
     exact (prec_comp_X_add_C_iff (f := g) (g := h) r).1 htranslated
   grind
+
+/-- Translation reduces the full positive-leading compatibility bridge to the
+nonnegative-coefficient degree-split package: shift both polynomials far enough
+to the right so all roots become nonpositive, apply the nonnegative theorem,
+then translate the common interleaver back. -/
+theorem posComboPairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+    {f g : ℝ[X]}
+    (_hf_rr_ne : f ≠ 0) (hf_rr_splits : f.Splits)
+    (_hg_rr_ne : g ≠ 0) (hg_rr_splits : g.Splits)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+  exact posComboPairHasCommonInterleaver_via_nonnegShift
+    _hf_rr_ne hf_rr_splits _hg_rr_ne hg_rr_splits hf_pos hg_pos hfg
+    (fun {F G} hF_pos hG_pos hFnn hGnn hFG =>
+      posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
+        hsame hsucc (f := F) (g := G) hF_pos hG_pos hFnn hGnn hFG)
 
 /-- Translation reduces the full positive-leading compatibility bridge to the
 repaired nonnegative-coefficient degree-split package.  This is the shifted
@@ -2336,38 +2356,11 @@ theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
     (hg_pos : HasPosLeadingCoeff g)
     (hfg : PosComboRealRooted f g) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  obtain ⟨rf, hrf⟩ := exists_root_upper_bound f
-  obtain ⟨rg, hrg⟩ := exists_root_upper_bound g
-  let r : ℝ := max rf rg
-  let f' : ℝ[X] := f.comp (X + C r)
-  let g' : ℝ[X] := g.comp (X + C r)
-  have hf'_pos : HasPosLeadingCoeff f' := by
-    simpa [f'] using hf_pos.comp_X_add_C r
-  have hg'_pos : HasPosLeadingCoeff g' := by
-    simpa [g'] using hg_pos.comp_X_add_C r
-  have hfnn : HasNonnegCoeffs f' := by
-    refine hasNonnegCoeffs_comp_X_add_C_of_roots_le hf_pos hf_rr_splits ?_
-    grind
-  have hgnn : HasNonnegCoeffs g' := by
-    refine hasNonnegCoeffs_comp_X_add_C_of_roots_le hg_pos hg_rr_splits ?_
-    grind
-  have hfg' : PosComboRealRooted f' g' := by
-    intro α β hα hβ
-    simpa [f', g'] using hfg.comp_X_add_C r hα hβ
-  rcases
+  exact posComboPairHasCommonInterleaver_via_nonnegShift
+    _hf_rr_ne hf_rr_splits _hg_rr_ne hg_rr_splits hf_pos hg_pos hfg
+    (fun {F G} hF_pos hG_pos hFnn hGnn hFG =>
       posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-        hsame hsucc hf'_pos hg'_pos hfnn hgnn hfg' with
-    ⟨h', hf'h', hg'h'⟩
-  let h : ℝ[X] := h'.comp (X - C r)
-  have hh_comp : h.comp (X + C r) = h' := by
-    simp [h, Polynomial.comp_assoc, sub_eq_add_neg, add_assoc, add_comm]
-  have hfh : Prec f h := by
-    have htranslated : Prec f' (h.comp (X + C r)) := by lia
-    exact (prec_comp_X_add_C_iff (f := f) (g := h) r).1 htranslated
-  have hgh : Prec g h := by
-    have htranslated : Prec g' (h.comp (X + C r)) := by lia
-    exact (prec_comp_X_add_C_iff (f := g) (g := h) r).1 htranslated
-  grind
+        hsame hsucc (f := F) (g := G) hF_pos hG_pos hFnn hGnn hFG)
 
 /-- Translation reduces the full positive-leading compatibility bridge to the
 nonnegative-coefficient degree-split package: shift both polynomials far enough
