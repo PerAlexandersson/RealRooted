@@ -47,6 +47,16 @@ theorem pairwiseCompatible_iff_familyCompatible_of_natDegree_le_one
   RealRooted.pairwiseCompatible_iff_familyCompatible_of_natDegree_le_one
     hpos hdeg
 
+/-- Challenge-facing reduction for the left-oriented common-interleaver target. -/
+theorem pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
+    {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (htwo : ∀ ⦃f g : ℝ[X]⦄, Compatible f g → ∃ h : ℝ[X], Prec h f ∧ Prec h g)
+    (hglobal : PairwiseHasCommonLeftInterleaver fs → HasCommonLeftInterleaver fs) :
+    PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
+  RealRooted.pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
+    hpos htwo hglobal
+
 end ChudnovskySeymour
 end Challenges
 end RealRooted
