@@ -473,6 +473,17 @@ private theorem isRealRooted_of_add_C_mul_right_family_of_natDegree_le
       PosComboRealRooted.isRealRooted_left_of_sameDegree
         (f := g) (g := f) hcombo hg_pos hf_pos heq
 
+/-- In a positive-combination family, if the right summand has degree one more
+than the left summand, then the right summand is real-rooted. -/
+theorem PosComboRealRooted.isRealRooted_right_of_succDegree {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hsucc : g.natDegree = f.natDegree + 1) :
+    (g ≠ 0 ∧ g.Splits) :=
+  isRealRooted_of_add_C_mul_right_family_of_natDegree_le
+    (fun {_} hμ => PosComboRealRooted.isRealRooted_add_right hfg.comm hμ)
+    hf_pos hg_pos (by lia)
+
 /-- If the affine family has enough right-hand degree to dominate the `X * f`
 perturbation, then the boundary member `C t * f + g` is already real-rooted.
 This is the first compiled reduction from the two-parameter family to the

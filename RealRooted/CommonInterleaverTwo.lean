@@ -1233,18 +1233,17 @@ theorem sameDegreePairHasCommonInterleaver_nonneg_of_slotData
 
 This is the succ-degree analogue of the same-degree slot-intersection input
 used for #41.  For a nonnegative positive-combination pair with no common
-roots and `g.natDegree = f.natDegree + 1`, it packages the two pieces of the
-remaining converse-Obreschkoff content:
+roots and `g.natDegree = f.natDegree + 1`, it packages the two remaining
+pieces of the remaining converse-Obreschkoff content:
 
-* real-rootedness of both members (`f` and `g` split), and
+* real-rootedness of the lower-degree member `f`, and
 * the descending root-slot intervals of `f` and `g` meet in each of the
   `f.natDegree + 1` common slots.
 
+The right endpoint `g` is now supplied by
+`PosComboRealRooted.isRealRooted_right_of_succDegree`.
 The `Fin` bounds are threaded as explicit hypotheses so no in-type proof
-obligations remain.  (In the same-degree case #41 the real-rootedness half was
-already available from `isRealRooted_left/right_of_posComboRealRooted_sameDegree`;
-the succ-degree real-rootedness lemma is not yet in the tree, so it is bundled
-here as part of the honest boundary.) -/
+obligations remain. -/
 def PosComboNoCommonSuccDegreeSlotDataNonnegStatement : Prop :=
   ∀ ⦃f g : ℝ[X]⦄,
     HasPosLeadingCoeff f →
@@ -1254,7 +1253,7 @@ def PosComboNoCommonSuccDegreeSlotDataNonnegStatement : Prop :=
     PosComboRealRooted f g →
     g.natDegree = f.natDegree + 1 →
     (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits) ∧
+    (f ≠ 0 ∧ f.Splits) ∧
       ∀ j, j < f.natDegree + 1 →
         ∀ (hjf : j < (rootSeqDesc f).length + 1)
           (hjg : j < (rootSeqDesc g).length + 1),
@@ -1271,7 +1270,9 @@ theorem succDegreePairHasCommonInterleaver_nonneg_of_slotData
     (hstmt : PosComboNoCommonSuccDegreeSlotDataNonnegStatement) :
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
-  obtain ⟨hf_rr, hg_rr, hslot⟩ := hstmt hf_pos hg_pos hfnn hgnn hfg hsucc hno
+  obtain ⟨hf_rr, hslot⟩ := hstmt hf_pos hg_pos hfnn hgnn hfg hsucc hno
+  have hg_rr : g ≠ 0 ∧ g.Splits :=
+    hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hsucc
   refine
     pairHasCommonInterleaver_of_succDegree_slotIntersections
       hf_rr.1 hg_rr.1 hf_rr.2 hg_rr.2 hsucc ?_
