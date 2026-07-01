@@ -100,8 +100,7 @@ theorem favardInterlacing :
         have hInter_step : Interlaces f (aPoly * f + bPoly * g) :=
           hPrec_step.toInterlaces (by lia)
         grind
-  intro n
-  exact (hQ n).1.toPrec
+  exact fun n => (hQ n).1.toPrec
 
 theorem isRealRooted_of_favard
     {P : Nat → ℝ[X]} {α β : Nat → ℝ}

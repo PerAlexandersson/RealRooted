@@ -239,8 +239,7 @@ lemma prec_singletonFreeSetPartitions_three_four :
       rintro (_ | _ | m) <;> simp [coeff_X]
     have hCX_nonneg : HasNonnegCoeffs (C (3 : ℝ) * X) :=
       nonnegCoeffs_C_mul (by simp) hX_nonneg
-    intro m
-    exact add_nonneg (hasNonnegCoeffs_one m) (hCX_nonneg m)
+    exact fun m => add_nonneg (hasNonnegCoeffs_one m) (hCX_nonneg m)
   have hlin_nonpos : ∀ r ∈ (1 + C (3 : ℝ) * X).roots, r ≤ 0 :=
     roots_nonpos_of_nonneg_coeffs hprec.2.1.2 hlin_nonneg
   have hmul :

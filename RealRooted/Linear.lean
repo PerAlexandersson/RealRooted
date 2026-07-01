@@ -258,8 +258,7 @@ lemma prec_comp_X_add_C_iff {f g : ℝ[X]} (r : ℝ) :
   · intro h
     have h' := prec_comp_X_add_C h (-r)
     simpa [comp_assoc, add_assoc, add_left_comm, add_comm, sub_eq_add_neg] using h'
-  · intro h
-    exact prec_comp_X_add_C h r
+  · exact fun h => prec_comp_X_add_C h r
 
 /-- A real-rooted polynomial interlaces with itself in the same-degree sense. -/
 lemma prec_refl {f : ℝ[X]} (hf₀ : f ≠ 0) (hf : f.Splits) : Prec f f := by
