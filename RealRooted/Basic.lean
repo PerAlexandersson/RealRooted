@@ -73,7 +73,7 @@ lemma listInterlaces_iff_interleaves_of_length :
   | _ :: _, [_], h => by simp at h
   | s :: ss, r₁ :: r₂ :: rs, h => by
       have htail : ss.length + 1 = (r₂ :: rs).length := by
-        simp_all
+        simpa using h
       constructor
       · rintro ⟨hr₁s, hsr₂, htail_old⟩
         exact List.Interleaves.cons_symm
@@ -105,7 +105,7 @@ lemma listAlternates_iff_interleaves_of_length :
   | _ :: _, [], h => by simp at h
   | s :: ss, r :: rs, h => by
       have htail : ss.length + 1 = (r :: rs).length := by
-        simp_all
+        simpa using h
       constructor
       · rintro ⟨hsr, htail_old⟩
         exact List.Interleaves.cons_symm
@@ -427,7 +427,7 @@ lemma prec0_zero_zero : Prec0 (0 : ℝ[X]) 0 :=
 /-- The product of two real-rooted polynomials is real-rooted. -/
 lemma isRealRooted_mul {p q : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits)
     (hq_ne : q ≠ 0) (hq_splits : q.Splits) : (p * q ≠ 0 ∧ (p * q).Splits) := by
-  simp_all
+  exact ⟨mul_ne_zero hp_ne hq_ne, hp_splits.mul hq_splits⟩
 
 /-- Non-negative coefficients. -/
 def HasNonnegCoeffs (p : ℝ[X]) : Prop := ∀ n, 0 ≤ p.coeff n
