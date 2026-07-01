@@ -59,8 +59,7 @@ lemma add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
     have hq_lc : 0 < q.leadingCoeff := hq.pos_leadingCoeff hq_ne
     simpa [d] using hq_lc
   intro hsum0
-  have hcoeff0 : (p + q).coeff d = 0 := by
-    simp_all
+  have hcoeff0 : (p + q).coeff d = 0 := by simp_all
   rw [coeff_add] at hcoeff0
   linarith
 
@@ -163,17 +162,14 @@ theorem pairwiseHasCommonLeftInterleaver_zipWith_mul_reverse_of_interlacingSeqNo
   let fj := fs.get j'
   let gi := gs.reverse.get i''
   let gj := gs.reverse.get j''
-  have hi'' : i''.1 < gs.length := by
-    lia
-  have hj'' : j''.1 < gs.length := by
-    lia
+  have hi'' : i''.1 < gs.length := by lia
+  have hj'' : j''.1 < gs.length := by lia
   let ki : Fin gs.length := ⟨gs.length - 1 - i''.1, by
     lia⟩
   let kj : Fin gs.length := ⟨gs.length - 1 - j''.1, by
     lia⟩
   have hkj_ki : kj < ki := by
-    have hrev_idx : gs.length - 1 - j''.1 < gs.length - 1 - i''.1 := by
-      lia
+    have hrev_idx : gs.length - 1 - j''.1 < gs.length - 1 - i''.1 := by lia
     simpa [kj, ki] using hrev_idx
   have hfi_fj : Prec fi fj := by
     simpa [fi, fj] using (List.pairwise_iff_get.mp hpair_fs i' j' hij')
@@ -224,16 +220,13 @@ theorem pairwiseHasCommonInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg
   let fj := fs.get j'
   let gi := gs.reverse.get i''
   let gj := gs.reverse.get j''
-  have hi'' : i''.1 < gs.length := by
-    lia
-  have hj'' : j''.1 < gs.length := by
-    lia
+  have hi'' : i''.1 < gs.length := by lia
+  have hj'' : j''.1 < gs.length := by lia
   let ki : Fin gs.length := ⟨gs.length - 1 - i''.1, by
     lia⟩
   let kj : Fin gs.length := ⟨gs.length - 1 - j''.1, by
     lia⟩
-  have hkj_ki : kj < ki := by
-    grind
+  have hkj_ki : kj < ki := by grind
   have hfi_fj : Prec fi fj := by
     simpa [fi, fj] using (List.pairwise_iff_get.mp hpair_fs i' j' hij')
   have hgj_gi : Prec gj gi := by
@@ -497,8 +490,7 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg
   have hgs'_rev : IsInterlacingSeqNonneg gs'.reverse := by
     have hsub : gs'.Sublist gs.reverse := by
       simpa [gs'] using filterRightByLeftNonzero_sublist_right fs gs.reverse
-    have hsub_rev : gs'.reverse.Sublist gs := by
-      grind
+    have hsub_rev : gs'.reverse.Sublist gs := by grind
     exact IsInterlacingSeqNonneg.sublist hgs hsub_rev
   have hlen' : fs'.length = gs'.length := by
     simpa [fs', gs'] using length_filterLeftNonzero_eq_filterRightByLeftNonzero fs gs.reverse
