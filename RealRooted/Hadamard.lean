@@ -59,8 +59,7 @@ theorem hadamardProduct_assoc (p q r : ℝ[X]) :
 
 @[simp] theorem hadamardProduct_zero_right (p : ℝ[X]) :
     hadamardProduct p 0 = 0 := by
-  ext n
-  simp
+  rw [hadamardProduct_comm, hadamardProduct_zero_left]
 
 theorem hadamardProduct_add_left (p q r : ℝ[X]) :
     hadamardProduct (p + q) r =
@@ -71,8 +70,8 @@ theorem hadamardProduct_add_left (p q r : ℝ[X]) :
 theorem hadamardProduct_add_right (p q r : ℝ[X]) :
     hadamardProduct p (q + r) =
       hadamardProduct p q + hadamardProduct p r := by
-  ext n
-  simp [mul_add]
+  rw [hadamardProduct_comm p (q + r), hadamardProduct_add_left,
+    hadamardProduct_comm q p, hadamardProduct_comm r p]
 
 theorem hadamardProduct_C_mul_left (a : ℝ) (p q : ℝ[X]) :
     hadamardProduct (C a * p) q =
@@ -83,8 +82,8 @@ theorem hadamardProduct_C_mul_left (a : ℝ) (p q : ℝ[X]) :
 theorem hadamardProduct_C_mul_right (a : ℝ) (p q : ℝ[X]) :
     hadamardProduct p (C a * q) =
       C a * hadamardProduct p q := by
-  ext n
-  simp [mul_comm, mul_left_comm]
+  rw [hadamardProduct_comm p (C a * q), hadamardProduct_C_mul_left,
+    hadamardProduct_comm q p]
 
 /-- The support of a Hadamard product is contained in the left support. -/
 theorem support_hadamardProduct_subset_left (p q : ℝ[X]) :
@@ -97,10 +96,8 @@ theorem support_hadamardProduct_subset_left (p q : ℝ[X]) :
 /-- The support of a Hadamard product is contained in the right support. -/
 theorem support_hadamardProduct_subset_right (p q : ℝ[X]) :
     (hadamardProduct p q).support ⊆ q.support := by
-  intro n hn
-  rw [mem_support_iff] at hn ⊢
-  rw [coeff_hadamardProduct] at hn
-  exact right_ne_zero_of_mul hn
+  rw [hadamardProduct_comm]
+  exact support_hadamardProduct_subset_left q p
 
 theorem natDegree_hadamardProduct_le_left (p q : ℝ[X]) :
     (hadamardProduct p q).natDegree ≤ p.natDegree := by
@@ -173,6 +170,11 @@ theorem coeff_schurSzegoComp_eq_zero_of_lt {n k : Nat} (hk : n < k) (f g : ℝ[X
     (schurSzegoComp n f g).coeff k = 0 := by
   simp [coeff_schurSzegoComp, not_le_of_gt hk]
 
+theorem schurSzegoComp_comm (n : Nat) (f g : ℝ[X]) :
+    schurSzegoComp n f g = schurSzegoComp n g f := by
+  ext k
+  simp [coeff_schurSzegoComp, mul_comm]
+
 theorem natDegree_schurSzegoComp_le (n : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).natDegree ≤ n := by
   refine natDegree_le_iff_coeff_eq_zero.mpr ?_
@@ -212,6 +214,12 @@ theorem schurSzegoComp_eq_zero_iff_hadamardProduct_eq_zero_of_left_natDegree_le
       rw [coeff_schurSzegoComp_of_le hk, hcoeff, zero_div, coeff_zero]
     · simp [coeff_schurSzegoComp, hk]
 
+theorem schurSzegoComp_eq_zero_iff_hadamardProduct_eq_zero_of_right_natDegree_le
+    {n : Nat} {f g : ℝ[X]} (hg : g.natDegree ≤ n) :
+    schurSzegoComp n f g = 0 ↔ hadamardProduct f g = 0 := by
+  rw [schurSzegoComp_comm, hadamardProduct_comm]
+  exact schurSzegoComp_eq_zero_iff_hadamardProduct_eq_zero_of_left_natDegree_le hg
+
 theorem schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le
     {n : Nat} {gamma : ℕ → ℝ} {p : ℝ[X]} (hp : p.natDegree ≤ n) :
     schurSzegoComp n (jensenPolynomial n gamma) p = diagonalOperator gamma p := by
@@ -233,8 +241,7 @@ theorem schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le
 
 @[simp] theorem schurSzegoComp_zero_right (n : Nat) (f : ℝ[X]) :
     schurSzegoComp n f 0 = 0 := by
-  ext k
-  simp [coeff_schurSzegoComp]
+  rw [schurSzegoComp_comm, schurSzegoComp_zero_left]
 
 /-- **Finite Schur--Szegő composition theorem** (classical input).
 

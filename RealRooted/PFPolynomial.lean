@@ -260,21 +260,9 @@ theorem prec0_nonneg_combo_right_of_common_left_of_nonneg {p q r : ℝ[X]}
     (hq : HasNonnegCoeffs q) (hr : HasNonnegCoeffs r)
     {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
     Prec0 p (C a * q + C b * r) := by
-  have hpaq : Prec0 p (C a * q) := by
-    rcases eq_or_lt_of_le ha with rfl | ha_pos
-    · simp [prec0_zero_right]
-    rcases hpq with hp0 | hq0 | hpq'
-    · simpa [hp0] using prec0_zero_left (C a * q)
-    · simp [hq0, prec0_zero_right]
-    · exact (prec_C_mul_right hpq' ha_pos.ne').toPrec0
-  have hpbr : Prec0 p (C b * r) := by
-    rcases eq_or_lt_of_le hb with rfl | hb_pos
-    · simp [prec0_zero_right]
-    rcases hpr with hp0 | hr0 | hpr'
-    · simpa [hp0] using prec0_zero_left (C b * r)
-    · simp [hr0, prec0_zero_right]
-    · exact (prec_C_mul_right hpr' hb_pos.ne').toPrec0
-  exact prec0_add_right_of_common_left_of_nonneg hpaq hpbr
+  exact prec0_add_right_of_common_left_of_nonneg
+    (prec0_C_mul_right_of_nonneg hpq ha)
+    (prec0_C_mul_right_of_nonneg hpr hb)
     (nonnegCoeffs_C_mul ha hq) (nonnegCoeffs_C_mul hb hr)
 
 /-- Fixed-left cone closure in the polynomial PF notation. -/

@@ -295,6 +295,19 @@ lemma prec_C_mul_right {f g : ℝ[X]} (h : Prec f g) {a : ℝ} (ha : a ≠ 0) :
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hcase⟩
   exact ⟨hf, by simp_all, ss, rs, hss, hrs, hss_eq, by simp_all, hcase⟩
 
+/-- Multiplying the right polynomial in a zero-aware `Prec0` relation by a
+nonnegative scalar preserves the relation; the zero scalar is handled by the
+zero-aware cases. -/
+lemma prec0_C_mul_right_of_nonneg {f g : ℝ[X]}
+    (h : Prec0 f g) {a : ℝ} (ha : 0 ≤ a) :
+    Prec0 f (C a * g) := by
+  rcases eq_or_lt_of_le ha with rfl | ha_pos
+  · simp [prec0_zero_right]
+  rcases h with hf0 | hg0 | hprec
+  · simpa [hf0] using prec0_zero_left (C a * g)
+  · simp [hg0, prec0_zero_right]
+  · exact (prec_C_mul_right hprec ha_pos.ne').toPrec0
+
 /-- In particular, a nonzero scalar multiple of a real-rooted polynomial
 interlaces the original polynomial. -/
 lemma prec_C_mul_self {f : ℝ[X]} (hf₀ : f ≠ 0) (hf : f.Splits) {a : ℝ} (ha : a ≠ 0) :
