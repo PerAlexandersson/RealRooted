@@ -75,8 +75,7 @@ lemma coeff_affineDeriv {f : ℝ[X]} (hdeg : 1 ≤ f.natDegree) (c : ℝ) :
   have hcoeff_deriv : f.derivative.coeff (d - 1) = (↑(d - 1) + 1) * f.coeff d := by
     rw [coeff_derivative, hd1, mul_comm]
   -- ↑(d-1) + 1 = ↑d
-  have hcast : (↑(d - 1) : ℝ) + 1 = (↑d : ℝ) := by
-    simp_all
+  have hcast : (↑(d - 1) : ℝ) + 1 = (↑d : ℝ) := by simp_all
   rw [hf'd, hXf'd, hcoeff_deriv, hcast, show f.leadingCoeff = f.coeff d from rfl]
   ring
 
@@ -171,8 +170,7 @@ lemma derivative_sign_at_consecutive_roots {f : ℝ[X]}
   -- Factor f = (X - C r₁) * q₁
   obtain ⟨q₁, hfq₁⟩ := dvd_iff_isRoot.mpr hr₁
   -- q₁(r₁) = f'(r₁) from product rule: f' = q₁ + (X - r₁)*q₁'
-  have hq₁r₁ : q₁.eval r₁ = f.derivative.eval r₁ := by
-    simp_all
+  have hq₁r₁ : q₁.eval r₁ = f.derivative.eval r₁ := by simp_all
   -- Factor f = (X - C r₂) * q₂
   obtain ⟨q₂, hfq₂⟩ := dvd_iff_isRoot.mpr hr₂
   have hq₂r₂ : q₂.eval r₂ = f.derivative.eval r₂ := by
@@ -287,8 +285,7 @@ lemma exists_affineDeriv_root_between {f : ℝ[X]}
     · rcases le_or_gt 0 (g.eval r₂) with hg2 | hg2
       · have : g.eval r₂ = 0 := by nlinarith
         exact ⟨r₂, le_of_lt hlt, le_refl _, this⟩
-      · have h0 : (0 : ℝ) ∈ Set.Icc (g.eval r₂) (g.eval r₁) := by
-          grind
+      · have h0 : (0 : ℝ) ∈ Set.Icc (g.eval r₂) (g.eval r₁) := by grind
         obtain ⟨s, hs, hval⟩ := intermediate_value_Icc' (le_of_lt hlt)
           g.continuous.continuousOn h0
         exact ⟨s, hs.1, hs.2, hval⟩
@@ -569,8 +566,7 @@ private lemma rootMultiplicity_sub_one_le_affineDeriv
   set m := f.rootMultiplicity a
   rcases Nat.eq_zero_or_pos m with hm0 | hm_pos
   · lia
-  have hf_ne : f ≠ 0 := by
-    grind
+  have hf_ne : f ≠ 0 := by grind
   have hdvd_f : (X - C a) ^ m ∣ f := (le_rootMultiplicity_iff hf_ne).mp le_rfl
   have hdvd_cf : (X - C a) ^ m ∣ C c * f := dvd_mul_of_dvd_right hdvd_f _
   have hdvd_f' : (X - C a) ^ (m - 1) ∣ f.derivative :=
@@ -688,8 +684,7 @@ lemma mkAffineInterleaving_sub_multiset (f : ℝ[X]) (c : ℝ) (hdeg : 2 ≤ f.n
             rw [Multiset.count_cons, Multiset.count_cons]
             by_cases heq : a = s <;> by_cases hr₁a : a = r₁
             · rw [if_pos heq, if_pos hr₁a]
-              have hr_eq : r₁ = r₂ := by
-                grind
+              have hr_eq : r₁ = r₂ := by grind
               simp_all
             · rw [if_pos heq, if_neg hr₁a]
               exfalso
@@ -701,8 +696,7 @@ lemma mkAffineInterleaving_sub_multiset (f : ℝ[X]) (c : ℝ) (hdeg : 2 ≤ f.n
                     hlt
                     (hroots_nonpos r₂ (Multiset.subset_of_le hsub
                       (Multiset.mem_coe.mpr (.tail _ (.head _)))))).choose_spec
-                  have : a < r₂ := by
-                    lia
+                  have : a < r₂ := by lia
                   have : r₂ ≤ a := by
                     have hmem := Multiset.mem_coe.mp ha_tail
                     rcases List.mem_cons.mp hmem with h | h
@@ -713,8 +707,7 @@ lemma mkAffineInterleaving_sub_multiset (f : ℝ[X]) (c : ℝ) (hdeg : 2 ≤ f.n
             · rw [if_neg heq, if_pos hr₁a]
               by_cases ha2 : a ∈ (↑(r₂ :: rest) : Multiset ℝ)
               · grind
-              · have hlt : r₁ < r₂ := by
-                  lia
+              · have hlt : r₁ < r₂ := by lia
                 have : (↑(mkAffineInterleaving f c hdeg hc hroots_nonpos (r₂ :: rest) hrest
                     hsorted_tail hsub_tail hgap.2) : Multiset ℝ).count a = 0 :=
                   Multiset.count_eq_zero.mpr (by
@@ -797,8 +790,7 @@ private lemma exists_cons_of_card_succ {α : Type*} {s t : Multiset α}
     (hsub : s ≤ t) (hcard : s.card + 1 = t.card) :
     ∃ a, t = a ::ₘ s := by
   rcases Multiset.le_iff_exists_add.mp hsub with ⟨u, rfl⟩
-  have hu_card : u.card = 1 := by
-    simp_all
+  have hu_card : u.card = 1 := by simp_all
   rcases Multiset.card_eq_one.mp hu_card with ⟨a, rfl⟩
   refine ⟨a, ?_⟩
   simpa using (Multiset.add_comm s ({a} : Multiset α))
@@ -807,8 +799,7 @@ private lemma isRealRooted_of_pow_X_sub_C_mul {r : ℝ} {m : ℕ} {q : ℝ[X]}
     (hp_ne : ((X - C r) ^ m * q) ≠ 0) (hp_splits : ((X - C r) ^ m * q).Splits) :
     (q ≠ 0 ∧ q.Splits) := by
   have hpow_ne : ((X - C r) ^ m : ℝ[X]) ≠ 0 := pow_ne_zero _ (X_sub_C_ne_zero _)
-  have hq_ne : q ≠ 0 := by
-    simp_all
+  have hq_ne : q ≠ 0 := by simp_all
   refine ⟨hq_ne, ?_⟩
   have hcard := card_roots_of_splits hp_splits
   rw [roots_mul (mul_ne_zero hpow_ne hq_ne), roots_pow, roots_X_sub_C, Multiset.card_add,
@@ -934,15 +925,13 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
     hrs_root r₁ (by simp [hrs_cons])
   have hr₁_mem_f : r₁ ∈ f.roots := (mem_roots hf₀.ne_zero).mpr hr₁_root
   have hr₁_nonpos : r₁ ≤ 0 := hroots_nonpos r₁ hr₁_mem_f
-  have hc_pos : 0 < c := by
-    grind
+  have hc_pos : 0 < c := by grind
   by_cases hu : u ≤ r₁
   · exact prec_of_extra_root_left hf₀.ne_zero hg₀.ne_zero hf hg_rr hrs_sorted hrs_eq hu_roots_eq'
       hss_interlaces hu
   · have hu_gt : r₁ < u := lt_of_not_ge hu
     set m := f.rootMultiplicity r₁ with hm_def
-    have hm_pos : 0 < m := by
-      simp_all
+    have hm_pos : 0 < m := by simp_all
     have hrs_count_r₁ : (↑(r₁ :: rest) : Multiset ℝ).count r₁ = m := by
       simp_all
     have hss_count_r₁_le : (↑ss : Multiset ℝ).count r₁ + 1 ≤ m := by
@@ -954,15 +943,12 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
     have hgmult_ge : m - 1 ≤ g.rootMultiplicity r₁ := by
       rw [hm_def]
       exact rootMultiplicity_sub_one_le_affineDeriv r₁ hg₀.ne_zero
-    have hgmult_eq : g.rootMultiplicity r₁ = m - 1 := by
-      lia
+    have hgmult_eq : g.rootMultiplicity r₁ = m - 1 := by lia
     obtain ⟨q, hf_fact, hq_nodvd⟩ := exists_eq_pow_rootMultiplicity_mul_and_not_dvd f hf₀.ne_zero r₁
     obtain ⟨qg, hg_fact, hqg_nodvd⟩ :=
       exists_eq_pow_rootMultiplicity_mul_and_not_dvd g hg₀.ne_zero r₁
-    have hf_fact' : f = (X - C r₁) ^ m * q := by
-      lia
-    have hg_fact' : g = (X - C r₁) ^ (m - 1) * qg := by
-      lia
+    have hf_fact' : f = (X - C r₁) ^ m * q := by lia
+    have hg_fact' : g = (X - C r₁) ^ (m - 1) * qg := by lia
     have hq_ne : q ≠ 0 := by
       intro hq
       simpa [hf_fact', hq] using hf₀.ne_zero
@@ -1015,12 +1001,9 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
     have hf_deriv_fact :
         f.derivative =
           (X - C r₁) ^ (m - 1) * (C (m : ℝ) * q + (X - C r₁) * q.derivative) := by
-      have hm_succ : m = (m - 1) + 1 := by
-        lia
-      have hm_succ' : 1 + (m - 1) = m := by
-        lia
-      have hm_pred : 1 + (m - 1) - 1 = m - 1 := by
-        lia
+      have hm_succ : m = (m - 1) + 1 := by lia
+      have hm_succ' : 1 + (m - 1) = m := by lia
+      have hm_pred : 1 + (m - 1) - 1 = m - 1 := by lia
       rw [hf_fact', derivative_mul, derivative_pow, derivative_sub, derivative_X, derivative_C,
         sub_zero]
       rw [hm_succ, pow_succ']
@@ -1028,12 +1011,9 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
     have hg_expand :
         g = (X - C r₁) ^ (m - 1) *
           (C c * (X - C r₁) * q + (1 - X) * (C (m : ℝ) * q + (X - C r₁) * q.derivative)) := by
-      have hm_succ : m = (m - 1) + 1 := by
-        lia
-      have hm_succ' : 1 + (m - 1) = m := by
-        lia
-      have hm_pred : 1 + (m - 1) - 1 = m - 1 := by
-        lia
+      have hm_succ : m = (m - 1) + 1 := by lia
+      have hm_succ' : 1 + (m - 1) = m := by lia
+      have hm_pred : 1 + (m - 1) - 1 = m - 1 := by lia
       rw [hg_def, hf_deriv_fact, hf_fact']
       rw [hm_succ, pow_succ']
       grind
@@ -1167,8 +1147,7 @@ theorem prec_affine_derivative_deg_one {f : ℝ[X]} (hf : f.Splits)
     rw [eval_eq_leadingCoeff_mul_prod_sub hg_rr.2 r, hs_eq]; simp
   -- s ≤ r
   have hsr : s ≤ r := by
-    have : 0 < r - s := by
-      simp_all
+    have : 0 < r - s := by simp_all
     linarith
   -- Prec with ListAlternates [s] [r]
   exact ⟨hg_rr, ⟨hf₀.ne_zero, hf⟩, [s], [r], List.pairwise_singleton _ _,
