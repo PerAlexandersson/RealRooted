@@ -617,9 +617,7 @@ private lemma isRoot_of_mem_sorted_roots_eq
     (hrs_eq : (↑rs : Multiset ℝ) = f.roots)
     (hEq : rs = pre ++ r :: rest) :
     f.IsRoot r := by
-  have hf_ne : f ≠ 0 := by
-    intro hf0
-    simp_all
+  have hf_ne : f ≠ 0 := fun hf0 => by simp_all
   exact (mem_roots hf_ne).mp <| by
     simpa [hrs_eq] using Multiset.mem_coe.mpr (by simp_all : r ∈ rs)
 
@@ -833,12 +831,8 @@ lemma exists_isRoot_between_of_eval_mul_neg {p : ℝ[X]} {a b : ℝ}
     ∃ c, a < c ∧ c < b ∧ p.IsRoot c := by
   obtain ⟨c, hac, hcb, hc_root⟩ :=
     exists_isRoot_between_of_eval_mul_nonpos (le_of_lt hab) (le_of_lt hsign)
-  have hca : c ≠ a := by
-    intro h
-    simp_all
-  have hcb' : c ≠ b := by
-    intro h
-    simp_all
+  have hca : c ≠ a := fun h => by simp_all
+  have hcb' : c ≠ b := fun h => by simp_all
   grind
 
 /-- Strict interval-root construction: if a polynomial has strictly opposite

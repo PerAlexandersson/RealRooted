@@ -1159,9 +1159,7 @@ theorem eval_mul_right_family_one_neg_at_root_two_of_no_common
   have hp_eval : (f + C (1 : ℝ) * g).eval r = -g.eval r := by
     rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C]
     linarith
-  have hg_ne : g.eval r ≠ 0 := by
-    intro hg0
-    simp_all
+  have hg_ne : g.eval r ≠ 0 := fun hg0 => by simp_all
   simp_all
 
 /-- At a root of `f + g`, the other specialized right-family member `f + 2g`
@@ -1178,9 +1176,7 @@ theorem eval_mul_right_family_two_neg_at_root_one_of_no_common
   have hq_eval : (f + C (2 : ℝ) * g).eval r = -f.eval r := by
     rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C]
     linarith
-  have hf_ne : f.eval r ≠ 0 := by
-    intro hf0
-    simp_all
+  have hf_ne : f.eval r ≠ 0 := fun hf0 => by simp_all
   simp_all
 
 /-- Same-degree `Prec` can be recovered once one has strict sign changes of `g`

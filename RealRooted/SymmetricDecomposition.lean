@@ -830,9 +830,7 @@ private theorem isRealRooted_of_fPolynomial_natDegree_roots_gt_neg_one
         (p ≠ 0 ∧ p.Splits) := by
     intro n
     exact Nat.strong_induction_on n (fun n ih p hpdeg hqdeg hq_rr hq_gt => by
-      have hp0 : p ≠ 0 := by
-        intro hpz
-        simp_all
+      have hp0 : p ≠ 0 := fun hpz => by simp_all
       by_cases hn : n = 0
       · exact isRealRooted_of_deg_zero hp0 (by lia)
       · have hroots_pos : 0 < (fPolynomial n p).roots.card := by
@@ -912,9 +910,7 @@ lemma root_gt_neg_one_of_mem_roots_fPolynomial_natDegree_of_isRealRooted_of_hasN
     (hpnn : HasNonnegCoeffs p)
     {x : ℝ} (hx : x ∈ (fPolynomial p.natDegree p).roots) :
     -1 < x := by
-  have hp0 : p ≠ 0 := by
-    intro hpz
-    simp_all
+  have hp0 : p ≠ 0 := fun hpz => by simp_all
   by_cases hxm1 : x = -1
   · subst hxm1
     exfalso
@@ -942,9 +938,7 @@ theorem isRealRooted_of_isRealRooted_fPolynomial_natDegree_of_hasNonnegCoeffs
     {p : ℝ[X]} (hfp_ne : (fPolynomial p.natDegree p) ≠ 0)
     (hfp_splits : (fPolynomial p.natDegree p).Splits)
     (hpnn : HasNonnegCoeffs p) : (p ≠ 0 ∧ p.Splits) := by
-  have hp0 : p ≠ 0 := by
-    intro hpz
-    simp_all
+  have hp0 : p ≠ 0 := fun hpz => by simp_all
   have hfpdeg : (fPolynomial p.natDegree p).natDegree = p.natDegree :=
     fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero le_rfl hpnn hp0
   have hgt : ∀ x ∈ (fPolynomial p.natDegree p).roots, -1 < x :=

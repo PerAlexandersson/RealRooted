@@ -505,9 +505,7 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg
   have hsum_eq :
       (fs'.zipWith (· * ·) gs').sum = (fs.zipWith (· * ·) gs.reverse).sum := by
     simpa [fs', gs'] using zipWith_mul_sum_filterLeftNonzero_eq fs gs.reverse
-  have hfs'_ne : fs' ≠ [] := by
-    intro hnil
-    simp_all
+  have hfs'_ne : fs' ≠ [] := fun hnil => by simp_all
   have hrr :
       (((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum) ≠ 0 ∧
         ((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum).Splits) :=
@@ -551,9 +549,7 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg_both
   have hsum_eq :
       (fs'.zipWith (· * ·) gs').sum = (fs.zipWith (· * ·) gs.reverse).sum := by
     simpa [fs', gs'] using zipWith_mul_sum_filterProductNonzero_eq fs gs.reverse
-  have hfs'_ne : fs' ≠ [] := by
-    intro hnil
-    simp_all
+  have hfs'_ne : fs' ≠ [] := fun hnil => by simp_all
   have hrr :
       (((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum) ≠ 0 ∧
         ((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum).Splits) :=
