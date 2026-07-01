@@ -2371,6 +2371,24 @@ theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
       posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
         hsame hsucc (f := F) (g := G) hF_pos hG_pos hFnn hGnn hFG)
 
+private theorem compatiblePairHasCommonInterleaver_of_realRootedPosComboBridge
+    (hbridge :
+      ∀ ⦃f g : ℝ[X]⦄,
+        f ≠ 0 →
+        f.Splits →
+        g ≠ 0 →
+        g.Splits →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        PosComboRealRooted f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :
+    CompatiblePairHasCommonInterleaverStatement := by
+  intro f g hf_pos hg_pos hfg
+  have hf_rr : (f ≠ 0 ∧ f.Splits) := Compatible.isRealRooted_left hfg hf_pos
+  have hg_rr : (g ≠ 0 ∧ g.Splits) := Compatible.isRealRooted_right hfg hg_pos
+  exact hbridge hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hf_pos hg_pos
+    (Compatible.toPosComboRealRooted hfg hf_pos hg_pos)
+
 /-- Translation reduces the full positive-leading compatibility bridge to the
 nonnegative-coefficient degree-split package: shift both polynomials far enough
 to the right so all roots become nonpositive, apply the nonnegative theorem,
@@ -2378,28 +2396,22 @@ then translate the common interleaver back. -/
 theorem compatiblePairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
     (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement := by
-  intro f g hf_pos hg_pos hfg
-  have hf_rr : (f ≠ 0 ∧ f.Splits) := Compatible.isRealRooted_left hfg hf_pos
-  have hg_rr : (g ≠ 0 ∧ g.Splits) := Compatible.isRealRooted_right hfg hg_pos
-  exact
-    posComboPairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
-      hsame hsucc hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hf_pos hg_pos
-      (Compatible.toPosComboRealRooted hfg hf_pos hg_pos)
+    CompatiblePairHasCommonInterleaverStatement :=
+  compatiblePairHasCommonInterleaver_of_realRootedPosComboBridge
+    (fun {_ _} hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos hfg =>
+      posComboPairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
+        hsame hsucc hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos hfg)
 
 /-- Shifted compatibility bridge using the repaired same-degree
 common-interleaver branch directly. -/
 theorem compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
     (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement := by
-  intro f g hf_pos hg_pos hfg
-  have hf_rr : (f ≠ 0 ∧ f.Splits) := Compatible.isRealRooted_left hfg hf_pos
-  have hg_rr : (g ≠ 0 ∧ g.Splits) := Compatible.isRealRooted_right hfg hg_pos
-  exact
-    posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-      hsame hsucc hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hf_pos hg_pos
-      (Compatible.toPosComboRealRooted hfg hf_pos hg_pos)
+    CompatiblePairHasCommonInterleaverStatement :=
+  compatiblePairHasCommonInterleaver_of_realRootedPosComboBridge
+    (fun {_ _} hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos hfg =>
+      posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
+        hsame hsucc hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos hfg)
 
 /-- Shifted positive-leading compatibility bridge with the succ-degree branch
 discharged by the affine-family bridge.  This leaves only the same-degree
@@ -2452,14 +2464,11 @@ the full positive-leading compatibility bridge after the nonnegative shift
 reduction. -/
 theorem compatiblePairHasCommonInterleaver_of_boundaryRightPairOrientation_via_nonnegShift
     (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
-    CompatiblePairHasCommonInterleaverStatement := by
-  intro f g hf_pos hg_pos hfg
-  have hf_rr : (f ≠ 0 ∧ f.Splits) := Compatible.isRealRooted_left hfg hf_pos
-  have hg_rr : (g ≠ 0 ∧ g.Splits) := Compatible.isRealRooted_right hfg hg_pos
-  exact
-    posComboPairHasCommonInterleaver_of_boundaryRightPairOrientation_via_nonnegShift
-      hboundary hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hf_pos hg_pos
-      (Compatible.toPosComboRealRooted hfg hf_pos hg_pos)
+    CompatiblePairHasCommonInterleaverStatement :=
+  compatiblePairHasCommonInterleaver_of_realRootedPosComboBridge
+    (fun {_ _} hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos hfg =>
+      posComboPairHasCommonInterleaver_of_boundaryRightPairOrientation_via_nonnegShift
+        hboundary hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos hfg)
 
 /-- Compatibility-to-common-interleaver bridge from the reduced positive-combo
 ingredients (no-common orientation + degree closeness). -/
