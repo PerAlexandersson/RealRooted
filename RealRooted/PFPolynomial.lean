@@ -154,9 +154,8 @@ theorem isPFPolynomial_X_add_C {a : ℝ} (ha : 0 ≤ a) :
     IsPFPolynomial (X + C a : ℝ[X]) := by
   have hnn : HasNonnegCoeffs (X + C a : ℝ[X]) := by
     simpa [sub_eq_add_neg] using hasNonnegCoeffs_X_sub_C (r := -a) (by linarith)
-  have hrr : ((X + C a : ℝ[X]) ≠ 0 ∧ (X + C a : ℝ[X]).Splits) := by
-    simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-a)
-  exact IsPFPolynomial.of_realRooted_nonneg hnn hrr.2
+  exact IsPFPolynomial.of_realRooted_nonneg hnn <| by
+    simp
 
 theorem reverse_X_sub_C_isPF {r : ℝ} (hr : r ≤ 0) :
     IsPFPolynomial ((X - C r : ℝ[X]).reverse) := by

@@ -316,8 +316,7 @@ lemma mkInterleaving_sub_multiset (f : ℝ[X])
           · -- Rolle: s < r₂ ≤ all tail elements, so s ∉ tail
             have hspec := (exists_root_derivative_between hlt
               (hrs r₁ (.head _)) (hrs r₂ (.tail _ (.head _)))).choose_spec
-            have : a < r₂ := by
-              lia
+            have : a < r₂ := by lia
             have : r₂ ≤ a := by
               have hmem := Multiset.mem_coe.mp ha_tail
               rcases List.mem_cons.mp hmem with h | h <;> simp_all
@@ -327,8 +326,7 @@ lemma mkInterleaving_sub_multiset (f : ℝ[X])
         rw [if_neg heq, if_pos hr₁a]
         by_cases ha2 : a ∈ (↑(r₂ :: rest) : Multiset ℝ)
         · grind
-        · have hlt : r₁ < r₂ := by
-            lia
+        · have hlt : r₁ < r₂ := by lia
           have : (↑(mkInterleaving f (r₂ :: rest) hrest) : Multiset ℝ).count a = 0 :=
             Multiset.count_eq_zero.mpr (by
               rw [Multiset.mem_coe]; grind)
