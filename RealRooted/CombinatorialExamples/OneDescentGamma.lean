@@ -67,7 +67,9 @@ lemma hasNonnegCoeffs_X_add_C {t : ℝ} (ht : 0 ≤ t) :
     (hasNonnegCoeffs_X_sub_C (r := -t) (by linarith))
 
 lemma oneDescent_hasNonnegCoeffs_X : HasNonnegCoeffs (X : ℝ[X]) := by
-  grind [HasNonnegCoeffs, coeff_X]
+  intro n
+  simp only [coeff_X]
+  split <;> norm_num
 
 lemma isRealRooted_X_pow : ∀ n : Nat, (((X : ℝ[X]) ^ n) ≠ 0 ∧ ((X : ℝ[X]) ^ n).Splits) := by
   simp
