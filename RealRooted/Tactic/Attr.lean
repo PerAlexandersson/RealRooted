@@ -76,5 +76,59 @@ initialize rrMatrixThresholdAttr : Lean.TagAttribute ←
 namespace RealRooted
 namespace Tactic
 
+open Lean
+open Lean.Elab
+open Lean.Elab.Command
+open Lean.Elab.Tactic
+
+def rrCertificateAttributes : Array (Name × Lean.TagAttribute) :=
+  #[
+    (`rr_recurrence, rrRecurrenceAttr),
+    (`rr_degree, rrDegreeAttr),
+    (`rr_nonzero, rrNonzeroAttr),
+    (`rr_pos_lc, rrPosLCAttr),
+    (`rr_nonneg, rrNonnegAttr),
+    (`rr_root_bound, rrRootBoundAttr),
+    (`rr_base_prec, rrBasePrecAttr),
+    (`rr_base_interlaces, rrBaseInterlacesAttr),
+    (`rr_matrix_rect, rrMatrixRectAttr),
+    (`rr_matrix_nonneg, rrMatrixNonnegAttr),
+    (`rr_matrix_2x2, rrMatrix2x2Attr),
+    (`rr_matrix_threshold, rrMatrixThresholdAttr)
+  ]
+
+private def taggedDecls (env : Environment) (attr : Lean.TagAttribute) : Array Name :=
+  Id.run do
+    let mut names := #[]
+    for (declName, _) in env.constants do
+      if attr.hasTag env declName then
+        names := names.push declName
+    return names.qsort Name.quickLt
+
+private def namesString (names : Array Name) : String :=
+  if names.isEmpty then
+    "(none)"
+  else
+    String.intercalate ", " (names.toList.map toString)
+
+private def logTaggedCertificates [Monad m] [MonadEnv m] [MonadLog m]
+    [MonadOptions m] [AddMessageContext m] : m Unit := do
+  let env ← getEnv
+  for (attrName, attr) in rrCertificateAttributes do
+    let names := taggedDecls env attr
+    logInfo m!"[{attrName}] {names.size}: {namesString names}"
+
 end Tactic
 end RealRooted
+
+open RealRooted.Tactic
+
+syntax (name := rr_certificates_cmd) "#rr_certificates" : command
+
+elab_rules : command
+  | `(command| #rr_certificates) => logTaggedCertificates
+
+syntax (name := rr_certificates_tac) "rr_certificates" : tactic
+
+elab_rules : tactic
+  | `(tactic| rr_certificates) => logTaggedCertificates

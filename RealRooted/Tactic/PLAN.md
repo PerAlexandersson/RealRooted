@@ -126,7 +126,8 @@ work.
 The first certificate-driven layer is implemented.
 
 - `Attr.lean` defines tag attributes for recurrence, degree, sign, base-case,
-  and matrix certificates.
+  and matrix certificates, plus `#rr_certificates` / `rr_certificates` for
+  inspecting visible tagged declarations.
 - `SideGoals.lean` defines `rr_side`, a conservative side-goal closer.
 - `Finish.lean` defines small proof-tail dispatchers that consume `Prec`
   certificates.
