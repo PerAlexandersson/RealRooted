@@ -490,7 +490,7 @@ lemma hasNonnegCoeffs_rowPairAffineSeq
           · have ha : HasNonnegCoeffs a := hrow₁_nonneg a (by simp)
             have hb : HasNonnegCoeffs b := hrow₂_nonneg b (by simp)
             have hsa : HasNonnegCoeffs (C s * (X * a)) :=
-              nonnegCoeffs_C_mul hs (hasNonnegCoeffs_X.mul ha)
+              nonnegCoeffs_C_mul hs ha.X_mul
             have hta : HasNonnegCoeffs (C t * a) :=
               nonnegCoeffs_C_mul ht ha
             have hsum : HasNonnegCoeffs (C s * (X * a) + (C t * a + b)) :=

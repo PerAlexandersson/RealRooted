@@ -235,7 +235,7 @@ theorem isRealRooted_affine_combo_of_prec_nonneg {f g : ℝ[X]}
     prec_add_of_prec_right_of_posLeadingCoeff hg_Xf hsXf hg_pos hsXf_pos
   have hmid_nonneg : HasNonnegCoeffs (g + C s * (X * f)) := by
     refine hgnn.add ?_
-    exact (nonnegCoeffs_C_mul hs.le (hasNonnegCoeffs_X.mul hfnn))
+    exact (nonnegCoeffs_C_mul hs.le hfnn.X_mul)
   have hmid_pos : HasPosLeadingCoeff (g + C s * (X * f)) :=
     hmid_nonneg.pos_leadingCoeff hmid.1.1
   have hsum : Prec (C t * f + (g + C s * (X * f))) (X * f) :=
@@ -287,7 +287,7 @@ private lemma affine_family_pair_data {f g : ℝ[X]}
     HasPosLeadingCoeff (X * f) := by
   have hCt_nonneg : HasNonnegCoeffs (C t * f) := nonnegCoeffs_C_mul ht.le hfnn
   have hsum_nonneg : HasNonnegCoeffs (C t * f + g) := hCt_nonneg.add hgnn
-  have hXf_nonneg : HasNonnegCoeffs (X * f) := hasNonnegCoeffs_X.mul hfnn
+  have hXf_nonneg : HasNonnegCoeffs (X * f) := hfnn.X_mul
   have hCt_ne : C t * f ≠ 0 :=
     mul_ne_zero (C_ne_zero.mpr ht.ne') hf0
   have hsum_ne : C t * f + g ≠ 0 :=
@@ -600,7 +600,7 @@ private lemma isRealRooted_add_X_mul_right_of_affine_family
     {s : ℝ} (hs : 0 < s) : ((g + C s * (X * f)) ≠ 0 ∧ (g + C s * (X * f)).Splits) := by
   have hf_pos : HasPosLeadingCoeff f := hfnn.pos_leadingCoeff hf0
   have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff hg0
-  have hXf_nonneg : HasNonnegCoeffs (X * f) := hasNonnegCoeffs_X.mul hfnn
+  have hXf_nonneg : HasNonnegCoeffs (X * f) := hfnn.X_mul
   have hXf_ne : X * f ≠ 0 := mul_ne_zero X_ne_zero hf0
   have hCsXf_nonneg : HasNonnegCoeffs (C s * (X * f)) :=
     nonnegCoeffs_C_mul hs.le hXf_nonneg
@@ -687,7 +687,7 @@ private lemma affine_family_right_pair_data {f g : ℝ[X]}
     X * f ≠ 0 ∧
     HasPosLeadingCoeff g ∧
     HasPosLeadingCoeff (X * f) := by
-  have hXf_nonneg : HasNonnegCoeffs (X * f) := hasNonnegCoeffs_X.mul hfnn
+  have hXf_nonneg : HasNonnegCoeffs (X * f) := hfnn.X_mul
   have hXf_ne : X * f ≠ 0 := mul_ne_zero X_ne_zero hf0
   refine
     ⟨posComboRealRooted_right_of_affine_family hf0 hg0 hfnn hgnn haff,
@@ -1809,7 +1809,7 @@ private lemma isRealRooted_X_mul_of_affine_family
   have hfg_ne : f + g ≠ 0 :=
     add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero hfnn hgnn hg0
   have hfg_pos : HasPosLeadingCoeff (f + g) := hfg_nonneg.pos_leadingCoeff hfg_ne
-  have hXf_nonneg : HasNonnegCoeffs (X * f) := hasNonnegCoeffs_X.mul hfnn
+  have hXf_nonneg : HasNonnegCoeffs (X * f) := hfnn.X_mul
   have hXf_ne : X * f ≠ 0 := mul_ne_zero X_ne_zero hf0
   have hXf_pos : HasPosLeadingCoeff (X * f) := hXf_nonneg.pos_leadingCoeff hXf_ne
   have hdeg_fg : (f + g).natDegree ≤ (X * f).natDegree := by

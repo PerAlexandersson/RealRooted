@@ -27,7 +27,7 @@ lemma hasNonnegCoeffs_affine_mul {s t : ℝ} (hs : 0 ≤ s) (ht : 0 ≤ t)
     {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
     HasNonnegCoeffs ((C s * X + C t) * p) := by
   have hsXp : HasNonnegCoeffs (C s * (X * p)) :=
-    nonnegCoeffs_C_mul hs (hasNonnegCoeffs_X.mul hp)
+    nonnegCoeffs_C_mul hs hp.X_mul
   have htp : HasNonnegCoeffs (C t * p) :=
     nonnegCoeffs_C_mul ht hp
   have hsum : HasNonnegCoeffs (C s * (X * p) + C t * p) := hsXp.add htp

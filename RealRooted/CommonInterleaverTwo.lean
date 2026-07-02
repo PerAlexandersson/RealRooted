@@ -723,7 +723,7 @@ theorem posComboNoCommonAffineFamily_of_boundaryRightPairOrientation
     dsimp [p]
     exact (nonnegCoeffs_C_mul ht.le hfnn).add hgnn
   have hp_pos : HasPosLeadingCoeff p := hp_nn.pos_leadingCoeff hp_rr.1
-  have hXf_nn : HasNonnegCoeffs (X * f) := hasNonnegCoeffs_X.mul hfnn
+  have hXf_nn : HasNonnegCoeffs (X * f) := hfnn.X_mul
   have hXf0 : X * f ≠ 0 := mul_ne_zero X_ne_zero (HasPosLeadingCoeff.ne_zero hf_pos)
   have hXf_pos : HasPosLeadingCoeff (X * f) := hXf_nn.pos_leadingCoeff hXf0
   have hprec_or : Prec p (X * f) ∨ Prec (X * f) p := by

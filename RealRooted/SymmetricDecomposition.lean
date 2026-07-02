@@ -2449,7 +2449,7 @@ theorem brandenSolusTheorem26_forward_of_prec_b_a {d : ℕ} {p a b : ℝ[X]}
   have ha_rr : (a ≠ 0 ∧ a.Splits) := hba.2.1
   have hb_pos : HasPosLeadingCoeff b := hb_nonneg.pos_leadingCoeff hb_rr.1
   have ha_pos : HasPosLeadingCoeff a := ha_nonneg.pos_leadingCoeff ha_rr.1
-  have hXb_nonneg : HasNonnegCoeffs (X * b) := hasNonnegCoeffs_X.mul hb_nonneg
+  have hXb_nonneg : HasNonnegCoeffs (X * b) := hb_nonneg.X_mul
   have hXb_pos : HasPosLeadingCoeff (X * b) :=
     hXb_nonneg.pos_leadingCoeff (mul_ne_zero X_ne_zero hb_rr.1)
   have haxb : Prec a (X * b) := prec_mul_X_of_prec_of_nonneg hba hb_nonneg ha_nonneg
@@ -2595,7 +2595,7 @@ private theorem natDegree_X_mul_component_eq_or_succ_of_prec_left_top
   have hall_aXb : AllComboRealRooted a (X * b) :=
     allComboRealRooted_left_X_mul_component_of_prec_left hp_eq hap
   have hXb0 : X * b ≠ 0 := mul_ne_zero X_ne_zero hb0
-  have hXb_nonneg : HasNonnegCoeffs (X * b) := hasNonnegCoeffs_X.mul hb_nonneg
+  have hXb_nonneg : HasNonnegCoeffs (X * b) := hb_nonneg.X_mul
   have hXb_le_p : (X * b).natDegree ≤ p.natDegree := by
     apply Polynomial.le_natDegree_of_ne_zero
     have hcoeff_pos : 0 < p.coeff (X * b).natDegree := by
