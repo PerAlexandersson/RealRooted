@@ -99,6 +99,16 @@ private lemma rootSlotInterval_eq_univ_of_length_eq_zero
   subst j
   simp [rootSlotInterval]
 
+private lemma rootSlotInterval_inter_nonempty_of_lengths_eq_zero
+    {rs ss : List ℝ} (hrs : rs.length = 0) (hss : ss.length = 0)
+    (jr : Fin (rs.length + 1)) (js : Fin (ss.length + 1)) :
+    (rootSlotInterval rs jr ∩ rootSlotInterval ss js).Nonempty := by
+  refine ⟨0, ?_, ?_⟩
+  · rw [rootSlotInterval_eq_univ_of_length_eq_zero hrs jr]
+    simp
+  · rw [rootSlotInterval_eq_univ_of_length_eq_zero hss js]
+    simp
+
 lemma rootSlotInterval_nonempty (rs : List ℝ) (hrs : rs.Pairwise (· ≥ ·))
     (j : Fin (rs.length + 1)) : (rootSlotInterval rs j).Nonempty := by
   unfold rootSlotInterval
@@ -1033,16 +1043,7 @@ theorem rootSlotInterval_inter_nonempty_of_commonInterleaver
       have hg0 : g.natDegree = 0 := by lia
       have hf_len0 : (rootSeqDesc f).length = 0 := by simp [hf0, hfh.1.2]
       have hg_len0 : (rootSeqDesc g).length = 0 := by simp [hg0, hgh.1.2]
-      have hslot_f : rootSlotInterval (rootSeqDesc f) jf = Set.univ :=
-        rootSlotInterval_eq_univ_of_length_eq_zero hf_len0 jf
-      have hslot_g : rootSlotInterval (rootSeqDesc g) jg = Set.univ :=
-        rootSlotInterval_eq_univ_of_length_eq_zero hg_len0 jg
-      refine ⟨0, ?_⟩
-      refine ⟨?_, ?_⟩
-      · rw [hslot_f]
-        simp
-      · rw [hslot_g]
-        simp
+      exact rootSlotInterval_inter_nonempty_of_lengths_eq_zero hf_len0 hg_len0 jf jg
     · have hf_pos : 0 < f.natDegree := by lia
       have hg_pos : 0 < g.natDegree := by lia
       have hrevf_ne : (rootSeqDesc f).reverse ≠ [] := by
