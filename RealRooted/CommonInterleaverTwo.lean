@@ -1852,13 +1852,19 @@ private theorem allComboRealRooted_of_degreeSplit_and_nonnegCoeffs_ordered
       allComboRealRooted_mul_common_factor (isRealRooted_X_sub_C r).2 hall_q
     lia
 
-/-- Recursive upgrade of the honest degree-split no-common package to a full
-all-combinations result in the nonnegative-coefficient regime. Shared roots are
-factored out until one reaches the terminal no-common quotient, where the
-same-degree alternative or succ-degree orientation hypothesis is applied. -/
-theorem allComboRealRooted_of_posCombo_and_degreeSplit_and_nonnegCoeffs
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeOrientationNonnegStatement)
+/-- An ordered all-combinations bridge plus the nonnegative degree-closeness
+theorem gives the unordered all-combinations bridge. -/
+theorem allComboRealRooted_of_orderedBridge_and_nonnegCoeffs
+    (hordered :
+      ∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        AllComboRealRooted f g)
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -1874,15 +1880,32 @@ theorem allComboRealRooted_of_posCombo_and_degreeSplit_and_nonnegCoeffs
     natDegree_close_of_posComboRealRooted_of_nonnegCoeffs
       hfg hf0 hg0 hfnn hgnn
   by_cases hdeg : f.natDegree ≤ g.natDegree
-  · exact
-      allComboRealRooted_of_degreeSplit_and_nonnegCoeffs_ordered
-        hsame hsucc hf_pos hg_pos hfnn hgnn hfg hdeg hclose.2
+  · exact hordered hf_pos hg_pos hfnn hgnn hfg hdeg hclose.2
   · have hdeg' : g.natDegree ≤ f.natDegree := le_of_not_ge hdeg
-    have hall' : AllComboRealRooted g f :=
-      allComboRealRooted_of_degreeSplit_and_nonnegCoeffs_ordered
-        hsame hsucc hg_pos hf_pos hgnn hfnn
-        (PosComboRealRooted.comm hfg) hdeg' hclose.1
-    exact allComboRealRooted_comm hall'
+    exact
+      allComboRealRooted_comm <|
+        hordered hg_pos hf_pos hgnn hfnn (PosComboRealRooted.comm hfg) hdeg' hclose.1
+
+/-- Recursive upgrade of the honest degree-split no-common package to a full
+all-combinations result in the nonnegative-coefficient regime. Shared roots are
+factored out until one reaches the terminal no-common quotient, where the
+same-degree alternative or succ-degree orientation hypothesis is applied. -/
+theorem allComboRealRooted_of_posCombo_and_degreeSplit_and_nonnegCoeffs
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeOrientationNonnegStatement)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g) :
+    AllComboRealRooted f g := by
+  exact
+    allComboRealRooted_of_orderedBridge_and_nonnegCoeffs
+      (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi =>
+        allComboRealRooted_of_degreeSplit_and_nonnegCoeffs_ordered
+          (f := f) (g := g) hsame hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi)
+      hf_pos hg_pos hfnn hgnn hfg
 
 /-- In the nonnegative-coefficient regime, all-combinations real-rootedness
 implies the Obreschkoff orientation alternative. -/
@@ -1995,23 +2018,12 @@ theorem allComboRealRooted_of_posCombo_and_affineFamilyBridge_and_nonnegCoeffs
     (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
     AllComboRealRooted f g := by
-  have hf0 : f ≠ 0 := hf_pos.ne_zero
-  have hg0 : g ≠ 0 := hg_pos.ne_zero
-  have hclose :
-      f.natDegree ≤ g.natDegree + 1 ∧
-        g.natDegree ≤ f.natDegree + 1 :=
-    natDegree_close_of_posComboRealRooted_of_nonnegCoeffs
-      hfg hf0 hg0 hfnn hgnn
-  by_cases hdeg : f.natDegree ≤ g.natDegree
-  · exact
-      allComboRealRooted_of_affineFamilyBridge_and_nonnegCoeffs_ordered
-        haffBridge hf_pos hg_pos hfnn hgnn hfg hdeg hclose.2
-  · have hdeg' : g.natDegree ≤ f.natDegree := le_of_not_ge hdeg
-    have hall' : AllComboRealRooted g f :=
-      allComboRealRooted_of_affineFamilyBridge_and_nonnegCoeffs_ordered
-        haffBridge hg_pos hf_pos hgnn hfnn (PosComboRealRooted.comm hfg)
-        hdeg' hclose.1
-    exact allComboRealRooted_comm hall'
+  exact
+    allComboRealRooted_of_orderedBridge_and_nonnegCoeffs
+      (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi =>
+        allComboRealRooted_of_affineFamilyBridge_and_nonnegCoeffs_ordered
+          (f := f) (g := g) haffBridge hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi)
+      hf_pos hg_pos hfnn hgnn hfg
 
 /-- The affine-family bridge therefore yields the full Obreschkoff orientation
 alternative for every positive-combination pair with nonnegative coefficients,
