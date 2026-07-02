@@ -224,58 +224,80 @@ theorem support_schurSzegoComp_eq_hadamardProduct_inter_range
       Nat.choose_eq_zero_of_lt (Nat.lt_of_not_le hk)
     simp [Finset.mem_filter, Finset.mem_inter, Finset.mem_range, hk, hchoose_nat]
 
-theorem support_schurSzegoComp_eq_hadamardProduct_of_left_natDegree_le
-    {n : Nat} {f g : ℝ[X]} (hf : f.natDegree ≤ n) :
+theorem support_schurSzegoComp_eq_hadamardProduct_of_hadamardProduct_natDegree_le
+    {n : Nat} {f g : ℝ[X]} (hfg : (hadamardProduct f g).natDegree ≤ n) :
     (schurSzegoComp n f g).support = (hadamardProduct f g).support := by
   rw [support_schurSzegoComp_eq_hadamardProduct_inter_range, Finset.inter_eq_left]
   intro k hk
-  have hk_le : k ≤ n :=
-    (Polynomial.le_natDegree_of_ne_zero (mem_support_iff.mp hk)).trans <|
-      (natDegree_hadamardProduct_le_left f g).trans hf
-  simpa [Finset.mem_range] using Nat.lt_succ_of_le hk_le
+  have hk_le : k ≤ (hadamardProduct f g).natDegree :=
+    Polynomial.le_natDegree_of_ne_zero (mem_support_iff.mp hk)
+  simpa [Finset.mem_range] using Nat.lt_succ_of_le (hk_le.trans hfg)
+
+theorem schurSzegoComp_eq_zero_iff_hadamardProduct_eq_zero_of_hadamardProduct_natDegree_le
+    {n : Nat} {f g : ℝ[X]} (hfg : (hadamardProduct f g).natDegree ≤ n) :
+    schurSzegoComp n f g = 0 ↔ hadamardProduct f g = 0 := by
+  rw [← support_eq_empty, ← support_eq_empty,
+    support_schurSzegoComp_eq_hadamardProduct_of_hadamardProduct_natDegree_le hfg]
+
+theorem support_schurSzegoComp_eq_inter_of_hadamardProduct_natDegree_le
+    {n : Nat} {f g : ℝ[X]} (hfg : (hadamardProduct f g).natDegree ≤ n) :
+    (schurSzegoComp n f g).support = f.support ∩ g.support := by
+  rw [support_schurSzegoComp_eq_hadamardProduct_of_hadamardProduct_natDegree_le hfg,
+    support_hadamardProduct_eq]
+
+theorem schurSzegoComp_eq_zero_iff_support_disjoint_of_hadamardProduct_natDegree_le
+    {n : Nat} {f g : ℝ[X]} (hfg : (hadamardProduct f g).natDegree ≤ n) :
+    schurSzegoComp n f g = 0 ↔ Disjoint f.support g.support := by
+  rw [schurSzegoComp_eq_zero_iff_hadamardProduct_eq_zero_of_hadamardProduct_natDegree_le hfg,
+    hadamardProduct_eq_zero_iff_support_disjoint]
+
+theorem support_schurSzegoComp_eq_hadamardProduct_of_left_natDegree_le
+    {n : Nat} {f g : ℝ[X]} (hf : f.natDegree ≤ n) :
+    (schurSzegoComp n f g).support = (hadamardProduct f g).support :=
+  support_schurSzegoComp_eq_hadamardProduct_of_hadamardProduct_natDegree_le
+    ((natDegree_hadamardProduct_le_left f g).trans hf)
 
 theorem schurSzegoComp_eq_zero_iff_hadamardProduct_eq_zero_of_left_natDegree_le
     {n : Nat} {f g : ℝ[X]} (hf : f.natDegree ≤ n) :
-    schurSzegoComp n f g = 0 ↔ hadamardProduct f g = 0 := by
-  rw [← support_eq_empty, ← support_eq_empty,
-    support_schurSzegoComp_eq_hadamardProduct_of_left_natDegree_le hf]
+    schurSzegoComp n f g = 0 ↔ hadamardProduct f g = 0 :=
+  schurSzegoComp_eq_zero_iff_hadamardProduct_eq_zero_of_hadamardProduct_natDegree_le
+    ((natDegree_hadamardProduct_le_left f g).trans hf)
 
 theorem support_schurSzegoComp_eq_inter_of_left_natDegree_le
     {n : Nat} {f g : ℝ[X]} (hf : f.natDegree ≤ n) :
-    (schurSzegoComp n f g).support = f.support ∩ g.support := by
-  rw [support_schurSzegoComp_eq_hadamardProduct_of_left_natDegree_le hf,
-    support_hadamardProduct_eq]
+    (schurSzegoComp n f g).support = f.support ∩ g.support :=
+  support_schurSzegoComp_eq_inter_of_hadamardProduct_natDegree_le
+    ((natDegree_hadamardProduct_le_left f g).trans hf)
 
 theorem schurSzegoComp_eq_zero_iff_support_disjoint_of_left_natDegree_le
     {n : Nat} {f g : ℝ[X]} (hf : f.natDegree ≤ n) :
-    schurSzegoComp n f g = 0 ↔ Disjoint f.support g.support := by
-  rw [schurSzegoComp_eq_zero_iff_hadamardProduct_eq_zero_of_left_natDegree_le hf,
-    hadamardProduct_eq_zero_iff_support_disjoint]
+    schurSzegoComp n f g = 0 ↔ Disjoint f.support g.support :=
+  schurSzegoComp_eq_zero_iff_support_disjoint_of_hadamardProduct_natDegree_le
+    ((natDegree_hadamardProduct_le_left f g).trans hf)
 
 theorem support_schurSzegoComp_eq_hadamardProduct_of_right_natDegree_le
     {n : Nat} {f g : ℝ[X]} (hg : g.natDegree ≤ n) :
-    (schurSzegoComp n f g).support = (hadamardProduct f g).support := by
-  rw [schurSzegoComp_comm, hadamardProduct_comm]
-  exact support_schurSzegoComp_eq_hadamardProduct_of_left_natDegree_le hg
+    (schurSzegoComp n f g).support = (hadamardProduct f g).support :=
+  support_schurSzegoComp_eq_hadamardProduct_of_hadamardProduct_natDegree_le
+    ((natDegree_hadamardProduct_le_right f g).trans hg)
 
 theorem schurSzegoComp_eq_zero_iff_hadamardProduct_eq_zero_of_right_natDegree_le
     {n : Nat} {f g : ℝ[X]} (hg : g.natDegree ≤ n) :
-    schurSzegoComp n f g = 0 ↔ hadamardProduct f g = 0 := by
-  rw [schurSzegoComp_comm, hadamardProduct_comm]
-  exact schurSzegoComp_eq_zero_iff_hadamardProduct_eq_zero_of_left_natDegree_le hg
+    schurSzegoComp n f g = 0 ↔ hadamardProduct f g = 0 :=
+  schurSzegoComp_eq_zero_iff_hadamardProduct_eq_zero_of_hadamardProduct_natDegree_le
+    ((natDegree_hadamardProduct_le_right f g).trans hg)
 
 theorem support_schurSzegoComp_eq_inter_of_right_natDegree_le
     {n : Nat} {f g : ℝ[X]} (hg : g.natDegree ≤ n) :
-    (schurSzegoComp n f g).support = f.support ∩ g.support := by
-  rw [schurSzegoComp_comm, Finset.inter_comm]
-  exact support_schurSzegoComp_eq_inter_of_left_natDegree_le hg
+    (schurSzegoComp n f g).support = f.support ∩ g.support :=
+  support_schurSzegoComp_eq_inter_of_hadamardProduct_natDegree_le
+    ((natDegree_hadamardProduct_le_right f g).trans hg)
 
 theorem schurSzegoComp_eq_zero_iff_support_disjoint_of_right_natDegree_le
     {n : Nat} {f g : ℝ[X]} (hg : g.natDegree ≤ n) :
-    schurSzegoComp n f g = 0 ↔ Disjoint f.support g.support := by
-  rw [schurSzegoComp_comm]
-  simpa [disjoint_comm] using
-    schurSzegoComp_eq_zero_iff_support_disjoint_of_left_natDegree_le (f := g) (g := f) hg
+    schurSzegoComp n f g = 0 ↔ Disjoint f.support g.support :=
+  schurSzegoComp_eq_zero_iff_support_disjoint_of_hadamardProduct_natDegree_le
+    ((natDegree_hadamardProduct_le_right f g).trans hg)
 
 theorem schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le
     {n : Nat} {gamma : ℕ → ℝ} {p : ℝ[X]} (hp : p.natDegree ≤ n) :
