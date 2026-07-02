@@ -708,29 +708,19 @@ private lemma common_root_reduction_data
       qg.natDegree ≤ qf.natDegree + 1 := by
   obtain ⟨qf, hqf⟩ := dvd_iff_isRoot.mpr hrf
   obtain ⟨qg, hqg⟩ := dvd_iff_isRoot.mpr hrg
+  have hf_ne : f ≠ 0 := hf_pos.ne_zero
+  have hg_ne : g ≠ 0 := hg_pos.ne_zero
   refine ⟨qf, qg, hqf, hqg, ?_, ?_, ?_, ?_, ?_⟩
   · exact (of_mul_X_sub_C (f := qf) (g := qg) (r := r) (by
         lia))
   · exact hasPosLeadingCoeff_of_X_sub_C_mul (by simpa [hqf] using hf_pos)
   · exact hasPosLeadingCoeff_of_X_sub_C_mul (by simpa [hqg] using hg_pos)
-  · have hf_ne : f ≠ 0 := by
-      intro h0
-      simp [HasPosLeadingCoeff, h0] at hf_pos
-    have hqf_ne : qf ≠ 0 := by simp_all
-    have hg_ne : g ≠ 0 := by
-      intro h0
-      simp [HasPosLeadingCoeff, h0] at hg_pos
+  · have hqf_ne : qf ≠ 0 := by simp_all
     have hqg_ne : qg ≠ 0 := by simp_all
     rw [hqf, hqg, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
       natDegree_mul (X_sub_C_ne_zero r) hqg_ne, natDegree_X_sub_C] at hdeg_lo
     lia
-  · have hf_ne : f ≠ 0 := by
-      intro h0
-      simp [HasPosLeadingCoeff, h0] at hf_pos
-    have hqf_ne : qf ≠ 0 := by simp_all
-    have hg_ne : g ≠ 0 := by
-      intro h0
-      simp [HasPosLeadingCoeff, h0] at hg_pos
+  · have hqf_ne : qf ≠ 0 := by simp_all
     have hqg_ne : qg ≠ 0 := by simp_all
     rw [hqf, hqg, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
       natDegree_mul (X_sub_C_ne_zero r) hqg_ne, natDegree_X_sub_C] at hdeg_hi
@@ -776,9 +766,7 @@ theorem prec_or_revPrec_of_posComboRealRooted_of_no_common
     rcases hno with ⟨r, hrf, hrg⟩
     obtain ⟨qf, qg, hqf, hqg, hqfg, hqf_pos, hqg_pos, hqdeg_lo, hqdeg_hi⟩ :=
       common_root_reduction_data hfg hf_pos hg_pos hdeg_lo hdeg_hi hrf hrg
-    have hf_ne : f ≠ 0 := by
-      intro h0
-      simp [HasPosLeadingCoeff, h0] at hf_pos
+    have hf_ne : f ≠ 0 := hf_pos.ne_zero
     have hqf_ne : qf ≠ 0 := by
       simp_all
     have hqf_deg_lt : qf.natDegree < n := by
@@ -1163,9 +1151,7 @@ theorem prec_same_of_root_sign_data
       card_roots_of_splits hf_splits]
   have hn : 1 ≤ rs.length := by
     lia
-  have hg_ne : g ≠ 0 := by
-    intro hg0
-    simp [HasPosLeadingCoeff, hg0] at hg_pos
+  have hg_ne : g ≠ 0 := hg_pos.ne_zero
   exact
     prec_same_of_strict_signs_of_right_root
       hf_ne hf_splits hg_ne hrs_sorted hrs_eq hdeg hn
