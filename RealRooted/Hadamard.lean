@@ -46,6 +46,13 @@ theorem hadamardProduct_comm (p q : ℝ[X]) :
   ext n
   simp [mul_comm]
 
+/-- A Hadamard product is a diagonal operator whose diagonal is given by the
+right factor's coefficients. -/
+theorem hadamardProduct_eq_diagonalOperator (p q : ℝ[X]) :
+    hadamardProduct p q = diagonalOperator (fun n => q.coeff n) p := by
+  ext n
+  rw [coeff_hadamardProduct, coeff_diagonalOperator, mul_comm]
+
 theorem hadamardProduct_assoc (p q r : ℝ[X]) :
     hadamardProduct (hadamardProduct p q) r =
       hadamardProduct p (hadamardProduct q r) := by
@@ -64,8 +71,9 @@ theorem hadamardProduct_assoc (p q r : ℝ[X]) :
 theorem hadamardProduct_add_left (p q r : ℝ[X]) :
     hadamardProduct (p + q) r =
       hadamardProduct p r + hadamardProduct q r := by
-  ext n
-  simp [add_mul]
+  rw [hadamardProduct_eq_diagonalOperator, diagonalOperator_add,
+    ← hadamardProduct_eq_diagonalOperator p r,
+    ← hadamardProduct_eq_diagonalOperator q r]
 
 theorem hadamardProduct_add_right (p q r : ℝ[X]) :
     hadamardProduct p (q + r) =
@@ -76,21 +84,14 @@ theorem hadamardProduct_add_right (p q r : ℝ[X]) :
 theorem hadamardProduct_C_mul_left (a : ℝ) (p q : ℝ[X]) :
     hadamardProduct (C a * p) q =
       C a * hadamardProduct p q := by
-  ext n
-  simp [mul_assoc]
+  rw [hadamardProduct_eq_diagonalOperator, diagonalOperator_C_mul,
+    ← hadamardProduct_eq_diagonalOperator p q]
 
 theorem hadamardProduct_C_mul_right (a : ℝ) (p q : ℝ[X]) :
     hadamardProduct p (C a * q) =
       C a * hadamardProduct p q := by
   rw [hadamardProduct_comm p (C a * q), hadamardProduct_C_mul_left,
     hadamardProduct_comm q p]
-
-/-- A Hadamard product is a diagonal operator whose diagonal is given by the
-right factor's coefficients. -/
-theorem hadamardProduct_eq_diagonalOperator (p q : ℝ[X]) :
-    hadamardProduct p q = diagonalOperator (fun n => q.coeff n) p := by
-  ext n
-  rw [coeff_hadamardProduct, coeff_diagonalOperator, mul_comm]
 
 /-- The support of a Hadamard product is contained in the left support. -/
 theorem support_hadamardProduct_subset_left (p q : ℝ[X]) :
@@ -223,6 +224,18 @@ theorem schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le
       coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hp hk_lt)
     rw [coeff_schurSzegoComp, if_neg hk, coeff_diagonalOperator, hp_coeff, mul_zero]
 
+/-- Fixed-degree Schur--Szego composition is a diagonal operator. -/
+theorem schurSzegoComp_eq_diagonalOperator (n : Nat) (f g : ℝ[X]) :
+    schurSzegoComp n f g =
+      diagonalOperator (fun k => g.coeff k / (Nat.choose n k : ℝ)) f := by
+  ext k
+  rw [coeff_diagonalOperator, coeff_schurSzegoComp]
+  by_cases hk : k ≤ n
+  · rw [if_pos hk]
+    ring
+  · rw [if_neg hk]
+    simp [Nat.choose_eq_zero_of_lt (Nat.lt_of_not_le hk)]
+
 @[simp] theorem schurSzegoComp_zero_left (n : Nat) (p : ℝ[X]) :
     schurSzegoComp n 0 p = 0 := by
   ext k
@@ -236,10 +249,9 @@ theorem schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le
 theorem schurSzegoComp_add_left (n : Nat) (f f' g : ℝ[X]) :
     schurSzegoComp n (f + f') g =
       schurSzegoComp n f g + schurSzegoComp n f' g := by
-  ext k
-  by_cases hk : k ≤ n
-  · simp only [coeff_schurSzegoComp_of_le hk, coeff_add, add_mul, add_div]
-  · simp [coeff_schurSzegoComp_eq_zero_of_lt (Nat.lt_of_not_le hk)]
+  rw [schurSzegoComp_eq_diagonalOperator, diagonalOperator_add,
+    ← schurSzegoComp_eq_diagonalOperator n f g,
+    ← schurSzegoComp_eq_diagonalOperator n f' g]
 
 /-- Schur--Szego composition is additive in its right argument. -/
 theorem schurSzegoComp_add_right (n : Nat) (f g g' : ℝ[X]) :
@@ -251,28 +263,13 @@ theorem schurSzegoComp_add_right (n : Nat) (f g g' : ℝ[X]) :
 /-- Scalars pull out of the left argument of a Schur--Szego composition. -/
 theorem schurSzegoComp_C_mul_left (n : Nat) (a : ℝ) (f g : ℝ[X]) :
     schurSzegoComp n (C a * f) g = C a * schurSzegoComp n f g := by
-  ext k
-  by_cases hk : k ≤ n
-  · rw [coeff_schurSzegoComp_of_le hk, coeff_C_mul, coeff_C_mul,
-      coeff_schurSzegoComp_of_le hk, mul_assoc, mul_div_assoc]
-  · simp [coeff_schurSzegoComp_eq_zero_of_lt (Nat.lt_of_not_le hk)]
+  rw [schurSzegoComp_eq_diagonalOperator, diagonalOperator_C_mul,
+    ← schurSzegoComp_eq_diagonalOperator n f g]
 
 /-- Scalars pull out of the right argument of a Schur--Szego composition. -/
 theorem schurSzegoComp_C_mul_right (n : Nat) (a : ℝ) (f g : ℝ[X]) :
     schurSzegoComp n f (C a * g) = C a * schurSzegoComp n f g := by
   rw [schurSzegoComp_comm, schurSzegoComp_C_mul_left, schurSzegoComp_comm n g f]
-
-/-- Fixed-degree Schur--Szego composition is a diagonal operator. -/
-theorem schurSzegoComp_eq_diagonalOperator (n : Nat) (f g : ℝ[X]) :
-    schurSzegoComp n f g =
-      diagonalOperator (fun k => g.coeff k / (Nat.choose n k : ℝ)) f := by
-  ext k
-  rw [coeff_diagonalOperator, coeff_schurSzegoComp]
-  by_cases hk : k ≤ n
-  · rw [if_pos hk]
-    ring
-  · rw [if_neg hk]
-    simp [Nat.choose_eq_zero_of_lt (Nat.lt_of_not_le hk)]
 
 theorem natDegree_schurSzegoComp_le_left (n : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).natDegree ≤ f.natDegree := by
