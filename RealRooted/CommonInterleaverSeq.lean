@@ -1602,6 +1602,14 @@ theorem le_of_mem_rootSlotInterval_of_lt
     y ≤ x :=
   le_of_mem_rootSlots_of_lt hrs_ne hrs hij hj hx hy
 
+private lemma get_ofFn_eq_apply
+    {α : Type*} {n : ℕ} {x : Fin n → α} {xs : List α}
+    (hxs : xs = List.ofFn x) {j : ℕ} (hj : j < xs.length) :
+    xs.get ⟨j, hj⟩ = x ⟨j, by simpa [hxs] using hj⟩ := by
+  subst xs
+  change (List.ofFn x)[j] = x ⟨j, by simpa using hj⟩
+  convert (List.getElem_ofFn (f := x) (i := j) (by simpa using hj)) using 2
+
 private lemma pairwise_ge_of_rootSlot_points
     {f : ℝ[X]} (hf : f.Splits) {n : ℕ} (hn : n = f.natDegree + 1)
     (x : Fin n → ℝ)
@@ -1706,9 +1714,8 @@ theorem pairHasCommonInterleaver_of_sameDegree_slotIntersections
       have hjn : j < n := by
         simpa [n, hxs_len] using hj
       have hraw := (Classical.choose_spec (hslot j (by simp_all))).1
-      convert hraw using 1
-      · change (List.ofFn x)[j] = x ⟨j, hjn⟩
-        convert (List.getElem_ofFn (f := x) (i := j) (by simpa [xs] using hj)) using 2
+      rw [get_ofFn_eq_apply (x := x) (xs := xs) rfl hj]
+      simpa [x] using hraw
     simpa [h] using prec_of_slots_polyOfDescRootsDesc hf₀ hf hxs_pair hdeg_lo hdeg_hi hslot_f
   · have hdeg_lo : g.natDegree ≤ xs.length := by
       simp_all
@@ -1724,9 +1731,8 @@ theorem pairHasCommonInterleaver_of_sameDegree_slotIntersections
       have hjn : j < n := by
         simpa [n, hxs_len] using hj
       have hraw := (Classical.choose_spec (hslot j (by simp_all))).2
-      convert hraw using 1
-      · change (List.ofFn x)[j] = x ⟨j, hjn⟩
-        convert (List.getElem_ofFn (f := x) (i := j) (by simpa [xs] using hj)) using 2
+      rw [get_ofFn_eq_apply (x := x) (xs := xs) rfl hj]
+      simpa [x] using hraw
     simpa [h] using prec_of_slots_polyOfDescRootsDesc hg₀ hg hxs_pair hdeg_lo hdeg_hi hslot_g
 
 /-- Matching nonempty root-slot intersections for a succ-degree pair of
@@ -1772,9 +1778,8 @@ theorem pairHasCommonInterleaver_of_succDegree_slotIntersections
       have hjn : j < n := by
         simpa [n, hxs_len] using hj
       have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hjn))).1
-      convert hraw using 1
-      · change (List.ofFn x)[j] = x ⟨j, hjn⟩
-        convert (List.getElem_ofFn (f := x) (i := j) (by simpa [xs] using hj)) using 2
+      rw [get_ofFn_eq_apply (x := x) (xs := xs) rfl hj]
+      simpa [x] using hraw
     simpa [h] using prec_of_slots_polyOfDescRootsDesc hf₀ hf hxs_pair hdeg_lo hdeg_hi hslot_f
   · have hdeg_lo : g.natDegree ≤ xs.length := by
       lia
@@ -1790,9 +1795,8 @@ theorem pairHasCommonInterleaver_of_succDegree_slotIntersections
       have hjn : j < n := by
         simpa [n, hxs_len] using hj
       have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hjn))).2
-      convert hraw using 1
-      · change (List.ofFn x)[j] = x ⟨j, hjn⟩
-        convert (List.getElem_ofFn (f := x) (i := j) (by simpa [xs] using hj)) using 2
+      rw [get_ofFn_eq_apply (x := x) (xs := xs) rfl hj]
+      simpa [x] using hraw
     simpa [h] using prec_of_slots_polyOfDescRootsDesc hg₀ hg hxs_pair hdeg_lo hdeg_hi hslot_g
 
 /-- Reversing a weak zero-aware interlacing sequence with nonnegative
