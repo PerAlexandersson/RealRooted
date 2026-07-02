@@ -1024,9 +1024,7 @@ lemma exists_root_le_of_mixed {smaller bigger : ℝ[X]}
     (hsmaller_gt : ∀ t ∈ smaller.roots, p < t)
     (hdeg : smaller.natDegree + 1 = (smaller + bigger).natDegree) :
     ∃ u₀ : ℝ, u₀ ≤ p ∧ (smaller + bigger).IsRoot u₀ := by
-  have hsum_ne : smaller + bigger ≠ 0 := by
-    intro h0
-    simp [HasPosLeadingCoeff, h0] at hsum_pos
+  have hsum_ne : smaller + bigger ≠ 0 := hsum_pos.ne_zero
   have hbig0 : bigger.eval p = 0 := hbigp
   have hsum_eval : (smaller + bigger).eval p = smaller.eval p := by
     simp_all
@@ -1485,23 +1483,13 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
           (by simp) (by simp) hno_rs_f
       have hus_nodup : us.Nodup := hus_pw.imp ne_of_lt
       have hfg_ne : f + g ≠ 0 := by
-        intro h0
         have hg_natDeg : ss_g.length = g.natDegree := by
           rw [← card_roots_of_splits hg.2, ← Multiset.coe_card, hss_g_eq]
         have hdeg_eq : f.natDegree = g.natDegree := by
           have hf_natDeg : ss_f.length = f.natDegree := by
             rw [← card_roots_of_splits hf.2, ← Multiset.coe_card, hss_f_eq]
           lia
-        have hcoeff_ne : (f + g).coeff f.natDegree ≠ 0 := by
-          rw [coeff_add]
-          have hfc : f.coeff f.natDegree = f.leadingCoeff := rfl
-          have hgc : g.coeff f.natDegree = g.leadingCoeff := by
-            simp_all
-          rw [hfc, hgc]
-          exact ne_of_gt (by
-            unfold HasPosLeadingCoeff at hf_pos hg_pos
-            grind)
-        simp_all
+        exact add_ne_zero_of_same_natDegree_of_posLeadingCoeff hdeg_eq hf_pos hg_pos
       have hus_sub : (↑us : Multiset ℝ) ≤ (f + g).roots := by
         rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr hus_nodup)]
         intro u hu
@@ -1607,9 +1595,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
           lt_of_lt_of_le hu₀_lt_r₁
             (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
       have hnodup := (hpw.imp ne_of_lt : (u₀ :: us).Nodup)
-      have hfg_ne : f + g ≠ 0 := by
-        intro h0
-        simp [HasPosLeadingCoeff, h0] at hfg_pos
+      have hfg_ne : f + g ≠ 0 := hfg_pos.ne_zero
       have hsub : (↑(u₀ :: us) : Multiset ℝ) ≤ (f + g).roots := by
         rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr hnodup)]
         intro u hu
@@ -1703,9 +1689,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
           lt_of_lt_of_le hu₀_lt_r₁
             (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
       have hnodup := (hpw.imp ne_of_lt : (u₀ :: us).Nodup)
-      have hfg_ne : f + g ≠ 0 := by
-        intro h0
-        simp [HasPosLeadingCoeff, h0] at hfg_pos
+      have hfg_ne : f + g ≠ 0 := hfg_pos.ne_zero
       have hsub : (↑(u₀ :: us) : Multiset ℝ) ≤ (f + g).roots := by
         rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr hnodup)]
         intro u hu
@@ -1745,19 +1729,8 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
           rw [← hss_g_eq, Multiset.coe_card] at this
           lia
         have hfgnd : (f + g).natDegree = 0 := by grind [natDegree_add_le f g]
-        have hfg_ne : f + g ≠ 0 := by
-          intro h0
-          have hcoeff_ne : (f + g).coeff 0 ≠ 0 := by
-            rw [coeff_add]
-            have hfc : f.coeff 0 = f.leadingCoeff := by
-              simpa [hfnd] using (show f.coeff f.natDegree = f.leadingCoeff from rfl)
-            have hgc : g.coeff 0 = g.leadingCoeff := by
-              simpa [hgnd] using (show g.coeff g.natDegree = g.leadingCoeff from rfl)
-            rw [hfc, hgc]
-            exact ne_of_gt (by
-              unfold HasPosLeadingCoeff at hf_pos hg_pos
-              grind)
-          simp_all
+        have hfg_ne : f + g ≠ 0 :=
+          add_ne_zero_of_same_natDegree_of_posLeadingCoeff (by simp [hfnd, hgnd]) hf_pos hg_pos
         have hfg_rr : ((f + g) ≠ 0 ∧ (f + g).Splits) := by
           have hcard_le : (f + g).roots.card ≤ 0 := by
             calc
@@ -2127,9 +2100,7 @@ theorem prec_add_of_prec_right_mixed_of_natDegree {f g h : ℝ[X]}
         List.pairwise_cons.mpr ⟨fun w hw => lt_of_lt_of_le hu₀_lt_r₁
           (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
       have hnodup : (u₀ :: us).Nodup := hpw.imp ne_of_lt
-      have hfg_ne : f + g ≠ 0 := by
-        intro h0
-        simp [HasPosLeadingCoeff, h0] at hfg_pos
+      have hfg_ne : f + g ≠ 0 := hfg_pos.ne_zero
       have hsub : (↑(u₀ :: us) : Multiset ℝ) ≤ (f + g).roots := by
         rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr hnodup)]
         intro u hu
@@ -2242,9 +2213,7 @@ theorem prec_add_of_prec_right_mixed_of_natDegree_of_no_common_right {f g h : �
         List.pairwise_cons.mpr ⟨fun w hw => lt_of_lt_of_le hu₀_lt_r₁
           (listInterlaces_all_ge us rest_rs r₁ hus_int w hw), hus_pw⟩
       have hnodup : (u₀ :: us).Nodup := hpw.imp ne_of_lt
-      have hfg_ne : f + g ≠ 0 := by
-        intro h0
-        simp [HasPosLeadingCoeff, h0] at hfg_pos
+      have hfg_ne : f + g ≠ 0 := hfg_pos.ne_zero
       have hsub : (↑(u₀ :: us) : Multiset ℝ) ≤ (f + g).roots := by
         rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr hnodup)]
         intro u hu
