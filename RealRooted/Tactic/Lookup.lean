@@ -66,7 +66,21 @@ def findRRCertificateProofsByType (target : Expr) : TacticM (Array (Name × Expr
         found := found.push (decl, proof)
   return found
 
+private def certificateAttrByName? (attrName : Name) : Option Lean.TagAttribute :=
+  (rrCertificateAttributes.find? fun (candidate, _) => candidate == attrName).map (·.2)
+
+private def closeWithTaggedMatches (found : Array (Name × Expr)) : TacticM Unit := do
+  match found.toList with
+  | [] =>
+      throwError "rr_lookup failed: no local or tagged certificate matches the goal"
+  | [(_, proof)] =>
+      closeMainGoal `rr_lookup proof
+  | xs =>
+      let names := xs.toArray.map (·.1)
+      throwError "rr_lookup failed: ambiguous tagged certificates: {namesString names}"
+
 syntax (name := rr_lookup) "rr_lookup" : tactic
+syntax (name := rr_lookup_attr) "rr_lookup" " [" ident "]" : tactic
 
 elab_rules : tactic
   | `(tactic| rr_lookup) =>
@@ -76,14 +90,16 @@ elab_rules : tactic
           closeMainGoal `rr_lookup proof
           return
         let found ← findRRCertificateProofsByType target
-        match found.toList with
-        | [] =>
-          throwError "rr_lookup failed: no local or tagged certificate matches the goal"
-        | [(_, proof)] =>
+        closeWithTaggedMatches found
+  | `(tactic| rr_lookup [ $attrName:ident ]) =>
+      withMainContext do
+        let target ← getMainTarget
+        if let some proof ← findLocalProofByType? target then
           closeMainGoal `rr_lookup proof
-        | xs =>
-          let names := xs.toArray.map (·.1)
-          throwError "rr_lookup failed: ambiguous tagged certificates: {namesString names}"
+          return
+        let some attr := certificateAttrByName? attrName.getId
+          | throwError "rr_lookup failed: unknown certificate attribute [{attrName.getId}]"
+        closeWithTaggedMatches (← findTaggedProofsByType attr target)
 
 end Tactic
 end RealRooted

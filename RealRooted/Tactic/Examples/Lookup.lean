@@ -18,5 +18,11 @@ example {P : Prop} (h : P) : P := by
 example : True := by
   rr_lookup
 
+@[rr_pos_lc] theorem rr_lookup_attr_true_smoke : True := by
+  trivial
+
+example : True := by
+  rr_lookup [rr_pos_lc]
+
 end Tactic
 end RealRooted
