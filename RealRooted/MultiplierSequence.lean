@@ -247,10 +247,8 @@ theorem isPFPolynomial_jensenPolynomial_of_finiteMultiplierSequence
     IsPFPolynomial (jensenPolynomial n gamma) := by
   have hd := hmult (natDegree_X_add_one_pow_le n) (splits_X_add_one_pow n)
   rw [← jensenPolynomial_eq_diagonalOperator_X_add_one_pow] at hd
-  rcases hd with hzero | hsplits
-  · simpa [hzero] using IsPFPolynomial.zero
-  · exact IsPFPolynomial.of_realRooted_nonneg
-      (hasNonnegCoeffs_jensenPolynomial hgamma) hsplits
+  exact IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
+    (hasNonnegCoeffs_jensenPolynomial hgamma) hd
 
 /-- The finite Polya--Schur theorem in the nonnegative-coefficient convention:
 a nonnegative diagonal sequence preserves real-rootedness up to degree `n` if
@@ -290,10 +288,8 @@ theorem isFinitePFMultiplierSequence_of_finiteMultiplierSequence
   by_cases hp0 : p = 0
   · simpa [hp0] using IsPFPolynomial.zero
   have hsplit := hmult hdeg (hp.ne_zero_and_splits hp0).2
-  rcases hsplit with hzero | hsplits
-  · simpa [hzero] using IsPFPolynomial.zero
-  · exact IsPFPolynomial.of_realRooted_nonneg
-      (hp.hasNonnegCoeffs.diagonalOperator hgamma) hsplits
+  exact IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
+    (hp.hasNonnegCoeffs.diagonalOperator hgamma) hsplit
 
 /-- The finite Polya--Schur classification, used in the forward direction. -/
 theorem jensenPolynomial_isPF_of_finiteMultiplierSequence

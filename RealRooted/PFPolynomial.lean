@@ -54,6 +54,15 @@ theorem of_realRooted_nonneg {p : ℝ[X]}
     IsPFPolynomial p :=
   ⟨hpnn, Or.inr hprr_splits, roots_nonpos_of_nonneg_coeffs hprr_splits hpnn⟩
 
+/-- Construct a PF polynomial from nonnegative coefficients and a
+zero-or-splits certificate. -/
+theorem of_nonnegCoeffs_eq_zero_or_splits {p : ℝ[X]}
+    (hpnn : HasNonnegCoeffs p) (hp : p = 0 ∨ p.Splits) :
+    IsPFPolynomial p := by
+  rcases hp with hzero | hsplits
+  · simpa [hzero] using IsPFPolynomial.zero
+  · exact IsPFPolynomial.of_realRooted_nonneg hpnn hsplits
+
 theorem const_mul {a : ℝ} (ha : 0 < a) {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
     IsPFPolynomial (C a * p) := by
