@@ -184,7 +184,7 @@ theorem natDegree_right_le_succ
       f.natDegree ?_ rfl h hf_pos hg_pos
   intro n ih f g hfdeg hfg hf_pos hg_pos
   by_cases hf_deg0 : f.natDegree = 0
-  · have hf_ne : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
+  · have hf_ne : f ≠ 0 := hf_pos.ne_zero
     let c : ℝ := f.coeff 0
     have hcoeff0 : f.coeff 0 = f.leadingCoeff := by
       simpa [hf_deg0] using (Polynomial.coeff_natDegree (p := f))
@@ -704,7 +704,7 @@ theorem posComboNoCommonAffineFamily_of_boundaryRightPairOrientation
     exact (nonnegCoeffs_C_mul ht.le hfnn).add hgnn
   have hp_pos : HasPosLeadingCoeff p := hp_nn.pos_leadingCoeff hp_rr.1
   have hXf_nn : HasNonnegCoeffs (X * f) := hfnn.X_mul
-  have hXf0 : X * f ≠ 0 := mul_ne_zero X_ne_zero (HasPosLeadingCoeff.ne_zero hf_pos)
+  have hXf0 : X * f ≠ 0 := mul_ne_zero X_ne_zero (hf_pos.ne_zero)
   have hXf_pos : HasPosLeadingCoeff (X * f) := hXf_nn.pos_leadingCoeff hXf0
   have hprec_or : Prec p (X * f) ∨ Prec (X * f) p := by
     dsimp [p]
@@ -728,8 +728,8 @@ theorem posComboNoCommonSameDegreeOrientation_of_shiftedPairOrientation_and_nonn
     (hshift : PosComboNoCommonSameDegreeShiftedPairOrientationStatement) :
     PosComboNoCommonSameDegreeOrientationNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
-  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
-  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
+  have hf0 : f ≠ 0 := hf_pos.ne_zero
+  have hg0 : g ≠ 0 := hg_pos.ne_zero
   exact
     prec_of_prec_shifted_pair_sameDegree_nonneg
       (hshift hf_pos hg_pos hfnn hgnn hfg hdeg hno)
@@ -903,8 +903,8 @@ theorem prec_or_revPrec_of_natDegree_le_one
     (hf_deg_le_one : f.natDegree ≤ 1)
     (hg_deg_le_one : g.natDegree ≤ 1) :
     Prec f g ∨ Prec g f := by
-  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
-  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
+  have hf0 : f ≠ 0 := hf_pos.ne_zero
+  have hg0 : g ≠ 0 := hg_pos.ne_zero
   by_cases hf_deg0 : f.natDegree = 0
   · have hf_rr : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_deg_zero hf0 hf_deg0
     by_cases hg_deg0 : g.natDegree = 0
@@ -1091,8 +1091,8 @@ theorem posComboNoCommonSuccDegreeOrientation_of_degree_zero
     (hf_deg0 : f.natDegree = 0)
     (hsucc : g.natDegree = f.natDegree + 1) :
     Prec f g := by
-  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
-  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
+  have hf0 : f ≠ 0 := hf_pos.ne_zero
+  have hg0 : g ≠ 0 := hg_pos.ne_zero
   have hf_rr : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_deg_zero hf0 hf_deg0
   have hg_deg1 : g.natDegree = 1 := by lia
   have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_degree_one hg_deg1
@@ -1137,8 +1137,8 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily_degre
     (hsucc : g.natDegree = f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
-  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
+  have hf0 : f ≠ 0 := hf_pos.ne_zero
+  have hg0 : g ≠ 0 := hg_pos.ne_zero
   have haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits) := by
@@ -1157,8 +1157,8 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily
     (haffBridge : PosComboNoCommonAffineFamilyStatement) :
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
-  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
-  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
+  have hf0 : f ≠ 0 := hf_pos.ne_zero
+  have hg0 : g ≠ 0 := hg_pos.ne_zero
   have haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits) := by
@@ -1383,8 +1383,8 @@ theorem allComboRealRooted_of_affineFamilyBridge_and_nonnegCoeffs
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     AllComboRealRooted f g := by
-  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
-  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
+  have hf0 : f ≠ 0 := hf_pos.ne_zero
+  have hg0 : g ≠ 0 := hg_pos.ne_zero
   have haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits) := by
@@ -1412,8 +1412,8 @@ theorem posComboNoCommonOrientation_of_affineFamilyBridge_and_nonnegCoeffs
   have hall : AllComboRealRooted f g :=
     allComboRealRooted_of_affineFamilyBridge_and_nonnegCoeffs
       haffBridge hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
-  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
-  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
+  have hf0 : f ≠ 0 := hf_pos.ne_zero
+  have hg0 : g ≠ 0 := hg_pos.ne_zero
   have hf_rr : (f ≠ 0 ∧ f.Splits) := hall.isRealRooted_left hf0
   have hg_rr : (g ≠ 0 ∧ g.Splits) := hall.isRealRooted_right hg0
   have hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by lia
@@ -1474,8 +1474,8 @@ private lemma common_root_reduction_data_of_posCombo_nonneg
   obtain ⟨qg, hqg⟩ := dvd_iff_isRoot.mpr hrg
   have hqfg : PosComboRealRooted qf qg :=
     PosComboRealRooted.of_mul_X_sub_C (r := r) (by lia)
-  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
-  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
+  have hf0 : f ≠ 0 := hf_pos.ne_zero
+  have hg0 : g ≠ 0 := hg_pos.ne_zero
   have hqf0 : qf ≠ 0 := by simp_all
   have hqg0 : qg ≠ 0 := by simp_all
   have hqf_nn : HasNonnegCoeffs qf := by
@@ -1730,8 +1730,8 @@ theorem allComboRealRooted_of_posCombo_and_degreeSplit_and_nonnegCoeffs
     (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
     AllComboRealRooted f g := by
-  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
-  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
+  have hf0 : f ≠ 0 := hf_pos.ne_zero
+  have hg0 : g ≠ 0 := hg_pos.ne_zero
   have hclose :
       f.natDegree ≤ g.natDegree + 1 ∧
         g.natDegree ≤ f.natDegree + 1 :=
@@ -1764,8 +1764,8 @@ theorem posComboOrientation_of_posCombo_and_degreeSplit_and_nonnegCoeffs
   have hall : AllComboRealRooted f g :=
     allComboRealRooted_of_posCombo_and_degreeSplit_and_nonnegCoeffs
       hsame hsucc hf_pos hg_pos hfnn hgnn hfg
-  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
-  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
+  have hf0 : f ≠ 0 := hf_pos.ne_zero
+  have hg0 : g ≠ 0 := hg_pos.ne_zero
   have hf_rr : (f ≠ 0 ∧ f.Splits) := hall.isRealRooted_left hf0
   have hg_rr : (g ≠ 0 ∧ g.Splits) := hall.isRealRooted_right hg0
   have hclose :
@@ -1843,8 +1843,8 @@ theorem allComboRealRooted_of_posCombo_and_affineFamilyBridge_and_nonnegCoeffs
     (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
     AllComboRealRooted f g := by
-  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
-  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
+  have hf0 : f ≠ 0 := hf_pos.ne_zero
+  have hg0 : g ≠ 0 := hg_pos.ne_zero
   have hclose :
       f.natDegree ≤ g.natDegree + 1 ∧
         g.natDegree ≤ f.natDegree + 1 :=
@@ -1876,8 +1876,8 @@ theorem posComboOrientation_of_affineFamilyBridge_and_nonnegCoeffs
   have hall : AllComboRealRooted f g :=
     allComboRealRooted_of_posCombo_and_affineFamilyBridge_and_nonnegCoeffs
       haffBridge hf_pos hg_pos hfnn hgnn hfg
-  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
-  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
+  have hf0 : f ≠ 0 := hf_pos.ne_zero
+  have hg0 : g ≠ 0 := hg_pos.ne_zero
   have hf_rr : (f ≠ 0 ∧ f.Splits) := hall.isRealRooted_left hf0
   have hg_rr : (g ≠ 0 ∧ g.Splits) := hall.isRealRooted_right hg0
   have hclose :
@@ -1964,8 +1964,8 @@ theorem posComboNoCommonOrientation_of_allComboBridge
   intro f g hfg hf_pos hg_pos hdeg_lo hdeg_hi hno
   have hall : AllComboRealRooted f g :=
     hallBridge hf_pos hg_pos hfg hdeg_lo hdeg_hi hno
-  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
-  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
+  have hf0 : f ≠ 0 := hf_pos.ne_zero
+  have hg0 : g ≠ 0 := hg_pos.ne_zero
   have hf_rr : (f ≠ 0 ∧ f.Splits) := hall.isRealRooted_left hf0
   have hg_rr : (g ≠ 0 ∧ g.Splits) := hall.isRealRooted_right hg0
   have hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by lia
@@ -2059,8 +2059,8 @@ theorem posComboNatDegreeClose_of_nonnegCoeffs
     f.natDegree ≤ g.natDegree + 1 ∧
       g.natDegree ≤ f.natDegree + 1 :=
   natDegree_close_of_posComboRealRooted_of_nonnegCoeffs
-    hfg (HasPosLeadingCoeff.ne_zero hf_pos)
-    (HasPosLeadingCoeff.ne_zero hg_pos) hfnn hgnn
+    hfg (hf_pos.ne_zero)
+    (hg_pos.ne_zero) hfnn hgnn
 
 /-- In the nonnegative-coefficient regime, the no-common-roots orientation
 core already implies the full positive-combo pair bridge. -/
@@ -2139,8 +2139,8 @@ theorem posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
-  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
+  have hf0 : f ≠ 0 := hf_pos.ne_zero
+  have hg0 : g ≠ 0 := hg_pos.ne_zero
   have hclose :
       f.natDegree ≤ g.natDegree + 1 ∧
         g.natDegree ≤ f.natDegree + 1 :=
@@ -2170,8 +2170,8 @@ theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  have hf0 : f ≠ 0 := HasPosLeadingCoeff.ne_zero hf_pos
-  have hg0 : g ≠ 0 := HasPosLeadingCoeff.ne_zero hg_pos
+  have hf0 : f ≠ 0 := hf_pos.ne_zero
+  have hg0 : g ≠ 0 := hg_pos.ne_zero
   have hclose :
       f.natDegree ≤ g.natDegree + 1 ∧
         g.natDegree ≤ f.natDegree + 1 :=
@@ -3230,7 +3230,7 @@ theorem hasCommonInterleaver_of_natDegree_le_one
   have hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits) :=
     fun f hf =>
       isRealRooted_of_natDegree_le_one
-        (HasPosLeadingCoeff.ne_zero (hpos f hf)) (hdeg f hf)
+        ((hpos f hf).ne_zero) (hdeg f hf)
   exact
     hasCommonInterleaver_of_pairwiseHasCommonInterleaver
       (fun f hf => (hrr f hf).2) hpos (pairwiseHasCommonInterleaver_of_natDegree_le_one hpos hdeg)
@@ -3249,7 +3249,7 @@ theorem chudnovskySeymour_fourWay_of_natDegree_le_one
   have hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits) :=
     fun f hf =>
       isRealRooted_of_natDegree_le_one
-        (HasPosLeadingCoeff.ne_zero (hpos f hf)) (hdeg f hf)
+        ((hpos f hf).ne_zero) (hdeg f hf)
   exact
     chudnovskySeymour_fourWay_of_pairwiseCommonForward hrr hpos <|
       fun _ => pairwiseHasCommonInterleaver_of_natDegree_le_one hpos hdeg
