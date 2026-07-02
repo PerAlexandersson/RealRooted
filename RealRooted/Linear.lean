@@ -437,9 +437,6 @@ lemma add_ne_zero_of_same_natDegree_of_posLeadingCoeff {p q : ℝ[X]}
     (hdeg : p.natDegree = q.natDegree)
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q) :
     p + q ≠ 0 := by
-  intro hpq
-  have hsum_pos := hasPosLeadingCoeff_add_of_same_natDegree hdeg hp_pos hq_pos
-  unfold HasPosLeadingCoeff at hsum_pos
-  simp [hpq] at hsum_pos
+  exact (hasPosLeadingCoeff_add_of_same_natDegree hdeg hp_pos hq_pos).ne_zero
 
 end RealRooted
