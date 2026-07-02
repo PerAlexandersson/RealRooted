@@ -2264,11 +2264,19 @@ theorem posComboPairHasCommonInterleaver_of_boundaryRightPairOrientation_and_non
     posComboOrientation_of_boundaryRightPairOrientation_and_nonnegCoeffs
       hboundary hf_pos hg_pos hfnn hgnn hfg
 
-/-- The honest degree-split package also yields the full positive-combo pair
-bridge in the nonnegative-coefficient regime. -/
-theorem posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+/-- An ordered positive-combo pair bridge plus the nonnegative degree-closeness
+theorem gives the unordered pair bridge. -/
+theorem posComboPairHasCommonInterleaver_of_orderedBridge_and_nonnegCoeffs
+    (hordered :
+      ∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -2282,16 +2290,29 @@ theorem posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
     natDegree_close_of_posComboRealRooted_of_nonnegCoeffs
       hfg hf0 hg0 hfnn hgnn
   by_cases hdeg : f.natDegree ≤ g.natDegree
-  · exact
-      posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs_ordered
-        hsame hsucc hf_pos hg_pos hfnn hgnn hfg hdeg hclose.2
+  · exact hordered hf_pos hg_pos hfnn hgnn hfg hdeg hclose.2
   · have hdeg' : g.natDegree ≤ f.natDegree := le_of_not_ge hdeg
     rcases
-        posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs_ordered
-          hsame hsucc hg_pos hf_pos hgnn hfnn
-          (PosComboRealRooted.comm hfg) hdeg' hclose.1 with
+        hordered hg_pos hf_pos hgnn hfnn (PosComboRealRooted.comm hfg) hdeg' hclose.1 with
       ⟨h, hg_prec, hf_prec⟩
-    grind
+    exact ⟨h, hf_prec, hg_prec⟩
+
+/-- The honest degree-split package also yields the full positive-combo pair
+bridge in the nonnegative-coefficient regime. -/
+theorem posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+  exact
+    posComboPairHasCommonInterleaver_of_orderedBridge_and_nonnegCoeffs
+      (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi =>
+        posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs_ordered
+          (f := f) (g := g) hsame hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi)
+      hf_pos hg_pos hfnn hgnn hfg
 
 /-- Repaired degree-split package for the full positive-combo pair bridge in
 the nonnegative-coefficient regime. This is the version to use after the
@@ -2305,24 +2326,12 @@ theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  have hf0 : f ≠ 0 := hf_pos.ne_zero
-  have hg0 : g ≠ 0 := hg_pos.ne_zero
-  have hclose :
-      f.natDegree ≤ g.natDegree + 1 ∧
-        g.natDegree ≤ f.natDegree + 1 :=
-    natDegree_close_of_posComboRealRooted_of_nonnegCoeffs
-      hfg hf0 hg0 hfnn hgnn
-  by_cases hdeg : f.natDegree ≤ g.natDegree
-  · exact
-      posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs_ordered
-        hsame hsucc hf_pos hg_pos hfnn hgnn hfg hdeg hclose.2
-  · have hdeg' : g.natDegree ≤ f.natDegree := le_of_not_ge hdeg
-    rcases
+  exact
+    posComboPairHasCommonInterleaver_of_orderedBridge_and_nonnegCoeffs
+      (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi =>
         posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs_ordered
-          hsame hsucc hg_pos hf_pos hgnn hfnn
-          (PosComboRealRooted.comm hfg) hdeg' hclose.1 with
-      ⟨h, hg_prec, hf_prec⟩
-    grind
+          (f := f) (g := g) hsame hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi)
+      hf_pos hg_pos hfnn hgnn hfg
 
 /-- Full positive-combo pair bridge in the nonnegative-coefficient regime,
 using the repaired same-degree branch and the affine-family bridge for the
