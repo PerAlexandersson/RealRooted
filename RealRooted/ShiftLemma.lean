@@ -59,14 +59,6 @@ private lemma natDegree_X_sub_one_mul {h : ℝ[X]} (hh_ne : h ≠ 0) :
   rw [natDegree_mul (X_sub_C_ne_zero 1) hh_ne, natDegree_X_sub_C]
   lia
 
-/-- Multiplication by the monic polynomial `X - 1` preserves positive leading coefficient. -/
-private lemma hasPosLeadingCoeff_X_sub_one_mul {h : ℝ[X]}
-    (hh_pos : HasPosLeadingCoeff h) :
-    HasPosLeadingCoeff ((X - C 1) * h) := by
-  unfold HasPosLeadingCoeff at hh_pos ⊢
-  rw [leadingCoeff_monic_mul (monic_X_sub_C (1 : ℝ))]
-  lia
-
 lemma shift_natDegree_of_interlaces {f h : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hh_pos : HasPosLeadingCoeff h)
@@ -77,7 +69,7 @@ lemma shift_natDegree_of_interlaces {f h : ℝ[X]}
   have hXh_deg : ((X - C 1) * h).natDegree = f.natDegree := by
     rw [natDegree_X_sub_one_mul hh_ne]
     lia
-  have hXh_pos := hasPosLeadingCoeff_X_sub_one_mul hh_pos
+  have hXh_pos := hasPosLeadingCoeff_X_sub_C_mul (r := (1 : ℝ)) hh_pos
   constructor
   · exact natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff
       hXh_deg.symm hf_pos hXh_pos
@@ -93,7 +85,7 @@ lemma shift_natDegree_of_same_degree {f h : ℝ[X]}
     HasPosLeadingCoeff (f + (X - C 1) * h) := by
   have hXh_deg : ((X - C 1) * h).natDegree = f.natDegree + 1 := by
     rw [natDegree_X_sub_one_mul hh_ne, hdeg]
-  have hXh_pos := hasPosLeadingCoeff_X_sub_one_mul hh_pos
+  have hXh_pos := hasPosLeadingCoeff_X_sub_C_mul (r := (1 : ℝ)) hh_pos
   have hlt : f.natDegree < ((X - C 1) * h).natDegree := by lia
   constructor
   · exact natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hlt hXh_pos ▸ hXh_deg
@@ -145,7 +137,8 @@ theorem prec_shift_of_same_degree
         comp_assoc, add_assoc, add_left_comm, add_comm] using hfX'
     exact (prec_comp_X_add_C_iff (f := f) (g := t) 1).1 <| by
       lia
-  have ht_pos : HasPosLeadingCoeff t := hasPosLeadingCoeff_X_sub_one_mul hh_pos
+  have ht_pos : HasPosLeadingCoeff t := by
+    simpa [t] using hasPosLeadingCoeff_X_sub_C_mul (r := (1 : ℝ)) hh_pos
   have hsum : Prec f ([f, t].sum) := by
     apply prec_sum_left_of_common_left_signed
     · intro p hp
