@@ -764,6 +764,19 @@ theorem hadamardProduct_preserves_pf_of_garloffWagner
     (hp.hasNonnegCoeffs.hadamardProduct hq.hasNonnegCoeffs)
     (hGW hp hp hq hq hp.prec0_self hq.prec0_self)
 
+theorem schurPolyaWagnerHadamardPF_of_garloffWagner_prec0
+    (hGW : garloffWagnerHadamardPFPrec0Statement) :
+    schurPolyaWagnerHadamardPFStatement :=
+  fun {_ _} hp hq => hadamardProduct_preserves_pf_of_garloffWagner hGW hp hq
+
+/-- The nonnegative two-pair Garloff--Wagner theorem gives PF closure under
+Hadamard products through the zero-aware PF wrapper. -/
+theorem schurPolyaWagnerHadamardPF_of_garloffWagner_nonnegPrec
+    (hGW : garloffWagnerHadamardNonnegPrecStatement) :
+    schurPolyaWagnerHadamardPFStatement :=
+  schurPolyaWagnerHadamardPF_of_garloffWagner_prec0
+    (garloffWagnerHadamardPFPrec0_of_nonnegPrec hGW)
+
 /-- The two-pair Garloff--Wagner theorem implies the one-polynomial
 real-rootedness/PF Hadamard theorem by applying it to self-pairs. -/
 theorem garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
@@ -773,14 +786,8 @@ theorem garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
   have hp : IsPFPolynomial p := IsPFPolynomial.of_realRooted_nonneg hpnn hprr.2
   have hq : IsPFPolynomial q := IsPFPolynomial.of_realRooted_nonneg hqnn hqrr.2
   have hpf : IsPFPolynomial (hadamardProduct p q) :=
-    hadamardProduct_preserves_pf_of_garloffWagner
-      (garloffWagnerHadamardPFPrec0_of_nonnegPrec hGW) hp hq
+    schurPolyaWagnerHadamardPF_of_garloffWagner_nonnegPrec hGW hp hq
   exact ⟨hpf.eq_zero_or_splits, hpf.hasNonnegCoeffs, hpf.roots_nonpos⟩
-
-theorem schurPolyaWagnerHadamardPF_of_garloffWagner_prec0
-    (hGW : garloffWagnerHadamardPFPrec0Statement) :
-    schurPolyaWagnerHadamardPFStatement :=
-  fun {_ _} hp hq => hadamardProduct_preserves_pf_of_garloffWagner hGW hp hq
 
 /-- Fixed-right Hadamard multiplication preserves zero-aware proper position
 inside the PF cone. -/
