@@ -28,6 +28,14 @@ lemma hasPosLeadingCoeff_X_sub_C_mul {r : ℝ} {p : ℝ[X]}
     HasPosLeadingCoeff ((X - C r) * p) := by
   simpa [HasPosLeadingCoeff] using hp
 
+lemma hasPosLeadingCoeff_X_sub_C (r : ℝ) :
+    HasPosLeadingCoeff (X - C r : ℝ[X]) :=
+  hasPosLeadingCoeff_of_monic (monic_X_sub_C r)
+
+lemma hasPosLeadingCoeff_X_add_C (r : ℝ) :
+    HasPosLeadingCoeff (X + C r : ℝ[X]) := by
+  simpa [sub_eq_add_neg, add_comm] using hasPosLeadingCoeff_X_sub_C (-r)
+
 lemma hasPosLeadingCoeff_of_X_sub_C_mul {q : ℝ[X]} {r : ℝ}
     (h : HasPosLeadingCoeff ((X - C r) * q)) :
     HasPosLeadingCoeff q := by

@@ -20,8 +20,8 @@ private lemma xAddOne_isRealRooted : ((X + 1 : ℝ[X]) ≠ 0 ∧ (X + 1 : ℝ[X]
 private lemma xAddOne_hasNonnegCoeffs : HasNonnegCoeffs (X + 1 : ℝ[X]) := by
   exact hasNonnegCoeffs_X_add_one
 
-private lemma xAddOne_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 1 : ℝ[X]) :=
-  xAddOne_hasNonnegCoeffs.pos_leadingCoeff xAddOne_isRealRooted.1
+private lemma xAddOne_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 1 : ℝ[X]) := by
+  simpa using hasPosLeadingCoeff_X_add_C (1 : ℝ)
 
 private lemma twoMul_xAddOne_isRealRooted :
     ((C (2 : ℝ) * (X + 1)) ≠ 0 ∧ (C (2 : ℝ) * (X + 1)).Splits) :=
@@ -134,8 +134,9 @@ private lemma xAddTwo_hasNonnegCoeffs : HasNonnegCoeffs (X + 2 : ℝ[X]) := by
   change HasNonnegCoeffs (X + C (2 : ℝ) : ℝ[X])
   exact hasNonnegCoeffs_X_add_C (by norm_num)
 
-private lemma xAddTwo_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 2 : ℝ[X]) :=
-  xAddTwo_hasNonnegCoeffs.pos_leadingCoeff xAddTwo_isRealRooted.1
+private lemma xAddTwo_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 2 : ℝ[X]) := by
+  change HasPosLeadingCoeff (X + C (2 : ℝ) : ℝ[X])
+  exact hasPosLeadingCoeff_X_add_C (2 : ℝ)
 
 private lemma xAddOne_roots :
     (X + 1 : ℝ[X]).roots = {(-1 : ℝ)} := by
@@ -159,8 +160,9 @@ private lemma xAddThree_hasNonnegCoeffs : HasNonnegCoeffs (X + 3 : ℝ[X]) := by
   change HasNonnegCoeffs (X + C (3 : ℝ) : ℝ[X])
   exact hasNonnegCoeffs_X_add_C (by norm_num)
 
-private lemma xAddThree_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 3 : ℝ[X]) :=
-  xAddThree_hasNonnegCoeffs.pos_leadingCoeff xAddThree_isRealRooted.1
+private lemma xAddThree_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 3 : ℝ[X]) := by
+  change HasPosLeadingCoeff (X + C (3 : ℝ) : ℝ[X])
+  exact hasPosLeadingCoeff_X_add_C (3 : ℝ)
 
 private lemma xAddThree_roots :
     (X + 3 : ℝ[X]).roots = {(-3 : ℝ)} := by
@@ -614,14 +616,14 @@ private lemma orientCexG_roots : orientCexG.roots = {2, -2} := by
   rfl
 
 private lemma orientCexF_hasPosLeadingCoeff : HasPosLeadingCoeff orientCexF := by
-  unfold HasPosLeadingCoeff orientCexF
-  rw [leadingCoeff_mul, leadingCoeff_X_sub_C, leadingCoeff_X_sub_C]
-  norm_num
+  unfold orientCexF
+  exact hasPosLeadingCoeff_X_sub_C_mul (r := (1 : ℝ))
+    (hasPosLeadingCoeff_X_sub_C (-1 : ℝ))
 
 private lemma orientCexG_hasPosLeadingCoeff : HasPosLeadingCoeff orientCexG := by
-  unfold HasPosLeadingCoeff orientCexG
-  rw [leadingCoeff_mul, leadingCoeff_X_sub_C, leadingCoeff_X_sub_C]
-  norm_num
+  unfold orientCexG
+  exact hasPosLeadingCoeff_X_sub_C_mul (r := (2 : ℝ))
+    (hasPosLeadingCoeff_X_sub_C (-2 : ℝ))
 
 private lemma orientCex_noCommon :
     ∀ r, orientCexF.IsRoot r → ¬ orientCexG.IsRoot r := by
