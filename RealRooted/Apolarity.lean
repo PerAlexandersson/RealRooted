@@ -677,7 +677,7 @@ theorem mem_closedBall_of_recip_avg {c : ℂ} {r : ℝ} (hr : 0 ≤ r) {w ζ : �
         rw [show {u : ℂ | A * Complex.normSq u - 2 * (α * u).re + 1 ≤ 0} =
             Metric.closedBall ((starRingEnd ℂ α) / A) (r / A) by
           ext
-          simp [Complex.normSq]
+          simp only [Complex.mul_re, Set.mem_setOf_eq, Metric.mem_closedBall]
           rw [dist_eq_norm, Complex.norm_def]
           simp +decide [Complex.normSq, Complex.div_re, Complex.div_im]
           ring_nf
