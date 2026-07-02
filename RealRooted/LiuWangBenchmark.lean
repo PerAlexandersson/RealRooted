@@ -1,6 +1,7 @@
 import RealRooted.MaWang
 import RealRooted.Linear
 import RealRooted.CombinatorialExamples.Common
+import RealRooted.Mathlib.Data.Nat.Choose.Cast
 import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Tactic
 
@@ -173,7 +174,7 @@ lemma natDegree_liuWangPoly (d n : Nat) (hn : 0 < n) :
       coeff_above_liuWangPoly d n m (by lia)))
     (by
       rw [coeff_top_liuWangPoly d n hn]
-      exact_mod_cast hn.ne')
+      exact Nat.cast_ne_zero.mpr hn.ne')
 
 lemma liuWangPoly_ne_zero (d n : Nat) (hn : 0 < n) :
     liuWangPoly d n ≠ 0 := by
@@ -208,7 +209,7 @@ private lemma coeff_zero_liuWangPoly_succ_succ (d n : Nat) :
   · have hchoose :
         ((Nat.choose d (n + 1) : ℕ) : ℝ) * (n + 1 : ℝ) =
           ((Nat.choose d n : ℕ) : ℝ) * ((d - n : ℕ) : ℝ) := by
-      exact_mod_cast Nat.choose_succ_right_eq d n
+      exact Nat.cast_choose_succ_right_eq (R := ℝ) d n
     rw [Nat.cast_sub hnd] at hchoose
     grind
   · have hz_n : Nat.choose d n = 0 := Nat.choose_eq_zero_of_lt (lt_of_not_ge hnd)
@@ -393,7 +394,7 @@ lemma liuWangRec_posLeadingCoeff (d n : Nat) (hn : 1 ≤ n) :
     HasPosLeadingCoeff (liuWangRec d n) := by
   unfold HasPosLeadingCoeff
   rw [liuWangRec_leadingCoeff d n hn]
-  exact_mod_cast hn
+  exact Nat.cast_pos.mpr (by lia : 0 < n)
 
 lemma eval_zero_liuWangRec_pos (d n : Nat) (hn : 1 ≤ n) (hnd : n ≤ d + 1) :
     0 < (liuWangRec d n).eval 0 := by

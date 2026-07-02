@@ -54,7 +54,7 @@ lemma choose_cast_succ_eq_ratio (m j : Nat) :
   have hj1_ne : ((j + 1 : Nat) : ℝ) ≠ 0 := by positivity
   rw [← mul_div_assoc]
   apply (eq_div_iff hj1_ne).2
-  exact_mod_cast (Nat.choose_succ_right_eq m j)
+  simpa [Nat.cast_add, Nat.cast_one] using Nat.cast_choose_succ_right_eq (R := ℝ) m j
 
 lemma oneDescentGamma_linearShift_nonneg (m j : Nat) :
     0 ≤ (((m - j : Nat) : ℝ) / ((j + 1 : Nat) : ℝ)) := by
@@ -216,7 +216,8 @@ lemma oneDescentGamma_adjacent_linearShift_le
   have hj1_pos : 0 < ((j + 1 : Nat) : ℝ) := by positivity
   have hj2_pos : 0 < ((j + 2 : Nat) : ℝ) := by positivity
   have hstep : ((m - j : Nat) : ℝ) = ((m - (j + 1) : Nat) : ℝ) + 1 := by
-    exact_mod_cast (show m - j = m - (j + 1) + 1 by lia)
+    simpa [Nat.cast_add, Nat.cast_one] using
+      congrArg (fun r : ℕ => (r : ℝ)) (show m - j = m - (j + 1) + 1 by lia)
   have hsucc : ((j + 2 : Nat) : ℝ) = ((j + 1 : Nat) : ℝ) + 1 := by grind
   field_simp [hj1_pos.ne', hj2_pos.ne']
   nlinarith [hstep, hsucc]
