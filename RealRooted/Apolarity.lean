@@ -869,20 +869,16 @@ theorem polarDeriv_natDegree {n : Nat} {c : ℂ} {r : ℝ} {ζ : ℂ}
       · simp_all +decide [ Multiset.powersetCard_one, mul_sub ] ; ring;
         rw [ Polynomial.leadingCoeff, hA ] ; ring;
       · simp_all +decide [ Multiset.powersetCard_one, Polynomial.leadingCoeff ] ; ring;
-    simp_all +decide [ sub_eq_iff_eq_add ];
-    refine ⟨ ?_, ?_ ⟩
+    simp_all +decide only [ ne_eq ];
+    refine mul_ne_zero ?_ ?_
     · rw [ ← hA, Polynomial.coeff_natDegree ] ; aesop;
     · intro h;
+      rw [ sub_eq_zero ] at h
       have h_avg : A.roots.sum / (A.roots.card : ℂ) ∈ Metric.closedBall c r := by
         apply multiset_avg_mem_closedBall;
-        · intro H; simp_all +decide;
-          replace H := congr_arg Multiset.toFinset H;
-          rw [ Finset.ext_iff ] at H;
-          specialize H ( Classical.choose ( Complex.exists_root <|
-            show A.degree > 0 from Polynomial.natDegree_pos_iff_degree_pos.mp <| by linarith ) ) ;
-          have := Classical.choose_spec ( Complex.exists_root <|
-            show A.degree > 0 from Polynomial.natDegree_pos_iff_degree_pos.mp <| by linarith ) ;
-          aesop;
+        · rw [ ← Multiset.card_pos ]
+          rw [ Polynomial.splits_iff_card_roots.mp <| IsAlgClosed.splits A, hA ]
+          linarith
         · exact fun z hz => hAroots z <| Polynomial.isRoot_of_mem_roots hz;
       rw [ ← h, mul_div_assoc ] at h_avg;
       rw [ show A.roots.card = n by
