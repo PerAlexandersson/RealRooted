@@ -319,15 +319,15 @@ theorem natDegree_schurSzegoComp_le_right (n : Nat) (f g : ℝ[X]) :
 support. -/
 theorem support_schurSzegoComp_subset_left (n : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).support ⊆ f.support := by
-  rw [schurSzegoComp_eq_diagonalOperator]
-  exact support_diagonalOperator_subset _ _
+  rw [support_schurSzegoComp_eq_filter_right]
+  exact Finset.filter_subset _ _
 
 /-- The support of a Schur--Szego composition is contained in the right
 support. -/
 theorem support_schurSzegoComp_subset_right (n : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).support ⊆ g.support := by
-  rw [schurSzegoComp_comm]
-  exact support_schurSzegoComp_subset_left n g f
+  rw [support_schurSzegoComp_eq_filter_left]
+  exact Finset.filter_subset _ _
 
 /-- Nonnegative coefficients are preserved by fixed-degree Schur--Szego
 composition. -/
