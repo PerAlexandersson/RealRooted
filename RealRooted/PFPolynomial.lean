@@ -102,6 +102,14 @@ theorem mul {p q : ℝ[X]}
     (hp.hasNonnegCoeffs.mul hq.hasNonnegCoeffs)
     hpq_rr.2
 
+theorem pow {p : ℝ[X]} (hp : IsPFPolynomial p) (n : ℕ) :
+    IsPFPolynomial (p ^ n) := by
+  induction n with
+  | zero =>
+      simpa using IsPFPolynomial.of_realRooted_nonneg hasNonnegCoeffs_one (by simp)
+  | succ n ih =>
+      simpa [pow_succ] using ih.mul hp
+
 theorem derivative {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
     IsPFPolynomial p.derivative := by

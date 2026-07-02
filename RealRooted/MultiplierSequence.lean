@@ -250,6 +250,15 @@ theorem isPFPolynomial_jensenPolynomial_of_finiteMultiplierSequence
   exact IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
     (hasNonnegCoeffs_jensenPolynomial hgamma) hd
 
+/-- The easy PF direction: a finite PF multiplier sequence has a PF Jensen
+polynomial. -/
+theorem isPFPolynomial_jensenPolynomial_of_finitePFMultiplierSequence
+    {n : ℕ} {gamma : ℕ → ℝ}
+    (hmult : IsFinitePFMultiplierSequence n gamma) :
+    IsPFPolynomial (jensenPolynomial n gamma) := by
+  rw [jensenPolynomial_eq_diagonalOperator_X_add_one_pow]
+  exact hmult (isPFPolynomial_X_add_one.pow n) (natDegree_X_add_one_pow_le n)
+
 /-- The finite Polya--Schur theorem in the nonnegative-coefficient convention:
 a nonnegative diagonal sequence preserves real-rootedness up to degree `n` if
 and only if its degree-`n` Jensen polynomial is PF. -/
@@ -319,5 +328,17 @@ theorem isFinitePFMultiplierSequence_of_jensenPolynomial
     IsFinitePFMultiplierSequence n gamma :=
   isFinitePFMultiplierSequence_of_finiteMultiplierSequence hgamma
     (isFiniteMultiplierSequence_of_jensenPolynomial hFPS hgamma hjensen)
+
+/-- PF-preservation form of finite Pólya--Schur: for a nonnegative diagonal
+sequence, preserving the PF cone up to degree `n` is equivalent to the degree
+`n` Jensen polynomial being PF. -/
+theorem isFinitePFMultiplierSequence_iff_jensenPolynomial
+    (hFPS : finitePolyaSchurNonnegStatement)
+    {n : ℕ} {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k) :
+    IsFinitePFMultiplierSequence n gamma ↔
+      IsPFPolynomial (jensenPolynomial n gamma) :=
+  ⟨isPFPolynomial_jensenPolynomial_of_finitePFMultiplierSequence,
+    isFinitePFMultiplierSequence_of_jensenPolynomial hFPS hgamma⟩
 
 end RealRooted
