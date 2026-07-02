@@ -3551,6 +3551,23 @@ theorem pairwiseCompatible_iff_familyCompatible_of_boundaryRightPairOrientation_
       hboundary)
     (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
 
+private theorem pairwiseCompatible_iff_familyCompatible_of_nonnegPairBridge
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (hbridge :
+      ∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :
+    PairwiseCompatible fs ↔ FamilyCompatible fs :=
+  pairwiseCompatible_iff_familyCompatible_of_fourWay <|
+    chudnovskySeymour_fourWay_of_nonnegPairBridge hrr hpos hnn hbridge
+
 /-- Nonnegative-coefficient specialization of Chudnovsky--Seymour `1 ↔ 4`
 from the no-common orientation core. -/
 theorem pairwiseCompatible_iff_familyCompatible_of_noCommonOrientation_and_nonnegCoeffs
@@ -3560,9 +3577,10 @@ theorem pairwiseCompatible_iff_familyCompatible_of_noCommonOrientation_and_nonne
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (hstep : PosComboNoCommonOrientationStatement) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
-  pairwiseCompatible_iff_familyCompatible_of_fourWay <|
-    chudnovskySeymour_fourWay_of_noCommonOrientation_and_nonnegCoeffs
-      (fs := fs) hrr hpos hnn hstep
+  pairwiseCompatible_iff_familyCompatible_of_nonnegPairBridge hrr hpos hnn
+    (fun {f g} hf_pos hg_pos hfnn hgnn hfg =>
+      compatiblePairHasCommonInterleaver_of_noCommonOrientation_and_nonnegCoeffs
+        hstep (f := f) (g := g) hf_pos hg_pos hfnn hgnn hfg)
 
 /-- Nonnegative-coefficient specialization of Chudnovsky--Seymour `1 ↔ 4`
 from the repaired degree-split package. -/
@@ -3574,9 +3592,10 @@ theorem pairwiseCompatible_iff_familyCompatible_of_pairDegreeSplit_and_nonnegCoe
     (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
-  pairwiseCompatible_iff_familyCompatible_of_fourWay <|
-    chudnovskySeymour_fourWay_of_pairDegreeSplit_and_nonnegCoeffs
-      (fs := fs) hrr hpos hnn hsame hsucc
+  pairwiseCompatible_iff_familyCompatible_of_nonnegPairBridge hrr hpos hnn
+    (fun {f g} hf_pos hg_pos hfnn hgnn hfg =>
+      compatiblePairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
+        hsame hsucc (f := f) (g := g) hf_pos hg_pos hfnn hgnn hfg)
 
 /-- Nonnegative-coefficient specialization of Chudnovsky--Seymour `1 ↔ 4`
 from the honest degree-split package. -/
@@ -3630,9 +3649,10 @@ theorem pairwiseCompatible_iff_familyCompatible_of_affineFamilyBridge_and_nonneg
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (haffBridge : PosComboNoCommonAffineFamilyStatement) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
-  pairwiseCompatible_iff_familyCompatible_of_fourWay <|
-    chudnovskySeymour_fourWay_of_affineFamilyBridge_and_nonnegCoeffs
-      (fs := fs) hrr hpos hnn haffBridge
+  pairwiseCompatible_iff_familyCompatible_of_nonnegPairBridge hrr hpos hnn
+    (fun {f g} hf_pos hg_pos hfnn hgnn hfg =>
+      compatiblePairHasCommonInterleaver_of_affineFamilyBridge_and_nonnegCoeffs
+        haffBridge (f := f) (g := g) hf_pos hg_pos hfnn hgnn hfg)
 
 /-- Nonnegative-coefficient specialization of Chudnovsky--Seymour `1 ↔ 4`
 from the boundary-right-pair orientation statement. -/
