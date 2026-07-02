@@ -1881,9 +1881,18 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_sameDegreePair_and_affineFam
     (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
     hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
 
-private theorem posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs_ordered
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+private theorem posComboPairHasCommonInterleaver_of_noCommonPairBridge_and_nonnegCoeffs_ordered
+    (hterminal :
+      ∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -1910,8 +1919,7 @@ private theorem posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
   intro n ih f g hfdeg hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
   by_cases hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r
   · exact
-      posComboNoCommonPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
-        hsame hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
+      hterminal hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
   · push Not at hno
     rcases hno with ⟨r, hrf, hrg⟩
     obtain ⟨qf, qg, hqf, hqg, hqfg, hqf_nn, hqg_nn, hqf0, hqg0,
@@ -1931,6 +1939,25 @@ private theorem posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
     · simpa [hqg] using
         prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hqg_prec
 
+private theorem posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs_ordered
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg_lo : f.natDegree ≤ g.natDegree)
+    (hdeg_hi : g.natDegree ≤ f.natDegree + 1) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  posComboPairHasCommonInterleaver_of_noCommonPairBridge_and_nonnegCoeffs_ordered
+    (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno =>
+      posComboNoCommonPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
+        hsame hsucc (f := f) (g := g)
+        hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno)
+    hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
+
 private theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs_ordered
     (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
@@ -1942,44 +1969,13 @@ private theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCo
     (hfg : PosComboRealRooted f g)
     (hdeg_lo : f.natDegree ≤ g.natDegree)
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  refine
-    Nat.strong_induction_on
-      (p := fun n =>
-        ∀ {f g : ℝ[X]},
-          f.natDegree = n →
-          HasPosLeadingCoeff f →
-          HasPosLeadingCoeff g →
-          HasNonnegCoeffs f →
-          HasNonnegCoeffs g →
-          PosComboRealRooted f g →
-          f.natDegree ≤ g.natDegree →
-          g.natDegree ≤ f.natDegree + 1 →
-          ∃ h : ℝ[X], Prec f h ∧ Prec g h)
-      f.natDegree ?_ rfl hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
-  intro n ih f g hfdeg hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
-  by_cases hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r
-  · exact
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  posComboPairHasCommonInterleaver_of_noCommonPairBridge_and_nonnegCoeffs_ordered
+    (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno =>
       posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-        hsame hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
-  · push Not at hno
-    rcases hno with ⟨r, hrf, hrg⟩
-    obtain ⟨qf, qg, hqf, hqg, hqfg, hqf_nn, hqg_nn, hqf0, hqg0,
-      hqf_pos, hqg_pos, hqdeg_lo, hqdeg_hi⟩ :=
-      common_root_reduction_data_of_posCombo_nonneg
-        hfg hf_pos hg_pos hfnn hgnn hdeg_lo hdeg_hi hrf hrg
-    have hqf_deg_lt : qf.natDegree < n := by
-      rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf0, natDegree_X_sub_C]
-      lia
-    rcases
-        ih qf.natDegree hqf_deg_lt rfl
-          hqf_pos hqg_pos hqf_nn hqg_nn hqfg hqdeg_lo hqdeg_hi with
-      ⟨h, hqf_prec, hqg_prec⟩
-    refine ⟨(X - C r) * h, ?_, ?_⟩
-    · simpa [hqf] using
-        prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hqf_prec
-    · simpa [hqg] using
-        prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hqg_prec
+        hsame hsucc (f := f) (g := g)
+        hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno)
+    hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
 
 private theorem allComboRealRooted_of_degreeSplit_and_nonnegCoeffs_ordered
     (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
