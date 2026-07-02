@@ -320,10 +320,8 @@ private theorem isRealRooted_of_add_C_mul_right_family_of_natDegree_lt
     unfold g₀
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
     simp_all
-  have hf₀_pos : HasPosLeadingCoeff f₀ := by
-    simp [HasPosLeadingCoeff, hf₀_monic.leadingCoeff]
-  have hg₀_pos : HasPosLeadingCoeff g₀ := by
-    simp [HasPosLeadingCoeff, hg₀_monic.leadingCoeff]
+  have hf₀_pos : HasPosLeadingCoeff f₀ := hasPosLeadingCoeff_of_monic hf₀_monic
+  have hg₀_pos : HasPosLeadingCoeff g₀ := hasPosLeadingCoeff_of_monic hg₀_monic
   have hdeg₀ : f₀.natDegree < g₀.natDegree := by
     simp [f₀, g₀, natDegree_C_mul, hf_lc_ne, hg_lc_ne, hdeg]
   have hfamily₀ : ∀ {μ : ℝ}, 0 < μ → ((g₀ + C μ * f₀) ≠ 0 ∧ (g₀ + C μ * f₀).Splits) := by
@@ -2111,8 +2109,7 @@ private theorem isRealRooted_of_sub_C_mul_right_family_of_natDegree_lt
     unfold g₀
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
     simp_all
-  have hg₀_pos : HasPosLeadingCoeff g₀ := by
-    simp [HasPosLeadingCoeff, hg₀_monic.leadingCoeff]
+  have hg₀_pos : HasPosLeadingCoeff g₀ := hasPosLeadingCoeff_of_monic hg₀_monic
   have hdeg₀ : f₀.natDegree < g₀.natDegree := by
     simp [f₀, g₀, natDegree_C_mul, hf_lc_ne, hg_lc_ne, hdeg]
   -- Monic subtraction family: g₀ - C μ'' * f₀ is real-rooted for small μ'' > 0.
