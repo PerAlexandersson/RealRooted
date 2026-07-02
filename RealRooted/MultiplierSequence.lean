@@ -191,10 +191,16 @@ theorem natDegree_jensenPolynomial_le (n : ℕ) (gamma : ℕ → ℝ) :
   rw [jensenPolynomial_eq_diagonalOperator_X_add_one_pow]
   exact (natDegree_diagonalOperator_le _ _).trans (natDegree_X_add_one_pow_le n)
 
+theorem support_jensenPolynomial_eq_filter (n : ℕ) (gamma : ℕ → ℝ) :
+    (jensenPolynomial n gamma).support =
+      ((X + 1 : ℝ[X]) ^ n).support.filter fun k => gamma k ≠ 0 := by
+  rw [jensenPolynomial_eq_diagonalOperator_X_add_one_pow,
+    support_diagonalOperator_eq_filter]
+
 theorem support_jensenPolynomial_subset (n : ℕ) (gamma : ℕ → ℝ) :
     (jensenPolynomial n gamma).support ⊆ Finset.range (n + 1) := by
-  rw [jensenPolynomial_eq_diagonalOperator_X_add_one_pow]
-  exact (support_diagonalOperator_subset _ _).trans <|
+  rw [support_jensenPolynomial_eq_filter]
+  exact (Finset.filter_subset _ _).trans <|
     Polynomial.supp_subset_range <|
       lt_of_le_of_lt (natDegree_X_add_one_pow_le n) (Nat.lt_succ_self n)
 
