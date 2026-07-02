@@ -221,7 +221,7 @@ private lemma rootSlotInterval_last_of_ne_nil {rs : List ℝ} (hrs : rs ≠ []) 
         =
       rootSlotInterval rs.reverse.reverse
         ⟨rs.length, by simp⟩ := by
-          lia
+          exact hcongr.symm
     _ = Set.Iic (rs.get ⟨rs.length - 1, by
           simpa using
             (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs) (by lia : 0 < 1))⟩) := by
@@ -260,6 +260,13 @@ private lemma getLast_eq_get_lastIndex {rs : List ℝ} (hrs : rs ≠ []) :
       rs.get ⟨rs.length - 1, by
         simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs) (by lia : 0 < 1))⟩ := by
   grind
+
+private lemma rootSlotInterval_last_eq_reverse_get_zero {rs : List ℝ} (hrs : rs ≠ []) :
+    rootSlotInterval rs
+      ⟨rs.length, by lia⟩ =
+      Set.Iic (rs.reverse.get ⟨0, by grind⟩) := by
+  rw [rootSlotInterval_last_of_ne_nil hrs]
+  rw [reverse_get_zero_eq_getLast hrs, getLast_eq_get_lastIndex hrs]
 
 private lemma rootSlot_lower_bound
     {rs : List ℝ} (hrs : rs ≠ []) {j : ℕ} (hj : j < rs.length) {x : ℝ}
@@ -1046,36 +1053,14 @@ theorem rootSlotInterval_inter_nonempty_of_commonInterleaver
         ⟨0, by grind⟩
       have hslot_f :
           rootSlotInterval (rootSeqDesc f) jf = Set.Iic af := by
-        let jfr : Fin ((((rootSeqDesc f).reverse).reverse).length + 1) :=
-          ⟨(rootSeqDesc f).reverse.length, by
-            simp [List.length_reverse]⟩
-        have hbase :
-            rootSlotInterval ((rootSeqDesc f).reverse).reverse jfr = Set.Iic af := by
-          simpa [jfr, af] using
-            rootSlotInterval_reverse_last (xs := (rootSeqDesc f).reverse) hrevf_ne
-        have hcongr :
-            rootSlotInterval ((rootSeqDesc f).reverse).reverse jfr =
-            rootSlotInterval (rootSeqDesc f) jf := by
-          apply rootSlotInterval_congr
-          · simp
-          · simp [jfr, jf, hj_eq_h, hf_eq_h, hfh.1.2]
-        lia
+        simpa [af, jf, hj_eq_h, hf_eq_h, hfh.1.2] using
+          rootSlotInterval_last_eq_reverse_get_zero
+            (rs := rootSeqDesc f) (List.reverse_ne_nil_iff.mp hrevf_ne)
       have hslot_g :
           rootSlotInterval (rootSeqDesc g) jg = Set.Iic ag := by
-        let jgr : Fin ((((rootSeqDesc g).reverse).reverse).length + 1) :=
-          ⟨(rootSeqDesc g).reverse.length, by
-            simp [List.length_reverse]⟩
-        have hbase :
-            rootSlotInterval ((rootSeqDesc g).reverse).reverse jgr = Set.Iic ag := by
-          simpa [jgr, ag] using
-            rootSlotInterval_reverse_last (xs := (rootSeqDesc g).reverse) hrevg_ne
-        have hcongr :
-            rootSlotInterval ((rootSeqDesc g).reverse).reverse jgr =
-            rootSlotInterval (rootSeqDesc g) jg := by
-          apply rootSlotInterval_congr
-          · simp
-          · simp [jgr, jg, hj_eq_h, hg_eq_h, hgh.1.2]
-        lia
+        simpa [ag, jg, hj_eq_h, hg_eq_h, hgh.1.2] using
+          rootSlotInterval_last_eq_reverse_get_zero
+            (rs := rootSeqDesc g) (List.reverse_ne_nil_iff.mp hrevg_ne)
       simp_all
 
 /-- Root-sequence common interleaver used for the Chudnovsky--Seymour proof.
