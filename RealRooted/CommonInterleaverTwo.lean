@@ -1706,6 +1706,22 @@ theorem allComboRealRooted_of_affineFamilyBridge_and_nonnegCoeffs
     allComboRealRooted_of_affine_family_nonneg
       hf0 hg0 hfnn hgnn haff
 
+private lemma prec_or_revPrec_of_allComboRealRooted_ordered
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hall : AllComboRealRooted f g)
+    (hdeg_lo : f.natDegree ≤ g.natDegree)
+    (hdeg_hi : g.natDegree ≤ f.natDegree + 1) :
+    Prec f g ∨ Prec g f := by
+  have hf0 : f ≠ 0 := hf_pos.ne_zero
+  have hg0 : g ≠ 0 := hg_pos.ne_zero
+  have hf_rr : (f ≠ 0 ∧ f.Splits) := hall.isRealRooted_left hf0
+  have hg_rr : (g ≠ 0 ∧ g.Splits) := hall.isRealRooted_right hg0
+  have hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by
+    lia
+  exact prec_of_allComboRealRooted hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hall hdeg
+
 /-- The same affine-family bridge also yields the no-common orientation step,
 since `AllComboRealRooted` can be fed into the completed Obreschkoff converse.
 -/
@@ -1724,12 +1740,9 @@ theorem posComboNoCommonOrientation_of_affineFamilyBridge_and_nonnegCoeffs
   have hall : AllComboRealRooted f g :=
     allComboRealRooted_of_affineFamilyBridge_and_nonnegCoeffs
       haffBridge hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
-  have hf0 : f ≠ 0 := hf_pos.ne_zero
-  have hg0 : g ≠ 0 := hg_pos.ne_zero
-  have hf_rr : (f ≠ 0 ∧ f.Splits) := hall.isRealRooted_left hf0
-  have hg_rr : (g ≠ 0 ∧ g.Splits) := hall.isRealRooted_right hg0
-  have hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by lia
-  exact prec_of_allComboRealRooted hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hall hdeg
+  exact
+    prec_or_revPrec_of_allComboRealRooted_ordered
+      hf_pos hg_pos hall hdeg_lo hdeg_hi
 
 private lemma hasNonnegCoeffs_quotient_add_right_of_common_root
     {f g qf qg : ℝ[X]} {r μ : ℝ}
@@ -2282,12 +2295,9 @@ theorem posComboNoCommonOrientation_of_allComboBridge
   intro f g hfg hf_pos hg_pos hdeg_lo hdeg_hi hno
   have hall : AllComboRealRooted f g :=
     hallBridge hf_pos hg_pos hfg hdeg_lo hdeg_hi hno
-  have hf0 : f ≠ 0 := hf_pos.ne_zero
-  have hg0 : g ≠ 0 := hg_pos.ne_zero
-  have hf_rr : (f ≠ 0 ∧ f.Splits) := hall.isRealRooted_left hf0
-  have hg_rr : (g ≠ 0 ∧ g.Splits) := hall.isRealRooted_right hg0
-  have hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree := by lia
-  exact prec_of_allComboRealRooted hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hall hdeg
+  exact
+    prec_or_revPrec_of_allComboRealRooted_ordered
+      hf_pos hg_pos hall hdeg_lo hdeg_hi
 
 /-- Converse reduction: the no-common orientation core immediately yields the
 all-combinations bridge by passing through `allComboRealRooted_of_prec`. -/
