@@ -463,6 +463,12 @@ def HasPosLeadingCoeff (p : ℝ[X]) : Prop := 0 < p.leadingCoeff
 lemma HasPosLeadingCoeff.ne_zero {p : ℝ[X]} (hp : HasPosLeadingCoeff p) : p ≠ 0 := by
   rintro rfl; simp at hp
 
+lemma hasPosLeadingCoeff_C_mul {a : ℝ} {p : ℝ[X]}
+    (ha : 0 < a) (hp : HasPosLeadingCoeff p) :
+    HasPosLeadingCoeff (C a * p) := by
+  unfold HasPosLeadingCoeff at hp ⊢
+  simp_all
+
 /-! ## Elementary interval inequalities -/
 
 lemma quadratic_nonneg_on_unit_interval_of_coeffs_nonneg

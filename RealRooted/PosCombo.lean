@@ -804,15 +804,15 @@ lemma natDegree_pos_combo_eq_right_of_natDegree_le {f g : ℝ[X]}
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
     (C a * f + C b * g).natDegree = g.natDegree := by
   rcases lt_or_eq_of_le hdeg with hlt | heq
-  · simpa [natDegree_C_mul' ha.ne', natDegree_C_mul' hb.ne'] using
+  · simpa [natDegree_C_mul ha.ne', natDegree_C_mul hb.ne'] using
       (natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
-        (by simpa [natDegree_C_mul' ha.ne', natDegree_C_mul' hb.ne'] using hlt)
+        (by simpa [natDegree_C_mul ha.ne', natDegree_C_mul hb.ne'] using hlt)
         (hasPosLeadingCoeff_C_mul hb hg_pos) :
           (C a * f + C b * g).natDegree = (C b * g).natDegree)
   · have hsame : (C a * f + C b * g).natDegree = f.natDegree := by
-      simpa [natDegree_C_mul' ha.ne', natDegree_C_mul' hb.ne'] using
+      simpa [natDegree_C_mul ha.ne', natDegree_C_mul hb.ne'] using
         (natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff
-          (by simpa [natDegree_C_mul' ha.ne', natDegree_C_mul' hb.ne'] using heq)
+          (by simpa [natDegree_C_mul ha.ne', natDegree_C_mul hb.ne'] using heq)
           (hasPosLeadingCoeff_C_mul ha hf_pos)
           (hasPosLeadingCoeff_C_mul hb hg_pos) :
             (C a * f + C b * g).natDegree = (C a * f).natDegree)
@@ -825,14 +825,14 @@ lemma natDegree_pos_combo_eq_left_of_natDegree_le {f g : ℝ[X]}
     {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
     (C a * f + C b * g).natDegree = f.natDegree := by
   rcases lt_or_eq_of_le hdeg with hlt | heq
-  · simpa [natDegree_C_mul' ha.ne', natDegree_C_mul' hb.ne'] using
+  · simpa [natDegree_C_mul ha.ne', natDegree_C_mul hb.ne'] using
       (natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff
-        (by simpa [natDegree_C_mul' ha.ne', natDegree_C_mul' hb.ne'] using hlt)
+        (by simpa [natDegree_C_mul ha.ne', natDegree_C_mul hb.ne'] using hlt)
         (hasPosLeadingCoeff_C_mul ha hf_pos) :
           (C a * f + C b * g).natDegree = (C a * f).natDegree)
-  · simpa [natDegree_C_mul' ha.ne', natDegree_C_mul' hb.ne'] using
+  · simpa [natDegree_C_mul ha.ne', natDegree_C_mul hb.ne'] using
       (natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff
-        (by simpa [natDegree_C_mul' ha.ne', natDegree_C_mul' hb.ne'] using heq.symm)
+        (by simpa [natDegree_C_mul ha.ne', natDegree_C_mul hb.ne'] using heq.symm)
         (hasPosLeadingCoeff_C_mul ha hf_pos)
         (hasPosLeadingCoeff_C_mul hb hg_pos) :
           (C a * f + C b * g).natDegree = (C a * f).natDegree)
@@ -846,10 +846,10 @@ lemma hasPosLeadingCoeff_pos_combo_of_natDegree_le_right {f g : ℝ[X]}
     HasPosLeadingCoeff (C a * f + C b * g) := by
   rcases lt_or_eq_of_le hdeg with hlt | heq
   · exact hasPosLeadingCoeff_add_of_natDegree_lt_right
-      (by simpa [natDegree_C_mul' ha.ne', natDegree_C_mul' hb.ne'] using hlt)
+      (by simpa [natDegree_C_mul ha.ne', natDegree_C_mul hb.ne'] using hlt)
       (hasPosLeadingCoeff_C_mul hb hg_pos)
   · exact hasPosLeadingCoeff_add_of_same_natDegree
-      (by simpa [natDegree_C_mul' ha.ne', natDegree_C_mul' hb.ne'] using heq)
+      (by simpa [natDegree_C_mul ha.ne', natDegree_C_mul hb.ne'] using heq)
       (hasPosLeadingCoeff_C_mul ha hf_pos)
       (hasPosLeadingCoeff_C_mul hb hg_pos)
 
@@ -861,10 +861,10 @@ lemma hasPosLeadingCoeff_pos_combo_of_natDegree_le_left {f g : ℝ[X]}
     HasPosLeadingCoeff (C a * f + C b * g) := by
   rcases lt_or_eq_of_le hdeg with hlt | heq
   · exact hasPosLeadingCoeff_add_of_natDegree_lt_left
-      (by simpa [natDegree_C_mul' ha.ne', natDegree_C_mul' hb.ne'] using hlt)
+      (by simpa [natDegree_C_mul ha.ne', natDegree_C_mul hb.ne'] using hlt)
       (hasPosLeadingCoeff_C_mul ha hf_pos)
   · exact hasPosLeadingCoeff_add_of_same_natDegree
-      (by simpa [natDegree_C_mul' ha.ne', natDegree_C_mul' hb.ne'] using heq.symm)
+      (by simpa [natDegree_C_mul ha.ne', natDegree_C_mul hb.ne'] using heq.symm)
       (hasPosLeadingCoeff_C_mul ha hf_pos)
       (hasPosLeadingCoeff_C_mul hb hg_pos)
 

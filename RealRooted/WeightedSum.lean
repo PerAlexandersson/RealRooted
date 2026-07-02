@@ -57,16 +57,6 @@ private lemma forall_weight_eq_zero_of_nonneg_of_not_exists_pos
   exact le_antisymm (not_lt.mp fun hap_pos => hnot_pos ⟨ap, hap, hap_pos⟩)
     (hnonneg ap hap)
 
-lemma hasPosLeadingCoeff_C_mul {a : ℝ} {p : ℝ[X]}
-    (ha : 0 < a) (hp : HasPosLeadingCoeff p) :
-    HasPosLeadingCoeff (C a * p) := by
-  unfold HasPosLeadingCoeff at hp ⊢
-  simp_all
-
-lemma natDegree_C_mul' {a : ℝ} {p : ℝ[X]} (ha : a ≠ 0) :
-    (C a * p).natDegree = p.natDegree :=
-  natDegree_C_mul ha
-
 lemma hasPosLeadingCoeff_weightedSum :
     ∀ l : List (ℝ × ℝ[X]),
       (∀ ap ∈ l, 0 ≤ ap.1) →
