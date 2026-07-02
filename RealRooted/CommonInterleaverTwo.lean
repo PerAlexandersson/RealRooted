@@ -3286,9 +3286,11 @@ theorem chudnovskySeymour_fourWay_of_boundaryRightPairOrientation_via_nonnegShif
     (PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs) ∧
       (PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs) ∧
       (HasCommonInterleaver fs ↔ FamilyCompatible fs) :=
-  chudnovskySeymour_fourWay_of_pairwiseCommonForward hrr hpos <|
-    pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_boundaryRightPairOrientation
-      (fs := fs) hboundary hpos
+  chudnovskySeymour_fourWay_of_sameDegreeAlternative_and_affineFamily_via_nonnegShift
+    (fs := fs) hrr hpos
+    (boundaryRightPairOrientation_implies_sameDegreeOrientationAlternative_nonneg
+      hboundary)
+    (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
 
 /-- Same four-way Chudnovsky--Seymour package, with assumptions phrased via the
 positive-combination two-polynomial bridge. -/
