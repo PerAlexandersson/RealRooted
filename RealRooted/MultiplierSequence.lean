@@ -297,12 +297,12 @@ theorem isFinitePFMultiplierSequence_of_finiteMultiplierSequence
 
 /-- The finite Polya--Schur classification, used in the forward direction. -/
 theorem jensenPolynomial_isPF_of_finiteMultiplierSequence
-    (_hFPS : finitePolyaSchurNonnegStatement)
+    (hFPS : finitePolyaSchurNonnegStatement)
     {n : ℕ} {gamma : ℕ → ℝ}
     (hgamma : ∀ k, 0 ≤ gamma k)
     (hmult : IsFiniteMultiplierSequence n gamma) :
     IsPFPolynomial (jensenPolynomial n gamma) :=
-  isPFPolynomial_jensenPolynomial_of_finiteMultiplierSequence hgamma hmult
+  (hFPS hgamma).1 hmult
 
 /-- The finite Polya--Schur classification, used in the reverse direction. -/
 theorem isFiniteMultiplierSequence_of_jensenPolynomial
