@@ -810,12 +810,11 @@ theorem multiset_avg_mem_closedBall {c : ℂ} {r : ℝ} (S : Multiset ℂ) (hS :
       exact convex_closedBall c r;
     convert h_convex.sum_mem _ _ _ <;> aesop;
   convert h_convex ( S.toFinset ) ( fun z => ( S.count z : ℝ ) / S.card ) _ _ _ using 1;
-  · simp +decide [ div_eq_inv_mul, Finset.sum_mul _ _ _, Finset.mul_sum ];
-    simp +decide [ ← Finset.mul_sum _ _ _, ← Finset.sum_mul, mul_assoc,
-      Finset.sum_multiset_count ];
+  · simp +decide [ div_eq_inv_mul ];
+    simp +decide [ ← Finset.mul_sum _ _ _, mul_assoc, Finset.sum_multiset_count ];
   · exact fun z hz => div_nonneg ( Nat.cast_nonneg _ ) ( Nat.cast_nonneg _ );
   · rw [ ← Finset.sum_div, div_eq_iff ] <;> norm_cast <;>
-      simp_all +decide [ Finset.sum_multiset_count ];
+      simp_all +decide;
   · grind
 
 /-
