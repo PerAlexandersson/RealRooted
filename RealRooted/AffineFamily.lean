@@ -1803,9 +1803,8 @@ private lemma isRealRooted_X_mul_of_affine_family
   have hfg_ne : f + g ≠ 0 :=
     add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero hfnn hgnn hg0
   have hfg_pos : HasPosLeadingCoeff (f + g) := hfg_nonneg.pos_leadingCoeff hfg_ne
-  have hXf_nonneg : HasNonnegCoeffs (X * f) := hfnn.X_mul
-  have hXf_ne : X * f ≠ 0 := mul_ne_zero X_ne_zero hf0
-  have hXf_pos : HasPosLeadingCoeff (X * f) := hXf_nonneg.pos_leadingCoeff hXf_ne
+  have hXf_pos : HasPosLeadingCoeff (X * f) :=
+    (hfnn.pos_leadingCoeff hf0).X_mul
   have hdeg_fg : (f + g).natDegree ≤ (X * f).natDegree := by
     have hmax : max f.natDegree g.natDegree ≤ f.natDegree + 1 := by
       simp_all
@@ -1985,7 +1984,7 @@ private lemma prec_of_prec_shifted_pair_sameDegree
     have hXf_deg : (X * f).natDegree = f.natDegree + 1 := by
       simp_all
     have hXf_pos : HasPosLeadingCoeff (X * f) :=
-      hfnn.X_mul.pos_leadingCoeff (mul_ne_zero X_ne_zero hf0)
+      (hfnn.pos_leadingCoeff hf0).X_mul
     have hg_lt : g.natDegree < (X * f).natDegree := by
       lia
     have hsum_deg : (g + X * f).natDegree = (X * f).natDegree :=
@@ -3033,7 +3032,7 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
   have hg_rr : (g ≠ 0 ∧ g.Splits) :=
     isRealRooted_right_of_affine_family_succDegree hf0 hg0 hfnn hgnn haff hsucc.symm
   have hXf_pos : HasPosLeadingCoeff (X * f) :=
-    hfnn.X_mul.pos_leadingCoeff (mul_ne_zero X_ne_zero hf0)
+    (hfnn.pos_leadingCoeff hf0).X_mul
   have hposcombo : PosComboRealRooted g (X * f) :=
     posComboRealRooted_right_of_affine_family hf0 hg0 hfnn hgnn haff
   have hno_right :
@@ -3265,7 +3264,7 @@ private lemma right_boundary_pair_sameDegree_data_of_affine_family_succDegree_no
     isRealRooted_right_of_affine_family_succDegree hf0 hg0 hfnn hgnn haff hsucc.symm
   have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff hg0
   have hXf_pos : HasPosLeadingCoeff (X * f) :=
-    hfnn.X_mul.pos_leadingCoeff (mul_ne_zero X_ne_zero hf0)
+    (hfnn.pos_leadingCoeff hf0).X_mul
   have hposcombo : PosComboRealRooted g (X * f) :=
     posComboRealRooted_right_of_affine_family hf0 hg0 hfnn hgnn haff
   have hno_right :

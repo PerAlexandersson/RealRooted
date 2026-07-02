@@ -2314,7 +2314,7 @@ private lemma leadingCoeff_add_X_mul_eq_of_natDegree_le
     (hb0 : b ≠ 0) :
     (a + X * b).leadingCoeff = b.leadingCoeff := by
   have hXb_pos : HasPosLeadingCoeff (X * b) :=
-    hb_nonneg.X_mul.pos_leadingCoeff (mul_ne_zero X_ne_zero hb0)
+    (hb_nonneg.pos_leadingCoeff hb0).X_mul
   have hdeg_lt : a.natDegree < (X * b).natDegree := by
     simp_all
   have hsum_deg : (a + X * b).natDegree = (X * b).natDegree :=
@@ -2441,8 +2441,7 @@ theorem brandenSolusTheorem26_forward_of_prec_b_a {d : ℕ} {p a b : ℝ[X]}
   have hb_pos : HasPosLeadingCoeff b := hb_nonneg.pos_leadingCoeff hb_rr.1
   have ha_pos : HasPosLeadingCoeff a := ha_nonneg.pos_leadingCoeff ha_rr.1
   have hXb_nonneg : HasNonnegCoeffs (X * b) := hb_nonneg.X_mul
-  have hXb_pos : HasPosLeadingCoeff (X * b) :=
-    hXb_nonneg.pos_leadingCoeff (mul_ne_zero X_ne_zero hb_rr.1)
+  have hXb_pos : HasPosLeadingCoeff (X * b) := hb_pos.X_mul
   have haxb : Prec a (X * b) := prec_mul_X_of_prec_of_nonneg hba hb_nonneg ha_nonneg
   have hp_right : Prec (a + X * b) (X * b) := by
     simpa using
@@ -2586,14 +2585,14 @@ private theorem natDegree_X_mul_component_eq_or_succ_of_prec_left_top
   have hall_aXb : AllComboRealRooted a (X * b) :=
     allComboRealRooted_left_X_mul_component_of_prec_left hp_eq hap
   have hXb0 : X * b ≠ 0 := mul_ne_zero X_ne_zero hb0
-  have hXb_nonneg : HasNonnegCoeffs (X * b) := hb_nonneg.X_mul
   have hXb_le_p : (X * b).natDegree ≤ p.natDegree := by
     apply Polynomial.le_natDegree_of_ne_zero
     have hcoeff_pos : 0 < p.coeff (X * b).natDegree := by
       rw [hp_eq, Polynomial.coeff_add]
       have ha_coeff_nonneg : 0 ≤ a.coeff (X * b).natDegree := ha_nonneg _
       have hXb_top_pos : 0 < (X * b).coeff (X * b).natDegree := by
-        have hlead : 0 < (X * b).leadingCoeff := hXb_nonneg.pos_leadingCoeff hXb0
+        have hlead : 0 < (X * b).leadingCoeff :=
+          (hb_nonneg.pos_leadingCoeff hb0).X_mul
         simp_all
       linarith
     grind
