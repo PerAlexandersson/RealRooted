@@ -188,25 +188,41 @@ theorem choose_mul_coeff_schurSzegoComp_eq_coeff_hadamardProduct_of_le
       (hadamardProduct f g).coeff k := by
   rw [choose_mul_coeff_schurSzegoComp_of_le hk, coeff_hadamardProduct]
 
+/-- Fixed-degree Schur--Szego composition is a diagonal operator. -/
+theorem schurSzegoComp_eq_diagonalOperator (n : Nat) (f g : ℝ[X]) :
+    schurSzegoComp n f g =
+      diagonalOperator (fun k => g.coeff k / (Nat.choose n k : ℝ)) f := by
+  ext k
+  rw [coeff_diagonalOperator, coeff_schurSzegoComp]
+  by_cases hk : k ≤ n
+  · rw [if_pos hk]
+    ring
+  · rw [if_neg hk]
+    simp [Nat.choose_eq_zero_of_lt (Nat.lt_of_not_le hk)]
+
+theorem support_schurSzegoComp_eq_filter_right (n : Nat) (f g : ℝ[X]) :
+    (schurSzegoComp n f g).support =
+      f.support.filter (fun k => g.coeff k / (Nat.choose n k : ℝ) ≠ 0) := by
+  rw [schurSzegoComp_eq_diagonalOperator, support_diagonalOperator_eq_filter]
+
+theorem support_schurSzegoComp_eq_filter_left (n : Nat) (f g : ℝ[X]) :
+    (schurSzegoComp n f g).support =
+      g.support.filter (fun k => f.coeff k / (Nat.choose n k : ℝ) ≠ 0) := by
+  rw [schurSzegoComp_comm]
+  exact support_schurSzegoComp_eq_filter_right n g f
+
 theorem support_schurSzegoComp_eq_hadamardProduct_inter_range
     (n : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).support =
       (hadamardProduct f g).support ∩ Finset.range (n + 1) := by
+  rw [support_schurSzegoComp_eq_filter_right, support_hadamardProduct_eq_filter_right]
   ext k
   by_cases hk : k ≤ n
-  · have hchoose : (Nat.choose n k : ℝ) ≠ 0 := by
-      exact_mod_cast Nat.choose_ne_zero hk
-    rw [mem_support_iff, coeff_schurSzegoComp_of_le hk, Finset.mem_inter,
-      mem_support_iff, coeff_hadamardProduct, Finset.mem_range,
-      Nat.lt_succ_iff]
-    constructor
-    · intro h
-      exact ⟨fun hmul => h (by rw [hmul, zero_div]), hk⟩
-    · intro h
-      exact div_ne_zero h.1 hchoose
-  · rw [mem_support_iff, coeff_schurSzegoComp, if_neg hk, Finset.mem_inter,
-      Finset.mem_range, Nat.lt_succ_iff]
-    simp [hk]
+  · have hchoose_nat : Nat.choose n k ≠ 0 := Nat.choose_ne_zero hk
+    simp [Finset.mem_filter, Finset.mem_inter, Finset.mem_range, hk, hchoose_nat]
+  · have hchoose_nat : Nat.choose n k = 0 :=
+      Nat.choose_eq_zero_of_lt (Nat.lt_of_not_le hk)
+    simp [Finset.mem_filter, Finset.mem_inter, Finset.mem_range, hk, hchoose_nat]
 
 theorem support_schurSzegoComp_eq_hadamardProduct_of_left_natDegree_le
     {n : Nat} {f g : ℝ[X]} (hf : f.natDegree ≤ n) :
@@ -253,18 +269,6 @@ theorem schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le
     have hp_coeff : p.coeff k = 0 :=
       coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hp hk_lt)
     rw [coeff_schurSzegoComp, if_neg hk, coeff_diagonalOperator, hp_coeff, mul_zero]
-
-/-- Fixed-degree Schur--Szego composition is a diagonal operator. -/
-theorem schurSzegoComp_eq_diagonalOperator (n : Nat) (f g : ℝ[X]) :
-    schurSzegoComp n f g =
-      diagonalOperator (fun k => g.coeff k / (Nat.choose n k : ℝ)) f := by
-  ext k
-  rw [coeff_diagonalOperator, coeff_schurSzegoComp]
-  by_cases hk : k ≤ n
-  · rw [if_pos hk]
-    ring
-  · rw [if_neg hk]
-    simp [Nat.choose_eq_zero_of_lt (Nat.lt_of_not_le hk)]
 
 @[simp] theorem schurSzegoComp_zero_left (n : Nat) (p : ℝ[X]) :
     schurSzegoComp n 0 p = 0 := by
