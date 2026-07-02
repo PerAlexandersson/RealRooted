@@ -2906,6 +2906,20 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_compatibleDegreeSp
     (compatiblePairHasCommonInterleaver_of_degreeSplit hsame hsucc)
     hpos hpair
 
+/-- Pairwise upgrade from the repaired shifted nonnegative-coefficient
+degree-split package. -/
+theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairDegreeSplit_via_nonnegShift
+    {fs : List ℝ[X]}
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hpair : PairwiseCompatible fs) :
+    PairwiseHasCommonInterleaver fs :=
+  pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairBridgePos
+    (compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
+      hsame hsucc)
+    hpos hpair
+
 /-- Pairwise upgrade from the nonnegative-coefficient degree-split package,
 after shifting each pair into the nonnegative regime. -/
 theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_degreeSplit_via_nonnegShift
@@ -2915,9 +2929,10 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_degreeSplit_via_no
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
-  pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairBridgePos
-    (compatiblePairHasCommonInterleaver_of_degreeSplit_via_nonnegShift hsame hsucc)
-    hpos hpair
+  pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairDegreeSplit_via_nonnegShift
+    (posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg
+      hsame)
+    hsucc hpos hpair
 
 /-- Pairwise upgrade after the nonnegative shift reduction, with the
 succ-degree branch discharged by the affine-family bridge. -/
@@ -2929,8 +2944,9 @@ theorem
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
-  pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_degreeSplit_via_nonnegShift
-    hsame
+  pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairDegreeSplit_via_nonnegShift
+    (posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg
+      hsame)
     (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
     hpos hpair
 
