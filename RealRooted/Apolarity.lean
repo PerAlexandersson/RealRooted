@@ -862,9 +862,9 @@ theorem polarDeriv_natDegree {n : Nat} {c : ℂ} {r : ℝ} {ζ : ℂ}
           = A.leadingCoeff * (-1) ^ (n - (n - 1)) * Multiset.esymm A.roots (n - (n - 1)) := by
         convert Polynomial.coeff_eq_esymm_roots_of_card _ _ using 1;
         all_goals norm_num [ hA ];
-        exact inferInstance;
-        convert Polynomial.splits_iff_card_roots.mp ( IsAlgClosed.splits A ) using 1;
-        all_goals norm_num [ hA ];
+        · exact inferInstance
+        · convert Polynomial.splits_iff_card_roots.mp ( IsAlgClosed.splits A ) using 1;
+          all_goals norm_num [ hA ];
       rcases n with ( _ | _ | n ) <;> simp_all +decide [ Multiset.esymm ];
       · simp_all +decide [ Multiset.powersetCard_one, mul_sub ] ; ring;
         rw [ Polynomial.leadingCoeff, hA ] ; ring;
@@ -933,8 +933,9 @@ theorem apolarPairing_deflation {n : Nat} (hn : 1 ≤ n) {ζ : ℂ} {f g g' : �
   ring;
   simp +decide [ add_comm 1, add_comm 2, mul_assoc, mul_left_comm ] ;
   ring;
-  rw [ show ( binomialLift m g' ).coeff ( 1 + m ) = 0 from _ ] ; ring;
-  · rw [ Finset.sum_congr rfl fun x hx => by
+  rw [ show ( binomialLift m g' ).coeff ( 1 + m ) = 0 from _ ];
+  · ring;
+    rw [ Finset.sum_congr rfl fun x hx => by
         rw [ show m - x = m - ( 1 + x ) + 1 by
           rw [ tsub_add_eq_add_tsub ( by linarith [ Finset.mem_range.mp hx ] ) ] ;
           simp +decide [ add_comm ] ] ] ;
@@ -975,9 +976,11 @@ private theorem grace_aux {c : ℂ} {r : ℝ} (hr : 0 ≤ r) :
       set f' := polarShift ζ f
       have hf' : (binomialLift (n - 1) f').natDegree = n - 1 := by
         have hf' : (polarDeriv n ζ (binomialLift n f)).natDegree = n - 1 := by
-          apply polarDeriv_natDegree;
-          exact Nat.pos_of_ne_zero hn;
-          exacts [ hf, hroots, hζ' ];
+          apply polarDeriv_natDegree
+          · exact Nat.pos_of_ne_zero hn
+          · exact hf
+          · exact hroots
+          · exact hζ'
         rw [ polarDeriv_binomialLift ( Nat.pos_of_ne_zero hn ) ζ f ] at hf';
         rwa [ Polynomial.natDegree_C_mul ] at hf' ; aesop
       have hf'_roots : (binomialLift (n - 1) f').RootsIn (Metric.closedBall c r) := by
@@ -1003,11 +1006,13 @@ private theorem grace_aux {c : ℂ} {r : ℝ} (hr : 0 ≤ r) :
       -- Apply the induction hypothesis to `f'` and `g'`.
       obtain ⟨w, hw⟩ :
           ∃ w : ℂ, (binomialLift (n - 1) g').IsRoot w ∧ w ∈ Metric.closedBall c r := by
-        apply ih (n - 1) (Nat.sub_lt (Nat.pos_of_ne_zero hn) (by linarith)) f' g' hf' (by
-        replace hg' := congr_arg Polynomial.natDegree hg';
-        rw [ Polynomial.natDegree_mul' ] at hg' <;> norm_num at * ; lia;
-        intro H
-        simp_all +decide) hap' hf'_roots;
+        apply ih (n - 1) (Nat.sub_lt (Nat.pos_of_ne_zero hn) (by linarith))
+          f' g' hf' (by
+            replace hg' := congr_arg Polynomial.natDegree hg';
+            rw [ Polynomial.natDegree_mul' ] at hg' <;> norm_num at *
+            · lia
+            · intro H
+              simp_all +decide) hap' hf'_roots;
       exact ⟨ w, by replace hg' := congr_arg ( Polynomial.eval w ) hg'; aesop ⟩
 
 /-- **Grace's apolarity theorem** (closed-disk case), phrased for the binomial
