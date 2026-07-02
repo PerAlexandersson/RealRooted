@@ -1328,6 +1328,144 @@ theorem posComboNoCommonSuccDegreeSlotData_iff_pairHasCommonInterleaver :
   ⟨succDegreePairHasCommonInterleaver_nonneg_of_slotData,
     posComboNoCommonSuccDegreeSlotData_of_pairHasCommonInterleaver⟩
 
+/-- **Combinatorial core of the succ-degree slot bound.**
+
+For descending real lists `rf` (length `n`) and `rg` (length `n + 1`), if the
+roots weave - `hc1`: for `1 ≤ j ≤ n`, `rg`'s `j`-th element is `≤` `rf`'s
+`(j-1)`-th; `hc2`: for `1 ≤ j < n`, `rf`'s `j`-th is `≤` `rg`'s `(j-1)`-th -
+then for every common slot `j ≤ n` the descending slot intervals of `rf` and
+`rg` intersect. This turns the analytic converse-Obreschkoff content into two
+clean root inequalities. (`List.getD _ _ 0` avoids in-bounds side goals.) -/
+theorem rootSlotInterval_inter_nonempty_of_crossing
+    (rf rg : List ℝ)
+    (hrf : rf.Pairwise (· ≥ ·)) (hrg : rg.Pairwise (· ≥ ·))
+    (hlen : rg.length = rf.length + 1)
+    (hc1 : ∀ j, 1 ≤ j → j ≤ rf.length → rg.getD j 0 ≤ rf.getD (j - 1) 0)
+    (hc2 : ∀ j, 1 ≤ j → j < rf.length → rf.getD j 0 ≤ rg.getD (j - 1) 0)
+    (j : ℕ) (hjf : j < rf.length + 1) (hjg : j < rg.length + 1) :
+    (rootSlotInterval rf ⟨j, hjf⟩ ∩ rootSlotInterval rg ⟨j, hjg⟩).Nonempty := by
+  rcases j with (_ | j) <;>
+    simp_all +decide only [ge_iff_le, List.getD_eq_getElem?_getD, Order.lt_add_one_iff,
+      getElem?_pos, Option.getD_some, rootSlotInterval, ↓reduceDIte, Fin.zero_eta,
+      List.length_nil, Nat.reduceAdd, List.length_cons, Nat.add_eq_zero_iff, and_false,
+      List.get_eq_getElem, add_tsub_cancel_right, Nat.add_right_cancel_iff]
+  · rcases rf with (_ | ⟨r, rf⟩) <;> rcases rg with (_ | ⟨s, rg⟩) <;> norm_num at *
+  · split_ifs <;> try linarith
+    · rcases x : rf.reverse with (_ | ⟨r, _ | ⟨s, l⟩⟩) <;>
+          simp_all +decide only [lt_add_iff_pos_right, Order.lt_one_iff,
+            List.reverse_eq_nil_iff, List.length_nil,
+            Set.univ_inter, Set.nonempty_Icc, List.Pairwise.nil, nonpos_iff_eq_zero,
+            zero_tsub, not_false_eq_true, getElem?_neg, Option.getD_none,
+            not_lt_zero, IsEmpty.forall_iff, implies_true, Nat.add_eq_zero_iff,
+            and_false, List.reverse_eq_cons_iff, List.reverse_nil, List.nil_append,
+            List.length_cons, zero_add, List.pairwise_cons, List.not_mem_nil, and_self,
+            Nat.sub_eq_zero_of_le, getElem?_pos, List.getElem_cons_zero, Option.getD_some,
+            Nat.reduceAdd, Order.lt_two_iff, Nat.add_eq_right, List.reverse_cons,
+            List.append_assoc, List.cons_append, List.length_append, List.length_reverse,
+            Nat.add_right_cancel_iff]
+      · rcases rg with (_ | ⟨a, _ | ⟨b, rg⟩⟩) <;>
+            simp_all +decide only [List.pairwise_cons, List.mem_cons, forall_eq_or_imp,
+              List.getElem_cons_succ, List.getElem_cons_zero]
+        · contradiction
+        · grind
+        · have hba : b ≤ a := hrg.1.1
+          exact ⟨b,
+            Set.mem_Iic.mpr (by simpa using hc1 1 (by norm_num) (by norm_num)),
+            Set.mem_Icc.mpr ⟨by linarith, by linarith⟩⟩
+      · refine ⟨rg[l.length + 2], ?_, ?_⟩ <;> norm_num
+        · have h := hc1 (l.length + 2) (by linarith) (by linarith)
+          have hr : (l.reverse ++ [s, r])[l.length + 2 - 1]?.getD 0 = r := by
+            rw [List.getElem?_append_right (by simp)]
+            simp
+          rwa [hr] at h
+        · have := List.pairwise_iff_get.mp hrg
+          exact this ⟨_, by linarith⟩ ⟨_, by linarith⟩ (Nat.lt_succ_self _)
+    · refine ⟨Max.max (rf[j + 1]) (rg[j + 1]), ?_, ?_⟩
+      · simp_all +decide only [List.pairwise_iff_get, Set.mem_Icc, le_sup_left, sup_le_iff,
+          true_and]
+        exact ⟨hrf ⟨j, by linarith⟩ ⟨j + 1, by lia⟩ (Nat.lt_succ_self _),
+          by simpa [List.getElem?_eq_getElem (by lia : j < rf.length)] using
+            hc1 (j + 1) (by linarith) (by lia)⟩
+      · simp_all +decide only [List.pairwise_iff_get, Set.mem_Icc, le_sup_right, sup_le_iff,
+          true_and, List.get_eq_getElem]
+        constructor
+        · grind +revert
+        · convert hrg ⟨j, by linarith⟩ ⟨j + 1, by linarith⟩
+              (Nat.lt_succ_self _) using 1
+
+/-- **Sub-statement A of milestone B2: left-endpoint real-rootedness.**
+
+For a nonnegative positive-combination pair `(f, g)` with positive leading
+coefficients and `g.natDegree = f.natDegree + 1`, the lower-degree member `f`
+splits over `ℝ`. This is the degree-drop root-continuity endpoint (`f` is the
+`μ → 0⁺` limit of the real-rooted family `f + C μ * g`, whose `f.natDegree`
+finite roots converge to the roots of `f` while one root escapes to `-∞`),
+isolated here as a reusable statement. -/
+def PosComboSuccDegreeLeftSplitsNonnegStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    f.Splits
+
+/-- **Sub-statement B of milestone B2: descending-root crossing inequalities.**
+
+Given the nonnegative positive-combination/no-common hypotheses at succ degree
+and that `f` already splits, the descending root sequences of `f` and `g` weave
+in the two clean crossing inequalities consumed by
+`rootSlotInterval_inter_nonempty_of_crossing`. This is the genuine analytic
+converse-Obreschkoff crossing content for the succ-degree case, now separated
+from the proved combinatorial slot construction. -/
+def PosComboNoCommonSuccDegreeRootCrossingNonnegStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    f.Splits →
+    (∀ j, 1 ≤ j → j ≤ f.natDegree →
+        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)
+
+/-- **Decomposition of milestone B2 into its two honest remaining pieces.**
+
+The succ-degree slot-data statement follows from left-endpoint real-rootedness
+of `f` (`PosComboSuccDegreeLeftSplitsNonnegStatement`) together with the
+descending-root crossing inequalities
+(`PosComboNoCommonSuccDegreeRootCrossingNonnegStatement`); the combinatorial
+step is discharged by `rootSlotInterval_inter_nonempty_of_crossing`. Via
+`posComboNoCommonSuccDegreeSlotData_iff_pairHasCommonInterleaver` this reduces
+the corrected common-right-interleaver target for milestone B2 (#42) to these
+two analytic statements. -/
+theorem posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_rootCrossing
+    (hsplit : PosComboSuccDegreeLeftSplitsNonnegStatement)
+    (hcross : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    PosComboNoCommonSuccDegreeSlotDataNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
+  have hf_split : f.Splits := hsplit hf_pos hg_pos hfnn hgnn hfg hsucc
+  have hg_split : g.Splits :=
+    (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hsucc).2
+  refine ⟨⟨HasPosLeadingCoeff.ne_zero hf_pos, hf_split⟩, ?_⟩
+  obtain ⟨hc1, hc2⟩ := hcross hf_pos hg_pos hfnn hgnn hfg hsucc hno hf_split
+  have hlenf : (rootSeqDesc f).length = f.natDegree := rootSeqDesc_length hf_split
+  have hleng : (rootSeqDesc g).length = g.natDegree := rootSeqDesc_length hg_split
+  intro j _ hjf hjg
+  refine
+    rootSlotInterval_inter_nonempty_of_crossing (rootSeqDesc f) (rootSeqDesc g)
+      rootSeqDesc_pairwise rootSeqDesc_pairwise ?_ ?_ ?_ j hjf hjg
+  · rw [hleng, hlenf, hsucc]
+  · intro k hk1 hk2
+    exact hc1 k hk1 (by rw [hlenf] at hk2; exact hk2)
+  · intro k hk1 hk2
+    exact hc2 k hk1 (by rw [hlenf] at hk2; exact hk2)
+
 /-- Honest nonnegative degree-split reduction of the no-common orientation
 problem: it is enough to solve the same-degree branch up to orientation
 alternative and the succ-degree branch in the forced direction. -/
