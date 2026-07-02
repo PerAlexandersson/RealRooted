@@ -7,6 +7,7 @@ import Mathlib.Analysis.Normed.Module.Convex
 import Mathlib.RingTheory.Polynomial.Vieta
 import Mathlib.Tactic
 import Mathlib.Topology.MetricSpace.Basic
+import RealRooted.Mathlib.Data.Nat.Choose.Cast
 
 /-!
 # Finite apolarity
@@ -418,9 +419,8 @@ theorem areApolar_monomial_monomial_iff_complex
   by_cases hsum : i + j = n
   · rw [if_pos hsum]
     have hi : i ≤ n := by lia
-    have hchoose : (Nat.choose n i : ℂ) ≠ 0 := by
-      have : 0 < Nat.choose n i := Nat.choose_pos hi
-      exact_mod_cast this.ne'
+    have hchoose : (Nat.choose n i : ℂ) ≠ 0 :=
+      Nat.cast_choose_ne_zero (R := ℂ) hi
     have hsign : ((-1 : ℂ) ^ i) ≠ 0 := pow_ne_zero _ (by norm_num)
     constructor
     · intro hzero
@@ -610,8 +610,7 @@ theorem exists_binomialLift_eq {n : Nat} (Q : ℂ[X]) (hQ : Q.natDegree ≤ n) :
   · rw [if_pos hk, Polynomial.finsetSum_coeff]
     rw [Finset.sum_eq_single k]
     · simp only [coeff_monomial_same]
-      rw [mul_div_cancel₀ _
-        (Nat.cast_ne_zero.mpr <| Nat.ne_of_gt <| Nat.choose_pos hk)]
+      rw [mul_div_cancel₀ _ (Nat.cast_choose_ne_zero (R := ℂ) hk)]
     · intro b _ hbk
       simp [Polynomial.coeff_monomial, hbk]
     · intro hknot
