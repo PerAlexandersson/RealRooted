@@ -3488,9 +3488,9 @@ theorem pairwiseCompatible_iff_familyCompatible_of_compatibleDegreeSplit
     (hsame : CompatibleSameDegreePairHasCommonInterleaverStatement)
     (hsucc : CompatibleSuccDegreePairHasCommonInterleaverStatement) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
-  pairwiseCompatible_iff_familyCompatible_of_fourWay <|
-    chudnovskySeymour_fourWay_of_compatibleDegreeSplit
-      (fs := fs) hrr hpos hsame hsucc
+  pairwiseCompatible_iff_familyCompatible_of_pairBridgePos
+    (hrr := hrr) (hpos := hpos)
+    (compatiblePairHasCommonInterleaver_of_degreeSplit hsame hsucc)
 
 /-- Chudnovsky--Seymour `1 ↔ 4` specialization from the repaired shifted
 nonnegative-coefficient degree split. -/
@@ -3501,9 +3501,10 @@ theorem pairwiseCompatible_iff_familyCompatible_of_pairDegreeSplit_via_nonnegShi
     (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
-  pairwiseCompatible_iff_familyCompatible_of_fourWay <|
-    chudnovskySeymour_fourWay_of_pairDegreeSplit_via_nonnegShift
-      (fs := fs) hrr hpos hsame hsucc
+  pairwiseCompatible_iff_familyCompatible_of_pairBridgePos
+    (hrr := hrr) (hpos := hpos)
+    (compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
+      hsame hsucc)
 
 /-- Chudnovsky--Seymour `1 ↔ 4` specialization from the nonnegative-coefficient
 degree-split package, with the familywise nonnegativity assumption removed by
