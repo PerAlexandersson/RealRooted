@@ -754,6 +754,16 @@ theorem garloffWagnerHadamardPFPrec0_of_nonnegPrec
   exact hGW hf.hasNonnegCoeffs hg.hasNonnegCoeffs
     hp.hasNonnegCoeffs hq.hasNonnegCoeffs hfg' hpq'
 
+/-- PF-polynomial closure under Hadamard product, stated directly from the
+zero-aware Garloff--Wagner PF wrapper. -/
+theorem hadamardProduct_preserves_pf_of_garloffWagner
+    (hGW : garloffWagnerHadamardPFPrec0Statement)
+    {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
+    IsPFPolynomial (hadamardProduct p q) :=
+  IsPFPolynomial.of_prec0_self
+    (hp.hasNonnegCoeffs.hadamardProduct hq.hasNonnegCoeffs)
+    (hGW hp hp hq hq hp.prec0_self hq.prec0_self)
+
 /-- The two-pair Garloff--Wagner theorem implies the one-polynomial
 real-rootedness/PF Hadamard theorem by applying it to self-pairs. -/
 theorem garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
@@ -763,26 +773,14 @@ theorem garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
   have hp : IsPFPolynomial p := IsPFPolynomial.of_realRooted_nonneg hpnn hprr.2
   have hq : IsPFPolynomial q := IsPFPolynomial.of_realRooted_nonneg hqnn hqrr.2
   have hpf : IsPFPolynomial (hadamardProduct p q) :=
-    IsPFPolynomial.of_prec0_self (hpnn.hadamardProduct hqnn)
-      ((garloffWagnerHadamardPFPrec0_of_nonnegPrec hGW)
-        hp hp hq hq hp.prec0_self hq.prec0_self)
+    hadamardProduct_preserves_pf_of_garloffWagner
+      (garloffWagnerHadamardPFPrec0_of_nonnegPrec hGW) hp hq
   exact ⟨hpf.eq_zero_or_splits, hpf.hasNonnegCoeffs, hpf.roots_nonpos⟩
 
 theorem schurPolyaWagnerHadamardPF_of_garloffWagner_prec0
     (hGW : garloffWagnerHadamardPFPrec0Statement) :
-    schurPolyaWagnerHadamardPFStatement := by
-  intro p q hp hq
-  exact IsPFPolynomial.of_prec0_self
-    (hp.hasNonnegCoeffs.hadamardProduct hq.hasNonnegCoeffs)
-    (hGW hp hp hq hq hp.prec0_self hq.prec0_self)
-
-/-- PF-polynomial closure under Hadamard product, stated directly from the
-zero-aware Garloff--Wagner PF wrapper. -/
-theorem hadamardProduct_preserves_pf_of_garloffWagner
-    (hGW : garloffWagnerHadamardPFPrec0Statement)
-    {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
-    IsPFPolynomial (hadamardProduct p q) :=
-  schurPolyaWagnerHadamardPF_of_garloffWagner_prec0 hGW hp hq
+    schurPolyaWagnerHadamardPFStatement :=
+  fun {_ _} hp hq => hadamardProduct_preserves_pf_of_garloffWagner hGW hp hq
 
 /-- Fixed-right Hadamard multiplication preserves zero-aware proper position
 inside the PF cone. -/
