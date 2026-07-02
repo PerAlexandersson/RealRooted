@@ -93,12 +93,22 @@ theorem hadamardProduct_C_mul_right (a : ℝ) (p q : ℝ[X]) :
   rw [hadamardProduct_comm p (C a * q), hadamardProduct_C_mul_left,
     hadamardProduct_comm q p]
 
+theorem support_hadamardProduct_eq_filter_right (p q : ℝ[X]) :
+    (hadamardProduct p q).support = p.support.filter fun n => q.coeff n ≠ 0 := by
+  rw [hadamardProduct_eq_diagonalOperator, support_diagonalOperator_eq_filter]
+
+theorem support_hadamardProduct_eq_filter_left (p q : ℝ[X]) :
+    (hadamardProduct p q).support = q.support.filter fun n => p.coeff n ≠ 0 := by
+  rw [hadamardProduct_comm]
+  exact support_hadamardProduct_eq_filter_right q p
+
 /-- The support of a Hadamard product is the intersection of the two
 supports. -/
 theorem support_hadamardProduct_eq (p q : ℝ[X]) :
     (hadamardProduct p q).support = p.support ∩ q.support := by
+  rw [support_hadamardProduct_eq_filter_right]
   ext n
-  simp [coeff_hadamardProduct, mem_support_iff]
+  simp [mem_support_iff]
 
 /-- The support of a Hadamard product is contained in the left support. -/
 theorem support_hadamardProduct_subset_left (p q : ℝ[X]) :
