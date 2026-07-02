@@ -2927,9 +2927,8 @@ theorem
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
-  pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairDegreeSplit_via_nonnegShift
-    (posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg
-      hsame)
+  pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_degreeSplit_via_nonnegShift
+    hsame
     (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
     hpos hpair
 
@@ -3252,10 +3251,8 @@ theorem chudnovskySeymour_fourWay_of_sameDegreeAlternative_and_affineFamily_via_
     (PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs) ∧
       (PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs) ∧
       (HasCommonInterleaver fs ↔ FamilyCompatible fs) :=
-  chudnovskySeymour_fourWay_of_pairDegreeSplit_via_nonnegShift
-    (fs := fs) hrr hpos
-    (posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg
-      hsame)
+  chudnovskySeymour_fourWay_of_degreeSplit_via_nonnegShift
+    (fs := fs) hrr hpos hsame
     (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
 
 /-- Four-way Chudnovsky--Seymour package from the stronger boundary-right-pair
@@ -3513,10 +3510,8 @@ theorem
     (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
     (haffBridge : PosComboNoCommonAffineFamilyStatement) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
-  pairwiseCompatible_iff_familyCompatible_of_pairDegreeSplit_via_nonnegShift
-    (fs := fs) hrr hpos
-    (posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg
-      hsame)
+  pairwiseCompatible_iff_familyCompatible_of_degreeSplit_via_nonnegShift
+    (fs := fs) hrr hpos hsame
     (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
 
 /-- Chudnovsky--Seymour `1 ↔ 4` specialization from the stronger
