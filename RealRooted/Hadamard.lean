@@ -178,25 +178,35 @@ theorem choose_mul_coeff_schurSzegoComp_eq_coeff_hadamardProduct_of_le
       (hadamardProduct f g).coeff k := by
   rw [choose_mul_coeff_schurSzegoComp_of_le hk, coeff_hadamardProduct]
 
-theorem support_schurSzegoComp_eq_hadamardProduct_of_left_natDegree_le
-    {n : Nat} {f g : ℝ[X]} (hf : f.natDegree ≤ n) :
-    (schurSzegoComp n f g).support = (hadamardProduct f g).support := by
+theorem support_schurSzegoComp_eq_hadamardProduct_inter_range
+    (n : Nat) (f g : ℝ[X]) :
+    (schurSzegoComp n f g).support =
+      (hadamardProduct f g).support ∩ Finset.range (n + 1) := by
   ext k
   by_cases hk : k ≤ n
   · have hchoose : (Nat.choose n k : ℝ) ≠ 0 := by
       exact_mod_cast Nat.choose_ne_zero hk
-    rw [mem_support_iff, mem_support_iff, coeff_schurSzegoComp_of_le hk,
-      coeff_hadamardProduct]
+    rw [mem_support_iff, coeff_schurSzegoComp_of_le hk, Finset.mem_inter,
+      mem_support_iff, coeff_hadamardProduct, Finset.mem_range,
+      Nat.lt_succ_iff]
     constructor
     · intro h
-      exact fun hmul => h (by rw [hmul, zero_div])
+      exact ⟨fun hmul => h (by rw [hmul, zero_div]), hk⟩
     · intro h
-      exact div_ne_zero h hchoose
-  · have hk_lt : n < k := Nat.lt_of_not_le hk
-    have hf_coeff : f.coeff k = 0 :=
-      coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hf hk_lt)
-    rw [mem_support_iff, mem_support_iff, coeff_schurSzegoComp, if_neg hk,
-      coeff_hadamardProduct, hf_coeff, zero_mul]
+      exact div_ne_zero h.1 hchoose
+  · rw [mem_support_iff, coeff_schurSzegoComp, if_neg hk, Finset.mem_inter,
+      Finset.mem_range, Nat.lt_succ_iff]
+    simp [hk]
+
+theorem support_schurSzegoComp_eq_hadamardProduct_of_left_natDegree_le
+    {n : Nat} {f g : ℝ[X]} (hf : f.natDegree ≤ n) :
+    (schurSzegoComp n f g).support = (hadamardProduct f g).support := by
+  rw [support_schurSzegoComp_eq_hadamardProduct_inter_range, Finset.inter_eq_left]
+  intro k hk
+  have hk_le : k ≤ n :=
+    (Polynomial.le_natDegree_of_ne_zero (mem_support_iff.mp hk)).trans <|
+      (natDegree_hadamardProduct_le_left f g).trans hf
+  simpa [Finset.mem_range] using Nat.lt_succ_of_le hk_le
 
 theorem schurSzegoComp_eq_zero_iff_hadamardProduct_eq_zero_of_left_natDegree_le
     {n : Nat} {f g : ℝ[X]} (hf : f.natDegree ≤ n) :
@@ -207,8 +217,12 @@ theorem schurSzegoComp_eq_zero_iff_hadamardProduct_eq_zero_of_left_natDegree_le
 theorem support_schurSzegoComp_eq_hadamardProduct_of_right_natDegree_le
     {n : Nat} {f g : ℝ[X]} (hg : g.natDegree ≤ n) :
     (schurSzegoComp n f g).support = (hadamardProduct f g).support := by
-  rw [schurSzegoComp_comm, hadamardProduct_comm]
-  exact support_schurSzegoComp_eq_hadamardProduct_of_left_natDegree_le hg
+  rw [support_schurSzegoComp_eq_hadamardProduct_inter_range, Finset.inter_eq_left]
+  intro k hk
+  have hk_le : k ≤ n :=
+    (Polynomial.le_natDegree_of_ne_zero (mem_support_iff.mp hk)).trans <|
+      (natDegree_hadamardProduct_le_right f g).trans hg
+  simpa [Finset.mem_range] using Nat.lt_succ_of_le hk_le
 
 theorem schurSzegoComp_eq_zero_iff_hadamardProduct_eq_zero_of_right_natDegree_le
     {n : Nat} {f g : ℝ[X]} (hg : g.natDegree ≤ n) :
