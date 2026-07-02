@@ -142,8 +142,10 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
         · rw [coeff_simsun_succ]
           by_cases hm : m ≤ (n + 1) / 2
           · have hscale : 0 ≤ (((n + 1 : Nat) : ℝ) - 2 * (m : ℝ)) := by
-              nlinarith [show (2 : ℝ) * (m : ℝ) ≤ ((n + 1 : Nat) : ℝ) by
-                exact_mod_cast (show 2 * m ≤ n + 1 by lia)]
+              have hm' : ((2 * m : Nat) : ℝ) ≤ ((n + 1 : Nat) : ℝ) :=
+                Nat.cast_le.mpr (by lia)
+              norm_num at hm' ⊢
+              nlinarith
             exact add_nonneg
               (mul_nonneg hscale (hprev_nonneg m))
               (mul_nonneg (by positivity) (hprev_nonneg (m + 1)))
@@ -161,7 +163,8 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
           have hprev_pos : 0 < coeff (simsun (n + 1)) k := by lia
           have hprev_zero : coeff (simsun (n + 1)) (k + 1) = 0 := by simp_all
           have hdouble : (2 : ℝ) * (k : ℝ) = (n : ℝ) := by
-            exact_mod_cast (show 2 * k = n by lia)
+            simpa [Nat.cast_mul] using
+              congrArg (fun r : Nat => (r : ℝ)) (show 2 * k = n by lia)
           simp_all
         · have hk_eq : k = n / 2 := by lia
           have hk_top : k + 1 = (n + 1) / 2 := by lia
@@ -169,7 +172,8 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
             hprev_nonneg k
           have hprev_pos : 0 < coeff (simsun (n + 1)) (k + 1) := by lia
           have hdouble : (2 : ℝ) * (k : ℝ) + 1 = (n : ℝ) := by
-            exact_mod_cast (show 2 * k + 1 = n by lia)
+            simpa [Nat.cast_add, Nat.cast_one, Nat.cast_mul] using
+              congrArg (fun r : Nat => (r : ℝ)) (show 2 * k + 1 = n by lia)
           have hcast :
               (((n + 1 : Nat) : ℝ) - 2 * (k : ℝ)) = (n : ℝ) + 1 - 2 * (k : ℝ) := by
             lia
@@ -198,7 +202,8 @@ lemma simsun_nonnegCoeffs_top_pos_and_above :
               have hk_ge : (n + 2) / 2 ≤ k := by lia
               have hk_eq : k = (n + 1) / 2 := by lia
               have hdouble : (2 : ℝ) * (k : ℝ) = (((n + 1 : Nat) : ℝ)) := by
-                exact_mod_cast (show 2 * k = n + 1 by lia)
+                simpa [Nat.cast_add, Nat.cast_one, Nat.cast_mul] using
+                  congrArg (fun r : Nat => (r : ℝ)) (show 2 * k = n + 1 by lia)
               simp_all
 
 lemma simsun_nonnegCoeffs (n : Nat) :

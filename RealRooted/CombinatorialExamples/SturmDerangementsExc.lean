@@ -337,7 +337,9 @@ lemma sturmDerangementsExc_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (sturmDer
             sturmDerangementsExc_nonnegCoeffs (n + 3) (m + 1)
           have hm' : (m : ℝ) ≤ n + 3 := by
             have hmNat : m ≤ n + 3 := le_trans hm (Nat.le_succ _)
-            exact_mod_cast hmNat
+            have hmReal : (m : ℝ) ≤ ((n + 3 : Nat) : ℝ) := Nat.cast_le.mpr hmNat
+            norm_num at hmReal ⊢
+            exact hmReal
           have hcoef : 0 ≤ ((n + 3 : ℝ) - m) := by
             linarith
           nlinarith
@@ -366,7 +368,7 @@ lemma prec_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
   · exact sturmDerangementsExc_posLeadingCoeff hn
   · exact roots_nonpos_sturmDerangementsExc_of_isRealRooted hrr
   · rw [natDegree_sturmDerangementsExc hn]
-    exact_mod_cast (Nat.sub_lt (by lia) (by lia))
+    exact Nat.cast_lt.mpr (Nat.sub_lt (by lia) (by lia))
 
 lemma natDegree_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n) :
     (affineSturmDerangementsExc n).natDegree = (sturmDerangementsExc n).natDegree := by
