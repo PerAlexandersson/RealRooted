@@ -133,11 +133,6 @@ def jensenPolynomial (n : ℕ) (gamma : ℕ → ℝ) : ℝ[X] :=
   ∑ k ∈ Finset.range (n + 1),
     monomial k ((Nat.choose n k : ℝ) * gamma k)
 
-@[simp] theorem jensenPolynomial_zero_sequence (n : ℕ) :
-    jensenPolynomial n (fun _ => (0 : ℝ)) = 0 := by
-  ext k
-  simp [jensenPolynomial]
-
 @[simp] theorem jensenPolynomial_zero (gamma : ℕ → ℝ) :
     jensenPolynomial 0 gamma = C (gamma 0) := by
   ext k
@@ -201,6 +196,16 @@ theorem support_jensenPolynomial_subset (n : ℕ) (gamma : ℕ → ℝ) :
     (jensenPolynomial n gamma).support ⊆ Finset.range (n + 1) := by
   rw [support_jensenPolynomial_eq_filter]
   exact Finset.filter_subset _ _
+
+theorem jensenPolynomial_eq_zero_iff {n : ℕ} {gamma : ℕ → ℝ} :
+    jensenPolynomial n gamma = 0 ↔ ∀ k, k ≤ n → gamma k = 0 := by
+  rw [← support_eq_empty, support_jensenPolynomial_eq_filter, Finset.filter_eq_empty_iff]
+  simp [Finset.mem_range]
+
+@[simp] theorem jensenPolynomial_zero_sequence (n : ℕ) :
+    jensenPolynomial n (fun _ => (0 : ℝ)) = 0 := by
+  rw [jensenPolynomial_eq_zero_iff]
+  simp
 
 /-- Finite multiplier sequence up to degree `n`: the diagonal operator
 preserves real-rootedness, allowing the zero polynomial. -/
