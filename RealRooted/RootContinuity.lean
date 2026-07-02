@@ -162,8 +162,8 @@ theorem exists_real_root_near_in_left_family
   let q : ℝ[X] := C (t + 1)⁻¹ * (C t * f + g)
   have ht_ne : t ≠ 0 := ne_of_gt ht
   have ht1_ne : t + 1 ≠ 0 := by positivity
-  have hf_pos : HasPosLeadingCoeff f := by simp [HasPosLeadingCoeff, hf_monic.leadingCoeff]
-  have hg_pos : HasPosLeadingCoeff g := by simp [HasPosLeadingCoeff, hg_monic.leadingCoeff]
+  have hf_pos : HasPosLeadingCoeff f := hasPosLeadingCoeff_of_monic hf_monic
+  have hg_pos : HasPosLeadingCoeff g := hasPosLeadingCoeff_of_monic hg_monic
   have hCt_f_pos : HasPosLeadingCoeff (C t * f) := hasPosLeadingCoeff_C_mul ht hf_pos
   have hsum_deg : (C t * f + g).natDegree = f.natDegree := by
     have hCt_deg : (C t * f).natDegree = f.natDegree := by rw [natDegree_C_mul ht_ne]
@@ -217,8 +217,8 @@ theorem exists_complex_aroot_near_in_left_family
   let q : ℝ[X] := C (t + 1)⁻¹ * (C t * f + g)
   have ht_ne : t ≠ 0 := ne_of_gt ht
   have ht1_ne : t + 1 ≠ 0 := by positivity
-  have hf_pos : HasPosLeadingCoeff f := by simp [HasPosLeadingCoeff, hf_monic.leadingCoeff]
-  have hg_pos : HasPosLeadingCoeff g := by simp [HasPosLeadingCoeff, hg_monic.leadingCoeff]
+  have hf_pos : HasPosLeadingCoeff f := hasPosLeadingCoeff_of_monic hf_monic
+  have hg_pos : HasPosLeadingCoeff g := hasPosLeadingCoeff_of_monic hg_monic
   have hCt_f_pos : HasPosLeadingCoeff (C t * f) := hasPosLeadingCoeff_C_mul ht hf_pos
   have hsum_deg : (C t * f + g).natDegree = f.natDegree := by
     have hCt_deg : (C t * f).natDegree = f.natDegree := by rw [natDegree_C_mul ht_ne]

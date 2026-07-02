@@ -463,6 +463,10 @@ def HasPosLeadingCoeff (p : ℝ[X]) : Prop := 0 < p.leadingCoeff
 lemma HasPosLeadingCoeff.ne_zero {p : ℝ[X]} (hp : HasPosLeadingCoeff p) : p ≠ 0 := by
   rintro rfl; simp at hp
 
+lemma hasPosLeadingCoeff_of_monic {p : ℝ[X]} (hp : p.Monic) :
+    HasPosLeadingCoeff p := by
+  simp [HasPosLeadingCoeff, hp.leadingCoeff]
+
 lemma hasPosLeadingCoeff_C_mul {a : ℝ} {p : ℝ[X]}
     (ha : 0 < a) (hp : HasPosLeadingCoeff p) :
     HasPosLeadingCoeff (C a * p) := by

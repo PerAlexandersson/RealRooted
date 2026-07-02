@@ -43,12 +43,8 @@ theorem prec_sub_X_mul_left {f g : ℝ[X]}
   · simpa [q, hq0] using prec0_zero_left f
   · have hg : (g ≠ 0 ∧ g.Splits) := hgf.1
     have hf : (f ≠ 0 ∧ f.Splits) := hgf.2.1
-    have hg_pos : HasPosLeadingCoeff g := by
-      unfold HasPosLeadingCoeff
-      simp [hg_monic.leadingCoeff]
-    have hf_pos : HasPosLeadingCoeff f := by
-      unfold HasPosLeadingCoeff
-      simp [hf_monic.leadingCoeff]
+    have hg_pos : HasPosLeadingCoeff g := hasPosLeadingCoeff_of_monic hg_monic
+    have hf_pos : HasPosLeadingCoeff f := hasPosLeadingCoeff_of_monic hf_monic
     have hprec_fXg : Prec f (X * g) :=
       (prec_iff_prec_mul_X_of_roots_nonpos
         (f := g) (g := f) hg.2 hf.2 hg_pos hf_pos hg_nonpos hf_nonpos hdeg).mp hgf
