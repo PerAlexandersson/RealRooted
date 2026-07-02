@@ -178,15 +178,16 @@ lemma angle_mem_Ioo_zero_pi_div_two (n j : ℕ) (hj0 : 0 < j) (hjn : 2 * j < n) 
     Real.pi * (j : ℝ) / (n : ℝ) ∈ Set.Ioo (0 : ℝ) (Real.pi / 2) := by
   constructor
   · have hnpos_nat : 0 < n := by lia
-    have hjpos : (0 : ℝ) < j := by exact_mod_cast hj0
-    have hnpos : (0 : ℝ) < n := by exact_mod_cast hnpos_nat
+    have hjpos : (0 : ℝ) < j := Nat.cast_pos.mpr hj0
+    have hnpos : (0 : ℝ) < n := Nat.cast_pos.mpr hnpos_nat
     positivity
   · have hnpos_nat : 0 < n := by lia
-    have hnpos : (0 : ℝ) < n := by exact_mod_cast hnpos_nat
+    have hnpos : (0 : ℝ) < n := Nat.cast_pos.mpr hnpos_nat
     have hratio : (j : ℝ) / (n : ℝ) < 1 / 2 := by
       rw [div_lt_iff₀ hnpos]
       norm_num
-      have hjn_real : (2 * j : ℝ) < n := by exact_mod_cast hjn
+      have hjn_real : (2 * j : ℝ) < n := by
+        simpa [Nat.cast_mul] using (Nat.cast_lt.mpr hjn : ((2 * j : ℕ) : ℝ) < n)
       nlinarith
     have hpi_pos : (0 : ℝ) < Real.pi := Real.pi_pos
     calc
@@ -261,7 +262,7 @@ lemma I_mul_tan_ne_zero {theta : ℝ} (hθ0 : 0 < theta) (hθlt : theta < Real.p
     Complex.I * (Real.tan theta : ℂ) ≠ 0 := by
   have htan_pos : 0 < Real.tan theta :=
     Real.tan_pos_of_pos_of_lt_pi_div_two hθ0 hθlt
-  exact mul_ne_zero Complex.I_ne_zero (by exact_mod_cast (ne_of_gt htan_pos))
+  exact mul_ne_zero Complex.I_ne_zero (Complex.ofReal_ne_zero.mpr htan_pos.ne')
 
 lemma oddBinom_tangent_eval_eq_zero (n j : ℕ) (hj0 : 0 < j) (hjn : 2 * j < n) :
     (oddBinomPoly n).eval
@@ -319,8 +320,8 @@ lemma tangentRoot_strictAnti {n i j : ℕ} (hi0 : 0 < i) (hij : i < j)
   have hthetai := angle_mem_Ioo_zero_pi_div_two n i hi0 hijn
   have hthetaj := angle_mem_Ioo_zero_pi_div_two n j hj0 hjn
   have hnpos_nat : 0 < n := by lia
-  have hnpos : (0 : ℝ) < n := by exact_mod_cast hnpos_nat
-  have hijR : (i : ℝ) < j := by exact_mod_cast hij
+  have hnpos : (0 : ℝ) < n := Nat.cast_pos.mpr hnpos_nat
+  have hijR : (i : ℝ) < j := Nat.cast_lt.mpr hij
   have hratio : (i : ℝ) / (n : ℝ) < (j : ℝ) / (n : ℝ) :=
     div_lt_div_of_pos_right hijR hnpos
   have htheta_lt :
