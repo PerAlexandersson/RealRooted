@@ -831,9 +831,13 @@ theorem hadamardReciprocalConeClosure_of_garloffWagner
     (hGW : garloffWagnerHadamardNonnegPrecStatement) :
     hadamardReciprocalConeClosureStatement := by
   intro D p q hp hq hprec_p hprec_q
+  have hp_shift : IsPFPolynomial (reciprocalShift D p) :=
+    IsPFPolynomial.of_realRooted_nonneg hp.hasNonnegCoeffs.reciprocalShift hprec_p.2.1.2
+  have hq_shift : IsPFPolynomial (reciprocalShift D q) :=
+    IsPFPolynomial.of_realRooted_nonneg hq.hasNonnegCoeffs.reciprocalShift hprec_q.2.1.2
   simpa [reciprocalShift_hadamardProduct] using
-    hGW hp.hasNonnegCoeffs hp.hasNonnegCoeffs.reciprocalShift
-      hq.hasNonnegCoeffs hq.hasNonnegCoeffs.reciprocalShift hprec_p hprec_q
+    (garloffWagnerHadamardPFPrec0_of_nonnegPrec hGW)
+      hp hp_shift hq hq_shift hprec_p.toPrec0 hprec_q.toPrec0
 
 /-- Polynomial-coefficient form of Polya-frequency closure under termwise
 products. This is finite-sequence closure packaged through coefficient
