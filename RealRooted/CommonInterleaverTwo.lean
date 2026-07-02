@@ -958,21 +958,6 @@ theorem allComboRealRooted_of_natDegree_le_one
   · exact allComboRealRooted_of_prec hprec
   · exact allComboRealRooted_comm (allComboRealRooted_of_prec hprec)
 
-/-- Two-polynomial common-interleaver endpoint in degree at most one. This is
-the direct pair version used by the low-degree Chudnovsky--Seymour package. -/
-theorem pairHasCommonInterleaver_of_natDegree_le_one
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_deg_le_one : f.natDegree ≤ 1)
-    (hg_deg_le_one : g.natDegree ≤ 1) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  rcases
-      prec_or_revPrec_of_natDegree_le_one
-        hf_pos hg_pos hf_deg_le_one hg_deg_le_one with hprec | hprec
-  · exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
-  · exact ⟨f, prec_refl hprec.2.1.1 hprec.2.1.2, hprec⟩
-
 /-- A symmetric `Prec` orientation immediately gives a common right
 interleaver: use the larger polynomial in the chosen orientation as the
 witness. -/
@@ -984,6 +969,19 @@ theorem pairHasCommonInterleaver_of_prec_or_revPrec
   rcases hprec_or with hprec | hprec
   · exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
   · exact ⟨f, prec_refl hprec.2.1.1 hprec.2.1.2, hprec⟩
+
+/-- Two-polynomial common-interleaver endpoint in degree at most one. This is
+the direct pair version used by the low-degree Chudnovsky--Seymour package. -/
+theorem pairHasCommonInterleaver_of_natDegree_le_one
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hf_deg_le_one : f.natDegree ≤ 1)
+    (hg_deg_le_one : g.natDegree ≤ 1) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  pairHasCommonInterleaver_of_prec_or_revPrec <|
+    prec_or_revPrec_of_natDegree_le_one
+      hf_pos hg_pos hf_deg_le_one hg_deg_le_one
 
 /-- Same-degree specialization of the low-degree pair endpoint. -/
 theorem pairHasCommonInterleaver_of_sameDegree_natDegree_le_one
@@ -1106,7 +1104,7 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_orientation_nonneg
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
   have hprec : Prec f g := horient hf_pos hg_pos hfnn hgnn hfg hsucc hno
-  exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
+  exact pairHasCommonInterleaver_of_prec_or_revPrec (Or.inl hprec)
 
 /-- The corrected succ-degree pair bridge is already unconditional in the
 constant-vs-linear endpoint case. -/
@@ -1120,7 +1118,7 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_degree_zero
   have hprec : Prec f g :=
     posComboNoCommonSuccDegreeOrientation_of_degree_zero
       hf_pos hg_pos hf_deg0 hsucc
-  exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
+  exact pairHasCommonInterleaver_of_prec_or_revPrec (Or.inl hprec)
 
 /-- Degree-one left-hand endpoint of the corrected succ-degree branch under
 the affine-family bridge.  The public affine-family degree-one lemma gives the
@@ -1490,9 +1488,9 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
   have hdeg : g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 := by lia
   rcases hdeg with hsame_deg | hsucc_deg
-  · rcases hsame hf_pos hg_pos hfnn hgnn hfg hsame_deg hno with hprec | hprec
-    · exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
-    · exact ⟨f, prec_refl hprec.2.1.1 hprec.2.1.2, hprec⟩
+  · exact
+      pairHasCommonInterleaver_of_prec_or_revPrec
+        (hsame hf_pos hg_pos hfnn hgnn hfg hsame_deg hno)
   · exact hsucc hf_pos hg_pos hfnn hgnn hfg hsucc_deg hno
 
 /-- Repaired no-common degree-split reduction of the common-interleaver bridge
@@ -1971,10 +1969,8 @@ theorem compatiblePairHasCommonInterleaver_of_posComboOrientation
         Prec f g ∨ Prec g f) :
     CompatiblePairHasCommonInterleaverStatement := by
   intro f g hf_pos hg_pos hfg
-  rcases horient hf_pos hg_pos
-      (Compatible.toPosComboRealRooted hfg hf_pos hg_pos) with hprec | hprec
-  · exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
-  · exact ⟨f, prec_refl hprec.2.1.1 hprec.2.1.2, hprec⟩
+  exact pairHasCommonInterleaver_of_prec_or_revPrec <|
+    horient hf_pos hg_pos (Compatible.toPosComboRealRooted hfg hf_pos hg_pos)
 
 /-- Compatibility-to-common-interleaver reduction through the positive-combo
 bridge. -/
@@ -2002,18 +1998,14 @@ theorem posComboPairHasCommonInterleaver_of_noCommonOrientation_and_degreeClose
         (hstep := fun hfg hf_pos hg_pos hdeg_lo hdeg_hi hno =>
           hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno)
         hfg hf_pos hg_pos hfg_deg hclose.2
-    rcases hprec_or with hprec | hprec
-    · exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
-    · exact ⟨f, prec_refl hprec.2.1.1 hprec.2.1.2, hprec⟩
+    exact pairHasCommonInterleaver_of_prec_or_revPrec hprec_or
   · have hgf_deg : g.natDegree ≤ f.natDegree := le_of_not_ge hfg_deg
     have hprec_or : Prec g f ∨ Prec f g :=
       PosComboRealRooted.prec_or_revPrec_of_posComboRealRooted_of_no_common
         (hstep := fun hfg hf_pos hg_pos hdeg_lo hdeg_hi hno =>
           hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno)
         (PosComboRealRooted.comm hfg) hg_pos hf_pos hgf_deg hclose.1
-    rcases hprec_or with hprec | hprec
-    · exact ⟨f, prec_refl hprec.2.1.1 hprec.2.1.2, hprec⟩
-    · exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
+    exact pairHasCommonInterleaver_of_prec_or_revPrec (Or.symm hprec_or)
 
 /-- Pair-bridge reduction through the all-combinations bridge and a separate
 degree-closeness input. -/
@@ -2056,18 +2048,14 @@ theorem posComboPairHasCommonInterleaver_of_noCommonOrientation_and_nonnegCoeffs
         (hstep := fun hfg hf_pos hg_pos hdeg_lo hdeg_hi hno =>
           hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno)
         hfg hf_pos hg_pos hfg_deg hclose.2
-    rcases hprec_or with hprec | hprec
-    · exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
-    · exact ⟨f, prec_refl hprec.2.1.1 hprec.2.1.2, hprec⟩
+    exact pairHasCommonInterleaver_of_prec_or_revPrec hprec_or
   · have hgf_deg : g.natDegree ≤ f.natDegree := le_of_not_ge hfg_deg
     have hprec_or : Prec g f ∨ Prec f g :=
       PosComboRealRooted.prec_or_revPrec_of_posComboRealRooted_of_no_common
         (hstep := fun hfg hf_pos hg_pos hdeg_lo hdeg_hi hno =>
           hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno)
         (PosComboRealRooted.comm hfg) hg_pos hf_pos hgf_deg hclose.1
-    rcases hprec_or with hprec | hprec
-    · exact ⟨f, prec_refl hprec.2.1.1 hprec.2.1.2, hprec⟩
-    · exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
+    exact pairHasCommonInterleaver_of_prec_or_revPrec (Or.symm hprec_or)
 
 /-- In the nonnegative-coefficient regime, the all-combinations bridge implies
 the full positive-combo pair bridge. -/
@@ -2091,11 +2079,9 @@ theorem posComboPairHasCommonInterleaver_of_affineFamilyBridge_and_nonnegCoeffs
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  rcases
-      posComboOrientation_of_affineFamilyBridge_and_nonnegCoeffs
-        haffBridge hf_pos hg_pos hfnn hgnn hfg with hprec | hprec
-  · exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
-  · exact ⟨f, prec_refl hprec.2.1.1 hprec.2.1.2, hprec⟩
+  exact pairHasCommonInterleaver_of_prec_or_revPrec <|
+    posComboOrientation_of_affineFamilyBridge_and_nonnegCoeffs
+      haffBridge hf_pos hg_pos hfnn hgnn hfg
 
 /-- The boundary-right-pair orientation statement therefore already yields the
 full positive-combo pair bridge in the nonnegative-coefficient regime. -/
@@ -2106,11 +2092,9 @@ theorem posComboPairHasCommonInterleaver_of_boundaryRightPairOrientation_and_non
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  rcases
-      posComboOrientation_of_boundaryRightPairOrientation_and_nonnegCoeffs
-        hboundary hf_pos hg_pos hfnn hgnn hfg with hprec | hprec
-  · exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
-  · exact ⟨f, prec_refl hprec.2.1.1 hprec.2.1.2, hprec⟩
+  exact pairHasCommonInterleaver_of_prec_or_revPrec <|
+    posComboOrientation_of_boundaryRightPairOrientation_and_nonnegCoeffs
+      hboundary hf_pos hg_pos hfnn hgnn hfg
 
 /-- The honest degree-split package also yields the full positive-combo pair
 bridge in the nonnegative-coefficient regime. -/
