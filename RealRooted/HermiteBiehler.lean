@@ -209,14 +209,6 @@ def hermiteBiehlerForwardPosStatement : Prop :=
     Prec g f →
     IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)
 
-/-- Nonnegative coefficients plus nonzeroness force a positive leading
-coefficient.  This is a small normalization helper for bridging to the
-sign-normalized Hermite--Biehler route. -/
-lemma hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero {p : ℝ[X]}
-    (hpnn : HasNonnegCoeffs p) (hp0 : p ≠ 0) :
-    HasPosLeadingCoeff p := by
-  exact hpnn.pos_leadingCoeff hp0
-
 /-- Concrete obstruction to a sign-free forward Hermite--Biehler route:
 `X - i` has the upper-half-plane root `i`. -/
 theorem not_isUpperHalfPlaneStable_hermiteBiehlerPolynomial_X_neg_one :

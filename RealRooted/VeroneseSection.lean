@@ -671,9 +671,9 @@ theorem pfPrecToHurwitzOddEven_of_hermiteBiehlerPosCoeffs
       IsHurwitzStable (oddEvenPolynomial p q) := by
   intro p q hpnn hqnn hp0 hq0 hpq
   have hp : HasPosLeadingCoeff p :=
-    hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hpnn hp0
+    hpnn.pos_leadingCoeff hp0
   have hq : HasPosLeadingCoeff q :=
-    hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hqnn hq0
+    hqnn.pos_leadingCoeff hq0
   refine ⟨hasNonnegCoeffs_oddEvenPolynomial hpnn hqnn, ?_⟩
   exact hHBToHurwitz hpnn hqnn (hHB (f := q) (g := p) hq hp hpq)
 
@@ -1001,7 +1001,7 @@ project:
 
 The nonnegativity halves of `IsHurwitzStable` supply the positive leading
 coefficients needed by the oriented Hermite--Biehler input through
-`hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero`. -/
+`HasNonnegCoeffs.pos_leadingCoeff`. -/
 theorem hurwitzStableOddEvenToPrec_of_converse
     (hSub : HurwitzOddEvenToHermiteBiehlerStableStatement)
     (hHB : HermiteBiehlerConverseOrientedStatement) :
@@ -1013,9 +1013,9 @@ theorem hurwitzStableOddEvenToPrec_of_converse
   have hupper : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) :=
     hSub hpnn hqnn hrhp
   have hqpos : HasPosLeadingCoeff q :=
-    hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hqnn hq
+    hqnn.pos_leadingCoeff hq
   have hppos : HasPosLeadingCoeff p :=
-    hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hpnn hp
+    hpnn.pos_leadingCoeff hp
   exact hHB hqpos hppos hupper
 
 /-! ## Degree-based orientation of the converse Hermite--Biehler step
@@ -1098,8 +1098,8 @@ theorem hurwitzStableOddEvenToPrec_of_converse_natDegree_lt
   have hpnn := hasNonnegCoeffs_left_of_oddEvenPolynomial hnn
   have hqnn := hasNonnegCoeffs_right_of_oddEvenPolynomial hnn
   have hupper := hSub hpnn hqnn hrhp
-  have hqpos := hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hqnn hq
-  have hppos := hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hpnn hp
+  have hqpos := hqnn.pos_leadingCoeff hq
+  have hppos := hpnn.pos_leadingCoeff hp
   exact hermiteBiehlerConverseOriented_of_natDegree_lt hConv hqpos hppos hdeg hupper
 
 /-! ### Degree of the odd/even polynomial -/
@@ -1254,9 +1254,9 @@ theorem hurwitzOddEvenToHermiteBiehlerRotated_of_hurwitzStablePrec
         ⟨hasNonnegCoeffs_oddEvenPolynomial hp hq, hrhp⟩
       have hprec : Prec p q := hPrec hp0 hq0 hO
       have hqpos : HasPosLeadingCoeff q :=
-        hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hq hq0
+        hq.pos_leadingCoeff hq0
       have hppos : HasPosLeadingCoeff p :=
-        hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero hp hp0
+        hp.pos_leadingCoeff hp0
       exact hFwd hqpos hppos hprec
 
 /-- Checked reduction of the interlacing-extraction interface.
