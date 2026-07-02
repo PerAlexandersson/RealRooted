@@ -1589,10 +1589,7 @@ private lemma eval_nonpos_at_root_of_degree_one_of_affine_family
     · have hg'_deg2 : g'.natDegree = 2 := by
         lia
       have hg'_pos : HasPosLeadingCoeff g' := by
-        unfold HasPosLeadingCoeff at hg_pos ⊢
-        dsimp [g']
-        rw [leadingCoeff_comp (by simp), leadingCoeff_X_add_C, one_pow, mul_one]
-        lia
+        simpa [g'] using hg_pos.comp_X_add_C r
       have hA_eq_lc : A = g'.leadingCoeff := by
         dsimp [A]
         symm
