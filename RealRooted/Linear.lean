@@ -59,6 +59,28 @@ lemma isRealRooted_X_mul {f : ℝ[X]} (hf_ne : f ≠ 0) (hf_splits : f.Splits) :
 lemma isRealRooted_X : ((X : ℝ[X]) ≠ 0 ∧ (X : ℝ[X]).Splits) := by
   simp
 
+/-- Orientation sanity check for the local `Prec` convention on linear factors.
+
+The root of `X + C a` is `-a`; hence `Prec (X + C b) (X + C a)` means that
+the root of the left polynomial is weakly to the left of the root of the right
+polynomial, equivalently `a ≤ b`. -/
+lemma prec_X_add_C_iff {a b : ℝ} :
+    Prec (X + C b) (X + C a) ↔ a ≤ b := by
+  constructor
+  · intro h
+    have hsum := roots_sum_le_of_prec_sameDegree h (by simp)
+    simpa using hsum
+  · intro hab
+    refine ⟨?_, ?_, [(-b)], [(-a)], ?_, ?_, ?_, ?_, ?_⟩
+    · simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-b)
+    · simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-a)
+    · exact List.pairwise_singleton _ _
+    · exact List.pairwise_singleton _ _
+    · simp
+    · simp
+    · refine Or.inr ⟨by simp, ?_⟩
+      simpa [ListAlternates, ListInterlaces] using hab
+
 lemma isRealRooted_of_deg_zero {p : ℝ[X]}
     (hp : p ≠ 0) (hdeg : p.natDegree = 0) :
     p ≠ 0 ∧ p.Splits :=

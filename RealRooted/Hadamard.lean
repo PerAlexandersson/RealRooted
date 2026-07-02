@@ -439,6 +439,14 @@ proper-position relation, then the pair of Hadamard products is again in
 proper position.  The conclusion is zero-aware for the same support reason as
 `garloffWagnerHadamardNonnegRealRootedStatement`.
 
+Orientation audit: in this repository `Prec f g` is the convention `f ≪ g`.
+In the differ-by-one case, `g` has the rightmost root; in the same-degree case,
+each root of `f` is weakly to the left of the corresponding root of `g`.  Thus
+for linear factors we have `Prec (X + C b) (X + C a) ↔ a ≤ b`, because their
+roots are `-b` and `-a`.  Consequently the Garloff--Wagner hypotheses written
+as `g $ f` and `q $ p` are represented here as `Prec f g` and `Prec p q`, and
+the conclusion is `Prec0 (f ⊙ p) (g ⊙ q)`.
+
 TODO T9: formalize this statement in RealRooted, following Garloff--Wagner,
 Theorem 4(b).  It is the remaining standard input used by the SuperEulerian
 proof through its `StandardFacts` bundle.
@@ -452,6 +460,12 @@ def garloffWagnerHadamardNonnegPrecStatement : Prop :=
     Prec f g →
     Prec p q →
     Prec0 (hadamardProduct f p) (hadamardProduct g q)
+
+/-- Linear-factor sanity check for the orientation used in
+`garloffWagnerHadamardNonnegPrecStatement`. -/
+theorem garloffWagnerHadamard_linear_orientation_sanity {a b : ℝ} :
+    Prec (X + C b) (X + C a) ↔ a ≤ b :=
+  prec_X_add_C_iff
 
 /-- **Hadamard product preserves Hurwitz stability** (Garloff--Wagner,
 Theorem 1) — precise external interface.
