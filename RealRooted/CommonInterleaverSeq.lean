@@ -53,11 +53,16 @@ def rootSeqDesc (f : ℝ[X]) : List ℝ :=
 @[simp] lemma rootSeqDesc_eq_nil {f : ℝ[X]} (hf : f.Splits) :
     rootSeqDesc f = [] ↔ f.natDegree = 0 := by simp [← List.length_eq_zero_iff, hf]
 
+private lemma rootSeqDesc_ne_nil_of_natDegree_pos
+    {f : ℝ[X]} (hf : f.Splits) (hpos : 0 < f.natDegree) :
+    rootSeqDesc f ≠ [] := by
+  apply List.ne_nil_of_length_pos
+  simpa [rootSeqDesc_length hf] using hpos
+
 private lemma rootSeqDesc_reverse_ne_nil_of_natDegree_pos
     {f : ℝ[X]} (hf : f.Splits) (hpos : 0 < f.natDegree) :
-    (rootSeqDesc f).reverse ≠ [] := by
-  apply List.ne_nil_of_length_pos
-  simpa [List.length_reverse, rootSeqDesc_length hf] using hpos
+    (rootSeqDesc f).reverse ≠ [] :=
+  List.reverse_ne_nil_iff.mpr (rootSeqDesc_ne_nil_of_natDegree_pos hf hpos)
 
 lemma rootSeqDesc_pairwise {f : ℝ[X]} :
     (rootSeqDesc f).Pairwise (· ≥ ·) := by
@@ -1174,10 +1179,8 @@ private lemma pairwise_ge_of_commonInterleaverSeq
   refine List.pairwise_ofFn.2 ?_
   intro i j hij
   have hd_pos : 0 < d := by lia
-  have hroot_ne : rootSeqDesc fmax ≠ [] := by
-    apply List.ne_nil_of_length_pos
-    rw [rootSeqDesc_length hfmax_rr, hfmax_deg]
-    lia
+  have hroot_ne : rootSeqDesc fmax ≠ [] :=
+    rootSeqDesc_ne_nil_of_natDegree_pos hfmax_rr (by lia)
   have hi_slot : i.1 < (rootSeqDesc fmax).length + 1 := by
     rw [rootSeqDesc_length hfmax_rr, hfmax_deg]
     lia
@@ -1652,10 +1655,8 @@ theorem pairHasCommonInterleaver_of_sameDegree_slotIntersections
   have hxs_pair : xs.Pairwise (· ≥ ·) := by
     refine List.pairwise_ofFn.2 ?_
     intro i j hij
-    have hroot_ne : rootSeqDesc f ≠ [] := by
-      apply List.ne_nil_of_length_pos
-      rw [rootSeqDesc_length hf]
-      lia
+    have hroot_ne : rootSeqDesc f ≠ [] :=
+      rootSeqDesc_ne_nil_of_natDegree_pos hf (by lia)
     have hi_slot : i.1 < (rootSeqDesc f).length + 1 := by
       have : i.1 < f.natDegree + 1 := by simpa [n] using i.2
       simpa [rootSeqDesc_length hf] using this
@@ -1743,10 +1744,8 @@ theorem pairHasCommonInterleaver_of_succDegree_slotIntersections
   have hxs_pair : xs.Pairwise (· ≥ ·) := by
     refine List.pairwise_ofFn.2 ?_
     intro i j hij
-    have hroot_ne : rootSeqDesc f ≠ [] := by
-      apply List.ne_nil_of_length_pos
-      rw [rootSeqDesc_length hf]
-      lia
+    have hroot_ne : rootSeqDesc f ≠ [] :=
+      rootSeqDesc_ne_nil_of_natDegree_pos hf (by lia)
     have hi_slot : i.1 < (rootSeqDesc f).length + 1 := by
       have : i.1 < f.natDegree + 1 := by simpa [n] using i.2
       simpa [rootSeqDesc_length hf] using this
