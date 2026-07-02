@@ -1602,6 +1602,39 @@ theorem le_of_mem_rootSlotInterval_of_lt
     y ≤ x :=
   le_of_mem_rootSlots_of_lt hrs_ne hrs hij hj hx hy
 
+private lemma pairwise_ge_of_rootSlot_points
+    {f : ℝ[X]} (hf : f.Splits) {n : ℕ} (hn : n = f.natDegree + 1)
+    (x : Fin n → ℝ)
+    (hslot : ∀ j (hj : j < n),
+      x ⟨j, hj⟩ ∈ rootSlotInterval (rootSeqDesc f)
+        ⟨j, by
+          have : j < f.natDegree + 1 := by simpa [hn] using hj
+          simpa [rootSeqDesc_length hf] using this⟩) :
+    (List.ofFn x).Pairwise (· ≥ ·) := by
+  refine List.pairwise_ofFn.2 ?_
+  intro i j hij
+  have hroot_ne : rootSeqDesc f ≠ [] :=
+    rootSeqDesc_ne_nil_of_natDegree_pos hf (by lia)
+  have hi_slot : i.1 < (rootSeqDesc f).length + 1 := by
+    have : i.1 < f.natDegree + 1 := by simpa [hn] using i.2
+    simpa [rootSeqDesc_length hf] using this
+  have hj_slot : j.1 < (rootSeqDesc f).length + 1 := by
+    have : j.1 < f.natDegree + 1 := by simpa [hn] using j.2
+    simpa [rootSeqDesc_length hf] using this
+  have hxi : x i ∈ rootSlotInterval (rootSeqDesc f) ⟨i.1, hi_slot⟩ := by
+    simpa using hslot i.1 i.2
+  have hxj : x j ∈ rootSlotInterval (rootSeqDesc f) ⟨j.1, hj_slot⟩ := by
+    simpa using hslot j.1 j.2
+  exact
+    le_of_mem_rootSlotInterval_of_lt
+      (rs := rootSeqDesc f)
+      hroot_ne
+      rootSeqDesc_pairwise
+      (i := i.1) (j := j.1)
+      (by simpa using hij)
+      (by simpa using hj_slot)
+      hxi hxj
+
 /-- In a `Prec` witness, the `j`th descending root of the right polynomial lies
 in the `j`th admissible slot of the left polynomial. -/
 theorem mem_rootSlotInterval_of_prec_desc
@@ -1653,33 +1686,10 @@ theorem pairHasCommonInterleaver_of_sameDegree_slotIntersections
   have hxs_len : xs.length = f.natDegree + 1 := by
     simp [xs, n]
   have hxs_pair : xs.Pairwise (· ≥ ·) := by
-    refine List.pairwise_ofFn.2 ?_
-    intro i j hij
-    have hroot_ne : rootSeqDesc f ≠ [] :=
-      rootSeqDesc_ne_nil_of_natDegree_pos hf (by lia)
-    have hi_slot : i.1 < (rootSeqDesc f).length + 1 := by
-      have : i.1 < f.natDegree + 1 := by simpa [n] using i.2
-      simpa [rootSeqDesc_length hf] using this
-    have hj_slot : j.1 < (rootSeqDesc f).length + 1 := by
-      have : j.1 < f.natDegree + 1 := by simpa [n] using j.2
-      simpa [rootSeqDesc_length hf] using this
-    have hxi :
-        x i ∈ rootSlotInterval (rootSeqDesc f) ⟨i.1, hi_slot⟩ := by
-      have hraw := (Classical.choose_spec (hslot i.1 (by simpa [n] using i.2))).1
-      simpa [x] using hraw
-    have hxj :
-        x j ∈ rootSlotInterval (rootSeqDesc f) ⟨j.1, hj_slot⟩ := by
-      have hraw := (Classical.choose_spec (hslot j.1 (by simpa [n] using j.2))).1
-      simpa [x] using hraw
-    exact
-      le_of_mem_rootSlotInterval_of_lt
-        (rs := rootSeqDesc f)
-        hroot_ne
-        rootSeqDesc_pairwise
-        (i := i.1) (j := j.1)
-        (by simp_all)
-        (by simpa using hj_slot)
-        hxi hxj
+    refine pairwise_ge_of_rootSlot_points hf (n := n) (by simp [n]) x ?_
+    intro j hj
+    have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hj))).1
+    simpa [x] using hraw
   let h : ℝ[X] := polyOfDescRootsDesc xs
   refine ⟨h, ?_, ?_⟩
   · have hdeg_lo : f.natDegree ≤ xs.length := by
@@ -1742,33 +1752,10 @@ theorem pairHasCommonInterleaver_of_succDegree_slotIntersections
   have hxs_len : xs.length = f.natDegree + 1 := by
     simp [xs, n]
   have hxs_pair : xs.Pairwise (· ≥ ·) := by
-    refine List.pairwise_ofFn.2 ?_
-    intro i j hij
-    have hroot_ne : rootSeqDesc f ≠ [] :=
-      rootSeqDesc_ne_nil_of_natDegree_pos hf (by lia)
-    have hi_slot : i.1 < (rootSeqDesc f).length + 1 := by
-      have : i.1 < f.natDegree + 1 := by simpa [n] using i.2
-      simpa [rootSeqDesc_length hf] using this
-    have hj_slot : j.1 < (rootSeqDesc f).length + 1 := by
-      have : j.1 < f.natDegree + 1 := by simpa [n] using j.2
-      simpa [rootSeqDesc_length hf] using this
-    have hxi :
-        x i ∈ rootSlotInterval (rootSeqDesc f) ⟨i.1, hi_slot⟩ := by
-      have hraw := (Classical.choose_spec (hslot i.1 (by simpa [n] using i.2))).1
-      simpa [x] using hraw
-    have hxj :
-        x j ∈ rootSlotInterval (rootSeqDesc f) ⟨j.1, hj_slot⟩ := by
-      have hraw := (Classical.choose_spec (hslot j.1 (by simpa [n] using j.2))).1
-      simpa [x] using hraw
-    exact
-      le_of_mem_rootSlotInterval_of_lt
-        (rs := rootSeqDesc f)
-        hroot_ne
-        rootSeqDesc_pairwise
-        (i := i.1) (j := j.1)
-        (by simp_all)
-        (by simpa using hj_slot)
-        hxi hxj
+    refine pairwise_ge_of_rootSlot_points hf (n := n) (by simp [n]) x ?_
+    intro j hj
+    have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hj))).1
+    simpa [x] using hraw
   let h : ℝ[X] := polyOfDescRootsDesc xs
   refine ⟨h, ?_, ?_⟩
   · have hdeg_lo : f.natDegree ≤ xs.length := by
