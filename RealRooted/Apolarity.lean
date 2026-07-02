@@ -703,7 +703,7 @@ theorem mem_closedBall_of_recip_avg {c : ℂ} {r : ℝ} (hr : 0 ≤ r) {w ζ : �
           simp_all +decide [ Finset.sum_multiset_count ];
       · intro z hz; specialize h_reciprocal_in_S z hz; aesop;
     convert h_reciprocal_in_S_ζ using 1;
-    rw [ ← hζ, inv_mul_eq_div, div_eq_mul_inv ] ; ring ; aesop;
+    rw [ ← hζ, inv_mul_eq_div, div_eq_mul_inv ] ; ring_nf ; aesop;
   by_cases h : w - ζ = 0 <;> simp_all +decide [ div_eq_mul_inv ];
   · norm_num [ ← hζ ] at *;
   · simp_all +decide [ Complex.normSq, Complex.norm_def, dist_eq_norm ];
