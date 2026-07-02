@@ -2809,8 +2809,9 @@ theorem compatiblePairHasCommonInterleaver_of_sameDegreeAlternative_and_affineFa
     (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
     (haffBridge : PosComboNoCommonAffineFamilyStatement) :
     CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
-    hsame
+  compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
+    (posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg
+      hsame)
     (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
 
 /-- Shifted positive-leading compatibility bridge with the succ-degree branch
@@ -2844,8 +2845,10 @@ theorem posComboPairHasCommonInterleaver_of_boundaryRightPairOrientation_via_non
     succDegreePairHasCommonInterleaver_nonneg_of_boundaryRightPairOrientation
       hboundary
   exact
-    posComboPairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
-      hsame_nonneg hsucc_nonneg
+    posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
+      (posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg
+        hsame_nonneg)
+      hsucc_nonneg
       hf_rr_ne hf_rr_splits hg_rr_ne hg_rr_splits hf_pos hg_pos hfg
 
 /-- The stronger boundary-right-pair orientation hypothesis already finishes
@@ -2853,11 +2856,19 @@ the full positive-leading compatibility bridge after the nonnegative shift
 reduction. -/
 theorem compatiblePairHasCommonInterleaver_of_boundaryRightPairOrientation_via_nonnegShift
     (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_realRootedPosComboBridge
-    (fun {_ _} hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos hfg =>
-      posComboPairHasCommonInterleaver_of_boundaryRightPairOrientation_via_nonnegShift
-        hboundary hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos hfg)
+    CompatiblePairHasCommonInterleaverStatement := by
+  have hsame_nonneg :
+      PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
+    posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg
+      (boundaryRightPairOrientation_implies_sameDegreeOrientationAlternative_nonneg
+        hboundary)
+  have hsucc_nonneg :
+      PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    succDegreePairHasCommonInterleaver_nonneg_of_boundaryRightPairOrientation
+      hboundary
+  exact
+    compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
+      hsame_nonneg hsucc_nonneg
 
 /-- Compatibility-to-common-interleaver bridge from the reduced positive-combo
 ingredients (no-common orientation + degree closeness). -/
