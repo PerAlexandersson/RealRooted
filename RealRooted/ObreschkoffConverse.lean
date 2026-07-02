@@ -679,7 +679,7 @@ private lemma false_of_allComboRealRooted_of_double_root_and_eval_ne_of_pos
     simp_all
   have hp_der_eval0 : p.derivative.eval x = 0 := by
     simp_all
-  have hp_rr : p.Splits := by simpa using hall 1 0
+  have hp_rr : p.Splits := (hall.isRealRooted_left hp0).2
   let pp : ℝ := p.derivative.derivative.eval x
   let qx : ℝ := q.eval x
   let qp : ℝ := q.derivative.eval x

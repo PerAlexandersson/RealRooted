@@ -20,6 +20,18 @@ namespace RealRooted
 def AllComboRealRooted (f g : ℝ[X]) : Prop :=
   ∀ α β : ℝ, (C α * f + C β * g).Splits
 
+namespace AllComboRealRooted
+
+lemma isRealRooted_left {f g : ℝ[X]} (hall : AllComboRealRooted f g) (hf0 : f ≠ 0) :
+    f ≠ 0 ∧ f.Splits :=
+  ⟨hf0, by simpa using hall 1 0⟩
+
+lemma isRealRooted_right {f g : ℝ[X]} (hall : AllComboRealRooted f g) (hg0 : g ≠ 0) :
+    g ≠ 0 ∧ g.Splits :=
+  ⟨hg0, by simpa using hall 0 1⟩
+
+end AllComboRealRooted
+
 lemma allComboRealRooted_comm {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
     AllComboRealRooted g f := by
   intro α β
