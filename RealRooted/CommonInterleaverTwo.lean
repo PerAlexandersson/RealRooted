@@ -2275,10 +2275,9 @@ theorem posComboOrientation_of_boundaryRightPairOrientation_and_nonnegCoeffs
     (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
     Prec f g ∨ Prec g f :=
-  posComboOrientation_of_allComboRealRooted_and_nonnegCoeffs
+  posComboOrientation_of_affineFamilyBridge_and_nonnegCoeffs
+    (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
     hf_pos hg_pos hfnn hgnn hfg
-    (allComboRealRooted_of_posCombo_and_boundaryRightPairOrientation_and_nonnegCoeffs
-      hboundary hf_pos hg_pos hfnn hgnn hfg)
 
 /-- The stronger boundary-right-pair hypothesis already contains the honest
 same-degree no-common branch in the nonnegative regime. -/
@@ -2470,9 +2469,9 @@ theorem posComboPairHasCommonInterleaver_of_boundaryRightPairOrientation_and_non
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
-  pairHasCommonInterleaver_of_prec_or_revPrec <|
-    posComboOrientation_of_boundaryRightPairOrientation_and_nonnegCoeffs
-      hboundary hf_pos hg_pos hfnn hgnn hfg
+  posComboPairHasCommonInterleaver_of_affineFamilyBridge_and_nonnegCoeffs
+    (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
+    hf_pos hg_pos hfnn hgnn hfg
 
 /-- An ordered positive-combo pair bridge plus the nonnegative degree-closeness
 theorem gives the unordered pair bridge. -/
@@ -2625,10 +2624,8 @@ theorem compatiblePairHasCommonInterleaver_of_boundaryRightPairOrientation_and_n
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : Compatible f g) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
-  compatiblePairHasCommonInterleaver_of_nonnegPosComboPairBridge
-    (fun {f g} hf_pos hg_pos hfnn hgnn hfg =>
-      posComboPairHasCommonInterleaver_of_boundaryRightPairOrientation_and_nonnegCoeffs
-        hboundary (f := f) (g := g) hf_pos hg_pos hfnn hgnn hfg)
+  compatiblePairHasCommonInterleaver_of_affineFamilyBridge_and_nonnegCoeffs
+    (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
     hf_pos hg_pos hfnn hgnn hfg
 
 /-- Compatibility bridge under nonnegative coefficients, reduced to the
@@ -3060,10 +3057,8 @@ theorem
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
-  pairwiseHasCommonInterleaver_of_nonnegPairBridge
-    (fun {f g} hf_pos hg_pos hfnn hgnn hfg =>
-      compatiblePairHasCommonInterleaver_of_boundaryRightPairOrientation_and_nonnegCoeffs
-        hboundary (f := f) (g := g) hf_pos hg_pos hfnn hgnn hfg)
+  pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_affineFamilyBridge_and_nonnegCoeffs
+    (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
     hpos hnn hpair
 
 /-- A single common right interleaver is in particular a pairwise common right
@@ -3387,9 +3382,9 @@ theorem chudnovskySeymour_fourWay_of_boundaryRightPairOrientation_and_nonnegCoef
     (PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs) ∧
       (PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs) ∧
       (HasCommonInterleaver fs ↔ FamilyCompatible fs) :=
-  chudnovskySeymour_fourWay_of_pairwiseCommonForward hrr hpos <|
-    pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_boundaryRightPairOrientation_nonneg
-      (fs := fs) hboundary hpos hnn
+  chudnovskySeymour_fourWay_of_affineFamilyBridge_and_nonnegCoeffs
+    (fs := fs) hrr hpos hnn
+    (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
 
 private theorem pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay
     {fs : List ℝ[X]}
@@ -3580,9 +3575,9 @@ theorem pairwiseCompatible_iff_familyCompatible_of_boundaryRightPairOrientation_
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
-  pairwiseCompatible_iff_familyCompatible_of_fourWay <|
-    chudnovskySeymour_fourWay_of_boundaryRightPairOrientation_and_nonnegCoeffs
-      (fs := fs) hrr hpos hnn hboundary
+  pairwiseCompatible_iff_familyCompatible_of_affineFamilyBridge_and_nonnegCoeffs
+    (fs := fs) hrr hpos hnn
+    (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
 
 /-- In the degree-`≤ 1` regime, every pair already has a common right
 interleaver. This is the fully packaged two-polynomial input for the
