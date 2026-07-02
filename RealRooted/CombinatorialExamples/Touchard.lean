@@ -71,8 +71,8 @@ lemma touchard_ne_zero (n : Nat) :
   (monic_touchard n).ne_zero
 
 lemma touchard_posLeadingCoeff (n : Nat) :
-    HasPosLeadingCoeff (touchard n) := by
-  simp [HasPosLeadingCoeff, (monic_touchard n).leadingCoeff]
+    HasPosLeadingCoeff (touchard n) :=
+  hasPosLeadingCoeff_of_monic (monic_touchard n)
 
 lemma touchard_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (touchard n)
   | 0 => by

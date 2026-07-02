@@ -95,8 +95,8 @@ lemma coloredSetPartitions_ne_zero (c m n : Nat) :
   (monic_coloredSetPartitions c m n).ne_zero
 
 lemma coloredSetPartitions_posLeadingCoeff (c m n : Nat) :
-    HasPosLeadingCoeff (coloredSetPartitions c m n) := by
-  simp [HasPosLeadingCoeff, (monic_coloredSetPartitions c m n).leadingCoeff]
+    HasPosLeadingCoeff (coloredSetPartitions c m n) :=
+  hasPosLeadingCoeff_of_monic (monic_coloredSetPartitions c m n)
 
 lemma coloredSetPartitions_nonnegCoeffs :
     ∀ c m n : Nat, HasNonnegCoeffs (coloredSetPartitions c m n)

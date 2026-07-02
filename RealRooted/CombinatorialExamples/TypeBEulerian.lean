@@ -125,8 +125,8 @@ lemma typeBEulerian_ne_zero (n : Nat) :
   (monic_typeBEulerian n).ne_zero
 
 lemma typeBEulerian_posLeadingCoeff (n : Nat) :
-    HasPosLeadingCoeff (typeBEulerian n) := by
-  simp [HasPosLeadingCoeff, (monic_typeBEulerian n).leadingCoeff]
+    HasPosLeadingCoeff (typeBEulerian n) :=
+  hasPosLeadingCoeff_of_monic (monic_typeBEulerian n)
 
 lemma typeBEulerian_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (typeBEulerian n)
   | 0 => by
