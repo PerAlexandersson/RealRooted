@@ -615,7 +615,7 @@ private lemma isRoot_of_mem_sorted_roots_eq
 
 /-- In a sorted interlacing layout, the polynomial-factor product has
 opposite-or-zero signs at any consecutive pair on the right-hand list. -/
-private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive :
+lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive :
     ∀ {ss rs pre : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ},
       rs.Pairwise (· ≤ ·) →
       ListInterlaces ss rs →
@@ -738,7 +738,7 @@ private lemma eval_mul_eval_nonpos_of_interlacing_heads {g : ℝ[X]}
 
 /-- At any consecutive pair in a sorted interlacing layout, the interlacing
 polynomial has opposite-or-zero signs. -/
-private lemma eval_mul_eval_nonpos_of_interlacing_consecutive {g : ℝ[X]}
+lemma eval_mul_eval_nonpos_of_interlacing_consecutive {g : ℝ[X]}
     (hg_splits : g.Splits)
     {ss rs pre : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ}
     (hrs_sorted : rs.Pairwise (· ≤ ·))
@@ -1078,7 +1078,7 @@ private lemma countP_lt_of_eq_max_isRoot
       · simp
     lia
 
-private lemma mul_neg_of_mul_neg_of_mul_neg {a b c d : ℝ}
+lemma mul_neg_of_mul_neg_of_mul_neg {a b c d : ℝ}
     (hab : a * b < 0) (hcd : c * d < 0) (hbd : b * d < 0) :
     a * c < 0 := by
   have hb_ne : b ≠ 0 := by

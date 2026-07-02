@@ -142,126 +142,6 @@ private lemma exists_delta_wronskian_iterateTDeriv_eval_mul_pos_joint_at_zero
         (by simpa [Real.norm_eq_abs, abs_of_pos hx_pos] using hclose')
     simp_all
 
-private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive_local :
-    ∀ {ss rs pre : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ},
-      rs.Pairwise (· ≤ ·) →
-      ListInterlaces ss rs →
-      rs = pre ++ r₁ :: r₂ :: rest →
-      (ss.map (fun x => r₁ - x)).prod * (ss.map (fun x => r₂ - x)).prod ≤ 0
-  | ss, rs, [], r₁, r₂, rest, _, hint, hEq => by
-      subst hEq
-      exact listInterlaces_prod_mul_prod_nonpos_at_heads hint
-  | ss, rs, a :: pre, r₁, r₂, rest, hrs_sorted, hint, hEq => by
-      obtain ⟨s, ss', rfl⟩ : ∃ s ss', ss = s :: ss' := by
-        cases ss with
-        | nil =>
-            cases rs with
-            | nil => simp at hEq
-            | cons b rs' =>
-                cases rs' with
-                | nil => simp at hEq
-                | cons c rs'' => simp [ListInterlaces] at hint
-        | cons s ss' => lia
-      cases rs with
-      | nil => simp at hEq
-      | cons b rs' =>
-          have hbEq : b :: rs' = (a :: pre) ++ r₁ :: r₂ :: rest := hEq
-          cases pre with
-          | nil =>
-              simp only [List.cons_append, List.nil_append, List.cons.injEq] at hbEq
-              rcases hbEq with ⟨rfl, rfl⟩
-              have hint' :
-                  b ≤ s ∧ s ≤ r₁ ∧
-                    ListInterlaces ss' (r₁ :: r₂ :: rest) := by
-                simpa [ListInterlaces] using hint
-              obtain ⟨hb_r₁, hs_r₁, htail⟩ := hint'
-              have hrs_tail : (r₁ :: r₂ :: rest).Pairwise (· ≤ ·) :=
-                (List.pairwise_cons.mp hrs_sorted).2
-              have hr₁r₂ : r₁ ≤ r₂ := List.rel_of_pairwise_cons hrs_tail (by simp)
-              have hs_factor_nonneg : 0 ≤ (r₁ - s) * (r₂ - s) := by
-                nlinarith
-              have htail_nonpos :
-                  (ss'.map (fun x => r₁ - x)).prod *
-                      (ss'.map (fun x => r₂ - x)).prod ≤ 0 :=
-                listInterlaces_prod_mul_prod_nonpos_at_heads htail
-              calc
-                ((s :: ss').map (fun x => r₁ - x)).prod *
-                    ((s :: ss').map (fun x => r₂ - x)).prod
-                    = ((r₁ - s) * (r₂ - s)) *
-                        ((ss'.map (fun x => r₁ - x)).prod *
-                          (ss'.map (fun x => r₂ - x)).prod) := by
-                          simp [mul_assoc, mul_left_comm]
-                _ ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hs_factor_nonneg htail_nonpos
-          | cons a' pre' =>
-              simp only [List.cons_append, List.cons.injEq] at hbEq
-              rcases hbEq with ⟨rfl, htailEq⟩
-              have hint_rs :
-                  ListInterlaces (s :: ss') (b :: a' :: pre' ++ r₁ :: r₂ :: rest) := by
-                lia
-              have hint' :
-                  b ≤ s ∧ s ≤ a' ∧
-                    ListInterlaces ss' (a' :: pre' ++ r₁ :: r₂ :: rest) := by
-                simpa [ListInterlaces] using hint_rs
-              obtain ⟨_, hs_le_a', hint_tail⟩ := hint'
-              have hrs_tail : (a' :: pre' ++ r₁ :: r₂ :: rest).Pairwise (· ≤ ·) := by
-                simp_all
-              have hr₁_mem : r₁ ∈ (a' :: pre' ++ r₁ :: r₂ :: rest) := by
-                simp [List.mem_cons, List.mem_append]
-              have ha'_le_r₁ : a' ≤ r₁ := by
-                simp_all
-              have hs_factor_nonneg : 0 ≤ (r₁ - s) * (r₂ - s) := by
-                have hs_le_r₁ : s ≤ r₁ := le_trans hs_le_a' ha'_le_r₁
-                have hr₁r₂ : r₁ ≤ r₂ := by
-                  grind
-                nlinarith
-              have htail_nonpos :
-                  (ss'.map (fun x => r₁ - x)).prod * (ss'.map (fun x => r₂ - x)).prod ≤ 0 :=
-                listInterlaces_prod_mul_prod_nonpos_of_consecutive_local
-                  (ss := ss') (rs := a' :: pre' ++ r₁ :: r₂ :: rest)
-                  (pre := a' :: pre') (rest := rest) hrs_tail hint_tail (by lia)
-              calc
-                ((s :: ss').map (fun x => r₁ - x)).prod *
-                    ((s :: ss').map (fun x => r₂ - x)).prod
-                    = ((r₁ - s) * (r₂ - s)) *
-                        ((ss'.map (fun x => r₁ - x)).prod *
-                          (ss'.map (fun x => r₂ - x)).prod) := by
-                          simp [mul_assoc, mul_left_comm]
-                _ ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hs_factor_nonneg htail_nonpos
-
-/-- Local consecutive-root sign lemma for an interlacer. This is the exact
-public-in-file replacement for the private Ma--Wang helper needed in the
-same-degree forward branch. -/
-private lemma eval_mul_eval_nonpos_of_interlacing_consecutive_local {g : ℝ[X]}
-    (hg_splits : g.Splits)
-    {ss rs pre : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ}
-    (hrs_sorted : rs.Pairwise (· ≤ ·))
-    (hss_eq : (↑ss : Multiset ℝ) = g.roots)
-    (hint : ListInterlaces ss rs)
-    (hEq : rs = pre ++ r₁ :: r₂ :: rest) :
-    g.eval r₁ * g.eval r₂ ≤ 0 := by
-  rw [eval_eq_leadingCoeff_mul_prod_sub hg_splits r₁,
-    eval_eq_leadingCoeff_mul_prod_sub hg_splits r₂, ← hss_eq]
-  have hprod_nonpos :
-      (ss.map (fun x => r₁ - x)).prod * (ss.map (fun x => r₂ - x)).prod ≤ 0 :=
-    listInterlaces_prod_mul_prod_nonpos_of_consecutive_local hrs_sorted hint hEq
-  have hlead_nonneg : 0 ≤ g.leadingCoeff * g.leadingCoeff := by
-    simpa [pow_two] using sq_nonneg g.leadingCoeff
-  have hprod_r₁ :
-      ((↑ss : Multiset ℝ).map (fun x => r₁ - x)).prod =
-        (ss.map (fun x => r₁ - x)).prod := rfl
-  have hprod_r₂ :
-      ((↑ss : Multiset ℝ).map (fun x => r₂ - x)).prod =
-        (ss.map (fun x => r₂ - x)).prod := rfl
-  have hfactor :
-      (g.leadingCoeff * (ss.map (fun x => r₁ - x)).prod) *
-          (g.leadingCoeff * (ss.map (fun x => r₂ - x)).prod) =
-        (g.leadingCoeff * g.leadingCoeff) *
-          (((ss.map (fun x => r₁ - x)).prod) *
-            ((ss.map (fun x => r₂ - x)).prod)) := by
-    ring
-  rw [hprod_r₁, hprod_r₂, hfactor]
-  exact mul_nonpos_of_nonneg_of_nonpos hlead_nonneg hprod_nonpos
-
 private lemma eval_mul_eval_neg_of_interlaces_consecutive_of_no_common
     {f g : ℝ[X]}
     (hgf : Interlaces g f)
@@ -278,7 +158,7 @@ private lemma eval_mul_eval_neg_of_interlaces_consecutive_of_no_common
     lia
   have hnonpos :
       g.eval r₁ * g.eval r₂ ≤ 0 :=
-    eval_mul_eval_nonpos_of_interlacing_consecutive_local hg.2 hrs_sorted hss_eq hint hEq_rs
+    eval_mul_eval_nonpos_of_interlacing_consecutive hg.2 hrs_sorted hss_eq hint hEq_rs
   have hr₁_root : f.IsRoot r₁ := by
     apply (mem_roots hf.1).mp
     simpa [hrs_eq] using Multiset.mem_coe.mpr (by simp_all : r₁ ∈ rs)
@@ -290,28 +170,6 @@ private lemma eval_mul_eval_neg_of_interlaces_consecutive_of_no_common
   have hg₂_ne : g.eval r₂ ≠ 0 := by
     simp_all
   grind
-
-private lemma mul_neg_of_mul_neg_of_mul_neg_local {a b c d : ℝ}
-    (hab : a * b < 0) (hcd : c * d < 0) (hbd : b * d < 0) :
-    a * c < 0 := by
-  have hb_ne : b ≠ 0 := by
-    intro hb0
-    simp [hb0] at hab
-  rcases lt_or_gt_of_ne hb_ne with hb | hb
-  · have hd : 0 < d := by
-      nlinarith
-    have ha : 0 < a := by
-      nlinarith
-    have hc : c < 0 := by
-      nlinarith
-    nlinarith
-  · have hd : d < 0 := by
-      nlinarith
-    have ha : a < 0 := by
-      nlinarith
-    have hc : 0 < c := by
-      nlinarith
-    nlinarith
 
 /-- Degree-drop converse to the usual Ma--Wang assembly step: if a nonzero
 polynomial `F` has strictly alternating signs on consecutive roots of a
@@ -1567,7 +1425,7 @@ private theorem isRealRooted_of_interlaces_eval_mul_neg_same_any_lc
     have hFg₂ : F.eval r₂ * g.eval r₂ < 0 := hroot_sign r₂ hr₂_root
     have hgg : g.eval r₁ * g.eval r₂ < 0 :=
       eval_mul_eval_neg_of_interlaces_consecutive_of_no_common hgf' hno_g_at_f pre hEq
-    exact mul_neg_of_mul_neg_of_mul_neg_local hFg₁ hFg₂ hgg
+    exact mul_neg_of_mul_neg_of_mul_neg hFg₁ hFg₂ hgg
   have hnegF_pos : HasPosLeadingCoeff (C (-1 : ℝ) * F) := by
     unfold HasPosLeadingCoeff
     simp_all
@@ -2670,7 +2528,7 @@ private theorem isRealRooted_of_right_factor_combo_posβ
     have hFq₂ : F.eval r₂ * q.eval r₂ < 0 := hroot_sign r₂ hr₂_root
     have hqq : q.eval r₁ * q.eval r₂ < 0 :=
       eval_mul_eval_neg_of_interlaces_consecutive_of_no_common hqf hq_no pre hEq
-    exact mul_neg_of_mul_neg_of_mul_neg_local hFq₁ hFq₂ hqq
+    exact mul_neg_of_mul_neg_of_mul_neg hFq₁ hFq₂ hqq
   have hsign :
       let rs := f.roots.sort (· ≤ ·)
       ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
