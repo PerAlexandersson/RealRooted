@@ -948,6 +948,20 @@ theorem allComboRealRooted_of_natDegree_le_one
   · exact allComboRealRooted_of_prec hprec
   · exact allComboRealRooted_comm (allComboRealRooted_of_prec hprec)
 
+/-- A `Prec` relation immediately gives a common right interleaver: use the
+right endpoint as the witness. -/
+theorem pairHasCommonInterleaver_of_prec
+    {f g : ℝ[X]} (hprec : Prec f g) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
+
+/-- A reversed `Prec` relation immediately gives a common right interleaver:
+use the left endpoint as the witness. -/
+theorem pairHasCommonInterleaver_of_revPrec
+    {f g : ℝ[X]} (hprec : Prec g f) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  ⟨f, prec_refl hprec.2.1.1 hprec.2.1.2, hprec⟩
+
 /-- A symmetric `Prec` orientation immediately gives a common right
 interleaver: use the larger polynomial in the chosen orientation as the
 witness. -/
@@ -957,8 +971,8 @@ theorem pairHasCommonInterleaver_of_prec_or_revPrec
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
   intro hprec_or
   rcases hprec_or with hprec | hprec
-  · exact ⟨g, hprec, prec_refl hprec.2.1.1 hprec.2.1.2⟩
-  · exact ⟨f, prec_refl hprec.2.1.1 hprec.2.1.2, hprec⟩
+  · exact pairHasCommonInterleaver_of_prec hprec
+  · exact pairHasCommonInterleaver_of_revPrec hprec
 
 /-- Two-polynomial common-interleaver endpoint in degree at most one. This is
 the direct pair version used by the low-degree Chudnovsky--Seymour package. -/
@@ -1094,7 +1108,7 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_orientation_nonneg
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
   have hprec : Prec f g := horient hf_pos hg_pos hfnn hgnn hfg hsucc hno
-  exact pairHasCommonInterleaver_of_prec_or_revPrec (Or.inl hprec)
+  exact pairHasCommonInterleaver_of_prec hprec
 
 /-- The corrected succ-degree pair bridge is already unconditional in the
 constant-vs-linear endpoint case. -/
@@ -1108,7 +1122,7 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_degree_zero
   have hprec : Prec f g :=
     posComboNoCommonSuccDegreeOrientation_of_degree_zero
       hf_pos hg_pos hf_deg0 hsucc
-  exact pairHasCommonInterleaver_of_prec_or_revPrec (Or.inl hprec)
+  exact pairHasCommonInterleaver_of_prec hprec
 
 /-- Degree-one left-hand endpoint of the corrected succ-degree branch under
 the affine-family bridge.  The public affine-family degree-one lemma gives the
