@@ -392,6 +392,12 @@ private lemma reverse_sublist_of_sublist_reverse {α : Type*} {xs ys : List α}
     xs.reverse.Sublist ys := by
   simpa using hxs.reverse
 
+private lemma interlacingSeqNonneg_reverse_of_sublist_reverse
+    {xs gs : List ℝ[X]} (hgs : IsInterlacingSeqNonneg gs)
+    (hxs : xs.Sublist gs.reverse) :
+    IsInterlacingSeqNonneg xs.reverse :=
+  IsInterlacingSeqNonneg.sublist hgs (reverse_sublist_of_sublist_reverse hxs)
+
 lemma filterRightByLeftNonzero_sublist_right (fs gs : List ℝ[X]) :
     (filterRightByLeftNonzero fs gs).Sublist gs :=
   map_snd_filter_zip_sublist_right (fun p : ℝ[X] × ℝ[X] => p.1 ≠ 0) fs gs
@@ -473,6 +479,34 @@ lemma mem_filterProductRightNonzero_ne_zero {fs gs : List ℝ[X]} {g : ℝ[X]}
   rcases List.mem_map.1 hg with ⟨p, hp, rfl⟩
   exact (of_decide_eq_true (List.mem_filter.1 hp).2).2
 
+private lemma interlacingSeqNonneg_filterLeftNonzero
+    {fs gs : List ℝ[X]} (hlen : fs.length = gs.length)
+    (hfs : IsInterlacingSeq0Nonneg fs)
+    (hfs_real : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits)) :
+    IsInterlacingSeqNonneg (filterLeftNonzero fs gs) := by
+  rw [filterLeftNonzero_eq_filter_ne_zero hlen]
+  exact IsInterlacingSeq0Nonneg.filter_ne_zero_of_realRooted hfs hfs_real
+
+private lemma interlacingSeqNonneg_filterProductLeftNonzero
+    {fs gs : List ℝ[X]} (hfs : IsInterlacingSeq0Nonneg fs)
+    (hfs_real : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits)) :
+    IsInterlacingSeqNonneg (filterProductLeftNonzero fs gs) :=
+  hfs.sublist_of_realRooted_of_ne
+    (filterProductLeftNonzero_sublist_left fs gs)
+    hfs_real
+    (fun _ hf => mem_filterProductLeftNonzero_ne_zero (fs := fs) (gs := gs) hf)
+
+private lemma interlacingSeqNonneg_reverse_filterProductRightNonzero
+    {fs gs : List ℝ[X]} (hgs : IsInterlacingSeq0Nonneg gs)
+    (hgs_real : ∀ g ∈ gs, g ≠ 0 → (g ≠ 0 ∧ g.Splits)) :
+    IsInterlacingSeqNonneg (filterProductRightNonzero fs gs.reverse).reverse := by
+  refine hgs.sublist_of_realRooted_of_ne ?_ hgs_real ?_
+  · exact reverse_sublist_of_sublist_reverse
+      (filterProductRightNonzero_sublist_right fs gs.reverse)
+  · intro g hg
+    exact mem_filterProductRightNonzero_ne_zero
+      (fs := fs) (gs := gs.reverse) (by simpa using hg)
+
 lemma zipWith_mul_sum_filterProductNonzero_eq
     (fs gs : List ℝ[X]) :
     ((filterProductLeftNonzero fs gs).zipWith (· * ·)
@@ -531,19 +565,14 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg
       ((fs.zipWith (· * ·) gs.reverse).sum).Splits) := by
   let fs' := filterLeftNonzero fs gs.reverse
   let gs' := filterRightByLeftNonzero fs gs.reverse
-  have hfs'_eq : fs' = fs.filter (· ≠ 0) := by
-    simpa [fs'] using
-      filterLeftNonzero_eq_filter_ne_zero
-        (fs := fs) (gs := gs.reverse) (by simp_all)
   have hfs' : IsInterlacingSeqNonneg fs' := by
-    rw [hfs'_eq]
-    exact IsInterlacingSeq0Nonneg.filter_ne_zero_of_realRooted hfs hfs_real
+    simpa [fs'] using interlacingSeqNonneg_filterLeftNonzero
+      (fs := fs) (gs := gs.reverse) (by simpa [List.length_reverse] using hlen)
+      hfs hfs_real
   have hgs'_rev : IsInterlacingSeqNonneg gs'.reverse := by
     have hsub : gs'.Sublist gs.reverse := by
       simpa [gs'] using filterRightByLeftNonzero_sublist_right fs gs.reverse
-    have hsub_rev : gs'.reverse.Sublist gs :=
-      reverse_sublist_of_sublist_reverse hsub
-    exact IsInterlacingSeqNonneg.sublist hgs hsub_rev
+    exact interlacingSeqNonneg_reverse_of_sublist_reverse hgs hsub
   have hlen' : fs'.length = gs'.length := by
     simpa [fs', gs'] using length_filterLeftNonzero_eq_filterRightByLeftNonzero fs gs.reverse
   have hsum_eq :
@@ -566,20 +595,13 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg_both
       ((fs.zipWith (· * ·) gs.reverse).sum).Splits) := by
   let fs' := filterProductLeftNonzero fs gs.reverse
   let gs' := filterProductRightNonzero fs gs.reverse
-  have hfs_sub : fs'.Sublist fs := by
-    simpa [fs'] using filterProductLeftNonzero_sublist_left fs gs.reverse
-  have hgs_sub_rev : gs'.reverse.Sublist gs := by
-    have hsub : gs'.Sublist gs.reverse := by
-      simpa [gs'] using filterProductRightNonzero_sublist_right fs gs.reverse
-    exact reverse_sublist_of_sublist_reverse hsub
-  have hfs' : IsInterlacingSeqNonneg fs' :=
-    hfs.sublist_of_realRooted_of_ne hfs_sub hfs_real
-      (fun f hf => mem_filterProductLeftNonzero_ne_zero (fs := fs) (gs := gs.reverse) hf)
+  have hfs' : IsInterlacingSeqNonneg fs' := by
+    simpa [fs'] using interlacingSeqNonneg_filterProductLeftNonzero
+      (fs := fs) (gs := gs.reverse) hfs hfs_real
   have hgs'_rev : IsInterlacingSeqNonneg gs'.reverse :=
-    hgs.sublist_of_realRooted_of_ne hgs_sub_rev hgs_real
-      (fun g hg =>
-        mem_filterProductRightNonzero_ne_zero
-          (fs := fs) (gs := gs.reverse) (by grind))
+    by
+      simpa [gs'] using interlacingSeqNonneg_reverse_filterProductRightNonzero
+        (fs := fs) (gs := gs) hgs hgs_real
   have hlen' : fs'.length = gs'.length := by
     simpa [fs', gs'] using length_filterProductLeftNonzero_eq_filterProductRightNonzero
       fs gs.reverse
