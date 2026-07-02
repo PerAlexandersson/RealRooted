@@ -319,8 +319,7 @@ theorem splits_tderiv {eps : ℝ} {p : ℝ[X]} (heps : 0 < eps) (hp : p.Splits) 
     rcases lt_or_gt_of_ne (fun h => hp₀ (leadingCoeff_eq_zero.mp h))
       with hneg | hpos
     · -- negative leading coefficient: T_ε(-p) = -T_ε(p)
-      have hneg_pos : HasPosLeadingCoeff (-p) := by
-        unfold HasPosLeadingCoeff; simp_all
+      have hneg_pos : HasPosLeadingCoeff (-p) := hasPosLeadingCoeff_neg hneg
       have hT_neg := isRealRooted_TDeriv_pos heps (by simp_all) hneg_pos (by simp_all)
       -- T_ε(-p) = -T_ε(p) since T_ε is linear
       have hlin : TDeriv eps (-p) = -TDeriv eps p := by
@@ -351,9 +350,7 @@ theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
   · rcases lt_or_gt_of_ne (leadingCoeff_ne_zero.mpr hp₀) with hneg | (hpos : HasPosLeadingCoeff p)
     · have hneg_rr : ((-p) ≠ 0 ∧ (-p).Splits) :=
         ⟨neg_ne_zero.mpr hp₀, by simp_all⟩
-      have hneg_pos : HasPosLeadingCoeff (-p) := by
-        unfold HasPosLeadingCoeff
-        simp_all
+      have hneg_pos : HasPosLeadingCoeff (-p) := hasPosLeadingCoeff_neg hneg
       have hrewrite : TDeriv eps (-p) = -TDeriv eps p := by
         simp [TDeriv]
         ring

@@ -1699,10 +1699,8 @@ private theorem not_allComboRealRooted_const_left_of_natDegree_ge_two
     have hneg_rr : ((-p) ≠ 0 ∧ (-p).Splits) := by
       simp_all
     have hneg_pos : HasPosLeadingCoeff (-p) := by
-      unfold HasPosLeadingCoeff
-      rw [leadingCoeff_neg]
       have hne0 : p.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hp_ne
-      grind
+      exact hasPosLeadingCoeff_neg (by grind)
     have hall_neg : AllComboRealRooted (C c) (-p) := by
       simpa using
         (allComboRealRooted_C_mul_right (f := C c) (g := p) (c := (-1 : ℝ)) hall)

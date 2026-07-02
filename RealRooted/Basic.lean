@@ -480,6 +480,10 @@ lemma HasPosLeadingCoeff.mul {p q : ℝ[X]}
   rw [leadingCoeff_mul]
   exact mul_pos hp hq
 
+lemma hasPosLeadingCoeff_neg {p : ℝ[X]} (hp : p.leadingCoeff < 0) :
+    HasPosLeadingCoeff (-p) := by
+  simpa [HasPosLeadingCoeff] using hp
+
 lemma HasPosLeadingCoeff.X_mul {p : ℝ[X]} (hp : HasPosLeadingCoeff p) :
     HasPosLeadingCoeff (X * p) := by
   unfold HasPosLeadingCoeff at hp ⊢
