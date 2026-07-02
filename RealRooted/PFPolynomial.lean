@@ -157,6 +157,9 @@ theorem isPFPolynomial_X_add_C {a : ℝ} (ha : 0 ≤ a) :
   exact IsPFPolynomial.of_realRooted_nonneg hnn <| by
     simp
 
+theorem isPFPolynomial_X_add_one : IsPFPolynomial (X + 1 : ℝ[X]) := by
+  simpa using isPFPolynomial_X_add_C (a := 1) zero_le_one
+
 theorem reverse_X_sub_C_isPF {r : ℝ} (hr : r ≤ 0) :
     IsPFPolynomial ((X - C r : ℝ[X]).reverse) := by
   by_cases hr0 : r = 0
@@ -259,8 +262,8 @@ theorem prec0_nonneg_combo_right_of_common_left_of_nonneg {p q r : ℝ[X]}
     (hpq : Prec0 p q) (hpr : Prec0 p r)
     (hq : HasNonnegCoeffs q) (hr : HasNonnegCoeffs r)
     {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
-    Prec0 p (C a * q + C b * r) := by
-  exact prec0_add_right_of_common_left_of_nonneg
+    Prec0 p (C a * q + C b * r) :=
+  prec0_add_right_of_common_left_of_nonneg
     (prec0_C_mul_right_of_nonneg hpq ha)
     (prec0_C_mul_right_of_nonneg hpr hb)
     (nonnegCoeffs_C_mul ha hq) (nonnegCoeffs_C_mul hb hr)
@@ -316,6 +319,6 @@ theorem reciprocalShift_preserves_pf : reciprocalShiftPreservesPFStatement := by
 theorem isPFPolynomial_mul_X_add_one {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
     IsPFPolynomial ((X + 1) * p) :=
-  (isPFPolynomial_X_add_C (by norm_num : 0 ≤ (1 : ℝ))).mul hp
+  isPFPolynomial_X_add_one.mul hp
 
 end RealRooted
