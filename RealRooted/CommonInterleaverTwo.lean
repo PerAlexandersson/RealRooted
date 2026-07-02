@@ -1977,9 +1977,18 @@ private theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCo
         hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno)
     hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
 
-private theorem allComboRealRooted_of_degreeSplit_and_nonnegCoeffs_ordered
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeOrientationNonnegStatement)
+private theorem allComboRealRooted_of_noCommonBridge_and_nonnegCoeffs_ordered
+    (hterminal :
+      ∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        AllComboRealRooted f g)
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -2006,8 +2015,7 @@ private theorem allComboRealRooted_of_degreeSplit_and_nonnegCoeffs_ordered
   intro n ih f g hfdeg hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
   by_cases hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r
   · exact
-      allComboRealRooted_of_degreeSplit_and_nonnegCoeffs
-        hsame hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
+      hterminal hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
   · push Not at hno
     rcases hno with ⟨r, hrf, hrg⟩
     obtain ⟨qf, qg, hqf, hqg, hqfg, hqf_nn, hqg_nn, hqf0, hqg0,
@@ -2023,6 +2031,25 @@ private theorem allComboRealRooted_of_degreeSplit_and_nonnegCoeffs_ordered
     have hall_mul : AllComboRealRooted ((X - C r) * qf) ((X - C r) * qg) :=
       allComboRealRooted_mul_common_factor (isRealRooted_X_sub_C r).2 hall_q
     lia
+
+private theorem allComboRealRooted_of_degreeSplit_and_nonnegCoeffs_ordered
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeOrientationNonnegStatement)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg_lo : f.natDegree ≤ g.natDegree)
+    (hdeg_hi : g.natDegree ≤ f.natDegree + 1) :
+    AllComboRealRooted f g :=
+  allComboRealRooted_of_noCommonBridge_and_nonnegCoeffs_ordered
+    (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno =>
+      allComboRealRooted_of_degreeSplit_and_nonnegCoeffs
+        hsame hsucc (f := f) (g := g)
+        hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno)
+    hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
 
 /-- An ordered all-combinations bridge plus the nonnegative degree-closeness
 theorem gives the unordered all-combinations bridge. -/
@@ -2141,41 +2168,13 @@ private theorem allComboRealRooted_of_affineFamilyBridge_and_nonnegCoeffs_ordere
     (hfg : PosComboRealRooted f g)
     (hdeg_lo : f.natDegree ≤ g.natDegree)
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1) :
-    AllComboRealRooted f g := by
-  refine
-    Nat.strong_induction_on
-      (p := fun n =>
-        ∀ {f g : ℝ[X]},
-          f.natDegree = n →
-          HasPosLeadingCoeff f →
-          HasPosLeadingCoeff g →
-          HasNonnegCoeffs f →
-          HasNonnegCoeffs g →
-          PosComboRealRooted f g →
-          f.natDegree ≤ g.natDegree →
-          g.natDegree ≤ f.natDegree + 1 →
-          AllComboRealRooted f g)
-      f.natDegree ?_ rfl hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
-  intro n ih f g hfdeg hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
-  by_cases hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r
-  · exact
+    AllComboRealRooted f g :=
+  allComboRealRooted_of_noCommonBridge_and_nonnegCoeffs_ordered
+    (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno =>
       allComboRealRooted_of_affineFamilyBridge_and_nonnegCoeffs
-        haffBridge hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
-  · push Not at hno
-    rcases hno with ⟨r, hrf, hrg⟩
-    obtain ⟨qf, qg, hqf, hqg, hqfg, hqf_nn, hqg_nn, hqf0, hqg0,
-      hqf_pos, hqg_pos, hqdeg_lo, hqdeg_hi⟩ :=
-      common_root_reduction_data_of_posCombo_nonneg
-        hfg hf_pos hg_pos hfnn hgnn hdeg_lo hdeg_hi hrf hrg
-    have hqf_deg_lt : qf.natDegree < n := by
-      rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf0, natDegree_X_sub_C]
-      lia
-    have hall_q : AllComboRealRooted qf qg :=
-      ih qf.natDegree hqf_deg_lt rfl
-        hqf_pos hqg_pos hqf_nn hqg_nn hqfg hqdeg_lo hqdeg_hi
-    have hall_mul : AllComboRealRooted ((X - C r) * qf) ((X - C r) * qg) :=
-      allComboRealRooted_mul_common_factor (isRealRooted_X_sub_C r).2 hall_q
-    lia
+        haffBridge (f := f) (g := g)
+        hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno)
+    hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
 
 /-- Recursive upgrade of the affine-family no-common bridge to a full
 all-combinations result in the nonnegative-coefficient regime. Shared roots are
