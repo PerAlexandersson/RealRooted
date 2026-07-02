@@ -1352,9 +1352,7 @@ theorem prec_of_strict_signs_of_endSigns_even
     (hright_sign : F.eval (rs.getLast (by
       grind)) < 0) :
     Prec f F := by
-  have hF_ne : F ≠ 0 := by
-    intro h0
-    simp [HasPosLeadingCoeff, h0] at hF_pos
+  have hF_ne : F ≠ 0 := hF_pos.ne_zero
   have hrs_ne : rs ≠ [] := by
     lia
   have hF_natdeg_pos : 0 < F.natDegree := by
@@ -1413,9 +1411,7 @@ theorem prec_of_strict_signs_of_endSigns_odd
     (hright_sign : F.eval (rs.getLast (by
       grind)) < 0) :
     Prec f F := by
-  have hF_ne : F ≠ 0 := by
-    intro h0
-    simp [HasPosLeadingCoeff, h0] at hF_pos
+  have hF_ne : F ≠ 0 := hF_pos.ne_zero
   have hrs_ne : rs ≠ [] := by
     lia
   have hF_natdeg_pos : 0 < F.natDegree := by
@@ -1619,9 +1615,7 @@ theorem prec_of_interlaces_eval_mul_neg_same {f g F : ℝ[X]}
   have hF_right_neg : F.eval ((r₀ :: rs').getLast (by lia)) < 0 := by
     have hprod := hroot_sign ((r₀ :: rs').getLast (by lia)) hlast_root
     nlinarith
-  have hF_ne : F ≠ 0 := by
-    intro h0
-    simp [HasPosLeadingCoeff, h0] at hF_pos
+  have hF_ne : F ≠ 0 := hF_pos.ne_zero
   have hF_natdeg_pos : 0 < F.natDegree := by
     lia
   have hF_deg_pos : 0 < F.degree := natDegree_pos_iff_degree_pos.mp hF_natdeg_pos
@@ -1806,9 +1800,7 @@ private lemma common_root_reduction_data
   · apply hasPosLeadingCoeff_of_X_sub_C_mul (r := r)
     grind
   · have hf_ne : f ≠ 0 := hf.1
-    have hF_ne : a * f + b * g ≠ 0 := by
-      intro h0
-      simp [HasPosLeadingCoeff, h0] at hF_pos
+    have hF_ne : a * f + b * g ≠ 0 := hF_pos.ne_zero
     have hqf_ne : qf ≠ 0 := by
       simp_all
     have hFq_ne : a * qf + b * qg ≠ 0 := by
@@ -1818,9 +1810,7 @@ private lemma common_root_reduction_data
       natDegree_mul (X_sub_C_ne_zero r) hFq_ne, natDegree_X_sub_C] at hdeg_lo
     lia
   · have hf_ne : f ≠ 0 := hf.1
-    have hF_ne : a * f + b * g ≠ 0 := by
-      intro h0
-      simp [HasPosLeadingCoeff, h0] at hF_pos
+    have hF_ne : a * f + b * g ≠ 0 := hF_pos.ne_zero
     have hqf_ne : qf ≠ 0 := by
       simp_all
     have hFq_ne : a * qf + b * qg ≠ 0 := by
@@ -1938,8 +1928,7 @@ theorem isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
     ((a * f + b * g) ≠ 0 ∧ (a * f + b * g).Splits) := by
   let F : ℝ[X] := a * f + b * g
   have hF_ne : F ≠ 0 := by
-    rintro h0
-    simp [HasPosLeadingCoeff, F, h0] at hF_pos
+    simpa [F] using hF_pos.ne_zero
   have hlc_pos : 0 < F.leadingCoeff := by simpa [F, HasPosLeadingCoeff] using hF_pos
   have hlc_ne : F.leadingCoeff ≠ 0 := ne_of_gt hlc_pos
   let q : ℝ[X] := C F.leadingCoeff⁻¹ * F
@@ -2085,9 +2074,7 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
     (hdeg_lo : f.natDegree ≤ F.natDegree)
     (hsub_rr : ∀ {δ : ℝ}, 0 < δ → ((F - C δ * g) ≠ 0 ∧ (F - C δ * g).Splits)) :
     F ≠ 0 ∧ F.Splits := by
-  have hF_ne : F ≠ 0 := by
-    intro h0
-    simp [HasPosLeadingCoeff, h0] at hF_pos
+  have hF_ne : F ≠ 0 := hF_pos.ne_zero
   have hlc_pos : 0 < F.leadingCoeff := by simpa [HasPosLeadingCoeff] using hF_pos
   have hlc_ne : F.leadingCoeff ≠ 0 := ne_of_gt hlc_pos
   let q : ℝ[X] := C F.leadingCoeff⁻¹ * F
