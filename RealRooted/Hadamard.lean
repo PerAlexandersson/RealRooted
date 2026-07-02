@@ -93,17 +93,24 @@ theorem hadamardProduct_C_mul_right (a : ℝ) (p q : ℝ[X]) :
   rw [hadamardProduct_comm p (C a * q), hadamardProduct_C_mul_left,
     hadamardProduct_comm q p]
 
+/-- The support of a Hadamard product is the intersection of the two
+supports. -/
+theorem support_hadamardProduct_eq (p q : ℝ[X]) :
+    (hadamardProduct p q).support = p.support ∩ q.support := by
+  ext n
+  simp [coeff_hadamardProduct, mem_support_iff]
+
 /-- The support of a Hadamard product is contained in the left support. -/
 theorem support_hadamardProduct_subset_left (p q : ℝ[X]) :
     (hadamardProduct p q).support ⊆ p.support := by
-  rw [hadamardProduct_eq_diagonalOperator]
-  exact support_diagonalOperator_subset _ _
+  rw [support_hadamardProduct_eq]
+  exact Finset.inter_subset_left
 
 /-- The support of a Hadamard product is contained in the right support. -/
 theorem support_hadamardProduct_subset_right (p q : ℝ[X]) :
     (hadamardProduct p q).support ⊆ q.support := by
-  rw [hadamardProduct_comm]
-  exact support_hadamardProduct_subset_left q p
+  rw [support_hadamardProduct_eq]
+  exact Finset.inter_subset_right
 
 theorem natDegree_hadamardProduct_le_left (p q : ℝ[X]) :
     (hadamardProduct p q).natDegree ≤ p.natDegree := by
@@ -119,20 +126,8 @@ theorem natDegree_hadamardProduct_le_right (p q : ℝ[X]) :
 disjoint. -/
 theorem hadamardProduct_eq_zero_iff_support_disjoint (p q : ℝ[X]) :
     hadamardProduct p q = 0 ↔ Disjoint p.support q.support := by
-  constructor
-  · intro h
-    rw [Finset.disjoint_left]
-    intro n hnp hnq
-    have hzero : (hadamardProduct p q).coeff n = 0 := by simp [h]
-    rw [coeff_hadamardProduct] at hzero
-    rw [mem_support_iff] at hnp hnq
-    exact (mul_ne_zero hnp hnq) hzero
-  · intro hdisj
-    ext n
-    by_cases hnp : n ∈ p.support
-    · have hnq : n ∉ q.support := Finset.disjoint_left.mp hdisj hnp
-      simp [coeff_hadamardProduct, (notMem_support_iff).mp hnq]
-    · simp [coeff_hadamardProduct, (notMem_support_iff).mp hnp]
+  rw [← support_eq_empty, support_hadamardProduct_eq,
+    Finset.disjoint_iff_inter_eq_empty]
 
 /-- Fixed-degree Schur--Szego composition.  If
 `f = ∑ binom(n,k) a_k X^k` and `g = ∑ binom(n,k) b_k X^k`, then
