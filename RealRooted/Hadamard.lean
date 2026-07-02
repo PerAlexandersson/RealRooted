@@ -775,8 +775,9 @@ theorem hadamardProduct_preserves_prec0_left
     {f p q : ℝ[X]}
     (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpq : Prec0 p q) :
-    Prec0 (hadamardProduct f p) (hadamardProduct f q) :=
-  hGW hf hf hp hq hf.prec0_self hpq
+    Prec0 (hadamardProduct f p) (hadamardProduct f q) := by
+  simpa [hadamardProduct_comm] using
+    hadamardProduct_preserves_prec0_right hGW hp hq hf hpq
 
 theorem reciprocalShift_hadamardProduct (D : ℕ) (p q : ℝ[X]) :
     reciprocalShift D (hadamardProduct p q) =
