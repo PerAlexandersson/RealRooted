@@ -228,6 +228,76 @@ theorem schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le
     schurSzegoComp n f 0 = 0 := by
   rw [schurSzegoComp_comm, schurSzegoComp_zero_left]
 
+/-- Schur--Szego composition is additive in its left argument. -/
+theorem schurSzegoComp_add_left (n : Nat) (f f' g : ℝ[X]) :
+    schurSzegoComp n (f + f') g =
+      schurSzegoComp n f g + schurSzegoComp n f' g := by
+  ext k
+  by_cases hk : k ≤ n
+  · simp only [coeff_schurSzegoComp_of_le hk, coeff_add, add_mul, add_div]
+  · simp [coeff_schurSzegoComp_eq_zero_of_lt (Nat.lt_of_not_le hk)]
+
+/-- Schur--Szego composition is additive in its right argument. -/
+theorem schurSzegoComp_add_right (n : Nat) (f g g' : ℝ[X]) :
+    schurSzegoComp n f (g + g') =
+      schurSzegoComp n f g + schurSzegoComp n f g' := by
+  rw [schurSzegoComp_comm, schurSzegoComp_add_left, schurSzegoComp_comm n g f,
+    schurSzegoComp_comm n g' f]
+
+/-- Scalars pull out of the left argument of a Schur--Szego composition. -/
+theorem schurSzegoComp_C_mul_left (n : Nat) (a : ℝ) (f g : ℝ[X]) :
+    schurSzegoComp n (C a * f) g = C a * schurSzegoComp n f g := by
+  ext k
+  by_cases hk : k ≤ n
+  · rw [coeff_schurSzegoComp_of_le hk, coeff_C_mul, coeff_C_mul,
+      coeff_schurSzegoComp_of_le hk, mul_assoc, mul_div_assoc]
+  · simp [coeff_schurSzegoComp_eq_zero_of_lt (Nat.lt_of_not_le hk)]
+
+/-- Scalars pull out of the right argument of a Schur--Szego composition. -/
+theorem schurSzegoComp_C_mul_right (n : Nat) (a : ℝ) (f g : ℝ[X]) :
+    schurSzegoComp n f (C a * g) = C a * schurSzegoComp n f g := by
+  rw [schurSzegoComp_comm, schurSzegoComp_C_mul_left, schurSzegoComp_comm n g f]
+
+/-- The support of a Schur--Szego composition is contained in the left
+support. -/
+theorem support_schurSzegoComp_subset_left (n : Nat) (f g : ℝ[X]) :
+    (schurSzegoComp n f g).support ⊆ f.support := by
+  intro k hk
+  rw [mem_support_iff, coeff_schurSzegoComp] at hk
+  rw [mem_support_iff]
+  intro hfk
+  exact hk (by simp [hfk])
+
+/-- The support of a Schur--Szego composition is contained in the right
+support. -/
+theorem support_schurSzegoComp_subset_right (n : Nat) (f g : ℝ[X]) :
+    (schurSzegoComp n f g).support ⊆ g.support := by
+  rw [schurSzegoComp_comm]
+  exact support_schurSzegoComp_subset_left n g f
+
+/-- Nonnegative coefficients are preserved by fixed-degree Schur--Szego
+composition. -/
+theorem HasNonnegCoeffs.schurSzegoComp {n : Nat} {f g : ℝ[X]}
+    (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g) :
+    HasNonnegCoeffs (schurSzegoComp n f g) := by
+  intro k
+  rw [coeff_schurSzegoComp]
+  split
+  · exact div_nonneg (mul_nonneg (hf k) (hg k)) (by positivity)
+  · exact le_refl 0
+
+/-- Fixed-degree Schur--Szego composition is a diagonal operator. -/
+theorem schurSzegoComp_eq_diagonalOperator (n : Nat) (f g : ℝ[X]) :
+    schurSzegoComp n f g =
+      diagonalOperator (fun k => g.coeff k / (Nat.choose n k : ℝ)) f := by
+  ext k
+  rw [coeff_diagonalOperator, coeff_schurSzegoComp]
+  by_cases hk : k ≤ n
+  · rw [if_pos hk]
+    ring
+  · rw [if_neg hk]
+    simp [Nat.choose_eq_zero_of_lt (Nat.lt_of_not_le hk)]
+
 /-- **Finite Schur--Szegő composition theorem** (classical input).
 
 If `f` is a PF polynomial (only real, nonpositive zeros) of degree at most `n`
