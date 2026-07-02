@@ -1398,6 +1398,14 @@ theorem posComboNoCommonSameDegreeSlotData_of_rootCrossing
   · intro k hk1 hk2
     exact hc2 k hk1 (by rw [hlenf] at hk2; exact hk2)
 
+/-- The repaired same-degree pair-interleaver endpoint follows directly from
+the same-degree descending-root crossing inequalities. -/
+theorem sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
+    (hcross : PosComboNoCommonSameDegreeRootCrossingNonnegStatement) :
+    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
+  sameDegreePairHasCommonInterleaver_nonneg_of_slotData
+    (posComboNoCommonSameDegreeSlotData_of_rootCrossing hcross)
+
 /-- **Honest missing root-slot boundary for milestone B2 (#42).**
 
 This is the succ-degree analogue of the same-degree slot-intersection input
@@ -1621,6 +1629,16 @@ theorem posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_rootCrossing
     exact hc1 k hk1 (by rw [hlenf] at hk2; exact hk2)
   · intro k hk1 hk2
     exact hc2 k hk1 (by rw [hlenf] at hk2; exact hk2)
+
+/-- The corrected succ-degree pair-interleaver endpoint follows directly from
+left-endpoint real-rootedness and the succ-degree descending-root crossing
+inequalities. -/
+theorem succDegreePairHasCommonInterleaver_nonneg_of_leftSplits_and_rootCrossing
+    (hsplit : PosComboSuccDegreeLeftSplitsNonnegStatement)
+    (hcross : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+  succDegreePairHasCommonInterleaver_nonneg_of_slotData
+    (posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_rootCrossing hsplit hcross)
 
 /-- Honest nonnegative degree-split reduction of the no-common orientation
 problem: it is enough to solve the same-degree branch up to orientation
