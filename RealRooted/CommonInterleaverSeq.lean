@@ -1672,6 +1672,27 @@ theorem prec_of_slots_polyOfDescRootsDesc {f : ℝ[X]} {xs : List ℝ} (hf₀ : 
   simpa [polyOfDescRootsDesc] using
     prec_of_slots_polyOfDescRoots hf₀ hf hxs hdeg_lo hdeg_hi hslot
 
+private lemma prec_polyOfDescRootsDesc_of_ofFn_slots
+    {f : ℝ[X]} {n : ℕ} {x : Fin n → ℝ}
+    (hf₀ : f ≠ 0) (hf : f.Splits)
+    (hxs : (List.ofFn x).Pairwise (· ≥ ·))
+    (hdeg_lo : f.natDegree ≤ n)
+    (hdeg_hi : n ≤ f.natDegree + 1)
+    (hslot : ∀ j (hj : j < n),
+      x ⟨j, hj⟩ ∈ rootSlotInterval (rootSeqDesc f)
+        ⟨j, by
+          have : j < f.natDegree + 1 := lt_of_lt_of_le hj hdeg_hi
+          simpa [rootSeqDesc_length hf] using this⟩) :
+    Prec f (polyOfDescRootsDesc (List.ofFn x)) := by
+  refine
+    prec_of_slots_polyOfDescRootsDesc hf₀ hf hxs
+      (by simpa using hdeg_lo)
+      (by simpa using hdeg_hi)
+      ?_
+  intro j hj
+  rw [get_ofFn_eq_apply (x := x) (xs := List.ofFn x) rfl hj]
+  exact hslot j (by simpa using hj)
+
 /-- Matching nonempty root-slot intersections for two same-degree real-rooted
 polynomials produce a common right interleaver.  This isolates the constructive
 part of the same-degree Chudnovsky--Seymour gap from the remaining
@@ -1700,40 +1721,18 @@ theorem pairHasCommonInterleaver_of_sameDegree_slotIntersections
     simpa [x] using hraw
   let h : ℝ[X] := polyOfDescRootsDesc xs
   refine ⟨h, ?_, ?_⟩
-  · have hdeg_lo : f.natDegree ≤ xs.length := by
-      simp_all
-    have hdeg_hi : xs.length ≤ f.natDegree + 1 := by
-      simp_all
-    have hslot_f :
-        ∀ j (hj : j < xs.length),
-          xs.get ⟨j, hj⟩ ∈ rootSlotInterval (rootSeqDesc f)
-            ⟨j, by
-              have : j < f.natDegree + 1 := lt_of_lt_of_le hj hdeg_hi
-              simpa [rootSeqDesc_length hf] using this⟩ := by
-      intro j hj
-      have hjn : j < n := by
-        simpa [n, hxs_len] using hj
-      have hraw := (Classical.choose_spec (hslot j (by simp_all))).1
-      rw [get_ofFn_eq_apply (x := x) (xs := xs) rfl hj]
-      simpa [x] using hraw
-    simpa [h] using prec_of_slots_polyOfDescRootsDesc hf₀ hf hxs_pair hdeg_lo hdeg_hi hslot_f
-  · have hdeg_lo : g.natDegree ≤ xs.length := by
-      simp_all
-    have hdeg_hi : xs.length ≤ g.natDegree + 1 := by
-      simp_all
-    have hslot_g :
-        ∀ j (hj : j < xs.length),
-          xs.get ⟨j, hj⟩ ∈ rootSlotInterval (rootSeqDesc g)
-            ⟨j, by
-              have : j < g.natDegree + 1 := lt_of_lt_of_le hj hdeg_hi
-              simpa [rootSeqDesc_length hg] using this⟩ := by
-      intro j hj
-      have hjn : j < n := by
-        simpa [n, hxs_len] using hj
-      have hraw := (Classical.choose_spec (hslot j (by simp_all))).2
-      rw [get_ofFn_eq_apply (x := x) (xs := xs) rfl hj]
-      simpa [x] using hraw
-    simpa [h] using prec_of_slots_polyOfDescRootsDesc hg₀ hg hxs_pair hdeg_lo hdeg_hi hslot_g
+  · simpa [h, xs] using
+      prec_polyOfDescRootsDesc_of_ofFn_slots hf₀ hf hxs_pair
+        (by simp [n]) (by simp [n])
+        (fun j hj => by
+          have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hj))).1
+          simpa [x] using hraw)
+  · simpa [h, xs] using
+      prec_polyOfDescRootsDesc_of_ofFn_slots hg₀ hg hxs_pair
+        (by simp [n, hdeg]) (by simp [n, hdeg])
+        (fun j hj => by
+          have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hj))).2
+          simpa [x] using hraw)
 
 /-- Matching nonempty root-slot intersections for a succ-degree pair of
 real-rooted polynomials produce a common right interleaver.  When `g` has
@@ -1764,40 +1763,18 @@ theorem pairHasCommonInterleaver_of_succDegree_slotIntersections
     simpa [x] using hraw
   let h : ℝ[X] := polyOfDescRootsDesc xs
   refine ⟨h, ?_, ?_⟩
-  · have hdeg_lo : f.natDegree ≤ xs.length := by
-      lia
-    have hdeg_hi : xs.length ≤ f.natDegree + 1 := by
-      lia
-    have hslot_f :
-        ∀ j (hj : j < xs.length),
-          xs.get ⟨j, hj⟩ ∈ rootSlotInterval (rootSeqDesc f)
-            ⟨j, by
-              have : j < f.natDegree + 1 := lt_of_lt_of_le hj hdeg_hi
-              simpa [rootSeqDesc_length hf] using this⟩ := by
-      intro j hj
-      have hjn : j < n := by
-        simpa [n, hxs_len] using hj
-      have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hjn))).1
-      rw [get_ofFn_eq_apply (x := x) (xs := xs) rfl hj]
-      simpa [x] using hraw
-    simpa [h] using prec_of_slots_polyOfDescRootsDesc hf₀ hf hxs_pair hdeg_lo hdeg_hi hslot_f
-  · have hdeg_lo : g.natDegree ≤ xs.length := by
-      lia
-    have hdeg_hi : xs.length ≤ g.natDegree + 1 := by
-      lia
-    have hslot_g :
-        ∀ j (hj : j < xs.length),
-          xs.get ⟨j, hj⟩ ∈ rootSlotInterval (rootSeqDesc g)
-            ⟨j, by
-              have : j < g.natDegree + 1 := lt_of_lt_of_le hj hdeg_hi
-              simpa [rootSeqDesc_length hg] using this⟩ := by
-      intro j hj
-      have hjn : j < n := by
-        simpa [n, hxs_len] using hj
-      have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hjn))).2
-      rw [get_ofFn_eq_apply (x := x) (xs := xs) rfl hj]
-      simpa [x] using hraw
-    simpa [h] using prec_of_slots_polyOfDescRootsDesc hg₀ hg hxs_pair hdeg_lo hdeg_hi hslot_g
+  · simpa [h, xs] using
+      prec_polyOfDescRootsDesc_of_ofFn_slots hf₀ hf hxs_pair
+        (by simp [n]) (by simp [n])
+        (fun j hj => by
+          have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hj))).1
+          simpa [x] using hraw)
+  · simpa [h, xs] using
+      prec_polyOfDescRootsDesc_of_ofFn_slots hg₀ hg hxs_pair
+        (by simp [n, hdeg]) (by simp [n, hdeg])
+        (fun j hj => by
+          have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hj))).2
+          simpa [x] using hraw)
 
 /-- Reversing a weak zero-aware interlacing sequence with nonnegative
 coefficients preserves the same structure. -/
