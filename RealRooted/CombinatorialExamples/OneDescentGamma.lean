@@ -227,8 +227,8 @@ lemma oneDescent_prec_gamma_one_top (m : Nat) (hm : 0 < m) :
   rw [oneDescentGamma_diag, oneDescentGamma_one m (m - 1) hpred_lt]
   have hpow0 : m - (m - 1) - 1 = 0 := by lia
   rw [hpow0, pow_zero]
-  have hchoose_ne : (((Nat.choose m (m - 1) : Nat) : ℝ)) ≠ 0 := by
-    exact_mod_cast Nat.choose_ne_zero (Nat.sub_le m 1)
+  have hchoose_ne : (((Nat.choose m (m - 1) : Nat) : ℝ)) ≠ 0 :=
+    Nat.cast_choose_ne_zero (R := ℝ) (Nat.sub_le m 1)
   have hprec :=
     prec_C_mul_right
       (prec_one_X_add_C ((((m - (m - 1) : Nat) : ℝ) / (((m - 1) + 1 : Nat) : ℝ))))
@@ -253,10 +253,10 @@ lemma oneDescent_prec_gamma_one_adjacent
       oneDescentGamma_adjacent_linearShift_le m j hj
   have hbase : Prec (X + C a) (X * (X + C b)) :=
     prec_X_add_C_to_X_mul_X_add_C ha hab
-  have hleft_ne : (((Nat.choose m (j + 1) : Nat) : ℝ)) ≠ 0 := by
-    exact_mod_cast Nat.choose_ne_zero (Nat.le_of_lt hj)
-  have hright_ne : (((Nat.choose m j : Nat) : ℝ)) ≠ 0 := by
-    exact_mod_cast Nat.choose_ne_zero (Nat.le_of_lt hjm)
+  have hleft_ne : (((Nat.choose m (j + 1) : Nat) : ℝ)) ≠ 0 :=
+    Nat.cast_choose_ne_zero (R := ℝ) (Nat.le_of_lt hj)
+  have hright_ne : (((Nat.choose m j : Nat) : ℝ)) ≠ 0 :=
+    Nat.cast_choose_ne_zero (R := ℝ) (Nat.le_of_lt hjm)
   have hscaled :
       Prec
         (C ((Nat.choose m (j + 1) : Nat) : ℝ) * (X + C a))
@@ -278,8 +278,8 @@ lemma oneDescent_prec_gamma_one_terminal (m : Nat) (hm : 1 < m) :
   have hab : a ≤ b := by grind
   have hbase : Prec (X + C a) (X * (X + C b)) :=
     prec_X_add_C_to_X_mul_X_add_C ha hab
-  have hchoose_ne : (((Nat.choose m 1 : Nat) : ℝ)) ≠ 0 := by
-    exact_mod_cast Nat.choose_ne_zero (show 1 ≤ m by lia)
+  have hchoose_ne : (((Nat.choose m 1 : Nat) : ℝ)) ≠ 0 :=
+    Nat.cast_choose_ne_zero (R := ℝ) (show 1 ≤ m by lia)
   have hscaled :
       Prec
         (C ((Nat.choose m 1 : Nat) : ℝ) * (X + C a))
@@ -331,8 +331,8 @@ theorem oneDescentGamma_one_isRealRooted
           (X ^ (m - j - 1) * (X + C a)).Splits) :=
       isRealRooted_mul (isRealRooted_X_pow (m - j - 1)).1 (isRealRooted_X_pow (m - j - 1)).2
         hlin_rr.1 hlin_rr.2
-    have hchoose_ne : (((Nat.choose m j : Nat) : ℝ)) ≠ 0 := by
-      exact_mod_cast Nat.choose_ne_zero hj
+    have hchoose_ne : (((Nat.choose m j : Nat) : ℝ)) ≠ 0 :=
+      Nat.cast_choose_ne_zero (R := ℝ) hj
     simpa [a, mul_assoc] using
       isRealRooted_C_mul hprod_rr.1 hprod_rr.2 hchoose_ne
 

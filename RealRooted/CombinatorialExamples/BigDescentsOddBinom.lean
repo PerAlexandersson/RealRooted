@@ -128,7 +128,7 @@ lemma oddBinomPolyReal_natDegree (n : ℕ) (hn : 0 < n) :
       · lia))
     (by
       rw [coeff_oddBinomPolyReal]
-      exact_mod_cast Nat.choose_ne_zero (by lia :
+      exact Nat.cast_choose_ne_zero (R := ℝ) (by lia :
         2 * ((n - 1) / 2) + 1 ≤ n))
 
 lemma oddBinomPolyReal_ne_zero (n : ℕ) (hn : 0 < n) :
@@ -137,8 +137,8 @@ lemma oddBinomPolyReal_ne_zero (n : ℕ) (hn : 0 < n) :
   have hcoeff := congrArg (fun p : ℝ[X] => p.coeff ((n - 1) / 2)) hp
   change (oddBinomPolyReal n).coeff ((n - 1) / 2) = 0 at hcoeff
   rw [coeff_oddBinomPolyReal] at hcoeff
-  exact Nat.choose_ne_zero (by lia :
-    2 * ((n - 1) / 2) + 1 ≤ n) (by exact_mod_cast hcoeff)
+  exact (Nat.cast_choose_ne_zero (R := ℝ) (by lia :
+    2 * ((n - 1) / 2) + 1 ≤ n)) hcoeff
 
 lemma oddBinom_eval_sq_eq_aux (n : ℕ) (y : ℂ) :
     (oddBinomPoly n).eval (y ^ 2) = (oddBinomAux n).eval y := by
