@@ -535,6 +535,12 @@ lemma HasNonnegCoeffs.mul {p q : ℝ[X]}
   intro n
   simpa [coeff_mul] using Finset.sum_nonneg fun ij _ => mul_nonneg (hp ij.1) (hq ij.2)
 
+protected lemma HasNonnegCoeffs.pow {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
+    ∀ n : ℕ, HasNonnegCoeffs (p ^ n)
+  | 0 => hasNonnegCoeffs_one
+  | n + 1 => by
+      simpa [pow_succ] using (hp.pow n).mul hp
+
 lemma hasNonnegCoeffs_X_sub_C {r : ℝ} (hr : r ≤ 0) : HasNonnegCoeffs (X - C r) := by
   rintro (_ | _ | n)
   · simp [coeff_sub, hr]
@@ -552,6 +558,9 @@ protected lemma HasNonnegCoeffs.X_mul {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
 lemma hasNonnegCoeffs_X_add_C {a : ℝ} (ha : 0 ≤ a) :
     HasNonnegCoeffs (X + C a : ℝ[X]) := by
   simpa [sub_eq_add_neg] using hasNonnegCoeffs_X_sub_C (r := -a) (by linarith)
+
+lemma hasNonnegCoeffs_X_add_one : HasNonnegCoeffs (X + 1 : ℝ[X]) := by
+  simpa using hasNonnegCoeffs_X_add_C (a := 1) (zero_le_one : (0 : ℝ) ≤ 1)
 
 lemma hasNonnegCoeffs_multiset_prod_X_sub_C :
     ∀ s : Multiset ℝ, (∀ r ∈ s, r ≤ 0) → HasNonnegCoeffs ((s.map (X - C ·)).prod) := by

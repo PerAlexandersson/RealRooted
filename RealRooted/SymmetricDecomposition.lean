@@ -151,15 +151,6 @@ lemma fPolynomial_succ_of_natDegree_le {d : ℕ} {p : ℝ[X]}
           C (p.coeff k) * X ^ k * (X + 1) ^ (d - k) := by
             rw [Finset.mul_sum]
 
-lemma HasNonnegCoeffs.pow {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
-    ∀ n : ℕ, HasNonnegCoeffs (p ^ n)
-  | 0 => hasNonnegCoeffs_one
-  | n + 1 => by
-      simpa [pow_succ] using (HasNonnegCoeffs.pow hp n).mul hp
-
-lemma hasNonnegCoeffs_X_add_one : HasNonnegCoeffs (X + 1 : ℝ[X]) :=
-  hasNonnegCoeffs_X.add hasNonnegCoeffs_one
-
 lemma hasNonnegCoeffs_IdTransform_iff {d : ℕ} {p : ℝ[X]} :
     HasNonnegCoeffs (IdTransform d p) ↔ HasNonnegCoeffs p := by
   constructor
