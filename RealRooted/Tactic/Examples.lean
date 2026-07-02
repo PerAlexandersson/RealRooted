@@ -6,6 +6,7 @@ import RealRooted.Tactic.Examples.Favard
 import RealRooted.Tactic.Examples.MaWang
 import RealRooted.Tactic.Examples.LiuWang
 import RealRooted.Tactic.Examples.Matrix
+import RealRooted.Tactic.Examples.Combinatorial
 
 /-!
 # RealRooted tactic examples

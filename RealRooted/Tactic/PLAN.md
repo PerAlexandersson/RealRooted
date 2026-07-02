@@ -142,6 +142,8 @@ The first certificate-driven layer is implemented.
   dispatchers.
 - `Matrix.lean` defines strict and weak matrix-transfer dispatchers.
 - `Examples/` contains abstract smoke tests for these dispatchers.
+  It also contains a small Touchard regression file under
+  `Examples/Combinatorial.lean`.
 
 ## Attribute system
 
