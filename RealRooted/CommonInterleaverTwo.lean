@@ -1240,6 +1240,31 @@ theorem sameDegreePairHasCommonInterleaver_nonneg_of_slotData
   intro j hj
   exact hstmt hf_pos hg_pos hfnn hgnn hfg hdeg hno j hj _ _
 
+/-- **Converse of the same-degree slot-data reduction for #41.**
+
+A common right interleaver for the same-degree pair `(f, g)` recovers the
+matching root-slot intersections through
+`rootSlotInterval_inter_nonempty_of_commonInterleaver`. -/
+theorem posComboNoCommonSameDegreeSlotData_of_pairHasCommonInterleaver
+    (hstmt : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement) :
+    PosComboNoCommonSameDegreeSlotDataNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
+  obtain ⟨h, hfh, hgh⟩ := hstmt hf_pos hg_pos hfnn hgnn hfg hdeg hno
+  intro j hj hjf hjg
+  have hjg' : j < g.natDegree + 1 := by lia
+  exact rootSlotInterval_inter_nonempty_of_commonInterleaver hfh hgh j hj hjg'
+
+/-- **The #41 same-degree slot-data reformulation is equivalent to the target.**
+
+The matching root-slot statement holds if and only if the repaired
+same-degree common-right-interleaver statement holds, so the #41 reduction to
+slot data loses no information. -/
+theorem posComboNoCommonSameDegreeSlotData_iff_pairHasCommonInterleaver :
+    PosComboNoCommonSameDegreeSlotDataNonnegStatement ↔
+      PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
+  ⟨sameDegreePairHasCommonInterleaver_nonneg_of_slotData,
+    posComboNoCommonSameDegreeSlotData_of_pairHasCommonInterleaver⟩
+
 /-- **Honest missing root-slot boundary for milestone B2 (#42).**
 
 This is the succ-degree analogue of the same-degree slot-intersection input
