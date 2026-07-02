@@ -5,6 +5,7 @@ import Mathlib.Algebra.Polynomial.Splits
 import Mathlib.Analysis.SpecificLimits.Basic
 import Mathlib.Data.List.Sort
 import Mathlib.Data.Real.Basic
+import RealRooted.Mathlib.Data.Nat.Choose.Cast
 import RealRooted.Mathlib.Data.List.Interleave
 
 /-!
@@ -55,7 +56,7 @@ lemma support_X_add_one_pow_eq_range (n : ℕ) :
   ext k
   rw [mem_support_iff, coeff_X_add_one_pow, Finset.mem_range, Nat.lt_succ_iff]
   by_cases hk : k ≤ n
-  · exact iff_of_true (by exact_mod_cast Nat.choose_ne_zero hk) hk
+  · exact iff_of_true (Nat.cast_choose_ne_zero (R := ℝ) hk) hk
   · have hchoose_nat : Nat.choose n k = 0 := Nat.choose_eq_zero_of_lt (Nat.lt_of_not_le hk)
     have hchoose : (Nat.choose n k : ℝ) = 0 := by exact_mod_cast hchoose_nat
     exact iff_of_false (fun hne => hne hchoose) hk

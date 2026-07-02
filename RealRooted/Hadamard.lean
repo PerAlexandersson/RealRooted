@@ -180,7 +180,7 @@ theorem choose_mul_coeff_schurSzegoComp_of_le {n k : Nat} (hk : k ≤ n) (f g : 
     (Nat.choose n k : ℝ) * (schurSzegoComp n f g).coeff k =
       f.coeff k * g.coeff k := by
   rw [coeff_schurSzegoComp_of_le hk]
-  field_simp [show (Nat.choose n k : ℝ) ≠ 0 by exact_mod_cast Nat.choose_ne_zero hk]
+  field_simp [Nat.cast_choose_ne_zero (R := ℝ) hk]
 
 theorem choose_mul_coeff_schurSzegoComp_eq_coeff_hadamardProduct_of_le
     {n k : Nat} (hk : k ≤ n) (f g : ℝ[X]) :
@@ -261,7 +261,7 @@ theorem schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le
     schurSzegoComp n (jensenPolynomial n gamma) p = diagonalOperator gamma p := by
   ext k
   by_cases hk : k ≤ n
-  · have hchoose : (Nat.choose n k : ℝ) ≠ 0 := by exact_mod_cast Nat.choose_ne_zero hk
+  · have hchoose : (Nat.choose n k : ℝ) ≠ 0 := Nat.cast_choose_ne_zero (R := ℝ) hk
     rw [coeff_schurSzegoComp_of_le hk, coeff_jensenPolynomial, coeff_diagonalOperator]
     simp only [hk, if_true]
     field_simp [hchoose]
