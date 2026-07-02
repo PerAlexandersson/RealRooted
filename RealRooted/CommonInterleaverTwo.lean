@@ -29,6 +29,11 @@ private lemma iic_inter_iic_nonempty (a b : ℝ) :
     (Set.Iic a ∩ Set.Iic b).Nonempty :=
   ⟨min a b, min_le_left a b, min_le_right a b⟩
 
+private lemma iic_inter_icc_nonempty_of_left
+    {a b c : ℝ} (hba : b ≤ a) (hbc : b ≤ c) :
+    (Set.Iic c ∩ Set.Icc b a).Nonempty :=
+  ⟨b, hbc, le_rfl, hba⟩
+
 private lemma icc_inter_icc_nonempty_of_crossing
     {a a' b b' : ℝ} (haa' : a ≤ a') (hbb' : b ≤ b')
     (hab' : a ≤ b') (hba' : b ≤ a') :
@@ -1549,9 +1554,8 @@ theorem rootSlotInterval_inter_nonempty_of_crossing
         · contradiction
         · grind
         · have hba : b ≤ a := hrg.1.1
-          exact ⟨b,
-            Set.mem_Iic.mpr (by simpa using hc1 1 (by norm_num) (by norm_num)),
-            Set.mem_Icc.mpr ⟨by linarith, by linarith⟩⟩
+          exact iic_inter_icc_nonempty_of_left hba
+            (by simpa using hc1 1 (by norm_num) (by norm_num))
       · refine ⟨rg[l.length + 2], ?_, ?_⟩ <;> norm_num
         · have h := hc1 (l.length + 2) (by linarith) (by linarith)
           have hr : (l.reverse ++ [s, r])[l.length + 2 - 1]?.getD 0 = r := by
