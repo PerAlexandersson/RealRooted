@@ -1337,18 +1337,14 @@ theorem rootSlotInterval_inter_nonempty_of_sameDegree_crossing
   · have hjrf : j < rf.length := by lia
     have hjrg : j < rg.length := by simpa [hlen] using hjrf
     have hjpos : 1 ≤ j := by lia
-    have hidx_rf : (⟨j - 1, by lia⟩ : Fin rf.length) < ⟨j, hjrf⟩ := by
-      change j - 1 < j
-      exact Nat.sub_lt (by lia : 0 < j) (by norm_num)
-    have hidx_rg : (⟨j - 1, by lia⟩ : Fin rg.length) < ⟨j, hjrg⟩ := by
-      change j - 1 < j
-      exact Nat.sub_lt (by lia : 0 < j) (by norm_num)
     have hrf_step : rf[j] ≤ rf[j - 1] := by
-      simpa [ge_iff_le] using
-        (List.pairwise_iff_get.mp hrf) ⟨j - 1, by lia⟩ ⟨j, hjrf⟩ hidx_rf
+      simpa [List.get_eq_getElem] using
+        get_le_get_of_pairwise_ge hrf
+          (i := ⟨j - 1, by lia⟩) (j := ⟨j, hjrf⟩) (by simp)
     have hrg_step : rg[j] ≤ rg[j - 1] := by
-      simpa [ge_iff_le] using
-        (List.pairwise_iff_get.mp hrg) ⟨j - 1, by lia⟩ ⟨j, hjrg⟩ hidx_rg
+      simpa [List.get_eq_getElem] using
+        get_le_get_of_pairwise_ge hrg
+          (i := ⟨j - 1, by lia⟩) (j := ⟨j, hjrg⟩) (by simp)
     have hcross_gf : rg[j] ≤ rf[j - 1] := by
       have hgj : rg.getD j 0 = rg[j] :=
         list_getD_eq_getElem_of_lt rg j 0 hjrg
@@ -1562,13 +1558,14 @@ theorem rootSlotInterval_inter_nonempty_of_crossing
           rwa [hr] at h
         · have := List.pairwise_iff_get.mp hrg
           exact this ⟨_, by linarith⟩ ⟨_, by linarith⟩ (Nat.lt_succ_self _)
-    · have hrf_step : rf[j + 1] ≤ rf[j] :=
-        (List.pairwise_iff_get.mp hrf)
-          ⟨j, by linarith⟩ ⟨j + 1, by lia⟩ (Nat.lt_succ_self _)
+    · have hrf_step : rf[j + 1] ≤ rf[j] := by
+        simpa [List.get_eq_getElem] using
+          get_le_get_of_pairwise_ge hrf
+            (i := ⟨j, by linarith⟩) (j := ⟨j + 1, by lia⟩) (by simp)
       have hrg_step : rg[j + 1] ≤ rg[j] := by
         simpa [List.get_eq_getElem] using
-          (List.pairwise_iff_get.mp hrg)
-            ⟨j, by linarith⟩ ⟨j + 1, by linarith⟩ (Nat.lt_succ_self _)
+          get_le_get_of_pairwise_ge hrg
+            (i := ⟨j, by linarith⟩) (j := ⟨j + 1, by linarith⟩) (by simp)
       have hcross_gf : rg[j + 1] ≤ rf[j] := by
         simpa [List.getD_eq_getElem?_getD,
           List.getElem?_eq_getElem (l := rg) (i := j + 1) (by linarith),

@@ -362,7 +362,7 @@ private lemma le_of_mem_adjacent_rootSlots
       simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using hy_bounds.2
     exact le_trans hy_upper hx_lower
 
-private lemma get_le_get_of_pairwise_ge
+lemma get_le_get_of_pairwise_ge
     {rs : List ℝ} (hrs : rs.Pairwise (· ≥ ·))
     {i j : Fin rs.length} (hij : i ≤ j) :
     rs.get j ≤ rs.get i := by
