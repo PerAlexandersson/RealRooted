@@ -2597,10 +2597,8 @@ theorem compatiblePairHasCommonInterleaver_of_allComboBridge_and_nonnegCoeffs
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : Compatible f g) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
-  compatiblePairHasCommonInterleaver_of_nonnegPosComboPairBridge
-    (fun {f g} hf_pos hg_pos hfnn hgnn hfg =>
-      posComboPairHasCommonInterleaver_of_allComboBridge_and_nonnegCoeffs
-        hallBridge (f := f) (g := g) hf_pos hg_pos hfnn hgnn hfg)
+  compatiblePairHasCommonInterleaver_of_noCommonOrientation_and_nonnegCoeffs
+    (posComboNoCommonOrientation_of_allComboBridge hallBridge)
     hf_pos hg_pos hfnn hgnn hfg
 
 /-- Compatibility bridge under nonnegative coefficients, reduced to the
@@ -3359,9 +3357,9 @@ theorem chudnovskySeymour_fourWay_of_allComboBridge_and_nonnegCoeffs
     (PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs) ∧
       (PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs) ∧
       (HasCommonInterleaver fs ↔ FamilyCompatible fs) :=
-  chudnovskySeymour_fourWay_of_pairwiseCommonForward hrr hpos <|
-    pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_allComboBridge_and_nonnegCoeffs
-      (fs := fs) hallBridge hpos hnn
+  chudnovskySeymour_fourWay_of_noCommonOrientation_and_nonnegCoeffs
+    (fs := fs) hrr hpos hnn
+    (posComboNoCommonOrientation_of_allComboBridge hallBridge)
 
 /-- Four-way Chudnovsky--Seymour package in the nonnegative-coefficient regime
 from the affine-family bridge. -/
@@ -3556,9 +3554,9 @@ theorem pairwiseCompatible_iff_familyCompatible_of_allComboBridge_and_nonnegCoef
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (hallBridge : PosComboNoCommonToAllComboBridgeStatement) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
-  pairwiseCompatible_iff_familyCompatible_of_fourWay <|
-    chudnovskySeymour_fourWay_of_allComboBridge_and_nonnegCoeffs
-      (fs := fs) hrr hpos hnn hallBridge
+  pairwiseCompatible_iff_familyCompatible_of_noCommonOrientation_and_nonnegCoeffs
+    (fs := fs) hrr hpos hnn
+    (posComboNoCommonOrientation_of_allComboBridge hallBridge)
 
 /-- Nonnegative-coefficient specialization of Chudnovsky--Seymour `1 ↔ 4`
 from the affine-family bridge. -/
