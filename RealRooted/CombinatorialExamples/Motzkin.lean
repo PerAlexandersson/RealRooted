@@ -119,12 +119,6 @@ lemma motzkin_posLeadingCoeff (n : Nat) :
   simpa [HasPosLeadingCoeff, leadingCoeff, natDegree_motzkin] using
     (coeff_motzkin_top_pos_and_above n).1
 
-lemma hasPosLeadingCoeff_C_mul_motzkin {a : ℝ} (ha : 0 < a) {p : ℝ[X]}
-    (hp : HasPosLeadingCoeff p) :
-    HasPosLeadingCoeff (C a * p) := by
-  simpa [HasPosLeadingCoeff, leadingCoeff_C_mul_of_isUnit (isUnit_iff_ne_zero.mpr ha.ne')]
-    using mul_pos ha hp
-
 lemma prec_self_mul_X_sub_C_of_roots_le {r : ℝ} {f : ℝ[X]}
     (hf : f.Splits) (hf_pos : HasPosLeadingCoeff f)
     (hf_le : ∀ s ∈ f.roots, s ≤ r) :
@@ -186,11 +180,11 @@ lemma prec_motzkin_shifted_succ {n : Nat}
     prec_C_mul_left hright_core hscalarB_pos.ne'
   have hleft_pos :
       HasPosLeadingCoeff (C (motzkinCoeffA n) * motzkin (n + 1)) :=
-    hasPosLeadingCoeff_C_mul_motzkin hscalarA_pos (motzkin_posLeadingCoeff (n + 1))
+    hasPosLeadingCoeff_C_mul hscalarA_pos (motzkin_posLeadingCoeff (n + 1))
   have hright_pos :
       HasPosLeadingCoeff
         (C (motzkinCoeffB n) * ((X - C motzkinShift) * motzkin n)) :=
-    hasPosLeadingCoeff_C_mul_motzkin hscalarB_pos
+    hasPosLeadingCoeff_C_mul hscalarB_pos
       (hasPosLeadingCoeff_X_sub_C_mul (motzkin_posLeadingCoeff n))
   have hsum :
       Prec
