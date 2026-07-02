@@ -258,15 +258,34 @@ theorem schurSzegoComp_C_mul_right (n : Nat) (a : ℝ) (f g : ℝ[X]) :
     schurSzegoComp n f (C a * g) = C a * schurSzegoComp n f g := by
   rw [schurSzegoComp_comm, schurSzegoComp_C_mul_left, schurSzegoComp_comm n g f]
 
+/-- Fixed-degree Schur--Szego composition is a diagonal operator. -/
+theorem schurSzegoComp_eq_diagonalOperator (n : Nat) (f g : ℝ[X]) :
+    schurSzegoComp n f g =
+      diagonalOperator (fun k => g.coeff k / (Nat.choose n k : ℝ)) f := by
+  ext k
+  rw [coeff_diagonalOperator, coeff_schurSzegoComp]
+  by_cases hk : k ≤ n
+  · rw [if_pos hk]
+    ring
+  · rw [if_neg hk]
+    simp [Nat.choose_eq_zero_of_lt (Nat.lt_of_not_le hk)]
+
+theorem natDegree_schurSzegoComp_le_left (n : Nat) (f g : ℝ[X]) :
+    (schurSzegoComp n f g).natDegree ≤ f.natDegree := by
+  rw [schurSzegoComp_eq_diagonalOperator]
+  exact natDegree_diagonalOperator_le _ _
+
+theorem natDegree_schurSzegoComp_le_right (n : Nat) (f g : ℝ[X]) :
+    (schurSzegoComp n f g).natDegree ≤ g.natDegree := by
+  rw [schurSzegoComp_comm]
+  exact natDegree_schurSzegoComp_le_left n g f
+
 /-- The support of a Schur--Szego composition is contained in the left
 support. -/
 theorem support_schurSzegoComp_subset_left (n : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).support ⊆ f.support := by
-  intro k hk
-  rw [mem_support_iff, coeff_schurSzegoComp] at hk
-  rw [mem_support_iff]
-  intro hfk
-  exact hk (by simp [hfk])
+  rw [schurSzegoComp_eq_diagonalOperator]
+  exact support_diagonalOperator_subset _ _
 
 /-- The support of a Schur--Szego composition is contained in the right
 support. -/
@@ -280,23 +299,8 @@ composition. -/
 theorem HasNonnegCoeffs.schurSzegoComp {n : Nat} {f g : ℝ[X]}
     (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g) :
     HasNonnegCoeffs (schurSzegoComp n f g) := by
-  intro k
-  rw [coeff_schurSzegoComp]
-  split
-  · exact div_nonneg (mul_nonneg (hf k) (hg k)) (by positivity)
-  · exact le_refl 0
-
-/-- Fixed-degree Schur--Szego composition is a diagonal operator. -/
-theorem schurSzegoComp_eq_diagonalOperator (n : Nat) (f g : ℝ[X]) :
-    schurSzegoComp n f g =
-      diagonalOperator (fun k => g.coeff k / (Nat.choose n k : ℝ)) f := by
-  ext k
-  rw [coeff_diagonalOperator, coeff_schurSzegoComp]
-  by_cases hk : k ≤ n
-  · rw [if_pos hk]
-    ring
-  · rw [if_neg hk]
-    simp [Nat.choose_eq_zero_of_lt (Nat.lt_of_not_le hk)]
+  rw [schurSzegoComp_eq_diagonalOperator]
+  exact hf.diagonalOperator fun k => div_nonneg (hg k) (by positivity)
 
 /-- **Finite Schur--Szegő composition theorem** (classical input).
 
