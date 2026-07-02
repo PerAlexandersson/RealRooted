@@ -467,6 +467,9 @@ lemma hasPosLeadingCoeff_of_monic {p : ℝ[X]} (hp : p.Monic) :
     HasPosLeadingCoeff p := by
   simp [HasPosLeadingCoeff, hp.leadingCoeff]
 
+lemma hasPosLeadingCoeff_one : HasPosLeadingCoeff (1 : ℝ[X]) :=
+  hasPosLeadingCoeff_of_monic monic_one
+
 lemma hasPosLeadingCoeff_C_mul {a : ℝ} {p : ℝ[X]}
     (ha : 0 < a) (hp : HasPosLeadingCoeff p) :
     HasPosLeadingCoeff (C a * p) := by

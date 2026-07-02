@@ -1703,8 +1703,7 @@ private lemma prec_of_affine_family_nonneg_degree_one
   have hdeg_cases : g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 :=
     natDegree_cases_of_affine_family hf0 hg0 hfnn hgnn haff
   have hInter : Interlaces (1 : ℝ[X]) f := interlaces_one_linear hdegf1
-  have h1_pos : HasPosLeadingCoeff (1 : ℝ[X]) := by
-    simp [HasPosLeadingCoeff]
+  have h1_pos : HasPosLeadingCoeff (1 : ℝ[X]) := hasPosLeadingCoeff_one
   have hg_pos_local : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff hg0
   have hdeg_right_local : g.natDegree ≤ f.natDegree + 1 :=
     natDegree_right_le_succ_of_affine_family hf0 hg0 hfnn hgnn haff

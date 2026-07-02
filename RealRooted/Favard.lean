@@ -48,8 +48,7 @@ theorem favardInterlacing :
         · rw [hP0, hP1]
           exact interlaces_one_X_sub_C (α 0)
         · rw [hP0]
-          unfold HasPosLeadingCoeff
-          simp
+          exact hasPosLeadingCoeff_one
         · rw [hP1]
           unfold HasPosLeadingCoeff
           simp
