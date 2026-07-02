@@ -18,7 +18,7 @@ private lemma xAddOne_isRealRooted : ((X + 1 : ℝ[X]) ≠ 0 ∧ (X + 1 : ℝ[X]
   simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-1 : ℝ)
 
 private lemma xAddOne_hasNonnegCoeffs : HasNonnegCoeffs (X + 1 : ℝ[X]) := by
-  simpa using hasNonnegCoeffs_X_add_C (a := 1) (by norm_num)
+  exact hasNonnegCoeffs_X_add_one
 
 private lemma xAddOne_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 1 : ℝ[X]) :=
   xAddOne_hasNonnegCoeffs.pos_leadingCoeff xAddOne_isRealRooted.1

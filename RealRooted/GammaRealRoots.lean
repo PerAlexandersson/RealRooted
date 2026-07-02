@@ -183,8 +183,7 @@ lemma gammaTransform_fixed (d : ℕ) (γ : ℝ[X]) :
 lemma hasNonnegCoeffs_gammaBasisTerm (d i : ℕ) :
     HasNonnegCoeffs (gammaBasisTerm d i) := by
   unfold gammaBasisTerm
-  exact (HasNonnegCoeffs.pow hasNonnegCoeffs_X i).mul
-    (HasNonnegCoeffs.pow hasNonnegCoeffs_X_add_one (d - 2 * i))
+  exact (hasNonnegCoeffs_X.pow i).mul (hasNonnegCoeffs_X_add_one.pow (d - 2 * i))
 
 lemma hasNonnegCoeffs_gammaTransform {d : ℕ} {γ : ℝ[X]} (hγ : HasNonnegCoeffs γ) :
     HasNonnegCoeffs (gammaTransform d γ) := by
@@ -616,7 +615,7 @@ lemma hasNonnegCoeffs_gammaQuadraticFactor {r : ℝ} (hr : r ≤ 0) :
   have hneg : 0 ≤ -r := by simp_all
   simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc, mul_assoc] using
     hasNonnegCoeffs_X.add
-      (nonnegCoeffs_C_mul hneg (HasNonnegCoeffs.pow hasNonnegCoeffs_X_add_one 2))
+      (nonnegCoeffs_C_mul hneg (hasNonnegCoeffs_X_add_one.pow 2))
 
 lemma isRealRooted_gammaQuadraticFactor {r : ℝ} (hr : r ≤ 0) :
     ((X - C r * (X + 1) ^ 2) ≠ 0 ∧ (X - C r * (X + 1) ^ 2).Splits) := by
@@ -910,7 +909,7 @@ theorem isRealRooted_and_hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasRoo
       rw [roots_C_mul _ hcoeff_ne] at hr
       exact roots_nonpos_of_nonneg_coeffs
         (isRealRooted_X_add_one_pow d).2
-        (HasNonnegCoeffs.pow hasNonnegCoeffs_X_add_one d)
+        (hasNonnegCoeffs_X_add_one.pow d)
         r hr
     · have hroots_pos : 0 < δ.roots.card := by
         rw [card_roots_of_splits hδ_rr.2, hδdeg]

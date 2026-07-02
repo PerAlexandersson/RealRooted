@@ -168,9 +168,9 @@ lemma hasNonnegCoeffs_fPolynomial {d : ℕ} {h : ℝ[X]} (hh : HasNonnegCoeffs h
   · exact hasNonnegCoeffs_zero
   · intro k s hk hs
     have hterm : HasNonnegCoeffs (C (h.coeff k) * X ^ k * (X + 1) ^ (d - k)) := by
-      have hXk : HasNonnegCoeffs (X ^ k) := HasNonnegCoeffs.pow hasNonnegCoeffs_X k
+      have hXk : HasNonnegCoeffs (X ^ k) := hasNonnegCoeffs_X.pow k
       have hXp : HasNonnegCoeffs ((X + 1) ^ (d - k)) :=
-        HasNonnegCoeffs.pow hasNonnegCoeffs_X_add_one (d - k)
+        hasNonnegCoeffs_X_add_one.pow (d - k)
       have hprod : HasNonnegCoeffs (X ^ k * (X + 1) ^ (d - k)) := hXk.mul hXp
       simpa [mul_assoc] using nonnegCoeffs_C_mul (hh k) hprod
     simpa [Finset.sum_insert, hk] using hterm.add hs
