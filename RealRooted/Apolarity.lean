@@ -864,7 +864,7 @@ theorem polarDeriv_natDegree {n : Nat} {c : ℂ} {r : ℝ} {ζ : ℂ}
         · convert Polynomial.splits_iff_card_roots.mp ( IsAlgClosed.splits A ) using 1;
           all_goals norm_num [ hA ];
       rcases n with ( _ | _ | n ) <;> simp_all +decide [ Multiset.esymm ];
-      · simp_all +decide [ Multiset.powersetCard_one, mul_sub ] ; ring;
+      · simp_all +decide [ Multiset.powersetCard_one, mul_sub ] ; ring_nf;
         rw [ Polynomial.leadingCoeff, hA ] ; ring;
       · simp_all +decide [ Multiset.powersetCard_one, Polynomial.leadingCoeff ] ; ring;
     simp_all +decide only [ ne_eq ];
@@ -921,14 +921,14 @@ theorem apolarPairing_deflation {n : Nat} (hn : 1 ≤ n) {ζ : ℂ} {f g g' : �
   rw [ add_comm 1 m, Finset.sum_range_succ ] ;
   norm_num [ Polynomial.coeff_X, mul_assoc, mul_left_comm, mul_add, add_mul,
     Finset.sum_add_distrib, Finset.mul_sum _ _ _, Finset.sum_mul _ _ _, pow_succ' ] ;
-  ring;
+  ring_nf;
   rw [ add_comm 1 m, Finset.sum_range_succ' ] ;
   norm_num [ Polynomial.coeff_X, mul_assoc, mul_left_comm, mul_comm, Finset.sum_range_succ ] ;
-  ring;
+  ring_nf;
   simp +decide [ add_comm 1, add_comm 2, mul_assoc, mul_left_comm ] ;
-  ring;
+  ring_nf;
   rw [ show ( binomialLift m g' ).coeff ( 1 + m ) = 0 from _ ];
-  · ring;
+  · ring_nf;
     rw [ Finset.sum_congr rfl fun x hx => by
         rw [ show m - x = m - ( 1 + x ) + 1 by
           rw [ tsub_add_eq_add_tsub ( by linarith [ Finset.mem_range.mp hx ] ) ] ;
