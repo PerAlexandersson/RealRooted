@@ -291,7 +291,7 @@ theorem apolarPairing_monomial_left {R : Type*} [CommRing R]
   · rw [if_pos hi, apolarPairing]
     have hmem : i ∈ Finset.range (n + 1) := Finset.mem_range.mpr (Nat.lt_succ_of_le hi)
     rw [Finset.sum_eq_single_of_mem i hmem]
-    · simp
+    · simp only [coeff_monomial_same]
     · intro k _ hki
       have hik : i ≠ k := fun h => hki h.symm
       simp [coeff_monomial, hik]
@@ -602,11 +602,24 @@ degree `n`.
 -/
 theorem exists_binomialLift_eq {n : Nat} (Q : ℂ[X]) (hQ : Q.natDegree ≤ n) :
     ∃ h : ℂ[X], binomialLift n h = Q := by
-  use ∑ k ∈ Finset.range (n + 1), Polynomial.monomial k ( Q.coeff k / Nat.choose n k );
-  ext k;
-  by_cases hk : k ≤ n <;> simp_all +decide [ binomialLift, Polynomial.coeff_monomial ];
-  · rw [ mul_div_cancel₀ _ ( Nat.cast_ne_zero.mpr <| Nat.ne_of_gt <| Nat.choose_pos hk ) ];
-  · rw [ if_neg hk.not_ge, Polynomial.coeff_eq_zero_of_natDegree_lt ( by linarith ) ]
+  refine ⟨∑ k ∈ Finset.range (n + 1),
+    Polynomial.monomial k (Q.coeff k / Nat.choose n k), ?_⟩
+  ext k
+  rw [coeff_binomialLift]
+  by_cases hk : k ≤ n
+  · rw [if_pos hk, Polynomial.finsetSum_coeff]
+    rw [Finset.sum_eq_single k]
+    · simp only [coeff_monomial_same]
+      rw [mul_div_cancel₀ _
+        (Nat.cast_ne_zero.mpr <| Nat.ne_of_gt <| Nat.choose_pos hk)]
+    · intro b _ hbk
+      simp [Polynomial.coeff_monomial, hbk]
+    · intro hknot
+      exact (hknot (by simpa [Finset.mem_range, Nat.lt_succ_iff] using hk)).elim
+  · rw [if_neg hk]
+    exact (Polynomial.coeff_eq_zero_of_natDegree_lt (by
+      exact Nat.lt_of_le_of_lt hQ (Nat.lt_of_not_ge hk))
+    ).symm
 
 /-
 Geometric core of Laguerre's theorem.  If `w` lies outside the closed disk,
