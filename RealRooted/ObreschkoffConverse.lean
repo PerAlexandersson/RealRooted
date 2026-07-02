@@ -1234,10 +1234,7 @@ private theorem prec_iterateTDeriv_of_allComboRealRooted_succ_of_no_common
         (iterateTDeriv eps (max f.natDegree g.natDegree) g).natDegree := by
     simpa [natDegree_iterateTDeriv, natDegree_iterateTDeriv] using hsucc
   dsimp
-  rcases hprec_iter with hfg | hgf
-  · exact hfg
-  · have hbounds := natDegree_bounds_of_prec hgf
-    lia
+  exact prec_forward_of_orientation_of_succDegree hdeg_iter_succ.symm hprec_iter
 
 /-- Same-degree companion to
 `interlaces_of_consecutive_signs_of_natDegree_lt`: if a nonzero polynomial `F`
@@ -2152,10 +2149,7 @@ theorem prec_of_allComboRealRooted {f g : ℝ[X]}
           Prec f g ∨ Prec g f :=
         prec_of_eq_zero_or_simple_combo_of_no_common
           hf.1 hf.2 hg.1 hg.2 hcombo_original (Or.inl hsucc) hno
-      rcases hprec_or with hfg | hgf
-      · lia
-      · have hbounds := natDegree_bounds_of_prec hgf
-        lia
+      exact prec_forward_of_orientation_of_succDegree hsucc.symm hprec_or
     · intro hsame
       exact
         prec_of_eq_zero_or_simple_combo_of_no_common
@@ -2734,10 +2728,9 @@ theorem derivative_prec0_of_prec_succDegree {f g : ℝ[X]}
     lia
   have hdeg' : f.derivative.natDegree + 1 = g.derivative.natDegree ∨
       f.derivative.natDegree = g.derivative.natDegree := Or.inl hfgdeg'
-  rcases prec_of_allComboRealRooted hfrr.1 hfrr.2 hgrr.1 hgrr.2 hall hdeg' with hprec | hrev
-  · exact hprec.toPrec0
-  · exfalso
-    exact absurd (natDegree_bounds_of_prec hrev).1 (by lia)
+  exact
+    (prec_forward_of_orientation_of_succDegree hfgdeg'.symm
+      (prec_of_allComboRealRooted hfrr.1 hfrr.2 hgrr.1 hgrr.2 hall hdeg')).toPrec0
 
 /-- In the same-degree case, existing Obreschkoff machinery gives the
 derivative pair in proper position up to orientation.  The remaining standard

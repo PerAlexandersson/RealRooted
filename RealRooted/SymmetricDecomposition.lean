@@ -3562,12 +3562,8 @@ theorem brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
   have hht_or : Prec h t ∨ Prec t h :=
     prec_of_allComboRealRooted hh_rr.1 hh_rr.2 ht_rr.1 ht_rr.2 hall_ht
       (Or.inl ht_deg)
-  have hnot_rev : ¬ Prec t h := by
-    intro hth
-    have hbounds := natDegree_bounds_of_prec hth
-    lia
   have hht : Prec h t := by
-    lia
+    exact prec_forward_of_orientation_of_succDegree ht_deg.symm hht_or
   have hbh : Prec b h :=
     prec_of_prec_mul_X_sub_C_of_sameDegree_of_roots_le (1 : ℝ)
       hht hh_deg.symm hb_pos hh_pos hb_le hh_le
