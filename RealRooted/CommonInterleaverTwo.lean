@@ -3542,9 +3542,11 @@ theorem pairwiseCompatible_iff_familyCompatible_of_boundaryRightPairOrientation_
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
-  pairwiseCompatible_iff_familyCompatible_of_fourWay <|
-    chudnovskySeymour_fourWay_of_boundaryRightPairOrientation_via_nonnegShift
-      (fs := fs) hrr hpos hboundary
+  pairwiseCompatible_iff_familyCompatible_via_nonnegShift
+    (fs := fs) hrr hpos
+    (boundaryRightPairOrientation_implies_sameDegreeOrientationAlternative_nonneg
+      hboundary)
+    (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
 
 /-- Nonnegative-coefficient specialization of Chudnovsky--Seymour `1 ↔ 4`
 from the no-common orientation core. -/
