@@ -2323,7 +2323,7 @@ private lemma leadingCoeff_add_X_mul_eq_of_natDegree_le
     (hb0 : b ≠ 0) :
     (a + X * b).leadingCoeff = b.leadingCoeff := by
   have hXb_pos : HasPosLeadingCoeff (X * b) :=
-    (hasNonnegCoeffs_X.mul hb_nonneg).pos_leadingCoeff (mul_ne_zero X_ne_zero hb0)
+    hb_nonneg.X_mul.pos_leadingCoeff (mul_ne_zero X_ne_zero hb0)
   have hdeg_lt : a.natDegree < (X * b).natDegree := by
     simp_all
   have hsum_deg : (a + X * b).natDegree = (X * b).natDegree :=
@@ -2380,7 +2380,7 @@ private theorem prec_b_component_of_prec_sum_of_leadingCoeff_eq
     Prec b a := by
   have hp0 : p ≠ 0 := hbp.2.1.1
   have hp_nonneg : HasNonnegCoeffs p := by
-    simpa [hp_eq] using ha_nonneg.add (hasNonnegCoeffs_X.mul hb_nonneg)
+    simpa [hp_eq] using ha_nonneg.add hb_nonneg.X_mul
   have hdeg : b.natDegree + 1 = p.natDegree :=
     natDegree_right_of_prec_to_sum hp_eq ha_nonneg hb_nonneg hb0 hbp
   let c : ℝ := p.leadingCoeff⁻¹
@@ -2758,7 +2758,7 @@ private theorem prec_b_component_of_prec_right_top
     Prec b a := by
   have hp_eq : p = a + X * b := hid.1
   have hp_nonneg : HasNonnegCoeffs p := by
-    simpa [hp_eq] using ha_nonneg.add (hasNonnegCoeffs_X.mul hb_nonneg)
+    simpa [hp_eq] using ha_nonneg.add hb_nonneg.X_mul
   have hpxb : Prec p (X * b) := prec_mul_X_of_prec_of_nonneg hbp hb_nonneg hp_nonneg
   have hall_aXb : AllComboRealRooted a (X * b) :=
     allComboRealRooted_left_X_mul_component_of_prec_right hp_eq hpxb
@@ -2772,7 +2772,7 @@ private theorem prec_b_component_of_prec_right_top
         rw [← ha_top, Polynomial.coeff_natDegree]
         exact ha_nonneg.pos_leadingCoeff ha0
       have hXb_coeff_nonneg : 0 ≤ (X * b).coeff d :=
-        (hasNonnegCoeffs_X.mul hb_nonneg) d
+        hb_nonneg.X_mul d
       linarith
     grind
   have hbp_deg : b.natDegree + 1 = p.natDegree :=
@@ -2886,7 +2886,7 @@ private theorem prec_b_component_of_prec_Id_top_of_right_top
   have hId_eq : h = a + b := by
     simpa [h] using idTransform_eq_add_of_isIdDecomposition hd hid
   have hp_nonneg : HasNonnegCoeffs p := by
-    simpa [hp_eq] using ha_nonneg.add (hasNonnegCoeffs_X.mul hb_nonneg)
+    simpa [hp_eq] using ha_nonneg.add hb_nonneg.X_mul
   have hh_nonneg : HasNonnegCoeffs h := by
     rw [hId_eq]
     exact ha_nonneg.add hb_nonneg
@@ -3153,7 +3153,7 @@ theorem hasNonnegCoeffs_pair_of_isIdDecomposition {d : ℕ} {p a b : ℝ[X]}
     (hb_nonneg : HasNonnegCoeffs b) :
     HasNonnegCoeffs p ∧ HasNonnegCoeffs (IdTransform d p) := by
   have hp_nonneg : HasNonnegCoeffs p := by
-    simpa [hid.1] using ha_nonneg.add (hasNonnegCoeffs_X.mul hb_nonneg)
+    simpa [hid.1] using ha_nonneg.add hb_nonneg.X_mul
   have hId_nonneg : HasNonnegCoeffs (IdTransform d p) := by
     rw [idTransform_eq_add_of_isIdDecomposition hd hid]
     exact ha_nonneg.add hb_nonneg
@@ -3179,7 +3179,7 @@ theorem hasNonnegCoeffs_pair_of_isRdDecomposition {d : ℕ} {p a b : ℝ[X]}
     (hb_nonneg : HasNonnegCoeffs b) :
     HasNonnegCoeffs p ∧ HasNonnegCoeffs (RdTransform d p) := by
   have hp_nonneg : HasNonnegCoeffs p := by
-    simpa [hrd.1] using ha_nonneg.add (hasNonnegCoeffs_X.mul hb_nonneg)
+    simpa [hrd.1] using ha_nonneg.add hb_nonneg.X_mul
   have hR_nonneg : HasNonnegCoeffs (RdTransform d p) := by
     rw [rdTransform_eq_add_X_add_one_mul_of_isRdDecomposition hd hrd]
     exact ha_nonneg.add (hasNonnegCoeffs_X_add_one.mul hb_nonneg)

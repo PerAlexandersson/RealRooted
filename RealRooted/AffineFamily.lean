@@ -1911,10 +1911,10 @@ private lemma affine_family_shifted_pair_data
     HasPosLeadingCoeff f ∧
     (g + X * f).natDegree = f.natDegree + 1 := by
   have hshift_nonneg : HasNonnegCoeffs (g + X * f) :=
-    hgnn.add (hasNonnegCoeffs_X.mul hfnn)
+    hgnn.add hfnn.X_mul
   have hshift_ne : g + X * f ≠ 0 :=
     add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
-      hgnn (hasNonnegCoeffs_X.mul hfnn) (mul_ne_zero X_ne_zero hf0)
+      hgnn hfnn.X_mul (mul_ne_zero X_ne_zero hf0)
   refine
     ⟨posComboRealRooted_shifted_pair_of_affine_family haff,
       hshift_nonneg, hfnn, hshift_ne, hf0,
@@ -1985,7 +1985,7 @@ private lemma prec_of_prec_shifted_pair_sameDegree
   have hshift : ((g + X * f) ≠ 0 ∧ (g + X * f).Splits) := h.2.1
   have hf_pos : HasPosLeadingCoeff f := hfnn.pos_leadingCoeff hf0
   have hshift_nonneg : HasNonnegCoeffs (g + X * f) :=
-    hgnn.add (hasNonnegCoeffs_X.mul hfnn)
+    hgnn.add hfnn.X_mul
   have hshift_ne : g + X * f ≠ 0 := hshift.1
   have hshift_pos : HasPosLeadingCoeff (g + X * f) :=
     hshift_nonneg.pos_leadingCoeff hshift_ne
@@ -1993,7 +1993,7 @@ private lemma prec_of_prec_shifted_pair_sameDegree
     have hXf_deg : (X * f).natDegree = f.natDegree + 1 := by
       simp_all
     have hXf_pos : HasPosLeadingCoeff (X * f) :=
-      (hasNonnegCoeffs_X.mul hfnn).pos_leadingCoeff (mul_ne_zero X_ne_zero hf0)
+      hfnn.X_mul.pos_leadingCoeff (mul_ne_zero X_ne_zero hf0)
     have hg_lt : g.natDegree < (X * f).natDegree := by
       lia
     have hsum_deg : (g + X * f).natDegree = (X * f).natDegree :=
@@ -3042,7 +3042,7 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
   have hg_rr : (g ≠ 0 ∧ g.Splits) :=
     isRealRooted_right_of_affine_family_succDegree hf0 hg0 hfnn hgnn haff hsucc.symm
   have hXf_pos : HasPosLeadingCoeff (X * f) :=
-    (hasNonnegCoeffs_X.mul hfnn).pos_leadingCoeff (mul_ne_zero X_ne_zero hf0)
+    hfnn.X_mul.pos_leadingCoeff (mul_ne_zero X_ne_zero hf0)
   have hposcombo : PosComboRealRooted g (X * f) :=
     posComboRealRooted_right_of_affine_family hf0 hg0 hfnn hgnn haff
   have hno_right :
@@ -3274,7 +3274,7 @@ private lemma right_boundary_pair_sameDegree_data_of_affine_family_succDegree_no
     isRealRooted_right_of_affine_family_succDegree hf0 hg0 hfnn hgnn haff hsucc.symm
   have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff hg0
   have hXf_pos : HasPosLeadingCoeff (X * f) :=
-    (hasNonnegCoeffs_X.mul hfnn).pos_leadingCoeff (mul_ne_zero X_ne_zero hf0)
+    hfnn.X_mul.pos_leadingCoeff (mul_ne_zero X_ne_zero hf0)
   have hposcombo : PosComboRealRooted g (X * f) :=
     posComboRealRooted_right_of_affine_family hf0 hg0 hfnn hgnn haff
   have hno_right :
@@ -3296,7 +3296,7 @@ private lemma right_boundary_pair_sameDegree_data_of_affine_family_succDegree_no
     have hdeg : g.natDegree ≤ (X * f).natDegree := by
       simp_all
     have hsum_nonneg : HasNonnegCoeffs (g + C μ * (X * f)) :=
-      hgnn.add (nonnegCoeffs_C_mul hμ.le (hasNonnegCoeffs_X.mul hfnn))
+      hgnn.add (nonnegCoeffs_C_mul hμ.le hfnn.X_mul)
     have hsum_ne : g + C μ * (X * f) ≠ 0 := hμ_rr.1
     exact hsum_nonneg.pos_leadingCoeff hsum_ne
   have hμ_deg : (g + C μ * (X * f)).natDegree = g.natDegree := by
@@ -3485,10 +3485,10 @@ private lemma prec_right_pair_of_affine_family_high_degree_core
   rcases hdeg_cases with hsame | hsucc
   · -- Same-degree case: apply AllCombo to the shifted pair (g + X*f, f).
     have hshift_nonneg : HasNonnegCoeffs (g + X * f) :=
-      hgnn.add (hasNonnegCoeffs_X.mul hfnn)
+      hgnn.add hfnn.X_mul
     have hshift_ne : g + X * f ≠ 0 :=
       add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
-        hgnn (hasNonnegCoeffs_X.mul hfnn) (mul_ne_zero X_ne_zero hf0)
+        hgnn hfnn.X_mul (mul_ne_zero X_ne_zero hf0)
     have hshift_deg : (g + X * f).natDegree = f.natDegree + 1 := by
       simpa [hsame] using
         natDegree_shifted_pair_eq_succ_of_affine_family hf0 hg0 hfnn hgnn haff
@@ -3593,10 +3593,10 @@ private lemma prec_right_pair_of_affine_family_high_degree
       -- the quotient pair, and lift back.
       have hf_pos : HasPosLeadingCoeff f := hfnn.pos_leadingCoeff hf0
       have hshift_nonneg : HasNonnegCoeffs (g + X * f) :=
-        hgnn.add (hasNonnegCoeffs_X.mul hfnn)
+        hgnn.add hfnn.X_mul
       have hshift_ne : g + X * f ≠ 0 :=
         add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
-          hgnn (hasNonnegCoeffs_X.mul hfnn) (mul_ne_zero X_ne_zero hf0)
+          hgnn hfnn.X_mul (mul_ne_zero X_ne_zero hf0)
       have hshift_pos : HasPosLeadingCoeff (g + X * f) :=
         hshift_nonneg.pos_leadingCoeff hshift_ne
       have hshift_deg : (g + X * f).natDegree = f.natDegree + 1 := by
@@ -4011,10 +4011,10 @@ theorem prec_shifted_pair_of_affine_family_nonneg
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
     Prec f (g + X * f) := by
   have hshift_nonneg : HasNonnegCoeffs (g + X * f) :=
-    hgnn.add (hasNonnegCoeffs_X.mul hfnn)
+    hgnn.add hfnn.X_mul
   have hshift_ne : g + X * f ≠ 0 :=
     add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
-      hgnn (hasNonnegCoeffs_X.mul hfnn) (mul_ne_zero X_ne_zero hf0)
+      hgnn hfnn.X_mul (mul_ne_zero X_ne_zero hf0)
   exact
     prec_of_affine_family_nonneg
       hf0 hshift_ne hfnn hshift_nonneg

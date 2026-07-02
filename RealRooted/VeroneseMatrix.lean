@@ -747,7 +747,7 @@ theorem hasNonnegCoeffs_veroneseLinearFactorRowDesc_entry
         ∀ q ∈ (oneSupportSeq r ⟨0, hr⟩).map (fun q => X * q), HasNonnegCoeffs q := by
       intro q hq
       rcases List.mem_map.1 hq with ⟨q', hq', rfl⟩
-      exact hasNonnegCoeffs_X.mul (hone (n := r) (i := ⟨0, hr⟩) hq')
+      exact (hone (n := r) (i := ⟨0, hr⟩) hq').X_mul
     grind
 
 /-- Conditional linear-factor step for the matrix route.  The only remaining
