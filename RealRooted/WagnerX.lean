@@ -514,6 +514,9 @@ lemma listAlternates_of_append_zero_both :
 
 /-! ## Roots of nonneg-coefficient polynomials are ≤ 0 -/
 
+lemma hasNonnegCoeffs_zero : HasNonnegCoeffs (0 : ℝ[X]) := by
+  simp [HasNonnegCoeffs]
+
 lemma hasNonnegCoeffs_one : HasNonnegCoeffs (1 : ℝ[X]) := by
   rintro (_ | n)
   · simp
@@ -528,6 +531,11 @@ lemma nonnegCoeffs_C_mul {a : ℝ} (ha : 0 ≤ a) {p : ℝ[X]}
     HasNonnegCoeffs (C a * p) := by
   intro n
   simpa [coeff_C_mul] using mul_nonneg ha (hp n)
+
+lemma HasNonnegCoeffs.add {p q : ℝ[X]}
+    (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q) :
+    HasNonnegCoeffs (p + q) := fun n => by
+  simpa [coeff_add] using add_nonneg (hp n) (hq n)
 
 lemma HasNonnegCoeffs.mul {p q : ℝ[X]}
     (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q) :
