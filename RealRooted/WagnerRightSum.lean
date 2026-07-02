@@ -1311,8 +1311,8 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
           have := card_roots_of_splits hg.2; rw [← hss_g_eq, Multiset.coe_card] at this; lia
         have hdeg_eq : f.natDegree = g.natDegree := by
           lia
-        have hfg_deg : (f + g).natDegree = f.natDegree := by
-          exact natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff hdeg_eq hf_pos hg_pos
+        have hfg_deg : (f + g).natDegree = f.natDegree :=
+          natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff hdeg_eq hf_pos hg_pos
         have hf_roots_erase : f.roots.erase s₁_f = ↑rest_f := by
           rw [← hss_f_eq, ← Multiset.cons_coe, Multiset.erase_cons_head]
         have hg_roots_erase : g.roots.erase s₁_g = ↑rest_g := by
@@ -1737,8 +1737,8 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
           lia
         have hdeg_eq : f.natDegree = g.natDegree := by
           lia
-        have hfg_deg : (f + g).natDegree = f.natDegree := by
-          exact natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff hdeg_eq hf_pos hg_pos
+        have hfg_deg : (f + g).natDegree = f.natDegree :=
+          natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff hdeg_eq hf_pos hg_pos
         have hf_roots_erase : f.roots.erase s₁_f = ↑rest_f := by
           rw [← hss_f_eq, ← Multiset.cons_coe, Multiset.erase_cons_head]
         have hg_roots_erase : g.roots.erase s₁_g = ↑rest_g := by
