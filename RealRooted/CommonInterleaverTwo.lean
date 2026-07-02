@@ -1265,6 +1265,139 @@ theorem posComboNoCommonSameDegreeSlotData_iff_pairHasCommonInterleaver :
   ⟨sameDegreePairHasCommonInterleaver_nonneg_of_slotData,
     posComboNoCommonSameDegreeSlotData_of_pairHasCommonInterleaver⟩
 
+/-- **Combinatorial core of the same-degree slot bound.**
+
+For descending real lists `rf` and `rg` of the same length, if their interior
+roots cross in both directions, then every matching root-slot interval meets.
+Top and bottom slots meet automatically; the hypotheses are only needed for
+interior slots. -/
+theorem rootSlotInterval_inter_nonempty_of_sameDegree_crossing
+    (rf rg : List ℝ)
+    (hrf : rf.Pairwise (· ≥ ·)) (hrg : rg.Pairwise (· ≥ ·))
+    (hlen : rg.length = rf.length)
+    (hc1 : ∀ j, 1 ≤ j → j < rf.length → rg.getD j 0 ≤ rf.getD (j - 1) 0)
+    (hc2 : ∀ j, 1 ≤ j → j < rf.length → rf.getD j 0 ≤ rg.getD (j - 1) 0)
+    (j : ℕ) (hjf : j < rf.length + 1) (hjg : j < rg.length + 1) :
+    (rootSlotInterval rf ⟨j, hjf⟩ ∩ rootSlotInterval rg ⟨j, hjg⟩).Nonempty := by
+  by_cases hlen0 : rf.length = 0
+  · rcases rf with (_ | ⟨a, rf⟩)
+    · rcases rg with (_ | ⟨b, rg⟩)
+      · have hj : j = 0 := by simpa using hjf
+        subst j
+        simp [rootSlotInterval]
+      · simp_all
+    · simp_all
+  by_cases hj0 : j = 0
+  · subst j
+    rcases rf with (_ | ⟨a, rf⟩)
+    · simp_all
+    rcases rg with (_ | ⟨b, rg⟩)
+    · simp_all
+    exact ⟨max a b, by simp [rootSlotInterval]⟩
+  by_cases hjlast : j = rf.length
+  · subst j
+    have hrf_len_pos : 0 < rf.length := Nat.pos_of_ne_zero hlen0
+    have hrg_len_pos : 0 < rg.length := by simpa [hlen] using hrf_len_pos
+    have hrf_rev_ne : rf.reverse ≠ [] := by
+      exact List.ne_nil_of_length_pos (by simpa [List.length_reverse] using hrf_len_pos)
+    have hrg_rev_ne : rg.reverse ≠ [] := by
+      exact List.ne_nil_of_length_pos (by simpa [List.length_reverse] using hrg_len_pos)
+    obtain ⟨a, rf', hrf_rev⟩ := List.exists_cons_of_ne_nil hrf_rev_ne
+    obtain ⟨b, rg', hrg_rev⟩ := List.exists_cons_of_ne_nil hrg_rev_ne
+    refine ⟨min a b, ?_⟩
+    simp [rootSlotInterval, hrf_rev, hrg_rev, hlen, hlen0]
+  · have hjrf : j < rf.length := by lia
+    have hjrg : j < rg.length := by simpa [hlen] using hjrf
+    have hjpos : 1 ≤ j := by lia
+    have hidx_rf : (⟨j - 1, by lia⟩ : Fin rf.length) < ⟨j, hjrf⟩ := by
+      change j - 1 < j
+      exact Nat.sub_lt (by lia : 0 < j) (by norm_num)
+    have hidx_rg : (⟨j - 1, by lia⟩ : Fin rg.length) < ⟨j, hjrg⟩ := by
+      change j - 1 < j
+      exact Nat.sub_lt (by lia : 0 < j) (by norm_num)
+    have hrf_step : rf[j] ≤ rf[j - 1] := by
+      simpa [ge_iff_le] using
+        (List.pairwise_iff_get.mp hrf) ⟨j - 1, by lia⟩ ⟨j, hjrf⟩ hidx_rf
+    have hrg_step : rg[j] ≤ rg[j - 1] := by
+      simpa [ge_iff_le] using
+        (List.pairwise_iff_get.mp hrg) ⟨j - 1, by lia⟩ ⟨j, hjrg⟩ hidx_rg
+    have hcross_gf : rg[j] ≤ rf[j - 1] := by
+      have hgj : rg.getD j 0 = rg[j] := by
+        rw [List.getD_eq_getElem?_getD,
+          List.getElem?_eq_getElem (l := rg) (i := j) hjrg]
+        simp
+      have hfj : rf.getD (j - 1) 0 = rf[j - 1] := by
+        rw [List.getD_eq_getElem?_getD,
+          List.getElem?_eq_getElem (l := rf) (i := j - 1) (by lia)]
+        simp
+      calc
+        rg[j] = rg.getD j 0 := hgj.symm
+        _ ≤ rf.getD (j - 1) 0 := hc1 j hjpos hjrf
+        _ = rf[j - 1] := hfj
+    have hcross_fg : rf[j] ≤ rg[j - 1] := by
+      have hfj : rf.getD j 0 = rf[j] := by
+        rw [List.getD_eq_getElem?_getD,
+          List.getElem?_eq_getElem (l := rf) (i := j) hjrf]
+        simp
+      have hgj : rg.getD (j - 1) 0 = rg[j - 1] := by
+        rw [List.getD_eq_getElem?_getD,
+          List.getElem?_eq_getElem (l := rg) (i := j - 1) (by lia)]
+        simp
+      calc
+        rf[j] = rf.getD j 0 := hfj.symm
+        _ ≤ rg.getD (j - 1) 0 := hc2 j hjpos hjrf
+        _ = rg[j - 1] := hgj
+    refine ⟨max rf[j] rg[j], ?_⟩
+    simp [rootSlotInterval, hj0, hjlast, hlen, hrf_step, hrg_step, hcross_gf,
+      hcross_fg]
+
+/-- **Sub-statement of milestone B1: descending-root crossing inequalities.**
+
+Given the nonnegative positive-combination/no-common hypotheses at equal
+degree, the descending root sequences of `f` and `g` should cross in the two
+interior inequalities consumed by
+`rootSlotInterval_inter_nonempty_of_sameDegree_crossing`. -/
+def PosComboNoCommonSameDegreeRootCrossingNonnegStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)
+
+/-- **Reduction of milestone B1 to its root-crossing content.**
+
+The same-degree slot-data statement follows from the descending-root crossing
+inequalities; the remaining work is therefore the analytic converse-Obreschkoff
+crossing input. -/
+theorem posComboNoCommonSameDegreeSlotData_of_rootCrossing
+    (hcross : PosComboNoCommonSameDegreeRootCrossingNonnegStatement) :
+    PosComboNoCommonSameDegreeSlotDataNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
+  have hf_split : f.Splits :=
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+  have hg_split : g.Splits :=
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+  obtain ⟨hc1, hc2⟩ := hcross hf_pos hg_pos hfnn hgnn hfg hdeg hno
+  have hlenf : (rootSeqDesc f).length = f.natDegree := rootSeqDesc_length hf_split
+  have hleng : (rootSeqDesc g).length = g.natDegree := rootSeqDesc_length hg_split
+  intro j _ hjf hjg
+  refine
+    rootSlotInterval_inter_nonempty_of_sameDegree_crossing
+      (rootSeqDesc f) (rootSeqDesc g) rootSeqDesc_pairwise rootSeqDesc_pairwise
+      ?_ ?_ ?_ j hjf hjg
+  · rw [hleng, hlenf, hdeg]
+  · intro k hk1 hk2
+    exact hc1 k hk1 (by rw [hlenf] at hk2; exact hk2)
+  · intro k hk1 hk2
+    exact hc2 k hk1 (by rw [hlenf] at hk2; exact hk2)
+
 /-- **Honest missing root-slot boundary for milestone B2 (#42).**
 
 This is the succ-degree analogue of the same-degree slot-intersection input
