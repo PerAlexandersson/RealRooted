@@ -18,7 +18,7 @@ private lemma xAddOne_isRealRooted : ((X + 1 : ℝ[X]) ≠ 0 ∧ (X + 1 : ℝ[X]
   simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-1 : ℝ)
 
 private lemma xAddOne_hasNonnegCoeffs : HasNonnegCoeffs (X + 1 : ℝ[X]) := by
-  simpa using hasNonnegCoeffs_X.add hasNonnegCoeffs_one
+  simpa using hasNonnegCoeffs_X_add_C (a := 1) (by norm_num)
 
 private lemma xAddOne_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 1 : ℝ[X]) :=
   xAddOne_hasNonnegCoeffs.pos_leadingCoeff xAddOne_isRealRooted.1
@@ -132,7 +132,7 @@ private lemma xAddTwo_isRealRooted : ((X + 2 : ℝ[X]) ≠ 0 ∧ (X + 2 : ℝ[X]
 
 private lemma xAddTwo_hasNonnegCoeffs : HasNonnegCoeffs (X + 2 : ℝ[X]) := by
   change HasNonnegCoeffs (X + C (2 : ℝ) : ℝ[X])
-  exact hasNonnegCoeffs_X.add (hasNonnegCoeffs_C (by simp : (0 : ℝ) ≤ 2))
+  exact hasNonnegCoeffs_X_add_C (by norm_num)
 
 private lemma xAddTwo_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 2 : ℝ[X]) :=
   xAddTwo_hasNonnegCoeffs.pos_leadingCoeff xAddTwo_isRealRooted.1
@@ -157,7 +157,7 @@ private lemma xAddThree_isRealRooted : ((X + 3 : ℝ[X]) ≠ 0 ∧ (X + 3 : ℝ[
 
 private lemma xAddThree_hasNonnegCoeffs : HasNonnegCoeffs (X + 3 : ℝ[X]) := by
   change HasNonnegCoeffs (X + C (3 : ℝ) : ℝ[X])
-  exact hasNonnegCoeffs_X.add (hasNonnegCoeffs_C (by simp : (0 : ℝ) ≤ 3))
+  exact hasNonnegCoeffs_X_add_C (by norm_num)
 
 private lemma xAddThree_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 3 : ℝ[X]) :=
   xAddThree_hasNonnegCoeffs.pos_leadingCoeff xAddThree_isRealRooted.1

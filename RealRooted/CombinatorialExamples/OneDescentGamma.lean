@@ -60,16 +60,6 @@ lemma oneDescentGamma_linearShift_nonneg (m j : Nat) :
     0 ≤ (((m - j : Nat) : ℝ) / ((j + 1 : Nat) : ℝ)) := by
   positivity
 
-lemma hasNonnegCoeffs_X_add_C {t : ℝ} (ht : 0 ≤ t) :
-    HasNonnegCoeffs (X + C t) := by
-  simpa [sub_eq_add_neg] using
-    (hasNonnegCoeffs_X_sub_C (r := -t) (by linarith))
-
-lemma oneDescent_hasNonnegCoeffs_X : HasNonnegCoeffs (X : ℝ[X]) := by
-  intro n
-  simp only [coeff_X]
-  split <;> norm_num
-
 lemma isRealRooted_X_pow :
     ∀ n : Nat, (((X : ℝ[X]) ^ n) ≠ 0 ∧ ((X : ℝ[X]) ^ n).Splits) := by
   simp

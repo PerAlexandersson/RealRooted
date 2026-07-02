@@ -19,9 +19,6 @@ section
 lemma hasNonnegCoeffs_zero : HasNonnegCoeffs (0 : ℝ[X]) := by
   simp [HasNonnegCoeffs]
 
-lemma hasNonnegCoeffs_X : HasNonnegCoeffs (X : ℝ[X]) := by
-  rintro (_ | _ | n) <;> simp [coeff_X]
-
 lemma HasNonnegCoeffs.add {p q : ℝ[X]} (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q) :
     HasNonnegCoeffs (p + q) := fun n => by
   simpa [coeff_add] using add_nonneg (hp n) (hq n)
