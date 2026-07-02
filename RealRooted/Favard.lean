@@ -68,8 +68,7 @@ theorem favardInterlacing :
           lia
         have hAf_pos : HasPosLeadingCoeff (aPoly * f) := by
           dsimp [aPoly]
-          unfold HasPosLeadingCoeff at hPos_n1 ⊢
-          simpa [Polynomial.leadingCoeff_mul, leadingCoeff_X_sub_C] using hPos_n1
+          exact hasPosLeadingCoeff_X_sub_C_mul hPos_n1
         have hBg_lt_Af : (bPoly * g).natDegree < (aPoly * f).natDegree := by
           have hBg_le : (bPoly * g).natDegree ≤ g.natDegree := by
             dsimp [bPoly]

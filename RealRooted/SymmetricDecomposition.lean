@@ -2916,9 +2916,7 @@ private theorem prec_b_component_of_prec_Id_top_of_right_top
     ⟨ht_ne, by simpa using hall_ht 0 1⟩
   have ht_pos : HasPosLeadingCoeff t := by
     dsimp [t]
-    unfold HasPosLeadingCoeff at hb_pos ⊢
-    rw [leadingCoeff_mul, leadingCoeff_X_sub_C, one_mul]
-    lia
+    exact hasPosLeadingCoeff_X_sub_C_mul (r := (1 : ℝ)) hb_pos
   have hb_rr : (b ≠ 0 ∧ b.Splits) := by
     apply isRealRooted_of_dvd ht_rr.1 ht_rr.2 hb0
     refine ⟨X - C (1 : ℝ), ?_⟩
@@ -3536,9 +3534,7 @@ theorem brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
     mul_ne_zero (X_sub_C_ne_zero (1 : ℝ)) hb0
   have ht_pos : HasPosLeadingCoeff t := by
     dsimp [t]
-    unfold HasPosLeadingCoeff at hb_pos ⊢
-    rw [leadingCoeff_mul, leadingCoeff_X_sub_C, one_mul]
-    lia
+    exact hasPosLeadingCoeff_X_sub_C_mul (r := (1 : ℝ)) hb_pos
   have hp_split : p = h + t := by
     grind
   have hall_hp : AllComboRealRooted h p := allComboRealRooted_of_prec hIdp

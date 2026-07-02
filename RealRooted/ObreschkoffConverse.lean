@@ -2402,13 +2402,6 @@ private lemma root_lt_rightmost_of_prec_sameDegree_no_common
     roots_le_of_prec_right hfg huR_max r ((mem_roots hfg.1.1).mpr hr)
   grind
 
-private lemma hasPosLeadingCoeff_of_right_factor
-    {q : ℝ[X]} {uR : ℝ}
-    (h : HasPosLeadingCoeff ((X - C uR) * q)) :
-    HasPosLeadingCoeff q := by
-  unfold HasPosLeadingCoeff at h ⊢
-  simp_all
-
 private lemma prec_of_right_factor_combo_of_natDegree_ge
     {f q : ℝ[X]} {uR α β : ℝ}
     (hqf : Interlaces q f)
@@ -2588,7 +2581,7 @@ private theorem allComboRealRooted_of_prec_sameDegree_pos_of_no_common
   have hroot_lt : ∀ r, f.IsRoot r → r < uR :=
     root_lt_rightmost_of_prec_sameDegree_no_common hfg huR_root huR_max hno
   have hqg_pos : HasPosLeadingCoeff qg := by
-    apply hasPosLeadingCoeff_of_right_factor
+    apply hasPosLeadingCoeff_of_X_sub_C_mul (r := uR)
     simpa [hqg] using hg_pos
   intro α β
   by_cases hβ0 : β = 0
