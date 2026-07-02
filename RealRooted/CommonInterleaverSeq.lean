@@ -53,6 +53,12 @@ def rootSeqDesc (f : ℝ[X]) : List ℝ :=
 @[simp] lemma rootSeqDesc_eq_nil {f : ℝ[X]} (hf : f.Splits) :
     rootSeqDesc f = [] ↔ f.natDegree = 0 := by simp [← List.length_eq_zero_iff, hf]
 
+private lemma rootSeqDesc_reverse_ne_nil_of_natDegree_pos
+    {f : ℝ[X]} (hf : f.Splits) (hpos : 0 < f.natDegree) :
+    (rootSeqDesc f).reverse ≠ [] := by
+  apply List.ne_nil_of_length_pos
+  simpa [List.length_reverse, rootSeqDesc_length hf] using hpos
+
 lemma rootSeqDesc_pairwise {f : ℝ[X]} :
     (rootSeqDesc f).Pairwise (· ≥ ·) := by
   simpa [rootSeqDesc] using (Multiset.pairwise_sort (s := f.roots) (r := (· ≤ ·))).reverse
@@ -1046,12 +1052,10 @@ theorem rootSlotInterval_inter_nonempty_of_commonInterleaver
       exact rootSlotInterval_inter_nonempty_of_lengths_eq_zero hf_len0 hg_len0 jf jg
     · have hf_pos : 0 < f.natDegree := by lia
       have hg_pos : 0 < g.natDegree := by lia
-      have hrevf_ne : (rootSeqDesc f).reverse ≠ [] := by
-        apply List.ne_nil_of_length_pos
-        simpa [List.length_reverse, rootSeqDesc_length hfh.1.2] using hf_pos
-      have hrevg_ne : (rootSeqDesc g).reverse ≠ [] := by
-        apply List.ne_nil_of_length_pos
-        simpa [List.length_reverse, rootSeqDesc_length hgh.1.2] using hg_pos
+      have hrevf_ne : (rootSeqDesc f).reverse ≠ [] :=
+        rootSeqDesc_reverse_ne_nil_of_natDegree_pos hfh.1.2 hf_pos
+      have hrevg_ne : (rootSeqDesc g).reverse ≠ [] :=
+        rootSeqDesc_reverse_ne_nil_of_natDegree_pos hgh.1.2 hg_pos
       let af : ℝ := ((rootSeqDesc f).reverse).get
         ⟨0, by grind⟩
       let ag : ℝ := ((rootSeqDesc g).reverse).get
