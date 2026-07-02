@@ -205,6 +205,11 @@ lemma leadingCoeff_TDeriv (eps : ℝ) (p : ℝ[X]) : (TDeriv eps p).leadingCoeff
       _ < p.natDegree := Nat.sub_lt (by lia) one_pos
   rw [Polynomial.coeff_eq_zero_of_natDegree_lt hp'_deg, sub_zero, Polynomial.leadingCoeff]
 
+lemma HasPosLeadingCoeff.TDeriv {eps : ℝ} {p : ℝ[X]}
+    (hp : HasPosLeadingCoeff p) :
+    HasPosLeadingCoeff (TDeriv eps p) := by
+  simpa [HasPosLeadingCoeff] using hp
+
 /-- T_ε of a nonzero polynomial with degree ≥ 1 is nonzero. -/
 lemma TDeriv_ne_zero {eps : ℝ} {p : ℝ[X]} (hp : p ≠ 0) :
     TDeriv eps p ≠ 0 := by
@@ -235,9 +240,7 @@ private lemma isRealRooted_TDeriv_pos {eps : ℝ} {p : ℝ[X]}
   -- HasPosLeadingCoeff of T_ε(p) (same leading coeff as p)
   have hT_pos : HasPosLeadingCoeff (C 1 * p + C (-eps) * p.derivative) := by
     rw [← hrewrite]
-    unfold HasPosLeadingCoeff
-    rw [leadingCoeff_TDeriv]
-    exact hp_pos
+    exact hp_pos.TDeriv
   -- degree bounds
   have hdeg_lo : p.natDegree ≤ (C 1 * p + C (-eps) * p.derivative).natDegree := by
     rw [← hrewrite, natDegree_TDeriv eps p]
@@ -364,9 +367,7 @@ theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
           simp [TDeriv]
         have hT_pos : HasPosLeadingCoeff (C 1 * (-p) + C (-eps) * (-p).derivative) := by
           rw [← hrewrite_neg]
-          unfold HasPosLeadingCoeff
-          rw [leadingCoeff_TDeriv]
-          simp_all
+          exact hneg_pos.TDeriv
         have hdeg_lo : (-p).natDegree ≤ (C 1 * (-p) + C (-eps) * (-p).derivative).natDegree := by
           rw [← hrewrite_neg, natDegree_TDeriv eps (-p)]
         have hdeg_hi :
@@ -391,9 +392,7 @@ theorem prec_TDeriv {eps : ℝ} {p : ℝ[X]}
         ring
       have hT_pos : HasPosLeadingCoeff (C 1 * p + C (-eps) * p.derivative) := by
         rw [← hrewrite]
-        unfold HasPosLeadingCoeff
-        rw [leadingCoeff_TDeriv]
-        exact hpos
+        exact hpos.TDeriv
       have hdeg_lo : p.natDegree ≤ (C 1 * p + C (-eps) * p.derivative).natDegree := by
         rw [← hrewrite, natDegree_TDeriv]
       have hdeg_hi : (C 1 * p + C (-eps) * p.derivative).natDegree ≤ p.natDegree + 1 := by
