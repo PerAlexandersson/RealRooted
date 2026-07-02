@@ -1,5 +1,6 @@
 import RealRooted.Basic
 import RealRooted.Tactic.Lookup
+import RealRooted.Tactic.Sign
 import RealRooted.Tactic.SideGoals
 
 /-!
@@ -84,6 +85,7 @@ macro_rules
         first
           | rr_lookup
           | assumption
+          | rr_sign
           | simp_all [
               RealRooted.Prec,
               RealRooted.Prec0,

@@ -29,6 +29,32 @@ These should be the first OEIS-facing targets for `rr_ma_wang`.
   `A021009`, `A046089`, `A049352`, `A049353`, `A079621`, `A111578`,
   `A143496`, `A154537`, `A225466`, `A364071`.
 
+## Executable OEIS recurrence test bed
+
+`RealRooted.Tactic.Examples.OEISTestbed` contains the first executable
+sequence-labelled regression tests from the Erik/sqrt2 recurrence survey.
+The examples do not yet formalize the row definitions; they isolate the
+certificate fragments that should be automatic once a sequence-specific file
+provides the recurrence identity, degree facts, root interval, and base cases.
+
+Current test-bed entries:
+
+- Ma--Wang Family A:
+  `A008517`, `A120434`, `A156919`;
+- Ma--Wang Family B and OEIS-stated conjecture targets:
+  `A321966`, `A322944`;
+- Liu--Wang Family E:
+  `A049403`, `A061896`, `A100862`, `A154227`, `A249248`;
+- Narayana/Jacobi Family G:
+  `A001263`, `A091044`, `A145596`, `A178343`;
+- Favard/Chebyshev Family F:
+  `A049310`.
+
+These 15 entries are meant to stay small and executable.  Harder targets such
+as `A390883` should be recorded here, but not forced into this scalar test bed
+until a refinement, companion-vector recurrence, or production-matrix
+certificate is explicit.
+
 ## OEIS Family C/D/H targets
 
 These are useful after the Ma-Wang tactic handles explicit root intervals and
@@ -96,4 +122,3 @@ namespace Tactic
 
 end Tactic
 end RealRooted
-

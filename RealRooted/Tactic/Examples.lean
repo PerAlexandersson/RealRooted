@@ -1,5 +1,6 @@
 import RealRooted.Tactic.Examples.Attr
 import RealRooted.Tactic.Examples.SideGoals
+import RealRooted.Tactic.Examples.Sign
 import RealRooted.Tactic.Examples.Lookup
 import RealRooted.Tactic.Examples.Finish
 import RealRooted.Tactic.Examples.Favard
@@ -8,6 +9,7 @@ import RealRooted.Tactic.Examples.LiuWang
 import RealRooted.Tactic.Examples.Matrix
 import RealRooted.Tactic.Examples.Combinatorial
 import RealRooted.Tactic.Examples.SequenceSurvey
+import RealRooted.Tactic.Examples.OEISTestbed
 
 /-!
 # RealRooted tactic examples
