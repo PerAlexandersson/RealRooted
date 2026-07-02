@@ -143,7 +143,7 @@ lemma typeBEulerian_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (typeBEulerian n
           have hcoeff_succ : 0 ≤ coeff (typeBEulerian n) (m + 1) :=
             typeBEulerian_nonnegCoeffs n (m + 1)
           have hnm : 0 ≤ ((2 * n + 1 : ℝ) - 2 * m) := by
-            have hm' : (m : ℝ) ≤ n := by exact_mod_cast hm
+            have hm' : (m : ℝ) ≤ n := Nat.cast_le.mpr hm
             nlinarith
           exact add_nonneg (mul_nonneg hnm hcoeff_m)
             (mul_nonneg (by positivity) hcoeff_succ)

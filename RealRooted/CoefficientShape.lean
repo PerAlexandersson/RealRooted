@@ -71,8 +71,9 @@ theorem CoeffUltraLogConcaveUpTo.logConcave {d : ℕ} {a : ℕ → ℝ}
   intro k hk0 hkd
   have hprod_nonneg : 0 ≤ a (k - 1) * a (k + 1) :=
     mul_nonneg (hnonneg (k - 1) (by lia)) (hnonneg (k + 1) (by lia))
-  have hk_pos_real : (0 : ℝ) < k := by exact_mod_cast hk0
-  have hdk_pos_real : (0 : ℝ) < ((d - k : ℕ) : ℝ) := by exact_mod_cast Nat.sub_pos_of_lt hkd
+  have hk_pos_real : (0 : ℝ) < k := Nat.cast_pos.mpr hk0
+  have hdk_pos_real : (0 : ℝ) < ((d - k : ℕ) : ℝ) :=
+    Nat.cast_pos.mpr (Nat.sub_pos_of_lt hkd)
   have hfactor_pos : 0 < (k : ℝ) * ((d - k : ℕ) : ℝ) :=
     mul_pos hk_pos_real hdk_pos_real
   have hfactor_le :
