@@ -48,6 +48,15 @@ lemma weightedSum_eq_zero_of_forall_coeff_zero :
       have hl : ∀ ap ∈ l, ap.1 = 0 := fun ap hap => hzero ap (by simp [hap])
       simp [weightedSum_cons, ha, weightedSum_eq_zero_of_forall_coeff_zero l hl]
 
+private lemma forall_weight_eq_zero_of_nonneg_of_not_exists_pos
+    {l : List (ℝ × ℝ[X])}
+    (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
+    (hnot_pos : ¬ ∃ ap ∈ l, 0 < ap.1) :
+    ∀ ap ∈ l, ap.1 = 0 := by
+  intro ap hap
+  exact le_antisymm (not_lt.mp fun hap_pos => hnot_pos ⟨ap, hap, hap_pos⟩)
+    (hnonneg ap hap)
+
 /-- `HasNonnegCoeffs` is closed under finite sums. -/
 lemma hasNonnegCoeffs_finsetSum {ι : Type}
     (s : Finset ι) (f : ι → ℝ[X]) (hf : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
@@ -75,15 +84,16 @@ lemma hasPosLeadingCoeff_weightedSum :
   | [], _, _, hex => by simp_all
   | (a, p) :: l, hnonneg, hpos, hex => by
       have hnonneg_a : 0 ≤ a := hnonneg (a, p) (by simp)
+      have hnonneg_tail : ∀ ap ∈ l, 0 ≤ ap.1 :=
+        fun ap hap => hnonneg ap (by simp [hap])
+      have hpos_tail : ∀ ap ∈ l, HasPosLeadingCoeff ap.2 :=
+        fun ap hap => hpos ap (by simp [hap])
       rcases lt_or_eq_of_le hnonneg_a with ha | rfl
       · by_cases htail : ∃ ap ∈ l, 0 < ap.1
         · have hCp_pos : HasPosLeadingCoeff (C a * p) :=
             hasPosLeadingCoeff_C_mul ha (hpos (a, p) (by simp))
           have htail_pos : HasPosLeadingCoeff (weightedSum l) :=
-            hasPosLeadingCoeff_weightedSum l
-              (fun ap hap => hnonneg ap (by simp [hap]))
-              (fun ap hap => hpos ap (by simp [hap]))
-              htail
+            hasPosLeadingCoeff_weightedSum l hnonneg_tail hpos_tail htail
           rcases lt_trichotomy (C a * p).natDegree (weightedSum l).natDegree with hlt | heq | hgt
           · simpa [weightedSum_cons] using
               hasPosLeadingCoeff_add_of_natDegree_lt_right hlt htail_pos
@@ -92,19 +102,14 @@ lemma hasPosLeadingCoeff_weightedSum :
           · simpa [weightedSum_cons] using
               hasPosLeadingCoeff_add_of_natDegree_lt_left hgt hCp_pos
         · have hzero_tail : weightedSum l = 0 :=
-            weightedSum_eq_zero_of_forall_coeff_zero l (fun ap hap => by
-              have hap_nonneg : 0 ≤ ap.1 := hnonneg ap (by simp [hap])
-              have hap_not_pos : ¬ 0 < ap.1 :=
-                fun hap_pos => htail ⟨ap, hap, hap_pos⟩
-              exact le_antisymm (not_lt.mp hap_not_pos) hap_nonneg)
+            weightedSum_eq_zero_of_forall_coeff_zero l
+              (forall_weight_eq_zero_of_nonneg_of_not_exists_pos
+                hnonneg_tail htail)
           simpa [weightedSum_cons, hzero_tail] using
             hasPosLeadingCoeff_C_mul ha (hpos (a, p) (by simp))
       · have htail : ∃ ap ∈ l, 0 < ap.1 := by simp_all
         simpa [weightedSum_cons] using
-          hasPosLeadingCoeff_weightedSum l
-            (fun ap hap => hnonneg ap (by simp [hap]))
-            (fun ap hap => hpos ap (by simp [hap]))
-            htail
+          hasPosLeadingCoeff_weightedSum l hnonneg_tail hpos_tail htail
 
 /-- Recursive compatibility data for building a common-left weighted sum using
 Wagner (2). Zero-weight terms may be skipped, while a positive-weight head term
@@ -240,6 +245,12 @@ theorem prec_weightedSum_right :
   | [], _, _, _, _, hex => by simp_all
   | (a, p) :: l, h, hnonneg, hprec, hpos, hex => by
       have hnonneg_a : 0 ≤ a := hnonneg (a, p) (by simp)
+      have hnonneg_tail : ∀ ap ∈ l, 0 ≤ ap.1 :=
+        fun ap hap => hnonneg ap (by simp [hap])
+      have hprec_tail : ∀ ap ∈ l, Prec ap.2 h :=
+        fun ap hap => hprec ap (by simp [hap])
+      have hpos_tail : ∀ ap ∈ l, HasPosLeadingCoeff ap.2 :=
+        fun ap hap => hpos ap (by simp [hap])
       rcases lt_or_eq_of_le hnonneg_a with ha | rfl
       · by_cases htail : ∃ ap ∈ l, 0 < ap.1
         · have hCp_prec : Prec (C a * p) h :=
@@ -247,33 +258,20 @@ theorem prec_weightedSum_right :
           have hCp_pos : HasPosLeadingCoeff (C a * p) :=
             hasPosLeadingCoeff_C_mul ha (hpos (a, p) (by simp))
           have htail_prec : Prec (weightedSum l) h :=
-            prec_weightedSum_right l h
-              (fun ap hap => hnonneg ap (by simp [hap]))
-              (fun ap hap => hprec ap (by simp [hap]))
-              (fun ap hap => hpos ap (by simp [hap]))
-              htail
+            prec_weightedSum_right l h hnonneg_tail hprec_tail hpos_tail htail
           have htail_pos : HasPosLeadingCoeff (weightedSum l) :=
-            hasPosLeadingCoeff_weightedSum l
-              (fun ap hap => hnonneg ap (by simp [hap]))
-              (fun ap hap => hpos ap (by simp [hap]))
-              htail
+            hasPosLeadingCoeff_weightedSum l hnonneg_tail hpos_tail htail
           simpa [weightedSum_cons] using
             prec_add_of_prec_right_of_posLeadingCoeff hCp_prec htail_prec hCp_pos htail_pos
         · have hzero_tail : weightedSum l = 0 :=
-            weightedSum_eq_zero_of_forall_coeff_zero l (fun ap hap => by
-              have hap_nonneg : 0 ≤ ap.1 := hnonneg ap (by simp [hap])
-              have hap_not_pos : ¬ 0 < ap.1 :=
-                fun hap_pos => htail ⟨ap, hap, hap_pos⟩
-              exact le_antisymm (not_lt.mp hap_not_pos) hap_nonneg)
+            weightedSum_eq_zero_of_forall_coeff_zero l
+              (forall_weight_eq_zero_of_nonneg_of_not_exists_pos
+                hnonneg_tail htail)
           simpa [weightedSum_cons, hzero_tail] using
             prec_C_mul_left (hprec (a, p) (by simp)) ha.ne'
       · have htail : ∃ ap ∈ l, 0 < ap.1 := by simp_all
         simpa [weightedSum_cons] using
-          prec_weightedSum_right l h
-            (fun ap hap => hnonneg ap (by simp [hap]))
-            (fun ap hap => hprec ap (by simp [hap]))
-            (fun ap hap => hpos ap (by simp [hap]))
-            htail
+          prec_weightedSum_right l h hnonneg_tail hprec_tail hpos_tail htail
 
 /-- Unweighted finite-sum Wagner theorem on the right. -/
 theorem prec_sum_right

@@ -126,7 +126,7 @@ if every polynomial in the family is interlaced on the left by the same `h`,
 all family members have positive leading coefficient, and the weights are
 nonnegative with at least one positive weight, then the weighted sum is also
 interlaced on the left by `h`. -/
-  theorem prec_weightedSum_left_of_common_left
+theorem prec_weightedSum_left_of_common_left
     (l : List (ℝ × ℝ[X])) (h : ℝ[X])
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
     (hprec : ∀ ap ∈ l, Prec h ap.2)
@@ -1159,7 +1159,8 @@ theorem prec_same_of_root_sign_data
   have hrs_eq : (↑rs : Multiset ℝ) = f.roots := Multiset.sort_eq ..
   have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hlen : rs.length = f.natDegree := by
-    rw [show rs = f.roots.sort (· ≤ ·) by lia, Multiset.length_sort, card_roots_of_splits hf_splits]
+    rw [show rs = f.roots.sort (· ≤ ·) by lia, Multiset.length_sort,
+      card_roots_of_splits hf_splits]
   have hn : 1 ≤ rs.length := by
     lia
   have hg_ne : g ≠ 0 := by
