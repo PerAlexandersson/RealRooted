@@ -91,13 +91,35 @@ lemma mem_zipWith_mul_get {row fs : List ℝ[X]}
   refine ⟨⟨i.1, by grind⟩, ?_⟩
   simp [List.get_eq_getElem]
 
+lemma hasNonnegCoeffs_of_mem_zipWith_mul {row fs : List ℝ[X]}
+    (hrow : ∀ p ∈ row, HasNonnegCoeffs p)
+    (hfs : ∀ f ∈ fs, HasNonnegCoeffs f) :
+    ∀ p ∈ row.zipWith (· * ·) fs, HasNonnegCoeffs p := by
+  intro p hp
+  rcases mem_zipWith_mul hp with ⟨a, ha, b, hb, rfl⟩
+  exact (hrow a ha).mul (hfs b hb)
+
+lemma splits_of_mem_zipWith_mul {row fs : List ℝ[X]}
+    (hrow : ∀ p ∈ row, p.Splits)
+    (hfs : ∀ f ∈ fs, f.Splits) :
+    ∀ p ∈ row.zipWith (· * ·) fs, p.Splits := by
+  intro p hp
+  rcases mem_zipWith_mul hp with ⟨a, ha, b, hb, rfl⟩
+  exact (hrow a ha).mul (hfs b hb)
+
+lemma posLeadingCoeff_of_mem_zipWith_mul {row fs : List ℝ[X]}
+    (hrow : ∀ p ∈ row, HasPosLeadingCoeff p)
+    (hfs : ∀ f ∈ fs, HasPosLeadingCoeff f) :
+    ∀ p ∈ row.zipWith (· * ·) fs, HasPosLeadingCoeff p := by
+  intro p hp
+  rcases mem_zipWith_mul hp with ⟨a, ha, b, hb, rfl⟩
+  exact (hrow a ha).mul (hfs b hb)
+
 lemma hasNonnegCoeffs_zipWith_mul_sum {row fs : List ℝ[X]}
     (hrow : ∀ p ∈ row, HasNonnegCoeffs p)
     (hfs : ∀ f ∈ fs, HasNonnegCoeffs f) :
     HasNonnegCoeffs ((row.zipWith (· * ·) fs).sum) :=
-  hasNonnegCoeffs_sum _ fun _ hp =>
-    let ⟨a, ha, b, hb, hp_eq⟩ := mem_zipWith_mul hp
-    hp_eq ▸ (hrow a ha).mul (hfs b hb)
+  hasNonnegCoeffs_sum _ (hasNonnegCoeffs_of_mem_zipWith_mul hrow hfs)
 
 /-- A zip-with product sum of nonnegative-coefficient polynomials is nonzero as
 soon as one product term is nonzero. -/
@@ -111,9 +133,7 @@ lemma zipWith_mul_sum_ne_zero_of_mem_ne_zero
   sum_ne_zero_of_hasNonnegCoeffs_of_mem_ne_zero
     (ps := row.zipWith (· * ·) fs)
     (p := p)
-    (fun _ hq =>
-      let ⟨a, ha, b, hb, hq_def⟩ := mem_zipWith_mul hq
-      hq_def ▸ (hrow a ha).mul (hfs b hb))
+    (hasNonnegCoeffs_of_mem_zipWith_mul hrow hfs)
     hp_mem hp_ne
 
 private theorem pairInterleavers_zipWith_mul_reverse_of_interlacingSeqNonneg
@@ -235,13 +255,13 @@ theorem hasCommonInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg
       pairwiseHasCommonInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg
         (fs := fs) (gs := gs) hlen hfs hgs
   have hrr : ∀ p ∈ ps, p.Splits := by
-    intro p hp
-    rcases mem_zipWith_mul hp with ⟨f, hf, g, hg, rfl⟩
-    exact (hfs.splits hf).mul (hgs_rr_rev g hg)
+    simpa [ps] using
+      splits_of_mem_zipWith_mul
+        (row := fs) (fs := gs.reverse) (fun p hp => hfs.splits hp) hgs_rr_rev
   have hpos : ∀ p ∈ ps, HasPosLeadingCoeff p := by
-    intro p hp
-    rcases mem_zipWith_mul hp with ⟨f, hf, g, hg, rfl⟩
-    exact (hfs.posLeadingCoeff f hf).mul (hgs_pos_rev g hg)
+    simpa [ps] using
+      posLeadingCoeff_of_mem_zipWith_mul
+        (row := fs) (fs := gs.reverse) hfs.posLeadingCoeff hgs_pos_rev
   exact hasCommonInterleaver_of_pairwiseHasCommonInterleaver hrr hpos hpair
 
 /-- Brändén's Lemma 7.8.3: the reversed product-sum of two interlacing
@@ -261,11 +281,11 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
       ((fs.zipWith (· * ·) gs.reverse).sum).Splits) := by
   let ps := fs.zipWith (· * ·) gs.reverse
   have hpos : ∀ p ∈ ps, HasPosLeadingCoeff p := by
-    intro p hp
-    rcases mem_zipWith_mul hp with ⟨f, hf, g, hg, rfl⟩
-    have hg_pos_rev : HasPosLeadingCoeff g :=
-      hgs.posLeadingCoeff g (by simp_all)
-    exact (hfs.posLeadingCoeff f hf).mul hg_pos_rev
+    have hgs_pos_rev : ∀ p ∈ gs.reverse, HasPosLeadingCoeff p :=
+      fun p hp => hgs.posLeadingCoeff p (by simp_all)
+    simpa [ps] using
+      posLeadingCoeff_of_mem_zipWith_mul
+        (row := fs) (fs := gs.reverse) hfs.posLeadingCoeff hgs_pos_rev
   have hps_ne : ps ≠ [] := by
     intro hnil
     have hlen_ps : ps.length = fs.length := by
