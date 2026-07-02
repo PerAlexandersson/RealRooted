@@ -250,9 +250,9 @@ lemma of_posComboRealRooted_sameDegree {f g : ℝ[X]}
     (hdeg : g.natDegree = f.natDegree) :
     Compatible f g := by
   have hf : (f ≠ 0 ∧ f.Splits) :=
-    PosComboRealRooted.isRealRooted_left_of_sameDegree hfg hf_pos hg_pos hdeg
+    hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg
   have hg : (g ≠ 0 ∧ g.Splits) :=
-    PosComboRealRooted.isRealRooted_right_of_sameDegree hfg hf_pos hg_pos hdeg
+    hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg
   intro α β hα hβ
   by_cases hα0 : α = 0
   · subst hα0
@@ -1038,9 +1038,9 @@ theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlterna
     PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
   have hf_rr : (f ≠ 0 ∧ f.Splits) :=
-      PosComboRealRooted.isRealRooted_left_of_sameDegree hfg hf_pos hg_pos hdeg
+      hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg
   have hg_rr : (g ≠ 0 ∧ g.Splits) :=
-      PosComboRealRooted.isRealRooted_right_of_sameDegree hfg hf_pos hg_pos hdeg
+      hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg
   have hslot :
       ∀ j (hj : j < f.natDegree + 1),
         (rootSlotInterval (rootSeqDesc f)
@@ -1233,9 +1233,9 @@ theorem sameDegreePairHasCommonInterleaver_nonneg_of_slotData
     PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
   have hf_rr : f ≠ 0 ∧ f.Splits :=
-    PosComboRealRooted.isRealRooted_left_of_sameDegree hfg hf_pos hg_pos hdeg
+    hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg
   have hg_rr : g ≠ 0 ∧ g.Splits :=
-    PosComboRealRooted.isRealRooted_right_of_sameDegree hfg hf_pos hg_pos hdeg
+    hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg
   refine
     pairHasCommonInterleaver_of_sameDegree_slotIntersections
       hf_rr.1 hg_rr.1 hf_rr.2 hg_rr.2 hdeg ?_
