@@ -57,14 +57,6 @@ private lemma forall_weight_eq_zero_of_nonneg_of_not_exists_pos
   exact le_antisymm (not_lt.mp fun hap_pos => hnot_pos ⟨ap, hap, hap_pos⟩)
     (hnonneg ap hap)
 
-/-- `HasNonnegCoeffs` is closed under finite sums. -/
-lemma hasNonnegCoeffs_finsetSum {ι : Type}
-    (s : Finset ι) (f : ι → ℝ[X]) (hf : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
-    HasNonnegCoeffs (s.sum f) := by
-  classical
-  intro n
-  simpa [finsetSum_coeff] using Finset.sum_nonneg fun i hi => hf i hi n
-
 lemma hasPosLeadingCoeff_C_mul {a : ℝ} {p : ℝ[X]}
     (ha : 0 < a) (hp : HasPosLeadingCoeff p) :
     HasPosLeadingCoeff (C a * p) := by

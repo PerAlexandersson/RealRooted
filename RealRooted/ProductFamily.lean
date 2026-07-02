@@ -26,15 +26,6 @@ lemma hasNonnegCoeffs_affine_mul {s t : ℝ} (hs : 0 ≤ s) (ht : 0 ≤ t)
   have hsum : HasNonnegCoeffs (C s * (X * p) + C t * p) := hsXp.add htp
   grind
 
-lemma hasNonnegCoeffs_sum :
-    ∀ ps : List ℝ[X], (∀ p ∈ ps, HasNonnegCoeffs p) → HasNonnegCoeffs ps.sum
-  | [], _ => by simpa using hasNonnegCoeffs_zero
-  | p :: ps, hps => by
-      have hp : HasNonnegCoeffs p := hps p (by simp)
-      have htail : HasNonnegCoeffs ps.sum :=
-        hasNonnegCoeffs_sum ps (fun q hq => hps q (by simp [hq]))
-      simpa using hp.add htail
-
 /-- A finite sum of nonnegative-coefficient polynomials cannot vanish if one of
 the summands is already nonzero. This is the no-cancellation fact needed when
 matrix row sums are built from nonnegative product terms. -/

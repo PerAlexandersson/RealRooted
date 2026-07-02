@@ -537,6 +537,22 @@ lemma HasNonnegCoeffs.add {p q : ℝ[X]}
     HasNonnegCoeffs (p + q) := fun n => by
   simpa [coeff_add] using add_nonneg (hp n) (hq n)
 
+lemma hasNonnegCoeffs_finsetSum {ι : Type}
+    (s : Finset ι) (f : ι → ℝ[X]) (hf : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
+    HasNonnegCoeffs (s.sum f) := by
+  classical
+  intro n
+  simpa [finsetSum_coeff] using Finset.sum_nonneg fun i hi => hf i hi n
+
+lemma hasNonnegCoeffs_sum :
+    ∀ ps : List ℝ[X], (∀ p ∈ ps, HasNonnegCoeffs p) → HasNonnegCoeffs ps.sum
+  | [], _ => by simpa using hasNonnegCoeffs_zero
+  | p :: ps, hps => by
+      have hp : HasNonnegCoeffs p := hps p (by simp)
+      have htail : HasNonnegCoeffs ps.sum :=
+        hasNonnegCoeffs_sum ps (fun q hq => hps q (by simp [hq]))
+      simpa using hp.add htail
+
 lemma HasNonnegCoeffs.mul {p q : ℝ[X]}
     (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q) :
     HasNonnegCoeffs (p * q) := by
