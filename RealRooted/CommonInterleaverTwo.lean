@@ -2929,9 +2929,9 @@ theorem
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
-  pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairBridgePos
-    (compatiblePairHasCommonInterleaver_of_sameDegreeAlternative_and_affineFamily_via_nonnegShift
-      hsame haffBridge)
+  pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_degreeSplit_via_nonnegShift
+    hsame
+    (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
     hpos hpair
 
 /-- Pairwise upgrade from the boundary-right-pair hypothesis after shifting
@@ -2943,9 +2943,10 @@ theorem
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
-  pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairBridgePos
-    (compatiblePairHasCommonInterleaver_of_boundaryRightPairOrientation_via_nonnegShift
+  pairwiseHasCommonInterleaver_of_pairwiseCompatible_nonnegShift
+    (boundaryRightPairOrientation_implies_sameDegreeOrientationAlternative_nonneg
       hboundary)
+    (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
     hpos hpair
 
 private theorem pairwiseHasCommonInterleaver_of_nonnegPairBridge
