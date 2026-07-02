@@ -127,12 +127,12 @@ lemma derivative {f g : ℝ[X]} (h : Compatible f g) :
   · rw [hcomb]
     exact derivative_eq_zero_or_ne_zero_and_splits hrr.2
 
-private lemma isRealRooted_left
+lemma isRealRooted_left
     {f g : ℝ[X]} (h : Compatible f g)
     (hf_pos : HasPosLeadingCoeff f) : (f ≠ 0 ∧ f.Splits) := by
   rcases h 1 0 (by simp) (by simp) with hzero | hrr <;> simp_all
 
-private lemma isRealRooted_right
+lemma isRealRooted_right
     {f g : ℝ[X]} (h : Compatible f g)
     (hg_pos : HasPosLeadingCoeff g) : (g ≠ 0 ∧ g.Splits) := by
   rcases h 0 1 (by simp) (by simp) with hzero | hrr <;> simp_all
@@ -146,7 +146,7 @@ private lemma natDegree_le_one_of_const_left
   by_cases hdeg : g.natDegree ≤ 1
   · lia
   have hg_deg2 : 2 ≤ g.natDegree := by lia
-  have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_right hcg hg_pos
+  have hg_rr : (g ≠ 0 ∧ g.Splits) := hcg.isRealRooted_right hg_pos
   obtain ⟨t, ht_pos, ht_bad⟩ :=
     exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
       hg_rr.2 hg_pos hg_deg2
@@ -2394,8 +2394,8 @@ private theorem compatiblePairHasCommonInterleaver_of_realRootedPosComboBridge
         ∃ h : ℝ[X], Prec f h ∧ Prec g h) :
     CompatiblePairHasCommonInterleaverStatement := by
   intro f g hf_pos hg_pos hfg
-  have hf_rr : (f ≠ 0 ∧ f.Splits) := Compatible.isRealRooted_left hfg hf_pos
-  have hg_rr : (g ≠ 0 ∧ g.Splits) := Compatible.isRealRooted_right hfg hg_pos
+  have hf_rr : (f ≠ 0 ∧ f.Splits) := hfg.isRealRooted_left hf_pos
+  have hg_rr : (g ≠ 0 ∧ g.Splits) := hfg.isRealRooted_right hg_pos
   exact hbridge hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hf_pos hg_pos
     (Compatible.toPosComboRealRooted hfg hf_pos hg_pos)
 
