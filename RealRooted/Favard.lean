@@ -50,8 +50,7 @@ theorem favardInterlacing :
         · rw [hP0]
           exact hasPosLeadingCoeff_one
         · rw [hP1]
-          unfold HasPosLeadingCoeff
-          simp
+          exact hasPosLeadingCoeff_X_sub_C (α 0)
     | succ n ih =>
         rcases ih with ⟨hInter, hPos_n, hPos_n1⟩
         let f : ℝ[X] := P (n + 1)
