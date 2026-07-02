@@ -42,6 +42,12 @@ private lemma icc_inter_icc_nonempty_of_crossing
     ⟨le_max_left a b, max_le haa' hba'⟩,
     ⟨le_max_right a b, max_le hab' hbb'⟩⟩
 
+private lemma list_getD_eq_getElem_of_lt
+    {α : Type*} (xs : List α) (i : ℕ) (d : α) (hi : i < xs.length) :
+    xs.getD i d = xs[i] := by
+  rw [List.getD_eq_getElem?_getD, List.getElem?_eq_getElem (l := xs) (i := i) hi]
+  simp
+
 private lemma nonneg_of_add_mul_pos_forall {a b : ℝ}
     (h : ∀ {μ : ℝ}, 0 < μ → 0 ≤ a + μ * b) :
     0 ≤ a := by
@@ -1344,27 +1350,19 @@ theorem rootSlotInterval_inter_nonempty_of_sameDegree_crossing
       simpa [ge_iff_le] using
         (List.pairwise_iff_get.mp hrg) ⟨j - 1, by lia⟩ ⟨j, hjrg⟩ hidx_rg
     have hcross_gf : rg[j] ≤ rf[j - 1] := by
-      have hgj : rg.getD j 0 = rg[j] := by
-        rw [List.getD_eq_getElem?_getD,
-          List.getElem?_eq_getElem (l := rg) (i := j) hjrg]
-        simp
-      have hfj : rf.getD (j - 1) 0 = rf[j - 1] := by
-        rw [List.getD_eq_getElem?_getD,
-          List.getElem?_eq_getElem (l := rf) (i := j - 1) (by lia)]
-        simp
+      have hgj : rg.getD j 0 = rg[j] :=
+        list_getD_eq_getElem_of_lt rg j 0 hjrg
+      have hfj : rf.getD (j - 1) 0 = rf[j - 1] :=
+        list_getD_eq_getElem_of_lt rf (j - 1) 0 (by lia)
       calc
         rg[j] = rg.getD j 0 := hgj.symm
         _ ≤ rf.getD (j - 1) 0 := hc1 j hjpos hjrf
         _ = rf[j - 1] := hfj
     have hcross_fg : rf[j] ≤ rg[j - 1] := by
-      have hfj : rf.getD j 0 = rf[j] := by
-        rw [List.getD_eq_getElem?_getD,
-          List.getElem?_eq_getElem (l := rf) (i := j) hjrf]
-        simp
-      have hgj : rg.getD (j - 1) 0 = rg[j - 1] := by
-        rw [List.getD_eq_getElem?_getD,
-          List.getElem?_eq_getElem (l := rg) (i := j - 1) (by lia)]
-        simp
+      have hfj : rf.getD j 0 = rf[j] :=
+        list_getD_eq_getElem_of_lt rf j 0 hjrf
+      have hgj : rg.getD (j - 1) 0 = rg[j - 1] :=
+        list_getD_eq_getElem_of_lt rg (j - 1) 0 (by lia)
       calc
         rf[j] = rf.getD j 0 := hfj.symm
         _ ≤ rg.getD (j - 1) 0 := hc2 j hjpos hjrf
