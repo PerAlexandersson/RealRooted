@@ -1,5 +1,5 @@
 import RealRooted.Tactic.Favard
-import RealRooted.Tactic.Sign
+import RealRooted.Tactic.RootBounds
 
 /-!
 # OEIS recurrence test bed
@@ -45,6 +45,11 @@ example {r : ℝ} (hr : r ≤ 0) :
     (C (3 : ℝ) * X : ℝ[X]).eval r ≤ 0 := by
   rr_sign
 
+-- `A321966`: root-sign package once the current row has nonnegative coefficients.
+example {p : ℝ[X]} (hrr : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p) :
+    ∀ r, p.IsRoot r → (C (2 : ℝ) * X : ℝ[X]).eval r ≤ 0 := by
+  rr_sign_at_roots using hrr, hpnn
+
 /-! ## Liu--Wang Family E: positive `t`-lag factors -/
 
 -- `A049403`: `B_n(t)=(n-1)t`.
@@ -53,6 +58,14 @@ example {n : Nat} (hn : 1 ≤ n) {r : ℝ} (hr : r ≤ 0) :
   have hc : 0 ≤ (n : ℝ) - 1 := by
     exact sub_nonneg.mpr (by exact_mod_cast hn)
   rr_sign
+
+-- `A049403`: root-sign package with the active-range scalar certificate.
+example {p : ℝ[X]} (hrr : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p)
+    {n : Nat} (hn : 1 ≤ n) :
+    ∀ r, p.IsRoot r → (C ((n : ℝ) - 1) * X : ℝ[X]).eval r ≤ 0 := by
+  have hc : 0 ≤ (n : ℝ) - 1 := by
+    exact sub_nonneg.mpr (by exact_mod_cast hn)
+  rr_sign_at_roots using hrr, hpnn
 
 -- `A061896`: Lucas-polynomial coefficient triangle, `B_n(t)=t`.
 example {r : ℝ} (hr : r ≤ 0) :
