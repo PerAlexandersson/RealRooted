@@ -550,7 +550,7 @@ theorem apolarEval_C_mul {R : Type*} [CommRing R]
   simp only [apolarEval, Polynomial.coeff_C_mul, Finset.mul_sum]
   refine Finset.sum_congr rfl ?_
   intro k _
-  ring
+  ac_rfl
 
 /-!
 ## Grace's apolarity theorem
