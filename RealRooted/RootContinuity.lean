@@ -164,9 +164,7 @@ theorem exists_real_root_near_in_left_family
   have ht1_ne : t + 1 ≠ 0 := by positivity
   have hf_pos : HasPosLeadingCoeff f := by simp [HasPosLeadingCoeff, hf_monic.leadingCoeff]
   have hg_pos : HasPosLeadingCoeff g := by simp [HasPosLeadingCoeff, hg_monic.leadingCoeff]
-  have hCt_f_pos : HasPosLeadingCoeff (C t * f) := by
-    unfold HasPosLeadingCoeff
-    simp_all
+  have hCt_f_pos : HasPosLeadingCoeff (C t * f) := hasPosLeadingCoeff_C_mul ht hf_pos
   have hsum_deg : (C t * f + g).natDegree = f.natDegree := by
     have hCt_deg : (C t * f).natDegree = f.natDegree := by rw [natDegree_C_mul ht_ne]
     exact
@@ -221,9 +219,7 @@ theorem exists_complex_aroot_near_in_left_family
   have ht1_ne : t + 1 ≠ 0 := by positivity
   have hf_pos : HasPosLeadingCoeff f := by simp [HasPosLeadingCoeff, hf_monic.leadingCoeff]
   have hg_pos : HasPosLeadingCoeff g := by simp [HasPosLeadingCoeff, hg_monic.leadingCoeff]
-  have hCt_f_pos : HasPosLeadingCoeff (C t * f) := by
-    unfold HasPosLeadingCoeff
-    simp_all
+  have hCt_f_pos : HasPosLeadingCoeff (C t * f) := hasPosLeadingCoeff_C_mul ht hf_pos
   have hsum_deg : (C t * f + g).natDegree = f.natDegree := by
     have hCt_deg : (C t * f).natDegree = f.natDegree := by rw [natDegree_C_mul ht_ne]
     exact
