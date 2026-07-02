@@ -473,6 +473,13 @@ lemma hasPosLeadingCoeff_C_mul {a : ℝ} {p : ℝ[X]}
   unfold HasPosLeadingCoeff at hp ⊢
   simp_all
 
+lemma HasPosLeadingCoeff.mul {p q : ℝ[X]}
+    (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q) :
+    HasPosLeadingCoeff (p * q) := by
+  unfold HasPosLeadingCoeff at hp hq ⊢
+  rw [leadingCoeff_mul]
+  exact mul_pos hp hq
+
 lemma HasPosLeadingCoeff.X_mul {p : ℝ[X]} (hp : HasPosLeadingCoeff p) :
     HasPosLeadingCoeff (X * p) := by
   unfold HasPosLeadingCoeff at hp ⊢
