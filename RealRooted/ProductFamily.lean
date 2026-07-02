@@ -387,6 +387,11 @@ private lemma map_snd_filter_zip_sublist_right
     (List.filter_sublist (p := fun q : α × β => decide (p q)) (l := as.zip bs))).trans
       (map_snd_zip_sublist_right as bs)
 
+private lemma reverse_sublist_of_sublist_reverse {α : Type*} {xs ys : List α}
+    (hxs : xs.Sublist ys.reverse) :
+    xs.reverse.Sublist ys := by
+  simpa using hxs.reverse
+
 lemma filterRightByLeftNonzero_sublist_right (fs gs : List ℝ[X]) :
     (filterRightByLeftNonzero fs gs).Sublist gs :=
   map_snd_filter_zip_sublist_right (fun p : ℝ[X] × ℝ[X] => p.1 ≠ 0) fs gs
@@ -536,7 +541,8 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg
   have hgs'_rev : IsInterlacingSeqNonneg gs'.reverse := by
     have hsub : gs'.Sublist gs.reverse := by
       simpa [gs'] using filterRightByLeftNonzero_sublist_right fs gs.reverse
-    have hsub_rev : gs'.reverse.Sublist gs := by grind
+    have hsub_rev : gs'.reverse.Sublist gs :=
+      reverse_sublist_of_sublist_reverse hsub
     exact IsInterlacingSeqNonneg.sublist hgs hsub_rev
   have hlen' : fs'.length = gs'.length := by
     simpa [fs', gs'] using length_filterLeftNonzero_eq_filterRightByLeftNonzero fs gs.reverse
@@ -565,7 +571,7 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg_both
   have hgs_sub_rev : gs'.reverse.Sublist gs := by
     have hsub : gs'.Sublist gs.reverse := by
       simpa [gs'] using filterProductRightNonzero_sublist_right fs gs.reverse
-    grind
+    exact reverse_sublist_of_sublist_reverse hsub
   have hfs' : IsInterlacingSeqNonneg fs' :=
     hfs.sublist_of_realRooted_of_ne hfs_sub hfs_real
       (fun f hf => mem_filterProductLeftNonzero_ne_zero (fs := fs) (gs := gs.reverse) hf)
