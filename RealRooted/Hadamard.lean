@@ -302,16 +302,17 @@ theorem schurSzegoComp_eq_zero_iff_support_disjoint_of_right_natDegree_le
 theorem schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le
     {n : Nat} {gamma : ℕ → ℝ} {p : ℝ[X]} (hp : p.natDegree ≤ n) :
     schurSzegoComp n (jensenPolynomial n gamma) p = diagonalOperator gamma p := by
+  rw [schurSzegoComp_eq_diagonalOperator]
   ext k
+  rw [coeff_diagonalOperator, coeff_diagonalOperator, coeff_jensenPolynomial]
   by_cases hk : k ≤ n
   · have hchoose : (Nat.choose n k : ℝ) ≠ 0 := Nat.cast_choose_ne_zero (R := ℝ) hk
-    rw [coeff_schurSzegoComp_of_le hk, coeff_jensenPolynomial, coeff_diagonalOperator]
     simp only [hk, if_true]
     field_simp [hchoose]
   · have hk_lt : n < k := Nat.lt_of_not_le hk
     have hp_coeff : p.coeff k = 0 :=
       coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hp hk_lt)
-    rw [coeff_schurSzegoComp, if_neg hk, coeff_diagonalOperator, hp_coeff, mul_zero]
+    simp [hk, hp_coeff]
 
 @[simp] theorem schurSzegoComp_zero_left (n : Nat) (p : ℝ[X]) :
     schurSzegoComp n 0 p = 0 := by
