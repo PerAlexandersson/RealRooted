@@ -838,7 +838,8 @@ theorem polarDeriv_natDegree {n : Nat} {c : ℂ} {r : ℝ} {ζ : ℂ}
     (polarDeriv n ζ A).natDegree = n - 1 := by
   refine le_antisymm ?_ ?_
   · rw [ Polynomial.natDegree_le_iff_degree_le, Polynomial.degree_le_iff_coeff_zero ];
-    unfold polarDeriv; simp_all +decide;
+    unfold polarDeriv; simp_all +decide only [Nat.cast_lt, map_natCast, coeff_add,
+      coeff_natCast_mul];
     intro m hm;
     rcases m with ( _ | m ) <;>
       simp_all +decide [ Polynomial.coeff_eq_zero_of_natDegree_lt, Polynomial.coeff_derivative,
