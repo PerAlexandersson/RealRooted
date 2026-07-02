@@ -2670,10 +2670,9 @@ theorem compatiblePairHasCommonInterleaver_of_sameDegreePair_and_affineFamily_no
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : Compatible f g) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
-  compatiblePairHasCommonInterleaver_of_nonnegPosComboPairBridge
-    (fun {f g} hf_pos hg_pos hfnn hgnn hfg =>
-      posComboPairHasCommonInterleaver_of_sameDegreePair_and_affineFamily_nonneg
-        hsame haffBridge (f := f) (g := g) hf_pos hg_pos hfnn hgnn hfg)
+  compatiblePairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
+    hsame
+    (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
     hf_pos hg_pos hfnn hgnn hfg
 
 private theorem posComboPairHasCommonInterleaver_via_nonnegShift
