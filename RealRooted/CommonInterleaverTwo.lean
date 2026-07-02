@@ -1291,6 +1291,42 @@ theorem succDegreePairHasCommonInterleaver_nonneg_of_slotData
   intro j hj
   exact hslot j hj _ _
 
+/-- **Converse of the slot-data reduction for #42.**
+
+A common right interleaver `h` for the succ-degree pair `(f, g)` recovers both
+pieces bundled by `PosComboNoCommonSuccDegreeSlotDataNonnegStatement`:
+real-rootedness of `f` is the left component of `Prec f h`, and each root-slot
+intersection is witnessed by the corresponding root of `h` through
+`rootSlotInterval_inter_nonempty_of_commonInterleaver`.
+
+Together with `succDegreePairHasCommonInterleaver_nonneg_of_slotData` this shows
+the slot-data hypothesis is equivalent to the actual common-interleaver goal,
+so the reduction to root slots loses nothing. -/
+theorem posComboNoCommonSuccDegreeSlotData_of_pairHasCommonInterleaver
+    (hstmt : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    PosComboNoCommonSuccDegreeSlotDataNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
+  obtain ⟨h, hfh, hgh⟩ := hstmt hf_pos hg_pos hfnn hgnn hfg hsucc hno
+  refine ⟨hfh.1, ?_⟩
+  intro j hj hjf hjg
+  have hjg' : j < g.natDegree + 1 := by lia
+  exact rootSlotInterval_inter_nonempty_of_commonInterleaver hfh hgh j hj hjg'
+
+/-- **The #42 slot-data reformulation is equivalent to the target.**
+
+Combining `succDegreePairHasCommonInterleaver_nonneg_of_slotData` with its
+converse `posComboNoCommonSuccDegreeSlotData_of_pairHasCommonInterleaver`, the
+root-slot statement `PosComboNoCommonSuccDegreeSlotDataNonnegStatement` holds if
+and only if the common-right-interleaver statement
+`PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement` does. This
+pins down the exact remaining content of milestone B2: proving the slot data is
+neither stronger nor weaker than proving the interleaver goal directly. -/
+theorem posComboNoCommonSuccDegreeSlotData_iff_pairHasCommonInterleaver :
+    PosComboNoCommonSuccDegreeSlotDataNonnegStatement ↔
+      PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+  ⟨succDegreePairHasCommonInterleaver_nonneg_of_slotData,
+    posComboNoCommonSuccDegreeSlotData_of_pairHasCommonInterleaver⟩
+
 /-- Honest nonnegative degree-split reduction of the no-common orientation
 problem: it is enough to solve the same-degree branch up to orientation
 alternative and the succ-degree branch in the forced direction. -/
