@@ -79,6 +79,17 @@ lemma reverse_rr {p : ℝ[X]} (hp : Multiset.card p.roots = p.natDegree)
         simp +decide [hx, Polynomial.eval_multiset_prod]
     · exact Polynomial.funext fun y => by
         simp +decide [hx', mul_sub, sub_mul, mul_assoc, mul_left_comm]
+  have h_factor_nonzero : ∀ x ∈ rs,
+      ¬ x = 0 ∧ ¬ (Polynomial.X - Polynomial.C x⁻¹ : ℝ[X]) = 0 := by
+    intro x hx
+    refine ⟨?_, Polynomial.X_sub_C_ne_zero _⟩
+    contrapose! h0
+    replace hrs := congr_arg (fun q => Polynomial.coeff q 0) hrs
+    simp_all +singlePass
+    exact Or.inr (by
+      rw [Polynomial.coeff_zero_eq_eval_zero]
+      rw [Polynomial.eval_multiset_prod]
+      aesop)
   rw [h_reverse, Polynomial.roots_C_mul, Polynomial.natDegree_C_mul] <;> norm_num
   · rw [Polynomial.roots_multiset_prod] <;> norm_num [Polynomial.natDegree_multiset_prod]
     · rw [Polynomial.natDegree_multiset_prod] <;> norm_num [Polynomial.natDegree_mul']
@@ -86,23 +97,9 @@ lemma reverse_rr {p : ℝ[X]} (hp : Multiset.card p.roots = p.natDegree)
         intro x hx
         by_cases hx' : x = 0 <;> simp +decide [hx', Polynomial.natDegree_mul']
       · intro x hx
-        refine ⟨?_, Polynomial.X_sub_C_ne_zero _⟩
-        contrapose! h0
-        replace hrs := congr_arg (fun q => Polynomial.coeff q 0) hrs
-        simp_all +singlePass
-        exact Or.inr (by
-          rw [Polynomial.coeff_zero_eq_eval_zero]
-          rw [Polynomial.eval_multiset_prod]
-          aesop)
+        exact h_factor_nonzero x hx
     · intro x hx
-      refine ⟨?_, Polynomial.X_sub_C_ne_zero _⟩
-      contrapose! h0
-      replace hrs := congr_arg (fun q => Polynomial.coeff q 0) hrs
-      simp_all +singlePass
-      exact Or.inr (by
-        rw [Polynomial.coeff_zero_eq_eval_zero]
-        rw [Polynomial.eval_multiset_prod]
-        aesop)
+      exact h_factor_nonzero x hx
   · rintro rfl
     contradiction
   · rintro rfl
