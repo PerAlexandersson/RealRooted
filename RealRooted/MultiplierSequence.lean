@@ -161,31 +161,36 @@ def jensenPolynomial (n : ℕ) (gamma : ℕ → ℝ) : ℝ[X] :=
       have hbk : b ≠ k := Ne.symm hne
       simp [Polynomial.coeff_monomial, hbk]
 
+/-- The Jensen polynomial of `gamma` is the image of `(X + 1) ^ n` under the
+diagonal operator attached to `gamma`. -/
+theorem jensenPolynomial_eq_diagonalOperator_X_add_one_pow
+    (n : ℕ) (gamma : ℕ → ℝ) :
+    jensenPolynomial n gamma = diagonalOperator gamma ((X + 1) ^ n) := by
+  ext k
+  rw [coeff_jensenPolynomial, coeff_diagonalOperator, coeff_X_add_one_pow]
+  by_cases hk : k ≤ n
+  · simp only [hk, if_true]
+    ring
+  · have hlt : n < k := Nat.lt_of_not_le hk
+    simp [hk, Nat.choose_eq_zero_of_lt hlt]
+
 theorem hasNonnegCoeffs_jensenPolynomial
     {n : ℕ} {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k) :
     HasNonnegCoeffs (jensenPolynomial n gamma) := by
-  intro k
-  rw [coeff_jensenPolynomial]
-  split_ifs
-  · exact mul_nonneg (Nat.cast_nonneg _) (hgamma k)
-  · simp
+  rw [jensenPolynomial_eq_diagonalOperator_X_add_one_pow]
+  exact (hasNonnegCoeffs_X_add_one.pow n).diagonalOperator hgamma
 
 theorem natDegree_jensenPolynomial_le (n : ℕ) (gamma : ℕ → ℝ) :
     (jensenPolynomial n gamma).natDegree ≤ n := by
-  rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
-  intro k hk
-  rw [coeff_jensenPolynomial]
-  simp [not_le_of_gt hk]
+  rw [jensenPolynomial_eq_diagonalOperator_X_add_one_pow]
+  exact (natDegree_diagonalOperator_le _ _).trans (natDegree_X_add_one_pow_le n)
 
 theorem support_jensenPolynomial_subset (n : ℕ) (gamma : ℕ → ℝ) :
     (jensenPolynomial n gamma).support ⊆ Finset.range (n + 1) := by
-  intro k hk
-  rw [Polynomial.mem_support_iff] at hk
-  rw [coeff_jensenPolynomial] at hk
-  have hk_le : k ≤ n := by
-    by_contra hle
-    simp [hle] at hk
-  simpa [Finset.mem_range, Nat.lt_succ_iff] using hk_le
+  rw [jensenPolynomial_eq_diagonalOperator_X_add_one_pow]
+  exact (support_diagonalOperator_subset _ _).trans <|
+    Polynomial.supp_subset_range <|
+      lt_of_le_of_lt (natDegree_X_add_one_pow_le n) (Nat.lt_succ_self n)
 
 /-- Finite multiplier sequence up to degree `n`: the diagonal operator
 preserves real-rootedness, allowing the zero polynomial. -/
@@ -212,19 +217,6 @@ theorem IsFinitePFMultiplierSequence.mono {m n : ℕ} {gamma : ℕ → ℝ}
     (hmn : m ≤ n) (h : IsFinitePFMultiplierSequence n gamma) :
     IsFinitePFMultiplierSequence m gamma :=
   fun {_} hp hdeg => h hp (hdeg.trans hmn)
-
-/-- The Jensen polynomial of `gamma` is the image of `(X + 1) ^ n` under the
-diagonal operator attached to `gamma`. -/
-theorem jensenPolynomial_eq_diagonalOperator_X_add_one_pow
-    (n : ℕ) (gamma : ℕ → ℝ) :
-    jensenPolynomial n gamma = diagonalOperator gamma ((X + 1) ^ n) := by
-  ext k
-  rw [coeff_jensenPolynomial, coeff_diagonalOperator, coeff_X_add_one_pow]
-  by_cases hk : k ≤ n
-  · simp only [hk, if_true]
-    ring
-  · have hlt : n < k := Nat.lt_of_not_le hk
-    simp [hk, Nat.choose_eq_zero_of_lt hlt]
 
 theorem splits_X_add_one_pow (n : ℕ) :
     ((X + 1 : ℝ[X]) ^ n).Splits :=
