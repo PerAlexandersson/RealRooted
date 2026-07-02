@@ -2244,9 +2244,10 @@ theorem posComboOrientation_of_boundaryRightPairOrientation_and_nonnegCoeffs
     (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
     Prec f g ∨ Prec g f :=
-  posComboOrientation_of_affineFamilyBridge_and_nonnegCoeffs
-    (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
+  posComboOrientation_of_allComboRealRooted_and_nonnegCoeffs
     hf_pos hg_pos hfnn hgnn hfg
+    (allComboRealRooted_of_posCombo_and_boundaryRightPairOrientation_and_nonnegCoeffs
+      hboundary hf_pos hg_pos hfnn hgnn hfg)
 
 /-- The stronger boundary-right-pair hypothesis already contains the honest
 same-degree no-common branch in the nonnegative regime. -/
@@ -2254,10 +2255,9 @@ theorem
     boundaryRightPairOrientation_implies_sameDegreeOrientationAlternative_nonneg
     (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
     PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement :=
-  fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg hno =>
-    posComboNoCommonOrientation_of_affineFamilyBridge_and_nonnegCoeffs
-      (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
-      hf_pos hg_pos hfnn hgnn hfg (by lia) (by lia) hno
+  fun {_ _} hf_pos hg_pos hfnn hgnn hfg _ _ =>
+    posComboOrientation_of_boundaryRightPairOrientation_and_nonnegCoeffs
+      hboundary hf_pos hg_pos hfnn hgnn hfg
 
 /-- The stronger boundary-right-pair hypothesis also contains the corrected
 succ-degree common-interleaver branch in the nonnegative regime. -/
@@ -2268,9 +2268,8 @@ theorem
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
   have hprec_or :
       Prec f g ∨ Prec g f :=
-    posComboNoCommonOrientation_of_affineFamilyBridge_and_nonnegCoeffs
-      (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
-      hf_pos hg_pos hfnn hgnn hfg (by lia) (by lia) hno
+    posComboOrientation_of_boundaryRightPairOrientation_and_nonnegCoeffs
+      hboundary hf_pos hg_pos hfnn hgnn hfg
   have hprec_fg : Prec f g :=
     prec_forward_of_orientation_of_succDegree hsucc hprec_or
   exact ⟨g, hprec_fg, prec_refl hprec_fg.2.1.1 hprec_fg.2.1.2⟩
