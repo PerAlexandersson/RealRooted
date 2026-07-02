@@ -715,23 +715,21 @@ theorem polarDeriv_binomialLift {n : Nat} (hn : 1 ≤ n) (ζ : ℂ) (f : ℂ[X])
       = C (n : ℂ) * binomialLift (n - 1) (polarShift ζ f) := by
   refine' Polynomial.ext fun k => _;
   rcases k with ( _ | k ) <;>
-    simp_all +decide [ Polynomial.coeff_derivative, mul_assoc, mul_comm, mul_left_comm ];
+    simp_all +decide;
   · unfold polarDeriv binomialLift polarShift;
     simp +decide [ Polynomial.coeff_derivative, Polynomial.coeff_C, Polynomial.coeff_X,
-      mul_assoc, mul_comm, mul_left_comm ] ;
-    rcases n <;> simp_all +decide [ Finset.sum_range_succ', Polynomial.coeff_monomial ];
+      mul_comm ] ;
+    rcases n <;> simp_all +decide [ Polynomial.coeff_monomial ];
     ring;
   · by_cases hk : k + 1 ≤ n <;> simp_all +decide [ polarDeriv, binomialLift ];
     · simp +decide [ Polynomial.coeff_derivative, Polynomial.coeff_monomial, sub_mul,
-        mul_assoc, mul_left_comm, Finset.sum_range_succ ];
+        mul_assoc, Finset.sum_range_succ ];
       split_ifs <;>
-        simp_all +decide [ Nat.choose_succ_succ, mul_add, add_mul, mul_assoc, mul_comm,
-          mul_left_comm ];
+        simp_all +decide [ mul_add, add_mul, mul_comm, mul_left_comm ];
       any_goals lia;
       · rcases n with _ | n
         · simp_all
-        · simp_all +decide [Nat.choose_succ_succ, add_mul, mul_add, mul_assoc,
-            mul_comm, mul_left_comm]
+        · simp_all +decide [Nat.choose_succ_succ, add_mul, mul_add, mul_left_comm]
           have h_choose_k := Nat.add_one_mul_choose_eq n k
           have h_choose_succ := Nat.add_one_mul_choose_eq n (k + 1)
           have hChooseK :
@@ -748,15 +746,14 @@ theorem polarDeriv_binomialLift {n : Nat} (hn : 1 ≤ n) (ζ : ℂ) (f : ℂ[X])
               simpa [Nat.choose_succ_succ, mul_comm] using h_choose_succ)
           rw [show k + 1 = 1 + k by lia]
           rw [show 1 + k + 1 = 2 + k by lia]
-          simp only [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] at *
+          simp only [Nat.add_comm, Nat.add_left_comm] at *
           push_cast at hChooseK hChooseSucc ⊢
           ring_nf at hChooseK hChooseSucc ⊢
           linear_combination (f.coeff (1 + k)) * hChooseK +
             (-(ζ * f.coeff (2 + k))) * hChooseSucc
       · ring;
-    · simp +decide [ Polynomial.coeff_monomial, Finset.sum_range_succ',
-        Polynomial.coeff_derivative, Polynomial.coeff_C, Polynomial.coeff_X, mul_assoc,
-        mul_left_comm, sub_mul, mul_sub, Finset.mul_sum _ _ _, Finset.sum_mul ];
+    · simp +decide [ Polynomial.coeff_monomial, Finset.sum_range_succ', mul_assoc,
+        sub_mul, Finset.mul_sum _ _ _ ];
       grind
 
 /-- **Laguerre's theorem** (closed-disk case): if all zeros of `A` (of degree
