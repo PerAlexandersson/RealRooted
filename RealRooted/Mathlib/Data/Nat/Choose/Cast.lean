@@ -21,4 +21,13 @@ theorem cast_choose_succ_right_eq {R : Type*} [NonAssocSemiring R] (n k : ℕ) :
   simpa [Nat.cast_mul] using
     congrArg (fun m : ℕ => (m : R)) (Nat.choose_succ_right_eq n k)
 
+/-- Casted form of `Nat.add_one_mul_choose_eq`, rewritten with Pascal's identity. -/
+theorem cast_add_one_mul_choose_eq {R : Type*} [CommSemiring R] (n k : ℕ) :
+    ((n + 1 : ℕ) : R) * (Nat.choose n k : R) =
+      ((k + 1 : ℕ) : R) *
+        ((Nat.choose n k : R) + (Nat.choose n (k + 1) : R)) := by
+  simpa [Nat.cast_mul, Nat.cast_add, Nat.cast_one, Nat.choose_succ_succ,
+    mul_comm] using
+    congrArg (fun m : ℕ => (m : R)) (Nat.add_one_mul_choose_eq n k)
+
 end Nat

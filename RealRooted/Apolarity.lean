@@ -744,20 +744,16 @@ theorem polarDeriv_binomialLift {n : Nat} (hn : 1 ≤ n) (ζ : ℂ) (f : ℂ[X])
       · rcases n with _ | n
         · simp_all
         · simp_all +decide [Nat.choose_succ_succ, add_mul, mul_add, mul_left_comm]
-          have h_choose_k := Nat.add_one_mul_choose_eq n k
-          have h_choose_succ := Nat.add_one_mul_choose_eq n (k + 1)
           have hChooseK :
               ((n + 1 : ℕ) : ℂ) * (n.choose k : ℂ) =
                 ((k + 1 : ℕ) : ℂ) *
                   ((n.choose k : ℂ) + (n.choose (k + 1) : ℂ)) := by
-            exact_mod_cast (by
-              simpa [Nat.choose_succ_succ, mul_comm] using h_choose_k)
+            exact Nat.cast_add_one_mul_choose_eq (R := ℂ) n k
           have hChooseSucc :
               ((n + 1 : ℕ) : ℂ) * (n.choose (k + 1) : ℂ) =
                 ((k + 1 + 1 : ℕ) : ℂ) *
                   ((n.choose (k + 1) : ℂ) + (n.choose (k + 1 + 1) : ℂ)) := by
-            exact_mod_cast (by
-              simpa [Nat.choose_succ_succ, mul_comm] using h_choose_succ)
+            exact Nat.cast_add_one_mul_choose_eq (R := ℂ) n (k + 1)
           rw [show k + 1 = 1 + k by lia]
           rw [show 1 + k + 1 = 2 + k by lia]
           simp only [Nat.add_comm, Nat.add_left_comm] at *

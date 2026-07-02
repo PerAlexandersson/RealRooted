@@ -2783,7 +2783,9 @@ theorem derivative_roots_sum_le_of_prec_sameDegree_monic {f g : ℝ[X]}
     simpa [hdeg] using Polynomial.nextCoeff_derivative_of_two_le_natDegree g hg_two
   have hfactor_nonneg : 0 ≤ (f.natDegree - 1 : ℝ) := by
     have hcast : (1 : ℝ) ≤ (f.natDegree : ℝ) := by
-      exact_mod_cast (by lia : 1 ≤ f.natDegree)
+      simpa using
+        (Nat.cast_le.mpr (by lia : 1 ≤ f.natDegree) :
+          ((1 : Nat) : ℝ) ≤ (f.natDegree : ℝ))
     linarith
   have hnext_der : g.derivative.nextCoeff ≤ f.derivative.nextCoeff := by
     rw [hf_next_der, hg_next_der]
