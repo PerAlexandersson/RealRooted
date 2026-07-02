@@ -923,6 +923,15 @@ theorem prec_or_revPrec_of_natDegree_le_one
     · have hg_deg1 : g.natDegree = 1 := by lia
       exact PosComboRealRooted.prec_or_revPrec_of_same_degree_one (by lia) hf_deg1
 
+/-- A symmetric `Prec` orientation implies all real linear combinations are
+real-rooted, after commuting the pair in the reversed case. -/
+theorem allComboRealRooted_of_prec_or_revPrec
+    {f g : ℝ[X]} :
+    Prec f g ∨ Prec g f →
+    AllComboRealRooted f g
+  | Or.inl hprec => allComboRealRooted_of_prec hprec
+  | Or.inr hprec => allComboRealRooted_comm (allComboRealRooted_of_prec hprec)
+
 /-- Therefore every positive-leading pair of degree at most one already
 satisfies the all-combinations conclusion. -/
 theorem allComboRealRooted_of_natDegree_le_one
@@ -931,12 +940,10 @@ theorem allComboRealRooted_of_natDegree_le_one
     (hg_pos : HasPosLeadingCoeff g)
     (hf_deg_le_one : f.natDegree ≤ 1)
     (hg_deg_le_one : g.natDegree ≤ 1) :
-    AllComboRealRooted f g := by
-  rcases
-      prec_or_revPrec_of_natDegree_le_one
-        hf_pos hg_pos hf_deg_le_one hg_deg_le_one with hprec | hprec
-  · exact allComboRealRooted_of_prec hprec
-  · exact allComboRealRooted_comm (allComboRealRooted_of_prec hprec)
+    AllComboRealRooted f g :=
+  allComboRealRooted_of_prec_or_revPrec <|
+    prec_or_revPrec_of_natDegree_le_one
+      hf_pos hg_pos hf_deg_le_one hg_deg_le_one
 
 /-- A `Prec` relation immediately gives a common right interleaver: use the
 right endpoint as the witness. -/
@@ -1357,12 +1364,9 @@ theorem allComboRealRooted_of_degreeSplit_and_nonnegCoeffs
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     AllComboRealRooted f g := by
-  rcases
-      posComboNoCommonOrientation_of_degreeSplit_and_nonnegCoeffs
-        hsame hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
-      with hprec | hprec
-  · exact allComboRealRooted_of_prec hprec
-  · exact allComboRealRooted_comm (allComboRealRooted_of_prec hprec)
+  exact allComboRealRooted_of_prec_or_revPrec <|
+    posComboNoCommonOrientation_of_degreeSplit_and_nonnegCoeffs
+      hsame hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
 
 /-- Affine-family bridge upgraded to the all-combinations conclusion in the
 nonnegative-coefficient regime, via `AffineFamily.allComboRealRooted_of_affine_family_nonneg`.
@@ -1973,9 +1977,8 @@ theorem posComboAllComboBridge_of_noCommonOrientation
     (hstep : PosComboNoCommonOrientationStatement) :
     PosComboNoCommonToAllComboBridgeStatement := by
   intro f g hf_pos hg_pos hfg hdeg_lo hdeg_hi hno
-  rcases hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno with hprec | hprec
-  · exact allComboRealRooted_of_prec hprec
-  · exact allComboRealRooted_comm (allComboRealRooted_of_prec hprec)
+  exact allComboRealRooted_of_prec_or_revPrec <|
+    hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno
 
 /-- The two no-common bridge formulations are equivalent:
 orientation (`Prec f g ∨ Prec g f`) and all-combinations real-rootedness. -/
