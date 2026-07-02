@@ -21,6 +21,22 @@ noncomputable section
 
 namespace RealRooted
 
+private lemma ici_inter_ici_nonempty (a b : ℝ) :
+    (Set.Ici a ∩ Set.Ici b).Nonempty :=
+  ⟨max a b, le_max_left a b, le_max_right a b⟩
+
+private lemma iic_inter_iic_nonempty (a b : ℝ) :
+    (Set.Iic a ∩ Set.Iic b).Nonempty :=
+  ⟨min a b, min_le_left a b, min_le_right a b⟩
+
+private lemma icc_inter_icc_nonempty_of_crossing
+    {a a' b b' : ℝ} (haa' : a ≤ a') (hbb' : b ≤ b')
+    (hab' : a ≤ b') (hba' : b ≤ a') :
+    (Set.Icc a a' ∩ Set.Icc b b').Nonempty :=
+  ⟨max a b,
+    ⟨le_max_left a b, max_le haa' hba'⟩,
+    ⟨le_max_right a b, max_le hab' hbb'⟩⟩
+
 private lemma nonneg_of_add_mul_pos_forall {a b : ℝ}
     (h : ∀ {μ : ℝ}, 0 < μ → 0 ≤ a + μ * b) :
     0 ≤ a := by
@@ -1293,7 +1309,8 @@ theorem rootSlotInterval_inter_nonempty_of_sameDegree_crossing
     · simp_all
     rcases rg with (_ | ⟨b, rg⟩)
     · simp_all
-    exact ⟨max a b, by simp [rootSlotInterval]⟩
+    change (Set.Ici a ∩ Set.Ici b).Nonempty
+    exact ici_inter_ici_nonempty a b
   by_cases hjlast : j = rf.length
   · subst j
     have hrf_len_pos : 0 < rf.length := Nat.pos_of_ne_zero hlen0
@@ -1304,8 +1321,8 @@ theorem rootSlotInterval_inter_nonempty_of_sameDegree_crossing
       exact List.ne_nil_of_length_pos (by simpa [List.length_reverse] using hrg_len_pos)
     obtain ⟨a, rf', hrf_rev⟩ := List.exists_cons_of_ne_nil hrf_rev_ne
     obtain ⟨b, rg', hrg_rev⟩ := List.exists_cons_of_ne_nil hrg_rev_ne
-    refine ⟨min a b, ?_⟩
-    simp [rootSlotInterval, hrf_rev, hrg_rev, hlen, hlen0]
+    convert iic_inter_iic_nonempty a b using 1
+    · simp [rootSlotInterval, hrf_rev, hrg_rev, hlen, hlen0]
   · have hjrf : j < rf.length := by lia
     have hjrg : j < rg.length := by simpa [hlen] using hjrf
     have hjpos : 1 ≤ j := by lia
@@ -1347,9 +1364,8 @@ theorem rootSlotInterval_inter_nonempty_of_sameDegree_crossing
         rf[j] = rf.getD j 0 := hfj.symm
         _ ≤ rg.getD (j - 1) 0 := hc2 j hjpos hjrf
         _ = rg[j - 1] := hgj
-    refine ⟨max rf[j] rg[j], ?_⟩
-    simp [rootSlotInterval, hj0, hjlast, hlen, hrf_step, hrg_step, hcross_gf,
-      hcross_fg]
+    simpa [rootSlotInterval, hj0, hjlast, hlen] using
+      icc_inter_icc_nonempty_of_crossing hrf_step hrg_step hcross_fg hcross_gf
 
 /-- **Sub-statement of milestone B1: descending-root crossing inequalities.**
 
@@ -1544,18 +1560,25 @@ theorem rootSlotInterval_inter_nonempty_of_crossing
           rwa [hr] at h
         · have := List.pairwise_iff_get.mp hrg
           exact this ⟨_, by linarith⟩ ⟨_, by linarith⟩ (Nat.lt_succ_self _)
-    · refine ⟨Max.max (rf[j + 1]) (rg[j + 1]), ?_, ?_⟩
-      · simp_all +decide only [List.pairwise_iff_get, Set.mem_Icc, le_sup_left, sup_le_iff,
-          true_and]
-        exact ⟨hrf ⟨j, by linarith⟩ ⟨j + 1, by lia⟩ (Nat.lt_succ_self _),
-          by simpa [List.getElem?_eq_getElem (by lia : j < rf.length)] using
-            hc1 (j + 1) (by linarith) (by lia)⟩
-      · simp_all +decide only [List.pairwise_iff_get, Set.mem_Icc, le_sup_right, sup_le_iff,
-          true_and, List.get_eq_getElem]
-        constructor
-        · grind +revert
-        · convert hrg ⟨j, by linarith⟩ ⟨j + 1, by linarith⟩
-              (Nat.lt_succ_self _) using 1
+    · have hrf_step : rf[j + 1] ≤ rf[j] :=
+        (List.pairwise_iff_get.mp hrf)
+          ⟨j, by linarith⟩ ⟨j + 1, by lia⟩ (Nat.lt_succ_self _)
+      have hrg_step : rg[j + 1] ≤ rg[j] := by
+        simpa [List.get_eq_getElem] using
+          (List.pairwise_iff_get.mp hrg)
+            ⟨j, by linarith⟩ ⟨j + 1, by linarith⟩ (Nat.lt_succ_self _)
+      have hcross_gf : rg[j + 1] ≤ rf[j] := by
+        simpa [List.getD_eq_getElem?_getD,
+          List.getElem?_eq_getElem (l := rg) (i := j + 1) (by linarith),
+          List.getElem?_eq_getElem (l := rf) (i := j) (by linarith)]
+          using hc1 (j + 1) (by linarith) (by lia)
+      have hcross_fg : rf[j + 1] ≤ rg[j] := by
+        simpa [List.getD_eq_getElem?_getD,
+          List.getElem?_eq_getElem (l := rf) (i := j + 1) (by lia),
+          List.getElem?_eq_getElem (l := rg) (i := j) (by linarith)]
+          using hc2 (j + 1) (by linarith) (by lia)
+      simpa [rootSlotInterval] using
+        icc_inter_icc_nonempty_of_crossing hrf_step hrg_step hcross_fg hcross_gf
 
 /-- **Sub-statement A of milestone B2: left-endpoint real-rootedness.**
 
