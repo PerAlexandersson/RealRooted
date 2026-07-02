@@ -242,8 +242,8 @@ lemma exp_two_pi_mul_nat_div_pow_eq_one (n j : ℕ) (hn : 0 < n) :
     (Complex.exp (((2 * (Real.pi * (j : ℝ) / (n : ℝ)) : ℝ) : ℂ) *
       Complex.I)) ^ n = 1 := by
   rw [← Complex.exp_nat_mul]
-  have hnreal : (n : ℝ) ≠ 0 := by exact_mod_cast (ne_of_gt hn)
-  have hnC : (n : ℂ) ≠ 0 := by exact_mod_cast (ne_of_gt hn)
+  have hnreal : (n : ℝ) ≠ 0 := Nat.cast_ne_zero_of_pos (R := ℝ) hn
+  have hnC : (n : ℂ) ≠ 0 := Nat.cast_ne_zero_of_pos (R := ℂ) hn
   have harg : (n : ℂ) *
       (((2 * (Real.pi * (j : ℝ) / (n : ℝ)) : ℝ) : ℂ) * Complex.I) =
       (j : ℂ) * (2 * (Real.pi : ℂ) * Complex.I) := by

@@ -7,6 +7,7 @@ import Mathlib.Analysis.Normed.Module.Convex
 import Mathlib.RingTheory.Polynomial.Vieta
 import Mathlib.Tactic
 import Mathlib.Topology.MetricSpace.Basic
+import RealRooted.Mathlib.Data.Nat.Cast.Basic
 import RealRooted.Mathlib.Data.Nat.Choose.Cast
 
 /-!
@@ -779,7 +780,7 @@ theorem polarDeriv_rootsIn {n : Nat} {c : ℂ} {r : ℝ} (hr : 0 ≤ r) {ζ : �
     (polarDeriv n ζ A).RootsIn (Metric.closedBall c r) := by
   intro w hw0
   by_contra hwmem
-  have hn0 : (n : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr (Nat.one_le_iff_ne_zero.mp hn)
+  have hn0 : (n : ℂ) ≠ 0 := Nat.cast_ne_zero_of_pos (R := ℂ) (by lia)
   have hAw : eval w A ≠ 0 := fun h => hwmem (hAroots w h)
   have hstar : (n : ℂ) * eval w A + (ζ - w) * eval w (derivative A) = 0 := by
     have h := hw0

@@ -5,6 +5,7 @@ import Mathlib.Algebra.Polynomial.Splits
 import Mathlib.Analysis.SpecificLimits.Basic
 import Mathlib.Data.List.Sort
 import Mathlib.Data.Real.Basic
+import RealRooted.Mathlib.Data.Nat.Cast.Basic
 import RealRooted.Mathlib.Data.Nat.Choose.Cast
 import RealRooted.Mathlib.Data.List.Interleave
 

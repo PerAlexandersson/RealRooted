@@ -146,7 +146,7 @@ lemma not_pow_dvd_TDeriv_of_multiple
   -- In char 0: (m : ℝ) ≠ 0, so it's in nonZeroDivisors
   have hm_nzd : (↑m : ℝ) ∈ nonZeroDivisors ℝ :=
     IsRegular.mem_nonZeroDivisors
-      (IsRegular.of_ne_zero (Nat.cast_ne_zero.mpr (by lia)))
+      (IsRegular.of_ne_zero (Nat.cast_ne_zero_of_pos (R := ℝ) (by lia)))
   have hp'_mult : p.derivative.rootMultiplicity a = m - 1 :=
     derivative_rootMultiplicity_of_root_of_mem_nonZeroDivisors hroot hm_nzd
   -- (X-a)^m ∣ p' means m ≤ rootMultiplicity a p' = m - 1. Contradiction.

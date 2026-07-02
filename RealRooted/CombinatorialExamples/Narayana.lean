@@ -111,11 +111,14 @@ private lemma leadingCoeff_one_sub_X_sq :
   rw [pow_two, leadingCoeff_mul' hmul_ne, leadingCoeff_one_sub_X]
   norm_num
 
+private lemma narayanaCoeffB_scalar_ne (n : Nat) (hn : 1 ≤ n) :
+    (-(n : ℝ)) / (n + 3 : ℝ) ≠ 0 :=
+  div_ne_zero (neg_ne_zero.mpr (Nat.cast_ne_zero_of_pos (R := ℝ) (by lia))) (by positivity)
+
 private lemma narayanaCoeffB_natDegree (n : Nat) (hn : 1 ≤ n) :
     (narayanaCoeffB n).natDegree = 2 := by
   unfold narayanaCoeffB
-  have hcoeff_ne : ((-(n : ℝ)) / (n + 3 : ℝ)) ≠ 0 :=
-    div_ne_zero (neg_ne_zero.mpr (by exact_mod_cast Nat.ne_of_gt hn)) (by positivity)
+  have hcoeff_ne := narayanaCoeffB_scalar_ne n hn
   have hmul_ne :
       (C ((-(n : ℝ)) / (n + 3 : ℝ))).leadingCoeff *
         ((1 - X : ℝ[X]) ^ 2).leadingCoeff ≠ 0 := by
@@ -126,8 +129,7 @@ private lemma narayanaCoeffB_natDegree (n : Nat) (hn : 1 ≤ n) :
 private lemma narayanaCoeffB_leadingCoeff (n : Nat) (hn : 1 ≤ n) :
     (narayanaCoeffB n).leadingCoeff = ((-(n : ℝ)) / (n + 3 : ℝ)) := by
   unfold narayanaCoeffB
-  have hcoeff_ne : ((-(n : ℝ)) / (n + 3 : ℝ)) ≠ 0 :=
-    div_ne_zero (neg_ne_zero.mpr (by exact_mod_cast Nat.ne_of_gt hn)) (by positivity)
+  have hcoeff_ne := narayanaCoeffB_scalar_ne n hn
   have hmul_ne :
       (C ((-(n : ℝ)) / (n + 3 : ℝ))).leadingCoeff *
         ((1 - X : ℝ[X]) ^ 2).leadingCoeff ≠ 0 := by
@@ -158,9 +160,7 @@ private lemma natDegree_leadingCoeff_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
     lia
   have hB_lc_ne : (narayanaCoeffB n).leadingCoeff * (narayanaQuot n).leadingCoeff ≠ 0 := by
     rw [narayanaCoeffB_leadingCoeff n hn, hlc]
-    exact mul_ne_zero
-      (div_ne_zero (neg_ne_zero.mpr (by exact_mod_cast Nat.ne_of_gt hn)) (by positivity))
-      one_ne_zero
+    exact mul_ne_zero (narayanaCoeffB_scalar_ne n hn) one_ne_zero
   have hB_natDegree : B.natDegree = n + 1 := by
     dsimp [B]
     rw [natDegree_mul' hB_lc_ne, narayanaCoeffB_natDegree n hn, hdeg]
@@ -172,7 +172,7 @@ private lemma natDegree_leadingCoeff_narayanaQuot_step (n : Nat) (hn : 1 ≤ n)
   have hA_ne : A ≠ 0 := leadingCoeff_ne_zero.mp (by rw [hA_leadingCoeff]; positivity)
   have hB_ne : B ≠ 0 := leadingCoeff_ne_zero.mp <| by
     rw [hB_leadingCoeff]
-    exact div_ne_zero (neg_ne_zero.mpr (by exact_mod_cast Nat.ne_of_gt hn)) (by positivity)
+    exact narayanaCoeffB_scalar_ne n hn
   have hA_degree : A.degree = n + 1 := by
     rw [degree_eq_natDegree hA_ne, hA_natDegree]
     lia
