@@ -540,11 +540,8 @@ lemma prec_recurrenceCoreSturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
     prec_lowerTerm_sturmDerangementsExc (by lia) hprec
   have haff : Prec (affineSturmDerangementsExc n) (sturmDerangementsExc n) :=
     prec_affine_sturmDerangementsExc (by lia) hprec.2.1.2
-  have hlower_pos : HasPosLeadingCoeff (C (n : ℝ) * sturmDerangementsExc (n - 1)) := by
-    have hn0 : (n : ℝ) ≠ 0 := by positivity
-    unfold HasPosLeadingCoeff
-    rw [leadingCoeff_C_mul_of_isUnit (isUnit_iff_ne_zero.mpr hn0)]
-    exact mul_pos (by positivity) (sturmDerangementsExc_posLeadingCoeff (by lia))
+  have hlower_pos : HasPosLeadingCoeff (C (n : ℝ) * sturmDerangementsExc (n - 1)) :=
+    hasPosLeadingCoeff_C_mul (by positivity) (sturmDerangementsExc_posLeadingCoeff (by lia))
   have haff_pos : HasPosLeadingCoeff (affineSturmDerangementsExc n) :=
     (affine_sturmDerangementsExc_nonnegCoeffs (by lia)).pos_leadingCoeff haff.1.1
   exact prec_add_of_prec_right_of_posLeadingCoeff hlower haff hlower_pos haff_pos
