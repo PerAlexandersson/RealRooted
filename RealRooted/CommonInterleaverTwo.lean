@@ -44,9 +44,17 @@ private lemma icc_inter_icc_nonempty_of_crossing
 
 private lemma list_getD_eq_getElem_of_lt
     {α : Type*} (xs : List α) (i : ℕ) (d : α) (hi : i < xs.length) :
-    xs.getD i d = xs[i] := by
+    xs.getD i d = xs.get ⟨i, hi⟩ := by
   rw [List.getD_eq_getElem?_getD, List.getElem?_eq_getElem (l := xs) (i := i) hi]
   simp
+
+private lemma getElem_le_getElem_of_getD_le
+    {α : Type*} [Preorder α] {xs ys : List α} {i j : ℕ} {d : α}
+    (h : xs.getD i d ≤ ys.getD j d) (hi : i < xs.length) (hj : j < ys.length) :
+    xs.get ⟨i, hi⟩ ≤ ys.get ⟨j, hj⟩ := by
+  rw [list_getD_eq_getElem_of_lt xs i d hi,
+    list_getD_eq_getElem_of_lt ys j d hj] at h
+  exact h
 
 private lemma nonneg_of_add_mul_pos_forall {a b : ℝ}
     (h : ∀ {μ : ℝ}, 0 < μ → 0 ≤ a + μ * b) :
@@ -1345,24 +1353,10 @@ theorem rootSlotInterval_inter_nonempty_of_sameDegree_crossing
       simpa [List.get_eq_getElem] using
         get_le_get_of_pairwise_ge hrg
           (i := ⟨j - 1, by lia⟩) (j := ⟨j, hjrg⟩) (by simp)
-    have hcross_gf : rg[j] ≤ rf[j - 1] := by
-      have hgj : rg.getD j 0 = rg[j] :=
-        list_getD_eq_getElem_of_lt rg j 0 hjrg
-      have hfj : rf.getD (j - 1) 0 = rf[j - 1] :=
-        list_getD_eq_getElem_of_lt rf (j - 1) 0 (by lia)
-      calc
-        rg[j] = rg.getD j 0 := hgj.symm
-        _ ≤ rf.getD (j - 1) 0 := hc1 j hjpos hjrf
-        _ = rf[j - 1] := hfj
-    have hcross_fg : rf[j] ≤ rg[j - 1] := by
-      have hfj : rf.getD j 0 = rf[j] :=
-        list_getD_eq_getElem_of_lt rf j 0 hjrf
-      have hgj : rg.getD (j - 1) 0 = rg[j - 1] :=
-        list_getD_eq_getElem_of_lt rg (j - 1) 0 (by lia)
-      calc
-        rf[j] = rf.getD j 0 := hfj.symm
-        _ ≤ rg.getD (j - 1) 0 := hc2 j hjpos hjrf
-        _ = rg[j - 1] := hgj
+    have hcross_gf : rg[j] ≤ rf[j - 1] :=
+      getElem_le_getElem_of_getD_le (hc1 j hjpos hjrf) hjrg (by lia)
+    have hcross_fg : rf[j] ≤ rg[j - 1] :=
+      getElem_le_getElem_of_getD_le (hc2 j hjpos hjrf) hjrf (by lia)
     simpa [rootSlotInterval, hj0, hjlast, hlen] using
       icc_inter_icc_nonempty_of_crossing hrf_step hrg_step hcross_fg hcross_gf
 
@@ -1556,8 +1550,11 @@ theorem rootSlotInterval_inter_nonempty_of_crossing
             rw [List.getElem?_append_right (by simp)]
             simp
           rwa [hr] at h
-        · have := List.pairwise_iff_get.mp hrg
-          exact this ⟨_, by linarith⟩ ⟨_, by linarith⟩ (Nat.lt_succ_self _)
+        · simpa [List.get_eq_getElem] using
+            get_le_get_of_pairwise_ge hrg
+              (i := ⟨l.length + 1, by linarith⟩)
+              (j := ⟨l.length + 2, by linarith⟩)
+              (by simp)
     · have hrf_step : rf[j + 1] ≤ rf[j] := by
         simpa [List.get_eq_getElem] using
           get_le_get_of_pairwise_ge hrf
