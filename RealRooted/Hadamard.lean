@@ -760,9 +760,12 @@ theorem garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
     (hGW : garloffWagnerHadamardNonnegPrecStatement) :
     garloffWagnerHadamardNonnegRealRootedStatement := by
   intro p q hpnn hqnn hprr hqrr
+  have hp : IsPFPolynomial p := IsPFPolynomial.of_realRooted_nonneg hpnn hprr.2
+  have hq : IsPFPolynomial q := IsPFPolynomial.of_realRooted_nonneg hqnn hqrr.2
   have hpf : IsPFPolynomial (hadamardProduct p q) :=
     IsPFPolynomial.of_prec0_self (hpnn.hadamardProduct hqnn)
-      (hGW hpnn hpnn hqnn hqnn (prec_refl hprr.1 hprr.2) (prec_refl hqrr.1 hqrr.2))
+      ((garloffWagnerHadamardPFPrec0_of_nonnegPrec hGW)
+        hp hp hq hq hp.prec0_self hq.prec0_self)
   exact ⟨hpf.eq_zero_or_splits, hpf.hasNonnegCoeffs, hpf.roots_nonpos⟩
 
 theorem schurPolyaWagnerHadamardPF_of_garloffWagner_prec0
