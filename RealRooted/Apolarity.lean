@@ -727,14 +727,15 @@ theorem polarDeriv_binomialLift {n : Nat} (hn : 1 ≤ n) (ζ : ℂ) (f : ℂ[X])
     polarDeriv n ζ (binomialLift n f)
       = C (n : ℂ) * binomialLift (n - 1) (polarShift ζ f) := by
   refine Polynomial.ext fun k => ?_
-  rcases k with ( _ | k ) <;>
-    simp_all +decide;
+  rcases k with _ | k
   · unfold polarDeriv binomialLift polarShift;
+    simp only [Polynomial.coeff_C_mul]
     simp +decide [ Polynomial.coeff_derivative, Polynomial.coeff_C, Polynomial.coeff_X,
       mul_comm ] ;
     rcases n <;> simp_all +decide [ Polynomial.coeff_monomial ];
     ring;
-  · by_cases hk : k + 1 ≤ n <;> simp_all +decide [ polarDeriv, binomialLift ];
+  · simp only [Polynomial.coeff_C_mul]
+    by_cases hk : k + 1 ≤ n <;> simp_all +decide [ polarDeriv, binomialLift ];
     · simp +decide [ Polynomial.coeff_derivative, Polynomial.coeff_monomial, sub_mul,
         mul_assoc, Finset.sum_range_succ ];
       split_ifs <;>
