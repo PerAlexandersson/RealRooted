@@ -90,11 +90,17 @@ theorem diagonalOperator_monomial (gamma : ℕ → ℝ) (n : ℕ) (a : ℝ) :
     simp
   · simp [Polynomial.coeff_monomial, Ne.symm hk]
 
+theorem support_diagonalOperator_eq_filter (gamma : ℕ → ℝ) (p : ℝ[X]) :
+    (diagonalOperator gamma p).support = p.support.filter fun n => gamma n ≠ 0 := by
+  ext n
+  by_cases hgamma : gamma n = 0
+  · simp [Polynomial.mem_support_iff, coeff_diagonalOperator, hgamma]
+  · simp [Polynomial.mem_support_iff, coeff_diagonalOperator, hgamma]
+
 theorem support_diagonalOperator_subset (gamma : ℕ → ℝ) (p : ℝ[X]) :
     (diagonalOperator gamma p).support ⊆ p.support := by
-  intro n hn
-  rw [Polynomial.mem_support_iff] at hn ⊢
-  exact right_ne_zero_of_mul (by simpa using hn)
+  rw [support_diagonalOperator_eq_filter]
+  exact Finset.filter_subset _ _
 
 theorem natDegree_diagonalOperator_le (gamma : ℕ → ℝ) (p : ℝ[X]) :
     (diagonalOperator gamma p).natDegree ≤ p.natDegree := by
