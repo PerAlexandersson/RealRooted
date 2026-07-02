@@ -115,6 +115,16 @@ lemma posLeadingCoeff_of_mem_zipWith_mul {row fs : List ℝ[X]}
   rcases mem_zipWith_mul hp with ⟨a, ha, b, hb, rfl⟩
   exact (hrow a ha).mul (hfs b hb)
 
+private lemma splits_reverse_of_interlacingSeqNonneg {fs : List ℝ[X]}
+    (hfs : IsInterlacingSeqNonneg fs) :
+    ∀ p ∈ fs.reverse, p.Splits :=
+  fun p hp => hfs.splits (by simpa using hp)
+
+private lemma posLeadingCoeff_reverse_of_interlacingSeqNonneg {fs : List ℝ[X]}
+    (hfs : IsInterlacingSeqNonneg fs) :
+    ∀ p ∈ fs.reverse, HasPosLeadingCoeff p :=
+  fun p hp => hfs.posLeadingCoeff p (by simpa using hp)
+
 lemma hasNonnegCoeffs_zipWith_mul_sum {row fs : List ℝ[X]}
     (hrow : ∀ p ∈ row, HasNonnegCoeffs p)
     (hfs : ∀ f ∈ fs, HasNonnegCoeffs f) :
@@ -247,9 +257,6 @@ theorem hasCommonInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg
     (hgs : IsInterlacingSeqNonneg gs) :
     HasCommonInterleaver (fs.zipWith (· * ·) gs.reverse) := by
   let ps := fs.zipWith (· * ·) gs.reverse
-  have hgs_rr_rev : ∀ p ∈ gs.reverse, p.Splits := fun p hp ↦ hgs.splits (by simp_all)
-  have hgs_pos_rev : ∀ p ∈ gs.reverse, HasPosLeadingCoeff p :=
-    fun p hp => hgs.posLeadingCoeff p (by simp_all)
   have hpair : PairwiseHasCommonInterleaver ps := by
     simpa [ps] using
       pairwiseHasCommonInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg
@@ -257,11 +264,15 @@ theorem hasCommonInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg
   have hrr : ∀ p ∈ ps, p.Splits := by
     simpa [ps] using
       splits_of_mem_zipWith_mul
-        (row := fs) (fs := gs.reverse) (fun p hp => hfs.splits hp) hgs_rr_rev
+        (row := fs) (fs := gs.reverse)
+        (fun p hp => hfs.splits hp)
+        (splits_reverse_of_interlacingSeqNonneg hgs)
   have hpos : ∀ p ∈ ps, HasPosLeadingCoeff p := by
     simpa [ps] using
       posLeadingCoeff_of_mem_zipWith_mul
-        (row := fs) (fs := gs.reverse) hfs.posLeadingCoeff hgs_pos_rev
+        (row := fs) (fs := gs.reverse)
+        hfs.posLeadingCoeff
+        (posLeadingCoeff_reverse_of_interlacingSeqNonneg hgs)
   exact hasCommonInterleaver_of_pairwiseHasCommonInterleaver hrr hpos hpair
 
 /-- Brändén's Lemma 7.8.3: the reversed product-sum of two interlacing
@@ -281,11 +292,11 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
       ((fs.zipWith (· * ·) gs.reverse).sum).Splits) := by
   let ps := fs.zipWith (· * ·) gs.reverse
   have hpos : ∀ p ∈ ps, HasPosLeadingCoeff p := by
-    have hgs_pos_rev : ∀ p ∈ gs.reverse, HasPosLeadingCoeff p :=
-      fun p hp => hgs.posLeadingCoeff p (by simp_all)
     simpa [ps] using
       posLeadingCoeff_of_mem_zipWith_mul
-        (row := fs) (fs := gs.reverse) hfs.posLeadingCoeff hgs_pos_rev
+        (row := fs) (fs := gs.reverse)
+        hfs.posLeadingCoeff
+        (posLeadingCoeff_reverse_of_interlacingSeqNonneg hgs)
   have hps_ne : ps ≠ [] := by
     intro hnil
     have hlen_ps : ps.length = fs.length := by
