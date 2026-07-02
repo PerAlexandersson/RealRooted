@@ -1013,9 +1013,9 @@ private theorem prec_of_eq_zero_or_simple_combo_succDegree
     wronskian_eval_mul_pos_of_le_of_eq_zero_or_simple_combo hf_ne hg_ne hg_splits
       hcombo (by simp_all) hno
   have hq_pos : HasPosLeadingCoeff (-wronskian f g) := by
-    unfold HasPosLeadingCoeff
-    rw [leadingCoeff_neg, leadingCoeff_wronskian_succ hdeg hf_pos hg_pos hf_deg_pos]
-    simpa using mul_pos hf_pos hg_pos
+    refine hasPosLeadingCoeff_neg ?_
+    rw [leadingCoeff_wronskian_succ hdeg hf_pos hg_pos hf_deg_pos]
+    nlinarith [mul_pos hf_pos hg_pos]
   have hq_deg_pos : 0 < (-wronskian f g).degree := by
     have hnat : 0 < (-wronskian f g).natDegree := by
       rw [natDegree_neg, wronskian_natDegree_succ hdeg hf_pos hg_pos hf_deg_pos]
@@ -1420,8 +1420,7 @@ private theorem isRealRooted_of_interlaces_eval_mul_neg_same_any_lc
       eval_mul_eval_neg_of_interlaces_consecutive_of_no_common hgf' hno_g_at_f pre hEq
     exact mul_neg_of_mul_neg_of_mul_neg hFg₁ hFg₂ hgg
   have hnegF_pos : HasPosLeadingCoeff (C (-1 : ℝ) * F) := by
-    unfold HasPosLeadingCoeff
-    simp_all
+    simpa using (hasPosLeadingCoeff_neg hF_lc_neg : HasPosLeadingCoeff (-F))
   have hnegF_deg : (C (-1 : ℝ) * F).natDegree = f.natDegree := by
     simp_all
   have hnegF_natdeg_pos : 0 < (C (-1 : ℝ) * F).natDegree := by
