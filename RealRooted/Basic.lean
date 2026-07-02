@@ -473,6 +473,12 @@ lemma hasPosLeadingCoeff_C_mul {a : ℝ} {p : ℝ[X]}
   unfold HasPosLeadingCoeff at hp ⊢
   simp_all
 
+lemma HasPosLeadingCoeff.X_mul {p : ℝ[X]} (hp : HasPosLeadingCoeff p) :
+    HasPosLeadingCoeff (X * p) := by
+  unfold HasPosLeadingCoeff at hp ⊢
+  rw [leadingCoeff_mul, leadingCoeff_X]
+  simpa using hp
+
 /-! ## Elementary interval inequalities -/
 
 lemma quadratic_nonneg_on_unit_interval_of_coeffs_nonneg

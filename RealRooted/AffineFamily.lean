@@ -80,9 +80,7 @@ lemma prec_self_mul_X_of_nonneg {f : ℝ[X]}
   have hXf : ((X * f) ≠ 0 ∧ (X * f).Splits) := isRealRooted_X_mul hf_ne hf_splits
   have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hf_splits hfnn
   have hXf_nonpos : ∀ r ∈ (X * f).roots, r ≤ 0 := by simp_all
-  have hXf_pos : HasPosLeadingCoeff (X * f) := by
-    unfold HasPosLeadingCoeff at hf_pos ⊢
-    simp_all
+  have hXf_pos : HasPosLeadingCoeff (X * f) := hf_pos.X_mul
   have hdeg : f.natDegree + 1 = (X * f).natDegree := by simp_all
   have hself : Prec (X * f) (X * f) := prec_refl hXf.1 hXf.2
   exact
@@ -223,10 +221,8 @@ theorem isRealRooted_affine_combo_of_prec_nonneg {f g : ℝ[X]}
   have hsXf : Prec (C s * (X * f)) (X * f) := prec_C_mul_self hXf.1 hXf.2 hs.ne'
   have htf : Prec (C t * f) (X * f) := prec_C_mul_left hf_Xf ht.ne'
   have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff hg.1
-  have hXf_pos : HasPosLeadingCoeff (X * f) := by
-    unfold HasPosLeadingCoeff at ⊢
-    rw [leadingCoeff_mul, leadingCoeff_X]
-    simpa [HasPosLeadingCoeff] using hfnn.pos_leadingCoeff hf.1
+  have hXf_pos : HasPosLeadingCoeff (X * f) :=
+    (hfnn.pos_leadingCoeff hf.1).X_mul
   have hsXf_pos : HasPosLeadingCoeff (C s * (X * f)) :=
     hasPosLeadingCoeff_C_mul hs hXf_pos
   have htf_pos : HasPosLeadingCoeff (C t * f) :=
@@ -1871,10 +1867,8 @@ private lemma natDegree_shifted_pair_eq_succ_of_affine_family
     (g + X * f).natDegree = f.natDegree + 1 := by
   have hdeg_right : g.natDegree ≤ f.natDegree + 1 :=
     natDegree_right_le_succ_of_affine_family hf0 hg0 hfnn hgnn haff
-  have hXf_pos : HasPosLeadingCoeff (X * f) := by
-    unfold HasPosLeadingCoeff at ⊢
-    rw [leadingCoeff_mul, leadingCoeff_X]
-    simpa [HasPosLeadingCoeff] using hfnn.pos_leadingCoeff hf0
+  have hXf_pos : HasPosLeadingCoeff (X * f) :=
+    (hfnn.pos_leadingCoeff hf0).X_mul
   have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff hg0
   rcases lt_or_eq_of_le hdeg_right with hlt | heq
   · have hg_lt : g.natDegree < (X * f).natDegree := by
