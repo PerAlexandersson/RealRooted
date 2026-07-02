@@ -597,12 +597,6 @@ lemma hasNonnegCoeffs_multiset_prod_X_sub_C :
       exact (hasNonnegCoeffs_X_sub_C (hs a (by simp))).mul
         (ih (fun r hr => hs r (by simp [hr])))
 
-lemma HasNonnegCoeffs.pos_leadingCoeff {p : ℝ[X]} (hp : HasNonnegCoeffs p) (hp0 : p ≠ 0) :
-    HasPosLeadingCoeff p := by
-  unfold HasPosLeadingCoeff
-  have := hp p.natDegree
-  exact lt_of_le_of_ne this (Ne.symm (leadingCoeff_ne_zero.mpr hp0))
-
 lemma roots_nonpos_of_nonneg_coeffs {p : ℝ[X]} (hp : p.Splits)
     (hnn : HasNonnegCoeffs p) : ∀ r ∈ p.roots, r ≤ 0 := by
   obtain rfl | hp₀ := eq_or_ne p 0

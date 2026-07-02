@@ -463,6 +463,11 @@ def HasPosLeadingCoeff (p : ℝ[X]) : Prop := 0 < p.leadingCoeff
 lemma HasPosLeadingCoeff.ne_zero {p : ℝ[X]} (hp : HasPosLeadingCoeff p) : p ≠ 0 := by
   rintro rfl; simp at hp
 
+lemma HasNonnegCoeffs.pos_leadingCoeff {p : ℝ[X]} (hp : HasNonnegCoeffs p)
+    (hp0 : p ≠ 0) : HasPosLeadingCoeff p := by
+  unfold HasPosLeadingCoeff
+  exact lt_of_le_of_ne (hp p.natDegree) (Ne.symm (leadingCoeff_ne_zero.mpr hp0))
+
 lemma hasPosLeadingCoeff_of_monic {p : ℝ[X]} (hp : p.Monic) :
     HasPosLeadingCoeff p := by
   simp [HasPosLeadingCoeff, hp.leadingCoeff]

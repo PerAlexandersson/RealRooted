@@ -215,8 +215,7 @@ sign-normalized Hermite--Biehler route. -/
 lemma hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hp0 : p ≠ 0) :
     HasPosLeadingCoeff p := by
-  unfold HasPosLeadingCoeff HasNonnegCoeffs at *
-  exact lt_of_le_of_ne (hpnn p.natDegree) (by simpa using (leadingCoeff_ne_zero.mpr hp0).symm)
+  exact hpnn.pos_leadingCoeff hp0
 
 /-- Concrete obstruction to a sign-free forward Hermite--Biehler route:
 `X - i` has the upper-half-plane root `i`. -/
