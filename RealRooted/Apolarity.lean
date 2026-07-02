@@ -911,7 +911,7 @@ theorem apolarPairing_deflation {n : Nat} (hn : 1 ≤ n) {ζ : ℂ} {f g g' : �
   obtain ⟨ m, rfl ⟩ := Nat.exists_eq_add_of_le hn;
   rw [ apolarPairing_eq_sum_binomialLift, apolarPairing_eq_sum_binomialLift ];
   simp +decide [ ← hdefl, Finset.sum_range_succ', mul_assoc, mul_left_comm, mul_comm,
-    Polynomial.coeff_X, Polynomial.coeff_C, sub_mul, mul_sub ];
+    mul_sub ];
   rw [ add_comm 1 m, Finset.sum_range_succ ] ;
   norm_num [ Polynomial.coeff_X, mul_assoc, mul_left_comm, mul_add, add_mul,
     Finset.sum_add_distrib, Finset.mul_sum _ _ _, Finset.sum_mul _ _ _, pow_succ' ] ;
@@ -919,8 +919,7 @@ theorem apolarPairing_deflation {n : Nat} (hn : 1 ≤ n) {ζ : ℂ} {f g g' : �
   rw [ add_comm 1 m, Finset.sum_range_succ' ] ;
   norm_num [ Polynomial.coeff_X, mul_assoc, mul_left_comm, mul_comm, Finset.sum_range_succ ] ;
   ring;
-  simp +decide [ add_comm 1, add_comm 2, Polynomial.coeff_X, mul_assoc, mul_left_comm,
-    Finset.sum_add_distrib, Finset.mul_sum _ _ _, Finset.sum_mul _ _ _, pow_succ' ] ;
+  simp +decide [ add_comm 1, add_comm 2, mul_assoc, mul_left_comm ] ;
   ring;
   rw [ show ( binomialLift m g' ).coeff ( 1 + m ) = 0 from _ ] ; ring;
   · rw [ Finset.sum_congr rfl fun x hx => by
@@ -946,7 +945,7 @@ private theorem grace_aux {c : ℂ} {r : ℝ} (hr : 0 ≤ r) :
   induction' n using Nat.strong_induction_on with n ih;
   intro f g hf hg hap hroots
   by_cases hn : n = 0;
-  · by_cases h : g.coeff 0 = 0 <;> simp_all +decide [ apolarPairing ];
+  · by_cases h : g.coeff 0 = 0 <;> simp_all +decide;
     · refine' ⟨ c, _, _ ⟩ <;> simp_all +decide [ binomialLift ];
     · have h_contra : f.coeff 0 = 0 := by
         unfold AreApolar at hap; simp_all +decide [ apolarPairing ] ;
@@ -995,7 +994,8 @@ private theorem grace_aux {c : ℂ} {r : ℝ} (hr : 0 ≤ r) :
         apply ih (n - 1) (Nat.sub_lt (Nat.pos_of_ne_zero hn) (by linarith)) f' g' hf' (by
         replace hg' := congr_arg Polynomial.natDegree hg';
         rw [ Polynomial.natDegree_mul' ] at hg' <;> norm_num at * ; lia;
-        intro H; simp_all +decide [ Polynomial.natDegree_mul' ] ;) hap' hf'_roots;
+        intro H
+        simp_all +decide) hap' hf'_roots;
       exact ⟨ w, by replace hg' := congr_arg ( Polynomial.eval w ) hg'; aesop ⟩
 
 /-- **Grace's apolarity theorem** (closed-disk case), phrased for the binomial
