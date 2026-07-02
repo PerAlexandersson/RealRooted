@@ -360,23 +360,47 @@ lemma filterRightByLeftNonzero_sublist_right (fs gs : List ℝ[X]) :
     (filterRightByLeftNonzero fs gs).Sublist gs :=
   map_snd_filter_zip_sublist_right (fun p : ℝ[X] × ℝ[X] => p.1 ≠ 0) fs gs
 
+private lemma zipWith_mul_map_fst_snd_sum (ps : List (ℝ[X] × ℝ[X])) :
+    ((ps.map Prod.fst).zipWith (· * ·) (ps.map Prod.snd)).sum =
+      (ps.map fun p => p.1 * p.2).sum := by
+  induction ps with
+  | nil =>
+      simp
+  | cons p ps ih =>
+      simp
+
+private lemma zipWith_mul_sum_filter_zip_eq
+    (p : ℝ[X] × ℝ[X] → Prop) [DecidablePred p]
+    (hzero : ∀ q : ℝ[X] × ℝ[X], ¬p q → q.1 * q.2 = 0)
+    (fs gs : List ℝ[X]) :
+    ((((fs.zip gs).filter p).map Prod.fst).zipWith (· * ·)
+      (((fs.zip gs).filter p).map Prod.snd)).sum =
+      (fs.zipWith (· * ·) gs).sum := by
+  rw [zipWith_mul_map_fst_snd_sum]
+  induction fs generalizing gs with
+  | nil =>
+      cases gs <;> simp
+  | cons f fs ih =>
+      cases gs with
+      | nil =>
+          simp
+      | cons g gs =>
+          by_cases hp : p (f, g)
+          · simp [hp, ih gs]
+          · have hprod : f * g = 0 := hzero (f, g) hp
+            simp [hp, hprod, ih gs]
+
 lemma zipWith_mul_sum_filterLeftNonzero_eq
     (fs gs : List ℝ[X]) :
     ((filterLeftNonzero fs gs).zipWith (· * ·) (filterRightByLeftNonzero fs gs)).sum =
       (fs.zipWith (· * ·) gs).sum := by
-  induction fs generalizing gs with
-  | nil =>
-      cases gs <;> simp [filterLeftNonzero, filterRightByLeftNonzero, filterLeftNonzeroPairs]
-  | cons f fs ih =>
-      cases gs with
-      | nil =>
-          simp [filterLeftNonzero, filterRightByLeftNonzero, filterLeftNonzeroPairs]
-      | cons g gs =>
-          by_cases hf : f = 0
-          · simp [filterLeftNonzero, filterRightByLeftNonzero, filterLeftNonzeroPairs, hf]
-            simpa [filterLeftNonzero, filterRightByLeftNonzero, filterLeftNonzeroPairs] using ih gs
-          · simp [filterLeftNonzero, filterRightByLeftNonzero, filterLeftNonzeroPairs, hf]
-            simpa [filterLeftNonzero, filterRightByLeftNonzero, filterLeftNonzeroPairs] using ih gs
+  simpa [filterLeftNonzero, filterRightByLeftNonzero, filterLeftNonzeroPairs] using
+    zipWith_mul_sum_filter_zip_eq
+      (fun p : ℝ[X] × ℝ[X] => p.1 ≠ 0)
+      (by
+        intro p hp
+        simp_all)
+      fs gs
 
 def filterProductNonzeroPairs (fs gs : List ℝ[X]) : List (ℝ[X] × ℝ[X]) :=
   (fs.zip gs).filter fun p => p.1 ≠ 0 ∧ p.2 ≠ 0
@@ -418,26 +442,17 @@ lemma zipWith_mul_sum_filterProductNonzero_eq
     ((filterProductLeftNonzero fs gs).zipWith (· * ·)
       (filterProductRightNonzero fs gs)).sum =
       (fs.zipWith (· * ·) gs).sum := by
-  induction fs generalizing gs with
-  | nil =>
-      cases gs <;> simp [filterProductLeftNonzero, filterProductRightNonzero,
-        filterProductNonzeroPairs]
-  | cons f fs ih =>
-      cases gs with
-      | nil =>
-          simp [filterProductLeftNonzero, filterProductRightNonzero,
-            filterProductNonzeroPairs]
-      | cons g gs =>
-          by_cases hfg : f ≠ 0 ∧ g ≠ 0
-          · simp [filterProductLeftNonzero, filterProductRightNonzero,
-              filterProductNonzeroPairs, hfg]
-            simpa [filterProductLeftNonzero, filterProductRightNonzero,
-              filterProductNonzeroPairs] using ih gs
-          · have hprod : f * g = 0 := by grind
-            simp [filterProductLeftNonzero, filterProductRightNonzero,
-              filterProductNonzeroPairs, hfg, hprod]
-            simpa [filterProductLeftNonzero, filterProductRightNonzero,
-              filterProductNonzeroPairs] using ih gs
+  simpa [filterProductLeftNonzero, filterProductRightNonzero,
+    filterProductNonzeroPairs] using
+    zipWith_mul_sum_filter_zip_eq
+      (fun p : ℝ[X] × ℝ[X] => p.1 ≠ 0 ∧ p.2 ≠ 0)
+      (by
+        intro p hp
+        by_cases hp_left : p.1 = 0
+        · simp [hp_left]
+        · have hp_right : p.2 = 0 := by simp_all
+          simp [hp_right])
+      fs gs
 
 private lemma isRealRooted_zipWith_mul_sum_reverse_of_filtered_strict
     {fs gs fs' gs' : List ℝ[X]}
