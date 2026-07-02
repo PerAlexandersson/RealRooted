@@ -627,7 +627,7 @@ lemma exists_delta_for_eval_iterateTDeriv_joint_at_zero
   intro z hz
   simpa [dist_eq_norm, iterateTDeriv_zero_eps] using hclose hz
 
-private lemma pos_of_norm_sub_lt_half_of_pos {a b : ℝ}
+lemma pos_of_norm_sub_lt_half_of_pos {a b : ℝ}
     (ha : 0 < a) (hab : ‖b - a‖ < a / 2) :
     0 < b := by
   have hab' : -(a / 2) < b - a ∧ b - a < a / 2 := by

@@ -80,13 +80,6 @@ private lemma continuousAt_wronskian_iterateTDeriv_eval_joint_zero
     (continuous_wronskian_iterateTDeriv_eval_joint n f g).continuousAt
   lia
 
-private lemma pos_of_norm_sub_lt_half_of_pos_local {a b : ℝ}
-    (ha : 0 < a) (hab : ‖b - a‖ < a / 2) :
-    0 < b := by
-  have hab' : -(a / 2) < b - a ∧ b - a < a / 2 := by
-    simpa [Real.norm_eq_abs] using (abs_lt.mp hab)
-  linarith
-
 private lemma exists_delta_wronskian_iterateTDeriv_eval_mul_pos_joint_at_zero
     (n : ℕ) {f g : ℝ[X]} {x : ℝ}
     (hx_eval : (wronskian f g).eval x ≠ 0) :
@@ -133,12 +126,12 @@ private lemma exists_delta_wronskian_iterateTDeriv_eval_mul_pos_joint_at_zero
         simpa [Real.norm_eq_abs, abs_of_neg hx_neg] using hclose_neg0
       have hpos_neg_iter :
           0 < -(wronskian (iterateTDeriv z.1 n f) (iterateTDeriv z.1 n g)).eval z.2 :=
-        pos_of_norm_sub_lt_half_of_pos_local (by simp_all) hclose_neg
+        pos_of_norm_sub_lt_half_of_pos (by simp_all) hclose_neg
       linarith
     exact mul_pos_of_neg_of_neg hneg_iter hx_neg
   · have hpos_iter :
         0 < (wronskian (iterateTDeriv z.1 n f) (iterateTDeriv z.1 n g)).eval z.2 :=
-      pos_of_norm_sub_lt_half_of_pos_local hx_pos
+      pos_of_norm_sub_lt_half_of_pos hx_pos
         (by simpa [Real.norm_eq_abs, abs_of_pos hx_pos] using hclose')
     simp_all
 
