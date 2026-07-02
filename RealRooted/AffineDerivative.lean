@@ -1087,7 +1087,7 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
     have hq_eval_ne : q.eval r₁ ≠ 0 := eval_ne_zero_of_not_dvd_X_sub_C hq_nodvd
     have hEval_pos : 0 < qg.eval r₁ * q.eval r₁ := by
       have hfactor_pos : 0 < ((1 - r₁) * (m : ℝ)) := by
-        have hm_pos' : 0 < (m : ℝ) := by exact_mod_cast hm_pos
+        have hm_pos' : 0 < (m : ℝ) := Nat.cast_pos.mpr hm_pos
         have h1 : 0 < 1 - r₁ := by linarith
         exact mul_pos h1 hm_pos'
       have hsq_pos : 0 < (q.eval r₁) ^ 2 :=

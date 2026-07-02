@@ -95,7 +95,8 @@ theorem HasNonnegCoeffs.polarTheta {N : ℕ} {p : ℝ[X]}
     HasNonnegCoeffs (polarTheta N p) := by
   intro n
   by_cases hn : n ≤ N
-  · simpa [coeff_polarTheta] using mul_nonneg (sub_nonneg.mpr (by exact_mod_cast hn)) (hp n)
+  · have hn' : (n : ℝ) ≤ N := Nat.cast_le.mpr hn
+    simpa [coeff_polarTheta] using mul_nonneg (sub_nonneg.mpr hn') (hp n)
   · have hNn : N < n := Nat.lt_of_not_ge hn
     have hpcoeff : p.coeff n = 0 :=
       coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hdeg hNn)
@@ -199,7 +200,7 @@ theorem polarTheta_eq_reciprocalShift_derivative_reciprocalShift
     rw [Polynomial.revAt_le hk_pred]
     have hsum : N - 1 - k + 1 = N - k := by grind
     have hcast : ((N - 1 - k : ℕ) : ℝ) + 1 = ((N - k : ℕ) : ℝ) := by
-      exact_mod_cast hsum
+      simpa [Nat.cast_add, Nat.cast_one] using congrArg (fun m : ℕ => (m : ℝ)) hsum
     rw [hcast]
     rw [hsum]
     rw [Polynomial.revAt_le (Nat.sub_le N k)]
