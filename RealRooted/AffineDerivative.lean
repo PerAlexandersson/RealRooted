@@ -795,25 +795,6 @@ private lemma exists_cons_of_card_succ {α : Type*} {s t : Multiset α}
   refine ⟨a, ?_⟩
   simpa using (Multiset.add_comm s ({a} : Multiset α))
 
-private lemma isRealRooted_of_pow_X_sub_C_mul {r : ℝ} {m : ℕ} {q : ℝ[X]}
-    (hp_ne : ((X - C r) ^ m * q) ≠ 0) (hp_splits : ((X - C r) ^ m * q).Splits) :
-    (q ≠ 0 ∧ q.Splits) := by
-  have hpow_ne : ((X - C r) ^ m : ℝ[X]) ≠ 0 := pow_ne_zero _ (X_sub_C_ne_zero _)
-  have hq_ne : q ≠ 0 := by simp_all
-  refine ⟨hq_ne, ?_⟩
-  have hcard := card_roots_of_splits hp_splits
-  rw [roots_mul (mul_ne_zero hpow_ne hq_ne), roots_pow, roots_X_sub_C, Multiset.card_add,
-    Multiset.card_nsmul, Multiset.card_singleton, natDegree_mul hpow_ne hq_ne,
-    (monic_X_sub_C r).natDegree_pow, natDegree_X_sub_C] at hcard
-  exact splits_of_card_roots (by lia)
-
-private lemma pos_leadingCoeff_of_pow_X_sub_C_mul {r : ℝ} {m : ℕ} {q : ℝ[X]}
-    (hp_pos : HasPosLeadingCoeff ((X - C r) ^ m * q)) :
-    HasPosLeadingCoeff q := by
-  have hpow_ne : ((X - C r) ^ m : ℝ[X]) ≠ 0 := pow_ne_zero _ (X_sub_C_ne_zero _)
-  unfold HasPosLeadingCoeff at hp_pos ⊢
-  simp_all
-
 private lemma eval_ne_zero_of_not_dvd_X_sub_C {p : ℝ[X]} {a : ℝ}
     (h : ¬ (X - C a) ∣ p) :
     p.eval a ≠ 0 :=
@@ -955,18 +936,28 @@ theorem prec_affine_derivative {f : ℝ[X]} (hf : f.Splits)
     have hqg_ne : qg ≠ 0 := by
       intro hqg
       simpa [hg_fact', hqg] using hg₀.ne_zero
-    have hq_rr : (q ≠ 0 ∧ q.Splits) :=
-      isRealRooted_of_pow_X_sub_C_mul
-        (by simpa [hf_fact', hd_def] using hf₀.ne_zero)
-        (by simpa [hf_fact', hd_def] using hf)
-    have hqg_rr : (qg ≠ 0 ∧ qg.Splits) :=
-      isRealRooted_of_pow_X_sub_C_mul
-        (by simpa [hg_fact', hd_def] using hg₀.ne_zero)
-        (by simpa [hg_fact', hd_def] using hg_rr)
+    have hq_rr : (q ≠ 0 ∧ q.Splits) := by
+      have hprod_ne : ((X - C r₁) ^ m * q) ≠ 0 := by
+        rw [← hf_fact']
+        exact hf₀.ne_zero
+      have hprod_splits : ((X - C r₁) ^ m * q).Splits := by
+        rw [← hf_fact']
+        exact hf
+      exact isRealRooted_of_dvd hprod_ne hprod_splits hq_ne
+        ⟨(X - C r₁) ^ m, by rw [mul_comm]⟩
+    have hqg_rr : (qg ≠ 0 ∧ qg.Splits) := by
+      have hprod_ne : ((X - C r₁) ^ (m - 1) * qg) ≠ 0 := by
+        rw [← hg_fact']
+        exact hg₀.ne_zero
+      have hprod_splits : ((X - C r₁) ^ (m - 1) * qg).Splits := by
+        rw [← hg_fact']
+        exact hg_rr
+      exact isRealRooted_of_dvd hprod_ne hprod_splits hqg_ne
+        ⟨(X - C r₁) ^ (m - 1), by rw [mul_comm]⟩
     have hq_pos : HasPosLeadingCoeff q :=
-      pos_leadingCoeff_of_pow_X_sub_C_mul (by simpa [hf_fact'] using hf₀)
+      hasPosLeadingCoeff_of_pow_X_sub_C_mul (by simpa [hf_fact'] using hf₀)
     have hqg_pos : HasPosLeadingCoeff qg :=
-      pos_leadingCoeff_of_pow_X_sub_C_mul (by simpa [hg_fact'] using hg₀)
+      hasPosLeadingCoeff_of_pow_X_sub_C_mul (by simpa [hg_fact'] using hg₀)
     have hq_root_gt : ∀ t ∈ q.roots, r₁ < t := by
       intro t ht
       have ht_root_q : q.IsRoot t := (mem_roots hq_ne).mp ht

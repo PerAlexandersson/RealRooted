@@ -41,6 +41,13 @@ lemma hasPosLeadingCoeff_of_X_sub_C_mul {q : ℝ[X]} {r : ℝ}
     HasPosLeadingCoeff q := by
   simpa [HasPosLeadingCoeff] using h
 
+lemma hasPosLeadingCoeff_of_pow_X_sub_C_mul {q : ℝ[X]} {r : ℝ} {m : ℕ}
+    (h : HasPosLeadingCoeff ((X - C r) ^ m * q)) :
+    HasPosLeadingCoeff q := by
+  have hpow_ne : ((X - C r) ^ m : ℝ[X]) ≠ 0 := pow_ne_zero _ (X_sub_C_ne_zero r)
+  unfold HasPosLeadingCoeff at h ⊢
+  simpa [leadingCoeff_mul, hpow_ne] using h
+
 lemma roots_le_X_sub_C_mul {r : ℝ} {f : ℝ[X]}
     (hf : f.Splits)
     (hf_le : ∀ s ∈ f.roots, s ≤ r) :
