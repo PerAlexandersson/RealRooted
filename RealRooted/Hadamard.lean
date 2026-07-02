@@ -240,6 +240,18 @@ theorem schurSzegoComp_eq_zero_iff_hadamardProduct_eq_zero_of_left_natDegree_le
   rw [← support_eq_empty, ← support_eq_empty,
     support_schurSzegoComp_eq_hadamardProduct_of_left_natDegree_le hf]
 
+theorem support_schurSzegoComp_eq_inter_of_left_natDegree_le
+    {n : Nat} {f g : ℝ[X]} (hf : f.natDegree ≤ n) :
+    (schurSzegoComp n f g).support = f.support ∩ g.support := by
+  rw [support_schurSzegoComp_eq_hadamardProduct_of_left_natDegree_le hf,
+    support_hadamardProduct_eq]
+
+theorem schurSzegoComp_eq_zero_iff_support_disjoint_of_left_natDegree_le
+    {n : Nat} {f g : ℝ[X]} (hf : f.natDegree ≤ n) :
+    schurSzegoComp n f g = 0 ↔ Disjoint f.support g.support := by
+  rw [schurSzegoComp_eq_zero_iff_hadamardProduct_eq_zero_of_left_natDegree_le hf,
+    hadamardProduct_eq_zero_iff_support_disjoint]
+
 theorem support_schurSzegoComp_eq_hadamardProduct_of_right_natDegree_le
     {n : Nat} {f g : ℝ[X]} (hg : g.natDegree ≤ n) :
     (schurSzegoComp n f g).support = (hadamardProduct f g).support := by
@@ -255,6 +267,18 @@ theorem schurSzegoComp_eq_zero_iff_hadamardProduct_eq_zero_of_right_natDegree_le
     schurSzegoComp n f g = 0 ↔ hadamardProduct f g = 0 := by
   rw [← support_eq_empty, ← support_eq_empty,
     support_schurSzegoComp_eq_hadamardProduct_of_right_natDegree_le hg]
+
+theorem support_schurSzegoComp_eq_inter_of_right_natDegree_le
+    {n : Nat} {f g : ℝ[X]} (hg : g.natDegree ≤ n) :
+    (schurSzegoComp n f g).support = f.support ∩ g.support := by
+  rw [support_schurSzegoComp_eq_hadamardProduct_of_right_natDegree_le hg,
+    support_hadamardProduct_eq]
+
+theorem schurSzegoComp_eq_zero_iff_support_disjoint_of_right_natDegree_le
+    {n : Nat} {f g : ℝ[X]} (hg : g.natDegree ≤ n) :
+    schurSzegoComp n f g = 0 ↔ Disjoint f.support g.support := by
+  rw [schurSzegoComp_eq_zero_iff_hadamardProduct_eq_zero_of_right_natDegree_le hg,
+    hadamardProduct_eq_zero_iff_support_disjoint]
 
 theorem schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le
     {n : Nat} {gamma : ℕ → ℝ} {p : ℝ[X]} (hp : p.natDegree ≤ n) :
