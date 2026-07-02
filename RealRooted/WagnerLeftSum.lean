@@ -376,11 +376,8 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
           rw [← hrs_g_eq, Multiset.coe_card] at this
           lia
         have hfgnd : (f + g).natDegree = 1 := by
-          apply le_antisymm
-          · have := natDegree_add_le f g; simp_all
-          · rw [← hfnd]; apply le_natDegree_of_ne_zero; rw [coeff_add]
-            have : g.coeff f.natDegree = 0 := coeff_eq_zero_of_natDegree_lt (by lia)
-            rw [this, add_zero]; exact ne_of_gt hf_pos
+          rw [natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff
+            (by rw [hfnd, hgnd]; norm_num) hf_pos, hfnd]
         have hcard1 : (f + g).roots.card = 1 := by
           rw [card_roots_of_splits hfg_rr.2, hfgnd]
         obtain ⟨u, hu⟩ := Multiset.card_pos_iff_exists_mem.mp (by lia : 0 < (f + g).roots.card)
@@ -528,11 +525,8 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
           rw [← hrs_g_eq, Multiset.coe_card] at this
           lia
         have hfgnd : (f + g).natDegree = 1 := by
-          apply le_antisymm
-          · have := natDegree_add_le f g; simp_all
-          · rw [← hgnd]; apply le_natDegree_of_ne_zero; rw [coeff_add]
-            have : f.coeff g.natDegree = 0 := coeff_eq_zero_of_natDegree_lt (by lia)
-            rw [this, zero_add]; exact ne_of_gt hg_pos
+          rw [natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
+            (by rw [hfnd, hgnd]; norm_num) hg_pos, hgnd]
         have hcard1 : (f + g).roots.card = 1 := by
           rw [card_roots_of_splits hfg_rr.2, hfgnd]
         obtain ⟨u, hu⟩ := Multiset.card_pos_iff_exists_mem.mp (by lia : 0 < (f + g).roots.card)
