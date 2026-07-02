@@ -2808,9 +2808,8 @@ theorem compatiblePairHasCommonInterleaver_of_sameDegreeAlternative_and_affineFa
     (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
     (haffBridge : PosComboNoCommonAffineFamilyStatement) :
     CompatiblePairHasCommonInterleaverStatement :=
-  compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-    (posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg
-      hsame)
+  compatiblePairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
+    hsame
     (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
 
 /-- Shifted positive-leading compatibility bridge with the succ-degree branch
