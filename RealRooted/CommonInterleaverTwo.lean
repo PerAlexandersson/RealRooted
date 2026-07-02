@@ -2151,16 +2151,17 @@ theorem compatiblePairHasCommonInterleaver_of_posComboPair
       (hfg.toPosComboRealRooted hf_pos hg_pos)
 
 /-- If one has both the no-common-roots orientation core and degree closeness
-for `PosComboRealRooted` pairs, then every positive-leading `PosComboRealRooted`
-pair has a common right interleaver. -/
-theorem posComboPairHasCommonInterleaver_of_noCommonOrientation_and_degreeClose
+for the current `PosComboRealRooted` pair, then the pair has a common right
+interleaver. -/
+theorem posComboPairHasCommonInterleaver_of_noCommonOrientation_and_degreeBounds
     (hstep : PosComboNoCommonOrientationStatement)
-    (hdegClose : PosComboNatDegreeCloseStatement) :
-    PosComboPairHasCommonInterleaverStatement := by
-  intro f g hf_pos hg_pos hfg
-  have hclose :
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hclose :
       f.natDegree ≤ g.natDegree + 1 ∧
-        g.natDegree ≤ f.natDegree + 1 := hdegClose hfg
+        g.natDegree ≤ f.natDegree + 1) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
   by_cases hfg_deg : f.natDegree ≤ g.natDegree
   · have hprec_or : Prec f g ∨ Prec g f :=
       PosComboRealRooted.prec_or_revPrec_of_posComboRealRooted_of_no_common
@@ -2175,6 +2176,18 @@ theorem posComboPairHasCommonInterleaver_of_noCommonOrientation_and_degreeClose
           hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno)
         (PosComboRealRooted.comm hfg) hg_pos hf_pos hgf_deg hclose.1
     exact pairHasCommonInterleaver_of_prec_or_revPrec (Or.symm hprec_or)
+
+/-- If one has both the no-common-roots orientation core and degree closeness
+for `PosComboRealRooted` pairs, then every positive-leading `PosComboRealRooted`
+pair has a common right interleaver. -/
+theorem posComboPairHasCommonInterleaver_of_noCommonOrientation_and_degreeClose
+    (hstep : PosComboNoCommonOrientationStatement)
+    (hdegClose : PosComboNatDegreeCloseStatement) :
+    PosComboPairHasCommonInterleaverStatement := by
+  intro f g hf_pos hg_pos hfg
+  exact
+    posComboPairHasCommonInterleaver_of_noCommonOrientation_and_degreeBounds
+      hstep hf_pos hg_pos hfg (hdegClose hfg)
 
 /-- Pair-bridge reduction through the all-combinations bridge and a separate
 degree-closeness input. -/
@@ -2207,24 +2220,10 @@ theorem posComboPairHasCommonInterleaver_of_noCommonOrientation_and_nonnegCoeffs
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  have hclose :
-      f.natDegree ≤ g.natDegree + 1 ∧
-        g.natDegree ≤ f.natDegree + 1 :=
-    posComboNatDegreeClose_of_nonnegCoeffs hf_pos hg_pos hfnn hgnn hfg
-  by_cases hfg_deg : f.natDegree ≤ g.natDegree
-  · have hprec_or : Prec f g ∨ Prec g f :=
-      PosComboRealRooted.prec_or_revPrec_of_posComboRealRooted_of_no_common
-        (hstep := fun hfg hf_pos hg_pos hdeg_lo hdeg_hi hno =>
-          hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno)
-        hfg hf_pos hg_pos hfg_deg hclose.2
-    exact pairHasCommonInterleaver_of_prec_or_revPrec hprec_or
-  · have hgf_deg : g.natDegree ≤ f.natDegree := le_of_not_ge hfg_deg
-    have hprec_or : Prec g f ∨ Prec f g :=
-      PosComboRealRooted.prec_or_revPrec_of_posComboRealRooted_of_no_common
-        (hstep := fun hfg hf_pos hg_pos hdeg_lo hdeg_hi hno =>
-          hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno)
-        (PosComboRealRooted.comm hfg) hg_pos hf_pos hgf_deg hclose.1
-    exact pairHasCommonInterleaver_of_prec_or_revPrec (Or.symm hprec_or)
+  exact
+    posComboPairHasCommonInterleaver_of_noCommonOrientation_and_degreeBounds
+      hstep hf_pos hg_pos hfg
+      (posComboNatDegreeClose_of_nonnegCoeffs hf_pos hg_pos hfnn hgnn hfg)
 
 /-- In the nonnegative-coefficient regime, the all-combinations bridge implies
 the full positive-combo pair bridge. -/
