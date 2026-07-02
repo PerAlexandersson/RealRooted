@@ -828,11 +828,11 @@ theorem polarDeriv_natDegree {n : Nat} {c : ℂ} {r : ℝ} {ζ : ℂ}
     (polarDeriv n ζ A).natDegree = n - 1 := by
   refine' le_antisymm _ _;
   · rw [ Polynomial.natDegree_le_iff_degree_le, Polynomial.degree_le_iff_coeff_zero ];
-    unfold polarDeriv; simp_all +decide [ Polynomial.coeff_derivative, Polynomial.coeff_C_mul ] ;
+    unfold polarDeriv; simp_all +decide;
     intro m hm;
     rcases m with ( _ | m ) <;>
       simp_all +decide [ Polynomial.coeff_eq_zero_of_natDegree_lt, Polynomial.coeff_derivative,
-        mul_assoc, sub_mul ] ;
+        sub_mul ] ;
     cases hm.eq_or_lt <;> simp_all +decide [ Polynomial.coeff_eq_zero_of_natDegree_lt ];
     ring;
   · refine' Polynomial.le_natDegree_of_ne_zero _;
@@ -841,9 +841,9 @@ theorem polarDeriv_natDegree {n : Nat} {c : ℂ} {r : ℝ} {ζ : ℂ}
       have h_coeff : (polarDeriv n ζ A).coeff (n - 1)
           = ((n : ℂ) - (n - 1)) * A.coeff (n - 1) + ζ * (n : ℂ) * A.coeff n := by
         unfold polarDeriv;
-        simp +decide [ Polynomial.coeff_derivative, Polynomial.coeff_X, mul_assoc, sub_mul ] ;
+        simp +decide [ Polynomial.coeff_derivative, mul_assoc, sub_mul ] ;
         rcases n with ( _ | _ | n ) <;>
-          simp_all +decide [ Polynomial.coeff_derivative, mul_assoc, mul_comm, mul_left_comm ];
+          simp_all +decide [ Polynomial.coeff_derivative, mul_comm ];
         ring;
       have h_vieta : A.coeff (n - 1)
           = A.leadingCoeff * (-1) ^ (n - (n - 1)) * Multiset.esymm A.roots (n - (n - 1)) := by
@@ -852,18 +852,17 @@ theorem polarDeriv_natDegree {n : Nat} {c : ℂ} {r : ℝ} {ζ : ℂ}
         exact inferInstance;
         convert Polynomial.splits_iff_card_roots.mp ( IsAlgClosed.splits A ) using 1;
         all_goals norm_num [ hA ]; all_goals infer_instance;
-      rcases n with ( _ | _ | n ) <;> simp_all +decide [ Nat.succ_eq_add_one, Multiset.esymm ];
+      rcases n with ( _ | _ | n ) <;> simp_all +decide [ Multiset.esymm ];
       · simp_all +decide [ Multiset.powersetCard_one, mul_sub ] ; ring;
         rw [ Polynomial.leadingCoeff, hA ] ; ring;
-      · simp_all +decide [ Multiset.powersetCard_one, Polynomial.leadingCoeff,
-          Polynomial.natDegree_eq_of_degree_eq_some ] ; ring;
+      · simp_all +decide [ Multiset.powersetCard_one, Polynomial.leadingCoeff ] ; ring;
     simp_all +decide [ sub_eq_iff_eq_add ];
     refine' ⟨ _, _ ⟩;
     · rw [ ← hA, Polynomial.coeff_natDegree ] ; aesop;
     · intro h;
       have h_avg : A.roots.sum / (A.roots.card : ℂ) ∈ Metric.closedBall c r := by
         apply multiset_avg_mem_closedBall;
-        · intro H; simp_all +decide [ Polynomial.coeff_natDegree ] ;
+        · intro H; simp_all +decide;
           replace H := congr_arg Multiset.toFinset H;
           rw [ Finset.ext_iff ] at H;
           specialize H ( Classical.choose ( Complex.exists_root <|
