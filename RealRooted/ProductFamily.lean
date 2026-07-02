@@ -116,19 +116,21 @@ lemma zipWith_mul_sum_ne_zero_of_mem_ne_zero
       hq_def ▸ (hrow a ha).mul (hfs b hb))
     hp_mem hp_ne
 
-/-- Product-family pairwise left common interleaver from two interlacing
-sequences: for `i < j`, the mixed product in the reversed family is interlaced
-by the two corresponding diagonal products. This is the pairwise input for
-Brändén 7.8.3. -/
-theorem pairwiseHasCommonLeftInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg
+private theorem pairInterleavers_zipWith_mul_reverse_of_interlacingSeqNonneg
     {fs gs : List ℝ[X]}
     (hlen : fs.length = gs.length)
     (hfs : IsInterlacingSeqNonneg fs)
-    (hgs : IsInterlacingSeqNonneg gs) :
-    PairwiseHasCommonLeftInterleaver (fs.zipWith (· * ·) gs.reverse) := by
+    (hgs : IsInterlacingSeqNonneg gs)
+    (i j : Fin (fs.zipWith (· * ·) gs.reverse).length)
+    (hij : i < j) :
+    (∃ h : ℝ[X],
+        Prec h ((fs.zipWith (· * ·) gs.reverse).get i) ∧
+          Prec h ((fs.zipWith (· * ·) gs.reverse).get j)) ∧
+      ∃ h : ℝ[X],
+        Prec ((fs.zipWith (· * ·) gs.reverse).get i) h ∧
+          Prec ((fs.zipWith (· * ·) gs.reverse).get j) h := by
   have hpair_fs : fs.Pairwise Prec := (isInterlacingSeq_iff_pairwise.mp hfs.2)
   have hpair_gs : gs.Pairwise Prec := (isInterlacingSeq_iff_pairwise.mp hgs.2)
-  intro i j hij
   have hzip_len : (fs.zipWith (· * ·) gs.reverse).length = fs.length := by
     simp [List.length_zipWith, hlen, List.length_reverse]
   let i' : Fin fs.length := ⟨i.1, by lia⟩
@@ -138,7 +140,6 @@ theorem pairwiseHasCommonLeftInterleaver_zipWith_mul_reverse_of_interlacingSeqNo
   let j'' : Fin gs.reverse.length :=
     ⟨j.1, by grind⟩
   have hij' : i' < j' := hij
-  have hij'' : i'' < j'' := hij
   let fi := fs.get i'
   let fj := fs.get j'
   let gi := gs.reverse.get i''
@@ -161,6 +162,11 @@ theorem pairwiseHasCommonLeftInterleaver_zipWith_mul_reverse_of_interlacingSeqNo
       simp [gi, ki]]
     exact List.pairwise_iff_get.mp hpair_gs kj ki hkj_ki
   have hfi_rr : (fi ≠ 0 ∧ fi.Splits) := hfs.realRooted fi (List.get_mem _ _)
+  have hfj_rr : (fj ≠ 0 ∧ fj.Splits) := hfs.realRooted fj (List.get_mem _ _)
+  have hgi_rr : (gi ≠ 0 ∧ gi.Splits) := by
+    rw [show gi = gs.get ki by
+      simp [gi, ki]]
+    exact hgs.realRooted _ (List.get_mem _ _)
   have hgj_rr : (gj ≠ 0 ∧ gj.Splits) := by
     rw [show gj = gs.get kj by
       simp [gj, kj]]
@@ -171,9 +177,31 @@ theorem pairwiseHasCommonLeftInterleaver_zipWith_mul_reverse_of_interlacingSeqNo
   have hleft_j : Prec (fi * gj) (fj * gj) := by
     simpa [fi, fj, gj, mul_comm, mul_left_comm, mul_assoc] using
       (prec_mul_common_factor hgj_rr.1 hgj_rr.2 hfi_fj)
-  refine ⟨fi * gj, ?_, ?_⟩
+  have hright_i : Prec (fi * gi) (fj * gi) := by
+    simpa [fi, fj, gi, mul_comm, mul_left_comm, mul_assoc] using
+      (prec_mul_common_factor hgi_rr.1 hgi_rr.2 hfi_fj)
+  have hright_j : Prec (fj * gj) (fj * gi) := by
+    simpa [fj, gi, gj, mul_comm, mul_left_comm, mul_assoc] using
+      (prec_mul_common_factor hfj_rr.1 hfj_rr.2 hgj_gi)
+  refine ⟨⟨fi * gj, ?_, ?_⟩, ⟨fj * gi, ?_, ?_⟩⟩
   · simpa [List.get_eq_getElem, fi, gi, gj, i', hzip_len] using hleft_i
   · simpa [List.get_eq_getElem, fi, fj, gj, j', hzip_len] using hleft_j
+  · simpa [List.get_eq_getElem, fi, fj, gi, i', hzip_len] using hright_i
+  · simpa [List.get_eq_getElem, fj, gi, gj, j', hzip_len] using hright_j
+
+/-- Product-family pairwise left common interleaver from two interlacing
+sequences: for `i < j`, the mixed product in the reversed family is interlaced
+by the two corresponding diagonal products. This is the pairwise input for
+Brändén 7.8.3. -/
+theorem pairwiseHasCommonLeftInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg
+    {fs gs : List ℝ[X]}
+    (hlen : fs.length = gs.length)
+    (hfs : IsInterlacingSeqNonneg fs)
+    (hgs : IsInterlacingSeqNonneg gs) :
+    PairwiseHasCommonLeftInterleaver (fs.zipWith (· * ·) gs.reverse) := by
+  intro i j hij
+  exact (pairInterleavers_zipWith_mul_reverse_of_interlacingSeqNonneg
+    (fs := fs) (gs := gs) hlen hfs hgs i j hij).1
 
 /-- Product-family pairwise common right interleaver from two interlacing
 sequences. For `i < j` in the reversed product family, the witness is the other
@@ -185,49 +213,9 @@ theorem pairwiseHasCommonInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg
     (hfs : IsInterlacingSeqNonneg fs)
     (hgs : IsInterlacingSeqNonneg gs) :
     PairwiseHasCommonInterleaver (fs.zipWith (· * ·) gs.reverse) := by
-  have hpair_fs : fs.Pairwise Prec := (isInterlacingSeq_iff_pairwise.mp hfs.2)
-  have hpair_gs : gs.Pairwise Prec := (isInterlacingSeq_iff_pairwise.mp hgs.2)
   intro i j hij
-  have hzip_len : (fs.zipWith (· * ·) gs.reverse).length = fs.length := by
-    simp [List.length_zipWith, hlen, List.length_reverse]
-  let i' : Fin fs.length := ⟨i.1, by lia⟩
-  let j' : Fin fs.length := ⟨j.1, by lia⟩
-  let i'' : Fin gs.reverse.length :=
-    ⟨i.1, by grind⟩
-  let j'' : Fin gs.reverse.length :=
-    ⟨j.1, by grind⟩
-  have hij' : i' < j' := hij
-  let fi := fs.get i'
-  let fj := fs.get j'
-  let gi := gs.reverse.get i''
-  let gj := gs.reverse.get j''
-  have hi'' : i''.1 < gs.length := by lia
-  have hj'' : j''.1 < gs.length := by lia
-  let ki : Fin gs.length := ⟨gs.length - 1 - i''.1, by
-    lia⟩
-  let kj : Fin gs.length := ⟨gs.length - 1 - j''.1, by
-    lia⟩
-  have hkj_ki : kj < ki := by grind
-  have hfi_fj : Prec fi fj := by
-    simpa [fi, fj] using (List.pairwise_iff_get.mp hpair_fs i' j' hij')
-  have hgj_gi : Prec gj gi := by
-    rw [show gj = gs.get kj by
-      simp [gj, kj]]
-    rw [show gi = gs.get ki by
-      simp [gi, ki]]
-    exact List.pairwise_iff_get.mp hpair_gs kj ki hkj_ki
-  have hfj_rr : (fj ≠ 0 ∧ fj.Splits) := hfs.realRooted fj (List.get_mem _ _)
-  have hgi_rr : (gi ≠ 0 ∧ gi.Splits) := by
-    rw [show gi = gs.get ki by
-      simp [gi, ki]]
-    exact hgs.realRooted _ (List.get_mem _ _)
-  have hright_i : Prec (fi * gi) (fj * gi) := by
-    simpa [fi, fj, gi, mul_comm, mul_left_comm, mul_assoc] using
-      (prec_mul_common_factor hgi_rr.1 hgi_rr.2 hfi_fj)
-  have hright_j : Prec (fj * gj) (fj * gi) := by
-    simpa [fj, gi, gj, mul_comm, mul_left_comm, mul_assoc] using
-      (prec_mul_common_factor hfj_rr.1 hfj_rr.2 hgj_gi)
-  grind
+  exact (pairInterleavers_zipWith_mul_reverse_of_interlacingSeqNonneg
+    (fs := fs) (gs := gs) hlen hfs hgs i j hij).2
 
 /-- The reversed product family has a common interleaver once one upgrades the
 pairwise witnesses via Chudnovsky--Seymour. This isolates the exact remaining
