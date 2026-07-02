@@ -445,6 +445,32 @@ lemma zipWith_mul_sum_filterProductNonzero_eq
             simpa [filterProductLeftNonzero, filterProductRightNonzero,
               filterProductNonzeroPairs] using ih gs
 
+private lemma isRealRooted_zipWith_mul_sum_reverse_of_filtered_strict
+    {fs gs fs' gs' : List ℝ[X]}
+    (hfs' : IsInterlacingSeqNonneg fs')
+    (hgs'_rev : IsInterlacingSeqNonneg gs'.reverse)
+    (hlen' : fs'.length = gs'.length)
+    (hsum_eq :
+      (fs'.zipWith (· * ·) gs').sum = (fs.zipWith (· * ·) gs.reverse).sum)
+    (hsum_ne : (fs.zipWith (· * ·) gs.reverse).sum ≠ 0) :
+    (((fs.zipWith (· * ·) gs.reverse).sum) ≠ 0 ∧
+      ((fs.zipWith (· * ·) gs.reverse).sum).Splits) := by
+  have hfs'_ne : fs' ≠ [] := by
+    intro hnil
+    apply hsum_ne
+    rw [← hsum_eq]
+    simp [hnil]
+  have hrr :
+      (((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum) ≠ 0 ∧
+        ((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum).Splits) :=
+    isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
+      (fs := fs') (gs := gs'.reverse)
+      hfs'_ne
+      (by simpa [List.length_reverse] using hlen')
+      hfs'
+      hgs'_rev
+  simpa [List.reverse_reverse, hsum_eq] using hrr
+
 /-- Weak zero-aware product-sum theorem. If the left family is weakly
 interlacing, its nonzero members are real-rooted, and the paired product sum is
 nonzero, then filtering out zero left factors lets us reuse Brändén's strict
@@ -477,17 +503,9 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg
   have hsum_eq :
       (fs'.zipWith (· * ·) gs').sum = (fs.zipWith (· * ·) gs.reverse).sum := by
     simpa [fs', gs'] using zipWith_mul_sum_filterLeftNonzero_eq fs gs.reverse
-  have hfs'_ne : fs' ≠ [] := fun hnil => by simp_all
-  have hrr :
-      (((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum) ≠ 0 ∧
-        ((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum).Splits) :=
-    isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
-      (fs := fs') (gs := gs'.reverse)
-      hfs'_ne
-      (by simp_all)
-      hfs'
-      hgs'_rev
-  simp_all
+  exact
+    isRealRooted_zipWith_mul_sum_reverse_of_filtered_strict
+      hfs' hgs'_rev hlen' hsum_eq hsum_ne
 
 /-- Two-sided weak zero-aware product-sum theorem. Zero factors on either side
 are removed pairwise before applying Brändén's strict product-sum theorem. -/
@@ -522,17 +540,9 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg_both
   have hsum_eq :
       (fs'.zipWith (· * ·) gs').sum = (fs.zipWith (· * ·) gs.reverse).sum := by
     simpa [fs', gs'] using zipWith_mul_sum_filterProductNonzero_eq fs gs.reverse
-  have hfs'_ne : fs' ≠ [] := fun hnil => by simp_all
-  have hrr :
-      (((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum) ≠ 0 ∧
-        ((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum).Splits) :=
-    isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
-      (fs := fs') (gs := gs'.reverse)
-      hfs'_ne
-      (by simp_all)
-      hfs'
-      hgs'_rev
-  simp_all
+  exact
+    isRealRooted_zipWith_mul_sum_reverse_of_filtered_strict
+      hfs' hgs'_rev hlen' hsum_eq hsum_ne
 
 end
 end RealRooted
