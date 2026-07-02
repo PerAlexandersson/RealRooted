@@ -15,15 +15,15 @@ open Polynomial
 
 namespace NewtonAux
 
-set_option linter.style.induction false in
 set_option linter.flexible false in
 lemma iterate_derivative_rr {p : ℝ[X]} (hp : Multiset.card p.roots = p.natDegree)
     (k : ℕ) :
     Multiset.card (derivative^[k] p).roots = (derivative^[k] p).natDegree ∧
       (derivative^[k] p).natDegree = p.natDegree - k := by
-  induction' k with k ih
-  · aesop
-  · by_cases h : (derivative^[k] p).natDegree = 0 <;>
+  induction k with
+  | zero => aesop
+  | succ k ih =>
+    by_cases h : (derivative^[k] p).natDegree = 0 <;>
       simp_all +decide [Function.iterate_succ_apply']
     · rw [Polynomial.eq_C_of_natDegree_eq_zero
         (show (derivative^[k] p).natDegree = 0 by lia)]
@@ -44,7 +44,6 @@ lemma iterate_derivative_rr {p : ℝ[X]} (hp : Multiset.card p.roots = p.natDegr
         Polynomial.card_roots' _
       lia
 
-set_option linter.style.induction false in
 set_option linter.flexible false in
 set_option linter.unusedSimpArgs false in
 lemma reverse_rr {p : ℝ[X]} (hp : Multiset.card p.roots = p.natDegree)
@@ -67,10 +66,12 @@ lemma reverse_rr {p : ℝ[X]} (hp : Multiset.card p.roots = p.natDegree)
             Multiset.prod (Multiset.map (fun r =>
               Polynomial.reverse (Polynomial.X - Polynomial.C r)) rs) := by
       conv_lhs => rw [hrs]
-      induction' rs using Multiset.induction with r rs ih
-      · simp +decide [Polynomial.reverse]
-      · induction' (r ::ₘ rs) using Multiset.induction <;> norm_num at *
-        tauto
+      induction rs using Multiset.induction with
+      | empty =>
+          simp +decide [Polynomial.reverse]
+      | cons r rs ih =>
+          induction (r ::ₘ rs) using Multiset.induction <;> norm_num at *
+          tauto
     refine h_reverse.trans (congr_arg _ (congr_arg _ (Multiset.map_congr rfl fun x hx => ?_)))
     rcases eq_or_ne x 0 with rfl | hx' <;>
       simp +decide [Polynomial.reverse, Polynomial.coeff_zero_eq_eval_zero] at *
