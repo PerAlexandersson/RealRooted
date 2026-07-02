@@ -3219,9 +3219,9 @@ theorem chudnovskySeymour_fourWay_of_degreeSplit_via_nonnegShift
     (PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs) ∧
       (PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs) ∧
       (HasCommonInterleaver fs ↔ FamilyCompatible fs) :=
-  chudnovskySeymour_fourWay_of_pairBridgePos
-    (hrr := hrr) (hpos := hpos)
-    (compatiblePairHasCommonInterleaver_of_degreeSplit_via_nonnegShift hsame hsucc)
+  chudnovskySeymour_fourWay_of_pairwiseCommonForward hrr hpos <|
+    pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_degreeSplit_via_nonnegShift
+      (fs := fs) hsame hsucc hpos
 
 /-- Four-way Chudnovsky--Seymour package after the nonnegative shift
 reduction, with the succ-degree branch discharged by the affine-family bridge.
@@ -3235,9 +3235,9 @@ theorem chudnovskySeymour_fourWay_of_sameDegreeAlternative_and_affineFamily_via_
     (PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs) ∧
       (PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs) ∧
       (HasCommonInterleaver fs ↔ FamilyCompatible fs) :=
-  chudnovskySeymour_fourWay_of_degreeSplit_via_nonnegShift
-    (fs := fs) hrr hpos hsame
-    (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
+  chudnovskySeymour_fourWay_of_pairwiseCommonForward hrr hpos <|
+    pairwiseHasCommonInterleaver_of_pairwiseCompatible_nonnegShift
+      (fs := fs) hsame haffBridge hpos
 
 /-- Four-way Chudnovsky--Seymour package from the stronger boundary-right-pair
 statement, upgraded to arbitrary positive-leading families by the shift
@@ -3250,10 +3250,9 @@ theorem chudnovskySeymour_fourWay_of_boundaryRightPairOrientation_via_nonnegShif
     (PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs) ∧
       (PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs) ∧
       (HasCommonInterleaver fs ↔ FamilyCompatible fs) :=
-  chudnovskySeymour_fourWay_of_pairBridgePos
-    (hrr := hrr) (hpos := hpos)
-    (compatiblePairHasCommonInterleaver_of_boundaryRightPairOrientation_via_nonnegShift
-      hboundary)
+  chudnovskySeymour_fourWay_of_pairwiseCommonForward hrr hpos <|
+    pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_boundaryRightPairOrientation
+      (fs := fs) hboundary hpos
 
 /-- Same four-way Chudnovsky--Seymour package, with assumptions phrased via the
 positive-combination two-polynomial bridge. -/
