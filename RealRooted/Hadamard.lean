@@ -85,13 +85,18 @@ theorem hadamardProduct_C_mul_right (a : ℝ) (p q : ℝ[X]) :
   rw [hadamardProduct_comm p (C a * q), hadamardProduct_C_mul_left,
     hadamardProduct_comm q p]
 
+/-- A Hadamard product is a diagonal operator whose diagonal is given by the
+right factor's coefficients. -/
+theorem hadamardProduct_eq_diagonalOperator (p q : ℝ[X]) :
+    hadamardProduct p q = diagonalOperator (fun n => q.coeff n) p := by
+  ext n
+  rw [coeff_hadamardProduct, coeff_diagonalOperator, mul_comm]
+
 /-- The support of a Hadamard product is contained in the left support. -/
 theorem support_hadamardProduct_subset_left (p q : ℝ[X]) :
     (hadamardProduct p q).support ⊆ p.support := by
-  intro n hn
-  rw [mem_support_iff] at hn ⊢
-  rw [coeff_hadamardProduct] at hn
-  exact left_ne_zero_of_mul hn
+  rw [hadamardProduct_eq_diagonalOperator]
+  exact support_diagonalOperator_subset _ _
 
 /-- The support of a Hadamard product is contained in the right support. -/
 theorem support_hadamardProduct_subset_right (p q : ℝ[X]) :
@@ -101,9 +106,8 @@ theorem support_hadamardProduct_subset_right (p q : ℝ[X]) :
 
 theorem natDegree_hadamardProduct_le_left (p q : ℝ[X]) :
     (hadamardProduct p q).natDegree ≤ p.natDegree := by
-  refine natDegree_le_iff_coeff_eq_zero.mpr ?_
-  intro n hn
-  rw [coeff_hadamardProduct, coeff_eq_zero_of_natDegree_lt hn, zero_mul]
+  rw [hadamardProduct_eq_diagonalOperator]
+  exact natDegree_diagonalOperator_le _ _
 
 theorem natDegree_hadamardProduct_le_right (p q : ℝ[X]) :
     (hadamardProduct p q).natDegree ≤ q.natDegree := by
@@ -367,8 +371,8 @@ products. -/
 theorem HasNonnegCoeffs.hadamardProduct {p q : ℝ[X]}
     (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q) :
     HasNonnegCoeffs (hadamardProduct p q) := by
-  intro n
-  simpa using mul_nonneg (hp n) (hq n)
+  rw [hadamardProduct_eq_diagonalOperator]
+  exact hp.diagonalOperator hq
 
 /-- **Odd/even Hadamard identity.**  The coefficientwise Hadamard product
 commutes with the odd/even construction `oddEvenPolynomial p q = q(x²) + x·p(x²)`:
