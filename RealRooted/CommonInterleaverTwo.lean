@@ -3224,6 +3224,21 @@ theorem chudnovskySeymour_fourWay_of_compatibleDegreeSplit
     (hrr := hrr) (hpos := hpos)
     (compatiblePairHasCommonInterleaver_of_degreeSplit hsame hsucc)
 
+/-- Four-way Chudnovsky--Seymour package from the repaired shifted
+nonnegative-coefficient degree split. -/
+theorem chudnovskySeymour_fourWay_of_pairDegreeSplit_via_nonnegShift
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs) ∧
+      (PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs) ∧
+      (HasCommonInterleaver fs ↔ FamilyCompatible fs) :=
+  chudnovskySeymour_fourWay_of_pairwiseCommonForward hrr hpos <|
+    pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairDegreeSplit_via_nonnegShift
+      (fs := fs) hsame hsucc hpos
+
 /-- Four-way Chudnovsky--Seymour package from the nonnegative-coefficient
 degree-split package, upgraded to arbitrary positive-leading families by a
 common translation trick applied pairwise. -/
@@ -3236,9 +3251,11 @@ theorem chudnovskySeymour_fourWay_of_degreeSplit_via_nonnegShift
     (PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs) ∧
       (PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs) ∧
       (HasCommonInterleaver fs ↔ FamilyCompatible fs) :=
-  chudnovskySeymour_fourWay_of_pairwiseCommonForward hrr hpos <|
-    pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_degreeSplit_via_nonnegShift
-      (fs := fs) hsame hsucc hpos
+  chudnovskySeymour_fourWay_of_pairDegreeSplit_via_nonnegShift
+    (fs := fs) hrr hpos
+    (posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg
+      hsame)
+    hsucc
 
 /-- Four-way Chudnovsky--Seymour package after the nonnegative shift
 reduction, with the succ-degree branch discharged by the affine-family bridge.
@@ -3252,9 +3269,11 @@ theorem chudnovskySeymour_fourWay_of_sameDegreeAlternative_and_affineFamily_via_
     (PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs) ∧
       (PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs) ∧
       (HasCommonInterleaver fs ↔ FamilyCompatible fs) :=
-  chudnovskySeymour_fourWay_of_pairwiseCommonForward hrr hpos <|
-    pairwiseHasCommonInterleaver_of_pairwiseCompatible_nonnegShift
-      (fs := fs) hsame haffBridge hpos
+  chudnovskySeymour_fourWay_of_pairDegreeSplit_via_nonnegShift
+    (fs := fs) hrr hpos
+    (posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg
+      hsame)
+    (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
 
 /-- Four-way Chudnovsky--Seymour package from the stronger boundary-right-pair
 statement, upgraded to arbitrary positive-leading families by the shift
