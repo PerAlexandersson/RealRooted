@@ -666,16 +666,6 @@ theorem pairHasCommonInterleaver_of_prec_right_pair_nonneg
   have hf : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_X_mul hprec.2.1.1 hprec.2.1.2
   exact ⟨X * f, prec_self_mul_X_of_nonneg hf.1 hf.2 hfnn, hprec⟩
 
-private theorem prec_forward_of_orientation_of_succDegree
-    {f g : ℝ[X]}
-    (hsucc : g.natDegree = f.natDegree + 1)
-    (hprec_or : Prec f g ∨ Prec g f) :
-    Prec f g := by
-  rcases hprec_or with hprec | hprec
-  · exact hprec
-  · have hbounds := natDegree_bounds_of_prec hprec
-    lia
-
 /-- In the succ-degree branch, the boundary right pair is automatic as soon as
 the original no-common orientation statement is known: `Prec g f` is ruled out
 by degree, so the previous transport theorem applies. -/

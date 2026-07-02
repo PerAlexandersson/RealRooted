@@ -285,6 +285,16 @@ lemma natDegree_bounds_of_prec {f g : ℝ[X]} (hfg : Prec f g) :
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
   lia
 
+lemma prec_forward_of_orientation_of_succDegree
+    {f g : ℝ[X]}
+    (hsucc : g.natDegree = f.natDegree + 1)
+    (hprec_or : Prec f g ∨ Prec g f) :
+    Prec f g := by
+  rcases hprec_or with hprec | hprec
+  · exact hprec
+  · have hbounds := natDegree_bounds_of_prec hprec
+    lia
+
 /-- Every root of the left-hand polynomial is bounded by any common upper bound
 for the roots of the right-hand polynomial in a `Prec` witness. -/
 theorem roots_le_of_prec_right {f g : ℝ[X]} {c : ℝ}
