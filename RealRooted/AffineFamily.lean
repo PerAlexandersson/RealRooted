@@ -292,7 +292,7 @@ private lemma affine_family_pair_data {f g : ℝ[X]}
   refine
     ⟨posComboRealRooted_of_affine_family (f := f) (g := g) haff (t := t) ht,
       hsum_nonneg, hXf_nonneg, hsum_ne, hXf_ne,
-      hsum_nonneg.pos_leadingCoeff hsum_ne, hXf_nonneg.pos_leadingCoeff hXf_ne⟩
+      hsum_nonneg.pos_leadingCoeff hsum_ne, (hfnn.pos_leadingCoeff hf0).X_mul⟩
 
 /-- Closure lemma for a lower-degree right family:
 if every `g + μ f` with `μ > 0` is real-rooted and `deg f < deg g`, then `g`
@@ -604,8 +604,7 @@ private lemma isRealRooted_add_X_mul_right_of_affine_family
     hgnn.add hCsXf_nonneg
   have hbase_ne : g + C s * (X * f) ≠ 0 :=
     add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero hgnn hCsXf_nonneg hCsXf_ne
-  have hXf_pos : HasPosLeadingCoeff (X * f) :=
-    hXf_nonneg.pos_leadingCoeff hXf_ne
+  have hXf_pos : HasPosLeadingCoeff (X * f) := hf_pos.X_mul
   have hCsXf_pos : HasPosLeadingCoeff (C s * (X * f)) :=
     hasPosLeadingCoeff_C_mul hs hXf_pos
   have hbase_pos : HasPosLeadingCoeff (g + C s * (X * f)) := by
@@ -686,7 +685,7 @@ private lemma affine_family_right_pair_data {f g : ℝ[X]}
   refine
     ⟨posComboRealRooted_right_of_affine_family hf0 hg0 hfnn hgnn haff,
       hgnn, hXf_nonneg, hg0, hXf_ne,
-      hgnn.pos_leadingCoeff hg0, hXf_nonneg.pos_leadingCoeff hXf_ne⟩
+      hgnn.pos_leadingCoeff hg0, (hfnn.pos_leadingCoeff hf0).X_mul⟩
 
 /-! ## Degree control for the affine family
 

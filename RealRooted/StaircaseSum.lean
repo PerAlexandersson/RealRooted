@@ -81,7 +81,8 @@ theorem prec_get_staircaseSum_of_isInterlacingSeqNonneg
     have hpos : ∀ p ∈ (X * (fs.take m).sum) :: fs.drop m, HasPosLeadingCoeff p := by
       intro p hp
       rcases List.mem_cons.mp hp with rfl | hp
-      · exact hprefix_nonneg.X_mul.pos_leadingCoeff hXprefix_prec.2.1.1
+      · exact (hprefix_nonneg.pos_leadingCoeff
+          (right_ne_zero_of_mul hXprefix_prec.2.1.1)).X_mul
       · exact hfs.posLeadingCoeff p (List.mem_of_mem_drop hp)
     have hsum_prec : Prec f (((X * (fs.take m).sum) :: fs.drop m).sum) :=
       prec_sum_left_of_common_left_signed
