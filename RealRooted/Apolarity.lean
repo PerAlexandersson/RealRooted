@@ -616,6 +616,7 @@ reciprocals `1 / (w - z)` over the nonempty multiset `S` (equivalently
 the disk.
 -/
 set_option maxHeartbeats 1200000 in
+-- The disk-membership proof normalizes a large complex quadratic inequality.
 theorem mem_closedBall_of_recip_avg {c : ℂ} {r : ℝ} (hr : 0 ≤ r) {w ζ : ℂ}
     (S : Multiset ℂ) (hS : S ≠ 0)
     (hw : w ∉ Metric.closedBall c r)
@@ -663,9 +664,9 @@ theorem mem_closedBall_of_recip_avg {c : ℂ} {r : ℝ} (hr : 0 ≤ r) {w ζ : �
         rw [show {u : ℂ | A * Complex.normSq u - 2 * (α * u).re + 1 ≤ 0} =
             Metric.closedBall ((starRingEnd ℂ α) / A) (r / A) by
           ext
-          simp [Complex.normSq, Complex.norm_def]
+          simp [Complex.normSq]
           rw [dist_eq_norm, Complex.norm_def]
-          simp +decide [Complex.normSq, Complex.div_re, Complex.div_im, hA_pos.ne']
+          simp +decide [Complex.normSq, Complex.div_re, Complex.div_im]
           ring_nf
           norm_num [hA_pos.le]
           rw [Real.sqrt_le_left] <;> ring_nf <;> norm_num [hA_pos.le, hA_pos.ne']
@@ -708,6 +709,7 @@ The polar derivative of a binomial lift is, up to the nonzero factor `n`, the
 binomial lift of the polar shift.
 -/
 set_option maxHeartbeats 1200000 in
+-- The coefficient comparison below expands a large binomial-sum identity.
 theorem polarDeriv_binomialLift {n : Nat} (hn : 1 ≤ n) (ζ : ℂ) (f : ℂ[X]) :
     polarDeriv n ζ (binomialLift n f)
       = C (n : ℂ) * binomialLift (n - 1) (polarShift ζ f) := by
@@ -904,6 +906,7 @@ Apolarity is preserved by polar-shifting one lift and deflating the other by
 a root: the algebraic engine of Grace's theorem.
 -/
 set_option maxHeartbeats 1200000 in
+-- The deflation identity expands two binomial-lift sums before cancellation.
 theorem apolarPairing_deflation {n : Nat} (hn : 1 ≤ n) {ζ : ℂ} {f g g' : ℂ[X]}
     (hdefl : (X - C ζ) * binomialLift (n - 1) g' = binomialLift n g) :
     apolarPairing (n - 1) (polarShift ζ f) g' = apolarPairing n f g := by
