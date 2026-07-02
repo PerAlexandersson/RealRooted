@@ -699,10 +699,10 @@ theorem mem_closedBall_of_recip_avg {c : ℂ} {r : ℝ} (hr : 0 ≤ r) {w ζ : �
     norm_num [ Complex.normSq ] at *;
     nlinarith [ inv_pos.mpr ( show 0 < ( w.re - ζ.re ) * ( w.re - ζ.re )
         + ( w.im - ζ.im ) * ( w.im - ζ.im ) from not_le.mp fun h' => h <| by
-          refine' Complex.ext _ _ <;> norm_num <;> nlinarith ),
+          refine Complex.ext ?_ ?_ <;> norm_num <;> nlinarith ),
       mul_inv_cancel₀ ( show ( w.re - ζ.re ) * ( w.re - ζ.re )
         + ( w.im - ζ.im ) * ( w.im - ζ.im ) ≠ 0 from fun h' => h <| by
-          refine' Complex.ext _ _ <;> norm_num <;> nlinarith ) ]
+          refine Complex.ext ?_ ?_ <;> norm_num <;> nlinarith ) ]
 
 /-
 The polar derivative of a binomial lift is, up to the nonzero factor `n`, the
@@ -713,7 +713,7 @@ set_option maxHeartbeats 1200000 in
 theorem polarDeriv_binomialLift {n : Nat} (hn : 1 ≤ n) (ζ : ℂ) (f : ℂ[X]) :
     polarDeriv n ζ (binomialLift n f)
       = C (n : ℂ) * binomialLift (n - 1) (polarShift ζ f) := by
-  refine' Polynomial.ext fun k => _;
+  refine Polynomial.ext fun k => ?_
   rcases k with ( _ | k ) <;>
     simp_all +decide;
   · unfold polarDeriv binomialLift polarShift;
@@ -826,7 +826,7 @@ theorem polarDeriv_natDegree {n : Nat} {c : ℂ} {r : ℝ} {ζ : ℂ}
     (hAroots : A.RootsIn (Metric.closedBall c r))
     (hζ : ζ ∉ Metric.closedBall c r) :
     (polarDeriv n ζ A).natDegree = n - 1 := by
-  refine' le_antisymm _ _;
+  refine le_antisymm ?_ ?_
   · rw [ Polynomial.natDegree_le_iff_degree_le, Polynomial.degree_le_iff_coeff_zero ];
     unfold polarDeriv; simp_all +decide;
     intro m hm;
@@ -835,7 +835,7 @@ theorem polarDeriv_natDegree {n : Nat} {c : ℂ} {r : ℝ} {ζ : ℂ}
         sub_mul ] ;
     cases hm.eq_or_lt <;> simp_all +decide [ Polynomial.coeff_eq_zero_of_natDegree_lt ];
     ring;
-  · refine' Polynomial.le_natDegree_of_ne_zero _;
+  · refine Polynomial.le_natDegree_of_ne_zero ?_
     have h_coeff : (polarDeriv n ζ A).coeff (n - 1)
         = A.coeff n * ((n : ℂ) * ζ - Multiset.sum A.roots) := by
       have h_coeff : (polarDeriv n ζ A).coeff (n - 1)
@@ -857,7 +857,7 @@ theorem polarDeriv_natDegree {n : Nat} {c : ℂ} {r : ℝ} {ζ : ℂ}
         rw [ Polynomial.leadingCoeff, hA ] ; ring;
       · simp_all +decide [ Multiset.powersetCard_one, Polynomial.leadingCoeff ] ; ring;
     simp_all +decide [ sub_eq_iff_eq_add ];
-    refine' ⟨ _, _ ⟩;
+    refine ⟨ ?_, ?_ ⟩
     · rw [ ← hA, Polynomial.coeff_natDegree ] ; aesop;
     · intro h;
       have h_avg : A.roots.sum / (A.roots.card : ℂ) ∈ Metric.closedBall c r := by
@@ -945,7 +945,7 @@ private theorem grace_aux {c : ℂ} {r : ℝ} (hr : 0 ≤ r) :
   intro f g hf hg hap hroots
   by_cases hn : n = 0;
   · by_cases h : g.coeff 0 = 0 <;> simp_all +decide;
-    · refine' ⟨ c, _, _ ⟩ <;> simp_all +decide [ binomialLift ];
+    · refine ⟨ c, ?_, ?_ ⟩ <;> simp_all +decide [ binomialLift ];
     · have h_contra : f.coeff 0 = 0 := by
         unfold AreApolar at hap; simp_all +decide [ apolarPairing ] ;
       contrapose! hroots;
