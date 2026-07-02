@@ -20,6 +20,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+      - name: Free up disk space
+        run: |
+          df -h /
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc \
+            /usr/local/.ghcup /opt/hostedtoolcache/CodeQL || true
+          sudo apt-get clean || true
+          df -h /
       - name: Prepare Lake cache directories
         run: |
           sudo mkdir -p /lake-cache/ai-projects/packages /lake-cache/ai-projects/build/RealRooted
