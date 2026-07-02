@@ -955,8 +955,8 @@ private theorem grace_aux {c : ℂ} {r : ℝ} (hr : 0 ≤ r) :
       (binomialLift n g).HasRootIn (Metric.closedBall c r) := by
   -- Apply induction on $n$.
   intro n
-  induction' n using Nat.strong_induction_on with n ih;
-  intro f g hf hg hap hroots
+  refine Nat.strong_induction_on n ?_
+  intro n ih f g hf hg hap hroots
   by_cases hn : n = 0;
   · by_cases h : g.coeff 0 = 0 <;> simp_all +decide;
     · refine ⟨ c, ?_, ?_ ⟩ <;> simp_all +decide [ binomialLift ];
