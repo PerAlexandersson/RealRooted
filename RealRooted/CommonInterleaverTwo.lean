@@ -1845,31 +1845,9 @@ private lemma common_root_reduction_data_of_posCombo_nonneg
     rw [hqf, hqg, natDegree_mul (X_sub_C_ne_zero r) hqf0, natDegree_X_sub_C,
       natDegree_mul (X_sub_C_ne_zero r) hqg0, natDegree_X_sub_C] at hdeg_hi
     lia
-  simp_all
-
-/-- Honest no-common degree-split reduction of the common-interleaver bridge
-in the nonnegative regime: the same-degree branch only needs the Obreschkoff
-alternative, while the succ-degree branch only asks for a common interleaver.
--/
-theorem posComboNoCommonPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg_lo : f.natDegree ≤ g.natDegree)
-    (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  have hdeg : g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 := by lia
-  rcases hdeg with hsame_deg | hsucc_deg
-  · exact
-      pairHasCommonInterleaver_of_prec_or_revPrec
-        (hsame hf_pos hg_pos hfnn hgnn hfg hsame_deg hno)
-  · exact hsucc hf_pos hg_pos hfnn hgnn hfg hsucc_deg hno
+  exact
+    ⟨qf, qg, hqf, hqg, hqfg, hqf_nn, hqg_nn, hqf0, hqg0, hqf_pos, hqg_pos,
+      hqdeg_lo, hqdeg_hi⟩
 
 /-- Repaired no-common degree-split reduction of the common-interleaver bridge
 in the nonnegative regime: both same-degree and succ-degree branches are stated
@@ -1891,6 +1869,27 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCo
   rcases hdeg with hsame_deg | hsucc_deg
   · exact hsame hf_pos hg_pos hfnn hgnn hfg hsame_deg hno
   · exact hsucc hf_pos hg_pos hfnn hgnn hfg hsucc_deg hno
+
+/-- Honest no-common degree-split reduction of the common-interleaver bridge
+in the nonnegative regime: the same-degree branch only needs the Obreschkoff
+alternative, while the succ-degree branch only asks for a common interleaver.
+-/
+theorem posComboNoCommonPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg_lo : f.natDegree ≤ g.natDegree)
+    (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
+    (posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg hsame)
+    hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno
 
 /-- Repaired no-common degree-split reduction with the succ-degree branch
 discharged by the affine-family bridge.  After this reduction, the only
