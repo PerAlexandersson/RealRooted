@@ -3492,12 +3492,7 @@ private lemma prec_right_pair_of_affine_family_high_degree_core
       prec_of_allComboRealRooted hf_rr.1 hf_rr.2 hshift_rr.1 hshift_rr.2
         (allComboRealRooted_comm hall_shift) (Or.inl hshift_deg.symm)
     have hprec_f_shift : Prec f (g + X * f) := by
-      rcases hprec_or with hgood | hbad
-      · lia
-      · -- Prec (g+X*f) f impossible: (g+X*f).natDegree = f.natDegree + 1
-        -- but Prec requires (g+X*f).natDegree ≤ f.natDegree.
-        exact absurd (natDegree_bounds_of_prec hbad).1
-          (by lia)
+      exact prec_forward_of_orientation_of_succDegree hshift_deg hprec_or
     exact
       prec_right_pair_of_prec_shifted_pair_sameDegree
         hprec_f_shift hf0 hg0 hfnn hgnn hsame
@@ -3514,12 +3509,7 @@ private lemma prec_right_pair_of_affine_family_high_degree_core
       prec_of_allComboRealRooted hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2
         (allComboRealRooted_comm hall) (Or.inl hsucc.symm)
     have hprec_fg : Prec f g := by
-      rcases hprec_or with hgood | hbad
-      · lia
-      · -- Prec g f impossible: g.natDegree = f.natDegree + 1
-        -- but Prec requires g.natDegree ≤ f.natDegree.
-        exact absurd (natDegree_bounds_of_prec hbad).1
-          (by lia)
+      exact prec_forward_of_orientation_of_succDegree hsucc hprec_or
     exact prec_to_prec_mul_X_of_nonneg hprec_fg hfnn hgnn
 
 /-- Wrapper matching the original high-degree target. The only genuinely hard

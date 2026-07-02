@@ -2564,12 +2564,8 @@ private theorem prec_b_component_of_prec_left_of_natDegree_le
   have hprec_or : Prec a (X * b) ∨ Prec (X * b) a :=
     prec_of_allComboRealRooted hap.1.1 hap.1.2 hXb_rr.1 hXb_rr.2 hall_aXb
       (Or.inl hdeg_aXb)
-  have hnot_rev : ¬ Prec (X * b) a := by
-    intro hbad
-    have hbound := (natDegree_bounds_of_prec hbad).1
-    lia
   have hprec_aXb : Prec a (X * b) := by
-    lia
+    exact prec_forward_of_orientation_of_succDegree hdeg_aXb.symm hprec_or
   exact prec_of_prec_mul_X_of_nonneg hprec_aXb hb_nonneg ha_nonneg
 
 private theorem natDegree_X_mul_component_eq_or_succ_of_prec_left_top
