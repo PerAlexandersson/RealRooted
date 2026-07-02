@@ -851,7 +851,7 @@ theorem polarDeriv_natDegree {n : Nat} {c : ℂ} {r : ℝ} {ζ : ℂ}
         all_goals norm_num [ hA ];
         exact inferInstance;
         convert Polynomial.splits_iff_card_roots.mp ( IsAlgClosed.splits A ) using 1;
-        all_goals norm_num [ hA ]; all_goals infer_instance;
+        all_goals norm_num [ hA ];
       rcases n with ( _ | _ | n ) <;> simp_all +decide [ Multiset.esymm ];
       · simp_all +decide [ Multiset.powersetCard_one, mul_sub ] ; ring;
         rw [ Polynomial.leadingCoeff, hA ] ; ring;
