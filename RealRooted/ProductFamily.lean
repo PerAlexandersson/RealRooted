@@ -314,21 +314,51 @@ lemma filterLeftNonzero_eq_filter_ne_zero {fs gs : List ℝ[X]}
           · simp [filterLeftNonzero, filterLeftNonzeroPairs, hf]
             simpa [filterLeftNonzero, filterLeftNonzeroPairs] using ih hlen
 
-lemma filterRightByLeftNonzero_sublist_right (fs gs : List ℝ[X]) :
-    (filterRightByLeftNonzero fs gs).Sublist gs := by
-  induction fs generalizing gs with
+private lemma map_fst_zip_sublist_left
+    {α β : Type*} (as : List α) (bs : List β) :
+    ((as.zip bs).map Prod.fst).Sublist as := by
+  induction as generalizing bs with
   | nil =>
-      cases gs <;> simp [filterRightByLeftNonzero, filterLeftNonzeroPairs]
-  | cons f fs ih =>
-      cases gs with
+      cases bs <;> simp
+  | cons a as ih =>
+      cases bs with
       | nil =>
-          simp [filterRightByLeftNonzero, filterLeftNonzeroPairs]
-      | cons g gs =>
-          by_cases hf : f = 0
-          · simp [filterRightByLeftNonzero, filterLeftNonzeroPairs, hf]
-            simpa [filterRightByLeftNonzero, filterLeftNonzeroPairs] using (ih gs).cons g
-          · simp [filterRightByLeftNonzero, filterLeftNonzeroPairs, hf]
-            simpa [filterRightByLeftNonzero, filterLeftNonzeroPairs] using ih gs
+          simp
+      | cons b bs =>
+          simpa using (ih bs).cons_cons a
+
+private lemma map_snd_zip_sublist_right
+    {α β : Type*} (as : List α) (bs : List β) :
+    ((as.zip bs).map Prod.snd).Sublist bs := by
+  induction as generalizing bs with
+  | nil =>
+      cases bs <;> simp
+  | cons a as ih =>
+      cases bs with
+      | nil =>
+          simp
+      | cons b bs =>
+          simpa using (ih bs).cons_cons b
+
+private lemma map_fst_filter_zip_sublist_left
+    {α β : Type*} (p : α × β → Prop) [DecidablePred p]
+    (as : List α) (bs : List β) :
+    (((as.zip bs).filter p).map Prod.fst).Sublist as :=
+  (List.Sublist.map Prod.fst
+    (List.filter_sublist (p := fun q : α × β => decide (p q)) (l := as.zip bs))).trans
+      (map_fst_zip_sublist_left as bs)
+
+private lemma map_snd_filter_zip_sublist_right
+    {α β : Type*} (p : α × β → Prop) [DecidablePred p]
+    (as : List α) (bs : List β) :
+    (((as.zip bs).filter p).map Prod.snd).Sublist bs :=
+  (List.Sublist.map Prod.snd
+    (List.filter_sublist (p := fun q : α × β => decide (p q)) (l := as.zip bs))).trans
+      (map_snd_zip_sublist_right as bs)
+
+lemma filterRightByLeftNonzero_sublist_right (fs gs : List ℝ[X]) :
+    (filterRightByLeftNonzero fs gs).Sublist gs :=
+  map_snd_filter_zip_sublist_right (fun p : ℝ[X] × ℝ[X] => p.1 ≠ 0) fs gs
 
 lemma zipWith_mul_sum_filterLeftNonzero_eq
     (fs gs : List ℝ[X]) :
@@ -364,38 +394,14 @@ lemma length_filterProductLeftNonzero_eq_filterProductRightNonzero
   simp [filterProductLeftNonzero, filterProductRightNonzero]
 
 lemma filterProductLeftNonzero_sublist_left (fs gs : List ℝ[X]) :
-    (filterProductLeftNonzero fs gs).Sublist fs := by
-  induction fs generalizing gs with
-  | nil =>
-      cases gs <;> simp [filterProductLeftNonzero, filterProductNonzeroPairs]
-  | cons f fs ih =>
-      cases gs with
-      | nil =>
-          simp [filterProductLeftNonzero, filterProductNonzeroPairs]
-      | cons g gs =>
-          by_cases hfg : f ≠ 0 ∧ g ≠ 0
-          · simp [filterProductLeftNonzero, filterProductNonzeroPairs, hfg]
-            simpa [filterProductLeftNonzero, filterProductNonzeroPairs] using ih gs
-          · simp [filterProductLeftNonzero, filterProductNonzeroPairs, hfg]
-            simpa [filterProductLeftNonzero, filterProductNonzeroPairs] using
-              (ih gs).cons f
+    (filterProductLeftNonzero fs gs).Sublist fs :=
+  map_fst_filter_zip_sublist_left
+    (fun p : ℝ[X] × ℝ[X] => p.1 ≠ 0 ∧ p.2 ≠ 0) fs gs
 
 lemma filterProductRightNonzero_sublist_right (fs gs : List ℝ[X]) :
-    (filterProductRightNonzero fs gs).Sublist gs := by
-  induction fs generalizing gs with
-  | nil =>
-      cases gs <;> simp [filterProductRightNonzero, filterProductNonzeroPairs]
-  | cons f fs ih =>
-      cases gs with
-      | nil =>
-          simp [filterProductRightNonzero, filterProductNonzeroPairs]
-      | cons g gs =>
-          by_cases hfg : f ≠ 0 ∧ g ≠ 0
-          · simp [filterProductRightNonzero, filterProductNonzeroPairs, hfg]
-            simpa [filterProductRightNonzero, filterProductNonzeroPairs] using ih gs
-          · simp [filterProductRightNonzero, filterProductNonzeroPairs, hfg]
-            simpa [filterProductRightNonzero, filterProductNonzeroPairs] using
-              (ih gs).cons g
+    (filterProductRightNonzero fs gs).Sublist gs :=
+  map_snd_filter_zip_sublist_right
+    (fun p : ℝ[X] × ℝ[X] => p.1 ≠ 0 ∧ p.2 ≠ 0) fs gs
 
 lemma mem_filterProductLeftNonzero_ne_zero {fs gs : List ℝ[X]} {f : ℝ[X]}
     (hf : f ∈ filterProductLeftNonzero fs gs) : f ≠ 0 := by
