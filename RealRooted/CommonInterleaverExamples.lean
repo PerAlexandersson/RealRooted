@@ -577,6 +577,159 @@ lemma not_posComboNoCommonSuccDegreeOrientationNonnegStatement :
         (by simp [xAddOne_natDegree, xSq_add_fiveX_add_six_natDegree])
         xAddOne_xSq_add_fiveX_add_six_noCommon)
 
+/-! ### The general no-common orientation statement is false
+
+The named `PosComboNoCommonOrientationStatement` (with the weaker conclusion
+`Prec f g ∨ Prec g f`, and no nonnegative-coefficient hypothesis) is also
+false.  Witnesses: `f = (X - 1)(X + 1) = X^2 - 1` and
+`g = (X - 2)(X + 2) = X^2 - 4`.  Every positive combination
+`lambda * f + mu * g = (lambda + mu) * X^2 - (lambda + 4 * mu)` is
+real-rooted; the pair has no common roots; but `g`'s roots strictly nest
+`f`'s roots, so neither orientation holds. -/
+
+private def orientCexF : ℝ[X] := (X - C (1 : ℝ)) * (X - C (-1 : ℝ))
+
+private def orientCexG : ℝ[X] := (X - C (2 : ℝ)) * (X - C (-2 : ℝ))
+
+private lemma orientCexF_natDegree : orientCexF.natDegree = 2 := by
+  unfold orientCexF
+  rw [natDegree_mul (X_sub_C_ne_zero _) (X_sub_C_ne_zero _),
+    natDegree_X_sub_C, natDegree_X_sub_C]
+
+private lemma orientCexG_natDegree : orientCexG.natDegree = 2 := by
+  unfold orientCexG
+  rw [natDegree_mul (X_sub_C_ne_zero _) (X_sub_C_ne_zero _),
+    natDegree_X_sub_C, natDegree_X_sub_C]
+
+private lemma orientCexF_roots : orientCexF.roots = {1, -1} := by
+  unfold orientCexF
+  rw [roots_mul (mul_ne_zero (X_sub_C_ne_zero _) (X_sub_C_ne_zero _)),
+    roots_X_sub_C, roots_X_sub_C]
+  rfl
+
+private lemma orientCexG_roots : orientCexG.roots = {2, -2} := by
+  unfold orientCexG
+  rw [roots_mul (mul_ne_zero (X_sub_C_ne_zero _) (X_sub_C_ne_zero _)),
+    roots_X_sub_C, roots_X_sub_C]
+  rfl
+
+private lemma orientCexF_hasPosLeadingCoeff : HasPosLeadingCoeff orientCexF := by
+  unfold HasPosLeadingCoeff orientCexF
+  rw [leadingCoeff_mul, leadingCoeff_X_sub_C, leadingCoeff_X_sub_C]
+  norm_num
+
+private lemma orientCexG_hasPosLeadingCoeff : HasPosLeadingCoeff orientCexG := by
+  unfold HasPosLeadingCoeff orientCexG
+  rw [leadingCoeff_mul, leadingCoeff_X_sub_C, leadingCoeff_X_sub_C]
+  norm_num
+
+private lemma orientCex_noCommon :
+    ∀ r, orientCexF.IsRoot r → ¬ orientCexG.IsRoot r := by
+  intro r hrF hrG
+  simp only [orientCexF, orientCexG, IsRoot.def, eval_mul, eval_sub,
+    eval_X, eval_C] at hrF hrG
+  rcases mul_eq_zero.mp hrF with h1 | h1 <;>
+    rcases mul_eq_zero.mp hrG with h2 | h2 <;> linarith
+
+private lemma orientCex_posComboRealRooted :
+    PosComboRealRooted orientCexF orientCexG := by
+  intro lam mu hlam hmu
+  have hlammu : (0 : ℝ) < lam + mu := by linarith
+  have hc : (0 : ℝ) ≤ (lam + 4 * mu) / (lam + mu) := by positivity
+  set r : ℝ := Real.sqrt ((lam + 4 * mu) / (lam + mu)) with hr
+  have hr2 : r ^ 2 = (lam + 4 * mu) / (lam + mu) := by
+    rw [hr]
+    exact Real.sq_sqrt hc
+  have key : (lam + mu) * r ^ 2 = lam + 4 * mu := by
+    rw [hr2]
+    field_simp
+  have hpoly :
+      C lam * orientCexF + C mu * orientCexG =
+        C (lam + mu) * (X - C r) * (X - C (-r)) := by
+    apply Polynomial.funext
+    intro x
+    simp only [orientCexF, orientCexG, eval_add, eval_mul, eval_sub, eval_C, eval_X]
+    linear_combination key
+  refine ⟨?_, ?_⟩
+  · rw [hpoly]
+    exact mul_ne_zero (mul_ne_zero (Polynomial.C_ne_zero.mpr hlammu.ne')
+      (X_sub_C_ne_zero _)) (X_sub_C_ne_zero _)
+  · rw [hpoly]
+    exact ((Polynomial.Splits.C _).mul (Polynomial.Splits.X_sub_C _)).mul
+      (Polynomial.Splits.X_sub_C _)
+
+private lemma sorted_pair_eq {a b : ℝ} (hab : a < b) {l : List ℝ}
+    (hsorted : l.Pairwise (· ≤ ·)) (hcoe : (↑l : Multiset ℝ) = {a, b}) :
+    l = [a, b] := by
+  have hlen : l.length = 2 := by
+    have h := congrArg Multiset.card hcoe
+    simpa using h
+  obtain ⟨x, y, rfl⟩ := List.length_eq_two.mp hlen
+  have hxy : x ≤ y := (List.pairwise_cons.mp hsorted).1 y (by simp)
+  have hne : a ≠ b := ne_of_lt hab
+  have hxab : x = a ∨ x = b := by
+    have hx : x ∈ ({a, b} : Multiset ℝ) := by
+      rw [← hcoe]
+      simp
+    simpa [Multiset.mem_cons, Multiset.mem_singleton] using hx
+  have hyab : y = a ∨ y = b := by
+    have hy : y ∈ ({a, b} : Multiset ℝ) := by
+      rw [← hcoe]
+      simp
+    simpa [Multiset.mem_cons, Multiset.mem_singleton] using hy
+  rcases hxab with rfl | rfl <;> rcases hyab with rfl | rfl
+  · exfalso
+    have hcount := congrArg (Multiset.count b) hcoe
+    simp [Ne.symm hne] at hcount
+  · rfl
+  · exact absurd hxy (by linarith)
+  · exfalso
+    have hcount := congrArg (Multiset.count a) hcoe
+    simp [hne] at hcount
+
+private lemma orientCex_not_prec :
+    ¬ (Prec orientCexF orientCexG ∨ Prec orientCexG orientCexF) := by
+  rintro (h | h)
+  · obtain ⟨-, -, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩ := h
+    rw [orientCexF_roots] at hss_eq
+    rw [orientCexG_roots] at hrs_eq
+    have hsseq : ss = [-1, 1] :=
+      sorted_pair_eq (by norm_num) hss (by rw [hss_eq]; exact Multiset.pair_comm 1 (-1))
+    have hrseq : rs = [-2, 2] :=
+      sorted_pair_eq (by norm_num) hrs (by rw [hrs_eq]; exact Multiset.pair_comm 2 (-2))
+    subst hsseq
+    subst hrseq
+    rcases hshape with ⟨hlen, _⟩ | ⟨_, halt⟩
+    · simp only [List.length_cons, List.length_nil] at hlen
+      lia
+    · simp only [ListAlternates, ListInterlaces] at halt
+      norm_num at halt
+  · obtain ⟨-, -, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩ := h
+    rw [orientCexG_roots] at hss_eq
+    rw [orientCexF_roots] at hrs_eq
+    have hsseq : ss = [-2, 2] :=
+      sorted_pair_eq (by norm_num) hss (by rw [hss_eq]; exact Multiset.pair_comm 2 (-2))
+    have hrseq : rs = [-1, 1] :=
+      sorted_pair_eq (by norm_num) hrs (by rw [hrs_eq]; exact Multiset.pair_comm 1 (-1))
+    subst hsseq
+    subst hrseq
+    rcases hshape with ⟨hlen, _⟩ | ⟨_, halt⟩
+    · simp only [List.length_cons, List.length_nil] at hlen
+      lia
+    · simp only [ListAlternates, ListInterlaces] at halt
+      norm_num at halt
+
+/-- The general no-common orientation statement is false. -/
+lemma not_posComboNoCommonOrientationStatement :
+    ¬ PosComboNoCommonOrientationStatement := by
+  intro horient
+  refine orientCex_not_prec ?_
+  exact horient orientCex_posComboRealRooted
+    orientCexF_hasPosLeadingCoeff orientCexG_hasPosLeadingCoeff
+    (by have h1 := orientCexF_natDegree; have h2 := orientCexG_natDegree; lia)
+    (by have h1 := orientCexF_natDegree; have h2 := orientCexG_natDegree; lia)
+    orientCex_noCommon
+
 end CommonInterleaverExamples
 
 end RealRooted
