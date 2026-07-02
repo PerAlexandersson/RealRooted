@@ -340,14 +340,7 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
           rw [← Multiset.coe_card, hrs_g_eq, card_roots_of_splits hg.2]
         have hdeg_eq : f.natDegree = g.natDegree := by
           lia
-        apply le_antisymm
-        · have h := natDegree_add_le f g; simp_all
-        · apply le_natDegree_of_ne_zero; rw [coeff_add]
-          have hfc : f.coeff f.natDegree = f.leadingCoeff := rfl
-          have hgc : g.coeff f.natDegree = g.leadingCoeff := by
-            simp_all
-          rw [hfc, hgc]
-          exact ne_of_gt (by unfold HasPosLeadingCoeff at hf_pos hg_pos; grind)
+        exact natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff hdeg_eq hf_pos hg_pos
       have hfg_natDeg : (f + g).natDegree = us.length := by
         rw [hus_len, hfg_deg]
         have := card_roots_of_splits hf.2
@@ -709,14 +702,7 @@ theorem prec_add_of_prec_left {f g h : ℝ[X]}
         have hdeg_eq : f.natDegree = g.natDegree := by
           lia
         have hfg_deg : (f + g).natDegree = f.natDegree := by
-          apply le_antisymm
-          · have h := natDegree_add_le f g; simp_all
-          · apply le_natDegree_of_ne_zero; rw [coeff_add]
-            have hfc : f.coeff f.natDegree = f.leadingCoeff := rfl
-            have hgc : g.coeff f.natDegree = g.leadingCoeff := by
-              simp_all
-            rw [hfc, hgc]
-            exact ne_of_gt (by unfold HasPosLeadingCoeff at hf_pos hg_pos; grind)
+          exact natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff hdeg_eq hf_pos hg_pos
         -- Call wagner2_roots_exist with empty consumed sets
         obtain ⟨us, hus_len, hus_int, hus_root, hus_pw, hus_lb⟩ :=
           wagner2_roots_exist f g hf.1 hf.2 hg.1 hg.2 hf_pos hg_pos hcop 0 0

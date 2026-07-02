@@ -1097,18 +1097,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
           have hg_natDeg : ss_g.length = g.natDegree := by
             rw [← card_roots_of_splits hg.2, ← Multiset.coe_card, hss_g_eq]
           have hdeg_eq : f.natDegree = g.natDegree := by lia
-          have hup : (f + g).natDegree ≤ f.natDegree := by
-            have h := natDegree_add_le f g
-            grind
-          have hdown : f.natDegree ≤ (f + g).natDegree := by
-            apply le_natDegree_of_ne_zero
-            rw [coeff_add]
-            have hfc : f.coeff f.natDegree = f.leadingCoeff := rfl
-            have hgc : g.coeff f.natDegree = g.leadingCoeff := by
-              simp_all
-            rw [hfc, hgc]
-            exact ne_of_gt (by unfold HasPosLeadingCoeff at hf_pos hg_pos; grind)
-          lia
+          exact natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff hdeg_eq hf_pos hg_pos
         lia
       -- us exhausts all roots of f+g (since |us| = deg(f+g))
       have hus_eq : (↑us : Multiset ℝ) = (f + g).roots := by
@@ -1323,14 +1312,7 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
         have hdeg_eq : f.natDegree = g.natDegree := by
           lia
         have hfg_deg : (f + g).natDegree = f.natDegree := by
-          apply le_antisymm
-          · have h := natDegree_add_le f g; grind
-          · apply le_natDegree_of_ne_zero; rw [coeff_add]
-            have hfc : f.coeff f.natDegree = f.leadingCoeff := rfl
-            have hgc : g.coeff f.natDegree = g.leadingCoeff := by
-              unfold leadingCoeff; lia
-            rw [hfc, hgc]
-            exact ne_of_gt (by unfold HasPosLeadingCoeff at hf_pos hg_pos; grind)
+          exact natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff hdeg_eq hf_pos hg_pos
         have hf_roots_erase : f.roots.erase s₁_f = ↑rest_f := by
           rw [← hss_f_eq, ← Multiset.cons_coe, Multiset.erase_cons_head]
         have hg_roots_erase : g.roots.erase s₁_g = ↑rest_g := by
@@ -1502,20 +1484,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
           have hg_natDeg : ss_g.length = g.natDegree := by
             rw [← card_roots_of_splits hg.2, ← Multiset.coe_card, hss_g_eq]
           have hdeg_eq : f.natDegree = g.natDegree := by lia
-          have hup : (f + g).natDegree ≤ f.natDegree := by
-            have h := natDegree_add_le f g
-            grind
-          have hdown : f.natDegree ≤ (f + g).natDegree := by
-            apply le_natDegree_of_ne_zero
-            rw [coeff_add]
-            have hfc : f.coeff f.natDegree = f.leadingCoeff := rfl
-            have hgc : g.coeff f.natDegree = g.leadingCoeff := by
-              simp_all
-            rw [hfc, hgc]
-            exact ne_of_gt (by
-              unfold HasPosLeadingCoeff at hf_pos hg_pos
-              grind)
-          lia
+          exact natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff hdeg_eq hf_pos hg_pos
         lia
       have hus_eq : (↑us : Multiset ℝ) = (f + g).roots := by
         apply Multiset.eq_of_le_of_card_le hus_sub
@@ -1769,17 +1738,7 @@ theorem prec_add_of_prec_right_of_no_common_right {f g h : ℝ[X]}
         have hdeg_eq : f.natDegree = g.natDegree := by
           lia
         have hfg_deg : (f + g).natDegree = f.natDegree := by
-          apply le_antisymm
-          · have h := natDegree_add_le f g
-            grind
-          · apply le_natDegree_of_ne_zero
-            rw [coeff_add]
-            have hfc : f.coeff f.natDegree = f.leadingCoeff := rfl
-            have hgc : g.coeff f.natDegree = g.leadingCoeff := by
-              unfold leadingCoeff
-              lia
-            rw [hfc, hgc]
-            exact ne_of_gt (by unfold HasPosLeadingCoeff at hf_pos hg_pos; grind)
+          exact natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff hdeg_eq hf_pos hg_pos
         have hf_roots_erase : f.roots.erase s₁_f = ↑rest_f := by
           rw [← hss_f_eq, ← Multiset.cons_coe, Multiset.erase_cons_head]
         have hg_roots_erase : g.roots.erase s₁_g = ↑rest_g := by
