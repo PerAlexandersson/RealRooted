@@ -7,6 +7,7 @@ import RealRooted.Tactic.Examples.MaWang
 import RealRooted.Tactic.Examples.LiuWang
 import RealRooted.Tactic.Examples.Matrix
 import RealRooted.Tactic.Examples.Combinatorial
+import RealRooted.Tactic.Examples.SequenceSurvey
 
 /-!
 # RealRooted tactic examples
