@@ -34,6 +34,11 @@ form. -/
 abbrev commonInterleaverNonnegCoeffsTarget : Prop :=
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target
 
+/-- Roadmap target for the nonnegative-coefficient finite-family compatibility
+form. -/
+abbrev familyCompatibleNonnegCoeffsTarget : Prop :=
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target
+
 /-- Full roadmap reduction for the common-left target. -/
 theorem commonLeftInterleaverTarget_of_pairwiseLeftBridge
     (htwo : CompatiblePairHasCommonLeftInterleaverStatement)
@@ -80,6 +85,33 @@ theorem commonInterleaverNonnegCoeffsTarget_of_boundaryRight
     (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
     commonInterleaverNonnegCoeffsTarget :=
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_boundaryRight_nonneg
+    hboundary
+
+/-- Challenge-facing reduction for the nonnegative-coefficient finite-family
+compatibility target from the repaired same-degree/succ-degree no-common pair
+bridges. -/
+theorem familyCompatibleNonnegCoeffsTarget_of_pairDegreeSplit
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    familyCompatibleNonnegCoeffsTarget :=
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_pairDegreeSplit_nonneg
+    hsame hsucc
+
+/-- Challenge-facing reduction for the nonnegative-coefficient finite-family
+compatibility target from the honest degree-split package. -/
+theorem familyCompatibleNonnegCoeffsTarget_of_degreeSplit
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    familyCompatibleNonnegCoeffsTarget :=
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_degreeSplit_nonneg
+    hsame hsucc
+
+/-- Challenge-facing reduction for the nonnegative-coefficient finite-family
+compatibility target from the boundary-right-pair orientation statement. -/
+theorem familyCompatibleNonnegCoeffsTarget_of_boundaryRight
+    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    familyCompatibleNonnegCoeffsTarget :=
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_boundaryRight_nonneg
     hboundary
 
 /-- Challenge-facing four-way package from the natural two-polynomial bridge. -/

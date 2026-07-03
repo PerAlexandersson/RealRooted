@@ -64,6 +64,22 @@ def chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_targ
     (∀ f ∈ fs, HasNonnegCoeffs f) →
     (PairwiseCompatible fs ↔ HasCommonInterleaver fs)
 
+/--
+Roadmap target for the nonnegative-coefficient form of the finite-family
+compatibility equivalence.
+
+This packages the `1 ↔ 4` Chudnovsky--Seymour surface in the same
+nonnegative-coefficient regime as
+`chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target`.
+-/
+def chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :
+    Prop :=
+  ∀ {fs : List ℝ[X]},
+    (∀ f ∈ fs, (f ≠ 0 ∧ f.Splits)) →
+    (∀ f ∈ fs, HasPosLeadingCoeff f) →
+    (∀ f ∈ fs, HasNonnegCoeffs f) →
+    (PairwiseCompatible fs ↔ FamilyCompatible fs)
+
 /-- The roadmap target follows from the natural positive-leading two-polynomial
 bridge used by the finite-family machinery. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge
@@ -142,6 +158,38 @@ theorem
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   fun hrr hpos hnn =>
     pairwiseCompatible_iff_hasCommonInterleaver_of_boundaryRightPairOrientation_and_nonnegCoeffs
+      hrr hpos hnn hboundary
+
+/-- The nonnegative-coefficient finite-family compatibility target follows
+from the repaired same-degree and successor-degree no-common pair bridges. -/
+theorem
+    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_pairDegreeSplit_nonneg
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
+  fun hrr hpos hnn =>
+    pairwiseCompatible_iff_familyCompatible_of_pairDegreeSplit_and_nonnegCoeffs
+      hrr hpos hnn hsame hsucc
+
+/-- The nonnegative-coefficient finite-family compatibility target follows
+from the honest same-degree orientation alternative and successor-degree
+bridge. -/
+theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_degreeSplit_nonneg
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
+  fun hrr hpos hnn =>
+    pairwiseCompatible_iff_familyCompatible_of_degreeSplit_and_nonnegCoeffs
+      hrr hpos hnn hsame hsucc
+
+/-- The nonnegative-coefficient finite-family compatibility target follows
+from the boundary-right-pair orientation statement. -/
+theorem
+    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_boundaryRight_nonneg
+    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
+  fun hrr hpos hnn =>
+    pairwiseCompatible_iff_familyCompatible_of_boundaryRightPairOrientation_and_nonnegCoeffs
       hrr hpos hnn hboundary
 
 /-- Degree-`≤ 1` positive-leading families already satisfy the common-interleaver
