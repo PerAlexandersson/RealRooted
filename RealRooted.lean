@@ -70,6 +70,7 @@ import RealRooted.WeightedSum
 import RealRooted.Challenges.AissenSchoenbergWhitney
 import RealRooted.Challenges.BrandenSolus
 import RealRooted.Challenges.ChudnovskySeymour
+import RealRooted.Challenges.Hadamard
 
 -- Local Mathlib extensions
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
