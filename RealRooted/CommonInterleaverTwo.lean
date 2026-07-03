@@ -1074,14 +1074,12 @@ theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlterna
               simpa [rootSeqDesc_length hg_rr.2] using this⟩).Nonempty := by
     rcases hsame hf_pos hg_pos hfnn hgnn hfg hdeg hno with hprec | hprec
     · intro j hj
-      have hjg : j < g.natDegree + 1 := by lia
       exact
         rootSlotInterval_inter_nonempty_of_commonInterleaver hprec
           (prec_refl hprec.2.1.1 hprec.2.1.2) j
           (by lia)
           (by lia)
     · intro j hj
-      have hjg : j < g.natDegree + 1 := by lia
       exact
         rootSlotInterval_inter_nonempty_of_commonInterleaver
           (prec_refl hprec.2.1.1 hprec.2.1.2) hprec
@@ -1273,7 +1271,7 @@ theorem posComboNoCommonSameDegreeSlotData_of_pairHasCommonInterleaver
     PosComboNoCommonSameDegreeSlotDataNonnegStatement := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
   obtain ⟨h, hfh, hgh⟩ := hstmt hf_pos hg_pos hfnn hgnn hfg hdeg hno
-  intro j hj hjf hjg
+  intro j hj _ _
   have hjg' : j < g.natDegree + 1 := by lia
   exact rootSlotInterval_inter_nonempty_of_commonInterleaver hfh hgh j hj hjg'
 
@@ -1521,7 +1519,7 @@ theorem posComboNoCommonSuccDegreeSlotData_of_pairHasCommonInterleaver
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
   obtain ⟨h, hfh, hgh⟩ := hstmt hf_pos hg_pos hfnn hgnn hfg hsucc hno
   refine ⟨hfh.1, ?_⟩
-  intro j hj hjf hjg
+  intro j hj _ _
   have hjg' : j < g.natDegree + 1 := by lia
   exact rootSlotInterval_inter_nonempty_of_commonInterleaver hfh hgh j hj hjg'
 
