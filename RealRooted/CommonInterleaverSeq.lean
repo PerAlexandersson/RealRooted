@@ -2561,6 +2561,21 @@ theorem hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver
         hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver_ge_two
           (f := f) (g := g) (fs := fs) hrr hpos hpair
 
+/-- Global finite-family left upgrade: pairwise common left interleavers imply a
+single common left interleaver under the usual split and positive-leading
+hypotheses. -/
+def CommonLeftInterleaverFamilyUpgradeStatement : Prop :=
+  ∀ {fs : List ℝ[X]},
+    (∀ f ∈ fs, f.Splits) →
+    (∀ f ∈ fs, HasPosLeadingCoeff f) →
+    PairwiseHasCommonLeftInterleaver fs →
+    HasCommonLeftInterleaver fs
+
+/-- The proved global finite-family left upgrade, packaged as a statement alias. -/
+theorem commonLeftInterleaverFamilyUpgrade :
+    CommonLeftInterleaverFamilyUpgradeStatement :=
+  hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver
+
 /-- A common interleaver immediately implies real-rootedness of the full sum,
 by Wagner's finite-sum theorem on the right. -/
 theorem isRealRooted_sum_of_commonInterleaver

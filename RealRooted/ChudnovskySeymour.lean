@@ -21,12 +21,7 @@ before the finite-family left Helly upgrade was internalized.
 -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
     (htwo : CompatiblePairHasCommonLeftInterleaverStatement)
-    (hglobal :
-      ∀ {fs : List ℝ[X]},
-        (∀ f ∈ fs, f.Splits) →
-        (∀ f ∈ fs, HasPosLeadingCoeff f) →
-        PairwiseHasCommonLeftInterleaver fs →
-        HasCommonLeftInterleaver fs) :
+    (hglobal : CommonLeftInterleaverFamilyUpgradeStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target :=
   fun {fs} hrr hpos =>
     pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge

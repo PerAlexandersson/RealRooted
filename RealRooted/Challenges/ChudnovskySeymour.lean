@@ -33,12 +33,7 @@ abbrev commonInterleaverTarget : Prop :=
 /-- Full roadmap reduction for the common-left target. -/
 theorem commonLeftInterleaverTarget_of_pairwiseLeftBridge
     (htwo : CompatiblePairHasCommonLeftInterleaverStatement)
-    (hglobal :
-      ∀ {fs : List ℝ[X]},
-        (∀ f ∈ fs, f.Splits) →
-        (∀ f ∈ fs, HasPosLeadingCoeff f) →
-        PairwiseHasCommonLeftInterleaver fs →
-        HasCommonLeftInterleaver fs) :
+    (hglobal : CommonLeftInterleaverFamilyUpgradeStatement) :
     commonLeftInterleaverTarget :=
   RealRooted.chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
     htwo hglobal
