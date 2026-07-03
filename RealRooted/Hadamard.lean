@@ -171,10 +171,9 @@ theorem schurSzegoComp_comm (n : Nat) (f g : ℝ[X]) :
   simp [coeff_schurSzegoComp, mul_comm]
 
 theorem natDegree_schurSzegoComp_le (n : Nat) (f g : ℝ[X]) :
-    (schurSzegoComp n f g).natDegree ≤ n := by
-  refine natDegree_le_iff_coeff_eq_zero.mpr ?_
-  intro k hk
-  exact coeff_schurSzegoComp_eq_zero_of_lt hk f g
+    (schurSzegoComp n f g).natDegree ≤ n :=
+  natDegree_le_iff_coeff_eq_zero.mpr fun _ hk =>
+    coeff_schurSzegoComp_eq_zero_of_lt hk f g
 
 theorem choose_mul_coeff_schurSzegoComp_of_le {n k : Nat} (hk : k ≤ n) (f g : ℝ[X]) :
     (Nat.choose n k : ℝ) * (schurSzegoComp n f g).coeff k =
@@ -593,20 +592,16 @@ nonnegative-coefficient half of Hurwitz stability is discharged here, so only
 right-half-plane stability of the product remains. -/
 theorem hadamardPreservesHurwitzStable_of_rightHalfPlane
     (h : hadamardPreservesRightHalfPlaneStableStatement) :
-    hadamardPreservesHurwitzStableStatement := by
-  intro a b ha hb
-  obtain ⟨hann, harhp⟩ := ha
-  obtain ⟨hbnn, hbrhp⟩ := hb
-  exact ⟨hann.hadamardProduct hbnn, h hann hbnn harhp hbrhp⟩
+    hadamardPreservesHurwitzStableStatement :=
+  fun {_ _} ha hb => ⟨ha.1.hadamardProduct hb.1, h ha.1 hb.1 ha.2 hb.2⟩
 
 /-- The analytic core is conversely implied by Garloff--Wagner Theorem 1, so the
 two interfaces are equivalent: isolating the right-half-plane half loses no
 content. -/
 theorem hadamardPreservesRightHalfPlaneStable_of_hurwitzStable
     (h : hadamardPreservesHurwitzStableStatement) :
-    hadamardPreservesRightHalfPlaneStableStatement := by
-  intro a b hann hbnn harhp hbrhp
-  exact (h ⟨hann, harhp⟩ ⟨hbnn, hbrhp⟩).2
+    hadamardPreservesRightHalfPlaneStableStatement :=
+  fun {_ _} hann hbnn harhp hbrhp => (h ⟨hann, harhp⟩ ⟨hbnn, hbrhp⟩).2
 
 /-- The combinatorial heart of Garloff--Wagner Theorem 1, as a pure matrix
 statement: total nonnegativity of the row-oriented Hurwitz matrix is preserved
