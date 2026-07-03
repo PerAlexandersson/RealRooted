@@ -779,6 +779,35 @@ theorem nonnegPrecToFullyInterlacingPair_of_hermiteBiehlerPosHurwitzMatrix
     (nonnegPrecToHurwitzOddEven_of_hermiteBiehlerPos hHB hHBToHurwitz)
     hHurwitzToMatrix
 
+/-- The three classical interfaces in the sign-normalized
+Hermite--Biehler/Hurwitz-matrix route. -/
+structure HermiteBiehlerHurwitzRoute : Prop where
+  /-- Forward, sign-normalized Hermite--Biehler bridge. -/
+  hermiteBiehlerForwardPos : hermiteBiehlerForwardPosStatement
+  /-- Conformal substitution from Hermite--Biehler stability to Hurwitz
+  stability of the odd/even polynomial. -/
+  hermiteBiehlerStableToHurwitzOddEven : HermiteBiehlerStableToHurwitzOddEvenStatement
+  /-- Forward matrix Hurwitz criterion. -/
+  hurwitzStableToMatrixTotallyNonnegative : HurwitzStableToMatrixTotallyNonnegativeStatement
+
+/-- Projection of the Hermite--Biehler/Hurwitz-matrix route onto the PF
+polynomial-to-Lace bridge. -/
+theorem HermiteBiehlerHurwitzRoute.toPfPrecToFullyInterlacingPair
+    (h : HermiteBiehlerHurwitzRoute) :
+    PfPrecToFullyInterlacingPairStatement :=
+  pfPrecToFullyInterlacingPair_of_hermiteBiehlerPosHurwitzMatrix
+    h.hermiteBiehlerForwardPos h.hermiteBiehlerStableToHurwitzOddEven
+    h.hurwitzStableToMatrixTotallyNonnegative
+
+/-- Projection of the Hermite--Biehler/Hurwitz-matrix route onto the
+nonnegative-coefficient polynomial-to-Lace bridge. -/
+theorem HermiteBiehlerHurwitzRoute.toNonnegPrecToFullyInterlacingPair
+    (h : HermiteBiehlerHurwitzRoute) :
+    NonnegPrecToFullyInterlacingPairStatement :=
+  nonnegPrecToFullyInterlacingPair_of_hermiteBiehlerPosHurwitzMatrix
+    h.hermiteBiehlerForwardPos h.hermiteBiehlerStableToHurwitzOddEven
+    h.hurwitzStableToMatrixTotallyNonnegative
+
 /-- Zero-aware interface from the two-row Lace condition back to polynomial
 interlacing.  This is the conservative target, since a Veronese section may be
 the zero polynomial. -/

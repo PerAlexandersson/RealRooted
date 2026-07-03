@@ -710,6 +710,31 @@ theorem garloffWagnerHadamardNonnegPrec_of_classicalInputs
     (hurwitzOddEvenToFullyInterlacingPair_of_matrixTNN hHurwitzToMatrix)
     (fullyInterlacingPairToPrec0_of_forwardASW_interlace hASW hInt)
 
+/-- The six classical inputs for the Garloff--Wagner two-pair theorem, with
+the shared Hermite--Biehler/Hurwitz-matrix route bundled. -/
+structure GarloffWagnerClassicalInputs : Prop where
+  /-- Analytic core of Garloff--Wagner Theorem 1. -/
+  hadamardPreservesRightHalfPlaneStable : hadamardPreservesRightHalfPlaneStableStatement
+  /-- Shared sign-normalized Hermite--Biehler/Hurwitz-matrix route. -/
+  route : HermiteBiehlerHurwitzRoute
+  /-- Forward Aissen--Schoenberg--Whitney. -/
+  aissenSchoenbergWhitneyForward : aissenSchoenbergWhitneyForwardStatement
+  /-- Combinatorial interlacing-extraction core. -/
+  fullyInterlacingPairInterlace : FullyInterlacingPairInterlaceStatement
+
+/-- Garloff--Wagner two-pair theorem reduced to a bundled set of classical
+inputs. -/
+theorem garloffWagnerHadamardNonnegPrec_of_classicalInputsBundle
+    (h : GarloffWagnerClassicalInputs) :
+    garloffWagnerHadamardNonnegPrecStatement :=
+  garloffWagnerHadamardNonnegPrec_of_classicalInputs
+    h.hadamardPreservesRightHalfPlaneStable
+    h.route.hermiteBiehlerForwardPos
+    h.route.hermiteBiehlerStableToHurwitzOddEven
+    h.route.hurwitzStableToMatrixTotallyNonnegative
+    h.aissenSchoenbergWhitneyForward
+    h.fullyInterlacingPairInterlace
+
 /-- PF-polynomial wrapper around the strict Garloff--Wagner two-pair theorem. -/
 def garloffWagnerHadamardPFPrecStatement : Prop :=
   ∀ {f g p q : ℝ[X]},
