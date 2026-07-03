@@ -54,7 +54,8 @@ theorem pairwiseCompatible_iff_familyCompatible_of_fourWay
     {fs : List ℝ[X]}
     (hfour : fourWayPackage fs) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
-  RealRooted.pairwiseCompatible_iff_familyCompatible_of_fourWay hfour
+  (pairwiseCompatible_iff_commonInterleaver_of_fourWay hfour).trans
+    (commonInterleaver_iff_familyCompatible_of_fourWay hfour)
 
 /-- Roadmap target for pairwise compatibility versus common left interleavers. -/
 abbrev commonLeftInterleaverTarget : Prop :=
@@ -303,8 +304,8 @@ to the nonnegative finite-family compatibility target. -/
 theorem familyCompatibleNonnegCoeffsTarget_of_fourWay
     (hfour : fourWayNonnegCoeffsTarget) :
     familyCompatibleNonnegCoeffsTarget :=
-  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_fourWay_nonneg
-    hfour
+  familyCompatibleNonnegCoeffsTarget_of_commonInterleaverTarget
+    (commonInterleaverNonnegCoeffsTarget_of_fourWay hfour)
 
 /-- Challenge-facing reduction for the nonnegative-coefficient finite-family
 compatibility target from the repaired same-degree/succ-degree no-common pair
@@ -313,8 +314,8 @@ theorem familyCompatibleNonnegCoeffsTarget_of_pairDegreeSplit
     (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     familyCompatibleNonnegCoeffsTarget :=
-  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_pairDegreeSplit_nonneg
-    hsame hsucc
+  familyCompatibleNonnegCoeffsTarget_of_commonInterleaverTarget
+    (commonInterleaverNonnegCoeffsTarget_of_pairDegreeSplit hsame hsucc)
 
 /-- Challenge-facing reduction for the nonnegative-coefficient finite-family
 compatibility target from the honest degree-split package. -/
@@ -322,16 +323,16 @@ theorem familyCompatibleNonnegCoeffsTarget_of_degreeSplit
     (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     familyCompatibleNonnegCoeffsTarget :=
-  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_degreeSplit_nonneg
-    hsame hsucc
+  familyCompatibleNonnegCoeffsTarget_of_commonInterleaverTarget
+    (commonInterleaverNonnegCoeffsTarget_of_degreeSplit hsame hsucc)
 
 /-- Challenge-facing reduction for the nonnegative-coefficient finite-family
 compatibility target from the boundary-right-pair orientation statement. -/
 theorem familyCompatibleNonnegCoeffsTarget_of_boundaryRight
     (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
     familyCompatibleNonnegCoeffsTarget :=
-  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_boundaryRight_nonneg
-    hboundary
+  familyCompatibleNonnegCoeffsTarget_of_commonInterleaverTarget
+    (commonInterleaverNonnegCoeffsTarget_of_boundaryRight hboundary)
 
 /-- Challenge-facing reduction for the nonnegative four-way package target
 from the repaired same-degree/succ-degree no-common pair bridges. -/
