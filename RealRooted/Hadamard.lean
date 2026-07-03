@@ -672,6 +672,16 @@ theorem hadamardPreservesHurwitzMatrixTN_of_stableRoute
     hadamardPreservesHurwitzMatrixTNStatement :=
   fun {_ _} ha hb => hFwd (hThm1 (hBwd ha) (hBwd hb))
 
+/-- Under the two directions of the Hurwitz-matrix criterion, Garloff--Wagner
+Theorem 1 is equivalent to the Hurwitz-matrix Hadamard leaf. -/
+theorem hadamardPreservesHurwitzStable_iff_matrixTN
+    (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement)
+    (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement) :
+    hadamardPreservesHurwitzStableStatement ↔
+      hadamardPreservesHurwitzMatrixTNStatement :=
+  ⟨fun h => hadamardPreservesHurwitzMatrixTN_of_stableRoute hBwd h hFwd,
+    fun h => hadamardPreservesHurwitzStable_of_matrixRoute hFwd h hBwd⟩
+
 /-- **Garloff--Wagner, Theorem 4(b), reduced to its classical inputs** (TODO T9).
 
 The two-pair interlacing form of the Garloff--Wagner Hadamard theorem follows,
