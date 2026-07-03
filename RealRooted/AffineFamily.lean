@@ -467,6 +467,28 @@ private theorem isRealRooted_of_add_C_mul_right_family_of_natDegree_le
       PosComboRealRooted.isRealRooted_left_of_sameDegree
         (f := g) (g := f) hcombo hg_pos hf_pos heq
 
+/-- In a positive-combination family, if the right summand has degree at least
+that of the left summand, then the right summand is real-rooted. -/
+theorem PosComboRealRooted.isRealRooted_right_of_natDegree_le {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : f.natDegree ≤ g.natDegree) :
+    (g ≠ 0 ∧ g.Splits) :=
+  isRealRooted_of_add_C_mul_right_family_of_natDegree_le
+    (fun {_} hμ => PosComboRealRooted.isRealRooted_add_right hfg.comm hμ)
+    hf_pos hg_pos hdeg
+
+/-- Symmetric form of
+`PosComboRealRooted.isRealRooted_right_of_natDegree_le`. -/
+theorem PosComboRealRooted.isRealRooted_left_of_natDegree_le {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree ≤ f.natDegree) :
+    (f ≠ 0 ∧ f.Splits) := by
+  simpa using
+    PosComboRealRooted.isRealRooted_right_of_natDegree_le
+      (PosComboRealRooted.comm hfg) hg_pos hf_pos hdeg
+
 /-- In a positive-combination family, if the right summand has degree one more
 than the left summand, then the right summand is real-rooted. -/
 theorem PosComboRealRooted.isRealRooted_right_of_succDegree {f g : ℝ[X]}
@@ -474,9 +496,7 @@ theorem PosComboRealRooted.isRealRooted_right_of_succDegree {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hsucc : g.natDegree = f.natDegree + 1) :
     (g ≠ 0 ∧ g.Splits) :=
-  isRealRooted_of_add_C_mul_right_family_of_natDegree_le
-    (fun {_} hμ => PosComboRealRooted.isRealRooted_add_right hfg.comm hμ)
-    hf_pos hg_pos (by lia)
+  PosComboRealRooted.isRealRooted_right_of_natDegree_le hfg hf_pos hg_pos (by lia)
 
 /-- If the affine family has enough right-hand degree to dominate the `X * f`
 perturbation, then the boundary member `C t * f + g` is already real-rooted.

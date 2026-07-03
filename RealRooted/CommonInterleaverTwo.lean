@@ -1705,6 +1705,57 @@ theorem PosComboRealRooted.left_splits_of_succDegree_of_coeff_zero_ne
     hfg_ref.isRealRooted_left_of_sameDegree hf_ref_pos hg_ref_pos hdeg_ref
   exact (DegreeDropReversal.splits_reflect_iff (p := f) hfN).mp hreflect_rr.2
 
+/-- If the lower-degree endpoint has nonzero constant coefficient, the
+degree-drop endpoint follows by reflecting and applying the degree-`≤`
+positive-combination closure to the reflected pair. -/
+theorem PosComboRealRooted.left_splits_of_succDegree_of_left_coeff_zero_ne
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hsucc : g.natDegree = f.natDegree + 1)
+    (hf0 : f.coeff 0 ≠ 0) :
+    f.Splits := by
+  let N := g.natDegree
+  have hfN : f.natDegree ≤ N := by
+    dsimp [N]
+    lia
+  have hgN : g.natDegree ≤ N := by simp [N]
+  have hf0_pos : 0 < f.coeff 0 := lt_of_le_of_ne (hfnn 0) hf0.symm
+  have hf_ref_pos : HasPosLeadingCoeff (reflect N f) := by
+    unfold HasPosLeadingCoeff
+    rw [DegreeDropReversal.leadingCoeff_reflect_eq_coeff_zero_of_natDegree_le hfN hf0]
+    exact hf0_pos
+  have hg_ref_nonneg : HasNonnegCoeffs (reflect N g) := by
+    intro n
+    simpa [Polynomial.coeff_reflect] using hgnn (revAt N n)
+  have hg_ref_ne : reflect N g ≠ 0 := by
+    intro hzero
+    exact hg_pos.ne_zero (Polynomial.reflect_eq_zero_iff.mp hzero)
+  have hg_ref_pos : HasPosLeadingCoeff (reflect N g) :=
+    hg_ref_nonneg.pos_leadingCoeff hg_ref_ne
+  have hfg_ref : PosComboRealRooted (reflect N f) (reflect N g) := by
+    intro lam μ hlam hμ
+    have hbase := hfg (lam := lam) (μ := μ) hlam hμ
+    have hdeg_combo : (C lam * f + C μ * g).natDegree ≤ N := by
+      dsimp [N]
+      rw [natDegree_pos_combo_eq_right_of_natDegree_le (by lia) hf_pos hg_pos hlam hμ]
+    have hsplit_ref : (reflect N (C lam * f + C μ * g)).Splits :=
+      DegreeDropReversal.splits_reflect_of_splits hbase.2 hdeg_combo
+    have hne_ref : reflect N (C lam * f + C μ * g) ≠ 0 := by
+      intro hzero
+      exact hbase.1 (Polynomial.reflect_eq_zero_iff.mp hzero)
+    constructor
+    · simpa [Polynomial.reflect_add, Polynomial.reflect_C_mul] using hne_ref
+    · simpa [Polynomial.reflect_add, Polynomial.reflect_C_mul] using hsplit_ref
+  have hdeg_ref_le : (reflect N g).natDegree ≤ (reflect N f).natDegree := by
+    rw [DegreeDropReversal.natDegree_reflect_eq_of_coeff_zero_ne hfN hf0]
+    exact Polynomial.natDegree_reflect_le.trans <| by rw [max_eq_left hgN]
+  have hreflect_rr :=
+    PosComboRealRooted.isRealRooted_right_of_natDegree_le
+      (PosComboRealRooted.comm hfg_ref) hg_ref_pos hf_ref_pos hdeg_ref_le
+  exact (DegreeDropReversal.splits_reflect_iff (p := f) hfN).mp hreflect_rr.2
+
 /-- Zero-constant succ-degree data pass to the pair divided by the common
 factor `X`.  This is the reduction package for the complementary branch to
 `PosComboRealRooted.left_splits_of_succDegree_of_coeff_zero_ne`. -/
