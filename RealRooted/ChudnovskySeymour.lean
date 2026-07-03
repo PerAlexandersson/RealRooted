@@ -83,6 +83,17 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_slotData
     pairwiseCompatible_iff_hasCommonInterleaver_of_slotData_via_nonnegShift
       hrr hpos hsame hsucc
 
+/-- The roadmap target follows from the root-crossing formulations of the
+same-degree and succ-degree endpoints after the nonnegative-shift reduction. -/
+theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing
+    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
+    (hsplit : PosComboSuccDegreeLeftSplitsNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
+  fun hrr hpos =>
+    pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_via_nonnegShift
+      hrr hpos hsame hsplit hsucc
+
 /-- Degree-`≤ 1` positive-leading families already satisfy the common-interleaver
 form of Chudnovsky--Seymour without the two-polynomial bridge hypothesis. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_natDegree_le_one
