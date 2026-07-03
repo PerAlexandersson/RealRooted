@@ -73,6 +73,16 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_nonnegShif
     pairwiseCompatible_iff_hasCommonInterleaver_via_nonnegShift
       hrr hpos hsame haffBridge
 
+/-- The roadmap target follows from the concrete slot-data endpoints after the
+nonnegative-shift reduction. -/
+theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_slotData
+    (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeSlotDataNonnegStatement) :
+    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
+  fun hrr hpos =>
+    pairwiseCompatible_iff_hasCommonInterleaver_of_slotData_via_nonnegShift
+      hrr hpos hsame hsucc
+
 /-- Degree-`≤ 1` positive-leading families already satisfy the common-interleaver
 form of Chudnovsky--Seymour without the two-polynomial bridge hypothesis. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_natDegree_le_one

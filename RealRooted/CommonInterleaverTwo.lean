@@ -2891,6 +2891,16 @@ theorem compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
       posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
         hsame hsucc hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos hfg)
 
+/-- Shifted compatibility bridge from the concrete slot-data endpoints for the
+same-degree and succ-degree nonnegative branches. -/
+theorem compatiblePairHasCommonInterleaver_of_slotData_via_nonnegShift
+    (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeSlotDataNonnegStatement) :
+    CompatiblePairHasCommonInterleaverStatement :=
+  compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
+    (sameDegreePairHasCommonInterleaver_nonneg_of_slotData hsame)
+    (succDegreePairHasCommonInterleaver_nonneg_of_slotData hsucc)
+
 /-- Translation reduces the full positive-leading compatibility bridge to the
 nonnegative-coefficient degree-split package: shift both polynomials far enough
 to the right so all roots become nonpositive, apply the nonnegative theorem,
@@ -3002,6 +3012,19 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairDegreeSplit_vi
   pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairBridgePos
     (compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
       hsame hsucc)
+    hpos hpair
+
+/-- Pairwise upgrade from the slot-data endpoints after shifting each pair
+into the nonnegative regime. -/
+theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_slotData_via_nonnegShift
+    {fs : List ℝ[X]}
+    (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeSlotDataNonnegStatement)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hpair : PairwiseCompatible fs) :
+    PairwiseHasCommonInterleaver fs :=
+  pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairBridgePos
+    (compatiblePairHasCommonInterleaver_of_slotData_via_nonnegShift hsame hsucc)
     hpos hpair
 
 /-- Pairwise upgrade from the nonnegative-coefficient degree-split package,
@@ -3310,6 +3333,22 @@ theorem chudnovskySeymour_fourWay_of_pairDegreeSplit_via_nonnegShift
     (compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
       hsame hsucc)
 
+/-- Four-way Chudnovsky--Seymour package from the concrete slot-data endpoints
+for the nonnegative same-degree and succ-degree branches, upgraded by the
+nonnegative-shift reduction. -/
+theorem chudnovskySeymour_fourWay_of_slotData_via_nonnegShift
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeSlotDataNonnegStatement) :
+    (PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs) ∧
+      (PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs) ∧
+      (HasCommonInterleaver fs ↔ FamilyCompatible fs) :=
+  chudnovskySeymour_fourWay_of_pairBridgePos
+    (hrr := hrr) (hpos := hpos)
+    (compatiblePairHasCommonInterleaver_of_slotData_via_nonnegShift hsame hsucc)
+
 /-- Four-way Chudnovsky--Seymour package from the nonnegative-coefficient
 degree-split package, upgraded to arbitrary positive-leading families by a
 common translation trick applied pairwise. -/
@@ -3576,6 +3615,19 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_pairDegreeSplit_via_nonne
     (compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
       hsame hsucc)
 
+/-- Chudnovsky--Seymour `1 ↔ 3` corollary from the concrete slot-data
+endpoints after the nonnegative-shift reduction. -/
+theorem pairwiseCompatible_iff_hasCommonInterleaver_of_slotData_via_nonnegShift
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeSlotDataNonnegStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
+  pairwiseCompatible_iff_hasCommonInterleaver_of_pairBridgePos
+    (hrr := hrr) (hpos := hpos)
+    (compatiblePairHasCommonInterleaver_of_slotData_via_nonnegShift hsame hsucc)
+
 /-- Chudnovsky--Seymour `1 ↔ 3` corollary from the nonnegative-coefficient
 degree-split package, with the familywise nonnegativity assumption removed by
 translation. -/
@@ -3661,6 +3713,19 @@ theorem pairwiseCompatible_iff_familyCompatible_of_pairDegreeSplit_via_nonnegShi
     (hrr := hrr) (hpos := hpos)
     (compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
       hsame hsucc)
+
+/-- Chudnovsky--Seymour `1 ↔ 4` specialization from the concrete slot-data
+endpoints after the nonnegative-shift reduction. -/
+theorem pairwiseCompatible_iff_familyCompatible_of_slotData_via_nonnegShift
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeSlotDataNonnegStatement) :
+    PairwiseCompatible fs ↔ FamilyCompatible fs :=
+  pairwiseCompatible_iff_familyCompatible_of_pairBridgePos
+    (hrr := hrr) (hpos := hpos)
+    (compatiblePairHasCommonInterleaver_of_slotData_via_nonnegShift hsame hsucc)
 
 /-- Chudnovsky--Seymour `1 ↔ 4` specialization from the nonnegative-coefficient
 degree-split package, with the familywise nonnegativity assumption removed by
