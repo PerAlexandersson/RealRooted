@@ -21,6 +21,41 @@ namespace ChudnovskySeymour
 abbrev fourWayPackage (fs : List ℝ[X]) : Prop :=
   ChudnovskySeymourFourWayPackage fs
 
+/-- Challenge-facing projection from the four-way package to `1 ↔ 2`. -/
+theorem pairwiseCompatible_iff_pairwiseHasCommonInterleaver_of_fourWay
+    {fs : List ℝ[X]}
+    (hfour : fourWayPackage fs) :
+    PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs :=
+  RealRooted.pairwiseCompatible_iff_pairwiseHasCommonInterleaver_of_fourWay hfour
+
+/-- Challenge-facing projection from the four-way package to `2 ↔ 3`. -/
+theorem pairwiseHasCommonInterleaver_iff_commonInterleaver_of_fourWay
+    {fs : List ℝ[X]}
+    (hfour : fourWayPackage fs) :
+    PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs :=
+  RealRooted.pairwiseHasCommonInterleaver_iff_hasCommonInterleaver_of_fourWay hfour
+
+/-- Challenge-facing projection from the four-way package to `3 ↔ 4`. -/
+theorem commonInterleaver_iff_familyCompatible_of_fourWay
+    {fs : List ℝ[X]}
+    (hfour : fourWayPackage fs) :
+    HasCommonInterleaver fs ↔ FamilyCompatible fs :=
+  RealRooted.hasCommonInterleaver_iff_familyCompatible_of_fourWay hfour
+
+/-- Challenge-facing projection from the four-way package to `1 ↔ 3`. -/
+theorem pairwiseCompatible_iff_commonInterleaver_of_fourWay
+    {fs : List ℝ[X]}
+    (hfour : fourWayPackage fs) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
+  RealRooted.pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay hfour
+
+/-- Challenge-facing projection from the four-way package to `1 ↔ 4`. -/
+theorem pairwiseCompatible_iff_familyCompatible_of_fourWay
+    {fs : List ℝ[X]}
+    (hfour : fourWayPackage fs) :
+    PairwiseCompatible fs ↔ FamilyCompatible fs :=
+  RealRooted.pairwiseCompatible_iff_familyCompatible_of_fourWay hfour
+
 /-- Roadmap target for pairwise compatibility versus common left interleavers. -/
 abbrev commonLeftInterleaverTarget : Prop :=
   chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target
