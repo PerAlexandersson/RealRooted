@@ -2487,6 +2487,21 @@ theorem hasCommonInterleaver_of_pairwiseHasCommonInterleaver
         hasCommonInterleaver_of_pairwiseHasCommonInterleaver_ge_two
           (f := f) (g := g) (fs := fs) hrr hpos hpair
 
+/-- Global finite-family right upgrade: pairwise common interleavers imply a
+single common interleaver under the usual split and positive-leading
+hypotheses. -/
+def CommonInterleaverFamilyUpgradeStatement : Prop :=
+  ∀ {fs : List ℝ[X]},
+    (∀ f ∈ fs, f.Splits) →
+    (∀ f ∈ fs, HasPosLeadingCoeff f) →
+    PairwiseHasCommonInterleaver fs →
+    HasCommonInterleaver fs
+
+/-- The proved global finite-family right upgrade, packaged as a statement alias. -/
+theorem commonInterleaverFamilyUpgrade :
+    CommonInterleaverFamilyUpgradeStatement :=
+  hasCommonInterleaver_of_pairwiseHasCommonInterleaver
+
 /-- Chudnovsky--Seymour `2 ⇒ 3`, left-oriented version: pairwise common left
 interleavers can be upgraded to a single common left interleaver. -/
 private theorem hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver_ge_two

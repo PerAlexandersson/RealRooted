@@ -3306,7 +3306,7 @@ private theorem chudnovskySeymour_fourWay_of_pairwiseCompatible_iff_pairwiseComm
       (PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs) ∧
       (HasCommonInterleaver fs ↔ FamilyCompatible fs) := by
   have h23 : PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs :=
-    ⟨hasCommonInterleaver_of_pairwiseHasCommonInterleaver
+    ⟨commonInterleaverFamilyUpgrade
         (fun f hf => (hrr f hf).2) hpos,
       pairwiseHasCommonInterleaver_of_commonInterleaver⟩
   have h34 : HasCommonInterleaver fs ↔ FamilyCompatible fs :=

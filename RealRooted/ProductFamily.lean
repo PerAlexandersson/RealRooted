@@ -273,7 +273,7 @@ theorem hasCommonInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg
         (row := fs) (fs := gs.reverse)
         hfs.posLeadingCoeff
         (posLeadingCoeff_reverse_of_interlacingSeqNonneg hgs)
-  exact hasCommonInterleaver_of_pairwiseHasCommonInterleaver hrr hpos hpair
+  exact commonInterleaverFamilyUpgrade hrr hpos hpair
 
 /-- Brändén's Lemma 7.8.3: the reversed product-sum of two interlacing
 nonnegative families is real-rooted.
