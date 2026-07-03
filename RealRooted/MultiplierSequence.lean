@@ -257,28 +257,6 @@ theorem IsFinitePFMultiplierSequence.mul {n : ℕ} {gamma delta : ℕ → ℝ}
   rw [← diagonalOperator_comp]
   exact hgamma (hdelta hp hdeg) ((natDegree_diagonalOperator_le delta p).trans hdeg)
 
-theorem isFiniteMultiplierSequence_one_sequence (n : ℕ) :
-    IsFiniteMultiplierSequence n (fun _ => (1 : ℝ)) := by
-  intro p _ hsplit
-  right
-  simpa using hsplit
-
-theorem isFinitePFMultiplierSequence_one_sequence (n : ℕ) :
-    IsFinitePFMultiplierSequence n (fun _ => (1 : ℝ)) := by
-  intro p hp _
-  simpa using hp
-
-theorem isFiniteMultiplierSequence_zero_sequence (n : ℕ) :
-    IsFiniteMultiplierSequence n (fun _ => (0 : ℝ)) := by
-  intro p _ _
-  left
-  simp
-
-theorem isFinitePFMultiplierSequence_zero_sequence (n : ℕ) :
-    IsFinitePFMultiplierSequence n (fun _ => (0 : ℝ)) := by
-  intro p _ _
-  simpa using IsPFPolynomial.zero
-
 theorem isFiniteMultiplierSequence_const_sequence (n : ℕ) (a : ℝ) :
     IsFiniteMultiplierSequence n (fun _ => a) := by
   intro p _ hsplit
@@ -300,6 +278,22 @@ theorem isFinitePFMultiplierSequence_const_sequence
   · simpa [diagonalOperator_const_sequence, ha0] using IsPFPolynomial.zero
   · have ha_pos : 0 < a := lt_of_le_of_ne ha (Ne.symm ha0)
     simpa [diagonalOperator_const_sequence] using hp.const_mul ha_pos
+
+theorem isFiniteMultiplierSequence_one_sequence (n : ℕ) :
+    IsFiniteMultiplierSequence n (fun _ => (1 : ℝ)) :=
+  isFiniteMultiplierSequence_const_sequence n (1 : ℝ)
+
+theorem isFinitePFMultiplierSequence_one_sequence (n : ℕ) :
+    IsFinitePFMultiplierSequence n (fun _ => (1 : ℝ)) :=
+  isFinitePFMultiplierSequence_const_sequence (n := n) (a := 1) zero_le_one
+
+theorem isFiniteMultiplierSequence_zero_sequence (n : ℕ) :
+    IsFiniteMultiplierSequence n (fun _ => (0 : ℝ)) :=
+  isFiniteMultiplierSequence_const_sequence n (0 : ℝ)
+
+theorem isFinitePFMultiplierSequence_zero_sequence (n : ℕ) :
+    IsFinitePFMultiplierSequence n (fun _ => (0 : ℝ)) :=
+  isFinitePFMultiplierSequence_const_sequence (n := n) (a := 0) le_rfl
 
 theorem splits_X_add_one_pow (n : ℕ) :
     ((X + 1 : ℝ[X]) ^ n).Splits :=
