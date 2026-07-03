@@ -151,6 +151,45 @@ lemma comp_X_add_C {f g : ℝ[X]} (h : Compatible f g) (r : ℝ) :
     rw [hcomb]
     exact isRealRooted_comp_X_add_C hrr.1 hrr.2 r
 
+/-- Reflecting both members at a common degree bound preserves compatibility. -/
+lemma reflect_of_natDegree_le {f g : ℝ[X]} (h : Compatible f g) {N : ℕ}
+    (hfN : f.natDegree ≤ N) (hgN : g.natDegree ≤ N) :
+    Compatible (reflect N f) (reflect N g) := by
+  intro α β hα hβ
+  have hcomb :
+      C α * reflect N f + C β * reflect N g =
+        reflect N (C α * f + C β * g) := by
+    simp [Polynomial.reflect_add, Polynomial.reflect_C_mul]
+  have hdeg_combo : (C α * f + C β * g).natDegree ≤ N :=
+    (Polynomial.natDegree_add_le _ _).trans <|
+      max_le
+        ((Polynomial.natDegree_C_mul_le α f).trans hfN)
+        ((Polynomial.natDegree_C_mul_le β g).trans hgN)
+  rcases h α β hα hβ with hzero | hrr
+  · left
+    simp [hcomb, hzero]
+  · right
+    rw [hcomb]
+    exact ⟨fun hzero => hrr.1 (Polynomial.reflect_eq_zero_iff.mp hzero),
+      DegreeDropReversal.splits_reflect_of_splits hrr.2 hdeg_combo⟩
+
+/-- Reflecting both members at a common degree bound preserves and reflects
+compatibility. -/
+lemma reflect_iff_natDegree_le {f g : ℝ[X]} {N : ℕ}
+    (hfN : f.natDegree ≤ N) (hgN : g.natDegree ≤ N) :
+    Compatible (reflect N f) (reflect N g) ↔ Compatible f g := by
+  refine ⟨?_, fun h => h.reflect_of_natDegree_le hfN hgN⟩
+  intro h
+  have hf_ref_N : (reflect N f).natDegree ≤ N :=
+    Polynomial.natDegree_reflect_le.trans <| by rw [max_eq_left hfN]
+  have hg_ref_N : (reflect N g).natDegree ≤ N :=
+    Polynomial.natDegree_reflect_le.trans <| by rw [max_eq_left hgN]
+  have hback : Compatible (reflect N (reflect N f)) (reflect N (reflect N g)) :=
+    Compatible.reflect_of_natDegree_le
+      (f := reflect N f) (g := reflect N g) (N := N) h hf_ref_N hg_ref_N
+  intro α β hα hβ
+  simpa [Polynomial.reflect_reflect] using hback α β hα hβ
+
 /-- Article 3.1: compatibility is preserved by differentiation. -/
 lemma derivative {f g : ℝ[X]} (h : Compatible f g) :
     Compatible f.derivative g.derivative := by
