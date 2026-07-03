@@ -1015,6 +1015,94 @@ lemma csDegree_le_natDegree_succ_of_pairwiseHasCommonInterleaver
     natDegree_ge_csDegree_sub_one_of_pairwiseHasCommonInterleaver (f := g) (g := f) hg hf hpair
   lia
 
+/-! ### Left-oriented degree bookkeeping -/
+
+/-- The target length for a common left interleaver: the minimum degree
+occurring in the family. -/
+def leftCsDegree (fs : List ℝ[X]) : ℕ :=
+  (fs.map Polynomial.natDegree).foldr Nat.min (csDegree fs)
+
+private lemma foldr_min_le_of_mem {xs : List ℕ} {a seed : ℕ} (ha : a ∈ xs) :
+    xs.foldr Nat.min seed ≤ a := by
+  induction xs with
+  | nil =>
+      simp_all
+  | cons x xs ih =>
+      simp only [List.foldr_cons, List.mem_cons] at ha ⊢
+      rcases ha with rfl | ha
+      · exact Nat.min_le_left a (xs.foldr Nat.min seed)
+      · exact le_trans (Nat.min_le_right x (xs.foldr Nat.min seed)) (ih ha)
+
+lemma leftCsDegree_le_natDegree {fs : List ℝ[X]} {f : ℝ[X]} (hf : f ∈ fs) :
+    leftCsDegree fs ≤ f.natDegree := by
+  unfold leftCsDegree
+  exact foldr_min_le_of_mem (List.mem_map_of_mem (f := Polynomial.natDegree) hf)
+
+private lemma exists_mem_eq_foldr_min_of_forall_le
+    {xs : List ℕ} {seed : ℕ} (hxs : xs ≠ []) (hseed : ∀ a ∈ xs, a ≤ seed) :
+    ∃ a ∈ xs, a = xs.foldr Nat.min seed := by
+  induction xs with
+  | nil =>
+      simp_all
+  | cons x xs ih =>
+      cases xs with
+      | nil =>
+        refine ⟨x, by simp, ?_⟩
+        simp [List.foldr_cons, Nat.min_eq_left (hseed x (by simp))]
+      | cons y ys =>
+        have hseed_tail : ∀ a ∈ y :: ys, a ≤ seed := by
+          intro a ha
+          exact hseed a (by simp [ha])
+        obtain ⟨a, ha, haeq⟩ := ih (by simp) hseed_tail
+        by_cases hx : x ≤ (y :: ys).foldr Nat.min seed
+        · refine ⟨x, by simp, ?_⟩
+          exact (Nat.min_eq_left hx).symm
+        · refine ⟨a, by simp [ha], ?_⟩
+          have hle : (y :: ys).foldr Nat.min seed ≤ x := by lia
+          exact haeq.trans (Nat.min_eq_right hle).symm
+
+lemma exists_mem_leftCsDegree_of_ne_nil {fs : List ℝ[X]} (hfs : fs ≠ []) :
+    ∃ f ∈ fs, f.natDegree = leftCsDegree fs := by
+  have hmap_ne : fs.map Polynomial.natDegree ≠ [] := by
+    simpa using hfs
+  have hseed : ∀ a ∈ fs.map Polynomial.natDegree, a ≤ csDegree fs := by
+    intro a ha
+    rcases List.mem_map.mp ha with ⟨f, hf, rfl⟩
+    exact natDegree_le_csDegree hf
+  obtain ⟨d, hd, hd_eq⟩ := exists_mem_eq_foldr_min_of_forall_le hmap_ne hseed
+  rcases List.mem_map.mp hd with ⟨f, hf, rfl⟩
+  exact ⟨f, hf, hd_eq⟩
+
+lemma natDegree_le_natDegree_succ_of_pairwiseHasCommonLeftInterleaver
+    {fs : List ℝ[X]} {f g : ℝ[X]}
+    (hf : f ∈ fs) (hg : g ∈ fs)
+    (hpair : PairwiseHasCommonLeftInterleaver fs) :
+    f.natDegree ≤ g.natDegree + 1 := by
+  obtain ⟨i, rfl⟩ := List.mem_iff_get.1 hf
+  obtain ⟨j, hgj⟩ := List.mem_iff_get.1 hg
+  rcases lt_trichotomy i j with hij | rfl | hji
+  · obtain ⟨h, hhf, hhg⟩ := hpair i j hij
+    rw [← hgj]
+    exact le_trans (natDegree_bounds_of_prec hhf).2 <|
+      Nat.succ_le_succ (natDegree_bounds_of_prec hhg).1
+  · lia
+  · obtain ⟨h, hhg, hhf⟩ := hpair j i hji
+    rw [← hgj]
+    exact le_trans (natDegree_bounds_of_prec hhf).2 <|
+      Nat.succ_le_succ (natDegree_bounds_of_prec hhg).1
+
+lemma natDegree_le_leftCsDegree_succ_of_pairwiseHasCommonLeftInterleaver
+    {fs : List ℝ[X]} {f : ℝ[X]}
+    (hfs : fs ≠ [])
+    (hf : f ∈ fs)
+    (hpair : PairwiseHasCommonLeftInterleaver fs) :
+    f.natDegree ≤ leftCsDegree fs + 1 := by
+  obtain ⟨g, hg, hgmin⟩ := exists_mem_leftCsDegree_of_ne_nil hfs
+  have hbound :=
+    natDegree_le_natDegree_succ_of_pairwiseHasCommonLeftInterleaver
+      (f := f) (g := g) hf hg hpair
+  lia
+
 /-- Pairwise slot intersection for a pair of polynomials sharing a common
 interleaver on the right. This is the local input needed for the finite-Helly
 step in the Chudnovsky--Seymour proof. -/
