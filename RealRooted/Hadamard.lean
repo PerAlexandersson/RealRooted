@@ -644,6 +644,16 @@ theorem hadamardPreservesHurwitzStable_of_matrixRoute
     hadamardPreservesHurwitzStableStatement :=
   fun {_ _} ha hb => hBwd (hHad (hFwd ha) (hFwd hb))
 
+/-- Hurwitz-matrix form of the coefficientwise Hadamard product of two
+polynomials. -/
+theorem hurwitz_hadamardProduct_matrix (a b : ℝ[X]) :
+    hurwitz (hadamardProduct a b).coeff =
+      Matrix.of fun i j => hurwitz a.coeff i j * hurwitz b.coeff i j := by
+  rw [show (hadamardProduct a b).coeff = fun n => a.coeff n * b.coeff n by
+    funext n
+    exact coeff_hadamardProduct a b n]
+  exact hurwitz_mul_entrywise_matrix a.coeff b.coeff
+
 /-- The Hurwitz-matrix Hadamard leaf reduces to the pure matrix Schur core.
 
 Using `hurwitz_mul_entrywise_matrix`, this strips away the coefficient
@@ -654,9 +664,7 @@ theorem hadamardPreservesHurwitzMatrixTN_of_schur
     (h : HurwitzMatrixSchurProductTNStatement) :
     hadamardPreservesHurwitzMatrixTNStatement := by
   intro a b ha hb
-  have hcoeff : (hadamardProduct a b).coeff = fun n => a.coeff n * b.coeff n :=
-    funext (fun n => coeff_hadamardProduct a b n)
-  rw [hcoeff, hurwitz_mul_entrywise_matrix]
+  rw [hurwitz_hadamardProduct_matrix]
   exact h ha hb
 
 /-- Garloff--Wagner Theorem 1 from the pure Hurwitz Schur-product core and the
