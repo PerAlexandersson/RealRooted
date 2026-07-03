@@ -780,6 +780,15 @@ theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_inBand
   exact hadamardPreservesHurwitzMatrixTN_det_of_card_le_three
     hInBand ha hb hrows hcols hn
 
+/-- The pure size-`≤ 3` Hurwitz matrix Schur-product statement implies the
+Hadamard-product Hurwitz-matrix size-`≤ 3` statement. -/
+theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_hurwitzLeThree
+    (hLeThree : HurwitzMatrixSchurProductDetLeThreeStatement) :
+    hadamardPreservesHurwitzMatrixTNDetLeThreeStatement := by
+  intro a b ha hb n rows cols hrows hcols hn
+  rw [hurwitz_hadamardProduct_matrix]
+  exact hLeThree ha hb hrows hcols hn
+
 /-- The Hurwitz-matrix Hadamard leaf reduces to the pure matrix Schur core.
 
 Using `hurwitz_mul_entrywise_matrix`, this strips away the coefficient

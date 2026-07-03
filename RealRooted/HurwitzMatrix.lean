@@ -324,4 +324,20 @@ theorem hurwitzMatrixSchurProductDetLeThree_of_inBand
   intro a b ha hb n rows cols hrows hcols hn
   exact hurwitz_schurProduct_det_of_card_le_three hInBand ha hb hrows hcols hn
 
+/-- The low-order, size-`≤ 3`, Hurwitz matrix Schur-product statement implies
+the isolated in-band `3 × 3` core. -/
+theorem hurwitzMatrixSchurProductDetFinThreeInBand_of_leThree
+    (hLeThree : HurwitzMatrixSchurProductDetLeThreeStatement) :
+    HurwitzMatrixSchurProductDetFinThreeInBandStatement := by
+  intro a b ha hb rows cols hrows hcols _hband
+  exact hLeThree ha hb hrows hcols (by norm_num)
+
+/-- The low-order, size-`≤ 3`, Hurwitz Schur-product statement is equivalent
+to the isolated in-band `3 × 3` core. -/
+theorem hurwitzMatrixSchurProductDetLeThree_iff_inBand :
+    HurwitzMatrixSchurProductDetLeThreeStatement ↔
+      HurwitzMatrixSchurProductDetFinThreeInBandStatement :=
+  ⟨hurwitzMatrixSchurProductDetFinThreeInBand_of_leThree,
+    hurwitzMatrixSchurProductDetLeThree_of_inBand⟩
+
 end RealRooted
