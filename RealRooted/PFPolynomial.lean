@@ -166,15 +166,11 @@ theorem isPFPolynomial_one : IsPFPolynomial (1 : ℝ[X]) :=
   IsPFPolynomial.one
 
 theorem isPFPolynomial_X : IsPFPolynomial (X : ℝ[X]) := by
-  simpa [mul_one] using isPFPolynomial_one.X_mul
+  simpa [mul_one] using IsPFPolynomial.one.X_mul
 
 theorem isPFPolynomial_X_pow (m : ℕ) :
-    IsPFPolynomial ((X : ℝ[X]) ^ m) := by
-  induction m with
-  | zero =>
-      exact isPFPolynomial_one
-  | succ m ih =>
-      simpa [pow_succ] using ih.mul isPFPolynomial_X
+    IsPFPolynomial ((X : ℝ[X]) ^ m) :=
+  isPFPolynomial_X.pow m
 
 theorem isPFPolynomial_X_add_C {a : ℝ} (ha : 0 ≤ a) :
     IsPFPolynomial (X + C a : ℝ[X]) := by
