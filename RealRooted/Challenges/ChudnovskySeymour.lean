@@ -29,6 +29,11 @@ abbrev commonLeftInterleaverTarget : Prop :=
 abbrev commonInterleaverTarget : Prop :=
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target
 
+/-- Roadmap target for the nonnegative-coefficient common right interleaver
+form. -/
+abbrev commonInterleaverNonnegCoeffsTarget : Prop :=
+  chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target
+
 /-- Full roadmap reduction for the common-left target. -/
 theorem commonLeftInterleaverTarget_of_pairwiseLeftBridge
     (htwo : CompatiblePairHasCommonLeftInterleaverStatement)
@@ -50,6 +55,32 @@ theorem commonInterleaverTarget_of_pairBridge
     (htwo : CompatiblePairHasCommonInterleaverStatement) :
     commonInterleaverTarget :=
   RealRooted.chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge htwo
+
+/-- Challenge-facing reduction for the nonnegative-coefficient common-right
+target from the repaired same-degree/succ-degree no-common pair bridges. -/
+theorem commonInterleaverNonnegCoeffsTarget_of_pairDegreeSplit
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    commonInterleaverNonnegCoeffsTarget :=
+  chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairDegreeSplit_nonneg
+    hsame hsucc
+
+/-- Challenge-facing reduction for the nonnegative-coefficient common-right
+target from the honest degree-split package. -/
+theorem commonInterleaverNonnegCoeffsTarget_of_degreeSplit
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    commonInterleaverNonnegCoeffsTarget :=
+  chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_degreeSplit_nonneg
+    hsame hsucc
+
+/-- Challenge-facing reduction for the nonnegative-coefficient common-right
+target from the boundary-right-pair orientation statement. -/
+theorem commonInterleaverNonnegCoeffsTarget_of_boundaryRight
+    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    commonInterleaverNonnegCoeffsTarget :=
+  chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_boundaryRight_nonneg
+    hboundary
 
 /-- Challenge-facing four-way package from the natural two-polynomial bridge. -/
 theorem fourWay_of_pairBridge

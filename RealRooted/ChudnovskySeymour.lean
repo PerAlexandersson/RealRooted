@@ -49,6 +49,21 @@ def chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target : Prop :=
     (∀ f ∈ fs, HasPosLeadingCoeff f) →
     (PairwiseCompatible fs ↔ HasCommonInterleaver fs)
 
+/--
+Roadmap target for the nonnegative-coefficient form of the direct
+pairwise-to-common interleaver equivalence.
+
+This is the theorem surface most directly connected to the current
+same-degree/succ-degree endpoint work.
+-/
+def chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :
+    Prop :=
+  ∀ {fs : List ℝ[X]},
+    (∀ f ∈ fs, (f ≠ 0 ∧ f.Splits)) →
+    (∀ f ∈ fs, HasPosLeadingCoeff f) →
+    (∀ f ∈ fs, HasNonnegCoeffs f) →
+    (PairwiseCompatible fs ↔ HasCommonInterleaver fs)
+
 /-- The roadmap target follows from the natural positive-leading two-polynomial
 bridge used by the finite-family machinery. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge
@@ -97,6 +112,37 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossi
   fun hrr hpos =>
     pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_via_nonnegShift
       hrr hpos hsame hsplit hsucc
+
+/-- The nonnegative-coefficient roadmap target follows from the repaired
+same-degree and successor-degree no-common pair bridges. -/
+theorem
+    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairDegreeSplit_nonneg
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
+  fun hrr hpos hnn =>
+    pairwiseCompatible_iff_hasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
+      hrr hpos hnn hsame hsucc
+
+/-- The nonnegative-coefficient roadmap target follows from the honest
+same-degree orientation alternative and successor-degree bridge. -/
+theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_degreeSplit_nonneg
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
+  fun hrr hpos hnn =>
+    pairwiseCompatible_iff_hasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
+      hrr hpos hnn hsame hsucc
+
+/-- The nonnegative-coefficient roadmap target follows from the
+boundary-right-pair orientation statement. -/
+theorem
+    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_boundaryRight_nonneg
+    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
+  fun hrr hpos hnn =>
+    pairwiseCompatible_iff_hasCommonInterleaver_of_boundaryRightPairOrientation_and_nonnegCoeffs
+      hrr hpos hnn hboundary
 
 /-- Degree-`≤ 1` positive-leading families already satisfy the common-interleaver
 form of Chudnovsky--Seymour without the two-polynomial bridge hypothesis. -/
