@@ -368,9 +368,8 @@ theorem pairwiseCompatible_of_commonLeftInterleaver
     {fs : List ℝ[X]}
     (hcommon : HasCommonLeftInterleaver fs)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
-    PairwiseCompatible fs := by
-  rcases hcommon with ⟨h, hprec⟩
-  exact fun i j _ => Compatible.of_commonLeftInterleaver
+    PairwiseCompatible fs :=
+  Exists.elim hcommon fun _ hprec i j _ => Compatible.of_commonLeftInterleaver
     (hprec (fs.get i) (List.get_mem _ _))
     (hprec (fs.get j) (List.get_mem _ _))
     (hpos (fs.get i) (List.get_mem _ _))
@@ -382,22 +381,20 @@ theorem pairwiseCompatible_of_pairwiseHasCommonLeftInterleaver
     {fs : List ℝ[X]}
     (hpair : PairwiseHasCommonLeftInterleaver fs)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
-    PairwiseCompatible fs := by
-  intro i j hij
-  rcases hpair i j hij with ⟨h, hhi, hhj⟩
-  exact Compatible.of_commonLeftInterleaver
-    hhi hhj
-    (hpos (fs.get i) (List.get_mem _ _))
-    (hpos (fs.get j) (List.get_mem _ _))
+    PairwiseCompatible fs :=
+  fun i j hij =>
+    Exists.elim (hpair i j hij) fun _ hh => Compatible.of_commonLeftInterleaver
+      hh.1 hh.2
+      (hpos (fs.get i) (List.get_mem _ _))
+      (hpos (fs.get j) (List.get_mem _ _))
 
 /-- A family with a common right interleaver is pairwise compatible. -/
 theorem pairwiseCompatible_of_commonInterleaver
     {fs : List ℝ[X]}
     (hcommon : HasCommonInterleaver fs)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
-    PairwiseCompatible fs := by
-  rcases hcommon with ⟨h, hprec⟩
-  exact fun i j _ => Compatible.of_commonInterleaver
+    PairwiseCompatible fs :=
+  Exists.elim hcommon fun _ hprec i j _ => Compatible.of_commonInterleaver
     (hprec (fs.get i) (List.get_mem _ _))
     (hprec (fs.get j) (List.get_mem _ _))
     (hpos (fs.get i) (List.get_mem _ _))
@@ -408,13 +405,12 @@ theorem pairwiseCompatible_of_pairwiseHasCommonInterleaver
     {fs : List ℝ[X]}
     (hpair : PairwiseHasCommonInterleaver fs)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
-    PairwiseCompatible fs := by
-  intro i j hij
-  rcases hpair i j hij with ⟨h, hih, hjh⟩
-  exact Compatible.of_commonInterleaver
-    hih hjh
-    (hpos (fs.get i) (List.get_mem _ _))
-    (hpos (fs.get j) (List.get_mem _ _))
+    PairwiseCompatible fs :=
+  fun i j hij =>
+    Exists.elim (hpair i j hij) fun _ hh => Compatible.of_commonInterleaver
+      hh.1 hh.2
+      (hpos (fs.get i) (List.get_mem _ _))
+      (hpos (fs.get j) (List.get_mem _ _))
 
 /-- Once the two-polynomial common-left-interleaver converse is available, the
 pairwise Chudnovsky--Seymour hypothesis immediately upgrades to pairwise common
@@ -3187,9 +3183,8 @@ interleaver witness. -/
 theorem pairwiseHasCommonInterleaver_of_commonInterleaver
     {fs : List ℝ[X]}
     (hcommon : HasCommonInterleaver fs) :
-    PairwiseHasCommonInterleaver fs := by
-  rcases hcommon with ⟨h, hprec⟩
-  exact fun i j _ => ⟨h,
+    PairwiseHasCommonInterleaver fs :=
+  Exists.elim hcommon fun h hprec i j _ => ⟨h,
     hprec (fs.get i) (List.get_mem _ _),
     hprec (fs.get j) (List.get_mem _ _)⟩
 
@@ -3198,9 +3193,8 @@ interleaver witness. -/
 theorem pairwiseHasCommonLeftInterleaver_of_commonLeftInterleaver
     {fs : List ℝ[X]}
     (hcommon : HasCommonLeftInterleaver fs) :
-    PairwiseHasCommonLeftInterleaver fs := by
-  rcases hcommon with ⟨h, hprec⟩
-  exact fun i j _ => ⟨h,
+    PairwiseHasCommonLeftInterleaver fs :=
+  Exists.elim hcommon fun h hprec i j _ => ⟨h,
     hprec (fs.get i) (List.get_mem _ _),
     hprec (fs.get j) (List.get_mem _ _)⟩
 
