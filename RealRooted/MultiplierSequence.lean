@@ -260,8 +260,7 @@ theorem jensenPolynomial_eq_zero_iff {n : ℕ} {gamma : ℕ → ℝ} :
 
 @[simp] theorem jensenPolynomial_zero_sequence (n : ℕ) :
     jensenPolynomial n (fun _ => (0 : ℝ)) = 0 := by
-  rw [jensenPolynomial_eq_zero_iff]
-  simp
+  simpa using jensenPolynomial_const_sequence n (0 : ℝ)
 
 @[simp] theorem jensenPolynomial_one_sequence (n : ℕ) :
     jensenPolynomial n (fun _ => (1 : ℝ)) = (X + 1 : ℝ[X]) ^ n := by
