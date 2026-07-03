@@ -477,4 +477,88 @@ theorem hurwitzMatrixSchurProductDetLeThree_iff_inBand :
   ⟨hurwitzMatrixSchurProductDetFinThreeInBand_of_leThree,
     hurwitzMatrixSchurProductDetLeThree_of_inBand⟩
 
+/-! ### Reusable reductions for the triangular-free `3 × 3` core -/
+
+/-- Arithmetic band bookkeeping for the triangular-free `3 × 3` core. Under
+the two triangular-free hypotheses `2 * cols 1 ≤ rows 0` and
+`2 * cols 2 ≤ rows 1`, monotonicity of the selected rows and columns forces
+every selected entry except possibly the top-right corner `(0, 2)` onto the
+nonzero staircase. -/
+theorem hurwitz_schurProduct_core_inband_entries
+    {rows cols : Fin 3 → ℕ} (hrows : StrictMono rows) (hcols : StrictMono cols)
+    (h01 : 2 * cols 1 ≤ rows 0) (h12 : 2 * cols 2 ≤ rows 1) :
+    2 * cols 0 ≤ rows 0 ∧ 2 * cols 0 ≤ rows 1 ∧ 2 * cols 1 ≤ rows 1 ∧
+      2 * cols 0 ≤ rows 2 ∧ 2 * cols 1 ≤ rows 2 ∧ 2 * cols 2 ≤ rows 2 := by
+  have hc01 : cols 0 ≤ cols 1 := hcols.monotone (by decide)
+  have hc12 : cols 1 ≤ cols 2 := hcols.monotone (by decide)
+  have hr01 : rows 0 ≤ rows 1 := hrows.monotone (by decide)
+  have hr12 : rows 1 ≤ rows 2 := hrows.monotone (by decide)
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩ <;> lia
+
+/-- The Hadamard-product matrix of two Hurwitz matrices is itself the Hurwitz
+matrix of the coefficientwise product, so every one of its minors is the same
+minor of `hurwitz (fun k => a k * b k)`. -/
+theorem hurwitz_schurProduct_submatrix_eq (a b : ℕ → ℝ) {n : ℕ}
+    (rows cols : Fin n → ℕ) :
+    (Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols =
+      (hurwitz (fun k => a k * b k)).submatrix rows cols := by
+  rw [hurwitz_mul_entrywise_matrix]
+
+/-- Fundamental column-shift structure of a Hurwitz matrix: in the nonzero
+staircase, moving one column to the right is the same as moving two rows up. -/
+theorem hurwitz_col_shift (c : ℕ → ℝ) {i j : ℕ} (h : 2 * (j + 1) ≤ i) :
+    hurwitz c i (j + 1) = hurwitz c (i - 2) j := by
+  rw [hurwitz_apply_of_band c (by lia), hurwitz_apply_of_band c (by lia)]
+  congr 1
+  by_cases hp : i % 2 = 0
+  · rw [if_pos hp, if_pos (by lia : (i - 2) % 2 = 0)]
+    lia
+  · rw [if_neg hp, if_neg (by lia : ¬ (i - 2) % 2 = 0)]
+    lia
+
+/-- Fully in-band subcase of the triangular-free `3 × 3` core: the top-right
+corner `(0, 2)` also lies on the nonzero staircase. -/
+def HurwitzMatrixSchurProductDetFinThreeCoreFullBandStatement : Prop :=
+  ∀ {a b : ℕ → ℝ},
+    (hurwitz a).IsTotallyNonneg →
+    (hurwitz b).IsTotallyNonneg →
+    ∀ {rows cols : Fin 3 → ℕ},
+      StrictMono rows →
+      StrictMono cols →
+      (∀ l : Fin 3, 2 * cols l ≤ rows l) →
+      2 * cols 1 ≤ rows 0 →
+      2 * cols 2 ≤ rows 1 →
+      2 * cols 2 ≤ rows 0 →
+      0 ≤
+        ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det
+
+/-- Corner-zero subcase of the triangular-free `3 × 3` core: the top-right
+corner `(0, 2)` lies above the staircase, so that entry vanishes. -/
+def HurwitzMatrixSchurProductDetFinThreeCoreCornerZeroStatement : Prop :=
+  ∀ {a b : ℕ → ℝ},
+    (hurwitz a).IsTotallyNonneg →
+    (hurwitz b).IsTotallyNonneg →
+    ∀ {rows cols : Fin 3 → ℕ},
+      StrictMono rows →
+      StrictMono cols →
+      (∀ l : Fin 3, 2 * cols l ≤ rows l) →
+      2 * cols 1 ≤ rows 0 →
+      2 * cols 2 ≤ rows 1 →
+      rows 0 < 2 * cols 2 →
+      0 ≤
+        ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det
+
+/-- Reduction of the triangular-free `3 × 3` core (GitHub issue #34) to its
+two top-right-corner subcases. Splitting on whether the corner `(0, 2)` is on
+the staircase reduces the sharper core to the fully in-band case and the
+corner-zero case. -/
+theorem hurwitzMatrixSchurProductDetFinThreeCore_of_fullBand_cornerZero
+    (hF : HurwitzMatrixSchurProductDetFinThreeCoreFullBandStatement)
+    (hZ : HurwitzMatrixSchurProductDetFinThreeCoreCornerZeroStatement) :
+    HurwitzMatrixSchurProductDetFinThreeCoreStatement := by
+  intro a b ha hb rows cols hrows hcols hband h01 h12
+  by_cases hc : 2 * cols 2 ≤ rows 0
+  · exact hF ha hb hrows hcols hband h01 h12 hc
+  · exact hZ ha hb hrows hcols hband h01 h12 (by lia)
+
 end RealRooted
