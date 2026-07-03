@@ -935,8 +935,7 @@ theorem reciprocalShift_hadamardProduct (D : ℕ) (p q : ℝ[X]) :
   ext n
   simp
 
-/-- Hadamard closure for the reciprocal-interlacing cone, obtained from the
-two-pair Garloff--Wagner theorem. -/
+/-- Hadamard closure for the reciprocal-interlacing cone. -/
 def hadamardReciprocalConeClosureStatement : Prop :=
   ∀ {D : ℕ} {p q : ℝ[X]},
     IsPFPolynomial p →
@@ -946,8 +945,10 @@ def hadamardReciprocalConeClosureStatement : Prop :=
     Prec0 (hadamardProduct p q)
       (reciprocalShift D (hadamardProduct p q))
 
-theorem hadamardReciprocalConeClosure_of_garloffWagner
-    (hGW : garloffWagnerHadamardNonnegPrecStatement) :
+/-- Hadamard closure for the reciprocal-interlacing cone, obtained from the
+zero-aware PF two-pair Garloff--Wagner wrapper. -/
+theorem hadamardReciprocalConeClosure_of_garloffWagner_prec0
+    (hGW : garloffWagnerHadamardPFPrec0Statement) :
     hadamardReciprocalConeClosureStatement := by
   intro D p q hp hq hprec_p hprec_q
   have hp_shift : IsPFPolynomial (reciprocalShift D p) :=
@@ -955,8 +956,24 @@ theorem hadamardReciprocalConeClosure_of_garloffWagner
   have hq_shift : IsPFPolynomial (reciprocalShift D q) :=
     IsPFPolynomial.of_realRooted_nonneg hq.hasNonnegCoeffs.reciprocalShift hprec_q.2.1.2
   simpa [reciprocalShift_hadamardProduct] using
+    hGW hp hp_shift hq hq_shift hprec_p.toPrec0 hprec_q.toPrec0
+
+/-- Hadamard closure for the reciprocal-interlacing cone, obtained from the
+nonnegative two-pair Garloff--Wagner theorem. -/
+theorem hadamardReciprocalConeClosure_of_garloffWagner
+    (hGW : garloffWagnerHadamardNonnegPrecStatement) :
+    hadamardReciprocalConeClosureStatement :=
+  hadamardReciprocalConeClosure_of_garloffWagner_prec0
     (garloffWagnerHadamardPFPrec0_of_nonnegPrec hGW)
-      hp hp_shift hq hq_shift hprec_p.toPrec0 hprec_q.toPrec0
+
+theorem hadamardReciprocalConeClosure_of_matrixHadamardBridges
+    (hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
+    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
+    hadamardReciprocalConeClosureStatement :=
+  hadamardReciprocalConeClosure_of_garloffWagner_prec0
+    (garloffWagnerHadamardPFPrec0_of_matrixHadamardBridges
+      hToFull hMatHad hFullToPrec0)
 
 /-- Polynomial-coefficient form of Polya-frequency closure under termwise
 products. This is finite-sequence closure packaged through coefficient
@@ -981,5 +998,22 @@ theorem polyaFrequencyHadamardCoeff_of_garloffWagner_nonneg
     polyaFrequencyHadamardCoeffStatement :=
   polyaFrequencyHadamardCoeff_of_schurPolyaWagner hASW
     (schurPolyaWagnerHadamardPF_of_garloffWagner_nonneg hGW)
+
+theorem polyaFrequencyHadamardCoeff_of_garloffWagner_nonnegPrec
+    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
+    (hGW : garloffWagnerHadamardNonnegPrecStatement) :
+    polyaFrequencyHadamardCoeffStatement :=
+  polyaFrequencyHadamardCoeff_of_schurPolyaWagner hASW
+    (schurPolyaWagnerHadamardPF_of_garloffWagner_nonnegPrec hGW)
+
+theorem polyaFrequencyHadamardCoeff_of_matrixHadamardBridges
+    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
+    (hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
+    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
+    polyaFrequencyHadamardCoeffStatement :=
+  polyaFrequencyHadamardCoeff_of_schurPolyaWagner hASW
+    (schurPolyaWagnerHadamardPF_of_matrixHadamardBridges
+      hToFull hMatHad hFullToPrec0)
 
 end RealRooted
