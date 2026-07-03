@@ -70,4 +70,36 @@ lemma IsTotallyNonneg.smul {M : Matrix ι ι R}
   rw [Matrix.det_smul]
   exact mul_nonneg (by positivity) (hM hrows hcols)
 
+/-- Every `2 × 2` minor of the entrywise product of two totally nonnegative
+matrices is nonnegative.  The analogous statement is false for larger minors
+of arbitrary totally nonnegative matrices. -/
+theorem IsTotallyNonneg.hadamard_det_fin_two {M N : Matrix ι ι R}
+    (hM : M.IsTotallyNonneg) (hN : N.IsTotallyNonneg) {rows cols : Fin 2 → ι}
+    (hrows : StrictMono rows) (hcols : StrictMono cols) :
+    0 ≤ ((Matrix.of fun i j => M i j * N i j).submatrix rows cols).det := by
+  have hMdet := hM hrows hcols
+  have hNdet := hN hrows hcols
+  rw [Matrix.det_fin_two] at hMdet hNdet ⊢
+  simp only [Matrix.submatrix_apply, Matrix.of_apply] at hMdet hNdet ⊢
+  have hM01 : 0 ≤ M (rows 0) (cols 1) := hM.nonneg _ _
+  have hM10 : 0 ≤ M (rows 1) (cols 0) := hM.nonneg _ _
+  have hN00 : 0 ≤ N (rows 0) (cols 0) := hN.nonneg _ _
+  have hN11 : 0 ≤ N (rows 1) (cols 1) := hN.nonneg _ _
+  have h1 := mul_nonneg hMdet (mul_nonneg hN00 hN11)
+  have h2 := mul_nonneg (mul_nonneg hM01 hM10) hNdet
+  have key :
+      M (rows 0) (cols 0) * N (rows 0) (cols 0) *
+            (M (rows 1) (cols 1) * N (rows 1) (cols 1)) -
+          M (rows 0) (cols 1) * N (rows 0) (cols 1) *
+            (M (rows 1) (cols 0) * N (rows 1) (cols 0)) =
+        (M (rows 0) (cols 0) * M (rows 1) (cols 1) -
+              M (rows 0) (cols 1) * M (rows 1) (cols 0)) *
+            (N (rows 0) (cols 0) * N (rows 1) (cols 1)) +
+          M (rows 0) (cols 1) * M (rows 1) (cols 0) *
+            (N (rows 0) (cols 0) * N (rows 1) (cols 1) -
+              N (rows 0) (cols 1) * N (rows 1) (cols 0)) := by
+    ring
+  rw [key]
+  exact add_nonneg h1 h2
+
 end Matrix

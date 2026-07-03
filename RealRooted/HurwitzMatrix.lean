@@ -139,4 +139,25 @@ def HurwitzMatrixSchurProductTNStatement : Prop :=
     (hurwitz b).IsTotallyNonneg →
     (Matrix.of fun i j => hurwitz a i j * hurwitz b i j).IsTotallyNonneg
 
+/-! ### Low-order cases of the Schur-product core -/
+
+/-- Every entry of the entrywise product of two totally nonnegative Hurwitz
+matrices is nonnegative.  This is the `1 × 1` minor case of
+`HurwitzMatrixSchurProductTNStatement`. -/
+theorem hurwitz_schurProduct_entry_nonneg {a b : ℕ → ℝ}
+    (ha : (hurwitz a).IsTotallyNonneg) (hb : (hurwitz b).IsTotallyNonneg)
+    (i j : ℕ) :
+    0 ≤ (Matrix.of fun i j => hurwitz a i j * hurwitz b i j) i j := by
+  simp only [Matrix.of_apply]
+  exact mul_nonneg (ha.nonneg i j) (hb.nonneg i j)
+
+/-- Every `2 × 2` minor of the entrywise product of two totally nonnegative
+Hurwitz matrices is nonnegative.  This is the general two-by-two Hadamard minor
+lemma specialized to Hurwitz matrices. -/
+theorem hurwitz_schurProduct_det_fin_two {a b : ℕ → ℝ}
+    (ha : (hurwitz a).IsTotallyNonneg) (hb : (hurwitz b).IsTotallyNonneg)
+    {rows cols : Fin 2 → ℕ} (hrows : StrictMono rows) (hcols : StrictMono cols) :
+    0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det :=
+  ha.hadamard_det_fin_two hb hrows hcols
+
 end RealRooted
