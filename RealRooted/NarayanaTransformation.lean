@@ -172,6 +172,27 @@ def narayanaTransform (m : ℕ) : ℝ[X] → ℝ[X] :=
     narayanaTransform m (Polynomial.monomial n a) = C a * narayanaPolynomial m n := by
   rw [narayanaTransform, basisTransform_monomial]
 
+theorem coeff_narayanaTransform (m : ℕ) (p : ℝ[X]) (j : ℕ) :
+    (narayanaTransform m p).coeff j =
+      p.sum fun k a => a * (narayanaPolynomial m k).coeff j :=
+  coeff_basisTransform (narayanaPolynomial m) p j
+
+@[simp] theorem coeff_narayanaTransform_monomial (m n j : ℕ) (a : ℝ) :
+    (narayanaTransform m (Polynomial.monomial n a)).coeff j =
+      a * (narayanaPolynomial m n).coeff j := by
+  simp [narayanaTransform_monomial]
+
+@[simp] theorem coeff_narayanaTransform_monomial_of_le
+    {m n j : ℕ} (hj : j ≤ n) (a : ℝ) :
+    (narayanaTransform m (Polynomial.monomial n a)).coeff j =
+      a * narayanaTransformCoeff m n j := by
+  simp [hj]
+
+@[simp] theorem coeff_narayanaTransform_monomial_of_lt
+    {m n j : ℕ} (hj : n < j) (a : ℝ) :
+    (narayanaTransform m (Polynomial.monomial n a)).coeff j = 0 := by
+  simp [hj]
+
 theorem HasNonnegCoeffs.narayanaTransform {m : ℕ} {p : ℝ[X]}
     (hp : HasNonnegCoeffs p) :
     HasNonnegCoeffs (narayanaTransform m p) :=
@@ -204,6 +225,43 @@ Mao--Wang, Eq. (2.3). -/
 def rectangularAdditiveConvolution (m n : ℕ) (f g : ℝ[X]) : ℝ[X] :=
   ∑ k ∈ Finset.range (n + 1),
     C (rectangularConvolutionCoeff m n f g k) * X ^ (n - k)
+
+/-- Factorial form of the generalized Narayana coefficient `N_m(n,k)`.
+
+From `N_m(n,k) = C(n,k) * C(n+m,k) / C(m+k,k)` one gets, for `k ≤ n`,
+the paper's Eq. (1.2) form. -/
+theorem narayanaTransformCoeff_eq_factorial (m n k : ℕ) (hk : k ≤ n) :
+    narayanaTransformCoeff m n k =
+      ((Nat.factorial n : ℝ) * (Nat.factorial (n + m) : ℝ) *
+          (Nat.factorial m : ℝ)) /
+        ((Nat.factorial k : ℝ) * (Nat.factorial (n - k) : ℝ) *
+          (Nat.factorial (m + k) : ℝ) *
+          (Nat.factorial (n + m - k) : ℝ)) := by
+  have hk2 : k ≤ n + m := hk.trans (Nat.le_add_right n m)
+  have h3 : k ≤ m + k := Nat.le_add_left k m
+  have e1 : (m + k) - k = m := by lia
+  unfold narayanaTransformCoeff
+  rw [Nat.cast_choose ℝ hk, Nat.cast_choose ℝ hk2, Nat.cast_choose ℝ h3, e1]
+  have f0 : ∀ p : ℕ, (Nat.factorial p : ℝ) ≠ 0 := fun p =>
+    Nat.cast_ne_zero.mpr (Nat.factorial_pos p).ne'
+  field_simp
+
+/-- The key coefficient identity from Section 2 of Mao--Wang.  For `i+j ≤ n`,
+the rectangular convolution coefficient `γ_{i,j}^{(n,m)}` transports the
+generalized Narayana coefficient `N_m(n,j)` to `N_m(n-i,j)`. -/
+theorem rectangularConvolutionGamma_mul_narayanaTransformCoeff
+    (m n i j : ℕ) (h : i + j ≤ n) :
+    rectangularConvolutionGamma m n i j * narayanaTransformCoeff m n j =
+      narayanaTransformCoeff m (n - i) j := by
+  have hj : j ≤ n := by lia
+  have hji : j ≤ n - i := by lia
+  have ea : (n - i) + m = n + m - i := by lia
+  rw [narayanaTransformCoeff_eq_factorial m n j hj,
+      narayanaTransformCoeff_eq_factorial m (n - i) j hji, ea]
+  unfold rectangularConvolutionGamma
+  have f0 : ∀ p : ℕ, (Nat.factorial p : ℝ) ≠ 0 := fun p =>
+    Nat.cast_ne_zero.mpr (Nat.factorial_pos p).ne'
+  field_simp
 
 /-- Gribinski--Marcus preservation theorem in the form used by Mao--Wang,
 paper Lemma 2.6. -/
