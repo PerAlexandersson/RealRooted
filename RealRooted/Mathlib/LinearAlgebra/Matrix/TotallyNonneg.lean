@@ -102,4 +102,23 @@ theorem IsTotallyNonneg.hadamard_det_fin_two {M N : Matrix ι ι R}
   rw [key]
   exact add_nonneg h1 h2
 
+/-- Every minor of size at most two of the entrywise product of two totally
+nonnegative matrices is nonnegative. -/
+theorem IsTotallyNonneg.hadamard_det_of_card_le_two {M N : Matrix ι ι R}
+    (hM : M.IsTotallyNonneg) (hN : N.IsTotallyNonneg)
+    {n : ℕ} {rows cols : Fin n → ι} (hrows : StrictMono rows) (hcols : StrictMono cols)
+    (hn : n ≤ 2) :
+    0 ≤ ((Matrix.of fun i j => M i j * N i j).submatrix rows cols).det := by
+  rcases n with _ | n
+  · simp
+  rcases n with _ | n
+  · rw [Matrix.det_fin_one]
+    simp only [Matrix.submatrix_apply, Matrix.of_apply]
+    exact mul_nonneg (hM.nonneg (rows 0) (cols 0)) (hN.nonneg (rows 0) (cols 0))
+  rcases n with _ | n
+  · exact hM.hadamard_det_fin_two hN hrows hcols
+  · have hlt : 2 < Nat.succ (Nat.succ (Nat.succ n)) :=
+      Nat.succ_lt_succ (Nat.succ_lt_succ (Nat.zero_lt_succ n))
+    exact (not_lt_of_ge hn hlt).elim
+
 end Matrix

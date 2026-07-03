@@ -160,4 +160,15 @@ theorem hurwitz_schurProduct_det_fin_two {a b : ℕ → ℝ}
     0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det :=
   ha.hadamard_det_fin_two hb hrows hcols
 
+/-- Every minor of size at most two of the entrywise product of two totally
+nonnegative Hurwitz matrices is nonnegative.  This packages the complete
+low-order part of `HurwitzMatrixSchurProductTNStatement`; the first remaining
+case is the genuinely Hurwitz-specific `3 × 3` minor. -/
+theorem hurwitz_schurProduct_det_of_card_le_two {a b : ℕ → ℝ}
+    (ha : (hurwitz a).IsTotallyNonneg) (hb : (hurwitz b).IsTotallyNonneg)
+    {n : ℕ} {rows cols : Fin n → ℕ} (hrows : StrictMono rows) (hcols : StrictMono cols)
+    (hn : n ≤ 2) :
+    0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det :=
+  ha.hadamard_det_of_card_le_two hb hrows hcols hn
+
 end RealRooted
