@@ -412,12 +412,20 @@ theorem pairwiseCompatible_of_pairwiseHasCommonInterleaver
       (hpos (fs.get i) (List.get_mem _ _))
       (hpos (fs.get j) (List.get_mem _ _))
 
+/-- Two-polynomial common-left bridge: compatibility implies a common left
+interleaver. This is the remaining local bridge for the common-left
+Chudnovsky--Seymour target after the finite-family upgrade. -/
+def CompatiblePairHasCommonLeftInterleaverStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    Compatible f g →
+    ∃ h : ℝ[X], Prec h f ∧ Prec h g
+
 /-- Once the two-polynomial common-left-interleaver converse is available, the
 pairwise Chudnovsky--Seymour hypothesis immediately upgrades to pairwise common
 left interleavers. This isolates the exact missing bridge. -/
 theorem pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible
     {fs : List ℝ[X]}
-    (htwo : ∀ ⦃f g : ℝ[X]⦄, Compatible f g → ∃ h : ℝ[X], Prec h f ∧ Prec h g)
+    (htwo : CompatiblePairHasCommonLeftInterleaverStatement)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonLeftInterleaver fs :=
   fun i j hij => by simpa using htwo (hpair i j hij)
@@ -428,7 +436,7 @@ two-polynomial common-left bridge and the finite-family left Helly upgrade. -/
 theorem pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
     {fs : List ℝ[X]}
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (htwo : ∀ ⦃f g : ℝ[X]⦄, Compatible f g → ∃ h : ℝ[X], Prec h f ∧ Prec h g)
+    (htwo : CompatiblePairHasCommonLeftInterleaverStatement)
     (hglobal : PairwiseHasCommonLeftInterleaver fs → HasCommonLeftInterleaver fs) :
     PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
   ⟨fun hpair =>
@@ -441,7 +449,7 @@ theorem pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direc
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, f.Splits)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (htwo : ∀ ⦃f g : ℝ[X]⦄, Compatible f g → ∃ h : ℝ[X], Prec h f ∧ Prec h g) :
+    (htwo : CompatiblePairHasCommonLeftInterleaverStatement) :
     PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
   pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge hpos htwo <|
     hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver hrr hpos

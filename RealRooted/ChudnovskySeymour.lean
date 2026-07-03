@@ -20,8 +20,7 @@ def chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target : Prop
 before the finite-family left Helly upgrade was internalized.
 -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
-    (htwo :
-      ∀ ⦃f g : ℝ[X]⦄, Compatible f g → ∃ h : ℝ[X], Prec h f ∧ Prec h g)
+    (htwo : CompatiblePairHasCommonLeftInterleaverStatement)
     (hglobal :
       ∀ {fs : List ℝ[X]},
         (∀ f ∈ fs, f.Splits) →
@@ -37,8 +36,7 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairwi
 common-left Chudnovsky--Seymour target now only needs the two-polynomial
 common-left bridge. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direct
-    (htwo :
-      ∀ ⦃f g : ℝ[X]⦄, Compatible f g → ∃ h : ℝ[X], Prec h f ∧ Prec h g) :
+    (htwo : CompatiblePairHasCommonLeftInterleaverStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target :=
   fun {fs} hrr hpos =>
     pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direct
