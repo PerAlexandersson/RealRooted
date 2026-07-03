@@ -156,4 +156,30 @@ theorem splits_of_reverse {p : K[X]} (h : p.reverse.Splits) :
     p.Splits :=
   splits_reverse_iff.mp h
 
+/-- Multiplying by a power of `X` does not change whether a polynomial splits. -/
+theorem splits_X_pow_mul_iff {p : K[X]} (k : ℕ) :
+    (X ^ k * p).Splits ↔ p.Splits :=
+  Polynomial.splits_mul_iff_right (pow_ne_zero k Polynomial.X_ne_zero)
+    (Polynomial.Splits.X_pow k)
+
+/-- The reflected degree-padded family splits if and only if the original
+family splits. -/
+theorem splits_reflected_family_iff {a b : K} {f g : K[X]} {N : ℕ}
+    (hfN : f.natDegree ≤ N) (hgN : g.natDegree = N) :
+    (C a * (X ^ (N - f.natDegree) * f.reverse) + C b * g.reverse).Splits ↔
+      (C a * f + C b * g).Splits := by
+  have hle : (C a * f + C b * g).natDegree ≤ N :=
+    (Polynomial.natDegree_add_le _ _).trans <|
+      max_le
+        ((Polynomial.natDegree_C_mul_le a f).trans hfN)
+        ((Polynomial.natDegree_C_mul_le b g).trans hgN.le)
+  have hreflect :
+      reflect N (C a * f + C b * g) =
+        C a * (X ^ (N - f.natDegree) * f.reverse) + C b * g.reverse := by
+    rw [Polynomial.reflect_add, Polynomial.reflect_C_mul, Polynomial.reflect_C_mul,
+      reflect_eq_X_pow_mul_reverse f hfN, reflect_eq_X_pow_mul_reverse g hgN.le]
+    simp [hgN]
+  rw [← hreflect]
+  exact splits_reflect_iff hle
+
 end RealRooted.DegreeDropReversal
