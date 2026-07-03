@@ -1125,10 +1125,10 @@ theorem posComboNoCommonSuccDegreeOrientation_of_degree_zero
 used immediately as input for the corrected succ-degree pair bridge. -/
 theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_orientation_nonneg
     (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
-  have hprec : Prec f g := horient hf_pos hg_pos hfnn hgnn hfg hsucc hno
-  exact pairHasCommonInterleaver_of_prec hprec
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+  fun {_ _} hf_pos hg_pos hfnn hgnn hfg hsucc hno =>
+    pairHasCommonInterleaver_of_prec <|
+      horient hf_pos hg_pos hfnn hgnn hfg hsucc hno
 
 /-- The corrected succ-degree pair bridge is already unconditional in the
 constant-vs-linear endpoint case. -/
@@ -1207,11 +1207,10 @@ forces the forward orientation by degree, so it also packages the honest
 succ-degree orientation statement. -/
 theorem posComboNoCommonSuccDegreeOrientation_of_noCommonOrientation
     (hstep : PosComboNoCommonOrientationStatement) :
-    PosComboNoCommonSuccDegreeOrientationNonnegStatement := by
-  intro f g hf_pos hg_pos _ _ hfg hsucc hno
-  have hprec_or : Prec f g ∨ Prec g f :=
-    hstep hfg hf_pos hg_pos (by lia) (by lia) hno
-  exact prec_forward_of_orientation_of_succDegree hsucc hprec_or
+    PosComboNoCommonSuccDegreeOrientationNonnegStatement :=
+  fun {_ _} hf_pos hg_pos _ _ hfg hsucc hno =>
+    prec_forward_of_orientation_of_succDegree hsucc <|
+      hstep hfg hf_pos hg_pos (by lia) (by lia) hno
 
 /-- Consequently, any proof of the older no-common orientation core can be fed
 directly into the corrected succ-degree common-interleaver bridge. -/
