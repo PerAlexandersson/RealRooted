@@ -128,4 +128,15 @@ theorem splits_reflect_iff {p : K[X]} {N : ℕ} (hN : p.natDegree ≤ N) :
     Polynomial.natDegree_reflect_le.trans <| by rw [max_eq_left hN]
   simpa using splits_reflect_of_splits h hreflect_deg
 
+/-- Reversal preserves and reflects splitting over a field. -/
+theorem splits_reverse_iff {p : K[X]} :
+    p.reverse.Splits ↔ p.Splits := by
+  simpa [Polynomial.reverse] using
+    (splits_reflect_iff (p := p) (N := p.natDegree) le_rfl)
+
+/-- If the reverse of a polynomial splits, then the original polynomial splits. -/
+theorem splits_of_reverse {p : K[X]} (h : p.reverse.Splits) :
+    p.Splits :=
+  splits_reverse_iff.mp h
+
 end RealRooted.DegreeDropReversal
