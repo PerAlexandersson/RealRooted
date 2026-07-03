@@ -215,6 +215,13 @@ def rectangularConvolutionGamma (m n i j : ℕ) : ℝ :=
     ((Nat.factorial (n + m - i) : ℝ) * (Nat.factorial (n + m - j) : ℝ) /
       ((Nat.factorial (n + m) : ℝ) * (Nat.factorial (n + m - i - j) : ℝ)))
 
+/-- The rectangular convolution coefficient is symmetric in its two indices. -/
+theorem rectangularConvolutionGamma_symm (m n i j : ℕ) :
+    rectangularConvolutionGamma m n i j = rectangularConvolutionGamma m n j i := by
+  unfold rectangularConvolutionGamma
+  rw [Nat.sub_right_comm n i j, Nat.sub_right_comm (n + m) i j]
+  ring
+
 def rectangularConvolutionCoeff (m n : ℕ) (f g : ℝ[X]) (k : ℕ) : ℝ :=
   ∑ i ∈ Finset.range (k + 1),
     rectangularConvolutionGamma m n i (k - i) *
@@ -225,6 +232,40 @@ Mao--Wang, Eq. (2.3). -/
 def rectangularAdditiveConvolution (m n : ℕ) (f g : ℝ[X]) : ℝ[X] :=
   ∑ k ∈ Finset.range (n + 1),
     C (rectangularConvolutionCoeff m n f g k) * X ^ (n - k)
+
+/-- Coefficient extraction for the rectangular additive convolution. -/
+theorem coeff_rectangularAdditiveConvolution_of_le (m n : ℕ) (f g : ℝ[X])
+    {j : ℕ} (hj : j ≤ n) :
+    (rectangularAdditiveConvolution m n f g).coeff j =
+      rectangularConvolutionCoeff m n f g (n - j) := by
+  unfold rectangularAdditiveConvolution
+  rw [Polynomial.finsetSum_coeff]
+  rw [Finset.sum_eq_single_of_mem (n - j)
+      (Finset.mem_range.mpr (Nat.lt_succ_iff.mpr (Nat.sub_le n j)))]
+  · rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, Nat.sub_sub_self hj,
+      if_pos rfl, mul_one]
+  · intro k hk hkne
+    have hk' : k ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
+    rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow,
+      if_neg (fun hjk => hkne (by lia)), mul_zero]
+
+/-- The rectangular additive convolution has no coefficients above degree `n`. -/
+theorem coeff_rectangularAdditiveConvolution_of_gt (m n : ℕ) (f g : ℝ[X])
+    {j : ℕ} (hj : n < j) :
+    (rectangularAdditiveConvolution m n f g).coeff j = 0 := by
+  unfold rectangularAdditiveConvolution
+  rw [Polynomial.finsetSum_coeff]
+  apply Finset.sum_eq_zero
+  intro k hk
+  rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_neg (fun hjk => by lia),
+    mul_zero]
+
+/-- The rectangular additive convolution has degree at most `n`. -/
+theorem natDegree_rectangularAdditiveConvolution_le (m n : ℕ) (f g : ℝ[X]) :
+    (rectangularAdditiveConvolution m n f g).natDegree ≤ n := by
+  rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
+  intro k hk
+  exact coeff_rectangularAdditiveConvolution_of_gt m n f g hk
 
 /-- Factorial form of the generalized Narayana coefficient `N_m(n,k)`.
 
@@ -257,6 +298,12 @@ theorem narayanaTransformCoeff_symm (m n k : ℕ) (hk : k ≤ n) :
   rw [h1, h2, h3]
   ring
 
+/-- Reversed-index coefficient of the generalized Narayana polynomial. -/
+theorem coeff_narayanaPolynomial_sub (m n i : ℕ) (hi : i ≤ n) :
+    (narayanaPolynomial m n).coeff (n - i) = narayanaTransformCoeff m n i := by
+  rw [coeff_narayanaPolynomial_of_le (Nat.sub_le n i)]
+  exact (narayanaTransformCoeff_symm m n i hi).symm
+
 /-- The key coefficient identity from Section 2 of Mao--Wang.  For `i+j ≤ n`,
 the rectangular convolution coefficient `γ_{i,j}^{(n,m)}` transports the
 generalized Narayana coefficient `N_m(n,j)` to `N_m(n-i,j)`. -/
@@ -273,6 +320,15 @@ theorem rectangularConvolutionGamma_mul_narayanaTransformCoeff
   have f0 : ∀ p : ℕ, (Nat.factorial p : ℝ) ≠ 0 := fun p =>
     Nat.cast_ne_zero.mpr (Nat.factorial_pos p).ne'
   field_simp
+
+/-- Symmetric companion of
+`rectangularConvolutionGamma_mul_narayanaTransformCoeff`. -/
+theorem rectangularConvolutionGamma_mul_narayanaTransformCoeff_left
+    (m n i j : ℕ) (h : i + j ≤ n) :
+    rectangularConvolutionGamma m n i j * narayanaTransformCoeff m n i =
+      narayanaTransformCoeff m (n - j) i := by
+  rw [rectangularConvolutionGamma_symm]
+  exact rectangularConvolutionGamma_mul_narayanaTransformCoeff m n j i (by lia)
 
 /-- Gribinski--Marcus preservation theorem in the form used by Mao--Wang,
 paper Lemma 2.6. -/
