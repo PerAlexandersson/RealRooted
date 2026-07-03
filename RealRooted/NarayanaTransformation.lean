@@ -246,6 +246,17 @@ theorem narayanaTransformCoeff_eq_factorial (m n k : ℕ) (hk : k ≤ n) :
     Nat.cast_ne_zero.mpr (Nat.factorial_pos p).ne'
   field_simp
 
+/-- Complementary-index symmetry of the generalized Narayana coefficients. -/
+theorem narayanaTransformCoeff_symm (m n k : ℕ) (hk : k ≤ n) :
+    narayanaTransformCoeff m n k = narayanaTransformCoeff m n (n - k) := by
+  rw [narayanaTransformCoeff_eq_factorial m n k hk,
+      narayanaTransformCoeff_eq_factorial m n (n - k) (Nat.sub_le n k)]
+  have h1 : n - (n - k) = k := by lia
+  have h2 : m + (n - k) = n + m - k := by lia
+  have h3 : n + m - (n - k) = m + k := by lia
+  rw [h1, h2, h3]
+  ring
+
 /-- The key coefficient identity from Section 2 of Mao--Wang.  For `i+j ≤ n`,
 the rectangular convolution coefficient `γ_{i,j}^{(n,m)}` transports the
 generalized Narayana coefficient `N_m(n,j)` to `N_m(n-i,j)`. -/
