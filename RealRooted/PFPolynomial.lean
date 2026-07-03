@@ -62,8 +62,8 @@ zero-or-splits certificate. -/
 theorem of_nonnegCoeffs_eq_zero_or_splits {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hp : p = 0 ∨ p.Splits) :
     IsPFPolynomial p := by
-  rcases hp with hzero | hsplits
-  · simpa [hzero] using IsPFPolynomial.zero
+  rcases hp with rfl | hsplits
+  · exact IsPFPolynomial.zero
   · exact IsPFPolynomial.of_realRooted_nonneg hpnn hsplits
 
 theorem const_mul {a : ℝ} (ha : 0 < a) {p : ℝ[X]}
@@ -155,10 +155,8 @@ theorem prec0_self {p : ℝ[X]} (hp : IsPFPolynomial p) :
 theorem of_prec0_self {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hpp : Prec0 p p) :
     IsPFPolynomial p := by
-  rcases hpp with rfl | rfl | hpp'
-  · exact IsPFPolynomial.zero
-  · exact IsPFPolynomial.zero
-  · exact IsPFPolynomial.of_realRooted_nonneg hpnn hpp'.1.2
+  rcases hpp with rfl | rfl | hpp' <;> try exact IsPFPolynomial.zero
+  exact IsPFPolynomial.of_realRooted_nonneg hpnn hpp'.1.2
 
 end IsPFPolynomial
 
