@@ -87,6 +87,14 @@ theorem commonInterleaverNonnegCoeffsTarget_of_boundaryRight
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_boundaryRight_nonneg
     hboundary
 
+/-- Challenge-facing projection from the nonnegative-coefficient common-right
+interleaver target to the finite-family compatibility target. -/
+theorem familyCompatibleNonnegCoeffsTarget_of_commonInterleaverTarget
+    (hcommon : commonInterleaverNonnegCoeffsTarget) :
+    familyCompatibleNonnegCoeffsTarget :=
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_nonneg
+    hcommon
+
 /-- Challenge-facing reduction for the nonnegative-coefficient finite-family
 compatibility target from the repaired same-degree/succ-degree no-common pair
 bridges. -/
