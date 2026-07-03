@@ -3826,6 +3826,118 @@ theorem pairwiseCompatible_iff_familyCompatible_of_boundaryRightPairOrientation_
     chudnovskySeymour_fourWay_of_boundaryRightPairOrientation_via_nonnegShift
       (fs := fs) hrr hpos hboundary
 
+/-- Nonnegative-coefficient specialization of Chudnovsky--Seymour `1 ↔ 3`
+from a direct nonnegative pair bridge. -/
+private theorem pairwiseCompatible_iff_hasCommonInterleaver_of_nonnegPairBridge
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (hbridge :
+      ∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
+  pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay <|
+    chudnovskySeymour_fourWay_of_nonnegPairBridge hrr hpos hnn hbridge
+
+/-- Nonnegative-coefficient specialization of Chudnovsky--Seymour `1 ↔ 3`
+from the no-common orientation core. -/
+theorem pairwiseCompatible_iff_hasCommonInterleaver_of_noCommonOrientation_and_nonnegCoeffs
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (hstep : PosComboNoCommonOrientationStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
+  pairwiseCompatible_iff_hasCommonInterleaver_of_nonnegPairBridge hrr hpos hnn
+    (nonnegPairBridge_of_noCommonOrientation hstep)
+
+/-- Nonnegative-coefficient specialization of Chudnovsky--Seymour `1 ↔ 3`
+from the repaired degree-split package. -/
+theorem pairwiseCompatible_iff_hasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
+  pairwiseCompatible_iff_hasCommonInterleaver_of_nonnegPairBridge hrr hpos hnn
+    (nonnegPairBridge_of_pairDegreeSplit hsame hsucc)
+
+/-- Nonnegative-coefficient specialization of Chudnovsky--Seymour `1 ↔ 3`
+from the honest degree-split package. -/
+theorem pairwiseCompatible_iff_hasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
+  pairwiseCompatible_iff_hasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
+    (fs := fs) hrr hpos hnn
+    (posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg hsame)
+    hsucc
+
+/-- Nonnegative-coefficient specialization of Chudnovsky--Seymour `1 ↔ 3`,
+using the repaired same-degree branch and the affine-family bridge for the
+succ-degree branch. -/
+theorem pairwiseCompatible_iff_hasCommonInterleaver_of_sameDegreePair_and_affineFamily_nonneg
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
+    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
+  pairwiseCompatible_iff_hasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
+    (fs := fs) hrr hpos hnn hsame
+    (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
+
+/-- Nonnegative-coefficient specialization of Chudnovsky--Seymour `1 ↔ 3`
+from the all-combinations bridge. -/
+theorem pairwiseCompatible_iff_hasCommonInterleaver_of_allComboBridge_and_nonnegCoeffs
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (hallBridge : PosComboNoCommonToAllComboBridgeStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
+  pairwiseCompatible_iff_hasCommonInterleaver_of_noCommonOrientation_and_nonnegCoeffs
+    (fs := fs) hrr hpos hnn
+    (posComboNoCommonOrientation_of_allComboBridge hallBridge)
+
+/-- Nonnegative-coefficient specialization of Chudnovsky--Seymour `1 ↔ 3`
+from the affine-family bridge. -/
+theorem pairwiseCompatible_iff_hasCommonInterleaver_of_affineFamilyBridge_and_nonnegCoeffs
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
+  pairwiseCompatible_iff_hasCommonInterleaver_of_nonnegPairBridge hrr hpos hnn
+    (nonnegPairBridge_of_affineFamilyBridge haffBridge)
+
+/-- Nonnegative-coefficient specialization of Chudnovsky--Seymour `1 ↔ 3`
+from the boundary-right-pair orientation statement. -/
+theorem pairwiseCompatible_iff_hasCommonInterleaver_of_boundaryRightPairOrientation_and_nonnegCoeffs
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
+  pairwiseCompatible_iff_hasCommonInterleaver_of_affineFamilyBridge_and_nonnegCoeffs
+    (fs := fs) hrr hpos hnn
+    (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
+
 private theorem pairwiseCompatible_iff_familyCompatible_of_nonnegPairBridge
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
