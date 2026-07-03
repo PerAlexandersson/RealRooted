@@ -30,6 +30,26 @@ abbrev commonLeftInterleaverTarget : Prop :=
 abbrev commonInterleaverTarget : Prop :=
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target
 
+/-- Full roadmap reduction for the common-left target. -/
+theorem commonLeftInterleaverTarget_of_pairwiseLeftBridge
+    (htwo :
+      ∀ ⦃f g : ℝ[X]⦄, Compatible f g → ∃ h : ℝ[X], Prec h f ∧ Prec h g)
+    (hglobal :
+      ∀ {fs : List ℝ[X]},
+        (∀ f ∈ fs, f.Splits) →
+        (∀ f ∈ fs, HasPosLeadingCoeff f) →
+        PairwiseHasCommonLeftInterleaver fs →
+        HasCommonLeftInterleaver fs) :
+    commonLeftInterleaverTarget :=
+  RealRooted.chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
+    htwo hglobal
+
+/-- Full roadmap reduction for the common-right target. -/
+theorem commonInterleaverTarget_of_pairBridge
+    (htwo : CompatiblePairHasCommonInterleaverStatement) :
+    commonInterleaverTarget :=
+  RealRooted.chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge htwo
+
 /-- Solved low-degree four-way Chudnovsky--Seymour package. -/
 theorem fourWay_of_natDegree_le_one {fs : List ℝ[X]}
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
