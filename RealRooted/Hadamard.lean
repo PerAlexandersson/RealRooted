@@ -748,6 +748,18 @@ theorem hadamardPreservesHurwitzMatrixTN_det_fin_three
   rw [hurwitz_hadamardProduct_matrix]
   exact hurwitz_schurProduct_det_fin_three hInBand ha hb hrows hcols
 
+/-- Low-order checked part of the Hurwitz-matrix Hadamard leaf through size
+three, assuming the pure in-band `3 × 3` matrix core. -/
+theorem hadamardPreservesHurwitzMatrixTN_det_of_card_le_three
+    (hInBand : HurwitzMatrixSchurProductDetFinThreeInBandStatement)
+    {a b : ℝ[X]} (ha : (hurwitz a.coeff).IsTotallyNonneg)
+    (hb : (hurwitz b.coeff).IsTotallyNonneg)
+    {n : ℕ} {rows cols : Fin n → ℕ} (hrows : StrictMono rows) (hcols : StrictMono cols)
+    (hn : n ≤ 3) :
+    0 ≤ (((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det) := by
+  rw [hurwitz_hadamardProduct_matrix]
+  exact hurwitz_schurProduct_det_of_card_le_three hInBand ha hb hrows hcols hn
+
 /-- The Hurwitz-matrix Hadamard leaf reduces to the pure matrix Schur core.
 
 Using `hurwitz_mul_entrywise_matrix`, this strips away the coefficient

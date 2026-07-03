@@ -288,4 +288,21 @@ theorem hurwitz_schurProduct_det_of_card_le_two {a b : ℕ → ℝ}
     0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det :=
   ha.hadamard_det_of_card_le_two hb hrows hcols hn
 
+/-- Every minor of size at most three of the entrywise product of two totally
+nonnegative Hurwitz matrices is nonnegative, assuming the in-band `3 × 3`
+Hurwitz core. -/
+theorem hurwitz_schurProduct_det_of_card_le_three
+    (hInBand : HurwitzMatrixSchurProductDetFinThreeInBandStatement)
+    {a b : ℕ → ℝ}
+    (ha : (hurwitz a).IsTotallyNonneg) (hb : (hurwitz b).IsTotallyNonneg)
+    {n : ℕ} {rows cols : Fin n → ℕ} (hrows : StrictMono rows) (hcols : StrictMono cols)
+    (hn : n ≤ 3) :
+    0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det := by
+  by_cases hn2 : n ≤ 2
+  · exact hurwitz_schurProduct_det_of_card_le_two ha hb hrows hcols hn2
+  · have hn3 : n = 3 := by
+      lia
+    subst n
+    exact hurwitz_schurProduct_det_fin_three hInBand ha hb hrows hcols
+
 end RealRooted
