@@ -13,6 +13,7 @@ the list-level common-interleaver combinatorics (CommonInterleaverSeq).
 import RealRooted.PosCombo
 import RealRooted.CommonInterleaverSeq
 import RealRooted.AffineFamily
+import RealRooted.DegreeDropReversal
 import RealRooted.GammaRealRoots
 
 open Polynomial
@@ -1656,6 +1657,53 @@ def PosComboSuccDegreeLeftSplitsNonnegStatement : Prop :=
     PosComboRealRooted f g →
     g.natDegree = f.natDegree + 1 →
     f.Splits
+
+/-- Constant-term nonzero subcase of the degree-drop endpoint.  Reflection at
+`g.natDegree` turns the succ-degree pair into an equal-degree pair, so the
+same-degree positive-combination converse applies. -/
+theorem PosComboRealRooted.left_splits_of_succDegree_of_coeff_zero_ne
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hsucc : g.natDegree = f.natDegree + 1)
+    (hf0 : f.coeff 0 ≠ 0) (hg0 : g.coeff 0 ≠ 0) :
+    f.Splits := by
+  let N := g.natDegree
+  have hfN : f.natDegree ≤ N := by
+    dsimp [N]
+    lia
+  have hgN : g.natDegree ≤ N := by simp [N]
+  have hf0_pos : 0 < f.coeff 0 := lt_of_le_of_ne (hfnn 0) hf0.symm
+  have hg0_pos : 0 < g.coeff 0 := lt_of_le_of_ne (hgnn 0) hg0.symm
+  have hf_ref_pos : HasPosLeadingCoeff (reflect N f) := by
+    unfold HasPosLeadingCoeff
+    rw [DegreeDropReversal.leadingCoeff_reflect_eq_coeff_zero_of_natDegree_le hfN hf0]
+    exact hf0_pos
+  have hg_ref_pos : HasPosLeadingCoeff (reflect N g) := by
+    unfold HasPosLeadingCoeff
+    rw [DegreeDropReversal.leadingCoeff_reflect_eq_coeff_zero_of_natDegree_le hgN hg0]
+    exact hg0_pos
+  have hdeg_ref : (reflect N g).natDegree = (reflect N f).natDegree := by
+    rw [DegreeDropReversal.natDegree_reflect_eq_of_coeff_zero_ne hgN hg0,
+      DegreeDropReversal.natDegree_reflect_eq_of_coeff_zero_ne hfN hf0]
+  have hfg_ref : PosComboRealRooted (reflect N f) (reflect N g) := by
+    intro lam μ hlam hμ
+    have hbase := hfg (lam := lam) (μ := μ) hlam hμ
+    have hdeg_combo : (C lam * f + C μ * g).natDegree ≤ N := by
+      dsimp [N]
+      rw [natDegree_pos_combo_eq_right_of_natDegree_le (by lia) hf_pos hg_pos hlam hμ]
+    have hsplit_ref : (reflect N (C lam * f + C μ * g)).Splits :=
+      DegreeDropReversal.splits_reflect_of_splits hbase.2 hdeg_combo
+    have hne_ref : reflect N (C lam * f + C μ * g) ≠ 0 := by
+      intro hzero
+      exact hbase.1 (Polynomial.reflect_eq_zero_iff.mp hzero)
+    constructor
+    · simpa [Polynomial.reflect_add, Polynomial.reflect_C_mul] using hne_ref
+    · simpa [Polynomial.reflect_add, Polynomial.reflect_C_mul] using hsplit_ref
+  have hreflect_rr :=
+    hfg_ref.isRealRooted_left_of_sameDegree hf_ref_pos hg_ref_pos hdeg_ref
+  exact (DegreeDropReversal.splits_reflect_iff (p := f) hfN).mp hreflect_rr.2
 
 /-- **Sub-statement B of milestone B2: descending-root crossing inequalities.**
 

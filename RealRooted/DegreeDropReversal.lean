@@ -70,6 +70,23 @@ theorem reflect_add_C_mul {R : Type*} [Semiring R] (f g : R[X]) (μ : R) (N : �
     reflect N (f + C μ * g) = reflect N f + C μ * reflect N g := by
   rw [Polynomial.reflect_add, Polynomial.reflect_C_mul]
 
+/-- If the constant coefficient is nonzero, reflecting at any degree bound
+puts a nonzero coefficient in the top reflected degree. -/
+theorem natDegree_reflect_eq_of_coeff_zero_ne {R : Type*} [Semiring R]
+    {p : R[X]} {N : ℕ} (hN : p.natDegree ≤ N) (h0 : p.coeff 0 ≠ 0) :
+    (reflect N p).natDegree = N := by
+  refine Polynomial.natDegree_eq_of_le_of_coeff_ne_zero ?_ ?_
+  · exact Polynomial.natDegree_reflect_le.trans <| by rw [max_eq_left hN]
+  · simpa [Polynomial.revAt_le le_rfl] using h0
+
+/-- Under the same hypotheses, the leading coefficient of the reflected
+polynomial is the original constant coefficient. -/
+theorem leadingCoeff_reflect_eq_coeff_zero_of_natDegree_le {R : Type*} [Semiring R]
+    {p : R[X]} {N : ℕ} (hN : p.natDegree ≤ N) (h0 : p.coeff 0 ≠ 0) :
+    (reflect N p).leadingCoeff = p.coeff 0 := by
+  rw [Polynomial.leadingCoeff, natDegree_reflect_eq_of_coeff_zero_ne hN h0]
+  simp
+
 /-- Degree-padded reversal form of a reflected affine polynomial family. -/
 theorem reflect_add_C_mul_eq_X_pow_mul_reverse_add_C_mul_X_pow_mul_reverse
     {R : Type*} [Semiring R] (f g : R[X]) (μ : R) {N : ℕ}
