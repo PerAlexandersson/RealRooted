@@ -1705,6 +1705,38 @@ theorem PosComboRealRooted.left_splits_of_succDegree_of_coeff_zero_ne
     hfg_ref.isRealRooted_left_of_sameDegree hf_ref_pos hg_ref_pos hdeg_ref
   exact (DegreeDropReversal.splits_reflect_iff (p := f) hfN).mp hreflect_rr.2
 
+/-- Zero-constant succ-degree data pass to the pair divided by the common
+factor `X`.  This is the reduction package for the complementary branch to
+`PosComboRealRooted.left_splits_of_succDegree_of_coeff_zero_ne`. -/
+theorem PosComboRealRooted.divX_succDegree_data
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hsucc : g.natDegree = f.natDegree + 1)
+    (hf0 : f.coeff 0 = 0) (hg0 : g.coeff 0 = 0) :
+    HasPosLeadingCoeff f.divX ∧
+      HasPosLeadingCoeff g.divX ∧
+      HasNonnegCoeffs f.divX ∧
+      HasNonnegCoeffs g.divX ∧
+      PosComboRealRooted f.divX g.divX ∧
+      g.divX.natDegree = f.divX.natDegree + 1 := by
+  have hf_nat_pos : 0 < f.natDegree := by
+    by_contra hnot
+    have hf_deg_zero : f.natDegree = 0 := Nat.eq_zero_of_not_pos hnot
+    have hf_C : f = C (f.coeff 0) := Polynomial.eq_C_of_natDegree_eq_zero hf_deg_zero
+    exact hf_pos.ne_zero (by simpa [hf0] using hf_C)
+  refine
+    ⟨hf_pos.divX_of_coeff_zero hf0,
+      hg_pos.divX_of_coeff_zero hg0,
+      hfnn.divX,
+      hgnn.divX,
+      hfg.divX_of_coeff_zero hf0 hg0,
+      ?_⟩
+  rw [Polynomial.natDegree_divX_eq_natDegree_tsub_one,
+    Polynomial.natDegree_divX_eq_natDegree_tsub_one]
+  lia
+
 /-- **Sub-statement B of milestone B2: descending-root crossing inequalities.**
 
 Given the nonnegative positive-combination/no-common hypotheses at succ degree

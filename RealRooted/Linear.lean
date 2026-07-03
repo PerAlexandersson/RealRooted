@@ -41,6 +41,25 @@ lemma hasPosLeadingCoeff_of_X_sub_C_mul {q : ℝ[X]} {r : ℝ}
     HasPosLeadingCoeff q := by
   simpa [HasPosLeadingCoeff] using h
 
+/-- Dividing by `X` preserves nonnegative coefficients. -/
+protected lemma HasNonnegCoeffs.divX {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
+    HasNonnegCoeffs p.divX := by
+  intro n
+  simpa [Polynomial.coeff_divX] using hp (n + 1)
+
+/-- If a positive-leading polynomial has zero constant coefficient, then its
+quotient by the common factor `X` still has positive leading coefficient. -/
+lemma HasPosLeadingCoeff.divX_of_coeff_zero {p : ℝ[X]}
+    (hp : HasPosLeadingCoeff p) (h0 : p.coeff 0 = 0) :
+    HasPosLeadingCoeff p.divX := by
+  have hX : X * p.divX = p := by
+    simpa [h0] using Polynomial.X_mul_divX_add p
+  have hX_pos : HasPosLeadingCoeff (X * p.divX) := by
+    simpa [hX] using hp
+  have hXC_pos : HasPosLeadingCoeff ((X - C 0) * p.divX) := by
+    simpa using hX_pos
+  exact hasPosLeadingCoeff_of_X_sub_C_mul hXC_pos
+
 lemma hasPosLeadingCoeff_of_pow_X_sub_C_mul {q : ℝ[X]} {r : ℝ} {m : ℕ}
     (h : HasPosLeadingCoeff ((X - C r) ^ m * q)) :
     HasPosLeadingCoeff q := by
@@ -70,6 +89,18 @@ lemma isRealRooted_C_mul {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits)
 lemma isRealRooted_X_mul {f : ℝ[X]} (hf_ne : f ≠ 0) (hf_splits : f.Splits) :
     ((X * f) ≠ 0 ∧ (X * f).Splits) :=
   isRealRooted_mul (by simp) (by simp) hf_ne hf_splits
+
+/-- If `p` has zero constant coefficient, splitting of `p.divX` gives splitting
+of `p` by restoring the common factor `X`. -/
+lemma splits_of_divX_splits_of_coeff_zero {p : ℝ[X]}
+    (hp_pos : HasPosLeadingCoeff p) (h0 : p.coeff 0 = 0)
+    (hdiv : p.divX.Splits) :
+    p.Splits := by
+  have hX : X * p.divX = p := by
+    simpa [h0] using Polynomial.X_mul_divX_add p
+  have hdiv_pos : HasPosLeadingCoeff p.divX := hp_pos.divX_of_coeff_zero h0
+  have hX_rr := isRealRooted_X_mul hdiv_pos.ne_zero hdiv
+  simpa [hX] using hX_rr.2
 
 lemma isRealRooted_X : ((X : ℝ[X]) ≠ 0 ∧ (X : ℝ[X]).Splits) := by
   simp
