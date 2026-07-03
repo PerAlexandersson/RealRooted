@@ -1168,9 +1168,9 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily_degre
   have hg0 : g ≠ 0 := hg_pos.ne_zero
   have haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits) := by
-    intro s t hs ht
-    exact
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧
+          (((C s * X + C t) * f) + g).Splits) :=
+    fun {s t} hs ht =>
       haffBridge hf_pos hg_pos hfnn hgnn hfg (by lia) (by lia) hno hs ht
   have hright : Prec g (X * f) :=
     prec_right_pair_of_affine_family_nonneg_degree_one
@@ -1188,9 +1188,9 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily
   have hg0 : g ≠ 0 := hg_pos.ne_zero
   have haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits) := by
-    intro s t hs ht
-    exact
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧
+          (((C s * X + C t) * f) + g).Splits) :=
+    fun {s t} hs ht =>
       haffBridge hf_pos hg_pos hfnn hgnn hfg (by lia) (by lia) hno hs ht
   have hright : Prec g (X * f) :=
     prec_right_pair_of_affine_family_nonneg
@@ -1766,9 +1766,10 @@ theorem allComboRealRooted_of_affineFamilyBridge_and_nonnegCoeffs
   have hg0 : g ≠ 0 := hg_pos.ne_zero
   have haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits) := by
-    intro s t hs ht
-    exact haffBridge hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hs ht
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧
+          (((C s * X + C t) * f) + g).Splits) :=
+    fun {s t} hs ht =>
+      haffBridge hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hs ht
   exact
     allComboRealRooted_of_affine_family_nonneg
       hf0 hg0 hfnn hgnn haff
