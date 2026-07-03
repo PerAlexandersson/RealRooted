@@ -4033,11 +4033,10 @@ theorem pairwiseCompatible_iff_familyCompatible_of_natDegree_le_one
 /-- Roadmap target for the common-interlacing form of the
 Chudnovsky--Seymour theorem used in `INTERLACING.md`.
 
-The reverse implication is intentionally only packaged as a statement here:
-it still needs
-1. the two-polynomial bridge `Compatible f g -> ∃ h, Prec h f ∧ Prec h g`, and
-2. the finite-family left-handed Helly upgrade
-   `PairwiseHasCommonLeftInterleaver fs -> HasCommonLeftInterleaver fs`. -/
+The finite-family left-handed Helly upgrade is now available as
+`hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver`, so the remaining
+input is the two-polynomial bridge
+`Compatible f g -> ∃ h, Prec h f ∧ Prec h g`. -/
 def chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_statement : Prop :=
   ∀ {fs : List ℝ[X]},
     (∀ f ∈ fs, (f ≠ 0 ∧ f.Splits)) →

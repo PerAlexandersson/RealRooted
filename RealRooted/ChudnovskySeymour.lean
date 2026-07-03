@@ -16,8 +16,8 @@ the usual real-rooted/splits and positivity hypotheses.
 def chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target : Prop :=
   chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_statement
 
-/-- The common-left roadmap target follows from the two expected inputs:
-the two-polynomial common-left bridge and the finite-family left Helly upgrade.
+/-- Legacy reduction of the common-left roadmap target from the two inputs used
+before the finite-family left Helly upgrade was internalized.
 -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
     (htwo :
