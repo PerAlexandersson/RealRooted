@@ -181,6 +181,120 @@ lemma listAlternates_forall₂_le :
       rcases h with ⟨hsr, htail⟩
       exact List.Forall₂.cons hsr (listInterlaces_forall₂_le_tail htail)
 
+private theorem getD_reverse_aux (l : List ℝ) (j : ℕ) (hj : j < l.length) :
+    l.reverse.getD j 0 = l.getD (l.length - 1 - j) 0 := by
+  have hj' : j < l.reverse.length := by simpa using hj
+  rw [List.getD_eq_getElem?_getD, List.getD_eq_getElem?_getD,
+    List.getElem?_eq_getElem hj', List.getElem?_eq_getElem (by lia)]
+  simp [List.getElem_reverse]
+
+/-- Interior step bounds extracted from a differ-by-1 list interlacing. -/
+theorem listInterlaces_getD_bounds :
+    ∀ (ss rs : List ℝ), ListInterlaces ss rs → ss.length + 1 = rs.length →
+      (∀ i, i < ss.length → rs.getD i 0 ≤ ss.getD i 0) ∧
+      (∀ i, i < ss.length → ss.getD i 0 ≤ rs.getD (i + 1) 0)
+  | [], [], _, hlen => by simp at hlen
+  | [], [_], _, _ => by refine ⟨?_, ?_⟩ <;> (intro i hi; simp at hi)
+  | [], _ :: _ :: _, h, _ => by simp [ListInterlaces] at h
+  | _ :: _, [], h, _ => by simp [ListInterlaces] at h
+  | _ :: _, [_], h, _ => by simp [ListInterlaces] at h
+  | _ :: ss', r₁ :: r₂ :: rs', h, hlen => by
+      obtain ⟨hr₁s, hsr₂, htail⟩ := h
+      have hlen' : ss'.length + 1 = (r₂ :: rs').length := by simpa using hlen
+      obtain ⟨ih1, ih2⟩ := listInterlaces_getD_bounds ss' (r₂ :: rs') htail hlen'
+      refine ⟨?_, ?_⟩
+      · intro i hi
+        match i with
+        | 0 => simpa using hr₁s
+        | k + 1 =>
+            have hk : k < ss'.length := by
+              simp at hi
+              lia
+            simpa using ih1 k hk
+      · intro i hi
+        match i with
+        | 0 => simpa using hsr₂
+        | k + 1 =>
+            have hk : k < ss'.length := by
+              simp at hi
+              lia
+            simpa using ih2 k hk
+
+/-- Interior step bounds extracted from a same-degree list alternation. -/
+theorem listAlternates_getD_bounds :
+    ∀ (ss rs : List ℝ), ListAlternates ss rs → ss.length = rs.length →
+      (∀ i, i < ss.length → ss.getD i 0 ≤ rs.getD i 0) ∧
+      (∀ i, i + 1 < ss.length → rs.getD i 0 ≤ ss.getD (i + 1) 0)
+  | [], [], _, _ => by refine ⟨?_, ?_⟩ <;> (intro i hi; simp at hi)
+  | [], _ :: _, h, _ => by simp [ListAlternates] at h
+  | _ :: _, [], h, _ => by simp [ListAlternates] at h
+  | _ :: ss', r :: rs', h, hlen => by
+      obtain ⟨hsr, htail⟩ := h
+      have hlen' : ss'.length + 1 = (r :: rs').length := by simpa using hlen
+      obtain ⟨ih1, ih2⟩ := listInterlaces_getD_bounds ss' (r :: rs') htail hlen'
+      refine ⟨?_, ?_⟩
+      · intro i hi
+        match i with
+        | 0 => simpa using hsr
+        | k + 1 =>
+            have hk : k < ss'.length := by
+              simp at hi
+              lia
+            simpa using ih2 k hk
+      · intro i hi
+        match i with
+        | 0 =>
+            have h0 : 0 < ss'.length := by
+              simp at hi
+              lia
+            simpa using ih1 0 h0
+        | k + 1 =>
+            have hk : k + 1 < ss'.length := by
+              simp at hi
+              lia
+            simpa using ih1 (k + 1) hk
+
+/-- Same-degree alternation in either direction gives descending root crossing
+inequalities for the reversed lists. -/
+theorem rootCrossing_of_listAlternates_or {ss rs : List ℝ}
+    (hlen : ss.length = rs.length)
+    (halt : ListAlternates ss rs ∨ ListAlternates rs ss) :
+    (∀ j, 1 ≤ j → j < ss.length →
+        rs.reverse.getD j 0 ≤ ss.reverse.getD (j - 1) 0) ∧
+    (∀ j, 1 ≤ j → j < ss.length →
+        ss.reverse.getD j 0 ≤ rs.reverse.getD (j - 1) 0) := by
+  rcases halt with halt | halt
+  · obtain ⟨hA, hB⟩ := listAlternates_getD_bounds ss rs halt hlen
+    refine ⟨?_, ?_⟩
+    · intro j hj1 hj2
+      rw [getD_reverse_aux rs j (by lia), getD_reverse_aux ss (j - 1) (by lia)]
+      have e1 : rs.length - 1 - j = ss.length - 1 - j := by rw [hlen]
+      have e2 : ss.length - 1 - (j - 1) = (ss.length - 1 - j) + 1 := by lia
+      rw [e1, e2]
+      exact hB (ss.length - 1 - j) (by lia)
+    · intro j hj1 hj2
+      rw [getD_reverse_aux ss j (by lia), getD_reverse_aux rs (j - 1) (by lia)]
+      have e2 : rs.length - 1 - (j - 1) = (ss.length - 1 - j) + 1 := by lia
+      rw [e2]
+      exact le_trans
+        (le_trans (hA (ss.length - 1 - j) (by lia)) (hB (ss.length - 1 - j) (by lia)))
+        (hA (ss.length - 1 - j + 1) (by lia))
+  · obtain ⟨hA, hB⟩ := listAlternates_getD_bounds rs ss halt hlen.symm
+    refine ⟨?_, ?_⟩
+    · intro j hj1 hj2
+      rw [getD_reverse_aux rs j (by lia), getD_reverse_aux ss (j - 1) (by lia)]
+      have e2 : ss.length - 1 - (j - 1) = (rs.length - 1 - j) + 1 := by lia
+      rw [e2]
+      exact le_trans
+        (le_trans (hA (rs.length - 1 - j) (by lia)) (hB (rs.length - 1 - j) (by lia)))
+        (hA (rs.length - 1 - j + 1) (by lia))
+    · intro j hj1 hj2
+      rw [getD_reverse_aux ss j (by lia), getD_reverse_aux rs (j - 1) (by lia)]
+      have e1 : ss.length - 1 - j = rs.length - 1 - j := by rw [hlen]
+      have e2 : rs.length - 1 - (j - 1) = (rs.length - 1 - j) + 1 := by lia
+      rw [e1, e2]
+      exact hB (rs.length - 1 - j) (by lia)
+
 /-- Same-degree weak alternation orders the sums of the two root lists. -/
 lemma listAlternates_sum_le {ss rs : List ℝ} (h : ListAlternates ss rs) :
     ss.sum ≤ rs.sum :=

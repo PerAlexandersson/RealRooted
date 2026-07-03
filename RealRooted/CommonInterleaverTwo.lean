@@ -1380,6 +1380,62 @@ def PosComboNoCommonSameDegreeRootCrossingNonnegStatement : Prop :=
     (∀ j, 1 ≤ j → j < f.natDegree →
         (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)
 
+/-- The same-degree orientation alternative gives the descending-root crossing
+inequalities consumed by the #41 slot-data reduction. -/
+theorem posComboNoCommonSameDegreeRootCrossing_of_orientationAlternative
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement) :
+    PosComboNoCommonSameDegreeRootCrossingNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
+  have hf_rr : f ≠ 0 ∧ f.Splits :=
+    hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg
+  have hg_rr : g ≠ 0 ∧ g.Splits :=
+    hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg
+  obtain ⟨sf, sg, hsf_pw, hsg_pw, hsf_eq, hsg_eq, halt⟩ :
+      ∃ sf sg : List ℝ, sf.Pairwise (· ≤ ·) ∧ sg.Pairwise (· ≤ ·) ∧
+        (↑sf : Multiset ℝ) = f.roots ∧ (↑sg : Multiset ℝ) = g.roots ∧
+        (ListAlternates sf sg ∨ ListAlternates sg sf) := by
+    rcases hsame hf_pos hg_pos hfnn hgnn hfg hdeg hno with hprec | hprec
+    · obtain ⟨hf, hg, ss, rs, hss_pw, hrs_pw, hss_eq, hrs_eq, hshape⟩ := hprec
+      have hss_len : ss.length = f.natDegree := by
+        rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
+      have hrs_len : rs.length = g.natDegree := by
+        rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
+      have halt : ListAlternates ss rs := by
+        rcases hshape with ⟨hlen1, _⟩ | ⟨_, h⟩
+        · exfalso
+          rw [hss_len, hrs_len, hdeg] at hlen1
+          lia
+        · exact h
+      exact ⟨ss, rs, hss_pw, hrs_pw, hss_eq, hrs_eq, Or.inl halt⟩
+    · obtain ⟨hg, hf, sg, sf, hsg_pw, hsf_pw, hsg_eq, hsf_eq, hshape⟩ := hprec
+      have hsg_len : sg.length = g.natDegree := by
+        rw [← Multiset.coe_card, hsg_eq, card_roots_of_splits hg.2]
+      have hsf_len : sf.length = f.natDegree := by
+        rw [← Multiset.coe_card, hsf_eq, card_roots_of_splits hf.2]
+      have halt : ListAlternates sg sf := by
+        rcases hshape with ⟨hlen1, _⟩ | ⟨_, h⟩
+        · exfalso
+          rw [hsg_len, hsf_len, hdeg] at hlen1
+          lia
+        · exact h
+      exact ⟨sf, sg, hsf_pw, hsg_pw, hsf_eq, hsg_eq, Or.inr halt⟩
+  have hsf_len : sf.length = f.natDegree := by
+    rw [← Multiset.coe_card, hsf_eq, card_roots_of_splits hf_rr.2]
+  have hsg_len : sg.length = g.natDegree := by
+    rw [← Multiset.coe_card, hsg_eq, card_roots_of_splits hg_rr.2]
+  have hdf : rootSeqDesc f = sf.reverse :=
+    rootSeqDesc_eq_reverse_of_pairwise hsf_pw hsf_eq
+  have hdg : rootSeqDesc g = sg.reverse :=
+    rootSeqDesc_eq_reverse_of_pairwise hsg_pw hsg_eq
+  have hlen : sf.length = sg.length := by rw [hsf_len, hsg_len, hdeg]
+  obtain ⟨hc1, hc2⟩ := rootCrossing_of_listAlternates_or hlen halt
+  rw [hdf, hdg]
+  refine ⟨?_, ?_⟩
+  · intro j hj1 hj2
+    exact hc1 j hj1 (by rw [hsf_len]; exact hj2)
+  · intro j hj1 hj2
+    exact hc2 j hj1 (by rw [hsf_len]; exact hj2)
+
 /-- **Reduction of milestone B1 to its root-crossing content.**
 
 The same-degree slot-data statement follows from the descending-root crossing
