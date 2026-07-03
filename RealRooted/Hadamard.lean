@@ -636,6 +636,32 @@ theorem hadamardPreservesHurwitzStable_of_matrixRoute
     hadamardPreservesHurwitzStableStatement :=
   fun {_ _} ha hb => hBwd (hHad (hFwd ha) (hFwd hb))
 
+/-- The Hurwitz-matrix Hadamard leaf reduces to the pure matrix Schur core.
+
+Using `hurwitz_mul_entrywise_matrix`, this strips away the coefficient
+bookkeeping from `hadamardPreservesHurwitzMatrixTNStatement`; the remaining
+input is only that entrywise products of totally nonnegative Hurwitz matrices
+are totally nonnegative. -/
+theorem hadamardPreservesHurwitzMatrixTN_of_schur
+    (h : HurwitzMatrixSchurProductTNStatement) :
+    hadamardPreservesHurwitzMatrixTNStatement := by
+  intro a b ha hb
+  have hcoeff : (hadamardProduct a b).coeff = fun n => a.coeff n * b.coeff n :=
+    funext (fun n => coeff_hadamardProduct a b n)
+  rw [hcoeff, hurwitz_mul_entrywise_matrix]
+  exact h ha hb
+
+/-- The Hurwitz-matrix Hadamard leaf also follows from Garloff--Wagner
+Theorem 1 plus both directions of the Hurwitz-matrix total-nonnegativity
+criterion.  Together with `hadamardPreservesHurwitzStable_of_matrixRoute`, this
+records the equivalence of the matrix leaf and Theorem 1 modulo that criterion. -/
+theorem hadamardPreservesHurwitzMatrixTN_of_stableRoute
+    (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement)
+    (hThm1 : hadamardPreservesHurwitzStableStatement)
+    (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement) :
+    hadamardPreservesHurwitzMatrixTNStatement :=
+  fun {_ _} ha hb => hFwd (hThm1 (hBwd ha) (hBwd hb))
+
 /-- **Garloff--Wagner, Theorem 4(b), reduced to its classical inputs** (TODO T9).
 
 The two-pair interlacing form of the Garloff--Wagner Hadamard theorem follows,

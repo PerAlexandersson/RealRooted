@@ -99,4 +99,44 @@ theorem hurwitzOddEvenToFullyInterlacingPair_of_criterion
   hurwitzOddEvenToFullyInterlacingPair_of_matrixMinors
     (hurwitzStableToHurwitzMatrixMinors_of_criterion h)
 
+/-! ### Entrywise Hadamard structure of Hurwitz matrices
+
+The coefficientwise Hadamard product of two polynomials corresponds, at the
+level of Hurwitz matrices, to the entrywise product of the two Hurwitz
+matrices.  Every entry of `hurwitz c` is either `0` or a single coefficient
+`c k`, so replacing `c` by the pointwise product `fun n => a n * b n`
+multiplies each entry by the corresponding entry of the other matrix. -/
+
+/-- Entrywise product identity for Hurwitz matrices.  The Hurwitz matrix of a
+coefficientwise product of sequences agrees, entrywise, with the product of
+the two Hurwitz matrices. -/
+theorem hurwitz_mul_entrywise (a b : ℕ → ℝ) (i j : ℕ) :
+    hurwitz (fun n => a n * b n) i j = hurwitz a i j * hurwitz b i j := by
+  unfold hurwitz toeplitz
+  by_cases hi : i % 2 = 0 <;>
+    simp only [hi, Matrix.of_apply, if_true, if_false] <;>
+      split <;> simp
+
+/-- Matrix form of `hurwitz_mul_entrywise`: the Hurwitz matrix of a
+coefficientwise product is the entrywise product of the two Hurwitz matrices. -/
+theorem hurwitz_mul_entrywise_matrix (a b : ℕ → ℝ) :
+    hurwitz (fun n => a n * b n) =
+      Matrix.of (fun i j => hurwitz a i j * hurwitz b i j) := by
+  ext i j
+  simp only [Matrix.of_apply]
+  exact hurwitz_mul_entrywise a b i j
+
+/-- Pure-matrix combinatorial core of Garloff--Wagner Theorem 1.
+
+This is the deep leaf of the reduction, stripped of analytic and polynomial
+content: the entrywise product of two totally nonnegative Hurwitz matrices is
+again totally nonnegative.  This is special to the Hurwitz block-Toeplitz
+structure; the entrywise product of arbitrary totally nonnegative matrices is
+not totally nonnegative in general. -/
+def HurwitzMatrixSchurProductTNStatement : Prop :=
+  ∀ {a b : ℕ → ℝ},
+    (hurwitz a).IsTotallyNonneg →
+    (hurwitz b).IsTotallyNonneg →
+    (Matrix.of fun i j => hurwitz a i j * hurwitz b i j).IsTotallyNonneg
+
 end RealRooted
