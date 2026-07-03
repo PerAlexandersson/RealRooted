@@ -654,6 +654,19 @@ theorem hurwitz_hadamardProduct_matrix (a b : ℝ[X]) :
     exact coeff_hadamardProduct a b n]
   exact hurwitz_mul_entrywise_matrix a.coeff b.coeff
 
+/-- Low-order checked part of the Hurwitz-matrix Hadamard leaf: every minor of
+size at most two is nonnegative.  The first remaining case for
+`hadamardPreservesHurwitzMatrixTNStatement` is the `3 × 3` Hurwitz-specific
+minor. -/
+theorem hadamardPreservesHurwitzMatrixTN_det_of_card_le_two
+    {a b : ℝ[X]} (ha : (hurwitz a.coeff).IsTotallyNonneg)
+    (hb : (hurwitz b.coeff).IsTotallyNonneg)
+    {n : ℕ} {rows cols : Fin n → ℕ} (hrows : StrictMono rows) (hcols : StrictMono cols)
+    (hn : n ≤ 2) :
+    0 ≤ (((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det) := by
+  rw [hurwitz_hadamardProduct_matrix]
+  exact hurwitz_schurProduct_det_of_card_le_two ha hb hrows hcols hn
+
 /-- The Hurwitz-matrix Hadamard leaf reduces to the pure matrix Schur core.
 
 Using `hurwitz_mul_entrywise_matrix`, this strips away the coefficient
