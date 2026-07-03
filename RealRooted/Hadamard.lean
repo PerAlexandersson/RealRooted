@@ -700,6 +700,33 @@ theorem hadamardPreservesRightHalfPlaneStable_iff_matrixTN
   hadamardPreservesHurwitzStable_iff_rightHalfPlane.symm.trans
     (hadamardPreservesHurwitzStable_iff_matrixTN hFwd hBwd)
 
+/-- The matrix route also gives the right-half-plane analytic core directly. -/
+theorem hadamardPreservesRightHalfPlaneStable_of_matrixRoute
+    (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement)
+    (hHad : hadamardPreservesHurwitzMatrixTNStatement)
+    (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement) :
+    hadamardPreservesRightHalfPlaneStableStatement :=
+  (hadamardPreservesRightHalfPlaneStable_iff_matrixTN hFwd hBwd).2 hHad
+
+/-- Conversely, the right-half-plane analytic core gives the matrix leaf through
+the Hurwitz-matrix criterion. -/
+theorem hadamardPreservesHurwitzMatrixTN_of_rightHalfPlaneRoute
+    (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement)
+    (hRHP : hadamardPreservesRightHalfPlaneStableStatement)
+    (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement) :
+    hadamardPreservesHurwitzMatrixTNStatement :=
+  (hadamardPreservesRightHalfPlaneStable_iff_matrixTN hFwd hBwd).1 hRHP
+
+/-- The pure Hurwitz Schur-product core implies the right-half-plane analytic
+core, modulo the two directions of the Hurwitz-matrix criterion. -/
+theorem hadamardPreservesRightHalfPlaneStable_of_hurwitzSchur
+    (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement)
+    (hSchur : HurwitzMatrixSchurProductTNStatement)
+    (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement) :
+    hadamardPreservesRightHalfPlaneStableStatement :=
+  hadamardPreservesRightHalfPlaneStable_of_matrixRoute hFwd
+    (hadamardPreservesHurwitzMatrixTN_of_schur hSchur) hBwd
+
 /-- **Garloff--Wagner, Theorem 4(b), reduced to its classical inputs** (TODO T9).
 
 The two-pair interlacing form of the Garloff--Wagner Hadamard theorem follows,
