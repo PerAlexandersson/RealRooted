@@ -54,13 +54,20 @@ theorem coeff_basisTransform (P : ℕ → ℝ[X]) (p : ℝ[X]) (j : ℕ) :
     basisTransform P 0 = 0 := by
   simp [basisTransform]
 
+@[simp] theorem basisTransform_monomial (P : ℕ → ℝ[X]) (n : ℕ) (a : ℝ) :
+    basisTransform P (Polynomial.monomial n a) = C a * P n := by
+  rw [basisTransform, Polynomial.sum_monomial_index]
+  simp
+
+@[simp] theorem basisTransform_C (P : ℕ → ℝ[X]) (a : ℝ) :
+    basisTransform P (C a) = C a * P 0 := by
+  simpa using basisTransform_monomial P 0 a
+
 @[simp] theorem basisTransform_X_pow (P : ℕ → ℝ[X]) (n : ℕ) :
     basisTransform P (X ^ n) = P n := by
   rw [show (X ^ n : ℝ[X]) = Polynomial.monomial n 1 by
     simp [Polynomial.X_pow_eq_monomial]]
-  rw [basisTransform, Polynomial.sum_monomial_index]
-  · simp
-  · simp
+  simp
 
 theorem basisTransform_add (P : ℕ → ℝ[X]) (p q : ℝ[X]) :
     basisTransform P (p + q) = basisTransform P p + basisTransform P q := by
@@ -160,6 +167,10 @@ def narayanaTransform (m : ℕ) : ℝ[X] → ℝ[X] :=
 @[simp] theorem narayanaTransform_X_pow (m n : ℕ) :
     narayanaTransform m (X ^ n) = narayanaPolynomial m n :=
   basisTransform_X_pow (narayanaPolynomial m) n
+
+@[simp] theorem narayanaTransform_monomial (m n : ℕ) (a : ℝ) :
+    narayanaTransform m (Polynomial.monomial n a) = C a * narayanaPolynomial m n := by
+  rw [narayanaTransform, basisTransform_monomial]
 
 theorem HasNonnegCoeffs.narayanaTransform {m : ℕ} {p : ℝ[X]}
     (hp : HasNonnegCoeffs p) :
