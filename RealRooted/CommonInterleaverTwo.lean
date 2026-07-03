@@ -1801,6 +1801,24 @@ theorem succDegreePairHasCommonInterleaver_nonneg_of_leftSplits_and_rootCrossing
   succDegreePairHasCommonInterleaver_nonneg_of_slotData
     (posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_rootCrossing hsplit hcross)
 
+/-- Succ-degree slot data from left-endpoint real-rootedness and the fixed
+orientation.  The orientation supplies the root-crossing inequalities. -/
+theorem posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_orientation
+    (hsplit : PosComboSuccDegreeLeftSplitsNonnegStatement)
+    (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
+    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
+  posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_rootCrossing hsplit
+    (posComboNoCommonSuccDegreeRootCrossing_of_orientation horient)
+
+/-- The repaired succ-degree pair-interleaver endpoint follows from
+left-endpoint real-rootedness and the fixed orientation. -/
+theorem succDegreePairHasCommonInterleaver_nonneg_of_leftSplits_and_orientation
+    (hsplit : PosComboSuccDegreeLeftSplitsNonnegStatement)
+    (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+  succDegreePairHasCommonInterleaver_nonneg_of_leftSplits_and_rootCrossing hsplit
+    (posComboNoCommonSuccDegreeRootCrossing_of_orientation horient)
+
 /-- Honest nonnegative degree-split reduction of the no-common orientation
 problem: it is enough to solve the same-degree branch up to orientation
 alternative and the succ-degree branch in the forced direction. -/
