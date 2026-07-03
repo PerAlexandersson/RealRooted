@@ -305,6 +305,119 @@ theorem hurwitz_schurProduct_det_of_card_le_three
     subst n
     exact hurwitz_schurProduct_det_fin_three hInBand ha hb hrows hcols
 
+/-- In-band entry formula: on the nonzero staircase `2 * j ≤ i`, every Hurwitz
+matrix entry is a single coefficient. -/
+theorem hurwitz_apply_of_band (c : ℕ → ℝ) {i j : ℕ} (h : 2 * j ≤ i) :
+    hurwitz c i j = c ((if i % 2 = 0 then i + 1 else i - 1) - 2 * j) := by
+  rcases Nat.even_or_odd i with ⟨m, hm⟩ | ⟨m, hm⟩
+  · subst hm
+    rw [show m + m = 2 * m by ring, hurwitz_even_row_apply,
+      if_pos (by lia : j ≤ m), if_pos (by lia : (2 * m) % 2 = 0)]
+    congr 1
+    lia
+  · subst hm
+    rw [hurwitz_odd_row_apply, if_pos (by lia : j ≤ m),
+      if_neg (by lia : ¬ (2 * m + 1) % 2 = 0)]
+    congr 1
+    lia
+
+/-- `StrictMono` for a two-element index vector. -/
+private theorem strictMono_pair {x y : ℕ} (hxy : x < y) :
+    StrictMono ![x, y] := by
+  intro i j hij
+  fin_cases i <;> fin_cases j <;> simp_all
+
+/-- Triangular reduction along the top row.  If the top selected row lies below
+the staircase of the middle column, then the two entries to the right of the
+top-left corner vanish and the determinant reduces to a `2 × 2` Hadamard minor. -/
+theorem hurwitz_schurProduct_det_fin_three_of_row0_below {a b : ℕ → ℝ}
+    (ha : (hurwitz a).IsTotallyNonneg) (hb : (hurwitz b).IsTotallyNonneg)
+    {rows cols : Fin 3 → ℕ} (hrows : StrictMono rows) (hcols : StrictMono cols)
+    (h : rows 0 < 2 * cols 1) :
+    0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det := by
+  have hc12 : cols 1 < cols 2 := hcols (by decide)
+  have hr12 : rows 1 < rows 2 := hrows (by decide)
+  have h2 : 0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix
+      ![rows 1, rows 2] ![cols 1, cols 2]).det :=
+    ha.hadamard_det_fin_two hb (strictMono_pair hr12) (strictMono_pair hc12)
+  rw [Matrix.det_fin_two] at h2
+  simp only [Matrix.submatrix_apply, Matrix.of_apply, Matrix.cons_val_zero,
+    Matrix.cons_val_one] at h2
+  have hM00 : 0 ≤ hurwitz a (rows 0) (cols 0) * hurwitz b (rows 0) (cols 0) :=
+    mul_nonneg (ha.nonneg _ _) (hb.nonneg _ _)
+  rw [Matrix.det_fin_three]
+  simp only [Matrix.submatrix_apply, Matrix.of_apply]
+  rw [hurwitz_apply_eq_zero_of_lt a h,
+    hurwitz_apply_eq_zero_of_lt a (by lia : rows 0 < 2 * cols 2)]
+  nlinarith [mul_nonneg hM00 h2]
+
+/-- Triangular reduction along the right column.  If the middle selected row lies
+below the staircase of the last column, then the two entries above the
+bottom-right corner vanish and the determinant reduces to a `2 × 2` Hadamard
+minor. -/
+theorem hurwitz_schurProduct_det_fin_three_of_row1_below {a b : ℕ → ℝ}
+    (ha : (hurwitz a).IsTotallyNonneg) (hb : (hurwitz b).IsTotallyNonneg)
+    {rows cols : Fin 3 → ℕ} (hrows : StrictMono rows) (hcols : StrictMono cols)
+    (h : rows 1 < 2 * cols 2) :
+    0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det := by
+  have hc01 : cols 0 < cols 1 := hcols (by decide)
+  have hr01 : rows 0 < rows 1 := hrows (by decide)
+  have h2 : 0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix
+      ![rows 0, rows 1] ![cols 0, cols 1]).det :=
+    ha.hadamard_det_fin_two hb (strictMono_pair hr01) (strictMono_pair hc01)
+  rw [Matrix.det_fin_two] at h2
+  simp only [Matrix.submatrix_apply, Matrix.of_apply, Matrix.cons_val_zero,
+    Matrix.cons_val_one] at h2
+  have hM22 : 0 ≤ hurwitz a (rows 2) (cols 2) * hurwitz b (rows 2) (cols 2) :=
+    mul_nonneg (ha.nonneg _ _) (hb.nonneg _ _)
+  rw [Matrix.det_fin_three]
+  simp only [Matrix.submatrix_apply, Matrix.of_apply]
+  rw [hurwitz_apply_eq_zero_of_lt a h,
+    hurwitz_apply_eq_zero_of_lt a (by lia : rows 0 < 2 * cols 2)]
+  nlinarith [mul_nonneg hM22 h2]
+
+/-- Refined in-band `3 × 3` Hurwitz Schur-product core after the two triangular
+reductions have been removed.  The remaining case has
+`2 * cols 1 ≤ rows 0` and `2 * cols 2 ≤ rows 1`, so the top `2 × 3` block lies
+on the nonzero staircase. -/
+def HurwitzMatrixSchurProductDetFinThreeCoreStatement : Prop :=
+  ∀ {a b : ℕ → ℝ},
+    (hurwitz a).IsTotallyNonneg →
+    (hurwitz b).IsTotallyNonneg →
+    ∀ {rows cols : Fin 3 → ℕ},
+      StrictMono rows →
+      StrictMono cols →
+      (∀ l : Fin 3, 2 * cols l ≤ rows l) →
+      2 * cols 1 ≤ rows 0 →
+      2 * cols 2 ≤ rows 1 →
+      0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det
+
+/-- The original in-band `3 × 3` core implies the refined triangular-free core. -/
+theorem hurwitzMatrixSchurProductDetFinThreeCore_of_inBand
+    (hInBand : HurwitzMatrixSchurProductDetFinThreeInBandStatement) :
+    HurwitzMatrixSchurProductDetFinThreeCoreStatement := by
+  intro a b ha hb rows cols hrows hcols hband _h01 _h12
+  exact hInBand ha hb hrows hcols hband
+
+/-- The refined triangular-free core implies the original in-band `3 × 3` core. -/
+theorem hurwitzMatrixSchurProductDetFinThreeInBand_of_core
+    (hcore : HurwitzMatrixSchurProductDetFinThreeCoreStatement) :
+    HurwitzMatrixSchurProductDetFinThreeInBandStatement := by
+  intro a b ha hb rows cols hrows hcols hband
+  by_cases h0 : rows 0 < 2 * cols 1
+  · exact hurwitz_schurProduct_det_fin_three_of_row0_below ha hb hrows hcols h0
+  · by_cases h1 : rows 1 < 2 * cols 2
+    · exact hurwitz_schurProduct_det_fin_three_of_row1_below ha hb hrows hcols h1
+    · exact hcore ha hb hrows hcols hband (by lia) (by lia)
+
+/-- The in-band `3 × 3` Hurwitz Schur-product core is equivalent to its
+triangular-free refinement. -/
+theorem hurwitzMatrixSchurProductDetFinThreeInBand_iff_core :
+    HurwitzMatrixSchurProductDetFinThreeInBandStatement ↔
+      HurwitzMatrixSchurProductDetFinThreeCoreStatement :=
+  ⟨hurwitzMatrixSchurProductDetFinThreeCore_of_inBand,
+    hurwitzMatrixSchurProductDetFinThreeInBand_of_core⟩
+
 /-- Low-order, size-`≤ 3`, form of the Hurwitz matrix Schur-product core. -/
 def HurwitzMatrixSchurProductDetLeThreeStatement : Prop :=
   ∀ {a b : ℕ → ℝ},
@@ -323,6 +436,14 @@ theorem hurwitzMatrixSchurProductDetLeThree_of_inBand
     HurwitzMatrixSchurProductDetLeThreeStatement := by
   intro a b ha hb n rows cols hrows hcols hn
   exact hurwitz_schurProduct_det_of_card_le_three hInBand ha hb hrows hcols hn
+
+/-- The refined triangular-free `3 × 3` core implies the low-order, size-`≤ 3`,
+Hurwitz matrix Schur-product statement. -/
+theorem hurwitzMatrixSchurProductDetLeThree_of_core
+    (hcore : HurwitzMatrixSchurProductDetFinThreeCoreStatement) :
+    HurwitzMatrixSchurProductDetLeThreeStatement :=
+  hurwitzMatrixSchurProductDetLeThree_of_inBand
+    (hurwitzMatrixSchurProductDetFinThreeInBand_of_core hcore)
 
 /-- The full Hurwitz matrix Schur-product statement implies its named
 low-order, size-`≤ 3`, consequence. -/
