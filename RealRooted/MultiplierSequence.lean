@@ -132,6 +132,19 @@ theorem diagonalOperator_add_sequence (gamma delta : ℕ → ℝ) (p : ℝ[X]) :
   ext n
   simp [add_mul]
 
+/-- The diagonal operator is negation-preserving in the diagonal sequence. -/
+theorem diagonalOperator_neg_sequence (gamma : ℕ → ℝ) (p : ℝ[X]) :
+    diagonalOperator (fun n => -gamma n) p = -diagonalOperator gamma p := by
+  ext n
+  simp
+
+/-- The diagonal operator is subtractive in the diagonal sequence. -/
+theorem diagonalOperator_sub_sequence (gamma delta : ℕ → ℝ) (p : ℝ[X]) :
+    diagonalOperator (fun n => gamma n - delta n) p =
+      diagonalOperator gamma p - diagonalOperator delta p := by
+  ext n
+  simp [sub_mul]
+
 /-- Nonnegative diagonal coefficients preserve nonnegative coefficients. -/
 theorem HasNonnegCoeffs.diagonalOperator
     {gamma : ℕ → ℝ} {p : ℝ[X]}
@@ -199,6 +212,21 @@ theorem jensenPolynomial_add_sequence (n : ℕ) (gamma delta : ℕ → ℝ) :
       jensenPolynomial n gamma + jensenPolynomial n delta := by
   ext k
   simp only [coeff_jensenPolynomial, Polynomial.coeff_add]
+  split_ifs <;> ring
+
+/-- The Jensen polynomial is negation-preserving in the diagonal sequence. -/
+theorem jensenPolynomial_neg_sequence (n : ℕ) (gamma : ℕ → ℝ) :
+    jensenPolynomial n (fun k => -gamma k) = -jensenPolynomial n gamma := by
+  ext k
+  simp only [coeff_jensenPolynomial, Polynomial.coeff_neg]
+  split_ifs <;> ring
+
+/-- The Jensen polynomial is subtractive in the diagonal sequence. -/
+theorem jensenPolynomial_sub_sequence (n : ℕ) (gamma delta : ℕ → ℝ) :
+    jensenPolynomial n (fun k => gamma k - delta k) =
+      jensenPolynomial n gamma - jensenPolynomial n delta := by
+  ext k
+  simp only [coeff_jensenPolynomial, Polynomial.coeff_sub]
   split_ifs <;> ring
 
 theorem hasNonnegCoeffs_jensenPolynomial
