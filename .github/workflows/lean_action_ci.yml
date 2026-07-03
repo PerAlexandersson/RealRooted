@@ -27,9 +27,5 @@ jobs:
             /usr/local/.ghcup /opt/hostedtoolcache/CodeQL || true
           sudo apt-get clean || true
           df -h /
-      - name: Prepare Lake cache directories
-        run: |
-          sudo mkdir -p /lake-cache/ai-projects/packages /lake-cache/ai-projects/build/RealRooted
-          sudo chown -R "$USER:$USER" /lake-cache
       - uses: leanprover/lean-action@v1
       - uses: leanprover-community/docgen-action@v1

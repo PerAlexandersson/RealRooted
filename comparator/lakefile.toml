@@ -1,10 +1,7 @@
 name = "RealRootedComparator"
 
 defaultTargets = ["Challenge", "Solution"]
-
-packagesDir = "/lake-cache/ai-projects/packages"
-buildDir = "/lake-cache/ai-projects/build/RealRootedComparator"
-
+packagesDir = "../.lake/packages"
 [leanOptions]
 relaxedAutoImplicit = false
 

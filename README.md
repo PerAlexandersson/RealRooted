@@ -214,6 +214,8 @@ naming conventions where practical.  In particular, keep declarations explicit,
 prefer small reusable lemmas, keep top-level declarations flush-left, and make
 sure public modules are imported by `RealRooted.lean`.
 
+Please keep repository configuration files (like `lakefile.toml` and `lake-manifest.json`) free of hardcoded absolute paths such as `/lake-cache/projects/...`. Reusable relative repository paths (e.g. `.lake/packages` and `.lake/build`) ensure that the builds work out-of-the-box in local developer environments.
+
 ## Bibliography and Links
 
 - M. Aissen, I. J. Schoenberg, and A. M. Whitney, *On the generating functions
