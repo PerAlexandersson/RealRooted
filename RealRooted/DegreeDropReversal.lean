@@ -1,5 +1,6 @@
 import Mathlib.Algebra.Polynomial.Reverse
 import Mathlib.Algebra.Polynomial.Splits
+import Mathlib.Algebra.Polynomial.FieldDivision
 
 /-!
 # Reversal toolkit for degree-drop root-continuity
@@ -161,6 +162,33 @@ theorem splits_X_pow_mul_iff {p : K[X]} (k : ℕ) :
     (X ^ k * p).Splits ↔ p.Splits :=
   Polynomial.splits_mul_iff_right (pow_ne_zero k Polynomial.X_ne_zero)
     (Polynomial.Splits.X_pow k)
+
+/-- Multiplying by one factor of `X` does not change whether a polynomial
+splits. -/
+theorem splits_X_mul_iff {p : K[X]} : (X * p).Splits ↔ p.Splits := by
+  rw [← pow_one (X : K[X])]
+  exact splits_X_pow_mul_iff (p := p) 1
+
+/-- A polynomial with zero constant coefficient is `X` times its `divX`
+quotient. -/
+theorem eq_X_mul_divX_of_coeff_zero {p : K[X]} (h0 : p.coeff 0 = 0) :
+    p = X * p.divX := by
+  have h := Polynomial.X_mul_divX_add p
+  rw [h0, Polynomial.C_0, add_zero] at h
+  exact h.symm
+
+/-- If the constant coefficient is zero, splitting is equivalent to splitting
+after dividing by `X`. -/
+theorem splits_iff_divX_splits_of_coeff_zero {p : K[X]} (h0 : p.coeff 0 = 0) :
+    p.Splits ↔ p.divX.Splits := by
+  conv_lhs => rw [eq_X_mul_divX_of_coeff_zero h0]
+  exact splits_X_mul_iff (p := p.divX)
+
+/-- If the constant coefficient is zero, splitting of `p.divX` lifts back to
+splitting of `p`. -/
+theorem splits_of_divX_splits_of_coeff_zero {p : K[X]} (h0 : p.coeff 0 = 0)
+    (hdiv : p.divX.Splits) : p.Splits :=
+  (splits_iff_divX_splits_of_coeff_zero h0).2 hdiv
 
 /-- The reflected degree-padded family splits if and only if the original
 family splits. -/
