@@ -847,6 +847,16 @@ theorem garloffWagnerHadamardPFPrec0_of_matrixHadamardBridges
     (garloffWagnerHadamardNonnegPrec_of_matrixHadamardBridges
       hToFull hMatHad hFullToPrec0)
 
+theorem garloffWagnerHadamardPFPrec0_of_matrixClassicalInputs
+    (hRoute : HermiteBiehlerHurwitzRoute)
+    (hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
+    (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hInt : FullyInterlacingPairInterlaceStatement) :
+    garloffWagnerHadamardPFPrec0Statement :=
+  garloffWagnerHadamardPFPrec0_of_nonnegPrec
+    (garloffWagnerHadamardNonnegPrec_of_matrixClassicalInputs
+      hRoute hMatHad hASW hInt)
+
 /-- PF-polynomial closure under Hadamard product, stated directly from the
 zero-aware Garloff--Wagner PF wrapper. -/
 theorem hadamardProduct_preserves_pf_of_garloffWagner
@@ -874,6 +884,17 @@ theorem hadamardProduct_preserves_pf_of_matrixHadamardBridges
     (garloffWagnerHadamardPFPrec0_of_matrixHadamardBridges
       hToFull hMatHad hFullToPrec0) hp hq
 
+theorem hadamardProduct_preserves_pf_of_matrixClassicalInputs
+    (hRoute : HermiteBiehlerHurwitzRoute)
+    (hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
+    (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hInt : FullyInterlacingPairInterlaceStatement)
+    {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
+    IsPFPolynomial (hadamardProduct p q) :=
+  hadamardProduct_preserves_pf_of_garloffWagner
+    (garloffWagnerHadamardPFPrec0_of_matrixClassicalInputs
+      hRoute hMatHad hASW hInt) hp hq
+
 theorem schurPolyaWagnerHadamardPF_of_garloffWagner_prec0
     (hGW : garloffWagnerHadamardPFPrec0Statement) :
     schurPolyaWagnerHadamardPFStatement :=
@@ -887,6 +908,16 @@ theorem schurPolyaWagnerHadamardPF_of_matrixHadamardBridges
   fun {_ _} hp hq =>
     hadamardProduct_preserves_pf_of_matrixHadamardBridges
       hToFull hMatHad hFullToPrec0 hp hq
+
+theorem schurPolyaWagnerHadamardPF_of_matrixClassicalInputs
+    (hRoute : HermiteBiehlerHurwitzRoute)
+    (hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
+    (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hInt : FullyInterlacingPairInterlaceStatement) :
+    schurPolyaWagnerHadamardPFStatement :=
+  fun {_ _} hp hq =>
+    hadamardProduct_preserves_pf_of_matrixClassicalInputs
+      hRoute hMatHad hASW hInt hp hq
 
 /-- The nonnegative two-pair Garloff--Wagner theorem gives PF closure under
 Hadamard products through the zero-aware PF wrapper. -/
@@ -975,6 +1006,16 @@ theorem hadamardReciprocalConeClosure_of_matrixHadamardBridges
     (garloffWagnerHadamardPFPrec0_of_matrixHadamardBridges
       hToFull hMatHad hFullToPrec0)
 
+theorem hadamardReciprocalConeClosure_of_matrixClassicalInputs
+    (hRoute : HermiteBiehlerHurwitzRoute)
+    (hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
+    (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hInt : FullyInterlacingPairInterlaceStatement) :
+    hadamardReciprocalConeClosureStatement :=
+  hadamardReciprocalConeClosure_of_garloffWagner_prec0
+    (garloffWagnerHadamardPFPrec0_of_matrixClassicalInputs
+      hRoute hMatHad hASW hInt)
+
 /-- Polynomial-coefficient form of Polya-frequency closure under termwise
 products. This is finite-sequence closure packaged through coefficient
 polynomials. -/
@@ -1015,5 +1056,16 @@ theorem polyaFrequencyHadamardCoeff_of_matrixHadamardBridges
   polyaFrequencyHadamardCoeff_of_schurPolyaWagner hASW
     (schurPolyaWagnerHadamardPF_of_matrixHadamardBridges
       hToFull hMatHad hFullToPrec0)
+
+theorem polyaFrequencyHadamardCoeff_of_matrixClassicalInputs
+    (hASW0 : aissenSchoenbergWhitneyForwardOrZeroStatement)
+    (hRoute : HermiteBiehlerHurwitzRoute)
+    (hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
+    (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hInt : FullyInterlacingPairInterlaceStatement) :
+    polyaFrequencyHadamardCoeffStatement :=
+  polyaFrequencyHadamardCoeff_of_schurPolyaWagner hASW0
+    (schurPolyaWagnerHadamardPF_of_matrixClassicalInputs
+      hRoute hMatHad hASW hInt)
 
 end RealRooted
