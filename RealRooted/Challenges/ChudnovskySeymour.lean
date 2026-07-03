@@ -109,6 +109,11 @@ abbrev succDegreeOrientationTarget : Prop :=
 abbrev succDegreeLeftSplitsTarget : Prop :=
   PosComboSuccDegreeLeftSplitsNonnegStatement
 
+/-- Residual succ-degree left-endpoint target after removing the nonzero
+constant-term and common-`X` branches. -/
+abbrev succDegreeResidualLeftSplitsTarget : Prop :=
+  PosComboSuccDegreeResidualLeftSplitsNonnegStatement
+
 /-- Zero-aware forward Aissen--Schoenberg--Whitney target used by the PF-limit
 left-endpoint route. -/
 abbrev forwardASWTarget : Prop :=
@@ -206,6 +211,13 @@ theorem succDegreeLeftSplitsTarget_of_forward_asw
     succDegreeLeftSplitsTarget :=
   PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw hASW
 
+/-- Challenge-facing reduction from the residual constant-coefficient branch to
+the full succ-degree left-splitting target. -/
+theorem succDegreeLeftSplitsTarget_of_residual
+    (hres : succDegreeResidualLeftSplitsTarget) :
+    succDegreeLeftSplitsTarget :=
+  PosComboSuccDegreeLeftSplitsNonnegStatement_of_residual hres
+
 /-- Challenge-facing reduction from forward ASW and root crossing to
 succ-degree slot data. -/
 theorem succDegreeSlotDataTarget_of_forward_asw_and_rootCrossing
@@ -223,6 +235,15 @@ theorem succDegreePairTarget_of_forward_asw_and_rootCrossing
     succDegreePairTarget :=
   succDegreePairHasCommonInterleaver_nonneg_of_forward_asw_and_rootCrossing
     hASW hcross
+
+/-- Challenge-facing reduction from the residual branch and root crossing to the
+repaired succ-degree pair endpoint. -/
+theorem succDegreePairTarget_of_residual_and_rootCrossing
+    (hres : succDegreeResidualLeftSplitsTarget)
+    (hcross : succDegreeRootCrossingTarget) :
+    succDegreePairTarget :=
+  succDegreePairTarget_of_leftSplits_and_rootCrossing
+    (succDegreeLeftSplitsTarget_of_residual hres) hcross
 
 /-- Challenge-facing reduction from left splitting and fixed orientation to
 succ-degree slot data. -/

@@ -1659,6 +1659,21 @@ def PosComboSuccDegreeLeftSplitsNonnegStatement : Prop :=
     g.natDegree = f.natDegree + 1 →
     f.Splits
 
+/-- Residual form of the succ-degree left-endpoint problem after the algebraic
+branches have been removed: the lower-degree polynomial has zero constant
+coefficient, while the higher-degree polynomial does not. -/
+def PosComboSuccDegreeResidualLeftSplitsNonnegStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    f.coeff 0 = 0 →
+    g.coeff 0 ≠ 0 →
+    f.Splits
+
 /-- The succ-degree left endpoint follows from the forward
 Aissen--Schoenberg--Whitney theorem.  This gives an alternate classical route:
 positive perturbations `f + μ g` are PF, and the PF Toeplitz minors are closed
@@ -1811,6 +1826,55 @@ theorem PosComboRealRooted.divX_succDegree_data
   rw [Polynomial.natDegree_divX_eq_natDegree_tsub_one,
     Polynomial.natDegree_divX_eq_natDegree_tsub_one]
   lia
+
+/-- The full succ-degree left-endpoint statement is reduced to the residual
+branch `f.coeff 0 = 0`, `g.coeff 0 ≠ 0`.
+
+The proof is a strong induction on `f.natDegree`.  If `f.coeff 0 ≠ 0`, the
+reflection route applies.  If both constant coefficients vanish, divide both
+polynomials by the common factor `X` and invoke the induction hypothesis. -/
+theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_residual
+    (hres : PosComboSuccDegreeResidualLeftSplitsNonnegStatement) :
+    PosComboSuccDegreeLeftSplitsNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hsucc
+  refine
+    Nat.strong_induction_on
+      (p := fun n =>
+        ∀ {f g : ℝ[X]},
+          f.natDegree = n →
+          HasPosLeadingCoeff f →
+          HasPosLeadingCoeff g →
+          HasNonnegCoeffs f →
+          HasNonnegCoeffs g →
+          PosComboRealRooted f g →
+          g.natDegree = f.natDegree + 1 →
+          f.Splits)
+      f.natDegree ?_ rfl hf_pos hg_pos hfnn hgnn hfg hsucc
+  intro n ih f g hfdeg hf_pos hg_pos hfnn hgnn hfg hsucc
+  by_cases hf0_ne : f.coeff 0 ≠ 0
+  · exact
+      hfg.left_splits_of_succDegree_of_left_coeff_zero_ne
+        hf_pos hg_pos hfnn hgnn hsucc hf0_ne
+  · have hf0 : f.coeff 0 = 0 := by
+      by_contra hf0
+      exact hf0_ne hf0
+    by_cases hg0 : g.coeff 0 = 0
+    · obtain ⟨hfdiv_pos, hgdiv_pos, hfdiv_nn, hgdiv_nn, hdiv_fg, hdiv_succ⟩ :=
+        hfg.divX_succDegree_data hf_pos hg_pos hfnn hgnn hsucc hf0 hg0
+      have hf_nat_pos : 0 < f.natDegree := by
+        by_contra hnot
+        have hf_deg_zero : f.natDegree = 0 := Nat.eq_zero_of_not_pos hnot
+        have hf_C : f = C (f.coeff 0) :=
+          Polynomial.eq_C_of_natDegree_eq_zero hf_deg_zero
+        exact hf_pos.ne_zero (by simpa [hf0] using hf_C)
+      have hdiv_deg_lt : f.divX.natDegree < n := by
+        rw [← hfdeg, Polynomial.natDegree_divX_eq_natDegree_tsub_one]
+        lia
+      have hdiv_splits : f.divX.Splits :=
+        ih f.divX.natDegree hdiv_deg_lt rfl
+          hfdiv_pos hgdiv_pos hfdiv_nn hgdiv_nn hdiv_fg hdiv_succ
+      exact DegreeDropReversal.splits_of_divX_splits_of_coeff_zero hf0 hdiv_splits
+    · exact hres hf_pos hg_pos hfnn hgnn hfg hsucc hf0 hg0
 
 /-- **Sub-statement B of milestone B2: descending-root crossing inequalities.**
 
