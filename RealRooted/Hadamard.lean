@@ -464,16 +464,21 @@ theorem finitePolyaSchur_nonneg_of_schurSzegoNonzero
   finitePolyaSchur_nonneg_of_backward
     (finitePolyaSchurNonnegBackward_of_schurSzegoNonzero hSZ)
 
-/-- Finite Schur--Szegő composition theorem. The degenerate cases (`f = 0` or
-`p = 0`, where the composition vanishes) are discharged; the remaining
-obligation is the substantive case of a nonzero PF polynomial `f` composed with
-a nonzero real-rooted polynomial `p`. -/
-theorem finiteSchurSzegoComposition : finiteSchurSzegoCompositionStatement := by
-  refine finiteSchurSzegoComposition_of_nonzero ?_
+/-- Nonzero finite Schur--Szegő composition theorem.  This is the substantive
+classical leaf: `f` is a nonzero PF polynomial, `p` is a nonzero real-rooted
+polynomial, both have degree at most `n`, and the fixed-degree Schur--Szegő
+composition is either zero or real-rooted. -/
+theorem finiteSchurSzegoCompositionNonzero :
+    finiteSchurSzegoCompositionNonzeroStatement := by
   intro n f p hf hf0 hfdeg hp0 hp hsplit
-  -- Substantive case: `f ≠ 0` PF (real, nonpositive zeros) and `p ≠ 0` with
-  -- only real zeros. Then `schurSzegoComp n f p` has only real zeros.
   sorry
+
+/-- Finite Schur--Szegő composition theorem. The degenerate cases (`f = 0` or
+`p = 0`, where the composition vanishes) are discharged by
+`finiteSchurSzegoComposition_of_nonzero`; the remaining classical content is
+`finiteSchurSzegoCompositionNonzero`. -/
+theorem finiteSchurSzegoComposition : finiteSchurSzegoCompositionStatement :=
+  finiteSchurSzegoComposition_of_nonzero finiteSchurSzegoCompositionNonzero
 
 /-- Directly applicable form of the finite Schur--Szegő composition theorem:
 for a PF polynomial `f` and a real-rooted polynomial `p`, both of degree at most
@@ -490,13 +495,13 @@ theorem schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial
 /-- The backward direction of the finite Pólya--Schur theorem, obtained from the
 finite Schur--Szegő composition theorem. -/
 theorem finitePolyaSchurNonnegBackward : finitePolyaSchurNonnegBackwardStatement :=
-  finitePolyaSchurNonnegBackward_of_schurSzego finiteSchurSzegoComposition
+  finitePolyaSchurNonnegBackward_of_schurSzegoNonzero finiteSchurSzegoCompositionNonzero
 
 /-- Classical finite Pólya--Schur theorem (nonnegative-coefficient convention).
 The only remaining analytic obligation is isolated in
 `finiteSchurSzegoComposition`. -/
 theorem finitePolyaSchur_nonneg : finitePolyaSchurNonnegStatement :=
-  finitePolyaSchur_nonneg_of_backward finitePolyaSchurNonnegBackward
+  finitePolyaSchur_nonneg_of_schurSzegoNonzero finiteSchurSzegoCompositionNonzero
 
 /-- Nonnegative coefficients are preserved by coefficientwise Hadamard
 products. -/
