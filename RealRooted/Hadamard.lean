@@ -615,6 +615,14 @@ theorem hadamardPreservesRightHalfPlaneStable_of_hurwitzStable
     hadamardPreservesRightHalfPlaneStableStatement :=
   fun {_ _} hann hbnn harhp hbrhp => (h ⟨hann, harhp⟩ ⟨hbnn, hbrhp⟩).2
 
+/-- Garloff--Wagner Theorem 1 is equivalent to its right-half-plane analytic
+core; coefficient nonnegativity of the product is elementary. -/
+theorem hadamardPreservesHurwitzStable_iff_rightHalfPlane :
+    hadamardPreservesHurwitzStableStatement ↔
+      hadamardPreservesRightHalfPlaneStableStatement :=
+  ⟨hadamardPreservesRightHalfPlaneStable_of_hurwitzStable,
+    hadamardPreservesHurwitzStable_of_rightHalfPlane⟩
+
 /-- The combinatorial heart of Garloff--Wagner Theorem 1, as a pure matrix
 statement: total nonnegativity of the row-oriented Hurwitz matrix is preserved
 under coefficientwise products. -/
@@ -681,6 +689,16 @@ theorem hadamardPreservesHurwitzStable_iff_matrixTN
       hadamardPreservesHurwitzMatrixTNStatement :=
   ⟨fun h => hadamardPreservesHurwitzMatrixTN_of_stableRoute hBwd h hFwd,
     fun h => hadamardPreservesHurwitzStable_of_matrixRoute hFwd h hBwd⟩
+
+/-- Under the Hurwitz-matrix criterion, the right-half-plane analytic core of
+Garloff--Wagner Theorem 1 is equivalent to the matrix Hadamard leaf. -/
+theorem hadamardPreservesRightHalfPlaneStable_iff_matrixTN
+    (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement)
+    (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement) :
+    hadamardPreservesRightHalfPlaneStableStatement ↔
+      hadamardPreservesHurwitzMatrixTNStatement :=
+  hadamardPreservesHurwitzStable_iff_rightHalfPlane.symm.trans
+    (hadamardPreservesHurwitzStable_iff_matrixTN hFwd hBwd)
 
 /-- **Garloff--Wagner, Theorem 4(b), reduced to its classical inputs** (TODO T9).
 
