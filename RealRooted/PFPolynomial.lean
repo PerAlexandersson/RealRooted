@@ -54,6 +54,9 @@ theorem of_realRooted_nonneg {p : ℝ[X]}
     IsPFPolynomial p :=
   ⟨hpnn, Or.inr hprr_splits, roots_nonpos_of_nonneg_coeffs hprr_splits hpnn⟩
 
+theorem one : IsPFPolynomial (1 : ℝ[X]) :=
+  IsPFPolynomial.of_realRooted_nonneg hasNonnegCoeffs_one (by simp)
+
 /-- Construct a PF polynomial from nonnegative coefficients and a
 zero-or-splits certificate. -/
 theorem of_nonnegCoeffs_eq_zero_or_splits {p : ℝ[X]}
@@ -75,6 +78,12 @@ theorem const_mul {a : ℝ} (ha : 0 < a) {p : ℝ[X]}
       have hrp : r ∈ p.roots := by
         simpa [Polynomial.roots_C_mul _ ha.ne'] using hr
       exact hp.roots_nonpos r hrp
+
+theorem of_C_nonneg {a : ℝ} (ha : 0 ≤ a) : IsPFPolynomial (Polynomial.C a) := by
+  by_cases ha0 : a = 0
+  · simpa [ha0] using IsPFPolynomial.zero
+  · have ha_pos : 0 < a := lt_of_le_of_ne ha (Ne.symm ha0)
+    simpa using IsPFPolynomial.one.const_mul ha_pos
 
 theorem X_mul {p : ℝ[X]} (hp : IsPFPolynomial p) :
     IsPFPolynomial (X * p) := by
@@ -106,7 +115,7 @@ theorem pow {p : ℝ[X]} (hp : IsPFPolynomial p) (n : ℕ) :
     IsPFPolynomial (p ^ n) := by
   induction n with
   | zero =>
-      simpa using IsPFPolynomial.of_realRooted_nonneg hasNonnegCoeffs_one (by simp)
+      simpa using IsPFPolynomial.one
   | succ n ih =>
       simpa [pow_succ] using ih.mul hp
 
@@ -154,7 +163,7 @@ theorem of_prec0_self {p : ℝ[X]}
 end IsPFPolynomial
 
 theorem isPFPolynomial_one : IsPFPolynomial (1 : ℝ[X]) :=
-  IsPFPolynomial.of_realRooted_nonneg hasNonnegCoeffs_one (by simp)
+  IsPFPolynomial.one
 
 theorem isPFPolynomial_X : IsPFPolynomial (X : ℝ[X]) := by
   simpa [mul_one] using isPFPolynomial_one.X_mul
