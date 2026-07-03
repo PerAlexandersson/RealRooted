@@ -3297,14 +3297,20 @@ theorem pairwiseCompatible_of_familyCompatible
     hfull [(α, fi), (β, fj)] (by grind) (by simp_all)
   simpa [fi, fj, weightedSum, weightedSum_cons] using hpair
 
+/-- The finite-family four-way Chudnovsky--Seymour package used by this
+project: pairwise compatibility, pairwise common right interleavers, global
+common right interleaver, and full nonnegative family compatibility. -/
+abbrev ChudnovskySeymourFourWayPackage (fs : List ℝ[X]) : Prop :=
+  (PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs) ∧
+    (PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs) ∧
+    (HasCommonInterleaver fs ↔ FamilyCompatible fs)
+
 private theorem chudnovskySeymour_fourWay_of_pairwiseCompatible_iff_pairwiseCommon
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (h12 : PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs) :
-    (PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs) ∧
-      (PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs) ∧
-      (HasCommonInterleaver fs ↔ FamilyCompatible fs) := by
+    ChudnovskySeymourFourWayPackage fs := by
   have h23 : PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs :=
     ⟨commonInterleaverFamilyUpgrade
         (fun f hf => (hrr f hf).2) hpos,
@@ -3319,9 +3325,7 @@ private theorem chudnovskySeymour_fourWay_of_pairwiseCommonForward
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hforward : PairwiseCompatible fs → PairwiseHasCommonInterleaver fs) :
-    (PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs) ∧
-      (PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs) ∧
-      (HasCommonInterleaver fs ↔ FamilyCompatible fs) :=
+    ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_pairwiseCompatible_iff_pairwiseCommon hrr hpos
     ⟨hforward, fun hpair => pairwiseCompatible_of_pairwiseHasCommonInterleaver hpair hpos⟩
 
@@ -3630,21 +3634,15 @@ theorem chudnovskySeymour_fourWay_of_boundaryRightPairOrientation_and_nonnegCoef
     (fs := fs) hrr hpos hnn
     (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
 
-private theorem pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay
+theorem pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay
     {fs : List ℝ[X]}
-    (hfour :
-      (PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs) ∧
-        (PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs) ∧
-        (HasCommonInterleaver fs ↔ FamilyCompatible fs)) :
+    (hfour : ChudnovskySeymourFourWayPackage fs) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
   hfour.1.trans hfour.2.1
 
-private theorem pairwiseCompatible_iff_familyCompatible_of_fourWay
+theorem pairwiseCompatible_iff_familyCompatible_of_fourWay
     {fs : List ℝ[X]}
-    (hfour :
-      (PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs) ∧
-        (PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs) ∧
-        (HasCommonInterleaver fs ↔ FamilyCompatible fs)) :
+    (hfour : ChudnovskySeymourFourWayPackage fs) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
   hfour.1.trans (hfour.2.1.trans hfour.2.2)
 

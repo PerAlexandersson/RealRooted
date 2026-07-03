@@ -19,9 +19,7 @@ namespace ChudnovskySeymour
 
 /-- Four-way compatibility/common-interleaver package for a finite family. -/
 abbrev fourWayPackage (fs : List ℝ[X]) : Prop :=
-  (PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs) ∧
-    (PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs) ∧
-    (HasCommonInterleaver fs ↔ FamilyCompatible fs)
+  ChudnovskySeymourFourWayPackage fs
 
 /-- Roadmap target for pairwise compatibility versus common left interleavers. -/
 abbrev commonLeftInterleaverTarget : Prop :=

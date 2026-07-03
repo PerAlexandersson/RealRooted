@@ -105,7 +105,7 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_natDegree_
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
-  let hfour := chudnovskySeymour_fourWay_of_natDegree_le_one hpos hdeg
-  hfour.1.trans hfour.2.1
+  pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay <|
+    chudnovskySeymour_fourWay_of_natDegree_le_one hpos hdeg
 
 end RealRooted
