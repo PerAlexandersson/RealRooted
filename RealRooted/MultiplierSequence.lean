@@ -210,24 +210,26 @@ theorem jensenPolynomial_const_sequence (n : ℕ) (a : ℝ) :
 theorem jensenPolynomial_add_sequence (n : ℕ) (gamma delta : ℕ → ℝ) :
     jensenPolynomial n (fun k => gamma k + delta k) =
       jensenPolynomial n gamma + jensenPolynomial n delta := by
-  ext k
-  simp only [coeff_jensenPolynomial, Polynomial.coeff_add]
-  split_ifs <;> ring
+  rw [jensenPolynomial_eq_diagonalOperator_X_add_one_pow,
+    jensenPolynomial_eq_diagonalOperator_X_add_one_pow,
+    jensenPolynomial_eq_diagonalOperator_X_add_one_pow,
+    diagonalOperator_add_sequence]
 
 /-- The Jensen polynomial is negation-preserving in the diagonal sequence. -/
 theorem jensenPolynomial_neg_sequence (n : ℕ) (gamma : ℕ → ℝ) :
     jensenPolynomial n (fun k => -gamma k) = -jensenPolynomial n gamma := by
-  ext k
-  simp only [coeff_jensenPolynomial, Polynomial.coeff_neg]
-  split_ifs <;> ring
+  rw [jensenPolynomial_eq_diagonalOperator_X_add_one_pow,
+    jensenPolynomial_eq_diagonalOperator_X_add_one_pow,
+    diagonalOperator_neg_sequence]
 
 /-- The Jensen polynomial is subtractive in the diagonal sequence. -/
 theorem jensenPolynomial_sub_sequence (n : ℕ) (gamma delta : ℕ → ℝ) :
     jensenPolynomial n (fun k => gamma k - delta k) =
       jensenPolynomial n gamma - jensenPolynomial n delta := by
-  ext k
-  simp only [coeff_jensenPolynomial, Polynomial.coeff_sub]
-  split_ifs <;> ring
+  rw [jensenPolynomial_eq_diagonalOperator_X_add_one_pow,
+    jensenPolynomial_eq_diagonalOperator_X_add_one_pow,
+    jensenPolynomial_eq_diagonalOperator_X_add_one_pow,
+    diagonalOperator_sub_sequence]
 
 theorem hasNonnegCoeffs_jensenPolynomial
     {n : ℕ} {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k) :
