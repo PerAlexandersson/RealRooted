@@ -307,6 +307,7 @@ private lemma exists_affineDeriv_root_between_strict {f : ℝ[X]}
     have hcont :
         ContinuousAt (fun x : ℝ => (1 - x) ^ (-c)) r₁ := by
       refine (continuousAt_const.sub continuousAt_id).rpow_const ?_
+      dsimp
       grind
     exact hcont.tendsto.mono_left nhdsWithin_le_nhds
   have hfa : Filter.Tendsto φ (nhdsWithin r₁ (Set.Ioi r₁)) (nhds 0) := by
@@ -322,6 +323,7 @@ private lemma exists_affineDeriv_root_between_strict {f : ℝ[X]}
     have hcont :
         ContinuousAt (fun x : ℝ => (1 - x) ^ (-c)) r₂ := by
       refine (continuousAt_const.sub continuousAt_id).rpow_const ?_
+      dsimp
       grind
     exact hcont.tendsto.mono_left nhdsWithin_le_nhds
   have hfb : Filter.Tendsto φ (nhdsWithin r₂ (Set.Iio r₂)) (nhds 0) := by

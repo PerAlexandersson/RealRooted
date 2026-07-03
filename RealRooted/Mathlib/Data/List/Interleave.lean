@@ -5,6 +5,7 @@ Authors: Yaël Dillies
 -/
 module
 
+public import Batteries.Data.List.Interleave
 public import Batteries.Data.List.Lemmas
 public import Mathlib.Logic.Function.Defs
 public import Mathlib.Order.Defs.Unbundled
@@ -18,126 +19,17 @@ import Mathlib.Tactic.MkIffOfInductiveProp
 /-!
 # Interleaving lists
 
-This file defines interleaving of lists, both as an operation and as a relation.
+This file defines interleaving of lists as a relation.
+
+## See also
+
+Interleaving of lists as an operation is defined in `Batteries/Data/List/Interleave`.
 -/
 
 public section
 
 namespace List
-variable {α : Type*} {r s : α → α → Prop} {l l₁ l₂ : List α} {a b c : α}
-
-/-- Interleaves two lists `l₁` and `l₂`, starting with an element of `l₂`.
-This operation is well-behaved only when the length of `l₂` is either the length of `l₁`
-or one more.
-```
-#eval interleave [1, 3] [0, 2, 4] -- [0, 1, 2, 3, 4]
-#eval interleave [0, 1, 2] [3, 4]
-```
--/
-@[expose]
-def interleave : List α → List α → List α
-  | _, [] => []
-  | l₁, a :: l₂ => a :: interleave l₂ l₁
-termination_by l₁ l₂ => l₁.length + l₂.length
-
-@[simp] lemma interleave_nil (l₁ : List α) : l₁.interleave [] = [] := by rw [interleave]
-
-@[simp]
-lemma interleave_cons (l₁ : List α) (a : α) (l₂ : List α) :
-    l₁.interleave (a :: l₂) = a :: interleave l₂ l₁ := by rw [interleave]
-
-@[simp]
-lemma interleave_append_append_of_length_eq_length :
-    ∀ {l₁ l₂ : List α} (_ : l₁.length = l₂.length) (l₃ l₄ : List α),
-      (l₁ ++ l₃).interleave (l₂ ++ l₄) = l₁.interleave l₂ ++ l₃.interleave l₄
-  | [], [], _, l₃, l₄ => by simp
-  | a :: l₁, b :: l₂, _, l₃, l₄ => by simp_all [interleave_append_append_of_length_eq_length]
-
-@[simp]
-lemma interleave_append_left_of_length_eq_length (h₁₂ : l₁.length = l₂.length) (l₃ : List α) :
-    (l₁ ++ l₃).interleave l₂ = l₁.interleave l₂ ++ l₃.interleave [] := by
-  simpa using interleave_append_append_of_length_eq_length h₁₂ _ []
-
-@[simp]
-lemma interleave_append_right_of_length_eq_length (h₁₂ : l₁.length = l₂.length) (l₃ : List α) :
-    l₁.interleave (l₂ ++ l₃) = l₁.interleave l₂ ++ [].interleave l₃ := by
-  simpa using interleave_append_append_of_length_eq_length h₁₂ [] _
-
-@[simp]
-lemma interleave_append_append_of_length_add_one_eq_length :
-    ∀ {l₁ l₂ : List α} (_ : l₁.length + 1 = l₂.length) (l₃ l₄ : List α),
-      (l₁ ++ l₃).interleave (l₂ ++ l₄) = l₁.interleave l₂ ++ l₄.interleave l₃
-  | [], b :: l₂, _, l₃, l₄ => by simp_all
-  | a :: l₁, b :: c :: l₂, _, l₃, l₄ => by simp_all [interleave_append_append_of_length_eq_length]
-
-@[simp]
-lemma interleave_append_left_of_length_add_one_eq_length (h₁₂ : l₁.length + 1 = l₂.length)
-    (l₃ : List α) : (l₁ ++ l₃).interleave l₂ = l₁.interleave l₂ ++ [].interleave l₃ := by
-  simpa using interleave_append_append_of_length_add_one_eq_length h₁₂ _ []
-
-@[simp]
-lemma interleave_append_right_of_length_add_one_eq_length (h₁₂ : l₁.length + 1 = l₂.length)
-    (l₃ : List α) : l₁.interleave (l₂ ++ l₃) = l₁.interleave l₂ ++ l₃.interleave [] := by
-  simpa using interleave_append_append_of_length_add_one_eq_length h₁₂ [] _
-
-@[simp]
-lemma reverse_interleave_of_length_eq_length :
-    ∀ {l₁ l₂ : List α}, l₁.length = l₂.length →
-      (l₁.interleave l₂).reverse = l₂.reverse.interleave l₁.reverse
-  | [], [], _ => by simp
-  | a :: l₁, b :: l₂, _ => by simp_all [reverse_interleave_of_length_eq_length]
-
-@[simp]
-lemma reverse_interleave_of_length_add_one_eq_length :
-    ∀ {l₁ l₂ : List α}, l₁.length + 1 = l₂.length →
-      (l₁.interleave l₂).reverse = l₁.reverse.interleave l₂.reverse
-  | [], [a], _ => by simp
-  | a :: l₁, b :: l₂, _ => by simp_all [reverse_interleave_of_length_add_one_eq_length]
-
-@[simp]
-lemma interleave_ofFn_ofFn :
-    ∀ {n : ℕ} {f g : Fin n → α},
-      interleave (ofFn f) (ofFn g) =
-        ofFn (n := 2 * n) (fun i ↦ if i.val % 2 = 0 then g ⟨i / 2, by lia⟩ else f ⟨i / 2, by lia⟩)
-  | 0, f, g  => by simp
-  | n + 1, f, g => by
-      simp_all [interleave_ofFn_ofFn]
-      grind [Nat.add_div_right, Nat.add_mod_right, Nat.mul_add_div, Nat.mul_add_mod]
-
-lemma interleave_ofFn_ofFn' :
-    ∀ {n : ℕ} {f : Fin n → α} {g : Fin (n + 1) → α},
-      interleave (ofFn f) (ofFn g) =
-        ofFn (n := 2 * n + 1)
-          (fun i ↦ if hi : i.val % 2 = 0 then g ⟨i / 2, by lia⟩ else f ⟨i / 2, by lia⟩)
-  | 0, f, g  => by simp
-  | n + 1, f, g => by
-      simp_all only [ofFn_succ, Fin.succ_zero_eq_one, interleave_cons,
-        interleave_ofFn_ofFn, Fin.succ_mk, Fin.val_zero, Nat.zero_mod, ↓reduceDIte,
-        Nat.zero_div, Fin.zero_eta, Fin.val_succ, Nat.zero_add, Nat.mod_succ,
-        Nat.succ_ne_self, Nat.reduceDiv, Nat.mul_eq, Nat.reduceAdd, Nat.mod_self,
-        Nat.zero_lt_succ, Nat.div_self, Fin.mk_one, cons.injEq, true_and]
-      congr 1
-      funext i
-      by_cases hc : (i : ℕ) % 2 = 0
-      · rw [if_pos hc, dif_neg (by lia : ¬ ((i : ℕ) + 3) % 2 = 0)]
-        congr 1
-        simp only [Fin.mk.injEq]
-        lia
-      · rw [if_neg hc, dif_pos (by lia : ((i : ℕ) + 3) % 2 = 0)]
-        congr 1
-        simp only [Fin.mk.injEq]
-        lia
-
-@[simp]
-lemma left_sublist_interleave : ∀ {l₁ l₂ : List α}, l₁.length ≤ l₂.length → l₁ <+ l₁.interleave l₂
-  | [], _, _ => by simp
-  | a :: l₁, b :: l₂, h => by
-    simp only [interleave_cons]
-    exact .cons _ <| .cons_cons _ <| left_sublist_interleave <| by simpa using h
-
-@[simp]
-lemma right_sublist_interleave {l₁ l₂ : List α} (hl : l₂.length ≤ l₁.length + 1) :
-    l₂ <+ l₁.interleave l₂ := by cases l₂ <;> simp_all
+variable {α : Type*} {r s : α → α → Prop} {l l₁ l₂ l₃ l₄ : List α} {a b c : α}
 
 variable (r) in
 /-- Relation for interleaving lists. `l₁` `r`-interleaves `l₂` if the length of `l₂` is either the
@@ -162,20 +54,15 @@ attribute [simp] Interleaves.nil_nil
 attribute [simp high] Interleaves.nil_singleton
 
 @[simp]
-lemma interleaves_nil_cons : Interleaves r [] (a :: l) ↔ l = [] := by
-  rw [interleaves_iff]
-  simp
+lemma interleaves_nil_cons : Interleaves r [] (a :: l) ↔ l = [] := by grind [interleaves_iff]
 
 @[simp]
-lemma not_interleaves_cons_nil : ¬ Interleaves r (a :: l) [] := by
-  rw [interleaves_iff]
-  simp
+lemma not_interleaves_cons_nil : ¬ Interleaves r (a :: l) [] := by grind [interleaves_iff]
 
 @[simp]
 lemma interleaves_cons_cons :
     Interleaves r (a :: l₁) (b :: l₂) ↔ r b a ∧ Interleaves r l₂ (a :: l₁) := by
-  rw [interleaves_iff]
-  simp [and_comm]
+  grind [interleaves_iff]
 
 @[simp high]
 lemma interleaves_singleton_singleton : Interleaves r [a] [b] ↔ r b a := by simp
@@ -190,18 +77,15 @@ lemma Interleaves.mono (hrs : ∀ ⦃a b⦄, r a b → s a b) :
 lemma interleaves_iff_length_isChain_interleave :
     ∀ {l₁ l₂ : List α},
     Interleaves r l₁ l₂ ↔
-      (l₁.length = l₂.length ∨ l₁.length + 1 = l₂.length) ∧ (l₁.interleave l₂).IsChain r
+      (l₁.length = l₂.length ∨ l₁.length + 1 = l₂.length) ∧ (l₂.interleave l₁).IsChain r
   | [], [] => by simp
-  | [], b :: l₂ => by simp
+  | [], b :: l₂ => by simp +contextual
   | a :: l₁, [] => by simp
-  | a :: l₁, [b] => by rw [interleaves_iff]; simp
+  | a :: l₁, [b] => by rw [interleaves_iff]; simp +contextual
   | a :: l₁, b :: l₂ => by
     rw [interleaves_iff]
-    simp only [reduceCtorEq, and_self, cons.injEq, false_and, exists_false, ↓existsAndEq, true_and,
-      exists_eq_right_right', false_or, length_cons, Nat.add_right_cancel_iff, interleave_cons,
-      isChain_cons_cons]
-    rw [interleaves_iff_length_isChain_interleave]
-    simp [or_comm, eq_comm, and_comm, and_assoc]
+    simp [interleaves_iff_length_isChain_interleave (l₁ := l₂) (l₂ := a :: l₁), or_comm, eq_comm,
+      and_comm, and_assoc]
 termination_by l₁ l₂ => l₁.length + l₂.length
 
 @[simp]
@@ -211,7 +95,7 @@ lemma interleaves_append_singleton_append_singleton_of_length_eq_length
   simp [interleaves_iff_length_isChain_interleave, and_comm, *]
 
 @[simp]
-lemma interleaves_append_singleton_append_singleton_of_length_add_one_eq_length
+lemma interleaves_append_singleton_append_singleton_of_length_eq_length_add_one
     (h : l₁.length + 1 = l₂.length) :
     Interleaves r (l₁ ++ [a]) (l₂ ++ [b]) ↔ r a b ∧ Interleaves r (l₁ ++ [a]) l₂ := by
   simp [interleaves_iff_length_isChain_interleave, and_comm, *]
@@ -221,44 +105,37 @@ lemma interleaves_reverse_reverse_of_length_eq_length (h : l₁.length = l₂.le
   simp [interleaves_iff_length_isChain_interleave, ← reverse_interleave_of_length_eq_length,
     isChain_reverse, *]
 
-lemma interleaves_reverse_reverse_of_length_add_one_eq_length (h : l₁.length + 1 = l₂.length) :
-    Interleaves r l₁.reverse l₂.reverse ↔ Interleaves (Function.swap r) l₁ l₂ := by
-  simp [interleaves_iff_length_isChain_interleave, ← reverse_interleave_of_length_add_one_eq_length,
+lemma interleaves_reverse_reverse_of_length_eq_length_add_one (h : l₁.length + 1 = l₂.length) :
+    Interleaves r l₁.reverse l₂.reverse ↔ Interleaves (fun a b ↦ r b a) l₁ l₂ := by
+  simp [interleaves_iff_length_isChain_interleave, ← reverse_interleave_of_length_eq_length_add_one,
     isChain_reverse, *]
 
 lemma interleaves_ofFn {n : ℕ} {f g : Fin n → α} :
     Interleaves r (ofFn f) (ofFn g) ↔
       (∀ i, r (g i) (f i)) ∧ ∀ (i : ℕ) (hi : i + 1 < n), r (f ⟨i, by lia⟩) (g ⟨i + 1, hi⟩) := by
   simp only [interleaves_iff_length_isChain_interleave, length_ofFn, Nat.succ_ne_self, or_false,
-    interleave_ofFn_ofFn, isChain_ofFn, true_and]
-  refine ⟨fun h ↦ ?_, fun h i hi ↦ by have := h.1 ⟨i / 2, by lia⟩; grind⟩
+    interleave_ofFn_ofFn_even, isChain_ofFn, true_and]
+  refine ⟨fun h ↦ ?_, by grind⟩
   exact ⟨fun i ↦ by have := h (2 * i); grind, fun i hi ↦ by have := h (2 * i + 1); grind⟩
 
 lemma interleaves_ofFn' {n : ℕ} {f : Fin n → α} {g : Fin (n + 1) → α} :
     Interleaves r (ofFn f) (ofFn g) ↔
       (∀ i : Fin n, r (f i) (g i.succ)) ∧ ∀ i : Fin n, r (g i.castSucc) (f i) := by
   simp only [interleaves_iff_length_isChain_interleave, length_ofFn, Nat.left_eq_add,
-    interleave_ofFn_ofFn', isChain_ofFn, Nat.succ_ne_self, or_true, true_and]
+    interleave_ofFn_ofFn_odd, isChain_ofFn, Nat.succ_ne_self, or_true, true_and]
   -- FIXME: Why doesn't `grind unfold these?
   unfold Fin.castSucc Fin.castAdd Fin.castLE
-  refine ⟨fun h ↦ ?_, fun h i hi ↦ by
-    have := h.1 ⟨i / 2, by lia⟩
-    have := h.2 ⟨i / 2, by lia⟩
-    grind [Nat.add_div_right, Nat.add_mod_right, Nat.mul_add_div, Nat.mul_add_mod]⟩
-  refine ⟨fun i ↦ ?_, fun i ↦ ?_⟩
-  · have := h (2 * i + 1)
-    grind [Nat.add_div_right, Nat.add_mod_right, Nat.mul_add_div, Nat.mul_add_mod]
-  · have := h (2 * i)
-    grind [Nat.add_div_right, Nat.add_mod_right, Nat.mul_add_div, Nat.mul_add_mod]
+  refine ⟨fun h ↦ ?_, fun h i hi ↦ by grind⟩
+  exact ⟨fun i ↦ by have := h (2 * i + 1); grind, fun i ↦ by have := h (2 * i); grind⟩
 
 variable [IsTrans α r]
 
 lemma Interleaves.pairwise_left (hl : Interleaves r l₁ l₂) : l₁.Pairwise r := by
   rw [interleaves_iff_length_isChain_interleave] at hl
-  exact hl.2.pairwise.sublist <| left_sublist_interleave <| by lia
+  exact hl.2.pairwise.sublist right_sublist_interleave
 
 lemma Interleaves.pairwise_right (hl : Interleaves r l₁ l₂) : l₂.Pairwise r := by
   rw [interleaves_iff_length_isChain_interleave] at hl
-  exact hl.2.pairwise.sublist <| right_sublist_interleave <| by lia
+  exact hl.2.pairwise.sublist left_sublist_interleave
 
 end List

@@ -64,7 +64,7 @@ private lemma interleaves_reverse_of_interlaced_left :
     simp only [List.length_cons] at h ⊢
     lia
   rw [List.reverse_cons, List.reverse_cons, List.reverse_cons,
-    List.interleaves_append_singleton_append_singleton_of_length_add_one_eq_length
+    List.interleaves_append_singleton_append_singleton_of_length_eq_length_add_one
       (by simpa using h_len),
     List.interleaves_append_singleton_append_singleton_of_length_eq_length
       (by simpa using h_len), ← List.reverse_cons]
@@ -144,7 +144,7 @@ private lemma interlaced_of_interleaves_reverse_left :
   · simp at h
   have h_len : ss.length + 1 = (r₂ :: rs).length := by simp_all
   rw [List.reverse_cons, List.reverse_cons, List.reverse_cons,
-    List.interleaves_append_singleton_append_singleton_of_length_add_one_eq_length
+    List.interleaves_append_singleton_append_singleton_of_length_eq_length_add_one
       (by simpa using h_len),
     List.interleaves_append_singleton_append_singleton_of_length_eq_length
       (by simpa using h_len), ← List.reverse_cons] at h_inter
