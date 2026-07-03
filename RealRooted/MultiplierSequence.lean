@@ -187,6 +187,12 @@ theorem jensenPolynomial_eq_diagonalOperator_X_add_one_pow
   · have hlt : n < k := Nat.lt_of_not_le hk
     simp [hk, Nat.choose_eq_zero_of_lt hlt]
 
+/-- The Jensen polynomial of a constant diagonal sequence. -/
+theorem jensenPolynomial_const_sequence (n : ℕ) (a : ℝ) :
+    jensenPolynomial n (fun _ => a) = C a * ((X + 1 : ℝ[X]) ^ n) := by
+  rw [jensenPolynomial_eq_diagonalOperator_X_add_one_pow]
+  exact diagonalOperator_const_sequence a ((X + 1 : ℝ[X]) ^ n)
+
 /-- The Jensen polynomial is additive in the diagonal sequence. -/
 theorem jensenPolynomial_add_sequence (n : ℕ) (gamma delta : ℕ → ℝ) :
     jensenPolynomial n (fun k => gamma k + delta k) =
@@ -226,6 +232,10 @@ theorem jensenPolynomial_eq_zero_iff {n : ℕ} {gamma : ℕ → ℝ} :
     jensenPolynomial n (fun _ => (0 : ℝ)) = 0 := by
   rw [jensenPolynomial_eq_zero_iff]
   simp
+
+@[simp] theorem jensenPolynomial_one_sequence (n : ℕ) :
+    jensenPolynomial n (fun _ => (1 : ℝ)) = (X + 1 : ℝ[X]) ^ n := by
+  simpa using jensenPolynomial_const_sequence n (1 : ℝ)
 
 /-- Finite multiplier sequence up to degree `n`: the diagonal operator
 preserves real-rootedness, allowing the zero polynomial. -/
