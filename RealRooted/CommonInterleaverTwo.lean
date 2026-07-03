@@ -370,8 +370,7 @@ theorem pairwiseCompatible_of_commonLeftInterleaver
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
     PairwiseCompatible fs := by
   rcases hcommon with ⟨h, hprec⟩
-  intro i j hij
-  exact Compatible.of_commonLeftInterleaver
+  exact fun i j _ => Compatible.of_commonLeftInterleaver
     (hprec (fs.get i) (List.get_mem _ _))
     (hprec (fs.get j) (List.get_mem _ _))
     (hpos (fs.get i) (List.get_mem _ _))
@@ -398,8 +397,7 @@ theorem pairwiseCompatible_of_commonInterleaver
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
     PairwiseCompatible fs := by
   rcases hcommon with ⟨h, hprec⟩
-  intro i j hij
-  exact Compatible.of_commonInterleaver
+  exact fun i j _ => Compatible.of_commonInterleaver
     (hprec (fs.get i) (List.get_mem _ _))
     (hprec (fs.get j) (List.get_mem _ _))
     (hpos (fs.get i) (List.get_mem _ _))
@@ -425,9 +423,8 @@ theorem pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible
     {fs : List ℝ[X]}
     (htwo : ∀ ⦃f g : ℝ[X]⦄, Compatible f g → ∃ h : ℝ[X], Prec h f ∧ Prec h g)
     (hpair : PairwiseCompatible fs) :
-    PairwiseHasCommonLeftInterleaver fs := by
-  intro i j hij
-  simpa using htwo (hpair i j hij)
+    PairwiseHasCommonLeftInterleaver fs :=
+  fun i j hij => by simpa using htwo (hpair i j hij)
 
 /-- Reduction for the left-oriented Chudnovsky--Seymour target: the full
 `PairwiseCompatible ↔ HasCommonLeftInterleaver` statement follows from the
@@ -449,9 +446,8 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible
     {fs : List ℝ[X]}
     (htwo : ∀ ⦃f g : ℝ[X]⦄, Compatible f g → ∃ h : ℝ[X], Prec f h ∧ Prec g h)
     (hpair : PairwiseCompatible fs) :
-    PairwiseHasCommonInterleaver fs := by
-  intro i j hij
-  simpa using htwo (hpair i j hij)
+    PairwiseHasCommonInterleaver fs :=
+  fun i j hij => by simpa using htwo (hpair i j hij)
 
 /-- Natural two-polynomial bridge hypothesis in the Chudnovsky--Seymour setup:
 compatibility plus positive leading coefficients implies a common right
