@@ -240,6 +240,43 @@ theorem hurwitz_schurProduct_det_fin_three_nonneg_of_band_fail {a b : ℕ → �
     0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det := by
   rw [hurwitz_schurProduct_det_fin_three_of_band_fail hrows hcols l hl]
 
+/-- In-band `3 × 3` core of the Hurwitz Schur-product theorem.
+
+Together with `hurwitz_schurProduct_det_fin_three_nonneg_of_band_fail`, this
+is equivalent to the full `3 × 3` case.  The condition
+`2 * cols l ≤ rows l` says that every selected row/column pair lies in the
+nonzero staircase of a Hurwitz matrix. -/
+def HurwitzMatrixSchurProductDetFinThreeInBandStatement : Prop :=
+  ∀ {a b : ℕ → ℝ},
+    (hurwitz a).IsTotallyNonneg →
+    (hurwitz b).IsTotallyNonneg →
+    ∀ {rows cols : Fin 3 → ℕ},
+      StrictMono rows →
+      StrictMono cols →
+      (∀ l : Fin 3, 2 * cols l ≤ rows l) →
+      0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det
+
+/-- Full `3 × 3` Hurwitz Schur-product minor from the in-band core.
+
+The out-of-band case is already structural: if some `rows l < 2 * cols l`,
+then the determinant is zero by `hurwitz_schurProduct_det_fin_three_of_band_fail`.
+-/
+theorem hurwitz_schurProduct_det_fin_three
+    (hInBand : HurwitzMatrixSchurProductDetFinThreeInBandStatement)
+    {a b : ℕ → ℝ}
+    (ha : (hurwitz a).IsTotallyNonneg) (hb : (hurwitz b).IsTotallyNonneg)
+    {rows cols : Fin 3 → ℕ} (hrows : StrictMono rows) (hcols : StrictMono cols) :
+    0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det := by
+  by_cases hfail : ∃ l : Fin 3, rows l < 2 * cols l
+  · rcases hfail with ⟨l, hl⟩
+    exact hurwitz_schurProduct_det_fin_three_nonneg_of_band_fail hrows hcols l hl
+  · have hband : ∀ l : Fin 3, 2 * cols l ≤ rows l := by
+      intro l
+      exact not_lt.mp (by
+        intro hl
+        exact hfail ⟨l, hl⟩)
+    exact hInBand ha hb hrows hcols hband
+
 /-- Every minor of size at most two of the entrywise product of two totally
 nonnegative Hurwitz matrices is nonnegative.  This packages the complete
 low-order part of `HurwitzMatrixSchurProductTNStatement`; the first remaining

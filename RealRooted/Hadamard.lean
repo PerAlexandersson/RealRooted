@@ -736,6 +736,18 @@ theorem hurwitz_hadamardProduct_det_fin_three_nonneg_of_band_fail
     0 ≤ ((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det := by
   rw [hurwitz_hadamardProduct_det_fin_three_of_band_fail hrows hcols l hl]
 
+/-- `3 × 3` Hurwitz-matrix Hadamard minors from the pure in-band `3 × 3`
+matrix core.  The out-of-band case is handled structurally by the
+band-fail zero lemma. -/
+theorem hadamardPreservesHurwitzMatrixTN_det_fin_three
+    (hInBand : HurwitzMatrixSchurProductDetFinThreeInBandStatement)
+    {a b : ℝ[X]} (ha : (hurwitz a.coeff).IsTotallyNonneg)
+    (hb : (hurwitz b.coeff).IsTotallyNonneg)
+    {rows cols : Fin 3 → ℕ} (hrows : StrictMono rows) (hcols : StrictMono cols) :
+    0 ≤ ((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det := by
+  rw [hurwitz_hadamardProduct_matrix]
+  exact hurwitz_schurProduct_det_fin_three hInBand ha hb hrows hcols
+
 /-- The Hurwitz-matrix Hadamard leaf reduces to the pure matrix Schur core.
 
 Using `hurwitz_mul_entrywise_matrix`, this strips away the coefficient
