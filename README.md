@@ -176,13 +176,15 @@ New formalization target: Braun-Jal, *Order polytopes of generalized snake
 posets are h^*-real-rooted*, arXiv:2607.00922v1.  The immediate Lean todo is
 their Theorem 4.1: for a generalized snake word `w` of length `n >= 1`, the
 non-nesting rook polynomial `M_{epsilon w}` is real-rooted and the polynomial
-for the word with the final letter deleted interlaces it.  The expected route is
-to define generalized snake words and their non-nesting rook polynomials,
-formalize the positive recurrence in Theorem 3.5, reuse the Narayana
-interlacing inputs behind Lemmas 3.3 and 3.4, expose the Branden matrix
-interlacing preserver used in the proof, and then package the resulting
-h^*-real-rootedness statement for order polytopes via the Stanley /
-Alexandersson-Jal width-two correspondence.
+for the word with the final letter deleted interlaces it.  Concrete subtasks:
+define generalized snake words, deletion of the final letter, and prefix
+operations; define the associated squarecase/non-nesting rook polynomials;
+formalize the modified Narayana polynomials `P_n`, the auxiliary sums `G_n`,
+and the interlacing inputs behind Lemmas 3.3 and 3.4; prove the positive
+non-nesting recurrence of Theorem 3.5; expose the Branden matrix interlacing
+preserver used in the induction; prove Theorem 4.1 by strong induction; then
+package the resulting h^*-real-rootedness statement for order polytopes via the
+Stanley / Alexandersson-Jal width-two correspondence.
 
 Short-term documentation/onboarding work is tracked by the challenge-file issue:
 small Lean entry-point files for Branden-Solus, Aissen-Schoenberg-Whitney, and
