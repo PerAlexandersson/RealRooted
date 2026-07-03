@@ -742,6 +742,53 @@ theorem garloffWagnerHadamardNonnegPrec_of_classicalInputsBundle
     h.aissenSchoenbergWhitneyForward
     h.fullyInterlacingPairInterlace
 
+/-- Garloff--Wagner two-pair theorem via the pure Hurwitz-matrix Hadamard
+core.
+
+This sharper reduction of issue #34 avoids converting the product back to
+Hurwitz stability.  It stays in the total-nonnegativity/interlacing dictionary:
+proper position gives fully interlacing coefficient rows, the matrix Hadamard
+core preserves total nonnegativity of the odd/even Hurwitz matrix, and the
+converse dictionary returns zero-aware proper position. -/
+theorem garloffWagnerHadamardNonnegPrec_of_matrixHadamardBridges
+    (hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
+    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
+    garloffWagnerHadamardNonnegPrecStatement := by
+  intro f g p q hf hg hp hq hfg hpq
+  have hFull1 : FullyInterlacingPair f.coeff (fun n => g.coeff n) :=
+    hToFull hf hg hfg
+  have hFull2 : FullyInterlacingPair p.coeff (fun n => q.coeff n) :=
+    hToFull hp hq hpq
+  have hM1 : (hurwitz (oddEvenPolynomial f g).coeff).IsTotallyNonneg :=
+    (hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair
+      f g).mpr hFull1
+  have hM2 : (hurwitz (oddEvenPolynomial p q).coeff).IsTotallyNonneg :=
+    (hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair
+      p q).mpr hFull2
+  have hMprod := hMatHad hM1 hM2
+  rw [hadamardProduct_oddEvenPolynomial] at hMprod
+  have hFull :
+      FullyInterlacingPair (hadamardProduct f p).coeff
+        (fun n => (hadamardProduct g q).coeff n) :=
+    (hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair
+      (hadamardProduct f p) (hadamardProduct g q)).mp hMprod
+  exact hFullToPrec0 hFull
+
+/-- Matrix-core version of the Garloff--Wagner two-pair reduction, with the
+non-Hadamard leaves discharged by the shared Hermite--Biehler route and the
+forward Aissen--Schoenberg--Whitney/interlacing-extraction route. -/
+theorem garloffWagnerHadamardNonnegPrec_of_matrixClassicalInputs
+    (hRoute : HermiteBiehlerHurwitzRoute)
+    (hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
+    (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hInt : FullyInterlacingPairInterlaceStatement) :
+    garloffWagnerHadamardNonnegPrecStatement :=
+  garloffWagnerHadamardNonnegPrec_of_matrixHadamardBridges
+    hRoute.toNonnegPrecToFullyInterlacingPair
+    hMatHad
+    (fullyInterlacingPairToPrec0_of_forwardASW_interlace hASW hInt)
+
 /-- PF-polynomial wrapper around the strict Garloff--Wagner two-pair theorem. -/
 def garloffWagnerHadamardPFPrecStatement : Prop :=
   ∀ {f g p q : ℝ[X]},
@@ -773,8 +820,8 @@ def garloffWagnerHadamardPFPrec0Statement : Prop :=
     Prec0 p q →
     Prec0 (hadamardProduct f p) (hadamardProduct g q)
 
-theorem garloffWagnerHadamardPFPrec0_of_nonnegPrec
-    (hGW : garloffWagnerHadamardNonnegPrecStatement) :
+theorem garloffWagnerHadamardPFPrec0_of_prec
+    (hGW : garloffWagnerHadamardPFPrecStatement) :
     garloffWagnerHadamardPFPrec0Statement := by
   intro f g p q hf hg hp hq hfg hpq
   rcases hfg with rfl | rfl | hfg'
@@ -783,8 +830,13 @@ theorem garloffWagnerHadamardPFPrec0_of_nonnegPrec
   rcases hpq with rfl | rfl | hpq'
   · simpa using prec0_zero_left (hadamardProduct g q)
   · simpa using prec0_zero_right (hadamardProduct f p)
-  exact hGW hf.hasNonnegCoeffs hg.hasNonnegCoeffs
-    hp.hasNonnegCoeffs hq.hasNonnegCoeffs hfg' hpq'
+  exact hGW hf hg hp hq hfg' hpq'
+
+theorem garloffWagnerHadamardPFPrec0_of_nonnegPrec
+    (hGW : garloffWagnerHadamardNonnegPrecStatement) :
+    garloffWagnerHadamardPFPrec0Statement :=
+  garloffWagnerHadamardPFPrec0_of_prec
+    (garloffWagnerHadamardPFPrec_of_nonnegPrec hGW)
 
 /-- PF-polynomial closure under Hadamard product, stated directly from the
 zero-aware Garloff--Wagner PF wrapper. -/
@@ -795,6 +847,13 @@ theorem hadamardProduct_preserves_pf_of_garloffWagner
   IsPFPolynomial.of_prec0_self
     (hp.hasNonnegCoeffs.hadamardProduct hq.hasNonnegCoeffs)
     (hGW hp hp hq hq hp.prec0_self hq.prec0_self)
+
+theorem hadamardProduct_preserves_pf_of_nonnegPrec
+    (hGW : garloffWagnerHadamardNonnegPrecStatement)
+    {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
+    IsPFPolynomial (hadamardProduct p q) :=
+  hadamardProduct_preserves_pf_of_garloffWagner
+    (garloffWagnerHadamardPFPrec0_of_nonnegPrec hGW) hp hq
 
 theorem schurPolyaWagnerHadamardPF_of_garloffWagner_prec0
     (hGW : garloffWagnerHadamardPFPrec0Statement) :
@@ -818,7 +877,7 @@ theorem garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
   have hp : IsPFPolynomial p := IsPFPolynomial.of_realRooted_nonneg hpnn hprr.2
   have hq : IsPFPolynomial q := IsPFPolynomial.of_realRooted_nonneg hqnn hqrr.2
   have hpf : IsPFPolynomial (hadamardProduct p q) :=
-    schurPolyaWagnerHadamardPF_of_garloffWagner_nonnegPrec hGW hp hq
+    hadamardProduct_preserves_pf_of_nonnegPrec hGW hp hq
   exact ⟨hpf.eq_zero_or_splits, hpf.hasNonnegCoeffs, hpf.roots_nonpos⟩
 
 /-- Fixed-right Hadamard multiplication preserves zero-aware proper position
