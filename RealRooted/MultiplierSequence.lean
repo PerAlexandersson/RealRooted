@@ -210,26 +210,21 @@ theorem jensenPolynomial_const_sequence (n : ℕ) (a : ℝ) :
 theorem jensenPolynomial_add_sequence (n : ℕ) (gamma delta : ℕ → ℝ) :
     jensenPolynomial n (fun k => gamma k + delta k) =
       jensenPolynomial n gamma + jensenPolynomial n delta := by
-  rw [jensenPolynomial_eq_diagonalOperator_X_add_one_pow,
-    jensenPolynomial_eq_diagonalOperator_X_add_one_pow,
-    jensenPolynomial_eq_diagonalOperator_X_add_one_pow,
-    diagonalOperator_add_sequence]
+  simpa [jensenPolynomial_eq_diagonalOperator_X_add_one_pow] using
+    diagonalOperator_add_sequence gamma delta ((X + 1 : ℝ[X]) ^ n)
 
 /-- The Jensen polynomial is negation-preserving in the diagonal sequence. -/
 theorem jensenPolynomial_neg_sequence (n : ℕ) (gamma : ℕ → ℝ) :
     jensenPolynomial n (fun k => -gamma k) = -jensenPolynomial n gamma := by
-  rw [jensenPolynomial_eq_diagonalOperator_X_add_one_pow,
-    jensenPolynomial_eq_diagonalOperator_X_add_one_pow,
-    diagonalOperator_neg_sequence]
+  simpa [jensenPolynomial_eq_diagonalOperator_X_add_one_pow] using
+    diagonalOperator_neg_sequence gamma ((X + 1 : ℝ[X]) ^ n)
 
 /-- The Jensen polynomial is subtractive in the diagonal sequence. -/
 theorem jensenPolynomial_sub_sequence (n : ℕ) (gamma delta : ℕ → ℝ) :
     jensenPolynomial n (fun k => gamma k - delta k) =
       jensenPolynomial n gamma - jensenPolynomial n delta := by
-  rw [jensenPolynomial_eq_diagonalOperator_X_add_one_pow,
-    jensenPolynomial_eq_diagonalOperator_X_add_one_pow,
-    jensenPolynomial_eq_diagonalOperator_X_add_one_pow,
-    diagonalOperator_sub_sequence]
+  simpa [jensenPolynomial_eq_diagonalOperator_X_add_one_pow] using
+    diagonalOperator_sub_sequence gamma delta ((X + 1 : ℝ[X]) ^ n)
 
 theorem hasNonnegCoeffs_jensenPolynomial
     {n : ℕ} {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k) :
