@@ -1419,11 +1419,9 @@ theorem posComboNoCommonSameDegreeRootCrossing_of_orientationAlternative
   have hlen : sf.length = sg.length := by rw [hsf_len, hsg_len, hdeg]
   obtain ⟨hc1, hc2⟩ := rootCrossing_of_listAlternates_or hlen halt
   rw [hdf, hdg]
-  refine ⟨?_, ?_⟩
-  · intro j hj1 hj2
-    exact hc1 j hj1 (by rw [hsf_len]; exact hj2)
-  · intro j hj1 hj2
-    exact hc2 j hj1 (by rw [hsf_len]; exact hj2)
+  exact ⟨
+    (fun j hj1 hj2 => hc1 j hj1 (by rw [hsf_len]; exact hj2)),
+    fun j hj1 hj2 => hc2 j hj1 (by rw [hsf_len]; exact hj2)⟩
 
 /-- **Reduction of milestone B1 to its root-crossing content.**
 
@@ -1442,15 +1440,13 @@ theorem posComboNoCommonSameDegreeSlotData_of_rootCrossing
   have hlenf : (rootSeqDesc f).length = f.natDegree := rootSeqDesc_length hf_split
   have hleng : (rootSeqDesc g).length = g.natDegree := rootSeqDesc_length hg_split
   intro j _ hjf hjg
-  refine
+  exact
     rootSlotInterval_inter_nonempty_of_sameDegree_crossing
       (rootSeqDesc f) (rootSeqDesc g) rootSeqDesc_pairwise rootSeqDesc_pairwise
-      ?_ ?_ ?_ j hjf hjg
-  · rw [hleng, hlenf, hdeg]
-  · intro k hk1 hk2
-    exact hc1 k hk1 (by rw [hlenf] at hk2; exact hk2)
-  · intro k hk1 hk2
-    exact hc2 k hk1 (by rw [hlenf] at hk2; exact hk2)
+      (by rw [hleng, hlenf, hdeg])
+      (fun k hk1 hk2 => hc1 k hk1 (by rw [hlenf] at hk2; exact hk2))
+      (fun k hk1 hk2 => hc2 k hk1 (by rw [hlenf] at hk2; exact hk2))
+      j hjf hjg
 
 /-- The repaired same-degree pair-interleaver endpoint follows directly from
 the same-degree descending-root crossing inequalities. -/
@@ -1684,14 +1680,13 @@ theorem posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_rootCrossing
   have hlenf : (rootSeqDesc f).length = f.natDegree := rootSeqDesc_length hf_split
   have hleng : (rootSeqDesc g).length = g.natDegree := rootSeqDesc_length hg_split
   intro j _ hjf hjg
-  refine
+  exact
     rootSlotInterval_inter_nonempty_of_crossing (rootSeqDesc f) (rootSeqDesc g)
-      rootSeqDesc_pairwise rootSeqDesc_pairwise ?_ ?_ ?_ j hjf hjg
-  · rw [hleng, hlenf, hsucc]
-  · intro k hk1 hk2
-    exact hc1 k hk1 (by rw [hlenf] at hk2; exact hk2)
-  · intro k hk1 hk2
-    exact hc2 k hk1 (by rw [hlenf] at hk2; exact hk2)
+      rootSeqDesc_pairwise rootSeqDesc_pairwise
+      (by rw [hleng, hlenf, hsucc])
+      (fun k hk1 hk2 => hc1 k hk1 (by rw [hlenf] at hk2; exact hk2))
+      (fun k hk1 hk2 => hc2 k hk1 (by rw [hlenf] at hk2; exact hk2))
+      j hjf hjg
 
 /-- The corrected succ-degree pair-interleaver endpoint follows directly from
 left-endpoint real-rootedness and the succ-degree descending-root crossing
@@ -3252,9 +3247,9 @@ private theorem chudnovskySeymour_fourWay_of_pairwiseCommonForward
     (hforward : PairwiseCompatible fs → PairwiseHasCommonInterleaver fs) :
     (PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs) ∧
       (PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs) ∧
-      (HasCommonInterleaver fs ↔ FamilyCompatible fs) := by
-  refine chudnovskySeymour_fourWay_of_pairwiseCompatible_iff_pairwiseCommon hrr hpos ?_
-  exact ⟨hforward, fun hpair => pairwiseCompatible_of_pairwiseHasCommonInterleaver hpair hpos⟩
+      (HasCommonInterleaver fs ↔ FamilyCompatible fs) :=
+  chudnovskySeymour_fourWay_of_pairwiseCompatible_iff_pairwiseCommon hrr hpos
+    ⟨hforward, fun hpair => pairwiseCompatible_of_pairwiseHasCommonInterleaver hpair hpos⟩
 
 /-- Chudnovsky--Seymour four-way package in the finite-list language used in
 this project, with the two-polynomial converse isolated as hypothesis:
