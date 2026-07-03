@@ -78,6 +78,162 @@ abbrev familyCompatibleNonnegCoeffsTarget : Prop :=
 abbrev fourWayNonnegCoeffsTarget : Prop :=
   chudnovskySeymour_fourWay_nonnegCoeffs_target
 
+/-! ## Pair endpoint targets for milestones B1 and B2 -/
+
+/-- Milestone B1 (#41): repaired same-degree no-common pair endpoint. -/
+abbrev sameDegreePairTarget : Prop :=
+  PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement
+
+/-- Strong same-degree orientation alternative used by several reductions. -/
+abbrev sameDegreeOrientationAlternativeTarget : Prop :=
+  PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement
+
+/-- Same-degree root-slot reformulation of milestone B1. -/
+abbrev sameDegreeSlotDataTarget : Prop :=
+  PosComboNoCommonSameDegreeSlotDataNonnegStatement
+
+/-- Same-degree descending-root crossing subtarget for milestone B1. -/
+abbrev sameDegreeRootCrossingTarget : Prop :=
+  PosComboNoCommonSameDegreeRootCrossingNonnegStatement
+
+/-- Milestone B2 (#42): repaired succ-degree no-common pair endpoint. -/
+abbrev succDegreePairTarget : Prop :=
+  PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement
+
+/-- Strong fixed-orientation succ-degree endpoint. -/
+abbrev succDegreeOrientationTarget : Prop :=
+  PosComboNoCommonSuccDegreeOrientationNonnegStatement
+
+/-- Succ-degree left-endpoint real-rootedness subtarget. -/
+abbrev succDegreeLeftSplitsTarget : Prop :=
+  PosComboSuccDegreeLeftSplitsNonnegStatement
+
+/-- Succ-degree root-slot reformulation of milestone B2. -/
+abbrev succDegreeSlotDataTarget : Prop :=
+  PosComboNoCommonSuccDegreeSlotDataNonnegStatement
+
+/-- Succ-degree descending-root crossing subtarget for milestone B2. -/
+abbrev succDegreeRootCrossingTarget : Prop :=
+  PosComboNoCommonSuccDegreeRootCrossingNonnegStatement
+
+/-- Challenge-facing equivalence between the same-degree slot-data target and
+the repaired same-degree pair endpoint. -/
+theorem sameDegreeSlotDataTarget_iff_pairTarget :
+    sameDegreeSlotDataTarget ↔ sameDegreePairTarget :=
+  posComboNoCommonSameDegreeSlotData_iff_pairHasCommonInterleaver
+
+/-- Challenge-facing reduction from same-degree slot data to the repaired
+same-degree pair endpoint. -/
+theorem sameDegreePairTarget_of_slotData
+    (hslot : sameDegreeSlotDataTarget) :
+    sameDegreePairTarget :=
+  sameDegreePairHasCommonInterleaver_nonneg_of_slotData hslot
+
+/-- Challenge-facing reduction from same-degree root crossing to slot data. -/
+theorem sameDegreeSlotDataTarget_of_rootCrossing
+    (hcross : sameDegreeRootCrossingTarget) :
+    sameDegreeSlotDataTarget :=
+  posComboNoCommonSameDegreeSlotData_of_rootCrossing hcross
+
+/-- Challenge-facing reduction from same-degree root crossing to the repaired
+same-degree pair endpoint. -/
+theorem sameDegreePairTarget_of_rootCrossing
+    (hcross : sameDegreeRootCrossingTarget) :
+    sameDegreePairTarget :=
+  sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing hcross
+
+/-- Challenge-facing reduction from the same-degree orientation alternative to
+same-degree root crossing. -/
+theorem sameDegreeRootCrossingTarget_of_orientationAlternative
+    (horient : sameDegreeOrientationAlternativeTarget) :
+    sameDegreeRootCrossingTarget :=
+  posComboNoCommonSameDegreeRootCrossing_of_orientationAlternative horient
+
+/-- Challenge-facing reduction from the same-degree orientation alternative to
+the repaired same-degree pair endpoint. -/
+theorem sameDegreePairTarget_of_orientationAlternative
+    (horient : sameDegreeOrientationAlternativeTarget) :
+    sameDegreePairTarget :=
+  posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg
+    horient
+
+/-- Challenge-facing equivalence between the succ-degree slot-data target and
+the repaired succ-degree pair endpoint. -/
+theorem succDegreeSlotDataTarget_iff_pairTarget :
+    succDegreeSlotDataTarget ↔ succDegreePairTarget :=
+  posComboNoCommonSuccDegreeSlotData_iff_pairHasCommonInterleaver
+
+/-- Challenge-facing reduction from succ-degree slot data to the repaired
+succ-degree pair endpoint. -/
+theorem succDegreePairTarget_of_slotData
+    (hslot : succDegreeSlotDataTarget) :
+    succDegreePairTarget :=
+  succDegreePairHasCommonInterleaver_nonneg_of_slotData hslot
+
+/-- Challenge-facing reduction from the fixed succ-degree orientation to
+succ-degree root crossing. -/
+theorem succDegreeRootCrossingTarget_of_orientation
+    (horient : succDegreeOrientationTarget) :
+    succDegreeRootCrossingTarget :=
+  posComboNoCommonSuccDegreeRootCrossing_of_orientation horient
+
+/-- Challenge-facing reduction from left splitting and root crossing to
+succ-degree slot data. -/
+theorem succDegreeSlotDataTarget_of_leftSplits_and_rootCrossing
+    (hsplit : succDegreeLeftSplitsTarget)
+    (hcross : succDegreeRootCrossingTarget) :
+    succDegreeSlotDataTarget :=
+  posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_rootCrossing hsplit hcross
+
+/-- Challenge-facing reduction from left splitting and root crossing to the
+repaired succ-degree pair endpoint. -/
+theorem succDegreePairTarget_of_leftSplits_and_rootCrossing
+    (hsplit : succDegreeLeftSplitsTarget)
+    (hcross : succDegreeRootCrossingTarget) :
+    succDegreePairTarget :=
+  succDegreePairHasCommonInterleaver_nonneg_of_leftSplits_and_rootCrossing
+    hsplit hcross
+
+/-- Challenge-facing reduction from left splitting and fixed orientation to
+succ-degree slot data. -/
+theorem succDegreeSlotDataTarget_of_leftSplits_and_orientation
+    (hsplit : succDegreeLeftSplitsTarget)
+    (horient : succDegreeOrientationTarget) :
+    succDegreeSlotDataTarget :=
+  posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_orientation hsplit horient
+
+/-- Challenge-facing reduction from left splitting and fixed orientation to
+the repaired succ-degree pair endpoint. -/
+theorem succDegreePairTarget_of_leftSplits_and_orientation
+    (hsplit : succDegreeLeftSplitsTarget)
+    (horient : succDegreeOrientationTarget) :
+    succDegreePairTarget :=
+  succDegreePairHasCommonInterleaver_nonneg_of_leftSplits_and_orientation
+    hsplit horient
+
+/-- Challenge-facing reduction from the stronger fixed orientation to the
+repaired succ-degree pair endpoint. -/
+theorem succDegreePairTarget_of_orientation
+    (horient : succDegreeOrientationTarget) :
+    succDegreePairTarget :=
+  posComboNoCommonSuccDegreePairHasCommonInterleaver_of_orientation_nonneg
+    horient
+
+/-- Challenge-facing reduction from the affine-family bridge to the repaired
+succ-degree pair endpoint. -/
+theorem succDegreePairTarget_of_affineFamily
+    (haff : PosComboNoCommonAffineFamilyStatement) :
+    succDegreePairTarget :=
+  posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haff
+
+/-- Challenge-facing reduction from the boundary-right-pair orientation
+statement to the repaired succ-degree pair endpoint. -/
+theorem succDegreePairTarget_of_boundaryRight
+    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    succDegreePairTarget :=
+  succDegreePairHasCommonInterleaver_nonneg_of_boundaryRightPairOrientation
+    hboundary
+
 /-- Full roadmap reduction for the common-left target. -/
 theorem commonLeftInterleaverTarget_of_pairwiseLeftBridge
     (htwo : CompatiblePairHasCommonLeftInterleaverStatement)
