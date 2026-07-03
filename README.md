@@ -157,9 +157,10 @@ declarations include:
 
 The main open flagship theorem is the Chudnovsky-Seymour compatibility theorem:
 pairwise compatibility should be equivalent to common interleaver data under
-the usual nonzero, real-rooted, and positive-leading hypotheses.  The remaining
-work is split across the pair endpoints in `CommonInterleaverTwo`, the finite
-family upgrade, and the final wrapper in `ChudnovskySeymour`.
+the usual nonzero, real-rooted, and positive-leading hypotheses.  The
+finite-family upgrades are now named and packaged in `CommonInterleaverSeq`;
+the remaining work is concentrated in the two-polynomial pair endpoints in
+`CommonInterleaverTwo` and the final wrappers in `ChudnovskySeymour`.
 
 After Chudnovsky-Seymour is available, the Heilmann-Lieb matching-polynomial
 theorem should be developed as a downstream graph-theoretic corollary.  The

@@ -5,7 +5,7 @@ Bridge file for compatibility/common-interleaver statements:
 - two-polynomial compatibility and pairwise compatibility on finite lists,
 - easy directions from common left interleavers to compatibility,
 - the reduction of Chudnovsky--Seymour to the missing two-polynomial converse
-  and the still-unpackaged list-level left-handed Helly upgrade.
+  together with the named finite-family common-interleaver upgrades.
 
 This file sits between the positive-combination machinery (PosCombo) and
 the list-level common-interleaver combinatorics (CommonInterleaverSeq).
@@ -4048,9 +4048,9 @@ theorem pairwiseCompatible_iff_familyCompatible_of_natDegree_le_one
 /-- Roadmap target for the common-interlacing form of the
 Chudnovsky--Seymour theorem used in `INTERLACING.md`.
 
-The finite-family left-handed Helly upgrade is now available as
-`hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver`, so the remaining
-input is the two-polynomial bridge
+The finite-family left-handed Helly upgrade is now packaged as
+`CommonLeftInterleaverFamilyUpgradeStatement`, so the remaining input is the
+two-polynomial bridge
 `Compatible f g -> ∃ h, Prec h f ∧ Prec h g`. -/
 def chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_statement : Prop :=
   ∀ {fs : List ℝ[X]},
