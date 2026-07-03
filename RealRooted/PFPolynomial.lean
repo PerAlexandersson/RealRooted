@@ -137,6 +137,34 @@ theorem of_sequence
   let hpnn := hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff hpf
   ⟨hpnn, hASW hpnn hpf⟩
 
+/-- Forward-ASW endpoint closure for positive affine coefficient limits. -/
+theorem of_forall_pos_add_C_mul_of_forward
+    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
+    {p q : ℝ[X]}
+    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
+    (hfamily : ∀ {μ : ℝ}, 0 < μ → (p + C μ * q).Splits) :
+    IsPFPolynomial p := by
+  exact IsPFPolynomial.of_sequence hASW <|
+    IsPolyaFreqSeq.of_forall_pos_add_mul
+      (a := fun n => p.coeff n) (b := fun n => q.coeff n) (by
+        intro μ hμ
+        have hnn : HasNonnegCoeffs (p + C μ * q) :=
+          hpnn.add (nonnegCoeffs_C_mul hμ.le hqnn)
+        have hpf : IsPolyaFreqSeq (fun n => (p + C μ * q).coeff n) :=
+          aissenSchoenbergWhitney_reverse hnn (hfamily hμ)
+            (roots_nonpos_of_nonneg_coeffs (hfamily hμ) hnn)
+        simpa [Polynomial.coeff_add, Polynomial.coeff_C_mul] using hpf)
+
+/-- Splitting form of `IsPFPolynomial.of_forall_pos_add_C_mul_of_forward`. -/
+theorem splits_of_forall_pos_add_C_mul_of_forward
+    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
+    {p q : ℝ[X]}
+    (hp0 : p ≠ 0)
+    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
+    (hfamily : ∀ {μ : ℝ}, 0 < μ → (p + C μ * q).Splits) :
+    p.Splits :=
+  (of_forall_pos_add_C_mul_of_forward hASW hpnn hqnn hfamily).ne_zero_and_splits hp0 |>.2
+
 theorem to_sequence
     {p : ℝ[X]}
     (hp : IsPFPolynomial p) :

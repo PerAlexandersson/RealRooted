@@ -15,6 +15,7 @@ import RealRooted.CommonInterleaverSeq
 import RealRooted.AffineFamily
 import RealRooted.DegreeDropReversal
 import RealRooted.GammaRealRoots
+import RealRooted.PFPolynomial
 
 open Polynomial
 
@@ -1657,6 +1658,29 @@ def PosComboSuccDegreeLeftSplitsNonnegStatement : Prop :=
     PosComboRealRooted f g →
     g.natDegree = f.natDegree + 1 →
     f.Splits
+
+/-- The succ-degree left endpoint follows from the forward
+Aissen--Schoenberg--Whitney theorem.  This gives an alternate classical route:
+positive perturbations `f + μ g` are PF, and the PF Toeplitz minors are closed
+under the coefficient limit `μ → 0⁺`. -/
+theorem PosComboRealRooted.left_splits_of_forward_asw
+    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
+    f.Splits :=
+  IsPFPolynomial.splits_of_forall_pos_add_C_mul_of_forward
+    hASW hf_pos.ne_zero hfnn hgnn
+    fun {_} hμ => (hfg.isRealRooted_add_right hμ).2
+
+/-- Conditional package form of `PosComboRealRooted.left_splits_of_forward_asw`
+for the milestone-B2 endpoint statement. -/
+theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw
+    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement) :
+    PosComboSuccDegreeLeftSplitsNonnegStatement := by
+  intro f g hf_pos _ hfnn hgnn hfg _
+  exact hfg.left_splits_of_forward_asw hASW hf_pos hfnn hgnn
 
 /-- Constant-term nonzero subcase of the degree-drop endpoint.  Reflection at
 `g.natDegree` turns the succ-degree pair into an equal-degree pair, so the

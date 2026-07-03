@@ -1,8 +1,9 @@
 import RealRooted.Basic
 import RealRooted.WagnerX
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+import Mathlib.Topology.Algebra.Polynomial
 
-open Polynomial Matrix
+open Polynomial Matrix Filter
 
 noncomputable section
 
@@ -67,6 +68,45 @@ theorem hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff
     (hpf : IsPolyaFreqSeq (fun n => p.coeff n)) :
     HasNonnegCoeffs p :=
   fun k => nonneg_of_IsPolyaFreqSeq hpf k
+
+lemma continuous_toeplitz_minor_det_add_mul {a b : ℕ → ℝ}
+    {n : ℕ} (rows cols : Fin n → ℕ) :
+    Continuous fun μ : ℝ =>
+      ((toeplitz (fun k => a k + μ * b k)).submatrix rows cols).det := by
+  simp only [Matrix.det_apply]
+  apply continuous_finsetSum
+  intro σ _
+  apply Continuous.const_smul
+  apply continuous_finsetProd
+  intro i _
+  by_cases hle : cols i ≤ rows (σ i)
+  · simp only [submatrix_apply, toeplitz_apply, hle, ↓reduceIte]
+    exact continuous_const.add (continuous_id.mul continuous_const)
+  · simp only [submatrix_apply, toeplitz_apply, hle, ↓reduceIte]
+    exact continuous_const
+
+/-- Pólya-frequency sequences are closed under coefficientwise positive affine limits. -/
+theorem IsPolyaFreqSeq.of_forall_pos_add_mul {a b : ℕ → ℝ}
+    (h : ∀ {μ : ℝ}, 0 < μ → IsPolyaFreqSeq (fun n => a n + μ * b n)) :
+    IsPolyaFreqSeq a := by
+  intro n rows cols hrows hcols
+  let D : ℝ → ℝ := fun μ =>
+    ((toeplitz (fun k => a k + μ * b k)).submatrix rows cols).det
+  have hD_nonneg : ∀ μ : ℝ, 0 < μ → 0 ≤ D μ := by
+    intro μ hμ
+    exact h hμ hrows hcols
+  have hD_lim :
+      Tendsto D (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds (D 0)) :=
+    (continuous_toeplitz_minor_det_add_mul (a := a) (b := b) rows cols).continuousAt
+      |>.continuousWithinAt
+  have hconst_lim : Tendsto (fun _ : ℝ => (0 : ℝ))
+      (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) :=
+    tendsto_const_nhds
+  have hD0 : 0 ≤ D 0 := by
+    exact le_of_tendsto_of_tendsto hconst_lim hD_lim (by
+      filter_upwards [self_mem_nhdsWithin] with μ hμ
+      exact hD_nonneg μ hμ)
+  simpa [D, toeplitz] using hD0
 
 /-- Planning stub for the forward Aissen--Schoenberg--Whitney theorem:
 Toeplitz total nonnegativity of the coefficient sequence of a nonzero
