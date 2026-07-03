@@ -50,6 +50,30 @@ theorem coeff_basisTransform (P : ℕ → ℝ[X]) (p : ℝ[X]) (j : ℕ) :
     (basisTransform P p).coeff j = p.sum fun k a => a * (P k).coeff j := by
   simp [basisTransform, Polynomial.coeff_sum, Polynomial.coeff_C_mul]
 
+@[simp] theorem basisTransform_zero (P : ℕ → ℝ[X]) :
+    basisTransform P 0 = 0 := by
+  simp [basisTransform]
+
+@[simp] theorem basisTransform_X_pow (P : ℕ → ℝ[X]) (n : ℕ) :
+    basisTransform P (X ^ n) = P n := by
+  rw [show (X ^ n : ℝ[X]) = Polynomial.monomial n 1 by
+    simp [Polynomial.X_pow_eq_monomial]]
+  rw [basisTransform, Polynomial.sum_monomial_index]
+  · simp
+  · simp
+
+theorem basisTransform_add (P : ℕ → ℝ[X]) (p q : ℝ[X]) :
+    basisTransform P (p + q) = basisTransform P p + basisTransform P q := by
+  rw [basisTransform, basisTransform, basisTransform]
+  exact Polynomial.sum_add_index p q (fun k a => C a * P k) (by simp) (by simp [add_mul])
+
+theorem basisTransform_smul (P : ℕ → ℝ[X]) (a : ℝ) (p : ℝ[X]) :
+    basisTransform P (a • p) = C a * basisTransform P p := by
+  rw [basisTransform, basisTransform]
+  rw [Polynomial.sum_smul_index]
+  · simp [Polynomial.sum_def, Finset.mul_sum, mul_assoc]
+  · simp
+
 theorem HasNonnegCoeffs.basisTransform {P : ℕ → ℝ[X]} {p : ℝ[X]}
     (hp : HasNonnegCoeffs p) (hP : ∀ k, HasNonnegCoeffs (P k)) :
     HasNonnegCoeffs (basisTransform P p) := by
@@ -132,6 +156,10 @@ theorem natDegree_narayanaPolynomial_le (m n : ℕ) :
 /-- The Narayana basis transform `X ^ k ↦ N_{k,m}`. -/
 def narayanaTransform (m : ℕ) : ℝ[X] → ℝ[X] :=
   basisTransform (narayanaPolynomial m)
+
+@[simp] theorem narayanaTransform_X_pow (m n : ℕ) :
+    narayanaTransform m (X ^ n) = narayanaPolynomial m n :=
+  basisTransform_X_pow (narayanaPolynomial m) n
 
 theorem HasNonnegCoeffs.narayanaTransform {m : ℕ} {p : ℝ[X]}
     (hp : HasNonnegCoeffs p) :
