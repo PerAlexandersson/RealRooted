@@ -332,6 +332,14 @@ theorem hurwitzMatrixSchurProductDetLeThree_of_schurProductTN
   intro a b ha hb n rows cols hrows hcols _hn
   exact h ha hb hrows hcols
 
+/-- The full Hurwitz matrix Schur-product statement implies the isolated
+in-band `3 × 3` core. -/
+theorem hurwitzMatrixSchurProductDetFinThreeInBand_of_schurProductTN
+    (h : HurwitzMatrixSchurProductTNStatement) :
+    HurwitzMatrixSchurProductDetFinThreeInBandStatement := by
+  intro a b ha hb rows cols hrows hcols _hband
+  exact h ha hb hrows hcols
+
 /-- The low-order, size-`≤ 3`, Hurwitz matrix Schur-product statement implies
 the isolated in-band `3 × 3` core. -/
 theorem hurwitzMatrixSchurProductDetFinThreeInBand_of_leThree
