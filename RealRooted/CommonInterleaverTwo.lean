@@ -2381,10 +2381,9 @@ theorem posComboAllComboBridge_of_noCommonOrientation
 orientation (`Prec f g ∨ Prec g f`) and all-combinations real-rootedness. -/
 theorem posComboNoCommonBridge_iff_orientation :
     PosComboNoCommonToAllComboBridgeStatement ↔
-      PosComboNoCommonOrientationStatement := by
-  constructor
-  · exact posComboNoCommonOrientation_of_allComboBridge
-  · exact posComboAllComboBridge_of_noCommonOrientation
+      PosComboNoCommonOrientationStatement :=
+  ⟨posComboNoCommonOrientation_of_allComboBridge,
+    posComboAllComboBridge_of_noCommonOrientation⟩
 
 /-- Reduction of the two-polynomial bridge to an orientation theorem for the
 positive-combination cone. If one can show `Prec f g ∨ Prec g f` for every
@@ -2397,10 +2396,10 @@ theorem compatiblePairHasCommonInterleaver_of_posComboOrientation
         HasPosLeadingCoeff g →
         PosComboRealRooted f g →
         Prec f g ∨ Prec g f) :
-    CompatiblePairHasCommonInterleaverStatement := by
-  intro f g hf_pos hg_pos hfg
-  exact pairHasCommonInterleaver_of_prec_or_revPrec <|
-    horient hf_pos hg_pos (hfg.toPosComboRealRooted hf_pos hg_pos)
+    CompatiblePairHasCommonInterleaverStatement :=
+  fun {_ _} hf_pos hg_pos hfg =>
+    pairHasCommonInterleaver_of_prec_or_revPrec <|
+      horient hf_pos hg_pos (hfg.toPosComboRealRooted hf_pos hg_pos)
 
 /-- Compatibility-to-common-interleaver reduction through the positive-combo
 bridge. -/
@@ -2630,9 +2629,8 @@ private theorem nonnegPosComboPairBridge_of_noCommonOrientation
       HasNonnegCoeffs f →
       HasNonnegCoeffs g →
       PosComboRealRooted f g →
-      ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg
-  exact
+      ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  fun {_ _} hf_pos hg_pos hfnn hgnn hfg =>
     posComboPairHasCommonInterleaver_of_noCommonOrientation_and_nonnegCoeffs
       hstep hf_pos hg_pos hfnn hgnn hfg
 
@@ -2644,9 +2642,8 @@ private theorem nonnegPosComboPairBridge_of_affineFamilyBridge
       HasNonnegCoeffs f →
       HasNonnegCoeffs g →
       PosComboRealRooted f g →
-      ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg
-  exact
+      ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  fun {_ _} hf_pos hg_pos hfnn hgnn hfg =>
     posComboPairHasCommonInterleaver_of_affineFamilyBridge_and_nonnegCoeffs
       haffBridge hf_pos hg_pos hfnn hgnn hfg
 
@@ -2659,9 +2656,8 @@ private theorem nonnegPosComboPairBridge_of_pairDegreeSplit
       HasNonnegCoeffs f →
       HasNonnegCoeffs g →
       PosComboRealRooted f g →
-      ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg
-  exact
+      ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  fun {_ _} hf_pos hg_pos hfnn hgnn hfg =>
     posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
       hsame hsucc hf_pos hg_pos hfnn hgnn hfg
 
@@ -2770,9 +2766,8 @@ private theorem nonnegPairBridge_of_noCommonOrientation
       HasNonnegCoeffs f →
       HasNonnegCoeffs g →
       Compatible f g →
-      ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg
-  exact
+      ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  fun {_ _} hf_pos hg_pos hfnn hgnn hfg =>
     compatiblePairHasCommonInterleaver_of_noCommonOrientation_and_nonnegCoeffs
       hstep hf_pos hg_pos hfnn hgnn hfg
 
@@ -2785,9 +2780,8 @@ private theorem nonnegPairBridge_of_pairDegreeSplit
       HasNonnegCoeffs f →
       HasNonnegCoeffs g →
       Compatible f g →
-      ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg
-  exact
+      ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  fun {_ _} hf_pos hg_pos hfnn hgnn hfg =>
     compatiblePairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
       hsame hsucc hf_pos hg_pos hfnn hgnn hfg
 
@@ -2799,9 +2793,8 @@ private theorem nonnegPairBridge_of_affineFamilyBridge
       HasNonnegCoeffs f →
       HasNonnegCoeffs g →
       Compatible f g →
-      ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  intro f g hf_pos hg_pos hfnn hgnn hfg
-  exact
+      ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  fun {_ _} hf_pos hg_pos hfnn hgnn hfg =>
     compatiblePairHasCommonInterleaver_of_affineFamilyBridge_and_nonnegCoeffs
       haffBridge hf_pos hg_pos hfnn hgnn hfg
 
