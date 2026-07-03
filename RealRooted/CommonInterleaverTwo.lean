@@ -4099,6 +4099,18 @@ theorem chudnovskySeymour_fourWay_of_natDegree_le_one
       (family_ne_zero_and_splits_of_natDegree_le_one hpos hdeg) hpos <|
       fun _ => pairwiseHasCommonInterleaver_of_natDegree_le_one hpos hdeg
 
+/-- Degree-`≤ 1` specialization of Chudnovsky--Seymour `1 ↔ 3`: for
+positive-leading linear/constant families, pairwise compatibility is already
+equivalent to having a common right interleaver. -/
+theorem pairwiseCompatible_iff_hasCommonInterleaver_of_natDegree_le_one
+    {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
+  pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay <|
+    chudnovskySeymour_fourWay_of_natDegree_le_one
+      (fs := fs) hpos hdeg
+
 /-- Degree-`≤ 1` specialization of Chudnovsky--Seymour `1 ↔ 4`: for
 positive-leading linear/constant families, pairwise compatibility is already
 equivalent to full family compatibility. -/

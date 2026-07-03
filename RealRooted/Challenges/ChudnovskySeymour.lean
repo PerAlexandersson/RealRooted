@@ -68,6 +68,15 @@ theorem fourWay_of_natDegree_le_one {fs : List ℝ[X]}
   chudnovskySeymour_fourWay_of_natDegree_le_one
     (fs := fs) hpos hdeg
 
+/-- Solved low-degree pairwise/common-interleaver equivalence. -/
+theorem pairwiseCompatible_iff_commonInterleaver_of_natDegree_le_one
+    {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
+  RealRooted.pairwiseCompatible_iff_hasCommonInterleaver_of_natDegree_le_one
+    hpos hdeg
+
 /-- Solved low-degree pairwise/full-family compatibility equivalence. -/
 theorem pairwiseCompatible_iff_familyCompatible_of_natDegree_le_one
     {fs : List ℝ[X]}
