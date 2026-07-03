@@ -429,6 +429,18 @@ theorem finiteSchurSzegoComposition : finiteSchurSzegoCompositionStatement := by
   -- only real zeros. Then `schurSzegoComp n f p` has only real zeros.
   sorry
 
+/-- Directly applicable form of the finite Schur--Szegő composition theorem:
+for a PF polynomial `f` and a real-rooted polynomial `p`, both of degree at most
+`n`, the fixed-degree Schur--Szegő composition is either zero or real-rooted. -/
+theorem schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial
+    {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f)
+    (hfdeg : f.natDegree ≤ n)
+    (hpdeg : p.natDegree ≤ n)
+    (hp : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  finiteSchurSzegoComposition hf hfdeg hpdeg hp
+
 /-- The backward direction of the finite Pólya--Schur theorem, obtained from the
 finite Schur--Szegő composition theorem. -/
 theorem finitePolyaSchurNonnegBackward : finitePolyaSchurNonnegBackwardStatement :=
