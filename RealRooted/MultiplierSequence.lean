@@ -125,6 +125,13 @@ theorem diagonalOperator_comm (gamma delta : ℕ → ℝ) (p : ℝ[X]) :
   ext n
   simp [mul_left_comm]
 
+/-- The diagonal operator is additive in the diagonal sequence. -/
+theorem diagonalOperator_add_sequence (gamma delta : ℕ → ℝ) (p : ℝ[X]) :
+    diagonalOperator (fun n => gamma n + delta n) p =
+      diagonalOperator gamma p + diagonalOperator delta p := by
+  ext n
+  simp [add_mul]
+
 /-- Nonnegative diagonal coefficients preserve nonnegative coefficients. -/
 theorem HasNonnegCoeffs.diagonalOperator
     {gamma : ℕ → ℝ} {p : ℝ[X]}
@@ -179,6 +186,14 @@ theorem jensenPolynomial_eq_diagonalOperator_X_add_one_pow
     ring
   · have hlt : n < k := Nat.lt_of_not_le hk
     simp [hk, Nat.choose_eq_zero_of_lt hlt]
+
+/-- The Jensen polynomial is additive in the diagonal sequence. -/
+theorem jensenPolynomial_add_sequence (n : ℕ) (gamma delta : ℕ → ℝ) :
+    jensenPolynomial n (fun k => gamma k + delta k) =
+      jensenPolynomial n gamma + jensenPolynomial n delta := by
+  ext k
+  simp only [coeff_jensenPolynomial, Polynomial.coeff_add]
+  split_ifs <;> ring
 
 theorem hasNonnegCoeffs_jensenPolynomial
     {n : ℕ} {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k) :
