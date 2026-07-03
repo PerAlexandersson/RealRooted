@@ -437,12 +437,10 @@ theorem pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (htwo : ∀ ⦃f g : ℝ[X]⦄, Compatible f g → ∃ h : ℝ[X], Prec h f ∧ Prec h g)
     (hglobal : PairwiseHasCommonLeftInterleaver fs → HasCommonLeftInterleaver fs) :
-    PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs := by
-  constructor
-  · intro hpair
-    exact hglobal (pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible htwo hpair)
-  · intro hcommon
-    exact pairwiseCompatible_of_commonLeftInterleaver hcommon hpos
+    PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
+  ⟨fun hpair =>
+    hglobal (pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible htwo hpair),
+    fun hcommon => pairwiseCompatible_of_commonLeftInterleaver hcommon hpos⟩
 
 /-- Once the two-polynomial common-right-interleaver converse is available, the
 pairwise Chudnovsky--Seymour hypothesis upgrades to pairwise common right
@@ -3262,16 +3260,13 @@ private theorem chudnovskySeymour_fourWay_of_pairwiseCompatible_iff_pairwiseComm
     (PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs) ∧
       (PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs) ∧
       (HasCommonInterleaver fs ↔ FamilyCompatible fs) := by
-  have h23 : PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs := by
-    constructor
-    · exact hasCommonInterleaver_of_pairwiseHasCommonInterleaver (fun f hf => (hrr f hf).2) hpos
-    · exact pairwiseHasCommonInterleaver_of_commonInterleaver
-  have h34 : HasCommonInterleaver fs ↔ FamilyCompatible fs := by
-    constructor
-    · intro hcommon
-      exact familyCompatible_of_commonInterleaver hcommon hpos
-    · intro hfull
-      exact h23.1 (h12.1 (pairwiseCompatible_of_familyCompatible hfull))
+  have h23 : PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs :=
+    ⟨hasCommonInterleaver_of_pairwiseHasCommonInterleaver
+        (fun f hf => (hrr f hf).2) hpos,
+      pairwiseHasCommonInterleaver_of_commonInterleaver⟩
+  have h34 : HasCommonInterleaver fs ↔ FamilyCompatible fs :=
+    ⟨fun hcommon => familyCompatible_of_commonInterleaver hcommon hpos,
+      fun hfull => h23.1 (h12.1 (pairwiseCompatible_of_familyCompatible hfull))⟩
   exact ⟨h12, h23, h34⟩
 
 private theorem chudnovskySeymour_fourWay_of_pairwiseCommonForward
