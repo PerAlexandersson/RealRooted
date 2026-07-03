@@ -2185,13 +2185,12 @@ theorem allComboRealRooted_of_posCombo_and_degreeSplit_and_nonnegCoeffs
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
-    AllComboRealRooted f g := by
-  exact
-    allComboRealRooted_of_orderedBridge_and_nonnegCoeffs
-      (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi =>
-        allComboRealRooted_of_degreeSplit_and_nonnegCoeffs_ordered
-          (f := f) (g := g) hsame hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi)
-      hf_pos hg_pos hfnn hgnn hfg
+    AllComboRealRooted f g :=
+  allComboRealRooted_of_orderedBridge_and_nonnegCoeffs
+    (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi =>
+      allComboRealRooted_of_degreeSplit_and_nonnegCoeffs_ordered
+        (f := f) (g := g) hsame hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi)
+    hf_pos hg_pos hfnn hgnn hfg
 
 /-- In the nonnegative-coefficient regime, all-combinations real-rootedness
 implies the Obreschkoff orientation alternative. -/
@@ -2275,13 +2274,12 @@ theorem allComboRealRooted_of_posCombo_and_affineFamilyBridge_and_nonnegCoeffs
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
-    AllComboRealRooted f g := by
-  exact
-    allComboRealRooted_of_orderedBridge_and_nonnegCoeffs
-      (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi =>
-        allComboRealRooted_of_affineFamilyBridge_and_nonnegCoeffs_ordered
-          (f := f) (g := g) haffBridge hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi)
-      hf_pos hg_pos hfnn hgnn hfg
+    AllComboRealRooted f g :=
+  allComboRealRooted_of_orderedBridge_and_nonnegCoeffs
+    (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi =>
+      allComboRealRooted_of_affineFamilyBridge_and_nonnegCoeffs_ordered
+        (f := f) (g := g) haffBridge hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi)
+    hf_pos hg_pos hfnn hgnn hfg
 
 /-- The affine-family bridge therefore yields the full Obreschkoff orientation
 alternative for every positive-combination pair with nonnegative coefficients,
@@ -2484,11 +2482,10 @@ theorem posComboPairHasCommonInterleaver_of_noCommonOrientation_and_nonnegCoeffs
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  exact
-    posComboPairHasCommonInterleaver_of_noCommonOrientation_and_degreeBounds
-      hstep hf_pos hg_pos hfg
-      (posComboNatDegreeClose_of_nonnegCoeffs hf_pos hg_pos hfnn hgnn hfg)
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  posComboPairHasCommonInterleaver_of_noCommonOrientation_and_degreeBounds
+    hstep hf_pos hg_pos hfg
+    (posComboNatDegreeClose_of_nonnegCoeffs hf_pos hg_pos hfnn hgnn hfg)
 
 /-- In the nonnegative-coefficient regime, the all-combinations bridge implies
 the full positive-combo pair bridge. -/
@@ -2573,13 +2570,12 @@ theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  exact
-    posComboPairHasCommonInterleaver_of_orderedBridge_and_nonnegCoeffs
-      (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi =>
-        posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs_ordered
-          (f := f) (g := g) hsame hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi)
-      hf_pos hg_pos hfnn hgnn hfg
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  posComboPairHasCommonInterleaver_of_orderedBridge_and_nonnegCoeffs
+    (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi =>
+      posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs_ordered
+        (f := f) (g := g) hsame hsucc hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi)
+    hf_pos hg_pos hfnn hgnn hfg
 
 /-- The honest degree-split package also yields the full positive-combo pair
 bridge in the nonnegative-coefficient regime. -/
