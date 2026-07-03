@@ -3999,6 +3999,16 @@ theorem pairwiseHasCommonInterleaver_of_natDegree_le_one
       (hdeg (fs.get i) (List.get_mem _ _))
       (hdeg (fs.get j) (List.get_mem _ _))
 
+/-- Positive-leading degree-`≤ 1` families are nonzero and split memberwise. -/
+theorem family_ne_zero_and_splits_of_natDegree_le_one
+    {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
+    ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits) :=
+  fun f hf =>
+    isRealRooted_of_natDegree_le_one
+      ((hpos f hf).ne_zero) (hdeg f hf)
+
 /-- Therefore any finite positive-leading family of degree at most one already
 has a global common right interleaver. -/
 theorem hasCommonInterleaver_of_natDegree_le_one
@@ -4006,12 +4016,9 @@ theorem hasCommonInterleaver_of_natDegree_le_one
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
     HasCommonInterleaver fs := by
-  have hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits) :=
-    fun f hf =>
-      isRealRooted_of_natDegree_le_one
-        ((hpos f hf).ne_zero) (hdeg f hf)
+  let hrr := family_ne_zero_and_splits_of_natDegree_le_one hpos hdeg
   exact
-    hasCommonInterleaver_of_pairwiseHasCommonInterleaver
+    commonInterleaverFamilyUpgrade
       (fun f hf => (hrr f hf).2) hpos (pairwiseHasCommonInterleaver_of_natDegree_le_one hpos hdeg)
 
 /-- Low-degree Chudnovsky--Seymour package: if every member of the family has
@@ -4025,12 +4032,9 @@ theorem chudnovskySeymour_fourWay_of_natDegree_le_one
     (PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs) ∧
       (PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs) ∧
       (HasCommonInterleaver fs ↔ FamilyCompatible fs) := by
-  have hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits) :=
-    fun f hf =>
-      isRealRooted_of_natDegree_le_one
-        ((hpos f hf).ne_zero) (hdeg f hf)
   exact
-    chudnovskySeymour_fourWay_of_pairwiseCommonForward hrr hpos <|
+    chudnovskySeymour_fourWay_of_pairwiseCommonForward
+      (family_ne_zero_and_splits_of_natDegree_le_one hpos hdeg) hpos <|
       fun _ => pairwiseHasCommonInterleaver_of_natDegree_le_one hpos hdeg
 
 /-- Degree-`≤ 1` specialization of Chudnovsky--Seymour `1 ↔ 4`: for

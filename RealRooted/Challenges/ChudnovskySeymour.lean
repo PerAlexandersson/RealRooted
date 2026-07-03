@@ -1,4 +1,5 @@
 import RealRooted.ChudnovskySeymour
+import RealRooted.CommonInterleaverSeq
 
 /-!
 # Chudnovsky--Seymour challenge entry point
@@ -33,10 +34,18 @@ abbrev commonInterleaverTarget : Prop :=
 /-- Full roadmap reduction for the common-left target. -/
 theorem commonLeftInterleaverTarget_of_pairwiseLeftBridge
     (htwo : CompatiblePairHasCommonLeftInterleaverStatement)
-    (hglobal : CommonLeftInterleaverFamilyUpgradeStatement) :
+    (hglobal : _root_.RealRooted.CommonLeftInterleaverFamilyUpgradeStatement) :
     commonLeftInterleaverTarget :=
   RealRooted.chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
     htwo hglobal
+
+/-- Direct roadmap reduction for the common-left target after the finite-family
+common-left upgrade has been internalized. -/
+theorem commonLeftInterleaverTarget_of_pairwiseLeftBridge_direct
+    (htwo : CompatiblePairHasCommonLeftInterleaverStatement) :
+    commonLeftInterleaverTarget :=
+  chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direct
+    htwo
 
 /-- Full roadmap reduction for the common-right target. -/
 theorem commonInterleaverTarget_of_pairBridge
@@ -79,6 +88,17 @@ theorem pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
     PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
   RealRooted.pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
     hpos htwo hglobal
+
+/-- Challenge-facing direct left-oriented finite-family reduction after the
+common-left upgrade: only the two-polynomial common-left bridge remains. -/
+theorem pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direct
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, f.Splits)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (htwo : CompatiblePairHasCommonLeftInterleaverStatement) :
+    PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
+  RealRooted.pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direct
+    hrr hpos htwo
 
 end ChudnovskySeymour
 end Challenges
