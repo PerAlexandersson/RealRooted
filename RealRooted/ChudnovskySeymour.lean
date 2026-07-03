@@ -53,6 +53,16 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge
   fun hrr hpos =>
     pairwiseCompatible_iff_hasCommonInterleaver_of_pairBridgePos hrr hpos htwo
 
+/-- The roadmap target follows from the same-degree and successor-degree
+two-polynomial bridges. -/
+theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_degreeSplit
+    (hsame : CompatibleSameDegreePairHasCommonInterleaverStatement)
+    (hsucc : CompatibleSuccDegreePairHasCommonInterleaverStatement) :
+    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
+  fun hrr hpos =>
+    pairwiseCompatible_iff_hasCommonInterleaver_of_compatibleDegreeSplit
+      hrr hpos hsame hsucc
+
 /-- Degree-`≤ 1` positive-leading families already satisfy the common-interleaver
 form of Chudnovsky--Seymour without the two-polynomial bridge hypothesis. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_natDegree_le_one

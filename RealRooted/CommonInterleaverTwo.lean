@@ -3549,6 +3549,19 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_pairBridgePos
     chudnovskySeymour_fourWay_of_pairBridgePos
       (fs := fs) hrr hpos htwo
 
+/-- Chudnovsky--Seymour `1 ↔ 3` corollary from the honest same-degree /
+succ-degree compatibility split. -/
+theorem pairwiseCompatible_iff_hasCommonInterleaver_of_compatibleDegreeSplit
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hsame : CompatibleSameDegreePairHasCommonInterleaverStatement)
+    (hsucc : CompatibleSuccDegreePairHasCommonInterleaverStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
+  pairwiseCompatible_iff_hasCommonInterleaver_of_pairBridgePos
+    (hrr := hrr) (hpos := hpos)
+    (compatiblePairHasCommonInterleaver_of_degreeSplit hsame hsucc)
+
 /-- Chudnovsky--Seymour `1 ↔ 4` corollary under the natural positive-leading
 pair bridge: pairwise compatibility is equivalent to full family
 compatibility. -/
