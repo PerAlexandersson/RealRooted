@@ -718,6 +718,24 @@ theorem hadamardPreservesHurwitzMatrixTN_det_of_card_le_two
   rw [hurwitz_hadamardProduct_matrix]
   exact hurwitz_schurProduct_det_of_card_le_two ha hb hrows hcols hn
 
+/-- Structural `3 × 3` band-fail case for the Hurwitz matrix of a Hadamard
+product.  This is the polynomial-facing form of
+`hurwitz_schurProduct_det_fin_three_of_band_fail`. -/
+theorem hurwitz_hadamardProduct_det_fin_three_of_band_fail
+    {a b : ℝ[X]} {rows cols : Fin 3 → ℕ} (hrows : StrictMono rows)
+    (hcols : StrictMono cols) (l : Fin 3) (hl : rows l < 2 * cols l) :
+    ((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det = 0 := by
+  rw [hurwitz_hadamardProduct_matrix]
+  exact hurwitz_schurProduct_det_fin_three_of_band_fail hrows hcols l hl
+
+/-- Nonnegativity form of the structural `3 × 3` band-fail case for the
+Hurwitz matrix of a Hadamard product. -/
+theorem hurwitz_hadamardProduct_det_fin_three_nonneg_of_band_fail
+    {a b : ℝ[X]} {rows cols : Fin 3 → ℕ} (hrows : StrictMono rows)
+    (hcols : StrictMono cols) (l : Fin 3) (hl : rows l < 2 * cols l) :
+    0 ≤ ((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det := by
+  rw [hurwitz_hadamardProduct_det_fin_three_of_band_fail hrows hcols l hl]
+
 /-- The Hurwitz-matrix Hadamard leaf reduces to the pure matrix Schur core.
 
 Using `hurwitz_mul_entrywise_matrix`, this strips away the coefficient
