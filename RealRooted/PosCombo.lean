@@ -2,6 +2,7 @@ import RealRooted.WeightedSum
 import RealRooted.MaWang
 import RealRooted.ObreschkoffContinuity
 import RealRooted.AissenSchoenbergWhitney
+import RealRooted.DegreeDropReversal
 
 /-!
 # Positive-combination real-rootedness
@@ -418,6 +419,27 @@ lemma comm {f g : ℝ[X]} (h : PosComboRealRooted f g) :
     PosComboRealRooted g f := by
   intro lam μ hlam hμ
   simpa [add_comm, mul_comm, mul_left_comm, mul_assoc] using h hμ hlam
+
+/-- Reflecting both members at a common degree bound preserves
+positive-combination real-rootedness. -/
+lemma reflect_of_natDegree_le {f g : ℝ[X]} (hfg : PosComboRealRooted f g) {N : ℕ}
+    (hfN : f.natDegree ≤ N) (hgN : g.natDegree ≤ N) :
+    PosComboRealRooted (reflect N f) (reflect N g) := by
+  intro lam μ hlam hμ
+  have hbase := hfg (lam := lam) (μ := μ) hlam hμ
+  have hdeg_combo : (C lam * f + C μ * g).natDegree ≤ N :=
+    (Polynomial.natDegree_add_le _ _).trans <|
+      max_le
+        ((Polynomial.natDegree_C_mul_le lam f).trans hfN)
+        ((Polynomial.natDegree_C_mul_le μ g).trans hgN)
+  have hsplit_ref : (reflect N (C lam * f + C μ * g)).Splits :=
+    DegreeDropReversal.splits_reflect_of_splits hbase.2 hdeg_combo
+  have hne_ref : reflect N (C lam * f + C μ * g) ≠ 0 := by
+    intro hzero
+    exact hbase.1 (Polynomial.reflect_eq_zero_iff.mp hzero)
+  constructor
+  · simpa [Polynomial.reflect_add, Polynomial.reflect_C_mul] using hne_ref
+  · simpa [Polynomial.reflect_add, Polynomial.reflect_C_mul] using hsplit_ref
 
 lemma isRealRooted_add {f g : ℝ[X]} (h : PosComboRealRooted f g) :
     ((f + g) ≠ 0 ∧ (f + g).Splits) := by
