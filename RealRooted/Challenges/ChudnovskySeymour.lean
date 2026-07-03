@@ -74,6 +74,10 @@ form. -/
 abbrev familyCompatibleNonnegCoeffsTarget : Prop :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target
 
+/-- Roadmap target for the nonnegative-coefficient four-way package. -/
+abbrev fourWayNonnegCoeffsTarget : Prop :=
+  chudnovskySeymour_fourWay_nonnegCoeffs_target
+
 /-- Full roadmap reduction for the common-left target. -/
 theorem commonLeftInterleaverTarget_of_pairwiseLeftBridge
     (htwo : CompatiblePairHasCommonLeftInterleaverStatement)
@@ -122,6 +126,14 @@ theorem commonInterleaverNonnegCoeffsTarget_of_boundaryRight
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_boundaryRight_nonneg
     hboundary
 
+/-- Challenge-facing projection from the nonnegative four-way package target
+to the nonnegative common-right interleaver target. -/
+theorem commonInterleaverNonnegCoeffsTarget_of_fourWay
+    (hfour : fourWayNonnegCoeffsTarget) :
+    commonInterleaverNonnegCoeffsTarget :=
+  chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_fourWay_nonneg
+    hfour
+
 /-- Challenge-facing projection from the nonnegative-coefficient common-right
 interleaver target to the finite-family compatibility target. -/
 theorem familyCompatibleNonnegCoeffsTarget_of_commonInterleaverTarget
@@ -129,6 +141,14 @@ theorem familyCompatibleNonnegCoeffsTarget_of_commonInterleaverTarget
     familyCompatibleNonnegCoeffsTarget :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_nonneg
     hcommon
+
+/-- Challenge-facing projection from the nonnegative four-way package target
+to the nonnegative finite-family compatibility target. -/
+theorem familyCompatibleNonnegCoeffsTarget_of_fourWay
+    (hfour : fourWayNonnegCoeffsTarget) :
+    familyCompatibleNonnegCoeffsTarget :=
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_fourWay_nonneg
+    hfour
 
 /-- Challenge-facing reduction for the nonnegative-coefficient finite-family
 compatibility target from the repaired same-degree/succ-degree no-common pair
@@ -156,6 +176,29 @@ theorem familyCompatibleNonnegCoeffsTarget_of_boundaryRight
     familyCompatibleNonnegCoeffsTarget :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_boundaryRight_nonneg
     hboundary
+
+/-- Challenge-facing reduction for the nonnegative four-way package target
+from the repaired same-degree/succ-degree no-common pair bridges. -/
+theorem fourWayNonnegCoeffsTarget_of_pairDegreeSplit
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    fourWayNonnegCoeffsTarget :=
+  chudnovskySeymour_fourWay_of_pairDegreeSplit_nonneg hsame hsucc
+
+/-- Challenge-facing reduction for the nonnegative four-way package target
+from the honest degree-split package. -/
+theorem fourWayNonnegCoeffsTarget_of_degreeSplit
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    fourWayNonnegCoeffsTarget :=
+  chudnovskySeymour_fourWay_of_degreeSplit_nonneg hsame hsucc
+
+/-- Challenge-facing reduction for the nonnegative four-way package target
+from the boundary-right-pair orientation statement. -/
+theorem fourWayNonnegCoeffsTarget_of_boundaryRight
+    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    fourWayNonnegCoeffsTarget :=
+  chudnovskySeymour_fourWay_of_boundaryRight_nonneg hboundary
 
 /-- Challenge-facing four-way package from the natural two-polynomial bridge. -/
 theorem fourWay_of_pairBridge

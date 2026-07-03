@@ -80,6 +80,21 @@ def chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_targe
     (∀ f ∈ fs, HasNonnegCoeffs f) →
     (PairwiseCompatible fs ↔ FamilyCompatible fs)
 
+/--
+Roadmap target for the nonnegative-coefficient four-way
+Chudnovsky--Seymour package.
+
+This is the strongest finite-family target currently exposed in the
+nonnegative-coefficient regime; the common-interleaver and family-compatible
+targets are projections from it.
+-/
+def chudnovskySeymour_fourWay_nonnegCoeffs_target : Prop :=
+  ∀ {fs : List ℝ[X]},
+    (∀ f ∈ fs, (f ≠ 0 ∧ f.Splits)) →
+    (∀ f ∈ fs, HasPosLeadingCoeff f) →
+    (∀ f ∈ fs, HasNonnegCoeffs f) →
+    ChudnovskySeymourFourWayPackage fs
+
 /-- The roadmap target follows from the natural positive-leading two-polynomial
 bridge used by the finite-family machinery. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge
@@ -129,6 +144,32 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossi
     pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_via_nonnegShift
       hrr hpos hsame hsplit hsucc
 
+/-- The nonnegative-coefficient common-interleaver target is a projection of
+the nonnegative four-way package target. -/
+theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_fourWay_nonneg
+    (hfour : chudnovskySeymour_fourWay_nonnegCoeffs_target) :
+    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
+  fun hrr hpos hnn =>
+    pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay (hfour hrr hpos hnn)
+
+/-- The nonnegative-coefficient finite-family compatibility target is a
+projection of the nonnegative four-way package target. -/
+theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_fourWay_nonneg
+    (hfour : chudnovskySeymour_fourWay_nonnegCoeffs_target) :
+    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
+  fun hrr hpos hnn =>
+    pairwiseCompatible_iff_familyCompatible_of_fourWay (hfour hrr hpos hnn)
+
+/-- The nonnegative four-way package target follows from the repaired
+same-degree and successor-degree no-common pair bridges. -/
+theorem chudnovskySeymour_fourWay_of_pairDegreeSplit_nonneg
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    chudnovskySeymour_fourWay_nonnegCoeffs_target :=
+  fun hrr hpos hnn =>
+    chudnovskySeymour_fourWay_of_pairDegreeSplit_and_nonnegCoeffs
+      hrr hpos hnn hsame hsucc
+
 /-- The nonnegative-coefficient roadmap target follows from the repaired
 same-degree and successor-degree no-common pair bridges. -/
 theorem
@@ -136,8 +177,17 @@ theorem
     (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
+  chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_fourWay_nonneg
+    (chudnovskySeymour_fourWay_of_pairDegreeSplit_nonneg hsame hsucc)
+
+/-- The nonnegative four-way package target follows from the honest same-degree
+orientation alternative and successor-degree bridge. -/
+theorem chudnovskySeymour_fourWay_of_degreeSplit_nonneg
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   fun hrr hpos hnn =>
-    pairwiseCompatible_iff_hasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
+    chudnovskySeymour_fourWay_of_degreeSplit_and_nonnegCoeffs
       hrr hpos hnn hsame hsucc
 
 /-- The nonnegative-coefficient roadmap target follows from the honest
@@ -146,9 +196,17 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_degreeSpli
     (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
+  chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_fourWay_nonneg
+    (chudnovskySeymour_fourWay_of_degreeSplit_nonneg hsame hsucc)
+
+/-- The nonnegative four-way package target follows from the
+boundary-right-pair orientation statement. -/
+theorem chudnovskySeymour_fourWay_of_boundaryRight_nonneg
+    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   fun hrr hpos hnn =>
-    pairwiseCompatible_iff_hasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
-      hrr hpos hnn hsame hsucc
+    chudnovskySeymour_fourWay_of_boundaryRightPairOrientation_and_nonnegCoeffs
+      hrr hpos hnn hboundary
 
 /-- The nonnegative-coefficient roadmap target follows from the
 boundary-right-pair orientation statement. -/
@@ -156,9 +214,8 @@ theorem
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_boundaryRight_nonneg
     (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
-  fun hrr hpos hnn =>
-    pairwiseCompatible_iff_hasCommonInterleaver_of_boundaryRightPairOrientation_and_nonnegCoeffs
-      hrr hpos hnn hboundary
+  chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_fourWay_nonneg
+    (chudnovskySeymour_fourWay_of_boundaryRight_nonneg hboundary)
 
 /-- The nonnegative-coefficient finite-family compatibility target is a formal
 consequence of the corresponding common-interleaver target. -/
@@ -178,9 +235,8 @@ theorem
     (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
-  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_nonneg
-    (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairDegreeSplit_nonneg
-      hsame hsucc)
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_fourWay_nonneg
+    (chudnovskySeymour_fourWay_of_pairDegreeSplit_nonneg hsame hsucc)
 
 /-- The nonnegative-coefficient finite-family compatibility target follows
 from the honest same-degree orientation alternative and successor-degree
@@ -189,9 +245,8 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_degreeSplit
     (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
-  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_nonneg
-    (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_degreeSplit_nonneg
-      hsame hsucc)
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_fourWay_nonneg
+    (chudnovskySeymour_fourWay_of_degreeSplit_nonneg hsame hsucc)
 
 /-- The nonnegative-coefficient finite-family compatibility target follows
 from the boundary-right-pair orientation statement. -/
@@ -199,9 +254,8 @@ theorem
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_boundaryRight_nonneg
     (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
-  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_nonneg
-    (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_boundaryRight_nonneg
-      hboundary)
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_fourWay_nonneg
+    (chudnovskySeymour_fourWay_of_boundaryRight_nonneg hboundary)
 
 /-- Degree-`≤ 1` positive-leading families already satisfy the common-interleaver
 form of Chudnovsky--Seymour without the two-polynomial bridge hypothesis. -/
