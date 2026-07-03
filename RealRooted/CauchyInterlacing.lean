@@ -12,8 +12,8 @@ together with the reusable, unconditional API surrounding it.
 
 Given a Hermitian matrix `A` of size `n + 1` and a deleted index `i`, the
 principal submatrix `B = A.submatrix i.succAbove i.succAbove` of size `n` has
-eigenvalues that interlace those of `A`. Writing the eigenvalues in
-decreasing order as `λ₀ ≥ λ₁ ≥ ⋯ ≥ λₙ` for `A` and `μ₀ ≥ ⋯ ≥ μₙ₋₁` for `B`,
+eigenvalues that interlace those of `A`. Writing the eigenvalues in decreasing
+order as `λ₀ ≥ λ₁ ≥ ⋯ ≥ λₙ` for `A` and `μ₀ ≥ ⋯ ≥ μₙ₋₁` for `B`,
 interlacing means `λ_{k+1} ≤ μ_k ≤ λ_k` for every `k`.
 
 ## Main definitions
@@ -73,8 +73,7 @@ theorem sortedEigenvalues_charpoly_roots {N : ℕ}
     A.charpoly.roots =
       (Finset.univ : Finset (Fin N)).val.map
         (fun k => (RCLike.ofReal (sortedEigenvalues A hA k) : 𝕜)) := by
-  have := hA.roots_charpoly_eq_eigenvalues₀
-  simp +decide [this, sortedEigenvalues]
+  simpa [sortedEigenvalues] using hA.roots_charpoly_eq_eigenvalues₀
 
 /-- The coordinate embedding `Fin n → Fin (n+1)` skipping index `i`, extended
 by zero: a vector on the `n` retained coordinates is placed into the big space,
@@ -168,7 +167,7 @@ theorem finrank_range_embedComplₗ {n : ℕ} (i : Fin (n + 1)) :
     Module.finrank 𝕜 (LinearMap.range (embedComplₗ (𝕜 := 𝕜) i)) = n := by
   convert finrank_map_embedComplₗ i (⊤ : Submodule 𝕜 (Fin n → 𝕜)) using 1
   · rw [LinearMap.range_eq_map]
-  · simp +decide
+  · simp
 
 /-- Any finite-dimensional subspace contains a subspace of every dimension up to
 its own. -/
@@ -181,7 +180,7 @@ theorem exists_submodule_le_finrank_eq {N : ℕ}
     refine
       ⟨Submodule.span 𝕜 (Set.range fun i : Fin m => this (Fin.castLE hm i)), ?_⟩
     rw [@finrank_span_eq_card]
-    · simp +decide
+    · simp
     · exact this.linearIndependent.comp _ (Fin.castLE_injective _)
   refine h_contra ⟨Submodule.map (Submodule.subtype S) T, Submodule.map_subtype_le _ _, ?_⟩
   convert hT using 1
@@ -237,9 +236,9 @@ theorem cauchyInterlacing_of_courantFischer
         (by
           have := Submodule.finrank_sup_add_finrank_inf_eq W_A
             (LinearMap.range (embedComplₗ i))
-          simp_all +decide [finrank_range_embedComplₗ]
+          simp_all [finrank_range_embedComplₗ]
           linarith [show Module.finrank 𝕜 (↥(W_A ⊔ (embedComplₗ i).range)) ≤ n + 1 from
-            le_trans (Submodule.finrank_le _) (by simp +decide)])
+            le_trans (Submodule.finrank_le _) (by simp)])
     generalize_proofs at *
     obtain ⟨y, hy₁, hy₂⟩ :=
       hCF (A.submatrix i.succAbove i.succAbove) ‹_› k |>.2
