@@ -50,6 +50,15 @@ theorem commonInterleaverTarget_of_pairBridge
     commonInterleaverTarget :=
   RealRooted.chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge htwo
 
+/-- Challenge-facing four-way package from the natural two-polynomial bridge. -/
+theorem fourWay_of_pairBridge
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (htwo : CompatiblePairHasCommonInterleaverStatement) :
+    fourWayPackage fs :=
+  chudnovskySeymour_fourWay_of_pairBridgePos hrr hpos htwo
+
 /-- Solved low-degree four-way Chudnovsky--Seymour package. -/
 theorem fourWay_of_natDegree_le_one {fs : List ℝ[X]}
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
