@@ -324,6 +324,14 @@ theorem hurwitzMatrixSchurProductDetLeThree_of_inBand
   intro a b ha hb n rows cols hrows hcols hn
   exact hurwitz_schurProduct_det_of_card_le_three hInBand ha hb hrows hcols hn
 
+/-- The full Hurwitz matrix Schur-product statement implies its named
+low-order, size-`≤ 3`, consequence. -/
+theorem hurwitzMatrixSchurProductDetLeThree_of_schurProductTN
+    (h : HurwitzMatrixSchurProductTNStatement) :
+    HurwitzMatrixSchurProductDetLeThreeStatement := by
+  intro a b ha hb n rows cols hrows hcols _hn
+  exact h ha hb hrows hcols
+
 /-- The low-order, size-`≤ 3`, Hurwitz matrix Schur-product statement implies
 the isolated in-band `3 × 3` core. -/
 theorem hurwitzMatrixSchurProductDetFinThreeInBand_of_leThree

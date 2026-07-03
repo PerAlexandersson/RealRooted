@@ -789,6 +789,14 @@ theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_hurwitzLeThree
   rw [hurwitz_hadamardProduct_matrix]
   exact hLeThree ha hb hrows hcols hn
 
+/-- The full Hurwitz-matrix Hadamard leaf implies its named low-order,
+size-`≤ 3`, consequence. -/
+theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_matrixTN
+    (h : hadamardPreservesHurwitzMatrixTNStatement) :
+    hadamardPreservesHurwitzMatrixTNDetLeThreeStatement := by
+  intro a b ha hb n rows cols hrows hcols _hn
+  exact h ha hb hrows hcols
+
 /-- The Hurwitz-matrix Hadamard leaf reduces to the pure matrix Schur core.
 
 Using `hurwitz_mul_entrywise_matrix`, this strips away the coefficient
@@ -801,6 +809,14 @@ theorem hadamardPreservesHurwitzMatrixTN_of_schur
   intro a b ha hb
   rw [hurwitz_hadamardProduct_matrix]
   exact h ha hb
+
+/-- The pure Hurwitz Schur-product core implies the named low-order,
+size-`≤ 3`, Hurwitz-matrix Hadamard leaf. -/
+theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_schur
+    (h : HurwitzMatrixSchurProductTNStatement) :
+    hadamardPreservesHurwitzMatrixTNDetLeThreeStatement :=
+  hadamardPreservesHurwitzMatrixTNDetLeThree_of_matrixTN
+    (hadamardPreservesHurwitzMatrixTN_of_schur h)
 
 /-- Garloff--Wagner Theorem 1 from the pure Hurwitz Schur-product core and the
 two directions of the Hurwitz-matrix criterion. -/
