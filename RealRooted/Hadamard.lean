@@ -398,6 +398,40 @@ def finiteSchurSzegoCompositionStatement : Prop :=
     p.Splits →
       schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits
 
+/-- Nonzero core of the finite Schur--Szegő composition theorem.  The full
+statement is equivalent to this one because the zero cases make the composition
+identically zero. -/
+def finiteSchurSzegoCompositionNonzeroStatement : Prop :=
+  ∀ {n : ℕ} {f p : ℝ[X]},
+    IsPFPolynomial f →
+    f ≠ 0 →
+    f.natDegree ≤ n →
+    p ≠ 0 →
+    p.natDegree ≤ n →
+    p.Splits →
+      schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits
+
+theorem finiteSchurSzegoCompositionNonzero_of_full
+    (h : finiteSchurSzegoCompositionStatement) :
+    finiteSchurSzegoCompositionNonzeroStatement :=
+  fun {_ _ _} hf _hf0 hfdeg _hp0 hpdeg hp => h hf hfdeg hpdeg hp
+
+theorem finiteSchurSzegoComposition_of_nonzero
+    (h : finiteSchurSzegoCompositionNonzeroStatement) :
+    finiteSchurSzegoCompositionStatement := by
+  intro n f p hf hfdeg hpdeg hp
+  by_cases hf0 : f = 0
+  · exact Or.inl (by rw [hf0]; exact schurSzegoComp_zero_left n p)
+  by_cases hp0 : p = 0
+  · exact Or.inl (by rw [hp0]; exact schurSzegoComp_zero_right n f)
+  exact h hf hf0 hfdeg hp0 hpdeg hp
+
+theorem finiteSchurSzegoCompositionStatement_iff_nonzero :
+    finiteSchurSzegoCompositionStatement ↔
+      finiteSchurSzegoCompositionNonzeroStatement :=
+  ⟨finiteSchurSzegoCompositionNonzero_of_full,
+    finiteSchurSzegoComposition_of_nonzero⟩
+
 /-- The backward direction of the finite Pólya--Schur theorem follows, by a
 `sorry`-free reduction, from the finite Schur--Szegő composition theorem: the
 diagonal operator attached to `gamma` acting on a polynomial `p` of degree at
@@ -420,11 +454,8 @@ theorem finitePolyaSchurNonnegBackward_of_schurSzego
 obligation is the substantive case of a nonzero PF polynomial `f` composed with
 a nonzero real-rooted polynomial `p`. -/
 theorem finiteSchurSzegoComposition : finiteSchurSzegoCompositionStatement := by
-  intro n f p hf hfdeg hp hsplit
-  by_cases hf0 : f = 0
-  · exact Or.inl (by rw [hf0]; exact schurSzegoComp_zero_left n p)
-  by_cases hp0 : p = 0
-  · exact Or.inl (by rw [hp0]; exact schurSzegoComp_zero_right n f)
+  refine finiteSchurSzegoComposition_of_nonzero ?_
+  intro n f p hf hf0 hfdeg hp0 hp hsplit
   -- Substantive case: `f ≠ 0` PF (real, nonpositive zeros) and `p ≠ 0` with
   -- only real zeros. Then `schurSzegoComp n f p` has only real zeros.
   sorry
