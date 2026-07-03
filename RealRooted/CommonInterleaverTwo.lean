@@ -3562,6 +3562,66 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_compatibleDegreeSplit
     (hrr := hrr) (hpos := hpos)
     (compatiblePairHasCommonInterleaver_of_degreeSplit hsame hsucc)
 
+/-- Chudnovsky--Seymour `1 ↔ 3` corollary from the repaired shifted
+nonnegative-coefficient degree split. -/
+theorem pairwiseCompatible_iff_hasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
+  pairwiseCompatible_iff_hasCommonInterleaver_of_pairBridgePos
+    (hrr := hrr) (hpos := hpos)
+    (compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
+      hsame hsucc)
+
+/-- Chudnovsky--Seymour `1 ↔ 3` corollary from the nonnegative-coefficient
+degree-split package, with the familywise nonnegativity assumption removed by
+translation. -/
+theorem pairwiseCompatible_iff_hasCommonInterleaver_of_degreeSplit_via_nonnegShift
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
+  pairwiseCompatible_iff_hasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
+    (fs := fs) hrr hpos
+    (posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg
+      hsame)
+    hsucc
+
+/-- Chudnovsky--Seymour `1 ↔ 3` corollary after the nonnegative shift
+reduction, with the succ-degree branch discharged by the affine-family bridge.
+-/
+theorem
+    pairwiseCompatible_iff_hasCommonInterleaver_via_nonnegShift
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
+    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
+  pairwiseCompatible_iff_hasCommonInterleaver_of_degreeSplit_via_nonnegShift
+    (fs := fs) hrr hpos hsame
+    (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
+
+/-- Chudnovsky--Seymour `1 ↔ 3` corollary from the stronger
+boundary-right-pair statement after the nonnegative shift reduction. -/
+theorem
+    pairwiseCompatible_iff_hasCommonInterleaver_of_boundaryRightPairOrientation_via_nonnegShift
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
+  pairwiseCompatible_iff_hasCommonInterleaver_via_nonnegShift
+    (fs := fs) hrr hpos
+    (boundaryRightPairOrientation_implies_sameDegreeOrientationAlternative_nonneg
+      hboundary)
+    (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
+
 /-- Chudnovsky--Seymour `1 ↔ 4` corollary under the natural positive-leading
 pair bridge: pairwise compatibility is equivalent to full family
 compatibility. -/

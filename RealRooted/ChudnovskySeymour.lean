@@ -63,6 +63,16 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_degreeSpli
     pairwiseCompatible_iff_hasCommonInterleaver_of_compatibleDegreeSplit
       hrr hpos hsame hsucc
 
+/-- The roadmap target follows from the nonnegative-shift route, with the
+succ-degree branch discharged by the affine-family bridge. -/
+theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_nonnegShift
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
+    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
+  fun hrr hpos =>
+    pairwiseCompatible_iff_hasCommonInterleaver_via_nonnegShift
+      hrr hpos hsame haffBridge
+
 /-- Degree-`≤ 1` positive-leading families already satisfy the common-interleaver
 form of Chudnovsky--Seymour without the two-polynomial bridge hypothesis. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_natDegree_le_one
