@@ -1707,57 +1707,7 @@ theorem PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_forward_asw
   exact (PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw hASW)
     hf_pos hg_pos hfnn hgnn hfg hsucc
 
-/-- Constant-term nonzero subcase of the degree-drop endpoint.  Reflection at
-`g.natDegree` turns the succ-degree pair into an equal-degree pair, so the
-same-degree positive-combination converse applies. -/
-theorem PosComboRealRooted.left_splits_of_succDegree_of_coeff_zero_ne
-    {f g : ℝ[X]}
-    (hfg : PosComboRealRooted f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
-    (hsucc : g.natDegree = f.natDegree + 1)
-    (hf0 : f.coeff 0 ≠ 0) (hg0 : g.coeff 0 ≠ 0) :
-    f.Splits := by
-  let N := g.natDegree
-  have hfN : f.natDegree ≤ N := by
-    dsimp [N]
-    lia
-  have hgN : g.natDegree ≤ N := by simp [N]
-  have hf0_pos : 0 < f.coeff 0 := lt_of_le_of_ne (hfnn 0) hf0.symm
-  have hg0_pos : 0 < g.coeff 0 := lt_of_le_of_ne (hgnn 0) hg0.symm
-  have hf_ref_pos : HasPosLeadingCoeff (reflect N f) := by
-    unfold HasPosLeadingCoeff
-    rw [DegreeDropReversal.leadingCoeff_reflect_eq_coeff_zero_of_natDegree_le hfN hf0]
-    exact hf0_pos
-  have hg_ref_pos : HasPosLeadingCoeff (reflect N g) := by
-    unfold HasPosLeadingCoeff
-    rw [DegreeDropReversal.leadingCoeff_reflect_eq_coeff_zero_of_natDegree_le hgN hg0]
-    exact hg0_pos
-  have hdeg_ref : (reflect N g).natDegree = (reflect N f).natDegree := by
-    rw [DegreeDropReversal.natDegree_reflect_eq_of_coeff_zero_ne hgN hg0,
-      DegreeDropReversal.natDegree_reflect_eq_of_coeff_zero_ne hfN hf0]
-  have hfg_ref : PosComboRealRooted (reflect N f) (reflect N g) := by
-    intro lam μ hlam hμ
-    have hbase := hfg (lam := lam) (μ := μ) hlam hμ
-    have hdeg_combo : (C lam * f + C μ * g).natDegree ≤ N := by
-      dsimp [N]
-      rw [natDegree_pos_combo_eq_right_of_natDegree_le (by lia) hf_pos hg_pos hlam hμ]
-    have hsplit_ref : (reflect N (C lam * f + C μ * g)).Splits :=
-      DegreeDropReversal.splits_reflect_of_splits hbase.2 hdeg_combo
-    have hne_ref : reflect N (C lam * f + C μ * g) ≠ 0 := by
-      intro hzero
-      exact hbase.1 (Polynomial.reflect_eq_zero_iff.mp hzero)
-    constructor
-    · simpa [Polynomial.reflect_add, Polynomial.reflect_C_mul] using hne_ref
-    · simpa [Polynomial.reflect_add, Polynomial.reflect_C_mul] using hsplit_ref
-  have hreflect_rr :=
-    hfg_ref.isRealRooted_left_of_sameDegree hf_ref_pos hg_ref_pos hdeg_ref
-  exact (DegreeDropReversal.splits_reflect_iff (p := f) hfN).mp hreflect_rr.2
-
-/-- If the lower-degree endpoint has nonzero constant coefficient, the
-degree-drop endpoint follows by reflecting and applying the degree-`≤`
-positive-combination closure to the reflected pair. -/
-theorem PosComboRealRooted.left_splits_of_succDegree_of_left_coeff_zero_ne
+private theorem left_splits_of_succDegree_of_left_coeff_zero_ne_core
     {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
@@ -1805,6 +1755,45 @@ theorem PosComboRealRooted.left_splits_of_succDegree_of_left_coeff_zero_ne
       (PosComboRealRooted.comm hfg_ref) hg_ref_pos hf_ref_pos hdeg_ref_le
   exact (DegreeDropReversal.splits_reflect_iff (p := f) hfN).mp hreflect_rr.2
 
+/-- Constant-term nonzero subcase of the degree-drop endpoint.  Reflection at
+`g.natDegree` turns the succ-degree pair into an equal-degree pair, so the
+same-degree positive-combination converse applies.  This two-sided interface is
+kept for older call sites; it now specializes the stronger one-sided theorem
+below. -/
+theorem PosComboRealRooted.left_splits_of_succDegree_of_coeff_zero_ne
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hsucc : g.natDegree = f.natDegree + 1)
+    (hf0 : f.coeff 0 ≠ 0) (hg0 : g.coeff 0 ≠ 0) :
+    f.Splits := by
+  have _ := hg0
+  exact left_splits_of_succDegree_of_left_coeff_zero_ne_core
+    hfg hf_pos hg_pos hfnn hgnn hsucc hf0
+
+/-- If the lower-degree endpoint has nonzero constant coefficient, the
+degree-drop endpoint follows by reflecting and applying the degree-`≤`
+positive-combination closure to the reflected pair. -/
+theorem PosComboRealRooted.left_splits_of_succDegree_of_left_coeff_zero_ne
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hsucc : g.natDegree = f.natDegree + 1)
+    (hf0 : f.coeff 0 ≠ 0) :
+    f.Splits :=
+  left_splits_of_succDegree_of_left_coeff_zero_ne_core
+    hfg hf_pos hg_pos hfnn hgnn hsucc hf0
+
+private lemma natDegree_pos_of_posLeadingCoeff_of_coeff_zero
+    {p : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (hp0 : p.coeff 0 = 0) :
+    0 < p.natDegree := by
+  by_contra hnot
+  have hp_deg_zero : p.natDegree = 0 := Nat.eq_zero_of_not_pos hnot
+  have hp_C : p = C (p.coeff 0) := Polynomial.eq_C_of_natDegree_eq_zero hp_deg_zero
+  exact hp_pos.ne_zero (by simpa [hp0] using hp_C)
+
 /-- Zero-constant succ-degree data pass to the pair divided by the common
 factor `X`.  This is the reduction package for the complementary branch to
 `PosComboRealRooted.left_splits_of_succDegree_of_coeff_zero_ne`. -/
@@ -1821,11 +1810,7 @@ theorem PosComboRealRooted.divX_succDegree_data
       HasNonnegCoeffs g.divX ∧
       PosComboRealRooted f.divX g.divX ∧
       g.divX.natDegree = f.divX.natDegree + 1 := by
-  have hf_nat_pos : 0 < f.natDegree := by
-    by_contra hnot
-    have hf_deg_zero : f.natDegree = 0 := Nat.eq_zero_of_not_pos hnot
-    have hf_C : f = C (f.coeff 0) := Polynomial.eq_C_of_natDegree_eq_zero hf_deg_zero
-    exact hf_pos.ne_zero (by simpa [hf0] using hf_C)
+  have hf_nat_pos := natDegree_pos_of_posLeadingCoeff_of_coeff_zero hf_pos hf0
   refine
     ⟨hf_pos.divX_of_coeff_zero hf0,
       hg_pos.divX_of_coeff_zero hg0,
@@ -1871,12 +1856,7 @@ theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_residual
     by_cases hg0 : g.coeff 0 = 0
     · obtain ⟨hfdiv_pos, hgdiv_pos, hfdiv_nn, hgdiv_nn, hdiv_fg, hdiv_succ⟩ :=
         hfg.divX_succDegree_data hf_pos hg_pos hfnn hgnn hsucc hf0 hg0
-      have hf_nat_pos : 0 < f.natDegree := by
-        by_contra hnot
-        have hf_deg_zero : f.natDegree = 0 := Nat.eq_zero_of_not_pos hnot
-        have hf_C : f = C (f.coeff 0) :=
-          Polynomial.eq_C_of_natDegree_eq_zero hf_deg_zero
-        exact hf_pos.ne_zero (by simpa [hf0] using hf_C)
+      have hf_nat_pos := natDegree_pos_of_posLeadingCoeff_of_coeff_zero hf_pos hf0
       have hdiv_deg_lt : f.divX.natDegree < n := by
         rw [← hfdeg, Polynomial.natDegree_divX_eq_natDegree_tsub_one]
         lia
