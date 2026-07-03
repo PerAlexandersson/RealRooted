@@ -441,6 +441,24 @@ lemma reflect_of_natDegree_le {f g : ℝ[X]} (hfg : PosComboRealRooted f g) {N :
   · simpa [Polynomial.reflect_add, Polynomial.reflect_C_mul] using hne_ref
   · simpa [Polynomial.reflect_add, Polynomial.reflect_C_mul] using hsplit_ref
 
+/-- Reflecting both members at a common degree bound preserves and reflects
+positive-combination real-rootedness. -/
+lemma reflect_iff_natDegree_le {f g : ℝ[X]} {N : ℕ}
+    (hfN : f.natDegree ≤ N) (hgN : g.natDegree ≤ N) :
+    PosComboRealRooted (reflect N f) (reflect N g) ↔ PosComboRealRooted f g := by
+  refine ⟨?_, fun hfg => hfg.reflect_of_natDegree_le hfN hgN⟩
+  intro hfg
+  have hf_ref_N : (reflect N f).natDegree ≤ N :=
+    Polynomial.natDegree_reflect_le.trans <| by rw [max_eq_left hfN]
+  have hg_ref_N : (reflect N g).natDegree ≤ N :=
+    Polynomial.natDegree_reflect_le.trans <| by rw [max_eq_left hgN]
+  have hback :
+      PosComboRealRooted (reflect N (reflect N f)) (reflect N (reflect N g)) :=
+    PosComboRealRooted.reflect_of_natDegree_le
+      (f := reflect N f) (g := reflect N g) (N := N) hfg hf_ref_N hg_ref_N
+  intro lam μ hlam hμ
+  simpa [Polynomial.reflect_reflect] using hback (lam := lam) (μ := μ) hlam hμ
+
 lemma isRealRooted_add {f g : ℝ[X]} (h : PosComboRealRooted f g) :
     ((f + g) ≠ 0 ∧ (f + g).Splits) := by
   simpa using h zero_lt_one zero_lt_one
