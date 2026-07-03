@@ -423,6 +423,29 @@ lemma isRealRooted_add {f g : ℝ[X]} (h : PosComboRealRooted f g) :
     ((f + g) ≠ 0 ∧ (f + g).Splits) := by
   simpa using h zero_lt_one zero_lt_one
 
+/-- If both endpoints have zero constant coefficient, we may divide the whole
+positive-combination family by the common factor `X`. -/
+lemma divX_of_coeff_zero {f g : ℝ[X]} (h : PosComboRealRooted f g)
+    (hf0 : f.coeff 0 = 0) (hg0 : g.coeff 0 = 0) :
+    PosComboRealRooted f.divX g.divX := by
+  intro lam μ hlam hμ
+  have hbase := h (lam := lam) (μ := μ) hlam hμ
+  have hf_eq : X * f.divX = f := by
+    simpa [hf0] using Polynomial.X_mul_divX_add f
+  have hg_eq : X * g.divX = g := by
+    simpa [hg0] using Polynomial.X_mul_divX_add g
+  have hfactor :
+      X * (C lam * f.divX + C μ * g.divX) = C lam * f + C μ * g := by
+    calc
+      X * (C lam * f.divX + C μ * g.divX)
+          = C lam * (X * f.divX) + C μ * (X * g.divX) := by ring
+      _ = C lam * f + C μ * g := by rw [hf_eq, hg_eq]
+  have hX :
+      (X * (C lam * f.divX + C μ * g.divX) ≠ 0 ∧
+        (X * (C lam * f.divX + C μ * g.divX)).Splits) := by
+    simpa [hfactor] using hbase
+  exact isRealRooted_of_X_mul hX.1 hX.2
+
 lemma isRealRooted_add_right {f g : ℝ[X]} (h : PosComboRealRooted f g)
     {μ : ℝ} (hμ : 0 < μ) : ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits) := by
   simpa [one_mul, add_comm] using h zero_lt_one hμ
