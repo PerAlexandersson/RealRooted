@@ -1267,11 +1267,10 @@ theorem sameDegreePairHasCommonInterleaver_nonneg_of_slotData
     hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg
   have hg_rr : g ≠ 0 ∧ g.Splits :=
     hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg
-  refine
+  exact
     pairHasCommonInterleaver_of_sameDegree_slotIntersections
-      hf_rr.1 hg_rr.1 hf_rr.2 hg_rr.2 hdeg ?_
-  intro j hj
-  exact hstmt hf_pos hg_pos hfnn hgnn hfg hdeg hno j hj _ _
+      hf_rr.1 hg_rr.1 hf_rr.2 hg_rr.2 hdeg <|
+        fun j hj => hstmt hf_pos hg_pos hfnn hgnn hfg hdeg hno j hj _ _
 
 /-- **Converse of the same-degree slot-data reduction for #41.**
 
@@ -1513,11 +1512,10 @@ theorem succDegreePairHasCommonInterleaver_nonneg_of_slotData
   obtain ⟨hf_rr, hslot⟩ := hstmt hf_pos hg_pos hfnn hgnn hfg hsucc hno
   have hg_rr : g ≠ 0 ∧ g.Splits :=
     hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hsucc
-  refine
+  exact
     pairHasCommonInterleaver_of_succDegree_slotIntersections
-      hf_rr.1 hg_rr.1 hf_rr.2 hg_rr.2 hsucc ?_
-  intro j hj
-  exact hslot j hj _ _
+      hf_rr.1 hg_rr.1 hf_rr.2 hg_rr.2 hsucc <|
+        fun j hj => hslot j hj _ _
 
 /-- **Converse of the slot-data reduction for #42.**
 
@@ -3194,8 +3192,7 @@ theorem pairwiseHasCommonInterleaver_of_commonInterleaver
     (hcommon : HasCommonInterleaver fs) :
     PairwiseHasCommonInterleaver fs := by
   rcases hcommon with ⟨h, hprec⟩
-  intro i j hij
-  exact ⟨h,
+  exact fun i j _ => ⟨h,
     hprec (fs.get i) (List.get_mem _ _),
     hprec (fs.get j) (List.get_mem _ _)⟩
 
@@ -3206,8 +3203,7 @@ theorem pairwiseHasCommonLeftInterleaver_of_commonLeftInterleaver
     (hcommon : HasCommonLeftInterleaver fs) :
     PairwiseHasCommonLeftInterleaver fs := by
   rcases hcommon with ⟨h, hprec⟩
-  intro i j hij
-  exact ⟨h,
+  exact fun i j _ => ⟨h,
     hprec (fs.get i) (List.get_mem _ _),
     hprec (fs.get j) (List.get_mem _ _)⟩
 
@@ -3776,9 +3772,8 @@ theorem pairwiseHasCommonInterleaver_of_natDegree_le_one
     {fs : List ℝ[X]}
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
-    PairwiseHasCommonInterleaver fs := by
-  intro i j hij
-  exact
+    PairwiseHasCommonInterleaver fs :=
+  fun i j _ =>
     pairHasCommonInterleaver_of_natDegree_le_one
       (hpos (fs.get i) (List.get_mem _ _))
       (hpos (fs.get j) (List.get_mem _ _))
