@@ -1697,6 +1697,16 @@ theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw
   intro f g hf_pos _ hfnn hgnn hfg _
   exact hfg.left_splits_of_forward_asw hASW hf_pos hfnn hgnn
 
+/-- Residual package form of the forward-ASW route.  This keeps the remaining
+#42 branch available as a smaller challenge target, while making clear that the
+PF-limit route already covers it under the forward ASW interface. -/
+theorem PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_forward_asw
+    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement) :
+    PosComboSuccDegreeResidualLeftSplitsNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hsucc _ _
+  exact (PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw hASW)
+    hf_pos hg_pos hfnn hgnn hfg hsucc
+
 /-- Constant-term nonzero subcase of the degree-drop endpoint.  Reflection at
 `g.natDegree` turns the succ-degree pair into an equal-degree pair, so the
 same-degree positive-combination converse applies. -/
@@ -1875,6 +1885,18 @@ theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_residual
           hfdiv_pos hgdiv_pos hfdiv_nn hgdiv_nn hdiv_fg hdiv_succ
       exact DegreeDropReversal.splits_of_divX_splits_of_coeff_zero hf0 hdiv_splits
     · exact hres hf_pos hg_pos hfnn hgnn hfg hsucc hf0 hg0
+
+/-- The residual constant-term branch is exactly equivalent to the full
+succ-degree left-endpoint statement: the reverse implication is just
+specialization, while the forward implication is the strong-induction
+constant-term reduction. -/
+theorem PosComboSuccDegreeLeftSplitsNonnegStatement_iff_residual :
+    PosComboSuccDegreeLeftSplitsNonnegStatement ↔
+      PosComboSuccDegreeResidualLeftSplitsNonnegStatement := by
+  constructor
+  · intro h f g hf_pos hg_pos hfnn hgnn hfg hsucc _ _
+    exact h hf_pos hg_pos hfnn hgnn hfg hsucc
+  · exact PosComboSuccDegreeLeftSplitsNonnegStatement_of_residual
 
 /-- **Sub-statement B of milestone B2: descending-root crossing inequalities.**
 

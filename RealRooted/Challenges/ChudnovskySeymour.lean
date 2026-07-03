@@ -211,12 +211,24 @@ theorem succDegreeLeftSplitsTarget_of_forward_asw
     succDegreeLeftSplitsTarget :=
   PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw hASW
 
+/-- Challenge-facing PF/ASW reduction to the residual left-splitting target. -/
+theorem succDegreeResidualLeftSplitsTarget_of_forward_asw
+    (hASW : forwardASWTarget) :
+    succDegreeResidualLeftSplitsTarget :=
+  PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_forward_asw hASW
+
 /-- Challenge-facing reduction from the residual constant-coefficient branch to
 the full succ-degree left-splitting target. -/
 theorem succDegreeLeftSplitsTarget_of_residual
     (hres : succDegreeResidualLeftSplitsTarget) :
     succDegreeLeftSplitsTarget :=
   PosComboSuccDegreeLeftSplitsNonnegStatement_of_residual hres
+
+/-- Challenge-facing equivalence between the full succ-degree left-splitting
+target and its residual constant-coefficient branch. -/
+theorem succDegreeLeftSplitsTarget_iff_residual :
+    succDegreeLeftSplitsTarget ↔ succDegreeResidualLeftSplitsTarget :=
+  PosComboSuccDegreeLeftSplitsNonnegStatement_iff_residual
 
 /-- Challenge-facing reduction from forward ASW and root crossing to
 succ-degree slot data. -/
