@@ -1289,6 +1289,47 @@ theorem hasCommonLeftInterleaverSeq_of_pairwise_shiftedSlotIntersections
   have hj : j < (rootSeqDesc f).length := Nat.lt_of_succ_lt_succ hjf
   simpa [leftSlotSetAt, hj] using hmem_slot
 
+/-- Geometric shifted-slot consequence of a common left interleaver.
+
+This is the remaining local geometric input in the left-oriented finite-family
+upgrade: if `h` is a common left interleaver of `f` and `g`, then the shifted
+root slots of `f` and `g` meet. -/
+def CommonLeftInterleaverShiftedSlotStatement : Prop :=
+  ∀ {h f g : ℝ[X]},
+    Prec h f →
+    Prec h g →
+    ∀ j : ℕ,
+      ∀ (hjf : j + 1 < (rootSeqDesc f).length + 1)
+        (hjg : j + 1 < (rootSeqDesc g).length + 1),
+        (rootSlotInterval (rootSeqDesc f) ⟨j + 1, hjf⟩ ∩
+          rootSlotInterval (rootSeqDesc g) ⟨j + 1, hjg⟩).Nonempty
+
+/-- A pairwise common-left-interleaver hypothesis gives the pairwise shifted
+root-slot intersections, assuming the geometric shifted-slot input. -/
+theorem pairwise_shiftedSlotIntersections_of_pairwiseHasCommonLeftInterleaver
+    {fs : List ℝ[X]}
+    (hslot : CommonLeftInterleaverShiftedSlotStatement)
+    (hpair : PairwiseHasCommonLeftInterleaver fs) :
+    ∀ (i k : Fin fs.length), i < k →
+      ∀ j : ℕ,
+        ∀ (hji : j + 1 < (rootSeqDesc (fs.get i)).length + 1)
+          (hjk : j + 1 < (rootSeqDesc (fs.get k)).length + 1),
+          (rootSlotInterval (rootSeqDesc (fs.get i)) ⟨j + 1, hji⟩ ∩
+            rootSlotInterval (rootSeqDesc (fs.get k)) ⟨j + 1, hjk⟩).Nonempty := by
+  intro i k hik j hji hjk
+  obtain ⟨h, hhi, hhk⟩ := hpair i k hik
+  exact hslot hhi hhk j hji hjk
+
+/-- Finite-family shifted-slot sequence from pairwise common left interleavers,
+modulo the local geometric shifted-slot input. -/
+theorem hasCommonLeftInterleaverSeq_of_pairwiseHasCommonLeftInterleaver
+    {fs : List ℝ[X]}
+    (hslot : CommonLeftInterleaverShiftedSlotStatement)
+    (hpair : PairwiseHasCommonLeftInterleaver fs) :
+    HasCommonLeftInterleaverSeq fs :=
+  hasCommonLeftInterleaverSeq_of_pairwise_shiftedSlotIntersections
+    (pairwise_shiftedSlotIntersections_of_pairwiseHasCommonLeftInterleaver hslot hpair)
+
 /-- Chudnovsky--Seymour `3.6.2 → 3.6.3`, in the formulation needed for the
 product-sum theorem: pairwise common interleavers imply a global common
 interleaving sequence. The intended proof follows the reference in
