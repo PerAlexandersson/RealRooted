@@ -369,6 +369,136 @@ theorem rectangularConvolutionCoeff_narayanaPolynomial_eq_sum_transport
   rw [← rectangularConvolutionGamma_mul_narayanaTransformCoeff m n i (k - i) hsum]
   ring
 
+/-- Vandermonde variant used in the Mao--Wang Section 2 coefficient bridge.
+Summing the shifted product of binomials over `Finset.range (k + 1)` collapses
+to a single binomial coefficient. -/
+theorem sum_choose_mul_choose_shift (m k : ℕ) :
+    ∑ i ∈ Finset.range (k + 1),
+        Nat.choose k i * Nat.choose (2 * m + k) (m + i) =
+      Nat.choose (2 * m + 2 * k) (m + k) := by
+  have h1 : Nat.choose (2 * m + 2 * k) (m + k) =
+      ∑ i ∈ Finset.range (m + k + 1),
+        Nat.choose k i * Nat.choose (2 * m + k) (m + k - i) := by
+    rw [show 2 * m + 2 * k = k + (2 * m + k) by ring, Nat.add_choose_eq]
+    rw [Finset.Nat.sum_antidiagonal_eq_sum_range_succ
+      fun i j => Nat.choose k i * Nat.choose (2 * m + k) j]
+  rw [h1, ← Finset.sum_subset (Finset.range_mono (by lia : k + 1 ≤ m + k + 1))]
+  · rw [← Finset.sum_flip]
+    exact Finset.sum_congr rfl fun x hx => by
+      rw [Nat.choose_symm (Finset.mem_range_succ_iff.mp hx),
+        Nat.add_sub_assoc (Finset.mem_range_succ_iff.mp hx)]
+  · intro x _ hx
+    have hx' : k < x := by
+      exact Nat.lt_of_succ_le (Nat.le_of_not_gt (by simpa [Finset.mem_range] using hx))
+    rw [Nat.choose_eq_zero_of_lt hx']
+    ring
+
+/-- Reciprocal-factorial form of the Chu--Vandermonde summation appearing in
+the Mao--Wang Section 2 coefficient bridge. -/
+theorem sum_factorial_recip_eq (m k : ℕ) :
+    ∑ i ∈ Finset.range (k + 1),
+        (1 : ℝ) /
+          ((Nat.factorial i : ℝ) * (Nat.factorial (m + i) : ℝ) *
+            (Nat.factorial (k - i) : ℝ) *
+            (Nat.factorial (m + k - i) : ℝ)) =
+      (Nat.factorial (2 * m + 2 * k) : ℝ) /
+        ((Nat.factorial k : ℝ) * (Nat.factorial (m + k) : ℝ) ^ 2 *
+          (Nat.factorial (2 * m + k) : ℝ)) := by
+  have h_binom : (∑ i ∈ Finset.range (k + 1),
+        (1 : ℝ) /
+          ((Nat.factorial i : ℝ) * (Nat.factorial (m + i) : ℝ) *
+            (Nat.factorial (k - i) : ℝ) *
+            (Nat.factorial (m + k - i) : ℝ))) =
+      ∑ i ∈ Finset.range (k + 1),
+        ((Nat.choose k i : ℝ) * (Nat.choose (2 * m + k) (m + i) : ℝ)) /
+          ((Nat.factorial k : ℝ) * (Nat.factorial (2 * m + k) : ℝ)) := by
+    refine Finset.sum_congr rfl fun i hi => ?_
+    have hik : i ≤ k := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
+    have hmi : m + i ≤ 2 * m + k := by lia
+    rw [Nat.cast_choose ℝ hik, Nat.cast_choose ℝ hmi]
+    field_simp
+    rw [show 2 * m + k - (m + i) = m + k - i by lia]
+  convert h_binom using 1
+  convert congr_arg
+      (fun x : ℕ =>
+        (x : ℝ) / ((Nat.factorial k : ℝ) * (Nat.factorial (2 * m + k) : ℝ)))
+      (sum_choose_mul_choose_shift m k) using 1
+  · rw [sum_choose_mul_choose_shift, Nat.cast_choose]
+    · rw [show 2 * m + 2 * k - (m + k) = m + k by
+        rw [Nat.sub_eq_of_eq_add]
+        ring]
+      ring
+    · lia
+  · convert congr_arg
+        (fun x : ℕ =>
+          (x : ℝ) / ((Nat.factorial k : ℝ) * (Nat.factorial (2 * m + k) : ℝ)))
+        (sum_choose_mul_choose_shift m k) using 1
+    norm_num [Finset.sum_div]
+
+/-- Short name for the transported Narayana rectangular-convolution coefficient
+sum used in the Mao--Wang Section 2 bridge. -/
+theorem rectangularConvolutionCoeff_narayana_eq_sum
+    (m n k : ℕ) (hk : k ≤ n) :
+    rectangularConvolutionCoeff m n (narayanaPolynomial m n)
+        (narayanaPolynomial m n) k =
+      ∑ i ∈ Finset.range (k + 1),
+        narayanaTransformCoeff m n i *
+          narayanaTransformCoeff m (n - i) (k - i) :=
+  rectangularConvolutionCoeff_narayanaPolynomial_eq_sum_transport m n k hk
+
+/-- Each summand of the Chu--Vandermonde sum factors as a constant independent
+of `i` times a reciprocal-factorial term. -/
+theorem narayana_product_term_eq (m n k i : ℕ) (hk : k ≤ n) (hi : i ≤ k) :
+    narayanaTransformCoeff m n i * narayanaTransformCoeff m (n - i) (k - i) =
+      ((Nat.factorial n : ℝ) * (Nat.factorial (n + m) : ℝ) *
+          (Nat.factorial m : ℝ) ^ 2 /
+            ((Nat.factorial (n - k) : ℝ) *
+              (Nat.factorial (n + m - k) : ℝ))) *
+        ((1 : ℝ) /
+          ((Nat.factorial i : ℝ) * (Nat.factorial (m + i) : ℝ) *
+            (Nat.factorial (k - i) : ℝ) *
+            (Nat.factorial (m + k - i) : ℝ))) := by
+  have h_geometric :
+      narayanaTransformCoeff m n i * narayanaTransformCoeff m (n - i) (k - i) =
+        ((Nat.factorial n : ℝ) * (Nat.factorial (n + m) : ℝ) *
+            (Nat.factorial m : ℝ) /
+          ((Nat.factorial i : ℝ) * (Nat.factorial (n - i) : ℝ) *
+            (Nat.factorial (m + i) : ℝ) *
+            (Nat.factorial (n + m - i) : ℝ))) *
+        ((Nat.factorial (n - i) : ℝ) * (Nat.factorial (n + m - i) : ℝ) *
+            (Nat.factorial m : ℝ) /
+          ((Nat.factorial (k - i) : ℝ) * (Nat.factorial (n - k) : ℝ) *
+            (Nat.factorial (m + k - i) : ℝ) *
+            (Nat.factorial (n + m - k) : ℝ))) := by
+    convert congr_arg₂ (· * ·)
+      (narayanaTransformCoeff_eq_factorial m n i (hi.trans hk))
+      (narayanaTransformCoeff_eq_factorial m (n - i) (k - i) (by lia)) using 2
+    rw [show n + m - i = n - i + m by lia,
+      show n - i - (k - i) = n - k by lia,
+      show m + (k - i) = m + k - i by lia,
+      show n - i + m - (k - i) = n + m - k by lia]
+  rw [h_geometric]
+  have f0 : ∀ p : ℕ, (Nat.factorial p : ℝ) ≠ 0 := fun p =>
+    Nat.cast_ne_zero.mpr (Nat.factorial_pos p).ne'
+  field_simp [f0]
+
+/-- Mao--Wang Section 2 coefficient bridge: closed form for the rectangular
+convolution coefficient of a generalized Narayana polynomial with itself. -/
+theorem coeff_rectangularConvolution_narayana (m n k : ℕ) (hk : k ≤ n) :
+    rectangularConvolutionCoeff m n (narayanaPolynomial m n)
+        (narayanaPolynomial m n) k =
+      narayanaTransformCoeff m n k *
+        ((Nat.factorial m : ℝ) * (Nat.factorial (2 * m + 2 * k) : ℝ) /
+          ((Nat.factorial (2 * m + k) : ℝ) *
+            (Nat.factorial (m + k) : ℝ))) := by
+  convert rectangularConvolutionCoeff_narayana_eq_sum m n k hk using 1
+  rw [Finset.sum_congr rfl
+    fun i hi => narayana_product_term_eq m n k i hk
+      (Nat.lt_succ_iff.mp (Finset.mem_range.mp hi))]
+  rw [← Finset.mul_sum _ _ _, sum_factorial_recip_eq]
+  rw [narayanaTransformCoeff_eq_factorial m n k hk]
+  ring
+
 /-- Coefficients of the rectangular additive convolution of two generalized
 Narayana polynomials, reduced to the transported convolution sum. -/
 theorem coeff_rectangularAdditiveConvolution_narayanaPolynomial_of_le
