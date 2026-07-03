@@ -1867,16 +1867,13 @@ private lemma common_root_reduction_data_of_posCombo_nonneg
   have hg0 : g ≠ 0 := hg_pos.ne_zero
   have hqf0 : qf ≠ 0 := by simp_all
   have hqg0 : qg ≠ 0 := by simp_all
-  have hqf_nn : HasNonnegCoeffs qf := by
-    refine coeff_nonneg_of_add_C_mul_nonneg_forall (f := qf) (g := qg) ?_
-    intro μ hμ
-    exact
+  have hqf_nn : HasNonnegCoeffs qf :=
+    coeff_nonneg_of_add_C_mul_nonneg_forall (f := qf) (g := qg) fun {μ} hμ =>
       hasNonnegCoeffs_quotient_add_right_of_common_root
         hfg hfnn hgnn hqf hqg hμ
-  have hqg_nn : HasNonnegCoeffs qg := by
-    refine coeff_nonneg_of_add_C_mul_nonneg_forall (f := qg) (g := qf) ?_
-    intro μ hμ
-    simpa [add_comm] using
+  have hqg_nn : HasNonnegCoeffs qg :=
+    coeff_nonneg_of_add_C_mul_nonneg_forall (f := qg) (g := qf) fun {μ} hμ => by
+      simpa [add_comm] using
       hasNonnegCoeffs_quotient_add_right_of_common_root
         (f := g) (g := f) (qf := qg) (qg := qf) (r := r)
         (PosComboRealRooted.comm hfg) hgnn hfnn hqg hqf hμ
@@ -2363,9 +2360,9 @@ theorem posComboNoCommonOrientation_of_allComboBridge
 all-combinations bridge by passing through `allComboRealRooted_of_prec`. -/
 theorem posComboAllComboBridge_of_noCommonOrientation
     (hstep : PosComboNoCommonOrientationStatement) :
-    PosComboNoCommonToAllComboBridgeStatement := by
-  intro f g hf_pos hg_pos hfg hdeg_lo hdeg_hi hno
-  exact allComboRealRooted_of_prec_or_revPrec <|
+    PosComboNoCommonToAllComboBridgeStatement :=
+  fun _ _ hf_pos hg_pos hfg hdeg_lo hdeg_hi hno =>
+    allComboRealRooted_of_prec_or_revPrec <|
     hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno
 
 /-- The two no-common bridge formulations are equivalent:
@@ -2434,9 +2431,8 @@ pair has a common right interleaver. -/
 theorem posComboPairHasCommonInterleaver_of_noCommonOrientation_and_degreeClose
     (hstep : PosComboNoCommonOrientationStatement)
     (hdegClose : PosComboNatDegreeCloseStatement) :
-    PosComboPairHasCommonInterleaverStatement := by
-  intro f g hf_pos hg_pos hfg
-  exact
+    PosComboPairHasCommonInterleaverStatement :=
+  fun _ _ hf_pos hg_pos hfg =>
     posComboPairHasCommonInterleaver_of_noCommonOrientation_and_degreeBounds
       hstep hf_pos hg_pos hfg (hdegClose hfg)
 
