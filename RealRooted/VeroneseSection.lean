@@ -400,19 +400,17 @@ theorem strictMono_veronesePairSelectRowMap {r i j : ℕ}
   · have hqle : m / 2 ≤ n / 2 := Nat.div_le_div_right (le_of_lt hmn)
     have hqlt : m / 2 < n / 2 := lt_of_le_of_ne hqle hq
     have hqsucc : m / 2 + 1 ≤ n / 2 := Nat.succ_le_of_lt hqlt
+    have hblock : (2 * r) * (m / 2 + 1) ≤ (2 * r) * (n / 2) :=
+      Nat.mul_le_mul_left (2 * r) hqsucc
     by_cases hm0 : m % 2 = 0
     · rw [if_pos hm0]
       by_cases hn0 : n % 2 = 0
       · simp_all
       · rw [if_neg hn0]
-        have hblock : (2 * r) * (m / 2 + 1) ≤ (2 * r) * (n / 2) :=
-          Nat.mul_le_mul_left (2 * r) hqsucc
         lia
     · rw [if_neg hm0]
       by_cases hn0 : n % 2 = 0
       · rw [if_pos hn0]
-        have hblock : (2 * r) * (m / 2 + 1) ≤ (2 * r) * (n / 2) :=
-          Nat.mul_le_mul_left (2 * r) hqsucc
         lia
       · simp_all
 
@@ -425,9 +423,9 @@ theorem lacePair_veronesePairSectionSeq {a b : ℕ → ℝ} {r i j row col : ℕ
   dsimp
   by_cases hrow : row % 2 = 0
   · rw [if_pos hrow]
+    have hik : i / 2 < r := div_two_lt_of_lt_two_mul hi
     by_cases hi_even : i % 2 = 0
     · rw [if_pos hi_even]
-      have hik : i / 2 < r := div_two_lt_of_lt_two_mul hi
       have hmap :
           i + (2 * r) * (row / 2) =
             2 * (i / 2 + r * (row / 2)) := by
@@ -436,7 +434,6 @@ theorem lacePair_veronesePairSectionSeq {a b : ℕ → ℝ} {r i j row col : ℕ
       exact (veronesePairLace_even (a := a) (b := b) (r := r)
         (k := i / 2) (n := row / 2) (c := col) hik).symm
     · rw [if_neg hi_even]
-      have hik : i / 2 < r := div_two_lt_of_lt_two_mul hi
       have hmap :
           i + (2 * r) * (row / 2) =
             2 * (i / 2 + r * (row / 2)) + 1 := by
@@ -445,9 +442,9 @@ theorem lacePair_veronesePairSectionSeq {a b : ℕ → ℝ} {r i j row col : ℕ
       exact (veronesePairLace_odd (a := a) (b := b) (r := r)
         (k := i / 2) (n := row / 2) (c := col) hik).symm
   · rw [if_neg hrow]
+    have hjk : j / 2 < r := div_two_lt_of_lt_two_mul hj
     by_cases hj_even : j % 2 = 0
     · rw [if_pos hj_even]
-      have hjk : j / 2 < r := div_two_lt_of_lt_two_mul hj
       have hmap :
           j + (2 * r) * (row / 2) =
             2 * (j / 2 + r * (row / 2)) := by
@@ -456,7 +453,6 @@ theorem lacePair_veronesePairSectionSeq {a b : ℕ → ℝ} {r i j row col : ℕ
       exact (veronesePairLace_even (a := a) (b := b) (r := r)
         (k := j / 2) (n := row / 2) (c := col) hjk).symm
     · rw [if_neg hj_even]
-      have hjk : j / 2 < r := div_two_lt_of_lt_two_mul hj
       have hmap :
           j + (2 * r) * (row / 2) =
             2 * (j / 2 + r * (row / 2)) + 1 := by
