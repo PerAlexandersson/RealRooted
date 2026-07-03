@@ -1289,6 +1289,21 @@ theorem hasCommonLeftInterleaverSeq_of_pairwise_shiftedSlotIntersections
   have hj : j < (rootSeqDesc f).length := Nat.lt_of_succ_lt_succ hjf
   simpa [leftSlotSetAt, hj] using hmem_slot
 
+/-- Atomic shifted-slot membership input for a left `Prec` relation.
+
+This is the direct left-oriented analogue of `mem_rootSlotInterval_of_prec`:
+if `Prec h f`, then each descending root of the inner polynomial `h` lies in
+the shifted slot of the outer polynomial `f`. -/
+def PrecLeftShiftedSlotStatement : Prop :=
+  ∀ {h f : ℝ[X]} (hhf : Prec h f) (j : Fin h.natDegree),
+    (rootSeqDesc h).get ⟨j.1, by
+      simp [rootSeqDesc_length hhf.1.2, j.2]⟩ ∈
+      rootSlotInterval (rootSeqDesc f)
+        ⟨j.1 + 1, by
+          have hdeg := (natDegree_bounds_of_prec hhf).1
+          have hjf : j.1 < f.natDegree := lt_of_lt_of_le j.2 hdeg
+          simpa [rootSeqDesc_length hhf.2.1.2] using Nat.succ_lt_succ hjf⟩
+
 /-- Geometric shifted-slot consequence of a common left interleaver.
 
 This is the remaining local geometric input in the left-oriented finite-family
@@ -1303,6 +1318,56 @@ def CommonLeftInterleaverShiftedSlotStatement : Prop :=
         (hjg : j + 1 < (rootSeqDesc g).length + 1),
         (rootSlotInterval (rootSeqDesc f) ⟨j + 1, hjf⟩ ∩
           rootSlotInterval (rootSeqDesc g) ⟨j + 1, hjg⟩).Nonempty
+
+/-- The common-left-interleaver shifted-slot statement follows from the atomic
+left `Prec` shifted-slot membership input. -/
+theorem commonLeftInterleaverShiftedSlot_of_precLeft
+    (hleft : PrecLeftShiftedSlotStatement) :
+    CommonLeftInterleaverShiftedSlotStatement := by
+  intro h f g hhf hhg j hjf hjg
+  let jf : Fin ((rootSeqDesc f).length + 1) := ⟨j + 1, hjf⟩
+  let jg : Fin ((rootSeqDesc g).length + 1) := ⟨j + 1, hjg⟩
+  change (rootSlotInterval (rootSeqDesc f) jf ∩
+    rootSlotInterval (rootSeqDesc g) jg).Nonempty
+  have hdeg_hf : h.natDegree ≤ f.natDegree ∧ f.natDegree ≤ h.natDegree + 1 :=
+    natDegree_bounds_of_prec hhf
+  have hdeg_hg : h.natDegree ≤ g.natDegree ∧ g.natDegree ≤ h.natDegree + 1 :=
+    natDegree_bounds_of_prec hhg
+  by_cases hjh : j < h.natDegree
+  · let jh : Fin h.natDegree := ⟨j, hjh⟩
+    let x : ℝ := (rootSeqDesc h).get ⟨j, by
+      simpa [rootSeqDesc_length hhf.1.2] using hjh⟩
+    have hmem_f : x ∈ rootSlotInterval (rootSeqDesc f) jf := by
+      simpa [x, jf, jh] using hleft hhf jh
+    have hmem_g : x ∈ rootSlotInterval (rootSeqDesc g) jg := by
+      simpa [x, jg, jh] using hleft hhg jh
+    exact ⟨x, ⟨hmem_f, hmem_g⟩⟩
+  · have hjf_nat : j < f.natDegree := by
+      have hjf' : j < (rootSeqDesc f).length := Nat.lt_of_succ_lt_succ hjf
+      simpa [rootSeqDesc_length hhf.2.1.2] using hjf'
+    have hjg_nat : j < g.natDegree := by
+      have hjg' : j < (rootSeqDesc g).length := Nat.lt_of_succ_lt_succ hjg
+      simpa [rootSeqDesc_length hhg.2.1.2] using hjg'
+    have hj_eq_h : j = h.natDegree := by lia
+    have hf_eq_h : f.natDegree = h.natDegree + 1 := by lia
+    have hg_eq_h : g.natDegree = h.natDegree + 1 := by lia
+    have hf_pos : 0 < f.natDegree := by lia
+    have hg_pos : 0 < g.natDegree := by lia
+    have hrevf_ne : (rootSeqDesc f).reverse ≠ [] :=
+      rootSeqDesc_reverse_ne_nil_of_natDegree_pos hhf.2.1.2 hf_pos
+    have hrevg_ne : (rootSeqDesc g).reverse ≠ [] :=
+      rootSeqDesc_reverse_ne_nil_of_natDegree_pos hhg.2.1.2 hg_pos
+    let af : ℝ := ((rootSeqDesc f).reverse).get ⟨0, by grind⟩
+    let ag : ℝ := ((rootSeqDesc g).reverse).get ⟨0, by grind⟩
+    have hslot_f : rootSlotInterval (rootSeqDesc f) jf = Set.Iic af := by
+      simpa [af, jf, hj_eq_h, hf_eq_h, hhf.2.1.2] using
+        rootSlotInterval_last_eq_reverse_get_zero
+          (rs := rootSeqDesc f) (List.reverse_ne_nil_iff.mp hrevf_ne)
+    have hslot_g : rootSlotInterval (rootSeqDesc g) jg = Set.Iic ag := by
+      simpa [ag, jg, hj_eq_h, hg_eq_h, hhg.2.1.2] using
+        rootSlotInterval_last_eq_reverse_get_zero
+          (rs := rootSeqDesc g) (List.reverse_ne_nil_iff.mp hrevg_ne)
+    simp_all
 
 /-- A pairwise common-left-interleaver hypothesis gives the pairwise shifted
 root-slot intersections, assuming the geometric shifted-slot input. -/
