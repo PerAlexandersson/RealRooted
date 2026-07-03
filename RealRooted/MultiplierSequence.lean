@@ -54,6 +54,11 @@ def diagonalOperator (gamma : ℕ → ℝ) (p : ℝ[X]) : ℝ[X] :=
   ext n
   simp
 
+theorem diagonalOperator_const_sequence (a : ℝ) (p : ℝ[X]) :
+    diagonalOperator (fun _ => a) p = C a * p := by
+  ext n
+  simp [mul_comm]
+
 theorem diagonalOperator_add (gamma : ℕ → ℝ) (p q : ℝ[X]) :
     diagonalOperator gamma (p + q) =
       diagonalOperator gamma p + diagonalOperator gamma q := by
@@ -273,6 +278,28 @@ theorem isFinitePFMultiplierSequence_zero_sequence (n : ℕ) :
     IsFinitePFMultiplierSequence n (fun _ => (0 : ℝ)) := by
   intro p _ _
   simpa using IsPFPolynomial.zero
+
+theorem isFiniteMultiplierSequence_const_sequence (n : ℕ) (a : ℝ) :
+    IsFiniteMultiplierSequence n (fun _ => a) := by
+  intro p _ hsplit
+  by_cases ha : a = 0
+  · left
+    simp [ha]
+  by_cases hp0 : p = 0
+  · left
+    simp [hp0]
+  · right
+    rw [diagonalOperator_const_sequence]
+    exact (isRealRooted_C_mul hp0 hsplit ha).2
+
+theorem isFinitePFMultiplierSequence_const_sequence
+    {n : ℕ} {a : ℝ} (ha : 0 ≤ a) :
+    IsFinitePFMultiplierSequence n (fun _ => a) := by
+  intro p hp _
+  by_cases ha0 : a = 0
+  · simpa [diagonalOperator_const_sequence, ha0] using IsPFPolynomial.zero
+  · have ha_pos : 0 < a := lt_of_le_of_ne ha (Ne.symm ha0)
+    simpa [diagonalOperator_const_sequence] using hp.const_mul ha_pos
 
 theorem splits_X_add_one_pow (n : ℕ) :
     ((X + 1 : ℝ[X]) ^ n).Splits :=
