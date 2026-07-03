@@ -30,6 +30,36 @@ theorem hurwitz_coeff_odd_row_apply (p : ℝ[X]) (i j : ℕ) :
     hurwitz (fun k => p.coeff k) (2 * i + 1) j = if j ≤ i then p.coeff (2 * (i - j)) else 0 := by
   simp [toeplitz, hurwitz_coeff_odd_row]
 
+/-! ### Row-parity entry formulas for arbitrary coefficient sequences
+
+The two lemmas above are the `c = p.coeff` special cases of the following
+general facts, which describe every entry of `hurwitz c` by row parity. -/
+
+/-- Even-row entry of the Hurwitz matrix of an arbitrary coefficient sequence. -/
+theorem hurwitz_even_row_apply (c : ℕ → ℝ) (i j : ℕ) :
+    hurwitz c (2 * i) j = if j ≤ i then c (2 * (i - j) + 1) else 0 := by
+  rw [hurwitz]
+  simp only [Matrix.of_apply]
+  rw [if_pos (by lia : (2 * i) % 2 = 0),
+    show (2 * i) / 2 = i by lia, toeplitz_apply]
+
+/-- Odd-row entry of the Hurwitz matrix of an arbitrary coefficient sequence. -/
+theorem hurwitz_odd_row_apply (c : ℕ → ℝ) (i j : ℕ) :
+    hurwitz c (2 * i + 1) j = if j ≤ i then c (2 * (i - j)) else 0 := by
+  rw [hurwitz]
+  simp only [Matrix.of_apply]
+  rw [if_neg (by lia : ¬ (2 * i + 1) % 2 = 0),
+    show (2 * i + 1) / 2 = i by lia, toeplitz_apply]
+
+/-- Every Hurwitz-matrix entry above the staircase vanishes. -/
+theorem hurwitz_apply_eq_zero_of_lt (c : ℕ → ℝ) {i j : ℕ} (h : i < 2 * j) :
+    hurwitz c i j = 0 := by
+  rcases Nat.even_or_odd i with ⟨m, hm⟩ | ⟨m, hm⟩
+  · subst hm
+    rw [show m + m = 2 * m by ring, hurwitz_even_row_apply, if_neg (by lia)]
+  · subst hm
+    rw [hurwitz_odd_row_apply, if_neg (by lia)]
+
 /-- Unfolded finite-minor form of
 `HurwitzStableToMatrixTotallyNonnegativeStatement`.
 
@@ -159,6 +189,53 @@ theorem hurwitz_schurProduct_det_fin_two {a b : ℕ → ℝ}
     {rows cols : Fin 2 → ℕ} (hrows : StrictMono rows) (hcols : StrictMono cols) :
     0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det :=
   ha.hadamard_det_fin_two hb hrows hcols
+
+/-! ### The `3 × 3` minor case: structural zero patterns -/
+
+/-- Entry of the entrywise Hurwitz product vanishes above the staircase. -/
+theorem hurwitz_schurProduct_apply_eq_zero_of_lt (a b : ℕ → ℝ) {i j : ℕ}
+    (h : i < 2 * j) :
+    (Matrix.of fun i j => hurwitz a i j * hurwitz b i j) i j = 0 := by
+  simp only [Matrix.of_apply, hurwitz_apply_eq_zero_of_lt a h, zero_mul]
+
+/-- Structural vanishing of a `3 × 3` Hadamard minor of two Hurwitz matrices.
+
+If the staircase condition `2 * cols l ≤ rows l` fails for some index `l`, then
+monotonicity of the selected rows and columns forces a top-right zero block
+large enough to make the determinant vanish. -/
+theorem hurwitz_schurProduct_det_fin_three_of_band_fail {a b : ℕ → ℝ}
+    {rows cols : Fin 3 → ℕ} (hrows : StrictMono rows) (hcols : StrictMono cols)
+    (l : Fin 3) (hl : rows l < 2 * cols l) :
+    ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det = 0 := by
+  have hr01 : rows 0 ≤ rows 1 := hrows.monotone (by decide)
+  have hr12 : rows 1 ≤ rows 2 := hrows.monotone (by decide)
+  have hr02 : rows 0 ≤ rows 2 := hrows.monotone (by decide)
+  have hc01 : cols 0 ≤ cols 1 := hcols.monotone (by decide)
+  have hc12 : cols 1 ≤ cols 2 := hcols.monotone (by decide)
+  have hc02 : cols 0 ≤ cols 2 := hcols.monotone (by decide)
+  rw [Matrix.det_fin_three]
+  simp only [Matrix.submatrix_apply, Matrix.of_apply]
+  fin_cases l <;> simp only [Fin.isValue] at hl ⊢
+  · rw [hurwitz_apply_eq_zero_of_lt a (by lia : rows 0 < 2 * cols 0),
+      hurwitz_apply_eq_zero_of_lt a (by lia : rows 0 < 2 * cols 1),
+      hurwitz_apply_eq_zero_of_lt a (by lia : rows 0 < 2 * cols 2)]
+    ring
+  · rw [hurwitz_apply_eq_zero_of_lt a (by lia : rows 0 < 2 * cols 1),
+      hurwitz_apply_eq_zero_of_lt a (by lia : rows 0 < 2 * cols 2),
+      hurwitz_apply_eq_zero_of_lt a (by lia : rows 1 < 2 * cols 1),
+      hurwitz_apply_eq_zero_of_lt a (by lia : rows 1 < 2 * cols 2)]
+    ring
+  · rw [hurwitz_apply_eq_zero_of_lt a (by lia : rows 0 < 2 * cols 2),
+      hurwitz_apply_eq_zero_of_lt a (by lia : rows 1 < 2 * cols 2),
+      hurwitz_apply_eq_zero_of_lt a (by lia : rows 2 < 2 * cols 2)]
+    ring
+
+/-- Nonnegativity form of the structural band-fail `3 × 3` case. -/
+theorem hurwitz_schurProduct_det_fin_three_nonneg_of_band_fail {a b : ℕ → ℝ}
+    {rows cols : Fin 3 → ℕ} (hrows : StrictMono rows) (hcols : StrictMono cols)
+    (l : Fin 3) (hl : rows l < 2 * cols l) :
+    0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det := by
+  rw [hurwitz_schurProduct_det_fin_three_of_band_fail hrows hcols l hl]
 
 /-- Every minor of size at most two of the entrywise product of two totally
 nonnegative Hurwitz matrices is nonnegative.  This packages the complete
