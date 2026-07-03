@@ -1172,6 +1172,14 @@ def HasCommonInterleaverSeq (fs : List ℝ[X]) : Prop :=
   ∀ j : ℕ, ∃ x : ℝ, ∀ f ∈ fs, ∀ hjf : j < (rootSeqDesc f).length + 1,
     x ∈ rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩
 
+/-- Shifted root-sequence common interleaver used for the left-oriented
+Chudnovsky--Seymour proof.  The sequence is written in descending order, and
+its `j`th entry lies in the shifted slot `j + 1` of every root sequence in the
+family. -/
+def HasCommonLeftInterleaverSeq (fs : List ℝ[X]) : Prop :=
+  ∀ j : ℕ, ∃ x : ℝ, ∀ f ∈ fs, ∀ hjf : j + 1 < (rootSeqDesc f).length + 1,
+    x ∈ rootSlotInterval (rootSeqDesc f) ⟨j + 1, hjf⟩
+
 private def slotSetAt (j : ℕ) (f : ℝ[X]) : Set ℝ :=
   if hj : j < (rootSeqDesc f).length + 1 then
     rootSlotInterval (rootSeqDesc f) ⟨j, hj⟩
@@ -1193,6 +1201,93 @@ private lemma slotSetAt_ordConnected (j : ℕ) (f : ℝ[X]) :
   · simpa [hj] using
       rootSlotInterval_ordConnected (rs := rootSeqDesc f) ⟨j, hj⟩
   · simpa [hj] using Set.ordConnected_univ
+
+private def leftSlotSetAt (j : ℕ) (f : ℝ[X]) : Set ℝ :=
+  if hj : j < (rootSeqDesc f).length then
+    rootSlotInterval (rootSeqDesc f) ⟨j + 1, Nat.succ_lt_succ hj⟩
+  else
+    Set.univ
+
+private lemma leftSlotSetAt_nonempty (j : ℕ) (f : ℝ[X]) :
+    (leftSlotSetAt j f).Nonempty := by
+  unfold leftSlotSetAt
+  by_cases hj : j < (rootSeqDesc f).length
+  · simpa [hj] using
+      rootSlotInterval_nonempty (rs := rootSeqDesc f) (rootSeqDesc_pairwise)
+        ⟨j + 1, Nat.succ_lt_succ hj⟩
+  · simp [hj]
+
+private lemma leftSlotSetAt_ordConnected (j : ℕ) (f : ℝ[X]) :
+    Set.OrdConnected (leftSlotSetAt j f) := by
+  unfold leftSlotSetAt
+  by_cases hj : j < (rootSeqDesc f).length
+  · simpa [hj] using
+      rootSlotInterval_ordConnected (rs := rootSeqDesc f)
+        ⟨j + 1, Nat.succ_lt_succ hj⟩
+  · simpa [hj] using Set.ordConnected_univ
+
+/-- Finite-Helly wrapper for the left-oriented shifted-slot construction.
+
+Once pairwise shifted root-slot intervals meet for every pair in the family,
+the one-dimensional Helly property produces a common shifted-slot sequence. -/
+theorem hasCommonLeftInterleaverSeq_of_pairwise_shiftedSlotIntersections
+    {fs : List ℝ[X]}
+    (hpair : ∀ (i k : Fin fs.length), i < k →
+      ∀ j : ℕ,
+        ∀ (hji : j + 1 < (rootSeqDesc (fs.get i)).length + 1)
+          (hjk : j + 1 < (rootSeqDesc (fs.get k)).length + 1),
+          (rootSlotInterval (rootSeqDesc (fs.get i)) ⟨j + 1, hji⟩ ∩
+            rootSlotInterval (rootSeqDesc (fs.get k)) ⟨j + 1, hjk⟩).Nonempty) :
+    HasCommonLeftInterleaverSeq fs := by
+  intro j
+  let ss : List (Set ℝ) := fs.map (leftSlotSetAt j)
+  have hss_len : ss.length = fs.length := by simp [ss]
+  have hne : ∀ s ∈ ss, s.Nonempty := by
+    intro s hs
+    rcases List.mem_map.mp hs with ⟨f, _hf, rfl⟩
+    exact leftSlotSetAt_nonempty j f
+  have hconn : ∀ s ∈ ss, Set.OrdConnected s := by
+    intro s hs
+    rcases List.mem_map.mp hs with ⟨f, _hf, rfl⟩
+    exact leftSlotSetAt_ordConnected j f
+  have hpair_sets : ss.Pairwise (fun s t => (s ∩ t).Nonempty) := by
+    refine List.pairwise_iff_get.2 ?_
+    intro i k hik
+    let i' : Fin fs.length := ⟨i.1, by rw [← hss_len]; exact i.2⟩
+    let k' : Fin fs.length := ⟨k.1, by rw [← hss_len]; exact k.2⟩
+    have hik' : i' < k' := by simpa [i', k'] using hik
+    let fi : ℝ[X] := fs.get i'
+    let fk : ℝ[X] := fs.get k'
+    have hget_i : ss.get i = leftSlotSetAt j fi := by
+      simp [ss, i', fi, List.get_eq_getElem]
+    have hget_k : ss.get k = leftSlotSetAt j fk := by
+      simp [ss, k', fk, List.get_eq_getElem]
+    rw [hget_i, hget_k]
+    by_cases hjfi : j < (rootSeqDesc fi).length
+    · by_cases hjfk : j < (rootSeqDesc fk).length
+      · rw [show leftSlotSetAt j fi =
+            rootSlotInterval (rootSeqDesc fi) ⟨j + 1, Nat.succ_lt_succ hjfi⟩ by
+              simp [leftSlotSetAt, hjfi],
+          show leftSlotSetAt j fk =
+            rootSlotInterval (rootSeqDesc fk) ⟨j + 1, Nat.succ_lt_succ hjfk⟩ by
+              simp [leftSlotSetAt, hjfk]]
+        simpa [fi, fk] using
+          hpair i' k' hik' j (Nat.succ_lt_succ hjfi) (Nat.succ_lt_succ hjfk)
+      · simpa [leftSlotSetAt, hjfi, hjfk] using
+          rootSlotInterval_nonempty (rs := rootSeqDesc fi) (rootSeqDesc_pairwise)
+            ⟨j + 1, Nat.succ_lt_succ hjfi⟩
+    · by_cases hjfk : j < (rootSeqDesc fk).length
+      · simpa [leftSlotSetAt, hjfi, hjfk] using
+          rootSlotInterval_nonempty (rs := rootSeqDesc fk) (rootSeqDesc_pairwise)
+            ⟨j + 1, Nat.succ_lt_succ hjfk⟩
+      · simp [leftSlotSetAt, hjfi, hjfk]
+  rcases listInter_nonempty_of_pairwise_ordConnected ss hne hconn hpair_sets with ⟨x, hx⟩
+  refine ⟨x, ?_⟩
+  intro f hf hjf
+  have hx_all := mem_listInter.mp hx
+  have hmem_slot : x ∈ leftSlotSetAt j f := by grind
+  have hj : j < (rootSeqDesc f).length := Nat.lt_of_succ_lt_succ hjf
+  simpa [leftSlotSetAt, hj] using hmem_slot
 
 /-- Chudnovsky--Seymour `3.6.2 → 3.6.3`, in the formulation needed for the
 product-sum theorem: pairwise common interleavers imply a global common
