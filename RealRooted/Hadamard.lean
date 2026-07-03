@@ -449,6 +449,21 @@ theorem finitePolyaSchurNonnegBackward_of_schurSzego
   rw [← heq]
   exact hSZ hjensen hfdeg hp hsplit
 
+/-- The backward finite Pólya--Schur direction follows directly from the
+nonzero core of the finite Schur--Szegő theorem. -/
+theorem finitePolyaSchurNonnegBackward_of_schurSzegoNonzero
+    (hSZ : finiteSchurSzegoCompositionNonzeroStatement) :
+    finitePolyaSchurNonnegBackwardStatement :=
+  finitePolyaSchurNonnegBackward_of_schurSzego
+    (finiteSchurSzegoComposition_of_nonzero hSZ)
+
+/-- Full finite Pólya--Schur from the nonzero core of finite Schur--Szegő. -/
+theorem finitePolyaSchur_nonneg_of_schurSzegoNonzero
+    (hSZ : finiteSchurSzegoCompositionNonzeroStatement) :
+    finitePolyaSchurNonnegStatement :=
+  finitePolyaSchur_nonneg_of_backward
+    (finitePolyaSchurNonnegBackward_of_schurSzegoNonzero hSZ)
+
 /-- Finite Schur--Szegő composition theorem. The degenerate cases (`f = 0` or
 `p = 0`, where the composition vanishes) are discharged; the remaining
 obligation is the substantive case of a nonzero PF polynomial `f` composed with
