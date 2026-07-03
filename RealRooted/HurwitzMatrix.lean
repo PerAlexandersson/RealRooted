@@ -22,18 +22,11 @@ finite-minor statement needed by the existing `VeroneseSection` route.
     hurwitz (fun k => p.coeff k) (2 * i + 1) j = toeplitz (fun k => p.coeff (2 * k)) i j := by
   simp [hurwitz, show (2 * i + 1) / 2 = i by lia]
 
-theorem hurwitz_coeff_even_row_apply (p : ℝ[X]) (i j : ℕ) :
-    hurwitz (fun k => p.coeff k) (2 * i) j = if j ≤ i then p.coeff (2 * (i - j) + 1) else 0 := by
-  simp [toeplitz, hurwitz_coeff_even_row]
-
-theorem hurwitz_coeff_odd_row_apply (p : ℝ[X]) (i j : ℕ) :
-    hurwitz (fun k => p.coeff k) (2 * i + 1) j = if j ≤ i then p.coeff (2 * (i - j)) else 0 := by
-  simp [toeplitz, hurwitz_coeff_odd_row]
-
 /-! ### Row-parity entry formulas for arbitrary coefficient sequences
 
-The two lemmas above are the `c = p.coeff` special cases of the following
-general facts, which describe every entry of `hurwitz c` by row parity. -/
+The polynomial-specific apply lemmas below are the `c = p.coeff` special cases
+of these general facts, which describe every entry of `hurwitz c` by row
+parity. -/
 
 /-- Even-row entry of the Hurwitz matrix of an arbitrary coefficient sequence. -/
 theorem hurwitz_even_row_apply (c : ℕ → ℝ) (i j : ℕ) :
@@ -59,6 +52,16 @@ theorem hurwitz_apply_eq_zero_of_lt (c : ℕ → ℝ) {i j : ℕ} (h : i < 2 * j
     rw [show m + m = 2 * m by ring, hurwitz_even_row_apply, if_neg (by lia)]
   · subst hm
     rw [hurwitz_odd_row_apply, if_neg (by lia)]
+
+theorem hurwitz_coeff_even_row_apply (p : ℝ[X]) (i j : ℕ) :
+    hurwitz (fun k => p.coeff k) (2 * i) j =
+      if j ≤ i then p.coeff (2 * (i - j) + 1) else 0 :=
+  hurwitz_even_row_apply (fun k => p.coeff k) i j
+
+theorem hurwitz_coeff_odd_row_apply (p : ℝ[X]) (i j : ℕ) :
+    hurwitz (fun k => p.coeff k) (2 * i + 1) j =
+      if j ≤ i then p.coeff (2 * (i - j)) else 0 :=
+  hurwitz_odd_row_apply (fun k => p.coeff k) i j
 
 /-- Unfolded finite-minor form of
 `HurwitzStableToMatrixTotallyNonnegativeStatement`.
