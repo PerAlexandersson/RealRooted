@@ -3,8 +3,8 @@ import RealRooted.Hadamard
 /-!
 # Hadamard and Hurwitz-matrix challenge entry point
 
-This module exposes the Garloff--Wagner Hadamard target and the current
-Hurwitz-matrix reductions as stable names for theorem-proving sessions.
+This module exposes the Garloff--Wagner, Schur--Szego, finite Polya--Schur,
+and Hurwitz-matrix targets as stable names for theorem-proving sessions.
 -/
 
 open Polynomial
@@ -14,6 +14,53 @@ noncomputable section
 namespace RealRooted
 namespace Challenges
 namespace Hadamard
+
+/-! ## Schur--Szego and finite Polya--Schur targets -/
+
+/-- Challenge-facing target for the fixed-degree Schur--Szego theorem. -/
+abbrev finiteSchurSzegoTarget : Prop :=
+  finiteSchurSzegoCompositionStatement
+
+/-- Challenge-facing nonzero core of the fixed-degree Schur--Szego theorem. -/
+abbrev finiteSchurSzegoNonzeroTarget : Prop :=
+  finiteSchurSzegoCompositionNonzeroStatement
+
+/-- Challenge-facing target for the backward finite Polya--Schur theorem. -/
+abbrev finitePolyaSchurBackwardTarget : Prop :=
+  finitePolyaSchurNonnegBackwardStatement
+
+/-- Challenge-facing target for the finite Polya--Schur theorem. -/
+abbrev finitePolyaSchurTarget : Prop :=
+  finitePolyaSchurNonnegStatement
+
+/-- The full fixed-degree Schur--Szego target is equivalent to its nonzero
+core; zero input cases are bookkeeping. -/
+theorem finiteSchurSzegoTarget_iff_nonzero :
+    finiteSchurSzegoTarget ↔ finiteSchurSzegoNonzeroTarget :=
+  finiteSchurSzegoCompositionStatement_iff_nonzero
+
+/-- Challenge-facing reduction from the nonzero Schur--Szego core to the full
+fixed-degree Schur--Szego target. -/
+theorem finiteSchurSzegoTarget_of_nonzero
+    (h : finiteSchurSzegoNonzeroTarget) :
+    finiteSchurSzegoTarget :=
+  finiteSchurSzegoComposition_of_nonzero h
+
+/-- Challenge-facing reduction from the nonzero Schur--Szego core to the
+backward finite Polya--Schur target. -/
+theorem finitePolyaSchurBackwardTarget_of_schurSzegoNonzero
+    (h : finiteSchurSzegoNonzeroTarget) :
+    finitePolyaSchurBackwardTarget :=
+  finitePolyaSchurNonnegBackward_of_schurSzegoNonzero h
+
+/-- Challenge-facing reduction from the nonzero Schur--Szego core to the full
+finite Polya--Schur target. -/
+theorem finitePolyaSchurTarget_of_schurSzegoNonzero
+    (h : finiteSchurSzegoNonzeroTarget) :
+    finitePolyaSchurTarget :=
+  finitePolyaSchur_nonneg_of_schurSzegoNonzero h
+
+/-! ## Garloff--Wagner and Hurwitz-matrix targets -/
 
 /-- Challenge-facing target for Garloff--Wagner, Theorem 4(b), in the
 nonnegative-coefficient proper-position form used by RealRooted. -/
