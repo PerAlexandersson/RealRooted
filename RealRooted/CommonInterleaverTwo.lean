@@ -1707,10 +1707,32 @@ theorem PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_forward_asw
   exact (PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw hASW)
     hf_pos hg_pos hfnn hgnn hfg hsucc
 
+/-- Reflecting both members at a common degree bound preserves
+positive-combination real-rootedness. -/
+theorem PosComboRealRooted.reflect_of_natDegree_le
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g) {N : ℕ}
+    (hfN : f.natDegree ≤ N) (hgN : g.natDegree ≤ N) :
+    PosComboRealRooted (reflect N f) (reflect N g) := by
+  intro lam μ hlam hμ
+  have hbase := hfg (lam := lam) (μ := μ) hlam hμ
+  have hdeg_combo : (C lam * f + C μ * g).natDegree ≤ N :=
+    (Polynomial.natDegree_add_le _ _).trans <|
+      max_le
+        ((Polynomial.natDegree_C_mul_le lam f).trans hfN)
+        ((Polynomial.natDegree_C_mul_le μ g).trans hgN)
+  have hsplit_ref : (reflect N (C lam * f + C μ * g)).Splits :=
+    DegreeDropReversal.splits_reflect_of_splits hbase.2 hdeg_combo
+  have hne_ref : reflect N (C lam * f + C μ * g) ≠ 0 := by
+    intro hzero
+    exact hbase.1 (Polynomial.reflect_eq_zero_iff.mp hzero)
+  constructor
+  · simpa [Polynomial.reflect_add, Polynomial.reflect_C_mul] using hne_ref
+  · simpa [Polynomial.reflect_add, Polynomial.reflect_C_mul] using hsplit_ref
+
 private theorem left_splits_of_succDegree_of_left_coeff_zero_ne_core
     {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hsucc : g.natDegree = f.natDegree + 1)
     (hf0 : f.coeff 0 ≠ 0) :
@@ -1733,20 +1755,8 @@ private theorem left_splits_of_succDegree_of_left_coeff_zero_ne_core
     exact hg_pos.ne_zero (Polynomial.reflect_eq_zero_iff.mp hzero)
   have hg_ref_pos : HasPosLeadingCoeff (reflect N g) :=
     hg_ref_nonneg.pos_leadingCoeff hg_ref_ne
-  have hfg_ref : PosComboRealRooted (reflect N f) (reflect N g) := by
-    intro lam μ hlam hμ
-    have hbase := hfg (lam := lam) (μ := μ) hlam hμ
-    have hdeg_combo : (C lam * f + C μ * g).natDegree ≤ N := by
-      dsimp [N]
-      rw [natDegree_pos_combo_eq_right_of_natDegree_le (by lia) hf_pos hg_pos hlam hμ]
-    have hsplit_ref : (reflect N (C lam * f + C μ * g)).Splits :=
-      DegreeDropReversal.splits_reflect_of_splits hbase.2 hdeg_combo
-    have hne_ref : reflect N (C lam * f + C μ * g) ≠ 0 := by
-      intro hzero
-      exact hbase.1 (Polynomial.reflect_eq_zero_iff.mp hzero)
-    constructor
-    · simpa [Polynomial.reflect_add, Polynomial.reflect_C_mul] using hne_ref
-    · simpa [Polynomial.reflect_add, Polynomial.reflect_C_mul] using hsplit_ref
+  have hfg_ref : PosComboRealRooted (reflect N f) (reflect N g) :=
+    hfg.reflect_of_natDegree_le hfN hgN
   have hdeg_ref_le : (reflect N g).natDegree ≤ (reflect N f).natDegree := by
     rw [DegreeDropReversal.natDegree_reflect_eq_of_coeff_zero_ne hfN hf0]
     exact Polynomial.natDegree_reflect_le.trans <| by rw [max_eq_left hgN]
@@ -1768,9 +1778,10 @@ theorem PosComboRealRooted.left_splits_of_succDegree_of_coeff_zero_ne
     (hsucc : g.natDegree = f.natDegree + 1)
     (hf0 : f.coeff 0 ≠ 0) (hg0 : g.coeff 0 ≠ 0) :
     f.Splits := by
+  have _ := hf_pos
   have _ := hg0
   exact left_splits_of_succDegree_of_left_coeff_zero_ne_core
-    hfg hf_pos hg_pos hfnn hgnn hsucc hf0
+    hfg hg_pos hfnn hgnn hsucc hf0
 
 /-- If the lower-degree endpoint has nonzero constant coefficient, the
 degree-drop endpoint follows by reflecting and applying the degree-`≤`
@@ -1782,9 +1793,10 @@ theorem PosComboRealRooted.left_splits_of_succDegree_of_left_coeff_zero_ne
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hsucc : g.natDegree = f.natDegree + 1)
     (hf0 : f.coeff 0 ≠ 0) :
-    f.Splits :=
-  left_splits_of_succDegree_of_left_coeff_zero_ne_core
-    hfg hf_pos hg_pos hfnn hgnn hsucc hf0
+    f.Splits := by
+  have _ := hf_pos
+  exact left_splits_of_succDegree_of_left_coeff_zero_ne_core
+    hfg hg_pos hfnn hgnn hsucc hf0
 
 private lemma natDegree_pos_of_posLeadingCoeff_of_coeff_zero
     {p : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (hp0 : p.coeff 0 = 0) :
