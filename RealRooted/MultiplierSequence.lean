@@ -233,6 +233,47 @@ theorem IsFinitePFMultiplierSequence.mono {m n : ℕ} {gamma : ℕ → ℝ}
     IsFinitePFMultiplierSequence m gamma :=
   fun {_} hp hdeg => h hp (hdeg.trans hmn)
 
+theorem IsFiniteMultiplierSequence.mul {n : ℕ} {gamma delta : ℕ → ℝ}
+    (hgamma : IsFiniteMultiplierSequence n gamma)
+    (hdelta : IsFiniteMultiplierSequence n delta) :
+    IsFiniteMultiplierSequence n (fun k => gamma k * delta k) := by
+  intro p hp hsplit
+  rw [← diagonalOperator_comp]
+  rcases hdelta hp hsplit with hzero | hsplit_delta
+  · left
+    simp [hzero]
+  · exact hgamma ((natDegree_diagonalOperator_le delta p).trans hp) hsplit_delta
+
+theorem IsFinitePFMultiplierSequence.mul {n : ℕ} {gamma delta : ℕ → ℝ}
+    (hgamma : IsFinitePFMultiplierSequence n gamma)
+    (hdelta : IsFinitePFMultiplierSequence n delta) :
+    IsFinitePFMultiplierSequence n (fun k => gamma k * delta k) := by
+  intro p hp hdeg
+  rw [← diagonalOperator_comp]
+  exact hgamma (hdelta hp hdeg) ((natDegree_diagonalOperator_le delta p).trans hdeg)
+
+theorem isFiniteMultiplierSequence_one_sequence (n : ℕ) :
+    IsFiniteMultiplierSequence n (fun _ => (1 : ℝ)) := by
+  intro p _ hsplit
+  right
+  simpa using hsplit
+
+theorem isFinitePFMultiplierSequence_one_sequence (n : ℕ) :
+    IsFinitePFMultiplierSequence n (fun _ => (1 : ℝ)) := by
+  intro p hp _
+  simpa using hp
+
+theorem isFiniteMultiplierSequence_zero_sequence (n : ℕ) :
+    IsFiniteMultiplierSequence n (fun _ => (0 : ℝ)) := by
+  intro p _ _
+  left
+  simp
+
+theorem isFinitePFMultiplierSequence_zero_sequence (n : ℕ) :
+    IsFinitePFMultiplierSequence n (fun _ => (0 : ℝ)) := by
+  intro p _ _
+  simpa using IsPFPolynomial.zero
+
 theorem splits_X_add_one_pow (n : ℕ) :
     ((X + 1 : ℝ[X]) ^ n).Splits :=
   (show (X + 1 : ℝ[X]).Splits by
