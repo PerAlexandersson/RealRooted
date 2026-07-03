@@ -330,6 +330,59 @@ theorem rectangularConvolutionGamma_mul_narayanaTransformCoeff_left
   rw [rectangularConvolutionGamma_symm]
   exact rectangularConvolutionGamma_mul_narayanaTransformCoeff m n j i (by lia)
 
+/-- Rectangular convolution of two generalized Narayana polynomials, expanded
+as the finite coefficient sum before the final Vandermonde evaluation. -/
+theorem rectangularConvolutionCoeff_narayanaPolynomial_of_le
+    (m n k : ℕ) (hk : k ≤ n) :
+    rectangularConvolutionCoeff m n (narayanaPolynomial m n)
+        (narayanaPolynomial m n) k =
+      ∑ i ∈ Finset.range (k + 1),
+        rectangularConvolutionGamma m n i (k - i) *
+          narayanaTransformCoeff m n i *
+          narayanaTransformCoeff m n (k - i) := by
+  unfold rectangularConvolutionCoeff
+  apply Finset.sum_congr rfl
+  intro i hi
+  have hik : i ≤ k := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
+  have hi_n : i ≤ n := hik.trans hk
+  have hki_n : k - i ≤ n := (Nat.sub_le k i).trans hk
+  rw [coeff_narayanaPolynomial_sub m n i hi_n,
+    coeff_narayanaPolynomial_sub m n (k - i) hki_n]
+
+/-- The same convolution sum after transporting one Narayana factor with the
+rectangular convolution coefficient.  The remaining closed-form step is a
+Vandermonde/Chu summation. -/
+theorem rectangularConvolutionCoeff_narayanaPolynomial_eq_sum_transport
+    (m n k : ℕ) (hk : k ≤ n) :
+    rectangularConvolutionCoeff m n (narayanaPolynomial m n)
+        (narayanaPolynomial m n) k =
+      ∑ i ∈ Finset.range (k + 1),
+        narayanaTransformCoeff m n i *
+          narayanaTransformCoeff m (n - i) (k - i) := by
+  rw [rectangularConvolutionCoeff_narayanaPolynomial_of_le m n k hk]
+  apply Finset.sum_congr rfl
+  intro i hi
+  have hik : i ≤ k := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
+  have hsum : i + (k - i) ≤ n := by
+    rw [Nat.add_sub_of_le hik]
+    exact hk
+  rw [← rectangularConvolutionGamma_mul_narayanaTransformCoeff m n i (k - i) hsum]
+  ring
+
+/-- Coefficients of the rectangular additive convolution of two generalized
+Narayana polynomials, reduced to the transported convolution sum. -/
+theorem coeff_rectangularAdditiveConvolution_narayanaPolynomial_of_le
+    (m n j : ℕ) (hj : j ≤ n) :
+    (rectangularAdditiveConvolution m n (narayanaPolynomial m n)
+        (narayanaPolynomial m n)).coeff j =
+      ∑ i ∈ Finset.range (n - j + 1),
+        narayanaTransformCoeff m n i *
+          narayanaTransformCoeff m (n - i) (n - j - i) := by
+  rw [coeff_rectangularAdditiveConvolution_of_le m n (narayanaPolynomial m n)
+      (narayanaPolynomial m n) hj,
+    rectangularConvolutionCoeff_narayanaPolynomial_eq_sum_transport m n (n - j)
+      (Nat.sub_le n j)]
+
 /-- Gribinski--Marcus preservation theorem in the form used by Mao--Wang,
 paper Lemma 2.6. -/
 def rectangularAdditiveConvolutionPreservesNonnegRootsStatement : Prop :=
