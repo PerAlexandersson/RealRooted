@@ -101,4 +101,14 @@ theorem splits_reflect_of_splits {p : K[X]} (h : p.Splits) {N : ℕ}
   rw [reflect_eq_X_pow_mul_reverse p hN]
   exact splits_X_pow_mul_reverse h N
 
+/-- For polynomials of degree at most `N`, reflection preserves and reflects
+splitting. -/
+theorem splits_reflect_iff {p : K[X]} {N : ℕ} (hN : p.natDegree ≤ N) :
+    (reflect N p).Splits ↔ p.Splits := by
+  refine ⟨?_, fun h => splits_reflect_of_splits h hN⟩
+  intro h
+  have hreflect_deg : (reflect N p).natDegree ≤ N :=
+    Polynomial.natDegree_reflect_le.trans <| by rw [max_eq_left hN]
+  simpa using splits_reflect_of_splits h hreflect_deg
+
 end RealRooted.DegreeDropReversal
