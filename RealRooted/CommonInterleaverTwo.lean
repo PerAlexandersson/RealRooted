@@ -1571,7 +1571,7 @@ theorem rootSlotInterval_inter_nonempty_of_crossing
       List.length_nil, Nat.reduceAdd, List.length_cons, Nat.add_eq_zero_iff, and_false,
       List.get_eq_getElem, add_tsub_cancel_right, Nat.add_right_cancel_iff]
   · rcases rf with (_ | ⟨r, rf⟩) <;> rcases rg with (_ | ⟨s, rg⟩) <;> norm_num at *
-  · split_ifs <;> try linarith
+  · split_ifs <;> try lia
     · rcases x : rf.reverse with (_ | ⟨r, _ | ⟨s, l⟩⟩) <;>
           simp_all +decide only [lt_add_iff_pos_right, Order.lt_one_iff,
             List.reverse_eq_nil_iff, List.length_nil,
@@ -1593,34 +1593,34 @@ theorem rootSlotInterval_inter_nonempty_of_crossing
           exact iic_inter_icc_nonempty_of_left hba
             (by simpa using hc1 1 (by norm_num) (by norm_num))
       · refine ⟨rg[l.length + 2], ?_, ?_⟩ <;> norm_num
-        · have h := hc1 (l.length + 2) (by linarith) (by linarith)
+        · have h := hc1 (l.length + 2) (by lia) (by lia)
           have hr : (l.reverse ++ [s, r])[l.length + 2 - 1]?.getD 0 = r := by
             rw [List.getElem?_append_right (by simp)]
             simp
           rwa [hr] at h
         · simpa [List.get_eq_getElem] using
             get_le_get_of_pairwise_ge hrg
-              (i := ⟨l.length + 1, by linarith⟩)
-              (j := ⟨l.length + 2, by linarith⟩)
+              (i := ⟨l.length + 1, by lia⟩)
+              (j := ⟨l.length + 2, by lia⟩)
               (by simp)
     · have hrf_step : rf[j + 1] ≤ rf[j] := by
         simpa [List.get_eq_getElem] using
           get_le_get_of_pairwise_ge hrf
-            (i := ⟨j, by linarith⟩) (j := ⟨j + 1, by lia⟩) (by simp)
+            (i := ⟨j, by lia⟩) (j := ⟨j + 1, by lia⟩) (by simp)
       have hrg_step : rg[j + 1] ≤ rg[j] := by
         simpa [List.get_eq_getElem] using
           get_le_get_of_pairwise_ge hrg
-            (i := ⟨j, by linarith⟩) (j := ⟨j + 1, by linarith⟩) (by simp)
+            (i := ⟨j, by lia⟩) (j := ⟨j + 1, by lia⟩) (by simp)
       have hcross_gf : rg[j + 1] ≤ rf[j] := by
         simpa [List.getD_eq_getElem?_getD,
-          List.getElem?_eq_getElem (l := rg) (i := j + 1) (by linarith),
-          List.getElem?_eq_getElem (l := rf) (i := j) (by linarith)]
-          using hc1 (j + 1) (by linarith) (by lia)
+          List.getElem?_eq_getElem (l := rg) (i := j + 1) (by lia),
+          List.getElem?_eq_getElem (l := rf) (i := j) (by lia)]
+          using hc1 (j + 1) (by lia) (by lia)
       have hcross_fg : rf[j + 1] ≤ rg[j] := by
         simpa [List.getD_eq_getElem?_getD,
           List.getElem?_eq_getElem (l := rf) (i := j + 1) (by lia),
-          List.getElem?_eq_getElem (l := rg) (i := j) (by linarith)]
-          using hc2 (j + 1) (by linarith) (by lia)
+          List.getElem?_eq_getElem (l := rg) (i := j) (by lia)]
+          using hc2 (j + 1) (by lia) (by lia)
       simpa [rootSlotInterval] using
         icc_inter_icc_nonempty_of_crossing hrf_step hrg_step hcross_fg hcross_gf
 
