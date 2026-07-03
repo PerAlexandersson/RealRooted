@@ -839,6 +839,16 @@ theorem hadamardPreservesHurwitzMatrixTN_of_stableRoute
     hadamardPreservesHurwitzMatrixTNStatement :=
   fun {_ _} ha hb => hFwd (hThm1 (hBwd ha) (hBwd hb))
 
+/-- Low-order Hurwitz-matrix Hadamard minors from Garloff--Wagner Theorem 1
+plus both directions of the Hurwitz-matrix total-nonnegativity criterion. -/
+theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_stableRoute
+    (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement)
+    (hThm1 : hadamardPreservesHurwitzStableStatement)
+    (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement) :
+    hadamardPreservesHurwitzMatrixTNDetLeThreeStatement :=
+  hadamardPreservesHurwitzMatrixTNDetLeThree_of_matrixTN
+    (hadamardPreservesHurwitzMatrixTN_of_stableRoute hBwd hThm1 hFwd)
+
 /-- Under the two directions of the Hurwitz-matrix criterion, Garloff--Wagner
 Theorem 1 is equivalent to the Hurwitz-matrix Hadamard leaf. -/
 theorem hadamardPreservesHurwitzStable_iff_matrixTN
