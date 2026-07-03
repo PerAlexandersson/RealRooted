@@ -838,6 +838,15 @@ theorem garloffWagnerHadamardPFPrec0_of_nonnegPrec
   garloffWagnerHadamardPFPrec0_of_prec
     (garloffWagnerHadamardPFPrec_of_nonnegPrec hGW)
 
+theorem garloffWagnerHadamardPFPrec0_of_matrixHadamardBridges
+    (hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
+    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
+    garloffWagnerHadamardPFPrec0Statement :=
+  garloffWagnerHadamardPFPrec0_of_nonnegPrec
+    (garloffWagnerHadamardNonnegPrec_of_matrixHadamardBridges
+      hToFull hMatHad hFullToPrec0)
+
 /-- PF-polynomial closure under Hadamard product, stated directly from the
 zero-aware Garloff--Wagner PF wrapper. -/
 theorem hadamardProduct_preserves_pf_of_garloffWagner
@@ -855,10 +864,29 @@ theorem hadamardProduct_preserves_pf_of_nonnegPrec
   hadamardProduct_preserves_pf_of_garloffWagner
     (garloffWagnerHadamardPFPrec0_of_nonnegPrec hGW) hp hq
 
+theorem hadamardProduct_preserves_pf_of_matrixHadamardBridges
+    (hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
+    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
+    {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
+    IsPFPolynomial (hadamardProduct p q) :=
+  hadamardProduct_preserves_pf_of_garloffWagner
+    (garloffWagnerHadamardPFPrec0_of_matrixHadamardBridges
+      hToFull hMatHad hFullToPrec0) hp hq
+
 theorem schurPolyaWagnerHadamardPF_of_garloffWagner_prec0
     (hGW : garloffWagnerHadamardPFPrec0Statement) :
     schurPolyaWagnerHadamardPFStatement :=
   fun {_ _} hp hq => hadamardProduct_preserves_pf_of_garloffWagner hGW hp hq
+
+theorem schurPolyaWagnerHadamardPF_of_matrixHadamardBridges
+    (hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
+    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
+    schurPolyaWagnerHadamardPFStatement :=
+  fun {_ _} hp hq =>
+    hadamardProduct_preserves_pf_of_matrixHadamardBridges
+      hToFull hMatHad hFullToPrec0 hp hq
 
 /-- The nonnegative two-pair Garloff--Wagner theorem gives PF closure under
 Hadamard products through the zero-aware PF wrapper. -/
