@@ -454,12 +454,19 @@ theorem pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direc
   pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge hpos htwo <|
     hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver hrr hpos
 
+/-- Two-polynomial common-right bridge: compatibility implies a common right
+interleaver, without carrying family-level positivity hypotheses. -/
+def CompatiblePairHasCommonRightInterleaverStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    Compatible f g →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h
+
 /-- Once the two-polynomial common-right-interleaver converse is available, the
 pairwise Chudnovsky--Seymour hypothesis upgrades to pairwise common right
 interleavers. -/
 theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible
     {fs : List ℝ[X]}
-    (htwo : ∀ ⦃f g : ℝ[X]⦄, Compatible f g → ∃ h : ℝ[X], Prec f h ∧ Prec g h)
+    (htwo : CompatiblePairHasCommonRightInterleaverStatement)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
   fun i j hij => by simpa using htwo (hpair i j hij)
@@ -3329,7 +3336,7 @@ theorem chudnovskySeymour_fourWay_of_pairBridge
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (htwo : ∀ ⦃f g : ℝ[X]⦄, Compatible f g → ∃ h : ℝ[X], Prec f h ∧ Prec g h) :
+    (htwo : CompatiblePairHasCommonRightInterleaverStatement) :
     (PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs) ∧
       (PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs) ∧
       (HasCommonInterleaver fs ↔ FamilyCompatible fs) :=

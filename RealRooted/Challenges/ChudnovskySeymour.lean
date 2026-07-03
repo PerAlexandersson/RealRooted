@@ -32,8 +32,7 @@ abbrev commonInterleaverTarget : Prop :=
 
 /-- Full roadmap reduction for the common-left target. -/
 theorem commonLeftInterleaverTarget_of_pairwiseLeftBridge
-    (htwo :
-      ∀ ⦃f g : ℝ[X]⦄, Compatible f g → ∃ h : ℝ[X], Prec h f ∧ Prec h g)
+    (htwo : CompatiblePairHasCommonLeftInterleaverStatement)
     (hglobal :
       ∀ {fs : List ℝ[X]},
         (∀ f ∈ fs, f.Splits) →
@@ -80,7 +79,7 @@ theorem pairwiseCompatible_iff_familyCompatible_of_natDegree_le_one
 theorem pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
     {fs : List ℝ[X]}
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (htwo : ∀ ⦃f g : ℝ[X]⦄, Compatible f g → ∃ h : ℝ[X], Prec h f ∧ Prec h g)
+    (htwo : CompatiblePairHasCommonLeftInterleaverStatement)
     (hglobal : PairwiseHasCommonLeftInterleaver fs → HasCommonLeftInterleaver fs) :
     PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
   RealRooted.pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
