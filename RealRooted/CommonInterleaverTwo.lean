@@ -3259,6 +3259,14 @@ theorem posComboNoCommonSuccDegreeRootCrossing_of_rootCountNonRoot
   posComboNoCommonSuccDegreeRootCrossing_of_rootCount
     (posComboNoCommonSuccDegreeRootCount_of_rootCountNonRoot hcount)
 
+/-- The succ-degree root-crossing target follows from the upper common-non-root
+root-count formulation. -/
+theorem posComboNoCommonSuccDegreeRootCrossing_of_rootCountAboveNonRoot
+    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
+    PosComboNoCommonSuccDegreeRootCrossingNonnegStatement :=
+  posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove
+    (posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot hcount)
+
 /-- The fixed-orientation succ-degree endpoint implies the upper-threshold
 root-count target. -/
 theorem posComboNoCommonSuccDegreeRootCountAbove_of_orientation
@@ -5287,6 +5295,26 @@ theorem compatiblePairHasCommonInterleaver_of_rootCountAboveBoth
     (posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove hsame)
     (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove hsucc)
 
+/-- Shifted compatibility bridge from common-non-root lower-threshold root-count
+formulations in both branches. -/
+theorem compatiblePairHasCommonInterleaver_of_rootCountNonRoot
+    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
+    CompatiblePairHasCommonInterleaverStatement :=
+  compatiblePairHasCommonInterleaver_of_rootCrossing
+    (posComboNoCommonSameDegreeRootCrossing_of_rootCountNonRoot hsame)
+    (posComboNoCommonSuccDegreeRootCrossing_of_rootCountNonRoot hsucc)
+
+/-- Shifted compatibility bridge from common-non-root upper-threshold root-count
+formulations in both branches. -/
+theorem compatiblePairHasCommonInterleaver_of_rootCountAboveBothNonRoot
+    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
+    CompatiblePairHasCommonInterleaverStatement :=
+  compatiblePairHasCommonInterleaver_of_rootCrossing
+    (posComboNoCommonSameDegreeRootCrossing_of_rootCountAboveNonRoot hsame)
+    (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAboveNonRoot hsucc)
+
 /-- Shifted compatibility bridge from root-crossing formulations, with the
 succ-degree left endpoint supplied by the PF/ASW route. -/
 theorem compatiblePairHasCommonInterleaver_of_rootCrossing_and_forward_asw
@@ -5509,6 +5537,33 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCountAboveBoth
     PairwiseHasCommonInterleaver fs :=
   pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairBridgePos
     (compatiblePairHasCommonInterleaver_of_rootCountAboveBoth hsame hsucc)
+    hpos hpair
+
+/-- Pairwise upgrade from common-non-root lower-threshold root-count
+formulations in both branches. -/
+theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCountNonRoot
+    {fs : List ℝ[X]}
+    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hpair : PairwiseCompatible fs) :
+    PairwiseHasCommonInterleaver fs :=
+  pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairBridgePos
+    (compatiblePairHasCommonInterleaver_of_rootCountNonRoot hsame hsucc)
+    hpos hpair
+
+/-- Pairwise upgrade from common-non-root upper-threshold root-count
+formulations in both branches. -/
+theorem
+    pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCountAboveBothNonRoot
+    {fs : List ℝ[X]}
+    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hpair : PairwiseCompatible fs) :
+    PairwiseHasCommonInterleaver fs :=
+  pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairBridgePos
+    (compatiblePairHasCommonInterleaver_of_rootCountAboveBothNonRoot hsame hsucc)
     hpos hpair
 
 /-- Pairwise upgrade from root-crossing formulations, with the succ-degree left
