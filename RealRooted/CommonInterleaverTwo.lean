@@ -2899,6 +2899,75 @@ theorem succDegreeRootCrossing_of_posCombo_natDegree_eq_one
       succDegreeRootCountAbove_of_posCombo_natDegree_eq_one hf_pos hg_pos hfnn hgnn
         hfg hdeg hno hf_split hfdeg x)
 
+/-- A natural number bounded by one is zero or one. -/
+private lemma nat_eq_zero_or_eq_one_of_le_one {n : ℕ} (hn : n ≤ 1) :
+    n = 0 ∨ n = 1 := by
+  rcases n with _ | n
+  · exact Or.inl rfl
+  · have hn0 : n = 0 := by
+      exact Nat.eq_zero_of_le_zero (Nat.succ_le_succ_iff.mp hn)
+    exact Or.inr (by rw [hn0])
+
+/-- Low-degree base case for the upper-threshold succ-degree root-count
+formulation in the positive-combination / no-common-root setting. -/
+theorem succDegreeRootCountAbove_of_posCombo_natDegree_le_one
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hf_split : f.Splits) (hfdeg : f.natDegree ≤ 1) (x : ℝ) :
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
+  rcases nat_eq_zero_or_eq_one_of_le_one hfdeg with hf0 | hf1
+  · exact succDegreeRootCountAbove_of_posCombo_natDegree_eq_zero
+      hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 x
+  · exact succDegreeRootCountAbove_of_posCombo_natDegree_eq_one
+      hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf1 x
+
+/-- Low-degree base case for the lower-threshold succ-degree root-count
+formulation in the positive-combination / no-common-root setting. -/
+theorem succDegreeRootCount_of_posCombo_natDegree_le_one
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hf_split : f.Splits) (hfdeg : f.natDegree ≤ 1) (x : ℝ) :
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 := by
+  rcases nat_eq_zero_or_eq_one_of_le_one hfdeg with hf0 | hf1
+  · exact succDegreeRootCount_of_posCombo_natDegree_eq_zero
+      hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 x
+  · exact succDegreeRootCount_of_posCombo_natDegree_eq_one
+      hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf1 x
+
+/-- Low-degree base case for the succ-degree root-crossing target in the
+positive-combination / no-common-root setting. -/
+theorem succDegreeRootCrossing_of_posCombo_natDegree_le_one
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hf_split : f.Splits) (hfdeg : f.natDegree ≤ 1) :
+    (∀ j, 1 ≤ j → j ≤ f.natDegree →
+        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
+  rcases nat_eq_zero_or_eq_one_of_le_one hfdeg with hf0 | hf1
+  · have hg_split : g.Splits :=
+      (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
+    exact succDegreeRootCrossing_of_rootCountAbove hf_split hg_split hdeg
+      (fun x =>
+        succDegreeRootCountAbove_of_posCombo_natDegree_eq_zero
+          hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 x)
+  · exact succDegreeRootCrossing_of_posCombo_natDegree_eq_one
+      hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf1
+
 /-- Low-degree base case for the succ-degree root-crossing target.  In the
 constant-vs-linear case all crossing inequalities are vacuous. -/
 theorem succDegreeRootCrossing_of_natDegree_eq_zero
