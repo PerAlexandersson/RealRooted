@@ -2487,28 +2487,8 @@ theorem succDegreeRootCountAbove_of_natDegree_eq_zero
     (hdeg : g.natDegree = f.natDegree + 1) (hfdeg : f.natDegree = 0) (x : ℝ) :
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
-  have hfcard_nat : (f.roots.filter (x < ·)).card = 0 := by
-    have hle : (f.roots.filter (x < ·)).card ≤ 0 := by
-      calc
-        (f.roots.filter (x < ·)).card ≤ f.roots.card :=
-          Multiset.card_le_card (Multiset.filter_le _ _)
-        _ = f.natDegree := card_roots_of_splits hf
-        _ = 0 := hfdeg
-    exact Nat.eq_zero_of_le_zero hle
-  have hgcard_nat : (g.roots.filter (x < ·)).card ≤ 1 := by
-    calc
-      (g.roots.filter (x < ·)).card ≤ g.roots.card :=
-        Multiset.card_le_card (Multiset.filter_le _ _)
-      _ = g.natDegree := card_roots_of_splits hg
-      _ = f.natDegree + 1 := hdeg
-      _ = 1 := by rw [hfdeg]
-  have hfcard : ((f.roots.filter (x < ·)).card : ℤ) = 0 := by
-    exact_mod_cast hfcard_nat
-  have hgcard : ((g.roots.filter (x < ·)).card : ℤ) ≤ 1 := by
-    exact_mod_cast hgcard_nat
-  have hgnonneg : (0 : ℤ) ≤ (g.roots.filter (x < ·)).card := by
-    exact_mod_cast Nat.zero_le (g.roots.filter (x < ·)).card
-  constructor <;> lia
+  exact (succDegreeRootCountAbove_of_rootCount hf hg hdeg
+    (fun y => succDegreeRootCount_of_natDegree_eq_zero hf hg hdeg hfdeg y)) x
 
 /-- Degree-zero base case for the upper-threshold succ-degree analytic
 root-count target in the positive-combination/no-common setting. -/
