@@ -106,6 +106,16 @@ abbrev sameDegreeRootCountTarget : Prop :=
 abbrev sameDegreeRootCountAboveTarget : Prop :=
   PosComboNoCommonSameDegreeRootCountAboveNonnegStatement
 
+/-- Same-degree lower root-count subtarget restricted to common non-root
+thresholds. -/
+abbrev sameDegreeRootCountNonRootTarget : Prop :=
+  PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement
+
+/-- Same-degree upper root-count subtarget restricted to common non-root
+thresholds. -/
+abbrev sameDegreeRootCountAboveNonRootTarget : Prop :=
+  PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement
+
 /-- Milestone B2 (#42): repaired succ-degree no-common pair endpoint. -/
 abbrev succDegreePairTarget : Prop :=
   PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement
@@ -158,6 +168,11 @@ abbrev succDegreeRootCountTarget : Prop :=
 /-- Succ-degree upper-threshold root-count subtarget for milestone B2. -/
 abbrev succDegreeRootCountAboveTarget : Prop :=
   PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement
+
+/-- Succ-degree upper-threshold root-count subtarget restricted to common
+non-root thresholds. -/
+abbrev succDegreeRootCountAboveNonRootTarget : Prop :=
+  PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement
 
 /-- Challenge-facing equivalence between the same-degree slot-data target and
 the repaired same-degree pair endpoint. -/
@@ -212,6 +227,20 @@ theorem sameDegreeRootCountAboveTarget_of_rootCount
     (hcount : sameDegreeRootCountTarget) :
     sameDegreeRootCountAboveTarget :=
   posComboNoCommonSameDegreeRootCountAbove_of_rootCount hcount
+
+/-- Challenge-facing reduction from common-non-root same-degree lower root
+counts to the full lower-threshold formulation. -/
+theorem sameDegreeRootCountTarget_of_nonRoot
+    (hcount : sameDegreeRootCountNonRootTarget) :
+    sameDegreeRootCountTarget :=
+  posComboNoCommonSameDegreeRootCount_of_nonRoot hcount
+
+/-- Challenge-facing reduction from common-non-root same-degree upper root
+counts to the full upper-threshold formulation. -/
+theorem sameDegreeRootCountAboveTarget_of_nonRoot
+    (hcount : sameDegreeRootCountAboveNonRootTarget) :
+    sameDegreeRootCountAboveTarget :=
+  posComboNoCommonSameDegreeRootCountAbove_of_nonRoot hcount
 
 /-- Challenge-facing reduction from same-degree root counts to slot data. -/
 theorem sameDegreeSlotDataTarget_of_rootCount
@@ -357,6 +386,13 @@ theorem succDegreeRootCountAboveTarget_of_rootCount
     (hcount : succDegreeRootCountTarget) :
     succDegreeRootCountAboveTarget :=
   posComboNoCommonSuccDegreeRootCountAbove_of_rootCount hcount
+
+/-- Challenge-facing reduction from common-non-root succ-degree upper root
+counts to the full upper-threshold formulation. -/
+theorem succDegreeRootCountAboveTarget_of_nonRoot
+    (hcount : succDegreeRootCountAboveNonRootTarget) :
+    succDegreeRootCountAboveTarget :=
+  posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot hcount
 
 /-- Challenge-facing reduction from succ-degree root counts to slot data. -/
 theorem succDegreeSlotDataTarget_of_rootCount

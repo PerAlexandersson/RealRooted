@@ -1515,6 +1515,37 @@ def PosComboNoCommonSameDegreeRootCountAboveNonnegStatement : Prop :=
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1
 
+/-- Non-root-threshold version of the same-degree lower root-count target.
+
+The `RootCountJump` local-constancy bridge reduces the full lower-threshold
+target to this common-non-root form. -/
+def PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1
+
+/-- Non-root-threshold version of the same-degree upper root-count target. -/
+def PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1
+
 /-- Same-degree lower root-count bounds reduce to thresholds that are roots
 of neither polynomial.  This is the local-constancy bridge used before applying
 the fixed-threshold sign/parity lemmas. -/
@@ -1527,6 +1558,18 @@ theorem sameDegreeRootCount_of_nonRoot_bound
       ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 :=
   rootCount_diff_le_one_of_nonRoot_isRoot hf hg hbound
+
+/-- Same-degree upper root-count bounds reduce to thresholds that are roots
+of neither polynomial. -/
+theorem sameDegreeRootCountAbove_of_nonRoot_bound
+    {f g : ℝ[X]} (hf : f ≠ 0) (hg : g ≠ 0)
+    (hbound : ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :
+    ∀ x : ℝ,
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 :=
+  rootCountAbove_diff_le_one_of_nonRoot_isRoot hf hg hbound
 
 /-- Same-degree sign/parity bridge in the right-pencil language.  At a common
 non-root threshold, the combined lower root-count parity is equivalent to the
@@ -1844,6 +1887,24 @@ theorem posComboNoCommonSameDegreeRootCountAbove_of_rootCount
   have hg_split : g.Splits :=
     (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
   exact sameDegreeRootCountAbove_of_rootCount hf_split hg_split hdeg
+    (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
+
+/-- The same-degree lower root-count target follows from its common-non-root
+variant. -/
+theorem posComboNoCommonSameDegreeRootCount_of_nonRoot
+    (hcount : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement) :
+    PosComboNoCommonSameDegreeRootCountNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
+  exact sameDegreeRootCount_of_nonRoot_bound hf_pos.ne_zero hg_pos.ne_zero
+    (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
+
+/-- The same-degree upper root-count target follows from its common-non-root
+variant. -/
+theorem posComboNoCommonSameDegreeRootCountAbove_of_nonRoot
+    (hcount : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement) :
+    PosComboNoCommonSameDegreeRootCountAboveNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
+  exact sameDegreeRootCountAbove_of_nonRoot_bound hf_pos.ne_zero hg_pos.ne_zero
     (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
 
 /-- Low-degree base case for the same-degree root-count formulation.
@@ -2599,6 +2660,21 @@ def PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement : Prop :=
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1
 
+/-- Common-non-root version of the succ-degree upper root-count formulation. -/
+def PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    f.Splits →
+    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1
+
 /-- Root-count bridge for the succ-degree root-crossing target.
 
 The asymmetric lower-threshold count inequalities encode the fact that `g`
@@ -2667,6 +2743,17 @@ theorem succDegreeRootCountAbove_of_rootCount
   have hNcard : g.roots.card = f.natDegree + 1 := by
     rw [card_roots_of_splits hg, hdeg]
   exact count_gt_diff_le_one_of_count_le_two hMcard hNcard hcount
+
+/-- The succ-degree upper root-count target follows from its common-non-root
+variant. -/
+theorem posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot
+    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
+    PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split
+  have hg_ne : g ≠ 0 :=
+    (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).1
+  exact rootCountAbove_diff_le_one_of_nonRoot_isRoot hf_pos.ne_zero hg_ne
+    (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split)
 
 /-- The succ-degree root-count formulation implies the descending-root
 crossing formulation. -/
