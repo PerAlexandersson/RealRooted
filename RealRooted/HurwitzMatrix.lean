@@ -702,6 +702,30 @@ theorem hurwitzMatrixSchurProductDetFinThreeCoreCornerZero :
   rw [cza, czb]
   nlinarith [hres]
 
+/-- Since the corner-zero subcase is proved, the triangular-free `3 × 3` core
+now reduces to the fully in-band top-right subcase alone. -/
+theorem hurwitzMatrixSchurProductDetFinThreeCore_of_fullBand
+    (hF : HurwitzMatrixSchurProductDetFinThreeCoreFullBandStatement) :
+    HurwitzMatrixSchurProductDetFinThreeCoreStatement :=
+  hurwitzMatrixSchurProductDetFinThreeCore_of_fullBand_cornerZero hF
+    hurwitzMatrixSchurProductDetFinThreeCoreCornerZero
+
+/-- The fully in-band top-right subcase implies the original in-band `3 × 3`
+core. -/
+theorem hurwitzMatrixSchurProductDetFinThreeInBand_of_fullBand
+    (hF : HurwitzMatrixSchurProductDetFinThreeCoreFullBandStatement) :
+    HurwitzMatrixSchurProductDetFinThreeInBandStatement :=
+  hurwitzMatrixSchurProductDetFinThreeInBand_of_core
+    (hurwitzMatrixSchurProductDetFinThreeCore_of_fullBand hF)
+
+/-- The fully in-band top-right subcase implies the low-order, size-`≤ 3`,
+Hurwitz matrix Schur-product statement. -/
+theorem hurwitzMatrixSchurProductDetLeThree_of_fullBand
+    (hF : HurwitzMatrixSchurProductDetFinThreeCoreFullBandStatement) :
+    HurwitzMatrixSchurProductDetLeThreeStatement :=
+  hurwitzMatrixSchurProductDetLeThree_of_core
+    (hurwitzMatrixSchurProductDetFinThreeCore_of_fullBand hF)
+
 /-- The triangular-free core immediately gives the fully in-band top-right
 subcase. -/
 theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_core
@@ -709,6 +733,14 @@ theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_core
     HurwitzMatrixSchurProductDetFinThreeCoreFullBandStatement := by
   intro a b ha hb rows cols hrows hcols hband h01 h12 _h02
   exact hcore ha hb hrows hcols hband h01 h12
+
+/-- After the corner-zero subcase is proved, the triangular-free `3 × 3` core is
+equivalent to the fully in-band top-right subcase. -/
+theorem hurwitzMatrixSchurProductDetFinThreeCore_iff_fullBand :
+    HurwitzMatrixSchurProductDetFinThreeCoreStatement ↔
+      HurwitzMatrixSchurProductDetFinThreeCoreFullBandStatement :=
+  ⟨hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_core,
+    hurwitzMatrixSchurProductDetFinThreeCore_of_fullBand⟩
 
 /-- The triangular-free core immediately gives the corner-zero top-right
 subcase. -/

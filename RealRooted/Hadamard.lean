@@ -780,6 +780,14 @@ theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_inBand
   exact hadamardPreservesHurwitzMatrixTN_det_of_card_le_three
     hInBand ha hb hrows hcols hn
 
+/-- The fully in-band top-right subcase of the `3 × 3` Hurwitz Schur-product
+core implies the low-order, size-`≤ 3`, Hurwitz-matrix Hadamard leaf. -/
+theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_fullBand
+    (hF : HurwitzMatrixSchurProductDetFinThreeCoreFullBandStatement) :
+    hadamardPreservesHurwitzMatrixTNDetLeThreeStatement :=
+  hadamardPreservesHurwitzMatrixTNDetLeThree_of_inBand
+    (hurwitzMatrixSchurProductDetFinThreeInBand_of_fullBand hF)
+
 /-- The pure size-`≤ 3` Hurwitz matrix Schur-product statement implies the
 Hadamard-product Hurwitz-matrix size-`≤ 3` statement. -/
 theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_hurwitzLeThree
