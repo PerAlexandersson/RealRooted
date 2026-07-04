@@ -1246,6 +1246,19 @@ theorem no_common_root_right_family_one_two_of_no_common
   have hg_eval : g.eval r = 0 := by grind
   simp_all
 
+/-- A common root of the specialized left family `(f + g, 2f + g)` is already
+a common root of `(f, g)`, so the original no-common hypothesis excludes it. -/
+theorem no_common_root_left_family_one_two_of_no_common
+    {f g : ℝ[X]}
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    ∀ r, (C (1 : ℝ) * f + g).IsRoot r → ¬ (C (2 : ℝ) * f + g).IsRoot r := by
+  intro r hp hq
+  have hp_eval : (C (1 : ℝ) * f + g).eval r = 0 := by simp_all
+  have hq_eval : (C (2 : ℝ) * f + g).eval r = 0 := by simp_all
+  rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C] at hp_eval hq_eval
+  have hf_eval : f.eval r = 0 := by grind
+  simp_all
+
 /-- At a root of `f + 2g`, the companion family member `f + g` has the
 opposite sign of `g`; the original no-common-root hypothesis makes the sign
 strict. -/
@@ -1257,6 +1270,40 @@ theorem eval_mul_right_family_one_neg_at_root_two_of_no_common
   have hq_eval : (f + C (2 : ℝ) * g).eval r = 0 := by simp_all
   rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C] at hq_eval
   have hp_eval : (f + C (1 : ℝ) * g).eval r = -g.eval r := by
+    rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C]
+    linarith
+  have hg_ne : g.eval r ≠ 0 := fun hg0 => by simp_all
+  simp_all
+
+/-- At a root of `2f + g`, the companion family member `f + g` has the
+opposite sign of `f`; the original no-common-root hypothesis makes the sign
+strict. -/
+theorem eval_mul_left_family_one_neg_at_root_two_of_no_common
+    {f g : ℝ[X]}
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    ∀ r, (C (2 : ℝ) * f + g).IsRoot r →
+      (C (1 : ℝ) * f + g).eval r * f.eval r < 0 := by
+  intro r hroot
+  have hq_eval : (C (2 : ℝ) * f + g).eval r = 0 := by simp_all
+  rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C] at hq_eval
+  have hp_eval : (C (1 : ℝ) * f + g).eval r = -f.eval r := by
+    rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C]
+    linarith
+  have hf_ne : f.eval r ≠ 0 := fun hf0 => by simp_all
+  simp_all
+
+/-- At a root of `f + g`, the other specialized left-family member `2f + g`
+has the opposite sign of `g`; again the no-common-root hypothesis makes the
+sign strict. -/
+theorem eval_mul_left_family_two_neg_at_root_one_of_no_common
+    {f g : ℝ[X]}
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    ∀ r, (C (1 : ℝ) * f + g).IsRoot r →
+      (C (2 : ℝ) * f + g).eval r * g.eval r < 0 := by
+  intro r hroot
+  have hp_eval0 : (C (1 : ℝ) * f + g).eval r = 0 := by simp_all
+  rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C] at hp_eval0
+  have hq_eval : (C (2 : ℝ) * f + g).eval r = -g.eval r := by
     rw [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C]
     linarith
   have hg_ne : g.eval r ≠ 0 := fun hg0 => by simp_all
