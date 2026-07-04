@@ -13,6 +13,7 @@ the list-level common-interleaver combinatorics (CommonInterleaverSeq).
 import RealRooted.PosCombo
 import RealRooted.CommonInterleaverSeq
 import RealRooted.AffineFamily
+import RealRooted.DegreeDropDivXPrec
 import RealRooted.DegreeDropReversal
 import RealRooted.GammaRealRoots
 import RealRooted.PFPolynomial
@@ -3664,6 +3665,28 @@ def PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement : Prop :=
     f.coeff 0 ≠ 0 →
     g.coeff 0 = 0 →
     Prec (g.divX) f
+
+/-- The right-zero `divX` orientation target follows from proving the original
+succ-degree orientation `Prec f g` on this branch.  The degree-drop step is
+isolated in `prec_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero`. -/
+theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrec_of_precFG
+    (hprecFG :
+      ∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 = 0 →
+        Prec f g) :
+    PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0
+  exact prec_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero
+    (hprecFG hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0) hgnn hg0 hdeg
 
 /-- The lead root-count branch splits into the two possible constant-term
 cases for the higher-degree member. -/

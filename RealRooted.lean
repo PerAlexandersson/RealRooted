@@ -56,6 +56,7 @@ import RealRooted.CombinatorialExamples.TypeBEulerian
 import RealRooted.CommonInterleaverSeq
 import RealRooted.ConvexCombination
 import RealRooted.DegreeDropReversal
+import RealRooted.DegreeDropDivXPrec
 import RealRooted.FolkloreLemma
 import RealRooted.InterlacingSequence
 import RealRooted.InterlacingSequenceBasic

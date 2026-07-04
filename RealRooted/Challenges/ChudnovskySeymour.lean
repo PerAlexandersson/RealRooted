@@ -214,6 +214,23 @@ abbrev succDegreeRootCountLeadRightZeroTarget : Prop :=
 abbrev succDegreeRootCountLeadRightZeroDivXPrecTarget : Prop :=
   PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement
 
+/-- Sharper right-zero lead branch orientation target: prove the original
+succ-degree orientation `Prec f g` before applying the `divX` degree-drop
+reduction. -/
+abbrev succDegreeRootCountLeadRightZeroPrecTarget : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    f.Splits →
+    f.coeff 0 ≠ 0 →
+    g.coeff 0 = 0 →
+    Prec f g
+
 /-- Challenge-facing equivalence between the same-degree slot-data target and
 the repaired same-degree pair endpoint. -/
 theorem sameDegreeSlotDataTarget_iff_pairTarget :
@@ -721,6 +738,22 @@ theorem succDegreeRootCountLeadRightZeroTarget_of_divX_prec
     succDegreeRootCountLeadRightZeroTarget :=
   posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_prec
     horient
+
+/-- Challenge-facing reduction from the sharper right-zero orientation target
+to the `divX` orientation target. -/
+theorem succDegreeRootCountLeadRightZeroDivXPrecTarget_of_prec
+    (horient : succDegreeRootCountLeadRightZeroPrecTarget) :
+    succDegreeRootCountLeadRightZeroDivXPrecTarget :=
+  posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrec_of_precFG
+    horient
+
+/-- Challenge-facing reduction from the sharper right-zero orientation target
+to the right-zero lead root-count branch. -/
+theorem succDegreeRootCountLeadRightZeroTarget_of_prec
+    (horient : succDegreeRootCountLeadRightZeroPrecTarget) :
+    succDegreeRootCountLeadRightZeroTarget :=
+  succDegreeRootCountLeadRightZeroTarget_of_divX_prec
+    (succDegreeRootCountLeadRightZeroDivXPrecTarget_of_prec horient)
 
 /-- Challenge-facing reduction from the both-nonzero lead branch and the
 right-zero `divX` orientation target to the full lead branch. -/
