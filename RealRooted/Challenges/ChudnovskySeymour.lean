@@ -665,6 +665,42 @@ theorem commonInterleaverTarget_of_rootCrossing
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing_direct
     hsame hsucc
 
+/-- Challenge-facing full roadmap reduction from lower-threshold root-count
+formulations alone. -/
+theorem commonInterleaverTarget_of_rootCount
+    (hsame : sameDegreeRootCountTarget)
+    (hsucc : succDegreeRootCountTarget) :
+    commonInterleaverTarget :=
+  commonInterleaverTarget_of_pairBridge
+    (compatiblePairHasCommonInterleaver_of_rootCount hsame hsucc)
+
+/-- Challenge-facing full roadmap reduction from same-degree lower-threshold
+root counts and succ-degree upper-threshold root counts. -/
+theorem commonInterleaverTarget_of_rootCountAbove
+    (hsame : sameDegreeRootCountTarget)
+    (hsucc : succDegreeRootCountAboveTarget) :
+    commonInterleaverTarget :=
+  commonInterleaverTarget_of_pairBridge
+    (compatiblePairHasCommonInterleaver_of_rootCountAbove hsame hsucc)
+
+/-- Challenge-facing full roadmap reduction from same-degree upper-threshold
+root counts and succ-degree lower-threshold root counts. -/
+theorem commonInterleaverTarget_of_sameRootCountAbove
+    (hsame : sameDegreeRootCountAboveTarget)
+    (hsucc : succDegreeRootCountTarget) :
+    commonInterleaverTarget :=
+  commonInterleaverTarget_of_pairBridge
+    (compatiblePairHasCommonInterleaver_of_sameRootCountAbove hsame hsucc)
+
+/-- Challenge-facing full roadmap reduction from upper-threshold root-count
+formulations in both the same-degree and succ-degree branches. -/
+theorem commonInterleaverTarget_of_rootCountAboveBoth
+    (hsame : sameDegreeRootCountAboveTarget)
+    (hsucc : succDegreeRootCountAboveTarget) :
+    commonInterleaverTarget :=
+  commonInterleaverTarget_of_pairBridge
+    (compatiblePairHasCommonInterleaver_of_rootCountAboveBoth hsame hsucc)
+
 /-- Challenge-facing full roadmap reduction from the root-crossing formulations,
 with the succ-degree left endpoint supplied by forward ASW. -/
 theorem commonInterleaverTarget_of_rootCrossing_and_forward_asw
