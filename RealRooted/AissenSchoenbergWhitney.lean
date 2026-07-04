@@ -69,6 +69,15 @@ theorem hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff
     HasNonnegCoeffs p :=
   fun k => nonneg_of_IsPolyaFreqSeq hpf k
 
+/-- PF coefficient sequences have no positive real roots.  Thus the remaining
+content of the forward Aissen--Schoenberg--Whitney theorem is the splitting
+conjunct. -/
+theorem roots_nonpos_of_IsPolyaFreqSeq_coeff
+    {p : ℝ[X]}
+    (hpf : IsPolyaFreqSeq (fun n => p.coeff n)) :
+    ∀ r ∈ p.roots, r ≤ 0 :=
+  roots_nonpos_of_hasNonnegCoeffs (hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff hpf)
+
 lemma continuous_toeplitz_minor_det_add_mul {a b : ℕ → ℝ}
     {n : ℕ} (rows cols : Fin n → ℕ) :
     Continuous fun μ : ℝ =>
@@ -116,6 +125,13 @@ def aissenSchoenbergWhitneyForwardStatement : Prop :=
     IsPolyaFreqSeq (fun n => p.coeff n) →
     p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0
 
+/-- Splitting-only form of forward ASW.  The root-location conjunct follows
+from coefficient nonnegativity, so this is the remaining hard target. -/
+def aissenSchoenbergWhitneyForwardSplitsStatement : Prop :=
+  ∀ ⦃p : ℝ[X]⦄,
+    IsPolyaFreqSeq (fun n => p.coeff n) →
+    p.Splits
+
 /-- Zero-aware forward ASW interface.  This is often the most convenient
 closure form: a PF coefficient sequence gives either the zero polynomial or a
 strictly real-rooted polynomial with nonpositive roots. -/
@@ -139,6 +155,26 @@ theorem aissenSchoenbergWhitneyForwardNoNonneg_of_forward
     (hASW : aissenSchoenbergWhitneyForwardStatement) :
     aissenSchoenbergWhitneyForwardNoNonnegStatement :=
   fun {_} hp0 hpf => ⟨⟨hp0, (hASW hpf).1⟩, (hASW hpf).2⟩
+
+/-- The current forward ASW statement implies the splitting-only target. -/
+theorem aissenSchoenbergWhitneyForwardSplits_of_forward
+    (hASW : aissenSchoenbergWhitneyForwardStatement) :
+    aissenSchoenbergWhitneyForwardSplitsStatement :=
+  fun {_} hpf => (hASW hpf).1
+
+/-- The splitting-only target implies the current forward ASW statement, since
+PF coefficients already exclude positive real roots. -/
+theorem aissenSchoenbergWhitneyForward_of_splits
+    (hASW : aissenSchoenbergWhitneyForwardSplitsStatement) :
+    aissenSchoenbergWhitneyForwardStatement :=
+  fun {_} hpf => ⟨hASW hpf, roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
+
+/-- Forward ASW is equivalent to proving only the splitting conjunct. -/
+theorem aissenSchoenbergWhitneyForward_iff_splits :
+    aissenSchoenbergWhitneyForwardStatement ↔
+      aissenSchoenbergWhitneyForwardSplitsStatement :=
+  ⟨aissenSchoenbergWhitneyForwardSplits_of_forward,
+    aissenSchoenbergWhitneyForward_of_splits⟩
 
 /-- The no-extra-nonnegativity formulation implies the current forward ASW
 statement. -/

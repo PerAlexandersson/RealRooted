@@ -594,6 +594,32 @@ lemma HasNonnegCoeffs.pos_leadingCoeff {p : ℝ[X]} (hp : HasNonnegCoeffs p)
   unfold HasPosLeadingCoeff
   exact lt_of_le_of_ne (hp p.natDegree) (Ne.symm (leadingCoeff_ne_zero.mpr hp0))
 
+/-- A nonzero polynomial with nonnegative coefficients is strictly positive at
+every strictly positive real argument. -/
+theorem eval_pos_of_hasNonnegCoeffs {p : ℝ[X]} (hp : HasNonnegCoeffs p)
+    (hp0 : p ≠ 0) {t : ℝ} (ht : 0 < t) : 0 < p.eval t := by
+  rw [Polynomial.eval_eq_sum, Polynomial.sum_def]
+  apply Finset.sum_pos
+  · intro n hn
+    have hcoeff : 0 < p.coeff n :=
+      lt_of_le_of_ne (hp n) (Ne.symm (Polynomial.mem_support_iff.mp hn))
+    positivity
+  · exact Polynomial.support_nonempty.mpr hp0
+
+/-- A real polynomial with nonnegative coefficients has no positive real roots. -/
+theorem roots_nonpos_of_hasNonnegCoeffs {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
+    ∀ r ∈ p.roots, r ≤ 0 := by
+  intro r hr
+  by_contra hr_nonpos
+  have hp0 : p ≠ 0 := by
+    intro hp0
+    simp [hp0] at hr
+  have hr_pos : 0 < r := lt_of_not_ge hr_nonpos
+  have hroot : p.IsRoot r := (Polynomial.mem_roots hp0).mp hr
+  have heval_pos : 0 < p.eval r := eval_pos_of_hasNonnegCoeffs hp hp0 hr_pos
+  rw [Polynomial.IsRoot.def] at hroot
+  linarith
+
 lemma hasPosLeadingCoeff_of_monic {p : ℝ[X]} (hp : p.Monic) :
     HasPosLeadingCoeff p := by
   simp [HasPosLeadingCoeff, hp.leadingCoeff]

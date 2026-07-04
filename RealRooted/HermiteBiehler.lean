@@ -258,18 +258,6 @@ theorem eval_complexify_ofReal (p : ℝ[X]) (t : ℝ) :
   rw [complexify]
   exact Polynomial.eval_map_apply (f := Complex.ofRealHom) (p := p) t
 
-/-- A nonzero polynomial with nonnegative coefficients is strictly positive at
-every strictly positive real argument. -/
-theorem eval_pos_of_hasNonnegCoeffs {f : ℝ[X]} (hf : HasNonnegCoeffs f)
-    (hf0 : f ≠ 0) {t : ℝ} (ht : 0 < t) : 0 < f.eval t := by
-  rw [Polynomial.eval_eq_sum, Polynomial.sum_def]
-  apply Finset.sum_pos
-  · intro n hn
-    have hcoeff : 0 < f.coeff n :=
-      lt_of_le_of_ne (hf n) (Ne.symm (Polynomial.mem_support_iff.mp hn))
-    positivity
-  · exact Polynomial.support_nonempty.mpr hf0
-
 /-- First-quadrant form of the forward Hermite--Biehler/Hurwitz conformal
 substitution: it suffices to exclude roots of `q(x²) + x p(x²)` in the open
 first quadrant `{Re > 0, Im > 0}`. -/

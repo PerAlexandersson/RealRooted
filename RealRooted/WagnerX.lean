@@ -599,18 +599,8 @@ lemma hasNonnegCoeffs_multiset_prod_X_sub_C :
 
 lemma roots_nonpos_of_nonneg_coeffs {p : ℝ[X]} (hp : p.Splits)
     (hnn : HasNonnegCoeffs p) : ∀ r ∈ p.roots, r ≤ 0 := by
-  obtain rfl | hp₀ := eq_or_ne p 0
-  · simp
-  intro r hr
-  by_contra hgt; push Not at hgt
-  have hlc_pos : 0 < p.leadingCoeff := hnn.pos_leadingCoeff hp₀
-  have heval_pos : 0 < p.eval r := by
-    rw [eval_eq_sum_range r]
-    calc 0 < p.coeff p.natDegree * r ^ p.natDegree := mul_pos hlc_pos (pow_pos hgt _)
-    _ ≤ ∑ i ∈ Finset.range (p.natDegree + 1), p.coeff i * r ^ i :=
-        Finset.single_le_sum (fun i _ => mul_nonneg (hnn i) (pow_nonneg hgt.le i))
-          (Finset.mem_range.mpr (Nat.lt_succ_of_le le_rfl))
-  simp_all
+  have _ := hp
+  exact roots_nonpos_of_hasNonnegCoeffs hnn
 
 lemma hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos {p : ℝ[X]} (hp : p.Splits) :
     HasNonnegCoeffs p ∧ p ≠ 0 ↔ HasPosLeadingCoeff p ∧ ∀ r ∈ p.roots, r ≤ 0 := by
