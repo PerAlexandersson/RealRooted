@@ -3157,6 +3157,16 @@ theorem succDegreeRootCountAbove_of_prec
   rw [hfcard, hgcard]
   constructor <;> lia
 
+/-- `Prec`-to-root-count bridge in lower-threshold form. -/
+theorem succDegreeRootCount_of_prec
+    {f g : ℝ[X]} (hprec : Prec f g)
+    (hdeg : g.natDegree = f.natDegree + 1) :
+    ∀ x : ℝ,
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 :=
+  succDegreeRootCount_of_rootCountAbove hprec.1.2 hprec.2.1.2 hdeg
+    (succDegreeRootCountAbove_of_prec hprec hdeg)
+
 /-- The succ-degree upper root-count target follows from its common-non-root
 variant. -/
 theorem posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot
@@ -3343,6 +3353,27 @@ def PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement : Prop :=
     ∀ x : ℝ,
       ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2
+
+/-- The residual succ-degree root-count branch follows from an interlacing
+orientation in that branch. -/
+theorem posComboNoCommonSuccDegreeRootCountResidual_of_prec
+    (horient :
+      ∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 = 0 →
+        g.coeff 0 ≠ 0 →
+        Prec f g) :
+    PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0
+  exact succDegreeRootCount_of_prec
+    (horient hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0) hdeg
 
 /-- The succ-degree no-common root-count target splits into exactly two
 constant-term branches: the `f.coeff 0 ≠ 0` branch and the residual
