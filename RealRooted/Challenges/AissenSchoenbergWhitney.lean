@@ -73,6 +73,41 @@ theorem forwardTarget_iff_splitsTarget :
     forwardTarget ↔ forwardSplitsTarget :=
   aissenSchoenbergWhitneyForward_iff_splits
 
+/-- The zero-aware target implies the splitting-only target. -/
+theorem splitsTarget_of_forwardOrZeroTarget
+    (h : forwardOrZeroTarget) :
+    forwardSplitsTarget :=
+  aissenSchoenbergWhitneyForwardSplits_of_orZero h
+
+/-- The splitting-only target implies the zero-aware target. -/
+theorem forwardOrZeroTarget_of_splitsTarget
+    (h : forwardSplitsTarget) :
+    forwardOrZeroTarget :=
+  aissenSchoenbergWhitneyForwardOrZero_of_splits h
+
+/-- The zero-aware target is equivalent to the splitting-only target. -/
+theorem forwardOrZeroTarget_iff_splitsTarget :
+    forwardOrZeroTarget ↔ forwardSplitsTarget :=
+  aissenSchoenbergWhitneyForwardOrZero_iff_splits
+
+/-- The no-extra-nonnegativity target implies the splitting-only target. -/
+theorem splitsTarget_of_forwardNoNonnegTarget
+    (h : forwardNoNonnegTarget) :
+    forwardSplitsTarget :=
+  aissenSchoenbergWhitneyForwardSplits_of_noNonneg h
+
+/-- The splitting-only target implies the no-extra-nonnegativity target. -/
+theorem forwardNoNonnegTarget_of_splitsTarget
+    (h : forwardSplitsTarget) :
+    forwardNoNonnegTarget :=
+  aissenSchoenbergWhitneyForwardNoNonneg_of_splits h
+
+/-- The no-extra-nonnegativity target is equivalent to the splitting-only
+target. -/
+theorem forwardNoNonnegTarget_iff_splitsTarget :
+    forwardNoNonnegTarget ↔ forwardSplitsTarget :=
+  aissenSchoenbergWhitneyForwardNoNonneg_iff_splits
+
 /-- The strict and no-extra-nonnegativity forward targets are equivalent. -/
 theorem forwardTarget_iff_noNonnegTarget :
     forwardTarget ↔ forwardNoNonnegTarget :=

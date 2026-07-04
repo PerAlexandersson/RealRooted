@@ -193,6 +193,28 @@ theorem aissenSchoenbergWhitneyForward_iff_noNonneg :
   ⟨aissenSchoenbergWhitneyForwardNoNonneg_of_forward,
     aissenSchoenbergWhitneyForward_of_noNonneg⟩
 
+/-- The no-extra-nonnegativity ASW interface implies the splitting-only target. -/
+theorem aissenSchoenbergWhitneyForwardSplits_of_noNonneg
+    (hASW : aissenSchoenbergWhitneyForwardNoNonnegStatement) :
+    aissenSchoenbergWhitneyForwardSplitsStatement :=
+  aissenSchoenbergWhitneyForwardSplits_of_forward
+    (aissenSchoenbergWhitneyForward_of_noNonneg hASW)
+
+/-- The splitting-only target implies the no-extra-nonnegativity ASW interface. -/
+theorem aissenSchoenbergWhitneyForwardNoNonneg_of_splits
+    (hASW : aissenSchoenbergWhitneyForwardSplitsStatement) :
+    aissenSchoenbergWhitneyForwardNoNonnegStatement :=
+  aissenSchoenbergWhitneyForwardNoNonneg_of_forward
+    (aissenSchoenbergWhitneyForward_of_splits hASW)
+
+/-- The no-extra-nonnegativity ASW target is equivalent to proving only the
+splitting conjunct. -/
+theorem aissenSchoenbergWhitneyForwardNoNonneg_iff_splits :
+    aissenSchoenbergWhitneyForwardNoNonnegStatement ↔
+      aissenSchoenbergWhitneyForwardSplitsStatement :=
+  ⟨aissenSchoenbergWhitneyForwardSplits_of_noNonneg,
+    aissenSchoenbergWhitneyForwardNoNonneg_of_splits⟩
+
 /-- The strict nonzero forward ASW interface implies the zero-aware one. -/
 theorem aissenSchoenbergWhitneyForwardOrZero_of_forward
     (hASW : aissenSchoenbergWhitneyForwardStatement) :
