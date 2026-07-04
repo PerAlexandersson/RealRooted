@@ -367,6 +367,20 @@ theorem succDegreeRootCrossingTarget_of_orientation
     succDegreeRootCrossingTarget :=
   posComboNoCommonSuccDegreeRootCrossing_of_orientation horient
 
+/-- Challenge-facing reduction from the fixed succ-degree orientation to
+upper-threshold succ-degree root counts. -/
+theorem succDegreeRootCountAboveTarget_of_orientation
+    (horient : succDegreeOrientationTarget) :
+    succDegreeRootCountAboveTarget :=
+  posComboNoCommonSuccDegreeRootCountAbove_of_orientation horient
+
+/-- Challenge-facing reduction from the fixed succ-degree orientation to
+lower-threshold succ-degree root counts. -/
+theorem succDegreeRootCountTarget_of_orientation
+    (horient : succDegreeOrientationTarget) :
+    succDegreeRootCountTarget :=
+  posComboNoCommonSuccDegreeRootCount_of_orientation horient
+
 /-- Challenge-facing reduction from succ-degree root counts to succ-degree
 root crossing. -/
 theorem succDegreeRootCrossingTarget_of_rootCount

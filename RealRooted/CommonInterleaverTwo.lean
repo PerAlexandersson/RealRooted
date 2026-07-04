@@ -2859,6 +2859,124 @@ theorem succDegreeRootCountAbove_of_rootCount
     rw [card_roots_of_splits hg, hdeg]
   exact count_gt_diff_le_one_of_count_le_two hMcard hNcard hcount
 
+/-- If every entry of a list lies strictly above `x`, then filtering by
+`x < ·` keeps all entries. -/
+private lemma filter_gt_length_eq_of_all (l : List ℝ) (x : ℝ)
+    (h : ∀ a ∈ l, x < a) :
+    (l.filter (fun y => decide (x < y))).length = l.length := by
+  rw [List.filter_eq_self.mpr]
+  intro a ha
+  exact decide_eq_true (h a ha)
+
+/-- In a sorted increasing cons list whose head lies strictly above `x`, every
+entry lies strictly above `x`. -/
+private lemma all_gt_of_sorted_head {a : ℝ} {l : List ℝ} {x : ℝ}
+    (hsorted : (a :: l).Pairwise (· ≤ ·)) (hx : x < a) :
+    ∀ b ∈ (a :: l), x < b := by
+  intro b hb
+  rw [List.mem_cons] at hb
+  rcases hb with rfl | hb
+  · exact hx
+  · exact lt_of_lt_of_le hx ((List.pairwise_cons.mp hsorted).1 b hb)
+
+/-- Core combinatorial count bound for differ-by-one list interlacing.
+
+If sorted lists `ss` and `rs` interlace in the differ-by-one pattern, then the
+numbers of entries strictly above a threshold differ by at most one, with `rs`
+never below `ss`. -/
+private lemma interlaces_filter_gt_length_bounds :
+    ∀ (ss rs : List ℝ) (x : ℝ),
+      ss.Pairwise (· ≤ ·) → rs.Pairwise (· ≤ ·) →
+      ss.length + 1 = rs.length → ListInterlaces ss rs →
+      (ss.filter (fun y => decide (x < y))).length
+          ≤ (rs.filter (fun y => decide (x < y))).length ∧
+      (rs.filter (fun y => decide (x < y))).length
+          ≤ (ss.filter (fun y => decide (x < y))).length + 1
+  | [], [], _, _, _, hlen, _ => by simp at hlen
+  | [], [r], x, _, _, _, _ => by
+      simp only [List.filter_nil, List.length_nil]
+      refine ⟨Nat.zero_le _, ?_⟩
+      exact List.length_filter_le (fun y => decide (x < y)) [r]
+  | [], _ :: _ :: _, _, _, _, _, hint => by simp [ListInterlaces] at hint
+  | _ :: _, [], _, _, _, _, hint => by simp [ListInterlaces] at hint
+  | _ :: _, [_], _, _, _, hlen, _ => by simp at hlen
+  | s :: sst, r₁ :: r₂ :: rs, x, hss, hrs, hlen, hint => by
+      obtain ⟨hr₁s, hsr₂, htail⟩ := hint
+      have hss_tl : sst.Pairwise (· ≤ ·) := (List.pairwise_cons.mp hss).2
+      have hrs_tl : (r₂ :: rs).Pairwise (· ≤ ·) := (List.pairwise_cons.mp hrs).2
+      have hlen' : sst.length + 1 = (r₂ :: rs).length := by
+        simp only [List.length_cons] at hlen ⊢
+        lia
+      obtain ⟨IH1, IH2⟩ :=
+        interlaces_filter_gt_length_bounds sst (r₂ :: rs) x hss_tl hrs_tl hlen' htail
+      set p : ℝ → Bool := fun y => decide (x < y) with hp
+      by_cases hr₁ : x < r₁
+      · have hs : x < s := lt_of_lt_of_le hr₁ hr₁s
+        rw [List.filter_cons_of_pos (by simp [hp, hs]),
+          List.filter_cons_of_pos (by simp [hp, hr₁]), List.length_cons, List.length_cons]
+        lia
+      · by_cases hs : x < s
+        · have hs_all : ∀ b ∈ (s :: sst), x < b := all_gt_of_sorted_head hss hs
+          have hr₂ : x < r₂ := lt_of_lt_of_le hs hsr₂
+          have hr_all : ∀ b ∈ (r₂ :: rs), x < b := all_gt_of_sorted_head hrs_tl hr₂
+          have hsfull : ((s :: sst).filter p).length = (s :: sst).length :=
+            filter_gt_length_eq_of_all _ x hs_all
+          have hrfull : ((r₂ :: rs).filter p).length = (r₂ :: rs).length :=
+            filter_gt_length_eq_of_all _ x hr_all
+          have hRHS : ((r₁ :: r₂ :: rs).filter p).length =
+              ((r₂ :: rs).filter p).length := by
+            rw [List.filter_cons_of_neg (by
+              rw [hp]
+              simp only [decide_eq_true_eq]
+              exact hr₁)]
+          rw [hRHS, hsfull, hrfull, List.length_cons, List.length_cons]
+          rw [List.length_cons] at hlen'
+          lia
+        · rw [List.filter_cons_of_neg (by
+              rw [hp]
+              simp only [decide_eq_true_eq]
+              exact hs),
+            List.filter_cons_of_neg (by
+              rw [hp]
+              simp only [decide_eq_true_eq]
+              exact hr₁)]
+          exact ⟨IH1, IH2⟩
+
+/-- `Prec`-to-root-count bridge in upper-threshold form.
+
+For splitting real polynomials `f, g` with `g.natDegree = f.natDegree + 1`,
+the interlacing relation `Prec f g` forces the succ-degree upper-threshold
+root-count inequalities: the numbers of roots strictly above each threshold
+differ by at most one in each direction. -/
+theorem succDegreeRootCountAbove_of_prec
+    {f g : ℝ[X]} (hprec : Prec f g)
+    (hdeg : g.natDegree = f.natDegree + 1) :
+    ∀ x : ℝ,
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
+  obtain ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩ := hprec
+  have hss_len : ss.length = f.natDegree := by
+    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
+  have hrs_len : rs.length = g.natDegree := by
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
+  have hlen : ss.length + 1 = rs.length := by rw [hss_len, hrs_len, hdeg]
+  have hint : ListInterlaces ss rs := by
+    rcases hshape with ⟨_, hi⟩ | ⟨hbad, _⟩
+    · exact hi
+    · exfalso
+      rw [hss_len, hrs_len, hdeg] at hbad
+      lia
+  intro x
+  obtain ⟨B1, B2⟩ := interlaces_filter_gt_length_bounds ss rs x hss hrs hlen hint
+  have hfcard : (f.roots.filter (x < ·)).card =
+      (ss.filter (fun y => decide (x < y))).length := by
+    rw [← hss_eq, Multiset.filter_coe, Multiset.coe_card]
+  have hgcard : (g.roots.filter (x < ·)).card =
+      (rs.filter (fun y => decide (x < y))).length := by
+    rw [← hrs_eq, Multiset.filter_coe, Multiset.coe_card]
+  rw [hfcard, hgcard]
+  constructor <;> lia
+
 /-- The succ-degree upper root-count target follows from its common-non-root
 variant. -/
 theorem posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot
@@ -2913,6 +3031,23 @@ theorem posComboNoCommonSuccDegreeRootCountAbove_of_rootCount
     (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
   exact succDegreeRootCountAbove_of_rootCount hf_split hg_split hdeg
     (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split)
+
+/-- The fixed-orientation succ-degree endpoint implies the upper-threshold
+root-count target. -/
+theorem posComboNoCommonSuccDegreeRootCountAbove_of_orientation
+    (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
+    PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno _hf_split
+  exact succDegreeRootCountAbove_of_prec
+    (horient hf_pos hg_pos hfnn hgnn hfg hdeg hno) hdeg
+
+/-- The fixed-orientation succ-degree endpoint implies the lower-threshold
+root-count target, via the upper/lower threshold conversion. -/
+theorem posComboNoCommonSuccDegreeRootCount_of_orientation
+    (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
+    PosComboNoCommonSuccDegreeRootCountNonnegStatement :=
+  posComboNoCommonSuccDegreeRootCount_of_rootCountAbove
+    (posComboNoCommonSuccDegreeRootCountAbove_of_orientation horient)
 
 /-- Residual constant-term branch of the lower-threshold succ-degree no-common
 root-count statement: the case `f.coeff 0 = 0` and hence `g.coeff 0 ≠ 0` by
