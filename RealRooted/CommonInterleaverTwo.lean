@@ -1055,11 +1055,9 @@ witness. -/
 theorem pairHasCommonInterleaver_of_prec_or_revPrec
     {f g : ℝ[X]} :
     Prec f g ∨ Prec g f →
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  intro hprec_or
-  rcases hprec_or with hprec | hprec
-  · exact pairHasCommonInterleaver_of_prec hprec
-  · exact pairHasCommonInterleaver_of_revPrec hprec
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h
+  | Or.inl hprec => pairHasCommonInterleaver_of_prec hprec
+  | Or.inr hprec => pairHasCommonInterleaver_of_revPrec hprec
 
 /-- Two-polynomial common-interleaver endpoint in degree at most one. This is
 the direct pair version used by the low-degree Chudnovsky--Seymour package. -/

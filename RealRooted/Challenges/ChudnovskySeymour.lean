@@ -175,6 +175,18 @@ theorem sameDegreeRootCrossingPair_of_natDegree_le_one
         (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) :=
   sameDegreeRootCrossing_of_natDegree_le_one hf_deg_le_one
 
+/-- Challenge-facing low-degree base case for the repaired same-degree
+pair-interleaver endpoint. -/
+theorem sameDegreePairHasCommonInterleaver_of_natDegree_le_one
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hf_deg_le_one : f.natDegree ≤ 1) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  posComboNoCommonSameDegreePairHasCommonInterleaver_of_degree_le_one
+    hf_pos hg_pos hdeg hf_deg_le_one
+
 /-- Challenge-facing reduction from the same-degree orientation alternative to
 the repaired same-degree pair endpoint. -/
 theorem sameDegreePairTarget_of_orientationAlternative
