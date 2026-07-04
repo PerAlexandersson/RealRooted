@@ -344,6 +344,32 @@ theorem sameDegreePairTarget_of_rootCountAboveNonRoot
     sameDegreePairTarget :=
   sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot hcount
 
+/-- Challenge-facing right-pencil parity bridge for same-degree lower root
+counts. -/
+theorem sameDegreeRootCount_oddDiff_iff_pencilCrossing
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g) (hdeg : g.natDegree = f.natDegree)
+    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
+    (Odd (((f.roots.filter (· ≤ x)).card : ℤ) -
+        (g.roots.filter (· ≤ x)).card) ↔
+      ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) :=
+  posComboSameDegree_odd_roots_le_count_sub_iff_exists_pos_isRoot_add_right
+    hf_pos hg_pos hfg hdeg hxf hxg
+
+/-- Challenge-facing right-pencil parity bridge for same-degree upper root
+counts. -/
+theorem sameDegreeRootCountAbove_oddDiff_iff_pencilCrossing
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g) (hdeg : g.natDegree = f.natDegree)
+    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
+    (Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card) ↔
+      ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) :=
+  posComboSameDegree_odd_roots_gt_count_sub_iff_exists_pos_isRoot_add_right
+    hf_pos hg_pos hfg hdeg hxf hxg
+
 /-- Challenge-facing reduction from the same-degree orientation alternative to
 same-degree root crossing. -/
 theorem sameDegreeRootCrossingTarget_of_orientationAlternative
