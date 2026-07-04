@@ -2542,6 +2542,44 @@ theorem PosComboRealRooted.divX_succDegree_data
     Polynomial.natDegree_divX_eq_natDegree_tsub_one]
   lia
 
+/-- Roots of a nonzero polynomial with zero constant coefficient are exactly
+the roots of its `divX` quotient together with one extra root at `0`. -/
+theorem roots_eq_zero_cons_divX_of_coeff_zero {f : ℝ[X]}
+    (hf : f ≠ 0) (hf0 : f.coeff 0 = 0) :
+    f.roots = 0 ::ₘ f.divX.roots := by
+  have hX : f = X * f.divX := DegreeDropReversal.eq_X_mul_divX_of_coeff_zero hf0
+  have hne : X * f.divX ≠ 0 := by
+    rw [← hX]
+    exact hf
+  conv_lhs => rw [hX]
+  rw [Polynomial.roots_mul hne, Polynomial.roots_X, Multiset.singleton_add]
+
+/-- Single-polynomial `divX` root-count step.  For a nonzero polynomial with
+zero constant coefficient, the number of roots satisfying any predicate `p`
+equals the number for its `divX` quotient plus the contribution of the extra
+root at `0`. -/
+theorem card_roots_filter_divX_of_coeff_zero {f : ℝ[X]} (hf : f ≠ 0)
+    (hf0 : f.coeff 0 = 0) (p : ℝ → Prop) [DecidablePred p] :
+    (f.roots.filter p).card =
+      (f.divX.roots.filter p).card + (if p 0 then 1 else 0) := by
+  rw [roots_eq_zero_cons_divX_of_coeff_zero hf hf0, Multiset.filter_cons]
+  by_cases h : p 0 <;>
+    simp [h, Multiset.card_add, Multiset.card_singleton, add_comm]
+
+/-- Common-`X`/`divX` root-count invariance step.  Dividing out the common
+factor `X` from a pair of nonzero polynomials with zero constant coefficient
+leaves the threshold root-count difference with respect to any predicate `p`
+unchanged: the extra root at `0` is contributed to both counts and cancels. -/
+theorem card_roots_filter_sub_divX_of_coeff_zero {f g : ℝ[X]}
+    (hf : f ≠ 0) (hg : g ≠ 0) (hf0 : f.coeff 0 = 0) (hg0 : g.coeff 0 = 0)
+    (p : ℝ → Prop) [DecidablePred p] :
+    ((f.roots.filter p).card : ℤ) - (g.roots.filter p).card =
+      ((f.divX.roots.filter p).card : ℤ) - (g.divX.roots.filter p).card := by
+  rw [card_roots_filter_divX_of_coeff_zero hf hf0 p,
+    card_roots_filter_divX_of_coeff_zero hg hg0 p]
+  push_cast
+  ring
+
 /-- The full succ-degree left-endpoint statement is reduced to the residual
 branch `f.coeff 0 = 0`, `g.coeff 0 ≠ 0`.
 
