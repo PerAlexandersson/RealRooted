@@ -1,5 +1,6 @@
 import RealRooted.ChudnovskySeymour
 import RealRooted.CommonInterleaverSeq
+import RealRooted.SuccDegreeRootCrossing
 
 /-!
 # Chudnovsky--Seymour challenge entry point
@@ -254,6 +255,28 @@ theorem succDegreeRootCrossingPair_of_natDegree_eq_zero
     (∀ j, 1 ≤ j → j < f.natDegree →
         (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) :=
   succDegreeRootCrossing_of_natDegree_eq_zero hf_deg0
+
+/-- Challenge-facing degree-one analytic core for the succ-degree
+root-crossing target. -/
+theorem succDegreeRootLe_of_posCombo_deg1
+    {α β γ : ℝ} (hβγ : γ ≤ β)
+    (hsplit : ∀ lam μ : ℝ, 0 < lam → 0 < μ →
+      (C lam * (X - C α) + C μ * ((X - C β) * (X - C γ))).Splits) :
+    γ ≤ α :=
+  root_le_of_posCombo_deg1 hβγ hsplit
+
+/-- Challenge-facing example showing that positive-combination real-rootedness
+does not by itself force the stronger fixed succ-degree orientation. -/
+theorem succDegree_deg1_positiveCombo_example :
+    ∀ lam μ : ℝ, 0 < lam → 0 < μ →
+      (C lam * (C 2 * X + C 1) + C μ * ((X + C 1) * (X + C 2))).Splits :=
+  posCombo_deg1_all_splits
+
+/-- Challenge-facing counterexample to the fixed succ-degree orientation
+shortcut. -/
+theorem succDegree_deg1_not_prec_example :
+    ¬ Prec (C 2 * X + C 1 : ℝ[X]) ((X + C 1) * (X + C 2)) :=
+  not_prec_deg1_example
 
 /-- Challenge-facing degree-zero base case for the repaired succ-degree
 pair-interleaver endpoint. -/

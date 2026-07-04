@@ -69,6 +69,7 @@ import RealRooted.RootContinuity
 import RealRooted.RowThreshold
 import RealRooted.StaircaseSum
 import RealRooted.SuccDegreeLeftEndpoint
+import RealRooted.SuccDegreeRootCrossing
 import RealRooted.WagnerLeftSum
 import RealRooted.WagnerRightSum
 import RealRooted.WagnerX
