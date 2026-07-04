@@ -619,6 +619,50 @@ theorem isFinitePFMultiplierSequence_of_finiteMultiplierSequence
   exact IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
     (hp.hasNonnegCoeffs.diagonalOperator hgamma) hsplit
 
+/-- In degrees at most one, every nonnegative diagonal sequence preserves the
+PF cone: finite multiplier preservation is automatic in this range. -/
+theorem isFinitePFMultiplierSequence_of_natDegree_le_one
+    {n : ℕ} (hn : n ≤ 1) {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k) :
+    IsFinitePFMultiplierSequence n gamma :=
+  isFinitePFMultiplierSequence_of_finiteMultiplierSequence hgamma
+    (isFiniteMultiplierSequence_of_natDegree_le_one hn gamma)
+
+/-- Degree-zero finite PF multiplier sequences are automatic for nonnegative
+diagonal sequences. -/
+theorem isFinitePFMultiplierSequence_natDegree_zero
+    {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k) :
+    IsFinitePFMultiplierSequence 0 gamma :=
+  isFinitePFMultiplierSequence_of_natDegree_le_one (by norm_num) hgamma
+
+/-- Degree-one finite PF multiplier sequences are automatic for nonnegative
+diagonal sequences. -/
+theorem isFinitePFMultiplierSequence_natDegree_one
+    {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k) :
+    IsFinitePFMultiplierSequence 1 gamma :=
+  isFinitePFMultiplierSequence_of_natDegree_le_one le_rfl hgamma
+
+/-- Degree at most two PF-preservation case of the backward finite
+Pólya--Schur direction. -/
+theorem isFinitePFMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
+    {n : ℕ} (hn : n ≤ 2) {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k)
+    (hjensen : IsPFPolynomial (jensenPolynomial n gamma)) :
+    IsFinitePFMultiplierSequence n gamma :=
+  isFinitePFMultiplierSequence_of_finiteMultiplierSequence hgamma
+    (isFiniteMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
+      hn hgamma hjensen)
+
+/-- Degree-two finite PF multiplier sequences are classified by the PF Jensen
+polynomial condition. -/
+theorem isFinitePFMultiplierSequence_natDegree_two_of_isPF_jensenPolynomial
+    {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k)
+    (hjensen : IsPFPolynomial (jensenPolynomial 2 gamma)) :
+    IsFinitePFMultiplierSequence 2 gamma :=
+  isFinitePFMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
+    le_rfl hgamma hjensen
+
 /-- The finite Polya--Schur classification, used in the forward direction. -/
 theorem jensenPolynomial_isPF_of_finiteMultiplierSequence
     (hFPS : finitePolyaSchurNonnegStatement)
