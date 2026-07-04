@@ -16,6 +16,7 @@ import RealRooted.AffineFamily
 import RealRooted.DegreeDropReversal
 import RealRooted.GammaRealRoots
 import RealRooted.PFPolynomial
+import RealRooted.RootOrderBridge
 import RealRooted.SuccDegreeLeftEndpoint
 
 open Polynomial
@@ -1430,6 +1431,26 @@ def PosComboNoCommonSameDegreeRootCrossingNonnegStatement : Prop :=
         (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
     (∀ j, 1 ≤ j → j < f.natDegree →
         (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)
+
+/-- Root-count bridge for the same-degree root-crossing target.
+
+If for every threshold `x` the numbers of roots `≤ x`, counted with
+multiplicity, of `f` and `g` differ by at most one, then the descending root
+sequences of `f` and `g` satisfy the two interior crossing inequalities. -/
+theorem rootCrossing_of_rootCount_diff_le_one
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hdeg : g.natDegree = f.natDegree)
+    (hcount : ∀ x : ℝ,
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1) :
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
+  have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
+  have hNcard : g.roots.card = f.natDegree := by
+    rw [card_roots_of_splits hg, hdeg]
+  exact rootCrossing_of_count_diff_le_one hMcard hNcard hcount
 
 /-- Low-degree base case for the same-degree root-crossing target.  Through
 degree one the interior crossing inequalities are vacuous. -/
