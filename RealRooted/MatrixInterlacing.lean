@@ -128,7 +128,9 @@ lemma zipWith_mul_oneSupportSeq_sum_eq_get
       | zero =>
           simp [oneSupportSeq, List.ofFn_succ, zipWith_mul_replicate_zero_sum_eq_zero]
       | succ i =>
-          have hne : ¬ ((0 : Fin (row.length + 1)) = i.succ) := by grind
+          have hne : ¬ ((0 : Fin (row.length + 1)) = i.succ) := by
+            intro h
+            exact Fin.succ_ne_zero i h.symm
           simpa [oneSupportSeq, List.ofFn_succ, hne] using ih i
 
 lemma zipWith_mul_sum_ne_zero_of_get_ne_zero

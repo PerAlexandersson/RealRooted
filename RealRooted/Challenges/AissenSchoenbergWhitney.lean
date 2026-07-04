@@ -49,6 +49,13 @@ theorem pfSeq_of_forall_pos_add_C_mul_splits {p q : ℝ[X]}
     IsPolyaFreqSeq (fun n ↦ p.coeff n) :=
   IsPolyaFreqSeq.of_forall_pos_add_C_mul_splits hpnn hqnn hfamily
 
+/-- Challenge-facing low-degree forward ASW splitting theorem. -/
+theorem splits_of_pfCoeff_of_natDegree_le_two {p : ℝ[X]}
+    (hpf : IsPolyaFreqSeq (fun n ↦ p.coeff n))
+    (hdeg : p.natDegree ≤ 2) :
+    p.Splits :=
+  splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two hpf hdeg
+
 /-- Challenge-facing alias: PF coefficients already rule out positive real
 roots. -/
 theorem rootsNonpos_of_pfCoeff {p : ℝ[X]}

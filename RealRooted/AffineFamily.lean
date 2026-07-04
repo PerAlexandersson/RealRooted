@@ -3050,6 +3050,9 @@ private theorem exists_roots_strictly_interlacing_of_consecutive_exists {F : ℝ
       · simp_all
       · simp_all
 
+set_option maxHeartbeats 800000 in
+-- This long affine-family obstruction proof can exceed the default heartbeat
+-- limit after dependency rebuilds; the proof body is unchanged.
 /-- In the hard succ-degree affine branch with `g(0) ≠ 0`, every open interval
 between consecutive roots of `g` contains a root of `f`. The proof uses the
 boundary-ratio obstruction: if such an interval were root-free for `f`, then

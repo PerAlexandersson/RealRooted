@@ -4,6 +4,9 @@ import RealRooted.CoefficientShape
 import RealRooted.Linear
 import RealRooted.Derivative
 import RealRooted.IteratedDerivativeShift
+import RealRooted.QuadraticRoot
+import RealRooted.RecurrenceDiscriminant
+import RealRooted.TridiagonalDet
 import RealRooted.Wagner
 import RealRooted.ShiftLemma
 

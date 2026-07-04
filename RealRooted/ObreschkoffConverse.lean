@@ -1329,6 +1329,9 @@ private theorem isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
     refine ⟨hF_ne, ?_⟩
     exact splits_of_card_roots (by rw [← hws_eq, Multiset.coe_card, hws_len])
 
+set_option maxHeartbeats 800000 in
+-- This private sign-change theorem is near the default heartbeat limit after
+-- dependency rebuilds; the proof term is unchanged.
 /-- Same-degree `hroot_sign` real-rootedness without assuming the target has
 positive leading coefficient.
 
