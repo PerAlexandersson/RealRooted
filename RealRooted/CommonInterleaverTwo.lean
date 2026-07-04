@@ -1452,6 +1452,38 @@ theorem rootCrossing_of_rootCount_diff_le_one
     rw [card_roots_of_splits hg, hdeg]
   exact rootCrossing_of_count_diff_le_one hMcard hNcard hcount
 
+/-- Low-degree base case for the same-degree root-count formulation.
+
+If `f` and `g` split, have equal degree, and `f.natDegree ≤ 1`, then at every
+threshold the two root counts can differ by at most one. -/
+theorem rootCount_diff_le_one_of_natDegree_le_one
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hdeg : g.natDegree = f.natDegree) (hfdeg : f.natDegree ≤ 1) (x : ℝ) :
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 := by
+  have hfcard_nat : (f.roots.filter (· ≤ x)).card ≤ 1 := by
+    calc
+      (f.roots.filter (· ≤ x)).card ≤ f.roots.card :=
+        Multiset.card_le_card (Multiset.filter_le _ _)
+      _ = f.natDegree := card_roots_of_splits hf
+      _ ≤ 1 := hfdeg
+  have hgcard_nat : (g.roots.filter (· ≤ x)).card ≤ 1 := by
+    calc
+      (g.roots.filter (· ≤ x)).card ≤ g.roots.card :=
+        Multiset.card_le_card (Multiset.filter_le _ _)
+      _ = g.natDegree := card_roots_of_splits hg
+      _ = f.natDegree := hdeg
+      _ ≤ 1 := hfdeg
+  have hfcard : ((f.roots.filter (· ≤ x)).card : ℤ) ≤ 1 := by
+    exact_mod_cast hfcard_nat
+  have hgcard : ((g.roots.filter (· ≤ x)).card : ℤ) ≤ 1 := by
+    exact_mod_cast hgcard_nat
+  have hfnonneg : (0 : ℤ) ≤ (f.roots.filter (· ≤ x)).card := by
+    exact_mod_cast Nat.zero_le (f.roots.filter (· ≤ x)).card
+  have hgnonneg : (0 : ℤ) ≤ (g.roots.filter (· ≤ x)).card := by
+    exact_mod_cast Nat.zero_le (g.roots.filter (· ≤ x)).card
+  constructor <;> lia
+
 /-- Low-degree base case for the same-degree root-crossing target.  Through
 degree one the interior crossing inequalities are vacuous. -/
 theorem sameDegreeRootCrossing_of_natDegree_le_one
