@@ -3182,6 +3182,122 @@ private lemma interlaces_filter_gt_length_bounds :
               exact hr₁)]
           exact ⟨IH1, IH2⟩
 
+/-- Lower-threshold companion of `interlaces_filter_gt_length_bounds`.
+
+If sorted lists `ss` and `rs` interlace in the differ-by-one pattern, then the
+numbers of entries at or below a threshold differ by at most one, with `rs`
+never below `ss`. -/
+private lemma interlaces_filter_le_length_bounds :
+    ∀ (ss rs : List ℝ) (x : ℝ),
+      ss.Pairwise (· ≤ ·) → rs.Pairwise (· ≤ ·) →
+      ss.length + 1 = rs.length → ListInterlaces ss rs →
+      (ss.filter (fun y => decide (y ≤ x))).length
+          ≤ (rs.filter (fun y => decide (y ≤ x))).length ∧
+      (rs.filter (fun y => decide (y ≤ x))).length
+          ≤ (ss.filter (fun y => decide (y ≤ x))).length + 1
+  | [], [], _, _, _, hlen, _ => by simp at hlen
+  | [], [r], x, _, _, _, _ => by
+      simp only [List.filter_nil, List.length_nil]
+      refine ⟨Nat.zero_le _, ?_⟩
+      exact List.length_filter_le (fun y => decide (y ≤ x)) [r]
+  | [], _ :: _ :: _, _, _, _, _, hint => by simp [ListInterlaces] at hint
+  | _ :: _, [], _, _, _, _, hint => by simp [ListInterlaces] at hint
+  | _ :: _, [_], _, _, _, hlen, _ => by simp at hlen
+  | s :: sst, r₁ :: r₂ :: rs, x, hss, hrs, hlen, hint => by
+      obtain ⟨hr₁s, hsr₂, htail⟩ := hint
+      have hss_tl : sst.Pairwise (· ≤ ·) := (List.pairwise_cons.mp hss).2
+      have hrs_tl : (r₂ :: rs).Pairwise (· ≤ ·) := (List.pairwise_cons.mp hrs).2
+      have hlen' : sst.length + 1 = (r₂ :: rs).length := by
+        simp only [List.length_cons] at hlen ⊢
+        lia
+      obtain ⟨IH1, IH2⟩ :=
+        interlaces_filter_le_length_bounds sst (r₂ :: rs) x hss_tl hrs_tl hlen' htail
+      set p : ℝ → Bool := fun y => decide (y ≤ x) with hp
+      by_cases hs : s ≤ x
+      · have hr₁ : r₁ ≤ x := le_trans hr₁s hs
+        rw [List.filter_cons_of_pos (by simpa [hp] using hs),
+          List.filter_cons_of_pos (by simpa [hp] using hr₁)]
+        simp only [List.length_cons]
+        exact ⟨by lia, by lia⟩
+      · have hxs : x < s := lt_of_not_ge hs
+        have hsst_all : ∀ b ∈ sst, x < b := fun b hb =>
+          lt_of_lt_of_le hxs ((List.pairwise_cons.mp hss).1 b hb)
+        have hr₂ : x < r₂ := lt_of_lt_of_le hxs hsr₂
+        have hr_all : ∀ b ∈ (r₂ :: rs), x < b := all_gt_of_sorted_head hrs_tl hr₂
+        have hsst0 : (sst.filter p).length = 0 := by
+          rw [List.length_eq_zero_iff, List.filter_eq_nil_iff]
+          intro a ha
+          simp only [hp, decide_eq_true_eq]
+          exact not_le.mpr (hsst_all a ha)
+        have hr0 : ((r₂ :: rs).filter p).length = 0 := by
+          rw [List.length_eq_zero_iff, List.filter_eq_nil_iff]
+          intro a ha
+          simp only [hp, decide_eq_true_eq]
+          exact not_le.mpr (hr_all a ha)
+        rw [List.filter_cons_of_neg (by simpa [hp] using hs)]
+        by_cases hr₁ : r₁ ≤ x
+        · rw [List.filter_cons_of_pos (by simpa [hp] using hr₁)]
+          simp only [List.length_cons, hsst0, hr0]
+          exact ⟨by lia, by lia⟩
+        · rw [List.filter_cons_of_neg (by simpa [hp] using hr₁)]
+          simp only [hsst0, hr0]
+          exact ⟨by lia, by lia⟩
+
+/-- Core combinatorial oriented count bound for same-degree list alternation.
+
+If sorted lists `ss` and `rs` alternate in the same-degree pattern, then at any
+threshold `rs` has at most as many entries at or below it as `ss`, and `ss` has
+at most one more than `rs`. -/
+private lemma alternates_filter_le_length_bounds :
+    ∀ (ss rs : List ℝ) (x : ℝ),
+      ss.Pairwise (· ≤ ·) → rs.Pairwise (· ≤ ·) →
+      ss.length = rs.length → ListAlternates ss rs →
+      (rs.filter (fun y => decide (y ≤ x))).length
+          ≤ (ss.filter (fun y => decide (y ≤ x))).length ∧
+      (ss.filter (fun y => decide (y ≤ x))).length
+          ≤ (rs.filter (fun y => decide (y ≤ x))).length + 1
+  | [], [], _, _, _, _, _ => by simp
+  | [], _ :: _, _, _, _, hlen, _ => by simp at hlen
+  | _ :: _, [], _, _, _, hlen, _ => by simp at hlen
+  | s :: sst, r :: rs, x, hss, hrs, hlen, halt => by
+      obtain ⟨hsr, htail⟩ := halt
+      have hss_tl : sst.Pairwise (· ≤ ·) := (List.pairwise_cons.mp hss).2
+      have hlen' : sst.length + 1 = (r :: rs).length := by
+        simp only [List.length_cons] at hlen ⊢
+        lia
+      obtain ⟨IH1, IH2⟩ :=
+        interlaces_filter_le_length_bounds sst (r :: rs) x hss_tl hrs hlen' htail
+      set p : ℝ → Bool := fun y => decide (y ≤ x) with hp
+      by_cases hs : s ≤ x
+      · have hs_len :
+            ((s :: sst).filter p).length = (sst.filter p).length + 1 := by
+          rw [List.filter_cons_of_pos (l := sst) (a := s) (p := p)
+            (by simpa [hp] using hs)]
+          rfl
+        rw [hs_len]
+        exact ⟨IH2, by simpa using Nat.succ_le_succ IH1⟩
+      · have hxs : x < s := lt_of_not_ge hs
+        have hsst_all : ∀ b ∈ sst, x < b := fun b hb =>
+          lt_of_lt_of_le hxs ((List.pairwise_cons.mp hss).1 b hb)
+        have hr : x < r := lt_of_lt_of_le hxs hsr
+        have hr_all : ∀ b ∈ (r :: rs), x < b := all_gt_of_sorted_head hrs hr
+        have hsst0 : (sst.filter p).length = 0 := by
+          rw [List.length_eq_zero_iff, List.filter_eq_nil_iff]
+          intro a ha
+          simp only [hp, decide_eq_true_eq]
+          exact not_le.mpr (hsst_all a ha)
+        have hr0 : ((r :: rs).filter p).length = 0 := by
+          rw [List.length_eq_zero_iff, List.filter_eq_nil_iff]
+          intro a ha
+          simp only [hp, decide_eq_true_eq]
+          exact not_le.mpr (hr_all a ha)
+        have hs_len :
+            ((s :: sst).filter p).length = (sst.filter p).length := by
+          rw [List.filter_cons_of_neg (l := sst) (a := s) (p := p)
+            (by simpa [hp] using hs)]
+        rw [hs_len, hsst0, hr0]
+        exact ⟨by lia, by lia⟩
+
 /-- `Prec`-to-root-count bridge in upper-threshold form.
 
 For splitting real polynomials `f, g` with `g.natDegree = f.natDegree + 1`,
@@ -3226,6 +3342,41 @@ theorem succDegreeRootCount_of_prec
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 :=
   succDegreeRootCount_of_rootCountAbove hprec.1.2 hprec.2.1.2 hdeg
     (succDegreeRootCountAbove_of_prec hprec hdeg)
+
+/-- Oriented same-degree `Prec`-to-root-count bridge in lower-threshold form.
+
+For splitting real polynomials `p, q` of equal degree, the same-degree
+interlacing relation `Prec p q` forces the oriented lower-threshold root-count
+inequalities: at each threshold `q` has at most as many roots at or below it as
+`p`, and `p` has at most one more than `q`. -/
+theorem sameDegreeRootCountOriented_of_prec
+    {p q : ℝ[X]} (hprec : Prec p q)
+    (hdeg : q.natDegree = p.natDegree) :
+    ∀ x : ℝ,
+      ((q.roots.filter (· ≤ x)).card : ℤ) ≤ (p.roots.filter (· ≤ x)).card ∧
+      ((p.roots.filter (· ≤ x)).card : ℤ) ≤ (q.roots.filter (· ≤ x)).card + 1 := by
+  obtain ⟨hp, hq, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩ := hprec
+  have hss_len : ss.length = p.natDegree := by
+    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hp.2]
+  have hrs_len : rs.length = q.natDegree := by
+    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hq.2]
+  have hlen : ss.length = rs.length := by rw [hss_len, hrs_len, hdeg]
+  have halt : ListAlternates ss rs := by
+    rcases hshape with ⟨hbad, _⟩ | ⟨_, ha⟩
+    · exfalso
+      rw [hss_len, hrs_len, hdeg] at hbad
+      lia
+    · exact ha
+  intro x
+  obtain ⟨B1, B2⟩ := alternates_filter_le_length_bounds ss rs x hss hrs hlen halt
+  have hpcard : (p.roots.filter (· ≤ x)).card =
+      (ss.filter (fun y => decide (y ≤ x))).length := by
+    rw [← hss_eq, Multiset.filter_coe, Multiset.coe_card]
+  have hqcard : (q.roots.filter (· ≤ x)).card =
+      (rs.filter (fun y => decide (y ≤ x))).length := by
+    rw [← hrs_eq, Multiset.filter_coe, Multiset.coe_card]
+  rw [hpcard, hqcard]
+  constructor <;> lia
 
 /-- The succ-degree upper root-count target follows from its common-non-root
 variant. -/
@@ -3576,6 +3727,39 @@ theorem
       exact (sameDegreeRootCountAbove_oriented_iff_rootCount_oriented_pointwise
         hf_split hdiv_split hdiv_deg x).mp
         (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0 x))
+
+/-- `Prec`/`divX` reduction of the right-zero lead branch.
+
+When `g.coeff 0 = 0`, `g.divX` has the same degree as `f`, so a same-degree
+interlacing orientation `Prec (g.divX) f` supplies exactly the oriented
+lower-threshold count comparison needed by
+`posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_sameDegreeCount`.
+This packages the whole right-zero lead branch from a checked orientation. -/
+theorem posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_prec
+    (horient :
+      ∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 = 0 →
+        Prec (g.divX) f) :
+    PosComboNoCommonSuccDegreeRootCountLeadRightZeroNonnegStatement := by
+  apply posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_sameDegreeCount
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0 x
+  have hprec : Prec (g.divX) f :=
+    horient hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0
+  have hgdivX : g.divX.natDegree = g.natDegree - 1 :=
+    Polynomial.natDegree_divX_eq_natDegree_tsub_one
+  have hdeg' : f.natDegree = g.divX.natDegree := by
+    rw [hgdivX]
+    lia
+  exact sameDegreeRootCountOriented_of_prec hprec hdeg' x
 
 /-- The residual succ-degree root-count branch follows from an interlacing
 orientation in that branch. -/

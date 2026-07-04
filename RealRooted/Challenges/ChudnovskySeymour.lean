@@ -696,6 +696,26 @@ theorem succDegreeRootCountLeadRightZeroTarget_of_divX_sameDegreeCountAbove
   posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_sameDegreeCountAbove
     hcount
 
+/-- Challenge-facing `Prec`/`divX` reduction of the right-zero lead root-count
+branch. -/
+theorem succDegreeRootCountLeadRightZeroTarget_of_divX_prec
+    (horient :
+      ∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 = 0 →
+        Prec (g.divX) f) :
+    succDegreeRootCountLeadRightZeroTarget :=
+  posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_prec
+    horient
+
 /-- Challenge-facing reduction from the residual branch and the two lead
 subbranches to the full lower-threshold root-count formulation. -/
 theorem succDegreeRootCountTarget_of_residual_and_leadSubbranches
