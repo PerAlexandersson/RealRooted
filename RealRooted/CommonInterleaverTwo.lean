@@ -17,6 +17,7 @@ import RealRooted.DegreeDropReversal
 import RealRooted.GammaRealRoots
 import RealRooted.PFPolynomial
 import RealRooted.RootOrderBridge
+import RealRooted.RootCountJump
 import RealRooted.SuccDegreeRootCrossing
 import RealRooted.SuccDegreeLeftEndpoint
 
@@ -1513,6 +1514,19 @@ def PosComboNoCommonSameDegreeRootCountAboveNonnegStatement : Prop :=
     ∀ x : ℝ,
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1
+
+/-- Same-degree lower root-count bounds reduce to thresholds that are roots
+of neither polynomial.  This is the local-constancy bridge used before applying
+the fixed-threshold sign/parity lemmas. -/
+theorem sameDegreeRootCount_of_nonRoot_bound
+    {f g : ℝ[X]} (hf : f ≠ 0) (hg : g ≠ 0)
+    (hbound : ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1) :
+    ∀ x : ℝ,
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 :=
+  rootCount_diff_le_one_of_nonRoot_isRoot hf hg hbound
 
 /-- Same-degree sign/parity bridge in the right-pencil language.  At a common
 non-root threshold, the combined lower root-count parity is equivalent to the

@@ -6,6 +6,7 @@ import RealRooted.Derivative
 import RealRooted.IteratedDerivativeShift
 import RealRooted.QuadraticRoot
 import RealRooted.RecurrenceDiscriminant
+import RealRooted.RootCountJump
 import RealRooted.RootOrderBridge
 import RealRooted.TridiagonalDet
 import RealRooted.Wagner
