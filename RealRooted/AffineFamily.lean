@@ -3047,29 +3047,53 @@ theorem isRoot_add_left_iff_parameter_eq_of_no_common
     exact (isRoot_add_left_iff_parameter_eq hfx).mpr hlam_eq
 
 /-- A fixed threshold can be a root of a no-common right pencil for at most one
+parameter. -/
+theorem pencil_parameter_unique_of_isRoot_of_no_common
+    {f g : ℝ[X]} (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    {mu1 mu2 x : ℝ}
+    (h1 : (f + C mu1 * g).IsRoot x)
+    (h2 : (f + C mu2 * g).IsRoot x) :
+    mu1 = mu2 := by
+  have hgx : g.eval x ≠ 0 :=
+    eval_right_ne_zero_of_isRoot_add_right_of_no_common hno h1
+  have hmu1 : mu1 = -f.eval x / g.eval x :=
+    (isRoot_add_right_iff_parameter_eq hgx).mp h1
+  have hmu2 : mu2 = -f.eval x / g.eval x :=
+    (isRoot_add_right_iff_parameter_eq hgx).mp h2
+  exact hmu1.trans hmu2.symm
+
+/-- Left-family form of `pencil_parameter_unique_of_isRoot_of_no_common`. -/
+theorem pencil_parameter_unique_left_of_isRoot_of_no_common
+    {f g : ℝ[X]} (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    {lam eta x : ℝ}
+    (h1 : (C lam * f + g).IsRoot x)
+    (h2 : (C eta * f + g).IsRoot x) :
+    lam = eta :=
+  pencil_parameter_unique_of_isRoot_of_no_common
+    (f := g) (g := f) (mu1 := lam) (mu2 := eta) (x := x)
+    (fun r hg hf => hno r hf hg) (by simpa [add_comm] using h1)
+    (by simpa [add_comm] using h2)
+
+/-- A fixed threshold can be a root of a no-common right pencil for at most one
 positive parameter. -/
 theorem root_parameter_unique_add_right_of_no_common
     {f g : ℝ[X]} {mu nu x : ℝ}
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hmu : 0 < mu) (hnu : 0 < nu)
+    (_hmu : 0 < mu) (_hnu : 0 < nu)
     (hroot_mu : (f + C mu * g).IsRoot x)
     (hroot_nu : (f + C nu * g).IsRoot x) :
-    mu = nu := by
-  have hmu_eq := (isRoot_add_right_iff_parameter_eq_of_no_common hno hmu).mp hroot_mu
-  have hnu_eq := (isRoot_add_right_iff_parameter_eq_of_no_common hno hnu).mp hroot_nu
-  exact hmu_eq.trans hnu_eq.symm
+    mu = nu :=
+  pencil_parameter_unique_of_isRoot_of_no_common hno hroot_mu hroot_nu
 
 /-- Left-family form of `root_parameter_unique_add_right_of_no_common`. -/
 theorem root_parameter_unique_add_left_of_no_common
     {f g : ℝ[X]} {lam eta x : ℝ}
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hlam : 0 < lam) (heta : 0 < eta)
+    (_hlam : 0 < lam) (_heta : 0 < eta)
     (hroot_lam : (C lam * f + g).IsRoot x)
     (hroot_eta : (C eta * f + g).IsRoot x) :
-    lam = eta := by
-  have hlam_eq := (isRoot_add_left_iff_parameter_eq_of_no_common hno hlam).mp hroot_lam
-  have heta_eq := (isRoot_add_left_iff_parameter_eq_of_no_common hno heta).mp hroot_eta
-  exact hlam_eq.trans heta_eq.symm
+    lam = eta :=
+  pencil_parameter_unique_left_of_isRoot_of_no_common hno hroot_lam hroot_eta
 
 /-- At a root of an interior right positive combination, the derivative does
 not vanish. -/
