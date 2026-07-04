@@ -448,6 +448,16 @@ theorem commonInterleaverTarget_of_rootCrossing_and_forward_asw
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing_and_forward_asw
     hsame hASW hsucc
 
+/-- Challenge-facing full roadmap reduction from the root-crossing formulations,
+with the succ-degree left endpoint supplied by the splitting-only ASW target. -/
+theorem commonInterleaverTarget_of_rootCrossing_and_forward_asw_splits
+    (hsame : sameDegreeRootCrossingTarget)
+    (hASW : forwardASWSplitsTarget)
+    (hsucc : succDegreeRootCrossingTarget) :
+  commonInterleaverTarget :=
+  chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing_and_forwardASWSplits
+    hsame hASW hsucc
+
 /-- Challenge-facing reduction for the nonnegative-coefficient common-right
 target from the repaired same-degree/succ-degree no-common pair bridges. -/
 theorem commonInterleaverNonnegCoeffsTarget_of_pairDegreeSplit
