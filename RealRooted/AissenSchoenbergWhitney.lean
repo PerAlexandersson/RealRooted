@@ -473,4 +473,22 @@ theorem aissenSchoenbergWhitney_reverse {p : ℝ[X]}
     exact IsPolyaFreqSeq.const_mul p.leadingCoeff hlc_nonneg
       (IsPolyaFreqSeq.prod_X_sub_C p.roots hroots)
 
+/-- If every positive affine perturbation `p + C μ * q` splits and both
+polynomials have nonnegative coefficients, then the coefficient sequence of
+`p` is Pólya-frequency.  This packages the reverse ASW theorem together with
+the Toeplitz-minor limit closure. -/
+theorem IsPolyaFreqSeq.of_forall_pos_add_C_mul_splits {p q : ℝ[X]}
+    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
+    (hfamily : ∀ {μ : ℝ}, 0 < μ → (p + C μ * q).Splits) :
+    IsPolyaFreqSeq (fun n => p.coeff n) :=
+  IsPolyaFreqSeq.of_forall_pos_add_mul
+    (a := fun n => p.coeff n) (b := fun n => q.coeff n) (by
+      intro μ hμ
+      have hnn : HasNonnegCoeffs (p + C μ * q) :=
+        hpnn.add (nonnegCoeffs_C_mul hμ.le hqnn)
+      have hpf : IsPolyaFreqSeq (fun n => (p + C μ * q).coeff n) :=
+        aissenSchoenbergWhitney_reverse hnn (hfamily hμ)
+          (roots_nonpos_of_nonneg_coeffs (hfamily hμ) hnn)
+      simpa [Polynomial.coeff_add, Polynomial.coeff_C_mul] using hpf)
+
 end RealRooted
