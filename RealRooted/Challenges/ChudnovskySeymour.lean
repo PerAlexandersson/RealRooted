@@ -1,6 +1,7 @@
 import RealRooted.ChudnovskySeymour
 import RealRooted.CommonInterleaverSeq
 import RealRooted.SuccDegreeRootCrossing
+import RealRooted.Bezoutian
 
 /-!
 # Chudnovsky--Seymour challenge entry point
@@ -2012,6 +2013,174 @@ theorem pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direc
     PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
   RealRooted.pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direct
     hrr hpos htwo
+
+/-! ## Same-degree orientation alternative counterexample -/
+
+/- The strong orientation-alternative endpoint is false already in degree two.
+The nested pair `(X + 6)(X + 1)` and `(X + 2)(X + 3)` has nonnegative
+coefficients, positive leading coefficients, no common root, and every positive
+combination is real-rooted.  The roots are nested, so neither orientation
+`Prec f g` nor `Prec g f` holds. -/
+
+/-- Outer quadratic `(X + 6)(X + 1)` of the degree-two counterexample. -/
+private def orientAltCexA : ℝ[X] := (X + C 6) * (X + C 1)
+
+/-- Inner quadratic `(X + 2)(X + 3)` of the degree-two counterexample. -/
+private def orientAltCexB : ℝ[X] := (X + C 2) * (X + C 3)
+
+private lemma orientAltCexA_monic : orientAltCexA.Monic :=
+  (Polynomial.monic_X_add_C 6).mul (Polynomial.monic_X_add_C 1)
+
+private lemma orientAltCexB_monic : orientAltCexB.Monic :=
+  (Polynomial.monic_X_add_C 2).mul (Polynomial.monic_X_add_C 3)
+
+private lemma orientAltCexA_natDegree : orientAltCexA.natDegree = 2 := by
+  unfold orientAltCexA
+  rw [Polynomial.natDegree_mul
+    (Polynomial.X_add_C_ne_zero 6) (Polynomial.X_add_C_ne_zero 1),
+    Polynomial.natDegree_X_add_C, Polynomial.natDegree_X_add_C]
+
+private lemma orientAltCexB_natDegree : orientAltCexB.natDegree = 2 := by
+  unfold orientAltCexB
+  rw [Polynomial.natDegree_mul
+    (Polynomial.X_add_C_ne_zero 2) (Polynomial.X_add_C_ne_zero 3),
+    Polynomial.natDegree_X_add_C, Polynomial.natDegree_X_add_C]
+
+private lemma orientAltCexA_posLeading : HasPosLeadingCoeff orientAltCexA := by
+  change (0 : ℝ) < orientAltCexA.leadingCoeff
+  rw [orientAltCexA_monic.leadingCoeff]
+  norm_num
+
+private lemma orientAltCexB_posLeading : HasPosLeadingCoeff orientAltCexB := by
+  change (0 : ℝ) < orientAltCexB.leadingCoeff
+  rw [orientAltCexB_monic.leadingCoeff]
+  norm_num
+
+private lemma orientAltCexA_nextCoeff : orientAltCexA.nextCoeff = 7 := by
+  unfold orientAltCexA
+  rw [(Polynomial.monic_X_add_C (6 : ℝ)).nextCoeff_mul
+      (Polynomial.monic_X_add_C (1 : ℝ)),
+    Polynomial.nextCoeff_X_add_C, Polynomial.nextCoeff_X_add_C]
+  norm_num
+
+private lemma orientAltCexB_nextCoeff : orientAltCexB.nextCoeff = 5 := by
+  unfold orientAltCexB
+  rw [(Polynomial.monic_X_add_C (2 : ℝ)).nextCoeff_mul
+      (Polynomial.monic_X_add_C (3 : ℝ)),
+    Polynomial.nextCoeff_X_add_C, Polynomial.nextCoeff_X_add_C]
+  norm_num
+
+private lemma orientAltCexA_nonneg : HasNonnegCoeffs orientAltCexA := by
+  have hexp : orientAltCexA = C 6 + C 7 * X + X ^ 2 := by
+    apply Polynomial.funext
+    intro x
+    simp only [orientAltCexA, eval_add, eval_mul, eval_C, eval_X, eval_pow]
+    ring
+  intro n
+  rw [hexp]
+  simp only [coeff_add, coeff_C_mul, coeff_C, coeff_X, coeff_X_pow]
+  split_ifs <;> norm_num
+
+private lemma orientAltCexB_nonneg : HasNonnegCoeffs orientAltCexB := by
+  have hexp : orientAltCexB = C 6 + C 5 * X + X ^ 2 := by
+    apply Polynomial.funext
+    intro x
+    simp only [orientAltCexB, eval_add, eval_mul, eval_C, eval_X, eval_pow]
+    ring
+  intro n
+  rw [hexp]
+  simp only [coeff_add, coeff_C_mul, coeff_C, coeff_X, coeff_X_pow]
+  split_ifs <;> norm_num
+
+private lemma orientAltCexA_neg_one_mem : (-1 : ℝ) ∈ orientAltCexA.roots := by
+  unfold orientAltCexA
+  rw [Polynomial.roots_mul
+      (mul_ne_zero (Polynomial.X_add_C_ne_zero 6) (Polynomial.X_add_C_ne_zero 1)),
+    Polynomial.roots_X_add_C, Polynomial.roots_X_add_C, Multiset.mem_add]
+  right
+  rw [Multiset.mem_singleton]
+
+private lemma orientAltCexB_roots_le :
+    ∀ r ∈ orientAltCexB.roots, r ≤ -2 := by
+  unfold orientAltCexB
+  rw [Polynomial.roots_mul
+      (mul_ne_zero (Polynomial.X_add_C_ne_zero 2) (Polynomial.X_add_C_ne_zero 3)),
+    Polynomial.roots_X_add_C, Polynomial.roots_X_add_C]
+  intro r hr
+  simp only [Multiset.mem_add, Multiset.mem_singleton] at hr
+  rcases hr with h | h <;> subst h <;> norm_num
+
+private lemma orientAltCex_noCommon :
+    ∀ r, orientAltCexA.IsRoot r → ¬ orientAltCexB.IsRoot r := by
+  intro r hrA hrB
+  simp only [orientAltCexA, Polynomial.IsRoot.def, eval_mul, eval_add, eval_X,
+    eval_C, mul_eq_zero] at hrA
+  simp only [orientAltCexB, Polynomial.IsRoot.def, eval_mul, eval_add, eval_X,
+    eval_C, mul_eq_zero] at hrB
+  rcases hrA with h | h <;> rcases hrB with h' | h' <;> linarith
+
+private lemma orientAltCex_posCombo :
+    PosComboRealRooted orientAltCexA orientAltCexB := by
+  intro lam μ hlam hμ
+  have hexp : C lam * orientAltCexA + C μ * orientAltCexB =
+      C (lam + μ) * X ^ 2 + C (7 * lam + 5 * μ) * X + C (6 * lam + 6 * μ) := by
+    apply Polynomial.funext
+    intro x
+    simp only [orientAltCexA, orientAltCexB, eval_add, eval_mul, eval_C, eval_X,
+      eval_pow]
+    ring
+  rw [hexp]
+  have hlc : (0 : ℝ) < lam + μ := by linarith
+  set q : ℝ[X] :=
+    C (lam + μ) * X ^ 2 + C (7 * lam + 5 * μ) * X + C (6 * lam + 6 * μ) with hq
+  have hc2 : q.coeff 2 = lam + μ := by
+    rw [hq]
+    simp only [coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_C]
+    norm_num
+  have hc1 : q.coeff 1 = 7 * lam + 5 * μ := by
+    rw [hq]
+    simp only [coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_C]
+    norm_num
+  have hc0 : q.coeff 0 = 6 * lam + 6 * μ := by
+    rw [hq]
+    simp only [coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_C]
+    norm_num
+  have hdeg : q.natDegree = 2 := by
+    rw [hq]
+    exact Polynomial.natDegree_quadratic hlc.ne'
+  have hdisc : 0 ≤ discrim (q.coeff 2) (q.coeff 1) (q.coeff 0) := by
+    rw [hc2, hc1, hc0]
+    have hd :
+        discrim (lam + μ) (7 * lam + 5 * μ) (6 * lam + 6 * μ) =
+          25 * lam ^ 2 + 22 * lam * μ + μ ^ 2 := by
+      unfold discrim
+      ring
+    rw [hd]
+    nlinarith [mul_pos hlam hμ, sq_nonneg lam, sq_nonneg μ]
+  exact Polynomial.isRealRooted_of_natDegree_two_of_discrim_nonneg hdeg hdisc
+
+/-- The strong same-degree orientation alternative is false. -/
+theorem not_posComboNoCommonSameDegreeOrientationAlternativeNonneg :
+    ¬ PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement := by
+  intro H
+  have hor := H orientAltCexA_posLeading orientAltCexB_posLeading
+    orientAltCexA_nonneg orientAltCexB_nonneg orientAltCex_posCombo
+    (by rw [orientAltCexB_natDegree, orientAltCexA_natDegree])
+    orientAltCex_noCommon
+  rcases hor with hAB | hBA
+  · have h := roots_le_of_prec_right hAB orientAltCexB_roots_le
+    have hbad := h (-1) orientAltCexA_neg_one_mem
+    norm_num at hbad
+  · have h := nextCoeff_le_of_prec_sameDegree_monic
+      orientAltCexB_monic orientAltCexA_monic hBA
+      (by rw [orientAltCexB_natDegree, orientAltCexA_natDegree])
+    rw [orientAltCexA_nextCoeff, orientAltCexB_nextCoeff] at h
+    norm_num at h
+
+/-- Challenge-facing falsity of the strong same-degree orientation alternative. -/
+theorem not_sameDegreeOrientationAlternativeTarget :
+    ¬ sameDegreeOrientationAlternativeTarget :=
+  not_posComboNoCommonSameDegreeOrientationAlternativeNonneg
 
 end ChudnovskySeymour
 end Challenges
