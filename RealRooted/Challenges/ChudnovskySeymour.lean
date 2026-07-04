@@ -215,6 +215,40 @@ theorem succDegreeRootCrossingTarget_of_orientation
     succDegreeRootCrossingTarget :=
   posComboNoCommonSuccDegreeRootCrossing_of_orientation horient
 
+/-- Challenge-facing degree-zero base case for the succ-degree root-crossing
+inequalities. -/
+theorem succDegreeRootCrossingPair_of_natDegree_eq_zero
+    {f g : ℝ[X]} (hf_deg0 : f.natDegree = 0) :
+    (∀ j, 1 ≤ j → j ≤ f.natDegree →
+        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) :=
+  succDegreeRootCrossing_of_natDegree_eq_zero hf_deg0
+
+/-- Challenge-facing degree-zero base case for the repaired succ-degree
+pair-interleaver endpoint. -/
+theorem succDegreePairHasCommonInterleaver_of_natDegree_eq_zero
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hf_deg0 : f.natDegree = 0)
+    (hsucc : g.natDegree = f.natDegree + 1) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  posComboNoCommonSuccDegreePairHasCommonInterleaver_of_degree_zero
+    hf_pos hg_pos hf_deg0 hsucc
+
+/-- Challenge-facing unconditional succ-degree left-splitting target from the
+root-continuity endpoint. -/
+theorem succDegreeLeftSplitsTarget_of_rootContinuity :
+    succDegreeLeftSplitsTarget :=
+  PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity
+
+/-- Challenge-facing unconditional residual left-splitting target from the
+root-continuity endpoint. -/
+theorem succDegreeResidualLeftSplitsTarget_of_rootContinuity :
+    succDegreeResidualLeftSplitsTarget :=
+  PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_rootContinuity
+
 /-- Challenge-facing reduction from left splitting and root crossing to
 succ-degree slot data. -/
 theorem succDegreeSlotDataTarget_of_leftSplits_and_rootCrossing
@@ -222,6 +256,13 @@ theorem succDegreeSlotDataTarget_of_leftSplits_and_rootCrossing
     (hcross : succDegreeRootCrossingTarget) :
     succDegreeSlotDataTarget :=
   posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_rootCrossing hsplit hcross
+
+/-- Challenge-facing reduction from root crossing alone to succ-degree slot
+data; root continuity supplies the left-splitting endpoint. -/
+theorem succDegreeSlotDataTarget_of_rootCrossing
+    (hcross : succDegreeRootCrossingTarget) :
+    succDegreeSlotDataTarget :=
+  posComboNoCommonSuccDegreeSlotData_of_rootCrossing hcross
 
 /-- Challenge-facing reduction from left splitting and root crossing to the
 repaired succ-degree pair endpoint. -/
@@ -231,6 +272,13 @@ theorem succDegreePairTarget_of_leftSplits_and_rootCrossing
     succDegreePairTarget :=
   succDegreePairHasCommonInterleaver_nonneg_of_leftSplits_and_rootCrossing
     hsplit hcross
+
+/-- Challenge-facing reduction from root crossing alone to the repaired
+succ-degree pair endpoint; root continuity supplies the left endpoint. -/
+theorem succDegreePairTarget_of_rootCrossing
+    (hcross : succDegreeRootCrossingTarget) :
+    succDegreePairTarget :=
+  succDegreePairHasCommonInterleaver_nonneg_of_rootCrossing hcross
 
 /-- Challenge-facing PF/ASW reduction to the succ-degree left-splitting target. -/
 theorem succDegreeLeftSplitsTarget_of_forward_asw
@@ -460,6 +508,15 @@ theorem commonInterleaverTarget_of_pairBridge
     commonInterleaverTarget :=
   RealRooted.chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge htwo
 
+/-- Challenge-facing full roadmap reduction from the root-crossing
+formulations alone; root continuity supplies the succ-degree left endpoint. -/
+theorem commonInterleaverTarget_of_rootCrossing
+    (hsame : sameDegreeRootCrossingTarget)
+    (hsucc : succDegreeRootCrossingTarget) :
+    commonInterleaverTarget :=
+  chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing_direct
+    hsame hsucc
+
 /-- Challenge-facing full roadmap reduction from the root-crossing formulations,
 with the succ-degree left endpoint supplied by forward ASW. -/
 theorem commonInterleaverTarget_of_rootCrossing_and_forward_asw
@@ -480,6 +537,18 @@ theorem commonInterleaverTarget_of_rootCrossing_and_forward_asw_splits
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing_and_forwardASWSplits
     hsame hASW hsucc
 
+/-- Challenge-facing four-way package from the root-crossing formulations
+alone; root continuity supplies the succ-degree left endpoint. -/
+theorem fourWay_of_rootCrossing
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hsame : sameDegreeRootCrossingTarget)
+    (hsucc : succDegreeRootCrossingTarget) :
+    fourWayPackage fs :=
+  chudnovskySeymour_fourWay_of_rootCrossing
+    hrr hpos hsame hsucc
+
 /-- Challenge-facing four-way package from the root-crossing formulations,
 with the succ-degree left endpoint supplied by the splitting-only ASW target. -/
 theorem fourWay_of_rootCrossing_and_forward_asw_splits
@@ -494,6 +563,14 @@ theorem fourWay_of_rootCrossing_and_forward_asw_splits
     hrr hpos hsame hASW hsucc
 
 /-- Challenge-facing reduction for the nonnegative four-way target from
+root-crossing alone. -/
+theorem fourWayNonnegCoeffsTarget_of_rootCrossing
+    (hsame : sameDegreeRootCrossingTarget)
+    (hsucc : succDegreeRootCrossingTarget) :
+    fourWayNonnegCoeffsTarget :=
+  chudnovskySeymour_fourWay_of_rootCrossing_nonneg hsame hsucc
+
+/-- Challenge-facing reduction for the nonnegative four-way target from
 root-crossing plus splitting-only ASW. -/
 theorem fourWayNonnegCoeffsTarget_of_rootCrossing_and_forward_asw_splits
     (hsame : sameDegreeRootCrossingTarget)
@@ -504,6 +581,14 @@ theorem fourWayNonnegCoeffsTarget_of_rootCrossing_and_forward_asw_splits
     hsame hASW hsucc
 
 /-- Challenge-facing reduction for the nonnegative common-right target from
+root-crossing alone. -/
+theorem commonInterleaverNonnegCoeffsTarget_of_rootCrossing
+    (hsame : sameDegreeRootCrossingTarget)
+    (hsucc : succDegreeRootCrossingTarget) :
+    commonInterleaverNonnegCoeffsTarget :=
+  chudnovskySeymour_commonInterleaver_of_rootCrossing_nonneg hsame hsucc
+
+/-- Challenge-facing reduction for the nonnegative common-right target from
 root-crossing plus splitting-only ASW. -/
 theorem commonInterleaverNonnegCoeffsTarget_of_rootCrossing_and_forward_asw_splits
     (hsame : sameDegreeRootCrossingTarget)
@@ -512,6 +597,14 @@ theorem commonInterleaverNonnegCoeffsTarget_of_rootCrossing_and_forward_asw_spli
     commonInterleaverNonnegCoeffsTarget :=
   chudnovskySeymour_commonInterleaver_of_rootCrossing_forwardASWSplits_nonneg
     hsame hASW hsucc
+
+/-- Challenge-facing reduction for the nonnegative finite-family compatibility
+target from root-crossing alone. -/
+theorem familyCompatibleNonnegCoeffsTarget_of_rootCrossing
+    (hsame : sameDegreeRootCrossingTarget)
+    (hsucc : succDegreeRootCrossingTarget) :
+    familyCompatibleNonnegCoeffsTarget :=
+  chudnovskySeymour_familyCompatible_of_rootCrossing_nonneg hsame hsucc
 
 /-- Challenge-facing reduction for the nonnegative finite-family compatibility
 target from root-crossing plus splitting-only ASW. -/

@@ -16,6 +16,7 @@ import RealRooted.AffineFamily
 import RealRooted.DegreeDropReversal
 import RealRooted.GammaRealRoots
 import RealRooted.PFPolynomial
+import RealRooted.SuccDegreeLeftEndpoint
 
 open Polynomial
 
@@ -1201,11 +1202,10 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_degree_zero
     (hg_pos : HasPosLeadingCoeff g)
     (hf_deg0 : f.natDegree = 0)
     (hsucc : g.natDegree = f.natDegree + 1) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  have hprec : Prec f g :=
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  pairHasCommonInterleaver_of_prec <|
     posComboNoCommonSuccDegreeOrientation_of_degree_zero
       hf_pos hg_pos hf_deg0 hsucc
-  exact pairHasCommonInterleaver_of_prec hprec
 
 /-- Degree-one left-hand endpoint of the corrected succ-degree branch under
 the affine-family bridge.  The public affine-family degree-one lemma gives the
@@ -1721,6 +1721,23 @@ def PosComboSuccDegreeResidualLeftSplitsNonnegStatement : Prop :=
     g.coeff 0 ≠ 0 →
     f.Splits
 
+/-- The succ-degree left endpoint follows directly from the escaping-root
+continuity argument for the family `f + C μ * g`; no ASW input is needed. -/
+theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity :
+    PosComboSuccDegreeLeftSplitsNonnegStatement := by
+  intro f g hf_pos hg_pos _ _ hfg hsucc
+  exact
+    splits_of_add_C_mul_family_of_succDegree
+      (fun {μ} hμ => hfg.isRealRooted_add_right hμ) hf_pos hg_pos hsucc
+
+/-- Residual succ-degree left endpoint from the same root-continuity argument. -/
+theorem PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_rootContinuity :
+    PosComboSuccDegreeResidualLeftSplitsNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hsucc _ _
+  exact
+    PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity
+      hf_pos hg_pos hfnn hgnn hfg hsucc
+
 /-- The succ-degree left endpoint follows from the forward
 Aissen--Schoenberg--Whitney theorem.  This gives an alternate classical route:
 positive perturbations `f + μ g` are PF, and the PF Toeplitz minors are closed
@@ -1994,6 +2011,16 @@ def PosComboNoCommonSuccDegreeRootCrossingNonnegStatement : Prop :=
     (∀ j, 1 ≤ j → j < f.natDegree →
         (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)
 
+/-- Low-degree base case for the succ-degree root-crossing target.  In the
+constant-vs-linear case all crossing inequalities are vacuous. -/
+theorem succDegreeRootCrossing_of_natDegree_eq_zero
+    {f g : ℝ[X]} (hf_deg0 : f.natDegree = 0) :
+    (∀ j, 1 ≤ j → j ≤ f.natDegree →
+        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
+  refine ⟨?_, ?_⟩ <;> intro j hj1 hjlt <;> exfalso <;> lia
+
 private lemma succCross_getD_reverse (l : List ℝ) (j : ℕ) (hj : j < l.length) :
     l.reverse.getD j 0 = l.getD (l.length - 1 - j) 0 := by
   have hj' : j < l.reverse.length := by simpa using hj
@@ -2114,6 +2141,23 @@ theorem succDegreePairHasCommonInterleaver_nonneg_of_leftSplits_and_rootCrossing
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
   succDegreePairHasCommonInterleaver_nonneg_of_slotData
     (posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_rootCrossing hsplit hcross)
+
+/-- Succ-degree slot data from the unconditional root-continuity left endpoint
+and the descending-root crossing inequalities. -/
+theorem posComboNoCommonSuccDegreeSlotData_of_rootCrossing
+    (hcross : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
+  posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_rootCrossing
+    PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity hcross
+
+/-- The corrected succ-degree pair-interleaver endpoint follows from the
+succ-degree descending-root crossing inequalities alone; root continuity
+supplies the left endpoint. -/
+theorem succDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
+    (hcross : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+  succDegreePairHasCommonInterleaver_nonneg_of_slotData
+    (posComboNoCommonSuccDegreeSlotData_of_rootCrossing hcross)
 
 /-- Succ-degree slot data from the PF/ASW left-endpoint route and the
 descending-root crossing inequalities. -/
@@ -3426,6 +3470,15 @@ theorem compatiblePairHasCommonInterleaver_of_rootCrossing_via_nonnegShift
     (succDegreePairHasCommonInterleaver_nonneg_of_leftSplits_and_rootCrossing
       hsplit hsucc)
 
+/-- Shifted compatibility bridge from root-crossing formulations alone.  The
+succ-degree left endpoint is supplied by the root-continuity theorem. -/
+theorem compatiblePairHasCommonInterleaver_of_rootCrossing
+    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    CompatiblePairHasCommonInterleaverStatement :=
+  compatiblePairHasCommonInterleaver_of_rootCrossing_via_nonnegShift
+    hsame PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity hsucc
+
 /-- Shifted compatibility bridge from root-crossing formulations, with the
 succ-degree left endpoint supplied by the PF/ASW route. -/
 theorem compatiblePairHasCommonInterleaver_of_rootCrossing_and_forward_asw
@@ -3586,6 +3639,18 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCrossing_via_n
     (compatiblePairHasCommonInterleaver_of_rootCrossing_via_nonnegShift
       hsame hsplit hsucc)
     hpos hpair
+
+/-- Pairwise upgrade from root-crossing formulations alone.  The succ-degree
+left endpoint is supplied by root continuity before shifting. -/
+theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCrossing
+    {fs : List ℝ[X]}
+    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hpair : PairwiseCompatible fs) :
+    PairwiseHasCommonInterleaver fs :=
+  pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCrossing_via_nonnegShift
+    hsame PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity hsucc hpos hpair
 
 /-- Pairwise upgrade from root-crossing formulations, with the succ-degree left
 endpoint supplied by the PF/ASW route before shifting. -/
@@ -3959,6 +4024,18 @@ theorem chudnovskySeymour_fourWay_of_rootCrossing_via_nonnegShift
     (compatiblePairHasCommonInterleaver_of_rootCrossing_via_nonnegShift
       hsame hsplit hsucc)
 
+/-- Four-way Chudnovsky--Seymour package from root-crossing formulations alone.
+The succ-degree left endpoint is supplied by root continuity before shifting. -/
+theorem chudnovskySeymour_fourWay_of_rootCrossing
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    ChudnovskySeymourFourWayPackage fs :=
+  chudnovskySeymour_fourWay_of_rootCrossing_via_nonnegShift
+    hrr hpos hsame PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity hsucc
+
 /-- Four-way Chudnovsky--Seymour package from root-crossing formulations, with
 the succ-degree left endpoint supplied by the PF/ASW route before shifting. -/
 theorem chudnovskySeymour_fourWay_of_rootCrossing_and_forward_asw
@@ -4279,6 +4356,18 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_via_nonnegSh
     chudnovskySeymour_fourWay_of_rootCrossing_via_nonnegShift
       (fs := fs) hrr hpos hsame hsplit hsucc
 
+/-- Chudnovsky--Seymour `1 ↔ 3` corollary from root-crossing formulations
+alone.  Root continuity supplies the succ-degree left endpoint. -/
+theorem pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
+  pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_via_nonnegShift
+    hrr hpos hsame PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity hsucc
+
 /-- Chudnovsky--Seymour `1 ↔ 3` corollary from root-crossing formulations, with
 the succ-degree left endpoint supplied by the PF/ASW route before shifting. -/
 theorem pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_and_forward_asw
@@ -4415,6 +4504,18 @@ theorem pairwiseCompatible_iff_familyCompatible_of_rootCrossing_via_nonnegShift
   pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos <|
     (pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_via_nonnegShift
       (fs := fs) hrr hpos hsame hsplit hsucc).1
+
+/-- Chudnovsky--Seymour `1 ↔ 4` specialization from root-crossing formulations
+alone.  Root continuity supplies the succ-degree left endpoint. -/
+theorem pairwiseCompatible_iff_familyCompatible_of_rootCrossing
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    PairwiseCompatible fs ↔ FamilyCompatible fs :=
+  pairwiseCompatible_iff_familyCompatible_of_rootCrossing_via_nonnegShift
+    hrr hpos hsame PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity hsucc
 
 /-- Chudnovsky--Seymour `1 ↔ 4` specialization from root-crossing formulations,
 with the succ-degree left endpoint supplied by the PF/ASW route before shifting.

@@ -144,6 +144,17 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossi
     pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_via_nonnegShift
       hrr hpos hsame hsplit hsucc
 
+/-- The roadmap target follows from the root-crossing formulations alone:
+root continuity supplies the succ-degree left endpoint. -/
+theorem
+    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing_direct
+    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
+  fun hrr hpos =>
+    pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing
+      hrr hpos hsame hsucc
+
 /-- The roadmap target follows from the root-crossing formulations once the
 succ-degree left endpoint is supplied by the PF/ASW route. -/
 theorem
@@ -180,6 +191,16 @@ theorem chudnovskySeymour_fourWay_of_rootCrossing_forwardASWSplits_nonneg
     chudnovskySeymour_fourWay_of_rootCrossing_and_forward_asw_splits
       hrr hpos hsame hASW hsucc
 
+/-- The nonnegative four-way package target follows from the root-crossing
+formulations alone; root continuity supplies the succ-degree left endpoint. -/
+theorem chudnovskySeymour_fourWay_of_rootCrossing_nonneg
+    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    chudnovskySeymour_fourWay_nonnegCoeffs_target :=
+  fun hrr hpos _ =>
+    RealRooted.chudnovskySeymour_fourWay_of_rootCrossing
+      hrr hpos hsame hsucc
+
 /-- The nonnegative common-interleaver target follows from the root-crossing
 formulations and splitting-only ASW. -/
 theorem
@@ -193,6 +214,17 @@ theorem
       (chudnovskySeymour_fourWay_of_rootCrossing_forwardASWSplits_nonneg
         hsame hASW hsucc hrr hpos hnn)
 
+/-- The nonnegative common-interleaver target follows from the root-crossing
+formulations alone. -/
+theorem chudnovskySeymour_commonInterleaver_of_rootCrossing_nonneg
+    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
+  fun hrr hpos hnn =>
+    pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay
+      (chudnovskySeymour_fourWay_of_rootCrossing_nonneg
+        hsame hsucc hrr hpos hnn)
+
 /-- The nonnegative finite-family compatibility target follows from the
 root-crossing formulations and splitting-only ASW. -/
 theorem
@@ -205,6 +237,17 @@ theorem
     pairwiseCompatible_iff_familyCompatible_of_fourWay
       (chudnovskySeymour_fourWay_of_rootCrossing_forwardASWSplits_nonneg
         hsame hASW hsucc hrr hpos hnn)
+
+/-- The nonnegative finite-family compatibility target follows from the
+root-crossing formulations alone. -/
+theorem chudnovskySeymour_familyCompatible_of_rootCrossing_nonneg
+    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
+  fun hrr hpos hnn =>
+    pairwiseCompatible_iff_familyCompatible_of_fourWay
+      (chudnovskySeymour_fourWay_of_rootCrossing_nonneg
+        hsame hsucc hrr hpos hnn)
 
 /-- The nonnegative-coefficient common-interleaver target is a projection of
 the nonnegative four-way package target. -/
