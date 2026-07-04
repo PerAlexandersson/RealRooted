@@ -3431,6 +3431,53 @@ theorem posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_rightZero
   · exact hright hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0
   · exact hboth hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0
 
+/-- `divX` reduction of the right-zero lead branch.
+
+When `g.coeff 0 = 0`, the roots of `g` are the roots of `g.divX` together with
+one extra root at `0`.  Thus the right-zero succ-degree lower root-count bounds
+follow from the oriented same-degree lower count comparison of `g.divX` and
+`f`. -/
+theorem posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_sameDegreeCount
+    (hcount :
+      ∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 = 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) ≤
+              (g.divX.roots.filter (· ≤ x)).card ∧
+          ((g.divX.roots.filter (· ≤ x)).card : ℤ) ≤
+              (f.roots.filter (· ≤ x)).card + 1) :
+    PosComboNoCommonSuccDegreeRootCountLeadRightZeroNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0 x
+  have hg_ne : g ≠ 0 := hg_pos.ne_zero
+  obtain ⟨hFH, hHF⟩ :=
+    hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0 x
+  by_cases h0 : (0 : ℝ) ≤ x
+  · have hc : ((g.roots.filter (· ≤ x)).card : ℤ) =
+        (g.divX.roots.filter (· ≤ x)).card + 1 := by
+      have h := card_roots_filter_divX_of_coeff_zero hg_ne hg0 (· ≤ x)
+      have h' : (g.roots.filter (· ≤ x)).card =
+          (g.divX.roots.filter (· ≤ x)).card + 1 := by
+        simpa [h0] using h
+      exact_mod_cast h'
+    exact ⟨by lia, by lia⟩
+  · have hc : ((g.roots.filter (· ≤ x)).card : ℤ) =
+        (g.divX.roots.filter (· ≤ x)).card := by
+      have h := card_roots_filter_divX_of_coeff_zero hg_ne hg0 (· ≤ x)
+      have h' : (g.roots.filter (· ≤ x)).card =
+          (g.divX.roots.filter (· ≤ x)).card := by
+        simpa [h0] using h
+      exact_mod_cast h'
+    exact ⟨by lia, by lia⟩
+
 /-- The residual succ-degree root-count branch follows from an interlacing
 orientation in that branch. -/
 theorem posComboNoCommonSuccDegreeRootCountResidual_of_prec
