@@ -474,6 +474,22 @@ theorem succDegreeRootCountTarget_of_orientation
     succDegreeRootCountTarget :=
   posComboNoCommonSuccDegreeRootCount_of_orientation horient
 
+/-- Challenge-facing `Prec`-to-root-count bridge in upper-threshold form. -/
+theorem succDegreeRootCountAbovePair_of_prec
+    {f g : ℝ[X]} (hprec : Prec f g)
+    (hdeg : g.natDegree = f.natDegree + 1) (x : ℝ) :
+    ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+    ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 :=
+  succDegreeRootCountAbove_of_prec hprec hdeg x
+
+/-- Challenge-facing `Prec`-to-root-count bridge in lower-threshold form. -/
+theorem succDegreeRootCountPair_of_prec
+    {f g : ℝ[X]} (hprec : Prec f g)
+    (hdeg : g.natDegree = f.natDegree + 1) (x : ℝ) :
+    ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+    ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 :=
+  succDegreeRootCount_of_prec hprec hdeg x
+
 /-- Challenge-facing reduction from succ-degree root counts to succ-degree
 root crossing. -/
 theorem succDegreeRootCrossingTarget_of_rootCount
@@ -599,6 +615,67 @@ theorem succDegreeRootCrossingTarget_of_residual_and_lead
     (hres : succDegreeRootCountResidualTarget) :
     succDegreeRootCrossingTarget :=
   posComboNoCommonSuccDegreeRootCrossing_of_residual_and_lead hlead hres
+
+/-- Challenge-facing reduction from residual interlacing orientation to the
+residual succ-degree root-count target. -/
+theorem succDegreeRootCountResidualTarget_of_prec
+    (hresPrec :
+      ∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 = 0 →
+        g.coeff 0 ≠ 0 →
+        Prec f g) :
+    succDegreeRootCountResidualTarget :=
+  posComboNoCommonSuccDegreeRootCountResidual_of_prec hresPrec
+
+/-- Challenge-facing reduction from the lead root-count branch and residual
+interlacing orientation to the full lower-threshold root-count target. -/
+theorem succDegreeRootCountTarget_of_lead_and_residualPrec
+    (hlead : succDegreeRootCountLeadTarget)
+    (hresPrec :
+      ∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 = 0 →
+        g.coeff 0 ≠ 0 →
+        Prec f g) :
+    succDegreeRootCountTarget :=
+  succDegreeRootCountTarget_of_residual_and_lead hlead
+    (succDegreeRootCountResidualTarget_of_prec hresPrec)
+
+/-- Challenge-facing reduction from the lead root-count branch and residual
+interlacing orientation to the repaired succ-degree pair endpoint. -/
+theorem succDegreePairTarget_of_lead_and_residualPrec
+    (hlead : succDegreeRootCountLeadTarget)
+    (hresPrec :
+      ∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 = 0 →
+        g.coeff 0 ≠ 0 →
+        Prec f g) :
+    succDegreePairTarget :=
+  succDegreePairHasCommonInterleaver_nonneg_of_residual_and_lead hlead
+    (succDegreeRootCountResidualTarget_of_prec hresPrec)
 
 /-- Challenge-facing reduction from succ-degree root counts to slot data. -/
 theorem succDegreeSlotDataTarget_of_rootCount
