@@ -67,11 +67,24 @@ theorem finiteSchurSzegoTarget_of_finitePolyaSchur
     finiteSchurSzegoTarget :=
   finiteSchurSzegoComposition_of_finitePolyaSchur h
 
+/-- Challenge-facing reduction from finite Pólya--Schur to the nonzero
+fixed-degree Schur--Szegő core. -/
+theorem finiteSchurSzegoNonzeroTarget_of_finitePolyaSchur
+    (h : finitePolyaSchurTarget) :
+    finiteSchurSzegoNonzeroTarget :=
+  finiteSchurSzegoCompositionNonzero_of_finitePolyaSchur h
+
 /-- Challenge-facing equivalence between fixed-degree Schur--Szegő and finite
 Pólya--Schur in the local nonnegative-coefficient convention. -/
 theorem finiteSchurSzegoTarget_iff_finitePolyaSchurTarget :
     finiteSchurSzegoTarget ↔ finitePolyaSchurTarget :=
   finiteSchurSzegoCompositionStatement_iff_finitePolyaSchur
+
+/-- Challenge-facing equivalence between the nonzero Schur--Szegő core and
+finite Pólya--Schur. -/
+theorem finiteSchurSzegoNonzeroTarget_iff_finitePolyaSchurTarget :
+    finiteSchurSzegoNonzeroTarget ↔ finitePolyaSchurTarget :=
+  finiteSchurSzegoCompositionNonzeroStatement_iff_finitePolyaSchur
 
 /-! ## Garloff--Wagner and Hurwitz-matrix targets -/
 

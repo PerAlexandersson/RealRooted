@@ -507,6 +507,21 @@ theorem finiteSchurSzegoCompositionStatement_iff_finitePolyaSchur :
   ⟨finitePolyaSchur_nonneg_of_schurSzego,
     finiteSchurSzegoComposition_of_finitePolyaSchur⟩
 
+/-- The finite Pólya--Schur theorem implies the nonzero core of fixed-degree
+Schur--Szegő composition. -/
+theorem finiteSchurSzegoCompositionNonzero_of_finitePolyaSchur
+    (hFPS : finitePolyaSchurNonnegStatement) :
+    finiteSchurSzegoCompositionNonzeroStatement :=
+  finiteSchurSzegoCompositionNonzero_of_full
+    (finiteSchurSzegoComposition_of_finitePolyaSchur hFPS)
+
+/-- The nonzero core of fixed-degree Schur--Szegő composition and finite
+Pólya--Schur are equivalent classical inputs in the local convention. -/
+theorem finiteSchurSzegoCompositionNonzeroStatement_iff_finitePolyaSchur :
+    finiteSchurSzegoCompositionNonzeroStatement ↔ finitePolyaSchurNonnegStatement :=
+  ⟨finitePolyaSchur_nonneg_of_schurSzegoNonzero,
+    finiteSchurSzegoCompositionNonzero_of_finitePolyaSchur⟩
+
 /-- Nonzero finite Schur--Szegő composition theorem.  This is the substantive
 classical leaf: `f` is a nonzero PF polynomial, `p` is a nonzero real-rooted
 polynomial, both have degree at most `n`, and the fixed-degree Schur--Szegő
