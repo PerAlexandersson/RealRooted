@@ -250,6 +250,20 @@ theorem sameDegreeRootCountAboveTarget_of_nonRoot
     sameDegreeRootCountAboveTarget :=
   posComboNoCommonSameDegreeRootCountAbove_of_nonRoot hcount
 
+/-- Challenge-facing reduction from common-non-root same-degree lower root
+counts to same-degree root crossing. -/
+theorem sameDegreeRootCrossingTarget_of_rootCountNonRoot
+    (hcount : sameDegreeRootCountNonRootTarget) :
+    sameDegreeRootCrossingTarget :=
+  posComboNoCommonSameDegreeRootCrossing_of_rootCountNonRoot hcount
+
+/-- Challenge-facing reduction from common-non-root same-degree upper root
+counts to same-degree root crossing. -/
+theorem sameDegreeRootCrossingTarget_of_rootCountAboveNonRoot
+    (hcount : sameDegreeRootCountAboveNonRootTarget) :
+    sameDegreeRootCrossingTarget :=
+  posComboNoCommonSameDegreeRootCrossing_of_rootCountAboveNonRoot hcount
+
 /-- Challenge-facing reduction from same-degree root counts to slot data. -/
 theorem sameDegreeSlotDataTarget_of_rootCount
     (hcount : sameDegreeRootCountTarget) :
@@ -262,6 +276,20 @@ theorem sameDegreeSlotDataTarget_of_rootCountAbove
     (hcount : sameDegreeRootCountAboveTarget) :
     sameDegreeSlotDataTarget :=
   posComboNoCommonSameDegreeSlotData_of_rootCountAbove hcount
+
+/-- Challenge-facing reduction from common-non-root same-degree lower root
+counts to slot data. -/
+theorem sameDegreeSlotDataTarget_of_rootCountNonRoot
+    (hcount : sameDegreeRootCountNonRootTarget) :
+    sameDegreeSlotDataTarget :=
+  posComboNoCommonSameDegreeSlotData_of_rootCountNonRoot hcount
+
+/-- Challenge-facing reduction from common-non-root same-degree upper root
+counts to slot data. -/
+theorem sameDegreeSlotDataTarget_of_rootCountAboveNonRoot
+    (hcount : sameDegreeRootCountAboveNonRootTarget) :
+    sameDegreeSlotDataTarget :=
+  posComboNoCommonSameDegreeSlotData_of_rootCountAboveNonRoot hcount
 
 /-- Challenge-facing reduction from same-degree root counts to the repaired
 same-degree pair endpoint. -/
@@ -276,6 +304,20 @@ theorem sameDegreePairTarget_of_rootCountAbove
     (hcount : sameDegreeRootCountAboveTarget) :
     sameDegreePairTarget :=
   sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove hcount
+
+/-- Challenge-facing reduction from common-non-root same-degree lower root
+counts to the repaired same-degree pair endpoint. -/
+theorem sameDegreePairTarget_of_rootCountNonRoot
+    (hcount : sameDegreeRootCountNonRootTarget) :
+    sameDegreePairTarget :=
+  sameDegreePairHasCommonInterleaver_nonneg_of_rootCountNonRoot hcount
+
+/-- Challenge-facing reduction from common-non-root same-degree upper root
+counts to the repaired same-degree pair endpoint. -/
+theorem sameDegreePairTarget_of_rootCountAboveNonRoot
+    (hcount : sameDegreeRootCountAboveNonRootTarget) :
+    sameDegreePairTarget :=
+  sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot hcount
 
 /-- Challenge-facing reduction from the same-degree orientation alternative to
 same-degree root crossing. -/

@@ -2114,6 +2114,54 @@ theorem sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove
   sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
     (posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove hcount)
 
+/-- Same-degree root crossing from the common-non-root lower-threshold
+root-count formulation. -/
+theorem posComboNoCommonSameDegreeRootCrossing_of_rootCountNonRoot
+    (hcount : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement) :
+    PosComboNoCommonSameDegreeRootCrossingNonnegStatement :=
+  posComboNoCommonSameDegreeRootCrossing_of_rootCount
+    (posComboNoCommonSameDegreeRootCount_of_nonRoot hcount)
+
+/-- Same-degree root crossing from the common-non-root upper-threshold
+root-count formulation. -/
+theorem posComboNoCommonSameDegreeRootCrossing_of_rootCountAboveNonRoot
+    (hcount : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement) :
+    PosComboNoCommonSameDegreeRootCrossingNonnegStatement :=
+  posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove
+    (posComboNoCommonSameDegreeRootCountAbove_of_nonRoot hcount)
+
+/-- Same-degree slot data from the common-non-root lower-threshold root-count
+formulation. -/
+theorem posComboNoCommonSameDegreeSlotData_of_rootCountNonRoot
+    (hcount : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement) :
+    PosComboNoCommonSameDegreeSlotDataNonnegStatement :=
+  posComboNoCommonSameDegreeSlotData_of_rootCount
+    (posComboNoCommonSameDegreeRootCount_of_nonRoot hcount)
+
+/-- Same-degree slot data from the common-non-root upper-threshold root-count
+formulation. -/
+theorem posComboNoCommonSameDegreeSlotData_of_rootCountAboveNonRoot
+    (hcount : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement) :
+    PosComboNoCommonSameDegreeSlotDataNonnegStatement :=
+  posComboNoCommonSameDegreeSlotData_of_rootCountAbove
+    (posComboNoCommonSameDegreeRootCountAbove_of_nonRoot hcount)
+
+/-- The repaired same-degree pair-interleaver endpoint follows from the
+common-non-root lower-threshold root-count formulation. -/
+theorem sameDegreePairHasCommonInterleaver_nonneg_of_rootCountNonRoot
+    (hcount : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement) :
+    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
+  sameDegreePairHasCommonInterleaver_nonneg_of_rootCount
+    (posComboNoCommonSameDegreeRootCount_of_nonRoot hcount)
+
+/-- The repaired same-degree pair-interleaver endpoint follows from the
+common-non-root upper-threshold root-count formulation. -/
+theorem sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot
+    (hcount : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement) :
+    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
+  sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove
+    (posComboNoCommonSameDegreeRootCountAbove_of_nonRoot hcount)
+
 /-- **Honest missing root-slot boundary for milestone B2 (#42).**
 
 This is the succ-degree analogue of the same-degree slot-intersection input
