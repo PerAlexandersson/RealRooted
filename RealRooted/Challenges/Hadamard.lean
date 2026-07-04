@@ -72,6 +72,11 @@ Hurwitz-stability form. -/
 abbrev hurwitzStableHadamardTarget : Prop :=
   hadamardPreservesHurwitzStableStatement
 
+/-- Challenge-facing right-half-plane analytic core for Garloff--Wagner,
+Theorem 1. -/
+abbrev rightHalfPlaneStableHadamardTarget : Prop :=
+  hadamardPreservesRightHalfPlaneStableStatement
+
 /-- Challenge-facing matrix Hadamard target for Hurwitz matrices. -/
 abbrev hurwitzMatrixHadamardTarget : Prop :=
   hadamardPreservesHurwitzMatrixTNStatement
@@ -131,6 +136,24 @@ theorem hurwitzMatrixHadamardOddEvenPFTarget_of_hurwitzSchur
     (h : hurwitzSchurTarget) :
     hurwitzMatrixHadamardOddEvenPFTarget :=
   hadamardPreservesHurwitzMatrixOddEvenPF_of_schur h
+
+/-- Challenge-facing odd/even PF consequence from Garloff--Wagner Theorem 1
+plus the Hurwitz-matrix total-nonnegativity criterion. -/
+theorem hurwitzMatrixHadamardOddEvenPFTarget_of_stableRoute
+    (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement)
+    (hThm1 : hurwitzStableHadamardTarget)
+    (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement) :
+    hurwitzMatrixHadamardOddEvenPFTarget :=
+  hadamardPreservesHurwitzMatrixOddEvenPF_of_stableRoute hBwd hThm1 hFwd
+
+/-- Challenge-facing odd/even PF consequence from the right-half-plane
+analytic core plus the Hurwitz-matrix total-nonnegativity criterion. -/
+theorem hurwitzMatrixHadamardOddEvenPFTarget_of_rightHalfPlaneRoute
+    (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement)
+    (hRHP : rightHalfPlaneStableHadamardTarget)
+    (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement) :
+    hurwitzMatrixHadamardOddEvenPFTarget :=
+  hadamardPreservesHurwitzMatrixOddEvenPF_of_rightHalfPlaneRoute hBwd hRHP hFwd
 
 /-- The triangular-free `3 x 3` target is equivalent to the conjunction of
 the full-band and corner-zero top-right subcases. -/

@@ -892,6 +892,16 @@ theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_stableRoute
   hadamardPreservesHurwitzMatrixTNDetLeThree_of_matrixTN
     (hadamardPreservesHurwitzMatrixTN_of_stableRoute hBwd hThm1 hFwd)
 
+/-- Odd/even PF consequence from Garloff--Wagner Theorem 1 plus both
+directions of the Hurwitz-matrix total-nonnegativity criterion. -/
+theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_stableRoute
+    (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement)
+    (hThm1 : hadamardPreservesHurwitzStableStatement)
+    (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement) :
+    hadamardPreservesHurwitzMatrixOddEvenPFStatement :=
+  hadamardPreservesHurwitzMatrixOddEvenPF_of_matrixTN
+    (hadamardPreservesHurwitzMatrixTN_of_stableRoute hBwd hThm1 hFwd)
+
 /-- Under the two directions of the Hurwitz-matrix criterion, Garloff--Wagner
 Theorem 1 is equivalent to the Hurwitz-matrix Hadamard leaf. -/
 theorem hadamardPreservesHurwitzStable_iff_matrixTN
@@ -928,6 +938,16 @@ theorem hadamardPreservesHurwitzMatrixTN_of_rightHalfPlaneRoute
     (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement) :
     hadamardPreservesHurwitzMatrixTNStatement :=
   (hadamardPreservesRightHalfPlaneStable_iff_matrixTN hFwd hBwd).1 hRHP
+
+/-- Odd/even PF consequence from the right-half-plane analytic core plus the
+Hurwitz-matrix total-nonnegativity criterion. -/
+theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_rightHalfPlaneRoute
+    (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement)
+    (hRHP : hadamardPreservesRightHalfPlaneStableStatement)
+    (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement) :
+    hadamardPreservesHurwitzMatrixOddEvenPFStatement :=
+  hadamardPreservesHurwitzMatrixOddEvenPF_of_matrixTN
+    (hadamardPreservesHurwitzMatrixTN_of_rightHalfPlaneRoute hBwd hRHP hFwd)
 
 /-- The pure Hurwitz Schur-product core implies the right-half-plane analytic
 core, modulo the two directions of the Hurwitz-matrix criterion. -/
