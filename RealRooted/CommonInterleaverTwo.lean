@@ -3767,6 +3767,15 @@ theorem posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_prec
     lia
   exact sameDegreeRootCountOriented_of_prec hprec hdeg' x
 
+/-- The full lead root-count branch follows from the both-nonzero branch and
+the `divX` orientation target for the right-zero branch. -/
+theorem posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_divX_prec
+    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
+    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement) :
+    PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement :=
+  posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_rightZero hboth
+    (posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_prec hdivX)
+
 /-- The residual succ-degree root-count branch follows from an interlacing
 orientation in that branch. -/
 theorem posComboNoCommonSuccDegreeRootCountResidual_of_prec
@@ -3819,6 +3828,44 @@ theorem posComboNoCommonSuccDegreeRootCrossing_of_residual_and_lead
     PosComboNoCommonSuccDegreeRootCrossingNonnegStatement :=
   posComboNoCommonSuccDegreeRootCrossing_of_rootCount
     (posComboNoCommonSuccDegreeRootCount_of_residual_and_lead hlead hres)
+
+/-- The lower-threshold succ-degree root-count target follows from the
+residual branch, the both-nonzero lead branch, and the right-zero `divX`
+orientation target. -/
+theorem posComboNoCommonSuccDegreeRootCount_of_residual_bothNonzero_divX_prec
+    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
+    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement)
+    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
+    PosComboNoCommonSuccDegreeRootCountNonnegStatement :=
+  posComboNoCommonSuccDegreeRootCount_of_residual_and_lead
+    (posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_divX_prec
+      hboth hdivX)
+    hres
+
+/-- The upper-threshold succ-degree root-count target follows from the
+residual branch, the both-nonzero lead branch, and the right-zero `divX`
+orientation target. -/
+theorem posComboNoCommonSuccDegreeRootCountAbove_of_residual_bothNonzero_divX_prec
+    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
+    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement)
+    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
+    PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement :=
+  posComboNoCommonSuccDegreeRootCountAbove_of_residual_and_lead
+    (posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_divX_prec
+      hboth hdivX)
+    hres
+
+/-- The succ-degree root-crossing target follows from the residual branch, the
+both-nonzero lead branch, and the right-zero `divX` orientation target. -/
+theorem posComboNoCommonSuccDegreeRootCrossing_of_residual_bothNonzero_divX_prec
+    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
+    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement)
+    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
+    PosComboNoCommonSuccDegreeRootCrossingNonnegStatement :=
+  posComboNoCommonSuccDegreeRootCrossing_of_residual_and_lead
+    (posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_divX_prec
+      hboth hdivX)
+    hres
 
 /-- Degree-zero base case for the succ-degree root-count formulation.
 
@@ -4400,6 +4447,18 @@ theorem succDegreePairHasCommonInterleaver_nonneg_of_residual_and_lead
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
   succDegreePairHasCommonInterleaver_nonneg_of_rootCount
     (posComboNoCommonSuccDegreeRootCount_of_residual_and_lead hlead hres)
+
+/-- The repaired succ-degree pair-interleaver endpoint follows from the
+residual branch, the both-nonzero lead branch, and the right-zero `divX`
+orientation target. -/
+theorem succDegreePairHasCommonInterleaver_nonneg_of_residual_bothNonzero_divX_prec
+    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
+    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement)
+    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+  succDegreePairHasCommonInterleaver_nonneg_of_rootCount
+    (posComboNoCommonSuccDegreeRootCount_of_residual_bothNonzero_divX_prec
+      hboth hdivX hres)
 
 /-- Succ-degree slot data from the PF/ASW left-endpoint route and the
 descending-root crossing inequalities. -/

@@ -708,6 +708,15 @@ theorem succDegreeRootCountLeadRightZeroTarget_of_divX_prec
   posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_prec
     horient
 
+/-- Challenge-facing reduction from the both-nonzero lead branch and the
+right-zero `divX` orientation target to the full lead branch. -/
+theorem succDegreeRootCountLeadTarget_of_bothNonzero_and_divXPrec
+    (hboth : succDegreeRootCountLeadBothNonzeroTarget)
+    (hdivX : succDegreeRootCountLeadRightZeroDivXPrecTarget) :
+    succDegreeRootCountLeadTarget :=
+  posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_divX_prec
+    hboth hdivX
+
 /-- Challenge-facing reduction from the residual branch and the two lead
 subbranches to the full lower-threshold root-count formulation. -/
 theorem succDegreeRootCountTarget_of_residual_and_leadSubbranches
@@ -718,6 +727,17 @@ theorem succDegreeRootCountTarget_of_residual_and_leadSubbranches
   succDegreeRootCountTarget_of_residual_and_lead
     (succDegreeRootCountLeadTarget_of_bothNonzero_and_rightZero hboth hright)
     hres
+
+/-- Challenge-facing reduction from the residual branch, the both-nonzero lead
+branch, and the right-zero `divX` orientation target to the full lower-threshold
+root-count formulation. -/
+theorem succDegreeRootCountTarget_of_residual_bothNonzero_divXPrec
+    (hboth : succDegreeRootCountLeadBothNonzeroTarget)
+    (hdivX : succDegreeRootCountLeadRightZeroDivXPrecTarget)
+    (hres : succDegreeRootCountResidualTarget) :
+    succDegreeRootCountTarget :=
+  posComboNoCommonSuccDegreeRootCount_of_residual_bothNonzero_divX_prec
+    hboth hdivX hres
 
 /-- Challenge-facing reduction from the succ-degree constant-term branches to
 the upper-threshold root-count formulation. -/
@@ -734,6 +754,28 @@ theorem succDegreeRootCrossingTarget_of_residual_and_lead
     (hres : succDegreeRootCountResidualTarget) :
     succDegreeRootCrossingTarget :=
   posComboNoCommonSuccDegreeRootCrossing_of_residual_and_lead hlead hres
+
+/-- Challenge-facing reduction from the residual branch, the both-nonzero lead
+branch, and the right-zero `divX` orientation target to the upper-threshold
+root-count formulation. -/
+theorem succDegreeRootCountAboveTarget_of_residual_bothNonzero_divXPrec
+    (hboth : succDegreeRootCountLeadBothNonzeroTarget)
+    (hdivX : succDegreeRootCountLeadRightZeroDivXPrecTarget)
+    (hres : succDegreeRootCountResidualTarget) :
+    succDegreeRootCountAboveTarget :=
+  posComboNoCommonSuccDegreeRootCountAbove_of_residual_bothNonzero_divX_prec
+    hboth hdivX hres
+
+/-- Challenge-facing reduction from the residual branch, the both-nonzero lead
+branch, and the right-zero `divX` orientation target to succ-degree root
+crossing. -/
+theorem succDegreeRootCrossingTarget_of_residual_bothNonzero_divXPrec
+    (hboth : succDegreeRootCountLeadBothNonzeroTarget)
+    (hdivX : succDegreeRootCountLeadRightZeroDivXPrecTarget)
+    (hres : succDegreeRootCountResidualTarget) :
+    succDegreeRootCrossingTarget :=
+  posComboNoCommonSuccDegreeRootCrossing_of_residual_bothNonzero_divX_prec
+    hboth hdivX hres
 
 /-- Challenge-facing reduction from residual interlacing orientation to the
 residual succ-degree root-count target. -/
@@ -866,6 +908,17 @@ theorem succDegreePairTarget_of_residual_and_lead
     (hres : succDegreeRootCountResidualTarget) :
     succDegreePairTarget :=
   succDegreePairHasCommonInterleaver_nonneg_of_residual_and_lead hlead hres
+
+/-- Challenge-facing reduction from the residual branch, the both-nonzero lead
+branch, and the right-zero `divX` orientation target to the repaired
+succ-degree pair endpoint. -/
+theorem succDegreePairTarget_of_residual_bothNonzero_divXPrec
+    (hboth : succDegreeRootCountLeadBothNonzeroTarget)
+    (hdivX : succDegreeRootCountLeadRightZeroDivXPrecTarget)
+    (hres : succDegreeRootCountResidualTarget) :
+    succDegreePairTarget :=
+  succDegreePairHasCommonInterleaver_nonneg_of_residual_bothNonzero_divX_prec
+    hboth hdivX hres
 
 /-- Challenge-facing degree-zero base case for the succ-degree root-crossing
 inequalities. -/
