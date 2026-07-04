@@ -458,6 +458,49 @@ theorem commonInterleaverTarget_of_rootCrossing_and_forward_asw_splits
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing_and_forwardASWSplits
     hsame hASW hsucc
 
+/-- Challenge-facing four-way package from the root-crossing formulations,
+with the succ-degree left endpoint supplied by the splitting-only ASW target. -/
+theorem fourWay_of_rootCrossing_and_forward_asw_splits
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hsame : sameDegreeRootCrossingTarget)
+    (hASW : forwardASWSplitsTarget)
+    (hsucc : succDegreeRootCrossingTarget) :
+    fourWayPackage fs :=
+  chudnovskySeymour_fourWay_of_rootCrossing_and_forward_asw_splits
+    hrr hpos hsame hASW hsucc
+
+/-- Challenge-facing reduction for the nonnegative four-way target from
+root-crossing plus splitting-only ASW. -/
+theorem fourWayNonnegCoeffsTarget_of_rootCrossing_and_forward_asw_splits
+    (hsame : sameDegreeRootCrossingTarget)
+    (hASW : forwardASWSplitsTarget)
+    (hsucc : succDegreeRootCrossingTarget) :
+    fourWayNonnegCoeffsTarget :=
+  chudnovskySeymour_fourWay_of_rootCrossing_forwardASWSplits_nonneg
+    hsame hASW hsucc
+
+/-- Challenge-facing reduction for the nonnegative common-right target from
+root-crossing plus splitting-only ASW. -/
+theorem commonInterleaverNonnegCoeffsTarget_of_rootCrossing_and_forward_asw_splits
+    (hsame : sameDegreeRootCrossingTarget)
+    (hASW : forwardASWSplitsTarget)
+    (hsucc : succDegreeRootCrossingTarget) :
+    commonInterleaverNonnegCoeffsTarget :=
+  chudnovskySeymour_commonInterleaver_of_rootCrossing_forwardASWSplits_nonneg
+    hsame hASW hsucc
+
+/-- Challenge-facing reduction for the nonnegative finite-family compatibility
+target from root-crossing plus splitting-only ASW. -/
+theorem familyCompatibleNonnegCoeffsTarget_of_rootCrossing_and_forward_asw_splits
+    (hsame : sameDegreeRootCrossingTarget)
+    (hASW : forwardASWSplitsTarget)
+    (hsucc : succDegreeRootCrossingTarget) :
+    familyCompatibleNonnegCoeffsTarget :=
+  chudnovskySeymour_familyCompatible_of_rootCrossing_forwardASWSplits_nonneg
+    hsame hASW hsucc
+
 /-- Challenge-facing reduction for the nonnegative-coefficient common-right
 target from the repaired same-degree/succ-degree no-common pair bridges. -/
 theorem commonInterleaverNonnegCoeffsTarget_of_pairDegreeSplit
