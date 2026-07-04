@@ -198,6 +198,58 @@ theorem card_filter_le_add_card_filter_gt (M : Multiset ℝ) (x : ℝ) :
     (Multiset.filter_add_not (p := fun y : ℝ => y ≤ x) M)
   simpa [Multiset.card_add, not_le] using h
 
+/-- Convert the upper-threshold succ-degree count bound into the asymmetric
+lower-threshold bound. -/
+theorem count_le_two_of_count_gt_diff_le_one
+    {M N : Multiset ℝ} {d : ℕ}
+    (hM : M.card = d) (hN : N.card = d + 1)
+    (hcount : ∀ x : ℝ,
+      ((M.filter (x < ·)).card : ℤ) - (N.filter (x < ·)).card ≤ 1 ∧
+      ((N.filter (x < ·)).card : ℤ) - (M.filter (x < ·)).card ≤ 1) :
+    ∀ x : ℝ,
+      ((M.filter (· ≤ x)).card : ℤ) - (N.filter (· ≤ x)).card ≤ 0 ∧
+      ((N.filter (· ≤ x)).card : ℤ) - (M.filter (· ≤ x)).card ≤ 2 := by
+  intro x
+  have hpartM := card_filter_le_add_card_filter_gt M x
+  have hpartN := card_filter_le_add_card_filter_gt N x
+  have hMcard : (M.filter (· ≤ x)).card + (M.filter (x < ·)).card = d := by
+    simpa [hM] using hpartM
+  have hNcard : (N.filter (· ≤ x)).card + (N.filter (x < ·)).card = d + 1 := by
+    simpa [hN] using hpartN
+  have hMcardz : ((M.filter (· ≤ x)).card : ℤ) + (M.filter (x < ·)).card = d := by
+    exact_mod_cast hMcard
+  have hNcardz :
+      ((N.filter (· ≤ x)).card : ℤ) + (N.filter (x < ·)).card = d + 1 := by
+    exact_mod_cast hNcard
+  have hupper := hcount x
+  constructor <;> lia
+
+/-- Convert the asymmetric lower-threshold succ-degree count bound into the
+upper-threshold count bound. -/
+theorem count_gt_diff_le_one_of_count_le_two
+    {M N : Multiset ℝ} {d : ℕ}
+    (hM : M.card = d) (hN : N.card = d + 1)
+    (hcount : ∀ x : ℝ,
+      ((M.filter (· ≤ x)).card : ℤ) - (N.filter (· ≤ x)).card ≤ 0 ∧
+      ((N.filter (· ≤ x)).card : ℤ) - (M.filter (· ≤ x)).card ≤ 2) :
+    ∀ x : ℝ,
+      ((M.filter (x < ·)).card : ℤ) - (N.filter (x < ·)).card ≤ 1 ∧
+      ((N.filter (x < ·)).card : ℤ) - (M.filter (x < ·)).card ≤ 1 := by
+  intro x
+  have hpartM := card_filter_le_add_card_filter_gt M x
+  have hpartN := card_filter_le_add_card_filter_gt N x
+  have hMcard : (M.filter (· ≤ x)).card + (M.filter (x < ·)).card = d := by
+    simpa [hM] using hpartM
+  have hNcard : (N.filter (· ≤ x)).card + (N.filter (x < ·)).card = d + 1 := by
+    simpa [hN] using hpartN
+  have hMcardz : ((M.filter (· ≤ x)).card : ℤ) + (M.filter (x < ·)).card = d := by
+    exact_mod_cast hMcard
+  have hNcardz :
+      ((N.filter (· ≤ x)).card : ℤ) + (N.filter (x < ·)).card = d + 1 := by
+    exact_mod_cast hNcard
+  have hlower := hcount x
+  constructor <;> lia
+
 /-- Succ-degree root crossing from the more analytic upper-threshold count
 bound.
 
@@ -216,20 +268,7 @@ theorem succRootCrossing_of_count_gt_diff_le_one
     (∀ j, 1 ≤ j → j < d →
         ((M.sort (· ≤ ·)).reverse).getD j 0 ≤
           ((N.sort (· ≤ ·)).reverse).getD (j - 1) 0) := by
-  refine succRootCrossing_of_count_le_two hM hN ?_
-  intro x
-  have hpartM := card_filter_le_add_card_filter_gt M x
-  have hpartN := card_filter_le_add_card_filter_gt N x
-  have hMcard : (M.filter (· ≤ x)).card + (M.filter (x < ·)).card = d := by
-    simpa [hM] using hpartM
-  have hNcard : (N.filter (· ≤ x)).card + (N.filter (x < ·)).card = d + 1 := by
-    simpa [hN] using hpartN
-  have hMcardz : ((M.filter (· ≤ x)).card : ℤ) + (M.filter (x < ·)).card = d := by
-    exact_mod_cast hMcard
-  have hNcardz :
-      ((N.filter (· ≤ x)).card : ℤ) + (N.filter (x < ·)).card = d + 1 := by
-    exact_mod_cast hNcard
-  have hupper := hcount x
-  constructor <;> lia
+  exact succRootCrossing_of_count_le_two hM hN
+    (count_le_two_of_count_gt_diff_le_one hM hN hcount)
 
 end RealRooted

@@ -268,6 +268,20 @@ theorem succDegreeRootCrossingTarget_of_rootCountAbove
     succDegreeRootCrossingTarget :=
   posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove hcount
 
+/-- Challenge-facing conversion from upper-threshold succ-degree root counts
+to lower-threshold succ-degree root counts. -/
+theorem succDegreeRootCountTarget_of_rootCountAbove
+    (hcount : succDegreeRootCountAboveTarget) :
+    succDegreeRootCountTarget :=
+  posComboNoCommonSuccDegreeRootCount_of_rootCountAbove hcount
+
+/-- Challenge-facing conversion from lower-threshold succ-degree root counts
+to upper-threshold succ-degree root counts. -/
+theorem succDegreeRootCountAboveTarget_of_rootCount
+    (hcount : succDegreeRootCountTarget) :
+    succDegreeRootCountAboveTarget :=
+  posComboNoCommonSuccDegreeRootCountAbove_of_rootCount hcount
+
 /-- Challenge-facing degree-zero base case for the succ-degree root-crossing
 inequalities. -/
 theorem succDegreeRootCrossingPair_of_natDegree_eq_zero
@@ -286,6 +300,15 @@ theorem succDegreeRootCountPair_of_natDegree_eq_zero
       ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 :=
   succDegreeRootCount_of_natDegree_eq_zero hf hg hdeg hf_deg0 x
+
+/-- Challenge-facing degree-zero base case for the upper-threshold succ-degree
+root-count formulation. -/
+theorem succDegreeRootCountAbovePair_of_natDegree_eq_zero
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hdeg : g.natDegree = f.natDegree + 1) (hf_deg0 : f.natDegree = 0) (x : ℝ) :
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 :=
+  succDegreeRootCountAbove_of_natDegree_eq_zero hf hg hdeg hf_deg0 x
 
 /-- Challenge-facing degree-one analytic core for the succ-degree
 root-crossing target. -/

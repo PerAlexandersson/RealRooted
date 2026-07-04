@@ -2190,6 +2190,38 @@ theorem succDegreeRootCrossing_of_rootCountAbove
     rw [card_roots_of_splits hg, hdeg]
   exact succRootCrossing_of_count_gt_diff_le_one hMcard hNcard hcount
 
+/-- Convert the upper-threshold succ-degree root-count formulation into the
+lower-threshold formulation. -/
+theorem succDegreeRootCount_of_rootCountAbove
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hcount : ∀ x : ℝ,
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :
+    ∀ x : ℝ,
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 := by
+  have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
+  have hNcard : g.roots.card = f.natDegree + 1 := by
+    rw [card_roots_of_splits hg, hdeg]
+  exact count_le_two_of_count_gt_diff_le_one hMcard hNcard hcount
+
+/-- Convert the lower-threshold succ-degree root-count formulation into the
+upper-threshold formulation. -/
+theorem succDegreeRootCountAbove_of_rootCount
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hcount : ∀ x : ℝ,
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2) :
+    ∀ x : ℝ,
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
+  have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
+  have hNcard : g.roots.card = f.natDegree + 1 := by
+    rw [card_roots_of_splits hg, hdeg]
+  exact count_gt_diff_le_one_of_count_le_two hMcard hNcard hcount
+
 /-- The succ-degree root-count formulation implies the descending-root
 crossing formulation. -/
 theorem posComboNoCommonSuccDegreeRootCrossing_of_rootCount
@@ -2210,6 +2242,28 @@ theorem posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove
   have hg_split : g.Splits :=
     (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
   exact succDegreeRootCrossing_of_rootCountAbove hf_split hg_split hdeg
+    (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split)
+
+/-- The upper-threshold root-count target implies the lower-threshold
+root-count target. -/
+theorem posComboNoCommonSuccDegreeRootCount_of_rootCountAbove
+    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement) :
+    PosComboNoCommonSuccDegreeRootCountNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split
+  have hg_split : g.Splits :=
+    (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
+  exact succDegreeRootCount_of_rootCountAbove hf_split hg_split hdeg
+    (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split)
+
+/-- The lower-threshold root-count target implies the upper-threshold
+root-count target. -/
+theorem posComboNoCommonSuccDegreeRootCountAbove_of_rootCount
+    (hcount : PosComboNoCommonSuccDegreeRootCountNonnegStatement) :
+    PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split
+  have hg_split : g.Splits :=
+    (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
+  exact succDegreeRootCountAbove_of_rootCount hf_split hg_split hdeg
     (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split)
 
 /-- Degree-zero base case for the succ-degree root-count formulation.
@@ -2259,6 +2313,52 @@ theorem succDegreeRootCount_of_posCombo_natDegree_eq_zero
   have hg_split : g.Splits :=
     (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
   exact succDegreeRootCount_of_natDegree_eq_zero hf_split hg_split hdeg hfdeg x
+
+/-- Degree-zero base case for the upper-threshold succ-degree root-count
+formulation. -/
+theorem succDegreeRootCountAbove_of_natDegree_eq_zero
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hdeg : g.natDegree = f.natDegree + 1) (hfdeg : f.natDegree = 0) (x : ℝ) :
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
+  have hfcard_nat : (f.roots.filter (x < ·)).card = 0 := by
+    have hle : (f.roots.filter (x < ·)).card ≤ 0 := by
+      calc
+        (f.roots.filter (x < ·)).card ≤ f.roots.card :=
+          Multiset.card_le_card (Multiset.filter_le _ _)
+        _ = f.natDegree := card_roots_of_splits hf
+        _ = 0 := hfdeg
+    exact Nat.eq_zero_of_le_zero hle
+  have hgcard_nat : (g.roots.filter (x < ·)).card ≤ 1 := by
+    calc
+      (g.roots.filter (x < ·)).card ≤ g.roots.card :=
+        Multiset.card_le_card (Multiset.filter_le _ _)
+      _ = g.natDegree := card_roots_of_splits hg
+      _ = f.natDegree + 1 := hdeg
+      _ = 1 := by rw [hfdeg]
+  have hfcard : ((f.roots.filter (x < ·)).card : ℤ) = 0 := by
+    exact_mod_cast hfcard_nat
+  have hgcard : ((g.roots.filter (x < ·)).card : ℤ) ≤ 1 := by
+    exact_mod_cast hgcard_nat
+  have hgnonneg : (0 : ℤ) ≤ (g.roots.filter (x < ·)).card := by
+    exact_mod_cast Nat.zero_le (g.roots.filter (x < ·)).card
+  constructor <;> lia
+
+/-- Degree-zero base case for the upper-threshold succ-degree analytic
+root-count target in the positive-combination/no-common setting. -/
+theorem succDegreeRootCountAbove_of_posCombo_natDegree_eq_zero
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (_hfnn : HasNonnegCoeffs f) (_hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (_hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hf_split : f.Splits) (hfdeg : f.natDegree = 0) (x : ℝ) :
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
+  have hg_split : g.Splits :=
+    (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
+  exact succDegreeRootCountAbove_of_natDegree_eq_zero hf_split hg_split hdeg hfdeg x
 
 /-- Low-degree base case for the succ-degree root-crossing target.  In the
 constant-vs-linear case all crossing inequalities are vacuous. -/
