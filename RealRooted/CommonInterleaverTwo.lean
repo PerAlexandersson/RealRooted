@@ -1170,6 +1170,27 @@ theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_degree_le_one
   pairHasCommonInterleaver_of_sameDegree_natDegree_le_one
     hf_pos hg_pos hdeg hf_deg_le_one
 
+/-- Low-degree base case for the same-degree root-slot data.  Through degree one,
+the common-right-interleaver base case already supplies every matching slot
+intersection. -/
+theorem sameDegreeSlotData_of_natDegree_le_one
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hf_deg_le_one : f.natDegree ≤ 1) :
+    ∀ j, j < f.natDegree + 1 →
+      ∀ (hjf : j < (rootSeqDesc f).length + 1)
+        (hjg : j < (rootSeqDesc g).length + 1),
+        (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+          rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty := by
+  obtain ⟨h, hfh, hgh⟩ :=
+    posComboNoCommonSameDegreePairHasCommonInterleaver_of_degree_le_one
+      hf_pos hg_pos hdeg hf_deg_le_one
+  intro j hj _ _
+  have hjg' : j < g.natDegree + 1 := by lia
+  exact rootSlotInterval_inter_nonempty_of_commonInterleaver hfh hgh j hj hjg'
+
 /-- Succ-degree branch of the honest no-common target is already unconditional
 in the constant-vs-linear endpoint case. -/
 theorem posComboNoCommonSuccDegreeOrientation_of_degree_zero
@@ -1207,6 +1228,29 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_degree_zero
   pairHasCommonInterleaver_of_prec <|
     posComboNoCommonSuccDegreeOrientation_of_degree_zero
       hf_pos hg_pos hf_deg0 hsucc
+
+/-- Degree-zero base case for the succ-degree root-slot data.  In the
+constant-vs-linear endpoint, the unconditional common interleaver recovers both
+the left real-rootedness and all matching slot intersections. -/
+theorem succDegreeSlotData_of_natDegree_eq_zero
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hf_deg0 : f.natDegree = 0)
+    (hsucc : g.natDegree = f.natDegree + 1) :
+    (f ≠ 0 ∧ f.Splits) ∧
+      ∀ j, j < f.natDegree + 1 →
+        ∀ (hjf : j < (rootSeqDesc f).length + 1)
+          (hjg : j < (rootSeqDesc g).length + 1),
+          (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+            rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty := by
+  obtain ⟨h, hfh, hgh⟩ :=
+    posComboNoCommonSuccDegreePairHasCommonInterleaver_of_degree_zero
+      hf_pos hg_pos hf_deg0 hsucc
+  refine ⟨hfh.1, ?_⟩
+  intro j hj _ _
+  have hjg' : j < g.natDegree + 1 := by lia
+  exact rootSlotInterval_inter_nonempty_of_commonInterleaver hfh hgh j hj hjg'
 
 /-- Degree-one left-hand endpoint of the corrected succ-degree branch under
 the affine-family bridge.  The public affine-family degree-one lemma gives the

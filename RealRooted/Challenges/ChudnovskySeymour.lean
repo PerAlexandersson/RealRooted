@@ -287,6 +287,21 @@ theorem sameDegreePairHasCommonInterleaver_of_natDegree_le_one
   posComboNoCommonSameDegreePairHasCommonInterleaver_of_degree_le_one
     hf_pos hg_pos hdeg hf_deg_le_one
 
+/-- Challenge-facing low-degree base case for same-degree root-slot data. -/
+theorem sameDegreeSlotDataPair_of_natDegree_le_one
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hf_deg_le_one : f.natDegree ≤ 1) :
+    ∀ j, j < f.natDegree + 1 →
+      ∀ (hjf : j < (rootSeqDesc f).length + 1)
+        (hjg : j < (rootSeqDesc g).length + 1),
+        (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+          rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty :=
+  sameDegreeSlotData_of_natDegree_le_one
+    hf_pos hg_pos hdeg hf_deg_le_one
+
 /-- Challenge-facing reduction from the same-degree orientation alternative to
 the repaired same-degree pair endpoint. -/
 theorem sameDegreePairTarget_of_orientationAlternative
@@ -397,6 +412,22 @@ theorem succDegreeRootCountAbovePair_of_natDegree_eq_zero
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 :=
   succDegreeRootCountAbove_of_natDegree_eq_zero hf hg hdeg hf_deg0 x
+
+/-- Challenge-facing degree-zero base case for succ-degree root-slot data. -/
+theorem succDegreeSlotDataPair_of_natDegree_eq_zero
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hf_deg0 : f.natDegree = 0)
+    (hsucc : g.natDegree = f.natDegree + 1) :
+    (f ≠ 0 ∧ f.Splits) ∧
+      ∀ j, j < f.natDegree + 1 →
+        ∀ (hjf : j < (rootSeqDesc f).length + 1)
+          (hjg : j < (rootSeqDesc g).length + 1),
+          (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+            rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty :=
+  succDegreeSlotData_of_natDegree_eq_zero
+    hf_pos hg_pos hf_deg0 hsucc
 
 /-- Challenge-facing degree-one analytic core for the succ-degree
 root-crossing target. -/
