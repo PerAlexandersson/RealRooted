@@ -124,6 +124,16 @@ equivalent to the zero-aware target used by the PF-limit route. -/
 abbrev forwardASWSplitsTarget : Prop :=
   aissenSchoenbergWhitneyForwardSplitsStatement
 
+/-- Affine-family bridge target for packaging the no-common nonnegative
+positive-combination hypotheses into Branden's affine-family input. -/
+abbrev affineFamilyTarget : Prop :=
+  PosComboNoCommonAffineFamilyStatement
+
+/-- Boundary-right-pair orientation target; this is a stronger sufficient
+condition for the affine-family bridge. -/
+abbrev boundaryRightPairOrientationTarget : Prop :=
+  PosComboNoCommonBoundaryRightPairOrientationStatement
+
 /-- Succ-degree root-slot reformulation of milestone B2. -/
 abbrev succDegreeSlotDataTarget : Prop :=
   PosComboNoCommonSuccDegreeSlotDataNonnegStatement
@@ -440,16 +450,23 @@ theorem succDegreePairTarget_of_orientation
 /-- Challenge-facing reduction from the affine-family bridge to the repaired
 succ-degree pair endpoint. -/
 theorem succDegreePairTarget_of_affineFamily
-    (haff : PosComboNoCommonAffineFamilyStatement) :
+    (haff : affineFamilyTarget) :
     succDegreePairTarget :=
   posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haff
+
+/-- Challenge-facing reduction from boundary-right-pair orientation to the
+affine-family bridge. -/
+theorem affineFamilyTarget_of_boundaryRight
+    (hboundary : boundaryRightPairOrientationTarget) :
+    affineFamilyTarget :=
+  posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary
 
 /-- Challenge-facing no-common left-endpoint reduction from the affine-family
 bridge.  This is the endpoint part of `succDegreePairTarget_of_affineFamily`;
 the remaining input is producing the affine family from positive
 compatibility. -/
 theorem succDegreeNoCommonLeftSplitsTarget_of_affineFamily
-    (haff : PosComboNoCommonAffineFamilyStatement)
+    (haff : affineFamilyTarget)
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -465,7 +482,7 @@ theorem succDegreeNoCommonLeftSplitsTarget_of_affineFamily
 /-- Challenge-facing no-common left-endpoint reduction from boundary-right
 pair orientation. -/
 theorem succDegreeNoCommonLeftSplitsTarget_of_boundaryRight
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement)
+    (hboundary : boundaryRightPairOrientationTarget)
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -481,7 +498,7 @@ theorem succDegreeNoCommonLeftSplitsTarget_of_boundaryRight
 /-- Challenge-facing reduction from the boundary-right-pair orientation
 statement to the repaired succ-degree pair endpoint. -/
 theorem succDegreePairTarget_of_boundaryRight
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    (hboundary : boundaryRightPairOrientationTarget) :
     succDegreePairTarget :=
   succDegreePairHasCommonInterleaver_nonneg_of_boundaryRightPairOrientation
     hboundary
@@ -541,7 +558,7 @@ theorem commonInterleaverTarget_of_rootCrossing_and_forward_asw_splits
 the affine-family bridge for the succ-degree branch. -/
 theorem commonInterleaverTarget_of_sameDegreeRootCrossing_and_affineFamily
     (hsame : sameDegreeRootCrossingTarget)
-    (haff : PosComboNoCommonAffineFamilyStatement) :
+    (haff : affineFamilyTarget) :
     commonInterleaverTarget :=
   chudnovskySeymour_commonInterleaver_of_sameDegreeCrossing_affineFamily
     hsame haff
@@ -593,7 +610,7 @@ theorem fourWayNonnegCoeffsTarget_of_rootCrossing_and_forward_asw_splits
 same-degree root-crossing and the affine-family bridge. -/
 theorem fourWayNonnegCoeffsTarget_of_sameDegreeRootCrossing_and_affineFamily
     (hsame : sameDegreeRootCrossingTarget)
-    (haff : PosComboNoCommonAffineFamilyStatement) :
+    (haff : affineFamilyTarget) :
     fourWayNonnegCoeffsTarget :=
   chudnovskySeymour_fourWay_of_sameDegreeRootCrossing_and_affineFamily_nonneg
     hsame haff
@@ -620,7 +637,7 @@ theorem commonInterleaverNonnegCoeffsTarget_of_rootCrossing_and_forward_asw_spli
 same-degree root-crossing and the affine-family bridge. -/
 theorem commonInterleaverNonnegCoeffsTarget_of_sameDegreeRootCrossing_and_affineFamily
     (hsame : sameDegreeRootCrossingTarget)
-    (haff : PosComboNoCommonAffineFamilyStatement) :
+    (haff : affineFamilyTarget) :
     commonInterleaverNonnegCoeffsTarget :=
   chudnovskySeymour_commonInterleaver_of_sameDegreeRootCrossing_and_affineFamily_nonneg
     hsame haff
@@ -647,7 +664,7 @@ theorem familyCompatibleNonnegCoeffsTarget_of_rootCrossing_and_forward_asw_split
 target from same-degree root-crossing and the affine-family bridge. -/
 theorem familyCompatibleNonnegCoeffsTarget_of_sameDegreeRootCrossing_and_affineFamily
     (hsame : sameDegreeRootCrossingTarget)
-    (haff : PosComboNoCommonAffineFamilyStatement) :
+    (haff : affineFamilyTarget) :
     familyCompatibleNonnegCoeffsTarget :=
   chudnovskySeymour_familyCompatible_of_sameDegreeRootCrossing_and_affineFamily_nonneg
     hsame haff
@@ -673,7 +690,7 @@ theorem commonInterleaverNonnegCoeffsTarget_of_degreeSplit
 /-- Challenge-facing reduction for the nonnegative-coefficient common-right
 target from the boundary-right-pair orientation statement. -/
 theorem commonInterleaverNonnegCoeffsTarget_of_boundaryRight
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    (hboundary : boundaryRightPairOrientationTarget) :
     commonInterleaverNonnegCoeffsTarget :=
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_boundaryRight_nonneg
     hboundary
@@ -724,7 +741,7 @@ theorem familyCompatibleNonnegCoeffsTarget_of_degreeSplit
 /-- Challenge-facing reduction for the nonnegative-coefficient finite-family
 compatibility target from the boundary-right-pair orientation statement. -/
 theorem familyCompatibleNonnegCoeffsTarget_of_boundaryRight
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    (hboundary : boundaryRightPairOrientationTarget) :
     familyCompatibleNonnegCoeffsTarget :=
   familyCompatibleNonnegCoeffsTarget_of_commonInterleaverTarget
     (commonInterleaverNonnegCoeffsTarget_of_boundaryRight hboundary)
@@ -748,7 +765,7 @@ theorem fourWayNonnegCoeffsTarget_of_degreeSplit
 /-- Challenge-facing reduction for the nonnegative four-way package target
 from the boundary-right-pair orientation statement. -/
 theorem fourWayNonnegCoeffsTarget_of_boundaryRight
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    (hboundary : boundaryRightPairOrientationTarget) :
     fourWayNonnegCoeffsTarget :=
   chudnovskySeymour_fourWay_of_boundaryRight_nonneg hboundary
 
