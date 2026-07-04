@@ -742,6 +742,58 @@ theorem fourWay_of_rootCrossing
   chudnovskySeymour_fourWay_of_rootCrossing
     hrr hpos hsame hsucc
 
+/-- Challenge-facing four-way package from lower-threshold root-count
+formulations alone. -/
+theorem fourWay_of_rootCount
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hsame : sameDegreeRootCountTarget)
+    (hsucc : succDegreeRootCountTarget) :
+    fourWayPackage fs :=
+  fourWay_of_rootCrossing hrr hpos
+    (sameDegreeRootCrossingTarget_of_rootCount hsame)
+    (succDegreeRootCrossingTarget_of_rootCount hsucc)
+
+/-- Challenge-facing four-way package from same-degree lower-threshold root
+counts and succ-degree upper-threshold root counts. -/
+theorem fourWay_of_rootCountAbove
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hsame : sameDegreeRootCountTarget)
+    (hsucc : succDegreeRootCountAboveTarget) :
+    fourWayPackage fs :=
+  fourWay_of_rootCrossing hrr hpos
+    (sameDegreeRootCrossingTarget_of_rootCount hsame)
+    (succDegreeRootCrossingTarget_of_rootCountAbove hsucc)
+
+/-- Challenge-facing four-way package from same-degree upper-threshold root
+counts and succ-degree lower-threshold root counts. -/
+theorem fourWay_of_sameRootCountAbove
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hsame : sameDegreeRootCountAboveTarget)
+    (hsucc : succDegreeRootCountTarget) :
+    fourWayPackage fs :=
+  fourWay_of_rootCrossing hrr hpos
+    (sameDegreeRootCrossingTarget_of_rootCountAbove hsame)
+    (succDegreeRootCrossingTarget_of_rootCount hsucc)
+
+/-- Challenge-facing four-way package from upper-threshold root-count
+formulations in both branches. -/
+theorem fourWay_of_rootCountAboveBoth
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hsame : sameDegreeRootCountAboveTarget)
+    (hsucc : succDegreeRootCountAboveTarget) :
+    fourWayPackage fs :=
+  fourWay_of_rootCrossing hrr hpos
+    (sameDegreeRootCrossingTarget_of_rootCountAbove hsame)
+    (succDegreeRootCrossingTarget_of_rootCountAbove hsucc)
+
 /-- Challenge-facing four-way package from the root-crossing formulations,
 with the succ-degree left endpoint supplied by the splitting-only ASW target. -/
 theorem fourWay_of_rootCrossing_and_forward_asw_splits
