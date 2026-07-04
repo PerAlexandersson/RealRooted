@@ -174,6 +174,11 @@ non-root thresholds. -/
 abbrev succDegreeRootCountAboveNonRootTarget : Prop :=
   PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement
 
+/-- Succ-degree lower-threshold root-count subtarget restricted to common
+non-root thresholds. -/
+abbrev succDegreeRootCountNonRootTarget : Prop :=
+  PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement
+
 /-- Succ-degree residual constant-term root-count branch. -/
 abbrev succDegreeRootCountResidualTarget : Prop :=
   PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement
@@ -458,12 +463,52 @@ theorem succDegreeRootCountAboveTarget_of_nonRoot
     succDegreeRootCountAboveTarget :=
   posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot hcount
 
+/-- Challenge-facing equivalence between the upper and lower common-non-root
+succ-degree root-count formulations. -/
+theorem succDegreeRootCountAboveNonRootTarget_iff_rootCountNonRoot :
+    succDegreeRootCountAboveNonRootTarget ↔ succDegreeRootCountNonRootTarget :=
+  posComboNoCommonSuccDegreeRootCountAboveNonRoot_iff_rootCountNonRoot
+
+/-- Challenge-facing reduction from common-non-root succ-degree lower root
+counts to the full upper-threshold formulation. -/
+theorem succDegreeRootCountAboveTarget_of_rootCountNonRoot
+    (hcount : succDegreeRootCountNonRootTarget) :
+    succDegreeRootCountAboveTarget :=
+  posComboNoCommonSuccDegreeRootCountAbove_of_rootCountNonRoot hcount
+
 /-- Challenge-facing reduction from common-non-root succ-degree upper root
 counts to the lower-threshold formulation. -/
 theorem succDegreeRootCountTarget_of_nonRoot
     (hcount : succDegreeRootCountAboveNonRootTarget) :
     succDegreeRootCountTarget :=
   posComboNoCommonSuccDegreeRootCount_of_nonRoot hcount
+
+/-- Challenge-facing reduction from common-non-root succ-degree lower root
+counts to the full lower-threshold formulation. -/
+theorem succDegreeRootCountTarget_of_rootCountNonRoot
+    (hcount : succDegreeRootCountNonRootTarget) :
+    succDegreeRootCountTarget :=
+  posComboNoCommonSuccDegreeRootCount_of_rootCountNonRoot hcount
+
+/-- Challenge-facing reduction from common-non-root succ-degree lower root
+counts to root crossing. -/
+theorem succDegreeRootCrossingTarget_of_rootCountNonRoot
+    (hcount : succDegreeRootCountNonRootTarget) :
+    succDegreeRootCrossingTarget :=
+  posComboNoCommonSuccDegreeRootCrossing_of_rootCountNonRoot hcount
+
+/-- Challenge-facing right-pencil parity bridge for succ-degree upper root
+counts. -/
+theorem succDegreeRootCountAbove_oddDiff_iff_pencilCrossing
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g) (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
+    (Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card) ↔
+      ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) :=
+  succDegree_odd_roots_gt_count_sub_iff_exists_pos_isRoot_add_right
+    hf_pos hg_pos hfg hdeg hf_split hxf hxg
 
 /-- Challenge-facing reduction from the succ-degree constant-term branches to
 the full lower-threshold root-count formulation. -/
@@ -509,6 +554,13 @@ theorem succDegreeSlotDataTarget_of_nonRoot
     succDegreeSlotDataTarget :=
   posComboNoCommonSuccDegreeSlotData_of_nonRoot hcount
 
+/-- Challenge-facing reduction from common-non-root succ-degree lower root
+counts to slot data. -/
+theorem succDegreeSlotDataTarget_of_rootCountNonRoot
+    (hcount : succDegreeRootCountNonRootTarget) :
+    succDegreeSlotDataTarget :=
+  posComboNoCommonSuccDegreeSlotData_of_rootCountNonRoot hcount
+
 /-- Challenge-facing reduction from the succ-degree constant-term branches to
 slot data. -/
 theorem succDegreeSlotDataTarget_of_residual_and_lead
@@ -537,6 +589,13 @@ theorem succDegreePairTarget_of_nonRoot
     (hcount : succDegreeRootCountAboveNonRootTarget) :
     succDegreePairTarget :=
   succDegreePairHasCommonInterleaver_nonneg_of_nonRoot hcount
+
+/-- Challenge-facing reduction from common-non-root succ-degree lower root
+counts to the repaired succ-degree pair endpoint. -/
+theorem succDegreePairTarget_of_rootCountNonRoot
+    (hcount : succDegreeRootCountNonRootTarget) :
+    succDegreePairTarget :=
+  succDegreePairHasCommonInterleaver_nonneg_of_rootCountNonRoot hcount
 
 /-- Challenge-facing reduction from the succ-degree constant-term branches to
 the repaired succ-degree pair endpoint. -/

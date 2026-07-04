@@ -2838,6 +2838,75 @@ def PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement : Prop :=
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1
 
+/-- Partition roots of a splitting polynomial by a threshold. -/
+theorem card_roots_filter_gt_add_le_of_splits {p : ℝ[X]} (hp : p.Splits)
+    (x : ℝ) :
+    (p.roots.filter (x < ·)).card + (p.roots.filter (· ≤ x)).card =
+      p.natDegree := by
+  have hcompl :
+      p.roots.filter (· ≤ x) = p.roots.filter (fun r => ¬ x < r) := by
+    apply Multiset.filter_congr
+    intro r _
+    exact ⟨fun h => not_lt.mpr h, fun h => not_lt.mp h⟩
+  rw [hcompl, ← Multiset.card_add, Multiset.filter_add_not,
+    card_roots_of_splits hp]
+
+/-- Common-non-root version of the succ-degree lower root-count formulation. -/
+def PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    f.Splits →
+    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2
+
+/-- At a fixed threshold, the succ-degree upper common-non-root bounds are
+equivalent to the lower common-non-root bounds. -/
+theorem succDegreeRootCountAbove_nonRoot_iff_rootCount_nonRoot_pointwise
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hdeg : g.natDegree = f.natDegree + 1) (x : ℝ) :
+    (((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+        ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)
+      ↔
+    (((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+        ((g.roots.filter (· ≤ x)).card : ℤ) -
+          (f.roots.filter (· ≤ x)).card ≤ 2) := by
+  have hfpart := card_roots_filter_gt_add_le_of_splits hf x
+  have hgpart := card_roots_filter_gt_add_le_of_splits hg x
+  have hfpartZ :
+      ((f.roots.filter (x < ·)).card : ℤ) + (f.roots.filter (· ≤ x)).card =
+        f.natDegree := by exact_mod_cast hfpart
+  have hgpartZ :
+      ((g.roots.filter (x < ·)).card : ℤ) + (g.roots.filter (· ≤ x)).card =
+        g.natDegree := by exact_mod_cast hgpart
+  have hdegZ : (g.natDegree : ℤ) = (f.natDegree : ℤ) + 1 := by exact_mod_cast hdeg
+  constructor <;> · rintro ⟨h1, h2⟩; constructor <;> lia
+
+/-- The succ-degree upper common-non-root root-count target is equivalent to
+the lower common-non-root root-count target. -/
+theorem posComboNoCommonSuccDegreeRootCountAboveNonRoot_iff_rootCountNonRoot :
+    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement ↔
+      PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement := by
+  constructor
+  · intro hcount f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split x hxf hxg
+    have hg_split : g.Splits :=
+      (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
+    exact (succDegreeRootCountAbove_nonRoot_iff_rootCount_nonRoot_pointwise
+      hf_split hg_split hdeg x).mp
+      (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split x hxf hxg)
+  · intro hcount f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split x hxf hxg
+    have hg_split : g.Splits :=
+      (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
+    exact (succDegreeRootCountAbove_nonRoot_iff_rootCount_nonRoot_pointwise
+      hf_split hg_split hdeg x).mpr
+      (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split x hxf hxg)
+
 /-- Root-count bridge for the succ-degree root-crossing target.
 
 The asymmetric lower-threshold count inequalities encode the fact that `g`
@@ -3036,6 +3105,29 @@ theorem posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot
   exact rootCountAbove_diff_le_one_of_nonRoot_isRoot hf_pos.ne_zero hg_ne
     (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split)
 
+/-- The succ-degree lower common-non-root root-count target implies the full
+upper-threshold succ-degree root-count target. -/
+theorem posComboNoCommonSuccDegreeRootCountAbove_of_rootCountNonRoot
+    (hcount : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
+    PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement :=
+  posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot
+    (posComboNoCommonSuccDegreeRootCountAboveNonRoot_iff_rootCountNonRoot.mpr
+      hcount)
+
+/-- Succ-degree right-pencil parity bridge for upper root counts. -/
+theorem succDegree_odd_roots_gt_count_sub_iff_exists_pos_isRoot_add_right
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g) (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
+    (Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card) ↔
+      ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) := by
+  have hg_split : g.Splits :=
+    (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
+  exact sameDegree_odd_roots_gt_count_sub_iff_exists_pos_isRoot_add_right
+    hf_split hg_split hf_pos hg_pos hxf hxg
+
 /-- The succ-degree root-count formulation implies the descending-root
 crossing formulation. -/
 theorem posComboNoCommonSuccDegreeRootCrossing_of_rootCount
@@ -3087,6 +3179,22 @@ theorem posComboNoCommonSuccDegreeRootCount_of_nonRoot
     PosComboNoCommonSuccDegreeRootCountNonnegStatement :=
   posComboNoCommonSuccDegreeRootCount_of_rootCountAbove
     (posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot hcount)
+
+/-- The lower-threshold succ-degree root-count target follows from the lower
+common-non-root formulation. -/
+theorem posComboNoCommonSuccDegreeRootCount_of_rootCountNonRoot
+    (hcount : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
+    PosComboNoCommonSuccDegreeRootCountNonnegStatement :=
+  posComboNoCommonSuccDegreeRootCount_of_rootCountAbove
+    (posComboNoCommonSuccDegreeRootCountAbove_of_rootCountNonRoot hcount)
+
+/-- The succ-degree root-crossing target follows from the lower
+common-non-root root-count formulation. -/
+theorem posComboNoCommonSuccDegreeRootCrossing_of_rootCountNonRoot
+    (hcount : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
+    PosComboNoCommonSuccDegreeRootCrossingNonnegStatement :=
+  posComboNoCommonSuccDegreeRootCrossing_of_rootCount
+    (posComboNoCommonSuccDegreeRootCount_of_rootCountNonRoot hcount)
 
 /-- The fixed-orientation succ-degree endpoint implies the upper-threshold
 root-count target. -/
@@ -3720,6 +3828,22 @@ theorem succDegreePairHasCommonInterleaver_nonneg_of_nonRoot
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
   succDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove
     (posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot hcount)
+
+/-- Succ-degree slot data from the lower common-non-root root-count
+formulation. -/
+theorem posComboNoCommonSuccDegreeSlotData_of_rootCountNonRoot
+    (hcount : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
+    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
+  posComboNoCommonSuccDegreeSlotData_of_rootCount
+    (posComboNoCommonSuccDegreeRootCount_of_rootCountNonRoot hcount)
+
+/-- The repaired succ-degree pair-interleaver endpoint follows from the lower
+common-non-root root-count formulation. -/
+theorem succDegreePairHasCommonInterleaver_nonneg_of_rootCountNonRoot
+    (hcount : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+  succDegreePairHasCommonInterleaver_nonneg_of_rootCount
+    (posComboNoCommonSuccDegreeRootCount_of_rootCountNonRoot hcount)
 
 /-- Succ-degree slot data from the two lower-threshold constant-term
 root-count branches. -/
