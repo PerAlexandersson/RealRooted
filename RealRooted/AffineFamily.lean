@@ -2671,26 +2671,14 @@ private lemma hasSimpleRoots_right_of_affine_family_succDegree_not_isRoot_zero
           hfamilyNegη zero_lt_one hpη_mult hqNegη_eval_ne hprodNeg_pos
 
 private lemma roots_nodup_of_hasSimpleRoots
-    {p : ℝ[X]} (hp0 : p ≠ 0) (hsimple : HasSimpleRoots p) :
-    p.roots.Nodup := by
-  refine Multiset.nodup_iff_count_le_one.mpr ?_
-  intro r
-  rw [count_roots (a := r) p]
-  by_cases hr : p.IsRoot r
-  · simp [hsimple r hr]
-  · have hmult0 : p.rootMultiplicity r = 0 := by
-      simp_all
-    lia
+    {p : ℝ[X]} (_hp0 : p ≠ 0) (hsimple : HasSimpleRoots p) :
+    p.roots.Nodup :=
+  hsimple.roots_nodup
 
 private lemma roots_sort_sortedLT_of_hasSimpleRoots
-    {p : ℝ[X]} (hp0 : p ≠ 0) (hsimple : HasSimpleRoots p) :
-    (p.roots.sort (· ≤ ·)).SortedLT := by
-  have hsorted : (p.roots.sort (· ≤ ·)).SortedLE := by
-    simpa using (Multiset.pairwise_sort (s := p.roots) (r := (· ≤ ·))).sortedLE
-  have hnodup : (p.roots.sort (· ≤ ·)).Nodup := by
-    apply Multiset.coe_nodup.mp
-    simpa using roots_nodup_of_hasSimpleRoots hp0 hsimple
-  exact hsorted.sortedLT_of_nodup hnodup
+    {p : ℝ[X]} (_hp0 : p ≠ 0) (hsimple : HasSimpleRoots p) :
+    (p.roots.sort (· ≤ ·)).SortedLT :=
+  hsimple.roots_sort_sortedLT
 
 /-- Exact double roots are impossible in interior positive combinations of a
 positive-combination real-rooted family. This is the local obstruction that the

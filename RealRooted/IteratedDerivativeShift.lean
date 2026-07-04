@@ -47,6 +47,30 @@ lemma HasSimpleRoots.eval_derivative_ne_zero
   rw [hsimple r hr] at hmult
   lia
 
+/-- A polynomial with simple real roots has no duplicate entries in its root
+multiset. -/
+lemma HasSimpleRoots.roots_nodup (hsimple : HasSimpleRoots p) :
+    p.roots.Nodup := by
+  refine Multiset.nodup_iff_count_le_one.mpr ?_
+  intro r
+  rw [count_roots (a := r) p]
+  by_cases hr : p.IsRoot r
+  · simp [hsimple r hr]
+  · have hmult0 : p.rootMultiplicity r = 0 := by
+      simp_all
+    lia
+
+/-- The sorted root list of a polynomial with simple real roots is strictly
+sorted. -/
+lemma HasSimpleRoots.roots_sort_sortedLT (hsimple : HasSimpleRoots p) :
+    (p.roots.sort (· ≤ ·)).SortedLT := by
+  have hsorted : (p.roots.sort (· ≤ ·)).SortedLE := by
+    simpa using (Multiset.pairwise_sort (s := p.roots) (r := (· ≤ ·))).sortedLE
+  have hnodup : (p.roots.sort (· ≤ ·)).Nodup := by
+    apply Multiset.coe_nodup.mp
+    simpa using hsimple.roots_nodup
+  exact hsorted.sortedLT_of_nodup hnodup
+
 @[simp] lemma iterateTDeriv_zero (eps : ℝ) (p : ℝ[X]) :
     iterateTDeriv eps 0 p = p :=
   rfl
