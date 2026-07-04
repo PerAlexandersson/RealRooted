@@ -147,6 +147,10 @@ abbrev succDegreeSlotDataTarget : Prop :=
 abbrev succDegreeRootCrossingTarget : Prop :=
   PosComboNoCommonSuccDegreeRootCrossingNonnegStatement
 
+/-- Succ-degree analytic root-count subtarget for milestone B2. -/
+abbrev succDegreeRootCountTarget : Prop :=
+  PosComboNoCommonSuccDegreeRootCountNonnegStatement
+
 /-- Challenge-facing equivalence between the same-degree slot-data target and
 the repaired same-degree pair endpoint. -/
 theorem sameDegreeSlotDataTarget_iff_pairTarget :
@@ -245,6 +249,13 @@ theorem succDegreeRootCrossingTarget_of_orientation
     (horient : succDegreeOrientationTarget) :
     succDegreeRootCrossingTarget :=
   posComboNoCommonSuccDegreeRootCrossing_of_orientation horient
+
+/-- Challenge-facing reduction from succ-degree root counts to succ-degree
+root crossing. -/
+theorem succDegreeRootCrossingTarget_of_rootCount
+    (hcount : succDegreeRootCountTarget) :
+    succDegreeRootCrossingTarget :=
+  posComboNoCommonSuccDegreeRootCrossing_of_rootCount hcount
 
 /-- Challenge-facing degree-zero base case for the succ-degree root-crossing
 inequalities. -/

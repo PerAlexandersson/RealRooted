@@ -2114,6 +2114,58 @@ def PosComboNoCommonSuccDegreeRootCrossingNonnegStatement : Prop :=
     (∀ j, 1 ≤ j → j < f.natDegree →
         (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)
 
+/-- **Analytic root-count formulation of the succ-degree root-crossing target.**
+
+For a succ-degree positive-combination pair with no common roots, the lower
+threshold root count for `f` should be at most the lower threshold root count
+for `g`, and the count for `g` should exceed the count for `f` by at most two.
+Equivalently, the numbers of roots strictly above a threshold differ by at most
+one, with the extra `g` root accounted for. -/
+def PosComboNoCommonSuccDegreeRootCountNonnegStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    f.Splits →
+    ∀ x : ℝ,
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2
+
+/-- Root-count bridge for the succ-degree root-crossing target.
+
+The asymmetric lower-threshold count inequalities encode the fact that `g`
+has one extra root.  They imply exactly the two descending-root crossing
+inequalities consumed by the succ-degree slot construction. -/
+theorem succDegreeRootCrossing_of_rootCount
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hcount : ∀ x : ℝ,
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2) :
+    (∀ j, 1 ≤ j → j ≤ f.natDegree →
+        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
+  have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
+  have hNcard : g.roots.card = f.natDegree + 1 := by
+    rw [card_roots_of_splits hg, hdeg]
+  exact succRootCrossing_of_count_le_two hMcard hNcard hcount
+
+/-- The succ-degree root-count formulation implies the descending-root
+crossing formulation. -/
+theorem posComboNoCommonSuccDegreeRootCrossing_of_rootCount
+    (hcount : PosComboNoCommonSuccDegreeRootCountNonnegStatement) :
+    PosComboNoCommonSuccDegreeRootCrossingNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split
+  have hg_split : g.Splits :=
+    (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
+  exact succDegreeRootCrossing_of_rootCount hf_split hg_split hdeg
+    (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split)
+
 /-- Low-degree base case for the succ-degree root-crossing target.  In the
 constant-vs-linear case all crossing inequalities are vacuous. -/
 theorem succDegreeRootCrossing_of_natDegree_eq_zero
