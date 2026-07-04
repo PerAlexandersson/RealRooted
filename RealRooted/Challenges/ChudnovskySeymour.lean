@@ -413,6 +413,53 @@ theorem succDegreeRootCountAbovePair_of_natDegree_eq_zero
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 :=
   succDegreeRootCountAbove_of_natDegree_eq_zero hf hg hdeg hf_deg0 x
 
+/-- Challenge-facing degree-one base case for the upper-threshold succ-degree
+root-count formulation in the positive-combination/no-common setting. -/
+theorem succDegreeRootCountAbovePair_of_posCombo_natDegree_eq_one
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hf : f.Splits) (hf_deg1 : f.natDegree = 1) (x : ℝ) :
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 :=
+  succDegreeRootCountAbove_of_posCombo_natDegree_eq_one
+    hf_pos hg_pos hfnn hgnn hfg hdeg hno hf hf_deg1 x
+
+/-- Challenge-facing degree-one base case for the lower-threshold succ-degree
+root-count formulation in the positive-combination/no-common setting. -/
+theorem succDegreeRootCountPair_of_posCombo_natDegree_eq_one
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hf : f.Splits) (hf_deg1 : f.natDegree = 1) (x : ℝ) :
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 :=
+  succDegreeRootCount_of_posCombo_natDegree_eq_one
+    hf_pos hg_pos hfnn hgnn hfg hdeg hno hf hf_deg1 x
+
+/-- Challenge-facing degree-one base case for the succ-degree root-crossing
+inequalities in the positive-combination/no-common setting. -/
+theorem succDegreeRootCrossingPair_of_posCombo_natDegree_eq_one
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hf : f.Splits) (hf_deg1 : f.natDegree = 1) :
+    (∀ j, 1 ≤ j → j ≤ f.natDegree →
+        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) :=
+  succDegreeRootCrossing_of_posCombo_natDegree_eq_one
+    hf_pos hg_pos hfnn hgnn hfg hdeg hno hf hf_deg1
+
 /-- Challenge-facing degree-zero base case for succ-degree root-slot data. -/
 theorem succDegreeSlotDataPair_of_natDegree_eq_zero
     {f g : ℝ[X]}

@@ -9,6 +9,14 @@ same-degree Chudnovsky--Seymour root-crossing target.
 
 namespace RealRooted
 
+/-- For natural counts, oddness of the integer difference is the same as
+oddness of the natural sum. This is useful because root-count targets are
+stated with integer differences, while sign parity naturally sees sums. -/
+theorem odd_int_nat_sub_iff_odd_add (m n : ℕ) :
+    Odd ((m : ℤ) - n) ↔ Odd (m + n) := by
+  rw [← Int.not_even_iff_odd, ← Nat.not_even_iff_odd]
+  rw [Int.even_sub, Int.even_coe_nat, Int.even_coe_nat, Nat.even_add]
+
 set_option linter.flexible false in
 /-- If two finite multisets of reals have the same cardinality and their
 counting functions differ by at most one at every threshold, then their

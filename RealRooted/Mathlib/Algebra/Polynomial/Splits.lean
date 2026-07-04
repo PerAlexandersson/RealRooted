@@ -141,6 +141,18 @@ theorem Splits.eval_neg_iff_odd_card_roots_gt
       exact hodd (hpos.mp hpos_eval)
     exact lt_of_le_of_ne (le_of_not_gt hnot_pos) hne
 
+/-- For two splitting polynomials with positive leading coefficients, the
+parity of the combined count of roots strictly above `x` records whether their
+values at `x` have the same sign. -/
+theorem Splits.even_card_roots_gt_add_iff_eval_pos_iff
+    {p q : ℝ[X]} (hp : p.Splits) (hq : q.Splits)
+    (hp_pos : 0 < p.leadingCoeff) (hq_pos : 0 < q.leadingCoeff)
+    {x : ℝ} (hxp : ¬ p.IsRoot x) (hxq : ¬ q.IsRoot x) :
+    (Even ((p.roots.filter (x < ·)).card + (q.roots.filter (x < ·)).card) ↔
+      (0 < p.eval x ↔ 0 < q.eval x)) := by
+  rw [hp.eval_pos_iff_even_card_roots_gt hp_pos hxp,
+    hq.eval_pos_iff_even_card_roots_gt hq_pos hxq, ← Nat.even_add]
+
 /-- The roots weakly below `x` and strictly above `x`, counted with
 multiplicity, partition the roots of a splitting polynomial. -/
 theorem Splits.card_filter_le_add_card_filter_lt_eq_natDegree
