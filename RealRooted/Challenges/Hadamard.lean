@@ -162,6 +162,11 @@ theorem hurwitzSchurTriangularFreeTarget_iff_fullBand_cornerZero :
       hurwitzSchurFullBandTarget ∧ hurwitzSchurCornerZeroTarget :=
   hurwitzMatrixSchurProductDetFinThreeCore_iff_fullBand_cornerZero
 
+/-- Challenge-facing theorem discharging the corner-zero top-right subcase. -/
+theorem hurwitzSchurCornerZeroTarget_proved :
+    hurwitzSchurCornerZeroTarget :=
+  hurwitzMatrixSchurProductDetFinThreeCoreCornerZero
+
 /-- Challenge-facing reduction from the two top-right subcases to the
 triangular-free `3 x 3` target. -/
 theorem hurwitzSchurTriangularFreeTarget_of_fullBand_cornerZero
@@ -169,6 +174,14 @@ theorem hurwitzSchurTriangularFreeTarget_of_fullBand_cornerZero
     (hZ : hurwitzSchurCornerZeroTarget) :
     hurwitzSchurTriangularFreeTarget :=
   hurwitzMatrixSchurProductDetFinThreeCore_of_fullBand_cornerZero hF hZ
+
+/-- Since the corner-zero subcase is proved, the triangular-free `3 x 3` target
+now reduces to the fully in-band top-right subcase alone. -/
+theorem hurwitzSchurTriangularFreeTarget_of_fullBand
+    (hF : hurwitzSchurFullBandTarget) :
+    hurwitzSchurTriangularFreeTarget :=
+  hurwitzSchurTriangularFreeTarget_of_fullBand_cornerZero
+    hF hurwitzSchurCornerZeroTarget_proved
 
 /-- Challenge-facing reduction from the two top-right subcases to the isolated
 in-band `3 x 3` target. -/
@@ -179,6 +192,14 @@ theorem hurwitzSchurInBandTarget_of_fullBand_cornerZero
   hurwitzMatrixSchurProductDetFinThreeInBand_of_core
     (hurwitzSchurTriangularFreeTarget_of_fullBand_cornerZero hF hZ)
 
+/-- Challenge-facing reduction from the fully in-band top-right subcase alone to
+the isolated in-band `3 x 3` target. -/
+theorem hurwitzSchurInBandTarget_of_fullBand
+    (hF : hurwitzSchurFullBandTarget) :
+    hurwitzSchurInBandTarget :=
+  hurwitzSchurInBandTarget_of_fullBand_cornerZero
+    hF hurwitzSchurCornerZeroTarget_proved
+
 /-- Challenge-facing reduction from the two top-right subcases to the
 low-order Hurwitz Schur-product target through size `3`. -/
 theorem hurwitzSchurLeThreeTarget_of_fullBand_cornerZero
@@ -188,6 +209,14 @@ theorem hurwitzSchurLeThreeTarget_of_fullBand_cornerZero
   hurwitzMatrixSchurProductDetLeThree_of_core
     (hurwitzSchurTriangularFreeTarget_of_fullBand_cornerZero hF hZ)
 
+/-- Challenge-facing reduction from the fully in-band top-right subcase alone to
+the low-order Hurwitz Schur-product target through size `3`. -/
+theorem hurwitzSchurLeThreeTarget_of_fullBand
+    (hF : hurwitzSchurFullBandTarget) :
+    hurwitzSchurLeThreeTarget :=
+  hurwitzSchurLeThreeTarget_of_fullBand_cornerZero
+    hF hurwitzSchurCornerZeroTarget_proved
+
 /-- Challenge-facing reduction from the two top-right subcases to the
 low-order Hurwitz-matrix Hadamard target through size `3`. -/
 theorem hurwitzMatrixHadamardLeThreeTarget_of_fullBand_cornerZero
@@ -196,6 +225,14 @@ theorem hurwitzMatrixHadamardLeThreeTarget_of_fullBand_cornerZero
     hurwitzMatrixHadamardLeThreeTarget :=
   hadamardPreservesHurwitzMatrixTNDetLeThree_of_inBand
     (hurwitzSchurInBandTarget_of_fullBand_cornerZero hF hZ)
+
+/-- Challenge-facing reduction from the fully in-band top-right subcase alone to
+the low-order Hurwitz-matrix Hadamard target through size `3`. -/
+theorem hurwitzMatrixHadamardLeThreeTarget_of_fullBand
+    (hF : hurwitzSchurFullBandTarget) :
+    hurwitzMatrixHadamardLeThreeTarget :=
+  hurwitzMatrixHadamardLeThreeTarget_of_fullBand_cornerZero
+    hF hurwitzSchurCornerZeroTarget_proved
 
 /-- Challenge-facing reduction of Garloff--Wagner's nonnegative
 proper-position target through the Hurwitz-matrix Hadamard leaf. -/
