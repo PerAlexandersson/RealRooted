@@ -63,6 +63,40 @@ theorem hurwitz_coeff_odd_row_apply (p : ℝ[X]) (i j : ℕ) :
       if j ≤ i then p.coeff (2 * (i - j)) else 0 :=
   hurwitz_odd_row_apply (fun k => p.coeff k) i j
 
+/-! ### Odd/even Toeplitz submatrices of a Hurwitz matrix -/
+
+/-- The even rows of a Hurwitz matrix form the Toeplitz matrix for the odd
+subsequence of coefficients. -/
+theorem hurwitz_submatrix_even_eq_toeplitz (c : ℕ → ℝ) :
+    (hurwitz c).submatrix (fun i => 2 * i) id = toeplitz (fun n => c (2 * n + 1)) := by
+  ext i j
+  simp only [Matrix.submatrix_apply, id_eq]
+  rw [hurwitz_even_row_apply, toeplitz_apply]
+
+/-- The odd rows of a Hurwitz matrix form the Toeplitz matrix for the even
+subsequence of coefficients. -/
+theorem hurwitz_submatrix_odd_eq_toeplitz (c : ℕ → ℝ) :
+    (hurwitz c).submatrix (fun i => 2 * i + 1) id = toeplitz (fun n => c (2 * n)) := by
+  ext i j
+  simp only [Matrix.submatrix_apply, id_eq]
+  rw [hurwitz_odd_row_apply, toeplitz_apply]
+
+/-- Total nonnegativity of a Hurwitz matrix implies that the odd coefficient
+subsequence is Pólya-frequency. -/
+theorem hurwitz_isPolyaFreqSeq_odd {c : ℕ → ℝ}
+    (hc : (hurwitz c).IsTotallyNonneg) :
+    IsPolyaFreqSeq (fun n => c (2 * n + 1)) := by
+  rw [IsPolyaFreqSeq, ← hurwitz_submatrix_even_eq_toeplitz]
+  exact hc.submatrix (by intro i j hij; lia) strictMono_id
+
+/-- Total nonnegativity of a Hurwitz matrix implies that the even coefficient
+subsequence is Pólya-frequency. -/
+theorem hurwitz_isPolyaFreqSeq_even {c : ℕ → ℝ}
+    (hc : (hurwitz c).IsTotallyNonneg) :
+    IsPolyaFreqSeq (fun n => c (2 * n)) := by
+  rw [IsPolyaFreqSeq, ← hurwitz_submatrix_odd_eq_toeplitz]
+  exact hc.submatrix (strictMono_nat_of_lt_succ fun _ => by lia) strictMono_id
+
 /-- Unfolded finite-minor form of
 `HurwitzStableToMatrixTotallyNonnegativeStatement`.
 
