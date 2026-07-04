@@ -56,6 +56,53 @@ private lemma prod_map_sub_pos_iff_even {x : ℝ} :
             · exact absurd hpos hnotpos
         rw [hPlt, ih htmem]
 
+/-- Sign of `prod (x - r)` over a multiset of reals, normalized by
+`(-1) ^ #{r | x < r}`, provided none of the factors vanish. -/
+private lemma prod_sub_mul_neg_one_pow_pos
+    (s : Multiset ℝ) (x : ℝ) (hx : ∀ r ∈ s, r ≠ x) :
+    0 < (s.map (fun r => x - r)).prod * (-1) ^ (s.filter (x < ·)).card := by
+  induction s using Multiset.induction with
+  | empty =>
+      simp
+  | cons a t ih =>
+      have hxt : ∀ r ∈ t, r ≠ x := fun r hr => hx r (Multiset.mem_cons_of_mem hr)
+      have hax : a ≠ x := hx a (Multiset.mem_cons_self a t)
+      have iht := ih hxt
+      rcases lt_or_gt_of_ne hax with hlt | hgt
+      · have hfilt : ((a ::ₘ t).filter (x < ·)) = t.filter (x < ·) := by
+          rw [Multiset.filter_cons]
+          simp [not_lt.mpr hlt.le]
+        rw [Multiset.map_cons, Multiset.prod_cons, hfilt]
+        have hpos : 0 < x - a := by linarith
+        nlinarith [iht]
+      · have hfilt : ((a ::ₘ t).filter (x < ·)) = a ::ₘ t.filter (x < ·) := by
+          rw [Multiset.filter_cons]
+          simp [hgt]
+        rw [Multiset.map_cons, Multiset.prod_cons, hfilt, Multiset.card_cons, pow_succ]
+        have hneg : x - a < 0 := by linarith
+        nlinarith [iht]
+
+/-- Sign-count bridge for a nonzero splitting real polynomial.  At a non-root
+`x`, `p.eval x`, the leading coefficient, and the parity of the roots strictly
+above `x` have positive normalized product. -/
+theorem Splits.eval_mul_leadingCoeff_neg_one_pow_pos
+    {p : ℝ[X]} (hp_ne : p ≠ 0) (hp : p.Splits) {x : ℝ} (hx : ¬ p.IsRoot x) :
+    0 < p.eval x * p.leadingCoeff * (-1) ^ (p.roots.filter (x < ·)).card := by
+  have hlc_ne : p.leadingCoeff ≠ 0 :=
+    Polynomial.leadingCoeff_ne_zero.mpr hp_ne
+  have hroots : ∀ r ∈ p.roots, r ≠ x := by
+    intro r hr hrx
+    exact hx (hrx ▸ Polynomial.isRoot_of_mem_roots hr)
+  have hkey : p.eval x * p.leadingCoeff * (-1) ^ (p.roots.filter (x < ·)).card =
+      (p.leadingCoeff * p.leadingCoeff) *
+        ((p.roots.map (fun r => x - r)).prod *
+          (-1) ^ (p.roots.filter (x < ·)).card) := by
+    rw [hp.eval_eq_prod_roots x]
+    ring
+  rw [hkey]
+  exact mul_pos (mul_self_pos.mpr hlc_ne)
+    (prod_sub_mul_neg_one_pow_pos p.roots x hroots)
+
 /-- Sign of a splitting polynomial at a non-root, counted by roots strictly
 above the point. -/
 theorem Splits.eval_pos_iff_even_card_roots_gt
@@ -93,5 +140,16 @@ theorem Splits.eval_neg_iff_odd_card_roots_gt
       intro hpos_eval
       exact hodd (hpos.mp hpos_eval)
     exact lt_of_le_of_ne (le_of_not_gt hnot_pos) hne
+
+/-- The roots weakly below `x` and strictly above `x`, counted with
+multiplicity, partition the roots of a splitting polynomial. -/
+theorem Splits.card_filter_le_add_card_filter_lt_eq_natDegree
+    {p : ℝ[X]} (hp : p.Splits) (x : ℝ) :
+    (p.roots.filter (· ≤ x)).card + (p.roots.filter (x < ·)).card = p.natDegree := by
+  have hgt : p.roots.filter (x < ·) = p.roots.filter (fun r => ¬ r ≤ x) := by
+    apply Multiset.filter_congr
+    intro r _
+    simp [not_le]
+  rw [hgt, ← Multiset.card_add, Multiset.filter_add_not, ← hp.natDegree_eq_card_roots]
 
 end Polynomial
