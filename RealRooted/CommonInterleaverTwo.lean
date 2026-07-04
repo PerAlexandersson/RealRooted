@@ -1513,6 +1513,41 @@ def PosComboNoCommonSameDegreeRootCountAboveNonnegStatement : Prop :=
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1
 
+/-- Same-degree sign/parity bridge in the right-pencil language.  At a common
+non-root threshold, the combined lower root-count parity is equivalent to the
+absence of a positive parameter for which `f + C μ * g` vanishes at the
+threshold. -/
+theorem sameDegree_even_card_roots_le_add_iff_not_exists_pos_isRoot_add_right
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hf_pos : 0 < f.leadingCoeff) (hg_pos : 0 < g.leadingCoeff)
+    (hdeg : g.natDegree = f.natDegree)
+    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
+    (Even ((f.roots.filter (· ≤ x)).card + (g.roots.filter (· ≤ x)).card) ↔
+      ¬ ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) := by
+  have hfx_eval : f.eval x ≠ 0 := by
+    intro hfx
+    exact hxf (by simpa [Polynomial.IsRoot.def] using hfx)
+  have hgx_eval : g.eval x ≠ 0 := by
+    intro hgx
+    exact hxg (by simpa [Polynomial.IsRoot.def] using hgx)
+  rw [hf.even_card_roots_le_add_iff_eval_pos_iff hg hf_pos hg_pos hdeg hxf hxg]
+  exact (not_exists_pos_isRoot_add_right_iff_eval_pos_iff hfx_eval hgx_eval).symm
+
+/-- Positive-combination same-degree form of
+`sameDegree_even_card_roots_le_add_iff_not_exists_pos_isRoot_add_right`. -/
+theorem posComboSameDegree_even_card_roots_le_add_iff_not_exists_pos_isRoot_add_right
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
+    (Even ((f.roots.filter (· ≤ x)).card + (g.roots.filter (· ≤ x)).card) ↔
+      ¬ ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) := by
+  exact sameDegree_even_card_roots_le_add_iff_not_exists_pos_isRoot_add_right
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+    hf_pos hg_pos hdeg hxf hxg
+
 /-- Root-count bridge for the same-degree root-crossing target.
 
 If for every threshold `x` the numbers of roots `≤ x`, counted with

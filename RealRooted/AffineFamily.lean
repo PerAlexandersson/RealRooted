@@ -2818,6 +2818,88 @@ theorem isRoot_add_left_iff_parameter_eq
   simpa [add_comm] using
     isRoot_add_right_iff_parameter_eq (f := g) (g := f) (mu := lam) (x := x) hfx
 
+/-- A fixed point `x` is hit by the right pencil `f + C μ * g` for some
+positive parameter exactly when the endpoint evaluations have opposite signs. -/
+theorem exists_pos_isRoot_add_right_iff_eval_mul_neg
+    {f g : ℝ[X]} {x : ℝ} (hfx : f.eval x ≠ 0) :
+    (∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) ↔ f.eval x * g.eval x < 0 := by
+  constructor
+  · rintro ⟨μ, hμ, hroot⟩
+    have hroot_eval : f.eval x + μ * g.eval x = 0 := by
+      simpa [Polynomial.IsRoot.def, eval_add, eval_mul, eval_C] using hroot
+    have hgx : g.eval x ≠ 0 := by
+      intro hgx
+      rw [hgx, mul_zero, add_zero] at hroot_eval
+      exact hfx hroot_eval
+    have hsquare : 0 < g.eval x * g.eval x := mul_self_pos.mpr hgx
+    have hf_eq : f.eval x = -μ * g.eval x := by linarith
+    rw [hf_eq]
+    nlinarith
+  · intro hmul
+    have hgx : g.eval x ≠ 0 := by
+      intro hgx
+      rw [hgx, mul_zero] at hmul
+      linarith
+    refine ⟨-f.eval x / g.eval x, ?_, ?_⟩
+    · have hsquare : 0 < g.eval x * g.eval x := mul_self_pos.mpr hgx
+      have hrewrite :
+          -f.eval x / g.eval x = -(f.eval x * g.eval x) / (g.eval x * g.eval x) := by
+        field_simp [hgx]
+      rw [hrewrite]
+      exact div_pos (by linarith) hsquare
+    · exact (isRoot_add_right_iff_parameter_eq (f := f) (g := g) (x := x) hgx).mpr rfl
+
+/-- Left-family form of `exists_pos_isRoot_add_right_iff_eval_mul_neg`. -/
+theorem exists_pos_isRoot_add_left_iff_eval_mul_neg
+    {f g : ℝ[X]} {x : ℝ} (hgx : g.eval x ≠ 0) :
+    (∃ lam : ℝ, 0 < lam ∧ (C lam * f + g).IsRoot x) ↔ f.eval x * g.eval x < 0 := by
+  simpa [add_comm, mul_comm] using
+    exists_pos_isRoot_add_right_iff_eval_mul_neg (f := g) (g := f) (x := x) hgx
+
+/-- If no positive right-pencil member vanishes at `x`, then the endpoint
+evaluations have the same sign. -/
+theorem eval_pos_iff_of_not_exists_pos_isRoot_add_right
+    {f g : ℝ[X]} {x : ℝ} (hfx : f.eval x ≠ 0) (hgx : g.eval x ≠ 0)
+    (hno : ¬ ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) :
+    (0 < f.eval x ↔ 0 < g.eval x) := by
+  have hnot_mul : ¬ f.eval x * g.eval x < 0 := by
+    intro hmul
+    exact hno ((exists_pos_isRoot_add_right_iff_eval_mul_neg hfx).mpr hmul)
+  constructor
+  · intro hfpos
+    by_contra hnot
+    have hgneg : g.eval x < 0 := lt_of_le_of_ne (le_of_not_gt hnot) hgx
+    exact hnot_mul (by nlinarith)
+  · intro hgpos
+    by_contra hnot
+    have hfneg : f.eval x < 0 := lt_of_le_of_ne (le_of_not_gt hnot) hfx
+    exact hnot_mul (by nlinarith)
+
+/-- Same-sign endpoint evaluations rule out positive right-pencil roots at the
+fixed point. -/
+theorem not_exists_pos_isRoot_add_right_of_eval_pos_iff
+    {f g : ℝ[X]} {x : ℝ} (hfx : f.eval x ≠ 0)
+    (hsign : (0 < f.eval x ↔ 0 < g.eval x)) :
+    ¬ ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x := by
+  rw [exists_pos_isRoot_add_right_iff_eval_mul_neg hfx]
+  intro hmul
+  rcases lt_or_gt_of_ne hfx with hfneg | hfpos
+  · have hgpos : 0 < g.eval x := by nlinarith
+    have hfpos' : 0 < f.eval x := hsign.mpr hgpos
+    linarith
+  · have hgneg : g.eval x < 0 := by nlinarith
+    have hgpos : 0 < g.eval x := hsign.mp hfpos
+    linarith
+
+/-- Absence of a positive right-pencil root at `x` is equivalent to same-sign
+endpoint evaluations, provided neither endpoint vanishes at `x`. -/
+theorem not_exists_pos_isRoot_add_right_iff_eval_pos_iff
+    {f g : ℝ[X]} {x : ℝ} (hfx : f.eval x ≠ 0) (hgx : g.eval x ≠ 0) :
+    (¬ ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) ↔
+      (0 < f.eval x ↔ 0 < g.eval x) :=
+  ⟨eval_pos_iff_of_not_exists_pos_isRoot_add_right hfx hgx,
+    not_exists_pos_isRoot_add_right_of_eval_pos_iff hfx⟩
+
 /-- Under a no-common-root hypothesis, a root of `f` is not a zero of `g`. -/
 theorem eval_right_ne_zero_of_isRoot_of_no_common
     {f g : ℝ[X]} {x : ℝ}
