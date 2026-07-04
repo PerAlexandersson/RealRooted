@@ -507,6 +507,40 @@ theorem succDegreeRootCrossingPair_of_posCombo_natDegree_le_one
   succDegreeRootCrossing_of_posCombo_natDegree_le_one
     hf_pos hg_pos hfnn hgnn hfg hdeg hno hf hf_deg_le_one
 
+/-- Challenge-facing low-degree base case for succ-degree root-slot data in
+the positive-combination/no-common setting. -/
+theorem succDegreeSlotDataPair_of_posCombo_natDegree_le_one
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hf_deg_le_one : f.natDegree ≤ 1) :
+    (f ≠ 0 ∧ f.Splits) ∧
+      ∀ j, j < f.natDegree + 1 →
+        ∀ (hjf : j < (rootSeqDesc f).length + 1)
+          (hjg : j < (rootSeqDesc g).length + 1),
+          (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+            rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty :=
+  succDegreeSlotData_of_posCombo_natDegree_le_one
+    hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_deg_le_one
+
+/-- Challenge-facing low-degree base case for the repaired succ-degree
+common-right-interleaver endpoint in the positive-combination/no-common
+setting. -/
+theorem succDegreePairHasCommonInterleaver_of_posCombo_natDegree_le_one
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hf_deg_le_one : f.natDegree ≤ 1) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  posComboNoCommonSuccDegreePairHasCommonInterleaver_of_natDegree_le_one
+    hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_deg_le_one
+
 /-- Challenge-facing degree-zero base case for succ-degree root-slot data. -/
 theorem succDegreeSlotDataPair_of_natDegree_eq_zero
     {f g : ℝ[X]}
