@@ -411,7 +411,9 @@ def PosComboRealRooted (f g : ℝ[X]) : Prop :=
 
 namespace PosComboRealRooted
 
-private lemma toPosComboHyp {f g : ℝ[X]} (hfg : PosComboRealRooted f g) :
+/-- View `PosComboRealRooted` as the lightweight continuity hypothesis used in
+`ObreschkoffContinuity`. -/
+lemma toPosComboHyp {f g : ℝ[X]} (hfg : PosComboRealRooted f g) :
     RealRooted.PosComboHyp f g :=
   hfg
 
@@ -585,7 +587,7 @@ lemma isRealRooted_left_of_sameDegree {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree = f.natDegree) : (f ≠ 0 ∧ f.Splits) :=
   RealRooted.PosComboHyp.isRealRooted_left_of_posComboRealRooted_sameDegree
-    (hfg := toPosComboHyp hfg) hf_pos hg_pos hdeg
+    (hfg := hfg.toPosComboHyp) hf_pos hg_pos hdeg
 
 /-- Equal-degree positive-combination real-rootedness forces the right summand
 to be real-rooted. -/
@@ -594,7 +596,96 @@ lemma isRealRooted_right_of_sameDegree {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree = f.natDegree) : (g ≠ 0 ∧ g.Splits) :=
   RealRooted.PosComboHyp.isRealRooted_right_of_posComboRealRooted_sameDegree
-    (hfg := toPosComboHyp hfg) hf_pos hg_pos hdeg
+    (hfg := hfg.toPosComboHyp) hf_pos hg_pos hdeg
+
+/-- Root-continuity bridge for the left affine family, stated directly for
+`PosComboRealRooted`. -/
+theorem exists_root_near_left_family
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
+    {a t ε : ℝ}
+    (ha : f.IsRoot a)
+    (hf_monic : f.Monic) (hg_monic : g.Monic)
+    (hdeg : g.natDegree = f.natDegree)
+    (ht : 0 < t)
+    (hcoeff_bound : (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) < ε) :
+    ∃ b : ℝ, (C t * f + g).IsRoot b ∧
+      ‖a - b‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖a‖ 1 :=
+  RealRooted.PosComboHyp.exists_root_near_left_family
+    (hfg := hfg.toPosComboHyp) ha hf_monic hg_monic hdeg ht hcoeff_bound
+
+/-- Complex-root continuity bridge for the left affine family, stated directly
+for `PosComboRealRooted`. -/
+theorem exists_complex_aroot_near_left_family
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
+    {z : ℂ} {t ε : ℝ}
+    (hz : f.aeval z = 0)
+    (hf_monic : f.Monic) (hg_monic : g.Monic)
+    (hdeg : g.natDegree = f.natDegree)
+    (ht : 0 < t)
+    (hcoeff_bound : (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) < ε) :
+    ∃ w : ℂ, w ∈ (C t * f + g).aroots ℂ ∧
+      ‖z - w‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖z‖ 1 :=
+  RealRooted.PosComboHyp.exists_complex_aroot_near_left_family
+    (hfg := hfg.toPosComboHyp) hz hf_monic hg_monic hdeg ht hcoeff_bound
+
+/-- Left-family root continuity with an automatically chosen positive
+parameter, stated directly for `PosComboRealRooted`. -/
+theorem exists_t_and_root_near_left_family
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
+    {a ε : ℝ}
+    (ha : f.IsRoot a)
+    (hf_monic : f.Monic) (hg_monic : g.Monic)
+    (hdeg : g.natDegree = f.natDegree)
+    (hε : 0 < ε) :
+    ∃ t : ℝ, 0 < t ∧ ∃ b : ℝ, (C t * f + g).IsRoot b ∧
+      ‖a - b‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖a‖ 1 :=
+  RealRooted.PosComboHyp.exists_t_and_root_near_left_family
+    (hfg := hfg.toPosComboHyp) ha hf_monic hg_monic hdeg hε
+
+/-- Root-continuity bridge for the right affine family, stated directly for
+`PosComboRealRooted`.  This is the small-`μ` perturbation form used when
+studying `f + C μ * g` near `f`. -/
+theorem exists_root_near_right_family
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
+    {a μ ε : ℝ}
+    (ha : f.IsRoot a)
+    (hf_monic : f.Monic) (hg_monic : g.Monic)
+    (hdeg : g.natDegree = f.natDegree)
+    (hμ : 0 < μ)
+    (hcoeff_bound : (μ / (μ + 1)) * (coeffSumRange f + coeffSumRange g) < ε) :
+    ∃ b : ℝ, (f + C μ * g).IsRoot b ∧
+      ‖a - b‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖a‖ 1 :=
+  RealRooted.PosComboHyp.exists_root_near_right_family
+    (hfg := hfg.toPosComboHyp) ha hf_monic hg_monic hdeg hμ hcoeff_bound
+
+/-- Complex-root continuity bridge for the right affine family, stated directly
+for `PosComboRealRooted`. -/
+theorem exists_complex_aroot_near_right_family
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
+    {z : ℂ} {μ ε : ℝ}
+    (hz : f.aeval z = 0)
+    (hf_monic : f.Monic) (hg_monic : g.Monic)
+    (hdeg : g.natDegree = f.natDegree)
+    (hμ : 0 < μ)
+    (hcoeff_bound : (μ / (μ + 1)) * (coeffSumRange f + coeffSumRange g) < ε) :
+    ∃ w : ℂ, w ∈ (f + C μ * g).aroots ℂ ∧
+      ‖z - w‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖z‖ 1 :=
+  RealRooted.PosComboHyp.exists_complex_aroot_near_right_family
+    (hfg := hfg.toPosComboHyp) hz hf_monic hg_monic hdeg hμ hcoeff_bound
+
+/-- Right-family root continuity with an automatically chosen positive
+parameter, stated directly for `PosComboRealRooted`. -/
+theorem exists_mu_and_root_near_right_family
+    {f g : ℝ[X]} (hfg : PosComboRealRooted f g)
+    {a ε : ℝ}
+    (ha : f.IsRoot a)
+    (hf_monic : f.Monic) (hg_monic : g.Monic)
+    (hdeg : g.natDegree = f.natDegree)
+    (hε : 0 < ε) :
+    ∃ μ : ℝ, 0 < μ ∧ ∃ b : ℝ, (f + C μ * g).IsRoot b ∧
+      ‖a - b‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖a‖ 1 :=
+  RealRooted.PosComboHyp.exists_mu_and_root_near_right_family
+    (hfg := hfg.toPosComboHyp) ha hf_monic hg_monic hdeg hε
 
 /-- Positive-combination real-rootedness gives real-rootedness on the closed
 line segment once the two endpoints are known to be real-rooted. -/
