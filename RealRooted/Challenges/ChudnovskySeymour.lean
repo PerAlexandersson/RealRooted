@@ -325,6 +325,22 @@ theorem succDegreeNoCommonLeftSplitsTarget_of_affineFamily
   posComboNoCommonSuccDegreeLeftSplits_of_affineFamily
     haff hf_pos hg_pos hfnn hgnn hfg hsucc hno
 
+/-- Challenge-facing no-common left-endpoint reduction from boundary-right
+pair orientation. -/
+theorem succDegreeNoCommonLeftSplitsTarget_of_boundaryRight
+    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hsucc : g.natDegree = f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    f.Splits :=
+  posComboNoCommonSuccDegreeLeftSplits_of_boundaryRightPairOrientation
+    hboundary hf_pos hg_pos hfnn hgnn hfg hsucc hno
+
 /-- Challenge-facing reduction from the boundary-right-pair orientation
 statement to the repaired succ-degree pair endpoint. -/
 theorem succDegreePairTarget_of_boundaryRight

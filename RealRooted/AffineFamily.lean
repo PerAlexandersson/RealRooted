@@ -1870,10 +1870,9 @@ theorem isRealRooted_left_of_affine_family_nonneg
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
-    (f ≠ 0 ∧ f.Splits) :=
-  isRealRooted_of_X_mul
-    (isRealRooted_X_mul_of_affine_family_nonneg hf0 hg0 hfnn hgnn haff).1
-    (isRealRooted_X_mul_of_affine_family_nonneg hf0 hg0 hfnn hgnn haff).2
+    (f ≠ 0 ∧ f.Splits) := by
+  have hXf := isRealRooted_X_mul_of_affine_family_nonneg hf0 hg0 hfnn hgnn haff
+  exact isRealRooted_of_X_mul hXf.1 hXf.2
 
 /-- Repackage the affine family as a one-parameter positive-combination family
 for the shifted pair `(g + X * f, f)`. This is the natural shifted target for

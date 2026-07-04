@@ -1771,6 +1771,23 @@ theorem posComboNoCommonSuccDegreeLeftSplits_of_affineFamily
     (isRealRooted_left_of_affine_family_nonneg
       hf_pos.ne_zero hg_pos.ne_zero hfnn hgnn haff).2
 
+/-- Boundary-right-pair orientation also contains the no-common succ-degree
+left endpoint, because it first produces the affine-family bridge. -/
+theorem posComboNoCommonSuccDegreeLeftSplits_of_boundaryRightPairOrientation
+    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hsucc : g.natDegree = f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    f.Splits :=
+  posComboNoCommonSuccDegreeLeftSplits_of_affineFamily
+    (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
+    hf_pos hg_pos hfnn hgnn hfg hsucc hno
+
 private theorem left_splits_of_succDegree_of_left_coeff_zero_ne_core
     {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
