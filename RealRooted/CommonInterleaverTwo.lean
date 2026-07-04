@@ -2580,6 +2580,83 @@ theorem card_roots_filter_sub_divX_of_coeff_zero {f g : ℝ[X]}
   push_cast
   ring
 
+/-- Lower-threshold same-cardinality count bounds lift across a common
+zero constant term. -/
+theorem rootCount_diff_le_one_of_divX_coeff_zero {f g : ℝ[X]}
+    (hf : f ≠ 0) (hg : g ≠ 0) (hf0 : f.coeff 0 = 0) (hg0 : g.coeff 0 = 0)
+    (hcount : ∀ x : ℝ,
+      ((f.divX.roots.filter (· ≤ x)).card : ℤ) -
+          (g.divX.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.divX.roots.filter (· ≤ x)).card : ℤ) -
+          (f.divX.roots.filter (· ≤ x)).card ≤ 1) :
+    ∀ x : ℝ,
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 := by
+  intro x
+  have hfg := card_roots_filter_sub_divX_of_coeff_zero hf hg hf0 hg0 (fun y : ℝ => y ≤ x)
+  have hgf := card_roots_filter_sub_divX_of_coeff_zero hg hf hg0 hf0 (fun y : ℝ => y ≤ x)
+  constructor
+  · rw [hfg]
+    exact (hcount x).1
+  · rw [hgf]
+    exact (hcount x).2
+
+/-- Upper-threshold same-cardinality count bounds lift across a common
+zero constant term. -/
+theorem rootCountAbove_diff_le_one_of_divX_coeff_zero {f g : ℝ[X]}
+    (hf : f ≠ 0) (hg : g ≠ 0) (hf0 : f.coeff 0 = 0) (hg0 : g.coeff 0 = 0)
+    (hcount : ∀ x : ℝ,
+      ((f.divX.roots.filter (x < ·)).card : ℤ) -
+          (g.divX.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.divX.roots.filter (x < ·)).card : ℤ) -
+          (f.divX.roots.filter (x < ·)).card ≤ 1) :
+    ∀ x : ℝ,
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
+  intro x
+  have hfg := card_roots_filter_sub_divX_of_coeff_zero hf hg hf0 hg0 (fun y : ℝ => x < y)
+  have hgf := card_roots_filter_sub_divX_of_coeff_zero hg hf hg0 hf0 (fun y : ℝ => x < y)
+  constructor
+  · rw [hfg]
+    exact (hcount x).1
+  · rw [hgf]
+    exact (hcount x).2
+
+/-- Succ-degree lower-threshold count bounds lift across a common zero
+constant term. -/
+theorem succDegreeRootCount_of_divX_coeff_zero {f g : ℝ[X]}
+    (hf : f ≠ 0) (hg : g ≠ 0) (hf0 : f.coeff 0 = 0) (hg0 : g.coeff 0 = 0)
+    (hcount : ∀ x : ℝ,
+      ((f.divX.roots.filter (· ≤ x)).card : ℤ) -
+          (g.divX.roots.filter (· ≤ x)).card ≤ 0 ∧
+      ((g.divX.roots.filter (· ≤ x)).card : ℤ) -
+          (f.divX.roots.filter (· ≤ x)).card ≤ 2) :
+    ∀ x : ℝ,
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 := by
+  intro x
+  have hfg := card_roots_filter_sub_divX_of_coeff_zero hf hg hf0 hg0 (fun y : ℝ => y ≤ x)
+  have hgf := card_roots_filter_sub_divX_of_coeff_zero hg hf hg0 hf0 (fun y : ℝ => y ≤ x)
+  constructor
+  · rw [hfg]
+    exact (hcount x).1
+  · rw [hgf]
+    exact (hcount x).2
+
+/-- Succ-degree upper-threshold count bounds lift across a common zero
+constant term. -/
+theorem succDegreeRootCountAbove_of_divX_coeff_zero {f g : ℝ[X]}
+    (hf : f ≠ 0) (hg : g ≠ 0) (hf0 : f.coeff 0 = 0) (hg0 : g.coeff 0 = 0)
+    (hcount : ∀ x : ℝ,
+      ((f.divX.roots.filter (x < ·)).card : ℤ) -
+          (g.divX.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.divX.roots.filter (x < ·)).card : ℤ) -
+          (f.divX.roots.filter (x < ·)).card ≤ 1) :
+    ∀ x : ℝ,
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 :=
+  rootCountAbove_diff_le_one_of_divX_coeff_zero hf hg hf0 hg0 hcount
+
 /-- The full succ-degree left-endpoint statement is reduced to the residual
 branch `f.coeff 0 = 0`, `g.coeff 0 ≠ 0`.
 
@@ -2836,6 +2913,66 @@ theorem posComboNoCommonSuccDegreeRootCountAbove_of_rootCount
     (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
   exact succDegreeRootCountAbove_of_rootCount hf_split hg_split hdeg
     (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split)
+
+/-- Residual constant-term branch of the lower-threshold succ-degree no-common
+root-count statement: the case `f.coeff 0 = 0` and hence `g.coeff 0 ≠ 0` by
+the no-common hypothesis. -/
+def PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    f.Splits →
+    f.coeff 0 = 0 →
+    g.coeff 0 ≠ 0 →
+    ∀ x : ℝ,
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2
+
+/-- Nonzero constant-term branch of the lower-threshold succ-degree no-common
+root-count statement.  This is the root-count analogue of the reflection route
+used for the succ-degree left endpoint. -/
+def PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    f.Splits →
+    f.coeff 0 ≠ 0 →
+    ∀ x : ℝ,
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2
+
+/-- The succ-degree no-common root-count target splits into exactly two
+constant-term branches: the `f.coeff 0 ≠ 0` branch and the residual
+`f.coeff 0 = 0`, `g.coeff 0 ≠ 0` branch.  The no-common-root hypothesis rules
+out the common-`X` branch. -/
+theorem posComboNoCommonSuccDegreeRootCount_of_residual_and_lead
+    (hlead : PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement)
+    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
+    PosComboNoCommonSuccDegreeRootCountNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split
+  by_cases hf0 : f.coeff 0 = 0
+  · exact hres hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0
+      (right_coeff_zero_ne_of_no_common_of_left_coeff_zero hno hf0)
+  · exact hlead hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0
+
+/-- The upper-threshold succ-degree no-common root-count target follows from
+the two lower-threshold constant-term branches. -/
+theorem posComboNoCommonSuccDegreeRootCountAbove_of_residual_and_lead
+    (hlead : PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement)
+    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
+    PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement :=
+  posComboNoCommonSuccDegreeRootCountAbove_of_rootCount
+    (posComboNoCommonSuccDegreeRootCount_of_residual_and_lead hlead hres)
 
 /-- Degree-zero base case for the succ-degree root-count formulation.
 

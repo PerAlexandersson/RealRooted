@@ -174,6 +174,14 @@ non-root thresholds. -/
 abbrev succDegreeRootCountAboveNonRootTarget : Prop :=
   PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement
 
+/-- Succ-degree residual constant-term root-count branch. -/
+abbrev succDegreeRootCountResidualTarget : Prop :=
+  PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement
+
+/-- Succ-degree nonzero constant-term root-count branch. -/
+abbrev succDegreeRootCountLeadTarget : Prop :=
+  PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement
+
 /-- Challenge-facing equivalence between the same-degree slot-data target and
 the repaired same-degree pair endpoint. -/
 theorem sameDegreeSlotDataTarget_iff_pairTarget :
@@ -393,6 +401,22 @@ theorem succDegreeRootCountAboveTarget_of_nonRoot
     (hcount : succDegreeRootCountAboveNonRootTarget) :
     succDegreeRootCountAboveTarget :=
   posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot hcount
+
+/-- Challenge-facing reduction from the succ-degree constant-term branches to
+the full lower-threshold root-count formulation. -/
+theorem succDegreeRootCountTarget_of_residual_and_lead
+    (hlead : succDegreeRootCountLeadTarget)
+    (hres : succDegreeRootCountResidualTarget) :
+    succDegreeRootCountTarget :=
+  posComboNoCommonSuccDegreeRootCount_of_residual_and_lead hlead hres
+
+/-- Challenge-facing reduction from the succ-degree constant-term branches to
+the upper-threshold root-count formulation. -/
+theorem succDegreeRootCountAboveTarget_of_residual_and_lead
+    (hlead : succDegreeRootCountLeadTarget)
+    (hres : succDegreeRootCountResidualTarget) :
+    succDegreeRootCountAboveTarget :=
+  posComboNoCommonSuccDegreeRootCountAbove_of_residual_and_lead hlead hres
 
 /-- Challenge-facing reduction from succ-degree root counts to slot data. -/
 theorem succDegreeSlotDataTarget_of_rootCount
