@@ -3032,6 +3032,14 @@ theorem posComboNoCommonSuccDegreeRootCountAbove_of_rootCount
   exact succDegreeRootCountAbove_of_rootCount hf_split hg_split hdeg
     (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split)
 
+/-- The lower-threshold succ-degree root-count target follows from the
+common-non-root upper-threshold variant. -/
+theorem posComboNoCommonSuccDegreeRootCount_of_nonRoot
+    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
+    PosComboNoCommonSuccDegreeRootCountNonnegStatement :=
+  posComboNoCommonSuccDegreeRootCount_of_rootCountAbove
+    (posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot hcount)
+
 /-- The fixed-orientation succ-degree endpoint implies the upper-threshold
 root-count target. -/
 theorem posComboNoCommonSuccDegreeRootCountAbove_of_orientation
@@ -3107,6 +3115,15 @@ theorem posComboNoCommonSuccDegreeRootCountAbove_of_residual_and_lead
     (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
     PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement :=
   posComboNoCommonSuccDegreeRootCountAbove_of_rootCount
+    (posComboNoCommonSuccDegreeRootCount_of_residual_and_lead hlead hres)
+
+/-- The succ-degree root-crossing target follows from the two constant-term
+root-count branches. -/
+theorem posComboNoCommonSuccDegreeRootCrossing_of_residual_and_lead
+    (hlead : PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement)
+    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
+    PosComboNoCommonSuccDegreeRootCrossingNonnegStatement :=
+  posComboNoCommonSuccDegreeRootCrossing_of_rootCount
     (posComboNoCommonSuccDegreeRootCount_of_residual_and_lead hlead hres)
 
 /-- Degree-zero base case for the succ-degree root-count formulation.
@@ -3639,6 +3656,40 @@ theorem succDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
   succDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
     (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove hcount)
+
+/-- Succ-degree slot data from the common-non-root upper-threshold root-count
+formulation. -/
+theorem posComboNoCommonSuccDegreeSlotData_of_nonRoot
+    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
+    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
+  posComboNoCommonSuccDegreeSlotData_of_rootCountAbove
+    (posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot hcount)
+
+/-- The repaired succ-degree pair-interleaver endpoint follows from the
+common-non-root upper-threshold root-count formulation. -/
+theorem succDegreePairHasCommonInterleaver_nonneg_of_nonRoot
+    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+  succDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove
+    (posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot hcount)
+
+/-- Succ-degree slot data from the two lower-threshold constant-term
+root-count branches. -/
+theorem posComboNoCommonSuccDegreeSlotData_of_residual_and_lead
+    (hlead : PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement)
+    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
+    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
+  posComboNoCommonSuccDegreeSlotData_of_rootCount
+    (posComboNoCommonSuccDegreeRootCount_of_residual_and_lead hlead hres)
+
+/-- The repaired succ-degree pair-interleaver endpoint follows from the two
+lower-threshold constant-term root-count branches. -/
+theorem succDegreePairHasCommonInterleaver_nonneg_of_residual_and_lead
+    (hlead : PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement)
+    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+  succDegreePairHasCommonInterleaver_nonneg_of_rootCount
+    (posComboNoCommonSuccDegreeRootCount_of_residual_and_lead hlead hres)
 
 /-- Succ-degree slot data from the PF/ASW left-endpoint route and the
 descending-root crossing inequalities. -/
