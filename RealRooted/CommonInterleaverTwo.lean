@@ -3384,6 +3384,53 @@ def PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement : Prop :=
       ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2
 
+/-- Nonzero constant-term succ-degree root-count branch, further restricted to
+the subcase where the higher-degree member also has nonzero constant term. -/
+def PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    f.Splits →
+    f.coeff 0 ≠ 0 →
+    g.coeff 0 ≠ 0 →
+    ∀ x : ℝ,
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2
+
+/-- Nonzero constant-term succ-degree root-count branch, further restricted to
+the subcase where the higher-degree member has zero constant term. -/
+def PosComboNoCommonSuccDegreeRootCountLeadRightZeroNonnegStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    f.Splits →
+    f.coeff 0 ≠ 0 →
+    g.coeff 0 = 0 →
+    ∀ x : ℝ,
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2
+
+/-- The lead root-count branch splits into the two possible constant-term
+cases for the higher-degree member. -/
+theorem posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_rightZero
+    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
+    (hright : PosComboNoCommonSuccDegreeRootCountLeadRightZeroNonnegStatement) :
+    PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0
+  by_cases hg0 : g.coeff 0 = 0
+  · exact hright hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0
+  · exact hboth hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0
+
 /-- The residual succ-degree root-count branch follows from an interlacing
 orientation in that branch. -/
 theorem posComboNoCommonSuccDegreeRootCountResidual_of_prec

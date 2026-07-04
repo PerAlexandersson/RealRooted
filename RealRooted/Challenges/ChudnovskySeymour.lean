@@ -188,6 +188,14 @@ abbrev succDegreeRootCountResidualTarget : Prop :=
 abbrev succDegreeRootCountLeadTarget : Prop :=
   PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement
 
+/-- Succ-degree lead root-count branch with both constant terms nonzero. -/
+abbrev succDegreeRootCountLeadBothNonzeroTarget : Prop :=
+  PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement
+
+/-- Succ-degree lead root-count branch with zero higher-degree constant term. -/
+abbrev succDegreeRootCountLeadRightZeroTarget : Prop :=
+  PosComboNoCommonSuccDegreeRootCountLeadRightZeroNonnegStatement
+
 /-- Challenge-facing equivalence between the same-degree slot-data target and
 the repaired same-degree pair endpoint. -/
 theorem sameDegreeSlotDataTarget_iff_pairTarget :
@@ -624,6 +632,26 @@ theorem succDegreeRootCountTarget_of_residual_and_lead
     (hres : succDegreeRootCountResidualTarget) :
     succDegreeRootCountTarget :=
   posComboNoCommonSuccDegreeRootCount_of_residual_and_lead hlead hres
+
+/-- Challenge-facing split of the succ-degree lead root-count branch by the
+higher-degree constant term. -/
+theorem succDegreeRootCountLeadTarget_of_bothNonzero_and_rightZero
+    (hboth : succDegreeRootCountLeadBothNonzeroTarget)
+    (hright : succDegreeRootCountLeadRightZeroTarget) :
+    succDegreeRootCountLeadTarget :=
+  posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_rightZero
+    hboth hright
+
+/-- Challenge-facing reduction from the residual branch and the two lead
+subbranches to the full lower-threshold root-count formulation. -/
+theorem succDegreeRootCountTarget_of_residual_and_leadSubbranches
+    (hboth : succDegreeRootCountLeadBothNonzeroTarget)
+    (hright : succDegreeRootCountLeadRightZeroTarget)
+    (hres : succDegreeRootCountResidualTarget) :
+    succDegreeRootCountTarget :=
+  succDegreeRootCountTarget_of_residual_and_lead
+    (succDegreeRootCountLeadTarget_of_bothNonzero_and_rightZero hboth hright)
+    hres
 
 /-- Challenge-facing reduction from the succ-degree constant-term branches to
 the upper-threshold root-count formulation. -/
