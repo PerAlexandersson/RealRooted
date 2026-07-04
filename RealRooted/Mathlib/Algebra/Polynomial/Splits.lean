@@ -187,4 +187,54 @@ theorem Splits.even_card_roots_le_add_iff_eval_pos_iff
   rw [Nat.even_add] at key
   exact key
 
+/-- Difference form of `Splits.even_card_roots_le_add_iff_eval_pos_iff`.
+
+For two equal-degree splitting polynomials with positive leading coefficients,
+the signed integer difference of the counts of roots weakly below `x` is even
+exactly when their values at a common non-root `x` share a sign.  This is the
+shape consumed by root-count targets whose statements bound
+`((p.roots.filter (· ≤ x)).card : ℤ) - (q.roots.filter (· ≤ x)).card`. -/
+theorem Splits.even_intCard_roots_le_sub_iff_eval_pos_iff
+    {p q : ℝ[X]} (hp : p.Splits) (hq : q.Splits)
+    (hp_pos : 0 < p.leadingCoeff) (hq_pos : 0 < q.leadingCoeff)
+    (hdeg : q.natDegree = p.natDegree)
+    {x : ℝ} (hxp : ¬ p.IsRoot x) (hxq : ¬ q.IsRoot x) :
+    (Even (((p.roots.filter (· ≤ x)).card : ℤ) -
+        (q.roots.filter (· ≤ x)).card) ↔
+      (0 < p.eval x ↔ 0 < q.eval x)) := by
+  have hsum := hp.even_card_roots_le_add_iff_eval_pos_iff hq hp_pos hq_pos hdeg hxp hxq
+  rw [← hsum, Int.even_sub, Int.even_coe_nat, Int.even_coe_nat, Nat.even_add]
+
+/-- Odd form of `Splits.even_intCard_roots_le_sub_iff_eval_pos_iff`.
+
+The signed integer difference of the below-threshold root counts is odd exactly
+when the two values at a common non-root `x` have opposite signs. -/
+theorem Splits.odd_intCard_roots_le_sub_iff_not_eval_pos_iff
+    {p q : ℝ[X]} (hp : p.Splits) (hq : q.Splits)
+    (hp_pos : 0 < p.leadingCoeff) (hq_pos : 0 < q.leadingCoeff)
+    (hdeg : q.natDegree = p.natDegree)
+    {x : ℝ} (hxp : ¬ p.IsRoot x) (hxq : ¬ q.IsRoot x) :
+    (Odd (((p.roots.filter (· ≤ x)).card : ℤ) -
+        (q.roots.filter (· ≤ x)).card) ↔
+      ¬ (0 < p.eval x ↔ 0 < q.eval x)) := by
+  rw [Int.not_even_iff_odd.symm,
+    hp.even_intCard_roots_le_sub_iff_eval_pos_iff hq hp_pos hq_pos hdeg hxp hxq]
+
+/-- Upper-threshold difference form of the sign/parity bridge.
+
+The signed integer difference of the counts of roots strictly above `x` of two
+splitting polynomials with positive leading coefficients is even exactly when
+their values at a common non-root `x` share a sign.  Unlike the below-threshold
+form this needs no equal-degree hypothesis. -/
+theorem Splits.even_intCard_roots_gt_sub_iff_eval_pos_iff
+    {p q : ℝ[X]} (hp : p.Splits) (hq : q.Splits)
+    (hp_pos : 0 < p.leadingCoeff) (hq_pos : 0 < q.leadingCoeff)
+    {x : ℝ} (hxp : ¬ p.IsRoot x) (hxq : ¬ q.IsRoot x) :
+    (Even (((p.roots.filter (x < ·)).card : ℤ) -
+        (q.roots.filter (x < ·)).card) ↔
+      (0 < p.eval x ↔ 0 < q.eval x)) := by
+  have hep := hp.eval_pos_iff_even_card_roots_gt hp_pos hxp
+  have heq := hq.eval_pos_iff_even_card_roots_gt hq_pos hxq
+  rw [Int.even_sub, Int.even_coe_nat, Int.even_coe_nat, ← hep, ← heq]
+
 end Polynomial
