@@ -100,6 +100,15 @@ theorem roots_reverse_eq_map_inv_of_splits_coeff_zero_ne {p : K[X]}
   · exact roots_reverse_prod_X_sub_C p.roots hroots_ne
   · exact hlc
 
+/-- Predicate root-count transport across `reverse`: filtering roots of the
+reverse by `q` counts exactly the original roots whose inverse satisfies `q`. -/
+theorem card_filter_reverse_roots {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
+    (q : K → Prop) [DecidablePred q] :
+    (p.reverse.roots.filter q).card = (p.roots.filter (fun r => q r⁻¹)).card := by
+  rw [roots_reverse_eq_map_inv_of_splits_coeff_zero_ne hp h0]
+  rw [Multiset.filter_map, Multiset.card_map]
+  rfl
+
 /-- Reversal preserves `Splits` over a field. -/
 theorem splits_reverse {p : K[X]} (h : p.Splits) :
     p.reverse.Splits := by
