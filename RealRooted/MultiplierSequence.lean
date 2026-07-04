@@ -187,6 +187,23 @@ def jensenPolynomial (n : ℕ) (gamma : ℕ → ℝ) : ℝ[X] :=
       have hbk : b ≠ k := Ne.symm hne
       simp [Polynomial.coeff_monomial, hbk]
 
+/-- A polynomial of degree at most `n` is recovered as the Jensen polynomial of
+its binomially normalized coefficient sequence. -/
+theorem jensenPolynomial_normalized_coeff_eq_of_natDegree_le
+    {n : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ n) :
+    jensenPolynomial n (fun k => p.coeff k / (Nat.choose n k : ℝ)) = p := by
+  ext k
+  rw [coeff_jensenPolynomial]
+  by_cases hk : k ≤ n
+  · have hchoose : (Nat.choose n k : ℝ) ≠ 0 :=
+      Nat.cast_choose_ne_zero (R := ℝ) hk
+    simp only [hk, if_true]
+    field_simp [hchoose]
+  · have hklt : n < k := Nat.lt_of_not_le hk
+    have hpcoeff : p.coeff k = 0 :=
+      coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hp hklt)
+    simp [hk, hpcoeff]
+
 /-- The Jensen polynomial of `gamma` is the image of `(X + 1) ^ n` under the
 diagonal operator attached to `gamma`. -/
 theorem jensenPolynomial_eq_diagonalOperator_X_add_one_pow

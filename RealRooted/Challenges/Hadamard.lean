@@ -60,6 +60,19 @@ theorem finitePolyaSchurTarget_of_schurSzegoNonzero
     finitePolyaSchurTarget :=
   finitePolyaSchur_nonneg_of_schurSzegoNonzero h
 
+/-- Challenge-facing reduction from the finite Pólya--Schur theorem to the
+full fixed-degree Schur--Szegő target. -/
+theorem finiteSchurSzegoTarget_of_finitePolyaSchur
+    (h : finitePolyaSchurTarget) :
+    finiteSchurSzegoTarget :=
+  finiteSchurSzegoComposition_of_finitePolyaSchur h
+
+/-- Challenge-facing equivalence between fixed-degree Schur--Szegő and finite
+Pólya--Schur in the local nonnegative-coefficient convention. -/
+theorem finiteSchurSzegoTarget_iff_finitePolyaSchurTarget :
+    finiteSchurSzegoTarget ↔ finitePolyaSchurTarget :=
+  finiteSchurSzegoCompositionStatement_iff_finitePolyaSchur
+
 /-! ## Garloff--Wagner and Hurwitz-matrix targets -/
 
 /-- Challenge-facing target for Garloff--Wagner, Theorem 4(b), in the

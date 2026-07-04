@@ -464,6 +464,49 @@ theorem finitePolyaSchur_nonneg_of_schurSzegoNonzero
   finitePolyaSchur_nonneg_of_backward
     (finitePolyaSchurNonnegBackward_of_schurSzegoNonzero hSZ)
 
+/-- The finite Pólya--Schur theorem implies fixed-degree Schur--Szegő
+composition.
+
+The diagonal sequence used here is the binomially normalized coefficient
+sequence of the PF factor.  The theorem
+`jensenPolynomial_normalized_coeff_eq_of_natDegree_le` identifies its Jensen
+polynomial with that factor, and the fixed-degree Schur--Szegő composition is
+the corresponding diagonal operator on the other factor. -/
+theorem finiteSchurSzegoComposition_of_finitePolyaSchur
+    (hFPS : finitePolyaSchurNonnegStatement) :
+    finiteSchurSzegoCompositionStatement := by
+  intro n f p hf hfdeg hpdeg hsplit
+  let gamma : ℕ → ℝ := fun k => f.coeff k / (Nat.choose n k : ℝ)
+  have hgamma : ∀ k, 0 ≤ gamma k := fun k =>
+    div_nonneg (hf.hasNonnegCoeffs k) (by positivity)
+  have hjensen_eq : jensenPolynomial n gamma = f := by
+    simpa [gamma] using jensenPolynomial_normalized_coeff_eq_of_natDegree_le hfdeg
+  have hjensen : IsPFPolynomial (jensenPolynomial n gamma) := by
+    rw [hjensen_eq]
+    exact hf
+  have hmult : IsFiniteMultiplierSequence n gamma :=
+    (hFPS hgamma).2 hjensen
+  have heq : schurSzegoComp n f p = diagonalOperator gamma p := by
+    rw [schurSzegoComp_comm, schurSzegoComp_eq_diagonalOperator]
+  rw [heq]
+  exact hmult hpdeg hsplit
+
+/-- The full finite Schur--Szegő theorem implies the finite Pólya--Schur
+theorem. -/
+theorem finitePolyaSchur_nonneg_of_schurSzego
+    (hSZ : finiteSchurSzegoCompositionStatement) :
+    finitePolyaSchurNonnegStatement :=
+  finitePolyaSchur_nonneg_of_backward
+    (finitePolyaSchurNonnegBackward_of_schurSzego hSZ)
+
+/-- Fixed-degree Schur--Szegő composition and finite Pólya--Schur are
+equivalent classical inputs in the nonnegative-coefficient convention used
+here. -/
+theorem finiteSchurSzegoCompositionStatement_iff_finitePolyaSchur :
+    finiteSchurSzegoCompositionStatement ↔ finitePolyaSchurNonnegStatement :=
+  ⟨finitePolyaSchur_nonneg_of_schurSzego,
+    finiteSchurSzegoComposition_of_finitePolyaSchur⟩
+
 /-- Nonzero finite Schur--Szegő composition theorem.  This is the substantive
 classical leaf: `f` is a nonzero PF polynomial, `p` is a nonzero real-rooted
 polynomial, both have degree at most `n`, and the fixed-degree Schur--Szegő
