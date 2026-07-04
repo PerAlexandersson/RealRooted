@@ -86,6 +86,12 @@ theorem finiteSchurSzegoNonzeroTarget_iff_finitePolyaSchurTarget :
     finiteSchurSzegoNonzeroTarget ↔ finitePolyaSchurTarget :=
   finiteSchurSzegoCompositionNonzeroStatement_iff_finitePolyaSchur
 
+/-- Challenge-facing equivalence between the nonzero Schur--Szegő core and
+the backward finite Pólya--Schur target. -/
+theorem finiteSchurSzegoNonzeroTarget_iff_finitePolyaSchurBackwardTarget :
+    finiteSchurSzegoNonzeroTarget ↔ finitePolyaSchurBackwardTarget :=
+  finiteSchurSzegoCompositionNonzeroStatement_iff_finitePolyaSchurBackward
+
 /-! ## Garloff--Wagner and Hurwitz-matrix targets -/
 
 /-- Challenge-facing target for Garloff--Wagner, Theorem 4(b), in the

@@ -409,6 +409,20 @@ theorem finitePolyaSchur_nonneg_of_backward
   fun hgamma => ⟨isPFPolynomial_jensenPolynomial_of_finiteMultiplierSequence hgamma,
     hBack hgamma⟩
 
+/-- The full finite Pólya--Schur statement contains, in particular, the hard
+backward direction from PF Jensen polynomial to finite multiplier sequence. -/
+theorem finitePolyaSchur_backward_of_nonneg
+    (hFPS : finitePolyaSchurNonnegStatement) :
+    finitePolyaSchurNonnegBackwardStatement :=
+  fun hgamma hjensen => (hFPS hgamma).2 hjensen
+
+/-- In the nonnegative-coefficient convention, the full finite Pólya--Schur
+statement is equivalent to its backward direction.  The forward direction is
+the elementary Jensen-polynomial test on `(X + 1)^n`. -/
+theorem finitePolyaSchurNonnegStatement_iff_backward :
+    finitePolyaSchurNonnegStatement ↔ finitePolyaSchurNonnegBackwardStatement :=
+  ⟨finitePolyaSchur_backward_of_nonneg, finitePolyaSchur_nonneg_of_backward⟩
+
 /- The classical finite Pólya--Schur theorem `finitePolyaSchur_nonneg` is
 established in `RealRooted.Hadamard`, where the Schur--Szegő composition
 machinery (`finiteSchurSzegoComposition`) needed for the backward direction

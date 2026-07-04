@@ -522,6 +522,16 @@ theorem finiteSchurSzegoCompositionNonzeroStatement_iff_finitePolyaSchur :
   ⟨finitePolyaSchur_nonneg_of_schurSzegoNonzero,
     finiteSchurSzegoCompositionNonzero_of_finitePolyaSchur⟩
 
+/-- The nonzero Schur--Szegő core is equivalent to the hard backward direction
+of finite Pólya--Schur. -/
+theorem finiteSchurSzegoCompositionNonzeroStatement_iff_finitePolyaSchurBackward :
+    finiteSchurSzegoCompositionNonzeroStatement ↔
+      finitePolyaSchurNonnegBackwardStatement :=
+  ⟨finitePolyaSchurNonnegBackward_of_schurSzegoNonzero,
+    fun hBack =>
+      finiteSchurSzegoCompositionNonzero_of_finitePolyaSchur
+        (finitePolyaSchur_nonneg_of_backward hBack)⟩
+
 /-- Nonzero finite Schur--Szegő composition theorem.  This is the substantive
 classical leaf: `f` is a nonzero PF polynomial, `p` is a nonzero real-rooted
 polynomial, both have degree at most `n`, and the fixed-degree Schur--Szegő
