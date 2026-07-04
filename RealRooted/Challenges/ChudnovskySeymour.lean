@@ -255,6 +255,26 @@ theorem sameDegreeRootCountAboveTarget_of_nonRoot
     sameDegreeRootCountAboveTarget :=
   posComboNoCommonSameDegreeRootCountAbove_of_nonRoot hcount
 
+/-- Challenge-facing equivalence between the same-degree upper and lower
+common-non-root root-count formulations. -/
+theorem sameDegreeRootCountAboveNonRootTarget_iff_rootCountNonRoot :
+    sameDegreeRootCountAboveNonRootTarget ↔ sameDegreeRootCountNonRootTarget :=
+  posComboNoCommonSameDegreeRootCountAboveNonRoot_iff_rootCountNonRoot
+
+/-- Challenge-facing reduction from common-non-root same-degree lower root
+counts to the full upper-threshold formulation. -/
+theorem sameDegreeRootCountAboveTarget_of_rootCountNonRoot
+    (hcount : sameDegreeRootCountNonRootTarget) :
+    sameDegreeRootCountAboveTarget :=
+  posComboNoCommonSameDegreeRootCountAbove_of_rootCountNonRoot hcount
+
+/-- Challenge-facing reduction from common-non-root same-degree upper root
+counts to the full lower-threshold formulation. -/
+theorem sameDegreeRootCountTarget_of_rootCountAboveNonRoot
+    (hcount : sameDegreeRootCountAboveNonRootTarget) :
+    sameDegreeRootCountTarget :=
+  posComboNoCommonSameDegreeRootCount_of_rootCountAboveNonRoot hcount
+
 /-- Challenge-facing reduction from common-non-root same-degree lower root
 counts to same-degree root crossing. -/
 theorem sameDegreeRootCrossingTarget_of_rootCountNonRoot

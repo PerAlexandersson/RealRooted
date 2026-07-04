@@ -2851,6 +2851,69 @@ theorem card_roots_filter_gt_add_le_of_splits {p : ℝ[X]} (hp : p.Splits)
   rw [hcompl, ← Multiset.card_add, Multiset.filter_add_not,
     card_roots_of_splits hp]
 
+/-- At a fixed threshold, same-degree upper common-non-root bounds are
+equivalent to the lower common-non-root bounds. -/
+theorem sameDegreeRootCountAbove_nonRoot_iff_rootCount_nonRoot_pointwise
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hdeg : g.natDegree = f.natDegree) (x : ℝ) :
+    (((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+        ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)
+      ↔
+    (((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+        ((g.roots.filter (· ≤ x)).card : ℤ) -
+          (f.roots.filter (· ≤ x)).card ≤ 1) := by
+  have hfpart := card_roots_filter_gt_add_le_of_splits hf x
+  have hgpart := card_roots_filter_gt_add_le_of_splits hg x
+  have hfpartZ :
+      ((f.roots.filter (x < ·)).card : ℤ) + (f.roots.filter (· ≤ x)).card =
+        f.natDegree := by exact_mod_cast hfpart
+  have hgpartZ :
+      ((g.roots.filter (x < ·)).card : ℤ) + (g.roots.filter (· ≤ x)).card =
+        g.natDegree := by exact_mod_cast hgpart
+  have hdegZ : (g.natDegree : ℤ) = f.natDegree := by exact_mod_cast hdeg
+  constructor <;> · rintro ⟨h1, h2⟩; constructor <;> lia
+
+/-- The same-degree upper common-non-root root-count target is equivalent to
+the lower common-non-root root-count target. -/
+theorem posComboNoCommonSameDegreeRootCountAboveNonRoot_iff_rootCountNonRoot :
+    PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement ↔
+      PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement := by
+  constructor
+  · intro hcount f g hf_pos hg_pos hfnn hgnn hfg hdeg hno x hxf hxg
+    have hf_split : f.Splits :=
+      (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+    have hg_split : g.Splits :=
+      (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+    exact (sameDegreeRootCountAbove_nonRoot_iff_rootCount_nonRoot_pointwise
+      hf_split hg_split hdeg x).mp
+      (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno x hxf hxg)
+  · intro hcount f g hf_pos hg_pos hfnn hgnn hfg hdeg hno x hxf hxg
+    have hf_split : f.Splits :=
+      (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+    have hg_split : g.Splits :=
+      (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+    exact (sameDegreeRootCountAbove_nonRoot_iff_rootCount_nonRoot_pointwise
+      hf_split hg_split hdeg x).mpr
+      (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno x hxf hxg)
+
+/-- The same-degree lower common-non-root target implies the full
+upper-threshold same-degree root-count target. -/
+theorem posComboNoCommonSameDegreeRootCountAbove_of_rootCountNonRoot
+    (hcount : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement) :
+    PosComboNoCommonSameDegreeRootCountAboveNonnegStatement :=
+  posComboNoCommonSameDegreeRootCountAbove_of_nonRoot
+    (posComboNoCommonSameDegreeRootCountAboveNonRoot_iff_rootCountNonRoot.mpr
+      hcount)
+
+/-- The same-degree upper common-non-root target implies the full
+lower-threshold same-degree root-count target. -/
+theorem posComboNoCommonSameDegreeRootCount_of_rootCountAboveNonRoot
+    (hcount : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement) :
+    PosComboNoCommonSameDegreeRootCountNonnegStatement :=
+  posComboNoCommonSameDegreeRootCount_of_nonRoot
+    (posComboNoCommonSameDegreeRootCountAboveNonRoot_iff_rootCountNonRoot.mp
+      hcount)
+
 /-- Common-non-root version of the succ-degree lower root-count formulation. -/
 def PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement : Prop :=
   ∀ ⦃f g : ℝ[X]⦄,
