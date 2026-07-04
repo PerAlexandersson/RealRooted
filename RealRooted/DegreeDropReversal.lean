@@ -25,6 +25,22 @@ theorem splits_reverse_X_add_C (a : K) :
     (Polynomial.reverse_natDegree_le (X + C a)).trans <| by
       rw [Polynomial.natDegree_X_add_C]
 
+/-- Reversal of a nonzero monic linear factor, normalized as a nonzero scalar
+times another monic linear factor. -/
+theorem reverse_X_sub_C_eq (r : K) (hr : r ≠ 0) :
+    (X - C r : K[X]).reverse = C (-r) * (X - C r⁻¹) := by
+  ext n
+  rcases n with _ | _ | n <;>
+    simp [Polynomial.reverse, Polynomial.coeff_one, Polynomial.coeff_X,
+      Polynomial.coeff_C, hr]
+
+/-- Roots of the reverse of a nonzero monic linear factor. -/
+theorem roots_reverse_X_sub_C (r : K) (hr : r ≠ 0) :
+    (X - C r : K[X]).reverse.roots = {r⁻¹} := by
+  rw [reverse_X_sub_C_eq r hr, Polynomial.roots_C_mul]
+  · exact Polynomial.roots_X_sub_C r⁻¹
+  · simpa using neg_ne_zero.mpr hr
+
 /-- Reversal preserves `Splits` over a field. -/
 theorem splits_reverse {p : K[X]} (h : p.Splits) :
     p.reverse.Splits := by
