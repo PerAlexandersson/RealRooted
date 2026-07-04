@@ -3106,8 +3106,7 @@ theorem PosComboRealRooted.root_parameter_eq_and_derivative_ne_zero_add_right
     (hroot : (f + C mu * g).IsRoot x) :
     mu = -f.eval x / g.eval x ∧
       (f + C mu * g).derivative.eval x ≠ 0 :=
-  ⟨(isRoot_add_right_iff_parameter_eq
-      (eval_right_ne_zero_of_isRoot_add_right_of_no_common hno hroot)).mp hroot,
+  ⟨(isRoot_add_right_iff_parameter_eq_of_no_common hno hmu).mp hroot,
     hfg.derivative_eval_ne_zero_add_right hno hmu hroot⟩
 
 /-- Left-family form of
@@ -3121,8 +3120,7 @@ theorem PosComboRealRooted.root_parameter_eq_and_derivative_ne_zero_add_left
     (hroot : (C lam * f + g).IsRoot x) :
     lam = -g.eval x / f.eval x ∧
       (C lam * f + g).derivative.eval x ≠ 0 :=
-  ⟨(isRoot_add_left_iff_parameter_eq
-      (eval_left_ne_zero_of_isRoot_add_left_of_no_common hno hroot)).mp hroot,
+  ⟨(isRoot_add_left_iff_parameter_eq_of_no_common hno hlam).mp hroot,
     hfg.derivative_eval_ne_zero_add_left hno hlam hroot⟩
 
 /-- In a one-parameter boundary family `g + t f`, a Wronskian-zero point where
