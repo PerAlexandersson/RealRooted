@@ -494,16 +494,10 @@ private lemma exists_special_pair_of_wronskian_zero
           hno
 
 private lemma eval_derivative_ne_zero_of_hasSimpleRoots
-    {p : ℝ[X]} (hp0 : p ≠ 0) (hsimple : HasSimpleRoots p)
+    {p : ℝ[X]} (_hp0 : p ≠ 0) (hsimple : HasSimpleRoots p)
     {r : ℝ} (hr : p.IsRoot r) :
-    p.derivative.eval r ≠ 0 := by
-  intro hder0
-  have hder_root : p.derivative.IsRoot r := by
-    simp_all
-  have hmult : 1 < p.rootMultiplicity r :=
-    (one_lt_rootMultiplicity_iff_isRoot hp0).2 ⟨hr, hder_root⟩
-  rw [hsimple r hr] at hmult
-  lia
+    p.derivative.eval r ≠ 0 :=
+  hsimple.eval_derivative_ne_zero hr
 
 /-- Local double-root obstruction in the positive-sign case.
 

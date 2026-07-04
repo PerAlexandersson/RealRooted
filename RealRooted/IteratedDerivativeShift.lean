@@ -35,6 +35,18 @@ def HasSimpleRoots (p : ℝ[X]) : Prop :=
 @[grind <=]
 lemma HasSimpleRoots.ne_zero (hp : HasSimpleRoots p) : p ≠ 0 := by rintro rfl; simp at hp
 
+/-- At a simple real root, the derivative does not vanish. -/
+lemma HasSimpleRoots.eval_derivative_ne_zero
+    (hsimple : HasSimpleRoots p) {r : ℝ} (hr : p.IsRoot r) :
+    p.derivative.eval r ≠ 0 := by
+  intro hder0
+  have hder_root : p.derivative.IsRoot r := by
+    simp_all
+  have hmult : 1 < p.rootMultiplicity r :=
+    (one_lt_rootMultiplicity_iff_isRoot hsimple.ne_zero).2 ⟨hr, hder_root⟩
+  rw [hsimple r hr] at hmult
+  lia
+
 @[simp] lemma iterateTDeriv_zero (eps : ℝ) (p : ℝ[X]) :
     iterateTDeriv eps 0 p = p :=
   rfl

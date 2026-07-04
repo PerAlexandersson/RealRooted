@@ -2928,6 +2928,30 @@ theorem isRoot_add_left_iff_parameter_eq
   simpa [add_comm] using
     isRoot_add_right_iff_parameter_eq (f := g) (g := f) (mu := lam) (x := x) hfx
 
+/-- At a root of an interior right positive combination, the derivative does
+not vanish. -/
+theorem PosComboRealRooted.derivative_eval_ne_zero_add_right
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    {mu x : ℝ}
+    (hmu : 0 < mu)
+    (hroot : (f + C mu * g).IsRoot x) :
+    (f + C mu * g).derivative.eval x ≠ 0 :=
+  (hfg.hasSimpleRoots_add_right hno hmu).eval_derivative_ne_zero hroot
+
+/-- Left-family form of
+`PosComboRealRooted.derivative_eval_ne_zero_add_right`. -/
+theorem PosComboRealRooted.derivative_eval_ne_zero_add_left
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    {lam x : ℝ}
+    (hlam : 0 < lam)
+    (hroot : (C lam * f + g).IsRoot x) :
+    (C lam * f + g).derivative.eval x ≠ 0 :=
+  (hfg.hasSimpleRoots_add_left hno hlam).eval_derivative_ne_zero hroot
+
 /-- In a one-parameter boundary family `g + t f`, a Wronskian-zero point where
 `g` and `f` have opposite signs would force an interior double root. Hence the
 Wronskian cannot vanish on the positive-level set of the ratio `-g / f`. -/
