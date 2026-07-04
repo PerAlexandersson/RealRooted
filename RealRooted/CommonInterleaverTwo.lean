@@ -2524,6 +2524,36 @@ theorem succDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
   succDegreePairHasCommonInterleaver_nonneg_of_slotData
     (posComboNoCommonSuccDegreeSlotData_of_rootCrossing hcross)
 
+/-- Succ-degree slot data from the lower-threshold root-count formulation. -/
+theorem posComboNoCommonSuccDegreeSlotData_of_rootCount
+    (hcount : PosComboNoCommonSuccDegreeRootCountNonnegStatement) :
+    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
+  posComboNoCommonSuccDegreeSlotData_of_rootCrossing
+    (posComboNoCommonSuccDegreeRootCrossing_of_rootCount hcount)
+
+/-- The corrected succ-degree pair-interleaver endpoint follows directly from
+the lower-threshold root-count formulation. -/
+theorem succDegreePairHasCommonInterleaver_nonneg_of_rootCount
+    (hcount : PosComboNoCommonSuccDegreeRootCountNonnegStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+  succDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
+    (posComboNoCommonSuccDegreeRootCrossing_of_rootCount hcount)
+
+/-- Succ-degree slot data from the upper-threshold root-count formulation. -/
+theorem posComboNoCommonSuccDegreeSlotData_of_rootCountAbove
+    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement) :
+    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
+  posComboNoCommonSuccDegreeSlotData_of_rootCrossing
+    (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove hcount)
+
+/-- The corrected succ-degree pair-interleaver endpoint follows directly from
+the upper-threshold root-count formulation. -/
+theorem succDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove
+    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+  succDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
+    (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove hcount)
+
 /-- Succ-degree slot data from the PF/ASW left-endpoint route and the
 descending-root crossing inequalities. -/
 theorem posComboNoCommonSuccDegreeSlotData_of_forward_asw_and_rootCrossing
