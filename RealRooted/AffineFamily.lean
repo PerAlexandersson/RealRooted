@@ -2877,6 +2877,32 @@ private lemma hasSimpleRoots_add_right_of_posComboRealRooted
           lia)
         (by grind) hpk_mult hneg_eval_ne hneg_pos
 
+/-- Every interior positive combination of a no-common positive-combination
+family has simple roots. -/
+theorem PosComboRealRooted.hasSimpleRoots_add_right
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    {μ : ℝ}
+    (hμ : 0 < μ) :
+    HasSimpleRoots (f + C μ * g) :=
+  hasSimpleRoots_add_right_of_posComboRealRooted hfg hno hμ
+
+/-- Left-family form of `PosComboRealRooted.hasSimpleRoots_add_right`. -/
+theorem PosComboRealRooted.hasSimpleRoots_add_left
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    {lam : ℝ}
+    (hlam : 0 < lam) :
+    HasSimpleRoots (C lam * f + g) := by
+  have hno' : ∀ r, g.IsRoot r → ¬ f.IsRoot r := by
+    intro r hg hf
+    exact hno r hf hg
+  simpa [add_comm] using
+    PosComboRealRooted.hasSimpleRoots_add_right
+      (f := g) (g := f) (PosComboRealRooted.comm hfg) hno' hlam
+
 /-- In a one-parameter boundary family `g + t f`, a Wronskian-zero point where
 `g` and `f` have opposite signs would force an interior double root. Hence the
 Wronskian cannot vanish on the positive-level set of the ratio `-g / f`. -/
