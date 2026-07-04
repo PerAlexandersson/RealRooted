@@ -210,4 +210,40 @@ theorem rootCountAbove_diff_le_one_of_nonRoot_isRoot
       (by simpa [Polynomial.IsRoot.def] using hfx)
       (by simpa [Polynomial.IsRoot.def] using hgx)
 
+/-- Push a threshold up to a common non-root without changing both lower
+(`· ≤ x`) and upper (`x < ·`) root counts for both polynomials. -/
+theorem exists_nonRoot_threshold_count_le_and_gt_eq
+    {f g : ℝ[X]} (hf : f ≠ 0) (hg : g ≠ 0) (x : ℝ) :
+    ∃ x' : ℝ, x ≤ x' ∧ f.eval x' ≠ 0 ∧ g.eval x' ≠ 0 ∧
+      (f.roots.filter (· ≤ x')).card = (f.roots.filter (· ≤ x)).card ∧
+      (g.roots.filter (· ≤ x')).card = (g.roots.filter (· ≤ x)).card ∧
+      (f.roots.filter (x' < ·)).card = (f.roots.filter (x < ·)).card ∧
+      (g.roots.filter (x' < ·)).card = (g.roots.filter (x < ·)).card := by
+  classical
+  set combined : Multiset ℝ := f.roots + g.roots with hcomb
+  have hmem_combined : ∀ {r : ℝ}, r ∈ f.roots ∨ r ∈ g.roots → r ∈ combined := by
+    intro r hr
+    rw [hcomb, Multiset.mem_add]
+    exact hr
+  obtain ⟨x', hxx', hgap⟩ := exists_threshold_no_mem_Ioc combined x
+  refine ⟨x', le_of_lt hxx', ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro hval
+    have hr : x' ∈ f.roots := (mem_roots hf).mpr hval
+    rcases hgap x' (hmem_combined (Or.inl hr)) with hx' | hx' <;> linarith
+  · intro hval
+    have hr : x' ∈ g.roots := (mem_roots hg).mpr hval
+    rcases hgap x' (hmem_combined (Or.inr hr)) with hx' | hx' <;> linarith
+  · refine (card_filter_le_eq_of_no_mem_Ioc f.roots (le_of_lt hxx') ?_).symm
+    intro r hr
+    exact hgap r (hmem_combined (Or.inl hr))
+  · refine (card_filter_le_eq_of_no_mem_Ioc g.roots (le_of_lt hxx') ?_).symm
+    intro r hr
+    exact hgap r (hmem_combined (Or.inr hr))
+  · refine (card_filter_lt_eq_of_no_mem_Ioc f.roots (le_of_lt hxx') ?_).symm
+    intro r hr
+    exact hgap r (hmem_combined (Or.inl hr))
+  · refine (card_filter_lt_eq_of_no_mem_Ioc g.roots (le_of_lt hxx') ?_).symm
+    intro r hr
+    exact hgap r (hmem_combined (Or.inr hr))
+
 end RealRooted
