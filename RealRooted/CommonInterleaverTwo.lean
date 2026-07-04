@@ -2415,6 +2415,30 @@ private lemma natDegree_pos_of_posLeadingCoeff_of_coeff_zero
   have hp_C : p = C (p.coeff 0) := Polynomial.eq_C_of_natDegree_eq_zero hp_deg_zero
   exact hp_pos.ne_zero (by simpa [hp0] using hp_C)
 
+/-- A no-common-roots pair cannot have zero constant coefficient on both
+members.  This is the form used when the lower-degree endpoint has a factor
+`X`: the higher-degree endpoint is automatically in the residual branch. -/
+theorem right_coeff_zero_ne_of_no_common_of_left_coeff_zero
+    {f g : ℝ[X]}
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hf0 : f.coeff 0 = 0) :
+    g.coeff 0 ≠ 0 := by
+  intro hg0
+  have hf_root : f.IsRoot 0 := by
+    simpa [Polynomial.IsRoot.def, Polynomial.coeff_zero_eq_eval_zero] using hf0
+  have hg_root : g.IsRoot 0 := by
+    simpa [Polynomial.IsRoot.def, Polynomial.coeff_zero_eq_eval_zero] using hg0
+  exact (hno 0 hf_root) hg_root
+
+/-- Symmetric constant-coefficient form of the no-common-roots hypothesis. -/
+theorem left_coeff_zero_ne_of_no_common_of_right_coeff_zero
+    {f g : ℝ[X]}
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hg0 : g.coeff 0 = 0) :
+    f.coeff 0 ≠ 0 := by
+  intro hf0
+  exact right_coeff_zero_ne_of_no_common_of_left_coeff_zero hno hf0 hg0
+
 /-- Zero-constant succ-degree data pass to the pair divided by the common
 factor `X`.  This is the reduction package for the complementary branch to
 `PosComboRealRooted.left_splits_of_succDegree_of_coeff_zero_ne`. -/
