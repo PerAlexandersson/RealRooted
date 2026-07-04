@@ -119,6 +119,11 @@ left-endpoint route. -/
 abbrev forwardASWTarget : Prop :=
   aissenSchoenbergWhitneyForwardOrZeroStatement
 
+/-- Splitting-only forward Aissen--Schoenberg--Whitney target; this is now
+equivalent to the zero-aware target used by the PF-limit route. -/
+abbrev forwardASWSplitsTarget : Prop :=
+  aissenSchoenbergWhitneyForwardSplitsStatement
+
 /-- Succ-degree root-slot reformulation of milestone B2. -/
 abbrev succDegreeSlotDataTarget : Prop :=
   PosComboNoCommonSuccDegreeSlotDataNonnegStatement
@@ -217,6 +222,32 @@ theorem succDegreeResidualLeftSplitsTarget_of_forward_asw
     succDegreeResidualLeftSplitsTarget :=
   PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_forward_asw hASW
 
+/-- The zero-aware ASW target is equivalent to the splitting-only target. -/
+theorem forwardASWTarget_iff_splitsTarget :
+    forwardASWTarget ↔ forwardASWSplitsTarget :=
+  aissenSchoenbergWhitneyForwardOrZero_iff_splits
+
+/-- Challenge-facing bridge from splitting-only ASW to the zero-aware ASW
+target. -/
+theorem forwardASWTarget_of_splitsTarget
+    (hASW : forwardASWSplitsTarget) :
+    forwardASWTarget :=
+  aissenSchoenbergWhitneyForwardOrZero_of_splits hASW
+
+/-- Challenge-facing PF/ASW reduction to the succ-degree left-splitting target,
+using only the splitting conjunct of ASW. -/
+theorem succDegreeLeftSplitsTarget_of_forward_asw_splits
+    (hASW : forwardASWSplitsTarget) :
+    succDegreeLeftSplitsTarget :=
+  PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw_splits hASW
+
+/-- Challenge-facing PF/ASW reduction to the residual left-splitting target,
+using only the splitting conjunct of ASW. -/
+theorem succDegreeResidualLeftSplitsTarget_of_forward_asw_splits
+    (hASW : forwardASWSplitsTarget) :
+    succDegreeResidualLeftSplitsTarget :=
+  PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_forward_asw_splits hASW
+
 /-- Challenge-facing reduction from the residual constant-coefficient branch to
 the full succ-degree left-splitting target. -/
 theorem succDegreeLeftSplitsTarget_of_residual
@@ -239,6 +270,15 @@ theorem succDegreeSlotDataTarget_of_forward_asw_and_rootCrossing
   posComboNoCommonSuccDegreeSlotData_of_forward_asw_and_rootCrossing
     hASW hcross
 
+/-- Challenge-facing reduction from splitting-only ASW and root crossing to
+succ-degree slot data. -/
+theorem succDegreeSlotDataTarget_of_forward_asw_splits_and_rootCrossing
+    (hASW : forwardASWSplitsTarget)
+    (hcross : succDegreeRootCrossingTarget) :
+    succDegreeSlotDataTarget :=
+  posComboNoCommonSuccDegreeSlotData_of_forward_asw_splits_and_rootCrossing
+    hASW hcross
+
 /-- Challenge-facing reduction from forward ASW and root crossing to the
 repaired succ-degree pair endpoint. -/
 theorem succDegreePairTarget_of_forward_asw_and_rootCrossing
@@ -246,6 +286,15 @@ theorem succDegreePairTarget_of_forward_asw_and_rootCrossing
     (hcross : succDegreeRootCrossingTarget) :
     succDegreePairTarget :=
   succDegreePairHasCommonInterleaver_nonneg_of_forward_asw_and_rootCrossing
+    hASW hcross
+
+/-- Challenge-facing reduction from splitting-only ASW and root crossing to the
+repaired succ-degree pair endpoint. -/
+theorem succDegreePairTarget_of_forward_asw_splits_and_rootCrossing
+    (hASW : forwardASWSplitsTarget)
+    (hcross : succDegreeRootCrossingTarget) :
+    succDegreePairTarget :=
+  succDegreePairHasCommonInterleaver_nonneg_of_forward_asw_splits_and_rootCrossing
     hASW hcross
 
 /-- Challenge-facing reduction from the residual branch and root crossing to the
@@ -283,6 +332,15 @@ theorem succDegreeSlotDataTarget_of_forward_asw_and_orientation
   posComboNoCommonSuccDegreeSlotData_of_forward_asw_and_orientation
     hASW horient
 
+/-- Challenge-facing reduction from splitting-only ASW and fixed orientation to
+succ-degree slot data. -/
+theorem succDegreeSlotDataTarget_of_forward_asw_splits_and_orientation
+    (hASW : forwardASWSplitsTarget)
+    (horient : succDegreeOrientationTarget) :
+    succDegreeSlotDataTarget :=
+  posComboNoCommonSuccDegreeSlotData_of_forward_asw_splits_and_orientation
+    hASW horient
+
 /-- Challenge-facing reduction from forward ASW and fixed orientation to the
 repaired succ-degree pair endpoint. -/
 theorem succDegreePairTarget_of_forward_asw_and_orientation
@@ -290,6 +348,15 @@ theorem succDegreePairTarget_of_forward_asw_and_orientation
     (horient : succDegreeOrientationTarget) :
     succDegreePairTarget :=
   succDegreePairHasCommonInterleaver_nonneg_of_forward_asw_and_orientation
+    hASW horient
+
+/-- Challenge-facing reduction from splitting-only ASW and fixed orientation to
+the repaired succ-degree pair endpoint. -/
+theorem succDegreePairTarget_of_forward_asw_splits_and_orientation
+    (hASW : forwardASWSplitsTarget)
+    (horient : succDegreeOrientationTarget) :
+    succDegreePairTarget :=
+  succDegreePairHasCommonInterleaver_nonneg_of_forward_asw_splits_and_orientation
     hASW horient
 
 /-- Challenge-facing reduction from the stronger fixed orientation to the

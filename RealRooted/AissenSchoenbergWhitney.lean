@@ -219,6 +219,28 @@ theorem aissenSchoenbergWhitneyForward_iff_orZero :
   ⟨aissenSchoenbergWhitneyForwardOrZero_of_forward,
     aissenSchoenbergWhitneyForward_of_orZero⟩
 
+/-- The zero-aware forward ASW interface implies the splitting-only target. -/
+theorem aissenSchoenbergWhitneyForwardSplits_of_orZero
+    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement) :
+    aissenSchoenbergWhitneyForwardSplitsStatement :=
+  aissenSchoenbergWhitneyForwardSplits_of_forward
+    (aissenSchoenbergWhitneyForward_of_orZero hASW)
+
+/-- The splitting-only target implies the zero-aware forward ASW interface. -/
+theorem aissenSchoenbergWhitneyForwardOrZero_of_splits
+    (hASW : aissenSchoenbergWhitneyForwardSplitsStatement) :
+    aissenSchoenbergWhitneyForwardOrZeroStatement :=
+  aissenSchoenbergWhitneyForwardOrZero_of_forward
+    (aissenSchoenbergWhitneyForward_of_splits hASW)
+
+/-- The zero-aware ASW target is equivalent to proving only the splitting
+conjunct. -/
+theorem aissenSchoenbergWhitneyForwardOrZero_iff_splits :
+    aissenSchoenbergWhitneyForwardOrZeroStatement ↔
+      aissenSchoenbergWhitneyForwardSplitsStatement :=
+  ⟨aissenSchoenbergWhitneyForwardSplits_of_orZero,
+    aissenSchoenbergWhitneyForwardOrZero_of_splits⟩
+
 /-- Without a nonzero hypothesis, the forward ASW interface would force the
 zero polynomial to be real-rooted, contrary to the strict local definition of
 `p ≠ 0 ∧ p.Splits`. -/

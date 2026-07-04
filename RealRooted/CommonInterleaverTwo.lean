@@ -1736,6 +1736,13 @@ theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw
   intro f g hf_pos _ hfnn hgnn hfg _
   exact hfg.left_splits_of_forward_asw hASW hf_pos hfnn hgnn
 
+/-- Conditional package form using the splitting-only ASW target. -/
+theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw_splits
+    (hASW : aissenSchoenbergWhitneyForwardSplitsStatement) :
+    PosComboSuccDegreeLeftSplitsNonnegStatement :=
+  PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw
+    (aissenSchoenbergWhitneyForwardOrZero_of_splits hASW)
+
 /-- Residual package form of the forward-ASW route.  This keeps the remaining
 #42 branch available as a smaller challenge target, while making clear that the
 PF-limit route already covers it under the forward ASW interface. -/
@@ -1745,6 +1752,13 @@ theorem PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_forward_asw
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc _ _
   exact (PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw hASW)
     hf_pos hg_pos hfnn hgnn hfg hsucc
+
+/-- Residual package form using the splitting-only ASW target. -/
+theorem PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_forward_asw_splits
+    (hASW : aissenSchoenbergWhitneyForwardSplitsStatement) :
+    PosComboSuccDegreeResidualLeftSplitsNonnegStatement :=
+  PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_forward_asw
+    (aissenSchoenbergWhitneyForwardOrZero_of_splits hASW)
 
 /-- The affine-family bridge already gives the succ-degree left endpoint in
 the no-common branch.  This isolates the remaining #42 work in that branch as
@@ -2102,6 +2116,15 @@ theorem posComboNoCommonSuccDegreeSlotData_of_forward_asw_and_rootCrossing
   posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_rootCrossing
     (PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw hASW) hcross
 
+/-- Succ-degree slot data from the splitting-only ASW target and the
+root-crossing target. -/
+theorem posComboNoCommonSuccDegreeSlotData_of_forward_asw_splits_and_rootCrossing
+    (hASW : aissenSchoenbergWhitneyForwardSplitsStatement)
+    (hcross : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
+  posComboNoCommonSuccDegreeSlotData_of_forward_asw_and_rootCrossing
+    (aissenSchoenbergWhitneyForwardOrZero_of_splits hASW) hcross
+
 /-- Succ-degree pair interleavers from the PF/ASW left-endpoint route and the
 descending-root crossing inequalities. -/
 theorem
@@ -2111,6 +2134,16 @@ theorem
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
   succDegreePairHasCommonInterleaver_nonneg_of_leftSplits_and_rootCrossing
     (PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw hASW) hcross
+
+/-- Succ-degree pair interleavers from the splitting-only ASW target and the
+root-crossing target. -/
+theorem
+    succDegreePairHasCommonInterleaver_nonneg_of_forward_asw_splits_and_rootCrossing
+    (hASW : aissenSchoenbergWhitneyForwardSplitsStatement)
+    (hcross : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+  succDegreePairHasCommonInterleaver_nonneg_of_forward_asw_and_rootCrossing
+    (aissenSchoenbergWhitneyForwardOrZero_of_splits hASW) hcross
 
 /-- Succ-degree slot data from left-endpoint real-rootedness and the fixed
 orientation.  The orientation supplies the root-crossing inequalities. -/
@@ -2139,6 +2172,15 @@ theorem posComboNoCommonSuccDegreeSlotData_of_forward_asw_and_orientation
   posComboNoCommonSuccDegreeSlotData_of_forward_asw_and_rootCrossing hASW
     (posComboNoCommonSuccDegreeRootCrossing_of_orientation horient)
 
+/-- Succ-degree slot data from the splitting-only ASW target and the fixed
+succ-degree orientation. -/
+theorem posComboNoCommonSuccDegreeSlotData_of_forward_asw_splits_and_orientation
+    (hASW : aissenSchoenbergWhitneyForwardSplitsStatement)
+    (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
+    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
+  posComboNoCommonSuccDegreeSlotData_of_forward_asw_and_orientation
+    (aissenSchoenbergWhitneyForwardOrZero_of_splits hASW) horient
+
 /-- Succ-degree pair interleavers from the PF/ASW left-endpoint route and the
 fixed orientation. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_forward_asw_and_orientation
@@ -2147,6 +2189,15 @@ theorem succDegreePairHasCommonInterleaver_nonneg_of_forward_asw_and_orientation
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
   succDegreePairHasCommonInterleaver_nonneg_of_forward_asw_and_rootCrossing hASW
     (posComboNoCommonSuccDegreeRootCrossing_of_orientation horient)
+
+/-- Succ-degree pair interleavers from the splitting-only ASW target and the
+fixed orientation. -/
+theorem succDegreePairHasCommonInterleaver_nonneg_of_forward_asw_splits_and_orientation
+    (hASW : aissenSchoenbergWhitneyForwardSplitsStatement)
+    (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+  succDegreePairHasCommonInterleaver_nonneg_of_forward_asw_and_orientation
+    (aissenSchoenbergWhitneyForwardOrZero_of_splits hASW) horient
 
 /-- Honest nonnegative degree-split reduction of the no-common orientation
 problem: it is enough to solve the same-degree branch up to orientation
