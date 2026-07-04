@@ -152,4 +152,27 @@ theorem Splits.card_filter_le_add_card_filter_lt_eq_natDegree
     simp [not_le]
   rw [hgt, ← Multiset.card_add, Multiset.filter_add_not, ← hp.natDegree_eq_card_roots]
 
+/-- For two equal-degree splitting polynomials with positive leading
+coefficients, the parity of the combined count of roots weakly below `x`
+records whether their values at `x` have the same sign. -/
+theorem Splits.even_card_roots_le_add_iff_eval_pos_iff
+    {p q : ℝ[X]} (hp : p.Splits) (hq : q.Splits)
+    (hp_pos : 0 < p.leadingCoeff) (hq_pos : 0 < q.leadingCoeff)
+    (hdeg : q.natDegree = p.natDegree)
+    {x : ℝ} (hxp : ¬ p.IsRoot x) (hxq : ¬ q.IsRoot x) :
+    (Even ((p.roots.filter (· ≤ x)).card + (q.roots.filter (· ≤ x)).card) ↔
+      (0 < p.eval x ↔ 0 < q.eval x)) := by
+  have hpp := hp.card_filter_le_add_card_filter_lt_eq_natDegree x
+  have hqp := hq.card_filter_le_add_card_filter_lt_eq_natDegree x
+  have hep := hp.eval_pos_iff_even_card_roots_gt hp_pos hxp
+  have heq := hq.eval_pos_iff_even_card_roots_gt hq_pos hxq
+  rw [hep, heq, ← Nat.even_add]
+  have key : Even (((p.roots.filter (· ≤ x)).card + (q.roots.filter (· ≤ x)).card) +
+      ((p.roots.filter (x < ·)).card + (q.roots.filter (x < ·)).card)) := by
+    refine ⟨p.natDegree, ?_⟩
+    have hd : q.natDegree = p.natDegree := hdeg
+    lia
+  rw [Nat.even_add] at key
+  exact key
+
 end Polynomial
