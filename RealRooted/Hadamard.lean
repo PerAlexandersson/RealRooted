@@ -2,6 +2,7 @@ import RealRooted.PFPolynomial
 import RealRooted.MultiplierSequence
 import RealRooted.VeroneseSection
 import RealRooted.HurwitzMatrix
+import RealRooted.Apolarity
 
 open Polynomial
 
@@ -174,6 +175,27 @@ theorem natDegree_schurSzegoComp_le (n : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).natDegree ≤ n :=
   natDegree_le_iff_coeff_eq_zero.mpr fun _ hk =>
     coeff_schurSzegoComp_eq_zero_of_lt hk f g
+
+/-- The fixed-degree Schur--Szegő composition of two binomial lifts is the
+binomial lift of the coefficientwise Hadamard product of the underlying
+coefficient sequences. -/
+theorem schurSzegoComp_binomialLift (n : Nat) (f₀ g₀ : ℝ[X]) :
+    schurSzegoComp n (binomialLift n f₀) (binomialLift n g₀) =
+      binomialLift n (hadamardProduct f₀ g₀) := by
+  ext k
+  simp only [coeff_schurSzegoComp, coeff_binomialLift, coeff_hadamardProduct]
+  by_cases hk : k ≤ n
+  · simp only [if_pos hk]
+    have hchoose : (Nat.choose n k : ℝ) ≠ 0 := by
+      exact_mod_cast (Nat.choose_pos hk).ne'
+    field_simp
+  · simp only [if_neg hk]
+
+/-- Evaluation form of `schurSzegoComp_binomialLift`. -/
+theorem schurSzegoComp_eval_eq_apolarEval (n : Nat) (f₀ g₀ : ℝ[X]) (z : ℝ) :
+    (schurSzegoComp n (binomialLift n f₀) (binomialLift n g₀)).eval z =
+      apolarEval n (hadamardProduct f₀ g₀) z := by
+  rw [schurSzegoComp_binomialLift, eval_binomialLift]
 
 theorem choose_mul_coeff_schurSzegoComp_of_le {n k : Nat} (hk : k ≤ n) (f g : ℝ[X]) :
     (Nat.choose n k : ℝ) * (schurSzegoComp n f g).coeff k =

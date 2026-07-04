@@ -1037,4 +1037,78 @@ theorem exists_coApolarPoint_apolar_of_grace {n : Nat} {c : ℂ} {r : ℝ}
   obtain ⟨z, hzroot, hzmem⟩ := grace_apolarity_closedBall hr hf hg hap hroots
   exact ⟨z, hzmem, (areApolar_coApolarPoint_iff_isRoot n g z).2 hzroot⟩
 
+/-!
+## Apolar twist and Schur--Szegő composition
+
+The apolar twist packages the finite apolarity identity that turns a zero of
+the binomial-normalized Schur--Szegő composition into an apolarity hypothesis
+for Grace's theorem.
+-/
+
+/-- The apolar twist of `g` by `z` in degree `n`. -/
+def apolarTwist {R : Type*} [CommRing R] (n : Nat) (z : R) (g : R[X]) : R[X] :=
+  Finset.sum (Finset.range (n + 1)) fun j =>
+    monomial j ((-1 : R) ^ (n - j) * g.coeff (n - j) * z ^ (n - j))
+
+theorem coeff_apolarTwist {R : Type*} [CommRing R]
+    (n : Nat) (z : R) (g : R[X]) (j : Nat) :
+    (apolarTwist n z g).coeff j =
+      if j ≤ n then
+        (-1 : R) ^ (n - j) * g.coeff (n - j) * z ^ (n - j)
+      else 0 := by
+  simp only [apolarTwist, finsetSum_coeff, coeff_monomial]
+  rw [Finset.sum_ite_eq' (Finset.range (n + 1)) j]
+  simp [Finset.mem_range]
+
+theorem natDegree_apolarTwist_le {R : Type*} [CommRing R]
+    (n : Nat) (z : R) (g : R[X]) :
+    (apolarTwist n z g).natDegree ≤ n := by
+  refine (Polynomial.natDegree_sum_le _ _).trans ?_
+  exact Finset.sup_le fun j hj =>
+    (Polynomial.natDegree_monomial_le _).trans (Finset.mem_range_succ_iff.mp hj)
+
+/-- Pairing against the apolar twist computes the binomial-normalized
+Schur--Szegő composition of `f` and `g` evaluated at `z`. -/
+theorem apolarPairing_apolarTwist {R : Type*} [CommRing R]
+    (n : Nat) (f g : R[X]) (z : R) :
+    apolarPairing n f (apolarTwist n z g) =
+      ∑ k ∈ Finset.range (n + 1),
+        (Nat.choose n k : R) * f.coeff k * g.coeff k * z ^ k := by
+  rw [apolarTwist, apolarPairing_sum_right,
+    ← Finset.sum_range_reflect
+      (fun k => (Nat.choose n k : R) * f.coeff k * g.coeff k * z ^ k) (n + 1)]
+  refine Finset.sum_congr rfl fun j hj => ?_
+  have hj' : j ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hj)
+  simp only [Nat.add_sub_cancel]
+  rw [apolarPairing_monomial_right, if_pos hj']
+  have h1 : (-1 : R) ^ (n - j) * (-1 : R) ^ (n - j) = 1 := by
+    rw [← mul_pow]
+    norm_num
+  linear_combination
+    ((n.choose (n - j) : R) * f.coeff (n - j) *
+        g.coeff (n - j) * z ^ (n - j)) * h1
+
+/-- `f` is apolar to the apolar twist of `g` by `z` exactly when `z` is a zero
+of the binomial-normalized Schur--Szegő composition of `f` and `g`. -/
+theorem areApolar_apolarTwist_iff {R : Type*} [CommRing R]
+    (n : Nat) (f g : R[X]) (z : R) :
+    AreApolar n f (apolarTwist n z g) ↔
+      ∑ k ∈ Finset.range (n + 1),
+        (Nat.choose n k : R) * f.coeff k * g.coeff k * z ^ k = 0 := by
+  rw [AreApolar, apolarPairing_apolarTwist]
+
+/-- Closed-disk Grace root transfer for the apolar twist formulation of
+Schur--Szegő composition. -/
+theorem exists_apolarTwist_root_of_grace {n : Nat} {c : ℂ} {r : ℝ}
+    (hr : 0 ≤ r) {f g : ℂ[X]} {z : ℂ}
+    (hf : (binomialLift n f).natDegree = n)
+    (htw : (binomialLift n (apolarTwist n z g)).natDegree = n)
+    (hcomp : ∑ k ∈ Finset.range (n + 1),
+      (Nat.choose n k : ℂ) * f.coeff k * g.coeff k * z ^ k = 0)
+    (hroots : (binomialLift n f).RootsIn (Metric.closedBall c r)) :
+    (binomialLift n (apolarTwist n z g)).HasRootIn (Metric.closedBall c r) := by
+  have hap : AreApolar n f (apolarTwist n z g) :=
+    (areApolar_apolarTwist_iff n f g z).2 hcomp
+  exact grace_apolarity_closedBall hr hf htw hap hroots
+
 end RealRooted
