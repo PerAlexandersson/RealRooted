@@ -2903,6 +2903,31 @@ theorem PosComboRealRooted.hasSimpleRoots_add_left
     PosComboRealRooted.hasSimpleRoots_add_right
       (f := g) (g := f) (PosComboRealRooted.comm hfg) hno' hlam
 
+/-- For a fixed point where `g` does not vanish, the right pencil
+`f + C mu * g` has a root at that point for exactly one parameter. -/
+theorem isRoot_add_right_iff_parameter_eq
+    {f g : ℝ[X]} {mu x : ℝ} (hgx : g.eval x ≠ 0) :
+    (f + C mu * g).IsRoot x ↔ mu = -f.eval x / g.eval x := by
+  rw [Polynomial.IsRoot.def, eval_add, eval_mul, eval_C]
+  constructor
+  · intro hroot
+    have hmul : mu * g.eval x = -f.eval x := by
+      linarith
+    calc
+      mu = (mu * g.eval x) / g.eval x := by field_simp [hgx]
+      _ = -f.eval x / g.eval x := by rw [hmul]
+  · intro hmu
+    rw [hmu]
+    field_simp [hgx]
+    ring
+
+/-- Left-family form of `isRoot_add_right_iff_parameter_eq`. -/
+theorem isRoot_add_left_iff_parameter_eq
+    {f g : ℝ[X]} {lam x : ℝ} (hfx : f.eval x ≠ 0) :
+    (C lam * f + g).IsRoot x ↔ lam = -g.eval x / f.eval x := by
+  simpa [add_comm] using
+    isRoot_add_right_iff_parameter_eq (f := g) (g := f) (mu := lam) (x := x) hfx
+
 /-- In a one-parameter boundary family `g + t f`, a Wronskian-zero point where
 `g` and `f` have opposite signs would force an interior double root. Hence the
 Wronskian cannot vanish on the positive-level set of the ratio `-g / f`. -/
