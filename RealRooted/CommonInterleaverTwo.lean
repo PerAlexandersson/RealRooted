@@ -1746,6 +1746,31 @@ theorem PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_forward_asw
   exact (PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw hASW)
     hf_pos hg_pos hfnn hgnn hfg hsucc
 
+/-- The affine-family bridge already gives the succ-degree left endpoint in
+the no-common branch.  This isolates the remaining #42 work in that branch as
+the affine-family/boundary-pair packaging step, not the endpoint
+real-rootedness step. -/
+theorem posComboNoCommonSuccDegreeLeftSplits_of_affineFamily
+    (haffBridge : PosComboNoCommonAffineFamilyStatement)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hsucc : g.natDegree = f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    f.Splits := by
+  have haff :
+      ∀ {s t : ℝ}, 0 < s → 0 < t →
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧
+          (((C s * X + C t) * f) + g).Splits) :=
+    fun {s t} hs ht =>
+      haffBridge hf_pos hg_pos hfnn hgnn hfg (by lia) (by lia) hno hs ht
+  exact
+    (isRealRooted_left_of_affine_family_nonneg
+      hf_pos.ne_zero hg_pos.ne_zero hfnn hgnn haff).2
+
 private theorem left_splits_of_succDegree_of_left_coeff_zero_ne_core
     {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)

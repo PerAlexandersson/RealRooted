@@ -1847,6 +1847,34 @@ private lemma isRealRooted_X_mul_of_affine_family
   · lia
   · lia
 
+/-- Direct endpoint form of the affine-family converse: the two-parameter
+positive affine family already forces `X * f` to be real-rooted. -/
+theorem isRealRooted_X_mul_of_affine_family_nonneg
+    {f g : ℝ[X]}
+    (hf0 : f ≠ 0) (hg0 : g ≠ 0)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (haff :
+      ∀ {s t : ℝ}, 0 < s → 0 < t →
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
+    ((X * f) ≠ 0 ∧ (X * f).Splits) :=
+  isRealRooted_X_mul_of_affine_family hf0 hg0 hfnn hgnn haff
+
+/-- Left-endpoint form of the affine-family converse: the two-parameter
+positive affine family already forces the lower member `f` to be real-rooted. -/
+theorem isRealRooted_left_of_affine_family_nonneg
+    {f g : ℝ[X]}
+    (hf0 : f ≠ 0) (hg0 : g ≠ 0)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (haff :
+      ∀ {s t : ℝ}, 0 < s → 0 < t →
+        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
+    (f ≠ 0 ∧ f.Splits) :=
+  isRealRooted_of_X_mul
+    (isRealRooted_X_mul_of_affine_family_nonneg hf0 hg0 hfnn hgnn haff).1
+    (isRealRooted_X_mul_of_affine_family_nonneg hf0 hg0 hfnn hgnn haff).2
+
 /-- Repackage the affine family as a one-parameter positive-combination family
 for the shifted pair `(g + X * f, f)`. This is the natural shifted target for
 the affine converse: proving `Prec f (g + X * f)` would reduce the original
