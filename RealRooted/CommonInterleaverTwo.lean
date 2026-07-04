@@ -3631,6 +3631,23 @@ def PosComboNoCommonSuccDegreeRootCountLeadRightZeroNonnegStatement : Prop :=
       ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2
 
+/-- Exact residual orientation target for the right-zero lead branch: after
+removing the zero root from the higher-degree polynomial, orient the resulting
+same-degree pair as `g.divX ≺ f`. -/
+def PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree + 1 →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    f.Splits →
+    f.coeff 0 ≠ 0 →
+    g.coeff 0 = 0 →
+    Prec (g.divX) f
+
 /-- The lead root-count branch splits into the two possible constant-term
 cases for the higher-degree member. -/
 theorem posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_rightZero
@@ -3737,18 +3754,7 @@ lower-threshold count comparison needed by
 This packages the whole right-zero lead branch from a checked orientation. -/
 theorem posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_prec
     (horient :
-      ∀ ⦃f g : ℝ[X]⦄,
-        HasPosLeadingCoeff f →
-        HasPosLeadingCoeff g →
-        HasNonnegCoeffs f →
-        HasNonnegCoeffs g →
-        PosComboRealRooted f g →
-        g.natDegree = f.natDegree + 1 →
-        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-        f.Splits →
-        f.coeff 0 ≠ 0 →
-        g.coeff 0 = 0 →
-        Prec (g.divX) f) :
+      PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement) :
     PosComboNoCommonSuccDegreeRootCountLeadRightZeroNonnegStatement := by
   apply posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_sameDegreeCount
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0 x

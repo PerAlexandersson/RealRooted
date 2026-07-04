@@ -196,6 +196,10 @@ abbrev succDegreeRootCountLeadBothNonzeroTarget : Prop :=
 abbrev succDegreeRootCountLeadRightZeroTarget : Prop :=
   PosComboNoCommonSuccDegreeRootCountLeadRightZeroNonnegStatement
 
+/-- Exact `divX` orientation subtarget for the right-zero lead branch. -/
+abbrev succDegreeRootCountLeadRightZeroDivXPrecTarget : Prop :=
+  PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement
+
 /-- Challenge-facing equivalence between the same-degree slot-data target and
 the repaired same-degree pair endpoint. -/
 theorem sameDegreeSlotDataTarget_iff_pairTarget :
@@ -699,19 +703,7 @@ theorem succDegreeRootCountLeadRightZeroTarget_of_divX_sameDegreeCountAbove
 /-- Challenge-facing `Prec`/`divX` reduction of the right-zero lead root-count
 branch. -/
 theorem succDegreeRootCountLeadRightZeroTarget_of_divX_prec
-    (horient :
-      ∀ ⦃f g : ℝ[X]⦄,
-        HasPosLeadingCoeff f →
-        HasPosLeadingCoeff g →
-        HasNonnegCoeffs f →
-        HasNonnegCoeffs g →
-        PosComboRealRooted f g →
-        g.natDegree = f.natDegree + 1 →
-        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-        f.Splits →
-        f.coeff 0 ≠ 0 →
-        g.coeff 0 = 0 →
-        Prec (g.divX) f) :
+    (horient : succDegreeRootCountLeadRightZeroDivXPrecTarget) :
     succDegreeRootCountLeadRightZeroTarget :=
   posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_prec
     horient
