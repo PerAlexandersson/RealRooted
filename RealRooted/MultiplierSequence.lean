@@ -384,6 +384,116 @@ theorem isFiniteMultiplierSequence_natDegree_one (gamma : ℕ → ℝ) :
     IsFiniteMultiplierSequence 1 gamma :=
   isFiniteMultiplierSequence_of_natDegree_le_one le_rfl gamma
 
+/-- The degree-two Jensen PF hypothesis gives the expected log-concavity
+inequality on the first three diagonal entries. -/
+theorem IsPFPolynomial.jensenPolynomial_two_logConcave {gamma : ℕ → ℝ}
+    (hj : IsPFPolynomial (jensenPolynomial 2 gamma)) :
+    gamma 0 * gamma 2 ≤ gamma 1 ^ 2 := by
+  have hdisc := disc_nonneg_of_isPolyaFreqSeq_natDegree_le_two
+    (p := jensenPolynomial 2 gamma) hj.to_sequence
+    (natDegree_jensenPolynomial_le 2 gamma)
+  simp [coeff_jensenPolynomial] at hdisc
+  nlinarith
+
+/-- A splitting real quadratic has nonnegative discriminant, expressed in
+coefficient form. -/
+theorem four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits_natDegree_two
+    {p : ℝ[X]} (hdeg : p.natDegree = 2) (hs : p.Splits) :
+    4 * (p.coeff 0 * p.coeff 2) ≤ p.coeff 1 ^ 2 := by
+  have hp0 : p ≠ 0 := by
+    rintro rfl
+    simp at hdeg
+  obtain ⟨x, hxmem⟩ : ∃ x, x ∈ p.roots := by
+    apply Multiset.card_pos_iff_exists_mem.mp
+    rw [card_roots_of_splits hs, hdeg]
+    norm_num
+  have hxroot : p.IsRoot x := (Polynomial.mem_roots hp0).mp hxmem
+  have hxquad : p.coeff 2 * (x * x) + p.coeff 1 * x + p.coeff 0 = 0 := by
+    rw [Polynomial.IsRoot.def] at hxroot
+    rw [Polynomial.eval_eq_sum_range, hdeg] at hxroot
+    simp only [Finset.sum_range_succ, Finset.sum_range_zero] at hxroot
+    linear_combination hxroot
+  have hdisc_sq := discrim_eq_sq_of_quadratic_eq_zero hxquad
+  unfold discrim at hdisc_sq
+  nlinarith [sq_nonneg (2 * p.coeff 2 * x + p.coeff 1)]
+
+private theorem diagonalOperator_discrim_nonneg_of_natDegree_two
+    {gamma : ℕ → ℝ} {p : ℝ[X]}
+    (hgamma0 : 0 ≤ gamma 0) (hgamma2 : 0 ≤ gamma 2)
+    (hlog : gamma 0 * gamma 2 ≤ gamma 1 ^ 2)
+    (hpdisc : 4 * (p.coeff 0 * p.coeff 2) ≤ p.coeff 1 ^ 2) :
+    0 ≤ discrim ((diagonalOperator gamma p).coeff 2)
+      ((diagonalOperator gamma p).coeff 1) ((diagonalOperator gamma p).coeff 0) := by
+  rw [coeff_diagonalOperator, coeff_diagonalOperator, coeff_diagonalOperator]
+  unfold discrim
+  ring_nf
+  by_cases hprod : 0 ≤ p.coeff 0 * p.coeff 2
+  · nlinarith [hlog, hpdisc, hprod, sq_nonneg (gamma 1), sq_nonneg (p.coeff 1)]
+  · have hp_nonpos : p.coeff 0 * p.coeff 2 ≤ 0 := le_of_lt (not_le.mp hprod)
+    have hgamma_nonneg : 0 ≤ gamma 0 * gamma 2 := mul_nonneg hgamma0 hgamma2
+    have hmul_nonpos : (gamma 0 * gamma 2) * (p.coeff 0 * p.coeff 2) ≤ 0 :=
+      mul_nonpos_of_nonneg_of_nonpos hgamma_nonneg hp_nonpos
+    nlinarith [hmul_nonpos, sq_nonneg (gamma 1 * p.coeff 1)]
+
+/-- Degree at most two case of the backward finite Pólya--Schur direction.
+
+The proof is the classical discriminant argument: the PF Jensen polynomial
+gives `gamma 0 * gamma 2 ≤ gamma 1 ^ 2`, while a split quadratic input gives
+the corresponding discriminant inequality for its coefficients. -/
+theorem isFiniteMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
+    {n : ℕ} (hn : n ≤ 2) {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k)
+    (hjensen : IsPFPolynomial (jensenPolynomial n gamma)) :
+    IsFiniteMultiplierSequence n gamma := by
+  intro p hp hsplit
+  by_cases hn1 : n ≤ 1
+  · exact isFiniteMultiplierSequence_of_natDegree_le_one hn1 gamma hp hsplit
+  have hn_eq : n = 2 := by
+    lia
+  subst n
+  by_cases hzero : diagonalOperator gamma p = 0
+  · exact Or.inl hzero
+  by_cases hq_le_one : (diagonalOperator gamma p).natDegree ≤ 1
+  · exact Or.inr ((isRealRooted_of_natDegree_le_one hzero hq_le_one).2)
+  have hpdeg : p.natDegree = 2 := by
+    have hq_le_p := natDegree_diagonalOperator_le gamma p
+    lia
+  have hqdeg : (diagonalOperator gamma p).natDegree = 2 := by
+    have hq_le_two := (natDegree_diagonalOperator_le gamma p).trans hp
+    lia
+  have hlog := hjensen.jensenPolynomial_two_logConcave
+  have hpdisc :=
+    four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits_natDegree_two
+      hpdeg hsplit
+  have hqdisc := diagonalOperator_discrim_nonneg_of_natDegree_two
+    (hgamma 0) (hgamma 2) hlog hpdisc
+  have hqcoeff2 : (diagonalOperator gamma p).coeff 2 ≠ 0 := by
+    have hlc : (diagonalOperator gamma p).leadingCoeff ≠ 0 :=
+      leadingCoeff_ne_zero.mpr hzero
+    rwa [Polynomial.leadingCoeff, hqdeg] at hlc
+  have hqdisc' : 0 ≤ (diagonalOperator gamma p).coeff 1 ^ 2 -
+      4 * (diagonalOperator gamma p).coeff 2 * (diagonalOperator gamma p).coeff 0 := by
+    simpa [discrim] using hqdisc
+  obtain ⟨x, hx⟩ := exists_root_of_disc_nonneg
+    (a := (diagonalOperator gamma p).coeff 2)
+    (b := (diagonalOperator gamma p).coeff 1)
+    (c := (diagonalOperator gamma p).coeff 0) hqcoeff2 hqdisc'
+  have hroot : (diagonalOperator gamma p).IsRoot x := by
+    rw [Polynomial.IsRoot.def, Polynomial.eval_eq_sum_range, hqdeg]
+    simp only [Finset.sum_range_succ, Finset.sum_range_zero]
+    linear_combination hx
+  exact Or.inr (Polynomial.Splits.of_natDegree_eq_two hqdeg hroot)
+
+/-- Degree-two finite multiplier sequences are classified by the PF Jensen
+polynomial condition. -/
+theorem isFiniteMultiplierSequence_natDegree_two_of_isPF_jensenPolynomial
+    {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k)
+    (hjensen : IsPFPolynomial (jensenPolynomial 2 gamma)) :
+    IsFiniteMultiplierSequence 2 gamma :=
+  isFiniteMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
+    le_rfl hgamma hjensen
+
 theorem splits_X_add_one_pow (n : ℕ) :
     ((X + 1 : ℝ[X]) ^ n).Splits :=
   (show (X + 1 : ℝ[X]).Splits by
@@ -436,6 +546,23 @@ theorem finitePolyaSchurNonnegBackward_of_natDegree_le_one
     (_hjensen : IsPFPolynomial (jensenPolynomial n gamma)) :
     IsFiniteMultiplierSequence n gamma :=
   isFiniteMultiplierSequence_of_natDegree_le_one hn gamma
+
+/-- Degree at most two case of the backward finite Pólya--Schur direction. -/
+theorem finitePolyaSchurNonnegBackward_of_natDegree_le_two
+    {n : ℕ} (hn : n ≤ 2) {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k)
+    (hjensen : IsPFPolynomial (jensenPolynomial n gamma)) :
+    IsFiniteMultiplierSequence n gamma :=
+  isFiniteMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
+    hn hgamma hjensen
+
+/-- Degree-two case of the backward finite Pólya--Schur direction. -/
+theorem finitePolyaSchurNonnegBackward_natDegree_two
+    {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k)
+    (hjensen : IsPFPolynomial (jensenPolynomial 2 gamma)) :
+    IsFiniteMultiplierSequence 2 gamma :=
+  finitePolyaSchurNonnegBackward_of_natDegree_le_two le_rfl hgamma hjensen
 
 theorem finitePolyaSchur_nonneg_of_backward
     (hBack : finitePolyaSchurNonnegBackwardStatement) :
