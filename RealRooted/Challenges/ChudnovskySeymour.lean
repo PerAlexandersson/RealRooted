@@ -537,6 +537,15 @@ theorem commonInterleaverTarget_of_rootCrossing_and_forward_asw_splits
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing_and_forwardASWSplits
     hsame hASW hsucc
 
+/-- Challenge-facing full roadmap reduction from same-degree root-crossing and
+the affine-family bridge for the succ-degree branch. -/
+theorem commonInterleaverTarget_of_sameDegreeRootCrossing_and_affineFamily
+    (hsame : sameDegreeRootCrossingTarget)
+    (haff : PosComboNoCommonAffineFamilyStatement) :
+    commonInterleaverTarget :=
+  chudnovskySeymour_commonInterleaver_of_sameDegreeCrossing_affineFamily
+    hsame haff
+
 /-- Challenge-facing four-way package from the root-crossing formulations
 alone; root continuity supplies the succ-degree left endpoint. -/
 theorem fourWay_of_rootCrossing
@@ -580,6 +589,15 @@ theorem fourWayNonnegCoeffsTarget_of_rootCrossing_and_forward_asw_splits
   chudnovskySeymour_fourWay_of_rootCrossing_forwardASWSplits_nonneg
     hsame hASW hsucc
 
+/-- Challenge-facing reduction for the nonnegative four-way target from
+same-degree root-crossing and the affine-family bridge. -/
+theorem fourWayNonnegCoeffsTarget_of_sameDegreeRootCrossing_and_affineFamily
+    (hsame : sameDegreeRootCrossingTarget)
+    (haff : PosComboNoCommonAffineFamilyStatement) :
+    fourWayNonnegCoeffsTarget :=
+  chudnovskySeymour_fourWay_of_sameDegreeRootCrossing_and_affineFamily_nonneg
+    hsame haff
+
 /-- Challenge-facing reduction for the nonnegative common-right target from
 root-crossing alone. -/
 theorem commonInterleaverNonnegCoeffsTarget_of_rootCrossing
@@ -598,6 +616,15 @@ theorem commonInterleaverNonnegCoeffsTarget_of_rootCrossing_and_forward_asw_spli
   chudnovskySeymour_commonInterleaver_of_rootCrossing_forwardASWSplits_nonneg
     hsame hASW hsucc
 
+/-- Challenge-facing reduction for the nonnegative common-right target from
+same-degree root-crossing and the affine-family bridge. -/
+theorem commonInterleaverNonnegCoeffsTarget_of_sameDegreeRootCrossing_and_affineFamily
+    (hsame : sameDegreeRootCrossingTarget)
+    (haff : PosComboNoCommonAffineFamilyStatement) :
+    commonInterleaverNonnegCoeffsTarget :=
+  chudnovskySeymour_commonInterleaver_of_sameDegreeRootCrossing_and_affineFamily_nonneg
+    hsame haff
+
 /-- Challenge-facing reduction for the nonnegative finite-family compatibility
 target from root-crossing alone. -/
 theorem familyCompatibleNonnegCoeffsTarget_of_rootCrossing
@@ -615,6 +642,15 @@ theorem familyCompatibleNonnegCoeffsTarget_of_rootCrossing_and_forward_asw_split
     familyCompatibleNonnegCoeffsTarget :=
   chudnovskySeymour_familyCompatible_of_rootCrossing_forwardASWSplits_nonneg
     hsame hASW hsucc
+
+/-- Challenge-facing reduction for the nonnegative finite-family compatibility
+target from same-degree root-crossing and the affine-family bridge. -/
+theorem familyCompatibleNonnegCoeffsTarget_of_sameDegreeRootCrossing_and_affineFamily
+    (hsame : sameDegreeRootCrossingTarget)
+    (haff : PosComboNoCommonAffineFamilyStatement) :
+    familyCompatibleNonnegCoeffsTarget :=
+  chudnovskySeymour_familyCompatible_of_sameDegreeRootCrossing_and_affineFamily_nonneg
+    hsame haff
 
 /-- Challenge-facing reduction for the nonnegative-coefficient common-right
 target from the repaired same-degree/succ-degree no-common pair bridges. -/
