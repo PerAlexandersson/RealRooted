@@ -793,13 +793,16 @@ private lemma exists_strict_root_upper_bound_of_nonneg_of_not_isRoot_zero
       lia
     exact ⟨c, hc_top, lt_of_le_of_ne hc_le0 hc_ne0⟩
 
-private lemma isRoot_of_X_mul_of_ne_zero
+/-- A nonzero root of `X * f` is already a root of `f`. -/
+lemma isRoot_of_X_mul_of_ne_zero
     {f : ℝ[X]} {r : ℝ}
     (hr : r ≠ 0) (hX : (X * f).IsRoot r) :
     f.IsRoot r := by
   simp_all
 
-private lemma no_common_right_pair_of_no_common_of_not_isRoot_zero
+/-- If `g` has no common root with `f` and `0` is not a root of `g`, then `g`
+has no common root with `X * f`. -/
+theorem no_common_right_pair_of_no_common_of_not_isRoot_zero
     {f g : ℝ[X]}
     (hno_fg : ∀ r, g.IsRoot r → ¬ f.IsRoot r)
     (hg0 : ¬ g.IsRoot 0) :
@@ -814,7 +817,9 @@ private lemma eq_zero_of_common_right_pair_of_no_common
     r = 0 := by
   simp_all
 
-private lemma common_right_pair_iff_root_zero_or_common_fg
+/-- Common roots of the right pair `(g, X * f)` are exactly the zero root of
+`g` or common roots of `(g, f)`. -/
+theorem common_right_pair_iff_root_zero_or_common_fg
     {f g : ℝ[X]} :
     (∃ r, g.IsRoot r ∧ (X * f).IsRoot r) ↔
       g.IsRoot 0 ∨ ∃ r, g.IsRoot r ∧ f.IsRoot r := by
@@ -839,7 +844,9 @@ private lemma no_common_of_right_pair_root_zero_reduction
     ∀ r, qg.IsRoot r → ¬ f.IsRoot r := by
   simp_all
 
-private lemma roots_strictly_neg_of_nonneg_of_no_common_right_pair
+/-- If `g` has nonnegative coefficients and no common root with `X * f`, then
+every real root of `g` is strictly negative. -/
+theorem roots_strictly_neg_of_nonneg_of_no_common_right_pair
     {f g : ℝ[X]}
     (hg_ne : g ≠ 0) (hg_splits : g.Splits) (hgnn : HasNonnegCoeffs g)
     (hno : ∀ r, g.IsRoot r → ¬ (X * f).IsRoot r) :
@@ -851,7 +858,9 @@ private lemma roots_strictly_neg_of_nonneg_of_no_common_right_pair
     simp_all
   grind
 
-private lemma exists_strict_right_root_of_X_mul_of_no_common
+/-- The distinguished root `0` of `X * f` lies strictly to the right of every
+root of `g` when `g` is nonnegative and has no common root with `X * f`. -/
+theorem exists_strict_right_root_of_X_mul_of_no_common
     {f g : ℝ[X]}
     (hg_ne : g ≠ 0) (hg_splits : g.Splits) (hgnn : HasNonnegCoeffs g)
     (hno : ∀ r, g.IsRoot r → ¬ (X * f).IsRoot r) :
@@ -860,7 +869,9 @@ private lemma exists_strict_right_root_of_X_mul_of_no_common
   intro r hr
   exact roots_strictly_neg_of_nonneg_of_no_common_right_pair hg_ne hg_splits hgnn hno r hr
 
-private lemma exists_strict_right_root_of_X_mul_of_no_common_fg_of_not_isRoot_zero
+/-- Convenience form of `exists_strict_right_root_of_X_mul_of_no_common` from
+no common roots of `(g, f)` and `¬ g.IsRoot 0`. -/
+theorem exists_strict_right_root_of_X_mul_of_no_common_fg_of_not_isRoot_zero
     {f g : ℝ[X]}
     (hg_ne : g ≠ 0) (hg_splits : g.Splits) (hgnn : HasNonnegCoeffs g)
     (hno_fg : ∀ r, g.IsRoot r → ¬ f.IsRoot r)
