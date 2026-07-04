@@ -1202,6 +1202,26 @@ theorem commonInterleaverTarget_of_rootCountAboveBoth
   commonInterleaverTarget_of_pairBridge
     (compatiblePairHasCommonInterleaver_of_rootCountAboveBoth hsame hsucc)
 
+/-- Challenge-facing full roadmap reduction from common-non-root lower-threshold
+root-count formulations in both branches. -/
+theorem commonInterleaverTarget_of_rootCountNonRoot
+    (hsame : sameDegreeRootCountNonRootTarget)
+    (hsucc : succDegreeRootCountNonRootTarget) :
+    commonInterleaverTarget :=
+  commonInterleaverTarget_of_rootCount
+    (sameDegreeRootCountTarget_of_nonRoot hsame)
+    (succDegreeRootCountTarget_of_rootCountNonRoot hsucc)
+
+/-- Challenge-facing full roadmap reduction from common-non-root upper-threshold
+root-count formulations in both branches. -/
+theorem commonInterleaverTarget_of_rootCountAboveBothNonRoot
+    (hsame : sameDegreeRootCountAboveNonRootTarget)
+    (hsucc : succDegreeRootCountAboveNonRootTarget) :
+    commonInterleaverTarget :=
+  commonInterleaverTarget_of_rootCountAboveBoth
+    (sameDegreeRootCountAboveTarget_of_nonRoot hsame)
+    (succDegreeRootCountAboveTarget_of_nonRoot hsucc)
+
 /-- Challenge-facing full roadmap reduction from the root-crossing formulations,
 with the succ-degree left endpoint supplied by forward ASW. -/
 theorem commonInterleaverTarget_of_rootCrossing_and_forward_asw
@@ -1359,6 +1379,27 @@ theorem fourWayNonnegCoeffsTarget_of_rootCountAboveBoth
     (succDegreeRootCrossingTarget_of_rootCountAbove hsucc)
 
 /-- Challenge-facing reduction for the nonnegative four-way target from
+common-non-root lower-threshold root-count formulations in both branches. -/
+theorem fourWayNonnegCoeffsTarget_of_rootCountNonRoot
+    (hsame : sameDegreeRootCountNonRootTarget)
+    (hsucc : succDegreeRootCountNonRootTarget) :
+    fourWayNonnegCoeffsTarget :=
+  fourWayNonnegCoeffsTarget_of_rootCrossing
+    (sameDegreeRootCrossingTarget_of_rootCountNonRoot hsame)
+    (succDegreeRootCrossingTarget_of_rootCountNonRoot hsucc)
+
+/-- Challenge-facing reduction for the nonnegative four-way target from
+common-non-root upper-threshold root-count formulations in both branches. -/
+theorem fourWayNonnegCoeffsTarget_of_rootCountAboveBothNonRoot
+    (hsame : sameDegreeRootCountAboveNonRootTarget)
+    (hsucc : succDegreeRootCountAboveNonRootTarget) :
+    fourWayNonnegCoeffsTarget :=
+  fourWayNonnegCoeffsTarget_of_rootCrossing
+    (sameDegreeRootCrossingTarget_of_rootCountAboveNonRoot hsame)
+    (succDegreeRootCrossingTarget_of_rootCountAbove
+      (succDegreeRootCountAboveTarget_of_nonRoot hsucc))
+
+/-- Challenge-facing reduction for the nonnegative four-way target from
 root-crossing plus splitting-only ASW. -/
 theorem fourWayNonnegCoeffsTarget_of_rootCrossing_and_forward_asw_splits
     (hsame : sameDegreeRootCrossingTarget)
@@ -1428,6 +1469,27 @@ theorem commonInterleaverNonnegCoeffsTarget_of_rootCountAboveBoth
     (succDegreeRootCrossingTarget_of_rootCountAbove hsucc)
 
 /-- Challenge-facing reduction for the nonnegative common-right target from
+common-non-root lower-threshold root-count formulations in both branches. -/
+theorem commonInterleaverNonnegCoeffsTarget_of_rootCountNonRoot
+    (hsame : sameDegreeRootCountNonRootTarget)
+    (hsucc : succDegreeRootCountNonRootTarget) :
+    commonInterleaverNonnegCoeffsTarget :=
+  commonInterleaverNonnegCoeffsTarget_of_rootCrossing
+    (sameDegreeRootCrossingTarget_of_rootCountNonRoot hsame)
+    (succDegreeRootCrossingTarget_of_rootCountNonRoot hsucc)
+
+/-- Challenge-facing reduction for the nonnegative common-right target from
+common-non-root upper-threshold root-count formulations in both branches. -/
+theorem commonInterleaverNonnegCoeffsTarget_of_rootCountAboveBothNonRoot
+    (hsame : sameDegreeRootCountAboveNonRootTarget)
+    (hsucc : succDegreeRootCountAboveNonRootTarget) :
+    commonInterleaverNonnegCoeffsTarget :=
+  commonInterleaverNonnegCoeffsTarget_of_rootCrossing
+    (sameDegreeRootCrossingTarget_of_rootCountAboveNonRoot hsame)
+    (succDegreeRootCrossingTarget_of_rootCountAbove
+      (succDegreeRootCountAboveTarget_of_nonRoot hsucc))
+
+/-- Challenge-facing reduction for the nonnegative common-right target from
 root-crossing plus splitting-only ASW. -/
 theorem commonInterleaverNonnegCoeffsTarget_of_rootCrossing_and_forward_asw_splits
     (hsame : sameDegreeRootCrossingTarget)
@@ -1495,6 +1557,29 @@ theorem familyCompatibleNonnegCoeffsTarget_of_rootCountAboveBoth
   familyCompatibleNonnegCoeffsTarget_of_rootCrossing
     (sameDegreeRootCrossingTarget_of_rootCountAbove hsame)
     (succDegreeRootCrossingTarget_of_rootCountAbove hsucc)
+
+/-- Challenge-facing reduction for the nonnegative finite-family compatibility
+target from common-non-root lower-threshold root-count formulations in both
+branches. -/
+theorem familyCompatibleNonnegCoeffsTarget_of_rootCountNonRoot
+    (hsame : sameDegreeRootCountNonRootTarget)
+    (hsucc : succDegreeRootCountNonRootTarget) :
+    familyCompatibleNonnegCoeffsTarget :=
+  familyCompatibleNonnegCoeffsTarget_of_rootCrossing
+    (sameDegreeRootCrossingTarget_of_rootCountNonRoot hsame)
+    (succDegreeRootCrossingTarget_of_rootCountNonRoot hsucc)
+
+/-- Challenge-facing reduction for the nonnegative finite-family compatibility
+target from common-non-root upper-threshold root-count formulations in both
+branches. -/
+theorem familyCompatibleNonnegCoeffsTarget_of_rootCountAboveBothNonRoot
+    (hsame : sameDegreeRootCountAboveNonRootTarget)
+    (hsucc : succDegreeRootCountAboveNonRootTarget) :
+    familyCompatibleNonnegCoeffsTarget :=
+  familyCompatibleNonnegCoeffsTarget_of_rootCrossing
+    (sameDegreeRootCrossingTarget_of_rootCountAboveNonRoot hsame)
+    (succDegreeRootCrossingTarget_of_rootCountAbove
+      (succDegreeRootCountAboveTarget_of_nonRoot hsucc))
 
 /-- Challenge-facing reduction for the nonnegative finite-family compatibility
 target from root-crossing plus splitting-only ASW. -/
