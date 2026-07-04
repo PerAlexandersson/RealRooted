@@ -3004,6 +3004,73 @@ theorem eval_right_ne_zero_of_isRoot_add_left_of_no_common
       (f := g) (g := f) (mu := lam) (x := x)
       (fun r hg hf => hno r hf hg) hlam (by simpa [add_comm] using hroot)
 
+/-- Positive-parameter no-common form of
+`isRoot_add_right_iff_parameter_eq`, with the endpoint nonvanishing inferred
+from the root/no-common hypotheses on the forward implication and from
+positivity on the reverse implication. -/
+theorem isRoot_add_right_iff_parameter_eq_of_no_common
+    {f g : ℝ[X]} {mu x : ℝ}
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hmu : 0 < mu) :
+    (f + C mu * g).IsRoot x ↔ mu = -f.eval x / g.eval x := by
+  constructor
+  · intro hroot
+    exact
+      (isRoot_add_right_iff_parameter_eq
+        (eval_right_ne_zero_of_isRoot_add_right_of_no_common hno hroot)).mp hroot
+  · intro hmu_eq
+    have hgx : g.eval x ≠ 0 := by
+      intro hgx
+      have hmu0 : mu = 0 := by
+        simpa [hgx] using hmu_eq
+      exact hmu.ne' hmu0
+    exact (isRoot_add_right_iff_parameter_eq hgx).mpr hmu_eq
+
+/-- Left-family form of
+`isRoot_add_right_iff_parameter_eq_of_no_common`. -/
+theorem isRoot_add_left_iff_parameter_eq_of_no_common
+    {f g : ℝ[X]} {lam x : ℝ}
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hlam : 0 < lam) :
+    (C lam * f + g).IsRoot x ↔ lam = -g.eval x / f.eval x := by
+  constructor
+  · intro hroot
+    exact
+      (isRoot_add_left_iff_parameter_eq
+        (eval_left_ne_zero_of_isRoot_add_left_of_no_common hno hroot)).mp hroot
+  · intro hlam_eq
+    have hfx : f.eval x ≠ 0 := by
+      intro hfx
+      have hlam0 : lam = 0 := by
+        simpa [hfx] using hlam_eq
+      exact hlam.ne' hlam0
+    exact (isRoot_add_left_iff_parameter_eq hfx).mpr hlam_eq
+
+/-- A fixed threshold can be a root of a no-common right pencil for at most one
+positive parameter. -/
+theorem root_parameter_unique_add_right_of_no_common
+    {f g : ℝ[X]} {mu nu x : ℝ}
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hmu : 0 < mu) (hnu : 0 < nu)
+    (hroot_mu : (f + C mu * g).IsRoot x)
+    (hroot_nu : (f + C nu * g).IsRoot x) :
+    mu = nu := by
+  have hmu_eq := (isRoot_add_right_iff_parameter_eq_of_no_common hno hmu).mp hroot_mu
+  have hnu_eq := (isRoot_add_right_iff_parameter_eq_of_no_common hno hnu).mp hroot_nu
+  exact hmu_eq.trans hnu_eq.symm
+
+/-- Left-family form of `root_parameter_unique_add_right_of_no_common`. -/
+theorem root_parameter_unique_add_left_of_no_common
+    {f g : ℝ[X]} {lam eta x : ℝ}
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hlam : 0 < lam) (heta : 0 < eta)
+    (hroot_lam : (C lam * f + g).IsRoot x)
+    (hroot_eta : (C eta * f + g).IsRoot x) :
+    lam = eta := by
+  have hlam_eq := (isRoot_add_left_iff_parameter_eq_of_no_common hno hlam).mp hroot_lam
+  have heta_eq := (isRoot_add_left_iff_parameter_eq_of_no_common hno heta).mp hroot_eta
+  exact hlam_eq.trans heta_eq.symm
+
 /-- At a root of an interior right positive combination, the derivative does
 not vanish. -/
 theorem PosComboRealRooted.derivative_eval_ne_zero_add_right
