@@ -361,6 +361,29 @@ theorem isFinitePFMultiplierSequence_zero_sequence (n : ℕ) :
     IsFinitePFMultiplierSequence n (fun _ => (0 : ℝ)) :=
   isFinitePFMultiplierSequence_const_sequence (n := n) (a := 0) le_rfl
 
+/-- In degrees at most one, every diagonal sequence is a finite multiplier
+sequence: after applying the diagonal operator, the output is either zero or a
+nonzero polynomial of degree at most one, hence split over `ℝ`. -/
+theorem isFiniteMultiplierSequence_of_natDegree_le_one
+    {n : ℕ} (hn : n ≤ 1) (gamma : ℕ → ℝ) :
+    IsFiniteMultiplierSequence n gamma := by
+  intro p hp _
+  by_cases hzero : diagonalOperator gamma p = 0
+  · exact Or.inl hzero
+  · exact Or.inr <|
+      (isRealRooted_of_natDegree_le_one hzero
+        ((natDegree_diagonalOperator_le gamma p).trans (hp.trans hn))).2
+
+/-- Degree-zero finite multiplier sequences are automatic. -/
+theorem isFiniteMultiplierSequence_natDegree_zero (gamma : ℕ → ℝ) :
+    IsFiniteMultiplierSequence 0 gamma :=
+  isFiniteMultiplierSequence_of_natDegree_le_one (by norm_num) gamma
+
+/-- Degree-one finite multiplier sequences are automatic. -/
+theorem isFiniteMultiplierSequence_natDegree_one (gamma : ℕ → ℝ) :
+    IsFiniteMultiplierSequence 1 gamma :=
+  isFiniteMultiplierSequence_of_natDegree_le_one le_rfl gamma
+
 theorem splits_X_add_one_pow (n : ℕ) :
     ((X + 1 : ℝ[X]) ^ n).Splits :=
   (show (X + 1 : ℝ[X]).Splits by
@@ -402,6 +425,17 @@ def finitePolyaSchurNonnegBackwardStatement : Prop :=
     (∀ k, 0 ≤ gamma k) →
       IsPFPolynomial (jensenPolynomial n gamma) →
         IsFiniteMultiplierSequence n gamma
+
+/-- Low-degree base case of the backward finite Pólya--Schur direction.
+
+For `n ≤ 1`, the Jensen-polynomial hypothesis is unnecessary: diagonal
+operators preserve real-rootedness up to degree one for purely degree reasons. -/
+theorem finitePolyaSchurNonnegBackward_of_natDegree_le_one
+    {n : ℕ} (hn : n ≤ 1) {gamma : ℕ → ℝ}
+    (_hgamma : ∀ k, 0 ≤ gamma k)
+    (_hjensen : IsPFPolynomial (jensenPolynomial n gamma)) :
+    IsFiniteMultiplierSequence n gamma :=
+  isFiniteMultiplierSequence_of_natDegree_le_one hn gamma
 
 theorem finitePolyaSchur_nonneg_of_backward
     (hBack : finitePolyaSchurNonnegBackwardStatement) :
