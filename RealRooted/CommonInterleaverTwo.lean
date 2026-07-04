@@ -1622,6 +1622,16 @@ theorem rootCount_diff_le_one_of_natDegree_le_one
     exact_mod_cast Nat.zero_le (g.roots.filter (· ≤ x)).card
   constructor <;> lia
 
+/-- Low-degree base case for the upper-threshold same-degree root-count
+formulation. -/
+theorem rootCountAbove_diff_le_one_of_natDegree_le_one
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hdeg : g.natDegree = f.natDegree) (hfdeg : f.natDegree ≤ 1) (x : ℝ) :
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 :=
+  sameDegreeRootCountAbove_of_rootCount hf hg hdeg
+    (fun y => rootCount_diff_le_one_of_natDegree_le_one hf hg hdeg hfdeg y) x
+
 /-- Low-degree base case for the same-degree analytic root-count target in
 the positive-combination/no-common setting. -/
 theorem rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_one
@@ -1639,6 +1649,24 @@ theorem rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_one
   have hg_split : g.Splits :=
     (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
   exact rootCount_diff_le_one_of_natDegree_le_one hf_split hg_split hdeg hfdeg x
+
+/-- Low-degree base case for the upper-threshold same-degree analytic
+root-count target in the positive-combination/no-common setting. -/
+theorem rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_one
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (_hfnn : HasNonnegCoeffs f) (_hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (_hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hfdeg : f.natDegree ≤ 1) (x : ℝ) :
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
+  have hf_split : f.Splits :=
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+  have hg_split : g.Splits :=
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+  exact rootCountAbove_diff_le_one_of_natDegree_le_one hf_split hg_split hdeg hfdeg x
 
 /-- Low-degree base case for the same-degree root-crossing target.  Through
 degree one the interior crossing inequalities are vacuous. -/

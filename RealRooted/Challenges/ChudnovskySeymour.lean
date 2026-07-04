@@ -239,6 +239,15 @@ theorem sameDegreeRootCountPair_of_natDegree_le_one
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 :=
   rootCount_diff_le_one_of_natDegree_le_one hf hg hdeg hf_deg_le_one x
 
+/-- Challenge-facing low-degree base case for the upper-threshold same-degree
+root-count formulation. -/
+theorem sameDegreeRootCountAbovePair_of_natDegree_le_one
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hdeg : g.natDegree = f.natDegree) (hf_deg_le_one : f.natDegree ≤ 1) (x : ℝ) :
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 :=
+  rootCountAbove_diff_le_one_of_natDegree_le_one hf hg hdeg hf_deg_le_one x
+
 /-- Challenge-facing low-degree base case for the repaired same-degree
 pair-interleaver endpoint. -/
 theorem sameDegreePairHasCommonInterleaver_of_natDegree_le_one
