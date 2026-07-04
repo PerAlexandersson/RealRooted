@@ -267,6 +267,15 @@ theorem succDegreeRootCrossingPair_of_natDegree_eq_zero
         (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) :=
   succDegreeRootCrossing_of_natDegree_eq_zero hf_deg0
 
+/-- Challenge-facing degree-zero base case for the succ-degree root-count
+formulation. -/
+theorem succDegreeRootCountPair_of_natDegree_eq_zero
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hdeg : g.natDegree = f.natDegree + 1) (hf_deg0 : f.natDegree = 0) (x : ℝ) :
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 :=
+  succDegreeRootCount_of_natDegree_eq_zero hf hg hdeg hf_deg0 x
+
 /-- Challenge-facing degree-one analytic core for the succ-degree
 root-crossing target. -/
 theorem succDegreeRootLe_of_posCombo_deg1
