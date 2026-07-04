@@ -2916,6 +2916,83 @@ theorem isRoot_add_left_iff_parameter_eq
   simpa [add_comm] using
     isRoot_add_right_iff_parameter_eq (f := g) (g := f) (mu := lam) (x := x) hfx
 
+/-- Under a no-common-root hypothesis, a root of `f` is not a zero of `g`. -/
+theorem eval_right_ne_zero_of_isRoot_of_no_common
+    {f g : ℝ[X]} {x : ℝ}
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hfx : f.IsRoot x) :
+    g.eval x ≠ 0 := by
+  intro hgx
+  exact hno x hfx (by simpa [Polynomial.IsRoot.def] using hgx)
+
+/-- Symmetric endpoint-evaluation form of
+`eval_right_ne_zero_of_isRoot_of_no_common`. -/
+theorem eval_left_ne_zero_of_isRoot_of_no_common
+    {f g : ℝ[X]} {x : ℝ}
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hgx : g.IsRoot x) :
+    f.eval x ≠ 0 := by
+  intro hfx
+  exact hno x (by simpa [Polynomial.IsRoot.def] using hfx) hgx
+
+/-- At a root of a no-common right pencil, the right endpoint does not vanish. -/
+theorem eval_right_ne_zero_of_isRoot_add_right_of_no_common
+    {f g : ℝ[X]} {mu x : ℝ}
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hroot : (f + C mu * g).IsRoot x) :
+    g.eval x ≠ 0 := by
+  intro hgx
+  have hroot_eval : f.eval x + mu * g.eval x = 0 := by
+    simpa [Polynomial.IsRoot.def, eval_add, eval_mul, eval_C] using hroot
+  have hfx : f.IsRoot x := by
+    have hfx_eval : f.eval x = 0 := by
+      rw [hgx, mul_zero, add_zero] at hroot_eval
+      exact hroot_eval
+    simpa [Polynomial.IsRoot.def] using hfx_eval
+  exact hno x hfx (by simpa [Polynomial.IsRoot.def] using hgx)
+
+/-- At a root of an interior no-common right pencil, the left endpoint does not
+vanish. -/
+theorem eval_left_ne_zero_of_isRoot_add_right_of_no_common
+    {f g : ℝ[X]} {mu x : ℝ}
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hmu : 0 < mu)
+    (hroot : (f + C mu * g).IsRoot x) :
+    f.eval x ≠ 0 := by
+  intro hfx
+  have hroot_eval : f.eval x + mu * g.eval x = 0 := by
+    simpa [Polynomial.IsRoot.def, eval_add, eval_mul, eval_C] using hroot
+  have hgx_eval : g.eval x = 0 := by
+    have hmul : mu * g.eval x = 0 := by
+      linarith
+    exact (mul_eq_zero.mp hmul).resolve_left hmu.ne'
+  exact hno x (by simpa [Polynomial.IsRoot.def] using hfx)
+    (by simpa [Polynomial.IsRoot.def] using hgx_eval)
+
+/-- At a root of a no-common left pencil, the left endpoint does not vanish. -/
+theorem eval_left_ne_zero_of_isRoot_add_left_of_no_common
+    {f g : ℝ[X]} {lam x : ℝ}
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hroot : (C lam * f + g).IsRoot x) :
+    f.eval x ≠ 0 := by
+  simpa [add_comm] using
+    eval_right_ne_zero_of_isRoot_add_right_of_no_common
+      (f := g) (g := f) (mu := lam) (x := x)
+      (fun r hg hf => hno r hf hg) (by simpa [add_comm] using hroot)
+
+/-- At a root of an interior no-common left pencil, the right endpoint does not
+vanish. -/
+theorem eval_right_ne_zero_of_isRoot_add_left_of_no_common
+    {f g : ℝ[X]} {lam x : ℝ}
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hlam : 0 < lam)
+    (hroot : (C lam * f + g).IsRoot x) :
+    g.eval x ≠ 0 := by
+  simpa [add_comm] using
+    eval_left_ne_zero_of_isRoot_add_right_of_no_common
+      (f := g) (g := f) (mu := lam) (x := x)
+      (fun r hg hf => hno r hf hg) hlam (by simpa [add_comm] using hroot)
+
 /-- At a root of an interior right positive combination, the derivative does
 not vanish. -/
 theorem PosComboRealRooted.derivative_eval_ne_zero_add_right
@@ -2939,6 +3016,36 @@ theorem PosComboRealRooted.derivative_eval_ne_zero_add_left
     (hroot : (C lam * f + g).IsRoot x) :
     (C lam * f + g).derivative.eval x ≠ 0 :=
   (hfg.hasSimpleRoots_add_left hno hlam).eval_derivative_ne_zero hroot
+
+/-- A root of an interior no-common right positive pencil carries both the
+unique parameter formula and simple-crossing derivative nonvanishing. -/
+theorem PosComboRealRooted.root_parameter_eq_and_derivative_ne_zero_add_right
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    {mu x : ℝ}
+    (hmu : 0 < mu)
+    (hroot : (f + C mu * g).IsRoot x) :
+    mu = -f.eval x / g.eval x ∧
+      (f + C mu * g).derivative.eval x ≠ 0 :=
+  ⟨(isRoot_add_right_iff_parameter_eq
+      (eval_right_ne_zero_of_isRoot_add_right_of_no_common hno hroot)).mp hroot,
+    hfg.derivative_eval_ne_zero_add_right hno hmu hroot⟩
+
+/-- Left-family form of
+`PosComboRealRooted.root_parameter_eq_and_derivative_ne_zero_add_right`. -/
+theorem PosComboRealRooted.root_parameter_eq_and_derivative_ne_zero_add_left
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    {lam x : ℝ}
+    (hlam : 0 < lam)
+    (hroot : (C lam * f + g).IsRoot x) :
+    lam = -g.eval x / f.eval x ∧
+      (C lam * f + g).derivative.eval x ≠ 0 :=
+  ⟨(isRoot_add_left_iff_parameter_eq
+      (eval_left_ne_zero_of_isRoot_add_left_of_no_common hno hroot)).mp hroot,
+    hfg.derivative_eval_ne_zero_add_left hno hlam hroot⟩
 
 /-- In a one-parameter boundary family `g + t f`, a Wronskian-zero point where
 `g` and `f` have opposite signs would force an interior double root. Hence the
