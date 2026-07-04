@@ -3201,6 +3201,21 @@ theorem succDegree_odd_roots_gt_count_sub_iff_exists_pos_isRoot_add_right
   exact sameDegree_odd_roots_gt_count_sub_iff_exists_pos_isRoot_add_right
     hf_split hg_split hf_pos hg_pos hxf hxg
 
+/-- Succ-degree upper root-count parity in endpoint-sign form. -/
+theorem succDegree_odd_roots_gt_count_sub_iff_eval_mul_neg
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g) (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
+    (Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card) ↔ f.eval x * g.eval x < 0) := by
+  have hfx_eval : f.eval x ≠ 0 := by
+    intro hfx
+    exact hxf (by simpa [Polynomial.IsRoot.def] using hfx)
+  exact (succDegree_odd_roots_gt_count_sub_iff_exists_pos_isRoot_add_right
+    hf_pos hg_pos hfg hdeg hf_split hxf hxg).trans
+    (exists_pos_isRoot_add_right_iff_eval_mul_neg hfx_eval)
+
 /-- Succ-degree right-pencil parity bridge for lower root counts. Since `g` has
 one more root than `f`, the lower root-count difference has even parity exactly
 when the right pencil crosses zero at the threshold. -/
@@ -3223,6 +3238,21 @@ theorem succDegree_even_roots_le_count_sub_iff_exists_pos_isRoot_add_right
   exact (even_add_iff_odd_add_of_add_eq_succ hfpart hgpart).trans
     (sameDegree_odd_card_roots_gt_add_iff_exists_pos_isRoot_add_right
       hf_split hg_split hf_pos hg_pos hxf hxg)
+
+/-- Succ-degree lower root-count parity in endpoint-sign form. -/
+theorem succDegree_even_roots_le_count_sub_iff_eval_mul_neg
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g) (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
+    (Even (((f.roots.filter (· ≤ x)).card : ℤ) -
+        (g.roots.filter (· ≤ x)).card) ↔ f.eval x * g.eval x < 0) := by
+  have hfx_eval : f.eval x ≠ 0 := by
+    intro hfx
+    exact hxf (by simpa [Polynomial.IsRoot.def] using hfx)
+  exact (succDegree_even_roots_le_count_sub_iff_exists_pos_isRoot_add_right
+    hf_pos hg_pos hfg hdeg hf_split hxf hxg).trans
+    (exists_pos_isRoot_add_right_iff_eval_mul_neg hfx_eval)
 
 /-- The succ-degree root-count formulation implies the descending-root
 crossing formulation. -/

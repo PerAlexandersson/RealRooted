@@ -580,6 +580,18 @@ theorem succDegreeRootCountAbove_oddDiff_iff_pencilCrossing
   succDegree_odd_roots_gt_count_sub_iff_exists_pos_isRoot_add_right
     hf_pos hg_pos hfg hdeg hf_split hxf hxg
 
+/-- Challenge-facing endpoint-sign form of the succ-degree upper root-count
+parity bridge. -/
+theorem succDegreeRootCountAbove_oddDiff_iff_eval_mul_neg
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g) (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
+    (Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card) ↔ f.eval x * g.eval x < 0) :=
+  succDegree_odd_roots_gt_count_sub_iff_eval_mul_neg
+    hf_pos hg_pos hfg hdeg hf_split hxf hxg
+
 /-- Challenge-facing right-pencil parity bridge for succ-degree lower root
 counts. -/
 theorem succDegreeRootCount_evenDiff_iff_pencilCrossing
@@ -591,6 +603,18 @@ theorem succDegreeRootCount_evenDiff_iff_pencilCrossing
         (g.roots.filter (· ≤ x)).card) ↔
       ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) :=
   succDegree_even_roots_le_count_sub_iff_exists_pos_isRoot_add_right
+    hf_pos hg_pos hfg hdeg hf_split hxf hxg
+
+/-- Challenge-facing endpoint-sign form of the succ-degree lower root-count
+parity bridge. -/
+theorem succDegreeRootCount_evenDiff_iff_eval_mul_neg
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g) (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
+    (Even (((f.roots.filter (· ≤ x)).card : ℤ) -
+        (g.roots.filter (· ≤ x)).card) ↔ f.eval x * g.eval x < 0) :=
+  succDegree_even_roots_le_count_sub_iff_eval_mul_neg
     hf_pos hg_pos hfg hdeg hf_split hxf hxg
 
 /-- Challenge-facing reduction from the succ-degree constant-term branches to
