@@ -97,6 +97,10 @@ abbrev sameDegreeSlotDataTarget : Prop :=
 abbrev sameDegreeRootCrossingTarget : Prop :=
   PosComboNoCommonSameDegreeRootCrossingNonnegStatement
 
+/-- Same-degree analytic root-count subtarget for milestone B1. -/
+abbrev sameDegreeRootCountTarget : Prop :=
+  PosComboNoCommonSameDegreeRootCountNonnegStatement
+
 /-- Milestone B2 (#42): repaired succ-degree no-common pair endpoint. -/
 abbrev succDegreePairTarget : Prop :=
   PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement
@@ -168,6 +172,13 @@ theorem sameDegreePairTarget_of_rootCrossing
     sameDegreePairTarget :=
   sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing hcross
 
+/-- Challenge-facing reduction from same-degree root counts to same-degree
+root crossing. -/
+theorem sameDegreeRootCrossingTarget_of_rootCount
+    (hcount : sameDegreeRootCountTarget) :
+    sameDegreeRootCrossingTarget :=
+  posComboNoCommonSameDegreeRootCrossing_of_rootCount hcount
+
 /-- Challenge-facing reduction from the same-degree orientation alternative to
 same-degree root crossing. -/
 theorem sameDegreeRootCrossingTarget_of_orientationAlternative
@@ -184,6 +195,15 @@ theorem sameDegreeRootCrossingPair_of_natDegree_le_one
     (∀ j, 1 ≤ j → j < f.natDegree →
         (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) :=
   sameDegreeRootCrossing_of_natDegree_le_one hf_deg_le_one
+
+/-- Challenge-facing low-degree base case for the same-degree root-count
+formulation. -/
+theorem sameDegreeRootCountPair_of_natDegree_le_one
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hdeg : g.natDegree = f.natDegree) (hf_deg_le_one : f.natDegree ≤ 1) (x : ℝ) :
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 :=
+  rootCount_diff_le_one_of_natDegree_le_one hf hg hdeg hf_deg_le_one x
 
 /-- Challenge-facing low-degree base case for the repaired same-degree
 pair-interleaver endpoint. -/

@@ -1432,6 +1432,25 @@ def PosComboNoCommonSameDegreeRootCrossingNonnegStatement : Prop :=
     (∀ j, 1 ≤ j → j < f.natDegree →
         (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)
 
+/-- **Analytic root-count formulation of milestone B1.**
+
+For a nonnegative positive-combination same-degree pair with no common roots,
+the two threshold root-count functions should differ by at most one.  The
+pure order bridge `rootCrossing_of_rootCount_diff_le_one` turns this into the
+descending-root crossing inequalities. -/
+def PosComboNoCommonSameDegreeRootCountNonnegStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∀ x : ℝ,
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1
+
 /-- Root-count bridge for the same-degree root-crossing target.
 
 If for every threshold `x` the numbers of roots `≤ x`, counted with
@@ -1451,6 +1470,19 @@ theorem rootCrossing_of_rootCount_diff_le_one
   have hNcard : g.roots.card = f.natDegree := by
     rw [card_roots_of_splits hg, hdeg]
   exact rootCrossing_of_count_diff_le_one hMcard hNcard hcount
+
+/-- The same-degree root-count formulation implies the descending-root
+crossing formulation. -/
+theorem posComboNoCommonSameDegreeRootCrossing_of_rootCount
+    (hcount : PosComboNoCommonSameDegreeRootCountNonnegStatement) :
+    PosComboNoCommonSameDegreeRootCrossingNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
+  have hf_split : f.Splits :=
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+  have hg_split : g.Splits :=
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+  exact rootCrossing_of_rootCount_diff_le_one hf_split hg_split hdeg
+    (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
 
 /-- Low-degree base case for the same-degree root-count formulation.
 
@@ -1483,6 +1515,24 @@ theorem rootCount_diff_le_one_of_natDegree_le_one
   have hgnonneg : (0 : ℤ) ≤ (g.roots.filter (· ≤ x)).card := by
     exact_mod_cast Nat.zero_le (g.roots.filter (· ≤ x)).card
   constructor <;> lia
+
+/-- Low-degree base case for the same-degree analytic root-count target in
+the positive-combination/no-common setting. -/
+theorem rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_one
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (_hfnn : HasNonnegCoeffs f) (_hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (_hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hfdeg : f.natDegree ≤ 1) (x : ℝ) :
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 := by
+  have hf_split : f.Splits :=
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+  have hg_split : g.Splits :=
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+  exact rootCount_diff_le_one_of_natDegree_le_one hf_split hg_split hdeg hfdeg x
 
 /-- Low-degree base case for the same-degree root-crossing target.  Through
 degree one the interior crossing inequalities are vacuous. -/
