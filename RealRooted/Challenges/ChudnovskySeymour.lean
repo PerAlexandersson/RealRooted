@@ -165,6 +165,16 @@ theorem sameDegreeRootCrossingTarget_of_orientationAlternative
     sameDegreeRootCrossingTarget :=
   posComboNoCommonSameDegreeRootCrossing_of_orientationAlternative horient
 
+/-- Challenge-facing low-degree base case for the same-degree root-crossing
+inequalities. -/
+theorem sameDegreeRootCrossingPair_of_natDegree_le_one
+    {f g : ℝ[X]} (hf_deg_le_one : f.natDegree ≤ 1) :
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) :=
+  sameDegreeRootCrossing_of_natDegree_le_one hf_deg_le_one
+
 /-- Challenge-facing reduction from the same-degree orientation alternative to
 the repaired same-degree pair endpoint. -/
 theorem sameDegreePairTarget_of_orientationAlternative

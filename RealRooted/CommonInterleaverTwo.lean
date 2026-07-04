@@ -1433,6 +1433,16 @@ def PosComboNoCommonSameDegreeRootCrossingNonnegStatement : Prop :=
     (∀ j, 1 ≤ j → j < f.natDegree →
         (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)
 
+/-- Low-degree base case for the same-degree root-crossing target.  Through
+degree one the interior crossing inequalities are vacuous. -/
+theorem sameDegreeRootCrossing_of_natDegree_le_one
+    {f g : ℝ[X]} (hf_deg_le_one : f.natDegree ≤ 1) :
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
+  refine ⟨?_, ?_⟩ <;> intro j hj1 hjlt <;> exfalso <;> lia
+
 /-- The same-degree orientation alternative gives the descending-root crossing
 inequalities consumed by the #41 slot-data reduction. -/
 theorem posComboNoCommonSameDegreeRootCrossing_of_orientationAlternative
