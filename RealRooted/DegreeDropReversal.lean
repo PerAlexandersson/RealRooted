@@ -41,6 +41,65 @@ theorem roots_reverse_X_sub_C (r : K) (hr : r ≠ 0) :
   · exact Polynomial.roots_X_sub_C r⁻¹
   · simpa using neg_ne_zero.mpr hr
 
+/-- A product of monic linear factors is nonzero. -/
+theorem prod_X_sub_C_ne_zero (s : Multiset K) :
+    (Multiset.map (fun r => (X - C r : K[X])) s).prod ≠ 0 := by
+  induction s using Multiset.induction with
+  | empty => simp
+  | cons r s ih =>
+      simp [ih, Polynomial.X_sub_C_ne_zero r]
+
+/-- Roots of the reverse of a product of nonzero monic linear factors. -/
+theorem roots_reverse_prod_X_sub_C (s : Multiset K) (hs : ∀ r ∈ s, r ≠ 0) :
+    ((Multiset.map (fun r => (X - C r : K[X])) s).prod).reverse.roots =
+      s.map (fun r => r⁻¹) := by
+  induction s using Multiset.induction with
+  | empty =>
+      simp [Polynomial.reverse]
+  | cons r s ih =>
+      have hr : r ≠ 0 := hs r (by simp)
+      have hs' : ∀ a ∈ s, a ≠ 0 := by
+        intro a ha
+        exact hs a (by simp [ha])
+      have ih' := ih hs'
+      rw [Multiset.map_cons, Multiset.prod_cons]
+      rw [Polynomial.reverse_mul_of_domain]
+      rw [Polynomial.roots_mul]
+      · rw [roots_reverse_X_sub_C r hr, ih']
+        simp
+      · have hleft : (X - C r : K[X]).reverse ≠ 0 := by
+          rw [reverse_X_sub_C_eq r hr]
+          exact mul_ne_zero
+            (Polynomial.C_ne_zero.mpr (neg_ne_zero.mpr hr))
+            (Polynomial.X_sub_C_ne_zero r⁻¹)
+        have hright :
+            ((Multiset.map (fun r => (X - C r : K[X])) s).prod).reverse ≠ 0 := by
+          intro hzero
+          exact prod_X_sub_C_ne_zero s (Polynomial.reverse_eq_zero.mp hzero)
+        exact mul_ne_zero hleft hright
+
+/-- If `p` splits and has nonzero constant coefficient, the roots of
+`p.reverse` are exactly the inverses of the roots of `p`, with multiplicity. -/
+theorem roots_reverse_eq_map_inv_of_splits_coeff_zero_ne {p : K[X]}
+    (hp : p.Splits) (h0 : p.coeff 0 ≠ 0) :
+    p.reverse.roots = p.roots.map (fun r => r⁻¹) := by
+  have hp_ne : p ≠ 0 := by
+    intro hp_zero
+    exact h0 (by simp [hp_zero])
+  have hlc : p.leadingCoeff ≠ 0 := Polynomial.leadingCoeff_ne_zero.mpr hp_ne
+  have hroots_ne : ∀ r ∈ p.roots, r ≠ 0 := by
+    intro r hr hr_zero
+    have hroot : p.IsRoot 0 := by
+      simpa [hr_zero] using Polynomial.isRoot_of_mem_roots hr
+    exact h0 (by
+      simpa [Polynomial.IsRoot.def, Polynomial.coeff_zero_eq_eval_zero] using hroot)
+  conv_lhs => rw [Polynomial.Splits.eq_prod_roots hp]
+  rw [Polynomial.reverse_mul_of_domain]
+  rw [Polynomial.reverse_C]
+  rw [Polynomial.roots_C_mul]
+  · exact roots_reverse_prod_X_sub_C p.roots hroots_ne
+  · exact hlc
+
 /-- Reversal preserves `Splits` over a field. -/
 theorem splits_reverse {p : K[X]} (h : p.Splits) :
     p.reverse.Splits := by
