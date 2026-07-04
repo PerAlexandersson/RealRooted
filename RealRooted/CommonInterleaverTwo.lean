@@ -5328,6 +5328,28 @@ theorem compatiblePairHasCommonInterleaver_of_rootCountNonRoot
     (posComboNoCommonSameDegreeRootCrossing_of_rootCountNonRoot hsame)
     (posComboNoCommonSuccDegreeRootCrossing_of_rootCountNonRoot hsucc)
 
+/-- Shifted compatibility bridge from same-degree common-non-root
+lower-threshold root counts and succ-degree common-non-root upper-threshold
+root counts. -/
+theorem compatiblePairHasCommonInterleaver_of_rootCountAboveNonRoot
+    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
+    CompatiblePairHasCommonInterleaverStatement :=
+  compatiblePairHasCommonInterleaver_of_rootCrossing
+    (posComboNoCommonSameDegreeRootCrossing_of_rootCountNonRoot hsame)
+    (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAboveNonRoot hsucc)
+
+/-- Shifted compatibility bridge from same-degree common-non-root
+upper-threshold root counts and succ-degree common-non-root lower-threshold
+root counts. -/
+theorem compatiblePairHasCommonInterleaver_of_sameRootCountAboveNonRoot
+    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
+    CompatiblePairHasCommonInterleaverStatement :=
+  compatiblePairHasCommonInterleaver_of_rootCrossing
+    (posComboNoCommonSameDegreeRootCrossing_of_rootCountAboveNonRoot hsame)
+    (posComboNoCommonSuccDegreeRootCrossing_of_rootCountNonRoot hsucc)
+
 /-- Shifted compatibility bridge from common-non-root upper-threshold root-count
 formulations in both branches. -/
 theorem compatiblePairHasCommonInterleaver_of_rootCountAboveBothNonRoot
@@ -5573,6 +5595,34 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCountNonRoot
     PairwiseHasCommonInterleaver fs :=
   pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairBridgePos
     (compatiblePairHasCommonInterleaver_of_rootCountNonRoot hsame hsucc)
+    hpos hpair
+
+/-- Pairwise upgrade from same-degree common-non-root lower-threshold root
+counts and succ-degree common-non-root upper-threshold root counts. -/
+theorem
+    pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCountAboveNonRoot
+    {fs : List ℝ[X]}
+    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hpair : PairwiseCompatible fs) :
+    PairwiseHasCommonInterleaver fs :=
+  pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairBridgePos
+    (compatiblePairHasCommonInterleaver_of_rootCountAboveNonRoot hsame hsucc)
+    hpos hpair
+
+/-- Pairwise upgrade from same-degree common-non-root upper-threshold root
+counts and succ-degree common-non-root lower-threshold root counts. -/
+theorem
+    pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_sameRootCountAboveNonRoot
+    {fs : List ℝ[X]}
+    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hpair : PairwiseCompatible fs) :
+    PairwiseHasCommonInterleaver fs :=
+  pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairBridgePos
+    (compatiblePairHasCommonInterleaver_of_sameRootCountAboveNonRoot hsame hsucc)
     hpos hpair
 
 /-- Pairwise upgrade from common-non-root upper-threshold root-count
