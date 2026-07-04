@@ -236,6 +236,13 @@ theorem sameDegreeRootCrossingTarget_of_rootCountAbove
     sameDegreeRootCrossingTarget :=
   posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove hcount
 
+/-- Challenge-facing reduction from same-degree root crossing to the
+lower-threshold root-count formulation. -/
+theorem sameDegreeRootCountTarget_of_rootCrossing
+    (hcross : sameDegreeRootCrossingTarget) :
+    sameDegreeRootCountTarget :=
+  posComboNoCommonSameDegreeRootCount_of_rootCrossing hcross
+
 /-- Challenge-facing conversion from same-degree upper-threshold root counts to
 the lower-threshold formulation. -/
 theorem sameDegreeRootCountTarget_of_rootCountAbove

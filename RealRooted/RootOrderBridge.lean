@@ -124,6 +124,119 @@ theorem rootCrossing_of_count_diff_le_one
     norm_num at *
     lia
 
+set_option linter.flexible false in
+/-- Converse of `rootCrossing_of_count_diff_le_one`.
+
+If two finite multisets of reals have the same cardinality and their descending
+sorted lists satisfy the two interior crossing inequalities, then their lower
+counting functions differ by at most one at every threshold. -/
+theorem count_diff_le_one_of_rootCrossing
+    {M N : Multiset ℝ} {d : ℕ}
+    (hM : M.card = d) (hN : N.card = d)
+    (hcross :
+      (∀ j, 1 ≤ j → j < d →
+          ((N.sort (· ≤ ·)).reverse).getD j 0 ≤
+            ((M.sort (· ≤ ·)).reverse).getD (j - 1) 0) ∧
+      (∀ j, 1 ≤ j → j < d →
+          ((M.sort (· ≤ ·)).reverse).getD j 0 ≤
+            ((N.sort (· ≤ ·)).reverse).getD (j - 1) 0)) :
+    ∀ x : ℝ,
+      ((M.filter (· ≤ x)).card : ℤ) - (N.filter (· ≤ x)).card ≤ 1 ∧
+      ((N.filter (· ≤ x)).card : ℤ) - (M.filter (· ≤ x)).card ≤ 1 := by
+  set sM := M.sort (· ≤ ·)
+  set sN := N.sort (· ≤ ·)
+  have hM_sorted : sM.Pairwise (· ≤ ·) := Multiset.pairwise_sort _ _
+  have hN_sorted : sN.Pairwise (· ≤ ·) := Multiset.pairwise_sort _ _
+  have hsM : sM.length = d := by aesop
+  have hsN : sN.length = d := by aesop
+  have hsM_eq : Multiset.ofList sM = M := Multiset.sort_eq M (· ≤ ·)
+  have hsN_eq : Multiset.ofList sN = N := Multiset.sort_eq N (· ≤ ·)
+  have h_helper (s : List ℝ) (hs : s.Pairwise (· ≤ ·)) (P : Multiset ℝ)
+      (hsP : Multiset.ofList s = P) (x : ℝ) (k : ℕ) (hk : k < s.length) :
+      s[k]! ≤ x ↔ k < (P.filter (· ≤ x)).card := by
+    have h_helper (s : List ℝ) (hs : s.Pairwise (· ≤ ·)) (x : ℝ) (k : ℕ)
+        (hk : k < s.length) : s[k]! ≤ x ↔ k < (s.filter (· ≤ x)).length := by
+      induction s generalizing k with
+      | nil =>
+          simp at hk
+      | cons hd tl ih =>
+          rw [List.pairwise_cons] at hs
+          rcases hs with ⟨hhd, htl⟩
+          rcases k with _ | k
+          · by_cases hdx : hd ≤ x
+            · simp [hdx]
+            · have hfilter : tl.filter (· ≤ x) = [] := by
+                rw [List.filter_eq_nil_iff]
+                intro y hy hyx
+                exact hdx ((hhd y hy).trans (of_decide_eq_true hyx))
+              exact iff_of_false hdx (by simp [hdx, hfilter])
+          · have hk_tl : k < tl.length := by simpa using hk
+            by_cases hdx : hd ≤ x
+            · have ihk := ih htl k hk_tl
+              simpa [hdx, Nat.succ_lt_succ_iff] using ihk
+            · have hfilter : tl.filter (· ≤ x) = [] := by
+                rw [List.filter_eq_nil_iff]
+                intro y hy hyx
+                exact hdx ((hhd y hy).trans (of_decide_eq_true hyx))
+              have hnot : ¬tl[k]! ≤ x := by
+                intro hyx
+                have hmem : tl[k]! ∈ tl := by
+                  rw [getElem!_pos tl k hk_tl]
+                  exact List.getElem_mem hk_tl
+                exact hdx ((hhd _ hmem).trans hyx)
+              exact iff_of_false hnot (by simp [hdx, hfilter])
+    convert h_helper s hs x k hk using 1
+    aesop (simp_config := { singlePass := true })
+  have h_reverse_getD (l : List ℝ) (hl : l.length = d) (i : ℕ) (hi : i < d) :
+      l.reverse.getD i 0 = l[d - 1 - i]! := by
+    grind +splitIndPred
+  have hint1 : ∀ i, i + 1 < d → sN[i]! ≤ sM[i + 1]! := by
+    intro i hi
+    have hstep := hcross.1 (d - 1 - i) (by lia) (by lia)
+    rw [h_reverse_getD _ hsN _ (by lia), h_reverse_getD _ hsM _ (by lia)] at hstep
+    have e1 : d - 1 - (d - 1 - i) = i := by lia
+    have e2 : d - 1 - (d - 1 - i - 1) = i + 1 := by lia
+    rw [e1, e2] at hstep
+    exact hstep
+  have hint2 : ∀ i, i + 1 < d → sM[i]! ≤ sN[i + 1]! := by
+    intro i hi
+    have hstep := hcross.2 (d - 1 - i) (by lia) (by lia)
+    rw [h_reverse_getD _ hsM _ (by lia), h_reverse_getD _ hsN _ (by lia)] at hstep
+    have e1 : d - 1 - (d - 1 - i) = i := by lia
+    have e2 : d - 1 - (d - 1 - i - 1) = i + 1 := by lia
+    rw [e1, e2] at hstep
+    exact hstep
+  intro x
+  have ha_le_d : (M.filter (· ≤ x)).card ≤ d :=
+    hM ▸ Multiset.card_le_card (Multiset.filter_le _ _)
+  have hb_le_d : (N.filter (· ≤ x)).card ≤ d :=
+    hN ▸ Multiset.card_le_card (Multiset.filter_le _ _)
+  have hab1 : (M.filter (· ≤ x)).card ≤ (N.filter (· ≤ x)).card + 1 := by
+    by_contra hcon
+    push Not at hcon
+    have hb1_lt_d : (N.filter (· ≤ x)).card + 1 < d := by lia
+    have hbx : sM[(N.filter (· ≤ x)).card + 1]! ≤ x := by
+      rw [h_helper sM hM_sorted M hsM_eq x ((N.filter (· ≤ x)).card + 1) (by lia)]
+      lia
+    have hNb : sN[(N.filter (· ≤ x)).card]! ≤ x :=
+      le_trans (hint1 _ hb1_lt_d) hbx
+    have hlt :=
+      (h_helper sN hN_sorted N hsN_eq x (N.filter (· ≤ x)).card (by lia)).mp hNb
+    lia
+  have hba1 : (N.filter (· ≤ x)).card ≤ (M.filter (· ≤ x)).card + 1 := by
+    by_contra hcon
+    push Not at hcon
+    have ha1_lt_d : (M.filter (· ≤ x)).card + 1 < d := by lia
+    have hax : sN[(M.filter (· ≤ x)).card + 1]! ≤ x := by
+      rw [h_helper sN hN_sorted N hsN_eq x ((M.filter (· ≤ x)).card + 1) (by lia)]
+      lia
+    have hMa : sM[(M.filter (· ≤ x)).card]! ≤ x :=
+      le_trans (hint2 _ ha1_lt_d) hax
+    have hlt :=
+      (h_helper sM hM_sorted M hsM_eq x (M.filter (· ≤ x)).card (by lia)).mp hMa
+    lia
+  exact ⟨by lia, by lia⟩
+
 /-- Succ-degree version of `rootCrossing_of_count_diff_le_one`.
 
 If `N` has one more element than `M`, and at every lower threshold the count

@@ -1805,6 +1805,26 @@ theorem rootCrossing_of_rootCountAbove_diff_le_one
     rw [card_roots_of_splits hg, hdeg]
   exact rootCrossing_of_count_gt_diff_le_one hMcard hNcard hcount
 
+/-- Same-degree descending-root crossing implies the lower-threshold root-count
+formulation. -/
+theorem sameDegreeRootCount_of_rootCrossing
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hdeg : g.natDegree = f.natDegree)
+    (hcross :
+      (∀ j, 1 ≤ j → j < f.natDegree →
+          (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+      (∀ j, 1 ≤ j → j < f.natDegree →
+          (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)) :
+    ∀ x : ℝ,
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 := by
+  have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
+  have hNcard : g.roots.card = f.natDegree := by
+    rw [card_roots_of_splits hg, hdeg]
+  simpa [rootSeqDesc] using
+    (count_diff_le_one_of_rootCrossing (M := f.roots) (N := g.roots)
+      hMcard hNcard hcross)
+
 /-- Convert the upper-threshold same-degree root-count formulation into the
 lower-threshold formulation. -/
 theorem sameDegreeRootCount_of_rootCountAbove
@@ -1862,6 +1882,19 @@ theorem posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove
     (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
   exact rootCrossing_of_rootCountAbove_diff_le_one hf_split hg_split hdeg
     (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
+
+/-- The same-degree descending-root crossing formulation implies the
+same-degree root-count formulation. -/
+theorem posComboNoCommonSameDegreeRootCount_of_rootCrossing
+    (hcross : PosComboNoCommonSameDegreeRootCrossingNonnegStatement) :
+    PosComboNoCommonSameDegreeRootCountNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
+  have hf_split : f.Splits :=
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+  have hg_split : g.Splits :=
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+  exact sameDegreeRootCount_of_rootCrossing hf_split hg_split hdeg
+    (hcross hf_pos hg_pos hfnn hgnn hfg hdeg hno)
 
 /-- The upper-threshold same-degree root-count target implies the
 lower-threshold root-count target. -/
