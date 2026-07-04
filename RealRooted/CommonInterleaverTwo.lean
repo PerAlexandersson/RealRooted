@@ -1631,6 +1631,22 @@ theorem sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
   sameDegreePairHasCommonInterleaver_nonneg_of_slotData
     (posComboNoCommonSameDegreeSlotData_of_rootCrossing hcross)
 
+/-- The same-degree slot-data statement follows directly from the analytic
+root-count formulation. -/
+theorem posComboNoCommonSameDegreeSlotData_of_rootCount
+    (hcount : PosComboNoCommonSameDegreeRootCountNonnegStatement) :
+    PosComboNoCommonSameDegreeSlotDataNonnegStatement :=
+  posComboNoCommonSameDegreeSlotData_of_rootCrossing
+    (posComboNoCommonSameDegreeRootCrossing_of_rootCount hcount)
+
+/-- The repaired same-degree pair-interleaver endpoint follows directly from
+the analytic root-count formulation. -/
+theorem sameDegreePairHasCommonInterleaver_nonneg_of_rootCount
+    (hcount : PosComboNoCommonSameDegreeRootCountNonnegStatement) :
+    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
+  sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
+    (posComboNoCommonSameDegreeRootCrossing_of_rootCount hcount)
+
 /-- **Honest missing root-slot boundary for milestone B2 (#42).**
 
 This is the succ-degree analogue of the same-degree slot-intersection input
@@ -3828,6 +3844,27 @@ theorem compatiblePairHasCommonInterleaver_of_rootCrossing
   compatiblePairHasCommonInterleaver_of_rootCrossing_via_nonnegShift
     hsame PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity hsucc
 
+/-- Shifted compatibility bridge from lower-threshold root-count
+formulations.  The succ-degree left endpoint is supplied by the
+root-continuity theorem before shifting. -/
+theorem compatiblePairHasCommonInterleaver_of_rootCount
+    (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountNonnegStatement) :
+    CompatiblePairHasCommonInterleaverStatement :=
+  compatiblePairHasCommonInterleaver_of_rootCrossing
+    (posComboNoCommonSameDegreeRootCrossing_of_rootCount hsame)
+    (posComboNoCommonSuccDegreeRootCrossing_of_rootCount hsucc)
+
+/-- Shifted compatibility bridge from same-degree lower-threshold root counts
+and succ-degree upper-threshold root counts. -/
+theorem compatiblePairHasCommonInterleaver_of_rootCountAbove
+    (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement) :
+    CompatiblePairHasCommonInterleaverStatement :=
+  compatiblePairHasCommonInterleaver_of_rootCrossing
+    (posComboNoCommonSameDegreeRootCrossing_of_rootCount hsame)
+    (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove hsucc)
+
 /-- Shifted compatibility bridge from root-crossing formulations, with the
 succ-degree left endpoint supplied by the PF/ASW route. -/
 theorem compatiblePairHasCommonInterleaver_of_rootCrossing_and_forward_asw
@@ -4000,6 +4037,31 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCrossing
     PairwiseHasCommonInterleaver fs :=
   pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCrossing_via_nonnegShift
     hsame PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity hsucc hpos hpair
+
+/-- Pairwise upgrade from lower-threshold root-count formulations. -/
+theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCount
+    {fs : List ℝ[X]}
+    (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountNonnegStatement)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hpair : PairwiseCompatible fs) :
+    PairwiseHasCommonInterleaver fs :=
+  pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCrossing
+    (posComboNoCommonSameDegreeRootCrossing_of_rootCount hsame)
+    (posComboNoCommonSuccDegreeRootCrossing_of_rootCount hsucc) hpos hpair
+
+/-- Pairwise upgrade from same-degree lower-threshold root counts and
+succ-degree upper-threshold root counts. -/
+theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCountAbove
+    {fs : List ℝ[X]}
+    (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hpair : PairwiseCompatible fs) :
+    PairwiseHasCommonInterleaver fs :=
+  pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCrossing
+    (posComboNoCommonSameDegreeRootCrossing_of_rootCount hsame)
+    (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove hsucc) hpos hpair
 
 /-- Pairwise upgrade from root-crossing formulations, with the succ-degree left
 endpoint supplied by the PF/ASW route before shifting. -/

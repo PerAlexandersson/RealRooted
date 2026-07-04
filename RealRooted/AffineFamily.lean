@@ -3109,6 +3109,25 @@ theorem PosComboRealRooted.root_parameter_eq_and_derivative_ne_zero_add_right
   ⟨(isRoot_add_right_iff_parameter_eq_of_no_common hno hmu).mp hroot,
     hfg.derivative_eval_ne_zero_add_right hno hmu hroot⟩
 
+/-- A root of an interior no-common right positive pencil carries endpoint
+nonvanishing, the unique parameter formula, and simple-crossing derivative
+nonvanishing. -/
+theorem PosComboRealRooted.root_crossing_data_add_right
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    {mu x : ℝ}
+    (hmu : 0 < mu)
+    (hroot : (f + C mu * g).IsRoot x) :
+    g.eval x ≠ 0 ∧ f.eval x ≠ 0 ∧
+      mu = -f.eval x / g.eval x ∧
+      (f + C mu * g).derivative.eval x ≠ 0 := by
+  have hdata := hfg.root_parameter_eq_and_derivative_ne_zero_add_right hno hmu hroot
+  exact
+    ⟨eval_right_ne_zero_of_isRoot_add_right_of_no_common hno hroot,
+      eval_left_ne_zero_of_isRoot_add_right_of_no_common hno hmu hroot,
+      hdata.1, hdata.2⟩
+
 /-- Left-family form of
 `PosComboRealRooted.root_parameter_eq_and_derivative_ne_zero_add_right`. -/
 theorem PosComboRealRooted.root_parameter_eq_and_derivative_ne_zero_add_left
@@ -3122,6 +3141,24 @@ theorem PosComboRealRooted.root_parameter_eq_and_derivative_ne_zero_add_left
       (C lam * f + g).derivative.eval x ≠ 0 :=
   ⟨(isRoot_add_left_iff_parameter_eq_of_no_common hno hlam).mp hroot,
     hfg.derivative_eval_ne_zero_add_left hno hlam hroot⟩
+
+/-- Left-family form of
+`PosComboRealRooted.root_crossing_data_add_right`. -/
+theorem PosComboRealRooted.root_crossing_data_add_left
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    {lam x : ℝ}
+    (hlam : 0 < lam)
+    (hroot : (C lam * f + g).IsRoot x) :
+    f.eval x ≠ 0 ∧ g.eval x ≠ 0 ∧
+      lam = -g.eval x / f.eval x ∧
+      (C lam * f + g).derivative.eval x ≠ 0 := by
+  have hdata := hfg.root_parameter_eq_and_derivative_ne_zero_add_left hno hlam hroot
+  exact
+    ⟨eval_left_ne_zero_of_isRoot_add_left_of_no_common hno hroot,
+      eval_right_ne_zero_of_isRoot_add_left_of_no_common hno hlam hroot,
+      hdata.1, hdata.2⟩
 
 /-- In a one-parameter boundary family `g + t f`, a Wronskian-zero point where
 `g` and `f` have opposite signs would force an interior double root. Hence the
