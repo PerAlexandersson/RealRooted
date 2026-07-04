@@ -102,6 +102,10 @@ abbrev sameDegreeRootCrossingTarget : Prop :=
 abbrev sameDegreeRootCountTarget : Prop :=
   PosComboNoCommonSameDegreeRootCountNonnegStatement
 
+/-- Same-degree upper-threshold root-count subtarget for milestone B1. -/
+abbrev sameDegreeRootCountAboveTarget : Prop :=
+  PosComboNoCommonSameDegreeRootCountAboveNonnegStatement
+
 /-- Milestone B2 (#42): repaired succ-degree no-common pair endpoint. -/
 abbrev succDegreePairTarget : Prop :=
   PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement
@@ -187,6 +191,27 @@ theorem sameDegreeRootCrossingTarget_of_rootCount
     (hcount : sameDegreeRootCountTarget) :
     sameDegreeRootCrossingTarget :=
   posComboNoCommonSameDegreeRootCrossing_of_rootCount hcount
+
+/-- Challenge-facing reduction from same-degree upper-threshold root counts to
+same-degree root crossing. -/
+theorem sameDegreeRootCrossingTarget_of_rootCountAbove
+    (hcount : sameDegreeRootCountAboveTarget) :
+    sameDegreeRootCrossingTarget :=
+  posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove hcount
+
+/-- Challenge-facing conversion from same-degree upper-threshold root counts to
+the lower-threshold formulation. -/
+theorem sameDegreeRootCountTarget_of_rootCountAbove
+    (hcount : sameDegreeRootCountAboveTarget) :
+    sameDegreeRootCountTarget :=
+  posComboNoCommonSameDegreeRootCount_of_rootCountAbove hcount
+
+/-- Challenge-facing conversion from same-degree lower-threshold root counts to
+the upper-threshold formulation. -/
+theorem sameDegreeRootCountAboveTarget_of_rootCount
+    (hcount : sameDegreeRootCountTarget) :
+    sameDegreeRootCountAboveTarget :=
+  posComboNoCommonSameDegreeRootCountAbove_of_rootCount hcount
 
 /-- Challenge-facing reduction from the same-degree orientation alternative to
 same-degree root crossing. -/

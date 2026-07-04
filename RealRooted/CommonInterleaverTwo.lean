@@ -1451,6 +1451,24 @@ def PosComboNoCommonSameDegreeRootCountNonnegStatement : Prop :=
       ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1
 
+/-- **Upper-threshold version of the same-degree root-count formulation.**
+
+This is the form naturally paired with sign-count lemmas, since the sign of a
+split polynomial at `x` is controlled by the number of roots strictly above
+`x`. -/
+def PosComboNoCommonSameDegreeRootCountAboveNonnegStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    HasNonnegCoeffs f →
+    HasNonnegCoeffs g →
+    PosComboRealRooted f g →
+    g.natDegree = f.natDegree →
+    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+    ∀ x : ℝ,
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1
+
 /-- Root-count bridge for the same-degree root-crossing target.
 
 If for every threshold `x` the numbers of roots `≤ x`, counted with
@@ -1471,6 +1489,55 @@ theorem rootCrossing_of_rootCount_diff_le_one
     rw [card_roots_of_splits hg, hdeg]
   exact rootCrossing_of_count_diff_le_one hMcard hNcard hcount
 
+/-- Root-count bridge from the upper-threshold formulation to the same-degree
+root-crossing target. -/
+theorem rootCrossing_of_rootCountAbove_diff_le_one
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hdeg : g.natDegree = f.natDegree)
+    (hcount : ∀ x : ℝ,
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
+  have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
+  have hNcard : g.roots.card = f.natDegree := by
+    rw [card_roots_of_splits hg, hdeg]
+  exact rootCrossing_of_count_gt_diff_le_one hMcard hNcard hcount
+
+/-- Convert the upper-threshold same-degree root-count formulation into the
+lower-threshold formulation. -/
+theorem sameDegreeRootCount_of_rootCountAbove
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hdeg : g.natDegree = f.natDegree)
+    (hcount : ∀ x : ℝ,
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :
+    ∀ x : ℝ,
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 := by
+  have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
+  have hNcard : g.roots.card = f.natDegree := by
+    rw [card_roots_of_splits hg, hdeg]
+  exact count_le_diff_le_one_of_count_gt_diff_le_one hMcard hNcard hcount
+
+/-- Convert the lower-threshold same-degree root-count formulation into the
+upper-threshold formulation. -/
+theorem sameDegreeRootCountAbove_of_rootCount
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hdeg : g.natDegree = f.natDegree)
+    (hcount : ∀ x : ℝ,
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1) :
+    ∀ x : ℝ,
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
+  have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
+  have hNcard : g.roots.card = f.natDegree := by
+    rw [card_roots_of_splits hg, hdeg]
+  exact count_gt_diff_le_one_of_count_le_diff_le_one hMcard hNcard hcount
+
 /-- The same-degree root-count formulation implies the descending-root
 crossing formulation. -/
 theorem posComboNoCommonSameDegreeRootCrossing_of_rootCount
@@ -1482,6 +1549,45 @@ theorem posComboNoCommonSameDegreeRootCrossing_of_rootCount
   have hg_split : g.Splits :=
     (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
   exact rootCrossing_of_rootCount_diff_le_one hf_split hg_split hdeg
+    (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
+
+/-- The upper-threshold same-degree root-count formulation implies the
+descending-root crossing formulation. -/
+theorem posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove
+    (hcount : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement) :
+    PosComboNoCommonSameDegreeRootCrossingNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
+  have hf_split : f.Splits :=
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+  have hg_split : g.Splits :=
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+  exact rootCrossing_of_rootCountAbove_diff_le_one hf_split hg_split hdeg
+    (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
+
+/-- The upper-threshold same-degree root-count target implies the
+lower-threshold root-count target. -/
+theorem posComboNoCommonSameDegreeRootCount_of_rootCountAbove
+    (hcount : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement) :
+    PosComboNoCommonSameDegreeRootCountNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
+  have hf_split : f.Splits :=
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+  have hg_split : g.Splits :=
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+  exact sameDegreeRootCount_of_rootCountAbove hf_split hg_split hdeg
+    (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
+
+/-- The lower-threshold same-degree root-count target implies the
+upper-threshold root-count target. -/
+theorem posComboNoCommonSameDegreeRootCountAbove_of_rootCount
+    (hcount : PosComboNoCommonSameDegreeRootCountNonnegStatement) :
+    PosComboNoCommonSameDegreeRootCountAboveNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
+  have hf_split : f.Splits :=
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+  have hg_split : g.Splits :=
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+  exact sameDegreeRootCountAbove_of_rootCount hf_split hg_split hdeg
     (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
 
 /-- Low-degree base case for the same-degree root-count formulation.
@@ -1646,6 +1752,22 @@ theorem sameDegreePairHasCommonInterleaver_nonneg_of_rootCount
     PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
   sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
     (posComboNoCommonSameDegreeRootCrossing_of_rootCount hcount)
+
+/-- The same-degree slot-data statement follows directly from the
+upper-threshold analytic root-count formulation. -/
+theorem posComboNoCommonSameDegreeSlotData_of_rootCountAbove
+    (hcount : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement) :
+    PosComboNoCommonSameDegreeSlotDataNonnegStatement :=
+  posComboNoCommonSameDegreeSlotData_of_rootCrossing
+    (posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove hcount)
+
+/-- The repaired same-degree pair-interleaver endpoint follows directly from
+the upper-threshold analytic root-count formulation. -/
+theorem sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove
+    (hcount : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement) :
+    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
+  sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
+    (posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove hcount)
 
 /-- **Honest missing root-slot boundary for milestone B2 (#42).**
 
