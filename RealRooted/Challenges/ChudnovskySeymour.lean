@@ -307,6 +307,24 @@ theorem succDegreePairTarget_of_affineFamily
     succDegreePairTarget :=
   posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haff
 
+/-- Challenge-facing no-common left-endpoint reduction from the affine-family
+bridge.  This is the endpoint part of `succDegreePairTarget_of_affineFamily`;
+the remaining input is producing the affine family from positive
+compatibility. -/
+theorem succDegreeNoCommonLeftSplitsTarget_of_affineFamily
+    (haff : PosComboNoCommonAffineFamilyStatement)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hsucc : g.natDegree = f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    f.Splits :=
+  posComboNoCommonSuccDegreeLeftSplits_of_affineFamily
+    haff hf_pos hg_pos hfnn hgnn hfg hsucc hno
+
 /-- Challenge-facing reduction from the boundary-right-pair orientation
 statement to the repaired succ-degree pair endpoint. -/
 theorem succDegreePairTarget_of_boundaryRight
