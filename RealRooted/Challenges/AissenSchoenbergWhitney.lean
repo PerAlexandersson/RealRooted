@@ -35,6 +35,15 @@ theorem reverseTheorem {p : ℝ[X]}
     IsPolyaFreqSeq (fun n ↦ p.coeff n) :=
   aissenSchoenbergWhitney_reverse hpnn hsplits hroots
 
+/-- Challenge-facing alias for the PF-limit closure used in the current #42
+endpoint route. -/
+theorem pfSeq_of_forall_pos_add_C_mul_splits {p q : ℝ[X]}
+    (hpnn : HasNonnegCoeffs p)
+    (hqnn : HasNonnegCoeffs q)
+    (hfamily : ∀ {μ : ℝ}, 0 < μ → (p + C μ * q).Splits) :
+    IsPolyaFreqSeq (fun n ↦ p.coeff n) :=
+  IsPolyaFreqSeq.of_forall_pos_add_C_mul_splits hpnn hqnn hfamily
+
 /-- The strict and no-extra-nonnegativity forward targets are equivalent. -/
 theorem forwardTarget_iff_noNonnegTarget :
     forwardTarget ↔ forwardNoNonnegTarget :=
