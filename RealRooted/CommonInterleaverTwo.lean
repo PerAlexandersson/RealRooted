@@ -2947,6 +2947,33 @@ theorem posComboNoCommonSameDegreeRootCount_of_rootCountAboveNonRoot
     (posComboNoCommonSameDegreeRootCountAboveNonRoot_iff_rootCountNonRoot.mp
       hcount)
 
+/-- Oriented same-cardinality root counts: the lower-threshold comparison
+`f` against `g` is equivalent to the opposite upper-threshold comparison.
+
+This form is useful when a same-degree comparison is later used after a `divX`
+step: the lower count of `f` is bounded by the lower count of `g` exactly when
+the upper count of `g` is bounded by the upper count of `f`. -/
+theorem sameDegreeRootCountAbove_oriented_iff_rootCount_oriented_pointwise
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hdeg : g.natDegree = f.natDegree) (x : ℝ) :
+    (((g.roots.filter (x < ·)).card : ℤ) ≤ (f.roots.filter (x < ·)).card ∧
+        ((f.roots.filter (x < ·)).card : ℤ) ≤
+          (g.roots.filter (x < ·)).card + 1)
+      ↔
+    (((f.roots.filter (· ≤ x)).card : ℤ) ≤ (g.roots.filter (· ≤ x)).card ∧
+        ((g.roots.filter (· ≤ x)).card : ℤ) ≤
+          (f.roots.filter (· ≤ x)).card + 1) := by
+  have hfpart := card_roots_filter_gt_add_le_of_splits hf x
+  have hgpart := card_roots_filter_gt_add_le_of_splits hg x
+  have hfpartZ :
+      ((f.roots.filter (x < ·)).card : ℤ) + (f.roots.filter (· ≤ x)).card =
+        f.natDegree := by exact_mod_cast hfpart
+  have hgpartZ :
+      ((g.roots.filter (x < ·)).card : ℤ) + (g.roots.filter (· ≤ x)).card =
+        g.natDegree := by exact_mod_cast hgpart
+  have hdegZ : (g.natDegree : ℤ) = f.natDegree := by exact_mod_cast hdeg
+  constructor <;> · rintro ⟨h1, h2⟩; constructor <;> lia
+
 /-- Common-non-root version of the succ-degree lower root-count formulation. -/
 def PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement : Prop :=
   ∀ ⦃f g : ℝ[X]⦄,
@@ -3510,6 +3537,45 @@ theorem posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_sameDegreeCount
         simpa [h0] using h
       exact_mod_cast h'
     exact ⟨by lia, by lia⟩
+
+/-- Upper-threshold `divX` reduction of the right-zero lead branch.
+
+This is the same reduction as
+`posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_sameDegreeCount`,
+but with the same-degree comparison supplied in the opposite upper-threshold
+orientation between `g.divX` and `f`. -/
+theorem
+    posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_sameDegreeCountAbove
+    (hcount :
+      ∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 = 0 →
+        ∀ x : ℝ,
+          ((g.divX.roots.filter (x < ·)).card : ℤ) ≤
+              (f.roots.filter (x < ·)).card ∧
+          ((f.roots.filter (x < ·)).card : ℤ) ≤
+              (g.divX.roots.filter (x < ·)).card + 1) :
+    PosComboNoCommonSuccDegreeRootCountLeadRightZeroNonnegStatement :=
+  posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_sameDegreeCount
+    (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0 x => by
+      have hg_split : g.Splits :=
+        (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
+      have hdiv_split : g.divX.Splits :=
+        (DegreeDropReversal.splits_iff_divX_splits_of_coeff_zero hg0).1 hg_split
+      have hdiv_deg : g.divX.natDegree = f.natDegree := by
+        rw [Polynomial.natDegree_divX_eq_natDegree_tsub_one, hdeg]
+        simp
+      exact (sameDegreeRootCountAbove_oriented_iff_rootCount_oriented_pointwise
+        hf_split hdiv_split hdiv_deg x).mp
+        (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0 x))
 
 /-- The residual succ-degree root-count branch follows from an interlacing
 orientation in that branch. -/
