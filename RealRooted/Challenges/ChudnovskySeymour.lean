@@ -1,4 +1,5 @@
 import RealRooted.ChudnovskySeymour
+import RealRooted.CommonInterleaverExamples
 import RealRooted.CommonInterleaverSeq
 import RealRooted.SuccDegreeRootCrossing
 import RealRooted.Bezoutian
@@ -184,9 +185,18 @@ abbrev succDegreeRootCountNonRootTarget : Prop :=
 abbrev succDegreeRootCountResidualTarget : Prop :=
   PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement
 
-/-- Exact residual orientation subtarget for the succ-degree residual branch. -/
+/-- Exact residual orientation subtarget for the succ-degree residual branch.
+This target is now known to be false; see
+`not_succDegreeRootCountResidualPrecTarget`. -/
 abbrev succDegreeRootCountResidualPrecTarget : Prop :=
   PosComboNoCommonSuccDegreeRootCountResidualPrecStatement
+
+/-- Challenge-facing falsity of the residual `Prec` shortcut.  The counterexample
+is `f = X`, `g = (X + 1) * (X + 2)`, formalized in
+`RealRooted.CommonInterleaverExamples`. -/
+theorem not_succDegreeRootCountResidualPrecTarget :
+    ¬ succDegreeRootCountResidualPrecTarget :=
+  CommonInterleaverExamples.not_posComboNoCommonSuccDegreeRootCountResidualPrecStatement
 
 /-- Succ-degree nonzero constant-term root-count branch. -/
 abbrev succDegreeRootCountLeadTarget : Prop :=
