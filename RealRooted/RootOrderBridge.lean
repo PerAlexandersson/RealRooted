@@ -17,6 +17,35 @@ theorem odd_int_nat_sub_iff_odd_add (m n : ℕ) :
   rw [← Int.not_even_iff_odd, ← Nat.not_even_iff_odd]
   rw [Int.even_sub, Int.even_coe_nat, Int.even_coe_nat, Nat.even_add]
 
+/-- For natural counts, evenness of the integer difference is the same as
+evenness of the natural sum. -/
+theorem even_int_nat_sub_iff_even_add (m n : ℕ) :
+    Even ((m : ℤ) - n) ↔ Even (m + n) := by
+  rw [Int.even_sub, Int.even_coe_nat, Int.even_coe_nat, Nat.even_add]
+
+/-- If two lower counts have complementary upper counts and the second total is
+one larger, then lower evenness is equivalent to upper oddness. -/
+theorem even_add_iff_odd_add_of_add_eq_succ
+    {a b u v d : ℕ} (ha : u + a = d) (hb : v + b = d + 1) :
+    Even (a + b) ↔ Odd (u + v) := by
+  rw [← Nat.not_even_iff_odd]
+  constructor
+  · intro hab huv
+    have hsum : u + v + (a + b) = 2 * d + 1 := by lia
+    have htot : Even (u + v + (a + b)) := by
+      rw [Nat.even_add]
+      exact ⟨fun _ => hab, fun _ => huv⟩
+    rw [hsum] at htot
+    exact Nat.not_even_two_mul_add_one d htot
+  · intro huv
+    by_contra hab
+    have hsum : u + v + (a + b) = 2 * d + 1 := by lia
+    have htot : Even (u + v + (a + b)) := by
+      rw [Nat.even_add]
+      exact ⟨fun hu => False.elim (huv hu), fun ha => False.elim (hab ha)⟩
+    rw [hsum] at htot
+    exact Nat.not_even_two_mul_add_one d htot
+
 set_option linter.flexible false in
 /-- If two finite multisets of reals have the same cardinality and their
 counting functions differ by at most one at every threshold, then their

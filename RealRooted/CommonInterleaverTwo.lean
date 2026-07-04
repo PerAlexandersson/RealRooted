@@ -3191,6 +3191,29 @@ theorem succDegree_odd_roots_gt_count_sub_iff_exists_pos_isRoot_add_right
   exact sameDegree_odd_roots_gt_count_sub_iff_exists_pos_isRoot_add_right
     hf_split hg_split hf_pos hg_pos hxf hxg
 
+/-- Succ-degree right-pencil parity bridge for lower root counts. Since `g` has
+one more root than `f`, the lower root-count difference has even parity exactly
+when the right pencil crosses zero at the threshold. -/
+theorem succDegree_even_roots_le_count_sub_iff_exists_pos_isRoot_add_right
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g) (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
+    (Even (((f.roots.filter (· ≤ x)).card : ℤ) -
+        (g.roots.filter (· ≤ x)).card) ↔
+      ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) := by
+  have hg_split : g.Splits :=
+    (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
+  rw [even_int_nat_sub_iff_even_add]
+  have hfpart := card_roots_filter_gt_add_le_of_splits hf_split x
+  have hgpart :
+      (g.roots.filter (x < ·)).card + (g.roots.filter (· ≤ x)).card =
+        f.natDegree + 1 := by
+    rw [card_roots_filter_gt_add_le_of_splits hg_split x, hdeg]
+  exact (even_add_iff_odd_add_of_add_eq_succ hfpart hgpart).trans
+    (sameDegree_odd_card_roots_gt_add_iff_exists_pos_isRoot_add_right
+      hf_split hg_split hf_pos hg_pos hxf hxg)
+
 /-- The succ-degree root-count formulation implies the descending-root
 crossing formulation. -/
 theorem posComboNoCommonSuccDegreeRootCrossing_of_rootCount
