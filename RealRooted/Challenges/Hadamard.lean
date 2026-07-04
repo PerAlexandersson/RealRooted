@@ -108,11 +108,29 @@ abbrev hurwitzSchurCornerZeroTarget : Prop :=
 abbrev hurwitzMatrixHadamardLeThreeTarget : Prop :=
   hadamardPreservesHurwitzMatrixTNDetLeThreeStatement
 
+/-- Challenge-facing odd/even PF consequence of the Hurwitz-matrix Hadamard
+target. -/
+abbrev hurwitzMatrixHadamardOddEvenPFTarget : Prop :=
+  hadamardPreservesHurwitzMatrixOddEvenPFStatement
+
 /-- The full Hurwitz Schur-product target implies the matrix Hadamard target. -/
 theorem hurwitzMatrixHadamardTarget_of_hurwitzSchur
     (h : hurwitzSchurTarget) :
     hurwitzMatrixHadamardTarget :=
   hadamardPreservesHurwitzMatrixTN_of_schur h
+
+/-- The matrix Hadamard target implies its odd/even PF consequence. -/
+theorem hurwitzMatrixHadamardOddEvenPFTarget_of_matrixHadamard
+    (h : hurwitzMatrixHadamardTarget) :
+    hurwitzMatrixHadamardOddEvenPFTarget :=
+  hadamardPreservesHurwitzMatrixOddEvenPF_of_matrixTN h
+
+/-- The full Hurwitz Schur-product target implies the odd/even PF consequence
+for Hadamard products. -/
+theorem hurwitzMatrixHadamardOddEvenPFTarget_of_hurwitzSchur
+    (h : hurwitzSchurTarget) :
+    hurwitzMatrixHadamardOddEvenPFTarget :=
+  hadamardPreservesHurwitzMatrixOddEvenPF_of_schur h
 
 /-- The triangular-free `3 x 3` target is equivalent to the conjunction of
 the full-band and corner-zero top-right subcases. -/

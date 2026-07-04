@@ -810,6 +810,49 @@ theorem hadamardPreservesHurwitzMatrixTN_of_schur
   rw [hurwitz_hadamardProduct_matrix]
   exact h ha hb
 
+/-- Odd/even coefficient-subsequence PF consequence of the Hurwitz-matrix
+Hadamard leaf. -/
+def hadamardPreservesHurwitzMatrixOddEvenPFStatement : Prop :=
+  ∀ {a b : ℝ[X]},
+    (hurwitz a.coeff).IsTotallyNonneg →
+    (hurwitz b.coeff).IsTotallyNonneg →
+    IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n + 1)) ∧
+      IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n))
+
+/-- The Hurwitz-matrix Hadamard leaf makes the odd coefficient subsequence of
+the Hadamard product Pólya-frequency. -/
+theorem hadamardProduct_oddCoeff_isPolyaFreqSeq_of_matrixTN
+    (h : hadamardPreservesHurwitzMatrixTNStatement)
+    {a b : ℝ[X]} (ha : (hurwitz a.coeff).IsTotallyNonneg)
+    (hb : (hurwitz b.coeff).IsTotallyNonneg) :
+    IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n + 1)) :=
+  hurwitz_isPolyaFreqSeq_odd (h ha hb)
+
+/-- The Hurwitz-matrix Hadamard leaf makes the even coefficient subsequence of
+the Hadamard product Pólya-frequency. -/
+theorem hadamardProduct_evenCoeff_isPolyaFreqSeq_of_matrixTN
+    (h : hadamardPreservesHurwitzMatrixTNStatement)
+    {a b : ℝ[X]} (ha : (hurwitz a.coeff).IsTotallyNonneg)
+    (hb : (hurwitz b.coeff).IsTotallyNonneg) :
+    IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n)) :=
+  hurwitz_isPolyaFreqSeq_even (h ha hb)
+
+/-- Bundled odd/even PF consequence of the Hurwitz-matrix Hadamard leaf. -/
+theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_matrixTN
+    (h : hadamardPreservesHurwitzMatrixTNStatement) :
+    hadamardPreservesHurwitzMatrixOddEvenPFStatement :=
+  fun {_ _} ha hb =>
+    ⟨hadamardProduct_oddCoeff_isPolyaFreqSeq_of_matrixTN h ha hb,
+      hadamardProduct_evenCoeff_isPolyaFreqSeq_of_matrixTN h ha hb⟩
+
+/-- The pure Hurwitz Schur-product core gives the odd/even PF consequence for
+Hadamard products. -/
+theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_schur
+    (h : HurwitzMatrixSchurProductTNStatement) :
+    hadamardPreservesHurwitzMatrixOddEvenPFStatement :=
+  hadamardPreservesHurwitzMatrixOddEvenPF_of_matrixTN
+    (hadamardPreservesHurwitzMatrixTN_of_schur h)
+
 /-- The pure Hurwitz Schur-product core implies the named low-order,
 size-`≤ 3`, Hurwitz-matrix Hadamard leaf. -/
 theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_schur
