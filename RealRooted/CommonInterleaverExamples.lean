@@ -732,6 +732,137 @@ lemma not_posComboNoCommonOrientationStatement :
     (by have h1 := orientCexF_natDegree; have h2 := orientCexG_natDegree; lia)
     orientCex_noCommon
 
+/-! ### The residual succ-degree orientation target is false
+
+The residual branch of the succ-degree no-common orientation problem
+(`PosComboNoCommonSuccDegreeRootCountResidualPrecStatement`) additionally
+assumes `f.coeff 0 = 0` and `g.coeff 0 ≠ 0`.  It is false: take `f = X` and
+`g = (X + 1)(X + 2)`.  A common left interleaver `X + 3/2` witnesses the
+positive-combination condition, but `0`, the only root of `X`, lies strictly to
+the right of both roots of `g`, so `Prec X g` fails. -/
+
+private lemma X_isRealRooted : ((X : ℝ[X]) ≠ 0 ∧ (X : ℝ[X]).Splits) :=
+  isRealRooted_X
+
+private lemma X_hasNonnegCoeffs : HasNonnegCoeffs (X : ℝ[X]) :=
+  hasNonnegCoeffs_X
+
+private lemma X_hasPosLeadingCoeff : HasPosLeadingCoeff (X : ℝ[X]) :=
+  X_hasNonnegCoeffs.pos_leadingCoeff X_ne_zero
+
+private lemma X_roots : (X : ℝ[X]).roots = {(0 : ℝ)} := by
+  simp
+
+private lemma X_coeff_zero : (X : ℝ[X]).coeff 0 = 0 := by
+  simp
+
+private lemma xAddOne_xAddTwo_isRealRooted :
+    ((((X + 1) * (X + 2)) : ℝ[X]) ≠ 0 ∧ (((X + 1) * (X + 2)) : ℝ[X]).Splits) :=
+  isRealRooted_mul xAddOne_isRealRooted.1 xAddOne_isRealRooted.2
+    xAddTwo_isRealRooted.1 xAddTwo_isRealRooted.2
+
+private lemma xAddOne_xAddTwo_hasNonnegCoeffs :
+    HasNonnegCoeffs (((X + 1) * (X + 2)) : ℝ[X]) :=
+  xAddOne_hasNonnegCoeffs.mul xAddTwo_hasNonnegCoeffs
+
+private lemma xAddOne_xAddTwo_hasPosLeadingCoeff :
+    HasPosLeadingCoeff (((X + 1) * (X + 2)) : ℝ[X]) :=
+  xAddOne_xAddTwo_hasNonnegCoeffs.pos_leadingCoeff xAddOne_xAddTwo_isRealRooted.1
+
+private lemma xAddOne_xAddTwo_natDegree :
+    (((X + 1) * (X + 2)) : ℝ[X]).natDegree = 2 := by
+  rw [natDegree_mul xAddOne_isRealRooted.1 xAddTwo_isRealRooted.1]
+  simp [xAddOne_natDegree, xAddTwo_natDegree]
+
+private lemma xAddOne_xAddTwo_roots :
+    (((X + 1) * (X + 2)) : ℝ[X]).roots = {(-2 : ℝ)} + {(-1 : ℝ)} := by
+  rw [roots_mul (mul_ne_zero xAddOne_isRealRooted.1 xAddTwo_isRealRooted.1),
+    xAddOne_roots, xAddTwo_roots, add_comm]
+
+private lemma xAddOne_xAddTwo_coeff_zero_ne :
+    (((X + 1) * (X + 2)) : ℝ[X]).coeff 0 ≠ 0 := by
+  rw [coeff_zero_eq_eval_zero]
+  simp only [eval_mul, eval_add, eval_X, eval_one, eval_ofNat]
+  norm_num
+
+private lemma xAddThreeHalves_isRealRooted :
+    ((X + C (3 / 2 : ℝ) : ℝ[X]) ≠ 0 ∧ (X + C (3 / 2 : ℝ) : ℝ[X]).Splits) := by
+  simpa [sub_eq_add_neg, add_comm] using isRealRooted_X_sub_C (-(3 / 2 : ℝ))
+
+private lemma xAddThreeHalves_prec_X :
+    Prec (X + C (3 / 2 : ℝ) : ℝ[X]) (X : ℝ[X]) := by
+  refine
+    ⟨xAddThreeHalves_isRealRooted, X_isRealRooted, [(-(3 / 2 : ℝ))], [(0 : ℝ)],
+      List.pairwise_singleton _ _, List.pairwise_singleton _ _, ?_, ?_, ?_⟩
+  · simp
+  · simp
+  · exact Or.inr ⟨by simp, by norm_num [ListAlternates, ListInterlaces]⟩
+
+private lemma xAddThreeHalves_prec_xAddOne_xAddTwo :
+    Prec (X + C (3 / 2 : ℝ) : ℝ[X]) (((X + 1) * (X + 2)) : ℝ[X]) := by
+  refine
+    ⟨xAddThreeHalves_isRealRooted, xAddOne_xAddTwo_isRealRooted,
+      [(-(3 / 2 : ℝ))], [(-2 : ℝ), (-1 : ℝ)],
+      List.pairwise_singleton _ _, ?_, ?_, ?_, ?_⟩
+  · norm_num
+  · simp
+  · rw [xAddOne_xAddTwo_roots]
+    rfl
+  · exact Or.inl ⟨by simp, by norm_num [ListInterlaces]⟩
+
+private lemma X_xAddOne_xAddTwo_posComboRealRooted :
+    PosComboRealRooted (X : ℝ[X]) (((X + 1) * (X + 2)) : ℝ[X]) :=
+  PosComboRealRooted.of_commonLeftInterleaver
+    xAddThreeHalves_prec_X
+    xAddThreeHalves_prec_xAddOne_xAddTwo
+    X_hasPosLeadingCoeff
+    xAddOne_xAddTwo_hasPosLeadingCoeff
+
+private lemma X_xAddOne_xAddTwo_noCommon :
+    ∀ r, (X : ℝ[X]).IsRoot r → ¬ (((X + 1) * (X + 2)) : ℝ[X]).IsRoot r := by
+  intro r hr1 hr2
+  have hr0 : r = 0 := by
+    have h := hr1
+    simp only [IsRoot, eval_X] at h
+    exact h
+  subst hr0
+  simp only [IsRoot, eval_mul, eval_add, eval_X, eval_one, eval_ofNat] at hr2
+  norm_num at hr2
+
+private lemma X_not_prec_xAddOne_xAddTwo :
+    ¬ Prec (X : ℝ[X]) (((X + 1) * (X + 2)) : ℝ[X]) := by
+  intro hprec
+  have hg_le : ∀ r ∈ (((X + 1) * (X + 2)) : ℝ[X]).roots, r ≤ (-1 : ℝ) := by
+    intro r hr
+    rw [xAddOne_xAddTwo_roots] at hr
+    simp only [Multiset.mem_add, Multiset.mem_singleton] at hr
+    rcases hr with h | h <;> subst h <;> norm_num
+  have hf_le := roots_le_of_prec_right hprec hg_le
+  have h0 : (0 : ℝ) ∈ (X : ℝ[X]).roots := by
+    rw [X_roots]
+    simp
+  have := hf_le 0 h0
+  norm_num at this
+
+/-- The residual succ-degree orientation target
+`PosComboNoCommonSuccDegreeRootCountResidualPrecStatement` is false.
+Witnessed by `f = X`, `g = (X + 1)(X + 2)`. -/
+lemma not_posComboNoCommonSuccDegreeRootCountResidualPrecStatement :
+    ¬ PosComboNoCommonSuccDegreeRootCountResidualPrecStatement :=
+  fun hres =>
+    X_not_prec_xAddOne_xAddTwo
+      (hres
+        X_hasPosLeadingCoeff
+        xAddOne_xAddTwo_hasPosLeadingCoeff
+        X_hasNonnegCoeffs
+        xAddOne_xAddTwo_hasNonnegCoeffs
+        X_xAddOne_xAddTwo_posComboRealRooted
+        (by norm_num [xAddOne_xAddTwo_natDegree, natDegree_X])
+        X_xAddOne_xAddTwo_noCommon
+        X_isRealRooted.2
+        X_coeff_zero
+        xAddOne_xAddTwo_coeff_zero_ne)
+
 end CommonInterleaverExamples
 
 end RealRooted
