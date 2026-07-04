@@ -135,6 +135,11 @@ abbrev hurwitzSchurTriangularFreeTarget : Prop :=
 abbrev hurwitzSchurFullBandTarget : Prop :=
   HurwitzMatrixSchurProductDetFinThreeCoreFullBandStatement
 
+/-- Challenge-facing corner-zeroed determinant subtarget for the fully in-band
+top-right subcase of the triangular-free `3 x 3` target. -/
+abbrev hurwitzSchurFullBandCornerZeroedTarget : Prop :=
+  HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedStatement
+
 /-- Challenge-facing corner-zero top-right subcase of the triangular-free
 `3 x 3` target. -/
 abbrev hurwitzSchurCornerZeroTarget : Prop :=
@@ -205,6 +210,13 @@ theorem hurwitzSchurCornerZeroTarget_proved :
     hurwitzSchurCornerZeroTarget :=
   hurwitzMatrixSchurProductDetFinThreeCoreCornerZero
 
+/-- Challenge-facing reduction from the corner-zeroed full-band subtarget to
+the fully in-band top-right subcase. -/
+theorem hurwitzSchurFullBandTarget_of_cornerZeroed
+    (h : hurwitzSchurFullBandCornerZeroedTarget) :
+    hurwitzSchurFullBandTarget :=
+  hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_cornerZeroed h
+
 /-- Challenge-facing reduction from the two top-right subcases to the
 triangular-free `3 x 3` target. -/
 theorem hurwitzSchurTriangularFreeTarget_of_fullBand_cornerZero
@@ -219,6 +231,14 @@ theorem hurwitzSchurTriangularFreeTarget_of_fullBand
     (hF : hurwitzSchurFullBandTarget) :
     hurwitzSchurTriangularFreeTarget :=
   hurwitzMatrixSchurProductDetFinThreeCore_of_fullBand hF
+
+/-- Challenge-facing reduction from the corner-zeroed full-band subtarget to
+the triangular-free `3 x 3` target. -/
+theorem hurwitzSchurTriangularFreeTarget_of_fullBandCornerZeroed
+    (h : hurwitzSchurFullBandCornerZeroedTarget) :
+    hurwitzSchurTriangularFreeTarget :=
+  hurwitzSchurTriangularFreeTarget_of_fullBand
+    (hurwitzSchurFullBandTarget_of_cornerZeroed h)
 
 /-- Challenge-facing reduction from the two top-right subcases to the isolated
 in-band `3 x 3` target. -/
@@ -236,6 +256,14 @@ theorem hurwitzSchurInBandTarget_of_fullBand
     hurwitzSchurInBandTarget :=
   hurwitzMatrixSchurProductDetFinThreeInBand_of_fullBand hF
 
+/-- Challenge-facing reduction from the corner-zeroed full-band subtarget to
+the isolated in-band `3 x 3` target. -/
+theorem hurwitzSchurInBandTarget_of_fullBandCornerZeroed
+    (h : hurwitzSchurFullBandCornerZeroedTarget) :
+    hurwitzSchurInBandTarget :=
+  hurwitzSchurInBandTarget_of_fullBand
+    (hurwitzSchurFullBandTarget_of_cornerZeroed h)
+
 /-- Challenge-facing reduction from the two top-right subcases to the
 low-order Hurwitz Schur-product target through size `3`. -/
 theorem hurwitzSchurLeThreeTarget_of_fullBand_cornerZero
@@ -252,6 +280,14 @@ theorem hurwitzSchurLeThreeTarget_of_fullBand
     hurwitzSchurLeThreeTarget :=
   hurwitzMatrixSchurProductDetLeThree_of_fullBand hF
 
+/-- Challenge-facing reduction from the corner-zeroed full-band subtarget to
+the low-order Hurwitz Schur-product target through size `3`. -/
+theorem hurwitzSchurLeThreeTarget_of_fullBandCornerZeroed
+    (h : hurwitzSchurFullBandCornerZeroedTarget) :
+    hurwitzSchurLeThreeTarget :=
+  hurwitzSchurLeThreeTarget_of_fullBand
+    (hurwitzSchurFullBandTarget_of_cornerZeroed h)
+
 /-- Challenge-facing reduction from the two top-right subcases to the
 low-order Hurwitz-matrix Hadamard target through size `3`. -/
 theorem hurwitzMatrixHadamardLeThreeTarget_of_fullBand_cornerZero
@@ -267,6 +303,14 @@ theorem hurwitzMatrixHadamardLeThreeTarget_of_fullBand
     (hF : hurwitzSchurFullBandTarget) :
     hurwitzMatrixHadamardLeThreeTarget :=
   hadamardPreservesHurwitzMatrixTNDetLeThree_of_fullBand hF
+
+/-- Challenge-facing reduction from the corner-zeroed full-band subtarget to
+the low-order Hurwitz-matrix Hadamard target through size `3`. -/
+theorem hurwitzMatrixHadamardLeThreeTarget_of_fullBandCornerZeroed
+    (h : hurwitzSchurFullBandCornerZeroedTarget) :
+    hurwitzMatrixHadamardLeThreeTarget :=
+  hurwitzMatrixHadamardLeThreeTarget_of_fullBand
+    (hurwitzSchurFullBandTarget_of_cornerZeroed h)
 
 /-- Challenge-facing reduction of Garloff--Wagner's nonnegative
 proper-position target through the Hurwitz-matrix Hadamard leaf. -/

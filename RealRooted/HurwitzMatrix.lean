@@ -566,6 +566,69 @@ def HurwitzMatrixSchurProductDetFinThreeCoreFullBandStatement : Prop :=
       0 ≤
         ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det
 
+/-- The full-band `3 × 3` Hadamard determinant with the top-right corner
+contribution deleted.  This is the remaining determinant after expanding along
+the top row and setting the `(0, 2)` entry to zero. -/
+def hurwitzSchurProductFullBandCornerZeroedDet
+    (a b : ℕ → ℝ) (rows cols : Fin 3 → ℕ) : ℝ :=
+  (hurwitz a (rows 0) (cols 0) * hurwitz b (rows 0) (cols 0)) *
+      ((hurwitz a (rows 1) (cols 1) * hurwitz b (rows 1) (cols 1)) *
+          (hurwitz a (rows 2) (cols 2) * hurwitz b (rows 2) (cols 2)) -
+        (hurwitz a (rows 1) (cols 2) * hurwitz b (rows 1) (cols 2)) *
+          (hurwitz a (rows 2) (cols 1) * hurwitz b (rows 2) (cols 1))) -
+    (hurwitz a (rows 0) (cols 1) * hurwitz b (rows 0) (cols 1)) *
+      ((hurwitz a (rows 1) (cols 0) * hurwitz b (rows 1) (cols 0)) *
+          (hurwitz a (rows 2) (cols 2) * hurwitz b (rows 2) (cols 2)) -
+        (hurwitz a (rows 1) (cols 2) * hurwitz b (rows 1) (cols 2)) *
+          (hurwitz a (rows 2) (cols 0) * hurwitz b (rows 2) (cols 0)))
+
+/-- Corner-zeroed subtarget for the full-band `3 × 3` Hurwitz Schur-product
+core.  The full determinant follows from this subtarget by adding the
+top-right corner contribution, which is a nonnegative `2 × 2` Hadamard minor. -/
+def HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedStatement : Prop :=
+  ∀ {a b : ℕ → ℝ},
+    (hurwitz a).IsTotallyNonneg →
+    (hurwitz b).IsTotallyNonneg →
+    ∀ {rows cols : Fin 3 → ℕ},
+      StrictMono rows →
+      StrictMono cols →
+      (∀ l : Fin 3, 2 * cols l ≤ rows l) →
+      2 * cols 1 ≤ rows 0 →
+      2 * cols 2 ≤ rows 1 →
+      2 * cols 2 ≤ rows 0 →
+      0 ≤ hurwitzSchurProductFullBandCornerZeroedDet a b rows cols
+
+/-- The full-band `3 × 3` core follows from the corner-zeroed full-band
+subtarget.  The missing top-right term factors as the `(0, 2)` entry times a
+`2 × 2` Hadamard minor on rows `{1, 2}` and columns `{0, 1}`. -/
+theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_cornerZeroed
+    (hCZ : HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedStatement) :
+    HurwitzMatrixSchurProductDetFinThreeCoreFullBandStatement := by
+  intro a b ha hb rows cols hrows hcols hband h01 h12 h02
+  have hcz := hCZ ha hb hrows hcols hband h01 h12 h02
+  have hr12 : rows 1 < rows 2 := hrows (by decide)
+  have hc01 : cols 0 < cols 1 := hcols (by decide)
+  have hcorner := ha.hadamard_det_fin_two hb
+    (strictMono_pair hr12) (strictMono_pair hc01)
+  rw [Matrix.det_fin_two] at hcorner
+  simp only [Matrix.submatrix_apply, Matrix.of_apply, Matrix.cons_val_zero,
+    Matrix.cons_val_one] at hcorner
+  have hentry :
+      0 ≤ hurwitz a (rows 0) (cols 2) * hurwitz b (rows 0) (cols 2) :=
+    mul_nonneg (ha.nonneg _ _) (hb.nonneg _ _)
+  have hcornerTerm :
+      0 ≤
+        (hurwitz a (rows 0) (cols 2) * hurwitz b (rows 0) (cols 2)) *
+          ((hurwitz a (rows 1) (cols 0) * hurwitz b (rows 1) (cols 0)) *
+              (hurwitz a (rows 2) (cols 1) * hurwitz b (rows 2) (cols 1)) -
+            (hurwitz a (rows 1) (cols 1) * hurwitz b (rows 1) (cols 1)) *
+              (hurwitz a (rows 2) (cols 0) * hurwitz b (rows 2) (cols 0))) :=
+    mul_nonneg hentry hcorner
+  rw [Matrix.det_fin_three]
+  simp only [Matrix.submatrix_apply, Matrix.of_apply,
+    hurwitzSchurProductFullBandCornerZeroedDet] at hcz ⊢
+  nlinarith [hcz, hcornerTerm]
+
 /-- Corner-zero subcase of the triangular-free `3 × 3` core: the top-right
 corner `(0, 2)` lies above the staircase, so that entry vanishes. -/
 def HurwitzMatrixSchurProductDetFinThreeCoreCornerZeroStatement : Prop :=
