@@ -213,6 +213,33 @@ theorem sameDegreeRootCountAboveTarget_of_rootCount
     sameDegreeRootCountAboveTarget :=
   posComboNoCommonSameDegreeRootCountAbove_of_rootCount hcount
 
+/-- Challenge-facing reduction from same-degree root counts to slot data. -/
+theorem sameDegreeSlotDataTarget_of_rootCount
+    (hcount : sameDegreeRootCountTarget) :
+    sameDegreeSlotDataTarget :=
+  posComboNoCommonSameDegreeSlotData_of_rootCount hcount
+
+/-- Challenge-facing reduction from same-degree upper-threshold root counts to
+slot data. -/
+theorem sameDegreeSlotDataTarget_of_rootCountAbove
+    (hcount : sameDegreeRootCountAboveTarget) :
+    sameDegreeSlotDataTarget :=
+  posComboNoCommonSameDegreeSlotData_of_rootCountAbove hcount
+
+/-- Challenge-facing reduction from same-degree root counts to the repaired
+same-degree pair endpoint. -/
+theorem sameDegreePairTarget_of_rootCount
+    (hcount : sameDegreeRootCountTarget) :
+    sameDegreePairTarget :=
+  sameDegreePairHasCommonInterleaver_nonneg_of_rootCount hcount
+
+/-- Challenge-facing reduction from same-degree upper-threshold root counts to
+the repaired same-degree pair endpoint. -/
+theorem sameDegreePairTarget_of_rootCountAbove
+    (hcount : sameDegreeRootCountAboveTarget) :
+    sameDegreePairTarget :=
+  sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove hcount
+
 /-- Challenge-facing reduction from the same-degree orientation alternative to
 same-degree root crossing. -/
 theorem sameDegreeRootCrossingTarget_of_orientationAlternative
@@ -315,6 +342,33 @@ theorem succDegreeRootCountAboveTarget_of_rootCount
     (hcount : succDegreeRootCountTarget) :
     succDegreeRootCountAboveTarget :=
   posComboNoCommonSuccDegreeRootCountAbove_of_rootCount hcount
+
+/-- Challenge-facing reduction from succ-degree root counts to slot data. -/
+theorem succDegreeSlotDataTarget_of_rootCount
+    (hcount : succDegreeRootCountTarget) :
+    succDegreeSlotDataTarget :=
+  posComboNoCommonSuccDegreeSlotData_of_rootCount hcount
+
+/-- Challenge-facing reduction from succ-degree upper-threshold root counts to
+slot data. -/
+theorem succDegreeSlotDataTarget_of_rootCountAbove
+    (hcount : succDegreeRootCountAboveTarget) :
+    succDegreeSlotDataTarget :=
+  posComboNoCommonSuccDegreeSlotData_of_rootCountAbove hcount
+
+/-- Challenge-facing reduction from succ-degree root counts to the repaired
+succ-degree pair endpoint. -/
+theorem succDegreePairTarget_of_rootCount
+    (hcount : succDegreeRootCountTarget) :
+    succDegreePairTarget :=
+  succDegreePairHasCommonInterleaver_nonneg_of_rootCount hcount
+
+/-- Challenge-facing reduction from succ-degree upper-threshold root counts to
+the repaired succ-degree pair endpoint. -/
+theorem succDegreePairTarget_of_rootCountAbove
+    (hcount : succDegreeRootCountAboveTarget) :
+    succDegreePairTarget :=
+  succDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove hcount
 
 /-- Challenge-facing degree-zero base case for the succ-degree root-crossing
 inequalities. -/
