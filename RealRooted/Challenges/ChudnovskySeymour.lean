@@ -710,6 +710,54 @@ theorem commonInterleaverTarget_of_pairBridge
     commonInterleaverTarget :=
   RealRooted.chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge htwo
 
+/-- Challenge-facing pairwise upgrade from lower-threshold root-count
+formulations alone. -/
+theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCount
+    {fs : List ℝ[X]}
+    (hsame : sameDegreeRootCountTarget)
+    (hsucc : succDegreeRootCountTarget)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hpair : PairwiseCompatible fs) :
+    PairwiseHasCommonInterleaver fs :=
+  RealRooted.pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCount
+    hsame hsucc hpos hpair
+
+/-- Challenge-facing pairwise upgrade from same-degree lower-threshold root
+counts and succ-degree upper-threshold root counts. -/
+theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCountAbove
+    {fs : List ℝ[X]}
+    (hsame : sameDegreeRootCountTarget)
+    (hsucc : succDegreeRootCountAboveTarget)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hpair : PairwiseCompatible fs) :
+    PairwiseHasCommonInterleaver fs :=
+  RealRooted.pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCountAbove
+    hsame hsucc hpos hpair
+
+/-- Challenge-facing pairwise upgrade from same-degree upper-threshold root
+counts and succ-degree lower-threshold root counts. -/
+theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_sameRootCountAbove
+    {fs : List ℝ[X]}
+    (hsame : sameDegreeRootCountAboveTarget)
+    (hsucc : succDegreeRootCountTarget)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hpair : PairwiseCompatible fs) :
+    PairwiseHasCommonInterleaver fs :=
+  RealRooted.pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_sameRootCountAbove
+    hsame hsucc hpos hpair
+
+/-- Challenge-facing pairwise upgrade from upper-threshold root-count
+formulations in both branches. -/
+theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCountAboveBoth
+    {fs : List ℝ[X]}
+    (hsame : sameDegreeRootCountAboveTarget)
+    (hsucc : succDegreeRootCountAboveTarget)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hpair : PairwiseCompatible fs) :
+    PairwiseHasCommonInterleaver fs :=
+  RealRooted.pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCountAboveBoth
+    hsame hsucc hpos hpair
+
 /-- Challenge-facing full roadmap reduction from the root-crossing
 formulations alone; root continuity supplies the succ-degree left endpoint. -/
 theorem commonInterleaverTarget_of_rootCrossing
