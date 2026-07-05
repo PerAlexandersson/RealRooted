@@ -65,11 +65,6 @@ jobs:
             lake-${{ hashFiles('lean-toolchain', 'lakefile.toml', 'lake-manifest.json') }}-
             lake-
 
-      - name: Prepare Lake cache directories
-        run: |
-          sudo mkdir -p /lake-cache/ai-projects/packages /lake-cache/ai-projects/build/RealRooted
-          sudo chown -R "$USER:$USER" /lake-cache
-
       - name: Build library (warms oleans for comparator)
         run: |
           lake exe cache get
