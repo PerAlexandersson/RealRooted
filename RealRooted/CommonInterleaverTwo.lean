@@ -19,6 +19,7 @@ import RealRooted.GammaRealRoots
 import RealRooted.PFPolynomial
 import RealRooted.RootOrderBridge
 import RealRooted.RootCountJump
+import RealRooted.SameDegreeCubicRootCount
 import RealRooted.SameDegreeQuadraticRootCount
 import RealRooted.SuccDegreeRootCrossing
 import RealRooted.SuccDegreeLeftEndpoint
@@ -2233,6 +2234,80 @@ theorem sameDegreeRootCrossing_of_posCombo_natDegree_le_two
     (fun x =>
       rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
         hf_pos hg_pos hfnn hgnn hfg hdeg hno hfdeg x)
+
+/-- Degree-`≤ 3` same-degree root-count route, assuming the two cubic interior
+partial-separation leaves. -/
+theorem rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_three_of_cubicInterior
+    (hbelow : CubicInteriorTwoBelowStatement)
+    (habove : CubicInteriorTwoAboveStatement)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hfdeg : f.natDegree ≤ 3) (x : ℝ) :
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 := by
+  by_cases hle : f.natDegree ≤ 2
+  · exact rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
+      hf_pos hg_pos hfnn hgnn hfg hdeg hno hle x
+  · have hfdeg3 : f.natDegree = 3 := by
+      lia
+    have hgdeg3 : g.natDegree = 3 := by
+      rw [hdeg, hfdeg3]
+    exact sameDegree_cubic_rootCount_le_one_of_interior hbelow habove
+      hfdeg3 hgdeg3
+      (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+      (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+      hf_pos hg_pos hfg x
+
+/-- Degree-`≤ 3` same-degree upper-threshold route, assuming the two cubic
+interior partial-separation leaves. -/
+theorem rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_three_of_cubicInterior
+    (hbelow : CubicInteriorTwoBelowStatement)
+    (habove : CubicInteriorTwoAboveStatement)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hfdeg : f.natDegree ≤ 3) (x : ℝ) :
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
+  exact sameDegreeRootCountAbove_of_rootCount
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+    hdeg
+    (fun y =>
+      rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_three_of_cubicInterior
+        hbelow habove hf_pos hg_pos hfnn hgnn hfg hdeg hno hfdeg y)
+    x
+
+/-- Degree-`≤ 3` same-degree root-crossing route, assuming the two cubic
+interior partial-separation leaves. -/
+theorem sameDegreeRootCrossing_of_posCombo_natDegree_le_three_of_cubicInterior
+    (hbelow : CubicInteriorTwoBelowStatement)
+    (habove : CubicInteriorTwoAboveStatement)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hfdeg : f.natDegree ≤ 3) :
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
+  exact rootCrossing_of_rootCountAbove_diff_le_one
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+    hdeg
+    (fun x =>
+      rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_three_of_cubicInterior
+        hbelow habove hf_pos hg_pos hfnn hgnn hfg hdeg hno hfdeg x)
 
 /-- The same-degree orientation alternative gives the descending-root crossing
 inequalities consumed by the #41 slot-data reduction. -/
