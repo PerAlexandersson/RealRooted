@@ -2116,6 +2116,46 @@ theorem rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_eq_two
         hf_pos hg_pos hfg hdeg hfdeg y)
     x
 
+/-- Degree-`≤ 2` base case for the same-degree analytic root-count target in
+the positive-combination/no-common setting. -/
+theorem rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hfdeg : f.natDegree ≤ 2) (x : ℝ) :
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 := by
+  by_cases hle : f.natDegree ≤ 1
+  · exact rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_one
+      hf_pos hg_pos hfnn hgnn hfg hdeg hno hle x
+  · have htwo : f.natDegree = 2 := by
+      lia
+    exact rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_eq_two
+      hf_pos hg_pos hfg hdeg htwo x
+
+/-- Degree-`≤ 2` base case for the upper-threshold same-degree analytic
+root-count target in the positive-combination/no-common setting. -/
+theorem rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hfdeg : f.natDegree ≤ 2) (x : ℝ) :
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
+  by_cases hle : f.natDegree ≤ 1
+  · exact rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_one
+      hf_pos hg_pos hfnn hgnn hfg hdeg hno hle x
+  · have htwo : f.natDegree = 2 := by
+      lia
+    exact rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_eq_two
+      hf_pos hg_pos hfg hdeg htwo x
+
 /-- Low-degree base case for the same-degree root-crossing target.  Through
 degree one the interior crossing inequalities are vacuous. -/
 theorem sameDegreeRootCrossing_of_natDegree_le_one
@@ -2145,6 +2185,28 @@ theorem sameDegreeRootCrossing_of_posCombo_natDegree_eq_two
     (fun x =>
       rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_eq_two
         hf_pos hg_pos hfg hdeg hfdeg x)
+
+/-- Degree-`≤ 2` base case for the same-degree root-crossing target in the
+positive-combination/no-common setting. -/
+theorem sameDegreeRootCrossing_of_posCombo_natDegree_le_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hfdeg : f.natDegree ≤ 2) :
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
+  exact rootCrossing_of_rootCountAbove_diff_le_one
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+    hdeg
+    (fun x =>
+      rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
+        hf_pos hg_pos hfnn hgnn hfg hdeg hno hfdeg x)
 
 /-- The same-degree orientation alternative gives the descending-root crossing
 inequalities consumed by the #41 slot-data reduction. -/

@@ -504,6 +504,62 @@ theorem sameDegreeRootCrossingPair_of_posCombo_natDegree_eq_two
   exact sameDegreeRootCrossing_of_posCombo_natDegree_eq_two
     hf_pos hg_pos hfg hdeg hf_deg2
 
+/-- Challenge-facing degree-`≤ 2` base case for the same-degree root-count
+formulation in the positive-combination/no-common setting. -/
+theorem sameDegreeRootCountPair_of_posCombo_natDegree_le_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hf_deg_le_two : f.natDegree ≤ 2)
+    (x : ℝ) :
+    ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 :=
+  rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
+    hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_deg_le_two x
+
+/-- Challenge-facing degree-`≤ 2` base case for the upper-threshold
+same-degree root-count formulation in the positive-combination/no-common
+setting. -/
+theorem sameDegreeRootCountAbovePair_of_posCombo_natDegree_le_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hf_deg_le_two : f.natDegree ≤ 2)
+    (x : ℝ) :
+    ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 :=
+  rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
+    hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_deg_le_two x
+
+/-- Challenge-facing degree-`≤ 2` base case for the same-degree root-crossing
+formulation in the positive-combination/no-common setting. -/
+theorem sameDegreeRootCrossingPair_of_posCombo_natDegree_le_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hf_deg_le_two : f.natDegree ≤ 2) :
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) :=
+  sameDegreeRootCrossing_of_posCombo_natDegree_le_two
+    hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_deg_le_two
+
 /-- Challenge-facing low-degree base case for the repaired same-degree
 pair-interleaver endpoint. -/
 theorem sameDegreePairHasCommonInterleaver_of_natDegree_le_one
