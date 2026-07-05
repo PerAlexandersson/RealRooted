@@ -111,6 +111,16 @@ theorem finiteSchurSzegoNonzeroPair_of_natDegree_le_two
   finiteSchurSzegoCompositionNonzero_of_natDegree_le_two
     hn hf hf0 hfdeg hp0 hpdeg hsplit
 
+/-- Challenge-facing checked low-degree Schur--Szegő base case for arbitrary
+level when both factors have degree at most `2`. -/
+theorem finiteSchurSzegoPair_of_factors_natDegree_le_two
+    {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 2)
+    (hpdeg : p.natDegree ≤ 2) (hsplit : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  finiteSchurSzegoComposition_of_factors_natDegree_le_two
+    hf hfdeg hpdeg hsplit
+
 /-- Challenge-facing checked low-degree backward finite Pólya--Schur base case,
 through degree `2`. -/
 theorem finitePolyaSchurBackwardPair_of_natDegree_le_two
