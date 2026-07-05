@@ -107,6 +107,10 @@ abbrev sameDegreeRootCrossingTarget : Prop :=
 abbrev sameDegreeRootCountTarget : Prop :=
   PosComboNoCommonSameDegreeRootCountNonnegStatement
 
+/-- Cubic partial-separation leaf for the same-degree root-count route. -/
+abbrev sameDegreeCubicSecondRootBoundTarget : Prop :=
+  CubicSecondRootBoundStatement
+
 /-- Same-degree upper-threshold root-count subtarget for milestone B1. -/
 abbrev sameDegreeRootCountAboveTarget : Prop :=
   PosComboNoCommonSameDegreeRootCountAboveNonnegStatement
@@ -512,6 +516,29 @@ theorem sameDegreeRootCountPair_le_two_of_posCombo_natDegree_eq_three
     (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
   have hg_deg3 : g.natDegree = 3 := by rw [hdeg, hf_deg3]
   exact sameDegree_cubic_rootCount_le_two
+    hf_deg3 hg_deg3 hf_split hg_split hf_pos hg_pos hfg x
+
+/-- Challenge-facing cubic reduction: the partial-separation leaf upgrades the
+same-degree cubic root-count bound from `≤ 2` to the target `≤ 1`. -/
+theorem sameDegreeRootCountPair_of_secondRootBound_natDegree_eq_three
+    (hbound : sameDegreeCubicSecondRootBoundTarget)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hf_deg3 : f.natDegree = 3)
+    (x : ℝ) :
+    ((f.roots.filter (· ≤ x)).card : ℤ) -
+        (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) -
+        (f.roots.filter (· ≤ x)).card ≤ 1 := by
+  have hf_split : f.Splits :=
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+  have hg_split : g.Splits :=
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+  have hg_deg3 : g.natDegree = 3 := by rw [hdeg, hf_deg3]
+  exact sameDegree_cubic_rootCount_le_one_of_secondRootBound hbound
     hf_deg3 hg_deg3 hf_split hg_split hf_pos hg_pos hfg x
 
 /-- Challenge-facing degree-two base case for the upper-threshold same-degree

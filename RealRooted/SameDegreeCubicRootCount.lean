@@ -156,4 +156,93 @@ theorem sameDegree_cubic_rootCount_le_two
   push_cast
   constructor <;> grind
 
+/-- Finite indicator-level core for the cubic same-degree root-count bound of
+`1`.  For ordered triples `a ≤ b ≤ c` and `p ≤ q ≤ r` satisfying the four
+interleaving inequalities `p ≤ b`, `q ≤ c`, `a ≤ q`, `b ≤ r`, the two
+threshold indicator counts differ by at most one, in both directions.  This is
+the degree-three analogue of `count_pair_diff_le_one`. -/
+theorem card_filter_triple_diff_le_one
+    (a b c p q r x : ℝ)
+    (hab : a ≤ b) (hbc : b ≤ c) (hpq : p ≤ q) (hqr : q ≤ r)
+    (hpb : p ≤ b) (hqc : q ≤ c) (haq : a ≤ q) (hbr : b ≤ r) :
+    (((if a ≤ x then 1 else 0) + (if b ≤ x then 1 else 0) +
+          (if c ≤ x then 1 else 0) : ℤ) -
+        ((if p ≤ x then 1 else 0) + (if q ≤ x then 1 else 0) +
+          (if r ≤ x then 1 else 0)) ≤ 1) ∧
+    (((if p ≤ x then 1 else 0) + (if q ≤ x then 1 else 0) +
+          (if r ≤ x then 1 else 0) : ℤ) -
+        ((if a ≤ x then 1 else 0) + (if b ≤ x then 1 else 0) +
+          (if c ≤ x then 1 else 0)) ≤ 1) := by
+  constructor <;> grind
+
+/-- Partial-separation-free leaf for the cubic same-degree root count.
+
+For a split cubic positive-combination pair with positive leading coefficients,
+and roots listed in ascending order (`a ≤ b ≤ c` for `f`, `p ≤ q ≤ r` for
+`g`), the smallest root of `f` lies at or below the middle root of `g`, and the
+middle root of `f` lies at or below the largest root of `g`.
+
+Equivalently: `g` has at most one root strictly below every root of `f`, and
+`f` has at most one root strictly above every root of `g`.  This is exactly the
+remaining analytic content needed to upgrade the cubic root-count bound from
+`≤ 2` (`sameDegree_cubic_rootCount_le_two`) to `≤ 1`: the full-separation
+obstruction `not_posComboRealRooted_cubic_separated` already rules out the case
+where all three roots of `g` lie below all of `f`, so what remains is the
+`2`-below / `2`-above partial-separation obstruction. -/
+def CubicSecondRootBoundStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    f.Splits →
+    g.Splits →
+    f.natDegree = 3 →
+    g.natDegree = 3 →
+    PosComboRealRooted f g →
+    ∀ a b c p q r : ℝ,
+      a ≤ b →
+      b ≤ c →
+      p ≤ q →
+      q ≤ r →
+      f.roots = {a, b, c} →
+      g.roots = {p, q, r} →
+      a ≤ q ∧ b ≤ r
+
+/-- Checked reduction of the cubic same-degree root-count target to the
+partial-separation leaf.
+
+Given the `CubicSecondRootBoundStatement` leaf, two split cubics with positive
+leading coefficients forming a positive-combination real-rooted pair have
+threshold root-count functions differing by at most one at every threshold.
+This strengthens `sameDegree_cubic_rootCount_le_two` from `≤ 2` to `≤ 1`,
+modulo the single analytic leaf `hbound`, and matches the degree-three case of
+the milestone-B1 root-count target
+`PosComboNoCommonSameDegreeRootCountNonnegStatement`. -/
+theorem sameDegree_cubic_rootCount_le_one_of_secondRootBound
+    (hbound : CubicSecondRootBoundStatement)
+    {f g : ℝ[X]}
+    (hfdeg : f.natDegree = 3) (hgdeg : g.natDegree = 3)
+    (hf : f.Splits) (hg : g.Splits)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hpc : PosComboRealRooted f g) :
+    ∀ x : ℝ,
+      ((f.roots.filter (· ≤ x)).card : ℤ) -
+          (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) -
+          (f.roots.filter (· ≤ x)).card ≤ 1 := by
+  intro x
+  obtain ⟨a, b, c, hab, hbc, hfroots, _⟩ :=
+    exists_roots_triple_of_splits_natDegree_three hf hfdeg
+  obtain ⟨p, q, r, hpq, hqr, hgroots, _⟩ :=
+    exists_roots_triple_of_splits_natDegree_three hg hgdeg
+  obtain ⟨haq, hbr⟩ :=
+    hbound hf_pos hg_pos hf hg hfdeg hgdeg hpc a b c p q r
+      hab hbc hpq hqr hfroots hgroots
+  obtain ⟨hpb, hqc⟩ :=
+    hbound hg_pos hf_pos hg hf hgdeg hfdeg hpc.comm p q r a b c
+      hpq hqr hab hbc hgroots hfroots
+  rw [hfroots, hgroots, card_filter_le_triple, card_filter_le_triple]
+  push_cast
+  exact card_filter_triple_diff_le_one a b c p q r x
+    hab hbc hpq hqr hpb hqc haq hbr
+
 end RealRooted
