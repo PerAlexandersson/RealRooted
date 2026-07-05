@@ -100,7 +100,9 @@ lemma interleave_ofFn_ofFn :
       interleave (ofFn f) (ofFn g) =
         ofFn (n := 2 * n) (fun i ↦ if i.val % 2 = 0 then g ⟨i / 2, by lia⟩ else f ⟨i / 2, by lia⟩)
   | 0, f, g  => by simp
-  | n + 1, f, g => by simp_all [interleave_ofFn_ofFn]; grind
+  | n + 1, f, g => by
+      simp_all [interleave_ofFn_ofFn]
+      grind [Nat.add_div_right, Nat.add_mod_right, Nat.mul_add_div, Nat.mul_add_mod]
 
 lemma interleave_ofFn_ofFn' :
     ∀ {n : ℕ} {f : Fin n → α} {g : Fin (n + 1) → α},
@@ -108,7 +110,23 @@ lemma interleave_ofFn_ofFn' :
         ofFn (n := 2 * n + 1)
           (fun i ↦ if hi : i.val % 2 = 0 then g ⟨i / 2, by lia⟩ else f ⟨i / 2, by lia⟩)
   | 0, f, g  => by simp
-  | n + 1, f, g => by simp_all [interleave_ofFn_ofFn]; grind
+  | n + 1, f, g => by
+      simp_all only [ofFn_succ, Fin.succ_zero_eq_one, interleave_cons,
+        interleave_ofFn_ofFn, Fin.succ_mk, Fin.val_zero, Nat.zero_mod, ↓reduceDIte,
+        Nat.zero_div, Fin.zero_eta, Fin.val_succ, Nat.zero_add, Nat.mod_succ,
+        Nat.succ_ne_self, Nat.reduceDiv, Nat.mul_eq, Nat.reduceAdd, Nat.mod_self,
+        Nat.zero_lt_succ, Nat.div_self, Fin.mk_one, cons.injEq, true_and]
+      congr 1
+      funext i
+      by_cases hc : (i : ℕ) % 2 = 0
+      · rw [if_pos hc, dif_neg (by lia : ¬ ((i : ℕ) + 3) % 2 = 0)]
+        congr 1
+        simp only [Fin.mk.injEq]
+        lia
+      · rw [if_neg hc, dif_pos (by lia : ((i : ℕ) + 3) % 2 = 0)]
+        congr 1
+        simp only [Fin.mk.injEq]
+        lia
 
 @[simp]
 lemma left_sublist_interleave : ∀ {l₁ l₂ : List α}, l₁.length ≤ l₂.length → l₁ <+ l₁.interleave l₂
@@ -224,8 +242,14 @@ lemma interleaves_ofFn' {n : ℕ} {f : Fin n → α} {g : Fin (n + 1) → α} :
   -- FIXME: Why doesn't `grind unfold these?
   unfold Fin.castSucc Fin.castAdd Fin.castLE
   refine ⟨fun h ↦ ?_, fun h i hi ↦ by
-    have := h.1 ⟨i / 2, by lia⟩; have := h.2 ⟨i / 2, by lia⟩; grind⟩
-  exact ⟨fun i ↦ by have := h (2 * i + 1); grind, fun i ↦ by have := h (2 * i); grind⟩
+    have := h.1 ⟨i / 2, by lia⟩
+    have := h.2 ⟨i / 2, by lia⟩
+    grind [Nat.add_div_right, Nat.add_mod_right, Nat.mul_add_div, Nat.mul_add_mod]⟩
+  refine ⟨fun i ↦ ?_, fun i ↦ ?_⟩
+  · have := h (2 * i + 1)
+    grind [Nat.add_div_right, Nat.add_mod_right, Nat.mul_add_div, Nat.mul_add_mod]
+  · have := h (2 * i)
+    grind [Nat.add_div_right, Nat.add_mod_right, Nat.mul_add_div, Nat.mul_add_mod]
 
 variable [IsTrans α r]
 
