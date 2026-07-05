@@ -747,13 +747,13 @@ theorem polarDeriv_binomialLift {n : Nat} (hn : 1 ≤ n) (ζ : ℂ) (f : ℂ[X])
           have hChooseK :
               ((n + 1 : ℕ) : ℂ) * (n.choose k : ℂ) =
                 ((k + 1 : ℕ) : ℂ) *
-                  ((n.choose k : ℂ) + (n.choose (k + 1) : ℂ)) := by
-            exact Nat.cast_add_one_mul_choose_eq (R := ℂ) n k
+                  ((n.choose k : ℂ) + (n.choose (k + 1) : ℂ)) :=
+            Nat.cast_add_one_mul_choose_eq (R := ℂ) n k
           have hChooseSucc :
               ((n + 1 : ℕ) : ℂ) * (n.choose (k + 1) : ℂ) =
                 ((k + 1 + 1 : ℕ) : ℂ) *
-                  ((n.choose (k + 1) : ℂ) + (n.choose (k + 1 + 1) : ℂ)) := by
-            exact Nat.cast_add_one_mul_choose_eq (R := ℂ) n (k + 1)
+                  ((n.choose (k + 1) : ℂ) + (n.choose (k + 1 + 1) : ℂ)) :=
+            Nat.cast_add_one_mul_choose_eq (R := ℂ) n (k + 1)
           rw [show k + 1 = 1 + k by lia]
           rw [show 1 + k + 1 = 2 + k by lia]
           simp only [Nat.add_comm, Nat.add_left_comm] at *
@@ -978,10 +978,15 @@ private theorem grace_aux {c : ℂ} {r : ℝ} (hr : 0 ≤ r) :
         rw [ polarDeriv_binomialLift ( Nat.pos_of_ne_zero hn ) ζ f ] at hf';
         rwa [ Polynomial.natDegree_C_mul ] at hf' ; aesop
       have hf'_roots : (binomialLift (n - 1) f').RootsIn (Metric.closedBall c r) := by
-        have := polarDeriv_rootsIn hr ( Nat.pos_of_ne_zero hn ) hf hroots hζ';
-        have := polarDeriv_binomialLift ( Nat.pos_of_ne_zero hn ) ζ f;
-        simp_all +decide [ RootsIn ] ;
-        assumption;
+        have hderiv_roots :=
+          polarDeriv_rootsIn hr ( Nat.pos_of_ne_zero hn ) hf hroots hζ'
+        have hpolar := polarDeriv_binomialLift ( Nat.pos_of_ne_zero hn ) ζ f
+        intro z hz
+        exact hderiv_roots z (by
+          rw [hpolar]
+          rw [Polynomial.IsRoot.def] at hz ⊢
+          simp only [Polynomial.eval_mul, Polynomial.eval_C, mul_eq_zero]
+          exact Or.inr (by simpa [f'] using hz))
       -- Let `B₁ := B /ₘ (X - C ζ)`.  Since `B.IsRoot ζ` we have
       -- `(X - C ζ) * B₁ = B` (`mul_divByMonic_eq_iff_isRoot`).
       obtain ⟨g', hg'⟩ :
