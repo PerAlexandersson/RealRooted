@@ -318,6 +318,32 @@ theorem hurwitzSchurTriangularFreeTarget_iff_fullBand :
     hurwitzSchurTriangularFreeTarget ↔ hurwitzSchurFullBandTarget :=
   hurwitzMatrixSchurProductDetFinThreeCore_iff_fullBand
 
+/-- Challenge-facing equivalence between the isolated in-band `3 x 3` target
+and its triangular-free refinement. -/
+theorem hurwitzSchurInBandTarget_iff_triangularFree :
+    hurwitzSchurInBandTarget ↔ hurwitzSchurTriangularFreeTarget :=
+  hurwitzMatrixSchurProductDetFinThreeInBand_iff_core
+
+/-- Challenge-facing equivalence between the low-order size-`≤ 3` Hurwitz
+Schur-product target and the isolated in-band `3 x 3` target. -/
+theorem hurwitzSchurLeThreeTarget_iff_inBand :
+    hurwitzSchurLeThreeTarget ↔ hurwitzSchurInBandTarget :=
+  hurwitzMatrixSchurProductDetLeThree_iff_inBand
+
+/-- Challenge-facing low-order consequence of the full Hurwitz Schur-product
+target. -/
+theorem hurwitzSchurLeThreeTarget_of_hurwitzSchur
+    (h : hurwitzSchurTarget) :
+    hurwitzSchurLeThreeTarget :=
+  hurwitzMatrixSchurProductDetLeThree_of_schurProductTN h
+
+/-- Challenge-facing in-band `3 x 3` consequence of the full Hurwitz
+Schur-product target. -/
+theorem hurwitzSchurInBandTarget_of_hurwitzSchur
+    (h : hurwitzSchurTarget) :
+    hurwitzSchurInBandTarget :=
+  hurwitzMatrixSchurProductDetFinThreeInBand_of_schurProductTN h
+
 /-- Challenge-facing theorem discharging the corner-zero top-right subcase. -/
 theorem hurwitzSchurCornerZeroTarget_proved :
     hurwitzSchurCornerZeroTarget :=
@@ -588,6 +614,35 @@ theorem hurwitzMatrixHadamardLeThreeTarget_of_fullBand_cornerZero
     hurwitzMatrixHadamardLeThreeTarget :=
   hadamardPreservesHurwitzMatrixTNDetLeThree_of_inBand
     (hurwitzSchurInBandTarget_of_fullBand_cornerZero hF hZ)
+
+/-- Challenge-facing reduction from the isolated in-band `3 x 3` target to the
+low-order Hurwitz-matrix Hadamard target through size `3`. -/
+theorem hurwitzMatrixHadamardLeThreeTarget_of_inBand
+    (h : hurwitzSchurInBandTarget) :
+    hurwitzMatrixHadamardLeThreeTarget :=
+  hadamardPreservesHurwitzMatrixTNDetLeThree_of_inBand h
+
+/-- Challenge-facing reduction from the low-order size-`≤ 3` Hurwitz
+Schur-product target to the low-order Hurwitz-matrix Hadamard target. -/
+theorem hurwitzMatrixHadamardLeThreeTarget_of_hurwitzSchurLeThree
+    (h : hurwitzSchurLeThreeTarget) :
+    hurwitzMatrixHadamardLeThreeTarget :=
+  hadamardPreservesHurwitzMatrixTNDetLeThree_of_hurwitzLeThree h
+
+/-- Challenge-facing low-order Hurwitz-matrix Hadamard consequence of the full
+Hurwitz Schur-product target. -/
+theorem hurwitzMatrixHadamardLeThreeTarget_of_hurwitzSchur
+    (h : hurwitzSchurTarget) :
+    hurwitzMatrixHadamardLeThreeTarget :=
+  hurwitzMatrixHadamardLeThreeTarget_of_hurwitzSchurLeThree
+    (hurwitzSchurLeThreeTarget_of_hurwitzSchur h)
+
+/-- Challenge-facing low-order consequence of the full Hurwitz-matrix Hadamard
+target. -/
+theorem hurwitzMatrixHadamardLeThreeTarget_of_matrixHadamard
+    (h : hurwitzMatrixHadamardTarget) :
+    hurwitzMatrixHadamardLeThreeTarget :=
+  hadamardPreservesHurwitzMatrixTNDetLeThree_of_matrixTN h
 
 /-- Challenge-facing reduction from the fully in-band top-right subcase alone to
 the low-order Hurwitz-matrix Hadamard target through size `3`. -/
