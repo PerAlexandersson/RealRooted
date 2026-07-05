@@ -470,15 +470,8 @@ theorem sameDegreeRootCountPair_of_posCombo_natDegree_eq_two
     (x : ℝ) :
     ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 := by
-  have hg_deg2 : g.natDegree = 2 := by
-    rw [hdeg, hf_deg2]
-  exact RealRooted.sameDegree_quadratic_rootCount_le_one
-    hf_deg2 hg_deg2
-    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
-    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
-    hf_pos hg_pos
-    (fun {lam μ} hlam hμ => (hfg hlam hμ).2)
-    x
+  exact rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_eq_two
+    hf_pos hg_pos hfg hdeg hf_deg2 x
 
 /-- Challenge-facing degree-two base case for the upper-threshold same-degree
 root-count formulation in the positive-combination setting. -/
@@ -492,14 +485,8 @@ theorem sameDegreeRootCountAbovePair_of_posCombo_natDegree_eq_two
     (x : ℝ) :
     ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
-  exact sameDegreeRootCountAbove_of_rootCount
-    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
-    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
-    hdeg
-    (fun y =>
-      sameDegreeRootCountPair_of_posCombo_natDegree_eq_two
-        hf_pos hg_pos hfg hdeg hf_deg2 y)
-    x
+  exact rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_eq_two
+    hf_pos hg_pos hfg hdeg hf_deg2 x
 
 /-- Challenge-facing degree-two base case for the same-degree root-crossing
 formulation in the positive-combination setting. -/
@@ -514,13 +501,8 @@ theorem sameDegreeRootCrossingPair_of_posCombo_natDegree_eq_two
         (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
     (∀ j, 1 ≤ j → j < f.natDegree →
         (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
-  exact rootCrossing_of_rootCountAbove_diff_le_one
-    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
-    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
-    hdeg
-    (fun x =>
-      sameDegreeRootCountAbovePair_of_posCombo_natDegree_eq_two
-        hf_pos hg_pos hfg hdeg hf_deg2 x)
+  exact sameDegreeRootCrossing_of_posCombo_natDegree_eq_two
+    hf_pos hg_pos hfg hdeg hf_deg2
 
 /-- Challenge-facing low-degree base case for the repaired same-degree
 pair-interleaver endpoint. -/

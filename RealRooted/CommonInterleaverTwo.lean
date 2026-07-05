@@ -19,6 +19,7 @@ import RealRooted.GammaRealRoots
 import RealRooted.PFPolynomial
 import RealRooted.RootOrderBridge
 import RealRooted.RootCountJump
+import RealRooted.SameDegreeQuadraticRootCount
 import RealRooted.SuccDegreeRootCrossing
 import RealRooted.SuccDegreeLeftEndpoint
 
@@ -2076,6 +2077,45 @@ theorem rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_one
     (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
   exact rootCountAbove_diff_le_one_of_natDegree_le_one hf_split hg_split hdeg hfdeg x
 
+/-- Degree-two base case for the same-degree analytic root-count target in
+the positive-combination setting. -/
+theorem rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_eq_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hfdeg : f.natDegree = 2) (x : ℝ) :
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 := by
+  have hgdeg : g.natDegree = 2 := by
+    rw [hdeg, hfdeg]
+  exact sameDegree_quadratic_rootCount_le_one
+    hfdeg hgdeg
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+    hf_pos hg_pos
+    (fun {lam μ} hlam hμ => (hfg hlam hμ).2)
+    x
+
+/-- Degree-two base case for the upper-threshold same-degree analytic
+root-count target in the positive-combination setting. -/
+theorem rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_eq_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hfdeg : f.natDegree = 2) (x : ℝ) :
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
+  exact sameDegreeRootCountAbove_of_rootCount
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+    hdeg
+    (fun y =>
+      rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_eq_two
+        hf_pos hg_pos hfg hdeg hfdeg y)
+    x
+
 /-- Low-degree base case for the same-degree root-crossing target.  Through
 degree one the interior crossing inequalities are vacuous. -/
 theorem sameDegreeRootCrossing_of_natDegree_le_one
@@ -2085,6 +2125,26 @@ theorem sameDegreeRootCrossing_of_natDegree_le_one
     (∀ j, 1 ≤ j → j < f.natDegree →
         (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
   refine ⟨?_, ?_⟩ <;> intro j hj1 hjlt <;> exfalso <;> lia
+
+/-- Degree-two base case for the same-degree root-crossing target in the
+positive-combination setting. -/
+theorem sameDegreeRootCrossing_of_posCombo_natDegree_eq_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hfdeg : f.natDegree = 2) :
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) :=
+  rootCrossing_of_rootCountAbove_diff_le_one
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+    hdeg
+    (fun x =>
+      rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_eq_two
+        hf_pos hg_pos hfg hdeg hfdeg x)
 
 /-- The same-degree orientation alternative gives the descending-root crossing
 inequalities consumed by the #41 slot-data reduction. -/
