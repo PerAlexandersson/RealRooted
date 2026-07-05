@@ -958,6 +958,24 @@ theorem succDegreeRootCountPair_of_prec
     ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 :=
   succDegreeRootCount_of_prec hprec hdeg x
 
+/-- Challenge-facing Rolle root-count bridge in upper-threshold form. -/
+theorem rootCountAboveDerivativePair_of_splits
+    {p : ℝ[X]} (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) (x : ℝ) :
+    ((p.derivative.roots.filter (x < ·)).card : ℤ) -
+        (p.roots.filter (x < ·)).card ≤ 1 ∧
+    ((p.roots.filter (x < ·)).card : ℤ) -
+        (p.derivative.roots.filter (x < ·)).card ≤ 1 :=
+  rootCountAbove_derivative_diff_le_one_of_splits hp hdeg x
+
+/-- Challenge-facing Rolle root-count bridge in lower-threshold form. -/
+theorem rootCountDerivativePair_of_splits
+    {p : ℝ[X]} (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) (x : ℝ) :
+    ((p.derivative.roots.filter (· ≤ x)).card : ℤ) -
+        (p.roots.filter (· ≤ x)).card ≤ 0 ∧
+    ((p.roots.filter (· ≤ x)).card : ℤ) -
+        (p.derivative.roots.filter (· ≤ x)).card ≤ 2 :=
+  rootCount_derivative_diff_le_two_of_splits hp hdeg x
+
 /-- Challenge-facing reduction from succ-degree root counts to succ-degree
 root crossing. -/
 theorem succDegreeRootCrossingTarget_of_rootCount

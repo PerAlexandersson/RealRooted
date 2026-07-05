@@ -3676,6 +3676,23 @@ theorem succDegreeRootCountAbove_of_prec
   rw [hfcard, hgcard]
   constructor <;> lia
 
+/-- Rolle root-count bound in upper-threshold form.
+
+For a splitting real polynomial of degree at least two, the numbers of roots of
+`p` and `p.derivative` strictly above any threshold differ by at most one. -/
+theorem rootCountAbove_derivative_diff_le_one_of_splits
+    {p : ℝ[X]} (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) :
+    ∀ x : ℝ,
+      ((p.derivative.roots.filter (x < ·)).card : ℤ) -
+          (p.roots.filter (x < ·)).card ≤ 1 ∧
+      ((p.roots.filter (x < ·)).card : ℤ) -
+          (p.derivative.roots.filter (x < ·)).card ≤ 1 := by
+  have hprec : Prec p.derivative p := (derivative_interlaces hp hdeg).toPrec
+  have hdeg' : p.natDegree = p.derivative.natDegree + 1 := by
+    rw [p.natDegree_derivative]
+    lia
+  exact succDegreeRootCountAbove_of_prec hprec hdeg'
+
 /-- `Prec`-to-root-count bridge in lower-threshold form. -/
 theorem succDegreeRootCount_of_prec
     {f g : ℝ[X]} (hprec : Prec f g)
@@ -3685,6 +3702,24 @@ theorem succDegreeRootCount_of_prec
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 :=
   succDegreeRootCount_of_rootCountAbove hprec.1.2 hprec.2.1.2 hdeg
     (succDegreeRootCountAbove_of_prec hprec hdeg)
+
+/-- Rolle root-count bound in lower-threshold form.
+
+For a splitting real polynomial of degree at least two, every threshold contains
+at least as many roots of `p` as roots of `p.derivative`, but no more than two
+extra in the succ-degree convention. -/
+theorem rootCount_derivative_diff_le_two_of_splits
+    {p : ℝ[X]} (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) :
+    ∀ x : ℝ,
+      ((p.derivative.roots.filter (· ≤ x)).card : ℤ) -
+          (p.roots.filter (· ≤ x)).card ≤ 0 ∧
+      ((p.roots.filter (· ≤ x)).card : ℤ) -
+          (p.derivative.roots.filter (· ≤ x)).card ≤ 2 := by
+  have hprec : Prec p.derivative p := (derivative_interlaces hp hdeg).toPrec
+  have hdeg' : p.natDegree = p.derivative.natDegree + 1 := by
+    rw [p.natDegree_derivative]
+    lia
+  exact succDegreeRootCount_of_prec hprec hdeg'
 
 /-- Tight oriented lower-threshold `Prec`-to-root-count bridge for the
 differ-by-one case.
