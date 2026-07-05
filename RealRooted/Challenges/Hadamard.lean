@@ -201,6 +201,11 @@ subtarget for the fully in-band corner-zeroed `3 x 3` target. -/
 abbrev hurwitzSchurFullBandCornerZeroedSingleFirstColTarget : Prop :=
   HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstColStatement
 
+/-- Challenge-facing strict-remainder branch of the first-column normal form. -/
+abbrev hurwitzSchurFullBandCornerZeroedSingleFirstColPositiveRemainderTarget :
+    Prop :=
+  HurwitzMatrixSchurProductDetFirstColPositiveRemainderStatement
+
 /-- Challenge-facing corner-zero top-right subcase of the triangular-free
 `3 x 3` target. -/
 abbrev hurwitzSchurCornerZeroTarget : Prop :=
@@ -298,6 +303,14 @@ theorem hurwitzSchurFullBandCornerZeroedSingleColZeroTarget_of_firstCol
     (h : hurwitzSchurFullBandCornerZeroedSingleFirstColTarget) :
     hurwitzSchurFullBandCornerZeroedSingleColZeroTarget :=
   hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZero_of_firstCol
+    h
+
+/-- Challenge-facing reduction from the strict-remainder branch to the
+first-column normal form. -/
+theorem hurwitzSchurFullBandCornerZeroedSingleFirstColTarget_of_positiveRemainder
+    (h : hurwitzSchurFullBandCornerZeroedSingleFirstColPositiveRemainderTarget) :
+    hurwitzSchurFullBandCornerZeroedSingleFirstColTarget :=
+  hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstCol_of_positiveRemainder
     h
 
 /-- Challenge-facing reduction from the column-normalized single-matrix leaf
@@ -514,6 +527,13 @@ theorem hurwitzMatrixHadamardLeThreeTarget_of_cornerZeroedSingleFirstCol
     (h : hurwitzSchurFullBandCornerZeroedSingleFirstColTarget) :
     hurwitzMatrixHadamardLeThreeTarget :=
   hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingleFirstCol h
+
+/-- Challenge-facing reduction from the strict-remainder branch to the
+low-order Hurwitz-matrix Hadamard target through size `3`. -/
+theorem hurwitzMatrixHadamardLeThreeTarget_of_cornerZeroedSingleFirstColPositiveRemainder
+    (h : hurwitzSchurFullBandCornerZeroedSingleFirstColPositiveRemainderTarget) :
+    hurwitzMatrixHadamardLeThreeTarget :=
+  hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingleFirstColPositiveRemainder h
 
 /-- Challenge-facing reduction of Garloff--Wagner's nonnegative
 proper-position target through the Hurwitz-matrix Hadamard leaf. -/

@@ -940,6 +940,16 @@ theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingleFirstCol
     (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZero_of_firstCol
       hFirst)
 
+/-- The strict-remainder first-column branch implies the low-order,
+size-`≤ 3`, Hurwitz-matrix Hadamard leaf. -/
+theorem
+    hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingleFirstColPositiveRemainder
+    (hPos : HurwitzMatrixSchurProductDetFirstColPositiveRemainderStatement) :
+    hadamardPreservesHurwitzMatrixTNDetLeThreeStatement :=
+  hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingleFirstCol
+    (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstCol_of_positiveRemainder
+      hPos)
+
 /-- The pure size-`≤ 3` Hurwitz matrix Schur-product statement implies the
 Hadamard-product Hurwitz-matrix size-`≤ 3` statement. -/
 theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_hurwitzLeThree

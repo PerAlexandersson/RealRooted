@@ -666,6 +666,25 @@ def HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZeroSta
           (hurwitz a (rows 1) (cols 0) * hurwitz a (rows 2) (cols 2) -
             hurwitz a (rows 1) (cols 2) * hurwitz a (rows 2) (cols 0))
 
+/-- First-column form of the corner-zeroed single-matrix determinant. -/
+def hurwitzFullBandCornerZeroedSingleFirstColDet
+    (a : ℕ → ℝ) (row0 row1 row2 col1 col2 : ℕ) : ℝ :=
+  hurwitz a row0 0 *
+      (hurwitz a (row1 - 2 * col1) 0 *
+          hurwitz a (row2 - 2 * col2) 0 -
+        hurwitz a (row1 - 2 * col2) 0 *
+          hurwitz a (row2 - 2 * col1) 0) -
+    hurwitz a (row0 - 2 * col1) 0 *
+      (hurwitz a row1 0 * hurwitz a (row2 - 2 * col2) 0 -
+        hurwitz a (row1 - 2 * col2) 0 * hurwitz a row2 0)
+
+/-- The lower-left `2 × 2` minor appearing in the first-column determinant
+decomposition. -/
+def hurwitzFullBandCornerZeroedSingleFirstColLowerMinor
+    (a : ℕ → ℝ) (row1 row2 col1 : ℕ) : ℝ :=
+  hurwitz a row1 0 * hurwitz a (row2 - 2 * col1) 0 -
+    hurwitz a (row1 - 2 * col1) 0 * hurwitz a row2 0
+
 /-- First-column normal form of the single-matrix full-band corner-zeroed
 determinant subtarget.
 
@@ -682,14 +701,128 @@ def HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstColSt
       0 < col1 →
       col1 < col2 →
       2 * col2 ≤ row0 →
-      0 ≤ hurwitz a row0 0 *
-          (hurwitz a (row1 - 2 * col1) 0 *
-              hurwitz a (row2 - 2 * col2) 0 -
-            hurwitz a (row1 - 2 * col2) 0 *
-              hurwitz a (row2 - 2 * col1) 0) -
-        hurwitz a (row0 - 2 * col1) 0 *
-          (hurwitz a row1 0 * hurwitz a (row2 - 2 * col2) 0 -
-            hurwitz a (row1 - 2 * col2) 0 * hurwitz a row2 0)
+      0 ≤ hurwitzFullBandCornerZeroedSingleFirstColDet a row0 row1 row2 col1 col2
+
+/-- Strict-remainder branch of the first-column target.
+
+The full `3 × 3` determinant supplies the first-column corner-zeroed
+determinant plus a product of the shifted top-right entry and the lower-left
+`2 × 2` minor.  The zero cases of that product are automatic, so the remaining
+work is the branch where both factors are strictly positive. -/
+def HurwitzMatrixSchurProductDetFirstColPositiveRemainderStatement : Prop :=
+  ∀ {a : ℕ → ℝ},
+    (hurwitz a).IsTotallyNonneg →
+    ∀ {row0 row1 row2 col1 col2 : ℕ},
+      row0 < row1 →
+      row1 < row2 →
+      0 < col1 →
+      col1 < col2 →
+      2 * col2 ≤ row0 →
+      0 < hurwitz a (row0 - 2 * col2) 0 →
+      0 < hurwitzFullBandCornerZeroedSingleFirstColLowerMinor a row1 row2 col1 →
+      0 ≤ hurwitzFullBandCornerZeroedSingleFirstColDet a row0 row1 row2 col1 col2
+
+/-- The strict-remainder branch implies the first-column normal form. -/
+theorem
+    hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstCol_of_positiveRemainder
+    (hPos :
+      HurwitzMatrixSchurProductDetFirstColPositiveRemainderStatement) :
+    HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstColStatement := by
+  intro a ha row0 row1 row2 col1 col2 hr01 hr12 hc0 hc12 h02
+  let rows : Fin 3 → ℕ := ![row0, row1, row2]
+  let cols : Fin 3 → ℕ := ![0, col1, col2]
+  have hrows : StrictMono rows := by
+    intro i j hij
+    fin_cases i <;> fin_cases j <;> simp [rows] at hij ⊢ <;> lia
+  have hcols : StrictMono cols := by
+    intro i j hij
+    fin_cases i <;> fin_cases j <;> simp [cols] at hij ⊢ <;> lia
+  have hrow0_le : ∀ i : Fin 3, row0 ≤ rows i := by
+    intro i
+    fin_cases i
+    · rfl
+    · exact le_of_lt hr01
+    · exact (le_of_lt hr01).trans (le_of_lt hr12)
+  have hcol_le : ∀ j : Fin 3, cols j ≤ col2 := by
+    intro j
+    fin_cases j
+    · exact Nat.zero_le col2
+    · exact le_of_lt hc12
+    · rfl
+  have hall : ∀ i j : Fin 3, 2 * cols j ≤ rows i := by
+    intro i j
+    have hi := hrow0_le i
+    have hj := hcol_le j
+    lia
+  have hshift (i j : Fin 3) :
+      hurwitz a (rows i) (cols j) = hurwitz a (rows i - 2 * cols j) 0 := by
+    simpa using
+      hurwitz_col_shift_add a 0 (cols j) (rows i) (by simpa using hall i j)
+  have hcorner_nonneg : 0 ≤ hurwitz a (row0 - 2 * col2) 0 := by
+    have h := ha.nonneg row0 col2
+    change 0 ≤ hurwitz a (rows 0) (cols 2) at h
+    rwa [hshift 0 2] at h
+  have hminor_nonneg :
+      0 ≤ hurwitzFullBandCornerZeroedSingleFirstColLowerMinor a row1 row2 col1 := by
+    have h := ha (strictMono_pair hr12) (strictMono_pair hc0)
+    rw [Matrix.det_fin_two] at h
+    simp only [Matrix.submatrix_apply, Matrix.cons_val_zero, Matrix.cons_val_one] at h
+    have h10 : hurwitz a row1 col1 = hurwitz a (row1 - 2 * col1) 0 := by
+      change hurwitz a (rows 1) (cols 1) = hurwitz a (rows 1 - 2 * cols 1) 0
+      exact hshift 1 1
+    have h21 : hurwitz a row2 col1 = hurwitz a (row2 - 2 * col1) 0 := by
+      change hurwitz a (rows 2) (cols 1) = hurwitz a (rows 2 - 2 * cols 1) 0
+      exact hshift 2 1
+    simpa [hurwitzFullBandCornerZeroedSingleFirstColLowerMinor, h10, h21] using h
+  have hs01 : hurwitz a row0 col1 = hurwitz a (row0 - 2 * col1) 0 := by
+    change hurwitz a (rows 0) (cols 1) = hurwitz a (rows 0 - 2 * cols 1) 0
+    exact hshift 0 1
+  have hs02 : hurwitz a row0 col2 = hurwitz a (row0 - 2 * col2) 0 := by
+    change hurwitz a (rows 0) (cols 2) = hurwitz a (rows 0 - 2 * cols 2) 0
+    exact hshift 0 2
+  have hs11 : hurwitz a row1 col1 = hurwitz a (row1 - 2 * col1) 0 := by
+    change hurwitz a (rows 1) (cols 1) = hurwitz a (rows 1 - 2 * cols 1) 0
+    exact hshift 1 1
+  have hs12 : hurwitz a row1 col2 = hurwitz a (row1 - 2 * col2) 0 := by
+    change hurwitz a (rows 1) (cols 2) = hurwitz a (rows 1 - 2 * cols 2) 0
+    exact hshift 1 2
+  have hs21 : hurwitz a row2 col1 = hurwitz a (row2 - 2 * col1) 0 := by
+    change hurwitz a (rows 2) (cols 1) = hurwitz a (rows 2 - 2 * cols 1) 0
+    exact hshift 2 1
+  have hs22 : hurwitz a row2 col2 = hurwitz a (row2 - 2 * col2) 0 := by
+    change hurwitz a (rows 2) (cols 2) = hurwitz a (rows 2 - 2 * cols 2) 0
+    exact hshift 2 2
+  have hdet_full :
+      0 ≤ hurwitzFullBandCornerZeroedSingleFirstColDet a row0 row1 row2 col1 col2 +
+        hurwitz a (row0 - 2 * col2) 0 *
+          hurwitzFullBandCornerZeroedSingleFirstColLowerMinor a row1 row2 col1 := by
+    have hdet := ha hrows hcols
+    rw [Matrix.det_fin_three] at hdet
+    simp only [Matrix.submatrix_apply] at hdet
+    change
+      0 ≤
+        hurwitz a row0 0 * hurwitz a row1 col1 * hurwitz a row2 col2 -
+          hurwitz a row0 0 * hurwitz a row1 col2 * hurwitz a row2 col1 -
+            hurwitz a row0 col1 * hurwitz a row1 0 * hurwitz a row2 col2 +
+          hurwitz a row0 col1 * hurwitz a row1 col2 * hurwitz a row2 0 +
+            hurwitz a row0 col2 * hurwitz a row1 0 * hurwitz a row2 col1 -
+          hurwitz a row0 col2 * hurwitz a row1 col1 * hurwitz a row2 0 at hdet
+    rw [hs01, hs02, hs11, hs12, hs21, hs22] at hdet
+    dsimp [hurwitzFullBandCornerZeroedSingleFirstColDet,
+      hurwitzFullBandCornerZeroedSingleFirstColLowerMinor]
+    nlinarith [hdet]
+  by_cases hcorner :
+      hurwitz a (row0 - 2 * col2) 0 = 0
+  · dsimp [hurwitzFullBandCornerZeroedSingleFirstColDet] at hdet_full ⊢
+    nlinarith
+  · by_cases hminor :
+        hurwitzFullBandCornerZeroedSingleFirstColLowerMinor a row1 row2 col1 = 0
+    · dsimp [hurwitzFullBandCornerZeroedSingleFirstColDet,
+        hurwitzFullBandCornerZeroedSingleFirstColLowerMinor] at hdet_full hminor ⊢
+      nlinarith
+    · exact hPos ha hr01 hr12 hc0 hc12 h02
+        (lt_of_le_of_ne hcorner_nonneg (Ne.symm hcorner))
+        (lt_of_le_of_ne hminor_nonneg (Ne.symm hminor))
 
 /-- The first-column normal form implies the column-normalized single-matrix
 corner-zeroed determinant target. -/
@@ -732,7 +865,7 @@ theorem
   have hfirst := hFirst ha hr01 hr12 hc01pos hc12 h02
   rw [hentry 0 0, hentry 1 1, hentry 2 2, hentry 1 2, hentry 2 1,
     hentry 0 1, hentry 1 0, hentry 2 0]
-  simpa [hcol0] using hfirst
+  simpa [hurwitzFullBandCornerZeroedSingleFirstColDet, hcol0] using hfirst
 
 /-- The column-normalized single-matrix corner-zeroed target implies the
 general single-matrix corner-zeroed target. -/
