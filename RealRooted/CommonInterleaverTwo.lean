@@ -5467,6 +5467,49 @@ theorem posComboPairHasCommonInterleaver_of_natDegree_le_reduction
         prec_mul_common_factor (isRealRooted_X_sub_C r).1
           (isRealRooted_X_sub_C r).2 hqg_prec
 
+/-- Unordered degree-bounded common-root reduction for the nonnegative
+common-interleaver bridge.  If a no-common terminal endpoint handles every
+ordered close-degree pair whose right degree is at most `N`, then the same
+conclusion holds for every nonnegative positive-combination pair whose two
+degrees are both at most `N`. -/
+theorem posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered
+    {N : ℕ}
+    (hterminal :
+      ∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        g.natDegree ≤ N →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hfdeg : f.natDegree ≤ N)
+    (hgdeg : g.natDegree ≤ N) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+  obtain ⟨hclose_left, hclose_right⟩ :=
+    natDegree_close_of_posComboRealRooted_of_nonnegCoeffs
+      hfg hf_pos.ne_zero hg_pos.ne_zero hfnn hgnn
+  by_cases hdeg : f.natDegree ≤ g.natDegree
+  · exact
+      posComboPairHasCommonInterleaver_of_natDegree_le_reduction
+        (N := N) hterminal hf_pos hg_pos hfnn hgnn hfg hdeg hclose_right hgdeg
+  · have hdeg' : g.natDegree ≤ f.natDegree := le_of_not_ge hdeg
+    rcases
+        posComboPairHasCommonInterleaver_of_natDegree_le_reduction
+          (N := N) hterminal hg_pos hf_pos hgnn hfnn
+          (PosComboRealRooted.comm hfg) hdeg' hclose_left hfdeg with
+      ⟨h, hg_prec, hf_prec⟩
+    exact ⟨h, hf_prec, hg_prec⟩
+
 /-- Ordered nonnegative-coefficient degree-`≤ 2` pair endpoint.  Shared roots
 are factored out recursively, and the terminal no-common-root case is the
 checked low-degree root-crossing endpoint. -/
@@ -5499,21 +5542,13 @@ theorem posComboPairHasCommonInterleaver_nonneg_of_natDegree_le_two
     (hfg : PosComboRealRooted f g)
     (hfdeg : f.natDegree ≤ 2)
     (hgdeg : g.natDegree ≤ 2) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  obtain ⟨hclose_left, hclose_right⟩ :=
-    natDegree_close_of_posComboRealRooted_of_nonnegCoeffs
-      hfg hf_pos.ne_zero hg_pos.ne_zero hfnn hgnn
-  by_cases hdeg : f.natDegree ≤ g.natDegree
-  · exact
-      posComboPairHasCommonInterleaver_nonneg_of_natDegree_le_two_ordered
-        hf_pos hg_pos hfnn hgnn hfg hdeg hclose_right hgdeg
-  · have hdeg' : g.natDegree ≤ f.natDegree := le_of_not_ge hdeg
-    rcases
-        posComboPairHasCommonInterleaver_nonneg_of_natDegree_le_two_ordered
-          hg_pos hf_pos hgnn hfnn (PosComboRealRooted.comm hfg) hdeg' hclose_left
-          hfdeg with
-      ⟨h, hg_prec, hf_prec⟩
-    exact ⟨h, hf_prec, hg_prec⟩
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered
+    (N := 2)
+    (fun {_f _g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg =>
+      posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_two
+        hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg)
+    hf_pos hg_pos hfnn hgnn hfg hfdeg hgdeg
 
 private theorem posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs_ordered
     (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
