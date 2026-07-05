@@ -10,6 +10,7 @@ import RealRooted.RecurrenceDiscriminant
 import RealRooted.RootCountJump
 import RealRooted.RootOrderBridge
 import RealRooted.SameDegreeQuadraticObstruction
+import RealRooted.SameDegreeQuadraticRootCount
 import RealRooted.TridiagonalDet
 import RealRooted.Wagner
 import RealRooted.ShiftLemma

@@ -4,6 +4,7 @@ import RealRooted.CommonInterleaverSeq
 import RealRooted.SuccDegreeRootCrossing
 import RealRooted.Bezoutian
 import RealRooted.SameDegreeQuadraticObstruction
+import RealRooted.SameDegreeQuadraticRootCount
 
 /-!
 # Chudnovsky--Seymour challenge entry point
@@ -456,6 +457,28 @@ theorem sameDegreeRootCountAbovePair_of_natDegree_le_one
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 :=
   rootCountAbove_diff_le_one_of_natDegree_le_one hf hg hdeg hf_deg_le_one x
+
+/-- Challenge-facing degree-two base case for the same-degree root-count
+formulation in the positive-combination setting. -/
+theorem sameDegreeRootCountPair_of_posCombo_natDegree_eq_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hf_deg2 : f.natDegree = 2)
+    (x : ℝ) :
+    ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 := by
+  have hg_deg2 : g.natDegree = 2 := by
+    rw [hdeg, hf_deg2]
+  exact RealRooted.sameDegree_quadratic_rootCount_le_one
+    hf_deg2 hg_deg2
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+    hf_pos hg_pos
+    (fun {lam μ} hlam hμ => (hfg hlam hμ).2)
+    x
 
 /-- Challenge-facing low-degree base case for the repaired same-degree
 pair-interleaver endpoint. -/
