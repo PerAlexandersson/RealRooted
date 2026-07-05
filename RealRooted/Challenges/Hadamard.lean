@@ -212,6 +212,33 @@ nonnegative-coefficient proper-position form used by RealRooted. -/
 abbrev garloffWagnerNonnegPrecTarget : Prop :=
   garloffWagnerHadamardNonnegPrecStatement
 
+/-- Challenge-facing PF-polynomial strict proper-position Garloff--Wagner
+target. -/
+abbrev garloffWagnerPFPrecTarget : Prop :=
+  garloffWagnerHadamardPFPrecStatement
+
+/-- Challenge-facing zero-aware PF-polynomial proper-position
+Garloff--Wagner target. -/
+abbrev garloffWagnerPFPrec0Target : Prop :=
+  garloffWagnerHadamardPFPrec0Statement
+
+/-- Challenge-facing one-polynomial nonnegative real-rooted Hadamard target. -/
+abbrev garloffWagnerNonnegRealRootedTarget : Prop :=
+  garloffWagnerHadamardNonnegRealRootedStatement
+
+/-- Challenge-facing PF-polynomial Schur--Pólya--Wagner Hadamard target. -/
+abbrev schurPolyaWagnerHadamardPFTarget : Prop :=
+  schurPolyaWagnerHadamardPFStatement
+
+/-- Challenge-facing Hadamard closure target for the reciprocal-interlacing
+cone. -/
+abbrev hadamardReciprocalConeClosureTarget : Prop :=
+  hadamardReciprocalConeClosureStatement
+
+/-- Challenge-facing Pólya-frequency coefficientwise Hadamard closure target. -/
+abbrev polyaFrequencyHadamardCoeffTarget : Prop :=
+  polyaFrequencyHadamardCoeffStatement
+
 /-- Challenge-facing target for Garloff--Wagner, Theorem 1, in the
 Hurwitz-stability form. -/
 abbrev hurwitzStableHadamardTarget : Prop :=
@@ -773,6 +800,199 @@ theorem garloffWagnerNonnegPrecTarget_of_classicalInputsBundle
     (h : GarloffWagnerClassicalInputs) :
     garloffWagnerNonnegPrecTarget :=
   garloffWagnerHadamardNonnegPrec_of_classicalInputsBundle h
+
+/-- Challenge-facing reduction from the nonnegative two-pair statement to the
+strict PF-polynomial proper-position target. -/
+theorem garloffWagnerPFPrecTarget_of_nonnegPrec
+    (h : garloffWagnerNonnegPrecTarget) :
+    garloffWagnerPFPrecTarget :=
+  garloffWagnerHadamardPFPrec_of_nonnegPrec h
+
+/-- Challenge-facing reduction from strict PF proper position to the zero-aware
+PF proper-position target. -/
+theorem garloffWagnerPFPrec0Target_of_prec
+    (h : garloffWagnerPFPrecTarget) :
+    garloffWagnerPFPrec0Target :=
+  garloffWagnerHadamardPFPrec0_of_prec h
+
+/-- Challenge-facing reduction from the nonnegative two-pair statement to the
+zero-aware PF proper-position target. -/
+theorem garloffWagnerPFPrec0Target_of_nonnegPrec
+    (h : garloffWagnerNonnegPrecTarget) :
+    garloffWagnerPFPrec0Target :=
+  garloffWagnerHadamardPFPrec0_of_nonnegPrec h
+
+/-- Challenge-facing reduction of the zero-aware PF target through the
+Hurwitz-matrix Hadamard leaf. -/
+theorem garloffWagnerPFPrec0Target_of_matrixHadamardBridges
+    (hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (hMatHad : hurwitzMatrixHadamardTarget)
+    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
+    garloffWagnerPFPrec0Target :=
+  garloffWagnerHadamardPFPrec0_of_matrixHadamardBridges
+    hToFull hMatHad hFullToPrec0
+
+/-- Challenge-facing reduction of the zero-aware PF target through the pure
+Hurwitz Schur-product target. -/
+theorem garloffWagnerPFPrec0Target_of_hurwitzSchur
+    (hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (hSchur : hurwitzSchurTarget)
+    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
+    garloffWagnerPFPrec0Target :=
+  garloffWagnerHadamardPFPrec0_of_hurwitzSchur
+    hToFull hSchur hFullToPrec0
+
+/-- Challenge-facing reduction of the zero-aware PF target through the bundled
+classical inputs. -/
+theorem garloffWagnerPFPrec0Target_of_classicalInputsBundle
+    (h : GarloffWagnerClassicalInputs) :
+    garloffWagnerPFPrec0Target :=
+  garloffWagnerPFPrec0Target_of_nonnegPrec
+    (garloffWagnerNonnegPrecTarget_of_classicalInputsBundle h)
+
+/-- Challenge-facing reduction from the nonnegative two-pair target to the
+one-polynomial real-rooted Hadamard target. -/
+theorem garloffWagnerNonnegRealRootedTarget_of_nonnegPrec
+    (h : garloffWagnerNonnegPrecTarget) :
+    garloffWagnerNonnegRealRootedTarget :=
+  garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec h
+
+/-- Challenge-facing PF Schur--Pólya--Wagner target from the zero-aware PF
+Garloff--Wagner wrapper. -/
+theorem schurPolyaWagnerHadamardPFTarget_of_prec0
+    (h : garloffWagnerPFPrec0Target) :
+    schurPolyaWagnerHadamardPFTarget :=
+  schurPolyaWagnerHadamardPF_of_garloffWagner_prec0 h
+
+/-- Challenge-facing PF Schur--Pólya--Wagner target from the nonnegative
+two-pair Garloff--Wagner target. -/
+theorem schurPolyaWagnerHadamardPFTarget_of_nonnegPrec
+    (h : garloffWagnerNonnegPrecTarget) :
+    schurPolyaWagnerHadamardPFTarget :=
+  schurPolyaWagnerHadamardPF_of_garloffWagner_nonnegPrec h
+
+/-- Challenge-facing PF Schur--Pólya--Wagner target through the Hurwitz-matrix
+Hadamard leaf. -/
+theorem schurPolyaWagnerHadamardPFTarget_of_matrixHadamardBridges
+    (hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (hMatHad : hurwitzMatrixHadamardTarget)
+    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
+    schurPolyaWagnerHadamardPFTarget :=
+  schurPolyaWagnerHadamardPF_of_matrixHadamardBridges
+    hToFull hMatHad hFullToPrec0
+
+/-- Challenge-facing PF Schur--Pólya--Wagner target through the pure Hurwitz
+Schur-product target. -/
+theorem schurPolyaWagnerHadamardPFTarget_of_hurwitzSchur
+    (hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (hSchur : hurwitzSchurTarget)
+    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
+    schurPolyaWagnerHadamardPFTarget :=
+  schurPolyaWagnerHadamardPF_of_hurwitzSchur hToFull hSchur hFullToPrec0
+
+/-- Challenge-facing PF Schur--Pólya--Wagner target through the bundled
+classical inputs. -/
+theorem schurPolyaWagnerHadamardPFTarget_of_classicalInputsBundle
+    (h : GarloffWagnerClassicalInputs) :
+    schurPolyaWagnerHadamardPFTarget :=
+  schurPolyaWagnerHadamardPFTarget_of_nonnegPrec
+    (garloffWagnerNonnegPrecTarget_of_classicalInputsBundle h)
+
+/-- Challenge-facing reciprocal-cone Hadamard closure from the zero-aware PF
+Garloff--Wagner wrapper. -/
+theorem hadamardReciprocalConeClosureTarget_of_prec0
+    (h : garloffWagnerPFPrec0Target) :
+    hadamardReciprocalConeClosureTarget :=
+  hadamardReciprocalConeClosure_of_garloffWagner_prec0 h
+
+/-- Challenge-facing reciprocal-cone Hadamard closure from the nonnegative
+two-pair Garloff--Wagner target. -/
+theorem hadamardReciprocalConeClosureTarget_of_nonnegPrec
+    (h : garloffWagnerNonnegPrecTarget) :
+    hadamardReciprocalConeClosureTarget :=
+  hadamardReciprocalConeClosure_of_garloffWagner h
+
+/-- Challenge-facing reciprocal-cone Hadamard closure through the
+Hurwitz-matrix Hadamard leaf. -/
+theorem hadamardReciprocalConeClosureTarget_of_matrixHadamardBridges
+    (hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (hMatHad : hurwitzMatrixHadamardTarget)
+    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
+    hadamardReciprocalConeClosureTarget :=
+  hadamardReciprocalConeClosure_of_matrixHadamardBridges
+    hToFull hMatHad hFullToPrec0
+
+/-- Challenge-facing reciprocal-cone Hadamard closure through the pure Hurwitz
+Schur-product target. -/
+theorem hadamardReciprocalConeClosureTarget_of_hurwitzSchur
+    (hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (hSchur : hurwitzSchurTarget)
+    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
+    hadamardReciprocalConeClosureTarget :=
+  hadamardReciprocalConeClosure_of_hurwitzSchur hToFull hSchur hFullToPrec0
+
+/-- Challenge-facing reciprocal-cone Hadamard closure through the bundled
+classical inputs. -/
+theorem hadamardReciprocalConeClosureTarget_of_classicalInputsBundle
+    (h : GarloffWagnerClassicalInputs) :
+    hadamardReciprocalConeClosureTarget :=
+  hadamardReciprocalConeClosureTarget_of_nonnegPrec
+    (garloffWagnerNonnegPrecTarget_of_classicalInputsBundle h)
+
+/-- Challenge-facing coefficientwise Pólya-frequency closure from the
+Schur--Pólya--Wagner PF target. -/
+theorem polyaFrequencyHadamardCoeffTarget_of_schurPolyaWagner
+    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
+    (hSPW : schurPolyaWagnerHadamardPFTarget) :
+    polyaFrequencyHadamardCoeffTarget :=
+  polyaFrequencyHadamardCoeff_of_schurPolyaWagner hASW hSPW
+
+/-- Challenge-facing coefficientwise Pólya-frequency closure from the
+one-polynomial nonnegative real-rooted Hadamard target. -/
+theorem polyaFrequencyHadamardCoeffTarget_of_garloffWagner_nonneg
+    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
+    (hGW : garloffWagnerNonnegRealRootedTarget) :
+    polyaFrequencyHadamardCoeffTarget :=
+  polyaFrequencyHadamardCoeff_of_garloffWagner_nonneg hASW hGW
+
+/-- Challenge-facing coefficientwise Pólya-frequency closure from the
+nonnegative two-pair Garloff--Wagner target. -/
+theorem polyaFrequencyHadamardCoeffTarget_of_garloffWagner_nonnegPrec
+    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
+    (hGW : garloffWagnerNonnegPrecTarget) :
+    polyaFrequencyHadamardCoeffTarget :=
+  polyaFrequencyHadamardCoeff_of_garloffWagner_nonnegPrec hASW hGW
+
+/-- Challenge-facing coefficientwise Pólya-frequency closure through the
+Hurwitz-matrix Hadamard leaf. -/
+theorem polyaFrequencyHadamardCoeffTarget_of_matrixHadamardBridges
+    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
+    (hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (hMatHad : hurwitzMatrixHadamardTarget)
+    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
+    polyaFrequencyHadamardCoeffTarget :=
+  polyaFrequencyHadamardCoeff_of_matrixHadamardBridges
+    hASW hToFull hMatHad hFullToPrec0
+
+/-- Challenge-facing coefficientwise Pólya-frequency closure through the pure
+Hurwitz Schur-product target. -/
+theorem polyaFrequencyHadamardCoeffTarget_of_hurwitzSchur
+    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
+    (hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (hSchur : hurwitzSchurTarget)
+    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
+    polyaFrequencyHadamardCoeffTarget :=
+  polyaFrequencyHadamardCoeff_of_hurwitzSchur
+    hASW hToFull hSchur hFullToPrec0
+
+/-- Challenge-facing coefficientwise Pólya-frequency closure through the
+bundled classical inputs. -/
+theorem polyaFrequencyHadamardCoeffTarget_of_classicalInputsBundle
+    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
+    (h : GarloffWagnerClassicalInputs) :
+    polyaFrequencyHadamardCoeffTarget :=
+  polyaFrequencyHadamardCoeffTarget_of_garloffWagner_nonnegPrec hASW
+    (garloffWagnerNonnegPrecTarget_of_classicalInputsBundle h)
 
 end Hadamard
 end Challenges
