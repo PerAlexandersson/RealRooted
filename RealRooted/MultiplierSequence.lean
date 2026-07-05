@@ -470,48 +470,38 @@ theorem IsPFPolynomial.jensenPolynomial_three_logConcave {gamma : ℕ → ℝ}
   ⟨hj.jensenPolynomial_three_logConcave_left,
     hj.jensenPolynomial_three_logConcave_right⟩
 
+/-- Adjacent log-concavity inequalities for a Jensen cubic that is zero or
+splits.  This degree-`≤ 3` form packages the degenerate cases with the exact
+cubic Newton inequalities. -/
+theorem jensenPolynomial_three_logConcave_of_eq_zero_or_splits
+    {gamma : ℕ → ℝ}
+    (hs : jensenPolynomial 3 gamma = 0 ∨ (jensenPolynomial 3 gamma).Splits) :
+    gamma 0 * gamma 2 ≤ gamma 1 ^ 2 ∧
+      gamma 1 * gamma 3 ≤ gamma 2 ^ 2 :=
+  jensen_three_logConcave_of_natDegree_le_three
+    (natDegree_jensenPolynomial_le 3 gamma) hs
+    (by norm_num [coeff_jensenPolynomial])
+    (by norm_num [coeff_jensenPolynomial])
+    (by norm_num [coeff_jensenPolynomial])
+    (by norm_num [coeff_jensenPolynomial])
+
 /-- Adjacent log-concavity inequalities for a splitting Jensen cubic of exact
 degree three.  This is the coefficient form of the two cubic Newton
 inequalities after the binomial factors in `jensenPolynomial 3 gamma` cancel. -/
 theorem jensenPolynomial_three_logConcave_of_splits_natDegree_three
     {gamma : ℕ → ℝ}
-    (hdeg : (jensenPolynomial 3 gamma).natDegree = 3)
+    (_hdeg : (jensenPolynomial 3 gamma).natDegree = 3)
     (hs : (jensenPolynomial 3 gamma).Splits) :
     gamma 0 * gamma 2 ≤ gamma 1 ^ 2 ∧
-      gamma 1 * gamma 3 ≤ gamma 2 ^ 2 := by
-  constructor
-  · have h :=
-      three_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits_natDegree_three
-        hdeg hs
-    norm_num [coeff_jensenPolynomial] at h
-    nlinarith
-  · have h :=
-      three_mul_coeff_one_mul_coeff_three_le_coeff_two_sq_of_splits_natDegree_three
-        hdeg hs
-    norm_num [coeff_jensenPolynomial] at h
-    nlinarith
+      gamma 1 * gamma 3 ≤ gamma 2 ^ 2 :=
+  jensenPolynomial_three_logConcave_of_eq_zero_or_splits (Or.inr hs)
 
 /-- A splitting real quadratic has nonnegative discriminant, expressed in
 coefficient form. -/
 theorem four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits_natDegree_two
     {p : ℝ[X]} (hdeg : p.natDegree = 2) (hs : p.Splits) :
-    4 * (p.coeff 0 * p.coeff 2) ≤ p.coeff 1 ^ 2 := by
-  have hp0 : p ≠ 0 := by
-    rintro rfl
-    simp at hdeg
-  obtain ⟨x, hxmem⟩ : ∃ x, x ∈ p.roots := by
-    apply Multiset.card_pos_iff_exists_mem.mp
-    rw [card_roots_of_splits hs, hdeg]
-    norm_num
-  have hxroot : p.IsRoot x := (Polynomial.mem_roots hp0).mp hxmem
-  have hxquad : p.coeff 2 * (x * x) + p.coeff 1 * x + p.coeff 0 = 0 := by
-    rw [Polynomial.IsRoot.def] at hxroot
-    rw [Polynomial.eval_eq_sum_range, hdeg] at hxroot
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero] at hxroot
-    linear_combination hxroot
-  have hdisc_sq := discrim_eq_sq_of_quadratic_eq_zero hxquad
-  unfold discrim at hdisc_sq
-  nlinarith [sq_nonneg (2 * p.coeff 2 * x + p.coeff 1)]
+    4 * (p.coeff 0 * p.coeff 2) ≤ p.coeff 1 ^ 2 :=
+  quadratic_disc_coeff_le_of_splits_natDegree_two hdeg hs
 
 private theorem diagonalOperator_discrim_nonneg_of_natDegree_two
     {gamma : ℕ → ℝ} {p : ℝ[X]}

@@ -148,6 +148,15 @@ theorem jensenPolynomialThree_logConcave_of_splits_natDegree_three
       gamma 1 * gamma 3 ≤ gamma 2 ^ 2 :=
   jensenPolynomial_three_logConcave_of_splits_natDegree_three hdeg hs
 
+/-- Challenge-facing cubic log-concavity for a Jensen polynomial that is zero
+or splits. -/
+theorem jensenPolynomialThree_logConcave_of_eq_zero_or_splits
+    {gamma : ℕ → ℝ}
+    (hs : jensenPolynomial 3 gamma = 0 ∨ (jensenPolynomial 3 gamma).Splits) :
+    gamma 0 * gamma 2 ≤ gamma 1 ^ 2 ∧
+      gamma 1 * gamma 3 ≤ gamma 2 ^ 2 :=
+  jensenPolynomial_three_logConcave_of_eq_zero_or_splits hs
+
 /-- Challenge-facing cubic log-concavity inequalities from the PF Jensen
 polynomial hypothesis. -/
 theorem jensenPolynomialThree_logConcave_of_isPF
