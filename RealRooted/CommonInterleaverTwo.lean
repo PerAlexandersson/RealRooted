@@ -2309,6 +2309,67 @@ theorem sameDegreeRootCrossing_of_posCombo_natDegree_le_three_of_cubicInterior
       rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_three_of_cubicInterior
         hbelow habove hf_pos hg_pos hfnn hgnn hfg hdeg hno hfdeg x)
 
+/-- Degree-`≤ 3` same-degree slot-data route, assuming the two cubic interior
+partial-separation leaves. -/
+theorem sameDegreeSlotData_of_posCombo_natDegree_le_three_of_cubicInterior
+    (hbelow : CubicInteriorTwoBelowStatement)
+    (habove : CubicInteriorTwoAboveStatement)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hfdeg : f.natDegree ≤ 3) :
+    ∀ j, j < f.natDegree + 1 →
+      ∀ (hjf : j < (rootSeqDesc f).length + 1)
+        (hjg : j < (rootSeqDesc g).length + 1),
+        (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+          rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty := by
+  have hf_split : f.Splits :=
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+  have hg_split : g.Splits :=
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+  obtain ⟨hc1, hc2⟩ :=
+    sameDegreeRootCrossing_of_posCombo_natDegree_le_three_of_cubicInterior
+      hbelow habove hf_pos hg_pos hfnn hgnn hfg hdeg hno hfdeg
+  have hlenf : (rootSeqDesc f).length = f.natDegree :=
+    rootSeqDesc_length hf_split
+  have hleng : (rootSeqDesc g).length = g.natDegree :=
+    rootSeqDesc_length hg_split
+  intro j _ hjf hjg
+  exact
+    rootSlotInterval_inter_nonempty_of_sameDegree_crossing
+      (rootSeqDesc f) (rootSeqDesc g) rootSeqDesc_pairwise rootSeqDesc_pairwise
+      (by rw [hleng, hlenf, hdeg])
+      (fun k hk1 hk2 => hc1 k hk1 (by rw [hlenf] at hk2; exact hk2))
+      (fun k hk1 hk2 => hc2 k hk1 (by rw [hlenf] at hk2; exact hk2))
+      j hjf hjg
+
+/-- Degree-`≤ 3` same-degree common-interleaver endpoint, assuming the two
+cubic interior partial-separation leaves. -/
+theorem sameDegreePairHasCommonInterleaver_nonneg_of_natDegree_le_three_of_cubicInterior
+    (hbelow : CubicInteriorTwoBelowStatement)
+    (habove : CubicInteriorTwoAboveStatement)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hfdeg : f.natDegree ≤ 3) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+  have hf_rr : f ≠ 0 ∧ f.Splits :=
+    hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg
+  have hg_rr : g ≠ 0 ∧ g.Splits :=
+    hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg
+  exact
+    pairHasCommonInterleaver_of_sameDegree_slotIntersections
+      hf_rr.1 hg_rr.1 hf_rr.2 hg_rr.2 hdeg <|
+        fun j hj =>
+          sameDegreeSlotData_of_posCombo_natDegree_le_three_of_cubicInterior
+            hbelow habove hf_pos hg_pos hfnn hgnn hfg hdeg hno hfdeg j hj _ _
+
 /-- The same-degree orientation alternative gives the descending-root crossing
 inequalities consumed by the #41 slot-data reduction. -/
 theorem posComboNoCommonSameDegreeRootCrossing_of_orientationAlternative
