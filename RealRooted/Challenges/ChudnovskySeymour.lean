@@ -801,6 +801,13 @@ theorem succDegreeRootCountLeadRightZeroPrecTarget_of_divXPrec
     succDegreeRootCountLeadRightZeroPrecTarget :=
   posComboNoCommonSuccDegreeRootCountLeadRightZeroPrecFG_of_divX hdivX
 
+/-- Challenge-facing equivalence between the sharper right-zero orientation
+target and the `divX` orientation target. -/
+theorem succDegreeRootCountLeadRightZeroPrecTarget_iff_divXPrecTarget :
+    succDegreeRootCountLeadRightZeroPrecTarget ↔
+      succDegreeRootCountLeadRightZeroDivXPrecTarget :=
+  posComboNoCommonSuccDegreeRootCountLeadRightZeroPrecFG_iff_divXPrec
+
 /-- Challenge-facing reduction from the sharper right-zero orientation target
 to the right-zero lead root-count branch. -/
 theorem succDegreeRootCountLeadRightZeroTarget_of_prec

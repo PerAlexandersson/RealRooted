@@ -3703,6 +3703,25 @@ theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroPrecFG_of_divX
   exact prec_of_prec_divX_left_of_hasNonnegCoeffs_coeff_zero
     (hdivX hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0) hfnn hgnn hg0 hdeg
 
+/-- On the right-zero lead branch, the sharper succ-degree orientation
+`Prec f g` is equivalent to the `divX` orientation target `Prec (g.divX) f`. -/
+theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroPrecFG_iff_divXPrec :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 = 0 →
+        Prec f g) ↔
+      PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement := by
+  exact ⟨posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrec_of_precFG,
+    posComboNoCommonSuccDegreeRootCountLeadRightZeroPrecFG_of_divX⟩
+
 /-- The lead root-count branch splits into the two possible constant-term
 cases for the higher-degree member. -/
 theorem posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_rightZero
