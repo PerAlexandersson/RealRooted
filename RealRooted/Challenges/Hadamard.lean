@@ -138,6 +138,16 @@ theorem finitePFMultiplierSequencePair_iff_jensenPolynomial_of_natDegree_le_two
       IsPFPolynomial (jensenPolynomial n gamma) :=
   isFinitePFMultiplierSequence_iff_jensenPolynomial_natDegree_le_two hn hgamma
 
+/-- Challenge-facing cubic Newton inequalities for an exact-degree splitting
+Jensen polynomial. -/
+theorem jensenPolynomialThree_logConcave_of_splits_natDegree_three
+    {gamma : ℕ → ℝ}
+    (hdeg : (jensenPolynomial 3 gamma).natDegree = 3)
+    (hs : (jensenPolynomial 3 gamma).Splits) :
+    gamma 0 * gamma 2 ≤ gamma 1 ^ 2 ∧
+      gamma 1 * gamma 3 ≤ gamma 2 ^ 2 :=
+  jensenPolynomial_three_logConcave_of_splits_natDegree_three hdeg hs
+
 /-! ## Garloff--Wagner and Hurwitz-matrix targets -/
 
 /-- Challenge-facing target for Garloff--Wagner, Theorem 4(b), in the

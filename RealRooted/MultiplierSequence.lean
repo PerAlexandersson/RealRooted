@@ -1,4 +1,5 @@
 import RealRooted.CoefficientShape
+import RealRooted.CubicNewton
 import RealRooted.PFPolynomial
 
 open Polynomial
@@ -468,6 +469,27 @@ theorem IsPFPolynomial.jensenPolynomial_three_logConcave {gamma : ℕ → ℝ}
       gamma 1 * gamma 3 ≤ gamma 2 ^ 2 :=
   ⟨hj.jensenPolynomial_three_logConcave_left,
     hj.jensenPolynomial_three_logConcave_right⟩
+
+/-- Adjacent log-concavity inequalities for a splitting Jensen cubic of exact
+degree three.  This is the coefficient form of the two cubic Newton
+inequalities after the binomial factors in `jensenPolynomial 3 gamma` cancel. -/
+theorem jensenPolynomial_three_logConcave_of_splits_natDegree_three
+    {gamma : ℕ → ℝ}
+    (hdeg : (jensenPolynomial 3 gamma).natDegree = 3)
+    (hs : (jensenPolynomial 3 gamma).Splits) :
+    gamma 0 * gamma 2 ≤ gamma 1 ^ 2 ∧
+      gamma 1 * gamma 3 ≤ gamma 2 ^ 2 := by
+  constructor
+  · have h :=
+      three_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits_natDegree_three
+        hdeg hs
+    norm_num [coeff_jensenPolynomial] at h
+    nlinarith
+  · have h :=
+      three_mul_coeff_one_mul_coeff_three_le_coeff_two_sq_of_splits_natDegree_three
+        hdeg hs
+    norm_num [coeff_jensenPolynomial] at h
+    nlinarith
 
 /-- A splitting real quadratic has nonnegative discriminant, expressed in
 coefficient form. -/
