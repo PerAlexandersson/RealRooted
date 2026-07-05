@@ -1603,6 +1603,34 @@ theorem pairHasCommonInterleaver_nonneg_of_posCombo_natDegree_le_two
         hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg)
     hf_pos hg_pos hfnn hgnn hfg hf_deg_le_two hg_deg_le_two
 
+/-- Challenge-facing unordered degree-bounded common-root reduction in the
+positive-combination/splitting setting.  It first translates to the
+nonnegative-coefficient setting and then applies the nonnegative unordered
+degree-bounded reduction. -/
+theorem pairHasCommonInterleaver_of_posCombo_natDegree_le_reduction
+    {N : ℕ}
+    (hterminal :
+      ∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        g.natDegree ≤ N →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hf_splits : f.Splits) (hg_splits : g.Splits)
+    (hfg : PosComboRealRooted f g)
+    (hf_deg_le : f.natDegree ≤ N)
+    (hg_deg_le : g.natDegree ≤ N) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered_via_nonnegShift
+    hterminal hf_pos hg_pos hf_splits hg_splits hfg hf_deg_le hg_deg_le
+
 /-- Challenge-facing degree-`≤ 2` positive-combination endpoint. -/
 theorem pairHasCommonInterleaver_of_posCombo_natDegree_le_two
     {f g : ℝ[X]}
@@ -1612,7 +1640,11 @@ theorem pairHasCommonInterleaver_of_posCombo_natDegree_le_two
     (hf_deg_le_two : f.natDegree ≤ 2)
     (hg_deg_le_two : g.natDegree ≤ 2) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
-  posComboPairHasCommonInterleaver_of_natDegree_le_two
+  pairHasCommonInterleaver_of_posCombo_natDegree_le_reduction
+    (N := 2)
+    (fun {_f _g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg =>
+      posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_two
+        hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg)
     hf_pos hg_pos hf_splits hg_splits hfg hf_deg_le_two hg_deg_le_two
 
 /-- Challenge-facing compatibility-level degree-`≤ 2` pair endpoint. -/

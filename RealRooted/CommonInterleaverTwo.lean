@@ -6370,19 +6370,33 @@ private theorem posComboPairHasCommonInterleaver_via_nonnegShift
     exact (prec_comp_X_add_C_iff (f := g) (g := h) r).1 htranslated
   grind
 
-/-- Positive-combination degree-`≤ 2` pair endpoint.  Translate both
-polynomials far enough to make the shifted roots nonpositive, apply the
-nonnegative-coefficient degree-`≤ 2` endpoint, and translate the common right
-interleaver back. -/
-theorem posComboPairHasCommonInterleaver_of_natDegree_le_two
+/-- Degree-bounded common-interleaver endpoint for positive-leading split
+positive-combination pairs.  Translating both polynomials far enough makes the
+shifted coefficients nonnegative without changing their degrees, so the
+nonnegative unordered degree-bounded reduction applies to the shifted pair; the
+resulting common right interleaver is translated back. -/
+theorem posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered_via_nonnegShift
+    {N : ℕ}
+    (hterminal :
+      ∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        g.natDegree ≤ N →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
     (hf_splits : f.Splits)
     (hg_splits : g.Splits)
     (hfg : PosComboRealRooted f g)
-    (hfdeg : f.natDegree ≤ 2)
-    (hgdeg : g.natDegree ≤ 2) :
+    (hfdeg : f.natDegree ≤ N)
+    (hgdeg : g.natDegree ≤ N) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
   obtain ⟨rf, hrf⟩ := exists_root_upper_bound f
   obtain ⟨rg, hrg⟩ := exists_root_upper_bound g
@@ -6402,17 +6416,17 @@ theorem posComboPairHasCommonInterleaver_of_natDegree_le_two
   have hfg' : PosComboRealRooted f' g' := by
     intro α β hα hβ
     simpa [f', g'] using hfg.comp_X_add_C r hα hβ
-  have hfdeg' : f'.natDegree ≤ 2 := by
+  have hfdeg' : f'.natDegree ≤ N := by
     have hdeg_eq : f'.natDegree = f.natDegree := by
       simp [f', Polynomial.natDegree_comp]
     lia
-  have hgdeg' : g'.natDegree ≤ 2 := by
+  have hgdeg' : g'.natDegree ≤ N := by
     have hdeg_eq : g'.natDegree = g.natDegree := by
       simp [g', Polynomial.natDegree_comp]
     lia
   rcases
-      posComboPairHasCommonInterleaver_nonneg_of_natDegree_le_two
-        hf'_pos hg'_pos hfnn hgnn hfg' hfdeg' hgdeg' with
+      posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered
+        (N := N) hterminal hf'_pos hg'_pos hfnn hgnn hfg' hfdeg' hgdeg' with
     ⟨h', hf'h', hg'h'⟩
   let h : ℝ[X] := h'.comp (X - C r)
   have hh_comp : h.comp (X + C r) = h' := by
@@ -6428,6 +6442,27 @@ theorem posComboPairHasCommonInterleaver_of_natDegree_le_two
       exact hg'h'
     exact (prec_comp_X_add_C_iff (f := g) (g := h) r).1 htranslated
   exact ⟨h, hfh, hgh⟩
+
+/-- Positive-combination degree-`≤ 2` pair endpoint.  Translate both
+polynomials far enough to make the shifted roots nonpositive, apply the
+nonnegative-coefficient degree-`≤ 2` endpoint, and translate the common right
+interleaver back. -/
+theorem posComboPairHasCommonInterleaver_of_natDegree_le_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hf_splits : f.Splits)
+    (hg_splits : g.Splits)
+    (hfg : PosComboRealRooted f g)
+    (hfdeg : f.natDegree ≤ 2)
+    (hgdeg : g.natDegree ≤ 2) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered_via_nonnegShift
+    (N := 2)
+    (fun {_f _g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg =>
+      posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_two
+        hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg)
+    hf_pos hg_pos hf_splits hg_splits hfg hfdeg hgdeg
 
 /-- Compatibility-level degree-`≤ 2` two-polynomial Chudnovsky--Seymour
 endpoint. -/
