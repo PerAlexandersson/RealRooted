@@ -5393,10 +5393,26 @@ private theorem posComboPairHasCommonInterleaver_of_noCommonPairBridge_and_nonne
     · simpa [hqg] using
         prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hqg_prec
 
-/-- Ordered nonnegative-coefficient degree-`≤ 2` pair endpoint.  Shared roots
-are factored out recursively, and the terminal no-common-root case is the
-checked low-degree root-crossing endpoint. -/
-theorem posComboPairHasCommonInterleaver_nonneg_of_natDegree_le_two_ordered
+/-- Degree-bounded common-root reduction for the nonnegative
+common-interleaver bridge.  Given a terminal endpoint that produces a common
+right interleaver for no-common pairs whose right degree is at most `N`,
+peeling common linear factors by strong induction on `f.natDegree` extends the
+conclusion to all nonnegative positive-combination pairs of right degree at
+most `N`, common roots included. -/
+theorem posComboPairHasCommonInterleaver_of_natDegree_le_reduction
+    {N : ℕ}
+    (hterminal :
+      ∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        g.natDegree ≤ N →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -5405,7 +5421,7 @@ theorem posComboPairHasCommonInterleaver_nonneg_of_natDegree_le_two_ordered
     (hfg : PosComboRealRooted f g)
     (hdeg_lo : f.natDegree ≤ g.natDegree)
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
-    (hgdeg : g.natDegree ≤ 2) :
+    (hgdeg : g.natDegree ≤ N) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
   refine
     Nat.strong_induction_on
@@ -5419,14 +5435,12 @@ theorem posComboPairHasCommonInterleaver_nonneg_of_natDegree_le_two_ordered
           PosComboRealRooted f g →
           f.natDegree ≤ g.natDegree →
           g.natDegree ≤ f.natDegree + 1 →
-          g.natDegree ≤ 2 →
+          g.natDegree ≤ N →
           ∃ h : ℝ[X], Prec f h ∧ Prec g h)
       f.natDegree ?_ rfl hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hgdeg
   intro n ih f g hfdeg hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hgdeg
   by_cases hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r
-  · exact
-      posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_two
-        hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg
+  · exact hterminal hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg
   · push Not at hno
     rcases hno with ⟨r, hrf, hrg⟩
     obtain ⟨qf, qg, hqf, hqg, hqfg, hqf_nn, hqg_nn, hqf0, hqg0,
@@ -5436,14 +5450,14 @@ theorem posComboPairHasCommonInterleaver_nonneg_of_natDegree_le_two_ordered
     have hqf_deg_lt : qf.natDegree < n := by
       rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf0, natDegree_X_sub_C]
       lia
-    have hqgdeg : qg.natDegree ≤ 2 := by
-      have hgeq : g.natDegree = qg.natDegree + 1 := by
+    have hqg_deg_le : qg.natDegree ≤ N := by
+      have hle : qg.natDegree ≤ g.natDegree := by
         rw [hqg, natDegree_mul (X_sub_C_ne_zero r) hqg0, natDegree_X_sub_C]
         lia
-      lia
+      exact le_trans hle hgdeg
     rcases
         ih qf.natDegree hqf_deg_lt rfl
-          hqf_pos hqg_pos hqf_nn hqg_nn hqfg hqdeg_lo hqdeg_hi hqgdeg with
+          hqf_pos hqg_pos hqf_nn hqg_nn hqfg hqdeg_lo hqdeg_hi hqg_deg_le with
       ⟨h, hqf_prec, hqg_prec⟩
     refine ⟨(X - C r) * h, ?_, ?_⟩
     · simpa [hqf] using
@@ -5452,6 +5466,27 @@ theorem posComboPairHasCommonInterleaver_nonneg_of_natDegree_le_two_ordered
     · simpa [hqg] using
         prec_mul_common_factor (isRealRooted_X_sub_C r).1
           (isRealRooted_X_sub_C r).2 hqg_prec
+
+/-- Ordered nonnegative-coefficient degree-`≤ 2` pair endpoint.  Shared roots
+are factored out recursively, and the terminal no-common-root case is the
+checked low-degree root-crossing endpoint. -/
+theorem posComboPairHasCommonInterleaver_nonneg_of_natDegree_le_two_ordered
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg_lo : f.natDegree ≤ g.natDegree)
+    (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
+    (hgdeg : g.natDegree ≤ 2) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  posComboPairHasCommonInterleaver_of_natDegree_le_reduction
+    (N := 2)
+    (fun {_f _g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg =>
+      posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_two
+        hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg)
+    hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hgdeg
 
 /-- Nonnegative-coefficient degree-`≤ 2` pair endpoint, with no degree order
 assumption. -/
