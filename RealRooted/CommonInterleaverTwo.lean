@@ -3855,6 +3855,89 @@ theorem succDegree_odd_roots_gt_count_sub_iff_eval_mul_neg
     hf_pos hg_pos hfg hdeg hf_split hxf hxg).trans
     (exists_pos_isRoot_add_right_iff_eval_mul_neg hfx_eval)
 
+/-- If the succ-degree upper root-count difference is not odd, then the
+endpoint evaluations at that common non-root have the same sign. -/
+theorem succDegree_eval_mul_pos_of_not_odd_roots_gt_count_sub
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g) (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
+    (hnot_odd : ¬ Odd (((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card)) :
+    0 < f.eval x * g.eval x := by
+  have hnot_neg : ¬ f.eval x * g.eval x < 0 := by
+    intro hneg
+    exact hnot_odd
+      ((succDegree_odd_roots_gt_count_sub_iff_eval_mul_neg
+        hf_pos hg_pos hfg hdeg hf_split hxf hxg).mpr hneg)
+  have hfx_eval : f.eval x ≠ 0 := by
+    intro hfx
+    exact hxf (by simpa [Polynomial.IsRoot.def] using hfx)
+  have hgx_eval : g.eval x ≠ 0 := by
+    intro hgx
+    exact hxg (by simpa [Polynomial.IsRoot.def] using hgx)
+  have hprod_ne : f.eval x * g.eval x ≠ 0 := mul_ne_zero hfx_eval hgx_eval
+  exact lt_of_le_of_ne (le_of_not_gt hnot_neg) hprod_ne.symm
+
+/-- A gap of exactly two in the forward upper root count forces same-sign
+endpoint evaluations at a common non-root threshold. -/
+theorem succDegree_eval_mul_pos_of_roots_gt_count_sub_eq_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g) (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
+    (hcount : ((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card = 2) :
+    0 < f.eval x * g.eval x :=
+  succDegree_eval_mul_pos_of_not_odd_roots_gt_count_sub
+    hf_pos hg_pos hfg hdeg hf_split hxf hxg (by rw [hcount]; norm_num)
+
+/-- A gap of exactly two in the reverse upper root count forces same-sign
+endpoint evaluations at a common non-root threshold. -/
+theorem succDegree_eval_mul_pos_of_rev_roots_gt_count_sub_eq_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g) (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
+    (hcount : ((g.roots.filter (x < ·)).card : ℤ) -
+        (f.roots.filter (x < ·)).card = 2) :
+    0 < f.eval x * g.eval x := by
+  refine succDegree_eval_mul_pos_of_not_odd_roots_gt_count_sub
+    hf_pos hg_pos hfg hdeg hf_split hxf hxg ?_
+  rw [show ((f.roots.filter (x < ·)).card : ℤ) -
+      (g.roots.filter (x < ·)).card = -2 by linarith]
+  norm_num
+
+/-- A forward upper root-count gap of two rules out roots at that threshold
+throughout the closed segment between the endpoints. -/
+theorem succDegree_closedSegment_not_isRoot_of_roots_gt_count_sub_eq_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g) (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) {β x : ℝ} (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1)
+    (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
+    (hcount : ((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card = 2) :
+    ¬ (C (1 - β) * f + C β * g).IsRoot x :=
+  closedSegment_not_isRoot_of_eval_mul_pos hβ0 hβ1 <|
+    succDegree_eval_mul_pos_of_roots_gt_count_sub_eq_two
+      hf_pos hg_pos hfg hdeg hf_split hxf hxg hcount
+
+/-- A reverse upper root-count gap of two rules out roots at that threshold
+throughout the closed segment between the endpoints. -/
+theorem succDegree_closedSegment_not_isRoot_of_rev_roots_gt_count_sub_eq_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g) (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) {β x : ℝ} (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1)
+    (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
+    (hcount : ((g.roots.filter (x < ·)).card : ℤ) -
+        (f.roots.filter (x < ·)).card = 2) :
+    ¬ (C (1 - β) * f + C β * g).IsRoot x :=
+  closedSegment_not_isRoot_of_eval_mul_pos hβ0 hβ1 <|
+    succDegree_eval_mul_pos_of_rev_roots_gt_count_sub_eq_two
+      hf_pos hg_pos hfg hdeg hf_split hxf hxg hcount
+
 /-- Succ-degree right-pencil parity bridge for lower root counts. Since `g` has
 one more root than `f`, the lower root-count difference has even parity exactly
 when the right pencil crosses zero at the threshold. -/
