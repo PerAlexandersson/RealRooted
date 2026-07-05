@@ -417,6 +417,36 @@ theorem derivative_eq_zero_or_ne_zero_and_splits {p : ℝ[X]}
   · have hdeg2 : 2 ≤ p.natDegree := by lia
     exact Or.inr (derivative_interlaces hp_splits hdeg2).2.1
 
+/-- A closed segment of real-rooted polynomials has a zero-aware real-rooted
+derivative segment. -/
+theorem closedSegment_derivative_eq_zero_or_ne_zero_and_splits
+    {f g : ℝ[X]}
+    (hseg : ∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+      ((C (1 - β) * f + C β * g) ≠ 0 ∧
+        (C (1 - β) * f + C β * g).Splits))
+    {β : ℝ} (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1) :
+    (C (1 - β) * f.derivative + C β * g.derivative = 0) ∨
+      ((C (1 - β) * f.derivative + C β * g.derivative) ≠ 0 ∧
+        (C (1 - β) * f.derivative + C β * g.derivative).Splits) := by
+  simpa using
+    (derivative_eq_zero_or_ne_zero_and_splits
+      (p := C (1 - β) * f + C β * g) (hseg hβ0 hβ1).2)
+
+/-- Nonzero members of the derivative segment of a closed real-rooted segment
+are real-rooted. -/
+theorem closedSegment_derivative_splits_of_ne
+    {f g : ℝ[X]}
+    (hseg : ∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+      ((C (1 - β) * f + C β * g) ≠ 0 ∧
+        (C (1 - β) * f + C β * g).Splits))
+    {β : ℝ} (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1)
+    (hder_ne : C (1 - β) * f.derivative + C β * g.derivative ≠ 0) :
+    (C (1 - β) * f.derivative + C β * g.derivative).Splits := by
+  rcases closedSegment_derivative_eq_zero_or_ne_zero_and_splits
+      hseg hβ0 hβ1 with hzero | hsplit
+  · exact False.elim (hder_ne hzero)
+  · exact hsplit.2
+
 /-- If all roots of a real-rooted polynomial are nonpositive, then all roots of
 its derivative are nonpositive. -/
 theorem roots_nonpos_derivative_of_roots_nonpos {p : ℝ[X]}
