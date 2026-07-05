@@ -228,6 +228,17 @@ abbrev hurwitzSchurTriangularFreeTarget : Prop :=
 abbrev hurwitzSchurFullBandTarget : Prop :=
   HurwitzMatrixSchurProductDetFinThreeCoreFullBandStatement
 
+/-- Challenge-facing Pólya-frequency target for the column-zero sequences.
+
+This is the Hurwitz-specific leaf exposed by the staircase/Toeplitz normal
+form: for two totally nonnegative Hurwitz matrices, the pointwise product of
+their column-zero sequences should be Pólya-frequency. -/
+abbrev hurwitzColumnZeroProductPFTarget : Prop :=
+  ∀ {a b : ℕ → ℝ},
+    (hurwitz a).IsTotallyNonneg →
+    (hurwitz b).IsTotallyNonneg →
+    IsPolyaFreqSeq (fun k => hurwitz a k 0 * hurwitz b k 0)
+
 /-- Challenge-facing corner-zeroed determinant subtarget for the fully in-band
 top-right subcase of the triangular-free `3 x 3` target. -/
 abbrev hurwitzSchurFullBandCornerZeroedTarget : Prop :=
@@ -343,6 +354,27 @@ theorem hurwitzSchurInBandTarget_of_hurwitzSchur
     (h : hurwitzSchurTarget) :
     hurwitzSchurInBandTarget :=
   hurwitzMatrixSchurProductDetFinThreeInBand_of_schurProductTN h
+
+/-- Challenge-facing reduction from the column-zero Pólya-frequency leaf to the
+fully in-band `3 x 3` Hurwitz Schur-product target. -/
+theorem hurwitzSchurFullBandTarget_of_columnZeroProductPF
+    (hPF : hurwitzColumnZeroProductPFTarget) :
+    hurwitzSchurFullBandTarget :=
+  hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_polyaFreq hPF
+
+/-- Challenge-facing reduction from the column-zero Pólya-frequency leaf to the
+isolated in-band `3 x 3` Hurwitz Schur-product target. -/
+theorem hurwitzSchurInBandTarget_of_columnZeroProductPF
+    (hPF : hurwitzColumnZeroProductPFTarget) :
+    hurwitzSchurInBandTarget :=
+  hurwitzMatrixSchurProductDetFinThreeInBand_of_polyaFreq hPF
+
+/-- Challenge-facing reduction from the column-zero Pólya-frequency leaf to the
+low-order size-`≤ 3` Hurwitz Schur-product target. -/
+theorem hurwitzSchurLeThreeTarget_of_columnZeroProductPF
+    (hPF : hurwitzColumnZeroProductPFTarget) :
+    hurwitzSchurLeThreeTarget :=
+  hurwitzMatrixSchurProductDetLeThree_of_polyaFreq hPF
 
 /-- Challenge-facing theorem discharging the corner-zero top-right subcase. -/
 theorem hurwitzSchurCornerZeroTarget_proved :
@@ -636,6 +668,14 @@ theorem hurwitzMatrixHadamardLeThreeTarget_of_hurwitzSchur
     hurwitzMatrixHadamardLeThreeTarget :=
   hurwitzMatrixHadamardLeThreeTarget_of_hurwitzSchurLeThree
     (hurwitzSchurLeThreeTarget_of_hurwitzSchur h)
+
+/-- Challenge-facing reduction from the column-zero Pólya-frequency leaf to the
+low-order Hurwitz-matrix Hadamard target through size `3`. -/
+theorem hurwitzMatrixHadamardLeThreeTarget_of_columnZeroProductPF
+    (hPF : hurwitzColumnZeroProductPFTarget) :
+    hurwitzMatrixHadamardLeThreeTarget :=
+  hurwitzMatrixHadamardLeThreeTarget_of_hurwitzSchurLeThree
+    (hurwitzSchurLeThreeTarget_of_columnZeroProductPF hPF)
 
 /-- Challenge-facing low-order consequence of the full Hurwitz-matrix Hadamard
 target. -/

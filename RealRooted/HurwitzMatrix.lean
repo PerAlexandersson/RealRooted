@@ -1560,4 +1560,109 @@ theorem not_hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle :
     (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstCol_of_single
       h)
 
+/-! ### Hurwitz staircase/Toeplitz normal form for the full-band Schur product
+
+The genuine two-matrix issue #34 target is special to Hurwitz matrices, and
+(as recorded in `RealRooted.Challenges.Issue34WindowObstruction`) cannot be
+reached from total nonnegativity of the selected `3 × 3` windows alone.  The
+lemmas below expose the Hurwitz-specific input: the column-shift/staircase
+relation `hurwitz_col_shift_add` identifies, on the nonzero staircase, a
+Hurwitz matrix entry with a single Toeplitz entry of its column-`0` sequence.
+This turns any fully in-band minor of the entrywise product of two Hurwitz
+matrices into an honest Toeplitz minor of the pointwise product of the two
+column-`0` sequences, and thereby reduces the full-band `3 × 3` core to a
+single Pólya-frequency statement about that product sequence. -/
+
+/-- Hurwitz staircase/Toeplitz relation.  On the nonzero staircase
+`2 * j ≤ i`, the `(i, j)` entry of a Hurwitz matrix equals the `(i, 2 * j)`
+entry of the Toeplitz matrix built from its column-`0` sequence
+`n ↦ hurwitz c n 0`. -/
+theorem hurwitz_eq_toeplitz_colZero (c : ℕ → ℝ) {i j : ℕ} (h : 2 * j ≤ i) :
+    hurwitz c i j = toeplitz (fun n => hurwitz c n 0) i (2 * j) := by
+  have hshift := hurwitz_col_shift_add c 0 j i (by simpa using h)
+  simp only [Nat.zero_add] at hshift
+  rw [hshift, toeplitz_apply, if_pos h]
+
+/-- Toeplitz normal form for a fully in-band minor of the entrywise Hurwitz
+product.  When every selected `(rows i, cols j)` cell lies on the nonzero
+staircase, the selected submatrix of the Hadamard product equals the Toeplitz
+submatrix of the pointwise product sequence
+`k ↦ hurwitz a k 0 * hurwitz b k 0`, with the columns doubled. -/
+theorem hurwitz_schurProduct_submatrix_eq_toeplitz_of_band
+    (a b : ℕ → ℝ) {n : ℕ} {rows cols : Fin n → ℕ}
+    (hband : ∀ i j, 2 * cols j ≤ rows i) :
+    (Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols =
+      (toeplitz (fun k => hurwitz a k 0 * hurwitz b k 0)).submatrix rows
+        (fun j => 2 * cols j) := by
+  ext i j
+  simp only [Matrix.submatrix_apply, Matrix.of_apply]
+  rw [hurwitz_eq_toeplitz_colZero a (hband i j),
+    hurwitz_eq_toeplitz_colZero b (hband i j), toeplitz_apply, toeplitz_apply,
+    toeplitz_apply, if_pos (hband i j), if_pos (hband i j), if_pos (hband i j)]
+
+/-- Determinant form of the Toeplitz normal form: a fully in-band minor of the
+entrywise Hurwitz product has the same determinant as the corresponding
+doubled-column Toeplitz minor of the pointwise product sequence. -/
+theorem hurwitz_schurProduct_det_submatrix_eq_toeplitz_of_band
+    (a b : ℕ → ℝ) {n : ℕ} {rows cols : Fin n → ℕ}
+    (hband : ∀ i j, 2 * cols j ≤ rows i) :
+    ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det =
+      ((toeplitz (fun k => hurwitz a k 0 * hurwitz b k 0)).submatrix rows
+        (fun j => 2 * cols j)).det := by
+  rw [hurwitz_schurProduct_submatrix_eq_toeplitz_of_band a b hband]
+
+/-- Reusable reduction of the full-band `3 × 3` Hurwitz Schur-product core
+(GitHub issue #34) to a single Pólya-frequency statement.
+
+If for every pair of totally nonnegative Hurwitz matrices the pointwise product
+of their column-`0` sequences is a Pólya-frequency sequence, then the full-band
+`3 × 3` core holds.  This is faithful to the classical Garloff--Wagner content:
+after the staircase change of variables the minor is literally a Toeplitz minor
+of that product sequence, so its nonnegativity is exactly the Pólya-frequency
+condition.  Unlike the refuted single-matrix corner-zeroed route, this genuinely
+uses the Hurwitz Toeplitz/staircase structure of both factors. -/
+theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_polyaFreq
+    (hPF : ∀ {a b : ℕ → ℝ},
+      (hurwitz a).IsTotallyNonneg →
+      (hurwitz b).IsTotallyNonneg →
+      IsPolyaFreqSeq (fun k => hurwitz a k 0 * hurwitz b k 0)) :
+    HurwitzMatrixSchurProductDetFinThreeCoreFullBandStatement := by
+  intro a b ha hb rows cols hrows hcols _hband _h01 _h12 h02
+  have hbandall : ∀ i j : Fin 3, 2 * cols j ≤ rows i := by
+    intro i j
+    have hcj : cols j ≤ cols 2 := hcols.monotone (Fin.le_last j)
+    have hri : rows 0 ≤ rows i := hrows.monotone (Fin.zero_le i)
+    calc
+      2 * cols j ≤ 2 * cols 2 := by lia
+      _ ≤ rows 0 := h02
+      _ ≤ rows i := hri
+  have hdbl : StrictMono (fun j : Fin 3 => 2 * cols j) := by
+    intro x y hxy
+    have := hcols hxy
+    lia
+  rw [hurwitz_schurProduct_det_submatrix_eq_toeplitz_of_band a b hbandall]
+  exact hPF ha hb hrows hdbl
+
+/-- The Pólya-frequency reduction, transported to the original in-band `3 × 3`
+Hurwitz Schur-product core through the existing full-band reduction. -/
+theorem hurwitzMatrixSchurProductDetFinThreeInBand_of_polyaFreq
+    (hPF : ∀ {a b : ℕ → ℝ},
+      (hurwitz a).IsTotallyNonneg →
+      (hurwitz b).IsTotallyNonneg →
+      IsPolyaFreqSeq (fun k => hurwitz a k 0 * hurwitz b k 0)) :
+    HurwitzMatrixSchurProductDetFinThreeInBandStatement :=
+  hurwitzMatrixSchurProductDetFinThreeInBand_of_fullBand
+    (hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_polyaFreq hPF)
+
+/-- The Pólya-frequency reduction, transported to the low-order size-`≤ 3`
+Hurwitz Schur-product statement. -/
+theorem hurwitzMatrixSchurProductDetLeThree_of_polyaFreq
+    (hPF : ∀ {a b : ℕ → ℝ},
+      (hurwitz a).IsTotallyNonneg →
+      (hurwitz b).IsTotallyNonneg →
+      IsPolyaFreqSeq (fun k => hurwitz a k 0 * hurwitz b k 0)) :
+    HurwitzMatrixSchurProductDetLeThreeStatement :=
+  hurwitzMatrixSchurProductDetLeThree_of_fullBand
+    (hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_polyaFreq hPF)
+
 end RealRooted
