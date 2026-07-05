@@ -241,6 +241,41 @@ theorem cubicDiscr_schurSzegoComp (n : Nat) (f g : ℝ[X]) :
           ((g.coeff 0 / (Nat.choose n 0 : ℝ)) * f.coeff 0) ^ 2 := by
   rw [schurSzegoComp_eq_diagonalOperator, cubicDiscr_diagonalOperator]
 
+/-- If the left factor has degree at most three, the fixed-degree
+Schur--Szego composition is the degree-three Jensen polynomial attached to the
+coefficientwise product of the two binomial-normalized coefficient sequences. -/
+theorem schurSzegoComp_eq_jensenPolynomial_three_normalized
+    {n : Nat} {f p : ℝ[X]} (hfdeg : f.natDegree ≤ 3) :
+    schurSzegoComp n f p =
+      jensenPolynomial 3 (fun k =>
+        (p.coeff k / (Nat.choose n k : ℝ)) *
+          (f.coeff k / (Nat.choose 3 k : ℝ))) := by
+  ext k
+  rw [coeff_schurSzegoComp, coeff_jensenPolynomial]
+  by_cases hk3 : k ≤ 3
+  · have hchoose3 : (Nat.choose 3 k : ℝ) ≠ 0 :=
+      Nat.cast_choose_ne_zero (R := ℝ) hk3
+    by_cases hkn : k ≤ n
+    · simp only [hk3, hkn, if_true]
+      field_simp [hchoose3]
+    · have hnlt : n < k := Nat.lt_of_not_le hkn
+      simp [hk3, hkn, Nat.choose_eq_zero_of_lt hnlt]
+  · have hklt : 3 < k := Nat.lt_of_not_le hk3
+    have hfcoeff : f.coeff k = 0 :=
+      coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hfdeg hklt)
+    simp [hk3, hfcoeff]
+
+/-- Cubic-discriminant form of
+`schurSzegoComp_eq_jensenPolynomial_three_normalized`. -/
+theorem cubicDiscr_schurSzegoComp_eq_jensenPolynomial_three_normalized
+    {n : Nat} {f p : ℝ[X]} (hfdeg : f.natDegree ≤ 3) :
+    cubicDiscr (schurSzegoComp n f p) =
+      cubicDiscr
+        (jensenPolynomial 3 (fun k =>
+          (p.coeff k / (Nat.choose n k : ℝ)) *
+            (f.coeff k / (Nat.choose 3 k : ℝ)))) := by
+  rw [schurSzegoComp_eq_jensenPolynomial_three_normalized hfdeg]
+
 theorem support_schurSzegoComp_eq_filter_right (n : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).support =
       f.support.filter (fun k => g.coeff k / (Nat.choose n k : ℝ) ≠ 0) := by

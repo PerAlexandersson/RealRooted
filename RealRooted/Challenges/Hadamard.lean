@@ -408,6 +408,32 @@ abbrev schurSzegoCompPFFactorCubicDiscriminantNonnegTarget : Prop :=
     p.Splits →
     0 ≤ cubicDiscr (schurSzegoComp n f p)
 
+/-- Challenge-facing normalized Jensen-product form of the missing
+degree-`≤ 3` PF-factor cubic discriminant inequality.
+
+For a degree-`≤ 3` left factor `f`, the fixed-degree Schur--Szegő composition
+is the degree-three Jensen polynomial attached to the coefficientwise product
+of the binomial-normalized coefficient sequences of `p` and `f`. -/
+abbrev schurSzegoCompPFFactorJensenProductCubicDiscriminantTarget : Prop :=
+  ∀ {n : ℕ} {f p : ℝ[X]},
+    IsPFPolynomial f →
+    f.natDegree ≤ 3 →
+    p.natDegree ≤ n →
+    p.Splits →
+    0 ≤ cubicDiscr
+      (jensenPolynomial 3 (fun k =>
+        (p.coeff k / (Nat.choose n k : ℝ)) *
+          (f.coeff k / (Nat.choose 3 k : ℝ))))
+
+/-- The normalized Jensen-product cubic discriminant target implies the
+original Schur--Szegő cubic discriminant target. -/
+theorem schurSzegoCompPFFactorCubicDiscriminantNonnegTarget_of_jensenProduct
+    (hdisc : schurSzegoCompPFFactorJensenProductCubicDiscriminantTarget) :
+    schurSzegoCompPFFactorCubicDiscriminantNonnegTarget :=
+  fun hf hfdeg hpdeg hsplit => by
+    rw [cubicDiscr_schurSzegoComp_eq_jensenPolynomial_three_normalized hfdeg]
+    exact hdisc hf hfdeg hpdeg hsplit
+
 /-- The degree-`≤ 3` PF-factor cubic discriminant target is exactly the
 remaining input needed for the corresponding Schur--Szegő pair route. -/
 theorem finiteSchurSzegoPair_of_pf_factor_natDegree_le_three_of_cubicDiscriminantTarget
@@ -418,6 +444,19 @@ theorem finiteSchurSzegoPair_of_pf_factor_natDegree_le_three_of_cubicDiscriminan
     schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
   finiteSchurSzegoPair_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
     hf hfdeg hpdeg hsplit (hdisc hf hfdeg hpdeg hsplit)
+
+/-- Normalized Jensen-product version of the degree-`≤ 3` PF-factor
+Schur--Szegő route. -/
+theorem finiteSchurSzegoPair_of_pf_factor_natDegree_le_three_of_jensenProductTarget
+    (hdisc : schurSzegoCompPFFactorJensenProductCubicDiscriminantTarget)
+    {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
+    (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  finiteSchurSzegoPair_of_pf_factor_natDegree_le_three_of_cubicDiscriminantTarget
+    (schurSzegoCompPFFactorCubicDiscriminantNonnegTarget_of_jensenProduct
+      hdisc)
+    hf hfdeg hpdeg hsplit
 
 /-- Challenge-facing explicit cubic discriminant formula for degree-three
 Jensen polynomials. -/
