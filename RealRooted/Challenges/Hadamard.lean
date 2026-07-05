@@ -248,6 +248,16 @@ theorem cubicDiscriminantSplittingTarget_proved :
     cubicDiscriminantSplittingTarget :=
   fun hdeg hdisc => splits_of_cubicDiscr_nonneg hdeg hdisc
 
+/-- Challenge-facing cubic discriminant splitting target through degree three. -/
+abbrev cubicDiscriminantNatDegreeLeThreeTarget : Prop :=
+  ∀ {p : ℝ[X]}, p.natDegree ≤ 3 → 0 ≤ cubicDiscr p → p.Splits
+
+/-- The checked cubic discriminant criterion proves the degree-`≤ 3`
+challenge target. -/
+theorem cubicDiscriminantNatDegreeLeThreeTarget_proved :
+    cubicDiscriminantNatDegreeLeThreeTarget :=
+  fun hdeg hdisc => splits_of_natDegree_le_three_cubicDiscr_nonneg hdeg hdisc
+
 /-- Challenge-facing target for the exact-degree-three diagonal-operator
 output, once its cubic discriminant is known to be nonnegative. -/
 abbrev diagonalOperatorCubicDiscriminantTarget : Prop :=
@@ -262,6 +272,21 @@ theorem diagonalOperatorCubicDiscriminantTarget_proved :
     diagonalOperatorCubicDiscriminantTarget :=
   fun hdeg hdisc =>
     diagonalOperator_splits_of_natDegree_three_cubicDiscr_nonneg hdeg hdisc
+
+/-- Challenge-facing target for degree-`≤ 3` diagonal-operator outputs, once
+their cubic discriminant is known to be nonnegative. -/
+abbrev diagonalOperatorCubicDiscriminantLeThreeTarget : Prop :=
+  ∀ {gamma : ℕ → ℝ} {p : ℝ[X]},
+    (diagonalOperator gamma p).natDegree ≤ 3 →
+    0 ≤ cubicDiscr (diagonalOperator gamma p) →
+    (diagonalOperator gamma p).Splits
+
+/-- The degree-`≤ 3` cubic discriminant criterion proves the diagonal-operator
+target. -/
+theorem diagonalOperatorCubicDiscriminantLeThreeTarget_proved :
+    diagonalOperatorCubicDiscriminantLeThreeTarget :=
+  fun hdeg hdisc =>
+    diagonalOperator_splits_of_natDegree_le_three_cubicDiscr_nonneg hdeg hdisc
 
 /-- Challenge-facing cubic Newton inequalities for an exact-degree splitting
 Jensen polynomial. -/

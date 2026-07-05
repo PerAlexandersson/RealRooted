@@ -147,4 +147,50 @@ theorem splits_of_cubicDiscr_nonneg {p : ℝ[X]} (hdeg : p.natDegree = 3)
   rw [← hfact, splits_X_sub_C_mul_iff]
   exact hsplit
 
+/-- If `p` has degree exactly two, then its cubic discriminant is the square of
+its quadratic leading coefficient times its quadratic discriminant. -/
+lemma cubicDiscr_eq_coeff_two_sq_mul_discrim_of_natDegree_two
+    {p : ℝ[X]} (hdeg : p.natDegree = 2) :
+    cubicDiscr p =
+      p.coeff 2 ^ 2 * discrim (p.coeff 2) (p.coeff 1) (p.coeff 0) := by
+  have hc3 : p.coeff 3 = 0 :=
+    coeff_eq_zero_of_natDegree_lt (by rw [hdeg]; norm_num)
+  unfold cubicDiscr discrim
+  rw [hc3]
+  ring
+
+/-- **Discriminant criterion through degree three.**  A real polynomial of
+`natDegree` at most three with nonnegative cubic coefficient discriminant splits
+over `ℝ`.  In degree two, this reduces to the usual quadratic discriminant
+because the cubic discriminant is the square of the quadratic leading
+coefficient times the quadratic discriminant. -/
+theorem splits_of_natDegree_le_three_cubicDiscr_nonneg
+    {p : ℝ[X]} (hdeg : p.natDegree ≤ 3) (hdisc : 0 ≤ cubicDiscr p) :
+    p.Splits := by
+  by_cases h3 : p.natDegree = 3
+  · exact splits_of_cubicDiscr_nonneg h3 hdisc
+  have hle2 : p.natDegree ≤ 2 :=
+    Nat.lt_succ_iff.mp (lt_of_le_of_ne hdeg h3)
+  by_cases h2 : p.natDegree = 2
+  · have hkey := cubicDiscr_eq_coeff_two_sq_mul_discrim_of_natDegree_two h2
+    have hc2_ne : p.coeff 2 ≠ 0 := by
+      have hp_ne : p ≠ 0 := by
+        intro hp
+        rw [hp, natDegree_zero] at h2
+        norm_num at h2
+      have hlc : p.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hp_ne
+      rwa [leadingCoeff, h2] at hlc
+    have hsquare : 0 < p.coeff 2 ^ 2 :=
+      (sq_nonneg _).lt_of_ne (Ne.symm (pow_ne_zero 2 hc2_ne))
+    have hquad : 0 ≤ discrim (p.coeff 2) (p.coeff 1) (p.coeff 0) :=
+      (mul_nonneg_iff_of_pos_left hsquare).mp (hkey ▸ hdisc)
+    exact quadratic_splits_of_discrim_nonneg h2 hquad
+  have hle1 : p.natDegree ≤ 1 :=
+    Nat.lt_succ_iff.mp (lt_of_le_of_ne hle2 h2)
+  rcases Nat.eq_or_lt_of_le hle1 with h1 | hlt1
+  · exact Polynomial.Splits.of_natDegree_eq_one h1
+  · have h0 : p.natDegree = 0 :=
+      Nat.eq_zero_of_le_zero (Nat.le_of_lt_succ hlt1)
+    exact Polynomial.Splits.of_natDegree_eq_zero h0
+
 end RealRooted

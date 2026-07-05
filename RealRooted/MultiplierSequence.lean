@@ -181,6 +181,15 @@ theorem diagonalOperator_splits_of_natDegree_three_cubicDiscr_nonneg
     (diagonalOperator gamma p).Splits :=
   splits_of_cubicDiscr_nonneg hdeg hdisc
 
+/-- Degree-at-most-three diagonal-operator output splits once its cubic
+discriminant is nonnegative. -/
+theorem diagonalOperator_splits_of_natDegree_le_three_cubicDiscr_nonneg
+    {gamma : ℕ → ℝ} {p : ℝ[X]}
+    (hdeg : (diagonalOperator gamma p).natDegree ≤ 3)
+    (hdisc : 0 ≤ cubicDiscr (diagonalOperator gamma p)) :
+    (diagonalOperator gamma p).Splits :=
+  splits_of_natDegree_le_three_cubicDiscr_nonneg hdeg hdisc
+
 /-- The degree-`n` Jensen polynomial attached to a diagonal sequence. -/
 def jensenPolynomial (n : ℕ) (gamma : ℕ → ℝ) : ℝ[X] :=
   ∑ k ∈ Finset.range (n + 1),
