@@ -8,6 +8,7 @@ import RealRooted.QuadraticRoot
 import RealRooted.RecurrenceDiscriminant
 import RealRooted.RootCountJump
 import RealRooted.RootOrderBridge
+import RealRooted.SameDegreeQuadraticObstruction
 import RealRooted.TridiagonalDet
 import RealRooted.Wagner
 import RealRooted.ShiftLemma
