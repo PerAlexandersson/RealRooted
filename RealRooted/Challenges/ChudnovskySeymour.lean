@@ -3,6 +3,7 @@ import RealRooted.CommonInterleaverExamples
 import RealRooted.CommonInterleaverSeq
 import RealRooted.SuccDegreeRootCrossing
 import RealRooted.Bezoutian
+import RealRooted.SameDegreeCubicRootCount
 import RealRooted.SameDegreeQuadraticObstruction
 import RealRooted.SameDegreeQuadraticRootCount
 
@@ -490,6 +491,28 @@ theorem sameDegreeRootCountPair_of_posCombo_natDegree_eq_two
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 := by
   exact rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_eq_two
     hf_pos hg_pos hfg hdeg hf_deg2 x
+
+/-- Challenge-facing cubic intermediate: in the same-degree cubic
+positive-combination setting, lower-threshold root counts differ by at most
+two.  This is weaker than the final same-degree root-count target, but it is a
+checked next step after ruling out full cubic separation. -/
+theorem sameDegreeRootCountPair_le_two_of_posCombo_natDegree_eq_three
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hf_deg3 : f.natDegree = 3)
+    (x : ℝ) :
+    ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 2 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 := by
+  have hf_split : f.Splits :=
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+  have hg_split : g.Splits :=
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+  have hg_deg3 : g.natDegree = 3 := by rw [hdeg, hf_deg3]
+  exact sameDegree_cubic_rootCount_le_two
+    hf_deg3 hg_deg3 hf_split hg_split hf_pos hg_pos hfg x
 
 /-- Challenge-facing degree-two base case for the upper-threshold same-degree
 root-count formulation in the positive-combination setting. -/

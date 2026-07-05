@@ -111,4 +111,49 @@ theorem not_posComboRealRooted_cubic_separated
   exact not_posComboRealRooted_quadratic_separated
     hf'pos hg'pos hf'deg hg'deg hf'splits hg'splits z1 z2 hz hg'le hf'ge hderpc
 
+/-- Degree-three same-degree root-count bound.
+
+For two split real cubics with positive leading coefficients forming a
+positive-combination real-rooted pair, the two lower-threshold root-count
+functions differ by at most two at every threshold. -/
+theorem sameDegree_cubic_rootCount_le_two
+    {f g : ℝ[X]}
+    (hfdeg : f.natDegree = 3) (hgdeg : g.natDegree = 3)
+    (hf : f.Splits) (hg : g.Splits)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hpc : PosComboRealRooted f g) :
+    ∀ x : ℝ,
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 2 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 := by
+  intro x
+  obtain ⟨a, b, c, hab, hbc, hfroots, _⟩ :=
+    exists_roots_triple_of_splits_natDegree_three hf hfdeg
+  obtain ⟨p, q, r, hpq, hqr, hgroots, _⟩ :=
+    exists_roots_triple_of_splits_natDegree_three hg hgdeg
+  have hfmem : ∀ s ∈ f.roots, s = a ∨ s = b ∨ s = c := by
+    intro s hs
+    rw [hfroots] at hs
+    simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hs
+    tauto
+  have hgmem : ∀ s ∈ g.roots, s = p ∨ s = q ∨ s = r := by
+    intro s hs
+    rw [hgroots] at hs
+    simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hs
+    tauto
+  have hno1 : ¬ (c ≤ x ∧ x < p) := by
+    rintro ⟨hcx, hxp⟩
+    exact not_posComboRealRooted_cubic_separated (f := g) (g := f)
+      hg_pos hf_pos hg hf hgdeg hfdeg hpc.comm x p hxp
+      (fun s hs => by rcases hfmem s hs with h | h | h <;> subst h <;> linarith)
+      (fun s hs => by rcases hgmem s hs with h | h | h <;> subst h <;> linarith)
+  have hno2 : ¬ (r ≤ x ∧ x < a) := by
+    rintro ⟨hrx, hxa⟩
+    exact not_posComboRealRooted_cubic_separated (f := f) (g := g)
+      hf_pos hg_pos hf hg hfdeg hgdeg hpc x a hxa
+      (fun s hs => by rcases hgmem s hs with h | h | h <;> subst h <;> linarith)
+      (fun s hs => by rcases hfmem s hs with h | h | h <;> subst h <;> linarith)
+  rw [hfroots, hgroots, card_filter_le_triple, card_filter_le_triple]
+  push_cast
+  constructor <;> grind
+
 end RealRooted
