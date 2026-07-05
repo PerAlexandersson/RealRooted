@@ -681,6 +681,10 @@ product sequence. -/
 abbrev hurwitzColumnZeroProductEvenColToeplitzTarget : Prop :=
   HurwitzColumnZeroProductEvenColToeplitzStatement
 
+/-- Challenge-facing Hurwitz normal form of the even-column Toeplitz leaf. -/
+abbrev hurwitzMulTotallyNonnegTarget : Prop :=
+  HurwitzMulTotallyNonnegStatement
+
 /-- The column-zero product Pólya-frequency leaf is false.  It was only a
 sufficient route to the full-band Hurwitz Schur-product target, not a valid
 consequence of total nonnegativity of the two Hurwitz matrices. -/
@@ -831,6 +835,20 @@ theorem hurwitzColumnZeroProductEvenColToeplitzTarget_of_columnZeroProductPF
     (hPF : hurwitzColumnZeroProductPFTarget) :
     hurwitzColumnZeroProductEvenColToeplitzTarget :=
   hurwitzColumnZeroProductEvenColToeplitz_of_polyaFreq hPF
+
+/-- Challenge-facing reduction from the Hurwitz normal-form leaf to the
+even-column Toeplitz leaf. -/
+theorem hurwitzColumnZeroProductEvenColToeplitzTarget_of_hurwitzMul
+    (h : hurwitzMulTotallyNonnegTarget) :
+    hurwitzColumnZeroProductEvenColToeplitzTarget :=
+  hurwitzColumnZeroProductEvenColToeplitz_of_hurwitzMul h
+
+/-- Challenge-facing reduction from the even-column Toeplitz leaf to the
+Hurwitz normal-form leaf. -/
+theorem hurwitzMulTotallyNonnegTarget_of_evenColToeplitz
+    (h : hurwitzColumnZeroProductEvenColToeplitzTarget) :
+    hurwitzMulTotallyNonnegTarget :=
+  hurwitzMul_of_hurwitzColumnZeroProductEvenColToeplitz h
 
 /-- Challenge-facing reduction from the even-column Toeplitz leaf to the fully
 in-band `3 x 3` Hurwitz Schur-product target. -/

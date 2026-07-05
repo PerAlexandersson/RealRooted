@@ -1795,6 +1795,90 @@ theorem hurwitzColumnZeroProductEvenColToeplitz_of_size_le_two
     exact mul_nonneg (ha.nonneg _ _) (hb.nonneg _ _)
   · exact det_hadamard_fin_two_nonneg hMa hMb
 
+/-! ### Hurwitz normal form for the even-column Toeplitz leaf
+
+The entrywise product of two Hurwitz matrices is again a Hurwitz matrix,
+namely the Hurwitz matrix of the pointwise product of the two coefficient
+sequences.  Thus the even-column Toeplitz leaf is equivalent to total
+nonnegativity of this pointwise-product Hurwitz matrix. -/
+
+/-- The Hurwitz matrix of the pointwise product of two coefficient sequences is
+the entrywise product of the two Hurwitz matrices. -/
+theorem hurwitz_mul_apply (a b : ℕ → ℝ) (i j : ℕ) :
+    hurwitz (fun k => a k * b k) i j = hurwitz a i j * hurwitz b i j := by
+  rcases Nat.even_or_odd i with ⟨m, hm⟩ | ⟨m, hm⟩
+  · subst hm
+    rw [show m + m = 2 * m by ring, hurwitz_even_row_apply, hurwitz_even_row_apply,
+      hurwitz_even_row_apply]
+    split <;> simp
+  · subst hm
+    rw [hurwitz_odd_row_apply, hurwitz_odd_row_apply, hurwitz_odd_row_apply]
+    split <;> simp
+
+/-- Pointwise even-column identity: the even-column entry of the Toeplitz matrix
+of the column-`0` product sequence equals the corresponding entry of the
+Hurwitz matrix of the pointwise product. -/
+theorem toeplitz_colZeroProduct_apply_eq_hurwitz_mul (a b : ℕ → ℝ) (i j : ℕ) :
+    toeplitz (fun k => hurwitz a k 0 * hurwitz b k 0) i (2 * j) =
+      hurwitz (fun k => a k * b k) i j := by
+  rw [toeplitz_apply]
+  rcases Nat.even_or_odd i with ⟨m, hm⟩ | ⟨m, hm⟩
+  · subst hm
+    rw [show m + m = 2 * m by ring, hurwitz_even_row_apply]
+    by_cases h : j ≤ m
+    · rw [if_pos (by lia), if_pos h, show 2 * m - 2 * j = 2 * (m - j) by lia,
+        hurwitz_even_row_apply, hurwitz_even_row_apply]
+      simp
+    · rw [if_neg (by lia), if_neg h]
+  · subst hm
+    rw [hurwitz_odd_row_apply]
+    by_cases h : j ≤ m
+    · rw [if_pos (by lia), if_pos h, show 2 * m + 1 - 2 * j = 2 * (m - j) + 1 by lia,
+        hurwitz_odd_row_apply, hurwitz_odd_row_apply]
+      simp
+    · rw [if_neg (by lia), if_neg h]
+
+/-- Hurwitz normal form for the column-`0` product minor.  For arbitrary rows
+and columns, the even-column Toeplitz submatrix of the pointwise product of the
+two column-`0` sequences equals the corresponding submatrix of the Hurwitz
+matrix of the pointwise product `fun k => a k * b k`. -/
+theorem toeplitz_colZeroProduct_submatrix_eq_hurwitz_mul
+    (a b : ℕ → ℝ) {n : ℕ} (rows cols : Fin n → ℕ) :
+    (toeplitz (fun k => hurwitz a k 0 * hurwitz b k 0)).submatrix rows
+        (fun j => 2 * cols j)
+      = (hurwitz (fun k => a k * b k)).submatrix rows cols := by
+  ext i j
+  simp only [Matrix.submatrix_apply]
+  exact toeplitz_colZeroProduct_apply_eq_hurwitz_mul a b (rows i) (cols j)
+
+/-- Total-nonnegativity leaf in Hurwitz normal form: the Hurwitz matrix of the
+pointwise product of two coefficient sequences with totally nonnegative Hurwitz
+matrices is itself totally nonnegative.  This is the clean Garloff--Wagner
+content of GitHub issue #34, equivalent to the even-column Toeplitz leaf. -/
+def HurwitzMulTotallyNonnegStatement : Prop :=
+  ∀ {a b : ℕ → ℝ},
+    (hurwitz a).IsTotallyNonneg →
+    (hurwitz b).IsTotallyNonneg →
+    (hurwitz (fun k => a k * b k)).IsTotallyNonneg
+
+/-- The Hurwitz normal-form leaf implies the even-column Toeplitz leaf. -/
+theorem hurwitzColumnZeroProductEvenColToeplitz_of_hurwitzMul
+    (h : HurwitzMulTotallyNonnegStatement) :
+    HurwitzColumnZeroProductEvenColToeplitzStatement := by
+  intro a b ha hb n rows cols hrows hcols
+  rw [toeplitz_colZeroProduct_submatrix_eq_hurwitz_mul]
+  exact h ha hb hrows hcols
+
+/-- Conversely, the even-column Toeplitz leaf implies the Hurwitz normal-form
+leaf: every minor of the Hurwitz matrix of the pointwise product is an
+even-column Toeplitz minor of the column-`0` product sequence. -/
+theorem hurwitzMul_of_hurwitzColumnZeroProductEvenColToeplitz
+    (h : HurwitzColumnZeroProductEvenColToeplitzStatement) :
+    HurwitzMulTotallyNonnegStatement := by
+  intro a b ha hb n rows cols hrows hcols
+  rw [← toeplitz_colZeroProduct_submatrix_eq_hurwitz_mul]
+  exact h ha hb hrows hcols
+
 /-! ### The column-`0` product Pólya-frequency leaf is false
 
 The full-band reduction
