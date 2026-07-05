@@ -930,6 +930,16 @@ theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingleColZero
   hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingle
     (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle_of_colZero hZero)
 
+/-- The first-column normal form implies the low-order, size-`≤ 3`,
+Hurwitz-matrix Hadamard leaf. -/
+theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingleFirstCol
+    (hFirst :
+      HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstColStatement) :
+    hadamardPreservesHurwitzMatrixTNDetLeThreeStatement :=
+  hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingleColZero
+    (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZero_of_firstCol
+      hFirst)
+
 /-- The pure size-`≤ 3` Hurwitz matrix Schur-product statement implies the
 Hadamard-product Hurwitz-matrix size-`≤ 3` statement. -/
 theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_hurwitzLeThree

@@ -196,6 +196,11 @@ subtarget for the fully in-band corner-zeroed `3 x 3` target. -/
 abbrev hurwitzSchurFullBandCornerZeroedSingleColZeroTarget : Prop :=
   HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZeroStatement
 
+/-- Challenge-facing first-column normal form of the single-matrix determinant
+subtarget for the fully in-band corner-zeroed `3 x 3` target. -/
+abbrev hurwitzSchurFullBandCornerZeroedSingleFirstColTarget : Prop :=
+  HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstColStatement
+
 /-- Challenge-facing corner-zero top-right subcase of the triangular-free
 `3 x 3` target. -/
 abbrev hurwitzSchurCornerZeroTarget : Prop :=
@@ -287,12 +292,27 @@ theorem hurwitzSchurFullBandCornerZeroedSingleTarget_of_colZero
     hurwitzSchurFullBandCornerZeroedSingleTarget :=
   hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle_of_colZero h
 
+/-- Challenge-facing reduction from the first-column normal form to the
+column-normalized single-matrix leaf. -/
+theorem hurwitzSchurFullBandCornerZeroedSingleColZeroTarget_of_firstCol
+    (h : hurwitzSchurFullBandCornerZeroedSingleFirstColTarget) :
+    hurwitzSchurFullBandCornerZeroedSingleColZeroTarget :=
+  hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZero_of_firstCol
+    h
+
 /-- Challenge-facing reduction from the column-normalized single-matrix leaf
 to the two-matrix corner-zeroed full-band subtarget. -/
 theorem hurwitzSchurFullBandCornerZeroedTarget_of_singleColZero
     (h : hurwitzSchurFullBandCornerZeroedSingleColZeroTarget) :
     hurwitzSchurFullBandCornerZeroedTarget :=
   hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroed_of_singleColZero h
+
+/-- Challenge-facing reduction from the first-column normal form to the
+two-matrix corner-zeroed full-band subtarget. -/
+theorem hurwitzSchurFullBandCornerZeroedTarget_of_singleFirstCol
+    (h : hurwitzSchurFullBandCornerZeroedSingleFirstColTarget) :
+    hurwitzSchurFullBandCornerZeroedTarget :=
+  hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroed_of_singleFirstCol h
 
 /-- Challenge-facing reduction from the single-matrix corner-zeroed determinant
 subtarget to the fully in-band top-right subcase. -/
@@ -308,6 +328,13 @@ theorem hurwitzSchurFullBandTarget_of_cornerZeroedSingleColZero
     (h : hurwitzSchurFullBandCornerZeroedSingleColZeroTarget) :
     hurwitzSchurFullBandTarget :=
   hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_cornerZeroedSingleColZero h
+
+/-- Challenge-facing reduction from the first-column normal form to the fully
+in-band top-right subcase. -/
+theorem hurwitzSchurFullBandTarget_of_cornerZeroedSingleFirstCol
+    (h : hurwitzSchurFullBandCornerZeroedSingleFirstColTarget) :
+    hurwitzSchurFullBandTarget :=
+  hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_cornerZeroedSingleFirstCol h
 
 /-- Challenge-facing reduction from the two top-right subcases to the
 triangular-free `3 x 3` target. -/
@@ -345,6 +372,13 @@ theorem hurwitzSchurTriangularFreeTarget_of_cornerZeroedSingleColZero
     (h : hurwitzSchurFullBandCornerZeroedSingleColZeroTarget) :
     hurwitzSchurTriangularFreeTarget :=
   hurwitzMatrixSchurProductDetFinThreeCore_of_cornerZeroedSingleColZero h
+
+/-- Challenge-facing reduction from the first-column normal form to the
+triangular-free `3 x 3` target. -/
+theorem hurwitzSchurTriangularFreeTarget_of_cornerZeroedSingleFirstCol
+    (h : hurwitzSchurFullBandCornerZeroedSingleFirstColTarget) :
+    hurwitzSchurTriangularFreeTarget :=
+  hurwitzMatrixSchurProductDetFinThreeCore_of_cornerZeroedSingleFirstCol h
 
 /-- Challenge-facing reduction from the two top-right subcases to the isolated
 in-band `3 x 3` target. -/
@@ -384,6 +418,13 @@ theorem hurwitzSchurInBandTarget_of_cornerZeroedSingleColZero
     hurwitzSchurInBandTarget :=
   hurwitzMatrixSchurProductDetFinThreeInBand_of_cornerZeroedSingleColZero h
 
+/-- Challenge-facing reduction from the first-column normal form to the
+isolated in-band `3 x 3` target. -/
+theorem hurwitzSchurInBandTarget_of_cornerZeroedSingleFirstCol
+    (h : hurwitzSchurFullBandCornerZeroedSingleFirstColTarget) :
+    hurwitzSchurInBandTarget :=
+  hurwitzMatrixSchurProductDetFinThreeInBand_of_cornerZeroedSingleFirstCol h
+
 /-- Challenge-facing reduction from the two top-right subcases to the
 low-order Hurwitz Schur-product target through size `3`. -/
 theorem hurwitzSchurLeThreeTarget_of_fullBand_cornerZero
@@ -422,6 +463,13 @@ theorem hurwitzSchurLeThreeTarget_of_cornerZeroedSingleColZero
     hurwitzSchurLeThreeTarget :=
   hurwitzMatrixSchurProductDetLeThree_of_cornerZeroedSingleColZero h
 
+/-- Challenge-facing reduction from the first-column normal form to the
+low-order Hurwitz Schur-product target through size `3`. -/
+theorem hurwitzSchurLeThreeTarget_of_cornerZeroedSingleFirstCol
+    (h : hurwitzSchurFullBandCornerZeroedSingleFirstColTarget) :
+    hurwitzSchurLeThreeTarget :=
+  hurwitzMatrixSchurProductDetLeThree_of_cornerZeroedSingleFirstCol h
+
 /-- Challenge-facing reduction from the two top-right subcases to the
 low-order Hurwitz-matrix Hadamard target through size `3`. -/
 theorem hurwitzMatrixHadamardLeThreeTarget_of_fullBand_cornerZero
@@ -459,6 +507,13 @@ theorem hurwitzMatrixHadamardLeThreeTarget_of_cornerZeroedSingleColZero
     (h : hurwitzSchurFullBandCornerZeroedSingleColZeroTarget) :
     hurwitzMatrixHadamardLeThreeTarget :=
   hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingleColZero h
+
+/-- Challenge-facing reduction from the first-column normal form to the
+low-order Hurwitz-matrix Hadamard target through size `3`. -/
+theorem hurwitzMatrixHadamardLeThreeTarget_of_cornerZeroedSingleFirstCol
+    (h : hurwitzSchurFullBandCornerZeroedSingleFirstColTarget) :
+    hurwitzMatrixHadamardLeThreeTarget :=
+  hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingleFirstCol h
 
 /-- Challenge-facing reduction of Garloff--Wagner's nonnegative
 proper-position target through the Hurwitz-matrix Hadamard leaf. -/

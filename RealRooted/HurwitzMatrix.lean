@@ -666,6 +666,74 @@ def HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZeroSta
           (hurwitz a (rows 1) (cols 0) * hurwitz a (rows 2) (cols 2) -
             hurwitz a (rows 1) (cols 2) * hurwitz a (rows 2) (cols 0))
 
+/-- First-column normal form of the single-matrix full-band corner-zeroed
+determinant subtarget.
+
+After the first selected column is normalized to `0`, every remaining selected
+column can be shifted back to column `0` by moving rows up by twice that column
+index.  This is the remaining #34 leaf in pure first-column Hurwitz form. -/
+def HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstColStatement :
+    Prop :=
+  ∀ {a : ℕ → ℝ},
+    (hurwitz a).IsTotallyNonneg →
+    ∀ {row0 row1 row2 col1 col2 : ℕ},
+      row0 < row1 →
+      row1 < row2 →
+      0 < col1 →
+      col1 < col2 →
+      2 * col2 ≤ row0 →
+      0 ≤ hurwitz a row0 0 *
+          (hurwitz a (row1 - 2 * col1) 0 *
+              hurwitz a (row2 - 2 * col2) 0 -
+            hurwitz a (row1 - 2 * col2) 0 *
+              hurwitz a (row2 - 2 * col1) 0) -
+        hurwitz a (row0 - 2 * col1) 0 *
+          (hurwitz a row1 0 * hurwitz a (row2 - 2 * col2) 0 -
+            hurwitz a (row1 - 2 * col2) 0 * hurwitz a row2 0)
+
+/-- The first-column normal form implies the column-normalized single-matrix
+corner-zeroed determinant target. -/
+theorem
+    hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZero_of_firstCol
+    (hFirst :
+      HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstColStatement) :
+    HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZeroStatement := by
+  intro a ha rows cols hrows hcols _hband _h01 _h12 h02 hcol0
+  have hr01 : rows 0 < rows 1 := hrows (by decide)
+  have hr12 : rows 1 < rows 2 := hrows (by decide)
+  have hr02le : rows 0 ≤ rows 2 := (le_of_lt hr01).trans (le_of_lt hr12)
+  have hc01 : cols 0 < cols 1 := hcols (by decide)
+  have hc12 : cols 1 < cols 2 := hcols (by decide)
+  have hc01pos : 0 < cols 1 := by
+    simpa [hcol0] using hc01
+  have hcol_le_two : ∀ j : Fin 3, cols j ≤ cols 2 := by
+    intro j
+    fin_cases j
+    · change cols 0 ≤ cols 2
+      rw [hcol0]
+      exact Nat.zero_le (cols 2)
+    · exact le_of_lt hc12
+    · rfl
+  have hrow_ge_zero : ∀ i : Fin 3, rows 0 ≤ rows i := by
+    intro i
+    fin_cases i
+    · rfl
+    · exact le_of_lt hr01
+    · exact hr02le
+  have hall : ∀ i j : Fin 3, 2 * cols j ≤ rows i := by
+    intro i j
+    have hc := hcol_le_two j
+    have hr := hrow_ge_zero i
+    lia
+  have hentry (i j : Fin 3) :
+      hurwitz a (rows i) (cols j) = hurwitz a (rows i - 2 * cols j) 0 := by
+    simpa using
+      hurwitz_col_shift_add a 0 (cols j) (rows i) (by simpa using hall i j)
+  have hfirst := hFirst ha hr01 hr12 hc01pos hc12 h02
+  rw [hentry 0 0, hentry 1 1, hentry 2 2, hentry 1 2, hentry 2 1,
+    hentry 0 1, hentry 1 0, hentry 2 0]
+  simpa [hcol0] using hfirst
+
 /-- The column-normalized single-matrix corner-zeroed target implies the
 general single-matrix corner-zeroed target. -/
 theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle_of_colZero
@@ -922,6 +990,16 @@ theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroed_of_singleCo
   hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroed_of_single
     (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle_of_colZero hZero)
 
+/-- The first-column normal form implies the two-matrix corner-zeroed
+full-band subtarget. -/
+theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroed_of_singleFirstCol
+    (hFirst :
+      HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstColStatement) :
+    HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedStatement :=
+  hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroed_of_singleColZero
+    (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZero_of_firstCol
+      hFirst)
+
 /-- The column-normalized single-matrix corner-zeroed determinant subtarget
 implies the full-band `3 × 3` Hurwitz Schur-product subcase. -/
 theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_cornerZeroedSingleColZero
@@ -930,6 +1008,16 @@ theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_cornerZeroedSingleCo
     HurwitzMatrixSchurProductDetFinThreeCoreFullBandStatement :=
   hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_cornerZeroedSingle
     (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle_of_colZero hZero)
+
+/-- The first-column normal form implies the full-band `3 × 3` Hurwitz
+Schur-product subcase. -/
+theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_cornerZeroedSingleFirstCol
+    (hFirst :
+      HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstColStatement) :
+    HurwitzMatrixSchurProductDetFinThreeCoreFullBandStatement :=
+  hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_cornerZeroedSingleColZero
+    (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZero_of_firstCol
+      hFirst)
 
 /-- The corner-zero subcase of the triangular-free `3 × 3` Hurwitz
 Schur-product core.  When the top-right corner `(0, 2)` lies strictly above the
@@ -1079,6 +1167,36 @@ theorem hurwitzMatrixSchurProductDetLeThree_of_cornerZeroedSingleColZero
     HurwitzMatrixSchurProductDetLeThreeStatement :=
   hurwitzMatrixSchurProductDetLeThree_of_cornerZeroedSingle
     (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle_of_colZero hZero)
+
+/-- The first-column normal form implies the triangular-free `3 × 3` Hurwitz
+Schur-product core. -/
+theorem hurwitzMatrixSchurProductDetFinThreeCore_of_cornerZeroedSingleFirstCol
+    (hFirst :
+      HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstColStatement) :
+    HurwitzMatrixSchurProductDetFinThreeCoreStatement :=
+  hurwitzMatrixSchurProductDetFinThreeCore_of_cornerZeroedSingleColZero
+    (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZero_of_firstCol
+      hFirst)
+
+/-- The first-column normal form implies the original in-band `3 × 3` Hurwitz
+Schur-product core. -/
+theorem hurwitzMatrixSchurProductDetFinThreeInBand_of_cornerZeroedSingleFirstCol
+    (hFirst :
+      HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstColStatement) :
+    HurwitzMatrixSchurProductDetFinThreeInBandStatement :=
+  hurwitzMatrixSchurProductDetFinThreeInBand_of_cornerZeroedSingleColZero
+    (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZero_of_firstCol
+      hFirst)
+
+/-- The first-column normal form implies the low-order, size-`≤ 3`, Hurwitz
+matrix Schur-product statement. -/
+theorem hurwitzMatrixSchurProductDetLeThree_of_cornerZeroedSingleFirstCol
+    (hFirst :
+      HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstColStatement) :
+    HurwitzMatrixSchurProductDetLeThreeStatement :=
+  hurwitzMatrixSchurProductDetLeThree_of_cornerZeroedSingleColZero
+    (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZero_of_firstCol
+      hFirst)
 
 /-- The triangular-free core immediately gives the fully in-band top-right
 subcase. -/
