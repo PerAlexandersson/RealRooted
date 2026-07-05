@@ -2304,6 +2304,36 @@ theorem fourWay_of_natDegree_le_one {fs : List ℝ[X]}
   chudnovskySeymour_fourWay_of_natDegree_le_one
     (fs := fs) hpos hdeg
 
+/-- Solved low-degree pairwise compatibility / pairwise common-interleaver
+equivalence. -/
+theorem pairwiseCompatible_iff_pairwiseHasCommonInterleaver_of_natDegree_le_one
+    {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
+    PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs :=
+  RealRooted.pairwiseCompatible_iff_pairwiseHasCommonInterleaver_of_natDegree_le_one
+    hpos hdeg
+
+/-- Solved low-degree pairwise common-interleaver / global common-interleaver
+equivalence. -/
+theorem pairwiseHasCommonInterleaver_iff_commonInterleaver_of_natDegree_le_one
+    {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
+    PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs :=
+  RealRooted.pairwiseHasCommonInterleaver_iff_hasCommonInterleaver_of_natDegree_le_one
+    hpos hdeg
+
+/-- Solved low-degree global common-interleaver / full-family compatibility
+equivalence. -/
+theorem commonInterleaver_iff_familyCompatible_of_natDegree_le_one
+    {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
+    HasCommonInterleaver fs ↔ FamilyCompatible fs :=
+  RealRooted.hasCommonInterleaver_iff_familyCompatible_of_natDegree_le_one
+    hpos hdeg
+
 /-- Solved low-degree pairwise/common-interleaver equivalence. -/
 theorem pairwiseCompatible_iff_commonInterleaver_of_natDegree_le_one
     {fs : List ℝ[X]}

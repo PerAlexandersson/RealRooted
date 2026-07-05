@@ -7530,6 +7530,42 @@ theorem chudnovskySeymour_fourWay_of_natDegree_le_one
       (family_ne_zero_and_splits_of_natDegree_le_one hpos hdeg) hpos <|
       fun _ => pairwiseHasCommonInterleaver_of_natDegree_le_one hpos hdeg
 
+/-- Degree-`≤ 1` specialization of Chudnovsky--Seymour `1 ↔ 2`: for
+positive-leading linear/constant families, pairwise compatibility is already
+equivalent to pairwise common-interleaver data. -/
+theorem pairwiseCompatible_iff_pairwiseHasCommonInterleaver_of_natDegree_le_one
+    {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
+    PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs :=
+  pairwiseCompatible_iff_pairwiseHasCommonInterleaver_of_fourWay <|
+    chudnovskySeymour_fourWay_of_natDegree_le_one
+      (fs := fs) hpos hdeg
+
+/-- Degree-`≤ 1` specialization of Chudnovsky--Seymour `2 ↔ 3`: for
+positive-leading linear/constant families, pairwise common-interleaver data is
+already equivalent to a global common interleaver. -/
+theorem pairwiseHasCommonInterleaver_iff_hasCommonInterleaver_of_natDegree_le_one
+    {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
+    PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs :=
+  pairwiseHasCommonInterleaver_iff_hasCommonInterleaver_of_fourWay <|
+    chudnovskySeymour_fourWay_of_natDegree_le_one
+      (fs := fs) hpos hdeg
+
+/-- Degree-`≤ 1` specialization of Chudnovsky--Seymour `3 ↔ 4`: for
+positive-leading linear/constant families, a global common interleaver is
+already equivalent to full family compatibility. -/
+theorem hasCommonInterleaver_iff_familyCompatible_of_natDegree_le_one
+    {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
+    HasCommonInterleaver fs ↔ FamilyCompatible fs :=
+  hasCommonInterleaver_iff_familyCompatible_of_fourWay <|
+    chudnovskySeymour_fourWay_of_natDegree_le_one
+      (fs := fs) hpos hdeg
+
 /-- Degree-`≤ 1` specialization of Chudnovsky--Seymour `1 ↔ 3`: for
 positive-leading linear/constant families, pairwise compatibility is already
 equivalent to having a common right interleaver. -/
