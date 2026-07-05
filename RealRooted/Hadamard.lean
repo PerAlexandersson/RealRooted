@@ -657,6 +657,16 @@ theorem finiteSchurSzegoComposition_of_factors_natDegree_le_two
     linear_combination hx
   exact Or.inr (Polynomial.Splits.of_natDegree_eq_two hqdeg hroot)
 
+/-- Nonzero-core version of the arbitrary-level degree-`≤ 2` Schur--Szego
+base case. -/
+theorem finiteSchurSzegoCompositionNonzero_of_factors_natDegree_le_two
+    {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (_hf0 : f ≠ 0) (hfdeg : f.natDegree ≤ 2)
+    (_hp0 : p ≠ 0) (hpdeg : p.natDegree ≤ 2) (hsplit : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  finiteSchurSzegoComposition_of_factors_natDegree_le_two
+    hf hfdeg hpdeg hsplit
+
 /-- The full finite Schur--Szegő theorem implies the finite Pólya--Schur
 theorem. -/
 theorem finitePolyaSchur_nonneg_of_schurSzego
