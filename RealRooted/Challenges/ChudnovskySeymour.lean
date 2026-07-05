@@ -124,6 +124,23 @@ abbrev sameDegreeCubicInteriorTwoBelowTarget : Prop :=
 abbrev sameDegreeCubicInteriorTwoAboveTarget : Prop :=
   CubicInteriorTwoAboveStatement
 
+/-- Challenge-facing discriminant bridge for the cubic interior route.  A
+positive-combination real-rooted split cubic pair gives nonnegative
+discriminant along its monic root pencil. -/
+theorem sameDegreeCubicDiscrPencilNonnegTarget
+    {f g : ℝ[X]}
+    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
+    (hfs : f.Splits) (hgs : g.Splits)
+    (hfd : f.natDegree = 3) (hgd : g.natDegree = 3)
+    (hpc : PosComboRealRooted f g)
+    (a b c p q r : ℝ)
+    (hfr : f.roots = {a, b, c}) (hgr : g.roots = {p, q, r}) :
+    ∀ s : ℝ, 0 < s →
+      0 ≤ cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+        + C s * ((X - C p) * (X - C q) * (X - C r))) :=
+  cubicDiscr_monicPencil_nonneg_of_posCombo
+    hf hg hfs hgs hfd hgd hpc a b c p q r hfr hgr
+
 /-- Same-degree upper-threshold root-count subtarget for milestone B1. -/
 abbrev sameDegreeRootCountAboveTarget : Prop :=
   PosComboNoCommonSameDegreeRootCountAboveNonnegStatement

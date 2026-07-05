@@ -1,5 +1,6 @@
 import RealRooted.SameDegreeDerivative
 import RealRooted.SameDegreeQuadraticRootCount
+import RealRooted.CubicDiscriminant
 
 /-!
 # Degree-three same-degree root-count helpers
@@ -39,6 +40,79 @@ theorem exists_roots_triple_of_splits_natDegree_three {f : ℝ[X]}
   refine ⟨a, b, c, hab, hbc, hcoe, ?_⟩
   rw [Polynomial.Splits.eq_prod_roots hf, hcoe]
   simp [Multiset.map_cons, Multiset.prod_cons, mul_assoc]
+
+/-- Recover the leading-coefficient factorisation of a split cubic from a
+specified triple of roots. -/
+theorem eq_C_leadingCoeff_mul_prod_three
+    {f : ℝ[X]} (hf : f.Splits) (a b c : ℝ) (hr : f.roots = {a, b, c}) :
+    f = C f.leadingCoeff * ((X - C a) * (X - C b) * (X - C c)) := by
+  rw [Polynomial.Splits.eq_prod_roots hf, hr]
+  simp [Multiset.map_cons, Multiset.prod_cons, mul_assoc]
+
+/-- For a positive-combination real-rooted split cubic pair, the corresponding
+monic root pencil has nonnegative cubic discriminant at every positive
+parameter.  This packages the easy direction of the discriminant route to the
+two open cubic interior leaves. -/
+theorem cubicDiscr_monicPencil_nonneg_of_posCombo
+    {f g : ℝ[X]}
+    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
+    (hfs : f.Splits) (hgs : g.Splits)
+    (hfd : f.natDegree = 3) (hgd : g.natDegree = 3)
+    (hpc : PosComboRealRooted f g)
+    (a b c p q r : ℝ)
+    (hfr : f.roots = {a, b, c}) (hgr : g.roots = {p, q, r}) :
+    ∀ s : ℝ, 0 < s →
+      0 ≤ cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+        + C s * ((X - C p) * (X - C q) * (X - C r))) := by
+  intro s hs
+  let lf := f.leadingCoeff
+  let lg := g.leadingCoeff
+  let F : ℝ[X] := (X - C a) * (X - C b) * (X - C c)
+  let G : ℝ[X] := (X - C p) * (X - C q) * (X - C r)
+  have hlf0 : 0 < lf := by
+    change 0 < f.leadingCoeff
+    exact hf
+  have hlg0 : 0 < lg := by
+    change 0 < g.leadingCoeff
+    exact hg
+  have ht0 : 0 < s * lf / lg := by positivity
+  have ht0' : 0 < s * f.leadingCoeff / g.leadingCoeff := by
+    simpa [lf, lg] using ht0
+  obtain ⟨_, hsplit⟩ := hpc.isRealRooted_add_right ht0'
+  have hfeq : f = C lf * F := by
+    simpa [lf, F] using eq_C_leadingCoeff_mul_prod_three hfs a b c hfr
+  have hgeq : g = C lg * G := by
+    simpa [lg, G] using eq_C_leadingCoeff_mul_prod_three hgs p q r hgr
+  have hscalar : (s * lf / lg) * lg = lf * s := by
+    field_simp [hlg0.ne']
+  have hscaled : C (s * lf / lg) * (C lg * G) = C lf * (C s * G) := by
+    calc
+      C (s * lf / lg) * (C lg * G)
+          = C ((s * lf / lg) * lg) * G := by rw [← mul_assoc, ← C_mul]
+      _ = C (lf * s) * G := by rw [hscalar]
+      _ = C lf * (C s * G) := by
+        simp [G, C_mul, mul_assoc, mul_comm, mul_left_comm]
+  have hcombo :
+      f + C (s * f.leadingCoeff / g.leadingCoeff) * g
+        = C f.leadingCoeff *
+            ((X - C a) * (X - C b) * (X - C c)
+              + C s * ((X - C p) * (X - C q) * (X - C r))) := by
+    change f + C (s * lf / lg) * g = C lf * (F + C s * G)
+    rw [hfeq, hgeq]
+    calc
+      C lf * F + C (s * lf / lg) * (C lg * G)
+          = C lf * F + C lf * (C s * G) := by rw [hscaled]
+      _ = C lf * (F + C s * G) := by rw [mul_add]
+  have hdeg_le :
+      (f + C (s * f.leadingCoeff / g.leadingCoeff) * g).natDegree ≤ 3 := by
+    refine (natDegree_add_le _ _).trans ?_
+    exact max_le (by rw [hfd]) ((natDegree_C_mul_le _ _).trans (by rw [hgd]))
+  have hdisc_nonneg :
+      0 ≤ cubicDiscr (f + C (s * f.leadingCoeff / g.leadingCoeff) * g) :=
+    cubicDiscr_nonneg_of_splits_natDegree_le_three hdeg_le hsplit
+  rw [hcombo, cubicDiscr_C_mul] at hdisc_nonneg
+  have h4 : 0 < f.leadingCoeff ^ 4 := by positivity
+  nlinarith [hdisc_nonneg, h4]
 
 /-- Root count of a three-element multiset below a threshold, as a sum of
 indicators. -/
