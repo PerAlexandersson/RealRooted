@@ -249,4 +249,12 @@ theorem cubicDiscr_nonneg_of_splits_natDegree_le_three
   ring_nf
   norm_num
 
+/-- Through degree three, nonnegativity of the cubic coefficient discriminant
+is equivalent to splitting over `ℝ`. -/
+theorem cubicDiscr_nonneg_iff_splits_of_natDegree_le_three
+    {p : ℝ[X]} (hdeg : p.natDegree ≤ 3) :
+    0 ≤ cubicDiscr p ↔ p.Splits :=
+  ⟨splits_of_natDegree_le_three_cubicDiscr_nonneg hdeg,
+    cubicDiscr_nonneg_of_splits_natDegree_le_three hdeg⟩
+
 end RealRooted

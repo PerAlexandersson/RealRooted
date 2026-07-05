@@ -351,6 +351,18 @@ theorem IsPFPolynomial.cubicDiscr_jensenPolynomial_three_nonneg
   cubicDiscr_jensenPolynomial_three_nonneg_of_eq_zero_or_splits
     hj.eq_zero_or_splits
 
+/-- For degree-three Jensen polynomials, nonnegative cubic discriminant is
+equivalent to being zero or splitting. -/
+theorem cubicDiscr_jensenPolynomial_three_nonneg_iff_eq_zero_or_splits
+    {gamma : ℕ → ℝ} :
+    0 ≤ cubicDiscr (jensenPolynomial 3 gamma) ↔
+      jensenPolynomial 3 gamma = 0 ∨ (jensenPolynomial 3 gamma).Splits :=
+  ⟨fun hdisc =>
+      Or.inr <|
+        splits_of_natDegree_le_three_cubicDiscr_nonneg
+          (natDegree_jensenPolynomial_le 3 gamma) hdisc,
+    cubicDiscr_jensenPolynomial_three_nonneg_of_eq_zero_or_splits⟩
+
 /-- Finite multiplier sequence up to degree `n`: the diagonal operator
 preserves real-rootedness, allowing the zero polynomial. -/
 def IsFiniteMultiplierSequence (n : ℕ) (gamma : ℕ → ℝ) : Prop :=

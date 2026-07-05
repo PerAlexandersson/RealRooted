@@ -345,6 +345,13 @@ theorem cubicDiscriminantNatDegreeLeThreeTarget_proved :
     cubicDiscriminantNatDegreeLeThreeTarget :=
   fun hdeg hdisc => splits_of_natDegree_le_three_cubicDiscr_nonneg hdeg hdisc
 
+/-- Challenge-facing equivalence form of the checked cubic discriminant
+criterion through degree three. -/
+theorem cubicDiscriminantNonneg_iff_splits_of_natDegree_le_three
+    {p : ℝ[X]} (hdeg : p.natDegree ≤ 3) :
+    0 ≤ cubicDiscr p ↔ p.Splits :=
+  RealRooted.cubicDiscr_nonneg_iff_splits_of_natDegree_le_three hdeg
+
 /-- Challenge-facing target for the exact-degree-three diagonal-operator
 output, once its cubic discriminant is known to be nonnegative. -/
 abbrev diagonalOperatorCubicDiscriminantTarget : Prop :=
@@ -438,6 +445,14 @@ theorem cubicDiscr_jensenPolynomialThree_nonneg_of_isPF
     (hj : IsPFPolynomial (jensenPolynomial 3 gamma)) :
     0 ≤ cubicDiscr (jensenPolynomial 3 gamma) :=
   hj.cubicDiscr_jensenPolynomial_three_nonneg
+
+/-- Challenge-facing equivalence between nonnegative cubic discriminant and
+zero-or-splitting for degree-three Jensen polynomials. -/
+theorem cubicDiscr_jensenPolynomialThree_nonneg_iff_eq_zero_or_splits
+    {gamma : ℕ → ℝ} :
+    0 ≤ cubicDiscr (jensenPolynomial 3 gamma) ↔
+      jensenPolynomial 3 gamma = 0 ∨ (jensenPolynomial 3 gamma).Splits :=
+  RealRooted.cubicDiscr_jensenPolynomial_three_nonneg_iff_eq_zero_or_splits
 
 /-- Challenge-facing cubic Newton inequalities for an exact-degree splitting
 Jensen polynomial. -/
