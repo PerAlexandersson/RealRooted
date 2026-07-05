@@ -77,4 +77,69 @@ theorem three_mul_coeff_one_mul_coeff_three_le_coeff_two_sq_of_splits_natDegree_
   rw [hc1, hc2, hc3]
   nlinarith [hnewton, sq_nonneg p.leadingCoeff]
 
+/-- A splitting real quadratic has nonnegative discriminant, expressed in
+coefficient form. -/
+theorem quadratic_disc_coeff_le_of_splits_natDegree_two
+    {p : ℝ[X]} (hdeg : p.natDegree = 2) (hs : p.Splits) :
+    4 * (p.coeff 0 * p.coeff 2) ≤ p.coeff 1 ^ 2 := by
+  have hp0 : p ≠ 0 := by
+    rintro rfl
+    simp at hdeg
+  obtain ⟨x, hxmem⟩ : ∃ x, x ∈ p.roots := by
+    apply Multiset.card_pos_iff_exists_mem.mp
+    rw [card_roots_of_splits hs, hdeg]
+    norm_num
+  have hxroot : p.IsRoot x := (Polynomial.mem_roots hp0).mp hxmem
+  have hxquad : p.coeff 2 * (x * x) + p.coeff 1 * x + p.coeff 0 = 0 := by
+    rw [Polynomial.IsRoot.def] at hxroot
+    rw [Polynomial.eval_eq_sum_range, hdeg] at hxroot
+    simp only [Finset.sum_range_succ, Finset.sum_range_zero] at hxroot
+    linear_combination hxroot
+  have hdisc_sq := discrim_eq_sq_of_quadratic_eq_zero hxquad
+  unfold discrim at hdisc_sq
+  nlinarith [sq_nonneg (2 * p.coeff 2 * x + p.coeff 1)]
+
+/-- Newton's adjacent coefficient inequalities for a real polynomial of degree
+at most three that is zero or splits. -/
+theorem three_mul_coeff_newton_of_natDegree_le_three
+    {p : ℝ[X]} (hdeg : p.natDegree ≤ 3) (hs : p = 0 ∨ p.Splits) :
+    3 * (p.coeff 0 * p.coeff 2) ≤ p.coeff 1 ^ 2 ∧
+      3 * (p.coeff 1 * p.coeff 3) ≤ p.coeff 2 ^ 2 := by
+  rcases hs with rfl | hsplits
+  · simp
+  by_cases h3 : p.natDegree = 3
+  · exact
+      ⟨three_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits_natDegree_three
+          h3 hsplits,
+        three_mul_coeff_one_mul_coeff_three_le_coeff_two_sq_of_splits_natDegree_three
+          h3 hsplits⟩
+  · have hle2 : p.natDegree ≤ 2 := Nat.lt_succ_iff.mp (lt_of_le_of_ne hdeg h3)
+    have hc3 : p.coeff 3 = 0 :=
+      coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hle2 (by norm_num))
+    refine ⟨?_, ?_⟩
+    · by_cases h2 : p.natDegree = 2
+      · have hquad := quadratic_disc_coeff_le_of_splits_natDegree_two h2 hsplits
+        nlinarith [hquad, sq_nonneg (p.coeff 1)]
+      · have hle1 : p.natDegree ≤ 1 :=
+          Nat.lt_succ_iff.mp (lt_of_le_of_ne hle2 h2)
+        have hc2 : p.coeff 2 = 0 :=
+          coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hle1 (by norm_num))
+        rw [hc2]
+        nlinarith [sq_nonneg (p.coeff 1)]
+    · rw [hc3]
+      nlinarith [sq_nonneg (p.coeff 2)]
+
+/-- Jensen-normalized cubic log-concavity from splitting of a polynomial whose
+coefficients are the binomially weighted `gᵢ`. -/
+theorem jensen_three_logConcave_of_natDegree_le_three
+    {p : ℝ[X]} {g0 g1 g2 g3 : ℝ}
+    (hdeg : p.natDegree ≤ 3) (hs : p = 0 ∨ p.Splits)
+    (h0 : p.coeff 0 = g0) (h1 : p.coeff 1 = 3 * g1)
+    (h2 : p.coeff 2 = 3 * g2) (h3 : p.coeff 3 = g3) :
+    g0 * g2 ≤ g1 ^ 2 ∧ g1 * g3 ≤ g2 ^ 2 := by
+  obtain ⟨hleft, hright⟩ := three_mul_coeff_newton_of_natDegree_le_three hdeg hs
+  rw [h0, h1, h2] at hleft
+  rw [h1, h2, h3] at hright
+  exact ⟨by nlinarith [hleft], by nlinarith [hright]⟩
+
 end RealRooted
