@@ -657,6 +657,213 @@ theorem finiteSchurSzegoComposition_of_factors_natDegree_le_two
     linear_combination hx
   exact Or.inr (Polynomial.Splits.of_natDegree_eq_two hqdeg hroot)
 
+/-- Newton's first coefficient inequality (`k = 1`) for a real polynomial that
+splits and has degree at least two, in the level-`natDegree` normalization:
+`2 * natDegree * coeff 0 * coeff 2 ≤ (natDegree - 1) * coeff 1 ^ 2`.
+
+This is the splitting-only form of the ultra-log-concavity inequality
+`hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits` at index
+`k = 1`; no nonnegativity of the coefficients is assumed. -/
+theorem two_natDegree_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits
+    {p : ℝ[X]} (hdeg : 2 ≤ p.natDegree) (hs : p.Splits) :
+    2 * (p.natDegree : ℝ) * (p.coeff 0 * p.coeff 2) ≤
+      ((p.natDegree : ℝ) - 1) * p.coeff 1 ^ 2 := by
+  set t := p.roots.map Neg.neg with ht_def
+  have htcard : Multiset.card t = p.natDegree := by
+    rw [ht_def, Multiset.card_map, card_roots_of_splits hs]
+  have h1d : 1 ≤ p.natDegree := le_trans one_le_two hdeg
+  have hc0 := coeff_eq_leadingCoeff_mul_esymm_neg_roots hs (k := 0) (Nat.zero_le _)
+  have hc1 := coeff_eq_leadingCoeff_mul_esymm_neg_roots hs (k := 1) h1d
+  have hc2 := coeff_eq_leadingCoeff_mul_esymm_neg_roots hs (k := 2) hdeg
+  rw [← ht_def] at hc0 hc1 hc2
+  have hnewton := NewtonAux.newton_esymm_ineq t (n := p.natDegree)
+    (m := p.natDegree - 1) htcard
+    (Nat.sub_pos_of_lt (lt_of_lt_of_le one_lt_two hdeg))
+    (Nat.sub_lt (lt_of_lt_of_le (by norm_num) hdeg) Nat.one_pos)
+  have idxm1 : p.natDegree - 1 - 1 = p.natDegree - 2 := by rw [Nat.sub_sub]
+  have idxp1 : p.natDegree - 1 + 1 = p.natDegree := Nat.sub_add_cancel h1d
+  rw [idxm1, idxp1] at hnewton
+  have hi0 : p.natDegree - 0 = p.natDegree := Nat.sub_zero _
+  rw [hi0] at hc0
+  have hcast_m : ((p.natDegree - 1 : ℕ) : ℝ) = (p.natDegree : ℝ) - 1 := by
+    rw [Nat.cast_sub h1d]
+    norm_num
+  have hself : p.natDegree - (p.natDegree - 1) = 1 := Nat.sub_sub_self h1d
+  have hcast_nm : ((p.natDegree - (p.natDegree - 1) : ℕ) : ℝ) = 1 := by
+    rw [hself]
+    norm_num
+  have hcast_nm1 : ((p.natDegree - (p.natDegree - 1) + 1 : ℕ) : ℝ) = 2 := by
+    rw [hself]
+    norm_num
+  rw [hcast_m, hcast_nm, hcast_nm1] at hnewton
+  rw [hc0, hc1, hc2]
+  nlinarith [mul_le_mul_of_nonneg_left hnewton (sq_nonneg p.leadingCoeff),
+    sq_nonneg p.leadingCoeff]
+
+/-- Level-lift arithmetic for Newton's `k = 1` inequality: an inequality in the
+level-`N` normalization lifts to any larger level `M ≥ N`.  The key algebraic
+identity is
+`(N - 1) * ((M - 1) * A - 2 * M * B) =
+  (M - 1) * ((N - 1) * A - 2 * N * B) + 2 * B * (M - N)`. -/
+private theorem newton_level_lift_arith {A B M N : ℝ}
+    (hA : 0 ≤ A) (hMN : N ≤ M) (hN1 : 1 < N)
+    (hnat : 2 * N * B ≤ (N - 1) * A) :
+    2 * M * B ≤ (M - 1) * A := by
+  rcases le_or_gt B 0 with hB | hB
+  · nlinarith [mul_nonneg (show (0 : ℝ) ≤ M - 1 by linarith) hA,
+      mul_nonneg (show (0 : ℝ) ≤ M by linarith)
+        (show (0 : ℝ) ≤ -B by linarith)]
+  · have key : (N - 1) * ((M - 1) * A - 2 * M * B)
+        = (M - 1) * ((N - 1) * A - 2 * N * B) + 2 * B * (M - N) := by
+      ring
+    nlinarith [key,
+      mul_nonneg (show (0 : ℝ) ≤ M - 1 by linarith)
+        (show (0 : ℝ) ≤ (N - 1) * A - 2 * N * B by linarith),
+      mul_nonneg hB.le (show (0 : ℝ) ≤ M - N by linarith), hN1]
+
+/-- Newton's first coefficient inequality (`k = 1`) in the level-`n`
+normalization, for a splitting polynomial of degree at most `n`.  It is the
+level-`natDegree` inequality
+`two_natDegree_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits` lifted to
+level `n` via `newton_level_lift_arith`; the low-degree cases (`natDegree ≤ 1`)
+have `coeff 2 = 0`. -/
+theorem two_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits_of_natDegree_le
+    {n : ℕ} (hn : 2 ≤ n) {p : ℝ[X]} (hpdeg : p.natDegree ≤ n) (hs : p.Splits) :
+    2 * (n : ℝ) * (p.coeff 0 * p.coeff 2) ≤ ((n : ℝ) - 1) * p.coeff 1 ^ 2 := by
+  rcases le_or_gt 2 p.natDegree with hdeg | hdeg
+  · have hnat :=
+      two_natDegree_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits hdeg hs
+    have hNn : (p.natDegree : ℝ) ≤ (n : ℝ) := by exact_mod_cast hpdeg
+    have h1N : (1 : ℝ) < (p.natDegree : ℝ) := by
+      have : (2 : ℝ) ≤ (p.natDegree : ℝ) := by exact_mod_cast hdeg
+      linarith
+    exact newton_level_lift_arith (A := p.coeff 1 ^ 2)
+      (B := p.coeff 0 * p.coeff 2) (M := (n : ℝ)) (N := (p.natDegree : ℝ))
+      (sq_nonneg _) hNn h1N hnat
+  · have hc2 : p.coeff 2 = 0 := coeff_eq_zero_of_natDegree_lt hdeg
+    have hnR : (2 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
+    rw [hc2]
+    nlinarith [sq_nonneg (p.coeff 1), hnR]
+
+/-- Pure arithmetic core of the Schur--Szego discriminant inequality when only
+the PF factor has degree at most two.  Here `a`, `b`, `c` are the coefficients of
+the PF factor and `d`, `e`, `g` those of the splitting factor, with the level-`N`
+Newton inequality `2 N (d g) ≤ (N - 1) e^2` replacing the quadratic
+discriminant of the splitting factor. -/
+private theorem schurSzegoComp_pf_disc_arith
+    {a b c d e g N : ℝ}
+    (ha : 0 ≤ a) (hc : 0 ≤ c)
+    (hfd : 4 * (a * c) ≤ b ^ 2)
+    (hpd : 2 * N * (d * g) ≤ (N - 1) * e ^ 2)
+    (hN : 2 ≤ N) :
+    4 * (a * d * (c * g / (N * (N - 1) / 2))) ≤ (b * e / N) ^ 2 := by
+  have hNpos : (0 : ℝ) < N := by linarith
+  have hN1 : (0 : ℝ) < N - 1 := by linarith
+  have hac : 0 ≤ a * c := mul_nonneg ha hc
+  have hkey : 4 * (a * d * (c * g / (N * (N - 1) / 2))) =
+      8 * (a * c) * (d * g) / (N * (N - 1)) := by
+    field_simp
+    ring
+  rw [hkey, div_pow, div_le_div_iff₀ (mul_pos hNpos hN1) (pow_pos hNpos 2)]
+  rcases le_total (d * g) 0 with hdg | hdg
+  · nlinarith [mul_nonpos_of_nonneg_of_nonpos (mul_nonneg hac (sq_nonneg N)) hdg,
+      mul_nonneg (sq_nonneg (b * e)) (mul_pos hNpos hN1).le]
+  · have hmul : 4 * (a * c) * (2 * N * (d * g)) ≤
+        b ^ 2 * ((N - 1) * e ^ 2) :=
+      mul_le_mul hfd hpd (by nlinarith [hdg, hNpos.le]) (sq_nonneg b)
+    nlinarith [mul_le_mul_of_nonneg_right hmul hNpos.le, sq_nonneg (b * e)]
+
+/-- **Schur--Szego discriminant inequality with a degree-`≤ 2` PF factor.**
+For a level `n ≥ 2`, a PF factor `f` of degree at most two, and a splitting
+factor `p` of arbitrary degree at most `n`, the fixed-degree Schur--Szego
+composition satisfies the quadratic discriminant inequality
+`4 * coeff 0 * coeff 2 ≤ coeff 1 ^ 2`.
+
+The input for `f` is its degree-`≤ 2` quadratic discriminant inequality
+`quadratic_disc_coeff_le_of_splits_natDegree_le_two` (with the nonnegativity of
+its coefficients); the input for `p` is the level-`n` Newton inequality
+`two_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits_of_natDegree_le`. -/
+theorem four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_schurSzegoComp_of_pf
+    {n : ℕ} (hn : 2 ≤ n) {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 2)
+    (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
+    4 * ((schurSzegoComp n f p).coeff 0 * (schurSzegoComp n f p).coeff 2) ≤
+      (schurSzegoComp n f p).coeff 1 ^ 2 := by
+  have h0n : 0 ≤ n := Nat.zero_le n
+  have h1n : 1 ≤ n := le_trans (by norm_num) hn
+  have hfd : 4 * (f.coeff 0 * f.coeff 2) ≤ f.coeff 1 ^ 2 := by
+    rcases hf.eq_zero_or_splits with h | h
+    · simp [h]
+    · exact quadratic_disc_coeff_le_of_splits_natDegree_le_two hfdeg h
+  have hpd : 2 * (n : ℝ) * (p.coeff 0 * p.coeff 2) ≤
+      ((n : ℝ) - 1) * p.coeff 1 ^ 2 :=
+    two_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits_of_natDegree_le
+      hn hpdeg hsplit
+  have hf0 : 0 ≤ f.coeff 0 := hf.hasNonnegCoeffs 0
+  have hf2 : 0 ≤ f.coeff 2 := hf.hasNonnegCoeffs 2
+  have hnR : (2 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
+  rw [coeff_schurSzegoComp_of_le h0n, coeff_schurSzegoComp_of_le h1n,
+    coeff_schurSzegoComp_of_le hn, Nat.choose_zero_right, Nat.choose_one_right,
+    Nat.cast_one, div_one, Nat.cast_choose_two]
+  exact schurSzegoComp_pf_disc_arith hf0 hf2 hfd hpd hnR
+
+/-- **Fixed-degree Schur--Szego composition with a degree-`≤ 2` PF factor.**
+
+For an arbitrary level `n`, a PF polynomial `f` of degree at most two, and a
+splitting polynomial `p` of arbitrary degree at most `n`, the fixed-degree
+Schur--Szego composition `schurSzegoComp n f p` is either zero or splits over
+`ℝ`.
+
+The composition has degree at most two (it inherits the degree bound of the PF
+factor), so it is settled by the quadratic discriminant inequality
+`four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_schurSzegoComp_of_pf`; the
+low-level cases (composition of degree at most one) are handled separately.
+Unlike `finiteSchurSzegoComposition_of_factors_natDegree_le_two`, here the
+splitting factor `p` may have arbitrary degree up to the level `n`. -/
+theorem finiteSchurSzegoComposition_of_pf_factor_natDegree_le_two
+    {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 2)
+    (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits := by
+  by_cases hq0 : schurSzegoComp n f p = 0
+  · exact Or.inl hq0
+  by_cases hqle1 : (schurSzegoComp n f p).natDegree ≤ 1
+  · exact Or.inr (isRealRooted_of_natDegree_le_one hq0 hqle1).2
+  have hqle2 : (schurSzegoComp n f p).natDegree ≤ 2 :=
+    le_trans (natDegree_schurSzegoComp_le_left n f p) hfdeg
+  have hqdeg : (schurSzegoComp n f p).natDegree = 2 :=
+    le_antisymm hqle2 (Nat.succ_le_of_lt (not_le.mp hqle1))
+  have hn : 2 ≤ n := hqdeg ▸ natDegree_schurSzegoComp_le n f p
+  have hdisc : 0 ≤ (schurSzegoComp n f p).coeff 1 ^ 2 -
+      4 * (schurSzegoComp n f p).coeff 2 * (schurSzegoComp n f p).coeff 0 := by
+    have := four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_schurSzegoComp_of_pf
+      hn hf hfdeg hpdeg hsplit
+    nlinarith [this]
+  obtain ⟨x, hx⟩ := exists_root_of_disc_nonneg
+    (a := (schurSzegoComp n f p).coeff 2)
+    (b := (schurSzegoComp n f p).coeff 1)
+    (c := (schurSzegoComp n f p).coeff 0)
+    (by
+      have hlc : (schurSzegoComp n f p).leadingCoeff ≠ 0 :=
+        leadingCoeff_ne_zero.mpr hq0
+      rwa [Polynomial.leadingCoeff, hqdeg] at hlc)
+    hdisc
+  have hroot : (schurSzegoComp n f p).IsRoot x := by
+    rw [Polynomial.IsRoot.def, Polynomial.eval_eq_sum_range, hqdeg]
+    simp only [Finset.sum_range_succ, Finset.sum_range_zero]
+    linear_combination hx
+  exact Or.inr (Polynomial.Splits.of_natDegree_eq_two hqdeg hroot)
+
+/-- Nonzero-core version of the arbitrary-level Schur--Szego base case with a
+degree-`≤ 2` PF factor. -/
+theorem finiteSchurSzegoCompositionNonzero_of_pf_factor_natDegree_le_two
+    {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (_hf0 : f ≠ 0) (hfdeg : f.natDegree ≤ 2)
+    (_hp0 : p ≠ 0) (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  finiteSchurSzegoComposition_of_pf_factor_natDegree_le_two
+    hf hfdeg hpdeg hsplit
+
 /-- Nonzero-core version of the arbitrary-level degree-`≤ 2` Schur--Szego
 base case. -/
 theorem finiteSchurSzegoCompositionNonzero_of_factors_natDegree_le_two
