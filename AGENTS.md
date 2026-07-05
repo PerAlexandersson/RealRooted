@@ -70,5 +70,12 @@ open derivative-refactor PR.
 
 - Before changing files touched by an open Yael PR, inspect the PR diff and
   avoid fighting the intended API direction.
-- Run focused `lake build` targets for touched Lean modules, then run full
-  `lake build` before pushing Lean changes.
+- For local Docker builds after PR #63, do not run plain `lake build` unless
+  you are intentionally allowing a project-local `.lake`.  The committed
+  manifest uses relative `.lake/packages` for portability, so use the
+  `/workspace/lean/AGENTS.md` temporary-Lakefile plus `--packages` override
+  pattern with the existing `/lake-cache/ai-projects/packages` checkouts and a
+  per-worker build directory under
+  `/lake-cache/ai-projects/build/RealRooted-<worker-tag>`.
+- Run focused Lake builds for touched Lean modules, then run a full Lake build
+  before pushing Lean changes, using the same cache-aware local command shape.
