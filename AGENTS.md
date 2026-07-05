@@ -77,5 +77,8 @@ open derivative-refactor PR.
   pattern with the existing `/lake-cache/ai-projects/packages` checkouts and a
   per-worker build directory under
   `/lake-cache/ai-projects/build/RealRooted-<worker-tag>`.
+  In this project, also pass the matching `-KbuildDir=<external-build-dir>`
+  option; the temporary Lakefile `buildDir` entry alone can still materialize a
+  root `.lake/build` directory.
 - Run focused Lake builds for touched Lean modules, then run a full Lake build
   before pushing Lean changes, using the same cache-aware local command shape.

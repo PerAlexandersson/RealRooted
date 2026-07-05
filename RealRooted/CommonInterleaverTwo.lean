@@ -1291,6 +1291,19 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_degree_zero
     posComboNoCommonSuccDegreeOrientation_of_degree_zero
       hf_pos hg_pos hf_deg0 hsucc
 
+/-- The common-left succ-degree pair bridge is already unconditional in the
+constant-vs-linear endpoint case. -/
+theorem posComboNoCommonSuccDegreeCommonLeftInterleaver_of_degree_zero
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hf_deg0 : f.natDegree = 0)
+    (hsucc : g.natDegree = f.natDegree + 1) :
+    ∃ h : ℝ[X], Prec h f ∧ Prec h g :=
+  pairHasCommonLeftInterleaver_of_prec <|
+    posComboNoCommonSuccDegreeOrientation_of_degree_zero
+      hf_pos hg_pos hf_deg0 hsucc
+
 /-- Degree-zero base case for the succ-degree root-slot data.  In the
 constant-vs-linear endpoint, the unconditional common interleaver recovers both
 the left real-rootedness and all matching slot intersections. -/
@@ -3777,6 +3790,15 @@ def PosComboNoCommonSuccDegreeCommonLeftInterleaverNonnegStatement : Prop :=
     (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
     f.Splits →
     ∃ h : ℝ[X], Prec h f ∧ Prec h g
+
+/-- The fixed-orientation succ-degree endpoint supplies the common-left
+interleaver formulation by using `f` as the witness. -/
+theorem posComboNoCommonSuccDegreeCommonLeftInterleaver_of_orientation
+    (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
+    PosComboNoCommonSuccDegreeCommonLeftInterleaverNonnegStatement := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno _hf_split
+  exact pairHasCommonLeftInterleaver_of_prec <|
+    horient hf_pos hg_pos hfnn hgnn hfg hdeg hno
 
 /-- A common left interleaver gives the lower common-non-root succ-degree
 root-count target.  The degrees force the left interleaver to have the same

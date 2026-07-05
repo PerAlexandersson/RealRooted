@@ -1019,6 +1019,13 @@ theorem succDegreeRootCountAboveNonRootTarget_of_commonLeftInterleaver
     succDegreeRootCountAboveNonRootTarget :=
   posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_commonLeftInterleaver hleft
 
+/-- Challenge-facing reduction from the fixed succ-degree orientation to the
+common-left-interleaver formulation. -/
+theorem succDegreeCommonLeftInterleaverTarget_of_orientation
+    (horient : succDegreeOrientationTarget) :
+    succDegreeCommonLeftInterleaverTarget :=
+  posComboNoCommonSuccDegreeCommonLeftInterleaver_of_orientation horient
+
 /-- Challenge-facing reduction from common-non-root succ-degree lower root
 counts to the full upper-threshold formulation. -/
 theorem succDegreeRootCountAboveTarget_of_rootCountNonRoot
