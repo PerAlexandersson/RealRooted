@@ -56,6 +56,108 @@ theorem card_filter_lt_eq_of_no_mem_Ioc
       exact lt_of_le_of_lt hab hbr
   rw [hset]
 
+/-- The elements in `(a, b]` and the elements strictly above `b` partition the
+elements strictly above `a`. -/
+theorem card_filter_Ioc_add_card_filter_gt_eq_card_filter_gt
+    {α : Type*} [LinearOrder α] (s : Multiset α) {a b : α} (hab : a ≤ b) :
+    (s.filter (fun r => a < r ∧ r ≤ b)).card + (s.filter (b < ·)).card =
+      (s.filter (a < ·)).card := by
+  have hIoc :
+      s.filter (fun r => a < r ∧ r ≤ b) =
+        (s.filter (a < ·)).filter (· ≤ b) := by
+    ext r
+    by_cases har : a < r <;> by_cases hrb : r ≤ b <;> simp [har, hrb]
+  have hgt :
+      s.filter (b < ·) =
+        (s.filter (a < ·)).filter (fun r => ¬ r ≤ b) := by
+    ext r
+    by_cases hbr : b < r
+    · simp [hbr, lt_of_le_of_lt hab hbr]
+    · simp [hbr, not_le]
+  rw [hIoc, hgt, ← Multiset.card_add, Multiset.filter_add_not]
+
+/-- If `b` is not present, the elements in `(a, b)` and the elements strictly
+above `b` partition the elements strictly above `a`. -/
+theorem card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem
+    {α : Type*} [LinearOrder α] (s : Multiset α) {a b : α} (hab : a ≤ b)
+    (hb : b ∉ s) :
+    (s.filter (fun r => a < r ∧ r < b)).card + (s.filter (b < ·)).card =
+      (s.filter (a < ·)).card := by
+  have hIoo :
+      s.filter (fun r => a < r ∧ r < b) =
+        s.filter (fun r => a < r ∧ r ≤ b) := by
+    apply Multiset.filter_congr
+    intro r hr
+    constructor
+    · intro h
+      exact ⟨h.1, le_of_lt h.2⟩
+    · intro h
+      have hr_ne : r ≠ b := by
+        intro hrb
+        exact hb (by simpa [hrb] using hr)
+      exact ⟨h.1, lt_of_le_of_ne h.2 hr_ne⟩
+  rw [hIoo]
+  exact card_filter_Ioc_add_card_filter_gt_eq_card_filter_gt s hab
+
+/-- Polynomial-root form of
+`card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem`. -/
+theorem card_roots_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_isRoot
+    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ} (hab : a ≤ b)
+    (hb : ¬ p.IsRoot b) :
+    (p.roots.filter (fun r => a < r ∧ r < b)).card +
+        (p.roots.filter (b < ·)).card =
+      (p.roots.filter (a < ·)).card :=
+  card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem p.roots hab
+    (fun hb_mem => hb ((mem_roots hp).mp hb_mem))
+
+/-- If two endpoint polynomials have the same nonzero sign at `x`, then every
+member of their closed segment is nonzero at `x`. -/
+theorem closedSegment_eval_ne_zero_of_eval_mul_pos
+    {f g : ℝ[X]} {β x : ℝ} (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1)
+    (hprod : 0 < f.eval x * g.eval x) :
+    (C (1 - β) * f + C β * g).eval x ≠ 0 := by
+  have hweight : 0 ≤ 1 - β := by linarith
+  have hf_ne : f.eval x ≠ 0 := by
+    intro hf0
+    rw [hf0, zero_mul] at hprod
+    linarith
+  by_cases hf_pos : 0 < f.eval x
+  · have hg_pos : 0 < g.eval x := by nlinarith
+    have hpos_eval : 0 < (1 - β) * f.eval x + β * g.eval x := by
+      by_cases hβ : β = 0
+      · simpa [hβ] using hf_pos
+      · have hβ_pos : 0 < β := lt_of_le_of_ne hβ0 (Ne.symm hβ)
+        have hleft_nonneg : 0 ≤ (1 - β) * f.eval x :=
+          mul_nonneg hweight (le_of_lt hf_pos)
+        have hright_pos : 0 < β * g.eval x := mul_pos hβ_pos hg_pos
+        linarith
+    have hpos : 0 < (C (1 - β) * f + C β * g).eval x := by
+      simpa [eval_add, eval_mul, eval_C] using hpos_eval
+    exact ne_of_gt hpos
+  · have hf_neg : f.eval x < 0 :=
+      lt_of_le_of_ne (le_of_not_gt hf_pos) hf_ne
+    have hg_neg : g.eval x < 0 := by nlinarith
+    have hneg_eval : (1 - β) * f.eval x + β * g.eval x < 0 := by
+      by_cases hβ : β = 0
+      · simpa [hβ] using hf_neg
+      · have hβ_pos : 0 < β := lt_of_le_of_ne hβ0 (Ne.symm hβ)
+        have hleft_nonpos : (1 - β) * f.eval x ≤ 0 :=
+          mul_nonpos_of_nonneg_of_nonpos hweight (le_of_lt hf_neg)
+        have hright_neg : β * g.eval x < 0 := mul_neg_of_pos_of_neg hβ_pos hg_neg
+        linarith
+    have hneg : (C (1 - β) * f + C β * g).eval x < 0 := by
+      simpa [eval_add, eval_mul, eval_C] using hneg_eval
+    exact ne_of_lt hneg
+
+/-- `IsRoot`-form of `closedSegment_eval_ne_zero_of_eval_mul_pos`. -/
+theorem closedSegment_not_isRoot_of_eval_mul_pos
+    {f g : ℝ[X]} {β x : ℝ} (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1)
+    (hprod : 0 < f.eval x * g.eval x) :
+    ¬ (C (1 - β) * f + C β * g).IsRoot x := by
+  simpa [Polynomial.IsRoot.def] using
+    closedSegment_eval_ne_zero_of_eval_mul_pos (f := f) (g := g)
+      (β := β) (x := x) hβ0 hβ1 hprod
+
 /-- Move a real threshold strictly upward without crossing any element of a
 finite multiset. -/
 theorem exists_threshold_no_mem_Ioc (s : Multiset ℝ) (x : ℝ) :
