@@ -2328,7 +2328,7 @@ theorem pairwiseCompatible_iff_familyCompatible_of_natDegree_le_one
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
-  RealRooted.pairwiseCompatible_iff_familyCompatible_of_natDegree_le_one
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_natDegree_le_one
     hpos hdeg
 
 /-- Challenge-facing reduction for the left-oriented common-interleaver target. -/
