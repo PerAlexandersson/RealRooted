@@ -1665,6 +1665,68 @@ theorem hurwitzMatrixSchurProductDetLeThree_of_polyaFreq
   hurwitzMatrixSchurProductDetLeThree_of_fullBand
     (hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_polyaFreq hPF)
 
+/-- Even-column Toeplitz nonnegativity leaf for the column-`0` product
+sequence.  Only doubled columns `2 * cols j` are selected, so this is strictly
+weaker than the false full column-`0` product Pólya-frequency leaf. -/
+def HurwitzColumnZeroProductEvenColToeplitzStatement : Prop :=
+  ∀ {a b : ℕ → ℝ},
+    (hurwitz a).IsTotallyNonneg →
+    (hurwitz b).IsTotallyNonneg →
+    ∀ {n : ℕ} {rows cols : Fin n → ℕ},
+      StrictMono rows →
+      StrictMono cols →
+      0 ≤ ((toeplitz (fun k => hurwitz a k 0 * hurwitz b k 0)).submatrix rows
+        (fun j => 2 * cols j)).det
+
+/-- Sharpened reduction of the full-band `3 × 3` Hurwitz Schur-product core
+(GitHub issue #34) to the even-column Toeplitz leaf. -/
+theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_evenColToeplitz
+    (hEven : HurwitzColumnZeroProductEvenColToeplitzStatement) :
+    HurwitzMatrixSchurProductDetFinThreeCoreFullBandStatement := by
+  intro a b ha hb rows cols hrows hcols _hband _h01 _h12 h02
+  have hbandall : ∀ i j : Fin 3, 2 * cols j ≤ rows i := by
+    intro i j
+    have hcj : cols j ≤ cols 2 := hcols.monotone (Fin.le_last j)
+    have hri : rows 0 ≤ rows i := hrows.monotone (Fin.zero_le i)
+    calc
+      2 * cols j ≤ 2 * cols 2 := Nat.mul_le_mul_left 2 hcj
+      _ ≤ rows 0 := h02
+      _ ≤ rows i := hri
+  rw [hurwitz_schurProduct_det_submatrix_eq_toeplitz_of_band a b hbandall]
+  exact hEven ha hb hrows hcols
+
+/-- The even-column Toeplitz reduction, transported to the original in-band
+`3 × 3` Hurwitz Schur-product core. -/
+theorem hurwitzMatrixSchurProductDetFinThreeInBand_of_evenColToeplitz
+    (hEven : HurwitzColumnZeroProductEvenColToeplitzStatement) :
+    HurwitzMatrixSchurProductDetFinThreeInBandStatement :=
+  hurwitzMatrixSchurProductDetFinThreeInBand_of_fullBand
+    (hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_evenColToeplitz hEven)
+
+/-- The even-column Toeplitz reduction, transported to the low-order size-`≤ 3`
+Hurwitz Schur-product statement. -/
+theorem hurwitzMatrixSchurProductDetLeThree_of_evenColToeplitz
+    (hEven : HurwitzColumnZeroProductEvenColToeplitzStatement) :
+    HurwitzMatrixSchurProductDetLeThreeStatement :=
+  hurwitzMatrixSchurProductDetLeThree_of_fullBand
+    (hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_evenColToeplitz hEven)
+
+/-- The full column-`0` product Pólya-frequency leaf implies the sharper
+even-column Toeplitz leaf: doubled columns are a special case of arbitrary
+columns.  The converse is not known and is the point of the sharper leaf. -/
+theorem hurwitzColumnZeroProductEvenColToeplitz_of_polyaFreq
+    (hPF : ∀ {a b : ℕ → ℝ},
+      (hurwitz a).IsTotallyNonneg →
+      (hurwitz b).IsTotallyNonneg →
+      IsPolyaFreqSeq (fun k => hurwitz a k 0 * hurwitz b k 0)) :
+    HurwitzColumnZeroProductEvenColToeplitzStatement := by
+  intro a b ha hb n rows cols hrows hcols
+  have hdbl : StrictMono (fun j : Fin n => 2 * cols j) := by
+    intro x y hxy
+    have h := hcols hxy
+    exact Nat.mul_lt_mul_of_pos_left h (by decide : 0 < 2)
+  exact hPF ha hb hrows hdbl
+
 /-! ### The column-`0` product Pólya-frequency leaf is false
 
 The full-band reduction

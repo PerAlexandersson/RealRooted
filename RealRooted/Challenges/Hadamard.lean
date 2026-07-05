@@ -621,6 +621,13 @@ abbrev hurwitzColumnZeroProductPFTarget : Prop :=
     (hurwitz b).IsTotallyNonneg →
     IsPolyaFreqSeq (fun k => hurwitz a k 0 * hurwitz b k 0)
 
+/-- Challenge-facing even-column Toeplitz target for the column-zero product
+sequence.  This is the sharper leaf that the fully in-band Hurwitz staircase
+actually needs; it is weaker than full Pólya-frequency of the column-zero
+product sequence. -/
+abbrev hurwitzColumnZeroProductEvenColToeplitzTarget : Prop :=
+  HurwitzColumnZeroProductEvenColToeplitzStatement
+
 /-- The column-zero product Pólya-frequency leaf is false.  It was only a
 sufficient route to the full-band Hurwitz Schur-product target, not a valid
 consequence of total nonnegativity of the two Hurwitz matrices. -/
@@ -764,6 +771,34 @@ theorem hurwitzSchurLeThreeTarget_of_columnZeroProductPF
     (hPF : hurwitzColumnZeroProductPFTarget) :
     hurwitzSchurLeThreeTarget :=
   hurwitzMatrixSchurProductDetLeThree_of_polyaFreq hPF
+
+/-- Challenge-facing implication from the full column-zero Pólya-frequency leaf
+to the sharper even-column Toeplitz leaf. -/
+theorem hurwitzColumnZeroProductEvenColToeplitzTarget_of_columnZeroProductPF
+    (hPF : hurwitzColumnZeroProductPFTarget) :
+    hurwitzColumnZeroProductEvenColToeplitzTarget :=
+  hurwitzColumnZeroProductEvenColToeplitz_of_polyaFreq hPF
+
+/-- Challenge-facing reduction from the even-column Toeplitz leaf to the fully
+in-band `3 x 3` Hurwitz Schur-product target. -/
+theorem hurwitzSchurFullBandTarget_of_evenColToeplitz
+    (hEven : hurwitzColumnZeroProductEvenColToeplitzTarget) :
+    hurwitzSchurFullBandTarget :=
+  hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_evenColToeplitz hEven
+
+/-- Challenge-facing reduction from the even-column Toeplitz leaf to the
+isolated in-band `3 x 3` Hurwitz Schur-product target. -/
+theorem hurwitzSchurInBandTarget_of_evenColToeplitz
+    (hEven : hurwitzColumnZeroProductEvenColToeplitzTarget) :
+    hurwitzSchurInBandTarget :=
+  hurwitzMatrixSchurProductDetFinThreeInBand_of_evenColToeplitz hEven
+
+/-- Challenge-facing reduction from the even-column Toeplitz leaf to the
+low-order size-`≤ 3` Hurwitz Schur-product target. -/
+theorem hurwitzSchurLeThreeTarget_of_evenColToeplitz
+    (hEven : hurwitzColumnZeroProductEvenColToeplitzTarget) :
+    hurwitzSchurLeThreeTarget :=
+  hurwitzMatrixSchurProductDetLeThree_of_evenColToeplitz hEven
 
 /-- Challenge-facing theorem discharging the corner-zero top-right subcase. -/
 theorem hurwitzSchurCornerZeroTarget_proved :
