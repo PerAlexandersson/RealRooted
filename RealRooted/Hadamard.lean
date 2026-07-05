@@ -864,6 +864,68 @@ theorem finiteSchurSzegoCompositionNonzero_of_pf_factor_natDegree_le_two
   finiteSchurSzegoComposition_of_pf_factor_natDegree_le_two
     hf hfdeg hpdeg hsplit
 
+/-- If the degree-`n` Jensen polynomial is PF and itself has degree at most
+two, then the diagonal sequence is a finite multiplier sequence through degree
+`n`.
+
+Unlike `isFiniteMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two`,
+the degree bound here is on the Jensen polynomial, not on the ambient level
+`n`.  The proof is the Schur--Szegő base case with a degree-`≤ 2` PF factor,
+applied to the Jensen polynomial and then identified with the diagonal
+operator. -/
+theorem isFiniteMultiplierSequence_of_isPF_jensenPolynomial_self_natDegree_le_two
+    {n : ℕ} {gamma : ℕ → ℝ}
+    (hjensen : IsPFPolynomial (jensenPolynomial n gamma))
+    (hjdeg : (jensenPolynomial n gamma).natDegree ≤ 2) :
+    IsFiniteMultiplierSequence n gamma := by
+  intro p hp hsplit
+  have hschur : schurSzegoComp n (jensenPolynomial n gamma) p = 0 ∨
+      (schurSzegoComp n (jensenPolynomial n gamma) p).Splits :=
+    finiteSchurSzegoComposition_of_pf_factor_natDegree_le_two
+      hjensen hjdeg hp hsplit
+  have heq : schurSzegoComp n (jensenPolynomial n gamma) p =
+      diagonalOperator gamma p :=
+    schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le hp
+  rwa [heq] at hschur
+
+/-- PF-preservation version of
+`isFiniteMultiplierSequence_of_isPF_jensenPolynomial_self_natDegree_le_two`. -/
+theorem isFinitePFMultiplierSequence_of_isPF_jensenPolynomial_self_natDegree_le_two
+    {n : ℕ} {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k)
+    (hjensen : IsPFPolynomial (jensenPolynomial n gamma))
+    (hjdeg : (jensenPolynomial n gamma).natDegree ≤ 2) :
+    IsFinitePFMultiplierSequence n gamma :=
+  isFinitePFMultiplierSequence_of_finiteMultiplierSequence hgamma
+    (isFiniteMultiplierSequence_of_isPF_jensenPolynomial_self_natDegree_le_two
+      hjensen hjdeg)
+
+/-- Finite multiplier sequences are classified by the PF Jensen polynomial in
+the special case where that Jensen polynomial has degree at most two. -/
+theorem isFiniteMultiplierSequence_iff_jensenPolynomial_of_self_natDegree_le_two
+    {n : ℕ} {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k)
+    (hjdeg : (jensenPolynomial n gamma).natDegree ≤ 2) :
+    IsFiniteMultiplierSequence n gamma ↔
+      IsPFPolynomial (jensenPolynomial n gamma) :=
+  ⟨isPFPolynomial_jensenPolynomial_of_finiteMultiplierSequence hgamma,
+    fun hjensen =>
+      isFiniteMultiplierSequence_of_isPF_jensenPolynomial_self_natDegree_le_two
+        hjensen hjdeg⟩
+
+/-- PF-preservation classification in the special case where the Jensen
+polynomial has degree at most two. -/
+theorem isFinitePFMultiplierSequence_iff_jensenPolynomial_of_self_natDegree_le_two
+    {n : ℕ} {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k)
+    (hjdeg : (jensenPolynomial n gamma).natDegree ≤ 2) :
+    IsFinitePFMultiplierSequence n gamma ↔
+      IsPFPolynomial (jensenPolynomial n gamma) :=
+  ⟨isPFPolynomial_jensenPolynomial_of_finitePFMultiplierSequence,
+    fun hjensen =>
+      isFinitePFMultiplierSequence_of_isPF_jensenPolynomial_self_natDegree_le_two
+        hgamma hjensen hjdeg⟩
+
 /-- Nonzero-core version of the arbitrary-level degree-`≤ 2` Schur--Szego
 base case. -/
 theorem finiteSchurSzegoCompositionNonzero_of_factors_natDegree_le_two

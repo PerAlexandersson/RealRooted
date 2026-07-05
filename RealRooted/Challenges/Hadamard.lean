@@ -261,6 +261,49 @@ theorem finitePFMultiplierSequencePair_iff_jensenPolynomial_of_natDegree_le_two
       IsPFPolynomial (jensenPolynomial n gamma) :=
   isFinitePFMultiplierSequence_iff_jensenPolynomial_natDegree_le_two hn hgamma
 
+/-- Challenge-facing finite multiplier-sequence criterion when the Jensen
+polynomial itself has degree at most `2`. -/
+theorem finiteMultiplierSequencePair_of_jensenPolynomial_self_natDegree_le_two
+    {n : ℕ} {gamma : ℕ → ℝ}
+    (hjensen : IsPFPolynomial (jensenPolynomial n gamma))
+    (hjdeg : (jensenPolynomial n gamma).natDegree ≤ 2) :
+    IsFiniteMultiplierSequence n gamma :=
+  isFiniteMultiplierSequence_of_isPF_jensenPolynomial_self_natDegree_le_two
+    hjensen hjdeg
+
+/-- Challenge-facing PF multiplier-sequence criterion when the Jensen
+polynomial itself has degree at most `2`. -/
+theorem finitePFMultiplierSequencePair_of_jensenPolynomial_self_natDegree_le_two
+    {n : ℕ} {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k)
+    (hjensen : IsPFPolynomial (jensenPolynomial n gamma))
+    (hjdeg : (jensenPolynomial n gamma).natDegree ≤ 2) :
+    IsFinitePFMultiplierSequence n gamma :=
+  isFinitePFMultiplierSequence_of_isPF_jensenPolynomial_self_natDegree_le_two
+    hgamma hjensen hjdeg
+
+/-- Challenge-facing finite Pólya--Schur classification when the Jensen
+polynomial itself has degree at most `2`. -/
+theorem finitePolyaSchurPair_iff_jensenPolynomial_of_self_natDegree_le_two
+    {n : ℕ} {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k)
+    (hjdeg : (jensenPolynomial n gamma).natDegree ≤ 2) :
+    IsFiniteMultiplierSequence n gamma ↔
+      IsPFPolynomial (jensenPolynomial n gamma) :=
+  isFiniteMultiplierSequence_iff_jensenPolynomial_of_self_natDegree_le_two
+    hgamma hjdeg
+
+/-- Challenge-facing PF-preservation classification when the Jensen polynomial
+itself has degree at most `2`. -/
+theorem finitePFMultiplierSequencePair_iff_jensenPolynomial_of_self_natDegree_le_two
+    {n : ℕ} {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k)
+    (hjdeg : (jensenPolynomial n gamma).natDegree ≤ 2) :
+    IsFinitePFMultiplierSequence n gamma ↔
+      IsPFPolynomial (jensenPolynomial n gamma) :=
+  isFinitePFMultiplierSequence_iff_jensenPolynomial_of_self_natDegree_le_two
+    hgamma hjdeg
+
 /-- Challenge-facing cubic discriminant splitting target. -/
 abbrev cubicDiscriminantSplittingTarget : Prop :=
   ∀ {p : ℝ[X]}, p.natDegree = 3 → 0 ≤ cubicDiscr p → p.Splits
