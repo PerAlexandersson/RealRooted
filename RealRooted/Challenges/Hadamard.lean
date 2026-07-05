@@ -234,6 +234,28 @@ theorem finiteSchurSzegoNonzeroPair_of_pf_factor_natDegree_le_two
   finiteSchurSzegoCompositionNonzero_of_pf_factor_natDegree_le_two
     hf hf0 hfdeg hp0 hpdeg hsplit
 
+/-- Challenge-facing degree-`≤ 3` PF-factor Schur--Szegő route, assuming the
+remaining cubic discriminant inequality for the composition. -/
+theorem finiteSchurSzegoPair_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
+    {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
+    (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits)
+    (hdisc : 0 ≤ cubicDiscr (schurSzegoComp n f p)) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
+    hf hfdeg hpdeg hsplit hdisc
+
+/-- Challenge-facing nonzero degree-`≤ 3` PF-factor Schur--Szegő route,
+assuming the remaining cubic discriminant inequality for the composition. -/
+theorem finiteSchurSzegoNonzeroPair_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
+    {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hf0 : f ≠ 0) (hfdeg : f.natDegree ≤ 3)
+    (hp0 : p ≠ 0) (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits)
+    (hdisc : 0 ≤ cubicDiscr (schurSzegoComp n f p)) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  finiteSchurSzegoCompositionNonzero_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
+    hf hf0 hfdeg hp0 hpdeg hsplit hdisc
+
 /-- Challenge-facing checked low-degree backward finite Pólya--Schur base case,
 through degree `2`. -/
 theorem finitePolyaSchurBackwardPair_of_natDegree_le_two
@@ -368,6 +390,27 @@ theorem schurSzegoCompCubicDiscriminantLeThreeTarget_proved :
   fun hfdeg hdisc =>
     finiteSchurSzegoComposition_of_natDegree_le_three_cubicDiscr_nonneg
       hfdeg hdisc
+
+/-- Challenge-facing target for the missing degree-`≤ 3` PF-factor cubic
+discriminant inequality in the Schur--Szegő route. -/
+abbrev schurSzegoCompPFFactorCubicDiscriminantNonnegTarget : Prop :=
+  ∀ {n : ℕ} {f p : ℝ[X]},
+    IsPFPolynomial f →
+    f.natDegree ≤ 3 →
+    p.natDegree ≤ n →
+    p.Splits →
+    0 ≤ cubicDiscr (schurSzegoComp n f p)
+
+/-- The degree-`≤ 3` PF-factor cubic discriminant target is exactly the
+remaining input needed for the corresponding Schur--Szegő pair route. -/
+theorem finiteSchurSzegoPair_of_pf_factor_natDegree_le_three_of_cubicDiscriminantTarget
+    (hdisc : schurSzegoCompPFFactorCubicDiscriminantNonnegTarget)
+    {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
+    (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  finiteSchurSzegoPair_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
+    hf hfdeg hpdeg hsplit (hdisc hf hfdeg hpdeg hsplit)
 
 /-- Challenge-facing cubic Newton inequalities for an exact-degree splitting
 Jensen polynomial. -/

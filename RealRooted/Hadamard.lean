@@ -982,6 +982,32 @@ theorem finiteSchurSzegoCompositionNonzero_of_natDegree_le_three_cubicDiscr_nonn
   finiteSchurSzegoComposition_of_natDegree_le_three_cubicDiscr_nonneg
     hfdeg hdisc
 
+/-- Degree-`≤ 3` PF-factor Schur--Szegő composition reduced to the cubic
+discriminant inequality.
+
+This packages the exact hypotheses of the Schur--Szegő PF-factor route while
+leaving only `0 ≤ cubicDiscr (schurSzegoComp n f p)` as the remaining
+degree-three obligation. -/
+theorem finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
+    {n : ℕ} {f p : ℝ[X]}
+    (_hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
+    (_hpdeg : p.natDegree ≤ n) (_hsplit : p.Splits)
+    (hdisc : 0 ≤ cubicDiscr (schurSzegoComp n f p)) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  finiteSchurSzegoComposition_of_natDegree_le_three_cubicDiscr_nonneg
+    hfdeg hdisc
+
+/-- Nonzero-core version of the degree-`≤ 3` PF-factor Schur--Szegő reduction
+to the cubic discriminant inequality. -/
+theorem finiteSchurSzegoCompositionNonzero_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
+    {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (_hf0 : f ≠ 0) (hfdeg : f.natDegree ≤ 3)
+    (_hp0 : p ≠ 0) (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits)
+    (hdisc : 0 ≤ cubicDiscr (schurSzegoComp n f p)) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
+    hf hfdeg hpdeg hsplit hdisc
+
 /-- The full finite Schur--Szegő theorem implies the finite Pólya--Schur
 theorem. -/
 theorem finitePolyaSchur_nonneg_of_schurSzego
