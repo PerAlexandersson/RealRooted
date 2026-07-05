@@ -913,6 +913,24 @@ theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_cornerZeroedSingle
   hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_cornerZeroed
     (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroed_of_single hSingle)
 
+/-- The column-normalized single-matrix corner-zeroed determinant subtarget
+implies the two-matrix corner-zeroed full-band subtarget. -/
+theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroed_of_singleColZero
+    (hZero :
+      HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZeroStatement) :
+    HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedStatement :=
+  hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroed_of_single
+    (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle_of_colZero hZero)
+
+/-- The column-normalized single-matrix corner-zeroed determinant subtarget
+implies the full-band `3 × 3` Hurwitz Schur-product subcase. -/
+theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_cornerZeroedSingleColZero
+    (hZero :
+      HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZeroStatement) :
+    HurwitzMatrixSchurProductDetFinThreeCoreFullBandStatement :=
+  hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_cornerZeroedSingle
+    (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle_of_colZero hZero)
+
 /-- The corner-zero subcase of the triangular-free `3 × 3` Hurwitz
 Schur-product core.  When the top-right corner `(0, 2)` lies strictly above the
 staircase, the corresponding Hadamard-product entry vanishes and the determinant
@@ -1034,6 +1052,33 @@ theorem hurwitzMatrixSchurProductDetLeThree_of_cornerZeroedSingle
     HurwitzMatrixSchurProductDetLeThreeStatement :=
   hurwitzMatrixSchurProductDetLeThree_of_core
     (hurwitzMatrixSchurProductDetFinThreeCore_of_cornerZeroedSingle hSingle)
+
+/-- The column-normalized single-matrix corner-zeroed determinant subtarget
+implies the triangular-free `3 × 3` Hurwitz Schur-product core. -/
+theorem hurwitzMatrixSchurProductDetFinThreeCore_of_cornerZeroedSingleColZero
+    (hZero :
+      HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZeroStatement) :
+    HurwitzMatrixSchurProductDetFinThreeCoreStatement :=
+  hurwitzMatrixSchurProductDetFinThreeCore_of_cornerZeroedSingle
+    (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle_of_colZero hZero)
+
+/-- The column-normalized single-matrix corner-zeroed determinant subtarget
+implies the original in-band `3 × 3` Hurwitz Schur-product core. -/
+theorem hurwitzMatrixSchurProductDetFinThreeInBand_of_cornerZeroedSingleColZero
+    (hZero :
+      HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZeroStatement) :
+    HurwitzMatrixSchurProductDetFinThreeInBandStatement :=
+  hurwitzMatrixSchurProductDetFinThreeInBand_of_cornerZeroedSingle
+    (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle_of_colZero hZero)
+
+/-- The column-normalized single-matrix corner-zeroed determinant subtarget
+implies the low-order, size-`≤ 3`, Hurwitz matrix Schur-product statement. -/
+theorem hurwitzMatrixSchurProductDetLeThree_of_cornerZeroedSingleColZero
+    (hZero :
+      HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZeroStatement) :
+    HurwitzMatrixSchurProductDetLeThreeStatement :=
+  hurwitzMatrixSchurProductDetLeThree_of_cornerZeroedSingle
+    (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle_of_colZero hZero)
 
 /-- The triangular-free core immediately gives the fully in-band top-right
 subcase. -/

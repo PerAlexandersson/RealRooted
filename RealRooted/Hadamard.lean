@@ -921,6 +921,15 @@ theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingle
   hadamardPreservesHurwitzMatrixTNDetLeThree_of_inBand
     (hurwitzMatrixSchurProductDetFinThreeInBand_of_cornerZeroedSingle hSingle)
 
+/-- The column-normalized single-matrix corner-zeroed determinant subtarget
+implies the low-order, size-`≤ 3`, Hurwitz-matrix Hadamard leaf. -/
+theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingleColZero
+    (hZero :
+      HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZeroStatement) :
+    hadamardPreservesHurwitzMatrixTNDetLeThreeStatement :=
+  hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingle
+    (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle_of_colZero hZero)
+
 /-- The pure size-`≤ 3` Hurwitz matrix Schur-product statement implies the
 Hadamard-product Hurwitz-matrix size-`≤ 3` statement. -/
 theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_hurwitzLeThree
