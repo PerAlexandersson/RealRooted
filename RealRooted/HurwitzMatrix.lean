@@ -620,10 +620,13 @@ def HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedStatement : Prop
 
 /-- Single-matrix full-band corner-zeroed determinant subtarget.
 
-This is the sharper one-matrix inequality isolated by the Aristotle
-corner-zeroed run.  It says that, for one totally nonnegative Hurwitz matrix in
-the fully in-band configuration, deleting the top-right contribution from the
-`3 × 3` determinant still leaves a nonnegative expression. -/
+This is the sharper one-matrix inequality isolated by an earlier Aristotle
+corner-zeroed run.  It is retained as a named historical branch for existing
+reductions, but it is too strong as a proof route: see
+`RealRooted.Challenges.Issue34SingleMatrixCounterexample` for checked
+arithmetic showing a candidate window where the full determinant is positive
+while the corner-zeroed expression is negative.  The two-matrix issue #34
+target is not refuted by that arithmetic witness. -/
 def HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleStatement : Prop :=
   ∀ {a : ℕ → ℝ},
     (hurwitz a).IsTotallyNonneg →

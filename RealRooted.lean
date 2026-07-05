@@ -83,6 +83,7 @@ import RealRooted.Challenges.AissenSchoenbergWhitney
 import RealRooted.Challenges.BrandenSolus
 import RealRooted.Challenges.ChudnovskySeymour
 import RealRooted.Challenges.Hadamard
+import RealRooted.Challenges.Issue34SingleMatrixCounterexample
 
 -- Local Mathlib extensions
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
