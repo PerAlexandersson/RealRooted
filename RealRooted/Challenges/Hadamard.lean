@@ -260,6 +260,13 @@ theorem hurwitzSchurTriangularFreeTarget_of_fullBandCornerZeroed
   hurwitzSchurTriangularFreeTarget_of_fullBand
     (hurwitzSchurFullBandTarget_of_cornerZeroed h)
 
+/-- Challenge-facing reduction from the single-matrix corner-zeroed determinant
+subtarget to the triangular-free `3 x 3` target. -/
+theorem hurwitzSchurTriangularFreeTarget_of_cornerZeroedSingle
+    (h : hurwitzSchurFullBandCornerZeroedSingleTarget) :
+    hurwitzSchurTriangularFreeTarget :=
+  hurwitzMatrixSchurProductDetFinThreeCore_of_cornerZeroedSingle h
+
 /-- Challenge-facing reduction from the two top-right subcases to the isolated
 in-band `3 x 3` target. -/
 theorem hurwitzSchurInBandTarget_of_fullBand_cornerZero
@@ -283,6 +290,13 @@ theorem hurwitzSchurInBandTarget_of_fullBandCornerZeroed
     hurwitzSchurInBandTarget :=
   hurwitzSchurInBandTarget_of_fullBand
     (hurwitzSchurFullBandTarget_of_cornerZeroed h)
+
+/-- Challenge-facing reduction from the single-matrix corner-zeroed determinant
+subtarget to the isolated in-band `3 x 3` target. -/
+theorem hurwitzSchurInBandTarget_of_cornerZeroedSingle
+    (h : hurwitzSchurFullBandCornerZeroedSingleTarget) :
+    hurwitzSchurInBandTarget :=
+  hurwitzMatrixSchurProductDetFinThreeInBand_of_cornerZeroedSingle h
 
 /-- Challenge-facing reduction from the two top-right subcases to the
 low-order Hurwitz Schur-product target through size `3`. -/
@@ -308,6 +322,13 @@ theorem hurwitzSchurLeThreeTarget_of_fullBandCornerZeroed
   hurwitzSchurLeThreeTarget_of_fullBand
     (hurwitzSchurFullBandTarget_of_cornerZeroed h)
 
+/-- Challenge-facing reduction from the single-matrix corner-zeroed determinant
+subtarget to the low-order Hurwitz Schur-product target through size `3`. -/
+theorem hurwitzSchurLeThreeTarget_of_cornerZeroedSingle
+    (h : hurwitzSchurFullBandCornerZeroedSingleTarget) :
+    hurwitzSchurLeThreeTarget :=
+  hurwitzMatrixSchurProductDetLeThree_of_cornerZeroedSingle h
+
 /-- Challenge-facing reduction from the two top-right subcases to the
 low-order Hurwitz-matrix Hadamard target through size `3`. -/
 theorem hurwitzMatrixHadamardLeThreeTarget_of_fullBand_cornerZero
@@ -331,6 +352,13 @@ theorem hurwitzMatrixHadamardLeThreeTarget_of_fullBandCornerZeroed
     hurwitzMatrixHadamardLeThreeTarget :=
   hurwitzMatrixHadamardLeThreeTarget_of_fullBand
     (hurwitzSchurFullBandTarget_of_cornerZeroed h)
+
+/-- Challenge-facing reduction from the single-matrix corner-zeroed determinant
+subtarget to the low-order Hurwitz-matrix Hadamard target through size `3`. -/
+theorem hurwitzMatrixHadamardLeThreeTarget_of_cornerZeroedSingle
+    (h : hurwitzSchurFullBandCornerZeroedSingleTarget) :
+    hurwitzMatrixHadamardLeThreeTarget :=
+  hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingle h
 
 /-- Challenge-facing reduction of Garloff--Wagner's nonnegative
 proper-position target through the Hurwitz-matrix Hadamard leaf. -/
