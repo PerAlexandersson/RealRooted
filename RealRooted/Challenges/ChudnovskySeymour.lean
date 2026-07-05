@@ -501,6 +501,27 @@ theorem sameDegreeRootCountAbovePair_of_posCombo_natDegree_eq_two
         hf_pos hg_pos hfg hdeg hf_deg2 y)
     x
 
+/-- Challenge-facing degree-two base case for the same-degree root-crossing
+formulation in the positive-combination setting. -/
+theorem sameDegreeRootCrossingPair_of_posCombo_natDegree_eq_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hf_deg2 : f.natDegree = 2) :
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
+  exact rootCrossing_of_rootCountAbove_diff_le_one
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+    hdeg
+    (fun x =>
+      sameDegreeRootCountAbovePair_of_posCombo_natDegree_eq_two
+        hf_pos hg_pos hfg hdeg hf_deg2 x)
+
 /-- Challenge-facing low-degree base case for the repaired same-degree
 pair-interleaver endpoint. -/
 theorem sameDegreePairHasCommonInterleaver_of_natDegree_le_one
