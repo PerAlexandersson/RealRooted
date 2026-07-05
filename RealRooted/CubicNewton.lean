@@ -99,6 +99,19 @@ theorem quadratic_disc_coeff_le_of_splits_natDegree_two
   unfold discrim at hdisc_sq
   nlinarith [sq_nonneg (2 * p.coeff 2 * x + p.coeff 1)]
 
+/-- A splitting real polynomial of degree at most two has nonnegative
+quadratic discriminant, expressed in coefficient form. -/
+theorem quadratic_disc_coeff_le_of_splits_natDegree_le_two
+    {p : ℝ[X]} (hdeg : p.natDegree ≤ 2) (hs : p.Splits) :
+    4 * (p.coeff 0 * p.coeff 2) ≤ p.coeff 1 ^ 2 := by
+  by_cases h2 : p.natDegree = 2
+  · exact quadratic_disc_coeff_le_of_splits_natDegree_two h2 hs
+  · have hle1 : p.natDegree ≤ 1 := Nat.lt_succ_iff.mp (lt_of_le_of_ne hdeg h2)
+    have hc2 : p.coeff 2 = 0 :=
+      coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hle1 (by norm_num))
+    rw [hc2]
+    nlinarith [sq_nonneg (p.coeff 1)]
+
 /-- Newton's adjacent coefficient inequalities for a real polynomial of degree
 at most three that is zero or splits. -/
 theorem three_mul_coeff_newton_of_natDegree_le_three

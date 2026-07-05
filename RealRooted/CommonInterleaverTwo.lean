@@ -3703,6 +3703,14 @@ theorem posComboNoCommonSuccDegreeRootCountAbove_of_rootCount
   exact succDegreeRootCountAbove_of_rootCount hf_split hg_split hdeg
     (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split)
 
+/-- The lower- and upper-threshold succ-degree root-count targets are
+equivalent. -/
+theorem posComboNoCommonSuccDegreeRootCountAbove_iff_rootCount :
+    PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement ↔
+      PosComboNoCommonSuccDegreeRootCountNonnegStatement :=
+  ⟨posComboNoCommonSuccDegreeRootCount_of_rootCountAbove,
+    posComboNoCommonSuccDegreeRootCountAbove_of_rootCount⟩
+
 /-- The lower-threshold succ-degree root-count target follows from the
 common-non-root upper-threshold variant. -/
 theorem posComboNoCommonSuccDegreeRootCount_of_nonRoot

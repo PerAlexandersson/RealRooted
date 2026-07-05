@@ -709,6 +709,12 @@ theorem succDegreeRootCountAboveTarget_of_rootCount
     succDegreeRootCountAboveTarget :=
   posComboNoCommonSuccDegreeRootCountAbove_of_rootCount hcount
 
+/-- Challenge-facing equivalence between the lower- and upper-threshold
+succ-degree root-count formulations. -/
+theorem succDegreeRootCountAboveTarget_iff_rootCount :
+    succDegreeRootCountAboveTarget ↔ succDegreeRootCountTarget :=
+  posComboNoCommonSuccDegreeRootCountAbove_iff_rootCount
+
 /-- Challenge-facing reduction from common-non-root succ-degree upper root
 counts to the full upper-threshold formulation. -/
 theorem succDegreeRootCountAboveTarget_of_nonRoot
