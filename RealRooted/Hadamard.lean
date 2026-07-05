@@ -221,6 +221,26 @@ theorem schurSzegoComp_eq_diagonalOperator (n : Nat) (f g : ℝ[X]) :
   · rw [if_neg hk]
     simp [Nat.choose_eq_zero_of_lt (Nat.lt_of_not_le hk)]
 
+/-- Coefficient expansion of the cubic discriminant of a fixed-degree
+Schur--Szegő composition.  This is the Schur--Szegő analogue of
+`cubicDiscr_diagonalOperator`, with the second factor converted to the
+normalized diagonal sequence `g.coeff k / Nat.choose n k`. -/
+theorem cubicDiscr_schurSzegoComp (n : Nat) (f g : ℝ[X]) :
+    cubicDiscr (schurSzegoComp n f g) =
+      18 * ((g.coeff 3 / (Nat.choose n 3 : ℝ)) * f.coeff 3) *
+          ((g.coeff 2 / (Nat.choose n 2 : ℝ)) * f.coeff 2) *
+          ((g.coeff 1 / (Nat.choose n 1 : ℝ)) * f.coeff 1) *
+          ((g.coeff 0 / (Nat.choose n 0 : ℝ)) * f.coeff 0)
+        - 4 * ((g.coeff 2 / (Nat.choose n 2 : ℝ)) * f.coeff 2) ^ 3 *
+          ((g.coeff 0 / (Nat.choose n 0 : ℝ)) * f.coeff 0)
+        + ((g.coeff 2 / (Nat.choose n 2 : ℝ)) * f.coeff 2) ^ 2 *
+          ((g.coeff 1 / (Nat.choose n 1 : ℝ)) * f.coeff 1) ^ 2
+        - 4 * ((g.coeff 3 / (Nat.choose n 3 : ℝ)) * f.coeff 3) *
+          ((g.coeff 1 / (Nat.choose n 1 : ℝ)) * f.coeff 1) ^ 3
+        - 27 * ((g.coeff 3 / (Nat.choose n 3 : ℝ)) * f.coeff 3) ^ 2 *
+          ((g.coeff 0 / (Nat.choose n 0 : ℝ)) * f.coeff 0) ^ 2 := by
+  rw [schurSzegoComp_eq_diagonalOperator, cubicDiscr_diagonalOperator]
+
 theorem support_schurSzegoComp_eq_filter_right (n : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).support =
       f.support.filter (fun k => g.coeff k / (Nat.choose n k : ℝ) ≠ 0) := by
