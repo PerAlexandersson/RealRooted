@@ -207,6 +207,87 @@ def CubicSecondRootBoundStatement : Prop :=
       g.roots = {p, q, r} →
       a ≤ q ∧ b ≤ r
 
+/-- Interior `2`-below partial-separation obstruction for split cubic pairs.
+
+For ordered cubic roots `a ≤ b ≤ c` of `f` and `p ≤ q ≤ r` of `g`, this rules
+out the case where `q < a` but `a ≤ r`.  The complementary case `r < a` is the
+full-separation obstruction already handled by
+`not_posComboRealRooted_cubic_separated`. -/
+def CubicInteriorTwoBelowStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    f.Splits →
+    g.Splits →
+    f.natDegree = 3 →
+    g.natDegree = 3 →
+    PosComboRealRooted f g →
+    ∀ a b c p q r : ℝ,
+      a ≤ b →
+      b ≤ c →
+      p ≤ q →
+      q ≤ r →
+      f.roots = {a, b, c} →
+      g.roots = {p, q, r} →
+      q < a →
+      a ≤ r →
+      False
+
+/-- Interior `2`-above partial-separation obstruction for split cubic pairs. -/
+def CubicInteriorTwoAboveStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    f.Splits →
+    g.Splits →
+    f.natDegree = 3 →
+    g.natDegree = 3 →
+    PosComboRealRooted f g →
+    ∀ a b c p q r : ℝ,
+      a ≤ b →
+      b ≤ c →
+      p ≤ q →
+      q ≤ r →
+      f.roots = {a, b, c} →
+      g.roots = {p, q, r} →
+      a ≤ r →
+      r < b →
+      False
+
+/-- The two interior cubic obstructions imply the second-root bound leaf. -/
+theorem cubicSecondRootBound_of_interior
+    (hbelow : CubicInteriorTwoBelowStatement)
+    (habove : CubicInteriorTwoAboveStatement) :
+    CubicSecondRootBoundStatement := by
+  intro f g hf hg hfs hgs hfd hgd hpc a b c p q r hab hbc hpq hqr hfr hgr
+  have hfmem : ∀ x ∈ f.roots, x = a ∨ x = b ∨ x = c := by
+    intro x hx
+    rw [hfr] at hx
+    simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hx
+    tauto
+  have hgmem : ∀ x ∈ g.roots, x = p ∨ x = q ∨ x = r := by
+    intro x hx
+    rw [hgr] at hx
+    simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hx
+    tauto
+  refine ⟨?_, ?_⟩
+  · by_contra hnot
+    have hcon : q < a := not_le.mp hnot
+    rcases lt_or_ge r a with hra | har
+    · exact not_posComboRealRooted_cubic_separated hf hg hfs hgs hfd hgd hpc r a hra
+        (fun x hx => by rcases hgmem x hx with h | h | h <;> subst h <;> linarith)
+        (fun x hx => by rcases hfmem x hx with h | h | h <;> subst h <;> linarith)
+    · exact hbelow hf hg hfs hgs hfd hgd hpc a b c p q r
+        hab hbc hpq hqr hfr hgr hcon har
+  · by_contra hnot
+    have hcon : r < b := not_le.mp hnot
+    rcases lt_or_ge r a with hra | har
+    · exact not_posComboRealRooted_cubic_separated hf hg hfs hgs hfd hgd hpc r a hra
+        (fun x hx => by rcases hgmem x hx with h | h | h <;> subst h <;> linarith)
+        (fun x hx => by rcases hfmem x hx with h | h | h <;> subst h <;> linarith)
+    · exact habove hf hg hfs hgs hfd hgd hpc a b c p q r
+        hab hbc hpq hqr hfr hgr har hcon
+
 /-- Checked reduction of the cubic same-degree root-count target to the
 partial-separation leaf.
 
@@ -244,5 +325,23 @@ theorem sameDegree_cubic_rootCount_le_one_of_secondRootBound
   push_cast
   exact card_filter_triple_diff_le_one a b c p q r x
     hab hbc hpq hqr hpb hqc haq hbr
+
+/-- End-to-end reduction of the cubic root-count bound to the interior leaves. -/
+theorem sameDegree_cubic_rootCount_le_one_of_interior
+    (hbelow : CubicInteriorTwoBelowStatement)
+    (habove : CubicInteriorTwoAboveStatement)
+    {f g : ℝ[X]}
+    (hfdeg : f.natDegree = 3) (hgdeg : g.natDegree = 3)
+    (hf : f.Splits) (hg : g.Splits)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hpc : PosComboRealRooted f g) :
+    ∀ x : ℝ,
+      ((f.roots.filter (· ≤ x)).card : ℤ) -
+          (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) -
+          (f.roots.filter (· ≤ x)).card ≤ 1 :=
+  sameDegree_cubic_rootCount_le_one_of_secondRootBound
+    (cubicSecondRootBound_of_interior hbelow habove)
+    hfdeg hgdeg hf hg hf_pos hg_pos hpc
 
 end RealRooted

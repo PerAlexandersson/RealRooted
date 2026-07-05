@@ -116,6 +116,14 @@ abbrev sameDegreeRootCountTarget : Prop :=
 abbrev sameDegreeCubicSecondRootBoundTarget : Prop :=
   CubicSecondRootBoundStatement
 
+/-- Interior `2`-below cubic partial-separation leaf. -/
+abbrev sameDegreeCubicInteriorTwoBelowTarget : Prop :=
+  CubicInteriorTwoBelowStatement
+
+/-- Interior `2`-above cubic partial-separation leaf. -/
+abbrev sameDegreeCubicInteriorTwoAboveTarget : Prop :=
+  CubicInteriorTwoAboveStatement
+
 /-- Same-degree upper-threshold root-count subtarget for milestone B1. -/
 abbrev sameDegreeRootCountAboveTarget : Prop :=
   PosComboNoCommonSameDegreeRootCountAboveNonnegStatement
@@ -554,6 +562,34 @@ theorem sameDegreeRootCountPair_of_secondRootBound_natDegree_eq_three
   have hg_deg3 : g.natDegree = 3 := by rw [hdeg, hf_deg3]
   exact sameDegree_cubic_rootCount_le_one_of_secondRootBound hbound
     hf_deg3 hg_deg3 hf_split hg_split hf_pos hg_pos hfg x
+
+/-- Challenge-facing reduction from the two interior cubic leaves to the
+partial-separation leaf. -/
+theorem sameDegreeCubicSecondRootBoundTarget_of_interior
+    (hbelow : sameDegreeCubicInteriorTwoBelowTarget)
+    (habove : sameDegreeCubicInteriorTwoAboveTarget) :
+    sameDegreeCubicSecondRootBoundTarget :=
+  cubicSecondRootBound_of_interior hbelow habove
+
+/-- Challenge-facing cubic reduction from the two interior leaves to the
+same-degree root-count target. -/
+theorem sameDegreeRootCountPair_of_interior_natDegree_eq_three
+    (hbelow : sameDegreeCubicInteriorTwoBelowTarget)
+    (habove : sameDegreeCubicInteriorTwoAboveTarget)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hf_deg3 : f.natDegree = 3)
+    (x : ℝ) :
+    ((f.roots.filter (· ≤ x)).card : ℤ) -
+        (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) -
+        (f.roots.filter (· ≤ x)).card ≤ 1 :=
+  sameDegreeRootCountPair_of_secondRootBound_natDegree_eq_three
+    (sameDegreeCubicSecondRootBoundTarget_of_interior hbelow habove)
+    hf_pos hg_pos hfg hdeg hf_deg3 x
 
 /-- Challenge-facing degree-two base case for the upper-threshold same-degree
 root-count formulation in the positive-combination setting. -/
