@@ -1,4 +1,5 @@
 import RealRooted.CoefficientShape
+import RealRooted.CubicDiscriminant
 import RealRooted.CubicNewton
 import RealRooted.PFPolynomial
 
@@ -154,6 +155,31 @@ theorem HasNonnegCoeffs.diagonalOperator
     HasNonnegCoeffs (diagonalOperator gamma p) := by
   intro n
   simpa using mul_nonneg (hgamma n) (hp n)
+
+/-! ## Cubic discriminant route -/
+
+/-- Coefficient expansion of the cubic discriminant after applying a diagonal
+operator.  This is the algebraic target needed for the degree-three finite
+Pólya--Schur route. -/
+theorem cubicDiscr_diagonalOperator (gamma : ℕ → ℝ) (p : ℝ[X]) :
+    cubicDiscr (diagonalOperator gamma p) =
+      18 * (gamma 3 * p.coeff 3) * (gamma 2 * p.coeff 2) *
+          (gamma 1 * p.coeff 1) * (gamma 0 * p.coeff 0)
+        - 4 * (gamma 2 * p.coeff 2) ^ 3 * (gamma 0 * p.coeff 0)
+        + (gamma 2 * p.coeff 2) ^ 2 * (gamma 1 * p.coeff 1) ^ 2
+        - 4 * (gamma 3 * p.coeff 3) * (gamma 1 * p.coeff 1) ^ 3
+        - 27 * (gamma 3 * p.coeff 3) ^ 2 * (gamma 0 * p.coeff 0) ^ 2 := by
+  unfold cubicDiscr
+  simp only [coeff_diagonalOperator]
+
+/-- Degree-three diagonal-operator output splits once its cubic discriminant is
+nonnegative. -/
+theorem diagonalOperator_splits_of_natDegree_three_cubicDiscr_nonneg
+    {gamma : ℕ → ℝ} {p : ℝ[X]}
+    (hdeg : (diagonalOperator gamma p).natDegree = 3)
+    (hdisc : 0 ≤ cubicDiscr (diagonalOperator gamma p)) :
+    (diagonalOperator gamma p).Splits :=
+  splits_of_cubicDiscr_nonneg hdeg hdisc
 
 /-- The degree-`n` Jensen polynomial attached to a diagonal sequence. -/
 def jensenPolynomial (n : ℕ) (gamma : ℕ → ℝ) : ℝ[X] :=
