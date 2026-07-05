@@ -1,4 +1,5 @@
 import Mathlib
+import RealRooted.PosCombo
 
 /-!
 # Degree-two same-degree obstruction
@@ -172,5 +173,41 @@ theorem exists_pos_combo_not_splits_of_quadratic_roots_separated
     rw [h] at hdeg
     simp at hdeg
   exact hnoroot x ((mem_roots hp0).1 hxmem)
+
+/-- Separated monic quadratic root pairs cannot satisfy the
+`PosComboRealRooted` hypothesis. -/
+theorem not_posComboRealRooted_quadratic_roots_separated
+    {a b c d : ℝ} (hab : a ≤ b) (hcd : c ≤ d) (hsep : d < a) :
+    ¬ PosComboRealRooted ((X - C a) * (X - C b)) ((X - C c) * (X - C d)) := by
+  intro hfg
+  obtain ⟨t, ht, hnot⟩ :=
+    exists_pos_combo_not_splits_of_quadratic_roots_separated hab hcd hsep
+  exact hnot (hfg.isRealRooted_add_right ht).2
+
+/-- Positive scalar multiples of separated monic quadratic root pairs cannot
+satisfy the `PosComboRealRooted` hypothesis. -/
+theorem not_posComboRealRooted_pos_scaled_quadratic_roots_separated
+    {A B a b c d : ℝ} (hA : 0 < A) (hB : 0 < B)
+    (hab : a ≤ b) (hcd : c ≤ d) (hsep : d < a) :
+    ¬ PosComboRealRooted
+      (C A * ((X - C a) * (X - C b)))
+      (C B * ((X - C c) * (X - C d))) := by
+  intro hscaled
+  have hmonic :
+      PosComboRealRooted ((X - C a) * (X - C b)) ((X - C c) * (X - C d)) := by
+    intro lam μ hlam hμ
+    have hbase := hscaled (lam := lam / A) (μ := μ / B)
+      (div_pos hlam hA) (div_pos hμ hB)
+    have hEq :
+        C (lam / A) * (C A * ((X - C a) * (X - C b))) +
+            C (μ / B) * (C B * ((X - C c) * (X - C d))) =
+          C lam * ((X - C a) * (X - C b)) +
+            C μ * ((X - C c) * (X - C d)) := by
+      apply Polynomial.funext
+      intro x
+      simp only [eval_add, eval_mul, eval_C, eval_sub, eval_X]
+      field_simp [hA.ne', hB.ne']
+    simpa [hEq] using hbase
+  exact not_posComboRealRooted_quadratic_roots_separated hab hcd hsep hmonic
 
 end RealRooted

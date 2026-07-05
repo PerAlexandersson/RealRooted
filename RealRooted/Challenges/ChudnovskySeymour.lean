@@ -3,6 +3,7 @@ import RealRooted.CommonInterleaverExamples
 import RealRooted.CommonInterleaverSeq
 import RealRooted.SuccDegreeRootCrossing
 import RealRooted.Bezoutian
+import RealRooted.SameDegreeQuadraticObstruction
 
 /-!
 # Chudnovsky--Seymour challenge entry point
@@ -482,6 +483,24 @@ theorem sameDegreeSlotDataPair_of_natDegree_le_one
           rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty :=
   sameDegreeSlotData_of_natDegree_le_one
     hf_pos hg_pos hdeg hf_deg_le_one
+
+/-- Challenge-facing degree-two obstruction: separated monic quadratic roots
+contradict positive-combination real-rootedness. -/
+theorem sameDegreeQuadraticSeparatedRoots_not_posCombo
+    {a b c d : ℝ} (hab : a ≤ b) (hcd : c ≤ d) (hsep : d < a) :
+    ¬ PosComboRealRooted ((X - C a) * (X - C b)) ((X - C c) * (X - C d)) :=
+  RealRooted.not_posComboRealRooted_quadratic_roots_separated hab hcd hsep
+
+/-- Challenge-facing scaled degree-two obstruction for positive-leading
+quadratic factors. -/
+theorem sameDegreeQuadraticSeparatedRoots_not_posCombo_scaled
+    {A B a b c d : ℝ} (hA : 0 < A) (hB : 0 < B)
+    (hab : a ≤ b) (hcd : c ≤ d) (hsep : d < a) :
+    ¬ PosComboRealRooted
+      (C A * ((X - C a) * (X - C b)))
+      (C B * ((X - C c) * (X - C d))) :=
+  RealRooted.not_posComboRealRooted_pos_scaled_quadratic_roots_separated
+    hA hB hab hcd hsep
 
 /-- Challenge-facing reduction from the same-degree orientation alternative to
 the repaired same-degree pair endpoint. -/
