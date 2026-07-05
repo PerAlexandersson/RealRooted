@@ -1,3 +1,4 @@
+import RealRooted.CoefficientShape
 import RealRooted.PFPolynomial
 
 open Polynomial
@@ -394,6 +395,79 @@ theorem IsPFPolynomial.jensenPolynomial_two_logConcave {gamma : ℕ → ℝ}
     (natDegree_jensenPolynomial_le 2 gamma)
   simp [coeff_jensenPolynomial] at hdisc
   nlinarith
+
+private lemma gamma_eq_zero_of_natDegree_jensen_lt {n : ℕ} {gamma : ℕ → ℝ}
+    {k : ℕ} (hk : k ≤ n) (hdeg : (jensenPolynomial n gamma).natDegree < k) :
+    gamma k = 0 := by
+  have hcoeff : (jensenPolynomial n gamma).coeff k = 0 :=
+    coeff_eq_zero_of_natDegree_lt hdeg
+  rw [coeff_jensenPolynomial] at hcoeff
+  have hchoose : (Nat.choose n k : ℝ) ≠ 0 :=
+    Nat.cast_choose_ne_zero (R := ℝ) hk
+  simp only [hk, if_true, mul_eq_zero, hchoose, false_or] at hcoeff
+  exact hcoeff
+
+/-- Left adjacent log-concavity inequality extracted from a degree-three PF
+Jensen polynomial. -/
+theorem IsPFPolynomial.jensenPolynomial_three_logConcave_left {gamma : ℕ → ℝ}
+    (hj : IsPFPolynomial (jensenPolynomial 3 gamma)) :
+    gamma 0 * gamma 2 ≤ gamma 1 ^ 2 := by
+  by_cases hdeg : (jensenPolynomial 3 gamma).natDegree < 2
+  · have hgamma2 : gamma 2 = 0 :=
+      gamma_eq_zero_of_natDegree_jensen_lt (n := 3) (gamma := gamma)
+        (k := 2) (by norm_num) hdeg
+    rw [hgamma2]
+    nlinarith [sq_nonneg (gamma 1)]
+  · have hdeg' : 1 < (jensenPolynomial 3 gamma).natDegree := by lia
+    have hdeg_le : (jensenPolynomial 3 gamma).natDegree ≤ 3 :=
+      natDegree_jensenPolynomial_le 3 gamma
+    have hdeg_ge : 2 ≤ (jensenPolynomial 3 gamma).natDegree := by lia
+    have hulc :=
+      hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits
+        hj.hasNonnegCoeffs hj.eq_zero_or_splits
+    rcases Nat.eq_or_lt_of_le hdeg_ge with hdeg_two' | hdeg_gt
+    · have hdeg_two : (jensenPolynomial 3 gamma).natDegree = 2 := hdeg_two'.symm
+      have h := hulc 1 (by norm_num) (by rw [hdeg_two]; norm_num)
+      rw [hdeg_two] at h
+      norm_num [coeff_jensenPolynomial] at h
+      nlinarith
+    · have hdeg_three : (jensenPolynomial 3 gamma).natDegree = 3 := by lia
+      have h := hulc 1 (by norm_num) hdeg'
+      rw [hdeg_three] at h
+      norm_num [coeff_jensenPolynomial] at h
+      nlinarith
+
+/-- Right adjacent log-concavity inequality extracted from a degree-three PF
+Jensen polynomial. -/
+theorem IsPFPolynomial.jensenPolynomial_three_logConcave_right {gamma : ℕ → ℝ}
+    (hj : IsPFPolynomial (jensenPolynomial 3 gamma)) :
+    gamma 1 * gamma 3 ≤ gamma 2 ^ 2 := by
+  by_cases hdeg : (jensenPolynomial 3 gamma).natDegree < 3
+  · have hgamma3 : gamma 3 = 0 :=
+      gamma_eq_zero_of_natDegree_jensen_lt (n := 3) (gamma := gamma)
+        (k := 3) (by norm_num) hdeg
+    rw [hgamma3]
+    nlinarith [sq_nonneg (gamma 2)]
+  · have hdeg' : 2 < (jensenPolynomial 3 gamma).natDegree := by lia
+    have hdeg_le : (jensenPolynomial 3 gamma).natDegree ≤ 3 :=
+      natDegree_jensenPolynomial_le 3 gamma
+    have hdeg_three : (jensenPolynomial 3 gamma).natDegree = 3 := by lia
+    have hulc :=
+      hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits
+        hj.hasNonnegCoeffs hj.eq_zero_or_splits
+    have h := hulc 2 (by norm_num) hdeg'
+    rw [hdeg_three] at h
+    norm_num [coeff_jensenPolynomial] at h
+    nlinarith
+
+/-- Adjacent log-concavity inequalities extracted from a degree-three PF
+Jensen polynomial. -/
+theorem IsPFPolynomial.jensenPolynomial_three_logConcave {gamma : ℕ → ℝ}
+    (hj : IsPFPolynomial (jensenPolynomial 3 gamma)) :
+    gamma 0 * gamma 2 ≤ gamma 1 ^ 2 ∧
+      gamma 1 * gamma 3 ≤ gamma 2 ^ 2 :=
+  ⟨hj.jensenPolynomial_three_logConcave_left,
+    hj.jensenPolynomial_three_logConcave_right⟩
 
 /-- A splitting real quadratic has nonnegative discriminant, expressed in
 coefficient form. -/
