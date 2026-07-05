@@ -1064,6 +1064,29 @@ theorem pairHasCommonInterleaver_of_prec_or_revPrec
   | Or.inl hprec => pairHasCommonInterleaver_of_prec hprec
   | Or.inr hprec => pairHasCommonInterleaver_of_revPrec hprec
 
+/-- A `Prec` relation immediately gives a common left interleaver: use the
+left endpoint as the witness. -/
+theorem pairHasCommonLeftInterleaver_of_prec
+    {f g : ℝ[X]} (hprec : Prec f g) :
+    ∃ h : ℝ[X], Prec h f ∧ Prec h g :=
+  ⟨f, prec_refl hprec.1.1 hprec.1.2, hprec⟩
+
+/-- A reversed `Prec` relation immediately gives a common left interleaver:
+use the right endpoint as the witness. -/
+theorem pairHasCommonLeftInterleaver_of_revPrec
+    {f g : ℝ[X]} (hprec : Prec g f) :
+    ∃ h : ℝ[X], Prec h f ∧ Prec h g :=
+  ⟨g, hprec, prec_refl hprec.1.1 hprec.1.2⟩
+
+/-- A symmetric `Prec` orientation immediately gives a common left interleaver:
+use the smaller polynomial in the chosen orientation as the witness. -/
+theorem pairHasCommonLeftInterleaver_of_prec_or_revPrec
+    {f g : ℝ[X]} :
+    Prec f g ∨ Prec g f →
+    ∃ h : ℝ[X], Prec h f ∧ Prec h g
+  | Or.inl hprec => pairHasCommonLeftInterleaver_of_prec hprec
+  | Or.inr hprec => pairHasCommonLeftInterleaver_of_revPrec hprec
+
 /-- Two-polynomial common-interleaver endpoint in degree at most one. This is
 the direct pair version used by the low-degree Chudnovsky--Seymour package. -/
 theorem pairHasCommonInterleaver_of_natDegree_le_one
@@ -1074,6 +1097,18 @@ theorem pairHasCommonInterleaver_of_natDegree_le_one
     (hg_deg_le_one : g.natDegree ≤ 1) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
   pairHasCommonInterleaver_of_prec_or_revPrec <|
+    prec_or_revPrec_of_natDegree_le_one
+      hf_pos hg_pos hf_deg_le_one hg_deg_le_one
+
+/-- Two-polynomial common-left-interleaver endpoint in degree at most one. -/
+theorem pairHasCommonLeftInterleaver_of_natDegree_le_one
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hf_deg_le_one : f.natDegree ≤ 1)
+    (hg_deg_le_one : g.natDegree ≤ 1) :
+    ∃ h : ℝ[X], Prec h f ∧ Prec h g :=
+  pairHasCommonLeftInterleaver_of_prec_or_revPrec <|
     prec_or_revPrec_of_natDegree_le_one
       hf_pos hg_pos hf_deg_le_one hg_deg_le_one
 
@@ -1088,6 +1123,17 @@ theorem pairHasCommonInterleaver_of_sameDegree_natDegree_le_one
   pairHasCommonInterleaver_of_natDegree_le_one
     hf_pos hg_pos hf_deg_le_one (by lia)
 
+/-- Same-degree specialization of the low-degree common-left pair endpoint. -/
+theorem pairHasCommonLeftInterleaver_of_sameDegree_natDegree_le_one
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hf_deg_le_one : f.natDegree ≤ 1) :
+    ∃ h : ℝ[X], Prec h f ∧ Prec h g :=
+  pairHasCommonLeftInterleaver_of_natDegree_le_one
+    hf_pos hg_pos hf_deg_le_one (by lia)
+
 /-- Compatibility-level version of the low-degree common-interleaver endpoint.
 In degree at most one the common interleaver exists without using the
 compatibility hypothesis, but keeping it in the statement makes this theorem a
@@ -1100,6 +1146,17 @@ theorem compatiblePairHasCommonInterleaver_of_natDegree_le_one
     (hg_deg_le_one : g.natDegree ≤ 1) :
     ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
   pairHasCommonInterleaver_of_natDegree_le_one
+    hf_pos hg_pos hf_deg_le_one hg_deg_le_one
+
+/-- Compatibility-level version of the low-degree common-left endpoint. -/
+theorem compatiblePairHasCommonLeftInterleaver_of_natDegree_le_one
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hf_deg_le_one : f.natDegree ≤ 1)
+    (hg_deg_le_one : g.natDegree ≤ 1) :
+    ∃ h : ℝ[X], Prec h f ∧ Prec h g :=
+  pairHasCommonLeftInterleaver_of_natDegree_le_one
     hf_pos hg_pos hf_deg_le_one hg_deg_le_one
 
 /-- Same-degree branch of the honest no-common target is already unconditional
@@ -7410,6 +7467,20 @@ theorem pairwiseHasCommonInterleaver_of_natDegree_le_one
       (hdeg (fs.get i) (List.get_mem _ _))
       (hdeg (fs.get j) (List.get_mem _ _))
 
+/-- Pairwise low-degree common-left interleavers for positive-leading
+linear/constant families. -/
+theorem pairwiseHasCommonLeftInterleaver_of_natDegree_le_one
+    {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
+    PairwiseHasCommonLeftInterleaver fs :=
+  fun i j _ =>
+    pairHasCommonLeftInterleaver_of_natDegree_le_one
+      (hpos (fs.get i) (List.get_mem _ _))
+      (hpos (fs.get j) (List.get_mem _ _))
+      (hdeg (fs.get i) (List.get_mem _ _))
+      (hdeg (fs.get j) (List.get_mem _ _))
+
 /-- Positive-leading degree-`≤ 1` families are nonzero and split memberwise. -/
 theorem family_ne_zero_and_splits_of_natDegree_le_one
     {fs : List ℝ[X]}
@@ -7431,6 +7502,19 @@ theorem hasCommonInterleaver_of_natDegree_le_one
   exact
     commonInterleaverFamilyUpgrade
       (fun f hf => (hrr f hf).2) hpos (pairwiseHasCommonInterleaver_of_natDegree_le_one hpos hdeg)
+
+/-- Positive-leading degree-`≤ 1` families already have a global common left
+interleaver. -/
+theorem hasCommonLeftInterleaver_of_natDegree_le_one
+    {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
+    HasCommonLeftInterleaver fs := by
+  let hrr := family_ne_zero_and_splits_of_natDegree_le_one hpos hdeg
+  exact
+    commonLeftInterleaverFamilyUpgrade
+      (fun f hf => (hrr f hf).2) hpos
+      (pairwiseHasCommonLeftInterleaver_of_natDegree_le_one hpos hdeg)
 
 /-- Low-degree Chudnovsky--Seymour package: if every member of the family has
 degree at most one and positive leading coefficient, then all four standard
@@ -7457,6 +7541,17 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_natDegree_le_one
   pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay <|
     chudnovskySeymour_fourWay_of_natDegree_le_one
       (fs := fs) hpos hdeg
+
+/-- Degree-`≤ 1` specialization of Chudnovsky--Seymour `1 ↔ 3`, left-oriented:
+for positive-leading linear/constant families, pairwise compatibility is
+already equivalent to having a common left interleaver. -/
+theorem pairwiseCompatible_iff_commonLeftInterleaver_of_natDegree_le_one
+    {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
+    PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
+  ⟨fun _ => hasCommonLeftInterleaver_of_natDegree_le_one hpos hdeg,
+    fun hcommon => pairwiseCompatible_of_commonLeftInterleaver hcommon hpos⟩
 
 /-- Degree-`≤ 1` specialization of Chudnovsky--Seymour `1 ↔ 4`: for
 positive-leading linear/constant families, pairwise compatibility is already

@@ -420,4 +420,14 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_natDegree_
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
   pairwiseCompatible_iff_hasCommonInterleaver_of_natDegree_le_one hpos hdeg
 
+/-- Degree-`≤ 1` positive-leading families also satisfy the left-oriented
+common-interleaver form of Chudnovsky--Seymour without the two-polynomial
+bridge hypothesis. -/
+theorem chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_natDegree_le_one
+    {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
+    PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
+  pairwiseCompatible_iff_commonLeftInterleaver_of_natDegree_le_one hpos hdeg
+
 end RealRooted

@@ -2313,6 +2313,15 @@ theorem pairwiseCompatible_iff_commonInterleaver_of_natDegree_le_one
   RealRooted.pairwiseCompatible_iff_hasCommonInterleaver_of_natDegree_le_one
     hpos hdeg
 
+/-- Solved low-degree pairwise/common-left-interleaver equivalence. -/
+theorem pairwiseCompatible_iff_commonLeftInterleaver_of_natDegree_le_one
+    {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
+    PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
+  RealRooted.pairwiseCompatible_iff_commonLeftInterleaver_of_natDegree_le_one
+    hpos hdeg
+
 /-- Solved low-degree pairwise/full-family compatibility equivalence. -/
 theorem pairwiseCompatible_iff_familyCompatible_of_natDegree_le_one
     {fs : List ℝ[X]}
