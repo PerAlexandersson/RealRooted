@@ -166,6 +166,25 @@ theorem jensenPolynomialThree_logConcave_of_isPF
       gamma 1 * gamma 3 ≤ gamma 2 ^ 2 :=
   hj.jensenPolynomial_three_logConcave
 
+/-- Challenge-facing cubic log-concavity necessary condition for finite
+multiplier sequences. -/
+theorem finiteMultiplierSequenceThree_logConcave
+    {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k)
+    (hmult : IsFiniteMultiplierSequence 3 gamma) :
+    gamma 0 * gamma 2 ≤ gamma 1 ^ 2 ∧
+      gamma 1 * gamma 3 ≤ gamma 2 ^ 2 :=
+  finiteMultiplierSequence_three_logConcave hgamma hmult
+
+/-- Challenge-facing cubic log-concavity necessary condition for finite PF
+multiplier sequences. -/
+theorem finitePFMultiplierSequenceThree_logConcave
+    {gamma : ℕ → ℝ}
+    (hmult : IsFinitePFMultiplierSequence 3 gamma) :
+    gamma 0 * gamma 2 ≤ gamma 1 ^ 2 ∧
+      gamma 1 * gamma 3 ≤ gamma 2 ^ 2 :=
+  finitePFMultiplierSequence_three_logConcave hmult
+
 /-! ## Garloff--Wagner and Hurwitz-matrix targets -/
 
 /-- Challenge-facing target for Garloff--Wagner, Theorem 4(b), in the

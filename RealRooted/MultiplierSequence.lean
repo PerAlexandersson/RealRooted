@@ -606,6 +606,27 @@ theorem isPFPolynomial_jensenPolynomial_of_finitePFMultiplierSequence
   rw [jensenPolynomial_eq_diagonalOperator_X_add_one_pow]
   exact hmult (isPFPolynomial_X_add_one.pow n) (natDegree_X_add_one_pow_le n)
 
+/-- A nonnegative finite multiplier sequence through degree three satisfies
+the two adjacent cubic log-concavity inequalities. -/
+theorem finiteMultiplierSequence_three_logConcave
+    {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k)
+    (hmult : IsFiniteMultiplierSequence 3 gamma) :
+    gamma 0 * gamma 2 ≤ gamma 1 ^ 2 ∧
+      gamma 1 * gamma 3 ≤ gamma 2 ^ 2 :=
+  (isPFPolynomial_jensenPolynomial_of_finiteMultiplierSequence
+    hgamma hmult).jensenPolynomial_three_logConcave
+
+/-- A finite PF multiplier sequence through degree three satisfies the two
+adjacent cubic log-concavity inequalities. -/
+theorem finitePFMultiplierSequence_three_logConcave
+    {gamma : ℕ → ℝ}
+    (hmult : IsFinitePFMultiplierSequence 3 gamma) :
+    gamma 0 * gamma 2 ≤ gamma 1 ^ 2 ∧
+      gamma 1 * gamma 3 ≤ gamma 2 ^ 2 :=
+  (isPFPolynomial_jensenPolynomial_of_finitePFMultiplierSequence
+    hmult).jensenPolynomial_three_logConcave
+
 /-- The finite Polya--Schur theorem in the nonnegative-coefficient convention:
 a nonnegative diagonal sequence preserves real-rootedness up to degree `n` if
 and only if its degree-`n` Jensen polynomial is PF. -/
