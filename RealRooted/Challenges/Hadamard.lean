@@ -92,6 +92,86 @@ theorem finiteSchurSzegoNonzeroTarget_iff_finitePolyaSchurBackwardTarget :
     finiteSchurSzegoNonzeroTarget ↔ finitePolyaSchurBackwardTarget :=
   finiteSchurSzegoCompositionNonzeroStatement_iff_finitePolyaSchurBackward
 
+/-- Challenge-facing equivalence between the full finite Pólya--Schur theorem
+and its hard backward direction. -/
+theorem finitePolyaSchurTarget_iff_backwardTarget :
+    finitePolyaSchurTarget ↔ finitePolyaSchurBackwardTarget :=
+  finitePolyaSchurNonnegStatement_iff_backward
+
+/-- Challenge-facing reduction from the backward finite Pólya--Schur direction
+to the full finite Pólya--Schur theorem. -/
+theorem finitePolyaSchurTarget_of_backward
+    (h : finitePolyaSchurBackwardTarget) :
+    finitePolyaSchurTarget :=
+  finitePolyaSchur_nonneg_of_backward h
+
+/-- Challenge-facing extraction of the backward finite Pólya--Schur direction
+from the full finite Pólya--Schur theorem. -/
+theorem finitePolyaSchurBackwardTarget_of_target
+    (h : finitePolyaSchurTarget) :
+    finitePolyaSchurBackwardTarget :=
+  finitePolyaSchur_backward_of_nonneg h
+
+/-- Challenge-facing finite multiplier-sequence criterion from the full finite
+Pólya--Schur theorem. -/
+theorem finiteMultiplierSequencePair_of_jensenPolynomial
+    (hFPS : finitePolyaSchurTarget)
+    {n : ℕ} {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k)
+    (hjensen : IsPFPolynomial (jensenPolynomial n gamma)) :
+    IsFiniteMultiplierSequence n gamma :=
+  isFiniteMultiplierSequence_of_jensenPolynomial hFPS hgamma hjensen
+
+/-- Challenge-facing finite multiplier-sequence criterion from the backward
+finite Pólya--Schur direction. -/
+theorem finiteMultiplierSequencePair_of_jensenPolynomial_of_backward
+    (hBack : finitePolyaSchurBackwardTarget)
+    {n : ℕ} {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k)
+    (hjensen : IsPFPolynomial (jensenPolynomial n gamma)) :
+    IsFiniteMultiplierSequence n gamma :=
+  isFiniteMultiplierSequence_of_jensenPolynomial_of_backward hBack hgamma hjensen
+
+/-- Challenge-facing PF multiplier-sequence criterion from the full finite
+Pólya--Schur theorem. -/
+theorem finitePFMultiplierSequencePair_of_jensenPolynomial
+    (hFPS : finitePolyaSchurTarget)
+    {n : ℕ} {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k)
+    (hjensen : IsPFPolynomial (jensenPolynomial n gamma)) :
+    IsFinitePFMultiplierSequence n gamma :=
+  isFinitePFMultiplierSequence_of_jensenPolynomial hFPS hgamma hjensen
+
+/-- Challenge-facing PF multiplier-sequence criterion from the backward finite
+Pólya--Schur direction. -/
+theorem finitePFMultiplierSequencePair_of_jensenPolynomial_of_backward
+    (hBack : finitePolyaSchurBackwardTarget)
+    {n : ℕ} {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k)
+    (hjensen : IsPFPolynomial (jensenPolynomial n gamma)) :
+    IsFinitePFMultiplierSequence n gamma :=
+  isFinitePFMultiplierSequence_of_jensenPolynomial_of_backward
+    hBack hgamma hjensen
+
+/-- Challenge-facing PF-preservation form of finite Pólya--Schur. -/
+theorem finitePFMultiplierSequencePair_iff_jensenPolynomial
+    (hFPS : finitePolyaSchurTarget)
+    {n : ℕ} {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k) :
+    IsFinitePFMultiplierSequence n gamma ↔
+      IsPFPolynomial (jensenPolynomial n gamma) :=
+  isFinitePFMultiplierSequence_iff_jensenPolynomial hFPS hgamma
+
+/-- Challenge-facing PF-preservation form of the backward finite Pólya--Schur
+direction. -/
+theorem finitePFMultiplierSequencePair_iff_jensenPolynomial_of_backward
+    (hBack : finitePolyaSchurBackwardTarget)
+    {n : ℕ} {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k) :
+    IsFinitePFMultiplierSequence n gamma ↔
+      IsPFPolynomial (jensenPolynomial n gamma) :=
+  isFinitePFMultiplierSequence_iff_jensenPolynomial_of_backward hBack hgamma
+
 /-- Challenge-facing checked low-degree Schur--Szegő base case, through
 degree `2`. -/
 theorem finiteSchurSzegoPair_of_natDegree_le_two
