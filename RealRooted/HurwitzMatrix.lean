@@ -618,6 +618,29 @@ def HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedStatement : Prop
       2 * cols 2 ≤ rows 0 →
       0 ≤ hurwitzSchurProductFullBandCornerZeroedDet a b rows cols
 
+/-- Single-matrix full-band corner-zeroed determinant subtarget.
+
+This is the sharper one-matrix inequality isolated by the Aristotle
+corner-zeroed run.  It says that, for one totally nonnegative Hurwitz matrix in
+the fully in-band configuration, deleting the top-right contribution from the
+`3 × 3` determinant still leaves a nonnegative expression. -/
+def HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleStatement : Prop :=
+  ∀ {a : ℕ → ℝ},
+    (hurwitz a).IsTotallyNonneg →
+    ∀ {rows cols : Fin 3 → ℕ},
+      StrictMono rows →
+      StrictMono cols →
+      (∀ l : Fin 3, 2 * cols l ≤ rows l) →
+      2 * cols 1 ≤ rows 0 →
+      2 * cols 2 ≤ rows 1 →
+      2 * cols 2 ≤ rows 0 →
+      0 ≤ hurwitz a (rows 0) (cols 0) *
+          (hurwitz a (rows 1) (cols 1) * hurwitz a (rows 2) (cols 2) -
+            hurwitz a (rows 1) (cols 2) * hurwitz a (rows 2) (cols 1)) -
+        hurwitz a (rows 0) (cols 1) *
+          (hurwitz a (rows 1) (cols 0) * hurwitz a (rows 2) (cols 2) -
+            hurwitz a (rows 1) (cols 2) * hurwitz a (rows 2) (cols 0))
+
 /-- The full-band `3 × 3` core follows from the corner-zeroed full-band
 subtarget.  The missing top-right term factors as the `(0, 2)` entry times a
 `2 × 2` Hadamard minor on rows `{1, 2}` and columns `{0, 1}`. -/
@@ -713,6 +736,55 @@ theorem hadamard_det_fin_three_cornerZero_nonneg
     mul_nonneg (mul_nonneg ha01 mA_r12c02) (mul_nonneg mB01 hb22),
     mul_nonneg (mul_nonneg ha12 mA02) (mul_nonneg hb00 mB_r12c12),
     mul_nonneg (mul_nonneg (mul_nonneg ha01 ha12) ha20) detB]
+
+/-- The two-matrix corner-zeroed full-band subtarget follows from the
+single-matrix corner-zeroed determinant subtarget for each factor.
+
+This is the checked part of the Aristotle corner-zeroed reduction: the
+one-matrix inequalities supply the `detA` and `detB` inputs to the existing
+positive-combination certificate
+`hadamard_det_fin_three_cornerZero_nonneg`; the remaining inputs are ordinary
+`2 × 2` minors of the two totally nonnegative Hurwitz matrices. -/
+theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroed_of_single
+    (hSingle :
+      HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleStatement) :
+    HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedStatement := by
+  intro a b ha hb rows cols hrows hcols hband h01 h12 h02
+  have hr01 : StrictMono ![rows 0, rows 1] := strictMono_pair (hrows (by decide))
+  have hr02 : StrictMono ![rows 0, rows 2] := strictMono_pair (hrows (by decide))
+  have hr12 : StrictMono ![rows 1, rows 2] := strictMono_pair (hrows (by decide))
+  have hc01 : StrictMono ![cols 0, cols 1] := strictMono_pair (hcols (by decide))
+  have hc02 : StrictMono ![cols 0, cols 2] := strictMono_pair (hcols (by decide))
+  have hc12 : StrictMono ![cols 1, cols 2] := strictMono_pair (hcols (by decide))
+  have mA02 := ha hr02 hc01
+  rw [Matrix.det_fin_two] at mA02
+  simp only [Matrix.submatrix_apply, Matrix.cons_val_zero, Matrix.cons_val_one] at mA02
+  have mAc02 := ha hr12 hc02
+  rw [Matrix.det_fin_two] at mAc02
+  simp only [Matrix.submatrix_apply, Matrix.cons_val_zero, Matrix.cons_val_one] at mAc02
+  have mB01 := hb hr01 hc01
+  rw [Matrix.det_fin_two] at mB01
+  simp only [Matrix.submatrix_apply, Matrix.cons_val_zero, Matrix.cons_val_one] at mB01
+  have mBc12 := hb hr12 hc12
+  rw [Matrix.det_fin_two] at mBc12
+  simp only [Matrix.submatrix_apply, Matrix.cons_val_zero, Matrix.cons_val_one] at mBc12
+  have detA := hSingle ha hrows hcols hband h01 h12 h02
+  have detB := hSingle hb hrows hcols hband h01 h12 h02
+  have hres := hadamard_det_fin_three_cornerZero_nonneg
+    (hurwitz a (rows 0) (cols 0)) (hurwitz a (rows 0) (cols 1))
+    (hurwitz a (rows 1) (cols 0)) (hurwitz a (rows 1) (cols 1))
+    (hurwitz a (rows 1) (cols 2)) (hurwitz a (rows 2) (cols 0))
+    (hurwitz a (rows 2) (cols 1)) (hurwitz a (rows 2) (cols 2))
+    (hurwitz b (rows 0) (cols 0)) (hurwitz b (rows 0) (cols 1))
+    (hurwitz b (rows 1) (cols 0)) (hurwitz b (rows 1) (cols 1))
+    (hurwitz b (rows 1) (cols 2)) (hurwitz b (rows 2) (cols 0))
+    (hurwitz b (rows 2) (cols 1)) (hurwitz b (rows 2) (cols 2))
+    (ha.nonneg (rows 0) (cols 1)) (ha.nonneg (rows 1) (cols 2))
+    (ha.nonneg (rows 2) (cols 0)) (hb.nonneg (rows 0) (cols 0))
+    (hb.nonneg (rows 1) (cols 1)) (hb.nonneg (rows 2) (cols 2))
+    mA02 mAc02 mB01 mBc12 detA detB
+  simp only [hurwitzSchurProductFullBandCornerZeroedDet]
+  nlinarith [hres]
 
 /-- The corner-zero subcase of the triangular-free `3 × 3` Hurwitz
 Schur-product core.  When the top-right corner `(0, 2)` lies strictly above the

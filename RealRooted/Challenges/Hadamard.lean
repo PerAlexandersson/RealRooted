@@ -140,6 +140,11 @@ top-right subcase of the triangular-free `3 x 3` target. -/
 abbrev hurwitzSchurFullBandCornerZeroedTarget : Prop :=
   HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedStatement
 
+/-- Challenge-facing single-matrix determinant subtarget for the fully in-band
+corner-zeroed `3 x 3` target. -/
+abbrev hurwitzSchurFullBandCornerZeroedSingleTarget : Prop :=
+  HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleStatement
+
 /-- Challenge-facing corner-zero top-right subcase of the triangular-free
 `3 x 3` target. -/
 abbrev hurwitzSchurCornerZeroTarget : Prop :=
@@ -216,6 +221,21 @@ theorem hurwitzSchurFullBandTarget_of_cornerZeroed
     (h : hurwitzSchurFullBandCornerZeroedTarget) :
     hurwitzSchurFullBandTarget :=
   hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_cornerZeroed h
+
+/-- Challenge-facing reduction from the single-matrix corner-zeroed determinant
+subtarget to the two-matrix corner-zeroed full-band subtarget. -/
+theorem hurwitzSchurFullBandCornerZeroedTarget_of_single
+    (h : hurwitzSchurFullBandCornerZeroedSingleTarget) :
+    hurwitzSchurFullBandCornerZeroedTarget :=
+  hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroed_of_single h
+
+/-- Challenge-facing reduction from the single-matrix corner-zeroed determinant
+subtarget to the fully in-band top-right subcase. -/
+theorem hurwitzSchurFullBandTarget_of_cornerZeroedSingle
+    (h : hurwitzSchurFullBandCornerZeroedSingleTarget) :
+    hurwitzSchurFullBandTarget :=
+  hurwitzSchurFullBandTarget_of_cornerZeroed
+    (hurwitzSchurFullBandCornerZeroedTarget_of_single h)
 
 /-- Challenge-facing reduction from the two top-right subcases to the
 triangular-free `3 x 3` target. -/
