@@ -550,6 +550,26 @@ theorem hurwitz_col_shift (c : ℕ → ℝ) {i j : ℕ} (h : 2 * (j + 1) ≤ i) 
   · rw [if_neg hp, if_neg (by lia : ¬ (i - 2) % 2 = 0)]
     lia
 
+/-- Iterated column-shift structure of a Hurwitz matrix: in the nonzero
+staircase, moving `d` columns to the right is the same as moving `2 * d` rows
+up.  This is the `hurwitz_col_shift` identity applied `d` times. -/
+theorem hurwitz_col_shift_add (c : ℕ → ℝ) (j : ℕ) :
+    ∀ (d i : ℕ), 2 * (j + d) ≤ i →
+      hurwitz c i (j + d) = hurwitz c (i - 2 * d) j := by
+  intro d
+  induction d with
+  | zero =>
+      intro i _
+      simp
+  | succ d ih =>
+      intro i h
+      have h1 : hurwitz c i (j + (d + 1)) = hurwitz c (i - 2) (j + d) := by
+        have hji : j + (d + 1) = (j + d) + 1 := by lia
+        rw [hji, hurwitz_col_shift c (by lia)]
+      rw [h1, ih (i - 2) (by lia)]
+      congr 1
+      lia
+
 /-- Fully in-band subcase of the triangular-free `3 × 3` core: the top-right
 corner `(0, 2)` also lies on the nonzero staircase. -/
 def HurwitzMatrixSchurProductDetFinThreeCoreFullBandStatement : Prop :=

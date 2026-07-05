@@ -21,7 +21,7 @@ the roots of its `divX` quotient together with one extra root at `0`.
 
 This is the standalone version of the same fact used in
 `RealRooted.CommonInterleaverTwo`. -/
-theorem roots_eq_zero_cons_divX_of_coeff_zero' {f : ℝ[X]}
+theorem roots_eq_zero_cons_divX_of_coeff_zero {f : ℝ[X]}
     (hf : f ≠ 0) (hf0 : f.coeff 0 = 0) :
     f.roots = 0 ::ₘ f.divX.roots := by
   have hX : f = X * f.divX := DegreeDropReversal.eq_X_mul_divX_of_coeff_zero hf0
@@ -30,6 +30,11 @@ theorem roots_eq_zero_cons_divX_of_coeff_zero' {f : ℝ[X]}
     exact hf
   conv_lhs => rw [hX]
   rw [Polynomial.roots_mul hne, Polynomial.roots_X, Multiset.singleton_add]
+
+theorem roots_eq_zero_cons_divX_of_coeff_zero' {f : ℝ[X]}
+    (hf : f ≠ 0) (hf0 : f.coeff 0 = 0) :
+    f.roots = 0 ::ₘ f.divX.roots :=
+  roots_eq_zero_cons_divX_of_coeff_zero hf hf0
 
 /-- Auxiliary list-combinatorial core of the right-zero degree drop.
 
@@ -144,7 +149,7 @@ theorem prec_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero
       rw [hm0]
       simp
     have e2 : (↑rs : Multiset ℝ) = (0 : ℝ) ::ₘ g.divX.roots := by
-      rw [hrs_eq, roots_eq_zero_cons_divX_of_coeff_zero' hg.1 hg0]
+      rw [hrs_eq, roots_eq_zero_cons_divX_of_coeff_zero hg.1 hg0]
     rw [e1] at e2
     exact (Multiset.cons_inj_right (0 : ℝ)).mp e2
   have hdrop_sorted : (rs.dropLast).Pairwise (· ≤ ·) :=
@@ -164,5 +169,114 @@ theorem prec_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero
     (DegreeDropReversal.splits_iff_divX_splits_of_coeff_zero hg0).1 hg.2
   exact ⟨⟨hdivX_ne, hdivX_split⟩, hf, rs.dropLast, ss, hdrop_sorted, hss_sorted,
     hdivX_roots, hss_eq, Or.inr ⟨hlen_eq, hAlt⟩⟩
+
+/-- List-level converse of `listAlternates_dropLast_of_listInterlaces`.
+
+If `us` alternates with the equal-length list `ts` and `m` dominates every entry
+of `us`, then `us` interlaces the strictly longer list `ts ++ [m]`. -/
+private lemma listInterlaces_append_singleton_of_listAlternates {m : ℝ} :
+    ∀ {ts us : List ℝ}, ts.length = us.length →
+      ListAlternates ts us → (∀ u ∈ us, u ≤ m) →
+      ListInterlaces us (ts ++ [m]) := by
+  intro ts
+  induction ts with
+  | nil =>
+      intro us hlen _ _
+      cases us with
+      | nil => simp [ListInterlaces]
+      | cons _ _ => simp at hlen
+  | cons t ts' ih =>
+      intro us hlen halt hle
+      cases us with
+      | nil => simp at hlen
+      | cons u us' =>
+          obtain ⟨htu, hI⟩ := halt
+          cases ts' with
+          | nil =>
+              cases us' with
+              | nil =>
+                  exact ⟨htu, hle u (by simp), by simp [ListInterlaces]⟩
+              | cons _ _ => simp at hlen
+          | cons t₂ ts'' =>
+              cases us' with
+              | nil => simp at hlen
+              | cons u₂ us'' =>
+                  obtain ⟨hut₂, ht₂u₂, hItail⟩ := hI
+                  rw [List.cons_append, List.cons_append]
+                  refine ⟨htu, hut₂, ?_⟩
+                  have := ih (us := u₂ :: us'') (by simpa using hlen)
+                    ⟨ht₂u₂, hItail⟩ (fun x hx => hle x (by simp [hx]))
+                  rwa [List.cons_append] at this
+
+/-- Right-zero degree-drop reconstruction at the `Prec` level.
+
+This is the converse of `prec_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero`.
+In the succ-degree configuration `g.natDegree = f.natDegree + 1`, if both `f`
+and `g` have nonnegative coefficients and `g.coeff 0 = 0`, then the same-degree
+alternation `Prec (g.divX) f` reassembles, after restoring the zero root of `g`,
+into the differ-by-one interlacing `Prec f g`.
+
+Together with `prec_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero` this shows
+that on the right-zero lead branch the sharper orientation target `Prec f g` and
+the `divX` orientation target `Prec (g.divX) f` are equivalent. -/
+theorem prec_of_prec_divX_left_of_hasNonnegCoeffs_coeff_zero
+    {f g : ℝ[X]}
+    (hprec : Prec (g.divX) f)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hg0 : g.coeff 0 = 0)
+    (hdeg : g.natDegree = f.natDegree + 1) :
+    Prec f g := by
+  obtain ⟨hdivX, hf, aa, bb, haa_sorted, hbb_sorted, haa_eq, hbb_eq, hshape⟩ :=
+    hprec
+  have haa_len : aa.length = g.divX.natDegree := by
+    rw [← Multiset.coe_card, haa_eq, card_roots_of_splits hdivX.2]
+  have hbb_len : bb.length = f.natDegree := by
+    rw [← Multiset.coe_card, hbb_eq, card_roots_of_splits hf.2]
+  have hdivX_deg : g.divX.natDegree = f.natDegree := by
+    rw [Polynomial.natDegree_divX_eq_natDegree_tsub_one, hdeg, Nat.add_sub_cancel]
+  have hAlt : ListAlternates aa bb := by
+    rcases hshape with ⟨hbad, _⟩ | ⟨_, halt⟩
+    · exfalso
+      rw [haa_len, hbb_len, hdivX_deg] at hbad
+      lia
+    · exact halt
+  have hgX : g = X * g.divX :=
+    DegreeDropReversal.eq_X_mul_divX_of_coeff_zero hg0
+  have hg_ne : g ≠ 0 := by
+    rw [hgX]
+    exact mul_ne_zero X_ne_zero hdivX.1
+  have hg_split : g.Splits :=
+    (DegreeDropReversal.splits_iff_divX_splits_of_coeff_zero hg0).2 hdivX.2
+  have hf_nonpos : ∀ u ∈ bb, u ≤ 0 := by
+    intro u hu
+    have hmem : u ∈ f.roots := by
+      rw [← hbb_eq]; exact Multiset.mem_coe.mpr hu
+    exact roots_nonpos_of_hasNonnegCoeffs hfnn u hmem
+  have hg_roots : g.roots = (0 : ℝ) ::ₘ g.divX.roots :=
+    roots_eq_zero_cons_divX_of_coeff_zero hg_ne hg0
+  have hdivX_nonpos : ∀ a ∈ aa, a ≤ 0 := by
+    intro a ha
+    have hmem : a ∈ g.divX.roots := by
+      rw [← haa_eq]; exact Multiset.mem_coe.mpr ha
+    have hmem' : a ∈ g.roots := by
+      rw [hg_roots]; exact Multiset.mem_cons_of_mem hmem
+    exact roots_nonpos_of_hasNonnegCoeffs hgnn a hmem'
+  have hrs_sorted : (aa ++ [(0 : ℝ)]).Pairwise (· ≤ ·) := by
+    rw [List.pairwise_append]
+    refine ⟨haa_sorted, by simp, ?_⟩
+    intro x hx y hy
+    simp only [List.mem_singleton] at hy
+    subst hy
+    exact hdivX_nonpos x hx
+  have hrs_eq : (↑(aa ++ [(0 : ℝ)]) : Multiset ℝ) = g.roots := by
+    rw [hg_roots, ← haa_eq]
+    simp
+  refine ⟨hf, ⟨hg_ne, hg_split⟩, bb, aa ++ [(0 : ℝ)], hbb_sorted, hrs_sorted,
+    hbb_eq, hrs_eq, Or.inl ⟨?_, ?_⟩⟩
+  · rw [List.length_append, haa_len, hbb_len, hdivX_deg]
+    simp
+  · exact listInterlaces_append_singleton_of_listAlternates
+      (by rw [haa_len, hbb_len, hdivX_deg]) hAlt hf_nonpos
 
 end RealRooted

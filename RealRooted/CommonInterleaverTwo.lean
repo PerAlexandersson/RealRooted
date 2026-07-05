@@ -2624,18 +2624,6 @@ theorem PosComboRealRooted.divX_succDegree_data
     Polynomial.natDegree_divX_eq_natDegree_tsub_one]
   lia
 
-/-- Roots of a nonzero polynomial with zero constant coefficient are exactly
-the roots of its `divX` quotient together with one extra root at `0`. -/
-theorem roots_eq_zero_cons_divX_of_coeff_zero {f : ℝ[X]}
-    (hf : f ≠ 0) (hf0 : f.coeff 0 = 0) :
-    f.roots = 0 ::ₘ f.divX.roots := by
-  have hX : f = X * f.divX := DegreeDropReversal.eq_X_mul_divX_of_coeff_zero hf0
-  have hne : X * f.divX ≠ 0 := by
-    rw [← hX]
-    exact hf
-  conv_lhs => rw [hX]
-  rw [Polynomial.roots_mul hne, Polynomial.roots_X, Multiset.singleton_add]
-
 /-- Single-polynomial `divX` root-count step.  For a nonzero polynomial with
 zero constant coefficient, the number of roots satisfying any predicate `p`
 equals the number for its `divX` quotient plus the contribution of the extra
@@ -3687,6 +3675,33 @@ theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrec_of_precFG
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0
   exact prec_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero
     (hprecFG hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0) hgnn hg0 hdeg
+
+/-- Converse of `posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrec_of_precFG`:
+the sharper succ-degree orientation `Prec f g` on the right-zero lead branch
+follows from the `divX` orientation target `Prec (g.divX) f`.  The degree-drop
+reconstruction is isolated in
+`prec_of_prec_divX_left_of_hasNonnegCoeffs_coeff_zero`.
+
+Together with `posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrec_of_precFG`
+this shows that on the right-zero lead branch the sharper orientation target and
+the `divX` orientation target are equivalent. -/
+theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroPrecFG_of_divX
+    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement) :
+    ∀ ⦃f g : ℝ[X]⦄,
+      HasPosLeadingCoeff f →
+      HasPosLeadingCoeff g →
+      HasNonnegCoeffs f →
+      HasNonnegCoeffs g →
+      PosComboRealRooted f g →
+      g.natDegree = f.natDegree + 1 →
+      (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+      f.Splits →
+      f.coeff 0 ≠ 0 →
+      g.coeff 0 = 0 →
+      Prec f g := by
+  intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0
+  exact prec_of_prec_divX_left_of_hasNonnegCoeffs_coeff_zero
+    (hdivX hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0) hfnn hgnn hg0 hdeg
 
 /-- The lead root-count branch splits into the two possible constant-term
 cases for the higher-degree member. -/

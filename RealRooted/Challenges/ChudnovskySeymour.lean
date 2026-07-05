@@ -747,6 +747,18 @@ theorem succDegreeRootCountLeadRightZeroDivXPrecTarget_of_prec
   posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrec_of_precFG
     horient
 
+/-- Challenge-facing converse reduction: the sharper right-zero orientation
+target `Prec f g` follows from the `divX` orientation target `Prec (g.divX) f`.
+The degree-drop reconstruction is isolated in
+`prec_of_prec_divX_left_of_hasNonnegCoeffs_coeff_zero`.
+
+Together with `succDegreeRootCountLeadRightZeroDivXPrecTarget_of_prec` this shows
+that on the right-zero lead branch the two orientation targets are equivalent. -/
+theorem succDegreeRootCountLeadRightZeroPrecTarget_of_divXPrec
+    (hdivX : succDegreeRootCountLeadRightZeroDivXPrecTarget) :
+    succDegreeRootCountLeadRightZeroPrecTarget :=
+  posComboNoCommonSuccDegreeRootCountLeadRightZeroPrecFG_of_divX hdivX
+
 /-- Challenge-facing reduction from the sharper right-zero orientation target
 to the right-zero lead root-count branch. -/
 theorem succDegreeRootCountLeadRightZeroTarget_of_prec
