@@ -678,6 +678,89 @@ theorem sameDegreeRootCrossingPair_of_posCombo_natDegree_le_two
   sameDegreeRootCrossing_of_posCombo_natDegree_le_two
     hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_deg_le_two
 
+/-- Challenge-facing degree-`≤ 3` same-degree root-count route, assuming the
+two cubic interior partial-separation leaves. -/
+theorem sameDegreeRootCountPair_of_interior_natDegree_le_three
+    (hbelow : sameDegreeCubicInteriorTwoBelowTarget)
+    (habove : sameDegreeCubicInteriorTwoAboveTarget)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hf_deg_le_three : f.natDegree ≤ 3)
+    (x : ℝ) :
+    ((f.roots.filter (· ≤ x)).card : ℤ) -
+        (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) -
+        (f.roots.filter (· ≤ x)).card ≤ 1 := by
+  by_cases hf_deg_le_two : f.natDegree ≤ 2
+  · exact sameDegreeRootCountPair_of_posCombo_natDegree_le_two
+      hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_deg_le_two x
+  · have hf_deg_three : f.natDegree = 3 := by
+      lia
+    exact sameDegreeRootCountPair_of_interior_natDegree_eq_three
+      hbelow habove hf_pos hg_pos hfg hdeg hf_deg_three x
+
+/-- Challenge-facing degree-`≤ 3` upper-threshold route, assuming the two cubic
+interior partial-separation leaves. -/
+theorem sameDegreeRootCountAbovePair_of_interior_natDegree_le_three
+    (hbelow : sameDegreeCubicInteriorTwoBelowTarget)
+    (habove : sameDegreeCubicInteriorTwoAboveTarget)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hf_deg_le_three : f.natDegree ≤ 3)
+    (x : ℝ) :
+    ((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) -
+        (f.roots.filter (x < ·)).card ≤ 1 := by
+  have hf_split : f.Splits :=
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+  have hg_split : g.Splits :=
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+  exact sameDegreeRootCountAbove_of_rootCount hf_split hg_split hdeg
+    (fun y =>
+      sameDegreeRootCountPair_of_interior_natDegree_le_three
+        hbelow habove hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_deg_le_three y)
+    x
+
+/-- Challenge-facing degree-`≤ 3` root-crossing route, assuming the two cubic
+interior partial-separation leaves. -/
+theorem sameDegreeRootCrossingPair_of_interior_natDegree_le_three
+    (hbelow : sameDegreeCubicInteriorTwoBelowTarget)
+    (habove : sameDegreeCubicInteriorTwoAboveTarget)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hf_deg_le_three : f.natDegree ≤ 3) :
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
+  have hf_split : f.Splits :=
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+  have hg_split : g.Splits :=
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+  exact rootCrossing_of_rootCountAbove_diff_le_one hf_split hg_split hdeg
+    (fun x =>
+      sameDegreeRootCountAbovePair_of_interior_natDegree_le_three
+        hbelow habove hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_deg_le_three x)
+
 /-- Challenge-facing low-degree base case for the repaired same-degree
 pair-interleaver endpoint. -/
 theorem sameDegreePairHasCommonInterleaver_of_natDegree_le_one
