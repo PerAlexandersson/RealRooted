@@ -4716,6 +4716,13 @@ theorem posComboNoCommonSuccDegreeSlotData_of_nonRoot
   posComboNoCommonSuccDegreeSlotData_of_rootCountAbove
     (posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot hcount)
 
+/-- Succ-degree slot data from the common-non-root upper-threshold root-count
+formulation, with an explicit name for the `rootCountAboveNonRoot` leaf. -/
+theorem posComboNoCommonSuccDegreeSlotData_of_rootCountAboveNonRoot
+    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
+    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
+  posComboNoCommonSuccDegreeSlotData_of_nonRoot hcount
+
 /-- The repaired succ-degree pair-interleaver endpoint follows from the
 common-non-root upper-threshold root-count formulation. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_nonRoot
@@ -4723,6 +4730,14 @@ theorem succDegreePairHasCommonInterleaver_nonneg_of_nonRoot
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
   succDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove
     (posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot hcount)
+
+/-- The repaired succ-degree pair-interleaver endpoint follows from the
+common-non-root upper-threshold root-count formulation, with an explicit name
+for the `rootCountAboveNonRoot` leaf. -/
+theorem succDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot
+    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+  succDegreePairHasCommonInterleaver_nonneg_of_nonRoot hcount
 
 /-- Succ-degree slot data from the lower common-non-root root-count
 formulation. -/

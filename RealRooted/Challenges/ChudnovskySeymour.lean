@@ -765,6 +765,14 @@ theorem succDegreeRootCountTarget_of_nonRoot
     succDegreeRootCountTarget :=
   posComboNoCommonSuccDegreeRootCount_of_nonRoot hcount
 
+/-- Challenge-facing reduction from common-non-root succ-degree upper root
+counts to the lower-threshold formulation, with an explicit name for the
+`rootCountAboveNonRoot` leaf. -/
+theorem succDegreeRootCountTarget_of_rootCountAboveNonRoot
+    (hcount : succDegreeRootCountAboveNonRootTarget) :
+    succDegreeRootCountTarget :=
+  succDegreeRootCountTarget_of_nonRoot hcount
+
 /-- Challenge-facing reduction from common-non-root succ-degree lower root
 counts to the full lower-threshold formulation. -/
 theorem succDegreeRootCountTarget_of_rootCountNonRoot
@@ -1090,6 +1098,14 @@ theorem succDegreeSlotDataTarget_of_nonRoot
     succDegreeSlotDataTarget :=
   posComboNoCommonSuccDegreeSlotData_of_nonRoot hcount
 
+/-- Challenge-facing reduction from common-non-root succ-degree upper root
+counts to slot data, with an explicit name for the `rootCountAboveNonRoot`
+leaf. -/
+theorem succDegreeSlotDataTarget_of_rootCountAboveNonRoot
+    (hcount : succDegreeRootCountAboveNonRootTarget) :
+    succDegreeSlotDataTarget :=
+  posComboNoCommonSuccDegreeSlotData_of_rootCountAboveNonRoot hcount
+
 /-- Challenge-facing reduction from common-non-root succ-degree lower root
 counts to slot data. -/
 theorem succDegreeSlotDataTarget_of_rootCountNonRoot
@@ -1125,6 +1141,14 @@ theorem succDegreePairTarget_of_nonRoot
     (hcount : succDegreeRootCountAboveNonRootTarget) :
     succDegreePairTarget :=
   succDegreePairHasCommonInterleaver_nonneg_of_nonRoot hcount
+
+/-- Challenge-facing reduction from common-non-root succ-degree upper root
+counts to the repaired succ-degree pair endpoint, with an explicit name for the
+`rootCountAboveNonRoot` leaf. -/
+theorem succDegreePairTarget_of_rootCountAboveNonRoot
+    (hcount : succDegreeRootCountAboveNonRootTarget) :
+    succDegreePairTarget :=
+  succDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot hcount
 
 /-- Challenge-facing reduction from common-non-root succ-degree lower root
 counts to the repaired succ-degree pair endpoint. -/
