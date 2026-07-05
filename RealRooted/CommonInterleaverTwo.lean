@@ -1981,6 +1981,32 @@ theorem posComboNoCommonSameDegreeRootCountAbove_of_rootCount
   exact sameDegreeRootCountAbove_of_rootCount hf_split hg_split hdeg
     (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
 
+/-- The lower-threshold and upper-threshold same-degree root-count targets are
+equivalent. -/
+theorem posComboNoCommonSameDegreeRootCountAbove_iff_rootCount :
+    PosComboNoCommonSameDegreeRootCountAboveNonnegStatement ↔
+      PosComboNoCommonSameDegreeRootCountNonnegStatement :=
+  ⟨posComboNoCommonSameDegreeRootCount_of_rootCountAbove,
+    posComboNoCommonSameDegreeRootCountAbove_of_rootCount⟩
+
+/-- The same-degree root-crossing target is equivalent to the lower-threshold
+root-count target. -/
+theorem posComboNoCommonSameDegreeRootCrossing_iff_rootCount :
+    PosComboNoCommonSameDegreeRootCrossingNonnegStatement ↔
+      PosComboNoCommonSameDegreeRootCountNonnegStatement :=
+  ⟨posComboNoCommonSameDegreeRootCount_of_rootCrossing,
+    posComboNoCommonSameDegreeRootCrossing_of_rootCount⟩
+
+/-- The same-degree root-crossing target is equivalent to the upper-threshold
+root-count target. -/
+theorem posComboNoCommonSameDegreeRootCrossing_iff_rootCountAbove :
+    PosComboNoCommonSameDegreeRootCrossingNonnegStatement ↔
+      PosComboNoCommonSameDegreeRootCountAboveNonnegStatement :=
+  ⟨fun hcross =>
+      posComboNoCommonSameDegreeRootCountAbove_of_rootCount
+        (posComboNoCommonSameDegreeRootCount_of_rootCrossing hcross),
+    posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove⟩
+
 /-- The same-degree lower root-count target follows from its common-non-root
 variant. -/
 theorem posComboNoCommonSameDegreeRootCount_of_nonRoot
