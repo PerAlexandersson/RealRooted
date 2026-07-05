@@ -332,6 +332,20 @@ theorem hurwitzSchurFullBandCornerZeroedSingleFirstColTarget_of_positiveRemainde
   hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstCol_of_positiveRemainder
     h
 
+/-- Challenge-facing disproof of the first-column normal form: this branch is
+too strong and should not be used as a route to the two-matrix #34 target. -/
+theorem not_hurwitzSchurFullBandCornerZeroedSingleFirstColTarget :
+    ¬ hurwitzSchurFullBandCornerZeroedSingleFirstColTarget :=
+  not_hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstCol
+
+/-- The strict-remainder branch is also false, since it implies the false
+first-column normal form. -/
+theorem not_hurwitzSchurFullBandCornerZeroedSingleFirstColPositiveRemainderTarget :
+    ¬ hurwitzSchurFullBandCornerZeroedSingleFirstColPositiveRemainderTarget := by
+  intro h
+  exact not_hurwitzSchurFullBandCornerZeroedSingleFirstColTarget
+    (hurwitzSchurFullBandCornerZeroedSingleFirstColTarget_of_positiveRemainder h)
+
 /-- Challenge-facing reduction from the column-normalized single-matrix leaf
 to the two-matrix corner-zeroed full-band subtarget. -/
 theorem hurwitzSchurFullBandCornerZeroedTarget_of_singleColZero
