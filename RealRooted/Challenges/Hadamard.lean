@@ -423,6 +423,22 @@ theorem cubicDiscr_jensenPolynomialThree (gamma : ℕ → ℝ) :
         - gamma 3 ^ 2 * gamma 0 ^ 2) :=
   RealRooted.cubicDiscr_jensenPolynomial_three gamma
 
+/-- Challenge-facing nonnegativity of the cubic discriminant for a degree-three
+Jensen polynomial that is zero or splits. -/
+theorem cubicDiscr_jensenPolynomialThree_nonneg_of_eq_zero_or_splits
+    {gamma : ℕ → ℝ}
+    (hs : jensenPolynomial 3 gamma = 0 ∨ (jensenPolynomial 3 gamma).Splits) :
+    0 ≤ cubicDiscr (jensenPolynomial 3 gamma) :=
+  RealRooted.cubicDiscr_jensenPolynomial_three_nonneg_of_eq_zero_or_splits hs
+
+/-- Challenge-facing nonnegativity of the cubic discriminant for a PF
+degree-three Jensen polynomial. -/
+theorem cubicDiscr_jensenPolynomialThree_nonneg_of_isPF
+    {gamma : ℕ → ℝ}
+    (hj : IsPFPolynomial (jensenPolynomial 3 gamma)) :
+    0 ≤ cubicDiscr (jensenPolynomial 3 gamma) :=
+  hj.cubicDiscr_jensenPolynomial_three_nonneg
+
 /-- Challenge-facing cubic Newton inequalities for an exact-degree splitting
 Jensen polynomial. -/
 theorem jensenPolynomialThree_logConcave_of_splits_natDegree_three

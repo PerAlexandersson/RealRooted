@@ -331,6 +331,26 @@ theorem cubicDiscr_jensenPolynomial_three (gamma : ℕ → ℝ) :
   norm_num [coeff_X_add_one_pow]
   ring
 
+/-- A degree-three Jensen polynomial that is zero or splits has nonnegative
+cubic discriminant. -/
+theorem cubicDiscr_jensenPolynomial_three_nonneg_of_eq_zero_or_splits
+    {gamma : ℕ → ℝ}
+    (hs : jensenPolynomial 3 gamma = 0 ∨ (jensenPolynomial 3 gamma).Splits) :
+    0 ≤ cubicDiscr (jensenPolynomial 3 gamma) := by
+  rcases hs with hzero | hsplit
+  · simp [hzero, cubicDiscr]
+  · exact
+      cubicDiscr_nonneg_of_splits_natDegree_le_three
+        (natDegree_jensenPolynomial_le 3 gamma) hsplit
+
+/-- A PF degree-three Jensen polynomial has nonnegative cubic discriminant. -/
+theorem IsPFPolynomial.cubicDiscr_jensenPolynomial_three_nonneg
+    {gamma : ℕ → ℝ}
+    (hj : IsPFPolynomial (jensenPolynomial 3 gamma)) :
+    0 ≤ cubicDiscr (jensenPolynomial 3 gamma) :=
+  cubicDiscr_jensenPolynomial_three_nonneg_of_eq_zero_or_splits
+    hj.eq_zero_or_splits
+
 /-- Finite multiplier sequence up to degree `n`: the diagonal operator
 preserves real-rootedness, allowing the zero polynomial. -/
 def IsFiniteMultiplierSequence (n : ℕ) (gamma : ℕ → ℝ) : Prop :=

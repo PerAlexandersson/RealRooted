@@ -4,6 +4,7 @@ import Mathlib.Algebra.Polynomial.SpecificDegree
 import Mathlib.Algebra.QuadraticDiscriminant
 import Mathlib.Analysis.Complex.Polynomial.Basic
 import Mathlib.Analysis.Real.Sqrt
+import RealRooted.CubicNewton
 
 /-!
 # The discriminant criterion for a real cubic to split
@@ -93,8 +94,11 @@ lemma coeff_X_sub_C_mul_of_natDegree_two {q : ℝ[X]} (r : ℝ) (hqdeg : q.natDe
   have hq3 : q.coeff 3 = 0 := coeff_eq_zero_of_natDegree_lt (by rw [hqdeg]; decide)
   refine ⟨?_, ?_, ?_, ?_⟩
   · rw [show (3 : ℕ) = 2 + 1 from rfl, coeff_X_sub_C_mul, hq3, mul_zero, sub_zero]
+    simp
   · rw [show (2 : ℕ) = 1 + 1 from rfl, coeff_X_sub_C_mul]
+    simp
   · rw [show (1 : ℕ) = 0 + 1 from rfl, coeff_X_sub_C_mul]
+    simp
   · rw [sub_mul, coeff_sub, coeff_C_mul, coeff_X_mul_zero, zero_sub]
 
 /-- Discriminant factorisation for a cubic given as `(X - C r) * q` with `q` a
@@ -192,5 +196,57 @@ theorem splits_of_natDegree_le_three_cubicDiscr_nonneg
   · have h0 : p.natDegree = 0 :=
       Nat.eq_zero_of_le_zero (Nat.le_of_lt_succ hlt1)
     exact Polynomial.Splits.of_natDegree_eq_zero h0
+
+/-- A splitting real cubic has nonnegative cubic coefficient discriminant. -/
+theorem cubicDiscr_nonneg_of_splits_natDegree_three
+    {p : ℝ[X]} (hdeg : p.natDegree = 3) (hs : p.Splits) :
+    0 ≤ cubicDiscr p := by
+  obtain ⟨r, hr⟩ := cubic_exists_isRoot hdeg
+  have hfact : (X - C r) * (p /ₘ (X - C r)) = p := mul_divByMonic_eq_iff_isRoot.mpr hr
+  set q := p /ₘ (X - C r) with hq
+  have hqdeg : q.natDegree = 2 := by
+    rw [hq, natDegree_divByMonic p (monic_X_sub_C r), hdeg, natDegree_X_sub_C]
+  have hqsplit : q.Splits := by
+    have hp : ((X - C r) * q).Splits := by
+      rwa [hfact]
+    rwa [splits_X_sub_C_mul_iff] at hp
+  have hdisc_q : 0 ≤ discrim (q.coeff 2) (q.coeff 1) (q.coeff 0) := by
+    have hquad := quadratic_disc_coeff_le_of_splits_natDegree_two hqdeg hqsplit
+    unfold discrim
+    nlinarith [hquad]
+  have hkey : cubicDiscr p
+      = (q.eval r) ^ 2 * discrim (q.coeff 2) (q.coeff 1) (q.coeff 0) := by
+    rw [← hfact]
+    exact cubicDiscr_eq_of_factor hqdeg
+  rw [hkey]
+  exact mul_nonneg (sq_nonneg _) hdisc_q
+
+/-- A splitting real polynomial of degree at most three has nonnegative cubic
+coefficient discriminant. -/
+theorem cubicDiscr_nonneg_of_splits_natDegree_le_three
+    {p : ℝ[X]} (hdeg : p.natDegree ≤ 3) (hs : p.Splits) :
+    0 ≤ cubicDiscr p := by
+  by_cases h3 : p.natDegree = 3
+  · exact cubicDiscr_nonneg_of_splits_natDegree_three h3 hs
+  have hle2 : p.natDegree ≤ 2 :=
+    Nat.lt_succ_iff.mp (lt_of_le_of_ne hdeg h3)
+  by_cases h2 : p.natDegree = 2
+  · have hkey := cubicDiscr_eq_coeff_two_sq_mul_discrim_of_natDegree_two h2
+    have hdisc_q : 0 ≤ discrim (p.coeff 2) (p.coeff 1) (p.coeff 0) := by
+      have hquad := quadratic_disc_coeff_le_of_splits_natDegree_two h2 hs
+      unfold discrim
+      nlinarith [hquad]
+    rw [hkey]
+    exact mul_nonneg (sq_nonneg _) hdisc_q
+  have hle1 : p.natDegree ≤ 1 :=
+    Nat.lt_succ_iff.mp (lt_of_le_of_ne hle2 h2)
+  have hc2 : p.coeff 2 = 0 :=
+    coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hle1 (by norm_num))
+  have hc3 : p.coeff 3 = 0 :=
+    coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hle1 (by norm_num))
+  unfold cubicDiscr
+  rw [hc2, hc3]
+  ring_nf
+  norm_num
 
 end RealRooted
