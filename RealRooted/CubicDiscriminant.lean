@@ -50,6 +50,34 @@ def cubicDiscr (p : ℝ[X]) : ℝ :=
     - 4 * p.coeff 3 * p.coeff 1 ^ 3
     - 27 * p.coeff 3 ^ 2 * p.coeff 0 ^ 2
 
+/-- The coefficient discriminant `cubicDiscr` is homogeneous of degree four in the
+coefficients, so scaling by a constant `C k` multiplies it by `k ^ 4`. -/
+theorem cubicDiscr_C_mul (k : ℝ) (p : ℝ[X]) :
+    cubicDiscr (C k * p) = k ^ 4 * cubicDiscr p := by
+  unfold cubicDiscr
+  simp only [coeff_C_mul]
+  ring
+
+/-- Expansion of a monic product of three linear factors. -/
+theorem prod_three_X_sub_C_expand (a b c : ℝ) :
+    (X - C a) * (X - C b) * (X - C c)
+      = X ^ 3 - C (a + b + c) * X ^ 2 + C (a * b + b * c + c * a) * X
+          - C (a * b * c) := by
+  simp only [C_add, C_mul]
+  ring
+
+/-- The coefficient discriminant of a monic split cubic equals the square of the
+product of the pairwise differences of its roots. -/
+theorem cubicDiscr_prod_three_X_sub_C (a b c : ℝ) :
+    cubicDiscr ((X - C a) * (X - C b) * (X - C c))
+      = ((a - b) * (b - c) * (a - c)) ^ 2 := by
+  rw [prod_three_X_sub_C_expand]
+  unfold cubicDiscr
+  simp only [coeff_sub, coeff_add, coeff_C_mul, coeff_X_pow, coeff_C,
+    coeff_X, mul_ite, mul_one, mul_zero]
+  norm_num
+  ring
+
 /-- Every real cubic has a real root: a degree-three real polynomial without a
 root would be irreducible, contradicting that irreducible real polynomials have
 degree at most two. -/
