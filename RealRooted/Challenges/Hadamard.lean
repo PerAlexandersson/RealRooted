@@ -92,6 +92,52 @@ theorem finiteSchurSzegoNonzeroTarget_iff_finitePolyaSchurBackwardTarget :
     finiteSchurSzegoNonzeroTarget ↔ finitePolyaSchurBackwardTarget :=
   finiteSchurSzegoCompositionNonzeroStatement_iff_finitePolyaSchurBackward
 
+/-- Challenge-facing checked low-degree Schur--Szegő base case, through
+degree `2`. -/
+theorem finiteSchurSzegoPair_of_natDegree_le_two
+    {n : ℕ} (hn : n ≤ 2) {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ n)
+    (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  finiteSchurSzegoComposition_of_natDegree_le_two hn hf hfdeg hpdeg hsplit
+
+/-- Challenge-facing checked low-degree nonzero Schur--Szegő base case, through
+degree `2`. -/
+theorem finiteSchurSzegoNonzeroPair_of_natDegree_le_two
+    {n : ℕ} (hn : n ≤ 2) {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hf0 : f ≠ 0) (hfdeg : f.natDegree ≤ n)
+    (hp0 : p ≠ 0) (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  finiteSchurSzegoCompositionNonzero_of_natDegree_le_two
+    hn hf hf0 hfdeg hp0 hpdeg hsplit
+
+/-- Challenge-facing checked low-degree backward finite Pólya--Schur base case,
+through degree `2`. -/
+theorem finitePolyaSchurBackwardPair_of_natDegree_le_two
+    {n : ℕ} (hn : n ≤ 2) {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k)
+    (hjensen : IsPFPolynomial (jensenPolynomial n gamma)) :
+    IsFiniteMultiplierSequence n gamma :=
+  finitePolyaSchurNonnegBackward_of_natDegree_le_two hn hgamma hjensen
+
+/-- Challenge-facing checked low-degree finite Pólya--Schur classification,
+through degree `2`. -/
+theorem finitePolyaSchurPair_iff_jensenPolynomial_of_natDegree_le_two
+    {n : ℕ} (hn : n ≤ 2) {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k) :
+    IsFiniteMultiplierSequence n gamma ↔
+      IsPFPolynomial (jensenPolynomial n gamma) :=
+  finitePolyaSchur_nonneg_of_natDegree_le_two hn hgamma
+
+/-- Challenge-facing checked low-degree PF multiplier-sequence classification,
+through degree `2`. -/
+theorem finitePFMultiplierSequencePair_iff_jensenPolynomial_of_natDegree_le_two
+    {n : ℕ} (hn : n ≤ 2) {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, 0 ≤ gamma k) :
+    IsFinitePFMultiplierSequence n gamma ↔
+      IsPFPolynomial (jensenPolynomial n gamma) :=
+  isFinitePFMultiplierSequence_iff_jensenPolynomial_natDegree_le_two hn hgamma
+
 /-! ## Garloff--Wagner and Hurwitz-matrix targets -/
 
 /-- Challenge-facing target for Garloff--Wagner, Theorem 4(b), in the
