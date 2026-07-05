@@ -1727,6 +1727,74 @@ theorem hurwitzColumnZeroProductEvenColToeplitz_of_polyaFreq
     exact Nat.mul_lt_mul_of_pos_left h (by decide : 0 < 2)
   exact hPF ha hb hrows hdbl
 
+/-! ### Hadamard normal form for the even-column Toeplitz leaf
+
+The even-column Toeplitz minor of the pointwise product of the two column-`0`
+sequences is, entry by entry, the Hadamard product of the two Hurwitz
+submatrices selected by the same rows and columns.  This holds with no band
+hypothesis: off the staircase every entry on both sides vanishes. -/
+
+/-- Non-band Toeplitz/Hadamard normal form for the column-`0` product minor.
+For arbitrary rows and columns, the even-column Toeplitz submatrix of the
+pointwise product of the two column-`0` sequences equals the entrywise product
+of the corresponding submatrices of the two Hurwitz matrices. -/
+theorem toeplitz_colZeroProduct_submatrix_eq_hadamard
+    (a b : ℕ → ℝ) {n : ℕ} (rows cols : Fin n → ℕ) :
+    (toeplitz (fun k => hurwitz a k 0 * hurwitz b k 0)).submatrix rows
+        (fun j => 2 * cols j)
+      = Matrix.of fun i j =>
+          (hurwitz a).submatrix rows cols i j *
+            (hurwitz b).submatrix rows cols i j := by
+  ext i j
+  simp only [Matrix.submatrix_apply, Matrix.of_apply, toeplitz_apply]
+  by_cases h : 2 * cols j ≤ rows i
+  · rw [if_pos h, hurwitz_eq_toeplitz_colZero a h, hurwitz_eq_toeplitz_colZero b h]
+    simp only [toeplitz_apply, if_pos h]
+  · rw [if_neg h, hurwitz_apply_eq_zero_of_lt a (by lia), zero_mul]
+
+/-- The determinant of the Hadamard product of two `2 × 2` totally
+nonnegative matrices is nonnegative. -/
+theorem det_hadamard_fin_two_nonneg
+    {M N : Matrix (Fin 2) (Fin 2) ℝ}
+    (hM : M.IsTotallyNonneg) (hN : N.IsTotallyNonneg) :
+    0 ≤ (Matrix.of fun i j => M i j * N i j).det := by
+  have hM01 : 0 ≤ M 0 1 := hM.nonneg 0 1
+  have hM10 : 0 ≤ M 1 0 := hM.nonneg 1 0
+  have hN01 : 0 ≤ N 0 1 := hN.nonneg 0 1
+  have hN10 : 0 ≤ N 1 0 := hN.nonneg 1 0
+  have hdM : 0 ≤ M 0 0 * M 1 1 - M 0 1 * M 1 0 := by
+    have h := hM (rows := id) (cols := id) strictMono_id strictMono_id
+    simpa [Matrix.det_fin_two] using h
+  have hdN : 0 ≤ N 0 0 * N 1 1 - N 0 1 * N 1 0 := by
+    have h := hN (rows := id) (cols := id) strictMono_id strictMono_id
+    simpa [Matrix.det_fin_two] using h
+  rw [Matrix.det_fin_two]
+  simp only [Matrix.of_apply]
+  nlinarith [mul_nonneg hM01 hM10, mul_nonneg hN01 hN10,
+    mul_nonneg (mul_nonneg hM01 hM10) hdN, mul_nonneg hdM (mul_nonneg hN01 hN10),
+    mul_nonneg hdM hdN]
+
+/-- The even-column Toeplitz leaf holds at every size `n ≤ 2`.  This is the
+size-`≤ 2` part of `HurwitzColumnZeroProductEvenColToeplitzStatement`, obtained
+from the Hadamard normal form and the fact that the Hadamard product of two
+totally nonnegative matrices has nonnegative determinant in sizes `≤ 2`. -/
+theorem hurwitzColumnZeroProductEvenColToeplitz_of_size_le_two
+    {a b : ℕ → ℝ}
+    (ha : (hurwitz a).IsTotallyNonneg) (hb : (hurwitz b).IsTotallyNonneg)
+    {n : ℕ} (hn : n ≤ 2) {rows cols : Fin n → ℕ}
+    (hrows : StrictMono rows) (hcols : StrictMono cols) :
+    0 ≤ ((toeplitz (fun k => hurwitz a k 0 * hurwitz b k 0)).submatrix rows
+        (fun j => 2 * cols j)).det := by
+  rw [toeplitz_colZeroProduct_submatrix_eq_hadamard a b rows cols]
+  have hMa := ha.submatrix hrows hcols
+  have hMb := hb.submatrix hrows hcols
+  interval_cases n
+  · simp
+  · rw [Matrix.det_fin_one]
+    simp only [Matrix.of_apply, Matrix.submatrix_apply]
+    exact mul_nonneg (ha.nonneg _ _) (hb.nonneg _ _)
+  · exact det_hadamard_fin_two_nonneg hMa hMb
+
 /-! ### The column-`0` product Pólya-frequency leaf is false
 
 The full-band reduction

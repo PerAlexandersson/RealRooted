@@ -839,6 +839,18 @@ theorem hurwitzSchurFullBandTarget_of_evenColToeplitz
     hurwitzSchurFullBandTarget :=
   hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_evenColToeplitz hEven
 
+/-- Challenge-facing unconditional size-`≤ 2` part of the even-column Toeplitz
+leaf.  The remaining size-`3` slice is the genuine Garloff-Wagner content of
+issue #34. -/
+theorem hurwitzColumnZeroProductEvenColToeplitzTarget_size_le_two
+    {a b : ℕ → ℝ}
+    (ha : (hurwitz a).IsTotallyNonneg) (hb : (hurwitz b).IsTotallyNonneg)
+    {n : ℕ} (hn : n ≤ 2) {rows cols : Fin n → ℕ}
+    (hrows : StrictMono rows) (hcols : StrictMono cols) :
+    0 ≤ ((toeplitz (fun k => hurwitz a k 0 * hurwitz b k 0)).submatrix rows
+        (fun j => 2 * cols j)).det :=
+  hurwitzColumnZeroProductEvenColToeplitz_of_size_le_two ha hb hn hrows hcols
+
 /-- Challenge-facing reduction from the even-column Toeplitz leaf to the
 isolated in-band `3 x 3` Hurwitz Schur-product target. -/
 theorem hurwitzSchurInBandTarget_of_evenColToeplitz
