@@ -259,6 +259,11 @@ non-root thresholds. -/
 abbrev succDegreeRootCountNonRootTarget : Prop :=
   PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement
 
+/-- Succ-degree common-left-interleaver formulation for the honest
+common-non-root root-count leaf. -/
+abbrev succDegreeCommonLeftInterleaverTarget : Prop :=
+  PosComboNoCommonSuccDegreeCommonLeftInterleaverNonnegStatement
+
 /-- Succ-degree residual constant-term root-count branch. -/
 abbrev succDegreeRootCountResidualTarget : Prop :=
   PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement
@@ -999,6 +1004,20 @@ succ-degree root-count formulations. -/
 theorem succDegreeRootCountAboveNonRootTarget_iff_rootCountNonRoot :
     succDegreeRootCountAboveNonRootTarget ↔ succDegreeRootCountNonRootTarget :=
   posComboNoCommonSuccDegreeRootCountAboveNonRoot_iff_rootCountNonRoot
+
+/-- Challenge-facing reduction from the common-left-interleaver formulation to
+the lower common-non-root succ-degree root-count leaf. -/
+theorem succDegreeRootCountNonRootTarget_of_commonLeftInterleaver
+    (hleft : succDegreeCommonLeftInterleaverTarget) :
+    succDegreeRootCountNonRootTarget :=
+  posComboNoCommonSuccDegreeRootCountNonRoot_of_commonLeftInterleaver hleft
+
+/-- Challenge-facing reduction from the common-left-interleaver formulation to
+the upper common-non-root succ-degree root-count leaf. -/
+theorem succDegreeRootCountAboveNonRootTarget_of_commonLeftInterleaver
+    (hleft : succDegreeCommonLeftInterleaverTarget) :
+    succDegreeRootCountAboveNonRootTarget :=
+  posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_commonLeftInterleaver hleft
 
 /-- Challenge-facing reduction from common-non-root succ-degree lower root
 counts to the full upper-threshold formulation. -/
