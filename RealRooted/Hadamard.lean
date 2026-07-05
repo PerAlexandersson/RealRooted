@@ -513,6 +513,40 @@ theorem finiteSchurSzegoComposition_of_finitePolyaSchur
   rw [heq]
   exact hmult hpdeg hsplit
 
+/-- Low-degree fixed-degree Schur--Szegő composition, through degree two.
+
+This is the specialization of the finite Pólya--Schur route using the checked
+degree-`≤ 2` backward theorem from `RealRooted.MultiplierSequence`; it does
+not use the remaining classical Schur--Szegő input. -/
+theorem finiteSchurSzegoComposition_of_natDegree_le_two
+    {n : ℕ} (hn : n ≤ 2) {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ n)
+    (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits := by
+  let gamma : ℕ → ℝ := fun k => f.coeff k / (Nat.choose n k : ℝ)
+  have hgamma : ∀ k, 0 ≤ gamma k := fun k =>
+    div_nonneg (hf.hasNonnegCoeffs k) (by positivity)
+  have hjensen_eq : jensenPolynomial n gamma = f := by
+    simpa [gamma] using jensenPolynomial_normalized_coeff_eq_of_natDegree_le hfdeg
+  have hjensen : IsPFPolynomial (jensenPolynomial n gamma) := by
+    rw [hjensen_eq]
+    exact hf
+  have hmult : IsFiniteMultiplierSequence n gamma :=
+    finitePolyaSchurNonnegBackward_of_natDegree_le_two hn hgamma hjensen
+  have heq : schurSzegoComp n f p = diagonalOperator gamma p := by
+    rw [schurSzegoComp_comm, schurSzegoComp_eq_diagonalOperator]
+  rw [heq]
+  exact hmult hpdeg hsplit
+
+/-- Nonzero-core version of the checked degree-`≤ 2` Schur--Szegő composition
+case. -/
+theorem finiteSchurSzegoCompositionNonzero_of_natDegree_le_two
+    {n : ℕ} (hn : n ≤ 2) {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (_hf0 : f ≠ 0) (hfdeg : f.natDegree ≤ n)
+    (_hp0 : p ≠ 0) (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  finiteSchurSzegoComposition_of_natDegree_le_two hn hf hfdeg hpdeg hsplit
+
 /-- The full finite Schur--Szegő theorem implies the finite Pólya--Schur
 theorem. -/
 theorem finitePolyaSchur_nonneg_of_schurSzego
