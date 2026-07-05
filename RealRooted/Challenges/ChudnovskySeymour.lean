@@ -71,6 +71,11 @@ abbrev commonLeftInterleaverTarget : Prop :=
 abbrev commonInterleaverTarget : Prop :=
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target
 
+/-- Roadmap target for pairwise compatibility versus full finite-family
+compatibility under the standard hypotheses. -/
+abbrev familyCompatibleTarget : Prop :=
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target
+
 /-- Roadmap target for the nonnegative-coefficient common right interleaver
 form. -/
 abbrev commonInterleaverNonnegCoeffsTarget : Prop :=
@@ -1919,6 +1924,134 @@ theorem commonInterleaverTarget_of_sameDegreeRootCrossing_and_affineFamily
     commonInterleaverTarget :=
   chudnovskySeymour_commonInterleaver_of_sameDegreeCrossing_affineFamily
     hsame haff
+
+/-- Challenge-facing projection from the common-right target to the full
+finite-family compatibility target. -/
+theorem familyCompatibleTarget_of_commonInterleaverTarget
+    (hcommon : commonInterleaverTarget) :
+    familyCompatibleTarget :=
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
+    hcommon
+
+/-- Challenge-facing full finite-family compatibility reduction from the
+natural two-polynomial common-interleaver bridge. -/
+theorem familyCompatibleTarget_of_pairBridge
+    (htwo : CompatiblePairHasCommonInterleaverStatement) :
+    familyCompatibleTarget :=
+  familyCompatibleTarget_of_commonInterleaverTarget
+    (commonInterleaverTarget_of_pairBridge htwo)
+
+/-- Challenge-facing finite-family compatibility reduction from the
+root-crossing formulations alone. -/
+theorem familyCompatibleTarget_of_rootCrossing
+    (hsame : sameDegreeRootCrossingTarget)
+    (hsucc : succDegreeRootCrossingTarget) :
+    familyCompatibleTarget :=
+  familyCompatibleTarget_of_commonInterleaverTarget
+    (commonInterleaverTarget_of_rootCrossing hsame hsucc)
+
+/-- Challenge-facing finite-family compatibility reduction from lower-threshold
+root-count formulations alone. -/
+theorem familyCompatibleTarget_of_rootCount
+    (hsame : sameDegreeRootCountTarget)
+    (hsucc : succDegreeRootCountTarget) :
+    familyCompatibleTarget :=
+  familyCompatibleTarget_of_commonInterleaverTarget
+    (commonInterleaverTarget_of_rootCount hsame hsucc)
+
+/-- Challenge-facing finite-family compatibility reduction from same-degree
+lower-threshold root counts and succ-degree upper-threshold root counts. -/
+theorem familyCompatibleTarget_of_rootCountAbove
+    (hsame : sameDegreeRootCountTarget)
+    (hsucc : succDegreeRootCountAboveTarget) :
+    familyCompatibleTarget :=
+  familyCompatibleTarget_of_commonInterleaverTarget
+    (commonInterleaverTarget_of_rootCountAbove hsame hsucc)
+
+/-- Challenge-facing finite-family compatibility reduction from same-degree
+upper-threshold root counts and succ-degree lower-threshold root counts. -/
+theorem familyCompatibleTarget_of_sameRootCountAbove
+    (hsame : sameDegreeRootCountAboveTarget)
+    (hsucc : succDegreeRootCountTarget) :
+    familyCompatibleTarget :=
+  familyCompatibleTarget_of_commonInterleaverTarget
+    (commonInterleaverTarget_of_sameRootCountAbove hsame hsucc)
+
+/-- Challenge-facing finite-family compatibility reduction from upper-threshold
+root-count formulations in both branches. -/
+theorem familyCompatibleTarget_of_rootCountAboveBoth
+    (hsame : sameDegreeRootCountAboveTarget)
+    (hsucc : succDegreeRootCountAboveTarget) :
+    familyCompatibleTarget :=
+  familyCompatibleTarget_of_commonInterleaverTarget
+    (commonInterleaverTarget_of_rootCountAboveBoth hsame hsucc)
+
+/-- Challenge-facing finite-family compatibility reduction from common-non-root
+lower-threshold root-count formulations in both branches. -/
+theorem familyCompatibleTarget_of_rootCountNonRoot
+    (hsame : sameDegreeRootCountNonRootTarget)
+    (hsucc : succDegreeRootCountNonRootTarget) :
+    familyCompatibleTarget :=
+  familyCompatibleTarget_of_commonInterleaverTarget
+    (commonInterleaverTarget_of_rootCountNonRoot hsame hsucc)
+
+/-- Challenge-facing finite-family compatibility reduction from same-degree
+common-non-root lower counts and succ-degree common-non-root upper counts. -/
+theorem familyCompatibleTarget_of_rootCountAboveNonRoot
+    (hsame : sameDegreeRootCountNonRootTarget)
+    (hsucc : succDegreeRootCountAboveNonRootTarget) :
+    familyCompatibleTarget :=
+  familyCompatibleTarget_of_commonInterleaverTarget
+    (commonInterleaverTarget_of_rootCountAboveNonRoot hsame hsucc)
+
+/-- Challenge-facing finite-family compatibility reduction from same-degree
+common-non-root upper counts and succ-degree common-non-root lower counts. -/
+theorem familyCompatibleTarget_of_sameRootCountAboveNonRoot
+    (hsame : sameDegreeRootCountAboveNonRootTarget)
+    (hsucc : succDegreeRootCountNonRootTarget) :
+    familyCompatibleTarget :=
+  familyCompatibleTarget_of_commonInterleaverTarget
+    (commonInterleaverTarget_of_sameRootCountAboveNonRoot hsame hsucc)
+
+/-- Challenge-facing finite-family compatibility reduction from common-non-root
+upper-threshold root-count formulations in both branches. -/
+theorem familyCompatibleTarget_of_rootCountAboveBothNonRoot
+    (hsame : sameDegreeRootCountAboveNonRootTarget)
+    (hsucc : succDegreeRootCountAboveNonRootTarget) :
+    familyCompatibleTarget :=
+  familyCompatibleTarget_of_commonInterleaverTarget
+    (commonInterleaverTarget_of_rootCountAboveBothNonRoot hsame hsucc)
+
+/-- Challenge-facing finite-family compatibility reduction from root-crossing
+with the succ-degree left endpoint supplied by forward ASW. -/
+theorem familyCompatibleTarget_of_rootCrossing_and_forward_asw
+    (hsame : sameDegreeRootCrossingTarget)
+    (hASW : forwardASWTarget)
+    (hsucc : succDegreeRootCrossingTarget) :
+    familyCompatibleTarget :=
+  familyCompatibleTarget_of_commonInterleaverTarget
+    (commonInterleaverTarget_of_rootCrossing_and_forward_asw hsame hASW hsucc)
+
+/-- Challenge-facing finite-family compatibility reduction from root-crossing
+with the succ-degree left endpoint supplied by splitting-only ASW. -/
+theorem familyCompatibleTarget_of_rootCrossing_and_forward_asw_splits
+    (hsame : sameDegreeRootCrossingTarget)
+    (hASW : forwardASWSplitsTarget)
+    (hsucc : succDegreeRootCrossingTarget) :
+    familyCompatibleTarget :=
+  familyCompatibleTarget_of_commonInterleaverTarget
+    (commonInterleaverTarget_of_rootCrossing_and_forward_asw_splits
+      hsame hASW hsucc)
+
+/-- Challenge-facing finite-family compatibility reduction from same-degree
+root-crossing and the affine-family bridge for the succ-degree branch. -/
+theorem familyCompatibleTarget_of_sameDegreeRootCrossing_and_affineFamily
+    (hsame : sameDegreeRootCrossingTarget)
+    (haff : affineFamilyTarget) :
+    familyCompatibleTarget :=
+  familyCompatibleTarget_of_commonInterleaverTarget
+    (commonInterleaverTarget_of_sameDegreeRootCrossing_and_affineFamily
+      hsame haff)
 
 /-- Challenge-facing four-way package from the root-crossing formulations
 alone; root continuity supplies the succ-degree left endpoint. -/

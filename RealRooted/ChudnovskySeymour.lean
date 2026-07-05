@@ -50,6 +50,19 @@ def chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target : Prop :=
     (PairwiseCompatible fs ↔ HasCommonInterleaver fs)
 
 /--
+Roadmap target for the full finite-family compatibility equivalence.
+
+This is the `1 ↔ 4` Chudnovsky--Seymour surface under the same standard
+real-rooted/splits and positive-leading hypotheses as
+`chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target`.
+-/
+def chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target : Prop :=
+  ∀ {fs : List ℝ[X]},
+    (∀ f ∈ fs, (f ≠ 0 ∧ f.Splits)) →
+    (∀ f ∈ fs, HasPosLeadingCoeff f) →
+    (PairwiseCompatible fs ↔ FamilyCompatible fs)
+
+/--
 Roadmap target for the nonnegative-coefficient form of the direct
 pairwise-to-common interleaver equivalence.
 
@@ -103,6 +116,24 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge
   fun hrr hpos =>
     pairwiseCompatible_iff_hasCommonInterleaver_of_pairBridgePos hrr hpos htwo
 
+/-- The finite-family compatibility roadmap target is a formal consequence of
+the corresponding common-interleaver target. -/
+theorem
+    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
+    (hcommon : chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target) :
+    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target :=
+  fun hrr hpos =>
+    pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos
+      (hcommon hrr hpos).1
+
+/-- The finite-family compatibility roadmap target follows from the natural
+positive-leading two-polynomial bridge. -/
+theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_pairBridge
+    (htwo : CompatiblePairHasCommonInterleaverStatement) :
+    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target :=
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
+    (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge htwo)
+
 /-- The roadmap target follows from the same-degree and successor-degree
 two-polynomial bridges. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_degreeSplit
@@ -112,6 +143,16 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_degreeSpli
   fun hrr hpos =>
     pairwiseCompatible_iff_hasCommonInterleaver_of_compatibleDegreeSplit
       hrr hpos hsame hsucc
+
+/-- The finite-family compatibility roadmap target follows from the
+same-degree and successor-degree two-polynomial bridges. -/
+theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_degreeSplit
+    (hsame : CompatibleSameDegreePairHasCommonInterleaverStatement)
+    (hsucc : CompatibleSuccDegreePairHasCommonInterleaverStatement) :
+    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target :=
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
+    (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_degreeSplit
+      hsame hsucc)
 
 /-- The roadmap target follows from the nonnegative-shift route, with the
 succ-degree branch discharged by the affine-family bridge. -/
@@ -123,6 +164,17 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_nonnegShif
     pairwiseCompatible_iff_hasCommonInterleaver_via_nonnegShift
       hrr hpos hsame haffBridge
 
+/-- The finite-family compatibility roadmap target follows from the
+nonnegative-shift route, with the succ-degree branch discharged by the
+affine-family bridge. -/
+theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_nonnegShift
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
+    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target :=
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
+    (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_nonnegShift
+      hsame haffBridge)
+
 /-- The roadmap target follows from the concrete slot-data endpoints after the
 nonnegative-shift reduction. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_slotData
@@ -132,6 +184,16 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_slotData
   fun hrr hpos =>
     pairwiseCompatible_iff_hasCommonInterleaver_of_slotData_via_nonnegShift
       hrr hpos hsame hsucc
+
+/-- The finite-family compatibility roadmap target follows from the concrete
+slot-data endpoints after the nonnegative-shift reduction. -/
+theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_slotData
+    (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeSlotDataNonnegStatement) :
+    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target :=
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
+    (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_slotData
+      hsame hsucc)
 
 /-- The roadmap target follows from the root-crossing formulations of the
 same-degree and succ-degree endpoints after the nonnegative-shift reduction. -/
@@ -144,6 +206,17 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossi
     pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_via_nonnegShift
       hrr hpos hsame hsplit hsucc
 
+/-- The finite-family compatibility roadmap target follows from the
+root-crossing formulations after the nonnegative-shift reduction. -/
+theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_rootCrossing
+    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
+    (hsplit : PosComboSuccDegreeLeftSplitsNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target :=
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
+    (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing
+      hsame hsplit hsucc)
+
 /-- The roadmap target follows from the root-crossing formulations alone:
 root continuity supplies the succ-degree left endpoint. -/
 theorem
@@ -154,6 +227,17 @@ theorem
   fun hrr hpos =>
     pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing
       hrr hpos hsame hsucc
+
+/-- The finite-family compatibility roadmap target follows from root-crossing
+alone; root continuity supplies the succ-degree left endpoint. -/
+theorem
+    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_rootCrossing_direct
+    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target :=
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
+    (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing_direct
+      hsame hsucc)
 
 /-- The roadmap target follows from the root-crossing formulations once the
 succ-degree left endpoint is supplied by the PF/ASW route. -/
@@ -167,6 +251,18 @@ theorem
     pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_and_forward_asw
       hrr hpos hsame hASW hsucc
 
+/-- The finite-family compatibility roadmap target follows from root-crossing
+once the succ-degree left endpoint is supplied by the PF/ASW route. -/
+theorem
+    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_rootCrossing_and_forward_asw
+    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
+    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target :=
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
+    (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing_and_forward_asw
+      hsame hASW hsucc)
+
 /-- The roadmap target follows from the root-crossing formulations once the
 succ-degree left endpoint is supplied by the splitting-only ASW target. -/
 theorem
@@ -178,6 +274,19 @@ theorem
   fun hrr hpos =>
     pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_and_forward_asw_splits
       hrr hpos hsame hASW hsucc
+
+/-- The finite-family compatibility roadmap target follows from root-crossing
+once the succ-degree left endpoint is supplied by the splitting-only ASW
+target. -/
+theorem
+    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_rootCrossing_and_forwardASWSplits
+    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
+    (hASW : aissenSchoenbergWhitneyForwardSplitsStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target :=
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
+    (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing_and_forwardASWSplits
+      hsame hASW hsucc)
 
 /-- The roadmap target also follows from the same-degree root-crossing
 formulation and the affine-family bridge, avoiding the separate succ-degree
@@ -191,6 +300,17 @@ theorem
     (compatiblePairHasCommonInterleaver_of_sameDegreePair_and_affineFamily_via_nonnegShift
       (sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing hsame)
       haffBridge)
+
+/-- The finite-family compatibility roadmap target follows from same-degree
+root-crossing and the affine-family bridge. -/
+theorem
+    chudnovskySeymour_familyCompatible_of_sameDegreeCrossing_affineFamily
+    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
+    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target :=
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
+    (chudnovskySeymour_commonInterleaver_of_sameDegreeCrossing_affineFamily
+      hsame haffBridge)
 
 /-- The nonnegative four-way package target follows from the root-crossing
 formulations once the succ-degree left endpoint is supplied by the
