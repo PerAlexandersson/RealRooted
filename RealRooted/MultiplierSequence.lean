@@ -254,6 +254,20 @@ theorem jensenPolynomial_eq_diagonalOperator_X_add_one_pow
   · have hlt : n < k := Nat.lt_of_not_le hk
     simp [hk, Nat.choose_eq_zero_of_lt hlt]
 
+/-- Multiplying two diagonal sequences inside a Jensen polynomial is the same
+as applying one sequence as a diagonal operator to the Jensen polynomial of the
+other sequence. -/
+theorem jensenPolynomial_mul_sequence_eq_diagonalOperator
+    (n : ℕ) (gamma delta : ℕ → ℝ) :
+    jensenPolynomial n (fun k => gamma k * delta k) =
+      diagonalOperator gamma (jensenPolynomial n delta) := by
+  ext k
+  rw [coeff_jensenPolynomial, coeff_diagonalOperator, coeff_jensenPolynomial]
+  by_cases hk : k ≤ n
+  · simp only [hk, if_true]
+    ring
+  · simp [hk]
+
 /-- The Jensen polynomial of a constant diagonal sequence. -/
 theorem jensenPolynomial_const_sequence (n : ℕ) (a : ℝ) :
     jensenPolynomial n (fun _ => a) = C a * ((X + 1 : ℝ[X]) ^ n) := by

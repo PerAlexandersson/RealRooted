@@ -276,6 +276,32 @@ theorem cubicDiscr_schurSzegoComp_eq_jensenPolynomial_three_normalized
             (f.coeff k / (Nat.choose 3 k : ℝ)))) := by
   rw [schurSzegoComp_eq_jensenPolynomial_three_normalized hfdeg]
 
+/-- Diagonal-operator form of
+`schurSzegoComp_eq_jensenPolynomial_three_normalized`: the degree-`≤ 3` factor
+provides the diagonal sequence acting on the degree-three Jensen polynomial of
+the other binomially normalized coefficient sequence. -/
+theorem schurSzegoComp_eq_diagonalOperator_jensenPolynomial_three_normalized
+    {n : Nat} {f p : ℝ[X]} (hfdeg : f.natDegree ≤ 3) :
+    schurSzegoComp n f p =
+      diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
+        (jensenPolynomial 3 (fun k => p.coeff k / (Nat.choose n k : ℝ))) := by
+  rw [schurSzegoComp_eq_jensenPolynomial_three_normalized hfdeg]
+  rw [← jensenPolynomial_mul_sequence_eq_diagonalOperator
+    3 (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
+      (fun k => p.coeff k / (Nat.choose n k : ℝ))]
+  congr with k
+  ring
+
+/-- Cubic-discriminant form of
+`schurSzegoComp_eq_diagonalOperator_jensenPolynomial_three_normalized`. -/
+theorem cubicDiscr_schurSzegoComp_eq_diagonalOperator_jensenPolynomial_three_normalized
+    {n : Nat} {f p : ℝ[X]} (hfdeg : f.natDegree ≤ 3) :
+    cubicDiscr (schurSzegoComp n f p) =
+      cubicDiscr
+        (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
+          (jensenPolynomial 3 (fun k => p.coeff k / (Nat.choose n k : ℝ)))) := by
+  rw [schurSzegoComp_eq_diagonalOperator_jensenPolynomial_three_normalized hfdeg]
+
 theorem support_schurSzegoComp_eq_filter_right (n : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).support =
       f.support.filter (fun k => g.coeff k / (Nat.choose n k : ℝ) ≠ 0) := by

@@ -425,6 +425,37 @@ abbrev schurSzegoCompPFFactorJensenProductCubicDiscriminantTarget : Prop :=
         (p.coeff k / (Nat.choose n k : ℝ)) *
           (f.coeff k / (Nat.choose 3 k : ℝ))))
 
+/-- Challenge-facing diagonal-operator form of the missing degree-`≤ 3`
+PF-factor cubic discriminant inequality.
+
+This packages the normalized Jensen-product target as preservation of cubic
+discriminant nonnegativity by the diagonal sequence supplied by the
+degree-`≤ 3` PF factor. -/
+abbrev schurSzegoCompPFFactorDiagonalOperatorCubicDiscriminantTarget : Prop :=
+  ∀ {n : ℕ} {f p : ℝ[X]},
+    IsPFPolynomial f →
+    f.natDegree ≤ 3 →
+    p.natDegree ≤ n →
+    p.Splits →
+    0 ≤ cubicDiscr
+      (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
+        (jensenPolynomial 3 (fun k => p.coeff k / (Nat.choose n k : ℝ))))
+
+/-- The diagonal-operator cubic discriminant target is equivalent to the
+normalized Jensen-product target. -/
+theorem schurSzegoCompPFFactorDiagonalOperatorCubicDiscriminantTarget_iff_jensenProduct :
+    schurSzegoCompPFFactorDiagonalOperatorCubicDiscriminantTarget ↔
+      schurSzegoCompPFFactorJensenProductCubicDiscriminantTarget := by
+  constructor
+  · intro hdiag n f p hf hfdeg hpdeg hsplit
+    rw [← cubicDiscr_schurSzegoComp_eq_jensenPolynomial_three_normalized hfdeg,
+      cubicDiscr_schurSzegoComp_eq_diagonalOperator_jensenPolynomial_three_normalized hfdeg]
+    exact hdiag hf hfdeg hpdeg hsplit
+  · intro hjensen n f p hf hfdeg hpdeg hsplit
+    rw [← cubicDiscr_schurSzegoComp_eq_diagonalOperator_jensenPolynomial_three_normalized hfdeg,
+      cubicDiscr_schurSzegoComp_eq_jensenPolynomial_three_normalized hfdeg]
+    exact hjensen hf hfdeg hpdeg hsplit
+
 /-- The normalized Jensen-product cubic discriminant target implies the
 original Schur--Szegő cubic discriminant target. -/
 theorem schurSzegoCompPFFactorCubicDiscriminantNonnegTarget_of_jensenProduct
@@ -433,6 +464,15 @@ theorem schurSzegoCompPFFactorCubicDiscriminantNonnegTarget_of_jensenProduct
   fun hf hfdeg hpdeg hsplit => by
     rw [cubicDiscr_schurSzegoComp_eq_jensenPolynomial_three_normalized hfdeg]
     exact hdisc hf hfdeg hpdeg hsplit
+
+/-- The diagonal-operator cubic discriminant target implies the original
+Schur--Szegő cubic discriminant target. -/
+theorem schurSzegoCompPFFactorCubicDiscriminantNonnegTarget_of_diagonalOperator
+    (hdisc : schurSzegoCompPFFactorDiagonalOperatorCubicDiscriminantTarget) :
+    schurSzegoCompPFFactorCubicDiscriminantNonnegTarget :=
+  schurSzegoCompPFFactorCubicDiscriminantNonnegTarget_of_jensenProduct
+    (schurSzegoCompPFFactorDiagonalOperatorCubicDiscriminantTarget_iff_jensenProduct.1
+      hdisc)
 
 /-- The degree-`≤ 3` PF-factor cubic discriminant target is exactly the
 remaining input needed for the corresponding Schur--Szegő pair route. -/
@@ -455,6 +495,19 @@ theorem finiteSchurSzegoPair_of_pf_factor_natDegree_le_three_of_jensenProductTar
     schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
   finiteSchurSzegoPair_of_pf_factor_natDegree_le_three_of_cubicDiscriminantTarget
     (schurSzegoCompPFFactorCubicDiscriminantNonnegTarget_of_jensenProduct
+      hdisc)
+    hf hfdeg hpdeg hsplit
+
+/-- Diagonal-operator version of the degree-`≤ 3` PF-factor Schur--Szegő
+route. -/
+theorem finiteSchurSzegoPair_of_pf_factor_natDegree_le_three_of_diagonalOperatorTarget
+    (hdisc : schurSzegoCompPFFactorDiagonalOperatorCubicDiscriminantTarget)
+    {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
+    (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  finiteSchurSzegoPair_of_pf_factor_natDegree_le_three_of_cubicDiscriminantTarget
+    (schurSzegoCompPFFactorCubicDiscriminantNonnegTarget_of_diagonalOperator
       hdisc)
     hf hfdeg hpdeg hsplit
 
