@@ -4666,6 +4666,64 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_natDegree_le_one
       hf_rr.1 hg_pos.ne_zero hf_rr.2 hg_split hdeg
       (fun j hj => hslot j hj _ _)
 
+/-- Low-degree base case for the repaired same-degree common-right-interleaver
+endpoint in the positive-combination / no-common-root setting. -/
+theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_natDegree_le_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hfdeg : f.natDegree ≤ 2) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+  have hf_split : f.Splits :=
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+  have hg_split : g.Splits :=
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
+  obtain ⟨hc1, hc2⟩ :=
+    sameDegreeRootCrossing_of_posCombo_natDegree_le_two
+      hf_pos hg_pos hfnn hgnn hfg hdeg hno hfdeg
+  have hlenf : (rootSeqDesc f).length = f.natDegree := rootSeqDesc_length hf_split
+  have hleng : (rootSeqDesc g).length = g.natDegree := rootSeqDesc_length hg_split
+  refine
+    pairHasCommonInterleaver_of_sameDegree_slotIntersections
+      hf_pos.ne_zero hg_pos.ne_zero hf_split hg_split hdeg ?_
+  intro j hj
+  exact
+    rootSlotInterval_inter_nonempty_of_sameDegree_crossing
+      (rootSeqDesc f) (rootSeqDesc g) rootSeqDesc_pairwise rootSeqDesc_pairwise
+      (by rw [hleng, hlenf, hdeg])
+      (fun k hk1 hk2 => hc1 k hk1 (by rw [hlenf] at hk2; exact hk2))
+      (fun k hk1 hk2 => hc2 k hk1 (by rw [hlenf] at hk2; exact hk2))
+      j (by rw [hlenf]; exact hj) (by rw [hleng, hdeg]; exact hj)
+
+/-- Low-degree no-common degree-split endpoint in the positive-combination /
+nonnegative-coefficient setting.  The same-degree branch uses the checked
+degree-`≤ 2` root-crossing route, while the succ-degree branch reduces to the
+checked degree-`≤ 1` endpoint for the smaller polynomial. -/
+theorem posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg_lo : f.natDegree ≤ g.natDegree)
+    (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hgdeg : g.natDegree ≤ 2) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+  rcases Nat.lt_or_ge f.natDegree g.natDegree with hlt | hge
+  · have hsucc : g.natDegree = f.natDegree + 1 := by lia
+    have hfdeg : f.natDegree ≤ 1 := by lia
+    exact
+      posComboNoCommonSuccDegreePairHasCommonInterleaver_of_natDegree_le_one
+        hf_pos hg_pos hfnn hgnn hfg hsucc hno hfdeg
+  · have hsame : g.natDegree = f.natDegree := by lia
+    have hfdeg : f.natDegree ≤ 2 := by lia
+    exact
+      posComboNoCommonSameDegreePairHasCommonInterleaver_of_natDegree_le_two
+        hf_pos hg_pos hfnn hgnn hfg hsame hno hfdeg
+
 /-- Low-degree base case for the succ-degree root-crossing target.  In the
 constant-vs-linear case all crossing inequalities are vacuous. -/
 theorem succDegreeRootCrossing_of_natDegree_eq_zero

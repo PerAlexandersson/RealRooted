@@ -678,6 +678,23 @@ theorem sameDegreeRootCrossingPair_of_posCombo_natDegree_le_two
   sameDegreeRootCrossing_of_posCombo_natDegree_le_two
     hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_deg_le_two
 
+/-- Challenge-facing degree-`≤ 2` base case for the repaired same-degree
+common-right-interleaver endpoint in the positive-combination/no-common
+setting. -/
+theorem sameDegreePairHasCommonInterleaver_of_posCombo_natDegree_le_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hf_deg_le_two : f.natDegree ≤ 2) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  posComboNoCommonSameDegreePairHasCommonInterleaver_of_natDegree_le_two
+    hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_deg_le_two
+
 /-- Challenge-facing degree-`≤ 3` same-degree root-count route, assuming the
 two cubic interior partial-separation leaves. -/
 theorem sameDegreeRootCountPair_of_interior_natDegree_le_three
@@ -1525,6 +1542,21 @@ theorem succDegreePairHasCommonInterleaver_of_posCombo_natDegree_le_one
     ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
   posComboNoCommonSuccDegreePairHasCommonInterleaver_of_natDegree_le_one
     hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_deg_le_one
+
+/-- Challenge-facing degree-`≤ 2` no-common degree-split endpoint in the
+positive-combination/nonnegative-coefficient setting. -/
+theorem noCommonPairHasCommonInterleaver_of_posCombo_natDegree_le_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg_lo : f.natDegree ≤ g.natDegree)
+    (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hg_deg_le_two : g.natDegree ≤ 2) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_two
+    hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hg_deg_le_two
 
 /-- Challenge-facing degree-zero base case for succ-degree root-slot data. -/
 theorem succDegreeSlotDataPair_of_natDegree_eq_zero
