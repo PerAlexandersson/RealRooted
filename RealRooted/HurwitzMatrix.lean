@@ -1665,4 +1665,157 @@ theorem hurwitzMatrixSchurProductDetLeThree_of_polyaFreq
   hurwitzMatrixSchurProductDetLeThree_of_fullBand
     (hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_polyaFreq hPF)
 
+/-! ### The column-`0` product Pólya-frequency leaf is false
+
+The full-band reduction
+`hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_polyaFreq` only shows
+that the column-`0` product Pólya-frequency statement is a sufficient condition
+for the full-band `3 × 3` Hurwitz Schur-product core.  That statement itself is
+false: total nonnegativity of a Hurwitz matrix does not force its column-`0`
+sequence to be Pólya-frequency, and the pointwise product of the column-`0`
+sequences of two totally nonnegative Hurwitz matrices can fail to be
+Pólya-frequency.  This rules out this particular Pólya-frequency route to
+GitHub issue #34, without bearing on the truth of the classical
+Garloff--Wagner theorem itself. -/
+
+/-- If all odd-indexed entries of a coefficient sequence vanish, then every
+even row of its Hurwitz matrix is identically zero. -/
+theorem hurwitz_even_row_eq_zero_of_odd_zero {a : ℕ → ℝ}
+    (hodd : ∀ n, a (2 * n + 1) = 0) (i j : ℕ) :
+    hurwitz a (2 * i) j = 0 := by
+  rw [hurwitz_even_row_apply]
+  split
+  · rw [hodd]
+  · rfl
+
+/-- Total nonnegativity of a Hurwitz matrix whose odd-indexed coefficients all
+vanish and whose even coefficient subsequence is Pólya-frequency.  The even
+rows of the Hurwitz matrix vanish, so every finite minor either contains a
+zero row or selects only odd rows, in which case it is a Toeplitz minor of the
+even subsequence. -/
+theorem hurwitz_isTotallyNonneg_of_odd_zero {a : ℕ → ℝ}
+    (hodd : ∀ n, a (2 * n + 1) = 0)
+    (heven : IsPolyaFreqSeq (fun n => a (2 * n))) :
+    (hurwitz a).IsTotallyNonneg := by
+  rw [IsPolyaFreqSeq] at heven
+  intro n rows cols hrows hcols
+  by_cases hall : ∀ k, rows k % 2 = 1
+  · have hsub : (hurwitz a).submatrix rows cols =
+        (toeplitz (fun t => a (2 * t))).submatrix (fun k => rows k / 2) cols := by
+      ext k l
+      simp only [Matrix.submatrix_apply]
+      have hr : rows k % 2 = 1 := hall k
+      unfold hurwitz
+      simp only [Matrix.of_apply]
+      rw [if_neg (by lia)]
+    rw [hsub]
+    refine heven ?_ hcols
+    intro k1 k2 hk
+    have h1 : rows k1 % 2 = 1 := hall k1
+    have h2 : rows k2 % 2 = 1 := hall k2
+    have hlt := hrows hk
+    lia
+  · obtain ⟨k, hk⟩ := not_forall.mp hall
+    have hke : rows k % 2 = 0 := by
+      rcases Nat.mod_two_eq_zero_or_one (rows k) with h | h
+      · exact h
+      · exact absurd h hk
+    have hzero : ∀ l, ((hurwitz a).submatrix rows cols) k l = 0 := by
+      intro l
+      simp only [Matrix.submatrix_apply]
+      have hrk : rows k = 2 * (rows k / 2) := by lia
+      rw [hrk]
+      exact hurwitz_even_row_eq_zero_of_odd_zero hodd _ _
+    exact le_of_eq (Matrix.det_eq_zero_of_row_eq_zero k hzero).symm
+
+/-- Counterexample coefficient sequence `1 + X^2`. -/
+def cexOddZero : ℕ → ℝ :=
+  fun n => if n = 0 then 1 else if n = 2 then 1 else 0
+
+/-- The odd-indexed coefficients of `cexOddZero` vanish. -/
+theorem cexOddZero_odd_zero (n : ℕ) : cexOddZero (2 * n + 1) = 0 := by
+  simp only [cexOddZero]
+  rw [if_neg (by lia), if_neg (by lia)]
+
+/-- The even coefficient subsequence of `cexOddZero` is `(1 + X)`, a
+Pólya-frequency sequence. -/
+theorem cexOddZero_even_isPolyaFreqSeq :
+    IsPolyaFreqSeq (fun n => cexOddZero (2 * n)) := by
+  have h := IsPolyaFreqSeq.prod_X_sub_C (Multiset.replicate 1 (-1 : ℝ))
+    (by
+      intro r hr
+      rw [Multiset.eq_of_mem_replicate hr]
+      norm_num)
+  have heq :
+      (fun n =>
+          (((Multiset.replicate 1 (-1 : ℝ)).map fun r => X - C r).prod).coeff n)
+        = fun n => cexOddZero (2 * n) := by
+    funext n
+    rw [Multiset.map_replicate, Multiset.prod_replicate, pow_one]
+    match n with
+    | 0 =>
+        rw [coeff_sub, coeff_X, coeff_C]
+        norm_num [cexOddZero]
+    | 1 =>
+        rw [coeff_sub, coeff_X, coeff_C]
+        norm_num [cexOddZero]
+    | m + 2 =>
+        have hL : ((X - C (-1 : ℝ)).coeff (m + 2)) = 0 := by
+          rw [coeff_sub, coeff_X, coeff_C,
+            if_neg (by lia : ¬ (1 : ℕ) = m + 2),
+            if_neg (by lia : ¬ m + 2 = 0), sub_zero]
+        have hR : cexOddZero (2 * (m + 2)) = 0 := by
+          simp only [cexOddZero]
+          rw [if_neg (by lia), if_neg (by lia)]
+        rw [hL, hR]
+  rwa [heq] at h
+
+/-- The Hurwitz matrix of `cexOddZero` is totally nonnegative. -/
+theorem cexOddZero_hurwitz_isTotallyNonneg :
+    (hurwitz cexOddZero).IsTotallyNonneg :=
+  hurwitz_isTotallyNonneg_of_odd_zero cexOddZero_odd_zero
+    cexOddZero_even_isPolyaFreqSeq
+
+/-- Column-`0` value of `hurwitz cexOddZero` at row `1` is `1`. -/
+theorem cexOddZero_col0_one : hurwitz cexOddZero 1 0 = 1 := by
+  rw [show (1 : ℕ) = 2 * 0 + 1 from rfl, hurwitz_odd_row_apply,
+    if_pos (Nat.zero_le 0)]
+  simp [cexOddZero]
+
+/-- Column-`0` value of `hurwitz cexOddZero` at row `2` is `0`. -/
+theorem cexOddZero_col0_two : hurwitz cexOddZero 2 0 = 0 := by
+  rw [show (2 : ℕ) = 2 * 1 from rfl,
+    hurwitz_even_row_eq_zero_of_odd_zero cexOddZero_odd_zero]
+
+/-- Column-`0` value of `hurwitz cexOddZero` at row `3` is `1`. -/
+theorem cexOddZero_col0_three : hurwitz cexOddZero 3 0 = 1 := by
+  rw [show (3 : ℕ) = 2 * 1 + 1 from rfl, hurwitz_odd_row_apply,
+    if_pos (Nat.zero_le 1)]
+  simp [cexOddZero]
+
+/-- The column-`0` product Pólya-frequency leaf of GitHub issue #34 is false.
+
+Using `a = b = cexOddZero`, both Hurwitz matrices are totally nonnegative, yet
+the pointwise product of their column-`0` sequences is `0, 1, 0, 1, 0, …`,
+whose Toeplitz minor on rows `(2, 3)` and columns `(0, 1)` equals `-1`. -/
+theorem not_hurwitzColumnZeroProductPF :
+    ¬ (∀ {a b : ℕ → ℝ},
+      (hurwitz a).IsTotallyNonneg →
+      (hurwitz b).IsTotallyNonneg →
+      IsPolyaFreqSeq (fun k => hurwitz a k 0 * hurwitz b k 0)) := by
+  intro H
+  have hPF := H cexOddZero_hurwitz_isTotallyNonneg cexOddZero_hurwitz_isTotallyNonneg
+  rw [IsPolyaFreqSeq] at hPF
+  have hdet := hPF (strictMono_pair (by norm_num : (2 : ℕ) < 3))
+    (strictMono_pair (by norm_num : (0 : ℕ) < 1))
+  have hval :
+      ((toeplitz (fun k => hurwitz cexOddZero k 0 * hurwitz cexOddZero k 0)).submatrix
+        ![2, 3] ![0, 1]).det = -1 := by
+    rw [Matrix.det_fin_two]
+    simp only [Matrix.submatrix_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
+      toeplitz_apply]
+    norm_num [cexOddZero_col0_one, cexOddZero_col0_two, cexOddZero_col0_three]
+  rw [hval] at hdet
+  norm_num at hdet
+
 end RealRooted

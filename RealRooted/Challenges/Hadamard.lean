@@ -621,6 +621,13 @@ abbrev hurwitzColumnZeroProductPFTarget : Prop :=
     (hurwitz b).IsTotallyNonneg →
     IsPolyaFreqSeq (fun k => hurwitz a k 0 * hurwitz b k 0)
 
+/-- The column-zero product Pólya-frequency leaf is false.  It was only a
+sufficient route to the full-band Hurwitz Schur-product target, not a valid
+consequence of total nonnegativity of the two Hurwitz matrices. -/
+theorem not_hurwitzColumnZeroProductPFTarget :
+    ¬ hurwitzColumnZeroProductPFTarget :=
+  not_hurwitzColumnZeroProductPF
+
 /-- Challenge-facing corner-zeroed determinant subtarget for the fully in-band
 top-right subcase of the triangular-free `3 x 3` target. -/
 abbrev hurwitzSchurFullBandCornerZeroedTarget : Prop :=
