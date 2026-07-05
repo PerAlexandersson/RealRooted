@@ -152,6 +152,15 @@ equivalent to the zero-aware target used by the PF-limit route. -/
 abbrev forwardASWSplitsTarget : Prop :=
   aissenSchoenbergWhitneyForwardSplitsStatement
 
+/-- No-common orientation target used before splitting into same-degree and
+successor-degree endpoint repairs. -/
+abbrev noCommonOrientationTarget : Prop :=
+  PosComboNoCommonOrientationStatement
+
+/-- All-combinations bridge target implying the no-common orientation target. -/
+abbrev allComboBridgeTarget : Prop :=
+  PosComboNoCommonToAllComboBridgeStatement
+
 /-- Affine-family bridge target for packaging the no-common nonnegative
 positive-combination hypotheses into Branden's affine-family input. -/
 abbrev affineFamilyTarget : Prop :=
@@ -2099,6 +2108,36 @@ theorem fourWayNonnegCoeffsTarget_of_sameDegreeRootCrossing_and_affineFamily
   chudnovskySeymour_fourWay_of_sameDegreeRootCrossing_and_affineFamily_nonneg
     hsame haff
 
+/-- Challenge-facing reduction for the nonnegative four-way target from the
+no-common orientation core. -/
+theorem fourWayNonnegCoeffsTarget_of_noCommonOrientation
+    (hstep : noCommonOrientationTarget) :
+    fourWayNonnegCoeffsTarget :=
+  chudnovskySeymour_fourWay_of_noCommonOrientation_nonneg hstep
+
+/-- Challenge-facing reduction for the nonnegative four-way target from the
+repaired same-degree bridge and affine-family successor-degree bridge. -/
+theorem fourWayNonnegCoeffsTarget_of_sameDegreePair_and_affineFamily
+    (hsame : sameDegreePairTarget)
+    (haff : affineFamilyTarget) :
+    fourWayNonnegCoeffsTarget :=
+  chudnovskySeymour_fourWayTarget_of_sameDegreePair_and_affineFamily_nonneg
+    hsame haff
+
+/-- Challenge-facing reduction for the nonnegative four-way target from the
+all-combinations bridge. -/
+theorem fourWayNonnegCoeffsTarget_of_allComboBridge
+    (hall : allComboBridgeTarget) :
+    fourWayNonnegCoeffsTarget :=
+  chudnovskySeymour_fourWay_of_allComboBridge_nonneg hall
+
+/-- Challenge-facing reduction for the nonnegative four-way target from the
+affine-family bridge. -/
+theorem fourWayNonnegCoeffsTarget_of_affineFamilyBridge
+    (haff : affineFamilyTarget) :
+    fourWayNonnegCoeffsTarget :=
+  chudnovskySeymour_fourWay_of_affineFamilyBridge_nonneg haff
+
 /-- Challenge-facing reduction for the nonnegative common-right target from
 root-crossing alone. -/
 theorem commonInterleaverNonnegCoeffsTarget_of_rootCrossing
@@ -2209,6 +2248,39 @@ theorem commonInterleaverNonnegCoeffsTarget_of_sameDegreeRootCrossing_and_affine
     commonInterleaverNonnegCoeffsTarget :=
   chudnovskySeymour_commonInterleaver_of_sameDegreeRootCrossing_and_affineFamily_nonneg
     hsame haff
+
+/-- Challenge-facing reduction for the nonnegative common-right target from the
+no-common orientation core. -/
+theorem commonInterleaverNonnegCoeffsTarget_of_noCommonOrientation
+    (hstep : noCommonOrientationTarget) :
+    commonInterleaverNonnegCoeffsTarget :=
+  chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_noCommonOrientation_nonneg
+    hstep
+
+/-- Challenge-facing reduction for the nonnegative common-right target from the
+repaired same-degree bridge and affine-family successor-degree bridge. -/
+theorem commonInterleaverNonnegCoeffsTarget_of_sameDegreePair_and_affineFamily
+    (hsame : sameDegreePairTarget)
+    (haff : affineFamilyTarget) :
+    commonInterleaverNonnegCoeffsTarget :=
+  chudnovskySeymour_commonInterleaver_of_sameDegreePair_affineFamily_nonneg
+    hsame haff
+
+/-- Challenge-facing reduction for the nonnegative common-right target from the
+all-combinations bridge. -/
+theorem commonInterleaverNonnegCoeffsTarget_of_allComboBridge
+    (hall : allComboBridgeTarget) :
+    commonInterleaverNonnegCoeffsTarget :=
+  chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_allComboBridge_nonneg
+    hall
+
+/-- Challenge-facing reduction for the nonnegative common-right target from the
+affine-family bridge. -/
+theorem commonInterleaverNonnegCoeffsTarget_of_affineFamilyBridge
+    (haff : affineFamilyTarget) :
+    commonInterleaverNonnegCoeffsTarget :=
+  chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_affineFamilyBridge_nonneg
+    haff
 
 /-- Challenge-facing reduction for the nonnegative finite-family compatibility
 target from root-crossing alone. -/
@@ -2322,6 +2394,40 @@ theorem familyCompatibleNonnegCoeffsTarget_of_sameDegreeRootCrossing_and_affineF
     familyCompatibleNonnegCoeffsTarget :=
   chudnovskySeymour_familyCompatible_of_sameDegreeRootCrossing_and_affineFamily_nonneg
     hsame haff
+
+/-- Challenge-facing reduction for the nonnegative finite-family compatibility
+target from the no-common orientation core. -/
+theorem familyCompatibleNonnegCoeffsTarget_of_noCommonOrientation
+    (hstep : noCommonOrientationTarget) :
+    familyCompatibleNonnegCoeffsTarget :=
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_noCommonOrientation_nonneg
+    hstep
+
+/-- Challenge-facing reduction for the nonnegative finite-family compatibility
+target from the repaired same-degree bridge and affine-family successor-degree
+bridge. -/
+theorem familyCompatibleNonnegCoeffsTarget_of_sameDegreePair_and_affineFamily
+    (hsame : sameDegreePairTarget)
+    (haff : affineFamilyTarget) :
+    familyCompatibleNonnegCoeffsTarget :=
+  chudnovskySeymour_familyCompatible_of_sameDegreePair_affineFamily_nonneg
+    hsame haff
+
+/-- Challenge-facing reduction for the nonnegative finite-family compatibility
+target from the all-combinations bridge. -/
+theorem familyCompatibleNonnegCoeffsTarget_of_allComboBridge
+    (hall : allComboBridgeTarget) :
+    familyCompatibleNonnegCoeffsTarget :=
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_allComboBridge_nonneg
+    hall
+
+/-- Challenge-facing reduction for the nonnegative finite-family compatibility
+target from the affine-family bridge. -/
+theorem familyCompatibleNonnegCoeffsTarget_of_affineFamilyBridge
+    (haff : affineFamilyTarget) :
+    familyCompatibleNonnegCoeffsTarget :=
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_affineFamilyBridge_nonneg
+    haff
 
 /-- Challenge-facing reduction for the nonnegative-coefficient common-right
 target from the repaired same-degree/succ-degree no-common pair bridges. -/
