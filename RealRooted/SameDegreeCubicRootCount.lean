@@ -114,6 +114,87 @@ theorem cubicDiscr_monicPencil_nonneg_of_posCombo
   have h4 : 0 < f.leadingCoeff ^ 4 := by positivity
   nlinarith [hdisc_nonneg, h4]
 
+/-- Evaluation of the monic cubic root pencil `F + sG`. -/
+theorem eval_monicCubicPencil (a b c p q r s x : ℝ) :
+    ((X - C a) * (X - C b) * (X - C c)
+      + C s * ((X - C p) * (X - C q) * (X - C r))).eval x =
+      (x - a) * (x - b) * (x - c) + s * ((x - p) * (x - q) * (x - r)) := by
+  simp only [eval_add, eval_mul, eval_sub, eval_C, eval_X]
+
+/-- Coefficient form of the monic cubic root pencil. -/
+theorem monicCubicPencil_eq (a b c p q r s : ℝ) :
+    (X - C a) * (X - C b) * (X - C c)
+        + C s * ((X - C p) * (X - C q) * (X - C r)) =
+      C (1 + s) * X ^ 3
+        + C (-((a + b + c) + s * (p + q + r))) * X ^ 2
+        + C ((a * b + b * c + c * a) + s * (p * q + q * r + r * p)) * X
+        + C (-(a * b * c + s * (p * q * r))) := by
+  simp only [C_add, C_mul, C_neg, C_1]
+  ring
+
+/-- In the strict two-below configuration with `a < r`, the monic pencil is
+negative at the least root `a` of the first cubic for every positive
+parameter. -/
+theorem eval_monicCubicPencil_at_a_neg_twoBelow
+    {a b c p q r s : ℝ} (hqa : q < a) (har : a < r) (hs : 0 < s)
+    (hpq : p ≤ q) :
+    ((X - C a) * (X - C b) * (X - C c)
+      + C s * ((X - C p) * (X - C q) * (X - C r))).eval a < 0 := by
+  rw [eval_monicCubicPencil]
+  have hz : (a - a) * (a - b) * (a - c) = 0 := by ring
+  rw [hz, zero_add]
+  have hpa : 0 < a - p := by linarith
+  have hqa' : 0 < a - q := by linarith
+  have har' : a - r < 0 := by linarith
+  have hg : (a - p) * (a - q) * (a - r) < 0 := by
+    nlinarith [mul_pos hpa hqa']
+  nlinarith [mul_neg_of_pos_of_neg hs hg]
+
+/-- In the two-above configuration, the monic pencil is positive at the middle
+root `b` of the first cubic for every positive parameter. -/
+theorem eval_monicCubicPencil_at_b_pos_twoAbove
+    {a b c p q r s : ℝ} (hqr : q ≤ r) (hpq : p ≤ q) (hrb : r < b)
+    (hs : 0 < s) :
+    0 < ((X - C a) * (X - C b) * (X - C c)
+      + C s * ((X - C p) * (X - C q) * (X - C r))).eval b := by
+  rw [eval_monicCubicPencil]
+  have hz : (b - a) * (b - b) * (b - c) = 0 := by ring
+  rw [hz, zero_add]
+  have hpb : 0 < b - p := by linarith
+  have hqb : 0 < b - q := by linarith
+  have hrb' : 0 < b - r := by linarith
+  have hg : 0 < (b - p) * (b - q) * (b - r) := by positivity
+  positivity
+
+/-- Pure algebraic negative-discriminant leaf for the `2`-below cubic
+configuration.  Together with `cubicDiscr_monicPencil_nonneg_of_posCombo`, this
+rules out the corresponding positive-combination real-rooted configuration. -/
+def CubicDiscrMonicPencilNegTwoBelowStatement : Prop :=
+  ∀ a b c p q r : ℝ,
+    a ≤ b →
+    b ≤ c →
+    p ≤ q →
+    q ≤ r →
+    q < a →
+    a ≤ r →
+    ∃ s : ℝ, 0 < s ∧
+      cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+        + C s * ((X - C p) * (X - C q) * (X - C r))) < 0
+
+/-- Pure algebraic negative-discriminant leaf for the `2`-above cubic
+configuration. -/
+def CubicDiscrMonicPencilNegTwoAboveStatement : Prop :=
+  ∀ a b c p q r : ℝ,
+    a ≤ b →
+    b ≤ c →
+    p ≤ q →
+    q ≤ r →
+    a ≤ r →
+    r < b →
+    ∃ s : ℝ, 0 < s ∧
+      cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+        + C s * ((X - C p) * (X - C q) * (X - C r))) < 0
+
 /-- Root count of a three-element multiset below a threshold, as a sum of
 indicators. -/
 theorem card_filter_le_triple (a b c x : ℝ) :
@@ -328,6 +409,30 @@ def CubicInteriorTwoAboveStatement : Prop :=
       r < b →
       False
 
+/-- The negative-discriminant monic-pencil leaf implies the interior `2`-below
+obstruction. -/
+theorem cubicInteriorTwoBelow_of_discr_monicPencil_neg
+    (hneg : CubicDiscrMonicPencilNegTwoBelowStatement) :
+    CubicInteriorTwoBelowStatement := by
+  intro f g hf hg hfs hgs hfd hgd hpc a b c p q r hab hbc hpq hqr hfr hgr hqa har
+  have hnonneg :=
+    cubicDiscr_monicPencil_nonneg_of_posCombo
+      hf hg hfs hgs hfd hgd hpc a b c p q r hfr hgr
+  obtain ⟨s, hs, hlt⟩ := hneg a b c p q r hab hbc hpq hqr hqa har
+  exact (not_lt_of_ge (hnonneg s hs)) hlt
+
+/-- The negative-discriminant monic-pencil leaf implies the interior `2`-above
+obstruction. -/
+theorem cubicInteriorTwoAbove_of_discr_monicPencil_neg
+    (hneg : CubicDiscrMonicPencilNegTwoAboveStatement) :
+    CubicInteriorTwoAboveStatement := by
+  intro f g hf hg hfs hgs hfd hgd hpc a b c p q r hab hbc hpq hqr hfr hgr har hrb
+  have hnonneg :=
+    cubicDiscr_monicPencil_nonneg_of_posCombo
+      hf hg hfs hgs hfd hgd hpc a b c p q r hfr hgr
+  obtain ⟨s, hs, hlt⟩ := hneg a b c p q r hab hbc hpq hqr har hrb
+  exact (not_lt_of_ge (hnonneg s hs)) hlt
+
 /-- The two interior cubic obstructions imply the second-root bound leaf. -/
 theorem cubicSecondRootBound_of_interior
     (hbelow : CubicInteriorTwoBelowStatement)
@@ -361,6 +466,16 @@ theorem cubicSecondRootBound_of_interior
         (fun x hx => by rcases hfmem x hx with h | h | h <;> subst h <;> linarith)
     · exact habove hf hg hfs hgs hfd hgd hpc a b c p q r
         hab hbc hpq hqr hfr hgr har hcon
+
+/-- The two negative-discriminant monic-pencil leaves imply the cubic
+second-root bound. -/
+theorem cubicSecondRootBound_of_discr_monicPencil_neg
+    (hbelow : CubicDiscrMonicPencilNegTwoBelowStatement)
+    (habove : CubicDiscrMonicPencilNegTwoAboveStatement) :
+    CubicSecondRootBoundStatement :=
+  cubicSecondRootBound_of_interior
+    (cubicInteriorTwoBelow_of_discr_monicPencil_neg hbelow)
+    (cubicInteriorTwoAbove_of_discr_monicPencil_neg habove)
 
 /-- Checked reduction of the cubic same-degree root-count target to the
 partial-separation leaf.

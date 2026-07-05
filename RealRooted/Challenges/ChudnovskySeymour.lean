@@ -124,6 +124,16 @@ abbrev sameDegreeCubicInteriorTwoBelowTarget : Prop :=
 abbrev sameDegreeCubicInteriorTwoAboveTarget : Prop :=
   CubicInteriorTwoAboveStatement
 
+/-- Pure algebraic negative-discriminant leaf for the `2`-below monic cubic
+pencil. -/
+abbrev sameDegreeCubicDiscrPencilNegTwoBelowTarget : Prop :=
+  CubicDiscrMonicPencilNegTwoBelowStatement
+
+/-- Pure algebraic negative-discriminant leaf for the `2`-above monic cubic
+pencil. -/
+abbrev sameDegreeCubicDiscrPencilNegTwoAboveTarget : Prop :=
+  CubicDiscrMonicPencilNegTwoAboveStatement
+
 /-- Challenge-facing discriminant bridge for the cubic interior route.  A
 positive-combination real-rooted split cubic pair gives nonnegative
 discriminant along its monic root pencil. -/
@@ -140,6 +150,28 @@ theorem sameDegreeCubicDiscrPencilNonnegTarget
         + C s * ((X - C p) * (X - C q) * (X - C r))) :=
   cubicDiscr_monicPencil_nonneg_of_posCombo
     hf hg hfs hgs hfd hgd hpc a b c p q r hfr hgr
+
+/-- Challenge-facing reduction from the `2`-below negative-discriminant leaf to
+the interior obstruction. -/
+theorem sameDegreeCubicInteriorTwoBelowTarget_of_discrPencilNeg
+    (hneg : sameDegreeCubicDiscrPencilNegTwoBelowTarget) :
+    sameDegreeCubicInteriorTwoBelowTarget :=
+  cubicInteriorTwoBelow_of_discr_monicPencil_neg hneg
+
+/-- Challenge-facing reduction from the `2`-above negative-discriminant leaf to
+the interior obstruction. -/
+theorem sameDegreeCubicInteriorTwoAboveTarget_of_discrPencilNeg
+    (hneg : sameDegreeCubicDiscrPencilNegTwoAboveTarget) :
+    sameDegreeCubicInteriorTwoAboveTarget :=
+  cubicInteriorTwoAbove_of_discr_monicPencil_neg hneg
+
+/-- Challenge-facing reduction from the two pure negative-discriminant leaves
+to the cubic second-root bound. -/
+theorem sameDegreeCubicSecondRootBoundTarget_of_discrPencilNeg
+    (hbelow : sameDegreeCubicDiscrPencilNegTwoBelowTarget)
+    (habove : sameDegreeCubicDiscrPencilNegTwoAboveTarget) :
+    sameDegreeCubicSecondRootBoundTarget :=
+  cubicSecondRootBound_of_discr_monicPencil_neg hbelow habove
 
 /-- Same-degree upper-threshold root-count subtarget for milestone B1. -/
 abbrev sameDegreeRootCountAboveTarget : Prop :=
