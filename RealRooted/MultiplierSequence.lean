@@ -315,6 +315,22 @@ theorem jensenPolynomial_eq_zero_iff {n : ℕ} {gamma : ℕ → ℝ} :
     jensenPolynomial n (fun _ => (1 : ℝ)) = (X + 1 : ℝ[X]) ^ n := by
   simpa using jensenPolynomial_const_sequence n (1 : ℝ)
 
+/-- Explicit cubic discriminant of the degree-three Jensen polynomial.
+
+This is the coefficient-normalized algebraic target for the degree-three
+finite Pólya--Schur route. -/
+theorem cubicDiscr_jensenPolynomial_three (gamma : ℕ → ℝ) :
+    cubicDiscr (jensenPolynomial 3 gamma) =
+      27 * (6 * gamma 3 * gamma 2 * gamma 1 * gamma 0
+        - 4 * gamma 2 ^ 3 * gamma 0
+        + 3 * gamma 2 ^ 2 * gamma 1 ^ 2
+        - 4 * gamma 3 * gamma 1 ^ 3
+        - gamma 3 ^ 2 * gamma 0 ^ 2) := by
+  rw [jensenPolynomial_eq_diagonalOperator_X_add_one_pow,
+    cubicDiscr_diagonalOperator]
+  norm_num [coeff_X_add_one_pow]
+  ring
+
 /-- Finite multiplier sequence up to degree `n`: the diagonal operator
 preserves real-rootedness, allowing the zero polynomial. -/
 def IsFiniteMultiplierSequence (n : ℕ) (gamma : ℕ → ℝ) : Prop :=

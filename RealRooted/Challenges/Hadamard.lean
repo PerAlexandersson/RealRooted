@@ -412,6 +412,17 @@ theorem finiteSchurSzegoPair_of_pf_factor_natDegree_le_three_of_cubicDiscriminan
   finiteSchurSzegoPair_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
     hf hfdeg hpdeg hsplit (hdisc hf hfdeg hpdeg hsplit)
 
+/-- Challenge-facing explicit cubic discriminant formula for degree-three
+Jensen polynomials. -/
+theorem cubicDiscr_jensenPolynomialThree (gamma : ℕ → ℝ) :
+    cubicDiscr (jensenPolynomial 3 gamma) =
+      27 * (6 * gamma 3 * gamma 2 * gamma 1 * gamma 0
+        - 4 * gamma 2 ^ 3 * gamma 0
+        + 3 * gamma 2 ^ 2 * gamma 1 ^ 2
+        - 4 * gamma 3 * gamma 1 ^ 3
+        - gamma 3 ^ 2 * gamma 0 ^ 2) :=
+  RealRooted.cubicDiscr_jensenPolynomial_three gamma
+
 /-- Challenge-facing cubic Newton inequalities for an exact-degree splitting
 Jensen polynomial. -/
 theorem jensenPolynomialThree_logConcave_of_splits_natDegree_three
