@@ -316,12 +316,36 @@ theorem hurwitzSchurFullBandCornerZeroedSingleTarget_of_colZero
     hurwitzSchurFullBandCornerZeroedSingleTarget :=
   hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle_of_colZero h
 
+/-- Challenge-facing specialization from the general single-matrix leaf to the
+column-normalized single-matrix leaf. -/
+theorem hurwitzSchurFullBandCornerZeroedSingleColZeroTarget_of_single
+    (h : hurwitzSchurFullBandCornerZeroedSingleTarget) :
+    hurwitzSchurFullBandCornerZeroedSingleColZeroTarget :=
+  hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZero_of_single
+    h
+
 /-- Challenge-facing reduction from the first-column normal form to the
 column-normalized single-matrix leaf. -/
 theorem hurwitzSchurFullBandCornerZeroedSingleColZeroTarget_of_firstCol
     (h : hurwitzSchurFullBandCornerZeroedSingleFirstColTarget) :
     hurwitzSchurFullBandCornerZeroedSingleColZeroTarget :=
   hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZero_of_firstCol
+    h
+
+/-- Challenge-facing specialization from the column-normalized single-matrix
+leaf to the first-column normal form. -/
+theorem hurwitzSchurFullBandCornerZeroedSingleFirstColTarget_of_colZero
+    (h : hurwitzSchurFullBandCornerZeroedSingleColZeroTarget) :
+    hurwitzSchurFullBandCornerZeroedSingleFirstColTarget :=
+  hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstCol_of_colZero
+    h
+
+/-- Challenge-facing specialization from the general single-matrix leaf to the
+first-column normal form. -/
+theorem hurwitzSchurFullBandCornerZeroedSingleFirstColTarget_of_single
+    (h : hurwitzSchurFullBandCornerZeroedSingleTarget) :
+    hurwitzSchurFullBandCornerZeroedSingleFirstColTarget :=
+  hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstCol_of_single
     h
 
 /-- Challenge-facing reduction from the strict-remainder branch to the
@@ -337,6 +361,18 @@ too strong and should not be used as a route to the two-matrix #34 target. -/
 theorem not_hurwitzSchurFullBandCornerZeroedSingleFirstColTarget :
     ¬ hurwitzSchurFullBandCornerZeroedSingleFirstColTarget :=
   not_hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstCol
+
+/-- The column-normalized single-matrix leaf is false, since it specializes to
+the false first-column normal form. -/
+theorem not_hurwitzSchurFullBandCornerZeroedSingleColZeroTarget :
+    ¬ hurwitzSchurFullBandCornerZeroedSingleColZeroTarget :=
+  not_hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZero
+
+/-- The general single-matrix corner-zeroed leaf is false, since it specializes
+to the false first-column normal form. -/
+theorem not_hurwitzSchurFullBandCornerZeroedSingleTarget :
+    ¬ hurwitzSchurFullBandCornerZeroedSingleTarget :=
+  not_hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle
 
 /-- The strict-remainder branch is also false, since it implies the false
 first-column normal form. -/

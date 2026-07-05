@@ -827,6 +827,16 @@ theorem
         (lt_of_le_of_ne hcorner_nonneg (Ne.symm hcorner))
         (lt_of_le_of_ne hminor_nonneg (Ne.symm hminor))
 
+/-- The general single-matrix corner-zeroed target specializes to the
+column-normalized target. -/
+theorem
+    hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZero_of_single
+    (hSingle :
+      HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleStatement) :
+    HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZeroStatement := by
+  intro a ha rows cols hrows hcols hband h01 h12 h02 _hcol0
+  exact hSingle ha hrows hcols hband h01 h12 h02
+
 /-- The first-column normal form implies the column-normalized single-matrix
 corner-zeroed determinant target. -/
 theorem
@@ -869,6 +879,72 @@ theorem
   rw [hentry 0 0, hentry 1 1, hentry 2 2, hentry 1 2, hentry 2 1,
     hentry 0 1, hentry 1 0, hentry 2 0]
   simpa [hurwitzFullBandCornerZeroedSingleFirstColDet, hcol0] using hfirst
+
+/-- The column-normalized single-matrix target specializes to the first-column
+normal form. -/
+theorem
+    hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstCol_of_colZero
+    (hZero :
+      HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZeroStatement) :
+    HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstColStatement := by
+  intro a ha row0 row1 row2 col1 col2 hr01 hr12 hc0 hc12 h02
+  let rows : Fin 3 → ℕ := ![row0, row1, row2]
+  let cols : Fin 3 → ℕ := ![0, col1, col2]
+  have hrows : StrictMono rows := by
+    intro i j hij
+    fin_cases i <;> fin_cases j <;> simp [rows] at hij ⊢ <;> lia
+  have hcols : StrictMono cols := by
+    intro i j hij
+    fin_cases i <;> fin_cases j <;> simp [cols] at hij ⊢ <;> lia
+  have hband : ∀ l : Fin 3, 2 * cols l ≤ rows l := by
+    intro l
+    fin_cases l <;> simp [rows, cols] <;> lia
+  have h01 : 2 * cols 1 ≤ rows 0 := by
+    change 2 * col1 ≤ row0
+    exact le_trans (Nat.mul_le_mul_left 2 (le_of_lt hc12)) h02
+  have h12 : 2 * cols 2 ≤ rows 1 := by
+    change 2 * col2 ≤ row1
+    exact le_trans h02 (le_of_lt hr01)
+  have h02' : 2 * cols 2 ≤ rows 0 := by
+    change 2 * col2 ≤ row0
+    exact h02
+  have hcol0 : cols 0 = 0 := by simp [cols]
+  have hres := hZero ha hrows hcols hband h01 h12 h02' hcol0
+  have hall : ∀ i j : Fin 3, 2 * cols j ≤ rows i := by
+    intro i j
+    fin_cases i <;> fin_cases j <;> simp [rows, cols] <;> lia
+  have hshift (i j : Fin 3) :
+      hurwitz a (rows i) (cols j) = hurwitz a (rows i - 2 * cols j) 0 := by
+    simpa only [Nat.zero_add] using
+      hurwitz_col_shift_add a 0 (cols j) (rows i) (by simpa using hall i j)
+  have hs01 : hurwitz a row0 col1 = hurwitz a (row0 - 2 * col1) 0 := by
+    change hurwitz a (rows 0) (cols 1) = hurwitz a (rows 0 - 2 * cols 1) 0
+    exact hshift 0 1
+  have hs11 : hurwitz a row1 col1 = hurwitz a (row1 - 2 * col1) 0 := by
+    change hurwitz a (rows 1) (cols 1) = hurwitz a (rows 1 - 2 * cols 1) 0
+    exact hshift 1 1
+  have hs21 : hurwitz a row2 col1 = hurwitz a (row2 - 2 * col1) 0 := by
+    change hurwitz a (rows 2) (cols 1) = hurwitz a (rows 2 - 2 * cols 1) 0
+    exact hshift 2 1
+  have hs12 : hurwitz a row1 col2 = hurwitz a (row1 - 2 * col2) 0 := by
+    change hurwitz a (rows 1) (cols 2) = hurwitz a (rows 1 - 2 * cols 2) 0
+    exact hshift 1 2
+  have hs22 : hurwitz a row2 col2 = hurwitz a (row2 - 2 * col2) 0 := by
+    change hurwitz a (rows 2) (cols 2) = hurwitz a (rows 2 - 2 * cols 2) 0
+    exact hshift 2 2
+  simpa [hurwitzFullBandCornerZeroedSingleFirstColDet, rows, cols,
+    hs01, hs11, hs21, hs12, hs22] using hres
+
+/-- The general single-matrix target specializes to the first-column normal
+form. -/
+theorem
+    hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstCol_of_single
+    (hSingle :
+      HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleStatement) :
+    HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstColStatement :=
+  hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstCol_of_colZero
+    (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZero_of_single
+      hSingle)
 
 /-- The column-normalized single-matrix corner-zeroed target implies the
 general single-matrix corner-zeroed target. -/
@@ -1467,5 +1543,21 @@ theorem not_hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFi
   simp only [hurwitz_cexA_firstColumn, cexFirstColumn,
     hurwitzFullBandCornerZeroedSingleFirstColDet] at key
   norm_num [Nat.choose] at key
+
+/-- The column-normalized single-matrix leaf of GitHub issue #34 is false. -/
+theorem not_hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZero :
+    ¬ HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZeroStatement := by
+  intro h
+  exact not_hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstCol
+    (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstCol_of_colZero
+      h)
+
+/-- The general single-matrix corner-zeroed leaf of GitHub issue #34 is false. -/
+theorem not_hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle :
+    ¬ HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleStatement := by
+  intro h
+  exact not_hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstCol
+    (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstCol_of_single
+      h)
 
 end RealRooted
