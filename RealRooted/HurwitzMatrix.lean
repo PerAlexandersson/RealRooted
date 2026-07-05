@@ -641,6 +641,124 @@ def HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleStatement 
           (hurwitz a (rows 1) (cols 0) * hurwitz a (rows 2) (cols 2) -
             hurwitz a (rows 1) (cols 2) * hurwitz a (rows 2) (cols 0))
 
+/-- Column-normalized version of the single-matrix full-band corner-zeroed
+determinant subtarget.
+
+The first selected column is assumed to be `0`.  The general single-matrix
+subtarget reduces to this normalized form by shifting all selected columns by
+`cols 0` and all selected rows by `2 * cols 0`. -/
+def HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZeroStatement :
+    Prop :=
+  ∀ {a : ℕ → ℝ},
+    (hurwitz a).IsTotallyNonneg →
+    ∀ {rows cols : Fin 3 → ℕ},
+      StrictMono rows →
+      StrictMono cols →
+      (∀ l : Fin 3, 2 * cols l ≤ rows l) →
+      2 * cols 1 ≤ rows 0 →
+      2 * cols 2 ≤ rows 1 →
+      2 * cols 2 ≤ rows 0 →
+      cols 0 = 0 →
+      0 ≤ hurwitz a (rows 0) (cols 0) *
+          (hurwitz a (rows 1) (cols 1) * hurwitz a (rows 2) (cols 2) -
+            hurwitz a (rows 1) (cols 2) * hurwitz a (rows 2) (cols 1)) -
+        hurwitz a (rows 0) (cols 1) *
+          (hurwitz a (rows 1) (cols 0) * hurwitz a (rows 2) (cols 2) -
+            hurwitz a (rows 1) (cols 2) * hurwitz a (rows 2) (cols 0))
+
+/-- The column-normalized single-matrix corner-zeroed target implies the
+general single-matrix corner-zeroed target. -/
+theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle_of_colZero
+    (hZero :
+      HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZeroStatement) :
+    HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleStatement := by
+  intro a ha rows cols hrows hcols hband h01 h12 h02
+  let d := cols 0
+  let rows' : Fin 3 → ℕ := fun i => rows i - 2 * d
+  let cols' : Fin 3 → ℕ := fun i => cols i - d
+  have hr01 : rows 0 ≤ rows 1 := hrows.monotone (by decide)
+  have hr12 : rows 1 ≤ rows 2 := hrows.monotone (by decide)
+  have hr02 : rows 0 ≤ rows 2 := hrows.monotone (by decide)
+  have hc0 : ∀ i : Fin 3, d ≤ cols i := by
+    intro i
+    have h0i : (0 : Fin 3) ≤ i := by
+      fin_cases i <;> decide
+    exact hcols.monotone h0i
+  have hdrow : ∀ i : Fin 3, 2 * d ≤ rows i := by
+    intro i
+    have h0 : 2 * d ≤ rows 0 := by
+      simpa [d] using hband 0
+    fin_cases i
+    · exact h0
+    · exact le_trans h0 hr01
+    · exact le_trans h0 hr02
+  have hrows' : StrictMono rows' := by
+    intro i j hij
+    dsimp [rows']
+    have hij' := hrows hij
+    have hi := hdrow i
+    have hj := hdrow j
+    lia
+  have hcols' : StrictMono cols' := by
+    intro i j hij
+    dsimp [cols']
+    have hij' := hcols hij
+    have hi := hc0 i
+    have hj := hc0 j
+    lia
+  have hband' : ∀ l : Fin 3, 2 * cols' l ≤ rows' l := by
+    intro l
+    dsimp [rows', cols']
+    have hc := hc0 l
+    have hr := hdrow l
+    have hb := hband l
+    lia
+  have h01' : 2 * cols' 1 ≤ rows' 0 := by
+    dsimp [rows', cols']
+    have hc := hc0 1
+    have hr := hdrow 0
+    lia
+  have h12' : 2 * cols' 2 ≤ rows' 1 := by
+    dsimp [rows', cols']
+    have hc := hc0 2
+    have hr := hdrow 1
+    lia
+  have h02' : 2 * cols' 2 ≤ rows' 0 := by
+    dsimp [rows', cols']
+    have hc := hc0 2
+    have hr := hdrow 0
+    lia
+  have hcol0' : cols' 0 = 0 := by
+    dsimp [cols', d]
+    exact Nat.sub_self _
+  have hall : ∀ i j : Fin 3, 2 * cols j ≤ rows i := by
+    intro i j
+    fin_cases i <;> fin_cases j
+    · simpa using hband 0
+    · simpa using h01
+    · simpa using h02
+    · exact le_trans (by simpa using hband 0) hr01
+    · simpa using hband 1
+    · simpa using h12
+    · exact le_trans (by simpa using hband 0) hr02
+    · exact le_trans (by simpa using hband 1) hr12
+    · simpa using hband 2
+  have hentry (i j : Fin 3) :
+      hurwitz a (rows i) (cols j) = hurwitz a (rows' i) (cols' j) := by
+    have hcadd : cols' j + d = cols j := by
+      dsimp [cols', d]
+      exact Nat.sub_add_cancel (hc0 j)
+    have hrow : rows i - 2 * d = rows' i := by
+      rfl
+    have hs := hurwitz_col_shift_add a (cols' j) d (rows i) <|
+      by simpa [hcadd] using hall i j
+    rw [hcadd, hrow] at hs
+    exact hs
+  have hnorm := hZero ha hrows' hcols' hband' h01' h12' h02' hcol0'
+  rw [← hentry 0 0, ← hentry 1 1, ← hentry 2 2, ← hentry 1 2,
+    ← hentry 2 1, ← hentry 0 1, ← hentry 1 0, ← hentry 2 0] at hnorm
+  exact hnorm
+
 /-- The full-band `3 × 3` core follows from the corner-zeroed full-band
 subtarget.  The missing top-right term factors as the `(0, 2)` entry times a
 `2 × 2` Hadamard minor on rows `{1, 2}` and columns `{0, 1}`. -/
