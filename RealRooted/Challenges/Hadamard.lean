@@ -353,6 +353,22 @@ theorem diagonalOperatorCubicDiscriminantLeThreeTarget_proved :
   fun hdeg hdisc =>
     diagonalOperator_splits_of_natDegree_le_three_cubicDiscr_nonneg hdeg hdisc
 
+/-- Challenge-facing cubic-discriminant splitting target for the fixed-degree
+Schur--Szegő composition with a degree-`≤ 3` factor: once the composition's
+cubic coefficient discriminant is nonnegative, it is either zero or splits. -/
+abbrev schurSzegoCompCubicDiscriminantLeThreeTarget : Prop :=
+  ∀ {n : ℕ} {f p : ℝ[X]}, f.natDegree ≤ 3 →
+    0 ≤ cubicDiscr (schurSzegoComp n f p) →
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits
+
+/-- The checked degree-`≤ 3` cubic-discriminant route for the Schur--Szegő
+composition proves the challenge target. -/
+theorem schurSzegoCompCubicDiscriminantLeThreeTarget_proved :
+    schurSzegoCompCubicDiscriminantLeThreeTarget :=
+  fun hfdeg hdisc =>
+    finiteSchurSzegoComposition_of_natDegree_le_three_cubicDiscr_nonneg
+      hfdeg hdisc
+
 /-- Challenge-facing cubic Newton inequalities for an exact-degree splitting
 Jensen polynomial. -/
 theorem jensenPolynomialThree_logConcave_of_splits_natDegree_three

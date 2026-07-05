@@ -936,6 +936,32 @@ theorem finiteSchurSzegoCompositionNonzero_of_factors_natDegree_le_two
   finiteSchurSzegoComposition_of_factors_natDegree_le_two
     hf hfdeg hpdeg hsplit
 
+/-- Cubic-discriminant splitting route for the fixed-degree Schur--Szegő
+composition with a degree-`≤ 3` factor.
+
+Once the fixed-degree Schur--Szegő composition's cubic coefficient discriminant
+`cubicDiscr (schurSzegoComp n f p)` is known to be nonnegative, the composition
+is either zero or splits over `ℝ`.  The composition inherits the degree bound of
+the degree-`≤ 3` factor `f` via `natDegree_schurSzegoComp_le_left`, so the
+result is the degree-`≤ 3` cubic discriminant criterion applied to it. -/
+theorem finiteSchurSzegoComposition_of_natDegree_le_three_cubicDiscr_nonneg
+    {n : ℕ} {f p : ℝ[X]} (hfdeg : f.natDegree ≤ 3)
+    (hdisc : 0 ≤ cubicDiscr (schurSzegoComp n f p)) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits := by
+  by_cases hq0 : schurSzegoComp n f p = 0
+  · exact Or.inl hq0
+  · refine Or.inr (splits_of_natDegree_le_three_cubicDiscr_nonneg ?_ hdisc)
+    exact le_trans (natDegree_schurSzegoComp_le_left n f p) hfdeg
+
+/-- Nonzero-core version of the degree-`≤ 3` cubic-discriminant splitting route
+for the fixed-degree Schur--Szegő composition. -/
+theorem finiteSchurSzegoCompositionNonzero_of_natDegree_le_three_cubicDiscr_nonneg
+    {n : ℕ} {f p : ℝ[X]} (_hf0 : f ≠ 0) (hfdeg : f.natDegree ≤ 3)
+    (_hp0 : p ≠ 0) (hdisc : 0 ≤ cubicDiscr (schurSzegoComp n f p)) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  finiteSchurSzegoComposition_of_natDegree_le_three_cubicDiscr_nonneg
+    hfdeg hdisc
+
 /-- The full finite Schur--Szegő theorem implies the finite Pólya--Schur
 theorem. -/
 theorem finitePolyaSchur_nonneg_of_schurSzego
