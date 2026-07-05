@@ -214,6 +214,88 @@ theorem chudnovskySeymour_fourWay_of_rootCrossing_nonneg
     RealRooted.chudnovskySeymour_fourWay_of_rootCrossing
       hrr hpos hsame hsucc
 
+/-- The nonnegative four-way package target follows from lower-threshold
+root-count formulations in both degree branches. -/
+theorem chudnovskySeymour_fourWay_of_rootCount_nonneg
+    (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountNonnegStatement) :
+    chudnovskySeymour_fourWay_nonnegCoeffs_target :=
+  chudnovskySeymour_fourWay_of_rootCrossing_nonneg
+    (posComboNoCommonSameDegreeRootCrossing_of_rootCount hsame)
+    (posComboNoCommonSuccDegreeRootCrossing_of_rootCount hsucc)
+
+/-- The nonnegative four-way package target follows from same-degree
+lower-threshold root counts and succ-degree upper-threshold root counts. -/
+theorem chudnovskySeymour_fourWay_of_rootCountAbove_nonneg
+    (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement) :
+    chudnovskySeymour_fourWay_nonnegCoeffs_target :=
+  chudnovskySeymour_fourWay_of_rootCrossing_nonneg
+    (posComboNoCommonSameDegreeRootCrossing_of_rootCount hsame)
+    (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove hsucc)
+
+/-- The nonnegative four-way package target follows from same-degree
+upper-threshold root counts and succ-degree lower-threshold root counts. -/
+theorem chudnovskySeymour_fourWay_of_sameRootCountAbove_nonneg
+    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountNonnegStatement) :
+    chudnovskySeymour_fourWay_nonnegCoeffs_target :=
+  chudnovskySeymour_fourWay_of_rootCrossing_nonneg
+    (posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove hsame)
+    (posComboNoCommonSuccDegreeRootCrossing_of_rootCount hsucc)
+
+/-- The nonnegative four-way package target follows from upper-threshold
+root-count formulations in both degree branches. -/
+theorem chudnovskySeymour_fourWay_of_rootCountAboveBoth_nonneg
+    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement) :
+    chudnovskySeymour_fourWay_nonnegCoeffs_target :=
+  chudnovskySeymour_fourWay_of_rootCrossing_nonneg
+    (posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove hsame)
+    (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove hsucc)
+
+/-- The nonnegative four-way package target follows from common-non-root
+lower-threshold root-count formulations in both degree branches. -/
+theorem chudnovskySeymour_fourWay_of_rootCountNonRoot_nonneg
+    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
+    chudnovskySeymour_fourWay_nonnegCoeffs_target :=
+  chudnovskySeymour_fourWay_of_rootCrossing_nonneg
+    (posComboNoCommonSameDegreeRootCrossing_of_rootCountNonRoot hsame)
+    (posComboNoCommonSuccDegreeRootCrossing_of_rootCountNonRoot hsucc)
+
+/-- The nonnegative four-way package target follows from same-degree
+common-non-root lower-threshold root counts and succ-degree common-non-root
+upper-threshold root counts. -/
+theorem chudnovskySeymour_fourWay_of_rootCountAboveNonRoot_nonneg
+    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
+    chudnovskySeymour_fourWay_nonnegCoeffs_target :=
+  chudnovskySeymour_fourWay_of_rootCrossing_nonneg
+    (posComboNoCommonSameDegreeRootCrossing_of_rootCountNonRoot hsame)
+    (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAboveNonRoot hsucc)
+
+/-- The nonnegative four-way package target follows from same-degree
+common-non-root upper-threshold root counts and succ-degree common-non-root
+lower-threshold root counts. -/
+theorem chudnovskySeymour_fourWay_of_sameRootCountAboveNonRoot_nonneg
+    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
+    chudnovskySeymour_fourWay_nonnegCoeffs_target :=
+  chudnovskySeymour_fourWay_of_rootCrossing_nonneg
+    (posComboNoCommonSameDegreeRootCrossing_of_rootCountAboveNonRoot hsame)
+    (posComboNoCommonSuccDegreeRootCrossing_of_rootCountNonRoot hsucc)
+
+/-- The nonnegative four-way package target follows from common-non-root
+upper-threshold root-count formulations in both degree branches. -/
+theorem chudnovskySeymour_fourWay_of_rootCountAboveBothNonRoot_nonneg
+    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
+    chudnovskySeymour_fourWay_nonnegCoeffs_target :=
+  chudnovskySeymour_fourWay_of_rootCrossing_nonneg
+    (posComboNoCommonSameDegreeRootCrossing_of_rootCountAboveNonRoot hsame)
+    (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAboveNonRoot hsucc)
+
 /-- The nonnegative four-way package target follows from same-degree
 root-crossing and the affine-family bridge for the succ-degree branch. -/
 theorem chudnovskySeymour_fourWay_of_sameDegreeRootCrossing_and_affineFamily_nonneg
