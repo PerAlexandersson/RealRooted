@@ -1558,6 +1558,42 @@ theorem noCommonPairHasCommonInterleaver_of_posCombo_natDegree_le_two
   posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_two
     hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hg_deg_le_two
 
+/-- Challenge-facing degree-`≤ 2` positive-combination endpoint in the
+nonnegative-coefficient setting. -/
+theorem pairHasCommonInterleaver_nonneg_of_posCombo_natDegree_le_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hf_deg_le_two : f.natDegree ≤ 2)
+    (hg_deg_le_two : g.natDegree ≤ 2) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  posComboPairHasCommonInterleaver_nonneg_of_natDegree_le_two
+    hf_pos hg_pos hfnn hgnn hfg hf_deg_le_two hg_deg_le_two
+
+/-- Challenge-facing degree-`≤ 2` positive-combination endpoint. -/
+theorem pairHasCommonInterleaver_of_posCombo_natDegree_le_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hf_splits : f.Splits) (hg_splits : g.Splits)
+    (hfg : PosComboRealRooted f g)
+    (hf_deg_le_two : f.natDegree ≤ 2)
+    (hg_deg_le_two : g.natDegree ≤ 2) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  posComboPairHasCommonInterleaver_of_natDegree_le_two
+    hf_pos hg_pos hf_splits hg_splits hfg hf_deg_le_two hg_deg_le_two
+
+/-- Challenge-facing compatibility-level degree-`≤ 2` pair endpoint. -/
+theorem compatiblePairHasCommonInterleaver_of_natDegree_le_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : Compatible f g)
+    (hf_deg_le_two : f.natDegree ≤ 2)
+    (hg_deg_le_two : g.natDegree ≤ 2) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  RealRooted.compatiblePairHasCommonInterleaver_of_natDegree_le_two
+    hf_pos hg_pos hfg hf_deg_le_two hg_deg_le_two
+
 /-- Challenge-facing degree-zero base case for succ-degree root-slot data. -/
 theorem succDegreeSlotDataPair_of_natDegree_eq_zero
     {f g : ℝ[X]}
@@ -2853,6 +2889,16 @@ theorem fourWay_of_natDegree_le_one {fs : List ℝ[X]}
   chudnovskySeymour_fourWay_of_natDegree_le_one
     (fs := fs) hpos hdeg
 
+/-- Challenge-facing degree-`≤ 2` four-way Chudnovsky--Seymour package under
+the standard memberwise real-rootedness hypothesis. -/
+theorem fourWay_of_natDegree_le_two {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 2) :
+    fourWayPackage fs :=
+  chudnovskySeymour_fourWay_of_natDegree_le_two
+    (fs := fs) hrr hpos hdeg
+
 /-- Solved low-degree pairwise compatibility / pairwise common-interleaver
 equivalence. -/
 theorem pairwiseCompatible_iff_pairwiseHasCommonInterleaver_of_natDegree_le_one
@@ -2861,6 +2907,16 @@ theorem pairwiseCompatible_iff_pairwiseHasCommonInterleaver_of_natDegree_le_one
     (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
     PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs :=
   RealRooted.pairwiseCompatible_iff_pairwiseHasCommonInterleaver_of_natDegree_le_one
+    hpos hdeg
+
+/-- Challenge-facing degree-`≤ 2` pairwise compatibility / pairwise
+common-interleaver equivalence. -/
+theorem pairwiseCompatible_iff_pairwiseHasCommonInterleaver_of_natDegree_le_two
+    {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 2) :
+    PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs :=
+  RealRooted.pairwiseCompatible_iff_pairwiseHasCommonInterleaver_of_natDegree_le_two
     hpos hdeg
 
 /-- Solved low-degree pairwise common-interleaver / global common-interleaver
@@ -2873,6 +2929,17 @@ theorem pairwiseHasCommonInterleaver_iff_commonInterleaver_of_natDegree_le_one
   RealRooted.pairwiseHasCommonInterleaver_iff_hasCommonInterleaver_of_natDegree_le_one
     hpos hdeg
 
+/-- Challenge-facing degree-`≤ 2` pairwise common-interleaver / global common
+interleaver equivalence under memberwise real-rootedness. -/
+theorem pairwiseHasCommonInterleaver_iff_commonInterleaver_of_natDegree_le_two
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 2) :
+    PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs :=
+  RealRooted.pairwiseHasCommonInterleaver_iff_hasCommonInterleaver_of_natDegree_le_two
+    hrr hpos hdeg
+
 /-- Solved low-degree global common-interleaver / full-family compatibility
 equivalence. -/
 theorem commonInterleaver_iff_familyCompatible_of_natDegree_le_one
@@ -2883,6 +2950,17 @@ theorem commonInterleaver_iff_familyCompatible_of_natDegree_le_one
   RealRooted.hasCommonInterleaver_iff_familyCompatible_of_natDegree_le_one
     hpos hdeg
 
+/-- Challenge-facing degree-`≤ 2` global common-interleaver / full-family
+compatibility equivalence under memberwise real-rootedness. -/
+theorem commonInterleaver_iff_familyCompatible_of_natDegree_le_two
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 2) :
+    HasCommonInterleaver fs ↔ FamilyCompatible fs :=
+  RealRooted.hasCommonInterleaver_iff_familyCompatible_of_natDegree_le_two
+    hrr hpos hdeg
+
 /-- Solved low-degree pairwise/common-interleaver equivalence. -/
 theorem pairwiseCompatible_iff_commonInterleaver_of_natDegree_le_one
     {fs : List ℝ[X]}
@@ -2891,6 +2969,17 @@ theorem pairwiseCompatible_iff_commonInterleaver_of_natDegree_le_one
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
   RealRooted.pairwiseCompatible_iff_hasCommonInterleaver_of_natDegree_le_one
     hpos hdeg
+
+/-- Challenge-facing degree-`≤ 2` pairwise/common-interleaver equivalence under
+memberwise real-rootedness. -/
+theorem pairwiseCompatible_iff_commonInterleaver_of_natDegree_le_two
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 2) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
+  RealRooted.pairwiseCompatible_iff_hasCommonInterleaver_of_natDegree_le_two
+    hrr hpos hdeg
 
 /-- Solved low-degree pairwise/common-left-interleaver equivalence. -/
 theorem pairwiseCompatible_iff_commonLeftInterleaver_of_natDegree_le_one
@@ -2909,6 +2998,17 @@ theorem pairwiseCompatible_iff_familyCompatible_of_natDegree_le_one
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_natDegree_le_one
     hpos hdeg
+
+/-- Challenge-facing degree-`≤ 2` pairwise/full-family compatibility
+equivalence under memberwise real-rootedness. -/
+theorem pairwiseCompatible_iff_familyCompatible_of_natDegree_le_two
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 2) :
+    PairwiseCompatible fs ↔ FamilyCompatible fs :=
+  RealRooted.pairwiseCompatible_iff_familyCompatible_of_natDegree_le_two
+    hrr hpos hdeg
 
 /-- Challenge-facing reduction for the left-oriented common-interleaver target. -/
 theorem pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge

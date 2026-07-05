@@ -5393,6 +5393,93 @@ private theorem posComboPairHasCommonInterleaver_of_noCommonPairBridge_and_nonne
     · simpa [hqg] using
         prec_mul_common_factor (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hqg_prec
 
+/-- Ordered nonnegative-coefficient degree-`≤ 2` pair endpoint.  Shared roots
+are factored out recursively, and the terminal no-common-root case is the
+checked low-degree root-crossing endpoint. -/
+theorem posComboPairHasCommonInterleaver_nonneg_of_natDegree_le_two_ordered
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg_lo : f.natDegree ≤ g.natDegree)
+    (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
+    (hgdeg : g.natDegree ≤ 2) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+  refine
+    Nat.strong_induction_on
+      (p := fun n =>
+        ∀ {f g : ℝ[X]},
+          f.natDegree = n →
+          HasPosLeadingCoeff f →
+          HasPosLeadingCoeff g →
+          HasNonnegCoeffs f →
+          HasNonnegCoeffs g →
+          PosComboRealRooted f g →
+          f.natDegree ≤ g.natDegree →
+          g.natDegree ≤ f.natDegree + 1 →
+          g.natDegree ≤ 2 →
+          ∃ h : ℝ[X], Prec f h ∧ Prec g h)
+      f.natDegree ?_ rfl hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hgdeg
+  intro n ih f g hfdeg hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hgdeg
+  by_cases hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r
+  · exact
+      posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_two
+        hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg
+  · push Not at hno
+    rcases hno with ⟨r, hrf, hrg⟩
+    obtain ⟨qf, qg, hqf, hqg, hqfg, hqf_nn, hqg_nn, hqf0, hqg0,
+      hqf_pos, hqg_pos, hqdeg_lo, hqdeg_hi⟩ :=
+      common_root_reduction_data_of_posCombo_nonneg
+        hfg hf_pos hg_pos hfnn hgnn hdeg_lo hdeg_hi hrf hrg
+    have hqf_deg_lt : qf.natDegree < n := by
+      rw [← hfdeg, hqf, natDegree_mul (X_sub_C_ne_zero r) hqf0, natDegree_X_sub_C]
+      lia
+    have hqgdeg : qg.natDegree ≤ 2 := by
+      have hgeq : g.natDegree = qg.natDegree + 1 := by
+        rw [hqg, natDegree_mul (X_sub_C_ne_zero r) hqg0, natDegree_X_sub_C]
+        lia
+      lia
+    rcases
+        ih qf.natDegree hqf_deg_lt rfl
+          hqf_pos hqg_pos hqf_nn hqg_nn hqfg hqdeg_lo hqdeg_hi hqgdeg with
+      ⟨h, hqf_prec, hqg_prec⟩
+    refine ⟨(X - C r) * h, ?_, ?_⟩
+    · simpa [hqf] using
+        prec_mul_common_factor (isRealRooted_X_sub_C r).1
+          (isRealRooted_X_sub_C r).2 hqf_prec
+    · simpa [hqg] using
+        prec_mul_common_factor (isRealRooted_X_sub_C r).1
+          (isRealRooted_X_sub_C r).2 hqg_prec
+
+/-- Nonnegative-coefficient degree-`≤ 2` pair endpoint, with no degree order
+assumption. -/
+theorem posComboPairHasCommonInterleaver_nonneg_of_natDegree_le_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hfdeg : f.natDegree ≤ 2)
+    (hgdeg : g.natDegree ≤ 2) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+  obtain ⟨hclose_left, hclose_right⟩ :=
+    natDegree_close_of_posComboRealRooted_of_nonnegCoeffs
+      hfg hf_pos.ne_zero hg_pos.ne_zero hfnn hgnn
+  by_cases hdeg : f.natDegree ≤ g.natDegree
+  · exact
+      posComboPairHasCommonInterleaver_nonneg_of_natDegree_le_two_ordered
+        hf_pos hg_pos hfnn hgnn hfg hdeg hclose_right hgdeg
+  · have hdeg' : g.natDegree ≤ f.natDegree := le_of_not_ge hdeg
+    rcases
+        posComboPairHasCommonInterleaver_nonneg_of_natDegree_le_two_ordered
+          hg_pos hf_pos hgnn hfnn (PosComboRealRooted.comm hfg) hdeg' hclose_left
+          hfdeg with
+      ⟨h, hg_prec, hf_prec⟩
+    exact ⟨h, hf_prec, hg_prec⟩
+
 private theorem posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs_ordered
     (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
@@ -6212,6 +6299,80 @@ private theorem posComboPairHasCommonInterleaver_via_nonnegShift
     have htranslated : Prec g' (h.comp (X + C r)) := by lia
     exact (prec_comp_X_add_C_iff (f := g) (g := h) r).1 htranslated
   grind
+
+/-- Positive-combination degree-`≤ 2` pair endpoint.  Translate both
+polynomials far enough to make the shifted roots nonpositive, apply the
+nonnegative-coefficient degree-`≤ 2` endpoint, and translate the common right
+interleaver back. -/
+theorem posComboPairHasCommonInterleaver_of_natDegree_le_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hf_splits : f.Splits)
+    (hg_splits : g.Splits)
+    (hfg : PosComboRealRooted f g)
+    (hfdeg : f.natDegree ≤ 2)
+    (hgdeg : g.natDegree ≤ 2) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+  obtain ⟨rf, hrf⟩ := exists_root_upper_bound f
+  obtain ⟨rg, hrg⟩ := exists_root_upper_bound g
+  let r : ℝ := max rf rg
+  let f' : ℝ[X] := f.comp (X + C r)
+  let g' : ℝ[X] := g.comp (X + C r)
+  have hf'_pos : HasPosLeadingCoeff f' := by
+    simpa [f'] using hf_pos.comp_X_add_C r
+  have hg'_pos : HasPosLeadingCoeff g' := by
+    simpa [g'] using hg_pos.comp_X_add_C r
+  have hfnn : HasNonnegCoeffs f' := by
+    refine hasNonnegCoeffs_comp_X_add_C_of_roots_le hf_pos hf_splits ?_
+    grind
+  have hgnn : HasNonnegCoeffs g' := by
+    refine hasNonnegCoeffs_comp_X_add_C_of_roots_le hg_pos hg_splits ?_
+    grind
+  have hfg' : PosComboRealRooted f' g' := by
+    intro α β hα hβ
+    simpa [f', g'] using hfg.comp_X_add_C r hα hβ
+  have hfdeg' : f'.natDegree ≤ 2 := by
+    have hdeg_eq : f'.natDegree = f.natDegree := by
+      simp [f', Polynomial.natDegree_comp]
+    lia
+  have hgdeg' : g'.natDegree ≤ 2 := by
+    have hdeg_eq : g'.natDegree = g.natDegree := by
+      simp [g', Polynomial.natDegree_comp]
+    lia
+  rcases
+      posComboPairHasCommonInterleaver_nonneg_of_natDegree_le_two
+        hf'_pos hg'_pos hfnn hgnn hfg' hfdeg' hgdeg' with
+    ⟨h', hf'h', hg'h'⟩
+  let h : ℝ[X] := h'.comp (X - C r)
+  have hh_comp : h.comp (X + C r) = h' := by
+    simp [h, Polynomial.comp_assoc, sub_eq_add_neg, add_assoc, add_comm]
+  have hfh : Prec f h := by
+    have htranslated : Prec f' (h.comp (X + C r)) := by
+      rw [hh_comp]
+      exact hf'h'
+    exact (prec_comp_X_add_C_iff (f := f) (g := h) r).1 htranslated
+  have hgh : Prec g h := by
+    have htranslated : Prec g' (h.comp (X + C r)) := by
+      rw [hh_comp]
+      exact hg'h'
+    exact (prec_comp_X_add_C_iff (f := g) (g := h) r).1 htranslated
+  exact ⟨h, hfh, hgh⟩
+
+/-- Compatibility-level degree-`≤ 2` two-polynomial Chudnovsky--Seymour
+endpoint. -/
+theorem compatiblePairHasCommonInterleaver_of_natDegree_le_two
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfg : Compatible f g)
+    (hfdeg : f.natDegree ≤ 2)
+    (hgdeg : g.natDegree ≤ 2) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  posComboPairHasCommonInterleaver_of_natDegree_le_two hf_pos hg_pos
+    (hfg.isRealRooted_left hf_pos).2
+    (hfg.isRealRooted_right hg_pos).2
+    (hfg.toPosComboRealRooted hf_pos hg_pos) hfdeg hgdeg
 
 /-- Translation reduces the full positive-leading compatibility bridge to the
 repaired nonnegative-coefficient degree-split package.  This is the shifted
@@ -7832,6 +7993,22 @@ theorem pairwiseHasCommonInterleaver_of_natDegree_le_one
       (hdeg (fs.get i) (List.get_mem _ _))
       (hdeg (fs.get j) (List.get_mem _ _))
 
+/-- In the degree-`≤ 2` regime, pairwise compatibility gives pairwise common
+right interleavers. -/
+theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_natDegree_le_two
+    {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 2)
+    (hpair : PairwiseCompatible fs) :
+    PairwiseHasCommonInterleaver fs :=
+  fun i j hij =>
+    compatiblePairHasCommonInterleaver_of_natDegree_le_two
+      (hpos (fs.get i) (List.get_mem _ _))
+      (hpos (fs.get j) (List.get_mem _ _))
+      (hpair i j hij)
+      (hdeg (fs.get i) (List.get_mem _ _))
+      (hdeg (fs.get j) (List.get_mem _ _))
+
 /-- Pairwise low-degree common-left interleavers for positive-leading
 linear/constant families. -/
 theorem pairwiseHasCommonLeftInterleaver_of_natDegree_le_one
@@ -7895,6 +8072,19 @@ theorem chudnovskySeymour_fourWay_of_natDegree_le_one
       (family_ne_zero_and_splits_of_natDegree_le_one hpos hdeg) hpos <|
       fun _ => pairwiseHasCommonInterleaver_of_natDegree_le_one hpos hdeg
 
+/-- Degree-`≤ 2` Chudnovsky--Seymour package under the standard memberwise
+real-rootedness hypothesis.  The new ingredient is the checked two-polynomial
+degree-`≤ 2` bridge from pairwise compatibility to pairwise common right
+interleavers. -/
+theorem chudnovskySeymour_fourWay_of_natDegree_le_two
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 2) :
+    ChudnovskySeymourFourWayPackage fs :=
+  chudnovskySeymour_fourWay_of_pairwiseCommonForward hrr hpos <|
+    pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_natDegree_le_two hpos hdeg
+
 /-- Degree-`≤ 1` specialization of Chudnovsky--Seymour `1 ↔ 2`: for
 positive-leading linear/constant families, pairwise compatibility is already
 equivalent to pairwise common-interleaver data. -/
@@ -7906,6 +8096,16 @@ theorem pairwiseCompatible_iff_pairwiseHasCommonInterleaver_of_natDegree_le_one
   pairwiseCompatible_iff_pairwiseHasCommonInterleaver_of_fourWay <|
     chudnovskySeymour_fourWay_of_natDegree_le_one
       (fs := fs) hpos hdeg
+
+/-- Degree-`≤ 2` specialization of Chudnovsky--Seymour `1 ↔ 2`: pairwise
+compatibility is equivalent to pairwise common-interleaver data. -/
+theorem pairwiseCompatible_iff_pairwiseHasCommonInterleaver_of_natDegree_le_two
+    {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 2) :
+    PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs :=
+  ⟨pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_natDegree_le_two hpos hdeg,
+    fun hpair => pairwiseCompatible_of_pairwiseHasCommonInterleaver hpair hpos⟩
 
 /-- Degree-`≤ 1` specialization of Chudnovsky--Seymour `2 ↔ 3`: for
 positive-leading linear/constant families, pairwise common-interleaver data is
@@ -7919,6 +8119,18 @@ theorem pairwiseHasCommonInterleaver_iff_hasCommonInterleaver_of_natDegree_le_on
     chudnovskySeymour_fourWay_of_natDegree_le_one
       (fs := fs) hpos hdeg
 
+/-- Degree-`≤ 2` specialization of Chudnovsky--Seymour `2 ↔ 3` under
+memberwise real-rootedness. -/
+theorem pairwiseHasCommonInterleaver_iff_hasCommonInterleaver_of_natDegree_le_two
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 2) :
+    PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs :=
+  pairwiseHasCommonInterleaver_iff_hasCommonInterleaver_of_fourWay <|
+    chudnovskySeymour_fourWay_of_natDegree_le_two
+      (fs := fs) hrr hpos hdeg
+
 /-- Degree-`≤ 1` specialization of Chudnovsky--Seymour `3 ↔ 4`: for
 positive-leading linear/constant families, a global common interleaver is
 already equivalent to full family compatibility. -/
@@ -7931,6 +8143,18 @@ theorem hasCommonInterleaver_iff_familyCompatible_of_natDegree_le_one
     chudnovskySeymour_fourWay_of_natDegree_le_one
       (fs := fs) hpos hdeg
 
+/-- Degree-`≤ 2` specialization of Chudnovsky--Seymour `3 ↔ 4` under
+memberwise real-rootedness. -/
+theorem hasCommonInterleaver_iff_familyCompatible_of_natDegree_le_two
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 2) :
+    HasCommonInterleaver fs ↔ FamilyCompatible fs :=
+  hasCommonInterleaver_iff_familyCompatible_of_fourWay <|
+    chudnovskySeymour_fourWay_of_natDegree_le_two
+      (fs := fs) hrr hpos hdeg
+
 /-- Degree-`≤ 1` specialization of Chudnovsky--Seymour `1 ↔ 3`: for
 positive-leading linear/constant families, pairwise compatibility is already
 equivalent to having a common right interleaver. -/
@@ -7942,6 +8166,18 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_natDegree_le_one
   pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay <|
     chudnovskySeymour_fourWay_of_natDegree_le_one
       (fs := fs) hpos hdeg
+
+/-- Degree-`≤ 2` specialization of Chudnovsky--Seymour `1 ↔ 3` under
+memberwise real-rootedness. -/
+theorem pairwiseCompatible_iff_hasCommonInterleaver_of_natDegree_le_two
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 2) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
+  pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay <|
+    chudnovskySeymour_fourWay_of_natDegree_le_two
+      (fs := fs) hrr hpos hdeg
 
 /-- Degree-`≤ 1` specialization of Chudnovsky--Seymour `1 ↔ 3`, left-oriented:
 for positive-leading linear/constant families, pairwise compatibility is
@@ -7965,6 +8201,18 @@ theorem pairwiseCompatible_iff_familyCompatible_of_natDegree_le_one
   pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos <|
     (pairwiseCompatible_iff_hasCommonInterleaver_of_natDegree_le_one
       (fs := fs) hpos hdeg).1
+
+/-- Degree-`≤ 2` specialization of Chudnovsky--Seymour `1 ↔ 4` under
+memberwise real-rootedness. -/
+theorem pairwiseCompatible_iff_familyCompatible_of_natDegree_le_two
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 2) :
+    PairwiseCompatible fs ↔ FamilyCompatible fs :=
+  pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos <|
+    (pairwiseCompatible_iff_hasCommonInterleaver_of_natDegree_le_two
+      (fs := fs) hrr hpos hdeg).1
 
 /-- Roadmap target for the common-interlacing form of the
 Chudnovsky--Seymour theorem used in `INTERLACING.md`.
