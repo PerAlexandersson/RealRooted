@@ -1369,4 +1369,103 @@ theorem hurwitzMatrixSchurProductDetFinThreeCore_iff_fullBand_cornerZero :
       hurwitzMatrixSchurProductDetFinThreeCoreCornerZero_of_core hcore⟩,
     fun h => hurwitzMatrixSchurProductDetFinThreeCore_of_fullBand_cornerZero h.1 h.2⟩
 
+/-! ### The first-column normal-form leaf is false
+
+The leaf
+`HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstColStatement`
+is strictly stronger than the genuine `3 × 3` minor nonnegativity supplied by
+total nonnegativity: the corner-zeroed determinant equals the honest minor
+minus the top-right corner contribution, and that subtraction can make it
+negative.
+
+The explicit counterexample below uses the totally nonnegative Hurwitz matrix
+whose first column is the binomial sequence `k ↦ C(16, k)`, with
+`rows = (9, 10, 11)` and `cols = (0, 1, 2)`.  There the corner-zeroed
+determinant equals `-11569226240 < 0`.
+-/
+
+/-- The Hurwitz matrix of any coefficient sequence is the even-column submatrix
+of the Toeplitz matrix built from its own first column. -/
+theorem hurwitz_eq_toeplitz_firstColumn_submatrix (c : ℕ → ℝ) :
+    hurwitz c = (toeplitz fun k => hurwitz c k 0).submatrix id fun j => 2 * j := by
+  ext i j
+  simp only [Matrix.submatrix_apply, id_eq, toeplitz_apply]
+  by_cases h : 2 * j ≤ i
+  · rw [if_pos h]
+    simpa using hurwitz_col_shift_add c 0 j i (by simpa using h)
+  · rw [if_neg h]
+    exact hurwitz_apply_eq_zero_of_lt c (by lia)
+
+/-- If the first column of a Hurwitz matrix is a Pólya-frequency sequence, then
+the whole Hurwitz matrix is totally nonnegative. -/
+theorem hurwitz_isTotallyNonneg_of_firstColumn_isPolyaFreqSeq (c : ℕ → ℝ)
+    (h : IsPolyaFreqSeq fun k => hurwitz c k 0) :
+    (hurwitz c).IsTotallyNonneg := by
+  rw [hurwitz_eq_toeplitz_firstColumn_submatrix c]
+  exact Matrix.IsTotallyNonneg.submatrix h strictMono_id (fun _ _ hab => by lia)
+
+/-- Counterexample first column: the binomial sequence `k ↦ C(16, k)`. -/
+noncomputable def cexFirstColumn : ℕ → ℝ := fun k => (Nat.choose 16 k : ℝ)
+
+/-- The binomial sequence `k ↦ C(16, k)` is a Pólya-frequency sequence. -/
+theorem cexFirstColumn_isPolyaFreqSeq : IsPolyaFreqSeq cexFirstColumn := by
+  have hpf := IsPolyaFreqSeq.prod_X_sub_C (Multiset.replicate 16 (-1 : ℝ))
+    (by
+      intro r hr
+      rw [Multiset.eq_of_mem_replicate hr]
+      norm_num)
+  have heq : ((Multiset.replicate 16 (-1 : ℝ)).map fun r => X - C r).prod =
+      (X + 1) ^ 16 := by
+    rw [Multiset.map_replicate, Multiset.prod_replicate]
+    congr 1
+    rw [map_neg, map_one]
+    ring
+  have hfun :
+      (fun n => (((Multiset.replicate 16 (-1 : ℝ)).map fun r => X - C r).prod).coeff n)
+        = cexFirstColumn := by
+    funext n
+    rw [heq, Polynomial.coeff_X_add_one_pow]
+    rfl
+  rwa [hfun] at hpf
+
+/-- The counterexample coefficient sequence: the parity swap of
+`cexFirstColumn`, chosen so that the first column of `hurwitz cexA` is exactly
+`cexFirstColumn`. -/
+noncomputable def cexA : ℕ → ℝ :=
+  fun n => if n % 2 = 0 then cexFirstColumn (n + 1) else cexFirstColumn (n - 1)
+
+/-- The first column of `hurwitz cexA` is the binomial sequence. -/
+theorem hurwitz_cexA_firstColumn (k : ℕ) : hurwitz cexA k 0 = cexFirstColumn k := by
+  rcases Nat.even_or_odd k with ⟨m, hm⟩ | ⟨m, hm⟩
+  · subst hm
+    rw [show m + m = 2 * m by ring, hurwitz_even_row_apply, if_pos (Nat.zero_le m),
+      Nat.sub_zero]
+    simp only [cexA, if_neg (show ¬ (2 * m + 1) % 2 = 0 by lia), Nat.add_sub_cancel]
+  · subst hm
+    rw [hurwitz_odd_row_apply, if_pos (Nat.zero_le m), Nat.sub_zero]
+    simp only [cexA, if_pos (show (2 * m) % 2 = 0 by lia)]
+
+/-- The Hurwitz matrix of the counterexample is totally nonnegative. -/
+theorem cexA_hurwitz_isTotallyNonneg : (hurwitz cexA).IsTotallyNonneg := by
+  refine hurwitz_isTotallyNonneg_of_firstColumn_isPolyaFreqSeq cexA ?_
+  have : (fun k => hurwitz cexA k 0) = cexFirstColumn := by
+    funext k
+    exact hurwitz_cexA_firstColumn k
+  rw [this]
+  exact cexFirstColumn_isPolyaFreqSeq
+
+/-- The first-column normal-form leaf of GitHub issue #34 is false.  Even for
+the concrete totally nonnegative Hurwitz matrix `hurwitz cexA`, the
+corner-zeroed determinant at `rows = (9, 10, 11)`, `cols = (0, 1, 2)` is
+negative. -/
+theorem not_hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstCol :
+    ¬ HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstColStatement := by
+  intro H
+  have key := H cexA_hurwitz_isTotallyNonneg (row0 := 9) (row1 := 10) (row2 := 11)
+    (col1 := 1) (col2 := 2) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+    (by norm_num)
+  simp only [hurwitz_cexA_firstColumn, cexFirstColumn,
+    hurwitzFullBandCornerZeroedSingleFirstColDet] at key
+  norm_num [Nat.choose] at key
+
 end RealRooted
