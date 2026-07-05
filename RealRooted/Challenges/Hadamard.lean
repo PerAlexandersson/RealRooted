@@ -148,6 +148,15 @@ theorem jensenPolynomialThree_logConcave_of_splits_natDegree_three
       gamma 1 * gamma 3 ≤ gamma 2 ^ 2 :=
   jensenPolynomial_three_logConcave_of_splits_natDegree_three hdeg hs
 
+/-- Challenge-facing cubic log-concavity inequalities from the PF Jensen
+polynomial hypothesis. -/
+theorem jensenPolynomialThree_logConcave_of_isPF
+    {gamma : ℕ → ℝ}
+    (hj : IsPFPolynomial (jensenPolynomial 3 gamma)) :
+    gamma 0 * gamma 2 ≤ gamma 1 ^ 2 ∧
+      gamma 1 * gamma 3 ≤ gamma 2 ^ 2 :=
+  hj.jensenPolynomial_three_logConcave
+
 /-! ## Garloff--Wagner and Hurwitz-matrix targets -/
 
 /-- Challenge-facing target for Garloff--Wagner, Theorem 4(b), in the
