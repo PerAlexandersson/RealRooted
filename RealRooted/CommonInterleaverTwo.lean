@@ -3297,6 +3297,81 @@ def PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement : Prop :=
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1
 
+/-- Compatible-pair version of the succ-degree common-non-root upper
+root-count leaf.  This strips the #42 target down to the Chudnovsky--Seymour
+compatibility input, positive leading coefficients, the succ-degree condition,
+and splitting of the lower-degree endpoint. -/
+def CompatibleSuccDegreeRootCountAboveNonRootStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    Compatible f g →
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    g.natDegree = f.natDegree + 1 →
+    f.Splits →
+    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1
+
+/-- The compatible CS 3.4 root-count leaf implies the #42 positive-combo
+succ-degree root-count leaf. -/
+theorem posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_compatible
+    (hcount : CompatibleSuccDegreeRootCountAboveNonRootStatement) :
+    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement := by
+  intro f g hf_pos hg_pos _hfnn _hgnn hfg hdeg _hno hf_split x hxf hxg
+  exact hcount
+    (Compatible.of_posComboRealRooted_succDegree hfg hf_pos hg_pos hdeg hf_split)
+    hf_pos hg_pos hdeg hf_split x hxf hxg
+
+/-- Differentiating a succ-degree pair preserves the succ-degree relation,
+provided the lower-degree endpoint has positive degree. -/
+theorem succDegree_derivative_natDegree_eq
+    {f g : ℝ[X]} (hdeg : g.natDegree = f.natDegree + 1)
+    (hfdeg : f.natDegree ≠ 0) :
+    g.derivative.natDegree = f.derivative.natDegree + 1 := by
+  rw [f.natDegree_derivative, g.natDegree_derivative, hdeg]
+  lia
+
+/-- Applying the compatible succ-degree root-count theorem to derivatives. -/
+theorem compatibleSuccDegreeRootCountAboveNonRoot_derivative
+    (hcount : CompatibleSuccDegreeRootCountAboveNonRootStatement)
+    {f g : ℝ[X]} (hcomp : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) (hfdeg : 2 ≤ f.natDegree) :
+    ∀ x : ℝ, ¬ f.derivative.IsRoot x → ¬ g.derivative.IsRoot x →
+      ((f.derivative.roots.filter (x < ·)).card : ℤ) -
+          (g.derivative.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.derivative.roots.filter (x < ·)).card : ℤ) -
+          (f.derivative.roots.filter (x < ·)).card ≤ 1 := by
+  have hf'_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
+  have hg'_pos : HasPosLeadingCoeff g.derivative :=
+    hg_pos.derivative (by rw [hdeg]; lia)
+  have hdeg' : g.derivative.natDegree = f.derivative.natDegree + 1 :=
+    succDegree_derivative_natDegree_eq hdeg (by lia)
+  have hf'_split : f.derivative.Splits :=
+    (derivative_interlaces hf_split hfdeg).2.1.2
+  exact hcount hcomp.derivative hf'_pos hg'_pos hdeg' hf'_split
+
+/-- Derivative application of the compatible succ-degree root-count theorem,
+promoted from common non-root thresholds to all thresholds. -/
+theorem compatibleSuccDegreeRootCountAbove_derivative
+    (hcount : CompatibleSuccDegreeRootCountAboveNonRootStatement)
+    {f g : ℝ[X]} (hcomp : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) (hfdeg : 2 ≤ f.natDegree) :
+    ∀ x : ℝ,
+      ((f.derivative.roots.filter (x < ·)).card : ℤ) -
+          (g.derivative.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.derivative.roots.filter (x < ·)).card : ℤ) -
+          (f.derivative.roots.filter (x < ·)).card ≤ 1 := by
+  have hf'_ne : f.derivative ≠ 0 := Polynomial.derivative_ne_zero.mpr (by lia)
+  have hg'_ne : g.derivative ≠ 0 :=
+    Polynomial.derivative_ne_zero.mpr (by rw [hdeg]; lia)
+  exact rootCountAbove_diff_le_one_of_nonRoot_isRoot hf'_ne hg'_ne
+    (compatibleSuccDegreeRootCountAboveNonRoot_derivative
+      hcount hcomp hf_pos hg_pos hdeg hf_split hfdeg)
+
 /-- Partition roots of a splitting polynomial by a threshold. -/
 theorem card_roots_filter_gt_add_le_of_splits {p : ℝ[X]} (hp : p.Splits)
     (x : ℝ) :
@@ -3925,6 +4000,49 @@ theorem rootCountAbove_derivative_rev_sub_ge_two_of_sub_ge_three
   obtain ⟨hf_forw, _hf_back⟩ :=
     rootCountAbove_derivative_oriented_of_splits hf hfdeg x
   lia
+
+/-- Derivative induction rules out all upper-count gaps of size at least
+three for a succ-degree compatible pair.
+
+This is the CS 3.4 induction step up to the remaining exact gap-two case. -/
+theorem compatibleSuccDegreeRootCountAbove_le_two_of_derivative
+    (hcount : CompatibleSuccDegreeRootCountAboveNonRootStatement)
+    {f g : ℝ[X]} (hcomp : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) (hfdeg : 2 ≤ f.natDegree) :
+    ∀ x : ℝ,
+      ((f.roots.filter (x < ·)).card : ℤ) -
+          (g.roots.filter (x < ·)).card ≤ 2 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) -
+          (f.roots.filter (x < ·)).card ≤ 2 := by
+  have hg_split : g.Splits := (hcomp.isRealRooted_right hg_pos).2
+  have hgdeg : 2 ≤ g.natDegree := by rw [hdeg]; lia
+  have hder_bound :=
+    compatibleSuccDegreeRootCountAbove_derivative
+      hcount hcomp hf_pos hg_pos hdeg hf_split hfdeg
+  intro x
+  constructor
+  · by_contra hle
+    have hgap :
+        3 ≤ ((f.roots.filter (x < ·)).card : ℤ) -
+          (g.roots.filter (x < ·)).card := by
+      lia
+    have hder_gap :=
+      rootCountAbove_derivative_sub_ge_two_of_sub_ge_three
+        hf_split hg_split hfdeg hgdeg hgap
+    have hder_le := (hder_bound x).1
+    lia
+  · by_contra hle
+    have hgap :
+        3 ≤ ((g.roots.filter (x < ·)).card : ℤ) -
+          (f.roots.filter (x < ·)).card := by
+      lia
+    have hder_gap :=
+      rootCountAbove_derivative_rev_sub_ge_two_of_sub_ge_three
+        hf_split hg_split hfdeg hgdeg hgap
+    have hder_le := (hder_bound x).2
+    lia
 
 /-- Oriented same-degree `Prec`-to-root-count bridge in lower-threshold form.
 

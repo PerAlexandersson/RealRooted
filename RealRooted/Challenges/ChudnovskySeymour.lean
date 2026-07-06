@@ -254,6 +254,11 @@ non-root thresholds. -/
 abbrev succDegreeRootCountAboveNonRootTarget : Prop :=
   PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement
 
+/-- Compatible-pair version of the succ-degree common-non-root upper
+root-count leaf. -/
+abbrev compatibleSuccDegreeRootCountAboveNonRootTarget : Prop :=
+  CompatibleSuccDegreeRootCountAboveNonRootStatement
+
 /-- Succ-degree lower-threshold root-count subtarget restricted to common
 non-root thresholds. -/
 abbrev succDegreeRootCountNonRootTarget : Prop :=
@@ -966,6 +971,44 @@ theorem succDegreeDerivativeCompatiblePair_of_posCombo
     Compatible f.derivative g.derivative :=
   (succDegreeCompatiblePair_of_posCombo hf_pos hg_pos hfg hdeg hf_split).derivative
 
+/-- Challenge-facing reduction from the compatible succ-degree root-count leaf
+to the positive-combination leaf. -/
+theorem succDegreeRootCountAboveNonRootTarget_of_compatible
+    (hcount : compatibleSuccDegreeRootCountAboveNonRootTarget) :
+    succDegreeRootCountAboveNonRootTarget :=
+  posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_compatible hcount
+
+/-- Challenge-facing derivative application of the compatible succ-degree
+root-count leaf. -/
+theorem compatibleSuccDegreeRootCountAboveNonRootDerivativePair
+    (hcount : compatibleSuccDegreeRootCountAboveNonRootTarget)
+    {f g : ℝ[X]} (hcomp : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) (hfdeg : 2 ≤ f.natDegree) (x : ℝ)
+    (hxf : ¬ f.derivative.IsRoot x) (hxg : ¬ g.derivative.IsRoot x) :
+    ((f.derivative.roots.filter (x < ·)).card : ℤ) -
+        (g.derivative.roots.filter (x < ·)).card ≤ 1 ∧
+    ((g.derivative.roots.filter (x < ·)).card : ℤ) -
+        (f.derivative.roots.filter (x < ·)).card ≤ 1 :=
+  compatibleSuccDegreeRootCountAboveNonRoot_derivative
+    hcount hcomp hf_pos hg_pos hdeg hf_split hfdeg x hxf hxg
+
+/-- Challenge-facing derivative application of the compatible succ-degree
+root-count leaf, promoted to all thresholds. -/
+theorem compatibleSuccDegreeRootCountAboveDerivativePair
+    (hcount : compatibleSuccDegreeRootCountAboveNonRootTarget)
+    {f g : ℝ[X]} (hcomp : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) (hfdeg : 2 ≤ f.natDegree) (x : ℝ) :
+    ((f.derivative.roots.filter (x < ·)).card : ℤ) -
+        (g.derivative.roots.filter (x < ·)).card ≤ 1 ∧
+    ((g.derivative.roots.filter (x < ·)).card : ℤ) -
+        (f.derivative.roots.filter (x < ·)).card ≤ 1 :=
+  compatibleSuccDegreeRootCountAbove_derivative
+    hcount hcomp hf_pos hg_pos hdeg hf_split hfdeg x
+
 /-- Challenge-facing `Prec`-to-root-count bridge in upper-threshold form. -/
 theorem succDegreeRootCountAbovePair_of_prec
     {f g : ℝ[X]} (hprec : Prec f g)
@@ -1032,6 +1075,38 @@ theorem rootCountAboveDerivativeRevSubGeTwo_of_subGeThree
     2 ≤ ((g.derivative.roots.filter (x < ·)).card : ℤ) -
       (f.derivative.roots.filter (x < ·)).card :=
   rootCountAbove_derivative_rev_sub_ge_two_of_sub_ge_three hf hg hfdeg hgdeg hgap
+
+/-- Challenge-facing bridge: derivative induction rules out upper-count gaps
+of size at least three for compatible succ-degree pairs. -/
+theorem compatibleSuccDegreeRootCountAboveLeTwoPair_of_derivative
+    (hcount : compatibleSuccDegreeRootCountAboveNonRootTarget)
+    {f g : ℝ[X]} (hcomp : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) (hfdeg : 2 ≤ f.natDegree) (x : ℝ) :
+    ((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card ≤ 2 ∧
+    ((g.roots.filter (x < ·)).card : ℤ) -
+        (f.roots.filter (x < ·)).card ≤ 2 :=
+  compatibleSuccDegreeRootCountAbove_le_two_of_derivative
+    hcount hcomp hf_pos hg_pos hdeg hf_split hfdeg x
+
+/-- Challenge-facing positive-combination specialization of the gap-at-most-two
+derivative-induction bridge. -/
+theorem succDegreeRootCountAboveLeTwoPair_of_derivative
+    (hcount : compatibleSuccDegreeRootCountAboveNonRootTarget)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) (hfdeg : 2 ≤ f.natDegree) (x : ℝ) :
+    ((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card ≤ 2 ∧
+    ((g.roots.filter (x < ·)).card : ℤ) -
+        (f.roots.filter (x < ·)).card ≤ 2 :=
+  compatibleSuccDegreeRootCountAboveLeTwoPair_of_derivative hcount
+    (succDegreeCompatiblePair_of_posCombo hf_pos hg_pos hfg hdeg hf_split)
+    hf_pos hg_pos hdeg hf_split hfdeg x
 
 /-- Challenge-facing Rolle root-count bridge in lower-threshold form. -/
 theorem rootCountDerivativePair_of_splits
