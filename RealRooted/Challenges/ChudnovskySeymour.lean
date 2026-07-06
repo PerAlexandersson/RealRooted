@@ -942,6 +942,30 @@ theorem succDegreeRootCountTarget_of_orientation
     succDegreeRootCountTarget :=
   posComboNoCommonSuccDegreeRootCount_of_orientation horient
 
+/-- Challenge-facing bridge from the succ-degree positive-combination
+hypotheses to Chudnovsky--Seymour compatibility. -/
+theorem succDegreeCompatiblePair_of_posCombo
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) :
+    Compatible f g :=
+  Compatible.of_posComboRealRooted_succDegree hfg hf_pos hg_pos hdeg hf_split
+
+/-- Challenge-facing derivative compatibility bridge for the succ-degree
+positive-combination hypotheses. -/
+theorem succDegreeDerivativeCompatiblePair_of_posCombo
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) :
+    Compatible f.derivative g.derivative :=
+  (succDegreeCompatiblePair_of_posCombo hf_pos hg_pos hfg hdeg hf_split).derivative
+
 /-- Challenge-facing `Prec`-to-root-count bridge in upper-threshold form. -/
 theorem succDegreeRootCountAbovePair_of_prec
     {f g : ℝ[X]} (hprec : Prec f g)

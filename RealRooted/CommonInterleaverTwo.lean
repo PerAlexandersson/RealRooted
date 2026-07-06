@@ -322,6 +322,33 @@ lemma toPosComboRealRooted {f g : ℝ[X]} (h : Compatible f g)
     lia
   · lia
 
+/-- Strict positive-combination real-rootedness plus real-rooted endpoints
+upgrades to Chudnovsky--Seymour compatibility.
+
+The strictly positive quadrant is exactly the `PosComboRealRooted` hypothesis;
+the coordinate axes are supplied by the endpoint real-rootedness assumptions. -/
+lemma of_posComboRealRooted {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf : f ≠ 0 ∧ f.Splits)
+    (hg : g ≠ 0 ∧ g.Splits) :
+    Compatible f g := by
+  intro α β hα hβ
+  by_cases hα0 : α = 0
+  · subst hα0
+    by_cases hβ0 : β = 0
+    · subst hβ0
+      simp
+    · right
+      simpa using isRealRooted_C_mul hg.1 hg.2 hβ0
+  · by_cases hβ0 : β = 0
+    · subst hβ0
+      right
+      simpa using isRealRooted_C_mul hf.1 hf.2 hα0
+    · right
+      have hα_pos : 0 < α := lt_of_le_of_ne hα (Ne.symm hα0)
+      have hβ_pos : 0 < β := lt_of_le_of_ne hβ (Ne.symm hβ0)
+      exact hfg hα_pos hβ_pos
+
 /-- In equal degree, strict positive-combination real-rootedness upgrades to
 full nonnegative compatibility: the endpoint real-rootedness follows from the
 same-degree restricted converse, and the genuinely positive quadrant is exactly
@@ -331,21 +358,24 @@ lemma of_posComboRealRooted_sameDegree {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree = f.natDegree) :
-    Compatible f g := by
-  have hf : (f ≠ 0 ∧ f.Splits) :=
-    hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg
-  have hg : (g ≠ 0 ∧ g.Splits) :=
-    hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg
-  intro α β hα hβ
-  by_cases hα0 : α = 0
-  · subst hα0
-    by_cases hβ0 : β = 0 <;> simp_all
-  · by_cases hβ0 : β = 0
-    · simp_all
-    · right
-      have hα_pos : 0 < α := lt_of_le_of_ne hα (Ne.symm hα0)
-      have hβ_pos : 0 < β := lt_of_le_of_ne hβ (Ne.symm hβ0)
-      exact hfg hα_pos hβ_pos
+    Compatible f g :=
+  of_posComboRealRooted hfg
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg)
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg)
+
+/-- In the succ-degree #42 setting, strict positive-combination
+real-rootedness upgrades to full nonnegative compatibility once the left
+endpoint is known to split.  The right endpoint real-rootedness is supplied by
+the existing succ-degree endpoint theorem. -/
+lemma of_posComboRealRooted_succDegree {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_splits : f.Splits) :
+    Compatible f g :=
+  of_posComboRealRooted hfg ⟨hf_pos.ne_zero, hf_splits⟩
+    (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg)
 
 /-- A common left interleaver gives full nonnegative compatibility for a pair,
 not just the strictly positive `PosComboRealRooted` condition. -/
