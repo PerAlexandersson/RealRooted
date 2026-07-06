@@ -259,6 +259,16 @@ root-count leaf. -/
 abbrev compatibleSuccDegreeRootCountAboveNonRootTarget : Prop :=
   CompatibleSuccDegreeRootCountAboveNonRootStatement
 
+/-- Compatible-pair gap-at-most-two version of the succ-degree common-non-root
+upper root-count leaf. -/
+abbrev compatibleSuccDegreeRootCountAboveLeTwoTarget : Prop :=
+  CompatibleSuccDegreeRootCountAboveLeTwoStatement
+
+/-- Exact gap-two obstruction for the compatible succ-degree common-non-root
+upper root-count leaf. -/
+abbrev compatibleSuccDegreeRootCountAboveNoGapTwoTarget : Prop :=
+  CompatibleSuccDegreeRootCountAboveNoGapTwoStatement
+
 /-- Succ-degree lower-threshold root-count subtarget restricted to common
 non-root thresholds. -/
 abbrev succDegreeRootCountNonRootTarget : Prop :=
@@ -977,6 +987,14 @@ theorem succDegreeRootCountAboveNonRootTarget_of_compatible
     (hcount : compatibleSuccDegreeRootCountAboveNonRootTarget) :
     succDegreeRootCountAboveNonRootTarget :=
   posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_compatible hcount
+
+/-- Challenge-facing reduction from the compatible gap-at-most-two theorem and
+the exact gap-two obstruction to the compatible root-count leaf. -/
+theorem compatibleSuccDegreeRootCountAboveNonRootTarget_of_leTwo_of_noGapTwo
+    (hle2 : compatibleSuccDegreeRootCountAboveLeTwoTarget)
+    (hgap : compatibleSuccDegreeRootCountAboveNoGapTwoTarget) :
+    compatibleSuccDegreeRootCountAboveNonRootTarget :=
+  compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_noGapTwo hle2 hgap
 
 /-- Challenge-facing derivative application of the compatible succ-degree
 root-count leaf. -/

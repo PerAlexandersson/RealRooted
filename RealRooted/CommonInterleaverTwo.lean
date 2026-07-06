@@ -3312,6 +3312,51 @@ def CompatibleSuccDegreeRootCountAboveNonRootStatement : Prop :=
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1
 
+/-- Compatible-pair gap-at-most-two version of the succ-degree
+common-non-root upper root-count leaf. -/
+def CompatibleSuccDegreeRootCountAboveLeTwoStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    Compatible f g →
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    g.natDegree = f.natDegree + 1 →
+    f.Splits →
+    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 2 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 2
+
+/-- Exact gap-two obstruction for the compatible succ-degree common-non-root
+upper root-count leaf. -/
+def CompatibleSuccDegreeRootCountAboveNoGapTwoStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    Compatible f g →
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    g.natDegree = f.natDegree + 1 →
+    f.Splits →
+    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2
+
+private lemma int_le_one_of_le_two_ne_two {z : ℤ} (hzle : z ≤ 2) (hzne : z ≠ 2) :
+    z ≤ 1 := by
+  have hzlt : z < 2 := lt_of_le_of_ne hzle hzne
+  exact Int.lt_add_one_iff.mp (by simpa using hzlt)
+
+/-- A gap-at-most-two theorem plus exclusion of exact gap two gives the full
+compatible succ-degree common-non-root upper root-count leaf. -/
+theorem compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_noGapTwo
+    (hle2 : CompatibleSuccDegreeRootCountAboveLeTwoStatement)
+    (hgap : CompatibleSuccDegreeRootCountAboveNoGapTwoStatement) :
+    CompatibleSuccDegreeRootCountAboveNonRootStatement := by
+  intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
+  obtain ⟨hfg_le2, hgf_le2⟩ :=
+    hle2 hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
+  obtain ⟨hfg_ne2, hgf_ne2⟩ :=
+    hgap hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
+  exact ⟨int_le_one_of_le_two_ne_two hfg_le2 hfg_ne2,
+    int_le_one_of_le_two_ne_two hgf_le2 hgf_ne2⟩
+
 /-- The compatible CS 3.4 root-count leaf implies the #42 positive-combo
 succ-degree root-count leaf. -/
 theorem posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_compatible
