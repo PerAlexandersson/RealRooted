@@ -426,6 +426,59 @@ lemma of_commonInterleaver {f g h : ℝ[X]}
 
 end Compatible
 
+/-- In the succ-degree positive-leading setting, the derivative of every
+closed-segment member is nonzero as soon as the lower-degree endpoint has
+positive degree.
+
+For `β > 0`, the `g.derivative` term has strictly larger degree than the
+`f.derivative` term; for `β = 0`, this is just nonvanishing of
+`f.derivative`. -/
+theorem succDegree_closedSegment_derivative_ne_zero
+    {f g : ℝ[X]}
+    (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hfdeg : f.natDegree ≠ 0)
+    {β : ℝ} (hβ0 : 0 ≤ β) :
+    C (1 - β) * f.derivative + C β * g.derivative ≠ 0 := by
+  rcases lt_or_eq_of_le hβ0 with hβ_pos | hβ_zero
+  · have hleft_lt :
+        (C (1 - β) * f.derivative).natDegree <
+          (C β * g.derivative).natDegree := by
+      have hleft_le :
+          (C (1 - β) * f.derivative).natDegree ≤ f.derivative.natDegree :=
+        Polynomial.natDegree_C_mul_le _ _
+      have hf'_deg : f.derivative.natDegree = f.natDegree - 1 :=
+        f.natDegree_derivative
+      have hright_deg :
+          (C β * g.derivative).natDegree = g.derivative.natDegree := by
+        rw [Polynomial.natDegree_C_mul hβ_pos.ne']
+      have hg'_deg : g.derivative.natDegree = g.natDegree - 1 :=
+        g.natDegree_derivative
+      rw [hright_deg, hg'_deg, hdeg]
+      lia
+    have hg'_pos : HasPosLeadingCoeff g.derivative :=
+      hg_pos.derivative (by rw [hdeg]; lia)
+    have hright_pos : HasPosLeadingCoeff (C β * g.derivative) :=
+      hasPosLeadingCoeff_C_mul hβ_pos hg'_pos
+    exact (hasPosLeadingCoeff_add_of_natDegree_lt_right hleft_lt hright_pos).ne_zero
+  · subst hβ_zero
+    simpa using (Polynomial.derivative_ne_zero.mpr hfdeg)
+
+/-- In the succ-degree positive-leading setting, derivative closed-segment
+members inherit splitting from the original closed segment. -/
+theorem succDegree_closedSegment_derivative_splits
+    {f g : ℝ[X]}
+    (hseg : ∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+      ((C (1 - β) * f + C β * g) ≠ 0 ∧
+        (C (1 - β) * f + C β * g).Splits))
+    (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hfdeg : f.natDegree ≠ 0)
+    {β : ℝ} (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1) :
+    (C (1 - β) * f.derivative + C β * g.derivative).Splits :=
+  closedSegment_derivative_splits_of_ne hseg hβ0 hβ1
+    (succDegree_closedSegment_derivative_ne_zero hg_pos hdeg hfdeg hβ0)
+
 namespace PosComboRealRooted
 
 lemma comp_X_add_C {f g : ℝ[X]} (h : PosComboRealRooted f g) (r : ℝ) :
