@@ -4261,6 +4261,66 @@ theorem succDegree_closedSegment_not_isRoot_of_rev_roots_gt_count_sub_eq_two
     succDegree_eval_mul_pos_of_rev_roots_gt_count_sub_eq_two
       hf_pos hg_pos hfg hdeg hf_split hxf hxg hcount
 
+/-- Compatible-pair version of the forward gap-two endpoint-sign lemma. -/
+theorem compatibleSuccDegree_eval_mul_pos_of_roots_gt_count_sub_eq_two
+    {f g : ℝ[X]}
+    (hcomp : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
+    (hcount : ((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card = 2) :
+    0 < f.eval x * g.eval x :=
+  succDegree_eval_mul_pos_of_roots_gt_count_sub_eq_two
+    hf_pos hg_pos (hcomp.toPosComboRealRooted hf_pos hg_pos)
+    hdeg hf_split hxf hxg hcount
+
+/-- Compatible-pair version of the reverse gap-two endpoint-sign lemma. -/
+theorem compatibleSuccDegree_eval_mul_pos_of_rev_roots_gt_count_sub_eq_two
+    {f g : ℝ[X]}
+    (hcomp : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
+    (hcount : ((g.roots.filter (x < ·)).card : ℤ) -
+        (f.roots.filter (x < ·)).card = 2) :
+    0 < f.eval x * g.eval x :=
+  succDegree_eval_mul_pos_of_rev_roots_gt_count_sub_eq_two
+    hf_pos hg_pos (hcomp.toPosComboRealRooted hf_pos hg_pos)
+    hdeg hf_split hxf hxg hcount
+
+/-- Compatible-pair version of the forward gap-two closed-segment
+nonvanishing lemma. -/
+theorem compatibleSuccDegree_closedSegment_not_isRoot_of_roots_gt_count_sub_eq_two
+    {f g : ℝ[X]}
+    (hcomp : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) {β x : ℝ} (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1)
+    (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
+    (hcount : ((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card = 2) :
+    ¬ (C (1 - β) * f + C β * g).IsRoot x :=
+  succDegree_closedSegment_not_isRoot_of_roots_gt_count_sub_eq_two
+    hf_pos hg_pos (hcomp.toPosComboRealRooted hf_pos hg_pos)
+    hdeg hf_split hβ0 hβ1 hxf hxg hcount
+
+/-- Compatible-pair version of the reverse gap-two closed-segment
+nonvanishing lemma. -/
+theorem compatibleSuccDegree_closedSegment_not_isRoot_of_rev_roots_gt_count_sub_eq_two
+    {f g : ℝ[X]}
+    (hcomp : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) {β x : ℝ} (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1)
+    (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
+    (hcount : ((g.roots.filter (x < ·)).card : ℤ) -
+        (f.roots.filter (x < ·)).card = 2) :
+    ¬ (C (1 - β) * f + C β * g).IsRoot x :=
+  succDegree_closedSegment_not_isRoot_of_rev_roots_gt_count_sub_eq_two
+    hf_pos hg_pos (hcomp.toPosComboRealRooted hf_pos hg_pos)
+    hdeg hf_split hβ0 hβ1 hxf hxg hcount
+
 /-- Succ-degree right-pencil parity bridge for lower root counts. Since `g` has
 one more root than `f`, the lower root-count difference has even parity exactly
 when the right pencil crosses zero at the threshold. -/

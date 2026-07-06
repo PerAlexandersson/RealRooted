@@ -1307,6 +1307,64 @@ theorem succDegreeRootCountAbove_closedSegmentNotRoot_of_reverseGapTwo
   succDegree_closedSegment_not_isRoot_of_rev_roots_gt_count_sub_eq_two
     hf_pos hg_pos hfg hdeg hf_split hβ0 hβ1 hxf hxg hcount
 
+/-- Challenge-facing compatible endpoint-sign consequence for a forward
+succ-degree upper root-count gap of two. -/
+theorem compatibleSuccDegreeRootCountAbove_eval_mul_pos_of_gapTwo
+    {f g : ℝ[X]}
+    (hcomp : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
+    (hcount : ((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card = 2) :
+    0 < f.eval x * g.eval x :=
+  compatibleSuccDegree_eval_mul_pos_of_roots_gt_count_sub_eq_two
+    hcomp hf_pos hg_pos hdeg hf_split hxf hxg hcount
+
+/-- Challenge-facing compatible endpoint-sign consequence for a reverse
+succ-degree upper root-count gap of two. -/
+theorem compatibleSuccDegreeRootCountAbove_eval_mul_pos_of_reverseGapTwo
+    {f g : ℝ[X]}
+    (hcomp : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
+    (hcount : ((g.roots.filter (x < ·)).card : ℤ) -
+        (f.roots.filter (x < ·)).card = 2) :
+    0 < f.eval x * g.eval x :=
+  compatibleSuccDegree_eval_mul_pos_of_rev_roots_gt_count_sub_eq_two
+    hcomp hf_pos hg_pos hdeg hf_split hxf hxg hcount
+
+/-- Challenge-facing compatible closed-segment nonvanishing consequence of a
+forward upper root-count gap of two. -/
+theorem compatibleSuccDegreeRootCountAbove_closedSegmentNotRoot_of_gapTwo
+    {f g : ℝ[X]}
+    (hcomp : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) {β x : ℝ} (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1)
+    (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
+    (hcount : ((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card = 2) :
+    ¬ (C (1 - β) * f + C β * g).IsRoot x :=
+  compatibleSuccDegree_closedSegment_not_isRoot_of_roots_gt_count_sub_eq_two
+    hcomp hf_pos hg_pos hdeg hf_split hβ0 hβ1 hxf hxg hcount
+
+/-- Challenge-facing compatible closed-segment nonvanishing consequence of a
+reverse upper root-count gap of two. -/
+theorem compatibleSuccDegreeRootCountAbove_closedSegmentNotRoot_of_reverseGapTwo
+    {f g : ℝ[X]}
+    (hcomp : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) {β x : ℝ} (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1)
+    (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
+    (hcount : ((g.roots.filter (x < ·)).card : ℤ) -
+        (f.roots.filter (x < ·)).card = 2) :
+    ¬ (C (1 - β) * f + C β * g).IsRoot x :=
+  compatibleSuccDegree_closedSegment_not_isRoot_of_rev_roots_gt_count_sub_eq_two
+    hcomp hf_pos hg_pos hdeg hf_split hβ0 hβ1 hxf hxg hcount
+
 /-- Challenge-facing right-pencil parity bridge for succ-degree lower root
 counts. -/
 theorem succDegreeRootCount_evenDiff_iff_pencilCrossing
