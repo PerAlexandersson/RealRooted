@@ -950,6 +950,16 @@ theorem succDegreeRootCountAbovePair_of_prec
     ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 :=
   succDegreeRootCountAbove_of_prec hprec hdeg x
 
+/-- Challenge-facing oriented `Prec`-to-root-count bridge in upper-threshold
+form. -/
+theorem succDegreeRootCountAboveOrientedPair_of_prec
+    {f g : ℝ[X]} (hprec : Prec f g)
+    (hdeg : g.natDegree = f.natDegree + 1) (x : ℝ) :
+    ((f.roots.filter (x < ·)).card : ℤ) ≤ (g.roots.filter (x < ·)).card ∧
+    ((g.roots.filter (x < ·)).card : ℤ) ≤
+      (f.roots.filter (x < ·)).card + 1 :=
+  succDegreeRootCountAboveOriented_of_prec hprec hdeg x
+
 /-- Challenge-facing `Prec`-to-root-count bridge in lower-threshold form. -/
 theorem succDegreeRootCountPair_of_prec
     {f g : ℝ[X]} (hprec : Prec f g)
@@ -966,6 +976,38 @@ theorem rootCountAboveDerivativePair_of_splits
     ((p.roots.filter (x < ·)).card : ℤ) -
         (p.derivative.roots.filter (x < ·)).card ≤ 1 :=
   rootCountAbove_derivative_diff_le_one_of_splits hp hdeg x
+
+/-- Challenge-facing oriented Rolle root-count bridge in upper-threshold
+form. -/
+theorem rootCountAboveDerivativeOrientedPair_of_splits
+    {p : ℝ[X]} (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) (x : ℝ) :
+    ((p.derivative.roots.filter (x < ·)).card : ℤ) ≤
+        (p.roots.filter (x < ·)).card ∧
+    ((p.roots.filter (x < ·)).card : ℤ) ≤
+        (p.derivative.roots.filter (x < ·)).card + 1 :=
+  rootCountAbove_derivative_oriented_of_splits hp hdeg x
+
+/-- Challenge-facing forward derivative gap propagation for upper root
+counts. -/
+theorem rootCountAboveDerivativeSubGeTwo_of_subGeThree
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hfdeg : 2 ≤ f.natDegree) (hgdeg : 2 ≤ g.natDegree) {x : ℝ}
+    (hgap : 3 ≤ ((f.roots.filter (x < ·)).card : ℤ) -
+      (g.roots.filter (x < ·)).card) :
+    2 ≤ ((f.derivative.roots.filter (x < ·)).card : ℤ) -
+      (g.derivative.roots.filter (x < ·)).card :=
+  rootCountAbove_derivative_sub_ge_two_of_sub_ge_three hf hg hfdeg hgdeg hgap
+
+/-- Challenge-facing reverse derivative gap propagation for upper root
+counts. -/
+theorem rootCountAboveDerivativeRevSubGeTwo_of_subGeThree
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hfdeg : 2 ≤ f.natDegree) (hgdeg : 2 ≤ g.natDegree) {x : ℝ}
+    (hgap : 3 ≤ ((g.roots.filter (x < ·)).card : ℤ) -
+      (f.roots.filter (x < ·)).card) :
+    2 ≤ ((g.derivative.roots.filter (x < ·)).card : ℤ) -
+      (f.derivative.roots.filter (x < ·)).card :=
+  rootCountAbove_derivative_rev_sub_ge_two_of_sub_ge_three hf hg hfdeg hgdeg hgap
 
 /-- Challenge-facing Rolle root-count bridge in lower-threshold form. -/
 theorem rootCountDerivativePair_of_splits

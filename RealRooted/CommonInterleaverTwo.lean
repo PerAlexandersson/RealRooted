@@ -3317,6 +3317,33 @@ theorem sameDegreeRootCountAbove_oriented_iff_rootCount_oriented_pointwise
   have hdegZ : (g.natDegree : ℤ) = f.natDegree := by exact_mod_cast hdeg
   constructor <;> · rintro ⟨h1, h2⟩; constructor <;> lia
 
+/-- Succ-degree oriented root counts: the lower-threshold comparison is
+equivalent to the same upper-threshold comparison.
+
+The extra degree of `g` appears on both sides of the complement calculation, so
+the orientation is unchanged when passing from roots at or below the threshold
+to roots strictly above it. -/
+theorem succDegreeRootCountAbove_oriented_iff_rootCount_oriented_pointwise
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hdeg : g.natDegree = f.natDegree + 1) (x : ℝ) :
+    (((f.roots.filter (x < ·)).card : ℤ) ≤ (g.roots.filter (x < ·)).card ∧
+        ((g.roots.filter (x < ·)).card : ℤ) ≤
+          (f.roots.filter (x < ·)).card + 1)
+      ↔
+    (((f.roots.filter (· ≤ x)).card : ℤ) ≤ (g.roots.filter (· ≤ x)).card ∧
+        ((g.roots.filter (· ≤ x)).card : ℤ) ≤
+          (f.roots.filter (· ≤ x)).card + 1) := by
+  have hfpart := card_roots_filter_gt_add_le_of_splits hf x
+  have hgpart := card_roots_filter_gt_add_le_of_splits hg x
+  have hfpartZ :
+      ((f.roots.filter (x < ·)).card : ℤ) + (f.roots.filter (· ≤ x)).card =
+        f.natDegree := by exact_mod_cast hfpart
+  have hgpartZ :
+      ((g.roots.filter (x < ·)).card : ℤ) + (g.roots.filter (· ≤ x)).card =
+        g.natDegree := by exact_mod_cast hgpart
+  have hdegZ : (g.natDegree : ℤ) = (f.natDegree : ℤ) + 1 := by exact_mod_cast hdeg
+  constructor <;> · rintro ⟨h1, h2⟩; constructor <;> lia
+
 /-- Common-non-root version of the succ-degree lower root-count formulation. -/
 def PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement : Prop :=
   ∀ ⦃f g : ℝ[X]⦄,
@@ -3755,6 +3782,66 @@ theorem succDegreeRootCountLowerOriented_of_prec
     rw [← hrs_eq, Multiset.filter_coe, Multiset.coe_card]
   rw [hpcard, hqcard]
   constructor <;> lia
+
+/-- Tight oriented upper-threshold `Prec`-to-root-count bridge for the
+differ-by-one case.
+
+If `p ≺ q` and `q` has one more root than `p`, then every upper threshold
+contains at least as many roots of `q` as roots of `p`, but at most one more. -/
+theorem succDegreeRootCountAboveOriented_of_prec
+    {p q : ℝ[X]} (hprec : Prec p q)
+    (hdeg : q.natDegree = p.natDegree + 1) :
+    ∀ x : ℝ,
+      ((p.roots.filter (x < ·)).card : ℤ) ≤ (q.roots.filter (x < ·)).card ∧
+      ((q.roots.filter (x < ·)).card : ℤ) ≤
+        (p.roots.filter (x < ·)).card + 1 := fun x =>
+  (succDegreeRootCountAbove_oriented_iff_rootCount_oriented_pointwise
+    hprec.1.2 hprec.2.1.2 hdeg x).mpr
+    (succDegreeRootCountLowerOriented_of_prec hprec hdeg x)
+
+/-- Oriented Rolle root-count bound in upper-threshold form. -/
+theorem rootCountAbove_derivative_oriented_of_splits
+    {p : ℝ[X]} (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) :
+    ∀ x : ℝ,
+      ((p.derivative.roots.filter (x < ·)).card : ℤ) ≤
+        (p.roots.filter (x < ·)).card ∧
+      ((p.roots.filter (x < ·)).card : ℤ) ≤
+        (p.derivative.roots.filter (x < ·)).card + 1 := by
+  have hprec : Prec p.derivative p := (derivative_interlaces hp hdeg).toPrec
+  have hdeg' : p.natDegree = p.derivative.natDegree + 1 := by
+    rw [p.natDegree_derivative]
+    lia
+  exact succDegreeRootCountAboveOriented_of_prec hprec hdeg'
+
+/-- A forward upper-count gap of at least three propagates to a derivative gap
+of at least two. -/
+theorem rootCountAbove_derivative_sub_ge_two_of_sub_ge_three
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hfdeg : 2 ≤ f.natDegree) (hgdeg : 2 ≤ g.natDegree) {x : ℝ}
+    (hgap : 3 ≤ ((f.roots.filter (x < ·)).card : ℤ) -
+      (g.roots.filter (x < ·)).card) :
+    2 ≤ ((f.derivative.roots.filter (x < ·)).card : ℤ) -
+      (g.derivative.roots.filter (x < ·)).card := by
+  obtain ⟨_hf_le, hf_back⟩ :=
+    rootCountAbove_derivative_oriented_of_splits hf hfdeg x
+  obtain ⟨hg_forw, _hg_back⟩ :=
+    rootCountAbove_derivative_oriented_of_splits hg hgdeg x
+  lia
+
+/-- A reverse upper-count gap of at least three propagates to a derivative gap
+of at least two. -/
+theorem rootCountAbove_derivative_rev_sub_ge_two_of_sub_ge_three
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hfdeg : 2 ≤ f.natDegree) (hgdeg : 2 ≤ g.natDegree) {x : ℝ}
+    (hgap : 3 ≤ ((g.roots.filter (x < ·)).card : ℤ) -
+      (f.roots.filter (x < ·)).card) :
+    2 ≤ ((g.derivative.roots.filter (x < ·)).card : ℤ) -
+      (f.derivative.roots.filter (x < ·)).card := by
+  obtain ⟨_hg_le, hg_back⟩ :=
+    rootCountAbove_derivative_oriented_of_splits hg hgdeg x
+  obtain ⟨hf_forw, _hf_back⟩ :=
+    rootCountAbove_derivative_oriented_of_splits hf hfdeg x
+  lia
 
 /-- Oriented same-degree `Prec`-to-root-count bridge in lower-threshold form.
 
