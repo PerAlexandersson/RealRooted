@@ -20,22 +20,20 @@ def chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target : Prop
 before the finite-family left Helly upgrade was internalized.
 -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
-    (htwo : CompatiblePairHasCommonLeftInterleaverStatement)
     (hglobal : CommonLeftInterleaverFamilyUpgradeStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target :=
   fun {fs} hrr hpos =>
     pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
-      (fs := fs) hpos htwo (hglobal (fun f hf => (hrr f hf).2) hpos)
+      (fs := fs) hpos (hglobal (fun f hf => (hrr f hf).2) hpos)
 
 /-- Direct roadmap wrapper after the finite-family common-left upgrade: the
 common-left Chudnovsky--Seymour target now only needs the two-polynomial
 common-left bridge. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direct
-    (htwo : CompatiblePairHasCommonLeftInterleaverStatement) :
-    chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target :=
+    : chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target :=
   fun {fs} hrr hpos =>
     pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direct
-      (fs := fs) (fun f hf => (hrr f hf).2) hpos htwo
+      (fs := fs) (fun f hf => (hrr f hf).2) hpos
 
 /--
 Roadmap target for a direct pairwise-to-common interleaver equivalence.

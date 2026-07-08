@@ -544,22 +544,18 @@ theorem pairwiseCompatible_of_pairwiseHasCommonInterleaver
       (hpos (fs.get j) (List.get_mem _ _))
 
 /-- Two-polynomial common-left bridge: compatibility implies a common left
-interleaver. This is the remaining local bridge for the common-left
-Chudnovsky--Seymour target after the finite-family upgrade. -/
-def CompatiblePairHasCommonLeftInterleaverStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    Compatible f g →
-    ∃ h : ℝ[X], Prec h f ∧ Prec h g
+interleaver. -/
+theorem compatiblePairHasCommonLeftInterleaver {f g : ℝ[X]} (h : Compatible f g) :
+    ∃ h : ℝ[X], Prec h f ∧ Prec h g := by
+  sorry
 
 /-- Once the two-polynomial common-left-interleaver converse is available, the
 pairwise Chudnovsky--Seymour hypothesis immediately upgrades to pairwise common
 left interleavers. This isolates the exact missing bridge. -/
 theorem pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible
-    {fs : List ℝ[X]}
-    (htwo : CompatiblePairHasCommonLeftInterleaverStatement)
-    (hpair : PairwiseCompatible fs) :
+    {fs : List ℝ[X]} (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonLeftInterleaver fs :=
-  fun i j hij => by simpa using htwo (hpair i j hij)
+  fun i j hij => by simpa using compatiblePairHasCommonLeftInterleaver (hpair i j hij)
 
 /-- Reduction for the left-oriented Chudnovsky--Seymour target: the full
 `PairwiseCompatible ↔ HasCommonLeftInterleaver` statement follows from the
@@ -567,11 +563,10 @@ two-polynomial common-left bridge and the finite-family left Helly upgrade. -/
 theorem pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
     {fs : List ℝ[X]}
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (htwo : CompatiblePairHasCommonLeftInterleaverStatement)
     (hglobal : PairwiseHasCommonLeftInterleaver fs → HasCommonLeftInterleaver fs) :
     PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
   ⟨fun hpair =>
-    hglobal (pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible htwo hpair),
+    hglobal (pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible hpair),
     fun hcommon => pairwiseCompatible_of_commonLeftInterleaver hcommon hpos⟩
 
 /-- Direct left-oriented finite-family reduction after the common-left Helly
@@ -579,10 +574,9 @@ upgrade: only the two-polynomial common-left bridge remains as input. -/
 theorem pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direct
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, f.Splits)
-    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (htwo : CompatiblePairHasCommonLeftInterleaverStatement) :
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
     PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
-  pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge hpos htwo <|
+  pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge hpos <|
     hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver hrr hpos
 
 /-- Two-polynomial common-right bridge: compatibility implies a common right

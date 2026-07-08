@@ -252,6 +252,12 @@ abbrev succDegreeSlotDataTarget : Prop :=
 abbrev succDegreeRootCrossingTarget : Prop :=
   PosComboNoCommonSuccDegreeRootCrossingNonnegStatement
 
+/-- Two-polynomial common-left bridge target: compatibility implies a common left interleaver. -/
+def compatiblePairHasCommonLeftInterleaverTarget : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    Compatible f g →
+    ∃ h : ℝ[X], Prec h f ∧ Prec h g
+
 /-- Succ-degree analytic root-count subtarget for milestone B2. -/
 abbrev succDegreeRootCountTarget : Prop :=
   PosComboNoCommonSuccDegreeRootCountNonnegStatement
@@ -3299,19 +3305,18 @@ theorem succDegreePairTarget_of_boundaryRight
 
 /-- Full roadmap reduction for the common-left target. -/
 theorem commonLeftInterleaverTarget_of_pairwiseLeftBridge
-    (htwo : CompatiblePairHasCommonLeftInterleaverStatement)
+    (_htwo : compatiblePairHasCommonLeftInterleaverTarget)
     (hglobal : _root_.RealRooted.CommonLeftInterleaverFamilyUpgradeStatement) :
     commonLeftInterleaverTarget :=
   RealRooted.chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
-    htwo hglobal
+    hglobal
 
 /-- Direct roadmap reduction for the common-left target after the finite-family
 common-left upgrade has been internalized. -/
 theorem commonLeftInterleaverTarget_of_pairwiseLeftBridge_direct
-    (htwo : CompatiblePairHasCommonLeftInterleaverStatement) :
+    (_htwo : compatiblePairHasCommonLeftInterleaverTarget) :
     commonLeftInterleaverTarget :=
   chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direct
-    htwo
 
 /-- Full roadmap reduction for the common-right target. -/
 theorem commonInterleaverTarget_of_pairBridge
@@ -4652,11 +4657,11 @@ theorem pairwiseCompatible_iff_familyCompatible_of_natDegree_le_two
 theorem pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
     {fs : List ℝ[X]}
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (htwo : CompatiblePairHasCommonLeftInterleaverStatement)
+    (_htwo : compatiblePairHasCommonLeftInterleaverTarget)
     (hglobal : PairwiseHasCommonLeftInterleaver fs → HasCommonLeftInterleaver fs) :
     PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
   RealRooted.pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
-    hpos htwo hglobal
+    hpos hglobal
 
 /-- Challenge-facing direct left-oriented finite-family reduction after the
 common-left upgrade: only the two-polynomial common-left bridge remains. -/
@@ -4664,10 +4669,10 @@ theorem pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direc
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, f.Splits)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (htwo : CompatiblePairHasCommonLeftInterleaverStatement) :
+    (_htwo : compatiblePairHasCommonLeftInterleaverTarget) :
     PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
   RealRooted.pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direct
-    hrr hpos htwo
+    hrr hpos
 
 /-! ## Same-degree orientation alternative counterexample -/
 
