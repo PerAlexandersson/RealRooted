@@ -1,4 +1,6 @@
+import RealRooted.ClosedSegmentCountEqFromAnalytic
 import RealRooted.CommonInterleaverTwo
+import RealRooted.SameDegreeCountFromAnalytic
 
 noncomputable section
 
@@ -551,6 +553,29 @@ theorem
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_fourWay_nonneg
     (chudnovskySeymour_fourWay_of_pairDegreeSplit_nonneg hsame hsucc)
+
+/-- The proved #41 same-degree endpoint and #42 successor-degree endpoint close
+the nonnegative-coefficient four-way Chudnovsky--Seymour package. -/
+theorem chudnovskySeymour_fourWay_nonnegCoeffs :
+    chudnovskySeymour_fourWay_nonnegCoeffs_target :=
+  chudnovskySeymour_fourWay_of_pairDegreeSplit_nonneg
+    posComboNoCommonSameDegreePairHasCommonInterleaverNonneg_from_analytic
+    succDegreePairHasCommonInterleaver_nonneg_of_local_lower_counts
+
+/-- The proved #41 same-degree endpoint and #42 successor-degree endpoint close
+the nonnegative-coefficient pairwise/common-interleaver form of
+Chudnovsky--Seymour. -/
+theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs :
+    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
+  chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_fourWay_nonneg
+    chudnovskySeymour_fourWay_nonnegCoeffs
+
+/-- The nonnegative-coefficient finite-family compatibility form follows from
+the proved #41/#42 endpoint package. -/
+theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs :
+    chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
+  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_fourWay_nonneg
+    chudnovskySeymour_fourWay_nonnegCoeffs
 
 /-- The nonnegative four-way package target follows from the honest same-degree
 orientation alternative and successor-degree bridge. -/
