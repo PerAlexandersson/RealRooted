@@ -79,6 +79,7 @@ import RealRooted.ProductFamily
 import RealRooted.RootContinuity
 import RealRooted.SameDegreeMultiplicityLowerCount
 import RealRooted.PositiveParameterLocalLowerCount
+import RealRooted.SameDegreeCountFromAnalytic
 import RealRooted.RowThreshold
 import RealRooted.StaircaseSum
 import RealRooted.DegreeIncreasingLocalLowerCount
