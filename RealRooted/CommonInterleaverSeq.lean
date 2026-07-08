@@ -2691,6 +2691,39 @@ private lemma pairwise_ge_of_rootSlot_points
       (by simpa using hj_slot)
       hxi hxj
 
+private lemma pairwise_ge_of_shifted_rootSlot_points
+    {f : ℝ[X]} (hf : f.Splits) {n : ℕ} (hn : n = f.natDegree)
+    (x : Fin n → ℝ)
+    (hslot : ∀ j (hj : j < n),
+      x ⟨j, hj⟩ ∈ rootSlotInterval (rootSeqDesc f)
+        ⟨j + 1, by
+          have : j < f.natDegree := by simpa [hn] using hj
+          simpa [rootSeqDesc_length hf] using Nat.succ_lt_succ this⟩) :
+    (List.ofFn x).Pairwise (· ≥ ·) := by
+  refine List.pairwise_ofFn.2 ?_
+  intro i j hij
+  have hroot_ne : rootSeqDesc f ≠ [] :=
+    rootSeqDesc_ne_nil_of_natDegree_pos hf (by lia)
+  have hi_slot : i.1 + 1 < (rootSeqDesc f).length + 1 := by
+    have : i.1 < f.natDegree := by simpa [hn] using i.2
+    simpa [rootSeqDesc_length hf] using Nat.succ_lt_succ this
+  have hj_slot : j.1 + 1 < (rootSeqDesc f).length + 1 := by
+    have : j.1 < f.natDegree := by simpa [hn] using j.2
+    simpa [rootSeqDesc_length hf] using Nat.succ_lt_succ this
+  have hxi : x i ∈ rootSlotInterval (rootSeqDesc f) ⟨i.1 + 1, hi_slot⟩ := by
+    simpa using hslot i.1 i.2
+  have hxj : x j ∈ rootSlotInterval (rootSeqDesc f) ⟨j.1 + 1, hj_slot⟩ := by
+    simpa using hslot j.1 j.2
+  exact
+    le_of_mem_rootSlotInterval_of_lt
+      (rs := rootSeqDesc f)
+      hroot_ne
+      rootSeqDesc_pairwise
+      (i := i.1 + 1) (j := j.1 + 1)
+      (by lia)
+      (by simpa using hj_slot)
+      hxi hxj
+
 /-- In a `Prec` witness, the `j`th descending root of the right polynomial lies
 in the `j`th admissible slot of the left polynomial. -/
 theorem mem_rootSlotInterval_of_prec_desc
@@ -2796,6 +2829,49 @@ theorem pairHasCommonInterleaver_of_slotIntersections
         (fun j hj => by
           have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hj))).2
           simpa [x] using hraw)
+
+/-- Matching nonempty shifted root-slot intersections for two close-degree
+real-rooted polynomials produce a common left interleaver.  This is the
+left-oriented analogue of `pairHasCommonInterleaver_of_slotIntersections`. -/
+theorem pairHasCommonLeftInterleaver_of_shiftedSlotIntersections
+    {f g : ℝ[X]} (hf₀ : f ≠ 0) (hg₀ : g ≠ 0) (hf : f.Splits) (hg : g.Splits)
+    (hdeg_lo : f.natDegree ≤ g.natDegree)
+    (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
+    (hslot :
+      ∀ j (hj : j < f.natDegree),
+        (rootSlotInterval (rootSeqDesc f)
+            ⟨j + 1, by simpa [rootSeqDesc_length hf] using Nat.succ_lt_succ hj⟩ ∩
+          rootSlotInterval (rootSeqDesc g)
+            ⟨j + 1, by
+              have : j < g.natDegree := lt_of_lt_of_le hj hdeg_lo
+              simpa [rootSeqDesc_length hg] using Nat.succ_lt_succ this⟩).Nonempty) :
+    ∃ h : ℝ[X], Prec h f ∧ Prec h g := by
+  classical
+  let n : ℕ := f.natDegree
+  let x : Fin n → ℝ := fun j =>
+    Classical.choose (hslot j.1 (by exact j.2))
+  let xs : List ℝ := List.ofFn x
+  have hxs_pair : xs.Pairwise (· ≥ ·) := by
+    refine pairwise_ge_of_shifted_rootSlot_points hf (n := n) (by simp [n]) x ?_
+    intro j hj
+    have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hj))).1
+    simpa [x] using hraw
+  let h : ℝ[X] := polyOfDescRootsDesc xs
+  refine ⟨h, ?_, ?_⟩
+  · simpa [h, xs] using
+      prec_left_of_shifted_slots_polyOfDescRootsDesc hf₀ hf hxs_pair
+        (by simp [xs, n]) (by simp [xs, n])
+        (fun j hj => by
+          have hjf : j < f.natDegree := by simpa [xs, n] using hj
+          have hraw := (Classical.choose_spec (hslot j hjf)).1
+          simpa [x, xs] using hraw)
+  · simpa [h, xs] using
+      prec_left_of_shifted_slots_polyOfDescRootsDesc hg₀ hg hxs_pair
+        (by simpa [xs, n] using hdeg_lo) (by simpa [xs, n] using hdeg_hi)
+        (fun j hj => by
+          have hjf : j < f.natDegree := by simpa [xs, n] using hj
+          have hraw := (Classical.choose_spec (hslot j hjf)).2
+          simpa [x, xs] using hraw)
 
 /-- Matching nonempty root-slot intersections for two same-degree real-rooted
 polynomials produce a common right interleaver.  This isolates the constructive
