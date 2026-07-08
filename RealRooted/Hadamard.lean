@@ -3,6 +3,10 @@ import RealRooted.MultiplierSequence
 import RealRooted.VeroneseSection
 import RealRooted.HurwitzMatrix
 import RealRooted.Apolarity
+import RealRooted.GraceHalfPlane
+import RealRooted.Bezoutian
+import RealRooted.DegreeDropReversal
+import RealRooted.AllCombo
 
 open Polynomial
 
@@ -26,7 +30,7 @@ relation.
 
 /-- Coefficientwise Hadamard product of two real polynomials. -/
 def hadamardProduct (p q : ℝ[X]) : ℝ[X] :=
-  p.sum fun n a => monomial n (a * q.coeff n)
+  p.sum fun n a ↦ monomial n (a * q.coeff n)
 
 @[simp] theorem coeff_hadamardProduct (p q : ℝ[X]) (n : ℕ) :
     (hadamardProduct p q).coeff n = p.coeff n * q.coeff n := by
@@ -34,13 +38,7 @@ def hadamardProduct (p q : ℝ[X]) : ℝ[X] :=
   rw [hadamardProduct, Polynomial.coeff_sum]
   simp only [Polynomial.coeff_monomial]
   rw [Polynomial.sum_def]
-  rw [Finset.sum_eq_single n]
-  · simp
-  · intro b _ hbn
-    simp [hbn]
-  · intro hn
-    rw [(Polynomial.notMem_support_iff).mp hn]
-    simp
+  simp_all
 
 theorem hadamardProduct_comm (p q : ℝ[X]) :
     hadamardProduct p q = hadamardProduct q p := by
@@ -50,7 +48,7 @@ theorem hadamardProduct_comm (p q : ℝ[X]) :
 /-- A Hadamard product is a diagonal operator whose diagonal is given by the
 right factor's coefficients. -/
 theorem hadamardProduct_eq_diagonalOperator (p q : ℝ[X]) :
-    hadamardProduct p q = diagonalOperator (fun n => q.coeff n) p := by
+    hadamardProduct p q = diagonalOperator (fun n ↦ q.coeff n) p := by
   ext n
   rw [coeff_hadamardProduct, coeff_diagonalOperator, mul_comm]
 
@@ -66,8 +64,7 @@ theorem hadamardProduct_assoc (p q r : ℝ[X]) :
   simp
 
 @[simp] theorem hadamardProduct_zero_right (p : ℝ[X]) :
-    hadamardProduct p 0 = 0 := by
-  rw [hadamardProduct_comm, hadamardProduct_zero_left]
+    hadamardProduct p 0 = 0 := by rw [hadamardProduct_comm, hadamardProduct_zero_left]
 
 theorem hadamardProduct_add_left (p q r : ℝ[X]) :
     hadamardProduct (p + q) r =
@@ -95,11 +92,11 @@ theorem hadamardProduct_C_mul_right (a : ℝ) (p q : ℝ[X]) :
     hadamardProduct_comm q p]
 
 theorem support_hadamardProduct_eq_filter_right (p q : ℝ[X]) :
-    (hadamardProduct p q).support = p.support.filter fun n => q.coeff n ≠ 0 := by
+    (hadamardProduct p q).support = p.support.filter fun n ↦ q.coeff n ≠ 0 := by
   rw [hadamardProduct_eq_diagonalOperator, support_diagonalOperator_eq_filter]
 
 theorem support_hadamardProduct_eq_filter_left (p q : ℝ[X]) :
-    (hadamardProduct p q).support = q.support.filter fun n => p.coeff n ≠ 0 := by
+    (hadamardProduct p q).support = q.support.filter fun n ↦ p.coeff n ≠ 0 := by
   rw [hadamardProduct_comm]
   exact support_hadamardProduct_eq_filter_right q p
 
@@ -108,20 +105,19 @@ supports. -/
 theorem support_hadamardProduct_eq (p q : ℝ[X]) :
     (hadamardProduct p q).support = p.support ∩ q.support := by
   rw [support_hadamardProduct_eq_filter_right]
-  ext n
-  simp [mem_support_iff]
+  grind
 
 /-- The support of a Hadamard product is contained in the left support. -/
 theorem support_hadamardProduct_subset_left (p q : ℝ[X]) :
     (hadamardProduct p q).support ⊆ p.support := by
   rw [support_hadamardProduct_eq]
-  exact Finset.inter_subset_left
+  simp
 
 /-- The support of a Hadamard product is contained in the right support. -/
 theorem support_hadamardProduct_subset_right (p q : ℝ[X]) :
     (hadamardProduct p q).support ⊆ q.support := by
   rw [support_hadamardProduct_eq]
-  exact Finset.inter_subset_right
+  simp
 
 theorem natDegree_hadamardProduct_le_left (p q : ℝ[X]) :
     (hadamardProduct p q).natDegree ≤ p.natDegree := by
@@ -145,7 +141,7 @@ theorem hadamardProduct_eq_zero_iff_support_disjoint (p q : ℝ[X]) :
 `schurSzegoComp n f g = ∑ binom(n,k) a_k b_k X^k`. -/
 def schurSzegoComp (n : Nat) (f g : ℝ[X]) : ℝ[X] :=
   Finset.sum (Finset.range (n + 1))
-    (fun k => monomial k (f.coeff k * g.coeff k / (Nat.choose n k : ℝ)))
+    (fun k ↦ monomial k (f.coeff k * g.coeff k / (Nat.choose n k : ℝ)))
 
 theorem coeff_schurSzegoComp (n k : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).coeff k =
@@ -159,12 +155,10 @@ theorem coeff_schurSzegoComp (n k : Nat) (f g : ℝ[X]) :
 
 theorem coeff_schurSzegoComp_of_le {n k : Nat} (hk : k ≤ n) (f g : ℝ[X]) :
     (schurSzegoComp n f g).coeff k =
-      f.coeff k * g.coeff k / (Nat.choose n k : ℝ) := by
-  simp [coeff_schurSzegoComp, hk]
+      f.coeff k * g.coeff k / (Nat.choose n k : ℝ) := by simp [coeff_schurSzegoComp, hk]
 
 theorem coeff_schurSzegoComp_eq_zero_of_lt {n k : Nat} (hk : n < k) (f g : ℝ[X]) :
-    (schurSzegoComp n f g).coeff k = 0 := by
-  simp [coeff_schurSzegoComp, not_le_of_gt hk]
+    (schurSzegoComp n f g).coeff k = 0 := by simp [coeff_schurSzegoComp, not_le_of_gt hk]
 
 theorem schurSzegoComp_comm (n : Nat) (f g : ℝ[X]) :
     schurSzegoComp n f g = schurSzegoComp n g f := by
@@ -173,7 +167,7 @@ theorem schurSzegoComp_comm (n : Nat) (f g : ℝ[X]) :
 
 theorem natDegree_schurSzegoComp_le (n : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).natDegree ≤ n :=
-  natDegree_le_iff_coeff_eq_zero.mpr fun _ hk =>
+  natDegree_le_iff_coeff_eq_zero.mpr fun _ hk ↦
     coeff_schurSzegoComp_eq_zero_of_lt hk f g
 
 /-- The fixed-degree Schur--Szegő composition of two binomial lifts is the
@@ -184,12 +178,7 @@ theorem schurSzegoComp_binomialLift (n : Nat) (f₀ g₀ : ℝ[X]) :
       binomialLift n (hadamardProduct f₀ g₀) := by
   ext k
   simp only [coeff_schurSzegoComp, coeff_binomialLift, coeff_hadamardProduct]
-  by_cases hk : k ≤ n
-  · simp only [if_pos hk]
-    have hchoose : (Nat.choose n k : ℝ) ≠ 0 := by
-      exact_mod_cast (Nat.choose_pos hk).ne'
-    field_simp
-  · simp only [if_neg hk]
+  grind
 
 /-- Evaluation form of `schurSzegoComp_binomialLift`. -/
 theorem schurSzegoComp_eval_eq_apolarEval (n : Nat) (f₀ g₀ : ℝ[X]) (z : ℝ) :
@@ -212,12 +201,11 @@ theorem choose_mul_coeff_schurSzegoComp_eq_coeff_hadamardProduct_of_le
 /-- Fixed-degree Schur--Szego composition is a diagonal operator. -/
 theorem schurSzegoComp_eq_diagonalOperator (n : Nat) (f g : ℝ[X]) :
     schurSzegoComp n f g =
-      diagonalOperator (fun k => g.coeff k / (Nat.choose n k : ℝ)) f := by
+      diagonalOperator (fun k ↦ g.coeff k / (Nat.choose n k : ℝ)) f := by
   ext k
   rw [coeff_diagonalOperator, coeff_schurSzegoComp]
   by_cases hk : k ≤ n
-  · rw [if_pos hk]
-    ring
+  · grind
   · rw [if_neg hk]
     simp [Nat.choose_eq_zero_of_lt (Nat.lt_of_not_le hk)]
 
@@ -247,7 +235,7 @@ coefficientwise product of the two binomial-normalized coefficient sequences. -/
 theorem schurSzegoComp_eq_jensenPolynomial_three_normalized
     {n : Nat} {f p : ℝ[X]} (hfdeg : f.natDegree ≤ 3) :
     schurSzegoComp n f p =
-      jensenPolynomial 3 (fun k =>
+      jensenPolynomial 3 (fun k ↦
         (p.coeff k / (Nat.choose n k : ℝ)) *
           (f.coeff k / (Nat.choose 3 k : ℝ))) := by
   ext k
@@ -256,8 +244,7 @@ theorem schurSzegoComp_eq_jensenPolynomial_three_normalized
   · have hchoose3 : (Nat.choose 3 k : ℝ) ≠ 0 :=
       Nat.cast_choose_ne_zero (R := ℝ) hk3
     by_cases hkn : k ≤ n
-    · simp only [hk3, hkn, if_true]
-      field_simp [hchoose3]
+    · grind
     · have hnlt : n < k := Nat.lt_of_not_le hkn
       simp [hk3, hkn, Nat.choose_eq_zero_of_lt hnlt]
   · have hklt : 3 < k := Nat.lt_of_not_le hk3
@@ -271,7 +258,7 @@ theorem cubicDiscr_schurSzegoComp_eq_jensenPolynomial_three_normalized
     {n : Nat} {f p : ℝ[X]} (hfdeg : f.natDegree ≤ 3) :
     cubicDiscr (schurSzegoComp n f p) =
       cubicDiscr
-        (jensenPolynomial 3 (fun k =>
+        (jensenPolynomial 3 (fun k ↦
           (p.coeff k / (Nat.choose n k : ℝ)) *
             (f.coeff k / (Nat.choose 3 k : ℝ)))) := by
   rw [schurSzegoComp_eq_jensenPolynomial_three_normalized hfdeg]
@@ -283,14 +270,13 @@ the other binomially normalized coefficient sequence. -/
 theorem schurSzegoComp_eq_diagonalOperator_jensenPolynomial_three_normalized
     {n : Nat} {f p : ℝ[X]} (hfdeg : f.natDegree ≤ 3) :
     schurSzegoComp n f p =
-      diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
-        (jensenPolynomial 3 (fun k => p.coeff k / (Nat.choose n k : ℝ))) := by
+      diagonalOperator (fun k ↦ f.coeff k / (Nat.choose 3 k : ℝ))
+        (jensenPolynomial 3 (fun k ↦ p.coeff k / (Nat.choose n k : ℝ))) := by
   rw [schurSzegoComp_eq_jensenPolynomial_three_normalized hfdeg]
   rw [← jensenPolynomial_mul_sequence_eq_diagonalOperator
-    3 (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
-      (fun k => p.coeff k / (Nat.choose n k : ℝ))]
-  congr with k
-  ring
+    3 (fun k ↦ f.coeff k / (Nat.choose 3 k : ℝ))
+      (fun k ↦ p.coeff k / (Nat.choose n k : ℝ))]
+  grind
 
 /-- Cubic-discriminant form of
 `schurSzegoComp_eq_diagonalOperator_jensenPolynomial_three_normalized`. -/
@@ -298,18 +284,18 @@ theorem cubicDiscr_schurSzegoComp_eq_diagonalOperator_jensenPolynomial_three_nor
     {n : Nat} {f p : ℝ[X]} (hfdeg : f.natDegree ≤ 3) :
     cubicDiscr (schurSzegoComp n f p) =
       cubicDiscr
-        (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
-          (jensenPolynomial 3 (fun k => p.coeff k / (Nat.choose n k : ℝ)))) := by
+        (diagonalOperator (fun k ↦ f.coeff k / (Nat.choose 3 k : ℝ))
+          (jensenPolynomial 3 (fun k ↦ p.coeff k / (Nat.choose n k : ℝ)))) := by
   rw [schurSzegoComp_eq_diagonalOperator_jensenPolynomial_three_normalized hfdeg]
 
 theorem support_schurSzegoComp_eq_filter_right (n : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).support =
-      f.support.filter (fun k => g.coeff k / (Nat.choose n k : ℝ) ≠ 0) := by
+      f.support.filter (fun k ↦ g.coeff k / (Nat.choose n k : ℝ) ≠ 0) := by
   rw [schurSzegoComp_eq_diagonalOperator, support_diagonalOperator_eq_filter]
 
 theorem support_schurSzegoComp_eq_filter_left (n : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).support =
-      g.support.filter (fun k => f.coeff k / (Nat.choose n k : ℝ) ≠ 0) := by
+      g.support.filter (fun k ↦ f.coeff k / (Nat.choose n k : ℝ) ≠ 0) := by
   rw [schurSzegoComp_comm]
   exact support_schurSzegoComp_eq_filter_right n g f
 
@@ -331,9 +317,9 @@ theorem support_schurSzegoComp_eq_hadamardProduct_of_hadamardProduct_natDegree_l
     (schurSzegoComp n f g).support = (hadamardProduct f g).support := by
   rw [support_schurSzegoComp_eq_hadamardProduct_inter_range, Finset.inter_eq_left]
   intro k hk
-  have hk_le : k ≤ (hadamardProduct f g).natDegree :=
+  have : k ≤ (hadamardProduct f g).natDegree :=
     Polynomial.le_natDegree_of_ne_zero (mem_support_iff.mp hk)
-  simpa [Finset.mem_range] using Nat.lt_succ_of_le (hk_le.trans hfg)
+  grind
 
 theorem schurSzegoComp_eq_zero_iff_hadamardProduct_eq_zero_of_hadamardProduct_natDegree_le
     {n : Nat} {f g : ℝ[X]} (hfg : (hadamardProduct f g).natDegree ≤ n) :
@@ -409,8 +395,7 @@ theorem schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le
   rw [coeff_diagonalOperator, coeff_diagonalOperator, coeff_jensenPolynomial]
   by_cases hk : k ≤ n
   · have hchoose : (Nat.choose n k : ℝ) ≠ 0 := Nat.cast_choose_ne_zero (R := ℝ) hk
-    simp only [hk, if_true]
-    field_simp [hchoose]
+    grind
   · have hk_lt : n < k := Nat.lt_of_not_le hk
     have hp_coeff : p.coeff k = 0 :=
       coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hp hk_lt)
@@ -422,8 +407,7 @@ theorem schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le
   simp [coeff_schurSzegoComp]
 
 @[simp] theorem schurSzegoComp_zero_right (n : Nat) (f : ℝ[X]) :
-    schurSzegoComp n f 0 = 0 := by
-  rw [schurSzegoComp_comm, schurSzegoComp_zero_left]
+    schurSzegoComp n f 0 = 0 := by rw [schurSzegoComp_comm, schurSzegoComp_zero_left]
 
 /-- Schur--Szego composition is additive in its left argument. -/
 theorem schurSzegoComp_add_left (n : Nat) (f f' g : ℝ[X]) :
@@ -466,14 +450,14 @@ support. -/
 theorem support_schurSzegoComp_subset_left (n : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).support ⊆ f.support := by
   rw [support_schurSzegoComp_eq_filter_right]
-  exact Finset.filter_subset _ _
+  simp
 
 /-- The support of a Schur--Szego composition is contained in the right
 support. -/
 theorem support_schurSzegoComp_subset_right (n : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).support ⊆ g.support := by
   rw [support_schurSzegoComp_eq_filter_left]
-  exact Finset.filter_subset _ _
+  simp
 
 /-- Nonnegative coefficients are preserved by fixed-degree Schur--Szego
 composition. -/
@@ -481,7 +465,7 @@ theorem HasNonnegCoeffs.schurSzegoComp {n : Nat} {f g : ℝ[X]}
     (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g) :
     HasNonnegCoeffs (schurSzegoComp n f g) := by
   rw [schurSzegoComp_eq_diagonalOperator]
-  exact hf.diagonalOperator fun k => div_nonneg (hg k) (by positivity)
+  exact hf.diagonalOperator fun k ↦ div_nonneg (hg k) (by simp [*])
 
 /-- **Finite Schur--Szegő composition theorem** (classical input).
 
@@ -517,23 +501,22 @@ def finiteSchurSzegoCompositionNonzeroStatement : Prop :=
 theorem finiteSchurSzegoCompositionNonzero_of_full
     (h : finiteSchurSzegoCompositionStatement) :
     finiteSchurSzegoCompositionNonzeroStatement :=
-  fun {_ _ _} hf _hf0 hfdeg _hp0 hpdeg hp => h hf hfdeg hpdeg hp
+  fun {_ _ _} hf _hf0 hfdeg _hp0 hpdeg hp ↦ h hf hfdeg hpdeg hp
 
 theorem finiteSchurSzegoComposition_of_nonzero
     (h : finiteSchurSzegoCompositionNonzeroStatement) :
     finiteSchurSzegoCompositionStatement := by
   intro n f p hf hfdeg hpdeg hp
   by_cases hf0 : f = 0
-  · exact Or.inl (by rw [hf0]; exact schurSzegoComp_zero_left n p)
+  · simp [*]
   by_cases hp0 : p = 0
-  · exact Or.inl (by rw [hp0]; exact schurSzegoComp_zero_right n f)
+  · simp [*]
   exact h hf hf0 hfdeg hp0 hpdeg hp
 
 theorem finiteSchurSzegoCompositionStatement_iff_nonzero :
     finiteSchurSzegoCompositionStatement ↔
       finiteSchurSzegoCompositionNonzeroStatement :=
-  ⟨finiteSchurSzegoCompositionNonzero_of_full,
-    finiteSchurSzegoComposition_of_nonzero⟩
+  ⟨finiteSchurSzegoCompositionNonzero_of_full, finiteSchurSzegoComposition_of_nonzero⟩
 
 /-- The backward direction of the finite Pólya--Schur theorem follows, by a
 `sorry`-free reduction, from the finite Schur--Szegő composition theorem: the
@@ -543,7 +526,7 @@ most `n` is exactly the Schur--Szegő composition of the PF Jensen polynomial of
 theorem finitePolyaSchurNonnegBackward_of_schurSzego
     (hSZ : finiteSchurSzegoCompositionStatement) :
     finitePolyaSchurNonnegBackwardStatement := by
-  intro n gamma _hgamma hjensen p hp hsplit
+  intro n gamma _ hjensen p hp hsplit
   have hfdeg : (jensenPolynomial n gamma).natDegree ≤ n :=
     natDegree_jensenPolynomial_le n gamma
   have heq :
@@ -579,14 +562,12 @@ theorem finiteSchurSzegoComposition_of_finitePolyaSchur
     (hFPS : finitePolyaSchurNonnegStatement) :
     finiteSchurSzegoCompositionStatement := by
   intro n f p hf hfdeg hpdeg hsplit
-  let gamma : ℕ → ℝ := fun k => f.coeff k / (Nat.choose n k : ℝ)
-  have hgamma : ∀ k, 0 ≤ gamma k := fun k =>
-    div_nonneg (hf.hasNonnegCoeffs k) (by positivity)
-  have hjensen_eq : jensenPolynomial n gamma = f := by
+  let gamma : ℕ → ℝ := fun k ↦ f.coeff k / (Nat.choose n k : ℝ)
+  have hgamma : ∀ k, 0 ≤ gamma k := fun k ↦
+    div_nonneg (hf.hasNonnegCoeffs k) (by simp [*])
+  have : jensenPolynomial n gamma = f := by
     simpa [gamma] using jensenPolynomial_normalized_coeff_eq_of_natDegree_le hfdeg
-  have hjensen : IsPFPolynomial (jensenPolynomial n gamma) := by
-    rw [hjensen_eq]
-    exact hf
+  have hjensen : IsPFPolynomial (jensenPolynomial n gamma) := by simp [*]
   have hmult : IsFiniteMultiplierSequence n gamma :=
     (hFPS hgamma).2 hjensen
   have heq : schurSzegoComp n f p = diagonalOperator gamma p := by
@@ -604,14 +585,12 @@ theorem finiteSchurSzegoComposition_of_natDegree_le_two
     (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ n)
     (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
     schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits := by
-  let gamma : ℕ → ℝ := fun k => f.coeff k / (Nat.choose n k : ℝ)
-  have hgamma : ∀ k, 0 ≤ gamma k := fun k =>
-    div_nonneg (hf.hasNonnegCoeffs k) (by positivity)
-  have hjensen_eq : jensenPolynomial n gamma = f := by
+  let gamma : ℕ → ℝ := fun k ↦ f.coeff k / (Nat.choose n k : ℝ)
+  have hgamma : ∀ k, 0 ≤ gamma k := fun k ↦
+    div_nonneg (hf.hasNonnegCoeffs k) (by simp [*])
+  have : jensenPolynomial n gamma = f := by
     simpa [gamma] using jensenPolynomial_normalized_coeff_eq_of_natDegree_le hfdeg
-  have hjensen : IsPFPolynomial (jensenPolynomial n gamma) := by
-    rw [hjensen_eq]
-    exact hf
+  have hjensen : IsPFPolynomial (jensenPolynomial n gamma) := by simp [*]
   have hmult : IsFiniteMultiplierSequence n gamma :=
     finitePolyaSchurNonnegBackward_of_natDegree_le_two hn hgamma hjensen
   have heq : schurSzegoComp n f p = diagonalOperator gamma p := by
@@ -640,24 +619,22 @@ private theorem schurSzegoComp_disc_arith
     4 * (a * d * (c * g / (N * (N - 1) / 2))) ≤ (b * e / N) ^ 2 := by
   have hNpos : (0 : ℝ) < N := by linarith
   have hN1 : (0 : ℝ) < N - 1 := by linarith
-  have hNne : N ≠ 0 := ne_of_gt hNpos
-  have hN1ne : N - 1 ≠ 0 := ne_of_gt hN1
+  have : N ≠ 0 := ne_of_gt hNpos
+  have : N - 1 ≠ 0 := ne_of_gt hN1
   have hac : 0 ≤ a * c := mul_nonneg ha hc
   have hkey : 4 * (a * d * (c * g / (N * (N - 1) / 2))) =
-      8 * (a * c) * (d * g) / (N * (N - 1)) := by
-    field_simp
-    ring
+      8 * (a * c) * (d * g) / (N * (N - 1)) := by grind
   rw [hkey, div_pow, div_le_div_iff₀ (mul_pos hNpos hN1) (pow_pos hNpos 2)]
   rcases le_total (d * g) 0 with hdg | hdg
   · nlinarith [mul_nonpos_of_nonneg_of_nonpos (mul_nonneg hac (sq_nonneg N)) hdg,
       mul_nonneg (sq_nonneg (b * e)) (mul_pos hNpos hN1).le]
-  · have h4dg : (0 : ℝ) ≤ 4 * (d * g) := by linarith
+  · have h4dg : (0 : ℝ) ≤ 4 * (d * g) := by simp [*]
     have hmul : 4 * (a * c) * (4 * (d * g)) ≤ b ^ 2 * e ^ 2 :=
       mul_le_mul hfd hpd h4dg (sq_nonneg b)
     nlinarith [hmul, mul_nonneg hac hdg, sq_nonneg N,
       mul_nonneg (mul_nonneg hac hdg) (sq_nonneg N),
       mul_nonneg (mul_nonneg (sq_nonneg b) (sq_nonneg e))
-        (mul_nonneg hNpos.le (show (0 : ℝ) ≤ N - 2 by linarith)),
+        (mul_nonneg hNpos.le (show (0 : ℝ) ≤ N - 2 by simp [*])),
       mul_nonneg (sq_nonneg (b * e)) (mul_pos hNpos hN1).le]
 
 /-- **Schur--Szego discriminant inequality.**  For a level `n ≥ 2`, a PF factor
@@ -676,7 +653,7 @@ theorem four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_schurSzegoComp
     4 * ((schurSzegoComp n f p).coeff 0 * (schurSzegoComp n f p).coeff 2) ≤
       (schurSzegoComp n f p).coeff 1 ^ 2 := by
   have h0n : 0 ≤ n := Nat.zero_le n
-  have h1n : 1 ≤ n := le_trans (by norm_num) hn
+  have h1n : 1 ≤ n := le_trans (by simp [*]) hn
   have hfd : 4 * (f.coeff 0 * f.coeff 2) ≤ f.coeff 1 ^ 2 := by
     rcases hf.eq_zero_or_splits with h | h
     · simp [h]
@@ -685,7 +662,7 @@ theorem four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_schurSzegoComp
     quadratic_disc_coeff_le_of_splits_natDegree_le_two hpdeg hsplit
   have hf0 : 0 ≤ f.coeff 0 := hf.hasNonnegCoeffs 0
   have hf2 : 0 ≤ f.coeff 2 := hf.hasNonnegCoeffs 2
-  have hnR : (2 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
+  have hnR : (2 : ℝ) ≤ (n : ℝ) := by simp [*]
   rw [coeff_schurSzegoComp_of_le h0n, coeff_schurSzegoComp_of_le h1n,
     coeff_schurSzegoComp_of_le hn, Nat.choose_zero_right, Nat.choose_one_right,
     Nat.cast_one, div_one, Nat.cast_choose_two]
@@ -710,7 +687,7 @@ theorem finiteSchurSzegoComposition_of_factors_natDegree_le_two
     (hpdeg : p.natDegree ≤ 2) (hsplit : p.Splits) :
     schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits := by
   by_cases hq0 : schurSzegoComp n f p = 0
-  · exact Or.inl hq0
+  · simp [*]
   by_cases hqle1 : (schurSzegoComp n f p).natDegree ≤ 1
   · exact Or.inr (isRealRooted_of_natDegree_le_one hq0 hqle1).2
   have hqle2 : (schurSzegoComp n f p).natDegree ≤ 2 :=
@@ -722,8 +699,8 @@ theorem finiteSchurSzegoComposition_of_factors_natDegree_le_two
       4 * (schurSzegoComp n f p).coeff 2 * (schurSzegoComp n f p).coeff 0 := by
     have := four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_schurSzegoComp
       hn hf hfdeg hpdeg hsplit
-    nlinarith [this]
-  obtain ⟨x, hx⟩ := exists_root_of_disc_nonneg
+    grind
+  obtain ⟨x, _⟩ := exists_root_of_disc_nonneg
     (a := (schurSzegoComp n f p).coeff 2)
     (b := (schurSzegoComp n f p).coeff 1)
     (c := (schurSzegoComp n f p).coeff 0)
@@ -735,7 +712,7 @@ theorem finiteSchurSzegoComposition_of_factors_natDegree_le_two
   have hroot : (schurSzegoComp n f p).IsRoot x := by
     rw [Polynomial.IsRoot.def, Polynomial.eval_eq_sum_range, hqdeg]
     simp only [Finset.sum_range_succ, Finset.sum_range_zero]
-    linear_combination hx
+    grind
   exact Or.inr (Polynomial.Splits.of_natDegree_eq_two hqdeg hroot)
 
 /-- Newton's first coefficient inequality (`k = 1`) for a real polynomial that
@@ -760,22 +737,16 @@ theorem two_natDegree_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits
   have hnewton := NewtonAux.newton_esymm_ineq t (n := p.natDegree)
     (m := p.natDegree - 1) htcard
     (Nat.sub_pos_of_lt (lt_of_lt_of_le one_lt_two hdeg))
-    (Nat.sub_lt (lt_of_lt_of_le (by norm_num) hdeg) Nat.one_pos)
-  have idxm1 : p.natDegree - 1 - 1 = p.natDegree - 2 := by rw [Nat.sub_sub]
+    (Nat.sub_lt (lt_of_lt_of_le (by simp [*]) hdeg) Nat.one_pos)
+  have idxm1 : p.natDegree - 1 - 1 = p.natDegree - 2 := by grind
   have idxp1 : p.natDegree - 1 + 1 = p.natDegree := Nat.sub_add_cancel h1d
   rw [idxm1, idxp1] at hnewton
   have hi0 : p.natDegree - 0 = p.natDegree := Nat.sub_zero _
   rw [hi0] at hc0
-  have hcast_m : ((p.natDegree - 1 : ℕ) : ℝ) = (p.natDegree : ℝ) - 1 := by
-    rw [Nat.cast_sub h1d]
-    norm_num
-  have hself : p.natDegree - (p.natDegree - 1) = 1 := Nat.sub_sub_self h1d
-  have hcast_nm : ((p.natDegree - (p.natDegree - 1) : ℕ) : ℝ) = 1 := by
-    rw [hself]
-    norm_num
-  have hcast_nm1 : ((p.natDegree - (p.natDegree - 1) + 1 : ℕ) : ℝ) = 2 := by
-    rw [hself]
-    norm_num
+  have hcast_m : ((p.natDegree - 1 : ℕ) : ℝ) = (p.natDegree : ℝ) - 1 := by simp [*]
+  have : p.natDegree - (p.natDegree - 1) = 1 := Nat.sub_sub_self h1d
+  have hcast_nm : ((p.natDegree - (p.natDegree - 1) : ℕ) : ℝ) = 1 := by simp [*]
+  have hcast_nm1 : ((p.natDegree - (p.natDegree - 1) + 1 : ℕ) : ℝ) = 2 := by simp [*]
   rw [hcast_m, hcast_nm, hcast_nm1] at hnewton
   rw [hc0, hc1, hc2]
   nlinarith [mul_le_mul_of_nonneg_left hnewton (sq_nonneg p.leadingCoeff),
@@ -793,14 +764,13 @@ private theorem newton_level_lift_arith {A B M N : ℝ}
   rcases le_or_gt B 0 with hB | hB
   · nlinarith [mul_nonneg (show (0 : ℝ) ≤ M - 1 by linarith) hA,
       mul_nonneg (show (0 : ℝ) ≤ M by linarith)
-        (show (0 : ℝ) ≤ -B by linarith)]
+        (show (0 : ℝ) ≤ -B by simp [*])]
   · have key : (N - 1) * ((M - 1) * A - 2 * M * B)
-        = (M - 1) * ((N - 1) * A - 2 * N * B) + 2 * B * (M - N) := by
-      ring
+        = (M - 1) * ((N - 1) * A - 2 * N * B) + 2 * B * (M - N) := by ring
     nlinarith [key,
       mul_nonneg (show (0 : ℝ) ≤ M - 1 by linarith)
-        (show (0 : ℝ) ≤ (N - 1) * A - 2 * N * B by linarith),
-      mul_nonneg hB.le (show (0 : ℝ) ≤ M - N by linarith), hN1]
+        (show (0 : ℝ) ≤ (N - 1) * A - 2 * N * B by simp [*]),
+      mul_nonneg hB.le (show (0 : ℝ) ≤ M - N by simp [*]), hN1]
 
 /-- Newton's first coefficient inequality (`k = 1`) in the level-`n`
 normalization, for a splitting polynomial of degree at most `n`.  It is the
@@ -814,15 +784,15 @@ theorem two_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits_of_natDegree_
   rcases le_or_gt 2 p.natDegree with hdeg | hdeg
   · have hnat :=
       two_natDegree_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits hdeg hs
-    have hNn : (p.natDegree : ℝ) ≤ (n : ℝ) := by exact_mod_cast hpdeg
+    have hNn : (p.natDegree : ℝ) ≤ (n : ℝ) := by simp [*]
     have h1N : (1 : ℝ) < (p.natDegree : ℝ) := by
-      have : (2 : ℝ) ≤ (p.natDegree : ℝ) := by exact_mod_cast hdeg
+      have : (2 : ℝ) ≤ (p.natDegree : ℝ) := by simp [*]
       linarith
     exact newton_level_lift_arith (A := p.coeff 1 ^ 2)
       (B := p.coeff 0 * p.coeff 2) (M := (n : ℝ)) (N := (p.natDegree : ℝ))
       (sq_nonneg _) hNn h1N hnat
   · have hc2 : p.coeff 2 = 0 := coeff_eq_zero_of_natDegree_lt hdeg
-    have hnR : (2 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
+    have hnR : (2 : ℝ) ≤ (n : ℝ) := by simp [*]
     rw [hc2]
     nlinarith [sq_nonneg (p.coeff 1), hnR]
 
@@ -842,16 +812,14 @@ private theorem schurSzegoComp_pf_disc_arith
   have hN1 : (0 : ℝ) < N - 1 := by linarith
   have hac : 0 ≤ a * c := mul_nonneg ha hc
   have hkey : 4 * (a * d * (c * g / (N * (N - 1) / 2))) =
-      8 * (a * c) * (d * g) / (N * (N - 1)) := by
-    field_simp
-    ring
+      8 * (a * c) * (d * g) / (N * (N - 1)) := by grind
   rw [hkey, div_pow, div_le_div_iff₀ (mul_pos hNpos hN1) (pow_pos hNpos 2)]
   rcases le_total (d * g) 0 with hdg | hdg
   · nlinarith [mul_nonpos_of_nonneg_of_nonpos (mul_nonneg hac (sq_nonneg N)) hdg,
       mul_nonneg (sq_nonneg (b * e)) (mul_pos hNpos hN1).le]
   · have hmul : 4 * (a * c) * (2 * N * (d * g)) ≤
         b ^ 2 * ((N - 1) * e ^ 2) :=
-      mul_le_mul hfd hpd (by nlinarith [hdg, hNpos.le]) (sq_nonneg b)
+      mul_le_mul hfd hpd (by simp [*]) (sq_nonneg b)
     nlinarith [mul_le_mul_of_nonneg_right hmul hNpos.le, sq_nonneg (b * e)]
 
 /-- **Schur--Szego discriminant inequality with a degree-`≤ 2` PF factor.**
@@ -871,7 +839,7 @@ theorem four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_schurSzegoComp_of_pf
     4 * ((schurSzegoComp n f p).coeff 0 * (schurSzegoComp n f p).coeff 2) ≤
       (schurSzegoComp n f p).coeff 1 ^ 2 := by
   have h0n : 0 ≤ n := Nat.zero_le n
-  have h1n : 1 ≤ n := le_trans (by norm_num) hn
+  have h1n : 1 ≤ n := le_trans (by simp [*]) hn
   have hfd : 4 * (f.coeff 0 * f.coeff 2) ≤ f.coeff 1 ^ 2 := by
     rcases hf.eq_zero_or_splits with h | h
     · simp [h]
@@ -882,7 +850,7 @@ theorem four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_schurSzegoComp_of_pf
       hn hpdeg hsplit
   have hf0 : 0 ≤ f.coeff 0 := hf.hasNonnegCoeffs 0
   have hf2 : 0 ≤ f.coeff 2 := hf.hasNonnegCoeffs 2
-  have hnR : (2 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
+  have hnR : (2 : ℝ) ≤ (n : ℝ) := by simp [*]
   rw [coeff_schurSzegoComp_of_le h0n, coeff_schurSzegoComp_of_le h1n,
     coeff_schurSzegoComp_of_le hn, Nat.choose_zero_right, Nat.choose_one_right,
     Nat.cast_one, div_one, Nat.cast_choose_two]
@@ -907,7 +875,7 @@ theorem finiteSchurSzegoComposition_of_pf_factor_natDegree_le_two
     (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
     schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits := by
   by_cases hq0 : schurSzegoComp n f p = 0
-  · exact Or.inl hq0
+  · simp [*]
   by_cases hqle1 : (schurSzegoComp n f p).natDegree ≤ 1
   · exact Or.inr (isRealRooted_of_natDegree_le_one hq0 hqle1).2
   have hqle2 : (schurSzegoComp n f p).natDegree ≤ 2 :=
@@ -919,8 +887,8 @@ theorem finiteSchurSzegoComposition_of_pf_factor_natDegree_le_two
       4 * (schurSzegoComp n f p).coeff 2 * (schurSzegoComp n f p).coeff 0 := by
     have := four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_schurSzegoComp_of_pf
       hn hf hfdeg hpdeg hsplit
-    nlinarith [this]
-  obtain ⟨x, hx⟩ := exists_root_of_disc_nonneg
+    grind
+  obtain ⟨x, _⟩ := exists_root_of_disc_nonneg
     (a := (schurSzegoComp n f p).coeff 2)
     (b := (schurSzegoComp n f p).coeff 1)
     (c := (schurSzegoComp n f p).coeff 0)
@@ -932,7 +900,7 @@ theorem finiteSchurSzegoComposition_of_pf_factor_natDegree_le_two
   have hroot : (schurSzegoComp n f p).IsRoot x := by
     rw [Polynomial.IsRoot.def, Polynomial.eval_eq_sum_range, hqdeg]
     simp only [Finset.sum_range_succ, Finset.sum_range_zero]
-    linear_combination hx
+    grind
   exact Or.inr (Polynomial.Splits.of_natDegree_eq_two hqdeg hroot)
 
 /-- Nonzero-core version of the arbitrary-level Schur--Szego base case with a
@@ -960,14 +928,14 @@ theorem isFiniteMultiplierSequence_of_isPF_jensenPolynomial_self_natDegree_le_tw
     (hjdeg : (jensenPolynomial n gamma).natDegree ≤ 2) :
     IsFiniteMultiplierSequence n gamma := by
   intro p hp hsplit
-  have hschur : schurSzegoComp n (jensenPolynomial n gamma) p = 0 ∨
+  have : schurSzegoComp n (jensenPolynomial n gamma) p = 0 ∨
       (schurSzegoComp n (jensenPolynomial n gamma) p).Splits :=
     finiteSchurSzegoComposition_of_pf_factor_natDegree_le_two
       hjensen hjdeg hp hsplit
-  have heq : schurSzegoComp n (jensenPolynomial n gamma) p =
+  have : schurSzegoComp n (jensenPolynomial n gamma) p =
       diagonalOperator gamma p :=
     schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le hp
-  rwa [heq] at hschur
+  simp_all
 
 /-- PF-preservation version of
 `isFiniteMultiplierSequence_of_isPF_jensenPolynomial_self_natDegree_le_two`. -/
@@ -990,7 +958,7 @@ theorem isFiniteMultiplierSequence_iff_jensenPolynomial_of_self_natDegree_le_two
     IsFiniteMultiplierSequence n gamma ↔
       IsPFPolynomial (jensenPolynomial n gamma) :=
   ⟨isPFPolynomial_jensenPolynomial_of_finiteMultiplierSequence hgamma,
-    fun hjensen =>
+    fun hjensen ↦
       isFiniteMultiplierSequence_of_isPF_jensenPolynomial_self_natDegree_le_two
         hjensen hjdeg⟩
 
@@ -1003,7 +971,7 @@ theorem isFinitePFMultiplierSequence_iff_jensenPolynomial_of_self_natDegree_le_t
     IsFinitePFMultiplierSequence n gamma ↔
       IsPFPolynomial (jensenPolynomial n gamma) :=
   ⟨isPFPolynomial_jensenPolynomial_of_finitePFMultiplierSequence,
-    fun hjensen =>
+    fun hjensen ↦
       isFinitePFMultiplierSequence_of_isPF_jensenPolynomial_self_natDegree_le_two
         hgamma hjensen hjdeg⟩
 
@@ -1029,8 +997,8 @@ theorem finiteSchurSzegoComposition_of_natDegree_le_three_cubicDiscr_nonneg
     {n : ℕ} {f p : ℝ[X]} (hfdeg : f.natDegree ≤ 3)
     (hdisc : 0 ≤ cubicDiscr (schurSzegoComp n f p)) :
     schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits := by
-  by_cases hq0 : schurSzegoComp n f p = 0
-  · exact Or.inl hq0
+  by_cases schurSzegoComp n f p = 0
+  · simp [*]
   · refine Or.inr (splits_of_natDegree_le_three_cubicDiscr_nonneg ?_ hdisc)
     exact le_trans (natDegree_schurSzegoComp_le_left n f p) hfdeg
 
@@ -1082,8 +1050,7 @@ equivalent classical inputs in the nonnegative-coefficient convention used
 here. -/
 theorem finiteSchurSzegoCompositionStatement_iff_finitePolyaSchur :
     finiteSchurSzegoCompositionStatement ↔ finitePolyaSchurNonnegStatement :=
-  ⟨finitePolyaSchur_nonneg_of_schurSzego,
-    finiteSchurSzegoComposition_of_finitePolyaSchur⟩
+  ⟨finitePolyaSchur_nonneg_of_schurSzego, finiteSchurSzegoComposition_of_finitePolyaSchur⟩
 
 /-- The finite Pólya--Schur theorem implies the nonzero core of fixed-degree
 Schur--Szegő composition. -/
@@ -1106,9 +1073,489 @@ theorem finiteSchurSzegoCompositionNonzeroStatement_iff_finitePolyaSchurBackward
     finiteSchurSzegoCompositionNonzeroStatement ↔
       finitePolyaSchurNonnegBackwardStatement :=
   ⟨finitePolyaSchurNonnegBackward_of_schurSzegoNonzero,
-    fun hBack =>
+    fun hBack ↦
       finiteSchurSzegoCompositionNonzero_of_finitePolyaSchur
         (finitePolyaSchur_nonneg_of_backward hBack)⟩
+
+
+theorem apolarEval_apolarTwist (n : Nat) (z : ℂ) (g : ℂ[X]) (w : ℂ) :
+    apolarEval n (apolarTwist n z g) w =
+      ∑ i ∈ Finset.range (n + 1),
+        (Nat.choose n i : ℂ) * g.coeff i * (-z) ^ i * w ^ (n - i) := by
+  unfold apolarEval
+  rw [← Finset.sum_range_reflect
+    (fun i ↦ (Nat.choose n i : ℂ) * g.coeff i * (-z) ^ i * w ^ (n - i)) (n + 1)]
+  refine Finset.sum_congr rfl fun j hj ↦ ?_
+  have hj' : j ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hj)
+  rw [coeff_apolarTwist, if_pos hj']
+  have he : n + 1 - 1 - j = n - j := by simp [*]
+  rw [he]
+  have hnn : n - (n - j) = j := by lia
+  rw [hnn]
+  have hnegz : (-z) ^ (n - j) = (-1 : ℂ) ^ (n - j) * z ^ (n - j) := by rw [neg_pow]
+  rw [hnegz, Nat.choose_symm hj']
+  ring
+
+theorem apolarEval_apolarTwist_eq_mul (n : Nat) (z : ℂ) (g : ℂ[X]) {w : ℂ}
+    (hw : w ≠ 0) :
+    apolarEval n (apolarTwist n z g) w = w ^ n * apolarEval n g (-z / w) := by
+  rw [apolarEval_apolarTwist, apolarEval, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun i hi ↦ ?_
+  have hi' : i ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hi)
+  have hwi : w ^ (n - i) = w ^ n / w ^ i := by
+    rw [eq_div_iff (pow_ne_zero i hw), ← pow_add, Nat.sub_add_cancel hi']
+  rw [hwi, div_pow]
+  grind
+
+theorem isRoot_binomialLift_apolarTwist_iff (n : Nat) (z : ℂ) (g : ℂ[X]) {w : ℂ}
+    (hw : w ≠ 0) :
+    (binomialLift n (apolarTwist n z g)).IsRoot w ↔
+      (binomialLift n g).IsRoot (-z / w) := by
+  simp only [Polynomial.IsRoot, eval_binomialLift]
+  rw [apolarEval_apolarTwist_eq_mul n z g hw]
+  simp [*]
+
+theorem exists_apolarTwist_root_of_grace_lowerHalf {n : Nat} {b : ℝ}
+    {f g : ℂ[X]} {z : ℂ}
+    (hf : (binomialLift n f).natDegree = n)
+    (htw : (binomialLift n (apolarTwist n z g)).natDegree = n)
+    (hcomp : ∑ k ∈ Finset.range (n + 1),
+      (Nat.choose n k : ℂ) * f.coeff k * g.coeff k * z ^ k = 0)
+    (hroots : (binomialLift n f).RootsIn (lowerHalf b)) :
+    (binomialLift n (apolarTwist n z g)).HasRootIn (lowerHalf b) := by
+  have hap : AreApolar n f (apolarTwist n z g) :=
+    (areApolar_apolarTwist_iff n f g z).2 hcomp
+  exact grace_apolarity_lowerHalf hf htw hap hroots
+
+theorem exists_apolarTwist_root_of_grace_upperHalf {n : Nat} {b : ℝ}
+    {f g : ℂ[X]} {z : ℂ}
+    (hf : (binomialLift n f).natDegree = n)
+    (htw : (binomialLift n (apolarTwist n z g)).natDegree = n)
+    (hcomp : ∑ k ∈ Finset.range (n + 1),
+      (Nat.choose n k : ℂ) * f.coeff k * g.coeff k * z ^ k = 0)
+    (hroots : (binomialLift n f).RootsIn (upperHalf b)) :
+    (binomialLift n (apolarTwist n z g)).HasRootIn (upperHalf b) := by
+  have hap : AreApolar n f (apolarTwist n z g) :=
+    (areApolar_apolarTwist_iff n f g z).2 hcomp
+  exact grace_apolarity_upperHalf hf htw hap hroots
+
+theorem eval_map_schurSzegoComp_eq_sum (n : Nat) (f p : ℝ[X])
+    {F₀ P₀ : ℂ[X]}
+    (hF : binomialLift n F₀ = f.map Complex.ofRealHom)
+    (hP : binomialLift n P₀ = p.map Complex.ofRealHom)
+    (z : ℂ) :
+    ((schurSzegoComp n f p).map Complex.ofRealHom).eval z =
+      ∑ k ∈ Finset.range (n + 1),
+        (Nat.choose n k : ℂ) * F₀.coeff k * P₀.coeff k * z ^ k := by
+  rw [Polynomial.eval_eq_sum_range' (n := n + 1)
+    (Nat.lt_succ_of_le ((natDegree_map_le).trans (natDegree_schurSzegoComp_le n f p)))]
+  refine Finset.sum_congr rfl fun k hk ↦ ?_
+  have hk' : k ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
+  rw [coeff_map, coeff_schurSzegoComp_of_le hk']
+  have hFk : (f.map Complex.ofRealHom).coeff k = (Nat.choose n k : ℂ) * F₀.coeff k := by
+    rw [← hF, coeff_binomialLift, if_pos hk']
+  have hPk : (p.map Complex.ofRealHom).coeff k = (Nat.choose n k : ℂ) * P₀.coeff k := by
+    rw [← hP, coeff_binomialLift, if_pos hk']
+  rw [coeff_map, Complex.ofRealHom_eq_coe] at hFk hPk
+  have : (Nat.choose n k : ℂ) ≠ 0 := Nat.cast_choose_ne_zero (R := ℂ) hk'
+  rw [Complex.ofRealHom_eq_coe, Complex.ofReal_div, Complex.ofReal_mul]
+  push_cast
+  grind
+
+theorem coeff_n_binomialLift_apolarTwist (n : Nat) (z : ℂ) {F₀ f : ℂ[X]}
+    (hF : binomialLift n F₀ = f) :
+    (binomialLift n (apolarTwist n z F₀)).coeff n = f.coeff 0 := by
+  rw [coeff_binomialLift, if_pos (le_refl n), coeff_apolarTwist, if_pos (le_refl n)]
+  simp only [Nat.sub_self, pow_zero, mul_one, Nat.choose_self, Nat.cast_one, one_mul]
+  rw [← hF, coeff_binomialLift, if_pos (Nat.zero_le n)]
+  simp
+
+theorem natDegree_binomialLift_apolarTwist (n : Nat) (z : ℂ) {F₀ f : ℂ[X]}
+    (hF : binomialLift n F₀ = f) (hf0 : f.coeff 0 ≠ 0) :
+    (binomialLift n (apolarTwist n z F₀)).natDegree = n := by
+  refine le_antisymm (natDegree_binomialLift_le n _) ?_
+  apply Polynomial.le_natDegree_of_ne_zero
+  rw [coeff_n_binomialLift_apolarTwist n z hF]
+  simp [*]
+
+theorem pf_complex_root_nonpos_real {f : ℝ[X]} (hf : IsPFPolynomial f) (hf0 : f ≠ 0)
+    {μ : ℂ} (hμ : (f.map Complex.ofRealHom).IsRoot μ) :
+    μ.im = 0 ∧ μ.re ≤ 0 := by
+  have hsplits : f.Splits := hf.eq_zero_or_splits.resolve_left hf0
+  obtain ⟨r, hr⟩ : μ ∈ Complex.ofRealHom.range := hsplits.mem_range_of_isRoot hf0 hμ
+  have hr_root : f.IsRoot r := by
+    have hev : (f.map Complex.ofRealHom).eval μ = 0 := hμ
+    rw [← hr, Polynomial.eval_map, Polynomial.eval₂_hom] at hev
+    simp_all
+  have : r ≤ 0 := hf.roots_nonpos r ((Polynomial.mem_roots hf0).mpr hr_root)
+  rw [← hr]
+  refine ⟨by simp [Complex.ofRealHom_eq_coe], ?_⟩
+  simp only [Complex.ofRealHom_eq_coe, Complex.ofReal_re]
+  grind
+
+theorem splits_complex_root_im_zero {p : ℝ[X]} (hp0 : p ≠ 0) (hsplit : p.Splits)
+    {μ : ℂ} (hμ : (p.map Complex.ofRealHom).IsRoot μ) :
+    μ.im = 0 := by
+  obtain ⟨r, hr⟩ : μ ∈ Complex.ofRealHom.range := hsplit.mem_range_of_isRoot hp0 hμ
+  rw [← hr]
+  simp [Complex.ofRealHom_eq_coe]
+
+theorem core_squeeze {n : Nat} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hf0 : f ≠ 0) (hfdeg : f.natDegree = n)
+    (hf00 : f.coeff 0 ≠ 0)
+    (hp0 : p ≠ 0) (hpdeg : p.natDegree = n) (hsplit : p.Splits) :
+    (schurSzegoComp n f p).Splits := by
+  apply Polynomial.splits_of_all_roots_real
+  intro z hz
+  obtain ⟨F₀, hF⟩ := exists_binomialLift_eq (f.map Complex.ofRealHom)
+    (le_of_eq (by rw [natDegree_map_eq_of_injective Complex.ofReal_injective, hfdeg]))
+  obtain ⟨P₀, hP⟩ := exists_binomialLift_eq (p.map Complex.ofRealHom)
+    (le_of_eq (by rw [natDegree_map_eq_of_injective Complex.ofReal_injective, hpdeg]))
+  have : ∑ k ∈ Finset.range (n + 1),
+      (Nat.choose n k : ℂ) * F₀.coeff k * P₀.coeff k * z ^ k = 0 := by
+    rw [← eval_map_schurSzegoComp_eq_sum n f p hF hP z]
+    simp [*]
+  by_cases hz0 : z = 0
+  · simp [*]
+  have hPdeg : (binomialLift n P₀).natDegree = n := by simp [*]
+  have hf00c : (f.map Complex.ofRealHom).coeff 0 ≠ 0 := by simp [*]
+  have hTwdeg : (binomialLift n (apolarTwist n z F₀)).natDegree = n :=
+    natDegree_binomialLift_apolarTwist n z hF hf00c
+  have hPmap : binomialLift n P₀ = p.map Complex.ofRealHom := hP
+  have hRootsLower : (binomialLift n P₀).RootsIn (lowerHalf 0) := by
+    intro w hw
+    rw [mem_lowerHalf]
+    rw [hPmap] at hw
+    have := splits_complex_root_im_zero hp0 hsplit hw
+    simp [*]
+  have hRootsUpper : (binomialLift n P₀).RootsIn (upperHalf 0) := by
+    intro w hw
+    rw [mem_upperHalf]
+    rw [hPmap] at hw
+    have := splits_complex_root_im_zero hp0 hsplit hw
+    simp [*]
+  have hsum' : ∑ k ∈ Finset.range (n + 1),
+      (Nat.choose n k : ℂ) * P₀.coeff k * F₀.coeff k * z ^ k = 0 := by grind
+  obtain ⟨w, hwroot, hwmem⟩ :=
+    exists_apolarTwist_root_of_grace_lowerHalf hPdeg hTwdeg hsum' hRootsLower
+  obtain ⟨w', hw'root, hw'mem⟩ :=
+    exists_apolarTwist_root_of_grace_upperHalf hPdeg hTwdeg hsum' hRootsUpper
+  rw [mem_lowerHalf] at hwmem
+  rw [mem_upperHalf] at hw'mem
+  have : f.coeff n ≠ 0 := by
+    rw [← hfdeg]
+    exact Polynomial.leadingCoeff_ne_zero.mpr hf0
+  have : F₀.coeff n = (f.map Complex.ofRealHom).coeff n := by
+    have : (f.map Complex.ofRealHom).coeff n = (Nat.choose n n : ℂ) * F₀.coeff n := by
+      rw [← hF, coeff_binomialLift, if_pos (le_refl n)]
+    simp [*]
+  have hcoeff0 : (binomialLift n (apolarTwist n z F₀)).coeff 0 ≠ 0 := by
+    rw [coeff_binomialLift, if_pos (Nat.zero_le n), coeff_apolarTwist, if_pos (Nat.zero_le n)]
+    simp [*]
+  have hwne : w ≠ 0 := by
+    rintro rfl
+    apply hcoeff0
+    have : (binomialLift n (apolarTwist n z F₀)).eval 0 = 0 := hwroot
+    rw [Polynomial.coeff_zero_eq_eval_zero]
+    simp [*]
+  have hw'ne : w' ≠ 0 := by
+    rintro rfl
+    apply hcoeff0
+    have : (binomialLift n (apolarTwist n z F₀)).eval 0 = 0 := hw'root
+    rw [Polynomial.coeff_zero_eq_eval_zero]
+    simp [*]
+  have hμ : (binomialLift n F₀).IsRoot (-z / w) :=
+    (isRoot_binomialLift_apolarTwist_iff n z F₀ hwne).mp hwroot
+  have hμ' : (binomialLift n F₀).IsRoot (-z / w') :=
+    (isRoot_binomialLift_apolarTwist_iff n z F₀ hw'ne).mp hw'root
+  rw [hF] at hμ hμ'
+  obtain ⟨hμim, hμre⟩ := pf_complex_root_nonpos_real hf hf0 hμ
+  obtain ⟨hμ'im, hμ're⟩ := pf_complex_root_nonpos_real hf hf0 hμ'
+  set μ := -z / w with hμdef
+  set μ' := -z / w' with hμ'def
+  have hzμ : z = -(μ * w) := by simp [*]
+  have hzμ' : z = -(μ' * w') := by grind
+  have hμre0 : μ.re < 0 := by
+    rcases lt_or_eq_of_le hμre with h | h
+    · grind
+    · exfalso; apply hz0
+      have hμ0 : μ = 0 := Complex.ext (by rw [Complex.zero_re, ← h]) (by rw [hμim, Complex.zero_im])
+      grind
+  have hμ're0 : μ'.re < 0 := by
+    rcases lt_or_eq_of_le hμ're with h | h
+    · grind
+    · exfalso; apply hz0
+      have hμ'0 : μ' = 0 :=
+        Complex.ext (by rw [Complex.zero_re, ← h]) (by rw [hμ'im, Complex.zero_im])
+      grind
+  have hzim : z.im = -(μ.re * w.im) := by
+    rw [hzμ]
+    simp [Complex.mul_im, hμim]
+  have hzim' : z.im = -(μ'.re * w'.im) := by
+    rw [hzμ']
+    simp [Complex.mul_im, hμ'im]
+  have : z.im ≤ 0 := by
+    rw [hzim]
+    nlinarith [hwmem, hμre0]
+  have : 0 ≤ z.im := by
+    rw [hzim']
+    nlinarith [hw'mem, hμ're0]
+  linarith
+
+
+
+
+theorem reflect_schurSzegoComp (n : Nat) (f p : ℝ[X]) :
+    reflect n (schurSzegoComp n f p) =
+      schurSzegoComp n (reflect n f) (reflect n p) := by
+  ext k
+  rw [coeff_reflect]
+  by_cases hk : k ≤ n
+  · rw [revAt_le hk, coeff_schurSzegoComp_of_le (Nat.sub_le n k),
+      coeff_schurSzegoComp_of_le hk, coeff_reflect, coeff_reflect,
+      revAt_le hk, Nat.choose_symm hk]
+  · rw [coeff_schurSzegoComp_eq_zero_of_lt (Nat.lt_of_not_le hk),
+      revAt_eq_self_of_lt (Nat.lt_of_not_le hk),
+      coeff_schurSzegoComp_eq_zero_of_lt (Nat.lt_of_not_le hk)]
+
+theorem schurSzegoComp_X_mul_left (n : Nat) (hn : 1 ≤ n) (f₁ p : ℝ[X]) :
+    schurSzegoComp n (X * f₁) p =
+      X * schurSzegoComp (n - 1) f₁ (C (n : ℝ)⁻¹ * derivative p) := by
+  ext k
+  rcases k with _ | k
+  · rw [coeff_schurSzegoComp_of_le (Nat.zero_le n), coeff_X_mul_zero, zero_mul,
+      zero_div, coeff_X_mul_zero]
+  · rw [coeff_X_mul]
+    by_cases hk : k ≤ n - 1
+    · rw [coeff_schurSzegoComp_of_le (by lia : k + 1 ≤ n),
+        coeff_schurSzegoComp_of_le hk, coeff_X_mul, coeff_C_mul, coeff_derivative]
+      have : ((n - 1).choose k : ℝ) ≠ 0 := Nat.cast_choose_ne_zero (R := ℝ) hk
+      have : (n : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by lia)
+      have : (n.choose (k + 1) : ℝ) ≠ 0 := Nat.cast_choose_ne_zero (R := ℝ) (by lia)
+      have hnat : n * (n - 1).choose k = n.choose (k + 1) * (k + 1) := by
+        have := Nat.add_one_mul_choose_eq (n - 1) k
+        simp_all
+      have : (n.choose (k + 1) : ℝ) * ((k : ℝ) + 1) = (n : ℝ) * ((n - 1).choose k : ℝ) := by
+        have := congrArg (Nat.cast (R := ℝ)) hnat
+        grind
+      grind
+    · rw [coeff_schurSzegoComp_eq_zero_of_lt (by lia : n < k + 1),
+        coeff_schurSzegoComp_eq_zero_of_lt (by lia : n - 1 < k)]
+
+theorem schurSzegoComp_eq_diagonalOperator_pred (n : Nat) (hn : 1 ≤ n) (f p : ℝ[X])
+    (hpn : p.coeff n = 0) :
+    schurSzegoComp n f p =
+      diagonalOperator (fun k ↦ ((n : ℝ) - k) / n) (schurSzegoComp (n - 1) f p) := by
+  ext k
+  rw [coeff_diagonalOperator]
+  by_cases hk : k ≤ n - 1
+  · rw [coeff_schurSzegoComp_of_le (by lia : k ≤ n), coeff_schurSzegoComp_of_le hk]
+    have : ((n - 1).choose k : ℝ) ≠ 0 := Nat.cast_choose_ne_zero (R := ℝ) hk
+    have : (n.choose k : ℝ) ≠ 0 := Nat.cast_choose_ne_zero (R := ℝ) (by lia)
+    have : (n : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by lia)
+    have hnat : (n - 1).choose k * n = n.choose k * (n - k) := by
+      have := Nat.choose_mul_succ_eq (n - 1) k
+      simp_all
+    have : ((n - 1).choose k : ℝ) * (n : ℝ) = (n.choose k : ℝ) * ((n : ℝ) - k) := by
+      have := congrArg (Nat.cast (R := ℝ)) hnat
+      push_cast [Nat.cast_sub (by lia : k ≤ n)] at this
+      assumption
+    grind
+  · rw [coeff_schurSzegoComp_eq_zero_of_lt (by lia : n - 1 < k)]
+    by_cases hkn : k = n
+    · rw [hkn, coeff_schurSzegoComp_of_le (le_refl n)]
+      simp [hpn]
+    · rw [coeff_schurSzegoComp_eq_zero_of_lt (by lia : n < k), mul_zero]
+
+theorem diagonalOperator_pred_eq_reflect_derivative (n : Nat) (hn : 1 ≤ n)
+    (q : ℝ[X]) (hq : q.natDegree ≤ n) :
+    diagonalOperator (fun k ↦ ((n : ℝ) - k) / n) q =
+      C (n : ℝ)⁻¹ * reflect (n - 1) (derivative (reflect n q)) := by
+  ext k
+  rw [coeff_diagonalOperator, coeff_C_mul, coeff_reflect]
+  by_cases hk : k ≤ n - 1
+  · rw [revAt_le hk, coeff_derivative, coeff_reflect, revAt_le (by lia : n - 1 - k + 1 ≤ n)]
+    have : (n : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by lia)
+    have hidx : n - (n - 1 - k + 1) = k := by lia
+    rw [hidx]
+    have : ((n - 1 - k : ℕ) : ℝ) + 1 = (n : ℝ) - k := by
+      push_cast [Nat.cast_sub (by assumption : k ≤ n - 1), Nat.cast_sub hn]
+      ring
+    grind
+  · have hRHS : (derivative (reflect n q)).coeff (revAt (n - 1) k) = 0 := by
+      apply Polynomial.coeff_eq_zero_of_natDegree_lt
+      rw [revAt_eq_self_of_lt (by lia : n - 1 < k)]
+      calc (derivative (reflect n q)).natDegree
+          ≤ (reflect n q).natDegree - 1 := Polynomial.natDegree_derivative_le _
+        _ ≤ n - 1 := by
+            have := Polynomial.natDegree_reflect_le (N := n) (p := q)
+            simp_all
+        _ < k := by lia
+    rw [hRHS, mul_zero]
+    by_cases k = n
+    · simp [*]
+    · rw [Polynomial.coeff_eq_zero_of_natDegree_lt (by lia : q.natDegree < k)]; simp
+
+theorem isPFPolynomial_of_X_mul {f₁ : ℝ[X]} (hp : IsPFPolynomial (X * f₁)) :
+    IsPFPolynomial f₁ := by
+  by_cases hf1 : f₁ = 0
+  · simp_all
+  refine IsPFPolynomial.of_realRooted_nonneg ?_ ?_
+  · intro k
+    have := hp.hasNonnegCoeffs (k + 1)
+    simp_all
+  · have hXsplit : (X * f₁).Splits := hp.eq_zero_or_splits.resolve_left (by
+      simp [mul_eq_zero, X_ne_zero, hf1])
+    simp_all
+
+theorem schurSzegoComp_X_mul_right (n : Nat) (hn : 1 ≤ n) (f p₁ : ℝ[X]) :
+    schurSzegoComp n f (X * p₁) =
+      X * schurSzegoComp (n - 1) (C (n : ℝ)⁻¹ * derivative f) p₁ := by
+  rw [schurSzegoComp_comm, schurSzegoComp_X_mul_left n hn p₁ f, schurSzegoComp_comm]
+
+theorem splits_diagonalOperator_pred (n : Nat) (hn : 1 ≤ n) {q : ℝ[X]}
+    (hq : q.natDegree ≤ n) (hsplit : q.Splits) :
+    (diagonalOperator (fun k ↦ ((n : ℝ) - k) / n) q).Splits := by
+  rw [diagonalOperator_pred_eq_reflect_derivative n hn q hq]
+  refine (Polynomial.Splits.C (R := ℝ) _).mul ?_
+  · have hrq : (reflect n q).Splits :=
+      (DegreeDropReversal.splits_reflect_iff hq).mpr hsplit
+    have hder : (derivative (reflect n q)).Splits := splits_derivative hrq
+    refine DegreeDropReversal.splits_reflect_of_splits hder ?_
+    refine le_trans (Polynomial.natDegree_derivative_le _) ?_
+    have := Polynomial.natDegree_reflect_le (N := n) (p := q)
+    simp_all
+
+theorem splits_schurSzegoComp_X_mul_left {n : Nat} (hn : 1 ≤ n) {f₁ p : ℝ[X]}
+    (hinner : (schurSzegoComp (n - 1) f₁ (C (n : ℝ)⁻¹ * derivative p)).Splits) :
+    (schurSzegoComp n (X * f₁) p).Splits := by
+  rw [schurSzegoComp_X_mul_left n hn f₁ p]
+  simp [*]
+
+theorem splits_schurSzegoComp_X_mul_right {n : Nat} (hn : 1 ≤ n) {f p₁ : ℝ[X]}
+    (hinner : (schurSzegoComp (n - 1) (C (n : ℝ)⁻¹ * derivative f) p₁).Splits) :
+    (schurSzegoComp n f (X * p₁)).Splits := by
+  rw [schurSzegoComp_X_mul_right n hn f p₁]
+  simp [*]
+
+theorem isPFPolynomial_reflect {n : Nat} {f : ℝ[X]} (hf : IsPFPolynomial f)
+    (hfdeg : f.natDegree ≤ n) : IsPFPolynomial (reflect n f) := by
+  rw [DegreeDropReversal.reflect_eq_X_pow_mul_reverse f hfdeg]
+  have : IsPFPolynomial f.reverse := hf.reverse
+  clear hf hfdeg
+  induction (n - f.natDegree) with
+  | zero => simp [*]
+  | succ m ih =>
+    rw [pow_succ, mul_comm (X ^ m) X, mul_assoc]
+    exact ih.X_mul
+
+theorem splits_schurSzegoComp_of_isPF (n : Nat) :
+    ∀ (f p : ℝ[X]), IsPFPolynomial f → f ≠ 0 → f.natDegree ≤ n →
+      p ≠ 0 → p.natDegree ≤ n → p.Splits →
+      (schurSzegoComp n f p).Splits := by
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    intro f p hf hf0 hfdeg _ hp hsplit
+    by_cases htriv : (schurSzegoComp n f p).natDegree ≤ 1
+    · by_cases hz : schurSzegoComp n f p = 0
+      · simp [*]
+      · exact (isRealRooted_of_natDegree_le_one hz htriv).2
+    have hn1 : 1 ≤ n := by
+      by_contra h
+      push Not at h
+      interval_cases n
+      · exact htriv ((natDegree_schurSzegoComp_le 0 f p).trans (by simp [*]))
+    by_cases hf00 : f.coeff 0 = 0
+    · have hfX : f = X * f.divX := DegreeDropReversal.eq_X_mul_divX_of_coeff_zero hf00
+      have hf1pf : IsPFPolynomial f.divX := isPFPolynomial_of_X_mul (hfX ▸ hf)
+      have hderiv_split : (C (n : ℝ)⁻¹ * derivative p).Splits :=
+        (Polynomial.Splits.C (R := ℝ) _).mul (splits_derivative hsplit)
+      have hinner : (schurSzegoComp (n - 1) f.divX (C (n : ℝ)⁻¹ * derivative p)).Splits := by
+        by_cases hz : schurSzegoComp (n - 1) f.divX (C (n : ℝ)⁻¹ * derivative p) = 0
+        · rw [hz]; simp
+        refine ih (n - 1) (by lia) f.divX (C (n : ℝ)⁻¹ * derivative p) hf1pf ?_ ?_ ?_ ?_
+          hderiv_split
+        · grind
+        · rw [Polynomial.natDegree_divX_eq_natDegree_tsub_one]; lia
+        · intro h
+          apply hz
+          rw [schurSzegoComp_comm, schurSzegoComp_eq_diagonalOperator, h]
+          simp
+        · exact (Polynomial.natDegree_C_mul_le _ _).trans
+            ((Polynomial.natDegree_derivative_le _).trans (by simp [*]))
+      have := splits_schurSzegoComp_X_mul_left hn1 (f₁ := f.divX) (p := p) hinner
+      grind
+    by_cases hp00 : p.coeff 0 = 0
+    · have hpX : p = X * p.divX := DegreeDropReversal.eq_X_mul_divX_of_coeff_zero hp00
+      have hp1split : p.divX.Splits := (DegreeDropReversal.splits_X_mul_iff).mp (hpX ▸ hsplit)
+      have hderiv_pf : IsPFPolynomial (C (n : ℝ)⁻¹ * derivative f) :=
+        (hf.derivative).const_mul (by positivity)
+      have hderiv_split : (C (n : ℝ)⁻¹ * derivative f).Splits :=
+        (Polynomial.Splits.C (R := ℝ) _).mul (splits_derivative
+          (hf.eq_zero_or_splits.resolve_left hf0))
+      have hinner : (schurSzegoComp (n - 1) (C (n : ℝ)⁻¹ * derivative f) p.divX).Splits := by
+        by_cases hz : schurSzegoComp (n - 1) (C (n : ℝ)⁻¹ * derivative f) p.divX = 0
+        · rw [hz]; simp
+        refine ih (n - 1) (by lia) (C (n : ℝ)⁻¹ * derivative f) p.divX hderiv_pf ?_ ?_ ?_ ?_
+          hp1split
+        · intro h; rw [h] at hz; simp at hz
+        · exact (Polynomial.natDegree_C_mul_le _ _).trans
+            ((Polynomial.natDegree_derivative_le _).trans (by simp [*]))
+        · grind
+        · rw [Polynomial.natDegree_divX_eq_natDegree_tsub_one]; lia
+      have := splits_schurSzegoComp_X_mul_right hn1 (f := f)
+        (p₁ := p.divX) hinner
+      grind
+    by_cases hlt : f.natDegree < n ∧ p.natDegree < n
+    · have hpn : p.coeff n = 0 := Polynomial.coeff_eq_zero_of_natDegree_lt hlt.2
+      rw [schurSzegoComp_eq_diagonalOperator_pred n hn1 f p hpn]
+      refine splits_diagonalOperator_pred n hn1 ?_ ?_
+      · exact (natDegree_schurSzegoComp_le (n - 1) f p).trans (by simp [*])
+      · grind
+    push Not at hlt
+    have hRf_pf : IsPFPolynomial (reflect n f) := isPFPolynomial_reflect hf hfdeg
+    have hRf_deg : (reflect n f).natDegree = n :=
+      DegreeDropReversal.natDegree_reflect_eq_of_coeff_zero_ne hfdeg hf00
+    have hRf_ne : reflect n f ≠ 0 := by simp [*]
+    have hRp_deg : (reflect n p).natDegree = n :=
+      DegreeDropReversal.natDegree_reflect_eq_of_coeff_zero_ne hp hp00
+    have hRp_ne : reflect n p ≠ 0 := by simp [*]
+    have hRp_split : (reflect n p).Splits :=
+      DegreeDropReversal.splits_reflect_of_splits hsplit hp
+    suffices hcore : (schurSzegoComp n (reflect n f) (reflect n p)).Splits by
+      rw [← reflect_schurSzegoComp] at hcore
+      exact (DegreeDropReversal.splits_reflect_iff (natDegree_schurSzegoComp_le n f p)).mp hcore
+    by_cases hfn : f.natDegree = n
+    · have hRf_coeff0 : (reflect n f).coeff 0 ≠ 0 := by
+        rw [coeff_reflect, revAt_zero]
+        rw [← hfn]
+        exact Polynomial.leadingCoeff_ne_zero.mpr hf0
+      exact core_squeeze hRf_pf hRf_ne hRf_deg hRf_coeff0 hRp_ne hRp_deg hRp_split
+    · have hRf_coeff0 : (reflect n f).coeff 0 = 0 := by
+        rw [coeff_reflect, revAt_zero]
+        exact Polynomial.coeff_eq_zero_of_natDegree_lt (by lia)
+      have hRfX : reflect n f = X * (reflect n f).divX :=
+        DegreeDropReversal.eq_X_mul_divX_of_coeff_zero hRf_coeff0
+      have hRf1_pf : IsPFPolynomial (reflect n f).divX :=
+        isPFPolynomial_of_X_mul (hRfX ▸ hRf_pf)
+      have hderiv_split : (C (n : ℝ)⁻¹ * derivative (reflect n p)).Splits :=
+        (Polynomial.Splits.C (R := ℝ) _).mul (splits_derivative hRp_split)
+      have hinner :
+          (schurSzegoComp (n - 1) (reflect n f).divX
+            (C (n : ℝ)⁻¹ * derivative (reflect n p))).Splits := by
+        by_cases hz : schurSzegoComp (n - 1) (reflect n f).divX
+            (C (n : ℝ)⁻¹ * derivative (reflect n p)) = 0
+        · rw [hz]; simp
+        refine ih (n - 1) (by lia) (reflect n f).divX
+          (C (n : ℝ)⁻¹ * derivative (reflect n p)) hRf1_pf ?_ ?_ ?_ ?_ hderiv_split
+        · grind
+        · rw [Polynomial.natDegree_divX_eq_natDegree_tsub_one, hRf_deg]
+        · intro h; rw [h] at hz; simp at hz
+        · exact (Polynomial.natDegree_C_mul_le _ _).trans
+            ((Polynomial.natDegree_derivative_le _).trans (by simp [*]))
+      have := splits_schurSzegoComp_X_mul_left hn1 (f₁ := (reflect n f).divX)
+        (p := reflect n p) hinner
+      grind
 
 /-- Nonzero finite Schur--Szegő composition theorem.  This is the substantive
 classical leaf: `f` is a nonzero PF polynomial, `p` is a nonzero real-rooted
@@ -1117,7 +1564,7 @@ composition is either zero or real-rooted. -/
 theorem finiteSchurSzegoCompositionNonzero :
     finiteSchurSzegoCompositionNonzeroStatement := by
   intro n f p hf hf0 hfdeg hp0 hp hsplit
-  sorry
+  exact Or.inr (splits_schurSzegoComp_of_isPF n f p hf hf0 hfdeg hp0 hp hsplit)
 
 /-- Finite Schur--Szegő composition theorem. The degenerate cases (`f = 0` or
 `p = 0`, where the composition vanishes) are discharged by
@@ -1171,8 +1618,7 @@ theorem hadamardProduct_oddEvenPolynomial (p q p' q' : ℝ[X]) :
   · subst hk
     rw [show k + k = 2 * k by ring]
     simp
-  · subst hk
-    simp
+  · simp [*]
 
 /-- Nonnegative-coefficient Schur--Polya/Garloff--Wagner real-rootedness
 interface for coefficientwise Hadamard products.
@@ -1199,11 +1645,9 @@ theorem IsPFPolynomial.hadamardProduct
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
     IsPFPolynomial (hadamardProduct p q) := by
   by_cases hp0 : p = 0
-  · subst p
-    simpa using IsPFPolynomial.zero
+  · simp_all
   by_cases hq0 : q = 0
-  · subst q
-    simpa using IsPFPolynomial.zero
+  · simp_all
   rcases hGW hp.hasNonnegCoeffs hq.hasNonnegCoeffs
       (hp.ne_zero_and_splits hp0)
       (hq.ne_zero_and_splits hq0) with ⟨hrr, hnn, hroots⟩
@@ -1219,7 +1663,7 @@ def schurPolyaWagnerHadamardPFStatement : Prop :=
 theorem schurPolyaWagnerHadamardPF_of_garloffWagner_nonneg
     (hGW : garloffWagnerHadamardNonnegRealRootedStatement) :
     schurPolyaWagnerHadamardPFStatement :=
-  fun {_ _} hp hq => hp.hadamardProduct hGW hq
+  fun {_ _} hp hq ↦ hp.hadamardProduct hGW hq
 
 /-- Nonnegative-coefficient Garloff--Wagner interlacing interface for
 coefficientwise Hadamard products.
@@ -1302,7 +1746,7 @@ right-half-plane stability of the product remains. -/
 theorem hadamardPreservesHurwitzStable_of_rightHalfPlane
     (h : hadamardPreservesRightHalfPlaneStableStatement) :
     hadamardPreservesHurwitzStableStatement :=
-  fun {_ _} ha hb => ⟨ha.1.hadamardProduct hb.1, h ha.1 hb.1 ha.2 hb.2⟩
+  fun {_ _} ha hb ↦ ⟨ha.1.hadamardProduct hb.1, h ha.1 hb.1 ha.2 hb.2⟩
 
 /-- The analytic core is conversely implied by Garloff--Wagner Theorem 1, so the
 two interfaces are equivalent: isolating the right-half-plane half loses no
@@ -1310,7 +1754,7 @@ content. -/
 theorem hadamardPreservesRightHalfPlaneStable_of_hurwitzStable
     (h : hadamardPreservesHurwitzStableStatement) :
     hadamardPreservesRightHalfPlaneStableStatement :=
-  fun {_ _} hann hbnn harhp hbrhp => (h ⟨hann, harhp⟩ ⟨hbnn, hbrhp⟩).2
+  fun {_ _} hann hbnn harhp hbrhp ↦ (h ⟨hann, harhp⟩ ⟨hbnn, hbrhp⟩).2
 
 /-- Garloff--Wagner Theorem 1 is equivalent to its right-half-plane analytic
 core; coefficient nonnegativity of the product is elementary. -/
@@ -1339,16 +1783,16 @@ theorem hadamardPreservesHurwitzStable_of_matrixRoute
     (hHad : hadamardPreservesHurwitzMatrixTNStatement)
     (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement) :
     hadamardPreservesHurwitzStableStatement :=
-  fun {_ _} ha hb => hBwd (hHad (hFwd ha) (hFwd hb))
+  fun {_ _} ha hb ↦ hBwd (hHad (hFwd ha) (hFwd hb))
 
 /-- Hurwitz-matrix form of the coefficientwise Hadamard product of two
 polynomials. -/
 theorem hurwitz_hadamardProduct_matrix (a b : ℝ[X]) :
     hurwitz (hadamardProduct a b).coeff =
-      Matrix.of fun i j => hurwitz a.coeff i j * hurwitz b.coeff i j := by
-  rw [show (hadamardProduct a b).coeff = fun n => a.coeff n * b.coeff n by
+      Matrix.of fun i j ↦ hurwitz a.coeff i j * hurwitz b.coeff i j := by
+  rw [show (hadamardProduct a b).coeff = fun n ↦ a.coeff n * b.coeff n by
     funext n
-    exact coeff_hadamardProduct a b n]
+    simp]
   exact hurwitz_mul_entrywise_matrix a.coeff b.coeff
 
 /-- Low-order checked part of the Hurwitz-matrix Hadamard leaf: every minor of
@@ -1422,7 +1866,7 @@ Hurwitz-matrix Hadamard leaf. -/
 theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_inBand
     (hInBand : HurwitzMatrixSchurProductDetFinThreeInBandStatement) :
     hadamardPreservesHurwitzMatrixTNDetLeThreeStatement := by
-  intro a b ha hb n rows cols hrows hcols hn
+  intro a _ ha hb _ _ _ hrows hcols hn
   exact hadamardPreservesHurwitzMatrixTN_det_of_card_le_three
     hInBand ha hb hrows hcols hn
 
@@ -1477,7 +1921,7 @@ Hadamard-product Hurwitz-matrix size-`≤ 3` statement. -/
 theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_hurwitzLeThree
     (hLeThree : HurwitzMatrixSchurProductDetLeThreeStatement) :
     hadamardPreservesHurwitzMatrixTNDetLeThreeStatement := by
-  intro a b ha hb n rows cols hrows hcols hn
+  intro a _ ha hb _ _ _ hrows hcols hn
   rw [hurwitz_hadamardProduct_matrix]
   exact hLeThree ha hb hrows hcols hn
 
@@ -1486,7 +1930,7 @@ size-`≤ 3`, consequence. -/
 theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_matrixTN
     (h : hadamardPreservesHurwitzMatrixTNStatement) :
     hadamardPreservesHurwitzMatrixTNDetLeThreeStatement := by
-  intro a b ha hb n rows cols hrows hcols _hn
+  intro a _ ha hb _ _ _ hrows hcols _
   exact h ha hb hrows hcols
 
 /-- The Hurwitz-matrix Hadamard leaf reduces to the pure matrix Schur core.
@@ -1498,7 +1942,7 @@ are totally nonnegative. -/
 theorem hadamardPreservesHurwitzMatrixTN_of_schur
     (h : HurwitzMatrixSchurProductTNStatement) :
     hadamardPreservesHurwitzMatrixTNStatement := by
-  intro a b ha hb
+  intro a _ ha hb
   rw [hurwitz_hadamardProduct_matrix]
   exact h ha hb
 
@@ -1508,8 +1952,8 @@ def hadamardPreservesHurwitzMatrixOddEvenPFStatement : Prop :=
   ∀ {a b : ℝ[X]},
     (hurwitz a.coeff).IsTotallyNonneg →
     (hurwitz b.coeff).IsTotallyNonneg →
-    IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n + 1)) ∧
-      IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n))
+    IsPolyaFreqSeq (fun n ↦ (hadamardProduct a b).coeff (2 * n + 1)) ∧
+      IsPolyaFreqSeq (fun n ↦ (hadamardProduct a b).coeff (2 * n))
 
 /-- The Hurwitz-matrix Hadamard leaf makes the odd coefficient subsequence of
 the Hadamard product Pólya-frequency. -/
@@ -1517,7 +1961,7 @@ theorem hadamardProduct_oddCoeff_isPolyaFreqSeq_of_matrixTN
     (h : hadamardPreservesHurwitzMatrixTNStatement)
     {a b : ℝ[X]} (ha : (hurwitz a.coeff).IsTotallyNonneg)
     (hb : (hurwitz b.coeff).IsTotallyNonneg) :
-    IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n + 1)) :=
+    IsPolyaFreqSeq (fun n ↦ (hadamardProduct a b).coeff (2 * n + 1)) :=
   hurwitz_isPolyaFreqSeq_odd (h ha hb)
 
 /-- The Hurwitz-matrix Hadamard leaf makes the even coefficient subsequence of
@@ -1526,14 +1970,14 @@ theorem hadamardProduct_evenCoeff_isPolyaFreqSeq_of_matrixTN
     (h : hadamardPreservesHurwitzMatrixTNStatement)
     {a b : ℝ[X]} (ha : (hurwitz a.coeff).IsTotallyNonneg)
     (hb : (hurwitz b.coeff).IsTotallyNonneg) :
-    IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n)) :=
+    IsPolyaFreqSeq (fun n ↦ (hadamardProduct a b).coeff (2 * n)) :=
   hurwitz_isPolyaFreqSeq_even (h ha hb)
 
 /-- Bundled odd/even PF consequence of the Hurwitz-matrix Hadamard leaf. -/
 theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_matrixTN
     (h : hadamardPreservesHurwitzMatrixTNStatement) :
     hadamardPreservesHurwitzMatrixOddEvenPFStatement :=
-  fun {_ _} ha hb =>
+  fun {_ _} ha hb ↦
     ⟨hadamardProduct_oddCoeff_isPolyaFreqSeq_of_matrixTN h ha hb,
       hadamardProduct_evenCoeff_isPolyaFreqSeq_of_matrixTN h ha hb⟩
 
@@ -1572,7 +2016,7 @@ theorem hadamardPreservesHurwitzMatrixTN_of_stableRoute
     (hThm1 : hadamardPreservesHurwitzStableStatement)
     (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement) :
     hadamardPreservesHurwitzMatrixTNStatement :=
-  fun {_ _} ha hb => hFwd (hThm1 (hBwd ha) (hBwd hb))
+  fun {_ _} ha hb ↦ hFwd (hThm1 (hBwd ha) (hBwd hb))
 
 /-- Low-order Hurwitz-matrix Hadamard minors from Garloff--Wagner Theorem 1
 plus both directions of the Hurwitz-matrix total-nonnegativity criterion. -/
@@ -1601,8 +2045,8 @@ theorem hadamardPreservesHurwitzStable_iff_matrixTN
     (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement) :
     hadamardPreservesHurwitzStableStatement ↔
       hadamardPreservesHurwitzMatrixTNStatement :=
-  ⟨fun h => hadamardPreservesHurwitzMatrixTN_of_stableRoute hBwd h hFwd,
-    fun h => hadamardPreservesHurwitzStable_of_matrixRoute hFwd h hBwd⟩
+  ⟨fun h ↦ hadamardPreservesHurwitzMatrixTN_of_stableRoute hBwd h hFwd,
+    fun h ↦ hadamardPreservesHurwitzStable_of_matrixRoute hFwd h hBwd⟩
 
 /-- Under the Hurwitz-matrix criterion, the right-half-plane analytic core of
 Garloff--Wagner Theorem 1 is equivalent to the matrix Hadamard leaf. -/
@@ -1771,9 +2215,9 @@ theorem garloffWagnerHadamardNonnegPrec_of_matrixHadamardBridges
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     garloffWagnerHadamardNonnegPrecStatement := by
   intro f g p q hf hg hp hq hfg hpq
-  have hFull1 : FullyInterlacingPair f.coeff (fun n => g.coeff n) :=
+  have hFull1 : FullyInterlacingPair f.coeff (fun n ↦ g.coeff n) :=
     hToFull hf hg hfg
-  have hFull2 : FullyInterlacingPair p.coeff (fun n => q.coeff n) :=
+  have hFull2 : FullyInterlacingPair p.coeff (fun n ↦ q.coeff n) :=
     hToFull hp hq hpq
   have hM1 : (hurwitz (oddEvenPolynomial f g).coeff).IsTotallyNonneg :=
     (hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair
@@ -1785,7 +2229,7 @@ theorem garloffWagnerHadamardNonnegPrec_of_matrixHadamardBridges
   rw [hadamardProduct_oddEvenPolynomial] at hMprod
   have hFull :
       FullyInterlacingPair (hadamardProduct f p).coeff
-        (fun n => (hadamardProduct g q).coeff n) :=
+        (fun n ↦ (hadamardProduct g q).coeff n) :=
     (hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair
       (hadamardProduct f p) (hadamardProduct g q)).mp hMprod
   exact hFullToPrec0 hFull
@@ -1836,7 +2280,7 @@ def garloffWagnerHadamardPFPrecStatement : Prop :=
 theorem garloffWagnerHadamardPFPrec_of_nonnegPrec
     (hGW : garloffWagnerHadamardNonnegPrecStatement) :
     garloffWagnerHadamardPFPrecStatement :=
-  fun {_ _ _ _} hf hg hp hq hfg hpq =>
+  fun {_ _ _ _} hf hg hp hq hfg hpq ↦
     hGW hf.hasNonnegCoeffs hg.hasNonnegCoeffs
       hp.hasNonnegCoeffs hq.hasNonnegCoeffs hfg hpq
 
@@ -1971,14 +2415,14 @@ theorem hadamardProduct_preserves_pf_of_hurwitzSchurClassicalInputs
 theorem schurPolyaWagnerHadamardPF_of_garloffWagner_prec0
     (hGW : garloffWagnerHadamardPFPrec0Statement) :
     schurPolyaWagnerHadamardPFStatement :=
-  fun {_ _} hp hq => hadamardProduct_preserves_pf_of_garloffWagner hGW hp hq
+  fun {_ _} hp hq ↦ hadamardProduct_preserves_pf_of_garloffWagner hGW hp hq
 
 theorem schurPolyaWagnerHadamardPF_of_matrixHadamardBridges
     (hToFull : NonnegPrecToFullyInterlacingPairStatement)
     (hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     schurPolyaWagnerHadamardPFStatement :=
-  fun {_ _} hp hq =>
+  fun {_ _} hp hq ↦
     hadamardProduct_preserves_pf_of_matrixHadamardBridges
       hToFull hMatHad hFullToPrec0 hp hq
 
@@ -1987,7 +2431,7 @@ theorem schurPolyaWagnerHadamardPF_of_hurwitzSchur
     (hSchur : HurwitzMatrixSchurProductTNStatement)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     schurPolyaWagnerHadamardPFStatement :=
-  fun {_ _} hp hq =>
+  fun {_ _} hp hq ↦
     hadamardProduct_preserves_pf_of_hurwitzSchur
       hToFull hSchur hFullToPrec0 hp hq
 
@@ -1997,7 +2441,7 @@ theorem schurPolyaWagnerHadamardPF_of_matrixClassicalInputs
     (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hInt : FullyInterlacingPairInterlaceStatement) :
     schurPolyaWagnerHadamardPFStatement :=
-  fun {_ _} hp hq =>
+  fun {_ _} hp hq ↦
     hadamardProduct_preserves_pf_of_matrixClassicalInputs
       hRoute hMatHad hASW hInt hp hq
 
@@ -2007,7 +2451,7 @@ theorem schurPolyaWagnerHadamardPF_of_hurwitzSchurClassicalInputs
     (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hInt : FullyInterlacingPairInterlaceStatement) :
     schurPolyaWagnerHadamardPFStatement :=
-  fun {_ _} hp hq =>
+  fun {_ _} hp hq ↦
     hadamardProduct_preserves_pf_of_hurwitzSchurClassicalInputs
       hRoute hSchur hASW hInt hp hq
 
@@ -2132,15 +2576,15 @@ products. This is finite-sequence closure packaged through coefficient
 polynomials. -/
 def polyaFrequencyHadamardCoeffStatement : Prop :=
   ∀ {p q : ℝ[X]},
-    IsPolyaFreqSeq (fun n => p.coeff n) →
-    IsPolyaFreqSeq (fun n => q.coeff n) →
-    IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)
+    IsPolyaFreqSeq (fun n ↦ p.coeff n) →
+    IsPolyaFreqSeq (fun n ↦ q.coeff n) →
+    IsPolyaFreqSeq (fun n ↦ (hadamardProduct p q).coeff n)
 
 theorem polyaFrequencyHadamardCoeff_of_schurPolyaWagner
     (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
     (hSPW : schurPolyaWagnerHadamardPFStatement) :
     polyaFrequencyHadamardCoeffStatement :=
-  fun {_ _} hp hq =>
+  fun {_ _} hp hq ↦
     (hSPW (IsPFPolynomial.of_sequence hASW hp)
       (IsPFPolynomial.of_sequence hASW hq)).to_sequence
 
