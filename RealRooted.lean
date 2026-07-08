@@ -38,6 +38,7 @@ import RealRooted.MultiplierSequence
 import RealRooted.Hadamard
 import RealRooted.GraceHalfPlane
 import RealRooted.Apolarity
+import RealRooted.HeilmannLieb
 import RealRooted.EulerOperator
 import RealRooted.Favard
 import RealRooted.AissenSchoenbergWhitney
