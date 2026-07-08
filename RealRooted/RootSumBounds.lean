@@ -90,39 +90,6 @@ theorem nextCoeff_add_C_mul_of_natDegree_succ {f g : ℝ[X]} {μ : ℝ}
   rw [nextCoeff_of_natDegree_pos hsum_pos, hsum_deg, hdeg, Nat.add_sub_cancel,
     coeff_add, coeff_C_mul, leadingCoeff]
 
-/-- If `g` has strictly larger degree than `f`, then
-`C (1 - β) * f + C β * g` has the same degree as `g`, provided `β ≠ 0`. -/
-theorem natDegree_closedSegment_of_natDegree_lt {f g : ℝ[X]} {β : ℝ}
-    (hβ : β ≠ 0) (hdeg : f.natDegree < g.natDegree) :
-    (C (1 - β) * f + C β * g).natDegree = g.natDegree := by
-  refine natDegree_add_C_mul_of_natDegree_lt (f := C (1 - β) * f) hβ ?_
-  exact (natDegree_C_mul_le (1 - β) f).trans_lt hdeg
-
-/-- If `g` has strictly larger degree than `f`, then the leading coefficient of
-`C (1 - β) * f + C β * g` is the scaled leading coefficient of `g`. -/
-theorem leadingCoeff_closedSegment_of_natDegree_lt {f g : ℝ[X]} {β : ℝ}
-    (hβ : β ≠ 0) (hdeg : f.natDegree < g.natDegree) :
-    (C (1 - β) * f + C β * g).leadingCoeff = β * g.leadingCoeff := by
-  exact leadingCoeff_add_C_mul_of_natDegree_lt (f := C (1 - β) * f) hβ
-    ((natDegree_C_mul_le (1 - β) f).trans_lt hdeg)
-
-/-- In the degree-jump-by-one case, the next coefficient of the closed-segment
-member is the scaled leading coefficient of `f` plus the scaled next-highest
-coefficient of `g`. -/
-theorem nextCoeff_closedSegment_of_natDegree_succ {f g : ℝ[X]} {β : ℝ}
-    (hβ : β ≠ 0) (hdeg : g.natDegree = f.natDegree + 1) :
-    (C (1 - β) * f + C β * g).nextCoeff =
-      (1 - β) * f.leadingCoeff + β * g.coeff f.natDegree := by
-  have hlt : f.natDegree < g.natDegree := by
-    rw [hdeg]
-    exact Nat.lt_succ_self _
-  have hsum_deg := natDegree_closedSegment_of_natDegree_lt hβ hlt
-  have hsum_pos : 0 < (C (1 - β) * f + C β * g).natDegree := by
-    rw [hsum_deg, hdeg]
-    exact Nat.succ_pos _
-  rw [nextCoeff_of_natDegree_pos hsum_pos, hsum_deg, hdeg, Nat.add_sub_cancel,
-    coeff_add, coeff_C_mul, coeff_C_mul, leadingCoeff]
-
 end Polynomial
 
 namespace RealRooted
@@ -210,67 +177,20 @@ theorem roots_sum_lt_natDegree_mul_of_succDegree_add_right_small
     _ < (g.natDegree : ℝ) * A := hδ μ hμ hμδ
     _ = ((f + C μ * g).natDegree : ℝ) * A := by rw [hnat]
 
-/-- Closed-segment form of
-`roots_sum_lt_natDegree_mul_of_succDegree_add_right_small`: for a
-positive-leading succ-degree pair, the root sum of
-`C (1 - β) * f + C β * g` eventually lies below `(natDegree : ℝ) * A` as
-`β → 0+`. -/
-theorem roots_sum_lt_natDegree_mul_of_succDegree_closedSegment_left_small
-    {f g : ℝ[X]} (hf_pos : 0 < f.leadingCoeff) (hg_pos : 0 < g.leadingCoeff)
-    (hdeg : g.natDegree = f.natDegree + 1) (A : ℝ) :
-    ∃ δ : ℝ, 0 < δ ∧ ∀ β : ℝ, 0 < β → β < δ →
-      (C (1 - β) * f + C β * g).Splits →
-        (C (1 - β) * f + C β * g).roots.sum <
-          ((C (1 - β) * f + C β * g).natDegree : ℝ) * A := by
-  obtain ⟨δ, hδ_pos, hδ⟩ :=
-    neg_add_mul_div_mul_eventually_lt (a := f.leadingCoeff) (b := g.leadingCoeff)
-      (c := g.coeff f.natDegree - f.leadingCoeff) (B := (g.natDegree : ℝ) * A)
-      hf_pos hg_pos
-  refine ⟨δ, hδ_pos, ?_⟩
-  intro β hβ hβδ hp_split
-  have hβ_ne : β ≠ 0 := ne_of_gt hβ
-  have hlt : f.natDegree < g.natDegree := by
-    rw [hdeg]
-    exact Nat.lt_succ_self _
-  have hnat := Polynomial.natDegree_closedSegment_of_natDegree_lt hβ_ne hlt
-  have hlc : (C (1 - β) * f + C β * g).leadingCoeff =
-      β * g.leadingCoeff :=
-    Polynomial.leadingCoeff_closedSegment_of_natDegree_lt hβ_ne hlt
-  have hnext : (C (1 - β) * f + C β * g).nextCoeff =
-      (1 - β) * f.leadingCoeff + β * g.coeff f.natDegree :=
-    Polynomial.nextCoeff_closedSegment_of_natDegree_succ hβ_ne hdeg
-  have hlc_ne : (C (1 - β) * f + C β * g).leadingCoeff ≠ 0 := by
-    rw [hlc]
-    exact ne_of_gt (mul_pos hβ hg_pos)
-  have hsum := hp_split.roots_sum_eq_neg_nextCoeff_div_leadingCoeff hlc_ne
-  calc
-    (C (1 - β) * f + C β * g).roots.sum =
-        -((C (1 - β) * f + C β * g).nextCoeff) /
-          (C (1 - β) * f + C β * g).leadingCoeff := hsum
-    _ = - (f.leadingCoeff + β * (g.coeff f.natDegree - f.leadingCoeff)) /
-        (β * g.leadingCoeff) := by
-      rw [hnext, hlc]
-      ring
-    _ < (g.natDegree : ℝ) * A := hδ β hβ hβδ
-    _ = ((C (1 - β) * f + C β * g).natDegree : ℝ) * A := by rw [hnat]
-
 /-- Polynomial-root form: if the sum of the roots of `p` is strictly less than
 `(p.roots.card : ℝ) * A`, then `p` has a root strictly below `A`. -/
 theorem exists_root_lt_of_roots_sum_lt_card_mul {p : ℝ[X]} {A : ℝ}
     (h : p.roots.sum < (p.roots.card : ℝ) * A) :
-    ∃ r : ℝ, r ∈ p.roots ∧ r < A := by
-  obtain ⟨r, hr, hlt⟩ := Multiset.exists_lt_of_sum_lt_card_mul h
-  exact ⟨r, hr, hlt⟩
+    ∃ r : ℝ, r ∈ p.roots ∧ r < A :=
+  Multiset.exists_lt_of_sum_lt_card_mul h
 
 /-- Split-polynomial form: if `p` splits and the sum of its roots is strictly
 less than `(p.natDegree : ℝ) * A`, then `p` has a root strictly below `A`. -/
 theorem exists_root_lt_of_roots_sum_lt_natDegree_mul {p : ℝ[X]} {A : ℝ}
     (hp : p.Splits) (h : p.roots.sum < (p.natDegree : ℝ) * A) :
-    ∃ r : ℝ, r ∈ p.roots ∧ r < A := by
-  have hcard : p.roots.card = p.natDegree := hp.natDegree_eq_card_roots.symm
-  apply exists_root_lt_of_roots_sum_lt_card_mul
-  rw [hcard]
-  exact h
+    ∃ r : ℝ, r ∈ p.roots ∧ r < A :=
+  exists_root_lt_of_roots_sum_lt_card_mul <| by
+    simpa [hp.natDegree_eq_card_roots.symm] using h
 
 /-- In a positive-leading succ-degree pencil `f + C μ * g`, some root is below
 any fixed bound `A` for all sufficiently small positive `μ`, assuming the
@@ -286,21 +206,5 @@ theorem exists_root_lt_of_succDegree_add_right_small
   refine ⟨δ, hδ_pos, ?_⟩
   intro μ hμ hμδ hp_split
   exact exists_root_lt_of_roots_sum_lt_natDegree_mul hp_split (hδ μ hμ hμδ hp_split)
-
-/-- In a positive-leading succ-degree closed segment
-`C (1 - β) * f + C β * g`, some root is below any fixed bound `A` for all
-sufficiently small positive `β`, assuming the segment member splits. -/
-theorem exists_root_lt_of_succDegree_closedSegment_left_small
-    {f g : ℝ[X]} (hf_pos : 0 < f.leadingCoeff) (hg_pos : 0 < g.leadingCoeff)
-    (hdeg : g.natDegree = f.natDegree + 1) (A : ℝ) :
-    ∃ δ : ℝ, 0 < δ ∧ ∀ β : ℝ, 0 < β → β < δ →
-      (C (1 - β) * f + C β * g).Splits →
-        ∃ r : ℝ, r ∈ (C (1 - β) * f + C β * g).roots ∧ r < A := by
-  obtain ⟨δ, hδ_pos, hδ⟩ :=
-    roots_sum_lt_natDegree_mul_of_succDegree_closedSegment_left_small hf_pos
-      hg_pos hdeg A
-  refine ⟨δ, hδ_pos, ?_⟩
-  intro β hβ hβδ hp_split
-  exact exists_root_lt_of_roots_sum_lt_natDegree_mul hp_split (hδ β hβ hβδ hp_split)
 
 end RealRooted

@@ -25,7 +25,7 @@ This is the polynomial bridge for the local-lower-count part of issue #42:
 after an analytic continuity argument supplies the per-root lower counts near a
 fixed positive parameter, the threshold count equality is finite bookkeeping.
 -/
-theorem exists_radius_card_roots_filter_gt_eq_of_sameDegree_local_lower_counts
+private theorem exists_radius_card_roots_filter_gt_eq_of_sameDegree_local_lower_counts
     {p : ℝ[X]} {x : ℝ} (hx : x ∉ p.roots) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ q : ℝ[X], p.Splits → q.Splits →
       q.natDegree = p.natDegree →
@@ -45,7 +45,7 @@ theorem exists_radius_card_roots_filter_gt_eq_of_sameDegree_local_lower_counts
 
 /-- A natural-number-valued function that is locally constant along a closed
 real interval takes equal values at the endpoints. -/
-theorem eq_of_locally_constant_on_Icc {N : ℝ → ℕ} {a b : ℝ} (hab : a ≤ b)
+private theorem eq_of_locally_constant_on_Icc {N : ℝ → ℕ} {a b : ℝ} (hab : a ≤ b)
     (hloc : ∀ t ∈ Set.Icc a b, ∃ ε > 0, ∀ u ∈ Set.Icc a b,
       |u - t| < ε → N u = N t) :
     N a = N b := by
@@ -69,7 +69,7 @@ root-continuity theorem: once each root of `f + C μ * g` keeps at least its
 multiplicity inside every sufficiently small ball for nearby parameters, the
 finite radius bridge gives exact equality of the upper count near `μ`.
 -/
-theorem rightFamily_local_card_roots_gt_eq_of_local_lower_counts
+private theorem rightFamily_local_card_roots_gt_eq_of_local_lower_counts
     {f g : ℝ[X]} {μ₀ μ₁ μ x : ℝ}
     (hμ : μ ∈ Set.Icc μ₀ μ₁)
     (hdeg : ∀ ν ∈ Set.Icc μ₀ μ₁,
@@ -115,10 +115,8 @@ theorem rightFamily_card_roots_gt_eq_of_local_lower_counts
   refine eq_of_locally_constant_on_Icc
     (N := fun μ => ((f + C μ * g).roots.filter (x < ·)).card) hμ₁ ?_
   intro μ hμ
-  have hdegμ : ∀ ν ∈ Set.Icc μ₀ μ₁,
-      (f + C ν * g).natDegree = (f + C μ * g).natDegree := fun ν hν => by
-    rw [hdeg ν hν, hdeg μ hμ]
   exact rightFamily_local_card_roots_gt_eq_of_local_lower_counts
-    (f := f) (g := g) (μ := μ) hμ hdegμ hrr hne (hlower μ hμ)
+    (f := f) (g := g) (μ := μ) hμ
+    (fun ν hν => by rw [hdeg ν hν, hdeg μ hμ]) hrr hne (hlower μ hμ)
 
 end RealRooted
