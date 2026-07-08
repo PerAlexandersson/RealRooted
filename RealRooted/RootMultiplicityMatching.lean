@@ -76,25 +76,6 @@ theorem rel_sum_of_forall {α β ι : Type*} {r : α → β → Prop} {s : Finse
         (ih fun j hj => h j (Finset.mem_insert_of_mem hj))
 
 /--
-A matching gives the local lower count around any fixed source value.
-
-This is the finite bridge from a future multiplicity-preserving analytic
-matching theorem to the per-root lower-count input used by issue #42.
--/
-theorem count_le_card_filter_of_rel
-    {α β : Type*} [DecidableEq α] {R : α → β → Prop} [DecidableRel R]
-    {s : Multiset α} {u : Multiset β} (h : Multiset.Rel R s u) (a : α) :
-    s.count a ≤ (u.filter (fun y => R a y)).card := by
-  induction h with
-  | zero => simp
-  | @cons x y s u hxy _ ih =>
-      rw [Multiset.count_cons, Multiset.filter_cons, Multiset.card_add]
-      by_cases hax : a = x
-      · subst hax
-        simp [hxy, Nat.add_comm, Nat.add_le_add_right ih]
-      · simp [hax, le_trans ih (Nat.le_add_left _ _)]
-
-/--
 Assemble local repeated-root clusters into one global proximity matching.
 
 For each distinct source value `r`, the cluster `cluster r` has exactly
