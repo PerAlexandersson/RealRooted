@@ -99,16 +99,28 @@ def risingFactorialPolynomial (μ : ℝ) (k : ℕ) : ℝ[X] :=
 
 /-- Brenti's falling-factorial inverse transform, paper Lemma 3.9 / Brenti
 Theorem 2.4.2. -/
-def brentiFallingFactorialStatement : Prop :=
+abbrev brentiFallingFactorialStatement : Prop :=
   ∀ {p : ℝ[X]},
     HasOnlyNonposRoots (basisTransform fallingFactorialPolynomial p) →
       HasOnlyNonposRoots p
 
+/-- Brenti's falling-factorial inverse transform. -/
+theorem brentiFallingFactorial {p : ℝ[X]}
+    (h : HasOnlyNonposRoots (basisTransform fallingFactorialPolynomial p)) :
+    HasOnlyNonposRoots p := by
+  sorry
+
 /-- Su--Yang--Zhang generalized rising-factorial transform, paper Lemma 3.11.
 -/
-def generalizedRisingFactorialPreservesPFStatement : Prop :=
+abbrev generalizedRisingFactorialPreservesPFStatement : Prop :=
   ∀ {μ : ℝ}, 0 < μ → ∀ {p : ℝ[X]},
     IsPFPolynomial p → IsPFPolynomial (basisTransform (risingFactorialPolynomial μ) p)
+
+/-- Su--Yang--Zhang generalized rising-factorial transform preserves PF polynomials. -/
+theorem generalizedRisingFactorialPreservesPF {μ : ℝ} (hμ : 0 < μ) {p : ℝ[X]}
+    (hp : IsPFPolynomial p) :
+    IsPFPolynomial (basisTransform (risingFactorialPolynomial μ) p) := by
+  sorry
 
 /-- Coefficient `N_m(n,k)` of the generalized Narayana polynomial. -/
 def narayanaTransformCoeff (m n k : ℕ) : ℝ :=
@@ -200,13 +212,23 @@ theorem HasNonnegCoeffs.narayanaTransform {m : ℕ} {p : ℝ[X]}
 
 /-- Dominici--Johnston--Jordaan root-location input for the generalized
 Narayana polynomials, paper Lemma 2.5. -/
-def narayanaPolynomialRootLocationStatement : Prop :=
+abbrev narayanaPolynomialRootLocationStatement : Prop :=
   ∀ m n : ℕ, IsPFPolynomial (narayanaPolynomial m n)
 
+/-- The generalized Narayana polynomials are PF polynomials. -/
+theorem narayanaPolynomialRootLocation (m n : ℕ) :
+    IsPFPolynomial (narayanaPolynomial m n) := by
+  sorry
+
 /-- Mao--Wang Theorem 1.1 in zero-aware PF-polynomial form. -/
-def narayanaTransformPreservesPFStatement : Prop :=
+abbrev narayanaTransformPreservesPFStatement : Prop :=
   ∀ (m : ℕ) {p : ℝ[X]},
     IsPFPolynomial p → IsPFPolynomial (narayanaTransform m p)
+
+/-- The Narayana transform preserves PF polynomials. -/
+theorem narayanaTransformPreservesPF (m : ℕ) {p : ℝ[X]} (hp : IsPFPolynomial p) :
+    IsPFPolynomial (narayanaTransform m p) := by
+  sorry
 
 /-- Gribinski--Marcus rectangular additive convolution coefficient. -/
 def rectangularConvolutionGamma (m n i j : ℕ) : ℝ :=
@@ -515,7 +537,7 @@ theorem coeff_rectangularAdditiveConvolution_narayanaPolynomial_of_le
 
 /-- Gribinski--Marcus preservation theorem in the form used by Mao--Wang,
 paper Lemma 2.6. -/
-def rectangularAdditiveConvolutionPreservesNonnegRootsStatement : Prop :=
+abbrev rectangularAdditiveConvolutionPreservesNonnegRootsStatement : Prop :=
   ∀ {m n : ℕ} {f g : ℝ[X]},
     f.natDegree = n →
     g.natDegree = n →
@@ -524,5 +546,13 @@ def rectangularAdditiveConvolutionPreservesNonnegRootsStatement : Prop :=
     HasOnlyNonnegRoots f →
     HasOnlyNonnegRoots g →
       HasOnlyNonnegRoots (rectangularAdditiveConvolution m n f g)
+
+/-- Gribinski--Marcus preservation theorem for rectangular additive convolution. -/
+theorem rectangularAdditiveConvolutionPreservesNonnegRoots {m n : ℕ} {f g : ℝ[X]}
+    (hfdeg : f.natDegree = n) (hgdeg : g.natDegree = n)
+    (hflead : 0 < f.leadingCoeff) (hglead : 0 < g.leadingCoeff)
+    (hfroots : HasOnlyNonnegRoots f) (hgroots : HasOnlyNonnegRoots g) :
+    HasOnlyNonnegRoots (rectangularAdditiveConvolution m n f g) := by
+  sorry
 
 end RealRooted
