@@ -33,6 +33,29 @@ def indepPoly {V : Type u} [Fintype V] [DecidableEq V]
       G.IsIndepSet (s : Set V)),
     (X : ℝ[X]) ^ s.card
 
+/-- Independent subsets of a fixed finite vertex support. -/
+def indepSetsOn {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    (S : Finset V) : Finset (Finset V) :=
+  S.powerset.filter fun s : Finset V => G.IsIndepSet (s : Set V)
+
+/-- Support-restricted independence polynomial. -/
+def indepPolyOn {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    (S : Finset V) : ℝ[X] :=
+  ∑ s ∈ indepSetsOn G S, (X : ℝ[X]) ^ s.card
+
+/-- The support-restricted definition recovers `indepPoly` on the full vertex set. -/
+theorem indepPoly_eq_indepPolyOn_univ {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] :
+    indepPoly G = indepPolyOn G Finset.univ := by
+  unfold indepPoly indepPolyOn indepSetsOn
+  apply Finset.sum_congr
+  · ext s
+    simp
+  · intro s hs
+    rfl
+
 /-- Claw-free graph: no vertex has three pairwise non-adjacent neighbors. -/
 def ClawFree {V : Type u} (G : _root_.SimpleGraph V) : Prop :=
   ∀ v : V, ∀ s : Finset V, (∀ w ∈ s, G.Adj v w) → ¬ G.IsNIndepSet 3 s
@@ -57,6 +80,123 @@ theorem ClawFree.induce {V : Type u} {G : _root_.SimpleGraph V}
     · rw [Finset.card_map]
       exact hind.card_eq
   exact hG v t' ht'_neigh ht'_ind
+
+/-- Inserting a new vertex preserves independence exactly when the old set was
+independent and every old vertex is non-adjacent to the new one. -/
+theorem isIndepSet_insert_iff {V : Type u} [DecidableEq V]
+    {G : _root_.SimpleGraph V} {v : V} {s : Finset V} (hv : v ∉ s) :
+    G.IsIndepSet ((insert v s : Finset V) : Set V) ↔
+      G.IsIndepSet (s : Set V) ∧ ∀ w ∈ s, ¬ G.Adj v w := by
+  constructor
+  · intro h
+    constructor
+    · intro a ha b hb hne hadj
+      exact h (by simp [ha]) (by simp [hb]) hne hadj
+    · intro w hw hadj
+      exact h (by simp) (by simp [hw]) (fun hvw => hv (by simpa [hvw] using hw)) hadj
+  · rintro ⟨hind, hnonadj⟩ a ha b hb hne hadj
+    simp only [Finset.mem_coe, Finset.mem_insert] at ha hb
+    rcases ha with rfl | ha
+    · rcases hb with rfl | hb
+      · exact hne rfl
+      · exact hnonadj b hb hadj
+    · rcases hb with rfl | hb
+      · exact hnonadj a ha hadj.symm
+      · exact hind ha hb hne hadj
+
+/-- Independent sets on `insert v S` split into those avoiding `v` and those
+containing `v`.  In the latter case the remaining vertices must lie in the
+non-neighbor support. -/
+theorem indepSetsOn_insert {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    {S : Finset V} {v : V} (hv : v ∉ S) :
+    indepSetsOn G (insert v S) =
+      indepSetsOn G S ∪
+        (indepSetsOn G (S.filter fun w => ¬ G.Adj v w)).image (insert v) := by
+  ext t
+  simp only [indepSetsOn, Finset.mem_filter, Finset.mem_powerset, Finset.mem_union,
+    Finset.mem_image]
+  constructor
+  · rintro ⟨htsub, htind⟩
+    by_cases hvt : v ∈ t
+    · refine Or.inr ?_
+      refine ⟨t.erase v, ?_, ?_⟩
+      · have hsubS : t.erase v ⊆ S := by
+          intro w hw
+          have hwt : w ∈ t := Finset.mem_of_mem_erase hw
+          have hwins : w = v ∨ w ∈ S := Finset.mem_insert.mp (htsub hwt)
+          rcases hwins with hwv | hS
+          · have hv_mem_erase : v ∈ t.erase v := by
+              exact hwv ▸ hw
+            exact False.elim (Finset.notMem_erase v t hv_mem_erase)
+          · exact hS
+        have hnotadj : ∀ w ∈ t.erase v, ¬ G.Adj v w := by
+          intro w hw
+          have hne : v ∉ t.erase v := Finset.notMem_erase v t
+          have ht_eq : insert v (t.erase v) = t := Finset.insert_erase hvt
+          have htind' : G.IsIndepSet ((insert v (t.erase v) : Finset V) : Set V) := by
+            simpa [ht_eq] using htind
+          exact ((isIndepSet_insert_iff hne).mp htind').2 w hw
+        exact ⟨fun w hw => Finset.mem_filter.mpr ⟨hsubS hw, hnotadj w hw⟩,
+          ((isIndepSet_insert_iff (Finset.notMem_erase v t)).mp
+            (by simpa [Finset.insert_erase hvt] using htind)).1⟩
+      · exact Finset.insert_erase hvt
+    · refine Or.inl ?_
+      exact ⟨fun w hw => by
+        rcases Finset.mem_insert.mp (htsub hw) with hwv | hS
+        · exact False.elim (hvt (by simpa [hwv] using hw))
+        · exact hS, htind⟩
+  · rintro (hleft | hright)
+    · exact ⟨fun w hw => Finset.mem_insert.mpr (Or.inr (hleft.1 hw)), hleft.2⟩
+    · rcases hright with ⟨u, hu, htu⟩
+      subst htu
+      have hvu : v ∉ u := fun h => hv (Finset.mem_filter.mp (hu.1 h)).1
+      refine ⟨?_, ?_⟩
+      · intro w hw
+        rcases Finset.mem_insert.mp hw with hwv | hwu
+        · rw [hwv]
+          exact Finset.mem_insert_self v S
+        · exact Finset.mem_insert.mpr (Or.inr (Finset.mem_filter.mp (hu.1 hwu)).1)
+      · exact (isIndepSet_insert_iff hvu).mpr
+          ⟨hu.2, fun w hw => (Finset.mem_filter.mp (hu.1 hw)).2⟩
+
+/-- Vertex insertion recurrence for the support-restricted independence
+polynomial. -/
+theorem indepPolyOn_insert {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    {S : Finset V} {v : V} (hv : v ∉ S) :
+    indepPolyOn G (insert v S) =
+      indepPolyOn G S + X * indepPolyOn G (S.filter fun w => ¬ G.Adj v w) := by
+  unfold indepPolyOn
+  rw [indepSetsOn_insert G hv]
+  have hdisj : Disjoint (indepSetsOn G S)
+      ((indepSetsOn G (S.filter fun w => ¬ G.Adj v w)).image (insert v)) := by
+    rw [Finset.disjoint_left]
+    intro t ht htimg
+    have hvt_not : v ∉ t :=
+      Finset.notMem_of_mem_powerset_of_notMem (Finset.mem_filter.mp ht).1 hv
+    rcases Finset.mem_image.mp htimg with ⟨u, hu, rfl⟩
+    exact hvt_not (Finset.mem_insert_self v u)
+  rw [Finset.sum_union hdisj]
+  rw [Finset.sum_image]
+  · rw [Finset.mul_sum]
+    congr 1
+    apply Finset.sum_congr rfl
+    intro u hu
+    have hsub : u ⊆ S.filter fun w => ¬ G.Adj v w :=
+      Finset.mem_powerset.mp (Finset.mem_filter.mp hu).1
+    have hvu : v ∉ u := fun h => hv (Finset.mem_filter.mp (hsub h)).1
+    rw [Finset.card_insert_of_notMem hvu]
+    simp [pow_succ, mul_comm]
+  · intro u hu w hw h
+    have hsubu : u ⊆ S.filter fun x => ¬ G.Adj v x :=
+      Finset.mem_powerset.mp (Finset.mem_filter.mp hu).1
+    have hsubw : w ⊆ S.filter fun x => ¬ G.Adj v x :=
+      Finset.mem_powerset.mp (Finset.mem_filter.mp hw).1
+    have hvu : v ∉ u := fun hmem => hv (Finset.mem_filter.mp (hsubu hmem)).1
+    have hvw : v ∉ w := fun hmem => hv (Finset.mem_filter.mp (hsubw hmem)).1
+    have herase := congrArg (fun t : Finset V => t.erase v) h
+    simpa [Finset.erase_insert hvu, Finset.erase_insert hvw] using herase
 
 /-- A finite set of edges is a matching if distinct edges do not share a vertex. -/
 def IsMatchingEdgeFinset {V : Type u} (G : _root_.SimpleGraph V)
