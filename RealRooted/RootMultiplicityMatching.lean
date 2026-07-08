@@ -1,5 +1,4 @@
 import RealRooted.RootCountFinite
-import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 
@@ -234,39 +233,3 @@ theorem card_filter_gt_eq_of_forall_le_count_and_card_eq
   exact Nat.le_antisymm (by lia) hgt
 
 end Multiset
-
-namespace Polynomial
-
-/--
-A cluster of selected nearby roots gives the corresponding lower count in the
-root multiset.
-
-This is the algebraic bridge for the issue #42 peeling route when the analytic
-argument produces actual nearby roots as a submultiset of `p.roots`.
--/
-theorem card_le_card_roots_filter_of_le_roots
-    {p : ℝ[X]} {s : Multiset ℝ} {a ρ : ℝ}
-    (hs : s ≤ p.roots) (hnear : ∀ q ∈ s, |q - a| < ρ) :
-    s.card ≤ (p.roots.filter (fun q => |q - a| < ρ)).card :=
-  Multiset.card_le_card_filter_of_le_of_forall_mem hs hnear
-
-/--
-A local factorization by nearby monic linear factors gives the corresponding
-lower count in the root multiset.
-
-This is the algebraic bridge for the issue #42 peeling route: once the analytic
-argument produces a product of factors `X - C q`, all with `q` in the ball
-around `a`, and proves that this product divides the perturbed polynomial `p`,
-the local lower-count hypothesis needed by `SmallPositiveParameterCount`
-follows from Mathlib's `Multiset.prod_X_sub_C_dvd_iff_le_roots`.
--/
-theorem card_le_card_roots_filter_of_prod_X_sub_C_dvd
-    {p : ℝ[X]} {s : Multiset ℝ} {a ρ : ℝ} (hp : p ≠ 0)
-    (hdvd : (s.map (fun q => (Polynomial.X - Polynomial.C q : ℝ[X]))).prod ∣ p)
-    (hnear : ∀ q ∈ s, |q - a| < ρ) :
-    s.card ≤ (p.roots.filter (fun q => |q - a| < ρ)).card := by
-  exact card_le_card_roots_filter_of_le_roots
-    ((Multiset.prod_X_sub_C_dvd_iff_le_roots hp s).mp (by simpa using hdvd))
-    hnear
-
-end Polynomial
