@@ -1,7 +1,6 @@
 import Mathlib.Algebra.Order.BigOperators.Group.Multiset
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Algebra.Polynomial.Splits
-import Mathlib.Data.Real.Basic
 import Mathlib.Tactic
 
 /-!
