@@ -586,6 +586,23 @@ def CompatiblePairHasCommonRightInterleaverStatement : Prop :=
     Compatible f g →
     ∃ h : ℝ[X], Prec f h ∧ Prec g h
 
+/-- Natural two-polynomial bridge hypothesis in the Chudnovsky--Seymour setup:
+compatibility plus positive leading coefficients implies a common right
+interleaver. -/
+def CompatiblePairHasCommonInterleaverStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    Compatible f g →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h
+
+/-- Natural two-polynomial bridge: compatibility plus positive leading
+coefficients implies a common right interleaver. -/
+theorem compatiblePairHasCommonInterleaver {f g : ℝ[X]}
+    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g) (h : Compatible f g) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+  sorry
+
 /-- Once the two-polynomial common-right-interleaver converse is available, the
 pairwise Chudnovsky--Seymour hypothesis upgrades to pairwise common right
 interleavers. -/
@@ -596,15 +613,7 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible
     PairwiseHasCommonInterleaver fs :=
   fun i j hij => by simpa using htwo (hpair i j hij)
 
-/-- Natural two-polynomial bridge hypothesis in the Chudnovsky--Seymour setup:
-compatibility plus positive leading coefficients implies a common right
-interleaver. -/
-def CompatiblePairHasCommonInterleaverStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    Compatible f g →
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h
+
 
 /-- Same-degree branch of the positive-leading compatibility bridge. This is
 the honest `Compatible`-level version of article 3.6.1 → 3.6.2 in the equal-

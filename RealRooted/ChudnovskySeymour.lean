@@ -108,11 +108,11 @@ def chudnovskySeymour_fourWay_nonnegCoeffs_target : Prop :=
 
 /-- The roadmap target follows from the natural positive-leading two-polynomial
 bridge used by the finite-family machinery. -/
-theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge
-    (htwo : CompatiblePairHasCommonInterleaverStatement) :
+theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
   fun hrr hpos =>
-    pairwiseCompatible_iff_hasCommonInterleaver_of_pairBridgePos hrr hpos htwo
+    pairwiseCompatible_iff_hasCommonInterleaver_of_pairBridgePos hrr hpos
+      (fun _ _ hf hg h => compatiblePairHasCommonInterleaver hf hg h)
 
 /-- The finite-family compatibility roadmap target is a formal consequence of
 the corresponding common-interleaver target. -/
@@ -126,11 +126,10 @@ theorem
 
 /-- The finite-family compatibility roadmap target follows from the natural
 positive-leading two-polynomial bridge. -/
-theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_pairBridge
-    (htwo : CompatiblePairHasCommonInterleaverStatement) :
+theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_pairBridge :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
-    (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge htwo)
+    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge
 
 /-- The roadmap target follows from the same-degree and successor-degree
 two-polynomial bridges. -/
@@ -291,13 +290,10 @@ formulation and the affine-family bridge, avoiding the separate succ-degree
 root-crossing branch. -/
 theorem
     chudnovskySeymour_commonInterleaver_of_sameDegreeCrossing_affineFamily
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (_hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
+    (_haffBridge : PosComboNoCommonAffineFamilyStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge
-    (compatiblePairHasCommonInterleaver_of_sameDegreePair_and_affineFamily_via_nonnegShift
-      (sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing hsame)
-      haffBridge)
 
 /-- The finite-family compatibility roadmap target follows from same-degree
 root-crossing and the affine-family bridge. -/

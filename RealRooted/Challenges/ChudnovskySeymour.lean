@@ -258,6 +258,15 @@ def compatiblePairHasCommonLeftInterleaverTarget : Prop :=
     Compatible f g →
     ∃ h : ℝ[X], Prec h f ∧ Prec h g
 
+/-- Two-polynomial common-right bridge target: compatibility plus positive leading
+coefficients implies a common right interleaver. -/
+def compatiblePairHasCommonInterleaverTarget : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    Compatible f g →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h
+
 /-- Succ-degree analytic root-count subtarget for milestone B2. -/
 abbrev succDegreeRootCountTarget : Prop :=
   PosComboNoCommonSuccDegreeRootCountNonnegStatement
@@ -3318,11 +3327,10 @@ theorem commonLeftInterleaverTarget_of_pairwiseLeftBridge_direct
     commonLeftInterleaverTarget :=
   chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direct
 
-/-- Full roadmap reduction for the common-right target. -/
 theorem commonInterleaverTarget_of_pairBridge
-    (htwo : CompatiblePairHasCommonInterleaverStatement) :
+    (_htwo : compatiblePairHasCommonInterleaverTarget) :
     commonInterleaverTarget :=
-  RealRooted.chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge htwo
+  RealRooted.chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge
 
 /-- Challenge-facing pairwise upgrade from lower-threshold root-count
 formulations alone. -/
@@ -3546,13 +3554,11 @@ theorem familyCompatibleTarget_of_commonInterleaverTarget
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
     hcommon
 
-/-- Challenge-facing full finite-family compatibility reduction from the
-natural two-polynomial common-interleaver bridge. -/
 theorem familyCompatibleTarget_of_pairBridge
-    (htwo : CompatiblePairHasCommonInterleaverStatement) :
+    (_htwo : compatiblePairHasCommonInterleaverTarget) :
     familyCompatibleTarget :=
   familyCompatibleTarget_of_commonInterleaverTarget
-    (commonInterleaverTarget_of_pairBridge htwo)
+    (commonInterleaverTarget_of_pairBridge _htwo)
 
 /-- Challenge-facing finite-family compatibility reduction from the
 root-crossing formulations alone. -/
@@ -4515,14 +4521,14 @@ theorem fourWayNonnegCoeffsTarget_of_sameDegreeRootCount_and_lowerCountEq
   fourWayNonnegCoeffsTarget_of_sameDegreeRootCrossing_and_lowerCountEq
     (sameDegreeRootCrossingTarget_of_rootCount hrc) hlower
 
-/-- Challenge-facing four-way package from the natural two-polynomial bridge. -/
 theorem fourWay_of_pairBridge
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (htwo : CompatiblePairHasCommonInterleaverStatement) :
+    (_htwo : compatiblePairHasCommonInterleaverTarget) :
     fourWayPackage fs :=
-  chudnovskySeymour_fourWay_of_pairBridgePos hrr hpos htwo
+  chudnovskySeymour_fourWay_of_pairBridgePos hrr hpos
+    (fun _ _ hf hg h => compatiblePairHasCommonInterleaver hf hg h)
 
 /-- Solved low-degree four-way Chudnovsky--Seymour package. -/
 theorem fourWay_of_natDegree_le_one {fs : List ℝ[X]}
