@@ -1,6 +1,5 @@
 import Mathlib
 import RealRooted.RootCountFinite
-import RealRooted.RootCountHelpers
 
 /-!
 # Root-order bridge
@@ -10,6 +9,19 @@ same-degree Chudnovsky--Seymour root-crossing target.
 -/
 
 namespace RealRooted
+
+private theorem int_le_one_of_le_two_of_ne_two {z : ℤ} (hle : z ≤ 2) (hne : z ≠ 2) :
+    z ≤ 1 :=
+  Int.lt_add_one_iff.mp (by simpa using lt_of_le_of_ne hle hne)
+
+private theorem abs_sub_le_one_of_abs_le_two_of_ne_two_of_ne_neg_two {a b : ℤ}
+    (hle : |a - b| ≤ 2) (hne : a - b ≠ 2) (hne' : a - b ≠ -2) :
+    |a - b| ≤ 1 := by
+  obtain ⟨hlo, hhi⟩ := abs_le.mp hle
+  refine abs_le.mpr ⟨?_, int_le_one_of_le_two_of_ne_two hhi hne⟩
+  have h : -(a - b) ≤ 1 :=
+    int_le_one_of_le_two_of_ne_two (by linarith) (fun hc => hne' (by linarith))
+  linarith
 
 /-- For natural counts, oddness of the integer difference is the same as
 oddness of the natural sum. This is useful because root-count targets are
@@ -1382,8 +1394,10 @@ theorem succ_card_filter_Ioc_diff_le_one_of_count_le_of_ne_two
           - (N.filter (fun y => a < y ∧ y ≤ b)).card ≤ 1 ∧
       ((N.filter (fun y => a < y ∧ y ≤ b)).card : ℤ)
           - (M.filter (fun y => a < y ∧ y ≤ b)).card ≤ 1 :=
-  sub_le_one_and_symm_of_le_two_and_ne_two
-    (succ_card_filter_Ioc_diff_le_two_of_count_le hcount a b hab) hne
+  by
+    have hle := succ_card_filter_Ioc_diff_le_two_of_count_le hcount a b hab
+    exact ⟨int_le_one_of_le_two_of_ne_two hle.1 hne.1,
+      int_le_one_of_le_two_of_ne_two hle.2 hne.2⟩
 
 /-- Absolute-value form of the conditional half-open sharpening. -/
 theorem abs_succ_card_filter_Ioc_sub_le_one_of_count_le_of_ne_two
@@ -1414,8 +1428,11 @@ theorem natAbs_succ_card_filter_Ioc_sub_le_one_of_count_le_of_ne_two
           - (N.filter (fun y => a < y ∧ y ≤ b)).card ≠ -2) :
     (((M.filter (fun y => a < y ∧ y ≤ b)).card : ℤ)
         - (N.filter (fun y => a < y ∧ y ≤ b)).card).natAbs ≤ 1 :=
-  natAbs_sub_le_one_of_abs_sub_le_one
-    (abs_succ_card_filter_Ioc_sub_le_one_of_count_le_of_ne_two hcount hab hne hne')
+  by
+    have h :=
+      abs_succ_card_filter_Ioc_sub_le_one_of_count_le_of_ne_two hcount hab hne hne'
+    rw [Int.abs_eq_natAbs] at h
+    exact_mod_cast h
 
 /-- Conditional sharpening of the succ-degree open slot `(a, b)`. -/
 theorem succ_card_filter_Ioo_diff_le_one_of_count_lt_le_of_ne_two
@@ -1435,8 +1452,10 @@ theorem succ_card_filter_Ioo_diff_le_one_of_count_lt_le_of_ne_two
           - (N.filter (fun y => a < y ∧ y < b)).card ≤ 1 ∧
       ((N.filter (fun y => a < y ∧ y < b)).card : ℤ)
           - (M.filter (fun y => a < y ∧ y < b)).card ≤ 1 :=
-  sub_le_one_and_symm_of_le_two_and_ne_two
-    (succ_card_filter_Ioo_diff_le_two_of_count_lt_le hle hlt a b hab) hne
+  by
+    have hle' := succ_card_filter_Ioo_diff_le_two_of_count_lt_le hle hlt a b hab
+    exact ⟨int_le_one_of_le_two_of_ne_two hle'.1 hne.1,
+      int_le_one_of_le_two_of_ne_two hle'.2 hne.2⟩
 
 /-- Absolute-value form of the conditional open sharpening. -/
 theorem abs_succ_card_filter_Ioo_sub_le_one_of_count_lt_le_of_ne_two
@@ -1473,9 +1492,11 @@ theorem natAbs_succ_card_filter_Ioo_sub_le_one_of_count_lt_le_of_ne_two
           - (N.filter (fun y => a < y ∧ y < b)).card ≠ -2) :
     (((M.filter (fun y => a < y ∧ y < b)).card : ℤ)
         - (N.filter (fun y => a < y ∧ y < b)).card).natAbs ≤ 1 :=
-  natAbs_sub_le_one_of_abs_sub_le_one
-    (abs_succ_card_filter_Ioo_sub_le_one_of_count_lt_le_of_ne_two
-      hle hlt hab hne hne')
+  by
+    have h :=
+      abs_succ_card_filter_Ioo_sub_le_one_of_count_lt_le_of_ne_two hle hlt hab hne hne'
+    rw [Int.abs_eq_natAbs] at h
+    exact_mod_cast h
 
 /-- Bundled conditional sharpening for both succ-degree slots. -/
 theorem succ_card_filter_Ioc_and_Ioo_diff_le_one_of_count_lt_le_of_ne_two

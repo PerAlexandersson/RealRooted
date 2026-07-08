@@ -9,7 +9,6 @@ import RealRooted.IteratedDerivativeShift
 import RealRooted.QuadraticCubicPencil
 import RealRooted.QuadraticRoot
 import RealRooted.RecurrenceDiscriminant
-import RealRooted.RootCountHelpers
 import RealRooted.RootCountJump
 import RealRooted.RootOrderBridge
 import RealRooted.SameDegreeCubicRootCount
