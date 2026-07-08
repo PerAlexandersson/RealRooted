@@ -62,7 +62,7 @@ noncomputable section
 `(1 + ρ⁻¹) ^ s.card`.  Because each `|w| ≥ ρ > 0`, the constant coefficient
 `∏ (-w)` is nonzero, so this is a genuine relative bound.
 -/
-lemma abs_coeff_prod_X_sub_C_le (s : Multiset ℝ) (ρ : ℝ) (hρ : 0 < ρ)
+private lemma abs_coeff_prod_X_sub_C_le (s : Multiset ℝ) (ρ : ℝ) (hρ : 0 < ρ)
     (hs : ∀ w ∈ s, ρ ≤ |w|) (j : ℕ) :
     |((s.map (fun w => X - C w)).prod).coeff j|
       ≤ |((s.map (fun w => X - C w)).prod).coeff 0| * (1 + ρ⁻¹) ^ s.card := by
@@ -115,7 +115,7 @@ lemma abs_coeff_prod_X_sub_C_le (s : Multiset ℝ) (ρ : ℝ) (hρ : 0 < ρ)
             _ ≤ |w| * |P.coeff 0| * ((1 + ρ⁻¹) ^ t.card * (1 + ρ⁻¹)) := hkey
 
 /-- Constant coefficient of a product of linear factors, in absolute value. -/
-lemma abs_coeff_zero_prod_X_sub_C (s : Multiset ℝ) :
+private lemma abs_coeff_zero_prod_X_sub_C (s : Multiset ℝ) :
     |((s.map (fun w => X - C w)).prod).coeff 0| = (s.map (fun w => |w|)).prod := by
   induction s using Multiset.induction with
   | empty => simp
@@ -127,7 +127,7 @@ lemma abs_coeff_zero_prod_X_sub_C (s : Multiset ℝ) :
 
 /-- A product of `|w|` over a multiset all of whose entries have `|w| ≥ b ≥ 0`
 is bounded below by `b ^ card`. -/
-lemma pow_card_le_prod_abs (s : Multiset ℝ) (b : ℝ) (hb : 0 ≤ b)
+private lemma pow_card_le_prod_abs (s : Multiset ℝ) (b : ℝ) (hb : 0 ≤ b)
     (hs : ∀ w ∈ s, b ≤ |w|) :
     b ^ Multiset.card s ≤ (s.map (fun w => |w|)).prod := by
   induction s using Multiset.induction with
@@ -147,7 +147,7 @@ strictly within `ρ` of `0`.
 The large root forces the far cluster's constant coefficient to exceed the bound
 that `abs_coeff_le_of_mul` would otherwise impose on the near cluster's monic
 leading coefficient, so the near cluster must contain at least `m` roots. -/
-lemma near_card_ge_of_low_coeff_le_of_large_root
+private lemma near_card_ge_of_low_coeff_le_of_large_root
     (n : ℕ) (ρ : ℝ) (hρ : 0 < ρ) (R : ℝ[X])
     (hmonic : R.Monic) (hsplit : R.Splits) (hdeg : R.natDegree = n)
     (m : ℕ) (hm : m ≤ n) (D : ℝ) (hD : 0 ≤ D)
@@ -244,7 +244,7 @@ The product of `|q - c|` over the roots equals
 `|f c + μ g c| / (μ |g.leadingCoeff|)`, which tends to `+∞` as `μ → 0⁺`, so some
 factor must be large.
 -/
-lemma exists_mem_roots_abs_sub_gt (f g : ℝ[X]) (hlt : f.natDegree < g.natDegree)
+private lemma exists_mem_roots_abs_sub_gt (f g : ℝ[X]) (hlt : f.natDegree < g.natDegree)
     (c : ℝ) (hc : f.eval c ≠ 0) (A : ℝ) :
     ∃ δ : ℝ, 0 < δ ∧ ∀ μ : ℝ, 0 < μ → μ < δ → (f + C μ * g).Splits →
       ∃ q ∈ (f + C μ * g).roots, A < |q - c| := by
