@@ -161,7 +161,7 @@ the root bound `B`) such that any monic split real polynomial of degree `n` with
 roots bounded by `B` whose lowest `m` coefficients are all smaller than `δ` has
 at least `m` roots within `ρ` of `0`.
 -/
-lemma exists_delta_le_card_filter_roots_near_zero
+private lemma exists_delta_le_card_filter_roots_near_zero
     (n : ℕ) (ρ B : ℝ) (hρ : 0 < ρ) (hB : 0 < B) :
     ∃ δ : ℝ, 0 < δ ∧ ∀ (m : ℕ), m ≤ n → ∀ R : ℝ[X],
       R.Monic → R.Splits → R.natDegree = n →
@@ -283,7 +283,7 @@ A uniform root bound: if every coefficient of `p` has absolute value at most
 root of `p` has absolute value below `M / C0 + 1`.  (A convenient real-valued
 repackaging of Cauchy's bound.)
 -/
-lemma abs_root_lt_of_coeff_le {p : ℝ[X]} {C0 M : ℝ} (hC0 : 0 < C0)
+private lemma abs_root_lt_of_coeff_le {p : ℝ[X]} {C0 M : ℝ} (hC0 : 0 < C0)
     (hlc : C0 ≤ |p.leadingCoeff|) (hM : ∀ i, |p.coeff i| ≤ M)
     {r : ℝ} (hr : r ∈ p.roots) : |r| < M / C0 + 1 := by
   have hM0 : (0 : ℝ) ≤ M := le_trans (abs_nonneg _) (hM 0)
