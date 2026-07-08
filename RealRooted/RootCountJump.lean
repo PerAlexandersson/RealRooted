@@ -77,31 +77,6 @@ theorem card_filter_Ioc_add_card_filter_gt_eq_card_filter_gt
     · simp [hbr, not_le]
   rw [hIoc, hgt, ← Multiset.card_add, Multiset.filter_add_not]
 
-/-- The elements at most `a` and the elements in `(a, b]` partition the
-elements at most `b`. -/
-theorem card_filter_le_add_card_filter_Ioc_eq_card_filter_le
-    {α : Type*} [LinearOrder α] (s : Multiset α) {a b : α} (hab : a ≤ b) :
-    (s.filter (· ≤ a)).card + (s.filter (fun r => a < r ∧ r ≤ b)).card =
-      (s.filter (· ≤ b)).card := by
-  have hle :
-      s.filter (· ≤ a) =
-        (s.filter (· ≤ b)).filter (· ≤ a) := by
-    ext r
-    by_cases hra : r ≤ a
-    · simp [hra, le_trans hra hab]
-    · simp [hra]
-  have hIoc :
-      s.filter (fun r => a < r ∧ r ≤ b) =
-        (s.filter (· ≤ b)).filter (fun r => ¬ r ≤ a) := by
-    ext r
-    by_cases hrb : r ≤ b <;> by_cases hra : r ≤ a
-    · simp [hrb, not_lt_of_ge hra]
-    · have har : a < r := not_le.mp hra
-      simp [hrb, har]
-    · simp [hrb]
-    · simp [hrb]
-  rw [hle, hIoc, ← Multiset.card_add, Multiset.filter_add_not]
-
 /-- If `b` is not present, the elements in `(a, b)` and the elements strictly
 above `b` partition the elements strictly above `a`. -/
 theorem card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem
@@ -124,29 +99,6 @@ theorem card_filter_Ioo_add_card_filter_gt_eq_card_filter_gt_of_not_mem
       exact ⟨h.1, lt_of_le_of_ne h.2 hr_ne⟩
   rw [hIoo]
   exact card_filter_Ioc_add_card_filter_gt_eq_card_filter_gt s hab
-
-/-- If `b` is not present, the elements at most `a` and the elements in
-`(a, b)` partition the elements at most `b`. -/
-theorem card_filter_le_add_card_filter_Ioo_eq_card_filter_le_of_not_mem
-    {α : Type*} [LinearOrder α] (s : Multiset α) {a b : α} (hab : a ≤ b)
-    (hb : b ∉ s) :
-    (s.filter (· ≤ a)).card + (s.filter (fun r => a < r ∧ r < b)).card =
-      (s.filter (· ≤ b)).card := by
-  have hIoo :
-      s.filter (fun r => a < r ∧ r < b) =
-        s.filter (fun r => a < r ∧ r ≤ b) := by
-    apply Multiset.filter_congr
-    intro r hr
-    constructor
-    · intro h
-      exact ⟨h.1, le_of_lt h.2⟩
-    · intro h
-      have hr_ne : r ≠ b := by
-        intro hrb
-        exact hb (by simpa [hrb] using hr)
-      exact ⟨h.1, lt_of_le_of_ne h.2 hr_ne⟩
-  rw [hIoo]
-  exact card_filter_le_add_card_filter_Ioc_eq_card_filter_le s hab
 
 /-- If two multisets have the same number of elements above each endpoint of
 an interval, then they have the same number of elements inside the interval,
@@ -178,36 +130,6 @@ theorem card_filter_Ioo_eq_of_card_filter_gt_eq
           (s.filter (b < ·)).card := by rw [← hb]
   exact Nat.add_right_cancel hsum
 
-/-- If two multisets have the same number of elements at most each endpoint of
-an interval, then they have the same number of elements inside the interval,
-provided the right endpoint belongs to neither multiset. -/
-theorem card_filter_Ioo_eq_of_card_filter_le_eq
-    {α : Type*} [LinearOrder α] (s t : Multiset α) {a b : α} (hab : a ≤ b)
-    (hsb : b ∉ s) (htb : b ∉ t)
-    (ha : (s.filter (· ≤ a)).card = (t.filter (· ≤ a)).card)
-    (hb : (s.filter (· ≤ b)).card = (t.filter (· ≤ b)).card) :
-    (s.filter (fun r => a < r ∧ r < b)).card =
-      (t.filter (fun r => a < r ∧ r < b)).card := by
-  have hspart :=
-    card_filter_le_add_card_filter_Ioo_eq_card_filter_le_of_not_mem s hab hsb
-  have htpart :=
-    card_filter_le_add_card_filter_Ioo_eq_card_filter_le_of_not_mem t hab htb
-  have hsum :
-      (s.filter (· ≤ a)).card +
-          (s.filter (fun r => a < r ∧ r < b)).card =
-        (s.filter (· ≤ a)).card +
-          (t.filter (fun r => a < r ∧ r < b)).card := by
-    calc
-      (s.filter (· ≤ a)).card +
-          (s.filter (fun r => a < r ∧ r < b)).card
-          = (s.filter (· ≤ b)).card := hspart
-      _ = (t.filter (· ≤ b)).card := hb
-      _ = (t.filter (· ≤ a)).card +
-          (t.filter (fun r => a < r ∧ r < b)).card := htpart.symm
-      _ = (s.filter (· ≤ a)).card +
-          (t.filter (fun r => a < r ∧ r < b)).card := by rw [← ha]
-  exact Nat.add_left_cancel hsum
-
 /-- If two polynomials have the same number of roots above each endpoint of
 an interval, then they have the same number of roots inside the interval,
 provided the right endpoint is a root of neither polynomial. -/
@@ -223,23 +145,6 @@ theorem card_roots_filter_Ioo_eq_of_card_filter_gt_eq
     (f.roots.filter (fun r => a < r ∧ r < b)).card =
       (g.roots.filter (fun r => a < r ∧ r < b)).card :=
   card_filter_Ioo_eq_of_card_filter_gt_eq f.roots g.roots hab
-    (fun hb_mem => hfb ((mem_roots hf).mp hb_mem))
-    (fun hb_mem => hgb ((mem_roots hg).mp hb_mem)) ha hb
-
-/-- Lower-count polynomial-root form of
-`card_filter_Ioo_eq_of_card_filter_le_eq`. -/
-theorem card_roots_filter_Ioo_eq_of_card_filter_le_eq
-    {f g : ℝ[X]} (hf : f ≠ 0) (hg : g ≠ 0) {a b : ℝ} (hab : a ≤ b)
-    (hfb : ¬ f.IsRoot b) (hgb : ¬ g.IsRoot b)
-    (ha :
-      (f.roots.filter (· ≤ a)).card =
-        (g.roots.filter (· ≤ a)).card)
-    (hb :
-      (f.roots.filter (· ≤ b)).card =
-        (g.roots.filter (· ≤ b)).card) :
-    (f.roots.filter (fun r => a < r ∧ r < b)).card =
-      (g.roots.filter (fun r => a < r ∧ r < b)).card :=
-  card_filter_Ioo_eq_of_card_filter_le_eq f.roots g.roots hab
     (fun hb_mem => hfb ((mem_roots hf).mp hb_mem))
     (fun hb_mem => hgb ((mem_roots hg).mp hb_mem)) ha hb
 
@@ -319,17 +224,6 @@ theorem rightFamily_eval_ne_zero_of_eval_mul_pos
     have hneg : (f + C μ * g).eval x < 0 := by
       simpa [eval_add, eval_mul, eval_C] using hneg_eval
     exact ne_of_lt hneg
-
-/-- `IsRoot`-form of `rightFamily_eval_ne_zero_of_eval_mul_pos`.
-
-The unprimed name is already used by `RealRooted/CommonInterleaverTwo.lean`. -/
-theorem rightFamily_not_isRoot_of_eval_mul_pos'
-    {f g : ℝ[X]} {μ x : ℝ} (hμ : 0 ≤ μ)
-    (hprod : 0 < f.eval x * g.eval x) :
-    ¬ (f + C μ * g).IsRoot x := by
-  simpa [Polynomial.IsRoot.def] using
-    rightFamily_eval_ne_zero_of_eval_mul_pos (f := f) (g := g)
-      (μ := μ) (x := x) hμ hprod
 
 /-- Move a real threshold strictly upward without crossing any element of a
 finite multiset. -/
@@ -514,116 +408,5 @@ theorem rootCount_max_abs_diff_le_one_of_bundled
           ≤ 1 := by
   intro x
   exact max_le (h x).1 (h x).2
-
-/-- No-crossing bridge between a strict upper-bound count and a non-strict
-lower-bound count. -/
-theorem card_filter_lt_eq_card_filter_le_of_no_mem_Ioo
-    {α : Type*} [LinearOrder α] (s : Multiset α) {a b : α} (hab : a < b)
-    (h : ∀ r ∈ s, r ≤ a ∨ b ≤ r) :
-    (s.filter (· < b)).card = (s.filter (· ≤ a)).card := by
-  congr 1
-  refine Multiset.filter_congr fun x hx => ?_
-  exact ⟨fun hx' => Or.resolve_right (h x hx) (not_le_of_gt hx'),
-    fun hx' => lt_of_le_of_lt hx' hab⟩
-
-/-- No-crossing bridge between a strict lower-bound count and a non-strict
-upper-bound count. -/
-theorem card_filter_gt_eq_card_filter_ge_of_no_mem_Ioo
-    {α : Type*} [LinearOrder α] (s : Multiset α) {a b : α} (hab : a < b)
-    (h : ∀ r ∈ s, r ≤ a ∨ b ≤ r) :
-    (s.filter (a < ·)).card = (s.filter (b ≤ ·)).card := by
-  congr 1
-  refine Multiset.filter_congr fun x hx => ?_
-  exact ⟨fun hx' => Or.resolve_left (h x hx) (not_le_of_gt hx'),
-    fun hx' => lt_of_lt_of_le hab hx'⟩
-
-/-- Chudnovsky--Seymour 3.3 interval root-count constancy, upper-count form.
-
-If a closed segment never has a root at two thresholds `a ≤ b`, and the
-single-threshold upper root counts of `f` and `g` agree at every such
-non-crossing threshold, then the numbers of roots in `(a, b)` agree. -/
-theorem rootCount_Ioo_eq_of_closedSegment_splits_agree
-    {f g : ℝ[X]} (hf : f ≠ 0) (hg : g ≠ 0) {a b : ℝ} (hab : a ≤ b)
-    (hfa : ¬ f.IsRoot a) (hga : ¬ g.IsRoot a)
-    (hfb : ¬ f.IsRoot b) (hgb : ¬ g.IsRoot b)
-    (hsega : ∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
-      ¬ (C (1 - β) * f + C β * g).IsRoot a)
-    (hsegb : ∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
-      ¬ (C (1 - β) * f + C β * g).IsRoot b)
-    (hstep : ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
-        ¬ (C (1 - β) * f + C β * g).IsRoot x) →
-      (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card) :
-    (f.roots.filter (fun r => a < r ∧ r < b)).card =
-      (g.roots.filter (fun r => a < r ∧ r < b)).card :=
-  card_roots_filter_Ioo_eq_of_card_filter_gt_eq hf hg hab hfb hgb
-    (hstep a hfa hga hsega) (hstep b hfb hgb hsegb)
-
-/-- Direct #42 interval root-count equality from a right-endpoint sign
-hypothesis and explicit upper-count equalities at the two endpoints. -/
-theorem rootCount_Ioo_eq_of_eval_mul_pos_right_of_card_filter_gt_eq
-    {f g : ℝ[X]} (hf : f ≠ 0) (hg : g ≠ 0) {a b : ℝ} (hab : a ≤ b)
-    (hpb : 0 < f.eval b * g.eval b)
-    (ha : (f.roots.filter (a < ·)).card = (g.roots.filter (a < ·)).card)
-    (hb : (f.roots.filter (b < ·)).card = (g.roots.filter (b < ·)).card) :
-    (f.roots.filter (fun r => a < r ∧ r < b)).card =
-      (g.roots.filter (fun r => a < r ∧ r < b)).card := by
-  have hfb : ¬ f.IsRoot b := by
-    have := closedSegment_not_isRoot_of_eval_mul_pos (f := f) (g := g)
-      (β := 0) (x := b) le_rfl zero_le_one hpb
-    simpa using this
-  have hgb : ¬ g.IsRoot b := by
-    have := closedSegment_not_isRoot_of_eval_mul_pos (f := f) (g := g)
-      (β := 1) (x := b) zero_le_one le_rfl hpb
-    simpa using this
-  exact card_roots_filter_Ioo_eq_of_card_filter_gt_eq hf hg hab hfb hgb ha hb
-
-/-- Lower-count analogue of
-`rootCount_Ioo_eq_of_eval_mul_pos_right_of_card_filter_gt_eq`. -/
-theorem rootCount_Ioo_eq_of_eval_mul_pos_right_of_card_filter_le_eq
-    {f g : ℝ[X]} (hf : f ≠ 0) (hg : g ≠ 0) {a b : ℝ} (hab : a ≤ b)
-    (hpb : 0 < f.eval b * g.eval b)
-    (ha : (f.roots.filter (· ≤ a)).card = (g.roots.filter (· ≤ a)).card)
-    (hb : (f.roots.filter (· ≤ b)).card = (g.roots.filter (· ≤ b)).card) :
-    (f.roots.filter (fun r => a < r ∧ r < b)).card =
-      (g.roots.filter (fun r => a < r ∧ r < b)).card := by
-  have hfb : ¬ f.IsRoot b := by
-    have := closedSegment_not_isRoot_of_eval_mul_pos (f := f) (g := g)
-      (β := 0) (x := b) le_rfl zero_le_one hpb
-    simpa using this
-  have hgb : ¬ g.IsRoot b := by
-    have := closedSegment_not_isRoot_of_eval_mul_pos (f := f) (g := g)
-      (β := 1) (x := b) zero_le_one le_rfl hpb
-    simpa using this
-  exact card_roots_filter_Ioo_eq_of_card_filter_le_eq hf hg hab hfb hgb ha hb
-
-/-- Direct #42 endpoint-sign support: from a common nonzero endpoint sign
-`0 < f.eval x * g.eval x`, both `f` and `g` are nonzero at `x`.
-
-A small reusable projection of `closedSegment_eval_ne_zero_of_eval_mul_pos`
-at the two extreme convex weights, packaging the boilerplate used throughout
-the endpoint-sign root-count wrappers. -/
-theorem eval_ne_zero_endpoints_of_eval_mul_pos
-    {f g : ℝ[X]} {x : ℝ} (hprod : 0 < f.eval x * g.eval x) :
-    f.eval x ≠ 0 ∧ g.eval x ≠ 0 := by
-  refine ⟨?_, ?_⟩
-  · have := closedSegment_eval_ne_zero_of_eval_mul_pos (f := f) (g := g)
-      (β := 0) (x := x) le_rfl zero_le_one hprod
-    simpa using this
-  · have := closedSegment_eval_ne_zero_of_eval_mul_pos (f := f) (g := g)
-      (β := 1) (x := x) zero_le_one le_rfl hprod
-    simpa using this
-
-/-- Direct #42 endpoint-sign support: `IsRoot`-form of
-`eval_ne_zero_endpoints_of_eval_mul_pos`.
-
-From a common nonzero endpoint sign `0 < f.eval x * g.eval x`, neither `f`
-nor `g` has a root at `x`. -/
-theorem not_isRoot_endpoints_of_eval_mul_pos
-    {f g : ℝ[X]} {x : ℝ} (hprod : 0 < f.eval x * g.eval x) :
-    ¬ f.IsRoot x ∧ ¬ g.IsRoot x := by
-  obtain ⟨hf0, hg0⟩ := eval_ne_zero_endpoints_of_eval_mul_pos hprod
-  exact ⟨by simpa [Polynomial.IsRoot.def] using hf0,
-    by simpa [Polynomial.IsRoot.def] using hg0⟩
 
 end RealRooted
