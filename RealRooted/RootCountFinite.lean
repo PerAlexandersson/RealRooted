@@ -101,7 +101,7 @@ theorem exists_guard_le_and_pos_le_abs_sub
 
 /-- If `r` is separated from a threshold `x` and lies above `x`, then every
 point closer to `r` than the separation margin also lies above `x`. -/
-theorem threshold_lt_of_abs_sub_lt_of_threshold_lt
+private theorem threshold_lt_of_abs_sub_lt_of_threshold_lt
     {x r q ε : ℝ} (hxr : x < r) (hsep : ε ≤ |r - x|)
     (hclose : |q - r| < ε) :
     x < q := by
@@ -112,7 +112,7 @@ theorem threshold_lt_of_abs_sub_lt_of_threshold_lt
 
 /-- If `r` is separated from a threshold `x` by a margin and lies at
 or below `x`, then every point closer to `r` than the margin lies below `x`. -/
-theorem lt_threshold_of_abs_sub_lt_of_le_threshold
+private theorem lt_threshold_of_abs_sub_lt_of_le_threshold
     {x r q ε : ℝ} (hrx : r ≤ x)
     (hsep : ε ≤ |r - x|) (hclose : |q - r| < ε) :
     q < x := by
@@ -130,7 +130,7 @@ theorem lt_threshold_of_abs_sub_lt_of_le_threshold
 /-- If a submultiset consists only of elements satisfying a predicate, then
 its cardinality is bounded by the corresponding filtered count of the ambient
 multiset. -/
-theorem card_le_card_filter_of_le_of_forall_mem
+private theorem card_le_card_filter_of_le_of_forall_mem
     {α : Type*} {p : α → Prop} [DecidablePred p] {s t : Multiset α}
     (hst : s ≤ t) (hs : ∀ a ∈ s, p a) :
     s.card ≤ (t.filter p).card :=
@@ -157,19 +157,8 @@ theorem exists_le_card_eq_of_le_card {α : Type*} (t : Multiset α) {n : ℕ}
           obtain ⟨u, hut, hcard⟩ := ih hn
           exact ⟨a ::ₘ u, Multiset.cons_le_cons a hut, by simp [hcard]⟩
 
-/-- Extract an exact-cardinality submultiset from a filtered multiset. -/
-theorem exists_le_card_eq_of_le_card_filter
-    {α : Type*} {p : α → Prop} [DecidablePred p] {t : Multiset α} {n : ℕ}
-    (h : n ≤ (t.filter p).card) :
-    ∃ u : Multiset α, u ≤ t ∧ u.card = n ∧ ∀ a ∈ u, p a := by
-  obtain ⟨u, hu_filter, hcard⟩ :=
-    exists_le_card_eq_of_le_card (t.filter p) h
-  refine ⟨u, le_trans hu_filter (Multiset.filter_le p t), hcard, ?_⟩
-  intro a ha
-  exact (Multiset.mem_filter.mp (Multiset.mem_of_le hu_filter ha)).2
-
 /-- Filter cardinality is monotone along a `Multiset.Rel` matching. -/
-theorem card_filter_le_of_rel {α β : Type*} {r : α → β → Prop}
+private theorem card_filter_le_of_rel {α β : Type*} {r : α → β → Prop}
     {p : α → Prop} {q : β → Prop} [DecidablePred p] [DecidablePred q]
     {s : Multiset α} {t : Multiset β}
     (h : Multiset.Rel r s t)
@@ -207,24 +196,6 @@ theorem rel_abs_sub_lt_of_repeated_left
   intro x q hx hq
   have hx_eq : x = r := hs x hx
   simpa [hx_eq] using hu q hq
-
-/--
-Local count-to-matching form for one repeated source root.
-
-If the target has at least as many elements in the δ-ball around `r` as the
-source has copies of `r`, then one can extract an exact-cardinality target
-cluster and match it to the repeated source cluster.
--/
-theorem exists_rel_abs_sub_lt_of_repeated_left_of_card_le_filter
-    {s t : Multiset ℝ} {r δ : ℝ}
-    (hs : ∀ x ∈ s, x = r)
-    (hcard : s.card ≤ (t.filter (fun q => |q - r| < δ)).card) :
-    ∃ u : Multiset ℝ, u ≤ t ∧
-      Multiset.Rel (fun x q => |q - x| < δ) s u := by
-  obtain ⟨u, hut, hu_card, hu_ball⟩ :=
-    exists_le_card_eq_of_le_card_filter (t := t)
-      (p := fun q => |q - r| < δ) hcard
-  exact ⟨u, hut, rel_abs_sub_lt_of_repeated_left hs hu_ball hu_card.symm⟩
 
 /-- A proximity matching preserves weak-lower threshold counts when the source
 multiset is separated from the threshold. -/
@@ -267,7 +238,7 @@ elements of `s`, and at least all weak-lower elements of `s` plus one more,
 then the strict-upper counts are equal.  In the issue #42 route, the extra
 weak-lower element is the root escaping to the left.
 -/
-theorem card_filter_gt_eq_of_succ_le_filter_le
+private theorem card_filter_gt_eq_of_succ_le_filter_le
     {α : Type*} [LinearOrder α] {s t : Multiset α} {x : α}
     (hgt : (s.filter (fun r => x < r)).card ≤
       (t.filter (fun r => x < r)).card)
@@ -287,7 +258,7 @@ This is the form most directly consumed by the issue #42 escape argument: the
 continuity part gives the weak lower bound, and the escaping root turns it into
 a strict lower-count increase.
 -/
-theorem card_filter_gt_eq_of_filter_le_lt
+private theorem card_filter_gt_eq_of_filter_le_lt
     {α : Type*} [LinearOrder α] {s t : Multiset α} {x : α}
     (hgt : (s.filter (fun r => x < r)).card ≤
       (t.filter (fun r => x < r)).card)
@@ -297,42 +268,6 @@ theorem card_filter_gt_eq_of_filter_le_lt
     (t.filter (fun r => x < r)).card =
       (s.filter (fun r => x < r)).card :=
   card_filter_gt_eq_of_succ_le_filter_le hgt (Nat.succ_le_iff.mpr hle) hcard
-
-/--
-Finite assembly form for the issue #42 small-parameter argument.
-
-Assume `t` has one more element than `s`.  If a submultiset `u` of `t`
-accounts for the strict-upper roots of `s`, while a submultiset `a ::ₘ v` of
-`t` accounts for the weak-lower roots of `s` plus one additional weak-lower
-element `a`, then the strict-upper counts of `s` and `t` are equal.
-
-In the #42 route, `u` and `v` should come from finite-root continuity and
-side-preservation, while `a` is the root escaping to the left.
--/
-theorem card_filter_gt_eq_of_submultisets_with_extra_le
-    {α : Type*} [LinearOrder α] {s t u v : Multiset α} {x a : α}
-    (hu : u ≤ t)
-    (hu_card : u.card = (s.filter (fun r => x < r)).card)
-    (hu_mem : ∀ r ∈ u, x < r)
-    (hv : a ::ₘ v ≤ t)
-    (hv_card : v.card = (s.filter (fun r => r ≤ x)).card)
-    (ha : a ≤ x) (hv_mem : ∀ r ∈ v, r ≤ x)
-    (hcard : t.card = s.card + 1) :
-    (t.filter (fun r => x < r)).card =
-      (s.filter (fun r => x < r)).card := by
-  refine card_filter_gt_eq_of_filter_le_lt ?_ ?_ hcard
-  · rw [← hu_card]
-    exact card_le_card_filter_of_le_of_forall_mem hu hu_mem
-  · rw [← hv_card]
-    have hle :
-        (a ::ₘ v).card ≤ (t.filter (fun r => r ≤ x)).card := by
-      refine card_le_card_filter_of_le_of_forall_mem hv ?_
-      intro r hr
-      rw [Multiset.mem_cons] at hr
-      rcases hr with rfl | hr
-      · exact ha
-      · exact hv_mem r hr
-    exact Nat.succ_le_iff.mp (by simpa using hle)
 
 /--
 Assembly form for a proximity matching plus one escaped root.
@@ -346,7 +281,7 @@ In the #42 route, `s` is the lower endpoint root multiset, `u` is the finite
 root cluster of the small positive pencil, `t` is the full pencil root
 multiset, and `a` is the root escaping to the left.
 -/
-theorem card_filter_gt_eq_of_rel_with_extra_le
+private theorem card_filter_gt_eq_of_rel_with_extra_le
     {s u t : Multiset ℝ} {x δ a : ℝ}
     (hsep : ∀ r ∈ s, δ ≤ |r - x|)
     (hmatch : Multiset.Rel (fun r q => |q - r| < δ) s u)
@@ -389,7 +324,7 @@ Variant of `card_filter_gt_eq_of_rel_with_extra_le` for the form naturally
 produced by the two analytic ingredients: a matching submultiset `u ≤ t` and
 a separately found escaped root `a ∈ t`, with `a ∉ u`.
 -/
-theorem card_filter_gt_eq_of_rel_with_separate_extra_le
+private theorem card_filter_gt_eq_of_rel_with_separate_extra_le
     {s u t : Multiset ℝ} {x δ a : ℝ}
     (hsep : ∀ r ∈ s, δ ≤ |r - x|)
     (hmatch : Multiset.Rel (fun r q => |q - r| < δ) s u)
@@ -403,7 +338,7 @@ theorem card_filter_gt_eq_of_rel_with_separate_extra_le
 
 /-- A proximity matching keeps the matched roots above any guard threshold
 which is separated from all source roots below them. -/
-theorem forall_mem_right_threshold_lt_of_rel_abs_sub_lt
+private theorem forall_mem_right_threshold_lt_of_rel_abs_sub_lt
     {s u : Multiset ℝ} {B δ : ℝ}
     (hB : ∀ r ∈ s, B < r)
     (hsep : ∀ r ∈ s, δ ≤ |r - B|)
