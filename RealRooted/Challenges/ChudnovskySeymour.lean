@@ -78,8 +78,11 @@ abbrev commonInterleaverTarget : Prop :=
 
 /-- Roadmap target for pairwise compatibility versus full finite-family
 compatibility under the standard hypotheses. -/
-abbrev familyCompatibleTarget : Prop :=
-  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target
+def familyCompatibleTarget : Prop :=
+  ∀ {fs : List ℝ[X]},
+    (∀ f ∈ fs, (f ≠ 0 ∧ f.Splits)) →
+    (∀ f ∈ fs, HasPosLeadingCoeff f) →
+    (PairwiseCompatible fs ↔ FamilyCompatible fs)
 
 /-- Roadmap target for the nonnegative-coefficient common right interleaver
 form. -/

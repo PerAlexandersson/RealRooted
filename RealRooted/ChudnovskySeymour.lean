@@ -47,14 +47,19 @@ def chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target : Prop :=
     (∀ f ∈ fs, HasPosLeadingCoeff f) →
     (PairwiseCompatible fs ↔ HasCommonInterleaver fs)
 
-/--
-Roadmap target for the full finite-family compatibility equivalence.
+/-- Chudnovsky--Seymour pairwise-to-family compatibility equivalence.
 
 This is the `1 ↔ 4` Chudnovsky--Seymour surface under the same standard
 real-rooted/splits and positive-leading hypotheses as
-`chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target`.
--/
-def chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target : Prop :=
+`chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target`. -/
+theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
+    PairwiseCompatible fs ↔ FamilyCompatible fs := by
+  sorry
+
+private abbrev chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target : Prop :=
   ∀ {fs : List ℝ[X]},
     (∀ f ∈ fs, (f ≠ 0 ∧ f.Splits)) →
     (∀ f ∈ fs, HasPosLeadingCoeff f) →
