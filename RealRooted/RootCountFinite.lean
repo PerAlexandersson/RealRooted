@@ -177,6 +177,54 @@ private theorem card_filter_le_of_rel {α β : Type*} {r : α → β → Prop}
         · simpa [ha, hb] using le_trans (ih hpq_tail) (Nat.le_succ (filter q t).card)
         · simpa [ha, hb] using ih hpq_tail
 
+/-- A filter by a disjunction has cardinality bounded by the sum of the two
+filtered cardinalities. -/
+private theorem card_filter_or_le_add {α : Type*} {p q : α → Prop}
+    [DecidablePred p] [DecidablePred q] (s : Multiset α) :
+    (s.filter (fun a => p a ∨ q a)).card ≤
+      (s.filter p).card + (s.filter q).card := by
+  induction s using Multiset.induction with
+  | empty =>
+      simp
+  | cons a s ih =>
+      by_cases hp : p a <;> by_cases hq : q a <;> simp [hp, hq] <;> lia
+
+/-- Filter cardinality monotonicity along a relation, with membership in both
+matched multisets available to the predicate-transfer proof. -/
+private theorem card_filter_le_of_rel_with_right_mem
+    {α β : Type*} {r : α → β → Prop}
+    {p : α → Prop} {q : β → Prop} [DecidablePred p] [DecidablePred q]
+    {s : Multiset α} {t : Multiset β}
+    (h : Multiset.Rel r s t)
+    (hpq : ∀ a ∈ s, ∀ b ∈ t, r a b → p a → q b) :
+    (s.filter p).card ≤ (t.filter q).card := by
+  induction h with
+  | zero => simp
+  | @cons a b s t hab _ ih =>
+      have hpq_tail : ∀ a ∈ s, ∀ b ∈ t, r a b → p a → q b := by
+        intro a ha b hb hab hpa
+        exact hpq a (by simp [ha]) b (by simp [hb]) hab hpa
+      by_cases ha : p a
+      · have hb : q b := hpq a (by simp) b (by simp) hab ha
+        simpa [ha, hb] using Nat.succ_le_succ (ih hpq_tail)
+      · by_cases hb : q b
+        · simpa [ha, hb] using le_trans (ih hpq_tail) (Nat.le_succ (filter q t).card)
+        · simpa [ha, hb] using ih hpq_tail
+
+/-- The equality-filter cardinality is the multiplicity of the filtered
+element. -/
+theorem card_filter_eq_eq_count {α : Type*} [DecidableEq α] (s : Multiset α)
+    (x : α) :
+    (s.filter (fun a => a = x)).card = s.count x := by
+  induction s using Multiset.induction with
+  | empty =>
+      simp
+  | cons a s ih =>
+      by_cases hax : a = x
+      · subst hax
+        simp [ih, Multiset.count_cons_self]
+      · simp [hax, ih, Multiset.count_cons_of_ne (Ne.symm hax)]
+
 /--
 A target cluster in a small ball around `r` matches a source cluster consisting
 only of copies of `r`, provided the two clusters have the same cardinality.
@@ -220,6 +268,62 @@ theorem card_filter_gt_le_of_rel_abs_sub_lt
   refine card_filter_le_of_rel hmatch ?_
   intro r hr q hqr hxr
   exact threshold_lt_of_abs_sub_lt_of_threshold_lt hxr (hsep r hr) hqr
+
+/-- A proximity matching preserves strict-upper threshold counts when only the
+source roots already above the threshold are required to be separated from the
+threshold. -/
+theorem card_filter_gt_le_of_rel_abs_sub_lt_of_gt_sep
+    {s t : Multiset ℝ} {x δ : ℝ}
+    (hsep : ∀ r ∈ s, x < r → δ ≤ |r - x|)
+    (hmatch : Multiset.Rel (fun r q => |q - r| < δ) s t) :
+    (s.filter (fun r => x < r)).card ≤
+      (t.filter (fun q => x < q)).card := by
+  refine card_filter_le_of_rel hmatch ?_
+  intro r hr q hqr hxr
+  exact threshold_lt_of_abs_sub_lt_of_threshold_lt hxr (hsep r hr hxr) hqr
+
+/-- Under a proximity matching, target roots above a threshold can only come
+from source roots above that threshold or from source roots exactly at the
+threshold, provided all other source roots are separated from the threshold. -/
+theorem card_filter_gt_le_add_card_filter_eq_of_rel_abs_sub_lt
+    {s t : Multiset ℝ} {x δ : ℝ}
+    (hsep : ∀ r ∈ s, r ≠ x → δ ≤ |r - x|)
+    (hmatch : Multiset.Rel (fun r q => |q - r| < δ) s t) :
+    (t.filter (fun q => x < q)).card ≤
+      (s.filter (fun r => x < r)).card +
+        (s.filter (fun r => r = x)).card := by
+  have hmatch_flip :
+      Multiset.Rel (fun q r => |q - r| < δ) t s :=
+    (Multiset.rel_flip).2 hmatch
+  have hle_or :
+      (t.filter (fun q => x < q)).card ≤
+        (s.filter (fun r => x < r ∨ r = x)).card := by
+    refine card_filter_le_of_rel_with_right_mem hmatch_flip ?_
+    intro q _hq r hr hqr hxq
+    by_cases hrx : r = x
+    · exact Or.inr hrx
+    · by_cases hxr : x < r
+      · exact Or.inl hxr
+      · have hr_le : r ≤ x := le_of_not_gt hxr
+        have hq_lt : q < x :=
+          lt_threshold_of_abs_sub_lt_of_le_threshold hr_le (hsep r hr hrx) hqr
+        exact False.elim (not_lt_of_ge (le_of_lt hxq) hq_lt)
+  exact le_trans hle_or (card_filter_or_le_add s)
+
+/-- If a proximity-matched source multiset has a single element at the
+threshold, then the target strict-upper count is at most one larger than the
+source strict-upper count. -/
+theorem card_filter_gt_le_add_one_of_rel_abs_sub_lt_of_count_eq_one
+    {s t : Multiset ℝ} {x δ : ℝ}
+    (hsep : ∀ r ∈ s, r ≠ x → δ ≤ |r - x|)
+    (hx : s.count x = 1)
+    (hmatch : Multiset.Rel (fun r q => |q - r| < δ) s t) :
+    (t.filter (fun q => x < q)).card ≤
+      (s.filter (fun r => x < r)).card + 1 := by
+  have hle :=
+    card_filter_gt_le_add_card_filter_eq_of_rel_abs_sub_lt hsep hmatch
+  rw [card_filter_eq_eq_count, hx] at hle
+  exact hle
 
 /-- The weak-lower and strict-upper filters partition a finite multiset over a
 linear order. -/

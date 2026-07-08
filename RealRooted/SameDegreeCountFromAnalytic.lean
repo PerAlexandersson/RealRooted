@@ -15,6 +15,76 @@ open Polynomial
 
 namespace RealRooted
 
+/-- Near a simple root at the threshold, same-degree perturbations can change
+the strict-upper root count by at most one, and only upward from the source
+side.
+
+This is the crossing analogue of the non-root local-constancy bridge from
+`RootCountLocalConstancy`: the analytic input is still the #42 multiplicity
+lower-count theorem, but the finite count conclusion allows the single root at
+`x` to move across the threshold. -/
+theorem exists_eps_card_roots_gt_bounds_near_simple_root
+    {f g : ℝ[X]} {μ x : ℝ}
+    (hp_split : (f + C μ * g).Splits)
+    (hsimple : HasSimpleRoots (f + C μ * g))
+    (hroot : (f + C μ * g).IsRoot x) :
+    ∃ ε : ℝ, 0 < ε ∧ ∀ ν : ℝ, |ν - μ| < ε →
+      (f + C ν * g).Splits →
+      (f + C ν * g).natDegree = (f + C μ * g).natDegree →
+      (((f + C μ * g).roots.filter (x < ·)).card ≤
+          ((f + C ν * g).roots.filter (x < ·)).card ∧
+        ((f + C ν * g).roots.filter (x < ·)).card ≤
+          ((f + C μ * g).roots.filter (x < ·)).card + 1) := by
+  classical
+  set p : ℝ[X] := f + C μ * g
+  have hp_def : p = f + C μ * g := rfl
+  have hx_count : p.roots.count x = 1 := by
+    rw [count_roots]
+    exact hsimple x (by simpa [hp_def] using hroot)
+  have hx_not_erase : x ∉ p.roots.erase x := by
+    rw [← Multiset.count_eq_zero, Multiset.count_erase_self, hx_count]
+  obtain ⟨η, hη_pos, hη⟩ :=
+    Multiset.exists_pos_le_abs_sub_of_not_mem (p.roots.erase x) hx_not_erase
+  obtain ⟨ρ, hρ_pos, hρ_lt_η, hsep_centers⟩ :=
+    Multiset.exists_pos_lt_and_two_mul_le_abs_sub_toFinset p.roots hη_pos
+  obtain ⟨ε, hε_pos, hε⟩ :=
+    exists_eps_forall_root_count_le_card_filter_near (f := f) (g := g)
+      (μ0 := μ) hp_split ρ hρ_pos
+  refine ⟨ε, hε_pos, ?_⟩
+  intro ν hν hν_split hν_deg
+  have hcount := hε ν hν hν_split hν_deg
+  have hcount_local : ∀ a ∈ p.roots.toFinset,
+      p.roots.count a ≤
+        ((f + C ν * g).roots.filter (fun q => |q - a| < ρ)).card := by
+    intro a ha
+    simpa [p, hp_def] using hcount a (by simpa [p, hp_def] using ha)
+  obtain ⟨u, hu, hrel⟩ :=
+    Multiset.exists_rel_le_of_forall_le_count (s := p.roots)
+      (t := (f + C ν * g).roots) hsep_centers hcount_local
+  have hcard : (f + C ν * g).roots.card = p.roots.card := by
+    rw [hν_split.natDegree_eq_card_roots.symm,
+      hp_split.natDegree_eq_card_roots.symm, hν_deg]
+  have hu_card : u.card = (f + C ν * g).roots.card := by
+    rw [hcard, Multiset.card_eq_card_of_rel hrel]
+  have hu_eq : u = (f + C ν * g).roots :=
+    Multiset.eq_of_le_of_card_le hu hu_card.ge
+  rw [hu_eq] at hrel
+  have hsep_gt : ∀ r ∈ p.roots, x < r → ρ ≤ |r - x| := by
+    intro r hr hxr
+    have hr_ne : r ≠ x := ne_of_gt hxr
+    exact le_trans (le_of_lt hρ_lt_η)
+      (hη r ((Multiset.mem_erase_of_ne hr_ne).2 hr))
+  have hsep_ne : ∀ r ∈ p.roots, r ≠ x → ρ ≤ |r - x| := by
+    intro r hr hrx
+    exact le_trans (le_of_lt hρ_lt_η)
+      (hη r ((Multiset.mem_erase_of_ne hrx).2 hr))
+  constructor
+  · simpa [p, hp_def] using
+      Multiset.card_filter_gt_le_of_rel_abs_sub_lt_of_gt_sep hsep_gt hrel
+  · simpa [p, hp_def] using
+      Multiset.card_filter_gt_le_add_one_of_rel_abs_sub_lt_of_count_eq_one
+        hsep_ne hx_count hrel
+
 /-- Local lower counts from the #42 multiplicity-continuity theorem give
 strict-upper root-count equality on the unit interval. -/
 theorem rightFamily_card_roots_gt_eq_zero_one_of_constant_degree
