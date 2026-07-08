@@ -37,13 +37,46 @@ def indepPoly {V : Type u} [Fintype V] [DecidableEq V]
 def ClawFree {V : Type u} (G : _root_.SimpleGraph V) : Prop :=
   ∀ v : V, ∀ s : Finset V, (∀ w ∈ s, G.Adj v w) → ¬ G.IsNIndepSet 3 s
 
+/-- A finite set of edges is a matching if distinct edges do not share a vertex. -/
+def IsMatchingEdgeFinset {V : Type u} (G : _root_.SimpleGraph V)
+    (M : Finset G.edgeSet) : Prop :=
+  ∀ ⦃e₁ : G.edgeSet⦄, e₁ ∈ M → ∀ ⦃e₂ : G.edgeSet⦄, e₂ ∈ M →
+    e₁ ≠ e₂ → ¬ (((e₁ : Sym2 V) ∩ (e₂ : Sym2 V) : Set V).Nonempty)
+
+/-- Edge-set matchings are exactly independent sets in the line graph. -/
+theorem isMatchingEdgeFinset_iff_lineGraph_isIndepSet {V : Type u}
+    (G : _root_.SimpleGraph V) (M : Finset G.edgeSet) :
+    IsMatchingEdgeFinset G M ↔ G.lineGraph.IsIndepSet (M : Set G.edgeSet) := by
+  constructor
+  · intro h e₁ he₁ e₂ he₂ hne hadj
+    exact h he₁ he₂ hne hadj.2
+  · intro h e₁ he₁ e₂ he₂ hne hnonempty
+    exact h he₁ he₂ hne ⟨hne, hnonempty⟩
+
 /-- Matching-generating polynomial, represented as the independence polynomial
-of the line graph. A later intrinsic matching-count definition should be proved
-equal to this one. -/
+of the line graph. -/
 def matchingGeneratingPolynomial {V : Type u} [Fintype V] [DecidableEq V]
     (G : _root_.SimpleGraph V) : ℝ[X] := by
   classical
   exact indepPoly G.lineGraph
+
+/-- Intrinsic matching-generating polynomial as a sum over finite matchings of
+edge sets. -/
+def matchingPolynomialByEdges {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) : ℝ[X] := by
+  classical
+  exact ∑ M ∈ (Finset.univ.filter fun M : Finset G.edgeSet =>
+      IsMatchingEdgeFinset G M),
+    (X : ℝ[X]) ^ M.card
+
+/-- The intrinsic edge-matching polynomial agrees with the line-graph
+independence-polynomial definition. -/
+theorem matchingPolynomialByEdges_eq_matchingGeneratingPolynomial
+    {V : Type u} [Fintype V] [DecidableEq V] (G : _root_.SimpleGraph V) :
+    matchingPolynomialByEdges G = matchingGeneratingPolynomial G := by
+  classical
+  simp [matchingPolynomialByEdges, matchingGeneratingPolynomial, indepPoly,
+    isMatchingEdgeFinset_iff_lineGraph_isIndepSet]
 
 /-- Independence polynomials have nonnegative coefficients by construction. -/
 theorem indepPoly_hasNonnegCoeffs {V : Type u} [Fintype V] [DecidableEq V]
