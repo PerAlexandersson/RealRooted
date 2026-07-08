@@ -37,6 +37,27 @@ def indepPoly {V : Type u} [Fintype V] [DecidableEq V]
 def ClawFree {V : Type u} (G : _root_.SimpleGraph V) : Prop :=
   ∀ v : V, ∀ s : Finset V, (∀ w ∈ s, G.Adj v w) → ¬ G.IsNIndepSet 3 s
 
+/-- Induced subgraphs of claw-free graphs are claw-free. -/
+theorem ClawFree.induce {V : Type u} {G : _root_.SimpleGraph V}
+    (hG : ClawFree G) (s : Set V) : ClawFree (G.induce s) := by
+  intro v t hneigh hind
+  let t' : Finset V := t.map ⟨Subtype.val, Subtype.val_injective⟩
+  have ht'_neigh : ∀ w ∈ t', G.Adj v w := by
+    intro w hw
+    rcases Finset.mem_map.mp hw with ⟨x, hx, rfl⟩
+    exact hneigh x hx
+  have ht'_ind : G.IsNIndepSet 3 t' := by
+    refine ⟨?_, ?_⟩
+    · rw [SimpleGraph.isIndepSet_iff]
+      intro a ha b hb hne hadj
+      rcases Finset.mem_map.mp ha with ⟨a', ha', rfl⟩
+      rcases Finset.mem_map.mp hb with ⟨b', hb', hb_eq⟩
+      subst hb_eq
+      exact hind.isIndepSet ha' hb' (fun h => hne (congrArg Subtype.val h)) hadj
+    · rw [Finset.card_map]
+      exact hind.card_eq
+  exact hG v t' ht'_neigh ht'_ind
+
 /-- A finite set of edges is a matching if distinct edges do not share a vertex. -/
 def IsMatchingEdgeFinset {V : Type u} (G : _root_.SimpleGraph V)
     (M : Finset G.edgeSet) : Prop :=
@@ -78,6 +99,28 @@ theorem matchingPolynomialByEdges_eq_matchingGeneratingPolynomial
   simp [matchingPolynomialByEdges, matchingGeneratingPolynomial, indepPoly,
     isMatchingEdgeFinset_iff_lineGraph_isIndepSet]
 
+/-- The empty independent set gives the constant coefficient of the
+independence polynomial. -/
+theorem indepPoly_coeff_zero {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) : (indepPoly G).coeff 0 = 1 := by
+  classical
+  rw [indepPoly, Polynomial.finsetSum_coeff, Finset.sum_eq_single ∅]
+  · simp
+  · intro s hs hne
+    have hs_nonzero : s.card ≠ 0 := by
+      rwa [Finset.card_ne_zero, Finset.nonempty_iff_ne_empty]
+    have hzero : ¬ 0 = s.card := fun h => hs_nonzero h.symm
+    simp [Polynomial.coeff_X_pow, hzero]
+  · intro hnot
+    simp at hnot
+
+/-- Independence polynomials are nonzero. -/
+theorem indepPoly_ne_zero {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) : indepPoly G ≠ 0 := by
+  intro h
+  have hcoeff := congrArg (fun p : ℝ[X] => p.coeff 0) h
+  simp [indepPoly_coeff_zero] at hcoeff
+
 /-- Independence polynomials have nonnegative coefficients by construction. -/
 theorem indepPoly_hasNonnegCoeffs {V : Type u} [Fintype V] [DecidableEq V]
     (G : _root_.SimpleGraph V) :
@@ -89,6 +132,11 @@ theorem indepPoly_hasNonnegCoeffs {V : Type u} [Fintype V] [DecidableEq V]
     by_cases hs : n = s.card
     · simp [Polynomial.coeff_X_pow, hs]
     · simp [Polynomial.coeff_X_pow, hs]
+
+/-- Independence polynomials have positive leading coefficient. -/
+theorem indepPoly_hasPosLeadingCoeff {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) : HasPosLeadingCoeff (indepPoly G) :=
+  (indepPoly_hasNonnegCoeffs G).pos_leadingCoeff (indepPoly_ne_zero G)
 
 /-- Line graphs are claw-free.
 
