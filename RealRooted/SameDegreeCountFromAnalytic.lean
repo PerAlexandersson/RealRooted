@@ -85,6 +85,50 @@ theorem exists_eps_card_roots_gt_bounds_near_simple_root
       Multiset.card_filter_gt_le_add_one_of_rel_abs_sub_lt_of_count_eq_one
         hsep_ne hx_count hrel
 
+/-- On a nonnegative same-degree right-family interval with no root at the
+threshold, the strict-upper root count is constant. -/
+theorem rightFamily_card_roots_gt_eq_of_no_isRoot_interval_sameDegree
+    {f g : ℝ[X]} {μ₀ μ₁ x : ℝ}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hμ₀_nonneg : 0 ≤ μ₀) (hμ₀μ₁ : μ₀ ≤ μ₁)
+    (hne : ∀ μ ∈ Set.Icc μ₀ μ₁, ¬ (f + C μ * g).IsRoot x) :
+    ((f + C μ₀ * g).roots.filter (x < ·)).card =
+      ((f + C μ₁ * g).roots.filter (x < ·)).card := by
+  have hf_split : f.Splits :=
+    (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
+  have hsplit_nonneg : ∀ μ : ℝ, 0 ≤ μ → (f + C μ * g).Splits := by
+    intro μ hμ
+    by_cases hμ0 : μ = 0
+    · simpa [hμ0] using hf_split
+    · have hμ_pos : 0 < μ := lt_of_le_of_ne hμ (fun h => hμ0 h.symm)
+      simpa using (hfg (lam := 1) (μ := μ) zero_lt_one hμ_pos).2
+  have hdeg_nonneg :
+      ∀ μ : ℝ, 0 ≤ μ → (f + C μ * g).natDegree = f.natDegree := by
+    intro μ hμ
+    by_cases hμ0 : μ = 0
+    · simp [hμ0]
+    · have hμ_pos : 0 < μ := lt_of_le_of_ne hμ (fun h => hμ0 h.symm)
+      have hle : f.natDegree ≤ g.natDegree := by rw [hdeg]
+      simpa [hdeg] using
+        (PosComboRealRooted.family_natDegree_right
+          (f := f) (g := g) hle hf_pos hg_pos hμ_pos)
+  refine
+    rightFamily_card_roots_gt_eq_of_local_lower_counts hμ₀μ₁ ?_ ?_ hne ?_
+  · intro μ hμ
+    rw [hdeg_nonneg μ (le_trans hμ₀_nonneg hμ.1),
+      hdeg_nonneg μ₀ hμ₀_nonneg]
+  · intro μ hμ
+    exact hsplit_nonneg μ (le_trans hμ₀_nonneg hμ.1)
+  · intro μ hμ ρ hρ
+    exact positiveParameter_local_lower_count
+      (fun ν hν => hsplit_nonneg ν (le_trans hμ₀_nonneg hν.1))
+      (fun ν hν => by
+        rw [hdeg_nonneg ν (le_trans hμ₀_nonneg hν.1),
+          hdeg_nonneg μ₀ hμ₀_nonneg])
+      hμ hρ
+
 /-- Local lower counts from the #42 multiplicity-continuity theorem give
 strict-upper root-count equality on the unit interval. -/
 theorem rightFamily_card_roots_gt_eq_zero_one_of_constant_degree
@@ -212,5 +256,181 @@ theorem sameDegree_rootCountAbove_pointwise_of_not_exists_pos_isRoot
   · exact hxf (by simpa [hμ0] using hroot)
   · have hμ_pos : 0 < μ := lt_of_le_of_ne hμ (fun h => hμ0 h.symm)
     exact hno_pos ⟨μ, hμ_pos, hroot⟩
+
+/-- Pointwise same-degree upper root-count bound in the single-crossing case. -/
+theorem sameDegree_rootCountAbove_pointwise_of_exists_pos_isRoot
+    {f g : ℝ[X]} {x : ℝ}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
+    (hcross : ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) :
+    ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
+  obtain ⟨μ, hμ, hroot⟩ := hcross
+  obtain ⟨_, _, _, _, huniq⟩ :=
+    hfg.root_crossing_data_unique_add_right hno hμ hroot
+  have hsimple : HasSimpleRoots (f + C μ * g) :=
+    hfg.hasSimpleRoots_add_right hno hμ
+  obtain ⟨ε, hε_pos, hε⟩ :=
+    exists_eps_card_roots_gt_bounds_near_simple_root
+      (f := f) (g := g) (μ := μ) (x := x)
+      (by simpa using (hfg (lam := 1) (μ := μ) zero_lt_one hμ).2)
+      hsimple hroot
+  let δ : ℝ := min (μ / 2) (ε / 2)
+  have hδ_pos : 0 < δ := by
+    dsimp [δ]
+    exact lt_min (by positivity) (by positivity)
+  have hδ_lt_μ : δ < μ := by
+    have hδ_le : δ ≤ μ / 2 := min_le_left (μ / 2) (ε / 2)
+    linarith
+  have hδ_lt_ε : δ < ε := by
+    have hδ_le : δ ≤ ε / 2 := le_trans (min_le_right (μ / 2) (ε / 2)) le_rfl
+    linarith
+  let μL : ℝ := μ - δ
+  let μR : ℝ := μ + δ
+  have hμL_pos : 0 < μL := by
+    dsimp [μL]
+    linarith
+  have hμL_lt_μ : μL < μ := by
+    dsimp [μL]
+    linarith
+  have hμR_pos : 0 < μR := by
+    dsimp [μR]
+    linarith
+  have hμ_lt_μR : μ < μR := by
+    dsimp [μR]
+    linarith
+  have hdistL : |μL - μ| < ε := by
+    have hsub : μL - μ = -δ := by
+      dsimp [μL]
+      ring
+    rw [hsub, abs_neg, abs_of_pos hδ_pos]
+    exact hδ_lt_ε
+  have hdistR : |μR - μ| < ε := by
+    have hsub : μR - μ = δ := by
+      dsimp [μR]
+      ring
+    rw [hsub, abs_of_pos hδ_pos]
+    exact hδ_lt_ε
+  have hsplit_pos : ∀ τ : ℝ, 0 < τ → (f + C τ * g).Splits := by
+    intro τ hτ
+    simpa using (hfg (lam := 1) (μ := τ) zero_lt_one hτ).2
+  have hdeg_pos :
+      ∀ τ : ℝ, 0 < τ → (f + C τ * g).natDegree = f.natDegree := by
+    intro τ hτ
+    have hle : f.natDegree ≤ g.natDegree := by rw [hdeg]
+    simpa [hdeg] using
+      (PosComboRealRooted.family_natDegree_right
+        (f := f) (g := g) hle hf_pos hg_pos hτ)
+  have hμL_deg : (f + C μL * g).natDegree = (f + C μ * g).natDegree := by
+    rw [hdeg_pos μL hμL_pos, hdeg_pos μ hμ]
+  have hμR_deg : (f + C μR * g).natDegree = (f + C μ * g).natDegree := by
+    rw [hdeg_pos μR hμR_pos, hdeg_pos μ hμ]
+  obtain ⟨hP_le_L, hL_le_P⟩ :=
+    hε μL hdistL (hsplit_pos μL hμL_pos) hμL_deg
+  obtain ⟨hP_le_R, hR_le_P⟩ :=
+    hε μR hdistR (hsplit_pos μR hμR_pos) hμR_deg
+  have hL_le_R_add_one :
+      ((f + C μL * g).roots.filter (x < ·)).card ≤
+        ((f + C μR * g).roots.filter (x < ·)).card + 1 :=
+    le_trans hL_le_P (Nat.succ_le_succ hP_le_R)
+  have hR_le_L_add_one :
+      ((f + C μR * g).roots.filter (x < ·)).card ≤
+        ((f + C μL * g).roots.filter (x < ·)).card + 1 :=
+    le_trans hR_le_P (Nat.succ_le_succ hP_le_L)
+  have hne_left_interval :
+      ∀ τ ∈ Set.Icc (0 : ℝ) μL, ¬ (f + C τ * g).IsRoot x := by
+    intro τ hτ hrootτ
+    by_cases hτ0 : τ = 0
+    · exact hxf (by simpa [hτ0] using hrootτ)
+    · have hτ_pos : 0 < τ := lt_of_le_of_ne hτ.1 (fun h => hτ0 h.symm)
+      have hτ_eq : τ = μ := huniq τ hτ_pos hrootτ
+      have : τ ≤ μL := hτ.2
+      linarith
+  have hF_eq_L :
+      (f.roots.filter (x < ·)).card =
+        ((f + C μL * g).roots.filter (x < ·)).card := by
+    simpa using
+      rightFamily_card_roots_gt_eq_of_no_isRoot_interval_sameDegree
+        (f := f) (g := g) (μ₀ := 0) (μ₁ := μL) (x := x)
+        hf_pos hg_pos hfg hdeg (by norm_num) (le_of_lt hμL_pos)
+        hne_left_interval
+  have hne_right_interval :
+      ∀ η ∈ Set.Icc (0 : ℝ) μR⁻¹, ¬ (g + C η * f).IsRoot x := by
+    intro η hη hrootη
+    by_cases hη0 : η = 0
+    · exact hxg (by simpa [hη0] using hrootη)
+    · have hη_pos : 0 < η := lt_of_le_of_ne hη.1 (fun h => hη0 h.symm)
+      have hη_ne : η ≠ 0 := ne_of_gt hη_pos
+      have hroot_right : (f + C η⁻¹ * g).IsRoot x := by
+        have hiff :=
+          add_right_isRoot_iff_add_left_inv
+            (f := f) (g := g) (μ := η⁻¹) (x := x) (inv_ne_zero hη_ne)
+        rw [inv_inv] at hiff
+        exact hiff.mpr hrootη
+      have hη_inv_eq : η⁻¹ = μ :=
+        huniq η⁻¹ (inv_pos.mpr hη_pos) hroot_right
+      have hη_eq : η = μ⁻¹ := by
+        calc
+          η = (η⁻¹)⁻¹ := by rw [inv_inv]
+          _ = μ⁻¹ := by rw [hη_inv_eq]
+      have hμR_inv_lt_μ_inv : μR⁻¹ < μ⁻¹ := by
+        simpa [one_div] using one_div_lt_one_div_of_lt hμ hμ_lt_μR
+      have hη_lt : η < μ⁻¹ := lt_of_le_of_lt hη.2 hμR_inv_lt_μ_inv
+      rw [hη_eq] at hη_lt
+      exact (lt_irrefl (μ⁻¹)) hη_lt
+  have hG_eq_Rinv :
+      (g.roots.filter (x < ·)).card =
+        ((g + C μR⁻¹ * f).roots.filter (x < ·)).card := by
+    have hμR_inv_pos : 0 < μR⁻¹ := inv_pos.mpr hμR_pos
+    simpa using
+      rightFamily_card_roots_gt_eq_of_no_isRoot_interval_sameDegree
+        (f := g) (g := f) (μ₀ := 0) (μ₁ := μR⁻¹) (x := x)
+        hg_pos hf_pos (PosComboRealRooted.comm hfg) hdeg.symm
+        (by norm_num) (le_of_lt hμR_inv_pos) hne_right_interval
+  have hR_eq_Rinv :
+      ((f + C μR * g).roots.filter (x < ·)).card =
+        ((g + C μR⁻¹ * f).roots.filter (x < ·)).card :=
+    add_right_roots_gt_card_eq_add_left_inv
+      (f := f) (g := g) (μ := μR) (x := x) (ne_of_gt hμR_pos)
+  have hF_le_G_nat :
+      (f.roots.filter (x < ·)).card ≤ (g.roots.filter (x < ·)).card + 1 := by
+    rw [hF_eq_L, hG_eq_Rinv, ← hR_eq_Rinv]
+    exact hL_le_R_add_one
+  have hG_le_F_nat :
+      (g.roots.filter (x < ·)).card ≤ (f.roots.filter (x < ·)).card + 1 := by
+    rw [hF_eq_L, hG_eq_Rinv, ← hR_eq_Rinv]
+    exact hR_le_L_add_one
+  have hF_le_G_int :
+      ((f.roots.filter (x < ·)).card : ℤ) ≤
+        (g.roots.filter (x < ·)).card + 1 := by
+    exact_mod_cast hF_le_G_nat
+  have hG_le_F_int :
+      ((g.roots.filter (x < ·)).card : ℤ) ≤
+        (f.roots.filter (x < ·)).card + 1 := by
+    exact_mod_cast hG_le_F_nat
+  constructor <;> lia
+
+/-- The #41 common-non-root upper root-count target follows from the #42
+analytic count spine. -/
+theorem posComboNoCommonSameDegreeRootCountAboveNonRootNonneg_from_analytic :
+    PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement := by
+  intro f g hf_pos hg_pos _hfnn _hgnn hfg hdeg hno x hxf hxg
+  by_cases hcross : ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x
+  · exact
+      sameDegree_rootCountAbove_pointwise_of_exists_pos_isRoot
+        hf_pos hg_pos hfg hdeg hno hxf hxg hcross
+  · exact
+      sameDegree_rootCountAbove_pointwise_of_not_exists_pos_isRoot
+        hf_pos hg_pos hfg hdeg hxf hxg hcross
+
+/-- The repaired #41 same-degree pair-interleaver endpoint follows from the
+#42 analytic count spine. -/
+theorem posComboNoCommonSameDegreePairHasCommonInterleaverNonneg_from_analytic :
+    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
+  sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot
+    posComboNoCommonSameDegreeRootCountAboveNonRootNonneg_from_analytic
 
 end RealRooted
