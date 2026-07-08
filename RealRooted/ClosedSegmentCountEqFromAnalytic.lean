@@ -20,7 +20,7 @@ namespace RealRooted
 The central closed-segment count-equality target follows from the proved
 degree-increasing and positive-parameter local lower-count inputs.
 -/
-theorem compatibleSuccDegreeClosedSegmentCountEq_of_local_lower_counts :
+private theorem compatibleSuccDegreeClosedSegmentCountEq_of_local_lower_counts :
     CompatibleSuccDegreeClosedSegmentCountEqStatement := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hseg
   have hx_roots : x ∉ f.roots :=
