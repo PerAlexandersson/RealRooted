@@ -704,11 +704,19 @@ theorem mem_closedBall_of_recip_avg {c : ℂ} {r : ℝ} (hr : 0 ≤ r) {w ζ : �
       · intro z hz; specialize h_reciprocal_in_S z hz; aesop;
     convert h_reciprocal_in_S_ζ using 1;
     rw [ ← hζ, inv_mul_eq_div, div_eq_mul_inv ] ; ring_nf ; aesop;
-  by_cases h : w - ζ = 0 <;> simp_all +decide [ div_eq_mul_inv ];
-  · norm_num [ ← hζ ] at *;
-  · simp_all +decide [ Complex.normSq, Complex.norm_def, dist_eq_norm ];
-    simp +zetaDelta at *;
-    rw [ Real.sqrt_le_left hr ];
+  by_cases h : w - ζ = 0
+  · simp_all +decide only [ne_eq, Metric.mem_closedBall, not_le, div_eq_mul_inv,
+      inv_zero, mul_zero, one_mul, Complex.mul_re, Set.mem_setOf_eq, map_inv₀,
+      Complex.inv_re, Complex.sub_re, Complex.inv_im, Complex.sub_im, neg_sub,
+      neg_mul, mul_neg, sub_neg_eq_add, ge_iff_le]
+    norm_num [ ← hζ ] at *
+  · simp_all +decide only [ne_eq, Metric.mem_closedBall, not_le, div_eq_mul_inv,
+      one_mul, Complex.mul_re, Set.mem_setOf_eq, map_inv₀, Complex.inv_re,
+      Complex.sub_re, Complex.inv_im, Complex.sub_im, neg_sub, ge_iff_le]
+    simp_all +decide only [dist_eq_norm, Complex.norm_def, Complex.normSq,
+      MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk, Complex.sub_re, Complex.sub_im]
+    simp +zetaDelta only [sub_pos, Complex.sub_re, Complex.sub_im] at *
+    rw [ Real.sqrt_le_left hr ]
     norm_num [ Complex.normSq ] at *;
     nlinarith [ inv_pos.mpr ( show 0 < ( w.re - ζ.re ) * ( w.re - ζ.re )
         + ( w.im - ζ.im ) * ( w.im - ζ.im ) from not_le.mp fun h' => h <| by
@@ -735,15 +743,32 @@ theorem polarDeriv_binomialLift {n : Nat} (hn : 1 ≤ n) (ζ : ℂ) (f : ℂ[X])
     rcases n <;> simp_all +decide [ Polynomial.coeff_monomial ];
     ring;
   · simp only [Polynomial.coeff_C_mul]
-    by_cases hk : k + 1 ≤ n <;> simp_all +decide [ polarDeriv, binomialLift ];
-    · simp +decide [ Polynomial.coeff_derivative, Polynomial.coeff_monomial, sub_mul,
-        mul_assoc, Finset.sum_range_succ ];
-      split_ifs <;>
-        simp_all +decide [ mul_add, add_mul, mul_comm, mul_left_comm ];
-      any_goals lia;
+    by_cases hk : k + 1 ≤ n
+    · simp_all +decide only [Order.add_one_le_iff, polarDeriv, map_natCast,
+        binomialLift, map_sum, coeff_add, coeff_natCast_mul, finsetSum_coeff,
+        Nat.sub_add_cancel, coeff_polarShift]
+      simp +decide only [coeff_monomial, Finset.sum_ite_eq', Finset.mem_range,
+        Order.lt_add_one_iff, Order.add_one_le_iff, mul_ite, mul_zero,
+        Finset.sum_range_succ, Nat.choose_self, Nat.cast_one, one_mul, sub_mul,
+        coeff_sub, coeff_C_mul, coeff_add, finsetSum_coeff, coeff_derivative,
+        Nat.cast_add, ite_mul, mul_assoc, zero_mul, coeff_X_mul]
+      split_ifs
+      all_goals
+        try (simp only [show n = k + 1 by omega, Nat.choose_self, Nat.cast_add,
+          Nat.cast_one]; ring_nf)
+        try (simp only [show n = k + 1 + 1 by omega, Nat.choose_succ_self_right,
+          Nat.choose_self, Nat.succ_sub_one, Nat.cast_add, Nat.cast_one]; ring_nf)
+        try simp +decide only [add_zero]
+        try simp +decide only [add_zero, mul_zero, zero_sub]
+        try simp +decide only [mul_eq_zero, Nat.cast_eq_zero]
+      any_goals lia
       · rcases n with _ | n
         · simp_all
-        · simp_all +decide [Nat.choose_succ_succ, add_mul, mul_add, mul_left_comm]
+        · simp_all +decide only [le_add_iff_nonneg_left, zero_le,
+            Order.lt_add_one_iff, Order.add_one_le_iff,
+            Nat.add_right_cancel_iff, Nat.cast_add, Nat.cast_one,
+            Nat.choose_succ_succ, Nat.succ_eq_add_one, add_mul, mul_add,
+            mul_left_comm, one_mul, add_tsub_cancel_right]
           have hChooseK :
               ((n + 1 : ℕ) : ℂ) * (n.choose k : ℂ) =
                 ((k + 1 : ℕ) : ℂ) *
@@ -761,9 +786,16 @@ theorem polarDeriv_binomialLift {n : Nat} (hn : 1 ≤ n) (ζ : ℂ) (f : ℂ[X])
           ring_nf at hChooseK hChooseSucc ⊢
           linear_combination (f.coeff (1 + k)) * hChooseK +
             (-(ζ * f.coeff (2 + k))) * hChooseSucc
-      · ring;
-    · simp +decide [ Polynomial.coeff_monomial, Finset.sum_range_succ', mul_assoc,
-        sub_mul, Finset.mul_sum _ _ _ ];
+    · simp_all +decide only [Order.add_one_le_iff, not_lt, polarDeriv,
+        map_natCast, binomialLift, map_sum, coeff_add, coeff_natCast_mul,
+        finsetSum_coeff, Nat.sub_add_cancel, coeff_polarShift]
+      simp +decide only [coeff_monomial, Finset.sum_ite_eq', Finset.mem_range,
+        Order.lt_add_one_iff, Order.add_one_le_iff, mul_ite, mul_zero,
+        Finset.sum_range_succ', derivative_monomial_succ, mul_assoc,
+        Nat.choose_zero_right, Nat.cast_one, one_mul, monomial_zero_left,
+        derivative_C, add_zero, Finset.mul_sum _ _ _, sub_mul, C_mul_monomial,
+        X_mul_monomial, Finset.sum_sub_distrib, coeff_sub, finsetSum_coeff,
+        Nat.cast_add, Nat.add_right_cancel_iff]
       grind
 
 /-- **Laguerre's theorem** (closed-disk case): if all zeros of `A` (of degree
@@ -852,7 +884,9 @@ theorem polarDeriv_natDegree {n : Nat} {c : ℂ} {r : ℝ} {ζ : ℂ}
       have h_coeff : (polarDeriv n ζ A).coeff (n - 1)
           = ((n : ℂ) - (n - 1)) * A.coeff (n - 1) + ζ * (n : ℂ) * A.coeff n := by
         unfold polarDeriv;
-        simp +decide [ Polynomial.coeff_derivative, mul_assoc, sub_mul ] ;
+        simp +decide only [map_natCast, sub_mul, coeff_add, coeff_natCast_mul,
+          coeff_sub, coeff_C_mul, coeff_derivative, sub_sub_cancel, one_mul,
+          mul_assoc]
         rcases n with ( _ | _ | n ) <;>
           simp_all +decide [ Polynomial.coeff_derivative, mul_comm ];
         ring;
@@ -916,8 +950,10 @@ theorem apolarPairing_deflation {n : Nat} (hn : 1 ≤ n) {ζ : ℂ} {f g g' : �
     ( fun x : ℂ[X] => apolarPairing ( n - 1 ) ( polarShift ζ f ) g' ) hdefl ) using 1;
   obtain ⟨ m, rfl ⟩ := Nat.exists_eq_add_of_le hn;
   rw [ apolarPairing_eq_sum_binomialLift, apolarPairing_eq_sum_binomialLift ];
-  simp +decide [ ← hdefl, Finset.sum_range_succ', mul_assoc, mul_left_comm, mul_comm,
-    mul_sub ];
+  simp +decide only [← hdefl, add_tsub_cancel_left, mul_comm, mul_sub,
+    coeff_sub, coeff_mul_C, mul_assoc, mul_left_comm, Finset.sum_sub_distrib,
+    Finset.sum_range_succ', pow_zero, tsub_zero, one_mul, coeff_polarShift,
+    zero_add]
   rw [ add_comm 1 m, Finset.sum_range_succ ] ;
   norm_num [ Polynomial.coeff_X, mul_assoc, mul_left_comm, mul_add, add_mul,
     Finset.sum_add_distrib, Finset.mul_sum _ _ _, Finset.sum_mul _ _ _, pow_succ' ] ;
@@ -951,13 +987,33 @@ private theorem grace_aux {c : ℂ} {r : ℝ} (hr : 0 ≤ r) :
   intro n
   refine Nat.strong_induction_on n ?_
   intro n ih f g hf hg hap hroots
-  by_cases hn : n = 0;
-  · by_cases h : g.coeff 0 = 0 <;> simp_all +decide;
-    · refine ⟨ c, ?_, ?_ ⟩ <;> simp_all +decide [ binomialLift ];
-    · have h_contra : f.coeff 0 = 0 := by
-        unfold AreApolar at hap; simp_all +decide [ apolarPairing ] ;
+  by_cases hn : n = 0
+  · by_cases h : g.coeff 0 = 0
+    · simp_all +decide only [not_lt_zero, not_isEmpty_of_nonempty,
+        IsEmpty.forall_iff, implies_true]
+      refine ⟨ c, ?_, ?_ ⟩
+      · simp_all +decide only [binomialLift, zero_add, Finset.range_one,
+          Finset.sum_singleton, Nat.choose_self, Nat.cast_one, one_mul,
+          monomial_zero_left, natDegree_C, mul_zero, monomial_zero_right,
+          natDegree_zero, IsRoot.def, eval_zero]
+      · simp_all +decide only [binomialLift, zero_add, Finset.range_one,
+          Finset.sum_singleton, Nat.choose_self, Nat.cast_one, one_mul,
+          monomial_zero_left, natDegree_C, mul_zero, monomial_zero_right,
+          natDegree_zero, Metric.mem_closedBall, dist_self]
+    · simp_all +decide only [not_lt_zero, not_isEmpty_of_nonempty,
+        IsEmpty.forall_iff, implies_true]
+      have h_contra : f.coeff 0 = 0 := by
+        unfold AreApolar at hap;
+        simp_all +decide only [apolarPairing, zero_add, Finset.range_one,
+          zero_tsub, Finset.sum_singleton, pow_zero, Nat.choose_self,
+          Nat.cast_one, mul_one, one_mul, mul_eq_zero, or_false]
       contrapose! hroots;
-      unfold RootsIn; simp_all +decide [ binomialLift ] ;
+      unfold RootsIn;
+      simp_all +decide only [binomialLift, zero_add, Finset.range_one,
+        Finset.sum_singleton, Nat.choose_self, Nat.cast_one, mul_zero,
+        monomial_zero_right, natDegree_zero, one_mul, monomial_zero_left,
+        natDegree_C, IsRoot.def, eval_zero, Metric.mem_closedBall,
+        forall_const, not_forall, not_le]
       rcases exists_nat_gt r with ⟨ n, hn ⟩ ;
       exact ⟨ c + n, by simpa [ abs_of_nonneg hr ] using hn ⟩;
   · obtain ⟨ζ, hζ⟩ : ∃ ζ : ℂ, (binomialLift n g).IsRoot ζ := by
