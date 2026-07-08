@@ -21,9 +21,9 @@ Choose one separation radius around the roots of `p` so that any same-degree
 split polynomial with enough roots in each such ball has the same strict-upper
 root count across a threshold `x`.
 
-This is the polynomial bridge for the local-bound part of issue #42: after an
-analytic continuity argument supplies the per-root lower counts near a fixed
-positive parameter, the threshold count equality is finite bookkeeping.
+This is the polynomial bridge for the local-lower-count part of issue #42:
+after an analytic continuity argument supplies the per-root lower counts near a
+fixed positive parameter, the threshold count equality is finite bookkeeping.
 -/
 theorem exists_radius_card_roots_filter_gt_eq_of_sameDegree_local_lower_counts
     {p : ℝ[X]} {x : ℝ} (hx : x ∉ p.roots) :
