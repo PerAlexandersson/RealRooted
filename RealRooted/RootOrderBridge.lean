@@ -1,4 +1,5 @@
 import Mathlib
+import RealRooted.RootCountFinite
 import RealRooted.RootCountHelpers
 
 /-!
@@ -359,14 +360,6 @@ theorem succRootCrossing_of_count_le_two
     norm_num at *
     lia
 
-/-- The roots below-or-at and strictly above a threshold partition a multiset
-of real roots. -/
-theorem card_filter_le_add_card_filter_gt (M : Multiset ℝ) (x : ℝ) :
-    (M.filter (· ≤ x)).card + (M.filter (x < ·)).card = M.card := by
-  have h := congrArg Multiset.card
-    (Multiset.filter_add_not (p := fun y : ℝ => y ≤ x) M)
-  simpa [Multiset.card_add, not_le] using h
-
 /-- Convert the upper-threshold same-cardinality count bound into the
 lower-threshold count bound. -/
 theorem count_le_diff_le_one_of_count_gt_diff_le_one
@@ -379,8 +372,8 @@ theorem count_le_diff_le_one_of_count_gt_diff_le_one
       ((M.filter (· ≤ x)).card : ℤ) - (N.filter (· ≤ x)).card ≤ 1 ∧
       ((N.filter (· ≤ x)).card : ℤ) - (M.filter (· ≤ x)).card ≤ 1 := by
   intro x
-  have hpartM := card_filter_le_add_card_filter_gt M x
-  have hpartN := card_filter_le_add_card_filter_gt N x
+  have hpartM := Multiset.card_filter_le_add_card_filter_gt M x
+  have hpartN := Multiset.card_filter_le_add_card_filter_gt N x
   have hMcard : (M.filter (· ≤ x)).card + (M.filter (x < ·)).card = d := by
     simpa [hM] using hpartM
   have hNcard : (N.filter (· ≤ x)).card + (N.filter (x < ·)).card = d := by
@@ -404,8 +397,8 @@ theorem count_gt_diff_le_one_of_count_le_diff_le_one
       ((M.filter (x < ·)).card : ℤ) - (N.filter (x < ·)).card ≤ 1 ∧
       ((N.filter (x < ·)).card : ℤ) - (M.filter (x < ·)).card ≤ 1 := by
   intro x
-  have hpartM := card_filter_le_add_card_filter_gt M x
-  have hpartN := card_filter_le_add_card_filter_gt N x
+  have hpartM := Multiset.card_filter_le_add_card_filter_gt M x
+  have hpartN := Multiset.card_filter_le_add_card_filter_gt N x
   have hMcard : (M.filter (· ≤ x)).card + (M.filter (x < ·)).card = d := by
     simpa [hM] using hpartM
   have hNcard : (N.filter (· ≤ x)).card + (N.filter (x < ·)).card = d := by
@@ -445,8 +438,8 @@ theorem count_le_two_of_count_gt_diff_le_one
       ((M.filter (· ≤ x)).card : ℤ) - (N.filter (· ≤ x)).card ≤ 0 ∧
       ((N.filter (· ≤ x)).card : ℤ) - (M.filter (· ≤ x)).card ≤ 2 := by
   intro x
-  have hpartM := card_filter_le_add_card_filter_gt M x
-  have hpartN := card_filter_le_add_card_filter_gt N x
+  have hpartM := Multiset.card_filter_le_add_card_filter_gt M x
+  have hpartN := Multiset.card_filter_le_add_card_filter_gt N x
   have hMcard : (M.filter (· ≤ x)).card + (M.filter (x < ·)).card = d := by
     simpa [hM] using hpartM
   have hNcard : (N.filter (· ≤ x)).card + (N.filter (x < ·)).card = d + 1 := by
@@ -471,8 +464,8 @@ theorem count_gt_diff_le_one_of_count_le_two
       ((M.filter (x < ·)).card : ℤ) - (N.filter (x < ·)).card ≤ 1 ∧
       ((N.filter (x < ·)).card : ℤ) - (M.filter (x < ·)).card ≤ 1 := by
   intro x
-  have hpartM := card_filter_le_add_card_filter_gt M x
-  have hpartN := card_filter_le_add_card_filter_gt N x
+  have hpartM := Multiset.card_filter_le_add_card_filter_gt M x
+  have hpartN := Multiset.card_filter_le_add_card_filter_gt N x
   have hMcard : (M.filter (· ≤ x)).card + (M.filter (x < ·)).card = d := by
     simpa [hM] using hpartM
   have hNcard : (N.filter (· ≤ x)).card + (N.filter (x < ·)).card = d + 1 := by
