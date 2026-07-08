@@ -328,10 +328,10 @@ is an `ε > 0` such that for every `ν` with `|ν - μ0| < ε` for which
 of `p0`, counted with multiplicity, has at least that many roots of `pnu` within
 `ρ` of `a`.
 
-The base parameter `μ0` is completely unconstrained: in particular `μ0 = 0` is
-allowed, which is the endpoint case feeding the `hlocal_lower` hypothesis of the
-downstream count-equality route (see
-`RealRooted.local_lower_counts_add_C_mul_endpoint`). -/
+The base parameter `μ0` is completely unconstrained.  The live #42 route uses
+this same-degree theorem on positive parameter intervals via
+`positiveParameter_local_lower_count`; the jumping endpoint is handled
+separately by `degreeIncreasing_local_lower_count`. -/
 theorem exists_eps_forall_root_count_le_card_filter_near
     {f g : ℝ[X]} {μ0 : ℝ}
     (hp0_split : (f + C μ0 * g).Splits)
@@ -522,49 +522,6 @@ theorem exists_eps_forall_root_count_le_card_filter_near
       = (pnu.roots.filter (fun q => |q - a| < ρ)).card := by
     rw [hRdef, card_filter_roots_near_eq_taylor a ρ ptil, hptil_roots]
   rw [← htransfer]; exact hcount
-
-/-- **Endpoint per-root lower counts** (`μ = 0`).
-
-Specialising `exists_eps_forall_root_count_le_card_filter_near` to the base
-`μ0 = 0`, i.e. the endpoint member `f = f + C 0 * g`, yields exactly the
-`hlocal_lower` hypothesis consumed by the issue #42 count-equality route
-(`card_filter_gt_endpoint_eq_of_local_lower_counts_and_bounds`), namely that for
-every `ρ > 0` there is a threshold below which each nearby positive member
-`f + C μ * g` splits and its roots account, with multiplicity, for all roots of
-the endpoint `f`.
-
-The two facts the analytic core needs about the nearby members — that
-`f + C μ * g` splits and keeps the same `natDegree` as `f` for all small
-positive `μ` — are supplied by `hfam`.  For the reciprocal family the same lemma
-applies with `f` and `g` swapped, giving the `μ = 0` endpoint for `g + C μ * f`. -/
-theorem local_lower_counts_add_C_mul_endpoint
-    {f g : ℝ[X]} (hf_split : f.Splits)
-    (hfam : ∃ δ₀ : ℝ, 0 < δ₀ ∧ ∀ μ : ℝ, 0 < μ → μ < δ₀ →
-      (f + C μ * g).Splits ∧ (f + C μ * g).natDegree = f.natDegree) :
-    ∀ ρ : ℝ, 0 < ρ → ∃ δ : ℝ, 0 < δ ∧ ∀ μ : ℝ,
-        0 < μ → μ < δ →
-        (f + C μ * g).Splits ∧
-          ∀ a ∈ f.roots.toFinset,
-            f.roots.count a ≤
-              ((f + C μ * g).roots.filter (fun q => |q - a| < ρ)).card := by
-  intro ρ hρ
-  obtain ⟨δ₀, hδ₀, hfam⟩ := hfam
-  have hbase : f + C (0 : ℝ) * g = f := by simp
-  have hp0_split : (f + C (0 : ℝ) * g).Splits := by rw [hbase]; exact hf_split
-  obtain ⟨ε, hε, hmain⟩ :=
-    exists_eps_forall_root_count_le_card_filter_near hp0_split ρ hρ
-  refine ⟨min ε δ₀, lt_min hε hδ₀, ?_⟩
-  intro μ hμpos hμlt
-  have hμε : |μ - 0| < ε := by
-    rw [sub_zero, abs_of_pos hμpos]
-    exact lt_of_lt_of_le hμlt (min_le_left _ _)
-  have hμδ₀ : μ < δ₀ := lt_of_lt_of_le hμlt (min_le_right _ _)
-  obtain ⟨hsplit, hdeg⟩ := hfam μ hμpos hμδ₀
-  have hdeg0 : (f + C μ * g).natDegree = (f + C (0 : ℝ) * g).natDegree := by
-    rw [hbase, hdeg]
-  have hcount := hmain μ hμε hsplit hdeg0
-  rw [hbase] at hcount
-  exact ⟨hsplit, hcount⟩
 
 end
 
