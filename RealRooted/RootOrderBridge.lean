@@ -10,6 +10,46 @@ same-degree Chudnovsky--Seymour root-crossing target.
 
 namespace RealRooted
 
+/-- In a sorted list, the `k`-th entry is at most `x` exactly when more than
+`k` entries are at most `x`, transported through the corresponding multiset. -/
+private theorem sorted_getElem_le_iff_lt_card_filter
+    (s : List ℝ) (hs : s.Pairwise (· ≤ ·)) (P : Multiset ℝ)
+    (hsP : Multiset.ofList s = P) (x : ℝ) (k : ℕ) (hk : k < s.length) :
+    s[k]! ≤ x ↔ k < (P.filter (· ≤ x)).card := by
+  have h_helper (s : List ℝ) (hs : s.Pairwise (· ≤ ·)) (x : ℝ) (k : ℕ)
+      (hk : k < s.length) : s[k]! ≤ x ↔ k < (s.filter (· ≤ x)).length := by
+    induction s generalizing k with
+    | nil =>
+        simp at hk
+    | cons hd tl ih =>
+        rw [List.pairwise_cons] at hs
+        rcases hs with ⟨hhd, htl⟩
+        rcases k with _ | k
+        · by_cases hdx : hd ≤ x
+          · simp [hdx]
+          · have hfilter : tl.filter (· ≤ x) = [] := by
+              rw [List.filter_eq_nil_iff]
+              intro y hy hyx
+              exact hdx ((hhd y hy).trans (of_decide_eq_true hyx))
+            exact iff_of_false hdx (by simp [hdx, hfilter])
+        · have hk_tl : k < tl.length := by simpa using hk
+          by_cases hdx : hd ≤ x
+          · have ihk := ih htl k hk_tl
+            simpa [hdx, Nat.succ_lt_succ_iff] using ihk
+          · have hfilter : tl.filter (· ≤ x) = [] := by
+              rw [List.filter_eq_nil_iff]
+              intro y hy hyx
+              exact hdx ((hhd y hy).trans (of_decide_eq_true hyx))
+            have hnot : ¬tl[k]! ≤ x := by
+              intro hyx
+              have hmem : tl[k]! ∈ tl := by
+                rw [getElem!_pos tl k hk_tl]
+                exact List.getElem_mem hk_tl
+              exact hdx ((hhd _ hmem).trans hyx)
+            exact iff_of_false hnot (by simp [hdx, hfilter])
+  convert h_helper s hs x k hk using 1
+  aesop (simp_config := { singlePass := true })
+
 /-- For natural counts, oddness of the integer difference is the same as
 oddness of the natural sum. This is useful because root-count targets are
 stated with integer differences, while sign parity naturally sees sums. -/
@@ -71,42 +111,7 @@ theorem rootCrossing_of_count_diff_le_one
   have hsN : sN.length = d := by aesop
   have hsM_eq : Multiset.ofList sM = M := Multiset.sort_eq M (· ≤ ·)
   have hsN_eq : Multiset.ofList sN = N := Multiset.sort_eq N (· ≤ ·)
-  have h_helper (s : List ℝ) (hs : s.Pairwise (· ≤ ·)) (P : Multiset ℝ)
-      (hsP : Multiset.ofList s = P) (x : ℝ) (k : ℕ) (hk : k < s.length) :
-      s[k]! ≤ x ↔ k < (P.filter (· ≤ x)).card := by
-    have h_helper (s : List ℝ) (hs : s.Pairwise (· ≤ ·)) (x : ℝ) (k : ℕ)
-        (hk : k < s.length) : s[k]! ≤ x ↔ k < (s.filter (· ≤ x)).length := by
-      induction s generalizing k with
-      | nil =>
-          simp at hk
-      | cons hd tl ih =>
-          rw [List.pairwise_cons] at hs
-          rcases hs with ⟨hhd, htl⟩
-          rcases k with _ | k
-          · by_cases hdx : hd ≤ x
-            · simp [hdx]
-            · have hfilter : tl.filter (· ≤ x) = [] := by
-                rw [List.filter_eq_nil_iff]
-                intro y hy hyx
-                exact hdx ((hhd y hy).trans (of_decide_eq_true hyx))
-              exact iff_of_false hdx (by simp [hdx, hfilter])
-          · have hk_tl : k < tl.length := by simpa using hk
-            by_cases hdx : hd ≤ x
-            · have ihk := ih htl k hk_tl
-              simpa [hdx, Nat.succ_lt_succ_iff] using ihk
-            · have hfilter : tl.filter (· ≤ x) = [] := by
-                rw [List.filter_eq_nil_iff]
-                intro y hy hyx
-                exact hdx ((hhd y hy).trans (of_decide_eq_true hyx))
-              have hnot : ¬tl[k]! ≤ x := by
-                intro hyx
-                have hmem : tl[k]! ∈ tl := by
-                  rw [getElem!_pos tl k hk_tl]
-                  exact List.getElem_mem hk_tl
-                exact hdx ((hhd _ hmem).trans hyx)
-              exact iff_of_false hnot (by simp [hdx, hfilter])
-    convert h_helper s hs x k hk using 1
-    aesop (simp_config := { singlePass := true })
+  have h_helper := sorted_getElem_le_iff_lt_card_filter
   have h_reverse_getD (l : List ℝ) (hl : l.length = d) (i : ℕ) (hi : i < d) :
       l.reverse.getD i 0 = l[d - 1 - i]! := by
     grind +splitIndPred
@@ -152,42 +157,7 @@ theorem count_diff_le_one_of_rootCrossing
   have hsN : sN.length = d := by aesop
   have hsM_eq : Multiset.ofList sM = M := Multiset.sort_eq M (· ≤ ·)
   have hsN_eq : Multiset.ofList sN = N := Multiset.sort_eq N (· ≤ ·)
-  have h_helper (s : List ℝ) (hs : s.Pairwise (· ≤ ·)) (P : Multiset ℝ)
-      (hsP : Multiset.ofList s = P) (x : ℝ) (k : ℕ) (hk : k < s.length) :
-      s[k]! ≤ x ↔ k < (P.filter (· ≤ x)).card := by
-    have h_helper (s : List ℝ) (hs : s.Pairwise (· ≤ ·)) (x : ℝ) (k : ℕ)
-        (hk : k < s.length) : s[k]! ≤ x ↔ k < (s.filter (· ≤ x)).length := by
-      induction s generalizing k with
-      | nil =>
-          simp at hk
-      | cons hd tl ih =>
-          rw [List.pairwise_cons] at hs
-          rcases hs with ⟨hhd, htl⟩
-          rcases k with _ | k
-          · by_cases hdx : hd ≤ x
-            · simp [hdx]
-            · have hfilter : tl.filter (· ≤ x) = [] := by
-                rw [List.filter_eq_nil_iff]
-                intro y hy hyx
-                exact hdx ((hhd y hy).trans (of_decide_eq_true hyx))
-              exact iff_of_false hdx (by simp [hdx, hfilter])
-          · have hk_tl : k < tl.length := by simpa using hk
-            by_cases hdx : hd ≤ x
-            · have ihk := ih htl k hk_tl
-              simpa [hdx, Nat.succ_lt_succ_iff] using ihk
-            · have hfilter : tl.filter (· ≤ x) = [] := by
-                rw [List.filter_eq_nil_iff]
-                intro y hy hyx
-                exact hdx ((hhd y hy).trans (of_decide_eq_true hyx))
-              have hnot : ¬tl[k]! ≤ x := by
-                intro hyx
-                have hmem : tl[k]! ∈ tl := by
-                  rw [getElem!_pos tl k hk_tl]
-                  exact List.getElem_mem hk_tl
-                exact hdx ((hhd _ hmem).trans hyx)
-              exact iff_of_false hnot (by simp [hdx, hfilter])
-    convert h_helper s hs x k hk using 1
-    aesop (simp_config := { singlePass := true })
+  have h_helper := sorted_getElem_le_iff_lt_card_filter
   have h_reverse_getD (l : List ℝ) (hl : l.length = d) (i : ℕ) (hi : i < d) :
       l.reverse.getD i 0 = l[d - 1 - i]! := by
     grind +splitIndPred
@@ -238,24 +208,6 @@ theorem count_diff_le_one_of_rootCrossing
     lia
   exact ⟨by lia, by lia⟩
 
-/-- Absolute-value form of `count_diff_le_one_of_rootCrossing`. -/
-theorem abs_count_le_sub_le_one_of_rootCrossing
-    {M N : Multiset ℝ} {d : ℕ}
-    (hM : M.card = d) (hN : N.card = d)
-    (hcross :
-      (∀ j, 1 ≤ j → j < d →
-          ((N.sort (· ≤ ·)).reverse).getD j 0 ≤
-            ((M.sort (· ≤ ·)).reverse).getD (j - 1) 0) ∧
-      (∀ j, 1 ≤ j → j < d →
-          ((M.sort (· ≤ ·)).reverse).getD j 0 ≤
-            ((N.sort (· ≤ ·)).reverse).getD (j - 1) 0)) :
-    ∀ x : ℝ,
-      |((M.filter (· ≤ x)).card : ℤ) - (N.filter (· ≤ x)).card| ≤ 1 := by
-  intro x
-  obtain ⟨h1, h2⟩ := count_diff_le_one_of_rootCrossing hM hN hcross x
-  rw [abs_le]
-  exact ⟨by lia, h1⟩
-
 /-- Succ-degree version of `rootCrossing_of_count_diff_le_one`.
 
 If `N` has one more element than `M`, and at every lower threshold the count
@@ -282,42 +234,7 @@ theorem succRootCrossing_of_count_le_two
   have hsN : sN.length = d + 1 := by aesop
   have hsM_eq : Multiset.ofList sM = M := Multiset.sort_eq M (· ≤ ·)
   have hsN_eq : Multiset.ofList sN = N := Multiset.sort_eq N (· ≤ ·)
-  have h_helper (s : List ℝ) (hs : s.Pairwise (· ≤ ·)) (P : Multiset ℝ)
-      (hsP : Multiset.ofList s = P) (x : ℝ) (k : ℕ) (hk : k < s.length) :
-      s[k]! ≤ x ↔ k < (P.filter (· ≤ x)).card := by
-    have h_helper (s : List ℝ) (hs : s.Pairwise (· ≤ ·)) (x : ℝ) (k : ℕ)
-        (hk : k < s.length) : s[k]! ≤ x ↔ k < (s.filter (· ≤ x)).length := by
-      induction s generalizing k with
-      | nil =>
-          simp at hk
-      | cons hd tl ih =>
-          rw [List.pairwise_cons] at hs
-          rcases hs with ⟨hhd, htl⟩
-          rcases k with _ | k
-          · by_cases hdx : hd ≤ x
-            · simp [hdx]
-            · have hfilter : tl.filter (· ≤ x) = [] := by
-                rw [List.filter_eq_nil_iff]
-                intro y hy hyx
-                exact hdx ((hhd y hy).trans (of_decide_eq_true hyx))
-              exact iff_of_false hdx (by simp [hdx, hfilter])
-          · have hk_tl : k < tl.length := by simpa using hk
-            by_cases hdx : hd ≤ x
-            · have ihk := ih htl k hk_tl
-              simpa [hdx, Nat.succ_lt_succ_iff] using ihk
-            · have hfilter : tl.filter (· ≤ x) = [] := by
-                rw [List.filter_eq_nil_iff]
-                intro y hy hyx
-                exact hdx ((hhd y hy).trans (of_decide_eq_true hyx))
-              have hnot : ¬tl[k]! ≤ x := by
-                intro hyx
-                have hmem : tl[k]! ∈ tl := by
-                  rw [getElem!_pos tl k hk_tl]
-                  exact List.getElem_mem hk_tl
-                exact hdx ((hhd _ hmem).trans hyx)
-              exact iff_of_false hnot (by simp [hdx, hfilter])
-    convert h_helper s hs x k hk using 1
-    aesop (simp_config := { singlePass := true })
+  have h_helper := sorted_getElem_le_iff_lt_card_filter
   have h_reverse_getD (l : List ℝ) (hl : l.length = d) (i : ℕ) (hi : i < d) :
       l.reverse.getD i 0 = l[d - 1 - i]! := by
     have hi' : i < l.reverse.length := by simpa [List.length_reverse, hl] using hi
