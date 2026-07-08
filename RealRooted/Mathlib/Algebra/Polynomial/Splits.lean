@@ -126,8 +126,8 @@ theorem Splits.eval_neg_iff_odd_card_roots_gt
   let n := (p.roots.filter (x < ·)).card
   have hpos : 0 < p.eval x ↔ Even n :=
     hp.eval_pos_iff_even_card_roots_gt hlc hx
-  have hne : p.eval x ≠ 0 := by
-    exact fun h => hx (by simpa [Polynomial.IsRoot.def] using h)
+  have hne : p.eval x ≠ 0 :=
+    fun h => hx (by simpa [Polynomial.IsRoot.def] using h)
   constructor
   · intro hneg
     rw [← Nat.not_even_iff_odd]

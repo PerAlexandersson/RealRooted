@@ -18,6 +18,55 @@ noncomputable section
 
 namespace RealRooted
 
+/-! ## Mathlib-version compatibility helpers
+
+The following lemmas restate a handful of `Polynomial` facts about derivatives
+using API that is stable across the Mathlib versions this file is built against.
+-/
+
+/-- Exact `natDegree` of a derivative over `ℝ` (a characteristic-zero field). -/
+lemma natDegree_derivative_eq (p : ℝ[X]) :
+    p.derivative.natDegree = p.natDegree - 1 := by
+  rcases eq_or_ne p.natDegree 0 with h | h
+  · have hle := Polynomial.natDegree_derivative_le p
+    rw [h] at hle ⊢
+    simpa using hle
+  · refine le_antisymm (Polynomial.natDegree_derivative_le p) ?_
+    refine Polynomial.le_natDegree_of_ne_zero ?_
+    have hp0 : p ≠ 0 := fun hc => h (by simp [hc])
+    have hidx : p.natDegree - 1 + 1 = p.natDegree := by lia
+    rw [Polynomial.coeff_derivative, hidx]
+    refine mul_ne_zero ?_ (by positivity)
+    rw [← Polynomial.leadingCoeff]
+    exact Polynomial.leadingCoeff_ne_zero.mpr hp0
+
+/-- A polynomial of `natDegree` zero has vanishing derivative. -/
+lemma derivative_eq_zero_of_natDegree_eq_zero {p : ℝ[X]} (h : p.natDegree = 0) :
+    p.derivative = 0 := by
+  rw [eq_C_of_natDegree_eq_zero h, derivative_C]
+
+/-- A polynomial of positive `natDegree` has a nonzero derivative. -/
+lemma derivative_ne_zero_of_natDegree_ne_zero {p : ℝ[X]} (h : p.natDegree ≠ 0) :
+    p.derivative ≠ 0 := by
+  intro hc
+  have hp0 : p ≠ 0 := fun hpc => h (by simp [hpc])
+  have hidx : p.natDegree - 1 + 1 = p.natDegree := by lia
+  have hcoeff : p.derivative.coeff (p.natDegree - 1) ≠ 0 := by
+    rw [Polynomial.coeff_derivative, hidx]
+    refine mul_ne_zero ?_ (by positivity)
+    rw [← Polynomial.leadingCoeff]
+    exact Polynomial.leadingCoeff_ne_zero.mpr hp0
+  rw [hc] at hcoeff
+  simp at hcoeff
+
+/-- A polynomial of `natDegree` zero splits in the zero-aware convention. -/
+lemma splits_of_natDegree_eq_zero {p : ℝ[X]} (h : p.natDegree = 0) :
+    p.Splits := by
+  apply splits_of_card_roots
+  have hle : p.roots.card ≤ p.natDegree := Polynomial.card_roots' p
+  rw [h] at hle ⊢
+  exact Nat.le_zero.mp hle
+
 /-! ## Exact degree of derivative -/
 
 protected lemma HasNonnegCoeffs.derivative {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
@@ -29,7 +78,7 @@ protected lemma HasPosLeadingCoeff.derivative {f : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hdeg : f.natDegree ≠ 0) :
     HasPosLeadingCoeff f.derivative := by
   unfold HasPosLeadingCoeff at hf_pos ⊢
-  rw [leadingCoeff, f.natDegree_derivative, coeff_derivative]
+  rw [leadingCoeff, natDegree_derivative_eq f, coeff_derivative]
   rw [Nat.sub_add_cancel (by lia), coeff_natDegree] at *
   nlinarith
 
@@ -57,7 +106,8 @@ lemma eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
       _ = p.roots.count x := (count_roots p).symm
       _ ≤ p.roots.card := p.roots.count_le_card x
       _ ≤ p.natDegree := card_roots' p
-  have hpd_ne : p.derivative ≠ 0 := by simp; lia
+  have hpd_ne : p.derivative ≠ 0 :=
+    derivative_ne_zero_of_natDegree_ne_zero (by lia)
   have hpd_rootmult : p.derivative.rootMultiplicity x = 1 := by
     rw [derivative_rootMultiplicity_of_root hp_root, hmult]
   intro hder2
@@ -90,6 +140,345 @@ theorem isRoot_derivative_of_rootMultiplicity_ge_two {p : ℝ[X]} {r : ℝ}
     pow_sub_one_dvd_derivative_of_pow_dvd hdvd
   simp only [Nat.reduceSubDiff, pow_one] at hdvd'
   exact dvd_iff_isRoot.mp hdvd'
+
+/-- Rolle-type interval root-count bound.  If `p.derivative` has no root in
+the half-open interval `(a, b]`, then `p` has at most one root there, counted
+with multiplicity. -/
+theorem card_roots_filter_Ioc_le_one_of_derivative_no_root
+    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ}
+    (hno : ∀ x, a < x → x ≤ b → ¬ p.derivative.IsRoot x) :
+    (p.roots.filter (fun r => a < r ∧ r ≤ b)).card ≤ 1 := by
+  have _ : p ≠ 0 := hp
+  by_contra h_contra
+  have h_nodup : (p.roots.filter (fun r => a < r ∧ r ≤ b)).Nodup := by
+    refine Multiset.nodup_iff_count_le_one.mpr ?_
+    intro x
+    by_cases hx : a < x ∧ x ≤ b
+    · have hcount :
+          (p.roots.filter (fun r => a < r ∧ r ≤ b)).count x =
+            p.rootMultiplicity x := by
+        simp [hx, count_roots]
+      rw [hcount]
+      exact Nat.le_of_not_lt fun h =>
+        hno x hx.1 hx.2 <| isRoot_derivative_of_rootMultiplicity_ge_two h
+    · have hcount :
+          (p.roots.filter (fun r => a < r ∧ r ≤ b)).count x = 0 := by
+        simp [hx]
+      rw [hcount]
+      exact Nat.zero_le _
+  obtain ⟨r₁, r₂, hr₁, hr₂, hr₁r₂⟩ :
+      ∃ r₁ r₂, r₁ ∈ p.roots.filter (fun r => a < r ∧ r ≤ b) ∧
+        r₂ ∈ p.roots.filter (fun r => a < r ∧ r ≤ b) ∧ r₁ ≠ r₂ := by
+    let m := p.roots.filter (fun r => a < r ∧ r ≤ b)
+    have hm_card : 1 < m.card := Nat.lt_of_not_ge h_contra
+    have hm_pos : 0 < m.card := Nat.zero_lt_of_lt hm_card
+    obtain ⟨r₁, hr₁⟩ := Multiset.card_pos_iff_exists_mem.mp hm_pos
+    have hm_erase_pos : 0 < (m.erase r₁).card := by
+      rw [Multiset.card_erase_of_mem hr₁]
+      exact Nat.sub_pos_of_lt hm_card
+    obtain ⟨r₂, hr₂erase⟩ := Multiset.card_pos_iff_exists_mem.mp hm_erase_pos
+    have hr₂ : r₂ ∈ m := Multiset.mem_of_mem_erase hr₂erase
+    have hm_nodup : m.Nodup := h_nodup
+    have hr₁_notin : r₁ ∉ m.erase r₁ := hm_nodup.notMem_erase
+    have hr₁r₂ : r₁ ≠ r₂ := by
+      intro h
+      subst h
+      exact hr₁_notin hr₂erase
+    exact ⟨r₁, r₂, hr₁, hr₂, hr₁r₂⟩
+  obtain ⟨r₁, r₂, hr₁, hr₂, hr₁r₂⟩ :
+      ∃ r₁ r₂, r₁ ∈ p.roots.filter (fun r => a < r ∧ r ≤ b) ∧
+        r₂ ∈ p.roots.filter (fun r => a < r ∧ r ≤ b) ∧ r₁ < r₂ := by
+    cases lt_or_gt_of_ne hr₁r₂ with
+    | inl hlt => exact ⟨r₁, r₂, hr₁, hr₂, hlt⟩
+    | inr hgt => exact ⟨r₂, r₁, hr₂, hr₁, hgt⟩
+  obtain ⟨c, hc₁, hc₂, hc₃⟩ : ∃ c, r₁ < c ∧ c < r₂ ∧ p.derivative.IsRoot c := by
+    apply exists_root_derivative_between hr₁r₂
+    · exact Polynomial.isRoot_of_mem_roots <| (Multiset.mem_filter.mp hr₁).1
+    · exact Polynomial.isRoot_of_mem_roots <| (Multiset.mem_filter.mp hr₂).1
+  exact hno c (by linarith [Multiset.mem_filter.mp hr₁])
+    (by linarith [Multiset.mem_filter.mp hr₂]) hc₃
+
+/-- Direct #42 Rolle-type strict-open interval root-count bound.  If
+`p.derivative` has no root in `(a, b)`, then `p` has at most one root there,
+counted with multiplicity. -/
+theorem card_roots_filter_Ioo_le_one_of_derivative_no_root
+    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ}
+    (hno : ∀ x, a < x → x < b → ¬ p.derivative.IsRoot x) :
+    (p.roots.filter (fun r => a < r ∧ r < b)).card ≤ 1 := by
+  have _ : p ≠ 0 := hp
+  by_contra h_contra
+  have h_nodup : (p.roots.filter (fun r => a < r ∧ r < b)).Nodup := by
+    refine Multiset.nodup_iff_count_le_one.mpr ?_
+    intro x
+    by_cases hx : a < x ∧ x < b
+    · have hcount :
+          (p.roots.filter (fun r => a < r ∧ r < b)).count x =
+            p.rootMultiplicity x := by
+        simp [hx, count_roots]
+      rw [hcount]
+      exact Nat.le_of_not_lt fun h =>
+        hno x hx.1 hx.2 <| isRoot_derivative_of_rootMultiplicity_ge_two h
+    · have hcount :
+          (p.roots.filter (fun r => a < r ∧ r < b)).count x = 0 := by
+        simp [hx]
+      rw [hcount]
+      exact Nat.zero_le _
+  obtain ⟨r₁, r₂, hr₁, hr₂, hr₁r₂⟩ :
+      ∃ r₁ r₂, r₁ ∈ p.roots.filter (fun r => a < r ∧ r < b) ∧
+        r₂ ∈ p.roots.filter (fun r => a < r ∧ r < b) ∧ r₁ ≠ r₂ := by
+    let m := p.roots.filter (fun r => a < r ∧ r < b)
+    have hm_card : 1 < m.card := Nat.lt_of_not_ge h_contra
+    have hm_pos : 0 < m.card := Nat.zero_lt_of_lt hm_card
+    obtain ⟨r₁, hr₁⟩ := Multiset.card_pos_iff_exists_mem.mp hm_pos
+    have hm_erase_pos : 0 < (m.erase r₁).card := by
+      rw [Multiset.card_erase_of_mem hr₁]
+      exact Nat.sub_pos_of_lt hm_card
+    obtain ⟨r₂, hr₂erase⟩ := Multiset.card_pos_iff_exists_mem.mp hm_erase_pos
+    have hr₂ : r₂ ∈ m := Multiset.mem_of_mem_erase hr₂erase
+    have hm_nodup : m.Nodup := h_nodup
+    have hr₁_notin : r₁ ∉ m.erase r₁ := hm_nodup.notMem_erase
+    have hr₁r₂ : r₁ ≠ r₂ := by
+      intro h
+      subst h
+      exact hr₁_notin hr₂erase
+    exact ⟨r₁, r₂, hr₁, hr₂, hr₁r₂⟩
+  obtain ⟨r₁, r₂, hr₁, hr₂, hr₁r₂⟩ :
+      ∃ r₁ r₂, r₁ ∈ p.roots.filter (fun r => a < r ∧ r < b) ∧
+        r₂ ∈ p.roots.filter (fun r => a < r ∧ r < b) ∧ r₁ < r₂ := by
+    cases lt_or_gt_of_ne hr₁r₂ with
+    | inl hlt => exact ⟨r₁, r₂, hr₁, hr₂, hlt⟩
+    | inr hgt => exact ⟨r₂, r₁, hr₂, hr₁, hgt⟩
+  obtain ⟨c, hc₁, hc₂, hc₃⟩ : ∃ c, r₁ < c ∧ c < r₂ ∧ p.derivative.IsRoot c := by
+    apply exists_root_derivative_between hr₁r₂
+    · exact Polynomial.isRoot_of_mem_roots <| (Multiset.mem_filter.mp hr₁).1
+    · exact Polynomial.isRoot_of_mem_roots <| (Multiset.mem_filter.mp hr₂).1
+  exact hno c (by linarith [Multiset.mem_filter.mp hr₁])
+    (by linarith [Multiset.mem_filter.mp hr₂]) hc₃
+
+/-- Rolle-type root-count bound for the half-open interval `[a, b)`. -/
+theorem card_roots_filter_Ico_le_one_of_derivative_no_root
+    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ}
+    (hno : ∀ x, a ≤ x → x < b → ¬ p.derivative.IsRoot x) :
+    (p.roots.filter (fun r => a ≤ r ∧ r < b)).card ≤ 1 := by
+  have _ : p ≠ 0 := hp
+  by_contra h_contra
+  have h_nodup : (p.roots.filter (fun r => a ≤ r ∧ r < b)).Nodup := by
+    refine Multiset.nodup_iff_count_le_one.mpr ?_
+    intro x
+    by_cases hx : a ≤ x ∧ x < b
+    · have hcount :
+          (p.roots.filter (fun r => a ≤ r ∧ r < b)).count x =
+            p.rootMultiplicity x := by
+        simp [hx, count_roots]
+      rw [hcount]
+      exact Nat.le_of_not_lt fun h =>
+        hno x hx.1 hx.2 <| isRoot_derivative_of_rootMultiplicity_ge_two h
+    · have hcount :
+          (p.roots.filter (fun r => a ≤ r ∧ r < b)).count x = 0 := by
+        simp [hx]
+      rw [hcount]
+      exact Nat.zero_le _
+  obtain ⟨r₁, r₂, hr₁, hr₂, hr₁r₂⟩ :
+      ∃ r₁ r₂, r₁ ∈ p.roots.filter (fun r => a ≤ r ∧ r < b) ∧
+        r₂ ∈ p.roots.filter (fun r => a ≤ r ∧ r < b) ∧ r₁ ≠ r₂ := by
+    let m := p.roots.filter (fun r => a ≤ r ∧ r < b)
+    have hm_card : 1 < m.card := Nat.lt_of_not_ge h_contra
+    have hm_pos : 0 < m.card := Nat.zero_lt_of_lt hm_card
+    obtain ⟨r₁, hr₁⟩ := Multiset.card_pos_iff_exists_mem.mp hm_pos
+    have hm_erase_pos : 0 < (m.erase r₁).card := by
+      rw [Multiset.card_erase_of_mem hr₁]
+      exact Nat.sub_pos_of_lt hm_card
+    obtain ⟨r₂, hr₂erase⟩ := Multiset.card_pos_iff_exists_mem.mp hm_erase_pos
+    have hr₂ : r₂ ∈ m := Multiset.mem_of_mem_erase hr₂erase
+    have hm_nodup : m.Nodup := h_nodup
+    have hr₁_notin : r₁ ∉ m.erase r₁ := hm_nodup.notMem_erase
+    have hr₁r₂ : r₁ ≠ r₂ := by
+      intro h
+      subst h
+      exact hr₁_notin hr₂erase
+    exact ⟨r₁, r₂, hr₁, hr₂, hr₁r₂⟩
+  obtain ⟨r₁, r₂, hr₁, hr₂, hr₁r₂⟩ :
+      ∃ r₁ r₂, r₁ ∈ p.roots.filter (fun r => a ≤ r ∧ r < b) ∧
+        r₂ ∈ p.roots.filter (fun r => a ≤ r ∧ r < b) ∧ r₁ < r₂ := by
+    cases lt_or_gt_of_ne hr₁r₂ with
+    | inl hlt => exact ⟨r₁, r₂, hr₁, hr₂, hlt⟩
+    | inr hgt => exact ⟨r₂, r₁, hr₂, hr₁, hgt⟩
+  obtain ⟨c, hc₁, hc₂, hc₃⟩ : ∃ c, r₁ < c ∧ c < r₂ ∧ p.derivative.IsRoot c := by
+    apply exists_root_derivative_between hr₁r₂
+    · exact Polynomial.isRoot_of_mem_roots <| (Multiset.mem_filter.mp hr₁).1
+    · exact Polynomial.isRoot_of_mem_roots <| (Multiset.mem_filter.mp hr₂).1
+  exact hno c (by linarith [Multiset.mem_filter.mp hr₁])
+    (by linarith [Multiset.mem_filter.mp hr₂]) hc₃
+
+/-- Rolle-type root-count bound for the closed interval `[a, b]`. -/
+theorem card_roots_filter_Icc_le_one_of_derivative_no_root
+    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ}
+    (hno : ∀ x, a ≤ x → x ≤ b → ¬ p.derivative.IsRoot x) :
+    (p.roots.filter (fun r => a ≤ r ∧ r ≤ b)).card ≤ 1 := by
+  have _ : p ≠ 0 := hp
+  by_contra h_contra
+  have h_nodup : (p.roots.filter (fun r => a ≤ r ∧ r ≤ b)).Nodup := by
+    refine Multiset.nodup_iff_count_le_one.mpr ?_
+    intro x
+    by_cases hx : a ≤ x ∧ x ≤ b
+    · have hcount :
+          (p.roots.filter (fun r => a ≤ r ∧ r ≤ b)).count x =
+            p.rootMultiplicity x := by
+        simp [hx, count_roots]
+      rw [hcount]
+      exact Nat.le_of_not_lt fun h =>
+        hno x hx.1 hx.2 <| isRoot_derivative_of_rootMultiplicity_ge_two h
+    · have hcount :
+          (p.roots.filter (fun r => a ≤ r ∧ r ≤ b)).count x = 0 := by
+        simp [hx]
+      rw [hcount]
+      exact Nat.zero_le _
+  obtain ⟨r₁, r₂, hr₁, hr₂, hr₁r₂⟩ :
+      ∃ r₁ r₂, r₁ ∈ p.roots.filter (fun r => a ≤ r ∧ r ≤ b) ∧
+        r₂ ∈ p.roots.filter (fun r => a ≤ r ∧ r ≤ b) ∧ r₁ ≠ r₂ := by
+    let m := p.roots.filter (fun r => a ≤ r ∧ r ≤ b)
+    have hm_card : 1 < m.card := Nat.lt_of_not_ge h_contra
+    have hm_pos : 0 < m.card := Nat.zero_lt_of_lt hm_card
+    obtain ⟨r₁, hr₁⟩ := Multiset.card_pos_iff_exists_mem.mp hm_pos
+    have hm_erase_pos : 0 < (m.erase r₁).card := by
+      rw [Multiset.card_erase_of_mem hr₁]
+      exact Nat.sub_pos_of_lt hm_card
+    obtain ⟨r₂, hr₂erase⟩ := Multiset.card_pos_iff_exists_mem.mp hm_erase_pos
+    have hr₂ : r₂ ∈ m := Multiset.mem_of_mem_erase hr₂erase
+    have hm_nodup : m.Nodup := h_nodup
+    have hr₁_notin : r₁ ∉ m.erase r₁ := hm_nodup.notMem_erase
+    have hr₁r₂ : r₁ ≠ r₂ := by
+      intro h
+      subst h
+      exact hr₁_notin hr₂erase
+    exact ⟨r₁, r₂, hr₁, hr₂, hr₁r₂⟩
+  obtain ⟨r₁, r₂, hr₁, hr₂, hr₁r₂⟩ :
+      ∃ r₁ r₂, r₁ ∈ p.roots.filter (fun r => a ≤ r ∧ r ≤ b) ∧
+        r₂ ∈ p.roots.filter (fun r => a ≤ r ∧ r ≤ b) ∧ r₁ < r₂ := by
+    cases lt_or_gt_of_ne hr₁r₂ with
+    | inl hlt => exact ⟨r₁, r₂, hr₁, hr₂, hlt⟩
+    | inr hgt => exact ⟨r₂, r₁, hr₂, hr₁, hgt⟩
+  obtain ⟨c, hc₁, hc₂, hc₃⟩ : ∃ c, r₁ < c ∧ c < r₂ ∧ p.derivative.IsRoot c := by
+    apply exists_root_derivative_between hr₁r₂
+    · exact Polynomial.isRoot_of_mem_roots <| (Multiset.mem_filter.mp hr₁).1
+    · exact Polynomial.isRoot_of_mem_roots <| (Multiset.mem_filter.mp hr₂).1
+  exact hno c (by linarith [Multiset.mem_filter.mp hr₁])
+    (by linarith [Multiset.mem_filter.mp hr₂]) hc₃
+
+/-- Contrapositive Rolle wrapper for `(a, b)`. -/
+theorem exists_isRoot_derivative_mem_Ioo_of_one_lt_card_roots
+    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ}
+    (hcard : 1 < (p.roots.filter (fun r => a < r ∧ r < b)).card) :
+    ∃ x, a < x ∧ x < b ∧ p.derivative.IsRoot x := by
+  by_contra h
+  have hno : ∀ x, a < x → x < b → ¬ p.derivative.IsRoot x :=
+    fun x hax hxb hroot => h ⟨x, hax, hxb, hroot⟩
+  exact absurd (card_roots_filter_Ioo_le_one_of_derivative_no_root hp hno)
+    (Nat.not_le.mpr hcard)
+
+/-- Contrapositive Rolle wrapper for `(a, b]`. -/
+theorem exists_isRoot_derivative_mem_Ioc_of_one_lt_card_roots
+    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ}
+    (hcard : 1 < (p.roots.filter (fun r => a < r ∧ r ≤ b)).card) :
+    ∃ x, a < x ∧ x ≤ b ∧ p.derivative.IsRoot x := by
+  by_contra h
+  have hno : ∀ x, a < x → x ≤ b → ¬ p.derivative.IsRoot x :=
+    fun x hax hxb hroot => h ⟨x, hax, hxb, hroot⟩
+  exact absurd (card_roots_filter_Ioc_le_one_of_derivative_no_root hp hno)
+    (Nat.not_le.mpr hcard)
+
+/-- Contrapositive Rolle wrapper for `[a, b]`. -/
+theorem exists_isRoot_derivative_mem_Icc_of_one_lt_card_roots
+    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ}
+    (hcard : 1 < (p.roots.filter (fun r => a ≤ r ∧ r ≤ b)).card) :
+    ∃ x, a ≤ x ∧ x ≤ b ∧ p.derivative.IsRoot x := by
+  by_contra h
+  have hno : ∀ x, a ≤ x → x ≤ b → ¬ p.derivative.IsRoot x :=
+    fun x hax hxb hroot => h ⟨x, hax, hxb, hroot⟩
+  exact absurd (card_roots_filter_Icc_le_one_of_derivative_no_root hp hno)
+    (Nat.not_le.mpr hcard)
+
+/-- Contrapositive Rolle wrapper for `[a, b)`. -/
+theorem exists_isRoot_derivative_mem_Ico_of_one_lt_card_roots
+    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ}
+    (hcard : 1 < (p.roots.filter (fun r => a ≤ r ∧ r < b)).card) :
+    ∃ x, a ≤ x ∧ x < b ∧ p.derivative.IsRoot x := by
+  by_contra h
+  have hno : ∀ x, a ≤ x → x < b → ¬ p.derivative.IsRoot x :=
+    fun x hax hxb hroot => h ⟨x, hax, hxb, hroot⟩
+  exact absurd (card_roots_filter_Ico_le_one_of_derivative_no_root hp hno)
+    (Nat.not_le.mpr hcard)
+
+/-! ## Root-count transfer from `p` to its derivative
+
+Applied, statement-shaped lemmas: whenever an interval carries more than one
+root of `p` with multiplicity, Rolle's theorem forces at least one root of
+`p.derivative` in the same interval.
+-/
+
+/-- Rolle transfer on the open interval `(a, b)`. -/
+theorem one_le_card_roots_filter_derivative_Ioo_of_one_lt_card_roots
+    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ}
+    (hcard : 1 < (p.roots.filter (fun r => a < r ∧ r < b)).card) :
+    1 ≤ (p.derivative.roots.filter (fun r => a < r ∧ r < b)).card := by
+  have hle : (p.roots.filter (fun r => a < r ∧ r < b)).card ≤ p.natDegree :=
+    le_trans (Multiset.card_le_card (Multiset.filter_le _ p.roots))
+      (Polynomial.card_roots' p)
+  have hderiv_ne : p.derivative ≠ 0 :=
+    derivative_ne_zero_of_natDegree_ne_zero (by lia)
+  obtain ⟨x, hax, hxb, hroot⟩ :=
+    exists_isRoot_derivative_mem_Ioo_of_one_lt_card_roots hp hcard
+  have hx_mem : x ∈ p.derivative.roots.filter (fun r => a < r ∧ r < b) :=
+    Multiset.mem_filter.mpr ⟨Polynomial.mem_roots'.mpr ⟨hderiv_ne, hroot⟩, hax, hxb⟩
+  exact Multiset.card_pos_iff_exists_mem.mpr ⟨x, hx_mem⟩
+
+/-- Rolle transfer on the half-open interval `(a, b]`. -/
+theorem one_le_card_roots_filter_derivative_Ioc_of_one_lt_card_roots
+    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ}
+    (hcard : 1 < (p.roots.filter (fun r => a < r ∧ r ≤ b)).card) :
+    1 ≤ (p.derivative.roots.filter (fun r => a < r ∧ r ≤ b)).card := by
+  have hle : (p.roots.filter (fun r => a < r ∧ r ≤ b)).card ≤ p.natDegree :=
+    le_trans (Multiset.card_le_card (Multiset.filter_le _ p.roots))
+      (Polynomial.card_roots' p)
+  have hderiv_ne : p.derivative ≠ 0 :=
+    derivative_ne_zero_of_natDegree_ne_zero (by lia)
+  obtain ⟨x, hax, hxb, hroot⟩ :=
+    exists_isRoot_derivative_mem_Ioc_of_one_lt_card_roots hp hcard
+  have hx_mem : x ∈ p.derivative.roots.filter (fun r => a < r ∧ r ≤ b) :=
+    Multiset.mem_filter.mpr ⟨Polynomial.mem_roots'.mpr ⟨hderiv_ne, hroot⟩, hax, hxb⟩
+  exact Multiset.card_pos_iff_exists_mem.mpr ⟨x, hx_mem⟩
+
+/-- Rolle transfer on the half-open interval `[a, b)`. -/
+theorem one_le_card_roots_filter_derivative_Ico_of_one_lt_card_roots
+    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ}
+    (hcard : 1 < (p.roots.filter (fun r => a ≤ r ∧ r < b)).card) :
+    1 ≤ (p.derivative.roots.filter (fun r => a ≤ r ∧ r < b)).card := by
+  have hle : (p.roots.filter (fun r => a ≤ r ∧ r < b)).card ≤ p.natDegree :=
+    le_trans (Multiset.card_le_card (Multiset.filter_le _ p.roots))
+      (Polynomial.card_roots' p)
+  have hderiv_ne : p.derivative ≠ 0 :=
+    derivative_ne_zero_of_natDegree_ne_zero (by lia)
+  obtain ⟨x, hax, hxb, hroot⟩ :=
+    exists_isRoot_derivative_mem_Ico_of_one_lt_card_roots hp hcard
+  have hx_mem : x ∈ p.derivative.roots.filter (fun r => a ≤ r ∧ r < b) :=
+    Multiset.mem_filter.mpr ⟨Polynomial.mem_roots'.mpr ⟨hderiv_ne, hroot⟩, hax, hxb⟩
+  exact Multiset.card_pos_iff_exists_mem.mpr ⟨x, hx_mem⟩
+
+/-- Rolle transfer on the closed interval `[a, b]`. -/
+theorem one_le_card_roots_filter_derivative_Icc_of_one_lt_card_roots
+    {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ}
+    (hcard : 1 < (p.roots.filter (fun r => a ≤ r ∧ r ≤ b)).card) :
+    1 ≤ (p.derivative.roots.filter (fun r => a ≤ r ∧ r ≤ b)).card := by
+  have hle : (p.roots.filter (fun r => a ≤ r ∧ r ≤ b)).card ≤ p.natDegree :=
+    le_trans (Multiset.card_le_card (Multiset.filter_le _ p.roots))
+      (Polynomial.card_roots' p)
+  have hderiv_ne : p.derivative ≠ 0 :=
+    derivative_ne_zero_of_natDegree_ne_zero (by lia)
+  obtain ⟨x, hax, hxb, hroot⟩ :=
+    exists_isRoot_derivative_mem_Icc_of_one_lt_card_roots hp hcard
+  have hx_mem : x ∈ p.derivative.roots.filter (fun r => a ≤ r ∧ r ≤ b) :=
+    Multiset.mem_filter.mpr ⟨Polynomial.mem_roots'.mpr ⟨hderiv_ne, hroot⟩, hax, hxb⟩
+  exact Multiset.card_pos_iff_exists_mem.mpr ⟨x, hx_mem⟩
 
 /-! ## Interleaving construction -/
 
@@ -236,7 +625,8 @@ lemma mkInterleaving_sub_multiset (f : ℝ[X])
       apply le_trans _ hsub
       simp [Multiset.le_iff_count, Multiset.coe_count, List.count_cons]
     have ih := mkInterleaving_sub_multiset f hdeg (r₂ :: rest) hrest hsorted_tail hsub_tail
-    have hf'_ne : f.derivative ≠ 0 := by simp; lia
+    have hf'_ne : f.derivative ≠ 0 :=
+      derivative_ne_zero_of_natDegree_ne_zero (by lia)
     have hge_tail : ∀ x ∈ mkInterleaving f (r₂ :: rest) hrest, r₂ ≤ x :=
       mkInterleaving_ge f r₂ rest hrest hsorted_tail hsub_tail
     -- Definitionally unfold mkInterleaving via let + rfl
@@ -360,11 +750,12 @@ theorem derivative_interlaces {f : ℝ[X]} (hf : f.Splits) (hdeg : 2 ≤ f.natDe
   have hsub : (↑ss : Multiset ℝ) ≤ f.derivative.roots :=
     (mkInterleaving_sub_multiset f hdeg rs hrs_root hrs_sorted hsub_rs).1
   -- Degree and cardinality → f' is real-rooted
-  have hf'_ne : f.derivative ≠ 0 := by simp; lia
+  have hf'_ne : f.derivative ≠ 0 :=
+    derivative_ne_zero_of_natDegree_ne_zero (by lia)
   have hf'_card : f.derivative.roots.card = f.derivative.natDegree := by
     apply le_antisymm (card_roots' _)
     calc f.derivative.natDegree
-      _ = f.natDegree - 1 := f.natDegree_derivative
+      _ = f.natDegree - 1 := natDegree_derivative_eq f
       _ = ss.length := hss_length.symm
       _ = (↑ss : Multiset ℝ).card := (Multiset.coe_card ss).symm
       _ ≤ f.derivative.roots.card := Multiset.card_le_card hsub
@@ -372,12 +763,14 @@ theorem derivative_interlaces {f : ℝ[X]} (hf : f.Splits) (hdeg : 2 ≤ f.natDe
     ⟨hf'_ne, splits_of_card_roots hf'_card⟩
   -- Multiset equality (sub-multiset + same cardinality)
   have hss_eq : (↑ss : Multiset ℝ) = f.derivative.roots :=
-    Multiset.eq_of_le_of_card_le hsub (by simp_all)
+    Multiset.eq_of_le_of_card_le hsub
+      (le_of_eq (by rw [hf'_card, natDegree_derivative_eq f, ← hss_length,
+        ← Multiset.coe_card]))
   -- Sortedness from interleaving
   have hss_sorted : ss.Pairwise (· ≤ ·) :=
     sorted_of_listInterlaces ss rs hrs_sorted hss_interlaces
   -- Assemble
-  exact ⟨⟨by rintro rfl; simp at hf'_ne, hf⟩, hf'_rr, by rw [f.natDegree_derivative]; lia,
+  exact ⟨⟨by rintro rfl; simp at hf'_ne, hf⟩, hf'_rr, by rw [natDegree_derivative_eq f]; lia,
     rs, ss, hrs_sorted, hss_sorted, hrs_multiset, hss_eq, hss_interlaces⟩
 
 /-- Splitting is preserved by differentiation in the zero-aware convention. -/
@@ -389,13 +782,11 @@ theorem eq_zero_or_splits_derivative {p : ℝ[X]}
   by_cases hp0 : p = 0
   · simp [hp0]
   by_cases hdeg0 : p.natDegree = 0
-  · have hder0 : p.derivative = 0 := Polynomial.derivative_eq_zero.mpr hdeg0
+  · have hder0 : p.derivative = 0 := derivative_eq_zero_of_natDegree_eq_zero hdeg0
     rw [hder0]
     exact Or.inl rfl
   by_cases hdeg1 : p.natDegree = 1
-  · right
-    apply Polynomial.Splits.of_natDegree_eq_zero
-    rw [p.natDegree_derivative, hdeg1]
+  · exact Or.inr (splits_of_natDegree_eq_zero (by rw [natDegree_derivative_eq p, hdeg1]))
   · have hdeg2 : 2 ≤ p.natDegree := by lia
     exact Or.inr (derivative_interlaces hp hdeg2).2.1.2
 
@@ -406,13 +797,12 @@ theorem derivative_eq_zero_or_ne_zero_and_splits {p : ℝ[X]}
     p.derivative = 0 ∨ (p.derivative ≠ 0 ∧ p.derivative.Splits) := by
   by_cases hdeg0 : p.natDegree = 0
   · left
-    exact Polynomial.derivative_eq_zero.mpr hdeg0
+    exact derivative_eq_zero_of_natDegree_eq_zero hdeg0
   by_cases hdeg1 : p.natDegree = 1
   · right
-    have hder_ne : p.derivative ≠ 0 := Polynomial.derivative_ne_zero.mpr hdeg0
-    have hder_splits : p.derivative.Splits := by
-      apply Polynomial.Splits.of_natDegree_eq_zero
-      rw [p.natDegree_derivative, hdeg1]
+    have hder_ne : p.derivative ≠ 0 := derivative_ne_zero_of_natDegree_ne_zero hdeg0
+    have hder_splits : p.derivative.Splits :=
+      splits_of_natDegree_eq_zero (by rw [natDegree_derivative_eq p, hdeg1])
     exact ⟨hder_ne, hder_splits⟩
   · have hdeg2 : 2 ≤ p.natDegree := by lia
     exact Or.inr (derivative_interlaces hp_splits hdeg2).2.1
@@ -447,6 +837,144 @@ theorem closedSegment_derivative_splits_of_ne
   · exact False.elim (hder_ne hzero)
   · exact hsplit.2
 
+/-- Nonzero-and-splits wrapper for a derivative of a closed real-rooted
+segment.  This packages `closedSegment_derivative_splits_of_ne` in the
+`≠ 0 ∧ Splits` shape used by positive-combination arguments. -/
+theorem closedSegment_derivative_ne_zero_and_splits_of_ne
+    {f g : ℝ[X]}
+    (hseg : ∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+      ((C (1 - β) * f + C β * g) ≠ 0 ∧
+        (C (1 - β) * f + C β * g).Splits))
+    {β : ℝ} (hβ0 : 0 ≤ β) (hβ1 : β ≤ 1)
+    (hder_ne : C (1 - β) * f.derivative + C β * g.derivative ≠ 0) :
+    C (1 - β) * f.derivative + C β * g.derivative ≠ 0 ∧
+      (C (1 - β) * f.derivative + C β * g.derivative).Splits :=
+  ⟨hder_ne, closedSegment_derivative_splits_of_ne hseg hβ0 hβ1 hder_ne⟩
+
+/-- Right positive family, zero-aware: for each `μ > 0`, the derivative member
+`f' + C μ * g'` is either zero or real-rooted. -/
+theorem posFamily_derivative_eq_zero_or_ne_zero_and_splits
+    {f g : ℝ[X]}
+    (hfam : ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits))
+    {μ : ℝ} (hμ : 0 < μ) :
+    (f.derivative + C μ * g.derivative = 0) ∨
+      ((f.derivative + C μ * g.derivative) ≠ 0 ∧
+        (f.derivative + C μ * g.derivative).Splits) := by
+  simpa using
+    (derivative_eq_zero_or_ne_zero_and_splits
+      (p := f + C μ * g) (hfam hμ).2)
+
+/-- Explicit-binder variant of `posFamily_derivative_eq_zero_or_ne_zero_and_splits`. -/
+theorem posFamily_derivative_eq_zero_or_ne_zero_and_splits_explicit
+    {f g : ℝ[X]}
+    (hfam : ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits)) :
+    ∀ μ : ℝ, 0 < μ →
+      (f.derivative + C μ * g.derivative = 0) ∨
+        ((f.derivative + C μ * g.derivative) ≠ 0 ∧
+          (f.derivative + C μ * g.derivative).Splits) := by
+  intro μ hμ
+  exact posFamily_derivative_eq_zero_or_ne_zero_and_splits hfam hμ
+
+/-- Zero-or-splits projection for a derivative member of a positive right
+family. -/
+theorem posFamily_derivative_eq_zero_or_splits
+    {f g : ℝ[X]}
+    (hfam : ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits))
+    {μ : ℝ} (hμ : 0 < μ) :
+    (f.derivative + C μ * g.derivative = 0) ∨
+      (f.derivative + C μ * g.derivative).Splits := by
+  rcases posFamily_derivative_eq_zero_or_ne_zero_and_splits hfam hμ with hzero | hsplit
+  · exact Or.inl hzero
+  · exact Or.inr hsplit.2
+
+/-- Explicit-binder zero-or-splits projection for derivative members of a
+positive right family. -/
+theorem posFamily_derivative_eq_zero_or_splits_explicit
+    {f g : ℝ[X]}
+    (hfam : ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits)) :
+    ∀ μ : ℝ, 0 < μ →
+      (f.derivative + C μ * g.derivative = 0) ∨
+        (f.derivative + C μ * g.derivative).Splits := by
+  intro μ hμ
+  exact posFamily_derivative_eq_zero_or_splits hfam hμ
+
+/-- Nonzero members of the derivative of a real-rooted right family
+`f + C μ * g`, for `μ > 0`, are real-rooted. -/
+theorem posFamily_derivative_splits_of_ne
+    {f g : ℝ[X]}
+    (hfam : ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits))
+    {μ : ℝ} (hμ : 0 < μ)
+    (hder_ne : f.derivative + C μ * g.derivative ≠ 0) :
+    (f.derivative + C μ * g.derivative).Splits := by
+  rcases posFamily_derivative_eq_zero_or_ne_zero_and_splits hfam hμ with
+    hzero | hsplit
+  · exact absurd hzero hder_ne
+  · exact hsplit.2
+
+/-- Nonzero-and-splits packaging for a derivative member of a positive right
+family. -/
+theorem posFamily_derivative_ne_zero_and_splits
+    {f g : ℝ[X]}
+    (hfam : ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits))
+    {μ : ℝ} (hμ : 0 < μ)
+    (hder_ne : f.derivative + C μ * g.derivative ≠ 0) :
+    f.derivative + C μ * g.derivative ≠ 0 ∧
+      (f.derivative + C μ * g.derivative).Splits :=
+  ⟨hder_ne, posFamily_derivative_splits_of_ne hfam hμ hder_ne⟩
+
+/-- If every derivative member of a positive right family is nonzero, then the
+derivative family has the same `≠ 0 ∧ Splits` positive-family shape. -/
+theorem posFamily_derivative_family_of_ne
+    {f g : ℝ[X]}
+    (hfam : ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits))
+    (hder_ne : ∀ {μ : ℝ}, 0 < μ → f.derivative + C μ * g.derivative ≠ 0) :
+    ∀ {μ : ℝ}, 0 < μ →
+      (f.derivative + C μ * g.derivative ≠ 0 ∧
+        (f.derivative + C μ * g.derivative).Splits) :=
+  fun hμ => posFamily_derivative_ne_zero_and_splits hfam hμ (hder_ne hμ)
+
+/-- Explicit-binder variant of `posFamily_derivative_family_of_ne`. -/
+theorem posFamily_derivative_family_explicit_of_ne
+    {f g : ℝ[X]}
+    (hfam : ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits))
+    (hder_ne : ∀ μ : ℝ, 0 < μ → f.derivative + C μ * g.derivative ≠ 0) :
+    ∀ μ : ℝ, 0 < μ →
+      (f.derivative + C μ * g.derivative ≠ 0 ∧
+        (f.derivative + C μ * g.derivative).Splits) :=
+  fun μ hμ => posFamily_derivative_ne_zero_and_splits hfam hμ (hder_ne μ hμ)
+
+/-- Splitting projection from the implicit derivative-family wrapper. -/
+theorem posFamily_derivative_family_splits_of_ne
+    {f g : ℝ[X]}
+    (hfam : ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits))
+    (hder_ne : ∀ {μ : ℝ}, 0 < μ → f.derivative + C μ * g.derivative ≠ 0) :
+    ∀ {μ : ℝ}, 0 < μ → (f.derivative + C μ * g.derivative).Splits :=
+  fun hμ => (posFamily_derivative_family_of_ne hfam hder_ne hμ).2
+
+/-- Nonzero projection from the implicit derivative-family wrapper. -/
+theorem posFamily_derivative_family_ne_zero_of_ne
+    {f g : ℝ[X]}
+    (hfam : ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits))
+    (hder_ne : ∀ {μ : ℝ}, 0 < μ → f.derivative + C μ * g.derivative ≠ 0) :
+    ∀ {μ : ℝ}, 0 < μ → f.derivative + C μ * g.derivative ≠ 0 :=
+  fun hμ => (posFamily_derivative_family_of_ne hfam hder_ne hμ).1
+
+/-- Splitting projection from the explicit derivative-family wrapper. -/
+theorem posFamily_derivative_splits_explicit_of_ne
+    {f g : ℝ[X]}
+    (hfam : ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits))
+    (hder_ne : ∀ μ : ℝ, 0 < μ → f.derivative + C μ * g.derivative ≠ 0) :
+    ∀ μ : ℝ, 0 < μ → (f.derivative + C μ * g.derivative).Splits :=
+  fun μ hμ => (posFamily_derivative_family_explicit_of_ne hfam hder_ne μ hμ).2
+
+/-- Nonzero projection from the explicit derivative-family wrapper. -/
+theorem posFamily_derivative_ne_zero_explicit_of_ne
+    {f g : ℝ[X]}
+    (hfam : ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits))
+    (hder_ne : ∀ μ : ℝ, 0 < μ → f.derivative + C μ * g.derivative ≠ 0) :
+    ∀ μ : ℝ, 0 < μ → f.derivative + C μ * g.derivative ≠ 0 :=
+  fun μ hμ => (posFamily_derivative_family_explicit_of_ne hfam hder_ne μ hμ).1
+
 /-- If all roots of a real-rooted polynomial are nonpositive, then all roots of
 its derivative are nonpositive. -/
 theorem roots_nonpos_derivative_of_roots_nonpos {p : ℝ[X]}
@@ -454,12 +982,12 @@ theorem roots_nonpos_derivative_of_roots_nonpos {p : ℝ[X]}
     (hroots : ∀ r ∈ p.roots, r ≤ 0) :
     ∀ r ∈ p.derivative.roots, r ≤ 0 := by
   by_cases hdeg0 : p.natDegree = 0
-  · have hder0 : p.derivative = 0 := Polynomial.derivative_eq_zero.mpr hdeg0
+  · have hder0 : p.derivative = 0 := derivative_eq_zero_of_natDegree_eq_zero hdeg0
     rw [hder0]
     simp
   by_cases hdeg1 : p.natDegree = 1
   · have hderdeg : p.derivative.natDegree = 0 := by
-      rw [p.natDegree_derivative, hdeg1]
+      rw [natDegree_derivative_eq p, hdeg1]
     have hderC : p.derivative = C (p.derivative.coeff 0) :=
       eq_C_of_natDegree_eq_zero hderdeg
     rw [hderC]

@@ -3054,5 +3054,84 @@ theorem derivativePreservesPrec0_of_sameDegree
     · exact hsame hfg' hdeg
     · exact derivative_prec0_of_prec_succDegree hfg' (by lia)
 
+/-- Same-degree branch of differentiation preserving weak proper position. -/
+theorem derivativePreservesPrecSameDegree :
+    derivativePreservesPrecSameDegreeStatement :=
+  derivativePreservesPrecSameDegree_of_two_le_natDegree <|
+    derivativePreservesPrecSameDegree_of_posLeading <|
+      derivativePreservesPrecSameDegree_of_monic
+        derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonic
+
+/-- Differentiation preserves zero-aware weak proper position. -/
+theorem derivativePreservesPrec0 : derivativePreservesPrec0Statement :=
+  derivativePreservesPrec0_of_sameDegree derivativePreservesPrecSameDegree
+
+/-!
+### Direct #42 / shared #41 derivative-preservation API
+
+These wrappers repackage `derivativePreservesPrecSameDegree` and
+`derivativePreservesPrec0` in applied forms used by the closed-segment and
+common-interleaver routes.
+-/
+
+/-- Zero-aware derivative preservation, applied form of `derivativePreservesPrec0`. -/
+theorem derivative_prec0_of_prec0 {f g : ℝ[X]} (h : Prec0 f g) :
+    Prec0 f.derivative g.derivative :=
+  derivativePreservesPrec0 h
+
+/-- Explicit-binder variant of `derivative_prec0_of_prec0`. -/
+theorem derivative_prec0_of_prec0' (f g : ℝ[X]) (h : Prec0 f g) :
+    Prec0 f.derivative g.derivative :=
+  derivativePreservesPrec0 h
+
+/-- A strict `Prec` input yields zero-aware derivative preservation. -/
+theorem derivative_prec0_of_prec {f g : ℝ[X]} (h : Prec f g) :
+    Prec0 f.derivative g.derivative :=
+  derivativePreservesPrec0 h.toPrec0
+
+/-- Explicit-binder variant of `derivative_prec0_of_prec`. -/
+theorem derivative_prec0_of_prec' (f g : ℝ[X]) (h : Prec f g) :
+    Prec0 f.derivative g.derivative :=
+  derivativePreservesPrec0 h.toPrec0
+
+/-- Same-degree derivative preservation, applied form of
+`derivativePreservesPrecSameDegree`. -/
+theorem derivative_prec0_of_prec_sameDegree {f g : ℝ[X]} (h : Prec f g)
+    (hdeg : f.natDegree = g.natDegree) :
+    Prec0 f.derivative g.derivative :=
+  derivativePreservesPrecSameDegree h hdeg
+
+/-- Explicit-binder variant of `derivative_prec0_of_prec_sameDegree`. -/
+theorem derivative_prec0_of_prec_sameDegree' (f g : ℝ[X]) (h : Prec f g)
+    (hdeg : f.natDegree = g.natDegree) :
+    Prec0 f.derivative g.derivative :=
+  derivativePreservesPrecSameDegree h hdeg
+
+/-- Strict `Prec` output in the same-degree case. -/
+theorem derivative_prec_of_prec_sameDegree {f g : ℝ[X]} (h : Prec f g)
+    (hdeg : f.natDegree = g.natDegree) (hpos : 1 ≤ f.natDegree) :
+    Prec f.derivative g.derivative := by
+  have hfder_ne : f.derivative ≠ 0 :=
+    Polynomial.derivative_ne_zero.mpr (by lia)
+  have hgder_ne : g.derivative ≠ 0 :=
+    Polynomial.derivative_ne_zero.mpr (by lia)
+  exact (derivativePreservesPrecSameDegree h hdeg).toPrec_of_ne hfder_ne hgder_ne
+
+/-- Explicit-binder variant of `derivative_prec_of_prec_sameDegree`. -/
+theorem derivative_prec_of_prec_sameDegree' (f g : ℝ[X]) (h : Prec f g)
+    (hdeg : f.natDegree = g.natDegree) (hpos : 1 ≤ f.natDegree) :
+    Prec f.derivative g.derivative :=
+  derivative_prec_of_prec_sameDegree h hdeg hpos
+
+/-- Strict `Prec` output in the succ-degree case. -/
+theorem derivative_prec_of_prec_succDegree {f g : ℝ[X]} (h : Prec f g)
+    (hdeg : f.natDegree + 1 = g.natDegree) (hpos : 1 ≤ f.natDegree) :
+    Prec f.derivative g.derivative := by
+  have hfder_ne : f.derivative ≠ 0 :=
+    Polynomial.derivative_ne_zero.mpr (by lia)
+  have hgder_ne : g.derivative ≠ 0 :=
+    Polynomial.derivative_ne_zero.mpr (by lia)
+  exact (derivative_prec0_of_prec_succDegree h hdeg).toPrec_of_ne hfder_ne hgder_ne
+
 end
 end RealRooted

@@ -579,6 +579,101 @@ lemma not_posComboNoCommonSuccDegreeOrientationNonnegStatement :
         (by simp [xAddOne_natDegree, xSq_add_fiveX_add_six_natDegree])
         xAddOne_xSq_add_fiveX_add_six_noCommon)
 
+/-- The nonnegative-coefficient negative right-pencil target is false.  The
+same pair `X + 1, (X + 2)(X + 3)` is compatible and has nonnegative
+coefficients, but the negative pencil member at `μ = -1` is a quadratic with
+negative discriminant. -/
+lemma not_compatibleSuccDegreeNegativeRightFamilyNonnegStatement :
+    ¬ CompatibleSuccDegreeNegativeRightFamilyNonnegStatement := by
+  intro hneg
+  have hcomp : Compatible (X + 1 : ℝ[X]) (((X + 2) * (X + 3)) : ℝ[X]) :=
+    Compatible.of_posComboRealRooted
+      xAddOne_xSq_add_fiveX_add_six_posComboRealRooted
+      xAddOne_isRealRooted
+      xSq_add_fiveX_add_six_isRealRooted
+  have hsplits :
+      ((X + 1 : ℝ[X]) + C (-1 : ℝ) * (((X + 2) * (X + 3)) : ℝ[X])).Splits :=
+    hneg hcomp
+      xAddOne_hasPosLeadingCoeff
+      xSq_add_fiveX_add_six_hasPosLeadingCoeff
+      xAddOne_hasNonnegCoeffs
+      xSq_add_fiveX_add_six_hasNonnegCoeffs
+      (by simp [xAddOne_natDegree, xSq_add_fiveX_add_six_natDegree])
+      xAddOne_isRealRooted.2
+      (-1 : ℝ) (by norm_num)
+  have hp_eq :
+      ((X + 1 : ℝ[X]) + C (-1 : ℝ) * (((X + 2) * (X + 3)) : ℝ[X])) =
+        C (-1 : ℝ) * X ^ 2 + C (-4 : ℝ) * X + C (-5 : ℝ) := by
+    ext n
+    cases n with
+    | zero =>
+        norm_num [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm]
+    | succ n =>
+        cases n with
+        | zero =>
+            norm_num [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm,
+              coeff_X, coeff_one]
+        | succ n =>
+            cases n with
+            | zero =>
+                norm_num [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm,
+                  coeff_X, coeff_one]
+            | succ n =>
+                norm_num [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm,
+                  coeff_X, coeff_one]
+  have hdeg :
+      ((X + 1 : ℝ[X]) + C (-1 : ℝ) * (((X + 2) * (X + 3)) : ℝ[X])).natDegree = 2 := by
+    rw [hp_eq]
+    exact Polynomial.natDegree_quadratic (by norm_num : (-1 : ℝ) ≠ 0)
+  have hdisc := quadratic_disc_coeff_le_of_splits_natDegree_two hdeg hsplits
+  rw [hp_eq] at hdisc
+  norm_num [coeff_X, pow_two] at hdisc
+
+/-- The coefficient-free negative right-pencil shortcut is false, already for
+the nonnegative-coefficient counterexample above. -/
+lemma not_compatibleSuccDegreeNegativeRightFamilyStatement :
+    ¬ CompatibleSuccDegreeNegativeRightFamilyStatement :=
+  fun hneg =>
+    not_compatibleSuccDegreeNegativeRightFamilyNonnegStatement
+      (fun {f g} hcomp hf_pos hg_pos _ _ hdeg hf_split μ hμ =>
+        hneg (f := f) (g := g) hcomp hf_pos hg_pos hdeg hf_split μ hμ)
+
+/-- The signed right-pencil shortcut is false, because it contains the negative
+right-pencil half-line. -/
+lemma not_compatibleSuccDegreeSignedRightFamilyStatement :
+    ¬ CompatibleSuccDegreeSignedRightFamilyStatement :=
+  fun hsigned =>
+    not_compatibleSuccDegreeNegativeRightFamilyStatement
+      (fun {f g} hcomp hf_pos hg_pos hdeg hf_split μ _ =>
+        hsigned (f := f) (g := g) hcomp hf_pos hg_pos hdeg hf_split μ)
+
+/-- The coefficient-free all-combinations shortcut is false, because it would
+imply the negative right-pencil shortcut. -/
+lemma not_compatibleSuccDegreeAllComboStatement :
+    ¬ CompatibleSuccDegreeAllComboStatement :=
+  fun hall =>
+    not_compatibleSuccDegreeNegativeRightFamilyStatement
+      (compatibleSuccDegreeNegativeRightFamily_of_allCombo hall)
+
+/-- The forced compatible succ-degree `Prec` shortcut is false.  The same
+linear/quadratic pair is compatible, but both quadratic roots lie to the left
+of the linear root. -/
+lemma not_compatibleSuccDegreePrecStatement :
+    ¬ CompatibleSuccDegreePrecStatement := by
+  intro hprec
+  have hcomp : Compatible (X + 1 : ℝ[X]) (((X + 2) * (X + 3)) : ℝ[X]) :=
+    Compatible.of_posComboRealRooted
+      xAddOne_xSq_add_fiveX_add_six_posComboRealRooted
+      xAddOne_isRealRooted
+      xSq_add_fiveX_add_six_isRealRooted
+  exact
+    xAddOne_xSq_add_fiveX_add_six_not_prec
+      (hprec hcomp
+        xAddOne_hasPosLeadingCoeff
+        xSq_add_fiveX_add_six_hasPosLeadingCoeff
+        (by simp [xAddOne_natDegree, xSq_add_fiveX_add_six_natDegree])
+        xAddOne_isRealRooted.2)
+
 /-! ### The general no-common orientation statement is false
 
 The named `PosComboNoCommonOrientationStatement` (with the weaker conclusion

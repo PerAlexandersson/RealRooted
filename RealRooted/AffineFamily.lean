@@ -8,6 +8,7 @@ The remaining live theorem here is `prec_of_affine_family_nonneg`.
 import RealRooted.ProductFamily
 import RealRooted.AffineDerivative
 import RealRooted.PosCombo
+import RealRooted.SuccDegreeLeftEndpoint
 import RealRooted.ObreschkoffConverse
 import RealRooted.FolkloreLemma
 import Mathlib.Analysis.Calculus.Deriv.Inv
@@ -497,6 +498,15 @@ theorem PosComboRealRooted.isRealRooted_right_of_succDegree {f g : ℝ[X]}
     (hsucc : g.natDegree = f.natDegree + 1) :
     (g ≠ 0 ∧ g.Splits) :=
   PosComboRealRooted.isRealRooted_right_of_natDegree_le hfg hf_pos hg_pos (by lia)
+
+/-- In a positive-combination family, if the right summand has degree one more
+than the left summand, then the left summand is real-rooted. -/
+theorem PosComboRealRooted.isRealRooted_left_of_succDegree {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hsucc : g.natDegree = f.natDegree + 1) :
+    (f ≠ 0 ∧ f.Splits) :=
+  ⟨hf_pos.ne_zero, hfg.left_splits_of_succDegree hf_pos hg_pos hsucc⟩
 
 /-- If the affine family has enough right-hand degree to dominate the `X * f`
 perturbation, then the boundary member `C t * f + g` is already real-rooted.
@@ -3106,6 +3116,20 @@ theorem PosComboRealRooted.root_parameter_eq_and_derivative_ne_zero_add_right
   ⟨(isRoot_add_right_iff_parameter_eq_of_no_common hno hmu).mp hroot,
     hfg.derivative_eval_ne_zero_add_right hno hmu hroot⟩
 
+/-- A root of two positive right-pencil members has a unique parameter, and
+the corresponding root is simple in the first member. -/
+theorem PosComboRealRooted.parameter_unique_and_derivative_ne_zero_add_right
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    {mu nu x : ℝ}
+    (hmu : 0 < mu) (hnu : 0 < nu)
+    (hroot_mu : (f + C mu * g).IsRoot x)
+    (hroot_nu : (f + C nu * g).IsRoot x) :
+    mu = nu ∧ (f + C mu * g).derivative.eval x ≠ 0 :=
+  ⟨root_parameter_unique_add_right_of_no_common hno hmu hnu hroot_mu hroot_nu,
+    hfg.derivative_eval_ne_zero_add_right hno hmu hroot_mu⟩
+
 /-- A root of an interior no-common right positive pencil carries endpoint
 nonvanishing, the unique parameter formula, and simple-crossing derivative
 nonvanishing. -/
@@ -3140,6 +3164,20 @@ theorem PosComboRealRooted.root_parameter_eq_and_derivative_ne_zero_add_left
     hfg.derivative_eval_ne_zero_add_left hno hlam hroot⟩
 
 /-- Left-family form of
+`PosComboRealRooted.parameter_unique_and_derivative_ne_zero_add_right`. -/
+theorem PosComboRealRooted.parameter_unique_and_derivative_ne_zero_add_left
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    {lam eta x : ℝ}
+    (hlam : 0 < lam) (heta : 0 < eta)
+    (hroot_lam : (C lam * f + g).IsRoot x)
+    (hroot_eta : (C eta * f + g).IsRoot x) :
+    lam = eta ∧ (C lam * f + g).derivative.eval x ≠ 0 :=
+  ⟨root_parameter_unique_add_left_of_no_common hno hlam heta hroot_lam hroot_eta,
+    hfg.derivative_eval_ne_zero_add_left hno hlam hroot_lam⟩
+
+/-- Left-family form of
 `PosComboRealRooted.root_crossing_data_add_right`. -/
 theorem PosComboRealRooted.root_crossing_data_add_left
     {f g : ℝ[X]}
@@ -3156,6 +3194,168 @@ theorem PosComboRealRooted.root_crossing_data_add_left
     ⟨eval_left_ne_zero_of_isRoot_add_left_of_no_common hno hroot,
       eval_right_ne_zero_of_isRoot_add_left_of_no_common hno hlam hroot,
       hdata.1, hdata.2⟩
+
+/-- Full crossing data at a right-pencil root, extending
+`PosComboRealRooted.root_crossing_data_add_right` with uniqueness of the
+positive parameter placing `x` on the pencil. This packages the
+`parameter_unique_and_derivative_ne_zero_add_right` uniqueness into a single
+statement downstream direct-crossing code can use without re-deriving the
+affine-family plumbing. -/
+theorem PosComboRealRooted.root_crossing_data_unique_add_right
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    {mu x : ℝ}
+    (hmu : 0 < mu)
+    (hroot : (f + C mu * g).IsRoot x) :
+    g.eval x ≠ 0 ∧ f.eval x ≠ 0 ∧
+      mu = -f.eval x / g.eval x ∧
+      (f + C mu * g).derivative.eval x ≠ 0 ∧
+      (∀ nu : ℝ, 0 < nu → (f + C nu * g).IsRoot x → nu = mu) := by
+  obtain ⟨hg, hf, hpar, hder⟩ :=
+    hfg.root_crossing_data_add_right hno hmu hroot
+  refine ⟨hg, hf, hpar, hder, ?_⟩
+  intro nu hnu hroot_nu
+  exact
+    (hfg.parameter_unique_and_derivative_ne_zero_add_right hno hnu hmu
+      hroot_nu hroot).1
+
+/-- Left-family form of
+`PosComboRealRooted.root_crossing_data_unique_add_right`. -/
+theorem PosComboRealRooted.root_crossing_data_unique_add_left
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    {lam x : ℝ}
+    (hlam : 0 < lam)
+    (hroot : (C lam * f + g).IsRoot x) :
+    f.eval x ≠ 0 ∧ g.eval x ≠ 0 ∧
+      lam = -g.eval x / f.eval x ∧
+      (C lam * f + g).derivative.eval x ≠ 0 ∧
+      (∀ eta : ℝ, 0 < eta → (C eta * f + g).IsRoot x → eta = lam) := by
+  obtain ⟨hf, hg, hpar, hder⟩ :=
+    hfg.root_crossing_data_add_left hno hlam hroot
+  refine ⟨hf, hg, hpar, hder, ?_⟩
+  intro eta heta hroot_eta
+  exact
+    (hfg.parameter_unique_and_derivative_ne_zero_add_left hno heta hlam
+      hroot_eta hroot).1
+
+/-- Endpoint-sign wrapper for the right pencil: when the two endpoint
+evaluations have opposite signs at `x`, there is a positive parameter placing
+`x` on the pencil `f + C μ * g`; that parameter is unique among positive
+parameters, is given by `-f(x)/g(x)`, and `x` is a simple root of the
+corresponding member (its derivative does not vanish). This is the endpoint
+entry point for direct simple-crossing code: it needs only the endpoint sign
+condition, not a supplied root. -/
+theorem PosComboRealRooted.exists_unique_pos_parameter_crossing_add_right
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    {x : ℝ} (hfx : f.eval x ≠ 0)
+    (hsign : f.eval x * g.eval x < 0) :
+    ∃ mu : ℝ, 0 < mu ∧ (f + C mu * g).IsRoot x ∧
+      mu = -f.eval x / g.eval x ∧
+      (f + C mu * g).derivative.eval x ≠ 0 ∧
+      (∀ nu : ℝ, 0 < nu → (f + C nu * g).IsRoot x → nu = mu) := by
+  obtain ⟨mu, hmu, hroot⟩ :=
+    (exists_pos_isRoot_add_right_iff_eval_mul_neg hfx).mpr hsign
+  obtain ⟨_, _, hpar, hder, huniq⟩ :=
+    hfg.root_crossing_data_unique_add_right hno hmu hroot
+  exact ⟨mu, hmu, hroot, hpar, hder, huniq⟩
+
+/-- Left-family form of
+`PosComboRealRooted.exists_unique_pos_parameter_crossing_add_right`. -/
+theorem PosComboRealRooted.exists_unique_pos_parameter_crossing_add_left
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    {x : ℝ} (hgx : g.eval x ≠ 0)
+    (hsign : f.eval x * g.eval x < 0) :
+    ∃ lam : ℝ, 0 < lam ∧ (C lam * f + g).IsRoot x ∧
+      lam = -g.eval x / f.eval x ∧
+      (C lam * f + g).derivative.eval x ≠ 0 ∧
+      (∀ eta : ℝ, 0 < eta → (C eta * f + g).IsRoot x → eta = lam) := by
+  obtain ⟨lam, hlam, hroot⟩ :=
+    (exists_pos_isRoot_add_left_iff_eval_mul_neg hgx).mpr hsign
+  obtain ⟨_, _, hpar, hder, huniq⟩ :=
+    hfg.root_crossing_data_unique_add_left hno hlam hroot
+  exact ⟨lam, hlam, hroot, hpar, hder, huniq⟩
+
+/-- Projection of `PosComboRealRooted.root_crossing_data_unique_add_right`
+keeping only the derivative nonvanishing and parameter uniqueness facts. -/
+theorem PosComboRealRooted.derivative_ne_zero_and_parameter_unique_add_right
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    {mu x : ℝ}
+    (hmu : 0 < mu)
+    (hroot : (f + C mu * g).IsRoot x) :
+    (f + C mu * g).derivative.eval x ≠ 0 ∧
+      (∀ nu : ℝ, 0 < nu → (f + C nu * g).IsRoot x → nu = mu) := by
+  obtain ⟨_, _, _, hder, huniq⟩ :=
+    hfg.root_crossing_data_unique_add_right hno hmu hroot
+  exact ⟨hder, huniq⟩
+
+/-- Left-family form of
+`PosComboRealRooted.derivative_ne_zero_and_parameter_unique_add_right`. -/
+theorem PosComboRealRooted.derivative_ne_zero_and_parameter_unique_add_left
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    {lam x : ℝ}
+    (hlam : 0 < lam)
+    (hroot : (C lam * f + g).IsRoot x) :
+    (C lam * f + g).derivative.eval x ≠ 0 ∧
+      (∀ eta : ℝ, 0 < eta → (C eta * f + g).IsRoot x → eta = lam) := by
+  obtain ⟨_, _, _, hder, huniq⟩ :=
+    hfg.root_crossing_data_unique_add_left hno hlam hroot
+  exact ⟨hder, huniq⟩
+
+/-- Endpoint-sign entry point for the right pencil, deriving endpoint
+nonvanishing from the opposite-sign condition. -/
+theorem PosComboRealRooted.exists_unique_pos_parameter_crossing_add_right_of_sign
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    {x : ℝ} (hsign : f.eval x * g.eval x < 0) :
+    ∃ mu : ℝ, 0 < mu ∧ (f + C mu * g).IsRoot x ∧
+      mu = -f.eval x / g.eval x ∧
+      (f + C mu * g).derivative.eval x ≠ 0 ∧
+      (∀ nu : ℝ, 0 < nu → (f + C nu * g).IsRoot x → nu = mu) :=
+  hfg.exists_unique_pos_parameter_crossing_add_right hno
+    (left_ne_zero_of_mul (ne_of_lt hsign)) hsign
+
+/-- Left-family form of
+`PosComboRealRooted.exists_unique_pos_parameter_crossing_add_right_of_sign`. -/
+theorem PosComboRealRooted.exists_unique_pos_parameter_crossing_add_left_of_sign
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    {x : ℝ} (hsign : f.eval x * g.eval x < 0) :
+    ∃ lam : ℝ, 0 < lam ∧ (C lam * f + g).IsRoot x ∧
+      lam = -g.eval x / f.eval x ∧
+      (C lam * f + g).derivative.eval x ≠ 0 ∧
+      (∀ eta : ℝ, 0 < eta → (C eta * f + g).IsRoot x → eta = lam) :=
+  hfg.exists_unique_pos_parameter_crossing_add_left hno
+    (right_ne_zero_of_mul (ne_of_lt hsign)) hsign
+
+/-- Bundled right-and-left endpoint-sign crossing entry point. -/
+theorem PosComboRealRooted.exists_unique_pos_parameters_crossing_of_sign
+    {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    {x : ℝ} (hsign : f.eval x * g.eval x < 0) :
+    (∃ mu : ℝ, 0 < mu ∧ (f + C mu * g).IsRoot x ∧
+        mu = -f.eval x / g.eval x ∧
+        (f + C mu * g).derivative.eval x ≠ 0 ∧
+        (∀ nu : ℝ, 0 < nu → (f + C nu * g).IsRoot x → nu = mu)) ∧
+      (∃ lam : ℝ, 0 < lam ∧ (C lam * f + g).IsRoot x ∧
+        lam = -g.eval x / f.eval x ∧
+        (C lam * f + g).derivative.eval x ≠ 0 ∧
+        (∀ eta : ℝ, 0 < eta → (C eta * f + g).IsRoot x → eta = lam)) :=
+  ⟨hfg.exists_unique_pos_parameter_crossing_add_right_of_sign hno hsign,
+    hfg.exists_unique_pos_parameter_crossing_add_left_of_sign hno hsign⟩
 
 /-- In a one-parameter boundary family `g + t f`, a Wronskian-zero point where
 `g` and `f` have opposite signs would force an interior double root. Hence the
@@ -3821,8 +4021,8 @@ private lemma prec_right_pair_of_affine_family_high_degree_core
     have hprec_or : Prec f (g + X * f) ∨ Prec (g + X * f) f :=
       prec_of_allComboRealRooted hf_rr.1 hf_rr.2 hshift_rr.1 hshift_rr.2
         (allComboRealRooted_comm hall_shift) (Or.inl hshift_deg.symm)
-    have hprec_f_shift : Prec f (g + X * f) := by
-      exact prec_forward_of_orientation_of_succDegree hshift_deg hprec_or
+    have hprec_f_shift : Prec f (g + X * f) :=
+      prec_forward_of_orientation_of_succDegree hshift_deg hprec_or
     exact
       prec_right_pair_of_prec_shifted_pair_sameDegree
         hprec_f_shift hf0 hg0 hfnn hgnn hsame
@@ -3838,8 +4038,8 @@ private lemma prec_right_pair_of_affine_family_high_degree_core
     have hprec_or : Prec f g ∨ Prec g f :=
       prec_of_allComboRealRooted hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2
         (allComboRealRooted_comm hall) (Or.inl hsucc.symm)
-    have hprec_fg : Prec f g := by
-      exact prec_forward_of_orientation_of_succDegree hsucc hprec_or
+    have hprec_fg : Prec f g :=
+      prec_forward_of_orientation_of_succDegree hsucc hprec_or
     exact prec_to_prec_mul_X_of_nonneg hprec_fg hfnn hgnn
 
 /-- Wrapper matching the original high-degree target. The only genuinely hard

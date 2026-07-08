@@ -6,6 +6,8 @@ import RealRooted.SameDegreeQuadraticObstruction
 This module discharges the degree-two base case of the same-degree root-count
 leaf of the Chudnovsky--Seymour common-interleaver machinery (issue #41), using
 the separated-root obstruction from `RealRooted.SameDegreeQuadraticObstruction`.
+It is #41-only support unless a future direct #42 pass names this exact
+degree-two base case as its remaining gap.
 
 The same-degree root-count leaf asks: for a positive-combination real-rooted
 same-degree pair `f, g`, the two threshold root-count functions
@@ -121,6 +123,34 @@ theorem count_pair_diff_le_one
     (((if c ≤ x then 1 else 0) + (if d ≤ x then 1 else 0) : ℤ)
         - ((if a ≤ x then 1 else 0) + (if b ≤ x then 1 else 0)) ≤ 1) := by
   grind
+
+/-- Root-order interleaving for a positive-combination real-rooted split
+quadratic pair with positive leading coefficients.
+
+Given the roots `{a, b}` (`a ≤ b`) of `f` and `{c, d}` (`c ≤ d`) of `g`, with
+`f` and `g` forming a `PosComboRealRooted` pair, neither root pair lies entirely
+below the other: `a ≤ d` and `c ≤ b`. -/
+theorem posComboRealRooted_quadratic_roots_interleave
+    {f g : ℝ[X]}
+    (hf : f.Splits) (hg : g.Splits)
+    (hfl : 0 < f.leadingCoeff) (hgl : 0 < g.leadingCoeff)
+    (hpc : PosComboRealRooted f g)
+    {a b c d : ℝ} (hab : a ≤ b) (hcd : c ≤ d)
+    (hfroots : f.roots = {a, b}) (hgroots : g.roots = {c, d}) :
+    a ≤ d ∧ c ≤ b := by
+  have hffac : f = C f.leadingCoeff * ((X - C a) * (X - C b)) := by
+    rw [Polynomial.Splits.eq_prod_roots hf, hfroots]
+    simp [Multiset.map_cons, Multiset.prod_cons]
+  have hgfac : g = C g.leadingCoeff * ((X - C c) * (X - C d)) := by
+    rw [Polynomial.Splits.eq_prod_roots hg, hgroots]
+    simp [Multiset.map_cons, Multiset.prod_cons]
+  have hpc' : ∀ {lam μ : ℝ}, 0 < lam → 0 < μ →
+      (C lam * (C f.leadingCoeff * ((X - C a) * (X - C b)))
+        + C μ * (C g.leadingCoeff * ((X - C c) * (X - C d)))).Splits :=
+    fun {lam μ} hl hm => hffac ▸ hgfac ▸ (hpc hl hm).2
+  have hpencil := monic_pencil_splits_of_posCombo hfl hgl hpc'
+  obtain ⟨h1, h2⟩ := not_separated_of_monic_pencil_splits hab hcd hpencil
+  exact ⟨not_lt.mp h1, not_lt.mp h2⟩
 
 /-- Degree-two same-degree root-count bound.
 

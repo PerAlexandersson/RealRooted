@@ -1,12 +1,17 @@
 import RealRooted.Tactic.Attr
 import RealRooted.Tactic.SideGoals
+import RealRooted.Tactic.ScalarDen
 import RealRooted.Tactic.Sign
 import RealRooted.Tactic.RootBounds
 import RealRooted.Tactic.Lookup
 import RealRooted.Tactic.Finish
+import RealRooted.Tactic.WagnerX
 import RealRooted.Tactic.MaWang
+import RealRooted.Tactic.SecondDerivative
 import RealRooted.Tactic.Favard
 import RealRooted.Tactic.LiuWang
+import RealRooted.Tactic.Product
+import RealRooted.Tactic.PFBidiagonal
 import RealRooted.Tactic.Matrix
 import RealRooted.Tactic.OEIS
 import RealRooted.Tactic.Targets

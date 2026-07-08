@@ -4,9 +4,13 @@ import RealRooted.Tactic.Examples.Sign
 import RealRooted.Tactic.Examples.RootBounds
 import RealRooted.Tactic.Examples.Lookup
 import RealRooted.Tactic.Examples.Finish
+import RealRooted.Tactic.Examples.WagnerX
 import RealRooted.Tactic.Examples.Favard
 import RealRooted.Tactic.Examples.MaWang
 import RealRooted.Tactic.Examples.LiuWang
+import RealRooted.Tactic.Examples.Product
+import RealRooted.Tactic.Examples.PFBidiagonal
+import RealRooted.Tactic.Examples.OEISPositiveTLag
 import RealRooted.Tactic.Examples.Matrix
 import RealRooted.Tactic.Examples.Combinatorial
 import RealRooted.Tactic.Examples.SequenceSurvey

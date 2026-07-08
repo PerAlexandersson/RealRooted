@@ -208,8 +208,8 @@ private lemma coeff_zero_liuWangPoly_succ_succ (d n : Nat) :
   by_cases hnd : n ≤ d
   · have hchoose :
         ((Nat.choose d (n + 1) : ℕ) : ℝ) * (n + 1 : ℝ) =
-          ((Nat.choose d n : ℕ) : ℝ) * ((d - n : ℕ) : ℝ) := by
-      exact Nat.cast_choose_succ_right_eq (R := ℝ) d n
+          ((Nat.choose d n : ℕ) : ℝ) * ((d - n : ℕ) : ℝ) :=
+      Nat.cast_choose_succ_right_eq (R := ℝ) d n
     rw [Nat.cast_sub hnd] at hchoose
     grind
   · have hz_n : Nat.choose d n = 0 := Nat.choose_eq_zero_of_lt (lt_of_not_ge hnd)

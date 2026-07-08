@@ -67,41 +67,40 @@ theorem hadamardProduct_assoc (p q r : ℝ[X]) :
 
 @[simp] theorem hadamardProduct_zero_right (p : ℝ[X]) :
     hadamardProduct p 0 = 0 := by
-  rw [hadamardProduct_comm, hadamardProduct_zero_left]
+  ext n
+  simp
 
 theorem hadamardProduct_add_left (p q r : ℝ[X]) :
     hadamardProduct (p + q) r =
       hadamardProduct p r + hadamardProduct q r := by
-  rw [hadamardProduct_eq_diagonalOperator, diagonalOperator_add,
-    ← hadamardProduct_eq_diagonalOperator p r,
-    ← hadamardProduct_eq_diagonalOperator q r]
+  simpa [hadamardProduct_eq_diagonalOperator] using
+    diagonalOperator_add (fun k => r.coeff k) p q
 
 theorem hadamardProduct_add_right (p q r : ℝ[X]) :
     hadamardProduct p (q + r) =
       hadamardProduct p q + hadamardProduct p r := by
-  rw [hadamardProduct_comm p (q + r), hadamardProduct_add_left,
-    hadamardProduct_comm q p, hadamardProduct_comm r p]
+  ext n
+  simp [mul_add]
 
 theorem hadamardProduct_C_mul_left (a : ℝ) (p q : ℝ[X]) :
-    hadamardProduct (C a * p) q =
-      C a * hadamardProduct p q := by
-  rw [hadamardProduct_eq_diagonalOperator, diagonalOperator_C_mul,
-    ← hadamardProduct_eq_diagonalOperator p q]
+    hadamardProduct (C a * p) q = C a * hadamardProduct p q := by
+  simpa [hadamardProduct_eq_diagonalOperator] using
+    diagonalOperator_C_mul (fun k => q.coeff k) a p
 
 theorem hadamardProduct_C_mul_right (a : ℝ) (p q : ℝ[X]) :
     hadamardProduct p (C a * q) =
       C a * hadamardProduct p q := by
-  rw [hadamardProduct_comm p (C a * q), hadamardProduct_C_mul_left,
-    hadamardProduct_comm q p]
+  ext n
+  simp [mul_comm, mul_left_comm]
 
 theorem support_hadamardProduct_eq_filter_right (p q : ℝ[X]) :
     (hadamardProduct p q).support = p.support.filter fun n => q.coeff n ≠ 0 := by
   rw [hadamardProduct_eq_diagonalOperator, support_diagonalOperator_eq_filter]
 
 theorem support_hadamardProduct_eq_filter_left (p q : ℝ[X]) :
-    (hadamardProduct p q).support = q.support.filter fun n => p.coeff n ≠ 0 := by
-  rw [hadamardProduct_comm]
-  exact support_hadamardProduct_eq_filter_right q p
+    (hadamardProduct p q).support = q.support.filter fun n => p.coeff n ≠ 0 :=
+  (congrArg (fun r : ℝ[X] => r.support) (hadamardProduct_comm p q)).trans
+    (support_hadamardProduct_eq_filter_right q p)
 
 /-- The support of a Hadamard product is the intersection of the two
 supports. -/
@@ -113,25 +112,24 @@ theorem support_hadamardProduct_eq (p q : ℝ[X]) :
 
 /-- The support of a Hadamard product is contained in the left support. -/
 theorem support_hadamardProduct_subset_left (p q : ℝ[X]) :
-    (hadamardProduct p q).support ⊆ p.support := by
-  rw [support_hadamardProduct_eq]
-  exact Finset.inter_subset_left
+    (hadamardProduct p q).support ⊆ p.support :=
+  (support_hadamardProduct_eq p q).symm ▸
+    (Finset.inter_subset_left : p.support ∩ q.support ⊆ p.support)
 
 /-- The support of a Hadamard product is contained in the right support. -/
 theorem support_hadamardProduct_subset_right (p q : ℝ[X]) :
-    (hadamardProduct p q).support ⊆ q.support := by
-  rw [support_hadamardProduct_eq]
-  exact Finset.inter_subset_right
+    (hadamardProduct p q).support ⊆ q.support :=
+  (support_hadamardProduct_eq p q).symm ▸
+    (Finset.inter_subset_right : p.support ∩ q.support ⊆ q.support)
 
 theorem natDegree_hadamardProduct_le_left (p q : ℝ[X]) :
-    (hadamardProduct p q).natDegree ≤ p.natDegree := by
-  rw [hadamardProduct_eq_diagonalOperator]
-  exact natDegree_diagonalOperator_le _ _
+    (hadamardProduct p q).natDegree ≤ p.natDegree :=
+  (hadamardProduct_eq_diagonalOperator p q).symm ▸
+    natDegree_diagonalOperator_le _ _
 
 theorem natDegree_hadamardProduct_le_right (p q : ℝ[X]) :
-    (hadamardProduct p q).natDegree ≤ q.natDegree := by
-  rw [hadamardProduct_comm]
-  exact natDegree_hadamardProduct_le_left q p
+    (hadamardProduct p q).natDegree ≤ q.natDegree :=
+  (hadamardProduct_comm p q).symm ▸ natDegree_hadamardProduct_le_left q p
 
 /-- A Hadamard product vanishes exactly when the two coefficient supports are
 disjoint. -/
@@ -209,6 +207,48 @@ theorem choose_mul_coeff_schurSzegoComp_eq_coeff_hadamardProduct_of_le
       (hadamardProduct f g).coeff k := by
   rw [choose_mul_coeff_schurSzegoComp_of_le hk, coeff_hadamardProduct]
 
+/-- Constant coefficient of a fixed-degree Schur--Szegő composition. -/
+theorem coeff_zero_schurSzegoComp (n : Nat) (f g : ℝ[X]) :
+    (schurSzegoComp n f g).coeff 0 = f.coeff 0 * g.coeff 0 := by
+  simpa using coeff_schurSzegoComp_of_le (Nat.zero_le n) f g
+
+/-- Linear coefficient of a fixed-degree Schur--Szegő composition. -/
+theorem coeff_one_schurSzegoComp_of_one_le
+    {n : Nat} (hn : 1 ≤ n) (f g : ℝ[X]) :
+    (schurSzegoComp n f g).coeff 1 =
+      f.coeff 1 * g.coeff 1 / (n : ℝ) := by
+  simpa [Nat.choose_one_right] using coeff_schurSzegoComp_of_le hn f g
+
+/-- Quadratic coefficient of a fixed-degree Schur--Szegő composition, with
+`Nat.choose n 2` expanded. -/
+theorem coeff_two_schurSzegoComp_of_two_le
+    {n : Nat} (hn : 2 ≤ n) (f g : ℝ[X]) :
+    (schurSzegoComp n f g).coeff 2 =
+      2 * (f.coeff 2 * g.coeff 2) / ((n : ℝ) * ((n : ℝ) - 1)) := by
+  have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
+  have hn0 : 0 < (n : ℝ) := by linarith
+  have hn1 : 0 < (n : ℝ) - 1 := by linarith
+  have hden : (n : ℝ) * ((n : ℝ) - 1) ≠ 0 := (mul_pos hn0 hn1).ne'
+  rw [coeff_schurSzegoComp_of_le hn, Nat.cast_choose_two]
+  field_simp [hden]
+
+/-- Cubic coefficient of a fixed-degree Schur--Szegő composition, with
+`Nat.choose n 3` expanded. -/
+theorem coeff_three_schurSzegoComp_of_three_le
+    {n : Nat} (hn : 3 ≤ n) (f g : ℝ[X]) :
+    (schurSzegoComp n f g).coeff 3 =
+      6 * (f.coeff 3 * g.coeff 3) /
+        ((n : ℝ) * ((n : ℝ) - 1) * ((n : ℝ) - 2)) := by
+  have hnR : (3 : ℝ) ≤ n := by exact_mod_cast hn
+  have hn0 : 0 < (n : ℝ) := by linarith
+  have hn1 : 0 < (n : ℝ) - 1 := by linarith
+  have hn2 : 0 < (n : ℝ) - 2 := by linarith
+  have hdenpos : 0 < (n : ℝ) * ((n : ℝ) - 1) * ((n : ℝ) - 2) :=
+    mul_pos (mul_pos hn0 hn1) hn2
+  have hden : (n : ℝ) * ((n : ℝ) - 1) * ((n : ℝ) - 2) ≠ 0 := hdenpos.ne'
+  rw [coeff_schurSzegoComp_of_le hn, Nat.cast_choose_three]
+  field_simp [hden]
+
 /-- Fixed-degree Schur--Szego composition is a diagonal operator. -/
 theorem schurSzegoComp_eq_diagonalOperator (n : Nat) (f g : ℝ[X]) :
     schurSzegoComp n f g =
@@ -240,6 +280,136 @@ theorem cubicDiscr_schurSzegoComp (n : Nat) (f g : ℝ[X]) :
         - 27 * ((g.coeff 3 / (Nat.choose n 3 : ℝ)) * f.coeff 3) ^ 2 *
           ((g.coeff 0 / (Nat.choose n 0 : ℝ)) * f.coeff 0) ^ 2 := by
   rw [schurSzegoComp_eq_diagonalOperator, cubicDiscr_diagonalOperator]
+
+/-- Arithmetic core for rewriting the level-`n` degree-three Jensen section in
+terms of an iterated derivative of the reflected degree-`n` polynomial. -/
+theorem six_mul_choose_mul_descFactorial_sub_three_eq_choose_three_mul_factorial
+    {n k : ℕ} (hn : 3 ≤ n) (hk : k ≤ 3) :
+    6 * (Nat.choose n k * (n - k).descFactorial (n - 3)) =
+      Nat.choose 3 k * Nat.factorial n := by
+  interval_cases k
+  · simp
+    have hsub : n - (n - 3) = 3 := by lia
+    simpa [hsub, Nat.factorial] using
+      Nat.factorial_mul_descFactorial (n := n) (k := n - 3) (by lia)
+  · norm_num [Nat.choose_one_right]
+    have hsub : n - 1 - (n - 3) = 2 := by lia
+    have hdesc : 2 * (n - 1).descFactorial (n - 3) = Nat.factorial (n - 1) := by
+      simpa [hsub, Nat.factorial] using
+        Nat.factorial_mul_descFactorial (n := n - 1) (k := n - 3) (by lia)
+    have hfact : Nat.factorial (n - 1) * n = Nat.factorial n := by
+      simpa [Nat.descFactorial_one, mul_comm] using
+        Nat.factorial_mul_descFactorial (n := n) (k := 1) (by lia)
+    calc
+      6 * (n * (n - 1).descFactorial (n - 3)) =
+          3 * ((2 * (n - 1).descFactorial (n - 3)) * n) := by ring
+      _ = 3 * (Nat.factorial (n - 1) * n) := by rw [hdesc]
+      _ = 3 * Nat.factorial n := by rw [hfact]
+  · norm_num
+    have hsub : n - 2 - (n - 3) = 1 := by lia
+    have hdesc : (n - 2).descFactorial (n - 3) = Nat.factorial (n - 2) := by
+      simpa [hsub] using
+        Nat.factorial_mul_descFactorial (n := n - 2) (k := n - 3) (by lia)
+    have hchoose :
+        Nat.choose n 2 * 2 * Nat.factorial (n - 2) = Nat.factorial n := by
+      simpa [Nat.factorial] using
+        Nat.choose_mul_factorial_mul_factorial (show 2 ≤ n from by lia)
+    calc
+      6 * (Nat.choose n 2 * (n - 2).descFactorial (n - 3)) =
+          3 * (Nat.choose n 2 * 2 * (n - 2).descFactorial (n - 3)) := by
+        ring
+      _ = 3 * (Nat.choose n 2 * 2 * Nat.factorial (n - 2)) := by rw [hdesc]
+      _ = 3 * Nat.factorial n := by rw [hchoose]
+  · norm_num
+    rw [Nat.descFactorial_self,
+      ← Nat.choose_mul_factorial_mul_factorial (show 3 ≤ n from hn)]
+    ring
+
+/-- Real-valued ratio form of
+`six_mul_choose_mul_descFactorial_sub_three_eq_choose_three_mul_factorial`. -/
+theorem choose_three_div_choose_eq_six_mul_descFactorial_div_factorial
+    {n k : ℕ} (hn : 3 ≤ n) (hk : k ≤ 3) :
+    (Nat.choose 3 k : ℝ) / (Nat.choose n k : ℝ) =
+      (6 : ℝ) * ((n - k).descFactorial (n - 3) : ℝ) /
+        Nat.factorial n := by
+  have hchoose : (Nat.choose n k : ℝ) ≠ 0 :=
+    Nat.cast_choose_ne_zero (R := ℝ) (hk.trans hn)
+  have hfact : (Nat.factorial n : ℝ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero n
+  have h :
+      (6 : ℝ) *
+          ((Nat.choose n k : ℝ) * ((n - k).descFactorial (n - 3) : ℝ)) =
+        (Nat.choose 3 k : ℝ) * (Nat.factorial n : ℝ) := by
+    exact_mod_cast
+      six_mul_choose_mul_descFactorial_sub_three_eq_choose_three_mul_factorial
+        hn hk
+  field_simp [hchoose, hfact]
+  rw [← h]
+  ring
+
+/-- Coefficient form of
+`choose_three_div_choose_eq_six_mul_descFactorial_div_factorial`, matching the
+degree-three Jensen coefficient with the scaled reflected-derivative
+coefficient. -/
+theorem choose_three_mul_normalized_coeff_eq_descFactorial_coeff
+    {n k : ℕ} (hn : 3 ≤ n) (hk : k ≤ 3) (p : ℝ[X]) :
+    (Nat.choose 3 k : ℝ) * (p.coeff k / (Nat.choose n k : ℝ)) =
+      ((6 : ℝ) / Nat.factorial n) *
+        (((n - k).descFactorial (n - 3) : ℝ) * p.coeff k) := by
+  calc
+    (Nat.choose 3 k : ℝ) * (p.coeff k / (Nat.choose n k : ℝ)) =
+        ((Nat.choose 3 k : ℝ) / (Nat.choose n k : ℝ)) * p.coeff k := by ring
+    _ = ((6 : ℝ) * ((n - k).descFactorial (n - 3) : ℝ) / Nat.factorial n) *
+        p.coeff k := by
+      rw [choose_three_div_choose_eq_six_mul_descFactorial_div_factorial hn hk]
+    _ = ((6 : ℝ) / Nat.factorial n) *
+        (((n - k).descFactorial (n - 3) : ℝ) * p.coeff k) := by ring
+
+/-- Coefficient form of the level-`n` degree-three Jensen section, written with
+the descending-factorial coefficient that appears after reflecting and
+differentiating `n - 3` times. -/
+theorem coeff_jensenPolynomial_three_normalized_eq_descFactorial_coeff
+    {n k : ℕ} (hn : 3 ≤ n) (hk : k ≤ 3) (p : ℝ[X]) :
+    (jensenPolynomial 3 (fun j => p.coeff j / (Nat.choose n j : ℝ))).coeff k =
+      ((6 : ℝ) / Nat.factorial n) *
+        (((n - k).descFactorial (n - 3) : ℝ) * p.coeff k) := by
+  simpa [coeff_jensenPolynomial, hk] using
+    choose_three_mul_normalized_coeff_eq_descFactorial_coeff hn hk p
+
+/-- Coefficient form of the reflected iterated-derivative side of the
+level-`n` degree-three Jensen section identity. -/
+theorem coeff_reflect_iterate_derivative_reflect_eq_descFactorial_coeff
+    {n k : ℕ} (hn : 3 ≤ n) (hk : k ≤ 3) (p : ℝ[X]) :
+    (reflect 3 ((derivative^[n - 3]) (reflect n p))).coeff k =
+      ((n - k).descFactorial (n - 3) : ℝ) * p.coeff k := by
+  rw [Polynomial.coeff_reflect, Polynomial.revAt_le hk,
+    Polynomial.coeff_iterate_derivative, Polynomial.coeff_reflect,
+    show 3 - k + (n - 3) = n - k from by lia,
+    Polynomial.revAt_le (Nat.sub_le n k), Nat.sub_sub_self (hk.trans hn),
+    nsmul_eq_mul]
+
+/-- The level-`n` degree-three Jensen section is a scalar multiple of the
+degree-three reflection of the `(n - 3)`rd derivative of the degree-`n`
+reflection. -/
+theorem jensenPolynomial_three_normalized_eq_reflect_iterate_derivative
+    {n : ℕ} (hn : 3 ≤ n) {p : ℝ[X]} (hpdeg : p.natDegree ≤ n) :
+    jensenPolynomial 3 (fun k => p.coeff k / (Nat.choose n k : ℝ)) =
+      C ((6 : ℝ) / Nat.factorial n) *
+        reflect 3 ((derivative^[n - 3]) (reflect n p)) := by
+  ext k
+  by_cases hk : k ≤ 3
+  · rw [coeff_jensenPolynomial_three_normalized_eq_descFactorial_coeff hn hk p,
+      coeff_C_mul,
+      coeff_reflect_iterate_derivative_reflect_eq_descFactorial_coeff hn hk p]
+  · have hder_deg : ((derivative^[n - 3]) (reflect n p)).natDegree ≤ 3 :=
+      (natDegree_iterate_derivative _ _).trans <| by
+        have : (reflect n p).natDegree ≤ n :=
+          Polynomial.natDegree_reflect_le.trans (by rw [max_eq_left hpdeg])
+        lia
+    have hzero : (reflect 3 ((derivative^[n - 3]) (reflect n p))).coeff k = 0 :=
+      coeff_eq_zero_of_natDegree_lt <| lt_of_le_of_lt
+        (Polynomial.natDegree_reflect_le.trans (by rw [max_eq_left hder_deg]))
+        (Nat.lt_of_not_le hk)
+    rw [coeff_C_mul, hzero, mul_zero, coeff_jensenPolynomial, if_neg hk]
 
 /-- If the left factor has degree at most three, the fixed-degree
 Schur--Szego composition is the degree-three Jensen polynomial attached to the
@@ -273,8 +443,8 @@ theorem cubicDiscr_schurSzegoComp_eq_jensenPolynomial_three_normalized
       cubicDiscr
         (jensenPolynomial 3 (fun k =>
           (p.coeff k / (Nat.choose n k : ℝ)) *
-            (f.coeff k / (Nat.choose 3 k : ℝ)))) := by
-  rw [schurSzegoComp_eq_jensenPolynomial_three_normalized hfdeg]
+            (f.coeff k / (Nat.choose 3 k : ℝ)))) :=
+  congrArg cubicDiscr (schurSzegoComp_eq_jensenPolynomial_three_normalized hfdeg)
 
 /-- Diagonal-operator form of
 `schurSzegoComp_eq_jensenPolynomial_three_normalized`: the degree-`≤ 3` factor
@@ -285,10 +455,10 @@ theorem schurSzegoComp_eq_diagonalOperator_jensenPolynomial_three_normalized
     schurSzegoComp n f p =
       diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
         (jensenPolynomial 3 (fun k => p.coeff k / (Nat.choose n k : ℝ))) := by
-  rw [schurSzegoComp_eq_jensenPolynomial_three_normalized hfdeg]
-  rw [← jensenPolynomial_mul_sequence_eq_diagonalOperator
-    3 (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
-      (fun k => p.coeff k / (Nat.choose n k : ℝ))]
+  rw [schurSzegoComp_eq_jensenPolynomial_three_normalized hfdeg,
+    ← jensenPolynomial_mul_sequence_eq_diagonalOperator
+      3 (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
+        (fun k => p.coeff k / (Nat.choose n k : ℝ))]
   congr with k
   ring
 
@@ -299,8 +469,193 @@ theorem cubicDiscr_schurSzegoComp_eq_diagonalOperator_jensenPolynomial_three_nor
     cubicDiscr (schurSzegoComp n f p) =
       cubicDiscr
         (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
-          (jensenPolynomial 3 (fun k => p.coeff k / (Nat.choose n k : ℝ)))) := by
-  rw [schurSzegoComp_eq_diagonalOperator_jensenPolynomial_three_normalized hfdeg]
+          (jensenPolynomial 3 (fun k => p.coeff k / (Nat.choose n k : ℝ)))) :=
+  congrArg cubicDiscr
+    (schurSzegoComp_eq_diagonalOperator_jensenPolynomial_three_normalized hfdeg)
+
+/-- Degree-three Schur--Szego composition, written as a diagonal operator applied
+to a reflected iterated derivative of the right factor. -/
+theorem schurSzegoComp_eq_diagonalOperator_reflect_iterate_derivative_three
+    {n : Nat} (hn : 3 ≤ n) {f p : ℝ[X]}
+    (hfdeg : f.natDegree ≤ 3) (hpdeg : p.natDegree ≤ n) :
+    schurSzegoComp n f p =
+      diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
+        (C ((6 : ℝ) / Nat.factorial n) *
+          reflect 3 ((derivative^[n - 3]) (reflect n p))) := by
+  rw [schurSzegoComp_eq_diagonalOperator_jensenPolynomial_three_normalized hfdeg,
+    jensenPolynomial_three_normalized_eq_reflect_iterate_derivative hn hpdeg]
+
+/-- Scalar-pulled form of
+`schurSzegoComp_eq_diagonalOperator_reflect_iterate_derivative_three`. -/
+theorem schurSzegoComp_eq_C_mul_diagonalOperator_reflect_iterate_derivative_three
+    {n : Nat} (hn : 3 ≤ n) {f p : ℝ[X]}
+    (hfdeg : f.natDegree ≤ 3) (hpdeg : p.natDegree ≤ n) :
+    schurSzegoComp n f p =
+      C ((6 : ℝ) / Nat.factorial n) *
+        diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
+          (reflect 3 ((derivative^[n - 3]) (reflect n p))) := by
+  rw [schurSzegoComp_eq_diagonalOperator_reflect_iterate_derivative_three
+    hn hfdeg hpdeg, diagonalOperator_C_mul]
+
+/-- Cubic discriminant form of
+`schurSzegoComp_eq_C_mul_diagonalOperator_reflect_iterate_derivative_three`. -/
+theorem cubicDiscr_schurSzegoComp_eq_reflect_diagonalOperator_three
+    {n : Nat} (hn : 3 ≤ n) {f p : ℝ[X]}
+    (hfdeg : f.natDegree ≤ 3) (hpdeg : p.natDegree ≤ n) :
+    cubicDiscr (schurSzegoComp n f p) =
+      ((6 : ℝ) / Nat.factorial n) ^ 4 *
+        cubicDiscr
+          (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
+            (reflect 3 ((derivative^[n - 3]) (reflect n p)))) := by
+  rw [schurSzegoComp_eq_C_mul_diagonalOperator_reflect_iterate_derivative_three
+    hn hfdeg hpdeg, cubicDiscr_C_mul]
+
+/-- Nonnegativity transfer through the reflected-derivative form of degree-three
+Schur--Szego composition. -/
+theorem cubicDiscr_schurSzegoComp_nonneg_of_reflect_diagonalOperator_three
+    {n : Nat} (hn : 3 ≤ n) {f p : ℝ[X]}
+    (hfdeg : f.natDegree ≤ 3) (hpdeg : p.natDegree ≤ n)
+    (hdisc : 0 ≤ cubicDiscr
+      (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
+        (reflect 3 ((derivative^[n - 3]) (reflect n p))))) :
+    0 ≤ cubicDiscr (schurSzegoComp n f p) := by
+  rw [cubicDiscr_schurSzegoComp_eq_reflect_diagonalOperator_three hn hfdeg hpdeg]
+  positivity
+
+/-- Iterated derivatives of a splitting polynomial are zero or split. -/
+theorem iterate_derivative_eq_zero_or_splits {p : ℝ[X]} (hsplit : p.Splits)
+    (n : ℕ) :
+    (derivative^[n]) p = 0 ∨ ((derivative^[n]) p).Splits := by
+  induction n with
+  | zero => exact Or.inr hsplit
+  | succ n ih =>
+      simpa [Function.iterate_succ_apply'] using eq_zero_or_splits_derivative ih
+
+/-- The iterated derivative of the degree-`n` reflection has degree at most
+three after `n - 3` derivatives. -/
+theorem natDegree_iterate_derivative_reflect_le_three
+    {n : ℕ} (hn : 3 ≤ n) {p : ℝ[X]} (hpdeg : p.natDegree ≤ n) :
+    ((derivative^[n - 3]) (reflect n p)).natDegree ≤ 3 := by
+  calc
+    ((derivative^[n - 3]) (reflect n p)).natDegree ≤
+        (reflect n p).natDegree - (n - 3) := by
+      simpa using natDegree_iterate_derivative (reflect n p) (n - 3)
+    _ ≤ n - (n - 3) := Nat.sub_le_sub_right
+      (Polynomial.natDegree_reflect_le.trans <| by rw [max_eq_left hpdeg]) _
+    _ = 3 := by lia
+
+/-- The reflected iterated-derivative section has degree at most three. -/
+theorem natDegree_reflect_iterate_derivative_reflect_le_three
+    {n : ℕ} (hn : 3 ≤ n) {p : ℝ[X]} (hpdeg : p.natDegree ≤ n) :
+    (reflect 3 ((derivative^[n - 3]) (reflect n p))).natDegree ≤ 3 :=
+  Polynomial.natDegree_reflect_le.trans <| by
+    rw [max_eq_left (natDegree_iterate_derivative_reflect_le_three hn hpdeg)]
+
+/-- The reflected iterated-derivative section of a splitting polynomial also
+splits. -/
+theorem reflect_iterate_derivative_reflect_splits_of_splits
+    {n : ℕ} (hn : 3 ≤ n) {p : ℝ[X]} (hpdeg : p.natDegree ≤ n)
+    (hsplit : p.Splits) :
+    (reflect 3 ((derivative^[n - 3]) (reflect n p))).Splits := by
+  have hreflect : (reflect n p).Splits :=
+    DegreeDropReversal.splits_reflect_of_splits hsplit hpdeg
+  have hqsplit : ((derivative^[n - 3]) (reflect n p)).Splits :=
+    (iterate_derivative_eq_zero_or_splits hreflect (n - 3)).elim
+      (fun h => by simp [h]) id
+  exact DegreeDropReversal.splits_reflect_of_splits hqsplit
+    (natDegree_iterate_derivative_reflect_le_three hn hpdeg)
+
+/-- The level-`n` degree-three Jensen section of a splitting polynomial is
+real-rooted, via the reflected iterated-derivative identity. -/
+theorem jensenPolynomial_three_normalized_eq_zero_or_splits_of_splits
+    {n : ℕ} (hn : 3 ≤ n) {p : ℝ[X]} (hpdeg : p.natDegree ≤ n)
+    (hsplit : p.Splits) :
+    jensenPolynomial 3 (fun k => p.coeff k / (Nat.choose n k : ℝ)) = 0 ∨
+      (jensenPolynomial 3 (fun k => p.coeff k / (Nat.choose n k : ℝ))).Splits := by
+  rw [jensenPolynomial_three_normalized_eq_reflect_iterate_derivative hn hpdeg]
+  exact Or.inr ((reflect_iterate_derivative_reflect_splits_of_splits
+    hn hpdeg hsplit).C_mul _)
+
+/-- Cubic-discriminant nonnegativity for the level-`n` degree-three Jensen
+section of a splitting polynomial. -/
+theorem cubicDiscr_jensenPolynomial_three_normalized_nonneg_of_splits
+    {n : ℕ} (hn : 3 ≤ n) {p : ℝ[X]} (hpdeg : p.natDegree ≤ n)
+    (hsplit : p.Splits) :
+    0 ≤ cubicDiscr
+      (jensenPolynomial 3 (fun k => p.coeff k / (Nat.choose n k : ℝ))) := by
+  rcases jensenPolynomial_three_normalized_eq_zero_or_splits_of_splits
+      hn hpdeg hsplit with hzero | hsplit'
+  · simp [hzero, cubicDiscr]
+  · exact cubicDiscr_nonneg_of_splits_natDegree_le_three
+      (natDegree_jensenPolynomial_le 3 _) hsplit'
+
+/-- Denominator-cleared numerator of the fixed-degree Schur--Szegő cubic
+discriminant after substituting the coefficient formulas
+`(schurSzegoComp n f p).coeff k = f.coeff k * p.coeff k / C(n, k)`. -/
+def schurSzegoCompCubicDiscrNumerator (n : ℕ) (f p : ℝ[X]) : ℝ :=
+  18 * (f.coeff 3 * p.coeff 3) * (f.coeff 2 * p.coeff 2)
+      * (f.coeff 1 * p.coeff 1) * (f.coeff 0 * p.coeff 0)
+      * (n : ℝ) ^ 2 * (Nat.choose n 2 : ℝ) ^ 2 * (Nat.choose n 3 : ℝ)
+    - 4 * (f.coeff 2 * p.coeff 2) ^ 3 * (f.coeff 0 * p.coeff 0)
+      * (n : ℝ) ^ 3 * (Nat.choose n 3 : ℝ) ^ 2
+    + (f.coeff 2 * p.coeff 2) ^ 2 * (f.coeff 1 * p.coeff 1) ^ 2
+      * (n : ℝ) * (Nat.choose n 2 : ℝ) * (Nat.choose n 3 : ℝ) ^ 2
+    - 4 * (f.coeff 3 * p.coeff 3) * (f.coeff 1 * p.coeff 1) ^ 3
+      * (Nat.choose n 2 : ℝ) ^ 3 * (Nat.choose n 3 : ℝ)
+    - 27 * (f.coeff 3 * p.coeff 3) ^ 2 * (f.coeff 0 * p.coeff 0) ^ 2
+      * (n : ℝ) ^ 3 * (Nat.choose n 2 : ℝ) ^ 3
+
+/-- Denominator-cleared form of the cubic-discriminant nonnegativity target for
+the fixed-degree Schur--Szegő composition, for a level `n ≥ 3`.
+
+Substituting the explicit coefficient formulas into `cubicDiscr` produces a
+rational function with denominator
+`(n : ℝ)^3 * C(n,2)^3 * C(n,3)^2`, which is positive when `3 ≤ n`.  Clearing it
+gives nonnegativity of `schurSzegoCompCubicDiscrNumerator n f p`. -/
+theorem cubicDiscr_schurSzegoComp_nonneg_iff_of_three_le
+    {n : ℕ} (hn : 3 ≤ n) (f p : ℝ[X]) :
+    0 ≤ cubicDiscr (schurSzegoComp n f p) ↔
+      0 ≤ schurSzegoCompCubicDiscrNumerator n f p := by
+  have h1n : 1 ≤ n := le_trans (by norm_num) hn
+  have h2n : 2 ≤ n := le_trans (by norm_num) hn
+  have hc2R : (0 : ℝ) < (Nat.choose n 2 : ℝ) := by exact_mod_cast Nat.choose_pos h2n
+  have hc3R : (0 : ℝ) < (Nat.choose n 3 : ℝ) := by exact_mod_cast Nat.choose_pos hn
+  have hnR : (0 : ℝ) < (n : ℝ) := by
+    exact_mod_cast lt_of_lt_of_le (by norm_num) hn
+  have hc2ne : (Nat.choose n 2 : ℝ) ≠ 0 := ne_of_gt hc2R
+  have hc3ne : (Nat.choose n 3 : ℝ) ≠ 0 := ne_of_gt hc3R
+  have hnne : (n : ℝ) ≠ 0 := ne_of_gt hnR
+  have hKpos : (0 : ℝ) <
+      (n : ℝ) ^ 3 * (Nat.choose n 2 : ℝ) ^ 3 * (Nat.choose n 3 : ℝ) ^ 2 := by
+    positivity
+  have hEq : cubicDiscr (schurSzegoComp n f p)
+      * ((n : ℝ) ^ 3 * (Nat.choose n 2 : ℝ) ^ 3 * (Nat.choose n 3 : ℝ) ^ 2) =
+      schurSzegoCompCubicDiscrNumerator n f p := by
+    unfold cubicDiscr schurSzegoCompCubicDiscrNumerator
+    rw [coeff_schurSzegoComp_of_le (Nat.zero_le n) f p,
+        coeff_schurSzegoComp_of_le h1n f p,
+        coeff_schurSzegoComp_of_le h2n f p,
+        coeff_schurSzegoComp_of_le hn f p,
+        Nat.choose_zero_right, Nat.choose_one_right, Nat.cast_one]
+    field_simp
+  rw [← mul_nonneg_iff_of_pos_right hKpos, hEq]
+
+/-- The diagonal-operator Jensen form is enough for the denominator-cleared
+cubic-discriminant numerator.
+
+This isolates the remaining degree-three PF-factor kernel: after the
+`p`-side has been rewritten as its normalized Jensen section, it remains to
+prove cubic-discriminant nonnegativity for the diagonal action attached to the
+degree-`≤ 3` PF factor `f`. -/
+theorem schurSzegoCompCubicDiscrNumerator_nonneg_of_diagonalOperator_jensen_nonneg
+    {n : ℕ} (hn : 3 ≤ n) {f p : ℝ[X]} (hfdeg : f.natDegree ≤ 3)
+    (hdisc : 0 ≤ cubicDiscr
+      (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
+        (jensenPolynomial 3 (fun k => p.coeff k / (Nat.choose n k : ℝ))))) :
+    0 ≤ schurSzegoCompCubicDiscrNumerator n f p :=
+  (cubicDiscr_schurSzegoComp_nonneg_iff_of_three_le hn f p).1 <| by
+    simpa [cubicDiscr_schurSzegoComp_eq_diagonalOperator_jensenPolynomial_three_normalized
+      hfdeg] using hdisc
 
 theorem support_schurSzegoComp_eq_filter_right (n : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).support =
@@ -309,9 +664,9 @@ theorem support_schurSzegoComp_eq_filter_right (n : Nat) (f g : ℝ[X]) :
 
 theorem support_schurSzegoComp_eq_filter_left (n : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).support =
-      g.support.filter (fun k => f.coeff k / (Nat.choose n k : ℝ) ≠ 0) := by
-  rw [schurSzegoComp_comm]
-  exact support_schurSzegoComp_eq_filter_right n g f
+      g.support.filter (fun k => f.coeff k / (Nat.choose n k : ℝ) ≠ 0) :=
+  (congrArg (fun r : ℝ[X] => r.support) (schurSzegoComp_comm n f g)).trans
+    (support_schurSzegoComp_eq_filter_right n g f)
 
 theorem support_schurSzegoComp_eq_hadamardProduct_inter_range
     (n : Nat) (f g : ℝ[X]) :
@@ -429,59 +784,58 @@ theorem schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le
 theorem schurSzegoComp_add_left (n : Nat) (f f' g : ℝ[X]) :
     schurSzegoComp n (f + f') g =
       schurSzegoComp n f g + schurSzegoComp n f' g := by
-  rw [schurSzegoComp_eq_diagonalOperator, diagonalOperator_add,
-    ← schurSzegoComp_eq_diagonalOperator n f g,
-    ← schurSzegoComp_eq_diagonalOperator n f' g]
+  simpa [schurSzegoComp_eq_diagonalOperator] using
+    diagonalOperator_add (fun k => g.coeff k / (Nat.choose n k : ℝ)) f f'
 
 /-- Schur--Szego composition is additive in its right argument. -/
 theorem schurSzegoComp_add_right (n : Nat) (f g g' : ℝ[X]) :
     schurSzegoComp n f (g + g') =
       schurSzegoComp n f g + schurSzegoComp n f g' := by
-  rw [schurSzegoComp_comm, schurSzegoComp_add_left, schurSzegoComp_comm n g f,
-    schurSzegoComp_comm n g' f]
+  rw [schurSzegoComp_comm n f (g + g'), schurSzegoComp_add_left,
+    schurSzegoComp_comm n g f, schurSzegoComp_comm n g' f]
 
 /-- Scalars pull out of the left argument of a Schur--Szego composition. -/
 theorem schurSzegoComp_C_mul_left (n : Nat) (a : ℝ) (f g : ℝ[X]) :
     schurSzegoComp n (C a * f) g = C a * schurSzegoComp n f g := by
-  rw [schurSzegoComp_eq_diagonalOperator, diagonalOperator_C_mul,
-    ← schurSzegoComp_eq_diagonalOperator n f g]
+  simpa [schurSzegoComp_eq_diagonalOperator] using
+    diagonalOperator_C_mul (fun k => g.coeff k / (Nat.choose n k : ℝ)) a f
 
 /-- Scalars pull out of the right argument of a Schur--Szego composition. -/
 theorem schurSzegoComp_C_mul_right (n : Nat) (a : ℝ) (f g : ℝ[X]) :
     schurSzegoComp n f (C a * g) = C a * schurSzegoComp n f g := by
-  rw [schurSzegoComp_comm, schurSzegoComp_C_mul_left, schurSzegoComp_comm n g f]
+  rw [schurSzegoComp_comm n f (C a * g), schurSzegoComp_C_mul_left,
+    schurSzegoComp_comm n g f]
 
 theorem natDegree_schurSzegoComp_le_left (n : Nat) (f g : ℝ[X]) :
-    (schurSzegoComp n f g).natDegree ≤ f.natDegree := by
-  rw [schurSzegoComp_eq_diagonalOperator]
-  exact natDegree_diagonalOperator_le _ _
+    (schurSzegoComp n f g).natDegree ≤ f.natDegree :=
+  (schurSzegoComp_eq_diagonalOperator n f g).symm ▸
+    natDegree_diagonalOperator_le _ _
 
 theorem natDegree_schurSzegoComp_le_right (n : Nat) (f g : ℝ[X]) :
-    (schurSzegoComp n f g).natDegree ≤ g.natDegree := by
-  rw [schurSzegoComp_comm]
-  exact natDegree_schurSzegoComp_le_left n g f
+    (schurSzegoComp n f g).natDegree ≤ g.natDegree :=
+  (schurSzegoComp_comm n f g).symm ▸ natDegree_schurSzegoComp_le_left n g f
 
 /-- The support of a Schur--Szego composition is contained in the left
 support. -/
 theorem support_schurSzegoComp_subset_left (n : Nat) (f g : ℝ[X]) :
-    (schurSzegoComp n f g).support ⊆ f.support := by
-  rw [support_schurSzegoComp_eq_filter_right]
-  exact Finset.filter_subset _ _
+    (schurSzegoComp n f g).support ⊆ f.support :=
+  (support_schurSzegoComp_eq_filter_right n f g).symm ▸
+    Finset.filter_subset _ _
 
 /-- The support of a Schur--Szego composition is contained in the right
 support. -/
 theorem support_schurSzegoComp_subset_right (n : Nat) (f g : ℝ[X]) :
-    (schurSzegoComp n f g).support ⊆ g.support := by
-  rw [support_schurSzegoComp_eq_filter_left]
-  exact Finset.filter_subset _ _
+    (schurSzegoComp n f g).support ⊆ g.support :=
+  (support_schurSzegoComp_eq_filter_left n f g).symm ▸
+    Finset.filter_subset _ _
 
 /-- Nonnegative coefficients are preserved by fixed-degree Schur--Szego
 composition. -/
 theorem HasNonnegCoeffs.schurSzegoComp {n : Nat} {f g : ℝ[X]}
     (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g) :
-    HasNonnegCoeffs (schurSzegoComp n f g) := by
-  rw [schurSzegoComp_eq_diagonalOperator]
-  exact hf.diagonalOperator fun k => div_nonneg (hg k) (by positivity)
+    HasNonnegCoeffs (schurSzegoComp n f g) :=
+  (schurSzegoComp_eq_diagonalOperator n f g).symm ▸
+    hf.diagonalOperator fun k => div_nonneg (hg k) (by positivity)
 
 /-- **Finite Schur--Szegő composition theorem** (classical input).
 
@@ -524,9 +878,9 @@ theorem finiteSchurSzegoComposition_of_nonzero
     finiteSchurSzegoCompositionStatement := by
   intro n f p hf hfdeg hpdeg hp
   by_cases hf0 : f = 0
-  · exact Or.inl (by rw [hf0]; exact schurSzegoComp_zero_left n p)
+  · simp [hf0, schurSzegoComp_zero_left]
   by_cases hp0 : p = 0
-  · exact Or.inl (by rw [hp0]; exact schurSzegoComp_zero_right n f)
+  · simp [hp0, schurSzegoComp_zero_right]
   exact h hf hf0 hfdeg hp0 hpdeg hp
 
 theorem finiteSchurSzegoCompositionStatement_iff_nonzero :
@@ -546,10 +900,7 @@ theorem finitePolyaSchurNonnegBackward_of_schurSzego
   intro n gamma _hgamma hjensen p hp hsplit
   have hfdeg : (jensenPolynomial n gamma).natDegree ≤ n :=
     natDegree_jensenPolynomial_le n gamma
-  have heq :
-      schurSzegoComp n (jensenPolynomial n gamma) p = diagonalOperator gamma p :=
-    schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le hp
-  rw [← heq]
+  rw [← schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le hp]
   exact hSZ hjensen hfdeg hp hsplit
 
 /-- The backward finite Pólya--Schur direction follows directly from the
@@ -582,16 +933,11 @@ theorem finiteSchurSzegoComposition_of_finitePolyaSchur
   let gamma : ℕ → ℝ := fun k => f.coeff k / (Nat.choose n k : ℝ)
   have hgamma : ∀ k, 0 ≤ gamma k := fun k =>
     div_nonneg (hf.hasNonnegCoeffs k) (by positivity)
-  have hjensen_eq : jensenPolynomial n gamma = f := by
-    simpa [gamma] using jensenPolynomial_normalized_coeff_eq_of_natDegree_le hfdeg
   have hjensen : IsPFPolynomial (jensenPolynomial n gamma) := by
-    rw [hjensen_eq]
-    exact hf
+    simpa [gamma] using hf.jensenPolynomial_normalized_coeff_of_natDegree_le hfdeg
   have hmult : IsFiniteMultiplierSequence n gamma :=
     (hFPS hgamma).2 hjensen
-  have heq : schurSzegoComp n f p = diagonalOperator gamma p := by
-    rw [schurSzegoComp_comm, schurSzegoComp_eq_diagonalOperator]
-  rw [heq]
+  rw [schurSzegoComp_comm, schurSzegoComp_eq_diagonalOperator]
   exact hmult hpdeg hsplit
 
 /-- Low-degree fixed-degree Schur--Szegő composition, through degree two.
@@ -607,16 +953,11 @@ theorem finiteSchurSzegoComposition_of_natDegree_le_two
   let gamma : ℕ → ℝ := fun k => f.coeff k / (Nat.choose n k : ℝ)
   have hgamma : ∀ k, 0 ≤ gamma k := fun k =>
     div_nonneg (hf.hasNonnegCoeffs k) (by positivity)
-  have hjensen_eq : jensenPolynomial n gamma = f := by
-    simpa [gamma] using jensenPolynomial_normalized_coeff_eq_of_natDegree_le hfdeg
   have hjensen : IsPFPolynomial (jensenPolynomial n gamma) := by
-    rw [hjensen_eq]
-    exact hf
+    simpa [gamma] using hf.jensenPolynomial_normalized_coeff_of_natDegree_le hfdeg
   have hmult : IsFiniteMultiplierSequence n gamma :=
     finitePolyaSchurNonnegBackward_of_natDegree_le_two hn hgamma hjensen
-  have heq : schurSzegoComp n f p = diagonalOperator gamma p := by
-    rw [schurSzegoComp_comm, schurSzegoComp_eq_diagonalOperator]
-  rw [heq]
+  rw [schurSzegoComp_comm, schurSzegoComp_eq_diagonalOperator]
   exact hmult hpdeg hsplit
 
 /-- Nonzero-core version of the checked degree-`≤ 2` Schur--Szegő composition
@@ -826,6 +1167,258 @@ theorem two_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits_of_natDegree_
     rw [hc2]
     nlinarith [sq_nonneg (p.coeff 1), hnR]
 
+/-- Newton's second coefficient inequality (`k = 2`) for a real polynomial that
+splits and has degree at least three, in the level-`natDegree` normalization:
+`3 * (natDegree - 1) * coeff 1 * coeff 3 ≤
+  2 * (natDegree - 2) * coeff 2 ^ 2`.
+
+This is the splitting-only form of the ultra-log-concavity inequality
+`hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits` at index
+`k = 2`; no nonnegativity of the coefficients is assumed. -/
+theorem newton_three_coeff_one_coeff_three_of_splits
+    {p : ℝ[X]} (hdeg : 3 ≤ p.natDegree) (hs : p.Splits) :
+    3 * ((p.natDegree : ℝ) - 1) * (p.coeff 1 * p.coeff 3) ≤
+      2 * ((p.natDegree : ℝ) - 2) * p.coeff 2 ^ 2 := by
+  set t := p.roots.map Neg.neg with ht_def
+  have htcard : Multiset.card t = p.natDegree := by
+    rw [ht_def, Multiset.card_map, card_roots_of_splits hs]
+  have h1d : 1 ≤ p.natDegree := by lia
+  have h2d : 2 ≤ p.natDegree := by lia
+  have hc1 := coeff_eq_leadingCoeff_mul_esymm_neg_roots hs (k := 1) h1d
+  have hc2 := coeff_eq_leadingCoeff_mul_esymm_neg_roots hs (k := 2) h2d
+  have hc3 := coeff_eq_leadingCoeff_mul_esymm_neg_roots hs (k := 3) hdeg
+  rw [← ht_def] at hc1 hc2 hc3
+  have hnewton := NewtonAux.newton_esymm_ineq t (n := p.natDegree)
+    (m := p.natDegree - 2) htcard (by lia) (by lia)
+  have idxm1 : p.natDegree - 2 - 1 = p.natDegree - 3 := by rw [Nat.sub_sub]
+  have idxp1 : p.natDegree - 2 + 1 = p.natDegree - 1 := by lia
+  rw [idxm1, idxp1] at hnewton
+  have hnm2 : p.natDegree - (p.natDegree - 2) = 2 := by lia
+  have hcast_m : ((p.natDegree - 2 : ℕ) : ℝ) = (p.natDegree : ℝ) - 2 := by
+    rw [Nat.cast_sub h2d]
+    norm_num
+  have hcast_nm : ((p.natDegree - (p.natDegree - 2) : ℕ) : ℝ) = 2 := by
+    rw [hnm2]
+    norm_num
+  have hcast_nm1 : ((p.natDegree - (p.natDegree - 2) + 1 : ℕ) : ℝ) = 3 := by
+    rw [hnm2]
+    norm_num
+  rw [hcast_m, hcast_nm, hcast_nm1] at hnewton
+  rw [hc1, hc2, hc3]
+  nlinarith [mul_le_mul_of_nonneg_left hnewton (sq_nonneg p.leadingCoeff),
+    sq_nonneg p.leadingCoeff]
+
+/-- Level-lift arithmetic for Newton's `k = 2` inequality: an inequality in the
+level-`N` normalization lifts to any larger level `M ≥ N`.  The key algebraic
+identity is
+`(N - 1) * (2 * (M - 2) * A - 3 * (M - 1) * B) =
+  (M - 1) * (2 * (N - 2) * A - 3 * (N - 1) * B) + 2 * A * (M - N)`. -/
+private theorem newton_second_level_lift_arith {A B M N : ℝ}
+    (hA : 0 ≤ A) (hMN : N ≤ M) (hN2 : 2 < N)
+    (hnat : 3 * (N - 1) * B ≤ 2 * (N - 2) * A) :
+    3 * (M - 1) * B ≤ 2 * (M - 2) * A := by
+  rcases le_or_gt B 0 with hB | hB
+  · nlinarith [mul_nonneg (show (0 : ℝ) ≤ M - 2 by linarith) hA,
+      mul_nonneg (show (0 : ℝ) ≤ M - 1 by linarith)
+        (show (0 : ℝ) ≤ -B by linarith)]
+  · have key : (N - 1) * (2 * (M - 2) * A - 3 * (M - 1) * B)
+        = (M - 1) * (2 * (N - 2) * A - 3 * (N - 1) * B) +
+          2 * A * (M - N) := by
+      ring
+    nlinarith [key,
+      mul_nonneg (show (0 : ℝ) ≤ M - 1 by linarith)
+        (show (0 : ℝ) ≤ 2 * (N - 2) * A - 3 * (N - 1) * B by linarith),
+      mul_nonneg hA (show (0 : ℝ) ≤ M - N by linarith), hN2]
+
+/-- Newton's second coefficient inequality (`k = 2`) in the level-`n`
+normalization, for a splitting polynomial of degree at most `n`.  It is the
+level-`natDegree` inequality `newton_three_coeff_one_coeff_three_of_splits`
+lifted to level `n`; the low-degree cases (`natDegree ≤ 2`) have
+`coeff 3 = 0`. -/
+theorem newton_three_coeff_one_coeff_three_of_splits_of_natDegree_le
+    {n : ℕ} (hn : 3 ≤ n) {p : ℝ[X]} (hpdeg : p.natDegree ≤ n) (hs : p.Splits) :
+    3 * ((n : ℝ) - 1) * (p.coeff 1 * p.coeff 3) ≤
+      2 * ((n : ℝ) - 2) * p.coeff 2 ^ 2 := by
+  rcases le_or_gt 3 p.natDegree with hdeg | hdeg
+  · have hnat :=
+      newton_three_coeff_one_coeff_three_of_splits hdeg hs
+    have hNn : (p.natDegree : ℝ) ≤ (n : ℝ) := by exact_mod_cast hpdeg
+    have h2N : (2 : ℝ) < (p.natDegree : ℝ) := by
+      have : (3 : ℝ) ≤ (p.natDegree : ℝ) := by exact_mod_cast hdeg
+      linarith
+    exact newton_second_level_lift_arith (A := p.coeff 2 ^ 2)
+      (B := p.coeff 1 * p.coeff 3) (M := (n : ℝ)) (N := (p.natDegree : ℝ))
+      (sq_nonneg _) hNn h2N hnat
+  · have hc3 : p.coeff 3 = 0 := coeff_eq_zero_of_natDegree_lt hdeg
+    have hnR : (3 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
+    rw [hc3]
+    nlinarith [sq_nonneg (p.coeff 2), hnR]
+
+/-- Normalized binomial-level coefficient log-concavity of a splitting polynomial.
+
+Writing `γ k = p.coeff k / (n.choose k)`, the two adjacent inequalities
+`γ 0 * γ 2 ≤ γ 1 ^ 2` and `γ 1 * γ 3 ≤ γ 2 ^ 2` hold when `p` splits and has
+degree at most `n`.  These are exactly the level-`n` Newton inequalities at
+`k = 1` and `k = 2`, divided through by the binomial factors.
+
+This is the splitting-factor input for the normalized Jensen-product form of
+the degree-`≤ 3` Schur--Szegő cubic-discriminant route. -/
+theorem normalized_coeff_logConcave_of_splits_natDegree_le
+    {n : ℕ} {p : ℝ[X]} (hpdeg : p.natDegree ≤ n) (hs : p.Splits) :
+    (p.coeff 0 / (n.choose 0 : ℝ)) * (p.coeff 2 / (n.choose 2 : ℝ)) ≤
+        (p.coeff 1 / (n.choose 1 : ℝ)) ^ 2 ∧
+      (p.coeff 1 / (n.choose 1 : ℝ)) * (p.coeff 3 / (n.choose 3 : ℝ)) ≤
+        (p.coeff 2 / (n.choose 2 : ℝ)) ^ 2 := by
+  set N : ℝ := (n : ℝ) with hN_def
+  constructor
+  · rcases le_or_gt 2 n with h2 | h2
+    · have hpd :=
+        two_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits_of_natDegree_le
+          h2 hpdeg hs
+      have hN2 : (2 : ℝ) ≤ N := by rw [hN_def]; exact_mod_cast h2
+      have hNpos : (0 : ℝ) < N := by linarith
+      have hN1pos : (0 : ℝ) < N - 1 := by linarith
+      have hc0 : (n.choose 0 : ℝ) = 1 := by norm_num
+      have hc1 : (n.choose 1 : ℝ) = N := by rw [Nat.choose_one_right, hN_def]
+      have hc2 : (n.choose 2 : ℝ) = N * (N - 1) / 2 := by
+        rw [Nat.cast_choose_two, hN_def]
+      rw [hc0, hc1, hc2]
+      have key1 :
+          p.coeff 0 / 1 * (p.coeff 2 / (N * (N - 1) / 2))
+            = 2 * (p.coeff 0 * p.coeff 2) / (N * (N - 1)) := by
+        field_simp
+      have key2 : (p.coeff 1 / N) ^ 2 = p.coeff 1 ^ 2 / N ^ 2 := by
+        rw [div_pow]
+      rw [key1, key2, div_le_div_iff₀ (mul_pos hNpos hN1pos) (pow_pos hNpos 2)]
+      nlinarith [mul_le_mul_of_nonneg_right hpd hNpos.le, hpd]
+    · have hlt : n < 2 := h2
+      have hc2 : (n.choose 2 : ℝ) = 0 := by
+        rw [Nat.choose_eq_zero_of_lt hlt]
+        norm_num
+      rw [hc2, div_zero, mul_zero]
+      positivity
+  · rcases le_or_gt 3 n with h3 | h3
+    · have hpd :=
+        newton_three_coeff_one_coeff_three_of_splits_of_natDegree_le
+          h3 hpdeg hs
+      have hN3 : (3 : ℝ) ≤ N := by rw [hN_def]; exact_mod_cast h3
+      have hNpos : (0 : ℝ) < N := by linarith
+      have hN1pos : (0 : ℝ) < N - 1 := by linarith
+      have hN2pos : (0 : ℝ) < N - 2 := by linarith
+      have hc1 : (n.choose 1 : ℝ) = N := by rw [Nat.choose_one_right, hN_def]
+      have hc2 : (n.choose 2 : ℝ) = N * (N - 1) / 2 := by
+        rw [Nat.cast_choose_two, hN_def]
+      have hc3 : (n.choose 3 : ℝ) = N * (N - 1) * (N - 2) / 6 := by
+        rw [Nat.cast_choose_three, hN_def]
+      rw [hc1, hc2, hc3]
+      have key1 :
+          p.coeff 1 / N * (p.coeff 3 / (N * (N - 1) * (N - 2) / 6))
+            = 6 * (p.coeff 1 * p.coeff 3) / (N ^ 2 * (N - 1) * (N - 2)) := by
+        field_simp
+      have key2 :
+          (p.coeff 2 / (N * (N - 1) / 2)) ^ 2
+            = 4 * p.coeff 2 ^ 2 / (N ^ 2 * (N - 1) ^ 2) := by
+        field_simp
+        ring
+      have hden1 : (0 : ℝ) < N ^ 2 * (N - 1) * (N - 2) := by positivity
+      have hden2 : (0 : ℝ) < N ^ 2 * (N - 1) ^ 2 := by positivity
+      rw [key1, key2, div_le_div_iff₀ hden1 hden2]
+      nlinarith [mul_le_mul_of_nonneg_right hpd
+        (show (0 : ℝ) ≤ 2 * N ^ 2 * (N - 1) by positivity), hpd]
+    · have hlt : n < 3 := h3
+      have hc3 : (n.choose 3 : ℝ) = 0 := by
+        rw [Nat.choose_eq_zero_of_lt hlt]
+        norm_num
+      rw [hc3, div_zero, mul_zero]
+      positivity
+
+/-- First adjacent normalized log-concavity inequality for a splitting
+polynomial at binomial level `n`. -/
+theorem normalized_coeff_left_logConcave_of_splits_natDegree_le
+    {n : ℕ} {p : ℝ[X]} (hpdeg : p.natDegree ≤ n) (hs : p.Splits) :
+    (p.coeff 0 / (n.choose 0 : ℝ)) * (p.coeff 2 / (n.choose 2 : ℝ)) ≤
+      (p.coeff 1 / (n.choose 1 : ℝ)) ^ 2 :=
+  (normalized_coeff_logConcave_of_splits_natDegree_le hpdeg hs).1
+
+/-- Second adjacent normalized log-concavity inequality for a splitting
+polynomial at binomial level `n`. -/
+theorem normalized_coeff_right_logConcave_of_splits_natDegree_le
+    {n : ℕ} {p : ℝ[X]} (hpdeg : p.natDegree ≤ n) (hs : p.Splits) :
+    (p.coeff 1 / (n.choose 1 : ℝ)) * (p.coeff 3 / (n.choose 3 : ℝ)) ≤
+      (p.coeff 2 / (n.choose 2 : ℝ)) ^ 2 :=
+  (normalized_coeff_logConcave_of_splits_natDegree_le hpdeg hs).2
+
+/-- Binomially normalized coefficients of a PF polynomial are nonnegative. -/
+theorem normalized_coeff_nonneg_of_isPF (n : ℕ) {f : ℝ[X]}
+    (hf : IsPFPolynomial f) :
+    ∀ k, 0 ≤ f.coeff k / (Nat.choose n k : ℝ) :=
+  fun k =>
+    div_nonneg (hf.hasNonnegCoeffs k)
+      (by exact_mod_cast Nat.zero_le (Nat.choose n k))
+
+/-- Constant normalized coefficient nonnegativity for a PF polynomial at
+binomial level three. -/
+theorem normalized_coeff_zero_nonneg_of_isPF_three {f : ℝ[X]}
+    (hf : IsPFPolynomial f) :
+    0 ≤ f.coeff 0 / (Nat.choose 3 0 : ℝ) :=
+  normalized_coeff_nonneg_of_isPF 3 hf 0
+
+/-- Linear normalized coefficient nonnegativity for a PF polynomial at
+binomial level three. -/
+theorem normalized_coeff_one_nonneg_of_isPF_three {f : ℝ[X]}
+    (hf : IsPFPolynomial f) :
+    0 ≤ f.coeff 1 / (Nat.choose 3 1 : ℝ) :=
+  normalized_coeff_nonneg_of_isPF 3 hf 1
+
+/-- Quadratic normalized coefficient nonnegativity for a PF polynomial at
+binomial level three. -/
+theorem normalized_coeff_two_nonneg_of_isPF_three {f : ℝ[X]}
+    (hf : IsPFPolynomial f) :
+    0 ≤ f.coeff 2 / (Nat.choose 3 2 : ℝ) :=
+  normalized_coeff_nonneg_of_isPF 3 hf 2
+
+/-- Cubic normalized coefficient nonnegativity for a PF polynomial at binomial
+level three. -/
+theorem normalized_coeff_three_nonneg_of_isPF_three {f : ℝ[X]}
+    (hf : IsPFPolynomial f) :
+    0 ≤ f.coeff 3 / (Nat.choose 3 3 : ℝ) :=
+  normalized_coeff_nonneg_of_isPF 3 hf 3
+
+/-- Normalized coefficient log-concavity of a degree-`≤ 3` PF polynomial.
+
+Writing `γ k = f.coeff k / (3.choose k)`, the adjacent cubic log-concavity
+inequalities `γ 0 * γ 2 ≤ γ 1 ^ 2` and `γ 1 * γ 3 ≤ γ 2 ^ 2` follow by
+identifying the degree-three Jensen polynomial of `γ` with `f`.  This is the
+PF-factor input parallel to
+`normalized_coeff_logConcave_of_splits_natDegree_le` in the normalized
+Jensen-product Schur--Szegő route. -/
+theorem normalized_coeff_logConcave_of_isPF_natDegree_le_three
+    {f : ℝ[X]} (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3) :
+    (f.coeff 0 / (Nat.choose 3 0 : ℝ)) * (f.coeff 2 / (Nat.choose 3 2 : ℝ)) ≤
+        (f.coeff 1 / (Nat.choose 3 1 : ℝ)) ^ 2 ∧
+      (f.coeff 1 / (Nat.choose 3 1 : ℝ)) * (f.coeff 3 / (Nat.choose 3 3 : ℝ)) ≤
+        (f.coeff 2 / (Nat.choose 3 2 : ℝ)) ^ 2 := by
+  let gamma : ℕ → ℝ := fun k => f.coeff k / (Nat.choose 3 k : ℝ)
+  have hjensen : IsPFPolynomial (jensenPolynomial 3 gamma) := by
+    simpa [gamma] using hf.jensenPolynomial_normalized_coeff_of_natDegree_le hfdeg
+  simpa [gamma] using hjensen.jensenPolynomial_three_logConcave
+
+/-- First adjacent normalized log-concavity inequality for a degree-`≤ 3` PF
+polynomial. -/
+theorem normalized_coeff_left_logConcave_of_isPF_natDegree_le_three
+    {f : ℝ[X]} (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3) :
+    (f.coeff 0 / (Nat.choose 3 0 : ℝ)) * (f.coeff 2 / (Nat.choose 3 2 : ℝ)) ≤
+      (f.coeff 1 / (Nat.choose 3 1 : ℝ)) ^ 2 :=
+  (normalized_coeff_logConcave_of_isPF_natDegree_le_three hf hfdeg).1
+
+/-- Second adjacent normalized log-concavity inequality for a degree-`≤ 3` PF
+polynomial. -/
+theorem normalized_coeff_right_logConcave_of_isPF_natDegree_le_three
+    {f : ℝ[X]} (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3) :
+    (f.coeff 1 / (Nat.choose 3 1 : ℝ)) * (f.coeff 3 / (Nat.choose 3 3 : ℝ)) ≤
+      (f.coeff 2 / (Nat.choose 3 2 : ℝ)) ^ 2 :=
+  (normalized_coeff_logConcave_of_isPF_natDegree_le_three hf hfdeg).2
+
 /-- Pure arithmetic core of the Schur--Szego discriminant inequality when only
 the PF factor has degree at most two.  Here `a`, `b`, `c` are the coefficients of
 the PF factor and `d`, `e`, `g` those of the splitting factor, with the level-`N`
@@ -1028,11 +1621,9 @@ result is the degree-`≤ 3` cubic discriminant criterion applied to it. -/
 theorem finiteSchurSzegoComposition_of_natDegree_le_three_cubicDiscr_nonneg
     {n : ℕ} {f p : ℝ[X]} (hfdeg : f.natDegree ≤ 3)
     (hdisc : 0 ≤ cubicDiscr (schurSzegoComp n f p)) :
-    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits := by
-  by_cases hq0 : schurSzegoComp n f p = 0
-  · exact Or.inl hq0
-  · refine Or.inr (splits_of_natDegree_le_three_cubicDiscr_nonneg ?_ hdisc)
-    exact le_trans (natDegree_schurSzegoComp_le_left n f p) hfdeg
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  Or.inr (splits_of_natDegree_le_three_cubicDiscr_nonneg
+    (le_trans (natDegree_schurSzegoComp_le_left n f p) hfdeg) hdisc)
 
 /-- Nonzero-core version of the degree-`≤ 3` cubic-discriminant splitting route
 for the fixed-degree Schur--Szegő composition. -/
@@ -1058,6 +1649,210 @@ theorem finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscr_n
   finiteSchurSzegoComposition_of_natDegree_le_three_cubicDiscr_nonneg
     hfdeg hdisc
 
+/-- The level-three normalized diagonal-operator form is exactly the
+Schur--Szego composition cubic discriminant. -/
+theorem cubicDiscr_diagonalOperator_normalized_three_eq_cubicDiscr_schurSzegoComp
+    (f q : ℝ[X]) :
+    cubicDiscr (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q) =
+      cubicDiscr (schurSzegoComp 3 f q) := by
+  rw [← schurSzegoComp_eq_diagonalOperator 3 q f, schurSzegoComp_comm]
+
+/-- Level-three normalized diagonal-operator cubic-discriminant base case for
+a degree-`≤ 3` PF factor and a splitting factor. -/
+def pfCubicDiscrDiagonalNonnegStatement : Prop :=
+  ∀ {f q : ℝ[X]},
+    IsPFPolynomial f →
+    f.natDegree ≤ 3 →
+    q.natDegree ≤ 3 →
+    q.Splits →
+    0 ≤ cubicDiscr
+      (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q)
+
+/-- The normalized diagonal base case is equivalent to the level-three
+Schur--Szego cubic-discriminant base case. -/
+theorem pfCubicDiscrDiagonalNonnegStatement_iff :
+    pfCubicDiscrDiagonalNonnegStatement ↔
+      ∀ {f q : ℝ[X]},
+        IsPFPolynomial f →
+        f.natDegree ≤ 3 →
+        q.natDegree ≤ 3 →
+        q.Splits →
+        0 ≤ cubicDiscr (schurSzegoComp 3 f q) := by
+  simp only [pfCubicDiscrDiagonalNonnegStatement,
+    cubicDiscr_diagonalOperator_normalized_three_eq_cubicDiscr_schurSzegoComp]
+
+/-- The classical fixed-degree Schur--Szego theorem discharges the isolated
+level-three diagonal cubic-discriminant base case. -/
+theorem pfCubicDiscrDiagonalNonnegStatement_of_schurSzego
+    (hSZ : finiteSchurSzegoCompositionStatement) :
+    pfCubicDiscrDiagonalNonnegStatement :=
+  pfCubicDiscrDiagonalNonnegStatement_iff.mpr fun {f q} hf hfdeg hqdeg hsplit => by
+    rcases hSZ hf hfdeg hqdeg hsplit with hzero | hs
+    · simp [hzero, cubicDiscr]
+    · exact cubicDiscr_nonneg_of_splits_natDegree_le_three
+        ((natDegree_schurSzegoComp_le_left 3 f q).trans hfdeg) hs
+
+/-- The isolated normalized diagonal base case discharges the level-three
+degree-`≤ 3` PF-factor Schur--Szego composition route. -/
+theorem finiteSchurSzegoComposition_of_pf_factor_three_of_base
+    (h : pfCubicDiscrDiagonalNonnegStatement)
+    {f q : ℝ[X]} (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
+    (hqdeg : q.natDegree ≤ 3) (hsplit : q.Splits) :
+    schurSzegoComp 3 f q = 0 ∨ (schurSzegoComp 3 f q).Splits :=
+  finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
+    hf hfdeg hqdeg hsplit
+    (pfCubicDiscrDiagonalNonnegStatement_iff.mp h hf hfdeg hqdeg hsplit)
+
+/-- The isolated level-three diagonal base case proves the reflected
+diagonal-operator discriminant input at every level `n ≥ 3`. -/
+theorem cubicDiscr_reflect_diagonalOperator_nonneg_of_pfCubicDiscrDiagonalNonneg
+    (h : pfCubicDiscrDiagonalNonnegStatement)
+    {n : ℕ} (hn : 3 ≤ n) {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
+    (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
+    0 ≤ cubicDiscr
+      (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
+        (reflect 3 ((derivative^[n - 3]) (reflect n p)))) :=
+  h hf hfdeg
+    (natDegree_reflect_iterate_derivative_reflect_le_three hn hpdeg)
+    (reflect_iterate_derivative_reflect_splits_of_splits hn hpdeg hsplit)
+
+/-- The isolated level-three diagonal base case proves high-level
+cubic-discriminant nonnegativity for degree-`≤ 3` PF factors. -/
+theorem cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_le_three_of_pfDiagonalBase
+    (h : pfCubicDiscrDiagonalNonnegStatement)
+    {n : ℕ} (hn : 3 ≤ n) {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
+    (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
+    0 ≤ cubicDiscr (schurSzegoComp n f p) :=
+  cubicDiscr_schurSzegoComp_nonneg_of_reflect_diagonalOperator_three
+    hn hfdeg hpdeg
+    (cubicDiscr_reflect_diagonalOperator_nonneg_of_pfCubicDiscrDiagonalNonneg
+      h hn hf hfdeg hpdeg hsplit)
+
+/-- Low-level (`n < 3`) cubic-discriminant nonnegativity for a degree-`≤ 3`
+PF factor with `f.natDegree ≤ n`. -/
+private theorem cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_natDegree_lt_three
+    {n : ℕ} (hn : n < 3) {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
+    (hfn : f.natDegree ≤ n) (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
+    0 ≤ cubicDiscr (schurSzegoComp n f p) := by
+  rcases finiteSchurSzegoComposition_of_pf_factor_natDegree_le_two
+      hf (hfn.trans (Nat.lt_succ_iff.mp hn)) hpdeg hsplit with hzero | hs
+  · simp [hzero, cubicDiscr]
+  · exact cubicDiscr_nonneg_of_splits_natDegree_le_three
+      ((natDegree_schurSzegoComp_le_left n f p).trans hfdeg) hs
+
+/-- The isolated level-three diagonal base case proves the corrected all-level
+cubic-discriminant route retaining `f.natDegree ≤ n`. -/
+theorem cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_le_three_leftNatDegree_of_pfDiagonalBase
+    (h : pfCubicDiscrDiagonalNonnegStatement)
+    {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
+    (hfn : f.natDegree ≤ n) (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
+    0 ≤ cubicDiscr (schurSzegoComp n f p) :=
+  (le_or_gt 3 n).elim
+    (fun hn =>
+      cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_le_three_of_pfDiagonalBase
+        h hn hf hfdeg hpdeg hsplit)
+    (fun hn =>
+      cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_natDegree_lt_three
+        hn hf hfdeg hfn hpdeg hsplit)
+
+/-- Degree-`≤ 3` Schur--Szego composition reduced to the reflected-derivative
+diagonal-operator discriminant. -/
+theorem finiteSchurSzegoComposition_of_pf_factor_le_three_reflect_diagonalOperator
+    {n : ℕ} (hn : 3 ≤ n) {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
+    (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits)
+    (hdisc : 0 ≤ cubicDiscr
+      (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
+        (reflect 3 ((derivative^[n - 3]) (reflect n p))))) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
+    hf hfdeg hpdeg hsplit
+    (cubicDiscr_schurSzegoComp_nonneg_of_reflect_diagonalOperator_three
+      hn hfdeg hpdeg hdisc)
+
+/-- The isolated level-three diagonal base case discharges the high-level
+degree-`≤ 3` PF-factor Schur--Szego route. -/
+theorem finiteSchurSzegoComposition_of_pf_factor_le_three_of_pfCubicDiscrDiagonalNonneg
+    (h : pfCubicDiscrDiagonalNonnegStatement)
+    {n : ℕ} (hn : 3 ≤ n) {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
+    (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
+    hf hfdeg hpdeg hsplit
+    (cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_le_three_of_pfDiagonalBase
+      h hn hf hfdeg hpdeg hsplit)
+
+/-- Corrected all-level degree-`≤ 3` PF-factor Schur--Szego route from the
+isolated level-three diagonal base case, retaining `f.natDegree ≤ n`. -/
+theorem
+    finiteSchurSzegoComposition_of_pf_factor_le_three_leftNatDegree_of_pfCubicDiscrDiagonalNonneg
+    (h : pfCubicDiscrDiagonalNonnegStatement)
+    {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
+    (hfn : f.natDegree ≤ n) (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
+    hf hfdeg hpdeg hsplit
+    (cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_le_three_leftNatDegree_of_pfDiagonalBase
+      h hf hfdeg hfn hpdeg hsplit)
+
+/-- Degree-`≤ 3` PF-factor Schur--Szegő composition reduced to the
+denominator-cleared cubic-discriminant numerator at levels `n ≥ 3`. -/
+theorem finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscrNumerator_nonneg
+    {n : ℕ} (hn : 3 ≤ n) {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
+    (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits)
+    (hnum : 0 ≤ schurSzegoCompCubicDiscrNumerator n f p) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
+    hf hfdeg hpdeg hsplit
+    ((cubicDiscr_schurSzegoComp_nonneg_iff_of_three_le hn f p).2 hnum)
+
+/-- Corrected all-level denominator-cleared numerator route for cubic
+discriminant nonnegativity, retaining the original fixed-degree Schur--Szegő
+hypothesis `f.natDegree ≤ n`.
+
+For `3 ≤ n`, this is exactly the denominator-cleared numerator equivalence.
+For `n < 3`, the left-degree hypothesis makes `f` a degree-`≤ 2` PF factor,
+so the checked quadratic Schur--Szegő base case supplies splitting, hence
+cubic-discriminant nonnegativity in degree at most three. -/
+theorem cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_le_three_leftNatDegree_num_nonneg
+    {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
+    (hfn : f.natDegree ≤ n) (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits)
+    (hnum : 3 ≤ n → 0 ≤ schurSzegoCompCubicDiscrNumerator n f p) :
+    0 ≤ cubicDiscr (schurSzegoComp n f p) :=
+  (le_or_gt 3 n).elim
+    (fun hn =>
+      (cubicDiscr_schurSzegoComp_nonneg_iff_of_three_le hn f p).2
+        (hnum hn))
+    (fun hn =>
+      cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_natDegree_lt_three
+        hn hf hfdeg hfn hpdeg hsplit)
+
+/-- Corrected all-level denominator-cleared numerator route for degree-`≤ 3`
+PF factors, retaining the original fixed-degree Schur--Szegő hypothesis
+`f.natDegree ≤ n`.
+
+For `3 ≤ n`, this is the denominator-cleared cubic-discriminant route.  For
+`n < 3`, the hypothesis `f.natDegree ≤ n` makes `f` a degree-`≤ 2` PF factor,
+so the checked quadratic Schur--Szegő base case applies directly. -/
+theorem finiteSchurSzegoComposition_of_pf_factor_le_three_leftNatDegree_num_nonneg
+    {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
+    (hfn : f.natDegree ≤ n) (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits)
+    (hnum : 3 ≤ n → 0 ≤ schurSzegoCompCubicDiscrNumerator n f p) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
+    hf hfdeg hpdeg hsplit
+    (cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_le_three_leftNatDegree_num_nonneg
+      hf hfdeg hfn hpdeg hsplit hnum)
+
 /-- Nonzero-core version of the degree-`≤ 3` PF-factor Schur--Szegő reduction
 to the cubic discriminant inequality. -/
 theorem finiteSchurSzegoCompositionNonzero_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
@@ -1068,6 +1863,54 @@ theorem finiteSchurSzegoCompositionNonzero_of_pf_factor_natDegree_le_three_cubic
     schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
   finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
     hf hfdeg hpdeg hsplit hdisc
+
+/-- Nonzero-core version of the high-level diagonal-base route for degree-`≤ 3`
+PF factors. -/
+theorem finiteSchurSzegoCompositionNonzero_of_pf_factor_le_three_of_pfCubicDiscrDiagonalNonneg
+    (h : pfCubicDiscrDiagonalNonnegStatement)
+    {n : ℕ} (hn : 3 ≤ n) {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (_hf0 : f ≠ 0) (hfdeg : f.natDegree ≤ 3)
+    (_hp0 : p ≠ 0) (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  finiteSchurSzegoComposition_of_pf_factor_le_three_of_pfCubicDiscrDiagonalNonneg
+    h hn hf hfdeg hpdeg hsplit
+
+/-- Nonzero-core version of the corrected all-level diagonal-base route for
+degree-`≤ 3` PF factors, retaining `f.natDegree ≤ n`. -/
+theorem
+    finiteSchurSzegoCompositionNonzero_of_pf_factor_le_three_leftNatDegree_of_pfDiagonalBase
+    (h : pfCubicDiscrDiagonalNonnegStatement)
+    {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (_hf0 : f ≠ 0) (hfdeg : f.natDegree ≤ 3)
+    (hfn : f.natDegree ≤ n) (_hp0 : p ≠ 0)
+    (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  finiteSchurSzegoComposition_of_pf_factor_le_three_leftNatDegree_of_pfCubicDiscrDiagonalNonneg
+    h hf hfdeg hfn hpdeg hsplit
+
+/-- Nonzero-core version of the degree-`≤ 3` PF-factor Schur--Szegő reduction
+to the denominator-cleared cubic-discriminant numerator at levels `n ≥ 3`. -/
+theorem finiteSchurSzegoCompositionNonzero_of_pf_factor_le_three_cubicDiscrNumerator_nonneg
+    {n : ℕ} (hn : 3 ≤ n) {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (_hf0 : f ≠ 0) (hfdeg : f.natDegree ≤ 3)
+    (_hp0 : p ≠ 0) (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits)
+    (hnum : 0 ≤ schurSzegoCompCubicDiscrNumerator n f p) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscrNumerator_nonneg
+    hn hf hfdeg hpdeg hsplit hnum
+
+/-- Nonzero-core version of the corrected all-level denominator-cleared
+numerator route for degree-`≤ 3` PF factors, retaining the original
+fixed-degree Schur--Szegő hypothesis `f.natDegree ≤ n`. -/
+theorem finiteSchurSzegoCompositionNonzero_of_pf_factor_le_three_leftNatDegree_num_nonneg
+    {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (_hf0 : f ≠ 0) (hfdeg : f.natDegree ≤ 3)
+    (hfn : f.natDegree ≤ n) (_hp0 : p ≠ 0)
+    (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits)
+    (hnum : 3 ≤ n → 0 ≤ schurSzegoCompCubicDiscrNumerator n f p) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
+  finiteSchurSzegoComposition_of_pf_factor_le_three_leftNatDegree_num_nonneg
+    hf hfdeg hfn hpdeg hsplit hnum
 
 /-- The full finite Schur--Szegő theorem implies the finite Pólya--Schur
 theorem. -/
@@ -1153,9 +1996,8 @@ theorem finitePolyaSchur_nonneg : finitePolyaSchurNonnegStatement :=
 products. -/
 theorem HasNonnegCoeffs.hadamardProduct {p q : ℝ[X]}
     (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q) :
-    HasNonnegCoeffs (hadamardProduct p q) := by
-  rw [hadamardProduct_eq_diagonalOperator]
-  exact hp.diagonalOperator hq
+    HasNonnegCoeffs (hadamardProduct p q) :=
+  (hadamardProduct_eq_diagonalOperator p q).symm ▸ hp.diagonalOperator hq
 
 /-- **Odd/even Hadamard identity.**  The coefficientwise Hadamard product
 commutes with the odd/even construction `oddEvenPolynomial p q = q(x²) + x·p(x²)`:
@@ -1840,6 +2682,62 @@ theorem garloffWagnerHadamardPFPrec_of_nonnegPrec
     hGW hf.hasNonnegCoeffs hg.hasNonnegCoeffs
       hp.hasNonnegCoeffs hq.hasNonnegCoeffs hfg hpq
 
+theorem garloffWagnerHadamardPFPrec_of_matrixHadamardBridges
+    (hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
+    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
+    garloffWagnerHadamardPFPrecStatement :=
+  garloffWagnerHadamardPFPrec_of_nonnegPrec
+    (garloffWagnerHadamardNonnegPrec_of_matrixHadamardBridges
+      hToFull hMatHad hFullToPrec0)
+
+theorem garloffWagnerHadamardPFPrec_of_hurwitzSchur
+    (hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (hSchur : HurwitzMatrixSchurProductTNStatement)
+    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
+    garloffWagnerHadamardPFPrecStatement :=
+  garloffWagnerHadamardPFPrec_of_nonnegPrec
+    (garloffWagnerHadamardNonnegPrec_of_hurwitzSchur
+      hToFull hSchur hFullToPrec0)
+
+theorem garloffWagnerHadamardPFPrec_of_classicalInputs
+    (hRHP : hadamardPreservesRightHalfPlaneStableStatement)
+    (hHB : hermiteBiehlerForwardPosStatement)
+    (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
+    (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
+    (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hInt : FullyInterlacingPairInterlaceStatement) :
+    garloffWagnerHadamardPFPrecStatement :=
+  garloffWagnerHadamardPFPrec_of_nonnegPrec
+    (garloffWagnerHadamardNonnegPrec_of_classicalInputs
+      hRHP hHB hHBToHurwitz hHurwitzToMatrix hASW hInt)
+
+theorem garloffWagnerHadamardPFPrec_of_classicalInputsBundle
+    (h : GarloffWagnerClassicalInputs) :
+    garloffWagnerHadamardPFPrecStatement :=
+  garloffWagnerHadamardPFPrec_of_nonnegPrec
+    (garloffWagnerHadamardNonnegPrec_of_classicalInputsBundle h)
+
+theorem garloffWagnerHadamardPFPrec_of_matrixClassicalInputs
+    (hRoute : HermiteBiehlerHurwitzRoute)
+    (hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
+    (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hInt : FullyInterlacingPairInterlaceStatement) :
+    garloffWagnerHadamardPFPrecStatement :=
+  garloffWagnerHadamardPFPrec_of_nonnegPrec
+    (garloffWagnerHadamardNonnegPrec_of_matrixClassicalInputs
+      hRoute hMatHad hASW hInt)
+
+theorem garloffWagnerHadamardPFPrec_of_hurwitzSchurClassicalInputs
+    (hRoute : HermiteBiehlerHurwitzRoute)
+    (hSchur : HurwitzMatrixSchurProductTNStatement)
+    (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hInt : FullyInterlacingPairInterlaceStatement) :
+    garloffWagnerHadamardPFPrecStatement :=
+  garloffWagnerHadamardPFPrec_of_nonnegPrec
+    (garloffWagnerHadamardNonnegPrec_of_hurwitzSchurClassicalInputs
+      hRoute hSchur hASW hInt)
+
 /-- Zero-aware PF-polynomial wrapper around the Garloff--Wagner two-pair
 theorem. This is the form most convenient for recursive arguments where a
 support specialization may produce the zero polynomial. -/
@@ -1888,6 +2786,24 @@ theorem garloffWagnerHadamardPFPrec0_of_hurwitzSchur
   garloffWagnerHadamardPFPrec0_of_nonnegPrec
     (garloffWagnerHadamardNonnegPrec_of_hurwitzSchur
       hToFull hSchur hFullToPrec0)
+
+theorem garloffWagnerHadamardPFPrec0_of_classicalInputs
+    (hRHP : hadamardPreservesRightHalfPlaneStableStatement)
+    (hHB : hermiteBiehlerForwardPosStatement)
+    (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
+    (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
+    (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hInt : FullyInterlacingPairInterlaceStatement) :
+    garloffWagnerHadamardPFPrec0Statement :=
+  garloffWagnerHadamardPFPrec0_of_nonnegPrec
+    (garloffWagnerHadamardNonnegPrec_of_classicalInputs
+      hRHP hHB hHBToHurwitz hHurwitzToMatrix hASW hInt)
+
+theorem garloffWagnerHadamardPFPrec0_of_classicalInputsBundle
+    (h : GarloffWagnerClassicalInputs) :
+    garloffWagnerHadamardPFPrec0Statement :=
+  garloffWagnerHadamardPFPrec0_of_nonnegPrec
+    (garloffWagnerHadamardNonnegPrec_of_classicalInputsBundle h)
 
 theorem garloffWagnerHadamardPFPrec0_of_matrixClassicalInputs
     (hRoute : HermiteBiehlerHurwitzRoute)
@@ -1946,6 +2862,28 @@ theorem hadamardProduct_preserves_pf_of_hurwitzSchur
     (garloffWagnerHadamardPFPrec0_of_hurwitzSchur
       hToFull hSchur hFullToPrec0) hp hq
 
+/-- PF-polynomial Hadamard closure through the six classical inputs. -/
+theorem hadamardProduct_preserves_pf_of_classicalInputs
+    (hRHP : hadamardPreservesRightHalfPlaneStableStatement)
+    (hHB : hermiteBiehlerForwardPosStatement)
+    (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
+    (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
+    (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hInt : FullyInterlacingPairInterlaceStatement)
+    {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
+    IsPFPolynomial (hadamardProduct p q) :=
+  hadamardProduct_preserves_pf_of_nonnegPrec
+    (garloffWagnerHadamardNonnegPrec_of_classicalInputs
+      hRHP hHB hHBToHurwitz hHurwitzToMatrix hASW hInt) hp hq
+
+/-- PF-polynomial Hadamard closure through bundled classical inputs. -/
+theorem hadamardProduct_preserves_pf_of_classicalInputsBundle
+    (h : GarloffWagnerClassicalInputs)
+    {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
+    IsPFPolynomial (hadamardProduct p q) :=
+  hadamardProduct_preserves_pf_of_nonnegPrec
+    (garloffWagnerHadamardNonnegPrec_of_classicalInputsBundle h) hp hq
+
 theorem hadamardProduct_preserves_pf_of_matrixClassicalInputs
     (hRoute : HermiteBiehlerHurwitzRoute)
     (hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
@@ -1973,6 +2911,12 @@ theorem schurPolyaWagnerHadamardPF_of_garloffWagner_prec0
     schurPolyaWagnerHadamardPFStatement :=
   fun {_ _} hp hq => hadamardProduct_preserves_pf_of_garloffWagner hGW hp hq
 
+theorem schurPolyaWagnerHadamardPF_of_garloffWagner_prec
+    (hGW : garloffWagnerHadamardPFPrecStatement) :
+    schurPolyaWagnerHadamardPFStatement :=
+  schurPolyaWagnerHadamardPF_of_garloffWagner_prec0
+    (garloffWagnerHadamardPFPrec0_of_prec hGW)
+
 theorem schurPolyaWagnerHadamardPF_of_matrixHadamardBridges
     (hToFull : NonnegPrecToFullyInterlacingPairStatement)
     (hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
@@ -1990,6 +2934,24 @@ theorem schurPolyaWagnerHadamardPF_of_hurwitzSchur
   fun {_ _} hp hq =>
     hadamardProduct_preserves_pf_of_hurwitzSchur
       hToFull hSchur hFullToPrec0 hp hq
+
+theorem schurPolyaWagnerHadamardPF_of_classicalInputs
+    (hRHP : hadamardPreservesRightHalfPlaneStableStatement)
+    (hHB : hermiteBiehlerForwardPosStatement)
+    (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
+    (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
+    (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hInt : FullyInterlacingPairInterlaceStatement) :
+    schurPolyaWagnerHadamardPFStatement :=
+  fun {_ _} hp hq =>
+    hadamardProduct_preserves_pf_of_classicalInputs
+      hRHP hHB hHBToHurwitz hHurwitzToMatrix hASW hInt hp hq
+
+theorem schurPolyaWagnerHadamardPF_of_classicalInputsBundle
+    (h : GarloffWagnerClassicalInputs) :
+    schurPolyaWagnerHadamardPFStatement :=
+  fun {_ _} hp hq =>
+    hadamardProduct_preserves_pf_of_classicalInputsBundle h hp hq
 
 theorem schurPolyaWagnerHadamardPF_of_matrixClassicalInputs
     (hRoute : HermiteBiehlerHurwitzRoute)
@@ -2030,6 +2992,62 @@ theorem garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
   have hpf : IsPFPolynomial (hadamardProduct p q) :=
     hadamardProduct_preserves_pf_of_nonnegPrec hGW hp hq
   exact ⟨hpf.eq_zero_or_splits, hpf.hasNonnegCoeffs, hpf.roots_nonpos⟩
+
+theorem garloffWagnerHadamardNonnegRealRooted_of_matrixHadamardBridges
+    (hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
+    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
+    garloffWagnerHadamardNonnegRealRootedStatement :=
+  garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
+    (garloffWagnerHadamardNonnegPrec_of_matrixHadamardBridges
+      hToFull hMatHad hFullToPrec0)
+
+theorem garloffWagnerHadamardNonnegRealRooted_of_hurwitzSchur
+    (hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (hSchur : HurwitzMatrixSchurProductTNStatement)
+    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
+    garloffWagnerHadamardNonnegRealRootedStatement :=
+  garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
+    (garloffWagnerHadamardNonnegPrec_of_hurwitzSchur
+      hToFull hSchur hFullToPrec0)
+
+theorem garloffWagnerHadamardNonnegRealRooted_of_classicalInputs
+    (hRHP : hadamardPreservesRightHalfPlaneStableStatement)
+    (hHB : hermiteBiehlerForwardPosStatement)
+    (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
+    (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
+    (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hInt : FullyInterlacingPairInterlaceStatement) :
+    garloffWagnerHadamardNonnegRealRootedStatement :=
+  garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
+    (garloffWagnerHadamardNonnegPrec_of_classicalInputs
+      hRHP hHB hHBToHurwitz hHurwitzToMatrix hASW hInt)
+
+theorem garloffWagnerHadamardNonnegRealRooted_of_classicalInputsBundle
+    (h : GarloffWagnerClassicalInputs) :
+    garloffWagnerHadamardNonnegRealRootedStatement :=
+  garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
+    (garloffWagnerHadamardNonnegPrec_of_classicalInputsBundle h)
+
+theorem garloffWagnerHadamardNonnegRealRooted_of_matrixClassicalInputs
+    (hRoute : HermiteBiehlerHurwitzRoute)
+    (hMatHad : hadamardPreservesHurwitzMatrixTNStatement)
+    (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hInt : FullyInterlacingPairInterlaceStatement) :
+    garloffWagnerHadamardNonnegRealRootedStatement :=
+  garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
+    (garloffWagnerHadamardNonnegPrec_of_matrixClassicalInputs
+      hRoute hMatHad hASW hInt)
+
+theorem garloffWagnerHadamardNonnegRealRooted_of_hurwitzSchurClassicalInputs
+    (hRoute : HermiteBiehlerHurwitzRoute)
+    (hSchur : HurwitzMatrixSchurProductTNStatement)
+    (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hInt : FullyInterlacingPairInterlaceStatement) :
+    garloffWagnerHadamardNonnegRealRootedStatement :=
+  garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
+    (garloffWagnerHadamardNonnegPrec_of_hurwitzSchurClassicalInputs
+      hRoute hSchur hASW hInt)
 
 /-- Fixed-right Hadamard multiplication preserves zero-aware proper position
 inside the PF cone. -/
@@ -2081,6 +3099,12 @@ theorem hadamardReciprocalConeClosure_of_garloffWagner_prec0
   simpa [reciprocalShift_hadamardProduct] using
     hGW hp hp_shift hq hq_shift hprec_p.toPrec0 hprec_q.toPrec0
 
+theorem hadamardReciprocalConeClosure_of_garloffWagner_prec
+    (hGW : garloffWagnerHadamardPFPrecStatement) :
+    hadamardReciprocalConeClosureStatement :=
+  hadamardReciprocalConeClosure_of_garloffWagner_prec0
+    (garloffWagnerHadamardPFPrec0_of_prec hGW)
+
 /-- Hadamard closure for the reciprocal-interlacing cone, obtained from the
 nonnegative two-pair Garloff--Wagner theorem. -/
 theorem hadamardReciprocalConeClosure_of_garloffWagner
@@ -2106,6 +3130,24 @@ theorem hadamardReciprocalConeClosure_of_hurwitzSchur
   hadamardReciprocalConeClosure_of_garloffWagner_prec0
     (garloffWagnerHadamardPFPrec0_of_hurwitzSchur
       hToFull hSchur hFullToPrec0)
+
+theorem hadamardReciprocalConeClosure_of_classicalInputs
+    (hRHP : hadamardPreservesRightHalfPlaneStableStatement)
+    (hHB : hermiteBiehlerForwardPosStatement)
+    (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
+    (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
+    (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hInt : FullyInterlacingPairInterlaceStatement) :
+    hadamardReciprocalConeClosureStatement :=
+  hadamardReciprocalConeClosure_of_garloffWagner
+    (garloffWagnerHadamardNonnegPrec_of_classicalInputs
+      hRHP hHB hHBToHurwitz hHurwitzToMatrix hASW hInt)
+
+theorem hadamardReciprocalConeClosure_of_classicalInputsBundle
+    (h : GarloffWagnerClassicalInputs) :
+    hadamardReciprocalConeClosureStatement :=
+  hadamardReciprocalConeClosure_of_garloffWagner
+    (garloffWagnerHadamardNonnegPrec_of_classicalInputsBundle h)
 
 theorem hadamardReciprocalConeClosure_of_matrixClassicalInputs
     (hRoute : HermiteBiehlerHurwitzRoute)
@@ -2144,6 +3186,20 @@ theorem polyaFrequencyHadamardCoeff_of_schurPolyaWagner
     (hSPW (IsPFPolynomial.of_sequence hASW hp)
       (IsPFPolynomial.of_sequence hASW hq)).to_sequence
 
+theorem polyaFrequencyHadamardCoeff_of_garloffWagner_prec0
+    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
+    (hGW : garloffWagnerHadamardPFPrec0Statement) :
+    polyaFrequencyHadamardCoeffStatement :=
+  polyaFrequencyHadamardCoeff_of_schurPolyaWagner hASW
+    (schurPolyaWagnerHadamardPF_of_garloffWagner_prec0 hGW)
+
+theorem polyaFrequencyHadamardCoeff_of_garloffWagner_prec
+    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
+    (hGW : garloffWagnerHadamardPFPrecStatement) :
+    polyaFrequencyHadamardCoeffStatement :=
+  polyaFrequencyHadamardCoeff_of_schurPolyaWagner hASW
+    (schurPolyaWagnerHadamardPF_of_garloffWagner_prec hGW)
+
 theorem polyaFrequencyHadamardCoeff_of_garloffWagner_nonneg
     (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
     (hGW : garloffWagnerHadamardNonnegRealRootedStatement) :
@@ -2177,6 +3233,26 @@ theorem polyaFrequencyHadamardCoeff_of_hurwitzSchur
   polyaFrequencyHadamardCoeff_of_schurPolyaWagner hASW
     (schurPolyaWagnerHadamardPF_of_hurwitzSchur
       hToFull hSchur hFullToPrec0)
+
+theorem polyaFrequencyHadamardCoeff_of_classicalInputs
+    (hASW0 : aissenSchoenbergWhitneyForwardOrZeroStatement)
+    (hRHP : hadamardPreservesRightHalfPlaneStableStatement)
+    (hHB : hermiteBiehlerForwardPosStatement)
+    (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
+    (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
+    (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hInt : FullyInterlacingPairInterlaceStatement) :
+    polyaFrequencyHadamardCoeffStatement :=
+  polyaFrequencyHadamardCoeff_of_schurPolyaWagner hASW0
+    (schurPolyaWagnerHadamardPF_of_classicalInputs
+      hRHP hHB hHBToHurwitz hHurwitzToMatrix hASW hInt)
+
+theorem polyaFrequencyHadamardCoeff_of_classicalInputsBundle
+    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
+    (h : GarloffWagnerClassicalInputs) :
+    polyaFrequencyHadamardCoeffStatement :=
+  polyaFrequencyHadamardCoeff_of_schurPolyaWagner hASW
+    (schurPolyaWagnerHadamardPF_of_classicalInputsBundle h)
 
 theorem polyaFrequencyHadamardCoeff_of_matrixClassicalInputs
     (hASW0 : aissenSchoenbergWhitneyForwardOrZeroStatement)

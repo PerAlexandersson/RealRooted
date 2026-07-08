@@ -316,8 +316,8 @@ theorem apolarPairing_monomial_right {R : Type*} [CommRing R]
   classical
   by_cases hj : j ≤ n
   · rw [if_pos hj, apolarPairing]
-    have hmem : n - j ∈ Finset.range (n + 1) := by
-      exact Finset.mem_range.mpr (Nat.lt_succ_of_le (Nat.sub_le n j))
+    have hmem : n - j ∈ Finset.range (n + 1) :=
+      Finset.mem_range.mpr (Nat.lt_succ_of_le (Nat.sub_le n j))
     rw [Finset.sum_eq_single_of_mem (n - j) hmem]
     · have hsub : n - (n - j) = j := Nat.sub_sub_self hj
       simp [hsub]
@@ -816,8 +816,8 @@ theorem multiset_avg_mem_closedBall {c : ℂ} {r : ℝ} (S : Multiset ℂ) (hS :
       (∑ z ∈ s, w z = 1) → (∀ z ∈ s, z ∈ Metric.closedBall c r) →
       (∑ z ∈ s, w z • z) ∈ Metric.closedBall c r := by
     intros s w hw_nonneg hw_sum hw_mem
-    have h_convex : Convex ℝ (Metric.closedBall c r) := by
-      exact convex_closedBall c r;
+    have h_convex : Convex ℝ (Metric.closedBall c r) :=
+      convex_closedBall c r
     convert h_convex.sum_mem _ _ _ <;> aesop;
   convert h_convex ( S.toFinset ) ( fun z => ( S.count z : ℝ ) / S.card ) _ _ _ using 1;
   · simp +decide [ div_eq_inv_mul ];
@@ -960,9 +960,9 @@ private theorem grace_aux {c : ℂ} {r : ℝ} (hr : 0 ≤ r) :
       unfold RootsIn; simp_all +decide [ binomialLift ] ;
       rcases exists_nat_gt r with ⟨ n, hn ⟩ ;
       exact ⟨ c + n, by simpa [ abs_of_nonneg hr ] using hn ⟩;
-  · obtain ⟨ζ, hζ⟩ : ∃ ζ : ℂ, (binomialLift n g).IsRoot ζ := by
-      exact Complex.exists_root ( show Polynomial.degree ( binomialLift n g ) > 0 from
-        Polynomial.natDegree_pos_iff_degree_pos.mp ( by rw [ hg ] ; positivity ) );
+  · obtain ⟨ζ, hζ⟩ : ∃ ζ : ℂ, (binomialLift n g).IsRoot ζ :=
+      Complex.exists_root ( show Polynomial.degree ( binomialLift n g ) > 0 from
+        Polynomial.natDegree_pos_iff_degree_pos.mp ( by rw [ hg ] ; positivity ) )
     by_cases hζ' : ζ ∈ Metric.closedBall c r;
     · exact ⟨ ζ, hζ, hζ' ⟩;
     · -- Let `f' := polarShift ζ f`; then `polarDeriv n ζ A` equals
@@ -991,8 +991,8 @@ private theorem grace_aux {c : ℂ} {r : ℝ} (hr : 0 ≤ r) :
       -- `(X - C ζ) * B₁ = B` (`mul_divByMonic_eq_iff_isRoot`).
       obtain ⟨g', hg'⟩ :
           ∃ g' : ℂ[X], (X - C ζ) * binomialLift (n - 1) g' = binomialLift n g := by
-        obtain ⟨g', hg'⟩ : ∃ g' : ℂ[X], binomialLift n g = (X - C ζ) * g' := by
-          exact Polynomial.dvd_iff_isRoot.mpr hζ;
+        obtain ⟨g', hg'⟩ : ∃ g' : ℂ[X], binomialLift n g = (X - C ζ) * g' :=
+          Polynomial.dvd_iff_isRoot.mpr hζ
         have hg'_deg : g'.natDegree = n - 1 := by
           rw [ hg', Polynomial.natDegree_mul' ] at hg <;> aesop;
         obtain ⟨ g'', hg'' ⟩ := exists_binomialLift_eq g' ( by linarith ) ; use g''; aesop;

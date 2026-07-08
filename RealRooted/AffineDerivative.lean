@@ -1155,4 +1155,52 @@ theorem prec_affine_derivative' {f : ℝ[X]} (hf : f.Splits) (hdeg : 1 ≤ f.nat
   · exact prec_affine_derivative_deg_one hf h.symm hf_pos hroots_nonpos hc
   · exact prec_affine_derivative hf h hf_pos hroots_nonpos hc
 
+/-! ## Sign wrappers at nonpositive roots
+
+These give the sign of the affine derivative `g = C c * f + (1 - X) * f'` at a
+nonpositive root `r` of `f` directly in terms of the sign of `f'(r)`, using
+`g(r) = (1 - r) * f'(r)` with `1 - r > 0`. They complement
+`eval_affineDeriv_eq_zero_iff` and remove the local `(1 - r) > 0` rewriting that
+otherwise recurs in sign-crossing / interleaving arguments. -/
+
+/-- At a nonpositive root `r` of `f`, the affine derivative is positive iff `f'`
+is positive there. -/
+lemma eval_affineDeriv_pos_iff {f : ℝ[X]} {r : ℝ} (hr : f.IsRoot r) (c : ℝ)
+    (hr_nonpos : r ≤ 0) :
+    0 < (C c * f + (1 - X) * f.derivative).eval r ↔ 0 < f.derivative.eval r := by
+  rw [eval_affineDeriv_at_root hr c]
+  have h1 : (0 : ℝ) < 1 - r := by linarith
+  constructor
+  · intro h
+    exact lt_of_not_ge fun hx =>
+      absurd h (not_lt.mpr (mul_nonpos_of_nonneg_of_nonpos h1.le hx))
+  · intro h
+    exact mul_pos h1 h
+
+/-- At a nonpositive root `r` of `f`, the affine derivative is negative iff `f'`
+is negative there. -/
+lemma eval_affineDeriv_neg_iff {f : ℝ[X]} {r : ℝ} (hr : f.IsRoot r) (c : ℝ)
+    (hr_nonpos : r ≤ 0) :
+    (C c * f + (1 - X) * f.derivative).eval r < 0 ↔ f.derivative.eval r < 0 := by
+  rw [eval_affineDeriv_at_root hr c]
+  have h1 : (0 : ℝ) < 1 - r := by linarith
+  constructor
+  · intro h
+    exact lt_of_not_ge fun hx => absurd h (not_lt.mpr (mul_nonneg h1.le hx))
+  · intro h
+    exact mul_neg_of_pos_of_neg h1 h
+
+/-- **Applied form** of `prec_affine_derivative'` for polynomials with
+nonnegative coefficients. Such polynomials automatically have nonpositive roots
+(`roots_nonpos_of_hasNonnegCoeffs`) and positive leading coefficient
+(`HasNonnegCoeffs.pos_leadingCoeff`), so only real-rootedness, degree `≥ 1`, and
+`c > natDegree f` need to be supplied. -/
+theorem prec_affine_derivative_of_nonnegCoeffs {f : ℝ[X]} (hf : f.Splits)
+    (hdeg : 1 ≤ f.natDegree) (hfnn : HasNonnegCoeffs f)
+    {c : ℝ} (hc : (f.natDegree : ℝ) < c) :
+    Prec (C c * f + (1 - X) * f.derivative) f := by
+  have hf0 : f ≠ 0 := by rintro rfl; simp at hdeg
+  exact prec_affine_derivative' hf hdeg (hfnn.pos_leadingCoeff hf0)
+    (roots_nonpos_of_hasNonnegCoeffs hfnn) hc
+
 end RealRooted

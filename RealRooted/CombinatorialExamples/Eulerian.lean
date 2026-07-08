@@ -2,6 +2,7 @@ import RealRooted.AffineDerivative
 import RealRooted.Basic
 import RealRooted.Derivative
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
+import RealRooted.Tactic.WagnerX
 import RealRooted.Wagner
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Tactic
@@ -168,35 +169,17 @@ lemma affineEulerianTilde_nonnegCoeffs (n : Nat) :
     have hcoeff_succ : coeff (eulerianTilde n) (m + 1) = 0 := habove (m + 1) (by lia)
     simp [hcoeff_m, hcoeff_succ]
 
-lemma roots_nonpos_affineEulerianTilde_of_isRealRooted {n : Nat} (hrr : (eulerianTilde n).Splits) :
-    ∀ r ∈ (affineEulerianTilde n).roots, r ≤ 0 :=
-  roots_nonpos_of_nonneg_coeffs (prec_affineEulerianTilde hrr).1.2
-    (affineEulerianTilde_nonnegCoeffs n)
-
-lemma natDegree_affineEulerianTilde (n : Nat) :
-    (affineEulerianTilde n).natDegree = (eulerianTilde n).natDegree := by
-  rw [affineEulerianTilde]
-  refine natDegree_affineDeriv (eulerianTilde_ne_zero n) ?_ ?_
-  · rw [natDegree_eulerianTilde]
-    lia
-  · rw [natDegree_eulerianTilde]
-    norm_num
-
 /-- Once the affine block is known to precede `P_n`, the outer `X` factor in the
 recurrence gives `P_n ≪ P_{n+1}`. -/
 lemma prec_eulerianTilde_succ_of_prec_affine {n : Nat}
     (haff : Prec (affineEulerianTilde n) (eulerianTilde n)) :
     Prec (eulerianTilde n) (eulerianTilde (n + 1)) := by
-  have haff_nonpos :
-      ∀ r ∈ (affineEulerianTilde n).roots, r ≤ 0 :=
-    roots_nonpos_of_nonneg_coeffs haff.1.2 (affineEulerianTilde_nonnegCoeffs n)
-  have hp_nonpos :
-      ∀ r ∈ (eulerianTilde n).roots, r ≤ 0 :=
-    roots_nonpos_of_nonneg_coeffs haff.2.1.2 (eulerianTilde_nonnegCoeffs n)
   have hmain :
-      Prec (eulerianTilde n) (X * affineEulerianTilde n) :=
-    prec_sameDegree_to_prec_mul_X_of_roots_nonpos haff
-      (natDegree_affineEulerianTilde n) haff_nonpos hp_nonpos
+      Prec (eulerianTilde n) (X * affineEulerianTilde n) := by
+    rr_prec_mul_X using
+      proper := haff,
+      left_nonneg := affineEulerianTilde_nonnegCoeffs n,
+      right_nonneg := eulerianTilde_nonnegCoeffs n
   simpa [eulerianTilde_succ_eq_X_mul_affineEulerianTilde n] using hmain
 
 /-- Main induction theorem: consecutive Eulerian tilde polynomials interlace in

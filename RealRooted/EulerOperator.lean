@@ -1,5 +1,6 @@
 import RealRooted.Derivative
 import RealRooted.PFPolynomial
+import RealRooted.ObreschkoffConverse
 
 open Polynomial
 
@@ -162,6 +163,12 @@ theorem thetaPlusOnePreservesPrec0_of_derivative
     thetaPlusOnePreservesPrec0Statement := by
   intro p q hp hq hpq
   simpa [thetaPlusOne_eq_derivative_X_mul] using hderiv (prec0_X_mul_both_of_pf hp hq hpq)
+
+/-- `theta + 1` preserves weak proper position on the polynomial PF cone,
+obtained from the derivative preservation theorem via
+`thetaPlusOnePreservesPrec0_of_derivative`. -/
+theorem thetaPlusOnePreservesPrec0 : thetaPlusOnePreservesPrec0Statement :=
+  thetaPlusOnePreservesPrec0_of_derivative derivativePreservesPrec0
 
 /-- Classical Rolle input: a PF polynomial is in weak proper position with
 each of its iterates under `theta + 1`. -/

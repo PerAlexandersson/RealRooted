@@ -6,6 +6,11 @@ import RealRooted.Bezoutian
 import RealRooted.SameDegreeCubicRootCount
 import RealRooted.SameDegreeQuadraticObstruction
 import RealRooted.SameDegreeQuadraticRootCount
+import RealRooted.SuccDegreeLeftEndpoint
+import RealRooted.RootContinuity
+import RealRooted.RootCountJump
+import RealRooted.DegreeDropReversal
+import RealRooted.DegreeDropDivXPrec
 
 /-!
 # Chudnovsky--Seymour challenge entry point
@@ -173,6 +178,20 @@ theorem sameDegreeCubicSecondRootBoundTarget_of_discrPencilNeg
     sameDegreeCubicSecondRootBoundTarget :=
   cubicSecondRootBound_of_discr_monicPencil_neg hbelow habove
 
+/-- Challenge-facing reduction from the normalized negative-discriminant leaves
+to the cubic second-root bound. -/
+theorem sameDegreeCubicSecondRootBoundTarget_of_normalized
+    (hbelow : ∀ b c p r : ℝ, 1 ≤ b → b ≤ c → p ≤ 0 → 1 ≤ r →
+      ∃ s : ℝ, 0 < s ∧
+        cubicDiscr ((X - C (1 : ℝ)) * (X - C b) * (X - C c)
+          + C s * ((X - C p) * (X - C (0 : ℝ)) * (X - C r))) < 0)
+    (habove : ∀ a c p q : ℝ, a ≤ 0 → 1 ≤ c → p ≤ q → q ≤ 0 →
+      ∃ s : ℝ, 0 < s ∧
+        cubicDiscr ((X - C a) * (X - C (1 : ℝ)) * (X - C c)
+          + C s * ((X - C p) * (X - C q) * (X - C (0 : ℝ)))) < 0) :
+    sameDegreeCubicSecondRootBoundTarget :=
+  cubicSecondRootBound_of_normalized hbelow habove
+
 /-- Same-degree upper-threshold root-count subtarget for milestone B1. -/
 abbrev sameDegreeRootCountAboveTarget : Prop :=
   PosComboNoCommonSameDegreeRootCountAboveNonnegStatement
@@ -268,6 +287,177 @@ abbrev compatibleSuccDegreeRootCountAboveLeTwoTarget : Prop :=
 upper root-count leaf. -/
 abbrev compatibleSuccDegreeRootCountAboveNoGapTwoTarget : Prop :=
   CompatibleSuccDegreeRootCountAboveNoGapTwoStatement
+
+/-- Closed-segment exact gap-two obstruction for the compatible succ-degree
+common-non-root upper root-count leaf. -/
+abbrev compatibleSuccDegreeClosedSegmentNoGapTwoTarget : Prop :=
+  CompatibleSuccDegreeClosedSegmentNoGapTwoStatement
+
+/-- Closed-segment endpoint count equality for the compatible succ-degree
+common-non-root upper root-count leaf. -/
+abbrev compatibleSuccDegreeClosedSegmentCountEqTarget : Prop :=
+  CompatibleSuccDegreeClosedSegmentCountEqStatement
+
+/-- Right-pencil exact gap-two obstruction for the compatible succ-degree
+common-non-root upper root-count leaf. -/
+abbrev compatibleSuccDegreeRightFamilyNoGapTwoTarget : Prop :=
+  CompatibleSuccDegreeRightFamilyNoGapTwoStatement
+
+/-- Endpoint-sign exact gap-two obstruction for the compatible succ-degree
+common-non-root upper root-count leaf. -/
+abbrev compatibleSuccDegreeEndpointSignNoGapTwoTarget : Prop :=
+  CompatibleSuccDegreeEndpointSignNoGapTwoStatement
+
+/-- Coefficient-free compatible succ-degree all-combinations target.
+
+This target is now known to be false; see
+`not_compatibleSuccDegreeAllComboTarget`. -/
+abbrev compatibleSuccDegreeAllComboTarget : Prop :=
+  CompatibleSuccDegreeAllComboStatement
+
+/-- Challenge-facing falsity of the coefficient-free all-combinations shortcut.
+The counterexample is formalized in `RealRooted.CommonInterleaverExamples`. -/
+theorem not_compatibleSuccDegreeAllComboTarget :
+    ¬ compatibleSuccDegreeAllComboTarget :=
+  CommonInterleaverExamples.not_compatibleSuccDegreeAllComboStatement
+
+/-- Signed right-pencil form of the compatible succ-degree all-combinations
+target.
+
+This target is now known to be false; see
+`not_compatibleSuccDegreeSignedRightFamilyTarget`. -/
+abbrev compatibleSuccDegreeSignedRightFamilyTarget : Prop :=
+  CompatibleSuccDegreeSignedRightFamilyStatement
+
+/-- Challenge-facing falsity of the signed right-pencil shortcut. -/
+theorem not_compatibleSuccDegreeSignedRightFamilyTarget :
+    ¬ compatibleSuccDegreeSignedRightFamilyTarget :=
+  CommonInterleaverExamples.not_compatibleSuccDegreeSignedRightFamilyStatement
+
+/-- Negative right-pencil form of the compatible succ-degree all-combinations
+target.
+
+This target is now known to be false; see
+`not_compatibleSuccDegreeNegativeRightFamilyTarget`. -/
+abbrev compatibleSuccDegreeNegativeRightFamilyTarget : Prop :=
+  CompatibleSuccDegreeNegativeRightFamilyStatement
+
+/-- Challenge-facing falsity of the coefficient-free negative right-pencil
+shortcut. -/
+theorem not_compatibleSuccDegreeNegativeRightFamilyTarget :
+    ¬ compatibleSuccDegreeNegativeRightFamilyTarget :=
+  CommonInterleaverExamples.not_compatibleSuccDegreeNegativeRightFamilyStatement
+
+/-- Nonnegative-coefficient negative right-pencil form of the compatible
+succ-degree all-combinations target.
+
+This target is now known to be false; see
+`not_compatibleSuccDegreeNegativeRightFamilyNonnegTarget`. -/
+abbrev compatibleSuccDegreeNegativeRightFamilyNonnegTarget : Prop :=
+  CompatibleSuccDegreeNegativeRightFamilyNonnegStatement
+
+/-- Challenge-facing falsity of the nonnegative-coefficient negative
+right-pencil shortcut.  The counterexample is `f = X + 1`,
+`g = (X + 2) * (X + 3)`, formalized in
+`RealRooted.CommonInterleaverExamples`. -/
+theorem not_compatibleSuccDegreeNegativeRightFamilyNonnegTarget :
+    ¬ compatibleSuccDegreeNegativeRightFamilyNonnegTarget :=
+  CommonInterleaverExamples.not_compatibleSuccDegreeNegativeRightFamilyNonnegStatement
+
+/-- Coefficient-free compatible succ-degree orientation target.
+
+This target is now known to be false; see
+`not_compatibleSuccDegreePrecTarget`. -/
+abbrev compatibleSuccDegreePrecTarget : Prop :=
+  CompatibleSuccDegreePrecStatement
+
+/-- Challenge-facing falsity of the forced compatible succ-degree `Prec`
+shortcut. -/
+theorem not_compatibleSuccDegreePrecTarget :
+    ¬ compatibleSuccDegreePrecTarget :=
+  CommonInterleaverExamples.not_compatibleSuccDegreePrecStatement
+
+/-- Exact lower-threshold endpoint-sign count comparison for the compatible
+succ-degree common-non-root upper root-count leaf. -/
+abbrev compatibleSuccDegreeEndpointSignLowerCountEqTarget : Prop :=
+  CompatibleSuccDegreeEndpointSignLowerCountEqStatement
+
+/-- Lower-threshold endpoint-sign exact gap obstruction for the compatible
+succ-degree common-non-root upper root-count leaf. -/
+abbrev compatibleSuccDegreeEndpointSignLowerNoGapTarget : Prop :=
+  CompatibleSuccDegreeEndpointSignLowerNoGapStatement
+
+/-- Degree-two succ-degree root-order leaf for the remaining exact no-gap
+obstruction. -/
+abbrev succDegreeQuadraticCubicRootBoundsTarget : Prop :=
+  SuccDegreeQuadraticCubicRootBoundsStatement
+
+/-- Degree-two succ-degree obstruction to the first-above configuration. -/
+abbrev succDegreeQuadraticCubicFirstAboveObstructionTarget : Prop :=
+  SuccDegreeQuadraticCubicFirstAboveObstructionStatement
+
+/-- Degree-two succ-degree obstruction to the second-above configuration. -/
+abbrev succDegreeQuadraticCubicSecondAboveObstructionTarget : Prop :=
+  SuccDegreeQuadraticCubicSecondAboveObstructionStatement
+
+/-- Degree-two succ-degree obstruction to the full-below configuration. -/
+abbrev succDegreeQuadraticCubicFullBelowObstructionTarget : Prop :=
+  SuccDegreeQuadraticCubicFullBelowObstructionStatement
+
+/-- Pure monic-pencil obstruction for the first-above quadratic/cubic
+configuration. -/
+abbrev quadraticCubicFirstAbovePencilObstructionTarget : Prop :=
+  QuadraticCubicFirstAbovePencilObstructionStatement
+
+/-- Pure monic-pencil obstruction for the second-above quadratic/cubic
+configuration. -/
+abbrev quadraticCubicSecondAbovePencilObstructionTarget : Prop :=
+  QuadraticCubicSecondAbovePencilObstructionStatement
+
+/-- Pure monic-pencil obstruction for the full-below quadratic/cubic
+configuration. -/
+abbrev quadraticCubicFullBelowPencilObstructionTarget : Prop :=
+  QuadraticCubicFullBelowPencilObstructionStatement
+
+/-- Challenge-facing reduction from the three quadratic/cubic obstruction
+leaves to the degree-two root-order leaf. -/
+theorem succDegreeQuadraticCubicRootBoundsTarget_of_obstructions
+    (hfirst : succDegreeQuadraticCubicFirstAboveObstructionTarget)
+    (hsecond : succDegreeQuadraticCubicSecondAboveObstructionTarget)
+    (hbelow : succDegreeQuadraticCubicFullBelowObstructionTarget) :
+    succDegreeQuadraticCubicRootBoundsTarget :=
+  succDegreeQuadraticCubicRootBounds_of_obstructions hfirst hsecond hbelow
+
+/-- Challenge-facing reduction from the pure first-above monic-pencil
+obstruction to the polynomial obstruction leaf. -/
+theorem succDegreeQuadraticCubicFirstAboveObstructionTarget_of_pencil
+    (hpencil : quadraticCubicFirstAbovePencilObstructionTarget) :
+    succDegreeQuadraticCubicFirstAboveObstructionTarget :=
+  succDegreeQuadraticCubicFirstAboveObstruction_of_pencil hpencil
+
+/-- Challenge-facing reduction from the pure second-above monic-pencil
+obstruction to the polynomial obstruction leaf. -/
+theorem succDegreeQuadraticCubicSecondAboveObstructionTarget_of_pencil
+    (hpencil : quadraticCubicSecondAbovePencilObstructionTarget) :
+    succDegreeQuadraticCubicSecondAboveObstructionTarget :=
+  succDegreeQuadraticCubicSecondAboveObstruction_of_pencil hpencil
+
+/-- Challenge-facing reduction from the pure full-below monic-pencil
+obstruction to the polynomial obstruction leaf. -/
+theorem succDegreeQuadraticCubicFullBelowObstructionTarget_of_pencil
+    (hpencil : quadraticCubicFullBelowPencilObstructionTarget) :
+    succDegreeQuadraticCubicFullBelowObstructionTarget :=
+  succDegreeQuadraticCubicFullBelowObstruction_of_pencil hpencil
+
+/-- Challenge-facing reduction from the three pure monic-pencil obstructions
+to the degree-two root-order leaf. -/
+theorem succDegreeQuadraticCubicRootBoundsTarget_of_pencil_obstructions
+    (hfirst : quadraticCubicFirstAbovePencilObstructionTarget)
+    (hsecond : quadraticCubicSecondAbovePencilObstructionTarget)
+    (hbelow : quadraticCubicFullBelowPencilObstructionTarget) :
+    succDegreeQuadraticCubicRootBoundsTarget :=
+  succDegreeQuadraticCubicRootBounds_of_pencil_obstructions
+    hfirst hsecond hbelow
 
 /-- Succ-degree lower-threshold root-count subtarget restricted to common
 non-root thresholds. -/
@@ -660,6 +850,31 @@ theorem sameDegreeRootCountPair_of_interior_natDegree_eq_three
     (sameDegreeCubicSecondRootBoundTarget_of_interior hbelow habove)
     hf_pos hg_pos hfg hdeg hf_deg3 x
 
+/-- Challenge-facing cubic reduction from the normalized negative-discriminant
+leaves to the same-degree root-count target. -/
+theorem sameDegreeRootCountPair_of_normalized_natDegree_eq_three
+    (hbelow : ∀ b c p r : ℝ, 1 ≤ b → b ≤ c → p ≤ 0 → 1 ≤ r →
+      ∃ s : ℝ, 0 < s ∧
+        cubicDiscr ((X - C (1 : ℝ)) * (X - C b) * (X - C c)
+          + C s * ((X - C p) * (X - C (0 : ℝ)) * (X - C r))) < 0)
+    (habove : ∀ a c p q : ℝ, a ≤ 0 → 1 ≤ c → p ≤ q → q ≤ 0 →
+      ∃ s : ℝ, 0 < s ∧
+        cubicDiscr ((X - C a) * (X - C (1 : ℝ)) * (X - C c)
+          + C s * ((X - C p) * (X - C q) * (X - C (0 : ℝ)))) < 0)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hf_deg3 : f.natDegree = 3)
+    (x : ℝ) :
+    ((f.roots.filter (· ≤ x)).card : ℤ) -
+        (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) -
+        (f.roots.filter (· ≤ x)).card ≤ 1 :=
+  sameDegree_cubic_rootCount_le_one_of_normalized_posCombo
+    hbelow habove hf_pos hg_pos hfg hdeg hf_deg3 x
+
 /-- Challenge-facing degree-two base case for the upper-threshold same-degree
 root-count formulation in the positive-combination setting. -/
 theorem sameDegreeRootCountAbovePair_of_posCombo_natDegree_eq_two
@@ -870,6 +1085,66 @@ theorem sameDegreePairHasCommonInterleaver_of_interior_natDegree_le_three
   sameDegreePairHasCommonInterleaver_nonneg_of_natDegree_le_three_of_cubicInterior
     hbelow habove hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_deg_le_three
 
+/-- Challenge-facing degree-`≤ 3` same-degree root-count route from the
+normalized negative-discriminant leaves. -/
+theorem sameDegreeRootCountPair_of_normalized_natDegree_le_three
+    (hbelow : ∀ b c p r : ℝ, 1 ≤ b → b ≤ c → p ≤ 0 → 1 ≤ r →
+      ∃ s : ℝ, 0 < s ∧
+        cubicDiscr ((X - C (1 : ℝ)) * (X - C b) * (X - C c)
+          + C s * ((X - C p) * (X - C (0 : ℝ)) * (X - C r))) < 0)
+    (habove : ∀ a c p q : ℝ, a ≤ 0 → 1 ≤ c → p ≤ q → q ≤ 0 →
+      ∃ s : ℝ, 0 < s ∧
+        cubicDiscr ((X - C a) * (X - C (1 : ℝ)) * (X - C c)
+          + C s * ((X - C p) * (X - C q) * (X - C (0 : ℝ)))) < 0)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hf_deg_le_three : f.natDegree ≤ 3)
+    (x : ℝ) :
+    ((f.roots.filter (· ≤ x)).card : ℤ) -
+        (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) -
+        (f.roots.filter (· ≤ x)).card ≤ 1 :=
+  sameDegreeRootCountPair_of_interior_natDegree_le_three
+    (sameDegreeCubicInteriorTwoBelowTarget_of_discrPencilNeg
+      (cubicDiscrMonicPencilNegTwoBelow_of_normalized hbelow))
+    (sameDegreeCubicInteriorTwoAboveTarget_of_discrPencilNeg
+      (cubicDiscrMonicPencilNegTwoAbove_of_normalized habove))
+    hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_deg_le_three x
+
+/-- Challenge-facing degree-`≤ 3` repaired same-degree pair endpoint from the
+normalized negative-discriminant leaves. -/
+theorem sameDegreePairHasCommonInterleaver_of_normalized_natDegree_le_three
+    (hbelow : ∀ b c p r : ℝ, 1 ≤ b → b ≤ c → p ≤ 0 → 1 ≤ r →
+      ∃ s : ℝ, 0 < s ∧
+        cubicDiscr ((X - C (1 : ℝ)) * (X - C b) * (X - C c)
+          + C s * ((X - C p) * (X - C (0 : ℝ)) * (X - C r))) < 0)
+    (habove : ∀ a c p q : ℝ, a ≤ 0 → 1 ≤ c → p ≤ q → q ≤ 0 →
+      ∃ s : ℝ, 0 < s ∧
+        cubicDiscr ((X - C a) * (X - C (1 : ℝ)) * (X - C c)
+          + C s * ((X - C p) * (X - C q) * (X - C (0 : ℝ)))) < 0)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hf_deg_le_three : f.natDegree ≤ 3) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  sameDegreePairHasCommonInterleaver_of_interior_natDegree_le_three
+    (sameDegreeCubicInteriorTwoBelowTarget_of_discrPencilNeg
+      (cubicDiscrMonicPencilNegTwoBelow_of_normalized hbelow))
+    (sameDegreeCubicInteriorTwoAboveTarget_of_discrPencilNeg
+      (cubicDiscrMonicPencilNegTwoAbove_of_normalized habove))
+    hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_deg_le_three
+
 /-- Challenge-facing low-degree base case for the repaired same-degree
 pair-interleaver endpoint. -/
 theorem sameDegreePairHasCommonInterleaver_of_natDegree_le_one
@@ -995,6 +1270,680 @@ theorem compatibleSuccDegreeRootCountAboveNonRootTarget_of_leTwo_of_noGapTwo
     (hgap : compatibleSuccDegreeRootCountAboveNoGapTwoTarget) :
     compatibleSuccDegreeRootCountAboveNonRootTarget :=
   compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_noGapTwo hle2 hgap
+
+/-- Challenge-facing derivative-induction bridge from the compatible
+root-count target to the gap-at-most-two target.  The low-degree compatible
+bases close the degree-zero and degree-one cases. -/
+theorem compatibleSuccDegreeRootCountAboveLeTwoTarget_of_nonRoot
+    (hcount : compatibleSuccDegreeRootCountAboveNonRootTarget) :
+    compatibleSuccDegreeRootCountAboveLeTwoTarget :=
+  compatibleSuccDegreeRootCountAboveLeTwo_of_nonRoot hcount
+
+/-- Challenge-facing strong-induction bridge: the exact gap-two obstruction
+alone closes the compatible common-non-root root-count target. -/
+theorem compatibleSuccDegreeRootCountAboveNonRootTarget_of_noGapTwo
+    (hgap : compatibleSuccDegreeRootCountAboveNoGapTwoTarget) :
+    compatibleSuccDegreeRootCountAboveNonRootTarget :=
+  compatibleSuccDegreeRootCountAboveNonRoot_of_noGapTwo hgap
+
+/-- Challenge-facing direct reduction from the closed-segment exact gap-two
+obstruction to the compatible root-count leaf. -/
+theorem compatibleSuccDegreeRootCountAboveNonRootTarget_of_closedSegment
+    (hclosed : compatibleSuccDegreeClosedSegmentNoGapTwoTarget) :
+    compatibleSuccDegreeRootCountAboveNonRootTarget :=
+  compatibleSuccDegreeRootCountAboveNonRoot_of_closedSegment hclosed
+
+/-- Challenge-facing direct reduction from closed-segment endpoint count
+equality to the compatible root-count leaf. -/
+theorem compatibleSuccDegreeRootCountAboveNonRootTarget_of_closedSegmentCountEq
+    (hcount : compatibleSuccDegreeClosedSegmentCountEqTarget) :
+    compatibleSuccDegreeRootCountAboveNonRootTarget :=
+  compatibleSuccDegreeRootCountAboveNonRoot_of_closedSegmentCountEq hcount
+
+/-- Challenge-facing reduction from closed-segment endpoint count equality to
+the succ-degree common-non-root upper root-count leaf. -/
+theorem succDegreeRootCountAboveNonRootTarget_of_closedSegmentCountEq
+    (hcount : compatibleSuccDegreeClosedSegmentCountEqTarget) :
+    succDegreeRootCountAboveNonRootTarget :=
+  posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_closedSegmentCountEq hcount
+
+/-- Challenge-facing reverse reduction from the compatible root-count leaf to
+closed-segment endpoint count equality. -/
+theorem compatibleSuccDegreeClosedSegmentCountEqTarget_of_nonRoot
+    (hcount : compatibleSuccDegreeRootCountAboveNonRootTarget) :
+    compatibleSuccDegreeClosedSegmentCountEqTarget :=
+  compatibleSuccDegreeClosedSegmentCountEq_of_nonRoot hcount
+
+/-- Challenge-facing equivalence between the closed-segment endpoint
+count-equality target and the compatible common-non-root root-count leaf. -/
+theorem compatibleSuccDegreeClosedSegmentCountEqTarget_iff_nonRootTarget :
+    compatibleSuccDegreeClosedSegmentCountEqTarget ↔
+      compatibleSuccDegreeRootCountAboveNonRootTarget :=
+  compatibleSuccDegreeClosedSegmentCountEq_iff_nonRoot
+
+/-- Challenge-facing direct reduction from the right-pencil exact gap-two
+obstruction to the compatible root-count leaf. -/
+theorem compatibleSuccDegreeRootCountAboveNonRootTarget_of_rightFamily
+    (hright : compatibleSuccDegreeRightFamilyNoGapTwoTarget) :
+    compatibleSuccDegreeRootCountAboveNonRootTarget :=
+  compatibleSuccDegreeRootCountAboveNonRoot_of_rightFamily hright
+
+/-- Challenge-facing direct reduction from the endpoint-sign exact gap-two
+obstruction to the compatible root-count leaf. -/
+theorem compatibleSuccDegreeRootCountAboveNonRootTarget_of_endpointSign
+    (hsign : compatibleSuccDegreeEndpointSignNoGapTwoTarget) :
+    compatibleSuccDegreeRootCountAboveNonRootTarget :=
+  compatibleSuccDegreeRootCountAboveNonRoot_of_endpointSign hsign
+
+/-- Challenge-facing direct reduction from the lower-threshold endpoint-sign
+exact gap obstruction to the compatible root-count leaf. -/
+theorem compatibleSuccDegreeRootCountAboveNonRootTarget_of_endpointSignLower
+    (hlower : compatibleSuccDegreeEndpointSignLowerNoGapTarget) :
+    compatibleSuccDegreeRootCountAboveNonRootTarget :=
+  compatibleSuccDegreeRootCountAboveNonRoot_of_endpointSignLower hlower
+
+/-- Challenge-facing direct reduction from the exact lower-threshold
+endpoint-sign count comparison to the compatible root-count leaf. -/
+theorem compatibleSuccDegreeRootCountAboveNonRootTarget_of_lowerCountEq
+    (hcount : compatibleSuccDegreeEndpointSignLowerCountEqTarget) :
+    compatibleSuccDegreeRootCountAboveNonRootTarget :=
+  compatibleSuccDegreeRootCountAboveNonRoot_of_lowerCountEq hcount
+
+/-- Challenge-facing reduction from the closed-segment exact gap-two
+obstruction to the compatible exact gap-two obstruction. -/
+theorem compatibleSuccDegreeRootCountAboveNoGapTwoTarget_of_closedSegment
+    (hclosed : compatibleSuccDegreeClosedSegmentNoGapTwoTarget) :
+    compatibleSuccDegreeRootCountAboveNoGapTwoTarget :=
+  compatibleSuccDegreeRootCountAboveNoGapTwo_of_closedSegment hclosed
+
+/-- Challenge-facing reduction from closed-segment endpoint count equality to
+the closed-segment exact gap-two obstruction. -/
+theorem compatibleSuccDegreeClosedSegmentNoGapTwoTarget_of_countEq
+    (hcount : compatibleSuccDegreeClosedSegmentCountEqTarget) :
+    compatibleSuccDegreeClosedSegmentNoGapTwoTarget :=
+  compatibleSuccDegreeClosedSegmentNoGapTwo_of_countEq hcount
+
+/-- Challenge-facing reduction from closed-segment endpoint count equality to
+the exact lower-threshold endpoint-sign count comparison. -/
+theorem compatibleSuccDegreeEndpointSignLowerCountEqTarget_of_closedSegmentCountEq
+    (hcount : compatibleSuccDegreeClosedSegmentCountEqTarget) :
+    compatibleSuccDegreeEndpointSignLowerCountEqTarget :=
+  compatibleSuccDegreeEndpointSignLowerCountEq_of_closedSegmentCountEq hcount
+
+/-- Challenge-facing reduction from the exact lower-threshold endpoint-sign
+count comparison to closed-segment endpoint count equality. -/
+theorem compatibleSuccDegreeClosedSegmentCountEqTarget_of_lowerCountEq
+    (hcount : compatibleSuccDegreeEndpointSignLowerCountEqTarget) :
+    compatibleSuccDegreeClosedSegmentCountEqTarget :=
+  compatibleSuccDegreeClosedSegmentCountEq_of_lowerCountEq hcount
+
+/-- Challenge-facing equivalence between the closed-segment endpoint
+count-equality target and the exact lower-threshold endpoint-sign count target. -/
+theorem compatibleSuccDegreeClosedSegmentCountEqTarget_iff_lowerCountEqTarget :
+    compatibleSuccDegreeClosedSegmentCountEqTarget ↔
+      compatibleSuccDegreeEndpointSignLowerCountEqTarget :=
+  compatibleSuccDegreeClosedSegmentCountEq_iff_lowerCountEq
+
+/-- Challenge-facing low-degree base case for closed-segment endpoint count
+equality. -/
+theorem compatibleSuccDegreeClosedSegmentCountEqPair_of_natDegree_le_one
+    {f g : ℝ[X]}
+    (hcomp : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) (hfdeg : f.natDegree ≤ 1)
+    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
+    (hseg : ∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+      ¬ (C (1 - β) * f + C β * g).IsRoot x) :
+    (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card :=
+  compatibleSuccDegreeClosedSegmentCountEq_of_natDegree_le_one
+    hcomp hf_pos hg_pos hdeg hf_split hfdeg hxf hxg hseg
+
+/-- Challenge-facing degree-`≤ 1` base case for the #42 exact lower-threshold
+endpoint-sign count comparison.  This is the degree-`≤ 1` base wrapper for the
+lower-count endpoint-sign route: positivity of the endpoint product at the fixed
+threshold rules out any closed-segment crossing, giving the exact lower-count
+difference `= 1` directly, without a separate closed-segment no-crossing
+hypothesis. -/
+theorem compatibleSuccDegreeEndpointSignLowerCountEqPair_of_natDegree_le_one
+    {f g : ℝ[X]}
+    (hcomp : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) (hfdeg : f.natDegree ≤ 1)
+    {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x)
+    (hprod : 0 < f.eval x * g.eval x) :
+    ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1 :=
+  compatibleSuccDegreeEndpointSignLowerCountEq_of_natDegree_le_one
+    hcomp hf_pos hg_pos hdeg hf_split hfdeg hxf hxg hprod
+
+/-- Challenge-facing low-degree base case for the exact gap-two obstruction. -/
+theorem compatibleSuccDegreeRootCountAboveNoGapTwoPair_of_natDegree_le_one
+    {f g : ℝ[X]}
+    (hcomp : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) (hfdeg : f.natDegree ≤ 1)
+    (x : ℝ) (_hxf : ¬ f.IsRoot x) (_hxg : ¬ g.IsRoot x) :
+      ((f.roots.filter (x < ·)).card : ℤ) -
+          (g.roots.filter (x < ·)).card ≠ 2 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) -
+          (f.roots.filter (x < ·)).card ≠ 2 :=
+  compatibleSuccDegreeRootCountAboveNoGapTwo_of_natDegree_le_one
+    hcomp hf_pos hg_pos hdeg hf_split hfdeg x
+
+/-- Challenge-facing degree-two lower-threshold root-count base, reduced to
+the quadratic/cubic root-order leaf. -/
+theorem succDegreeRootCountPair_of_natDegree_eq_two_of_rootBounds
+    (hbound : succDegreeQuadraticCubicRootBoundsTarget)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) (hfdeg : f.natDegree = 2) (x : ℝ) :
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 :=
+  succDegreeRootCount_of_posCombo_natDegree_eq_two_of_rootBounds
+    hbound hf_pos hg_pos hfg hdeg hf_split hfdeg x
+
+/-- Challenge-facing degree-two upper-threshold root-count base, reduced to
+the quadratic/cubic root-order leaf. -/
+theorem succDegreeRootCountAbovePair_of_natDegree_eq_two_of_rootBounds
+    (hbound : succDegreeQuadraticCubicRootBoundsTarget)
+    {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) (hfdeg : f.natDegree = 2) (x : ℝ) :
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 :=
+  succDegreeRootCountAbove_of_posCombo_natDegree_eq_two_of_rootBounds
+    hbound hf_pos hg_pos hfg hdeg hf_split hfdeg x
+
+/-- Challenge-facing degree-two exact no-gap base, reduced to the
+quadratic/cubic root-order leaf. -/
+theorem compatibleSuccDegreeRootCountAboveNoGapTwoPair_of_natDegree_eq_two_of_rootBounds
+    (hbound : succDegreeQuadraticCubicRootBoundsTarget)
+    {f g : ℝ[X]}
+    (hcomp : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) (hfdeg : f.natDegree = 2)
+    (x : ℝ) (_hxf : ¬ f.IsRoot x) (_hxg : ¬ g.IsRoot x) :
+      ((f.roots.filter (x < ·)).card : ℤ) -
+          (g.roots.filter (x < ·)).card ≠ 2 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) -
+          (f.roots.filter (x < ·)).card ≠ 2 :=
+  compatibleSuccDegreeRootCountAboveNoGapTwo_of_natDegree_eq_two_of_rootBounds
+    hbound hcomp hf_pos hg_pos hdeg hf_split hfdeg x
+
+/-- Challenge-facing exact no-gap base through lower endpoint degree two,
+reduced to the quadratic/cubic root-order leaf. -/
+theorem compatibleSuccDegreeRootCountAboveNoGapTwoPair_of_natDegree_le_two_of_rootBounds
+    (hbound : succDegreeQuadraticCubicRootBoundsTarget)
+    {f g : ℝ[X]}
+    (hcomp : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) (hfdeg : f.natDegree ≤ 2)
+    (x : ℝ) (_hxf : ¬ f.IsRoot x) (_hxg : ¬ g.IsRoot x) :
+      ((f.roots.filter (x < ·)).card : ℤ) -
+          (g.roots.filter (x < ·)).card ≠ 2 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) -
+          (f.roots.filter (x < ·)).card ≠ 2 :=
+  compatibleSuccDegreeRootCountAboveNoGapTwo_of_natDegree_le_two_of_rootBounds
+    hbound hcomp hf_pos hg_pos hdeg hf_split hfdeg x
+
+/-- Challenge-facing exact no-gap base through lower endpoint degree two,
+reduced to the three quadratic/cubic obstruction leaves. -/
+theorem compatibleSuccDegreeRootCountAboveNoGapTwoPair_of_natDegree_le_two_of_obstructions
+    (hfirst : succDegreeQuadraticCubicFirstAboveObstructionTarget)
+    (hsecond : succDegreeQuadraticCubicSecondAboveObstructionTarget)
+    (hbelow : succDegreeQuadraticCubicFullBelowObstructionTarget)
+    {f g : ℝ[X]}
+    (hcomp : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) (hfdeg : f.natDegree ≤ 2)
+    (x : ℝ) (_hxf : ¬ f.IsRoot x) (_hxg : ¬ g.IsRoot x) :
+      ((f.roots.filter (x < ·)).card : ℤ) -
+          (g.roots.filter (x < ·)).card ≠ 2 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) -
+          (f.roots.filter (x < ·)).card ≠ 2 :=
+  compatibleSuccDegreeRootCountAboveNoGapTwo_of_natDegree_le_two_of_obstructions
+    hfirst hsecond hbelow hcomp hf_pos hg_pos hdeg hf_split hfdeg x
+
+/-- Challenge-facing exact no-gap base through lower endpoint degree two,
+reduced to the three pure monic-pencil obstruction leaves. -/
+theorem compatibleSuccDegreeRootCountAboveNoGapTwoPair_of_natDegree_le_two_of_pencil_obstructions
+    (hfirst : quadraticCubicFirstAbovePencilObstructionTarget)
+    (hsecond : quadraticCubicSecondAbovePencilObstructionTarget)
+    (hbelow : quadraticCubicFullBelowPencilObstructionTarget)
+    {f g : ℝ[X]}
+    (hcomp : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits) (hfdeg : f.natDegree ≤ 2)
+    (x : ℝ) (_hxf : ¬ f.IsRoot x) (_hxg : ¬ g.IsRoot x) :
+      ((f.roots.filter (x < ·)).card : ℤ) -
+          (g.roots.filter (x < ·)).card ≠ 2 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) -
+          (f.roots.filter (x < ·)).card ≠ 2 :=
+  compatibleSuccDegreeRootCountAboveNoGapTwo_of_natDegree_le_two_of_pencil_obstructions
+    hfirst hsecond hbelow hcomp hf_pos hg_pos hdeg hf_split hfdeg x
+
+/-- Challenge-facing reduction from closed-segment endpoint count equality to
+the compatible exact gap-two obstruction. -/
+theorem compatibleSuccDegreeRootCountAboveNoGapTwoTarget_of_closedSegmentCountEq
+    (hcount : compatibleSuccDegreeClosedSegmentCountEqTarget) :
+    compatibleSuccDegreeRootCountAboveNoGapTwoTarget :=
+  compatibleSuccDegreeRootCountAboveNoGapTwo_of_closedSegmentCountEq hcount
+
+/-- Challenge-facing reduction from the right-pencil exact gap-two obstruction
+to the closed-segment exact gap-two obstruction. -/
+theorem compatibleSuccDegreeClosedSegmentNoGapTwoTarget_of_rightFamily
+    (hright : compatibleSuccDegreeRightFamilyNoGapTwoTarget) :
+    compatibleSuccDegreeClosedSegmentNoGapTwoTarget :=
+  compatibleSuccDegreeClosedSegmentNoGapTwo_of_rightFamily hright
+
+/-- Challenge-facing reduction from the right-pencil exact gap-two obstruction
+to the endpoint-sign exact gap-two obstruction. -/
+theorem compatibleSuccDegreeEndpointSignNoGapTwoTarget_of_rightFamily
+    (hright : compatibleSuccDegreeRightFamilyNoGapTwoTarget) :
+    compatibleSuccDegreeEndpointSignNoGapTwoTarget :=
+  compatibleSuccDegreeEndpointSignNoGapTwo_of_rightFamily hright
+
+/-- Challenge-facing equivalence between the right-pencil and endpoint-sign
+exact gap-two obstruction targets. -/
+theorem compatibleSuccDegreeRightFamilyNoGapTwoTarget_iff_endpointSignTarget :
+    compatibleSuccDegreeRightFamilyNoGapTwoTarget ↔
+      compatibleSuccDegreeEndpointSignNoGapTwoTarget :=
+  compatibleSuccDegreeRightFamilyNoGapTwo_iff_endpointSign
+
+/-- Challenge-facing reduction from the right-pencil exact gap-two obstruction
+to the compatible exact gap-two obstruction. -/
+theorem compatibleSuccDegreeRootCountAboveNoGapTwoTarget_of_rightFamily
+    (hright : compatibleSuccDegreeRightFamilyNoGapTwoTarget) :
+    compatibleSuccDegreeRootCountAboveNoGapTwoTarget :=
+  compatibleSuccDegreeRootCountAboveNoGapTwo_of_rightFamily hright
+
+/-- Challenge-facing reduction from the endpoint-sign exact gap-two obstruction
+to the right-pencil exact gap-two obstruction. -/
+theorem compatibleSuccDegreeRightFamilyNoGapTwoTarget_of_endpointSign
+    (hsign : compatibleSuccDegreeEndpointSignNoGapTwoTarget) :
+    compatibleSuccDegreeRightFamilyNoGapTwoTarget :=
+  compatibleSuccDegreeRightFamilyNoGapTwo_of_endpointSign hsign
+
+/-- Challenge-facing reduction from the endpoint-sign exact gap-two obstruction
+to the closed-segment exact gap-two obstruction. -/
+theorem compatibleSuccDegreeClosedSegmentNoGapTwoTarget_of_endpointSign
+    (hsign : compatibleSuccDegreeEndpointSignNoGapTwoTarget) :
+    compatibleSuccDegreeClosedSegmentNoGapTwoTarget :=
+  compatibleSuccDegreeClosedSegmentNoGapTwo_of_endpointSign hsign
+
+/-- Challenge-facing reduction from the closed-segment exact gap-two obstruction
+to the endpoint-sign exact gap-two obstruction. -/
+theorem compatibleSuccDegreeEndpointSignNoGapTwoTarget_of_closedSegment
+    (hclosed : compatibleSuccDegreeClosedSegmentNoGapTwoTarget) :
+    compatibleSuccDegreeEndpointSignNoGapTwoTarget :=
+  compatibleSuccDegreeEndpointSignNoGapTwo_of_closedSegment hclosed
+
+/-- Challenge-facing equivalence between the closed-segment and endpoint-sign
+exact gap-two obstruction targets. -/
+theorem compatibleSuccDegreeClosedSegmentNoGapTwoTarget_iff_endpointSignTarget :
+    compatibleSuccDegreeClosedSegmentNoGapTwoTarget ↔
+      compatibleSuccDegreeEndpointSignNoGapTwoTarget :=
+  compatibleSuccDegreeClosedSegmentNoGapTwo_iff_endpointSign
+
+/-- Challenge-facing reduction from the endpoint-sign exact gap-two obstruction
+to the compatible exact gap-two obstruction. -/
+theorem compatibleSuccDegreeRootCountAboveNoGapTwoTarget_of_endpointSign
+    (hsign : compatibleSuccDegreeEndpointSignNoGapTwoTarget) :
+    compatibleSuccDegreeRootCountAboveNoGapTwoTarget :=
+  compatibleSuccDegreeRootCountAboveNoGapTwo_of_endpointSign hsign
+
+/-- Challenge-facing reduction from the no-common orientation core to the
+compatible succ-degree orientation target. -/
+theorem compatibleSuccDegreePrecTarget_of_noCommonOrientation
+    (hstep : noCommonOrientationTarget) :
+    compatibleSuccDegreePrecTarget :=
+  compatibleSuccDegreePrec_of_noCommonOrientation hstep
+
+/-- Challenge-facing reduction from the all-combinations bridge to the
+compatible succ-degree all-combinations target. -/
+theorem compatibleSuccDegreeAllComboTarget_of_allComboBridge
+    (hall : allComboBridgeTarget) :
+    compatibleSuccDegreeAllComboTarget :=
+  compatibleSuccDegreeAllCombo_of_allComboBridge hall
+
+/-- Challenge-facing projection from the compatible succ-degree
+all-combinations target to the negative right-pencil family. -/
+theorem compatibleSuccDegreeNegativeRightFamilyTarget_of_allCombo
+    (hall : compatibleSuccDegreeAllComboTarget) :
+    compatibleSuccDegreeNegativeRightFamilyTarget :=
+  compatibleSuccDegreeNegativeRightFamily_of_allCombo hall
+
+/-- Challenge-facing projection from the compatible succ-degree
+all-combinations target to the nonnegative-coefficient negative right-pencil
+family. -/
+theorem compatibleSuccDegreeNegativeRightFamilyNonnegTarget_of_allCombo
+    (hall : compatibleSuccDegreeAllComboTarget) :
+    compatibleSuccDegreeNegativeRightFamilyNonnegTarget :=
+  compatibleSuccDegreeNegativeRightFamilyNonneg_of_allCombo hall
+
+/-- Challenge-facing degree-zero base case for the nonnegative-coefficient
+negative right-pencil family. -/
+theorem compatibleSuccDegreeNegativeRightFamilyNonnegTarget_of_natDegree_eq_zero
+    {f g : ℝ[X]}
+    (hcomp : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits)
+    (hfdeg : f.natDegree = 0)
+    (μ : ℝ) (hμ : μ < 0) :
+    (f + C μ * g).Splits :=
+  compatibleSuccDegreeNegativeRightFamilyNonneg_of_natDegree_eq_zero
+    hcomp hf_pos hg_pos hfnn hgnn hdeg hf_split hfdeg μ hμ
+
+/-- Challenge-facing reduction from the all-combinations bridge to the
+nonnegative-coefficient negative right-pencil family. -/
+theorem compatibleSuccDegreeNegativeRightFamilyNonnegTarget_of_allComboBridge
+    (hall : allComboBridgeTarget) :
+    compatibleSuccDegreeNegativeRightFamilyNonnegTarget :=
+  compatibleSuccDegreeNegativeRightFamilyNonneg_of_allComboBridge hall
+
+/-- Challenge-facing reduction from the honest same-degree/succ-degree
+orientation split to the nonnegative-coefficient negative right-pencil family.
+-/
+theorem compatibleSuccDegreeNegativeRightFamilyNonnegTarget_of_degreeSplit
+    (hsame : sameDegreeOrientationAlternativeTarget)
+    (hsucc : succDegreeOrientationTarget) :
+    compatibleSuccDegreeNegativeRightFamilyNonnegTarget :=
+  compatibleSuccDegreeNegativeRightFamilyNonneg_of_degreeSplit hsame hsucc
+
+/-- Challenge-facing reduction from the affine-family bridge to the
+nonnegative-coefficient negative right-pencil family. -/
+theorem compatibleSuccDegreeNegativeRightFamilyNonnegTarget_of_affineFamily
+    (haff : affineFamilyTarget) :
+    compatibleSuccDegreeNegativeRightFamilyNonnegTarget :=
+  compatibleSuccDegreeNegativeRightFamilyNonneg_of_affineFamilyBridge haff
+
+/-- Challenge-facing reduction from the boundary-right-pair orientation target
+to the nonnegative-coefficient negative right-pencil family. -/
+theorem compatibleSuccDegreeNegativeRightFamilyNonnegTarget_of_boundaryRightPairOrientation
+    (hboundary : boundaryRightPairOrientationTarget) :
+    compatibleSuccDegreeNegativeRightFamilyNonnegTarget :=
+  compatibleSuccDegreeNegativeRightFamilyNonneg_of_boundaryRightPairOrientation hboundary
+
+/-- Challenge-facing projection from the compatible succ-degree all-combinations
+target to the signed right-pencil family. -/
+theorem compatibleSuccDegreeSignedRightFamilyTarget_of_allCombo
+    (hall : compatibleSuccDegreeAllComboTarget) :
+    compatibleSuccDegreeSignedRightFamilyTarget :=
+  compatibleSuccDegreeSignedRightFamily_of_allCombo hall
+
+/-- Challenge-facing reduction from the signed right-pencil family to the
+compatible succ-degree all-combinations target. -/
+theorem compatibleSuccDegreeAllComboTarget_of_signedRightFamily
+    (hsigned : compatibleSuccDegreeSignedRightFamilyTarget) :
+    compatibleSuccDegreeAllComboTarget :=
+  compatibleSuccDegreeAllCombo_of_signedRightFamily hsigned
+
+/-- Challenge-facing reduction from the negative right-pencil family to the
+signed right-pencil family. -/
+theorem compatibleSuccDegreeSignedRightFamilyTarget_of_negativeRightFamily
+    (hneg : compatibleSuccDegreeNegativeRightFamilyTarget) :
+    compatibleSuccDegreeSignedRightFamilyTarget :=
+  compatibleSuccDegreeSignedRightFamily_of_negativeRightFamily hneg
+
+/-- Challenge-facing reduction from the nonnegative-coefficient negative
+right-pencil family to the coefficient-free negative right-pencil family. -/
+theorem compatibleSuccDegreeNegativeRightFamilyTarget_of_nonnegShift
+    (hneg : compatibleSuccDegreeNegativeRightFamilyNonnegTarget) :
+    compatibleSuccDegreeNegativeRightFamilyTarget :=
+  compatibleSuccDegreeNegativeRightFamily_of_nonnegShift hneg
+
+/-- Challenge-facing reduction from the negative right-pencil family to the
+compatible succ-degree all-combinations target. -/
+theorem compatibleSuccDegreeAllComboTarget_of_negativeRightFamily
+    (hneg : compatibleSuccDegreeNegativeRightFamilyTarget) :
+    compatibleSuccDegreeAllComboTarget :=
+  compatibleSuccDegreeAllCombo_of_negativeRightFamily hneg
+
+/-- Challenge-facing reduction from the nonnegative-coefficient negative
+right-pencil family to the compatible succ-degree all-combinations target. -/
+theorem compatibleSuccDegreeAllComboTarget_of_negativeRightFamily_nonnegShift
+    (hneg : compatibleSuccDegreeNegativeRightFamilyNonnegTarget) :
+    compatibleSuccDegreeAllComboTarget :=
+  compatibleSuccDegreeAllCombo_of_negativeRightFamily_nonnegShift hneg
+
+/-- Challenge-facing reduction from the compatible succ-degree all-combinations
+target to the compatible succ-degree orientation target. -/
+theorem compatibleSuccDegreePrecTarget_of_allCombo
+    (hall : compatibleSuccDegreeAllComboTarget) :
+    compatibleSuccDegreePrecTarget :=
+  compatibleSuccDegreePrec_of_allCombo hall
+
+/-- Challenge-facing reduction from the signed right-pencil family to the
+compatible succ-degree orientation target. -/
+theorem compatibleSuccDegreePrecTarget_of_signedRightFamily
+    (hsigned : compatibleSuccDegreeSignedRightFamilyTarget) :
+    compatibleSuccDegreePrecTarget :=
+  compatibleSuccDegreePrec_of_signedRightFamily hsigned
+
+/-- Challenge-facing reduction from the negative right-pencil family to the
+compatible succ-degree orientation target. -/
+theorem compatibleSuccDegreePrecTarget_of_negativeRightFamily
+    (hneg : compatibleSuccDegreeNegativeRightFamilyTarget) :
+    compatibleSuccDegreePrecTarget :=
+  compatibleSuccDegreePrec_of_negativeRightFamily hneg
+
+/-- Challenge-facing reduction from the nonnegative-coefficient negative
+right-pencil family to the compatible succ-degree orientation target. -/
+theorem compatibleSuccDegreePrecTarget_of_negativeRightFamily_nonnegShift
+    (hneg : compatibleSuccDegreeNegativeRightFamilyNonnegTarget) :
+    compatibleSuccDegreePrecTarget :=
+  compatibleSuccDegreePrec_of_negativeRightFamily_nonnegShift hneg
+
+/-- Challenge-facing reduction from the all-combinations bridge to the
+compatible succ-degree orientation target. -/
+theorem compatibleSuccDegreePrecTarget_of_allComboBridge
+    (hall : allComboBridgeTarget) :
+    compatibleSuccDegreePrecTarget :=
+  compatibleSuccDegreePrec_of_allComboBridge hall
+
+/-- Challenge-facing reduction from the compatible succ-degree orientation
+target to the exact lower-threshold endpoint-sign count comparison. -/
+theorem compatibleSuccDegreeEndpointSignLowerCountEqTarget_of_prec
+    (hprec : compatibleSuccDegreePrecTarget) :
+    compatibleSuccDegreeEndpointSignLowerCountEqTarget :=
+  compatibleSuccDegreeEndpointSignLowerCountEq_of_prec hprec
+
+/-- Challenge-facing reduction from the compatible succ-degree all-combinations
+target to the exact lower-threshold endpoint-sign count comparison. -/
+theorem compatibleSuccDegreeEndpointSignLowerCountEqTarget_of_allCombo
+    (hall : compatibleSuccDegreeAllComboTarget) :
+    compatibleSuccDegreeEndpointSignLowerCountEqTarget :=
+  compatibleSuccDegreeEndpointSignLowerCountEq_of_allCombo hall
+
+/-- Challenge-facing reduction from the signed right-pencil family to the exact
+lower-threshold endpoint-sign count comparison. -/
+theorem compatibleSuccDegreeEndpointSignLowerCountEqTarget_of_signedRightFamily
+    (hsigned : compatibleSuccDegreeSignedRightFamilyTarget) :
+    compatibleSuccDegreeEndpointSignLowerCountEqTarget :=
+  compatibleSuccDegreeEndpointSignLowerCountEq_of_signedRightFamily hsigned
+
+/-- Challenge-facing reduction from the negative right-pencil family to the
+exact lower-threshold endpoint-sign count comparison. -/
+theorem compatibleSuccDegreeEndpointSignLowerCountEqTarget_of_negativeRightFamily
+    (hneg : compatibleSuccDegreeNegativeRightFamilyTarget) :
+    compatibleSuccDegreeEndpointSignLowerCountEqTarget :=
+  compatibleSuccDegreeEndpointSignLowerCountEq_of_negativeRightFamily hneg
+
+/-- Challenge-facing reduction from the nonnegative-coefficient negative
+right-pencil family to the exact lower-threshold endpoint-sign count
+comparison. -/
+theorem compatibleSuccDegreeEndpointSignLowerCountEqTarget_of_negativeRightFamily_nonnegShift
+    (hneg : compatibleSuccDegreeNegativeRightFamilyNonnegTarget) :
+    compatibleSuccDegreeEndpointSignLowerCountEqTarget :=
+  compatibleSuccDegreeEndpointSignLowerCountEq_of_negativeRightFamily_nonnegShift hneg
+
+/-- Challenge-facing reduction from the no-common orientation core to the exact
+lower-threshold endpoint-sign count comparison. -/
+theorem compatibleSuccDegreeEndpointSignLowerCountEqTarget_of_noCommonOrientation
+    (hstep : noCommonOrientationTarget) :
+    compatibleSuccDegreeEndpointSignLowerCountEqTarget :=
+  compatibleSuccDegreeEndpointSignLowerCountEq_of_prec
+    (compatibleSuccDegreePrec_of_noCommonOrientation hstep)
+
+/-- Challenge-facing reduction from the all-combinations bridge to the exact
+lower-threshold endpoint-sign count comparison. -/
+theorem compatibleSuccDegreeEndpointSignLowerCountEqTarget_of_allComboBridge
+    (hall : allComboBridgeTarget) :
+    compatibleSuccDegreeEndpointSignLowerCountEqTarget :=
+  compatibleSuccDegreeEndpointSignLowerCountEq_of_allComboBridge hall
+
+/-- Challenge-facing reduction from the exact lower-threshold endpoint-sign
+count comparison to the lower-threshold endpoint-sign exact gap obstruction. -/
+theorem compatibleSuccDegreeEndpointSignLowerNoGapTarget_of_lowerCountEq
+    (hcount : compatibleSuccDegreeEndpointSignLowerCountEqTarget) :
+    compatibleSuccDegreeEndpointSignLowerNoGapTarget :=
+  compatibleSuccDegreeEndpointSignLowerNoGap_of_lowerCountEq hcount
+
+/-- Challenge-facing reduction from the lower-threshold endpoint-sign exact gap
+obstruction to the endpoint-sign exact gap-two obstruction. -/
+theorem compatibleSuccDegreeEndpointSignNoGapTwoTarget_of_lower
+    (hlower : compatibleSuccDegreeEndpointSignLowerNoGapTarget) :
+    compatibleSuccDegreeEndpointSignNoGapTwoTarget :=
+  compatibleSuccDegreeEndpointSignNoGapTwo_of_lower hlower
+
+/-- Challenge-facing reduction from the exact lower-threshold endpoint-sign
+count comparison to the endpoint-sign exact gap-two obstruction. -/
+theorem compatibleSuccDegreeEndpointSignNoGapTwoTarget_of_lowerCountEq
+    (hcount : compatibleSuccDegreeEndpointSignLowerCountEqTarget) :
+    compatibleSuccDegreeEndpointSignNoGapTwoTarget :=
+  compatibleSuccDegreeEndpointSignNoGapTwo_of_lowerCountEq hcount
+
+/-- Challenge-facing reduction from the lower-threshold endpoint-sign exact gap
+obstruction to the right-pencil exact gap-two obstruction. -/
+theorem compatibleSuccDegreeRightFamilyNoGapTwoTarget_of_endpointSignLower
+    (hlower : compatibleSuccDegreeEndpointSignLowerNoGapTarget) :
+    compatibleSuccDegreeRightFamilyNoGapTwoTarget :=
+  compatibleSuccDegreeRightFamilyNoGapTwo_of_endpointSignLower hlower
+
+/-- Challenge-facing reduction from the exact lower-threshold endpoint-sign
+count comparison to the right-pencil exact gap-two obstruction. -/
+theorem compatibleSuccDegreeRightFamilyNoGapTwoTarget_of_lowerCountEq
+    (hcount : compatibleSuccDegreeEndpointSignLowerCountEqTarget) :
+    compatibleSuccDegreeRightFamilyNoGapTwoTarget :=
+  compatibleSuccDegreeRightFamilyNoGapTwo_of_lowerCountEq hcount
+
+/-- Challenge-facing reduction from the lower-threshold endpoint-sign exact gap
+obstruction to the closed-segment exact gap-two obstruction. -/
+theorem compatibleSuccDegreeClosedSegmentNoGapTwoTarget_of_endpointSignLower
+    (hlower : compatibleSuccDegreeEndpointSignLowerNoGapTarget) :
+    compatibleSuccDegreeClosedSegmentNoGapTwoTarget :=
+  compatibleSuccDegreeClosedSegmentNoGapTwo_of_endpointSignLower hlower
+
+/-- Challenge-facing reduction from the exact lower-threshold endpoint-sign
+count comparison to the closed-segment exact gap-two obstruction. -/
+theorem compatibleSuccDegreeClosedSegmentNoGapTwoTarget_of_lowerCountEq
+    (hcount : compatibleSuccDegreeEndpointSignLowerCountEqTarget) :
+    compatibleSuccDegreeClosedSegmentNoGapTwoTarget :=
+  compatibleSuccDegreeClosedSegmentNoGapTwo_of_lowerCountEq hcount
+
+/-- Challenge-facing reduction from the lower-threshold endpoint-sign exact gap
+obstruction to the compatible exact gap-two obstruction. -/
+theorem compatibleSuccDegreeRootCountAboveNoGapTwoTarget_of_endpointSignLower
+    (hlower : compatibleSuccDegreeEndpointSignLowerNoGapTarget) :
+    compatibleSuccDegreeRootCountAboveNoGapTwoTarget :=
+  compatibleSuccDegreeRootCountAboveNoGapTwo_of_endpointSignLower hlower
+
+/-- Challenge-facing reduction from the exact lower-threshold endpoint-sign
+count comparison to the compatible exact gap-two obstruction. -/
+theorem compatibleSuccDegreeRootCountAboveNoGapTwoTarget_of_lowerCountEq
+    (hcount : compatibleSuccDegreeEndpointSignLowerCountEqTarget) :
+    compatibleSuccDegreeRootCountAboveNoGapTwoTarget :=
+  compatibleSuccDegreeRootCountAboveNoGapTwo_of_lowerCountEq hcount
+
+/-- Challenge-facing reduction from the compatible gap-at-most-two theorem and
+the closed-segment exact gap-two obstruction to the compatible root-count
+leaf. -/
+theorem compatibleSuccDegreeRootCountAboveNonRootTarget_of_leTwo_of_closedSegment
+    (hle2 : compatibleSuccDegreeRootCountAboveLeTwoTarget)
+    (hclosed : compatibleSuccDegreeClosedSegmentNoGapTwoTarget) :
+    compatibleSuccDegreeRootCountAboveNonRootTarget :=
+  compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_closedSegment hle2 hclosed
+
+/-- Challenge-facing reduction from the compatible gap-at-most-two theorem and
+the right-pencil exact gap-two obstruction to the compatible root-count leaf. -/
+theorem compatibleSuccDegreeRootCountAboveNonRootTarget_of_leTwo_of_rightFamily
+    (hle2 : compatibleSuccDegreeRootCountAboveLeTwoTarget)
+    (hright : compatibleSuccDegreeRightFamilyNoGapTwoTarget) :
+    compatibleSuccDegreeRootCountAboveNonRootTarget :=
+  compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_rightFamily hle2 hright
+
+/-- Challenge-facing reduction from the compatible gap-at-most-two theorem and
+the endpoint-sign exact gap-two obstruction to the compatible root-count leaf. -/
+theorem compatibleSuccDegreeRootCountAboveNonRootTarget_of_leTwo_of_endpointSign
+    (hle2 : compatibleSuccDegreeRootCountAboveLeTwoTarget)
+    (hsign : compatibleSuccDegreeEndpointSignNoGapTwoTarget) :
+    compatibleSuccDegreeRootCountAboveNonRootTarget :=
+  compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_endpointSign hle2 hsign
+
+/-- Challenge-facing reduction from the compatible gap-at-most-two theorem and
+the lower-threshold endpoint-sign exact gap obstruction to the compatible
+root-count leaf. -/
+theorem compatibleSuccDegreeRootCountAboveNonRootTarget_of_leTwo_of_endpointSignLower
+    (hle2 : compatibleSuccDegreeRootCountAboveLeTwoTarget)
+    (hlower : compatibleSuccDegreeEndpointSignLowerNoGapTarget) :
+    compatibleSuccDegreeRootCountAboveNonRootTarget :=
+  compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_endpointSignLower hle2 hlower
+
+/-- Challenge-facing reduction from the compatible gap-at-most-two theorem and
+the exact lower-threshold endpoint-sign count comparison to the compatible
+root-count leaf. -/
+theorem compatibleSuccDegreeRootCountAboveNonRootTarget_of_leTwo_of_lowerCountEq
+    (hle2 : compatibleSuccDegreeRootCountAboveLeTwoTarget)
+    (hcount : compatibleSuccDegreeEndpointSignLowerCountEqTarget) :
+    compatibleSuccDegreeRootCountAboveNonRootTarget :=
+  compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_lowerCountEq hle2 hcount
+
+/-- Challenge-facing closed-segment real-rootedness package for positive
+segment parameters in a compatible succ-degree pair. -/
+theorem compatibleSuccDegreeClosedSegmentRealRooted_of_pos
+    {f g : ℝ[X]} (hcomp : Compatible f g)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    {β : ℝ} (hβ0 : 0 < β) (hβ1 : β ≤ 1) :
+    (C (1 - β) * f + C β * g) ≠ 0 ∧
+      (C (1 - β) * f + C β * g).Splits :=
+  compatibleSuccDegree_closedSegment_isRealRooted_of_pos
+    hcomp hg_pos hdeg hβ0 hβ1
+
+/-- Challenge-facing degree package for positive closed-segment parameters in
+a compatible succ-degree pair. -/
+theorem compatibleSuccDegreeClosedSegmentNatDegreeEqRight_of_pos
+    {f g : ℝ[X]}
+    (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    {β : ℝ} (hβ0 : 0 < β) :
+    (C (1 - β) * f + C β * g).natDegree = g.natDegree :=
+  succDegree_closedSegment_natDegree_eq_right_of_pos hg_pos hdeg hβ0
+
+/-- Challenge-facing root-cardinality package for positive closed-segment
+parameters in a compatible succ-degree pair. -/
+theorem compatibleSuccDegreeClosedSegmentRootsCardEqSucc_of_pos
+    {f g : ℝ[X]} (hcomp : Compatible f g)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    {β : ℝ} (hβ0 : 0 < β) (hβ1 : β ≤ 1) :
+    (C (1 - β) * f + C β * g).roots.card = f.natDegree + 1 :=
+  compatibleSuccDegree_closedSegment_roots_card_eq_succ_of_pos
+    hcomp hg_pos hdeg hβ0 hβ1
 
 /-- Challenge-facing derivative application of the compatible succ-degree
 root-count leaf. -/
@@ -1713,6 +2662,25 @@ theorem succDegreePairTarget_of_rootCountAboveNonRoot
     (hcount : succDegreeRootCountAboveNonRootTarget) :
     succDegreePairTarget :=
   succDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot hcount
+
+/-- Challenge-facing reduction from closed-segment endpoint count equality to
+the repaired succ-degree pair endpoint. -/
+theorem succDegreePairTarget_of_closedSegmentCountEq
+    (hcount : compatibleSuccDegreeClosedSegmentCountEqTarget) :
+    succDegreePairTarget :=
+  succDegreePairHasCommonInterleaver_nonneg_of_closedSegmentCountEq hcount
+
+/-- Challenge-facing direct reduction from the #42 exact lower-threshold
+endpoint-sign count equality leaf to the repaired succ-degree pair endpoint.
+This is the single-hypothesis lower-count endpoint-sign route: it composes the
+lower-count/closed-segment count bridge with
+`succDegreePairTarget_of_closedSegmentCountEq`, so downstream users can discharge
+the #42 succ-degree endpoint from the lower-count leaf alone. -/
+theorem succDegreePairTarget_of_lowerCountEq
+    (hlower : compatibleSuccDegreeEndpointSignLowerCountEqTarget) :
+    succDegreePairTarget :=
+  succDegreePairTarget_of_closedSegmentCountEq
+    (compatibleSuccDegreeClosedSegmentCountEqTarget_of_lowerCountEq hlower)
 
 /-- Challenge-facing reduction from common-non-root succ-degree lower root
 counts to the repaired succ-degree pair endpoint. -/
@@ -3300,6 +4268,245 @@ theorem fourWayNonnegCoeffsTarget_of_boundaryRight
     fourWayNonnegCoeffsTarget :=
   chudnovskySeymour_fourWay_of_boundaryRight_nonneg hboundary
 
+/-! ### Composition wrappers combining the #41 same-degree endpoint with the
+#42 closed-segment/lower-count route -/
+
+/-- Nonnegative-coefficient common-right target from the #41 same-degree pair
+endpoint and the #42 compatible closed-segment endpoint count equality. -/
+theorem commonInterleaverNonnegCoeffsTarget_of_sameDegreePair_and_closedSegmentCountEq
+    (hsame : sameDegreePairTarget)
+    (hcount : compatibleSuccDegreeClosedSegmentCountEqTarget) :
+    commonInterleaverNonnegCoeffsTarget :=
+  commonInterleaverNonnegCoeffsTarget_of_pairDegreeSplit hsame
+    (succDegreePairTarget_of_closedSegmentCountEq hcount)
+
+/-- Nonnegative-coefficient finite-family compatibility target from the #41
+same-degree pair endpoint and the #42 compatible closed-segment endpoint count
+equality. -/
+theorem familyCompatibleNonnegCoeffsTarget_of_sameDegreePair_and_closedSegmentCountEq
+    (hsame : sameDegreePairTarget)
+    (hcount : compatibleSuccDegreeClosedSegmentCountEqTarget) :
+    familyCompatibleNonnegCoeffsTarget :=
+  familyCompatibleNonnegCoeffsTarget_of_pairDegreeSplit hsame
+    (succDegreePairTarget_of_closedSegmentCountEq hcount)
+
+/-- Nonnegative four-way package target from the #41 same-degree pair endpoint
+and the #42 compatible closed-segment endpoint count equality. -/
+theorem fourWayNonnegCoeffsTarget_of_sameDegreePair_and_closedSegmentCountEq
+    (hsame : sameDegreePairTarget)
+    (hcount : compatibleSuccDegreeClosedSegmentCountEqTarget) :
+    fourWayNonnegCoeffsTarget :=
+  fourWayNonnegCoeffsTarget_of_pairDegreeSplit hsame
+    (succDegreePairTarget_of_closedSegmentCountEq hcount)
+
+/-- Nonnegative-coefficient common-right target from the #41 same-degree pair
+endpoint and the #42 compatible succ-degree exact lower-threshold endpoint-sign
+count equality leaf. -/
+theorem commonInterleaverNonnegCoeffsTarget_of_sameDegreePair_and_lowerCountEq
+    (hsame : sameDegreePairTarget)
+    (hlower : compatibleSuccDegreeEndpointSignLowerCountEqTarget) :
+    commonInterleaverNonnegCoeffsTarget :=
+  commonInterleaverNonnegCoeffsTarget_of_sameDegreePair_and_closedSegmentCountEq hsame
+    (compatibleSuccDegreeClosedSegmentCountEqTarget_of_lowerCountEq hlower)
+
+/-- Nonnegative-coefficient finite-family compatibility target from the #41
+same-degree pair endpoint and the #42 compatible succ-degree exact
+lower-threshold endpoint-sign count equality leaf. -/
+theorem familyCompatibleNonnegCoeffsTarget_of_sameDegreePair_and_lowerCountEq
+    (hsame : sameDegreePairTarget)
+    (hlower : compatibleSuccDegreeEndpointSignLowerCountEqTarget) :
+    familyCompatibleNonnegCoeffsTarget :=
+  familyCompatibleNonnegCoeffsTarget_of_sameDegreePair_and_closedSegmentCountEq hsame
+    (compatibleSuccDegreeClosedSegmentCountEqTarget_of_lowerCountEq hlower)
+
+/-- Nonnegative four-way package target from the #41 same-degree pair endpoint
+and the #42 compatible succ-degree exact lower-threshold endpoint-sign count
+equality leaf. -/
+theorem fourWayNonnegCoeffsTarget_of_sameDegreePair_and_lowerCountEq
+    (hsame : sameDegreePairTarget)
+    (hlower : compatibleSuccDegreeEndpointSignLowerCountEqTarget) :
+    fourWayNonnegCoeffsTarget :=
+  fourWayNonnegCoeffsTarget_of_sameDegreePair_and_closedSegmentCountEq hsame
+    (compatibleSuccDegreeClosedSegmentCountEqTarget_of_lowerCountEq hlower)
+
+/-! #### Same-degree slot-data endpoint (#41) with the direct #42 route
+
+The same-degree slot-data endpoint feeds the repaired same-degree pair endpoint
+through `sameDegreePairTarget_of_slotData`, so these wrappers only precompose
+that reduction with the pair-endpoint wrappers above. -/
+
+/-- Nonnegative-coefficient common-right target from the #41 same-degree
+slot-data endpoint and the #42 compatible closed-segment count equality. -/
+theorem commonInterleaverNonnegCoeffsTarget_of_sameDegreeSlotData_and_closedSegmentCountEq
+    (hslot : sameDegreeSlotDataTarget)
+    (hcount : compatibleSuccDegreeClosedSegmentCountEqTarget) :
+    commonInterleaverNonnegCoeffsTarget :=
+  commonInterleaverNonnegCoeffsTarget_of_sameDegreePair_and_closedSegmentCountEq
+    (sameDegreePairTarget_of_slotData hslot) hcount
+
+/-- Nonnegative-coefficient finite-family compatibility target from the #41
+same-degree slot-data endpoint and the #42 closed-segment count equality. -/
+theorem familyCompatibleNonnegCoeffsTarget_of_sameDegreeSlotData_and_closedSegmentCountEq
+    (hslot : sameDegreeSlotDataTarget)
+    (hcount : compatibleSuccDegreeClosedSegmentCountEqTarget) :
+    familyCompatibleNonnegCoeffsTarget :=
+  familyCompatibleNonnegCoeffsTarget_of_sameDegreePair_and_closedSegmentCountEq
+    (sameDegreePairTarget_of_slotData hslot) hcount
+
+/-- Nonnegative four-way package target from the #41 same-degree slot-data
+endpoint and the #42 compatible closed-segment count equality. -/
+theorem fourWayNonnegCoeffsTarget_of_sameDegreeSlotData_and_closedSegmentCountEq
+    (hslot : sameDegreeSlotDataTarget)
+    (hcount : compatibleSuccDegreeClosedSegmentCountEqTarget) :
+    fourWayNonnegCoeffsTarget :=
+  fourWayNonnegCoeffsTarget_of_sameDegreePair_and_closedSegmentCountEq
+    (sameDegreePairTarget_of_slotData hslot) hcount
+
+/-- Nonnegative-coefficient common-right target from the #41 same-degree
+slot-data endpoint and the #42 endpoint-sign lower-count equality. -/
+theorem commonInterleaverNonnegCoeffsTarget_of_sameDegreeSlotData_and_lowerCountEq
+    (hslot : sameDegreeSlotDataTarget)
+    (hlower : compatibleSuccDegreeEndpointSignLowerCountEqTarget) :
+    commonInterleaverNonnegCoeffsTarget :=
+  commonInterleaverNonnegCoeffsTarget_of_sameDegreePair_and_lowerCountEq
+    (sameDegreePairTarget_of_slotData hslot) hlower
+
+/-- Nonnegative-coefficient finite-family compatibility target from the #41
+same-degree slot-data endpoint and the #42 endpoint-sign lower-count equality. -/
+theorem familyCompatibleNonnegCoeffsTarget_of_sameDegreeSlotData_and_lowerCountEq
+    (hslot : sameDegreeSlotDataTarget)
+    (hlower : compatibleSuccDegreeEndpointSignLowerCountEqTarget) :
+    familyCompatibleNonnegCoeffsTarget :=
+  familyCompatibleNonnegCoeffsTarget_of_sameDegreePair_and_lowerCountEq
+    (sameDegreePairTarget_of_slotData hslot) hlower
+
+/-- Nonnegative four-way package target from the #41 same-degree slot-data
+endpoint and the #42 endpoint-sign lower-count equality. -/
+theorem fourWayNonnegCoeffsTarget_of_sameDegreeSlotData_and_lowerCountEq
+    (hslot : sameDegreeSlotDataTarget)
+    (hlower : compatibleSuccDegreeEndpointSignLowerCountEqTarget) :
+    fourWayNonnegCoeffsTarget :=
+  fourWayNonnegCoeffsTarget_of_sameDegreePair_and_lowerCountEq
+    (sameDegreePairTarget_of_slotData hslot) hlower
+
+/-! #### Same-degree root-crossing endpoint (#41) with the direct #42 route
+
+The same-degree root-crossing endpoint reduces to the repaired same-degree pair
+endpoint via `sameDegreePairTarget_of_rootCrossing`. -/
+
+/-- Nonnegative-coefficient common-right target from the #41 same-degree
+root-crossing endpoint and the #42 compatible closed-segment count equality. -/
+theorem commonInterleaverNonnegCoeffsTarget_of_sameDegreeRootCrossing_and_closedSegmentCountEq
+    (hcross : sameDegreeRootCrossingTarget)
+    (hcount : compatibleSuccDegreeClosedSegmentCountEqTarget) :
+    commonInterleaverNonnegCoeffsTarget :=
+  commonInterleaverNonnegCoeffsTarget_of_sameDegreePair_and_closedSegmentCountEq
+    (sameDegreePairTarget_of_rootCrossing hcross) hcount
+
+/-- Nonnegative-coefficient finite-family compatibility target from the #41
+same-degree root-crossing endpoint and the #42 closed-segment count equality. -/
+theorem familyCompatibleNonnegCoeffsTarget_of_sameDegreeRootCrossing_and_closedSegmentCountEq
+    (hcross : sameDegreeRootCrossingTarget)
+    (hcount : compatibleSuccDegreeClosedSegmentCountEqTarget) :
+    familyCompatibleNonnegCoeffsTarget :=
+  familyCompatibleNonnegCoeffsTarget_of_sameDegreePair_and_closedSegmentCountEq
+    (sameDegreePairTarget_of_rootCrossing hcross) hcount
+
+/-- Nonnegative four-way package target from the #41 same-degree root-crossing
+endpoint and the #42 compatible closed-segment count equality. -/
+theorem fourWayNonnegCoeffsTarget_of_sameDegreeRootCrossing_and_closedSegmentCountEq
+    (hcross : sameDegreeRootCrossingTarget)
+    (hcount : compatibleSuccDegreeClosedSegmentCountEqTarget) :
+    fourWayNonnegCoeffsTarget :=
+  fourWayNonnegCoeffsTarget_of_sameDegreePair_and_closedSegmentCountEq
+    (sameDegreePairTarget_of_rootCrossing hcross) hcount
+
+/-- Nonnegative-coefficient common-right target from the #41 same-degree
+root-crossing endpoint and the #42 endpoint-sign lower-count equality. -/
+theorem commonInterleaverNonnegCoeffsTarget_of_sameDegreeRootCrossing_and_lowerCountEq
+    (hcross : sameDegreeRootCrossingTarget)
+    (hlower : compatibleSuccDegreeEndpointSignLowerCountEqTarget) :
+    commonInterleaverNonnegCoeffsTarget :=
+  commonInterleaverNonnegCoeffsTarget_of_sameDegreePair_and_lowerCountEq
+    (sameDegreePairTarget_of_rootCrossing hcross) hlower
+
+/-- Nonnegative-coefficient finite-family compatibility target from the #41
+same-degree root-crossing endpoint and the #42 endpoint-sign lower-count equality. -/
+theorem familyCompatibleNonnegCoeffsTarget_of_sameDegreeRootCrossing_and_lowerCountEq
+    (hcross : sameDegreeRootCrossingTarget)
+    (hlower : compatibleSuccDegreeEndpointSignLowerCountEqTarget) :
+    familyCompatibleNonnegCoeffsTarget :=
+  familyCompatibleNonnegCoeffsTarget_of_sameDegreePair_and_lowerCountEq
+    (sameDegreePairTarget_of_rootCrossing hcross) hlower
+
+/-- Nonnegative four-way package target from the #41 same-degree root-crossing
+endpoint and the #42 endpoint-sign lower-count equality. -/
+theorem fourWayNonnegCoeffsTarget_of_sameDegreeRootCrossing_and_lowerCountEq
+    (hcross : sameDegreeRootCrossingTarget)
+    (hlower : compatibleSuccDegreeEndpointSignLowerCountEqTarget) :
+    fourWayNonnegCoeffsTarget :=
+  fourWayNonnegCoeffsTarget_of_sameDegreePair_and_lowerCountEq
+    (sameDegreePairTarget_of_rootCrossing hcross) hlower
+
+/-! #### Same-degree lower root-count endpoint (#41) with the direct #42 route
+
+The same-degree lower-threshold root-count endpoint reduces to the same-degree
+root-crossing endpoint via `sameDegreeRootCrossingTarget_of_rootCount`. -/
+
+/-- Nonnegative-coefficient common-right target from the #41 same-degree lower
+root-count endpoint and the #42 compatible closed-segment count equality. -/
+theorem commonInterleaverNonnegCoeffsTarget_of_sameDegreeRootCount_and_closedSegmentCountEq
+    (hrc : sameDegreeRootCountTarget)
+    (hcount : compatibleSuccDegreeClosedSegmentCountEqTarget) :
+    commonInterleaverNonnegCoeffsTarget :=
+  commonInterleaverNonnegCoeffsTarget_of_sameDegreeRootCrossing_and_closedSegmentCountEq
+    (sameDegreeRootCrossingTarget_of_rootCount hrc) hcount
+
+/-- Nonnegative-coefficient finite-family compatibility target from the #41
+same-degree lower root-count endpoint and the #42 closed-segment count equality. -/
+theorem familyCompatibleNonnegCoeffsTarget_of_sameDegreeRootCount_and_closedSegmentCountEq
+    (hrc : sameDegreeRootCountTarget)
+    (hcount : compatibleSuccDegreeClosedSegmentCountEqTarget) :
+    familyCompatibleNonnegCoeffsTarget :=
+  familyCompatibleNonnegCoeffsTarget_of_sameDegreeRootCrossing_and_closedSegmentCountEq
+    (sameDegreeRootCrossingTarget_of_rootCount hrc) hcount
+
+/-- Nonnegative four-way package target from the #41 same-degree lower
+root-count endpoint and the #42 compatible closed-segment count equality. -/
+theorem fourWayNonnegCoeffsTarget_of_sameDegreeRootCount_and_closedSegmentCountEq
+    (hrc : sameDegreeRootCountTarget)
+    (hcount : compatibleSuccDegreeClosedSegmentCountEqTarget) :
+    fourWayNonnegCoeffsTarget :=
+  fourWayNonnegCoeffsTarget_of_sameDegreeRootCrossing_and_closedSegmentCountEq
+    (sameDegreeRootCrossingTarget_of_rootCount hrc) hcount
+
+/-- Nonnegative-coefficient common-right target from the #41 same-degree lower
+root-count endpoint and the #42 endpoint-sign lower-count equality. -/
+theorem commonInterleaverNonnegCoeffsTarget_of_sameDegreeRootCount_and_lowerCountEq
+    (hrc : sameDegreeRootCountTarget)
+    (hlower : compatibleSuccDegreeEndpointSignLowerCountEqTarget) :
+    commonInterleaverNonnegCoeffsTarget :=
+  commonInterleaverNonnegCoeffsTarget_of_sameDegreeRootCrossing_and_lowerCountEq
+    (sameDegreeRootCrossingTarget_of_rootCount hrc) hlower
+
+/-- Nonnegative-coefficient finite-family compatibility target from the #41
+same-degree lower root-count endpoint and the #42 endpoint-sign lower-count equality. -/
+theorem familyCompatibleNonnegCoeffsTarget_of_sameDegreeRootCount_and_lowerCountEq
+    (hrc : sameDegreeRootCountTarget)
+    (hlower : compatibleSuccDegreeEndpointSignLowerCountEqTarget) :
+    familyCompatibleNonnegCoeffsTarget :=
+  familyCompatibleNonnegCoeffsTarget_of_sameDegreeRootCrossing_and_lowerCountEq
+    (sameDegreeRootCrossingTarget_of_rootCount hrc) hlower
+
+/-- Nonnegative four-way package target from the #41 same-degree lower
+root-count endpoint and the #42 endpoint-sign lower-count equality. -/
+theorem fourWayNonnegCoeffsTarget_of_sameDegreeRootCount_and_lowerCountEq
+    (hrc : sameDegreeRootCountTarget)
+    (hlower : compatibleSuccDegreeEndpointSignLowerCountEqTarget) :
+    fourWayNonnegCoeffsTarget :=
+  fourWayNonnegCoeffsTarget_of_sameDegreeRootCrossing_and_lowerCountEq
+    (sameDegreeRootCrossingTarget_of_rootCount hrc) hlower
+
 /-- Challenge-facing four-way package from the natural two-polynomial bridge. -/
 theorem fourWay_of_pairBridge
     {fs : List ℝ[X]}
@@ -3626,6 +4833,188 @@ theorem not_posComboNoCommonSameDegreeOrientationAlternativeNonneg :
 theorem not_sameDegreeOrientationAlternativeTarget :
     ¬ sameDegreeOrientationAlternativeTarget :=
   not_posComboNoCommonSameDegreeOrientationAlternativeNonneg
+
+/-! ## Direct issue #42 route: harvested succ-degree support -/
+
+/-- Challenge-facing lower-degree succ-degree endpoint splitting. -/
+theorem succDegreeLeftEndpointSplits {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hsucc : g.natDegree = f.natDegree + 1) :
+    f.Splits :=
+  RealRooted.left_splits_closedSegment_of_succDegree hf_pos hg_pos hfg hsucc
+
+/-- Challenge-facing higher-degree succ-degree endpoint splitting. -/
+theorem succDegreeRightEndpointSplits {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hsucc : f.natDegree = g.natDegree + 1) :
+    g.Splits :=
+  RealRooted.right_splits_closedSegment_of_succDegree hf_pos hg_pos hfg hsucc
+
+/-- Challenge-facing lower-degree endpoint packaged as `≠ 0 ∧ Splits`. -/
+theorem succDegreeLeftEndpointNeZeroAndSplits {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hsucc : g.natDegree = f.natDegree + 1) :
+    f ≠ 0 ∧ f.Splits :=
+  RealRooted.left_ne_zero_and_splits_closedSegment_of_succDegree
+    hf_pos hg_pos hfg hsucc
+
+/-- Challenge-facing higher-degree endpoint packaged as `≠ 0 ∧ Splits`. -/
+theorem succDegreeRightEndpointNeZeroAndSplits {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hsucc : f.natDegree = g.natDegree + 1) :
+    g ≠ 0 ∧ g.Splits :=
+  RealRooted.right_ne_zero_and_splits_closedSegment_of_succDegree
+    hf_pos hg_pos hfg hsucc
+
+/-- Challenge-facing lower-degree endpoint root-card package. -/
+theorem succDegreeLeftEndpointCardRoots {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hsucc : g.natDegree = f.natDegree + 1) :
+    f.roots.card = f.natDegree :=
+  RealRooted.left_card_roots_of_succDegree hf_pos hg_pos hfg hsucc
+
+/-- Challenge-facing higher-degree endpoint root-card package. -/
+theorem succDegreeRightEndpointCardRoots {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hsucc : f.natDegree = g.natDegree + 1) :
+    g.roots.card = g.natDegree :=
+  RealRooted.right_card_roots_of_succDegree hf_pos hg_pos hfg hsucc
+
+/-- Challenge-facing inclusive closed-segment lower-degree endpoint. -/
+theorem succDegreeLeftEndpointClosedSegmentIccSplits {f g : ℝ[X]}
+    (hfamily : ∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+      ((C (1 - β) * f + C β * g) ≠ 0 ∧ (C (1 - β) * f + C β * g).Splits))
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hsucc : g.natDegree = f.natDegree + 1) :
+    f.Splits :=
+  RealRooted.splits_of_closedSegmentIcc_family_of_succDegree
+    hfamily hf_pos hg_pos hsucc
+
+/-- Challenge-facing inclusive closed-segment higher-degree endpoint. -/
+theorem succDegreeRightEndpointClosedSegmentIccSplits {f g : ℝ[X]}
+    (hfamily : ∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+      ((C (1 - β) * f + C β * g) ≠ 0 ∧ (C (1 - β) * f + C β * g).Splits))
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hsucc : f.natDegree = g.natDegree + 1) :
+    g.Splits :=
+  RealRooted.splits_right_of_closedSegmentIcc_family_of_succDegree
+    hfamily hf_pos hg_pos hsucc
+
+/-- Challenge-facing `Prec`-level degree-drop for the right-zero lead branch. -/
+theorem succDegreePrecDivXLeftOfPrec {f g : ℝ[X]}
+    (hprec : Prec f g) (hgnn : HasNonnegCoeffs g) (hg0 : g.coeff 0 = 0)
+    (hdeg : g.natDegree = f.natDegree + 1) :
+    Prec (g.divX) f :=
+  RealRooted.prec_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero
+    hprec hgnn hg0 hdeg
+
+/-- Challenge-facing converse right-zero degree-drop reconstruction. -/
+theorem succDegreePrecOfPrecDivXLeft {f g : ℝ[X]}
+    (hprec : Prec (g.divX) f) (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g) (hg0 : g.coeff 0 = 0)
+    (hdeg : g.natDegree = f.natDegree + 1) :
+    Prec f g :=
+  RealRooted.prec_of_prec_divX_left_of_hasNonnegCoeffs_coeff_zero
+    hprec hfnn hgnn hg0 hdeg
+
+/-- Challenge-facing right-zero degree-drop equivalence. -/
+theorem succDegreePrecIffPrecDivXLeft {f g : ℝ[X]}
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) (hg0 : g.coeff 0 = 0)
+    (hdeg : g.natDegree = f.natDegree + 1) :
+    Prec f g ↔ Prec (g.divX) f :=
+  RealRooted.prec_iff_prec_divX_left_of_hasNonnegCoeffs_coeff_zero
+    hfnn hgnn hg0 hdeg
+
+/-- Challenge-facing `Prec0`-level degree-drop for the right-zero lead branch. -/
+theorem succDegreePrec0DivXLeftOfPrec {f g : ℝ[X]}
+    (hprec : Prec f g) (hgnn : HasNonnegCoeffs g) (hg0 : g.coeff 0 = 0)
+    (hdeg : g.natDegree = f.natDegree + 1) :
+    Prec0 (g.divX) f :=
+  RealRooted.prec0_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero
+    hprec hgnn hg0 hdeg
+
+/-- Challenge-facing reflected-family splitting equivalence. -/
+theorem reflectedFamilySplitsIff {a b : ℝ} {f g : ℝ[X]} {N : ℕ}
+    (hfN : f.natDegree ≤ N) (hgN : g.natDegree = N) :
+    (C a * (X ^ (N - f.natDegree) * f.reverse) + C b * g.reverse).Splits ↔
+      (C a * f + C b * g).Splits :=
+  RealRooted.DegreeDropReversal.splits_reflected_family_iff hfN hgN
+
+/-- Challenge-facing reverse/divX additive family splitting equivalence. -/
+theorem reverseFamilySplitsIffDivXAdd {a b : ℝ} {f g : ℝ[X]}
+    (h0 : (C a * f + C b * g).coeff 0 = 0) :
+    (C a * f + C b * g).reverse.Splits ↔
+      (C a * f.divX + C b * g.divX).Splits :=
+  RealRooted.DegreeDropReversal.splits_reverse_family_iff_divX_add_of_coeff_zero h0
+
+/-- Challenge-facing reflected/divX additive family splitting equivalence. -/
+theorem reflectedFamilySplitsIffDivXAdd {a b : ℝ} {f g : ℝ[X]} {N : ℕ}
+    (hfN : f.natDegree ≤ N) (hgN : g.natDegree = N)
+    (h0 : (C a * f + C b * g).coeff 0 = 0) :
+    (C a * (X ^ (N - f.natDegree) * f.reverse) + C b * g.reverse).Splits ↔
+      (C a * f.divX + C b * g.divX).Splits :=
+  RealRooted.DegreeDropReversal.splits_reflected_family_iff_divX_add_of_coeff_zero
+    hfN hgN h0
+
+/-- Challenge-facing lower-threshold root-count gap stability from common non-roots. -/
+theorem rootCountDiffLeOneOfNonRoot {f g : ℝ[X]} (hf : f ≠ 0) (hg : g ≠ 0)
+    (hbound : ∀ x : ℝ, f.eval x ≠ 0 → g.eval x ≠ 0 →
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1) :
+    ∀ x : ℝ,
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 :=
+  RealRooted.rootCount_diff_le_one_of_nonRoot hf hg hbound
+
+/-- Challenge-facing absolute-value form of lower-threshold root-count stability. -/
+theorem rootCountAbsDiffLeOneOfNonRoot {f g : ℝ[X]} (hf : f ≠ 0) (hg : g ≠ 0)
+    (hbound : ∀ x : ℝ, f.eval x ≠ 0 → g.eval x ≠ 0 →
+      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1) :
+    ∀ x : ℝ,
+      |((f.roots.filter (· ≤ x)).card : ℤ) -
+          (g.roots.filter (· ≤ x)).card| ≤ 1 :=
+  RealRooted.rootCount_abs_diff_le_one_of_nonRoot hf hg hbound
+
+/-- Challenge-facing max-form projection from bundled lower/upper root-count gaps. -/
+theorem rootCountMaxAbsDiffLeOneOfBundled {f g : ℝ[X]}
+    (h : ∀ x : ℝ,
+      |((f.roots.filter (· ≤ x)).card : ℤ) -
+          (g.roots.filter (· ≤ x)).card| ≤ 1 ∧
+      |((f.roots.filter (x < ·)).card : ℤ) -
+          (g.roots.filter (x < ·)).card| ≤ 1) :
+    ∀ x : ℝ,
+      max
+        |((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card|
+        |((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card|
+          ≤ 1 :=
+  RealRooted.rootCount_max_abs_diff_le_one_of_bundled h
+
+/-- Challenge-facing lower-threshold bound transport across a root-free window. -/
+theorem cardRootsFilterLeBoundOfNoIsRootIoc {f g : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
+    (hf : ∀ x, a < x → x ≤ b → ¬ f.IsRoot x)
+    (hg : ∀ x, a < x → x ≤ b → ¬ g.IsRoot x)
+    (h : ((f.roots.filter (· ≤ a)).card : ℤ) - (g.roots.filter (· ≤ a)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ a)).card : ℤ) - (f.roots.filter (· ≤ a)).card ≤ 1) :
+    ((f.roots.filter (· ≤ b)).card : ℤ) - (g.roots.filter (· ≤ b)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ b)).card : ℤ) - (f.roots.filter (· ≤ b)).card ≤ 1 :=
+  RealRooted.card_roots_filter_le_bound_of_no_isRoot_Ioc hab hf hg h
+
+/-- Challenge-facing upper-threshold bound transport across a root-free window. -/
+theorem cardRootsFilterGtBoundOfNoIsRootIoc {f g : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
+    (hf : ∀ x, a < x → x ≤ b → ¬ f.IsRoot x)
+    (hg : ∀ x, a < x → x ≤ b → ¬ g.IsRoot x)
+    (h : ((f.roots.filter (a < ·)).card : ℤ) - (g.roots.filter (a < ·)).card ≤ 1 ∧
+      ((g.roots.filter (a < ·)).card : ℤ) - (f.roots.filter (a < ·)).card ≤ 1) :
+    ((f.roots.filter (b < ·)).card : ℤ) - (g.roots.filter (b < ·)).card ≤ 1 ∧
+      ((g.roots.filter (b < ·)).card : ℤ) - (f.roots.filter (b < ·)).card ≤ 1 :=
+  RealRooted.card_roots_filter_gt_bound_of_no_isRoot_Ioc hab hf hg h
 
 end ChudnovskySeymour
 end Challenges

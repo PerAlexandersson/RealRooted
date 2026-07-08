@@ -143,8 +143,8 @@ theorem of_forall_pos_add_C_mul_of_forward
     {p q : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
     (hfamily : ∀ {μ : ℝ}, 0 < μ → (p + C μ * q).Splits) :
-    IsPFPolynomial p := by
-  exact IsPFPolynomial.of_sequence hASW <|
+    IsPFPolynomial p :=
+  IsPFPolynomial.of_sequence hASW <|
     IsPolyaFreqSeq.of_forall_pos_add_C_mul_splits hpnn hqnn hfamily
 
 /-- Splitting form of `IsPFPolynomial.of_forall_pos_add_C_mul_of_forward`. -/

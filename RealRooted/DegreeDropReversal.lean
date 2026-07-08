@@ -109,6 +109,40 @@ theorem card_filter_reverse_roots {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠
   rw [Multiset.filter_map, Multiset.card_map]
   rfl
 
+/-- Total root count (with multiplicity) is preserved by reversal for a split
+polynomial with nonzero constant coefficient.  This is the no-gap accounting
+fact: reversal neither creates nor destroys roots. -/
+theorem card_roots_reverse {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0) :
+    p.reverse.roots.card = p.roots.card := by
+  rw [roots_reverse_eq_map_inv_of_splits_coeff_zero_ne hp h0, Multiset.card_map]
+
+/-- Membership transport across reversal: the roots of `p.reverse` are exactly
+the inverses of the roots of `p`. -/
+theorem mem_roots_reverse_iff {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
+    {x : K} : x ∈ p.reverse.roots ↔ ∃ r ∈ p.roots, r⁻¹ = x := by
+  rw [roots_reverse_eq_map_inv_of_splits_coeff_zero_ne hp h0, Multiset.mem_map]
+
+/-- Every root of the reverse of a split polynomial with nonzero constant
+coefficient is itself nonzero: reversal never introduces a zero root, which is
+what keeps closed-segment endpoint arguments away from the point at infinity. -/
+theorem ne_zero_of_mem_roots_reverse {p : K[X]} (hp : p.Splits)
+    (h0 : p.coeff 0 ≠ 0) {x : K} (hx : x ∈ p.reverse.roots) : x ≠ 0 := by
+  obtain ⟨r, hr, rfl⟩ := (mem_roots_reverse_iff hp h0).1 hx
+  refine inv_ne_zero (fun hr0 => h0 ?_)
+  have hroot : p.IsRoot 0 := by
+    simpa [hr0] using Polynomial.isRoot_of_mem_roots hr
+  simpa [Polynomial.IsRoot.def, Polynomial.coeff_zero_eq_eval_zero] using hroot
+
+/-- Pointwise multiplicity transport across reversal: the multiplicity of `x` as
+a root of `p.reverse` equals the multiplicity of `x⁻¹` as a root of `p`.  This
+refines `card_roots_reverse` to a per-point no-gap statement. -/
+theorem count_roots_reverse [DecidableEq K] {p : K[X]} (hp : p.Splits)
+    (h0 : p.coeff 0 ≠ 0) {x : K} :
+    p.reverse.roots.count x = p.roots.count x⁻¹ := by
+  rw [roots_reverse_eq_map_inv_of_splits_coeff_zero_ne hp h0]
+  rw [show x = (x⁻¹)⁻¹ from (inv_inv x).symm,
+    Multiset.count_map_eq_count' _ _ inv_injective, inv_inv]
+
 /-- Reversal preserves `Splits` over a field. -/
 theorem splits_reverse {p : K[X]} (h : p.Splits) :
     p.reverse.Splits := by
@@ -149,6 +183,21 @@ theorem reflect_eq_X_pow_mul_reverse {R : Type*} [Semiring R] (f : R[X]) {N : �
       · linarith
     · lia
   · linarith
+
+/-- Root-count accounting for reflection at a degree bound: reflecting at `N`
+splits the roots into the `N - natDegree` padding zeros contributed by the
+`X`-power and the reversed roots.  Useful for no-gap counting at the degree-drop
+endpoint. -/
+theorem card_roots_reflect {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
+    {N : ℕ} (hN : p.natDegree ≤ N) :
+    (reflect N p).roots.card = (N - p.natDegree) + p.roots.card := by
+  have hrev_ne : p.reverse ≠ 0 := by
+    rw [Ne, Polynomial.reverse_eq_zero]
+    exact fun hp0 => h0 (by simp [hp0])
+  rw [reflect_eq_X_pow_mul_reverse p hN,
+    Polynomial.roots_mul (mul_ne_zero (pow_ne_zero _ Polynomial.X_ne_zero) hrev_ne),
+    Multiset.card_add, Polynomial.roots_pow, Polynomial.roots_X, Multiset.card_nsmul,
+    Multiset.card_singleton, mul_one, card_roots_reverse hp h0]
 
 /-- Reflection is linear on a polynomial family `f + C μ * g`. -/
 theorem reflect_add_C_mul {R : Type*} [Semiring R] (f g : R[X]) (μ : R) (N : ℕ) :
@@ -243,9 +292,11 @@ theorem splits_of_reverse {p : K[X]} (h : p.reverse.Splits) :
 
 /-- Multiplying by a power of `X` does not change whether a polynomial splits. -/
 theorem splits_X_pow_mul_iff {p : K[X]} (k : ℕ) :
-    (X ^ k * p).Splits ↔ p.Splits :=
-  Polynomial.splits_mul_iff_right (pow_ne_zero k Polynomial.X_ne_zero)
-    (Polynomial.Splits.X_pow k)
+    (X ^ k * p).Splits ↔ p.Splits := by
+  rcases eq_or_ne p 0 with hp | hp
+  · subst hp; simp
+  · rw [Polynomial.splits_mul (pow_ne_zero k Polynomial.X_ne_zero) hp,
+      and_iff_right (Polynomial.Splits.X_pow k)]
 
 /-- Multiplying by one factor of `X` does not change whether a polynomial
 splits. -/
@@ -261,6 +312,19 @@ theorem eq_X_mul_divX_of_coeff_zero {p : K[X]} (h0 : p.coeff 0 = 0) :
   rw [h0, Polynomial.C_0, add_zero] at h
   exact h.symm
 
+/-- Reversal is blind to a vanishing constant term: if `p.coeff 0 = 0`, then
+`p` and its `divX` quotient have the same reversal.
+
+This is the reversal-side companion of `eq_X_mul_divX_of_coeff_zero`: on the
+residual constant-term branch where the constant coefficient vanishes, the
+reversal used by the degree-drop endpoint may be computed on the lower-degree
+`divX` quotient, which is exactly the polynomial handled after removing the zero
+root. -/
+theorem reverse_divX_of_coeff_zero {p : K[X]} (h0 : p.coeff 0 = 0) :
+    p.reverse = p.divX.reverse := by
+  conv_lhs => rw [eq_X_mul_divX_of_coeff_zero h0]
+  exact Polynomial.reverse_X_mul p.divX
+
 /-- If the constant coefficient is zero, splitting is equivalent to splitting
 after dividing by `X`. -/
 theorem splits_iff_divX_splits_of_coeff_zero {p : K[X]} (h0 : p.coeff 0 = 0) :
@@ -273,6 +337,17 @@ splitting of `p`. -/
 theorem splits_of_divX_splits_of_coeff_zero {p : K[X]} (h0 : p.coeff 0 = 0)
     (hdiv : p.divX.Splits) : p.Splits :=
   (splits_iff_divX_splits_of_coeff_zero h0).2 hdiv
+
+/-- Alias for `reverse_divX_of_coeff_zero` matching the right-zero branch. -/
+theorem reverse_eq_reverse_divX_of_coeff_zero {p : K[X]} (h0 : p.coeff 0 = 0) :
+    p.reverse = p.divX.reverse :=
+  reverse_divX_of_coeff_zero h0
+
+/-- In the zero-constant branch, `p.reverse` splits iff `p.divX` splits. -/
+theorem splits_reverse_iff_divX_splits_of_coeff_zero {p : K[X]}
+    (h0 : p.coeff 0 = 0) :
+    p.reverse.Splits ↔ p.divX.Splits := by
+  rw [reverse_eq_reverse_divX_of_coeff_zero h0, splits_reverse_iff]
 
 /-- The reflected degree-padded family splits if and only if the original
 family splits. -/
@@ -293,5 +368,178 @@ theorem splits_reflected_family_iff {a b : K} {f g : K[X]} {N : ℕ}
     simp [hgN]
   rw [← hreflect]
   exact splits_reflect_iff hle
+
+/-- Additive right-zero degree-drop/reversal wrapper for the affine family. -/
+theorem splits_reverse_family_iff_divX_add_of_coeff_zero {a b : K} {f g : K[X]}
+    (h0 : (C a * f + C b * g).coeff 0 = 0) :
+    (C a * f + C b * g).reverse.Splits ↔
+      (C a * f.divX + C b * g.divX).Splits := by
+  rw [splits_reverse_iff_divX_splits_of_coeff_zero h0, Polynomial.divX_add,
+    Polynomial.divX_C_mul, Polynomial.divX_C_mul]
+
+/-- Forward consumer for `splits_reverse_family_iff_divX_add_of_coeff_zero`. -/
+theorem splits_divX_add_of_splits_reverse_family_of_coeff_zero
+    {a b : K} {f g : K[X]}
+    (h0 : (C a * f + C b * g).coeff 0 = 0)
+    (h : (C a * f + C b * g).reverse.Splits) :
+    (C a * f.divX + C b * g.divX).Splits :=
+  (splits_reverse_family_iff_divX_add_of_coeff_zero h0).mp h
+
+/-- Converse consumer for `splits_reverse_family_iff_divX_add_of_coeff_zero`. -/
+theorem splits_reverse_family_of_splits_divX_add_of_coeff_zero
+    {a b : K} {f g : K[X]}
+    (h0 : (C a * f + C b * g).coeff 0 = 0)
+    (h : (C a * f.divX + C b * g.divX).Splits) :
+    (C a * f + C b * g).reverse.Splits :=
+  (splits_reverse_family_iff_divX_add_of_coeff_zero h0).mpr h
+
+/-- Reflected-family form of `splits_reverse_family_iff_divX_add_of_coeff_zero`. -/
+theorem splits_reflected_family_iff_divX_add_of_coeff_zero
+    {a b : K} {f g : K[X]} {N : ℕ}
+    (hfN : f.natDegree ≤ N) (hgN : g.natDegree = N)
+    (h0 : (C a * f + C b * g).coeff 0 = 0) :
+    (C a * (X ^ (N - f.natDegree) * f.reverse) + C b * g.reverse).Splits ↔
+      (C a * f.divX + C b * g.divX).Splits := by
+  rw [splits_reflected_family_iff hfN hgN]
+  exact (splits_reverse_iff (p := C a * f + C b * g)).symm.trans
+    (splits_reverse_family_iff_divX_add_of_coeff_zero h0)
+
+/-- Forward-direction consumer of `splits_reflected_family_iff_divX_add_of_coeff_zero`. -/
+theorem splits_divX_add_of_splits_reflected_family_of_coeff_zero
+    {a b : K} {f g : K[X]} {N : ℕ}
+    (hfN : f.natDegree ≤ N) (hgN : g.natDegree = N)
+    (h0 : (C a * f + C b * g).coeff 0 = 0)
+    (h : (C a * (X ^ (N - f.natDegree) * f.reverse) + C b * g.reverse).Splits) :
+    (C a * f.divX + C b * g.divX).Splits :=
+  (splits_reflected_family_iff_divX_add_of_coeff_zero hfN hgN h0).mp h
+
+/-- Converse-direction consumer of
+`splits_reflected_family_iff_divX_add_of_coeff_zero`. -/
+theorem splits_reflected_family_of_splits_divX_add_of_coeff_zero
+    {a b : K} {f g : K[X]} {N : ℕ}
+    (hfN : f.natDegree ≤ N) (hgN : g.natDegree = N)
+    (h0 : (C a * f + C b * g).coeff 0 = 0)
+    (h : (C a * f.divX + C b * g.divX).Splits) :
+    (C a * (X ^ (N - f.natDegree) * f.reverse) + C b * g.reverse).Splits :=
+  (splits_reflected_family_iff_divX_add_of_coeff_zero hfN hgN h0).mpr h
+
+/-- Direct routing between the reflected family and the reversed affine
+family. -/
+theorem splits_reflected_family_iff_splits_reverse {a b : K} {f g : K[X]}
+    {N : ℕ} (hfN : f.natDegree ≤ N) (hgN : g.natDegree = N) :
+    (C a * (X ^ (N - f.natDegree) * f.reverse) + C b * g.reverse).Splits ↔
+      (C a * f + C b * g).reverse.Splits := by
+  rw [splits_reverse_iff, splits_reflected_family_iff hfN hgN]
+
+/-- Reverse-orientation routing between the reversed affine family and the
+reflected family. -/
+theorem splits_reverse_iff_splits_reflected_family {a b : K} {f g : K[X]}
+    {N : ℕ} (hfN : f.natDegree ≤ N) (hgN : g.natDegree = N) :
+    (C a * f + C b * g).reverse.Splits ↔
+      (C a * (X ^ (N - f.natDegree) * f.reverse) + C b * g.reverse).Splits :=
+  (splits_reflected_family_iff_splits_reverse hfN hgN).symm
+
+/-- Forward-direction consumer of `splits_reflected_family_iff_splits_reverse`. -/
+theorem splits_reverse_of_splits_reflected_family {a b : K} {f g : K[X]}
+    {N : ℕ} (hfN : f.natDegree ≤ N) (hgN : g.natDegree = N)
+    (h : (C a * (X ^ (N - f.natDegree) * f.reverse) + C b * g.reverse).Splits) :
+    (C a * f + C b * g).reverse.Splits :=
+  (splits_reflected_family_iff_splits_reverse hfN hgN).mp h
+
+/-- Converse-direction consumer of `splits_reflected_family_iff_splits_reverse`. -/
+theorem splits_reflected_family_of_splits_reverse {a b : K} {f g : K[X]}
+    {N : ℕ} (hfN : f.natDegree ≤ N) (hgN : g.natDegree = N)
+    (h : (C a * f + C b * g).reverse.Splits) :
+    (C a * (X ^ (N - f.natDegree) * f.reverse) + C b * g.reverse).Splits :=
+  (splits_reflected_family_iff_splits_reverse hfN hgN).mpr h
+
+/-- Orientation flip of `count_roots_reverse`: the multiplicity of `r⁻¹` as a
+root of `p.reverse` equals the multiplicity of `r` as a root of `p`. -/
+theorem count_roots_reverse_inv [DecidableEq K] {p : K[X]} (hp : p.Splits)
+    (h0 : p.coeff 0 ≠ 0) {r : K} :
+    p.reverse.roots.count r⁻¹ = p.roots.count r := by
+  rw [count_roots_reverse hp h0, inv_inv]
+
+/-- No-gap emptiness transport across reversal. -/
+theorem card_filter_reverse_roots_eq_zero_iff {p : K[X]} (hp : p.Splits)
+    (h0 : p.coeff 0 ≠ 0) (q : K → Prop) [DecidablePred q] :
+    (p.reverse.roots.filter q).card = 0 ↔
+      (p.roots.filter (fun r => q r⁻¹)).card = 0 := by
+  rw [card_filter_reverse_roots hp h0 q]
+
+section Ordered
+
+variable [LinearOrder K] [IsStrictOrderedRing K]
+
+/-- Inversion sends a positive open interval `(a, b)` to `(b⁻¹, a⁻¹)`. -/
+theorem mem_Ioo_inv_iff {a b r : K} (ha : 0 < a) (hb : 0 < b) :
+    (a < r⁻¹ ∧ r⁻¹ < b) ↔ (b⁻¹ < r ∧ r < a⁻¹) := by
+  constructor
+  · intro h
+    have hr_pos : 0 < r := inv_pos.mp (lt_trans ha h.1)
+    exact ⟨inv_lt_of_inv_lt₀ hr_pos h.2, by simpa using inv_strictAnti₀ ha h.1⟩
+  · intro h
+    refine ⟨?_, ?_⟩ <;>
+      nlinarith [inv_pos.2 ha, inv_pos.2 hb, mul_inv_cancel₀ (ne_of_gt ha),
+        mul_inv_cancel₀ (ne_of_gt hb),
+        mul_inv_cancel₀ (show r ≠ 0 by linarith [inv_pos.2 ha, inv_pos.2 hb])]
+
+/-- Inversion sends the positive half-line `(a, ∞)` to `(0, a⁻¹)`. -/
+theorem mem_Ioi_inv_iff {a r : K} (ha : 0 < a) :
+    a < r⁻¹ ↔ (0 < r ∧ r < a⁻¹) := by
+  by_cases hr : 0 < r
+  · constructor <;> intro h <;> simp_all +decide [lt_inv_comm₀]
+    simpa using inv_strictAnti₀ h.1 h.2
+  · refine iff_of_false (fun h => hr ?_) (by tauto)
+    nlinarith [inv_mul_cancel₀ (show r ≠ 0 by rintro rfl; norm_num at h; linarith),
+      inv_pos.2 ha]
+
+/-- Interval root-count transport under reversal. -/
+theorem card_roots_reverse_Ioo {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
+    {a b : K} (ha : 0 < a) (hb : 0 < b) :
+    (p.reverse.roots.filter (fun x => a < x ∧ x < b)).card =
+      (p.roots.filter (fun r => b⁻¹ < r ∧ r < a⁻¹)).card := by
+  rw [card_filter_reverse_roots hp h0 (fun x => a < x ∧ x < b)]
+  exact congrArg Multiset.card
+    (Multiset.filter_congr (fun r _ => mem_Ioo_inv_iff ha hb))
+
+/-- Half-line root-count transport under reversal. -/
+theorem card_roots_reverse_Ioi {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
+    {a : K} (ha : 0 < a) :
+    (p.reverse.roots.filter (fun x => a < x)).card =
+      (p.roots.filter (fun r => 0 < r ∧ r < a⁻¹)).card := by
+  rw [card_filter_reverse_roots hp h0 (fun x => a < x)]
+  exact congrArg Multiset.card
+    (Multiset.filter_congr (fun r _ => mem_Ioi_inv_iff ha))
+
+/-- No-gap emptiness on a positive interval under reversal. -/
+theorem card_roots_reverse_Ioo_eq_zero_iff {p : K[X]} (hp : p.Splits)
+    (h0 : p.coeff 0 ≠ 0) {a b : K} (ha : 0 < a) (hb : 0 < b) :
+    (p.reverse.roots.filter (fun x => a < x ∧ x < b)).card = 0 ↔
+      (p.roots.filter (fun r => b⁻¹ < r ∧ r < a⁻¹)).card = 0 := by
+  rw [card_roots_reverse_Ioo hp h0 ha hb]
+
+/-- Interval root-count transport under reflection at a degree bound. -/
+theorem card_roots_reflect_Ioo {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
+    {N : ℕ} (hN : p.natDegree ≤ N) {a b : K} (ha : 0 < a) (hb : 0 < b) :
+    ((reflect N p).roots.filter (fun x => a < x ∧ x < b)).card =
+      (p.roots.filter (fun r => b⁻¹ < r ∧ r < a⁻¹)).card := by
+  have hrev : p.reverse ≠ 0 := by
+    rw [Ne, Polynomial.reverse_eq_zero]
+    exact fun hp0 => h0 (by simp [hp0])
+  have hpad :
+      Multiset.filter (fun x => a < x ∧ x < b)
+        ((N - p.natDegree) • ({0} : Multiset K)) = 0 := by
+    rw [Multiset.filter_eq_nil]
+    intro x hx
+    rw [Multiset.mem_nsmul, Multiset.mem_singleton] at hx
+    exact fun h => absurd (hx.2 ▸ h.1) (lt_asymm ha)
+  rw [reflect_eq_X_pow_mul_reverse p hN,
+    Polynomial.roots_mul (mul_ne_zero (pow_ne_zero _ Polynomial.X_ne_zero) hrev),
+    Polynomial.roots_pow, Polynomial.roots_X, Multiset.filter_add,
+    Multiset.card_add, card_roots_reverse_Ioo hp h0 ha hb, hpad,
+    Multiset.card_zero, zero_add]
+
+end Ordered
 
 end RealRooted.DegreeDropReversal

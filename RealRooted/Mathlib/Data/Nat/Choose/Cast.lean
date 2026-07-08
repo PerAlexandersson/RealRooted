@@ -1,4 +1,5 @@
 import Mathlib.Data.Nat.Choose.Cast
+import Mathlib.Tactic
 
 /-!
 # Extra lemmas about casts of binomial coefficients
@@ -29,5 +30,30 @@ theorem cast_add_one_mul_choose_eq {R : Type*} [CommSemiring R] (n k : ℕ) :
   simpa [Nat.cast_mul, Nat.cast_add, Nat.cast_one, Nat.choose_succ_succ,
     mul_comm] using
     congrArg (fun m : ℕ => (m : R)) (Nat.add_one_mul_choose_eq n k)
+
+/-- Casted descending factorial of length three. -/
+theorem cast_descFactorial_three {R : Type*} [CommRing R] (n : ℕ) :
+    (n.descFactorial 3 : R) = n * (n - 1) * (n - 2) := by
+  rw [descFactorial]
+  cases n with
+  | zero => simp
+  | succ n =>
+      cases n with
+      | zero => simp
+      | succ n =>
+          cases n with
+          | zero => simp
+          | succ n =>
+              rw [Nat.cast_mul, Nat.cast_descFactorial_two]
+              have hsub : n + 1 + 1 + 1 - 2 = n + 1 := by lia
+              rw [hsub]
+              norm_num [Nat.cast_add]
+              ring
+
+/-- Casted form of `Nat.choose n 3`. -/
+theorem cast_choose_three {R : Type*} [Field R] [CharZero R] (n : ℕ) :
+    (Nat.choose n 3 : R) = n * (n - 1) * (n - 2) / 6 := by
+  rw [← cast_descFactorial_three, descFactorial_eq_factorial_mul_choose]
+  norm_num [factorial]
 
 end Nat

@@ -823,6 +823,75 @@ lemma family_isCoprime_left {f g : ℝ[X]}
     (hfg.isRealRooted_add_left hlam₁).2
     (family_no_common_left hno hlam)
 
+/-- No two distinct closed-segment members `C (1 - βᵢ) * f + C βᵢ * g` share a
+real root, provided `f` and `g` have no common real root. -/
+lemma family_no_common_segment {f g : ℝ[X]}
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    {β₁ β₂ : ℝ} (hβ : β₁ ≠ β₂) :
+    ∀ r, (C (1 - β₁) * f + C β₁ * g).IsRoot r →
+      ¬ (C (1 - β₂) * f + C β₂ * g).IsRoot r := by
+  intro r hr₁ hr₂
+  have h₁ : (1 - β₁) * f.eval r + β₁ * g.eval r = 0 := by
+    have := hr₁
+    simp only [IsRoot, eval_add, eval_mul, eval_C] at this
+    linarith
+  have h₂ : (1 - β₂) * f.eval r + β₂ * g.eval r = 0 := by
+    have := hr₂
+    simp only [IsRoot, eval_add, eval_mul, eval_C] at this
+    linarith
+  have hfg : f.eval r = g.eval r := by
+    have hd : (β₁ - β₂) * (g.eval r - f.eval r) = 0 := by
+      linear_combination h₁ - h₂
+    have hne : β₁ - β₂ ≠ 0 := sub_ne_zero.mpr hβ
+    rcases mul_eq_zero.mp hd with h | h
+    · exact absurd h hne
+    · linarith
+  have hf0 : f.eval r = 0 := by
+    have hexp : f.eval r = (1 - β₁) * f.eval r + β₁ * g.eval r := by
+      rw [hfg]
+      ring
+    rw [hexp]
+    exact h₁
+  have hg0 : g.eval r = 0 := by
+    rw [← hfg]
+    exact hf0
+  exact hno r hf0 hg0
+
+/-- Two interior closed-segment members again form a positive-combination
+pair.  The scalar coefficients of any strictly positive combination stay
+strictly positive because both weights lie in `(0, 1)`. -/
+lemma family_pair_segment {f g : ℝ[X]} (h : PosComboRealRooted f g)
+    {β₁ β₂ : ℝ} (hβ₁0 : 0 < β₁) (hβ₁1 : β₁ < 1)
+    (hβ₂0 : 0 < β₂) (hβ₂1 : β₂ < 1) :
+    PosComboRealRooted (C (1 - β₁) * f + C β₁ * g)
+      (C (1 - β₂) * f + C β₂ * g) := by
+  intro lam μ hlam hμ
+  have h1β₁ : 0 < 1 - β₁ := by linarith
+  have h1β₂ : 0 < 1 - β₂ := by linarith
+  have hA : 0 < lam * (1 - β₁) + μ * (1 - β₂) := by positivity
+  have hB : 0 < lam * β₁ + μ * β₂ := by positivity
+  have hbase := h hA hB
+  have hEq :
+      C lam * (C (1 - β₁) * f + C β₁ * g) +
+          C μ * (C (1 - β₂) * f + C β₂ * g) =
+        C (lam * (1 - β₁) + μ * (1 - β₂)) * f +
+          C (lam * β₁ + μ * β₂) * g := by
+    simp only [map_add, map_mul]
+    ring
+  rwa [hEq]
+
+/-- Any two distinct closed-segment members of a positive-combination,
+common-root-free pair are coprime when the first one is interior. -/
+lemma family_isCoprime_segment {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    {β₁ β₂ : ℝ} (hβ₁0 : 0 < β₁) (hβ₁1 : β₁ < 1) (hβ : β₁ ≠ β₂) :
+    IsCoprime (C (1 - β₁) * f + C β₁ * g) (C (1 - β₂) * f + C β₂ * g) :=
+  isCoprime_of_no_common_real_root_of_isRealRooted
+    (hfg (by linarith) hβ₁0).1
+    (hfg (by linarith) hβ₁0).2
+    (family_no_common_segment hno hβ)
+
 /-- Positive-combination real-rootedness descends through a shared real-rooted
 factor. This is the common-factor reduction step needed for converse
 arguments. -/
@@ -845,7 +914,10 @@ lemma of_mul_X_sub_C {f g : ℝ[X]} {r : ℝ}
     PosComboRealRooted f g :=
   of_mul_common_factor h
 
-private lemma common_root_reduction_data
+/-- Common-root quotient data for a positive-leading close-degree
+`PosComboRealRooted` pair.  This is the reusable one-step data behind
+common-root reductions for Obreschkoff-style converse arguments. -/
+lemma common_root_reduction_data
     {f g : ℝ[X]} {r : ℝ}
     (hfg : PosComboRealRooted f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
@@ -1117,6 +1189,50 @@ lemma family_pair_data_left_one_two {f g : ℝ[X]}
     (f := f) (g := g) hfg hdeg hf_pos hg_pos hno zero_lt_one (by simp)
     (by simp)
 
+/-- An interior member `C (1 - β) * f + C β * g` of the closed segment keeps the
+common degree of an equal-degree positive-leading pair. -/
+lemma segment_natDegree {f g : ℝ[X]}
+    (hdeg : g.natDegree = f.natDegree)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    {β : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) :
+    (C (1 - β) * f + C β * g).natDegree = f.natDegree :=
+  natDegree_pos_combo_eq_left_of_natDegree_le hdeg.le hf_pos hg_pos
+    (by linarith) hβ0
+
+/-- An interior segment member of an equal-degree positive-leading pair again has
+a positive leading coefficient. -/
+lemma segment_hasPosLeadingCoeff {f g : ℝ[X]}
+    (hdeg : g.natDegree = f.natDegree)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    {β : ℝ} (hβ0 : 0 < β) (hβ1 : β < 1) :
+    HasPosLeadingCoeff (C (1 - β) * f + C β * g) :=
+  hasPosLeadingCoeff_pos_combo_of_natDegree_le_left hdeg.le hf_pos hg_pos
+    (by linarith) hβ0
+
+/-- Full closed-segment pair data for an equal-degree, positive-leading,
+common-root-free `PosComboRealRooted` pair. -/
+lemma family_pair_data_segment {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    {β₁ β₂ : ℝ} (hβ₁0 : 0 < β₁) (hβ₁1 : β₁ < 1)
+    (hβ₂0 : 0 < β₂) (hβ₂1 : β₂ < 1) (hβ : β₁ ≠ β₂) :
+    PosComboRealRooted
+      (C (1 - β₁) * f + C β₁ * g) (C (1 - β₂) * f + C β₂ * g) ∧
+    HasPosLeadingCoeff (C (1 - β₁) * f + C β₁ * g) ∧
+    HasPosLeadingCoeff (C (1 - β₂) * f + C β₂ * g) ∧
+    (C (1 - β₁) * f + C β₁ * g).natDegree = f.natDegree ∧
+    (C (1 - β₂) * f + C β₂ * g).natDegree = f.natDegree ∧
+    IsCoprime (C (1 - β₁) * f + C β₁ * g)
+      (C (1 - β₂) * f + C β₂ * g) :=
+  ⟨family_pair_segment hfg hβ₁0 hβ₁1 hβ₂0 hβ₂1,
+    segment_hasPosLeadingCoeff hdeg hf_pos hg_pos hβ₁0 hβ₁1,
+    segment_hasPosLeadingCoeff hdeg hf_pos hg_pos hβ₂0 hβ₂1,
+    segment_natDegree hdeg hf_pos hg_pos hβ₁0 hβ₁1,
+    segment_natDegree hdeg hf_pos hg_pos hβ₂0 hβ₂1,
+    family_isCoprime_segment hfg hno hβ₁0 hβ₁1 hβ⟩
+
 /-- A common root of the specialized right family `(f + g, f + 2g)` is already
 a common root of `(f, g)`, so the original no-common hypothesis excludes it. -/
 theorem no_common_root_right_family_one_two_of_no_common
@@ -1208,6 +1324,52 @@ theorem eval_mul_right_family_two_neg_at_root_one_of_no_common
     linarith
   have hf_ne : f.eval r ≠ 0 := fun hf0 => by simp_all
   simp_all
+
+/-- One-call same-degree data bundle for the specialized right family
+`(f + g, f + 2g)`. -/
+lemma family_root_sign_data_right_one_two {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hdeg : f.natDegree ≤ g.natDegree)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    (PosComboRealRooted (f + C (1 : ℝ) * g) (f + C (2 : ℝ) * g) ∧
+      HasPosLeadingCoeff (f + C (1 : ℝ) * g) ∧
+      HasPosLeadingCoeff (f + C (2 : ℝ) * g) ∧
+      (f + C (1 : ℝ) * g).natDegree = g.natDegree ∧
+      (f + C (2 : ℝ) * g).natDegree = g.natDegree ∧
+      IsCoprime (f + C (1 : ℝ) * g) (f + C (2 : ℝ) * g)) ∧
+    (∀ r, (f + C (1 : ℝ) * g).IsRoot r → ¬ (f + C (2 : ℝ) * g).IsRoot r) ∧
+    (∀ r, (f + C (2 : ℝ) * g).IsRoot r →
+      (f + C (1 : ℝ) * g).eval r * g.eval r < 0) ∧
+    (∀ r, (f + C (1 : ℝ) * g).IsRoot r →
+      (f + C (2 : ℝ) * g).eval r * f.eval r < 0) :=
+  ⟨family_pair_data_right_one_two hfg hdeg hf_pos hg_pos hno,
+    no_common_root_right_family_one_two_of_no_common hno,
+    eval_mul_right_family_one_neg_at_root_two_of_no_common hno,
+    eval_mul_right_family_two_neg_at_root_one_of_no_common hno⟩
+
+/-- Symmetric one-call same-degree data bundle for the specialized left family
+`(f + g, 2f + g)`. -/
+lemma family_root_sign_data_left_one_two {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree ≤ f.natDegree)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    (PosComboRealRooted (C (1 : ℝ) * f + g) (C (2 : ℝ) * f + g) ∧
+      HasPosLeadingCoeff (C (1 : ℝ) * f + g) ∧
+      HasPosLeadingCoeff (C (2 : ℝ) * f + g) ∧
+      (C (1 : ℝ) * f + g).natDegree = f.natDegree ∧
+      (C (2 : ℝ) * f + g).natDegree = f.natDegree ∧
+      IsCoprime (C (1 : ℝ) * f + g) (C (2 : ℝ) * f + g)) ∧
+    (∀ r, (C (1 : ℝ) * f + g).IsRoot r → ¬ (C (2 : ℝ) * f + g).IsRoot r) ∧
+    (∀ r, (C (2 : ℝ) * f + g).IsRoot r →
+      (C (1 : ℝ) * f + g).eval r * f.eval r < 0) ∧
+    (∀ r, (C (1 : ℝ) * f + g).IsRoot r →
+      (C (2 : ℝ) * f + g).eval r * g.eval r < 0) :=
+  ⟨family_pair_data_left_one_two hfg hdeg hf_pos hg_pos hno,
+    no_common_root_left_family_one_two_of_no_common hno,
+    eval_mul_left_family_one_neg_at_root_two_of_no_common hno,
+    eval_mul_left_family_two_neg_at_root_one_of_no_common hno⟩
 
 /-- Same-degree `Prec` can be recovered once one has strict sign changes of `g`
 on consecutive roots of `f` and one root of `g` strictly to the right of all

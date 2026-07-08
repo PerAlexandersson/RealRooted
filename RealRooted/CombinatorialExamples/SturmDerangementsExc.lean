@@ -2,6 +2,7 @@ import RealRooted.Basic
 import RealRooted.Derivative
 import RealRooted.Wagner
 import RealRooted.AffineDerivative
+import RealRooted.Tactic.WagnerX
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Algebra.Polynomial.Reverse
 import Mathlib.Tactic
@@ -469,47 +470,22 @@ lemma recurrenceCoreSturmDerangementsExc_ne_zero {n : Nat} (hn : 2 ≤ n) :
   rw [sturmDerangementsExc_succ_eq_X_mul_recurrenceCore n hn] at hsucc_ne
   simp_all
 
-lemma natDegree_recurrenceCoreSturmDerangementsExc {n : Nat} (hn : 2 ≤ n) :
-    (recurrenceCoreSturmDerangementsExc n).natDegree = n - 1 := by
-  have hcore_ne : recurrenceCoreSturmDerangementsExc n ≠ 0 :=
-    recurrenceCoreSturmDerangementsExc_ne_zero hn
-  have hdeg :=
-    congrArg Polynomial.natDegree (sturmDerangementsExc_succ_eq_X_mul_recurrenceCore n hn)
-  rw [natDegree_sturmDerangementsExc (by lia), natDegree_X_mul hcore_ne] at hdeg
-  lia
-
-lemma roots_nonpos_affine_sturmDerangementsExc_of_isRealRooted {n : Nat} (hn : 2 ≤ n)
-    (hrr : (sturmDerangementsExc n).Splits) :
-    ∀ r ∈ (affineSturmDerangementsExc n).roots, r ≤ 0 :=
-  roots_nonpos_of_nonneg_coeffs (prec_affine_sturmDerangementsExc hn hrr).1.2
-    (affine_sturmDerangementsExc_nonnegCoeffs hn)
-
-lemma roots_nonpos_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
-    (hprec : Prec (sturmDerangementsExc (n - 1)) (sturmDerangementsExc n)) :
-    ∀ r ∈ (C (n : ℝ) * sturmDerangementsExc (n - 1)).roots, r ≤ 0 := by
-  have hn_cast : (n : ℝ) ≠ 0 := by positivity
-  intro r hr
-  rw [roots_C_mul _ hn_cast] at hr
-  exact roots_nonpos_of_nonneg_coeffs hprec.1.2
-    (sturmDerangementsExc_nonnegCoeffs (n - 1)) r hr
-
 lemma prec_sturmDerangementsExc_affine_mul_X {n : Nat} (hn : 2 ≤ n)
     (hrr : (sturmDerangementsExc n).Splits) :
     Prec (sturmDerangementsExc n)
-      (X * affineSturmDerangementsExc n) :=
-  prec_sameDegree_to_prec_mul_X_of_roots_nonpos
-    (prec_affine_sturmDerangementsExc hn hrr)
-    (natDegree_affine_sturmDerangementsExc hn)
-    (roots_nonpos_affine_sturmDerangementsExc_of_isRealRooted hn hrr)
-    (roots_nonpos_sturmDerangementsExc_of_isRealRooted hrr)
+      (X * affineSturmDerangementsExc n) := by
+  rr_prec_mul_X using
+    proper := prec_affine_sturmDerangementsExc hn hrr,
+    left_nonneg := affine_sturmDerangementsExc_nonnegCoeffs hn,
+    right_nonneg := sturmDerangementsExc_nonnegCoeffs n
 
 lemma prec_X_mul_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
     (hrr : (sturmDerangementsExc n).Splits) :
-    Prec (X * affineSturmDerangementsExc n) (X * sturmDerangementsExc n) :=
-  prec_mul_X_both_of_roots_nonpos
-    (prec_affine_sturmDerangementsExc hn hrr)
-    (roots_nonpos_affine_sturmDerangementsExc_of_isRealRooted hn hrr)
-    (roots_nonpos_sturmDerangementsExc_of_isRealRooted hrr)
+    Prec (X * affineSturmDerangementsExc n) (X * sturmDerangementsExc n) := by
+  rr_prec_mul_X_both using
+    proper := prec_affine_sturmDerangementsExc hn hrr,
+    left_nonneg := affine_sturmDerangementsExc_nonnegCoeffs hn,
+    right_nonneg := sturmDerangementsExc_nonnegCoeffs n
 
 lemma prec_X_mul_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
     (hprec : Prec (sturmDerangementsExc (n - 1)) (sturmDerangementsExc n)) :
@@ -518,9 +494,13 @@ lemma prec_X_mul_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
   have hlower : Prec (C (n : ℝ) * sturmDerangementsExc (n - 1))
       (sturmDerangementsExc n) :=
     prec_lowerTerm_sturmDerangementsExc (by lia) hprec
-  exact prec_mul_X_both_of_roots_nonpos hlower
-    (roots_nonpos_lowerTerm_sturmDerangementsExc hn hprec)
-    (roots_nonpos_sturmDerangementsExc_of_isRealRooted hprec.2.1.2)
+  have hlower_nonneg :
+      HasNonnegCoeffs (C (n : ℝ) * sturmDerangementsExc (n - 1)) :=
+    nonnegCoeffs_C_mul (by positivity) (sturmDerangementsExc_nonnegCoeffs (n - 1))
+  rr_prec_mul_X_both using
+    proper := hlower,
+    left_nonneg := hlower_nonneg,
+    right_nonneg := sturmDerangementsExc_nonnegCoeffs n
 
 /-- The two inner summands in the derangement recurrence both precede `X * P_n`.
 This matches the main induction-step input in the human proof. -/
@@ -553,18 +533,12 @@ lemma prec_recurrenceCoreSturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
 lemma prec_sturmDerangementsExc_succ_of_prec_recurrenceCore {n : Nat} (hn : 2 ≤ n)
     (hcore : Prec (recurrenceCoreSturmDerangementsExc n) (sturmDerangementsExc n)) :
     Prec (sturmDerangementsExc n) (sturmDerangementsExc (n + 1)) := by
-  have hsame :
-      (recurrenceCoreSturmDerangementsExc n).natDegree = (sturmDerangementsExc n).natDegree := by
-    rw [natDegree_recurrenceCoreSturmDerangementsExc hn, natDegree_sturmDerangementsExc hn]
-  have hcore_nonpos :
-      ∀ r ∈ (recurrenceCoreSturmDerangementsExc n).roots, r ≤ 0 :=
-    roots_nonpos_of_nonneg_coeffs hcore.1.2 (recurrenceCoreSturmDerangementsExc_nonnegCoeffs hn)
-  have hpn_nonpos :
-      ∀ r ∈ (sturmDerangementsExc n).roots, r ≤ 0 :=
-    roots_nonpos_of_nonneg_coeffs hcore.2.1.2 (sturmDerangementsExc_nonnegCoeffs n)
   have hmain :
-      Prec (sturmDerangementsExc n) (X * recurrenceCoreSturmDerangementsExc n) :=
-    prec_sameDegree_to_prec_mul_X_of_roots_nonpos hcore hsame hcore_nonpos hpn_nonpos
+      Prec (sturmDerangementsExc n) (X * recurrenceCoreSturmDerangementsExc n) := by
+    rr_prec_mul_X using
+      proper := hcore,
+      left_nonneg := recurrenceCoreSturmDerangementsExc_nonnegCoeffs hn,
+      right_nonneg := sturmDerangementsExc_nonnegCoeffs n
   simpa [sturmDerangementsExc_succ_eq_X_mul_recurrenceCore n hn] using hmain
 
 /-- Consecutive derangement excedance polynomials interlace in the oriented

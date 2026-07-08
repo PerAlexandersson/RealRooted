@@ -1,6 +1,7 @@
 import RealRooted.MaWang
 import RealRooted.Linear
 import RealRooted.CombinatorialExamples.Common
+import RealRooted.Tactic.WagnerX
 import Mathlib.Tactic
 
 /-!
@@ -331,13 +332,13 @@ theorem interlaces_narayana_succ_of_nonnegCoeffs (n : Nat) (hn : 1 ≤ n)
     Interlaces (narayana n) (narayana (n + 1)) := by
   have hprecQ : Prec (narayanaQuot n) (narayanaQuot (n + 1)) :=
     prec_narayanaQuot_succ_of_nonnegCoeffs n hn hnonneg
-  have hq_nonpos : ∀ r ∈ (narayanaQuot n).roots, r ≤ 0 :=
-    roots_nonpos_of_nonneg_coeffs hprecQ.1.2 (hnonneg n)
-  have hq_succ_nonpos : ∀ r ∈ (narayanaQuot (n + 1)).roots, r ≤ 0 :=
-    roots_nonpos_of_nonneg_coeffs hprecQ.2.1.2 (hnonneg (n + 1))
+  have hmain : Prec (X * narayanaQuot n) (X * narayanaQuot (n + 1)) := by
+    rr_prec_mul_X_both using
+      proper := hprecQ,
+      left_nonneg := hnonneg n,
+      right_nonneg := hnonneg (n + 1)
   have hprec : Prec (narayana n) (narayana (n + 1)) := by
-    simpa [narayana] using
-      prec_mul_X_both_of_roots_nonpos hprecQ hq_nonpos hq_succ_nonpos
+    simpa [narayana] using hmain
   exact hprec.toInterlaces (by
     rw [natDegree_narayana (n + 1) (by lia), natDegree_narayana n hn])
 

@@ -106,9 +106,8 @@ theorem support_diagonalOperator_eq_filter (gamma : ℕ → ℝ) (p : ℝ[X]) :
   · simp [Polynomial.mem_support_iff, coeff_diagonalOperator, hgamma]
 
 theorem support_diagonalOperator_subset (gamma : ℕ → ℝ) (p : ℝ[X]) :
-    (diagonalOperator gamma p).support ⊆ p.support := by
-  rw [support_diagonalOperator_eq_filter]
-  exact Finset.filter_subset _ _
+    (diagonalOperator gamma p).support ⊆ p.support :=
+  (support_diagonalOperator_eq_filter gamma p).symm ▸ Finset.filter_subset _ _
 
 theorem natDegree_diagonalOperator_le (gamma : ℕ → ℝ) (p : ℝ[X]) :
     (diagonalOperator gamma p).natDegree ≤ p.natDegree := by
@@ -241,6 +240,14 @@ theorem jensenPolynomial_normalized_coeff_eq_of_natDegree_le
       coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hp hklt)
     simp [hk, hpcoeff]
 
+/-- A PF polynomial of degree at most `n`, rebuilt as the Jensen polynomial of
+its binomially normalized coefficient sequence, is PF. -/
+theorem IsPFPolynomial.jensenPolynomial_normalized_coeff_of_natDegree_le
+    {n : ℕ} {p : ℝ[X]} (hp : IsPFPolynomial p) (hpdeg : p.natDegree ≤ n) :
+    IsPFPolynomial
+      (jensenPolynomial n (fun k => p.coeff k / (Nat.choose n k : ℝ))) :=
+  (jensenPolynomial_normalized_coeff_eq_of_natDegree_le hpdeg).symm ▸ hp
+
 /-- The Jensen polynomial of `gamma` is the image of `(X + 1) ^ n` under the
 diagonal operator attached to `gamma`. -/
 theorem jensenPolynomial_eq_diagonalOperator_X_add_one_pow
@@ -270,9 +277,9 @@ theorem jensenPolynomial_mul_sequence_eq_diagonalOperator
 
 /-- The Jensen polynomial of a constant diagonal sequence. -/
 theorem jensenPolynomial_const_sequence (n : ℕ) (a : ℝ) :
-    jensenPolynomial n (fun _ => a) = C a * ((X + 1 : ℝ[X]) ^ n) := by
-  rw [jensenPolynomial_eq_diagonalOperator_X_add_one_pow]
-  exact diagonalOperator_const_sequence a ((X + 1 : ℝ[X]) ^ n)
+    jensenPolynomial n (fun _ => a) = C a * ((X + 1 : ℝ[X]) ^ n) :=
+  (jensenPolynomial_eq_diagonalOperator_X_add_one_pow n (fun _ => a)).trans
+    (diagonalOperator_const_sequence a ((X + 1 : ℝ[X]) ^ n))
 
 /-- The Jensen polynomial is additive in the diagonal sequence. -/
 theorem jensenPolynomial_add_sequence (n : ℕ) (gamma delta : ℕ → ℝ) :
@@ -296,14 +303,14 @@ theorem jensenPolynomial_sub_sequence (n : ℕ) (gamma delta : ℕ → ℝ) :
 
 theorem hasNonnegCoeffs_jensenPolynomial
     {n : ℕ} {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k) :
-    HasNonnegCoeffs (jensenPolynomial n gamma) := by
-  rw [jensenPolynomial_eq_diagonalOperator_X_add_one_pow]
-  exact (hasNonnegCoeffs_X_add_one.pow n).diagonalOperator hgamma
+    HasNonnegCoeffs (jensenPolynomial n gamma) :=
+  (jensenPolynomial_eq_diagonalOperator_X_add_one_pow n gamma).symm ▸
+    (hasNonnegCoeffs_X_add_one.pow n).diagonalOperator hgamma
 
 theorem natDegree_jensenPolynomial_le (n : ℕ) (gamma : ℕ → ℝ) :
-    (jensenPolynomial n gamma).natDegree ≤ n := by
-  rw [jensenPolynomial_eq_diagonalOperator_X_add_one_pow]
-  exact (natDegree_diagonalOperator_le _ _).trans (natDegree_X_add_one_pow_le n)
+    (jensenPolynomial n gamma).natDegree ≤ n :=
+  (jensenPolynomial_eq_diagonalOperator_X_add_one_pow n gamma).symm ▸
+    (natDegree_diagonalOperator_le _ _).trans (natDegree_X_add_one_pow_le n)
 
 theorem support_jensenPolynomial_eq_filter (n : ℕ) (gamma : ℕ → ℝ) :
     (jensenPolynomial n gamma).support =
@@ -312,9 +319,8 @@ theorem support_jensenPolynomial_eq_filter (n : ℕ) (gamma : ℕ → ℝ) :
     support_diagonalOperator_eq_filter, support_X_add_one_pow_eq_range]
 
 theorem support_jensenPolynomial_subset (n : ℕ) (gamma : ℕ → ℝ) :
-    (jensenPolynomial n gamma).support ⊆ Finset.range (n + 1) := by
-  rw [support_jensenPolynomial_eq_filter]
-  exact Finset.filter_subset _ _
+    (jensenPolynomial n gamma).support ⊆ Finset.range (n + 1) :=
+  (support_jensenPolynomial_eq_filter n gamma).symm ▸ Finset.filter_subset _ _
 
 theorem jensenPolynomial_eq_zero_iff {n : ℕ} {gamma : ℕ → ℝ} :
     jensenPolynomial n gamma = 0 ↔ ∀ k, k ≤ n → gamma k = 0 := by
@@ -699,9 +705,9 @@ polynomial. -/
 theorem isPFPolynomial_jensenPolynomial_of_finitePFMultiplierSequence
     {n : ℕ} {gamma : ℕ → ℝ}
     (hmult : IsFinitePFMultiplierSequence n gamma) :
-    IsPFPolynomial (jensenPolynomial n gamma) := by
-  rw [jensenPolynomial_eq_diagonalOperator_X_add_one_pow]
-  exact hmult (isPFPolynomial_X_add_one.pow n) (natDegree_X_add_one_pow_le n)
+    IsPFPolynomial (jensenPolynomial n gamma) :=
+  (jensenPolynomial_eq_diagonalOperator_X_add_one_pow n gamma).symm ▸
+    hmult (isPFPolynomial_X_add_one.pow n) (natDegree_X_add_one_pow_le n)
 
 /-- A nonnegative finite multiplier sequence through degree three satisfies
 the two adjacent cubic log-concavity inequalities. -/

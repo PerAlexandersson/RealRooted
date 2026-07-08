@@ -388,8 +388,8 @@ theorem sum_choose_mul_choose_shift (m k : ℕ) :
       rw [Nat.choose_symm (Finset.mem_range_succ_iff.mp hx),
         Nat.add_sub_assoc (Finset.mem_range_succ_iff.mp hx)]
   · intro x _ hx
-    have hx' : k < x := by
-      exact Nat.lt_of_succ_le (Nat.le_of_not_gt (by simpa [Finset.mem_range] using hx))
+    have hx' : k < x :=
+      Nat.lt_of_succ_le (Nat.le_of_not_gt (by simpa [Finset.mem_range] using hx))
     rw [Nat.choose_eq_zero_of_lt hx']
     ring
 

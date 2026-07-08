@@ -58,6 +58,19 @@ theorem cubicDiscr_C_mul (k : ℝ) (p : ℝ[X]) :
   simp only [coeff_C_mul]
   ring
 
+/-- Coefficient-form evaluation of the cubic discriminant.  For a cubic
+written in the standard basis `α X^3 + β X^2 + γ X + δ`, this rewrites
+`cubicDiscr` as the explicit degree-four polynomial in the coefficients. -/
+theorem cubicDiscr_of_coeffs (α β γ δ : ℝ) :
+    cubicDiscr (C α * X ^ 3 + C β * X ^ 2 + C γ * X + C δ)
+      = 18 * α * β * γ * δ - 4 * β ^ 3 * δ + β ^ 2 * γ ^ 2
+          - 4 * α * γ ^ 3 - 27 * α ^ 2 * δ ^ 2 := by
+  unfold cubicDiscr
+  simp only [coeff_add, coeff_C_mul, coeff_X_pow, coeff_C,
+    coeff_X, mul_ite, mul_one, mul_zero]
+  norm_num
+  try ring
+
 /-- Expansion of a monic product of three linear factors. -/
 theorem prod_three_X_sub_C_expand (a b c : ℝ) :
     (X - C a) * (X - C b) * (X - C c)
@@ -76,6 +89,45 @@ theorem cubicDiscr_prod_three_X_sub_C (a b c : ℝ) :
   simp only [coeff_sub, coeff_add, coeff_C_mul, coeff_X_pow, coeff_C,
     coeff_X, mul_ite, mul_one, mul_zero]
   norm_num
+  ring
+
+/-- #41-only cubic support, not #42.  Affine covariance of the cubic
+coefficient discriminant of a monic cubic root pencil.  Applying the affine
+change of variable `x ↦ (x - t) / k` to every root scales `cubicDiscr` by
+`k ^ 6`. -/
+theorem cubicDiscr_monicPencil_affine
+    (k t a b c p q r s : ℝ) (hk : k ≠ 0) :
+    cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+        + C s * ((X - C p) * (X - C q) * (X - C r))) =
+      k ^ 6 * cubicDiscr
+        ((X - C ((a - t) / k)) * (X - C ((b - t) / k)) *
+            (X - C ((c - t) / k))
+          + C s * ((X - C ((p - t) / k)) * (X - C ((q - t) / k)) *
+            (X - C ((r - t) / k)))) := by
+  have hcoeff : ∀ u v w x y z : ℝ,
+      (X - C u) * (X - C v) * (X - C w)
+          + C s * ((X - C x) * (X - C y) * (X - C z)) =
+        C (1 + s) * X ^ 3
+          + C (-((u + v + w) + s * (x + y + z))) * X ^ 2
+          + C ((u * v + v * w + w * u) + s * (x * y + y * z + z * x)) * X
+          + C (-(u * v * w + s * (x * y * z))) := by
+    intro u v w x y z
+    simp only [C_add, C_mul, C_neg, C_1]
+    ring
+  rw [hcoeff, hcoeff, cubicDiscr_of_coeffs, cubicDiscr_of_coeffs]
+  field_simp
+  ring
+
+/-- #41-only cubic support, not #42.  Single-monic-cubic special case of
+`cubicDiscr_monicPencil_affine`. -/
+theorem cubicDiscr_prod_three_X_sub_C_affine
+    (k t a b c : ℝ) (hk : k ≠ 0) :
+    cubicDiscr ((X - C a) * (X - C b) * (X - C c)) =
+      k ^ 6 * cubicDiscr
+        ((X - C ((a - t) / k)) * (X - C ((b - t) / k)) *
+          (X - C ((c - t) / k))) := by
+  rw [cubicDiscr_prod_three_X_sub_C, cubicDiscr_prod_three_X_sub_C]
+  field_simp
   ring
 
 /-- Every real cubic has a real root: a degree-three real polynomial without a
@@ -284,5 +336,113 @@ theorem cubicDiscr_nonneg_iff_splits_of_natDegree_le_three
     0 ≤ cubicDiscr p ↔ p.Splits :=
   ⟨splits_of_natDegree_le_three_cubicDiscr_nonneg hdeg,
     cubicDiscr_nonneg_of_splits_natDegree_le_three hdeg⟩
+
+/-- The cubic discriminant of a monic split cubic with three distinct real roots
+is strictly positive. -/
+theorem cubicDiscr_prod_three_X_sub_C_pos {a b c : ℝ}
+    (hab : a ≠ b) (hbc : b ≠ c) (hac : a ≠ c) :
+    0 < cubicDiscr ((X - C a) * (X - C b) * (X - C c)) := by
+  rw [cubicDiscr_prod_three_X_sub_C]
+  have hne : (a - b) * (b - c) * (a - c) ≠ 0 :=
+    mul_ne_zero (mul_ne_zero (sub_ne_zero.mpr hab) (sub_ne_zero.mpr hbc))
+      (sub_ne_zero.mpr hac)
+  exact (sq_nonneg _).lt_of_ne (Ne.symm (pow_ne_zero 2 hne))
+
+/-- Nonvanishing form of `cubicDiscr_prod_three_X_sub_C_pos`. -/
+theorem cubicDiscr_prod_three_X_sub_C_ne_zero {a b c : ℝ}
+    (hab : a ≠ b) (hbc : b ≠ c) (hac : a ≠ c) :
+    cubicDiscr ((X - C a) * (X - C b) * (X - C c)) ≠ 0 :=
+  ne_of_gt (cubicDiscr_prod_three_X_sub_C_pos hab hbc hac)
+
+/-- The discriminant of a monic split cubic vanishes exactly when two roots
+coincide. -/
+theorem cubicDiscr_prod_three_X_sub_C_eq_zero_iff (a b c : ℝ) :
+    cubicDiscr ((X - C a) * (X - C b) * (X - C c)) = 0
+      ↔ a = b ∨ b = c ∨ a = c := by
+  rw [cubicDiscr_prod_three_X_sub_C, pow_eq_zero_iff (by norm_num)]
+  rw [mul_eq_zero, mul_eq_zero, sub_eq_zero, sub_eq_zero, sub_eq_zero, or_assoc]
+
+/-- Nonnegativity of the discriminant of a split monic cubic. -/
+theorem cubicDiscr_prod_three_X_sub_C_nonneg (a b c : ℝ) :
+    0 ≤ cubicDiscr ((X - C a) * (X - C b) * (X - C c)) := by
+  rw [cubicDiscr_prod_three_X_sub_C]
+  exact sq_nonneg _
+
+/-- Nonvanishing criterion for the discriminant of a split monic cubic. -/
+theorem cubicDiscr_prod_three_X_sub_C_ne_zero_iff (a b c : ℝ) :
+    cubicDiscr ((X - C a) * (X - C b) * (X - C c)) ≠ 0
+      ↔ a ≠ b ∧ b ≠ c ∧ a ≠ c := by
+  rw [ne_eq, cubicDiscr_prod_three_X_sub_C_eq_zero_iff]
+  simp [not_or]
+
+/-- Positivity criterion for the discriminant of a split monic cubic. -/
+theorem cubicDiscr_prod_three_X_sub_C_pos_iff (a b c : ℝ) :
+    0 < cubicDiscr ((X - C a) * (X - C b) * (X - C c))
+      ↔ a ≠ b ∧ b ≠ c ∧ a ≠ c := by
+  constructor
+  · intro h
+    have hne : cubicDiscr ((X - C a) * (X - C b) * (X - C c)) ≠ 0 := ne_of_gt h
+    rw [ne_eq, cubicDiscr_prod_three_X_sub_C_eq_zero_iff] at hne
+    simpa [not_or] using hne
+  · rintro ⟨hab, hbc, hac⟩
+    exact cubicDiscr_prod_three_X_sub_C_pos hab hbc hac
+
+/-- A split monic cubic has positive discriminant iff its discriminant is nonzero. -/
+theorem cubicDiscr_prod_three_X_sub_C_pos_iff_ne_zero (a b c : ℝ) :
+    0 < cubicDiscr ((X - C a) * (X - C b) * (X - C c)) ↔
+      cubicDiscr ((X - C a) * (X - C b) * (X - C c)) ≠ 0 :=
+  ⟨ne_of_gt,
+    fun h => lt_of_le_of_ne (cubicDiscr_prod_three_X_sub_C_nonneg a b c) (Ne.symm h)⟩
+
+/-- A split monic cubic has nonpositive discriminant iff its discriminant
+vanishes. -/
+theorem cubicDiscr_prod_three_X_sub_C_nonpos_iff_eq_zero (a b c : ℝ) :
+    cubicDiscr ((X - C a) * (X - C b) * (X - C c)) ≤ 0 ↔
+      cubicDiscr ((X - C a) * (X - C b) * (X - C c)) = 0 :=
+  ⟨fun h => le_antisymm h (cubicDiscr_prod_three_X_sub_C_nonneg a b c),
+    fun h => le_of_eq h⟩
+
+/-- Reverse-direction form of
+`cubicDiscr_prod_three_X_sub_C_nonpos_iff_eq_zero`. -/
+theorem cubicDiscr_prod_three_X_sub_C_eq_zero_iff_nonpos (a b c : ℝ) :
+    cubicDiscr ((X - C a) * (X - C b) * (X - C c)) = 0 ↔
+      cubicDiscr ((X - C a) * (X - C b) * (X - C c)) ≤ 0 :=
+  (cubicDiscr_prod_three_X_sub_C_nonpos_iff_eq_zero a b c).symm
+
+/-- A split monic cubic cannot have negative discriminant. -/
+theorem cubicDiscr_prod_three_X_sub_C_not_neg (a b c : ℝ) :
+    ¬ cubicDiscr ((X - C a) * (X - C b) * (X - C c)) < 0 :=
+  not_lt.mpr (cubicDiscr_prod_three_X_sub_C_nonneg a b c)
+
+/-- Elimination form for an impossible negative discriminant of a split monic
+cubic. -/
+theorem cubicDiscr_prod_three_X_sub_C_neg_elim {a b c : ℝ} {P : Prop}
+    (h : cubicDiscr ((X - C a) * (X - C b) * (X - C c)) < 0) : P :=
+  absurd h (cubicDiscr_prod_three_X_sub_C_not_neg a b c)
+
+/-- Disjunctive elimination form for an impossible negative discriminant of a
+split monic cubic. -/
+theorem cubicDiscr_prod_three_X_sub_C_neg_or_elim {a b c : ℝ} {P : Prop}
+    (h : cubicDiscr ((X - C a) * (X - C b) * (X - C c)) < 0 ∨ P) : P :=
+  h.resolve_left (cubicDiscr_prod_three_X_sub_C_not_neg a b c)
+
+/-- Right-disjunctive elimination form for an impossible negative
+discriminant of a split monic cubic. -/
+theorem cubicDiscr_prod_three_X_sub_C_or_neg_elim {a b c : ℝ} {P : Prop}
+    (h : P ∨ cubicDiscr ((X - C a) * (X - C b) * (X - C c)) < 0) : P :=
+  h.resolve_right (cubicDiscr_prod_three_X_sub_C_not_neg a b c)
+
+/-- Positivity of the cubic discriminant from strictly ordered roots. -/
+theorem cubicDiscr_prod_three_X_sub_C_pos_of_lt {a b c : ℝ}
+    (hab : a < b) (hbc : b < c) :
+    0 < cubicDiscr ((X - C a) * (X - C b) * (X - C c)) :=
+  cubicDiscr_prod_three_X_sub_C_pos (ne_of_lt hab) (ne_of_lt hbc)
+    (ne_of_lt (hab.trans hbc))
+
+/-- Nonvanishing of the cubic discriminant from strictly ordered roots. -/
+theorem cubicDiscr_prod_three_X_sub_C_ne_zero_of_lt {a b c : ℝ}
+    (hab : a < b) (hbc : b < c) :
+    cubicDiscr ((X - C a) * (X - C b) * (X - C c)) ≠ 0 :=
+  ne_of_gt (cubicDiscr_prod_three_X_sub_C_pos_of_lt hab hbc)
 
 end RealRooted
