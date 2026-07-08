@@ -61,7 +61,7 @@ theorem exists_pos_lt_and_two_mul_le_abs_sub_toFinset
         · exact le_trans hεε₁ (hsep₁ b hb c hc hbc)
 
 /-- `Multiset.Rel` is preserved under finite sums indexed by a `Finset`. -/
-theorem rel_sum_of_forall {α β ι : Type*} {r : α → β → Prop} {s : Finset ι}
+private theorem rel_sum_of_forall {α β ι : Type*} {r : α → β → Prop} {s : Finset ι}
     {f : ι → Multiset α} {g : ι → Multiset β}
     (h : ∀ i ∈ s, Multiset.Rel r (f i) (g i)) :
     Multiset.Rel r (∑ i ∈ s, f i) (∑ i ∈ s, g i) := by
@@ -82,7 +82,7 @@ For each distinct source value `r`, the cluster `cluster r` has exactly
 `s.count r` target roots, all within `δ` of `r`; the summed clusters must be a
 submultiset of the ambient target multiset `t`.
 -/
-theorem exists_rel_le_of_clusters
+private theorem exists_rel_le_of_clusters
     {s t : Multiset ℝ} {δ : ℝ} (cluster : ℝ → Multiset ℝ)
     (hcard : ∀ r ∈ s.toFinset, (cluster r).card = s.count r)
     (hball : ∀ r ∈ s.toFinset, ∀ q ∈ cluster r, |q - r| < δ)
@@ -103,7 +103,7 @@ theorem exists_rel_le_of_clusters
   rwa [Multiset.toFinset_sum_count_nsmul_eq s] at hrel
 
 /-- A point cannot lie in two `δ`-balls whose centers are `2δ`-separated. -/
-theorem not_mem_ball_of_mem_ball_of_separated {a b q δ : ℝ}
+private theorem not_mem_ball_of_mem_ball_of_separated {a b q δ : ℝ}
     (hsep : 2 * δ ≤ |a - b|) (hqa : |q - a| < δ) :
     ¬ |q - b| < δ := by
   cases abs_cases (a - b) <;>
@@ -115,7 +115,7 @@ theorem not_mem_ball_of_mem_ball_of_separated {a b q δ : ℝ}
 Under `2δ`-separation of the centers, the `δ`-balls carved from `t` sum to a
 submultiset of `t`.
 -/
-theorem sum_filter_ball_le {s t : Multiset ℝ} {δ : ℝ}
+private theorem sum_filter_ball_le {s t : Multiset ℝ} {δ : ℝ}
     (hsep : ∀ a ∈ s.toFinset, ∀ b ∈ s.toFinset, a ≠ b → 2 * δ ≤ |a - b|) :
     (∑ a ∈ s.toFinset, t.filter (fun q => |q - a| < δ)) ≤ t := by
   classical
