@@ -56,7 +56,7 @@ counts: every root `a` of `f`, counted with multiplicity, must eventually be
 accounted for by roots of `f + C μ * g` in a small ball around `a`.  The finite
 matching and escaped-root assembly are handled internally.
 -/
-theorem card_filter_gt_add_C_mul_eventually_eq
+private theorem card_filter_gt_add_C_mul_eventually_eq
     {f g : ℝ[X]} {x : ℝ}
     (hf_pos : 0 < f.leadingCoeff) (hg_pos : 0 < g.leadingCoeff)
     (hdeg : g.natDegree = f.natDegree + 1) (hf_split : f.Splits)
