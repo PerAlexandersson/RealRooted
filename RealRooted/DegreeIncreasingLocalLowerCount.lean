@@ -114,30 +114,6 @@ private lemma abs_coeff_prod_X_sub_C_le (s : Multiset ℝ) (ρ : ℝ) (hρ : 0 <
               ≤ |P.coeff k| + |w| * |P.coeff (k + 1)| := htri
             _ ≤ |w| * |P.coeff 0| * ((1 + ρ⁻¹) ^ t.card * (1 + ρ⁻¹)) := hkey
 
-/-- Constant coefficient of a product of linear factors, in absolute value. -/
-private lemma abs_coeff_zero_prod_X_sub_C (s : Multiset ℝ) :
-    |((s.map (fun w => X - C w)).prod).coeff 0| = (s.map (fun w => |w|)).prod := by
-  induction s using Multiset.induction with
-  | empty => simp
-  | cons a t ih =>
-      rw [Multiset.map_cons, Multiset.prod_cons, mul_coeff_zero, abs_mul, ih,
-        Multiset.map_cons, Multiset.prod_cons]
-      congr 1
-      rw [coeff_sub, coeff_X_zero, coeff_C_zero, zero_sub, abs_neg]
-
-/-- A product of `|w|` over a multiset all of whose entries have `|w| ≥ b ≥ 0`
-is bounded below by `b ^ card`. -/
-private lemma pow_card_le_prod_abs (s : Multiset ℝ) (b : ℝ) (hb : 0 ≤ b)
-    (hs : ∀ w ∈ s, b ≤ |w|) :
-    b ^ Multiset.card s ≤ (s.map (fun w => |w|)).prod := by
-  induction s using Multiset.induction with
-  | empty => simp
-  | cons a t ih =>
-      rw [Multiset.map_cons, Multiset.prod_cons, Multiset.card_cons, pow_succ']
-      exact mul_le_mul (hs a (Multiset.mem_cons_self a t))
-        (ih fun w hw => hs w (Multiset.mem_cons_of_mem hw)) (pow_nonneg hb _)
-        (abs_nonneg a)
-
 /-- **Analytic core (escaping form).**  A monic split real polynomial `R` of
 degree `n` whose low coefficients (below `m ≤ n`) are all `≤ D`, and which has a
 root `r0` of large magnitude (`ρ ≤ |r0|` and

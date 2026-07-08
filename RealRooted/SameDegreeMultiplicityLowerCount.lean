@@ -131,6 +131,27 @@ lemma abs_coeff_le_of_mul {F N : ℝ[X]} {CF δ φ : ℝ}
     nlinarith [abs_nonneg (N.coeff k), abs_nonneg (F.coeff 0),
       mul_div_cancel₀ (φ + CF) hφ.ne']
 
+lemma abs_coeff_zero_prod_X_sub_C (s : Multiset ℝ) :
+    |((s.map (fun w => X - C w)).prod).coeff 0| = (s.map (fun w => |w|)).prod := by
+  induction s using Multiset.induction with
+  | empty => simp
+  | cons a t ih =>
+      rw [Multiset.map_cons, Multiset.prod_cons, mul_coeff_zero, abs_mul, ih,
+        Multiset.map_cons, Multiset.prod_cons]
+      congr 1
+      rw [coeff_sub, coeff_X_zero, coeff_C_zero, zero_sub, abs_neg]
+
+lemma pow_card_le_prod_abs (s : Multiset ℝ) (b : ℝ) (hb : 0 ≤ b)
+    (hs : ∀ w ∈ s, b ≤ |w|) :
+    b ^ s.card ≤ (s.map (fun w => |w|)).prod := by
+  induction s using Multiset.induction with
+  | empty => simp
+  | cons a t ih =>
+      rw [Multiset.map_cons, Multiset.prod_cons, Multiset.card_cons, pow_succ']
+      exact mul_le_mul (hs a (Multiset.mem_cons_self a t))
+        (ih fun w hw => hs w (Multiset.mem_cons_of_mem hw)) (pow_nonneg hb _)
+        (abs_nonneg a)
+
 /-! ### Core: many roots near zero from small low coefficients -/
 
 /-
@@ -197,34 +218,12 @@ lemma exists_delta_le_card_filter_roots_near_zero
       rwa [Polynomial.map_id, Real.norm_eq_abs] at hb
     have hF_coeff_zero : |F.coeff 0| ≥ (min ρ 1) ^ n := by
       have hEq : |F.coeff 0| = Multiset.prod (Multiset.map (fun r => |r|) far) := by
-        have hgen : ∀ s : Multiset ℝ,
-            |(Multiset.map (fun r => X - C r) s).prod.coeff 0|
-              = Multiset.prod (Multiset.map (fun r => |r|) s) := by
-          intro s
-          induction s using Multiset.induction with
-          | empty => simp
-          | cons a t ih =>
-              rw [Multiset.map_cons, Multiset.prod_cons, mul_coeff_zero, abs_mul, ih,
-                Multiset.map_cons, Multiset.prod_cons]
-              congr 1
-              rw [coeff_sub, coeff_X_zero, coeff_C_zero, zero_sub, abs_neg]
-        exact hgen far
+        simpa [F] using abs_coeff_zero_prod_X_sub_C far
       have hge : Multiset.prod (Multiset.map (fun r => |r|) far) ≥ (min ρ 1) ^ far.card := by
         have hfar : ∀ r ∈ far, |r| ≥ min ρ 1 := fun r hr =>
           le_trans (min_le_left _ _)
             (le_of_not_gt fun h => (Multiset.mem_filter.mp hr).2 h)
-        have hpow : ∀ s : Multiset ℝ, (∀ r ∈ s, |r| ≥ min ρ 1) →
-            Multiset.prod (Multiset.map (fun r => |r|) s) ≥ (min ρ 1) ^ s.card := by
-          intro s
-          induction s using Multiset.induction with
-          | empty => intro _; simp
-          | cons a t ih =>
-              intro hs
-              rw [Multiset.map_cons, Multiset.prod_cons, Multiset.card_cons, pow_succ']
-              exact mul_le_mul (hs a (Multiset.mem_cons_self a t))
-                (ih fun r hr => hs r (Multiset.mem_cons_of_mem hr))
-                (by positivity) (by positivity)
-        exact hpow far hfar
+        exact pow_card_le_prod_abs far (min ρ 1) (by positivity) hfar
       refine le_trans ?_ (hge.trans_eq hEq.symm)
       refine pow_le_pow_of_le_one (by positivity) (min_le_right _ _) ?_
       exact le_trans (Multiset.card_le_card <| Multiset.filter_le _ _)
