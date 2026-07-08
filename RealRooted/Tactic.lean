@@ -7,6 +7,7 @@ import RealRooted.Tactic.Lookup
 import RealRooted.Tactic.Finish
 import RealRooted.Tactic.WagnerX
 import RealRooted.Tactic.MaWang
+import RealRooted.Tactic.LiuWangRecursion
 import RealRooted.Tactic.SecondDerivative
 import RealRooted.Tactic.Favard
 import RealRooted.Tactic.LiuWang

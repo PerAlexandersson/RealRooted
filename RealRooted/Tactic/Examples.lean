@@ -7,6 +7,7 @@ import RealRooted.Tactic.Examples.Finish
 import RealRooted.Tactic.Examples.WagnerX
 import RealRooted.Tactic.Examples.Favard
 import RealRooted.Tactic.Examples.MaWang
+import RealRooted.Tactic.Examples.LiuWangRecursion
 import RealRooted.Tactic.Examples.LiuWang
 import RealRooted.Tactic.Examples.Product
 import RealRooted.Tactic.Examples.PFBidiagonal

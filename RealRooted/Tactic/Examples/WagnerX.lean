@@ -9,6 +9,8 @@ recurrences.
 
 open Polynomial
 
+noncomputable section
+
 namespace RealRooted
 namespace Tactic
 
@@ -489,14 +491,15 @@ lemma a358623Shifted_coeff_one : ∀ n : Nat, (a358623Shifted n).coeff 1 = 1
 
 lemma a358623Shifted_coeff_two_pos_succ :
     ∀ n : Nat, 0 < (a358623Shifted (n + 1)).coeff 2
-  | 0 => by norm_num
+  | 0 => by simp [a358623Shifted_one, coeff_one]
   | n + 1 => by
       have hprev : 0 < (a358623Shifted (n + 1)).coeff 2 :=
         a358623Shifted_coeff_two_pos_succ n
       have hone : (a358623Shifted n).coeff 1 = 1 :=
         a358623Shifted_coeff_one n
-      rw [a358623Shifted_succ_succ]
-      simp [coeff_derivative, hone]
+      rw [a358623Shifted_succ_succ, coeff_X_mul, coeff_add, coeff_C_mul,
+        coeff_C_mul, coeff_derivative, hone]
+      norm_num
       nlinarith [hprev, show (0 : ℝ) < (n : ℝ) + 4 by positivity]
 
 /-- Active shifted rows have degree at least two, as required by Rolle. -/
