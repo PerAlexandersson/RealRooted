@@ -1,4 +1,5 @@
 import RealRooted.SameDegreeMultiplicityLowerCount
+import RealRooted.RootSumBounds
 
 /-!
 # Issue #42: degree-increasing per-root multiplicity lower counts
@@ -278,12 +279,9 @@ lemma exists_mem_roots_abs_sub_gt (f g : ℝ[X]) (hlt : f.natDegree < g.natDegre
   intro μ hμ hμδ hsplit
   have hμne : μ ≠ 0 := hμ.ne'
   have hpdeg : (f + C μ * g).natDegree = g.natDegree :=
-    (Polynomial.natDegree_add_eq_right_of_natDegree_lt (p := f) (q := C μ * g) (by
-      rw [Polynomial.natDegree_C_mul hμne]
-      exact hlt)).trans (Polynomial.natDegree_C_mul hμne)
-  have hplc : (f + C μ * g).leadingCoeff = μ * g.leadingCoeff := by
-    have h0 : f.coeff g.natDegree = 0 := coeff_eq_zero_of_natDegree_lt hlt
-    rw [leadingCoeff, hpdeg, coeff_add, coeff_C_mul, h0, zero_add, leadingCoeff]
+    Polynomial.natDegree_add_C_mul_of_natDegree_lt hμne hlt
+  have hplc : (f + C μ * g).leadingCoeff = μ * g.leadingCoeff :=
+    Polynomial.leadingCoeff_add_C_mul_of_natDegree_lt hμne hlt
   -- Product identity for the split member evaluated at `c`.
   have habs_prod : ∀ s : Multiset ℝ,
       |(s.map (fun r => c - r)).prod| = (s.map (fun r => |c - r|)).prod := by
@@ -392,12 +390,10 @@ theorem degreeIncreasing_local_lower_count {f g : ℝ[X]}
   have hμne : μ ≠ 0 := hμ.ne'
   have hpdeg : pnu.natDegree = g.natDegree := by
     rw [hpnu]
-    exact (Polynomial.natDegree_add_eq_right_of_natDegree_lt (p := f) (q := C μ * g) (by
-      rw [Polynomial.natDegree_C_mul hμne]
-      exact hlt)).trans (Polynomial.natDegree_C_mul hμne)
+    exact Polynomial.natDegree_add_C_mul_of_natDegree_lt hμne hlt
   have hplc : pnu.leadingCoeff = μ * g.leadingCoeff := by
-    have h0 : f.coeff g.natDegree = 0 := coeff_eq_zero_of_natDegree_lt hlt
-    rw [hpnu, leadingCoeff, hpdeg, coeff_add, coeff_C_mul, h0, zero_add, leadingCoeff]
+    rw [hpnu]
+    exact Polynomial.leadingCoeff_add_C_mul_of_natDegree_lt hμne hlt
   have hcne : pnu.leadingCoeff ≠ 0 := by rw [hplc]; exact mul_ne_zero hμne hglc
   set ptil : ℝ[X] := C pnu.leadingCoeff⁻¹ * pnu with hptil
   have hptil_monic : ptil.Monic := by
