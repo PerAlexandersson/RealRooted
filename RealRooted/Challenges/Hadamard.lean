@@ -3023,9 +3023,9 @@ abbrev hurwitzMatrixHadamardEvenCoeffPFTarget : Prop :=
 
 /-- The full Hurwitz Schur-product target implies the matrix Hadamard target. -/
 theorem hurwitzMatrixHadamardTarget_of_hurwitzSchur
-    (h : hurwitzSchurTarget) :
+    (_h : hurwitzSchurTarget) :
     hurwitzMatrixHadamardTarget :=
-  hadamardPreservesHurwitzMatrixTN_of_schur h
+  hadamardPreservesHurwitzMatrixTN_of_schur
 
 /-- Challenge-facing equivalence between Garloff--Wagner Theorem 1 and its
 right-half-plane analytic core. -/
@@ -3088,19 +3088,19 @@ theorem rightHalfPlaneStableHadamardTarget_of_matrixRoute
 Schur-product core and both directions of the Hurwitz-matrix criterion. -/
 theorem hurwitzStableHadamardTarget_of_hurwitzSchur
     (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hSchur : hurwitzSchurTarget)
+    (_hSchur : hurwitzSchurTarget)
     (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement) :
     hurwitzStableHadamardTarget :=
-  hadamardPreservesHurwitzStable_of_hurwitzSchur hFwd hSchur hBwd
+  hadamardPreservesHurwitzStable_of_hurwitzSchur hFwd hBwd
 
 /-- Challenge-facing right-half-plane analytic target from the pure Hurwitz
 Schur-product core and both directions of the Hurwitz-matrix criterion. -/
 theorem rightHalfPlaneStableHadamardTarget_of_hurwitzSchur
     (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hSchur : hurwitzSchurTarget)
+    (_hSchur : hurwitzSchurTarget)
     (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement) :
     rightHalfPlaneStableHadamardTarget :=
-  hadamardPreservesRightHalfPlaneStable_of_hurwitzSchur hFwd hSchur hBwd
+  hadamardPreservesRightHalfPlaneStable_of_hurwitzSchur hFwd hBwd
 
 /-- Challenge-facing matrix Hadamard target from Garloff--Wagner Theorem 1
 plus the Hurwitz-matrix total-nonnegativity criterion. -/
@@ -3153,9 +3153,9 @@ theorem hurwitzMatrixHadamardEvenCoeffPFTarget_of_matrixHadamard
 /-- The full Hurwitz Schur-product target implies the odd/even PF consequence
 for Hadamard products. -/
 theorem hurwitzMatrixHadamardOddEvenPFTarget_of_hurwitzSchur
-    (h : hurwitzSchurTarget) :
+    (_h : hurwitzSchurTarget) :
     hurwitzMatrixHadamardOddEvenPFTarget :=
-  hadamardPreservesHurwitzMatrixOddEvenPF_of_schur h
+  hadamardPreservesHurwitzMatrixOddEvenPF_of_schur
 
 /-- The full Hurwitz Schur-product target implies the odd-coefficient PF leaf. -/
 theorem hurwitzMatrixHadamardOddCoeffPFTarget_of_hurwitzSchur
@@ -3292,16 +3292,16 @@ theorem hurwitzSchurFullBandTarget_of_leThree
 /-- Challenge-facing low-order consequence of the full Hurwitz Schur-product
 target. -/
 theorem hurwitzSchurLeThreeTarget_of_hurwitzSchur
-    (h : hurwitzSchurTarget) :
+    (_h : hurwitzSchurTarget) :
     hurwitzSchurLeThreeTarget :=
-  hurwitzMatrixSchurProductDetLeThree_of_schurProductTN h
+  hurwitzMatrixSchurProductDetLeThree_of_schurProductTN
 
 /-- Challenge-facing in-band `3 x 3` consequence of the full Hurwitz
 Schur-product target. -/
 theorem hurwitzSchurInBandTarget_of_hurwitzSchur
-    (h : hurwitzSchurTarget) :
+    (_h : hurwitzSchurTarget) :
     hurwitzSchurInBandTarget :=
-  hurwitzMatrixSchurProductDetFinThreeInBand_of_schurProductTN h
+  hurwitzMatrixSchurProductDetFinThreeInBand_of_schurProductTN
 
 /-- Challenge-facing reduction from the column-zero Pólya-frequency leaf to the
 fully in-band `3 x 3` Hurwitz Schur-product target. -/
@@ -3760,9 +3760,9 @@ theorem hurwitzMatrixHadamardLeThreeTarget_of_hurwitzSchurLeThree
 /-- Challenge-facing low-order Hurwitz-matrix Hadamard consequence of the full
 Hurwitz Schur-product target. -/
 theorem hurwitzMatrixHadamardLeThreeTarget_of_hurwitzSchur
-    (h : hurwitzSchurTarget) :
+    (_h : hurwitzSchurTarget) :
     hurwitzMatrixHadamardLeThreeTarget :=
-  hadamardPreservesHurwitzMatrixTNDetLeThree_of_schur h
+  hadamardPreservesHurwitzMatrixTNDetLeThree_of_schur
 
 /-- Challenge-facing reduction from the column-zero Pólya-frequency leaf to the
 low-order Hurwitz-matrix Hadamard target through size `3`. -/
@@ -3916,10 +3916,10 @@ theorem garloffWagnerNonnegPrecTarget_of_rightHalfPlaneRoute
 proper-position target through the pure Hurwitz Schur-product target. -/
 theorem garloffWagnerNonnegPrecTarget_of_hurwitzSchur
     (hToFull : NonnegPrecToFullyInterlacingPairStatement)
-    (hSchur : hurwitzSchurTarget)
+    (_hSchur : hurwitzSchurTarget)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     garloffWagnerNonnegPrecTarget :=
-  garloffWagnerHadamardNonnegPrec_of_hurwitzSchur hToFull hSchur hFullToPrec0
+  garloffWagnerHadamardNonnegPrec_of_hurwitzSchur hToFull hFullToPrec0
 
 /-- Challenge-facing reduction of Garloff--Wagner's nonnegative
 proper-position target through the six unbundled classical inputs. -/
@@ -3956,11 +3956,11 @@ proper-position target through the pure Hurwitz Schur-product classical
 inputs. -/
 theorem garloffWagnerNonnegPrecTarget_of_hurwitzSchurClassicalInputs
     (hRoute : HermiteBiehlerHurwitzRoute)
-    (hSchur : hurwitzSchurTarget)
+    (_hSchur : hurwitzSchurTarget)
     (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hInt : FullyInterlacingPairInterlaceStatement) :
     garloffWagnerNonnegPrecTarget :=
-  garloffWagnerHadamardNonnegPrec_of_hurwitzSchurClassicalInputs hRoute hSchur hASW hInt
+  garloffWagnerHadamardNonnegPrec_of_hurwitzSchurClassicalInputs hRoute hASW hInt
 
 /-- Challenge-facing reduction from the nonnegative two-pair statement to the
 strict PF-polynomial proper-position target. -/
@@ -4018,10 +4018,10 @@ theorem garloffWagnerPFPrecTarget_of_rightHalfPlaneRoute
 Hurwitz Schur-product target. -/
 theorem garloffWagnerPFPrecTarget_of_hurwitzSchur
     (hToFull : NonnegPrecToFullyInterlacingPairStatement)
-    (hSchur : hurwitzSchurTarget)
+    (_hSchur : hurwitzSchurTarget)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     garloffWagnerPFPrecTarget :=
-  garloffWagnerHadamardPFPrec_of_hurwitzSchur hToFull hSchur hFullToPrec0
+  garloffWagnerHadamardPFPrec_of_hurwitzSchur hToFull hFullToPrec0
 
 /-- Challenge-facing reduction of the strict PF target through the six
 unbundled classical inputs. -/
@@ -4057,12 +4057,12 @@ theorem garloffWagnerPFPrecTarget_of_matrixClassicalInputs
 Hurwitz Schur-product classical inputs. -/
 theorem garloffWagnerPFPrecTarget_of_hurwitzSchurClassicalInputs
     (hRoute : HermiteBiehlerHurwitzRoute)
-    (hSchur : hurwitzSchurTarget)
+    (_hSchur : hurwitzSchurTarget)
     (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hInt : FullyInterlacingPairInterlaceStatement) :
     garloffWagnerPFPrecTarget :=
   garloffWagnerHadamardPFPrec_of_hurwitzSchurClassicalInputs
-    hRoute hSchur hASW hInt
+    hRoute hASW hInt
 
 /-- Challenge-facing reduction from strict PF proper position to the zero-aware
 PF proper-position target. -/
@@ -4127,10 +4127,10 @@ theorem garloffWagnerPFPrec0Target_of_rightHalfPlaneRoute
 Hurwitz Schur-product target. -/
 theorem garloffWagnerPFPrec0Target_of_hurwitzSchur
     (hToFull : NonnegPrecToFullyInterlacingPairStatement)
-    (hSchur : hurwitzSchurTarget)
+    (_hSchur : hurwitzSchurTarget)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     garloffWagnerPFPrec0Target :=
-  garloffWagnerHadamardPFPrec0_of_hurwitzSchur hToFull hSchur hFullToPrec0
+  garloffWagnerHadamardPFPrec0_of_hurwitzSchur hToFull hFullToPrec0
 
 /-- Challenge-facing reduction of the zero-aware PF target through the six
 unbundled classical inputs. -/
@@ -4165,11 +4165,11 @@ theorem garloffWagnerPFPrec0Target_of_matrixClassicalInputs
 Hurwitz Schur-product classical inputs. -/
 theorem garloffWagnerPFPrec0Target_of_hurwitzSchurClassicalInputs
     (hRoute : HermiteBiehlerHurwitzRoute)
-    (hSchur : hurwitzSchurTarget)
+    (_hSchur : hurwitzSchurTarget)
     (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hInt : FullyInterlacingPairInterlaceStatement) :
     garloffWagnerPFPrec0Target :=
-  garloffWagnerHadamardPFPrec0_of_hurwitzSchurClassicalInputs hRoute hSchur hASW hInt
+  garloffWagnerHadamardPFPrec0_of_hurwitzSchurClassicalInputs hRoute hASW hInt
 
 /-- Challenge-facing reduction from the nonnegative two-pair target to the
 one-polynomial real-rooted Hadamard target. -/
@@ -4351,10 +4351,10 @@ theorem schurPolyaWagnerHadamardPFTarget_of_rightHalfPlaneRoute
 Schur-product target. -/
 theorem schurPolyaWagnerHadamardPFTarget_of_hurwitzSchur
     (hToFull : NonnegPrecToFullyInterlacingPairStatement)
-    (hSchur : hurwitzSchurTarget)
+    (_hSchur : hurwitzSchurTarget)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     schurPolyaWagnerHadamardPFTarget :=
-  schurPolyaWagnerHadamardPF_of_hurwitzSchur hToFull hSchur hFullToPrec0
+  schurPolyaWagnerHadamardPF_of_hurwitzSchur hToFull hFullToPrec0
 
 /-- Challenge-facing PF Schur--Pólya--Wagner target through the six
 unbundled classical inputs. -/
@@ -4389,11 +4389,11 @@ theorem schurPolyaWagnerHadamardPFTarget_of_matrixClassicalInputs
 Schur-product classical inputs. -/
 theorem schurPolyaWagnerHadamardPFTarget_of_hurwitzSchurClassicalInputs
     (hRoute : HermiteBiehlerHurwitzRoute)
-    (hSchur : hurwitzSchurTarget)
+    (_hSchur : hurwitzSchurTarget)
     (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hInt : FullyInterlacingPairInterlaceStatement) :
     schurPolyaWagnerHadamardPFTarget :=
-  schurPolyaWagnerHadamardPF_of_hurwitzSchurClassicalInputs hRoute hSchur hASW hInt
+  schurPolyaWagnerHadamardPF_of_hurwitzSchurClassicalInputs hRoute hASW hInt
 
 /-- Challenge-facing reciprocal-cone Hadamard closure from the zero-aware PF
 Garloff--Wagner wrapper. -/
@@ -4465,10 +4465,10 @@ theorem hadamardReciprocalConeClosureTarget_of_rightHalfPlaneRoute
 Schur-product target. -/
 theorem hadamardReciprocalConeClosureTarget_of_hurwitzSchur
     (hToFull : NonnegPrecToFullyInterlacingPairStatement)
-    (hSchur : hurwitzSchurTarget)
+    (_hSchur : hurwitzSchurTarget)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     hadamardReciprocalConeClosureTarget :=
-  hadamardReciprocalConeClosure_of_hurwitzSchur hToFull hSchur hFullToPrec0
+  hadamardReciprocalConeClosure_of_hurwitzSchur hToFull hFullToPrec0
 
 /-- Challenge-facing reciprocal-cone Hadamard closure through the six
 unbundled classical inputs. -/
@@ -4503,11 +4503,11 @@ theorem hadamardReciprocalConeClosureTarget_of_matrixClassicalInputs
 Hurwitz Schur-product classical inputs. -/
 theorem hadamardReciprocalConeClosureTarget_of_hurwitzSchurClassicalInputs
     (hRoute : HermiteBiehlerHurwitzRoute)
-    (hSchur : hurwitzSchurTarget)
+    (_hSchur : hurwitzSchurTarget)
     (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hInt : FullyInterlacingPairInterlaceStatement) :
     hadamardReciprocalConeClosureTarget :=
-  hadamardReciprocalConeClosure_of_hurwitzSchurClassicalInputs hRoute hSchur hASW hInt
+  hadamardReciprocalConeClosure_of_hurwitzSchurClassicalInputs hRoute hASW hInt
 
 /-- Challenge-facing coefficientwise Pólya-frequency closure from the
 Schur--Pólya--Wagner PF target. -/
@@ -4603,10 +4603,10 @@ Hurwitz Schur-product target. -/
 theorem polyaFrequencyHadamardCoeffTarget_of_hurwitzSchur
     (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
     (hToFull : NonnegPrecToFullyInterlacingPairStatement)
-    (hSchur : hurwitzSchurTarget)
+    (_hSchur : hurwitzSchurTarget)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     polyaFrequencyHadamardCoeffTarget :=
-  polyaFrequencyHadamardCoeff_of_hurwitzSchur hASW hToFull hSchur hFullToPrec0
+  polyaFrequencyHadamardCoeff_of_hurwitzSchur hASW hToFull hFullToPrec0
 
 /-- Challenge-facing coefficientwise Pólya-frequency closure through the six
 unbundled classical inputs. -/
@@ -4647,12 +4647,12 @@ Hurwitz Schur-product classical inputs. -/
 theorem polyaFrequencyHadamardCoeffTarget_of_hurwitzSchurClassicalInputs
     (hASW0 : aissenSchoenbergWhitneyForwardOrZeroStatement)
     (hRoute : HermiteBiehlerHurwitzRoute)
-    (hSchur : hurwitzSchurTarget)
+    (_hSchur : hurwitzSchurTarget)
     (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hInt : FullyInterlacingPairInterlaceStatement) :
     polyaFrequencyHadamardCoeffTarget :=
   polyaFrequencyHadamardCoeff_of_hurwitzSchurClassicalInputs
-    hASW0 hRoute hSchur hASW hInt
+    hASW0 hRoute hASW hInt
 
 end Hadamard
 end Challenges

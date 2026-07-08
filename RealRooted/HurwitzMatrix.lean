@@ -200,11 +200,17 @@ content: the entrywise product of two totally nonnegative Hurwitz matrices is
 again totally nonnegative.  This is special to the Hurwitz block-Toeplitz
 structure; the entrywise product of arbitrary totally nonnegative matrices is
 not totally nonnegative in general. -/
-def HurwitzMatrixSchurProductTNStatement : Prop :=
+abbrev HurwitzMatrixSchurProductTNStatement : Prop :=
   ∀ {a b : ℕ → ℝ},
     (hurwitz a).IsTotallyNonneg →
     (hurwitz b).IsTotallyNonneg →
     (Matrix.of fun i j => hurwitz a i j * hurwitz b i j).IsTotallyNonneg
+
+/-- The Schur product of two totally nonnegative Hurwitz matrices is totally nonnegative. -/
+theorem hurwitzMatrixSchurProductTN {a b : ℕ → ℝ}
+    (ha : (hurwitz a).IsTotallyNonneg) (hb : (hurwitz b).IsTotallyNonneg) :
+    (Matrix.of fun i j => hurwitz a i j * hurwitz b i j).IsTotallyNonneg := by
+  sorry
 
 /-! ### Low-order cases of the Schur-product core -/
 
@@ -479,21 +485,17 @@ theorem hurwitzMatrixSchurProductDetLeThree_of_core
   hurwitzMatrixSchurProductDetLeThree_of_inBand
     (hurwitzMatrixSchurProductDetFinThreeInBand_of_core hcore)
 
-/-- The full Hurwitz matrix Schur-product statement implies its named
-low-order, size-`≤ 3`, consequence. -/
-theorem hurwitzMatrixSchurProductDetLeThree_of_schurProductTN
-    (h : HurwitzMatrixSchurProductTNStatement) :
+theorem hurwitzMatrixSchurProductDetLeThree_of_schurProductTN :
     HurwitzMatrixSchurProductDetLeThreeStatement := by
   intro a b ha hb n rows cols hrows hcols _hn
-  exact h ha hb hrows hcols
+  exact hurwitzMatrixSchurProductTN ha hb hrows hcols
 
 /-- The full Hurwitz matrix Schur-product statement implies the isolated
 in-band `3 × 3` core. -/
-theorem hurwitzMatrixSchurProductDetFinThreeInBand_of_schurProductTN
-    (h : HurwitzMatrixSchurProductTNStatement) :
+theorem hurwitzMatrixSchurProductDetFinThreeInBand_of_schurProductTN :
     HurwitzMatrixSchurProductDetFinThreeInBandStatement := by
   intro a b ha hb rows cols hrows hcols _hband
-  exact h ha hb hrows hcols
+  exact hurwitzMatrixSchurProductTN ha hb hrows hcols
 
 /-- The low-order, size-`≤ 3`, Hurwitz matrix Schur-product statement implies
 the isolated in-band `3 × 3` core. -/
