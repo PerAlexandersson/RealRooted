@@ -357,8 +357,7 @@ theorem degreeIncreasing_local_lower_count {f g : ℝ[X]}
   rcases eq_or_ne f 0 with hf0 | hfne
   · refine ⟨1, one_pos, ?_⟩
     intro μ _ _ _ a ha
-    rw [hf0] at ha
-    simp at ha
+    simp [hf0] at ha
   obtain ⟨c, hc0⟩ := Finset.exists_notMem f.roots.toFinset
   have hc : f.eval c ≠ 0 := fun h =>
     hc0 (Multiset.mem_toFinset.mpr (mem_roots'.mpr ⟨hfne, h⟩))

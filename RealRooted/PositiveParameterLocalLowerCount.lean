@@ -51,9 +51,7 @@ theorem positiveParameter_local_lower_count
     exists_eps_forall_root_count_le_card_filter_near (μ0 := μ) (hsplit μ hμ) ρ hρ
   refine ⟨ε, hε, ?_⟩
   intro ν hν hdist a ha
-  have hdeg' : (f + C ν * g).natDegree = (f + C μ * g).natDegree := by
-    rw [hdeg ν hν, hdeg μ hμ]
-  exact hεspec ν hdist (hsplit ν hν) hdeg' a ha
+  exact hεspec ν hdist (hsplit ν hν) (by rw [hdeg ν hν, hdeg μ hμ]) a ha
 
 end RealRooted
 

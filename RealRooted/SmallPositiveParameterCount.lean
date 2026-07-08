@@ -46,9 +46,7 @@ private theorem matching_hypothesis_of_eventual_local_lower_counts
     Multiset.exists_rel_le_of_forall_le_count (s := f.roots)
       (t := (f + C μ * g).roots) hsep hcount
   refine ⟨hp_split, u, hu, ?_⟩
-  refine hRel.mono ?_
-  intro _ _ _ _ hclose
-  exact lt_trans hclose hερ
+  exact hRel.mono fun _ _ _ _ hclose => lt_trans hclose hερ
 
 /--
 Small-positive-parameter upper root-count equality for `f + C μ * g`.
