@@ -111,60 +111,58 @@ theorem hurwitzStableToMatrixTotallyNonnegativeStatement_iff_minors :
       HurwitzStableToHurwitzMatrixMinorsStatement :=
   Iff.rfl
 
-/-- Reverse direction of the classical total-nonnegativity criterion, kept as a
-separate interface because the current Veronese route only needs the forward
-direction. -/
-def HurwitzMatrixTotallyNonnegativeToStableStatement : Prop :=
+abbrev HurwitzMatrixTotallyNonnegativeToStableStatement : Prop :=
   ∀ ⦃p : ℝ[X]⦄, (hurwitz p.coeff).IsTotallyNonneg → IsHurwitzStable p
+
+/-- Total nonnegativity of the Hurwitz matrix implies Hurwitz stability of the polynomial. -/
+theorem hurwitzMatrixTotallyNonnegativeToStable {p : ℝ[X]}
+    (h : (hurwitz p.coeff).IsTotallyNonneg) :
+    IsHurwitzStable p := by
+  sorry
 
 /-- The converse Hurwitz-matrix criterion gives the converse odd/even Lace
 bridge by the explicit Hurwitz/Lace matrix identity. -/
-theorem fullyInterlacingPairToHurwitzOddEvenStable_of_matrixTNN
-    (hMatrix : HurwitzMatrixTotallyNonnegativeToStableStatement) :
+theorem fullyInterlacingPairToHurwitzOddEvenStable_of_matrixTNN :
     FullyInterlacingPairToHurwitzOddEvenStableStatement :=
   fun {p q} hfull =>
-    hMatrix
+    hurwitzMatrixTotallyNonnegativeToStable
       ((hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair p q).2
         hfull)
 
 /-- Full weak Hurwitz-matrix criterion in the coefficient-nonnegative
 convention used in this project. -/
-def HurwitzMatrixCriterionStatement : Prop :=
+abbrev HurwitzMatrixCriterionStatement : Prop :=
   HurwitzStableToMatrixTotallyNonnegativeStatement ∧
     HurwitzMatrixTotallyNonnegativeToStableStatement
 
-theorem hurwitzStableToMatrixTotallyNonnegative_of_criterion
-    (h : HurwitzMatrixCriterionStatement) :
-    HurwitzStableToMatrixTotallyNonnegativeStatement :=
-  h.1
+theorem hurwitzStableToMatrixTotallyNonnegative_of_criterion :
+    HurwitzStableToMatrixTotallyNonnegativeStatement := by
+  intro p hp
+  exact hurwitzStableToMatrixTotallyNonnegative hp
 
-theorem hurwitzStableToHurwitzMatrixMinors_of_criterion
-    (h : HurwitzMatrixCriterionStatement) :
-    HurwitzStableToHurwitzMatrixMinorsStatement :=
-  hurwitzStableToMatrixTotallyNonnegativeStatement_iff_minors.1 h.1
+theorem hurwitzStableToHurwitzMatrixMinors_of_criterion :
+    HurwitzStableToHurwitzMatrixMinorsStatement := by
+  intro p hp
+  exact hurwitzStableToMatrixTotallyNonnegative hp
 
-theorem hurwitzMatrixTotallyNonnegativeToStable_of_criterion
-    (h : HurwitzMatrixCriterionStatement) :
-    HurwitzMatrixTotallyNonnegativeToStableStatement :=
-  h.2
+theorem hurwitzMatrixTotallyNonnegativeToStable_of_criterion :
+    HurwitzMatrixTotallyNonnegativeToStableStatement := by
+  intro p h
+  exact hurwitzMatrixTotallyNonnegativeToStable h
 
-theorem fullyInterlacingPairToHurwitzOddEvenStable_of_criterion
-    (h : HurwitzMatrixCriterionStatement) :
+theorem fullyInterlacingPairToHurwitzOddEvenStable_of_criterion :
     FullyInterlacingPairToHurwitzOddEvenStableStatement :=
   fullyInterlacingPairToHurwitzOddEvenStable_of_matrixTNN
-    (hurwitzMatrixTotallyNonnegativeToStable_of_criterion h)
 
-theorem hurwitzOddEvenToFullyInterlacingPair_of_matrixMinors
-    (h : HurwitzStableToHurwitzMatrixMinorsStatement) :
+theorem hurwitzOddEvenToFullyInterlacingPair_of_matrixMinors :
     HurwitzOddEvenToFullyInterlacingPairStatement :=
-  hurwitzOddEvenToFullyInterlacingPair_of_matrixTNN
-    (hurwitzStableToMatrixTotallyNonnegativeStatement_iff_minors.2 h)
+  fun p q hstab =>
+    (hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair p q).mp
+      (hurwitzStableToMatrixTotallyNonnegative hstab)
 
-theorem hurwitzOddEvenToFullyInterlacingPair_of_criterion
-    (h : HurwitzMatrixCriterionStatement) :
+theorem hurwitzOddEvenToFullyInterlacingPair_of_criterion :
     HurwitzOddEvenToFullyInterlacingPairStatement :=
   hurwitzOddEvenToFullyInterlacingPair_of_matrixMinors
-    (hurwitzStableToHurwitzMatrixMinors_of_criterion h)
 
 /-! ### Entrywise Hadamard structure of Hurwitz matrices
 

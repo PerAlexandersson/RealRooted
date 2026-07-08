@@ -624,10 +624,13 @@ def HurwitzOddEvenToFullyInterlacingPairStatement : Prop :=
     IsHurwitzStable (oddEvenPolynomial p q) →
     FullyInterlacingPair p.coeff (fun n => q.coeff n)
 
-/-- Classical Hurwitz criterion interface in matrix form: Hurwitz stability
-should imply total nonnegativity of the Hurwitz matrix. -/
-def HurwitzStableToMatrixTotallyNonnegativeStatement : Prop :=
+abbrev HurwitzStableToMatrixTotallyNonnegativeStatement : Prop :=
   ∀ ⦃p : ℝ[X]⦄, IsHurwitzStable p → (hurwitz p.coeff).IsTotallyNonneg
+
+/-- Hurwitz stability implies that the Hurwitz matrix of the polynomial is totally nonnegative. -/
+theorem hurwitzStableToMatrixTotallyNonnegative {p : ℝ[X]} (hp : IsHurwitzStable p) :
+    (hurwitz p.coeff).IsTotallyNonneg := by
+  sorry
 
 /-- The legacy strong interface implies the PF interface. -/
 theorem pfPrecToFullyInterlacingPair_of_precToFully

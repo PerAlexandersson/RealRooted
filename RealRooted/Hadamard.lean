@@ -2660,11 +2660,12 @@ This mirrors the classical proof through the Asner--Kemperman Hurwitz-matrix
 total-nonnegativity criterion: forward criterion, matrix Hadamard core, and
 converse criterion. -/
 theorem hadamardPreservesHurwitzStable_of_matrixRoute
-    (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hHad : hadamardPreservesHurwitzMatrixTNStatement)
-    (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement) :
+    (hHad : hadamardPreservesHurwitzMatrixTNStatement) :
     hadamardPreservesHurwitzStableStatement :=
-  fun {_ _} ha hb => hBwd (hHad (hFwd ha) (hFwd hb))
+  fun {_ _} ha hb =>
+    hurwitzMatrixTotallyNonnegativeToStable
+      (hHad (hurwitzStableToMatrixTotallyNonnegative ha)
+            (hurwitzStableToMatrixTotallyNonnegative hb))
 
 /-- Hurwitz-matrix form of the coefficientwise Hadamard product of two
 polynomials. -/
@@ -2877,99 +2878,82 @@ theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_schur :
 
 /-- Garloff--Wagner Theorem 1 from the pure Hurwitz Schur-product core and the
 two directions of the Hurwitz-matrix criterion. -/
-theorem hadamardPreservesHurwitzStable_of_hurwitzSchur
-    (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement) :
+theorem hadamardPreservesHurwitzStable_of_hurwitzSchur :
     hadamardPreservesHurwitzStableStatement :=
-  hadamardPreservesHurwitzStable_of_matrixRoute hFwd
-    hadamardPreservesHurwitzMatrixTN_of_schur hBwd
+  hadamardPreservesHurwitzStable_of_matrixRoute
+    hadamardPreservesHurwitzMatrixTN_of_schur
 
 /-- The Hurwitz-matrix Hadamard leaf also follows from Garloff--Wagner
 Theorem 1 plus both directions of the Hurwitz-matrix total-nonnegativity
 criterion.  Together with `hadamardPreservesHurwitzStable_of_matrixRoute`, this
 records the equivalence of the matrix leaf and Theorem 1 modulo that criterion. -/
 theorem hadamardPreservesHurwitzMatrixTN_of_stableRoute
-    (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement)
-    (hThm1 : hadamardPreservesHurwitzStableStatement)
-    (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement) :
+    (hThm1 : hadamardPreservesHurwitzStableStatement) :
     hadamardPreservesHurwitzMatrixTNStatement :=
-  fun {_ _} ha hb => hFwd (hThm1 (hBwd ha) (hBwd hb))
+  fun {_ _} ha hb =>
+    hurwitzStableToMatrixTotallyNonnegative
+      (hThm1 (hurwitzMatrixTotallyNonnegativeToStable ha)
+             (hurwitzMatrixTotallyNonnegativeToStable hb))
 
 /-- Low-order Hurwitz-matrix Hadamard minors from Garloff--Wagner Theorem 1
 plus both directions of the Hurwitz-matrix total-nonnegativity criterion. -/
 theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_stableRoute
-    (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement)
-    (hThm1 : hadamardPreservesHurwitzStableStatement)
-    (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement) :
+    (hThm1 : hadamardPreservesHurwitzStableStatement) :
     hadamardPreservesHurwitzMatrixTNDetLeThreeStatement :=
   hadamardPreservesHurwitzMatrixTNDetLeThree_of_matrixTN
-    (hadamardPreservesHurwitzMatrixTN_of_stableRoute hBwd hThm1 hFwd)
+    (hadamardPreservesHurwitzMatrixTN_of_stableRoute hThm1)
 
 /-- Odd/even PF consequence from Garloff--Wagner Theorem 1 plus both
 directions of the Hurwitz-matrix total-nonnegativity criterion. -/
 theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_stableRoute
-    (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement)
-    (hThm1 : hadamardPreservesHurwitzStableStatement)
-    (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement) :
+    (hThm1 : hadamardPreservesHurwitzStableStatement) :
     hadamardPreservesHurwitzMatrixOddEvenPFStatement :=
   hadamardPreservesHurwitzMatrixOddEvenPF_of_matrixTN
-    (hadamardPreservesHurwitzMatrixTN_of_stableRoute hBwd hThm1 hFwd)
+    (hadamardPreservesHurwitzMatrixTN_of_stableRoute hThm1)
 
 /-- Under the two directions of the Hurwitz-matrix criterion, Garloff--Wagner
 Theorem 1 is equivalent to the Hurwitz-matrix Hadamard leaf. -/
-theorem hadamardPreservesHurwitzStable_iff_matrixTN
-    (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement) :
+theorem hadamardPreservesHurwitzStable_iff_matrixTN :
     hadamardPreservesHurwitzStableStatement ↔
       hadamardPreservesHurwitzMatrixTNStatement :=
-  ⟨fun h => hadamardPreservesHurwitzMatrixTN_of_stableRoute hBwd h hFwd,
-    fun h => hadamardPreservesHurwitzStable_of_matrixRoute hFwd h hBwd⟩
+  ⟨fun h => hadamardPreservesHurwitzMatrixTN_of_stableRoute h,
+    fun h => hadamardPreservesHurwitzStable_of_matrixRoute h⟩
 
 /-- Under the Hurwitz-matrix criterion, the right-half-plane analytic core of
 Garloff--Wagner Theorem 1 is equivalent to the matrix Hadamard leaf. -/
-theorem hadamardPreservesRightHalfPlaneStable_iff_matrixTN
-    (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement) :
+theorem hadamardPreservesRightHalfPlaneStable_iff_matrixTN :
     hadamardPreservesRightHalfPlaneStableStatement ↔
       hadamardPreservesHurwitzMatrixTNStatement :=
   hadamardPreservesHurwitzStable_iff_rightHalfPlane.symm.trans
-    (hadamardPreservesHurwitzStable_iff_matrixTN hFwd hBwd)
+    hadamardPreservesHurwitzStable_iff_matrixTN
 
 /-- The matrix route also gives the right-half-plane analytic core directly. -/
 theorem hadamardPreservesRightHalfPlaneStable_of_matrixRoute
-    (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hHad : hadamardPreservesHurwitzMatrixTNStatement)
-    (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement) :
+    (hHad : hadamardPreservesHurwitzMatrixTNStatement) :
     hadamardPreservesRightHalfPlaneStableStatement :=
-  (hadamardPreservesRightHalfPlaneStable_iff_matrixTN hFwd hBwd).2 hHad
+  hadamardPreservesRightHalfPlaneStable_iff_matrixTN.2 hHad
 
 /-- Conversely, the right-half-plane analytic core gives the matrix leaf through
 the Hurwitz-matrix criterion. -/
 theorem hadamardPreservesHurwitzMatrixTN_of_rightHalfPlaneRoute
-    (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement)
-    (hRHP : hadamardPreservesRightHalfPlaneStableStatement)
-    (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement) :
+    (hRHP : hadamardPreservesRightHalfPlaneStableStatement) :
     hadamardPreservesHurwitzMatrixTNStatement :=
-  (hadamardPreservesRightHalfPlaneStable_iff_matrixTN hFwd hBwd).1 hRHP
+  hadamardPreservesRightHalfPlaneStable_iff_matrixTN.1 hRHP
 
 /-- Odd/even PF consequence from the right-half-plane analytic core plus the
 Hurwitz-matrix total-nonnegativity criterion. -/
 theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_rightHalfPlaneRoute
-    (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement)
-    (hRHP : hadamardPreservesRightHalfPlaneStableStatement)
-    (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement) :
+    (hRHP : hadamardPreservesRightHalfPlaneStableStatement) :
     hadamardPreservesHurwitzMatrixOddEvenPFStatement :=
   hadamardPreservesHurwitzMatrixOddEvenPF_of_matrixTN
-    (hadamardPreservesHurwitzMatrixTN_of_rightHalfPlaneRoute hBwd hRHP hFwd)
+    (hadamardPreservesHurwitzMatrixTN_of_rightHalfPlaneRoute hRHP)
 
 /-- The pure Hurwitz Schur-product core implies the right-half-plane analytic
 core, modulo the two directions of the Hurwitz-matrix criterion. -/
-theorem hadamardPreservesRightHalfPlaneStable_of_hurwitzSchur
-    (hFwd : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hBwd : HurwitzMatrixTotallyNonnegativeToStableStatement) :
+theorem hadamardPreservesRightHalfPlaneStable_of_hurwitzSchur :
     hadamardPreservesRightHalfPlaneStableStatement :=
-  hadamardPreservesRightHalfPlaneStable_of_matrixRoute hFwd
-    hadamardPreservesHurwitzMatrixTN_of_schur hBwd
+  hadamardPreservesRightHalfPlaneStable_of_matrixRoute
+    hadamardPreservesHurwitzMatrixTN_of_schur
 
 /-- **Garloff--Wagner, Theorem 4(b), reduced to its classical inputs** (TODO T9).
 
