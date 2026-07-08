@@ -25,6 +25,7 @@ import RealRooted.MaWang
 import RealRooted.AffineDerivative
 import RealRooted.CombinatorialExamples
 import RealRooted.GeneralizedLiuWang
+import RealRooted.LiuWangRecursion
 import RealRooted.OperatorPreservesInterlacing
 import RealRooted.SymmetricDecomposition
 import RealRooted.CommonInterleaverTwo

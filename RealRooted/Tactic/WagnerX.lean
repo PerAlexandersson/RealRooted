@@ -101,8 +101,11 @@ theorem prec_wagner_derivative_gap_lag_step {f g : ℝ[X]} {a c : ℝ}
       hnonneg hprec hpoly_pos hex
   have hsum_nonneg : HasNonnegCoeffs (C c * g.derivative + C a * f) :=
     (nonnegCoeffs_C_mul hc.le hgnn.derivative).add (nonnegCoeffs_C_mul ha.le hfnn)
+  have hsum_nonneg_weighted :
+      HasNonnegCoeffs (weightedSum [(c, g.derivative), (a, f)]) := by
+    simpa [weightedSum, add_assoc] using hsum_nonneg
   simpa [weightedSum, add_assoc] using
-    (prec_mul_X_of_prec_of_nonneg hsum_prec hsum_nonneg hgnn)
+    (prec_mul_X_of_prec_of_nonneg hsum_prec hsum_nonneg_weighted hgnn)
 
 /-- Scalar-left Wagner derivative-gap-lag step.
 
@@ -125,7 +128,10 @@ theorem prec_wagner_derivative_gap_lag_step_den {f g p : ℝ[X]} {a c d : ℝ}
     simpa [hrec] using hstep
   have hscaled' : Prec g (C d⁻¹ * (C d * p)) :=
     prec_C_mul_right hscaled (inv_ne_zero hd.ne')
-  simpa [mul_assoc, C_mul_C, inv_mul_cancel₀ hd.ne'] using hscaled'
+  have hnormalize : C d⁻¹ * (C d * p) = p := by
+    rw [← mul_assoc, ← C_mul, inv_mul_cancel₀ hd.ne']
+    simp
+  simpa [hnormalize] using hscaled'
 
 /-- Sequence induction for active Wagner derivative-gap-lag recurrences.
 

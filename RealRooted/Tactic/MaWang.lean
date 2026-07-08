@@ -1,4 +1,4 @@
-import RealRooted.GeneralizedLiuWang
+import RealRooted.LiuWangRecursion
 import RealRooted.MaWang
 import RealRooted.Tactic.RootBounds
 import RealRooted.Tactic.ScalarDen
@@ -862,101 +862,9 @@ theorem prec_mw_lw_derivative_lag_sequence_of_root_signs
         ∀ r, (P (n + 1)).IsRoot r → (W n).eval r ≤ 0)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  intro n
-  induction n with
-  | zero =>
-      exact hbase
-  | succ n ih =>
-      have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
-      have hLag_inter : Interlaces (P n) (P (n + 1)) :=
-        ih.toInterlaces (hdeg_succ n)
-      have hDer_inter :
-          Interlaces (P (n + 1)).derivative (P (n + 1)) :=
-        derivative_interlaces hsource.2 (hdeg_two n)
-      have hDer_pos : HasPosLeadingCoeff (P (n + 1)).derivative :=
-        (hpos (n + 1)).derivative (by
-          have h := hdeg_two n
-          lia)
-      have hrec_weighted :
-          P (n + 2) =
-            U n * P (n + 1) +
-              polynomialWeightedSum
-                ((W n, P n) :: [(V n, (P (n + 1)).derivative)]) := by
-        calc
-          P (n + 2) =
-              U n * P (n + 1) + V n * (P (n + 1)).derivative +
-                W n * P n := hrec n
-          _ =
-              U n * P (n + 1) +
-                polynomialWeightedSum
-                  ((W n, P n) :: [(V n, (P (n + 1)).derivative)]) := by
-                simp [polynomialWeightedSum]
-                ring
-      have hF_pos :
-          HasPosLeadingCoeff
-            (U n * P (n + 1) +
-              polynomialWeightedSum
-                ((W n, P n) :: [(V n, (P (n + 1)).derivative)])) := by
-        rw [← hrec_weighted]
-        exact hpos (n + 2)
-      have htail_inter :
-          ∀ bg ∈ [(V n, (P (n + 1)).derivative)],
-            Interlaces bg.2 (P (n + 1)) := by
-        intro bg hmem
-        have hbg : bg = (V n, (P (n + 1)).derivative) := by
-          simpa using hmem
-        subst bg
-        simpa using hDer_inter
-      have htail_pos :
-          ∀ bg ∈ [(V n, (P (n + 1)).derivative)],
-            HasPosLeadingCoeff bg.2 := by
-        intro bg hmem
-        have hbg : bg = (V n, (P (n + 1)).derivative) := by
-          simpa using hmem
-        subst bg
-        simpa using hDer_pos
-      have htail_nonpos :
-          ∀ bg ∈ [(V n, (P (n + 1)).derivative)],
-            ∀ r : ℝ, (P (n + 1)).IsRoot r → bg.1.eval r ≤ 0 := by
-        intro bg hmem r hr
-        have hbg : bg = (V n, (P (n + 1)).derivative) := by
-          simpa using hmem
-        subst bg
-        exact hV_nonpos n hsource r hr
-      have hW_at_roots :
-          ∀ r, (P (n + 1)).IsRoot r → (W n).eval r ≤ 0 := by
-        intro r hr
-        exact hW_nonpos n hsource r hr
-      have hdeg_next :
-          (P (n + 1)).natDegree + 1 = (P (n + 2)).natDegree := by
-        simpa [Nat.add_assoc] using hdeg_succ (n + 1)
-      have hdeg_lo_weighted :
-          (P (n + 1)).natDegree ≤
-            (U n * P (n + 1) +
-              polynomialWeightedSum
-                ((W n, P n) :: [(V n, (P (n + 1)).derivative)])).natDegree := by
-        rw [← hrec_weighted]
-        lia
-      have hdeg_hi_weighted :
-          (U n * P (n + 1) +
-              polynomialWeightedSum
-                ((W n, P n) :: [(V n, (P (n + 1)).derivative)])).natDegree ≤
-            (P (n + 1)).natDegree + 1 := by
-        rw [← hrec_weighted]
-        lia
-      have hstep :
-          Prec (P (n + 1))
-            (U n * P (n + 1) +
-              polynomialWeightedSum
-                ((W n, P n) :: [(V n, (P (n + 1)).derivative)])) :=
-        prec_generalizedLiuWang_of_no_common
-          (f := P (n + 1)) (g := P n) (a := U n) (b := W n)
-          (l := [(V n, (P (n + 1)).derivative)])
-          hLag_inter (hpos n) htail_inter htail_pos htail_nonpos
-          hF_pos hdeg_lo_weighted hdeg_hi_weighted (hno n) hW_at_roots
-      rw [hrec_weighted]
-      exact hstep
+    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+  prec_lw_derivative_lag_sequence_of_root_signs
+    hbase hpos hdeg_two hrec hV_nonpos hW_nonpos hdeg_succ hno
 
 /-- Combined Ma--Wang/Liu--Wang sequence induction with direct root-sign
 side conditions. -/
@@ -1078,16 +986,9 @@ theorem isRealRooted_of_mw_lw_derivative_lag_sequence_of_root_signs
         ∀ r, (P (n + 1)).IsRoot r → (W n).eval r ≤ 0)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  have hprec : ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-    prec_mw_lw_derivative_lag_sequence_of_root_signs
-      hbase hpos hdeg_two hrec hV_nonpos hW_nonpos hdeg_succ hno
-  intro n
-  cases n with
-  | zero =>
-      exact hbase.1
-  | succ n =>
-      exact (hprec n).2.1
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_lw_derivative_lag_sequence_of_root_signs
+    hbase hpos hdeg_two hrec hV_nonpos hW_nonpos hdeg_succ hno
 
 /-- Real-rootedness corollary for the combined Ma--Wang/Liu--Wang
 derivative-plus-lag sequence induction with direct root-sign side conditions. -/
