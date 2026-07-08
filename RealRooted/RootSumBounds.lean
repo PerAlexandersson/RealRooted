@@ -18,7 +18,7 @@ namespace Multiset
 
 /-- If every element of a finite real multiset is at least `A`, then
 `(s.card : ℝ) * A` bounds the sum from below. -/
-theorem card_mul_le_sum_of_forall_le {s : Multiset ℝ} {A : ℝ}
+private theorem card_mul_le_sum_of_forall_le {s : Multiset ℝ} {A : ℝ}
     (h : ∀ r ∈ s, A ≤ r) :
     (s.card : ℝ) * A ≤ s.sum := by
   have hns : s.card • A ≤ s.sum := Multiset.card_nsmul_le_sum h
@@ -26,7 +26,7 @@ theorem card_mul_le_sum_of_forall_le {s : Multiset ℝ} {A : ℝ}
 
 /-- If the sum of a finite real multiset is strictly less than `(s.card : ℝ) * A`,
 then some element is strictly below `A`. -/
-theorem exists_lt_of_sum_lt_card_mul {s : Multiset ℝ} {A : ℝ}
+private theorem exists_lt_of_sum_lt_card_mul {s : Multiset ℝ} {A : ℝ}
     (h : s.sum < (s.card : ℝ) * A) :
     ∃ r ∈ s, r < A := by
   by_contra hcon
@@ -44,7 +44,7 @@ namespace Polynomial
 
 /-- Vieta's root-sum formula in division form.  This is a direct consequence of
 `Splits.nextCoeff_eq_neg_sum_roots_mul_leadingCoeff`. -/
-theorem Splits.roots_sum_eq_neg_nextCoeff_div_leadingCoeff {p : ℝ[X]}
+private theorem Splits.roots_sum_eq_neg_nextCoeff_div_leadingCoeff {p : ℝ[X]}
     (hp : p.Splits) (hlc : p.leadingCoeff ≠ 0) :
     p.roots.sum = -p.nextCoeff / p.leadingCoeff := by
   have hnext : p.nextCoeff = -p.leadingCoeff * p.roots.sum :=
@@ -78,7 +78,7 @@ theorem leadingCoeff_add_C_mul_of_natDegree_lt {f g : ℝ[X]} {μ : ℝ}
 /-- In the degree-jump-by-one case, the next coefficient of `f + C μ * g` is
 the leading coefficient of `f` plus the scaled next-highest coefficient of
 `g`. -/
-theorem nextCoeff_add_C_mul_of_natDegree_succ {f g : ℝ[X]} {μ : ℝ}
+private theorem nextCoeff_add_C_mul_of_natDegree_succ {f g : ℝ[X]} {μ : ℝ}
     (hμ : μ ≠ 0) (hdeg : g.natDegree = f.natDegree + 1) :
     (f + C μ * g).nextCoeff =
       f.leadingCoeff + μ * g.coeff f.natDegree := by
@@ -98,7 +98,7 @@ namespace RealRooted
 `a` and `b` are positive, then
 `-(a + μ * c) / (μ * b)` is below any fixed real bound for all sufficiently
 small positive `μ`. -/
-theorem neg_add_mul_div_mul_eventually_lt {a b c B : ℝ} (ha : 0 < a)
+private theorem neg_add_mul_div_mul_eventually_lt {a b c B : ℝ} (ha : 0 < a)
     (hb : 0 < b) :
     ∃ δ : ℝ, 0 < δ ∧ ∀ μ : ℝ, 0 < μ → μ < δ →
       - (a + μ * c) / (μ * b) < B := by
@@ -145,7 +145,7 @@ theorem neg_add_mul_div_mul_eventually_lt {a b c B : ℝ} (ha : 0 < a)
 
 /-- For a positive-leading succ-degree pair, the root sum of `f + C μ * g`
 eventually lies below `(natDegree : ℝ) * A` as `μ → 0+`. -/
-theorem roots_sum_lt_natDegree_mul_of_succDegree_add_right_small
+private theorem roots_sum_lt_natDegree_mul_of_succDegree_add_right_small
     {f g : ℝ[X]} (hf_pos : 0 < f.leadingCoeff) (hg_pos : 0 < g.leadingCoeff)
     (hdeg : g.natDegree = f.natDegree + 1) (A : ℝ) :
     ∃ δ : ℝ, 0 < δ ∧ ∀ μ : ℝ, 0 < μ → μ < δ →
@@ -179,14 +179,14 @@ theorem roots_sum_lt_natDegree_mul_of_succDegree_add_right_small
 
 /-- Polynomial-root form: if the sum of the roots of `p` is strictly less than
 `(p.roots.card : ℝ) * A`, then `p` has a root strictly below `A`. -/
-theorem exists_root_lt_of_roots_sum_lt_card_mul {p : ℝ[X]} {A : ℝ}
+private theorem exists_root_lt_of_roots_sum_lt_card_mul {p : ℝ[X]} {A : ℝ}
     (h : p.roots.sum < (p.roots.card : ℝ) * A) :
     ∃ r : ℝ, r ∈ p.roots ∧ r < A :=
   Multiset.exists_lt_of_sum_lt_card_mul h
 
 /-- Split-polynomial form: if `p` splits and the sum of its roots is strictly
 less than `(p.natDegree : ℝ) * A`, then `p` has a root strictly below `A`. -/
-theorem exists_root_lt_of_roots_sum_lt_natDegree_mul {p : ℝ[X]} {A : ℝ}
+private theorem exists_root_lt_of_roots_sum_lt_natDegree_mul {p : ℝ[X]} {A : ℝ}
     (hp : p.Splits) (h : p.roots.sum < (p.natDegree : ℝ) * A) :
     ∃ r : ℝ, r ∈ p.roots ∧ r < A :=
   exists_root_lt_of_roots_sum_lt_card_mul <| by
