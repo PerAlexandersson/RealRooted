@@ -223,15 +223,7 @@ constant-term and common-`X` branches. -/
 abbrev succDegreeResidualLeftSplitsTarget : Prop :=
   PosComboSuccDegreeResidualLeftSplitsNonnegStatement
 
-/-- Zero-aware forward Aissen--Schoenberg--Whitney target used by the PF-limit
-left-endpoint route. -/
-abbrev forwardASWTarget : Prop :=
-  aissenSchoenbergWhitneyForwardOrZeroStatement
 
-/-- Splitting-only forward Aissen--Schoenberg--Whitney target; this is now
-equivalent to the zero-aware target used by the PF-limit route. -/
-abbrev forwardASWSplitsTarget : Prop :=
-  aissenSchoenbergWhitneyForwardSplitsStatement
 
 /-- No-common orientation target used before splitting into same-degree and
 successor-degree endpoint repairs. -/
@@ -3085,39 +3077,44 @@ theorem succDegreePairTarget_of_rootCrossing
 
 /-- Challenge-facing PF/ASW reduction to the succ-degree left-splitting target. -/
 theorem succDegreeLeftSplitsTarget_of_forward_asw
-    (hASW : forwardASWTarget) :
+    (hASW : ∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n ↦ p.coeff n) →
+      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :
     succDegreeLeftSplitsTarget :=
   PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw hASW
 
 /-- Challenge-facing PF/ASW reduction to the residual left-splitting target. -/
 theorem succDegreeResidualLeftSplitsTarget_of_forward_asw
-    (hASW : forwardASWTarget) :
+    (hASW : ∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n ↦ p.coeff n) →
+      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :
     succDegreeResidualLeftSplitsTarget :=
   PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_forward_asw hASW
 
 /-- The zero-aware ASW target is equivalent to the splitting-only target. -/
 theorem forwardASWTarget_iff_splitsTarget :
-    forwardASWTarget ↔ forwardASWSplitsTarget :=
+    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n ↦ p.coeff n) →
+      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits) :=
   aissenSchoenbergWhitneyForwardOrZero_iff_splits
 
 /-- Challenge-facing bridge from splitting-only ASW to the zero-aware ASW
 target. -/
-theorem forwardASWTarget_of_splitsTarget
-    (hASW : forwardASWSplitsTarget) :
-    forwardASWTarget :=
-  aissenSchoenbergWhitneyForwardOrZero_of_splits hASW
+theorem forwardASWTarget_of_splitsTarget :
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits) →
+    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n ↦ p.coeff n) →
+      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
+  aissenSchoenbergWhitneyForwardOrZero_of_splits
 
 /-- Challenge-facing PF/ASW reduction to the succ-degree left-splitting target,
 using only the splitting conjunct of ASW. -/
 theorem succDegreeLeftSplitsTarget_of_forward_asw_splits
-    (hASW : forwardASWSplitsTarget) :
+    (hASW : ∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits) :
     succDegreeLeftSplitsTarget :=
   PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw_splits hASW
 
 /-- Challenge-facing PF/ASW reduction to the residual left-splitting target,
 using only the splitting conjunct of ASW. -/
 theorem succDegreeResidualLeftSplitsTarget_of_forward_asw_splits
-    (hASW : forwardASWSplitsTarget) :
+    (hASW : ∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits) :
     succDegreeResidualLeftSplitsTarget :=
   PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_forward_asw_splits hASW
 
@@ -3137,7 +3134,8 @@ theorem succDegreeLeftSplitsTarget_iff_residual :
 /-- Challenge-facing reduction from forward ASW and root crossing to
 succ-degree slot data. -/
 theorem succDegreeSlotDataTarget_of_forward_asw_and_rootCrossing
-    (hASW : forwardASWTarget)
+    (hASW : ∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n ↦ p.coeff n) →
+      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0)
     (hcross : succDegreeRootCrossingTarget) :
     succDegreeSlotDataTarget :=
   posComboNoCommonSuccDegreeSlotData_of_forward_asw_and_rootCrossing
@@ -3146,7 +3144,7 @@ theorem succDegreeSlotDataTarget_of_forward_asw_and_rootCrossing
 /-- Challenge-facing reduction from splitting-only ASW and root crossing to
 succ-degree slot data. -/
 theorem succDegreeSlotDataTarget_of_forward_asw_splits_and_rootCrossing
-    (hASW : forwardASWSplitsTarget)
+    (hASW : ∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits)
     (hcross : succDegreeRootCrossingTarget) :
     succDegreeSlotDataTarget :=
   posComboNoCommonSuccDegreeSlotData_of_forward_asw_splits_and_rootCrossing
@@ -3155,7 +3153,8 @@ theorem succDegreeSlotDataTarget_of_forward_asw_splits_and_rootCrossing
 /-- Challenge-facing reduction from forward ASW and root crossing to the
 repaired succ-degree pair endpoint. -/
 theorem succDegreePairTarget_of_forward_asw_and_rootCrossing
-    (hASW : forwardASWTarget)
+    (hASW : ∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n ↦ p.coeff n) →
+      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0)
     (hcross : succDegreeRootCrossingTarget) :
     succDegreePairTarget :=
   succDegreePairHasCommonInterleaver_nonneg_of_forward_asw_and_rootCrossing
@@ -3164,7 +3163,7 @@ theorem succDegreePairTarget_of_forward_asw_and_rootCrossing
 /-- Challenge-facing reduction from splitting-only ASW and root crossing to the
 repaired succ-degree pair endpoint. -/
 theorem succDegreePairTarget_of_forward_asw_splits_and_rootCrossing
-    (hASW : forwardASWSplitsTarget)
+    (hASW : ∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits)
     (hcross : succDegreeRootCrossingTarget) :
     succDegreePairTarget :=
   succDegreePairHasCommonInterleaver_nonneg_of_forward_asw_splits_and_rootCrossing
@@ -3199,7 +3198,8 @@ theorem succDegreePairTarget_of_leftSplits_and_orientation
 /-- Challenge-facing reduction from forward ASW and fixed orientation to
 succ-degree slot data. -/
 theorem succDegreeSlotDataTarget_of_forward_asw_and_orientation
-    (hASW : forwardASWTarget)
+    (hASW : ∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n ↦ p.coeff n) →
+      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0)
     (horient : succDegreeOrientationTarget) :
     succDegreeSlotDataTarget :=
   posComboNoCommonSuccDegreeSlotData_of_forward_asw_and_orientation
@@ -3208,7 +3208,7 @@ theorem succDegreeSlotDataTarget_of_forward_asw_and_orientation
 /-- Challenge-facing reduction from splitting-only ASW and fixed orientation to
 succ-degree slot data. -/
 theorem succDegreeSlotDataTarget_of_forward_asw_splits_and_orientation
-    (hASW : forwardASWSplitsTarget)
+    (hASW : ∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits)
     (horient : succDegreeOrientationTarget) :
     succDegreeSlotDataTarget :=
   posComboNoCommonSuccDegreeSlotData_of_forward_asw_splits_and_orientation
@@ -3217,7 +3217,8 @@ theorem succDegreeSlotDataTarget_of_forward_asw_splits_and_orientation
 /-- Challenge-facing reduction from forward ASW and fixed orientation to the
 repaired succ-degree pair endpoint. -/
 theorem succDegreePairTarget_of_forward_asw_and_orientation
-    (hASW : forwardASWTarget)
+    (hASW : ∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n ↦ p.coeff n) →
+      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0)
     (horient : succDegreeOrientationTarget) :
     succDegreePairTarget :=
   succDegreePairHasCommonInterleaver_nonneg_of_forward_asw_and_orientation
@@ -3226,7 +3227,7 @@ theorem succDegreePairTarget_of_forward_asw_and_orientation
 /-- Challenge-facing reduction from splitting-only ASW and fixed orientation to
 the repaired succ-degree pair endpoint. -/
 theorem succDegreePairTarget_of_forward_asw_splits_and_orientation
-    (hASW : forwardASWSplitsTarget)
+    (hASW : ∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits)
     (horient : succDegreeOrientationTarget) :
     succDegreePairTarget :=
   succDegreePairHasCommonInterleaver_nonneg_of_forward_asw_splits_and_orientation
@@ -3506,7 +3507,8 @@ theorem commonInterleaverTarget_of_rootCountAboveBothNonRoot
 with the succ-degree left endpoint supplied by forward ASW. -/
 theorem commonInterleaverTarget_of_rootCrossing_and_forward_asw
     (hsame : sameDegreeRootCrossingTarget)
-    (hASW : forwardASWTarget)
+    (hASW : ∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n ↦ p.coeff n) →
+      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0)
     (hsucc : succDegreeRootCrossingTarget) :
     commonInterleaverTarget :=
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing_and_forward_asw
@@ -3516,7 +3518,7 @@ theorem commonInterleaverTarget_of_rootCrossing_and_forward_asw
 with the succ-degree left endpoint supplied by the splitting-only ASW target. -/
 theorem commonInterleaverTarget_of_rootCrossing_and_forward_asw_splits
     (hsame : sameDegreeRootCrossingTarget)
-    (hASW : forwardASWSplitsTarget)
+    (hASW : ∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits)
     (hsucc : succDegreeRootCrossingTarget) :
   commonInterleaverTarget :=
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing_and_forwardASWSplits
@@ -3632,7 +3634,8 @@ theorem familyCompatibleTarget_of_rootCountAboveBothNonRoot
 with the succ-degree left endpoint supplied by forward ASW. -/
 theorem familyCompatibleTarget_of_rootCrossing_and_forward_asw
     (hsame : sameDegreeRootCrossingTarget)
-    (hASW : forwardASWTarget)
+    (hASW : ∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n ↦ p.coeff n) →
+      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0)
     (hsucc : succDegreeRootCrossingTarget) :
     familyCompatibleTarget :=
   familyCompatibleTarget_of_commonInterleaverTarget
@@ -3642,7 +3645,7 @@ theorem familyCompatibleTarget_of_rootCrossing_and_forward_asw
 with the succ-degree left endpoint supplied by splitting-only ASW. -/
 theorem familyCompatibleTarget_of_rootCrossing_and_forward_asw_splits
     (hsame : sameDegreeRootCrossingTarget)
-    (hASW : forwardASWSplitsTarget)
+    (hASW : ∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits)
     (hsucc : succDegreeRootCrossingTarget) :
     familyCompatibleTarget :=
   familyCompatibleTarget_of_commonInterleaverTarget
@@ -3730,7 +3733,7 @@ theorem fourWay_of_rootCrossing_and_forward_asw_splits
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hsame : sameDegreeRootCrossingTarget)
-    (hASW : forwardASWSplitsTarget)
+    (hASW : ∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits)
     (hsucc : succDegreeRootCrossingTarget) :
     fourWayPackage fs :=
   chudnovskySeymour_fourWay_of_rootCrossing_and_forward_asw_splits
@@ -3832,7 +3835,7 @@ theorem fourWayNonnegCoeffsTarget_of_rootCountAboveBothNonRoot
 root-crossing plus splitting-only ASW. -/
 theorem fourWayNonnegCoeffsTarget_of_rootCrossing_and_forward_asw_splits
     (hsame : sameDegreeRootCrossingTarget)
-    (hASW : forwardASWSplitsTarget)
+    (hASW : ∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits)
     (hsucc : succDegreeRootCrossingTarget) :
     fourWayNonnegCoeffsTarget :=
   chudnovskySeymour_fourWay_of_rootCrossing_forwardASWSplits_nonneg
@@ -3973,7 +3976,7 @@ theorem commonInterleaverNonnegCoeffsTarget_of_rootCountAboveBothNonRoot
 root-crossing plus splitting-only ASW. -/
 theorem commonInterleaverNonnegCoeffsTarget_of_rootCrossing_and_forward_asw_splits
     (hsame : sameDegreeRootCrossingTarget)
-    (hASW : forwardASWSplitsTarget)
+    (hASW : ∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits)
     (hsucc : succDegreeRootCrossingTarget) :
     commonInterleaverNonnegCoeffsTarget :=
   chudnovskySeymour_commonInterleaver_of_rootCrossing_forwardASWSplits_nonneg
@@ -4119,7 +4122,7 @@ theorem familyCompatibleNonnegCoeffsTarget_of_rootCountAboveBothNonRoot
 target from root-crossing plus splitting-only ASW. -/
 theorem familyCompatibleNonnegCoeffsTarget_of_rootCrossing_and_forward_asw_splits
     (hsame : sameDegreeRootCrossingTarget)
-    (hASW : forwardASWSplitsTarget)
+    (hASW : ∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits)
     (hsucc : succDegreeRootCrossingTarget) :
     familyCompatibleNonnegCoeffsTarget :=
   chudnovskySeymour_familyCompatible_of_rootCrossing_forwardASWSplits_nonneg

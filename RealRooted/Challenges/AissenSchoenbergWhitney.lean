@@ -15,23 +15,6 @@ namespace RealRooted
 namespace Challenges
 namespace AissenSchoenbergWhitney
 
-/-- The strict forward Aissen--Schoenberg--Whitney target. -/
-abbrev forwardTarget : Prop :=
-  aissenSchoenbergWhitneyForwardStatement
-
-/-- The zero-aware forward Aissen--Schoenberg--Whitney target. -/
-abbrev forwardOrZeroTarget : Prop :=
-  aissenSchoenbergWhitneyForwardOrZeroStatement
-
-/-- The splitting-only forward ASW target.  The root-location conjunct follows
-from PF coefficient nonnegativity. -/
-abbrev forwardSplitsTarget : Prop :=
-  aissenSchoenbergWhitneyForwardSplitsStatement
-
-/-- The forward target with PF-sequence nonnegativity used directly. -/
-abbrev forwardNoNonnegTarget : Prop :=
-  aissenSchoenbergWhitneyForwardNoNonnegStatement
-
 /-- Challenge-facing alias for the proved reverse ASW theorem. -/
 theorem reverseTheorem {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p)
@@ -64,65 +47,78 @@ theorem rootsNonpos_of_pfCoeff {p : ℝ[X]}
   roots_nonpos_of_IsPolyaFreqSeq_coeff hpf
 
 /-- The splitting-only target implies the full forward target. -/
-theorem forwardTarget_of_splitsTarget
-    (h : forwardSplitsTarget) :
-    forwardTarget :=
-  aissenSchoenbergWhitneyForward_of_splits h
+theorem forwardTarget_of_splitsTarget :
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits) →
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) :=
+  aissenSchoenbergWhitneyForward_of_splits
 
 /-- The full forward target implies the splitting-only target. -/
-theorem splitsTarget_of_forwardTarget
-    (h : forwardTarget) :
-    forwardSplitsTarget :=
-  aissenSchoenbergWhitneyForwardSplits_of_forward h
+theorem splitsTarget_of_forwardTarget :
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) →
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits) :=
+  aissenSchoenbergWhitneyForwardSplits_of_forward
 
 /-- The full forward target is equivalent to the splitting-only target. -/
 theorem forwardTarget_iff_splitsTarget :
-    forwardTarget ↔ forwardSplitsTarget :=
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits) :=
   aissenSchoenbergWhitneyForward_iff_splits
 
 /-- The zero-aware target implies the splitting-only target. -/
-theorem splitsTarget_of_forwardOrZeroTarget
-    (h : forwardOrZeroTarget) :
-    forwardSplitsTarget :=
-  aissenSchoenbergWhitneyForwardSplits_of_orZero h
+theorem splitsTarget_of_forwardOrZeroTarget :
+    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n ↦ p.coeff n) →
+      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) →
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits) :=
+  aissenSchoenbergWhitneyForwardSplits_of_orZero
 
 /-- The splitting-only target implies the zero-aware target. -/
-theorem forwardOrZeroTarget_of_splitsTarget
-    (h : forwardSplitsTarget) :
-    forwardOrZeroTarget :=
-  aissenSchoenbergWhitneyForwardOrZero_of_splits h
+theorem forwardOrZeroTarget_of_splitsTarget :
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits) →
+    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n ↦ p.coeff n) →
+      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
+  aissenSchoenbergWhitneyForwardOrZero_of_splits
 
 /-- The zero-aware target is equivalent to the splitting-only target. -/
 theorem forwardOrZeroTarget_iff_splitsTarget :
-    forwardOrZeroTarget ↔ forwardSplitsTarget :=
+    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n ↦ p.coeff n) →
+      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits) :=
   aissenSchoenbergWhitneyForwardOrZero_iff_splits
 
 /-- The no-extra-nonnegativity target implies the splitting-only target. -/
-theorem splitsTarget_of_forwardNoNonnegTarget
-    (h : forwardNoNonnegTarget) :
-    forwardSplitsTarget :=
-  aissenSchoenbergWhitneyForwardSplits_of_noNonneg h
+theorem splitsTarget_of_forwardNoNonnegTarget :
+    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq (fun n ↦ p.coeff n) →
+      (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) →
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits) :=
+  aissenSchoenbergWhitneyForwardSplits_of_noNonneg
 
 /-- The splitting-only target implies the no-extra-nonnegativity target. -/
-theorem forwardNoNonnegTarget_of_splitsTarget
-    (h : forwardSplitsTarget) :
-    forwardNoNonnegTarget :=
-  aissenSchoenbergWhitneyForwardNoNonneg_of_splits h
+theorem forwardNoNonnegTarget_of_splitsTarget :
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits) →
+    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq (fun n ↦ p.coeff n) →
+      (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
+  aissenSchoenbergWhitneyForwardNoNonneg_of_splits
 
 /-- The no-extra-nonnegativity target is equivalent to the splitting-only
 target. -/
 theorem forwardNoNonnegTarget_iff_splitsTarget :
-    forwardNoNonnegTarget ↔ forwardSplitsTarget :=
+    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq (fun n ↦ p.coeff n) →
+      (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits) :=
   aissenSchoenbergWhitneyForwardNoNonneg_iff_splits
 
 /-- The strict and no-extra-nonnegativity forward targets are equivalent. -/
 theorem forwardTarget_iff_noNonnegTarget :
-    forwardTarget ↔ forwardNoNonnegTarget :=
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
+    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq (fun n ↦ p.coeff n) →
+      (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
   aissenSchoenbergWhitneyForward_iff_noNonneg
 
 /-- The strict and zero-aware forward targets are equivalent. -/
 theorem forwardTarget_iff_orZeroTarget :
-    forwardTarget ↔ forwardOrZeroTarget :=
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n ↦ p.coeff n) → p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
+    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n ↦ p.coeff n) →
+      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
   aissenSchoenbergWhitneyForward_iff_orZero
 
 end AissenSchoenbergWhitney
