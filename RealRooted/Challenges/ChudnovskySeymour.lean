@@ -4666,6 +4666,15 @@ theorem pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direc
   RealRooted.pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direct
     hrr hpos htwo
 
+/-- Solved challenge-facing common-left Chudnovsky--Seymour equivalence. -/
+theorem pairwiseCompatible_iff_commonLeftInterleaver
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
+    PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
+  RealRooted.chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver
+    hrr hpos
+
 /-! ## Same-degree orientation alternative counterexample -/
 
 /- The strong orientation-alternative endpoint is false already in degree two.

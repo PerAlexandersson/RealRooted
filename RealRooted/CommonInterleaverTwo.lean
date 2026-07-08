@@ -551,6 +551,16 @@ def CompatiblePairHasCommonLeftInterleaverStatement : Prop :=
     Compatible f g →
     ∃ h : ℝ[X], Prec h f ∧ Prec h g
 
+/-- Positive-leading two-polynomial common-left bridge.  This is the usable
+pair-local form for the roadmap theorem, whose finite-family statement already
+assumes memberwise positive leading coefficients. -/
+def CompatiblePairHasCommonLeftInterleaverPosStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    Compatible f g →
+    ∃ h : ℝ[X], Prec h f ∧ Prec h g
+
 /-- Once the two-polynomial common-left-interleaver converse is available, the
 pairwise Chudnovsky--Seymour hypothesis immediately upgrades to pairwise common
 left interleavers. This isolates the exact missing bridge. -/
@@ -560,6 +570,21 @@ theorem pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonLeftInterleaver fs :=
   fun i j hij => by simpa using htwo (hpair i j hij)
+
+/-- Positive-leading version of
+`pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible`, using the memberwise
+positive-leading hypotheses already present in the finite-family theorem. -/
+theorem pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible_pos
+    {fs : List ℝ[X]}
+    (htwo : CompatiblePairHasCommonLeftInterleaverPosStatement)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hpair : PairwiseCompatible fs) :
+    PairwiseHasCommonLeftInterleaver fs :=
+  fun i j hij =>
+    htwo
+      (hpos (fs.get i) (List.get_mem _ _))
+      (hpos (fs.get j) (List.get_mem _ _))
+      (hpair i j hij)
 
 /-- Reduction for the left-oriented Chudnovsky--Seymour target: the full
 `PairwiseCompatible ↔ HasCommonLeftInterleaver` statement follows from the
@@ -584,6 +609,19 @@ theorem pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direc
     PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
   pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge hpos htwo <|
     hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver hrr hpos
+
+/-- Direct left-oriented finite-family reduction from the positive-leading
+two-polynomial common-left bridge. -/
+theorem pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridgePos_direct
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, f.Splits)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (htwo : CompatiblePairHasCommonLeftInterleaverPosStatement) :
+    PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
+  ⟨fun hpair =>
+    hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver hrr hpos <|
+      pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible_pos htwo hpos hpair,
+    fun hcommon => pairwiseCompatible_of_commonLeftInterleaver hcommon hpos⟩
 
 /-- Two-polynomial common-right bridge: compatibility implies a common right
 interleaver, without carrying family-level positivity hypotheses. -/
@@ -655,6 +693,26 @@ theorem compatiblePairHasCommonInterleaver_of_degreeSplit
     · lia
     · rcases hsucc hg_pos hf_pos hfg.comm hsucc_deg with ⟨h, hg_prec, hf_prec⟩
       grind
+
+/-- A positive-leading common-right bridge implies the corresponding common-left
+bridge: first get a common right interleaver, then convert it to a common left
+interleaver using degree closeness. -/
+theorem compatiblePairHasCommonLeftInterleaverPos_of_pairBridge
+    (hright : CompatiblePairHasCommonInterleaverStatement) :
+    CompatiblePairHasCommonLeftInterleaverPosStatement := by
+  intro f g hf_pos hg_pos hfg
+  have hclose := hfg.natDegree_close hf_pos hg_pos
+  by_cases hdeg : f.natDegree ≤ g.natDegree
+  · rcases hright hf_pos hg_pos hfg with ⟨h, hfh, hgh⟩
+    exact
+      pairHasCommonLeftInterleaver_of_commonInterleaver
+        hfh hgh hdeg hclose.2
+  · have hdeg' : g.natDegree ≤ f.natDegree := le_of_not_ge hdeg
+    rcases hright hg_pos hf_pos hfg.comm with ⟨h, hgh, hfh⟩
+    obtain ⟨l, hlg, hlf⟩ :=
+      pairHasCommonLeftInterleaver_of_commonInterleaver
+        hgh hfh hdeg' hclose.1
+    exact ⟨l, hlf, hlg⟩
 
 /-- Core two-polynomial target in positive-combination language: a
 positive-leading `PosComboRealRooted` pair admits a common right interleaver. -/

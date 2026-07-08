@@ -39,6 +39,26 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairwi
     pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direct
       (fs := fs) (fun f hf => (hrr f hf).2) hpos htwo
 
+/-- The common-left roadmap target follows from the positive-leading common
+right two-polynomial bridge. -/
+theorem chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairBridge
+    (hright : CompatiblePairHasCommonInterleaverStatement) :
+    chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target :=
+  fun {fs} hrr hpos =>
+    pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridgePos_direct
+      (fs := fs) (fun f hf => (hrr f hf).2) hpos
+      (compatiblePairHasCommonLeftInterleaverPos_of_pairBridge hright)
+
+/-- The proved #41 same-degree endpoint and #42 successor-degree endpoint close
+the left-oriented pairwise/common-left-interleaver Chudnovsky--Seymour target.
+-/
+theorem chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver :
+    chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target :=
+  chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairBridge
+    (compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
+      posComboNoCommonSameDegreePairHasCommonInterleaverNonneg_from_analytic
+      succDegreePairHasCommonInterleaver_nonneg_of_local_lower_counts)
+
 /--
 Roadmap target for a direct pairwise-to-common interleaver equivalence.
 

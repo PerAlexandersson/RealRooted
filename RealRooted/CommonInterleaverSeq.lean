@@ -2738,6 +2738,66 @@ theorem mem_rootSlotInterval_of_prec_desc
         simpa [hf, hg] using lt_of_lt_of_le j.2 hdeg⟩ :=
   mem_rootSlotInterval_of_prec hfg j
 
+/-- A common right interleaver gives matching shifted-slot intersections for a
+close-degree pair.  For all but the last shifted slot we use the corresponding
+root of the common right interleaver; the final lower-tail slots meet
+automatically. -/
+theorem shiftedSlotIntersections_of_commonInterleaver
+    {f g h : ℝ[X]}
+    (hfh : Prec f h) (hgh : Prec g h) :
+    ∀ j : ℕ,
+      ∀ (hjf : j + 1 < (rootSeqDesc f).length + 1)
+        (hjg : j + 1 < (rootSeqDesc g).length + 1),
+        (rootSlotInterval (rootSeqDesc f) ⟨j + 1, hjf⟩ ∩
+          rootSlotInterval (rootSeqDesc g) ⟨j + 1, hjg⟩).Nonempty := by
+  intro j hjf hjg
+  let jf : Fin ((rootSeqDesc f).length + 1) := ⟨j + 1, hjf⟩
+  let jg : Fin ((rootSeqDesc g).length + 1) := ⟨j + 1, hjg⟩
+  change (rootSlotInterval (rootSeqDesc f) jf ∩
+    rootSlotInterval (rootSeqDesc g) jg).Nonempty
+  have hdeg_fh := natDegree_bounds_of_prec hfh
+  have hdeg_gh := natDegree_bounds_of_prec hgh
+  have hjf_nat : j < f.natDegree := by
+    have hjf' : j < (rootSeqDesc f).length := Nat.lt_of_succ_lt_succ hjf
+    simpa [rootSeqDesc_length hfh.1.2] using hjf'
+  have hjg_nat : j < g.natDegree := by
+    have hjg' : j < (rootSeqDesc g).length := Nat.lt_of_succ_lt_succ hjg
+    simpa [rootSeqDesc_length hgh.1.2] using hjg'
+  by_cases hjh : j + 1 < h.natDegree
+  · let jh : Fin h.natDegree := ⟨j + 1, hjh⟩
+    let x : ℝ := (rootSeqDesc h).get ⟨j + 1, by
+      simpa [rootSeqDesc_length hfh.2.1.2] using hjh⟩
+    have hmem_f : x ∈ rootSlotInterval (rootSeqDesc f) jf := by
+      simpa [x, jf, jh] using mem_rootSlotInterval_of_prec_desc hfh jh
+    have hmem_g : x ∈ rootSlotInterval (rootSeqDesc g) jg := by
+      simpa [x, jg, jh] using mem_rootSlotInterval_of_prec_desc hgh jh
+    exact ⟨x, hmem_f, hmem_g⟩
+  · have hjh_le : h.natDegree ≤ j + 1 := by
+      exact Nat.le_of_not_gt hjh
+    have hjh_ge : j + 1 ≤ h.natDegree := by
+      exact (Nat.succ_le_iff.mpr hjf_nat).trans hdeg_fh.1
+    have hjh_eq : j + 1 = h.natDegree := le_antisymm hjh_ge hjh_le
+    have hf_eq_h : f.natDegree = h.natDegree := by lia
+    have hg_eq_h : g.natDegree = h.natDegree := by lia
+    have hf_pos : 0 < f.natDegree := by lia
+    have hg_pos : 0 < g.natDegree := by lia
+    have hrevf_ne : (rootSeqDesc f).reverse ≠ [] :=
+      rootSeqDesc_reverse_ne_nil_of_natDegree_pos hfh.1.2 hf_pos
+    have hrevg_ne : (rootSeqDesc g).reverse ≠ [] :=
+      rootSeqDesc_reverse_ne_nil_of_natDegree_pos hgh.1.2 hg_pos
+    let af : ℝ := ((rootSeqDesc f).reverse).get ⟨0, by grind⟩
+    let ag : ℝ := ((rootSeqDesc g).reverse).get ⟨0, by grind⟩
+    have hslot_f : rootSlotInterval (rootSeqDesc f) jf = Set.Iic af := by
+      simpa [af, jf, hjh_eq, hf_eq_h, hfh.1.2] using
+        rootSlotInterval_last_eq_reverse_get_zero
+          (rs := rootSeqDesc f) (List.reverse_ne_nil_iff.mp hrevf_ne)
+    have hslot_g : rootSlotInterval (rootSeqDesc g) jg = Set.Iic ag := by
+      simpa [ag, jg, hjh_eq, hg_eq_h, hgh.1.2] using
+        rootSlotInterval_last_eq_reverse_get_zero
+          (rs := rootSeqDesc g) (List.reverse_ne_nil_iff.mp hrevg_ne)
+    rw [hslot_f, hslot_g]
+    exact ⟨min af ag, min_le_left af ag, min_le_right af ag⟩
+
 /-- Slot data against `rootSeqDesc f` reconstructs a `Prec` witness with the
 descending-root polynomial built from those slot choices. -/
 theorem prec_of_slots_polyOfDescRootsDesc
@@ -2872,6 +2932,24 @@ theorem pairHasCommonLeftInterleaver_of_shiftedSlotIntersections
           have hjf : j < f.natDegree := by simpa [xs, n] using hj
           have hraw := (Classical.choose_spec (hslot j hjf)).2
           simpa [x, xs] using hraw)
+
+/-- A common right interleaver for a close-degree pair produces a common left
+interleaver. -/
+theorem pairHasCommonLeftInterleaver_of_commonInterleaver
+    {f g h : ℝ[X]}
+    (hfh : Prec f h) (hgh : Prec g h)
+    (hdeg_lo : f.natDegree ≤ g.natDegree)
+    (hdeg_hi : g.natDegree ≤ f.natDegree + 1) :
+    ∃ l : ℝ[X], Prec l f ∧ Prec l g :=
+  pairHasCommonLeftInterleaver_of_shiftedSlotIntersections
+    hfh.1.1 hgh.1.1 hfh.1.2 hgh.1.2 hdeg_lo hdeg_hi <|
+    fun j hj => by
+      have hjf : j + 1 < (rootSeqDesc f).length + 1 := by
+        simpa [rootSeqDesc_length hfh.1.2] using Nat.succ_lt_succ hj
+      have hjg : j + 1 < (rootSeqDesc g).length + 1 := by
+        have : j < g.natDegree := lt_of_lt_of_le hj hdeg_lo
+        simpa [rootSeqDesc_length hgh.1.2] using Nat.succ_lt_succ this
+      exact shiftedSlotIntersections_of_commonInterleaver hfh hgh j hjf hjg
 
 /-- Matching nonempty root-slot intersections for two same-degree real-rooted
 polynomials produce a common right interleaver.  This isolates the constructive
