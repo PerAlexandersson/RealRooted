@@ -24,10 +24,9 @@ If `f = (X - C r) * fTail`, then the quotient coefficients satisfy
 theorem coeff_tail_of_eq_linear_mul {f fTail : ℝ[X]} {r : ℝ}
     (hf : f = (X - C r) * fTail) (k : ℕ) :
     fTail.coeff k = f.coeff (k + 1) + r * fTail.coeff (k + 1) := by
-  have h : f.coeff (k + 1) = fTail.coeff k - r * fTail.coeff (k + 1) := by
-    rw [hf, sub_mul, Polynomial.coeff_sub, Polynomial.coeff_X_mul,
-      Polynomial.coeff_C_mul]
-  linarith
+  rw [hf, sub_mul, Polynomial.coeff_sub, Polynomial.coeff_X_mul,
+    Polynomial.coeff_C_mul]
+  ring
 
 /--
 One-step recursion for the coefficient difference of two quotients by nearby
@@ -39,9 +38,7 @@ theorem coeff_sub_recursion {f fTail p pTail : ℝ[X]} {r q : ℝ}
       (p.coeff (k + 1) - f.coeff (k + 1)) +
         q * (pTail.coeff (k + 1) - fTail.coeff (k + 1)) +
           (q - r) * fTail.coeff (k + 1) := by
-  have h1 := coeff_tail_of_eq_linear_mul hf k
-  have h2 := coeff_tail_of_eq_linear_mul hp k
-  rw [h1, h2]
+  rw [coeff_tail_of_eq_linear_mul hf k, coeff_tail_of_eq_linear_mul hp k]
   ring
 
 end RootMatchingPeeling

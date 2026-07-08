@@ -78,8 +78,13 @@ import RealRooted.ObreschkoffConverse
 import RealRooted.PosCombo
 import RealRooted.ProductFamily
 import RealRooted.RootContinuity
+import RealRooted.SameDegreeMultiplicityLowerCount
+import RealRooted.PositiveParameterLocalLowerCount
 import RealRooted.RowThreshold
 import RealRooted.StaircaseSum
+import RealRooted.DegreeIncreasingLocalLowerCount
+import RealRooted.SmallPositiveParameterCount
+import RealRooted.ClosedSegmentCountEqFromAnalytic
 import RealRooted.SuccDegreeLeftEndpoint
 import RealRooted.SuccDegreeRootCrossing
 import RealRooted.WagnerLeftSum

@@ -35,9 +35,9 @@ private theorem geom_sum_abs_pow_le_card_mul_max_of_abs_le
   have hterm : ∀ i ∈ Finset.range (d + 1 - k), |q| ^ i ≤ max 1 (R ^ d) := by
     intro i hi
     have hi_le_d : i ≤ d := by
-      have hi_lt : i < d + 1 - k := Finset.mem_range.mp hi
-      have hi_lt_succ : i < d + 1 := lt_of_lt_of_le hi_lt (Nat.sub_le _ _)
-      exact Nat.lt_succ_iff.mp (by simpa [Nat.succ_eq_add_one] using hi_lt_succ)
+      exact Nat.lt_succ_iff.mp <| by
+        simpa [Nat.succ_eq_add_one] using
+          lt_of_lt_of_le (Finset.mem_range.mp hi) (Nat.sub_le (d + 1) k)
     by_cases hR1 : R ≤ 1
     · have hq1 : |q| ≤ 1 := le_trans hR hR1
       exact (pow_le_one₀ (abs_nonneg q) hq1).trans (le_max_left _ _)
@@ -53,8 +53,7 @@ private theorem geom_sum_abs_pow_le_card_mul_max_of_abs_le
     _ ≤ (d + 1 : ℝ) * max 1 (R ^ d) := by
       have hcard : ((d + 1 - k : ℕ) : ℝ) ≤ d + 1 := by
         exact_mod_cast Nat.sub_le (d + 1) k
-      have hmax_nonneg : 0 ≤ max 1 (R ^ d) := le_trans zero_le_one (le_max_left _ _)
-      exact mul_le_mul_of_nonneg_right hcard hmax_nonneg
+      exact mul_le_mul_of_nonneg_right hcard (by positivity)
 
 /--
 Coefficient-difference bound after peeling one monic linear factor from each of
@@ -87,26 +86,22 @@ theorem coeff_sub_div_linear_bound {f fTail p pTail : ℝ[X]} {r q : ℝ} {d : �
     induction n with
     | zero =>
       intro k hk
-      have hk' : d + 1 ≤ k := by simpa using hk
-      have hdk : d < k := hk'
+      have hdk : d < k := hk
       have hfk : fTail.coeff k = 0 :=
         Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hfd hdk)
       have hpk : pTail.coeff k = 0 :=
         Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hpd hdk)
-      have hzero : d + 1 - k = 0 := Nat.sub_eq_zero_of_le hk'
+      have hzero : d + 1 - k = 0 := Nat.sub_eq_zero_of_le hk
       rw [hfk, hpk, hzero]
       simp
     | succ n ih =>
       intro k hk
       by_cases hkd : k ≤ d
       · have hkn : d + 1 ≤ (k + 1) + n := by
-          have hcomm : (k + 1) + n = k + (n + 1) := by ac_rfl
-          rw [hcomm]
-          exact hk
+          simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using hk
         have ihk := ih (k + 1) hkn
         have hsub : d + 1 - k = (d + 1 - (k + 1)) + 1 := by
-          rw [Nat.succ_sub_succ]
-          exact Nat.succ_sub hkd
+          simpa using Nat.succ_sub hkd
         rw [hsub, geom_sum_succ]
         set Sn := ∑ i ∈ Finset.range (d + 1 - (k + 1)), |q| ^ i with hSn
         have hrec := coeff_sub_recursion hf hp k
@@ -179,12 +174,11 @@ theorem coeff_sub_div_linear_bound_uniform_single_eps
       η * (1 + M) * ((d + 1 : ℝ) * max 1 (R ^ d)) := by
   have hM_nonneg : 0 ≤ M :=
     le_trans (abs_nonneg (fTail.coeff 0)) (hM 0)
-  have hconst_nonneg : 0 ≤ (d + 1 : ℝ) * max 1 (R ^ d) := by positivity
   have hfactor : η + |q - r| * M ≤ η * (1 + M) := by
-    nlinarith [mul_le_mul_of_nonneg_right hq hM_nonneg]
+    linarith [mul_le_mul_of_nonneg_right hq hM_nonneg]
   intro k
   exact (coeff_sub_div_linear_bound_uniform hf hp hfd hpd hcoeff hM hqR k).trans
-    (mul_le_mul_of_nonneg_right hfactor hconst_nonneg)
+    (mul_le_mul_of_nonneg_right hfactor (by positivity))
 
 /--
 Epsilon form of the uniform one-step peeling estimate.
@@ -205,9 +199,7 @@ theorem exists_pos_eta_coeff_sub_div_linear_bound_uniform
   let C₀ : ℝ := (1 + M) * ((d + 1 : ℝ) * max 1 (R ^ d))
   have hM_nonneg : 0 ≤ M :=
     le_trans (abs_nonneg (fTail.coeff 0)) (hM 0)
-  have hC₀_nonneg : 0 ≤ C₀ := by
-    have hconst_nonneg : 0 ≤ (d + 1 : ℝ) * max 1 (R ^ d) := by positivity
-    exact mul_nonneg (by linarith) hconst_nonneg
+  have hC₀_nonneg : 0 ≤ C₀ := by positivity
   let η : ℝ := ε / (C₀ + 1)
   have hden_pos : 0 < C₀ + 1 := by linarith
   have hη_pos : 0 < η := div_pos hε hden_pos
@@ -292,10 +284,7 @@ theorem tendsto_coeff_tail_of_modulus
       (fTail := fTail) hf hfd hM (half_pos hε)
   have hηδ : ∀ᶠ i in l, η i ≤ δ := by
     exact ((Metric.tendsto_nhds.mp hη) δ hδ_pos).mono fun i hi => by
-      have habs : |η i - 0| < δ := by
-        simpa [Real.dist_eq] using hi
-      have hlt : η i < δ := by linarith [(abs_lt.mp habs).2]
-      exact le_of_lt hlt
+      exact le_of_lt <| (abs_lt.mp (by simpa [Real.dist_eq] using hi)).2
   filter_upwards [hp, hpd, hcoeff, hq, hqR, hηδ] with
     i hpi hpdi hcoeffi hqi hqRi hηi
   have hcoeffδ : ∀ j, |(p i).coeff j - f.coeff j| ≤ δ :=
@@ -334,7 +323,7 @@ theorem eventually_forall_coeff_tail_close_of_modulus
     rw [Filter.eventually_all_finset]
     intro k hk
     exact ((Metric.tendsto_nhds.mp (hcoeff_tendsto k)) ε hε).mono fun i hi => by
-      exact le_of_lt (by simpa [Real.dist_eq] using hi)
+      simpa [Real.dist_eq] using hi.le
   filter_upwards [hfinite, hpd] with i hfinite_i hpdi k
   by_cases hk : k ≤ d
   · exact hfinite_i k (Finset.mem_range.mpr (Nat.lt_succ_of_le hk))
