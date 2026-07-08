@@ -169,7 +169,7 @@ polynomials for claw-free graphs; matching polynomials are independence
 polynomials of line graphs; and line graphs are claw-free.
 
 The next standard theorem input is Garloff-Wagner Hadamard proper-position,
-recorded as `garloffWagnerHadamardNonnegPrecStatement`.  This is the remaining
+recorded as `garloffWagnerHadamardNonnegPrec`.  This is the remaining
 RealRooted theorem currently used as an external standard fact by the
 `SuperEulerian` project.
 

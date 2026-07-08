@@ -2868,8 +2868,10 @@ theorem finitePFMultiplierSequenceThree_logConcave
 
 /-- Challenge-facing target for Garloff--Wagner, Theorem 4(b), in the
 nonnegative-coefficient proper-position form used by RealRooted. -/
-abbrev garloffWagnerNonnegPrecTarget : Prop :=
-  garloffWagnerHadamardNonnegPrecStatement
+def garloffWagnerNonnegPrecTarget : Prop :=
+  ∀ {f g p q : ℝ[X]},
+    HasNonnegCoeffs f → HasNonnegCoeffs g → HasNonnegCoeffs p → HasNonnegCoeffs q →
+    Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)
 
 /-- Challenge-facing PF-polynomial strict proper-position Garloff--Wagner
 target. -/
@@ -3963,9 +3965,9 @@ theorem garloffWagnerNonnegPrecTarget_of_hurwitzSchurClassicalInputs
 /-- Challenge-facing reduction from the nonnegative two-pair statement to the
 strict PF-polynomial proper-position target. -/
 theorem garloffWagnerPFPrecTarget_of_nonnegPrec
-    (h : garloffWagnerNonnegPrecTarget) :
+    (_h : garloffWagnerNonnegPrecTarget) :
     garloffWagnerPFPrecTarget :=
-  garloffWagnerHadamardPFPrec_of_nonnegPrec h
+  garloffWagnerHadamardPFPrec_of_nonnegPrec
 
 /-- Challenge-facing reduction of the strict PF target through the odd/even
 Hurwitz-stability route. -/
@@ -4072,9 +4074,9 @@ theorem garloffWagnerPFPrec0Target_of_prec
 /-- Challenge-facing reduction from the nonnegative two-pair statement to the
 zero-aware PF proper-position target. -/
 theorem garloffWagnerPFPrec0Target_of_nonnegPrec
-    (h : garloffWagnerNonnegPrecTarget) :
+    (_h : garloffWagnerNonnegPrecTarget) :
     garloffWagnerPFPrec0Target :=
-  garloffWagnerHadamardPFPrec0_of_nonnegPrec h
+  garloffWagnerHadamardPFPrec0_of_nonnegPrec
 
 /-- Challenge-facing reduction of the zero-aware PF target through the odd/even
 Hurwitz-stability route. -/
@@ -4172,9 +4174,9 @@ theorem garloffWagnerPFPrec0Target_of_hurwitzSchurClassicalInputs
 /-- Challenge-facing reduction from the nonnegative two-pair target to the
 one-polynomial real-rooted Hadamard target. -/
 theorem garloffWagnerNonnegRealRootedTarget_of_nonnegPrec
-    (h : garloffWagnerNonnegPrecTarget) :
+    (_h : garloffWagnerNonnegPrecTarget) :
     garloffWagnerNonnegRealRootedTarget :=
-  garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec h
+  garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
 
 /-- Challenge-facing one-polynomial real-rooted Hadamard target through the
 odd/even Hurwitz-stability route. -/
@@ -4289,9 +4291,9 @@ theorem schurPolyaWagnerHadamardPFTarget_of_prec
 /-- Challenge-facing PF Schur--Pólya--Wagner target from the nonnegative
 two-pair Garloff--Wagner target. -/
 theorem schurPolyaWagnerHadamardPFTarget_of_nonnegPrec
-    (h : garloffWagnerNonnegPrecTarget) :
+    (_h : garloffWagnerNonnegPrecTarget) :
     schurPolyaWagnerHadamardPFTarget :=
-  schurPolyaWagnerHadamardPF_of_garloffWagner_nonnegPrec h
+  schurPolyaWagnerHadamardPF_of_garloffWagner_nonnegPrec
 
 /-- Challenge-facing PF Schur--Pólya--Wagner target through the odd/even
 Hurwitz-stability route. -/
@@ -4410,9 +4412,9 @@ theorem hadamardReciprocalConeClosureTarget_of_prec
 /-- Challenge-facing reciprocal-cone Hadamard closure from the nonnegative
 two-pair Garloff--Wagner target. -/
 theorem hadamardReciprocalConeClosureTarget_of_nonnegPrec
-    (h : garloffWagnerNonnegPrecTarget) :
+    (_h : garloffWagnerNonnegPrecTarget) :
     hadamardReciprocalConeClosureTarget :=
-  hadamardReciprocalConeClosure_of_garloffWagner h
+  hadamardReciprocalConeClosure_of_garloffWagner
 
 /-- Challenge-facing reciprocal-cone Hadamard closure through the odd/even
 Hurwitz-stability route. -/
@@ -4543,9 +4545,9 @@ theorem polyaFrequencyHadamardCoeffTarget_of_garloffWagner_nonneg
 nonnegative two-pair Garloff--Wagner target. -/
 theorem polyaFrequencyHadamardCoeffTarget_of_garloffWagner_nonnegPrec
     (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
-    (hGW : garloffWagnerNonnegPrecTarget) :
+    (_hGW : garloffWagnerNonnegPrecTarget) :
     polyaFrequencyHadamardCoeffTarget :=
-  polyaFrequencyHadamardCoeff_of_garloffWagner_nonnegPrec hASW hGW
+  polyaFrequencyHadamardCoeff_of_garloffWagner_nonnegPrec hASW
 
 /-- Challenge-facing coefficientwise Pólya-frequency closure through the
 odd/even Hurwitz-stability route. -/

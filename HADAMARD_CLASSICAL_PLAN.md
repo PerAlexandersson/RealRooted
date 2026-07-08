@@ -11,7 +11,7 @@ independently.
 Main Lean target:
 
 ```lean
-RealRooted.garloffWagnerHadamardNonnegPrecStatement
+RealRooted.garloffWagnerHadamardNonnegPrec
 ```
 
 ## Subissues
