@@ -894,7 +894,7 @@ the image is, after clearing denominators,
 \[
   3125+166965t+636232t^2+636232t^3+166965t^4+3125t^5,
 \]
-and exact `polynomial-tools` reports `do_not_interlace`.  Thus any
+and exact `polytool` reports `do_not_interlace`.  Thus any
 Wagner-style gamma proof must use the actual normalized-row constraints, not
 only palindromicity and PF.
 
@@ -5596,7 +5596,7 @@ is false.  For \(d=4\), \(f=(1+z)^2\) gives
 \[
   M_4f=1+\frac{28}{5}z+\frac{13}{5}z^2,
 \]
-and polynomial-tools reports that \(f\) and \(M_4f\) do not weakly interlace.
+and polytool reports that \(f\) and \(M_4f\) do not weakly interlace.
 Low gamma prefixes are also too small for all-gap statements: for \(d=9\),
 \[
   M_9^2(1)=1+\frac{504}{25}z+\frac{756}{25}z^2,
@@ -5614,7 +5614,7 @@ first nontrivial tail is
   (151854872z^3+1590806268z^2+876900717z+37909536).
 \]
 The pair \(T_{9,1}^{(2)}, M_9^2T_{9,1}^{(2)}\) is verified by
-polynomial-tools to weakly interlace, and the script checks the directed
+polytool to weakly interlace, and the script checks the directed
 coefficient-ratio orientation.  This is a better next proof route than another
 quartic discriminant expansion: prove that the recurrence preserves this
 tail-separated cone, then take \(k=0\).
@@ -5652,7 +5652,7 @@ the main route.
 
 ## Exact Evidence
 
-The Rust probe uses exact integer arithmetic and the `polynomial-tools`
+The Rust probe uses exact integer arithmetic and the `polytool`
 weak-interlacing checks.  The polynomial lab contains the detailed checked
 ranges and commands.  The useful records for the proved consecutive-row route
 are:
@@ -5986,7 +5986,7 @@ is palindromic and real-rooted, but
   (\theta+1)^2H(t)=1+\frac{26}{3}t+9t^2
 \]
 does not interlace its shifted reciprocal.  Clearing denominators, exact
-`polynomial-tools` gives `do_not_interlace` for
+`polytool` gives `do_not_interlace` for
 \[
   3+26t+27t^2
   \quad\text{and}\quad

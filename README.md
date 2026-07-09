@@ -39,6 +39,9 @@ lake build RealRooted.VeroneseMatrix
 lake build RealRooted.VeroneseSection
 lake build RealRooted.Bezoutian
 lake build RealRooted.HeilmannLieb
+lake build RealRooted.LiuOppositeSignsTheorem
+lake build RealRooted.ThresholdMatrix
+lake build RealRooted.OEIS.A046802
 ```
 
 ## Repository Layout
@@ -55,6 +58,13 @@ lake build RealRooted.HeilmannLieb
   `Hadamard.lean` contain larger theorem packages and classical interfaces.
 - `RealRooted/HeilmannLieb.lean` contains the graph-theoretic
   Chudnovsky-Seymour and Heilmann-Lieb matching-polynomial corollaries.
+- `RealRooted/LiuOppositeSigns*.lean` packages the Liu opposite-leading-sign
+  compatibility target, root-deletion operation, and checked degree-gap
+  consequences.
+- `RealRooted/ThresholdMatrix.lean` contains reusable threshold-matrix
+  interlacing backends for Gustafsson-Solus and Haglund-Zhang style recurrences.
+- `RealRooted/OEIS/` contains generated sequence-facing wrappers, currently
+  including the A046802 Haglund-Zhang certificate surface.
 - `RealRooted/CombinatorialExamples/` contains examples such as Eulerian,
   type B Eulerian, simsun, Touchard, Narayana, Motzkin, and related families.
 - `RealRooted/Mathlib/` contains local compatibility lemmas intended to look
@@ -208,14 +218,19 @@ theorems.
 
 Current GitHub tracking:
 
-- #34: Garloff-Wagner Hadamard proper-position.
-- #41 and #42: Chudnovsky-Seymour pair endpoints.
-- #51: challenge files.
+- #64: Liu's opposite-leading-sign compatible-sequences theorem.
+- #67: Gustafsson-Solus Lemma 3.4 interlacing recursion.
+- #68: Haglund-Zhang `s`-inversion backend for A046802.
 
 Recently closed:
 
+- #34: Garloff-Wagner Hadamard proper-position.
+- #41 and #42: Chudnovsky-Seymour pair endpoints.
 - #44 and #45: Chudnovsky-Seymour family theorem and wrapper.
+- #51: challenge files.
 - #52: Heilmann-Lieb as a Chudnovsky-Seymour corollary.
+- #56 through #61: Hadamard orientation, coefficient, multiplier-sequence,
+  Schur-Szego, apolarity, and downstream StandardFacts cleanup.
 
 ## Development Notes
 
