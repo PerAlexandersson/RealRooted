@@ -173,6 +173,33 @@ theorem compatible_indepPolyOn_X_mul_self_of_splits {V : Type u} [DecidableEq V]
     Compatible (indepPolyOn G S) (X * indepPolyOn G S) :=
   compatible_self_X_mul_of_splits hS
 
+private theorem compatible_self_of_splits {p : ℝ[X]} (hp_ne : p ≠ 0) (hp : p.Splits) :
+    Compatible p p := by
+  intro α β _hα _hβ
+  have hsum : C α * p + C β * p = C (α + β) * p := by
+    rw [← add_mul, ← C_add]
+  by_cases hzero : α + β = 0
+  · left
+    rw [hsum, hzero]
+    simp
+  · right
+    rw [hsum]
+    exact isRealRooted_C_mul hp_ne hp hzero
+
+private theorem compatible_X_mul_of_compatible {f g : ℝ[X]} (h : Compatible f g) :
+    Compatible (X * f) (X * g) := by
+  intro α β hα hβ
+  have hsum : C α * (X * f) + C β * (X * g) =
+      X * (C α * f + C β * g) := by
+    ring
+  rcases h α β hα hβ with hzero | hrr
+  · left
+    rw [hsum, hzero]
+    simp
+  · right
+    rw [hsum]
+    exact isRealRooted_X_mul hrr.1 hrr.2
+
 /-- The support-restricted definition recovers `indepPoly` on the full vertex set. -/
 theorem indepPoly_eq_indepPolyOn_univ {V : Type u} [Fintype V] [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj] :
@@ -639,6 +666,36 @@ theorem cliqueDeletionFamily_sum {V : Type u} [DecidableEq V]
     rw [Finset.sum_eq_multiset_sum]
     simp [Finset.toList]
   simp [cliqueDeletionFamily, hsum, indepPolyOn_sdiff_clique G S K hK hKS]
+
+private theorem pairwiseCompatible_of_forall_mem {fs : List ℝ[X]}
+    (h : ∀ f ∈ fs, ∀ g ∈ fs, Compatible f g) : PairwiseCompatible fs := by
+  intro i j _hij
+  exact h (fs.get i) (List.get_mem fs i) (fs.get j) (List.get_mem fs j)
+
+/-- Pairwise compatibility of the clique-deletion family follows from the two
+compatibility obligations appearing in Chudnovsky--Seymour Lemma 2.5. -/
+theorem cliqueDeletionFamily_pairwiseCompatible_of_compatible
+    {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S K : Finset V)
+    (hbase : (indepPolyOn G (S \ K)).Splits)
+    (hbase_del : ∀ v ∈ K,
+      Compatible (indepPolyOn G (S \ K))
+        (X * indepPolyOn G (deleteClosedNeighborSupport G S v)))
+    (hdel_pair : ∀ u ∈ K, ∀ v ∈ K,
+      Compatible (indepPolyOn G (deleteClosedNeighborSupport G S u))
+        (indepPolyOn G (deleteClosedNeighborSupport G S v))) :
+    PairwiseCompatible (cliqueDeletionFamily G S K) := by
+  apply pairwiseCompatible_of_forall_mem
+  intro f hf g hg
+  simp only [cliqueDeletionFamily, List.mem_cons, List.mem_map] at hf hg
+  rcases hf with rfl | ⟨u, huList, rfl⟩
+  · rcases hg with rfl | ⟨v, hvList, rfl⟩
+    · exact compatible_self_of_splits (indepPolyOn_ne_zero G (S \ K)) hbase
+    · exact hbase_del v (Finset.mem_toList.mp hvList)
+  · rcases hg with rfl | ⟨v, hvList, rfl⟩
+    · exact (hbase_del u (Finset.mem_toList.mp huList)).comm
+    · exact compatible_X_mul_of_compatible
+        (hdel_pair u (Finset.mem_toList.mp huList) v (Finset.mem_toList.mp hvList))
 
 /-- If the clique-deletion family is pairwise compatible, then the support
 independence polynomial splits. This is the Chudnovsky--Seymour engine applied
