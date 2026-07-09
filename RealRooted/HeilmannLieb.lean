@@ -697,6 +697,32 @@ theorem cliqueDeletionFamily_pairwiseCompatible_of_compatible
     · exact compatible_X_mul_of_compatible
         (hdel_pair u (Finset.mem_toList.mp huList) v (Finset.mem_toList.mp hvList))
 
+/-- Pairwise compatibility of the clique-deletion family can be proved on the
+recursive supports produced by the outside-neighbor cliques. -/
+theorem cliqueDeletionFamily_pairwiseCompatible_of_neighborOutside_compatible
+    {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] {S K : Finset V}
+    (hK : G.IsClique (K : Set V)) (hKS : K ⊆ S)
+    (hbase : (indepPolyOn G (S \ K)).Splits)
+    (hbase_neighbor : ∀ v ∈ K,
+      Compatible (indepPolyOn G (S \ K))
+        (X * indepPolyOn G ((S \ K) \ neighborOutsideCliqueOn G S K v)))
+    (hneighbor_pair : ∀ u ∈ K, ∀ v ∈ K,
+      Compatible (indepPolyOn G ((S \ K) \ neighborOutsideCliqueOn G S K u))
+        (indepPolyOn G ((S \ K) \ neighborOutsideCliqueOn G S K v))) :
+    PairwiseCompatible (cliqueDeletionFamily G S K) := by
+  apply cliqueDeletionFamily_pairwiseCompatible_of_compatible G S K hbase
+  · intro v hv
+    have hsupport :=
+      deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique G hK hKS hv
+    simpa [hsupport] using hbase_neighbor v hv
+  · intro u hu v hv
+    have huSupport :=
+      deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique G hK hKS hu
+    have hvSupport :=
+      deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique G hK hKS hv
+    simpa [huSupport, hvSupport] using hneighbor_pair u hu v hv
+
 /-- If the clique-deletion family is pairwise compatible, then the support
 independence polynomial splits. This is the Chudnovsky--Seymour engine applied
 to the finite family from Lemma 2.3. -/
