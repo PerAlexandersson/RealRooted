@@ -180,9 +180,7 @@ Heilmann-Lieb matching-polynomial corollaries.
 
 The Garloff-Wagner Hadamard proper-position theorem is now formalized as
 `garloffWagnerHadamardNonnegPrec`, with the direct proof route in
-`RealRooted/GarloffWagner.lean`.  The remaining downstream work is to update
-the `SuperEulerian` project so it no longer treats this RealRooted theorem as
-an external standard fact.
+`RealRooted/GarloffWagner.lean`.
 
 New formalization target: Braun-Jal, *Order polytopes of generalized snake
 posets are h^*-real-rooted*, arXiv:2607.00922v1.  The immediate Lean todo is
@@ -210,8 +208,7 @@ theorems.
 
 Current GitHub tracking:
 
-- #34: Garloff-Wagner Hadamard proper-position, implemented locally and ready
-  for issue closure after review/merge.
+- #34: Garloff-Wagner Hadamard proper-position.
 - #41 and #42: Chudnovsky-Seymour pair endpoints.
 - #51: challenge files.
 

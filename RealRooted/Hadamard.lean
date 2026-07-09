@@ -2496,8 +2496,7 @@ as `g $ f` and `q $ p` are represented here as `Prec f g` and `Prec p q`, and
 the conclusion is `Prec0 (f ⊙ p) (g ⊙ q)`.
 
 This statement is proved directly in `RealRooted.GarloffWagner`, following
-Garloff--Wagner, Theorem 4(b).  It is the standard input used by the
-SuperEulerian proof through its `StandardFacts` bundle.
+Garloff--Wagner, Theorem 4(b).
 -/
 /-- Hadamard product preserves proper position in the nonnegative setting
 (Garloff--Wagner, Theorem 4(b)). -/
