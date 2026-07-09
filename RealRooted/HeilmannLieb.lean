@@ -143,6 +143,27 @@ theorem indepPolyOn_hasPosLeadingCoeff {V : Type u} [DecidableEq V]
     HasPosLeadingCoeff (indepPolyOn G S) :=
   (indepPolyOn_hasNonnegCoeffs G S).pos_leadingCoeff (indepPolyOn_ne_zero G S)
 
+/-- The empty support has independence polynomial `1`. -/
+theorem indepPolyOn_empty {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] :
+    indepPolyOn G (∅ : Finset V) = 1 := by
+  rw [indepPolyOn]
+  rw [Finset.sum_eq_single ∅]
+  · simp
+  · intro s hs hne
+    have hs' : s = ∅ ∧ G.IsIndepSet (s : Set V) := by
+      simpa [indepSetsOn] using hs
+    exact False.elim (hne hs'.1)
+  · intro hnot
+    simp [indepSetsOn] at hnot
+
+/-- The empty support independence polynomial splits. -/
+theorem indepPolyOn_empty_splits {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] :
+    (indepPolyOn G (∅ : Finset V)).Splits := by
+  rw [indepPolyOn_empty]
+  exact Polynomial.Splits.one
+
 private theorem compatible_self_X_mul_of_splits {p : ℝ[X]} (hp : p.Splits) :
     Compatible p (X * p) := by
   intro α β _hα _hβ
@@ -1147,6 +1168,14 @@ def SupportSimplicialXCompatible {V : Type u} [DecidableEq V]
   ∀ {K : Finset V}, IsSimplicialCliqueOn G S K →
     Compatible (indepPolyOn G S) (X * indepPolyOn G (S \ K))
 
+/-- Every nonempty finite support admits a nonempty simplicial clique.  This is
+the graph-theoretic existence input still needed to finish the graph-form
+Chudnovsky--Seymour theorem. -/
+def SupportSimplicialCliqueExists {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] : Prop :=
+  ∀ {S : Finset V}, S.Nonempty → ∃ K : Finset V,
+    K.Nonempty ∧ IsSimplicialCliqueOn G S K
+
 /-- Chudnovsky--Seymour Lemma 2.5.1, as a support-level induction step.  The
 new content is that compatibility of `I(S \ K)` and `I(S \ L)` follows from
 the two smaller-support compatibility invariants on `S \ (K ∪ L)`. -/
@@ -1359,6 +1388,98 @@ theorem supportSimplicialXCompatible_of_smaller
       simpa [hsupport] using hSplit ((S \ K) \ neighborOutsideCliqueOn G S K v) hsub
     exact compatible_indepPolyOn_X_mul_sdiff_of_cliqueDeletion_pairwiseCompatible
       G S K hK.2.1 hK.1 hbase hdel hpair
+
+/-- The support-level claw-free independence-polynomial theorem, conditional
+only on the graph-theoretic existence of nonempty simplicial cliques on
+nonempty finite supports.  This is the simultaneous induction assembly after
+Chudnovsky--Seymour Lemma 2.5. -/
+theorem supportIndepPoly_splits_of_simplicialCliqueExists
+    {V : Type u} [DecidableEq V]
+    {G : _root_.SimpleGraph V} [DecidableRel G.Adj] (hG : ClawFree G)
+    (hexists : SupportSimplicialCliqueExists G) :
+    ∀ S : Finset V, (indepPolyOn G S).Splits := by
+  classical
+  have hmain : ∀ n : ℕ, ∀ S : Finset V, S.card = n →
+      SupportIndepPolySplits G S ∧
+        SupportSimplicialPairCompatible G S ∧
+          SupportSimplicialXCompatible G S := by
+    intro n
+    refine Nat.strongRecOn n ?_
+    intro n ih S hcard
+    have hPairSmall : ∀ T : Finset V, T.card < S.card →
+        SupportSimplicialPairCompatible G T := by
+      intro T hT
+      have hTn : T.card < n := by simpa [hcard] using hT
+      intro K L hK hL
+      exact (ih T.card hTn T rfl).2.1 hK hL
+    have hXSmall : ∀ T : Finset V, T.card < S.card →
+        SupportSimplicialXCompatible G T := by
+      intro T hT
+      have hTn : T.card < n := by simpa [hcard] using hT
+      intro K hK
+      exact (ih T.card hTn T rfl).2.2 hK
+    have hSplitSelf : (indepPolyOn G S).Splits := by
+      by_cases hS_empty : S = ∅
+      · subst hS_empty
+        exact indepPolyOn_empty_splits G
+      · have hS_nonempty : S.Nonempty := Finset.nonempty_iff_ne_empty.mpr hS_empty
+        rcases hexists hS_nonempty with ⟨K, hK_nonempty, hK⟩
+        have hsmall : (S \ K).card < S.card :=
+          Finset.card_lt_card (Finset.sdiff_ssubset hK.1 hK_nonempty)
+        have hsmalln : (S \ K).card < n := by simpa [hcard] using hsmall
+        have hrec := ih (S \ K).card hsmalln (S \ K) rfl
+        have hbase : (indepPolyOn G (S \ K)).Splits :=
+          hrec.1 (S \ K) Subset.rfl
+        have hneighbor_simp : ∀ v ∈ K,
+            IsSimplicialCliqueOn G (S \ K)
+              (neighborOutsideCliqueOn G S K v) := by
+          intro v hv
+          exact hG.simplicialClique_neighborOutside hK hv
+        have hbase_neighbor : ∀ v ∈ K,
+            Compatible (indepPolyOn G (S \ K))
+              (X * indepPolyOn G ((S \ K) \ neighborOutsideCliqueOn G S K v)) := by
+          intro v hv
+          exact hrec.2.2 (hneighbor_simp v hv)
+        have hneighbor_pair : ∀ u ∈ K, ∀ v ∈ K,
+            Compatible
+              (indepPolyOn G ((S \ K) \ neighborOutsideCliqueOn G S K u))
+              (indepPolyOn G ((S \ K) \ neighborOutsideCliqueOn G S K v)) := by
+          intro u hu v hv
+          exact hrec.2.1 (hneighbor_simp u hu) (hneighbor_simp v hv)
+        have hpair : PairwiseCompatible (cliqueDeletionFamily G S K) :=
+          cliqueDeletionFamily_pairwiseCompatible_of_neighborOutside_compatible
+            G hK.2.1 hK.1 hbase hbase_neighbor hneighbor_pair
+        have hdel : ∀ v ∈ K,
+            (indepPolyOn G (deleteClosedNeighborSupport G S v)).Splits := by
+          intro v hv
+          have hsupport :=
+            deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique
+              G hK.2.1 hK.1 hv
+          have hsub :
+              (S \ K) \ neighborOutsideCliqueOn G S K v ⊆ S \ K := by
+            intro w hw
+            exact (Finset.mem_sdiff.mp hw).1
+          simpa [hsupport] using
+            hrec.1 ((S \ K) \ neighborOutsideCliqueOn G S K v) hsub
+        exact indepPolyOn_splits_of_cliqueDeletion_pairwiseCompatible
+          G S K hK.2.1 hK.1 hbase hdel hpair
+    have hSplit : SupportIndepPolySplits G S := by
+      intro T hTS
+      by_cases hTS_eq : T = S
+      · subst hTS_eq
+        exact hSplitSelf
+      · have hproper : T ⊂ S :=
+          Finset.ssubset_iff_subset_ne.mpr ⟨hTS, hTS_eq⟩
+        have hTsmall : T.card < S.card := Finset.card_lt_card hproper
+        have hTn : T.card < n := by simpa [hcard] using hTsmall
+        exact (ih T.card hTn T rfl).1 T Subset.rfl
+    have hPair : SupportSimplicialPairCompatible G S :=
+      supportSimplicialPairCompatible_of_smaller hG hSplit hPairSmall hXSmall
+    have hX : SupportSimplicialXCompatible G S :=
+      supportSimplicialXCompatible_of_smaller hG hSplit hPairSmall hXSmall
+    exact ⟨hSplit, hPair, hX⟩
+  intro S
+  exact (hmain S.card S rfl).1 S Subset.rfl
 
 /-- The support-restricted independence polynomial is the ordinary independence
 polynomial of the induced graph on that support. -/
@@ -1577,6 +1698,24 @@ Chudnovsky--Seymour interlacing engine from `RealRooted.ChudnovskySeymour`. -/
 def ClawFreeIndepPolySplitsStatement : Prop :=
   ∀ {V : Type u} [Fintype V] [DecidableEq V]
     (G : _root_.SimpleGraph V), ClawFree G → (indepPoly G).Splits
+
+/-- The remaining graph-theoretic existence statement needed to finish the
+support-level induction for all finite claw-free graphs. -/
+def ClawFreeSupportSimplicialCliqueExistsStatement : Prop :=
+  ∀ {V : Type u} [DecidableEq V] (G : _root_.SimpleGraph V) [DecidableRel G.Adj],
+    ClawFree G → SupportSimplicialCliqueExists G
+
+/-- The graph-form Chudnovsky--Seymour statement follows from the support-level
+induction once every nonempty finite support in a claw-free graph has a
+nonempty simplicial clique. -/
+theorem clawFreeIndepPolySplits_of_supportSimplicialCliqueExists
+    (hexists : ClawFreeSupportSimplicialCliqueExistsStatement.{u}) :
+    ClawFreeIndepPolySplitsStatement.{u} := by
+  intro V _hfinite _hdec G hG
+  classical
+  rw [indepPoly_eq_indepPolyOn_univ]
+  exact supportIndepPoly_splits_of_simplicialCliqueExists hG
+    (hexists G hG) Finset.univ
 
 /-- Conditional Heilmann--Lieb matching-generating corollary.
 
