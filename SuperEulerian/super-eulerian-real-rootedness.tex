@@ -1,0 +1,888 @@
+\documentclass[reqno]{amsart}
+
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathrsfs,mathtools,mathdots}
+\usepackage{xcolor}
+\usepackage{booktabs,enumerate}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+
+\numberwithin{equation}{section}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\defin}[1]{%
+\relax\ifmmode%
+\textcolor{blue}{#1}%
+\else\textcolor{blue}{\emph{#1}}%
+\fi%
+}
+
+\newcommand{\setN}{\mathbb{N}}
+\newcommand{\setR}{\mathbb{R}}
+\newcommand{\poly}{\setR[t]}
+\newcommand{\coeff}[2]{[#1]#2}
+\newcommand{\had}{\odot}
+\newcommand{\opI}{\mathcal{I}}
+\newcommand{\pf}{\mathrm{PF}}
+\DeclareMathOperator{\bl}{bl}
+\DeclareMathOperator{\roots}{roots}
+
+\title[Super-recurrence Eulerian polynomials]{Real-rootedness of a
+super-recurrence Eulerian family}
+\author{Per Alexandersson}
+\date{\today}
+
+\subjclass[2020]{Primary 05A15; Secondary 26C10, 05A20}
+\keywords{Eulerian polynomial, real-rooted polynomial, interlacing,
+Hadamard product, P{\'o}lya frequency sequence}
+
+\begin{document}
+
+\begin{abstract}
+We prove real-rootedness for a family of Eulerian-type polynomials introduced
+by U.~Shankar.  For an integer $l\geq 1$, the coefficients are defined by
+\[
+  E_{1,0}^{(l)}=1,\qquad
+  E_{n,k}^{(l)}
+  =(k+1)^lE_{n-1,k}^{(l)}
+  +(n-k)^lE_{n-1,k-1}^{(l)} .
+\]
+We show that the row polynomial
+$E_n^{(l)}(t)=\sum_{k=0}^{n-1}E_{n,k}^{(l)}t^k$ has only real
+nonpositive zeros.  In fact, we prove the stronger consecutive interlacing
+relation
+\[
+  E_n^{(l)}(t)\ll E_{n+1}^{(l)}(t)
+\]
+for all $l\geq 1$ and $n\geq 1$.  The proof is based on a Hadamard
+normalization of the rows, the Garloff--Wagner theorem on Hadamard products,
+and a small kernel interlacing argument.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+\label{sec:introduction}
+
+Eulerian polynomials are a central source of real-rooted and interlacing
+phenomena in enumerative combinatorics.  One way to see this is through the
+classical recurrence
+\[
+  A_{n,k}=(k+1)A_{n-1,k}+(n-k)A_{n-1,k-1}.
+\]
+Shankar~\cite{Shankar2025SuperRecurrence} considered a broad family of
+triangular arrays obtained by replacing the linear factors in such recurrences
+by powers.  The Eulerian specialization is the following.
+
+\begin{definition}
+\label{def:superEulerianRows}
+Fix $l\geq 1$.  We define the \defin{super-recurrence Eulerian
+coefficients} $E_{n,k}^{(l)}$ by
+\[
+  E_{1,0}^{(l)}=1
+\]
+and, for $n\geq 2$,
+\begin{equation}
+\label{eq:superEulerianRecurrence}
+  E_{n,k}^{(l)}
+  =(k+1)^lE_{n-1,k}^{(l)}
+  +(n-k)^lE_{n-1,k-1}^{(l)} ,
+\end{equation}
+where coefficients outside the range $0\leq k\leq n-1$ are interpreted as
+zero.  The \defin{row polynomial} is
+\[
+  E_n^{(l)}(t)
+  \coloneqq
+  \sum_{k=0}^{n-1}E_{n,k}^{(l)}t^k .
+\]
+\end{definition}
+
+For $l=1$ this is the usual Eulerian recurrence.  For example, when $l=2$ the
+first rows are
+\[
+  E_1^{(2)}(t)=1,\qquad
+  E_2^{(2)}(t)=1+t,\qquad
+  E_3^{(2)}(t)=1+8t+t^2,
+\]
+and
+\[
+  E_4^{(2)}(t)=1+41t+41t^2+t^3 .
+\]
+Shankar proved palindromicity and log-concavity properties for these arrays
+and recorded real-rootedness evidence.  The main result of this note settles
+the real-rootedness question in the Eulerian specialization, and gives a
+stronger interlacing statement.
+
+\begin{theorem}
+\label{thm:main}
+Let $l\geq 1$.
+\begin{enumerate}[(a)]
+\item For every $n\geq 1$, the polynomial $E_n^{(l)}(t)$ has only real
+  nonpositive zeros.
+\item For every $n\geq 1$,
+  \[
+    E_n^{(l)}(t)\ll E_{n+1}^{(l)}(t).
+  \]
+\end{enumerate}
+\end{theorem}
+
+Here $f\ll g$ denotes the usual weak proper-position relation for real-rooted
+polynomials, with the orientation fixed in Section~\ref{sec:tools}.  The proof
+also gives a refinement for a natural family of cumulative block-leader
+prefixes.  We state it now and define the prefixes in
+Section~\ref{sec:prefixes}.
+
+\begin{theorem}
+\label{thm:prefixChainIntro}
+For $l\geq 1$, $n\geq 1$, and $1<m\leq n$, the cumulative block-leader
+prefixes satisfy
+\[
+  P_{n,m-1}^{(l)}(t)\ll P_{n,m}^{(l)}(t).
+\]
+\end{theorem}
+
+Our proof has two main ideas.  The first is a normalization.  If $d=n-1$, put
+\[
+  Q_n^{(l)}(t)
+  \coloneqq
+  \sum_{i=0}^{d}
+  \frac{E_{n,i}^{(l)}}{\binom di^l}t^i .
+\]
+Then
+\[
+  E_n^{(l)}(t)=B_{d,l}(t)\had Q_n^{(l)}(t),
+  \qquad
+  B_{d,l}(t)=\sum_{i=0}^{d}\binom di^l t^i ,
+\]
+where $\had$ denotes coefficientwise Hadamard product.  The kernel
+$B_{d,l}$ is the $l$-fold Hadamard power of $(1+t)^d$, while the normalized
+rows $Q_n^{(l)}$ satisfy a recurrence built from the two operators
+$N-\theta$ and $\theta+1$, where $\theta=t\,d/dt$.  These operators preserve
+the cone of polynomials with nonnegative coefficients and only nonpositive
+real zeros.  This proves part~(a) of Theorem~\ref{thm:main}.
+
+The second idea is that the same normalization is compatible with interlacing.
+We use the two-pair form of the Garloff--Wagner Hadamard theorem
+\cite[Thm.~4]{GarloffWagner1996}.  A small pair of explicit kernels,
+\[
+  V_d(t)=(1+t)^d,\qquad
+  U_d(t)=\sum_{i=0}^{d}(i+1)\binom di t^i
+        =(1+t)^{d-1}(1+(d+1)t),
+\]
+contains all the needed root-list information.  Hadamard powers of the
+relations among $V_d$, $U_d$, and the shifted reciprocal of $U_d$ then yield
+the consecutive interlacing in part~(b).
+
+\section{Real-rootedness tools}
+\label{sec:tools}
+
+We collect the standard facts about real-rooted polynomials that are used in
+the proof.  For background on P{\'o}lya frequency sequences, real-rootedness,
+compatibility, and interlacing, see
+Aissen--Edrei--Schoenberg--Whitney~\cite{AissenEdreiSchoenbergWhitney1951},
+Brenti~\cite{Brenti1989}, Chudnovsky--Seymour~\cite{ChudnovskySeymour2007},
+and Br{\"a}nd{\'e}n~\cite{Branden2015}.
+
+\begin{definition}
+\label{def:pf}
+A polynomial $f\in\poly$ is a \defin{PF polynomial} if all its coefficients
+are nonnegative and all its zeros are real and nonpositive.  We use the
+convention that the zero polynomial is allowed when it appears as a limiting
+or degenerate case.
+\end{definition}
+
+If $f,g\in\poly$ have only real zeros, we write $f\ll g$ if the zeros of $f$
+weakly interlace or weakly alternate to the left of the zeros of $g$, in the
+following orientation.  If $\deg g=\deg f+1$, the roots can be listed as
+\[
+  \beta_1\leq \alpha_1\leq \beta_2\leq
+  \dotsb\leq \alpha_{\deg f}\leq \beta_{\deg g},
+\]
+where the $\alpha_i$ are roots of $f$ and the $\beta_i$ are roots of $g$.  If
+$\deg f=\deg g$, the roots can be listed as
+\[
+  \alpha_1\leq \beta_1\leq \alpha_2\leq
+  \dotsb\leq \alpha_{\deg f}\leq \beta_{\deg g}.
+\]
+We use the closed weak form, so repeated roots and zero polynomials are
+handled by the usual limiting convention.
+
+For $f(t)=\sum_i a_it^i$ and $g(t)=\sum_i b_it^i$, define their
+\defin{Hadamard product}
+\[
+  (f\had g)(t)\coloneqq \sum_i a_ib_i t^i ,
+\]
+where coefficients are extended by zero outside the degree range.  We also
+write
+\[
+  \opI_Df(t)\coloneqq t^D f(1/t)
+\]
+for the \defin{shifted reciprocal}.
+
+\begin{theorem}[Schur--P{\'o}lya--Wagner; Garloff--Wagner]
+\label{thm:hadamardTools}
+Let $f,g,p,q\in\poly$ be PF polynomials.
+\begin{enumerate}[(a)]
+\item If $f$ and $p$ are PF, then $f\had p$ is PF.
+\item If $f\ll g$ and $p\ll q$, then
+  \[
+    f\had p\ll g\had q.
+  \]
+\end{enumerate}
+\end{theorem}
+
+Part~(a) is the classical Schur--P{\'o}lya--Wagner preservation theorem, in the
+nonnegative-coefficient convention used here.  Part~(b) is the two-pair
+proper-position form of Garloff--Wagner~\cite[Thm.~4]{GarloffWagner1996};
+see also the earlier work of Schur and P{\'o}lya~\cite{SchurPolya1914}.
+
+\begin{theorem}[Fixed-left cone property]
+\label{thm:fixedLeftCone}
+Let $p,q,r\in\poly$ be PF polynomials.  If $p\ll q$ and $p\ll r$, then
+\[
+  p\ll aq+br
+\]
+for all $a,b\geq 0$.
+\end{theorem}
+
+This is the standard convexity of a common interlacing cone.  It is equivalent
+to the two-generator compatibility criterion of Obreschkoff type; in the form
+used here it is also contained in the addition lemmas used by
+Garloff--Wagner~\cite[Lem.~6]{GarloffWagner1996}.
+
+We shall use two elementary differential operators.  Let
+\[
+  \theta f(t)\coloneqq t f'(t).
+\]
+
+\begin{lemma}
+\label{lem:operatorsPreservePF}
+Let $f\in\poly$ be PF.
+\begin{enumerate}[(a)]
+\item The polynomial $(\theta+1)f=(tf)'$ is PF.
+\item If $\deg f\leq N$, then $(N-\theta)f$ is PF.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+The coefficients are plainly nonnegative in both cases, in the second case
+because the coefficient of $t^i$ in $(N-\theta)f$ is $(N-i)\coeff{t^i}f$.
+
+For the roots, part~(a) follows from Rolle's theorem applied to $tf$.  Indeed,
+the polynomial $tf$ has only real nonpositive zeros, and its derivative is
+$(\theta+1)f$.
+
+For part~(b), remove the zero roots of $f$.  Thus write
+\[
+  f(t)=t^s h(t),\qquad
+  h(t)=c\prod_{j=1}^{m}(t+a_j),
+\]
+where $c>0$ and $a_j>0$.  Since $s+m=\deg f\leq N$, we have
+\[
+  (N-\theta)f
+  =
+  t^s\bigl((N-s-\theta)h\bigr).
+\]
+Moreover,
+\[
+  (N-s-\theta)h
+  =
+  (N-s-m)h+\sum_{j=1}^{m}a_j\,\frac{h}{t+a_j}.
+\]
+The polynomials $h/(t+a_j)$ weakly interlace $h$, and all coefficients in
+this linear combination are nonnegative.  By
+Theorem~\ref{thm:fixedLeftCone}, the right-hand side is again real-rooted
+with only nonpositive zeros.  Multiplying by $t^s$ only appends zero roots.
+This completes the proof.
+\end{proof}
+
+\begin{lemma}
+\label{lem:thetaPlusOnePreservesInterlacing}
+The operator $\theta+1$ preserves weak proper position on the PF cone.  In
+particular, if $f$ and $g$ are PF and $f\ll g$, then
+\[
+  (\theta+1)f\ll(\theta+1)g.
+\]
+Consequently, every power $(\theta+1)^r$ has the same property.
+\end{lemma}
+
+\begin{proof}
+The compatibility characterization of proper position says that
+$f\ll g$ is equivalent, in this nonnegative PF setting, to real-rootedness of
+all nonnegative linear combinations $af+bg$.  Applying
+Lemma~\ref{lem:operatorsPreservePF}(a) to each such combination gives that
+\[
+  a(\theta+1)f+b(\theta+1)g
+\]
+is PF for all $a,b\geq 0$.  The same characterization gives the desired
+proper-position relation.  Iterating proves the final assertion.
+\end{proof}
+
+\section{The normalized rows}
+\label{sec:normalizedRows}
+
+The proof of Theorem~\ref{thm:main} starts with a normalization which removes
+the binomial part of the coefficients.
+
+\begin{definition}
+\label{def:normalizedRows}
+For $d=n-1$, define
+\[
+  Q_n^{(l)}(t)
+  \coloneqq
+  \sum_{i=0}^{d}
+  \frac{E_{n,i}^{(l)}}{\binom di^l}t^i .
+\]
+We also define
+\[
+  B_{d,l}(t)\coloneqq \sum_{i=0}^{d}\binom di^l t^i .
+\]
+\end{definition}
+
+\begin{lemma}[Normalized transfer identity]
+\label{lem:normalizedTransfer}
+For $l\geq 1$ and $n\geq 2$,
+\[
+  Q_n^{(l)}(t)
+  =
+  (1+t)
+  \left(
+    \frac{(\theta+1)(n-1-\theta)}{n-1}
+  \right)^l
+  Q_{n-1}^{(l)}(t).
+\]
+\end{lemma}
+
+\begin{proof}
+Put $N=n-1$ and write
+\[
+  Q_{n-1}^{(l)}(t)=\sum_{k=0}^{N-1}q_kt^k .
+\]
+The operator
+\[
+  \frac{(\theta+1)(N-\theta)}{N}
+\]
+is diagonal in the monomial basis: it sends $t^k$ to
+\[
+  \frac{(k+1)(N-k)}{N}t^k .
+\]
+Thus, after applying the $l$th power and multiplying by $1+t$, the coefficient
+of $t^k$ is
+\begin{equation}
+\label{eq:normalizedTransferCoeff}
+  \left(\frac{(k+1)(N-k)}{N}\right)^l q_k
+  +
+  \left(\frac{k(N+1-k)}{N}\right)^l q_{k-1},
+\end{equation}
+where $q_{-1}=q_N=0$.
+
+Since
+\[
+  q_k=\frac{E_{n-1,k}^{(l)}}{\binom{N-1}{k}^l},
+\]
+the first summand in \eqref{eq:normalizedTransferCoeff} is
+\[
+  \frac{(k+1)^lE_{n-1,k}^{(l)}}{\binom Nk^l},
+\]
+using
+\[
+  \binom Nk=\frac{N}{N-k}\binom{N-1}{k}.
+\]
+Similarly, the second summand is
+\[
+  \frac{(N+1-k)^lE_{n-1,k-1}^{(l)}}{\binom Nk^l},
+\]
+using
+\[
+  \binom Nk=\frac{N}{k}\binom{N-1}{k-1}.
+\]
+Since $N+1=n$, the sum is
+\[
+  \frac{
+    (k+1)^lE_{n-1,k}^{(l)}
+    +(n-k)^lE_{n-1,k-1}^{(l)}
+  }{\binom{n-1}{k}^l}
+  =
+  \frac{E_{n,k}^{(l)}}{\binom{n-1}{k}^l}.
+\]
+This is exactly the coefficient of $t^k$ in $Q_n^{(l)}$.
+\end{proof}
+
+\begin{lemma}
+\label{lem:normalizedRowsPF}
+For all $l\geq 1$ and $n\geq 1$, the polynomial $Q_n^{(l)}$ is PF.
+\end{lemma}
+
+\begin{proof}
+We proceed by induction on $n$.  The base case is $Q_1^{(l)}=1$.  Assume
+that $Q_{n-1}^{(l)}$ is PF.  Its degree is at most $n-2$.  Therefore
+Lemma~\ref{lem:operatorsPreservePF}(b), with $N=n-1$, shows that
+$(n-1-\theta)Q_{n-1}^{(l)}$ is PF.  Lemma~\ref{lem:operatorsPreservePF}(a)
+then shows that applying $\theta+1$ preserves the PF property.  The scalar
+factor $1/(n-1)$ is positive, and multiplication by $1+t$ only adds the root
+$-1$.  Iterating this $l$ times in
+Lemma~\ref{lem:normalizedTransfer} proves that $Q_n^{(l)}$ is PF.
+\end{proof}
+
+\begin{lemma}
+\label{lem:rowHadamardFactorization}
+For $d=n-1$,
+\[
+  E_n^{(l)}=B_{d,l}\had Q_n^{(l)}.
+\]
+Consequently, $E_n^{(l)}$ is PF for all $l\geq 1$ and $n\geq 1$.
+\end{lemma}
+
+\begin{proof}
+The coefficient of $t^i$ in $B_{d,l}\had Q_n^{(l)}$ is
+\[
+  \binom di^l\frac{E_{n,i}^{(l)}}{\binom di^l}
+  =
+  E_{n,i}^{(l)}.
+\]
+This proves the factorization.
+
+Moreover, $B_{d,l}$ is the $l$-fold Hadamard power of $(1+t)^d$, since
+\[
+  (1+t)^d=\sum_{i=0}^{d}\binom di t^i.
+\]
+The polynomial $(1+t)^d$ is PF, and so
+Theorem~\ref{thm:hadamardTools}(a) implies that $B_{d,l}$ is PF.  By
+Lemma~\ref{lem:normalizedRowsPF}, the other factor $Q_n^{(l)}$ is PF.
+Applying Theorem~\ref{thm:hadamardTools}(a) once more proves that
+$E_n^{(l)}$ is PF.
+\end{proof}
+
+This proves Theorem~\ref{thm:main}(a).
+
+\section{Palindromicity and the Hadamard kernels}
+\label{sec:kernels}
+
+We now prepare the interlacing proof.  We first record the palindromicity,
+which is also proved in Shankar's work~\cite{Shankar2025SuperRecurrence}.
+
+\begin{lemma}
+\label{lem:palindromic}
+For $0\leq k\leq n-1$,
+\[
+  E_{n,k}^{(l)}=E_{n,n-1-k}^{(l)}.
+\]
+Consequently, both $E_n^{(l)}$ and $Q_n^{(l)}$ are palindromic of degree
+$n-1$.
+\end{lemma}
+
+\begin{proof}
+We proceed by induction on $n$.  The claim is immediate for $n=1$.  Assume it
+for row $n-1$.  Applying the recurrence to the index $n-1-k$ gives
+\[
+  E_{n,n-1-k}^{(l)}
+  =
+  (n-k)^lE_{n-1,n-1-k}^{(l)}
+  +(k+1)^lE_{n-1,n-2-k}^{(l)}.
+\]
+By the induction hypothesis in row $n-1$,
+\[
+  E_{n-1,n-1-k}^{(l)}=E_{n-1,k-1}^{(l)}
+  \quad\text{and}\quad
+  E_{n-1,n-2-k}^{(l)}=E_{n-1,k}^{(l)},
+\]
+with the usual zero convention at the boundary.  Hence
+\[
+  E_{n,n-1-k}^{(l)}
+  =
+  (n-k)^lE_{n-1,k-1}^{(l)}
+  +(k+1)^lE_{n-1,k}^{(l)}
+  =
+  E_{n,k}^{(l)}.
+\]
+The assertion for $Q_n^{(l)}$ follows because
+$\binom{n-1}{k}=\binom{n-1}{n-1-k}$.
+\end{proof}
+
+Define the second Hadamard kernel by
+\[
+  K_{d,l}(t)\coloneqq
+  \sum_{i=0}^{d}(i+1)^l\binom di^l t^i .
+\]
+We shall compare $B_{d,l}$, $K_{d,l}$, and the shifted reciprocal
+$\opI_{d+1}K_{d,l}$.
+
+\begin{lemma}
+\label{lem:kernelInterlacings}
+For all $d\geq 0$ and $l\geq 1$,
+\[
+  B_{d,l}\ll K_{d,l},
+  \qquad
+  B_{d,l}\ll \opI_{d+1}K_{d,l},
+  \qquad
+  K_{d,l}\ll \opI_{d+1}K_{d,l}.
+\]
+\end{lemma}
+
+\begin{proof}
+The case $d=0$ is immediate, so assume $d\geq 1$.  Put
+\[
+  V_d(t)=(1+t)^d
+\]
+and
+\[
+  U_d(t)=\sum_{i=0}^{d}(i+1)\binom di t^i.
+\]
+Since
+\[
+  U_d(t)=(\theta+1)V_d(t)=(t(1+t)^d)'
+        =(1+t)^{d-1}(1+(d+1)t),
+\]
+the roots of $U_d$ are $-1$, with multiplicity $d-1$, and
+$-1/(d+1)$.  The polynomial $\opI_{d+1}U_d$ has roots $0$,
+$-(d+1)$, and $-1$ with multiplicity $d-1$.  Comparing these ordered root
+lists gives
+\[
+  V_d\ll U_d,
+  \qquad
+  V_d\ll \opI_{d+1}U_d,
+  \qquad
+  U_d\ll \opI_{d+1}U_d.
+\]
+
+Now
+\[
+  B_{d,l}=V_d^{\had l},
+  \qquad
+  K_{d,l}=U_d^{\had l},
+  \qquad
+  \opI_{d+1}K_{d,l}=(\opI_{d+1}U_d)^{\had l}.
+\]
+The last identity follows coefficientwise from the definition of the shifted
+reciprocal.  Repeated application of
+Theorem~\ref{thm:hadamardTools}(b) to the three displayed interlacings gives
+the result.
+\end{proof}
+
+\section{Consecutive interlacing}
+\label{sec:consecutive}
+
+We now prove the stronger part of Theorem~\ref{thm:main}.  The proof is a
+direct decomposition of the two summands in the recurrence for
+$E_{n+1}^{(l)}$.
+
+\begin{lemma}
+\label{lem:boundaryDecomposition}
+Let $n\geq 1$, put $d=n-1$, and set
+\[
+  p(t)=E_n^{(l)}(t),
+  \qquad
+  A(t)=(\theta+1)^lp(t).
+\]
+Then
+\[
+  E_{n+1}^{(l)}(t)=A(t)+t^nA(1/t).
+\]
+\end{lemma}
+
+\begin{proof}
+The recurrence for row $n+1$ gives
+\[
+  E_{n+1}^{(l)}(t)
+  =
+  \bigl((\theta+1)^l+t(n-\theta)^l\bigr)p(t).
+\]
+The first summand is $A(t)$.  We show that the second summand is
+$t^nA(1/t)$.  Write
+\[
+  p(t)=\sum_{i=0}^{d}a_i t^i .
+\]
+By Lemma~\ref{lem:palindromic}, $a_i=a_{d-i}$.  The coefficient of $t^j$ in
+$t(n-\theta)^lp(t)$ is
+\[
+  (n-j+1)^l a_{j-1}
+\]
+for $1\leq j\leq n$, and it is zero for $j=0$.  On the other hand,
+the coefficient of $t^j$ in $t^nA(1/t)$ is
+\[
+  (n-j+1)^l a_{n-j}
+  =
+  (n-j+1)^l a_{j-1},
+\]
+again for $1\leq j\leq n$.  Thus the two polynomials agree.
+\end{proof}
+
+\begin{lemma}
+\label{lem:summandDecompositions}
+With the notation of Lemma~\ref{lem:boundaryDecomposition},
+\[
+  p=B_{d,l}\had Q_n^{(l)},
+  \qquad
+  A=K_{d,l}\had Q_n^{(l)},
+\]
+and
+\[
+  t^nA(1/t)
+  =
+  (\opI_{d+1}K_{d,l})\had tQ_n^{(l)}.
+\]
+\end{lemma}
+
+\begin{proof}
+The first identity is Lemma~\ref{lem:rowHadamardFactorization}.  For the
+second, the coefficient of $t^i$ in $A=(\theta+1)^lp$ is
+\[
+  (i+1)^l E_{n,i}^{(l)}
+  =
+  (i+1)^l\binom di^l \coeff{t^i}{Q_n^{(l)}},
+\]
+which is the coefficient of $t^i$ in $K_{d,l}\had Q_n^{(l)}$.
+
+For the last identity, compare coefficients.  Since $n=d+1$, the coefficient
+of $t^j$ in the right-hand side is
+\[
+  (d+2-j)^l\binom d{d+1-j}^l\coeff{t^{j-1}}{Q_n^{(l)}}.
+\]
+Using
+\[
+  \binom d{d+1-j}=\binom d{j-1}
+\]
+and palindromicity of $Q_n^{(l)}$, this is exactly the coefficient of
+$t^j$ in $t^nA(1/t)$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}(b)]
+For $n=1$, the assertion is $1\ll 1+t$, which is immediate.  Assume
+$n\geq 2$ and use the notation of Lemma~\ref{lem:boundaryDecomposition}.
+By Lemma~\ref{lem:summandDecompositions},
+\[
+  p=B_{d,l}\had Q_n^{(l)},\qquad
+  A=K_{d,l}\had Q_n^{(l)}.
+\]
+The normalized row $Q_n^{(l)}$ is PF by Lemma~\ref{lem:normalizedRowsPF}, so
+\[
+  Q_n^{(l)}\ll Q_n^{(l)}.
+\]
+Together with $B_{d,l}\ll K_{d,l}$ from
+Lemma~\ref{lem:kernelInterlacings}, the two-pair Hadamard theorem gives
+\[
+  p\ll A.
+\]
+
+Similarly,
+\[
+  t^nA(1/t)
+  =
+  (\opI_{d+1}K_{d,l})\had tQ_n^{(l)}.
+\]
+Since $Q_n^{(l)}$ is PF, the root list immediately gives
+\[
+  Q_n^{(l)}\ll tQ_n^{(l)}.
+\]
+Combining this with
+\[
+  B_{d,l}\ll \opI_{d+1}K_{d,l}
+\]
+and applying Theorem~\ref{thm:hadamardTools}(b), we get
+\[
+  p\ll t^nA(1/t).
+\]
+The fixed-left cone property, Theorem~\ref{thm:fixedLeftCone}, now gives
+\[
+  p\ll A+t^nA(1/t).
+\]
+By Lemma~\ref{lem:boundaryDecomposition}, the right-hand side is
+$E_{n+1}^{(l)}$.  This proves
+\[
+  E_n^{(l)}\ll E_{n+1}^{(l)},
+\]
+as desired.
+\end{proof}
+
+The same proof gives a reciprocal endpoint which will be useful for the prefix
+refinement.
+
+\begin{corollary}
+\label{cor:boundaryEndpoint}
+Let
+\[
+  A_n^{(l)}(t)\coloneqq (\theta+1)^lE_n^{(l)}(t).
+\]
+Then
+\[
+  A_n^{(l)}(t)\ll t^nA_n^{(l)}(1/t)
+\]
+and
+\[
+  A_n^{(l)}(t)\ll E_{n+1}^{(l)}(t).
+\]
+\end{corollary}
+
+\begin{proof}
+The first statement follows from the same Hadamard decomposition as above,
+using
+\[
+  K_{d,l}\ll \opI_{d+1}K_{d,l}
+  \qquad\text{and}\qquad
+  Q_n^{(l)}\ll tQ_n^{(l)}.
+\]
+The second follows from the fixed-left cone property and
+\[
+  E_{n+1}^{(l)}(t)=A_n^{(l)}(t)+t^nA_n^{(l)}(1/t).
+\]
+This completes the proof.
+\end{proof}
+
+\section{Cumulative block-leader prefixes}
+\label{sec:prefixes}
+
+We finish with the prefix refinement.  We use a block-leader product formula
+for the rows.  A \defin{block-leader set} is a subset $B\subseteq[n]$ with
+$1\in B$.  For such a set, define
+\[
+  c_n(B)\coloneqq \prod_{i=1}^{n}w_i(B),
+\]
+where, if
+\[
+  r_i=|B\cap[i-1]|,
+\]
+then
+\[
+  w_i(B)=
+  \begin{cases}
+  i-r_i, & i\in B,\\
+  r_i, & i\notin B.
+  \end{cases}
+\]
+Equivalently, if $B=\{1=b_1<b_2<\dotsb<b_r\}$ and $b_{r+1}=n+1$, then
+\[
+  c_n(B)
+  =
+  \prod_{j=1}^{r}(b_j-j+1)
+  \prod_{j=1}^{r}j^{b_{j+1}-b_j-1}.
+\]
+
+\begin{lemma}
+\label{lem:blockLeaderFormula}
+We have
+\[
+  E_n^{(l)}(t)
+  =
+  \sum_{\substack{B\subseteq[n]\\1\in B}}
+  c_n(B)^l t^{|B|-1}.
+\]
+\end{lemma}
+
+\begin{proof}
+Let the right-hand side be $F_n^{(l)}(t)$.  We verify the same recurrence and
+initial condition as in Definition~\ref{def:superEulerianRows}.  The case
+$n=1$ is clear.
+
+Fix $n\geq 2$ and split the block-leader sets according to whether $n$ belongs
+to $B$.  If $n\notin B$ and $|B|=k+1$, then $B$ is a block-leader set in
+$[n-1]$ and
+\[
+  c_n(B)=(k+1)c_{n-1}(B).
+\]
+These terms contribute
+\[
+  (k+1)^l E_{n-1,k}^{(l)}
+\]
+to the coefficient of $t^k$.
+
+If $n\in B$, then $B'=B\setminus\{n\}$ is a block-leader set in $[n-1]$ with
+$|B'|=k$.  In this case
+\[
+  c_n(B)=(n-k)c_{n-1}(B'),
+\]
+and the contribution to the coefficient of $t^k$ is
+\[
+  (n-k)^lE_{n-1,k-1}^{(l)}.
+\]
+Thus the coefficients of $F_n^{(l)}$ satisfy
+\eqref{eq:superEulerianRecurrence}.  The claim follows.
+\end{proof}
+
+\begin{definition}
+\label{def:prefixes}
+For $1\leq m\leq n$, define the \defin{cumulative block-leader prefix}
+\[
+  P_{n,m}^{(l)}(t)
+  \coloneqq
+  \sum_{\substack{B\subseteq[n]\\1\in B,\ \max B\leq m}}
+  c_n(B)^l t^{|B|-1}.
+\]
+\end{definition}
+
+Note that $P_{n,n}^{(l)}=E_n^{(l)}$ by Lemma~\ref{lem:blockLeaderFormula}.
+
+\begin{lemma}
+\label{lem:prefixClosedForm}
+For $1\leq m\leq n$,
+\[
+  P_{n,m}^{(l)}(t)
+  =
+  (\theta+1)^{l(n-m)}E_m^{(l)}(t).
+\]
+\end{lemma}
+
+\begin{proof}
+If $B\subseteq[m]$ and we view $B$ as a subset of $[n]$, then every index
+$i>m$ is not in $B$ and has $r_i=|B|$.  Hence
+\[
+  c_n(B)=|B|^{n-m}c_m(B).
+\]
+Using Lemma~\ref{lem:blockLeaderFormula}, we get
+\[
+  P_{n,m}^{(l)}(t)
+  =
+  \sum_{\substack{B\subseteq[m]\\1\in B}}
+  |B|^{l(n-m)}c_m(B)^l t^{|B|-1}.
+\]
+The operator $\theta+1$ multiplies the monomial $t^{|B|-1}$ by $|B|$.
+Therefore $(\theta+1)^{l(n-m)}$ gives exactly the displayed factor
+$|B|^{l(n-m)}$.  This proves the identity.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:prefixChainIntro}]
+It is enough to prove that
+\[
+  P_{n,m}^{(l)}\ll P_{n,m+1}^{(l)}
+  \qquad (m<n),
+\]
+and then replace $m$ by $m-1$.  By Corollary~\ref{cor:boundaryEndpoint},
+\[
+  (\theta+1)^lE_m^{(l)}\ll E_{m+1}^{(l)}.
+\]
+Apply the operator
+\[
+  (\theta+1)^{l(n-m-1)}
+\]
+to both sides.  This preserves weak proper position by
+Lemma~\ref{lem:thetaPlusOnePreservesInterlacing}.  Using
+Lemma~\ref{lem:prefixClosedForm}, the resulting relation is exactly
+\[
+  P_{n,m}^{(l)}\ll P_{n,m+1}^{(l)}.
+\]
+The claim follows.
+\end{proof}
+
+\begin{remark}
+The normalized gamma-polynomial refinements suggested by computations are not
+used in the proof above.  The Hadamard normalization and the small kernel
+interlacing argument are sufficient for the real-rootedness and consecutive
+interlacing statements.
+\end{remark}
+
+\bibliographystyle{alpha}
+\bibliography{bibliography}
+
+\end{document}

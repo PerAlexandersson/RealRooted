@@ -5,6 +5,8 @@
 *.md
 !README.md
 !RealRooted/Tactic/PLAN.md
+!SuperEulerian/*.md
+!SuperEulerian/**/*.md
 
 # Generated/local artifacts.
 realrooted-interlacing-seminar-handout.html
@@ -20,6 +22,8 @@ realrooted-interlacing-seminar-handout.html
 *.exe
 *.aux
 *.bbl
+!SuperEulerian/*.bbl
+!SuperEulerian/**/*.bbl
 *.blg
 *.fdb_latexmk
 *.fls
