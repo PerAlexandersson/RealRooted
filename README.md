@@ -199,6 +199,12 @@ theorems.
 
 Current GitHub tracking:
 
+- #64: Liu's opposite-leading-sign compatible-sequences theorem.
+- #67: Gustafsson-Solus Lemma 3.4 interlacing recursion.
+- #68: Haglund-Zhang `s`-inversion backend for A046802.
+
+Recently closed:
+
 - #34: Garloff-Wagner Hadamard proper-position.
 - #41 and #42: Chudnovsky-Seymour pair endpoints.
 - #44 and #45: Chudnovsky-Seymour family theorem and wrapper.
