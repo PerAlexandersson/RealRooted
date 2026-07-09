@@ -42,15 +42,31 @@ theorem finitePolyaSchur_nonneg :
     RealRooted.finitePolyaSchurNonnegStatement :=
   RealRooted.finitePolyaSchur_nonneg
 
-/-- Garloff--Wagner proper-position Hadamard target. -/
-abbrev garloffWagnerHadamardNonnegPrecTarget : Prop :=
-  RealRooted.garloffWagnerHadamardNonnegPrecStatement
+/-- Garloff--Wagner proper-position Hadamard theorem. -/
+theorem garloffWagnerHadamardNonnegPrec
+    {f g p q : ℝ[X]}
+    (hf : HasNonnegCoeffs f)
+    (hg : HasNonnegCoeffs g)
+    (hp : HasNonnegCoeffs p)
+    (hq : HasNonnegCoeffs q)
+    (hfg : Prec f g)
+    (hpq : Prec p q) :
+    Prec0 (hadamardProduct f p) (hadamardProduct g q) :=
+  RealRooted.garloffWagnerHadamardNonnegPrec hf hg hp hq hfg hpq
 
-/-- Garloff--Wagner target from the bundled classical inputs. -/
+/-- Garloff--Wagner theorem from the bundled classical inputs. -/
 theorem garloffWagnerHadamardNonnegPrec_of_classicalInputs
-    (h : RealRooted.GarloffWagnerClassicalInputs) :
-    garloffWagnerHadamardNonnegPrecTarget :=
-  RealRooted.garloffWagnerHadamardNonnegPrec_of_classicalInputsBundle h
+    (h : RealRooted.GarloffWagnerClassicalInputs)
+    {f g p q : ℝ[X]}
+    (hf : HasNonnegCoeffs f)
+    (hg : HasNonnegCoeffs g)
+    (hp : HasNonnegCoeffs p)
+    (hq : HasNonnegCoeffs q)
+    (hfg : Prec f g)
+    (hpq : Prec p q) :
+    Prec0 (hadamardProduct f p) (hadamardProduct g q) :=
+  RealRooted.garloffWagnerHadamardNonnegPrec_of_classicalInputsBundle
+    h hf hg hp hq hfg hpq
 
 /-- PF-polynomial closure under Hadamard product from bundled classical inputs. -/
 theorem hadamardProduct_preserves_pf_of_classicalInputs

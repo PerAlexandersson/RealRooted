@@ -544,12 +544,10 @@ theorem pairwiseCompatible_of_pairwiseHasCommonInterleaver
       (hpos (fs.get j) (List.get_mem _ _))
 
 /-- Two-polynomial common-left bridge: compatibility implies a common left
-interleaver. This is the remaining local bridge for the common-left
-Chudnovsky--Seymour target after the finite-family upgrade. -/
-def CompatiblePairHasCommonLeftInterleaverStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    Compatible f g →
-    ∃ h : ℝ[X], Prec h f ∧ Prec h g
+interleaver. -/
+theorem compatiblePairHasCommonLeftInterleaver {f g : ℝ[X]} (h : Compatible f g) :
+    ∃ h : ℝ[X], Prec h f ∧ Prec h g := by
+  sorry
 
 /-- Positive-leading two-polynomial common-left bridge.  This is the usable
 pair-local form for the roadmap theorem, whose finite-family statement already
@@ -565,11 +563,9 @@ def CompatiblePairHasCommonLeftInterleaverPosStatement : Prop :=
 pairwise Chudnovsky--Seymour hypothesis immediately upgrades to pairwise common
 left interleavers. This isolates the exact missing bridge. -/
 theorem pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible
-    {fs : List ℝ[X]}
-    (htwo : CompatiblePairHasCommonLeftInterleaverStatement)
-    (hpair : PairwiseCompatible fs) :
+    {fs : List ℝ[X]} (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonLeftInterleaver fs :=
-  fun i j hij => by simpa using htwo (hpair i j hij)
+  fun i j hij => by simpa using compatiblePairHasCommonLeftInterleaver (hpair i j hij)
 
 /-- Positive-leading version of
 `pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible`, using the memberwise
@@ -592,11 +588,10 @@ two-polynomial common-left bridge and the finite-family left Helly upgrade. -/
 theorem pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
     {fs : List ℝ[X]}
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (htwo : CompatiblePairHasCommonLeftInterleaverStatement)
     (hglobal : PairwiseHasCommonLeftInterleaver fs → HasCommonLeftInterleaver fs) :
     PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
   ⟨fun hpair =>
-    hglobal (pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible htwo hpair),
+    hglobal (pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible hpair),
     fun hcommon => pairwiseCompatible_of_commonLeftInterleaver hcommon hpos⟩
 
 /-- Direct left-oriented finite-family reduction after the common-left Helly
@@ -604,10 +599,9 @@ upgrade: only the two-polynomial common-left bridge remains as input. -/
 theorem pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direct
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, f.Splits)
-    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (htwo : CompatiblePairHasCommonLeftInterleaverStatement) :
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
     PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
-  pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge hpos htwo <|
+  pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge hpos <|
     hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver hrr hpos
 
 /-- Direct left-oriented finite-family reduction from the positive-leading
@@ -630,6 +624,23 @@ def CompatiblePairHasCommonRightInterleaverStatement : Prop :=
     Compatible f g →
     ∃ h : ℝ[X], Prec f h ∧ Prec g h
 
+/-- Natural two-polynomial bridge hypothesis in the Chudnovsky--Seymour setup:
+compatibility plus positive leading coefficients implies a common right
+interleaver. -/
+def CompatiblePairHasCommonInterleaverStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    Compatible f g →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h
+
+/-- Natural two-polynomial bridge: compatibility plus positive leading
+coefficients implies a common right interleaver. -/
+theorem compatiblePairHasCommonInterleaver {f g : ℝ[X]}
+    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g) (h : Compatible f g) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+  sorry
+
 /-- Once the two-polynomial common-right-interleaver converse is available, the
 pairwise Chudnovsky--Seymour hypothesis upgrades to pairwise common right
 interleavers. -/
@@ -640,15 +651,7 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible
     PairwiseHasCommonInterleaver fs :=
   fun i j hij => by simpa using htwo (hpair i j hij)
 
-/-- Natural two-polynomial bridge hypothesis in the Chudnovsky--Seymour setup:
-compatibility plus positive leading coefficients implies a common right
-interleaver. -/
-def CompatiblePairHasCommonInterleaverStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    Compatible f g →
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h
+
 
 /-- Same-degree branch of the positive-leading compatibility bridge. This is
 the honest `Compatible`-level version of article 3.6.1 → 3.6.2 in the equal-

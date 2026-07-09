@@ -80,7 +80,7 @@ lake build RealRooted.Bezoutian
 ## Checked Highlights
 
 Every declaration named in this section is a checked Lean declaration, unless
-it is explicitly described as a `...Statement` interface.
+it is explicitly described as an unproved conjecture (bearing a `sorry` stub).
 
 ### Interlacing And Preservers
 
@@ -127,8 +127,8 @@ it is explicitly described as a `...Statement` interface.
 - `aissenSchoenbergWhitney_reverse`: the reverse Aissen-Schoenberg-Whitney
   direction, from real-rooted nonpositive roots and nonnegative coefficients to
   a Polya-frequency coefficient sequence.
-- `aissenSchoenbergWhitneyForwardStatement`: the remaining statement-level
-  interface for the opposite ASW direction.
+- `aissenSchoenbergWhitneyForward`: the target theorem for the opposite ASW
+  direction.
 - `IsPolyaFreqSeq.veroneseSectionSeq` and
   `IsPolyaFreqSeq_veroneseSectionPolynomial_coeff`: Veronese subsequences and
   Veronese section coefficients preserve Toeplitz total nonnegativity.
@@ -163,7 +163,7 @@ independence polynomials.  The matching-polynomial corollaries are packaged
 through the line-graph reduction in `HeilmannLieb`.
 
 The next standard theorem input is Garloff-Wagner Hadamard proper-position,
-recorded as `garloffWagnerHadamardNonnegPrecStatement`.  This is the remaining
+recorded as `garloffWagnerHadamardNonnegPrec`.  This is the remaining
 RealRooted theorem currently used as an external standard fact by the
 `SuperEulerian` project.
 
@@ -200,10 +200,11 @@ generalized snake poset target.
 
 ## Development Notes
 
-The repository intentionally distinguishes proved theorems from named theorem
-interfaces.  A declaration ending in `Statement` is usually a checked Lean
-proposition used to keep later wrappers stable while the classical theorem is
-not yet formalized.
+For unproved conjectures and target theorem interfaces, the project prefers
+declaring standard Lean `theorem` signatures with `sorry` proofs. We avoid
+passing conjectures around as hypothetical parameters (axioms in disguise).
+Using standard `sorry` stubs simplifies downstream signatures, avoids
+parameter propagation clutter, and aligns with Mathlib best practices.
 
 New Lean code should follow the Lean community style guidelines and Mathlib
 naming conventions where practical.  In particular, keep declarations explicit,

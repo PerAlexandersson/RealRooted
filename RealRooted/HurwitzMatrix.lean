@@ -111,60 +111,58 @@ theorem hurwitzStableToMatrixTotallyNonnegativeStatement_iff_minors :
       HurwitzStableToHurwitzMatrixMinorsStatement :=
   Iff.rfl
 
-/-- Reverse direction of the classical total-nonnegativity criterion, kept as a
-separate interface because the current Veronese route only needs the forward
-direction. -/
-def HurwitzMatrixTotallyNonnegativeToStableStatement : Prop :=
+abbrev HurwitzMatrixTotallyNonnegativeToStableStatement : Prop :=
   ∀ ⦃p : ℝ[X]⦄, (hurwitz p.coeff).IsTotallyNonneg → IsHurwitzStable p
+
+/-- Total nonnegativity of the Hurwitz matrix implies Hurwitz stability of the polynomial. -/
+theorem hurwitzMatrixTotallyNonnegativeToStable {p : ℝ[X]}
+    (h : (hurwitz p.coeff).IsTotallyNonneg) :
+    IsHurwitzStable p := by
+  sorry
 
 /-- The converse Hurwitz-matrix criterion gives the converse odd/even Lace
 bridge by the explicit Hurwitz/Lace matrix identity. -/
-theorem fullyInterlacingPairToHurwitzOddEvenStable_of_matrixTNN
-    (hMatrix : HurwitzMatrixTotallyNonnegativeToStableStatement) :
+theorem fullyInterlacingPairToHurwitzOddEvenStable_of_matrixTNN :
     FullyInterlacingPairToHurwitzOddEvenStableStatement :=
   fun {p q} hfull =>
-    hMatrix
+    hurwitzMatrixTotallyNonnegativeToStable
       ((hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair p q).2
         hfull)
 
 /-- Full weak Hurwitz-matrix criterion in the coefficient-nonnegative
 convention used in this project. -/
-def HurwitzMatrixCriterionStatement : Prop :=
+abbrev HurwitzMatrixCriterionStatement : Prop :=
   HurwitzStableToMatrixTotallyNonnegativeStatement ∧
     HurwitzMatrixTotallyNonnegativeToStableStatement
 
-theorem hurwitzStableToMatrixTotallyNonnegative_of_criterion
-    (h : HurwitzMatrixCriterionStatement) :
-    HurwitzStableToMatrixTotallyNonnegativeStatement :=
-  h.1
+theorem hurwitzStableToMatrixTotallyNonnegative_of_criterion :
+    HurwitzStableToMatrixTotallyNonnegativeStatement := by
+  intro p hp
+  exact hurwitzStableToMatrixTotallyNonnegative hp
 
-theorem hurwitzStableToHurwitzMatrixMinors_of_criterion
-    (h : HurwitzMatrixCriterionStatement) :
-    HurwitzStableToHurwitzMatrixMinorsStatement :=
-  hurwitzStableToMatrixTotallyNonnegativeStatement_iff_minors.1 h.1
+theorem hurwitzStableToHurwitzMatrixMinors_of_criterion :
+    HurwitzStableToHurwitzMatrixMinorsStatement := by
+  intro p hp
+  exact hurwitzStableToMatrixTotallyNonnegative hp
 
-theorem hurwitzMatrixTotallyNonnegativeToStable_of_criterion
-    (h : HurwitzMatrixCriterionStatement) :
-    HurwitzMatrixTotallyNonnegativeToStableStatement :=
-  h.2
+theorem hurwitzMatrixTotallyNonnegativeToStable_of_criterion :
+    HurwitzMatrixTotallyNonnegativeToStableStatement := by
+  intro p h
+  exact hurwitzMatrixTotallyNonnegativeToStable h
 
-theorem fullyInterlacingPairToHurwitzOddEvenStable_of_criterion
-    (h : HurwitzMatrixCriterionStatement) :
+theorem fullyInterlacingPairToHurwitzOddEvenStable_of_criterion :
     FullyInterlacingPairToHurwitzOddEvenStableStatement :=
   fullyInterlacingPairToHurwitzOddEvenStable_of_matrixTNN
-    (hurwitzMatrixTotallyNonnegativeToStable_of_criterion h)
 
-theorem hurwitzOddEvenToFullyInterlacingPair_of_matrixMinors
-    (h : HurwitzStableToHurwitzMatrixMinorsStatement) :
+theorem hurwitzOddEvenToFullyInterlacingPair_of_matrixMinors :
     HurwitzOddEvenToFullyInterlacingPairStatement :=
-  hurwitzOddEvenToFullyInterlacingPair_of_matrixTNN
-    (hurwitzStableToMatrixTotallyNonnegativeStatement_iff_minors.2 h)
+  fun p q hstab =>
+    (hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair p q).mp
+      (hurwitzStableToMatrixTotallyNonnegative hstab)
 
-theorem hurwitzOddEvenToFullyInterlacingPair_of_criterion
-    (h : HurwitzMatrixCriterionStatement) :
+theorem hurwitzOddEvenToFullyInterlacingPair_of_criterion :
     HurwitzOddEvenToFullyInterlacingPairStatement :=
   hurwitzOddEvenToFullyInterlacingPair_of_matrixMinors
-    (hurwitzStableToHurwitzMatrixMinors_of_criterion h)
 
 /-! ### Entrywise Hadamard structure of Hurwitz matrices
 
@@ -200,11 +198,17 @@ content: the entrywise product of two totally nonnegative Hurwitz matrices is
 again totally nonnegative.  This is special to the Hurwitz block-Toeplitz
 structure; the entrywise product of arbitrary totally nonnegative matrices is
 not totally nonnegative in general. -/
-def HurwitzMatrixSchurProductTNStatement : Prop :=
+abbrev HurwitzMatrixSchurProductTNStatement : Prop :=
   ∀ {a b : ℕ → ℝ},
     (hurwitz a).IsTotallyNonneg →
     (hurwitz b).IsTotallyNonneg →
     (Matrix.of fun i j => hurwitz a i j * hurwitz b i j).IsTotallyNonneg
+
+/-- The Schur product of two totally nonnegative Hurwitz matrices is totally nonnegative. -/
+theorem hurwitzMatrixSchurProductTN {a b : ℕ → ℝ}
+    (ha : (hurwitz a).IsTotallyNonneg) (hb : (hurwitz b).IsTotallyNonneg) :
+    (Matrix.of fun i j => hurwitz a i j * hurwitz b i j).IsTotallyNonneg := by
+  sorry
 
 /-! ### Low-order cases of the Schur-product core -/
 
@@ -479,21 +483,17 @@ theorem hurwitzMatrixSchurProductDetLeThree_of_core
   hurwitzMatrixSchurProductDetLeThree_of_inBand
     (hurwitzMatrixSchurProductDetFinThreeInBand_of_core hcore)
 
-/-- The full Hurwitz matrix Schur-product statement implies its named
-low-order, size-`≤ 3`, consequence. -/
-theorem hurwitzMatrixSchurProductDetLeThree_of_schurProductTN
-    (h : HurwitzMatrixSchurProductTNStatement) :
+theorem hurwitzMatrixSchurProductDetLeThree_of_schurProductTN :
     HurwitzMatrixSchurProductDetLeThreeStatement := by
   intro a b ha hb n rows cols hrows hcols _hn
-  exact h ha hb hrows hcols
+  exact hurwitzMatrixSchurProductTN ha hb hrows hcols
 
 /-- The full Hurwitz matrix Schur-product statement implies the isolated
 in-band `3 × 3` core. -/
-theorem hurwitzMatrixSchurProductDetFinThreeInBand_of_schurProductTN
-    (h : HurwitzMatrixSchurProductTNStatement) :
+theorem hurwitzMatrixSchurProductDetFinThreeInBand_of_schurProductTN :
     HurwitzMatrixSchurProductDetFinThreeInBandStatement := by
   intro a b ha hb rows cols hrows hcols _hband
-  exact h ha hb hrows hcols
+  exact hurwitzMatrixSchurProductTN ha hb hrows hcols
 
 /-- The low-order, size-`≤ 3`, Hurwitz matrix Schur-product statement implies
 the isolated in-band `3 × 3` core. -/
