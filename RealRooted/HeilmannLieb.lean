@@ -479,6 +479,35 @@ def deleteClosedNeighborSupport {V : Type u} [DecidableEq V]
     (S : Finset V) (v : V) : Finset V :=
   (S.erase v).filter fun w => ¬ G.Adj v w
 
+/-- For a vertex in a clique, deleting its closed neighborhood from the ambient
+support is the same as first deleting the clique, then deleting the outside
+neighbors of that vertex. -/
+theorem deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique
+    {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    {S K : Finset V} {k : V} (hK : G.IsClique (K : Set V))
+    (hKS : K ⊆ S) (hk : k ∈ K) :
+    deleteClosedNeighborSupport G S k =
+      (S \ K) \ neighborOutsideCliqueOn G S K k := by
+  ext w
+  by_cases hwS : w ∈ S
+  · by_cases hwK : w ∈ K
+    · by_cases hwk : w = k
+      · subst w
+        simp [deleteClosedNeighborSupport, neighborOutsideCliqueOn, neighborSetOn, hk]
+      · have hkw : G.Adj k w :=
+          hK (by simpa using hk) (by simpa using hwK) (fun h => hwk h.symm)
+        simp [deleteClosedNeighborSupport, neighborOutsideCliqueOn, neighborSetOn,
+          hwS, hwK, hwk, hkw]
+    · by_cases hAdj : G.Adj k w
+      · simp [deleteClosedNeighborSupport, neighborOutsideCliqueOn, neighborSetOn,
+          hwS, hwK, hAdj]
+      · have hwk : w ≠ k := fun h => hwK (by simpa [h] using hk)
+        simp [deleteClosedNeighborSupport, neighborOutsideCliqueOn, neighborSetOn,
+          hwS, hwK, hAdj, hwk]
+  · have hwK : w ∉ K := fun h => hwS (hKS h)
+    simp [deleteClosedNeighborSupport, neighborOutsideCliqueOn, neighborSetOn, hwS, hwK]
+
 /-- If `v` is adjacent to a clique vertex `x`, then removing `v` from the
 ambient support does not change the support left after deleting the closed
 neighborhood of `x`. -/
