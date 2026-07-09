@@ -262,6 +262,30 @@ theorem isSimplicialCliqueOn_empty {V : Type u} [DecidableEq V]
     IsSimplicialCliqueOn G S ∅ := by
   simp [IsSimplicialCliqueOn]
 
+/-- Removing an arbitrary set of vertices preserves a support-level simplicial
+clique after subtracting the same vertices from the clique. -/
+theorem IsSimplicialCliqueOn.sdiff_right {V : Type u} [DecidableEq V]
+    {G : _root_.SimpleGraph V} [DecidableRel G.Adj] {S K : Finset V}
+    (hK : IsSimplicialCliqueOn G S K) (L : Finset V) :
+    IsSimplicialCliqueOn G (S \ L) (K \ L) := by
+  classical
+  refine ⟨?_, ?_, ?_⟩
+  · intro x hx
+    exact Finset.mem_sdiff.mpr ⟨hK.1 (Finset.mem_sdiff.mp hx).1,
+      (Finset.mem_sdiff.mp hx).2⟩
+  · exact hK.2.1.subset fun _x hx => (Finset.mem_sdiff.mp hx).1
+  · intro v hv
+    have hvK : v ∈ K := (Finset.mem_sdiff.mp hv).1
+    exact (hK.2.2 v hvK).subset fun x hx => by
+      have hx' := Finset.mem_sdiff.mp hx
+      have hxN := Finset.mem_filter.mp hx'.1
+      have hxSL := Finset.mem_sdiff.mp hxN.1
+      have hx_notK : x ∉ K := by
+        intro hxK
+        exact hx'.2 (Finset.mem_sdiff.mpr ⟨hxK, hxSL.2⟩)
+      exact Finset.mem_sdiff.mpr
+        ⟨Finset.mem_filter.mpr ⟨hxSL.1, hxN.2⟩, hx_notK⟩
+
 /-- Chudnovsky--Seymour Lemma 2.4, in finite-support form.  In a claw-free
 graph, deleting a simplicial clique leaves each outside-neighbor set as a
 simplicial clique in the remaining support. -/
@@ -679,6 +703,40 @@ private theorem weightedSum_map_const (a : ℝ) :
   | p :: fs => by
       simp [weightedSum_map_const a fs, mul_add]
 
+private theorem weightedSum_append :
+    ∀ l m : List (ℝ × ℝ[X]), weightedSum (l ++ m) = weightedSum l + weightedSum m
+  | [], m => by simp
+  | (a, p) :: l, m => by
+      simp [weightedSum_append l m, add_assoc]
+
+private theorem sdiff_right_sdiff_eq_sdiff_union {V : Type u} [DecidableEq V]
+    (S K L : Finset V) : (S \ L) \ (K \ L) = S \ (K ∪ L) := by
+  ext x
+  simp only [Finset.mem_sdiff, Finset.mem_union]
+  constructor
+  · rintro ⟨⟨hxS, hxL⟩, hxKL⟩
+    exact ⟨hxS, fun hx => by
+      rcases hx with hxK | hxL'
+      · exact hxKL ⟨hxK, hxL⟩
+      · exact hxL hxL'⟩
+  · rintro ⟨hxS, hxKL⟩
+    exact ⟨⟨hxS, fun hxL => hxKL (Or.inr hxL)⟩,
+      fun hxK => hxKL (Or.inl hxK.1)⟩
+
+private theorem sdiff_left_sdiff_eq_sdiff_union {V : Type u} [DecidableEq V]
+    (S K L : Finset V) : (S \ K) \ (L \ K) = S \ (K ∪ L) := by
+  ext x
+  simp only [Finset.mem_sdiff, Finset.mem_union]
+  constructor
+  · rintro ⟨⟨hxS, hxK⟩, hxLK⟩
+    exact ⟨hxS, fun hx => by
+      rcases hx with hxK' | hxL
+      · exact hxK hxK'
+      · exact hxLK ⟨hxL, hxK⟩⟩
+  · rintro ⟨hxS, hxKL⟩
+    exact ⟨⟨hxS, fun hxK => hxKL (Or.inl hxK)⟩,
+      fun hxL => hxKL (Or.inr hxL.1)⟩
+
 private theorem pairwiseCompatible_of_forall_mem {fs : List ℝ[X]}
     (h : ∀ f ∈ fs, ∀ g ∈ fs, Compatible f g) : PairwiseCompatible fs := by
   intro i j _hij
@@ -741,6 +799,17 @@ def cliqueDeletionCompatibilityFamily {V : Type u} [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
     (S K : Finset V) : List ℝ[X] :=
   X * indepPolyOn G (S \ K) :: cliqueDeletionFamily G S K
+
+/-- The finite family used to prove compatibility of `I(S \ K)` and
+`I(S \ L)` in Chudnovsky--Seymour Lemma 2.5.1. -/
+def cliquePairDeletionFamily {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    (S K L : Finset V) : List ℝ[X] :=
+  indepPolyOn G (S \ (K ∪ L)) ::
+    (((K \ L).toList.map fun v =>
+      X * indepPolyOn G (deleteClosedNeighborSupport G (S \ L) v)) ++
+    ((L \ K).toList.map fun v =>
+      X * indepPolyOn G (deleteClosedNeighborSupport G (S \ K) v)))
 
 /-- Pairwise compatibility of the extended clique-deletion family follows from
 the recursive compatibility hypotheses in Chudnovsky--Seymour Lemma 2.5. -/
@@ -920,6 +989,144 @@ theorem compatible_indepPolyOn_X_mul_sdiff_of_cliqueDeletion_pairwiseCompatible
     ring
   simpa [hsum] using hfam ws hmem hnonneg
 
+/-- If the pair-deletion family is pairwise compatible, then the two
+simplicial-clique deletion polynomials are compatible.  This is the finite
+family assembly for Chudnovsky--Seymour Lemma 2.5.1. -/
+theorem compatible_indepPolyOn_sdiff_pair_of_pairDeletion_pairwiseCompatible
+    {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    (S K L : Finset V) (hK : G.IsClique (K : Set V))
+    (hL : G.IsClique (L : Set V)) (hKS : K ⊆ S) (hLS : L ⊆ S)
+    (hbase : (indepPolyOn G (S \ (K ∪ L))).Splits)
+    (hKdel : ∀ v ∈ K \ L,
+      (indepPolyOn G (deleteClosedNeighborSupport G (S \ L) v)).Splits)
+    (hLdel : ∀ v ∈ L \ K,
+      (indepPolyOn G (deleteClosedNeighborSupport G (S \ K) v)).Splits)
+    (hpair : PairwiseCompatible (cliquePairDeletionFamily G S K L)) :
+    Compatible (indepPolyOn G (S \ K)) (indepPolyOn G (S \ L)) := by
+  classical
+  let base := indepPolyOn G (S \ (K ∪ L))
+  let kTerms : List ℝ[X] :=
+    (K \ L).toList.map fun v =>
+      X * indepPolyOn G (deleteClosedNeighborSupport G (S \ L) v)
+  let lTerms : List ℝ[X] :=
+    (L \ K).toList.map fun v =>
+      X * indepPolyOn G (deleteClosedNeighborSupport G (S \ K) v)
+  let fs := cliquePairDeletionFamily G S K L
+  have hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits := by
+    intro f hf
+    change f ∈ cliquePairDeletionFamily G S K L at hf
+    simp only [cliquePairDeletionFamily, List.mem_cons, List.mem_append,
+      List.mem_map] at hf
+    rcases hf with rfl | htail
+    · exact ⟨indepPolyOn_ne_zero G (S \ (K ∪ L)), hbase⟩
+    · rcases htail with ⟨v, hvList, rfl⟩ | ⟨v, hvList, rfl⟩
+      · exact isRealRooted_X_mul
+          (indepPolyOn_ne_zero G (deleteClosedNeighborSupport G (S \ L) v))
+          (hKdel v (Finset.mem_toList.mp hvList))
+      · exact isRealRooted_X_mul
+          (indepPolyOn_ne_zero G (deleteClosedNeighborSupport G (S \ K) v))
+          (hLdel v (Finset.mem_toList.mp hvList))
+  have hpos : ∀ f ∈ fs, HasPosLeadingCoeff f := by
+    intro f hf
+    change f ∈ cliquePairDeletionFamily G S K L at hf
+    simp only [cliquePairDeletionFamily, List.mem_cons, List.mem_append,
+      List.mem_map] at hf
+    rcases hf with rfl | htail
+    · exact indepPolyOn_hasPosLeadingCoeff G (S \ (K ∪ L))
+    · rcases htail with ⟨v, _hvList, rfl⟩ | ⟨v, _hvList, rfl⟩
+      · exact (indepPolyOn_hasPosLeadingCoeff G
+          (deleteClosedNeighborSupport G (S \ L) v)).X_mul
+      · exact (indepPolyOn_hasPosLeadingCoeff G
+          (deleteClosedNeighborSupport G (S \ K) v)).X_mul
+  have hnn : ∀ f ∈ fs, HasNonnegCoeffs f := by
+    intro f hf
+    change f ∈ cliquePairDeletionFamily G S K L at hf
+    simp only [cliquePairDeletionFamily, List.mem_cons, List.mem_append,
+      List.mem_map] at hf
+    rcases hf with rfl | htail
+    · exact indepPolyOn_hasNonnegCoeffs G (S \ (K ∪ L))
+    · rcases htail with ⟨v, _hvList, rfl⟩ | ⟨v, _hvList, rfl⟩
+      · exact (indepPolyOn_hasNonnegCoeffs G
+          (deleteClosedNeighborSupport G (S \ L) v)).X_mul
+      · exact (indepPolyOn_hasNonnegCoeffs G
+          (deleteClosedNeighborSupport G (S \ K) v)).X_mul
+  have hfam : FamilyCompatible fs :=
+    (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs
+      (fs := fs) hrr hpos hnn).1 hpair
+  have hK_support : (S \ L) \ (K \ L) = S \ (K ∪ L) :=
+    sdiff_right_sdiff_eq_sdiff_union S K L
+  have hL_support : (S \ K) \ (L \ K) = S \ (K ∪ L) :=
+    sdiff_left_sdiff_eq_sdiff_union S K L
+  have hK_terms :
+      kTerms.sum =
+        ∑ v ∈ K \ L, X * indepPolyOn G (deleteClosedNeighborSupport G (S \ L) v) := by
+    rw [Finset.sum_eq_multiset_sum]
+    simp [kTerms, Finset.toList]
+  have hL_terms :
+      lTerms.sum =
+        ∑ v ∈ L \ K, X * indepPolyOn G (deleteClosedNeighborSupport G (S \ K) v) := by
+    rw [Finset.sum_eq_multiset_sum]
+    simp [lTerms, Finset.toList]
+  have hKsum : indepPolyOn G (S \ L) = base + kTerms.sum := by
+    have hK' : G.IsClique ((K \ L : Finset V) : Set V) :=
+      hK.subset fun _ hx => (Finset.mem_sdiff.mp hx).1
+    have hKS' : K \ L ⊆ S \ L := by
+      intro x hx
+      exact Finset.mem_sdiff.mpr ⟨hKS (Finset.mem_sdiff.mp hx).1,
+        (Finset.mem_sdiff.mp hx).2⟩
+    have h := indepPolyOn_sdiff_clique G (S \ L) (K \ L) hK' hKS'
+    rw [hK_support, ← hK_terms] at h
+    simpa [base] using h
+  have hLsum : indepPolyOn G (S \ K) = base + lTerms.sum := by
+    have hL' : G.IsClique ((L \ K : Finset V) : Set V) :=
+      hL.subset fun _ hx => (Finset.mem_sdiff.mp hx).1
+    have hLS' : L \ K ⊆ S \ K := by
+      intro x hx
+      exact Finset.mem_sdiff.mpr ⟨hLS (Finset.mem_sdiff.mp hx).1,
+        (Finset.mem_sdiff.mp hx).2⟩
+    have h := indepPolyOn_sdiff_clique G (S \ K) (L \ K) hL' hLS'
+    rw [hL_support, ← hL_terms] at h
+    simpa [base] using h
+  intro α β hα hβ
+  let ws : List (ℝ × ℝ[X]) :=
+    (α + β, base) ::
+      ((kTerms.map fun p => (β, p)) ++
+      (lTerms.map fun p => (α, p)))
+  have hmem : ∀ ap ∈ ws, ap.2 ∈ fs := by
+    intro ap hap
+    simp only [ws, List.mem_cons, List.mem_append, List.mem_map] at hap
+    change ap.2 ∈ cliquePairDeletionFamily G S K L
+    simp only [cliquePairDeletionFamily, List.mem_cons, List.mem_append, List.mem_map]
+    rcases hap with rfl | htail
+    · exact Or.inl rfl
+    · rcases htail with hKterm | hLterm
+      · rcases hKterm with ⟨p, hp, rfl⟩
+        rcases List.mem_map.mp hp with ⟨v, hvList, rfl⟩
+        exact Or.inr (Or.inl ⟨v, hvList, rfl⟩)
+      · rcases hLterm with ⟨p, hp, rfl⟩
+        rcases List.mem_map.mp hp with ⟨v, hvList, rfl⟩
+        exact Or.inr (Or.inr ⟨v, hvList, rfl⟩)
+  have hnonneg : ∀ ap ∈ ws, 0 ≤ ap.1 := by
+    intro ap hap
+    simp only [ws, List.mem_cons, List.mem_append, List.mem_map] at hap
+    rcases hap with rfl | htail
+    · exact add_nonneg hα hβ
+    · rcases htail with hKterm | hLterm
+      · rcases hKterm with ⟨_p, _hp, rfl⟩
+        exact hβ
+      · rcases hLterm with ⟨_p, _hp, rfl⟩
+        exact hα
+  have hsum : weightedSum ws =
+      C α * indepPolyOn G (S \ K) + C β * indepPolyOn G (S \ L) := by
+    simp only [ws, weightedSum_cons]
+    rw [weightedSum_append]
+    rw [weightedSum_map_const β kTerms, weightedSum_map_const α lTerms]
+    rw [hKsum, hLsum]
+    rw [C_add, add_mul]
+    ring
+  simpa [hsum] using hfam ws hmem hnonneg
+
 /-- On a support `S`, all support-restricted independence polynomials on
 subsupports of `S` split. -/
 def SupportIndepPolySplits {V : Type u} [DecidableEq V]
@@ -939,6 +1146,163 @@ def SupportSimplicialXCompatible {V : Type u} [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) : Prop :=
   ∀ {K : Finset V}, IsSimplicialCliqueOn G S K →
     Compatible (indepPolyOn G S) (X * indepPolyOn G (S \ K))
+
+/-- Chudnovsky--Seymour Lemma 2.5.1, as a support-level induction step.  The
+new content is that compatibility of `I(S \ K)` and `I(S \ L)` follows from
+the two smaller-support compatibility invariants on `S \ (K ∪ L)`. -/
+theorem supportSimplicialPairCompatible_of_smaller
+    {V : Type u} [DecidableEq V]
+    {G : _root_.SimpleGraph V} [DecidableRel G.Adj] (hG : ClawFree G)
+    {S : Finset V} (hSplit : SupportIndepPolySplits G S)
+    (hPairSmall : ∀ T : Finset V, T.card < S.card →
+      SupportSimplicialPairCompatible G T)
+    (hXSmall : ∀ T : Finset V, T.card < S.card →
+      SupportSimplicialXCompatible G T) :
+    SupportSimplicialPairCompatible G S := by
+  intro K L hK hL
+  have hUnionSub : K ∪ L ⊆ S := by
+    intro x hx
+    rcases Finset.mem_union.mp hx with hxK | hxL
+    · exact hK.1 hxK
+    · exact hL.1 hxL
+  by_cases hUnion_empty : K ∪ L = ∅
+  · have hK_empty : K = ∅ := by
+      ext x
+      constructor
+      · intro hx
+        have hxUnion : x ∈ K ∪ L := Finset.mem_union.mpr (Or.inl hx)
+        simp [hUnion_empty] at hxUnion
+      · simp
+    have hL_empty : L = ∅ := by
+      ext x
+      constructor
+      · intro hx
+        have hxUnion : x ∈ K ∪ L := Finset.mem_union.mpr (Or.inr hx)
+        simp [hUnion_empty] at hxUnion
+      · simp
+    have hS : (indepPolyOn G S).Splits := hSplit S Subset.rfl
+    simpa [hK_empty, hL_empty] using
+      compatible_self_of_splits (indepPolyOn_ne_zero G S) hS
+  · have hUnion_nonempty : (K ∪ L).Nonempty :=
+      Finset.nonempty_iff_ne_empty.mpr hUnion_empty
+    have hsmall : (S \ (K ∪ L)).card < S.card :=
+      Finset.card_lt_card (Finset.sdiff_ssubset hUnionSub hUnion_nonempty)
+    have hbase : (indepPolyOn G (S \ (K ∪ L))).Splits :=
+      hSplit (S \ (K ∪ L)) sdiff_subset
+    have hK_support : (S \ L) \ (K \ L) = S \ (K ∪ L) :=
+      sdiff_right_sdiff_eq_sdiff_union S K L
+    have hL_support : (S \ K) \ (L \ K) = S \ (K ∪ L) :=
+      sdiff_left_sdiff_eq_sdiff_union S K L
+    have hK_simp : IsSimplicialCliqueOn G (S \ L) (K \ L) :=
+      hK.sdiff_right L
+    have hL_simp : IsSimplicialCliqueOn G (S \ K) (L \ K) :=
+      hL.sdiff_right K
+    have hK_neighbor_simp : ∀ v ∈ K \ L,
+        IsSimplicialCliqueOn G (S \ (K ∪ L))
+          (neighborOutsideCliqueOn G (S \ L) (K \ L) v) := by
+      intro v hv
+      simpa [hK_support] using hG.simplicialClique_neighborOutside hK_simp hv
+    have hL_neighbor_simp : ∀ v ∈ L \ K,
+        IsSimplicialCliqueOn G (S \ (K ∪ L))
+          (neighborOutsideCliqueOn G (S \ K) (L \ K) v) := by
+      intro v hv
+      simpa [hL_support] using hG.simplicialClique_neighborOutside hL_simp hv
+    have hK_delete_support : ∀ v ∈ K \ L,
+        deleteClosedNeighborSupport G (S \ L) v =
+          (S \ (K ∪ L)) \ neighborOutsideCliqueOn G (S \ L) (K \ L) v := by
+      intro v hv
+      have h := deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique
+        G hK_simp.2.1 hK_simp.1 hv
+      simpa [hK_support] using h
+    have hL_delete_support : ∀ v ∈ L \ K,
+        deleteClosedNeighborSupport G (S \ K) v =
+          (S \ (K ∪ L)) \ neighborOutsideCliqueOn G (S \ K) (L \ K) v := by
+      intro v hv
+      have h := deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique
+        G hL_simp.2.1 hL_simp.1 hv
+      simpa [hL_support] using h
+    have hKdel : ∀ v ∈ K \ L,
+        (indepPolyOn G (deleteClosedNeighborSupport G (S \ L) v)).Splits := by
+      intro v hv
+      have hsub : deleteClosedNeighborSupport G (S \ L) v ⊆ S := by
+        intro w hw
+        exact (Finset.mem_sdiff.mp
+          (Finset.mem_of_mem_erase (Finset.mem_filter.mp hw).1)).1
+      exact hSplit (deleteClosedNeighborSupport G (S \ L) v) hsub
+    have hLdel : ∀ v ∈ L \ K,
+        (indepPolyOn G (deleteClosedNeighborSupport G (S \ K) v)).Splits := by
+      intro v hv
+      have hsub : deleteClosedNeighborSupport G (S \ K) v ⊆ S := by
+        intro w hw
+        exact (Finset.mem_sdiff.mp
+          (Finset.mem_of_mem_erase (Finset.mem_filter.mp hw).1)).1
+      exact hSplit (deleteClosedNeighborSupport G (S \ K) v) hsub
+    have hbase_k_x : ∀ v ∈ K \ L,
+        Compatible (indepPolyOn G (S \ (K ∪ L)))
+          (X * indepPolyOn G (deleteClosedNeighborSupport G (S \ L) v)) := by
+      intro v hv
+      have hx := hXSmall (S \ (K ∪ L)) hsmall (hK_neighbor_simp v hv)
+      simpa [hK_delete_support v hv] using hx
+    have hbase_l_x : ∀ v ∈ L \ K,
+        Compatible (indepPolyOn G (S \ (K ∪ L)))
+          (X * indepPolyOn G (deleteClosedNeighborSupport G (S \ K) v)) := by
+      intro v hv
+      have hx := hXSmall (S \ (K ∪ L)) hsmall (hL_neighbor_simp v hv)
+      simpa [hL_delete_support v hv] using hx
+    have hK_pair_x : ∀ u ∈ K \ L, ∀ v ∈ K \ L,
+        Compatible
+          (X * indepPolyOn G (deleteClosedNeighborSupport G (S \ L) u))
+          (X * indepPolyOn G (deleteClosedNeighborSupport G (S \ L) v)) := by
+      intro u hu v hv
+      have hp := (hPairSmall (S \ (K ∪ L)) hsmall)
+        (hK_neighbor_simp u hu) (hK_neighbor_simp v hv)
+      simpa [hK_delete_support u hu, hK_delete_support v hv] using
+        compatible_X_mul_of_compatible hp
+    have hL_pair_x : ∀ u ∈ L \ K, ∀ v ∈ L \ K,
+        Compatible
+          (X * indepPolyOn G (deleteClosedNeighborSupport G (S \ K) u))
+          (X * indepPolyOn G (deleteClosedNeighborSupport G (S \ K) v)) := by
+      intro u hu v hv
+      have hp := (hPairSmall (S \ (K ∪ L)) hsmall)
+        (hL_neighbor_simp u hu) (hL_neighbor_simp v hv)
+      simpa [hL_delete_support u hu, hL_delete_support v hv] using
+        compatible_X_mul_of_compatible hp
+    have hKL_pair_x : ∀ u ∈ K \ L, ∀ v ∈ L \ K,
+        Compatible
+          (X * indepPolyOn G (deleteClosedNeighborSupport G (S \ L) u))
+          (X * indepPolyOn G (deleteClosedNeighborSupport G (S \ K) v)) := by
+      intro u hu v hv
+      have hp := (hPairSmall (S \ (K ∪ L)) hsmall)
+        (hK_neighbor_simp u hu) (hL_neighbor_simp v hv)
+      simpa [hK_delete_support u hu, hL_delete_support v hv] using
+        compatible_X_mul_of_compatible hp
+    have hpair : PairwiseCompatible (cliquePairDeletionFamily G S K L) := by
+      apply pairwiseCompatible_of_forall_mem
+      intro f hf g hg
+      simp only [cliquePairDeletionFamily, List.mem_cons, List.mem_append,
+        List.mem_map] at hf hg
+      rcases hf with rfl | htailF
+      · rcases hg with rfl | htailG
+        · exact compatible_self_of_splits
+            (indepPolyOn_ne_zero G (S \ (K ∪ L))) hbase
+        · rcases htailG with ⟨v, hvList, rfl⟩ | ⟨v, hvList, rfl⟩
+          · exact hbase_k_x v (Finset.mem_toList.mp hvList)
+          · exact hbase_l_x v (Finset.mem_toList.mp hvList)
+      · rcases htailF with ⟨u, huList, rfl⟩ | ⟨u, huList, rfl⟩
+        · have hu : u ∈ K \ L := Finset.mem_toList.mp huList
+          rcases hg with rfl | htailG
+          · exact (hbase_k_x u hu).comm
+          · rcases htailG with ⟨v, hvList, rfl⟩ | ⟨v, hvList, rfl⟩
+            · exact hK_pair_x u hu v (Finset.mem_toList.mp hvList)
+            · exact hKL_pair_x u hu v (Finset.mem_toList.mp hvList)
+        · have hu : u ∈ L \ K := Finset.mem_toList.mp huList
+          rcases hg with rfl | htailG
+          · exact (hbase_l_x u hu).comm
+          · rcases htailG with ⟨v, hvList, rfl⟩ | ⟨v, hvList, rfl⟩
+            · exact (hKL_pair_x v (Finset.mem_toList.mp hvList) u hu).comm
+            · exact hL_pair_x u hu v (Finset.mem_toList.mp hvList)
+    exact compatible_indepPolyOn_sdiff_pair_of_pairDeletion_pairwiseCompatible
+      G S K L hK.2.1 hL.2.1 hK.1 hL.1 hbase hKdel hLdel hpair
 
 /-- Chudnovsky--Seymour Lemma 2.5.2, as a support-level induction step.  The
 new content is that the compatibility of `I(S)` with `X * I(S \ K)` follows
