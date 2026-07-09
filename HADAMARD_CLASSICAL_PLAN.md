@@ -11,8 +11,11 @@ independently.
 Main Lean target:
 
 ```lean
-RealRooted.garloffWagnerHadamardNonnegPrecStatement
+RealRooted.garloffWagnerHadamardNonnegPrec
 ```
+
+This is currently a theorem-shaped target name; until the classical theorem is
+formalized, it may be represented by an intentional `sorry` stub.
 
 ## Subissues
 
@@ -45,7 +48,7 @@ For Lean work in this package, run a focused build first:
 lake build RealRooted.Hadamard
 ```
 
-Before merging theorem work, run the full project build:
+Before merging theorem work, coordinate and run the full project build:
 
 ```bash
 lake build

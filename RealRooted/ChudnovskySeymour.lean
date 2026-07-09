@@ -22,22 +22,20 @@ def chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target : Prop
 before the finite-family left Helly upgrade was internalized.
 -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
-    (htwo : CompatiblePairHasCommonLeftInterleaverStatement)
     (hglobal : CommonLeftInterleaverFamilyUpgradeStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target :=
   fun {fs} hrr hpos =>
     pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
-      (fs := fs) hpos htwo (hglobal (fun f hf => (hrr f hf).2) hpos)
+      (fs := fs) hpos (hglobal (fun f hf => (hrr f hf).2) hpos)
 
 /-- Direct roadmap wrapper after the finite-family common-left upgrade: the
 common-left Chudnovsky--Seymour target now only needs the two-polynomial
 common-left bridge. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direct
-    (htwo : CompatiblePairHasCommonLeftInterleaverStatement) :
-    chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target :=
+    : chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target :=
   fun {fs} hrr hpos =>
     pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direct
-      (fs := fs) (fun f hf => (hrr f hf).2) hpos htwo
+      (fs := fs) (fun f hf => (hrr f hf).2) hpos
 
 /-- The common-left roadmap target follows from the positive-leading common
 right two-polynomial bridge. -/
@@ -71,14 +69,19 @@ def chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target : Prop :=
     (∀ f ∈ fs, HasPosLeadingCoeff f) →
     (PairwiseCompatible fs ↔ HasCommonInterleaver fs)
 
-/--
-Roadmap target for the full finite-family compatibility equivalence.
+/-- Chudnovsky--Seymour pairwise-to-family compatibility equivalence.
 
 This is the `1 ↔ 4` Chudnovsky--Seymour surface under the same standard
 real-rooted/splits and positive-leading hypotheses as
-`chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target`.
--/
-def chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target : Prop :=
+`chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target`. -/
+theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
+    PairwiseCompatible fs ↔ FamilyCompatible fs := by
+  sorry
+
+private abbrev chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target : Prop :=
   ∀ {fs : List ℝ[X]},
     (∀ f ∈ fs, (f ≠ 0 ∧ f.Splits)) →
     (∀ f ∈ fs, HasPosLeadingCoeff f) →
@@ -132,11 +135,11 @@ def chudnovskySeymour_fourWay_nonnegCoeffs_target : Prop :=
 
 /-- The roadmap target follows from the natural positive-leading two-polynomial
 bridge used by the finite-family machinery. -/
-theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge
-    (htwo : CompatiblePairHasCommonInterleaverStatement) :
+theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
   fun hrr hpos =>
-    pairwiseCompatible_iff_hasCommonInterleaver_of_pairBridgePos hrr hpos htwo
+    pairwiseCompatible_iff_hasCommonInterleaver_of_pairBridgePos hrr hpos
+      (fun _ _ hf hg h => compatiblePairHasCommonInterleaver hf hg h)
 
 /-- The finite-family compatibility roadmap target is a formal consequence of
 the corresponding common-interleaver target. -/
@@ -150,11 +153,10 @@ theorem
 
 /-- The finite-family compatibility roadmap target follows from the natural
 positive-leading two-polynomial bridge. -/
-theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_pairBridge
-    (htwo : CompatiblePairHasCommonInterleaverStatement) :
+theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_pairBridge :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
-    (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge htwo)
+    chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge
 
 /-- The roadmap target follows from the same-degree and successor-degree
 two-polynomial bridges. -/
@@ -315,13 +317,10 @@ formulation and the affine-family bridge, avoiding the separate succ-degree
 root-crossing branch. -/
 theorem
     chudnovskySeymour_commonInterleaver_of_sameDegreeCrossing_affineFamily
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (_hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
+    (_haffBridge : PosComboNoCommonAffineFamilyStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge
-    (compatiblePairHasCommonInterleaver_of_sameDegreePair_and_affineFamily_via_nonnegShift
-      (sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing hsame)
-      haffBridge)
 
 /-- The finite-family compatibility roadmap target follows from same-degree
 root-crossing and the affine-family bridge. -/

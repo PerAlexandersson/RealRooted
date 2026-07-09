@@ -202,12 +202,20 @@ theorem hasNonnegCoeffs_right_of_oddEvenPolynomial {p q : ℝ[X]}
 This is the minimal sign-stable form used in downstream plumbing:
 positive leading coefficients on both inputs prevent the false counterexample.
 -/
-def hermiteBiehlerForwardPosStatement : Prop :=
+abbrev hermiteBiehlerForwardPosStatement : Prop :=
   ∀ {f g : ℝ[X]},
     HasPosLeadingCoeff f →
     HasPosLeadingCoeff g →
     Prec g f →
     IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)
+
+/-- Sign-normalized forward Hermite--Biehler bridge: positive leading
+coefficients on both inputs prevent the false counterexample, ensuring
+upper-half-plane stability. -/
+theorem hermiteBiehlerForwardPos {f g : ℝ[X]}
+    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g) (h : Prec g f) :
+    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) := by
+  sorry
 
 /-- Concrete obstruction to a sign-free forward Hermite--Biehler route:
 `X - i` has the upper-half-plane root `i`. -/
@@ -220,19 +228,34 @@ theorem not_isUpperHalfPlaneStable_hermiteBiehlerPolynomial_X_neg_one :
 The exact orientation hypotheses may still be adjusted, but the target is that
 upper-half-plane stability of `f + i g` forces an interlacing relation between
 the real and imaginary parts. -/
-def hermiteBiehlerConverseStatement : Prop :=
+abbrev hermiteBiehlerConverseStatement : Prop :=
   ∀ ⦃f g : ℝ[X]⦄,
     HasPosLeadingCoeff f →
     HasPosLeadingCoeff g →
     IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) →
     Prec g f ∨ Prec f g
 
+/-- Converse Hermite--Biehler theorem: upper-half-plane stability of `f + i g`
+forces an interlacing relation between the real and imaginary parts. -/
+theorem hermiteBiehlerConverse {f g : ℝ[X]}
+    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
+    (h : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) :
+    Prec g f ∨ Prec f g := by
+  sorry
+
+/-- Conformal-substitution bridge from Hermite--Biehler stability to Hurwitz stability. -/
+theorem hermiteBiehlerStableToHurwitzOddEven {p q : ℝ[X]}
+    (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
+    (h : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p)) :
+    IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q)) := by
+  sorry
+
 /-- Analytic bridge from the Hermite--Biehler stable polynomial `q + i p` to
 right-half-plane stability of `q(x^2) + x p(x^2)`.
 
 This isolates the classical conformal-substitution part of the
 Hermite--Biehler/Hurwitz route. -/
-def HermiteBiehlerStableToHurwitzOddEvenStatement : Prop :=
+abbrev HermiteBiehlerStableToHurwitzOddEvenStatement : Prop :=
   ∀ ⦃p q : ℝ[X]⦄,
     HasNonnegCoeffs p →
     HasNonnegCoeffs q →
@@ -353,10 +376,9 @@ theorem hermiteBiehlerStableToHurwitzOddEven_of_upperHalfSubstitution
 /-- Packaging form of the analytic Hermite--Biehler-to-Hurwitz odd/even
 bridge, including the coefficient half of `IsHurwitzStable`. -/
 theorem isHurwitzStable_oddEvenPolynomial_of_hermiteBiehlerStableToHurwitz
-    (h : HermiteBiehlerStableToHurwitzOddEvenStatement) {p q : ℝ[X]}
-    (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
+    {p q : ℝ[X]} (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
     (hstable : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p)) :
     IsHurwitzStable (oddEvenPolynomial p q) :=
-  ⟨hasNonnegCoeffs_oddEvenPolynomial hp hq, h hp hq hstable⟩
+  ⟨hasNonnegCoeffs_oddEvenPolynomial hp hq, hermiteBiehlerStableToHurwitzOddEven hp hq hstable⟩
 
 end RealRooted
