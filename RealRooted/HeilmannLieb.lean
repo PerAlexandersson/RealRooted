@@ -256,6 +256,12 @@ def IsSimplicialCliqueOn {V : Type u} [DecidableEq V]
   K ⊆ S ∧ G.IsClique (K : Set V) ∧
     ∀ v ∈ K, G.IsClique (neighborOutsideCliqueOn G S K v : Set V)
 
+/-- The empty clique is simplicial on every finite support. -/
+theorem isSimplicialCliqueOn_empty {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) :
+    IsSimplicialCliqueOn G S ∅ := by
+  simp [IsSimplicialCliqueOn]
+
 /-- Chudnovsky--Seymour Lemma 2.4, in finite-support form.  In a claw-free
 graph, deleting a simplicial clique leaves each outside-neighbor set as a
 simplicial clique in the remaining support. -/
@@ -913,6 +919,82 @@ theorem compatible_indepPolyOn_X_mul_sdiff_of_cliqueDeletion_pairwiseCompatible
     rw [cliqueDeletionFamily_sum G S K hK hKS]
     ring
   simpa [hsum] using hfam ws hmem hnonneg
+
+/-- On a support `S`, all support-restricted independence polynomials on
+subsupports of `S` split. -/
+def SupportIndepPolySplits {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) : Prop :=
+  ∀ T : Finset V, T ⊆ S → (indepPolyOn G T).Splits
+
+/-- Pair-compatibility invariant from Chudnovsky--Seymour Lemma 2.5.1 on a
+finite support. -/
+def SupportSimplicialPairCompatible {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) : Prop :=
+  ∀ {K L : Finset V}, IsSimplicialCliqueOn G S K → IsSimplicialCliqueOn G S L →
+    Compatible (indepPolyOn G (S \ K)) (indepPolyOn G (S \ L))
+
+/-- Self/shift compatibility invariant from Chudnovsky--Seymour Lemma 2.5.2 on
+finite supports. -/
+def SupportSimplicialXCompatible {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) : Prop :=
+  ∀ {K : Finset V}, IsSimplicialCliqueOn G S K →
+    Compatible (indepPolyOn G S) (X * indepPolyOn G (S \ K))
+
+/-- Chudnovsky--Seymour Lemma 2.5.2, as a support-level induction step.  The
+new content is that the compatibility of `I(S)` with `X * I(S \ K)` follows
+from the two smaller-support compatibility invariants on `S \ K`. -/
+theorem supportSimplicialXCompatible_of_smaller
+    {V : Type u} [DecidableEq V]
+    {G : _root_.SimpleGraph V} [DecidableRel G.Adj] (hG : ClawFree G)
+    {S : Finset V} (hSplit : SupportIndepPolySplits G S)
+    (hPairSmall : ∀ T : Finset V, T.card < S.card →
+      SupportSimplicialPairCompatible G T)
+    (hXSmall : ∀ T : Finset V, T.card < S.card →
+      SupportSimplicialXCompatible G T) :
+    SupportSimplicialXCompatible G S := by
+  intro K hK
+  by_cases hK_empty : K = ∅
+  · subst hK_empty
+    have hS : (indepPolyOn G S).Splits := hSplit S Subset.rfl
+    simpa using compatible_indepPolyOn_X_mul_self_of_splits G S hS
+  · have hK_nonempty : K.Nonempty := Finset.nonempty_iff_ne_empty.mpr hK_empty
+    have hsmall : (S \ K).card < S.card :=
+      Finset.card_lt_card (Finset.sdiff_ssubset hK.1 hK_nonempty)
+    have hbase : (indepPolyOn G (S \ K)).Splits := hSplit (S \ K) sdiff_subset
+    have hneighbor_simp : ∀ v ∈ K,
+        IsSimplicialCliqueOn G (S \ K) (neighborOutsideCliqueOn G S K v) := by
+      intro v hv
+      exact hG.simplicialClique_neighborOutside hK hv
+    have hbase_neighbor_x : ∀ v ∈ K,
+        Compatible (indepPolyOn G (S \ K))
+          (X * indepPolyOn G ((S \ K) \ neighborOutsideCliqueOn G S K v)) := by
+      intro v hv
+      exact hXSmall (S \ K) hsmall (hneighbor_simp v hv)
+    have hbase_neighbor : ∀ v ∈ K,
+        Compatible (indepPolyOn G (S \ K))
+          (indepPolyOn G ((S \ K) \ neighborOutsideCliqueOn G S K v)) := by
+      intro v hv
+      simpa using (hPairSmall (S \ K) hsmall)
+        (isSimplicialCliqueOn_empty G (S \ K)) (hneighbor_simp v hv)
+    have hneighbor_pair : ∀ u ∈ K, ∀ v ∈ K,
+        Compatible (indepPolyOn G ((S \ K) \ neighborOutsideCliqueOn G S K u))
+          (indepPolyOn G ((S \ K) \ neighborOutsideCliqueOn G S K v)) := by
+      intro u hu v hv
+      exact (hPairSmall (S \ K) hsmall) (hneighbor_simp u hu) (hneighbor_simp v hv)
+    have hpair : PairwiseCompatible (cliqueDeletionCompatibilityFamily G S K) :=
+      cliqueDeletionCompatibilityFamily_pairwiseCompatible_of_neighborOutside_compatible
+        G hK.2.1 hK.1 hbase hbase_neighbor_x hbase_neighbor hneighbor_pair
+    have hdel : ∀ v ∈ K,
+        (indepPolyOn G (deleteClosedNeighborSupport G S v)).Splits := by
+      intro v hv
+      have hsupport :=
+        deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique G hK.2.1 hK.1 hv
+      have hsub : (S \ K) \ neighborOutsideCliqueOn G S K v ⊆ S := by
+        intro w hw
+        exact (Finset.mem_sdiff.mp (Finset.mem_sdiff.mp hw).1).1
+      simpa [hsupport] using hSplit ((S \ K) \ neighborOutsideCliqueOn G S K v) hsub
+    exact compatible_indepPolyOn_X_mul_sdiff_of_cliqueDeletion_pairwiseCompatible
+      G S K hK.2.1 hK.1 hbase hdel hpair
 
 /-- The support-restricted independence polynomial is the ordinary independence
 polynomial of the induced graph on that support. -/
