@@ -198,6 +198,86 @@ theorem indepPolyOn_insert {V : Type u} [DecidableEq V]
     have herase := congrArg (fun t : Finset V => t.erase v) h
     simpa [Finset.erase_insert hvu, Finset.erase_insert hvw] using herase
 
+/-- The support-restricted independence polynomial is the ordinary independence
+polynomial of the induced graph on that support. -/
+theorem indepPolyOn_univ_induce_finset {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) :
+    indepPolyOn (G.induce (S : Set V)) Finset.univ = indepPolyOn G S := by
+  classical
+  let lift : Finset V → Finset {x // x ∈ (S : Set V)} := fun t =>
+    S.attach.filter fun x => (x : V) ∈ t
+  have hmap_lift : ∀ {t : Finset V}, t ⊆ S → (lift t).image Subtype.val = t := by
+    intro t hsub
+    ext x
+    by_cases hxt : x ∈ t
+    · simp [lift, hxt, hsub hxt]
+    · simp [lift, hxt]
+  have hlift_indep : ∀ {t : Finset V}, t ⊆ S →
+      ((G.induce (S : Set V)).IsIndepSet ((lift t) : Set {x // x ∈ (S : Set V)}) ↔
+        G.IsIndepSet (t : Set V)) := by
+    intro t hsub
+    constructor
+    · intro hind a ha b hb hne hadj
+      have ha_fin : a ∈ t := by simpa using ha
+      have hb_fin : b ∈ t := by simpa using hb
+      have ha' : (⟨a, hsub ha_fin⟩ : {x // x ∈ (S : Set V)}) ∈ lift t := by
+        simp [lift, ha_fin]
+      have hb' : (⟨b, hsub hb_fin⟩ : {x // x ∈ (S : Set V)}) ∈ lift t := by
+        simp [lift, hb_fin]
+      exact hind ha' hb' (fun h => hne (congrArg Subtype.val h)) hadj
+    · intro hind a ha b hb hne hadj
+      have ha_fin : a ∈ lift t := by simpa using ha
+      have hb_fin : b ∈ lift t := by simpa using hb
+      exact hind (by simpa [lift] using (Finset.mem_filter.mp ha_fin).2)
+        (by simpa [lift] using (Finset.mem_filter.mp hb_fin).2)
+        (fun h => hne (Subtype.ext h)) hadj
+  unfold indepPolyOn indepSetsOn
+  refine Finset.sum_bij (fun t _ => t.image Subtype.val) ?_ ?_ ?_ ?_
+  · intro t ht
+    have ht' := Finset.mem_filter.mp ht
+    refine Finset.mem_filter.mpr ⟨?_, ?_⟩
+    · exact Finset.mem_powerset.mpr fun x hx => by
+        rcases Finset.mem_image.mp hx with ⟨a, _ha, rfl⟩
+        exact a.property
+    · intro a ha b hb hne hadj
+      rcases Finset.mem_image.mp ha with ⟨a', ha', rfl⟩
+      rcases Finset.mem_image.mp hb with ⟨b', hb', hb_eq⟩
+      subst hb_eq
+      exact ht'.2 ha' hb' (fun h => hne (congrArg Subtype.val h)) hadj
+  · intro _t _ht _u _hu h
+    exact Finset.image_injective Subtype.val_injective h
+  · intro t ht
+    have ht' := Finset.mem_filter.mp ht
+    have hsub : t ⊆ S := Finset.mem_powerset.mp ht'.1
+    refine ⟨lift t, ?_, hmap_lift hsub⟩
+    exact Finset.mem_filter.mpr
+      ⟨Finset.mem_powerset.mpr (fun _x _hx => by simp), (hlift_indep hsub).mpr ht'.2⟩
+  · intro t _ht
+    rw [Finset.card_image_of_injOn]
+    exact fun a _ b _ h => Subtype.ext h
+
+/-- Ordinary independence polynomials of induced graphs recover the
+support-restricted independence polynomial. -/
+theorem indepPoly_induce_finset {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) :
+    indepPoly (G.induce (S : Set V)) = indepPolyOn G S := by
+  classical
+  rw [indepPoly_eq_indepPolyOn_univ]
+  exact indepPolyOn_univ_induce_finset G S
+
+/-- Vertex insertion recurrence for independence polynomials of induced
+subgraphs. -/
+theorem indepPoly_induce_insert {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    {S : Finset V} {v : V} (hv : v ∉ S) :
+    indepPoly (G.induce ((insert v S : Finset V) : Set V)) =
+      indepPoly (G.induce (S : Set V)) +
+        X * indepPoly (G.induce ((S.filter fun w => ¬ G.Adj v w) : Set V)) := by
+  rw [indepPoly_induce_finset G (insert v S),
+    indepPoly_induce_finset G S,
+    indepPoly_induce_finset G (S.filter fun w => ¬ G.Adj v w),
+    indepPolyOn_insert G hv]
+
 /-- A finite set of edges is a matching if distinct edges do not share a vertex. -/
 def IsMatchingEdgeFinset {V : Type u} (G : _root_.SimpleGraph V)
     (M : Finset G.edgeSet) : Prop :=
