@@ -6,6 +6,12 @@
 !README.md
 !RealRooted/Tactic/PLAN.md
 
+# Public companion Lean development.
+!SuperEulerian/
+!SuperEulerian/**
+SuperEulerian/.lake/
+SuperEulerian/.lake
+
 # Generated/local artifacts.
 realrooted-interlacing-seminar-handout.html
 .DS_Store

@@ -155,18 +155,12 @@ declarations include:
 
 ## Current Roadmap
 
-The main open flagship theorem is the Chudnovsky-Seymour compatibility theorem:
-pairwise compatibility should be equivalent to common interleaver data under
-the usual nonzero, real-rooted, and positive-leading hypotheses.  The
-finite-family upgrades are now named and packaged in `CommonInterleaverSeq`;
-the remaining work is concentrated in the two-polynomial pair endpoints in
-`CommonInterleaverTwo` and the final wrappers in `ChudnovskySeymour`.
-
-After Chudnovsky-Seymour is available, the Heilmann-Lieb matching-polynomial
-theorem should be developed as a downstream graph-theoretic corollary.  The
-expected route is: Chudnovsky-Seymour gives real-rooted independence
-polynomials for claw-free graphs; matching polynomials are independence
-polynomials of line graphs; and line graphs are claw-free.
+The Chudnovsky-Seymour and Heilmann-Lieb graph-facing line is now represented
+by checked theorem interfaces in `ChudnovskySeymour.lean` and
+`HeilmannLieb.lean`.  The graph endpoint is
+`Graph.clawFree_indepPoly_splits`: finite claw-free graphs have real-rooted
+independence polynomials.  The matching-polynomial corollaries are packaged
+through the line-graph reduction in `HeilmannLieb`.
 
 The next standard theorem input is Garloff-Wagner Hadamard proper-position,
 recorded as `garloffWagnerHadamardNonnegPrecStatement`.  This is the remaining
@@ -187,9 +181,10 @@ preserver used in the induction; prove Theorem 4.1 by strong induction; then
 package the resulting h^*-real-rootedness statement for order polytopes via the
 Stanley / Alexandersson-Jal width-two correspondence.
 
-Short-term documentation/onboarding work is tracked by the challenge-file issue:
-small Lean entry-point files for Branden-Solus, Aissen-Schoenberg-Whitney, and
-Chudnovsky-Seymour theorem targets.
+Short-term documentation/onboarding now uses concise challenge entry-point files
+in `RealRooted/Challenges/`.  These files point to the corresponding human
+theorem statements on symmetricfunctions.com and to the original publications,
+while the detailed proof infrastructure remains in the main theorem modules.
 
 Longer term, a Borcea-Branden direction would be a substantial expansion toward
 stability theory.  A realistic path would first build the Hermite-Biehler and
@@ -197,19 +192,11 @@ Hurwitz-matrix total-nonnegativity interfaces into proved theorems, then add the
 multivariate stability infrastructure needed for algebraic-symbol preserver
 theorems.
 
-Current GitHub tracking:
-
-- #64: Liu's opposite-leading-sign compatible-sequences theorem.
-- #67: Gustafsson-Solus Lemma 3.4 interlacing recursion.
-- #68: Haglund-Zhang `s`-inversion backend for A046802.
-
-Recently closed:
-
-- #34: Garloff-Wagner Hadamard proper-position.
-- #41 and #42: Chudnovsky-Seymour pair endpoints.
-- #44 and #45: Chudnovsky-Seymour family theorem and wrapper.
-- #51: challenge files.
-- #52: Heilmann-Lieb as a Chudnovsky-Seymour corollary.
+GitHub issues track individual proof tasks rather than being duplicated here.
+Current open themes include Liu's compatible-sequences theorem, the
+Gustafsson-Solus interlacing recursion, the Haglund-Zhang `s`-inversion
+backend, a finite Borcea-Branden symbol interface, and the Braun-Jal
+generalized snake poset target.
 
 ## Development Notes
 
@@ -234,6 +221,8 @@ Please keep repository configuration files (like `lakefile.toml` and `lake-manif
   matrices of polynomials and formal power series*, arXiv:2404.12989.
 - J. Borcea and P. Branden, *The Lee-Yang and Polya-Schur programs. I. Linear
   operators preserving stability*, Invent. Math. 177 (2009), 541--569.
+- B. Braun and A. Jal, *Order polytopes of generalized snake posets are
+  h^*-real-rooted*, arXiv:2607.00922.
 - P. Branden and L. Solus, *Symmetric decompositions and real-rootedness*,
   Int. Math. Res. Not. (2019), doi:10.1093/imrn/rnz059.
 - M. Chudnovsky and P. Seymour, *The roots of the independence polynomial of a
