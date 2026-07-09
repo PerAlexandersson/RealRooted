@@ -45,6 +45,83 @@ def indepPolyOn {V : Type u} [DecidableEq V]
     (S : Finset V) : ℝ[X] :=
   ∑ s ∈ indepSetsOn G S, (X : ℝ[X]) ^ s.card
 
+/-- Weighted support-restricted independence polynomial.  The unweighted
+version is the specialization where every vertex has weight `1`. -/
+def weightedIndepPolyOn {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    (S : Finset V) (wt : V → ℝ) : ℝ[X] :=
+  ∑ s ∈ indepSetsOn G S, (∏ v ∈ s, C (wt v)) * (X : ℝ[X]) ^ s.card
+
+/-- The weighted support-restricted independence polynomial with all weights
+equal to `1` is the unweighted support-restricted independence polynomial. -/
+theorem weightedIndepPolyOn_one {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) :
+    weightedIndepPolyOn G S (fun _ => 1) = indepPolyOn G S := by
+  unfold weightedIndepPolyOn indepPolyOn
+  apply Finset.sum_congr rfl
+  intro s _hs
+  simp
+
+/-- The empty independent set gives the constant coefficient of the weighted
+support-restricted independence polynomial. -/
+theorem weightedIndepPolyOn_coeff_zero {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) (wt : V → ℝ) :
+    (weightedIndepPolyOn G S wt).coeff 0 = 1 := by
+  classical
+  rw [weightedIndepPolyOn, Polynomial.finsetSum_coeff, Finset.sum_eq_single ∅]
+  · simp
+  · intro s hs hne
+    have hs_nonzero : s.card ≠ 0 := by
+      rwa [Finset.card_ne_zero, Finset.nonempty_iff_ne_empty]
+    have hnot : ¬ s.card ≤ 0 := by
+      simpa [Nat.pos_iff_ne_zero] using Nat.pos_of_ne_zero hs_nonzero
+    rw [Polynomial.coeff_mul_X_pow', if_neg hnot]
+  · intro hnot
+    simp [indepSetsOn] at hnot
+
+/-- Weighted support-restricted independence polynomials are nonzero. -/
+theorem weightedIndepPolyOn_ne_zero {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) (wt : V → ℝ) :
+    weightedIndepPolyOn G S wt ≠ 0 := by
+  intro h
+  have hcoeff := congrArg (fun p : ℝ[X] => p.coeff 0) h
+  simp [weightedIndepPolyOn_coeff_zero] at hcoeff
+
+/-- Weighted support-restricted independence polynomials have nonnegative
+coefficients when all vertex weights on the support are nonnegative. -/
+theorem weightedIndepPolyOn_hasNonnegCoeffs {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] {S : Finset V} {wt : V → ℝ}
+    (hwt : ∀ v ∈ S, 0 ≤ wt v) :
+    HasNonnegCoeffs (weightedIndepPolyOn G S wt) := by
+  classical
+  have hprod :
+      ∀ t : Finset V, t ⊆ S → HasNonnegCoeffs (∏ v ∈ t, C (wt v)) := by
+    intro t
+    refine Finset.induction_on t ?_ ?_
+    · intro _hsub
+      simp [hasNonnegCoeffs_one]
+    · intro v t hv ih hsub
+      rw [Finset.prod_insert hv]
+      have hv_nonneg : HasNonnegCoeffs (C (wt v)) := by
+        simpa using nonnegCoeffs_C_mul (hwt v (hsub (Finset.mem_insert_self v t)))
+          hasNonnegCoeffs_one
+      have hsub_t : t ⊆ S := fun w hw => hsub (Finset.mem_insert.mpr (Or.inr hw))
+      exact hv_nonneg.mul (ih hsub_t)
+  intro n
+  rw [weightedIndepPolyOn, Polynomial.finsetSum_coeff]
+  exact Finset.sum_nonneg fun t ht => by
+    have hsub : t ⊆ S := Finset.mem_powerset.mp (Finset.mem_filter.mp ht).1
+    exact ((hprod t hsub).mul (hasNonnegCoeffs_X.pow t.card)) n
+
+/-- Weighted support-restricted independence polynomials have positive leading
+coefficient under nonnegative weights on the support. -/
+theorem weightedIndepPolyOn_hasPosLeadingCoeff {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] {S : Finset V} {wt : V → ℝ}
+    (hwt : ∀ v ∈ S, 0 ≤ wt v) :
+    HasPosLeadingCoeff (weightedIndepPolyOn G S wt) :=
+  (weightedIndepPolyOn_hasNonnegCoeffs G hwt).pos_leadingCoeff
+    (weightedIndepPolyOn_ne_zero G S wt)
+
 /-- The support-restricted definition recovers `indepPoly` on the full vertex set. -/
 theorem indepPoly_eq_indepPolyOn_univ {V : Type u} [Fintype V] [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj] :
@@ -160,14 +237,17 @@ theorem indepSetsOn_insert {V : Type u} [DecidableEq V]
       · exact (isIndepSet_insert_iff hvu).mpr
           ⟨hu.2, fun w hw => (Finset.mem_filter.mp (hu.1 hw)).2⟩
 
-/-- Vertex insertion recurrence for the support-restricted independence
-polynomial. -/
-theorem indepPolyOn_insert {V : Type u} [DecidableEq V]
-    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+/-- Vertex insertion recurrence for weighted support-restricted independence
+polynomials.  Varying the weight of the inserted vertex is the graph-side
+source of the nonnegative linear combinations used in the compatibility
+argument. -/
+theorem weightedIndepPolyOn_insert {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (wt : V → ℝ)
     {S : Finset V} {v : V} (hv : v ∉ S) :
-    indepPolyOn G (insert v S) =
-      indepPolyOn G S + X * indepPolyOn G (S.filter fun w => ¬ G.Adj v w) := by
-  unfold indepPolyOn
+    weightedIndepPolyOn G (insert v S) wt =
+      weightedIndepPolyOn G S wt +
+        C (wt v) * X * weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w) wt := by
+  unfold weightedIndepPolyOn
   rw [indepSetsOn_insert G hv]
   have hdisj : Disjoint (indepSetsOn G S)
       ((indepSetsOn G (S.filter fun w => ¬ G.Adj v w)).image (insert v)) := by
@@ -175,7 +255,7 @@ theorem indepPolyOn_insert {V : Type u} [DecidableEq V]
     intro t ht htimg
     have hvt_not : v ∉ t :=
       Finset.notMem_of_mem_powerset_of_notMem (Finset.mem_filter.mp ht).1 hv
-    rcases Finset.mem_image.mp htimg with ⟨u, hu, rfl⟩
+    rcases Finset.mem_image.mp htimg with ⟨u, _hu, rfl⟩
     exact hvt_not (Finset.mem_insert_self v u)
   rw [Finset.sum_union hdisj]
   rw [Finset.sum_image]
@@ -186,8 +266,8 @@ theorem indepPolyOn_insert {V : Type u} [DecidableEq V]
     have hsub : u ⊆ S.filter fun w => ¬ G.Adj v w :=
       Finset.mem_powerset.mp (Finset.mem_filter.mp hu).1
     have hvu : v ∉ u := fun h => hv (Finset.mem_filter.mp (hsub h)).1
-    rw [Finset.card_insert_of_notMem hvu]
-    simp [pow_succ, mul_comm]
+    rw [Finset.card_insert_of_notMem hvu, Finset.prod_insert hvu]
+    ring_nf
   · intro u hu w hw h
     have hsubu : u ⊆ S.filter fun x => ¬ G.Adj v x :=
       Finset.mem_powerset.mp (Finset.mem_filter.mp hu).1
@@ -197,6 +277,16 @@ theorem indepPolyOn_insert {V : Type u} [DecidableEq V]
     have hvw : v ∉ w := fun hmem => hv (Finset.mem_filter.mp (hsubw hmem)).1
     have herase := congrArg (fun t : Finset V => t.erase v) h
     simpa [Finset.erase_insert hvu, Finset.erase_insert hvw] using herase
+
+/-- Vertex insertion recurrence for the support-restricted independence
+polynomial. -/
+theorem indepPolyOn_insert {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    {S : Finset V} {v : V} (hv : v ∉ S) :
+    indepPolyOn G (insert v S) =
+      indepPolyOn G S + X * indepPolyOn G (S.filter fun w => ¬ G.Adj v w) := by
+  simpa [weightedIndepPolyOn_one] using
+    (weightedIndepPolyOn_insert (G := G) (wt := fun _ => 1) hv)
 
 /-- The support-restricted independence polynomial is the ordinary independence
 polynomial of the induced graph on that support. -/
