@@ -667,6 +667,12 @@ theorem cliqueDeletionFamily_sum {V : Type u} [DecidableEq V]
     simp [Finset.toList]
   simp [cliqueDeletionFamily, hsum, indepPolyOn_sdiff_clique G S K hK hKS]
 
+private theorem weightedSum_map_const (a : ℝ) :
+    ∀ fs : List ℝ[X], weightedSum (fs.map fun p => (a, p)) = C a * fs.sum
+  | [] => by simp
+  | p :: fs => by
+      simp [weightedSum_map_const a fs, mul_add]
+
 private theorem pairwiseCompatible_of_forall_mem {fs : List ℝ[X]}
     (h : ∀ f ∈ fs, ∀ g ∈ fs, Compatible f g) : PairwiseCompatible fs := by
   intro i j _hij
@@ -723,6 +729,13 @@ theorem cliqueDeletionFamily_pairwiseCompatible_of_neighborOutside_compatible
       deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique G hK hKS hv
     simpa [huSupport, hvSupport] using hneighbor_pair u hu v hv
 
+/-- The finite family used to prove compatibility of `I(S)` with
+`X * I(S \ K)` in Chudnovsky--Seymour Lemma 2.5.2. -/
+def cliqueDeletionCompatibilityFamily {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    (S K : Finset V) : List ℝ[X] :=
+  X * indepPolyOn G (S \ K) :: cliqueDeletionFamily G S K
+
 /-- If the clique-deletion family is pairwise compatible, then the support
 independence polynomial splits. This is the Chudnovsky--Seymour engine applied
 to the finite family from Lemma 2.3. -/
@@ -777,6 +790,78 @@ theorem indepPolyOn_splits_of_cliqueDeletion_pairwiseCompatible
   rcases hweighted with hzero | ⟨_, hsplits⟩
   · exact False.elim (indepPolyOn_ne_zero G S hzero)
   · exact hsplits
+
+/-- The clique-deletion family also assembles the compatibility of `I(S)` with
+`X * I(S \ K)` once the one-extra-term family is pairwise compatible. -/
+theorem compatible_indepPolyOn_X_mul_sdiff_of_cliqueDeletion_pairwiseCompatible
+    {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    (S K : Finset V) (hK : G.IsClique (K : Set V)) (hKS : K ⊆ S)
+    (hbase : (indepPolyOn G (S \ K)).Splits)
+    (hdel : ∀ v ∈ K, (indepPolyOn G (deleteClosedNeighborSupport G S v)).Splits)
+    (hpair : PairwiseCompatible (cliqueDeletionCompatibilityFamily G S K)) :
+    Compatible (indepPolyOn G S) (X * indepPolyOn G (S \ K)) := by
+  let fs := cliqueDeletionCompatibilityFamily G S K
+  have hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits := by
+    intro f hf
+    change f ∈ cliqueDeletionCompatibilityFamily G S K at hf
+    simp only [cliqueDeletionCompatibilityFamily, List.mem_cons, cliqueDeletionFamily,
+      List.mem_map] at hf
+    rcases hf with rfl | htail
+    · exact isRealRooted_X_mul (indepPolyOn_ne_zero G (S \ K)) hbase
+    · rcases htail with rfl | ⟨v, hvK, rfl⟩
+      · exact ⟨indepPolyOn_ne_zero G (S \ K), hbase⟩
+      · exact isRealRooted_X_mul
+          (indepPolyOn_ne_zero G (deleteClosedNeighborSupport G S v))
+          (hdel v (Finset.mem_toList.mp hvK))
+  have hpos : ∀ f ∈ fs, HasPosLeadingCoeff f := by
+    intro f hf
+    change f ∈ cliqueDeletionCompatibilityFamily G S K at hf
+    simp only [cliqueDeletionCompatibilityFamily, List.mem_cons, cliqueDeletionFamily,
+      List.mem_map] at hf
+    rcases hf with rfl | htail
+    · exact (indepPolyOn_hasPosLeadingCoeff G (S \ K)).X_mul
+    · rcases htail with rfl | ⟨v, _hvK, rfl⟩
+      · exact indepPolyOn_hasPosLeadingCoeff G (S \ K)
+      · exact (indepPolyOn_hasPosLeadingCoeff G
+          (deleteClosedNeighborSupport G S v)).X_mul
+  have hnn : ∀ f ∈ fs, HasNonnegCoeffs f := by
+    intro f hf
+    change f ∈ cliqueDeletionCompatibilityFamily G S K at hf
+    simp only [cliqueDeletionCompatibilityFamily, List.mem_cons, cliqueDeletionFamily,
+      List.mem_map] at hf
+    rcases hf with rfl | htail
+    · exact (indepPolyOn_hasNonnegCoeffs G (S \ K)).X_mul
+    · rcases htail with rfl | ⟨v, _hvK, rfl⟩
+      · exact indepPolyOn_hasNonnegCoeffs G (S \ K)
+      · exact (indepPolyOn_hasNonnegCoeffs G
+          (deleteClosedNeighborSupport G S v)).X_mul
+  have hfam : FamilyCompatible fs :=
+    (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs
+      (fs := fs) hrr hpos hnn).1 hpair
+  intro α β hα hβ
+  let ws : List (ℝ × ℝ[X]) :=
+    (β, X * indepPolyOn G (S \ K)) ::
+      (cliqueDeletionFamily G S K).map fun p => (α, p)
+  have hmem : ∀ ap ∈ ws, ap.2 ∈ fs := by
+    intro ap hap
+    simp only [ws, List.mem_cons, List.mem_map] at hap
+    rcases hap with rfl | ⟨p, hp, rfl⟩
+    · simp [fs, cliqueDeletionCompatibilityFamily]
+    · simp [fs, cliqueDeletionCompatibilityFamily, hp]
+  have hnonneg : ∀ ap ∈ ws, 0 ≤ ap.1 := by
+    intro ap hap
+    simp only [ws, List.mem_cons, List.mem_map] at hap
+    rcases hap with rfl | ⟨_p, _hp, rfl⟩
+    · exact hβ
+    · exact hα
+  have hsum : weightedSum ws =
+      C α * indepPolyOn G S + C β * (X * indepPolyOn G (S \ K)) := by
+    simp only [ws, weightedSum_cons]
+    rw [weightedSum_map_const α (cliqueDeletionFamily G S K)]
+    rw [cliqueDeletionFamily_sum G S K hK hKS]
+    ring
+  simpa [hsum] using hfam ws hmem hnonneg
 
 /-- The support-restricted independence polynomial is the ordinary independence
 polynomial of the induced graph on that support. -/
