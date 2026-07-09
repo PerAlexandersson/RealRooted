@@ -158,6 +158,88 @@ theorem ClawFree.induce {V : Type u} {G : _root_.SimpleGraph V}
       exact hind.card_eq
   exact hG v t' ht'_neigh ht'_ind
 
+/-- Neighbors of a vertex inside a finite support. -/
+def neighborSetOn {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    (S : Finset V) (v : V) : Finset V :=
+  S.filter fun w => G.Adj v w
+
+/-- Neighbors of a vertex in a finite support, excluding a clique. -/
+def neighborOutsideCliqueOn {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    (S K : Finset V) (v : V) : Finset V :=
+  neighborSetOn G S v \ K
+
+/-- A support-level version of the simplicial clique condition from
+Chudnovsky--Seymour. -/
+def IsSimplicialCliqueOn {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    (S K : Finset V) : Prop :=
+  K ⊆ S ∧ G.IsClique (K : Set V) ∧
+    ∀ v ∈ K, G.IsClique (neighborOutsideCliqueOn G S K v : Set V)
+
+/-- Chudnovsky--Seymour Lemma 2.4, in finite-support form.  In a claw-free
+graph, deleting a simplicial clique leaves each outside-neighbor set as a
+simplicial clique in the remaining support. -/
+theorem ClawFree.simplicialClique_neighborOutside {V : Type u} [DecidableEq V]
+    {G : _root_.SimpleGraph V} [DecidableRel G.Adj] (hG : ClawFree G)
+    {S K : Finset V} (hK : IsSimplicialCliqueOn G S K) {k : V} (hk : k ∈ K) :
+    IsSimplicialCliqueOn G (S \ K) (neighborOutsideCliqueOn G S K k) := by
+  classical
+  refine ⟨?_, hK.2.2 k hk, ?_⟩
+  · intro n hn
+    have hn' := Finset.mem_sdiff.mp hn
+    exact Finset.mem_sdiff.mpr ⟨(Finset.mem_filter.mp hn'.1).1, hn'.2⟩
+  · intro n hn x hx y hy hxy
+    by_contra hnot
+    have hnL := Finset.mem_sdiff.mp hn
+    have hnN := Finset.mem_filter.mp hnL.1
+    have hkn : G.Adj k n := hnN.2
+    have hx' : x ∈ neighborOutsideCliqueOn G (S \ K) (neighborOutsideCliqueOn G S K k) n := by
+      simpa using hx
+    have hy' : y ∈ neighborOutsideCliqueOn G (S \ K) (neighborOutsideCliqueOn G S K k) n := by
+      simpa using hy
+    have hxL := Finset.mem_sdiff.mp hx'
+    have hyL := Finset.mem_sdiff.mp hy'
+    have hxN := Finset.mem_filter.mp hxL.1
+    have hyN := Finset.mem_filter.mp hyL.1
+    have hxSdiff := Finset.mem_sdiff.mp hxN.1
+    have hySdiff := Finset.mem_sdiff.mp hyN.1
+    have hkx_not : ¬ G.Adj k x := by
+      intro hkx
+      exact hxL.2 (Finset.mem_sdiff.mpr
+        ⟨Finset.mem_filter.mpr ⟨hxSdiff.1, hkx⟩, hxSdiff.2⟩)
+    have hky_not : ¬ G.Adj k y := by
+      intro hky
+      exact hyL.2 (Finset.mem_sdiff.mpr
+        ⟨Finset.mem_filter.mpr ⟨hySdiff.1, hky⟩, hySdiff.2⟩)
+    have hneigh : ∀ w ∈ ({k, x, y} : Finset V), G.Adj n w := by
+      intro w hw
+      simp only [Finset.mem_insert, Finset.mem_singleton] at hw
+      rcases hw with rfl | rfl | rfl
+      · exact hkn.symm
+      · exact hxN.2
+      · exact hyN.2
+    have hxk : x ≠ k := fun hxk => hxSdiff.2 (by simpa [hxk] using hk)
+    have hyk : y ≠ k := fun hyk => hySdiff.2 (by simpa [hyk] using hk)
+    have hind : G.IsNIndepSet 3 ({k, x, y} : Finset V) := by
+      refine ⟨?_, ?_⟩
+      · rw [SimpleGraph.isIndepSet_iff]
+        intro a ha b hb hne hadj
+        simp only [Finset.mem_coe, Finset.mem_insert, Finset.mem_singleton] at ha hb
+        rcases ha with rfl | rfl | rfl <;> rcases hb with rfl | rfl | rfl
+        · exact hne rfl
+        · exact hkx_not hadj
+        · exact hky_not hadj
+        · exact hkx_not hadj.symm
+        · exact hne rfl
+        · exact hnot hadj
+        · exact hky_not hadj.symm
+        · exact hnot hadj.symm
+        · exact hne rfl
+      · simp [hxk.symm, hyk.symm, hxy]
+    exact hG n {k, x, y} hneigh hind
+
 /-- Inserting a new vertex preserves independence exactly when the old set was
 independent and every old vertex is non-adjacent to the new one. -/
 theorem isIndepSet_insert_iff {V : Type u} [DecidableEq V]
