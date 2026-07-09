@@ -221,6 +221,13 @@ private theorem compatible_X_mul_of_compatible {f g : ℝ[X]} (h : Compatible f 
     rw [hsum]
     exact isRealRooted_X_mul hrr.1 hrr.2
 
+private theorem splits_add_of_compatible {p q : ℝ[X]} (h : Compatible p q)
+    (hadd : p + q ≠ 0) : (p + q).Splits := by
+  have hcombo := h 1 1 zero_le_one zero_le_one
+  rcases hcombo with hzero | hsplit
+  · exact False.elim (hadd (by simpa using hzero))
+  · simpa using hsplit.2
+
 /-- The support-restricted definition recovers `indepPoly` on the full vertex set. -/
 theorem indepPoly_eq_indepPolyOn_univ {V : Type u} [Fintype V] [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj] :
@@ -306,6 +313,14 @@ def commonClosedNeighborSetOn {V : Type u} [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
     (S : Finset V) (u v : V) : Finset V :=
   closedNeighborSetOn G S u ∩ closedNeighborSetOn G S v
+
+/-- The common closed neighborhood inside `S` is a sub-support of `S`. -/
+theorem commonClosedNeighborSetOn_subset {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    (S : Finset V) (u v : V) :
+    commonClosedNeighborSetOn G S u v ⊆ S := by
+  intro w hw
+  exact (Finset.mem_filter.mp (Finset.mem_inter.mp hw).1).1
 
 /-- Neighbors of a vertex in a finite support, excluding a clique. -/
 def neighborOutsideCliqueOn {V : Type u} [DecidableEq V]
@@ -738,6 +753,21 @@ def deleteClosedNeighborSupport {V : Type u} [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
     (S : Finset V) (v : V) : Finset V :=
   (S.erase v).filter fun w => ¬ G.Adj v w
+
+/-- Closed-neighborhood deletion leaves a sub-support of the original support. -/
+theorem deleteClosedNeighborSupport_subset {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) (v : V) :
+    deleteClosedNeighborSupport G S v ⊆ S := by
+  intro w hw
+  exact Finset.mem_of_mem_erase (Finset.mem_filter.mp hw).1
+
+/-- Closed-neighborhood deletion is contained in the support with the vertex
+itself erased. -/
+theorem deleteClosedNeighborSupport_subset_erase {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) (v : V) :
+    deleteClosedNeighborSupport G S v ⊆ S.erase v := by
+  intro w hw
+  exact (Finset.mem_filter.mp hw).1
 
 /-- Vertex-deletion recurrence for the support-restricted independence
 polynomial. -/
@@ -1468,6 +1498,14 @@ def SupportSimplicialXCompatible {V : Type u} [DecidableEq V]
   ∀ {K : Finset V}, IsSimplicialCliqueOn G S K →
     Compatible (indepPolyOn G S) (X * indepPolyOn G (S \ K))
 
+/-- Vertex-deletion compatibility invariant from Chudnovsky--Seymour Lemma 2.6
+on a finite support. -/
+def SupportVertexDeletionCompatible {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) : Prop :=
+  ∀ {v : V}, v ∈ S →
+    Compatible (indepPolyOn G (S.erase v))
+      (X * indepPolyOn G (deleteClosedNeighborSupport G S v))
+
 /-- The pair of closed-neighborhood deletion terms appearing in
 Chudnovsky--Seymour Lemma 2.6 is compatible once Lemma 2.5.1 is available on
 the support obtained by deleting the common closed neighborhood of adjacent
@@ -1564,6 +1602,90 @@ theorem compatible_erase_X_mul_deleteClosedNeighborSupport_of_adjacent
       (by simpa [A, C] using hBaseDelV)
       hBC
   simpa [hrec, A, B, C] using hABC
+
+/-- Chudnovsky--Seymour Lemma 2.6, as a support-level induction step.  The
+compatibility of the two vertex-deletion summands for `v ∈ S` follows from the
+same invariant on smaller supports and Lemma 2.5.1 on the common-closed-
+neighborhood deletion support. -/
+theorem supportVertexDeletionCompatible_of_smaller
+    {V : Type u} [DecidableEq V]
+    {G : _root_.SimpleGraph V} [DecidableRel G.Adj] (hG : ClawFree G)
+    {S : Finset V} (hSplitSmall : ∀ T : Finset V, T.card < S.card →
+      (indepPolyOn G T).Splits)
+    (hPairSmall : ∀ T : Finset V, T.card < S.card →
+      SupportSimplicialPairCompatible G T)
+    (hVertexSmall : ∀ T : Finset V, T.card < S.card →
+      SupportVertexDeletionCompatible G T) :
+    SupportVertexDeletionCompatible G S := by
+  intro v hvS
+  let N := neighborSetOn G (S.erase v) v
+  by_cases hN_empty : N = ∅
+  · exact compatible_erase_X_mul_deleteClosedNeighborSupport_of_no_neighbors
+      G hN_empty (hSplitSmall (S.erase v) (Finset.card_erase_lt_of_mem hvS))
+  · have hN_nonempty : N.Nonempty := Finset.nonempty_iff_ne_empty.mpr hN_empty
+    rcases hN_nonempty with ⟨u, huN⟩
+    have huN' := Finset.mem_filter.mp huN
+    have huS_erase_v : u ∈ S.erase v := huN'.1
+    have huv_vu : G.Adj v u := huN'.2
+    have huv : G.Adj u v := huv_vu.symm
+    have huS : u ∈ S := Finset.mem_of_mem_erase huS_erase_v
+    have hv_ne_u : v ≠ u := fun h => (Finset.mem_erase.mp huS_erase_v).1 h.symm
+    have hvS_erase_u : v ∈ S.erase u :=
+      Finset.mem_erase.mpr ⟨hv_ne_u, hvS⟩
+    have hEraseVSmall : (S.erase v).card < S.card :=
+      Finset.card_erase_lt_of_mem hvS
+    have hEraseUSmall : (S.erase u).card < S.card :=
+      Finset.card_erase_lt_of_mem huS
+    have hBaseSplit : (indepPolyOn G ((S.erase v).erase u)).Splits := by
+      exact hSplitSmall ((S.erase v).erase u) <|
+        lt_of_le_of_lt (Finset.card_le_card (Finset.erase_subset u (S.erase v)))
+          hEraseVSmall
+    have hDelUSplit :
+        (indepPolyOn G (deleteClosedNeighborSupport G S u)).Splits :=
+      hSplitSmall (deleteClosedNeighborSupport G S u) <|
+        lt_of_le_of_lt
+          (Finset.card_le_card (deleteClosedNeighborSupport_subset_erase G S u))
+          hEraseUSmall
+    have hDelVSplit :
+        (indepPolyOn G (deleteClosedNeighborSupport G S v)).Splits :=
+      hSplitSmall (deleteClosedNeighborSupport G S v) <|
+        lt_of_le_of_lt
+          (Finset.card_le_card (deleteClosedNeighborSupport_subset_erase G S v))
+          hEraseVSmall
+    have hBaseDelU : Compatible (indepPolyOn G ((S.erase v).erase u))
+        (X * indepPolyOn G (deleteClosedNeighborSupport G S u)) := by
+      have h := hVertexSmall (S.erase v) hEraseVSmall huS_erase_v
+      have hsupport :
+          deleteClosedNeighborSupport G (S.erase v) u =
+            deleteClosedNeighborSupport G S u :=
+        deleteClosedNeighborSupport_erase_eq_of_adj G huv
+      simpa [hsupport] using h
+    have hBaseDelV : Compatible (indepPolyOn G ((S.erase v).erase u))
+        (X * indepPolyOn G (deleteClosedNeighborSupport G S v)) := by
+      have h := hVertexSmall (S.erase u) hEraseUSmall hvS_erase_u
+      have herase : (S.erase u).erase v = (S.erase v).erase u := by
+        ext w
+        by_cases hwv : w = v <;> by_cases hwu : w = u <;>
+          simp [Finset.mem_erase, hwv, hwu]
+      have hsupport :
+          deleteClosedNeighborSupport G (S.erase u) v =
+            deleteClosedNeighborSupport G S v :=
+        deleteClosedNeighborSupport_erase_eq_of_adj G huv_vu
+      simpa [herase, hsupport] using h
+    have hCommonSub : commonClosedNeighborSetOn G S u v ⊆ S :=
+      commonClosedNeighborSetOn_subset G S u v
+    have huCommon : u ∈ commonClosedNeighborSetOn G S u v := by
+      exact Finset.mem_inter.mpr
+        ⟨Finset.mem_filter.mpr ⟨huS, Or.inl rfl⟩,
+          Finset.mem_filter.mpr ⟨huS, Or.inr huv.symm⟩⟩
+    have hCommonNonempty : (commonClosedNeighborSetOn G S u v).Nonempty :=
+      ⟨u, huCommon⟩
+    have hCommonSmall :
+        (S \ commonClosedNeighborSetOn G S u v).card < S.card :=
+      Finset.card_lt_card (Finset.sdiff_ssubset hCommonSub hCommonNonempty)
+    exact compatible_erase_X_mul_deleteClosedNeighborSupport_of_adjacent hG
+      huS_erase_v huv hBaseSplit hDelUSplit hDelVSplit hBaseDelU hBaseDelV
+      (hPairSmall (S \ commonClosedNeighborSetOn G S u v) hCommonSmall)
 
 /-- Chudnovsky--Seymour Lemma 2.5.1, as a support-level induction step.  The
 new content is that compatibility of `I(S \ K)` and `I(S \ L)` follows from
@@ -1777,6 +1899,79 @@ theorem supportSimplicialXCompatible_of_smaller
       simpa [hsupport] using hSplit ((S \ K) \ neighborOutsideCliqueOn G S K v) hsub
     exact compatible_indepPolyOn_X_mul_sdiff_of_cliqueDeletion_pairwiseCompatible
       G S K hK.2.1 hK.1 hbase hdel hpair
+
+/-- Support-level Chudnovsky--Seymour theorem for claw-free graphs: every
+support-restricted independence polynomial is real-rooted. -/
+theorem supportIndepPoly_splits_of_clawFree
+    {V : Type u} [DecidableEq V]
+    {G : _root_.SimpleGraph V} [DecidableRel G.Adj] (hG : ClawFree G) :
+    ∀ S : Finset V, (indepPolyOn G S).Splits := by
+  classical
+  have hmain : ∀ n : ℕ, ∀ S : Finset V, S.card = n →
+      SupportIndepPolySplits G S ∧
+        SupportSimplicialPairCompatible G S ∧
+          SupportSimplicialXCompatible G S ∧
+            SupportVertexDeletionCompatible G S := by
+    intro n
+    refine Nat.strongRecOn n ?_
+    intro n ih S hcard
+    have hSplitSmall : ∀ T : Finset V, T.card < S.card →
+        (indepPolyOn G T).Splits := by
+      intro T hT
+      have hTn : T.card < n := by simpa [hcard] using hT
+      exact (ih T.card hTn T rfl).1 T Subset.rfl
+    have hPairSmall : ∀ T : Finset V, T.card < S.card →
+        SupportSimplicialPairCompatible G T := by
+      intro T hT
+      have hTn : T.card < n := by simpa [hcard] using hT
+      intro K L hK hL
+      exact (ih T.card hTn T rfl).2.1 hK hL
+    have hXSmall : ∀ T : Finset V, T.card < S.card →
+        SupportSimplicialXCompatible G T := by
+      intro T hT
+      have hTn : T.card < n := by simpa [hcard] using hT
+      intro K hK
+      exact (ih T.card hTn T rfl).2.2.1 hK
+    have hVertexSmall : ∀ T : Finset V, T.card < S.card →
+        SupportVertexDeletionCompatible G T := by
+      intro T hT
+      have hTn : T.card < n := by simpa [hcard] using hT
+      intro v hv
+      exact (ih T.card hTn T rfl).2.2.2 hv
+    have hVertex : SupportVertexDeletionCompatible G S :=
+      supportVertexDeletionCompatible_of_smaller hG hSplitSmall hPairSmall hVertexSmall
+    have hSplitSelf : (indepPolyOn G S).Splits := by
+      by_cases hS_empty : S = ∅
+      · subst hS_empty
+        exact indepPolyOn_empty_splits G
+      · have hS_nonempty : S.Nonempty := Finset.nonempty_iff_ne_empty.mpr hS_empty
+        rcases hS_nonempty with ⟨v, hvS⟩
+        have hsum_ne :
+            indepPolyOn G (S.erase v) +
+              X * indepPolyOn G (deleteClosedNeighborSupport G S v) ≠ 0 := by
+          intro hzero
+          exact indepPolyOn_ne_zero G S (by
+            rw [indepPolyOn_erase G hvS]
+            exact hzero)
+        have hsum_splits :=
+          splits_add_of_compatible (hVertex hvS) hsum_ne
+        rw [indepPolyOn_erase G hvS]
+        exact hsum_splits
+    have hSplit : SupportIndepPolySplits G S := by
+      intro T hTS
+      by_cases hTS_eq : T = S
+      · subst hTS_eq
+        exact hSplitSelf
+      · have hproper : T ⊂ S :=
+          Finset.ssubset_iff_subset_ne.mpr ⟨hTS, hTS_eq⟩
+        exact hSplitSmall T (Finset.card_lt_card hproper)
+    have hPair : SupportSimplicialPairCompatible G S :=
+      supportSimplicialPairCompatible_of_smaller hG hSplit hPairSmall hXSmall
+    have hX : SupportSimplicialXCompatible G S :=
+      supportSimplicialXCompatible_of_smaller hG hSplit hPairSmall hXSmall
+    exact ⟨hSplit, hPair, hX, hVertex⟩
+  intro S
+  exact (hmain S.card S rfl).1 S Subset.rfl
 
 /-- The support-restricted independence polynomial is the ordinary independence
 polynomial of the induced graph on that support. -/
@@ -1996,6 +2191,14 @@ def ClawFreeIndepPolySplitsStatement : Prop :=
   ∀ {V : Type u} [Fintype V] [DecidableEq V]
     (G : _root_.SimpleGraph V), ClawFree G → (indepPoly G).Splits
 
+/-- Chudnovsky--Seymour graph theorem: finite claw-free graph independence
+polynomials are real-rooted. -/
+theorem clawFree_indepPoly_splits : ClawFreeIndepPolySplitsStatement.{u} := by
+  intro V _hfinite _hdec G hG
+  classical
+  rw [indepPoly_eq_indepPolyOn_univ]
+  exact supportIndepPoly_splits_of_clawFree hG Finset.univ
+
 /-- Conditional Heilmann--Lieb matching-generating corollary.
 
 Once the graph-form Chudnovsky--Seymour statement is proved, the matching
@@ -2008,6 +2211,20 @@ theorem matchingGeneratingPolynomial_splits_of_clawFreeIndepPolySplits
     (matchingGeneratingPolynomial G).Splits := by
   classical
   exact hcs (G := G.lineGraph) (lineGraph_clawFree G)
+
+/-- Heilmann--Lieb theorem for the matching-generating polynomial. -/
+theorem matchingGeneratingPolynomial_splits
+    {V : Type u} [Fintype V] [DecidableEq V] (G : _root_.SimpleGraph V) :
+    (matchingGeneratingPolynomial G).Splits :=
+  matchingGeneratingPolynomial_splits_of_clawFreeIndepPolySplits
+    clawFree_indepPoly_splits G
+
+/-- Heilmann--Lieb theorem for the intrinsic edge-matching polynomial. -/
+theorem matchingPolynomialByEdges_splits
+    {V : Type u} [Fintype V] [DecidableEq V] (G : _root_.SimpleGraph V) :
+    (matchingPolynomialByEdges G).Splits := by
+  rw [matchingPolynomialByEdges_eq_matchingGeneratingPolynomial]
+  exact matchingGeneratingPolynomial_splits G
 
 end Graph
 end RealRooted
