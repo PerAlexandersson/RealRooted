@@ -390,6 +390,74 @@ theorem indepPolyOn_insert {V : Type u} [DecidableEq V]
   simpa [weightedIndepPolyOn_one] using
     (weightedIndepPolyOn_insert (G := G) (wt := fun _ => 1) hv)
 
+/-- The support left after deleting the closed neighborhood of `v`, relative to
+a finite ambient support. -/
+def deleteClosedNeighborSupport {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    (S : Finset V) (v : V) : Finset V :=
+  (S.erase v).filter fun w => ¬ G.Adj v w
+
+/-- If `v` is adjacent to a clique vertex `x`, then removing `v` from the
+ambient support does not change the support left after deleting the closed
+neighborhood of `x`. -/
+theorem deleteClosedNeighborSupport_erase_eq_of_clique {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    {S K : Finset V} {v x : V}
+    (hK : G.IsClique ((insert v K : Finset V) : Set V))
+    (hvK : v ∉ K) (hx : x ∈ K) :
+    deleteClosedNeighborSupport G (S.erase v) x =
+      deleteClosedNeighborSupport G S x := by
+  ext w
+  by_cases hwv : w = v
+  · subst w
+    have hx_ne : x ≠ v := fun hxv => hvK (by simpa [hxv] using hx)
+    have hxv_adj : G.Adj x v := hK (by simp [hx]) (by simp) hx_ne
+    simp [deleteClosedNeighborSupport, hxv_adj]
+  · simp [deleteClosedNeighborSupport, hwv]
+
+/-- Chudnovsky--Seymour's clique deletion expansion, in finite-support form.
+An independent set can meet a clique in at most one vertex, so the independence
+polynomial splits into the sets avoiding the clique and the sets containing a
+specified clique vertex. -/
+theorem indepPolyOn_sdiff_clique {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    (S K : Finset V) (hK : G.IsClique (K : Set V)) (hKS : K ⊆ S) :
+    indepPolyOn G S =
+      indepPolyOn G (S \ K) +
+        ∑ v ∈ K, X * indepPolyOn G (deleteClosedNeighborSupport G S v) := by
+  classical
+  revert S hK
+  refine Finset.induction_on K ?_ ?_
+  · intro S _hK _hKS
+    simp
+  · intro v K hvK ih S hK hKS
+    have hvS : v ∈ S := hKS (Finset.mem_insert_self v K)
+    have hK_old : G.IsClique (K : Set V) := by
+      exact hK.subset fun w hw => by simp [hw]
+    have hKS_old : K ⊆ S.erase v := by
+      intro w hw
+      refine Finset.mem_erase.mpr ⟨?_, hKS (Finset.mem_insert.mpr (Or.inr hw))⟩
+      exact fun hwv => hvK (by simpa [hwv] using hw)
+    have hrec_single : indepPolyOn G S =
+        indepPolyOn G (S.erase v) +
+          X * indepPolyOn G (deleteClosedNeighborSupport G S v) := by
+      have h := indepPolyOn_insert
+        (G := G) (S := S.erase v) (v := v) (Finset.notMem_erase v S)
+      simpa [deleteClosedNeighborSupport, Finset.insert_erase hvS] using h
+    rw [hrec_single, ih (S.erase v) hK_old hKS_old]
+    have hsdiff : S.erase v \ K = S \ insert v K := by
+      ext w
+      by_cases hwv : w = v <;> simp [Finset.mem_sdiff, hwv]
+    rw [hsdiff, Finset.sum_insert hvK]
+    have hsum :
+        (∑ x ∈ K, X * indepPolyOn G (deleteClosedNeighborSupport G (S.erase v) x)) =
+          ∑ x ∈ K, X * indepPolyOn G (deleteClosedNeighborSupport G S x) := by
+      apply Finset.sum_congr rfl
+      intro x hx
+      rw [deleteClosedNeighborSupport_erase_eq_of_clique G hK hvK hx]
+    rw [hsum]
+    ring_nf
+
 /-- The support-restricted independence polynomial is the ordinary independence
 polynomial of the induced graph on that support. -/
 theorem indepPolyOn_univ_induce_finset {V : Type u} [DecidableEq V]
