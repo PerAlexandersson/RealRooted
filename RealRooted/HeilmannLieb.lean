@@ -257,11 +257,55 @@ theorem ClawFree.induce {V : Type u} {G : _root_.SimpleGraph V}
       exact hind.card_eq
   exact hG v t' ht'_neigh ht'_ind
 
+private theorem ClawFree.adj_of_forced_triangle {V : Type u}
+    {G : _root_.SimpleGraph V} (hG : ClawFree G)
+    {z a b c : V} (hza : G.Adj z a) (hzb : G.Adj z b) (hzc : G.Adj z c)
+    (hab : ¬ G.Adj a b) (hac : ¬ G.Adj a c)
+    (hab_ne : a ≠ b) (hac_ne : a ≠ c) (hbc_ne : b ≠ c) : G.Adj b c := by
+  classical
+  by_contra hbc
+  have hneigh : ∀ w ∈ ({a, b, c} : Finset V), G.Adj z w := by
+    intro w hw
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hw
+    rcases hw with rfl | rfl | rfl
+    · exact hza
+    · exact hzb
+    · exact hzc
+  have hind : G.IsNIndepSet 3 ({a, b, c} : Finset V) := by
+    refine ⟨?_, ?_⟩
+    · rw [SimpleGraph.isIndepSet_iff]
+      intro x hx y hy hne hadj
+      simp only [Finset.mem_coe, Finset.mem_insert, Finset.mem_singleton] at hx hy
+      rcases hx with rfl | rfl | rfl <;> rcases hy with rfl | rfl | rfl
+      · exact hne rfl
+      · exact hab hadj
+      · exact hac hadj
+      · exact hab hadj.symm
+      · exact hne rfl
+      · exact hbc hadj
+      · exact hac hadj.symm
+      · exact hbc hadj.symm
+      · exact hne rfl
+    · simp [hab_ne, hac_ne, hbc_ne]
+  exact hG z {a, b, c} hneigh hind
+
 /-- Neighbors of a vertex inside a finite support. -/
 def neighborSetOn {V : Type u} [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
     (S : Finset V) (v : V) : Finset V :=
   S.filter fun w => G.Adj v w
+
+/-- Closed neighborhood of a vertex inside a finite support. -/
+def closedNeighborSetOn {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    (S : Finset V) (v : V) : Finset V :=
+  S.filter fun w => w = v ∨ G.Adj v w
+
+/-- Common closed neighborhood of two vertices inside a finite support. -/
+def commonClosedNeighborSetOn {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    (S : Finset V) (u v : V) : Finset V :=
+  closedNeighborSetOn G S u ∩ closedNeighborSetOn G S v
 
 /-- Neighbors of a vertex in a finite support, excluding a clique. -/
 def neighborOutsideCliqueOn {V : Type u} [DecidableEq V]
@@ -282,6 +326,93 @@ theorem isSimplicialCliqueOn_empty {V : Type u} [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) :
     IsSimplicialCliqueOn G S ∅ := by
   simp [IsSimplicialCliqueOn]
+
+/-- Chudnovsky--Seymour Lemma 2.6 graph ingredient, in finite-support form.
+After deleting the common closed neighborhood of adjacent vertices `u` and `v`,
+the remaining neighbors of `u` form a simplicial clique.  The corresponding
+statement for `v` follows by symmetry. -/
+theorem ClawFree.neighborSetOn_sdiff_commonClosedNeighbor_simplicial
+    {V : Type u} [DecidableEq V]
+    {G : _root_.SimpleGraph V} [DecidableRel G.Adj] (hG : ClawFree G)
+    {S : Finset V} {u v : V} (huv : G.Adj u v) :
+    IsSimplicialCliqueOn G (S \ commonClosedNeighborSetOn G S u v)
+      (neighborSetOn G (S \ commonClosedNeighborSetOn G S u v) u) := by
+  classical
+  let H := S \ commonClosedNeighborSetOn G S u v
+  let K := neighborSetOn G H u
+  change IsSimplicialCliqueOn G H K
+  have hu_not_H : u ∉ H := by
+    intro huH
+    have huH' := Finset.mem_sdiff.mp huH
+    have huS : u ∈ S := huH'.1
+    have huCommon : u ∈ commonClosedNeighborSetOn G S u v := by
+      exact Finset.mem_inter.mpr
+        ⟨Finset.mem_filter.mpr ⟨huS, Or.inl rfl⟩,
+          Finset.mem_filter.mpr ⟨huS, Or.inr huv.symm⟩⟩
+    exact huH'.2 huCommon
+  refine ⟨?_, ?_, ?_⟩
+  · intro x hx
+    exact (Finset.mem_filter.mp hx).1
+  · intro x hx y hy hxy
+    have hxK := Finset.mem_filter.mp hx
+    have hyK := Finset.mem_filter.mp hy
+    have hxH' := Finset.mem_sdiff.mp hxK.1
+    have hyH' := Finset.mem_sdiff.mp hyK.1
+    have hxClosedU : x ∈ closedNeighborSetOn G S u := by
+      exact Finset.mem_filter.mpr ⟨hxH'.1, Or.inr hxK.2⟩
+    have hyClosedU : y ∈ closedNeighborSetOn G S u := by
+      exact Finset.mem_filter.mpr ⟨hyH'.1, Or.inr hyK.2⟩
+    have hx_not_closed_v : x ∉ closedNeighborSetOn G S v := by
+      intro hxClosedV
+      exact hxH'.2 (Finset.mem_inter.mpr ⟨hxClosedU, hxClosedV⟩)
+    have hy_not_closed_v : y ∉ closedNeighborSetOn G S v := by
+      intro hyClosedV
+      exact hyH'.2 (Finset.mem_inter.mpr ⟨hyClosedU, hyClosedV⟩)
+    have hvx_not : ¬ G.Adj v x := by
+      intro hvx
+      exact hx_not_closed_v (Finset.mem_filter.mpr ⟨hxH'.1, Or.inr hvx⟩)
+    have hvy_not : ¬ G.Adj v y := by
+      intro hvy
+      exact hy_not_closed_v (Finset.mem_filter.mpr ⟨hyH'.1, Or.inr hvy⟩)
+    have hvx_ne : v ≠ x := by
+      intro hvx
+      exact hx_not_closed_v (Finset.mem_filter.mpr ⟨hxH'.1, Or.inl hvx.symm⟩)
+    have hvy_ne : v ≠ y := by
+      intro hvy
+      exact hy_not_closed_v (Finset.mem_filter.mpr ⟨hyH'.1, Or.inl hvy.symm⟩)
+    exact hG.adj_of_forced_triangle huv hxK.2 hyK.2 hvx_not hvy_not
+      hvx_ne hvy_ne hxy
+  · intro n hn x hx y hy hxy
+    have hnK := Finset.mem_filter.mp hn
+    have hxOut := Finset.mem_sdiff.mp hx
+    have hyOut := Finset.mem_sdiff.mp hy
+    have hxN := Finset.mem_filter.mp hxOut.1
+    have hyN := Finset.mem_filter.mp hyOut.1
+    have hux_not : ¬ G.Adj u x := by
+      intro hux
+      exact hxOut.2 (Finset.mem_filter.mpr ⟨hxN.1, hux⟩)
+    have huy_not : ¬ G.Adj u y := by
+      intro huy
+      exact hyOut.2 (Finset.mem_filter.mpr ⟨hyN.1, huy⟩)
+    have hux_ne : u ≠ x := by
+      intro hux
+      exact hu_not_H (by simpa [hux] using hxN.1)
+    have huy_ne : u ≠ y := by
+      intro huy
+      exact hu_not_H (by simpa [huy] using hyN.1)
+    exact hG.adj_of_forced_triangle hnK.2.symm hxN.2 hyN.2 hux_not huy_not
+      hux_ne huy_ne hxy
+
+/-- Symmetric version of
+`ClawFree.neighborSetOn_sdiff_commonClosedNeighbor_simplicial`. -/
+theorem ClawFree.neighborSetOn_sdiff_commonClosedNeighbor_simplicial_right
+    {V : Type u} [DecidableEq V]
+    {G : _root_.SimpleGraph V} [DecidableRel G.Adj] (hG : ClawFree G)
+    {S : Finset V} {u v : V} (huv : G.Adj u v) :
+    IsSimplicialCliqueOn G (S \ commonClosedNeighborSetOn G S u v)
+      (neighborSetOn G (S \ commonClosedNeighborSetOn G S u v) v) := by
+  simpa [commonClosedNeighborSetOn, inter_comm] using
+    hG.neighborSetOn_sdiff_commonClosedNeighbor_simplicial (S := S) huv.symm
 
 /-- Removing an arbitrary set of vertices preserves a support-level simplicial
 clique after subtracting the same vertices from the clique. -/
@@ -607,6 +738,62 @@ def deleteClosedNeighborSupport {V : Type u} [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
     (S : Finset V) (v : V) : Finset V :=
   (S.erase v).filter fun w => ¬ G.Adj v w
+
+/-- Deleting the remaining neighbors of `u` after removing the common closed
+neighborhood of adjacent `u` and `v` is the same support as deleting the closed
+neighborhood of `u` from the original support. -/
+theorem sdiff_commonClosedNeighbor_sdiff_neighborSetOn_eq_deleteClosedNeighborSupport
+    {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    {S : Finset V} {u v : V} (huv : G.Adj u v) :
+    (S \ commonClosedNeighborSetOn G S u v) \
+        neighborSetOn G (S \ commonClosedNeighborSetOn G S u v) u =
+      deleteClosedNeighborSupport G S u := by
+  ext w
+  constructor
+  · intro hw
+    have hw' := Finset.mem_sdiff.mp hw
+    have hwH' := Finset.mem_sdiff.mp hw'.1
+    have hwu : w ≠ u := by
+      intro hwu
+      have hwCommon : w ∈ commonClosedNeighborSetOn G S u v := by
+        exact Finset.mem_inter.mpr
+          ⟨Finset.mem_filter.mpr ⟨hwH'.1, Or.inl hwu⟩,
+            Finset.mem_filter.mpr ⟨hwH'.1, Or.inr (hwu ▸ huv.symm)⟩⟩
+      exact hwH'.2 hwCommon
+    have hnotAdj : ¬ G.Adj u w := by
+      intro huw
+      exact hw'.2 (Finset.mem_filter.mpr ⟨hw'.1, huw⟩)
+    exact Finset.mem_filter.mpr
+      ⟨Finset.mem_erase.mpr ⟨hwu, hwH'.1⟩, hnotAdj⟩
+  · intro hwDel
+    have hwFilter := Finset.mem_filter.mp hwDel
+    have hwErase := Finset.mem_erase.mp hwFilter.1
+    have hwS : w ∈ S := hwErase.2
+    have hwu : w ≠ u := hwErase.1
+    have hnotAdj : ¬ G.Adj u w := hwFilter.2
+    have hwNotCommon : w ∉ commonClosedNeighborSetOn G S u v := by
+      intro hwCommon
+      have hwClosedU := (Finset.mem_inter.mp hwCommon).1
+      rcases (Finset.mem_filter.mp hwClosedU).2 with hwu' | huw
+      · exact hwu hwu'
+      · exact hnotAdj huw
+    refine Finset.mem_sdiff.mpr ⟨Finset.mem_sdiff.mpr ⟨hwS, hwNotCommon⟩, ?_⟩
+    intro hwNeighbor
+    exact hnotAdj (Finset.mem_filter.mp hwNeighbor).2
+
+/-- Symmetric version of
+`sdiff_commonClosedNeighbor_sdiff_neighborSetOn_eq_deleteClosedNeighborSupport`. -/
+theorem sdiff_commonClosedNeighbor_sdiff_neighborSetOn_eq_deleteClosedNeighborSupport_right
+    {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    {S : Finset V} {u v : V} (huv : G.Adj u v) :
+    (S \ commonClosedNeighborSetOn G S u v) \
+        neighborSetOn G (S \ commonClosedNeighborSetOn G S u v) v =
+      deleteClosedNeighborSupport G S v := by
+  simpa [commonClosedNeighborSetOn, inter_comm] using
+    sdiff_commonClosedNeighbor_sdiff_neighborSetOn_eq_deleteClosedNeighborSupport
+      G (S := S) huv.symm
 
 /-- For a vertex in a clique, deleting its closed neighborhood from the ambient
 support is the same as first deleting the clique, then deleting the outside
@@ -1168,13 +1355,34 @@ def SupportSimplicialXCompatible {V : Type u} [DecidableEq V]
   ∀ {K : Finset V}, IsSimplicialCliqueOn G S K →
     Compatible (indepPolyOn G S) (X * indepPolyOn G (S \ K))
 
-/-- Every nonempty finite support admits a nonempty simplicial clique.  This is
-the graph-theoretic existence input still needed to finish the graph-form
-Chudnovsky--Seymour theorem. -/
-def SupportSimplicialCliqueExists {V : Type u} [DecidableEq V]
-    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] : Prop :=
-  ∀ {S : Finset V}, S.Nonempty → ∃ K : Finset V,
-    K.Nonempty ∧ IsSimplicialCliqueOn G S K
+/-- The pair of closed-neighborhood deletion terms appearing in
+Chudnovsky--Seymour Lemma 2.6 is compatible once Lemma 2.5.1 is available on
+the support obtained by deleting the common closed neighborhood of adjacent
+vertices. -/
+theorem compatible_X_mul_deleteClosedNeighborSupport_pair_of_commonClosedNeighbor
+    {V : Type u} [DecidableEq V]
+    {G : _root_.SimpleGraph V} [DecidableRel G.Adj] (hG : ClawFree G)
+    {S : Finset V} {u v : V} (huv : G.Adj u v)
+    (hPair : SupportSimplicialPairCompatible G
+      (S \ commonClosedNeighborSetOn G S u v)) :
+    Compatible
+      (X * indepPolyOn G (deleteClosedNeighborSupport G S u))
+      (X * indepPolyOn G (deleteClosedNeighborSupport G S v)) := by
+  let H := S \ commonClosedNeighborSetOn G S u v
+  have hKu : IsSimplicialCliqueOn G H (neighborSetOn G H u) :=
+    hG.neighborSetOn_sdiff_commonClosedNeighbor_simplicial huv
+  have hKv : IsSimplicialCliqueOn G H (neighborSetOn G H v) :=
+    hG.neighborSetOn_sdiff_commonClosedNeighbor_simplicial_right huv
+  have hp := hPair hKu hKv
+  have huSupport :
+      H \ neighborSetOn G H u = deleteClosedNeighborSupport G S u := by
+    exact sdiff_commonClosedNeighbor_sdiff_neighborSetOn_eq_deleteClosedNeighborSupport
+      G huv
+  have hvSupport :
+      H \ neighborSetOn G H v = deleteClosedNeighborSupport G S v := by
+    exact sdiff_commonClosedNeighbor_sdiff_neighborSetOn_eq_deleteClosedNeighborSupport_right
+      G huv
+  simpa [H, huSupport, hvSupport] using compatible_X_mul_of_compatible hp
 
 /-- Chudnovsky--Seymour Lemma 2.5.1, as a support-level induction step.  The
 new content is that compatibility of `I(S \ K)` and `I(S \ L)` follows from
@@ -1388,98 +1596,6 @@ theorem supportSimplicialXCompatible_of_smaller
       simpa [hsupport] using hSplit ((S \ K) \ neighborOutsideCliqueOn G S K v) hsub
     exact compatible_indepPolyOn_X_mul_sdiff_of_cliqueDeletion_pairwiseCompatible
       G S K hK.2.1 hK.1 hbase hdel hpair
-
-/-- The support-level claw-free independence-polynomial theorem, conditional
-only on the graph-theoretic existence of nonempty simplicial cliques on
-nonempty finite supports.  This is the simultaneous induction assembly after
-Chudnovsky--Seymour Lemma 2.5. -/
-theorem supportIndepPoly_splits_of_simplicialCliqueExists
-    {V : Type u} [DecidableEq V]
-    {G : _root_.SimpleGraph V} [DecidableRel G.Adj] (hG : ClawFree G)
-    (hexists : SupportSimplicialCliqueExists G) :
-    ∀ S : Finset V, (indepPolyOn G S).Splits := by
-  classical
-  have hmain : ∀ n : ℕ, ∀ S : Finset V, S.card = n →
-      SupportIndepPolySplits G S ∧
-        SupportSimplicialPairCompatible G S ∧
-          SupportSimplicialXCompatible G S := by
-    intro n
-    refine Nat.strongRecOn n ?_
-    intro n ih S hcard
-    have hPairSmall : ∀ T : Finset V, T.card < S.card →
-        SupportSimplicialPairCompatible G T := by
-      intro T hT
-      have hTn : T.card < n := by simpa [hcard] using hT
-      intro K L hK hL
-      exact (ih T.card hTn T rfl).2.1 hK hL
-    have hXSmall : ∀ T : Finset V, T.card < S.card →
-        SupportSimplicialXCompatible G T := by
-      intro T hT
-      have hTn : T.card < n := by simpa [hcard] using hT
-      intro K hK
-      exact (ih T.card hTn T rfl).2.2 hK
-    have hSplitSelf : (indepPolyOn G S).Splits := by
-      by_cases hS_empty : S = ∅
-      · subst hS_empty
-        exact indepPolyOn_empty_splits G
-      · have hS_nonempty : S.Nonempty := Finset.nonempty_iff_ne_empty.mpr hS_empty
-        rcases hexists hS_nonempty with ⟨K, hK_nonempty, hK⟩
-        have hsmall : (S \ K).card < S.card :=
-          Finset.card_lt_card (Finset.sdiff_ssubset hK.1 hK_nonempty)
-        have hsmalln : (S \ K).card < n := by simpa [hcard] using hsmall
-        have hrec := ih (S \ K).card hsmalln (S \ K) rfl
-        have hbase : (indepPolyOn G (S \ K)).Splits :=
-          hrec.1 (S \ K) Subset.rfl
-        have hneighbor_simp : ∀ v ∈ K,
-            IsSimplicialCliqueOn G (S \ K)
-              (neighborOutsideCliqueOn G S K v) := by
-          intro v hv
-          exact hG.simplicialClique_neighborOutside hK hv
-        have hbase_neighbor : ∀ v ∈ K,
-            Compatible (indepPolyOn G (S \ K))
-              (X * indepPolyOn G ((S \ K) \ neighborOutsideCliqueOn G S K v)) := by
-          intro v hv
-          exact hrec.2.2 (hneighbor_simp v hv)
-        have hneighbor_pair : ∀ u ∈ K, ∀ v ∈ K,
-            Compatible
-              (indepPolyOn G ((S \ K) \ neighborOutsideCliqueOn G S K u))
-              (indepPolyOn G ((S \ K) \ neighborOutsideCliqueOn G S K v)) := by
-          intro u hu v hv
-          exact hrec.2.1 (hneighbor_simp u hu) (hneighbor_simp v hv)
-        have hpair : PairwiseCompatible (cliqueDeletionFamily G S K) :=
-          cliqueDeletionFamily_pairwiseCompatible_of_neighborOutside_compatible
-            G hK.2.1 hK.1 hbase hbase_neighbor hneighbor_pair
-        have hdel : ∀ v ∈ K,
-            (indepPolyOn G (deleteClosedNeighborSupport G S v)).Splits := by
-          intro v hv
-          have hsupport :=
-            deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique
-              G hK.2.1 hK.1 hv
-          have hsub :
-              (S \ K) \ neighborOutsideCliqueOn G S K v ⊆ S \ K := by
-            intro w hw
-            exact (Finset.mem_sdiff.mp hw).1
-          simpa [hsupport] using
-            hrec.1 ((S \ K) \ neighborOutsideCliqueOn G S K v) hsub
-        exact indepPolyOn_splits_of_cliqueDeletion_pairwiseCompatible
-          G S K hK.2.1 hK.1 hbase hdel hpair
-    have hSplit : SupportIndepPolySplits G S := by
-      intro T hTS
-      by_cases hTS_eq : T = S
-      · subst hTS_eq
-        exact hSplitSelf
-      · have hproper : T ⊂ S :=
-          Finset.ssubset_iff_subset_ne.mpr ⟨hTS, hTS_eq⟩
-        have hTsmall : T.card < S.card := Finset.card_lt_card hproper
-        have hTn : T.card < n := by simpa [hcard] using hTsmall
-        exact (ih T.card hTn T rfl).1 T Subset.rfl
-    have hPair : SupportSimplicialPairCompatible G S :=
-      supportSimplicialPairCompatible_of_smaller hG hSplit hPairSmall hXSmall
-    have hX : SupportSimplicialXCompatible G S :=
-      supportSimplicialXCompatible_of_smaller hG hSplit hPairSmall hXSmall
-    exact ⟨hSplit, hPair, hX⟩
-  intro S
-  exact (hmain S.card S rfl).1 S Subset.rfl
 
 /-- The support-restricted independence polynomial is the ordinary independence
 polynomial of the induced graph on that support. -/
@@ -1698,24 +1814,6 @@ Chudnovsky--Seymour interlacing engine from `RealRooted.ChudnovskySeymour`. -/
 def ClawFreeIndepPolySplitsStatement : Prop :=
   ∀ {V : Type u} [Fintype V] [DecidableEq V]
     (G : _root_.SimpleGraph V), ClawFree G → (indepPoly G).Splits
-
-/-- The remaining graph-theoretic existence statement needed to finish the
-support-level induction for all finite claw-free graphs. -/
-def ClawFreeSupportSimplicialCliqueExistsStatement : Prop :=
-  ∀ {V : Type u} [DecidableEq V] (G : _root_.SimpleGraph V) [DecidableRel G.Adj],
-    ClawFree G → SupportSimplicialCliqueExists G
-
-/-- The graph-form Chudnovsky--Seymour statement follows from the support-level
-induction once every nonempty finite support in a claw-free graph has a
-nonempty simplicial clique. -/
-theorem clawFreeIndepPolySplits_of_supportSimplicialCliqueExists
-    (hexists : ClawFreeSupportSimplicialCliqueExistsStatement.{u}) :
-    ClawFreeIndepPolySplitsStatement.{u} := by
-  intro V _hfinite _hdec G hG
-  classical
-  rw [indepPoly_eq_indepPolyOn_univ]
-  exact supportIndepPoly_splits_of_simplicialCliqueExists hG
-    (hexists G hG) Finset.univ
 
 /-- Conditional Heilmann--Lieb matching-generating corollary.
 
