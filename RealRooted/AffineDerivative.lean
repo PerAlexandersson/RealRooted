@@ -795,11 +795,6 @@ private lemma exists_cons_of_card_succ {α : Type*} {s t : Multiset α}
   refine ⟨a, ?_⟩
   simpa using (Multiset.add_comm s ({a} : Multiset α))
 
-private lemma eval_ne_zero_of_not_dvd_X_sub_C {p : ℝ[X]} {a : ℝ}
-    (h : ¬ (X - C a) ∣ p) :
-    p.eval a ≠ 0 :=
-  fun hp => h ((dvd_iff_isRoot).2 hp)
-
 private lemma neg_pow_prod_nonneg_of_all_nonpos (s : Multiset ℝ)
     (hs : ∀ x ∈ s, x ≤ 0) :
     0 ≤ (-1 : ℝ) ^ s.card * s.prod := by

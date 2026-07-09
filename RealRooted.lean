@@ -35,7 +35,9 @@ import RealRooted.HermiteBiehler
 import RealRooted.PFPolynomial
 import RealRooted.NarayanaTransformation
 import RealRooted.MultiplierSequence
+import RealRooted.HadamardProduct
 import RealRooted.Hadamard
+import RealRooted.GarloffWagner
 import RealRooted.GraceHalfPlane
 import RealRooted.Apolarity
 import RealRooted.HeilmannLieb

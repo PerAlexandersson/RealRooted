@@ -158,6 +158,21 @@ lemma IsRoot.of_dvd {p q : ℝ[X]} (hpq : p ∣ q) {x : ℝ} (hx : p.IsRoot x) :
   rcases hpq with ⟨r, rfl⟩
   simpa [Polynomial.IsRoot.def] using congrArg (fun y => y * r.eval x) hx
 
+/-- If `X - C a` does not divide `p`, then `p(a) ≠ 0`. -/
+lemma eval_ne_zero_of_not_dvd_X_sub_C {p : ℝ[X]} {a : ℝ}
+    (h : ¬ (X - C a) ∣ p) :
+    p.eval a ≠ 0 :=
+  fun hp => h ((dvd_iff_isRoot).2 hp)
+
+/-- Divisibility by `X - C a` is equivalent to vanishing at `a`, in a
+nondivisibility/nonvanishing form convenient for quotient proofs. -/
+lemma not_dvd_X_sub_C_iff_eval_ne_zero {p : ℝ[X]} {a : ℝ} :
+    ¬ (X - C a) ∣ p ↔ p.eval a ≠ 0 := by
+  constructor
+  · exact eval_ne_zero_of_not_dvd_X_sub_C
+  · intro hp hdvd
+    exact hp ((dvd_iff_isRoot).1 hdvd)
+
 /-- A common root of two polynomials is also a root of their sum. -/
 lemma IsRoot.add {p q : ℝ[X]} {x : ℝ} (hp : p.IsRoot x) (hq : q.IsRoot x) :
     (p + q).IsRoot x := by
