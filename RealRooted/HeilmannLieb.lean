@@ -278,6 +278,108 @@ theorem weightedIndepPolyOn_insert {V : Type u} [DecidableEq V]
     have herase := congrArg (fun t : Finset V => t.erase v) h
     simpa [Finset.erase_insert hvu, Finset.erase_insert hvw] using herase
 
+/-- The weighted support-restricted independence polynomial only depends on
+the weights on its support. -/
+theorem weightedIndepPolyOn_congr {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] {S : Finset V}
+    {wt wt' : V → ℝ} (hwt : ∀ v ∈ S, wt v = wt' v) :
+    weightedIndepPolyOn G S wt = weightedIndepPolyOn G S wt' := by
+  unfold weightedIndepPolyOn
+  apply Finset.sum_congr rfl
+  intro t ht
+  have hsub : t ⊆ S := Finset.mem_powerset.mp (Finset.mem_filter.mp ht).1
+  have hprod : (∏ v ∈ t, C (wt v)) = (∏ v ∈ t, C (wt' v)) := by
+    apply Finset.prod_congr rfl
+    intro v hv
+    simp [hwt v (hsub hv)]
+  rw [hprod]
+
+/-- In the weighted insertion recurrence, the inserted vertex weight can be
+chosen independently of the old weights on the two smaller supports. -/
+theorem weightedIndepPolyOn_insert_update {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (wt : V → ℝ)
+    {S : Finset V} {v : V} (hv : v ∉ S) (a : ℝ) :
+    weightedIndepPolyOn G (insert v S) (Function.update wt v a) =
+      weightedIndepPolyOn G S wt +
+        C a * X * weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w) wt := by
+  rw [weightedIndepPolyOn_insert G (Function.update wt v a) hv]
+  have hS : weightedIndepPolyOn G S (Function.update wt v a) =
+      weightedIndepPolyOn G S wt := by
+    apply weightedIndepPolyOn_congr
+    intro w hw
+    have hne : w ≠ v := fun h => hv (by simpa [h] using hw)
+    simp [Function.update_of_ne hne]
+  have hN : weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w)
+      (Function.update wt v a) =
+        weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w) wt := by
+    apply weightedIndepPolyOn_congr
+    intro w hw
+    have hwS : w ∈ S := (Finset.mem_filter.mp hw).1
+    have hne : w ≠ v := fun h => hv (by simpa [h] using hwS)
+    simp [Function.update_of_ne hne]
+  simp [hS, hN]
+
+/-- Weighted insertion supplies the two-term compatibility input for the
+Chudnovsky--Seymour engine: nonnegative combinations of the old support
+polynomial and the `X`-shifted non-neighbor support are obtained by changing
+the inserted vertex weight and then scaling. -/
+theorem compatible_weightedIndepPolyOn_X_mul_of_insert_splits
+    {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (wt : V → ℝ)
+    {S : Finset V} {v : V} (hv : v ∉ S)
+    (hN : (weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w) wt).Splits)
+    (hinsert : ∀ a : ℝ, 0 ≤ a →
+      (weightedIndepPolyOn G (insert v S) (Function.update wt v a)).Splits) :
+    Compatible (weightedIndepPolyOn G S wt)
+      (X * weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w) wt) := by
+  intro α β hα hβ
+  by_cases hα0 : α = 0
+  · by_cases hβ0 : β = 0
+    · left
+      simp [hα0, hβ0]
+    · right
+      have hβpos : 0 < β := lt_of_le_of_ne hβ (Ne.symm hβ0)
+      have hXN :
+          (X * weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w) wt) ≠ 0 ∧
+            (X * weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w) wt).Splits :=
+        isRealRooted_X_mul
+          (weightedIndepPolyOn_ne_zero G (S.filter fun w => ¬ G.Adj v w) wt) hN
+      simpa [hα0] using isRealRooted_C_mul hXN.1 hXN.2 hβpos.ne'
+  · right
+    have hαpos : 0 < α := lt_of_le_of_ne hα (Ne.symm hα0)
+    have hbase_ne :
+        weightedIndepPolyOn G (insert v S) (Function.update wt v (β / α)) ≠ 0 :=
+      weightedIndepPolyOn_ne_zero G (insert v S) (Function.update wt v (β / α))
+    have hbase_split :
+        (weightedIndepPolyOn G (insert v S) (Function.update wt v (β / α))).Splits :=
+      hinsert (β / α) (div_nonneg hβ hαpos.le)
+    have hscaled := isRealRooted_C_mul hbase_ne hbase_split hαpos.ne'
+    have hrec := weightedIndepPolyOn_insert_update G wt hv (β / α)
+    have htarget :
+        C α * weightedIndepPolyOn G (insert v S) (Function.update wt v (β / α)) =
+          C α * weightedIndepPolyOn G S wt +
+            C β * (X * weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w) wt) := by
+      rw [hrec, mul_add]
+      congr 1
+      calc
+        C α * (C (β / α) * X *
+            weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w) wt) =
+            (C α * C (β / α)) * X *
+              weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w) wt := by
+          noncomm_ring
+        _ = C (α * (β / α)) * X *
+              weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w) wt := by
+          rw [C_mul]
+        _ = C β * X *
+              weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w) wt := by
+          have hαβ : α * (β / α) = β := by
+            field_simp [hα0]
+          rw [hαβ]
+        _ = C β *
+              (X * weightedIndepPolyOn G (S.filter fun w => ¬ G.Adj v w) wt) := by
+          rw [mul_assoc]
+    simpa [htarget] using hscaled
+
 /-- Vertex insertion recurrence for the support-restricted independence
 polynomial. -/
 theorem indepPolyOn_insert {V : Type u} [DecidableEq V]
