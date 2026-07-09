@@ -739,6 +739,62 @@ def deleteClosedNeighborSupport {V : Type u} [DecidableEq V]
     (S : Finset V) (v : V) : Finset V :=
   (S.erase v).filter fun w => ¬ G.Adj v w
 
+/-- Vertex-deletion recurrence for the support-restricted independence
+polynomial. -/
+theorem indepPolyOn_erase {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    {S : Finset V} {v : V} (hv : v ∈ S) :
+    indepPolyOn G S =
+      indepPolyOn G (S.erase v) +
+        X * indepPolyOn G (deleteClosedNeighborSupport G S v) := by
+  have h := indepPolyOn_insert
+    (G := G) (S := S.erase v) (v := v) (Finset.notMem_erase v S)
+  simpa [deleteClosedNeighborSupport, Finset.insert_erase hv] using h
+
+/-- If `v` has no neighbors in `S.erase v`, then deleting the closed
+neighborhood of `v` only erases `v`. -/
+theorem deleteClosedNeighborSupport_eq_erase_of_neighborSetOn_empty
+    {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    {S : Finset V} {v : V} (hneighbor : neighborSetOn G (S.erase v) v = ∅) :
+    deleteClosedNeighborSupport G S v = S.erase v := by
+  ext w
+  constructor
+  · intro hw
+    exact (Finset.mem_filter.mp hw).1
+  · intro hw
+    refine Finset.mem_filter.mpr ⟨hw, ?_⟩
+    intro hvw
+    have hwNeighbor : w ∈ neighborSetOn G (S.erase v) v :=
+      Finset.mem_filter.mpr ⟨hw, hvw⟩
+    simp [hneighbor] at hwNeighbor
+
+/-- The no-neighbor case of Chudnovsky--Seymour Lemma 2.6.  If `v` is isolated
+inside `S`, then the vertex-deletion summands are just a polynomial and its
+`X`-multiple. -/
+theorem compatible_erase_X_mul_deleteClosedNeighborSupport_of_no_neighbors
+    {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    {S : Finset V} {v : V} (hneighbor : neighborSetOn G (S.erase v) v = ∅)
+    (hSplit : (indepPolyOn G (S.erase v)).Splits) :
+    Compatible (indepPolyOn G (S.erase v))
+      (X * indepPolyOn G (deleteClosedNeighborSupport G S v)) := by
+  rw [deleteClosedNeighborSupport_eq_erase_of_neighborSetOn_empty G hneighbor]
+  exact compatible_indepPolyOn_X_mul_self_of_splits G (S.erase v) hSplit
+
+/-- If `u` is adjacent to `v`, then erasing `v` before deleting the closed
+neighborhood of `u` does not change the deletion support. -/
+theorem deleteClosedNeighborSupport_erase_eq_of_adj {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
+    {S : Finset V} {u v : V} (huv : G.Adj u v) :
+    deleteClosedNeighborSupport G (S.erase v) u =
+      deleteClosedNeighborSupport G S u := by
+  ext w
+  by_cases hwv : w = v
+  · subst w
+    simp [deleteClosedNeighborSupport, huv]
+  · simp [deleteClosedNeighborSupport, hwv]
+
 /-- Deleting the remaining neighbors of `u` after removing the common closed
 neighborhood of adjacent `u` and `v` is the same support as deleting the closed
 neighborhood of `u` from the original support. -/
@@ -865,13 +921,7 @@ theorem indepPolyOn_sdiff_clique {V : Type u} [DecidableEq V]
       intro w hw
       refine Finset.mem_erase.mpr ⟨?_, hKS (Finset.mem_insert.mpr (Or.inr hw))⟩
       exact fun hwv => hvK (by simpa [hwv] using hw)
-    have hrec_single : indepPolyOn G S =
-        indepPolyOn G (S.erase v) +
-          X * indepPolyOn G (deleteClosedNeighborSupport G S v) := by
-      have h := indepPolyOn_insert
-        (G := G) (S := S.erase v) (v := v) (Finset.notMem_erase v S)
-      simpa [deleteClosedNeighborSupport, Finset.insert_erase hvS] using h
-    rw [hrec_single, ih (S.erase v) hK_old hKS_old]
+    rw [indepPolyOn_erase G hvS, ih (S.erase v) hK_old hKS_old]
     have hsdiff : S.erase v \ K = S \ insert v K := by
       ext w
       by_cases hwv : w = v <;> simp [Finset.mem_sdiff, hwv]
@@ -949,6 +999,69 @@ private theorem pairwiseCompatible_of_forall_mem {fs : List ℝ[X]}
     (h : ∀ f ∈ fs, ∀ g ∈ fs, Compatible f g) : PairwiseCompatible fs := by
   intro i j _hij
   exact h (fs.get i) (List.get_mem fs i) (fs.get j) (List.get_mem fs j)
+
+private theorem compatible_add_left_of_pairwiseCompatible_three {a b c : ℝ[X]}
+    (ha : a ≠ 0 ∧ a.Splits) (hb : b ≠ 0 ∧ b.Splits) (hc : c ≠ 0 ∧ c.Splits)
+    (hapos : HasPosLeadingCoeff a) (hbpos : HasPosLeadingCoeff b)
+    (hcpos : HasPosLeadingCoeff c) (hann : HasNonnegCoeffs a)
+    (hbnn : HasNonnegCoeffs b) (hcnn : HasNonnegCoeffs c)
+    (hab : Compatible a b) (hac : Compatible a c) (hbc : Compatible b c) :
+    Compatible (a + b) c := by
+  let fs : List ℝ[X] := [a, b, c]
+  have hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits := by
+    intro f hf
+    simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hf
+    rcases hf with rfl | rfl | rfl
+    · exact ha
+    · exact hb
+    · exact hc
+  have hpos : ∀ f ∈ fs, HasPosLeadingCoeff f := by
+    intro f hf
+    simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hf
+    rcases hf with rfl | rfl | rfl
+    · exact hapos
+    · exact hbpos
+    · exact hcpos
+  have hnn : ∀ f ∈ fs, HasNonnegCoeffs f := by
+    intro f hf
+    simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hf
+    rcases hf with rfl | rfl | rfl
+    · exact hann
+    · exact hbnn
+    · exact hcnn
+  have hpair : PairwiseCompatible fs := by
+    apply pairwiseCompatible_of_forall_mem
+    intro f hf g hg
+    simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hf hg
+    rcases hf with rfl | rfl | rfl <;> rcases hg with rfl | rfl | rfl
+    · exact compatible_self_of_splits ha.1 ha.2
+    · exact hab
+    · exact hac
+    · exact hab.comm
+    · exact compatible_self_of_splits hb.1 hb.2
+    · exact hbc
+    · exact hac.comm
+    · exact hbc.comm
+    · exact compatible_self_of_splits hc.1 hc.2
+  have hfam : FamilyCompatible fs :=
+    (chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs
+      (fs := fs) hrr hpos hnn).1 hpair
+  intro α β hα hβ
+  let ws : List (ℝ × ℝ[X]) := [(α, a), (α, b), (β, c)]
+  have hmem : ∀ ap ∈ ws, ap.2 ∈ fs := by
+    intro ap hap
+    simp only [ws, List.mem_cons, List.not_mem_nil, or_false] at hap
+    rcases hap with rfl | rfl | rfl <;> simp [fs]
+  have hnonneg : ∀ ap ∈ ws, 0 ≤ ap.1 := by
+    intro ap hap
+    simp only [ws, List.mem_cons, List.not_mem_nil, or_false] at hap
+    rcases hap with rfl | rfl | rfl
+    · exact hα
+    · exact hα
+    · exact hβ
+  have hsum : weightedSum ws = C α * (a + b) + C β * c := by
+    simp [ws, weightedSum_cons, mul_add, add_assoc]
+  simpa [hsum] using hfam ws hmem hnonneg
 
 /-- Pairwise compatibility of the clique-deletion family follows from the two
 compatibility obligations appearing in Chudnovsky--Seymour Lemma 2.5. -/
@@ -1383,6 +1496,74 @@ theorem compatible_X_mul_deleteClosedNeighborSupport_pair_of_commonClosedNeighbo
     exact sdiff_commonClosedNeighbor_sdiff_neighborSetOn_eq_deleteClosedNeighborSupport_right
       G huv
   simpa [H, huSupport, hvSupport] using compatible_X_mul_of_compatible hp
+
+/-- The adjacent-neighbor case of Chudnovsky--Seymour Lemma 2.6.  Expanding
+`I(S.erase v)` at an adjacent vertex `u` reduces compatibility with
+`X * I(S \ N[v])` to the two smaller vertex-deletion compatibility inputs and
+the Lemma 2.5.1 common-closed-neighborhood bridge. -/
+theorem compatible_erase_X_mul_deleteClosedNeighborSupport_of_adjacent
+    {V : Type u} [DecidableEq V]
+    {G : _root_.SimpleGraph V} [DecidableRel G.Adj] (hG : ClawFree G)
+    {S : Finset V} {u v : V} (huS : u ∈ S.erase v) (huv : G.Adj u v)
+    (hBaseSplit : (indepPolyOn G ((S.erase v).erase u)).Splits)
+    (hDelUSplit : (indepPolyOn G (deleteClosedNeighborSupport G S u)).Splits)
+    (hDelVSplit : (indepPolyOn G (deleteClosedNeighborSupport G S v)).Splits)
+    (hBaseDelU : Compatible (indepPolyOn G ((S.erase v).erase u))
+      (X * indepPolyOn G (deleteClosedNeighborSupport G S u)))
+    (hBaseDelV : Compatible (indepPolyOn G ((S.erase v).erase u))
+      (X * indepPolyOn G (deleteClosedNeighborSupport G S v)))
+    (hPair : SupportSimplicialPairCompatible G
+      (S \ commonClosedNeighborSetOn G S u v)) :
+    Compatible (indepPolyOn G (S.erase v))
+      (X * indepPolyOn G (deleteClosedNeighborSupport G S v)) := by
+  let A := indepPolyOn G ((S.erase v).erase u)
+  let B := X * indepPolyOn G (deleteClosedNeighborSupport G S u)
+  let C := X * indepPolyOn G (deleteClosedNeighborSupport G S v)
+  have hrec : indepPolyOn G (S.erase v) = A + B := by
+    have h := indepPolyOn_erase (G := G) (S := S.erase v) (v := u) huS
+    have hsupport :
+        deleteClosedNeighborSupport G (S.erase v) u =
+          deleteClosedNeighborSupport G S u :=
+      deleteClosedNeighborSupport_erase_eq_of_adj G huv
+    simpa [A, B, hsupport] using h
+  have hA : A ≠ 0 ∧ A.Splits := by
+    exact ⟨indepPolyOn_ne_zero G ((S.erase v).erase u), hBaseSplit⟩
+  have hB : B ≠ 0 ∧ B.Splits := by
+    dsimp [B]
+    exact isRealRooted_X_mul
+      (indepPolyOn_ne_zero G (deleteClosedNeighborSupport G S u)) hDelUSplit
+  have hC : C ≠ 0 ∧ C.Splits := by
+    dsimp [C]
+    exact isRealRooted_X_mul
+      (indepPolyOn_ne_zero G (deleteClosedNeighborSupport G S v)) hDelVSplit
+  have hApos : HasPosLeadingCoeff A := by
+    dsimp [A]
+    exact indepPolyOn_hasPosLeadingCoeff G ((S.erase v).erase u)
+  have hBpos : HasPosLeadingCoeff B := by
+    dsimp [B]
+    exact (indepPolyOn_hasPosLeadingCoeff G (deleteClosedNeighborSupport G S u)).X_mul
+  have hCpos : HasPosLeadingCoeff C := by
+    dsimp [C]
+    exact (indepPolyOn_hasPosLeadingCoeff G (deleteClosedNeighborSupport G S v)).X_mul
+  have hAnn : HasNonnegCoeffs A := by
+    dsimp [A]
+    exact indepPolyOn_hasNonnegCoeffs G ((S.erase v).erase u)
+  have hBnn : HasNonnegCoeffs B := by
+    dsimp [B]
+    exact (indepPolyOn_hasNonnegCoeffs G (deleteClosedNeighborSupport G S u)).X_mul
+  have hCnn : HasNonnegCoeffs C := by
+    dsimp [C]
+    exact (indepPolyOn_hasNonnegCoeffs G (deleteClosedNeighborSupport G S v)).X_mul
+  have hBC : Compatible B C := by
+    simpa [B, C] using
+      compatible_X_mul_deleteClosedNeighborSupport_pair_of_commonClosedNeighbor hG huv hPair
+  have hABC : Compatible (A + B) C :=
+    compatible_add_left_of_pairwiseCompatible_three
+      hA hB hC hApos hBpos hCpos hAnn hBnn hCnn
+      (by simpa [A, B] using hBaseDelU)
+      (by simpa [A, C] using hBaseDelV)
+      hBC
+  simpa [hrec, A, B, C] using hABC
 
 /-- Chudnovsky--Seymour Lemma 2.5.1, as a support-level induction step.  The
 new content is that compatibility of `I(S \ K)` and `I(S \ L)` follows from
