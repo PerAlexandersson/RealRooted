@@ -122,6 +122,57 @@ theorem weightedIndepPolyOn_hasPosLeadingCoeff {V : Type u} [DecidableEq V]
   (weightedIndepPolyOn_hasNonnegCoeffs G hwt).pos_leadingCoeff
     (weightedIndepPolyOn_ne_zero G S wt)
 
+/-- Support-restricted independence polynomials are nonzero. -/
+theorem indepPolyOn_ne_zero {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) :
+    indepPolyOn G S ≠ 0 := by
+  simpa [weightedIndepPolyOn_one] using
+    (weightedIndepPolyOn_ne_zero G S fun _ => 1)
+
+/-- Support-restricted independence polynomials have nonnegative coefficients. -/
+theorem indepPolyOn_hasNonnegCoeffs {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) :
+    HasNonnegCoeffs (indepPolyOn G S) := by
+  simpa [weightedIndepPolyOn_one] using
+    (weightedIndepPolyOn_hasNonnegCoeffs (G := G) (S := S) (wt := fun _ => 1)
+      (by intro _ _; norm_num))
+
+/-- Support-restricted independence polynomials have positive leading coefficient. -/
+theorem indepPolyOn_hasPosLeadingCoeff {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V) :
+    HasPosLeadingCoeff (indepPolyOn G S) :=
+  (indepPolyOn_hasNonnegCoeffs G S).pos_leadingCoeff (indepPolyOn_ne_zero G S)
+
+private theorem compatible_self_X_mul_of_splits {p : ℝ[X]} (hp : p.Splits) :
+    Compatible p (X * p) := by
+  intro α β _hα _hβ
+  have hlin : (C α + C β * X : ℝ[X]).Splits := by
+    by_cases hβ0 : β = 0
+    · simp [hβ0]
+    · have hβα : β * (α / β) = α := by field_simp [hβ0]
+      have hfactor : (C α + C β * X : ℝ[X]) = C β * (X + C (α / β)) := by
+        rw [mul_add, ← C_mul, hβα]
+        ring
+      rw [hfactor]
+      exact (Polynomial.Splits.C β).mul <| by
+        simp
+  have hsum : C α * p + C β * (X * p) = (C α + C β * X) * p := by
+    ring
+  have hsplit : (C α * p + C β * (X * p)).Splits := by
+    rw [hsum]
+    exact hlin.mul hp
+  by_cases hzero : C α * p + C β * (X * p) = 0
+  · exact Or.inl hzero
+  · exact Or.inr ⟨hzero, hsplit⟩
+
+/-- If a support-restricted independence polynomial is real-rooted, then it is
+compatible with its `X`-multiple. -/
+theorem compatible_indepPolyOn_X_mul_self_of_splits {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (S : Finset V)
+    (hS : (indepPolyOn G S).Splits) :
+    Compatible (indepPolyOn G S) (X * indepPolyOn G S) :=
+  compatible_self_X_mul_of_splits hS
+
 /-- The support-restricted definition recovers `indepPoly` on the full vertex set. -/
 theorem indepPoly_eq_indepPolyOn_univ {V : Type u} [Fintype V] [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj] :
