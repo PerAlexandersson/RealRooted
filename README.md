@@ -52,6 +52,9 @@ lake build RealRooted.Bezoutian
   and Veronese-section material.
 - `RealRooted/SymmetricDecomposition.lean`, `Bezoutian.lean`, and
   `Hadamard.lean` contain larger theorem packages and classical interfaces.
+- `RealRooted/Challenges/` contains compact entry points for famous theorem
+  statements, each linking the Lean-facing declaration to human catalog
+  statements and references.
 - `RealRooted/CombinatorialExamples/` contains examples such as Eulerian,
   type B Eulerian, simsun, Touchard, Narayana, Motzkin, and related families.
 - `RealRooted/Mathlib/` contains local compatibility lemmas intended to look
@@ -81,6 +84,62 @@ lake build RealRooted.Bezoutian
 
 Every declaration named in this section is a checked Lean declaration, unless
 it is explicitly described as an unproved conjecture (bearing a `sorry` stub).
+
+### Theorem-Level Highlights
+
+The formalization now contains theorem interfaces for several standard
+real-rootedness and interlacing results.  In ordinary mathematical language,
+the checked or challenge-facing highlights are:
+
+- Cauchy interlacing: the eigenvalues of a principal codimension-one submatrix
+  of a real symmetric or Hermitian matrix interlace the eigenvalues of the
+  original matrix.  See `cauchy_interlacing` and
+  `RealRooted.Challenges.CauchyInterlacing`; references include Fisk (2005)
+  and Godsil (2017).
+- Wagner's lemma: for real-rooted polynomials with nonpositive roots and
+  positive leading coefficients, common interlacers are closed under addition,
+  and multiplication by `X` shifts the interlacing relation in the expected
+  way.  See `RealRooted.Challenges.Wagner`; reference: Wagner (1992).
+- Obreschkoff's theorem: two polynomials have a real-rooted real pencil
+  `alpha * f + beta * g` if and only if they interlace, up to orientation and
+  degree conventions.  See `allComboRealRooted_of_prec`,
+  `prec_of_allComboRealRooted`, and `RealRooted.Challenges.Obreschkoff`;
+  references include Obreschkoff (1963), Dedieu (1992), and Branden (2004).
+- Interlacing preservers: a linear operator that preserves real-rootedness
+  sends interlacing pairs to interlacing pairs, up to the zero and orientation
+  conventions used by `Prec0`.  See
+  `operatorPreservesInterlacingPairsUpToOrder` and
+  `RealRooted.Challenges.OperatorPreservers`; reference: Branden (2004).
+- Matrix preservers: a polynomial matrix with nonnegative coefficients
+  preserves interlacing sequences when its two-by-two affine tests interlace.
+  See `matrix_preserves_interlacing_seq` and
+  `RealRooted.Challenges.MatrixInterlacing`; reference: Branden (2015).
+- Favard interlacing: a three-term Favard recurrence with positive recurrence
+  coefficients gives a Sturm sequence, hence every polynomial in the sequence
+  is real-rooted.  See `favardInterlacing` and
+  `RealRooted.Challenges.Favard`; reference: Favard (1935).
+- Polya-frequency and Veronese results: the ASW reverse direction and the
+  Toeplitz/PF infrastructure imply that Veronese sections of a real-rooted
+  polynomial with nonnegative coefficients are real-rooted or zero.  See
+  `aissenSchoenbergWhitney_reverse`,
+  `isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg_matrix`,
+  and `RealRooted.Challenges.VeroneseSections`; references include
+  Aissen--Schoenberg--Whitney (1952) and Athanasiadis--Wagner (2024).
+- Eulerian examples: ordinary Eulerian and type `B` Eulerian polynomials are
+  real-rooted, and the formalization proves stronger consecutive interlacing
+  or Sturm-sequence statements.  See `RealRooted.Challenges.Eulerian`;
+  references include Frobenius (1910).
+- Graph polynomials: finite claw-free graphs have real-rooted independence
+  polynomials, and matching-polynomial corollaries are packaged through the
+  line-graph reduction.  See `Graph.clawFree_indepPoly_splits` and
+  `RealRooted.Challenges.ChudnovskySeymour`; references include
+  Chudnovsky--Seymour (2007) and Heilmann--Lieb (1972).
+
+The challenge surface also records open theorem-shaped targets.  Kurtz's
+coefficient inequality criterion and the Hermite--Poulain differential-operator
+preserver are stated as `sorry` targets, while Borcea--Branden's finite-symbol
+classification is currently a scaffold because a faithful statement needs a
+multivariate real-stability API.
 
 ### Interlacing And Preservers
 
@@ -233,20 +292,45 @@ Please keep repository configuration files (like `lakefile.toml` and `lake-manif
   matrices of polynomials and formal power series*, arXiv:2404.12989.
 - J. Borcea and P. Branden, *The Lee-Yang and Polya-Schur programs. I. Linear
   operators preserving stability*, Invent. Math. 177 (2009), 541--569.
+- P. Branden, *On operators on polynomials preserving real-rootedness and the
+  Neggers-Stanley conjecture*, J. Algebraic Combin. 20 (2004), 119--130.
+- P. Branden, *Iterated sequences and the geometry of zeros*, J. Reine Angew.
+  Math. 658 (2011), 115--131.
+- P. Branden, *Unimodality, log-concavity, real-rootedness and beyond*, in
+  *Handbook of Enumerative Combinatorics*, CRC Press, 2015, 437--483.
 - B. Braun and A. Jal, *Order polytopes of generalized snake posets are
   h^*-real-rooted*, arXiv:2607.00922.
 - P. Branden and L. Solus, *Symmetric decompositions and real-rootedness*,
   Int. Math. Res. Not. (2019), doi:10.1093/imrn/rnz059.
 - M. Chudnovsky and P. Seymour, *The roots of the independence polynomial of a
   clawfree graph*, J. Combin. Theory Ser. B 97 (2007), 350--357.
+- J.-P. Dedieu, *Obreschkoff's theorem revisited: what convex sets are
+  contained in the set of hyperbolic polynomials?*, J. Pure Appl. Algebra 81
+  (1992), 269--278.
+- J. Favard, *Sur les polynomes de Tchebicheff*, C. R. Acad. Sci. Paris 200
+  (1935), 2052--2053.
 - S. Fisk, *A very short proof of Cauchy's interlace theorem for eigenvalues
   of Hermitian matrices*, Amer. Math. Monthly 112 (2005), 118.
+- F. G. Frobenius, *Uber die Bernoullischen Zahlen und die Eulerschen
+  Polynome*, Sitzungsberichte der Koniglich Preussischen Akademie der
+  Wissenschaften (1910), 809--847.
 - J. Garloff and D. G. Wagner, *Hadamard Products of Stable Polynomials Are
   Stable*, J. Math. Anal. Appl. 202 (1996), 797--809.
 - C. D. Godsil, *Algebraic Combinatorics*, Routledge, 2017.
 - O. J. Heilmann and E. H. Lieb, *Theory of monomer-dimer systems*, Comm. Math.
   Phys. 25 (1972), 190--232.
+- J. I. Hutchinson, *On a remarkable class of entire functions*, Trans. Amer.
+  Math. Soc. 25 (1923), 325--332.
+- O. Holtz, *Hermite-Biehler, Routh-Hurwitz, and total positivity*, Linear
+  Algebra Appl. 372 (2003), 105--110.
+- D. C. Kurtz, *A sufficient condition for all the roots of a polynomial to be
+  real*, Amer. Math. Monthly 99 (1992), 259--263.
+- N. Obreschkoff, *Verteilung und Berechnung der Nullstellen reeller
+  Polynome*, VEB Deutscher Verlag der Wissenschaften, Berlin, 1963.
 - D. G. Wagner, *Total positivity of Hadamard products*, J. Math. Anal. Appl.
   163 (1992), 459--483.
 - Symmetric Functions Catalog:
-  <https://www.symmetricfunctions.com/realRooted.htm>.
+  <https://www.symmetricfunctions.com/realRooted.htm>,
+  <https://www.symmetricfunctions.com/realRootedInterlacing.htm>,
+  <https://www.symmetricfunctions.com/polyaFrequency.htm>, and
+  <https://www.symmetricfunctions.com/realRootedWords.htm>.
