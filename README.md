@@ -86,6 +86,9 @@ it is explicitly described as an unproved conjecture (bearing a `sorry` stub).
 
 - `derivative_interlaces`: Rolle-style derivative interlacing for real-rooted
   polynomials.
+- `prec_add_of_prec_right_of_posLeadingCoeff`, `prec_add_of_prec_left`, and
+  `prec0_mul_X_of_prec0`: checked Wagner-lemma forms for common interlacers
+  and multiplication by `X`.
 - `prec_ma_wang` and `generalizedLiuWangCriterion`: Ma-Wang and Liu-Wang style
   criteria for interlacing recurrences and weighted sums.
 - `favardInterlacing` and `isRealRooted_of_favard`: a Favard recurrence
@@ -95,6 +98,8 @@ it is explicitly described as an unproved conjecture (bearing a `sorry` stub).
   two-by-two interlacing checks.
 - `operatorPreservesInterlacingPairsUpToOrder`: a general operator-preserver
   interface for interlacing pairs.
+- `cauchy_interlacing`: Cauchy's eigenvalue interlacing theorem for Hermitian
+  matrices and one-index principal submatrices.
 
 ### Compatibility And Common Interleavers
 
@@ -182,9 +187,14 @@ package the resulting h^*-real-rootedness statement for order polytopes via the
 Stanley / Alexandersson-Jal width-two correspondence.
 
 Short-term documentation/onboarding now uses concise challenge entry-point files
-in `RealRooted/Challenges/`.  These files point to the corresponding human
-theorem statements on symmetricfunctions.com and to the original publications,
+in `RealRooted/Challenges/` for the famous general theorems and theorem-shaped
+targets.  These files point to the corresponding human theorem statements on
+symmetricfunctions.com and to the original publications or catalog references,
 while the detailed proof infrastructure remains in the main theorem modules.
+The current challenge surface includes ASW, Chudnovsky-Seymour, Hadamard,
+Wagner, Cauchy interlacing, Obreschkoff, operator and matrix interlacing
+preservers, Hermite-Biehler/Hurwitz, Veronese sections, Favard, Kurtz,
+Hermite-Poulain, Borcea-Branden, and Eulerian polynomials.
 
 Longer term, a Borcea-Branden direction would be a substantial expansion toward
 stability theory.  A realistic path would first build the Hermite-Biehler and
@@ -195,8 +205,9 @@ theorems.
 GitHub issues track individual proof tasks rather than being duplicated here.
 Current open themes include Liu's compatible-sequences theorem, the
 Gustafsson-Solus interlacing recursion, the Haglund-Zhang `s`-inversion
-backend, a finite Borcea-Branden symbol interface, and the Braun-Jal
-generalized snake poset target.
+backend, characteristic-polynomial packaging for Cauchy interlacing, Kurtz and
+Hermite-Poulain preservers, a finite Borcea-Branden symbol interface, and the
+Braun-Jal generalized snake poset target.
 
 ## Development Notes
 
@@ -228,9 +239,14 @@ Please keep repository configuration files (like `lakefile.toml` and `lake-manif
   Int. Math. Res. Not. (2019), doi:10.1093/imrn/rnz059.
 - M. Chudnovsky and P. Seymour, *The roots of the independence polynomial of a
   clawfree graph*, J. Combin. Theory Ser. B 97 (2007), 350--357.
+- S. Fisk, *A very short proof of Cauchy's interlace theorem for eigenvalues
+  of Hermitian matrices*, Amer. Math. Monthly 112 (2005), 118.
 - J. Garloff and D. G. Wagner, *Hadamard Products of Stable Polynomials Are
   Stable*, J. Math. Anal. Appl. 202 (1996), 797--809.
+- C. D. Godsil, *Algebraic Combinatorics*, Routledge, 2017.
 - O. J. Heilmann and E. H. Lieb, *Theory of monomer-dimer systems*, Comm. Math.
   Phys. 25 (1972), 190--232.
+- D. G. Wagner, *Total positivity of Hadamard products*, J. Math. Anal. Appl.
+  163 (1992), 459--483.
 - Symmetric Functions Catalog:
   <https://www.symmetricfunctions.com/realRooted.htm>.

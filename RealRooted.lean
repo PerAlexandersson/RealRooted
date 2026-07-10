@@ -94,10 +94,22 @@ import RealRooted.WagnerX
 import RealRooted.WeightedSum
 import RealRooted.Challenges.AissenSchoenbergWhitney
 import RealRooted.Challenges.BrandenSolus
+import RealRooted.Challenges.BorceaBranden
 import RealRooted.Challenges.ChudnovskySeymour
+import RealRooted.Challenges.CauchyInterlacing
+import RealRooted.Challenges.Eulerian
+import RealRooted.Challenges.Favard
 import RealRooted.Challenges.Hadamard
+import RealRooted.Challenges.HermiteBiehlerHurwitz
+import RealRooted.Challenges.HermitePoulain
 import RealRooted.Challenges.Issue34SingleMatrixCounterexample
 import RealRooted.Challenges.Issue34WindowObstruction
+import RealRooted.Challenges.Kurtz
+import RealRooted.Challenges.MatrixInterlacing
+import RealRooted.Challenges.Obreschkoff
+import RealRooted.Challenges.OperatorPreservers
+import RealRooted.Challenges.VeroneseSections
+import RealRooted.Challenges.Wagner
 
 -- Local Mathlib extensions
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
