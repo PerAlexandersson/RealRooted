@@ -197,71 +197,6 @@ theorem Interlace.ge {n : ℕ} {μ : Fin n → ℝ} {lam : Fin (n + 1) → ℝ}
     (h : Interlace μ lam) (k : Fin n) : lam k.succ ≤ μ k :=
   (h k).1
 
-/-- **Courant-Fischer min-max characterization** (witnessed form). For a
-Hermitian matrix `A` and index `k`, the `k`-th sorted eigenvalue `λ_k` is the
-max-min of the Rayleigh quotient over `(k+1)`-dimensional subspaces. -/
-def CourantFischerStatement (𝕜 : Type*) [RCLike 𝕜] : Prop :=
-  ∀ {N : ℕ} (A : Matrix (Fin N) (Fin N) 𝕜) (hA : A.IsHermitian) (k : Fin N),
-    (∃ W : Submodule 𝕜 (Fin N → 𝕜), Module.finrank 𝕜 W = (k : ℕ) + 1 ∧
-        ∀ x ∈ W, x ≠ 0 → sortedEigenvalues A hA k ≤ rayleigh A x) ∧
-    (∀ W : Submodule 𝕜 (Fin N → 𝕜), Module.finrank 𝕜 W = (k : ℕ) + 1 →
-        ∃ x ∈ W, x ≠ 0 ∧ rayleigh A x ≤ sortedEigenvalues A hA k)
-
-/-- Assuming the witnessed min-max characterization of sorted eigenvalues, the
-Cauchy interlacing theorem follows from the linear-algebra API above. -/
-theorem cauchyInterlacing_of_courantFischer
-    (hCF : CourantFischerStatement 𝕜)
-    {n : ℕ} (A : Matrix (Fin (n + 1)) (Fin (n + 1)) 𝕜) (hA : A.IsHermitian)
-    (i : Fin (n + 1)) :
-    Interlace
-      (sortedEigenvalues (A.submatrix i.succAbove i.succAbove)
-        (hA.submatrix i.succAbove))
-      (sortedEigenvalues A hA) := by
-  intro k
-  constructor
-  · obtain ⟨W_A, hW_A₁, hW_A₂⟩ := (hCF A hA k.succ).1
-    generalize_proofs at *
-    obtain ⟨T, hT₁, hT₂⟩ :=
-      exists_submodule_le_finrank_eq (W_A ⊓ LinearMap.range (embedComplₗ i)) (k + 1)
-        (by
-          have := Submodule.finrank_sup_add_finrank_inf_eq W_A
-            (LinearMap.range (embedComplₗ i))
-          simp_all [finrank_range_embedComplₗ]
-          linarith [show Module.finrank 𝕜 (↥(W_A ⊔ (embedComplₗ i).range)) ≤ n + 1 from
-            le_trans (Submodule.finrank_le _) (by simp)])
-    generalize_proofs at *
-    obtain ⟨y, hy₁, hy₂⟩ :=
-      hCF (A.submatrix i.succAbove i.succAbove) ‹_› k |>.2
-        (Submodule.comap (embedComplₗ i) T)
-        (by
-          have hT₃ : Module.finrank 𝕜
-              (Submodule.map (embedComplₗ i) (Submodule.comap (embedComplₗ i) T)) =
-                Module.finrank 𝕜 T := by
-            rw [Submodule.map_comap_eq_self]
-            aesop
-          generalize_proofs at *
-          rw [← hT₂, ← hT₃, finrank_map_embedComplₗ])
-    generalize_proofs at *
-    have := hW_A₂ (embedCompl i y) ?_ ?_
-    · exact this.trans (by simpa only [rayleigh_submatrix_embedCompl] using hy₂.2)
-    · exact (hT₁ hy₁).1
-    · exact fun h => hy₂.1 (by ext a; simpa using congr_fun h (i.succAbove a))
-  · obtain ⟨W, hW₁, hW₂⟩ :=
-      hCF (A.submatrix i.succAbove i.succAbove) (hA.submatrix i.succAbove) k |>.1
-    generalize_proofs at *
-    obtain ⟨x, hx₁, hx₂, hx₃⟩ :=
-      hCF A hA (Fin.castSucc k) |>.2 (Submodule.map (embedComplₗ (𝕜 := 𝕜) i) W)
-        (by
-          convert finrank_map_embedComplₗ i W using 1
-          aesop)
-    generalize_proofs at *
-    obtain ⟨y, hy₁, rfl⟩ := Submodule.mem_map.mp hx₁
-    generalize_proofs at *
-    refine (hW₂ y hy₁ ?_).trans ?_
-    · intro hy
-      exact hx₂ (by simpa [hy] using (map_zero (embedComplₗ (𝕜 := 𝕜) i)))
-    · simpa only [embedComplₗ_apply, rayleigh_submatrix_embedCompl] using hx₃
-
 /-!
 ### The Courant-Fischer min-max principle from an orthonormal eigenbasis
 
@@ -270,7 +205,7 @@ eigenvalues.  We prove it from the spectral theorem via a reusable statement
 `courantFischer_of_eigenbasis`, which takes an arbitrary orthonormal basis of
 eigenvectors (with real, antitone eigenvalues) and produces the two-sided
 variational bounds.  It is then specialised to `Matrix.IsHermitian.eigenvectorBasis`
-to discharge `CourantFischerStatement`.
+to prove `courant_fischer`.
 -/
 
 private theorem star_ofLp_dotProduct_self {N : ℕ} (x : EuclideanSpace 𝕜 (Fin N)) :
@@ -493,9 +428,12 @@ spectral eigenbasis `Matrix.IsHermitian.eigenvectorBasis` and transporting the
 witnessing subspaces along the (identity) linear equivalence between
 `EuclideanSpace 𝕜 (Fin N)` and `Fin N → 𝕜`.
 -/
-theorem courant_fischer (𝕜 : Type*) [RCLike 𝕜] :
-    CourantFischerStatement 𝕜 := by
-  intro N A hA k
+theorem courant_fischer (𝕜 : Type*) [RCLike 𝕜]
+    {N : ℕ} (A : Matrix (Fin N) (Fin N) 𝕜) (hA : A.IsHermitian) (k : Fin N) :
+    (∃ W : Submodule 𝕜 (Fin N → 𝕜), Module.finrank 𝕜 W = (k : ℕ) + 1 ∧
+        ∀ x ∈ W, x ≠ 0 → sortedEigenvalues A hA k ≤ rayleigh A x) ∧
+    (∀ W : Submodule 𝕜 (Fin N → 𝕜), Module.finrank 𝕜 W = (k : ℕ) + 1 →
+        ∃ x ∈ W, x ≠ 0 ∧ rayleigh A x ≤ sortedEigenvalues A hA k) := by
   set e : Fin (Fintype.card (Fin N)) ≃ Fin N :=
     Fintype.equivOfCardEq (by simp) with he
   set σ : Fin N ≃ Fin N := (finCongr (Fintype.card_fin N).symm).trans e with hσ
@@ -524,6 +462,60 @@ theorem courant_fischer (𝕜 : Type*) [RCLike 𝕜] :
     obtain ⟨y, hy, hy0, hyr⟩ := huniv _ hcard
     exact ⟨L y, Submodule.mem_comap.mp hy, fun h => hy0 (by simpa using h), hyr⟩
 
+/-- The Cauchy interlacing theorem, derived from the Courant-Fischer min-max
+characterization (`courant_fischer`) via the linear-algebra API above. -/
+theorem cauchyInterlacing_of_courantFischer
+    {n : ℕ} (A : Matrix (Fin (n + 1)) (Fin (n + 1)) 𝕜) (hA : A.IsHermitian)
+    (i : Fin (n + 1)) :
+    Interlace
+      (sortedEigenvalues (A.submatrix i.succAbove i.succAbove)
+        (hA.submatrix i.succAbove))
+      (sortedEigenvalues A hA) := by
+  intro k
+  constructor
+  · obtain ⟨W_A, hW_A₁, hW_A₂⟩ := (courant_fischer 𝕜 A hA k.succ).1
+    generalize_proofs at *
+    obtain ⟨T, hT₁, hT₂⟩ :=
+      exists_submodule_le_finrank_eq (W_A ⊓ LinearMap.range (embedComplₗ i)) (k + 1)
+        (by
+          have := Submodule.finrank_sup_add_finrank_inf_eq W_A
+            (LinearMap.range (embedComplₗ i))
+          simp_all [finrank_range_embedComplₗ]
+          linarith [show Module.finrank 𝕜 (↥(W_A ⊔ (embedComplₗ i).range)) ≤ n + 1 from
+            le_trans (Submodule.finrank_le _) (by simp)])
+    generalize_proofs at *
+    obtain ⟨y, hy₁, hy₂⟩ :=
+      courant_fischer 𝕜 (A.submatrix i.succAbove i.succAbove) ‹_› k |>.2
+        (Submodule.comap (embedComplₗ i) T)
+        (by
+          have hT₃ : Module.finrank 𝕜
+              (Submodule.map (embedComplₗ i) (Submodule.comap (embedComplₗ i) T)) =
+                Module.finrank 𝕜 T := by
+            rw [Submodule.map_comap_eq_self]
+            aesop
+          generalize_proofs at *
+          rw [← hT₂, ← hT₃, finrank_map_embedComplₗ])
+    generalize_proofs at *
+    have := hW_A₂ (embedCompl i y) ?_ ?_
+    · exact this.trans (by simpa only [rayleigh_submatrix_embedCompl] using hy₂.2)
+    · exact (hT₁ hy₁).1
+    · exact fun h => hy₂.1 (by ext a; simpa using congr_fun h (i.succAbove a))
+  · obtain ⟨W, hW₁, hW₂⟩ :=
+      courant_fischer 𝕜 (A.submatrix i.succAbove i.succAbove) (hA.submatrix i.succAbove) k |>.1
+    generalize_proofs at *
+    obtain ⟨x, hx₁, hx₂, hx₃⟩ :=
+      courant_fischer 𝕜 A hA (Fin.castSucc k) |>.2 (Submodule.map (embedComplₗ (𝕜 := 𝕜) i) W)
+        (by
+          convert finrank_map_embedComplₗ i W using 1
+          aesop)
+    generalize_proofs at *
+    obtain ⟨y, hy₁, rfl⟩ := Submodule.mem_map.mp hx₁
+    generalize_proofs at *
+    refine (hW₂ y hy₁ ?_).trans ?_
+    · intro hy
+      exact hx₂ (by simpa [hy] using (map_zero (embedComplₗ (𝕜 := 𝕜) i)))
+    · simpa only [embedComplₗ_apply, rayleigh_submatrix_embedCompl] using hx₃
+
 /-- **Cauchy interlacing theorem.** The eigenvalues of a principal submatrix of
 a Hermitian matrix, obtained by deleting one row and the corresponding column,
 interlace the eigenvalues of the full matrix.
@@ -538,6 +530,6 @@ theorem cauchy_interlacing (𝕜 : Type*) [RCLike 𝕜] {n : ℕ}
       (sortedEigenvalues (A.submatrix i.succAbove i.succAbove)
         (hA.submatrix i.succAbove))
       (sortedEigenvalues A hA) :=
-  cauchyInterlacing_of_courantFischer (courant_fischer 𝕜) A hA i
+  cauchyInterlacing_of_courantFischer A hA i
 
 end RealRooted
