@@ -65,7 +65,9 @@ example
 
 example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
-    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbackend : ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
+      BidiagonalJensenPencilCertificate alpha beta d →
+      BidiagonalPFPreserver alpha beta d)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hcert : ∀ n : Nat,
@@ -330,7 +332,9 @@ example (n : ℕ) (p : ℝ[X]) :
 
 example
     {alpha beta : ℕ → ℝ} {d : ℕ}
-    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbackend : ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
+      BidiagonalJensenPencilCertificate alpha beta d →
+      BidiagonalPFPreserver alpha beta d)
     (hcert : BidiagonalJensenPencilCertificate alpha beta d) :
     BidiagonalPFPreserver alpha beta d :=
   bidiagonalPFPreserver_of_jensenPencil hbackend hcert
@@ -364,7 +368,9 @@ example
 
 example
     {alpha beta : ℕ → ℝ} {d : ℕ} {p : ℝ[X]}
-    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbackend : ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
+      BidiagonalJensenPencilCertificate alpha beta d →
+      BidiagonalPFPreserver alpha beta d)
     (hcert : BidiagonalJensenPencilCertificate alpha beta d)
     (hp : IsPFPolynomial p)
     (hdeg : p.natDegree ≤ d) :
@@ -386,7 +392,9 @@ example
 
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
-    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbackend : ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
+      BidiagonalJensenPencilCertificate alpha beta d →
+      BidiagonalPFPreserver alpha beta d)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hcert : ∀ n : Nat,
@@ -403,7 +411,9 @@ example
 
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
-    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbackend : ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
+      BidiagonalJensenPencilCertificate alpha beta d →
+      BidiagonalPFPreserver alpha beta d)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hcert : ∀ n : Nat,
@@ -421,7 +431,9 @@ example
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
     {d m : Nat → ℕ} {A B : Nat → ℝ[X]} {S : Nat → ℝ → ℝ[X]}
-    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbackend : ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
+      BidiagonalJensenPencilCertificate alpha beta d →
+      BidiagonalPFPreserver alpha beta d)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (halpha : ∀ n : Nat,
@@ -454,7 +466,9 @@ example
 example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ}
     {d m : Nat → ℕ} {A B : Nat → ℝ[X]} {S : Nat → ℝ → ℝ[X]}
-    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbackend : ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
+      BidiagonalJensenPencilCertificate alpha beta d →
+      BidiagonalPFPreserver alpha beta d)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (halpha : ∀ n : Nat,
@@ -494,7 +508,9 @@ example
 
 example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
-    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbackend : ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
+      BidiagonalJensenPencilCertificate alpha beta d →
+      BidiagonalPFPreserver alpha beta d)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hcert : ∀ n : Nat,
@@ -522,7 +538,9 @@ Jensen-factorization and cubic-discriminant leaves that the Family H paper
 proof or certificate checker should provide. -/
 example
     {P : Nat → ℝ[X]} {d m : Nat → ℕ}
-    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbackend : ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
+      BidiagonalJensenPencilCertificate alpha beta d →
+      BidiagonalPFPreserver alpha beta d)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (halpha : ∀ n : Nat,
@@ -563,7 +581,9 @@ single per-row certificate.  This is the intended OEIS-facing interface once
 the arithmetic leaves have been generated. -/
 example
     {P : Nat → ℝ[X]} {d : Nat → ℕ}
-    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbackend : ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
+      BidiagonalJensenPencilCertificate alpha beta d →
+      BidiagonalPFPreserver alpha beta d)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hcert : ∀ n : Nat,
