@@ -129,12 +129,6 @@ theorem fullyInterlacingPairToHurwitzOddEvenStable_of_matrixTNN :
       ((hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair p q).2
         hfull)
 
-/-- Full weak Hurwitz-matrix criterion in the coefficient-nonnegative
-convention used in this project. -/
-abbrev HurwitzMatrixCriterionStatement : Prop :=
-  HurwitzStableToMatrixTotallyNonnegativeStatement ∧
-    HurwitzMatrixTotallyNonnegativeToStableStatement
-
 theorem hurwitzStableToMatrixTotallyNonnegative_of_criterion :
     HurwitzStableToMatrixTotallyNonnegativeStatement := by
   intro p hp
