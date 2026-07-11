@@ -17,6 +17,8 @@ Branden--Solus symmetric-decomposition theorem.  The decomposition API and
 boundary-case proof remain in `RealRooted.SymmetricDecomposition`.
 -/
 
+open Polynomial
+
 namespace RealRooted
 namespace Challenges
 namespace BrandenSolus
@@ -26,8 +28,20 @@ abbrev IDecomposition (d : ℕ) (p a b : ℝ[X]) : Prop :=
   IsIdDecomposition d p a b
 
 /-- Challenge-facing name for the Brändén--Solus Theorem 2.6 target. -/
-abbrev Theorem26Target : Prop :=
-  RealRooted.brandenSolusTheorem26Statement
+def Theorem26Target : Prop :=
+  ∀ {d : ℕ} {p a b : ℝ[X]},
+    p.natDegree ≤ d →
+    IDecomposition d p a b →
+    RealRooted.HasNonnegCoeffs a →
+    RealRooted.HasNonnegCoeffs b →
+    a ≠ 0 →
+    b ≠ 0 →
+    (RealRooted.Prec b a ↔ RealRooted.Prec a p) ∧
+    (RealRooted.Prec a p ↔ RealRooted.Prec b p) ∧
+    (RealRooted.Prec b p ↔ RealRooted.Prec (RealRooted.IdTransform d p) p) ∧
+    (RealRooted.Prec (RealRooted.IdTransform d p) p ↔
+      RealRooted.Prec (RealRooted.RdTransform d (RealRooted.fPolynomial d p))
+        (RealRooted.fPolynomial d p))
 
 /-- Branden--Solus symmetric-decomposition theorem, challenge-facing alias. -/
 theorem theorem26 :
