@@ -197,18 +197,6 @@ theorem hasNonnegCoeffs_right_of_oddEvenPolynomial {p q : ℝ[X]}
   intro n
   simpa using h (2 * n)
 
-/-- Sign-normalized forward Hermite--Biehler bridge.
-
-This is the minimal sign-stable form used in downstream plumbing:
-positive leading coefficients on both inputs prevent the false counterexample.
--/
-abbrev hermiteBiehlerForwardPosStatement : Prop :=
-  ∀ {f g : ℝ[X]},
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    Prec g f →
-    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)
-
 /-- Sign-normalized forward Hermite--Biehler bridge: positive leading
 coefficients on both inputs prevent the false counterexample, ensuring
 upper-half-plane stability. -/
@@ -222,18 +210,6 @@ theorem hermiteBiehlerForwardPos {f g : ℝ[X]}
 theorem not_isUpperHalfPlaneStable_hermiteBiehlerPolynomial_X_neg_one :
     ¬ IsUpperHalfPlaneStable (hermiteBiehlerPolynomial (X : ℝ[X]) (-(1 : ℝ[X]))) :=
   fun h => h Complex.I (by simp) (by simp [hermiteBiehlerPolynomial, complexify])
-
-/-- Planning stub for the converse Hermite--Biehler theorem.
-
-The exact orientation hypotheses may still be adjusted, but the target is that
-upper-half-plane stability of `f + i g` forces an interlacing relation between
-the real and imaginary parts. -/
-abbrev hermiteBiehlerConverseStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) →
-    Prec g f ∨ Prec f g
 
 /-- Converse Hermite--Biehler theorem: upper-half-plane stability of `f + i g`
 forces an interlacing relation between the real and imaginary parts. -/
