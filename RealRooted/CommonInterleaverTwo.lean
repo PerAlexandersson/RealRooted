@@ -3508,7 +3508,7 @@ theorem rootSlotInterval_inter_nonempty_of_crossing
 
 /-- The succ-degree left endpoint follows directly from the escaping-root
 continuity argument for the family `f + C μ * g`; no ASW input is needed. -/
-theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity :
+theorem posComboSuccDegreeLeftSplitsNonneg_of_rootContinuity :
     (∀ ⦃f g : ℝ[X]⦄,
         HasPosLeadingCoeff f →
         HasPosLeadingCoeff g →
@@ -3523,7 +3523,7 @@ theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity :
       (fun {μ} hμ => hfg.isRealRooted_add_right hμ) hf_pos hg_pos hsucc
 
 /-- Residual succ-degree left endpoint from the same root-continuity argument. -/
-theorem PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_rootContinuity :
+theorem posComboSuccDegreeResidualLeftSplitsNonneg_of_rootContinuity :
     (∀ ⦃f g : ℝ[X]⦄,
         HasPosLeadingCoeff f →
         HasPosLeadingCoeff g →
@@ -3536,7 +3536,7 @@ theorem PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_rootContinuity :
         f.Splits) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc _ _
   exact
-    PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity
+    posComboSuccDegreeLeftSplitsNonneg_of_rootContinuity
       hf_pos hg_pos hfnn hgnn hfg hsucc
 
 /-- The succ-degree left endpoint follows from the forward
@@ -3555,7 +3555,7 @@ theorem PosComboRealRooted.left_splits_of_forward_asw
 
 /-- Conditional package form of `PosComboRealRooted.left_splits_of_forward_asw`
 for the milestone-B2 endpoint statement. -/
-theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw :
+theorem posComboSuccDegreeLeftSplitsNonneg_of_forward_asw :
     (∀ ⦃f g : ℝ[X]⦄,
         HasPosLeadingCoeff f →
         HasPosLeadingCoeff g →
@@ -3568,7 +3568,7 @@ theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw :
   exact hfg.left_splits_of_forward_asw hf_pos hfnn hgnn
 
 /-- Conditional package form using the splitting-only ASW target. -/
-theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw_splits :
+theorem posComboSuccDegreeLeftSplitsNonneg_of_forward_asw_splits :
     (∀ ⦃f g : ℝ[X]⦄,
         HasPosLeadingCoeff f →
         HasPosLeadingCoeff g →
@@ -3577,12 +3577,12 @@ theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw_splits :
         PosComboRealRooted f g →
         g.natDegree = f.natDegree + 1 →
         f.Splits) :=
-  PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw
+  posComboSuccDegreeLeftSplitsNonneg_of_forward_asw
 
 /-- Residual package form of the forward-ASW route.  This keeps the remaining
 #42 branch available as a smaller challenge target, while making clear that the
 PF-limit route already covers it under the forward ASW interface. -/
-theorem PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_forward_asw :
+theorem posComboSuccDegreeResidualLeftSplitsNonneg_of_forward_asw :
     (∀ ⦃f g : ℝ[X]⦄,
         HasPosLeadingCoeff f →
         HasPosLeadingCoeff g →
@@ -3594,11 +3594,11 @@ theorem PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_forward_asw :
         g.coeff 0 ≠ 0 →
         f.Splits) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc _ _
-  exact PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw
+  exact posComboSuccDegreeLeftSplitsNonneg_of_forward_asw
     hf_pos hg_pos hfnn hgnn hfg hsucc
 
 /-- Residual package form using the splitting-only ASW target. -/
-theorem PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_forward_asw_splits :
+theorem posComboSuccDegreeResidualLeftSplitsNonneg_of_forward_asw_splits :
     (∀ ⦃f g : ℝ[X]⦄,
         HasPosLeadingCoeff f →
         HasPosLeadingCoeff g →
@@ -3609,7 +3609,7 @@ theorem PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_forward_asw_split
         f.coeff 0 = 0 →
         g.coeff 0 ≠ 0 →
         f.Splits) :=
-  PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_forward_asw
+  posComboSuccDegreeResidualLeftSplitsNonneg_of_forward_asw
 
 /-- The affine-family bridge already gives the succ-degree left endpoint in
 the no-common branch.  This isolates the remaining #42 work in that branch as
@@ -3911,7 +3911,7 @@ branch `f.coeff 0 = 0`, `g.coeff 0 ≠ 0`.
 The proof is a strong induction on `f.natDegree`.  If `f.coeff 0 ≠ 0`, the
 reflection route applies.  If both constant coefficients vanish, divide both
 polynomials by the common factor `X` and invoke the induction hypothesis. -/
-theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_residual
+theorem posComboSuccDegreeLeftSplitsNonneg_of_residual
     (hres : (∀ ⦃f g : ℝ[X]⦄,
         HasPosLeadingCoeff f →
         HasPosLeadingCoeff g →
@@ -3969,7 +3969,7 @@ theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_residual
 succ-degree left-endpoint statement: the reverse implication is just
 specialization, while the forward implication is the strong-induction
 constant-term reduction. -/
-theorem PosComboSuccDegreeLeftSplitsNonnegStatement_iff_residual :
+theorem posComboSuccDegreeLeftSplitsNonneg_iff_residual :
     (∀ ⦃f g : ℝ[X]⦄,
         HasPosLeadingCoeff f →
         HasPosLeadingCoeff g →
@@ -3991,7 +3991,7 @@ theorem PosComboSuccDegreeLeftSplitsNonnegStatement_iff_residual :
   constructor
   · intro h f g hf_pos hg_pos hfnn hgnn hfg hsucc _ _
     exact h hf_pos hg_pos hfnn hgnn hfg hsucc
-  · exact PosComboSuccDegreeLeftSplitsNonnegStatement_of_residual
+  · exact posComboSuccDegreeLeftSplitsNonneg_of_residual
 
 
 /-- The positive-combination splitting hypothesis on a positive scalar
@@ -10200,7 +10200,7 @@ theorem succDegreeSlotData_of_posCombo_natDegree_le_one
           (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
             rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty := by
   have hf_split : f.Splits :=
-    PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity
+    posComboSuccDegreeLeftSplitsNonneg_of_rootContinuity
       hf_pos hg_pos hfnn hgnn hfg hdeg
   have hg_split : g.Splits :=
     (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
@@ -10687,7 +10687,7 @@ theorem posComboNoCommonSuccDegreeSlotData_of_rootCrossing
               (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
                 rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) :=
   posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_rootCrossing
-    PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity hcross
+    posComboSuccDegreeLeftSplitsNonneg_of_rootContinuity hcross
 
 /-- The corrected succ-degree pair-interleaver endpoint follows from the
 succ-degree descending-root crossing inequalities alone; root continuity
@@ -11393,7 +11393,7 @@ theorem posComboNoCommonSuccDegreeSlotData_of_forward_asw_and_rootCrossing
               (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
                 rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) :=
   posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_rootCrossing
-    PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw hcross
+    posComboSuccDegreeLeftSplitsNonneg_of_forward_asw hcross
 
 /-- Succ-degree slot data from the splitting-only ASW target and the
 root-crossing target. -/
@@ -11454,7 +11454,7 @@ theorem
         (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
         ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   succDegreePairHasCommonInterleaver_nonneg_of_leftSplits_and_rootCrossing
-    PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw hcross
+    posComboSuccDegreeLeftSplitsNonneg_of_forward_asw hcross
 
 /-- Succ-degree pair interleavers from the splitting-only ASW target and the
 root-crossing target. -/
@@ -14124,7 +14124,7 @@ theorem compatiblePairHasCommonInterleaver_of_rootCrossing
         Compatible f g →
         ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   compatiblePairHasCommonInterleaver_of_rootCrossing_via_nonnegShift
-    hsame PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity hsucc
+    hsame posComboSuccDegreeLeftSplitsNonneg_of_rootContinuity hsucc
 
 /-- Shifted compatibility bridge from lower-threshold root-count
 formulations.  The succ-degree left endpoint is supplied by the
@@ -14443,7 +14443,7 @@ theorem compatiblePairHasCommonInterleaver_of_rootCrossing_and_forward_asw
         Compatible f g →
         ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   compatiblePairHasCommonInterleaver_of_rootCrossing_via_nonnegShift
-    hsame PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw hsucc
+    hsame posComboSuccDegreeLeftSplitsNonneg_of_forward_asw hsucc
 
 /-- Shifted compatibility bridge from root-crossing formulations, with the
 succ-degree left endpoint supplied by the splitting-only ASW target. -/
@@ -14842,7 +14842,7 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCrossing
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
   pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCrossing_via_nonnegShift
-    hsame PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity hsucc hpos hpair
+    hsame posComboSuccDegreeLeftSplitsNonneg_of_rootContinuity hsucc hpos hpair
 
 /-- Pairwise upgrade from lower-threshold root-count formulations. -/
 theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCount
@@ -15782,7 +15782,7 @@ theorem chudnovskySeymour_fourWay_of_rootCrossing
             (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_rootCrossing_via_nonnegShift
-    hrr hpos hsame PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity hsucc
+    hrr hpos hsame posComboSuccDegreeLeftSplitsNonneg_of_rootContinuity hsucc
 
 /-- Four-way Chudnovsky--Seymour package from root-crossing formulations, with
 the succ-degree left endpoint supplied by the PF/ASW route before shifting. -/
@@ -16407,7 +16407,7 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing
             (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
   pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_via_nonnegShift
-    hrr hpos hsame PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity hsucc
+    hrr hpos hsame posComboSuccDegreeLeftSplitsNonneg_of_rootContinuity hsucc
 
 /-- Chudnovsky--Seymour `1 ↔ 3` corollary from root-crossing formulations, with
 the succ-degree left endpoint supplied by the PF/ASW route before shifting. -/
@@ -16751,7 +16751,7 @@ theorem pairwiseCompatible_iff_familyCompatible_of_rootCrossing
             (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
   pairwiseCompatible_iff_familyCompatible_of_rootCrossing_via_nonnegShift
-    hrr hpos hsame PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity hsucc
+    hrr hpos hsame posComboSuccDegreeLeftSplitsNonneg_of_rootContinuity hsucc
 
 /-- Chudnovsky--Seymour `1 ↔ 4` specialization from root-crossing formulations,
 with the succ-degree left endpoint supplied by the PF/ASW route before shifting.

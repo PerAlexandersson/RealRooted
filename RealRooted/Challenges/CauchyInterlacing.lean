@@ -22,7 +22,7 @@ namespace Challenges
 namespace CauchyInterlacing
 
 /-- Cauchy's eigenvalue interlacing theorem for Hermitian matrices. -/
-theorem theoremStatement (𝕜 : Type*) [RCLike 𝕜] {n : ℕ}
+theorem eigenvalues_interlace (𝕜 : Type*) [RCLike 𝕜] {n : ℕ}
     (A : Matrix (Fin (n + 1)) (Fin (n + 1)) 𝕜) (hA : A.IsHermitian)
     (i : Fin (n + 1)) :
     RealRooted.Interlace

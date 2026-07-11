@@ -890,7 +890,7 @@ theorem finiteSchurSzegoComposition_of_nonzero
   · simp [hp0, schurSzegoComp_zero_right]
   exact h hf hf0 hfdeg hp0 hpdeg hp
 
-theorem finiteSchurSzegoCompositionStatement_iff_nonzero :
+theorem finiteSchurSzegoComposition_iff_nonzero :
     (∀ {n : ℕ} {f p : ℝ[X]},
       IsPFPolynomial f →
       f.natDegree ≤ n →
@@ -1717,7 +1717,7 @@ a degree-`≤ 3` PF factor and a splitting factor. -/
 
 /-- The normalized diagonal base case is equivalent to the level-three
 Schur--Szego cubic-discriminant base case. -/
-theorem pfCubicDiscrDiagonalNonnegStatement_iff :
+theorem pfCubicDiscrDiagonalNonneg_iff :
     (∀ {f q : ℝ[X]}, IsPFPolynomial f → f.natDegree ≤ 3 → q.natDegree ≤ 3 → q.Splits →
       0 ≤ cubicDiscr (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q)) ↔
       ∀ {f q : ℝ[X]},
@@ -1731,7 +1731,7 @@ theorem pfCubicDiscrDiagonalNonnegStatement_iff :
 
 /-- The classical fixed-degree Schur--Szego theorem discharges the isolated
 level-three diagonal cubic-discriminant base case. -/
-theorem pfCubicDiscrDiagonalNonnegStatement_of_schurSzego
+theorem pfCubicDiscrDiagonalNonneg_of_schurSzego
     (hSZ : ∀ {n : ℕ} {f p : ℝ[X]},
       IsPFPolynomial f →
       f.natDegree ≤ n →
@@ -1740,7 +1740,7 @@ theorem pfCubicDiscrDiagonalNonnegStatement_of_schurSzego
         schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits) :
     (∀ {f q : ℝ[X]}, IsPFPolynomial f → f.natDegree ≤ 3 → q.natDegree ≤ 3 → q.Splits →
       0 ≤ cubicDiscr (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q)) :=
-  pfCubicDiscrDiagonalNonnegStatement_iff.mpr fun {f q} hf hfdeg hqdeg hsplit => by
+  pfCubicDiscrDiagonalNonneg_iff.mpr fun {f q} hf hfdeg hqdeg hsplit => by
     rcases hSZ hf hfdeg hqdeg hsplit with hzero | hs
     · simp [hzero, cubicDiscr]
     · exact cubicDiscr_nonneg_of_splits_natDegree_le_three
@@ -1756,7 +1756,7 @@ theorem finiteSchurSzegoComposition_of_pf_factor_three_of_base
     schurSzegoComp 3 f q = 0 ∨ (schurSzegoComp 3 f q).Splits :=
   finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
     hf hfdeg hqdeg hsplit
-    (pfCubicDiscrDiagonalNonnegStatement_iff.mp h hf hfdeg hqdeg hsplit)
+    (pfCubicDiscrDiagonalNonneg_iff.mp h hf hfdeg hqdeg hsplit)
 
 /-- The isolated level-three diagonal base case proves the reflected
 diagonal-operator discriminant input at every level `n ≥ 3`. -/
@@ -1993,7 +1993,7 @@ theorem finitePolyaSchur_nonneg_of_schurSzego
 /-- Fixed-degree Schur--Szegő composition and finite Pólya--Schur are
 equivalent classical inputs in the nonnegative-coefficient convention used
 here. -/
-theorem finiteSchurSzegoCompositionStatement_iff_finitePolyaSchur :
+theorem finiteSchurSzegoComposition_iff_finitePolyaSchur :
     (∀ {n : ℕ} {f p : ℝ[X]},
       IsPFPolynomial f →
       f.natDegree ≤ n →
@@ -2027,7 +2027,7 @@ theorem finiteSchurSzegoCompositionNonzero_of_finitePolyaSchur
 
 /-- The nonzero core of fixed-degree Schur--Szegő composition and finite
 Pólya--Schur are equivalent classical inputs in the local convention. -/
-theorem finiteSchurSzegoCompositionNonzeroStatement_iff_finitePolyaSchur :
+theorem finiteSchurSzegoCompositionNonzero_iff_finitePolyaSchur :
     (∀ {n : ℕ} {f p : ℝ[X]},
       IsPFPolynomial f →
       f ≠ 0 →
@@ -2045,7 +2045,7 @@ theorem finiteSchurSzegoCompositionNonzeroStatement_iff_finitePolyaSchur :
 
 /-- The nonzero Schur--Szegő core is equivalent to the hard backward direction
 of finite Pólya--Schur. -/
-theorem finiteSchurSzegoCompositionNonzeroStatement_iff_finitePolyaSchurBackward :
+theorem finiteSchurSzegoCompositionNonzero_iff_finitePolyaSchurBackward :
     (∀ {n : ℕ} {f p : ℝ[X]},
       IsPFPolynomial f →
       f ≠ 0 →
@@ -3197,7 +3197,7 @@ inputs** (issue #34 / TODO T9).
 
 This composes the existing checked reductions for the four mid-level interfaces
 used by `garloffWagnerHadamardNonnegPrec_of_oddEven` into a single `sorry`-free
-reduction of the #34 target `garloffWagnerHadamardNonnegPrecStatement` onto six
+reduction of the #34 target `garloffWagnerHadamardNonnegPrec` onto six
 classical bottom-level inputs:
 
 * the right-half-plane analytic core of

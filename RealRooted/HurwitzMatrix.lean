@@ -102,7 +102,7 @@ theorem hurwitz_isPolyaFreqSeq_even {c : ℕ → ℝ}
 This is the statement to target if one proves the classical theorem directly
 from determinant formulas: every finite minor of the row-oriented Hurwitz
 matrix attached to a Hurwitz-stable polynomial is nonnegative. -/
-theorem hurwitzStableToMatrixTotallyNonnegativeStatement_iff_minors :
+theorem hurwitzStableToMatrixTotallyNonnegative_iff_minors :
     (∀ ⦃p : ℝ[X]⦄, IsHurwitzStable p → (hurwitz p.coeff).IsTotallyNonneg) ↔
       (∀ {p : ℝ[X]}, IsHurwitzStable p → (hurwitz p.coeff).IsTotallyNonneg) :=
   Iff.rfl
