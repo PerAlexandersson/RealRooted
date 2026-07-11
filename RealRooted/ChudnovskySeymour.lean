@@ -268,36 +268,33 @@ succ-degree left endpoint is supplied by the PF/ASW route. -/
 theorem
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing_and_forward_asw
     (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
     (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
   fun hrr hpos =>
     pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_and_forward_asw
-      hrr hpos hsame hASW hsucc
+      hrr hpos hsame hsucc
 
 /-- The finite-family compatibility roadmap target follows from root-crossing
 once the succ-degree left endpoint is supplied by the PF/ASW route. -/
 theorem
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_rootCrossing_and_forward_asw
     (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hASW : aissenSchoenbergWhitneyForwardOrZeroStatement)
     (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
     (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing_and_forward_asw
-      hsame hASW hsucc)
+      hsame hsucc)
 
 /-- The roadmap target follows from the root-crossing formulations once the
 succ-degree left endpoint is supplied by the splitting-only ASW target. -/
 theorem
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing_and_forwardASWSplits
     (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hASW : aissenSchoenbergWhitneyForwardSplitsStatement)
     (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
   fun hrr hpos =>
     pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_and_forward_asw_splits
-      hrr hpos hsame hASW hsucc
+      hrr hpos hsame hsucc
 
 /-- The finite-family compatibility roadmap target follows from root-crossing
 once the succ-degree left endpoint is supplied by the splitting-only ASW
@@ -305,12 +302,11 @@ target. -/
 theorem
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_rootCrossing_and_forwardASWSplits
     (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hASW : aissenSchoenbergWhitneyForwardSplitsStatement)
     (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
     (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing_and_forwardASWSplits
-      hsame hASW hsucc)
+      hsame hsucc)
 
 /-- The roadmap target also follows from the same-degree root-crossing
 formulation and the affine-family bridge, avoiding the separate succ-degree
@@ -338,12 +334,11 @@ formulations once the succ-degree left endpoint is supplied by the
 splitting-only ASW target. -/
 theorem chudnovskySeymour_fourWay_of_rootCrossing_forwardASWSplits_nonneg
     (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hASW : aissenSchoenbergWhitneyForwardSplitsStatement)
     (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   fun hrr hpos _ =>
     chudnovskySeymour_fourWay_of_rootCrossing_and_forward_asw_splits
-      hrr hpos hsame hASW hsucc
+      hrr hpos hsame hsucc
 
 /-- The nonnegative four-way package target follows from the root-crossing
 formulations alone; root continuity supplies the succ-degree left endpoint. -/
@@ -454,13 +449,12 @@ formulations and splitting-only ASW. -/
 theorem
     chudnovskySeymour_commonInterleaver_of_rootCrossing_forwardASWSplits_nonneg
     (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hASW : aissenSchoenbergWhitneyForwardSplitsStatement)
     (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   fun hrr hpos hnn =>
     pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay
       (chudnovskySeymour_fourWay_of_rootCrossing_forwardASWSplits_nonneg
-        hsame hASW hsucc hrr hpos hnn)
+        hsame hsucc hrr hpos hnn)
 
 /-- The nonnegative common-interleaver target follows from the root-crossing
 formulations alone. -/
@@ -489,13 +483,12 @@ root-crossing formulations and splitting-only ASW. -/
 theorem
     chudnovskySeymour_familyCompatible_of_rootCrossing_forwardASWSplits_nonneg
     (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hASW : aissenSchoenbergWhitneyForwardSplitsStatement)
     (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   fun hrr hpos hnn =>
     pairwiseCompatible_iff_familyCompatible_of_fourWay
       (chudnovskySeymour_fourWay_of_rootCrossing_forwardASWSplits_nonneg
-        hsame hASW hsucc hrr hpos hnn)
+        hsame hsucc hrr hpos hnn)
 
 /-- The nonnegative finite-family compatibility target follows from the
 root-crossing formulations alone. -/

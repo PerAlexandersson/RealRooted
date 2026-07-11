@@ -31,8 +31,10 @@ abbrev HasRealNonposRoots (p : ℝ[X]) : Prop :=
   p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0
 
 /-- Forward ASW target: PF coefficients imply real non-positive roots. -/
-abbrev forwardTarget : Prop :=
-  ∀ {p : ℝ[X]}, CoefficientsPolyaFrequency p → HasRealNonposRoots p
+theorem forwardTarget {p : ℝ[X]}
+    (hpf : CoefficientsPolyaFrequency p) :
+    HasRealNonposRoots p :=
+  RealRooted.aissenSchoenbergWhitneyForward hpf
 
 /-- Reverse ASW theorem: real non-positive roots imply PF coefficients. -/
 theorem reverseTheorem :
