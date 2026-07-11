@@ -1714,7 +1714,8 @@ a degree-`≤ 3` PF factor and a splitting factor. -/
 /-- The normalized diagonal base case is equivalent to the level-three
 Schur--Szego cubic-discriminant base case. -/
 theorem pfCubicDiscrDiagonalNonnegStatement_iff :
-    (∀ {f q : ℝ[X]}, IsPFPolynomial f → f.natDegree ≤ 3 → q.natDegree ≤ 3 → q.Splits → 0 ≤ cubicDiscr (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q)) ↔
+    (∀ {f q : ℝ[X]}, IsPFPolynomial f → f.natDegree ≤ 3 → q.natDegree ≤ 3 → q.Splits →
+      0 ≤ cubicDiscr (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q)) ↔
       ∀ {f q : ℝ[X]},
         IsPFPolynomial f →
         f.natDegree ≤ 3 →
@@ -1733,7 +1734,8 @@ theorem pfCubicDiscrDiagonalNonnegStatement_of_schurSzego
       p.natDegree ≤ n →
       p.Splits →
         schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits) :
-    (∀ {f q : ℝ[X]}, IsPFPolynomial f → f.natDegree ≤ 3 → q.natDegree ≤ 3 → q.Splits → 0 ≤ cubicDiscr (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q)) :=
+    (∀ {f q : ℝ[X]}, IsPFPolynomial f → f.natDegree ≤ 3 → q.natDegree ≤ 3 → q.Splits →
+      0 ≤ cubicDiscr (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q)) :=
   pfCubicDiscrDiagonalNonnegStatement_iff.mpr fun {f q} hf hfdeg hqdeg hsplit => by
     rcases hSZ hf hfdeg hqdeg hsplit with hzero | hs
     · simp [hzero, cubicDiscr]
@@ -1743,7 +1745,8 @@ theorem pfCubicDiscrDiagonalNonnegStatement_of_schurSzego
 /-- The isolated normalized diagonal base case discharges the level-three
 degree-`≤ 3` PF-factor Schur--Szego composition route. -/
 theorem finiteSchurSzegoComposition_of_pf_factor_three_of_base
-    (h : (∀ {f q : ℝ[X]}, IsPFPolynomial f → f.natDegree ≤ 3 → q.natDegree ≤ 3 → q.Splits → 0 ≤ cubicDiscr (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q)))
+    (h : (∀ {f q : ℝ[X]}, IsPFPolynomial f → f.natDegree ≤ 3 → q.natDegree ≤ 3 → q.Splits →
+      0 ≤ cubicDiscr (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q)))
     {f q : ℝ[X]} (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
     (hqdeg : q.natDegree ≤ 3) (hsplit : q.Splits) :
     schurSzegoComp 3 f q = 0 ∨ (schurSzegoComp 3 f q).Splits :=
@@ -1754,7 +1757,8 @@ theorem finiteSchurSzegoComposition_of_pf_factor_three_of_base
 /-- The isolated level-three diagonal base case proves the reflected
 diagonal-operator discriminant input at every level `n ≥ 3`. -/
 theorem cubicDiscr_reflect_diagonalOperator_nonneg_of_pfCubicDiscrDiagonalNonneg
-    (h : (∀ {f q : ℝ[X]}, IsPFPolynomial f → f.natDegree ≤ 3 → q.natDegree ≤ 3 → q.Splits → 0 ≤ cubicDiscr (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q)))
+    (h : (∀ {f q : ℝ[X]}, IsPFPolynomial f → f.natDegree ≤ 3 → q.natDegree ≤ 3 → q.Splits →
+      0 ≤ cubicDiscr (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q)))
     {n : ℕ} (hn : 3 ≤ n) {f p : ℝ[X]}
     (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
     (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
@@ -1768,7 +1772,8 @@ theorem cubicDiscr_reflect_diagonalOperator_nonneg_of_pfCubicDiscrDiagonalNonneg
 /-- The isolated level-three diagonal base case proves high-level
 cubic-discriminant nonnegativity for degree-`≤ 3` PF factors. -/
 theorem cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_le_three_of_pfDiagonalBase
-    (h : (∀ {f q : ℝ[X]}, IsPFPolynomial f → f.natDegree ≤ 3 → q.natDegree ≤ 3 → q.Splits → 0 ≤ cubicDiscr (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q)))
+    (h : (∀ {f q : ℝ[X]}, IsPFPolynomial f → f.natDegree ≤ 3 → q.natDegree ≤ 3 → q.Splits →
+      0 ≤ cubicDiscr (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q)))
     {n : ℕ} (hn : 3 ≤ n) {f p : ℝ[X]}
     (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
     (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
@@ -1794,7 +1799,8 @@ private theorem cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_natDegree_lt_three
 /-- The isolated level-three diagonal base case proves the corrected all-level
 cubic-discriminant route retaining `f.natDegree ≤ n`. -/
 theorem cubicDiscr_schurSzegoComp_nonneg_of_pf_factor_le_three_leftNatDegree_of_pfDiagonalBase
-    (h : (∀ {f q : ℝ[X]}, IsPFPolynomial f → f.natDegree ≤ 3 → q.natDegree ≤ 3 → q.Splits → 0 ≤ cubicDiscr (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q)))
+    (h : (∀ {f q : ℝ[X]}, IsPFPolynomial f → f.natDegree ≤ 3 → q.natDegree ≤ 3 → q.Splits →
+      0 ≤ cubicDiscr (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q)))
     {n : ℕ} {f p : ℝ[X]}
     (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
     (hfn : f.natDegree ≤ n) (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
@@ -1825,7 +1831,8 @@ theorem finiteSchurSzegoComposition_of_pf_factor_le_three_reflect_diagonalOperat
 /-- The isolated level-three diagonal base case discharges the high-level
 degree-`≤ 3` PF-factor Schur--Szego route. -/
 theorem finiteSchurSzegoComposition_of_pf_factor_le_three_of_pfCubicDiscrDiagonalNonneg
-    (h : (∀ {f q : ℝ[X]}, IsPFPolynomial f → f.natDegree ≤ 3 → q.natDegree ≤ 3 → q.Splits → 0 ≤ cubicDiscr (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q)))
+    (h : (∀ {f q : ℝ[X]}, IsPFPolynomial f → f.natDegree ≤ 3 → q.natDegree ≤ 3 → q.Splits →
+      0 ≤ cubicDiscr (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q)))
     {n : ℕ} (hn : 3 ≤ n) {f p : ℝ[X]}
     (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
     (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
@@ -1839,7 +1846,8 @@ theorem finiteSchurSzegoComposition_of_pf_factor_le_three_of_pfCubicDiscrDiagona
 isolated level-three diagonal base case, retaining `f.natDegree ≤ n`. -/
 theorem
     finiteSchurSzegoComposition_of_pf_factor_le_three_leftNatDegree_of_pfCubicDiscrDiagonalNonneg
-    (h : (∀ {f q : ℝ[X]}, IsPFPolynomial f → f.natDegree ≤ 3 → q.natDegree ≤ 3 → q.Splits → 0 ≤ cubicDiscr (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q)))
+    (h : (∀ {f q : ℝ[X]}, IsPFPolynomial f → f.natDegree ≤ 3 → q.natDegree ≤ 3 → q.Splits →
+      0 ≤ cubicDiscr (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q)))
     {n : ℕ} {f p : ℝ[X]}
     (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3)
     (hfn : f.natDegree ≤ n) (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
@@ -1915,7 +1923,8 @@ theorem finiteSchurSzegoCompositionNonzero_of_pf_factor_natDegree_le_three_cubic
 /-- Nonzero-core version of the high-level diagonal-base route for degree-`≤ 3`
 PF factors. -/
 theorem finiteSchurSzegoCompositionNonzero_of_pf_factor_le_three_of_pfCubicDiscrDiagonalNonneg
-    (h : (∀ {f q : ℝ[X]}, IsPFPolynomial f → f.natDegree ≤ 3 → q.natDegree ≤ 3 → q.Splits → 0 ≤ cubicDiscr (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q)))
+    (h : (∀ {f q : ℝ[X]}, IsPFPolynomial f → f.natDegree ≤ 3 → q.natDegree ≤ 3 → q.Splits →
+      0 ≤ cubicDiscr (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q)))
     {n : ℕ} (hn : 3 ≤ n) {f p : ℝ[X]}
     (hf : IsPFPolynomial f) (_hf0 : f ≠ 0) (hfdeg : f.natDegree ≤ 3)
     (_hp0 : p ≠ 0) (hpdeg : p.natDegree ≤ n) (hsplit : p.Splits) :
@@ -1927,7 +1936,8 @@ theorem finiteSchurSzegoCompositionNonzero_of_pf_factor_le_three_of_pfCubicDiscr
 degree-`≤ 3` PF factors, retaining `f.natDegree ≤ n`. -/
 theorem
     finiteSchurSzegoCompositionNonzero_of_pf_factor_le_three_leftNatDegree_of_pfDiagonalBase
-    (h : (∀ {f q : ℝ[X]}, IsPFPolynomial f → f.natDegree ≤ 3 → q.natDegree ≤ 3 → q.Splits → 0 ≤ cubicDiscr (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q)))
+    (h : (∀ {f q : ℝ[X]}, IsPFPolynomial f → f.natDegree ≤ 3 → q.natDegree ≤ 3 → q.Splits →
+      0 ≤ cubicDiscr (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ)) q)))
     {n : ℕ} {f p : ℝ[X]}
     (hf : IsPFPolynomial f) (_hf0 : f ≠ 0) (hfdeg : f.natDegree ≤ 3)
     (hfn : f.natDegree ≤ n) (_hp0 : p ≠ 0)
@@ -2621,7 +2631,9 @@ zero-aware because the Hadamard product can vanish when supports are disjoint.
 -/
 
 theorem IsPFPolynomial.hadamardProduct
-    (hGW : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → (p ≠ 0 ∧ p.Splits) → (q ≠ 0 ∧ q.Splits) → (hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧ HasNonnegCoeffs (hadamardProduct p q) ∧ ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0))
+    (hGW : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → (p ≠ 0 ∧ p.Splits) → (q ≠ 0 ∧
+      q.Splits) → (hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧
+      HasNonnegCoeffs (hadamardProduct p q) ∧ ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0))
     {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
     IsPFPolynomial (hadamardProduct p q) := by
@@ -2639,7 +2651,9 @@ theorem IsPFPolynomial.hadamardProduct
 /- Polynomial PF form of the Schur--Polya--Wagner Hadamard theorem. -/
 
 theorem schurPolyaWagnerHadamardPF_of_garloffWagner_nonneg
-    (hGW : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → (p ≠ 0 ∧ p.Splits) → (q ≠ 0 ∧ q.Splits) → (hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧ HasNonnegCoeffs (hadamardProduct p q) ∧ ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0)) :
+    (hGW : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → (p ≠ 0 ∧ p.Splits) → (q ≠ 0 ∧
+      q.Splits) → (hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧
+      HasNonnegCoeffs (hadamardProduct p q) ∧ ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0)) :
     (∀ {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → IsPFPolynomial (hadamardProduct p q)) :=
   fun {_ _} hp hq => hp.hadamardProduct hGW hq
 
@@ -2710,23 +2724,32 @@ polynomials is again right-half-plane stable. -/
 nonnegative-coefficient half of Hurwitz stability is discharged here, so only
 right-half-plane stability of the product remains. -/
 theorem hadamardPreservesHurwitzStable_of_rightHalfPlane
-    (h : (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b → IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) → IsRightHalfPlaneStable (complexify (hadamardProduct a b)))) :
-    (∀ {a b : ℝ[X]}, IsHurwitzStable a → IsHurwitzStable b → IsHurwitzStable (hadamardProduct a b)) :=
+    (h : (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b →
+      IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) →
+      IsRightHalfPlaneStable (complexify (hadamardProduct a b)))) :
+    (∀ {a b : ℝ[X]}, IsHurwitzStable a → IsHurwitzStable b →
+      IsHurwitzStable (hadamardProduct a b)) :=
   fun {_ _} ha hb => ⟨ha.1.hadamardProduct hb.1, h ha.1 hb.1 ha.2 hb.2⟩
 
 /-- The analytic core is conversely implied by Garloff--Wagner Theorem 1, so the
 two interfaces are equivalent: isolating the right-half-plane half loses no
 content. -/
 theorem hadamardPreservesRightHalfPlaneStable_of_hurwitzStable
-    (h : (∀ {a b : ℝ[X]}, IsHurwitzStable a → IsHurwitzStable b → IsHurwitzStable (hadamardProduct a b))) :
-    (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b → IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) → IsRightHalfPlaneStable (complexify (hadamardProduct a b))) :=
+    (h : (∀ {a b : ℝ[X]}, IsHurwitzStable a → IsHurwitzStable b →
+      IsHurwitzStable (hadamardProduct a b))) :
+    (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b → IsRightHalfPlaneStable (complexify a) →
+      IsRightHalfPlaneStable (complexify b) →
+      IsRightHalfPlaneStable (complexify (hadamardProduct a b))) :=
   fun {_ _} hann hbnn harhp hbrhp => (h ⟨hann, harhp⟩ ⟨hbnn, hbrhp⟩).2
 
 /-- Garloff--Wagner Theorem 1 is equivalent to its right-half-plane analytic
 core; coefficient nonnegativity of the product is elementary. -/
 theorem hadamardPreservesHurwitzStable_iff_rightHalfPlane :
-    (∀ {a b : ℝ[X]}, IsHurwitzStable a → IsHurwitzStable b → IsHurwitzStable (hadamardProduct a b)) ↔
-      (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b → IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) → IsRightHalfPlaneStable (complexify (hadamardProduct a b))) :=
+    (∀ {a b : ℝ[X]}, IsHurwitzStable a → IsHurwitzStable b →
+      IsHurwitzStable (hadamardProduct a b)) ↔
+      (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b →
+        IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) →
+        IsRightHalfPlaneStable (complexify (hadamardProduct a b))) :=
   ⟨hadamardPreservesRightHalfPlaneStable_of_hurwitzStable,
     hadamardPreservesHurwitzStable_of_rightHalfPlane⟩
 
@@ -2740,8 +2763,10 @@ This mirrors the classical proof through the Asner--Kemperman Hurwitz-matrix
 total-nonnegativity criterion: forward criterion, matrix Hadamard core, and
 converse criterion. -/
 theorem hadamardPreservesHurwitzStable_of_matrixRoute
-    (hHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg)) :
-    (∀ {a b : ℝ[X]}, IsHurwitzStable a → IsHurwitzStable b → IsHurwitzStable (hadamardProduct a b)) :=
+    (hHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+      (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg)) :
+    (∀ {a b : ℝ[X]}, IsHurwitzStable a → IsHurwitzStable b →
+      IsHurwitzStable (hadamardProduct a b)) :=
   fun {_ _} ha hb =>
     hurwitzMatrixTotallyNonnegativeToStable
       (hHad (hurwitzStableToMatrixTotallyNonnegative ha)
@@ -2792,7 +2817,10 @@ theorem hurwitz_hadamardProduct_det_fin_three_nonneg_of_band_fail
 matrix core.  The out-of-band case is handled structurally by the
 band-fail zero lemma. -/
 theorem hadamardPreservesHurwitzMatrixTN_det_fin_three
-    (hInBand : (∀ {a b : ℕ → ℝ}, (hurwitz a).IsTotallyNonneg → (hurwitz b).IsTotallyNonneg → ∀ {rows cols : Fin 3 → ℕ}, StrictMono rows → StrictMono cols → (∀ l : Fin 3, 2 * cols l ≤ rows l) → 0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det))
+    (hInBand : (∀ {a b : ℕ → ℝ}, (hurwitz a).IsTotallyNonneg → (hurwitz b).IsTotallyNonneg →
+      ∀ {rows cols : Fin 3 → ℕ}, StrictMono rows → StrictMono cols →
+      (∀ l : Fin 3, 2 * cols l ≤ rows l) →
+      0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det))
     {a b : ℝ[X]} (ha : (hurwitz a.coeff).IsTotallyNonneg)
     (hb : (hurwitz b.coeff).IsTotallyNonneg)
     {rows cols : Fin 3 → ℕ} (hrows : StrictMono rows) (hcols : StrictMono cols) :
@@ -2803,7 +2831,10 @@ theorem hadamardPreservesHurwitzMatrixTN_det_fin_three
 /-- Low-order checked part of the Hurwitz-matrix Hadamard leaf through size
 three, assuming the pure in-band `3 × 3` matrix core. -/
 theorem hadamardPreservesHurwitzMatrixTN_det_of_card_le_three
-    (hInBand : (∀ {a b : ℕ → ℝ}, (hurwitz a).IsTotallyNonneg → (hurwitz b).IsTotallyNonneg → ∀ {rows cols : Fin 3 → ℕ}, StrictMono rows → StrictMono cols → (∀ l : Fin 3, 2 * cols l ≤ rows l) → 0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det))
+    (hInBand : (∀ {a b : ℕ → ℝ}, (hurwitz a).IsTotallyNonneg → (hurwitz b).IsTotallyNonneg →
+      ∀ {rows cols : Fin 3 → ℕ}, StrictMono rows → StrictMono cols →
+      (∀ l : Fin 3, 2 * cols l ≤ rows l) →
+      0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det))
     {a b : ℝ[X]} (ha : (hurwitz a.coeff).IsTotallyNonneg)
     (hb : (hurwitz b.coeff).IsTotallyNonneg)
     {n : ℕ} {rows cols : Fin n → ℕ} (hrows : StrictMono rows) (hcols : StrictMono cols)
@@ -2817,8 +2848,13 @@ theorem hadamardPreservesHurwitzMatrixTN_det_of_card_le_three
 /-- The isolated in-band `3 × 3` core implies the low-order, size-`≤ 3`,
 Hurwitz-matrix Hadamard leaf. -/
 theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_inBand
-    (hInBand : (∀ {a b : ℕ → ℝ}, (hurwitz a).IsTotallyNonneg → (hurwitz b).IsTotallyNonneg → ∀ {rows cols : Fin 3 → ℕ}, StrictMono rows → StrictMono cols → (∀ l : Fin 3, 2 * cols l ≤ rows l) → 0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det)) :
-    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → ∀ {n : ℕ} {rows cols : Fin n → ℕ}, StrictMono rows → StrictMono cols → n ≤ 3 → 0 ≤ (((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det)) := by
+    (hInBand : (∀ {a b : ℕ → ℝ}, (hurwitz a).IsTotallyNonneg → (hurwitz b).IsTotallyNonneg →
+      ∀ {rows cols : Fin 3 → ℕ}, StrictMono rows → StrictMono cols →
+      (∀ l : Fin 3, 2 * cols l ≤ rows l) →
+      0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det)) :
+    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+      ∀ {n : ℕ} {rows cols : Fin n → ℕ}, StrictMono rows → StrictMono cols → n ≤ 3 →
+      0 ≤ (((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det)) := by
   intro a b ha hb n rows cols hrows hcols hn
   exact hadamardPreservesHurwitzMatrixTN_det_of_card_le_three
     hInBand ha hb hrows hcols hn
@@ -2826,8 +2862,14 @@ theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_inBand
 /-- The fully in-band top-right subcase of the `3 × 3` Hurwitz Schur-product
 core implies the low-order, size-`≤ 3`, Hurwitz-matrix Hadamard leaf. -/
 theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_fullBand
-    (hF : (∀ {a b : ℕ → ℝ}, (hurwitz a).IsTotallyNonneg → (hurwitz b).IsTotallyNonneg → ∀ {rows cols : Fin 3 → ℕ}, StrictMono rows → StrictMono cols → (∀ l : Fin 3, 2 * cols l ≤ rows l) → 2 * cols 1 ≤ rows 0 → 2 * cols 2 ≤ rows 1 → 2 * cols 2 ≤ rows 0 → 0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det)) :
-    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → ∀ {n : ℕ} {rows cols : Fin n → ℕ}, StrictMono rows → StrictMono cols → n ≤ 3 → 0 ≤ (((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det)) :=
+    (hF : (∀ {a b : ℕ → ℝ}, (hurwitz a).IsTotallyNonneg → (hurwitz b).IsTotallyNonneg →
+      ∀ {rows cols : Fin 3 → ℕ}, StrictMono rows → StrictMono cols →
+      (∀ l : Fin 3, 2 * cols l ≤ rows l) → 2 * cols 1 ≤ rows 0 → 2 * cols 2 ≤ rows 1 →
+      2 * cols 2 ≤ rows 0 →
+      0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det)) :
+    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+      ∀ {n : ℕ} {rows cols : Fin n → ℕ}, StrictMono rows → StrictMono cols → n ≤ 3 →
+      0 ≤ (((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det)) :=
   hadamardPreservesHurwitzMatrixTNDetLeThree_of_inBand
     (hurwitzMatrixSchurProductDetFinThreeInBand_of_fullBand hF)
 
@@ -2835,8 +2877,18 @@ theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_fullBand
 low-order, size-`≤ 3`, Hurwitz-matrix Hadamard leaf. -/
 theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingle
     (hSingle :
-      (∀ {a : ℕ → ℝ}, (hurwitz a).IsTotallyNonneg → ∀ {rows cols : Fin 3 → ℕ}, StrictMono rows → StrictMono cols → (∀ l : Fin 3, 2 * cols l ≤ rows l) → 2 * cols 1 ≤ rows 0 → 2 * cols 2 ≤ rows 1 → 2 * cols 2 ≤ rows 0 → 0 ≤ hurwitz a (rows 0) (cols 0) * (hurwitz a (rows 1) (cols 1) * hurwitz a (rows 2) (cols 2) - hurwitz a (rows 1) (cols 2) * hurwitz a (rows 2) (cols 1)) - hurwitz a (rows 0) (cols 1) * (hurwitz a (rows 1) (cols 0) * hurwitz a (rows 2) (cols 2) - hurwitz a (rows 1) (cols 2) * hurwitz a (rows 2) (cols 0)))) :
-    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → ∀ {n : ℕ} {rows cols : Fin n → ℕ}, StrictMono rows → StrictMono cols → n ≤ 3 → 0 ≤ (((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det)) :=
+      (∀ {a : ℕ → ℝ}, (hurwitz a).IsTotallyNonneg → ∀ {rows cols : Fin 3 → ℕ}, StrictMono rows →
+        StrictMono cols → (∀ l : Fin 3, 2 * cols l ≤ rows l) → 2 * cols 1 ≤ rows 0 →
+        2 * cols 2 ≤ rows 1 → 2 * cols 2 ≤ rows 0 →
+        0 ≤ hurwitz a (rows 0) (cols 0) *
+          (hurwitz a (rows 1) (cols 1) * hurwitz a (rows 2) (cols 2) -
+            hurwitz a (rows 1) (cols 2) * hurwitz a (rows 2) (cols 1)) -
+          hurwitz a (rows 0) (cols 1) *
+          (hurwitz a (rows 1) (cols 0) * hurwitz a (rows 2) (cols 2) -
+            hurwitz a (rows 1) (cols 2) * hurwitz a (rows 2) (cols 0)))) :
+    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+      ∀ {n : ℕ} {rows cols : Fin n → ℕ}, StrictMono rows → StrictMono cols → n ≤ 3 →
+      0 ≤ (((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det)) :=
   hadamardPreservesHurwitzMatrixTNDetLeThree_of_inBand
     (hurwitzMatrixSchurProductDetFinThreeInBand_of_cornerZeroedSingle hSingle)
 
@@ -2844,8 +2896,18 @@ theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingle
 implies the low-order, size-`≤ 3`, Hurwitz-matrix Hadamard leaf. -/
 theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingleColZero
     (hZero :
-      (∀ {a : ℕ → ℝ}, (hurwitz a).IsTotallyNonneg → ∀ {rows cols : Fin 3 → ℕ}, StrictMono rows → StrictMono cols → (∀ l : Fin 3, 2 * cols l ≤ rows l) → 2 * cols 1 ≤ rows 0 → 2 * cols 2 ≤ rows 1 → 2 * cols 2 ≤ rows 0 → cols 0 = 0 → 0 ≤ hurwitz a (rows 0) (cols 0) * (hurwitz a (rows 1) (cols 1) * hurwitz a (rows 2) (cols 2) - hurwitz a (rows 1) (cols 2) * hurwitz a (rows 2) (cols 1)) - hurwitz a (rows 0) (cols 1) * (hurwitz a (rows 1) (cols 0) * hurwitz a (rows 2) (cols 2) - hurwitz a (rows 1) (cols 2) * hurwitz a (rows 2) (cols 0)))) :
-    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → ∀ {n : ℕ} {rows cols : Fin n → ℕ}, StrictMono rows → StrictMono cols → n ≤ 3 → 0 ≤ (((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det)) :=
+      (∀ {a : ℕ → ℝ}, (hurwitz a).IsTotallyNonneg → ∀ {rows cols : Fin 3 → ℕ}, StrictMono rows →
+        StrictMono cols → (∀ l : Fin 3, 2 * cols l ≤ rows l) → 2 * cols 1 ≤ rows 0 →
+        2 * cols 2 ≤ rows 1 → 2 * cols 2 ≤ rows 0 → cols 0 = 0 →
+        0 ≤ hurwitz a (rows 0) (cols 0) *
+          (hurwitz a (rows 1) (cols 1) * hurwitz a (rows 2) (cols 2) -
+            hurwitz a (rows 1) (cols 2) * hurwitz a (rows 2) (cols 1)) -
+          hurwitz a (rows 0) (cols 1) *
+          (hurwitz a (rows 1) (cols 0) * hurwitz a (rows 2) (cols 2) -
+            hurwitz a (rows 1) (cols 2) * hurwitz a (rows 2) (cols 0)))) :
+    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+      ∀ {n : ℕ} {rows cols : Fin n → ℕ}, StrictMono rows → StrictMono cols → n ≤ 3 →
+      0 ≤ (((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det)) :=
   hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingle
     (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle_of_colZero hZero)
 
@@ -2853,8 +2915,12 @@ theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingleColZero
 Hurwitz-matrix Hadamard leaf. -/
 theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingleFirstCol
     (hFirst :
-      (∀ {a : ℕ → ℝ}, (hurwitz a).IsTotallyNonneg → ∀ {row0 row1 row2 col1 col2 : ℕ}, row0 < row1 → row1 < row2 → 0 < col1 → col1 < col2 → 2 * col2 ≤ row0 → 0 ≤ hurwitzFullBandCornerZeroedSingleFirstColDet a row0 row1 row2 col1 col2)) :
-    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → ∀ {n : ℕ} {rows cols : Fin n → ℕ}, StrictMono rows → StrictMono cols → n ≤ 3 → 0 ≤ (((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det)) :=
+      (∀ {a : ℕ → ℝ}, (hurwitz a).IsTotallyNonneg → ∀ {row0 row1 row2 col1 col2 : ℕ}, row0 < row1 →
+        row1 < row2 → 0 < col1 → col1 < col2 → 2 * col2 ≤ row0 →
+        0 ≤ hurwitzFullBandCornerZeroedSingleFirstColDet a row0 row1 row2 col1 col2)) :
+    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+      ∀ {n : ℕ} {rows cols : Fin n → ℕ}, StrictMono rows → StrictMono cols → n ≤ 3 →
+      0 ≤ (((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det)) :=
   hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingleColZero
     (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZero_of_firstCol
       hFirst)
@@ -2863,8 +2929,14 @@ theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingleFirstCol
 size-`≤ 3`, Hurwitz-matrix Hadamard leaf. -/
 theorem
     hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingleFirstColPositiveRemainder
-    (hPos : (∀ {a : ℕ → ℝ}, (hurwitz a).IsTotallyNonneg → ∀ {row0 row1 row2 col1 col2 : ℕ}, row0 < row1 → row1 < row2 → 0 < col1 → col1 < col2 → 2 * col2 ≤ row0 → 0 < hurwitz a (row0 - 2 * col2) 0 → 0 < hurwitzFullBandCornerZeroedSingleFirstColLowerMinor a row1 row2 col1 → 0 ≤ hurwitzFullBandCornerZeroedSingleFirstColDet a row0 row1 row2 col1 col2)) :
-    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → ∀ {n : ℕ} {rows cols : Fin n → ℕ}, StrictMono rows → StrictMono cols → n ≤ 3 → 0 ≤ (((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det)) :=
+    (hPos : (∀ {a : ℕ → ℝ}, (hurwitz a).IsTotallyNonneg →
+      ∀ {row0 row1 row2 col1 col2 : ℕ}, row0 < row1 → row1 < row2 → 0 < col1 → col1 < col2 →
+      2 * col2 ≤ row0 → 0 < hurwitz a (row0 - 2 * col2) 0 →
+      0 < hurwitzFullBandCornerZeroedSingleFirstColLowerMinor a row1 row2 col1 →
+      0 ≤ hurwitzFullBandCornerZeroedSingleFirstColDet a row0 row1 row2 col1 col2)) :
+    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+      ∀ {n : ℕ} {rows cols : Fin n → ℕ}, StrictMono rows → StrictMono cols → n ≤ 3 →
+      0 ≤ (((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det)) :=
   hadamardPreservesHurwitzMatrixTNDetLeThree_of_cornerZeroedSingleFirstCol
     (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstCol_of_positiveRemainder
       hPos)
@@ -2872,8 +2944,12 @@ theorem
 /-- The pure size-`≤ 3` Hurwitz matrix Schur-product statement implies the
 Hadamard-product Hurwitz-matrix size-`≤ 3` statement. -/
 theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_hurwitzLeThree
-    (hLeThree : (∀ {a b : ℕ → ℝ}, (hurwitz a).IsTotallyNonneg → (hurwitz b).IsTotallyNonneg → ∀ {n : ℕ} {rows cols : Fin n → ℕ}, StrictMono rows → StrictMono cols → n ≤ 3 → 0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det)) :
-    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → ∀ {n : ℕ} {rows cols : Fin n → ℕ}, StrictMono rows → StrictMono cols → n ≤ 3 → 0 ≤ (((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det)) := by
+    (hLeThree : (∀ {a b : ℕ → ℝ}, (hurwitz a).IsTotallyNonneg → (hurwitz b).IsTotallyNonneg →
+      ∀ {n : ℕ} {rows cols : Fin n → ℕ}, StrictMono rows → StrictMono cols → n ≤ 3 →
+      0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det)) :
+    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+      ∀ {n : ℕ} {rows cols : Fin n → ℕ}, StrictMono rows → StrictMono cols → n ≤ 3 →
+      0 ≤ (((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det)) := by
   intro a b ha hb n rows cols hrows hcols hn
   rw [hurwitz_hadamardProduct_matrix]
   exact hLeThree ha hb hrows hcols hn
@@ -2881,8 +2957,11 @@ theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_hurwitzLeThree
 /-- The full Hurwitz-matrix Hadamard leaf implies its named low-order,
 size-`≤ 3`, consequence. -/
 theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_matrixTN
-    (h : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg)) :
-    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → ∀ {n : ℕ} {rows cols : Fin n → ℕ}, StrictMono rows → StrictMono cols → n ≤ 3 → 0 ≤ (((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det)) := by
+    (h : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+      (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg)) :
+    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+      ∀ {n : ℕ} {rows cols : Fin n → ℕ}, StrictMono rows → StrictMono cols → n ≤ 3 →
+      0 ≤ (((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det)) := by
   intro a b ha hb n rows cols hrows hcols _hn
   exact h ha hb hrows hcols
 
@@ -2893,7 +2972,8 @@ bookkeeping from the Hurwitz-matrix Hadamard leaf; the remaining
 input is only that entrywise products of totally nonnegative Hurwitz matrices
 are totally nonnegative. -/
 theorem hadamardPreservesHurwitzMatrixTN_of_schur :
-    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg) := by
+    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+      (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg) := by
   intro a b ha hb
   rw [hurwitz_hadamardProduct_matrix]
   exact hurwitzMatrixSchurProductTN ha hb
@@ -2904,7 +2984,8 @@ Hadamard leaf. -/
 /-- The Hurwitz-matrix Hadamard leaf makes the odd coefficient subsequence of
 the Hadamard product Pólya-frequency. -/
 theorem hadamardProduct_oddCoeff_isPolyaFreqSeq_of_matrixTN
-    (h : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
+    (h : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+      (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
     {a b : ℝ[X]} (ha : (hurwitz a.coeff).IsTotallyNonneg)
     (hb : (hurwitz b.coeff).IsTotallyNonneg) :
     IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n + 1)) :=
@@ -2913,7 +2994,8 @@ theorem hadamardProduct_oddCoeff_isPolyaFreqSeq_of_matrixTN
 /-- The Hurwitz-matrix Hadamard leaf makes the even coefficient subsequence of
 the Hadamard product Pólya-frequency. -/
 theorem hadamardProduct_evenCoeff_isPolyaFreqSeq_of_matrixTN
-    (h : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
+    (h : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+      (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
     {a b : ℝ[X]} (ha : (hurwitz a.coeff).IsTotallyNonneg)
     (hb : (hurwitz b.coeff).IsTotallyNonneg) :
     IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n)) :=
@@ -2921,8 +3003,11 @@ theorem hadamardProduct_evenCoeff_isPolyaFreqSeq_of_matrixTN
 
 /-- Bundled odd/even PF consequence of the Hurwitz-matrix Hadamard leaf. -/
 theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_matrixTN
-    (h : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg)) :
-    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n + 1)) ∧ IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n))) :=
+    (h : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+      (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg)) :
+    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+      IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n + 1)) ∧
+      IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n))) :=
   fun {_ _} ha hb =>
     ⟨hadamardProduct_oddCoeff_isPolyaFreqSeq_of_matrixTN h ha hb,
       hadamardProduct_evenCoeff_isPolyaFreqSeq_of_matrixTN h ha hb⟩
@@ -2930,21 +3015,26 @@ theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_matrixTN
 /-- The pure Hurwitz Schur-product core gives the odd/even PF consequence for
 Hadamard products. -/
 theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_schur :
-    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n + 1)) ∧ IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n))) :=
+    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+      IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n + 1)) ∧
+      IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n))) :=
   hadamardPreservesHurwitzMatrixOddEvenPF_of_matrixTN
     hadamardPreservesHurwitzMatrixTN_of_schur
 
 /-- The pure Hurwitz Schur-product core implies the named low-order,
 size-`≤ 3`, Hurwitz-matrix Hadamard leaf. -/
 theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_schur :
-    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → ∀ {n : ℕ} {rows cols : Fin n → ℕ}, StrictMono rows → StrictMono cols → n ≤ 3 → 0 ≤ (((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det)) :=
+    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+      ∀ {n : ℕ} {rows cols : Fin n → ℕ}, StrictMono rows → StrictMono cols → n ≤ 3 →
+      0 ≤ (((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det)) :=
   hadamardPreservesHurwitzMatrixTNDetLeThree_of_matrixTN
     hadamardPreservesHurwitzMatrixTN_of_schur
 
 /-- Garloff--Wagner Theorem 1 from the pure Hurwitz Schur-product core and the
 two directions of the Hurwitz-matrix criterion. -/
 theorem hadamardPreservesHurwitzStable_of_hurwitzSchur :
-    (∀ {a b : ℝ[X]}, IsHurwitzStable a → IsHurwitzStable b → IsHurwitzStable (hadamardProduct a b)) :=
+    (∀ {a b : ℝ[X]}, IsHurwitzStable a → IsHurwitzStable b →
+      IsHurwitzStable (hadamardProduct a b)) :=
   hadamardPreservesHurwitzStable_of_matrixRoute
     hadamardPreservesHurwitzMatrixTN_of_schur
 
@@ -2953,8 +3043,10 @@ Theorem 1 plus both directions of the Hurwitz-matrix total-nonnegativity
 criterion.  Together with `hadamardPreservesHurwitzStable_of_matrixRoute`, this
 records the equivalence of the matrix leaf and Theorem 1 modulo that criterion. -/
 theorem hadamardPreservesHurwitzMatrixTN_of_stableRoute
-    (hThm1 : (∀ {a b : ℝ[X]}, IsHurwitzStable a → IsHurwitzStable b → IsHurwitzStable (hadamardProduct a b))) :
-    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg) :=
+    (hThm1 : (∀ {a b : ℝ[X]}, IsHurwitzStable a → IsHurwitzStable b →
+      IsHurwitzStable (hadamardProduct a b))) :
+    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+      (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg) :=
   fun {_ _} ha hb =>
     hurwitzStableToMatrixTotallyNonnegative
       (hThm1 (hurwitzMatrixTotallyNonnegativeToStable ha)
@@ -2963,60 +3055,83 @@ theorem hadamardPreservesHurwitzMatrixTN_of_stableRoute
 /-- Low-order Hurwitz-matrix Hadamard minors from Garloff--Wagner Theorem 1
 plus both directions of the Hurwitz-matrix total-nonnegativity criterion. -/
 theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_stableRoute
-    (hThm1 : (∀ {a b : ℝ[X]}, IsHurwitzStable a → IsHurwitzStable b → IsHurwitzStable (hadamardProduct a b))) :
-    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → ∀ {n : ℕ} {rows cols : Fin n → ℕ}, StrictMono rows → StrictMono cols → n ≤ 3 → 0 ≤ (((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det)) :=
+    (hThm1 : (∀ {a b : ℝ[X]}, IsHurwitzStable a → IsHurwitzStable b →
+      IsHurwitzStable (hadamardProduct a b))) :
+    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+      ∀ {n : ℕ} {rows cols : Fin n → ℕ}, StrictMono rows → StrictMono cols → n ≤ 3 →
+      0 ≤ (((hurwitz (hadamardProduct a b).coeff).submatrix rows cols).det)) :=
   hadamardPreservesHurwitzMatrixTNDetLeThree_of_matrixTN
     (hadamardPreservesHurwitzMatrixTN_of_stableRoute hThm1)
 
 /-- Odd/even PF consequence from Garloff--Wagner Theorem 1 plus both
 directions of the Hurwitz-matrix total-nonnegativity criterion. -/
 theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_stableRoute
-    (hThm1 : (∀ {a b : ℝ[X]}, IsHurwitzStable a → IsHurwitzStable b → IsHurwitzStable (hadamardProduct a b))) :
-    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n + 1)) ∧ IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n))) :=
+    (hThm1 : (∀ {a b : ℝ[X]}, IsHurwitzStable a → IsHurwitzStable b →
+      IsHurwitzStable (hadamardProduct a b))) :
+    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+      IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n + 1)) ∧
+      IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n))) :=
   hadamardPreservesHurwitzMatrixOddEvenPF_of_matrixTN
     (hadamardPreservesHurwitzMatrixTN_of_stableRoute hThm1)
 
 /-- Under the two directions of the Hurwitz-matrix criterion, Garloff--Wagner
 Theorem 1 is equivalent to the Hurwitz-matrix Hadamard leaf. -/
 theorem hadamardPreservesHurwitzStable_iff_matrixTN :
-    (∀ {a b : ℝ[X]}, IsHurwitzStable a → IsHurwitzStable b → IsHurwitzStable (hadamardProduct a b)) ↔
-      (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg) :=
+    (∀ {a b : ℝ[X]}, IsHurwitzStable a → IsHurwitzStable b →
+      IsHurwitzStable (hadamardProduct a b)) ↔
+      (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+        (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg) :=
   ⟨fun h => hadamardPreservesHurwitzMatrixTN_of_stableRoute h,
     fun h => hadamardPreservesHurwitzStable_of_matrixRoute h⟩
 
 /-- Under the Hurwitz-matrix criterion, the right-half-plane analytic core of
 Garloff--Wagner Theorem 1 is equivalent to the matrix Hadamard leaf. -/
 theorem hadamardPreservesRightHalfPlaneStable_iff_matrixTN :
-    (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b → IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) → IsRightHalfPlaneStable (complexify (hadamardProduct a b))) ↔
-      (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg) :=
+    (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b → IsRightHalfPlaneStable (complexify a) →
+      IsRightHalfPlaneStable (complexify b) →
+      IsRightHalfPlaneStable (complexify (hadamardProduct a b))) ↔
+      (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+        (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg) :=
   hadamardPreservesHurwitzStable_iff_rightHalfPlane.symm.trans
     hadamardPreservesHurwitzStable_iff_matrixTN
 
 /-- The matrix route also gives the right-half-plane analytic core directly. -/
 theorem hadamardPreservesRightHalfPlaneStable_of_matrixRoute
-    (hHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg)) :
-    (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b → IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) → IsRightHalfPlaneStable (complexify (hadamardProduct a b))) :=
+    (hHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+      (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg)) :
+    (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b → IsRightHalfPlaneStable (complexify a) →
+      IsRightHalfPlaneStable (complexify b) →
+      IsRightHalfPlaneStable (complexify (hadamardProduct a b))) :=
   hadamardPreservesRightHalfPlaneStable_iff_matrixTN.2 hHad
 
 /-- Conversely, the right-half-plane analytic core gives the matrix leaf through
 the Hurwitz-matrix criterion. -/
 theorem hadamardPreservesHurwitzMatrixTN_of_rightHalfPlaneRoute
-    (hRHP : (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b → IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) → IsRightHalfPlaneStable (complexify (hadamardProduct a b)))) :
-    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg) :=
+    (hRHP : (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b →
+      IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) →
+      IsRightHalfPlaneStable (complexify (hadamardProduct a b)))) :
+    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+      (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg) :=
   hadamardPreservesRightHalfPlaneStable_iff_matrixTN.1 hRHP
 
 /-- Odd/even PF consequence from the right-half-plane analytic core plus the
 Hurwitz-matrix total-nonnegativity criterion. -/
 theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_rightHalfPlaneRoute
-    (hRHP : (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b → IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) → IsRightHalfPlaneStable (complexify (hadamardProduct a b)))) :
-    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n + 1)) ∧ IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n))) :=
+    (hRHP : (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b →
+      IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) →
+      IsRightHalfPlaneStable (complexify (hadamardProduct a b)))) :
+    (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg →
+      IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n + 1)) ∧
+      IsPolyaFreqSeq (fun n => (hadamardProduct a b).coeff (2 * n))) :=
   hadamardPreservesHurwitzMatrixOddEvenPF_of_matrixTN
     (hadamardPreservesHurwitzMatrixTN_of_rightHalfPlaneRoute hRHP)
 
 /-- The pure Hurwitz Schur-product core implies the right-half-plane analytic
 core, modulo the two directions of the Hurwitz-matrix criterion. -/
 theorem hadamardPreservesRightHalfPlaneStable_of_hurwitzSchur :
-    (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b → IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) → IsRightHalfPlaneStable (complexify (hadamardProduct a b))) :=
+    (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b → IsRightHalfPlaneStable (complexify a) →
+      IsRightHalfPlaneStable (complexify b) →
+      IsRightHalfPlaneStable (complexify (hadamardProduct a b))) :=
   hadamardPreservesRightHalfPlaneStable_of_matrixRoute
     hadamardPreservesHurwitzMatrixTN_of_schur
 
@@ -3050,10 +3165,14 @@ reduction goes through `IsHurwitzStable` (Theorem 1) rather than the
 single-polynomial real-rootedness fact
 the nonnegative real-rooted Hadamard interface. -/
 theorem garloffWagnerHadamardNonnegPrec_of_oddEven
-    (hThm1 : (∀ {a b : ℝ[X]}, IsHurwitzStable a → IsHurwitzStable b → IsHurwitzStable (hadamardProduct a b)))
-    (hPrecToHurwitz : (∀ ⦃p q : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q → IsHurwitzStable (oddEvenPolynomial p q)))
-    (hHurwitzToFull : (∀ ⦃p q : ℝ[X]⦄, IsHurwitzStable (oddEvenPolynomial p q) → FullyInterlacingPair p.coeff (fun n => q.coeff n)))
-    (hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) → Prec0 p q)) :
+    (hThm1 : (∀ {a b : ℝ[X]}, IsHurwitzStable a → IsHurwitzStable b →
+      IsHurwitzStable (hadamardProduct a b)))
+    (hPrecToHurwitz : (∀ ⦃p q : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q →
+      IsHurwitzStable (oddEvenPolynomial p q)))
+    (hHurwitzToFull : (∀ ⦃p q : ℝ[X]⦄, IsHurwitzStable (oddEvenPolynomial p q) →
+      FullyInterlacingPair p.coeff (fun n => q.coeff n)))
+    (hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      Prec0 p q)) :
     ∀ {f g p q : ℝ[X]},
       HasNonnegCoeffs f → HasNonnegCoeffs g → HasNonnegCoeffs p → HasNonnegCoeffs q →
       Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q) := by
@@ -3086,10 +3205,17 @@ classical bottom-level inputs:
 This pins down the remaining analytic and combinatorial obligations for the
 #34 target in one place. -/
 theorem garloffWagnerHadamardNonnegPrec_of_classicalInputs
-    (hRHP : (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b → IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) → IsRightHalfPlaneStable (complexify (hadamardProduct a b))))
-    (hHBToHurwitz : (∀ ⦃p q : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs q → IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) → IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q))))
+    (hRHP : (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b →
+      IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) →
+      IsRightHalfPlaneStable (complexify (hadamardProduct a b))))
+    (hHBToHurwitz : (∀ ⦃p q : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs q →
+      IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) →
+      IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q))))
     (hHurwitzToMatrix : (∀ ⦃p : ℝ[X]⦄, IsHurwitzStable p → (hurwitz p.coeff).IsTotallyNonneg))
-    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs)))) :
+    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧
+      (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs)))) :
     ∀ {f g p q : ℝ[X]},
       HasNonnegCoeffs f → HasNonnegCoeffs g → HasNonnegCoeffs p → HasNonnegCoeffs q →
       Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q) :=
@@ -3103,14 +3229,20 @@ theorem garloffWagnerHadamardNonnegPrec_of_classicalInputs
 the shared Hermite--Biehler/Hurwitz-matrix route bundled. -/
 structure GarloffWagnerClassicalInputs : Prop where
   /-- Analytic core of Garloff--Wagner Theorem 1. -/
-  hadamardPreservesRightHalfPlaneStable : (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b → IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) → IsRightHalfPlaneStable (complexify (hadamardProduct a b)))
+  hadamardPreservesRightHalfPlaneStable : (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b →
+    IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) →
+    IsRightHalfPlaneStable (complexify (hadamardProduct a b)))
   /-- Shared sign-normalized Hermite--Biehler/Hurwitz-matrix route. -/
   route : HermiteBiehlerHurwitzRoute
   /-- Forward Aissen--Schoenberg--Whitney. -/
   aissenSchoenbergWhitneyForward :
     ∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0
   /-- Combinatorial interlacing-extraction core. -/
-  fullyInterlacingPairInterlace : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs)))
+  fullyInterlacingPairInterlace : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 →
+    FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧
+    rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧
+    ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧
+    ListAlternates ss rs)))
 
 /-- Garloff--Wagner two-pair theorem reduced to a bundled set of classical
 inputs. -/
@@ -3126,9 +3258,12 @@ theorem garloffWagnerHadamardNonnegPrec_of_classicalInputsBundle
     h.fullyInterlacingPairInterlace
 
 theorem garloffWagnerHadamardNonnegPrec_of_matrixHadamardBridges
-    (hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q → FullyInterlacingPair p.coeff (fun n => q.coeff n)))
-    (hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
-    (hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) → Prec0 p q)) :
+    (hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q →
+      FullyInterlacingPair p.coeff (fun n => q.coeff n)))
+    (hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg →
+      (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
+    (hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      Prec0 p q)) :
     ∀ {f g p q : ℝ[X]},
       HasNonnegCoeffs f → HasNonnegCoeffs g → HasNonnegCoeffs p → HasNonnegCoeffs q →
       Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q) := by
@@ -3153,8 +3288,10 @@ theorem garloffWagnerHadamardNonnegPrec_of_matrixHadamardBridges
 
 /-- Garloff--Wagner two-pair theorem via the pure Hurwitz Schur-product core. -/
 theorem garloffWagnerHadamardNonnegPrec_of_hurwitzSchur
-    (hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q → FullyInterlacingPair p.coeff (fun n => q.coeff n)))
-    (hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) → Prec0 p q)) :
+    (hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q →
+      FullyInterlacingPair p.coeff (fun n => q.coeff n)))
+    (hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      Prec0 p q)) :
     ∀ {f g p q : ℝ[X]},
       HasNonnegCoeffs f → HasNonnegCoeffs g → HasNonnegCoeffs p → HasNonnegCoeffs q →
       Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q) :=
@@ -3166,8 +3303,12 @@ non-Hadamard leaves discharged by the shared Hermite--Biehler route and the
 forward Aissen--Schoenberg--Whitney/interlacing-extraction route. -/
 theorem garloffWagnerHadamardNonnegPrec_of_matrixClassicalInputs
     (hRoute : HermiteBiehlerHurwitzRoute)
-    (hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
-    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs)))) :
+    (hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg →
+      (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
+    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧
+      (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs)))) :
     ∀ {f g p q : ℝ[X]},
       HasNonnegCoeffs f → HasNonnegCoeffs g → HasNonnegCoeffs p → HasNonnegCoeffs q →
       Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q) :=
@@ -3178,7 +3319,10 @@ theorem garloffWagnerHadamardNonnegPrec_of_matrixClassicalInputs
 
 theorem garloffWagnerHadamardNonnegPrec_of_hurwitzSchurClassicalInputs
     (hRoute : HermiteBiehlerHurwitzRoute)
-    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs)))) :
+    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧
+      (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs)))) :
     ∀ {f g p q : ℝ[X]},
       HasNonnegCoeffs f → HasNonnegCoeffs g → HasNonnegCoeffs p → HasNonnegCoeffs q →
       Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q) :=
@@ -3188,48 +3332,74 @@ theorem garloffWagnerHadamardNonnegPrec_of_hurwitzSchurClassicalInputs
 /- PF-polynomial wrapper around the strict Garloff--Wagner two-pair theorem. -/
 
 theorem garloffWagnerHadamardPFPrec_of_nonnegPrec :
-    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
+    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q →
+      Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
   fun {_ _ _ _} hf hg hp hq hfg hpq =>
     garloffWagnerHadamardNonnegPrec hf.hasNonnegCoeffs hg.hasNonnegCoeffs
       hp.hasNonnegCoeffs hq.hasNonnegCoeffs hfg hpq
 
 theorem garloffWagnerHadamardPFPrec_of_matrixHadamardBridges
-    (_hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q → FullyInterlacingPair p.coeff (fun n => q.coeff n)))
-    (_hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
-    (_hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) → Prec0 p q)) :
-    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
+    (_hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q →
+      FullyInterlacingPair p.coeff (fun n => q.coeff n)))
+    (_hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg →
+      (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
+    (_hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      Prec0 p q)) :
+    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q →
+      Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
   garloffWagnerHadamardPFPrec_of_nonnegPrec
 
 theorem garloffWagnerHadamardPFPrec_of_hurwitzSchur
-    (_hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q → FullyInterlacingPair p.coeff (fun n => q.coeff n)))
-    (_hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) → Prec0 p q)) :
-    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
+    (_hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q →
+      FullyInterlacingPair p.coeff (fun n => q.coeff n)))
+    (_hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      Prec0 p q)) :
+    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q →
+      Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
   garloffWagnerHadamardPFPrec_of_nonnegPrec
 
 theorem garloffWagnerHadamardPFPrec_of_classicalInputs
-    (_hRHP : (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b → IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) → IsRightHalfPlaneStable (complexify (hadamardProduct a b))))
-    (_hHBToHurwitz : (∀ ⦃p q : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs q → IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) → IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q))))
+    (_hRHP : (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b →
+      IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) →
+      IsRightHalfPlaneStable (complexify (hadamardProduct a b))))
+    (_hHBToHurwitz : (∀ ⦃p q : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs q →
+      IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) →
+      IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q))))
     (_hHurwitzToMatrix : (∀ ⦃p : ℝ[X]⦄, IsHurwitzStable p → (hurwitz p.coeff).IsTotallyNonneg))
-    (_hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs)))) :
-    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
+    (_hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧
+      (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs)))) :
+    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q →
+      Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
   garloffWagnerHadamardPFPrec_of_nonnegPrec
 
 theorem garloffWagnerHadamardPFPrec_of_classicalInputsBundle
     (_h : GarloffWagnerClassicalInputs) :
-    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
+    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q →
+      Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
   garloffWagnerHadamardPFPrec_of_nonnegPrec
 
 theorem garloffWagnerHadamardPFPrec_of_matrixClassicalInputs
     (_hRoute : HermiteBiehlerHurwitzRoute)
-    (_hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
-    (_hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs)))) :
-    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
+    (_hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg →
+      (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
+    (_hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧
+      (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs)))) :
+    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q →
+      Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
   garloffWagnerHadamardPFPrec_of_nonnegPrec
 
 theorem garloffWagnerHadamardPFPrec_of_hurwitzSchurClassicalInputs
     (_hRoute : HermiteBiehlerHurwitzRoute)
-    (_hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs)))) :
-    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
+    (_hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧
+      (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs)))) :
+    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q →
+      Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
   garloffWagnerHadamardPFPrec_of_nonnegPrec
 
 /- Zero-aware PF-polynomial wrapper around the Garloff--Wagner two-pair
@@ -3237,8 +3407,10 @@ theorem. This is the form most convenient for recursive arguments where a
 support specialization may produce the zero polynomial. -/
 
 theorem garloffWagnerHadamardPFPrec0_of_prec
-    (hGW : (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q))) :
-    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) := by
+    (hGW : (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p →
+      IsPFPolynomial q → Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q))) :
+    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q →
+      Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) := by
   intro f g p q hf hg hp hq hfg hpq
   rcases hfg with rfl | rfl | hfg'
   · simpa using prec0_zero_left (hadamardProduct g q)
@@ -3249,53 +3421,80 @@ theorem garloffWagnerHadamardPFPrec0_of_prec
   exact hGW hf hg hp hq hfg' hpq'
 
 theorem garloffWagnerHadamardPFPrec0_of_nonnegPrec :
-    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
+    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q →
+      Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
   garloffWagnerHadamardPFPrec0_of_prec
     garloffWagnerHadamardPFPrec_of_nonnegPrec
 
 theorem garloffWagnerHadamardPFPrec0_of_matrixHadamardBridges
-    (_hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q → FullyInterlacingPair p.coeff (fun n => q.coeff n)))
-    (_hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
-    (_hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) → Prec0 p q)) :
-    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
+    (_hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q →
+      FullyInterlacingPair p.coeff (fun n => q.coeff n)))
+    (_hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg →
+      (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
+    (_hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      Prec0 p q)) :
+    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q →
+      Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
   garloffWagnerHadamardPFPrec0_of_nonnegPrec
 
 theorem garloffWagnerHadamardPFPrec0_of_hurwitzSchur
-    (_hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q → FullyInterlacingPair p.coeff (fun n => q.coeff n)))
-    (_hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) → Prec0 p q)) :
-    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
+    (_hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q →
+      FullyInterlacingPair p.coeff (fun n => q.coeff n)))
+    (_hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      Prec0 p q)) :
+    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q →
+      Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
   garloffWagnerHadamardPFPrec0_of_nonnegPrec
 
 theorem garloffWagnerHadamardPFPrec0_of_classicalInputs
-    (_hRHP : (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b → IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) → IsRightHalfPlaneStable (complexify (hadamardProduct a b))))
-    (_hHBToHurwitz : (∀ ⦃p q : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs q → IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) → IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q))))
+    (_hRHP : (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b →
+      IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) →
+      IsRightHalfPlaneStable (complexify (hadamardProduct a b))))
+    (_hHBToHurwitz : (∀ ⦃p q : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs q →
+      IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) →
+      IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q))))
     (_hHurwitzToMatrix : (∀ ⦃p : ℝ[X]⦄, IsHurwitzStable p → (hurwitz p.coeff).IsTotallyNonneg))
-    (_hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs)))) :
-    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
+    (_hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧
+      (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs)))) :
+    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q →
+      Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
   garloffWagnerHadamardPFPrec0_of_nonnegPrec
 
 theorem garloffWagnerHadamardPFPrec0_of_classicalInputsBundle
     (_h : GarloffWagnerClassicalInputs) :
-    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
+    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q →
+      Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
   garloffWagnerHadamardPFPrec0_of_nonnegPrec
 
 theorem garloffWagnerHadamardPFPrec0_of_matrixClassicalInputs
     (_hRoute : HermiteBiehlerHurwitzRoute)
-    (_hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
-    (_hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs)))) :
-    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
+    (_hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg →
+      (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
+    (_hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧
+      (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs)))) :
+    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q →
+      Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
   garloffWagnerHadamardPFPrec0_of_nonnegPrec
 
 theorem garloffWagnerHadamardPFPrec0_of_hurwitzSchurClassicalInputs
     (_hRoute : HermiteBiehlerHurwitzRoute)
-    (_hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs)))) :
-    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
+    (_hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧
+      (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs)))) :
+    (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q →
+      Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)) :=
   garloffWagnerHadamardPFPrec0_of_nonnegPrec
 
 /-- PF-polynomial closure under Hadamard product, stated directly from the
 zero-aware Garloff--Wagner PF wrapper. -/
 theorem hadamardProduct_preserves_pf_of_garloffWagner
-    (hGW : (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)))
+    (hGW : (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p →
+      IsPFPolynomial q → Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)))
     {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
     IsPFPolynomial (hadamardProduct p q) :=
   IsPFPolynomial.of_prec0_self
@@ -3309,15 +3508,18 @@ theorem hadamardProduct_preserves_pf_of_nonnegPrec :
     garloffWagnerHadamardPFPrec0_of_nonnegPrec
 
 theorem hadamardProduct_preserves_pf_of_matrixHadamardBridges
-    (hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q → FullyInterlacingPair p.coeff (fun n => q.coeff n)))
-    (hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
+    (hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q →
+      FullyInterlacingPair p.coeff (fun n => q.coeff n)))
+    (hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg →
+      (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
     (hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) → Prec0 p q))
     {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
     IsPFPolynomial (hadamardProduct p q) :=
   hadamardProduct_preserves_pf_of_nonnegPrec
 
 theorem hadamardProduct_preserves_pf_of_hurwitzSchur
-    (hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q → FullyInterlacingPair p.coeff (fun n => q.coeff n)))
+    (hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q →
+      FullyInterlacingPair p.coeff (fun n => q.coeff n)))
     (hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) → Prec0 p q))
     {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
     IsPFPolynomial (hadamardProduct p q) :=
@@ -3325,10 +3527,17 @@ theorem hadamardProduct_preserves_pf_of_hurwitzSchur
 
 /-- PF-polynomial Hadamard closure through the six classical inputs. -/
 theorem hadamardProduct_preserves_pf_of_classicalInputs
-    (_hRHP : (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b → IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) → IsRightHalfPlaneStable (complexify (hadamardProduct a b))))
-    (_hHBToHurwitz : (∀ ⦃p q : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs q → IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) → IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q))))
+    (_hRHP : (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b →
+      IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) →
+      IsRightHalfPlaneStable (complexify (hadamardProduct a b))))
+    (_hHBToHurwitz : (∀ ⦃p q : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs q →
+      IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) →
+      IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q))))
     (_hHurwitzToMatrix : (∀ ⦃p : ℝ[X]⦄, IsHurwitzStable p → (hurwitz p.coeff).IsTotallyNonneg))
-    (_hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs))))
+    (_hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧
+      (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs))))
     {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
     IsPFPolynomial (hadamardProduct p q) :=
   hadamardProduct_preserves_pf_of_nonnegPrec
@@ -3342,8 +3551,12 @@ theorem hadamardProduct_preserves_pf_of_classicalInputsBundle
 
 theorem hadamardProduct_preserves_pf_of_matrixClassicalInputs
     (hRoute : HermiteBiehlerHurwitzRoute)
-    (hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
-    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs))))
+    (hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg →
+      (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
+    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧
+      (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs))))
     {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
     IsPFPolynomial (hadamardProduct p q) :=
   hadamardProduct_preserves_pf_of_garloffWagner
@@ -3352,7 +3565,10 @@ theorem hadamardProduct_preserves_pf_of_matrixClassicalInputs
 
 theorem hadamardProduct_preserves_pf_of_hurwitzSchurClassicalInputs
     (hRoute : HermiteBiehlerHurwitzRoute)
-    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs)))) :
+    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧
+      (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs)))) :
     {p q : ℝ[X]} → IsPFPolynomial p → IsPFPolynomial q →
     IsPFPolynomial (hadamardProduct p q) :=
   hadamardProduct_preserves_pf_of_nonnegPrec
@@ -3373,38 +3589,53 @@ theorem hadamardProduct_preserves_pf_of_hurwitzSchurClassicalInputs
   hadamardProduct_preserves_pf_of_nonnegPrec
 
 theorem schurPolyaWagnerHadamardPF_of_garloffWagner_prec0
-    (hGW : (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q))) :
+    (hGW : (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p →
+      IsPFPolynomial q → Prec0 f g → Prec0 p q →
+      Prec0 (hadamardProduct f p) (hadamardProduct g q))) :
     (∀ {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → IsPFPolynomial (hadamardProduct p q)) :=
   fun {_ _} hp hq => hadamardProduct_preserves_pf_of_garloffWagner hGW hp hq
 
 theorem schurPolyaWagnerHadamardPF_of_garloffWagner_prec
-    (hGW : (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q))) :
+    (hGW : (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p →
+      IsPFPolynomial q → Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q))) :
     (∀ {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → IsPFPolynomial (hadamardProduct p q)) :=
   schurPolyaWagnerHadamardPF_of_garloffWagner_prec0
     (garloffWagnerHadamardPFPrec0_of_prec hGW)
 
 theorem schurPolyaWagnerHadamardPF_of_matrixHadamardBridges
-    (hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q → FullyInterlacingPair p.coeff (fun n => q.coeff n)))
-    (hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
-    (hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) → Prec0 p q)) :
+    (hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q →
+      FullyInterlacingPair p.coeff (fun n => q.coeff n)))
+    (hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg →
+      (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
+    (hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      Prec0 p q)) :
     (∀ {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → IsPFPolynomial (hadamardProduct p q)) :=
   fun {_ _} hp hq =>
     hadamardProduct_preserves_pf_of_matrixHadamardBridges
       hToFull hMatHad hFullToPrec0 hp hq
 
 theorem schurPolyaWagnerHadamardPF_of_hurwitzSchur
-    (hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q → FullyInterlacingPair p.coeff (fun n => q.coeff n)))
-    (hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) → Prec0 p q)) :
+    (hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q →
+      FullyInterlacingPair p.coeff (fun n => q.coeff n)))
+    (hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      Prec0 p q)) :
     (∀ {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → IsPFPolynomial (hadamardProduct p q)) :=
   fun {_ _} hp hq =>
     hadamardProduct_preserves_pf_of_hurwitzSchur
       hToFull hFullToPrec0 hp hq
 
 theorem schurPolyaWagnerHadamardPF_of_classicalInputs
-    (hRHP : (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b → IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) → IsRightHalfPlaneStable (complexify (hadamardProduct a b))))
-    (hHBToHurwitz : (∀ ⦃p q : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs q → IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) → IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q))))
+    (hRHP : (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b →
+      IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) →
+      IsRightHalfPlaneStable (complexify (hadamardProduct a b))))
+    (hHBToHurwitz : (∀ ⦃p q : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs q →
+      IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) →
+      IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q))))
     (hHurwitzToMatrix : (∀ ⦃p : ℝ[X]⦄, IsHurwitzStable p → (hurwitz p.coeff).IsTotallyNonneg))
-    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs)))) :
+    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧
+      (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs)))) :
     (∀ {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → IsPFPolynomial (hadamardProduct p q)) :=
   fun {_ _} hp hq =>
     hadamardProduct_preserves_pf_of_classicalInputs
@@ -3418,8 +3649,12 @@ theorem schurPolyaWagnerHadamardPF_of_classicalInputsBundle
 
 theorem schurPolyaWagnerHadamardPF_of_matrixClassicalInputs
     (hRoute : HermiteBiehlerHurwitzRoute)
-    (hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
-    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs)))) :
+    (hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg →
+      (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
+    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧
+      (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs)))) :
     (∀ {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → IsPFPolynomial (hadamardProduct p q)) :=
   fun {_ _} hp hq =>
     hadamardProduct_preserves_pf_of_matrixClassicalInputs
@@ -3427,7 +3662,10 @@ theorem schurPolyaWagnerHadamardPF_of_matrixClassicalInputs
 
 theorem schurPolyaWagnerHadamardPF_of_hurwitzSchurClassicalInputs
     (hRoute : HermiteBiehlerHurwitzRoute)
-    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs)))) :
+    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧
+      (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs)))) :
     (∀ {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → IsPFPolynomial (hadamardProduct p q)) :=
   fun {_ _} hp hq =>
     hadamardProduct_preserves_pf_of_hurwitzSchurClassicalInputs
@@ -3443,7 +3681,9 @@ theorem schurPolyaWagnerHadamardPF_of_garloffWagner_nonnegPrec :
 /-- The two-pair Garloff--Wagner theorem implies the one-polynomial
 real-rootedness/PF Hadamard theorem by applying it to self-pairs. -/
 theorem garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec :
-    (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → (p ≠ 0 ∧ p.Splits) → (q ≠ 0 ∧ q.Splits) → (hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧ HasNonnegCoeffs (hadamardProduct p q) ∧ ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0) := by
+    (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → (p ≠ 0 ∧ p.Splits) → (q ≠ 0 ∧
+      q.Splits) → (hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧
+      HasNonnegCoeffs (hadamardProduct p q) ∧ ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0) := by
   intro p q hpnn hqnn hprr hqrr
   have hp : IsPFPolynomial p := IsPFPolynomial.of_realRooted_nonneg hpnn hprr.2
   have hq : IsPFPolynomial q := IsPFPolynomial.of_realRooted_nonneg hqnn hqrr.2
@@ -3452,50 +3692,84 @@ theorem garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec :
   exact ⟨hpf.eq_zero_or_splits, hpf.hasNonnegCoeffs, hpf.roots_nonpos⟩
 
 theorem garloffWagnerHadamardNonnegRealRooted_of_matrixHadamardBridges
-    (_hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q → FullyInterlacingPair p.coeff (fun n => q.coeff n)))
-    (_hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
-    (_hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) → Prec0 p q)) :
-    (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → (p ≠ 0 ∧ p.Splits) → (q ≠ 0 ∧ q.Splits) → (hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧ HasNonnegCoeffs (hadamardProduct p q) ∧ ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0) :=
+    (_hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q →
+      FullyInterlacingPair p.coeff (fun n => q.coeff n)))
+    (_hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg →
+      (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
+    (_hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      Prec0 p q)) :
+    (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → (p ≠ 0 ∧ p.Splits) → (q ≠ 0 ∧
+      q.Splits) → (hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧
+      HasNonnegCoeffs (hadamardProduct p q) ∧ ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0) :=
   garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
 
 theorem garloffWagnerHadamardNonnegRealRooted_of_hurwitzSchur
-    (_hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q → FullyInterlacingPair p.coeff (fun n => q.coeff n)))
-    (_hSchur : (∀ {a b : ℕ → ℝ}, (hurwitz a).IsTotallyNonneg → (hurwitz b).IsTotallyNonneg → (Matrix.of fun i j => hurwitz a i j * hurwitz b i j).IsTotallyNonneg))
-    (_hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) → Prec0 p q)) :
-    (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → (p ≠ 0 ∧ p.Splits) → (q ≠ 0 ∧ q.Splits) → (hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧ HasNonnegCoeffs (hadamardProduct p q) ∧ ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0) :=
+    (_hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q →
+      FullyInterlacingPair p.coeff (fun n => q.coeff n)))
+    (_hSchur : (∀ {a b : ℕ → ℝ}, (hurwitz a).IsTotallyNonneg → (hurwitz b).IsTotallyNonneg →
+      (Matrix.of fun i j => hurwitz a i j * hurwitz b i j).IsTotallyNonneg))
+    (_hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      Prec0 p q)) :
+    (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → (p ≠ 0 ∧ p.Splits) → (q ≠ 0 ∧
+      q.Splits) → (hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧
+      HasNonnegCoeffs (hadamardProduct p q) ∧ ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0) :=
   garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
 
 theorem garloffWagnerHadamardNonnegRealRooted_of_classicalInputs
-    (_hRHP : (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b → IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) → IsRightHalfPlaneStable (complexify (hadamardProduct a b))))
-    (_hHBToHurwitz : (∀ ⦃p q : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs q → IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) → IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q))))
+    (_hRHP : (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b →
+      IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) →
+      IsRightHalfPlaneStable (complexify (hadamardProduct a b))))
+    (_hHBToHurwitz : (∀ ⦃p q : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs q →
+      IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) →
+      IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q))))
     (_hHurwitzToMatrix : (∀ ⦃p : ℝ[X]⦄, IsHurwitzStable p → (hurwitz p.coeff).IsTotallyNonneg))
-    (_hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs)))) :
-    (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → (p ≠ 0 ∧ p.Splits) → (q ≠ 0 ∧ q.Splits) → (hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧ HasNonnegCoeffs (hadamardProduct p q) ∧ ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0) :=
+    (_hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧
+      (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs)))) :
+    (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → (p ≠ 0 ∧ p.Splits) → (q ≠ 0 ∧
+      q.Splits) → (hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧
+      HasNonnegCoeffs (hadamardProduct p q) ∧ ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0) :=
   garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
 
 theorem garloffWagnerHadamardNonnegRealRooted_of_classicalInputsBundle
     (_h : GarloffWagnerClassicalInputs) :
-    (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → (p ≠ 0 ∧ p.Splits) → (q ≠ 0 ∧ q.Splits) → (hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧ HasNonnegCoeffs (hadamardProduct p q) ∧ ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0) :=
+    (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → (p ≠ 0 ∧ p.Splits) → (q ≠ 0 ∧
+      q.Splits) → (hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧
+      HasNonnegCoeffs (hadamardProduct p q) ∧ ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0) :=
   garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
 
 theorem garloffWagnerHadamardNonnegRealRooted_of_matrixClassicalInputs
     (_hRoute : HermiteBiehlerHurwitzRoute)
-    (_hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
-    (_hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs)))) :
-    (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → (p ≠ 0 ∧ p.Splits) → (q ≠ 0 ∧ q.Splits) → (hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧ HasNonnegCoeffs (hadamardProduct p q) ∧ ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0) :=
+    (_hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg →
+      (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
+    (_hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧
+      (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs)))) :
+    (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → (p ≠ 0 ∧ p.Splits) → (q ≠ 0 ∧
+      q.Splits) → (hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧
+      HasNonnegCoeffs (hadamardProduct p q) ∧ ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0) :=
   garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
 
 theorem garloffWagnerHadamardNonnegRealRooted_of_hurwitzSchurClassicalInputs
     (_hRoute : HermiteBiehlerHurwitzRoute)
-    (_hSchur : (∀ {a b : ℕ → ℝ}, (hurwitz a).IsTotallyNonneg → (hurwitz b).IsTotallyNonneg → (Matrix.of fun i j => hurwitz a i j * hurwitz b i j).IsTotallyNonneg))
-    (_hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs)))) :
-    (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → (p ≠ 0 ∧ p.Splits) → (q ≠ 0 ∧ q.Splits) → (hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧ HasNonnegCoeffs (hadamardProduct p q) ∧ ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0) :=
+    (_hSchur : (∀ {a b : ℕ → ℝ}, (hurwitz a).IsTotallyNonneg → (hurwitz b).IsTotallyNonneg →
+      (Matrix.of fun i j => hurwitz a i j * hurwitz b i j).IsTotallyNonneg))
+    (_hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧
+      (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs)))) :
+    (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → (p ≠ 0 ∧ p.Splits) → (q ≠ 0 ∧
+      q.Splits) → (hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧
+      HasNonnegCoeffs (hadamardProduct p q) ∧ ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0) :=
   garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
 
 /-- Fixed-right Hadamard multiplication preserves zero-aware proper position
 inside the PF cone. -/
 theorem hadamardProduct_preserves_prec0_right
-    (hGW : (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)))
+    (hGW : (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p →
+      IsPFPolynomial q → Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)))
     {f g p : ℝ[X]}
     (hf : IsPFPolynomial f) (hg : IsPFPolynomial g) (hp : IsPFPolynomial p)
     (hfg : Prec0 f g) :
@@ -3505,7 +3779,8 @@ theorem hadamardProduct_preserves_prec0_right
 /-- Fixed-left Hadamard multiplication preserves zero-aware proper position
 inside the PF cone. -/
 theorem hadamardProduct_preserves_prec0_left
-    (hGW : (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)))
+    (hGW : (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p →
+      IsPFPolynomial q → Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q)))
     {f p q : ℝ[X]}
     (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpq : Prec0 p q) :
@@ -3524,8 +3799,12 @@ theorem reciprocalShift_hadamardProduct (D : ℕ) (p q : ℝ[X]) :
 /-- Hadamard closure for the reciprocal-interlacing cone, obtained from the
 zero-aware PF two-pair Garloff--Wagner wrapper. -/
 theorem hadamardReciprocalConeClosure_of_garloffWagner_prec0
-    (hGW : (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q))) :
-    (∀ {D : ℕ} {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → Prec p (reciprocalShift D p) → Prec q (reciprocalShift D q) → Prec0 (hadamardProduct p q) (reciprocalShift D (hadamardProduct p q))) := by
+    (hGW : (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p →
+      IsPFPolynomial q → Prec0 f g → Prec0 p q →
+      Prec0 (hadamardProduct f p) (hadamardProduct g q))) :
+    (∀ {D : ℕ} {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → Prec p (reciprocalShift D p) →
+      Prec q (reciprocalShift D q) →
+      Prec0 (hadamardProduct p q) (reciprocalShift D (hadamardProduct p q))) := by
   intro D p q hp hq hprec_p hprec_q
   have hp_shift : IsPFPolynomial (reciprocalShift D p) :=
     IsPFPolynomial.of_realRooted_nonneg hp.hasNonnegCoeffs.reciprocalShift hprec_p.2.1.2
@@ -3535,61 +3814,97 @@ theorem hadamardReciprocalConeClosure_of_garloffWagner_prec0
     hGW hp hp_shift hq hq_shift hprec_p.toPrec0 hprec_q.toPrec0
 
 theorem hadamardReciprocalConeClosure_of_garloffWagner_prec
-    (hGW : (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q))) :
-    (∀ {D : ℕ} {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → Prec p (reciprocalShift D p) → Prec q (reciprocalShift D q) → Prec0 (hadamardProduct p q) (reciprocalShift D (hadamardProduct p q))) :=
+    (hGW : (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p →
+      IsPFPolynomial q → Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q))) :
+    (∀ {D : ℕ} {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → Prec p (reciprocalShift D p) →
+      Prec q (reciprocalShift D q) →
+      Prec0 (hadamardProduct p q) (reciprocalShift D (hadamardProduct p q))) :=
   hadamardReciprocalConeClosure_of_garloffWagner_prec0
     (garloffWagnerHadamardPFPrec0_of_prec hGW)
 
 /-- Hadamard closure for the reciprocal-interlacing cone, obtained from the
 nonnegative two-pair Garloff--Wagner theorem. -/
 theorem hadamardReciprocalConeClosure_of_garloffWagner :
-    (∀ {D : ℕ} {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → Prec p (reciprocalShift D p) → Prec q (reciprocalShift D q) → Prec0 (hadamardProduct p q) (reciprocalShift D (hadamardProduct p q))) :=
+    (∀ {D : ℕ} {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → Prec p (reciprocalShift D p) →
+      Prec q (reciprocalShift D q) →
+      Prec0 (hadamardProduct p q) (reciprocalShift D (hadamardProduct p q))) :=
   hadamardReciprocalConeClosure_of_garloffWagner_prec0
     garloffWagnerHadamardPFPrec0_of_nonnegPrec
 
 theorem hadamardReciprocalConeClosure_of_matrixHadamardBridges
-    (hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q → FullyInterlacingPair p.coeff (fun n => q.coeff n)))
-    (hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
-    (hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) → Prec0 p q)) :
-    (∀ {D : ℕ} {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → Prec p (reciprocalShift D p) → Prec q (reciprocalShift D q) → Prec0 (hadamardProduct p q) (reciprocalShift D (hadamardProduct p q))) :=
+    (hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q →
+      FullyInterlacingPair p.coeff (fun n => q.coeff n)))
+    (hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg →
+      (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
+    (hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      Prec0 p q)) :
+    (∀ {D : ℕ} {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → Prec p (reciprocalShift D p) →
+      Prec q (reciprocalShift D q) →
+      Prec0 (hadamardProduct p q) (reciprocalShift D (hadamardProduct p q))) :=
   hadamardReciprocalConeClosure_of_garloffWagner_prec0
     (garloffWagnerHadamardPFPrec0_of_matrixHadamardBridges
       hToFull hMatHad hFullToPrec0)
 
 theorem hadamardReciprocalConeClosure_of_hurwitzSchur
-    (hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q → FullyInterlacingPair p.coeff (fun n => q.coeff n)))
-    (hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) → Prec0 p q)) :
-    (∀ {D : ℕ} {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → Prec p (reciprocalShift D p) → Prec q (reciprocalShift D q) → Prec0 (hadamardProduct p q) (reciprocalShift D (hadamardProduct p q))) :=
+    (hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q →
+      FullyInterlacingPair p.coeff (fun n => q.coeff n)))
+    (hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      Prec0 p q)) :
+    (∀ {D : ℕ} {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → Prec p (reciprocalShift D p) →
+      Prec q (reciprocalShift D q) →
+      Prec0 (hadamardProduct p q) (reciprocalShift D (hadamardProduct p q))) :=
   hadamardReciprocalConeClosure_of_garloffWagner_prec0
     (garloffWagnerHadamardPFPrec0_of_hurwitzSchur
       hToFull hFullToPrec0)
 
 theorem hadamardReciprocalConeClosure_of_classicalInputs
-    (_hRHP : (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b → IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) → IsRightHalfPlaneStable (complexify (hadamardProduct a b))))
-    (_hHBToHurwitz : (∀ ⦃p q : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs q → IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) → IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q))))
+    (_hRHP : (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b →
+      IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) →
+      IsRightHalfPlaneStable (complexify (hadamardProduct a b))))
+    (_hHBToHurwitz : (∀ ⦃p q : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs q →
+      IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) →
+      IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q))))
     (_hHurwitzToMatrix : (∀ ⦃p : ℝ[X]⦄, IsHurwitzStable p → (hurwitz p.coeff).IsTotallyNonneg))
-    (_hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs)))) :
-    (∀ {D : ℕ} {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → Prec p (reciprocalShift D p) → Prec q (reciprocalShift D q) → Prec0 (hadamardProduct p q) (reciprocalShift D (hadamardProduct p q))) :=
+    (_hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧
+      (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs)))) :
+    (∀ {D : ℕ} {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → Prec p (reciprocalShift D p) →
+      Prec q (reciprocalShift D q) →
+      Prec0 (hadamardProduct p q) (reciprocalShift D (hadamardProduct p q))) :=
   hadamardReciprocalConeClosure_of_garloffWagner
 
 theorem hadamardReciprocalConeClosure_of_classicalInputsBundle
     (_h : GarloffWagnerClassicalInputs) :
-    (∀ {D : ℕ} {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → Prec p (reciprocalShift D p) → Prec q (reciprocalShift D q) → Prec0 (hadamardProduct p q) (reciprocalShift D (hadamardProduct p q))) :=
+    (∀ {D : ℕ} {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → Prec p (reciprocalShift D p) →
+      Prec q (reciprocalShift D q) →
+      Prec0 (hadamardProduct p q) (reciprocalShift D (hadamardProduct p q))) :=
   hadamardReciprocalConeClosure_of_garloffWagner
 
 theorem hadamardReciprocalConeClosure_of_matrixClassicalInputs
     (hRoute : HermiteBiehlerHurwitzRoute)
-    (hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
-    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs)))) :
-    (∀ {D : ℕ} {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → Prec p (reciprocalShift D p) → Prec q (reciprocalShift D q) → Prec0 (hadamardProduct p q) (reciprocalShift D (hadamardProduct p q))) :=
+    (hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg →
+      (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
+    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧
+      (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs)))) :
+    (∀ {D : ℕ} {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → Prec p (reciprocalShift D p) →
+      Prec q (reciprocalShift D q) →
+      Prec0 (hadamardProduct p q) (reciprocalShift D (hadamardProduct p q))) :=
   hadamardReciprocalConeClosure_of_garloffWagner_prec0
     (garloffWagnerHadamardPFPrec0_of_matrixClassicalInputs
       hRoute hMatHad hInt)
 
 theorem hadamardReciprocalConeClosure_of_hurwitzSchurClassicalInputs
     (hRoute : HermiteBiehlerHurwitzRoute)
-    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs)))) :
-    (∀ {D : ℕ} {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → Prec p (reciprocalShift D p) → Prec q (reciprocalShift D q) → Prec0 (hadamardProduct p q) (reciprocalShift D (hadamardProduct p q))) :=
+    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧
+      (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs)))) :
+    (∀ {D : ℕ} {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → Prec p (reciprocalShift D p) →
+      Prec q (reciprocalShift D q) →
+      Prec0 (hadamardProduct p q) (reciprocalShift D (hadamardProduct p q))) :=
   hadamardReciprocalConeClosure_of_garloffWagner_prec0
     (garloffWagnerHadamardPFPrec0_of_hurwitzSchurClassicalInputs
       hRoute hInt)
@@ -3599,81 +3914,117 @@ products. This is finite-sequence closure packaged through coefficient
 polynomials. -/
 
 theorem polyaFrequencyHadamardCoeff_of_schurPolyaWagner
-    (hSPW : (∀ {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q → IsPFPolynomial (hadamardProduct p q))) :
-    (∀ {p q : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → IsPolyaFreqSeq (fun n => q.coeff n) → IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)) :=
+    (hSPW : (∀ {p q : ℝ[X]}, IsPFPolynomial p → IsPFPolynomial q →
+      IsPFPolynomial (hadamardProduct p q))) :
+    (∀ {p q : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → IsPolyaFreqSeq (fun n => q.coeff n) →
+      IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)) :=
   fun {_ _} hp hq =>
     (hSPW (IsPFPolynomial.of_sequence hp)
       (IsPFPolynomial.of_sequence hq)).to_sequence
 
 theorem polyaFrequencyHadamardCoeff_of_garloffWagner_prec0
-    (hGW : (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec0 f g → Prec0 p q → Prec0 (hadamardProduct f p) (hadamardProduct g q))) :
-    (∀ {p q : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → IsPolyaFreqSeq (fun n => q.coeff n) → IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)) :=
+    (hGW : (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p →
+      IsPFPolynomial q → Prec0 f g → Prec0 p q →
+      Prec0 (hadamardProduct f p) (hadamardProduct g q))) :
+    (∀ {p q : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → IsPolyaFreqSeq (fun n => q.coeff n) →
+      IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)) :=
   polyaFrequencyHadamardCoeff_of_schurPolyaWagner
     (schurPolyaWagnerHadamardPF_of_garloffWagner_prec0 hGW)
 
 theorem polyaFrequencyHadamardCoeff_of_garloffWagner_prec
-    (hGW : (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → IsPFPolynomial q → Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q))) :
-    (∀ {p q : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → IsPolyaFreqSeq (fun n => q.coeff n) → IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)) :=
+    (hGW : (∀ {f g p q : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p →
+      IsPFPolynomial q → Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q))) :
+    (∀ {p q : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → IsPolyaFreqSeq (fun n => q.coeff n) →
+      IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)) :=
   polyaFrequencyHadamardCoeff_of_schurPolyaWagner
     (schurPolyaWagnerHadamardPF_of_garloffWagner_prec hGW)
 
 theorem polyaFrequencyHadamardCoeff_of_garloffWagner_nonneg
-    (hGW : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → (p ≠ 0 ∧ p.Splits) → (q ≠ 0 ∧ q.Splits) → (hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧ HasNonnegCoeffs (hadamardProduct p q) ∧ ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0)) :
-    (∀ {p q : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → IsPolyaFreqSeq (fun n => q.coeff n) → IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)) :=
+    (hGW : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → (p ≠ 0 ∧ p.Splits) → (q ≠ 0 ∧
+      q.Splits) → (hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧
+      HasNonnegCoeffs (hadamardProduct p q) ∧ ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0)) :
+    (∀ {p q : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → IsPolyaFreqSeq (fun n => q.coeff n) →
+      IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)) :=
   polyaFrequencyHadamardCoeff_of_schurPolyaWagner
     (schurPolyaWagnerHadamardPF_of_garloffWagner_nonneg hGW)
 
 theorem polyaFrequencyHadamardCoeff_of_garloffWagner_nonnegPrec :
-    (∀ {p q : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → IsPolyaFreqSeq (fun n => q.coeff n) → IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)) :=
+    (∀ {p q : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → IsPolyaFreqSeq (fun n => q.coeff n) →
+      IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)) :=
   polyaFrequencyHadamardCoeff_of_schurPolyaWagner
     schurPolyaWagnerHadamardPF_of_garloffWagner_nonnegPrec
 
 theorem polyaFrequencyHadamardCoeff_of_matrixHadamardBridges
-    (hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q → FullyInterlacingPair p.coeff (fun n => q.coeff n)))
-    (hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
-    (hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) → Prec0 p q)) :
-    (∀ {p q : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → IsPolyaFreqSeq (fun n => q.coeff n) → IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)) :=
+    (hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q →
+      FullyInterlacingPair p.coeff (fun n => q.coeff n)))
+    (hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg →
+      (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
+    (hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      Prec0 p q)) :
+    (∀ {p q : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → IsPolyaFreqSeq (fun n => q.coeff n) →
+      IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)) :=
   polyaFrequencyHadamardCoeff_of_schurPolyaWagner
     (schurPolyaWagnerHadamardPF_of_matrixHadamardBridges
       hToFull hMatHad hFullToPrec0)
 
 theorem polyaFrequencyHadamardCoeff_of_hurwitzSchur
-    (hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q → FullyInterlacingPair p.coeff (fun n => q.coeff n)))
-    (hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) → Prec0 p q)) :
-    (∀ {p q : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → IsPolyaFreqSeq (fun n => q.coeff n) → IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)) :=
+    (hToFull : (∀ {p q : ℝ[X]}, HasNonnegCoeffs p → HasNonnegCoeffs q → Prec p q →
+      FullyInterlacingPair p.coeff (fun n => q.coeff n)))
+    (hFullToPrec0 : (∀ {p q : ℝ[X]}, FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      Prec0 p q)) :
+    (∀ {p q : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → IsPolyaFreqSeq (fun n => q.coeff n) →
+      IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)) :=
   polyaFrequencyHadamardCoeff_of_schurPolyaWagner
     (schurPolyaWagnerHadamardPF_of_hurwitzSchur
       hToFull hFullToPrec0)
 
 theorem polyaFrequencyHadamardCoeff_of_classicalInputs
-    (hRHP : (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b → IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) → IsRightHalfPlaneStable (complexify (hadamardProduct a b))))
-    (hHBToHurwitz : (∀ ⦃p q : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs q → IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) → IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q))))
+    (hRHP : (∀ {a b : ℝ[X]}, HasNonnegCoeffs a → HasNonnegCoeffs b →
+      IsRightHalfPlaneStable (complexify a) → IsRightHalfPlaneStable (complexify b) →
+      IsRightHalfPlaneStable (complexify (hadamardProduct a b))))
+    (hHBToHurwitz : (∀ ⦃p q : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs q →
+      IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) →
+      IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q))))
     (hHurwitzToMatrix : (∀ ⦃p : ℝ[X]⦄, IsHurwitzStable p → (hurwitz p.coeff).IsTotallyNonneg))
-    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs)))) :
-    (∀ {p q : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → IsPolyaFreqSeq (fun n => q.coeff n) → IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)) :=
+    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧
+      (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs)))) :
+    (∀ {p q : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → IsPolyaFreqSeq (fun n => q.coeff n) →
+      IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)) :=
   polyaFrequencyHadamardCoeff_of_schurPolyaWagner
     (schurPolyaWagnerHadamardPF_of_classicalInputs
       hRHP hHBToHurwitz hHurwitzToMatrix hInt)
 
 theorem polyaFrequencyHadamardCoeff_of_classicalInputsBundle
     (h : GarloffWagnerClassicalInputs) :
-    (∀ {p q : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → IsPolyaFreqSeq (fun n => q.coeff n) → IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)) :=
+    (∀ {p q : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → IsPolyaFreqSeq (fun n => q.coeff n) →
+      IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)) :=
   polyaFrequencyHadamardCoeff_of_schurPolyaWagner
     (schurPolyaWagnerHadamardPF_of_classicalInputsBundle h)
 
 theorem polyaFrequencyHadamardCoeff_of_matrixClassicalInputs
     (hRoute : HermiteBiehlerHurwitzRoute)
-    (hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg → (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
-    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs)))) :
-    (∀ {p q : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → IsPolyaFreqSeq (fun n => q.coeff n) → IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)) :=
+    (hMatHad : (∀ {a b : ℝ[X]}, (hurwitz a.coeff).IsTotallyNonneg →
+      (hurwitz b.coeff).IsTotallyNonneg → (hurwitz (hadamardProduct a b).coeff).IsTotallyNonneg))
+    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧
+      (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs)))) :
+    (∀ {p q : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → IsPolyaFreqSeq (fun n => q.coeff n) →
+      IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)) :=
   polyaFrequencyHadamardCoeff_of_schurPolyaWagner
     (schurPolyaWagnerHadamardPF_of_matrixClassicalInputs
       hRoute hMatHad hInt)
 
 theorem polyaFrequencyHadamardCoeff_of_hurwitzSchurClassicalInputs
     (hRoute : HermiteBiehlerHurwitzRoute)
-    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) → ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧ (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨ (ss.length = rs.length ∧ ListAlternates ss rs)))) :
-    (∀ {p q : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → IsPolyaFreqSeq (fun n => q.coeff n) → IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)) :=
+    (hInt : (∀ ⦃p q : ℝ[X]⦄, p ≠ 0 → q ≠ 0 → FullyInterlacingPair p.coeff (fun n => q.coeff n) →
+      ∃ ss rs : List ℝ, ss.Pairwise (· ≤ ·) ∧ rs.Pairwise (· ≤ ·) ∧ (↑ss : Multiset ℝ) = p.roots ∧
+      (↑rs : Multiset ℝ) = q.roots ∧ ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs)))) :
+    (∀ {p q : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → IsPolyaFreqSeq (fun n => q.coeff n) →
+      IsPolyaFreqSeq (fun n => (hadamardProduct p q).coeff n)) :=
   polyaFrequencyHadamardCoeff_of_schurPolyaWagner
     (schurPolyaWagnerHadamardPF_of_hurwitzSchurClassicalInputs
       hRoute hInt)

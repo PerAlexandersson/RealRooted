@@ -299,8 +299,9 @@ theorem hurwitz_schurProduct_det_fin_three
 
 /-- Every minor of size at most two of the entrywise product of two totally
 nonnegative Hurwitz matrices is nonnegative.  This packages the complete
-low-order part of the Hurwitz Schur-product theorem `hurwitzMatrixSchurProductTN`; the first remaining
-case is the genuinely Hurwitz-specific `3 × 3` minor. -/
+low-order part of the Hurwitz Schur-product theorem
+`hurwitzMatrixSchurProductTN`; the first remaining case is the genuinely
+Hurwitz-specific `3 × 3` minor. -/
 theorem hurwitz_schurProduct_det_of_card_le_two {a b : ℕ → ℝ}
     (ha : (hurwitz a).IsTotallyNonneg) (hb : (hurwitz b).IsTotallyNonneg)
     {n : ℕ} {rows cols : Fin n → ℕ} (hrows : StrictMono rows) (hcols : StrictMono cols)
