@@ -21,7 +21,16 @@ The central closed-segment count-equality target follows from the proved
 degree-increasing and positive-parameter local lower-count inputs.
 -/
 private theorem compatibleSuccDegreeClosedSegmentCountEq_of_local_lower_counts :
-    CompatibleSuccDegreeClosedSegmentCountEqStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card) := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hseg
   have hx_roots : x ∉ f.roots :=
     fun hx => hxf ((Polynomial.mem_roots hf_pos.ne_zero).mp hx)
@@ -63,7 +72,15 @@ private theorem compatibleSuccDegreeClosedSegmentCountEq_of_local_lower_counts :
 /-- The proved closed-segment count equality closes the repaired succ-degree
 #42 pair-interleaver endpoint. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_local_lower_counts :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   succDegreePairHasCommonInterleaver_nonneg_of_closedSegmentCountEq
     compatibleSuccDegreeClosedSegmentCountEq_of_local_lower_counts
 

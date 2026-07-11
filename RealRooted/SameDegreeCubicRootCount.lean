@@ -235,20 +235,6 @@ theorem cubicDiscr_monicCubicPencil_neg_of_deriv_disc_neg
   rw [monicCubicPencil_eq]
   exact cubicDiscr_neg_of_deriv_disc_neg _ _ _ _ hlead hderiv
 
-/-- Pure algebraic negative-discriminant leaf for the `2`-below cubic
-configuration.  Together with `cubicDiscr_monicPencil_nonneg_of_posCombo`, this
-rules out the corresponding positive-combination real-rooted configuration. -/
-def CubicDiscrMonicPencilNegTwoBelowStatement : Prop :=
-  ∀ a b c p q r : ℝ,
-    a ≤ b →
-    b ≤ c →
-    p ≤ q →
-    q ≤ r →
-    q < a →
-    a ≤ r →
-    ∃ s : ℝ, 0 < s ∧
-      cubicDiscr ((X - C a) * (X - C b) * (X - C c)
-        + C s * ((X - C p) * (X - C q) * (X - C r))) < 0
 
 /-- Affine normalization of the two-below negative-discriminant leaf.
 
@@ -260,7 +246,16 @@ theorem cubicDiscrMonicPencilNegTwoBelow_of_normalized
       ∃ s : ℝ, 0 < s ∧
         cubicDiscr ((X - C (1 : ℝ)) * (X - C b) * (X - C c)
           + C s * ((X - C p) * (X - C (0 : ℝ)) * (X - C r))) < 0) :
-    CubicDiscrMonicPencilNegTwoBelowStatement := by
+    (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        q < a →
+        a ≤ r →
+        ∃ s : ℝ, 0 < s ∧
+          cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))) < 0) := by
   intro a b c p q r hab hbc hpq hqr hqa har
   have haqpos : 0 < a - q := by linarith
   have haqne : a - q ≠ 0 := ne_of_gt haqpos
@@ -285,19 +280,6 @@ theorem cubicDiscrMonicPencilNegTwoBelow_of_normalized
   rw [key]
   exact mul_neg_of_pos_of_neg (by positivity) hneg
 
-/-- Pure algebraic negative-discriminant leaf for the `2`-above cubic
-configuration. -/
-def CubicDiscrMonicPencilNegTwoAboveStatement : Prop :=
-  ∀ a b c p q r : ℝ,
-    a ≤ b →
-    b ≤ c →
-    p ≤ q →
-    q ≤ r →
-    a ≤ r →
-    r < b →
-    ∃ s : ℝ, 0 < s ∧
-      cubicDiscr ((X - C a) * (X - C b) * (X - C c)
-        + C s * ((X - C p) * (X - C q) * (X - C r))) < 0
 
 /-- Affine normalization of the two-above negative-discriminant leaf. -/
 theorem cubicDiscrMonicPencilNegTwoAbove_of_normalized
@@ -305,7 +287,16 @@ theorem cubicDiscrMonicPencilNegTwoAbove_of_normalized
       ∃ s : ℝ, 0 < s ∧
         cubicDiscr ((X - C a) * (X - C (1 : ℝ)) * (X - C c)
           + C s * ((X - C p) * (X - C q) * (X - C (0 : ℝ)))) < 0) :
-    CubicDiscrMonicPencilNegTwoAboveStatement := by
+    (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        a ≤ r →
+        r < b →
+        ∃ s : ℝ, 0 < s ∧
+          cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))) < 0) := by
   intro a b c p q r hab hbc hpq hqr har hrb
   have hbrpos : 0 < b - r := by linarith
   have hbrne : b - r ≠ 0 := ne_of_gt hbrpos
@@ -363,14 +354,24 @@ theorem exists_deriv_disc_neg_of_coeffs (a b c p q r : ℝ)
   nlinarith [hlt]
 
 /-- #41-only sufficient condition feeding
-`CubicDiscrMonicPencilNegTwoBelowStatement`: it is enough to find a positive
-parameter where the monic cubic pencil's derivative has negative discriminant. -/
+the two-below negative-discriminant monic-pencil leaf: it is enough to find a
+positive parameter where the monic cubic pencil's derivative has negative
+discriminant. -/
 theorem cubicDiscrMonicPencilNegTwoBelow_of_deriv_disc
     (H : ∀ a b c p q r : ℝ, a ≤ b → b ≤ c → p ≤ q → q ≤ r → q < a → a ≤ r →
       ∃ s : ℝ, 0 < s ∧
         (-((a + b + c) + s * (p + q + r))) ^ 2 <
           3 * (1 + s) * ((a * b + b * c + c * a) + s * (p * q + q * r + r * p))) :
-    CubicDiscrMonicPencilNegTwoBelowStatement := by
+    (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        q < a →
+        a ≤ r →
+        ∃ s : ℝ, 0 < s ∧
+          cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))) < 0) := by
   intro a b c p q r hab hbc hpq hqr hqa har
   obtain ⟨s, hs, hderiv⟩ := H a b c p q r hab hbc hpq hqr hqa har
   exact ⟨s, hs,
@@ -378,14 +379,24 @@ theorem cubicDiscrMonicPencilNegTwoBelow_of_deriv_disc
       hderiv⟩
 
 /-- #41-only sufficient condition feeding
-`CubicDiscrMonicPencilNegTwoAboveStatement`: it is enough to find a positive
-parameter where the monic cubic pencil's derivative has negative discriminant. -/
+the two-above negative-discriminant monic-pencil leaf: it is enough to find a
+positive parameter where the monic cubic pencil's derivative has negative
+discriminant. -/
 theorem cubicDiscrMonicPencilNegTwoAbove_of_deriv_disc
     (H : ∀ a b c p q r : ℝ, a ≤ b → b ≤ c → p ≤ q → q ≤ r → a ≤ r → r < b →
       ∃ s : ℝ, 0 < s ∧
         (-((a + b + c) + s * (p + q + r))) ^ 2 <
           3 * (1 + s) * ((a * b + b * c + c * a) + s * (p * q + q * r + r * p))) :
-    CubicDiscrMonicPencilNegTwoAboveStatement := by
+    (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        a ≤ r →
+        r < b →
+        ∃ s : ℝ, 0 < s ∧
+          cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))) < 0) := by
   intro a b c p q r hab hbc hpq hqr har hrb
   obtain ⟨s, hs, hderiv⟩ := H a b c p q r hab hbc hpq hqr har hrb
   exact ⟨s, hs,
@@ -400,8 +411,8 @@ theorem derivDiscA_pos_of_lt {p q r : ℝ} (hqr : q < r) :
   nlinarith [mul_pos (sub_pos.mpr hqr) (sub_pos.mpr hqr),
     sq_nonneg (p - q), sq_nonneg (p - r)]
 
-/-- #41-only wrapper reducing `CubicDiscrMonicPencilNegTwoBelowStatement` to
-compact ordered-root coefficient inequalities. -/
+/-- #41-only wrapper reducing the two-below negative-discriminant monic-pencil
+leaf to compact ordered-root coefficient inequalities. -/
 theorem cubicDiscrMonicPencilNegTwoBelow_of_coeff_ineqs
     (H : ∀ a b c p q r : ℝ, a ≤ b → b ≤ c → p ≤ q → q ≤ r →
       q < a → a ≤ r →
@@ -414,7 +425,16 @@ theorem cubicDiscrMonicPencilNegTwoBelow_of_coeff_ineqs
           (2 * (a + b + c) * (p + q + r) -
               3 * (a * b + b * c + c * a) -
               3 * (p * q + q * r + r * p)) ^ 2) :
-    CubicDiscrMonicPencilNegTwoBelowStatement :=
+    (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        q < a →
+        a ≤ r →
+        ∃ s : ℝ, 0 < s ∧
+          cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))) < 0) :=
   cubicDiscrMonicPencilNegTwoBelow_of_deriv_disc
     (fun a b c p q r hab hbc hpq hqr hqa har =>
       let ⟨hA, hB, hdisc⟩ := H a b c p q r hab hbc hpq hqr hqa har
@@ -433,14 +453,23 @@ theorem cubicDiscrMonicPencilNegTwoBelow_of_coeff_ineqs'
           (2 * (a + b + c) * (p + q + r) -
               3 * (a * b + b * c + c * a) -
               3 * (p * q + q * r + r * p)) ^ 2) :
-    CubicDiscrMonicPencilNegTwoBelowStatement :=
+    (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        q < a →
+        a ≤ r →
+        ∃ s : ℝ, 0 < s ∧
+          cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))) < 0) :=
   cubicDiscrMonicPencilNegTwoBelow_of_coeff_ineqs
     (fun a b c p q r hab hbc hpq hqr hqa har =>
       let ⟨hB, hdisc⟩ := H a b c p q r hab hbc hpq hqr hqa har
       ⟨derivDiscA_pos_of_lt (lt_of_lt_of_le hqa har), hB, hdisc⟩)
 
-/-- #41-only wrapper reducing `CubicDiscrMonicPencilNegTwoAboveStatement` to
-compact ordered-root coefficient inequalities. -/
+/-- #41-only wrapper reducing the two-above negative-discriminant monic-pencil
+leaf to compact ordered-root coefficient inequalities. -/
 theorem cubicDiscrMonicPencilNegTwoAbove_of_coeff_ineqs
     (H : ∀ a b c p q r : ℝ, a ≤ b → b ≤ c → p ≤ q → q ≤ r →
       a ≤ r → r < b →
@@ -453,42 +482,44 @@ theorem cubicDiscrMonicPencilNegTwoAbove_of_coeff_ineqs
           (2 * (a + b + c) * (p + q + r) -
               3 * (a * b + b * c + c * a) -
               3 * (p * q + q * r + r * p)) ^ 2) :
-    CubicDiscrMonicPencilNegTwoAboveStatement :=
+    (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        a ≤ r →
+        r < b →
+        ∃ s : ℝ, 0 < s ∧
+          cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))) < 0) :=
   cubicDiscrMonicPencilNegTwoAbove_of_deriv_disc
     (fun a b c p q r hab hbc hpq hqr har hrb =>
       let ⟨hA, hB, hdisc⟩ := H a b c p q r hab hbc hpq hqr har hrb
       exists_deriv_disc_neg_of_coeffs a b c p q r hA hB hdisc)
 
-/-- Non-splitting reformulation of the `2`-below negative-discriminant leaf. -/
-def CubicMonicPencilNotSplitsTwoBelowStatement : Prop :=
-  ∀ a b c p q r : ℝ,
-    a ≤ b →
-    b ≤ c →
-    p ≤ q →
-    q ≤ r →
-    q < a →
-    a ≤ r →
-    ∃ s : ℝ, 0 < s ∧
-      ¬ ((X - C a) * (X - C b) * (X - C c)
-        + C s * ((X - C p) * (X - C q) * (X - C r))).Splits
-
-/-- Non-splitting reformulation of the `2`-above negative-discriminant leaf. -/
-def CubicMonicPencilNotSplitsTwoAboveStatement : Prop :=
-  ∀ a b c p q r : ℝ,
-    a ≤ b →
-    b ≤ c →
-    p ≤ q →
-    q ≤ r →
-    a ≤ r →
-    r < b →
-    ∃ s : ℝ, 0 < s ∧
-      ¬ ((X - C a) * (X - C b) * (X - C c)
-        + C s * ((X - C p) * (X - C q) * (X - C r))).Splits
 
 /-- The `2`-below negative-discriminant leaf is equivalent to non-splitting. -/
 theorem cubicDiscrMonicPencilNegTwoBelow_iff_notSplits :
-    CubicDiscrMonicPencilNegTwoBelowStatement ↔
-      CubicMonicPencilNotSplitsTwoBelowStatement := by
+    (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        q < a →
+        a ≤ r →
+        ∃ s : ℝ, 0 < s ∧
+          cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))) < 0) ↔
+      (∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          q < a →
+          a ≤ r →
+          ∃ s : ℝ, 0 < s ∧
+            ¬ ((X - C a) * (X - C b) * (X - C c)
+              + C s * ((X - C p) * (X - C q) * (X - C r))).Splits) := by
   constructor
   · intro h a b c p q r hab hbc hpq hqr hqa har
     obtain ⟨s, hs, hd⟩ := h a b c p q r hab hbc hpq hqr hqa har
@@ -501,8 +532,26 @@ theorem cubicDiscrMonicPencilNegTwoBelow_iff_notSplits :
 
 /-- The `2`-above negative-discriminant leaf is equivalent to non-splitting. -/
 theorem cubicDiscrMonicPencilNegTwoAbove_iff_notSplits :
-    CubicDiscrMonicPencilNegTwoAboveStatement ↔
-      CubicMonicPencilNotSplitsTwoAboveStatement := by
+    (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        a ≤ r →
+        r < b →
+        ∃ s : ℝ, 0 < s ∧
+          cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))) < 0) ↔
+      (∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          a ≤ r →
+          r < b →
+          ∃ s : ℝ, 0 < s ∧
+            ¬ ((X - C a) * (X - C b) * (X - C c)
+              + C s * ((X - C p) * (X - C q) * (X - C r))).Splits) := by
   constructor
   · intro h a b c p q r hab hbc hpq hqr har hrb
     obtain ⟨s, hs, hd⟩ := h a b c p q r hab hbc hpq hqr har hrb
@@ -648,90 +697,38 @@ theorem card_filter_triple_diff_le_one
           (if c ≤ x then 1 else 0)) ≤ 1) := by
   constructor <;> grind
 
-/-- Partial-separation-free leaf for the cubic same-degree root count.
-
-For a split cubic positive-combination pair with positive leading coefficients,
-and roots listed in ascending order (`a ≤ b ≤ c` for `f`, `p ≤ q ≤ r` for
-`g`), the smallest root of `f` lies at or below the middle root of `g`, and the
-middle root of `f` lies at or below the largest root of `g`.
-
-Equivalently: `g` has at most one root strictly below every root of `f`, and
-`f` has at most one root strictly above every root of `g`.  This is exactly the
-remaining analytic content needed to upgrade the cubic root-count bound from
-`≤ 2` (`sameDegree_cubic_rootCount_le_two`) to `≤ 1`: the full-separation
-obstruction `not_posComboRealRooted_cubic_separated` already rules out the case
-where all three roots of `g` lie below all of `f`, so what remains is the
-`2`-below / `2`-above partial-separation obstruction. -/
-def CubicSecondRootBoundStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    f.Splits →
-    g.Splits →
-    f.natDegree = 3 →
-    g.natDegree = 3 →
-    PosComboRealRooted f g →
-    ∀ a b c p q r : ℝ,
-      a ≤ b →
-      b ≤ c →
-      p ≤ q →
-      q ≤ r →
-      f.roots = {a, b, c} →
-      g.roots = {p, q, r} →
-      a ≤ q ∧ b ≤ r
-
-/-- Interior `2`-below partial-separation obstruction for split cubic pairs.
-
-For ordered cubic roots `a ≤ b ≤ c` of `f` and `p ≤ q ≤ r` of `g`, this rules
-out the case where `q < a` but `a ≤ r`.  The complementary case `r < a` is the
-full-separation obstruction already handled by
-`not_posComboRealRooted_cubic_separated`. -/
-def CubicInteriorTwoBelowStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    f.Splits →
-    g.Splits →
-    f.natDegree = 3 →
-    g.natDegree = 3 →
-    PosComboRealRooted f g →
-    ∀ a b c p q r : ℝ,
-      a ≤ b →
-      b ≤ c →
-      p ≤ q →
-      q ≤ r →
-      f.roots = {a, b, c} →
-      g.roots = {p, q, r} →
-      q < a →
-      a ≤ r →
-      False
-
-/-- Interior `2`-above partial-separation obstruction for split cubic pairs. -/
-def CubicInteriorTwoAboveStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    f.Splits →
-    g.Splits →
-    f.natDegree = 3 →
-    g.natDegree = 3 →
-    PosComboRealRooted f g →
-    ∀ a b c p q r : ℝ,
-      a ≤ b →
-      b ≤ c →
-      p ≤ q →
-      q ≤ r →
-      f.roots = {a, b, c} →
-      g.roots = {p, q, r} →
-      a ≤ r →
-      r < b →
-      False
 
 /-- The negative-discriminant monic-pencil leaf implies the interior `2`-below
 obstruction. -/
 theorem cubicInteriorTwoBelow_of_discr_monicPencil_neg
-    (hneg : CubicDiscrMonicPencilNegTwoBelowStatement) :
-    CubicInteriorTwoBelowStatement := by
+    (hneg : (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        q < a →
+        a ≤ r →
+        ∃ s : ℝ, 0 < s ∧
+          cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))) < 0)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          q < a →
+          a ≤ r →
+          False) := by
   intro f g hf hg hfs hgs hfd hgd hpc a b c p q r hab hbc hpq hqr hfr hgr hqa har
   have hnonneg :=
     cubicDiscr_monicPencil_nonneg_of_posCombo
@@ -742,8 +739,34 @@ theorem cubicInteriorTwoBelow_of_discr_monicPencil_neg
 /-- The negative-discriminant monic-pencil leaf implies the interior `2`-above
 obstruction. -/
 theorem cubicInteriorTwoAbove_of_discr_monicPencil_neg
-    (hneg : CubicDiscrMonicPencilNegTwoAboveStatement) :
-    CubicInteriorTwoAboveStatement := by
+    (hneg : (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        a ≤ r →
+        r < b →
+        ∃ s : ℝ, 0 < s ∧
+          cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))) < 0)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          a ≤ r →
+          r < b →
+          False) := by
   intro f g hf hg hfs hgs hfd hgd hpc a b c p q r hab hbc hpq hqr hfr hgr har hrb
   have hnonneg :=
     cubicDiscr_monicPencil_nonneg_of_posCombo
@@ -758,15 +781,81 @@ theorem cubicInteriorTwoAbove_of_normalized
       ∃ s : ℝ, 0 < s ∧
         cubicDiscr ((X - C a) * (X - C (1 : ℝ)) * (X - C c)
           + C s * ((X - C p) * (X - C q) * (X - C (0 : ℝ)))) < 0) :
-    CubicInteriorTwoAboveStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          a ≤ r →
+          r < b →
+          False) :=
   cubicInteriorTwoAbove_of_discr_monicPencil_neg
     (cubicDiscrMonicPencilNegTwoAbove_of_normalized H)
 
 /-- The two interior cubic obstructions imply the second-root bound leaf. -/
 theorem cubicSecondRootBound_of_interior
-    (hbelow : CubicInteriorTwoBelowStatement)
-    (habove : CubicInteriorTwoAboveStatement) :
-    CubicSecondRootBoundStatement := by
+    (hbelow : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          q < a →
+          a ≤ r →
+          False))
+    (habove : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          a ≤ r →
+          r < b →
+          False)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          a ≤ q ∧ b ≤ r) := by
   intro f g hf hg hfs hgs hfd hgd hpc a b c p q r hab hbc hpq hqr hfr hgr
   have hfmem : ∀ x ∈ f.roots, x = a ∨ x = b ∨ x = c := by
     intro x hx
@@ -799,9 +888,42 @@ theorem cubicSecondRootBound_of_interior
 /-- The two negative-discriminant monic-pencil leaves imply the cubic
 second-root bound. -/
 theorem cubicSecondRootBound_of_discr_monicPencil_neg
-    (hbelow : CubicDiscrMonicPencilNegTwoBelowStatement)
-    (habove : CubicDiscrMonicPencilNegTwoAboveStatement) :
-    CubicSecondRootBoundStatement :=
+    (hbelow : (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        q < a →
+        a ≤ r →
+        ∃ s : ℝ, 0 < s ∧
+          cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))) < 0))
+    (habove : (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        a ≤ r →
+        r < b →
+        ∃ s : ℝ, 0 < s ∧
+          cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))) < 0)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          a ≤ q ∧ b ≤ r) :=
   cubicSecondRootBound_of_interior
     (cubicInteriorTwoBelow_of_discr_monicPencil_neg hbelow)
     (cubicInteriorTwoAbove_of_discr_monicPencil_neg habove)
@@ -816,37 +938,118 @@ theorem cubicSecondRootBound_of_normalized
       ∃ s : ℝ, 0 < s ∧
         cubicDiscr ((X - C a) * (X - C (1 : ℝ)) * (X - C c)
           + C s * ((X - C p) * (X - C q) * (X - C (0 : ℝ)))) < 0) :
-    CubicSecondRootBoundStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          a ≤ q ∧ b ≤ r) :=
   cubicSecondRootBound_of_discr_monicPencil_neg
     (cubicDiscrMonicPencilNegTwoBelow_of_normalized hbelow)
     (cubicDiscrMonicPencilNegTwoAbove_of_normalized habove)
 
 /-- Non-splitting formulation implies the `2`-below interior obstruction. -/
 theorem cubicInteriorTwoBelow_of_notSplits
-    (h : CubicMonicPencilNotSplitsTwoBelowStatement) :
-    CubicInteriorTwoBelowStatement :=
+    (h : (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        q < a →
+        a ≤ r →
+        ∃ s : ℝ, 0 < s ∧
+          ¬ ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))).Splits)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          q < a →
+          a ≤ r →
+          False) :=
   cubicInteriorTwoBelow_of_discr_monicPencil_neg
     (cubicDiscrMonicPencilNegTwoBelow_iff_notSplits.mpr h)
 
 /-- Non-splitting formulation implies the `2`-above interior obstruction. -/
 theorem cubicInteriorTwoAbove_of_notSplits
-    (h : CubicMonicPencilNotSplitsTwoAboveStatement) :
-    CubicInteriorTwoAboveStatement :=
+    (h : (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        a ≤ r →
+        r < b →
+        ∃ s : ℝ, 0 < s ∧
+          ¬ ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))).Splits)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          a ≤ r →
+          r < b →
+          False) :=
   cubicInteriorTwoAbove_of_discr_monicPencil_neg
     (cubicDiscrMonicPencilNegTwoAbove_iff_notSplits.mpr h)
 
 /-- Checked reduction of the cubic same-degree root-count target to the
 partial-separation leaf.
 
-Given the `CubicSecondRootBoundStatement` leaf, two split cubics with positive
+Given the cubic second-root-bound leaf, two split cubics with positive
 leading coefficients forming a positive-combination real-rooted pair have
 threshold root-count functions differing by at most one at every threshold.
 This strengthens `sameDegree_cubic_rootCount_le_two` from `≤ 2` to `≤ 1`,
 modulo the single analytic leaf `hbound`, and matches the degree-three case of
-the milestone-B1 root-count target
-`PosComboNoCommonSameDegreeRootCountNonnegStatement`. -/
+the milestone-B1 same-degree no-common root-count nonnegativity target. -/
 theorem sameDegree_cubic_rootCount_le_one_of_secondRootBound
-    (hbound : CubicSecondRootBoundStatement)
+    (hbound : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          a ≤ q ∧ b ≤ r))
     {f g : ℝ[X]}
     (hfdeg : f.natDegree = 3) (hgdeg : g.natDegree = 3)
     (hf : f.Splits) (hg : g.Splits)
@@ -875,8 +1078,42 @@ theorem sameDegree_cubic_rootCount_le_one_of_secondRootBound
 
 /-- End-to-end reduction of the cubic root-count bound to the interior leaves. -/
 theorem sameDegree_cubic_rootCount_le_one_of_interior
-    (hbelow : CubicInteriorTwoBelowStatement)
-    (habove : CubicInteriorTwoAboveStatement)
+    (hbelow : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          q < a →
+          a ≤ r →
+          False))
+    (habove : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          a ≤ r →
+          r < b →
+          False))
     {f g : ℝ[X]}
     (hfdeg : f.natDegree = 3) (hgdeg : g.natDegree = 3)
     (hf : f.Splits) (hg : g.Splits)
@@ -894,8 +1131,26 @@ theorem sameDegree_cubic_rootCount_le_one_of_interior
 /-- End-to-end reduction of the cubic root-count bound to the
 negative-discriminant monic-pencil leaves. -/
 theorem sameDegree_cubic_rootCount_le_one_of_discr_monicPencil_neg
-    (hbelow : CubicDiscrMonicPencilNegTwoBelowStatement)
-    (habove : CubicDiscrMonicPencilNegTwoAboveStatement)
+    (hbelow : (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        q < a →
+        a ≤ r →
+        ∃ s : ℝ, 0 < s ∧
+          cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))) < 0))
+    (habove : (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        a ≤ r →
+        r < b →
+        ∃ s : ℝ, 0 < s ∧
+          cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))) < 0))
     {f g : ℝ[X]}
     (hfdeg : f.natDegree = 3) (hgdeg : g.natDegree = 3)
     (hf : f.Splits) (hg : g.Splits)
@@ -990,8 +1245,26 @@ theorem sameDegree_cubic_rootCount_le_one_of_normalized_posCombo_forall
 /-- Same-degree positive-combination cubic root-count wrapper from the
 negative-discriminant monic-pencil leaves. -/
 theorem sameDegree_cubic_rootCount_le_one_of_discr_monicPencil_neg_posCombo
-    (hbelow : CubicDiscrMonicPencilNegTwoBelowStatement)
-    (habove : CubicDiscrMonicPencilNegTwoAboveStatement)
+    (hbelow : (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        q < a →
+        a ≤ r →
+        ∃ s : ℝ, 0 < s ∧
+          cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))) < 0))
+    (habove : (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        a ≤ r →
+        r < b →
+        ∃ s : ℝ, 0 < s ∧
+          cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))) < 0))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hpc : PosComboRealRooted f g)
@@ -1010,8 +1283,26 @@ theorem sameDegree_cubic_rootCount_le_one_of_discr_monicPencil_neg_posCombo
 /-- Bundled-degree all-threshold version of
 `sameDegree_cubic_rootCount_le_one_of_discr_monicPencil_neg_posCombo`. -/
 theorem sameDegree_cubic_rootCount_le_one_of_discr_monicPencil_neg_posCombo_forall
-    (hbelow : CubicDiscrMonicPencilNegTwoBelowStatement)
-    (habove : CubicDiscrMonicPencilNegTwoAboveStatement)
+    (hbelow : (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        q < a →
+        a ≤ r →
+        ∃ s : ℝ, 0 < s ∧
+          cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))) < 0))
+    (habove : (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        a ≤ r →
+        r < b →
+        ∃ s : ℝ, 0 < s ∧
+          cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))) < 0))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hpc : PosComboRealRooted f g)
@@ -1028,8 +1319,26 @@ theorem sameDegree_cubic_rootCount_le_one_of_discr_monicPencil_neg_posCombo_fora
 /-- End-to-end reduction of the cubic root-count bound to the non-splitting
 monic-pencil leaves. -/
 theorem sameDegree_cubic_rootCount_le_one_of_notSplits
-    (hbelow : CubicMonicPencilNotSplitsTwoBelowStatement)
-    (habove : CubicMonicPencilNotSplitsTwoAboveStatement)
+    (hbelow : (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        q < a →
+        a ≤ r →
+        ∃ s : ℝ, 0 < s ∧
+          ¬ ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))).Splits))
+    (habove : (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        a ≤ r →
+        r < b →
+        ∃ s : ℝ, 0 < s ∧
+          ¬ ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))).Splits))
     {f g : ℝ[X]}
     (hfdeg : f.natDegree = 3) (hgdeg : g.natDegree = 3)
     (hf : f.Splits) (hg : g.Splits)
@@ -1048,8 +1357,26 @@ theorem sameDegree_cubic_rootCount_le_one_of_notSplits
 /-- End-to-end positive-combination cubic root-count wrapper from the
 negative-discriminant monic-pencil leaves through the non-splitting bridge. -/
 theorem sameDegree_cubic_rootCount_le_one_of_discr_monicPencil_neg_via_notSplits
-    (hbelow : CubicDiscrMonicPencilNegTwoBelowStatement)
-    (habove : CubicDiscrMonicPencilNegTwoAboveStatement)
+    (hbelow : (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        q < a →
+        a ≤ r →
+        ∃ s : ℝ, 0 < s ∧
+          cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))) < 0))
+    (habove : (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        a ≤ r →
+        r < b →
+        ∃ s : ℝ, 0 < s ∧
+          cubicDiscr ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))) < 0))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hpc : PosComboRealRooted f g)
@@ -1071,8 +1398,26 @@ theorem sameDegree_cubic_rootCount_le_one_of_discr_monicPencil_neg_via_notSplits
 /-- Same-degree positive-combination cubic root-count wrapper from the
 non-splitting monic-pencil leaves. -/
 theorem sameDegree_cubic_rootCount_le_one_of_notSplits_posCombo
-    (hbelow : CubicMonicPencilNotSplitsTwoBelowStatement)
-    (habove : CubicMonicPencilNotSplitsTwoAboveStatement)
+    (hbelow : (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        q < a →
+        a ≤ r →
+        ∃ s : ℝ, 0 < s ∧
+          ¬ ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))).Splits))
+    (habove : (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        a ≤ r →
+        r < b →
+        ∃ s : ℝ, 0 < s ∧
+          ¬ ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))).Splits))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hpc : PosComboRealRooted f g)
@@ -1092,8 +1437,26 @@ theorem sameDegree_cubic_rootCount_le_one_of_notSplits_posCombo
 /-- Bundled-degree all-threshold version of
 `sameDegree_cubic_rootCount_le_one_of_notSplits_posCombo`. -/
 theorem sameDegree_cubic_rootCount_le_one_of_notSplits_posCombo_forall
-    (hbelow : CubicMonicPencilNotSplitsTwoBelowStatement)
-    (habove : CubicMonicPencilNotSplitsTwoAboveStatement)
+    (hbelow : (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        q < a →
+        a ≤ r →
+        ∃ s : ℝ, 0 < s ∧
+          ¬ ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))).Splits))
+    (habove : (∀ a b c p q r : ℝ,
+        a ≤ b →
+        b ≤ c →
+        p ≤ q →
+        q ≤ r →
+        a ≤ r →
+        r < b →
+        ∃ s : ℝ, 0 < s ∧
+          ¬ ((X - C a) * (X - C b) * (X - C c)
+            + C s * ((X - C p) * (X - C q) * (X - C r))).Splits))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hpc : PosComboRealRooted f g)
