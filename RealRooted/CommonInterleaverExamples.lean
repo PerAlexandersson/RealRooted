@@ -108,7 +108,14 @@ lemma scaledLinearFamily_pairwiseCompatible_iff_familyCompatible :
 Once the outstanding two-polynomial all-combinations bridge is discharged, this
 family becomes an immediate end-to-end Chudnovsky--Seymour regression. -/
 lemma scaledLinearFamily_pairwiseCompatible_iff_familyCompatible_of_allComboBridge
-    (hallBridge : PosComboNoCommonToAllComboBridgeStatement) :
+    (hallBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        AllComboRealRooted f g)) :
     PairwiseCompatible scaledLinearFamily ↔ FamilyCompatible scaledLinearFamily :=
   pairwiseCompatible_iff_familyCompatible_of_allComboBridge_and_nonnegCoeffs
     (fs := scaledLinearFamily)
@@ -500,7 +507,17 @@ private lemma xAddOne_xAddTwo_not_prec :
 `X + 1, X + 2` satisfies the positive-combo/no-common hypotheses, but the
 affine slice at `s = t = 1` is `X^2 + 3 X + 3`, which is not real-rooted. -/
 lemma not_posComboNoCommonAffineFamilyStatement :
-    ¬ PosComboNoCommonAffineFamilyStatement := by
+    ¬ (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) := by
   intro haff
   have hrr :
       (((((C (1 : ℝ) * X + C (1 : ℝ)) * (X + 1)) + (X + 2)) : ℝ[X]) ≠ 0 ∧
@@ -522,7 +539,17 @@ lemma not_posComboNoCommonAffineFamilyStatement :
 /-- The sharper boundary-right-pair target is also false, because it implies
 the affine-family target already refuted above. -/
 lemma not_posComboNoCommonBoundaryRightPairOrientationStatement :
-    ¬ PosComboNoCommonBoundaryRightPairOrientationStatement :=
+    ¬ (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃t : ℝ⦄, 0 < t →
+          Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g)) :=
   fun hboundary =>
     not_posComboNoCommonAffineFamilyStatement
       (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
@@ -531,7 +558,15 @@ lemma not_posComboNoCommonBoundaryRightPairOrientationStatement :
 `f = X + 1`, `g = X + 2`, the shifted pair polynomial `g + X * f` is
 `X^2 + 2 X + 2`, which is not real-rooted. -/
 lemma not_posComboNoCommonSameDegreeShiftedPairOrientationStatement :
-    ¬ PosComboNoCommonSameDegreeShiftedPairOrientationStatement := by
+    ¬ (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f (g + X * f)) := by
   intro hshift
   have hprec : Prec (X + 1 : ℝ[X]) ((X + 2) + X * (X + 1)) :=
       hshift
@@ -550,7 +585,15 @@ lemma not_posComboNoCommonSameDegreeShiftedPairOrientationStatement :
 /-- The fixed-order same-degree orientation target is false as well: on the
 same linear example, the correct orientation is not `Prec (X + 1) (X + 2)`. -/
 lemma not_posComboNoCommonSameDegreeOrientationNonnegStatement :
-    ¬ PosComboNoCommonSameDegreeOrientationNonnegStatement :=
+    ¬ (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g) :=
   fun hsame =>
     xAddOne_xAddTwo_not_prec
       (hsame
@@ -567,7 +610,15 @@ lemma not_posComboNoCommonSameDegreeOrientationNonnegStatement :
 even has a concrete common interleaver `X + 5/2`, but both quadratic roots lie
 strictly to the left of `-1`, so `Prec (X + 1) ((X + 2)(X + 3))` fails. -/
 lemma not_posComboNoCommonSuccDegreeOrientationNonnegStatement :
-    ¬ PosComboNoCommonSuccDegreeOrientationNonnegStatement :=
+    ¬ (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g) :=
   fun hsucc =>
     xAddOne_xSq_add_fiveX_add_six_not_prec
       (hsucc
@@ -584,7 +635,15 @@ same pair `X + 1, (X + 2)(X + 3)` is compatible and has nonnegative
 coefficients, but the negative pencil member at `μ = -1` is a quadratic with
 negative discriminant. -/
 lemma not_compatibleSuccDegreeNegativeRightFamilyNonnegStatement :
-    ¬ CompatibleSuccDegreeNegativeRightFamilyNonnegStatement := by
+    ¬ (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ μ : ℝ, μ < 0 → (f + C μ * g).Splits) := by
   intro hneg
   have hcomp : Compatible (X + 1 : ℝ[X]) (((X + 2) * (X + 3)) : ℝ[X]) :=
     Compatible.of_posComboRealRooted
@@ -632,7 +691,13 @@ lemma not_compatibleSuccDegreeNegativeRightFamilyNonnegStatement :
 /-- The coefficient-free negative right-pencil shortcut is false, already for
 the nonnegative-coefficient counterexample above. -/
 lemma not_compatibleSuccDegreeNegativeRightFamilyStatement :
-    ¬ CompatibleSuccDegreeNegativeRightFamilyStatement :=
+    ¬ (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ μ : ℝ, μ < 0 → (f + C μ * g).Splits) :=
   fun hneg =>
     not_compatibleSuccDegreeNegativeRightFamilyNonnegStatement
       (fun {f g} hcomp hf_pos hg_pos _ _ hdeg hf_split μ hμ =>
@@ -641,7 +706,13 @@ lemma not_compatibleSuccDegreeNegativeRightFamilyStatement :
 /-- The signed right-pencil shortcut is false, because it contains the negative
 right-pencil half-line. -/
 lemma not_compatibleSuccDegreeSignedRightFamilyStatement :
-    ¬ CompatibleSuccDegreeSignedRightFamilyStatement :=
+    ¬ (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ μ : ℝ, (f + C μ * g).Splits) :=
   fun hsigned =>
     not_compatibleSuccDegreeNegativeRightFamilyStatement
       (fun {f g} hcomp hf_pos hg_pos hdeg hf_split μ _ =>
@@ -650,7 +721,13 @@ lemma not_compatibleSuccDegreeSignedRightFamilyStatement :
 /-- The coefficient-free all-combinations shortcut is false, because it would
 imply the negative right-pencil shortcut. -/
 lemma not_compatibleSuccDegreeAllComboStatement :
-    ¬ CompatibleSuccDegreeAllComboStatement :=
+    ¬ (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        AllComboRealRooted f g) :=
   fun hall =>
     not_compatibleSuccDegreeNegativeRightFamilyStatement
       (compatibleSuccDegreeNegativeRightFamily_of_allCombo hall)
@@ -659,7 +736,13 @@ lemma not_compatibleSuccDegreeAllComboStatement :
 linear/quadratic pair is compatible, but both quadratic roots lie to the left
 of the linear root. -/
 lemma not_compatibleSuccDegreePrecStatement :
-    ¬ CompatibleSuccDegreePrecStatement := by
+    ¬ (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        Prec f g) := by
   intro hprec
   have hcomp : Compatible (X + 1 : ℝ[X]) (((X + 2) * (X + 3)) : ℝ[X]) :=
     Compatible.of_posComboRealRooted
@@ -676,8 +759,9 @@ lemma not_compatibleSuccDegreePrecStatement :
 
 /-! ### The general no-common orientation statement is false
 
-The named `PosComboNoCommonOrientationStatement` (with the weaker conclusion
-`Prec f g ∨ Prec g f`, and no nonnegative-coefficient hypothesis) is also
+The positive-combination no-common orientation statement (with the weaker
+conclusion `Prec f g ∨ Prec g f`, and no nonnegative-coefficient hypothesis) is
+also
 false.  Witnesses: `f = (X - 1)(X + 1) = X^2 - 1` and
 `g = (X - 2)(X + 2) = X^2 - 4`.  Every positive combination
 `lambda * f + mu * g = (lambda + mu) * X^2 - (lambda + 4 * mu)` is
@@ -818,7 +902,14 @@ private lemma orientCex_not_prec :
 
 /-- The general no-common orientation statement is false. -/
 lemma not_posComboNoCommonOrientationStatement :
-    ¬ PosComboNoCommonOrientationStatement := by
+    ¬ (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f) := by
   intro horient
   refine orientCex_not_prec ?_
   exact horient orientCex_posComboRealRooted
@@ -830,7 +921,7 @@ lemma not_posComboNoCommonOrientationStatement :
 /-! ### The residual succ-degree orientation target is false
 
 The residual branch of the succ-degree no-common orientation problem
-(`PosComboNoCommonSuccDegreeRootCountResidualPrecStatement`) additionally
+(the succ-degree no-common root-count residual `Prec` statement) additionally
 assumes `f.coeff 0 = 0` and `g.coeff 0 ≠ 0`.  It is false: take `f = X` and
 `g = (X + 1)(X + 2)`.  A common left interleaver `X + 3/2` witnesses the
 positive-combination condition, but `0`, the only root of `X`, lies strictly to
@@ -940,10 +1031,21 @@ private lemma X_not_prec_xAddOne_xAddTwo :
   norm_num at this
 
 /-- The residual succ-degree orientation target
-`PosComboNoCommonSuccDegreeRootCountResidualPrecStatement` is false.
+(the succ-degree no-common root-count residual `Prec` statement) is false.
 Witnessed by `f = X`, `g = (X + 1)(X + 2)`. -/
 lemma not_posComboNoCommonSuccDegreeRootCountResidualPrecStatement :
-    ¬ PosComboNoCommonSuccDegreeRootCountResidualPrecStatement :=
+    ¬ (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 = 0 →
+        g.coeff 0 ≠ 0 →
+        Prec f g) :=
   fun hres =>
     X_not_prec_xAddOne_xAddTwo
       (hres

@@ -22,7 +22,11 @@ def chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target : Prop
 before the finite-family left Helly upgrade was internalized.
 -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
-    (hglobal : CommonLeftInterleaverFamilyUpgradeStatement) :
+    (hglobal : (∀ {fs : List ℝ[X]},
+        (∀ f ∈ fs, f.Splits) →
+        (∀ f ∈ fs, HasPosLeadingCoeff f) →
+        PairwiseHasCommonLeftInterleaver fs →
+        HasCommonLeftInterleaver fs)) :
     chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target :=
   fun {fs} hrr hpos =>
     pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
@@ -40,7 +44,11 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairwi
 /-- The common-left roadmap target follows from the positive-leading common
 right two-polynomial bridge. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairBridge
-    (hright : CompatiblePairHasCommonInterleaverStatement) :
+    (hright : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target :=
   fun {fs} hrr hpos =>
     pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridgePos_direct
@@ -161,8 +169,18 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_pairBridge 
 /-- The roadmap target follows from the same-degree and successor-degree
 two-polynomial bridges. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_degreeSplit
-    (hsame : CompatibleSameDegreePairHasCommonInterleaverStatement)
-    (hsucc : CompatibleSuccDegreePairHasCommonInterleaverStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        g.natDegree = f.natDegree →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        g.natDegree = f.natDegree + 1 →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
   fun hrr hpos =>
     pairwiseCompatible_iff_hasCommonInterleaver_of_compatibleDegreeSplit
@@ -171,8 +189,18 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_degreeSpli
 /-- The finite-family compatibility roadmap target follows from the
 same-degree and successor-degree two-polynomial bridges. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_degreeSplit
-    (hsame : CompatibleSameDegreePairHasCommonInterleaverStatement)
-    (hsucc : CompatibleSuccDegreePairHasCommonInterleaverStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        g.natDegree = f.natDegree →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        g.natDegree = f.natDegree + 1 →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
     (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_degreeSplit
@@ -181,8 +209,26 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_degreeSplit
 /-- The roadmap target follows from the nonnegative-shift route, with the
 succ-degree branch discharged by the affine-family bridge. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_nonnegShift
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
   fun hrr hpos =>
     pairwiseCompatible_iff_hasCommonInterleaver_via_nonnegShift
@@ -192,8 +238,26 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_nonnegShif
 nonnegative-shift route, with the succ-degree branch discharged by the
 affine-family bridge. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_nonnegShift
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
     (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_nonnegShift
@@ -202,8 +266,33 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_nonnegShift
 /-- The roadmap target follows from the concrete slot-data endpoints after the
 nonnegative-shift reduction. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_slotData
-    (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeSlotDataNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ j, j < f.natDegree + 1 →
+          ∀ (hjf : j < (rootSeqDesc f).length + 1)
+            (hjg : j < (rootSeqDesc g).length + 1),
+            (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+              rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (f ≠ 0 ∧ f.Splits) ∧
+          ∀ j, j < f.natDegree + 1 →
+            ∀ (hjf : j < (rootSeqDesc f).length + 1)
+              (hjg : j < (rootSeqDesc g).length + 1),
+              (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+                rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty)) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
   fun hrr hpos =>
     pairwiseCompatible_iff_hasCommonInterleaver_of_slotData_via_nonnegShift
@@ -212,8 +301,33 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_slotData
 /-- The finite-family compatibility roadmap target follows from the concrete
 slot-data endpoints after the nonnegative-shift reduction. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_slotData
-    (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeSlotDataNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ j, j < f.natDegree + 1 →
+          ∀ (hjf : j < (rootSeqDesc f).length + 1)
+            (hjg : j < (rootSeqDesc g).length + 1),
+            (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+              rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (f ≠ 0 ∧ f.Splits) ∧
+          ∀ j, j < f.natDegree + 1 →
+            ∀ (hjf : j < (rootSeqDesc f).length + 1)
+              (hjg : j < (rootSeqDesc g).length + 1),
+              (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+                rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty)) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
     (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_slotData
@@ -222,9 +336,39 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_slotData
 /-- The roadmap target follows from the root-crossing formulations of the
 same-degree and succ-degree endpoints after the nonnegative-shift reduction. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsplit : PosComboSuccDegreeLeftSplitsNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsplit : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
   fun hrr hpos =>
     pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_via_nonnegShift
@@ -233,9 +377,39 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossi
 /-- The finite-family compatibility roadmap target follows from the
 root-crossing formulations after the nonnegative-shift reduction. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_rootCrossing
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsplit : PosComboSuccDegreeLeftSplitsNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsplit : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
     (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing
@@ -245,8 +419,31 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_rootCrossin
 root continuity supplies the succ-degree left endpoint. -/
 theorem
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing_direct
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
   fun hrr hpos =>
     pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing
@@ -256,8 +453,31 @@ theorem
 alone; root continuity supplies the succ-degree left endpoint. -/
 theorem
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_rootCrossing_direct
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
     (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing_direct
@@ -267,8 +487,31 @@ theorem
 succ-degree left endpoint is supplied by the PF/ASW route. -/
 theorem
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing_and_forward_asw
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
   fun hrr hpos =>
     pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_and_forward_asw
@@ -278,8 +521,31 @@ theorem
 once the succ-degree left endpoint is supplied by the PF/ASW route. -/
 theorem
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_rootCrossing_and_forward_asw
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
     (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing_and_forward_asw
@@ -289,8 +555,31 @@ theorem
 succ-degree left endpoint is supplied by the splitting-only ASW target. -/
 theorem
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing_and_forwardASWSplits
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
   fun hrr hpos =>
     pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_and_forward_asw_splits
@@ -301,8 +590,31 @@ once the succ-degree left endpoint is supplied by the splitting-only ASW
 target. -/
 theorem
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_rootCrossing_and_forwardASWSplits
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
     (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_rootCrossing_and_forwardASWSplits
@@ -313,8 +625,29 @@ formulation and the affine-family bridge, avoiding the separate succ-degree
 root-crossing branch. -/
 theorem
     chudnovskySeymour_commonInterleaver_of_sameDegreeCrossing_affineFamily
-    (_hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (_haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (_hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (_haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge
 
@@ -322,8 +655,29 @@ theorem
 root-crossing and the affine-family bridge. -/
 theorem
     chudnovskySeymour_familyCompatible_of_sameDegreeCrossing_affineFamily
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver
     (chudnovskySeymour_commonInterleaver_of_sameDegreeCrossing_affineFamily
@@ -333,8 +687,31 @@ theorem
 formulations once the succ-degree left endpoint is supplied by the
 splitting-only ASW target. -/
 theorem chudnovskySeymour_fourWay_of_rootCrossing_forwardASWSplits_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   fun hrr hpos _ =>
     chudnovskySeymour_fourWay_of_rootCrossing_and_forward_asw_splits
@@ -343,8 +720,31 @@ theorem chudnovskySeymour_fourWay_of_rootCrossing_forwardASWSplits_nonneg
 /-- The nonnegative four-way package target follows from the root-crossing
 formulations alone; root continuity supplies the succ-degree left endpoint. -/
 theorem chudnovskySeymour_fourWay_of_rootCrossing_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   fun hrr hpos _ =>
     RealRooted.chudnovskySeymour_fourWay_of_rootCrossing
@@ -353,8 +753,29 @@ theorem chudnovskySeymour_fourWay_of_rootCrossing_nonneg
 /-- The nonnegative four-way package target follows from lower-threshold
 root-count formulations in both degree branches. -/
 theorem chudnovskySeymour_fourWay_of_rootCount_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_rootCrossing_nonneg
     (posComboNoCommonSameDegreeRootCrossing_of_rootCount hsame)
@@ -363,8 +784,29 @@ theorem chudnovskySeymour_fourWay_of_rootCount_nonneg
 /-- The nonnegative four-way package target follows from same-degree
 lower-threshold root counts and succ-degree upper-threshold root counts. -/
 theorem chudnovskySeymour_fourWay_of_rootCountAbove_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_rootCrossing_nonneg
     (posComboNoCommonSameDegreeRootCrossing_of_rootCount hsame)
@@ -373,8 +815,29 @@ theorem chudnovskySeymour_fourWay_of_rootCountAbove_nonneg
 /-- The nonnegative four-way package target follows from same-degree
 upper-threshold root counts and succ-degree lower-threshold root counts. -/
 theorem chudnovskySeymour_fourWay_of_sameRootCountAbove_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_rootCrossing_nonneg
     (posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove hsame)
@@ -383,8 +846,29 @@ theorem chudnovskySeymour_fourWay_of_sameRootCountAbove_nonneg
 /-- The nonnegative four-way package target follows from upper-threshold
 root-count formulations in both degree branches. -/
 theorem chudnovskySeymour_fourWay_of_rootCountAboveBoth_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_rootCrossing_nonneg
     (posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove hsame)
@@ -393,8 +877,29 @@ theorem chudnovskySeymour_fourWay_of_rootCountAboveBoth_nonneg
 /-- The nonnegative four-way package target follows from common-non-root
 lower-threshold root-count formulations in both degree branches. -/
 theorem chudnovskySeymour_fourWay_of_rootCountNonRoot_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_rootCrossing_nonneg
     (posComboNoCommonSameDegreeRootCrossing_of_rootCountNonRoot hsame)
@@ -404,8 +909,29 @@ theorem chudnovskySeymour_fourWay_of_rootCountNonRoot_nonneg
 common-non-root lower-threshold root counts and succ-degree common-non-root
 upper-threshold root counts. -/
 theorem chudnovskySeymour_fourWay_of_rootCountAboveNonRoot_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_rootCrossing_nonneg
     (posComboNoCommonSameDegreeRootCrossing_of_rootCountNonRoot hsame)
@@ -415,8 +941,29 @@ theorem chudnovskySeymour_fourWay_of_rootCountAboveNonRoot_nonneg
 common-non-root upper-threshold root counts and succ-degree common-non-root
 lower-threshold root counts. -/
 theorem chudnovskySeymour_fourWay_of_sameRootCountAboveNonRoot_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_rootCrossing_nonneg
     (posComboNoCommonSameDegreeRootCrossing_of_rootCountAboveNonRoot hsame)
@@ -425,8 +972,29 @@ theorem chudnovskySeymour_fourWay_of_sameRootCountAboveNonRoot_nonneg
 /-- The nonnegative four-way package target follows from common-non-root
 upper-threshold root-count formulations in both degree branches. -/
 theorem chudnovskySeymour_fourWay_of_rootCountAboveBothNonRoot_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_rootCrossing_nonneg
     (posComboNoCommonSameDegreeRootCrossing_of_rootCountAboveNonRoot hsame)
@@ -435,8 +1003,29 @@ theorem chudnovskySeymour_fourWay_of_rootCountAboveBothNonRoot_nonneg
 /-- The nonnegative four-way package target follows from same-degree
 root-crossing and the affine-family bridge for the succ-degree branch. -/
 theorem chudnovskySeymour_fourWay_of_sameDegreeRootCrossing_and_affineFamily_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   fun hrr hpos hnn =>
     chudnovskySeymour_fourWay_of_sameDegreePair_and_affineFamily_nonneg
@@ -448,8 +1037,31 @@ theorem chudnovskySeymour_fourWay_of_sameDegreeRootCrossing_and_affineFamily_non
 formulations and splitting-only ASW. -/
 theorem
     chudnovskySeymour_commonInterleaver_of_rootCrossing_forwardASWSplits_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   fun hrr hpos hnn =>
     pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay
@@ -459,8 +1071,31 @@ theorem
 /-- The nonnegative common-interleaver target follows from the root-crossing
 formulations alone. -/
 theorem chudnovskySeymour_commonInterleaver_of_rootCrossing_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   fun hrr hpos hnn =>
     pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay
@@ -470,8 +1105,29 @@ theorem chudnovskySeymour_commonInterleaver_of_rootCrossing_nonneg
 /-- The nonnegative common-interleaver target follows from same-degree
 root-crossing and the affine-family bridge. -/
 theorem chudnovskySeymour_commonInterleaver_of_sameDegreeRootCrossing_and_affineFamily_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   fun hrr hpos hnn =>
     pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay
@@ -482,8 +1138,31 @@ theorem chudnovskySeymour_commonInterleaver_of_sameDegreeRootCrossing_and_affine
 root-crossing formulations and splitting-only ASW. -/
 theorem
     chudnovskySeymour_familyCompatible_of_rootCrossing_forwardASWSplits_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   fun hrr hpos hnn =>
     pairwiseCompatible_iff_familyCompatible_of_fourWay
@@ -493,8 +1172,31 @@ theorem
 /-- The nonnegative finite-family compatibility target follows from the
 root-crossing formulations alone. -/
 theorem chudnovskySeymour_familyCompatible_of_rootCrossing_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   fun hrr hpos hnn =>
     pairwiseCompatible_iff_familyCompatible_of_fourWay
@@ -504,8 +1206,29 @@ theorem chudnovskySeymour_familyCompatible_of_rootCrossing_nonneg
 /-- The nonnegative finite-family compatibility target follows from
 same-degree root-crossing and the affine-family bridge. -/
 theorem chudnovskySeymour_familyCompatible_of_sameDegreeRootCrossing_and_affineFamily_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   fun hrr hpos hnn =>
     pairwiseCompatible_iff_familyCompatible_of_fourWay
@@ -531,7 +1254,14 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_fourWay_non
 /-- The nonnegative four-way package target follows from the no-common
 orientation core. -/
 theorem chudnovskySeymour_fourWay_of_noCommonOrientation_nonneg
-    (hstep : PosComboNoCommonOrientationStatement) :
+    (hstep : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   fun hrr hpos hnn =>
     chudnovskySeymour_fourWay_of_noCommonOrientation_and_nonnegCoeffs
@@ -541,7 +1271,14 @@ theorem chudnovskySeymour_fourWay_of_noCommonOrientation_nonneg
 no-common orientation core. -/
 theorem
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_noCommonOrientation_nonneg
-    (hstep : PosComboNoCommonOrientationStatement) :
+    (hstep : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f)) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_fourWay_nonneg
     (chudnovskySeymour_fourWay_of_noCommonOrientation_nonneg hstep)
@@ -549,8 +1286,24 @@ theorem
 /-- The nonnegative four-way package target follows from the repaired
 same-degree and successor-degree no-common pair bridges. -/
 theorem chudnovskySeymour_fourWay_of_pairDegreeSplit_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   fun hrr hpos hnn =>
     chudnovskySeymour_fourWay_of_pairDegreeSplit_and_nonnegCoeffs
@@ -560,8 +1313,24 @@ theorem chudnovskySeymour_fourWay_of_pairDegreeSplit_nonneg
 same-degree and successor-degree no-common pair bridges. -/
 theorem
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairDegreeSplit_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_fourWay_nonneg
     (chudnovskySeymour_fourWay_of_pairDegreeSplit_nonneg hsame hsucc)
@@ -592,8 +1361,24 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs :
 /-- The nonnegative four-way package target follows from the honest same-degree
 orientation alternative and successor-degree bridge. -/
 theorem chudnovskySeymour_fourWay_of_degreeSplit_nonneg
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   fun hrr hpos hnn =>
     chudnovskySeymour_fourWay_of_degreeSplit_and_nonnegCoeffs
@@ -602,8 +1387,24 @@ theorem chudnovskySeymour_fourWay_of_degreeSplit_nonneg
 /-- The nonnegative-coefficient roadmap target follows from the honest
 same-degree orientation alternative and successor-degree bridge. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_degreeSplit_nonneg
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_fourWay_nonneg
     (chudnovskySeymour_fourWay_of_degreeSplit_nonneg hsame hsucc)
@@ -612,8 +1413,26 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_degreeSpli
 same-degree bridge and the affine-family bridge for the successor-degree
 branch. -/
 theorem chudnovskySeymour_fourWayTarget_of_sameDegreePair_and_affineFamily_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   fun hrr hpos hnn =>
     chudnovskySeymour_fourWay_of_sameDegreePair_and_affineFamily_nonneg
@@ -624,8 +1443,26 @@ repaired same-degree bridge and the affine-family bridge for the
 successor-degree branch. -/
 theorem
     chudnovskySeymour_commonInterleaver_of_sameDegreePair_affineFamily_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_fourWay_nonneg
     (chudnovskySeymour_fourWayTarget_of_sameDegreePair_and_affineFamily_nonneg
@@ -634,7 +1471,14 @@ theorem
 /-- The nonnegative four-way package target follows from the all-combinations
 bridge. -/
 theorem chudnovskySeymour_fourWay_of_allComboBridge_nonneg
-    (hallBridge : PosComboNoCommonToAllComboBridgeStatement) :
+    (hallBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        AllComboRealRooted f g)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   fun hrr hpos hnn =>
     chudnovskySeymour_fourWay_of_allComboBridge_and_nonnegCoeffs
@@ -643,7 +1487,14 @@ theorem chudnovskySeymour_fourWay_of_allComboBridge_nonneg
 /-- The nonnegative-coefficient common-interleaver target follows from the
 all-combinations bridge. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_allComboBridge_nonneg
-    (hallBridge : PosComboNoCommonToAllComboBridgeStatement) :
+    (hallBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        AllComboRealRooted f g)) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_fourWay_nonneg
     (chudnovskySeymour_fourWay_of_allComboBridge_nonneg hallBridge)
@@ -651,7 +1502,17 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_allComboBr
 /-- The nonnegative four-way package target follows from the affine-family
 bridge. -/
 theorem chudnovskySeymour_fourWay_of_affineFamilyBridge_nonneg
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   fun hrr hpos hnn =>
     chudnovskySeymour_fourWay_of_affineFamilyBridge_and_nonnegCoeffs
@@ -660,7 +1521,17 @@ theorem chudnovskySeymour_fourWay_of_affineFamilyBridge_nonneg
 /-- The nonnegative-coefficient common-interleaver target follows from the
 affine-family bridge. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_affineFamilyBridge_nonneg
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_fourWay_nonneg
     (chudnovskySeymour_fourWay_of_affineFamilyBridge_nonneg haffBridge)
@@ -668,7 +1539,17 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_affineFami
 /-- The nonnegative four-way package target follows from the
 boundary-right-pair orientation statement. -/
 theorem chudnovskySeymour_fourWay_of_boundaryRight_nonneg
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    (hboundary : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃t : ℝ⦄, 0 < t →
+          Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g))) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   fun hrr hpos hnn =>
     chudnovskySeymour_fourWay_of_boundaryRightPairOrientation_and_nonnegCoeffs
@@ -678,7 +1559,17 @@ theorem chudnovskySeymour_fourWay_of_boundaryRight_nonneg
 boundary-right-pair orientation statement. -/
 theorem
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_boundaryRight_nonneg
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    (hboundary : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃t : ℝ⦄, 0 < t →
+          Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g))) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_fourWay_nonneg
     (chudnovskySeymour_fourWay_of_boundaryRight_nonneg hboundary)
@@ -697,7 +1588,14 @@ theorem
 from the no-common orientation core. -/
 theorem
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_noCommonOrientation_nonneg
-    (hstep : PosComboNoCommonOrientationStatement) :
+    (hstep : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f)) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_nonneg
     (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_noCommonOrientation_nonneg
@@ -707,8 +1605,24 @@ theorem
 from the repaired same-degree and successor-degree no-common pair bridges. -/
 theorem
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_pairDegreeSplit_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_nonneg
     (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairDegreeSplit_nonneg
@@ -718,8 +1632,24 @@ theorem
 from the honest same-degree orientation alternative and successor-degree
 bridge. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_degreeSplit_nonneg
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_nonneg
     (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_degreeSplit_nonneg
@@ -730,8 +1660,26 @@ from the repaired same-degree bridge and the affine-family bridge for the
 successor-degree branch. -/
 theorem
     chudnovskySeymour_familyCompatible_of_sameDegreePair_affineFamily_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_nonneg
     (chudnovskySeymour_commonInterleaver_of_sameDegreePair_affineFamily_nonneg
@@ -740,7 +1688,14 @@ theorem
 /-- The nonnegative-coefficient finite-family compatibility target follows
 from the all-combinations bridge. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_allComboBridge_nonneg
-    (hallBridge : PosComboNoCommonToAllComboBridgeStatement) :
+    (hallBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        AllComboRealRooted f g)) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_nonneg
     (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_allComboBridge_nonneg
@@ -749,7 +1704,17 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_allComboBri
 /-- The nonnegative-coefficient finite-family compatibility target follows
 from the affine-family bridge. -/
 theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_affineFamilyBridge_nonneg
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_nonneg
     (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_affineFamilyBridge_nonneg
@@ -759,7 +1724,17 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_affineFamil
 from the boundary-right-pair orientation statement. -/
 theorem
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_boundaryRight_nonneg
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    (hboundary : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃t : ℝ⦄, 0 < t →
+          Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g))) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_nonneg
     (chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_boundaryRight_nonneg
@@ -770,8 +1745,27 @@ common-non-root root-count leaf and the direct compatible succ-degree
 closed-segment endpoint count-equality route. -/
 theorem
     chudnovskySeymour_fourWay_of_sameRootCountNonRoot_and_succClosedSegmentCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
-    (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_rootCountAboveNonRoot_nonneg hsame
     (posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_closedSegmentCountEq hsucc)
@@ -781,8 +1775,27 @@ same-degree common-non-root root-count leaf and the direct compatible
 succ-degree closed-segment endpoint count-equality route. -/
 theorem
     chudnovskySeymour_commonInterleaver_of_sameRootCountNonRoot_and_succClosedSegmentCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
-    (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_fourWay_nonneg
     (chudnovskySeymour_fourWay_of_sameRootCountNonRoot_and_succClosedSegmentCountEq_nonneg
@@ -793,8 +1806,27 @@ from the same-degree common-non-root root-count leaf and the direct compatible
 succ-degree closed-segment endpoint count-equality route. -/
 theorem
     chudnovskySeymour_familyCompatible_of_sameRootCountNonRoot_and_succClosedSegmentCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
-    (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_fourWay_nonneg
     (chudnovskySeymour_fourWay_of_sameRootCountNonRoot_and_succClosedSegmentCountEq_nonneg
@@ -805,8 +1837,26 @@ common-non-root root-count leaf and the exact lower-threshold endpoint-sign
 count-equality form of the direct compatible succ-degree route. -/
 theorem
     chudnovskySeymour_fourWay_of_sameRootCountNonRoot_and_succEndpointSignLowerCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
-    (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_sameRootCountNonRoot_and_succClosedSegmentCountEq_nonneg
     hsame (compatibleSuccDegreeClosedSegmentCountEq_of_lowerCountEq hsucc)
@@ -816,8 +1866,26 @@ same-degree common-non-root root-count leaf and the exact lower-threshold
 endpoint-sign count-equality form of the direct compatible succ-degree route. -/
 theorem
     chudnovskySeymour_commonInterleaver_of_sameRootCountNonRoot_and_succLowerCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
-    (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_fourWay_nonneg
     (chudnovskySeymour_fourWay_of_sameRootCountNonRoot_and_succEndpointSignLowerCountEq_nonneg
@@ -829,8 +1897,26 @@ lower-threshold endpoint-sign count-equality form of the direct compatible
 succ-degree route. -/
 theorem
     chudnovskySeymour_familyCompatible_of_sameRootCountNonRoot_and_succLowerCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
-    (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_fourWay_nonneg
     (chudnovskySeymour_fourWay_of_sameRootCountNonRoot_and_succEndpointSignLowerCountEq_nonneg
@@ -855,8 +1941,25 @@ reductions. -/
 endpoint and the #42 compatible succ-degree closed-segment endpoint count
 equality. -/
 theorem chudnovskySeymour_fourWay_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_pairDegreeSplit_nonneg hsame
     (succDegreePairHasCommonInterleaver_nonneg_of_closedSegmentCountEq hsucc)
@@ -865,8 +1968,25 @@ theorem chudnovskySeymour_fourWay_of_sameDegreePair_and_succClosedSegmentCountEq
 same-degree pair endpoint and the #42 compatible succ-degree closed-segment
 endpoint count equality. -/
 theorem chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairDegreeSplit_nonneg hsame
     (succDegreePairHasCommonInterleaver_nonneg_of_closedSegmentCountEq hsucc)
@@ -875,8 +1995,25 @@ theorem chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succClosedSegm
 repaired same-degree pair endpoint and the #42 compatible succ-degree
 closed-segment endpoint count equality. -/
 theorem chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_of_pairDegreeSplit_nonneg hsame
     (succDegreePairHasCommonInterleaver_nonneg_of_closedSegmentCountEq hsucc)
@@ -884,8 +2021,24 @@ theorem chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succClosedSegme
 /-- Nonnegative four-way package target from the repaired same-degree pair
 endpoint and the #42 exact lower-threshold endpoint-sign count equality leaf. -/
 theorem chudnovskySeymour_fourWay_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
     hsame (compatibleSuccDegreeClosedSegmentCountEq_of_lowerCountEq hsucc)
@@ -895,8 +2048,24 @@ same-degree pair endpoint and the #42 exact lower-threshold endpoint-sign count
 equality leaf. -/
 theorem
     chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg hsame
     (compatibleSuccDegreeClosedSegmentCountEq_of_lowerCountEq hsucc)
@@ -905,8 +2074,24 @@ theorem
 repaired same-degree pair endpoint and the #42 exact lower-threshold
 endpoint-sign count equality leaf. -/
 theorem chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg hsame
     (compatibleSuccDegreeClosedSegmentCountEq_of_lowerCountEq hsucc)
@@ -919,8 +2104,29 @@ through `sameDegreePairHasCommonInterleaver_nonneg_of_slotData`. -/
 /-- Nonnegative four-way package target from the same-degree slot-data endpoint
 and the #42 compatible succ-degree closed-segment endpoint count equality. -/
 theorem chudnovskySeymour_fourWay_of_sameDegreeSlotData_and_succClosedSegmentCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
-    (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ j, j < f.natDegree + 1 →
+          ∀ (hjf : j < (rootSeqDesc f).length + 1)
+            (hjg : j < (rootSeqDesc g).length + 1),
+            (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+              rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_slotData hsame) hsucc
@@ -930,8 +2136,29 @@ slot-data endpoint and the #42 compatible succ-degree closed-segment endpoint
 count equality. -/
 theorem
     chudnovskySeymour_commonInterleaver_of_sameDegreeSlotData_and_succClosedSegmentCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
-    (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ j, j < f.natDegree + 1 →
+          ∀ (hjf : j < (rootSeqDesc f).length + 1)
+            (hjg : j < (rootSeqDesc g).length + 1),
+            (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+              rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_slotData hsame) hsucc
@@ -941,8 +2168,29 @@ same-degree slot-data endpoint and the #42 compatible succ-degree closed-segment
 endpoint count equality. -/
 theorem
     chudnovskySeymour_familyCompatible_of_sameDegreeSlotData_and_succClosedSegmentCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
-    (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ j, j < f.natDegree + 1 →
+          ∀ (hjf : j < (rootSeqDesc f).length + 1)
+            (hjg : j < (rootSeqDesc g).length + 1),
+            (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+              rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_slotData hsame) hsucc
@@ -950,8 +2198,28 @@ theorem
 /-- Nonnegative four-way package target from the same-degree slot-data endpoint
 and the #42 exact lower-threshold endpoint-sign count equality leaf. -/
 theorem chudnovskySeymour_fourWay_of_sameDegreeSlotData_and_succEndpointSignLowerCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
-    (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ j, j < f.natDegree + 1 →
+          ∀ (hjf : j < (rootSeqDesc f).length + 1)
+            (hjg : j < (rootSeqDesc g).length + 1),
+            (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+              rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_slotData hsame) hsucc
@@ -961,8 +2229,28 @@ slot-data endpoint and the #42 exact lower-threshold endpoint-sign count
 equality leaf. -/
 theorem
   chudnovskySeymour_commonInterleaver_of_sameDegreeSlotData_and_succEndpointSignLowerCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
-    (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ j, j < f.natDegree + 1 →
+          ∀ (hjf : j < (rootSeqDesc f).length + 1)
+            (hjg : j < (rootSeqDesc g).length + 1),
+            (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+              rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_slotData hsame) hsucc
@@ -972,8 +2260,28 @@ same-degree slot-data endpoint and the #42 exact lower-threshold endpoint-sign
 count equality leaf. -/
 theorem
     chudnovskySeymour_familyCompatible_of_sameDegreeSlotData_and_succEndpointSignLowerCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
-    (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ j, j < f.natDegree + 1 →
+          ∀ (hjf : j < (rootSeqDesc f).length + 1)
+            (hjg : j < (rootSeqDesc g).length + 1),
+            (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+              rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_slotData hsame) hsucc
@@ -987,8 +2295,28 @@ endpoint through `sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing`. -/
 endpoint and the #42 compatible succ-degree closed-segment endpoint count
 equality. -/
 theorem chudnovskySeymour_fourWay_of_sameDegreeRootCrossing_and_succClosedSegmentCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing hsame) hsucc
@@ -998,8 +2326,28 @@ root-crossing endpoint and the #42 compatible succ-degree closed-segment
 endpoint count equality. -/
 theorem
   chudnovskySeymour_commonInterleaver_of_sameDegreeRootCrossing_and_succClosedSegmentCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing hsame) hsucc
@@ -1009,8 +2357,28 @@ same-degree root-crossing endpoint and the #42 compatible succ-degree
 closed-segment endpoint count equality. -/
 theorem
     chudnovskySeymour_familyCompatible_of_sameDegreeRootCrossing_and_succClosedSegmentCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing hsame) hsucc
@@ -1018,8 +2386,27 @@ theorem
 /-- Nonnegative four-way package target from the same-degree root-crossing
 endpoint and the #42 exact lower-threshold endpoint-sign count equality leaf. -/
 theorem chudnovskySeymour_fourWay_of_sameDegreeRootCrossing_and_succEndpointSignLowerCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing hsame) hsucc
@@ -1029,8 +2416,27 @@ root-crossing endpoint and the #42 exact lower-threshold endpoint-sign count
 equality leaf. -/
 theorem
   chudnovskySeymour_commonInterleaver_of_sameDegreeRootCrossing_and_succEndpointSignLowerEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing hsame) hsucc
@@ -1040,8 +2446,27 @@ same-degree root-crossing endpoint and the #42 exact lower-threshold
 endpoint-sign count equality leaf. -/
 theorem
   chudnovskySeymour_familyCompatible_of_sameDegreeRootCrossing_and_succEndpointSignLowerEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing hsame) hsucc
@@ -1056,8 +2481,27 @@ same-degree pair endpoint through
 endpoint and the #42 compatible succ-degree closed-segment endpoint count
 equality. -/
 theorem chudnovskySeymour_fourWay_of_sameDegreeRootCount_and_succClosedSegmentCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
-    (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCount hsame) hsucc
@@ -1067,8 +2511,27 @@ root-count endpoint and the #42 compatible succ-degree closed-segment endpoint
 count equality. -/
 theorem
   chudnovskySeymour_commonInterleaver_of_sameDegreeRootCount_and_succClosedSegmentCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
-    (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCount hsame) hsucc
@@ -1078,8 +2541,27 @@ same-degree lower root-count endpoint and the #42 compatible succ-degree
 closed-segment endpoint count equality. -/
 theorem
   chudnovskySeymour_familyCompatible_of_sameDegreeRootCount_and_succClosedSegmentCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
-    (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCount hsame) hsucc
@@ -1087,8 +2569,26 @@ theorem
 /-- Nonnegative four-way package target from the same-degree lower root-count
 endpoint and the #42 exact lower-threshold endpoint-sign count equality leaf. -/
 theorem chudnovskySeymour_fourWay_of_sameDegreeRootCount_and_succEndpointSignLowerCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
-    (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCount hsame) hsucc
@@ -1098,8 +2598,26 @@ root-count endpoint and the #42 exact lower-threshold endpoint-sign count
 equality leaf. -/
 theorem
   chudnovskySeymour_commonInterleaver_of_sameDegreeRootCount_and_succEndpointSignLowerCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
-    (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCount hsame) hsucc
@@ -1109,8 +2627,26 @@ same-degree lower root-count endpoint and the #42 exact lower-threshold
 endpoint-sign count equality leaf. -/
 theorem
   chudnovskySeymour_familyCompatible_of_sameDegreeRootCount_and_succEndpointSignLowerCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
-    (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCount hsame) hsucc
@@ -1126,8 +2662,27 @@ endpoint and the #42 compatible succ-degree closed-segment endpoint count
 equality. -/
 theorem
   chudnovskySeymour_fourWay_of_sameDegreeRootCountAbove_and_succClosedSegmentCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
-    (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove hsame) hsucc
@@ -1137,8 +2692,27 @@ root-count endpoint and the #42 compatible succ-degree closed-segment endpoint
 count equality. -/
 theorem
   chudnovskySeymour_commonInterleaver_of_sameDegreeRootCountAbove_and_succClosedSegmentEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
-    (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove hsame) hsucc
@@ -1148,8 +2722,27 @@ same-degree upper root-count endpoint and the #42 compatible succ-degree
 closed-segment endpoint count equality. -/
 theorem
   chudnovskySeymour_familyCompatible_of_sameDegreeRootCountAbove_and_succClosedSegmentCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
-    (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove hsame) hsucc
@@ -1158,8 +2751,26 @@ theorem
 endpoint and the #42 exact lower-threshold endpoint-sign count equality leaf. -/
 theorem
   chudnovskySeymour_fourWay_of_sameDegreeRootCountAbove_and_succEndpointSignLowerCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
-    (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove hsame) hsucc
@@ -1169,8 +2780,26 @@ root-count endpoint and the #42 exact lower-threshold endpoint-sign count
 equality leaf. -/
 theorem
   chudnovskySeymour_commonInterleaver_of_sameDegreeRootCountAbove_and_succEndpointSignLowerEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
-    (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove hsame) hsucc
@@ -1180,8 +2809,26 @@ same-degree upper root-count endpoint and the #42 exact lower-threshold
 endpoint-sign count equality leaf. -/
 theorem
   chudnovskySeymour_familyCompatible_of_sameDegreeRootCountAbove_and_succEndpointSignLowerEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
-    (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove hsame) hsucc
@@ -1198,8 +2845,27 @@ upper root-count endpoint and the #42 compatible succ-degree closed-segment
 endpoint count equality. -/
 theorem
   chudnovskySeymour_fourWay_of_sameDegreeRootCountAboveNonRoot_and_succClosedSegmentCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
-    (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot hsame) hsucc
@@ -1209,8 +2875,27 @@ common-non-root upper root-count endpoint and the #42 compatible succ-degree
 closed-segment endpoint count equality. -/
 theorem
   chudnovskySeymour_commonInterleaver_of_rootCountAboveNonRoot_and_succClosedSegmentEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
-    (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot hsame) hsucc
@@ -1220,8 +2905,27 @@ same-degree common-non-root upper root-count endpoint and the #42 compatible
 succ-degree closed-segment endpoint count equality. -/
 theorem
   chudnovskySeymour_familyCompatible_of_rootCountAboveNonRoot_and_succClosedSegmentEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
-    (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot hsame) hsucc
@@ -1231,8 +2935,26 @@ upper root-count endpoint and the #42 exact lower-threshold endpoint-sign count
 equality leaf. -/
 theorem
   chudnovskySeymour_fourWay_of_rootCountAboveNonRoot_and_succEndpointSignLowerEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
-    (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot hsame) hsucc
@@ -1242,8 +2964,26 @@ common-non-root upper root-count endpoint and the #42 exact lower-threshold
 endpoint-sign count equality leaf. -/
 theorem
   chudnovskySeymour_commonInterleaver_of_rootCountAboveNonRoot_and_succEndpointSignLowerEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
-    (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot hsame) hsucc
@@ -1253,8 +2993,26 @@ same-degree common-non-root upper root-count endpoint and the #42 exact
 lower-threshold endpoint-sign count equality leaf. -/
 theorem
   chudnovskySeymour_familyCompatible_of_rootCountAboveNonRoot_and_succEndpointSignLowerEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
-    (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot hsame) hsucc
@@ -1271,8 +3029,27 @@ lower root-count endpoint and the #42 compatible succ-degree closed-segment
 endpoint count equality. -/
 theorem
   chudnovskySeymour_fourWay_of_sameDegreeRootCountNonRoot_and_succClosedSegmentCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
-    (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountNonRoot hsame) hsucc
@@ -1282,8 +3059,27 @@ common-non-root lower root-count endpoint and the #42 compatible succ-degree
 closed-segment endpoint count equality. -/
 theorem
   chudnovskySeymour_commonInterleaver_of_rootCountNonRoot_and_succClosedSegmentEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
-    (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountNonRoot hsame) hsucc
@@ -1293,8 +3089,27 @@ same-degree common-non-root lower root-count endpoint and the #42 compatible
 succ-degree closed-segment endpoint count equality. -/
 theorem
   chudnovskySeymour_familyCompatible_of_rootCountNonRoot_and_succClosedSegmentEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
-    (hsucc : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succClosedSegmentCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountNonRoot hsame) hsucc
@@ -1304,8 +3119,26 @@ lower root-count endpoint and the #42 exact lower-threshold endpoint-sign count
 equality leaf. -/
 theorem
   chudnovskySeymour_fourWay_of_sameDegreeRootCountNonRoot_and_succEndpointSignLowerCountEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
-    (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
     chudnovskySeymour_fourWay_nonnegCoeffs_target :=
   chudnovskySeymour_fourWay_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountNonRoot hsame) hsucc
@@ -1315,8 +3148,26 @@ common-non-root lower root-count endpoint and the #42 exact lower-threshold
 endpoint-sign count equality leaf. -/
 theorem
   chudnovskySeymour_commonInterleaver_of_rootCountNonRoot_and_succEndpointSignLowerEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
-    (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_nonnegCoeffs_target :=
   chudnovskySeymour_commonInterleaver_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountNonRoot hsame) hsucc
@@ -1326,8 +3177,26 @@ same-degree common-non-root lower root-count endpoint and the #42 exact
 lower-threshold endpoint-sign count equality leaf. -/
 theorem
   chudnovskySeymour_familyCompatible_of_rootCountNonRoot_and_succEndpointSignLowerEq_nonneg
-    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
-    (hsucc : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
     chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs_target :=
   chudnovskySeymour_familyCompatible_of_sameDegreePair_and_succEndpointSignLowerCountEq_nonneg
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCountNonRoot hsame) hsucc

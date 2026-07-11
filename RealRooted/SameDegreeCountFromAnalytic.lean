@@ -401,8 +401,18 @@ theorem sameDegree_rootCountAbove_pointwise_of_exists_pos_isRoot
 /-- The #41 common-non-root upper root-count target follows from the #42
 analytic count spine. -/
 theorem posComboNoCommonSameDegreeRootCountAboveNonRootNonneg_from_analytic :
-    PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement :=
-  fun f g hf_pos hg_pos _hfnn _hgnn hfg hdeg hno x hxf hxg => by
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) := by
+  intro f g hf_pos hg_pos _hfnn _hgnn hfg hdeg hno x hxf hxg
   by_cases hcross : ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x
   · exact
       sameDegree_rootCountAbove_pointwise_of_exists_pos_isRoot
@@ -414,7 +424,15 @@ theorem posComboNoCommonSameDegreeRootCountAboveNonRootNonneg_from_analytic :
 /-- The repaired #41 same-degree pair-interleaver endpoint follows from the
 #42 analytic count spine. -/
 theorem posComboNoCommonSameDegreePairHasCommonInterleaverNonneg_from_analytic :
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot
     posComboNoCommonSameDegreeRootCountAboveNonRootNonneg_from_analytic
 

@@ -549,15 +549,6 @@ theorem compatiblePairHasCommonLeftInterleaver {f g : ℝ[X]} (h : Compatible f 
     ∃ h : ℝ[X], Prec h f ∧ Prec h g := by
   sorry
 
-/-- Positive-leading two-polynomial common-left bridge.  This is the usable
-pair-local form for the roadmap theorem, whose finite-family statement already
-assumes memberwise positive leading coefficients. -/
-def CompatiblePairHasCommonLeftInterleaverPosStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    Compatible f g →
-    ∃ h : ℝ[X], Prec h f ∧ Prec h g
 
 /-- Once the two-polynomial common-left-interleaver converse is available, the
 pairwise Chudnovsky--Seymour hypothesis immediately upgrades to pairwise common
@@ -572,7 +563,11 @@ theorem pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible
 positive-leading hypotheses already present in the finite-family theorem. -/
 theorem pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible_pos
     {fs : List ℝ[X]}
-    (htwo : CompatiblePairHasCommonLeftInterleaverPosStatement)
+    (htwo : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec h f ∧ Prec h g))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonLeftInterleaver fs :=
@@ -610,29 +605,17 @@ theorem pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridgePos_di
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, f.Splits)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (htwo : CompatiblePairHasCommonLeftInterleaverPosStatement) :
+    (htwo : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec h f ∧ Prec h g)) :
     PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
   ⟨fun hpair =>
     hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver hrr hpos <|
       pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible_pos htwo hpos hpair,
     fun hcommon => pairwiseCompatible_of_commonLeftInterleaver hcommon hpos⟩
 
-/-- Two-polynomial common-right bridge: compatibility implies a common right
-interleaver, without carrying family-level positivity hypotheses. -/
-def CompatiblePairHasCommonRightInterleaverStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    Compatible f g →
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h
-
-/-- Natural two-polynomial bridge hypothesis in the Chudnovsky--Seymour setup:
-compatibility plus positive leading coefficients implies a common right
-interleaver. -/
-def CompatiblePairHasCommonInterleaverStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    Compatible f g →
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h
 
 /-- Natural two-polynomial bridge: compatibility plus positive leading
 coefficients implies a common right interleaver. -/
@@ -646,42 +629,35 @@ pairwise Chudnovsky--Seymour hypothesis upgrades to pairwise common right
 interleavers. -/
 theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible
     {fs : List ℝ[X]}
-    (htwo : CompatiblePairHasCommonRightInterleaverStatement)
+    (htwo : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
   fun i j hij => by simpa using htwo (hpair i j hij)
 
 
-
-/-- Same-degree branch of the positive-leading compatibility bridge. This is
-the honest `Compatible`-level version of article 3.6.1 → 3.6.2 in the equal-
-degree case. -/
-def CompatibleSameDegreePairHasCommonInterleaverStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    Compatible f g →
-    g.natDegree = f.natDegree →
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h
-
-/-- Succ-degree branch of the positive-leading compatibility bridge. Since
-`Compatible.natDegree_close` already rules out larger degree gaps, this and
-the same-degree branch are the only genuinely remaining cases. -/
-def CompatibleSuccDegreePairHasCommonInterleaverStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    Compatible f g →
-    g.natDegree = f.natDegree + 1 →
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h
-
 /-- Since `Compatible.natDegree_close` limits the degree gap to at most one,
 the full positive-leading compatibility bridge reduces to the same-degree and
 succ-degree cases, together with symmetry. -/
 theorem compatiblePairHasCommonInterleaver_of_degreeSplit
-    (hsame : CompatibleSameDegreePairHasCommonInterleaverStatement)
-    (hsucc : CompatibleSuccDegreePairHasCommonInterleaverStatement) :
-    CompatiblePairHasCommonInterleaverStatement := by
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        g.natDegree = f.natDegree →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        g.natDegree = f.natDegree + 1 →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   intro f g hf_pos hg_pos hfg
   have hclose := hfg.natDegree_close hf_pos hg_pos
   by_cases hdeg : f.natDegree ≤ g.natDegree
@@ -701,8 +677,16 @@ theorem compatiblePairHasCommonInterleaver_of_degreeSplit
 bridge: first get a common right interleaver, then convert it to a common left
 interleaver using degree closeness. -/
 theorem compatiblePairHasCommonLeftInterleaverPos_of_pairBridge
-    (hright : CompatiblePairHasCommonInterleaverStatement) :
-    CompatiblePairHasCommonLeftInterleaverPosStatement := by
+    (hright : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec h f ∧ Prec h g) := by
   intro f g hf_pos hg_pos hfg
   have hclose := hfg.natDegree_close hf_pos hg_pos
   by_cases hdeg : f.natDegree ≤ g.natDegree
@@ -717,169 +701,6 @@ theorem compatiblePairHasCommonLeftInterleaverPos_of_pairBridge
         hgh hfh hdeg' hclose.1
     exact ⟨l, hlf, hlg⟩
 
-/-- Core two-polynomial target in positive-combination language: a
-positive-leading `PosComboRealRooted` pair admits a common right interleaver. -/
-def PosComboPairHasCommonInterleaverStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    PosComboRealRooted f g →
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h
-
-/-- Degree-closeness bridge for positive-combination pairs. This is the
-remaining degree-only ingredient needed to pass from the no-common-roots
-orientation core to a full two-polynomial common-right-interleaver theorem. -/
-def PosComboNatDegreeCloseStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    PosComboRealRooted f g →
-    f.natDegree ≤ g.natDegree + 1 ∧
-      g.natDegree ≤ f.natDegree + 1
-
-/-- No-common-roots orientation core for the positive-combination converse.
-This matches the local step parameter in
-`PosComboRealRooted.prec_or_revPrec_of_posComboRealRooted_of_no_common`. -/
-def PosComboNoCommonOrientationStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    PosComboRealRooted f g →
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    f.natDegree ≤ g.natDegree →
-    g.natDegree ≤ f.natDegree + 1 →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    Prec f g ∨ Prec g f
-
-/-- Bridge statement: in the no-common, close-degree setup, positive-combination
-real-rootedness upgrades to full all-combinations real-rootedness. -/
-def PosComboNoCommonToAllComboBridgeStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    PosComboRealRooted f g →
-    f.natDegree ≤ g.natDegree →
-    g.natDegree ≤ f.natDegree + 1 →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    AllComboRealRooted f g
-
-/-- Stronger no-common bridge hypothesis in the nonnegative regime: instead of
-directly asking for `AllComboRealRooted f g`, assume the pair satisfies the
-full positive affine family needed by Brändén's converse. This isolates the
-remaining missing step as an affine-family packaging problem. -/
-def PosComboNoCommonAffineFamilyStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    f.natDegree ≤ g.natDegree →
-    g.natDegree ≤ f.natDegree + 1 →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
-      ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)
-
-/-- Stronger boundary-right-pair hypothesis in the nonnegative no-common
-regime: for each boundary member `C t * f + g`, orient the right-hand pair
-against `X * f`.  This is a useful conditional route to the affine family, not
-the current endpoint for the packet proof. -/
-def PosComboNoCommonBoundaryRightPairOrientationStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    f.natDegree ≤ g.natDegree →
-    g.natDegree ≤ f.natDegree + 1 →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    ∀ ⦃t : ℝ⦄, 0 < t →
-      Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g)
-
-/-- Strong shifted-pair formulation for the same-degree no-common branch after
-the affine/boundary counterexample.  It remains a named conditional hypothesis;
-the downstream bridge now uses the common-right-interleaver target below as the
-weaker endpoint. -/
-def PosComboNoCommonSameDegreeShiftedPairOrientationStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    Prec f (g + X * f)
-
-/-- Legacy fixed-orientation same-degree target in the nonnegative no-common
-regime.  It is retained for older reductions, but the repaired bridge no
-longer treats this as the required same-degree endpoint. -/
-def PosComboNoCommonSameDegreeOrientationNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    Prec f g
-
-/-- Strong same-degree no-common alternative in the nonnegative regime.  This
-weakens the fixed orientation, but it is still stronger than the repaired
-common-right-interleaver endpoint below. -/
-def PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    Prec f g ∨ Prec g f
-
-/-- Repaired same-degree no-common target in the nonnegative regime. The
-orientation alternative is too strong in degree `2`; for the
-Chudnovsky--Seymour bridge the needed conclusion is only a common right
-interleaver. -/
-def PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h
-
-/-- Fixed-orientation succ-degree target in the nonnegative no-common regime.
-This is stronger than what the Chudnovsky--Seymour bridge needs; the repaired
-succ-degree endpoint below only asks for a common right interleaver. -/
-def PosComboNoCommonSuccDegreeOrientationNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree + 1 →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    Prec f g
-
-/-- Repaired succ-degree no-common target for the Chudnovsky--Seymour bridge
-in the nonnegative regime: when the right degree is exactly one larger, the
-needed conclusion is the existence of a common interleaver, not a fixed
-orientation between `f` and `g`. -/
-def PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree + 1 →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h
 
 /-- If the original pair is already oriented as `f ≺ g`, then every boundary
 right pair `(C t * f + g, X * f)` inherits the correct orientation just by
@@ -913,7 +734,14 @@ theorem pairHasCommonInterleaver_of_prec_right_pair_nonneg
 the original no-common orientation statement is known: `Prec g f` is ruled out
 by degree, so the previous transport theorem applies. -/
 theorem prec_boundary_right_pair_of_orientation_succDegree_nonneg
-    (horient : PosComboNoCommonOrientationStatement)
+    (horient : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -935,8 +763,28 @@ recover the full affine-family hypothesis. The no-common condition for the
 boundary pair is automatic from nonnegative coefficients and the original
 no-common hypothesis. -/
 theorem posComboNoCommonAffineFamily_of_boundaryRightPairOrientation
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
-    PosComboNoCommonAffineFamilyStatement := by
+    (hboundary : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃t : ℝ⦄, 0 < t →
+          Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno s t hs ht
   let p : ℝ[X] := C t * f + g
   have hp_rr : (p ≠ 0 ∧ p.Splits) := by
@@ -966,8 +814,24 @@ theorem posComboNoCommonAffineFamily_of_boundaryRightPairOrientation
 original same-degree orientation statement in the nonnegative regime, via the
 public shifted-pair subtraction theorem from `AffineFamily`. -/
 theorem posComboNoCommonSameDegreeOrientation_of_shiftedPairOrientation_and_nonnegCoeffs
-    (hshift : PosComboNoCommonSameDegreeShiftedPairOrientationStatement) :
-    PosComboNoCommonSameDegreeOrientationNonnegStatement := by
+    (hshift : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f (g + X * f))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
   have hf0 : f ≠ 0 := hf_pos.ne_zero
   have hg0 : g ≠ 0 := hg_pos.ne_zero
@@ -979,7 +843,15 @@ theorem posComboNoCommonSameDegreeOrientation_of_shiftedPairOrientation_and_nonn
 /-- Consequently, the corrected shifted-pair same-degree hypothesis already
 gives the same-degree all-combinations bridge in the nonnegative regime. -/
 theorem allComboRealRooted_of_sameDegreeShiftedPairOrientation_and_nonnegCoeffs
-    (hshift : PosComboNoCommonSameDegreeShiftedPairOrientationStatement)
+    (hshift : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f (g + X * f)))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -1119,7 +991,11 @@ theorem compatible_of_forward_oneTwoFamilies_sameDegree_nonneg
 /-- Consequently, any generic two-polynomial compatibility bridge can consume
 the forward one-two-family hypotheses directly. -/
 theorem pairHasCommonInterleaver_of_forward_oneTwoFamilies_sameDegree_nonneg
-    (htwo : CompatiblePairHasCommonInterleaverStatement)
+    (htwo : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -1330,8 +1206,24 @@ theorem posComboNoCommonSameDegreeOrientationAlternative_of_degree_one
 /-- The old same-degree orientation alternative, when available, still feeds
 the repaired same-degree common-interleaver target. -/
 theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement) :
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement := by
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
   have hf_rr : (f ≠ 0 ∧ f.Splits) :=
       hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg
@@ -1416,8 +1308,24 @@ theorem posComboNoCommonSuccDegreeOrientation_of_degree_zero
 /-- Any proof of the stronger fixed-orientation succ-degree statement can be
 used immediately as input for the corrected succ-degree pair bridge. -/
 theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_orientation_nonneg
-    (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (horient : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   fun {_ _} hf_pos hg_pos hfnn hgnn hfg hsucc hno =>
     pairHasCommonInterleaver_of_prec <|
       horient hf_pos hg_pos hfnn hgnn hfg hsucc hno
@@ -1476,7 +1384,17 @@ the affine-family bridge.  The public affine-family degree-one lemma gives the
 stronger right-pair orientation `g ≪ X * f`, so `X * f` is the required common
 right interleaver. -/
 theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily_degree_one
-    (haffBridge : PosComboNoCommonAffineFamilyStatement)
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -1504,8 +1422,26 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily_degre
 common-right-interleaver branch.  The affine-family right-pair theorem gives
 `g ≪ X * f`, so `X * f` is a common right interleaver. -/
 theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
   have hf0 : f ≠ 0 := hf_pos.ne_zero
   have hg0 : g ≠ 0 := hg_pos.ne_zero
@@ -1524,8 +1460,23 @@ theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily
 branch in the nonnegative regime: one simply specializes the degree bounds to
 equality. -/
 theorem posComboNoCommonSameDegreeOrientationAlternative_of_noCommonOrientation
-    (hstep : PosComboNoCommonOrientationStatement) :
-    PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement :=
+    (hstep : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f) :=
   fun {_ _} hf_pos hg_pos _ _ hfg hdeg hno =>
     hstep hfg hf_pos hg_pos (by lia) (by lia) hno
 
@@ -1533,8 +1484,23 @@ theorem posComboNoCommonSameDegreeOrientationAlternative_of_noCommonOrientation
 forces the forward orientation by degree, so it also packages the honest
 succ-degree orientation statement. -/
 theorem posComboNoCommonSuccDegreeOrientation_of_noCommonOrientation
-    (hstep : PosComboNoCommonOrientationStatement) :
-    PosComboNoCommonSuccDegreeOrientationNonnegStatement :=
+    (hstep : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g) :=
   fun {_ _} hf_pos hg_pos _ _ hfg hsucc hno =>
     prec_forward_of_orientation_of_succDegree hsucc <|
       hstep hfg hf_pos hg_pos (by lia) (by lia) hno
@@ -1542,35 +1508,26 @@ theorem posComboNoCommonSuccDegreeOrientation_of_noCommonOrientation
 /-- Consequently, any proof of the older no-common orientation core can be fed
 directly into the corrected succ-degree common-interleaver bridge. -/
 theorem posComboNoCommonSuccDegreePairHasCommonInterleaver_of_noCommonOrientation
-    (hstep : PosComboNoCommonOrientationStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (hstep : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   posComboNoCommonSuccDegreePairHasCommonInterleaver_of_orientation_nonneg
     (posComboNoCommonSuccDegreeOrientation_of_noCommonOrientation hstep)
 
-/-- **Honest missing root-slot boundary for milestone B1 (#41).**
-
-This is the same-degree analogue of
-`PosComboNoCommonSuccDegreeSlotDataNonnegStatement`.  For a nonnegative
-positive-combination pair with no common roots and `g.natDegree = f.natDegree`,
-it packages the remaining converse-Obreschkoff content as nonempty
-intersections of matching descending root-slot intervals.
-
-The real-rootedness of `f` and `g` is not bundled here because it is already
-available from the same-degree `PosComboRealRooted` lemmas. -/
-def PosComboNoCommonSameDegreeSlotDataNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    ∀ j, j < f.natDegree + 1 →
-      ∀ (hjf : j < (rootSeqDesc f).length + 1)
-        (hjg : j < (rootSeqDesc g).length + 1),
-        (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
-          rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty
 
 /-- **Checked reduction of #41 to the same-degree root-slot boundary.**
 
@@ -1578,8 +1535,28 @@ The repaired same-degree common-right-interleaver endpoint follows from the
 matching slot-intersection condition via the constructive slot theorem in
 `CommonInterleaverSeq`. -/
 theorem sameDegreePairHasCommonInterleaver_nonneg_of_slotData
-    (hstmt : PosComboNoCommonSameDegreeSlotDataNonnegStatement) :
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement := by
+    (hstmt : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ j, j < f.natDegree + 1 →
+          ∀ (hjf : j < (rootSeqDesc f).length + 1)
+            (hjg : j < (rootSeqDesc g).length + 1),
+            (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+              rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
   have hf_rr : f ≠ 0 ∧ f.Splits :=
     hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg
@@ -1596,8 +1573,28 @@ A common right interleaver for the same-degree pair `(f, g)` recovers the
 matching root-slot intersections through
 `rootSlotInterval_inter_nonempty_of_commonInterleaver`. -/
 theorem posComboNoCommonSameDegreeSlotData_of_pairHasCommonInterleaver
-    (hstmt : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement) :
-    PosComboNoCommonSameDegreeSlotDataNonnegStatement := by
+    (hstmt : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ j, j < f.natDegree + 1 →
+          ∀ (hjf : j < (rootSeqDesc f).length + 1)
+            (hjg : j < (rootSeqDesc g).length + 1),
+            (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+              rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
   obtain ⟨h, hfh, hgh⟩ := hstmt hf_pos hg_pos hfnn hgnn hfg hdeg hno
   intro j hj _ _
@@ -1610,8 +1607,28 @@ The matching root-slot statement holds if and only if the repaired
 same-degree common-right-interleaver statement holds, so the #41 reduction to
 slot data loses no information. -/
 theorem posComboNoCommonSameDegreeSlotData_iff_pairHasCommonInterleaver :
-    PosComboNoCommonSameDegreeSlotDataNonnegStatement ↔
-      PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ j, j < f.natDegree + 1 →
+          ∀ (hjf : j < (rootSeqDesc f).length + 1)
+            (hjg : j < (rootSeqDesc g).length + 1),
+            (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+              rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) ↔
+      (∀ ⦃f g : ℝ[X]⦄,
+          HasPosLeadingCoeff f →
+          HasPosLeadingCoeff g →
+          HasNonnegCoeffs f →
+          HasNonnegCoeffs g →
+          PosComboRealRooted f g →
+          g.natDegree = f.natDegree →
+          (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+          ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   ⟨sameDegreePairHasCommonInterleaver_nonneg_of_slotData,
     posComboNoCommonSameDegreeSlotData_of_pairHasCommonInterleaver⟩
 
@@ -1675,93 +1692,6 @@ theorem rootSlotInterval_inter_nonempty_of_sameDegree_crossing
     simpa [rootSlotInterval, hj0, hjlast, hlen] using
       icc_inter_icc_nonempty_of_crossing hrf_step hrg_step hcross_fg hcross_gf
 
-/-- **Sub-statement of milestone B1: descending-root crossing inequalities.**
-
-Given the nonnegative positive-combination/no-common hypotheses at equal
-degree, the descending root sequences of `f` and `g` should cross in the two
-interior inequalities consumed by
-`rootSlotInterval_inter_nonempty_of_sameDegree_crossing`. -/
-def PosComboNoCommonSameDegreeRootCrossingNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    (∀ j, 1 ≤ j → j < f.natDegree →
-        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
-    (∀ j, 1 ≤ j → j < f.natDegree →
-        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)
-
-/-- **Analytic root-count formulation of milestone B1.**
-
-For a nonnegative positive-combination same-degree pair with no common roots,
-the two threshold root-count functions should differ by at most one.  The
-pure order bridge `rootCrossing_of_rootCount_diff_le_one` turns this into the
-descending-root crossing inequalities. -/
-def PosComboNoCommonSameDegreeRootCountNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    ∀ x : ℝ,
-      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
-      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1
-
-/-- **Upper-threshold version of the same-degree root-count formulation.**
-
-This is the form naturally paired with sign-count lemmas, since the sign of a
-split polynomial at `x` is controlled by the number of roots strictly above
-`x`. -/
-def PosComboNoCommonSameDegreeRootCountAboveNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    ∀ x : ℝ,
-      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1
-
-/-- Non-root-threshold version of the same-degree lower root-count target.
-
-The `RootCountJump` local-constancy bridge reduces the full lower-threshold
-target to this common-non-root form. -/
-def PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
-      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1
-
-/-- Non-root-threshold version of the same-degree upper root-count target. -/
-def PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1
 
 /-- Same-degree lower root-count bounds reduce to thresholds that are roots
 of neither polynomial.  This is the local-constancy bridge used before applying
@@ -2077,8 +2007,29 @@ theorem sameDegreeRootCountAbove_of_rootCount
 /-- The same-degree root-count formulation implies the descending-root
 crossing formulation. -/
 theorem posComboNoCommonSameDegreeRootCrossing_of_rootCount
-    (hcount : PosComboNoCommonSameDegreeRootCountNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCrossingNonnegStatement := by
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
   have hf_split : f.Splits :=
     (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
@@ -2090,8 +2041,29 @@ theorem posComboNoCommonSameDegreeRootCrossing_of_rootCount
 /-- The upper-threshold same-degree root-count formulation implies the
 descending-root crossing formulation. -/
 theorem posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove
-    (hcount : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCrossingNonnegStatement := by
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
   have hf_split : f.Splits :=
     (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
@@ -2103,8 +2075,29 @@ theorem posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove
 /-- The same-degree descending-root crossing formulation implies the
 same-degree root-count formulation. -/
 theorem posComboNoCommonSameDegreeRootCount_of_rootCrossing
-    (hcross : PosComboNoCommonSameDegreeRootCrossingNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCountNonnegStatement := by
+    (hcross : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
   have hf_split : f.Splits :=
     (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
@@ -2116,8 +2109,28 @@ theorem posComboNoCommonSameDegreeRootCount_of_rootCrossing
 /-- The upper-threshold same-degree root-count target implies the
 lower-threshold root-count target. -/
 theorem posComboNoCommonSameDegreeRootCount_of_rootCountAbove
-    (hcount : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCountNonnegStatement := by
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
   have hf_split : f.Splits :=
     (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
@@ -2129,8 +2142,28 @@ theorem posComboNoCommonSameDegreeRootCount_of_rootCountAbove
 /-- The lower-threshold same-degree root-count target implies the
 upper-threshold root-count target. -/
 theorem posComboNoCommonSameDegreeRootCountAbove_of_rootCount
-    (hcount : PosComboNoCommonSameDegreeRootCountNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCountAboveNonnegStatement := by
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
   have hf_split : f.Splits :=
     (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
@@ -2142,24 +2175,86 @@ theorem posComboNoCommonSameDegreeRootCountAbove_of_rootCount
 /-- The lower-threshold and upper-threshold same-degree root-count targets are
 equivalent. -/
 theorem posComboNoCommonSameDegreeRootCountAbove_iff_rootCount :
-    PosComboNoCommonSameDegreeRootCountAboveNonnegStatement ↔
-      PosComboNoCommonSameDegreeRootCountNonnegStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) ↔
+      (∀ ⦃f g : ℝ[X]⦄,
+          HasPosLeadingCoeff f →
+          HasPosLeadingCoeff g →
+          HasNonnegCoeffs f →
+          HasNonnegCoeffs g →
+          PosComboRealRooted f g →
+          g.natDegree = f.natDegree →
+          (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+          ∀ x : ℝ,
+            ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+            ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1) :=
   ⟨posComboNoCommonSameDegreeRootCount_of_rootCountAbove,
     posComboNoCommonSameDegreeRootCountAbove_of_rootCount⟩
 
 /-- The same-degree root-crossing target is equivalent to the lower-threshold
 root-count target. -/
 theorem posComboNoCommonSameDegreeRootCrossing_iff_rootCount :
-    PosComboNoCommonSameDegreeRootCrossingNonnegStatement ↔
-      PosComboNoCommonSameDegreeRootCountNonnegStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)) ↔
+      (∀ ⦃f g : ℝ[X]⦄,
+          HasPosLeadingCoeff f →
+          HasPosLeadingCoeff g →
+          HasNonnegCoeffs f →
+          HasNonnegCoeffs g →
+          PosComboRealRooted f g →
+          g.natDegree = f.natDegree →
+          (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+          ∀ x : ℝ,
+            ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+            ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1) :=
   ⟨posComboNoCommonSameDegreeRootCount_of_rootCrossing,
     posComboNoCommonSameDegreeRootCrossing_of_rootCount⟩
 
 /-- The same-degree root-crossing target is equivalent to the upper-threshold
 root-count target. -/
 theorem posComboNoCommonSameDegreeRootCrossing_iff_rootCountAbove :
-    PosComboNoCommonSameDegreeRootCrossingNonnegStatement ↔
-      PosComboNoCommonSameDegreeRootCountAboveNonnegStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)) ↔
+      (∀ ⦃f g : ℝ[X]⦄,
+          HasPosLeadingCoeff f →
+          HasPosLeadingCoeff g →
+          HasNonnegCoeffs f →
+          HasNonnegCoeffs g →
+          PosComboRealRooted f g →
+          g.natDegree = f.natDegree →
+          (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+          ∀ x : ℝ,
+            ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+            ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   ⟨fun hcross =>
       posComboNoCommonSameDegreeRootCountAbove_of_rootCount
         (posComboNoCommonSameDegreeRootCount_of_rootCrossing hcross),
@@ -2168,8 +2263,28 @@ theorem posComboNoCommonSameDegreeRootCrossing_iff_rootCountAbove :
 /-- The same-degree lower root-count target follows from its common-non-root
 variant. -/
 theorem posComboNoCommonSameDegreeRootCount_of_nonRoot
-    (hcount : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCountNonnegStatement := by
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
   exact sameDegreeRootCount_of_nonRoot_bound hf_pos.ne_zero hg_pos.ne_zero
     (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
@@ -2177,8 +2292,28 @@ theorem posComboNoCommonSameDegreeRootCount_of_nonRoot
 /-- The same-degree upper root-count target follows from its common-non-root
 variant. -/
 theorem posComboNoCommonSameDegreeRootCountAbove_of_nonRoot
-    (hcount : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCountAboveNonnegStatement := by
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
   exact sameDegreeRootCountAbove_of_nonRoot_bound hf_pos.ne_zero hg_pos.ne_zero
     (hcount hf_pos hg_pos hfnn hgnn hfg hdeg hno)
@@ -2395,8 +2530,42 @@ theorem sameDegreeRootCrossing_of_posCombo_natDegree_le_two
 /-- Degree-`≤ 3` same-degree root-count route, assuming the two cubic interior
 partial-separation leaves. -/
 theorem rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_three_of_cubicInterior
-    (hbelow : CubicInteriorTwoBelowStatement)
-    (habove : CubicInteriorTwoAboveStatement)
+    (hbelow : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          q < a →
+          a ≤ r →
+          False))
+    (habove : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          a ≤ r →
+          r < b →
+          False))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -2422,8 +2591,42 @@ theorem rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_three_of_cubic
 /-- Degree-`≤ 3` same-degree upper-threshold route, assuming the two cubic
 interior partial-separation leaves. -/
 theorem rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_three_of_cubicInterior
-    (hbelow : CubicInteriorTwoBelowStatement)
-    (habove : CubicInteriorTwoAboveStatement)
+    (hbelow : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          q < a →
+          a ≤ r →
+          False))
+    (habove : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          a ≤ r →
+          r < b →
+          False))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -2445,8 +2648,42 @@ theorem rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_three_of_
 /-- Degree-`≤ 3` same-degree root-crossing route, assuming the two cubic
 interior partial-separation leaves. -/
 theorem sameDegreeRootCrossing_of_posCombo_natDegree_le_three_of_cubicInterior
-    (hbelow : CubicInteriorTwoBelowStatement)
-    (habove : CubicInteriorTwoAboveStatement)
+    (hbelow : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          q < a →
+          a ≤ r →
+          False))
+    (habove : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          a ≤ r →
+          r < b →
+          False))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -2469,8 +2706,42 @@ theorem sameDegreeRootCrossing_of_posCombo_natDegree_le_three_of_cubicInterior
 /-- Degree-`≤ 3` same-degree slot-data route, assuming the two cubic interior
 partial-separation leaves. -/
 theorem sameDegreeSlotData_of_posCombo_natDegree_le_three_of_cubicInterior
-    (hbelow : CubicInteriorTwoBelowStatement)
-    (habove : CubicInteriorTwoAboveStatement)
+    (hbelow : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          q < a →
+          a ≤ r →
+          False))
+    (habove : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          a ≤ r →
+          r < b →
+          False))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -2506,8 +2777,42 @@ theorem sameDegreeSlotData_of_posCombo_natDegree_le_three_of_cubicInterior
 /-- Degree-`≤ 3` same-degree common-interleaver endpoint, assuming the two
 cubic interior partial-separation leaves. -/
 theorem sameDegreePairHasCommonInterleaver_nonneg_of_natDegree_le_three_of_cubicInterior
-    (hbelow : CubicInteriorTwoBelowStatement)
-    (habove : CubicInteriorTwoAboveStatement)
+    (hbelow : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          q < a →
+          a ≤ r →
+          False))
+    (habove : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          a ≤ r →
+          r < b →
+          False))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -2530,8 +2835,42 @@ theorem sameDegreePairHasCommonInterleaver_nonneg_of_natDegree_le_three_of_cubic
 /-- Degree-`≤ 3` no-common same-degree endpoint, assuming the two cubic
 interior partial-separation leaves. -/
 theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_natDegree_le_three_of_cubicInterior
-    (hbelow : CubicInteriorTwoBelowStatement)
-    (habove : CubicInteriorTwoAboveStatement)
+    (hbelow : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          q < a →
+          a ≤ r →
+          False))
+    (habove : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          a ≤ r →
+          r < b →
+          False))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -2546,8 +2885,27 @@ theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_natDegree_le_three
 /-- The same-degree orientation alternative gives the descending-root crossing
 inequalities consumed by the #41 slot-data reduction. -/
 theorem posComboNoCommonSameDegreeRootCrossing_of_orientationAlternative
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCrossingNonnegStatement := by
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
   have hf_rr : f ≠ 0 ∧ f.Splits :=
     hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg
@@ -2603,8 +2961,31 @@ The same-degree slot-data statement follows from the descending-root crossing
 inequalities; the remaining work is therefore the analytic converse-Obreschkoff
 crossing input. -/
 theorem posComboNoCommonSameDegreeSlotData_of_rootCrossing
-    (hcross : PosComboNoCommonSameDegreeRootCrossingNonnegStatement) :
-    PosComboNoCommonSameDegreeSlotDataNonnegStatement := by
+    (hcross : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ j, j < f.natDegree + 1 →
+          ∀ (hjf : j < (rootSeqDesc f).length + 1)
+            (hjg : j < (rootSeqDesc g).length + 1),
+            (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+              rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno
   have hf_split : f.Splits :=
     (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
@@ -2625,131 +3006,343 @@ theorem posComboNoCommonSameDegreeSlotData_of_rootCrossing
 /-- The repaired same-degree pair-interleaver endpoint follows directly from
 the same-degree descending-root crossing inequalities. -/
 theorem sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
-    (hcross : PosComboNoCommonSameDegreeRootCrossingNonnegStatement) :
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
+    (hcross : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   sameDegreePairHasCommonInterleaver_nonneg_of_slotData
     (posComboNoCommonSameDegreeSlotData_of_rootCrossing hcross)
 
 /-- The same-degree slot-data statement follows directly from the analytic
 root-count formulation. -/
 theorem posComboNoCommonSameDegreeSlotData_of_rootCount
-    (hcount : PosComboNoCommonSameDegreeRootCountNonnegStatement) :
-    PosComboNoCommonSameDegreeSlotDataNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ j, j < f.natDegree + 1 →
+          ∀ (hjf : j < (rootSeqDesc f).length + 1)
+            (hjg : j < (rootSeqDesc g).length + 1),
+            (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+              rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) :=
   posComboNoCommonSameDegreeSlotData_of_rootCrossing
     (posComboNoCommonSameDegreeRootCrossing_of_rootCount hcount)
 
 /-- The repaired same-degree pair-interleaver endpoint follows directly from
 the analytic root-count formulation. -/
 theorem sameDegreePairHasCommonInterleaver_nonneg_of_rootCount
-    (hcount : PosComboNoCommonSameDegreeRootCountNonnegStatement) :
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
     (posComboNoCommonSameDegreeRootCrossing_of_rootCount hcount)
 
 /-- The same-degree slot-data statement follows directly from the
 upper-threshold analytic root-count formulation. -/
 theorem posComboNoCommonSameDegreeSlotData_of_rootCountAbove
-    (hcount : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement) :
-    PosComboNoCommonSameDegreeSlotDataNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ j, j < f.natDegree + 1 →
+          ∀ (hjf : j < (rootSeqDesc f).length + 1)
+            (hjg : j < (rootSeqDesc g).length + 1),
+            (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+              rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) :=
   posComboNoCommonSameDegreeSlotData_of_rootCrossing
     (posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove hcount)
 
 /-- The repaired same-degree pair-interleaver endpoint follows directly from
 the upper-threshold analytic root-count formulation. -/
 theorem sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove
-    (hcount : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement) :
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
     (posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove hcount)
 
 /-- Same-degree root crossing from the common-non-root lower-threshold
 root-count formulation. -/
 theorem posComboNoCommonSameDegreeRootCrossing_of_rootCountNonRoot
-    (hcount : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCrossingNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)) :=
   posComboNoCommonSameDegreeRootCrossing_of_rootCount
     (posComboNoCommonSameDegreeRootCount_of_nonRoot hcount)
 
 /-- Same-degree root crossing from the common-non-root upper-threshold
 root-count formulation. -/
 theorem posComboNoCommonSameDegreeRootCrossing_of_rootCountAboveNonRoot
-    (hcount : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCrossingNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)) :=
   posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove
     (posComboNoCommonSameDegreeRootCountAbove_of_nonRoot hcount)
 
 /-- Same-degree slot data from the common-non-root lower-threshold root-count
 formulation. -/
 theorem posComboNoCommonSameDegreeSlotData_of_rootCountNonRoot
-    (hcount : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreeSlotDataNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ j, j < f.natDegree + 1 →
+          ∀ (hjf : j < (rootSeqDesc f).length + 1)
+            (hjg : j < (rootSeqDesc g).length + 1),
+            (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+              rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) :=
   posComboNoCommonSameDegreeSlotData_of_rootCount
     (posComboNoCommonSameDegreeRootCount_of_nonRoot hcount)
 
 /-- Same-degree slot data from the common-non-root upper-threshold root-count
 formulation. -/
 theorem posComboNoCommonSameDegreeSlotData_of_rootCountAboveNonRoot
-    (hcount : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreeSlotDataNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ j, j < f.natDegree + 1 →
+          ∀ (hjf : j < (rootSeqDesc f).length + 1)
+            (hjg : j < (rootSeqDesc g).length + 1),
+            (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+              rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) :=
   posComboNoCommonSameDegreeSlotData_of_rootCountAbove
     (posComboNoCommonSameDegreeRootCountAbove_of_nonRoot hcount)
 
 /-- The repaired same-degree pair-interleaver endpoint follows from the
 common-non-root lower-threshold root-count formulation. -/
 theorem sameDegreePairHasCommonInterleaver_nonneg_of_rootCountNonRoot
-    (hcount : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   sameDegreePairHasCommonInterleaver_nonneg_of_rootCount
     (posComboNoCommonSameDegreeRootCount_of_nonRoot hcount)
 
 /-- The repaired same-degree pair-interleaver endpoint follows from the
 common-non-root upper-threshold root-count formulation. -/
 theorem sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot
-    (hcount : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   sameDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove
     (posComboNoCommonSameDegreeRootCountAbove_of_nonRoot hcount)
 
-/-- **Honest missing root-slot boundary for milestone B2 (#42).**
-
-This is the succ-degree analogue of the same-degree slot-intersection input
-used for #41.  For a nonnegative positive-combination pair with no common
-roots and `g.natDegree = f.natDegree + 1`, it packages the two remaining
-pieces of the remaining converse-Obreschkoff content:
-
-* real-rootedness of the lower-degree member `f`, and
-* the descending root-slot intervals of `f` and `g` meet in each of the
-  `f.natDegree + 1` common slots.
-
-The right endpoint `g` is now supplied by
-`PosComboRealRooted.isRealRooted_right_of_succDegree`.
-The `Fin` bounds are threaded as explicit hypotheses so no in-type proof
-obligations remain. -/
-def PosComboNoCommonSuccDegreeSlotDataNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree + 1 →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    (f ≠ 0 ∧ f.Splits) ∧
-      ∀ j, j < f.natDegree + 1 →
-        ∀ (hjf : j < (rootSeqDesc f).length + 1)
-          (hjg : j < (rootSeqDesc g).length + 1),
-          (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
-            rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty
 
 /-- **Checked reduction of #42 to the root-slot boundary.**
 
 The corrected succ-degree common-right-interleaver endpoint follows from the
-precise root-slot condition `PosComboNoCommonSuccDegreeSlotDataNonnegStatement`
+precise succ-degree no-common slot-data nonnegativity condition
 via the constructive slot theorem.  This mirrors the same-degree slot boundary
 route for #41. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_slotData
-    (hstmt : PosComboNoCommonSuccDegreeSlotDataNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+    (hstmt : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (f ≠ 0 ∧ f.Splits) ∧
+          ∀ j, j < f.natDegree + 1 →
+            ∀ (hjf : j < (rootSeqDesc f).length + 1)
+              (hjg : j < (rootSeqDesc g).length + 1),
+              (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+                rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
   obtain ⟨hf_rr, hslot⟩ := hstmt hf_pos hg_pos hfnn hgnn hfg hsucc hno
   have hg_rr : g ≠ 0 ∧ g.Splits :=
@@ -2762,7 +3355,7 @@ theorem succDegreePairHasCommonInterleaver_nonneg_of_slotData
 /-- **Converse of the slot-data reduction for #42.**
 
 A common right interleaver `h` for the succ-degree pair `(f, g)` recovers both
-pieces bundled by `PosComboNoCommonSuccDegreeSlotDataNonnegStatement`:
+pieces bundled by the succ-degree no-common slot-data nonnegativity statement:
 real-rootedness of `f` is the left component of `Prec f h`, and each root-slot
 intersection is witnessed by the corresponding root of `h` through
 `rootSlotInterval_inter_nonempty_of_commonInterleaver`.
@@ -2771,8 +3364,29 @@ Together with `succDegreePairHasCommonInterleaver_nonneg_of_slotData` this shows
 the slot-data hypothesis is equivalent to the actual common-interleaver goal,
 so the reduction to root slots loses nothing. -/
 theorem posComboNoCommonSuccDegreeSlotData_of_pairHasCommonInterleaver
-    (hstmt : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
-    PosComboNoCommonSuccDegreeSlotDataNonnegStatement := by
+    (hstmt : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (f ≠ 0 ∧ f.Splits) ∧
+          ∀ j, j < f.natDegree + 1 →
+            ∀ (hjf : j < (rootSeqDesc f).length + 1)
+              (hjg : j < (rootSeqDesc g).length + 1),
+              (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+                rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
   obtain ⟨h, hfh, hgh⟩ := hstmt hf_pos hg_pos hfnn hgnn hfg hsucc hno
   refine ⟨hfh.1, ?_⟩
@@ -2784,14 +3398,35 @@ theorem posComboNoCommonSuccDegreeSlotData_of_pairHasCommonInterleaver
 
 Combining `succDegreePairHasCommonInterleaver_nonneg_of_slotData` with its
 converse `posComboNoCommonSuccDegreeSlotData_of_pairHasCommonInterleaver`, the
-root-slot statement `PosComboNoCommonSuccDegreeSlotDataNonnegStatement` holds if
-and only if the common-right-interleaver statement
-`PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement` does. This
+succ-degree no-common slot-data nonnegativity statement holds if
+and only if the common-right-interleaver nonnegativity statement
+does. This
 pins down the exact remaining content of milestone B2: proving the slot data is
 neither stronger nor weaker than proving the interleaver goal directly. -/
 theorem posComboNoCommonSuccDegreeSlotData_iff_pairHasCommonInterleaver :
-    PosComboNoCommonSuccDegreeSlotDataNonnegStatement ↔
-      PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (f ≠ 0 ∧ f.Splits) ∧
+          ∀ j, j < f.natDegree + 1 →
+            ∀ (hjf : j < (rootSeqDesc f).length + 1)
+              (hjg : j < (rootSeqDesc g).length + 1),
+              (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+                rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) ↔
+      (∀ ⦃f g : ℝ[X]⦄,
+          HasPosLeadingCoeff f →
+          HasPosLeadingCoeff g →
+          HasNonnegCoeffs f →
+          HasNonnegCoeffs g →
+          PosComboRealRooted f g →
+          g.natDegree = f.natDegree + 1 →
+          (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+          ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   ⟨succDegreePairHasCommonInterleaver_nonneg_of_slotData,
     posComboNoCommonSuccDegreeSlotData_of_pairHasCommonInterleaver⟩
 
@@ -2870,43 +3505,18 @@ theorem rootSlotInterval_inter_nonempty_of_crossing
       simpa [rootSlotInterval] using
         icc_inter_icc_nonempty_of_crossing hrf_step hrg_step hcross_fg hcross_gf
 
-/-- **Sub-statement A of milestone B2: left-endpoint real-rootedness.**
-
-For a nonnegative positive-combination pair `(f, g)` with positive leading
-coefficients and `g.natDegree = f.natDegree + 1`, the lower-degree member `f`
-splits over `ℝ`. This is the degree-drop root-continuity endpoint (`f` is the
-`μ → 0⁺` limit of the real-rooted family `f + C μ * g`, whose `f.natDegree`
-finite roots converge to the roots of `f` while one root escapes to `-∞`),
-isolated here as a reusable statement. -/
-def PosComboSuccDegreeLeftSplitsNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree + 1 →
-    f.Splits
-
-/-- Residual form of the succ-degree left-endpoint problem after the algebraic
-branches have been removed: the lower-degree polynomial has zero constant
-coefficient, while the higher-degree polynomial does not. -/
-def PosComboSuccDegreeResidualLeftSplitsNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree + 1 →
-    f.coeff 0 = 0 →
-    g.coeff 0 ≠ 0 →
-    f.Splits
 
 /-- The succ-degree left endpoint follows directly from the escaping-root
 continuity argument for the family `f + C μ * g`; no ASW input is needed. -/
 theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity :
-    PosComboSuccDegreeLeftSplitsNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits) := by
   intro f g hf_pos hg_pos _ _ hfg hsucc
   exact
     splits_of_add_C_mul_family_of_succDegree
@@ -2914,7 +3524,16 @@ theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity :
 
 /-- Residual succ-degree left endpoint from the same root-continuity argument. -/
 theorem PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_rootContinuity :
-    PosComboSuccDegreeResidualLeftSplitsNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        f.coeff 0 = 0 →
+        g.coeff 0 ≠ 0 →
+        f.Splits) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc _ _
   exact
     PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity
@@ -2937,27 +3556,59 @@ theorem PosComboRealRooted.left_splits_of_forward_asw
 /-- Conditional package form of `PosComboRealRooted.left_splits_of_forward_asw`
 for the milestone-B2 endpoint statement. -/
 theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw :
-    PosComboSuccDegreeLeftSplitsNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits) := by
   intro f g hf_pos _ hfnn hgnn hfg _
   exact hfg.left_splits_of_forward_asw hf_pos hfnn hgnn
 
 /-- Conditional package form using the splitting-only ASW target. -/
 theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw_splits :
-    PosComboSuccDegreeLeftSplitsNonnegStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits) :=
   PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw
 
 /-- Residual package form of the forward-ASW route.  This keeps the remaining
 #42 branch available as a smaller challenge target, while making clear that the
 PF-limit route already covers it under the forward ASW interface. -/
 theorem PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_forward_asw :
-    PosComboSuccDegreeResidualLeftSplitsNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        f.coeff 0 = 0 →
+        g.coeff 0 ≠ 0 →
+        f.Splits) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc _ _
   exact PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw
     hf_pos hg_pos hfnn hgnn hfg hsucc
 
 /-- Residual package form using the splitting-only ASW target. -/
 theorem PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_forward_asw_splits :
-    PosComboSuccDegreeResidualLeftSplitsNonnegStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        f.coeff 0 = 0 →
+        g.coeff 0 ≠ 0 →
+        f.Splits) :=
   PosComboSuccDegreeResidualLeftSplitsNonnegStatement_of_forward_asw
 
 /-- The affine-family bridge already gives the succ-degree left endpoint in
@@ -2965,7 +3616,17 @@ the no-common branch.  This isolates the remaining #42 work in that branch as
 the affine-family/boundary-pair packaging step, not the endpoint
 real-rootedness step. -/
 theorem posComboNoCommonSuccDegreeLeftSplits_of_affineFamily
-    (haffBridge : PosComboNoCommonAffineFamilyStatement)
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -2988,7 +3649,17 @@ theorem posComboNoCommonSuccDegreeLeftSplits_of_affineFamily
 /-- Boundary-right-pair orientation also contains the no-common succ-degree
 left endpoint, because it first produces the affine-family bridge. -/
 theorem posComboNoCommonSuccDegreeLeftSplits_of_boundaryRightPairOrientation
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement)
+    (hboundary : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃t : ℝ⦄, 0 < t →
+          Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g)))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -3241,8 +3912,24 @@ The proof is a strong induction on `f.natDegree`.  If `f.coeff 0 ≠ 0`, the
 reflection route applies.  If both constant coefficients vanish, divide both
 polynomials by the common factor `X` and invoke the induction hypothesis. -/
 theorem PosComboSuccDegreeLeftSplitsNonnegStatement_of_residual
-    (hres : PosComboSuccDegreeResidualLeftSplitsNonnegStatement) :
-    PosComboSuccDegreeLeftSplitsNonnegStatement := by
+    (hres : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        f.coeff 0 = 0 →
+        g.coeff 0 ≠ 0 →
+        f.Splits)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc
   refine
     Nat.strong_induction_on
@@ -3283,399 +3970,29 @@ succ-degree left-endpoint statement: the reverse implication is just
 specialization, while the forward implication is the strong-induction
 constant-term reduction. -/
 theorem PosComboSuccDegreeLeftSplitsNonnegStatement_iff_residual :
-    PosComboSuccDegreeLeftSplitsNonnegStatement ↔
-      PosComboSuccDegreeResidualLeftSplitsNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits) ↔
+      (∀ ⦃f g : ℝ[X]⦄,
+          HasPosLeadingCoeff f →
+          HasPosLeadingCoeff g →
+          HasNonnegCoeffs f →
+          HasNonnegCoeffs g →
+          PosComboRealRooted f g →
+          g.natDegree = f.natDegree + 1 →
+          f.coeff 0 = 0 →
+          g.coeff 0 ≠ 0 →
+          f.Splits) := by
   constructor
   · intro h f g hf_pos hg_pos hfnn hgnn hfg hsucc _ _
     exact h hf_pos hg_pos hfnn hgnn hfg hsucc
   · exact PosComboSuccDegreeLeftSplitsNonnegStatement_of_residual
 
-/-- **Sub-statement B of milestone B2: descending-root crossing inequalities.**
-
-Given the nonnegative positive-combination/no-common hypotheses at succ degree
-and that `f` already splits, the descending root sequences of `f` and `g` weave
-in the two clean crossing inequalities consumed by
-`rootSlotInterval_inter_nonempty_of_crossing`. This is the genuine analytic
-converse-Obreschkoff crossing content for the succ-degree case, now separated
-from the proved combinatorial slot construction. -/
-def PosComboNoCommonSuccDegreeRootCrossingNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree + 1 →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    f.Splits →
-    (∀ j, 1 ≤ j → j ≤ f.natDegree →
-        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
-    (∀ j, 1 ≤ j → j < f.natDegree →
-        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)
-
-/-- **Analytic root-count formulation of the succ-degree root-crossing target.**
-
-For a succ-degree positive-combination pair with no common roots, the lower
-threshold root count for `f` should be at most the lower threshold root count
-for `g`, and the count for `g` should exceed the count for `f` by at most two.
-Equivalently, the numbers of roots strictly above a threshold differ by at most
-one, with the extra `g` root accounted for. -/
-def PosComboNoCommonSuccDegreeRootCountNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree + 1 →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    f.Splits →
-    ∀ x : ℝ,
-      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
-      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2
-
-/-- **Upper-threshold version of the succ-degree root-count formulation.**
-
-This is the form naturally suggested by the root-continuity proof route: the
-numbers of roots strictly above each threshold differ by at most one. -/
-def PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree + 1 →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    f.Splits →
-    ∀ x : ℝ,
-      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1
-
-/-- Common-non-root version of the succ-degree upper root-count formulation. -/
-def PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree + 1 →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    f.Splits →
-    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1
-
-/-- Compatible-pair version of the succ-degree common-non-root upper
-root-count leaf.  This strips the #42 target down to the Chudnovsky--Seymour
-compatibility input, positive leading coefficients, the succ-degree condition,
-and splitting of the lower-degree endpoint. -/
-def CompatibleSuccDegreeRootCountAboveNonRootStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    Compatible f g →
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    g.natDegree = f.natDegree + 1 →
-    f.Splits →
-    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1
-
-/-- Compatible-pair gap-at-most-two version of the succ-degree
-common-non-root upper root-count leaf. -/
-def CompatibleSuccDegreeRootCountAboveLeTwoStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    Compatible f g →
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    g.natDegree = f.natDegree + 1 →
-    f.Splits →
-    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 2 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 2
-
-/-- Exact gap-two obstruction for the compatible succ-degree common-non-root
-upper root-count leaf. -/
-def CompatibleSuccDegreeRootCountAboveNoGapTwoStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    Compatible f g →
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    g.natDegree = f.natDegree + 1 →
-    f.Splits →
-    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2
-
-/-- Closed-segment form of the exact gap-two obstruction.  This is the
-continuity/count target left after the sign argument has shown that the fixed
-threshold is never a root along the closed segment from `f` to `g`. -/
-def CompatibleSuccDegreeClosedSegmentNoGapTwoStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    Compatible f g →
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    g.natDegree = f.natDegree + 1 →
-    f.Splits →
-    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
-        ¬ (C (1 - β) * f + C β * g).IsRoot x) →
-      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2
-
-/-- Closed-segment endpoint count-equality formulation.  This is the precise
-count-stability theorem suggested by the root-continuity route: if a fixed
-threshold is never crossed along the closed segment from the lower-degree
-endpoint to the higher-degree endpoint, then the endpoint upper root counts at
-that threshold agree. -/
-def CompatibleSuccDegreeClosedSegmentCountEqStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    Compatible f g →
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    g.natDegree = f.natDegree + 1 →
-    f.Splits →
-    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
-        ¬ (C (1 - β) * f + C β * g).IsRoot x) →
-      (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card
-
-/-- Right-pencil form of the exact gap-two obstruction.  The closed-segment
-form reduces to this by the change of variables `β = μ / (μ + 1)`. -/
-def CompatibleSuccDegreeRightFamilyNoGapTwoStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    Compatible f g →
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    g.natDegree = f.natDegree + 1 →
-    f.Splits →
-    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      (∀ {μ : ℝ}, 0 ≤ μ → ¬ (f + C μ * g).IsRoot x) →
-      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2
-
-/-- Endpoint-sign form of the exact gap-two obstruction.  The right-pencil
-no-root hypothesis is equivalent to this same-sign condition at a common
-non-root threshold. -/
-def CompatibleSuccDegreeEndpointSignNoGapTwoStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    Compatible f g →
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    g.natDegree = f.natDegree + 1 →
-    f.Splits →
-    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      0 < f.eval x * g.eval x →
-      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2
-
-/-- Coefficient-free compatible succ-degree all-combinations shortcut.  This
-candidate direct Obreschkoff span statement is now known to be false; see
-`CommonInterleaverExamples.not_compatibleSuccDegreeAllComboStatement`. -/
-def CompatibleSuccDegreeAllComboStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    Compatible f g →
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    g.natDegree = f.natDegree + 1 →
-    f.Splits →
-    AllComboRealRooted f g
-
-/-- Signed right-pencil form of the compatible succ-degree all-combinations
-shortcut.  By scaling, this one-parameter family is equivalent to the whole
-real linear span, and it is likewise known to be false. -/
-def CompatibleSuccDegreeSignedRightFamilyStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    Compatible f g →
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    g.natDegree = f.natDegree + 1 →
-    f.Splits →
-    ∀ μ : ℝ, (f + C μ * g).Splits
-
-/-- Negative right-pencil form of the compatible succ-degree all-combinations
-shortcut.  Compatibility supplies the case `0 ≤ μ`, but the isolated negative
-half-line is false in general. -/
-def CompatibleSuccDegreeNegativeRightFamilyStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    Compatible f g →
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    g.natDegree = f.natDegree + 1 →
-    f.Splits →
-    ∀ μ : ℝ, μ < 0 → (f + C μ * g).Splits
-
-/-- Nonnegative-coefficient version of the negative right-pencil shortcut.
-This candidate strengthening is false even before translating endpoints. -/
-def CompatibleSuccDegreeNegativeRightFamilyNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    Compatible f g →
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    g.natDegree = f.natDegree + 1 →
-    f.Splits →
-    ∀ μ : ℝ, μ < 0 → (f + C μ * g).Splits
-
-/-- Coefficient-free compatible succ-degree orientation shortcut.  The forced
-proper-position orientation `f ≪ g` is false in general; this statement remains
-only as a named failed route. -/
-def CompatibleSuccDegreePrecStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    Compatible f g →
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    g.natDegree = f.natDegree + 1 →
-    f.Splits →
-    Prec f g
-
-/-- Exact lower-threshold endpoint-sign comparison expected from the
-left-endpoint/count-stability picture. -/
-def CompatibleSuccDegreeEndpointSignLowerCountEqStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    Compatible f g →
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    g.natDegree = f.natDegree + 1 →
-    f.Splits →
-    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      0 < f.eval x * g.eval x →
-      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1
-
-/-- Lower-threshold endpoint-sign form of the exact gap obstruction.  This is
-weaker than the exact lower-count comparison, but it is equivalent to the
-upper-threshold endpoint-sign target by complement-count arithmetic. -/
-def CompatibleSuccDegreeEndpointSignLowerNoGapStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    Compatible f g →
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    g.natDegree = f.natDegree + 1 →
-    f.Splits →
-    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      0 < f.eval x * g.eval x →
-      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≠ 3 ∧
-      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≠ 1
-
-/-- Degree-two succ-degree root-order leaf.
-
-For roots listed as `a ≤ b` for the quadratic endpoint and `p ≤ q ≤ r` for
-the cubic endpoint, these three inequalities are exactly the finite root-order
-content needed to rule out the degree-two exact gap-two obstruction. -/
-def SuccDegreeQuadraticCubicRootBoundsStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    f.Splits →
-    g.Splits →
-    f.natDegree = 2 →
-    g.natDegree = 3 →
-    PosComboRealRooted f g →
-    ∀ a b p q r : ℝ,
-      a ≤ b →
-      p ≤ q →
-      q ≤ r →
-      f.roots = {a, b} →
-      g.roots = {p, q, r} →
-      p ≤ a ∧ q ≤ b ∧ a ≤ r
-
-/-- Degree-two succ-degree obstruction to the first cubic root lying strictly
-above the first quadratic root. -/
-def SuccDegreeQuadraticCubicFirstAboveObstructionStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    f.Splits →
-    g.Splits →
-    f.natDegree = 2 →
-    g.natDegree = 3 →
-    PosComboRealRooted f g →
-    ∀ a b p q r : ℝ,
-      a ≤ b →
-      p ≤ q →
-      q ≤ r →
-      f.roots = {a, b} →
-      g.roots = {p, q, r} →
-      a < p →
-      False
-
-/-- Degree-two succ-degree obstruction to the second cubic root lying strictly
-above the second quadratic root. -/
-def SuccDegreeQuadraticCubicSecondAboveObstructionStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    f.Splits →
-    g.Splits →
-    f.natDegree = 2 →
-    g.natDegree = 3 →
-    PosComboRealRooted f g →
-    ∀ a b p q r : ℝ,
-      a ≤ b →
-      p ≤ q →
-      q ≤ r →
-      f.roots = {a, b} →
-      g.roots = {p, q, r} →
-      b < q →
-      False
-
-/-- Degree-two succ-degree obstruction to all cubic roots lying strictly below
-the first quadratic root. -/
-def SuccDegreeQuadraticCubicFullBelowObstructionStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    f.Splits →
-    g.Splits →
-    f.natDegree = 2 →
-    g.natDegree = 3 →
-    PosComboRealRooted f g →
-    ∀ a b p q r : ℝ,
-      a ≤ b →
-      p ≤ q →
-      q ≤ r →
-      f.roots = {a, b} →
-      g.roots = {p, q, r} →
-      r < a →
-      False
-
-/-- Pure monic-pencil obstruction for the first-above quadratic/cubic
-configuration. -/
-def QuadraticCubicFirstAbovePencilObstructionStatement : Prop :=
-  ∀ ⦃a b p q r : ℝ⦄,
-    a ≤ b →
-    p ≤ q →
-    q ≤ r →
-    a < p →
-    ∃ t : ℝ, 0 < t ∧
-      ¬ (((X - C a) * (X - C b) +
-          C t * ((X - C p) * (X - C q) * (X - C r))) : ℝ[X]).Splits
-
-/-- Pure monic-pencil obstruction for the second-above quadratic/cubic
-configuration. -/
-def QuadraticCubicSecondAbovePencilObstructionStatement : Prop :=
-  ∀ ⦃a b p q r : ℝ⦄,
-    a ≤ b →
-    p ≤ q →
-    q ≤ r →
-    b < q →
-    ∃ t : ℝ, 0 < t ∧
-      ¬ (((X - C a) * (X - C b) +
-          C t * ((X - C p) * (X - C q) * (X - C r))) : ℝ[X]).Splits
-
-/-- Pure monic-pencil obstruction for the full-below quadratic/cubic
-configuration. -/
-def QuadraticCubicFullBelowPencilObstructionStatement : Prop :=
-  ∀ ⦃a b p q r : ℝ⦄,
-    a ≤ b →
-    p ≤ q →
-    q ≤ r →
-    r < a →
-    ∃ t : ℝ, 0 < t ∧
-      ¬ (((X - C a) * (X - C b) +
-          C t * ((X - C p) * (X - C q) * (X - C r))) : ℝ[X]).Splits
 
 /-- The positive-combination splitting hypothesis on a positive scalar
 multiple of a monic quadratic and a positive scalar multiple of a monic cubic
@@ -3711,8 +4028,30 @@ theorem eq_C_leadingCoeff_mul_prod_two
 /-- Pure first-above monic-pencil obstruction implies the corresponding
 polynomial obstruction leaf. -/
 theorem succDegreeQuadraticCubicFirstAboveObstruction_of_pencil
-    (hpencil : QuadraticCubicFirstAbovePencilObstructionStatement) :
-    SuccDegreeQuadraticCubicFirstAboveObstructionStatement := by
+    (hpencil : (∀ ⦃a b p q r : ℝ⦄,
+        a ≤ b →
+        p ≤ q →
+        q ≤ r →
+        a < p →
+        ∃ t : ℝ, 0 < t ∧
+          ¬ (((X - C a) * (X - C b) +
+              C t * ((X - C p) * (X - C q) * (X - C r))) : ℝ[X]).Splits)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 2 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b p q r : ℝ,
+          a ≤ b →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b} →
+          g.roots = {p, q, r} →
+          a < p →
+          False) := by
   intro f g hf_pos hg_pos hf_split hg_split _hfdeg _hgdeg hfg
     a b p q r hab hpq hqr hfroots hgroots hap
   have hffac : f = C f.leadingCoeff * ((X - C a) * (X - C b)) :=
@@ -3735,8 +4074,30 @@ theorem succDegreeQuadraticCubicFirstAboveObstruction_of_pencil
 /-- Pure second-above monic-pencil obstruction implies the corresponding
 polynomial obstruction leaf. -/
 theorem succDegreeQuadraticCubicSecondAboveObstruction_of_pencil
-    (hpencil : QuadraticCubicSecondAbovePencilObstructionStatement) :
-    SuccDegreeQuadraticCubicSecondAboveObstructionStatement := by
+    (hpencil : (∀ ⦃a b p q r : ℝ⦄,
+        a ≤ b →
+        p ≤ q →
+        q ≤ r →
+        b < q →
+        ∃ t : ℝ, 0 < t ∧
+          ¬ (((X - C a) * (X - C b) +
+              C t * ((X - C p) * (X - C q) * (X - C r))) : ℝ[X]).Splits)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 2 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b p q r : ℝ,
+          a ≤ b →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b} →
+          g.roots = {p, q, r} →
+          b < q →
+          False) := by
   intro f g hf_pos hg_pos hf_split hg_split _hfdeg _hgdeg hfg
     a b p q r hab hpq hqr hfroots hgroots hbq
   have hffac : f = C f.leadingCoeff * ((X - C a) * (X - C b)) :=
@@ -3759,8 +4120,30 @@ theorem succDegreeQuadraticCubicSecondAboveObstruction_of_pencil
 /-- Pure full-below monic-pencil obstruction implies the corresponding
 polynomial obstruction leaf. -/
 theorem succDegreeQuadraticCubicFullBelowObstruction_of_pencil
-    (hpencil : QuadraticCubicFullBelowPencilObstructionStatement) :
-    SuccDegreeQuadraticCubicFullBelowObstructionStatement := by
+    (hpencil : (∀ ⦃a b p q r : ℝ⦄,
+        a ≤ b →
+        p ≤ q →
+        q ≤ r →
+        r < a →
+        ∃ t : ℝ, 0 < t ∧
+          ¬ (((X - C a) * (X - C b) +
+              C t * ((X - C p) * (X - C q) * (X - C r))) : ℝ[X]).Splits)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 2 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b p q r : ℝ,
+          a ≤ b →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b} →
+          g.roots = {p, q, r} →
+          r < a →
+          False) := by
   intro f g hf_pos hg_pos hf_split hg_split _hfdeg _hgdeg hfg
     a b p q r hab hpq hqr hfroots hgroots hra
   have hffac : f = C f.leadingCoeff * ((X - C a) * (X - C b)) :=
@@ -3783,10 +4166,69 @@ theorem succDegreeQuadraticCubicFullBelowObstruction_of_pencil
 /-- The three elementary quadratic/cubic obstruction leaves imply the
 degree-two succ-degree root-order leaf. -/
 theorem succDegreeQuadraticCubicRootBounds_of_obstructions
-    (hfirst : SuccDegreeQuadraticCubicFirstAboveObstructionStatement)
-    (hsecond : SuccDegreeQuadraticCubicSecondAboveObstructionStatement)
-    (hbelow : SuccDegreeQuadraticCubicFullBelowObstructionStatement) :
-    SuccDegreeQuadraticCubicRootBoundsStatement := by
+    (hfirst : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 2 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b p q r : ℝ,
+          a ≤ b →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b} →
+          g.roots = {p, q, r} →
+          a < p →
+          False))
+    (hsecond : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 2 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b p q r : ℝ,
+          a ≤ b →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b} →
+          g.roots = {p, q, r} →
+          b < q →
+          False))
+    (hbelow : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 2 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b p q r : ℝ,
+          a ≤ b →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b} →
+          g.roots = {p, q, r} →
+          r < a →
+          False)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 2 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b p q r : ℝ,
+          a ≤ b →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b} →
+          g.roots = {p, q, r} →
+          p ≤ a ∧ q ≤ b ∧ a ≤ r) := by
   intro f g hf_pos hg_pos hf_split hg_split hfdeg hgdeg hfg
     a b p q r hab hpq hqr hfroots hgroots
   refine ⟨?_, ?_, ?_⟩
@@ -3803,10 +4245,45 @@ theorem succDegreeQuadraticCubicRootBounds_of_obstructions
 /-- Pure monic-pencil obstruction leaves imply the degree-two succ-degree
 root-order leaf. -/
 theorem succDegreeQuadraticCubicRootBounds_of_pencil_obstructions
-    (hfirst : QuadraticCubicFirstAbovePencilObstructionStatement)
-    (hsecond : QuadraticCubicSecondAbovePencilObstructionStatement)
-    (hbelow : QuadraticCubicFullBelowPencilObstructionStatement) :
-    SuccDegreeQuadraticCubicRootBoundsStatement :=
+    (hfirst : (∀ ⦃a b p q r : ℝ⦄,
+        a ≤ b →
+        p ≤ q →
+        q ≤ r →
+        a < p →
+        ∃ t : ℝ, 0 < t ∧
+          ¬ (((X - C a) * (X - C b) +
+              C t * ((X - C p) * (X - C q) * (X - C r))) : ℝ[X]).Splits))
+    (hsecond : (∀ ⦃a b p q r : ℝ⦄,
+        a ≤ b →
+        p ≤ q →
+        q ≤ r →
+        b < q →
+        ∃ t : ℝ, 0 < t ∧
+          ¬ (((X - C a) * (X - C b) +
+              C t * ((X - C p) * (X - C q) * (X - C r))) : ℝ[X]).Splits))
+    (hbelow : (∀ ⦃a b p q r : ℝ⦄,
+        a ≤ b →
+        p ≤ q →
+        q ≤ r →
+        r < a →
+        ∃ t : ℝ, 0 < t ∧
+          ¬ (((X - C a) * (X - C b) +
+              C t * ((X - C p) * (X - C q) * (X - C r))) : ℝ[X]).Splits)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 2 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b p q r : ℝ,
+          a ≤ b →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b} →
+          g.roots = {p, q, r} →
+          p ≤ a ∧ q ≤ b ∧ a ≤ r) :=
   succDegreeQuadraticCubicRootBounds_of_obstructions
     (succDegreeQuadraticCubicFirstAboveObstruction_of_pencil hfirst)
     (succDegreeQuadraticCubicSecondAboveObstruction_of_pencil hsecond)
@@ -3820,9 +4297,33 @@ private lemma int_le_one_of_le_two_ne_two {z : ℤ} (hzle : z ≤ 2) (hzne : z �
 /-- A gap-at-most-two theorem plus exclusion of exact gap two gives the full
 compatible succ-degree common-non-root upper root-count leaf. -/
 theorem compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_noGapTwo
-    (hle2 : CompatibleSuccDegreeRootCountAboveLeTwoStatement)
-    (hgap : CompatibleSuccDegreeRootCountAboveNoGapTwoStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement := by
+    (hle2 : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 2))
+    (hgap : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
   obtain ⟨hfg_le2, hgf_le2⟩ :=
     hle2 hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
@@ -3834,8 +4335,27 @@ theorem compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_noGapTwo
 /-- The compatible CS 3.4 root-count leaf implies the #42 positive-combo
 succ-degree root-count leaf. -/
 theorem posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_compatible
-    (hcount : CompatibleSuccDegreeRootCountAboveNonRootStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement := by
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) := by
   intro f g hf_pos hg_pos _hfnn _hgnn hfg hdeg _hno hf_split x hxf hxg
   exact hcount
     (Compatible.of_posComboRealRooted_succDegree hfg hf_pos hg_pos hdeg hf_split)
@@ -3852,7 +4372,15 @@ theorem succDegree_derivative_natDegree_eq
 
 /-- Applying the compatible succ-degree root-count theorem to derivatives. -/
 theorem compatibleSuccDegreeRootCountAboveNonRoot_derivative
-    (hcount : CompatibleSuccDegreeRootCountAboveNonRootStatement)
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
     {f g : ℝ[X]} (hcomp : Compatible f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree = f.natDegree + 1)
@@ -3874,7 +4402,15 @@ theorem compatibleSuccDegreeRootCountAboveNonRoot_derivative
 /-- Derivative application of the compatible succ-degree root-count theorem,
 promoted from common non-root thresholds to all thresholds. -/
 theorem compatibleSuccDegreeRootCountAbove_derivative
-    (hcount : CompatibleSuccDegreeRootCountAboveNonRootStatement)
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
     {f g : ℝ[X]} (hcomp : Compatible f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree = f.natDegree + 1)
@@ -3929,8 +4465,28 @@ theorem sameDegreeRootCountAbove_nonRoot_iff_rootCount_nonRoot_pointwise
 /-- The same-degree upper common-non-root root-count target is equivalent to
 the lower common-non-root root-count target. -/
 theorem posComboNoCommonSameDegreeRootCountAboveNonRoot_iff_rootCountNonRoot :
-    PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement ↔
-      PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) ↔
+      (∀ ⦃f g : ℝ[X]⦄,
+          HasPosLeadingCoeff f →
+          HasPosLeadingCoeff g →
+          HasNonnegCoeffs f →
+          HasNonnegCoeffs g →
+          PosComboRealRooted f g →
+          g.natDegree = f.natDegree →
+          (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+          ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+            ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+            ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1) := by
   constructor
   · intro hcount f g hf_pos hg_pos hfnn hgnn hfg hdeg hno x hxf hxg
     have hf_split : f.Splits :=
@@ -3952,8 +4508,28 @@ theorem posComboNoCommonSameDegreeRootCountAboveNonRoot_iff_rootCountNonRoot :
 /-- The same-degree lower common-non-root target implies the full
 upper-threshold same-degree root-count target. -/
 theorem posComboNoCommonSameDegreeRootCountAbove_of_rootCountNonRoot
-    (hcount : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCountAboveNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   posComboNoCommonSameDegreeRootCountAbove_of_nonRoot
     (posComboNoCommonSameDegreeRootCountAboveNonRoot_iff_rootCountNonRoot.mpr
       hcount)
@@ -3961,8 +4537,28 @@ theorem posComboNoCommonSameDegreeRootCountAbove_of_rootCountNonRoot
 /-- The same-degree upper common-non-root target implies the full
 lower-threshold same-degree root-count target. -/
 theorem posComboNoCommonSameDegreeRootCount_of_rootCountAboveNonRoot
-    (hcount : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement) :
-    PosComboNoCommonSameDegreeRootCountNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1) :=
   posComboNoCommonSameDegreeRootCount_of_nonRoot
     (posComboNoCommonSameDegreeRootCountAboveNonRoot_iff_rootCountNonRoot.mp
       hcount)
@@ -4021,20 +4617,6 @@ theorem succDegreeRootCountAbove_oriented_iff_rootCount_oriented_pointwise
   have hdegZ : (g.natDegree : ℤ) = (f.natDegree : ℤ) + 1 := by exact_mod_cast hdeg
   constructor <;> · rintro ⟨h1, h2⟩; constructor <;> lia
 
-/-- Common-non-root version of the succ-degree lower root-count formulation. -/
-def PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree + 1 →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    f.Splits →
-    ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
-      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
-      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2
 
 /-- At a fixed threshold, the succ-degree upper common-non-root bounds are
 equivalent to the lower common-non-root bounds. -/
@@ -4101,8 +4683,30 @@ theorem succDegree_rev_roots_gt_count_sub_eq_two_iff_roots_le_sub_eq_one
 /-- The succ-degree upper common-non-root root-count target is equivalent to
 the lower common-non-root root-count target. -/
 theorem posComboNoCommonSuccDegreeRootCountAboveNonRoot_iff_rootCountNonRoot :
-    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement ↔
-      PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) ↔
+      (∀ ⦃f g : ℝ[X]⦄,
+          HasPosLeadingCoeff f →
+          HasPosLeadingCoeff g →
+          HasNonnegCoeffs f →
+          HasNonnegCoeffs g →
+          PosComboRealRooted f g →
+          g.natDegree = f.natDegree + 1 →
+          (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+          f.Splits →
+          ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+            ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+            ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2) := by
   constructor
   · intro hcount f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split x hxf hxg
     have hg_split : g.Splits :=
@@ -4613,7 +5217,15 @@ three for a succ-degree compatible pair.
 
 This is the CS 3.4 induction step up to the remaining exact gap-two case. -/
 theorem compatibleSuccDegreeRootCountAbove_le_two_of_derivative
-    (hcount : CompatibleSuccDegreeRootCountAboveNonRootStatement)
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
     {f g : ℝ[X]} (hcomp : Compatible f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hdeg : g.natDegree = f.natDegree + 1)
@@ -4669,8 +5281,30 @@ theorem sameDegreeRootCountOriented_of_prec
 /-- The succ-degree upper root-count target follows from its common-non-root
 variant. -/
 theorem posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot
-    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement := by
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split
   have hg_ne : g ≠ 0 :=
     (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).1
@@ -4680,32 +5314,57 @@ theorem posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot
 /-- The succ-degree lower common-non-root root-count target implies the full
 upper-threshold succ-degree root-count target. -/
 theorem posComboNoCommonSuccDegreeRootCountAbove_of_rootCountNonRoot
-    (hcount : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot
     (posComboNoCommonSuccDegreeRootCountAboveNonRoot_iff_rootCountNonRoot.mpr
       hcount)
 
-/-- Common-left-interleaver formulation of the succ-degree no-common
-root-count target.  This isolates the Obreschkoff-converse content needed for
-the honest common-non-root leaf. -/
-def PosComboNoCommonSuccDegreeCommonLeftInterleaverNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree + 1 →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    f.Splits →
-    ∃ h : ℝ[X], Prec h f ∧ Prec h g
 
 /-- The fixed-orientation succ-degree endpoint supplies the common-left
 interleaver formulation by using `f` as the witness. -/
 theorem posComboNoCommonSuccDegreeCommonLeftInterleaver_of_orientation
-    (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
-    PosComboNoCommonSuccDegreeCommonLeftInterleaverNonnegStatement := by
+    (horient : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∃ h : ℝ[X], Prec h f ∧ Prec h g) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno _hf_split
   exact pairHasCommonLeftInterleaver_of_prec <|
     horient hf_pos hg_pos hfnn hgnn hfg hdeg hno
@@ -4715,8 +5374,28 @@ root-count target.  The degrees force the left interleaver to have the same
 degree as `f`, so the same-degree and tight succ-degree oriented count bounds
 combine directly. -/
 theorem posComboNoCommonSuccDegreeRootCountNonRoot_of_commonLeftInterleaver
-    (hleft : PosComboNoCommonSuccDegreeCommonLeftInterleaverNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement := by
+    (hleft : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∃ h : ℝ[X], Prec h f ∧ Prec h g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split x _hxf _hxg
   obtain ⟨h, hhf, hhg⟩ :=
     hleft hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split
@@ -4731,8 +5410,28 @@ theorem posComboNoCommonSuccDegreeRootCountNonRoot_of_commonLeftInterleaver
 /-- The honest common-non-root upper-count succ-degree leaf, reduced to the
 common-left-interleaver formulation. -/
 theorem posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_commonLeftInterleaver
-    (hleft : PosComboNoCommonSuccDegreeCommonLeftInterleaverNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement :=
+    (hleft : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∃ h : ℝ[X], Prec h f ∧ Prec h g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   posComboNoCommonSuccDegreeRootCountAboveNonRoot_iff_rootCountNonRoot.mpr
     (posComboNoCommonSuccDegreeRootCountNonRoot_of_commonLeftInterleaver hleft)
 
@@ -5294,8 +5993,27 @@ theorem closedSegment_forall_not_isRoot_iff_eval_mul_pos
 /-- The right-pencil no-gap-two theorem implies the closed-segment no-gap-two
 theorem by the parameter change `β = μ / (μ + 1)`. -/
 theorem compatibleSuccDegreeClosedSegmentNoGapTwo_of_rightFamily
-    (hright : CompatibleSuccDegreeRightFamilyNoGapTwoStatement) :
-    CompatibleSuccDegreeClosedSegmentNoGapTwoStatement := by
+    (hright : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {μ : ℝ}, 0 ≤ μ → ¬ (f + C μ * g).IsRoot x) →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2) := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hseg
   exact hright hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
     (fun {_} hμ => closedSegment_not_isRoot_add_right_of_nonneg hμ hseg)
@@ -5304,8 +6022,26 @@ theorem compatibleSuccDegreeClosedSegmentNoGapTwo_of_rightFamily
 theorem because the right-family no-root hypothesis is exactly same-sign
 endpoint evaluation at a common non-root threshold. -/
 theorem compatibleSuccDegreeRightFamilyNoGapTwo_of_endpointSign
-    (hsign : CompatibleSuccDegreeEndpointSignNoGapTwoStatement) :
-    CompatibleSuccDegreeRightFamilyNoGapTwoStatement := by
+    (hsign : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {μ : ℝ}, 0 ≤ μ → ¬ (f + C μ * g).IsRoot x) →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2) := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hno
   exact hsign hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
     (eval_mul_pos_of_no_rightFamily_isRoot hxf hxg hno)
@@ -5314,30 +6050,90 @@ theorem compatibleSuccDegreeRightFamilyNoGapTwo_of_endpointSign
 theorem because same-sign endpoint evaluations rule out nonnegative
 right-family roots at the fixed threshold. -/
 theorem compatibleSuccDegreeEndpointSignNoGapTwo_of_rightFamily
-    (hright : CompatibleSuccDegreeRightFamilyNoGapTwoStatement) :
-    CompatibleSuccDegreeEndpointSignNoGapTwoStatement := by
+    (hright : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {μ : ℝ}, 0 ≤ μ → ¬ (f + C μ * g).IsRoot x) →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2) := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hprod
   exact hright hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
     (fun {_} hμ => rightFamily_not_isRoot_of_eval_mul_pos hμ hprod)
 
 /-- The right-family and endpoint-sign no-gap-two targets are equivalent. -/
 theorem compatibleSuccDegreeRightFamilyNoGapTwo_iff_endpointSign :
-    CompatibleSuccDegreeRightFamilyNoGapTwoStatement ↔
-      CompatibleSuccDegreeEndpointSignNoGapTwoStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {μ : ℝ}, 0 ≤ μ → ¬ (f + C μ * g).IsRoot x) →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2) ↔
+      (∀ ⦃f g : ℝ[X]⦄,
+          Compatible f g →
+          HasPosLeadingCoeff f →
+          HasPosLeadingCoeff g →
+          g.natDegree = f.natDegree + 1 →
+          f.Splits →
+          ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+            0 < f.eval x * g.eval x →
+            ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+            ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2) :=
   ⟨compatibleSuccDegreeEndpointSignNoGapTwo_of_rightFamily,
     compatibleSuccDegreeRightFamilyNoGapTwo_of_endpointSign⟩
 
 /-- The all-combinations target contains the signed right-pencil family. -/
 theorem compatibleSuccDegreeSignedRightFamily_of_allCombo
-    (hallTarget : CompatibleSuccDegreeAllComboStatement) :
-    CompatibleSuccDegreeSignedRightFamilyStatement := by
+    (hallTarget : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        AllComboRealRooted f g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ μ : ℝ, (f + C μ * g).Splits) := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split μ
   simpa using hallTarget hcomp hf_pos hg_pos hdeg hf_split 1 μ
 
 /-- The all-combinations target implies the negative right-pencil target. -/
 theorem compatibleSuccDegreeNegativeRightFamily_of_allCombo
-    (hallTarget : CompatibleSuccDegreeAllComboStatement) :
-    CompatibleSuccDegreeNegativeRightFamilyStatement := by
+    (hallTarget : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        AllComboRealRooted f g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ μ : ℝ, μ < 0 → (f + C μ * g).Splits) := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split μ _
   exact compatibleSuccDegreeSignedRightFamily_of_allCombo hallTarget
     hcomp hf_pos hg_pos hdeg hf_split μ
@@ -5345,8 +6141,22 @@ theorem compatibleSuccDegreeNegativeRightFamily_of_allCombo
 /-- The all-combinations target implies the nonnegative-coefficient negative
 right-pencil target. -/
 theorem compatibleSuccDegreeNegativeRightFamilyNonneg_of_allCombo
-    (hallTarget : CompatibleSuccDegreeAllComboStatement) :
-    CompatibleSuccDegreeNegativeRightFamilyNonnegStatement := by
+    (hallTarget : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        AllComboRealRooted f g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ μ : ℝ, μ < 0 → (f + C μ * g).Splits) := by
   intro f g hcomp hf_pos hg_pos _ _ hdeg hf_split μ hμ
   exact compatibleSuccDegreeNegativeRightFamily_of_allCombo hallTarget
     hcomp hf_pos hg_pos hdeg hf_split μ hμ
@@ -5380,8 +6190,20 @@ theorem compatibleSuccDegreeNegativeRightFamilyNonneg_of_natDegree_eq_zero
 /-- The signed right-pencil family gives the whole all-combinations target by
 scaling every nonzero left coefficient to `1`. -/
 theorem compatibleSuccDegreeAllCombo_of_signedRightFamily
-    (hsigned : CompatibleSuccDegreeSignedRightFamilyStatement) :
-    CompatibleSuccDegreeAllComboStatement := by
+    (hsigned : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ μ : ℝ, (f + C μ * g).Splits)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        AllComboRealRooted f g) := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split α β
   by_cases hα : α = 0
   · have hfg : PosComboRealRooted f g :=
@@ -5405,8 +6227,20 @@ theorem compatibleSuccDegreeAllCombo_of_signedRightFamily
 /-- It is enough to prove the negative half of the right pencil: compatibility
 already gives the nonnegative half. -/
 theorem compatibleSuccDegreeSignedRightFamily_of_negativeRightFamily
-    (hneg : CompatibleSuccDegreeNegativeRightFamilyStatement) :
-    CompatibleSuccDegreeSignedRightFamilyStatement := by
+    (hneg : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ μ : ℝ, μ < 0 → (f + C μ * g).Splits)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ μ : ℝ, (f + C μ * g).Splits) := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split μ
   by_cases hμ : 0 ≤ μ
   · rcases hcomp 1 μ zero_le_one hμ with hzero | hrr
@@ -5430,8 +6264,22 @@ lemma splits_of_comp_X_add_C_splits
 nonnegative-coefficient target by translating both endpoints far enough that
 their roots are nonpositive. -/
 theorem compatibleSuccDegreeNegativeRightFamily_of_nonnegShift
-    (hneg : CompatibleSuccDegreeNegativeRightFamilyNonnegStatement) :
-    CompatibleSuccDegreeNegativeRightFamilyStatement := by
+    (hneg : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ μ : ℝ, μ < 0 → (f + C μ * g).Splits)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ μ : ℝ, μ < 0 → (f + C μ * g).Splits) := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split μ hμ
   have hfg : PosComboRealRooted f g :=
     hcomp.toPosComboRealRooted hf_pos hg_pos
@@ -5467,16 +6315,42 @@ theorem compatibleSuccDegreeNegativeRightFamily_of_nonnegShift
 
 /-- The negative right-pencil target implies the all-combinations target. -/
 theorem compatibleSuccDegreeAllCombo_of_negativeRightFamily
-    (hneg : CompatibleSuccDegreeNegativeRightFamilyStatement) :
-    CompatibleSuccDegreeAllComboStatement :=
+    (hneg : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ μ : ℝ, μ < 0 → (f + C μ * g).Splits)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        AllComboRealRooted f g) :=
   compatibleSuccDegreeAllCombo_of_signedRightFamily
     (compatibleSuccDegreeSignedRightFamily_of_negativeRightFamily hneg)
 
 /-- The nonnegative-coefficient negative right-pencil target implies the
 all-combinations target. -/
 theorem compatibleSuccDegreeAllCombo_of_negativeRightFamily_nonnegShift
-    (hneg : CompatibleSuccDegreeNegativeRightFamilyNonnegStatement) :
-    CompatibleSuccDegreeAllComboStatement :=
+    (hneg : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ μ : ℝ, μ < 0 → (f + C μ * g).Splits)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        AllComboRealRooted f g) :=
   compatibleSuccDegreeAllCombo_of_negativeRightFamily
     (compatibleSuccDegreeNegativeRightFamily_of_nonnegShift hneg)
 
@@ -5484,8 +6358,20 @@ theorem compatibleSuccDegreeAllCombo_of_negativeRightFamily_nonnegShift
 proper-position orientation, by Obreschkoff's converse and degree orientation.
 -/
 theorem compatibleSuccDegreePrec_of_allCombo
-    (hallTarget : CompatibleSuccDegreeAllComboStatement) :
-    CompatibleSuccDegreePrecStatement := by
+    (hallTarget : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        AllComboRealRooted f g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        Prec f g) := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split
   have hall : AllComboRealRooted f g :=
     hallTarget hcomp hf_pos hg_pos hdeg hf_split
@@ -5499,24 +6385,62 @@ theorem compatibleSuccDegreePrec_of_allCombo
 /-- The signed right-pencil target implies the forced succ-degree
 orientation. -/
 theorem compatibleSuccDegreePrec_of_signedRightFamily
-    (hsigned : CompatibleSuccDegreeSignedRightFamilyStatement) :
-    CompatibleSuccDegreePrecStatement :=
+    (hsigned : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ μ : ℝ, (f + C μ * g).Splits)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        Prec f g) :=
   compatibleSuccDegreePrec_of_allCombo
     (compatibleSuccDegreeAllCombo_of_signedRightFamily hsigned)
 
 /-- The negative right-pencil target implies the forced succ-degree
 orientation. -/
 theorem compatibleSuccDegreePrec_of_negativeRightFamily
-    (hneg : CompatibleSuccDegreeNegativeRightFamilyStatement) :
-    CompatibleSuccDegreePrecStatement :=
+    (hneg : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ μ : ℝ, μ < 0 → (f + C μ * g).Splits)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        Prec f g) :=
   compatibleSuccDegreePrec_of_allCombo
     (compatibleSuccDegreeAllCombo_of_negativeRightFamily hneg)
 
 /-- The nonnegative-coefficient negative right-pencil target implies the forced
 succ-degree orientation. -/
 theorem compatibleSuccDegreePrec_of_negativeRightFamily_nonnegShift
-    (hneg : CompatibleSuccDegreeNegativeRightFamilyNonnegStatement) :
-    CompatibleSuccDegreePrecStatement :=
+    (hneg : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ μ : ℝ, μ < 0 → (f + C μ * g).Splits)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        Prec f g) :=
   compatibleSuccDegreePrec_of_negativeRightFamily
     (compatibleSuccDegreeNegativeRightFamily_of_nonnegShift hneg)
 
@@ -5525,8 +6449,21 @@ coefficient-free compatible succ-degree orientation target.  Shared roots are
 handled by the existing positive-combination common-root induction, and the
 succ-degree hypothesis selects the forward orientation. -/
 theorem compatibleSuccDegreePrec_of_noCommonOrientation
-    (hstep : PosComboNoCommonOrientationStatement) :
-    CompatibleSuccDegreePrecStatement := by
+    (hstep : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        Prec f g) := by
   intro f g hcomp hf_pos hg_pos hdeg _hf_split
   have hfg : PosComboRealRooted f g :=
     hcomp.toPosComboRealRooted hf_pos hg_pos
@@ -5540,8 +6477,25 @@ theorem compatibleSuccDegreePrec_of_noCommonOrientation
 /-- The exact lower-count endpoint comparison implies the lower-threshold
 endpoint-sign exact gap obstruction. -/
 theorem compatibleSuccDegreeEndpointSignLowerNoGap_of_lowerCountEq
-    (hcount : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
-    CompatibleSuccDegreeEndpointSignLowerNoGapStatement := by
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≠ 3 ∧
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≠ 1) := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hprod
   have hgf :=
     hcount hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hprod
@@ -5550,8 +6504,26 @@ theorem compatibleSuccDegreeEndpointSignLowerNoGap_of_lowerCountEq
 /-- The lower-threshold endpoint-sign target implies the upper-threshold
 endpoint-sign target by exact complement-count arithmetic. -/
 theorem compatibleSuccDegreeEndpointSignNoGapTwo_of_lower
-    (hlower : CompatibleSuccDegreeEndpointSignLowerNoGapStatement) :
-    CompatibleSuccDegreeEndpointSignNoGapTwoStatement := by
+    (hlower : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≠ 3 ∧
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≠ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2) := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hprod
   have hg_split : g.Splits := (hcomp.isRealRooted_right hg_pos).2
   obtain ⟨hgf_ne3, hfg_ne1⟩ :=
@@ -5569,32 +6541,103 @@ theorem compatibleSuccDegreeEndpointSignNoGapTwo_of_lower
 /-- The exact lower-count endpoint comparison implies the upper-threshold
 endpoint-sign exact gap-two obstruction. -/
 theorem compatibleSuccDegreeEndpointSignNoGapTwo_of_lowerCountEq
-    (hcount : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
-    CompatibleSuccDegreeEndpointSignNoGapTwoStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2) :=
   compatibleSuccDegreeEndpointSignNoGapTwo_of_lower
     (compatibleSuccDegreeEndpointSignLowerNoGap_of_lowerCountEq hcount)
 
 /-- The lower-threshold endpoint-sign target implies the right-family
 no-gap-two theorem. -/
 theorem compatibleSuccDegreeRightFamilyNoGapTwo_of_endpointSignLower
-    (hlower : CompatibleSuccDegreeEndpointSignLowerNoGapStatement) :
-    CompatibleSuccDegreeRightFamilyNoGapTwoStatement :=
+    (hlower : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≠ 3 ∧
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≠ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {μ : ℝ}, 0 ≤ μ → ¬ (f + C μ * g).IsRoot x) →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2) :=
   compatibleSuccDegreeRightFamilyNoGapTwo_of_endpointSign
     (compatibleSuccDegreeEndpointSignNoGapTwo_of_lower hlower)
 
 /-- The exact lower-count endpoint comparison implies the right-family
 no-gap-two theorem. -/
 theorem compatibleSuccDegreeRightFamilyNoGapTwo_of_lowerCountEq
-    (hcount : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
-    CompatibleSuccDegreeRightFamilyNoGapTwoStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {μ : ℝ}, 0 ≤ μ → ¬ (f + C μ * g).IsRoot x) →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2) :=
   compatibleSuccDegreeRightFamilyNoGapTwo_of_endpointSign
     (compatibleSuccDegreeEndpointSignNoGapTwo_of_lowerCountEq hcount)
 
 /-- The endpoint-sign no-gap-two theorem implies the closed-segment
 no-gap-two theorem. -/
 theorem compatibleSuccDegreeClosedSegmentNoGapTwo_of_endpointSign
-    (hsign : CompatibleSuccDegreeEndpointSignNoGapTwoStatement) :
-    CompatibleSuccDegreeClosedSegmentNoGapTwoStatement := by
+    (hsign : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2) := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hseg
   exact hsign hcomp hf_pos hg_pos hdeg hf_split x hxf hxg <|
     (closedSegment_forall_not_isRoot_iff_eval_mul_pos hxf hxg).mp hseg
@@ -5603,40 +6646,134 @@ theorem compatibleSuccDegreeClosedSegmentNoGapTwo_of_endpointSign
 no-gap-two theorem because same-sign endpoint evaluations rule out
 closed-segment roots at the fixed threshold. -/
 theorem compatibleSuccDegreeEndpointSignNoGapTwo_of_closedSegment
-    (hclosed : CompatibleSuccDegreeClosedSegmentNoGapTwoStatement) :
-    CompatibleSuccDegreeEndpointSignNoGapTwoStatement := by
+    (hclosed : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2) := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hprod
   exact hclosed hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
     (fun {_} hβ0 hβ1 => closedSegment_not_isRoot_of_eval_mul_pos hβ0 hβ1 hprod)
 
 /-- The closed-segment and endpoint-sign no-gap-two targets are equivalent. -/
 theorem compatibleSuccDegreeClosedSegmentNoGapTwo_iff_endpointSign :
-    CompatibleSuccDegreeClosedSegmentNoGapTwoStatement ↔
-      CompatibleSuccDegreeEndpointSignNoGapTwoStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2) ↔
+      (∀ ⦃f g : ℝ[X]⦄,
+          Compatible f g →
+          HasPosLeadingCoeff f →
+          HasPosLeadingCoeff g →
+          g.natDegree = f.natDegree + 1 →
+          f.Splits →
+          ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+            0 < f.eval x * g.eval x →
+            ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+            ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2) :=
   ⟨compatibleSuccDegreeEndpointSignNoGapTwo_of_closedSegment,
     compatibleSuccDegreeClosedSegmentNoGapTwo_of_endpointSign⟩
 
 /-- The lower-threshold endpoint-sign target implies the closed-segment
 no-gap-two theorem. -/
 theorem compatibleSuccDegreeClosedSegmentNoGapTwo_of_endpointSignLower
-    (hlower : CompatibleSuccDegreeEndpointSignLowerNoGapStatement) :
-    CompatibleSuccDegreeClosedSegmentNoGapTwoStatement :=
+    (hlower : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≠ 3 ∧
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≠ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2) :=
   compatibleSuccDegreeClosedSegmentNoGapTwo_of_endpointSign
     (compatibleSuccDegreeEndpointSignNoGapTwo_of_lower hlower)
 
 /-- The exact lower-count endpoint comparison implies the closed-segment
 no-gap-two theorem. -/
 theorem compatibleSuccDegreeClosedSegmentNoGapTwo_of_lowerCountEq
-    (hcount : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
-    CompatibleSuccDegreeClosedSegmentNoGapTwoStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2) :=
   compatibleSuccDegreeClosedSegmentNoGapTwo_of_endpointSign
     (compatibleSuccDegreeEndpointSignNoGapTwo_of_lowerCountEq hcount)
 
 /-- Closed-segment endpoint count equality excludes both exact upper
 root-count gaps of two. -/
 theorem compatibleSuccDegreeClosedSegmentNoGapTwo_of_countEq
-    (hcount : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
-    CompatibleSuccDegreeClosedSegmentNoGapTwoStatement := by
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2) := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hseg
   have hcard := hcount hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hseg
   have hcard_int :
@@ -5648,8 +6785,25 @@ theorem compatibleSuccDegreeClosedSegmentNoGapTwo_of_countEq
 /-- Closed-segment endpoint count equality implies the exact lower-threshold
 endpoint-sign comparison. -/
 theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_closedSegmentCountEq
-    (hcount : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
-    CompatibleSuccDegreeEndpointSignLowerCountEqStatement := by
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1) := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hprod
   have hseg : ∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
       ¬ (C (1 - β) * f + C β * g).IsRoot x := by
@@ -5680,8 +6834,25 @@ theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_closedSegmentCountEq
 /-- The exact lower-threshold endpoint-sign comparison implies closed-segment
 endpoint count equality. -/
 theorem compatibleSuccDegreeClosedSegmentCountEq_of_lowerCountEq
-    (hcount : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
-    CompatibleSuccDegreeClosedSegmentCountEqStatement := by
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card) := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hseg
   have hprod : 0 < f.eval x * g.eval x :=
     (closedSegment_forall_not_isRoot_iff_eval_mul_pos hxf hxg).mp hseg
@@ -5710,8 +6881,25 @@ theorem compatibleSuccDegreeClosedSegmentCountEq_of_lowerCountEq
 /-- The closed-segment endpoint count-equality target is equivalent to the
 exact lower-threshold endpoint-sign count target. -/
 theorem compatibleSuccDegreeClosedSegmentCountEq_iff_lowerCountEq :
-    CompatibleSuccDegreeClosedSegmentCountEqStatement ↔
-      CompatibleSuccDegreeEndpointSignLowerCountEqStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card) ↔
+      (∀ ⦃f g : ℝ[X]⦄,
+          Compatible f g →
+          HasPosLeadingCoeff f →
+          HasPosLeadingCoeff g →
+          g.natDegree = f.natDegree + 1 →
+          f.Splits →
+          ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+            0 < f.eval x * g.eval x →
+            ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1) :=
   ⟨compatibleSuccDegreeEndpointSignLowerCountEq_of_closedSegmentCountEq,
     compatibleSuccDegreeClosedSegmentCountEq_of_lowerCountEq⟩
 
@@ -5720,7 +6908,16 @@ between any two common non-root thresholds that are not crossed by the closed
 segment.  This is the interval-count bookkeeping used in the
 Chudnovsky--Seymour `3.3` route. -/
 theorem compatibleSuccDegree_roots_Ioo_eq_of_closedSegmentCountEq
-    (hcount : CompatibleSuccDegreeClosedSegmentCountEqStatement)
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card))
     {f g : ℝ[X]}
     (hcomp : Compatible f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
@@ -5744,8 +6941,26 @@ theorem compatibleSuccDegree_roots_Ioo_eq_of_closedSegmentCountEq
 gap-two obstruction, since an assumed exact gap two supplies the required
 closed-segment nonvanishing by the endpoint sign lemma. -/
 theorem compatibleSuccDegreeRootCountAboveNoGapTwo_of_closedSegment
-    (hclosed : CompatibleSuccDegreeClosedSegmentNoGapTwoStatement) :
-    CompatibleSuccDegreeRootCountAboveNoGapTwoStatement := by
+    (hclosed : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2) := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
   constructor
   · intro hcount
@@ -5768,85 +6983,294 @@ theorem compatibleSuccDegreeRootCountAboveNoGapTwo_of_closedSegment
 /-- A gap-at-most-two theorem plus the closed-segment no-gap-two theorem gives
 the compatible succ-degree common-non-root upper root-count leaf. -/
 theorem compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_closedSegment
-    (hle2 : CompatibleSuccDegreeRootCountAboveLeTwoStatement)
-    (hclosed : CompatibleSuccDegreeClosedSegmentNoGapTwoStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement :=
+    (hle2 : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 2))
+    (hclosed : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_noGapTwo hle2
     (compatibleSuccDegreeRootCountAboveNoGapTwo_of_closedSegment hclosed)
 
 /-- The right-pencil no-gap-two theorem implies the compatible exact gap-two
 obstruction. -/
 theorem compatibleSuccDegreeRootCountAboveNoGapTwo_of_rightFamily
-    (hright : CompatibleSuccDegreeRightFamilyNoGapTwoStatement) :
-    CompatibleSuccDegreeRootCountAboveNoGapTwoStatement :=
+    (hright : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {μ : ℝ}, 0 ≤ μ → ¬ (f + C μ * g).IsRoot x) →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2) :=
   compatibleSuccDegreeRootCountAboveNoGapTwo_of_closedSegment
     (compatibleSuccDegreeClosedSegmentNoGapTwo_of_rightFamily hright)
 
 /-- The endpoint-sign no-gap-two theorem implies the compatible exact gap-two
 obstruction. -/
 theorem compatibleSuccDegreeRootCountAboveNoGapTwo_of_endpointSign
-    (hsign : CompatibleSuccDegreeEndpointSignNoGapTwoStatement) :
-    CompatibleSuccDegreeRootCountAboveNoGapTwoStatement :=
+    (hsign : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2) :=
   compatibleSuccDegreeRootCountAboveNoGapTwo_of_rightFamily
     (compatibleSuccDegreeRightFamilyNoGapTwo_of_endpointSign hsign)
 
 /-- The lower-threshold endpoint-sign target implies the compatible exact
 gap-two obstruction. -/
 theorem compatibleSuccDegreeRootCountAboveNoGapTwo_of_endpointSignLower
-    (hlower : CompatibleSuccDegreeEndpointSignLowerNoGapStatement) :
-    CompatibleSuccDegreeRootCountAboveNoGapTwoStatement :=
+    (hlower : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≠ 3 ∧
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≠ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2) :=
   compatibleSuccDegreeRootCountAboveNoGapTwo_of_endpointSign
     (compatibleSuccDegreeEndpointSignNoGapTwo_of_lower hlower)
 
 /-- The exact lower-count endpoint comparison implies the compatible exact
 gap-two obstruction. -/
 theorem compatibleSuccDegreeRootCountAboveNoGapTwo_of_lowerCountEq
-    (hcount : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
-    CompatibleSuccDegreeRootCountAboveNoGapTwoStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2) :=
   compatibleSuccDegreeRootCountAboveNoGapTwo_of_endpointSign
     (compatibleSuccDegreeEndpointSignNoGapTwo_of_lowerCountEq hcount)
 
 /-- Closed-segment endpoint count equality implies the compatible exact
 gap-two obstruction. -/
 theorem compatibleSuccDegreeRootCountAboveNoGapTwo_of_closedSegmentCountEq
-    (hcount : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
-    CompatibleSuccDegreeRootCountAboveNoGapTwoStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2) :=
   compatibleSuccDegreeRootCountAboveNoGapTwo_of_closedSegment
     (compatibleSuccDegreeClosedSegmentNoGapTwo_of_countEq hcount)
 
 /-- A gap-at-most-two theorem plus the right-pencil no-gap-two theorem gives
 the compatible succ-degree common-non-root upper root-count leaf. -/
 theorem compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_rightFamily
-    (hle2 : CompatibleSuccDegreeRootCountAboveLeTwoStatement)
-    (hright : CompatibleSuccDegreeRightFamilyNoGapTwoStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement :=
+    (hle2 : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 2))
+    (hright : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {μ : ℝ}, 0 ≤ μ → ¬ (f + C μ * g).IsRoot x) →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_noGapTwo hle2
     (compatibleSuccDegreeRootCountAboveNoGapTwo_of_rightFamily hright)
 
 /-- A gap-at-most-two theorem plus the endpoint-sign no-gap-two theorem gives
 the compatible succ-degree common-non-root upper root-count leaf. -/
 theorem compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_endpointSign
-    (hle2 : CompatibleSuccDegreeRootCountAboveLeTwoStatement)
-    (hsign : CompatibleSuccDegreeEndpointSignNoGapTwoStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement :=
+    (hle2 : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 2))
+    (hsign : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_noGapTwo hle2
     (compatibleSuccDegreeRootCountAboveNoGapTwo_of_endpointSign hsign)
 
 /-- A gap-at-most-two theorem plus the lower-threshold endpoint-sign target
 gives the compatible succ-degree common-non-root upper root-count leaf. -/
 theorem compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_endpointSignLower
-    (hle2 : CompatibleSuccDegreeRootCountAboveLeTwoStatement)
-    (hlower : CompatibleSuccDegreeEndpointSignLowerNoGapStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement :=
+    (hle2 : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 2))
+    (hlower : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≠ 3 ∧
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≠ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_endpointSign hle2
     (compatibleSuccDegreeEndpointSignNoGapTwo_of_lower hlower)
 
 /-- A gap-at-most-two theorem plus the exact lower-count endpoint comparison
 gives the compatible succ-degree common-non-root upper root-count leaf. -/
 theorem compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_lowerCountEq
-    (hle2 : CompatibleSuccDegreeRootCountAboveLeTwoStatement)
-    (hcount : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement :=
+    (hle2 : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 2))
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_endpointSign hle2
     (compatibleSuccDegreeEndpointSignNoGapTwo_of_lowerCountEq hcount)
 
@@ -5955,8 +7379,22 @@ the cases `g_le - f_le = 0` and `g_le - f_le = 1`; same-sign endpoint
 evaluations rule out the even zero case by the succ-degree lower-count parity
 bridge. -/
 theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_prec
-    (hprecTarget : CompatibleSuccDegreePrecStatement) :
-    CompatibleSuccDegreeEndpointSignLowerCountEqStatement := by
+    (hprecTarget : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        Prec f g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1) := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hprod
   have hprec : Prec f g :=
     hprecTarget hcomp hf_pos hg_pos hdeg hf_split
@@ -5995,40 +7433,121 @@ theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_prec
 /-- The compatible succ-degree all-combinations target implies the exact
 lower-count endpoint comparison. -/
 theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_allCombo
-    (hallTarget : CompatibleSuccDegreeAllComboStatement) :
-    CompatibleSuccDegreeEndpointSignLowerCountEqStatement :=
+    (hallTarget : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        AllComboRealRooted f g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1) :=
   compatibleSuccDegreeEndpointSignLowerCountEq_of_prec
     (compatibleSuccDegreePrec_of_allCombo hallTarget)
 
 /-- The signed right-pencil target implies the exact lower-count endpoint
 comparison. -/
 theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_signedRightFamily
-    (hsigned : CompatibleSuccDegreeSignedRightFamilyStatement) :
-    CompatibleSuccDegreeEndpointSignLowerCountEqStatement :=
+    (hsigned : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ μ : ℝ, (f + C μ * g).Splits)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1) :=
   compatibleSuccDegreeEndpointSignLowerCountEq_of_allCombo
     (compatibleSuccDegreeAllCombo_of_signedRightFamily hsigned)
 
 /-- The negative right-pencil target implies the exact lower-count endpoint
 comparison. -/
 theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_negativeRightFamily
-    (hneg : CompatibleSuccDegreeNegativeRightFamilyStatement) :
-    CompatibleSuccDegreeEndpointSignLowerCountEqStatement :=
+    (hneg : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ μ : ℝ, μ < 0 → (f + C μ * g).Splits)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1) :=
   compatibleSuccDegreeEndpointSignLowerCountEq_of_allCombo
     (compatibleSuccDegreeAllCombo_of_negativeRightFamily hneg)
 
 /-- The nonnegative-coefficient negative right-pencil target implies the exact
 lower-count endpoint comparison. -/
 theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_negativeRightFamily_nonnegShift
-    (hneg : CompatibleSuccDegreeNegativeRightFamilyNonnegStatement) :
-    CompatibleSuccDegreeEndpointSignLowerCountEqStatement :=
+    (hneg : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ μ : ℝ, μ < 0 → (f + C μ * g).Splits)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1) :=
   compatibleSuccDegreeEndpointSignLowerCountEq_of_negativeRightFamily
     (compatibleSuccDegreeNegativeRightFamily_of_nonnegShift hneg)
 
 /-- The succ-degree root-count formulation implies the descending-root
 crossing formulation. -/
 theorem posComboNoCommonSuccDegreeRootCrossing_of_rootCount
-    (hcount : PosComboNoCommonSuccDegreeRootCountNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCrossingNonnegStatement := by
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split
   have hg_split : g.Splits :=
     (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
@@ -6038,8 +7557,31 @@ theorem posComboNoCommonSuccDegreeRootCrossing_of_rootCount
 /-- The upper-threshold succ-degree root-count formulation implies the
 descending-root crossing formulation. -/
 theorem posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove
-    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCrossingNonnegStatement := by
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split
   have hg_split : g.Splits :=
     (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
@@ -6049,8 +7591,30 @@ theorem posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove
 /-- The upper-threshold root-count target implies the lower-threshold
 root-count target. -/
 theorem posComboNoCommonSuccDegreeRootCount_of_rootCountAbove
-    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCountNonnegStatement := by
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split
   have hg_split : g.Splits :=
     (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
@@ -6060,8 +7624,30 @@ theorem posComboNoCommonSuccDegreeRootCount_of_rootCountAbove
 /-- The lower-threshold root-count target implies the upper-threshold
 root-count target. -/
 theorem posComboNoCommonSuccDegreeRootCountAbove_of_rootCount
-    (hcount : PosComboNoCommonSuccDegreeRootCountNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement := by
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split
   have hg_split : g.Splits :=
     (hfg.isRealRooted_right_of_succDegree hf_pos hg_pos hdeg).2
@@ -6071,48 +7657,179 @@ theorem posComboNoCommonSuccDegreeRootCountAbove_of_rootCount
 /-- The lower- and upper-threshold succ-degree root-count targets are
 equivalent. -/
 theorem posComboNoCommonSuccDegreeRootCountAbove_iff_rootCount :
-    PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement ↔
-      PosComboNoCommonSuccDegreeRootCountNonnegStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) ↔
+      (∀ ⦃f g : ℝ[X]⦄,
+          HasPosLeadingCoeff f →
+          HasPosLeadingCoeff g →
+          HasNonnegCoeffs f →
+          HasNonnegCoeffs g →
+          PosComboRealRooted f g →
+          g.natDegree = f.natDegree + 1 →
+          (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+          f.Splits →
+          ∀ x : ℝ,
+            ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+            ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2) :=
   ⟨posComboNoCommonSuccDegreeRootCount_of_rootCountAbove,
     posComboNoCommonSuccDegreeRootCountAbove_of_rootCount⟩
 
 /-- The lower-threshold succ-degree root-count target follows from the
 common-non-root upper-threshold variant. -/
 theorem posComboNoCommonSuccDegreeRootCount_of_nonRoot
-    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCountNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2) :=
   posComboNoCommonSuccDegreeRootCount_of_rootCountAbove
     (posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot hcount)
 
 /-- The lower-threshold succ-degree root-count target follows from the lower
 common-non-root formulation. -/
 theorem posComboNoCommonSuccDegreeRootCount_of_rootCountNonRoot
-    (hcount : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCountNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2) :=
   posComboNoCommonSuccDegreeRootCount_of_rootCountAbove
     (posComboNoCommonSuccDegreeRootCountAbove_of_rootCountNonRoot hcount)
 
 /-- The succ-degree root-crossing target follows from the lower
 common-non-root root-count formulation. -/
 theorem posComboNoCommonSuccDegreeRootCrossing_of_rootCountNonRoot
-    (hcount : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCrossingNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)) :=
   posComboNoCommonSuccDegreeRootCrossing_of_rootCount
     (posComboNoCommonSuccDegreeRootCount_of_rootCountNonRoot hcount)
 
 /-- The succ-degree root-crossing target follows from the upper common-non-root
 root-count formulation. -/
 theorem posComboNoCommonSuccDegreeRootCrossing_of_rootCountAboveNonRoot
-    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCrossingNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)) :=
   posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove
     (posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot hcount)
 
 /-- The fixed-orientation succ-degree endpoint implies the upper-threshold
 root-count target. -/
 theorem posComboNoCommonSuccDegreeRootCountAbove_of_orientation
-    (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement := by
+    (horient : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno _hf_split
   exact succDegreeRootCountAbove_of_prec
     (horient hf_pos hg_pos hfnn hgnn hfg hdeg hno) hdeg
@@ -6120,117 +7837,30 @@ theorem posComboNoCommonSuccDegreeRootCountAbove_of_orientation
 /-- The fixed-orientation succ-degree endpoint implies the lower-threshold
 root-count target, via the upper/lower threshold conversion. -/
 theorem posComboNoCommonSuccDegreeRootCount_of_orientation
-    (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCountNonnegStatement :=
+    (horient : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2) :=
   posComboNoCommonSuccDegreeRootCount_of_rootCountAbove
     (posComboNoCommonSuccDegreeRootCountAbove_of_orientation horient)
 
-/-- Residual constant-term branch of the lower-threshold succ-degree no-common
-root-count statement: the case `f.coeff 0 = 0` and hence `g.coeff 0 ≠ 0` by
-the no-common hypothesis. -/
-def PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree + 1 →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    f.Splits →
-    f.coeff 0 = 0 →
-    g.coeff 0 ≠ 0 →
-    ∀ x : ℝ,
-      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
-      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2
-
-/-- Exact residual orientation target for the succ-degree branch: in the case
-where the lower-degree polynomial has zero constant term but the higher-degree
-polynomial does not, orient the original pair as `f ≺ g`. -/
-def PosComboNoCommonSuccDegreeRootCountResidualPrecStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree + 1 →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    f.Splits →
-    f.coeff 0 = 0 →
-    g.coeff 0 ≠ 0 →
-    Prec f g
-
-/-- Nonzero constant-term branch of the lower-threshold succ-degree no-common
-root-count statement.  This is the root-count analogue of the reflection route
-used for the succ-degree left endpoint. -/
-def PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree + 1 →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    f.Splits →
-    f.coeff 0 ≠ 0 →
-    ∀ x : ℝ,
-      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
-      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2
-
-/-- Nonzero constant-term succ-degree root-count branch, further restricted to
-the subcase where the higher-degree member also has nonzero constant term. -/
-def PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree + 1 →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    f.Splits →
-    f.coeff 0 ≠ 0 →
-    g.coeff 0 ≠ 0 →
-    ∀ x : ℝ,
-      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
-      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2
-
-/-- Nonzero constant-term succ-degree root-count branch, further restricted to
-the subcase where the higher-degree member has zero constant term. -/
-def PosComboNoCommonSuccDegreeRootCountLeadRightZeroNonnegStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree + 1 →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    f.Splits →
-    f.coeff 0 ≠ 0 →
-    g.coeff 0 = 0 →
-    ∀ x : ℝ,
-      ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
-      ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2
-
-/-- Exact residual orientation target for the right-zero lead branch: after
-removing the zero root from the higher-degree polynomial, orient the resulting
-same-degree pair as `g.divX ≺ f`. -/
-def PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    HasNonnegCoeffs f →
-    HasNonnegCoeffs g →
-    PosComboRealRooted f g →
-    g.natDegree = f.natDegree + 1 →
-    (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
-    f.Splits →
-    f.coeff 0 ≠ 0 →
-    g.coeff 0 = 0 →
-    Prec (g.divX) f
 
 /-- The right-zero `divX` orientation target follows from proving the original
 succ-degree orientation `Prec f g` on this branch.  The degree-drop step is
@@ -6249,7 +7879,18 @@ theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrec_of_precFG
         f.coeff 0 ≠ 0 →
         g.coeff 0 = 0 →
         Prec f g) :
-    PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 = 0 →
+        Prec (g.divX) f) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0
   exact prec_divX_left_of_prec_of_hasNonnegCoeffs_coeff_zero
     (hprecFG hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0) hgnn hg0 hdeg
@@ -6264,7 +7905,18 @@ Together with `posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrec_of_precF
 this shows that on the right-zero lead branch the sharper orientation target and
 the `divX` orientation target are equivalent. -/
 theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroPrecFG_of_divX
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement) :
+    (hdivX : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 = 0 →
+        Prec (g.divX) f)) :
     ∀ ⦃f g : ℝ[X]⦄,
       HasPosLeadingCoeff f →
       HasPosLeadingCoeff g →
@@ -6296,16 +7948,65 @@ theorem posComboNoCommonSuccDegreeRootCountLeadRightZeroPrecFG_iff_divXPrec :
         f.coeff 0 ≠ 0 →
         g.coeff 0 = 0 →
         Prec f g) ↔
-      PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement := by
+      (∀ ⦃f g : ℝ[X]⦄,
+          HasPosLeadingCoeff f →
+          HasPosLeadingCoeff g →
+          HasNonnegCoeffs f →
+          HasNonnegCoeffs g →
+          PosComboRealRooted f g →
+          g.natDegree = f.natDegree + 1 →
+          (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+          f.Splits →
+          f.coeff 0 ≠ 0 →
+          g.coeff 0 = 0 →
+          Prec (g.divX) f) := by
   exact ⟨posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrec_of_precFG,
     posComboNoCommonSuccDegreeRootCountLeadRightZeroPrecFG_of_divX⟩
 
 /-- The lead root-count branch splits into the two possible constant-term
 cases for the higher-degree member. -/
 theorem posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_rightZero
-    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hright : PosComboNoCommonSuccDegreeRootCountLeadRightZeroNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement := by
+    (hboth : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2))
+    (hright : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 = 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0
   by_cases hg0 : g.coeff 0 = 0
   · exact hright hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0
@@ -6335,7 +8036,20 @@ theorem posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_sameDegreeCount
               (g.divX.roots.filter (· ≤ x)).card ∧
           ((g.divX.roots.filter (· ≤ x)).card : ℤ) ≤
               (f.roots.filter (· ≤ x)).card + 1) :
-    PosComboNoCommonSuccDegreeRootCountLeadRightZeroNonnegStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 = 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0 x
   have hg_ne : g ≠ 0 := hg_pos.ne_zero
   obtain ⟨hFH, hHF⟩ :=
@@ -6383,7 +8097,20 @@ theorem
               (f.roots.filter (x < ·)).card ∧
           ((f.roots.filter (x < ·)).card : ℤ) ≤
               (g.divX.roots.filter (x < ·)).card + 1) :
-    PosComboNoCommonSuccDegreeRootCountLeadRightZeroNonnegStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 = 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2) :=
   posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_sameDegreeCount
     (fun {f g} hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0 x => by
       have hg_split : g.Splits :=
@@ -6406,8 +8133,32 @@ lower-threshold count comparison needed by
 This packages the whole right-zero lead branch from a checked orientation. -/
 theorem posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_prec
     (horient :
-      PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement) :
-    PosComboNoCommonSuccDegreeRootCountLeadRightZeroNonnegStatement := by
+      (∀ ⦃f g : ℝ[X]⦄,
+          HasPosLeadingCoeff f →
+          HasPosLeadingCoeff g →
+          HasNonnegCoeffs f →
+          HasNonnegCoeffs g →
+          PosComboRealRooted f g →
+          g.natDegree = f.natDegree + 1 →
+          (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+          f.Splits →
+          f.coeff 0 ≠ 0 →
+          g.coeff 0 = 0 →
+          Prec (g.divX) f)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 = 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2) := by
   apply posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_sameDegreeCount
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0 x
   have hprec : Prec (g.divX) f :=
@@ -6422,17 +8173,77 @@ theorem posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_prec
 /-- The full lead root-count branch follows from the both-nonzero branch and
 the `divX` orientation target for the right-zero branch. -/
 theorem posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_divX_prec
-    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement) :
-    PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement :=
+    (hboth : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2))
+    (hdivX : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 = 0 →
+        Prec (g.divX) f)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2) :=
   posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_rightZero hboth
     (posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_prec hdivX)
 
 /-- The residual succ-degree root-count branch follows from an interlacing
 orientation in that branch. -/
 theorem posComboNoCommonSuccDegreeRootCountResidual_of_prec
-    (horient : PosComboNoCommonSuccDegreeRootCountResidualPrecStatement) :
-    PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement := by
+    (horient : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 = 0 →
+        g.coeff 0 ≠ 0 →
+        Prec f g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 = 0 →
+        g.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0
   exact succDegreeRootCount_of_prec
     (horient hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0 hg0) hdeg
@@ -6442,9 +8253,45 @@ constant-term branches: the `f.coeff 0 ≠ 0` branch and the residual
 `f.coeff 0 = 0`, `g.coeff 0 ≠ 0` branch.  The no-common-root hypothesis rules
 out the common-`X` branch. -/
 theorem posComboNoCommonSuccDegreeRootCount_of_residual_and_lead
-    (hlead : PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement)
-    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCountNonnegStatement := by
+    (hlead : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2))
+    (hres : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 = 0 →
+        g.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split
   by_cases hf0 : f.coeff 0 = 0
   · exact hres hf_pos hg_pos hfnn hgnn hfg hdeg hno hf_split hf0
@@ -6454,18 +8301,91 @@ theorem posComboNoCommonSuccDegreeRootCount_of_residual_and_lead
 /-- The upper-threshold succ-degree no-common root-count target follows from
 the two lower-threshold constant-term branches. -/
 theorem posComboNoCommonSuccDegreeRootCountAbove_of_residual_and_lead
-    (hlead : PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement)
-    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement :=
+    (hlead : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2))
+    (hres : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 = 0 →
+        g.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   posComboNoCommonSuccDegreeRootCountAbove_of_rootCount
     (posComboNoCommonSuccDegreeRootCount_of_residual_and_lead hlead hres)
 
 /-- The succ-degree root-crossing target follows from the two constant-term
 root-count branches. -/
 theorem posComboNoCommonSuccDegreeRootCrossing_of_residual_and_lead
-    (hlead : PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement)
-    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCrossingNonnegStatement :=
+    (hlead : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2))
+    (hres : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 = 0 →
+        g.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)) :=
   posComboNoCommonSuccDegreeRootCrossing_of_rootCount
     (posComboNoCommonSuccDegreeRootCount_of_residual_and_lead hlead hres)
 
@@ -6473,10 +8393,58 @@ theorem posComboNoCommonSuccDegreeRootCrossing_of_residual_and_lead
 residual branch, the both-nonzero lead branch, and the right-zero `divX`
 orientation target. -/
 theorem posComboNoCommonSuccDegreeRootCount_of_residual_bothNonzero_divX_prec
-    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement)
-    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCountNonnegStatement :=
+    (hboth : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2))
+    (hdivX : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 = 0 →
+        Prec (g.divX) f))
+    (hres : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 = 0 →
+        g.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2) :=
   posComboNoCommonSuccDegreeRootCount_of_residual_and_lead
     (posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_divX_prec
       hboth hdivX)
@@ -6486,10 +8454,58 @@ theorem posComboNoCommonSuccDegreeRootCount_of_residual_bothNonzero_divX_prec
 residual branch, the both-nonzero lead branch, and the right-zero `divX`
 orientation target. -/
 theorem posComboNoCommonSuccDegreeRootCountAbove_of_residual_bothNonzero_divX_prec
-    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement)
-    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement :=
+    (hboth : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2))
+    (hdivX : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 = 0 →
+        Prec (g.divX) f))
+    (hres : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 = 0 →
+        g.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   posComboNoCommonSuccDegreeRootCountAbove_of_residual_and_lead
     (posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_divX_prec
       hboth hdivX)
@@ -6498,10 +8514,59 @@ theorem posComboNoCommonSuccDegreeRootCountAbove_of_residual_bothNonzero_divX_pr
 /-- The succ-degree root-crossing target follows from the residual branch, the
 both-nonzero lead branch, and the right-zero `divX` orientation target. -/
 theorem posComboNoCommonSuccDegreeRootCrossing_of_residual_bothNonzero_divX_prec
-    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement)
-    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCrossingNonnegStatement :=
+    (hboth : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2))
+    (hdivX : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 = 0 →
+        Prec (g.divX) f))
+    (hres : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 = 0 →
+        g.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)) :=
   posComboNoCommonSuccDegreeRootCrossing_of_residual_and_lead
     (posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_divX_prec
       hboth hdivX)
@@ -6511,10 +8576,56 @@ theorem posComboNoCommonSuccDegreeRootCrossing_of_residual_bothNonzero_divX_prec
 residual orientation target, the both-nonzero lead branch, and the right-zero
 `divX` orientation target. -/
 theorem posComboNoCommonSuccDegreeRootCount_of_residualPrec_bothNonzero_divX_prec
-    (hresPrec : PosComboNoCommonSuccDegreeRootCountResidualPrecStatement)
-    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement) :
-    PosComboNoCommonSuccDegreeRootCountNonnegStatement :=
+    (hresPrec : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 = 0 →
+        g.coeff 0 ≠ 0 →
+        Prec f g))
+    (hboth : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2))
+    (hdivX : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 = 0 →
+        Prec (g.divX) f)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2) :=
   posComboNoCommonSuccDegreeRootCount_of_residual_bothNonzero_divX_prec
     hboth hdivX (posComboNoCommonSuccDegreeRootCountResidual_of_prec hresPrec)
 
@@ -6523,10 +8634,56 @@ orientation target, the both-nonzero lead branch, and the right-zero `divX`
 orientation target. -/
 theorem
     posComboNoCommonSuccDegreeRootCountAbove_of_residualPrec_bothNonzero_divX_prec
-    (hresPrec : PosComboNoCommonSuccDegreeRootCountResidualPrecStatement)
-    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement :=
+    (hresPrec : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 = 0 →
+        g.coeff 0 ≠ 0 →
+        Prec f g))
+    (hboth : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2))
+    (hdivX : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 = 0 →
+        Prec (g.divX) f)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   posComboNoCommonSuccDegreeRootCountAbove_of_residual_bothNonzero_divX_prec
     hboth hdivX (posComboNoCommonSuccDegreeRootCountResidual_of_prec hresPrec)
 
@@ -6535,10 +8692,57 @@ target, the both-nonzero lead branch, and the right-zero `divX` orientation
 target. -/
 theorem
     posComboNoCommonSuccDegreeRootCrossing_of_residualPrec_bothNonzero_divX_prec
-    (hresPrec : PosComboNoCommonSuccDegreeRootCountResidualPrecStatement)
-    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement) :
-    PosComboNoCommonSuccDegreeRootCrossingNonnegStatement :=
+    (hresPrec : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 = 0 →
+        g.coeff 0 ≠ 0 →
+        Prec f g))
+    (hboth : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2))
+    (hdivX : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 = 0 →
+        Prec (g.divX) f)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)) :=
   posComboNoCommonSuccDegreeRootCrossing_of_residual_bothNonzero_divX_prec
     hboth hdivX (posComboNoCommonSuccDegreeRootCountResidual_of_prec hresPrec)
 
@@ -6918,7 +9122,21 @@ private lemma count_below_pair_triple_of_succ_bounds
 /-- Degree-two base case for the lower-threshold succ-degree root-count
 formulation, reduced to the quadratic/cubic root-order leaf. -/
 theorem succDegreeRootCount_of_posCombo_natDegree_eq_two_of_rootBounds
-    (hbound : SuccDegreeQuadraticCubicRootBoundsStatement)
+    (hbound : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 2 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b p q r : ℝ,
+          a ≤ b →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b} →
+          g.roots = {p, q, r} →
+          p ≤ a ∧ q ≤ b ∧ a ≤ r))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfg : PosComboRealRooted f g)
@@ -6942,7 +9160,21 @@ theorem succDegreeRootCount_of_posCombo_natDegree_eq_two_of_rootBounds
 /-- Degree-two base case for the upper-threshold succ-degree root-count
 formulation, reduced to the quadratic/cubic root-order leaf. -/
 theorem succDegreeRootCountAbove_of_posCombo_natDegree_eq_two_of_rootBounds
-    (hbound : SuccDegreeQuadraticCubicRootBoundsStatement)
+    (hbound : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 2 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b p q r : ℝ,
+          a ≤ b →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b} →
+          g.roots = {p, q, r} →
+          p ≤ a ∧ q ≤ b ∧ a ≤ r))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfg : PosComboRealRooted f g)
@@ -6961,7 +9193,21 @@ theorem succDegreeRootCountAbove_of_posCombo_natDegree_eq_two_of_rootBounds
 /-- Compatible-pair degree-two no-gap base, reduced to the quadratic/cubic
 root-order leaf. -/
 theorem compatibleSuccDegreeRootCountAboveNoGapTwo_of_natDegree_eq_two_of_rootBounds
-    (hbound : SuccDegreeQuadraticCubicRootBoundsStatement)
+    (hbound : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 2 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b p q r : ℝ,
+          a ≤ b →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b} →
+          g.roots = {p, q, r} →
+          p ≤ a ∧ q ≤ b ∧ a ≤ r))
     {f g : ℝ[X]}
     (hcomp : Compatible f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
@@ -6980,7 +9226,21 @@ theorem compatibleSuccDegreeRootCountAboveNoGapTwo_of_natDegree_eq_two_of_rootBo
 /-- Compatible-pair no-gap base through lower endpoint degree two, reduced to
 the quadratic/cubic root-order leaf. -/
 theorem compatibleSuccDegreeRootCountAboveNoGapTwo_of_natDegree_le_two_of_rootBounds
-    (hbound : SuccDegreeQuadraticCubicRootBoundsStatement)
+    (hbound : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 2 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b p q r : ℝ,
+          a ≤ b →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b} →
+          g.roots = {p, q, r} →
+          p ≤ a ∧ q ≤ b ∧ a ≤ r))
     {f g : ℝ[X]}
     (hcomp : Compatible f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
@@ -7000,9 +9260,54 @@ theorem compatibleSuccDegreeRootCountAboveNoGapTwo_of_natDegree_le_two_of_rootBo
 /-- The three quadratic/cubic obstruction leaves close the compatible
 succ-degree exact no-gap base through lower endpoint degree two. -/
 theorem compatibleSuccDegreeRootCountAboveNoGapTwo_of_natDegree_le_two_of_obstructions
-    (hfirst : SuccDegreeQuadraticCubicFirstAboveObstructionStatement)
-    (hsecond : SuccDegreeQuadraticCubicSecondAboveObstructionStatement)
-    (hbelow : SuccDegreeQuadraticCubicFullBelowObstructionStatement)
+    (hfirst : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 2 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b p q r : ℝ,
+          a ≤ b →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b} →
+          g.roots = {p, q, r} →
+          a < p →
+          False))
+    (hsecond : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 2 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b p q r : ℝ,
+          a ≤ b →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b} →
+          g.roots = {p, q, r} →
+          b < q →
+          False))
+    (hbelow : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 2 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b p q r : ℝ,
+          a ≤ b →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b} →
+          g.roots = {p, q, r} →
+          r < a →
+          False))
     {f g : ℝ[X]}
     (hcomp : Compatible f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
@@ -7019,9 +9324,30 @@ theorem compatibleSuccDegreeRootCountAboveNoGapTwo_of_natDegree_le_two_of_obstru
 /-- Pure monic-pencil obstruction leaves close the compatible succ-degree
 exact no-gap base through lower endpoint degree two. -/
 theorem compatibleSuccDegreeRootCountAboveNoGapTwo_of_natDegree_le_two_of_pencil_obstructions
-    (hfirst : QuadraticCubicFirstAbovePencilObstructionStatement)
-    (hsecond : QuadraticCubicSecondAbovePencilObstructionStatement)
-    (hbelow : QuadraticCubicFullBelowPencilObstructionStatement)
+    (hfirst : (∀ ⦃a b p q r : ℝ⦄,
+        a ≤ b →
+        p ≤ q →
+        q ≤ r →
+        a < p →
+        ∃ t : ℝ, 0 < t ∧
+          ¬ (((X - C a) * (X - C b) +
+              C t * ((X - C p) * (X - C q) * (X - C r))) : ℝ[X]).Splits))
+    (hsecond : (∀ ⦃a b p q r : ℝ⦄,
+        a ≤ b →
+        p ≤ q →
+        q ≤ r →
+        b < q →
+        ∃ t : ℝ, 0 < t ∧
+          ¬ (((X - C a) * (X - C b) +
+              C t * ((X - C p) * (X - C q) * (X - C r))) : ℝ[X]).Splits))
+    (hbelow : (∀ ⦃a b p q r : ℝ⦄,
+        a ≤ b →
+        p ≤ q →
+        q ≤ r →
+        r < a →
+        ∃ t : ℝ, 0 < t ∧
+          ¬ (((X - C a) * (X - C b) +
+              C t * ((X - C p) * (X - C q) * (X - C r))) : ℝ[X]).Splits))
     {f g : ℝ[X]}
     (hcomp : Compatible f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
@@ -7154,7 +9480,21 @@ theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_natDegree_le_one
 /-- Low-degree base case for closed-segment endpoint count equality through
 degree two, reduced to the quadratic/cubic root-order leaf. -/
 theorem compatibleSuccDegreeClosedSegmentCountEq_of_natDegree_le_two_of_rootBounds
-    (hbound : SuccDegreeQuadraticCubicRootBoundsStatement)
+    (hbound : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 2 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b p q r : ℝ,
+          a ≤ b →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b} →
+          g.roots = {p, q, r} →
+          p ≤ a ∧ q ≤ b ∧ a ≤ r))
     {f g : ℝ[X]}
     (hcomp : Compatible f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
@@ -7178,9 +9518,54 @@ theorem compatibleSuccDegreeClosedSegmentCountEq_of_natDegree_le_two_of_rootBoun
 /-- The three quadratic/cubic obstruction leaves close the closed-segment
 count-equality base through lower endpoint degree two. -/
 theorem compatibleSuccDegreeClosedSegmentCountEq_of_natDegree_le_two_of_obstructions
-    (hfirst : SuccDegreeQuadraticCubicFirstAboveObstructionStatement)
-    (hsecond : SuccDegreeQuadraticCubicSecondAboveObstructionStatement)
-    (hbelow : SuccDegreeQuadraticCubicFullBelowObstructionStatement)
+    (hfirst : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 2 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b p q r : ℝ,
+          a ≤ b →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b} →
+          g.roots = {p, q, r} →
+          a < p →
+          False))
+    (hsecond : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 2 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b p q r : ℝ,
+          a ≤ b →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b} →
+          g.roots = {p, q, r} →
+          b < q →
+          False))
+    (hbelow : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 2 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b p q r : ℝ,
+          a ≤ b →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b} →
+          g.roots = {p, q, r} →
+          r < a →
+          False))
     {f g : ℝ[X]}
     (hcomp : Compatible f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
@@ -7197,9 +9582,30 @@ theorem compatibleSuccDegreeClosedSegmentCountEq_of_natDegree_le_two_of_obstruct
 /-- Pure monic-pencil obstruction leaves close the closed-segment
 count-equality base through lower endpoint degree two. -/
 theorem compatibleSuccDegreeClosedSegmentCountEq_of_natDegree_le_two_of_pencil_obstructions
-    (hfirst : QuadraticCubicFirstAbovePencilObstructionStatement)
-    (hsecond : QuadraticCubicSecondAbovePencilObstructionStatement)
-    (hbelow : QuadraticCubicFullBelowPencilObstructionStatement)
+    (hfirst : (∀ ⦃a b p q r : ℝ⦄,
+        a ≤ b →
+        p ≤ q →
+        q ≤ r →
+        a < p →
+        ∃ t : ℝ, 0 < t ∧
+          ¬ (((X - C a) * (X - C b) +
+              C t * ((X - C p) * (X - C q) * (X - C r))) : ℝ[X]).Splits))
+    (hsecond : (∀ ⦃a b p q r : ℝ⦄,
+        a ≤ b →
+        p ≤ q →
+        q ≤ r →
+        b < q →
+        ∃ t : ℝ, 0 < t ∧
+          ¬ (((X - C a) * (X - C b) +
+              C t * ((X - C p) * (X - C q) * (X - C r))) : ℝ[X]).Splits))
+    (hbelow : (∀ ⦃a b p q r : ℝ⦄,
+        a ≤ b →
+        p ≤ q →
+        q ≤ r →
+        r < a →
+        ∃ t : ℝ, 0 < t ∧
+          ¬ (((X - C a) * (X - C b) +
+              C t * ((X - C p) * (X - C q) * (X - C r))) : ℝ[X]).Splits))
     {f g : ℝ[X]}
     (hcomp : Compatible f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
@@ -7217,7 +9623,15 @@ theorem compatibleSuccDegreeClosedSegmentCountEq_of_natDegree_le_two_of_pencil_o
 /-- The exact no-gap-two upper-count leaf closes the low-degree closed-segment
 endpoint count-equality base. -/
 theorem compatibleSuccDegreeClosedSegmentCountEq_of_natDegree_le_two_of_noGapTwo
-    (hgap : CompatibleSuccDegreeRootCountAboveNoGapTwoStatement)
+    (hgap : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2))
     {f g : ℝ[X]}
     (hcomp : Compatible f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
@@ -7243,8 +9657,25 @@ endpoint count equality.  The root-count leaf bounds the endpoint upper-count
 difference by one in both directions, while the no-crossing hypothesis forces
 that difference to be even. -/
 theorem compatibleSuccDegreeClosedSegmentCountEq_of_nonRoot
-    (hcount : CompatibleSuccDegreeRootCountAboveNonRootStatement) :
-    CompatibleSuccDegreeClosedSegmentCountEqStatement := by
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card) := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hseg
   obtain ⟨hfg_le, hgf_le⟩ :=
     hcount hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
@@ -7256,8 +9687,24 @@ theorem compatibleSuccDegreeClosedSegmentCountEq_of_nonRoot
 degree at least two this is the derivative induction step, while degrees zero
 and one are handled by the explicit low-degree bases. -/
 theorem compatibleSuccDegreeRootCountAboveLeTwo_of_nonRoot
-    (hcount : CompatibleSuccDegreeRootCountAboveNonRootStatement) :
-    CompatibleSuccDegreeRootCountAboveLeTwoStatement := by
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 2) := by
   intro f g hcomp hf_pos hg_pos hdeg hf_split x _hxf _hxg
   by_cases hfdeg : 2 ≤ f.natDegree
   · exact compatibleSuccDegreeRootCountAbove_le_two_of_derivative
@@ -7275,8 +9722,24 @@ degree: low degrees are explicit, while degree at least two uses derivative
 induction for the gap-at-most-two bound and the no-gap hypothesis to rule out
 the remaining exact gap. -/
 theorem compatibleSuccDegreeRootCountAboveNonRoot_of_noGapTwo
-    (hgap : CompatibleSuccDegreeRootCountAboveNoGapTwoStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement := by
+    (hgap : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) := by
   have hmain :
       ∀ n : ℕ, ∀ {f g : ℝ[X]},
         f.natDegree = n →
@@ -7335,24 +9798,76 @@ theorem compatibleSuccDegreeRootCountAboveNonRoot_of_noGapTwo
 /-- The closed-segment no-gap-two theorem closes the compatible succ-degree
 common-non-root upper root-count leaf. -/
 theorem compatibleSuccDegreeRootCountAboveNonRoot_of_closedSegment
-    (hclosed : CompatibleSuccDegreeClosedSegmentNoGapTwoStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement :=
+    (hclosed : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   compatibleSuccDegreeRootCountAboveNonRoot_of_noGapTwo
     (compatibleSuccDegreeRootCountAboveNoGapTwo_of_closedSegment hclosed)
 
 /-- Closed-segment endpoint count equality closes the compatible succ-degree
 common-non-root upper root-count leaf. -/
 theorem compatibleSuccDegreeRootCountAboveNonRoot_of_closedSegmentCountEq
-    (hcount : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   compatibleSuccDegreeRootCountAboveNonRoot_of_closedSegment
     (compatibleSuccDegreeClosedSegmentNoGapTwo_of_countEq hcount)
 
 /-- The closed-segment endpoint count-equality target is equivalent to the
 compatible common-non-root upper root-count leaf. -/
 theorem compatibleSuccDegreeClosedSegmentCountEq_iff_nonRoot :
-    CompatibleSuccDegreeClosedSegmentCountEqStatement ↔
-      CompatibleSuccDegreeRootCountAboveNonRootStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card) ↔
+      (∀ ⦃f g : ℝ[X]⦄,
+          Compatible f g →
+          HasPosLeadingCoeff f →
+          HasPosLeadingCoeff g →
+          g.natDegree = f.natDegree + 1 →
+          f.Splits →
+          ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+            ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+            ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   ⟨compatibleSuccDegreeRootCountAboveNonRoot_of_closedSegmentCountEq,
     compatibleSuccDegreeClosedSegmentCountEq_of_nonRoot⟩
 
@@ -7360,80 +9875,267 @@ theorem compatibleSuccDegreeClosedSegmentCountEq_iff_nonRoot :
 succ-degree common-non-root upper root-count leaf used by the repaired #42
 pair-interleaver route. -/
 theorem posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_closedSegmentCountEq
-    (hcount : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_compatible
     (compatibleSuccDegreeRootCountAboveNonRoot_of_closedSegmentCountEq hcount)
 
 /-- Closed-segment no-gap-two supplies the positive-combo succ-degree
 common-non-root upper root-count leaf. -/
 theorem posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_closedSegmentNoGapTwo
-    (hclosed : CompatibleSuccDegreeClosedSegmentNoGapTwoStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement :=
+    (hclosed : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_compatible
     (compatibleSuccDegreeRootCountAboveNonRoot_of_closedSegment hclosed)
 
 /-- The right-pencil no-gap-two theorem closes the compatible succ-degree
 common-non-root upper root-count leaf. -/
 theorem compatibleSuccDegreeRootCountAboveNonRoot_of_rightFamily
-    (hright : CompatibleSuccDegreeRightFamilyNoGapTwoStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement :=
+    (hright : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {μ : ℝ}, 0 ≤ μ → ¬ (f + C μ * g).IsRoot x) →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   compatibleSuccDegreeRootCountAboveNonRoot_of_noGapTwo
     (compatibleSuccDegreeRootCountAboveNoGapTwo_of_rightFamily hright)
 
 /-- The endpoint-sign no-gap-two theorem closes the compatible succ-degree
 common-non-root upper root-count leaf. -/
 theorem compatibleSuccDegreeRootCountAboveNonRoot_of_endpointSign
-    (hsign : CompatibleSuccDegreeEndpointSignNoGapTwoStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement :=
+    (hsign : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   compatibleSuccDegreeRootCountAboveNonRoot_of_noGapTwo
     (compatibleSuccDegreeRootCountAboveNoGapTwo_of_endpointSign hsign)
 
 /-- The lower-threshold endpoint-sign no-gap theorem closes the compatible
 succ-degree common-non-root upper root-count leaf. -/
 theorem compatibleSuccDegreeRootCountAboveNonRoot_of_endpointSignLower
-    (hlower : CompatibleSuccDegreeEndpointSignLowerNoGapStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement :=
+    (hlower : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≠ 3 ∧
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≠ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   compatibleSuccDegreeRootCountAboveNonRoot_of_noGapTwo
     (compatibleSuccDegreeRootCountAboveNoGapTwo_of_endpointSignLower hlower)
 
 /-- The exact lower-count endpoint comparison closes the compatible
 succ-degree common-non-root upper root-count leaf. -/
 theorem compatibleSuccDegreeRootCountAboveNonRoot_of_lowerCountEq
-    (hcount : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
-    CompatibleSuccDegreeRootCountAboveNonRootStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   compatibleSuccDegreeRootCountAboveNonRoot_of_noGapTwo
     (compatibleSuccDegreeRootCountAboveNoGapTwo_of_lowerCountEq hcount)
 
 /-- Right-pencil no-gap-two supplies the positive-combo succ-degree
 common-non-root upper root-count leaf. -/
 theorem posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_rightFamilyNoGapTwo
-    (hright : CompatibleSuccDegreeRightFamilyNoGapTwoStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement :=
+    (hright : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {μ : ℝ}, 0 ≤ μ → ¬ (f + C μ * g).IsRoot x) →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_compatible
     (compatibleSuccDegreeRootCountAboveNonRoot_of_rightFamily hright)
 
 /-- Endpoint-sign no-gap-two supplies the positive-combo succ-degree
 common-non-root upper root-count leaf. -/
 theorem posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_endpointSignNoGapTwo
-    (hsign : CompatibleSuccDegreeEndpointSignNoGapTwoStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement :=
+    (hsign : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_compatible
     (compatibleSuccDegreeRootCountAboveNonRoot_of_endpointSign hsign)
 
 /-- Lower endpoint-sign no-gap supplies the positive-combo succ-degree
 common-non-root upper root-count leaf. -/
 theorem posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_endpointSignLower
-    (hlower : CompatibleSuccDegreeEndpointSignLowerNoGapStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement :=
+    (hlower : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≠ 3 ∧
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≠ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_compatible
     (compatibleSuccDegreeRootCountAboveNonRoot_of_endpointSignLower hlower)
 
 /-- Exact lower-count endpoint comparison supplies the positive-combo
 succ-degree common-non-root upper root-count leaf. -/
 theorem posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_lowerCountEq
-    (hcount : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
-    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1) :=
   posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_compatible
     (compatibleSuccDegreeRootCountAboveNonRoot_of_lowerCountEq hcount)
 
@@ -7620,9 +10322,51 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_two
 /-- Degree-`≤ 3` no-common endpoint from cubic same-degree and succ-degree
 endpoints. -/
 theorem posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_three_of_cubicInterior
-    (hbelow : CubicInteriorTwoBelowStatement)
-    (habove : CubicInteriorTwoAboveStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+    (hbelow : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          q < a →
+          a ≤ r →
+          False))
+    (habove : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          a ≤ r →
+          r < b →
+          False))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -7644,9 +10388,51 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_three_of_cubicI
 /-- Degree-`≤ 3` no-common endpoint naming both the cubic same-degree and
 succ-degree branches. -/
 theorem posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_three_and_succDegree
-    (hbelow : CubicInteriorTwoBelowStatement)
-    (habove : CubicInteriorTwoAboveStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+    (hbelow : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          q < a →
+          a ≤ r →
+          False))
+    (habove : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.Splits →
+        g.Splits →
+        f.natDegree = 3 →
+        g.natDegree = 3 →
+        PosComboRealRooted f g →
+        ∀ a b c p q r : ℝ,
+          a ≤ b →
+          b ≤ c →
+          p ≤ q →
+          q ≤ r →
+          f.roots = {a, b, c} →
+          g.roots = {p, q, r} →
+          a ≤ r →
+          r < b →
+          False))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -7724,8 +10510,28 @@ theorem rootCrossing_of_listInterlaces {ss rs : List ℝ}
 /-- The fixed-orientation succ-degree statement implies the descending-root
 crossing endpoint. -/
 theorem posComboNoCommonSuccDegreeRootCrossing_of_orientation
-    (hsucc : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
-    PosComboNoCommonSuccDegreeRootCrossingNonnegStatement := by
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hdeg hno _
   have hprec : Prec f g := hsucc hf_pos hg_pos hfnn hgnn hfg hdeg hno
   obtain ⟨hf, hg, ss, rs, hss_pw, hrs_pw, hss_eq, hrs_eq, hshape⟩ := hprec
@@ -7752,17 +10558,50 @@ theorem posComboNoCommonSuccDegreeRootCrossing_of_orientation
 /-- **Decomposition of milestone B2 into its two honest remaining pieces.**
 
 The succ-degree slot-data statement follows from left-endpoint real-rootedness
-of `f` (`PosComboSuccDegreeLeftSplitsNonnegStatement`) together with the
+of `f` (the succ-degree left-splits nonnegativity statement) together with the
 descending-root crossing inequalities
-(`PosComboNoCommonSuccDegreeRootCrossingNonnegStatement`); the combinatorial
+(the succ-degree no-common root-crossing nonnegativity statement); the
+combinatorial
 step is discharged by `rootSlotInterval_inter_nonempty_of_crossing`. Via
 `posComboNoCommonSuccDegreeSlotData_iff_pairHasCommonInterleaver` this reduces
 the corrected common-right-interleaver target for milestone B2 (#42) to these
 two analytic statements. -/
 theorem posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_rootCrossing
-    (hsplit : PosComboSuccDegreeLeftSplitsNonnegStatement)
-    (hcross : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    PosComboNoCommonSuccDegreeSlotDataNonnegStatement := by
+    (hsplit : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits))
+    (hcross : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (f ≠ 0 ∧ f.Splits) ∧
+          ∀ j, j < f.natDegree + 1 →
+            ∀ (hjf : j < (rootSeqDesc f).length + 1)
+              (hjg : j < (rootSeqDesc g).length + 1),
+              (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+                rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
   have hf_split : f.Splits := hsplit hf_pos hg_pos hfnn hgnn hfg hsucc
   have hg_split : g.Splits :=
@@ -7784,17 +10623,69 @@ theorem posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_rootCrossing
 left-endpoint real-rootedness and the succ-degree descending-root crossing
 inequalities. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_leftSplits_and_rootCrossing
-    (hsplit : PosComboSuccDegreeLeftSplitsNonnegStatement)
-    (hcross : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (hsplit : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits))
+    (hcross : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   succDegreePairHasCommonInterleaver_nonneg_of_slotData
     (posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_rootCrossing hsplit hcross)
 
 /-- Succ-degree slot data from the unconditional root-continuity left endpoint
 and the descending-root crossing inequalities. -/
 theorem posComboNoCommonSuccDegreeSlotData_of_rootCrossing
-    (hcross : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
+    (hcross : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (f ≠ 0 ∧ f.Splits) ∧
+          ∀ j, j < f.natDegree + 1 →
+            ∀ (hjf : j < (rootSeqDesc f).length + 1)
+              (hjg : j < (rootSeqDesc g).length + 1),
+              (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+                rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) :=
   posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_rootCrossing
     PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity hcross
 
@@ -7802,61 +10693,234 @@ theorem posComboNoCommonSuccDegreeSlotData_of_rootCrossing
 succ-degree descending-root crossing inequalities alone; root continuity
 supplies the left endpoint. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
-    (hcross : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (hcross : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   succDegreePairHasCommonInterleaver_nonneg_of_slotData
     (posComboNoCommonSuccDegreeSlotData_of_rootCrossing hcross)
 
 /-- Succ-degree slot data from the lower-threshold root-count formulation. -/
 theorem posComboNoCommonSuccDegreeSlotData_of_rootCount
-    (hcount : PosComboNoCommonSuccDegreeRootCountNonnegStatement) :
-    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (f ≠ 0 ∧ f.Splits) ∧
+          ∀ j, j < f.natDegree + 1 →
+            ∀ (hjf : j < (rootSeqDesc f).length + 1)
+              (hjg : j < (rootSeqDesc g).length + 1),
+              (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+                rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) :=
   posComboNoCommonSuccDegreeSlotData_of_rootCrossing
     (posComboNoCommonSuccDegreeRootCrossing_of_rootCount hcount)
 
 /-- The corrected succ-degree pair-interleaver endpoint follows directly from
 the lower-threshold root-count formulation. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_rootCount
-    (hcount : PosComboNoCommonSuccDegreeRootCountNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   succDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
     (posComboNoCommonSuccDegreeRootCrossing_of_rootCount hcount)
 
 /-- Succ-degree slot data from the upper-threshold root-count formulation. -/
 theorem posComboNoCommonSuccDegreeSlotData_of_rootCountAbove
-    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement) :
-    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (f ≠ 0 ∧ f.Splits) ∧
+          ∀ j, j < f.natDegree + 1 →
+            ∀ (hjf : j < (rootSeqDesc f).length + 1)
+              (hjg : j < (rootSeqDesc g).length + 1),
+              (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+                rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) :=
   posComboNoCommonSuccDegreeSlotData_of_rootCrossing
     (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove hcount)
 
 /-- The corrected succ-degree pair-interleaver endpoint follows directly from
 the upper-threshold root-count formulation. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove
-    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   succDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
     (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove hcount)
 
 /-- Succ-degree slot data from the common-non-root upper-threshold root-count
 formulation. -/
 theorem posComboNoCommonSuccDegreeSlotData_of_nonRoot
-    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
-    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (f ≠ 0 ∧ f.Splits) ∧
+          ∀ j, j < f.natDegree + 1 →
+            ∀ (hjf : j < (rootSeqDesc f).length + 1)
+              (hjg : j < (rootSeqDesc g).length + 1),
+              (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+                rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) :=
   posComboNoCommonSuccDegreeSlotData_of_rootCountAbove
     (posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot hcount)
 
 /-- Succ-degree slot data from the common-non-root upper-threshold root-count
 formulation, with an explicit name for the `rootCountAboveNonRoot` leaf. -/
 theorem posComboNoCommonSuccDegreeSlotData_of_rootCountAboveNonRoot
-    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
-    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (f ≠ 0 ∧ f.Splits) ∧
+          ∀ j, j < f.natDegree + 1 →
+            ∀ (hjf : j < (rootSeqDesc f).length + 1)
+              (hjg : j < (rootSeqDesc g).length + 1),
+              (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+                rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) :=
   posComboNoCommonSuccDegreeSlotData_of_nonRoot hcount
 
 /-- The repaired succ-degree pair-interleaver endpoint follows from the
 common-non-root upper-threshold root-count formulation. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_nonRoot
-    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   succDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove
     (posComboNoCommonSuccDegreeRootCountAbove_of_nonRoot hcount)
 
@@ -7864,89 +10928,324 @@ theorem succDegreePairHasCommonInterleaver_nonneg_of_nonRoot
 common-non-root upper-threshold root-count formulation, with an explicit name
 for the `rootCountAboveNonRoot` leaf. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot
-    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   succDegreePairHasCommonInterleaver_nonneg_of_nonRoot hcount
 
 /-- Closed-segment endpoint count equality supplies the repaired succ-degree
 #42 pair-interleaver endpoint. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_closedSegmentCountEq
-    (hcount : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   succDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot
     (posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_closedSegmentCountEq hcount)
 
 /-- Closed-segment no-gap-two supplies the repaired succ-degree #42
 pair-interleaver endpoint. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_closedSegmentNoGapTwo
-    (hclosed : CompatibleSuccDegreeClosedSegmentNoGapTwoStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (hclosed : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
+            ¬ (C (1 - β) * f + C β * g).IsRoot x) →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   succDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot
     (posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_closedSegmentNoGapTwo hclosed)
 
 /-- Right-pencil no-gap-two supplies the repaired succ-degree #42
 pair-interleaver endpoint. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_rightFamilyNoGapTwo
-    (hright : CompatibleSuccDegreeRightFamilyNoGapTwoStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (hright : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          (∀ {μ : ℝ}, 0 ≤ μ → ¬ (f + C μ * g).IsRoot x) →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   succDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot
     (posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_rightFamilyNoGapTwo hright)
 
 /-- Endpoint-sign no-gap-two supplies the repaired succ-degree #42
 pair-interleaver endpoint. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_endpointSignNoGapTwo
-    (hsign : CompatibleSuccDegreeEndpointSignNoGapTwoStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (hsign : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≠ 2 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≠ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   succDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot
     (posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_endpointSignNoGapTwo hsign)
 
 /-- Lower endpoint-sign no-gap supplies the repaired succ-degree #42
 pair-interleaver endpoint. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_endpointSignLower
-    (hlower : CompatibleSuccDegreeEndpointSignLowerNoGapStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (hlower : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≠ 3 ∧
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≠ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   succDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot
     (posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_endpointSignLower hlower)
 
 /-- Exact lower-count endpoint comparison supplies the repaired succ-degree
 #42 pair-interleaver endpoint. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_lowerCountEq
-    (hcount : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   succDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot
     (posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_lowerCountEq hcount)
 
 /-- Succ-degree slot data from the lower common-non-root root-count
 formulation. -/
 theorem posComboNoCommonSuccDegreeSlotData_of_rootCountNonRoot
-    (hcount : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
-    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (f ≠ 0 ∧ f.Splits) ∧
+          ∀ j, j < f.natDegree + 1 →
+            ∀ (hjf : j < (rootSeqDesc f).length + 1)
+              (hjg : j < (rootSeqDesc g).length + 1),
+              (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+                rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) :=
   posComboNoCommonSuccDegreeSlotData_of_rootCount
     (posComboNoCommonSuccDegreeRootCount_of_rootCountNonRoot hcount)
 
 /-- The repaired succ-degree pair-interleaver endpoint follows from the lower
 common-non-root root-count formulation. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_rootCountNonRoot
-    (hcount : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (hcount : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   succDegreePairHasCommonInterleaver_nonneg_of_rootCount
     (posComboNoCommonSuccDegreeRootCount_of_rootCountNonRoot hcount)
 
 /-- Succ-degree slot data from the two lower-threshold constant-term
 root-count branches. -/
 theorem posComboNoCommonSuccDegreeSlotData_of_residual_and_lead
-    (hlead : PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement)
-    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
-    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
+    (hlead : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2))
+    (hres : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 = 0 →
+        g.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (f ≠ 0 ∧ f.Splits) ∧
+          ∀ j, j < f.natDegree + 1 →
+            ∀ (hjf : j < (rootSeqDesc f).length + 1)
+              (hjg : j < (rootSeqDesc g).length + 1),
+              (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+                rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) :=
   posComboNoCommonSuccDegreeSlotData_of_rootCount
     (posComboNoCommonSuccDegreeRootCount_of_residual_and_lead hlead hres)
 
 /-- The repaired succ-degree pair-interleaver endpoint follows from the two
 lower-threshold constant-term root-count branches. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_residual_and_lead
-    (hlead : PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement)
-    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (hlead : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2))
+    (hres : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 = 0 →
+        g.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   succDegreePairHasCommonInterleaver_nonneg_of_rootCount
     (posComboNoCommonSuccDegreeRootCount_of_residual_and_lead hlead hres)
 
@@ -7954,10 +11253,55 @@ theorem succDegreePairHasCommonInterleaver_nonneg_of_residual_and_lead
 residual branch, the both-nonzero lead branch, and the right-zero `divX`
 orientation target. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_residual_bothNonzero_divX_prec
-    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement)
-    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (hboth : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2))
+    (hdivX : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 = 0 →
+        Prec (g.divX) f))
+    (hres : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 = 0 →
+        g.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   succDegreePairHasCommonInterleaver_nonneg_of_rootCount
     (posComboNoCommonSuccDegreeRootCount_of_residual_bothNonzero_divX_prec
       hboth hdivX hres)
@@ -7967,10 +11311,53 @@ residual orientation target, the both-nonzero lead branch, and the right-zero
 `divX` orientation target. -/
 theorem
     succDegreePairHasCommonInterleaver_nonneg_of_residualPrec_bothNonzero_divX_prec
-    (hresPrec : PosComboNoCommonSuccDegreeRootCountResidualPrecStatement)
-    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
-    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (hresPrec : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 = 0 →
+        g.coeff 0 ≠ 0 →
+        Prec f g))
+    (hboth : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 ≠ 0 →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2))
+    (hdivX : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 = 0 →
+        Prec (g.divX) f)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   succDegreePairHasCommonInterleaver_nonneg_of_rootCount
     (posComboNoCommonSuccDegreeRootCount_of_residualPrec_bothNonzero_divX_prec
       hresPrec hboth hdivX)
@@ -7978,24 +11365,94 @@ theorem
 /-- Succ-degree slot data from the PF/ASW left-endpoint route and the
 descending-root crossing inequalities. -/
 theorem posComboNoCommonSuccDegreeSlotData_of_forward_asw_and_rootCrossing
-    (hcross : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
+    (hcross : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (f ≠ 0 ∧ f.Splits) ∧
+          ∀ j, j < f.natDegree + 1 →
+            ∀ (hjf : j < (rootSeqDesc f).length + 1)
+              (hjg : j < (rootSeqDesc g).length + 1),
+              (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+                rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) :=
   posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_rootCrossing
     PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw hcross
 
 /-- Succ-degree slot data from the splitting-only ASW target and the
 root-crossing target. -/
 theorem posComboNoCommonSuccDegreeSlotData_of_forward_asw_splits_and_rootCrossing
-    (hcross : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
+    (hcross : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (f ≠ 0 ∧ f.Splits) ∧
+          ∀ j, j < f.natDegree + 1 →
+            ∀ (hjf : j < (rootSeqDesc f).length + 1)
+              (hjg : j < (rootSeqDesc g).length + 1),
+              (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+                rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) :=
   posComboNoCommonSuccDegreeSlotData_of_forward_asw_and_rootCrossing hcross
 
 /-- Succ-degree pair interleavers from the PF/ASW left-endpoint route and the
 descending-root crossing inequalities. -/
 theorem
     succDegreePairHasCommonInterleaver_nonneg_of_forward_asw_and_rootCrossing
-    (hcross : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (hcross : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   succDegreePairHasCommonInterleaver_nonneg_of_leftSplits_and_rootCrossing
     PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw hcross
 
@@ -8003,64 +11460,225 @@ theorem
 root-crossing target. -/
 theorem
     succDegreePairHasCommonInterleaver_nonneg_of_forward_asw_splits_and_rootCrossing
-    (hcross : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (hcross : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   succDegreePairHasCommonInterleaver_nonneg_of_forward_asw_and_rootCrossing hcross
 
 /-- Succ-degree slot data from left-endpoint real-rootedness and the fixed
 orientation.  The orientation supplies the root-crossing inequalities. -/
 theorem posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_orientation
-    (hsplit : PosComboSuccDegreeLeftSplitsNonnegStatement)
-    (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
-    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
+    (hsplit : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits))
+    (horient : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (f ≠ 0 ∧ f.Splits) ∧
+          ∀ j, j < f.natDegree + 1 →
+            ∀ (hjf : j < (rootSeqDesc f).length + 1)
+              (hjg : j < (rootSeqDesc g).length + 1),
+              (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+                rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) :=
   posComboNoCommonSuccDegreeSlotData_of_leftSplits_and_rootCrossing hsplit
     (posComboNoCommonSuccDegreeRootCrossing_of_orientation horient)
 
 /-- The repaired succ-degree pair-interleaver endpoint follows from
 left-endpoint real-rootedness and the fixed orientation. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_leftSplits_and_orientation
-    (hsplit : PosComboSuccDegreeLeftSplitsNonnegStatement)
-    (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (hsplit : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits))
+    (horient : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   succDegreePairHasCommonInterleaver_nonneg_of_leftSplits_and_rootCrossing hsplit
     (posComboNoCommonSuccDegreeRootCrossing_of_orientation horient)
 
 /-- Succ-degree slot data from the PF/ASW left-endpoint route and the fixed
 orientation. -/
 theorem posComboNoCommonSuccDegreeSlotData_of_forward_asw_and_orientation
-    (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
-    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
+    (horient : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (f ≠ 0 ∧ f.Splits) ∧
+          ∀ j, j < f.natDegree + 1 →
+            ∀ (hjf : j < (rootSeqDesc f).length + 1)
+              (hjg : j < (rootSeqDesc g).length + 1),
+              (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+                rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) :=
   posComboNoCommonSuccDegreeSlotData_of_forward_asw_and_rootCrossing
     (posComboNoCommonSuccDegreeRootCrossing_of_orientation horient)
 
 /-- Succ-degree slot data from the splitting-only ASW target and the fixed
 succ-degree orientation. -/
 theorem posComboNoCommonSuccDegreeSlotData_of_forward_asw_splits_and_orientation
-    (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
-    PosComboNoCommonSuccDegreeSlotDataNonnegStatement :=
+    (horient : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (f ≠ 0 ∧ f.Splits) ∧
+          ∀ j, j < f.natDegree + 1 →
+            ∀ (hjf : j < (rootSeqDesc f).length + 1)
+              (hjg : j < (rootSeqDesc g).length + 1),
+              (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+                rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty) :=
   posComboNoCommonSuccDegreeSlotData_of_forward_asw_and_orientation horient
 
 /-- Succ-degree pair interleavers from the PF/ASW left-endpoint route and the
 fixed orientation. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_forward_asw_and_orientation
-    (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (horient : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   succDegreePairHasCommonInterleaver_nonneg_of_forward_asw_and_rootCrossing
     (posComboNoCommonSuccDegreeRootCrossing_of_orientation horient)
 
 /-- Succ-degree pair interleavers from the splitting-only ASW target and the
 fixed orientation. -/
 theorem succDegreePairHasCommonInterleaver_nonneg_of_forward_asw_splits_and_orientation
-    (horient : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement :=
+    (horient : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   succDegreePairHasCommonInterleaver_nonneg_of_forward_asw_and_orientation horient
 
 /-- Honest nonnegative degree-split reduction of the no-common orientation
 problem: it is enough to solve the same-degree branch up to orientation
 alternative and the succ-degree branch in the forced direction. -/
 theorem posComboNoCommonOrientation_of_degreeSplit_and_nonnegCoeffs
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeOrientationNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -8079,8 +11697,24 @@ theorem posComboNoCommonOrientation_of_degreeSplit_and_nonnegCoeffs
 /-- The same honest degree-split reduction also packages the no-common
 all-combinations bridge in the nonnegative regime. -/
 theorem allComboRealRooted_of_degreeSplit_and_nonnegCoeffs
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeOrientationNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -8099,7 +11733,17 @@ theorem allComboRealRooted_of_degreeSplit_and_nonnegCoeffs
 nonnegative-coefficient regime, via `AffineFamily.allComboRealRooted_of_affine_family_nonneg`.
 -/
 theorem allComboRealRooted_of_affineFamilyBridge_and_nonnegCoeffs
-    (haffBridge : PosComboNoCommonAffineFamilyStatement)
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -8127,7 +11771,14 @@ terminal bridge.  If the no-common close-degree positive-combination case
 upgrades to `AllComboRealRooted`, then the same conclusion holds with shared
 roots by peeling common linear factors and multiplying them back. -/
 theorem allComboRealRooted_of_noCommonBridge_ordered
-    (hterminal : PosComboNoCommonToAllComboBridgeStatement)
+    (hterminal : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        AllComboRealRooted f g))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -8169,8 +11820,21 @@ theorem allComboRealRooted_of_noCommonBridge_ordered
 all-combinations target, with common roots handled by
 `allComboRealRooted_of_noCommonBridge_ordered`. -/
 theorem compatibleSuccDegreeAllCombo_of_allComboBridge
-    (hallBridge : PosComboNoCommonToAllComboBridgeStatement) :
-    CompatibleSuccDegreeAllComboStatement := by
+    (hallBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        AllComboRealRooted f g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        AllComboRealRooted f g) := by
   intro f g hcomp hf_pos hg_pos hdeg _hf_split
   exact
     allComboRealRooted_of_noCommonBridge_ordered
@@ -8180,8 +11844,23 @@ theorem compatibleSuccDegreeAllCombo_of_allComboBridge
 /-- The no-common all-combinations bridge also implies the nonnegative
 negative right-pencil target. -/
 theorem compatibleSuccDegreeNegativeRightFamilyNonneg_of_allComboBridge
-    (hallBridge : PosComboNoCommonToAllComboBridgeStatement) :
-    CompatibleSuccDegreeNegativeRightFamilyNonnegStatement :=
+    (hallBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        AllComboRealRooted f g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ μ : ℝ, μ < 0 → (f + C μ * g).Splits) :=
   compatibleSuccDegreeNegativeRightFamilyNonneg_of_allCombo
     (compatibleSuccDegreeAllCombo_of_allComboBridge hallBridge)
 
@@ -8205,7 +11884,17 @@ private lemma prec_or_revPrec_of_allComboRealRooted_ordered
 since `AllComboRealRooted` can be fed into the completed Obreschkoff converse.
 -/
 theorem posComboNoCommonOrientation_of_affineFamilyBridge_and_nonnegCoeffs
-    (haffBridge : PosComboNoCommonAffineFamilyStatement)
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -8310,8 +11999,24 @@ private lemma common_root_reduction_data_of_posCombo_nonneg
 in the nonnegative regime: both same-degree and succ-degree branches are stated
 directly with the common-right-interleaver conclusion needed downstream. -/
 theorem posComboNoCommonPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -8332,8 +12037,24 @@ in the nonnegative regime: the same-degree branch only needs the Obreschkoff
 alternative, while the succ-degree branch only asks for a common interleaver.
 -/
 theorem posComboNoCommonPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -8352,8 +12073,26 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
 discharged by the affine-family bridge.  After this reduction, the only
 remaining local branch is the same-degree common-interleaver statement. -/
 theorem posComboNoCommonPairHasCommonInterleaver_of_sameDegreePair_and_affineFamily_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -8585,8 +12324,24 @@ theorem posComboPairHasCommonInterleaver_nonneg_of_natDegree_le_two
     hf_pos hg_pos hfnn hgnn hfg hfdeg hgdeg
 
 private theorem posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs_ordered
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -8604,8 +12359,24 @@ private theorem posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
     hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
 
 private theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs_ordered
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -8678,8 +12449,24 @@ private theorem allComboRealRooted_of_noCommonBridge_and_nonnegCoeffs_ordered
     lia
 
 private theorem allComboRealRooted_of_degreeSplit_and_nonnegCoeffs_ordered
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeOrientationNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -8735,8 +12522,24 @@ all-combinations result in the nonnegative-coefficient regime. Shared roots are
 factored out until one reaches the terminal no-common quotient, where the
 same-degree alternative or succ-degree orientation hypothesis is applied. -/
 theorem allComboRealRooted_of_posCombo_and_degreeSplit_and_nonnegCoeffs
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeOrientationNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -8754,9 +12557,33 @@ theorem allComboRealRooted_of_posCombo_and_degreeSplit_and_nonnegCoeffs
 nonnegative-coefficient negative right-pencil target by upgrading the
 positive-combination pair to all-combinations real-rootedness. -/
 theorem compatibleSuccDegreeNegativeRightFamilyNonneg_of_degreeSplit
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeOrientationNonnegStatement) :
-    CompatibleSuccDegreeNegativeRightFamilyNonnegStatement := by
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ μ : ℝ, μ < 0 → (f + C μ * g).Splits) := by
   intro f g hcomp hf_pos hg_pos hfnn hgnn _ _ μ _
   have hall : AllComboRealRooted f g :=
     allComboRealRooted_of_posCombo_and_degreeSplit_and_nonnegCoeffs
@@ -8800,8 +12627,24 @@ theorem posComboOrientation_of_allComboRealRooted_and_nonnegCoeffs
 orientation alternative for every positive-combination pair with nonnegative
 coefficients, not just in the terminal no-common case. -/
 theorem posComboOrientation_of_posCombo_and_degreeSplit_and_nonnegCoeffs
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeOrientationNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -8817,7 +12660,17 @@ theorem posComboOrientation_of_posCombo_and_degreeSplit_and_nonnegCoeffs
       hf_pos hg_pos hfnn hgnn hfg hall
 
 private theorem allComboRealRooted_of_affineFamilyBridge_and_nonnegCoeffs_ordered
-    (haffBridge : PosComboNoCommonAffineFamilyStatement)
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -8839,7 +12692,17 @@ all-combinations result in the nonnegative-coefficient regime. Shared roots are
 factored out using the positive-combination recursion, and the bridge is only
 used at the terminal no-common quotient. -/
 theorem allComboRealRooted_of_posCombo_and_affineFamilyBridge_and_nonnegCoeffs
-    (haffBridge : PosComboNoCommonAffineFamilyStatement)
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -8857,8 +12720,26 @@ theorem allComboRealRooted_of_posCombo_and_affineFamilyBridge_and_nonnegCoeffs
 right-pencil target by upgrading the positive-combination pair to
 all-combinations real-rootedness. -/
 theorem compatibleSuccDegreeNegativeRightFamilyNonneg_of_affineFamilyBridge
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
-    CompatibleSuccDegreeNegativeRightFamilyNonnegStatement := by
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ μ : ℝ, μ < 0 → (f + C μ * g).Splits) := by
   intro f g hcomp hf_pos hg_pos hfnn hgnn _ _ μ _
   have hall : AllComboRealRooted f g :=
     allComboRealRooted_of_posCombo_and_affineFamilyBridge_and_nonnegCoeffs
@@ -8870,7 +12751,17 @@ theorem compatibleSuccDegreeNegativeRightFamilyNonneg_of_affineFamilyBridge
 alternative for every positive-combination pair with nonnegative coefficients,
 not just the no-common case. -/
 theorem posComboOrientation_of_affineFamilyBridge_and_nonnegCoeffs
-    (haffBridge : PosComboNoCommonAffineFamilyStatement)
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -8890,7 +12781,17 @@ all-combinations conclusion in the nonnegative-coefficient regime, by first
 recovering the affine-family hypothesis and then running the common-root
 recursion packaged above. -/
 theorem allComboRealRooted_of_posCombo_and_boundaryRightPairOrientation_and_nonnegCoeffs
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement)
+    (hboundary : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃t : ℝ⦄, 0 < t →
+          Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g)))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -8906,8 +12807,26 @@ theorem allComboRealRooted_of_posCombo_and_boundaryRightPairOrientation_and_nonn
 nonnegative-coefficient negative right-pencil target through the affine-family
 bridge. -/
 theorem compatibleSuccDegreeNegativeRightFamilyNonneg_of_boundaryRightPairOrientation
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
-    CompatibleSuccDegreeNegativeRightFamilyNonnegStatement :=
+    (hboundary : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃t : ℝ⦄, 0 < t →
+          Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ μ : ℝ, μ < 0 → (f + C μ * g).Splits) :=
   compatibleSuccDegreeNegativeRightFamilyNonneg_of_affineFamilyBridge
     (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
 
@@ -8915,7 +12834,17 @@ theorem compatibleSuccDegreeNegativeRightFamilyNonneg_of_boundaryRightPairOrient
 the full Obreschkoff orientation alternative for every positive-combination
 pair with nonnegative coefficients. -/
 theorem posComboOrientation_of_boundaryRightPairOrientation_and_nonnegCoeffs
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement)
+    (hboundary : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃t : ℝ⦄, 0 < t →
+          Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g)))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -8931,8 +12860,26 @@ theorem posComboOrientation_of_boundaryRightPairOrientation_and_nonnegCoeffs
 same-degree no-common branch in the nonnegative regime. -/
 theorem
     boundaryRightPairOrientation_implies_sameDegreeOrientationAlternative_nonneg
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
-    PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement :=
+    (hboundary : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃t : ℝ⦄, 0 < t →
+          Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f) :=
   fun {_ _} hf_pos hg_pos hfnn hgnn hfg _ _ =>
     posComboOrientation_of_boundaryRightPairOrientation_and_nonnegCoeffs
       hboundary hf_pos hg_pos hfnn hgnn hfg
@@ -8941,8 +12888,26 @@ theorem
 succ-degree common-interleaver branch in the nonnegative regime. -/
 theorem
     succDegreePairHasCommonInterleaver_nonneg_of_boundaryRightPairOrientation
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
-    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+    (hboundary : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃t : ℝ⦄, 0 < t →
+          Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   intro f g hf_pos hg_pos hfnn hgnn hfg hsucc hno
   have hprec_or :
       Prec f g ∨ Prec g f :=
@@ -8955,8 +12920,22 @@ theorem
 /-- Reduction of no-common orientation to the all-combinations bridge plus
 Obreschkoff converse (`prec_of_allComboRealRooted`). -/
 theorem posComboNoCommonOrientation_of_allComboBridge
-    (hallBridge : PosComboNoCommonToAllComboBridgeStatement) :
-    PosComboNoCommonOrientationStatement := by
+    (hallBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        AllComboRealRooted f g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f) := by
   intro f g hfg hf_pos hg_pos hdeg_lo hdeg_hi hno
   have hall : AllComboRealRooted f g :=
     hallBridge hf_pos hg_pos hfg hdeg_lo hdeg_hi hno
@@ -8967,8 +12946,22 @@ theorem posComboNoCommonOrientation_of_allComboBridge
 /-- Converse reduction: the no-common orientation core immediately yields the
 all-combinations bridge by passing through `allComboRealRooted_of_prec`. -/
 theorem posComboAllComboBridge_of_noCommonOrientation
-    (hstep : PosComboNoCommonOrientationStatement) :
-    PosComboNoCommonToAllComboBridgeStatement :=
+    (hstep : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        AllComboRealRooted f g) :=
   fun _ _ hf_pos hg_pos hfg hdeg_lo hdeg_hi hno =>
     allComboRealRooted_of_prec_or_revPrec <|
     hstep hfg hf_pos hg_pos hdeg_lo hdeg_hi hno
@@ -8976,24 +12969,66 @@ theorem posComboAllComboBridge_of_noCommonOrientation
 /-- The two no-common bridge formulations are equivalent:
 orientation (`Prec f g ∨ Prec g f`) and all-combinations real-rootedness. -/
 theorem posComboNoCommonBridge_iff_orientation :
-    PosComboNoCommonToAllComboBridgeStatement ↔
-      PosComboNoCommonOrientationStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        AllComboRealRooted f g) ↔
+      (∀ ⦃f g : ℝ[X]⦄,
+          PosComboRealRooted f g →
+          HasPosLeadingCoeff f →
+          HasPosLeadingCoeff g →
+          f.natDegree ≤ g.natDegree →
+          g.natDegree ≤ f.natDegree + 1 →
+          (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+          Prec f g ∨ Prec g f) :=
   ⟨posComboNoCommonOrientation_of_allComboBridge,
     posComboAllComboBridge_of_noCommonOrientation⟩
 
 /-- The all-combinations no-common bridge also implies the coefficient-free
 compatible succ-degree orientation target. -/
 theorem compatibleSuccDegreePrec_of_allComboBridge
-    (hallBridge : PosComboNoCommonToAllComboBridgeStatement) :
-    CompatibleSuccDegreePrecStatement :=
+    (hallBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        AllComboRealRooted f g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        Prec f g) :=
   compatibleSuccDegreePrec_of_allCombo
     (compatibleSuccDegreeAllCombo_of_allComboBridge hallBridge)
 
 /-- The all-combinations no-common bridge implies the exact lower-count
 endpoint comparison used by the #42 no-gap reductions. -/
 theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_allComboBridge
-    (hallBridge : PosComboNoCommonToAllComboBridgeStatement) :
-    CompatibleSuccDegreeEndpointSignLowerCountEqStatement :=
+    (hallBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        AllComboRealRooted f g)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          0 < f.eval x * g.eval x →
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1) :=
   compatibleSuccDegreeEndpointSignLowerCountEq_of_allCombo
     (compatibleSuccDegreeAllCombo_of_allComboBridge hallBridge)
 
@@ -9008,7 +13043,11 @@ theorem compatiblePairHasCommonInterleaver_of_posComboOrientation
         HasPosLeadingCoeff g →
         PosComboRealRooted f g →
         Prec f g ∨ Prec g f) :
-    CompatiblePairHasCommonInterleaverStatement :=
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   fun {_ _} hf_pos hg_pos hfg =>
     pairHasCommonInterleaver_of_prec_or_revPrec <|
       horient hf_pos hg_pos (hfg.toPosComboRealRooted hf_pos hg_pos)
@@ -9016,8 +13055,16 @@ theorem compatiblePairHasCommonInterleaver_of_posComboOrientation
 /-- Compatibility-to-common-interleaver reduction through the positive-combo
 bridge. -/
 theorem compatiblePairHasCommonInterleaver_of_posComboPair
-    (hposCombo : PosComboPairHasCommonInterleaverStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
+    (hposCombo : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        PosComboRealRooted f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   fun {_ _} hf_pos hg_pos hfg =>
     hposCombo hf_pos hg_pos
       (hfg.toPosComboRealRooted hf_pos hg_pos)
@@ -9026,7 +13073,14 @@ theorem compatiblePairHasCommonInterleaver_of_posComboPair
 for the current `PosComboRealRooted` pair, then the pair has a common right
 interleaver. -/
 theorem posComboPairHasCommonInterleaver_of_noCommonOrientation_and_degreeBounds
-    (hstep : PosComboNoCommonOrientationStatement)
+    (hstep : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfg : PosComboRealRooted f g)
@@ -9053,9 +13107,23 @@ theorem posComboPairHasCommonInterleaver_of_noCommonOrientation_and_degreeBounds
 for `PosComboRealRooted` pairs, then every positive-leading `PosComboRealRooted`
 pair has a common right interleaver. -/
 theorem posComboPairHasCommonInterleaver_of_noCommonOrientation_and_degreeClose
-    (hstep : PosComboNoCommonOrientationStatement)
-    (hdegClose : PosComboNatDegreeCloseStatement) :
-    PosComboPairHasCommonInterleaverStatement :=
+    (hstep : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hdegClose : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree + 1 ∧
+          g.natDegree ≤ f.natDegree + 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        PosComboRealRooted f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   fun _ _ hf_pos hg_pos hfg =>
     posComboPairHasCommonInterleaver_of_noCommonOrientation_and_degreeBounds
       hstep hf_pos hg_pos hfg (hdegClose hfg)
@@ -9063,9 +13131,23 @@ theorem posComboPairHasCommonInterleaver_of_noCommonOrientation_and_degreeClose
 /-- Pair-bridge reduction through the all-combinations bridge and a separate
 degree-closeness input. -/
 theorem posComboPairHasCommonInterleaver_of_allComboBridge_and_degreeClose
-    (hallBridge : PosComboNoCommonToAllComboBridgeStatement)
-    (hdegClose : PosComboNatDegreeCloseStatement) :
-    PosComboPairHasCommonInterleaverStatement :=
+    (hallBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        AllComboRealRooted f g))
+    (hdegClose : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree + 1 ∧
+          g.natDegree ≤ f.natDegree + 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        PosComboRealRooted f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   posComboPairHasCommonInterleaver_of_noCommonOrientation_and_degreeClose
     (posComboNoCommonOrientation_of_allComboBridge hallBridge)
     hdegClose
@@ -9085,7 +13167,14 @@ theorem posComboNatDegreeClose_of_nonnegCoeffs
 /-- In the nonnegative-coefficient regime, the no-common-roots orientation
 core already implies the full positive-combo pair bridge. -/
 theorem posComboPairHasCommonInterleaver_of_noCommonOrientation_and_nonnegCoeffs
-    (hstep : PosComboNoCommonOrientationStatement)
+    (hstep : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -9098,7 +13187,14 @@ theorem posComboPairHasCommonInterleaver_of_noCommonOrientation_and_nonnegCoeffs
 /-- In the nonnegative-coefficient regime, the all-combinations bridge implies
 the full positive-combo pair bridge. -/
 theorem posComboPairHasCommonInterleaver_of_allComboBridge_and_nonnegCoeffs
-    (hallBridge : PosComboNoCommonToAllComboBridgeStatement)
+    (hallBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        AllComboRealRooted f g))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -9111,7 +13207,17 @@ theorem posComboPairHasCommonInterleaver_of_allComboBridge_and_nonnegCoeffs
 /-- In the nonnegative-coefficient regime, the affine-family bridge already
 implies the full positive-combo pair bridge. -/
 theorem posComboPairHasCommonInterleaver_of_affineFamilyBridge_and_nonnegCoeffs
-    (haffBridge : PosComboNoCommonAffineFamilyStatement)
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -9124,7 +13230,17 @@ theorem posComboPairHasCommonInterleaver_of_affineFamilyBridge_and_nonnegCoeffs
 /-- The boundary-right-pair orientation statement therefore already yields the
 full positive-combo pair bridge in the nonnegative-coefficient regime. -/
 theorem posComboPairHasCommonInterleaver_of_boundaryRightPairOrientation_and_nonnegCoeffs
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement)
+    (hboundary : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃t : ℝ⦄, 0 < t →
+          Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g)))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -9172,8 +13288,24 @@ the nonnegative-coefficient regime. This is the version to use after the
 same-degree orientation alternative is replaced by a common-interleaver target.
 -/
 theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -9188,8 +13320,24 @@ theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
 /-- The honest degree-split package also yields the full positive-combo pair
 bridge in the nonnegative-coefficient regime. -/
 theorem posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -9203,8 +13351,26 @@ theorem posComboPairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
 using the repaired same-degree branch and the affine-family bridge for the
 succ-degree branch. -/
 theorem posComboPairHasCommonInterleaver_of_sameDegreePair_and_affineFamily_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -9233,7 +13399,14 @@ private theorem compatiblePairHasCommonInterleaver_of_nonnegPosComboPairBridge
     (hfg.toPosComboRealRooted hf_pos hg_pos)
 
 private theorem nonnegPosComboPairBridge_of_noCommonOrientation
-    (hstep : PosComboNoCommonOrientationStatement) :
+    (hstep : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f)) :
     ∀ ⦃f g : ℝ[X]⦄,
       HasPosLeadingCoeff f →
       HasPosLeadingCoeff g →
@@ -9246,7 +13419,17 @@ private theorem nonnegPosComboPairBridge_of_noCommonOrientation
       hstep hf_pos hg_pos hfnn hgnn hfg
 
 private theorem nonnegPosComboPairBridge_of_affineFamilyBridge
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
     ∀ ⦃f g : ℝ[X]⦄,
       HasPosLeadingCoeff f →
       HasPosLeadingCoeff g →
@@ -9259,8 +13442,24 @@ private theorem nonnegPosComboPairBridge_of_affineFamilyBridge
       haffBridge hf_pos hg_pos hfnn hgnn hfg
 
 private theorem nonnegPosComboPairBridge_of_pairDegreeSplit
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     ∀ ⦃f g : ℝ[X]⦄,
       HasPosLeadingCoeff f →
       HasPosLeadingCoeff g →
@@ -9275,7 +13474,14 @@ private theorem nonnegPosComboPairBridge_of_pairDegreeSplit
 /-- Compatibility-to-common-interleaver bridge under no-common orientation and
 nonnegative coefficients. -/
 theorem compatiblePairHasCommonInterleaver_of_noCommonOrientation_and_nonnegCoeffs
-    (hstep : PosComboNoCommonOrientationStatement)
+    (hstep : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -9288,7 +13494,14 @@ theorem compatiblePairHasCommonInterleaver_of_noCommonOrientation_and_nonnegCoef
 /-- Compatibility bridge under nonnegative coefficients, reduced to the
 all-combinations bridge. -/
 theorem compatiblePairHasCommonInterleaver_of_allComboBridge_and_nonnegCoeffs
-    (hallBridge : PosComboNoCommonToAllComboBridgeStatement)
+    (hallBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        AllComboRealRooted f g))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -9301,7 +13514,17 @@ theorem compatiblePairHasCommonInterleaver_of_allComboBridge_and_nonnegCoeffs
 /-- Compatibility bridge under nonnegative coefficients, reduced to the
 affine-family bridge. -/
 theorem compatiblePairHasCommonInterleaver_of_affineFamilyBridge_and_nonnegCoeffs
-    (haffBridge : PosComboNoCommonAffineFamilyStatement)
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -9314,7 +13537,17 @@ theorem compatiblePairHasCommonInterleaver_of_affineFamilyBridge_and_nonnegCoeff
 /-- Compatibility bridge under nonnegative coefficients, reduced to the
 boundary-right-pair orientation statement. -/
 theorem compatiblePairHasCommonInterleaver_of_boundaryRightPairOrientation_and_nonnegCoeffs
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement)
+    (hboundary : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃t : ℝ⦄, 0 < t →
+          Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g)))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -9328,8 +13561,24 @@ theorem compatiblePairHasCommonInterleaver_of_boundaryRightPairOrientation_and_n
 repaired degree-split package with common-interleaver conclusions in both
 branches. -/
 theorem compatiblePairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -9342,8 +13591,24 @@ theorem compatiblePairHasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
 /-- Compatibility bridge under nonnegative coefficients, reduced to the honest
 degree-split package. -/
 theorem compatiblePairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -9357,8 +13622,26 @@ theorem compatiblePairHasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
 repaired same-degree branch and the affine-family bridge for the succ-degree
 branch. -/
 theorem compatiblePairHasCommonInterleaver_of_sameDegreePair_and_affineFamily_nonneg
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)))
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -9370,7 +13653,14 @@ theorem compatiblePairHasCommonInterleaver_of_sameDegreePair_and_affineFamily_no
     hf_pos hg_pos hfnn hgnn hfg
 
 private theorem nonnegPairBridge_of_noCommonOrientation
-    (hstep : PosComboNoCommonOrientationStatement) :
+    (hstep : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f)) :
     ∀ ⦃f g : ℝ[X]⦄,
       HasPosLeadingCoeff f →
       HasPosLeadingCoeff g →
@@ -9383,8 +13673,24 @@ private theorem nonnegPairBridge_of_noCommonOrientation
       hstep hf_pos hg_pos hfnn hgnn hfg
 
 private theorem nonnegPairBridge_of_pairDegreeSplit
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     ∀ ⦃f g : ℝ[X]⦄,
       HasPosLeadingCoeff f →
       HasPosLeadingCoeff g →
@@ -9397,7 +13703,17 @@ private theorem nonnegPairBridge_of_pairDegreeSplit
       hsame hsucc hf_pos hg_pos hfnn hgnn hfg
 
 private theorem nonnegPairBridge_of_affineFamilyBridge
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
     ∀ ⦃f g : ℝ[X]⦄,
       HasPosLeadingCoeff f →
       HasPosLeadingCoeff g →
@@ -9570,8 +13886,24 @@ repaired nonnegative-coefficient degree-split package.  This is the shifted
 version whose same-degree input already has the common-right-interleaver
 conclusion, rather than the stronger orientation alternative. -/
 theorem posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
     {f g : ℝ[X]}
     (_hf_rr_ne : f ≠ 0) (hf_rr_splits : f.Splits)
     (_hg_rr_ne : g ≠ 0) (hg_rr_splits : g.Splits)
@@ -9590,8 +13922,24 @@ nonnegative-coefficient degree-split package: shift both polynomials far enough
 to the right so all roots become nonpositive, apply the nonnegative theorem,
 then translate the common interleaver back. -/
 theorem posComboPairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
     {f g : ℝ[X]}
     (_hf_rr_ne : f ≠ 0) (hf_rr_splits : f.Splits)
     (_hg_rr_ne : g ≠ 0) (hg_rr_splits : g.Splits)
@@ -9614,7 +13962,11 @@ private theorem compatiblePairHasCommonInterleaver_of_realRootedPosComboBridge
         HasPosLeadingCoeff g →
         PosComboRealRooted f g →
         ∃ h : ℝ[X], Prec f h ∧ Prec g h) :
-    CompatiblePairHasCommonInterleaverStatement := by
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) := by
   intro f g hf_pos hg_pos hfg
   have hf_rr : (f ≠ 0 ∧ f.Splits) := hfg.isRealRooted_left hf_pos
   have hg_rr : (g ≠ 0 ∧ g.Splits) := hfg.isRealRooted_right hg_pos
@@ -9624,9 +13976,29 @@ private theorem compatiblePairHasCommonInterleaver_of_realRootedPosComboBridge
 /-- Shifted compatibility bridge using the repaired same-degree
 common-interleaver branch directly. -/
 theorem compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   compatiblePairHasCommonInterleaver_of_realRootedPosComboBridge
     (fun {_ _} hf_ne hf_splits hg_ne hg_splits hf_pos hg_pos hfg =>
       posComboPairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
@@ -9635,9 +14007,38 @@ theorem compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
 /-- Shifted compatibility bridge from the concrete slot-data endpoints for the
 same-degree and succ-degree nonnegative branches. -/
 theorem compatiblePairHasCommonInterleaver_of_slotData_via_nonnegShift
-    (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeSlotDataNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ j, j < f.natDegree + 1 →
+          ∀ (hjf : j < (rootSeqDesc f).length + 1)
+            (hjg : j < (rootSeqDesc g).length + 1),
+            (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+              rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (f ≠ 0 ∧ f.Splits) ∧
+          ∀ j, j < f.natDegree + 1 →
+            ∀ (hjf : j < (rootSeqDesc f).length + 1)
+              (hjg : j < (rootSeqDesc g).length + 1),
+              (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+                rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
     (sameDegreePairHasCommonInterleaver_nonneg_of_slotData hsame)
     (succDegreePairHasCommonInterleaver_nonneg_of_slotData hsucc)
@@ -9646,10 +14047,44 @@ theorem compatiblePairHasCommonInterleaver_of_slotData_via_nonnegShift
 nonnegative same-degree and succ-degree branches.  The succ-degree branch also
 needs the left-splitting input that is part of its slot-data decomposition. -/
 theorem compatiblePairHasCommonInterleaver_of_rootCrossing_via_nonnegShift
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsplit : PosComboSuccDegreeLeftSplitsNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsplit : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
     (sameDegreePairHasCommonInterleaver_nonneg_of_rootCrossing hsame)
     (succDegreePairHasCommonInterleaver_nonneg_of_leftSplits_and_rootCrossing
@@ -9658,9 +14093,36 @@ theorem compatiblePairHasCommonInterleaver_of_rootCrossing_via_nonnegShift
 /-- Shifted compatibility bridge from root-crossing formulations alone.  The
 succ-degree left endpoint is supplied by the root-continuity theorem. -/
 theorem compatiblePairHasCommonInterleaver_of_rootCrossing
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   compatiblePairHasCommonInterleaver_of_rootCrossing_via_nonnegShift
     hsame PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity hsucc
 
@@ -9668,9 +14130,34 @@ theorem compatiblePairHasCommonInterleaver_of_rootCrossing
 formulations.  The succ-degree left endpoint is supplied by the
 root-continuity theorem before shifting. -/
 theorem compatiblePairHasCommonInterleaver_of_rootCount
-    (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   compatiblePairHasCommonInterleaver_of_rootCrossing
     (posComboNoCommonSameDegreeRootCrossing_of_rootCount hsame)
     (posComboNoCommonSuccDegreeRootCrossing_of_rootCount hsucc)
@@ -9678,9 +14165,34 @@ theorem compatiblePairHasCommonInterleaver_of_rootCount
 /-- Shifted compatibility bridge from same-degree lower-threshold root counts
 and succ-degree upper-threshold root counts. -/
 theorem compatiblePairHasCommonInterleaver_of_rootCountAbove
-    (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   compatiblePairHasCommonInterleaver_of_rootCrossing
     (posComboNoCommonSameDegreeRootCrossing_of_rootCount hsame)
     (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove hsucc)
@@ -9688,9 +14200,34 @@ theorem compatiblePairHasCommonInterleaver_of_rootCountAbove
 /-- Shifted compatibility bridge from same-degree upper-threshold root counts
 and succ-degree lower-threshold root counts. -/
 theorem compatiblePairHasCommonInterleaver_of_sameRootCountAbove
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   compatiblePairHasCommonInterleaver_of_rootCrossing
     (posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove hsame)
     (posComboNoCommonSuccDegreeRootCrossing_of_rootCount hsucc)
@@ -9698,9 +14235,34 @@ theorem compatiblePairHasCommonInterleaver_of_sameRootCountAbove
 /-- Shifted compatibility bridge from upper-threshold root-count formulations
 in both the same-degree and succ-degree branches. -/
 theorem compatiblePairHasCommonInterleaver_of_rootCountAboveBoth
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   compatiblePairHasCommonInterleaver_of_rootCrossing
     (posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove hsame)
     (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove hsucc)
@@ -9708,9 +14270,34 @@ theorem compatiblePairHasCommonInterleaver_of_rootCountAboveBoth
 /-- Shifted compatibility bridge from common-non-root lower-threshold root-count
 formulations in both branches. -/
 theorem compatiblePairHasCommonInterleaver_of_rootCountNonRoot
-    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   compatiblePairHasCommonInterleaver_of_rootCrossing
     (posComboNoCommonSameDegreeRootCrossing_of_rootCountNonRoot hsame)
     (posComboNoCommonSuccDegreeRootCrossing_of_rootCountNonRoot hsucc)
@@ -9719,9 +14306,34 @@ theorem compatiblePairHasCommonInterleaver_of_rootCountNonRoot
 lower-threshold root counts and succ-degree common-non-root upper-threshold
 root counts. -/
 theorem compatiblePairHasCommonInterleaver_of_rootCountAboveNonRoot
-    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   compatiblePairHasCommonInterleaver_of_rootCrossing
     (posComboNoCommonSameDegreeRootCrossing_of_rootCountNonRoot hsame)
     (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAboveNonRoot hsucc)
@@ -9730,9 +14342,34 @@ theorem compatiblePairHasCommonInterleaver_of_rootCountAboveNonRoot
 upper-threshold root counts and succ-degree common-non-root lower-threshold
 root counts. -/
 theorem compatiblePairHasCommonInterleaver_of_sameRootCountAboveNonRoot
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   compatiblePairHasCommonInterleaver_of_rootCrossing
     (posComboNoCommonSameDegreeRootCrossing_of_rootCountAboveNonRoot hsame)
     (posComboNoCommonSuccDegreeRootCrossing_of_rootCountNonRoot hsucc)
@@ -9740,9 +14377,34 @@ theorem compatiblePairHasCommonInterleaver_of_sameRootCountAboveNonRoot
 /-- Shifted compatibility bridge from common-non-root upper-threshold root-count
 formulations in both branches. -/
 theorem compatiblePairHasCommonInterleaver_of_rootCountAboveBothNonRoot
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   compatiblePairHasCommonInterleaver_of_rootCrossing
     (posComboNoCommonSameDegreeRootCrossing_of_rootCountAboveNonRoot hsame)
     (posComboNoCommonSuccDegreeRootCrossing_of_rootCountAboveNonRoot hsucc)
@@ -9750,18 +14412,72 @@ theorem compatiblePairHasCommonInterleaver_of_rootCountAboveBothNonRoot
 /-- Shifted compatibility bridge from root-crossing formulations, with the
 succ-degree left endpoint supplied by the PF/ASW route. -/
 theorem compatiblePairHasCommonInterleaver_of_rootCrossing_and_forward_asw
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   compatiblePairHasCommonInterleaver_of_rootCrossing_via_nonnegShift
     hsame PosComboSuccDegreeLeftSplitsNonnegStatement_of_forward_asw hsucc
 
 /-- Shifted compatibility bridge from root-crossing formulations, with the
 succ-degree left endpoint supplied by the splitting-only ASW target. -/
 theorem compatiblePairHasCommonInterleaver_of_rootCrossing_and_forward_asw_splits
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   compatiblePairHasCommonInterleaver_of_rootCrossing_and_forward_asw
     hsame hsucc
 
@@ -9770,9 +14486,29 @@ nonnegative-coefficient degree-split package: shift both polynomials far enough
 to the right so all roots become nonpositive, apply the nonnegative theorem,
 then translate the common interleaver back. -/
 theorem compatiblePairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
     (posComboNoCommonSameDegreePairHasCommonInterleaver_of_orientationAlternative_nonneg hsame)
     hsucc
@@ -9781,9 +14517,31 @@ theorem compatiblePairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
 discharged by the affine-family bridge.  This leaves only the same-degree
 orientation alternative as an external hypothesis. -/
 theorem compatiblePairHasCommonInterleaver_of_sameDegreeAlternative_and_affineFamily_via_nonnegShift
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   compatiblePairHasCommonInterleaver_of_degreeSplit_via_nonnegShift
     hsame
     (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
@@ -9792,9 +14550,31 @@ theorem compatiblePairHasCommonInterleaver_of_sameDegreeAlternative_and_affineFa
 discharged by the affine-family bridge and the same-degree branch stated in the
 repaired common-right-interleaver form. -/
 theorem compatiblePairHasCommonInterleaver_of_sameDegreePair_and_affineFamily_via_nonnegShift
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
     hsame
     (posComboNoCommonSuccDegreePairHasCommonInterleaver_of_affineFamily haffBridge)
@@ -9803,7 +14583,17 @@ theorem compatiblePairHasCommonInterleaver_of_sameDegreePair_and_affineFamily_vi
 the positive-leading positive-combination bridge after the nonnegative shift
 reduction, provided the summands are individually real-rooted. -/
 theorem posComboPairHasCommonInterleaver_of_boundaryRightPairOrientation_via_nonnegShift
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement)
+    (hboundary : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃t : ℝ⦄, 0 < t →
+          Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g)))
     {f g : ℝ[X]}
     (hf_rr_ne : f ≠ 0) (hf_rr_splits : f.Splits) (hg_rr_ne : g ≠ 0) (hg_rr_splits : g.Splits)
     (hf_pos : HasPosLeadingCoeff f)
@@ -9821,8 +14611,22 @@ theorem posComboPairHasCommonInterleaver_of_boundaryRightPairOrientation_via_non
 the full positive-leading compatibility bridge after the nonnegative shift
 reduction. -/
 theorem compatiblePairHasCommonInterleaver_of_boundaryRightPairOrientation_via_nonnegShift
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
+    (hboundary : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃t : ℝ⦄, 0 < t →
+          Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g))) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   compatiblePairHasCommonInterleaver_of_sameDegreeAlternative_and_affineFamily_via_nonnegShift
     (boundaryRightPairOrientation_implies_sameDegreeOrientationAlternative_nonneg
       hboundary)
@@ -9831,9 +14635,23 @@ theorem compatiblePairHasCommonInterleaver_of_boundaryRightPairOrientation_via_n
 /-- Compatibility-to-common-interleaver bridge from the reduced positive-combo
 ingredients (no-common orientation + degree closeness). -/
 theorem compatiblePairHasCommonInterleaver_of_noCommonOrientation_and_degreeClose
-    (hstep : PosComboNoCommonOrientationStatement)
-    (hdegClose : PosComboNatDegreeCloseStatement) :
-    CompatiblePairHasCommonInterleaverStatement :=
+    (hstep : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hdegClose : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree + 1 ∧
+          g.natDegree ≤ f.natDegree + 1)) :
+    (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h) :=
   compatiblePairHasCommonInterleaver_of_posComboPair
     (posComboPairHasCommonInterleaver_of_noCommonOrientation_and_degreeClose
       hstep hdegClose)
@@ -9841,7 +14659,11 @@ theorem compatiblePairHasCommonInterleaver_of_noCommonOrientation_and_degreeClos
 /-- Pairwise upgrade using the natural positive-leading two-polynomial bridge. -/
 theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairBridgePos
     {fs : List ℝ[X]}
-    (htwo : CompatiblePairHasCommonInterleaverStatement)
+    (htwo : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
@@ -9855,8 +14677,18 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairBridgePos
 split. -/
 theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_compatibleDegreeSplit
     {fs : List ℝ[X]}
-    (hsame : CompatibleSameDegreePairHasCommonInterleaverStatement)
-    (hsucc : CompatibleSuccDegreePairHasCommonInterleaverStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        g.natDegree = f.natDegree →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        g.natDegree = f.natDegree + 1 →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
@@ -9868,8 +14700,24 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_compatibleDegreeSp
 degree-split package. -/
 theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairDegreeSplit_via_nonnegShift
     {fs : List ℝ[X]}
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
@@ -9882,8 +14730,33 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairDegreeSplit_vi
 into the nonnegative regime. -/
 theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_slotData_via_nonnegShift
     {fs : List ℝ[X]}
-    (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeSlotDataNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ j, j < f.natDegree + 1 →
+          ∀ (hjf : j < (rootSeqDesc f).length + 1)
+            (hjg : j < (rootSeqDesc g).length + 1),
+            (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+              rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (f ≠ 0 ∧ f.Splits) ∧
+          ∀ j, j < f.natDegree + 1 →
+            ∀ (hjf : j < (rootSeqDesc f).length + 1)
+              (hjg : j < (rootSeqDesc g).length + 1),
+              (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+                rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
@@ -9895,9 +14768,39 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_slotData_via_nonne
 pair into the nonnegative regime. -/
 theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCrossing_via_nonnegShift
     {fs : List ℝ[X]}
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsplit : PosComboSuccDegreeLeftSplitsNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsplit : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
@@ -9910,8 +14813,31 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCrossing_via_n
 left endpoint is supplied by root continuity before shifting. -/
 theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCrossing
     {fs : List ℝ[X]}
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
@@ -9921,8 +14847,29 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCrossing
 /-- Pairwise upgrade from lower-threshold root-count formulations. -/
 theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCount
     {fs : List ℝ[X]}
-    (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
@@ -9934,8 +14881,29 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCount
 succ-degree upper-threshold root counts. -/
 theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCountAbove
     {fs : List ℝ[X]}
-    (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
@@ -9947,8 +14915,29 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCountAbove
 succ-degree lower-threshold root counts. -/
 theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_sameRootCountAbove
     {fs : List ℝ[X]}
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
@@ -9960,8 +14949,29 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_sameRootCountAbove
 same-degree and succ-degree branches. -/
 theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCountAboveBoth
     {fs : List ℝ[X]}
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ,
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
@@ -9973,8 +14983,29 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCountAboveBoth
 formulations in both branches. -/
 theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCountNonRoot
     {fs : List ℝ[X]}
-    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
@@ -9987,8 +15018,29 @@ counts and succ-degree common-non-root upper-threshold root counts. -/
 theorem
     pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCountAboveNonRoot
     {fs : List ℝ[X]}
-    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
@@ -10001,8 +15053,29 @@ counts and succ-degree common-non-root lower-threshold root counts. -/
 theorem
     pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_sameRootCountAboveNonRoot
     {fs : List ℝ[X]}
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
+          ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
@@ -10015,8 +15088,29 @@ formulations in both branches. -/
 theorem
     pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCountAboveBothNonRoot
     {fs : List ℝ[X]}
-    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        ∀ x : ℝ, ¬ f.IsRoot x → ¬ g.IsRoot x →
+          ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
+          ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
@@ -10029,8 +15123,31 @@ endpoint supplied by the PF/ASW route before shifting. -/
 theorem
     pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCrossing_and_forward_asw
     {fs : List ℝ[X]}
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
@@ -10044,8 +15161,31 @@ endpoint supplied by the splitting-only ASW target before shifting. -/
 theorem
     pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCrossing_and_forward_asw_splits
     {fs : List ℝ[X]}
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
@@ -10056,8 +15196,24 @@ theorem
 after shifting each pair into the nonnegative regime. -/
 theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_degreeSplit_via_nonnegShift
     {fs : List ℝ[X]}
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
@@ -10071,8 +15227,26 @@ succ-degree branch discharged by the affine-family bridge. -/
 theorem
     pairwiseHasCommonInterleaver_of_pairwiseCompatible_nonnegShift
     {fs : List ℝ[X]}
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
@@ -10086,7 +15260,17 @@ each pair into the nonnegative regime. -/
 theorem
     pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_boundaryRightPairOrientation
     {fs : List ℝ[X]}
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement)
+    (hboundary : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃t : ℝ⦄, 0 < t →
+          Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g)))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs :=
@@ -10122,7 +15306,14 @@ private theorem pairwiseHasCommonInterleaver_of_nonnegPairBridge
 no-common-roots orientation core. -/
 theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_noCommonOrientation_and_nonnegCoeffs
     {fs : List ℝ[X]}
-    (hstep : PosComboNoCommonOrientationStatement)
+    (hstep : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (hpair : PairwiseCompatible fs) :
@@ -10135,8 +15326,24 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_noCommonOrientatio
 degree-split package. -/
 theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairDegreeSplit_and_nonnegCoeffs
     {fs : List ℝ[X]}
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (hpair : PairwiseCompatible fs) :
@@ -10149,8 +15356,24 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairDegreeSplit_an
 degree-split package. -/
 theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_degreeSplit_and_nonnegCoeffs
     {fs : List ℝ[X]}
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (hpair : PairwiseCompatible fs) :
@@ -10163,8 +15386,26 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_degreeSplit_and_no
 same-degree branch and the affine-family bridge for the succ-degree branch. -/
 theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_sameDegreePair_and_affineFamily_nonneg
     {fs : List ℝ[X]}
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement)
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (hpair : PairwiseCompatible fs) :
@@ -10178,7 +15419,14 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_sameDegreePair_and
 all-combinations bridge. -/
 theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_allComboBridge_and_nonnegCoeffs
     {fs : List ℝ[X]}
-    (hallBridge : PosComboNoCommonToAllComboBridgeStatement)
+    (hallBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        AllComboRealRooted f g))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (hpair : PairwiseCompatible fs) :
@@ -10191,7 +15439,17 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_allComboBridge_and
 affine-family bridge. -/
 theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_affineFamilyBridge_and_nonnegCoeffs
     {fs : List ℝ[X]}
-    (haffBridge : PosComboNoCommonAffineFamilyStatement)
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (hpair : PairwiseCompatible fs) :
@@ -10205,7 +15463,17 @@ boundary-right-pair orientation statement. -/
 theorem
     pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_boundaryRightPairOrientation_nonneg
     {fs : List ℝ[X]}
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement)
+    (hboundary : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃t : ℝ⦄, 0 < t →
+          Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g)))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
     (hpair : PairwiseCompatible fs) :
@@ -10321,7 +15589,9 @@ theorem chudnovskySeymour_fourWay_of_pairBridge
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (htwo : CompatiblePairHasCommonRightInterleaverStatement) :
+    (htwo : (∀ ⦃f g : ℝ[X]⦄,
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_pairwiseCommonForward hrr hpos <|
     pairwiseHasCommonInterleaver_of_pairwiseCompatible htwo
@@ -10332,7 +15602,11 @@ theorem chudnovskySeymour_fourWay_of_pairBridgePos
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (htwo : CompatiblePairHasCommonInterleaverStatement) :
+    (htwo : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_pairwiseCommonForward hrr hpos <|
     pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairBridgePos htwo hpos
@@ -10343,8 +15617,18 @@ theorem chudnovskySeymour_fourWay_of_compatibleDegreeSplit
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : CompatibleSameDegreePairHasCommonInterleaverStatement)
-    (hsucc : CompatibleSuccDegreePairHasCommonInterleaverStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        g.natDegree = f.natDegree →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        g.natDegree = f.natDegree + 1 →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_pairBridgePos
     (hrr := hrr) (hpos := hpos)
@@ -10356,8 +15640,24 @@ theorem chudnovskySeymour_fourWay_of_pairDegreeSplit_via_nonnegShift
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_pairBridgePos
     (hrr := hrr) (hpos := hpos)
@@ -10371,8 +15671,33 @@ theorem chudnovskySeymour_fourWay_of_slotData_via_nonnegShift
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeSlotDataNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ j, j < f.natDegree + 1 →
+          ∀ (hjf : j < (rootSeqDesc f).length + 1)
+            (hjg : j < (rootSeqDesc g).length + 1),
+            (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+              rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (f ≠ 0 ∧ f.Splits) ∧
+          ∀ j, j < f.natDegree + 1 →
+            ∀ (hjf : j < (rootSeqDesc f).length + 1)
+              (hjg : j < (rootSeqDesc g).length + 1),
+              (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+                rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty)) :
     ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_pairBridgePos
     (hrr := hrr) (hpos := hpos)
@@ -10385,9 +15710,39 @@ theorem chudnovskySeymour_fourWay_of_rootCrossing_via_nonnegShift
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsplit : PosComboSuccDegreeLeftSplitsNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsplit : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_pairBridgePos
     (hrr := hrr) (hpos := hpos)
@@ -10400,8 +15755,31 @@ theorem chudnovskySeymour_fourWay_of_rootCrossing
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_rootCrossing_via_nonnegShift
     hrr hpos hsame PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity hsucc
@@ -10412,8 +15790,31 @@ theorem chudnovskySeymour_fourWay_of_rootCrossing_and_forward_asw
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_pairBridgePos
     (hrr := hrr) (hpos := hpos)
@@ -10427,8 +15828,31 @@ theorem chudnovskySeymour_fourWay_of_rootCrossing_and_forward_asw_splits
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_rootCrossing_and_forward_asw
     (fs := fs) hrr hpos hsame hsucc
@@ -10440,8 +15864,24 @@ theorem chudnovskySeymour_fourWay_of_degreeSplit_via_nonnegShift
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_pairDegreeSplit_via_nonnegShift
     (fs := fs) hrr hpos
@@ -10456,8 +15896,26 @@ theorem chudnovskySeymour_fourWay_of_sameDegreeAlternative_and_affineFamily_via_
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
     ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_degreeSplit_via_nonnegShift
     (fs := fs) hrr hpos hsame
@@ -10470,7 +15928,17 @@ theorem chudnovskySeymour_fourWay_of_boundaryRightPairOrientation_via_nonnegShif
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    (hboundary : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃t : ℝ⦄, 0 < t →
+          Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g))) :
     ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_sameDegreeAlternative_and_affineFamily_via_nonnegShift
     (fs := fs) hrr hpos
@@ -10484,7 +15952,11 @@ theorem chudnovskySeymour_fourWay_of_posComboBridge
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hposComboBridge : PosComboPairHasCommonInterleaverStatement) :
+    (hposComboBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        PosComboRealRooted f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_pairBridgePos
     (hrr := hrr) (hpos := hpos)
@@ -10496,8 +15968,18 @@ theorem chudnovskySeymour_fourWay_of_noCommonOrientation_and_degreeClose
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hstep : PosComboNoCommonOrientationStatement)
-    (hdegClose : PosComboNatDegreeCloseStatement) :
+    (hstep : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hdegClose : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree + 1 ∧
+          g.natDegree ≤ f.natDegree + 1)) :
     ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_posComboBridge
     (hrr := hrr) (hpos := hpos)
@@ -10528,7 +16010,14 @@ theorem chudnovskySeymour_fourWay_of_noCommonOrientation_and_nonnegCoeffs
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hstep : PosComboNoCommonOrientationStatement) :
+    (hstep : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f)) :
     ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_nonnegPairBridge hrr hpos hnn
     (nonnegPairBridge_of_noCommonOrientation hstep)
@@ -10541,8 +16030,24 @@ theorem chudnovskySeymour_fourWay_of_pairDegreeSplit_and_nonnegCoeffs
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_nonnegPairBridge hrr hpos hnn
     (nonnegPairBridge_of_pairDegreeSplit hsame hsucc)
@@ -10555,8 +16060,24 @@ theorem chudnovskySeymour_fourWay_of_degreeSplit_and_nonnegCoeffs
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_pairDegreeSplit_and_nonnegCoeffs
     (fs := fs) hrr hpos hnn
@@ -10571,8 +16092,26 @@ theorem chudnovskySeymour_fourWay_of_sameDegreePair_and_affineFamily_nonneg
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
     ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_pairDegreeSplit_and_nonnegCoeffs
     (fs := fs) hrr hpos hnn hsame
@@ -10585,7 +16124,14 @@ theorem chudnovskySeymour_fourWay_of_allComboBridge_and_nonnegCoeffs
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hallBridge : PosComboNoCommonToAllComboBridgeStatement) :
+    (hallBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        AllComboRealRooted f g)) :
     ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_noCommonOrientation_and_nonnegCoeffs
     (fs := fs) hrr hpos hnn
@@ -10598,7 +16144,17 @@ theorem chudnovskySeymour_fourWay_of_affineFamilyBridge_and_nonnegCoeffs
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
     ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_nonnegPairBridge hrr hpos hnn
     (nonnegPairBridge_of_affineFamilyBridge haffBridge)
@@ -10610,7 +16166,17 @@ theorem chudnovskySeymour_fourWay_of_boundaryRightPairOrientation_and_nonnegCoef
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    (hboundary : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃t : ℝ⦄, 0 < t →
+          Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g))) :
     ChudnovskySeymourFourWayPackage fs :=
   chudnovskySeymour_fourWay_of_affineFamilyBridge_and_nonnegCoeffs
     (fs := fs) hrr hpos hnn
@@ -10664,7 +16230,11 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_pairBridgePos
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (htwo : CompatiblePairHasCommonInterleaverStatement) :
+    (htwo : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
   pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay <|
     chudnovskySeymour_fourWay_of_pairBridgePos
@@ -10676,8 +16246,18 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_compatibleDegreeSplit
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : CompatibleSameDegreePairHasCommonInterleaverStatement)
-    (hsucc : CompatibleSuccDegreePairHasCommonInterleaverStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        g.natDegree = f.natDegree →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        g.natDegree = f.natDegree + 1 →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
   pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay <|
     chudnovskySeymour_fourWay_of_compatibleDegreeSplit
@@ -10689,8 +16269,24 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_pairDegreeSplit_via_nonne
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
   pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay <|
     chudnovskySeymour_fourWay_of_pairDegreeSplit_via_nonnegShift
@@ -10702,8 +16298,33 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_slotData_via_nonnegShift
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeSlotDataNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ j, j < f.natDegree + 1 →
+          ∀ (hjf : j < (rootSeqDesc f).length + 1)
+            (hjg : j < (rootSeqDesc g).length + 1),
+            (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+              rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (f ≠ 0 ∧ f.Splits) ∧
+          ∀ j, j < f.natDegree + 1 →
+            ∀ (hjf : j < (rootSeqDesc f).length + 1)
+              (hjg : j < (rootSeqDesc g).length + 1),
+              (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+                rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty)) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
   pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay <|
     chudnovskySeymour_fourWay_of_slotData_via_nonnegShift
@@ -10715,9 +16336,39 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_via_nonnegSh
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsplit : PosComboSuccDegreeLeftSplitsNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsplit : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
   pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay <|
     chudnovskySeymour_fourWay_of_rootCrossing_via_nonnegShift
@@ -10729,8 +16380,31 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
   pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_via_nonnegShift
     hrr hpos hsame PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity hsucc
@@ -10741,8 +16415,31 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_and_forward_
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
   pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay <|
     chudnovskySeymour_fourWay_of_rootCrossing_and_forward_asw
@@ -10755,8 +16452,31 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_and_forward_
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
   pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_and_forward_asw
     (fs := fs) hrr hpos hsame hsucc
@@ -10768,8 +16488,24 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_degreeSplit_via_nonnegShi
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
   pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay <|
     chudnovskySeymour_fourWay_of_degreeSplit_via_nonnegShift
@@ -10783,8 +16519,26 @@ theorem
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
   pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay <|
     chudnovskySeymour_fourWay_of_sameDegreeAlternative_and_affineFamily_via_nonnegShift
@@ -10797,7 +16551,17 @@ theorem
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    (hboundary : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃t : ℝ⦄, 0 < t →
+          Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g))) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
   pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay <|
     chudnovskySeymour_fourWay_of_boundaryRightPairOrientation_via_nonnegShift
@@ -10810,7 +16574,11 @@ theorem pairwiseCompatible_iff_familyCompatible_of_pairBridgePos
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (htwo : CompatiblePairHasCommonInterleaverStatement) :
+    (htwo : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
   pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos <|
     (pairwiseCompatible_iff_hasCommonInterleaver_of_pairBridgePos
@@ -10822,8 +16590,18 @@ theorem pairwiseCompatible_iff_familyCompatible_of_compatibleDegreeSplit
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : CompatibleSameDegreePairHasCommonInterleaverStatement)
-    (hsucc : CompatibleSuccDegreePairHasCommonInterleaverStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        g.natDegree = f.natDegree →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        Compatible f g →
+        g.natDegree = f.natDegree + 1 →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
   pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos <|
     (pairwiseCompatible_iff_hasCommonInterleaver_of_compatibleDegreeSplit
@@ -10835,8 +16613,24 @@ theorem pairwiseCompatible_iff_familyCompatible_of_pairDegreeSplit_via_nonnegShi
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
   pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos <|
     (pairwiseCompatible_iff_hasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
@@ -10848,8 +16642,33 @@ theorem pairwiseCompatible_iff_familyCompatible_of_slotData_via_nonnegShift
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeSlotDataNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeSlotDataNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ j, j < f.natDegree + 1 →
+          ∀ (hjf : j < (rootSeqDesc f).length + 1)
+            (hjg : j < (rootSeqDesc g).length + 1),
+            (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+              rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (f ≠ 0 ∧ f.Splits) ∧
+          ∀ j, j < f.natDegree + 1 →
+            ∀ (hjf : j < (rootSeqDesc f).length + 1)
+              (hjg : j < (rootSeqDesc g).length + 1),
+              (rootSlotInterval (rootSeqDesc f) ⟨j, hjf⟩ ∩
+                rootSlotInterval (rootSeqDesc g) ⟨j, hjg⟩).Nonempty)) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
   pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos <|
     (pairwiseCompatible_iff_hasCommonInterleaver_of_slotData_via_nonnegShift
@@ -10861,9 +16680,39 @@ theorem pairwiseCompatible_iff_familyCompatible_of_rootCrossing_via_nonnegShift
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsplit : PosComboSuccDegreeLeftSplitsNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsplit : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        f.Splits))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
   pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos <|
     (pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_via_nonnegShift
@@ -10875,8 +16724,31 @@ theorem pairwiseCompatible_iff_familyCompatible_of_rootCrossing
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
   pairwiseCompatible_iff_familyCompatible_of_rootCrossing_via_nonnegShift
     hrr hpos hsame PosComboSuccDegreeLeftSplitsNonnegStatement_of_rootContinuity hsucc
@@ -10888,8 +16760,31 @@ theorem pairwiseCompatible_iff_familyCompatible_of_rootCrossing_and_forward_asw
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
   pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos <|
     (pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing_and_forward_asw
@@ -10902,8 +16797,31 @@ theorem pairwiseCompatible_iff_familyCompatible_of_rootCrossing_and_forward_asw_
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0)))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        (∀ j, 1 ≤ j → j ≤ f.natDegree →
+            (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < f.natDegree →
+            (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0))) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
   pairwiseCompatible_iff_familyCompatible_of_rootCrossing_and_forward_asw
     (fs := fs) hrr hpos hsame hsucc
@@ -10915,8 +16833,24 @@ theorem pairwiseCompatible_iff_familyCompatible_of_degreeSplit_via_nonnegShift
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
   pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos <|
     (pairwiseCompatible_iff_hasCommonInterleaver_of_degreeSplit_via_nonnegShift
@@ -10930,8 +16864,26 @@ theorem
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
   pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos <|
     (pairwiseCompatible_iff_hasCommonInterleaver_via_nonnegShift
@@ -10943,7 +16895,17 @@ theorem pairwiseCompatible_iff_familyCompatible_of_boundaryRightPairOrientation_
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    (hboundary : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃t : ℝ⦄, 0 < t →
+          Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g))) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
   pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos <|
     (pairwiseCompatible_iff_hasCommonInterleaver_of_boundaryRightPairOrientation_via_nonnegShift
@@ -10975,7 +16937,14 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_noCommonOrientation_and_n
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hstep : PosComboNoCommonOrientationStatement) :
+    (hstep : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f)) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
   pairwiseCompatible_iff_hasCommonInterleaver_of_nonnegPairBridge hrr hpos hnn
     (nonnegPairBridge_of_noCommonOrientation hstep)
@@ -10987,8 +16956,24 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_pairDegreeSplit_and_nonne
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
   pairwiseCompatible_iff_hasCommonInterleaver_of_nonnegPairBridge hrr hpos hnn
     (nonnegPairBridge_of_pairDegreeSplit hsame hsucc)
@@ -11000,8 +16985,24 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_degreeSplit_and_nonnegCoe
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
   pairwiseCompatible_iff_hasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
     (fs := fs) hrr hpos hnn
@@ -11016,8 +17017,26 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_sameDegreePair_and_affine
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
   pairwiseCompatible_iff_hasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
     (fs := fs) hrr hpos hnn hsame
@@ -11030,7 +17049,14 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_allComboBridge_and_nonneg
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hallBridge : PosComboNoCommonToAllComboBridgeStatement) :
+    (hallBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        AllComboRealRooted f g)) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
   pairwiseCompatible_iff_hasCommonInterleaver_of_noCommonOrientation_and_nonnegCoeffs
     (fs := fs) hrr hpos hnn
@@ -11043,7 +17069,17 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_affineFamilyBridge_and_no
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
   pairwiseCompatible_iff_hasCommonInterleaver_of_nonnegPairBridge hrr hpos hnn
     (nonnegPairBridge_of_affineFamilyBridge haffBridge)
@@ -11055,7 +17091,17 @@ theorem pairwiseCompatible_iff_hasCommonInterleaver_of_boundaryRightPairOrientat
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    (hboundary : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃t : ℝ⦄, 0 < t →
+          Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g))) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
   pairwiseCompatible_iff_hasCommonInterleaver_of_affineFamilyBridge_and_nonnegCoeffs
     (fs := fs) hrr hpos hnn
@@ -11068,7 +17114,14 @@ theorem pairwiseCompatible_iff_familyCompatible_of_noCommonOrientation_and_nonne
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hstep : PosComboNoCommonOrientationStatement) :
+    (hstep : (∀ ⦃f g : ℝ[X]⦄,
+        PosComboRealRooted f g →
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f)) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
   pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos <|
     (pairwiseCompatible_iff_hasCommonInterleaver_of_noCommonOrientation_and_nonnegCoeffs
@@ -11081,8 +17134,24 @@ theorem pairwiseCompatible_iff_familyCompatible_of_pairDegreeSplit_and_nonnegCoe
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
   pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos <|
     (pairwiseCompatible_iff_hasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
@@ -11095,8 +17164,24 @@ theorem pairwiseCompatible_iff_familyCompatible_of_degreeSplit_and_nonnegCoeffs
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
-    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        Prec f g ∨ Prec g f))
+    (hsucc : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h)) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
   pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos <|
     (pairwiseCompatible_iff_hasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
@@ -11110,8 +17195,26 @@ theorem pairwiseCompatible_iff_familyCompatible_of_sameDegreePair_and_affineFami
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (hsame : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∃ h : ℝ[X], Prec f h ∧ Prec g h))
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
   pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos <|
     (pairwiseCompatible_iff_hasCommonInterleaver_of_sameDegreePair_and_affineFamily_nonneg
@@ -11124,7 +17227,14 @@ theorem pairwiseCompatible_iff_familyCompatible_of_allComboBridge_and_nonnegCoef
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hallBridge : PosComboNoCommonToAllComboBridgeStatement) :
+    (hallBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        AllComboRealRooted f g)) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
   pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos <|
     (pairwiseCompatible_iff_hasCommonInterleaver_of_allComboBridge_and_nonnegCoeffs
@@ -11137,7 +17247,17 @@ theorem pairwiseCompatible_iff_familyCompatible_of_affineFamilyBridge_and_nonneg
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (haffBridge : PosComboNoCommonAffineFamilyStatement) :
+    (haffBridge : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃s t : ℝ⦄, 0 < s → 0 < t →
+          ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
   pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos <|
     (pairwiseCompatible_iff_hasCommonInterleaver_of_affineFamilyBridge_and_nonnegCoeffs
@@ -11150,7 +17270,17 @@ theorem pairwiseCompatible_iff_familyCompatible_of_boundaryRightPairOrientation_
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
-    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    (hboundary : (∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        f.natDegree ≤ g.natDegree →
+        g.natDegree ≤ f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        ∀ ⦃t : ℝ⦄, 0 < t →
+          Prec (C t * f + g) (X * f) ∨ Prec (X * f) (C t * f + g))) :
     PairwiseCompatible fs ↔ FamilyCompatible fs :=
   pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos <|
     (pairwiseCompatible_iff_hasCommonInterleaver_of_boundaryRightPairOrientation_and_nonnegCoeffs
@@ -11396,8 +17526,8 @@ theorem pairwiseCompatible_iff_familyCompatible_of_natDegree_le_two
 Chudnovsky--Seymour theorem used in `INTERLACING.md`.
 
 The finite-family left-handed Helly upgrade is now packaged as
-`CommonLeftInterleaverFamilyUpgradeStatement`, so the remaining input is the
-two-polynomial bridge
+the common-left-interleaver family-upgrade statement, so the remaining input is
+the two-polynomial bridge
 `Compatible f g -> ∃ h, Prec h f ∧ Prec h g`. -/
 def chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_statement : Prop :=
   ∀ {fs : List ℝ[X]},
