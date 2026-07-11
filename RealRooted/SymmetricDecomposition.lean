@@ -1892,19 +1892,14 @@ theorem isIdDecomposition_formula {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d
     natDegree_idDecompositionBFormula_le hd, idDecompositionAFormula_fixed hd,
     idDecompositionBFormula_fixed hd⟩
 
-/-- Planning target for Brändén--Solus Lemma 2.1: every polynomial of degree at
+/-- Brändén--Solus Lemma 2.1: every polynomial of degree at
 most `d` has a unique symmetric `I_d`-decomposition, and the explicit formulas
 agree with the abstract pair. -/
-def idDecompositionExistsUniqueStatement : Prop :=
-  ∀ {d : ℕ} {p : ℝ[X]},
-    p.natDegree ≤ d →
+theorem idDecompositionExistsUnique {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
     ∃! ab : ℝ[X] × ℝ[X],
       IsIdDecomposition d p ab.1 ab.2 ∧
       ab.1 = idDecompositionAFormula d p ∧
-      ab.2 = idDecompositionBFormula d p
-
-theorem idDecompositionExistsUnique : idDecompositionExistsUniqueStatement := by
-  intro d p hd
+      ab.2 = idDecompositionBFormula d p := by
   refine ⟨⟨idDecompositionAFormula d p, idDecompositionBFormula d p⟩, ?_, ?_⟩
   · exact ⟨isIdDecomposition_formula hd, rfl, rfl⟩
   · lia
@@ -2181,19 +2176,14 @@ theorem isRdDecomposition_formula {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d
     natDegree_rdDecompositionBFormula_le hd, rdDecompositionAFormula_fixed hd,
     rdDecompositionBFormula_fixed hd⟩
 
-/-- Planning target for Brändén--Solus Lemma 2.2: every polynomial of degree at
+/-- Brändén--Solus Lemma 2.2: every polynomial of degree at
 most `d` has a unique symmetric `R_d`-decomposition, again matching the
 explicit formulas. -/
-def rdDecompositionExistsUniqueStatement : Prop :=
-  ∀ {d : ℕ} {p : ℝ[X]},
-    p.natDegree ≤ d →
+theorem rdDecompositionExistsUnique {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
     ∃! ab : ℝ[X] × ℝ[X],
       IsRdDecomposition d p ab.1 ab.2 ∧
       ab.1 = rdDecompositionAFormula d p ∧
-      ab.2 = rdDecompositionBFormula d p
-
-theorem rdDecompositionExistsUnique : rdDecompositionExistsUniqueStatement := by
-  intro d p hd
+      ab.2 = rdDecompositionBFormula d p := by
   refine ⟨⟨rdDecompositionAFormula d p, rdDecompositionBFormula d p⟩, ?_, ?_⟩
   · exact ⟨isRdDecomposition_formula hd, rfl, rfl⟩
   · lia
@@ -2265,18 +2255,14 @@ theorem isRdDecomposition_fPolynomial_of_isIdDecomposition {d : ℕ} {h a b : �
   · rw [RdTransform_fPolynomial, hfixA]
   · rw [RdTransform_fPolynomial, hfixB]
 
-/-- Planning target for Brändén--Solus Lemma 2.3, relating the `I_d`- and
+/-- Brändén--Solus Lemma 2.3, relating the `I_d`- and
 `R_d`-decompositions through the `f`-polynomial transform. -/
-def fPolynomialDecompositionCompatibilityStatement : Prop :=
-  ∀ {d : ℕ} {h a b aTilde bTilde : ℝ[X]},
-    h.natDegree ≤ d →
-    IsIdDecomposition d h a b →
-    IsRdDecomposition d (fPolynomial d h) aTilde bTilde →
+theorem fPolynomialDecompositionCompatibility {d : ℕ} {h a b aTilde bTilde : ℝ[X]}
+    (hd : h.natDegree ≤ d)
+    (hid : IsIdDecomposition d h a b)
+    (hrd : IsRdDecomposition d (fPolynomial d h) aTilde bTilde) :
     aTilde = fPolynomial d a ∧
-    bTilde = fPolynomial (d - 1) b
-
-theorem fPolynomialDecompositionCompatibility : fPolynomialDecompositionCompatibilityStatement := by
-  intro d h a b aTilde bTilde hd hid hrd
+    bTilde = fPolynomial (d - 1) b := by
   have hleft := rdDecomposition_eq_formula_of_isRdDecomposition
     (p := fPolynomial d h) (a := aTilde) (b := bTilde) (fPolynomial_natDegree_le d h) hrd
   have hright := rdDecomposition_eq_formula_of_isRdDecomposition
@@ -3202,26 +3188,11 @@ lemma prec_iff_prec_mul_X_add_one_pow_both {n : ℕ} {f g : ℝ[X]} :
 /-- Reduced transport target: it is enough to treat the minimal ambient degree
 `max u.natDegree v.natDegree`, since larger ambient degrees only add a common
 power of `X + 1` to both transformed polynomials. -/
-def precFPolynomialTransportMinimalStatement : Prop :=
-  ∀ {d : ℕ} {u v : ℝ[X]},
-    d = max u.natDegree v.natDegree →
-    HasNonnegCoeffs u →
-    HasNonnegCoeffs v →
-    (Prec (fPolynomial d u) (fPolynomial d v) ↔ Prec u v)
-
-/-- Honest missing transport problem behind Brändén--Solus Theorem 2.6:
-the `f`-polynomial transform should preserve the oriented interlacing relation
-on nonnegative-coefficient pairs of degree at most `d`. -/
-def precFPolynomialTransportStatement : Prop :=
-  ∀ {d : ℕ} {u v : ℝ[X]},
-    u.natDegree ≤ d →
-    v.natDegree ≤ d →
-    HasNonnegCoeffs u →
-    HasNonnegCoeffs v →
-    (Prec (fPolynomial d u) (fPolynomial d v) ↔ Prec u v)
-
-theorem precFPolynomialTransportMinimal : precFPolynomialTransportMinimalStatement := by
-  intro d u v hd hu_nonneg hv_nonneg
+theorem precFPolynomialTransportMinimal {d : ℕ} {u v : ℝ[X]}
+    (hd : d = max u.natDegree v.natDegree)
+    (hu_nonneg : HasNonnegCoeffs u)
+    (hv_nonneg : HasNonnegCoeffs v) :
+    (Prec (fPolynomial d u) (fPolynomial d v) ↔ Prec u v) := by
   constructor
   · intro h
     have hud : u.natDegree ≤ d := by
@@ -3238,9 +3209,12 @@ theorem precFPolynomialTransportMinimal : precFPolynomialTransportMinimalStateme
     exact prec_fPolynomial_of_prec_of_hasNonnegCoeffs_of_minimal hd h hu_nonneg hv_nonneg
 
 theorem precFPolynomialTransport_of_minimal
-    (hminimal : precFPolynomialTransportMinimalStatement) :
-    precFPolynomialTransportStatement := by
-  intro d u v hud hvd hu_nonneg hv_nonneg
+    {d : ℕ} {u v : ℝ[X]}
+    (hud : u.natDegree ≤ d)
+    (hvd : v.natDegree ≤ d)
+    (hu_nonneg : HasNonnegCoeffs u)
+    (hv_nonneg : HasNonnegCoeffs v) :
+    (Prec (fPolynomial d u) (fPolynomial d v) ↔ Prec u v) := by
   let m := max u.natDegree v.natDegree
   have hum : u.natDegree ≤ m := le_max_left _ _
   have hvm : v.natDegree ≤ m := le_max_right _ _
@@ -3255,13 +3229,20 @@ theorem precFPolynomialTransport_of_minimal
               lia
     _ ↔ Prec (fPolynomial m u) (fPolynomial m v) :=
           prec_iff_prec_mul_X_add_one_pow_both
-    _ ↔ Prec u v := hminimal (d := m) rfl hu_nonneg hv_nonneg
+    _ ↔ Prec u v := precFPolynomialTransportMinimal (d := m) rfl hu_nonneg hv_nonneg
 
-theorem precFPolynomialTransport : precFPolynomialTransportStatement :=
-  precFPolynomialTransport_of_minimal precFPolynomialTransportMinimal
+/-- Honest transport result behind Brändén--Solus Theorem 2.6:
+the `f`-polynomial transform preserves the oriented interlacing relation
+on nonnegative-coefficient pairs of degree at most `d`. -/
+theorem precFPolynomialTransport {d : ℕ} {u v : ℝ[X]}
+    (hud : u.natDegree ≤ d)
+    (hvd : v.natDegree ≤ d)
+    (hu_nonneg : HasNonnegCoeffs u)
+    (hv_nonneg : HasNonnegCoeffs v) :
+    (Prec (fPolynomial d u) (fPolynomial d v) ↔ Prec u v) :=
+  precFPolynomialTransport_of_minimal hud hvd hu_nonneg hv_nonneg
 
 theorem brandenSolusTheorem26_last_equiv_of_precFPolynomialTransport
-    (htransport : precFPolynomialTransportStatement)
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
@@ -3272,7 +3253,7 @@ theorem brandenSolusTheorem26_last_equiv_of_precFPolynomialTransport
   rcases hasNonnegCoeffs_pair_of_isIdDecomposition hd hid ha_nonneg hb_nonneg with
     ⟨hp_nonneg, hId_nonneg⟩
   rw [RdTransform_fPolynomial]
-  exact (htransport
+  exact (precFPolynomialTransport
     (u := IdTransform d p) (v := p)
     (IdTransform_natDegree_le hd) hd hId_nonneg hp_nonneg).symm
 
@@ -3285,7 +3266,7 @@ theorem brandenSolusTheorem26_last_equiv
     (Prec (IdTransform d p) p ↔
       Prec (RdTransform d (fPolynomial d p)) (fPolynomial d p)) :=
   brandenSolusTheorem26_last_equiv_of_precFPolynomialTransport
-    precFPolynomialTransport hd hid ha_nonneg hb_nonneg
+    hd hid ha_nonneg hb_nonneg
 
 private theorem brandenSolusTheorem26_descend_of_lt_top
     {d : ℕ} {p a b : ℝ[X]}
@@ -3372,30 +3353,25 @@ private theorem brandenSolusTheorem26_descend_of_lt_top
   · lia
   · lia
 
-/-- Naive fully strict translation of Brändén--Solus Theorem 2.6 into the
-current `Prec` API.
-
-This exact formulation is false: our `Prec` predicate is reflexive on
-real-rooted polynomials and excludes the zero polynomial, so degenerate
-decompositions such as `p = 1`, `a = 1`, `b = 0` break the first equivalence.
-We keep this definition only so that the counterexample is recorded explicitly
-in the library. -/
-def brandenSolusTheorem26NaiveStatement : Prop :=
-  ∀ {d : ℕ} {p a b : ℝ[X]},
-    p.natDegree ≤ d →
-    IsIdDecomposition d p a b →
-    HasNonnegCoeffs a →
-    HasNonnegCoeffs b →
-    (Prec b a ↔ Prec a p) ∧
-    (Prec a p ↔ Prec b p) ∧
-    (Prec b p ↔ Prec (IdTransform d p) p) ∧
-    (Prec (IdTransform d p) p ↔
-      Prec (RdTransform d (fPolynomial d p)) (fPolynomial d p))
-
 /-- The naive fully strict `Prec` formulation of Brändén--Solus Theorem 2.6 is
-false. The counterexample is the degree-zero decomposition `1 = 1 + X * 0`. -/
+false. The counterexample is the degree-zero decomposition `1 = 1 + X * 0`.
+
+The naive formulation is the fully strict translation of Brändén--Solus
+Theorem 2.6 into the current `Prec` API. It is false because our `Prec`
+predicate is reflexive on real-rooted polynomials and excludes the zero
+polynomial, so degenerate decompositions such as `p = 1`, `a = 1`, `b = 0`
+break the first equivalence. -/
 theorem not_brandenSolusTheorem26NaiveStatement :
-    ¬ brandenSolusTheorem26NaiveStatement := by
+    ¬ ∀ {d : ℕ} {p a b : ℝ[X]},
+        p.natDegree ≤ d →
+        IsIdDecomposition d p a b →
+        HasNonnegCoeffs a →
+        HasNonnegCoeffs b →
+        (Prec b a ↔ Prec a p) ∧
+        (Prec a p ↔ Prec b p) ∧
+        (Prec b p ↔ Prec (IdTransform d p) p) ∧
+        (Prec (IdTransform d p) p ↔
+          Prec (RdTransform d (fPolynomial d p)) (fPolynomial d p)) := by
   intro h
   have hcase := h (d := 0) (p := (1 : ℝ[X])) (a := (1 : ℝ[X])) (b := 0)
     (by simp)
@@ -3409,38 +3385,6 @@ theorem not_brandenSolusTheorem26NaiveStatement :
   have hnot : ¬ Prec (0 : ℝ[X]) (1 : ℝ[X]) :=
     fun h0 => h0.1.1 rfl
   lia
-
-/-- Reduced frontier for Brändén--Solus Theorem 2.6: after the degree-ordered
-and below-top recursive branches, the only genuinely new case is when the
-left `I_d`-component occupies the full ambient degree. -/
-def brandenSolusTheorem26TopDegreeBoundaryStatement : Prop :=
-  ∀ {d : ℕ} {p a b : ℝ[X]},
-    p.natDegree ≤ d →
-    IsIdDecomposition d p a b →
-    HasNonnegCoeffs a →
-    HasNonnegCoeffs b →
-    a ≠ 0 →
-    b ≠ 0 →
-    a.natDegree = d →
-    (Prec b a ↔ Prec a p) ∧
-    (Prec a p ↔ Prec b p) ∧
-    (Prec b p ↔ Prec (IdTransform d p) p) ∧
-    (Prec (IdTransform d p) p ↔
-      Prec (RdTransform d (fPolynomial d p)) (fPolynomial d p))
-
-/-- Remaining ordered-degree bridge in the already-controlled branch
-`a.natDegree ≤ b.natDegree`: upgrading the proved equivalence
-`Prec b a ↔ Prec b p` to the desired `Prec b p ↔ Prec (IdTransform d p) p`. -/
-def brandenSolusTheorem26OrderedBridgeStatement : Prop :=
-  ∀ {d : ℕ} {p a b : ℝ[X]},
-    p.natDegree ≤ d →
-    IsIdDecomposition d p a b →
-    HasNonnegCoeffs a →
-    HasNonnegCoeffs b →
-    a ≠ 0 →
-    b ≠ 0 →
-    a.natDegree ≤ b.natDegree →
-    (Prec b p ↔ Prec (IdTransform d p) p)
 
 /-- In the ordered-degree branch `a.natDegree ≤ b.natDegree`, the forward half
 of the remaining bridge is already available: once `b` interlaces `p`, the
@@ -3558,34 +3502,44 @@ theorem brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
     · lia
   simp_all
 
-/-- The ordered-degree converse bridge, packaged as a standalone statement so it
-can still be referenced in reduction theorems. This is now proved below. -/
-def brandenSolusTheorem26OrderedBridgeConverseStatement : Prop :=
-  ∀ {d : ℕ} {p a b : ℝ[X]},
-    p.natDegree ≤ d →
-    IsIdDecomposition d p a b →
-    HasNonnegCoeffs a →
-    HasNonnegCoeffs b →
-    a ≠ 0 →
-    b ≠ 0 →
-    a.natDegree ≤ b.natDegree →
-    (Prec (IdTransform d p) p → Prec b p)
-
 /-- The bidirectional ordered-degree bridge reduces to its converse, since the
 forward implication is already available from the current library. -/
 theorem brandenSolusTheorem26OrderedBridge_of_converse
-    (hconverse : brandenSolusTheorem26OrderedBridgeConverseStatement) :
-    brandenSolusTheorem26OrderedBridgeStatement := by
-  intro d p a b hd hid ha_nonneg hb_nonneg ha0 hb0 ha_le
+    (hconverse :
+      ∀ {d : ℕ} {p a b : ℝ[X]},
+        p.natDegree ≤ d →
+        IsIdDecomposition d p a b →
+        HasNonnegCoeffs a →
+        HasNonnegCoeffs b →
+        a ≠ 0 →
+        b ≠ 0 →
+        a.natDegree ≤ b.natDegree →
+        (Prec (IdTransform d p) p → Prec b p))
+    {d : ℕ} {p a b : ℝ[X]}
+    (hd : p.natDegree ≤ d)
+    (hid : IsIdDecomposition d p a b)
+    (ha_nonneg : HasNonnegCoeffs a)
+    (hb_nonneg : HasNonnegCoeffs b)
+    (ha0 : a ≠ 0)
+    (hb0 : b ≠ 0)
+    (ha_le : a.natDegree ≤ b.natDegree) :
+    (Prec b p ↔ Prec (IdTransform d p) p) := by
   constructor
   · exact brandenSolusTheorem26_ordered_bridge_forward_of_natDegree_le
       hd hid ha_nonneg hb_nonneg ha_le ha0 hb0
   · exact hconverse hd hid ha_nonneg hb_nonneg ha0 hb0 ha_le
 
-theorem brandenSolusTheorem26OrderedBridgeConverse :
-    brandenSolusTheorem26OrderedBridgeConverseStatement := by
-  intro d p a b hd hid ha_nonneg hb_nonneg ha0 hb0 ha_le
-  exact brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
+theorem brandenSolusTheorem26OrderedBridgeConverse
+    {d : ℕ} {p a b : ℝ[X]}
+    (hd : p.natDegree ≤ d)
+    (hid : IsIdDecomposition d p a b)
+    (ha_nonneg : HasNonnegCoeffs a)
+    (hb_nonneg : HasNonnegCoeffs b)
+    (ha0 : a ≠ 0)
+    (hb0 : b ≠ 0)
+    (ha_le : a.natDegree ≤ b.natDegree) :
+    (Prec (IdTransform d p) p → Prec b p) :=
+  brandenSolusTheorem26_ordered_bridge_converse_of_natDegree_le
     hd hid ha_nonneg hb_nonneg ha0 hb0 ha_le
 
 /-- The full nondegenerate Brändén--Solus theorem reduces to the single
@@ -3594,8 +3548,30 @@ ordered-degree bridge `Prec b p ↔ Prec (IdTransform d p) p`. The other
 branches are already handled by the degree-ordered lemmas and the recursive
 common-`X` descent. -/
 theorem brandenSolusTheorem26_of_top_degree_boundary
-    (hordered : brandenSolusTheorem26OrderedBridgeStatement)
-    (hboundary : brandenSolusTheorem26TopDegreeBoundaryStatement)
+    (hordered :
+      ∀ {d : ℕ} {p a b : ℝ[X]},
+        p.natDegree ≤ d →
+        IsIdDecomposition d p a b →
+        HasNonnegCoeffs a →
+        HasNonnegCoeffs b →
+        a ≠ 0 →
+        b ≠ 0 →
+        a.natDegree ≤ b.natDegree →
+        (Prec b p ↔ Prec (IdTransform d p) p))
+    (hboundary :
+      ∀ {d : ℕ} {p a b : ℝ[X]},
+        p.natDegree ≤ d →
+        IsIdDecomposition d p a b →
+        HasNonnegCoeffs a →
+        HasNonnegCoeffs b →
+        a ≠ 0 →
+        b ≠ 0 →
+        a.natDegree = d →
+        (Prec b a ↔ Prec a p) ∧
+        (Prec a p ↔ Prec b p) ∧
+        (Prec b p ↔ Prec (IdTransform d p) p) ∧
+        (Prec (IdTransform d p) p ↔
+          Prec (RdTransform d (fPolynomial d p)) (fPolynomial d p)))
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
@@ -3663,8 +3639,30 @@ theorem brandenSolusTheorem26_of_top_degree_boundary
 forward ordered-degree implication, the only remaining abstract inputs are the
 top-degree boundary case and the converse half of the ordered bridge. -/
 theorem brandenSolusTheorem26_of_ordered_bridge_converse_and_top_degree_boundary
-    (hconverse : brandenSolusTheorem26OrderedBridgeConverseStatement)
-    (hboundary : brandenSolusTheorem26TopDegreeBoundaryStatement)
+    (hconverse :
+      ∀ {d : ℕ} {p a b : ℝ[X]},
+        p.natDegree ≤ d →
+        IsIdDecomposition d p a b →
+        HasNonnegCoeffs a →
+        HasNonnegCoeffs b →
+        a ≠ 0 →
+        b ≠ 0 →
+        a.natDegree ≤ b.natDegree →
+        (Prec (IdTransform d p) p → Prec b p))
+    (hboundary :
+      ∀ {d : ℕ} {p a b : ℝ[X]},
+        p.natDegree ≤ d →
+        IsIdDecomposition d p a b →
+        HasNonnegCoeffs a →
+        HasNonnegCoeffs b →
+        a ≠ 0 →
+        b ≠ 0 →
+        a.natDegree = d →
+        (Prec b a ↔ Prec a p) ∧
+        (Prec a p ↔ Prec b p) ∧
+        (Prec b p ↔ Prec (IdTransform d p) p) ∧
+        (Prec (IdTransform d p) p ↔
+          Prec (RdTransform d (fPolynomial d p)) (fPolynomial d p)))
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
@@ -3685,7 +3683,20 @@ theorem brandenSolusTheorem26_of_ordered_bridge_converse_and_top_degree_boundary
 abstract input for Brändén--Solus Theorem 2.6 is the top-degree boundary case
 `a.natDegree = d`. -/
 theorem brandenSolusTheorem26_of_top_degree_boundary_only
-    (hboundary : brandenSolusTheorem26TopDegreeBoundaryStatement)
+    (hboundary :
+      ∀ {d : ℕ} {p a b : ℝ[X]},
+        p.natDegree ≤ d →
+        IsIdDecomposition d p a b →
+        HasNonnegCoeffs a →
+        HasNonnegCoeffs b →
+        a ≠ 0 →
+        b ≠ 0 →
+        a.natDegree = d →
+        (Prec b a ↔ Prec a p) ∧
+        (Prec a p ↔ Prec b p) ∧
+        (Prec b p ↔ Prec (IdTransform d p) p) ∧
+        (Prec (IdTransform d p) p ↔
+          Prec (RdTransform d (fPolynomial d p)) (fPolynomial d p)))
     {d : ℕ} {p a b : ℝ[X]}
     (hd : p.natDegree ≤ d)
     (hid : IsIdDecomposition d p a b)
@@ -3702,9 +3713,22 @@ theorem brandenSolusTheorem26_of_top_degree_boundary_only
     brandenSolusTheorem26OrderedBridgeConverse
     hboundary hd hid ha_nonneg hb_nonneg ha0 hb0
 
-theorem brandenSolusTheorem26TopDegreeBoundary :
-    brandenSolusTheorem26TopDegreeBoundaryStatement := by
-  intro d p a b hd hid ha_nonneg hb_nonneg ha0 hb0 ha_top
+/-- Top-degree boundary case of Brändén--Solus Theorem 2.6: the branch where the
+left `I_d`-component occupies the full ambient degree, `a.natDegree = d`. -/
+theorem brandenSolusTheorem26TopDegreeBoundary
+    {d : ℕ} {p a b : ℝ[X]}
+    (hd : p.natDegree ≤ d)
+    (hid : IsIdDecomposition d p a b)
+    (ha_nonneg : HasNonnegCoeffs a)
+    (hb_nonneg : HasNonnegCoeffs b)
+    (ha0 : a ≠ 0)
+    (hb0 : b ≠ 0)
+    (ha_top : a.natDegree = d) :
+    (Prec b a ↔ Prec a p) ∧
+    (Prec a p ↔ Prec b p) ∧
+    (Prec b p ↔ Prec (IdTransform d p) p) ∧
+    (Prec (IdTransform d p) p ↔
+      Prec (RdTransform d (fPolynomial d p)) (fPolynomial d p)) := by
   refine ⟨?_, ?_, ?_, ?_⟩
   · exact
       brandenSolusTheorem26_first_equiv_of_top_degree
