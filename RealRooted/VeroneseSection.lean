@@ -844,7 +844,7 @@ The zero-aware target `FullyInterlacingPairToPrec0Statement` follows from two
 classical inputs:
 
 * the forward Aissen--Schoenberg--Whitney theorem
-  `aissenSchoenbergWhitneyForwardStatement`, which turns the two
+  `aissenSchoenbergWhitneyForward`, which turns the two
   Pólya-frequency coefficient rows (`FullyInterlacingPair.left_pf` and
   `FullyInterlacingPair.right_pf`) into real-rootedness of each polynomial; and
 * the interlacing-extraction interface `FullyInterlacingPairInterlaceStatement`,
@@ -853,7 +853,6 @@ classical inputs:
 The zero polynomial cases are discharged directly by `prec0_zero_left` and
 `prec0_zero_right`. -/
 theorem fullyInterlacingPairToPrec0_of_forwardASW_interlace
-    (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hInt : FullyInterlacingPairInterlaceStatement) :
     FullyInterlacingPairToPrec0Statement := by
   intro p q hfull
@@ -864,8 +863,8 @@ theorem fullyInterlacingPairToPrec0_of_forwardASW_interlace
   refine Or.inr (Or.inr ?_)
   have hp_pf : IsPolyaFreqSeq p.coeff := hfull.left_pf
   have hq_pf : IsPolyaFreqSeq (fun n => q.coeff n) := hfull.right_pf
-  obtain ⟨hp_split, _⟩ := hASW hp_pf
-  obtain ⟨hq_split, _⟩ := hASW hq_pf
+  obtain ⟨hp_split, _⟩ := aissenSchoenbergWhitneyForward hp_pf
+  obtain ⟨hq_split, _⟩ := aissenSchoenbergWhitneyForward hq_pf
   obtain ⟨ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩ := hInt hp0 hq0 hfull
   exact ⟨⟨hp0, hp_split⟩, ⟨hq0, hq_split⟩, ss, rs, hss, hrs,
     hss_eq, hrs_eq, hshape⟩
@@ -1780,24 +1779,22 @@ theorem IsPolyaFreqSeq_veroneseSectionPolynomial_coeff {p : ℝ[X]}
 /-- Conditional real-rootedness of Veronese sections from the forward ASW
 theorem and a PF certificate for the original polynomial. -/
 theorem splits_veroneseSectionPolynomial_of_pf {p : ℝ[X]}
-    (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hp : IsPolyaFreqSeq p.coeff) {r k : ℕ}
     (hr : 0 < r) (hk : k < r) :
     veroneseSectionPolynomial r k p = 0 ∨
       (veroneseSectionPolynomial r k p).Splits := by
   have hpf : IsPolyaFreqSeq (veroneseSectionPolynomial r k p).coeff :=
     IsPolyaFreqSeq_veroneseSectionPolynomial_coeff (p := p) hp hr hk
-  exact Or.inr (hASW hpf).1
+  exact Or.inr (aissenSchoenbergWhitneyForward hpf).1
 
 /-- Zero-aware real-rootedness of Veronese sections from the forward ASW
 theorem and a PF certificate for the original polynomial. -/
 theorem veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_pf {p : ℝ[X]}
-    (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hp : IsPolyaFreqSeq (fun n => p.coeff n)) {r k : ℕ}
     (hr : 0 < r) (hk : k < r) :
     veroneseSectionPolynomial r k p = 0 ∨
       (veroneseSectionPolynomial r k p).Splits :=
-  splits_veroneseSectionPolynomial_of_pf hASW hp hr hk
+  splits_veroneseSectionPolynomial_of_pf hp hr hk
 
 /-- Conditional PF preservation for Veronese sections of real-rooted
 nonnegative-coefficient polynomials, using the reverse ASW theorem. -/
@@ -1813,25 +1810,23 @@ theorem IsPolyaFreqSeq_veroneseSectionPolynomial_of_realRooted_nonneg
 /-- Conditional real-rootedness of Veronese sections of real-rooted
 nonnegative-coefficient polynomials, assuming both directions of ASW. -/
 theorem splits_veroneseSectionPolynomial_of_splits_nonneg {p : ℝ[X]}
-    (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hpnn : HasNonnegCoeffs p) (hprr : p.Splits) {r k : ℕ}
     (hr : 0 < r) (hk : k < r) :
     veroneseSectionPolynomial r k p = 0 ∨
       (veroneseSectionPolynomial r k p).Splits := by
   have hpf : IsPolyaFreqSeq (veroneseSectionPolynomial r k p).coeff :=
     IsPolyaFreqSeq_veroneseSectionPolynomial_of_realRooted_nonneg hpnn hprr hr hk
-  exact Or.inr (hASW hpf).1
+  exact Or.inr (aissenSchoenbergWhitneyForward hpf).1
 
 /-- Zero-aware real-rootedness of Veronese sections of real-rooted
 nonnegative-coefficient polynomials, assuming both directions of ASW. -/
 theorem veroneseSectionPolynomial_eq_zero_or_isRealRooted_of_realRooted_nonneg
     {p : ℝ[X]}
-    (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hpnn : HasNonnegCoeffs p) (hprr_splits : p.Splits) {r k : ℕ}
     (hr : 0 < r) (hk : k < r) :
     veroneseSectionPolynomial r k p = 0 ∨
       (veroneseSectionPolynomial r k p).Splits :=
   splits_veroneseSectionPolynomial_of_splits_nonneg
-    hASW hpnn hprr_splits hr hk
+    hpnn hprr_splits hr hk
 
 end RealRooted

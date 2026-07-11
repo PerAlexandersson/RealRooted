@@ -22,8 +22,10 @@ namespace Challenges
 namespace AissenSchoenbergWhitney
 
 /-- Forward ASW target: PF coefficients imply real non-positive roots. -/
-abbrev forwardTarget : Prop :=
-  RealRooted.aissenSchoenbergWhitneyForwardStatement
+theorem forwardTarget {p : ℝ[X]}
+    (hpf : IsPolyaFreqSeq (fun n ↦ p.coeff n)) :
+    p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0 :=
+  RealRooted.aissenSchoenbergWhitneyForward hpf
 
 /-- Reverse ASW theorem: real non-positive roots imply PF coefficients. -/
 theorem reverseTheorem {p : ℝ[X]}

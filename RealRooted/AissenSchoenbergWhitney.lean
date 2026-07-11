@@ -150,24 +150,6 @@ theorem aissenSchoenbergWhitneyForwardNoNonneg {p : ℝ[X]}
     (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0 :=
   ⟨⟨hp0, (aissenSchoenbergWhitneyForward hpf).1⟩, (aissenSchoenbergWhitneyForward hpf).2⟩
 
-/-- Legacy compatibility alias for ASW forward statement. -/
-abbrev aissenSchoenbergWhitneyForwardStatement : Prop :=
-  ∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0
-
-/-- Legacy compatibility alias for ASW forward splits statement. -/
-abbrev aissenSchoenbergWhitneyForwardSplitsStatement : Prop :=
-  ∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → p.Splits
-
-/-- Legacy compatibility alias for ASW forward or zero statement. -/
-abbrev aissenSchoenbergWhitneyForwardOrZeroStatement : Prop :=
-  ∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n => p.coeff n) →
-    (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0
-
-/-- Legacy compatibility alias for ASW forward no nonneg statement. -/
-abbrev aissenSchoenbergWhitneyForwardNoNonnegStatement : Prop :=
-  ∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq (fun n => p.coeff n) →
-    (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0
-
 /-- The current forward ASW statement implies the no-extra-nonnegativity
 formulation, since PF coefficients are already nonnegative. -/
 theorem aissenSchoenbergWhitneyForwardNoNonneg_of_forward :
@@ -722,7 +704,7 @@ theorem splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two {p : ℝ[X]}
 /-- Degree-bounded splitting-only forward ASW target: every polynomial of
 `natDegree` at most `N` with a Pólya-frequency coefficient sequence splits over
 `ℝ`. This is the natural quantity for a degree induction feeding
-`aissenSchoenbergWhitneyForwardSplitsStatement`. -/
+`aissenSchoenbergWhitneyForwardSplits`. -/
 def aissenSchoenbergWhitneyForwardSplitsUpTo (N : ℕ) : Prop :=
   ∀ ⦃p : ℝ[X]⦄,
     p.natDegree ≤ N →
