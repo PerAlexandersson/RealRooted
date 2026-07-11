@@ -21,13 +21,23 @@ namespace RealRooted
 namespace Challenges
 namespace Kurtz
 
+/-- Challenge-facing name for positivity of all coefficients up to the degree
+of `p`. -/
+abbrev PositiveCoefficientsUpToDegree (p : ℝ[X]) : Prop :=
+  ∀ i ≤ p.natDegree, 0 < p.coeff i
+
+/-- Challenge-facing name for the strict Hutchinson--Kurtz coefficient
+inequalities. -/
+abbrev KurtzStrictInequalities (p : ℝ[X]) : Prop :=
+  ∀ i : ℕ, 0 < i → i < p.natDegree →
+    4 * p.coeff (i - 1) * p.coeff (i + 1) < (p.coeff i) ^ 2
+
 /-- Kurtz's sufficient condition: positive coefficients and the strict
 Hutchinson--Kurtz log-concavity inequalities imply real-rootedness. -/
 theorem coefficientCriterion {p : ℝ[X]}
     (hdeg : 2 ≤ p.natDegree)
-    (hpos : ∀ i ≤ p.natDegree, 0 < p.coeff i)
-    (hineq : ∀ i : ℕ, 0 < i → i < p.natDegree →
-      4 * p.coeff (i - 1) * p.coeff (i + 1) < (p.coeff i) ^ 2) :
+    (hpos : PositiveCoefficientsUpToDegree p)
+    (hineq : KurtzStrictInequalities p) :
     p.Splits := by
   sorry
 

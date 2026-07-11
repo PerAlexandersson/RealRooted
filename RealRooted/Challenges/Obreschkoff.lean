@@ -22,32 +22,46 @@ namespace RealRooted
 namespace Challenges
 namespace Obreschkoff
 
+/-- Challenge-facing name for a real pencil whose every member is real-rooted
+or zero. -/
+abbrev RealPencilRealRooted (f g : ℝ[X]) : Prop :=
+  AllComboRealRooted f g
+
+/-- Challenge-facing name for proper position/interlacing in the current
+orientation. -/
+abbrev ProperPosition (f g : ℝ[X]) : Prop :=
+  Prec f g
+
+/-- Challenge-facing name for a nonzero real-split polynomial. -/
+abbrev NonzeroSplitPolynomial (p : ℝ[X]) : Prop :=
+  p ≠ 0 ∧ p.Splits
+
 /-- If `f` interlaces `g`, then every real linear combination is real-rooted
 or zero. -/
-theorem allCombinationsRealRooted_of_interlaces {f g : ℝ[X]}
-    (hfg : Prec f g) :
-    AllComboRealRooted f g :=
-  RealRooted.allComboRealRooted_of_prec hfg
+theorem allCombinationsRealRooted_of_interlaces :
+    ∀ {f g : ℝ[X]}, ProperPosition f g → RealPencilRealRooted f g :=
+  RealRooted.allComboRealRooted_of_prec
 
 /-- Converse Obreschkoff theorem in the degree-aware orientation used by
 `Prec`. -/
-theorem interlaces_or_reverse_of_allCombinationsRealRooted {f g : ℝ[X]}
-    (hf_ne : f ≠ 0) (hf_splits : f.Splits)
-    (hg_ne : g ≠ 0) (hg_splits : g.Splits)
-    (hall : AllComboRealRooted f g)
-    (hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree) :
-    Prec f g ∨ Prec g f :=
-  RealRooted.prec_of_allComboRealRooted hf_ne hf_splits hg_ne hg_splits hall hdeg
+theorem interlaces_or_reverse_of_allCombinationsRealRooted :
+    ∀ {f g : ℝ[X]},
+      NonzeroSplitPolynomial f →
+      NonzeroSplitPolynomial g →
+      RealPencilRealRooted f g →
+      f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree →
+      ProperPosition f g ∨ ProperPosition g f :=
+  fun hf hg => RealRooted.prec_of_allComboRealRooted hf.1 hf.2 hg.1 hg.2
 
 /-- Positive-leading-coefficient wrapper for the converse direction. -/
 theorem interlaces_or_reverse_of_allCombinationsRealRooted_posLeading {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hf_splits : f.Splits)
     (hg_pos : HasPosLeadingCoeff g) (hg_splits : g.Splits)
-    (hall : AllComboRealRooted f g)
+    (hall : RealPencilRealRooted f g)
     (hdeg : f.natDegree + 1 = g.natDegree ∨ f.natDegree = g.natDegree) :
-    Prec f g ∨ Prec g f :=
-  RealRooted.prec_of_allComboRealRooted
-    hf_pos.ne_zero hf_splits hg_pos.ne_zero hg_splits hall hdeg
+    ProperPosition f g ∨ ProperPosition g f :=
+  interlaces_or_reverse_of_allCombinationsRealRooted
+    ⟨hf_pos.ne_zero, hf_splits⟩ ⟨hg_pos.ne_zero, hg_splits⟩ hall hdeg
 
 end Obreschkoff
 end Challenges

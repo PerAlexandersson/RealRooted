@@ -52,7 +52,7 @@ lemma exists_sign_of_prod (l : List ℝ) (h : ∀ x ∈ l, 0 ≤ x ∨ x ≤ 0) 
   induction l with
   | nil => exact ⟨0, by simp⟩
   | cons a l ih =>
-    obtain ⟨k, hk⟩ := ih (fun x hx => h x (.tail _ hx))
+    obtain ⟨k, hk⟩ := ih (List.forall_mem_of_forall_mem_cons h)
     rcases h a (.head _) with ha | ha
     · refine ⟨k, ?_⟩
       rw [List.prod_cons]
@@ -965,7 +965,7 @@ private lemma wagner1_roots_exist_of_no_common_right (f g : ℝ[X])
               (sf ::ₘ consumed_f) (sg ::ₘ consumed_g)
               rest_f rest_g (b :: rest_rs) hlen_f' hlen_g' hint_f_tail hint_g_tail
               hss_f_eq' hss_g_eq' hcons_f' hcons_g'
-              (fun r hr => hno_rs r (.tail _ hr))
+              (List.forall_mem_of_forall_mem_cons hno_rs)
           have hu_lt_b : u < b := by
             grind
           have hus_pw' : (u :: us).Pairwise (· < ·) :=
@@ -990,7 +990,7 @@ private lemma wagner1_roots_exist_of_no_common_right (f g : ℝ[X])
               (sf ::ₘ consumed_f) (sg ::ₘ consumed_g)
               rest_f rest_g (b :: rest_rs) hlen_f' hlen_g' hint_f_tail hint_g_tail
               hss_f_eq' hss_g_eq' hcons_f' hcons_g'
-              (fun r hr => hno_rs r (.tail _ hr))
+              (List.forall_mem_of_forall_mem_cons hno_rs)
           have hu_lt_b : u < b := by
             grind
           have hus_pw' : (u :: us).Pairwise (· < ·) :=
@@ -1285,8 +1285,8 @@ theorem prec_add_of_prec_right {f g h : ℝ[X]}
       subst hrs_eq
       rcases rs_f with _ | ⟨r₁, rest_rs⟩
       · -- Degenerate: rs_f = [], all constants
-        refine ⟨⟨hfg_rr_ne, hfg_rr_splits⟩, hh, [], [], List.Pairwise.nil, List.Pairwise.nil, ?_,
-          hrs_f_eq, Or.inr ⟨rfl, trivial⟩⟩
+        refine ⟨⟨hfg_rr_ne, hfg_rr_splits⟩, hh, [], [], List.Pairwise.nil,
+          List.Pairwise.nil, ?_, hrs_f_eq, Or.inr ⟨rfl, trivial⟩⟩
         simp only [List.length_nil] at hlen_f_alt hlen_g_alt
         have hfnd : f.natDegree = 0 := by
           have := card_roots_of_splits hf.2; rw [← hss_f_eq, Multiset.coe_card] at this; lia

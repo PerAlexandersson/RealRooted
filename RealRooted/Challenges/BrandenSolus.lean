@@ -1,5 +1,7 @@
 import RealRooted.SymmetricDecomposition
 
+open Polynomial
+
 /-!
 # Branden--Solus challenge entry point
 
@@ -19,9 +21,17 @@ namespace RealRooted
 namespace Challenges
 namespace BrandenSolus
 
+/-- Challenge-facing name for the symmetric `I_d`-decomposition. -/
+abbrev IDecomposition (d : ℕ) (p a b : ℝ[X]) : Prop :=
+  IsIdDecomposition d p a b
+
+/-- Challenge-facing name for the Brändén--Solus Theorem 2.6 target. -/
+abbrev Theorem26Target : Prop :=
+  RealRooted.brandenSolusTheorem26Statement
+
 /-- Branden--Solus symmetric-decomposition theorem, challenge-facing alias. -/
 theorem theorem26 :
-    RealRooted.brandenSolusTheorem26Statement :=
+    Theorem26Target :=
   RealRooted.brandenSolusTheorem26
 
 end BrandenSolus

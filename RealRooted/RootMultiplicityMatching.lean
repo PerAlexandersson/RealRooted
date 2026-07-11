@@ -68,11 +68,9 @@ private theorem rel_sum_of_forall {α β ι : Type*} {r : α → β → Prop} {s
   classical
   induction s using Finset.induction with
   | empty =>
-      rw [Finset.sum_empty, Finset.sum_empty]
-      exact Multiset.Rel.zero
+      simp
   | insert i s hi ih =>
-      rw [Finset.sum_insert hi, Finset.sum_insert hi]
-      exact (h i (Finset.mem_insert_self i s)).add
+      simpa [Finset.sum_insert hi] using (h i (Finset.mem_insert_self i s)).add
         (ih fun j hj => h j (Finset.mem_insert_of_mem hj))
 
 /--
@@ -93,13 +91,11 @@ private theorem exists_rel_le_of_clusters
   have hrel : Multiset.Rel (fun r q => |q - r| < δ)
       (∑ r ∈ s.toFinset, s.count r • ({r} : Multiset ℝ))
       (∑ r ∈ s.toFinset, cluster r) := by
-    refine rel_sum_of_forall ?_
-    intro r hr
+    refine rel_sum_of_forall fun r hr => ?_
     rw [Multiset.nsmul_singleton]
     refine rel_abs_sub_lt_of_repeated_left
       (fun x hx => Multiset.eq_of_mem_replicate hx) (hball r hr) ?_
-    rw [Multiset.card_replicate]
-    exact (hcard r hr).symm
+    simpa using (hcard r hr).symm
   rwa [Multiset.toFinset_sum_count_nsmul_eq s] at hrel
 
 /-- A point cannot lie in two `δ`-balls whose centers are `2δ`-separated. -/
@@ -164,18 +160,17 @@ theorem exists_rel_le_of_forall_le_count {s t : Multiset ℝ} {δ : ℝ}
     else 0
   have hcluster : ∀ a (ha : a ∈ s.toFinset),
       cluster a ≤ t.filter (fun q => |q - a| < δ) ∧
-        (cluster a).card = s.count a := by
-    intro a ha
+        (cluster a).card = s.count a := fun a ha => by
     have hchoose := Classical.choose_spec <|
       exists_le_card_eq_of_le_card (t.filter (fun q => |q - a| < δ))
         (hcount a ha)
     have ha' : a ∈ s := by simpa using ha
     simpa [cluster, ha, ha'] using hchoose
   refine exists_rel_le_of_clusters cluster (fun a ha => (hcluster a ha).2) ?_ ?_
-  · intro a ha q hq
-    exact (Multiset.mem_filter.mp (Multiset.mem_of_le (hcluster a ha).1 hq)).2
-  · refine le_trans (Finset.sum_le_sum fun a ha => (hcluster a ha).1) ?_
-    exact sum_filter_ball_le hsep
+  · exact fun a ha q hq =>
+      (Multiset.mem_filter.mp (Multiset.mem_of_le (hcluster a ha).1 hq)).2
+  · exact le_trans (Finset.sum_le_sum fun a ha => (hcluster a ha).1)
+      (sum_filter_ball_le hsep)
 
 /--
 Finite local-count bridge for same-cardinality perturbations.
@@ -196,7 +191,7 @@ theorem card_filter_gt_eq_of_forall_le_count_and_card_eq
   obtain ⟨u, hu, hRel⟩ :=
     exists_rel_le_of_forall_le_count hsep_centers hcount
   have hu_card : u.card = t.card := by
-    rw [hcard, Multiset.card_eq_card_of_rel hRel]
+    simpa [hcard] using (Multiset.card_eq_card_of_rel hRel).symm
   have hut : u = t := Multiset.eq_of_le_of_card_le hu hu_card.ge
   rw [hut] at hRel
   have hgt : (s.filter (fun r => x < r)).card ≤

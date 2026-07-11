@@ -58,9 +58,7 @@ theorem roots_reverse_prod_X_sub_C (s : Multiset K) (hs : ∀ r ∈ s, r ≠ 0) 
       simp [Polynomial.reverse]
   | cons r s ih =>
       have hr : r ≠ 0 := hs r (by simp)
-      have hs' : ∀ a ∈ s, a ≠ 0 := by
-        intro a ha
-        exact hs a (by simp [ha])
+      have hs' : ∀ a ∈ s, a ≠ 0 := fun a ha => hs a (by simp [ha])
       have ih' := ih hs'
       rw [Multiset.map_cons, Multiset.prod_cons]
       rw [Polynomial.reverse_mul_of_domain]
@@ -68,13 +66,12 @@ theorem roots_reverse_prod_X_sub_C (s : Multiset K) (hs : ∀ r ∈ s, r ≠ 0) 
       · rw [roots_reverse_X_sub_C r hr, ih']
         simp
       · have hleft : (X - C r : K[X]).reverse ≠ 0 := by
-          rw [reverse_X_sub_C_eq r hr]
-          exact mul_ne_zero
+          simpa [reverse_X_sub_C_eq r hr] using mul_ne_zero
             (Polynomial.C_ne_zero.mpr (neg_ne_zero.mpr hr))
             (Polynomial.X_sub_C_ne_zero r⁻¹)
         have hright :
-            ((Multiset.map (fun r => (X - C r : K[X])) s).prod).reverse ≠ 0 := by
-          intro hzero
+            ((Multiset.map (fun r => (X - C r : K[X])) s).prod).reverse ≠ 0 :=
+          fun hzero => by
           exact prod_X_sub_C_ne_zero s (Polynomial.reverse_eq_zero.mp hzero)
         exact mul_ne_zero hleft hright
 
@@ -83,12 +80,10 @@ theorem roots_reverse_prod_X_sub_C (s : Multiset K) (hs : ∀ r ∈ s, r ≠ 0) 
 theorem roots_reverse_eq_map_inv_of_splits_coeff_zero_ne {p : K[X]}
     (hp : p.Splits) (h0 : p.coeff 0 ≠ 0) :
     p.reverse.roots = p.roots.map (fun r => r⁻¹) := by
-  have hp_ne : p ≠ 0 := by
-    intro hp_zero
+  have hp_ne : p ≠ 0 := fun hp_zero => by
     exact h0 (by simp [hp_zero])
   have hlc : p.leadingCoeff ≠ 0 := Polynomial.leadingCoeff_ne_zero.mpr hp_ne
-  have hroots_ne : ∀ r ∈ p.roots, r ≠ 0 := by
-    intro r hr hr_zero
+  have hroots_ne : ∀ r ∈ p.roots, r ≠ 0 := fun r hr hr_zero => by
     have hroot : p.IsRoot 0 := by
       simpa [hr_zero] using Polynomial.isRoot_of_mem_roots hr
     exact h0 (by
@@ -115,6 +110,11 @@ fact: reversal neither creates nor destroys roots. -/
 theorem card_roots_reverse {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0) :
     p.reverse.roots.card = p.roots.card := by
   rw [roots_reverse_eq_map_inv_of_splits_coeff_zero_ne hp h0, Multiset.card_map]
+
+/-- A polynomial with nonzero constant coefficient has nonzero reversal. -/
+theorem reverse_ne_zero_of_coeff_zero_ne {p : K[X]} (h0 : p.coeff 0 ≠ 0) :
+    p.reverse ≠ 0 :=
+  fun hrev => h0 (by simp [Polynomial.reverse_eq_zero.mp hrev])
 
 /-- Membership transport across reversal: the roots of `p.reverse` are exactly
 the inverses of the roots of `p`. -/
@@ -191,11 +191,10 @@ endpoint. -/
 theorem card_roots_reflect {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
     {N : ℕ} (hN : p.natDegree ≤ N) :
     (reflect N p).roots.card = (N - p.natDegree) + p.roots.card := by
-  have hrev_ne : p.reverse ≠ 0 := by
-    rw [Ne, Polynomial.reverse_eq_zero]
-    exact fun hp0 => h0 (by simp [hp0])
   rw [reflect_eq_X_pow_mul_reverse p hN,
-    Polynomial.roots_mul (mul_ne_zero (pow_ne_zero _ Polynomial.X_ne_zero) hrev_ne),
+    Polynomial.roots_mul
+      (mul_ne_zero (pow_ne_zero _ Polynomial.X_ne_zero)
+        (reverse_ne_zero_of_coeff_zero_ne h0)),
     Multiset.card_add, Polynomial.roots_pow, Polynomial.roots_X, Multiset.card_nsmul,
     Multiset.card_singleton, mul_one, card_roots_reverse hp h0]
 
@@ -266,8 +265,8 @@ theorem splits_X_pow_mul_reverse_of_splits {p : K[X]} (h : p.Splits) {N : ℕ}
 theorem splits_reflect_of_splits {p : K[X]} (h : p.Splits) {N : ℕ}
     (hN : p.natDegree ≤ N) :
     (reflect N p).Splits := by
-  rw [reflect_eq_X_pow_mul_reverse p hN]
-  exact splits_X_pow_mul_reverse_of_splits h hN
+  simpa [reflect_eq_X_pow_mul_reverse p hN] using
+    splits_X_pow_mul_reverse_of_splits h hN
 
 /-- For polynomials of degree at most `N`, reflection preserves and reflects
 splitting. -/
@@ -499,8 +498,8 @@ theorem card_roots_reverse_Ioo {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
     {a b : K} (ha : 0 < a) (hb : 0 < b) :
     (p.reverse.roots.filter (fun x => a < x ∧ x < b)).card =
       (p.roots.filter (fun r => b⁻¹ < r ∧ r < a⁻¹)).card := by
-  rw [card_filter_reverse_roots hp h0 (fun x => a < x ∧ x < b)]
-  exact congrArg Multiset.card
+  simpa [card_filter_reverse_roots hp h0 (fun x => a < x ∧ x < b)] using
+    congrArg Multiset.card
     (Multiset.filter_congr (fun r _ => mem_Ioo_inv_iff ha hb))
 
 /-- Half-line root-count transport under reversal. -/
@@ -508,8 +507,8 @@ theorem card_roots_reverse_Ioi {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
     {a : K} (ha : 0 < a) :
     (p.reverse.roots.filter (fun x => a < x)).card =
       (p.roots.filter (fun r => 0 < r ∧ r < a⁻¹)).card := by
-  rw [card_filter_reverse_roots hp h0 (fun x => a < x)]
-  exact congrArg Multiset.card
+  simpa [card_filter_reverse_roots hp h0 (fun x => a < x)] using
+    congrArg Multiset.card
     (Multiset.filter_congr (fun r _ => mem_Ioi_inv_iff ha))
 
 /-- No-gap emptiness on a positive interval under reversal. -/
@@ -524,9 +523,6 @@ theorem card_roots_reflect_Ioo {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
     {N : ℕ} (hN : p.natDegree ≤ N) {a b : K} (ha : 0 < a) (hb : 0 < b) :
     ((reflect N p).roots.filter (fun x => a < x ∧ x < b)).card =
       (p.roots.filter (fun r => b⁻¹ < r ∧ r < a⁻¹)).card := by
-  have hrev : p.reverse ≠ 0 := by
-    rw [Ne, Polynomial.reverse_eq_zero]
-    exact fun hp0 => h0 (by simp [hp0])
   have hpad :
       Multiset.filter (fun x => a < x ∧ x < b)
         ((N - p.natDegree) • ({0} : Multiset K)) = 0 := by
@@ -535,7 +531,9 @@ theorem card_roots_reflect_Ioo {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
     rw [Multiset.mem_nsmul, Multiset.mem_singleton] at hx
     exact fun h => absurd (hx.2 ▸ h.1) (lt_asymm ha)
   rw [reflect_eq_X_pow_mul_reverse p hN,
-    Polynomial.roots_mul (mul_ne_zero (pow_ne_zero _ Polynomial.X_ne_zero) hrev),
+    Polynomial.roots_mul
+      (mul_ne_zero (pow_ne_zero _ Polynomial.X_ne_zero)
+        (reverse_ne_zero_of_coeff_zero_ne h0)),
     Polynomial.roots_pow, Polynomial.roots_X, Multiset.filter_add,
     Multiset.card_add, card_roots_reverse_Ioo hp h0 ha hb, hpad,
     Multiset.card_zero, zero_add]

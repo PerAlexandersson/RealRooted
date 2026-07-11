@@ -20,7 +20,7 @@ namespace BorceaBranden
 
 /-- Marker for the missing multivariate-stability infrastructure needed before
 the finite-symbol classification can be stated faithfully. -/
-def NeedsMultivariateStabilityAPI : Prop := True
+abbrev NeedsMultivariateStabilityAPI : Prop := True
 
 /-- Current scaffold for the Borcea--Branden finite-symbol theorem. -/
 theorem finiteSymbolClassification_scaffold :

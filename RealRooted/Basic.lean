@@ -458,8 +458,7 @@ lemma listInterlaces_filter_lt_le_succ {x : ℝ} {ss rs : List ℝ}
       (ss.filter (fun a => x < a)).length + 1 := by
   have hfa := listInterlaces_dropLast_forall₂_le h hlen
   have hmono := filter_lt_length_le_of_forall₂_le (x := x) hfa
-  have hne : rs ≠ [] := by
-    intro hnil
+  have hne : rs ≠ [] := fun hnil => by
     rw [hnil] at hlen
     simp at hlen
   have hsplit : (rs.filter (fun a => x < a)).length ≤
@@ -585,7 +584,7 @@ theorem roots_le_of_prec_right {f g : ℝ[X]} {c : ℝ}
     ∀ r ∈ f.roots, r ≤ c := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
   have hrs_le : ∀ r ∈ rs, r ≤ c :=
-    fun r hr => hg_le r (by rw [← hrs_eq]; exact Multiset.mem_coe.mpr hr)
+    fun r hr => hg_le r (by simpa [hrs_eq] using Multiset.mem_coe.mpr hr)
   intro r hr
   have hr' : r ∈ ss := by
     have : r ∈ (↑ss : Multiset ℝ) := by lia
@@ -764,11 +763,9 @@ theorem eval_pos_of_hasNonnegCoeffs {p : ℝ[X]} (hp : HasNonnegCoeffs p)
 
 /-- A real polynomial with nonnegative coefficients has no positive real roots. -/
 theorem roots_nonpos_of_hasNonnegCoeffs {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
-    ∀ r ∈ p.roots, r ≤ 0 := by
-  intro r hr
+    ∀ r ∈ p.roots, r ≤ 0 := fun r hr => by
   by_contra hr_nonpos
-  have hp0 : p ≠ 0 := by
-    intro hp0
+  have hp0 : p ≠ 0 := fun hp0 => by
     simp [hp0] at hr
   have hr_pos : 0 < r := lt_of_not_ge hr_nonpos
   have hroot : p.IsRoot r := (Polynomial.mem_roots hp0).mp hr
@@ -786,15 +783,12 @@ lemma hasPosLeadingCoeff_one : HasPosLeadingCoeff (1 : ℝ[X]) :=
 lemma hasPosLeadingCoeff_C_mul {a : ℝ} {p : ℝ[X]}
     (ha : 0 < a) (hp : HasPosLeadingCoeff p) :
     HasPosLeadingCoeff (C a * p) := by
-  unfold HasPosLeadingCoeff at hp ⊢
-  simp_all
+  simpa [HasPosLeadingCoeff, leadingCoeff_mul] using mul_pos ha hp
 
 lemma HasPosLeadingCoeff.mul {p q : ℝ[X]}
     (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q) :
     HasPosLeadingCoeff (p * q) := by
-  unfold HasPosLeadingCoeff at hp hq ⊢
-  rw [leadingCoeff_mul]
-  exact mul_pos hp hq
+  simpa [HasPosLeadingCoeff, leadingCoeff_mul] using mul_pos hp hq
 
 lemma hasPosLeadingCoeff_neg {p : ℝ[X]} (hp : p.leadingCoeff < 0) :
     HasPosLeadingCoeff (-p) := by
@@ -802,9 +796,7 @@ lemma hasPosLeadingCoeff_neg {p : ℝ[X]} (hp : p.leadingCoeff < 0) :
 
 lemma HasPosLeadingCoeff.X_mul {p : ℝ[X]} (hp : HasPosLeadingCoeff p) :
     HasPosLeadingCoeff (X * p) := by
-  unfold HasPosLeadingCoeff at hp ⊢
-  rw [leadingCoeff_mul, leadingCoeff_X]
-  simpa using hp
+  simpa [HasPosLeadingCoeff, leadingCoeff_mul, leadingCoeff_X] using hp
 
 /-! ## Elementary interval inequalities -/
 

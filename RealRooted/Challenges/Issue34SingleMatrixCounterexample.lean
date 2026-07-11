@@ -51,89 +51,36 @@ def fullMinor : ℝ :=
       M 6 2 * M 7 0 * M 8 1 - M 6 2 * M 7 1 * M 8 0
 
 /-- The selected row indices are strictly increasing. -/
-theorem rows_strictMono : StrictMono rows := by
-  intro i j hij
-  fin_cases i <;> fin_cases j <;> simp [rows] at hij ⊢
+theorem rows_strictMono : StrictMono rows := by decide
 
 /-- The selected column indices are strictly increasing. -/
-theorem cols_strictMono : StrictMono cols := by
-  intro i j hij
-  fin_cases i <;> fin_cases j <;> simp [cols] at hij ⊢
+theorem cols_strictMono : StrictMono cols := by decide
 
 /-- The diagonal band hypotheses of the single-matrix subtarget hold. -/
-theorem band : ∀ l : Fin 3, 2 * cols l ≤ rows l := by
-  intro l
-  fin_cases l
-  · change 2 * (0 : ℕ) ≤ 6
-    norm_num
-  · change 2 * (1 : ℕ) ≤ 7
-    norm_num
-  · change 2 * (2 : ℕ) ≤ 8
-    norm_num
+theorem band : ∀ l : Fin 3, 2 * cols l ≤ rows l := by decide
 
 /-- The `(0, 1)` full-band side hypothesis holds. -/
-theorem band01 : 2 * cols 1 ≤ rows 0 := by
-  change 2 * (1 : ℕ) ≤ 6
-  norm_num
+theorem band01 : 2 * cols 1 ≤ rows 0 := by decide
 
 /-- The `(1, 2)` full-band side hypothesis holds. -/
-theorem band12 : 2 * cols 2 ≤ rows 1 := by
-  change 2 * (2 : ℕ) ≤ 7
-  norm_num
+theorem band12 : 2 * cols 2 ≤ rows 1 := by decide
 
 /-- The top-right corner is in band. -/
-theorem band02 : 2 * cols 2 ≤ rows 0 := by
-  change 2 * (2 : ℕ) ≤ 6
-  norm_num
-
-theorem entry_60 : M 6 0 = 30 := by
-  norm_num [M, hurwitz, toeplitz, cseq]
-
-theorem entry_61 : M 6 1 = 31 := by
-  norm_num [M, hurwitz, toeplitz, cseq]
-
-theorem entry_62 : M 6 2 = 10 := by
-  norm_num [M, hurwitz, toeplitz, cseq]
-
-theorem entry_70 : M 7 0 = 10 := by
-  norm_num [M, hurwitz, toeplitz, cseq]
-
-theorem entry_71 : M 7 1 = 17 := by
-  norm_num [M, hurwitz, toeplitz, cseq]
-
-theorem entry_72 : M 7 2 = 8 := by
-  norm_num [M, hurwitz, toeplitz, cseq]
-
-theorem entry_80 : M 8 0 = 0 := by
-  norm_num [M, hurwitz, toeplitz, cseq]
-
-theorem entry_81 : M 8 1 = 30 := by
-  norm_num [M, hurwitz, toeplitz, cseq]
-
-theorem entry_82 : M 8 2 = 31 := by
-  norm_num [M, hurwitz, toeplitz, cseq]
+theorem band02 : 2 * cols 2 ≤ rows 0 := by decide
 
 /-- The single-matrix corner-zeroed expression is negative in this window. -/
 theorem cornerZeroed_eq : cornerZeroed = -1000 := by
-  rw [cornerZeroed, entry_60, entry_61, entry_70, entry_71, entry_72, entry_80,
-    entry_81, entry_82]
-  norm_num
+  norm_num [cornerZeroed, M, hurwitz, toeplitz, cseq]
 
 /-- The full determinant of the same window is positive. -/
 theorem fullMinor_eq : fullMinor = 2000 := by
-  rw [fullMinor, entry_60, entry_61, entry_62, entry_70, entry_71, entry_72,
-    entry_80, entry_81, entry_82]
-  norm_num
+  norm_num [fullMinor, M, hurwitz, toeplitz, cseq]
 
 /-- The corner-zeroed expression violates the claimed nonnegativity conclusion. -/
-theorem cornerZeroed_negative : cornerZeroed < 0 := by
-  rw [cornerZeroed_eq]
-  norm_num
+theorem cornerZeroed_negative : cornerZeroed < 0 := by norm_num [cornerZeroed_eq]
 
 /-- The full determinant remains nonnegative in the same window. -/
-theorem fullMinor_nonneg : 0 ≤ fullMinor := by
-  rw [fullMinor_eq]
-  norm_num
+theorem fullMinor_nonneg : 0 ≤ fullMinor := by norm_num [fullMinor_eq]
 
 end
 

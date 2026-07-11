@@ -45,15 +45,15 @@ lemma weightedSum_eq_zero_of_forall_coeff_zero :
   | [], _ => rfl
   | (a, p) :: l, hzero => by
       have ha : a = 0 := hzero (a, p) (by simp)
-      have hl : ∀ ap ∈ l, ap.1 = 0 := fun ap hap => hzero ap (by simp [hap])
+      have hl : ∀ ap ∈ l, ap.1 = 0 :=
+        List.forall_mem_of_forall_mem_cons hzero
       simp [weightedSum_cons, ha, weightedSum_eq_zero_of_forall_coeff_zero l hl]
 
 private lemma forall_weight_eq_zero_of_nonneg_of_not_exists_pos
     {l : List (ℝ × ℝ[X])}
     (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
     (hnot_pos : ¬ ∃ ap ∈ l, 0 < ap.1) :
-    ∀ ap ∈ l, ap.1 = 0 := by
-  intro ap hap
+    ∀ ap ∈ l, ap.1 = 0 := fun ap hap => by
   exact le_antisymm (not_lt.mp fun hap_pos => hnot_pos ⟨ap, hap, hap_pos⟩)
     (hnonneg ap hap)
 
@@ -67,9 +67,9 @@ lemma hasPosLeadingCoeff_weightedSum :
   | (a, p) :: l, hnonneg, hpos, hex => by
       have hnonneg_a : 0 ≤ a := hnonneg (a, p) (by simp)
       have hnonneg_tail : ∀ ap ∈ l, 0 ≤ ap.1 :=
-        fun ap hap => hnonneg ap (by simp [hap])
+        List.forall_mem_of_forall_mem_cons hnonneg
       have hpos_tail : ∀ ap ∈ l, HasPosLeadingCoeff ap.2 :=
-        fun ap hap => hpos ap (by simp [hap])
+        List.forall_mem_of_forall_mem_cons hpos
       rcases lt_or_eq_of_le hnonneg_a with ha | rfl
       · by_cases htail : ∃ ap ∈ l, 0 < ap.1
         · have hCp_pos : HasPosLeadingCoeff (C a * p) :=
@@ -118,13 +118,11 @@ lemma nonneg {h : ℝ[X]} :
     ∀ {l : List (ℝ × ℝ[X])}, WeightedCompatibleLeft h l → ∀ ap ∈ l, 0 ≤ ap.1
   | _, @singleton _ a p ha _ _ => by
       grind
-  | _, cons_zero ha _ _ hl => by
-      intro ap hap
+  | _, cons_zero ha _ _ hl => fun ap hap => by
       rcases List.mem_cons.mp hap with rfl | hap
       · exact ha.symm.le
       · exact nonneg hl ap hap
-  | _, cons_pos ha _ _ hl _ _ _ => by
-      intro ap hap
+  | _, cons_pos ha _ _ hl _ _ _ => fun ap hap => by
       rcases List.mem_cons.mp hap with rfl | hap
       · exact ha.le
       · exact nonneg hl ap hap
@@ -134,13 +132,11 @@ lemma pos {h : ℝ[X]} :
       ∀ ap ∈ l, HasPosLeadingCoeff ap.2
   | _, @singleton _ a p _ _ hpos => by
       simp_all
-  | _, cons_zero _ _ hpos hl => by
-      intro ap hap
+  | _, cons_zero _ _ hpos hl => fun ap hap => by
       rcases List.mem_cons.mp hap with rfl | hap
       · exact hpos
       · exact pos hl ap hap
-  | _, cons_pos _ _ hpos hl _ _ _ => by
-      intro ap hap
+  | _, cons_pos _ _ hpos hl _ _ _ => fun ap hap => by
       rcases List.mem_cons.mp hap with rfl | hap
       · exact hpos
       · exact pos hl ap hap
@@ -228,11 +224,11 @@ theorem prec_weightedSum_right :
   | (a, p) :: l, h, hnonneg, hprec, hpos, hex => by
       have hnonneg_a : 0 ≤ a := hnonneg (a, p) (by simp)
       have hnonneg_tail : ∀ ap ∈ l, 0 ≤ ap.1 :=
-        fun ap hap => hnonneg ap (by simp [hap])
+        List.forall_mem_of_forall_mem_cons hnonneg
       have hprec_tail : ∀ ap ∈ l, Prec ap.2 h :=
-        fun ap hap => hprec ap (by simp [hap])
+        List.forall_mem_of_forall_mem_cons hprec
       have hpos_tail : ∀ ap ∈ l, HasPosLeadingCoeff ap.2 :=
-        fun ap hap => hpos ap (by simp [hap])
+        List.forall_mem_of_forall_mem_cons hpos
       rcases lt_or_eq_of_le hnonneg_a with ha | rfl
       · by_cases htail : ∃ ap ∈ l, 0 < ap.1
         · have hCp_prec : Prec (C a * p) h :=

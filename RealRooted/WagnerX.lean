@@ -323,7 +323,8 @@ lemma listAlternates_append_zero :
     obtain ⟨hr₁s, hsr₂, htail⟩ := hint
     simp only [ListAlternates, List.cons_append]
     refine ⟨hr₁s, ?_⟩
-    have hrs_tail : ∀ r ∈ r₂ :: rs', r ≤ 0 := fun r hr => hrs r (.tail _ hr)
+    have hrs_tail : ∀ r ∈ r₂ :: rs', r ≤ 0 :=
+      List.forall_mem_of_forall_mem_cons hrs
     have hlen_tail : ss'.length + 1 = (r₂ :: rs').length := by simp_all
     have ih := listAlternates_append_zero ss' (r₂ :: rs') hlen_tail htail hrs_tail
     match ss', rs' with
@@ -450,7 +451,8 @@ lemma listInterlaces_append_zero_both :
   | s :: ss', r₁ :: r₂ :: rs', hlen, hint, hrs => by
       obtain ⟨hr₁s, hsr₂, htail⟩ := hint
       simp only [List.cons_append, ListInterlaces, hr₁s, hsr₂, true_and]
-      have hrs_tail : ∀ r ∈ r₂ :: rs', r ≤ 0 := fun r hr => hrs r (.tail _ hr)
+      have hrs_tail : ∀ r ∈ r₂ :: rs', r ≤ 0 :=
+        List.forall_mem_of_forall_mem_cons hrs
       have hlen_tail : ss'.length + 1 = (r₂ :: rs').length := by simp_all
       exact listInterlaces_append_zero_both ss' (r₂ :: rs') hlen_tail htail hrs_tail
   | [], _ :: _ :: _, hlen, _, _ => by simp at hlen

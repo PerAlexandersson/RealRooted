@@ -46,11 +46,13 @@ lemma polynomialWeightedSum_eval_mul_eval_nonpos_of_common_right
                   simp [Polynomial.eval_mul]
                   ring
           _ ≤ 0 := mul_nonpos_of_nonpos_of_nonneg hb_nonpos hgg_nonneg
-      have htail_prec : ∀ bg ∈ l, Prec bg.2 f := by grind
-      have htail_pos : ∀ bg ∈ l, HasPosLeadingCoeff bg.2 := by grind
+      have htail_prec : ∀ bg ∈ l, Prec bg.2 f :=
+        List.forall_mem_of_forall_mem_cons hprec
+      have htail_pos : ∀ bg ∈ l, HasPosLeadingCoeff bg.2 :=
+        List.forall_mem_of_forall_mem_cons hpos
       have htail_coeff :
-          ∀ bg ∈ l, ∀ x : ℝ, f.IsRoot x → bg.1.eval x ≤ 0 := by
-        grind
+          ∀ bg ∈ l, ∀ x : ℝ, f.IsRoot x → bg.1.eval x ≤ 0 :=
+        List.forall_mem_of_forall_mem_cons hcoeff
       have htail_nonpos :
           (polynomialWeightedSum l).eval r * g₀.eval r ≤ 0 :=
         polynomialWeightedSum_eval_mul_eval_nonpos_of_common_right
@@ -236,15 +238,13 @@ theorem prec_generalizedLiuWang_of_no_common
   have hroot_nonpos :
       ∀ r, f.IsRoot r → F.eval r * g.eval r ≤ 0 := by
     intro r hr
-    have hprec_all : ∀ bg ∈ ((b, g) :: l), Prec bg.2 f := by
-      intro bg hmem
-      rcases List.mem_cons.mp hmem with rfl | hmem'
-      · exact hgf.toPrec
-      · exact (hl_inter bg hmem').toPrec
-    have hpos_all : ∀ bg ∈ ((b, g) :: l), HasPosLeadingCoeff bg.2 := by grind
+    have hprec_all : ∀ bg ∈ ((b, g) :: l), Prec bg.2 f :=
+      List.forall_mem_cons.2 ⟨hgf.toPrec, fun bg hmem => (hl_inter bg hmem).toPrec⟩
+    have hpos_all : ∀ bg ∈ ((b, g) :: l), HasPosLeadingCoeff bg.2 :=
+      List.forall_mem_cons.2 ⟨hg_pos, hl_pos⟩
     have hcoeff_all :
-        ∀ bg ∈ ((b, g) :: l), ∀ x : ℝ, f.IsRoot x → bg.1.eval x ≤ 0 := by
-      grind
+        ∀ bg ∈ ((b, g) :: l), ∀ x : ℝ, f.IsRoot x → bg.1.eval x ≤ 0 :=
+      List.forall_mem_cons.2 ⟨hb_nonpos, hl_nonpos⟩
     calc
       F.eval r * g.eval r
           = (polynomialWeightedSum ((b, g) :: l)).eval r * g.eval r := by

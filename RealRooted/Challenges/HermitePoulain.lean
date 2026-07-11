@@ -24,7 +24,7 @@ namespace HermitePoulain
 
 /-- The finite constant-coefficient differential operator `f(D)` applied to
 `g`. -/
-def applyAsDifferentialOperator (f g : ℝ[X]) : ℝ[X] :=
+abbrev applyAsDifferentialOperator (f g : ℝ[X]) : ℝ[X] :=
   (Finset.range (f.natDegree + 1)).sum fun k =>
     C (f.coeff k) * ((Polynomial.derivative^[k]) g)
 

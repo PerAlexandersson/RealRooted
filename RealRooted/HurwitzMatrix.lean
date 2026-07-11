@@ -15,11 +15,11 @@ finite-minor statement needed by the existing `VeroneseSection` route.
 -/
 
 @[simp] theorem hurwitz_coeff_even_row (p : ℝ[X]) (i j : ℕ) :
-    hurwitz (fun k => p.coeff k) (2 * i) j = toeplitz (fun k => p.coeff (2 * k + 1)) i j := by
+    hurwitz p.coeff (2 * i) j = toeplitz (fun k => p.coeff (2 * k + 1)) i j := by
   simp [hurwitz]
 
 @[simp] theorem hurwitz_coeff_odd_row (p : ℝ[X]) (i j : ℕ) :
-    hurwitz (fun k => p.coeff k) (2 * i + 1) j = toeplitz (fun k => p.coeff (2 * k)) i j := by
+    hurwitz p.coeff (2 * i + 1) j = toeplitz (fun k => p.coeff (2 * k)) i j := by
   simp [hurwitz, show (2 * i + 1) / 2 = i by lia]
 
 /-! ### Row-parity entry formulas for arbitrary coefficient sequences
@@ -54,14 +54,14 @@ theorem hurwitz_apply_eq_zero_of_lt (c : ℕ → ℝ) {i j : ℕ} (h : i < 2 * j
     rw [hurwitz_odd_row_apply, if_neg (by lia)]
 
 theorem hurwitz_coeff_even_row_apply (p : ℝ[X]) (i j : ℕ) :
-    hurwitz (fun k => p.coeff k) (2 * i) j =
+    hurwitz p.coeff (2 * i) j =
       if j ≤ i then p.coeff (2 * (i - j) + 1) else 0 :=
-  hurwitz_even_row_apply (fun k => p.coeff k) i j
+  hurwitz_even_row_apply p.coeff i j
 
 theorem hurwitz_coeff_odd_row_apply (p : ℝ[X]) (i j : ℕ) :
-    hurwitz (fun k => p.coeff k) (2 * i + 1) j =
+    hurwitz p.coeff (2 * i + 1) j =
       if j ≤ i then p.coeff (2 * (i - j)) else 0 :=
-  hurwitz_odd_row_apply (fun k => p.coeff k) i j
+  hurwitz_odd_row_apply p.coeff i j
 
 /-! ### Odd/even Toeplitz submatrices of a Hurwitz matrix -/
 
@@ -86,16 +86,16 @@ subsequence is Pólya-frequency. -/
 theorem hurwitz_isPolyaFreqSeq_odd {c : ℕ → ℝ}
     (hc : (hurwitz c).IsTotallyNonneg) :
     IsPolyaFreqSeq (fun n => c (2 * n + 1)) := by
-  rw [IsPolyaFreqSeq, ← hurwitz_submatrix_even_eq_toeplitz]
-  exact hc.submatrix (by intro i j hij; lia) strictMono_id
+  simpa [IsPolyaFreqSeq, ← hurwitz_submatrix_even_eq_toeplitz] using
+    hc.submatrix (by intro i j hij; lia) strictMono_id
 
 /-- Total nonnegativity of a Hurwitz matrix implies that the even coefficient
 subsequence is Pólya-frequency. -/
 theorem hurwitz_isPolyaFreqSeq_even {c : ℕ → ℝ}
     (hc : (hurwitz c).IsTotallyNonneg) :
     IsPolyaFreqSeq (fun n => c (2 * n)) := by
-  rw [IsPolyaFreqSeq, ← hurwitz_submatrix_odd_eq_toeplitz]
-  exact hc.submatrix (strictMono_nat_of_lt_succ fun _ => by lia) strictMono_id
+  simpa [IsPolyaFreqSeq, ← hurwitz_submatrix_odd_eq_toeplitz] using
+    hc.submatrix (strictMono_nat_of_lt_succ fun _ => by lia) strictMono_id
 
 /-- Unfolded finite-minor form of
 `HurwitzStableToMatrixTotallyNonnegativeStatement`.
@@ -136,19 +136,16 @@ abbrev HurwitzMatrixCriterionStatement : Prop :=
     HurwitzMatrixTotallyNonnegativeToStableStatement
 
 theorem hurwitzStableToMatrixTotallyNonnegative_of_criterion :
-    HurwitzStableToMatrixTotallyNonnegativeStatement := by
-  intro p hp
-  exact hurwitzStableToMatrixTotallyNonnegative hp
+    HurwitzStableToMatrixTotallyNonnegativeStatement :=
+  @hurwitzStableToMatrixTotallyNonnegative
 
 theorem hurwitzStableToHurwitzMatrixMinors_of_criterion :
-    HurwitzStableToHurwitzMatrixMinorsStatement := by
-  intro p hp
-  exact hurwitzStableToMatrixTotallyNonnegative hp
+    HurwitzStableToHurwitzMatrixMinorsStatement :=
+  @hurwitzStableToMatrixTotallyNonnegative
 
 theorem hurwitzMatrixTotallyNonnegativeToStable_of_criterion :
-    HurwitzMatrixTotallyNonnegativeToStableStatement := by
-  intro p h
-  exact hurwitzMatrixTotallyNonnegativeToStable h
+    HurwitzMatrixTotallyNonnegativeToStableStatement :=
+  @hurwitzMatrixTotallyNonnegativeToStable
 
 theorem fullyInterlacingPairToHurwitzOddEvenStable_of_criterion :
     FullyInterlacingPairToHurwitzOddEvenStableStatement :=
@@ -156,7 +153,7 @@ theorem fullyInterlacingPairToHurwitzOddEvenStable_of_criterion :
 
 theorem hurwitzOddEvenToFullyInterlacingPair_of_matrixMinors :
     HurwitzOddEvenToFullyInterlacingPairStatement :=
-  fun p q hstab =>
+  fun {p q} hstab =>
     (hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair p q).mp
       (hurwitzStableToMatrixTotallyNonnegative hstab)
 
@@ -188,8 +185,7 @@ theorem hurwitz_mul_entrywise_matrix (a b : ℕ → ℝ) :
     hurwitz (fun n => a n * b n) =
       Matrix.of (fun i j => hurwitz a i j * hurwitz b i j) := by
   ext i j
-  simp only [Matrix.of_apply]
-  exact hurwitz_mul_entrywise a b i j
+  simpa using hurwitz_mul_entrywise a b i j
 
 /-- Pure-matrix combinatorial core of Garloff--Wagner Theorem 1.
 
@@ -219,8 +215,7 @@ theorem hurwitz_schurProduct_entry_nonneg {a b : ℕ → ℝ}
     (ha : (hurwitz a).IsTotallyNonneg) (hb : (hurwitz b).IsTotallyNonneg)
     (i j : ℕ) :
     0 ≤ (Matrix.of fun i j => hurwitz a i j * hurwitz b i j) i j := by
-  simp only [Matrix.of_apply]
-  exact mul_nonneg (ha.nonneg i j) (hb.nonneg i j)
+  simpa using mul_nonneg (ha.nonneg i j) (hb.nonneg i j)
 
 /-- Every `2 × 2` minor of the entrywise product of two totally nonnegative
 Hurwitz matrices is nonnegative.  This is the general two-by-two Hadamard minor
@@ -308,11 +303,8 @@ theorem hurwitz_schurProduct_det_fin_three
   by_cases hfail : ∃ l : Fin 3, rows l < 2 * cols l
   · rcases hfail with ⟨l, hl⟩
     exact hurwitz_schurProduct_det_fin_three_nonneg_of_band_fail hrows hcols l hl
-  · have hband : ∀ l : Fin 3, 2 * cols l ≤ rows l := by
-      intro l
-      exact not_lt.mp (by
-        intro hl
-        exact hfail ⟨l, hl⟩)
+  · have hband : ∀ l : Fin 3, 2 * cols l ≤ rows l :=
+      fun l => not_lt.mp (fun hl => hfail ⟨l, hl⟩)
     exact hInBand ha hb hrows hcols hband
 
 /-- Every minor of size at most two of the entrywise product of two totally
@@ -433,9 +425,9 @@ def HurwitzMatrixSchurProductDetFinThreeCoreStatement : Prop :=
 /-- The original in-band `3 × 3` core implies the refined triangular-free core. -/
 theorem hurwitzMatrixSchurProductDetFinThreeCore_of_inBand
     (hInBand : HurwitzMatrixSchurProductDetFinThreeInBandStatement) :
-    HurwitzMatrixSchurProductDetFinThreeCoreStatement := by
-  intro a b ha hb rows cols hrows hcols hband _h01 _h12
-  exact hInBand ha hb hrows hcols hband
+    HurwitzMatrixSchurProductDetFinThreeCoreStatement :=
+  fun {_a _b} ha hb {_rows} {_cols} hrows hcols hband _h01 _h12 =>
+    hInBand ha hb hrows hcols hband
 
 /-- The refined triangular-free core implies the original in-band `3 × 3` core. -/
 theorem hurwitzMatrixSchurProductDetFinThreeInBand_of_core
@@ -471,9 +463,8 @@ def HurwitzMatrixSchurProductDetLeThreeStatement : Prop :=
 Hurwitz matrix Schur-product statement. -/
 theorem hurwitzMatrixSchurProductDetLeThree_of_inBand
     (hInBand : HurwitzMatrixSchurProductDetFinThreeInBandStatement) :
-    HurwitzMatrixSchurProductDetLeThreeStatement := by
-  intro a b ha hb n rows cols hrows hcols hn
-  exact hurwitz_schurProduct_det_of_card_le_three hInBand ha hb hrows hcols hn
+    HurwitzMatrixSchurProductDetLeThreeStatement :=
+  @hurwitz_schurProduct_det_of_card_le_three hInBand
 
 /-- The refined triangular-free `3 × 3` core implies the low-order, size-`≤ 3`,
 Hurwitz matrix Schur-product statement. -/
@@ -484,24 +475,24 @@ theorem hurwitzMatrixSchurProductDetLeThree_of_core
     (hurwitzMatrixSchurProductDetFinThreeInBand_of_core hcore)
 
 theorem hurwitzMatrixSchurProductDetLeThree_of_schurProductTN :
-    HurwitzMatrixSchurProductDetLeThreeStatement := by
-  intro a b ha hb n rows cols hrows hcols _hn
-  exact hurwitzMatrixSchurProductTN ha hb hrows hcols
+    HurwitzMatrixSchurProductDetLeThreeStatement :=
+  fun {_a _b} ha hb {_n} {_rows} {_cols} hrows hcols _hn =>
+    hurwitzMatrixSchurProductTN ha hb hrows hcols
 
 /-- The full Hurwitz matrix Schur-product statement implies the isolated
 in-band `3 × 3` core. -/
 theorem hurwitzMatrixSchurProductDetFinThreeInBand_of_schurProductTN :
-    HurwitzMatrixSchurProductDetFinThreeInBandStatement := by
-  intro a b ha hb rows cols hrows hcols _hband
-  exact hurwitzMatrixSchurProductTN ha hb hrows hcols
+    HurwitzMatrixSchurProductDetFinThreeInBandStatement :=
+  fun {_a _b} ha hb {_rows} {_cols} hrows hcols _hband =>
+    hurwitzMatrixSchurProductTN ha hb hrows hcols
 
 /-- The low-order, size-`≤ 3`, Hurwitz matrix Schur-product statement implies
 the isolated in-band `3 × 3` core. -/
 theorem hurwitzMatrixSchurProductDetFinThreeInBand_of_leThree
     (hLeThree : HurwitzMatrixSchurProductDetLeThreeStatement) :
-    HurwitzMatrixSchurProductDetFinThreeInBandStatement := by
-  intro a b ha hb rows cols hrows hcols _hband
-  exact hLeThree ha hb hrows hcols (by norm_num)
+    HurwitzMatrixSchurProductDetFinThreeInBandStatement :=
+  fun {_a _b} ha hb {_rows} {_cols} hrows hcols _hband =>
+    hLeThree ha hb hrows hcols (by norm_num)
 
 /-- The low-order, size-`≤ 3`, Hurwitz Schur-product statement is equivalent
 to the isolated in-band `3 × 3` core. -/
@@ -771,30 +762,22 @@ theorem
     rw [Matrix.det_fin_two] at h
     simp only [Matrix.submatrix_apply, Matrix.cons_val_zero, Matrix.cons_val_one] at h
     have h10 : hurwitz a row1 col1 = hurwitz a (row1 - 2 * col1) 0 := by
-      change hurwitz a (rows 1) (cols 1) = hurwitz a (rows 1 - 2 * cols 1) 0
-      exact hshift 1 1
+      simpa [rows, cols] using hshift 1 1
     have h21 : hurwitz a row2 col1 = hurwitz a (row2 - 2 * col1) 0 := by
-      change hurwitz a (rows 2) (cols 1) = hurwitz a (rows 2 - 2 * cols 1) 0
-      exact hshift 2 1
+      simpa [rows, cols] using hshift 2 1
     simpa [hurwitzFullBandCornerZeroedSingleFirstColLowerMinor, h10, h21] using h
   have hs01 : hurwitz a row0 col1 = hurwitz a (row0 - 2 * col1) 0 := by
-    change hurwitz a (rows 0) (cols 1) = hurwitz a (rows 0 - 2 * cols 1) 0
-    exact hshift 0 1
+    simpa [rows, cols] using hshift 0 1
   have hs02 : hurwitz a row0 col2 = hurwitz a (row0 - 2 * col2) 0 := by
-    change hurwitz a (rows 0) (cols 2) = hurwitz a (rows 0 - 2 * cols 2) 0
-    exact hshift 0 2
+    simpa [rows, cols] using hshift 0 2
   have hs11 : hurwitz a row1 col1 = hurwitz a (row1 - 2 * col1) 0 := by
-    change hurwitz a (rows 1) (cols 1) = hurwitz a (rows 1 - 2 * cols 1) 0
-    exact hshift 1 1
+    simpa [rows, cols] using hshift 1 1
   have hs12 : hurwitz a row1 col2 = hurwitz a (row1 - 2 * col2) 0 := by
-    change hurwitz a (rows 1) (cols 2) = hurwitz a (rows 1 - 2 * cols 2) 0
-    exact hshift 1 2
+    simpa [rows, cols] using hshift 1 2
   have hs21 : hurwitz a row2 col1 = hurwitz a (row2 - 2 * col1) 0 := by
-    change hurwitz a (rows 2) (cols 1) = hurwitz a (rows 2 - 2 * cols 1) 0
-    exact hshift 2 1
+    simpa [rows, cols] using hshift 2 1
   have hs22 : hurwitz a row2 col2 = hurwitz a (row2 - 2 * col2) 0 := by
-    change hurwitz a (rows 2) (cols 2) = hurwitz a (rows 2 - 2 * cols 2) 0
-    exact hshift 2 2
+    simpa [rows, cols] using hshift 2 2
   have hdet_full :
       0 ≤ hurwitzFullBandCornerZeroedSingleFirstColDet a row0 row1 row2 col1 col2 +
         hurwitz a (row0 - 2 * col2) 0 *
@@ -833,9 +816,9 @@ theorem
     hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZero_of_single
     (hSingle :
       HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleStatement) :
-    HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZeroStatement := by
-  intro a ha rows cols hrows hcols hband h01 h12 h02 _hcol0
-  exact hSingle ha hrows hcols hband h01 h12 h02
+    HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZeroStatement :=
+  fun {_a} ha {_rows} {_cols} hrows hcols hband h01 h12 h02 _hcol0 =>
+    hSingle ha hrows hcols hband h01 h12 h02
 
 /-- The first-column normal form implies the column-normalized single-matrix
 corner-zeroed determinant target. -/
@@ -855,9 +838,7 @@ theorem
   have hcol_le_two : ∀ j : Fin 3, cols j ≤ cols 2 := by
     intro j
     fin_cases j
-    · change cols 0 ≤ cols 2
-      rw [hcol0]
-      exact Nat.zero_le (cols 2)
+    · simp [hcol0]
     · exact le_of_lt hc12
     · rfl
   have hrow_ge_zero : ∀ i : Fin 3, rows 0 ≤ rows i := by
@@ -900,14 +881,11 @@ theorem
     intro l
     fin_cases l <;> simp [rows, cols] <;> lia
   have h01 : 2 * cols 1 ≤ rows 0 := by
-    change 2 * col1 ≤ row0
-    exact le_trans (Nat.mul_le_mul_left 2 (le_of_lt hc12)) h02
+    simpa [rows, cols] using le_trans (Nat.mul_le_mul_left 2 (le_of_lt hc12)) h02
   have h12 : 2 * cols 2 ≤ rows 1 := by
-    change 2 * col2 ≤ row1
-    exact le_trans h02 (le_of_lt hr01)
+    simpa [rows, cols] using le_trans h02 (le_of_lt hr01)
   have h02' : 2 * cols 2 ≤ rows 0 := by
-    change 2 * col2 ≤ row0
-    exact h02
+    simpa [rows, cols] using h02
   have hcol0 : cols 0 = 0 := by simp [cols]
   have hres := hZero ha hrows hcols hband h01 h12 h02' hcol0
   have hall : ∀ i j : Fin 3, 2 * cols j ≤ rows i := by
@@ -918,20 +896,15 @@ theorem
     simpa only [Nat.zero_add] using
       hurwitz_col_shift_add a 0 (cols j) (rows i) (by simpa using hall i j)
   have hs01 : hurwitz a row0 col1 = hurwitz a (row0 - 2 * col1) 0 := by
-    change hurwitz a (rows 0) (cols 1) = hurwitz a (rows 0 - 2 * cols 1) 0
-    exact hshift 0 1
+    simpa [rows, cols] using hshift 0 1
   have hs11 : hurwitz a row1 col1 = hurwitz a (row1 - 2 * col1) 0 := by
-    change hurwitz a (rows 1) (cols 1) = hurwitz a (rows 1 - 2 * cols 1) 0
-    exact hshift 1 1
+    simpa [rows, cols] using hshift 1 1
   have hs21 : hurwitz a row2 col1 = hurwitz a (row2 - 2 * col1) 0 := by
-    change hurwitz a (rows 2) (cols 1) = hurwitz a (rows 2 - 2 * cols 1) 0
-    exact hshift 2 1
+    simpa [rows, cols] using hshift 2 1
   have hs12 : hurwitz a row1 col2 = hurwitz a (row1 - 2 * col2) 0 := by
-    change hurwitz a (rows 1) (cols 2) = hurwitz a (rows 1 - 2 * cols 2) 0
-    exact hshift 1 2
+    simpa [rows, cols] using hshift 1 2
   have hs22 : hurwitz a row2 col2 = hurwitz a (row2 - 2 * col2) 0 := by
-    change hurwitz a (rows 2) (cols 2) = hurwitz a (rows 2 - 2 * cols 2) 0
-    exact hshift 2 2
+    simpa [rows, cols] using hshift 2 2
   simpa [hurwitzFullBandCornerZeroedSingleFirstColDet, rows, cols,
     hs01, hs11, hs21, hs12, hs22] using hres
 
@@ -1032,8 +1005,7 @@ theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle_of_co
       rfl
     have hs := hurwitz_col_shift_add a (cols' j) d (rows i) <|
       by simpa [hcadd] using hall i j
-    rw [hcadd, hrow] at hs
-    exact hs
+    simpa [hcadd, hrow] using hs
   have hnorm := hZero ha hrows' hcols' hband' h01' h12' h02' hcol0'
   rw [← hentry 0 0, ← hentry 1 1, ← hentry 2 2, ← hentry 1 2,
     ← hentry 2 1, ← hentry 0 1, ← hentry 1 0, ← hentry 2 0] at hnorm
@@ -1414,9 +1386,9 @@ theorem hurwitzMatrixSchurProductDetLeThree_of_cornerZeroedSingleFirstCol
 subcase. -/
 theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_core
     (hcore : HurwitzMatrixSchurProductDetFinThreeCoreStatement) :
-    HurwitzMatrixSchurProductDetFinThreeCoreFullBandStatement := by
-  intro a b ha hb rows cols hrows hcols hband h01 h12 _h02
-  exact hcore ha hb hrows hcols hband h01 h12
+    HurwitzMatrixSchurProductDetFinThreeCoreFullBandStatement :=
+  fun {_a _b} ha hb {_rows} {_cols} hrows hcols hband h01 h12 _h02 =>
+    hcore ha hb hrows hcols hband h01 h12
 
 /-- After the corner-zero subcase is proved, the triangular-free `3 × 3` core is
 equivalent to the fully in-band top-right subcase. -/
@@ -1430,9 +1402,9 @@ theorem hurwitzMatrixSchurProductDetFinThreeCore_iff_fullBand :
 subcase. -/
 theorem hurwitzMatrixSchurProductDetFinThreeCoreCornerZero_of_core
     (hcore : HurwitzMatrixSchurProductDetFinThreeCoreStatement) :
-    HurwitzMatrixSchurProductDetFinThreeCoreCornerZeroStatement := by
-  intro a b ha hb rows cols hrows hcols hband h01 h12 _h02
-  exact hcore ha hb hrows hcols hband h01 h12
+    HurwitzMatrixSchurProductDetFinThreeCoreCornerZeroStatement :=
+  fun {_a _b} ha hb {_rows} {_cols} hrows hcols hband h01 h12 _h02 =>
+    hcore ha hb hrows hcols hband h01 h12
 
 /-- The triangular-free `3 × 3` core is equivalent to the conjunction of the
 fully in-band top-right subcase and the corner-zero top-right subcase. -/
@@ -1477,8 +1449,8 @@ the whole Hurwitz matrix is totally nonnegative. -/
 theorem hurwitz_isTotallyNonneg_of_firstColumn_isPolyaFreqSeq (c : ℕ → ℝ)
     (h : IsPolyaFreqSeq fun k => hurwitz c k 0) :
     (hurwitz c).IsTotallyNonneg := by
-  rw [hurwitz_eq_toeplitz_firstColumn_submatrix c]
-  exact Matrix.IsTotallyNonneg.submatrix h strictMono_id (fun _ _ hab => by lia)
+  exact hurwitz_eq_toeplitz_firstColumn_submatrix c ▸
+    Matrix.IsTotallyNonneg.submatrix h strictMono_id (fun _ _ hab => by lia)
 
 /-- Counterexample first column: the binomial sequence `k ↦ C(16, k)`. -/
 noncomputable def cexFirstColumn : ℕ → ℝ := fun k => (Nat.choose 16 k : ℝ)
@@ -1524,11 +1496,7 @@ theorem hurwitz_cexA_firstColumn (k : ℕ) : hurwitz cexA k 0 = cexFirstColumn k
 /-- The Hurwitz matrix of the counterexample is totally nonnegative. -/
 theorem cexA_hurwitz_isTotallyNonneg : (hurwitz cexA).IsTotallyNonneg := by
   refine hurwitz_isTotallyNonneg_of_firstColumn_isPolyaFreqSeq cexA ?_
-  have : (fun k => hurwitz cexA k 0) = cexFirstColumn := by
-    funext k
-    exact hurwitz_cexA_firstColumn k
-  rw [this]
-  exact cexFirstColumn_isPolyaFreqSeq
+  simpa [hurwitz_cexA_firstColumn] using cexFirstColumn_isPolyaFreqSeq
 
 /-- The first-column normal-form leaf of GitHub issue #34 is false.  Even for
 the concrete totally nonnegative Hurwitz matrix `hurwitz cexA`, the
@@ -1546,17 +1514,15 @@ theorem not_hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFi
 
 /-- The column-normalized single-matrix leaf of GitHub issue #34 is false. -/
 theorem not_hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZero :
-    ¬ HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZeroStatement := by
-  intro h
-  exact not_hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstCol
+    ¬ HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleColZeroStatement :=
+  fun h => not_hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstCol
     (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstCol_of_colZero
       h)
 
 /-- The general single-matrix corner-zeroed leaf of GitHub issue #34 is false. -/
 theorem not_hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingle :
-    ¬ HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleStatement := by
-  intro h
-  exact not_hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstCol
+    ¬ HurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleStatement :=
+  fun h => not_hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstCol
     (hurwitzMatrixSchurProductDetFinThreeCoreFullBandCornerZeroedSingleFirstCol_of_single
       h)
 
@@ -1640,8 +1606,8 @@ theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_polyaFreq
     intro x y hxy
     have := hcols hxy
     lia
-  rw [hurwitz_schurProduct_det_submatrix_eq_toeplitz_of_band a b hbandall]
-  exact hPF ha hb hrows hdbl
+  simpa [hurwitz_schurProduct_det_submatrix_eq_toeplitz_of_band a b hbandall] using
+    hPF ha hb hrows hdbl
 
 /-- The Pólya-frequency reduction, transported to the original in-band `3 × 3`
 Hurwitz Schur-product core through the existing full-band reduction. -/
@@ -1692,8 +1658,8 @@ theorem hurwitzMatrixSchurProductDetFinThreeCoreFullBand_of_evenColToeplitz
       2 * cols j ≤ 2 * cols 2 := Nat.mul_le_mul_left 2 hcj
       _ ≤ rows 0 := h02
       _ ≤ rows i := hri
-  rw [hurwitz_schurProduct_det_submatrix_eq_toeplitz_of_band a b hbandall]
-  exact hEven ha hb hrows hcols
+  simpa [hurwitz_schurProduct_det_submatrix_eq_toeplitz_of_band a b hbandall] using
+    hEven ha hb hrows hcols
 
 /-- The even-column Toeplitz reduction, transported to the original in-band
 `3 × 3` Hurwitz Schur-product core. -/
@@ -1864,20 +1830,20 @@ def HurwitzMulTotallyNonnegStatement : Prop :=
 /-- The Hurwitz normal-form leaf implies the even-column Toeplitz leaf. -/
 theorem hurwitzColumnZeroProductEvenColToeplitz_of_hurwitzMul
     (h : HurwitzMulTotallyNonnegStatement) :
-    HurwitzColumnZeroProductEvenColToeplitzStatement := by
-  intro a b ha hb n rows cols hrows hcols
-  rw [toeplitz_colZeroProduct_submatrix_eq_hurwitz_mul]
-  exact h ha hb hrows hcols
+    HurwitzColumnZeroProductEvenColToeplitzStatement :=
+  fun {_ _} ha hb {_} {_} {_} hrows hcols => by
+    simpa [toeplitz_colZeroProduct_submatrix_eq_hurwitz_mul] using
+      h ha hb hrows hcols
 
 /-- Conversely, the even-column Toeplitz leaf implies the Hurwitz normal-form
 leaf: every minor of the Hurwitz matrix of the pointwise product is an
 even-column Toeplitz minor of the column-`0` product sequence. -/
 theorem hurwitzMul_of_hurwitzColumnZeroProductEvenColToeplitz
     (h : HurwitzColumnZeroProductEvenColToeplitzStatement) :
-    HurwitzMulTotallyNonnegStatement := by
-  intro a b ha hb n rows cols hrows hcols
-  rw [← toeplitz_colZeroProduct_submatrix_eq_hurwitz_mul]
-  exact h ha hb hrows hcols
+    HurwitzMulTotallyNonnegStatement :=
+  fun {_ _} ha hb {_} {_} {_} hrows hcols => by
+    simpa [toeplitz_colZeroProduct_submatrix_eq_hurwitz_mul] using
+      h ha hb hrows hcols
 
 /-! ### The column-`0` product Pólya-frequency leaf is false
 

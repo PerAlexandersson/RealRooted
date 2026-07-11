@@ -20,8 +20,7 @@ namespace Multiset
 private theorem card_mul_le_sum_of_forall_le {s : Multiset ℝ} {A : ℝ}
     (h : ∀ r ∈ s, A ≤ r) :
     (s.card : ℝ) * A ≤ s.sum := by
-  have hns : s.card • A ≤ s.sum := Multiset.card_nsmul_le_sum h
-  rwa [nsmul_eq_mul] at hns
+  simpa [nsmul_eq_mul] using Multiset.card_nsmul_le_sum h
 
 /-- If the sum of a finite real multiset is strictly less than `(s.card : ℝ) * A`,
 then some element is strictly below `A`. -/
@@ -29,12 +28,8 @@ private theorem exists_lt_of_sum_lt_card_mul {s : Multiset ℝ} {A : ℝ}
     (h : s.sum < (s.card : ℝ) * A) :
     ∃ r ∈ s, r < A := by
   by_contra hcon
-  have hle : ∀ r ∈ s, A ≤ r := by
-    intro r hr
-    have : ¬ r < A := by
-      intro hlt
-      exact hcon ⟨r, hr, hlt⟩
-    exact not_lt.mp this
+  have hle : ∀ r ∈ s, A ≤ r := fun r hr =>
+    not_lt.mp fun hlt => hcon ⟨r, hr, hlt⟩
   exact not_lt.mpr (card_mul_le_sum_of_forall_le hle) h
 
 end Multiset
@@ -58,10 +53,8 @@ theorem natDegree_add_C_mul_of_natDegree_lt {f g : ℝ[X]} {μ : ℝ}
     (f + C μ * g).natDegree = g.natDegree := by
   have hμg_deg : (C μ * g).natDegree = g.natDegree :=
     natDegree_C_mul (p := g) hμ
-  have hlt : f.natDegree < (C μ * g).natDegree := by
-    rw [hμg_deg]
-    exact hdeg
-  rw [natDegree_add_eq_right_of_natDegree_lt hlt, hμg_deg]
+  rw [natDegree_add_eq_right_of_natDegree_lt (by simpa [hμg_deg] using hdeg),
+    hμg_deg]
 
 /-- If `g` has strictly larger degree than `f`, then the leading coefficient of
 `f + C μ * g` is the scaled leading coefficient of `g`. -/
@@ -70,8 +63,7 @@ theorem leadingCoeff_add_C_mul_of_natDegree_lt {f g : ℝ[X]} {μ : ℝ}
     (f + C μ * g).leadingCoeff = μ * g.leadingCoeff := by
   have hsum_deg := natDegree_add_C_mul_of_natDegree_lt hμ hdeg
   rw [leadingCoeff, hsum_deg, coeff_add, coeff_C_mul]
-  have hf_coeff : f.coeff g.natDegree = 0 := coeff_eq_zero_of_natDegree_lt hdeg
-  rw [hf_coeff, zero_add]
+  rw [coeff_eq_zero_of_natDegree_lt hdeg, zero_add]
   rfl
 
 /-- In the degree-jump-by-one case, the next coefficient of `f + C μ * g` is
@@ -84,8 +76,7 @@ private theorem nextCoeff_add_C_mul_of_natDegree_succ {f g : ℝ[X]} {μ : ℝ}
   have hlt : f.natDegree < g.natDegree := by lia
   have hsum_deg := natDegree_add_C_mul_of_natDegree_lt hμ hlt
   have hsum_pos : 0 < (f + C μ * g).natDegree := by
-    rw [hsum_deg, hdeg]
-    exact Nat.succ_pos _
+    simp [hsum_deg, hdeg]
   rw [nextCoeff_of_natDegree_pos hsum_pos, hsum_deg, hdeg, Nat.add_sub_cancel,
     coeff_add, coeff_C_mul, leadingCoeff]
 
@@ -164,8 +155,7 @@ private theorem roots_sum_lt_natDegree_mul_of_succDegree_add_right_small
       f.leadingCoeff + μ * g.coeff f.natDegree :=
     Polynomial.nextCoeff_add_C_mul_of_natDegree_succ hμ_ne hdeg
   have hlc_ne : (f + C μ * g).leadingCoeff ≠ 0 := by
-    rw [hlc]
-    exact ne_of_gt (mul_pos hμ hg_pos)
+    simpa [hlc] using ne_of_gt (mul_pos hμ hg_pos)
   have hsum := hp_split.roots_sum_eq_neg_nextCoeff_div_leadingCoeff hlc_ne
   calc
     (f + C μ * g).roots.sum =
@@ -202,8 +192,7 @@ theorem exists_root_lt_of_succDegree_add_right_small
         ∃ r : ℝ, r ∈ (f + C μ * g).roots ∧ r < A := by
   obtain ⟨δ, hδ_pos, hδ⟩ :=
     roots_sum_lt_natDegree_mul_of_succDegree_add_right_small hf_pos hg_pos hdeg A
-  refine ⟨δ, hδ_pos, ?_⟩
-  intro μ hμ hμδ hp_split
-  exact exists_root_lt_of_roots_sum_lt_natDegree_mul hp_split (hδ μ hμ hμδ hp_split)
+  exact ⟨δ, hδ_pos, fun μ hμ hμδ hp_split =>
+    exists_root_lt_of_roots_sum_lt_natDegree_mul hp_split (hδ μ hμ hμδ hp_split)⟩
 
 end RealRooted

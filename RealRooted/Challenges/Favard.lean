@@ -20,19 +20,28 @@ namespace RealRooted
 namespace Challenges
 namespace Favard
 
+/-- Challenge-facing name for the three-term Favard recurrence. -/
+abbrev FavardRecurrence (P : Nat → ℝ[X]) (α β : Nat → ℝ) : Prop :=
+  SatisfiesFavardRecurrence P α β
+
+/-- Challenge-facing name for the recurrence plus positive Favard coefficients. -/
+abbrev PositiveFavardRecurrence (P : Nat → ℝ[X]) (α β : Nat → ℝ) : Prop :=
+  FavardRecurrence P α β ∧ ∀ n : Nat, 0 < β (n + 1)
+
 /-- Favard recurrence coefficients force consecutive interlacing. -/
 theorem interlacing :
-    RealRooted.favardInterlacingStatement :=
-  RealRooted.favardInterlacing
+    ∀ {P : Nat → ℝ[X]} {α β : Nat → ℝ},
+      PositiveFavardRecurrence P α β →
+      ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+  fun h => RealRooted.favardInterlacing h.1 h.2
 
 /-- Favard recurrence coefficients force real-rootedness of every polynomial
 in the sequence. -/
-theorem realRooted
-    {P : Nat → ℝ[X]} {α β : Nat → ℝ}
-    (hrec : SatisfiesFavardRecurrence P α β)
-    (hβ : ∀ n : Nat, 0 < β (n + 1)) :
-    ∀ n : Nat, (P n) ≠ 0 ∧ (P n).Splits :=
-  RealRooted.isRealRooted_of_favard hrec hβ
+theorem realRooted :
+    ∀ {P : Nat → ℝ[X]} {α β : Nat → ℝ},
+      PositiveFavardRecurrence P α β →
+      ∀ n : Nat, (P n) ≠ 0 ∧ (P n).Splits :=
+  fun h => RealRooted.isRealRooted_of_favard h.1 h.2
 
 end Favard
 end Challenges

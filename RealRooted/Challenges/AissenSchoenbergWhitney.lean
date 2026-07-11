@@ -21,17 +21,27 @@ namespace RealRooted
 namespace Challenges
 namespace AissenSchoenbergWhitney
 
+/-- Challenge-facing name for the Toeplitz total-nonnegativity condition on
+the coefficient sequence of a polynomial. -/
+abbrev CoefficientsPolyaFrequency (p : ℝ[X]) : Prop :=
+  IsPolyaFreqSeq p.coeff
+
+/-- Challenge-facing name for having only real nonpositive roots. -/
+abbrev HasRealNonposRoots (p : ℝ[X]) : Prop :=
+  p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0
+
 /-- Forward ASW target: PF coefficients imply real non-positive roots. -/
 abbrev forwardTarget : Prop :=
-  RealRooted.aissenSchoenbergWhitneyForwardStatement
+  ∀ {p : ℝ[X]}, CoefficientsPolyaFrequency p → HasRealNonposRoots p
 
 /-- Reverse ASW theorem: real non-positive roots imply PF coefficients. -/
-theorem reverseTheorem {p : ℝ[X]}
-    (hpnn : HasNonnegCoeffs p)
-    (hsplits : p.Splits)
-    (hroots : ∀ r ∈ p.roots, r ≤ 0) :
-    IsPolyaFreqSeq (fun n ↦ p.coeff n) :=
-  RealRooted.aissenSchoenbergWhitney_reverse hpnn hsplits hroots
+theorem reverseTheorem :
+    ∀ {p : ℝ[X]},
+      HasNonnegCoeffs p →
+      HasRealNonposRoots p →
+      CoefficientsPolyaFrequency p :=
+  fun hp ⟨hsplits, hroots⟩ =>
+    RealRooted.aissenSchoenbergWhitney_reverse hp hsplits hroots
 
 end AissenSchoenbergWhitney
 end Challenges

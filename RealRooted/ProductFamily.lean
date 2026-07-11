@@ -94,24 +94,21 @@ lemma mem_zipWith_mul_get {row fs : List ℝ[X]}
 lemma hasNonnegCoeffs_of_mem_zipWith_mul {row fs : List ℝ[X]}
     (hrow : ∀ p ∈ row, HasNonnegCoeffs p)
     (hfs : ∀ f ∈ fs, HasNonnegCoeffs f) :
-    ∀ p ∈ row.zipWith (· * ·) fs, HasNonnegCoeffs p := by
-  intro p hp
+    ∀ p ∈ row.zipWith (· * ·) fs, HasNonnegCoeffs p := fun p hp => by
   rcases mem_zipWith_mul hp with ⟨a, ha, b, hb, rfl⟩
   exact (hrow a ha).mul (hfs b hb)
 
 lemma splits_of_mem_zipWith_mul {row fs : List ℝ[X]}
     (hrow : ∀ p ∈ row, p.Splits)
     (hfs : ∀ f ∈ fs, f.Splits) :
-    ∀ p ∈ row.zipWith (· * ·) fs, p.Splits := by
-  intro p hp
+    ∀ p ∈ row.zipWith (· * ·) fs, p.Splits := fun p hp => by
   rcases mem_zipWith_mul hp with ⟨a, ha, b, hb, rfl⟩
   exact (hrow a ha).mul (hfs b hb)
 
 lemma posLeadingCoeff_of_mem_zipWith_mul {row fs : List ℝ[X]}
     (hrow : ∀ p ∈ row, HasPosLeadingCoeff p)
     (hfs : ∀ f ∈ fs, HasPosLeadingCoeff f) :
-    ∀ p ∈ row.zipWith (· * ·) fs, HasPosLeadingCoeff p := by
-  intro p hp
+    ∀ p ∈ row.zipWith (· * ·) fs, HasPosLeadingCoeff p := fun p hp => by
   rcases mem_zipWith_mul hp with ⟨a, ha, b, hb, rfl⟩
   exact (hrow a ha).mul (hfs b hb)
 
@@ -183,24 +180,20 @@ private theorem pairInterleavers_zipWith_mul_reverse_of_interlacingSeqNonneg
   have hkj_ki : kj < ki := by
     have hrev_idx : gs.length - 1 - j''.1 < gs.length - 1 - i''.1 := by lia
     simpa [kj, ki] using hrev_idx
+  have hgi_eq : gi = gs.get ki := by
+    simp [gi, ki]
+  have hgj_eq : gj = gs.get kj := by
+    simp [gj, kj]
   have hfi_fj : Prec fi fj := by
     simpa [fi, fj] using (List.pairwise_iff_get.mp hpair_fs i' j' hij')
   have hgj_gi : Prec gj gi := by
-    rw [show gj = gs.get kj by
-      simp [gj, kj]]
-    rw [show gi = gs.get ki by
-      simp [gi, ki]]
-    exact List.pairwise_iff_get.mp hpair_gs kj ki hkj_ki
+    simpa [hgj_eq, hgi_eq] using List.pairwise_iff_get.mp hpair_gs kj ki hkj_ki
   have hfi_rr : (fi ≠ 0 ∧ fi.Splits) := hfs.realRooted fi (List.get_mem _ _)
   have hfj_rr : (fj ≠ 0 ∧ fj.Splits) := hfs.realRooted fj (List.get_mem _ _)
   have hgi_rr : (gi ≠ 0 ∧ gi.Splits) := by
-    rw [show gi = gs.get ki by
-      simp [gi, ki]]
-    exact hgs.realRooted _ (List.get_mem _ _)
+    simpa [hgi_eq] using hgs.realRooted (gs.get ki) (List.get_mem _ _)
   have hgj_rr : (gj ≠ 0 ∧ gj.Splits) := by
-    rw [show gj = gs.get kj by
-      simp [gj, kj]]
-    exact hgs.realRooted _ (List.get_mem _ _)
+    simpa [hgj_eq] using hgs.realRooted (gs.get kj) (List.get_mem _ _)
   have hleft_i : Prec (fi * gj) (fi * gi) := by
     simpa [fi, gi, gj, mul_comm, mul_left_comm, mul_assoc] using
       (prec_mul_common_factor hfi_rr.1 hfi_rr.2 hgj_gi)
@@ -228,10 +221,10 @@ theorem pairwiseHasCommonLeftInterleaver_zipWith_mul_reverse_of_interlacingSeqNo
     (hlen : fs.length = gs.length)
     (hfs : IsInterlacingSeqNonneg fs)
     (hgs : IsInterlacingSeqNonneg gs) :
-    PairwiseHasCommonLeftInterleaver (fs.zipWith (· * ·) gs.reverse) := by
-  intro i j hij
-  exact (pairInterleavers_zipWith_mul_reverse_of_interlacingSeqNonneg
-    (fs := fs) (gs := gs) hlen hfs hgs i j hij).1
+    PairwiseHasCommonLeftInterleaver (fs.zipWith (· * ·) gs.reverse) :=
+  fun i j hij =>
+    (pairInterleavers_zipWith_mul_reverse_of_interlacingSeqNonneg
+      (fs := fs) (gs := gs) hlen hfs hgs i j hij).1
 
 /-- Product-family pairwise common right interleaver from two interlacing
 sequences. For `i < j` in the reversed product family, the witness is the other
@@ -242,10 +235,10 @@ theorem pairwiseHasCommonInterleaver_zipWith_mul_reverse_of_interlacingSeqNonneg
     (hlen : fs.length = gs.length)
     (hfs : IsInterlacingSeqNonneg fs)
     (hgs : IsInterlacingSeqNonneg gs) :
-    PairwiseHasCommonInterleaver (fs.zipWith (· * ·) gs.reverse) := by
-  intro i j hij
-  exact (pairInterleavers_zipWith_mul_reverse_of_interlacingSeqNonneg
-    (fs := fs) (gs := gs) hlen hfs hgs i j hij).2
+    PairwiseHasCommonInterleaver (fs.zipWith (· * ·) gs.reverse) :=
+  fun i j hij =>
+    (pairInterleavers_zipWith_mul_reverse_of_interlacingSeqNonneg
+      (fs := fs) (gs := gs) hlen hfs hgs i j hij).2
 
 /-- The reversed product family has a common interleaver once one upgrades the
 pairwise witnesses via Chudnovsky--Seymour. This isolates the exact remaining
@@ -297,8 +290,7 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
         (row := fs) (fs := gs.reverse)
         hfs.posLeadingCoeff
         (posLeadingCoeff_reverse_of_interlacingSeqNonneg hgs)
-  have hps_ne : ps ≠ [] := by
-    intro hnil
+  have hps_ne : ps ≠ [] := fun hnil => by
     have hlen_ps : ps.length = fs.length := by
       simp [ps, List.length_zipWith, hlen, List.length_reverse]
     grind
@@ -439,9 +431,7 @@ lemma zipWith_mul_sum_filterLeftNonzero_eq
   simpa [filterLeftNonzero, filterRightByLeftNonzero, filterLeftNonzeroPairs] using
     zipWith_mul_sum_filter_zip_eq
       (fun p : ℝ[X] × ℝ[X] => p.1 ≠ 0)
-      (by
-        intro p hp
-        simp_all)
+      (fun _ _ => by simp_all)
       fs gs
 
 def filterProductNonzeroPairs (fs gs : List ℝ[X]) : List (ℝ[X] × ℝ[X]) :=
@@ -499,13 +489,13 @@ private lemma interlacingSeqNonneg_filterProductLeftNonzero
 private lemma interlacingSeqNonneg_reverse_filterProductRightNonzero
     {fs gs : List ℝ[X]} (hgs : IsInterlacingSeq0Nonneg gs)
     (hgs_real : ∀ g ∈ gs, g ≠ 0 → (g ≠ 0 ∧ g.Splits)) :
-    IsInterlacingSeqNonneg (filterProductRightNonzero fs gs.reverse).reverse := by
-  refine hgs.sublist_of_realRooted_of_ne ?_ hgs_real ?_
-  · exact reverse_sublist_of_sublist_reverse
-      (filterProductRightNonzero_sublist_right fs gs.reverse)
-  · intro g hg
-    exact mem_filterProductRightNonzero_ne_zero
-      (fs := fs) (gs := gs.reverse) (by simpa using hg)
+    IsInterlacingSeqNonneg (filterProductRightNonzero fs gs.reverse).reverse :=
+  hgs.sublist_of_realRooted_of_ne
+    (reverse_sublist_of_sublist_reverse
+      (filterProductRightNonzero_sublist_right fs gs.reverse))
+    hgs_real
+    (fun _ hg => mem_filterProductRightNonzero_ne_zero
+      (fs := fs) (gs := gs.reverse) (by simpa using hg))
 
 lemma zipWith_mul_sum_filterProductNonzero_eq
     (fs gs : List ℝ[X]) :
@@ -516,8 +506,7 @@ lemma zipWith_mul_sum_filterProductNonzero_eq
     filterProductNonzeroPairs] using
     zipWith_mul_sum_filter_zip_eq
       (fun p : ℝ[X] × ℝ[X] => p.1 ≠ 0 ∧ p.2 ≠ 0)
-      (by
-        intro p hp
+      (fun p hp => by
         by_cases hp_left : p.1 = 0
         · simp [hp_left]
         · have hp_right : p.2 = 0 := by simp_all
@@ -534,11 +523,8 @@ private lemma isRealRooted_zipWith_mul_sum_reverse_of_filtered_strict
     (hsum_ne : (fs.zipWith (· * ·) gs.reverse).sum ≠ 0) :
     (((fs.zipWith (· * ·) gs.reverse).sum) ≠ 0 ∧
       ((fs.zipWith (· * ·) gs.reverse).sum).Splits) := by
-  have hfs'_ne : fs' ≠ [] := by
-    intro hnil
-    apply hsum_ne
-    rw [← hsum_eq]
-    simp [hnil]
+  have hfs'_ne : fs' ≠ [] := fun hnil => by
+    exact hsum_ne (by simpa [hnil] using hsum_eq.symm)
   have hrr :
       (((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum) ≠ 0 ∧
         ((fs'.zipWith (· * ·) (gs'.reverse).reverse).sum).Splits) :=
@@ -570,9 +556,8 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg
       (fs := fs) (gs := gs.reverse) (by simpa [List.length_reverse] using hlen)
       hfs hfs_real
   have hgs'_rev : IsInterlacingSeqNonneg gs'.reverse := by
-    have hsub : gs'.Sublist gs.reverse := by
+    exact interlacingSeqNonneg_reverse_of_sublist_reverse hgs <| by
       simpa [gs'] using filterRightByLeftNonzero_sublist_right fs gs.reverse
-    exact interlacingSeqNonneg_reverse_of_sublist_reverse hgs hsub
   have hlen' : fs'.length = gs'.length := by
     simpa [fs', gs'] using length_filterLeftNonzero_eq_filterRightByLeftNonzero fs gs.reverse
   have hsum_eq :
@@ -598,10 +583,9 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg_both
   have hfs' : IsInterlacingSeqNonneg fs' := by
     simpa [fs'] using interlacingSeqNonneg_filterProductLeftNonzero
       (fs := fs) (gs := gs.reverse) hfs hfs_real
-  have hgs'_rev : IsInterlacingSeqNonneg gs'.reverse :=
-    by
-      simpa [gs'] using interlacingSeqNonneg_reverse_filterProductRightNonzero
-        (fs := fs) (gs := gs) hgs hgs_real
+  have hgs'_rev : IsInterlacingSeqNonneg gs'.reverse := by
+    simpa [gs'] using interlacingSeqNonneg_reverse_filterProductRightNonzero
+      (fs := fs) (gs := gs) hgs hgs_real
   have hlen' : fs'.length = gs'.length := by
     simpa [fs', gs'] using length_filterProductLeftNonzero_eq_filterProductRightNonzero
       fs gs.reverse

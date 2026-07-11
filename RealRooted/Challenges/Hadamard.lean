@@ -32,50 +32,67 @@ namespace RealRooted
 namespace Challenges
 namespace Hadamard
 
+/-- Challenge-facing name for the fixed-degree Schur--Szego composition. -/
+noncomputable abbrev SchurSzegoComposition (n : Nat) (f g : ℝ[X]) : ℝ[X] :=
+  schurSzegoComp n f g
+
+/-- Challenge-facing name for coefficientwise Hadamard product. -/
+noncomputable abbrev HadamardProduct (p q : ℝ[X]) : ℝ[X] :=
+  hadamardProduct p q
+
+/-- Challenge-facing name for polynomial-side Pólya-frequency. -/
+abbrev PolyaFrequencyPolynomial (p : ℝ[X]) : Prop :=
+  IsPFPolynomial p
+
+/-- Challenge-facing name for a nonnegative-coefficient proper-position pair. -/
+abbrev NonnegativeProperPositionPair (f g : ℝ[X]) : Prop :=
+  HasNonnegCoeffs f ∧ HasNonnegCoeffs g ∧ Prec f g
+
 /-- Fixed-degree Schur--Szego composition theorem. -/
 theorem finiteSchurSzegoComposition :
-    RealRooted.finiteSchurSzegoCompositionStatement :=
+    ∀ {n : ℕ} {f p : ℝ[X]},
+      PolyaFrequencyPolynomial f →
+      f.natDegree ≤ n →
+      p.natDegree ≤ n →
+      p.Splits →
+        SchurSzegoComposition n f p = 0 ∨ (SchurSzegoComposition n f p).Splits :=
   RealRooted.finiteSchurSzegoComposition
 
 /-- Finite Polya--Schur theorem in the nonnegative-coefficient convention. -/
 theorem finitePolyaSchur_nonneg :
-    RealRooted.finitePolyaSchurNonnegStatement :=
+    ∀ {n : ℕ} {gamma : ℕ → ℝ},
+      (∀ k, 0 ≤ gamma k) →
+        (IsFiniteMultiplierSequence n gamma ↔
+          PolyaFrequencyPolynomial (jensenPolynomial n gamma)) :=
   RealRooted.finitePolyaSchur_nonneg
 
 /-- Garloff--Wagner proper-position Hadamard theorem. -/
-theorem garloffWagnerHadamardNonnegPrec
-    {f g p q : ℝ[X]}
-    (hf : HasNonnegCoeffs f)
-    (hg : HasNonnegCoeffs g)
-    (hp : HasNonnegCoeffs p)
-    (hq : HasNonnegCoeffs q)
-    (hfg : Prec f g)
-    (hpq : Prec p q) :
-    Prec0 (hadamardProduct f p) (hadamardProduct g q) :=
-  RealRooted.garloffWagnerHadamardNonnegPrec hf hg hp hq hfg hpq
+theorem garloffWagnerHadamardNonnegPrec :
+    ∀ {f g p q : ℝ[X]},
+      NonnegativeProperPositionPair f g →
+      NonnegativeProperPositionPair p q →
+      Prec0 (HadamardProduct f p) (HadamardProduct g q) :=
+  fun hfg hpq =>
+    RealRooted.garloffWagnerHadamardNonnegPrec
+      hfg.1 hfg.2.1 hpq.1 hpq.2.1 hfg.2.2 hpq.2.2
 
 /-- Garloff--Wagner theorem from the bundled classical inputs. -/
-theorem garloffWagnerHadamardNonnegPrec_of_classicalInputs
-    (h : RealRooted.GarloffWagnerClassicalInputs)
-    {f g p q : ℝ[X]}
-    (hf : HasNonnegCoeffs f)
-    (hg : HasNonnegCoeffs g)
-    (hp : HasNonnegCoeffs p)
-    (hq : HasNonnegCoeffs q)
-    (hfg : Prec f g)
-    (hpq : Prec p q) :
-    Prec0 (hadamardProduct f p) (hadamardProduct g q) :=
-  RealRooted.garloffWagnerHadamardNonnegPrec_of_classicalInputsBundle
-    h hf hg hp hq hfg hpq
+theorem garloffWagnerHadamardNonnegPrec_of_classicalInputs :
+    ∀ (_h : RealRooted.GarloffWagnerClassicalInputs) {f g p q : ℝ[X]},
+      NonnegativeProperPositionPair f g →
+      NonnegativeProperPositionPair p q →
+      Prec0 (HadamardProduct f p) (HadamardProduct g q) :=
+  fun h {_f} {_g} {_p} {_q} hfg hpq =>
+    RealRooted.garloffWagnerHadamardNonnegPrec_of_classicalInputsBundle
+      h hfg.1 hfg.2.1 hpq.1 hpq.2.1 hfg.2.2 hpq.2.2
 
 /-- PF-polynomial closure under Hadamard product from bundled classical inputs. -/
-theorem hadamardProduct_preserves_pf_of_classicalInputs
-    (h : RealRooted.GarloffWagnerClassicalInputs)
-    {p q : ℝ[X]}
-    (hp : IsPFPolynomial p)
-    (hq : IsPFPolynomial q) :
-    IsPFPolynomial (hadamardProduct p q) :=
-  RealRooted.hadamardProduct_preserves_pf_of_classicalInputsBundle h hp hq
+theorem hadamardProduct_preserves_pf_of_classicalInputs :
+    ∀ (_h : RealRooted.GarloffWagnerClassicalInputs) {p q : ℝ[X]},
+      PolyaFrequencyPolynomial p →
+      PolyaFrequencyPolynomial q →
+      PolyaFrequencyPolynomial (HadamardProduct p q) :=
+  RealRooted.hadamardProduct_preserves_pf_of_classicalInputsBundle
 
 end Hadamard
 end Challenges

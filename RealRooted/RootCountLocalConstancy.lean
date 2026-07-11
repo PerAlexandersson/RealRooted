@@ -40,8 +40,8 @@ private theorem exists_radius_card_roots_filter_gt_eq_of_sameDegree_local_lower_
     hsep_centers ?_ hcount ?_
   · intro r hr
     exact le_trans (le_of_lt hρη) (hη r hr)
-  · rw [hq_split.natDegree_eq_card_roots.symm,
-      hp_split.natDegree_eq_card_roots.symm, hdeg]
+  · simpa [hq_split.natDegree_eq_card_roots.symm,
+      hp_split.natDegree_eq_card_roots.symm] using hdeg
 
 /-- A natural-number-valued function that is locally constant along a closed
 real interval takes equal values at the endpoints. -/
@@ -49,8 +49,7 @@ private theorem eq_of_locally_constant_on_Icc {N : ℝ → ℕ} {a b : ℝ} (hab
     (hloc : ∀ t ∈ Set.Icc a b, ∃ ε > 0, ∀ u ∈ Set.Icc a b,
       |u - t| < ε → N u = N t) :
     N a = N b := by
-  have hcont : ContinuousOn N (Set.Icc a b) := by
-    intro t ht
+  have hcont : ContinuousOn N (Set.Icc a b) := fun t ht => by
     obtain ⟨ε, ε_pos, H⟩ := hloc t ht
     have hev : ∀ᶠ u in nhdsWithin t (Set.Icc a b), N u = N t := by
       filter_upwards [self_mem_nhdsWithin,
@@ -89,8 +88,8 @@ private theorem rightFamily_local_card_roots_gt_eq_of_local_lower_counts
   obtain ⟨ρ, hρ_pos, hρ⟩ :=
     exists_radius_card_roots_filter_gt_eq_of_sameDegree_local_lower_counts hx
   obtain ⟨ε, hε_pos, hε⟩ := hlower ρ hρ_pos
-  refine ⟨ε, hε_pos, fun ν hν hνμ => ?_⟩
-  exact hρ (f + C ν * g) (hrr μ hμ) (hrr ν hν) (hdeg ν hν) (hε ν hν hνμ)
+  exact ⟨ε, hε_pos, fun ν hν hνμ =>
+    hρ (f + C ν * g) (hrr μ hμ) (hrr ν hν) (hdeg ν hν) (hε ν hν hνμ)⟩
 
 /--
 Per-root lower counts along a root-free compact parameter interval imply
@@ -114,9 +113,8 @@ theorem rightFamily_card_roots_gt_eq_of_local_lower_counts
       ((f + C μ₁ * g).roots.filter (x < ·)).card := by
   refine eq_of_locally_constant_on_Icc
     (N := fun μ => ((f + C μ * g).roots.filter (x < ·)).card) hμ₁ ?_
-  intro μ hμ
-  exact rightFamily_local_card_roots_gt_eq_of_local_lower_counts
+  exact fun μ hμ => rightFamily_local_card_roots_gt_eq_of_local_lower_counts
     (f := f) (g := g) (μ := μ) hμ
-    (fun ν hν => by rw [hdeg ν hν, hdeg μ hμ]) hrr hne (hlower μ hμ)
+    (fun ν hν => by simpa [hdeg μ hμ] using hdeg ν hν) hrr hne (hlower μ hμ)
 
 end RealRooted

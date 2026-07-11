@@ -175,8 +175,7 @@ theorem oddEvenPolynomial_ne_zero_iff {p q : ℝ[X]} :
 
 theorem hasNonnegCoeffs_oddEvenPolynomial {p q : ℝ[X]}
     (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q) :
-    HasNonnegCoeffs (oddEvenPolynomial p q) := by
-  intro n
+    HasNonnegCoeffs (oddEvenPolynomial p q) := fun n => by
   by_cases hmod : n % 2 = 0
   · have hn : n = 2 * (n / 2) := by lia
     rw [hn, coeff_oddEvenPolynomial_even]
@@ -187,14 +186,12 @@ theorem hasNonnegCoeffs_oddEvenPolynomial {p q : ℝ[X]}
 
 theorem hasNonnegCoeffs_left_of_oddEvenPolynomial {p q : ℝ[X]}
     (h : HasNonnegCoeffs (oddEvenPolynomial p q)) :
-    HasNonnegCoeffs p := by
-  intro n
+    HasNonnegCoeffs p := fun n => by
   simpa using h (2 * n + 1)
 
 theorem hasNonnegCoeffs_right_of_oddEvenPolynomial {p q : ℝ[X]}
     (h : HasNonnegCoeffs (oddEvenPolynomial p q)) :
-    HasNonnegCoeffs q := by
-  intro n
+    HasNonnegCoeffs q := fun n => by
   simpa using h (2 * n)
 
 /-- Sign-normalized forward Hermite--Biehler bridge.
@@ -278,8 +275,7 @@ theorem eval_complexify_conj (p : ℝ[X]) (z : ℂ) :
 /-- Value of a complexified real polynomial at a real point. -/
 theorem eval_complexify_ofReal (p : ℝ[X]) (t : ℝ) :
     (complexify p).eval (t : ℂ) = ((p.eval t : ℝ) : ℂ) := by
-  rw [complexify]
-  exact Polynomial.eval_map_apply (f := Complex.ofRealHom) (p := p) t
+  simpa [complexify] using Polynomial.eval_map_apply (f := Complex.ofRealHom) (p := p) t
 
 /-- First-quadrant form of the forward Hermite--Biehler/Hurwitz conformal
 substitution: it suffices to exclude roots of `q(x²) + x p(x²)` in the open
@@ -313,8 +309,8 @@ interface: for `z` in the open first quadrant, `w = z²` lies in the open upper
 half-plane and `z` is a right-half-plane square root of `w`. -/
 theorem hermiteBiehlerStableToHurwitzOddEvenFirstQuadrant_of_upperHalfSubstitution
     (h : HermiteBiehlerStableToHurwitzOddEvenUpperHalfSubstitutionStatement) :
-    HermiteBiehlerStableToHurwitzOddEvenFirstQuadrantStatement := by
-  intro p q hp hq hstable z hzre hzim
+    HermiteBiehlerStableToHurwitzOddEvenFirstQuadrantStatement :=
+  fun p q hp hq hstable z hzre hzim => by
   rw [eval_complexify_oddEvenPolynomial]
   have hw : 0 < (z ^ 2).im := by
     rw [pow_two, Complex.mul_im]
@@ -345,8 +341,7 @@ theorem hermiteBiehlerStableToHurwitzOddEven_of_firstQuadrant
   · -- Lower half-plane: reduce to the first quadrant by conjugation.
     have hconj := eval_complexify_conj (oddEvenPolynomial p q) z
     have hre : 0 < (starRingEnd ℂ z).re := by
-      rw [Complex.conj_re]
-      exact hzre
+      simpa [Complex.conj_re] using hzre
     have hci : 0 < (starRingEnd ℂ z).im := by
       rw [Complex.conj_im]
       linarith

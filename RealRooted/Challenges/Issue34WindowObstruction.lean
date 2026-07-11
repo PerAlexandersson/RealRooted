@@ -11,15 +11,12 @@ staircase or Toeplitz relations between neighbouring entries, not only total
 nonnegativity of the selected windows.
 -/
 
-open Matrix
-
 namespace RealRooted.Issue34WindowObstruction
 
 /-- A `StrictMono` map `Fin n → Fin 3` forces `n ≤ 3`. -/
 theorem strictMono_fin_three_le {n : ℕ} {f : Fin n → Fin 3} (hf : StrictMono f) :
     n ≤ 3 := by
-  have hcard := Fintype.card_le_of_injective f hf.injective
-  simpa using hcard
+  simpa using Fintype.card_le_of_injective f hf.injective
 
 /-- A `StrictMono` self-map of `Fin 3` is the identity, pointwise. -/
 theorem strictMono_fin_three_eq {rows : Fin 3 → Fin 3} (h : StrictMono rows) :
@@ -39,8 +36,7 @@ def bMat : Matrix (Fin 3) (Fin 3) ℝ :=
   !![2, 1, 1; 2, 2, 3; 0, 1, 2]
 
 /-- The first witness matrix is totally nonnegative. -/
-theorem aMat_isTotallyNonneg : aMat.IsTotallyNonneg := by
-  intro n rows cols hrows hcols
+theorem aMat_isTotallyNonneg : aMat.IsTotallyNonneg := fun n rows cols hrows hcols => by
   have hn : n ≤ 3 := strictMono_fin_three_le hrows
   interval_cases n <;> norm_num [Matrix.det_fin_two, Matrix.det_fin_three]
   · fin_cases rows <;> fin_cases cols <;> norm_num [aMat]
@@ -53,8 +49,7 @@ theorem aMat_isTotallyNonneg : aMat.IsTotallyNonneg := by
     simp [r0, r1, r2, c0, c1, c2, aMat]
 
 /-- The second witness matrix is totally nonnegative. -/
-theorem bMat_isTotallyNonneg : bMat.IsTotallyNonneg := by
-  intro n rows cols hrows hcols
+theorem bMat_isTotallyNonneg : bMat.IsTotallyNonneg := fun n rows cols hrows hcols => by
   have hn : n ≤ 3 := strictMono_fin_three_le hrows
   interval_cases n <;> norm_num [Matrix.det_fin_two, Matrix.det_fin_three]
   · fin_cases rows <;> fin_cases cols <;> norm_num [bMat]
@@ -78,9 +73,8 @@ theorem exists_totallyNonneg_hadamard_det_neg :
     ∃ a b : Matrix (Fin 3) (Fin 3) ℝ,
       a.IsTotallyNonneg ∧ b.IsTotallyNonneg ∧
         (Matrix.of fun i j => a i j * b i j).det < 0 := by
-  refine ⟨aMat, bMat, aMat_isTotallyNonneg, bMat_isTotallyNonneg, ?_⟩
-  rw [hadamard_det_eq]
-  norm_num
+  exact ⟨aMat, bMat, aMat_isTotallyNonneg, bMat_isTotallyNonneg,
+    by norm_num [hadamard_det_eq]⟩
 
 /-- The corner-zeroed Hadamard determinant shape used in the issue #34
 full-band target. -/
@@ -100,8 +94,7 @@ minors alone. -/
 theorem exists_totallyNonneg_hadamardCornerZeroed_neg :
     ∃ a b : Matrix (Fin 3) (Fin 3) ℝ,
       a.IsTotallyNonneg ∧ b.IsTotallyNonneg ∧ hadamardCornerZeroedDet a b < 0 := by
-  refine ⟨aMat, bMat, aMat_isTotallyNonneg, bMat_isTotallyNonneg, ?_⟩
-  rw [hadamardCornerZeroedDet_eq]
-  norm_num
+  exact ⟨aMat, bMat, aMat_isTotallyNonneg, bMat_isTotallyNonneg,
+    by norm_num [hadamardCornerZeroedDet_eq]⟩
 
 end RealRooted.Issue34WindowObstruction

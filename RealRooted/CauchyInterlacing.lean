@@ -62,9 +62,8 @@ noncomputable def sortedEigenvalues {N : ℕ}
 /-- The sorted eigenvalues are listed in decreasing order. -/
 theorem sortedEigenvalues_antitone {N : ℕ}
     (A : Matrix (Fin N) (Fin N) 𝕜) (hA : A.IsHermitian) :
-    Antitone (sortedEigenvalues A hA) := by
-  intro a b hab
-  exact hA.eigenvalues₀_antitone (by simpa [finCongr] using hab)
+    Antitone (sortedEigenvalues A hA) :=
+  fun _ _ hab => hA.eigenvalues₀_antitone (by simpa [finCongr] using hab)
 
 /-- The sorted eigenvalues of a Hermitian matrix are exactly the roots of its
 characteristic polynomial, counted with multiplicity. -/
@@ -149,8 +148,7 @@ noncomputable def embedComplₗ {n : ℕ} (i : Fin (n + 1)) :
 
 /-- The linear zero-extension embedding is injective. -/
 theorem embedComplₗ_injective {n : ℕ} (i : Fin (n + 1)) :
-    Function.Injective (embedComplₗ (𝕜 := 𝕜) i) := by
-  intro x y hxy
+    Function.Injective (embedComplₗ (𝕜 := 𝕜) i) := fun x y hxy => by
   ext a
   have := congr_fun hxy (i.succAbove a)
   simpa using this
@@ -165,9 +163,8 @@ theorem finrank_map_embedComplₗ {n : ℕ} (i : Fin (n + 1))
 the `(n+1)`-dimensional ambient space. -/
 theorem finrank_range_embedComplₗ {n : ℕ} (i : Fin (n + 1)) :
     Module.finrank 𝕜 (LinearMap.range (embedComplₗ (𝕜 := 𝕜) i)) = n := by
-  convert finrank_map_embedComplₗ i (⊤ : Submodule 𝕜 (Fin n → 𝕜)) using 1
-  · rw [LinearMap.range_eq_map]
-  · simp
+  rw [LinearMap.range_eq_map]
+  simpa using finrank_map_embedComplₗ i (⊤ : Submodule 𝕜 (Fin n → 𝕜))
 
 /-- Any finite-dimensional subspace contains a subspace of every dimension up to
 its own. -/
@@ -283,6 +280,10 @@ variational bounds.  It is then specialised to `Matrix.IsHermitian.eigenvectorBa
 to discharge `CourantFischerStatement`.
 -/
 
+private theorem star_ofLp_dotProduct_self {N : ℕ} (x : EuclideanSpace 𝕜 (Fin N)) :
+    star (WithLp.ofLp x) ⬝ᵥ WithLp.ofLp x = (inner 𝕜 x x : 𝕜) := by
+  rw [EuclideanSpace.inner_eq_star_dotProduct, dotProduct_comm]
+
 /--
 Expansion of the Rayleigh **denominator** in an orthonormal basis: the
 Hermitian square norm of `x` is the sum of the squared moduli of its Fourier
@@ -293,9 +294,7 @@ theorem denom_eq_sum_sq {N : ℕ}
     (x : EuclideanSpace 𝕜 (Fin N)) :
     RCLike.re (star (WithLp.ofLp x) ⬝ᵥ WithLp.ofLp x)
       = ∑ i, ‖(inner 𝕜 (b i) x : 𝕜)‖ ^ 2 := by
-  have hxx : star (WithLp.ofLp x) ⬝ᵥ WithLp.ofLp x = (inner 𝕜 x x : 𝕜) := by
-    rw [EuclideanSpace.inner_eq_star_dotProduct, dotProduct_comm]
-  rw [hxx, inner_self_eq_norm_sq, ← b.sum_sq_norm_inner_right x]
+  rw [star_ofLp_dotProduct_self x, inner_self_eq_norm_sq, ← b.sum_sq_norm_inner_right x]
 
 /--
 Expansion of the Rayleigh **numerator** in an orthonormal eigenbasis: if
@@ -336,12 +335,8 @@ The Rayleigh denominator is strictly positive for a nonzero vector.
 -/
 theorem denom_pos {N : ℕ} (x : EuclideanSpace 𝕜 (Fin N)) (hx : x ≠ 0) :
     0 < RCLike.re (star (WithLp.ofLp x) ⬝ᵥ WithLp.ofLp x) := by
-  have hnorm : RCLike.re (star (WithLp.ofLp x) ⬝ᵥ WithLp.ofLp x) = ‖x‖ ^ 2 := by
-    have hxx : star (WithLp.ofLp x) ⬝ᵥ WithLp.ofLp x = (inner 𝕜 x x : 𝕜) := by
-      rw [EuclideanSpace.inner_eq_star_dotProduct, dotProduct_comm]
-    rw [hxx, inner_self_eq_norm_sq]
-  rw [hnorm]
-  exact pow_pos (norm_pos_iff.mpr hx) 2
+  simpa [star_ofLp_dotProduct_self x, inner_self_eq_norm_sq] using
+    pow_pos (norm_pos_iff.mpr hx) 2
 
 /--
 Fourier coefficients supported on `Set.range g`: if `x` lies in the span of
@@ -445,18 +440,15 @@ theorem courantFischer_of_eigenbasis {N : ℕ}
         exact hi (inner_eq_zero_of_mem_span_range b (Fin.castLE hk) x hx i hcon)
       obtain ⟨j, rfl⟩ := hmem
       refine hμ ?_
-      rw [Fin.le_def, Fin.val_castLE]
-      exact Nat.lt_succ_iff.mp j.isLt
+      simpa [Fin.le_def, Fin.val_castLE] using Nat.lt_succ_iff.mp j.isLt
   · intro W hW
     have hkN : (k : ℕ) < N := k.isLt
     set g : Fin (N - (k : ℕ)) → Fin N :=
       fun j => ⟨(k : ℕ) + (j : ℕ), by have := j.isLt; lia⟩ with hg
     have hgval : ∀ j, ((g j : Fin N) : ℕ) = (k : ℕ) + (j : ℕ) := fun _ => rfl
-    have hg_inj : Function.Injective g := by
-      intro a c hac
-      have h1 : (k : ℕ) + (a : ℕ) = (k : ℕ) + (c : ℕ) := by
-        rw [← hgval a, ← hgval c]; exact congrArg Fin.val hac
-      exact Fin.ext (by lia)
+    have hg_inj : Function.Injective g :=
+      fun _ _ hac => Fin.ext <| by
+        simpa [hgval, Nat.add_left_cancel_iff] using congrArg Fin.val hac
     set U : Submodule 𝕜 (EuclideanSpace 𝕜 (Fin N)) :=
       Submodule.span 𝕜 (Set.range fun j => (b (g j) : EuclideanSpace 𝕜 (Fin N)))
       with hU
@@ -487,15 +479,8 @@ theorem courantFischer_of_eigenbasis {N : ℕ}
           Nat.eq_zero_of_le_zero (Nat.le_of_not_gt hnonpos)
         have hle : Module.finrank 𝕜 (W ⊔ U : Submodule 𝕜 _) +
             Module.finrank 𝕜 (W ⊓ U : Submodule 𝕜 _) ≤ N := by
-          calc
-            Module.finrank 𝕜 (W ⊔ U : Submodule 𝕜 _) +
-                Module.finrank 𝕜 (W ⊓ U : Submodule 𝕜 _)
-                = Module.finrank 𝕜 (W ⊔ U : Submodule 𝕜 _) := by
-                  rw [hinf_zero, Nat.add_zero]
-            _ ≤ N := hsum
-        have hbad : N + 1 ≤ N := by
-          rw [← htotal]
-          exact hle
+          simpa [hinf_zero] using hsum
+        have hbad : N + 1 ≤ N := htotal ▸ hle
         exact (Nat.not_succ_le_self N) hbad
       have hne : (W ⊓ U : Submodule 𝕜 _) ≠ ⊥ := fun h => by
         rw [h] at hpos; simp at hpos
@@ -523,26 +508,26 @@ theorem courant_fischer (𝕜 : Type*) [RCLike 𝕜] :
   set σ : Fin N ≃ Fin N := (finCongr (Fintype.card_fin N).symm).trans e with hσ
   set b : OrthonormalBasis (Fin N) 𝕜 (EuclideanSpace 𝕜 (Fin N)) :=
     hA.eigenvectorBasis.reindex σ.symm with hb_def
-  have hev : ∀ j, hA.eigenvalues (σ j) = sortedEigenvalues A hA j := by
-    intro j
-    simp [hσ, he, sortedEigenvalues, Matrix.IsHermitian.eigenvalues]
+  have hev : ∀ j, hA.eigenvalues (σ j) = sortedEigenvalues A hA j :=
+    fun j => by simp [hσ, he, sortedEigenvalues, Matrix.IsHermitian.eigenvalues]
   have hbrel : ∀ j, A *ᵥ WithLp.ofLp (b j)
-      = sortedEigenvalues A hA j • WithLp.ofLp (b j) := by
-    intro j
-    simpa [hb_def, OrthonormalBasis.reindex_apply, hev j] using
-      hA.mulVec_eigenvectorBasis (σ j)
+      = sortedEigenvalues A hA j • WithLp.ofLp (b j) :=
+    fun j => by
+      simpa [hb_def, OrthonormalBasis.reindex_apply, hev j] using
+        hA.mulVec_eigenvectorBasis (σ j)
   obtain ⟨⟨W₀, hW₀card, hW₀⟩, huniv⟩ :=
     courantFischer_of_eigenbasis A b (sortedEigenvalues A hA)
       (sortedEigenvalues_antitone A hA) hbrel k
   set L := WithLp.linearEquiv 2 𝕜 (Fin N → 𝕜) with hL
   refine ⟨⟨W₀.map L.toLinearMap, ?_, ?_⟩, ?_⟩
-  · rw [LinearEquiv.finrank_map_eq]; exact hW₀card
+  · simpa [LinearEquiv.finrank_map_eq] using hW₀card
   · intro x hxmem hx0
     obtain ⟨y, hy, rfl⟩ := Submodule.mem_map.mp hxmem
     exact hW₀ y hy fun h => hx0 (by simp [h])
   · intro W hW
     have hcard : Module.finrank 𝕜 (W.comap L.toLinearMap) = (k : ℕ) + 1 := by
-      rw [Submodule.comap_equiv_eq_map_symm, LinearEquiv.finrank_map_eq]; exact hW
+      rw [Submodule.comap_equiv_eq_map_symm, LinearEquiv.finrank_map_eq]
+      exact hW
     obtain ⟨y, hy, hy0, hyr⟩ := huniv _ hcard
     exact ⟨L y, Submodule.mem_comap.mp hy, fun h => hy0 (by simpa using h), hyr⟩
 

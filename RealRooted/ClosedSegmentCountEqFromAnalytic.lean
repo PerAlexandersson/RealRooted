@@ -21,23 +21,19 @@ The central closed-segment count-equality target follows from the proved
 degree-increasing and positive-parameter local lower-count inputs.
 -/
 private theorem compatibleSuccDegreeClosedSegmentCountEq_of_local_lower_counts :
-    CompatibleSuccDegreeClosedSegmentCountEqStatement := by
-  intro f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hseg
+    CompatibleSuccDegreeClosedSegmentCountEqStatement :=
+  fun f g hcomp hf_pos hg_pos hdeg hf_split x hxf hxg hseg => by
   have hx_roots : x ∉ f.roots :=
     fun hx => hxf ((Polynomial.mem_roots hf_pos.ne_zero).mp hx)
   have hlt : f.natDegree < g.natDegree := by
     simp [hdeg]
-  have hfg_split_pos : ∀ μ : ℝ, 0 < μ → (f + C μ * g).Splits := by
-    intro μ hμ
+  have hfg_split_pos : ∀ μ : ℝ, 0 < μ → (f + C μ * g).Splits := fun μ hμ => by
     rcases hcomp 1 μ zero_le_one hμ.le with hzero | hrr
-    · rw [show f + C μ * g = 0 by simpa using hzero]
-      simp
+    · simp [show f + C μ * g = 0 by simpa using hzero]
     · simpa using hrr.2
-  have hgf_split : ∀ ν ∈ Set.Icc (0 : ℝ) 1, (g + C ν * f).Splits := by
-    intro ν hν
+  have hgf_split : ∀ ν ∈ Set.Icc (0 : ℝ) 1, (g + C ν * f).Splits := fun ν hν => by
     rcases hcomp.comm 1 ν zero_le_one hν.1 with hzero | hrr
-    · rw [show g + C ν * f = 0 by simpa using hzero]
-      simp
+    · simp [show g + C ν * f = 0 by simpa using hzero]
     · simpa using hrr.2
   refine card_filter_gt_endpoint_eq_of_local_lower_counts
     hf_pos hg_pos hdeg hf_split hx_roots
@@ -45,14 +41,11 @@ private theorem compatibleSuccDegreeClosedSegmentCountEq_of_local_lower_counts :
     ?_ ?_ ?_ ?_
   · intro ρ hρ
     obtain ⟨δ, hδ_pos, hδ⟩ := degreeIncreasing_local_lower_count hf_split hlt ρ hρ
-    refine ⟨δ, hδ_pos, ?_⟩
-    intro μ hμ hμδ
-    have hsplit := hfg_split_pos μ hμ
-    exact ⟨hsplit, hδ μ hμ hμδ hsplit⟩
-  · intro μ hμ _
-    exact hfg_split_pos μ hμ
-  · intro μ hμ _
-    exact closedSegment_not_isRoot_add_right_of_nonneg hμ.le hseg
+    exact ⟨δ, hδ_pos, fun μ hμ hμδ =>
+      let hsplit := hfg_split_pos μ hμ
+      ⟨hsplit, hδ μ hμ hμδ hsplit⟩⟩
+  · exact fun μ hμ _ => hfg_split_pos μ hμ
+  · exact fun μ hμ _ => closedSegment_not_isRoot_add_right_of_nonneg hμ.le hseg
   · exact hgf_split
   · intro ν hν
     refine closedSegment_not_isRoot_add_right_of_nonneg

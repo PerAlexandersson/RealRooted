@@ -1,5 +1,7 @@
 import RealRooted.HeilmannLieb
 
+open Polynomial
+
 /-!
 # Chudnovsky--Seymour challenge entry point
 
@@ -20,9 +22,21 @@ namespace ChudnovskySeymour
 
 universe u
 
+/-- Challenge-facing name for claw-free finite graphs. -/
+abbrev ClawFreeGraph {V : Type u} (G : _root_.SimpleGraph V) : Prop :=
+  RealRooted.Graph.ClawFree G
+
+/-- Challenge-facing name for the independence polynomial. -/
+noncomputable abbrev IndependencePolynomial
+    {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) : ℝ[X] :=
+  RealRooted.Graph.indepPoly G
+
 /-- Finite claw-free graph independence polynomials are real-rooted. -/
 theorem clawFree_indepPoly_splits :
-    RealRooted.Graph.ClawFreeIndepPolySplitsStatement.{u} :=
+    ∀ {V : Type u} [Fintype V] [DecidableEq V]
+      (G : _root_.SimpleGraph V),
+      ClawFreeGraph G → (IndependencePolynomial G).Splits :=
   RealRooted.Graph.clawFree_indepPoly_splits
 
 end ChudnovskySeymour

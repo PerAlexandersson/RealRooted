@@ -19,15 +19,24 @@ namespace RealRooted
 namespace Challenges
 namespace VeroneseSections
 
+/-- Challenge-facing name for the `k`th `r`-Veronese section of a polynomial. -/
+noncomputable abbrev VeroneseSection (r k : ℕ) (p : ℝ[X]) : ℝ[X] :=
+  veroneseSectionPolynomial r k p
+
+/-- Challenge-facing input class for the Veronese-section theorem. -/
+abbrev NonnegativeRealRootedPolynomial (p : ℝ[X]) : Prop :=
+  HasNonnegCoeffs p ∧ p ≠ 0 ∧ p.Splits
+
 /-- Veronese sections preserve real-rootedness for polynomials with
 nonnegative coefficients, allowing the selected section to vanish. -/
-theorem preserve_realRooted_nonneg
-    {r k : ℕ} (hr : 0 < r) (hk : k < r) {p : ℝ[X]}
-    (hpnn : HasNonnegCoeffs p) (hp_ne : p ≠ 0) (hp_splits : p.Splits) :
-    veroneseSectionPolynomial r k p = 0 ∨
-      (veroneseSectionPolynomial r k p).Splits :=
-  RealRooted.isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg_matrix
-    hr hk hpnn hp_ne hp_splits
+theorem preserve_realRooted_nonneg :
+    ∀ {r k : ℕ}, 0 < r → k < r → {p : ℝ[X]} →
+      NonnegativeRealRootedPolynomial p →
+        VeroneseSection r k p = 0 ∨
+          (VeroneseSection r k p).Splits :=
+  fun {_r} {_k} hr hk {_p} hp =>
+    RealRooted.isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg_matrix
+      hr hk hp.1 hp.2.1 hp.2.2
 
 end VeroneseSections
 end Challenges

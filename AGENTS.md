@@ -66,6 +66,35 @@ open derivative-refactor PR.
 - Use `grind`, `simp_all`, and `positivity` for routine local plumbing when they
   keep the proof shorter and stable.
 
+## External Lean Assistants
+
+- Aristotle is available in this Docker profile as `aristotle`.  The API key is
+  loaded through `ARISTOTLE_API_KEY` and the key file
+  `/workspace/lean/aristotle-api-key`.  Never print, copy, or commit the key.
+- If a shell does not have the assistant keys loaded, source
+  `/usr/local/lib/ai-projects-env.sh` and check only for presence, for example
+  `${ARISTOTLE_API_KEY:+yes}` or `${AXLE_API_KEY:+yes}`.  Do not echo the
+  values.
+- Use Aristotle proactively for focused proof-golfing, deduplication review,
+  theorem-shape suggestions, and candidate proof repair.  Keep requests small
+  and concrete:
+  the CLI currently accepts at most five files for `aristotle continue --files`,
+  so split larger cleanup work into batches.
+- Prefer continuing an existing relevant Aristotle RealRooted project when one
+  exists; otherwise submit a small project directory or focused file bundle.
+  Review downloaded or suggested patches manually before applying them.
+- Axle is available as `axle`.  The API key is loaded through `AXLE_API_KEY` and
+  `/workspace/lean/axle-api-key`; never print, copy, or commit the key.
+- Use `axle environments` and choose the closest environment to the project
+  toolchain, currently `lean-4.31.0`, for isolated snippets, candidate proof
+  checks, proof repair, and simplification experiments.  It is also useful for
+  testing tiny abstraction patterns before editing a local proof.  Axle
+  generally sees Mathlib environments rather than local project imports, so
+  local declarations need self-contained snippets or must still be verified
+  with Lake.
+- Aristotle and Axle results are advisory.  Every accepted Lean edit must be
+  checked locally with the cache-aware focused Lake command shape below.
+
 ## Workflow
 
 - Before changing files touched by an open Yael PR, inspect the PR diff and

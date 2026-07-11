@@ -1,4 +1,3 @@
-import RealRooted.HermiteBiehler
 import RealRooted.HurwitzMatrix
 
 /-!
@@ -24,21 +23,33 @@ namespace RealRooted
 namespace Challenges
 namespace HermiteBiehlerHurwitz
 
+/-- Challenge-facing name for the sign-normalized forward Hermite--Biehler
+target. -/
+abbrev HermiteBiehlerForwardTarget : Prop :=
+  RealRooted.hermiteBiehlerForwardPosStatement
+
+/-- Challenge-facing name for the converse Hermite--Biehler target. -/
+abbrev HermiteBiehlerConverseTarget : Prop :=
+  RealRooted.hermiteBiehlerConverseStatement
+
+/-- Challenge-facing name for the Hurwitz-matrix total-nonnegativity
+criterion. -/
+abbrev HurwitzMatrixCriterionTarget : Prop :=
+  RealRooted.HurwitzMatrixCriterionStatement
+
 /-- Sign-normalized forward Hermite--Biehler target. -/
 theorem hermiteBiehler_forward :
-    RealRooted.hermiteBiehlerForwardPosStatement := by
-  intro f g hf hg hprec
-  exact RealRooted.hermiteBiehlerForwardPos hf hg hprec
+    HermiteBiehlerForwardTarget :=
+  RealRooted.hermiteBiehlerForwardPos
 
 /-- Converse Hermite--Biehler target. -/
 theorem hermiteBiehler_converse :
-    RealRooted.hermiteBiehlerConverseStatement := by
-  intro f g hf hg hstable
-  exact RealRooted.hermiteBiehlerConverse hf hg hstable
+    HermiteBiehlerConverseTarget :=
+  @RealRooted.hermiteBiehlerConverse
 
 /-- Hurwitz-matrix total-nonnegativity criterion interface. -/
 theorem hurwitzMatrixCriterion :
-    RealRooted.HurwitzMatrixCriterionStatement :=
+    HurwitzMatrixCriterionTarget :=
   ⟨RealRooted.hurwitzStableToMatrixTotallyNonnegative_of_criterion,
     RealRooted.hurwitzMatrixTotallyNonnegativeToStable_of_criterion⟩
 

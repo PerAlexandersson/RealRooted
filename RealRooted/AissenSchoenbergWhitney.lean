@@ -68,7 +68,7 @@ theorem nonneg_of_IsPolyaFreqSeq
 nonnegative coefficients. -/
 theorem hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff
     {p : ℝ[X]}
-    (hpf : IsPolyaFreqSeq (fun n => p.coeff n)) :
+    (hpf : IsPolyaFreqSeq p.coeff) :
     HasNonnegCoeffs p :=
   fun k => nonneg_of_IsPolyaFreqSeq hpf k
 
@@ -77,7 +77,7 @@ content of the forward Aissen--Schoenberg--Whitney theorem is the splitting
 conjunct. -/
 theorem roots_nonpos_of_IsPolyaFreqSeq_coeff
     {p : ℝ[X]}
-    (hpf : IsPolyaFreqSeq (fun n => p.coeff n)) :
+    (hpf : IsPolyaFreqSeq p.coeff) :
     ∀ r ∈ p.roots, r ≤ 0 :=
   roots_nonpos_of_hasNonnegCoeffs (hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff hpf)
 
@@ -104,9 +104,8 @@ theorem IsPolyaFreqSeq.of_forall_pos_add_mul {a b : ℕ → ℝ}
   intro n rows cols hrows hcols
   let D : ℝ → ℝ := fun μ =>
     ((toeplitz (fun k => a k + μ * b k)).submatrix rows cols).det
-  have hD_nonneg : ∀ μ : ℝ, 0 < μ → 0 ≤ D μ := by
-    intro μ hμ
-    exact h hμ hrows hcols
+  have hD_nonneg : ∀ μ : ℝ, 0 < μ → 0 ≤ D μ :=
+    fun μ hμ => h hμ hrows hcols
   have hD_lim :
       Tendsto D (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds (D 0)) :=
     (continuous_toeplitz_minor_det_add_mul (a := a) (b := b) rows cols).continuousAt
@@ -124,14 +123,14 @@ theorem IsPolyaFreqSeq.of_forall_pos_add_mul {a b : ℕ → ℝ}
 Toeplitz total nonnegativity of the coefficient sequence of a nonzero
 polynomial should imply that the polynomial has only real nonpositive roots. -/
 theorem aissenSchoenbergWhitneyForward {p : ℝ[X]}
-    (hpf : IsPolyaFreqSeq (fun n => p.coeff n)) :
+    (hpf : IsPolyaFreqSeq p.coeff) :
     p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0 := by
   sorry
 
 /-- Splitting-only form of forward ASW.  The root-location conjunct follows
 from coefficient nonnegativity, so this is the remaining hard target. -/
 theorem aissenSchoenbergWhitneyForwardSplits {p : ℝ[X]}
-    (hpf : IsPolyaFreqSeq (fun n => p.coeff n)) :
+    (hpf : IsPolyaFreqSeq p.coeff) :
     p.Splits :=
   (aissenSchoenbergWhitneyForward hpf).1
 
@@ -139,100 +138,101 @@ theorem aissenSchoenbergWhitneyForwardSplits {p : ℝ[X]}
 closure form: a PF coefficient sequence gives either the zero polynomial or a
 strictly real-rooted polynomial with nonpositive roots. -/
 theorem aissenSchoenbergWhitneyForwardOrZero {p : ℝ[X]}
-    (_hpnn : HasNonnegCoeffs p) (hpf : IsPolyaFreqSeq (fun n => p.coeff n)) :
+    (_hpnn : HasNonnegCoeffs p) (hpf : IsPolyaFreqSeq p.coeff) :
     (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0 :=
-  ⟨Or.inr (aissenSchoenbergWhitneyForward hpf).1, (aissenSchoenbergWhitneyForward hpf).2⟩
+  ⟨Or.inr (aissenSchoenbergWhitneyForwardSplits hpf),
+    roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
 
 /-- Equivalent forward ASW statement with the redundant nonnegative-coefficient
 hypothesis removed. -/
 theorem aissenSchoenbergWhitneyForwardNoNonneg {p : ℝ[X]}
-    (hp0 : p ≠ 0) (hpf : IsPolyaFreqSeq (fun n => p.coeff n)) :
+    (hp0 : p ≠ 0) (hpf : IsPolyaFreqSeq p.coeff) :
     (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0 :=
-  ⟨⟨hp0, (aissenSchoenbergWhitneyForward hpf).1⟩, (aissenSchoenbergWhitneyForward hpf).2⟩
+  ⟨⟨hp0, aissenSchoenbergWhitneyForwardSplits hpf⟩,
+    roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
 
 /-- Legacy compatibility alias for ASW forward statement. -/
 abbrev aissenSchoenbergWhitneyForwardStatement : Prop :=
-  ∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0
+  ∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0
 
 /-- Legacy compatibility alias for ASW forward splits statement. -/
 abbrev aissenSchoenbergWhitneyForwardSplitsStatement : Prop :=
-  ∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → p.Splits
+  ∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits
 
 /-- Legacy compatibility alias for ASW forward or zero statement. -/
 abbrev aissenSchoenbergWhitneyForwardOrZeroStatement : Prop :=
-  ∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n => p.coeff n) →
+  ∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
     (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0
 
 /-- Legacy compatibility alias for ASW forward no nonneg statement. -/
 abbrev aissenSchoenbergWhitneyForwardNoNonnegStatement : Prop :=
-  ∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq (fun n => p.coeff n) →
+  ∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
     (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0
 
 /-- The current forward ASW statement implies the no-extra-nonnegativity
 formulation, since PF coefficients are already nonnegative. -/
 theorem aissenSchoenbergWhitneyForwardNoNonneg_of_forward :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
       p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) →
-    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
       (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
   fun hASW {_} hp0 hpf => ⟨⟨hp0, (hASW hpf).1⟩, (hASW hpf).2⟩
 
 /-- The current forward ASW statement implies the splitting-only target. -/
 theorem aissenSchoenbergWhitneyForwardSplits_of_forward :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
       p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) →
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → p.Splits) :=
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) :=
   fun hASW {_} hpf => (hASW hpf).1
 
 /-- The splitting-only target implies the current forward ASW statement, since
 PF coefficients already exclude positive real roots. -/
 theorem aissenSchoenbergWhitneyForward_of_splits :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → p.Splits) →
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) →
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
       p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) :=
   fun hASW {_} hpf => ⟨hASW hpf, roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
 
 /-- Forward ASW is equivalent to proving only the splitting conjunct. -/
 theorem aissenSchoenbergWhitneyForward_iff_splits :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
       p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
-      (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → p.Splits) :=
+      (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) :=
   ⟨aissenSchoenbergWhitneyForwardSplits_of_forward,
     aissenSchoenbergWhitneyForward_of_splits⟩
 
 /-- The no-extra-nonnegativity formulation implies the current forward ASW
 statement. -/
 theorem aissenSchoenbergWhitneyForward_of_noNonneg :
-    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
       (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) →
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) →
-      p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) := by
-  intro hASW p hpf
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
+      p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) := fun hASW {p} hpf => by
   by_cases hp0 : p = 0
   · simp [hp0]
   · exact ⟨(hASW hp0 hpf).1.2, (hASW hp0 hpf).2⟩
 
 /-- The two forward ASW interfaces are equivalent. -/
 theorem aissenSchoenbergWhitneyForward_iff_noNonneg :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
       p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
-      (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq (fun n => p.coeff n) →
+      (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
         (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
   ⟨aissenSchoenbergWhitneyForwardNoNonneg_of_forward,
     aissenSchoenbergWhitneyForward_of_noNonneg⟩
 
 /-- The no-extra-nonnegativity ASW interface implies the splitting-only target. -/
 theorem aissenSchoenbergWhitneyForwardSplits_of_noNonneg :
-    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
       (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) →
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → p.Splits) :=
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) :=
   aissenSchoenbergWhitneyForwardSplits_of_forward ∘
     aissenSchoenbergWhitneyForward_of_noNonneg
 
 /-- The splitting-only target implies the no-extra-nonnegativity ASW interface. -/
 theorem aissenSchoenbergWhitneyForwardNoNonneg_of_splits :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → p.Splits) →
-    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) →
+    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
       (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
   aissenSchoenbergWhitneyForwardNoNonneg_of_forward ∘
     aissenSchoenbergWhitneyForward_of_splits
@@ -240,56 +240,51 @@ theorem aissenSchoenbergWhitneyForwardNoNonneg_of_splits :
 /-- The no-extra-nonnegativity ASW target is equivalent to proving only the
 splitting conjunct. -/
 theorem aissenSchoenbergWhitneyForwardNoNonneg_iff_splits :
-    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
       (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
-      (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → p.Splits) :=
+      (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) :=
   ⟨aissenSchoenbergWhitneyForwardSplits_of_noNonneg,
     aissenSchoenbergWhitneyForwardNoNonneg_of_splits⟩
 
 /-- The strict nonzero forward ASW interface implies the zero-aware one. -/
 theorem aissenSchoenbergWhitneyForwardOrZero_of_forward :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
       p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) →
-    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
       (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
   fun hASW {_} _ hpf => ⟨Or.inr (hASW hpf).1, (hASW hpf).2⟩
 
 /-- The zero-aware forward ASW interface implies the strict nonzero one by
 discarding the zero case. -/
 theorem aissenSchoenbergWhitneyForward_of_orZero :
-    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
       (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) →
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) →
-      p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) := by
-  intro hASW p hpf
-  have hnn : HasNonnegCoeffs p :=
-    hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff hpf
-  have h := hASW hnn hpf
-  rcases h with ⟨hzero | hsplits, hroots⟩
-  · simp [hzero]
-  · exact ⟨hsplits, hroots⟩
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
+      p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) := fun hASW {p} hpf => by
+  have h := hASW (hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff hpf) hpf
+  exact ⟨h.1.elim (fun hzero => by simp [hzero]) id, h.2⟩
 
 /-- The strict and zero-aware forward ASW interfaces are equivalent. -/
 theorem aissenSchoenbergWhitneyForward_iff_orZero :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
       p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
-      (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n => p.coeff n) →
+      (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
         (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
   ⟨aissenSchoenbergWhitneyForwardOrZero_of_forward,
     aissenSchoenbergWhitneyForward_of_orZero⟩
 
 /-- The zero-aware forward ASW interface implies the splitting-only target. -/
 theorem aissenSchoenbergWhitneyForwardSplits_of_orZero :
-    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
       (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) →
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → p.Splits) :=
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) :=
   aissenSchoenbergWhitneyForwardSplits_of_forward ∘
     aissenSchoenbergWhitneyForward_of_orZero
 
 /-- The splitting-only target implies the zero-aware forward ASW interface. -/
 theorem aissenSchoenbergWhitneyForwardOrZero_of_splits :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → p.Splits) →
-    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) →
+    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
       (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
   aissenSchoenbergWhitneyForwardOrZero_of_forward ∘
     aissenSchoenbergWhitneyForward_of_splits
@@ -297,9 +292,9 @@ theorem aissenSchoenbergWhitneyForwardOrZero_of_splits :
 /-- The zero-aware ASW target is equivalent to proving only the splitting
 conjunct. -/
 theorem aissenSchoenbergWhitneyForwardOrZero_iff_splits :
-    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
       (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
-      (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → p.Splits) :=
+      (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) :=
   ⟨aissenSchoenbergWhitneyForwardSplits_of_orZero,
     aissenSchoenbergWhitneyForwardOrZero_of_splits⟩
 
@@ -309,12 +304,12 @@ zero polynomial to be real-rooted, contrary to the strict local definition of
 theorem not_aissenSchoenbergWhitneyForward_without_nonzero :
     ¬ (∀ ⦃p : ℝ[X]⦄,
       HasNonnegCoeffs p →
-      IsPolyaFreqSeq (fun n => p.coeff n) →
-      (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) := by
-  intro h
-  have hnn : HasNonnegCoeffs (0 : ℝ[X]) := by simp [HasNonnegCoeffs]
-  have hbad := h hnn (by simpa using IsPolyaFreqSeq_zero)
-  exact hbad.1.1 rfl
+      IsPolyaFreqSeq p.coeff →
+      (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
+  fun h => (h (p := 0) (by simp [HasNonnegCoeffs])
+    (by
+      convert IsPolyaFreqSeq_zero
+      exact coeff_zero _)).1.1 rfl
 
 lemma toeplitz_one_coeff : toeplitz (fun n ↦ (1 : ℝ[X]).coeff n) = 1 := by
   ext i j
@@ -417,17 +412,15 @@ lemma IsPolyaFreqSeq.const (c : ℝ) (hc : 0 ≤ c) :
     IsTotallyNonneg.smul IsTotallyNonneg.one c hc
 
 lemma toeplitz_const_mul (c : ℝ) (q : ℝ[X]) :
-    toeplitz (fun n ↦ (C c * q).coeff n) = c • toeplitz (fun n ↦ q.coeff n) := by
+    toeplitz (fun n ↦ (C c * q).coeff n) = c • toeplitz q.coeff := by
   ext i j
   simp
 
 lemma IsPolyaFreqSeq.const_mul (c : ℝ) (hc : 0 ≤ c) {q : ℝ[X]}
-    (hq : IsPolyaFreqSeq (fun n ↦ q.coeff n)) :
+    (hq : IsPolyaFreqSeq q.coeff) :
     IsPolyaFreqSeq (fun n ↦ (C c * q).coeff n) := by
-  rw [IsPolyaFreqSeq]
-  convert IsTotallyNonneg.smul hq c hc using 1
-  ext i j
-  simp [toeplitz_apply]
+  rw [IsPolyaFreqSeq, toeplitz_const_mul]
+  exact IsTotallyNonneg.smul hq c hc
 
 lemma toeplitz_linear_coeff (r : ℝ) :
     toeplitz (fun n ↦ (X - C r : ℝ[X]).coeff n) = bidiagonal (-r) := by
@@ -529,8 +522,7 @@ lemma hybrid_nonneg_aux {n : ℕ} (rows cols : Fin n → ℕ) (hrows : StrictMon
           simp only [hybrid, updateRow_ne heq, B, C, choices1, choices2, extendChoices,
             Matrix.of_apply]
           grind
-      rw [h_update]
-      rw [det_updateRow_add, det_updateRow_smul]
+      rw [h_update, det_updateRow_add, det_updateRow_smul]
       have hB_eq : updateRow C ⟨k, hk_lt⟩ (B ⟨k, hk_lt⟩) = B := by
         ext i j
         by_cases heq : i = ⟨k, hk_lt⟩
@@ -541,30 +533,29 @@ lemma hybrid_nonneg_aux {n : ℕ} (rows cols : Fin n → ℕ) (hrows : StrictMon
           grind
       have hC_eq : updateRow C ⟨k, hk_lt⟩ (C ⟨k, hk_lt⟩) = C :=
         updateRow_eq_self C ⟨k, hk_lt⟩
-      rw [hB_eq, hC_eq]
-      exact add_nonneg (mul_nonneg ha hB_nonneg) hC_nonneg
+      simpa [hB_eq, hC_eq] using add_nonneg (mul_nonneg ha hB_nonneg) hC_nonneg
 
 lemma toeplitz_linear_mul (r : ℝ) (q : ℝ[X]) :
     toeplitz (fun n ↦ ((X - C r) * q).coeff n) =
-    .of fun i j ↦ (-r) * toeplitz (fun n ↦ q.coeff n) i j +
-      mShift (toeplitz (fun n ↦ q.coeff n)) i j := by
+    .of fun i j ↦ (-r) * toeplitz q.coeff i j +
+      mShift (toeplitz q.coeff) i j := by
   ext i j
   simp only [toeplitz_apply, coeff_X_sub_C_mul, mShift, Matrix.of_apply]
   grind
 
 lemma IsPolyaFreqSeq.linear_mul {r : ℝ} (hr : r ≤ 0) {q : ℝ[X]}
-    (hq : IsPolyaFreqSeq (fun n ↦ q.coeff n)) :
+    (hq : IsPolyaFreqSeq q.coeff) :
     IsPolyaFreqSeq (fun n ↦ ((X - C r) * q).coeff n) := by
   rw [IsPolyaFreqSeq, toeplitz_linear_mul]
   intro n rows cols hrows hcols
   have h_eq : (Matrix.of (fun i j ↦
-      (-r) * toeplitz (fun n ↦ q.coeff n) i j +
-      mShift (toeplitz (fun n ↦ q.coeff n)) i j)).submatrix rows cols =
-      hybrid rows cols (toeplitz (fun n ↦ q.coeff n)) (-r) 0 Fin.elim0 := by
+      (-r) * toeplitz q.coeff i j +
+      mShift (toeplitz q.coeff) i j)).submatrix rows cols =
+      hybrid rows cols (toeplitz q.coeff) (-r) 0 Fin.elim0 := by
     ext i j
     simp [hybrid, mShift, Matrix.of_apply]
   rw [h_eq]
-  exact hybrid_nonneg_aux rows cols hrows hcols (toeplitz (fun n ↦ q.coeff n))
+  exact hybrid_nonneg_aux rows cols hrows hcols (toeplitz q.coeff)
     hq (-r) (neg_nonneg.mpr hr) n 0 (Nat.zero_le n) (Nat.sub_zero n) Fin.elim0
 
 lemma IsPolyaFreqSeq.prod_X_sub_C (s : Multiset ℝ) (hs : ∀ r ∈ s, r ≤ 0) :
@@ -583,9 +574,10 @@ theorem aissenSchoenbergWhitney_reverse {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p)
     (hsplits : p.Splits)
     (hroots : ∀ r ∈ p.roots, r ≤ 0) :
-    IsPolyaFreqSeq (fun n ↦ p.coeff n) := by
+    IsPolyaFreqSeq p.coeff := by
   rcases eq_or_ne p 0 with rfl | hp0
-  · simpa using IsPolyaFreqSeq_zero
+  · convert IsPolyaFreqSeq_zero
+    exact coeff_zero _
   · have hp_eq : p = C p.leadingCoeff * (p.roots.map fun r ↦ X - C r).prod :=
       (C_leadingCoeff_mul_prod_multiset_X_sub_C (card_roots_of_splits hsplits)).symm
     rw [hp_eq]
@@ -600,16 +592,16 @@ the Toeplitz-minor limit closure. -/
 theorem IsPolyaFreqSeq.of_forall_pos_add_C_mul_splits {p q : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
     (hfamily : ∀ {μ : ℝ}, 0 < μ → (p + C μ * q).Splits) :
-    IsPolyaFreqSeq (fun n => p.coeff n) :=
+    IsPolyaFreqSeq p.coeff :=
   IsPolyaFreqSeq.of_forall_pos_add_mul
-    (a := fun n => p.coeff n) (b := fun n => q.coeff n) (by
+    (a := p.coeff) (b := q.coeff) (by
       intro μ hμ
       have hnn : HasNonnegCoeffs (p + C μ * q) :=
         hpnn.add (nonnegCoeffs_C_mul hμ.le hqnn)
-      have hpf : IsPolyaFreqSeq (fun n => (p + C μ * q).coeff n) :=
-        aissenSchoenbergWhitney_reverse hnn (hfamily hμ)
-          (roots_nonpos_of_nonneg_coeffs (hfamily hμ) hnn)
-      simpa [Polynomial.coeff_add, Polynomial.coeff_C_mul] using hpf)
+      convert aissenSchoenbergWhitney_reverse hnn (hfamily hμ)
+        (roots_nonpos_of_nonneg_coeffs (hfamily hμ) hnn) using 1
+      funext n
+      simp [Polynomial.coeff_add, Polynomial.coeff_C_mul])
 
 /-! ### Low-degree forward ASW splitting -/
 
@@ -618,7 +610,7 @@ submatrix with rows `1, ..., n` and columns `0, ..., n - 1` is the tridiagonal
 Toeplitz matrix with diagonal `coeff 1`, superdiagonal `coeff 0`, and
 subdiagonal `coeff 2`. -/
 lemma toeplitz_submatrix_eq_tridiagM {p : ℝ[X]} (hdeg : p.natDegree ≤ 2) (n : ℕ) :
-    (toeplitz (fun k => p.coeff k)).submatrix
+    (toeplitz p.coeff).submatrix
         (fun i : Fin n => (i : ℕ) + 1) (fun j : Fin n => (j : ℕ)) =
       tridiagM (p.coeff 1) (p.coeff 0) (p.coeff 2) n := by
   ext i j
@@ -656,35 +648,30 @@ lemma toeplitz_submatrix_eq_tridiagM {p : ℝ[X]} (hdeg : p.natDegree ≤ 2) (n 
 sequence of `p` is Pólya-frequency and `p.natDegree ≤ 2`, then
 `4 * (coeff 0 * coeff 2) ≤ (coeff 1) ^ 2`. -/
 lemma disc_nonneg_of_isPolyaFreqSeq_natDegree_le_two {p : ℝ[X]}
-    (hpf : IsPolyaFreqSeq (fun n => p.coeff n)) (hdeg : p.natDegree ≤ 2) :
+    (hpf : IsPolyaFreqSeq p.coeff) (hdeg : p.natDegree ≤ 2) :
     4 * (p.coeff 0 * p.coeff 2) ≤ (p.coeff 1) ^ 2 := by
   set D : ℕ → ℝ := fun n =>
     (tridiagM (p.coeff 1) (p.coeff 0) (p.coeff 2) n).det with hD
   have h0 : D 0 = 1 := tridiagM_det_zero _ _ _
   have h1 : D 1 = p.coeff 1 := tridiagM_det_one _ _ _
   have hrec :
-      ∀ n, D (n + 2) = p.coeff 1 * D (n + 1) - p.coeff 0 * p.coeff 2 * D n := by
-    intro n
-    simpa [hD] using tridiagM_det_rec (p.coeff 1) (p.coeff 0) (p.coeff 2) n
+      ∀ n, D (n + 2) = p.coeff 1 * D (n + 1) - p.coeff 0 * p.coeff 2 * D n :=
+    fun n => by
+      simpa [hD] using tridiagM_det_rec (p.coeff 1) (p.coeff 0) (p.coeff 2) n
   have hpos : ∀ n, 0 ≤ D n := by
     intro n
-    have hmono_r : StrictMono (fun i : Fin n => (i : ℕ) + 1) := by
-      intro a b hab
-      have hab' : (a : ℕ) < (b : ℕ) := by exact_mod_cast hab
-      simpa only [add_lt_add_iff_right] using hab'
-    have hmono_c : StrictMono (fun j : Fin n => (j : ℕ)) := by
-      intro a b hab
-      exact_mod_cast hab
-    have hnn := hpf hmono_r hmono_c
-    rw [toeplitz_submatrix_eq_tridiagM hdeg n] at hnn
-    exact hnn
+    have hmono_r : StrictMono (fun i : Fin n => (i : ℕ) + 1) :=
+      fun _ _ hab => by simpa only [add_lt_add_iff_right] using Fin.val_strictMono hab
+    have hmono_c : StrictMono (fun j : Fin n => (j : ℕ)) :=
+      Fin.val_strictMono
+    simpa [toeplitz_submatrix_eq_tridiagM hdeg n] using hpf hmono_r hmono_c
   exact four_mul_le_sq_of_recurrence_nonneg h0 h1 hrec hpos
 
 /-- Forward Aissen--Schoenberg--Whitney splitting in degree at most two.  A
 polynomial of degree at most two whose coefficient sequence is Pólya-frequency
 splits over `ℝ`. -/
 theorem splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two {p : ℝ[X]}
-    (hpf : IsPolyaFreqSeq (fun n => p.coeff n)) (hdeg : p.natDegree ≤ 2) :
+    (hpf : IsPolyaFreqSeq p.coeff) (hdeg : p.natDegree ≤ 2) :
     p.Splits := by
   by_cases h2 : p.natDegree = 2
   · have hp0 : p ≠ 0 := by
@@ -706,8 +693,7 @@ theorem splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two {p : ℝ[X]}
     have hqdeg : (p /ₘ (X - C x)).natDegree = 1 := by
       rw [natDegree_divByMonic p (monic_X_sub_C x), h2, natDegree_X_sub_C]
     have hqsplits : (p /ₘ (X - C x)).Splits := (isRealRooted_of_degree_one hqdeg).2
-    rw [← hpq]
-    exact splits_X_sub_C_mul_iff.mpr hqsplits
+    exact hpq ▸ splits_X_sub_C_mul_iff.mpr hqsplits
   · rcases Nat.lt_or_ge p.natDegree 1 with hlt | hge
     · have h0 : p.natDegree = 0 := by lia
       have hcard : p.roots.card = p.natDegree := by
@@ -726,41 +712,36 @@ theorem splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two {p : ℝ[X]}
 def aissenSchoenbergWhitneyForwardSplitsUpTo (N : ℕ) : Prop :=
   ∀ ⦃p : ℝ[X]⦄,
     p.natDegree ≤ N →
-    IsPolyaFreqSeq (fun n => p.coeff n) →
+    IsPolyaFreqSeq p.coeff →
     p.Splits
 
 /-- The full splitting-only forward ASW target holds iff it holds at every
 degree bound. -/
 theorem aissenSchoenbergWhitneyForwardSplits_iff_forall_upTo :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → p.Splits) ↔
-      ∀ N : ℕ, aissenSchoenbergWhitneyForwardSplitsUpTo N := by
-  constructor
-  · intro hASW N p _ hpf
-    exact hASW hpf
-  · intro h p hpf
-    exact h p.natDegree (le_refl _) hpf
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) ↔
+      ∀ N : ℕ, aissenSchoenbergWhitneyForwardSplitsUpTo N :=
+  ⟨fun hASW _ {_} _ hpf => hASW hpf,
+    fun h {p} hpf => h p.natDegree (le_refl _) hpf⟩
 
 /-- Degree-≤2 instance of the degree-bounded splitting-only forward ASW target,
 from `splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two`. -/
 theorem aissenSchoenbergWhitneyForwardSplitsUpTo_two :
-    aissenSchoenbergWhitneyForwardSplitsUpTo 2 := by
-  intro p hdeg hpf
-  exact splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two hpf hdeg
+    aissenSchoenbergWhitneyForwardSplitsUpTo 2 :=
+  fun {_} hdeg hpf => splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two hpf hdeg
 
 /-- Monotonicity of the degree-bounded splitting-only forward ASW target in
 the degree bound. -/
 theorem aissenSchoenbergWhitneyForwardSplitsUpTo_mono {M N : ℕ} (hMN : M ≤ N)
     (h : aissenSchoenbergWhitneyForwardSplitsUpTo N) :
-    aissenSchoenbergWhitneyForwardSplitsUpTo M := by
-  intro p hdeg hpf
-  exact h (le_trans hdeg hMN) hpf
+    aissenSchoenbergWhitneyForwardSplitsUpTo M :=
+  fun {_} hdeg hpf => h (le_trans hdeg hMN) hpf
 
 /-- Exact-degree splitting-only forward ASW target.  This is the per-degree
 slice used as the successor step in the degree induction below. -/
 def aissenSchoenbergWhitneyForwardSplitsExactly (N : ℕ) : Prop :=
   ∀ ⦃p : ℝ[X]⦄,
     p.natDegree = N →
-    IsPolyaFreqSeq (fun n => p.coeff n) →
+    IsPolyaFreqSeq p.coeff →
     p.Splits
 
 /-- Base cases for the exact-degree forward ASW induction: forward ASW
@@ -775,8 +756,7 @@ theorem aissenSchoenbergWhitneyForwardSplitsExact_of_strongStep
     (step : ∀ d, 2 < d →
       (∀ d', d' < d → aissenSchoenbergWhitneyForwardSplitsExactly d') →
       aissenSchoenbergWhitneyForwardSplitsExactly d) :
-    ∀ d, aissenSchoenbergWhitneyForwardSplitsExactly d := by
-  intro d
+    ∀ d, aissenSchoenbergWhitneyForwardSplitsExactly d := fun d => by
   induction d using Nat.strong_induction_on with
   | _ d ih =>
     rcases lt_or_ge 2 d with hd | hd
@@ -789,11 +769,9 @@ theorem aissenSchoenbergWhitneyForwardSplits_of_strongStep
     (step : ∀ d, 2 < d →
       (∀ d', d' < d → aissenSchoenbergWhitneyForwardSplitsExactly d') →
       aissenSchoenbergWhitneyForwardSplitsExactly d) :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → p.Splits) := by
-  intro p hpf
-  exact
-    (aissenSchoenbergWhitneyForwardSplitsExact_of_strongStep step)
-      p.natDegree rfl hpf
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) :=
+  fun {p} hpf =>
+    (aissenSchoenbergWhitneyForwardSplitsExact_of_strongStep step) p.natDegree rfl hpf
 
 /-- Successor step for the degree induction: the degree-bounded target up to
 `N` together with the exact-degree target at `N + 1` gives the target up to
@@ -801,8 +779,7 @@ theorem aissenSchoenbergWhitneyForwardSplits_of_strongStep
 theorem aissenSchoenbergWhitneyForwardSplitsUpTo_succ_of_exactly {N : ℕ}
     (hN : aissenSchoenbergWhitneyForwardSplitsUpTo N)
     (hE : aissenSchoenbergWhitneyForwardSplitsExactly (N + 1)) :
-    aissenSchoenbergWhitneyForwardSplitsUpTo (N + 1) := by
-  intro p hdeg hpf
+    aissenSchoenbergWhitneyForwardSplitsUpTo (N + 1) := fun {p} hdeg hpf => by
   rcases eq_or_lt_of_le hdeg with h | h
   · exact hE h hpf
   · exact hN (Nat.lt_succ_iff.mp h) hpf
@@ -814,7 +791,7 @@ theorem aissenSchoenbergWhitneyForwardSplits_of_base_of_exactly
     (hbase : aissenSchoenbergWhitneyForwardSplitsUpTo 2)
     (hstep : ∀ N : ℕ, 2 ≤ N → aissenSchoenbergWhitneyForwardSplitsUpTo N →
         aissenSchoenbergWhitneyForwardSplitsExactly (N + 1)) :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → p.Splits) := by
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) := by
   rw [aissenSchoenbergWhitneyForwardSplits_iff_forall_upTo]
   intro N
   induction N with
@@ -828,7 +805,7 @@ theorem aissenSchoenbergWhitneyForwardSplits_of_base_of_exactly
 theorem aissenSchoenbergWhitneyForwardSplits_of_exactly
     (hstep : ∀ N : ℕ, 2 ≤ N → aissenSchoenbergWhitneyForwardSplitsUpTo N →
         aissenSchoenbergWhitneyForwardSplitsExactly (N + 1)) :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) → p.Splits) :=
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits) :=
   aissenSchoenbergWhitneyForwardSplits_of_base_of_exactly
     aissenSchoenbergWhitneyForwardSplitsUpTo_two hstep
 
@@ -837,7 +814,7 @@ degree-≤2 base case already filled. -/
 theorem aissenSchoenbergWhitneyForward_of_exactly
     (hstep : ∀ N : ℕ, 2 ≤ N → aissenSchoenbergWhitneyForwardSplitsUpTo N →
         aissenSchoenbergWhitneyForwardSplitsExactly (N + 1)) :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
       p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) :=
   aissenSchoenbergWhitneyForward_of_splits
     (aissenSchoenbergWhitneyForwardSplits_of_exactly hstep)
@@ -847,7 +824,7 @@ the degree-≤2 base case already filled. -/
 theorem aissenSchoenbergWhitneyForwardNoNonneg_of_exactly
     (hstep : ∀ N : ℕ, 2 ≤ N → aissenSchoenbergWhitneyForwardSplitsUpTo N →
         aissenSchoenbergWhitneyForwardSplitsExactly (N + 1)) :
-    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
       (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
   aissenSchoenbergWhitneyForwardNoNonneg_of_forward
     (aissenSchoenbergWhitneyForward_of_exactly hstep)
@@ -857,7 +834,7 @@ degree-≤2 base case already filled. -/
 theorem aissenSchoenbergWhitneyForwardOrZero_of_exactly
     (hstep : ∀ N : ℕ, 2 ≤ N → aissenSchoenbergWhitneyForwardSplitsUpTo N →
         aissenSchoenbergWhitneyForwardSplitsExactly (N + 1)) :
-    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
       (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
   aissenSchoenbergWhitneyForwardOrZero_of_forward
     (aissenSchoenbergWhitneyForward_of_exactly hstep)
@@ -867,7 +844,7 @@ theorem aissenSchoenbergWhitneyForward_of_strongStep
     (step : ∀ d, 2 < d →
       (∀ d', d' < d → aissenSchoenbergWhitneyForwardSplitsExactly d') →
       aissenSchoenbergWhitneyForwardSplitsExactly d) :
-    (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
       p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) :=
   aissenSchoenbergWhitneyForward_of_splits
     (aissenSchoenbergWhitneyForwardSplits_of_strongStep step)
@@ -877,7 +854,7 @@ theorem aissenSchoenbergWhitneyForwardOrZero_of_strongStep
     (step : ∀ d, 2 < d →
       (∀ d', d' < d → aissenSchoenbergWhitneyForwardSplitsExactly d') →
       aissenSchoenbergWhitneyForwardSplitsExactly d) :
-    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
       (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
   aissenSchoenbergWhitneyForwardOrZero_of_forward
     (aissenSchoenbergWhitneyForward_of_strongStep step)
@@ -888,7 +865,7 @@ theorem aissenSchoenbergWhitneyForwardNoNonneg_of_strongStep
     (step : ∀ d, 2 < d →
       (∀ d', d' < d → aissenSchoenbergWhitneyForwardSplitsExactly d') →
       aissenSchoenbergWhitneyForwardSplitsExactly d) :
-    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
       (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
   aissenSchoenbergWhitneyForwardNoNonneg_of_forward
     (aissenSchoenbergWhitneyForward_of_strongStep step)
@@ -896,37 +873,37 @@ theorem aissenSchoenbergWhitneyForwardNoNonneg_of_strongStep
 /-- Endpoint-packaging bridge for #42: the two convenient forward ASW closure
 forms are equivalent. -/
 theorem aissenSchoenbergWhitneyForwardNoNonneg_iff_orZero :
-    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
       (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
-      (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n => p.coeff n) →
+      (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
         (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
   aissenSchoenbergWhitneyForwardNoNonneg_iff_splits.trans
     aissenSchoenbergWhitneyForwardOrZero_iff_splits.symm
 
 /-- Projection from the no-extra-nonnegativity forward ASW endpoint to the
 zero-aware endpoint. -/
-theorem aissenSchoenbergWhitneyForwardOrZero_of_noNonneg
-    (h : (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq (fun n => p.coeff n) →
-      (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0)) :
-    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n => p.coeff n) →
+theorem aissenSchoenbergWhitneyForwardOrZero_of_noNonneg :
+    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
+      (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) →
+    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
       (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
-  aissenSchoenbergWhitneyForwardNoNonneg_iff_orZero.mp h
+  aissenSchoenbergWhitneyForwardNoNonneg_iff_orZero.mp
 
 /-- Projection from the zero-aware forward ASW endpoint to the
 no-extra-nonnegativity endpoint. -/
-theorem aissenSchoenbergWhitneyForwardNoNonneg_of_orZero
-    (h : (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n => p.coeff n) →
-      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0)) :
-    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq (fun n => p.coeff n) →
+theorem aissenSchoenbergWhitneyForwardNoNonneg_of_orZero :
+    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
+      (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) →
+    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
       (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
-  aissenSchoenbergWhitneyForwardNoNonneg_iff_orZero.mpr h
+  aissenSchoenbergWhitneyForwardNoNonneg_iff_orZero.mpr
 
 /-- Reversed-orientation endpoint equivalence for the zero-aware and
 no-extra-nonnegativity forward ASW interfaces. -/
 theorem aissenSchoenbergWhitneyForwardOrZero_iff_noNonneg :
-    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
       (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
-      (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq (fun n => p.coeff n) →
+      (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
         (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) :=
   ⟨aissenSchoenbergWhitneyForwardNoNonneg_of_orZero,
     aissenSchoenbergWhitneyForwardOrZero_of_noNonneg⟩
@@ -934,9 +911,9 @@ theorem aissenSchoenbergWhitneyForwardOrZero_iff_noNonneg :
 /-- Reversed-orientation endpoint equivalence from the zero-aware ASW endpoint
 to the base forward ASW endpoint. -/
 theorem aissenSchoenbergWhitneyForwardOrZero_iff_forward :
-    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, HasNonnegCoeffs p → IsPolyaFreqSeq p.coeff →
       (p = 0 ∨ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
-      (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) →
+      (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
         p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) :=
   aissenSchoenbergWhitneyForwardOrZero_iff_noNonneg.trans
     aissenSchoenbergWhitneyForward_iff_noNonneg.symm
@@ -944,9 +921,9 @@ theorem aissenSchoenbergWhitneyForwardOrZero_iff_forward :
 /-- Reversed-orientation endpoint equivalence from the no-extra-nonnegativity
 ASW endpoint to the base forward ASW endpoint. -/
 theorem aissenSchoenbergWhitneyForwardNoNonneg_iff_forward :
-    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq (fun n => p.coeff n) →
+    (∀ {p : ℝ[X]}, p ≠ 0 → IsPolyaFreqSeq p.coeff →
       (p ≠ 0 ∧ p.Splits) ∧ ∀ r ∈ p.roots, r ≤ 0) ↔
-      (∀ {p : ℝ[X]}, IsPolyaFreqSeq (fun n => p.coeff n) →
+      (∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff →
         p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0) :=
   aissenSchoenbergWhitneyForward_iff_noNonneg.symm
 
@@ -961,55 +938,52 @@ left-endpoint / direct route.
 
 /-- Applied splitting projection of the base forward ASW statement. -/
 theorem aissenSchoenbergWhitneyForward_splits_apply {p : ℝ[X]}
-    (hpf : IsPolyaFreqSeq (fun n => p.coeff n)) :
+    (hpf : IsPolyaFreqSeq p.coeff) :
     p.Splits :=
-  (aissenSchoenbergWhitneyForward hpf).1
+  aissenSchoenbergWhitneyForwardSplits hpf
 
 /-- Applied root-location projection of the base forward ASW statement. -/
 theorem aissenSchoenbergWhitneyForward_rootsNonpos_apply {p : ℝ[X]}
-    (hpf : IsPolyaFreqSeq (fun n => p.coeff n)) :
+    (hpf : IsPolyaFreqSeq p.coeff) :
     ∀ r ∈ p.roots, r ≤ 0 :=
-  (aissenSchoenbergWhitneyForward hpf).2
+  roots_nonpos_of_IsPolyaFreqSeq_coeff hpf
 
 /-- Applied root-count projection of the base forward ASW statement. -/
 theorem aissenSchoenbergWhitneyForward_cardRoots_apply {p : ℝ[X]}
-    (hpf : IsPolyaFreqSeq (fun n => p.coeff n)) :
+    (hpf : IsPolyaFreqSeq p.coeff) :
     p.roots.card = p.natDegree :=
   card_roots_of_splits (aissenSchoenbergWhitneyForward_splits_apply hpf)
 
 /-- Applied `≠ 0 ∧ Splits` projection of the base forward ASW statement. -/
 theorem aissenSchoenbergWhitneyForward_ne_zero_and_splits_apply {p : ℝ[X]}
-    (hp0 : p ≠ 0) (hpf : IsPolyaFreqSeq (fun n => p.coeff n)) :
+    (hp0 : p ≠ 0) (hpf : IsPolyaFreqSeq p.coeff) :
     p ≠ 0 ∧ p.Splits :=
   ⟨hp0, aissenSchoenbergWhitneyForward_splits_apply hpf⟩
 
 /-- Applied `≠ 0 ∧ roots.card = natDegree` projection of the base ASW statement. -/
 theorem aissenSchoenbergWhitneyForward_ne_zero_and_cardRoots_apply {p : ℝ[X]}
-    (hp0 : p ≠ 0) (hpf : IsPolyaFreqSeq (fun n => p.coeff n)) :
+    (hp0 : p ≠ 0) (hpf : IsPolyaFreqSeq p.coeff) :
     p ≠ 0 ∧ p.roots.card = p.natDegree :=
   ne_zero_and_card_roots_of_ne_zero_and_splits hp0
     (aissenSchoenbergWhitneyForward_splits_apply hpf)
 
 /-- Applied nonzero root-count projection of the no-extra-nonnegativity ASW form. -/
 theorem aissenSchoenbergWhitneyForwardNoNonneg_ne_zero_and_cardRoots_apply {p : ℝ[X]}
-    (hp0 : p ≠ 0) (hpf : IsPolyaFreqSeq (fun n => p.coeff n)) :
+    (hp0 : p ≠ 0) (hpf : IsPolyaFreqSeq p.coeff) :
     (p ≠ 0 ∧ p.roots.card = p.natDegree) ∧ ∀ r ∈ p.roots, r ≤ 0 :=
-  let h := aissenSchoenbergWhitneyForwardNoNonneg hp0 hpf
-  ⟨ne_zero_and_card_roots_of_ne_zero_and_splits h.1.1 h.1.2, h.2⟩
+  ⟨aissenSchoenbergWhitneyForward_ne_zero_and_cardRoots_apply hp0 hpf,
+    roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
 
 /-- Applied zero-aware root-count projection of the forward ASW statement. -/
 theorem aissenSchoenbergWhitneyForwardOrZero_cardRoots_apply {p : ℝ[X]}
-    (hnn : HasNonnegCoeffs p) (hpf : IsPolyaFreqSeq (fun n => p.coeff n)) :
-    (p = 0 ∨ p.roots.card = p.natDegree) ∧ ∀ r ∈ p.roots, r ≤ 0 := by
-  obtain ⟨hsplit, hroots⟩ := aissenSchoenbergWhitneyForwardOrZero hnn hpf
-  refine ⟨?_, hroots⟩
-  rcases hsplit with h | h
-  · exact Or.inl h
-  · exact Or.inr (card_roots_of_splits h)
+    (hnn : HasNonnegCoeffs p) (hpf : IsPolyaFreqSeq p.coeff) :
+    (p = 0 ∨ p.roots.card = p.natDegree) ∧ ∀ r ∈ p.roots, r ≤ 0 :=
+  ⟨(aissenSchoenbergWhitneyForwardOrZero hnn hpf).1.imp id card_roots_of_splits,
+    roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
 
 /-- Zero-aware ASW root-count package with nonnegative coefficients from PF. -/
 theorem aissenSchoenbergWhitneyForwardOrZero_cardRoots_of_isPolyaFreqSeq {p : ℝ[X]}
-    (hpf : IsPolyaFreqSeq (fun n => p.coeff n)) :
+    (hpf : IsPolyaFreqSeq p.coeff) :
     (p = 0 ∨ p.roots.card = p.natDegree) ∧ ∀ r ∈ p.roots, r ≤ 0 :=
   aissenSchoenbergWhitneyForwardOrZero_cardRoots_apply
     (hasNonnegCoeffs_of_IsPolyaFreqSeq_coeff hpf) hpf
