@@ -3361,7 +3361,7 @@ Theorem 2.6 into the current `Prec` API. It is false because our `Prec`
 predicate is reflexive on real-rooted polynomials and excludes the zero
 polynomial, so degenerate decompositions such as `p = 1`, `a = 1`, `b = 0`
 break the first equivalence. -/
-theorem not_brandenSolusTheorem26NaiveStatement :
+theorem not_brandenSolusTheorem26Naive :
     ¬ ∀ {d : ℕ} {p a b : ℝ[X]},
         p.natDegree ≤ d →
         IsIdDecomposition d p a b →

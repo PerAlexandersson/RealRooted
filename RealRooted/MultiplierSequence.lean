@@ -821,7 +821,7 @@ theorem finitePolyaSchur_backward_of_nonneg
 /-- In the nonnegative-coefficient convention, the full finite Pólya--Schur
 statement is equivalent to its backward direction.  The forward direction is
 the elementary Jensen-polynomial test on `(X + 1)^n`. -/
-theorem finitePolyaSchurNonnegStatement_iff_backward :
+theorem finitePolyaSchurNonneg_iff_backward :
     (∀ {n : ℕ} {gamma : ℕ → ℝ},
       (∀ k, 0 ≤ gamma k) →
         (IsFiniteMultiplierSequence n gamma ↔
