@@ -831,13 +831,14 @@ structure HermiteBiehlerHurwitzRoute : Prop where
     IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)
   /-- Conformal substitution from Hermite--Biehler stability to Hurwitz
   stability of the odd/even polynomial. -/
-  hermiteBiehlerStableToHurwitzOddEven : (∀ ⦃p q : ℝ[X]⦄,
-                                            HasNonnegCoeffs p →
-                                            HasNonnegCoeffs q →
-                                            IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) →
-                                            IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q)))
+  hermiteBiehlerStableToHurwitzOddEven : ∀ ⦃p q : ℝ[X]⦄,
+    HasNonnegCoeffs p →
+    HasNonnegCoeffs q →
+    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) →
+    IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q))
   /-- Forward matrix Hurwitz criterion. -/
-  hurwitzStableToMatrixTotallyNonnegative : (∀ ⦃p : ℝ[X]⦄, IsHurwitzStable p → (hurwitz p.coeff).IsTotallyNonneg)
+  hurwitzStableToMatrixTotallyNonnegative :
+    ∀ ⦃p : ℝ[X]⦄, IsHurwitzStable p → (hurwitz p.coeff).IsTotallyNonneg
 
 /-- Projection of the Hermite--Biehler/Hurwitz-matrix route onto the PF
 polynomial-to-Lace bridge. -/
