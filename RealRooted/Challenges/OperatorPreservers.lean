@@ -23,9 +23,10 @@ namespace OperatorPreservers
 
 /-- Real-rootedness-preserving linear operators preserve interlacing pairs up
 to order and zero images. -/
-theorem realRootedPreserver_preservesInterlacing :
-    RealRooted.operatorPreservesInterlacingPairsUpToOrderStatement :=
-  RealRooted.operatorPreservesInterlacingPairsUpToOrder
+theorem realRootedPreserver_preservesInterlacing
+    (T : ℝ[X] →ₗ[ℝ] ℝ[X]) (hT : RealRooted.PreservesRealRootedOrZero T) :
+    RealRooted.PreservesInterlacingPairsUpToOrder0 T :=
+  RealRooted.operatorPreservesInterlacingPairsUpToOrder T hT
 
 end OperatorPreservers
 end Challenges
