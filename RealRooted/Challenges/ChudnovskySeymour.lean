@@ -21,9 +21,11 @@ namespace ChudnovskySeymour
 universe u
 
 /-- Finite claw-free graph independence polynomials are real-rooted. -/
-theorem clawFree_indepPoly_splits :
-    RealRooted.Graph.ClawFreeIndepPolySplitsStatement.{u} :=
-  RealRooted.Graph.clawFree_indepPoly_splits
+theorem clawFree_indepPoly_splits
+    {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) (hG : RealRooted.Graph.ClawFree G) :
+    (RealRooted.Graph.indepPoly G).Splits :=
+  RealRooted.Graph.clawFree_indepPoly_splits G hG
 
 end ChudnovskySeymour
 end Challenges
