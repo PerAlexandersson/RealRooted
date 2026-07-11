@@ -22,9 +22,14 @@ namespace Challenges
 namespace CauchyInterlacing
 
 /-- Cauchy's eigenvalue interlacing theorem for Hermitian matrices. -/
-theorem theoremStatement (𝕜 : Type*) [RCLike 𝕜] :
-    RealRooted.CauchyInterlacingStatement 𝕜 :=
-  RealRooted.cauchy_interlacing 𝕜
+theorem theoremStatement (𝕜 : Type*) [RCLike 𝕜] {n : ℕ}
+    (A : Matrix (Fin (n + 1)) (Fin (n + 1)) 𝕜) (hA : A.IsHermitian)
+    (i : Fin (n + 1)) :
+    RealRooted.Interlace
+      (RealRooted.sortedEigenvalues (A.submatrix i.succAbove i.succAbove)
+        (hA.submatrix i.succAbove))
+      (RealRooted.sortedEigenvalues A hA) :=
+  RealRooted.cauchy_interlacing 𝕜 A hA i
 
 /-- Cauchy's interlacing theorem in principal-submatrix form: the eigenvalues
 of the one-index principal submatrix interlace the eigenvalues of the original

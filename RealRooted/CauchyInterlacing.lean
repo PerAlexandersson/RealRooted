@@ -23,8 +23,6 @@ interlacing means `λ_{k+1} ≤ μ_k ≤ λ_k` for every `k`.
   decreasing order.
 * `RealRooted.Interlace` — the interlacing relation between a length-`n` and a
   length-`n+1` decreasing family of reals.
-* `RealRooted.CauchyInterlacingStatement` — the interlacing statement for the
-  one-index deletion `i.succAbove`.
 
 ## Main results
 
@@ -202,17 +200,6 @@ theorem Interlace.ge {n : ℕ} {μ : Fin n → ℝ} {lam : Fin (n + 1) → ℝ}
     (h : Interlace μ lam) (k : Fin n) : lam k.succ ≤ μ k :=
   (h k).1
 
-/-- **Cauchy interlacing statement.** For every Hermitian matrix `A` of size
-`n + 1` and every deleted index `i`, the eigenvalues of the principal submatrix
-obtained by deleting row and column `i` interlace the eigenvalues of `A`. -/
-def CauchyInterlacingStatement (𝕜 : Type*) [RCLike 𝕜] : Prop :=
-  ∀ {n : ℕ} (A : Matrix (Fin (n + 1)) (Fin (n + 1)) 𝕜) (hA : A.IsHermitian)
-    (i : Fin (n + 1)),
-    Interlace
-      (sortedEigenvalues (A.submatrix i.succAbove i.succAbove)
-        (hA.submatrix i.succAbove))
-      (sortedEigenvalues A hA)
-
 /-- **Courant-Fischer min-max characterization** (witnessed form). For a
 Hermitian matrix `A` and index `k`, the `k`-th sorted eigenvalue `λ_k` is the
 max-min of the Rayleigh quotient over `(k+1)`-dimensional subspaces. -/
@@ -226,8 +213,14 @@ def CourantFischerStatement (𝕜 : Type*) [RCLike 𝕜] : Prop :=
 /-- Assuming the witnessed min-max characterization of sorted eigenvalues, the
 Cauchy interlacing theorem follows from the linear-algebra API above. -/
 theorem cauchyInterlacing_of_courantFischer
-    (hCF : CourantFischerStatement 𝕜) : CauchyInterlacingStatement 𝕜 := by
-  intro n A hA i k
+    (hCF : CourantFischerStatement 𝕜)
+    {n : ℕ} (A : Matrix (Fin (n + 1)) (Fin (n + 1)) 𝕜) (hA : A.IsHermitian)
+    (i : Fin (n + 1)) :
+    Interlace
+      (sortedEigenvalues (A.submatrix i.succAbove i.succAbove)
+        (hA.submatrix i.succAbove))
+      (sortedEigenvalues A hA) := by
+  intro k
   constructor
   · obtain ⟨W_A, hW_A₁, hW_A₂⟩ := (hCF A hA k.succ).1
     generalize_proofs at *
@@ -553,8 +546,13 @@ interlace the eigenvalues of the full matrix.
 The classical proof uses the Courant-Fischer min-max variational principle
 (`courant_fischer`); the reduction to it (`cauchyInterlacing_of_courantFischer`)
 is proved unconditionally from the linear-algebra API in this file. -/
-theorem cauchy_interlacing (𝕜 : Type*) [RCLike 𝕜] :
-    CauchyInterlacingStatement 𝕜 :=
-  cauchyInterlacing_of_courantFischer (courant_fischer 𝕜)
+theorem cauchy_interlacing (𝕜 : Type*) [RCLike 𝕜] {n : ℕ}
+    (A : Matrix (Fin (n + 1)) (Fin (n + 1)) 𝕜) (hA : A.IsHermitian)
+    (i : Fin (n + 1)) :
+    Interlace
+      (sortedEigenvalues (A.submatrix i.succAbove i.succAbove)
+        (hA.submatrix i.succAbove))
+      (sortedEigenvalues A hA) :=
+  cauchyInterlacing_of_courantFischer (courant_fischer 𝕜) A hA i
 
 end RealRooted
