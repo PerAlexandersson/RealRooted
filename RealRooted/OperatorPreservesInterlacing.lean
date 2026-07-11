@@ -65,19 +65,16 @@ theorem preservesInterlacingPairsUpToOrder0_of_preservesRealRootedOrZero
       (allComboRealRooted_comm hallT) (Or.inl hrevsucc)).imp
         (·.toPrec0) (·.toPrec0)).symm
 
-/-- Planning stub for the operator theorem mentioned in `INTERLACING.md`.
+/-- Real-rootedness-preserving linear operators preserve interlacing pairs up
+to order.
 
-Expected proof route: use Obreschkoff/all-combinations to show that if `T`
-preserves real-rootedness on each polynomial, then it preserves real-rootedness
-of every real linear combination of an interlacing pair, and hence preserves the
+Proof route: use Obreschkoff/all-combinations to show that if `T` preserves
+real-rootedness on each polynomial, then it preserves real-rootedness of every
+real linear combination of an interlacing pair, and hence preserves the
 interlacing relation itself. -/
-abbrev operatorPreservesInterlacingPairsUpToOrderStatement : Prop :=
-  ∀ T : ℝ[X] →ₗ[ℝ] ℝ[X],
-    PreservesRealRootedOrZero T →
-    PreservesInterlacingPairsUpToOrder0 T
-
-theorem operatorPreservesInterlacingPairsUpToOrder :
-    operatorPreservesInterlacingPairsUpToOrderStatement :=
-  @preservesInterlacingPairsUpToOrder0_of_preservesRealRootedOrZero
+theorem operatorPreservesInterlacingPairsUpToOrder
+    (T : ℝ[X] →ₗ[ℝ] ℝ[X]) (hT : PreservesRealRootedOrZero T) :
+    PreservesInterlacingPairsUpToOrder0 T :=
+  preservesInterlacingPairsUpToOrder0_of_preservesRealRootedOrZero hT
 
 end RealRooted
