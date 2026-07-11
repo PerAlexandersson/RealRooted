@@ -21,9 +21,12 @@ namespace Challenges
 namespace Favard
 
 /-- Favard recurrence coefficients force consecutive interlacing. -/
-theorem interlacing :
-    RealRooted.favardInterlacingStatement :=
-  RealRooted.favardInterlacing
+theorem interlacing
+    {P : Nat → ℝ[X]} {α β : Nat → ℝ}
+    (hrec : RealRooted.SatisfiesFavardRecurrence P α β)
+    (hβ : ∀ n : Nat, 0 < β (n + 1)) :
+    ∀ n : Nat, RealRooted.Prec (P n) (P (n + 1)) :=
+  RealRooted.favardInterlacing hrec hβ
 
 /-- Favard recurrence coefficients force real-rootedness of every polynomial
 in the sequence. -/
