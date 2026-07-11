@@ -3041,9 +3041,9 @@ same-degree branch.  The differ-by-one branch is
 `derivative_prec0_of_prec_succDegree`, proved above from the forward and
 converse Obreschkoff theorems. -/
 theorem derivativePreservesPrec0_of_sameDegree
-    (hsame : derivativePreservesPrecSameDegreeStatement) :
-    derivativePreservesPrec0Statement := by
-  intro f g hfg
+    (hsame : derivativePreservesPrecSameDegreeStatement)
+    {f g : ℝ[X]} (hfg : Prec0 f g) :
+    Prec0 f.derivative g.derivative := by
   rcases hfg with hfzero | hgzero | hfg'
   · rw [hfzero, derivative_zero]
     exact prec0_zero_left _
@@ -3063,8 +3063,9 @@ theorem derivativePreservesPrecSameDegree :
         derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonic
 
 /-- Differentiation preserves zero-aware weak proper position. -/
-theorem derivativePreservesPrec0 : derivativePreservesPrec0Statement :=
-  derivativePreservesPrec0_of_sameDegree derivativePreservesPrecSameDegree
+theorem derivativePreservesPrec0 {p q : ℝ[X]} (hpq : Prec0 p q) :
+    Prec0 p.derivative q.derivative :=
+  derivativePreservesPrec0_of_sameDegree derivativePreservesPrecSameDegree hpq
 
 /-!
 ### Direct #42 / shared #41 derivative-preservation API
