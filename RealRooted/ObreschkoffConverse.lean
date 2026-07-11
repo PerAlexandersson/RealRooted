@@ -2793,12 +2793,6 @@ theorem derivative_roots_sum_le_of_prec_sameDegree_monic {f g : ℝ[X]}
   have hdeg_pos : 0 < (f.natDegree : ℝ) := by positivity
   nlinarith
 
-/-- Same-degree branch of the standard fact that differentiation preserves
-oriented weak proper position. -/
-def derivativePreservesPrecSameDegreeStatement : Prop :=
-  ∀ {f g : ℝ[X]}, Prec f g → f.natDegree = g.natDegree →
-    Prec0 f.derivative g.derivative
-
 /-- Scaling both sides by nonzero constants preserves zero-aware proper
 position. -/
 private lemma prec0_C_mul_left_right {a b : ℝ} (ha : a ≠ 0) (hb : b ≠ 0)
@@ -2827,38 +2821,12 @@ lemma prec_degree_zero_degree_zero
   · simp [hroots_g]
   · exact Or.inr ⟨by lia, by simp [ListAlternates]⟩
 
-/-- Degree-at-least-two same-degree branch of the standard fact that
-differentiation preserves oriented weak proper position. -/
-def derivativePreservesPrecSameDegreeOfTwoLeNatDegreeStatement : Prop :=
-  ∀ {f g : ℝ[X]}, Prec f g → f.natDegree = g.natDegree → 2 ≤ f.natDegree →
-    Prec0 f.derivative g.derivative
-
-/-- Positive-leading-coefficient form of the degree-at-least-two same-degree
-derivative-preservation branch. -/
-def derivativePreservesPrecSameDegreeOfTwoLeNatDegreePosLeadingStatement : Prop :=
-  ∀ {f g : ℝ[X]}, HasPosLeadingCoeff f → HasPosLeadingCoeff g →
-    Prec f g → f.natDegree = g.natDegree → 2 ≤ f.natDegree →
-    Prec0 f.derivative g.derivative
-
-/-- Monic form of the degree-at-least-two same-degree derivative-preservation
-branch. -/
-def derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonicStatement : Prop :=
-  ∀ {f g : ℝ[X]}, f.Monic → g.Monic →
-    Prec f g → f.natDegree = g.natDegree → 2 ≤ f.natDegree →
-    Prec0 f.derivative g.derivative
-
-/-- Strict-`Prec` monic form of the degree-at-least-two same-degree
-derivative-preservation branch. -/
-def derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonicPrecStatement : Prop :=
-  ∀ {f g : ℝ[X]}, f.Monic → g.Monic →
-    Prec f g → f.natDegree = g.natDegree → 2 ≤ f.natDegree →
-    Prec f.derivative g.derivative
-
 /-- Monic degree-at-least-two same-degree branch of the standard fact that
 differentiation preserves oriented weak proper position. -/
-theorem derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonic :
-    derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonicStatement := by
-  intro f g hf_monic hg_monic hfg hdeg htwo
+theorem derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonic
+    {f g : ℝ[X]} (hf_monic : f.Monic) (hg_monic : g.Monic)
+    (hfg : Prec f g) (hdeg : f.natDegree = g.natDegree) (htwo : 2 ≤ f.natDegree) :
+    Prec0 f.derivative g.derivative := by
   have hfder_ne : f.derivative ≠ 0 :=
     Polynomial.derivative_ne_zero.mpr (by lia)
   have hgder_ne : g.derivative ≠ 0 :=
@@ -2878,31 +2846,36 @@ theorem derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonic :
 /-- The strict-`Prec` monic branch follows from the zero-aware monic branch,
 since the degree hypotheses make both derivatives nonzero. -/
 theorem derivativePreservesPrecSameDegree_monicPrec_of_monic
-    (hmonic : derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonicStatement) :
-    derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonicPrecStatement := by
-  intro f g hf_monic hg_monic hfg hdeg htwo
+    {f g : ℝ[X]} (hf_monic : f.Monic) (hg_monic : g.Monic)
+    (hfg : Prec f g) (hdeg : f.natDegree = g.natDegree) (htwo : 2 ≤ f.natDegree) :
+    Prec f.derivative g.derivative := by
   have hfder_ne : f.derivative ≠ 0 :=
     Polynomial.derivative_ne_zero.mpr (by lia)
   have hgder_ne : g.derivative ≠ 0 :=
     Polynomial.derivative_ne_zero.mpr (by lia)
-  rcases hmonic hf_monic hg_monic hfg hdeg htwo with hfzero | hgzero | hprec
+  rcases derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonic
+      hf_monic hg_monic hfg hdeg htwo with hfzero | hgzero | hprec
   · exact False.elim (hfder_ne hfzero)
   · exact False.elim (hgder_ne hgzero)
   · exact hprec
 
 /-- The zero-aware monic branch follows from the strict-`Prec` monic branch. -/
 theorem derivativePreservesPrecSameDegree_of_monicPrec
-    (hmonic : derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonicPrecStatement) :
-    derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonicStatement :=
-  fun {_ _} hf_monic hg_monic hfg hdeg htwo =>
-    (hmonic hf_monic hg_monic hfg hdeg htwo).toPrec0
+    (hmonic :
+      ∀ {f g : ℝ[X]}, f.Monic → g.Monic →
+        Prec f g → f.natDegree = g.natDegree → 2 ≤ f.natDegree →
+        Prec f.derivative g.derivative)
+    {f g : ℝ[X]} (hf_monic : f.Monic) (hg_monic : g.Monic)
+    (hfg : Prec f g) (hdeg : f.natDegree = g.natDegree) (htwo : 2 ≤ f.natDegree) :
+    Prec0 f.derivative g.derivative :=
+  (hmonic hf_monic hg_monic hfg hdeg htwo).toPrec0
 
 /-- The positive-leading-coefficient branch follows from the monic branch by
 normalizing both polynomials by their leading coefficients. -/
 theorem derivativePreservesPrecSameDegree_of_monic
-    (hmonic : derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonicStatement) :
-    derivativePreservesPrecSameDegreeOfTwoLeNatDegreePosLeadingStatement := by
-  intro f g hf_pos hg_pos hfg hdeg htwo
+    {f g : ℝ[X]} (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : Prec f g) (hdeg : f.natDegree = g.natDegree) (htwo : 2 ≤ f.natDegree) :
+    Prec0 f.derivative g.derivative := by
   have hf_lc_ne : f.leadingCoeff ≠ 0 := ne_of_gt hf_pos
   have hg_lc_ne : g.leadingCoeff ≠ 0 := ne_of_gt hg_pos
   let f₀ : ℝ[X] := C f.leadingCoeff⁻¹ * f
@@ -2924,7 +2897,8 @@ theorem derivativePreservesPrecSameDegree_of_monic
   have htwo₀ : 2 ≤ f₀.natDegree := by
     simpa [f₀, natDegree_C_mul (inv_ne_zero hf_lc_ne)] using htwo
   have hscaled : Prec0 f₀.derivative g₀.derivative :=
-    hmonic hf₀_monic hg₀_monic hfg₀ hdeg₀ htwo₀
+    derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonic
+      hf₀_monic hg₀_monic hfg₀ hdeg₀ htwo₀
   have hscaled' :
       Prec0 (C f.leadingCoeff⁻¹ * f.derivative)
         (C g.leadingCoeff⁻¹ * g.derivative) := by
@@ -2949,9 +2923,12 @@ theorem derivativePreservesPrecSameDegree_of_monic
 positive-leading-coefficient form by scaling both polynomials by signs. -/
 theorem derivativePreservesPrecSameDegree_of_posLeading
     (hpos :
-      derivativePreservesPrecSameDegreeOfTwoLeNatDegreePosLeadingStatement) :
-    derivativePreservesPrecSameDegreeOfTwoLeNatDegreeStatement := by
-  intro f g hfg hdeg htwo
+      ∀ {f g : ℝ[X]}, HasPosLeadingCoeff f → HasPosLeadingCoeff g →
+        Prec f g → f.natDegree = g.natDegree → 2 ≤ f.natDegree →
+        Prec0 f.derivative g.derivative)
+    {f g : ℝ[X]} (hfg : Prec f g) (hdeg : f.natDegree = g.natDegree)
+    (htwo : 2 ≤ f.natDegree) :
+    Prec0 f.derivative g.derivative := by
   have hf_lc_ne : f.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hfg.1.1
   have hg_lc_ne : g.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hfg.2.1.1
   let sf : ℝ := if 0 < f.leadingCoeff then 1 else -1
@@ -3002,9 +2979,11 @@ theorem derivativePreservesPrecSameDegree_of_posLeading
 degree-at-least-two branch.  Degrees zero and one are elementary because the
 derivatives are zero or nonzero constants. -/
 theorem derivativePreservesPrecSameDegree_of_two_le_natDegree
-    (hlarge : derivativePreservesPrecSameDegreeOfTwoLeNatDegreeStatement) :
-    derivativePreservesPrecSameDegreeStatement := by
-  intro f g hfg hdeg
+    (hlarge :
+      ∀ {f g : ℝ[X]}, Prec f g → f.natDegree = g.natDegree → 2 ≤ f.natDegree →
+        Prec0 f.derivative g.derivative)
+    {f g : ℝ[X]} (hfg : Prec f g) (hdeg : f.natDegree = g.natDegree) :
+    Prec0 f.derivative g.derivative := by
   by_cases hlarge_deg : 2 ≤ f.natDegree
   · exact hlarge hfg hdeg hlarge_deg
   · by_cases hfdeg0 : f.natDegree = 0
@@ -3041,7 +3020,9 @@ same-degree branch.  The differ-by-one branch is
 `derivative_prec0_of_prec_succDegree`, proved above from the forward and
 converse Obreschkoff theorems. -/
 theorem derivativePreservesPrec0_of_sameDegree
-    (hsame : derivativePreservesPrecSameDegreeStatement)
+    (hsame :
+      ∀ {f g : ℝ[X]}, Prec f g → f.natDegree = g.natDegree →
+        Prec0 f.derivative g.derivative)
     {f g : ℝ[X]} (hfg : Prec0 f g) :
     Prec0 f.derivative g.derivative := by
   rcases hfg with hfzero | hgzero | hfg'
@@ -3055,12 +3036,13 @@ theorem derivativePreservesPrec0_of_sameDegree
     · exact derivative_prec0_of_prec_succDegree hfg' (by lia)
 
 /-- Same-degree branch of differentiation preserving weak proper position. -/
-theorem derivativePreservesPrecSameDegree :
-    derivativePreservesPrecSameDegreeStatement :=
-  derivativePreservesPrecSameDegree_of_two_le_natDegree <|
-    derivativePreservesPrecSameDegree_of_posLeading <|
-      derivativePreservesPrecSameDegree_of_monic
-        derivativePreservesPrecSameDegreeOfTwoLeNatDegreeMonic
+theorem derivativePreservesPrecSameDegree
+    {f g : ℝ[X]} (hfg : Prec f g) (hdeg : f.natDegree = g.natDegree) :
+    Prec0 f.derivative g.derivative :=
+  derivativePreservesPrecSameDegree_of_two_le_natDegree
+    (derivativePreservesPrecSameDegree_of_posLeading
+      derivativePreservesPrecSameDegree_of_monic)
+    hfg hdeg
 
 /-- Differentiation preserves zero-aware weak proper position. -/
 theorem derivativePreservesPrec0 {p q : ℝ[X]} (hpq : Prec0 p q) :
