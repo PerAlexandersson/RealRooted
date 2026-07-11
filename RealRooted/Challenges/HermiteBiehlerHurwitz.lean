@@ -19,18 +19,25 @@ project.  The analytic stability bridges and Hurwitz-matrix finite-minor
 plumbing remain in `RealRooted.HermiteBiehler` and `RealRooted.HurwitzMatrix`.
 -/
 
+open Polynomial
+
 namespace RealRooted
 namespace Challenges
 namespace HermiteBiehlerHurwitz
 
 /-- Challenge-facing name for the sign-normalized forward Hermite--Biehler
 target. -/
-abbrev HermiteBiehlerForwardTarget : Prop :=
-  RealRooted.hermiteBiehlerForwardPosStatement
+def HermiteBiehlerForwardTarget : Prop :=
+  ∀ {f g : ℝ[X]},
+    RealRooted.HasPosLeadingCoeff f → RealRooted.HasPosLeadingCoeff g → RealRooted.Prec g f →
+    RealRooted.IsUpperHalfPlaneStable (RealRooted.hermiteBiehlerPolynomial f g)
 
 /-- Challenge-facing name for the converse Hermite--Biehler target. -/
-abbrev HermiteBiehlerConverseTarget : Prop :=
-  RealRooted.hermiteBiehlerConverseStatement
+def HermiteBiehlerConverseTarget : Prop :=
+  ∀ {f g : ℝ[X]},
+    RealRooted.HasPosLeadingCoeff f → RealRooted.HasPosLeadingCoeff g →
+    RealRooted.IsUpperHalfPlaneStable (RealRooted.hermiteBiehlerPolynomial f g) →
+    RealRooted.Prec g f ∨ RealRooted.Prec f g
 
 /-- Challenge-facing name for the Hurwitz-matrix total-nonnegativity
 criterion. -/

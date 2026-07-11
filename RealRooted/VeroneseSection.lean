@@ -647,7 +647,6 @@ theorem nonnegPrecToFullyInterlacingPair_of_pfPrec
 /-- Positive-leading-coefficient form used when zero coefficients are ruled out
 explicitly. -/
 theorem pfPrecToHurwitzOddEven_of_hermiteBiehlerPosCoeffs
-    (hHB : hermiteBiehlerForwardPosStatement)
     (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement) :
     ∀ {p q : ℝ[X]},
       HasNonnegCoeffs p →
@@ -661,26 +660,24 @@ theorem pfPrecToHurwitzOddEven_of_hermiteBiehlerPosCoeffs
   have hq : HasPosLeadingCoeff q :=
     hqnn.pos_leadingCoeff hq0
   refine ⟨hasNonnegCoeffs_oddEvenPolynomial hpnn hqnn, ?_⟩
-  exact hHBToHurwitz hpnn hqnn (hHB (f := q) (g := p) hq hp hpq)
+  exact hHBToHurwitz hpnn hqnn (hermiteBiehlerForwardPos (f := q) (g := p) hq hp hpq)
 
 /-- Sign-normalized Hermite--Biehler gives the nonnegative-coefficient
 Hurwitz odd/even bridge. -/
 theorem nonnegPrecToHurwitzOddEven_of_hermiteBiehlerPos
-    (hHB : hermiteBiehlerForwardPosStatement)
     (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement) :
     NonnegPrecToHurwitzOddEvenStatement :=
-  fun ⦃_ _⦄ hpnn hqnn hpq =>
-    pfPrecToHurwitzOddEven_of_hermiteBiehlerPosCoeffs hHB hHBToHurwitz
+  fun {_ _} hpnn hqnn hpq =>
+    pfPrecToHurwitzOddEven_of_hermiteBiehlerPosCoeffs hHBToHurwitz
       hpnn hqnn hpq.1.1 hpq.2.1.1 hpq
 
 /-- Sign-normalized Hermite--Biehler also gives the PF/AESW Hurwitz odd/even
 bridge, since PF coefficients are nonnegative. -/
 theorem pfPrecToHurwitzOddEven_of_hermiteBiehlerPos
-    (hHB : hermiteBiehlerForwardPosStatement)
     (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement) :
     PfPrecToHurwitzOddEvenStatement :=
-  fun hppf hqpf =>
-    nonnegPrecToHurwitzOddEven_of_hermiteBiehlerPos hHB hHBToHurwitz hppf.nonneg hqpf.nonneg
+  fun {_ _} hppf hqpf =>
+    nonnegPrecToHurwitzOddEven_of_hermiteBiehlerPos hHBToHurwitz hppf.nonneg hqpf.nonneg
 
 /-- The planned Hermite--Biehler/Hurwitz route implies the PF polynomial-to-Lace
 bridge. -/
@@ -728,12 +725,11 @@ theorem nonnegPrecToFullyInterlacingPair_of_hurwitzMatrixDirect
 /-- Sign-normalized Hermite--Biehler route to the PF polynomial-to-Lace
 bridge. -/
 theorem pfPrecToFullyInterlacingPair_of_hermiteBiehlerPosHurwitzMatrix
-    (hHB : hermiteBiehlerForwardPosStatement)
     (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
     (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement) :
     PfPrecToFullyInterlacingPairStatement :=
   pfPrecToFullyInterlacingPair_of_hurwitzMatrix
-    (pfPrecToHurwitzOddEven_of_hermiteBiehlerPos hHB hHBToHurwitz)
+    (pfPrecToHurwitzOddEven_of_hermiteBiehlerPos hHBToHurwitz)
     hHurwitzToMatrix
 
 /-- Combining reverse ASW with the Hermite--Biehler/Hurwitz route gives the
@@ -757,19 +753,20 @@ theorem nonnegPrecToFullyInterlacingPair_of_hurwitzMatrix
 polynomial-to-Lace bridge.  No reverse ASW hypothesis is needed here because
 the theorem assumes nonnegative coefficients directly. -/
 theorem nonnegPrecToFullyInterlacingPair_of_hermiteBiehlerPosHurwitzMatrix
-    (hHB : hermiteBiehlerForwardPosStatement)
     (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
     (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement) :
     NonnegPrecToFullyInterlacingPairStatement :=
   nonnegPrecToFullyInterlacingPair_of_hurwitzMatrixDirect
-    (nonnegPrecToHurwitzOddEven_of_hermiteBiehlerPos hHB hHBToHurwitz)
+    (nonnegPrecToHurwitzOddEven_of_hermiteBiehlerPos hHBToHurwitz)
     hHurwitzToMatrix
 
 /-- The three classical interfaces in the sign-normalized
 Hermite--Biehler/Hurwitz-matrix route. -/
 structure HermiteBiehlerHurwitzRoute : Prop where
   /-- Forward, sign-normalized Hermite--Biehler bridge. -/
-  hermiteBiehlerForwardPos : hermiteBiehlerForwardPosStatement
+  hermiteBiehlerForwardPos : ∀ {f g : ℝ[X]}, HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g → Prec g f →
+    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)
   /-- Conformal substitution from Hermite--Biehler stability to Hurwitz
   stability of the odd/even polynomial. -/
   hermiteBiehlerStableToHurwitzOddEven : HermiteBiehlerStableToHurwitzOddEvenStatement
@@ -782,7 +779,7 @@ theorem HermiteBiehlerHurwitzRoute.toPfPrecToFullyInterlacingPair
     (h : HermiteBiehlerHurwitzRoute) :
     PfPrecToFullyInterlacingPairStatement :=
   pfPrecToFullyInterlacingPair_of_hermiteBiehlerPosHurwitzMatrix
-    h.hermiteBiehlerForwardPos h.hermiteBiehlerStableToHurwitzOddEven
+    h.hermiteBiehlerStableToHurwitzOddEven
     h.hurwitzStableToMatrixTotallyNonnegative
 
 /-- Projection of the Hermite--Biehler/Hurwitz-matrix route onto the
@@ -791,7 +788,7 @@ theorem HermiteBiehlerHurwitzRoute.toNonnegPrecToFullyInterlacingPair
     (h : HermiteBiehlerHurwitzRoute) :
     NonnegPrecToFullyInterlacingPairStatement :=
   nonnegPrecToFullyInterlacingPair_of_hermiteBiehlerPosHurwitzMatrix
-    h.hermiteBiehlerForwardPos h.hermiteBiehlerStableToHurwitzOddEven
+    h.hermiteBiehlerStableToHurwitzOddEven
     h.hurwitzStableToMatrixTotallyNonnegative
 
 /-- Zero-aware interface from the two-row Lace condition back to polynomial
@@ -949,14 +946,14 @@ theorem hurwitzOddEvenToHermiteBiehlerStable_of_rotated
     simpa [isUpperHalfPlaneStable_iff_isRightHalfPlaneStable_comp] using hRot hp hq hrhp
 
 /-- Oriented converse Hermite--Biehler interface (oriented converse of
-`hermiteBiehlerForwardPosStatement`).
+`hermiteBiehlerForwardPos`).
 
 For polynomials `f`, `g` with positive leading coefficients, upper-half-plane
 stability of the combination `f + i g` forces the oriented proper position
 `Prec g f`.  This is strictly stronger than the disjunctive
-`hermiteBiehlerConverseStatement` already recorded in
+`hermiteBiehlerConverse` already recorded in
 `RealRooted.HermiteBiehler`: it commits to the orientation matching the forward
-bridge `hermiteBiehlerForwardPosStatement`, where `Prec g f` produces
+bridge `hermiteBiehlerForwardPos`, where `Prec g f` produces
 upper-half-plane stability of `f + i g`. -/
 def HermiteBiehlerConverseOrientedStatement : Prop :=
   ∀ ⦃f g : ℝ[X]⦄,
@@ -967,11 +964,11 @@ def HermiteBiehlerConverseOrientedStatement : Prop :=
 
 /-- Orientation-selection interface for the converse Hermite--Biehler theorem.
 
-The disjunctive converse `hermiteBiehlerConverseStatement` in
+The disjunctive converse `hermiteBiehlerConverse` in
 `RealRooted.HermiteBiehler` only concludes `Prec g f ∨ Prec f g`, leaving the
 orientation open.  This interface records the single remaining analytic fact
 needed to commit to the orientation matching the forward bridge
-`hermiteBiehlerForwardPosStatement`: for `f`, `g` with positive leading
+`hermiteBiehlerForwardPos`: for `f`, `g` with positive leading
 coefficients, upper-half-plane stability of `f + i g` excludes the reversed
 proper position, so the reversed branch `Prec f g` can only occur together with
 the oriented one `Prec g f`. -/
@@ -985,16 +982,15 @@ def HermiteBiehlerOrientationStatement : Prop :=
 /-- Checked reduction of the oriented converse Hermite--Biehler interface.
 
 `HermiteBiehlerConverseOrientedStatement` follows from the disjunctive converse
-Hermite--Biehler theorem `hermiteBiehlerConverseStatement` together with the
+Hermite--Biehler theorem `hermiteBiehlerConverse` together with the
 orientation-selection input `HermiteBiehlerOrientationStatement`.  The
 disjunctive converse supplies `Prec g f ∨ Prec f g` from positive leading
 coefficients and upper-half-plane stability; the orientation input selects the
 oriented branch. -/
 theorem hermiteBiehlerConverseOriented_of_orientation
-    (hConv : hermiteBiehlerConverseStatement)
     (hOrient : HermiteBiehlerOrientationStatement) :
     HermiteBiehlerConverseOrientedStatement :=
-  fun _ _ hf hg hstable => (hConv hf hg hstable).elim id (hOrient hf hg hstable)
+  fun _ _ hf hg hstable => (hermiteBiehlerConverse hf hg hstable).elim id (hOrient hf hg hstable)
 
 /-- Checked reduction of the analytic converse step
 `HurwitzStableOddEvenToPrecStatement`.
@@ -1037,7 +1033,7 @@ The oriented converse Hermite--Biehler interface
 *equal-degree* regime.  Once the two factors have strictly ordered degrees, the
 orientation is forced by the elementary degree constraint carried by `Prec`, so
 the orientation-selection input is unnecessary and the *disjunctive* converse
-`hermiteBiehlerConverseStatement` already suffices.
+`hermiteBiehlerConverse` already suffices.
 
 This isolates exactly where the orientation analytic content is needed: it is
 used only when the two polynomials have equal degree (equivalently, for the
@@ -1069,18 +1065,18 @@ orientation-selection input.
 For `f, g` with positive leading coefficients and strictly ordered degrees
 `g.natDegree < f.natDegree`, upper-half-plane stability of `f + i g` forces the
 oriented proper position `Prec g f`, using only the disjunctive converse
-`hermiteBiehlerConverseStatement`.  This is the part of
+`hermiteBiehlerConverse`.  This is the part of
 `HermiteBiehlerConverseOrientedStatement` that needs no extra analytic
 orientation fact: the orientation is pinned by the degree gap.  The remaining,
 genuinely analytic, orientation content of the oriented converse is therefore
 confined to the equal-degree case. -/
 theorem hermiteBiehlerConverseOriented_of_natDegree_lt
-    (hConv : hermiteBiehlerConverseStatement) {f g : ℝ[X]}
+    {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (hdeg : g.natDegree < f.natDegree)
     (hstable : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) :
     Prec g f :=
-  prec_of_or_of_natDegree_lt (hConv hf hg hstable) hdeg
+  prec_of_or_of_natDegree_lt (hermiteBiehlerConverse hf hg hstable) hdeg
 
 /-- Strict-degree case of the analytic converse step
 `HurwitzStableOddEvenToPrecStatement`, *without* the oriented converse interface.
@@ -1090,7 +1086,7 @@ even degree, see
 `natDegree_lt_iff_even_natDegree_oddEvenPolynomial`), Hurwitz stability of
 `q(x²) + x p(x²)` forces `Prec p q` using only the converse substitution
 interface `HurwitzOddEvenToHermiteBiehlerStableStatement` and the *disjunctive*
-converse Hermite--Biehler theorem `hermiteBiehlerConverseStatement`.  No
+converse Hermite--Biehler theorem `hermiteBiehlerConverse`.  No
 orientation-selection input (`HermiteBiehlerOrientationStatement` /
 `HermiteBiehlerConverseOrientedStatement`) is needed: the orientation is forced
 by the degree gap.
@@ -1101,7 +1097,6 @@ the strict-degree (even-degree) regime; only the equal-degree (odd-degree)
 regime retains genuinely analytic orientation content. -/
 theorem hurwitzStableOddEvenToPrec_of_converse_natDegree_lt
     (hSub : HurwitzOddEvenToHermiteBiehlerStableStatement)
-    (hConv : hermiteBiehlerConverseStatement)
     {p q : ℝ[X]} (hp : p ≠ 0) (hq : q ≠ 0)
     (hdeg : p.natDegree < q.natDegree)
     (hstable : IsHurwitzStable (oddEvenPolynomial p q)) : Prec p q := by
@@ -1110,8 +1105,8 @@ theorem hurwitzStableOddEvenToPrec_of_converse_natDegree_lt
   have hqnn := hasNonnegCoeffs_right_of_oddEvenPolynomial hnn
   have hupper := hSub hpnn hqnn hrhp
   have hqpos := hqnn.pos_leadingCoeff hq
-  exact hermiteBiehlerConverseOriented_of_natDegree_lt hConv hqpos
-    (hpnn.pos_leadingCoeff hp) hdeg hupper
+  have hppos := hpnn.pos_leadingCoeff hp
+  exact hermiteBiehlerConverseOriented_of_natDegree_lt hqpos hppos hdeg hupper
 
 /-! ### Degree of the odd/even polynomial -/
 
@@ -1240,11 +1235,11 @@ theorem isUpperHalfPlaneStable_hermiteBiehler_of_rhp_right_zero
 `HurwitzOddEvenToHermiteBiehlerRotatedStatement` follows from the real-variable
 converse Hurwitz/Hermite--Biehler interlacing step
 `HurwitzStableOddEvenToPrecStatement` together with the established forward
-Hermite--Biehler bridge `hermiteBiehlerForwardPosStatement`. -/
+Hermite--Biehler bridge `hermiteBiehlerForwardPos`. -/
 theorem hurwitzOddEvenToHermiteBiehlerRotated_of_hurwitzStablePrec
-    (hPrec : HurwitzStableOddEvenToPrecStatement)
-    (hFwd : hermiteBiehlerForwardPosStatement) :
-    HurwitzOddEvenToHermiteBiehlerRotatedStatement := fun p q hp hq hrhp => by
+    (hPrec : HurwitzStableOddEvenToPrecStatement) :
+    HurwitzOddEvenToHermiteBiehlerRotatedStatement := by
+  intro p q hp hq hrhp
   rw [← isUpperHalfPlaneStable_iff_isRightHalfPlaneStable_comp]
   by_cases hp0 : p = 0
   · subst hp0
@@ -1259,7 +1254,7 @@ theorem hurwitzOddEvenToHermiteBiehlerRotated_of_hurwitzStablePrec
         hq.pos_leadingCoeff hq0
       have hppos : HasPosLeadingCoeff p :=
         hp.pos_leadingCoeff hp0
-      exact hFwd hqpos hppos hprec
+      exact hermiteBiehlerForwardPos hqpos hppos hprec
 
 /-- Checked reduction of the interlacing-extraction interface.
 
@@ -1503,7 +1498,6 @@ theorem prec_veronesePairSectionPolynomial_fin_of_nonneg_prec
 Hermite--Biehler/Hurwitz matrix route. -/
 theorem prec0_veroneseSectionPolynomial_of_hermiteBiehlerPosHurwitzMatrix
     {p q : ℝ[X]} {r k : ℕ}
-    (hHB : hermiteBiehlerForwardPosStatement)
     (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
     (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
@@ -1513,14 +1507,13 @@ theorem prec0_veroneseSectionPolynomial_of_hermiteBiehlerPosHurwitzMatrix
     Prec0 (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) :=
   prec0_veroneseSectionPolynomial_of_pf_prec
     (pfPrecToFullyInterlacingPair_of_hermiteBiehlerPosHurwitzMatrix
-      hHB hHBToHurwitz hHurwitzToMatrix)
+      hHBToHurwitz hHurwitzToMatrix)
     hFullToPrec0 hppf hqpf hpq hr hk
 
 /-- Strict sign-normalized PF/AESW fixed-section Veronese interlacing through
 the Hermite--Biehler/Hurwitz matrix route. -/
 theorem prec_veroneseSectionPolynomial_of_hermiteBiehlerPosHurwitzMatrix
     {p q : ℝ[X]} {r k : ℕ}
-    (hHB : hermiteBiehlerForwardPosStatement)
     (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
     (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
     (hFullToPrec : FullyInterlacingPairToPrecStatement)
@@ -1530,14 +1523,13 @@ theorem prec_veroneseSectionPolynomial_of_hermiteBiehlerPosHurwitzMatrix
     Prec (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) :=
   prec_veroneseSectionPolynomial_of_pf_prec
     (pfPrecToFullyInterlacingPair_of_hermiteBiehlerPosHurwitzMatrix
-      hHB hHBToHurwitz hHurwitzToMatrix)
+      hHBToHurwitz hHurwitzToMatrix)
     hFullToPrec hppf hqpf hpq hr hk
 
 /-- Sign-normalized Fin-indexed PF/AESW pairwise Veronese interlacing through
 the Hermite--Biehler/Hurwitz matrix route. -/
 theorem prec0_veronesePairSectionPolynomial_fin_of_hermiteBiehlerPosHurwitzMatrix
     {p q : ℝ[X]} {r : ℕ}
-    (hHB : hermiteBiehlerForwardPosStatement)
     (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
     (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
@@ -1548,14 +1540,13 @@ theorem prec0_veronesePairSectionPolynomial_fin_of_hermiteBiehlerPosHurwitzMatri
       (veronesePairSectionPolynomial r p q j) :=
   prec0_veronesePairSectionPolynomial_fin_of_pf_prec
     (pfPrecToFullyInterlacingPair_of_hermiteBiehlerPosHurwitzMatrix
-      hHB hHBToHurwitz hHurwitzToMatrix)
+      hHBToHurwitz hHurwitzToMatrix)
     hFullToPrec0 hppf hqpf hpq hr i j hij
 
 /-- Strict sign-normalized Fin-indexed PF/AESW pairwise Veronese interlacing
 through the Hermite--Biehler/Hurwitz matrix route. -/
 theorem prec_veronesePairSectionPolynomial_fin_of_hermiteBiehlerPosHurwitzMatrix
     {p q : ℝ[X]} {r : ℕ}
-    (hHB : hermiteBiehlerForwardPosStatement)
     (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
     (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
     (hFullToPrec : FullyInterlacingPairToPrecStatement)
@@ -1566,14 +1557,13 @@ theorem prec_veronesePairSectionPolynomial_fin_of_hermiteBiehlerPosHurwitzMatrix
       (veronesePairSectionPolynomial r p q j) :=
   prec_veronesePairSectionPolynomial_fin_of_pf_prec
     (pfPrecToFullyInterlacingPair_of_hermiteBiehlerPosHurwitzMatrix
-      hHB hHBToHurwitz hHurwitzToMatrix)
+      hHBToHurwitz hHurwitzToMatrix)
     hFullToPrec hppf hqpf hpq hr i j hij
 
 /-- Sign-normalized nonnegative-coefficient fixed-section Veronese
 interlacing through the Hermite--Biehler/Hurwitz matrix route. -/
 theorem prec0_veroneseSectionPolynomial_of_nonneg_hermiteBiehlerPosHurwitzMatrix
     {p q : ℝ[X]} {r k : ℕ}
-    (hHB : hermiteBiehlerForwardPosStatement)
     (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
     (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
@@ -1582,14 +1572,13 @@ theorem prec0_veroneseSectionPolynomial_of_nonneg_hermiteBiehlerPosHurwitzMatrix
     Prec0 (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) :=
   prec0_veroneseSectionPolynomial_of_nonneg_prec
     (nonnegPrecToFullyInterlacingPair_of_hermiteBiehlerPosHurwitzMatrix
-      hHB hHBToHurwitz hHurwitzToMatrix)
+      hHBToHurwitz hHurwitzToMatrix)
     hFullToPrec0 hpnn hqnn hpq hr hk
 
 /-- Strict sign-normalized nonnegative-coefficient fixed-section Veronese
 interlacing through the Hermite--Biehler/Hurwitz matrix route. -/
 theorem prec_veroneseSectionPolynomial_of_nonneg_hermiteBiehlerPosHurwitzMatrix
     {p q : ℝ[X]} {r k : ℕ}
-    (hHB : hermiteBiehlerForwardPosStatement)
     (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
     (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
     (hFullToPrec : FullyInterlacingPairToPrecStatement)
@@ -1598,7 +1587,7 @@ theorem prec_veroneseSectionPolynomial_of_nonneg_hermiteBiehlerPosHurwitzMatrix
     Prec (veroneseSectionPolynomial r k p) (veroneseSectionPolynomial r k q) :=
   prec_veroneseSectionPolynomial_of_nonneg_prec
     (nonnegPrecToFullyInterlacingPair_of_hermiteBiehlerPosHurwitzMatrix
-      hHB hHBToHurwitz hHurwitzToMatrix)
+      hHBToHurwitz hHurwitzToMatrix)
     hFullToPrec hpnn hqnn hpq hr hk
 
 /-- Sign-normalized Fin-indexed nonnegative-coefficient pairwise Veronese
@@ -1606,7 +1595,6 @@ interlacing through the Hermite--Biehler/Hurwitz matrix route. -/
 theorem
     prec0_veronesePairSectionPolynomial_fin_of_nonneg_hermiteBiehlerPosHurwitzMatrix
     {p q : ℝ[X]} {r : ℕ}
-    (hHB : hermiteBiehlerForwardPosStatement)
     (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
     (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
@@ -1616,7 +1604,7 @@ theorem
       (veronesePairSectionPolynomial r p q j) :=
   prec0_veronesePairSectionPolynomial_fin_of_nonneg_prec
     (nonnegPrecToFullyInterlacingPair_of_hermiteBiehlerPosHurwitzMatrix
-      hHB hHBToHurwitz hHurwitzToMatrix)
+      hHBToHurwitz hHurwitzToMatrix)
     hFullToPrec0 hpnn hqnn hpq hr i j hij
 
 /-- Strict sign-normalized Fin-indexed nonnegative-coefficient pairwise
@@ -1624,7 +1612,6 @@ Veronese interlacing through the Hermite--Biehler/Hurwitz matrix route. -/
 theorem
     prec_veronesePairSectionPolynomial_fin_of_nonneg_hermiteBiehlerPosHurwitzMatrix
     {p q : ℝ[X]} {r : ℕ}
-    (hHB : hermiteBiehlerForwardPosStatement)
     (hHBToHurwitz : HermiteBiehlerStableToHurwitzOddEvenStatement)
     (hHurwitzToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
     (hFullToPrec : FullyInterlacingPairToPrecStatement)
@@ -1634,7 +1621,7 @@ theorem
       (veronesePairSectionPolynomial r p q j) :=
   prec_veronesePairSectionPolynomial_fin_of_nonneg_prec
     (nonnegPrecToFullyInterlacingPair_of_hermiteBiehlerPosHurwitzMatrix
-      hHB hHBToHurwitz hHurwitzToMatrix)
+      hHBToHurwitz hHurwitzToMatrix)
     hFullToPrec hpnn hqnn hpq hr i j hij
 
 /-- Conditional polynomial version of Athanasiadis--Wagner Corollary 5.6:
