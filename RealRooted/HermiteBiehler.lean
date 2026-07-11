@@ -226,18 +226,6 @@ theorem hermiteBiehlerStableToHurwitzOddEven {p q : ℝ[X]}
     IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q)) := by
   sorry
 
-/-- Analytic bridge from the Hermite--Biehler stable polynomial `q + i p` to
-right-half-plane stability of `q(x^2) + x p(x^2)`.
-
-This isolates the classical conformal-substitution part of the
-Hermite--Biehler/Hurwitz route. -/
-abbrev HermiteBiehlerStableToHurwitzOddEvenStatement : Prop :=
-  ∀ ⦃p q : ℝ[X]⦄,
-    HasNonnegCoeffs p →
-    HasNonnegCoeffs q →
-    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) →
-    IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q))
-
 /-! ## Reduction of the forward Hermite--Biehler/Hurwitz bridge to a
 first-quadrant conformal-substitution interface -/
 
@@ -257,39 +245,22 @@ theorem eval_complexify_ofReal (p : ℝ[X]) (t : ℝ) :
   rw [complexify]
   exact Polynomial.eval_map_apply (f := Complex.ofRealHom) (p := p) t
 
-/-- First-quadrant form of the forward Hermite--Biehler/Hurwitz conformal
-substitution: it suffices to exclude roots of `q(x²) + x p(x²)` in the open
-first quadrant `{Re > 0, Im > 0}`. -/
-def HermiteBiehlerStableToHurwitzOddEvenFirstQuadrantStatement : Prop :=
-  ∀ ⦃p q : ℝ[X]⦄,
-    HasNonnegCoeffs p →
-    HasNonnegCoeffs q →
-    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) →
-    ∀ z : ℂ, 0 < z.re → 0 < z.im →
-      (complexify (oddEvenPolynomial p q)).eval z ≠ 0
-
-/-- Upper-half-plane substitution form of the forward Hermite--Biehler/Hurwitz
-bridge: for any upper-half-plane point `w` with a right-half-plane square root
-`z`, the Hurwitz combination `q(w) + z·p(w)` is nonzero.
-
-This is the genuinely analytic conformal-substitution core: the quadratic map
-`z ↦ z²` sends the open first quadrant onto the open upper half-plane, so this
-interface and the first-quadrant interface above carry exactly the same
-content. -/
-def HermiteBiehlerStableToHurwitzOddEvenUpperHalfSubstitutionStatement : Prop :=
-  ∀ ⦃p q : ℝ[X]⦄,
-    HasNonnegCoeffs p →
-    HasNonnegCoeffs q →
-    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) →
-    ∀ ⦃w z : ℂ⦄, 0 < w.im → z ^ 2 = w → 0 < z.re →
-      (complexify q).eval w + z * (complexify p).eval w ≠ 0
-
 /-- The first-quadrant interface follows from the upper-half-plane substitution
 interface: for `z` in the open first quadrant, `w = z²` lies in the open upper
 half-plane and `z` is a right-half-plane square root of `w`. -/
 theorem hermiteBiehlerStableToHurwitzOddEvenFirstQuadrant_of_upperHalfSubstitution
-    (h : HermiteBiehlerStableToHurwitzOddEvenUpperHalfSubstitutionStatement) :
-    HermiteBiehlerStableToHurwitzOddEvenFirstQuadrantStatement := by
+    (h : ∀ ⦃p q : ℝ[X]⦄,
+      HasNonnegCoeffs p →
+      HasNonnegCoeffs q →
+      IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) →
+      ∀ ⦃w z : ℂ⦄, 0 < w.im → z ^ 2 = w → 0 < z.re →
+        (complexify q).eval w + z * (complexify p).eval w ≠ 0) :
+    ∀ ⦃p q : ℝ[X]⦄,
+      HasNonnegCoeffs p →
+      HasNonnegCoeffs q →
+      IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) →
+      ∀ z : ℂ, 0 < z.re → 0 < z.im →
+        (complexify (oddEvenPolynomial p q)).eval z ≠ 0 := by
   intro p q hp hq hstable z hzre hzim
   rw [eval_complexify_oddEvenPolynomial]
   have hw : 0 < (z ^ 2).im := by
@@ -300,14 +271,23 @@ theorem hermiteBiehlerStableToHurwitzOddEvenFirstQuadrant_of_upperHalfSubstituti
 /-- Checked reduction of the forward Hermite--Biehler/Hurwitz odd/even bridge to
 its first-quadrant conformal-substitution core.
 
-`HermiteBiehlerStableToHurwitzOddEvenStatement` follows from
-`HermiteBiehlerStableToHurwitzOddEvenFirstQuadrantStatement`: the real-axis case
+The forward Hermite--Biehler/Hurwitz odd/even bridge follows from its
+first-quadrant conformal-substitution core: the real-axis case
 `Im z = 0` is handled by positivity of the nonnegative-coefficient polynomial
 `q(x²) + x p(x²)`, and the lower half-plane case `Im z < 0` is reduced to the
 first quadrant by complex conjugation. -/
 theorem hermiteBiehlerStableToHurwitzOddEven_of_firstQuadrant
-    (h : HermiteBiehlerStableToHurwitzOddEvenFirstQuadrantStatement) :
-    HermiteBiehlerStableToHurwitzOddEvenStatement := by
+    (h : ∀ ⦃p q : ℝ[X]⦄,
+      HasNonnegCoeffs p →
+      HasNonnegCoeffs q →
+      IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) →
+      ∀ z : ℂ, 0 < z.re → 0 < z.im →
+        (complexify (oddEvenPolynomial p q)).eval z ≠ 0) :
+    ∀ ⦃p q : ℝ[X]⦄,
+      HasNonnegCoeffs p →
+      HasNonnegCoeffs q →
+      IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) →
+      IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q)) := by
   intro p q hp hq hstable z hzre
   -- The odd/even polynomial is nonzero, otherwise the stability hypothesis fails.
   have hfne : oddEvenPolynomial p q ≠ 0 := by
@@ -344,8 +324,17 @@ theorem hermiteBiehlerStableToHurwitzOddEven_of_firstQuadrant
 /-- Composite reduction: the forward Hermite--Biehler/Hurwitz odd/even bridge
 follows from the upper-half-plane substitution interface. -/
 theorem hermiteBiehlerStableToHurwitzOddEven_of_upperHalfSubstitution
-    (h : HermiteBiehlerStableToHurwitzOddEvenUpperHalfSubstitutionStatement) :
-    HermiteBiehlerStableToHurwitzOddEvenStatement :=
+    (h : ∀ ⦃p q : ℝ[X]⦄,
+      HasNonnegCoeffs p →
+      HasNonnegCoeffs q →
+      IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) →
+      ∀ ⦃w z : ℂ⦄, 0 < w.im → z ^ 2 = w → 0 < z.re →
+        (complexify q).eval w + z * (complexify p).eval w ≠ 0) :
+    ∀ ⦃p q : ℝ[X]⦄,
+      HasNonnegCoeffs p →
+      HasNonnegCoeffs q →
+      IsUpperHalfPlaneStable (hermiteBiehlerPolynomial q p) →
+      IsRightHalfPlaneStable (complexify (oddEvenPolynomial p q)) :=
   hermiteBiehlerStableToHurwitzOddEven_of_firstQuadrant
     (hermiteBiehlerStableToHurwitzOddEvenFirstQuadrant_of_upperHalfSubstitution h)
 

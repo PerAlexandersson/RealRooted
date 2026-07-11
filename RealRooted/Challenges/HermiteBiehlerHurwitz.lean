@@ -42,8 +42,10 @@ theorem hermiteBiehler_converse {f g : ℝ[X]}
 
 /-- Hurwitz-matrix total-nonnegativity criterion interface. -/
 theorem hurwitzMatrixCriterion :
-    RealRooted.HurwitzStableToMatrixTotallyNonnegativeStatement ∧
-      RealRooted.HurwitzMatrixTotallyNonnegativeToStableStatement :=
+    (∀ ⦃p : ℝ[X]⦄, RealRooted.IsHurwitzStable p →
+        (RealRooted.hurwitz p.coeff).IsTotallyNonneg) ∧
+      (∀ ⦃p : ℝ[X]⦄, (RealRooted.hurwitz p.coeff).IsTotallyNonneg →
+        RealRooted.IsHurwitzStable p) :=
   ⟨RealRooted.hurwitzStableToMatrixTotallyNonnegative_of_criterion,
     RealRooted.hurwitzMatrixTotallyNonnegativeToStable_of_criterion⟩
 
