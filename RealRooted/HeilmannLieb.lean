@@ -2182,42 +2182,30 @@ theorem lineGraph_clawFree {V : Type u} (G : _root_.SimpleGraph V) :
   rw [hind.card_eq] at hcard_le_two
   norm_num at hcard_le_two
 
-/-- Graph-form Chudnovsky--Seymour statement still needed for #52.
-
-This is the real graph-theoretic leaf: it should be proved by the usual
-claw-free deletion/compatibility induction, using the polynomial
-Chudnovsky--Seymour interlacing engine from `RealRooted.ChudnovskySeymour`. -/
-def ClawFreeIndepPolySplitsStatement : Prop :=
-  ∀ {V : Type u} [Fintype V] [DecidableEq V]
-    (G : _root_.SimpleGraph V), ClawFree G → (indepPoly G).Splits
-
 /-- Chudnovsky--Seymour graph theorem: finite claw-free graph independence
 polynomials are real-rooted. -/
-theorem clawFree_indepPoly_splits : ClawFreeIndepPolySplitsStatement.{u} := by
-  intro V _hfinite _hdec G hG
+theorem clawFree_indepPoly_splits {V : Type u} [Fintype V] [DecidableEq V]
+    (G : _root_.SimpleGraph V) (hG : ClawFree G) : (indepPoly G).Splits := by
   classical
   rw [indepPoly_eq_indepPolyOn_univ]
   exact supportIndepPoly_splits_of_clawFree hG Finset.univ
 
-/-- Conditional Heilmann--Lieb matching-generating corollary.
-
-Once the graph-form Chudnovsky--Seymour statement is proved, the matching
-polynomial route is immediate from the definition as the independence polynomial
-of the line graph and from `lineGraph_clawFree`. -/
+/-- Heilmann--Lieb matching-generating corollary: the matching polynomial route
+is immediate from the graph-form Chudnovsky--Seymour theorem
+(`clawFree_indepPoly_splits`), the definition as the independence polynomial of
+the line graph, and `lineGraph_clawFree`. -/
 theorem matchingGeneratingPolynomial_splits_of_clawFreeIndepPolySplits
-    (hcs : ClawFreeIndepPolySplitsStatement.{u})
     {V : Type u} [Fintype V] [DecidableEq V]
     (G : _root_.SimpleGraph V) :
     (matchingGeneratingPolynomial G).Splits := by
   classical
-  exact hcs (G := G.lineGraph) (lineGraph_clawFree G)
+  exact clawFree_indepPoly_splits (G := G.lineGraph) (lineGraph_clawFree G)
 
 /-- Heilmann--Lieb theorem for the matching-generating polynomial. -/
 theorem matchingGeneratingPolynomial_splits
     {V : Type u} [Fintype V] [DecidableEq V] (G : _root_.SimpleGraph V) :
     (matchingGeneratingPolynomial G).Splits :=
-  matchingGeneratingPolynomial_splits_of_clawFreeIndepPolySplits
-    clawFree_indepPoly_splits G
+  matchingGeneratingPolynomial_splits_of_clawFreeIndepPolySplits G
 
 /-- Heilmann--Lieb theorem for the intrinsic edge-matching polynomial. -/
 theorem matchingPolynomialByEdges_splits
