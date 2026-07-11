@@ -209,8 +209,9 @@ The intended paper proof is:
    that finite pencil certificate to the operator
    `diagonal alpha + X * diagonal beta`.
 
-This predicate records the concrete finite certificate, while the theorem
-connecting it to `BidiagonalPFPreserver` remains a named backend statement. -/
+This predicate records the concrete finite certificate, while the
+connection to `BidiagonalPFPreserver` remains an unproved backend interface
+passed in as a hypothesis. -/
 def BidiagonalJensenPencilCertificate
     (alpha beta : ℕ → ℝ) (d : ℕ) : Prop :=
   IsPFPolynomial (jensenPolynomial d alpha) ∧
@@ -218,17 +219,14 @@ def BidiagonalJensenPencilCertificate
   ∀ lam : ℝ, 0 ≤ lam →
     IsPFPolynomial (bidiagonalJensenPencil alpha beta d lam)
 
-/-- Backend theorem statement: a valid finite Jensen-pencil certificate implies
-that the corresponding coefficient-bidiagonal operator preserves PF
-polynomials up to degree `d`. -/
-def jensenPencilBidiagonalPreserverStatement : Prop :=
-  ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
-    BidiagonalJensenPencilCertificate alpha beta d →
-    BidiagonalPFPreserver alpha beta d
-
-/-- Apply the named Jensen-pencil backend theorem. -/
+/-- Apply the Jensen-pencil backend interface: a valid finite Jensen-pencil
+certificate implies that the corresponding coefficient-bidiagonal operator
+preserves PF polynomials up to degree `d`.  The backend implication is unproved
+and supplied as the hypothesis `hbackend`. -/
 theorem bidiagonalPFPreserver_of_jensenPencil
-    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbackend : ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
+      BidiagonalJensenPencilCertificate alpha beta d →
+      BidiagonalPFPreserver alpha beta d)
     {alpha beta : ℕ → ℝ} {d : ℕ}
     (hcert : BidiagonalJensenPencilCertificate alpha beta d) :
     BidiagonalPFPreserver alpha beta d :=
@@ -300,12 +298,6 @@ theorem BidiagonalCubicResidualCertificate.toJensenPencilCertificate
     hcert.alpha_factor hcert.beta_factor hcert.pencil_factor
     hcert.alpha_cubic hcert.beta_cubic hcert.pencil_cubic
 
-/-- Compatibility name for notes and tactic scripts that speak about the
-PF-bidiagonal backend as a theorem statement. -/
-abbrev pfBidiagonalPreserverStatement
-    (alpha beta : ℕ → ℝ) (d : ℕ) : Prop :=
-  BidiagonalPFPreserver alpha beta d
-
 /-- Apply a PF-bidiagonal preserver certificate to one polynomial. -/
 theorem isPFPolynomial_bidiagonalOperator_of_preserver
     {alpha beta : ℕ → ℝ} {d : ℕ} {p : ℝ[X]}
@@ -318,7 +310,7 @@ theorem isPFPolynomial_bidiagonalOperator_of_preserver
 /-- Compatibility spelling for the first PF-bidiagonal scaffold. -/
 theorem isPFPolynomial_bidiagonalOperator_of_classical
     {alpha beta : ℕ → ℝ} {d : ℕ} {p : ℝ[X]}
-    (hpres : pfBidiagonalPreserverStatement alpha beta d)
+    (hpres : BidiagonalPFPreserver alpha beta d)
     (hp : IsPFPolynomial p)
     (hdeg : p.natDegree ≤ d) :
     IsPFPolynomial (bidiagonalOperator alpha beta p) :=
@@ -326,7 +318,9 @@ theorem isPFPolynomial_bidiagonalOperator_of_classical
 
 /-- Apply a Jensen-pencil backend certificate to one polynomial. -/
 theorem isPFPolynomial_bidiagonalOperator_of_jensenPencil
-    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbackend : ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
+      BidiagonalJensenPencilCertificate alpha beta d →
+      BidiagonalPFPreserver alpha beta d)
     {alpha beta : ℕ → ℝ} {d : ℕ} {p : ℝ[X]}
     (hcert : BidiagonalJensenPencilCertificate alpha beta d)
     (hp : IsPFPolynomial p)
@@ -355,7 +349,9 @@ theorem isPFPolynomial_of_bidiagonalOperator_sequence
 
 /-- Sequence wrapper using per-row Jensen-pencil certificates. -/
 theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_jensenPencil
-    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbackend : ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
+      BidiagonalJensenPencilCertificate alpha beta d →
+      BidiagonalPFPreserver alpha beta d)
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
@@ -369,7 +365,9 @@ theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_jensenPencil
 
 /-- Sequence wrapper using bundled cubic-residual certificates as row hints. -/
 theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidualCertificate
-    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbackend : ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
+      BidiagonalJensenPencilCertificate alpha beta d →
+      BidiagonalPFPreserver alpha beta d)
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
@@ -420,7 +418,9 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence
 /-- Sequence wrapper for Family H-style second-derivative recurrences using
 per-row Jensen-pencil certificates. -/
 theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_jensenPencil
-    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbackend : ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
+      BidiagonalJensenPencilCertificate alpha beta d →
+      BidiagonalPFPreserver alpha beta d)
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
@@ -441,7 +441,9 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_jensenPenci
 bundled cubic-residual certificates as row hints. -/
 theorem
     isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidualCertificate
-    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbackend : ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
+      BidiagonalJensenPencilCertificate alpha beta d →
+      BidiagonalPFPreserver alpha beta d)
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
@@ -462,7 +464,9 @@ theorem
 /-- Short compatibility spelling for the bundled cubic-residual version of the
 second-derivative PF-bidiagonal sequence wrapper. -/
 theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert
-    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbackend : ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
+      BidiagonalJensenPencilCertificate alpha beta d →
+      BidiagonalPFPreserver alpha beta d)
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
@@ -482,7 +486,9 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert
 /-- Sequence wrapper whose per-row Jensen-pencil certificates are supplied by
 common-factor residual cubic certificates. -/
 theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidual
-    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbackend : ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
+      BidiagonalJensenPencilCertificate alpha beta d →
+      BidiagonalPFPreserver alpha beta d)
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
     {d m : Nat → ℕ} {A B : Nat → ℝ[X]} {S : Nat → ℝ → ℝ[X]}
     (hbase : IsPFPolynomial (P 0))
@@ -516,7 +522,9 @@ The recurrence is supplied in differential form using
 `bidiagonalOperator` and then applies the Jensen-pencil/cubic-residual PF
 sequence wrapper. -/
 theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidual
-    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbackend : ∀ {alpha beta : ℕ → ℝ} {d : ℕ},
+      BidiagonalJensenPencilCertificate alpha beta d →
+      BidiagonalPFPreserver alpha beta d)
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ}
     {d m : Nat → ℕ} {A B : Nat → ℝ[X]} {S : Nat → ℝ → ℝ[X]}
     (hbase : IsPFPolynomial (P 0))
