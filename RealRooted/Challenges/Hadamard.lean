@@ -34,12 +34,21 @@ namespace Hadamard
 
 /-- Fixed-degree Schur--Szego composition theorem. -/
 theorem finiteSchurSzegoComposition :
-    RealRooted.finiteSchurSzegoCompositionStatement :=
+    ∀ {n : ℕ} {f p : ℝ[X]},
+      RealRooted.IsPFPolynomial f →
+      f.natDegree ≤ n →
+      p.natDegree ≤ n →
+      p.Splits →
+        RealRooted.schurSzegoComp n f p = 0 ∨
+          (RealRooted.schurSzegoComp n f p).Splits :=
   RealRooted.finiteSchurSzegoComposition
 
 /-- Finite Polya--Schur theorem in the nonnegative-coefficient convention. -/
 theorem finitePolyaSchur_nonneg :
-    RealRooted.finitePolyaSchurNonnegStatement :=
+    ∀ {n : ℕ} {gamma : ℕ → ℝ},
+      (∀ k, 0 ≤ gamma k) →
+        (RealRooted.IsFiniteMultiplierSequence n gamma ↔
+          RealRooted.IsPFPolynomial (RealRooted.jensenPolynomial n gamma)) :=
   RealRooted.finitePolyaSchur_nonneg
 
 /-- Garloff--Wagner proper-position Hadamard theorem. -/
