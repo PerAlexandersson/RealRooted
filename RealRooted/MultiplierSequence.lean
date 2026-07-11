@@ -730,22 +730,6 @@ theorem finitePFMultiplierSequence_three_logConcave
   (isPFPolynomial_jensenPolynomial_of_finitePFMultiplierSequence
     hmult).jensenPolynomial_three_logConcave
 
-/-- The finite Polya--Schur theorem in the nonnegative-coefficient convention:
-a nonnegative diagonal sequence preserves real-rootedness up to degree `n` if
-and only if its degree-`n` Jensen polynomial is PF. -/
-def finitePolyaSchurNonnegStatement : Prop :=
-  ∀ {n : ℕ} {gamma : ℕ → ℝ},
-    (∀ k, 0 ≤ gamma k) →
-      (IsFiniteMultiplierSequence n gamma ↔
-        IsPFPolynomial (jensenPolynomial n gamma))
-
-/-- The remaining hard direction of the finite Polya--Schur theorem. -/
-def finitePolyaSchurNonnegBackwardStatement : Prop :=
-  ∀ {n : ℕ} {gamma : ℕ → ℝ},
-    (∀ k, 0 ≤ gamma k) →
-      IsPFPolynomial (jensenPolynomial n gamma) →
-        IsFiniteMultiplierSequence n gamma
-
 /-- Low-degree base case of the backward finite Pólya--Schur direction.
 
 For `n ≤ 1`, the Jensen-polynomial hypothesis is unnecessary: diagonal
@@ -810,29 +794,48 @@ theorem finitePolyaSchur_nonneg_natDegree_two
   finitePolyaSchur_nonneg_of_natDegree_le_two le_rfl hgamma
 
 theorem finitePolyaSchur_nonneg_of_backward
-    (hBack : finitePolyaSchurNonnegBackwardStatement) :
-    finitePolyaSchurNonnegStatement :=
+    (hBack : ∀ {n : ℕ} {gamma : ℕ → ℝ},
+      (∀ k, 0 ≤ gamma k) →
+        IsPFPolynomial (jensenPolynomial n gamma) →
+          IsFiniteMultiplierSequence n gamma) :
+    ∀ {n : ℕ} {gamma : ℕ → ℝ},
+      (∀ k, 0 ≤ gamma k) →
+        (IsFiniteMultiplierSequence n gamma ↔
+          IsPFPolynomial (jensenPolynomial n gamma)) :=
   fun hgamma => ⟨isPFPolynomial_jensenPolynomial_of_finiteMultiplierSequence hgamma,
     hBack hgamma⟩
 
 /-- The full finite Pólya--Schur statement contains, in particular, the hard
 backward direction from PF Jensen polynomial to finite multiplier sequence. -/
 theorem finitePolyaSchur_backward_of_nonneg
-    (hFPS : finitePolyaSchurNonnegStatement) :
-    finitePolyaSchurNonnegBackwardStatement :=
+    (hFPS : ∀ {n : ℕ} {gamma : ℕ → ℝ},
+      (∀ k, 0 ≤ gamma k) →
+        (IsFiniteMultiplierSequence n gamma ↔
+          IsPFPolynomial (jensenPolynomial n gamma))) :
+    ∀ {n : ℕ} {gamma : ℕ → ℝ},
+      (∀ k, 0 ≤ gamma k) →
+        IsPFPolynomial (jensenPolynomial n gamma) →
+          IsFiniteMultiplierSequence n gamma :=
   fun hgamma hjensen => (hFPS hgamma).2 hjensen
 
 /-- In the nonnegative-coefficient convention, the full finite Pólya--Schur
 statement is equivalent to its backward direction.  The forward direction is
 the elementary Jensen-polynomial test on `(X + 1)^n`. -/
 theorem finitePolyaSchurNonnegStatement_iff_backward :
-    finitePolyaSchurNonnegStatement ↔ finitePolyaSchurNonnegBackwardStatement :=
+    (∀ {n : ℕ} {gamma : ℕ → ℝ},
+      (∀ k, 0 ≤ gamma k) →
+        (IsFiniteMultiplierSequence n gamma ↔
+          IsPFPolynomial (jensenPolynomial n gamma))) ↔
+    (∀ {n : ℕ} {gamma : ℕ → ℝ},
+      (∀ k, 0 ≤ gamma k) →
+        IsPFPolynomial (jensenPolynomial n gamma) →
+          IsFiniteMultiplierSequence n gamma) :=
   ⟨finitePolyaSchur_backward_of_nonneg, finitePolyaSchur_nonneg_of_backward⟩
 
 /- The classical finite Pólya--Schur theorem `finitePolyaSchur_nonneg` is
 established in `RealRooted.Hadamard`, where the Schur--Szegő composition
-machinery (`finiteSchurSzegoComposition`) needed for the backward direction
-`finitePolyaSchurNonnegBackwardStatement` is available. -/
+machinery (`finiteSchurSzegoComposition`) needed for the backward direction is
+available. -/
 
 /-- A nonnegative finite multiplier sequence preserves the PF cone on the same
 degree range. -/
@@ -912,7 +915,10 @@ theorem isFinitePFMultiplierSequence_iff_jensenPolynomial_natDegree_two
 
 /-- The finite Polya--Schur classification, used in the forward direction. -/
 theorem jensenPolynomial_isPF_of_finiteMultiplierSequence
-    (hFPS : finitePolyaSchurNonnegStatement)
+    (hFPS : ∀ {n : ℕ} {gamma : ℕ → ℝ},
+      (∀ k, 0 ≤ gamma k) →
+        (IsFiniteMultiplierSequence n gamma ↔
+          IsPFPolynomial (jensenPolynomial n gamma)))
     {n : ℕ} {gamma : ℕ → ℝ}
     (hgamma : ∀ k, 0 ≤ gamma k)
     (hmult : IsFiniteMultiplierSequence n gamma) :
@@ -921,7 +927,10 @@ theorem jensenPolynomial_isPF_of_finiteMultiplierSequence
 
 /-- The finite Polya--Schur classification, used in the reverse direction. -/
 theorem isFiniteMultiplierSequence_of_jensenPolynomial
-    (hFPS : finitePolyaSchurNonnegStatement)
+    (hFPS : ∀ {n : ℕ} {gamma : ℕ → ℝ},
+      (∀ k, 0 ≤ gamma k) →
+        (IsFiniteMultiplierSequence n gamma ↔
+          IsPFPolynomial (jensenPolynomial n gamma)))
     {n : ℕ} {gamma : ℕ → ℝ}
     (hgamma : ∀ k, 0 ≤ gamma k)
     (hjensen : IsPFPolynomial (jensenPolynomial n gamma)) :
@@ -931,7 +940,10 @@ theorem isFiniteMultiplierSequence_of_jensenPolynomial
 /-- The backward finite Pólya--Schur direction, used directly as a multiplier
 sequence criterion. -/
 theorem isFiniteMultiplierSequence_of_jensenPolynomial_of_backward
-    (hBack : finitePolyaSchurNonnegBackwardStatement)
+    (hBack : ∀ {n : ℕ} {gamma : ℕ → ℝ},
+      (∀ k, 0 ≤ gamma k) →
+        IsPFPolynomial (jensenPolynomial n gamma) →
+          IsFiniteMultiplierSequence n gamma)
     {n : ℕ} {gamma : ℕ → ℝ}
     (hgamma : ∀ k, 0 ≤ gamma k)
     (hjensen : IsPFPolynomial (jensenPolynomial n gamma)) :
@@ -941,7 +953,10 @@ theorem isFiniteMultiplierSequence_of_jensenPolynomial_of_backward
 /-- PF preservation obtained from the finite Polya--Schur classification and a
 PF Jensen polynomial. -/
 theorem isFinitePFMultiplierSequence_of_jensenPolynomial
-    (hFPS : finitePolyaSchurNonnegStatement)
+    (hFPS : ∀ {n : ℕ} {gamma : ℕ → ℝ},
+      (∀ k, 0 ≤ gamma k) →
+        (IsFiniteMultiplierSequence n gamma ↔
+          IsPFPolynomial (jensenPolynomial n gamma)))
     {n : ℕ} {gamma : ℕ → ℝ}
     (hgamma : ∀ k, 0 ≤ gamma k)
     (hjensen : IsPFPolynomial (jensenPolynomial n gamma)) :
@@ -952,7 +967,10 @@ theorem isFinitePFMultiplierSequence_of_jensenPolynomial
 /-- PF preservation obtained from the backward finite Pólya--Schur direction
 and a PF Jensen polynomial. -/
 theorem isFinitePFMultiplierSequence_of_jensenPolynomial_of_backward
-    (hBack : finitePolyaSchurNonnegBackwardStatement)
+    (hBack : ∀ {n : ℕ} {gamma : ℕ → ℝ},
+      (∀ k, 0 ≤ gamma k) →
+        IsPFPolynomial (jensenPolynomial n gamma) →
+          IsFiniteMultiplierSequence n gamma)
     {n : ℕ} {gamma : ℕ → ℝ}
     (hgamma : ∀ k, 0 ≤ gamma k)
     (hjensen : IsPFPolynomial (jensenPolynomial n gamma)) :
@@ -964,7 +982,10 @@ theorem isFinitePFMultiplierSequence_of_jensenPolynomial_of_backward
 sequence, preserving the PF cone up to degree `n` is equivalent to the degree
 `n` Jensen polynomial being PF. -/
 theorem isFinitePFMultiplierSequence_iff_jensenPolynomial
-    (hFPS : finitePolyaSchurNonnegStatement)
+    (hFPS : ∀ {n : ℕ} {gamma : ℕ → ℝ},
+      (∀ k, 0 ≤ gamma k) →
+        (IsFiniteMultiplierSequence n gamma ↔
+          IsPFPolynomial (jensenPolynomial n gamma)))
     {n : ℕ} {gamma : ℕ → ℝ}
     (hgamma : ∀ k, 0 ≤ gamma k) :
     IsFinitePFMultiplierSequence n gamma ↔
@@ -975,7 +996,10 @@ theorem isFinitePFMultiplierSequence_iff_jensenPolynomial
 /-- PF finite multiplier sequences are classified by the Jensen polynomial
 once the backward finite Pólya--Schur direction is available. -/
 theorem isFinitePFMultiplierSequence_iff_jensenPolynomial_of_backward
-    (hBack : finitePolyaSchurNonnegBackwardStatement)
+    (hBack : ∀ {n : ℕ} {gamma : ℕ → ℝ},
+      (∀ k, 0 ≤ gamma k) →
+        IsPFPolynomial (jensenPolynomial n gamma) →
+          IsFiniteMultiplierSequence n gamma)
     {n : ℕ} {gamma : ℕ → ℝ}
     (hgamma : ∀ k, 0 ≤ gamma k) :
     IsFinitePFMultiplierSequence n gamma ↔
