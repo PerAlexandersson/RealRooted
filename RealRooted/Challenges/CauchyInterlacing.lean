@@ -38,7 +38,7 @@ noncomputable abbrev PrincipalSubmatrix {𝕜 : Type*} {n : ℕ}
   A.submatrix i.succAbove i.succAbove
 
 /-- Cauchy's eigenvalue interlacing theorem for Hermitian matrices. -/
-theorem eigenvalues_interlace (𝕜 : Type*) [RCLike 𝕜] {n : ℕ}
+theorem theoremStatement (𝕜 : Type*) [RCLike 𝕜] {n : ℕ}
     (A : Matrix (Fin (n + 1)) (Fin (n + 1)) 𝕜) (hA : A.IsHermitian)
     (i : Fin (n + 1)) :
     RealRooted.Interlace
