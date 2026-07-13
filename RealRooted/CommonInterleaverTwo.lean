@@ -6698,8 +6698,7 @@ private lemma count_above_singleton_pair_le
     ((({β, γ} : Multiset ℝ).filter (x < ·)).card : ℤ) -
         (({α} : Multiset ℝ).filter (x < ·)).card ≤ 1 := by
   simp only [Multiset.insert_eq_cons, Multiset.filter_cons, Multiset.filter_singleton]
-  split_ifs
-  all_goals simp_all; try linarith
+  split_ifs <;> (first | linarith | simp_all)
 
 /-- Counting core (lower threshold): for a singleton `{α}` and an ordered pair
 `{β, γ}` with `γ ≤ α`, the singleton never has more elements `≤ x` than the
@@ -6711,8 +6710,7 @@ private lemma count_below_singleton_pair_le
     ((({β, γ} : Multiset ℝ).filter (· ≤ x)).card : ℤ) -
         (({α} : Multiset ℝ).filter (· ≤ x)).card ≤ 2 := by
   simp only [Multiset.insert_eq_cons, Multiset.filter_cons, Multiset.filter_singleton]
-  split_ifs
-  all_goals simp_all; try linarith
+  split_ifs <;> (first | linarith | simp_all)
 
 /-- Degree-one base case for the upper-threshold succ-degree root-count
 formulation in the positive-combination / no-common-root setting.

@@ -1076,12 +1076,11 @@ lemma bezoutMatrix.no_complex_root_of_posDef {n : ℕ}
         have hsum := (mul_eq_zero.mp h_bezoutian).resolve_left hdiff_ne
         simpa only [bezoutMatrix, map_pow] using hsum⟩
     refine ⟨fun i ↦ (y i).re, ?_, ?_⟩
-    all_goals
-      simp_all only [Complex.ext_iff, Complex.zero_re, Complex.zero_im, ne_eq,
+    · simp_all only [Complex.ext_iff, Complex.zero_re, Complex.zero_im, ne_eq,
         Complex.re_sum, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul,
         sub_zero, Complex.conj_re, Complex.mul_im, add_zero, Complex.conj_im, mul_neg,
         sub_neg_eq_add, Finset.sum_add_distrib, Complex.im_sum, Finset.sum_neg_distrib]
-    · intro hre_zero
+      intro hre_zero
       have him_ne : (fun i ↦ (y i).im) ≠ 0 := fun h ↦
         hy.1 (funext fun i ↦ Complex.ext (congr_fun hre_zero i) (congr_fun h i))
       have him_pos := Matrix.PosDef.sum_pos hB him_ne
@@ -1090,7 +1089,11 @@ lemma bezoutMatrix.no_complex_root_of_posDef {n : ℕ}
             bezoutMatrix (n + 1) q p i j * (y i).re * (y j).re = 0 := by
         simp [congr_fun hre_zero]
       linarith
-    · have h_pos (x : Fin (n + 1) → ℝ) :
+    · simp_all only [Complex.ext_iff, Complex.zero_re, Complex.zero_im, ne_eq,
+        Complex.re_sum, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul,
+        sub_zero, Complex.conj_re, Complex.mul_im, add_zero, Complex.conj_im, mul_neg,
+        sub_neg_eq_add, Finset.sum_add_distrib, Complex.im_sum, Finset.sum_neg_distrib]
+      have h_pos (x : Fin (n + 1) → ℝ) :
           0 ≤ ∑ i : Fin (n + 1), ∑ j : Fin (n + 1),
             bezoutMatrix (n + 1) q p i j * x i * x j := by
         rcases eq_or_ne x 0 with rfl | hx

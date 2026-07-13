@@ -402,7 +402,6 @@ theorem zipWith_mul_veroneseLinearFactorRowDesc_sum_eq_of_last
   · simp
   · simp
 
-set_option linter.flexible false in
 /-- Matrix-vector multiplication by the cyclic matrix is exactly the
 Veronese-section recursion for multiplication by `X + a`, in descending
 residue order. -/
@@ -425,10 +424,13 @@ theorem matPolyAction_veroneseLinearFactorMatrixDesc
       have hrec :=
         veroneseSectionPolynomial_X_add_C_mul_succ
           (r := r) (k := r - 1 - (i.1 + 1)) hk_lt a p
-      simp [matPolyAction, veroneseLinearFactorMatrixDesc,
-        veroneseSectionPolynomialListDesc, i] at hrow ⊢
+      unfold matPolyAction
+      unfold veroneseLinearFactorMatrixDesc
+      simp only [List.get_eq_getElem, List.getElem_map, List.getElem_ofFn]
       rw [hrow]
-      simpa [i, add_comm, add_left_comm, add_assoc, hk_succ] using hrec.symm
+      unfold veroneseSectionPolynomialListDesc
+      simp only [List.get_eq_getElem, List.getElem_ofFn]
+      rw [hk_succ, add_comm, hrec.symm]
     · have hrow :=
         zipWith_mul_veroneseLinearFactorRowDesc_sum_eq_of_last
           (r := r) a i hi (veroneseSectionPolynomialListDesc r p)
@@ -439,13 +441,15 @@ theorem matPolyAction_veroneseLinearFactorMatrixDesc
         have hs : i.1 + 1 = r := le_antisymm hle' hle
         exact Nat.eq_sub_of_add_eq hs
       have hrec := veroneseSectionPolynomial_X_add_C_mul_zero (r := r) hr a p
-      simp [matPolyAction, veroneseLinearFactorMatrixDesc,
-        veroneseSectionPolynomialListDesc, i] at hrow ⊢
+      have h_zero : r - 1 - n = 0 := by
+        simpa [i] using congrArg (fun m => r - 1 - m) hi_last
+      unfold matPolyAction
+      unfold veroneseLinearFactorMatrixDesc
+      simp only [List.get_eq_getElem, List.getElem_map, List.getElem_ofFn]
       rw [hrow]
-      rw [show r - 1 - n = 0 by
-        simpa [i] using congrArg (fun m => r - 1 - m) hi_last]
-      rw [hrec]
-      ring
+      unfold veroneseSectionPolynomialListDesc
+      simp only [List.get_eq_getElem, List.getElem_ofFn]
+      rw [h_zero, hrec, Nat.sub_zero, add_comm]
 
 /-! ## Cyclic matrix 2-by-2 check and preserver step -/
 
@@ -463,7 +467,6 @@ def VeroneseLinearFactorMatrixDescHas2x2 (r : ℕ) (a : ℝ) : Prop :=
       ((veroneseLinearFactorRowDesc r a i₂).get
         ⟨j₂.1, by simp [length_veroneseLinearFactorRowDesc]⟩)
 
-set_option linter.flexible false in
 theorem veroneseLinearFactorMatrixDesc_has2x2_one (a : ℝ) :
     VeroneseLinearFactorMatrixDescHas2x2 1 a := by
   intro i₁ i₂ j₁ j₂ _ _ s t hs _
@@ -471,7 +474,6 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_one (a : ℝ) :
   fin_cases i₂
   fin_cases j₁
   fin_cases j₂
-  simp [veroneseLinearFactorRowDesc, oneSupportSeq]
   have hlin : ((C s * X + C (t + 1) : ℝ[X]) ≠ 0 ∧ (C s * X + C (t + 1) : ℝ[X]).Splits) :=
     isRealRooted_affine_factor (s := s) (t := t + 1) hs
   have hxpa : ((X + C a : ℝ[X]) ≠ 0 ∧ (X + C a : ℝ[X]).Splits) := by
@@ -484,8 +486,8 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_one (a : ℝ) :
       ((C s * X + C t) * (C a + X) + (C a + X) : ℝ[X]) =
         (C s * X + C (t + 1)) * (X + C a) := by
     grind
-  rw [hfactor]
-  exact (prec_refl hrr.1 hrr.2).toPrec0
+  simpa [veroneseLinearFactorRowDesc, oneSupportSeq, hfactor] using
+    (prec_refl hrr.1 hrr.2).toPrec0
 
 def veroneseLinearFactorConstEntry {r : ℕ} (a : ℝ) (i j : Fin r) : ℝ :=
   if j.1 = i.1 then a else if j.1 = i.1 + 1 then 1 else 0
@@ -515,8 +517,7 @@ lemma veroneseLinearFactorConstEntry_det_nonneg
   have hi_nat : i₁.1 ≤ i₂.1 := by lia
   have hj_nat : j₁.1 ≤ j₂.1 := by lia
   unfold veroneseLinearFactorConstEntry
-  split_ifs <;> try lia
-  all_goals nlinarith [ha, sq_nonneg a]
+  split_ifs <;> (first | lia | simp <;> nlinarith [ha, sq_nonneg a])
 
 theorem veroneseLinearFactorMatrixDesc_has2x2_nonlast
     {r : ℕ} {a : ℝ} (ha : 0 ≤ a)
@@ -583,8 +584,7 @@ lemma veroneseLinearFactorConstLastEntry_det_nonneg
         veroneseLinearFactorLastConstEntry a j₂ := by
   have hj_nat : j₁.1 ≤ j₂.1 := by lia
   unfold veroneseLinearFactorConstEntry veroneseLinearFactorLastConstEntry
-  split_ifs <;> try lia
-  all_goals nlinarith [ha, sq_nonneg a]
+  split_ifs <;> (first | lia | simp <;> nlinarith [ha, sq_nonneg a])
 
 theorem veroneseLinearFactorMatrixDesc_has2x2_mixed
     {r : ℕ} {a : ℝ} (ha : 0 ≤ a) (hr2 : 2 ≤ r)

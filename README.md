@@ -282,6 +282,18 @@ prefer small reusable lemmas, keep top-level declarations flush-left, and make
 sure public modules are imported by `RealRooted.lean`. All committed code must
 build without warnings (with the exception of `sorry` warnings).
 
+To maintain clean and reliable build verification, the use of `set_option` is
+forbidden in the codebase. All warnings, lint errors, or resource limits should
+be addressed by refining the underlying proofs and definitions rather than
+suppressing them.
+
+To ensure proofs are deterministic and maintainable, the use of `try`,
+`all_goals`, and `any_goals` tactics is forbidden in proofs (they remain
+permitted inside custom tactic implementations). Proofs should use structured
+casing or sequential composition instead. Similarly, the use of `simp +decide`
+and `simp_all +decide` is discouraged; prefer `simp` and `simp_all` without
+`+decide` whenever possible.
+
 Please keep repository configuration files (like `lakefile.toml` and
 `lake-manifest.json`) free of hardcoded absolute paths such as
 `/lake-cache/projects/...`. Reusable relative repository paths

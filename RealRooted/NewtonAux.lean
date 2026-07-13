@@ -15,7 +15,6 @@ open Polynomial
 
 namespace NewtonAux
 
-set_option linter.flexible false in
 lemma iterate_derivative_rr {p : ℝ[X]} (hp : Multiset.card p.roots = p.natDegree)
     (k : ℕ) :
     Multiset.card (derivative^[k] p).roots = (derivative^[k] p).natDegree ∧
@@ -23,17 +22,17 @@ lemma iterate_derivative_rr {p : ℝ[X]} (hp : Multiset.card p.roots = p.natDegr
   induction k with
   | zero => aesop
   | succ k ih =>
-    by_cases h : (derivative^[k] p).natDegree = 0 <;>
-      simp_all +decide [Function.iterate_succ_apply']
-    · rw [Polynomial.eq_C_of_natDegree_eq_zero
-        (show (derivative^[k] p).natDegree = 0 by lia)]
-      norm_num
+    rw [Function.iterate_succ_apply']
+    by_cases h : (derivative^[k] p).natDegree = 0
+    · rw [Polynomial.eq_C_of_natDegree_eq_zero h]
+      simp
       lia
     · have h_roots :
           Multiset.card (Polynomial.roots (Polynomial.derivative (derivative^[k] p))) ≥
             (derivative^[k] p).natDegree - 1 := by
         have := Polynomial.card_roots_le_derivative (derivative^[k] p)
-        aesop
+        rw [ih.1] at this
+        lia
       have h_deg :
           (Polynomial.derivative (derivative^[k] p)).natDegree ≤
             (derivative^[k] p).natDegree - 1 :=
@@ -42,10 +41,12 @@ lemma iterate_derivative_rr {p : ℝ[X]} (hp : Multiset.card p.roots = p.natDegr
           Multiset.card (Polynomial.roots (Polynomial.derivative (derivative^[k] p))) ≤
             (Polynomial.derivative (derivative^[k] p)).natDegree :=
         Polynomial.card_roots' _
-      lia
+      constructor
+      · lia
+      · rw [(derivative^[k] p).natDegree_derivative]
+        rw [ih.2]
+        lia
 
-set_option linter.flexible false in
-set_option linter.unusedSimpArgs false in
 lemma reverse_rr {p : ℝ[X]} (hp : Multiset.card p.roots = p.natDegree)
     (h0 : p.coeff 0 ≠ 0) :
     Multiset.card p.reverse.roots = p.reverse.natDegree := by
@@ -73,24 +74,29 @@ lemma reverse_rr {p : ℝ[X]} (hp : Multiset.card p.roots = p.natDegree)
           induction (r ::ₘ rs) using Multiset.induction <;> norm_num at *
           tauto
     refine h_reverse.trans (congr_arg _ (congr_arg _ (Multiset.map_congr rfl fun x hx => ?_)))
-    rcases eq_or_ne x 0 with rfl | hx' <;>
-      simp [Polynomial.reverse, Polynomial.coeff_zero_eq_eval_zero] at *
-    · exact h0 <| by
+    rcases eq_or_ne x 0 with rfl | hx'
+    · exfalso
+      rw [Polynomial.coeff_zero_eq_eval_zero] at h0
+      exact h0 <| by
         rw [hrs]
         simp [hx, Polynomial.eval_multiset_prod]
     · exact Polynomial.funext fun y => by
-        simp [hx', mul_sub, sub_mul, mul_assoc, mul_left_comm]
+        simp [hx', mul_sub, Polynomial.reverse]
+        ring
   have h_factor_nonzero : ∀ x ∈ rs,
       ¬ x = 0 ∧ ¬ (Polynomial.X - Polynomial.C x⁻¹ : ℝ[X]) = 0 := by
     intro x hx
     refine ⟨?_, Polynomial.X_sub_C_ne_zero _⟩
-    contrapose! h0
-    replace hrs := congr_arg (fun q => Polynomial.coeff q 0) hrs
-    simp_all +singlePass
-    exact Or.inr (by
-      rw [Polynomial.coeff_zero_eq_eval_zero]
-      rw [Polynomial.eval_multiset_prod]
-      aesop)
+    intro hx_zero
+    rw [Polynomial.coeff_zero_eq_eval_zero] at h0
+    apply h0
+    rw [hrs]
+    rw [hx_zero] at hx
+    simp only [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_multiset_prod,
+      Multiset.map_map, Function.comp_apply, Polynomial.eval_sub, Polynomial.eval_X,
+      mul_eq_zero]
+    right
+    exact Multiset.prod_eq_zero (Multiset.mem_map.mpr ⟨0, hx, by simp⟩)
   rw [h_reverse, Polynomial.roots_C_mul, Polynomial.natDegree_C_mul] <;> norm_num
   · rw [Polynomial.roots_multiset_prod] <;> norm_num [Polynomial.natDegree_multiset_prod]
     · rw [Polynomial.natDegree_multiset_prod] <;> norm_num [Polynomial.natDegree_mul']
@@ -106,19 +112,15 @@ lemma reverse_rr {p : ℝ[X]} (hp : Multiset.card p.roots = p.natDegree)
   · rintro rfl
     contradiction
 
-set_option linter.unusedSimpArgs false in
 lemma quad_discrim {q : ℝ[X]} (hd : q.natDegree = 2)
     (hq : Multiset.card q.roots = q.natDegree) :
     4 * q.coeff 0 * q.coeff 2 ≤ q.coeff 1 ^ 2 := by
   obtain ⟨x0, hx⟩ : ∃ x0, x0 ∈ q.roots :=
     Multiset.card_pos_iff_exists_mem.mp (by linarith)
-  simp_all [Polynomial.eval_eq_sum_range, Finset.sum_range_succ',
-    Polynomial.natDegree_eq_of_degree_eq_some]
+  simp_all [Polynomial.eval_eq_sum_range, Finset.sum_range_succ']
   cases le_or_gt 0 (q.coeff 2) <;>
     nlinarith [sq_nonneg (q.coeff 1 + 2 * x0 * q.coeff 2)]
 
-set_option linter.flexible false in
-set_option linter.unusedSimpArgs false in
 lemma newton_poly {g : ℝ[X]} (hg : Multiset.card g.roots = g.natDegree)
     {j : ℕ} (hj0 : 0 < j) (hj : j < g.natDegree) :
     g.coeff (j - 1) * g.coeff (j + 1) *
@@ -141,9 +143,11 @@ lemma newton_poly {g : ℝ[X]} (hg : Multiset.card g.roots = g.natDegree)
         have := iterate_derivative_rr hg (j - 1)
         aesop
       have hq1_coeff0 : q1.coeff 0 ≠ 0 := by
-        simp +zetaDelta at *
-        simp_all [Polynomial.coeff_iterate_derivative]
-        aesop_cat
+        dsimp only [q1]
+        rw [Polynomial.coeff_iterate_derivative, zero_add, nsmul_eq_mul,
+          Nat.descFactorial_self, mul_ne_zero_iff]
+        refine ⟨Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero _), ?_⟩
+        exact mul_ne_zero_iff.mp (ne_of_gt h_pos) |>.1
       have hq2_deg : q2.natDegree = q1.natDegree := by
         rw [Polynomial.reverse_natDegree]
         rw [Polynomial.natTrailingDegree_eq_zero.mpr]
@@ -156,9 +160,11 @@ lemma newton_poly {g : ℝ[X]} (hg : Multiset.card g.roots = g.natDegree)
     · lia
     · apply reverse_rr
       · convert iterate_derivative_rr hg (j - 1) |>.1 using 1
-      · simp +zetaDelta at *
-        simp_all [Polynomial.coeff_iterate_derivative]
-        aesop
+      · dsimp only [q1]
+        rw [Polynomial.coeff_iterate_derivative, zero_add, nsmul_eq_mul,
+          Nat.descFactorial_self, mul_ne_zero_iff]
+        refine ⟨Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero _), ?_⟩
+        exact mul_ne_zero_iff.mp (ne_of_gt h_pos) |>.1
   have hq_coeff0 :
       q.coeff 0 =
         ((g.natDegree - j - 1).descFactorial (g.natDegree - j - 1)) *
@@ -172,7 +178,7 @@ lemma newton_poly {g : ℝ[X]} (hg : Multiset.card g.roots = g.natDegree)
     have hq_coeff0 : q2.coeff (g.natDegree - j - 1) = q1.coeff 2 := by
       rw [Polynomial.coeff_reverse]
       rw [show q1.natDegree = g.natDegree - (j - 1) from ?_, revAt]
-      · simp +zetaDelta at *
+      · simp +zetaDelta only [Function.Embedding.coeFn_mk, tsub_le_iff_right] at *
         rw [if_pos (by lia)]
         rw [show g.natDegree - (j - 1) - (g.natDegree - j - 1) = 2 by lia]
       · have := iterate_derivative_rr hg (j - 1)
@@ -190,11 +196,14 @@ lemma newton_poly {g : ℝ[X]} (hg : Multiset.card g.roots = g.natDegree)
     rw [Polynomial.coeff_reverse]
     rw [Polynomial.coeff_iterate_derivative]
     rw [show q1.natDegree = g.natDegree - (j - 1) from ?_]
-    · rcases j with _ | j <;> simp_all [Nat.sub_sub, add_comm]
-      rw [show g.natDegree - j = (g.natDegree - (1 + (j + 1))) + 2 by lia]
-      simp [revAt]
-      ring_nf
-      grind
+    · rcases j with _ | j
+      · contradiction
+      · have h_deg : g.natDegree - (j + 1 - 1) = (g.natDegree - (1 + (j + 1))) + 2 := by lia
+        rw [h_deg]
+        simp_all [add_comm]
+        simp [revAt]
+        ring_nf
+        grind
     · have := iterate_derivative_rr hg (j - 1)
       aesop
   have hq_coeff2 :
@@ -207,25 +216,24 @@ lemma newton_poly {g : ℝ[X]} (hg : Multiset.card g.roots = g.natDegree)
             q2.coeff (g.natDegree - j - 1 + 2) := by
       rw [Polynomial.coeff_iterate_derivative]
       norm_num [add_comm, add_left_comm, add_assoc]
-    have hq_coeff2 : q2.coeff (g.natDegree - j - 1 + 2) = q1.coeff 0 := by
-      have hq_coeff2 :
+    have hq_coeff2' : q2.coeff (g.natDegree - j - 1 + 2) = q1.coeff 0 := by
+      have hq_coeff2_1 :
           q2.coeff (g.natDegree - j - 1 + 2) =
             q1.coeff (q1.natDegree - (g.natDegree - j - 1 + 2)) := by
         convert Polynomial.coeff_reverse _ _ using 2
         rw [Polynomial.revAt_le]
         rw [iterate_derivative_rr hg (j - 1) |>.2]
         lia
-      have hq_coeff2 : q1.natDegree = g.natDegree - (j - 1) := by
+      have hq_coeff2_2 : q1.natDegree = g.natDegree - (j - 1) := by
         have := iterate_derivative_rr hg (j - 1)
         aesop
       change q1.reverse.coeff (g.natDegree - j - 1 + 2) = q1.coeff 0
-      rw [Polynomial.coeff_reverse, hq_coeff2,
+      rw [Polynomial.coeff_reverse, hq_coeff2_2,
         Polynomial.revAt_le
           (by lia : g.natDegree - j - 1 + 2 ≤ g.natDegree - (j - 1)),
         show g.natDegree - (j - 1) - (g.natDegree - j - 1 + 2) = 0 by lia]
-    simp_all [mul_assoc, Polynomial.coeff_iterate_derivative]
-    rw [Polynomial.coeff_iterate_derivative]
-    aesop
+    rw [hq_coeff2, hq_coeff2', Polynomial.coeff_iterate_derivative, nsmul_eq_mul]
+    simp only [zero_add, mul_assoc]
   have h_discriminant : 4 * q.coeff 0 * q.coeff 2 ≤ q.coeff 1 ^ 2 := by
     apply quad_discrim
     · exact hq_deg
@@ -234,15 +242,42 @@ lemma newton_poly {g : ℝ[X]} (hg : Multiset.card g.roots = g.natDegree)
       · exact iterate_derivative_rr hg _ |>.1
       · rw [Polynomial.coeff_iterate_derivative]
         aesop
-  simp_all [Nat.descFactorial_eq_factorial_mul_choose]
-  rcases j with _ | j <;> simp_all [Nat.choose_succ_succ, Nat.factorial_succ]
-  rw [Nat.cast_choose, Nat.cast_choose] at * <;> try linarith
-  norm_num [Nat.succ_sub, Nat.factorial_succ] at *
-  field_simp at *
-  rw [Nat.sub_sub, Nat.cast_sub (by linarith)] at *
-  rw [Nat.cast_sub (by linarith)] at *
-  push_cast at *
-  nlinarith [(by norm_cast : (j : ℝ) + 1 < g.natDegree)]
+  simp only [Nat.descFactorial_eq_factorial_mul_choose] at *
+  rcases j with _ | j
+  · contradiction
+  · have hq0 : q.coeff 0 =
+        ((g.natDegree - (j + 1) - 1).factorial : ℝ) * j.factorial *
+          ((j + 2).choose j : ℝ) * g.coeff (j + 2) := by
+      rw [hq_coeff0]
+      simp only [Nat.choose_self, mul_one, add_tsub_cancel_right, Nat.cast_mul,
+        mul_eq_mul_right_iff]
+      left
+      ring
+    have hq1 : q.coeff 1 =
+        ((g.natDegree - (j + 1) - 1).factorial : ℝ) *
+          ((g.natDegree - (j + 1) - 1 + 1).choose (g.natDegree - (j + 1) - 1) : ℝ) *
+          j.factorial * ((j + 1).choose j : ℝ) * g.coeff (j + 1) := by
+      rw [hq_coeff1]
+      simp only [Nat.choose_succ_self_right, Nat.cast_mul, Nat.cast_add, Nat.cast_one,
+        add_tsub_cancel_right, mul_eq_mul_right_iff]
+      left
+      ring
+    have hq2 : q.coeff 2 =
+        ((g.natDegree - (j + 1) - 1).factorial : ℝ) *
+          ((g.natDegree - (j + 1) - 1 + 2).choose (g.natDegree - (j + 1) - 1) : ℝ) *
+          j.factorial * (j.choose j : ℝ) * g.coeff j := by
+      rw [hq_coeff2]
+      simp
+    rw [hq0, hq1, hq2] at h_discriminant
+    rw [Nat.cast_choose, Nat.cast_choose] at h_discriminant <;> try linarith
+    norm_num [Nat.succ_sub, Nat.factorial_succ] at h_discriminant
+    field_simp at h_discriminant
+    rw [Nat.sub_sub] at h_discriminant
+    rw [Nat.cast_sub (by linarith)] at h_discriminant
+    push_cast at h_neg
+    rw [Nat.cast_sub (by linarith)] at h_neg
+    push_cast at h_neg h_discriminant
+    nlinarith [(by norm_cast : (j : ℝ) + 1 < g.natDegree)]
 
 theorem newton_esymm_ineq (t : Multiset ℝ) {n m : ℕ} (hn : Multiset.card t = n)
     (hm0 : 0 < m) (hmn : m < n) :

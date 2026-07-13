@@ -461,16 +461,15 @@ macro_rules
       `(tactic|
         first
           | rw [RealRooted.ls4_factor_expansion]
-            set_option linter.unusedSimpArgs false in
-              simp only [Polynomial.derivative_add, Polynomial.derivative_sub,
-                Polynomial.derivative_mul, Polynomial.derivative_C,
-                Polynomial.derivative_X, Polynomial.derivative_one,
-                Polynomial.derivative_zero, Polynomial.derivative_natCast,
-                Polynomial.derivative_ofNat, Polynomial.derivative_neg,
-                RealRooted.ls4_C_two_real, RealRooted.ls4_C_four_real,
-                RealRooted.ls4_C_eight_real, RealRooted.ls4_C_sixteen_real,
-                RealRooted.ls4_C_neg_one_real,
-                Polynomial.C_1, one_mul]
+            simp [Polynomial.derivative_add, Polynomial.derivative_sub,
+              Polynomial.derivative_mul, Polynomial.derivative_C,
+              Polynomial.derivative_X, Polynomial.derivative_one,
+              Polynomial.derivative_zero, Polynomial.derivative_natCast,
+              Polynomial.derivative_ofNat, Polynomial.derivative_neg,
+              RealRooted.ls4_C_two_real, RealRooted.ls4_C_four_real,
+              RealRooted.ls4_C_eight_real, RealRooted.ls4_C_sixteen_real,
+              RealRooted.ls4_C_neg_one_real,
+              Polynomial.C_1, one_mul]
             repeat rw [RealRooted.ls4_C_ofNat_real]
             repeat rw [RealRooted.ls4_C_mul_neg_ofNat_mul]
             repeat rw [RealRooted.ls4_C_mul_ofNat_mul]
@@ -478,23 +477,21 @@ macro_rules
             try norm_num1
             repeat rw [RealRooted.ls4_C_ofNat_real]
             try
-              set_option linter.unusedSimpArgs false in
-                simp only [RealRooted.ls4_C_two_real, RealRooted.ls4_C_four_real,
-                  RealRooted.ls4_C_eight_real, RealRooted.ls4_C_sixteen_real,
-                  RealRooted.ls4_C_neg_one_real, Polynomial.C_add, Polynomial.C_1,
-                  Polynomial.C_neg, one_mul, mul_one]
+              simp [RealRooted.ls4_C_two_real, RealRooted.ls4_C_four_real,
+                RealRooted.ls4_C_eight_real, RealRooted.ls4_C_sixteen_real,
+                RealRooted.ls4_C_neg_one_real, Polynomial.C_add, Polynomial.C_1,
+                Polynomial.C_neg, one_mul, mul_one]
             repeat rw [RealRooted.ls4_C_ofNat_real]
             ring_nf
-          | set_option linter.unusedSimpArgs false in
-              simp only [Polynomial.derivative_add, Polynomial.derivative_sub,
-                Polynomial.derivative_mul, Polynomial.derivative_C,
-                Polynomial.derivative_X, Polynomial.derivative_one,
-                Polynomial.derivative_zero, Polynomial.derivative_natCast,
-                Polynomial.derivative_ofNat, Polynomial.derivative_neg,
-                RealRooted.ls4_C_two_real, RealRooted.ls4_C_four_real,
-                RealRooted.ls4_C_eight_real, RealRooted.ls4_C_sixteen_real,
-                RealRooted.ls4_C_neg_one_real,
-                Polynomial.C_1, one_mul]
+          | simp [Polynomial.derivative_add, Polynomial.derivative_sub,
+              Polynomial.derivative_mul, Polynomial.derivative_C,
+              Polynomial.derivative_X, Polynomial.derivative_one,
+              Polynomial.derivative_zero, Polynomial.derivative_natCast,
+              Polynomial.derivative_ofNat, Polynomial.derivative_neg,
+              RealRooted.ls4_C_two_real, RealRooted.ls4_C_four_real,
+              RealRooted.ls4_C_eight_real, RealRooted.ls4_C_sixteen_real,
+              RealRooted.ls4_C_neg_one_real,
+              Polynomial.C_1, one_mul]
             repeat rw [RealRooted.ls4_C_ofNat_real]
             repeat rw [RealRooted.ls4_C_mul_neg_ofNat_mul]
             repeat rw [RealRooted.ls4_C_mul_ofNat_mul]
@@ -502,11 +499,10 @@ macro_rules
             try norm_num1
             repeat rw [RealRooted.ls4_C_ofNat_real]
             try
-              set_option linter.unusedSimpArgs false in
-                simp only [RealRooted.ls4_C_two_real, RealRooted.ls4_C_four_real,
-                  RealRooted.ls4_C_eight_real, RealRooted.ls4_C_sixteen_real,
-                  RealRooted.ls4_C_neg_one_real, Polynomial.C_add, Polynomial.C_1,
-                  Polynomial.C_neg, one_mul, mul_one]
+              simp [RealRooted.ls4_C_two_real, RealRooted.ls4_C_four_real,
+                RealRooted.ls4_C_eight_real, RealRooted.ls4_C_sixteen_real,
+                RealRooted.ls4_C_neg_one_real, Polynomial.C_add, Polynomial.C_1,
+                Polynomial.C_neg, one_mul, mul_one]
             repeat rw [RealRooted.ls4_C_ofNat_real]
             ring_nf)
   | `(tactic|

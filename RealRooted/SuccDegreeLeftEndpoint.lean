@@ -27,12 +27,11 @@ lemma norm_aeval_eq_prod_norm_roots {p : ℝ[X]} (hp : p.Splits) (z : ℂ) :
     convert Polynomial.Splits.eq_prod_roots hp
   conv_lhs =>
     rw [h_prod]
-    simp +decide [norm_mul]
+    simp [norm_mul]
     ring_nf
   induction p.roots using Multiset.induction <;> norm_num at *
   tauto
 
-set_option linter.flexible false in
 /-- Escaping-root estimate: for a split real polynomial `p`, a complex point
 `z` with `z.im ≠ 0`, and any root `r` of `p`, the distance `‖z - r‖` is
 controlled by `‖p(z)‖`, since the other `card - 1` factors are bounded below by
@@ -55,8 +54,21 @@ lemma leadingCoeff_mul_pow_im_mul_norm_sub_le_norm_aeval
           (∀ s ∈ m, ‖z - (s : ℂ)‖ ≥ |z.im|) →
             |z.im| ^ m.card ≤ (m.map (fun s : ℝ => ‖z - (s : ℂ)‖)).prod := by
       intro m hm
-      induction m using Multiset.induction <;> simp_all +decide [pow_succ']
-      exact mul_le_mul hm.1 ‹_› (by positivity) (by positivity)
+      induction m using Multiset.induction with
+      | empty =>
+        simp only [Multiset.card_zero, pow_zero, Multiset.map_zero,
+          Multiset.prod_zero, le_refl]
+      | cons a m ih =>
+          have h_ih : |z.im| ^ m.card ≤ (m.map (fun s : ℝ => ‖z - (s : ℂ)‖)).prod := by
+            apply ih
+            intro s hs
+            apply hm
+            exact Multiset.mem_cons_of_mem hs
+          have ha : ‖z - (a : ℂ)‖ ≥ |z.im| := by
+            apply hm
+            exact Multiset.mem_cons_self a m
+          rw [Multiset.card_cons, pow_succ', Multiset.map_cons, Multiset.prod_cons]
+          exact mul_le_mul ha h_ih (by positivity) (by positivity)
     exact h_prod_bound _ fun s hs => by
       simpa using Complex.abs_im_le_norm (z - s)
   rw [← Multiset.cons_erase hr, Multiset.map_cons, Multiset.prod_cons]
@@ -113,9 +125,8 @@ lemma abs_nextCoeff_le_of_splits
       induction s using Multiset.induction <;> norm_num at *
       grind
     exact h_sum_escape_bound h_escape_bound
-  simp_all +decide [mul_assoc, abs_mul, abs_neg, abs_of_pos hlc]
+  simp_all [mul_assoc, abs_mul, abs_neg, abs_of_pos hlc]
 
-set_option linter.flexible false in
 /-- Single-member escaping-root inequality.  Given a *single* real-rooted
 member `f + C μ * g` (`μ > 0`) of the succ-degree family, the next coefficient
 of `f + μ g` is bounded by `μ` times a constant independent of `μ`.  This is the
@@ -134,27 +145,32 @@ lemma key_family_ineq_of_splits {f g : ℝ[X]} {μ : ℝ}
   have := @abs_nextCoeff_le_of_splits (f + Polynomial.C μ * g) ?_ z ?_ ?_
   · convert this using 1
     · rw [Polynomial.nextCoeff]
-      rw [Polynomial.natDegree_add_eq_right_of_natDegree_lt] <;>
-        norm_num [hsucc, hμ.ne']
-      all_goals rw [Polynomial.natDegree_C_mul] <;> aesop
+      rw [Polynomial.natDegree_add_eq_right_of_natDegree_lt]
+      · rw [Polynomial.natDegree_C_mul hμ.ne']; aesop
+      · rw [Polynomial.natDegree_C_mul hμ.ne']; aesop
     · have hcard : (f + Polynomial.C μ * g).roots.card = f.natDegree + 1 := by
         have := Polynomial.Splits.natDegree_eq_card_roots hsplit.2
         rw [← this, Polynomial.natDegree_add_eq_right_of_natDegree_lt]
-        all_goals rw [Polynomial.natDegree_C_mul] <;> aesop
-      rw [Polynomial.leadingCoeff_add_of_degree_lt] <;>
-        simp_all +decide [Polynomial.degree_eq_natDegree (show g ≠ 0 from by aesop_cat)]
-      · norm_num [abs_of_pos hμ, mul_assoc, mul_div_mul_left, hμ.ne']
-      · rw [Polynomial.degree_C hμ.ne']
-        norm_num
-        exact lt_of_le_of_lt Polynomial.degree_le_natDegree
-          (WithBot.coe_lt_coe.mpr (Nat.lt_succ_self _))
+        · rw [Polynomial.natDegree_C_mul hμ.ne']; aesop
+        · rw [Polynomial.natDegree_C_mul hμ.ne']; aesop
+      rw [hcard, Polynomial.leadingCoeff_add_of_degree_lt]
+      · simp only [map_add, map_mul, aeval_C, hzf, zero_add, leadingCoeff_mul,
+          Polynomial.leadingCoeff_C, norm_mul]
+        norm_num [abs_of_pos hg_pos, mul_assoc, mul_div_mul_left, hμ.ne', abs_of_pos hμ]
+      · rw [Polynomial.degree_C_mul hμ.ne',
+          Polynomial.degree_eq_natDegree (leadingCoeff_ne_zero.mp hg_pos.ne'), hsucc]
+        exact lt_of_le_of_lt (α := WithBot ℕ) (Polynomial.degree_le_natDegree (p := f))
+          (WithBot.coe_lt_coe.mpr (Nat.lt_succ_self f.natDegree))
   · exact hsplit.2
   · assumption
-  · rw [Polynomial.leadingCoeff_add_of_degree_lt] <;>
-      simp_all +decide [Polynomial.degree_eq_natDegree (show g ≠ 0 by aesop)]
-    rw [Polynomial.degree_C] <;> norm_num [hμ.ne']
-    exact lt_of_le_of_lt Polynomial.degree_le_natDegree
-      (WithBot.coe_lt_coe.mpr (Nat.lt_succ_self _))
+  · rw [Polynomial.leadingCoeff_add_of_degree_lt]
+    · rw [leadingCoeff_mul]
+      rw [Polynomial.leadingCoeff_C]
+      positivity
+    · rw [Polynomial.degree_C_mul hμ.ne',
+        Polynomial.degree_eq_natDegree (leadingCoeff_ne_zero.mp hg_pos.ne'), hsucc]
+      exact lt_of_le_of_lt (α := WithBot ℕ) (Polynomial.degree_le_natDegree (p := f))
+        (WithBot.coe_lt_coe.mpr (Nat.lt_succ_self f.natDegree))
 
 /-- A positive quantity cannot be bounded by `μ * M` for every `μ > 0`. -/
 lemma false_of_forall_pos_mul_le {a M : ℝ} (ha : 0 < a)
@@ -186,7 +202,6 @@ lemma false_of_forall_Ioo_mul_le {a M ε : ℝ} (ha : 0 < a) (hε : 0 < ε)
     have hμM : μ * M ≤ c * M := mul_le_mul_of_nonneg_right hμc hM.le
     linarith
 
-set_option linter.flexible false in
 /-- The per-`μ` escaping-root inequality.  Under the succ-degree family
 hypotheses, for a complex root `z` of `f` with `z.im ≠ 0`, the next coefficient
 of `f + μ g` is bounded by `μ` times a constant independent of `μ`. -/
