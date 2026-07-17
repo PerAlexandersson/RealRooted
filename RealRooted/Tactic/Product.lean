@@ -1735,19 +1735,10 @@ macro_rules
         quotient_realrooted := $hquot:term,
         factorization := $hrow:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (by
-                refine RealRooted.isRealRooted_of_C_pow_lift_sequence
-                  $hquot ?_ $hrow
-                intro n
-                positivity)
-          | rr_exact_realrooted_sequence_or_projection
-              (by
-                refine RealRooted.isRealRooted_of_C_pow_lift_right_sequence
-                  $hquot ?_ $hrow
-                intro n
-                positivity))
+        rr_product_lift_C_pow_sequence using
+          quotient_realrooted := $hquot,
+          scalar_ne := (fun n => by positivity),
+          factorization := $hrow)
   | `(tactic|
       rr_product_lift_X_pow_sequence using
         quotient_realrooted := $hquot:term,
@@ -1812,19 +1803,10 @@ macro_rules
         quotient_realrooted := $hquot:term,
         factorization := $hrow:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (by
-                refine RealRooted.isRealRooted_of_C_mul_X_add_C_pow_lift_sequence
-                  $hquot ?_ $hrow
-                intro n
-                positivity)
-          | rr_exact_realrooted_sequence_or_projection
-              (by
-                refine RealRooted.isRealRooted_of_C_mul_X_add_C_pow_lift_right_sequence
-                  $hquot ?_ $hrow
-                intro n
-                positivity))
+        rr_product_lift_affine_pow_sequence using
+          quotient_realrooted := $hquot,
+          slope_ne := (fun n => by positivity),
+          factorization := $hrow)
   | `(tactic|
       rr_product_lift_const_first_affine_pow_sequence using
         quotient_realrooted := $hquot:term,
@@ -1843,19 +1825,10 @@ macro_rules
         quotient_realrooted := $hquot:term,
         factorization := $hrow:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (by
-                refine RealRooted.isRealRooted_of_C_add_C_mul_X_pow_lift_sequence
-                  $hquot ?_ $hrow
-                intro n
-                positivity)
-          | rr_exact_realrooted_sequence_or_projection
-              (by
-                refine RealRooted.isRealRooted_of_C_add_C_mul_X_pow_lift_right_sequence
-                  $hquot ?_ $hrow
-                intro n
-                positivity))
+        rr_product_lift_const_first_affine_pow_sequence using
+          quotient_realrooted := $hquot,
+          slope_ne := (fun n => by positivity),
+          factorization := $hrow)
   | `(tactic|
       rr_endpoint_sum_then_X_pair_sequence using
         base := $hbase:term,
