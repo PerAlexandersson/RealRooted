@@ -207,6 +207,15 @@ example {P Q : Nat → ℝ[X]}
     quotient_realrooted := hquot,
     factorization := hrow
 
+/-- Automatic scalar certificates also work when the scalar is on the right. -/
+example {P Q : Nat → ℝ[X]}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = Q n * C ((n : ℝ) + 1)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_C_sequence_auto using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
 /-- Row-wise affine linear lift for rows `P_n = (s_n X+t_n) Q_n`. -/
 example {P Q : Nat → ℝ[X]} {s t : Nat → ℝ}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
@@ -235,6 +244,24 @@ example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
     (hrow : ∀ n : Nat, P n = (C ((n : ℝ) + 1) * X + C (t n)) * Q n) :
     ∀ n : Nat, (P n).Splits := by
   rr_product_lift_affine_sequence_auto using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
+/-- Positive row-wise affine slopes are also inferred for right factors. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = Q n * (C ((n : ℝ) + 1) * X + C (t n))) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_affine_sequence_auto using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
+/-- Constant-first positive slopes use the same automatic certificate path. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = (C (t n) + C ((n : ℝ) + 1) * X) * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_const_first_sequence_auto using
     quotient_realrooted := hquot,
     factorization := hrow
 
