@@ -2545,6 +2545,56 @@ example
     recurrence := hrec,
     nonzero := hne
 
+example
+    {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
+    (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
+    (hcert : ∀ n : Nat, N ≤ n →
+      BidiagonalCubicResidualCertificate
+        (fun k => secondDerivativeQuadraticCoeff (a0 n) (b1 n) (c2 n) k)
+        (fun k => secondDerivativeQuadraticCoeff (a1 n) (b2 n) (c3 n) k)
+        (d n))
+    (hrec : ∀ n : Nat, N ≤ n →
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) := by
+  rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
+    cubic_certificate := hcert,
+    cutoff := N,
+    base := hbase,
+    degree := hdeg,
+    recurrence := hrec
+
+example
+    {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
+    (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
+    (hcert : ∀ n : Nat, N ≤ n →
+      BidiagonalCubicResidualCertificate
+        (fun k => secondDerivativeQuadraticCoeff (a0 n) (b1 n) (c2 n) k)
+        (fun k => secondDerivativeQuadraticCoeff (a1 n) (b2 n) (c3 n) k)
+        (d n))
+    (hne : ∀ n : Nat, P n ≠ 0)
+    (hrec : ∀ n : Nat, N ≤ n →
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
+    cubic_certificate := hcert,
+    cutoff := N,
+    base := hbase,
+    degree := hdeg,
+    recurrence := hrec,
+    nonzero := hne
+
 /-- A036969-shaped recurrence shell.
 
 This example has the actual differential recurrence and actual residual

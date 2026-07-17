@@ -723,6 +723,42 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert
   isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidualCertificate
     hbackend hbase hdeg hcert hrec
 
+/-- Tail-start version of
+`isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert`.
+
+This is the direct version for certificates attached to the canonical
+quadratic coefficient functions of the second-derivative form. -/
+theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_from
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
+    (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
+    (hcert : ∀ n : Nat, N ≤ n →
+      BidiagonalCubicResidualCertificate
+        (fun k => secondDerivativeQuadraticCoeff (a0 n) (b1 n) (c2 n) k)
+        (fun k => secondDerivativeQuadraticCoeff (a1 n) (b2 n) (c3 n) k)
+        (d n))
+    (hrec : ∀ n : Nat, N ≤ n →
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) :=
+  isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidualCertificate_from
+    hbackend N hbase hdeg hcert
+    (fun n hn =>
+      calc
+        P (n + 1) =
+            secondDerivativeBidiagonalForm
+              (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n) := hrec n hn
+        _ =
+            bidiagonalOperator
+              (fun k => secondDerivativeQuadraticCoeff (a0 n) (b1 n) (c2 n) k)
+              (fun k => secondDerivativeQuadraticCoeff (a1 n) (b2 n) (c3 n) k)
+              (P n) :=
+            secondDerivativeBidiagonalForm_eq_bidiagonalOperator
+              (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n))
+
 /-- Sequence wrapper for second-derivative recurrences whose certificate is
 stated using named coefficient-bidiagonal functions.
 
@@ -1905,6 +1941,28 @@ syntax (name :=
     "nonzero" ":=" term :
   tactic
 
+syntax (name := rr_pf_second_derivative_bidiagonal_sequence_cubic_certificate_from_direct_named)
+  "rr_pf_second_derivative_bidiagonal_sequence" " using "
+    "jensen_backend" ":=" term ","
+    "cubic_certificate" ":=" term ","
+    "cutoff" ":=" term ","
+    "base" ":=" term ","
+    "degree" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name :=
+    rr_pf_second_derivative_bidiagonal_sequence_cubic_certificate_from_direct_realrooted_named)
+  "rr_pf_second_derivative_bidiagonal_sequence" " using "
+    "jensen_backend" ":=" term ","
+    "cubic_certificate" ":=" term ","
+    "cutoff" ":=" term ","
+    "base" ":=" term ","
+    "degree" ":=" term ","
+    "recurrence" ":=" term ","
+    "nonzero" ":=" term :
+  tactic
+
 macro_rules
   | `(tactic|
       rr_pf_second_derivative_bidiagonal_sequence using
@@ -1929,6 +1987,31 @@ macro_rules
         rr_exact_pf_sequence_realrooted
           (RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert
             $hbackend $hbase $hdeg $hcert $hrec), $hne)
+  | `(tactic|
+      rr_pf_second_derivative_bidiagonal_sequence using
+        jensen_backend := $hbackend:term,
+        cubic_certificate := $hcert:term,
+        cutoff := $N:term,
+        base := $hbase:term,
+        degree := $hdeg:term,
+        recurrence := $hrec:term) =>
+      `(tactic|
+        rr_exact_pf_sequence_or_projection
+          (isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_from
+            $hbackend $N $hbase $hdeg $hcert $hrec))
+  | `(tactic|
+      rr_pf_second_derivative_bidiagonal_sequence using
+        jensen_backend := $hbackend:term,
+        cubic_certificate := $hcert:term,
+        cutoff := $N:term,
+        base := $hbase:term,
+        degree := $hdeg:term,
+        recurrence := $hrec:term,
+        nonzero := $hne:term) =>
+      `(tactic|
+        rr_exact_pf_sequence_realrooted
+          (isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_from
+            $hbackend $N $hbase $hdeg $hcert $hrec), $hne)
 
 syntax (name := rr_pf_second_derivative_bidiagonal_sequence_cubic_certificate_normalized_named)
   "rr_pf_second_derivative_bidiagonal_sequence" " using "
