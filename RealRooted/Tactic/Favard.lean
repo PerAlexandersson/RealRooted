@@ -1881,7 +1881,24 @@ syntax (name := rr_favard_param_row_sign_auto_named)
 
 syntax (name := rr_favard_den_raw) "rr_favard_den_raw" " using " term : tactic
 
+syntax (name := rr_favard_goal_variants)
+  "rr_favard_goal_variants"
+    term ", " term ", " term ", " term ", " term ", " term :
+  tactic
+
 macro_rules
+  | `(tactic|
+      rr_favard_goal_variants
+        $hinterlace:term, $hrealrooted:term, $hnonzero:term,
+        $hinterlace_proj:term, $hrealrooted_proj:term, $hnonzero_proj:term) =>
+      `(tactic|
+        first
+          | exact $hinterlace
+          | rr_exact_realrooted_sequence_or_projection $hrealrooted
+          | exact $hnonzero
+          | exact $hinterlace_proj
+          | rr_exact_realrooted_sequence_or_projection $hrealrooted_proj
+          | exact $hnonzero_proj)
   | `(tactic| rr_favard_den_raw using $hraw:term) =>
       `(tactic|
         first
@@ -1954,21 +1971,19 @@ macro_rules
       rr_favard_const using
         $α:term, $β:term, $hβ:term, $hP0:term, $hP1:term, $hstep:term) =>
       `(tactic|
-        first
-          | exact RealRooted.favardInterlacing_const_coeff
-              (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_favard_const_coeff
-                (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep)
-          | exact RealRooted.nonzero_of_favard_const_coeff
-              (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep
-          | exact RealRooted.favardInterlacing_const_coeff
-              (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep _
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_favard_const_coeff
-                (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep _)
-          | exact RealRooted.nonzero_of_favard_const_coeff
-              (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep _)
+        rr_favard_goal_variants
+          (RealRooted.favardInterlacing_const_coeff
+            (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep),
+          (RealRooted.isRealRooted_of_favard_const_coeff
+            (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep),
+          (RealRooted.nonzero_of_favard_const_coeff
+            (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep),
+          (RealRooted.favardInterlacing_const_coeff
+            (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep _),
+          (RealRooted.isRealRooted_of_favard_const_coeff
+            (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep _),
+          (RealRooted.nonzero_of_favard_const_coeff
+            (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep _))
   | `(tactic|
       rr_favard_const using
         alpha := $α:term,
@@ -2013,21 +2028,19 @@ macro_rules
       rr_favard_param using
         $α:term, $β:term, $hβ:term, $hP0:term, $hP1:term, $hstep:term) =>
       `(tactic|
-        first
-          | exact RealRooted.favardInterlacing_param_coeff
-              (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_favard_param_coeff
-                (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep)
-          | exact RealRooted.nonzero_of_favard_param_coeff
-              (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep
-          | exact RealRooted.favardInterlacing_param_coeff
-              (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep _
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_favard_param_coeff
-                (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep _)
-          | exact RealRooted.nonzero_of_favard_param_coeff
-              (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep _)
+        rr_favard_goal_variants
+          (RealRooted.favardInterlacing_param_coeff
+            (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep),
+          (RealRooted.isRealRooted_of_favard_param_coeff
+            (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep),
+          (RealRooted.nonzero_of_favard_param_coeff
+            (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep),
+          (RealRooted.favardInterlacing_param_coeff
+            (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep _),
+          (RealRooted.isRealRooted_of_favard_param_coeff
+            (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep _),
+          (RealRooted.nonzero_of_favard_param_coeff
+            (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep _))
   | `(tactic|
       rr_favard_param using
         alpha := $α:term,
@@ -2078,21 +2091,19 @@ macro_rules
         $s:term, $α:term, $β:term, $hs:term, $hβ:term, $hP0:term, $hP1:term,
         $hstep:term) =>
       `(tactic|
-        first
-          | exact RealRooted.favardInterlacing_affine_const_coeff
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_favard_affine_const_coeff
-                (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep)
-          | exact RealRooted.nonzero_of_favard_affine_const_coeff
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep
-          | exact RealRooted.favardInterlacing_affine_const_coeff
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_favard_affine_const_coeff
-                (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _)
-          | exact RealRooted.nonzero_of_favard_affine_const_coeff
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _)
+        rr_favard_goal_variants
+          (RealRooted.favardInterlacing_affine_const_coeff
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep),
+          (RealRooted.isRealRooted_of_favard_affine_const_coeff
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep),
+          (RealRooted.nonzero_of_favard_affine_const_coeff
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep),
+          (RealRooted.favardInterlacing_affine_const_coeff
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _),
+          (RealRooted.isRealRooted_of_favard_affine_const_coeff
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _),
+          (RealRooted.nonzero_of_favard_affine_const_coeff
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _))
   | `(tactic|
       rr_favard_affine_const using
         slope := $s:term,
@@ -2152,21 +2163,19 @@ macro_rules
         base_one := $hP1:term,
         step := $hstep:term) =>
       `(tactic|
-        first
-          | exact RealRooted.favardInterlacing_affine_const_coeff_rowSign
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_favard_affine_const_coeff_rowSign
-                (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep)
-          | exact RealRooted.nonzero_of_favard_affine_const_coeff_rowSign
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep
-          | exact RealRooted.favardInterlacing_affine_const_coeff_rowSign
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_favard_affine_const_coeff_rowSign
-                (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _)
-          | exact RealRooted.nonzero_of_favard_affine_const_coeff_rowSign
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _)
+        rr_favard_goal_variants
+          (RealRooted.favardInterlacing_affine_const_coeff_rowSign
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep),
+          (RealRooted.isRealRooted_of_favard_affine_const_coeff_rowSign
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep),
+          (RealRooted.nonzero_of_favard_affine_const_coeff_rowSign
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep),
+          (RealRooted.favardInterlacing_affine_const_coeff_rowSign
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _),
+          (RealRooted.isRealRooted_of_favard_affine_const_coeff_rowSign
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _),
+          (RealRooted.nonzero_of_favard_affine_const_coeff_rowSign
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _))
   | `(tactic|
       rr_favard_affine_const_row_sign_auto using
         slope := $s:term,
@@ -2206,21 +2215,19 @@ macro_rules
         $s:term, $α:term, $β:term, $hs:term, $hβ:term, $hP0:term, $hP1:term,
         $hstep:term) =>
       `(tactic|
-        first
-          | exact RealRooted.favardInterlacing_affine_param_coeff
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_favard_affine_param_coeff
-                (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep)
-          | exact RealRooted.nonzero_of_favard_affine_param_coeff
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep
-          | exact RealRooted.favardInterlacing_affine_param_coeff
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_favard_affine_param_coeff
-                (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _)
-          | exact RealRooted.nonzero_of_favard_affine_param_coeff
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _)
+        rr_favard_goal_variants
+          (RealRooted.favardInterlacing_affine_param_coeff
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep),
+          (RealRooted.isRealRooted_of_favard_affine_param_coeff
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep),
+          (RealRooted.nonzero_of_favard_affine_param_coeff
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep),
+          (RealRooted.favardInterlacing_affine_param_coeff
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _),
+          (RealRooted.isRealRooted_of_favard_affine_param_coeff
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _),
+          (RealRooted.nonzero_of_favard_affine_param_coeff
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _))
   | `(tactic|
       rr_favard_affine_param using
         slope := $s:term,
@@ -3031,21 +3038,19 @@ macro_rules
         base_one := $hP1:term,
         step := $hstep:term) =>
       `(tactic|
-        first
-          | exact RealRooted.favardInterlacing_affine_param_coeff_rowSign
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign
-                (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep)
-          | exact RealRooted.nonzero_of_favard_affine_param_coeff_rowSign
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep
-          | exact RealRooted.favardInterlacing_affine_param_coeff_rowSign
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign
-                (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _)
-          | exact RealRooted.nonzero_of_favard_affine_param_coeff_rowSign
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _)
+        rr_favard_goal_variants
+          (RealRooted.favardInterlacing_affine_param_coeff_rowSign
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep),
+          (RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep),
+          (RealRooted.nonzero_of_favard_affine_param_coeff_rowSign
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep),
+          (RealRooted.favardInterlacing_affine_param_coeff_rowSign
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _),
+          (RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _),
+          (RealRooted.nonzero_of_favard_affine_param_coeff_rowSign
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _))
   | `(tactic|
       rr_favard_affine_param_row_sign_auto using
         slope := $s:term,
