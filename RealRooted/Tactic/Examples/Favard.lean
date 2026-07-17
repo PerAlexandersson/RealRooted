@@ -1031,7 +1031,7 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by intro n; rr_scalar_active_den_at n,
+    den_nonzero := by rr_scalar_active_den_all,
     slope_coeff_eq := by
       intro n
       norm_num,
@@ -1068,7 +1068,7 @@ example {P : Nat → ℝ[X]}
       norm_num
       simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by intro n; rr_scalar_active_den_at n,
+    den_nonzero := by rr_scalar_active_den_all,
     slope_coeff_eq := by
       intro n
       rr_scalar_coeff_at n,
@@ -1105,7 +1105,7 @@ example {P : Nat → ℝ[X]}
       norm_num
       simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by intro n; rr_scalar_active_den_at n,
+    den_nonzero := by rr_scalar_active_den_all,
     slope_coeff_eq := by
       intro n
       rr_scalar_coeff_at n,
@@ -1135,7 +1135,7 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by intro n; rr_scalar_active_den_at n,
+    den_nonzero := by rr_scalar_active_den_all,
     slope_coeff_eq := by
       intro n
       norm_num,
@@ -1164,7 +1164,7 @@ example {P : Nat → ℝ[X]} {n : Nat}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by intro n; rr_scalar_active_den_at n,
+    den_nonzero := by rr_scalar_active_den_all,
     slope_coeff_eq := by
       intro n
       norm_num,
@@ -1194,7 +1194,7 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by intro n; rr_scalar_active_den_at n,
+    den_nonzero := by rr_scalar_active_den_all,
     slope_coeff_eq := by
       intro n
       norm_num,
@@ -1223,7 +1223,7 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by intro n; rr_scalar_active_den_at n,
+    den_nonzero := by rr_scalar_active_den_all,
     slope_coeff_eq := by
       intro n
       norm_num,

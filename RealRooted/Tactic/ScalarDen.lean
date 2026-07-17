@@ -114,6 +114,9 @@ macro "rr_scalar_active_den_at " n:term : tactic =>
       | apply ne_of_lt
         rr_scalar_active_arith_at $n)
 
+macro "rr_scalar_active_den_all" : tactic =>
+  `(tactic| exact fun n => by rr_scalar_active_den_at n)
+
 macro "rr_scalar_coeff_at " n:term : tactic =>
   `(tactic|
     solve
@@ -170,6 +173,9 @@ syntax (name := rr_mw_den_norm_two_coeff_named)
 
 macro "rr_mw_active_den_at " n:term : tactic =>
   `(tactic| rr_scalar_active_den_at $n)
+
+macro "rr_mw_active_den_all" : tactic =>
+  `(tactic| rr_scalar_active_den_all)
 
 macro_rules
   | `(tactic|

@@ -17,8 +17,14 @@ example {n : Nat} : 0 ≤ (n : ℝ) + 1 := by
 example {n : Nat} : (n : ℝ) + 2 ≠ 0 := by
   rr_mw_active_den_at n
 
+example : ∀ n : Nat, (n : ℝ) + 2 ≠ 0 := by
+  rr_mw_active_den_all
+
 example {n : Nat} : 1 - ((n : ℝ) + 3) ≠ 0 := by
   rr_scalar_active_den_at n
+
+example : ∀ n : Nat, 1 - ((n : ℝ) + 3) ≠ 0 := by
+  rr_scalar_active_den_all
 
 example {f u v : ℝ[X]}
     (hf : f.Splits)
