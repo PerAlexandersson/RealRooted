@@ -998,16 +998,12 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 -- `A049403`: `B_n(t)=(n-1)t`.
 example {n : Nat} (hn : 1 ≤ n) {r : ℝ} (hr : r ≤ 0) :
     (C ((n : ℝ) - 1) * X : ℝ[X]).eval r ≤ 0 := by
-  have hc : 0 ≤ (n : ℝ) - 1 := by
-    exact sub_nonneg.mpr (by exact_mod_cast hn)
   rr_sign
 
 -- `A049403`: root-sign package with the active-range scalar certificate.
 example {p : ℝ[X]} (hrr : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p)
     {n : Nat} (hn : 1 ≤ n) :
     ∀ r, p.IsRoot r → (C ((n : ℝ) - 1) * X : ℝ[X]).eval r ≤ 0 := by
-  have hc : 0 ≤ (n : ℝ) - 1 := by
-    exact sub_nonneg.mpr (by exact_mod_cast hn)
   rr_sign_at_roots using hrr, hpnn
 
 -- `A061896`: Lucas-polynomial coefficient triangle, `B_n(t)=t`.
@@ -1018,30 +1014,22 @@ example {r : ℝ} (hr : r ≤ 0) :
 -- `A100862`: matching polynomial triangle, `B_n(t)=(n-2)t`.
 example {n : Nat} (hn : 2 ≤ n) {r : ℝ} (hr : r ≤ 0) :
     (C ((n : ℝ) - 2) * X : ℝ[X]).eval r ≤ 0 := by
-  have hc : 0 ≤ (n : ℝ) - 2 := by
-    exact sub_nonneg.mpr (by exact_mod_cast hn)
   rr_sign
 
 -- `A154227`: triangular-number lag coefficient, `B_n(t)=n(n+1)t/2`.
 example {n : Nat} {r : ℝ} (hr : r ≤ 0) :
     (C (((n : ℝ) * ((n : ℝ) + 1)) / 2) * X : ℝ[X]).eval r ≤ 0 := by
-  have hc : 0 ≤ ((n : ℝ) * ((n : ℝ) + 1)) / 2 := by
-    positivity
   rr_sign
 
 -- `A154228`: square-pyramidal lag coefficient, `B_n(t)=n(n+1)(2n+1)t/6`.
 example {n : Nat} {r : ℝ} (hr : r ≤ 0) :
     (C (((n : ℝ) * ((n : ℝ) + 1) * (2 * (n : ℝ) + 1)) / 6) * X :
       ℝ[X]).eval r ≤ 0 := by
-  have hc : 0 ≤ ((n : ℝ) * ((n : ℝ) + 1) * (2 * (n : ℝ) + 1)) / 6 := by
-    positivity
   rr_sign
 
 -- `A249248`: shifted positive lag coefficient, `B_n(t)=(n+2)t`.
 example {n : Nat} {r : ℝ} (hr : r ≤ 0) :
     (C ((n : ℝ) + 2) * X : ℝ[X]).eval r ≤ 0 := by
-  have hc : 0 ≤ (n : ℝ) + 2 := by
-    positivity
   rr_sign
 
 -- `A154986`: active coefficient `(m-1)(m-2)t`, after the row shift.
@@ -1105,8 +1093,6 @@ example {P : Nat → ℝ[X]}
 -- `A001263`: Narayana/Catalan rows, `B_n(t)=-(n/(n+3))(1-t)^2`.
 example {n : Nat} {r : ℝ} :
     (-(C ((n : ℝ) / ((n : ℝ) + 3))) * (1 - X) ^ 2 : ℝ[X]).eval r ≤ 0 := by
-  have hc : 0 ≤ (n : ℝ) / ((n : ℝ) + 3) := by
-    positivity
   rr_sign
 
 -- `A001263`: denominator-fused Narayana lag after the active row shift.
@@ -1170,8 +1156,6 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
 -- `A145596`: generalized Narayana rows, `B_n(t)=-(n/(n+3))(1-t)^2`.
 example {n : Nat} {r : ℝ} :
     (-(C ((n : ℝ) / ((n : ℝ) + 3))) * (1 - X) ^ 2 : ℝ[X]).eval r ≤ 0 := by
-  have hc : 0 ≤ (n : ℝ) / ((n : ℝ) + 3) := by
-    positivity
   rr_sign
 
 -- `A145596`: denominator-fused generalized Narayana lag.  The active left

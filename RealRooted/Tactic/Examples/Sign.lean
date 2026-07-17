@@ -16,6 +16,18 @@ example {c r : ℝ} (hc : 0 ≤ c) (hr : r ≤ 0) :
     (C c * X : ℝ[X]).eval r ≤ 0 := by
   rr_sign
 
+example {n : Nat} (hn : 1 ≤ n) {r : ℝ} (hr : r ≤ 0) :
+    (C ((n : ℝ) - 1) * X : ℝ[X]).eval r ≤ 0 := by
+  rr_sign
+
+example {n : Nat} (hn : 2 ≤ n) {r : ℝ} (hr : r ≤ 0) :
+    (C ((n : ℝ) - 2) * X : ℝ[X]).eval r ≤ 0 := by
+  rr_sign
+
+example {n : Nat} {r : ℝ} (hr : r ≤ 0) :
+    (C (((n : ℝ) * ((n : ℝ) + 1)) / 2) * X : ℝ[X]).eval r ≤ 0 := by
+  rr_sign
+
 example {r : ℝ} {q : ℝ[X]} (hr : r ≤ 0) (hq : 0 ≤ q.eval r) :
     (X * q : ℝ[X]).eval r ≤ 0 := by
   rr_sign
