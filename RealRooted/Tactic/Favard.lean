@@ -1,4 +1,5 @@
 import RealRooted.Favard
+import RealRooted.Tactic.Finish
 import RealRooted.Tactic.ScalarDen
 import RealRooted.Tactic.SideGoals
 
@@ -1895,12 +1896,14 @@ macro_rules
       `(tactic|
         first
           | exact RealRooted.favardInterlacing $hrec $hbeta
-          | exact RealRooted.isRealRooted_of_favard $hrec $hbeta
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_favard $hrec $hbeta)
           | exact RealRooted.nonzero_of_favard $hrec $hbeta
           | exact RealRooted.isGeneralizedSturmSeq_reverse_range_map_of_favard
               $hrec $hbeta
           | exact RealRooted.favardInterlacing $hrec $hbeta _
-          | exact RealRooted.isRealRooted_of_favard $hrec $hbeta _
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_favard $hrec $hbeta _)
           | exact RealRooted.nonzero_of_favard $hrec $hbeta _
           | exact RealRooted.isGeneralizedSturmSeq_reverse_range_map_of_favard
               $hrec $hbeta _)
@@ -1918,9 +1921,11 @@ macro_rules
           | refine RealRooted.favardInterlacing $hrec ?_ <;>
               intro n <;>
               positivity
-          | refine RealRooted.isRealRooted_of_favard $hrec ?_ <;>
-              intro n <;>
-              positivity
+          | rr_exact_realrooted_sequence_or_projection
+              (by
+                refine RealRooted.isRealRooted_of_favard $hrec ?_ <;>
+                intro n <;>
+                positivity)
           | refine RealRooted.nonzero_of_favard $hrec ?_ <;>
               intro n <;>
               positivity
@@ -1931,9 +1936,11 @@ macro_rules
           | refine RealRooted.favardInterlacing $hrec ?_ _ <;>
               intro n <;>
               positivity
-          | refine RealRooted.isRealRooted_of_favard $hrec ?_ _ <;>
-              intro n <;>
-              positivity
+          | rr_exact_realrooted_sequence_or_projection
+              (by
+                refine RealRooted.isRealRooted_of_favard $hrec ?_ _ <;>
+                intro n <;>
+                positivity)
           | refine RealRooted.nonzero_of_favard $hrec ?_ _ <;>
               intro n <;>
               positivity

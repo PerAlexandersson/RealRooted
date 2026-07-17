@@ -34,6 +34,12 @@ example {P : Nat → ℝ[X]} {α β : Nat → ℝ}
 example {P : Nat → ℝ[X]} {α β : Nat → ℝ}
     (hrec : SatisfiesFavardRecurrence P α β)
     (hbeta : ∀ n : Nat, 0 < β (n + 1)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_favard using hrec, hbeta
+
+example {P : Nat → ℝ[X]} {α β : Nat → ℝ}
+    (hrec : SatisfiesFavardRecurrence P α β)
+    (hbeta : ∀ n : Nat, 0 < β (n + 1)) :
     ∀ n : Nat, IsGeneralizedSturmSeq ((List.range (n + 1)).reverse.map P) := by
   rr_favard using hrec, hbeta
 
@@ -53,6 +59,12 @@ example {P : Nat → ℝ[X]} {α β : Nat → ℝ} {n : Nat}
 example {P : Nat → ℝ[X]}
     (hrec : SatisfiesFavardRecurrence P (fun _ => (0 : ℝ)) (fun _ => (1 : ℝ))) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_favard_auto using
+    recurrence := hrec
+
+example {P : Nat → ℝ[X]}
+    (hrec : SatisfiesFavardRecurrence P (fun _ => (0 : ℝ)) (fun _ => (1 : ℝ))) :
+    ∀ n : Nat, (P n).Splits := by
   rr_favard_auto using
     recurrence := hrec
 
