@@ -151,6 +151,11 @@ theorem left_splits_of_interlaces {g f : ℝ[X]} (hgf : Interlaces g f) :
     g.Splits :=
   (left_isRealRooted_of_interlaces hgf).2
 
+/-- Project the successor-degree equality from an `Interlaces` certificate. -/
+theorem natDegree_succ_of_interlaces {g f : ℝ[X]} (hgf : Interlaces g f) :
+    g.natDegree + 1 = f.natDegree :=
+  hgf.2.2.1
+
 /-- Project row-wise nonvanishing from a sequence real-rootedness certificate. -/
 theorem ne_zero_of_isRealRooted_sequence {P : Nat → ℝ[X]}
     (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
@@ -428,6 +433,8 @@ macro_rules
           | exact RealRooted.left_ne_zero_of_interlaces (by rr_lookup)
           | exact RealRooted.right_splits_of_interlaces (by rr_lookup)
           | exact RealRooted.left_splits_of_interlaces (by rr_lookup)
+          | exact RealRooted.natDegree_succ_of_interlaces (by rr_lookup)
+          | exact (RealRooted.natDegree_succ_of_interlaces (by rr_lookup)).symm
           | exact RealRooted.Prec.toInterlaces (by rr_lookup) (by rr_lookup)
           | exact RealRooted.Prec.toInterlaces (by rr_lookup) (by
               symm

@@ -169,8 +169,9 @@ theorem favardInterlacing_affine_const_coeff {P : Nat → ℝ[X]} {s α β : ℝ
         let f : ℝ[X] := P (n + 1)
         let g : ℝ[X] := P n
         have hdeg_gf : g.natDegree + 1 = f.natDegree := by
-          simpa [f, g] using hInter.2.2.1
-        have hf_ne : f ≠ 0 := by simpa [f] using hInter.1.1
+          simpa [f, g] using natDegree_succ_of_interlaces hInter
+        have hf_ne : f ≠ 0 := by
+          simpa [f] using right_ne_zero_of_interlaces hInter
         have hAf_deg : (aPoly * f).natDegree = f.natDegree + 1 := by
           rw [natDegree_mul hA_ne hf_ne, hA_deg]
           lia
@@ -347,8 +348,9 @@ theorem favardInterlacing_affine_param_coeff
             hasPosLeadingCoeff_C_mul_X_sub_C (s := s (n + 1)) (t := α (n + 1))
               (hs (n + 1))
         have hdeg_gf : g.natDegree + 1 = f.natDegree := by
-          simpa [f, g] using hInter.2.2.1
-        have hf_ne : f ≠ 0 := by simpa [f] using hInter.1.1
+          simpa [f, g] using natDegree_succ_of_interlaces hInter
+        have hf_ne : f ≠ 0 := by
+          simpa [f] using right_ne_zero_of_interlaces hInter
         have hAf_deg : (aPoly * f).natDegree = f.natDegree + 1 := by
           rw [natDegree_mul hA_ne hf_ne, hA_deg]
           lia

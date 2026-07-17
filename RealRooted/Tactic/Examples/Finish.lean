@@ -59,6 +59,14 @@ example {g f : ℝ[X]} (hgf : Interlaces g f) : f ≠ 0 ∧ f.Splits := by
 example {g f : ℝ[X]} (hgf : Interlaces g f) : g ≠ 0 ∧ g.Splits := by
   rr_finish
 
+example {g f : ℝ[X]} (hgf : Interlaces g f) :
+    g.natDegree + 1 = f.natDegree := by
+  rr_finish
+
+example {g f : ℝ[X]} (hgf : Interlaces g f) :
+    f.natDegree = g.natDegree + 1 := by
+  rr_finish
+
 example {f g : ℝ[X]} (hfg : Prec f g)
     (hdeg : f.natDegree + 1 = g.natDegree) :
     Interlaces f g := by
