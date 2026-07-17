@@ -1293,6 +1293,67 @@ macro_rules
         exact RealRooted.bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
           $halpha $hbeta $hA $hB $hS)
 
+syntax (name := rr_pf_bidiagonal_preserver_named)
+  "rr_pf_bidiagonal_preserver" " using "
+    "jensen_backend" ":=" term ","
+    "certificate" ":=" term :
+  tactic
+
+syntax (name := rr_pf_bidiagonal_preserver_cubic_named)
+  "rr_pf_bidiagonal_preserver_cubic" " using "
+    "jensen_backend" ":=" term ","
+    "cubic_certificate" ":=" term :
+  tactic
+
+syntax (name := rr_pf_bidiagonal_operator_named)
+  "rr_pf_bidiagonal_operator" " using "
+    "jensen_backend" ":=" term ","
+    "certificate" ":=" term ","
+    "input_pf" ":=" term ","
+    "degree" ":=" term :
+  tactic
+
+syntax (name := rr_pf_bidiagonal_operator_cubic_named)
+  "rr_pf_bidiagonal_operator_cubic" " using "
+    "jensen_backend" ":=" term ","
+    "cubic_certificate" ":=" term ","
+    "input_pf" ":=" term ","
+    "degree" ":=" term :
+  tactic
+
+macro_rules
+  | `(tactic|
+      rr_pf_bidiagonal_preserver using
+        jensen_backend := $hbackend:term,
+        certificate := $hcert:term) =>
+      `(tactic|
+        exact RealRooted.bidiagonalPFPreserver_of_jensenPencil $hbackend $hcert)
+  | `(tactic|
+      rr_pf_bidiagonal_preserver_cubic using
+        jensen_backend := $hbackend:term,
+        cubic_certificate := $hcert:term) =>
+      `(tactic|
+        exact RealRooted.bidiagonalPFPreserver_of_cubicResidualCertificate
+          $hbackend $hcert)
+  | `(tactic|
+      rr_pf_bidiagonal_operator using
+        jensen_backend := $hbackend:term,
+        certificate := $hcert:term,
+        input_pf := $hp:term,
+        degree := $hdeg:term) =>
+      `(tactic|
+        exact RealRooted.isPFPolynomial_bidiagonalOperator_of_jensenPencil
+          $hbackend $hcert $hp $hdeg)
+  | `(tactic|
+      rr_pf_bidiagonal_operator_cubic using
+        jensen_backend := $hbackend:term,
+        cubic_certificate := $hcert:term,
+        input_pf := $hp:term,
+        degree := $hdeg:term) =>
+      `(tactic|
+        exact RealRooted.isPFPolynomial_bidiagonalOperator_of_cubicResidualCertificate
+          $hbackend $hcert $hp $hdeg)
+
 syntax (name := rr_pf_bidiagonal_sequence_cubic_named)
   "rr_pf_bidiagonal_sequence_cubic" " using "
     "jensen_backend" ":=" term ","

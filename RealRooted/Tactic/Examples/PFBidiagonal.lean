@@ -2084,8 +2084,10 @@ example
     {alpha beta : ℕ → ℝ} {d : ℕ}
     (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hcert : BidiagonalJensenPencilCertificate alpha beta d) :
-    BidiagonalPFPreserver alpha beta d :=
-  bidiagonalPFPreserver_of_jensenPencil hbackend hcert
+    BidiagonalPFPreserver alpha beta d := by
+  rr_pf_bidiagonal_preserver using
+    jensen_backend := hbackend,
+    certificate := hcert
 
 example {p : ℝ[X]}
     (hnn : HasNonnegCoeffs p)
@@ -2174,8 +2176,12 @@ example
     (hcert : BidiagonalJensenPencilCertificate alpha beta d)
     (hp : IsPFPolynomial p)
     (hdeg : p.natDegree ≤ d) :
-    IsPFPolynomial (bidiagonalOperator alpha beta p) :=
-  isPFPolynomial_bidiagonalOperator_of_jensenPencil hbackend hcert hp hdeg
+    IsPFPolynomial (bidiagonalOperator alpha beta p) := by
+  rr_pf_bidiagonal_operator using
+    jensen_backend := hbackend,
+    certificate := hcert,
+    input_pf := hp,
+    degree := hdeg
 
 example
     {alpha beta : ℕ → ℝ} {d : ℕ}
@@ -2194,8 +2200,10 @@ example
     {alpha beta : ℕ → ℝ} {d : ℕ}
     (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hcert : BidiagonalCubicResidualCertificate alpha beta d) :
-    BidiagonalPFPreserver alpha beta d :=
-  hcert.toPFPreserver hbackend
+    BidiagonalPFPreserver alpha beta d := by
+  rr_pf_bidiagonal_preserver_cubic using
+    jensen_backend := hbackend,
+    cubic_certificate := hcert
 
 example
     {alpha beta : ℕ → ℝ} {d : ℕ} {p : ℝ[X]}
@@ -2203,8 +2211,12 @@ example
     (hcert : BidiagonalCubicResidualCertificate alpha beta d)
     (hp : IsPFPolynomial p)
     (hdeg : p.natDegree ≤ d) :
-    IsPFPolynomial (bidiagonalOperator alpha beta p) :=
-  isPFPolynomial_bidiagonalOperator_of_cubicResidualCertificate hbackend hcert hp hdeg
+    IsPFPolynomial (bidiagonalOperator alpha beta p) := by
+  rr_pf_bidiagonal_operator_cubic using
+    jensen_backend := hbackend,
+    cubic_certificate := hcert,
+    input_pf := hp,
+    degree := hdeg
 
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
