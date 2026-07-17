@@ -1923,18 +1923,47 @@ syntax (name := rr_product_scalar_C_add_X_pow_sequence_auto_named)
 
 syntax (name := rr_product_nonzero) "rr_product_nonzero" : tactic
 
+syntax (name := rr_product_two_variants)
+  "rr_product_two_variants" term ", " term :
+  tactic
+
+syntax (name := rr_product_two_sequence_variants)
+  "rr_product_two_sequence_variants" term ", " term :
+  tactic
+
+syntax (name := rr_product_four_sequence_variants)
+  "rr_product_four_sequence_variants" term ", " term ", " term ", " term :
+  tactic
+
 macro_rules
   | `(tactic| rr_product_nonzero) =>
       `(tactic| rr_side_ne)
+  | `(tactic| rr_product_two_variants $hleft:term, $hright:term) =>
+      `(tactic|
+        first
+          | rr_exact_realrooted_or_projection $hleft
+          | rr_exact_realrooted_or_projection $hright)
+  | `(tactic| rr_product_two_sequence_variants $hleft:term, $hright:term) =>
+      `(tactic|
+        first
+          | rr_exact_realrooted_sequence_or_projection $hleft
+          | rr_exact_realrooted_sequence_or_projection $hright)
+  | `(tactic|
+      rr_product_four_sequence_variants
+        $hleft:term, $hright:term, $hscalar_right:term, $hfactor_right:term) =>
+      `(tactic|
+        first
+          | rr_exact_realrooted_sequence_or_projection $hleft
+          | rr_exact_realrooted_sequence_or_projection $hright
+          | rr_exact_realrooted_sequence_or_projection $hscalar_right
+          | rr_exact_realrooted_sequence_or_projection $hfactor_right)
 
 macro_rules
   | `(tactic| rr_product_factor using $hp:term, $hs:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_or_projection
-              (RealRooted.isRealRooted_C_mul_X_add_C_mul $hp $hs)
-          | rr_exact_realrooted_or_projection
-              (RealRooted.isRealRooted_mul_C_mul_X_add_C $hp $hs))
+        rr_product_two_variants
+          (RealRooted.isRealRooted_C_mul_X_add_C_mul $hp $hs),
+          (RealRooted.isRealRooted_mul_C_mul_X_add_C $hp $hs))
   | `(tactic|
       rr_product_factor using
         realrooted := $hp:term,
@@ -1951,11 +1980,9 @@ macro_rules
         rr_product_factor_auto using $hp)
   | `(tactic| rr_product_factor_const_first using $hp:term, $hs:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_or_projection
-              (RealRooted.isRealRooted_C_add_C_mul_X_mul $hp $hs)
-          | rr_exact_realrooted_or_projection
-              (RealRooted.isRealRooted_mul_C_add_C_mul_X $hp $hs))
+        rr_product_two_variants
+          (RealRooted.isRealRooted_C_add_C_mul_X_mul $hp $hs),
+          (RealRooted.isRealRooted_mul_C_add_C_mul_X $hp $hs))
   | `(tactic|
       rr_product_factor_const_first using
         realrooted := $hp:term,
@@ -1972,11 +1999,9 @@ macro_rules
         rr_product_factor_const_first_auto using $hp)
   | `(tactic| rr_product_factor_X using $hp:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_or_projection
-              (RealRooted.isRealRooted_X_add_C_mul $hp)
-          | rr_exact_realrooted_or_projection
-              (RealRooted.isRealRooted_mul_X_add_C $hp))
+        rr_product_two_variants
+          (RealRooted.isRealRooted_X_add_C_mul $hp),
+          (RealRooted.isRealRooted_mul_X_add_C $hp))
   | `(tactic|
       rr_product_factor_X using
         realrooted := $hp:term) =>
@@ -1984,11 +2009,9 @@ macro_rules
         rr_product_factor_X using $hp)
   | `(tactic| rr_product_factor_C_add_X using $hp:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_or_projection
-              (RealRooted.isRealRooted_C_add_X_mul $hp)
-          | rr_exact_realrooted_or_projection
-              (RealRooted.isRealRooted_mul_C_add_X $hp))
+        rr_product_two_variants
+          (RealRooted.isRealRooted_C_add_X_mul $hp),
+          (RealRooted.isRealRooted_mul_C_add_X $hp))
   | `(tactic|
       rr_product_factor_C_add_X using
         realrooted := $hp:term) =>
@@ -2000,13 +2023,11 @@ macro_rules
         factor_realrooted := $hfactor:term,
         recurrence := $hstep:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_factor_sequence
-                $hbase $hfactor $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_factor_right_sequence
-                $hbase $hfactor $hstep))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_product_factor_sequence
+            $hbase $hfactor $hstep),
+          (RealRooted.isRealRooted_of_product_factor_right_sequence
+            $hbase $hfactor $hstep))
   | `(tactic|
       rr_product_identity_sequence using
         base := $hbase:term,
@@ -2019,13 +2040,10 @@ macro_rules
         base := $hbase:term,
         recurrence := $hstep:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_root_zero_sequence
-                $hbase $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_root_zero_right_sequence
-                $hbase $hstep))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_product_root_zero_sequence $hbase $hstep),
+          (RealRooted.isRealRooted_of_product_root_zero_right_sequence
+            $hbase $hstep))
   | `(tactic|
       rr_product_period_two_sequence using
         base_zero := $hbase_zero:term,
@@ -2041,57 +2059,46 @@ macro_rules
         factor_realrooted := $hfactor:term,
         factorization := $hrow:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_lift_sequence
-                $hquot $hfactor $hrow)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_lift_right_sequence
-                $hquot $hfactor $hrow))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_product_lift_sequence
+            $hquot $hfactor $hrow),
+          (RealRooted.isRealRooted_of_product_lift_right_sequence
+            $hquot $hfactor $hrow))
   | `(tactic|
       rr_product_lift_X_sequence using
         quotient_realrooted := $hquot:term,
         factorization := $hrow:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_X_lift_sequence $hquot $hrow)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_X_lift_right_sequence $hquot $hrow))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_X_lift_sequence $hquot $hrow),
+          (RealRooted.isRealRooted_of_X_lift_right_sequence $hquot $hrow))
   | `(tactic|
       rr_product_lift_X_add_C_sequence using
         quotient_realrooted := $hquot:term,
         factorization := $hrow:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_X_add_C_lift_sequence $hquot $hrow)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_X_add_C_lift_right_sequence
-                $hquot $hrow))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_X_add_C_lift_sequence $hquot $hrow),
+          (RealRooted.isRealRooted_of_X_add_C_lift_right_sequence
+            $hquot $hrow))
   | `(tactic|
       rr_product_lift_C_add_X_sequence using
         quotient_realrooted := $hquot:term,
         factorization := $hrow:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_C_add_X_lift_sequence $hquot $hrow)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_C_add_X_lift_right_sequence
-                $hquot $hrow))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_C_add_X_lift_sequence $hquot $hrow),
+          (RealRooted.isRealRooted_of_C_add_X_lift_right_sequence
+            $hquot $hrow))
   | `(tactic|
       rr_product_lift_C_sequence using
         quotient_realrooted := $hquot:term,
         scalar_ne := $hc:term,
         factorization := $hrow:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_C_lift_sequence $hquot $hc $hrow)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_C_lift_right_sequence
-                $hquot $hc $hrow))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_C_lift_sequence $hquot $hc $hrow),
+          (RealRooted.isRealRooted_of_C_lift_right_sequence $hquot $hc $hrow))
   | `(tactic|
       rr_product_lift_C_sequence_auto using
         quotient_realrooted := $hquot:term,
@@ -2117,13 +2124,11 @@ macro_rules
         slope_ne := $hs:term,
         factorization := $hrow:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_C_mul_X_add_C_lift_sequence
-                $hquot $hs $hrow)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_C_mul_X_add_C_lift_right_sequence
-                $hquot $hs $hrow))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_C_mul_X_add_C_lift_sequence
+            $hquot $hs $hrow),
+          (RealRooted.isRealRooted_of_C_mul_X_add_C_lift_right_sequence
+            $hquot $hs $hrow))
   | `(tactic|
       rr_product_lift_affine_sequence_auto using
         quotient_realrooted := $hquot:term,
@@ -2139,13 +2144,11 @@ macro_rules
         slope_ne := $hs:term,
         factorization := $hrow:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_C_add_C_mul_X_lift_sequence
-                $hquot $hs $hrow)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_C_add_C_mul_X_lift_right_sequence
-                $hquot $hs $hrow))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_C_add_C_mul_X_lift_sequence
+            $hquot $hs $hrow),
+          (RealRooted.isRealRooted_of_C_add_C_mul_X_lift_right_sequence
+            $hquot $hs $hrow))
   | `(tactic|
       rr_product_lift_const_first_sequence_auto using
         quotient_realrooted := $hquot:term,
@@ -2161,12 +2164,10 @@ macro_rules
         scalar_ne := $hc:term,
         factorization := $hrow:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_C_pow_lift_sequence $hquot $hc $hrow)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_C_pow_lift_right_sequence
-                $hquot $hc $hrow))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_C_pow_lift_sequence $hquot $hc $hrow),
+          (RealRooted.isRealRooted_of_C_pow_lift_right_sequence
+            $hquot $hc $hrow))
   | `(tactic|
       rr_product_lift_C_pow_sequence_auto using
         quotient_realrooted := $hquot:term,
@@ -2181,60 +2182,48 @@ macro_rules
         quotient_realrooted := $hquot:term,
         factorization := $hrow:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_X_pow_lift_sequence $hquot $hrow)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_X_pow_lift_right_sequence $hquot $hrow))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_X_pow_lift_sequence $hquot $hrow),
+          (RealRooted.isRealRooted_of_X_pow_lift_right_sequence $hquot $hrow))
   | `(tactic|
       rr_product_lift_X_add_C_pow_sequence using
         quotient_realrooted := $hquot:term,
         factorization := $hrow:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_X_add_C_pow_lift_sequence
-                $hquot $hrow)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_X_add_C_pow_lift_right_sequence
-                $hquot $hrow))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_X_add_C_pow_lift_sequence $hquot $hrow),
+          (RealRooted.isRealRooted_of_X_add_C_pow_lift_right_sequence
+            $hquot $hrow))
   | `(tactic|
       rr_product_lift_X_add_C_row_pow_sequence using
         quotient_realrooted := $hquot:term,
         factorization := $hrow:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_X_add_C_row_pow_lift_sequence
-                $hquot $hrow)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_X_add_C_row_pow_lift_right_sequence
-                $hquot $hrow))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_X_add_C_row_pow_lift_sequence
+            $hquot $hrow),
+          (RealRooted.isRealRooted_of_X_add_C_row_pow_lift_right_sequence
+            $hquot $hrow))
   | `(tactic|
       rr_product_lift_C_add_X_pow_sequence using
         quotient_realrooted := $hquot:term,
         factorization := $hrow:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_C_add_X_pow_lift_sequence
-                $hquot $hrow)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_C_add_X_pow_lift_right_sequence
-                $hquot $hrow))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_C_add_X_pow_lift_sequence $hquot $hrow),
+          (RealRooted.isRealRooted_of_C_add_X_pow_lift_right_sequence
+            $hquot $hrow))
   | `(tactic|
       rr_product_lift_affine_pow_sequence using
         quotient_realrooted := $hquot:term,
         slope_ne := $hs:term,
         factorization := $hrow:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_C_mul_X_add_C_pow_lift_sequence
-                $hquot $hs $hrow)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_C_mul_X_add_C_pow_lift_right_sequence
-                $hquot $hs $hrow))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_C_mul_X_add_C_pow_lift_sequence
+            $hquot $hs $hrow),
+          (RealRooted.isRealRooted_of_C_mul_X_add_C_pow_lift_right_sequence
+            $hquot $hs $hrow))
   | `(tactic|
       rr_product_lift_affine_pow_sequence_auto using
         quotient_realrooted := $hquot:term,
@@ -2250,13 +2239,11 @@ macro_rules
         slope_ne := $hs:term,
         factorization := $hrow:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_C_add_C_mul_X_pow_lift_sequence
-                $hquot $hs $hrow)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_C_add_C_mul_X_pow_lift_right_sequence
-                $hquot $hs $hrow))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_C_add_C_mul_X_pow_lift_sequence
+            $hquot $hs $hrow),
+          (RealRooted.isRealRooted_of_C_add_C_mul_X_pow_lift_right_sequence
+            $hquot $hs $hrow))
   | `(tactic|
       rr_product_lift_const_first_affine_pow_sequence_auto using
         quotient_realrooted := $hquot:term,
@@ -2363,13 +2350,11 @@ macro_rules
         slope_ne := $hs:term,
         recurrence := $hstep:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_affine_sequence
-                $hbase $hs $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_affine_right_sequence
-                $hbase $hs $hstep))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_product_affine_sequence
+            $hbase $hs $hstep),
+          (RealRooted.isRealRooted_of_product_affine_right_sequence
+            $hbase $hs $hstep))
   | `(tactic|
       rr_product_affine_sequence_auto using
         base := $hbase:term,
@@ -2385,13 +2370,11 @@ macro_rules
         slope_ne := $hs:term,
         recurrence := $hstep:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_const_first_affine_sequence
-                $hbase $hs $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_const_first_affine_right_sequence
-                $hbase $hs $hstep))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_product_const_first_affine_sequence
+            $hbase $hs $hstep),
+          (RealRooted.isRealRooted_of_product_const_first_affine_right_sequence
+            $hbase $hs $hstep))
   | `(tactic|
       rr_product_const_first_sequence_auto using
         base := $hbase:term,
@@ -2406,38 +2389,30 @@ macro_rules
         base := $hbase:term,
         recurrence := $hstep:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_X_add_C_sequence
-                $hbase $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_X_add_C_right_sequence
-                $hbase $hstep))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_product_X_add_C_sequence $hbase $hstep),
+          (RealRooted.isRealRooted_of_product_X_add_C_right_sequence
+            $hbase $hstep))
   | `(tactic|
       rr_product_C_add_X_sequence using
         base := $hbase:term,
         recurrence := $hstep:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_C_add_X_sequence
-                $hbase $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_C_add_X_right_sequence
-                $hbase $hstep))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_product_C_add_X_sequence $hbase $hstep),
+          (RealRooted.isRealRooted_of_product_C_add_X_right_sequence
+            $hbase $hstep))
   | `(tactic|
       rr_product_C_pow_sequence using
         base := $hbase:term,
         scalar_ne := $hc:term,
         recurrence := $hstep:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_C_pow_sequence
-                $hbase $hc $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_C_pow_right_sequence
-                $hbase $hc $hstep))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_product_C_pow_sequence
+            $hbase $hc $hstep),
+          (RealRooted.isRealRooted_of_product_C_pow_right_sequence
+            $hbase $hc $hstep))
   | `(tactic|
       rr_product_C_pow_sequence_auto using
         base := $hbase:term,
@@ -2452,50 +2427,41 @@ macro_rules
         base := $hbase:term,
         recurrence := $hstep:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_X_pow_sequence
-                $hbase $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_X_pow_right_sequence
-                $hbase $hstep))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_product_X_pow_sequence $hbase $hstep),
+          (RealRooted.isRealRooted_of_product_X_pow_right_sequence
+            $hbase $hstep))
   | `(tactic|
       rr_product_X_add_C_pow_sequence using
         base := $hbase:term,
         recurrence := $hstep:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_X_add_C_pow_sequence
-                $hbase $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_X_add_C_pow_right_sequence
-                $hbase $hstep))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_product_X_add_C_pow_sequence
+            $hbase $hstep),
+          (RealRooted.isRealRooted_of_product_X_add_C_pow_right_sequence
+            $hbase $hstep))
   | `(tactic|
       rr_product_C_add_X_pow_sequence using
         base := $hbase:term,
         recurrence := $hstep:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_C_add_X_pow_sequence
-                $hbase $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_C_add_X_pow_right_sequence
-                $hbase $hstep))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_product_C_add_X_pow_sequence
+            $hbase $hstep),
+          (RealRooted.isRealRooted_of_product_C_add_X_pow_right_sequence
+            $hbase $hstep))
   | `(tactic|
       rr_product_affine_pow_sequence using
         base := $hbase:term,
         slope_ne := $hs:term,
         recurrence := $hstep:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_C_mul_X_add_C_pow_sequence
-                $hbase $hs $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_C_mul_X_add_C_pow_right_sequence
-                $hbase $hs $hstep))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_product_C_mul_X_add_C_pow_sequence
+            $hbase $hs $hstep),
+          (RealRooted.isRealRooted_of_product_C_mul_X_add_C_pow_right_sequence
+            $hbase $hs $hstep))
   | `(tactic|
       rr_product_affine_pow_sequence_auto using
         base := $hbase:term,
@@ -2511,13 +2477,11 @@ macro_rules
         slope_ne := $hs:term,
         recurrence := $hstep:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_C_add_C_mul_X_pow_sequence
-                $hbase $hs $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_C_add_C_mul_X_pow_right_sequence
-                $hbase $hs $hstep))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_product_C_add_C_mul_X_pow_sequence
+            $hbase $hs $hstep),
+          (RealRooted.isRealRooted_of_product_C_add_C_mul_X_pow_right_sequence
+            $hbase $hs $hstep))
   | `(tactic|
       rr_product_const_first_affine_pow_sequence_auto using
         base := $hbase:term,
@@ -2533,13 +2497,11 @@ macro_rules
         scalar_ne := $ha:term,
         recurrence := $hstep:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_sequence
-                $hbase $ha $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_right_sequence
-                $hbase $ha $hstep))
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_product_scalar_sequence
+            $hbase $ha $hstep),
+          (RealRooted.isRealRooted_of_product_scalar_right_sequence
+            $hbase $ha $hstep))
   | `(tactic|
       rr_product_scalar_sequence_auto using
         base := $hbase:term,
@@ -2556,19 +2518,15 @@ macro_rules
         scalar_step := $hscalar:term,
         linear_step := $hlinear:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_linear_sequence
-                $hbase $ha $hscalar $hlinear)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_linear_right_sequence
-                $hbase $ha $hscalar $hlinear)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_linear_scalar_right_sequence
-                $hbase $ha $hscalar $hlinear)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_linear_scalar_right_linear_right_sequence
-                $hbase $ha $hscalar $hlinear))
+        rr_product_four_sequence_variants
+          (RealRooted.isRealRooted_of_product_scalar_linear_sequence
+            $hbase $ha $hscalar $hlinear),
+          (RealRooted.isRealRooted_of_product_scalar_linear_right_sequence
+            $hbase $ha $hscalar $hlinear),
+          (RealRooted.isRealRooted_of_product_scalar_linear_scalar_right_sequence
+            $hbase $ha $hscalar $hlinear),
+          (RealRooted.isRealRooted_of_product_scalar_linear_scalar_right_linear_right_sequence
+            $hbase $ha $hscalar $hlinear))
   | `(tactic|
       rr_product_scalar_linear_sequence_auto using
         base := $hbase:term,
@@ -2587,19 +2545,15 @@ macro_rules
         scalar_step := $hscalar:term,
         linear_step := $hlinear:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_C_add_X_sequence
-                $hbase $ha $hscalar $hlinear)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_C_add_X_right_sequence
-                $hbase $ha $hscalar $hlinear)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_C_add_X_scalar_right_sequence
-                $hbase $ha $hscalar $hlinear)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_C_add_X_scalar_right_linear_right_sequence
-                $hbase $ha $hscalar $hlinear))
+        rr_product_four_sequence_variants
+          (RealRooted.isRealRooted_of_product_scalar_C_add_X_sequence
+            $hbase $ha $hscalar $hlinear),
+          (RealRooted.isRealRooted_of_product_scalar_C_add_X_right_sequence
+            $hbase $ha $hscalar $hlinear),
+          (RealRooted.isRealRooted_of_product_scalar_C_add_X_scalar_right_sequence
+            $hbase $ha $hscalar $hlinear),
+          (RealRooted.isRealRooted_of_product_scalar_C_add_X_scalar_right_linear_right_sequence
+            $hbase $ha $hscalar $hlinear))
   | `(tactic|
       rr_product_scalar_C_add_X_sequence_auto using
         base := $hbase:term,
@@ -2619,19 +2573,15 @@ macro_rules
         scalar_step := $hscalar:term,
         factor_step := $hstep:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_factor_sequence
-                $hbase $ha $hfactor $hscalar $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_factor_right_sequence
-                $hbase $ha $hfactor $hscalar $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_factor_scalar_right_sequence
-                $hbase $ha $hfactor $hscalar $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_factor_scalar_right_factor_right_sequence
-                $hbase $ha $hfactor $hscalar $hstep))
+        rr_product_four_sequence_variants
+          (RealRooted.isRealRooted_of_product_scalar_factor_sequence
+            $hbase $ha $hfactor $hscalar $hstep),
+          (RealRooted.isRealRooted_of_product_scalar_factor_right_sequence
+            $hbase $ha $hfactor $hscalar $hstep),
+          (RealRooted.isRealRooted_of_product_scalar_factor_scalar_right_sequence
+            $hbase $ha $hfactor $hscalar $hstep),
+          (RealRooted.isRealRooted_of_product_scalar_factor_scalar_right_factor_right_sequence
+            $hbase $ha $hfactor $hscalar $hstep))
   | `(tactic|
       rr_product_scalar_factor_sequence_auto using
         base := $hbase:term,
@@ -2652,19 +2602,15 @@ macro_rules
         scalar_step := $hscalar:term,
         factor_step := $hstep:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_X_pow_sequence
-                $hbase $ha $hscalar $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_X_pow_right_sequence
-                $hbase $ha $hscalar $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_X_pow_scalar_right_sequence
-                $hbase $ha $hscalar $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_X_pow_scalar_right_factor_right_sequence
-                $hbase $ha $hscalar $hstep))
+        rr_product_four_sequence_variants
+          (RealRooted.isRealRooted_of_product_scalar_X_pow_sequence
+            $hbase $ha $hscalar $hstep),
+          (RealRooted.isRealRooted_of_product_scalar_X_pow_right_sequence
+            $hbase $ha $hscalar $hstep),
+          (RealRooted.isRealRooted_of_product_scalar_X_pow_scalar_right_sequence
+            $hbase $ha $hscalar $hstep),
+          (RealRooted.isRealRooted_of_product_scalar_X_pow_scalar_right_factor_right_sequence
+            $hbase $ha $hscalar $hstep))
   | `(tactic|
       rr_product_scalar_X_pow_sequence_auto using
         base := $hbase:term,
@@ -2683,19 +2629,15 @@ macro_rules
         scalar_step := $hscalar:term,
         factor_step := $hstep:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_X_add_C_pow_sequence
-                $hbase $ha $hscalar $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_X_add_C_pow_right_sequence
-                $hbase $ha $hscalar $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_X_add_C_pow_scalar_right_sequence
-                $hbase $ha $hscalar $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (isRealRooted_of_product_scalar_X_add_C_pow_scalar_right_factor_right_sequence
-                $hbase $ha $hscalar $hstep))
+        rr_product_four_sequence_variants
+          (RealRooted.isRealRooted_of_product_scalar_X_add_C_pow_sequence
+            $hbase $ha $hscalar $hstep),
+          (RealRooted.isRealRooted_of_product_scalar_X_add_C_pow_right_sequence
+            $hbase $ha $hscalar $hstep),
+          (RealRooted.isRealRooted_of_product_scalar_X_add_C_pow_scalar_right_sequence
+            $hbase $ha $hscalar $hstep),
+          (isRealRooted_of_product_scalar_X_add_C_pow_scalar_right_factor_right_sequence
+            $hbase $ha $hscalar $hstep))
   | `(tactic|
       rr_product_scalar_X_add_C_pow_sequence_auto using
         base := $hbase:term,
@@ -2714,19 +2656,15 @@ macro_rules
         scalar_step := $hscalar:term,
         factor_step := $hstep:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_C_add_X_pow_sequence
-                $hbase $ha $hscalar $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_C_add_X_pow_right_sequence
-                $hbase $ha $hscalar $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_C_add_X_pow_scalar_right_sequence
-                $hbase $ha $hscalar $hstep)
-          | rr_exact_realrooted_sequence_or_projection
-              (isRealRooted_of_product_scalar_C_add_X_pow_scalar_right_factor_right_sequence
-                $hbase $ha $hscalar $hstep))
+        rr_product_four_sequence_variants
+          (RealRooted.isRealRooted_of_product_scalar_C_add_X_pow_sequence
+            $hbase $ha $hscalar $hstep),
+          (RealRooted.isRealRooted_of_product_scalar_C_add_X_pow_right_sequence
+            $hbase $ha $hscalar $hstep),
+          (RealRooted.isRealRooted_of_product_scalar_C_add_X_pow_scalar_right_sequence
+            $hbase $ha $hscalar $hstep),
+          (isRealRooted_of_product_scalar_C_add_X_pow_scalar_right_factor_right_sequence
+            $hbase $ha $hscalar $hstep))
   | `(tactic|
       rr_product_scalar_C_add_X_pow_sequence_auto using
         base := $hbase:term,
