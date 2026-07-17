@@ -114,6 +114,18 @@ macro "rr_scalar_active_den_at " n:term : tactic =>
       | apply ne_of_lt
         rr_scalar_active_arith_at $n)
 
+macro "rr_scalar_coeff_at " n:term : tactic =>
+  `(tactic|
+    solve
+      | field_simp (discharger := rr_scalar_active_den_at $n) <;>
+          try norm_num [Nat.cast_add, Nat.cast_one] <;>
+          try ring_nf
+      | field_simp (discharger := rr_side_ne) <;>
+          try norm_num [Nat.cast_add, Nat.cast_one] <;>
+          try ring_nf
+      | norm_num [Nat.cast_add, Nat.cast_one]
+      | simp)
+
 syntax (name := rr_scalar_den_norm_named)
   "rr_scalar_den_norm" " using "
     "recurrence" ":=" term ","

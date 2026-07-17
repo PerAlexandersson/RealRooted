@@ -1271,22 +1271,13 @@ example {P : Nat → ℝ[X]}
     den_nonzero := by intro n; rr_scalar_active_den_at n,
     slope_coeff_eq := by
       intro n
-      have hd : 1 - ((n : ℝ) + 3) ≠ 0 := by rr_scalar_active_den_at n
-      field_simp [hd]
-      norm_num
-      ring_nf,
+      rr_scalar_coeff_at n,
     alpha_coeff_eq := by
       intro n
-      have hd : 1 - ((n : ℝ) + 3) ≠ 0 := by rr_scalar_active_den_at n
-      field_simp [hd]
-      norm_num
-      ring_nf,
+      rr_scalar_coeff_at n,
     beta_coeff_eq := by
       intro n
-      have hd : 1 - ((n : ℝ) + 3) ≠ 0 := by rr_scalar_active_den_at n
-      field_simp [hd]
-      norm_num
-      ring_nf,
+      rr_scalar_coeff_at n,
     raw_recurrence := hraw
 
 -- `A376467`: same denominator-Favard normalization with a larger shift.
@@ -1312,22 +1303,13 @@ example {P : Nat → ℝ[X]}
     den_nonzero := by intro n; rr_scalar_active_den_at n,
     slope_coeff_eq := by
       intro n
-      have hd : 1 - ((n : ℝ) + 3) ≠ 0 := by rr_scalar_active_den_at n
-      field_simp [hd]
-      norm_num
-      ring_nf,
+      rr_scalar_coeff_at n,
     alpha_coeff_eq := by
       intro n
-      have hd : 1 - ((n : ℝ) + 3) ≠ 0 := by rr_scalar_active_den_at n
-      field_simp [hd]
-      norm_num
-      ring_nf,
+      rr_scalar_coeff_at n,
     beta_coeff_eq := by
       intro n
-      have hd : 1 - ((n : ℝ) + 3) ≠ 0 := by rr_scalar_active_den_at n
-      field_simp [hd]
-      norm_num
-      ring_nf,
+      rr_scalar_coeff_at n,
     raw_recurrence := hraw
 
 -- `A049310`: Chebyshev `S(n,x)=U(n,x/2)` coefficient triangle.
@@ -1558,22 +1540,13 @@ example {P : Nat → ℝ[X]}
     den_nonzero := by intro n; rr_side_ne,
     slope_coeff_eq := by
       intro n
-      have hd : 1 + ((n + 2 : Nat) : ℝ) / 2 ≠ 0 := by rr_side_ne
-      field_simp [hd]
-      norm_num [Nat.cast_add, Nat.cast_one]
-      ring_nf,
+      rr_scalar_coeff_at n,
     alpha_coeff_eq := by
       intro n
-      have hd : 1 + ((n + 2 : Nat) : ℝ) / 2 ≠ 0 := by rr_side_ne
-      field_simp [hd]
-      norm_num [Nat.cast_add, Nat.cast_one]
-      ring_nf,
+      rr_scalar_coeff_at n,
     beta_coeff_eq := by
       intro n
-      have hd : 1 + ((n + 2 : Nat) : ℝ) / 2 ≠ 0 := by rr_side_ne
-      field_simp [hd]
-      norm_num [Nat.cast_add, Nat.cast_one]
-      ring_nf,
+      rr_scalar_coeff_at n,
     raw_recurrence := hraw
 
 -- `A136668`: `P_m=2mtP_{m-1}-(m+1)P_{m-2}`.
