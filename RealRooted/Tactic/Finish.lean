@@ -519,6 +519,23 @@ macro_rules
         first
           | rr_lookup
           | assumption
+          | exact RealRooted.at_of_isRealRooted_sequence (by rr_lookup) _
+          | exact RealRooted.ne_zero_of_isRealRooted_sequence (by rr_lookup)
+          | exact (RealRooted.ne_zero_of_isRealRooted_sequence (by rr_lookup) _)
+          | exact RealRooted.splits_of_isRealRooted_sequence (by rr_lookup)
+          | exact (RealRooted.splits_of_isRealRooted_sequence (by rr_lookup) _)
+          | exact RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence (by rr_lookup)
+          | exact (RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence (by rr_lookup) _)
+          | exact RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence (by rr_lookup)
+          | exact (RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence (by rr_lookup) _)
+          | exact RealRooted.left_ne_zero_of_isRealRooted_pair_sequence (by rr_lookup)
+          | exact (RealRooted.left_ne_zero_of_isRealRooted_pair_sequence (by rr_lookup) _)
+          | exact RealRooted.right_ne_zero_of_isRealRooted_pair_sequence (by rr_lookup)
+          | exact (RealRooted.right_ne_zero_of_isRealRooted_pair_sequence (by rr_lookup) _)
+          | exact RealRooted.left_splits_of_isRealRooted_pair_sequence (by rr_lookup)
+          | exact (RealRooted.left_splits_of_isRealRooted_pair_sequence (by rr_lookup) _)
+          | exact RealRooted.right_splits_of_isRealRooted_pair_sequence (by rr_lookup)
+          | exact (RealRooted.right_splits_of_isRealRooted_pair_sequence (by rr_lookup) _)
           | exact RealRooted.left_isRealRooted_of_prec (by rr_lookup)
           | exact RealRooted.right_isRealRooted_of_prec (by rr_lookup)
           | exact RealRooted.left_ne_zero_of_prec (by rr_lookup)
