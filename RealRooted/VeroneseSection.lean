@@ -554,18 +554,21 @@ theorem fullyInterlacingPair_veronesePairSectionPolynomial_coeff
 
 /-! ## Conditional bridge to polynomial interlacing -/
 
-/-- Strong interface for the polynomial-to-lace direction.
+/-- Strong candidate interface for the polynomial-to-lace direction.
 
 This is stronger than the Athanasiadis--Wagner polynomial setting: plain
 `Prec p q` does not include nonnegative coefficients or the AESW/PF condition.
-For Veronese applications, prefer `PfPrecToFullyInterlacingPairStatement` or
-`NonnegPrecToFullyInterlacingPairStatement` below. -/
+It is false for the current row orientation; see
+`not_precToFullyInterlacingPairStatement` below. -/
 def PrecToFullyInterlacingPairStatement : Prop :=
   ∀ {p q : ℝ[X]}, Prec p q →
     FullyInterlacingPair p.coeff q.coeff
 
-/-- Polynomial-to-lace interface in the AESW/Pólya-frequency regime used by
-Athanasiadis--Wagner. -/
+/-- Candidate polynomial-to-lace interface in the AESW/Pólya-frequency regime
+used by Athanasiadis--Wagner.
+
+This statement is also false for the current row orientation; see
+`not_pfPrecToFullyInterlacingPairStatement` below. -/
 def PfPrecToFullyInterlacingPairStatement : Prop :=
   ∀ {p q : ℝ[X]},
     IsPolyaFreqSeq p.coeff →
@@ -573,15 +576,43 @@ def PfPrecToFullyInterlacingPairStatement : Prop :=
     Prec p q →
     FullyInterlacingPair p.coeff q.coeff
 
-/-- Polynomial-to-lace interface in the real-rooted, nonnegative-coefficient
-regime.  The reverse ASW theorem reduces this to
-`PfPrecToFullyInterlacingPairStatement`. -/
+/-- Candidate polynomial-to-lace interface in the real-rooted,
+nonnegative-coefficient regime.
+
+This statement is false for the current row orientation; see
+`not_nonnegPrecToFullyInterlacingPairStatement` below. -/
 def NonnegPrecToFullyInterlacingPairStatement : Prop :=
   ∀ {p q : ℝ[X]},
     HasNonnegCoeffs p →
     HasNonnegCoeffs q →
     Prec p q →
     FullyInterlacingPair p.coeff q.coeff
+
+/-- The linear pair `X + 2`, `X + 1` violates the current Lace orientation:
+the minor on rows `2, 3` and columns `0, 1` has determinant `-1`. -/
+private theorem not_fullyInterlacingPair_X_add_C_two_one :
+    ¬ FullyInterlacingPair (X + C (2 : ℝ)).coeff (X + C (1 : ℝ)).coeff := by
+  intro hfull
+  have hminor := hfull (rows := ![2, 3]) (cols := ![0, 1]) (by decide) (by decide)
+  norm_num [FullyInterlacingPair, lacePair, toeplitz, Matrix.det_fin_two,
+    Polynomial.coeff_add, Polynomial.coeff_X, Polynomial.coeff_C, Polynomial.coeff_one]
+    at hminor
+
+private theorem prec_X_add_C_two_one : Prec (X + C (2 : ℝ)) (X + C (1 : ℝ)) := by
+  rw [prec_X_add_C_iff]
+  norm_num
+
+/-- `NonnegPrecToFullyInterlacingPairStatement` is false as stated. -/
+theorem not_nonnegPrecToFullyInterlacingPairStatement :
+    ¬ NonnegPrecToFullyInterlacingPairStatement := by
+  intro h
+  have hpnn : HasNonnegCoeffs (X + C (2 : ℝ)) :=
+    hasNonnegCoeffs_X_add_C (by norm_num)
+  have hqnn : HasNonnegCoeffs (X + C (1 : ℝ)) :=
+    hasNonnegCoeffs_X_add_C (by norm_num)
+  exact not_fullyInterlacingPair_X_add_C_two_one
+    (h (p := X + C (2 : ℝ)) (q := X + C (1 : ℝ)) hpnn hqnn
+      prec_X_add_C_two_one)
 
 /-- Hermite--Biehler/Hurwitz bridge target for producing the polynomial
 `q(x^2) + x p(x^2)` from an AESW interlacing pair. -/
@@ -643,6 +674,18 @@ theorem nonnegPrecToFullyInterlacingPair_of_pfPrec
     (aissenSchoenbergWhitney_reverse hpnn hpq.1.2 (roots_nonpos_of_nonneg_coeffs hpq.1.2 hpnn))
     (aissenSchoenbergWhitney_reverse hqnn hpq.2.1.2 (roots_nonpos_of_nonneg_coeffs hpq.2.1.2 hqnn))
     hpq
+
+/-- `PrecToFullyInterlacingPairStatement` is false as stated. -/
+theorem not_precToFullyInterlacingPairStatement :
+    ¬ PrecToFullyInterlacingPairStatement := by
+  exact fun h => not_nonnegPrecToFullyInterlacingPairStatement
+    (nonnegPrecToFullyInterlacingPair_of_precToFully h)
+
+/-- `PfPrecToFullyInterlacingPairStatement` is false as stated. -/
+theorem not_pfPrecToFullyInterlacingPairStatement :
+    ¬ PfPrecToFullyInterlacingPairStatement := by
+  exact fun h => not_nonnegPrecToFullyInterlacingPairStatement
+    (nonnegPrecToFullyInterlacingPair_of_pfPrec h)
 
 /-- Positive-leading-coefficient form used when zero coefficients are ruled out
 explicitly. -/
