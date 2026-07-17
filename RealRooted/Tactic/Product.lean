@@ -445,9 +445,9 @@ theorem prec_endpoint_sum_then_X_step {a b : ℝ[X]}
     (hcop : IsCoprime b (X * (a + b))) :
     Prec (a + b) (b + X * (a + b)) := by
   have ha_pos : HasPosLeadingCoeff a :=
-    ha_nonneg.pos_leadingCoeff hab.1.1
+    ha_nonneg.pos_leadingCoeff (left_ne_zero_of_prec hab)
   have hb_pos : HasPosLeadingCoeff b :=
-    hb_nonneg.pos_leadingCoeff hab.2.1.1
+    hb_nonneg.pos_leadingCoeff (right_ne_zero_of_prec hab)
   have hsum_prec_raw : Prec (C (1 : ℝ) * a + C (1 : ℝ) * b) b :=
     prec_nonneg_combo_right hab ha_pos hb_pos zero_le_one zero_le_one (Or.inl zero_lt_one)
   have hsum_prec : Prec (a + b) b := by
@@ -455,10 +455,11 @@ theorem prec_endpoint_sum_then_X_step {a b : ℝ[X]}
   have hsum_nonneg : HasNonnegCoeffs (a + b) :=
     ha_nonneg.add hb_nonneg
   have hsum_pos : HasPosLeadingCoeff (a + b) :=
-    hsum_nonneg.pos_leadingCoeff hsum_prec.1.1
+    hsum_nonneg.pos_leadingCoeff (left_ne_zero_of_prec hsum_prec)
   have hXsum_prec : Prec (a + b) (X * (a + b)) :=
     prec_mul_X_of_prec_of_nonneg
-      (prec_refl hsum_prec.1.1 hsum_prec.1.2) hsum_nonneg hsum_nonneg
+      (prec_refl (left_ne_zero_of_prec hsum_prec) (left_splits_of_prec hsum_prec))
+      hsum_nonneg hsum_nonneg
   have hXsum_pos : HasPosLeadingCoeff (X * (a + b)) :=
     hsum_pos.X_mul
   have hcombo : PosComboRealRooted b (X * (a + b)) :=
@@ -478,11 +479,13 @@ theorem prec_endpoint_X_then_sum_step {a b : ℝ[X]}
     (hcop : IsCoprime b (X * a)) :
     Prec (a + (b + X * a)) (b + X * a) := by
   have ha_pos : HasPosLeadingCoeff a :=
-    ha_nonneg.pos_leadingCoeff hab.1.1
+    ha_nonneg.pos_leadingCoeff (left_ne_zero_of_prec hab)
   have hb_pos : HasPosLeadingCoeff b :=
-    hb_nonneg.pos_leadingCoeff hab.2.1.1
+    hb_nonneg.pos_leadingCoeff (right_ne_zero_of_prec hab)
   have hXa_prec : Prec a (X * a) :=
-    prec_mul_X_of_prec_of_nonneg (prec_refl hab.1.1 hab.1.2) ha_nonneg ha_nonneg
+    prec_mul_X_of_prec_of_nonneg
+      (prec_refl (left_ne_zero_of_prec hab) (left_splits_of_prec hab))
+      ha_nonneg ha_nonneg
   have hXa_pos : HasPosLeadingCoeff (X * a) :=
     ha_pos.X_mul
   have hcombo : PosComboRealRooted b (X * a) :=
@@ -494,7 +497,7 @@ theorem prec_endpoint_X_then_sum_step {a b : ℝ[X]}
   have hsum_nonneg : HasNonnegCoeffs (b + X * a) :=
     hb_nonneg.add ha_nonneg.X_mul
   have hsum_pos : HasPosLeadingCoeff (b + X * a) :=
-    hsum_nonneg.pos_leadingCoeff ha_sum_prec.2.1.1
+    hsum_nonneg.pos_leadingCoeff (right_ne_zero_of_prec ha_sum_prec)
   have hnext_raw :
       Prec (C (1 : ℝ) * a + C (1 : ℝ) * (b + X * a)) (b + X * a) :=
     prec_nonneg_combo_right ha_sum_prec ha_pos hsum_pos
@@ -630,7 +633,9 @@ theorem isRealRooted_of_endpoint_sum_then_X_pair_lift_sequence
     have hrow :
         (X + C t) ^ (mA n) * A n ≠ 0 ∧
           ((X + C t) ^ (mA n) * A n).Splits :=
-      isRealRooted_mul hfactor.1 hfactor.2 (hquot n).1.1 (hquot n).1.2
+      isRealRooted_mul hfactor.1 hfactor.2
+        (left_ne_zero_of_isRealRooted_pair_sequence hquot n)
+        (left_splits_of_isRealRooted_pair_sequence hquot n)
     simpa [hrowA n] using hrow
   have hodd : ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
     intro n
@@ -639,7 +644,9 @@ theorem isRealRooted_of_endpoint_sum_then_X_pair_lift_sequence
     have hrow :
         (X + C t) ^ (mB n) * B n ≠ 0 ∧
           ((X + C t) ^ (mB n) * B n).Splits :=
-      isRealRooted_mul hfactor.1 hfactor.2 (hquot n).2.1 (hquot n).2.2
+      isRealRooted_mul hfactor.1 hfactor.2
+        (right_ne_zero_of_isRealRooted_pair_sequence hquot n)
+        (right_splits_of_isRealRooted_pair_sequence hquot n)
     simpa [hrowB n] using hrow
   intro n
   rcases Nat.mod_two_eq_zero_or_one n with hmod | hmod
@@ -676,7 +683,9 @@ theorem isRealRooted_of_endpoint_X_then_sum_pair_lift_sequence
     have hrow :
         (X + C t) ^ (mA n) * A n ≠ 0 ∧
           ((X + C t) ^ (mA n) * A n).Splits :=
-      isRealRooted_mul hfactor.1 hfactor.2 (hquot n).1.1 (hquot n).1.2
+      isRealRooted_mul hfactor.1 hfactor.2
+        (left_ne_zero_of_isRealRooted_pair_sequence hquot n)
+        (left_splits_of_isRealRooted_pair_sequence hquot n)
     simpa [hrowA n] using hrow
   have hodd : ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
     intro n
@@ -685,7 +694,9 @@ theorem isRealRooted_of_endpoint_X_then_sum_pair_lift_sequence
     have hrow :
         (X + C t) ^ (mB n) * B n ≠ 0 ∧
           ((X + C t) ^ (mB n) * B n).Splits :=
-      isRealRooted_mul hfactor.1 hfactor.2 (hquot n).2.1 (hquot n).2.2
+      isRealRooted_mul hfactor.1 hfactor.2
+        (right_ne_zero_of_isRealRooted_pair_sequence hquot n)
+        (right_splits_of_isRealRooted_pair_sequence hquot n)
     simpa [hrowB n] using hrow
   intro n
   rcases Nat.mod_two_eq_zero_or_one n with hmod | hmod
@@ -727,7 +738,9 @@ theorem isRealRooted_of_endpoint_X_then_sum_pair_lift_swapped_sequence
     have hrow :
         (X + C t) ^ (mB n) * B n ≠ 0 ∧
           ((X + C t) ^ (mB n) * B n).Splits :=
-      isRealRooted_mul hfactor.1 hfactor.2 (hquot n).2.1 (hquot n).2.2
+      isRealRooted_mul hfactor.1 hfactor.2
+        (right_ne_zero_of_isRealRooted_pair_sequence hquot n)
+        (right_splits_of_isRealRooted_pair_sequence hquot n)
     simpa [hrowB n] using hrow
   have hodd : ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
     intro n
@@ -736,7 +749,9 @@ theorem isRealRooted_of_endpoint_X_then_sum_pair_lift_swapped_sequence
     have hrow :
         (X + C t) ^ (mA n) * A n ≠ 0 ∧
           ((X + C t) ^ (mA n) * A n).Splits :=
-      isRealRooted_mul hfactor.1 hfactor.2 (hquot n).1.1 (hquot n).1.2
+      isRealRooted_mul hfactor.1 hfactor.2
+        (left_ne_zero_of_isRealRooted_pair_sequence hquot n)
+        (left_splits_of_isRealRooted_pair_sequence hquot n)
     simpa [hrowA n] using hrow
   intro n
   rcases Nat.mod_two_eq_zero_or_one n with hmod | hmod
