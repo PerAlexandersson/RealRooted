@@ -290,6 +290,25 @@ example {f g a : ℝ[X]}
     degree_upper := hdeg_hi,
     no_common_roots := hno
 
+/-- Explicit unit-`X` one-step alias for positive lags. -/
+example {f g a : ℝ[X]}
+    (hgf : Interlaces g f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hf_roots : ∀ r, f.IsRoot r → r ≤ 0)
+    (hF_pos : HasPosLeadingCoeff (a * f + X * g))
+    (hdeg_lo : f.natDegree ≤ (a * f + X * g).natDegree)
+    (hdeg_hi : (a * f + X * g).natDegree ≤ f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    Prec f (a * f + X * g) := by
+  rr_lw_positive_X_unit using
+    interlacer := hgf,
+    interlacer_pos_lc := hg_pos,
+    roots_nonpos := hf_roots,
+    target_pos_lc := hF_pos,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi,
+    no_common_roots := hno
+
 /-- Negative-square lag with the global sign certificate handled by `rr_sign`. -/
 example {f g a q : ℝ[X]} {c : ℝ}
     (hgf : Interlaces g f)
@@ -854,6 +873,81 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, (P n).Splits := by
   rr_lw_positive_X_lag_sequence_realrooted using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Strict scalar `c_n t` lag sequence with explicit scalar nonnegativity. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + (C (c n) * X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_positive_t_sequence using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    coeff_nonneg := hc,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Strict scalar `c_n t` lag sequence with automatic scalar nonnegativity. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (C ((n : ℝ) + 1) * X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_positive_t_sequence_auto using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Real-rootedness endpoint for strict scalar `c_n t` lag sequences. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + (C (c n) * X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_lw_positive_t_sequence_realrooted using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    coeff_nonneg := hc,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Automatic real-rootedness endpoint for strict scalar `c_n t` lag
+sequences. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (C ((n : ℝ) + 1) * X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_lw_positive_t_sequence_realrooted_auto using
     base := hbase,
     pos_lc := hpos,
     nonneg_coeffs := hnonneg,
@@ -2420,6 +2514,51 @@ example {f g a q : ℝ[X]}
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
     roots_nonpos := hf_roots,
+    factor_nonneg := hQ,
+    target_pos_lc := hF_pos,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi,
+    no_common_roots := hno
+
+/-- One-step product lag with the root half-line supplied by nonnegative
+coefficients. -/
+example {f g a q : ℝ[X]}
+    (hgf : Interlaces g f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hf_nonneg : HasNonnegCoeffs f)
+    (hQ : ∀ r, f.IsRoot r → 0 ≤ q.eval r)
+    (hF_pos : HasPosLeadingCoeff (a * f + (X * q) * g))
+    (hdeg_lo : f.natDegree ≤ (a * f + (X * q) * g).natDegree)
+    (hdeg_hi : (a * f + (X * q) * g).natDegree ≤ f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    Prec f (a * f + (X * q) * g) := by
+  rr_lw_positive_X_mul_nonneg using
+    interlacer := hgf,
+    interlacer_pos_lc := hg_pos,
+    nonneg_coeffs := hf_nonneg,
+    factor_nonneg := hQ,
+    target_pos_lc := hF_pos,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi,
+    no_common_roots := hno
+
+/-- One-step scalar product lag with explicit scalar nonnegativity. -/
+example {f g a q : ℝ[X]} {c : ℝ}
+    (hgf : Interlaces g f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hf_nonneg : HasNonnegCoeffs f)
+    (hc : 0 ≤ c)
+    (hQ : ∀ r, f.IsRoot r → 0 ≤ q.eval r)
+    (hF_pos : HasPosLeadingCoeff (a * f + (C c * X * q) * g))
+    (hdeg_lo : f.natDegree ≤ (a * f + (C c * X * q) * g).natDegree)
+    (hdeg_hi : (a * f + (C c * X * q) * g).natDegree ≤ f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    Prec f (a * f + (C c * X * q) * g) := by
+  rr_lw_positive_C_mul_X_mul_nonneg using
+    interlacer := hgf,
+    interlacer_pos_lc := hg_pos,
+    nonneg_coeffs := hf_nonneg,
+    coeff_nonneg := hc,
     factor_nonneg := hQ,
     target_pos_lc := hF_pos,
     degree_lower := hdeg_lo,
