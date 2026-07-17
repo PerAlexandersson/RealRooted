@@ -408,6 +408,27 @@ example {f u : ℝ[X]} {c : ℝ}
     source_pos_lc := hf_pos,
     coeff_nonneg := hc
 
+/-- Automatic negative-constant derivative shell for active scalar
+certificates. -/
+example {f u : ℝ[X]}
+    (hf : f.Splits)
+    (hdegf : 2 ≤ f.natDegree)
+    (hdeg_lo :
+      f.natDegree ≤ (u * f + C (-((3 : ℝ) + 1)) * f.derivative).natDegree)
+    (hdeg_hi :
+      (u * f + C (-((3 : ℝ) + 1)) * f.derivative).natDegree ≤
+        f.natDegree + 1)
+    (hF_pos : HasPosLeadingCoeff (u * f + C (-((3 : ℝ) + 1)) * f.derivative))
+    (hf_pos : HasPosLeadingCoeff f) :
+    Prec f (u * f + C (-((3 : ℝ) + 1)) * f.derivative) := by
+  rr_mw_derivative_neg_const_auto using
+    splits := hf,
+    degree_two := hdegf,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi,
+    target_pos_lc := hF_pos,
+    source_pos_lc := hf_pos
+
 example {f u : ℝ[X]} {c : ℝ}
     (hf : f.Splits)
     (hdegf : 2 ≤ f.natDegree)
@@ -1290,6 +1311,67 @@ example {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]}
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi
 
+/-- Denominator-fused generic Ma--Wang shell with nonnegative coefficients. -/
+example {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]} {b c d : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hV : ∀ n : Nat, ∀ r, r ≤ 0 → (V n).eval r ≤ 0)
+    (hden : ∀ n : Nat, d n ≠ 0)
+    (hcoeff : ∀ n : Nat, (d n)⁻¹ * b n = c n)
+    (hraw : ∀ n : Nat,
+      C (d n) * P (n + 2) =
+        C (d n) * (U n * P (n + 1)) +
+          C (b n) * (V n * (P (n + 1)).derivative))
+    (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
+    (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_mw_derivative_nonpos_sequence_den_coeff_nonneg using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    degree_two := hdeg_two,
+    coeff := c,
+    coeff_nonneg := hc,
+    coeff_nonpos_of_nonpos := hV,
+    den_nonzero := hden,
+    coeff_eq := hcoeff,
+    raw_recurrence := hraw,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi
+
+/-- Automatic real-rootedness endpoint for the denominator-fused generic
+Ma--Wang shell. -/
+example {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]} {b d : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
+    (hV : ∀ n : Nat, ∀ r, r ≤ 0 → (V n).eval r ≤ 0)
+    (hden : ∀ n : Nat, d n ≠ 0)
+    (hcoeff : ∀ n : Nat, (d n)⁻¹ * b n = (n : ℝ) + 1)
+    (hraw : ∀ n : Nat,
+      C (d n) * P (n + 2) =
+        C (d n) * (U n * P (n + 1)) +
+          C (b n) * (V n * (P (n + 1)).derivative))
+    (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
+    (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_auto using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    degree_two := hdeg_two,
+    coeff := (fun n : Nat => (n : ℝ) + 1),
+    coeff_nonpos_of_nonpos := hV,
+    den_nonzero := hden,
+    coeff_eq := hcoeff,
+    raw_recurrence := hraw,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi
+
 /-- OEIS Family B shell: `P_{n+2}=U_nP_{n+1}+X Q_n P'_{n+1}`. -/
 example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
@@ -1625,6 +1707,66 @@ example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]}
     degree_two := hdeg_two,
     factor_nonneg := hQ,
     recurrence := hrec,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi
+
+/-- Denominator-fused scalar Family B shell. -/
+example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]} {b c d : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hQ : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ (Q n).eval r)
+    (hden : ∀ n : Nat, d n ≠ 0)
+    (hcoeff : ∀ n : Nat, (d n)⁻¹ * b n = c n)
+    (hraw : ∀ n : Nat,
+      C (d n) * P (n + 2) =
+        C (d n) * (U n * P (n + 1)) +
+          C (b n) * ((X * Q n) * (P (n + 1)).derivative))
+    (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
+    (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_mw_derivative_C_mul_X_mul_sequence_den_coeff_nonneg using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    degree_two := hdeg_two,
+    coeff := c,
+    coeff_nonneg := hc,
+    factor_nonneg := hQ,
+    den_nonzero := hden,
+    coeff_eq := hcoeff,
+    raw_recurrence := hraw,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi
+
+/-- Automatic denominator-fused scalar Family B endpoint. -/
+example {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]} {b d : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
+    (hQ : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ (Q n).eval r)
+    (hden : ∀ n : Nat, d n ≠ 0)
+    (hcoeff : ∀ n : Nat, (d n)⁻¹ * b n = (n : ℝ) + 1)
+    (hraw : ∀ n : Nat,
+      C (d n) * P (n + 2) =
+        C (d n) * (U n * P (n + 1)) +
+          C (b n) * ((X * Q n) * (P (n + 1)).derivative))
+    (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
+    (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_mw_derivative_C_mul_X_mul_sequence_den_coeff_realrooted_nonneg_auto using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    degree_two := hdeg_two,
+    coeff := (fun n : Nat => (n : ℝ) + 1),
+    factor_nonneg := hQ,
+    den_nonzero := hden,
+    coeff_eq := hcoeff,
+    raw_recurrence := hraw,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi
 
