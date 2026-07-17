@@ -332,6 +332,10 @@ macro_rules
         first
           | rr_lookup
           | assumption
+          | exact RealRooted.Prec.toInterlaces (by rr_lookup) (by rr_lookup)
+          | exact RealRooted.Prec.toInterlaces (by rr_lookup) (by
+              symm
+              rr_lookup)
           | rr_sign
           | simp_all [
               RealRooted.Prec,

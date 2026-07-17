@@ -32,9 +32,19 @@ example {f g : ℝ[X]} (hfg : Prec f g)
   rr_interlaces using hfg, hdeg
 
 example {f g : ℝ[X]} (hfg : Prec f g)
+    (hdeg : f.natDegree + 1 = g.natDegree) :
+    Interlaces f g := by
+  rr_finish
+
+example {f g : ℝ[X]} (hfg : Prec f g)
     (hdeg : g.natDegree = f.natDegree + 1) :
     Interlaces f g := by
   rr_interlaces using hfg, hdeg
+
+example {f g : ℝ[X]} (hfg : Prec f g)
+    (hdeg : g.natDegree = f.natDegree + 1) :
+    Interlaces f g := by
+  rr_finish
 
 example {f g : ℝ[X]} (hfg : Prec f g) : Prec0 f g := by
   rr_prec0 using hfg
