@@ -624,18 +624,9 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_bidiagonalOperator_sequence hbase hdeg hpres
-    (fun n =>
-      calc
-        P (n + 1) =
-            secondDerivativeBidiagonalForm
-              (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n) := hrec n
-        _ =
-            bidiagonalOperator
-              (fun k => secondDerivativeQuadraticCoeff (a0 n) (b1 n) (c2 n) k)
-              (fun k => secondDerivativeQuadraticCoeff (a1 n) (b2 n) (c3 n) k)
-              (P n) :=
-            secondDerivativeBidiagonalForm_eq_bidiagonalOperator
-              (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n))
+    (fun n => (hrec n).trans
+      (secondDerivativeBidiagonalForm_eq_bidiagonalOperator
+        (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)))
 
 /-- Sequence wrapper for second-derivative recurrences whose preserver is
 stated using named coefficient-bidiagonal functions. -/
@@ -697,18 +688,9 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_jensenPenci
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_bidiagonalOperator_sequence_of_jensenPencil_from
     hbackend N hbase hdeg hcert
-    (fun n hn =>
-      calc
-        P (n + 1) =
-            secondDerivativeBidiagonalForm
-              (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n) := hrec n hn
-        _ =
-            bidiagonalOperator
-              (fun k => secondDerivativeQuadraticCoeff (a0 n) (b1 n) (c2 n) k)
-              (fun k => secondDerivativeQuadraticCoeff (a1 n) (b2 n) (c3 n) k)
-              (P n) :=
-            secondDerivativeBidiagonalForm_eq_bidiagonalOperator
-              (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n))
+    (fun n hn => (hrec n hn).trans
+      (secondDerivativeBidiagonalForm_eq_bidiagonalOperator
+        (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)))
 
 /-- Sequence wrapper for second-derivative recurrences whose Jensen
 certificates are attached to named coefficient-bidiagonal functions. -/
@@ -819,18 +801,9 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_f
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidualCertificate_from
     hbackend N hbase hdeg hcert
-    (fun n hn =>
-      calc
-        P (n + 1) =
-            secondDerivativeBidiagonalForm
-              (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n) := hrec n hn
-        _ =
-            bidiagonalOperator
-              (fun k => secondDerivativeQuadraticCoeff (a0 n) (b1 n) (c2 n) k)
-              (fun k => secondDerivativeQuadraticCoeff (a1 n) (b2 n) (c3 n) k)
-              (P n) :=
-            secondDerivativeBidiagonalForm_eq_bidiagonalOperator
-              (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n))
+    (fun n hn => (hrec n hn).trans
+      (secondDerivativeBidiagonalForm_eq_bidiagonalOperator
+        (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)))
 
 /-- Sequence wrapper for second-derivative recurrences whose certificate is
 stated using named coefficient-bidiagonal functions.
@@ -980,18 +953,9 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidu
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidual
     hbackend hbase hdeg halpha hbeta hpencil hA hB hS
-    (fun n =>
-      calc
-        P (n + 1) =
-            secondDerivativeBidiagonalForm
-              (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n) := hrec n
-        _ =
-            bidiagonalOperator
-              (fun k => secondDerivativeQuadraticCoeff (a0 n) (b1 n) (c2 n) k)
-              (fun k => secondDerivativeQuadraticCoeff (a1 n) (b2 n) (c3 n) k)
-              (P n) :=
-            secondDerivativeBidiagonalForm_eq_bidiagonalOperator
-              (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n))
+    (fun n => (hrec n).trans
+      (secondDerivativeBidiagonalForm_eq_bidiagonalOperator
+        (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)))
 
 /-- Second-derivative sequence wrapper whose residual pencil is derived from
 the endpoint factorizations as `A n + C lam * B n`. -/
