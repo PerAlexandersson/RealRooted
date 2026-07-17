@@ -546,6 +546,66 @@ example {P : Nat → ℝ[X]} {t : Nat → ℝ}
     base := hbase,
     recurrence := hrec
 
+/-- Product recurrence with powers of the root-at-zero factor. -/
+example {P : Nat → ℝ[X]} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = X ^ (m n) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_X_pow_sequence using
+    base := hbase,
+    recurrence := hrec
+
+/-- Powered unit-slope recurrences accept the factor on the right. -/
+example {P : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = P n * (X + C (t n)) ^ (m n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_X_add_C_pow_sequence using
+    base := hbase,
+    recurrence := hrec
+
+/-- Product recurrence with nonzero scalar-power factors. -/
+example {P : Nat → ℝ[X]} {c : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hrec : ∀ n : Nat, P (n + 1) = (C (c n) : ℝ[X]) ^ (m n) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_C_pow_sequence using
+    base := hbase,
+    scalar_ne := hc,
+    recurrence := hrec
+
+/-- Positive scalar-power factors can be certified automatically. -/
+example {P : Nat → ℝ[X]} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = P n * (C ((n : ℝ) + 1) : ℝ[X]) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_C_pow_sequence_auto using
+    base := hbase,
+    recurrence := hrec
+
+/-- Product recurrence with powered affine factors. -/
+example {P : Nat → ℝ[X]} {s t : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hs : ∀ n : Nat, s n ≠ 0)
+    (hrec :
+      ∀ n : Nat, P (n + 1) = (C (s n) * X + C (t n)) ^ (m n) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_affine_pow_sequence using
+    base := hbase,
+    slope_ne := hs,
+    recurrence := hrec
+
+/-- Report-order powered affine recurrences also have an auto-positive form. -/
+example {P : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat,
+      P (n + 1) = P n * (C (t n) + C ((n : ℝ) + 1) * X) ^ (m n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_const_first_affine_pow_sequence_auto using
+    base := hbase,
+    recurrence := hrec
+
 /-- Sequence-level scalar product recurrence. -/
 example {P : Nat → ℝ[X]} {a : Nat → ℝ}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
