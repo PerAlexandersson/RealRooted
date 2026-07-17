@@ -14,6 +14,15 @@ noncomputable section
 namespace RealRooted
 namespace Tactic
 
+example {c : ℝ} (hc : 0 < c) : 0 < c := by
+  rr_wagner_pos
+
+example {n : Nat} : 0 < (n : ℝ) + 1 := by
+  rr_wagner_pos
+
+example {n : Nat} (hn : 0 < n) : 0 < (n : ℝ) := by
+  rr_wagner_pos
+
 example {f g : ℝ[X]}
     (hfg : Prec f g)
     (hfnn : HasNonnegCoeffs f)
@@ -373,8 +382,8 @@ example {P : Nat → ℝ[X]}
     base := hbase,
     nonneg_coeffs := hnonneg,
     degree_two := hdeg,
-    lag_coeff_pos := fun _ => by positivity,
-    derivative_coeff_pos := fun _ => by positivity,
+    lag_coeff_pos := fun _ => by rr_wagner_pos,
+    derivative_coeff_pos := fun _ => by rr_wagner_pos,
     recurrence := hrec
 
 /-- `A358623`, active offset: the recurrence
@@ -407,8 +416,8 @@ theorem a358623_activeOffset_prec {P : Nat → ℝ[X]}
       base := hQbase,
       nonneg_coeffs := hQnonneg,
       degree_two := hQdeg,
-      lag_coeff_pos := fun _ => by positivity,
-      derivative_coeff_pos := fun _ => by positivity,
+      lag_coeff_pos := fun _ => by rr_wagner_pos,
+      derivative_coeff_pos := fun _ => by rr_wagner_pos,
       recurrence := hQrec
   intro n
   simpa [Q] using hQprec n
@@ -442,8 +451,8 @@ theorem a358623_activeOffset_realRooted {P : Nat → ℝ[X]}
       base := hQbase,
       nonneg_coeffs := hQnonneg,
       degree_two := hQdeg,
-      lag_coeff_pos := fun _ => by positivity,
-      derivative_coeff_pos := fun _ => by positivity,
+      lag_coeff_pos := fun _ => by rr_wagner_pos,
+      derivative_coeff_pos := fun _ => by rr_wagner_pos,
       recurrence := hQrec
   intro n
   simpa [Q] using hQrr n
@@ -545,8 +554,8 @@ theorem a358623Shifted_prec :
     base := a358623Shifted_base,
     nonneg_coeffs := a358623Shifted_nonneg,
     degree_two := a358623Shifted_degree_two_succ,
-    lag_coeff_pos := fun _ => by positivity,
-    derivative_coeff_pos := fun _ => by positivity,
+    lag_coeff_pos := fun _ => by rr_wagner_pos,
+    derivative_coeff_pos := fun _ => by rr_wagner_pos,
     recurrence := a358623Shifted_succ_succ
 
 /-- Real-rootedness of the shifted recurrence-defined `A358623` active family. -/
@@ -556,8 +565,8 @@ theorem a358623Shifted_realRooted :
     base := a358623Shifted_base,
     nonneg_coeffs := a358623Shifted_nonneg,
     degree_two := a358623Shifted_degree_two_succ,
-    lag_coeff_pos := fun _ => by positivity,
-    derivative_coeff_pos := fun _ => by positivity,
+    lag_coeff_pos := fun _ => by rr_wagner_pos,
+    derivative_coeff_pos := fun _ => by rr_wagner_pos,
     recurrence := a358623Shifted_succ_succ
 
 /-- Active-range sequence shell with a positive scalar on the left side. -/
