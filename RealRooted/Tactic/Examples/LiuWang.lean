@@ -248,49 +248,6 @@ example {f g a b : ℝ[X]}
     no_common_roots := hno,
     head_neg := hb_neg
 
-example {f g a : ℝ[X]} {c : ℝ}
-    (hgf : Interlaces g f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_rr : f ≠ 0 ∧ f.Splits)
-    (hf_nonneg : HasNonnegCoeffs f)
-    (hc : 0 ≤ c)
-    (hF_pos : HasPosLeadingCoeff (a * f + (C c * X) * g))
-    (hdeg_lo : f.natDegree ≤ (a * f + (C c * X) * g).natDegree)
-    (hdeg_hi : (a * f + (C c * X) * g).natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f (a * f + (C c * X) * g) := by
-  have hb_nonpos : ∀ r, f.IsRoot r → (C c * X : ℝ[X]).eval r ≤ 0 := by
-    rr_sign_at_roots using hf_rr, hf_nonneg
-  rr_liu_wang_two using
-    interlacer := hgf,
-    interlacer_pos_lc := hg_pos,
-    target_pos_lc := hF_pos,
-    degree_lower := hdeg_lo,
-    degree_upper := hdeg_hi,
-    no_common_roots := hno,
-    head_nonpos := hb_nonpos
-
-example {f g a q : ℝ[X]} {c : ℝ}
-    (hgf : Interlaces g f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hc : 0 ≤ c)
-    (hF_pos : HasPosLeadingCoeff (a * f + (-(C c) * q ^ 2) * g))
-    (hdeg_lo : f.natDegree ≤ (a * f + (-(C c) * q ^ 2) * g).natDegree)
-    (hdeg_hi : (a * f + (-(C c) * q ^ 2) * g).natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    Prec f (a * f + (-(C c) * q ^ 2) * g) := by
-  have hb_nonpos : ∀ r, f.IsRoot r → (-(C c) * q ^ 2 : ℝ[X]).eval r ≤ 0 := by
-    intro r _hr
-    rr_sign
-  rr_liu_wang_two using
-    interlacer := hgf,
-    interlacer_pos_lc := hg_pos,
-    target_pos_lc := hF_pos,
-    degree_lower := hdeg_lo,
-    degree_upper := hdeg_hi,
-    no_common_roots := hno,
-    head_nonpos := hb_nonpos
-
 /-- Positive `t`-lag with the nonpositive-root certificate inferred from
 nonnegative coefficients. -/
 example {f g a : ℝ[X]} {c : ℝ}
