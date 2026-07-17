@@ -168,6 +168,20 @@ theorem splits_of_isRealRooted_sequence {P : Nat → ℝ[X]}
     ∀ n : Nat, (P n).Splits :=
   fun n => (hP n).2
 
+/-- Project left row-wise real-rootedness from a pair-sequence certificate. -/
+theorem left_isRealRooted_of_isRealRooted_pair_sequence {A B : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    ∀ n : Nat, A n ≠ 0 ∧ (A n).Splits :=
+  fun n => (hP n).1
+
+/-- Project right row-wise real-rootedness from a pair-sequence certificate. -/
+theorem right_isRealRooted_of_isRealRooted_pair_sequence {A B : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    ∀ n : Nat, B n ≠ 0 ∧ (B n).Splits :=
+  fun n => (hP n).2
+
 /-- Project left row-wise nonvanishing from a pair-sequence certificate. -/
 theorem left_ne_zero_of_isRealRooted_pair_sequence {A B : Nat → ℝ[X]}
     (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
@@ -311,6 +325,8 @@ macro_rules
       `(tactic|
         first
           | exact $h
+          | exact RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence $h
+          | exact RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence $h
           | exact RealRooted.left_ne_zero_of_isRealRooted_pair_sequence $h
           | exact RealRooted.left_splits_of_isRealRooted_pair_sequence $h
           | exact RealRooted.right_ne_zero_of_isRealRooted_pair_sequence $h
@@ -318,6 +334,8 @@ macro_rules
   | `(tactic| rr_nonzero using $h:term) =>
       `(tactic|
         first
+          | exact RealRooted.left_ne_zero_of_isRealRooted_pair_sequence $h
+          | exact RealRooted.right_ne_zero_of_isRealRooted_pair_sequence $h
           | exact RealRooted.left_ne_zero_of_prec $h
           | exact RealRooted.right_ne_zero_of_prec $h
           | exact RealRooted.right_ne_zero_of_interlaces $h
@@ -329,6 +347,8 @@ macro_rules
       `(tactic|
         first
           | rr_lookup
+          | exact RealRooted.left_ne_zero_of_isRealRooted_pair_sequence (by rr_lookup)
+          | exact RealRooted.right_ne_zero_of_isRealRooted_pair_sequence (by rr_lookup)
           | exact RealRooted.left_ne_zero_of_prec (by rr_lookup)
           | exact RealRooted.right_ne_zero_of_prec (by rr_lookup)
           | exact RealRooted.right_ne_zero_of_interlaces (by rr_lookup)
@@ -338,6 +358,8 @@ macro_rules
   | `(tactic| rr_splits using $h:term) =>
       `(tactic|
         first
+          | exact RealRooted.left_splits_of_isRealRooted_pair_sequence $h
+          | exact RealRooted.right_splits_of_isRealRooted_pair_sequence $h
           | exact RealRooted.left_splits_of_prec $h
           | exact RealRooted.right_splits_of_prec $h
           | exact RealRooted.right_splits_of_interlaces $h
@@ -349,6 +371,8 @@ macro_rules
       `(tactic|
         first
           | rr_lookup
+          | exact RealRooted.left_splits_of_isRealRooted_pair_sequence (by rr_lookup)
+          | exact RealRooted.right_splits_of_isRealRooted_pair_sequence (by rr_lookup)
           | exact RealRooted.left_splits_of_prec (by rr_lookup)
           | exact RealRooted.right_splits_of_prec (by rr_lookup)
           | exact RealRooted.right_splits_of_interlaces (by rr_lookup)
@@ -359,6 +383,8 @@ macro_rules
       `(tactic|
         first
           | exact $h
+          | exact RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence $h
+          | exact RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence $h
           | exact RealRooted.left_isRealRooted_of_prec $h
           | exact RealRooted.right_isRealRooted_of_prec $h
           | exact RealRooted.right_isRealRooted_of_interlaces $h
@@ -369,6 +395,8 @@ macro_rules
       `(tactic|
         first
           | rr_lookup
+          | exact RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence (by rr_lookup)
+          | exact RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence (by rr_lookup)
           | exact RealRooted.left_isRealRooted_of_prec (by rr_lookup)
           | exact RealRooted.right_isRealRooted_of_prec (by rr_lookup)
           | exact RealRooted.right_isRealRooted_of_interlaces (by rr_lookup)
