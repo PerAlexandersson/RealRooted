@@ -212,6 +212,26 @@ example {P Q : Nat → ℝ[X]} {s t : Nat → ℝ} {m : Nat → Nat}
     slope_ne := hs,
     factorization := hrow
 
+/-- Automatic slope certificate for positive row-wise affine-power factors. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat,
+      P n = (C ((n : ℝ) + 1) * X + C (t n)) ^ (m n) * Q n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_affine_pow_sequence_auto using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
+/-- Automatic slope certificate for constant-first affine-power factors. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat,
+      P n = Q n * (C (t n) + C ((n : ℝ) + 1) * X) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_const_first_affine_pow_sequence_auto using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
 /-- Endpoint quotient with `A_{n+1}=A_n+B_n`,
 `B_{n+1}=B_n+X A_{n+1}`. -/
 example {A B : Nat → ℝ[X]}
