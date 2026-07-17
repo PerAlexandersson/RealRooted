@@ -3845,6 +3845,29 @@ syntax (name :=
     "no_common_roots" ":=" term :
   tactic
 
+syntax (name := rr_lw_one_add_X_one_add_two_X_lag_sequence_interval_named)
+  "rr_lw_one_add_X_one_add_two_X_lag_sequence_interval" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "root_lower" ":=" term ","
+    "root_upper" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name :=
+    rr_lw_one_add_X_one_add_two_X_lag_sequence_realrooted_interval_named)
+  "rr_lw_one_add_X_one_add_two_X_lag_sequence_realrooted_interval" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "root_lower" ":=" term ","
+    "root_upper" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
 syntax (name := rr_lw_C_mul_one_add_X_one_add_two_X_lag_sequence_interval_named)
   "rr_lw_C_mul_one_add_X_one_add_two_X_lag_sequence_interval" " using "
     "base" ":=" term ","
@@ -6333,6 +6356,31 @@ macro_rules
                 $hbase $hpos $hnonneg ?_ $hroot_lower $hrec $hdeg_succ $hno <;>
               intro n <;>
               rr_lw_active_nonneg_at n))
+  | `(tactic|
+      rr_lw_one_add_X_one_add_two_X_lag_sequence_interval using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        root_lower := $hroot_lower:term,
+        root_upper := $hroot_upper:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.prec_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
+          $hbase $hpos $hroot_lower $hroot_upper $hrec $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_one_add_X_one_add_two_X_lag_sequence_realrooted_interval using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        root_lower := $hroot_lower:term,
+        root_upper := $hroot_upper:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_lw_one_add_X_mul_one_add_two_mul_X_lag_sequence
+            $hbase $hpos $hroot_lower $hroot_upper $hrec $hdeg_succ $hno))
   | `(tactic|
       rr_lw_C_mul_one_add_X_one_add_two_X_lag_sequence_interval using
         base := $hbase:term,
