@@ -938,9 +938,16 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
         A n * P (n + 1) + (C (c n) * X * (1 - X) * (1 + X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
-  prec_lw_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
-    hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_nonneg using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    coeff_nonneg := hc,
+    root_lower := hroot_lower,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
 
 /-- Expanded cubic lag `c_n(t-t^3)` uses the same `[-1,0]` window. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
@@ -953,9 +960,16 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
       P (n + 2) = A n * P (n + 1) + (C (c n) * (X - X ^ 3)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_lw_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
-    hbase hpos hnonneg hc hroot_lower hrec hdeg_succ hno
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_realrooted_nonneg using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    coeff_nonneg := hc,
+    root_lower := hroot_lower,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
 
 /-- Narrower Family G7 interval lag:
 `P_{n+2}=A_nP_{n+1}+c_n(1+t)(1+2t)P_n`.
