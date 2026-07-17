@@ -752,10 +752,9 @@ macro_rules
         first
           | exact RealRooted.prec_pos_X_lag_combo_of_prec_nonneg
               $hprec $hfnn $hgnn $ha $hc
-          | refine (by
-              simpa [mul_assoc, add_assoc] using
-                (RealRooted.prec_pos_X_lag_combo_of_prec_nonneg
-                  $hprec $hfnn $hgnn $ha $hc)))
+          | simpa [mul_assoc, add_assoc] using
+              (RealRooted.prec_pos_X_lag_combo_of_prec_nonneg
+                $hprec $hfnn $hgnn $ha $hc))
   | `(tactic|
       rr_prec_pos_X_lag_combo using
         proper := $hprec:term,
@@ -767,10 +766,9 @@ macro_rules
         first
           | exact RealRooted.prec_pos_X_lag_combo_of_prec_nonneg
               $hprec $hfnn $hgnn $ha ($hc).le
-          | refine (by
-              simpa [mul_assoc, add_assoc] using
-                (RealRooted.prec_pos_X_lag_combo_of_prec_nonneg
-                  $hprec $hfnn $hgnn $ha ($hc).le)))
+          | simpa [mul_assoc, add_assoc] using
+              (RealRooted.prec_pos_X_lag_combo_of_prec_nonneg
+                $hprec $hfnn $hgnn $ha ($hc).le))
   | `(tactic|
       rr_prec_pos_X_lag_sequence using
         base := $hbase:term,
