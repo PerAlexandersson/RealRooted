@@ -3304,9 +3304,9 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        exact
-          RealRooted.isRealRooted_of_mw_derivative_one_add_X_mul_one_add_two_mul_X_sequence
-            $hbase $hpos $hdeg_two $hroot_lo $hroot_hi $hrec $hdeg_lo $hdeg_hi)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_mw_derivative_one_add_X_mul_one_add_two_mul_X_sequence
+            $hbase $hpos $hdeg_two $hroot_lo $hroot_hi $hrec $hdeg_lo $hdeg_hi))
   | `(tactic|
       rr_mw_derivative_neg_const using
         splits := $hf:term,
@@ -3733,9 +3733,9 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        exact
-          RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg $hdeg_two $hV $hrec $hdeg_lo $hdeg_hi)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence_of_nonneg_coeffs
+            $hbase $hpos $hnonneg $hdeg_two $hV $hrec $hdeg_lo $hdeg_hi))
   | `(tactic|
       rr_mw_derivative_nonpos_nonneg_sequence_sign_auto using
         base := $hbase:term,
@@ -3759,9 +3759,10 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence_of_nonneg_coeffs
-          $hbase $hpos $hnonneg $hdeg_two
-          (by intro n r hr; rr_sign) $hrec $hdeg_lo $hdeg_hi)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence_of_nonneg_coeffs
+            $hbase $hpos $hnonneg $hdeg_two
+            (by intro n r hr; rr_sign) $hrec $hdeg_lo $hdeg_hi))
   | `(tactic|
       rr_mw_lw_derivative_lag_sequence_sign_auto using
         base := $hbase:term,
@@ -3788,12 +3789,12 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact
-          RealRooted.isRealRooted_of_mw_lw_derivative_lag_sequence_of_nonneg_coeffs_on_roots
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_mw_lw_derivative_lag_sequence_of_nonneg_coeffs_on_roots
             $hbase $hpos $hnonneg $hdeg_two $hrec
             (by intro n r hr hroot_nonpos; rr_sign)
             (by intro n r hr hroot_nonpos; rr_sign)
-            $hdeg_succ $hno)
+            $hdeg_succ $hno))
   | `(tactic|
       rr_mw_lw_derivative_lag_sequence_window_sign_auto using
         base := $hbase:term,
@@ -3828,8 +3829,8 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact
-          RealRooted.isRealRooted_of_mw_lw_derivative_lag_sequence_of_root_window
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_mw_lw_derivative_lag_sequence_of_root_window
             $hbase $hpos $hdeg_two $hrec $hroot_lower $hroot_upper
             (by
               intro n r hr hroot_window_lower hroot_window_upper
@@ -3839,7 +3840,7 @@ macro_rules
               intro n r hr hroot_window_lower hroot_window_upper
               rr_mw_root_window_linear_facts
               rr_sign)
-            $hdeg_succ $hno)
+            $hdeg_succ $hno))
   | `(tactic|
       rr_mw_lw_derivative_lag_sequence_den_coeff_sign_auto using
         base := $hbase:term,
@@ -3894,8 +3895,8 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact
-          RealRooted.isRealRooted_of_mw_lw_derivative_lag_sequence_den_coeff_of_nonneg_coeffs
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_mw_lw_derivative_lag_sequence_den_coeff_of_nonneg_coeffs
             (V := $V) (W := $W) (b := $b) (c := $cV) (e := $e) (a := $cW)
             (d := $d)
             $hbase $hpos $hnonneg $hdeg_two
@@ -3907,7 +3908,7 @@ macro_rules
             (by
               intro n
               simpa [add_comm, add_left_comm, add_assoc] using $hraw n)
-            $hdeg_succ $hno)
+            $hdeg_succ $hno))
   | `(tactic|
       rr_mw_lw_derivative_lag_sequence_den_coeff_window_sign_auto using
         base := $hbase:term,
@@ -3971,8 +3972,8 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact
-          RealRooted.isRealRooted_of_mw_lw_derivative_lag_sequence_den_coeff_of_root_window
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_mw_lw_derivative_lag_sequence_den_coeff_of_root_window
             (V := $V) (W := $W) (b := $b) (c := $cV) (e := $e) (a := $cW)
             (d := $d)
             $hbase $hpos $hdeg_two
@@ -3991,7 +3992,7 @@ macro_rules
             (by
               intro n
               simpa [add_comm, add_left_comm, add_assoc] using $hraw n)
-            $hdeg_succ $hno)
+            $hdeg_succ $hno))
   | `(tactic|
       rr_mw_derivative_nonpos_sequence_den_coeff_nonneg using
         base := $hbase:term,
@@ -4091,10 +4092,10 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        exact
-          RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
             (c := $c) $hbase $hpos $hnonneg $hdeg_two $hc $hV $hden $hcoeff
-            $hraw $hdeg_lo $hdeg_hi)
+            $hraw $hdeg_lo $hdeg_hi))
   | `(tactic|
       rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_auto using
         base := $hbase:term,
@@ -4109,11 +4110,13 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        refine
-          RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
-            (c := $c) $hbase $hpos $hnonneg $hdeg_two ?_ $hV $hden $hcoeff
-            $hraw $hdeg_lo $hdeg_hi
-          <;> intro n <;> rr_mw_active_nonneg_at n)
+        rr_exact_realrooted_sequence_or_projection
+          (by
+            refine
+              RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
+                (c := $c) $hbase $hpos $hnonneg $hdeg_two ?_ $hV $hden $hcoeff
+                $hraw $hdeg_lo $hdeg_hi
+              <;> intro n <;> rr_mw_active_nonneg_at n))
   | `(tactic|
       rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto using
         base := $hbase:term,
@@ -4127,12 +4130,12 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        exact
-          RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
             (c := $c) $hbase $hpos $hnonneg $hdeg_two
             (by intro n; rr_mw_active_nonneg_at n)
             (by intro n r hr; rr_sign)
-            $hden $hcoeff $hraw $hdeg_lo $hdeg_hi)
+            $hden $hcoeff $hraw $hdeg_lo $hdeg_hi))
   | `(tactic|
       rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto_split using
         base := $hbase:term,
@@ -4149,8 +4152,8 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        exact
-          RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
             (V := $V) (b := $b) (c := $c) (d := $d)
             $hbase $hpos $hnonneg $hdeg_two
             (by intro n; rr_mw_active_nonneg_at n)
@@ -4159,7 +4162,7 @@ macro_rules
             (by
               intro n
               simpa [add_comm, add_left_comm, add_assoc] using $hraw n)
-            $hdeg_lo $hdeg_hi)
+            $hdeg_lo $hdeg_hi))
   | `(tactic|
       rr_mw_derivative_nonpos_nonneg_sequence_on_roots using
         base := $hbase:term,
@@ -4185,9 +4188,9 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        exact
-          RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
-            $hbase $hpos $hnonneg $hdeg_two $hV $hrec $hdeg_lo $hdeg_hi)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
+            $hbase $hpos $hnonneg $hdeg_two $hV $hrec $hdeg_lo $hdeg_hi))
   | `(tactic|
       rr_mw_derivative_X_mul_sequence_nonneg using
         base := $hbase:term,
@@ -4212,8 +4215,9 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_mw_derivative_X_mul_sequence_of_nonneg_coeffs
-          $hbase $hpos $hnonneg $hdeg_two $hQ $hrec $hdeg_lo $hdeg_hi)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_mw_derivative_X_mul_sequence_of_nonneg_coeffs
+            $hbase $hpos $hnonneg $hdeg_two $hQ $hrec $hdeg_lo $hdeg_hi))
   | `(tactic|
       rr_mw_derivative_X_sequence_nonneg using
         base := $hbase:term,
@@ -4236,8 +4240,9 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_mw_derivative_X_sequence_of_nonneg_coeffs
-          $hbase $hpos $hnonneg $hdeg_two $hrec $hdeg_lo $hdeg_hi)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_mw_derivative_X_sequence_of_nonneg_coeffs
+            $hbase $hpos $hnonneg $hdeg_two $hrec $hdeg_lo $hdeg_hi))
   | `(tactic|
       rr_mw_derivative_C_mul_X_sequence_nonneg using
         base := $hbase:term,
@@ -4275,8 +4280,9 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_mw_derivative_C_mul_X_sequence_of_nonneg_coeffs
-          $hbase $hpos $hnonneg $hdeg_two $hc $hrec $hdeg_lo $hdeg_hi)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_mw_derivative_C_mul_X_sequence_of_nonneg_coeffs
+            $hbase $hpos $hnonneg $hdeg_two $hc $hrec $hdeg_lo $hdeg_hi))
   | `(tactic|
       rr_mw_derivative_C_mul_X_sequence_realrooted_nonneg_auto using
         base := $hbase:term,
@@ -4287,9 +4293,11 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        refine RealRooted.isRealRooted_of_mw_derivative_C_mul_X_sequence_of_nonneg_coeffs
-          $hbase $hpos $hnonneg $hdeg_two ?_ $hrec $hdeg_lo $hdeg_hi
-          <;> intro n <;> rr_mw_active_nonneg_at n)
+        rr_exact_realrooted_sequence_or_projection
+          (by
+            refine RealRooted.isRealRooted_of_mw_derivative_C_mul_X_sequence_of_nonneg_coeffs
+              $hbase $hpos $hnonneg $hdeg_two ?_ $hrec $hdeg_lo $hdeg_hi
+              <;> intro n <;> rr_mw_active_nonneg_at n))
   | `(tactic|
       rr_mw_derivative_C_mul_X_mul_sequence_nonneg using
         base := $hbase:term,
@@ -4330,9 +4338,9 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        exact
-          RealRooted.isRealRooted_of_mw_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg $hdeg_two $hc $hQ $hrec $hdeg_lo $hdeg_hi)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_mw_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
+            $hbase $hpos $hnonneg $hdeg_two $hc $hQ $hrec $hdeg_lo $hdeg_hi))
   | `(tactic|
       rr_mw_derivative_C_mul_X_mul_sequence_realrooted_nonneg_auto using
         base := $hbase:term,
@@ -4344,10 +4352,12 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        refine
-          RealRooted.isRealRooted_of_mw_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg $hdeg_two ?_ $hQ $hrec $hdeg_lo $hdeg_hi
-          <;> intro n <;> rr_mw_active_nonneg_at n)
+        rr_exact_realrooted_sequence_or_projection
+          (by
+            refine
+              RealRooted.isRealRooted_of_mw_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
+                $hbase $hpos $hnonneg $hdeg_two ?_ $hQ $hrec $hdeg_lo $hdeg_hi
+              <;> intro n <;> rr_mw_active_nonneg_at n))
   | `(tactic|
       rr_mw_derivative_C_mul_X_mul_sequence_den_coeff_nonneg using
         base := $hbase:term,
@@ -4401,10 +4411,10 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        exact
-          RealRooted.isRealRooted_of_mw_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_coeffs
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_mw_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_coeffs
             (c := $c) $hbase $hpos $hnonneg $hdeg_two $hc $hQ $hden $hcoeff
-            $hraw $hdeg_lo $hdeg_hi)
+            $hraw $hdeg_lo $hdeg_hi))
   | `(tactic|
       rr_mw_derivative_C_mul_X_mul_sequence_den_coeff_realrooted_nonneg_auto using
         base := $hbase:term,
@@ -4419,11 +4429,13 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        refine
-          RealRooted.isRealRooted_of_mw_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_coeffs
-            (c := $c) $hbase $hpos $hnonneg $hdeg_two ?_ $hQ $hden $hcoeff
-            $hraw $hdeg_lo $hdeg_hi
-          <;> intro n <;> rr_mw_active_nonneg_at n)
+        rr_exact_realrooted_sequence_or_projection
+          (by
+            refine
+              isRealRooted_of_mw_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_coeffs
+                (c := $c) $hbase $hpos $hnonneg $hdeg_two ?_ $hQ $hden $hcoeff
+                $hraw $hdeg_lo $hdeg_hi
+              <;> intro n <;> rr_mw_active_nonneg_at n))
   | `(tactic|
       rr_mw_derivative_X_one_add_sequence_nonneg using
         base := $hbase:term,
@@ -4449,9 +4461,9 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        exact
-          RealRooted.isRealRooted_of_mw_derivative_X_mul_one_add_X_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg $hdeg_two $hroot_lower $hrec $hdeg_lo $hdeg_hi)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_mw_derivative_X_mul_one_add_X_sequence_of_nonneg_coeffs
+            $hbase $hpos $hnonneg $hdeg_two $hroot_lower $hrec $hdeg_lo $hdeg_hi))
   | `(tactic|
       rr_mw_derivative_C_mul_X_one_add_X_sequence_nonneg using
         base := $hbase:term,
@@ -4496,10 +4508,10 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        exact
-          RealRooted.isRealRooted_of_mw_derivative_C_mul_X_mul_one_add_X_sequence_of_nonneg_coeffs
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_mw_derivative_C_mul_X_mul_one_add_X_sequence_of_nonneg_coeffs
             $hbase $hpos $hnonneg $hdeg_two $hc $hroot_lower
-            $hrec $hdeg_lo $hdeg_hi)
+            $hrec $hdeg_lo $hdeg_hi))
   | `(tactic|
       rr_mw_derivative_C_mul_X_one_add_X_sequence_realrooted_nonneg_auto using
         base := $hbase:term,
@@ -4511,11 +4523,13 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        refine
-          RealRooted.isRealRooted_of_mw_derivative_C_mul_X_mul_one_add_X_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg $hdeg_two ?_ $hroot_lower
-            $hrec $hdeg_lo $hdeg_hi
-          <;> intro n <;> rr_mw_active_nonneg_at n)
+        rr_exact_realrooted_sequence_or_projection
+          (by
+            refine
+              isRealRooted_of_mw_derivative_C_mul_X_mul_one_add_X_sequence_of_nonneg_coeffs
+                $hbase $hpos $hnonneg $hdeg_two ?_ $hroot_lower
+                $hrec $hdeg_lo $hdeg_hi
+              <;> intro n <;> rr_mw_active_nonneg_at n))
   | `(tactic|
       rr_mw_derivative_neg_X_one_add_outer_sequence using
         base := $hbase:term,
@@ -4553,9 +4567,9 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        exact
-          RealRooted.isRealRooted_of_mw_derivative_neg_C_mul_X_mul_one_add_X_sequence
-            $hbase $hpos $hdeg_two $hc $hroot_upper $hrec $hdeg_lo $hdeg_hi)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_mw_derivative_neg_C_mul_X_mul_one_add_X_sequence
+            $hbase $hpos $hdeg_two $hc $hroot_upper $hrec $hdeg_lo $hdeg_hi))
   | `(tactic|
       rr_mw_derivative_neg_X_one_add_outer_sequence_realrooted_auto using
         base := $hbase:term,
@@ -4566,10 +4580,12 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        refine
-          RealRooted.isRealRooted_of_mw_derivative_neg_C_mul_X_mul_one_add_X_sequence
-            $hbase $hpos $hdeg_two ?_ $hroot_upper $hrec $hdeg_lo $hdeg_hi
-          <;> intro n <;> rr_mw_active_nonneg_at n)
+        rr_exact_realrooted_sequence_or_projection
+          (by
+            refine
+              RealRooted.isRealRooted_of_mw_derivative_neg_C_mul_X_mul_one_add_X_sequence
+                $hbase $hpos $hdeg_two ?_ $hroot_upper $hrec $hdeg_lo $hdeg_hi
+              <;> intro n <;> rr_mw_active_nonneg_at n))
   | `(tactic|
       rr_mw_derivative_C_mul_X_one_sub_X_sequence using
         base := $hbase:term,
@@ -4635,8 +4651,9 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_mw_derivative_C_mul_X_mul_one_sub_X_sequence
-          $hbase $hpos $hdeg_two $hc $hroots $hrec $hdeg_lo $hdeg_hi)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_mw_derivative_C_mul_X_mul_one_sub_X_sequence
+            $hbase $hpos $hdeg_two $hc $hroots $hrec $hdeg_lo $hdeg_hi))
   | `(tactic|
       rr_mw_derivative_C_mul_X_one_sub_X_sequence_realrooted_auto using
         base := $hbase:term,
@@ -4647,9 +4664,11 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        refine RealRooted.isRealRooted_of_mw_derivative_C_mul_X_mul_one_sub_X_sequence
-          $hbase $hpos $hdeg_two ?_ $hroots $hrec $hdeg_lo $hdeg_hi
-          <;> intro n <;> rr_mw_active_nonneg_at n)
+        rr_exact_realrooted_sequence_or_projection
+          (by
+            refine RealRooted.isRealRooted_of_mw_derivative_C_mul_X_mul_one_sub_X_sequence
+              $hbase $hpos $hdeg_two ?_ $hroots $hrec $hdeg_lo $hdeg_hi
+              <;> intro n <;> rr_mw_active_nonneg_at n))
   | `(tactic|
       rr_mw_derivative_C_mul_X_one_sub_X_sequence_realrooted_nonneg using
         base := $hbase:term,
@@ -4661,9 +4680,9 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        exact
-          RealRooted.isRealRooted_of_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg $hdeg_two $hc $hrec $hdeg_lo $hdeg_hi)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs
+            $hbase $hpos $hnonneg $hdeg_two $hc $hrec $hdeg_lo $hdeg_hi))
   | `(tactic|
       rr_mw_derivative_C_mul_X_one_sub_X_sequence_realrooted_nonneg_auto using
         base := $hbase:term,
@@ -4674,10 +4693,12 @@ macro_rules
         degree_lower := $hdeg_lo:term,
         degree_upper := $hdeg_hi:term) =>
       `(tactic|
-        refine
-          RealRooted.isRealRooted_of_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs
-            $hbase $hpos $hnonneg $hdeg_two ?_ $hrec $hdeg_lo $hdeg_hi
-          <;> intro n <;> rr_mw_active_nonneg_at n)
+        rr_exact_realrooted_sequence_or_projection
+          (by
+            refine
+              isRealRooted_of_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs
+                $hbase $hpos $hnonneg $hdeg_two ?_ $hrec $hdeg_lo $hdeg_hi
+              <;> intro n <;> rr_mw_active_nonneg_at n))
 
 end Tactic
 end RealRooted
