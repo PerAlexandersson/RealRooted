@@ -443,6 +443,71 @@ def a036969ResidualBeta : ℝ[X] :=
 def a036969ResidualPencil (d : ℕ) (lam : ℝ) : ℝ[X] :=
   a036969ResidualAlpha d + C lam * X * a036969ResidualBeta
 
+/-- The A036969 alpha residual has nonnegative coefficients. -/
+theorem a036969ResidualAlpha_hasNonnegCoeffs (d : ℕ) :
+    HasNonnegCoeffs (a036969ResidualAlpha d) := by
+  have h0 : HasNonnegCoeffs (1 : ℝ[X]) := hasNonnegCoeffs_one
+  have h1 : HasNonnegCoeffs (C (3 * (d : ℝ) + 2) * X) :=
+    nonnegCoeffs_C_mul (by positivity) hasNonnegCoeffs_X
+  have h2 : HasNonnegCoeffs (C (((d : ℝ) + 1) ^ 2) * X ^ 2) :=
+    nonnegCoeffs_C_mul (by positivity) (hasNonnegCoeffs_X.pow 2)
+  simpa [a036969ResidualAlpha, add_assoc] using h0.add (h1.add h2)
+
+/-- The A036969 alpha residual is at most quadratic. -/
+theorem natDegree_a036969ResidualAlpha_le (d : ℕ) :
+    (a036969ResidualAlpha d).natDegree ≤ 3 := by
+  unfold a036969ResidualAlpha
+  compute_degree
+  norm_num
+
+/-- The A036969 alpha residual has nonnegative cubic discriminant. -/
+theorem cubicDiscr_a036969ResidualAlpha_nonneg (d : ℕ) :
+    0 ≤ cubicDiscr (a036969ResidualAlpha d) := by
+  have hpoly :
+      a036969ResidualAlpha d =
+        C (0 : ℝ) * X ^ 3 +
+          C (((d : ℝ) + 1) ^ 2) * X ^ 2 +
+            C (3 * (d : ℝ) + 2) * X + C (1 : ℝ) := by
+    simp [a036969ResidualAlpha]
+    ring
+  have hdisc :
+      cubicDiscr (a036969ResidualAlpha d) =
+        ((d : ℝ) + 1) ^ 4 * (5 * (d : ℝ) ^ 2 + 4 * (d : ℝ)) := by
+    rw [hpoly, cubicDiscr_of_coeffs]
+    ring
+  rw [hdisc]
+  positivity
+
+/-- Cubic-discriminant certificate for the A036969 alpha residual. -/
+theorem a036969ResidualAlpha_cubicPFDiscriminantCertificate (d : ℕ) :
+    CubicPFDiscriminantCertificate (a036969ResidualAlpha d) :=
+  ⟨a036969ResidualAlpha_hasNonnegCoeffs d,
+    natDegree_a036969ResidualAlpha_le d,
+    cubicDiscr_a036969ResidualAlpha_nonneg d⟩
+
+/-- Cubic-discriminant certificate for the A036969 beta residual. -/
+theorem a036969ResidualBeta_cubicPFDiscriminantCertificate :
+    CubicPFDiscriminantCertificate a036969ResidualBeta := by
+  refine ⟨?_, ?_, ?_⟩
+  · simpa [a036969ResidualBeta] using (isPFPolynomial_X_add_one.pow 2).hasNonnegCoeffs
+  · unfold a036969ResidualBeta
+    compute_degree
+    norm_num
+  · have hdeg : a036969ResidualBeta.natDegree ≤ 3 := by
+      unfold a036969ResidualBeta
+      compute_degree
+      norm_num
+    have hsplit : a036969ResidualBeta.Splits := by
+      have hpf := (isPFPolynomial_X_add_one.pow 2).eq_zero_or_splits
+      rcases hpf with hzero | hsplit
+      · exfalso
+        have hbase : (X + 1 : ℝ[X]) ≠ 0 := by
+          simpa using Polynomial.X_add_C_ne_zero (1 : ℝ)
+        have hpow : (X + 1 : ℝ[X]) ^ 2 ≠ 0 := pow_ne_zero 2 hbase
+        exact hpow hzero
+      · simpa [a036969ResidualBeta] using hsplit
+    exact cubicDiscr_nonneg_of_splits_natDegree_le_three hdeg hsplit
+
 /-- The A036969 differential recurrence normalizes to a coefficient-bidiagonal
 operator with `alpha(k)=(k+1)^2` and `beta(k)=1`. -/
 theorem secondDerivativeBidiagonalForm_a036969 (p : ℝ[X]) :
@@ -1053,9 +1118,9 @@ example
 /-- A036969-shaped recurrence shell.
 
 This example has the actual differential recurrence and actual residual
-polynomials.  The remaining hypotheses are exactly the symbolic
-Jensen-factorization and cubic-discriminant leaves that the Family H paper
-proof or certificate checker should provide. -/
+polynomials.  The alpha and beta endpoint residual certificates are discharged
+below; the remaining hypotheses are the symbolic Jensen factorization and the
+nonnegative pencil residual leaf. -/
 example
     {P : Nat → ℝ[X]} {d m : Nat → ℕ}
     (hbackend : jensenPencilBidiagonalPreserverStatement)
@@ -1070,9 +1135,6 @@ example
     (hpencil : ∀ n : Nat, ∀ lam : ℝ, 0 ≤ lam →
       bidiagonalJensenPencil a036969Alpha a036969Beta (d n) lam =
         ((X + 1 : ℝ[X]) ^ m n) * a036969ResidualPencil (d n) lam)
-    (hA : ∀ n : Nat,
-      CubicPFDiscriminantCertificate (a036969ResidualAlpha (d n)))
-    (hB : CubicPFDiscriminantCertificate a036969ResidualBeta)
     (hS : ∀ n : Nat, ∀ lam : ℝ, 0 ≤ lam →
       CubicPFDiscriminantCertificate (a036969ResidualPencil (d n) lam))
     (hrec : ∀ n : Nat,
@@ -1085,8 +1147,8 @@ example
     alpha_factor := halpha,
     beta_factor := hbeta,
     pencil_factor := hpencil,
-    alpha_cubic := hA,
-    beta_cubic := (fun _ => hB),
+    alpha_cubic := (fun n => a036969ResidualAlpha_cubicPFDiscriminantCertificate (d n)),
+    beta_cubic := (fun _ => a036969ResidualBeta_cubicPFDiscriminantCertificate),
     pencil_cubic := hS,
     normalizer := (fun n => secondDerivativeBidiagonalForm_a036969 (P n)),
     recurrence := hrec
@@ -1105,9 +1167,6 @@ example
     (hpencil : ∀ n : Nat, ∀ lam : ℝ, 0 ≤ lam →
       bidiagonalJensenPencil a036969Alpha a036969Beta (d n) lam =
         ((X + 1 : ℝ[X]) ^ m n) * a036969ResidualPencil (d n) lam)
-    (hA : ∀ n : Nat,
-      CubicPFDiscriminantCertificate (a036969ResidualAlpha (d n)))
-    (hB : CubicPFDiscriminantCertificate a036969ResidualBeta)
     (hS : ∀ n : Nat, ∀ lam : ℝ, 0 ≤ lam →
       CubicPFDiscriminantCertificate (a036969ResidualPencil (d n) lam))
     (hne : ∀ n : Nat, P n ≠ 0)
@@ -1121,8 +1180,8 @@ example
     alpha_factor := halpha,
     beta_factor := hbeta,
     pencil_factor := hpencil,
-    alpha_cubic := hA,
-    beta_cubic := (fun _ => hB),
+    alpha_cubic := (fun n => a036969ResidualAlpha_cubicPFDiscriminantCertificate (d n)),
+    beta_cubic := (fun _ => a036969ResidualBeta_cubicPFDiscriminantCertificate),
     pencil_cubic := hS,
     normalizer := (fun n => secondDerivativeBidiagonalForm_a036969 (P n)),
     recurrence := hrec,
