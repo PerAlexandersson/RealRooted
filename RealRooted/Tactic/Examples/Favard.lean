@@ -189,12 +189,37 @@ example {P : Nat → ℝ[X]}
     base_one := hP1,
     step := hstep
 
+/-- Projection endpoint for the monic Chebyshev Favard wrapper. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = X)
+    (hstep : ∀ n : Nat, P (n + 2) = X * P (n + 1) - P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_favard_const_unit using
+    alpha := 0,
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
 /-- Real-rootedness consequence for the nonmonic `2t` Chebyshev recurrence. -/
 example {P : Nat → ℝ[X]}
     (hP0 : P 0 = 1)
     (hP1 : P 1 = C (2 : ℝ) * X)
     (hstep : ∀ n : Nat, P (n + 2) = (C (2 : ℝ) * X) * P (n + 1) - P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_favard_affine_const_unit using
+    slope := 2,
+    alpha := 0,
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
+/-- Projection endpoint for the nonmonic `2t` Chebyshev recurrence. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = C (2 : ℝ) * X)
+    (hstep : ∀ n : Nat, P (n + 2) = (C (2 : ℝ) * X) * P (n + 1) - P n) :
+    ∀ n : Nat, (P n).Splits := by
   rr_favard_affine_const_unit using
     slope := 2,
     alpha := 0,
@@ -232,6 +257,20 @@ example {P : Nat → ℝ[X]} {n : Nat}
     base_one := hP1,
     step := hstep
 
+/-- Projection endpoint for the parameterized monic Favard wrapper. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = X)
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        (X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) - P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_favard_param_unit using
+    alpha := fun m : Nat => (m : ℝ),
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
 /-- Positive-slope parameterized affine Favard unit-lag shape:
 `P_{n+2}=(s_{n+1}t-α_{n+1})P_{n+1}-P_n`. -/
 example {P : Nat → ℝ[X]}
@@ -243,6 +282,35 @@ example {P : Nat → ℝ[X]}
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
   rr_favard_affine_param_unit using
     slope := fun _ : Nat => (2 : ℝ),
+    alpha := fun m : Nat => (m : ℝ),
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
+/-- Projection endpoint for the affine parameterized Favard wrapper. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = C (2 : ℝ) * X)
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        (C (2 : ℝ) * X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) - P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_favard_affine_param_unit using
+    slope := fun _ : Nat => (2 : ℝ),
+    alpha := fun m : Nat => (m : ℝ),
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
+/-- Projection endpoint for the monic row-sign Favard wrapper. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = -X)
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        (C (((n + 1 : Nat) : ℝ)) - X) * P (n + 1) - P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_favard_param_row_sign_unit using
     alpha := fun m : Nat => (m : ℝ),
     base_zero := hP0,
     base_one := hP1,
