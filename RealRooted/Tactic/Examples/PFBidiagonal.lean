@@ -503,6 +503,13 @@ private theorem X_add_one_pow_eq_pow_sub_two_mul_sq (d : ℕ) (hd : 2 ≤ d) :
   simpa [Nat.sub_add_cancel hd] using
     (pow_add (X + 1 : ℝ[X]) (d - 2) 2)
 
+private theorem natCast_sub_two_add_one_eq_sub_one (d : ℕ) (hd : 2 ≤ d) :
+    ((d - 2 + 1 : ℕ) : ℝ[X]) = (d : ℝ[X]) - 1 := by
+  have hnat : d - 2 + 1 = d - 1 := by lia
+  have hd_one : 1 ≤ d := by lia
+  rw [hnat]
+  norm_num [Nat.cast_sub hd_one]
+
 private theorem oneSequence_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
     X * jensenPolynomial d (fun _ => (1 : ℝ)) =
       ((X + 1 : ℝ[X]) ^ (d - 2)) * a036969ResidualBeta := by
@@ -525,11 +532,7 @@ theorem a036969Alpha_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
     Polynomial.C_eq_natCast, Polynomial.C_1, one_mul, mul_one, add_zero]
   have hd1 : d - 1 = d - 2 + 1 := by lia
   have hd11 : d - 1 - 1 = d - 2 := by lia
-  have hcast_poly : ((d - 2 + 1 : ℕ) : ℝ[X]) = (d : ℝ[X]) - 1 := by
-    have hnat : d - 2 + 1 = d - 1 := by lia
-    have hd_one : 1 ≤ d := by lia
-    rw [hnat]
-    norm_num [Nat.cast_sub hd_one]
+  have hcast_poly := natCast_sub_two_add_one_eq_sub_one d hd
   have hC2 : (C (2 : ℝ) : ℝ[X]) = (2 : ℝ[X]) :=
     Polynomial.C_eq_natCast (R := ℝ) 2
   have hC3 : (C (3 : ℝ) : ℝ[X]) = (3 : ℝ[X]) :=
@@ -838,11 +841,7 @@ theorem a071951Alpha_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
     Polynomial.C_eq_natCast, Polynomial.C_1, one_mul, mul_one, add_zero]
   have hd1 : d - 1 = d - 2 + 1 := by lia
   have hd11 : d - 1 - 1 = d - 2 := by lia
-  have hcast_poly : ((d - 2 + 1 : ℕ) : ℝ[X]) = (d : ℝ[X]) - 1 := by
-    have hnat : d - 2 + 1 = d - 1 := by lia
-    have hd_one : 1 ≤ d := by lia
-    rw [hnat]
-    norm_num [Nat.cast_sub hd_one]
+  have hcast_poly := natCast_sub_two_add_one_eq_sub_one d hd
   have hC2 : (C (2 : ℝ) : ℝ[X]) = (2 : ℝ[X]) :=
     Polynomial.C_eq_natCast (R := ℝ) 2
   have hC3 : (C (3 : ℝ) : ℝ[X]) = (3 : ℝ[X]) :=
@@ -1327,11 +1326,7 @@ theorem a160562Alpha_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
     mul_one, add_zero]
   have hd1 : d - 1 = d - 2 + 1 := by lia
   have hd11 : d - 1 - 1 = d - 2 := by lia
-  have hcast_poly : ((d - 2 + 1 : ℕ) : ℝ[X]) = (d : ℝ[X]) - 1 := by
-    have hnat : d - 2 + 1 = d - 1 := by lia
-    have hd_one : 1 ≤ d := by lia
-    rw [hnat]
-    norm_num [Nat.cast_sub hd_one]
+  have hcast_poly := natCast_sub_two_add_one_eq_sub_one d hd
   have hC2 : (C (2 : ℝ) : ℝ[X]) = (2 : ℝ[X]) :=
     Polynomial.C_eq_natCast (R := ℝ) 2
   have hC4 : (C (4 : ℝ) : ℝ[X]) = (4 : ℝ[X]) :=
@@ -1577,11 +1572,7 @@ theorem a269945Alpha_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
     one_mul, mul_one, add_zero]
   have hd1 : d - 1 = d - 2 + 1 := by lia
   have hd11 : d - 1 - 1 = d - 2 := by lia
-  have hcast_poly : ((d - 2 + 1 : ℕ) : ℝ[X]) = (d : ℝ[X]) - 1 := by
-    have hnat : d - 2 + 1 = d - 1 := by lia
-    have hd_one : 1 ≤ d := by lia
-    rw [hnat]
-    norm_num [Nat.cast_sub hd_one]
+  have hcast_poly := natCast_sub_two_add_one_eq_sub_one d hd
   rw [hd11, hd1]
   rw [pow_add]
   rw [hcast_poly]
