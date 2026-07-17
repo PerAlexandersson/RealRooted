@@ -2524,6 +2524,12 @@ macro "rr_lw_quadratic_discriminant_at " n:term : tactic =>
           sq_nonneg (($n : ℝ) + 2),
           show 0 ≤ ($n : ℝ) by positivity])
 
+macro "rr_lw_negative_quadratic_side_at " n:term : tactic =>
+  `(tactic|
+    first
+      | rr_lw_active_nonneg_at $n
+      | rr_lw_quadratic_discriminant_at $n)
+
 syntax (name := rr_liu_wang)
   "rr_liu_wang" " using " term ", "
     term ", "
@@ -5308,9 +5314,7 @@ macro_rules
         refine RealRooted.prec_lw_negative_quadratic_lag_sequence
           $hbase $hpos ?_ ?_ ?_ $hrec $hdeg_succ $hno <;>
         intro n <;>
-        first
-          | rr_lw_active_nonneg_at n
-          | rr_lw_quadratic_discriminant_at n)
+        rr_lw_negative_quadratic_side_at n)
   | `(tactic|
       rr_lw_negative_quadratic_sequence_realrooted_auto using
         base := $hbase:term,
@@ -5324,9 +5328,7 @@ macro_rules
             refine RealRooted.isRealRooted_of_lw_negative_quadratic_lag_sequence
               $hbase $hpos ?_ ?_ ?_ $hrec $hdeg_succ $hno <;>
             intro n <;>
-            first
-              | rr_lw_active_nonneg_at n
-              | rr_lw_quadratic_discriminant_at n))
+            rr_lw_negative_quadratic_side_at n))
   | `(tactic|
       rr_lw_negative_quadratic_sequence_den_coeff_split using
         base := $hbase:term,
@@ -5381,9 +5383,7 @@ macro_rules
             $hbase $hpos ?_ ?_ ?_ $hden $ha_coeff $hb_coeff $hc_coeff
             $hraw $hdeg_succ $hno <;>
         intro n <;>
-        first
-          | rr_lw_active_nonneg_at n
-          | rr_lw_quadratic_discriminant_at n)
+        rr_lw_negative_quadratic_side_at n)
   | `(tactic|
       rr_lw_negative_quadratic_sequence_den_coeff_realrooted_split using
         base := $hbase:term,
@@ -5440,9 +5440,7 @@ macro_rules
                 $hbase $hpos ?_ ?_ ?_ $hden $ha_coeff $hb_coeff $hc_coeff
                 $hraw $hdeg_succ $hno <;>
             intro n <;>
-            first
-              | rr_lw_active_nonneg_at n
-              | rr_lw_quadratic_discriminant_at n))
+            rr_lw_negative_quadratic_side_at n))
   | `(tactic|
       rr_lw_positive_t_sequence using
         base := $hbase:term,
