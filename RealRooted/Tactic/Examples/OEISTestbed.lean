@@ -2046,18 +2046,14 @@ example {P : Nat → ℝ[X]}
       ((X - C (1 : ℝ)) * P (n + 1) + X * (P (n + 1)).derivative).natDegree ≤
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_mw_plus_derivative_sequence_expanded using
+  rr_mw_plus_derivative_sequence_expanded_auto using
     outer := fun _ => (1 : ℝ),
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    outer_nonzero := by intro n; norm_num,
     degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
-    coeff_nonpos := by
-      intro n r hr
-      have hr_nonpos : r ≤ 0 := hroots_nonpos n r hr
-      rr_sign,
+    root_nonpos := hroots_nonpos,
     recurrence := hrec,
     inner_degree_lower := hinner_deg_lo,
     inner_degree_upper := hinner_deg_hi
@@ -2086,13 +2082,12 @@ example {P : Nat → ℝ[X]}
           (C (2 : ℝ) * X) * (P (n + 1)).derivative +
             X * (P (n + 1)).derivative.derivative) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_ls4_plus_current_sequence_expanded using
+  rr_ls4_plus_current_sequence_expanded_auto using
     outer := fun _ => (1 : ℝ),
     tail := fun _ => (1 : ℝ),
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    tail_nonneg := by intro n; norm_num,
     outer_pos_lc := houter_pos,
     outer_prec := houter_prec,
     recurrence := hrec
@@ -2120,18 +2115,14 @@ example {P : Nat → ℝ[X]}
       ((X + C (1 : ℝ)) * P (n + 1) + X * (P (n + 1)).derivative).natDegree ≤
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_mw_plus_derivative_sequence_expanded using
+  rr_mw_plus_derivative_sequence_expanded_auto using
     outer := fun _ => (1 : ℝ),
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    outer_nonzero := by intro n; norm_num,
     degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
-    coeff_nonpos := by
-      intro n r hr
-      have hr_nonpos : r ≤ 0 := hroots_nonpos n r hr
-      rr_sign,
+    root_nonpos := hroots_nonpos,
     recurrence := hrec,
     inner_degree_lower := hinner_deg_lo,
     inner_degree_upper := hinner_deg_hi
@@ -2160,13 +2151,12 @@ example {P : Nat → ℝ[X]}
           (C (2 : ℝ) + C (2 : ℝ) * X) * (P (n + 1)).derivative +
             X * (P (n + 1)).derivative.derivative) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_ls4_plus_current_sequence_expanded using
+  rr_ls4_plus_current_sequence_expanded_auto using
     outer := fun _ => (1 : ℝ),
     tail := fun n => (n : ℝ) + 1,
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    tail_nonneg := by intro n; positivity,
     outer_pos_lc := houter_pos,
     outer_prec := houter_prec,
     recurrence := hrec
@@ -2197,18 +2187,14 @@ example {P : Nat → ℝ[X]}
           (C (16 : ℝ) * X) * (P (n + 1)).derivative).natDegree ≤
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_mw_plus_derivative_sequence_expanded using
+  rr_mw_plus_derivative_sequence_expanded_auto using
     outer := fun _ => ((1 : ℝ) / 4),
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    outer_nonzero := by intro n; norm_num,
     degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
-    coeff_nonpos := by
-      intro n r hr
-      have hr_nonpos : r ≤ 0 := hroots_nonpos n r hr
-      rr_sign,
+    root_nonpos := hroots_nonpos,
     recurrence := hrec,
     inner_degree_lower := hinner_deg_lo,
     inner_degree_upper := hinner_deg_hi
@@ -2239,18 +2225,14 @@ example {P : Nat → ℝ[X]}
           (C (2 : ℝ) * X) * (P (n + 1)).derivative).natDegree ≤
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_mw_plus_derivative_sequence_expanded using
+  rr_mw_plus_derivative_sequence_expanded_auto using
     outer := fun _ => (1 : ℝ),
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    outer_nonzero := by intro n; norm_num,
     degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
-    coeff_nonpos := by
-      intro n r hr
-      have hr_nonpos : r ≤ 0 := hroots_nonpos n r hr
-      rr_sign,
+    root_nonpos := hroots_nonpos,
     recurrence := hrec,
     inner_degree_lower := hinner_deg_lo,
     inner_degree_upper := hinner_deg_hi
@@ -2281,18 +2263,14 @@ example {P : Nat → ℝ[X]}
           (C (4 : ℝ) * X) * (P (n + 1)).derivative).natDegree ≤
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_mw_plus_derivative_sequence_expanded using
+  rr_mw_plus_derivative_sequence_expanded_auto using
     outer := fun _ => ((1 : ℝ) / 2),
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    outer_nonzero := by intro n; norm_num,
     degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
-    coeff_nonpos := by
-      intro n r hr
-      have hr_nonpos : r ≤ 0 := hroots_nonpos n r hr
-      rr_sign,
+    root_nonpos := hroots_nonpos,
     recurrence := hrec,
     inner_degree_lower := hinner_deg_lo,
     inner_degree_upper := hinner_deg_hi
@@ -2323,18 +2301,14 @@ example {P : Nat → ℝ[X]}
           (C (9 : ℝ) * X) * (P (n + 1)).derivative).natDegree ≤
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_mw_plus_derivative_sequence_expanded using
+  rr_mw_plus_derivative_sequence_expanded_auto using
     outer := fun _ => ((1 : ℝ) / 3),
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    outer_nonzero := by intro n; norm_num,
     degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
-    coeff_nonpos := by
-      intro n r hr
-      have hr_nonpos : r ≤ 0 := hroots_nonpos n r hr
-      rr_sign,
+    root_nonpos := hroots_nonpos,
     recurrence := hrec,
     inner_degree_lower := hinner_deg_lo,
     inner_degree_upper := hinner_deg_hi
@@ -2365,18 +2339,14 @@ example {P : Nat → ℝ[X]}
           (C (9 : ℝ) * X) * (P (n + 1)).derivative).natDegree ≤
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_mw_plus_derivative_sequence_expanded using
+  rr_mw_plus_derivative_sequence_expanded_auto using
     outer := fun _ => ((1 : ℝ) / 3),
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    outer_nonzero := by intro n; norm_num,
     degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
-    coeff_nonpos := by
-      intro n r hr
-      have hr_nonpos : r ≤ 0 := hroots_nonpos n r hr
-      rr_sign,
+    root_nonpos := hroots_nonpos,
     recurrence := hrec,
     inner_degree_lower := hinner_deg_lo,
     inner_degree_upper := hinner_deg_hi
@@ -2407,18 +2377,14 @@ example {P : Nat → ℝ[X]}
           (C (16 : ℝ) * X) * (P (n + 1)).derivative).natDegree ≤
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_mw_plus_derivative_sequence_expanded using
+  rr_mw_plus_derivative_sequence_expanded_auto using
     outer := fun _ => ((1 : ℝ) / 4),
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    outer_nonzero := by intro n; norm_num,
     degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
-    coeff_nonpos := by
-      intro n r hr
-      have hr_nonpos : r ≤ 0 := hroots_nonpos n r hr
-      rr_sign,
+    root_nonpos := hroots_nonpos,
     recurrence := hrec,
     inner_degree_lower := hinner_deg_lo,
     inner_degree_upper := hinner_deg_hi
@@ -2485,17 +2451,14 @@ example {P : Nat → ℝ[X]}
       ((-(X + C (1 : ℝ))) * P (n + 1) + X * (P (n + 1)).derivative).natDegree ≤
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_neg_mw_plus_derivative_sequence_expanded using
+  rr_neg_mw_plus_derivative_sequence_expanded_auto using
     outer := fun _ => (-1 : ℝ),
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    outer_nonzero := by intro n; norm_num,
     degree_two := hdeg_two,
     inner_neg_lc := hinner_neg,
-    coeff_nonneg := by
-      intro n r hr
-      simpa using hroots_nonneg n r hr,
+    root_nonneg := hroots_nonneg,
     recurrence := hrec,
     inner_degree_lower := hinner_deg_lo,
     inner_degree_upper := hinner_deg_hi
@@ -2526,19 +2489,14 @@ example {P : Nat → ℝ[X]}
           (C (4 : ℝ) * X) * (P (n + 1)).derivative).natDegree ≤
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_neg_mw_plus_derivative_sequence_expanded using
+  rr_neg_mw_plus_derivative_sequence_expanded_auto using
     outer := fun _ => (-(1 : ℝ) / 2),
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    outer_nonzero := by intro n; norm_num,
     degree_two := hdeg_two,
     inner_neg_lc := hinner_neg,
-    coeff_nonneg := by
-      intro n r hr
-      have hr_nonneg : 0 ≤ r := hroots_nonneg n r hr
-      simpa [Polynomial.eval_mul, Polynomial.eval_C] using
-        mul_nonneg (by norm_num : 0 ≤ (4 : ℝ)) hr_nonneg,
+    root_nonneg := hroots_nonneg,
     recurrence := hrec,
     inner_degree_lower := hinner_deg_lo,
     inner_degree_upper := hinner_deg_hi

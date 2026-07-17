@@ -414,6 +414,20 @@ syntax (name := rr_mw_plus_derivative_sequence_expanded_pos_named)
     "inner_degree_upper" ":=" term :
   tactic
 
+syntax (name := rr_mw_plus_derivative_sequence_expanded_auto)
+  "rr_mw_plus_derivative_sequence_expanded_auto" " using "
+    "outer" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "pos_lc" ":=" term ","
+    "degree_two" ":=" term ","
+    "inner_pos_lc" ":=" term ","
+    "root_nonpos" ":=" term ","
+    "recurrence" ":=" term ","
+    "inner_degree_lower" ":=" term ","
+    "inner_degree_upper" ":=" term :
+  tactic
+
 syntax (name := rr_neg_mw_plus_derivative_sequence_named)
   "rr_neg_mw_plus_derivative_sequence" " using "
     "outer" ":=" term ","
@@ -444,6 +458,20 @@ syntax (name := rr_neg_mw_plus_derivative_sequence_expanded_named)
     "inner_degree_upper" ":=" term :
   tactic
 
+syntax (name := rr_neg_mw_plus_derivative_sequence_expanded_auto)
+  "rr_neg_mw_plus_derivative_sequence_expanded_auto" " using "
+    "outer" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "pos_lc" ":=" term ","
+    "degree_two" ":=" term ","
+    "inner_neg_lc" ":=" term ","
+    "root_nonneg" ":=" term ","
+    "recurrence" ":=" term ","
+    "inner_degree_lower" ":=" term ","
+    "inner_degree_upper" ":=" term :
+  tactic
+
 syntax (name := rr_ls4_plus_current_sequence_expanded_named)
   "rr_ls4_plus_current_sequence_expanded" " using "
     "outer" ":=" term ","
@@ -452,6 +480,18 @@ syntax (name := rr_ls4_plus_current_sequence_expanded_named)
     "base_one" ":=" term ","
     "pos_lc" ":=" term ","
     "tail_nonneg" ":=" term ","
+    "outer_pos_lc" ":=" term ","
+    "outer_prec" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_ls4_plus_current_sequence_expanded_auto)
+  "rr_ls4_plus_current_sequence_expanded_auto" " using "
+    "outer" ":=" term ","
+    "tail" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "pos_lc" ":=" term ","
     "outer_pos_lc" ":=" term ","
     "outer_prec" ":=" term ","
     "recurrence" ":=" term :
@@ -574,6 +614,66 @@ macro_rules
            rw [$hrec n]
            rr_ls4_factorize))
   | `(tactic|
+      rr_mw_plus_derivative_sequence_expanded_auto using
+        outer := $a:term,
+        base_zero := $hbase_zero:term,
+        base_one := $hbase_one:term,
+        pos_lc := $hpos:term,
+        degree_two := $hdeg_two:term,
+        inner_pos_lc := $hinner_pos:term,
+        root_nonpos := $hroot:term,
+        recurrence := $hrec:term,
+        inner_degree_lower := $hinner_deg_lo:term,
+        inner_degree_upper := $hinner_deg_hi:term) =>
+      `(tactic|
+        rr_mw_plus_derivative_sequence_expanded using
+          outer := $a,
+          base_zero := $hbase_zero,
+          base_one := $hbase_one,
+          pos_lc := $hpos,
+          outer_nonzero := (by
+            intro n
+            positivity),
+          degree_two := $hdeg_two,
+          inner_pos_lc := $hinner_pos,
+          coeff_nonpos := (by
+            intro n r hr
+            have hr_nonpos : r ≤ 0 := ($hroot) n r hr
+            rr_sign),
+          recurrence := $hrec,
+          inner_degree_lower := $hinner_deg_lo,
+          inner_degree_upper := $hinner_deg_hi)
+  | `(tactic|
+      rr_neg_mw_plus_derivative_sequence_expanded_auto using
+        outer := $a:term,
+        base_zero := $hbase_zero:term,
+        base_one := $hbase_one:term,
+        pos_lc := $hpos:term,
+        degree_two := $hdeg_two:term,
+        inner_neg_lc := $hinner_neg:term,
+        root_nonneg := $hroot:term,
+        recurrence := $hrec:term,
+        inner_degree_lower := $hinner_deg_lo:term,
+        inner_degree_upper := $hinner_deg_hi:term) =>
+      `(tactic|
+        rr_neg_mw_plus_derivative_sequence_expanded using
+          outer := $a,
+          base_zero := $hbase_zero,
+          base_one := $hbase_one,
+          pos_lc := $hpos,
+          outer_nonzero := (by
+            intro n
+            norm_num),
+          degree_two := $hdeg_two,
+          inner_neg_lc := $hinner_neg,
+          coeff_nonneg := (by
+            intro n r hr
+            have hr_nonneg : 0 ≤ r := ($hroot) n r hr
+            rr_sign),
+          recurrence := $hrec,
+          inner_degree_lower := $hinner_deg_lo,
+          inner_degree_upper := $hinner_deg_hi)
+  | `(tactic|
       rr_ls4_plus_current_sequence_expanded using
         outer := $a:term,
         tail := $b:term,
@@ -592,6 +692,29 @@ macro_rules
           (intro n
            rw [$hrec n]
            rr_ls4_factorize))
+  | `(tactic|
+      rr_ls4_plus_current_sequence_expanded_auto using
+        outer := $a:term,
+        tail := $b:term,
+        base_zero := $hbase_zero:term,
+        base_one := $hbase_one:term,
+        pos_lc := $hpos:term,
+        outer_pos_lc := $houter_pos:term,
+        outer_prec := $houter_prec:term,
+        recurrence := $hrec:term) =>
+      `(tactic|
+        rr_ls4_plus_current_sequence_expanded using
+          outer := $a,
+          tail := $b,
+          base_zero := $hbase_zero,
+          base_one := $hbase_one,
+          pos_lc := $hpos,
+          tail_nonneg := (by
+            intro n
+            positivity),
+          outer_pos_lc := $houter_pos,
+          outer_prec := $houter_prec,
+          recurrence := $hrec)
   | `(tactic|
       rr_mw_plus_derivative_sequence using
         outer := $a:term,
