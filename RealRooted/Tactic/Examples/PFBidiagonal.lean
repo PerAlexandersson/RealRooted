@@ -67,6 +67,21 @@ example
 
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
+    (hbase : IsPFPolynomial (P 0))
+    (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
+    (hpres : ∀ n : Nat, BidiagonalPFPreserver (alpha n) (beta n) (d n))
+    (hne : ∀ n : Nat, P n ≠ 0)
+    (hrec : ∀ n : Nat,
+      P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_pf_bidiagonal_sequence using
+    preserver := hpres,
+    base := hbase,
+    degree := hdeg,
+    recurrence := hrec
+
+example
+    {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
     (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)

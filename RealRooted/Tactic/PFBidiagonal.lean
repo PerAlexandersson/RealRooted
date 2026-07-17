@@ -1,4 +1,5 @@
 import RealRooted.MultiplierSequence
+import RealRooted.Tactic.Lookup
 
 /-!
 # PF bidiagonal operator shells
@@ -793,7 +794,9 @@ macro_rules
           | exact $h
           | exact RealRooted.hasNonnegCoeffs_of_isPFPolynomial_sequence $h
           | exact RealRooted.splits_of_isPFPolynomial_sequence $h
-          | exact RealRooted.eq_zero_or_splits_of_isPFPolynomial_sequence $h)
+          | exact RealRooted.eq_zero_or_splits_of_isPFPolynomial_sequence $h
+          | exact RealRooted.isRealRooted_of_isPFPolynomial_sequence $h (by
+              rr_lookup))
   | `(tactic| rr_exact_pf_sequence_realrooted $h:term, $hne:term) =>
       `(tactic|
         exact RealRooted.isRealRooted_of_isPFPolynomial_sequence $h $hne)
