@@ -39,6 +39,13 @@ macro_rules
           | assumption
           | exact_mod_cast (by assumption)
           | exact sub_nonneg.mpr (by exact_mod_cast (by assumption))
+          | exact sub_nonneg.mpr (by exact_mod_cast (by lia))
+          | exact div_nonneg (by positivity) (by
+              first
+                | exact sub_nonneg.mpr (by exact_mod_cast (by lia))
+                | positivity
+                | norm_num
+                | nlinarith)
           | positivity
           | norm_num
           | nlinarith)
@@ -47,6 +54,7 @@ macro_rules
         first
           | assumption
           | exact_mod_cast (by assumption)
+          | exact sub_pos.mpr (by exact_mod_cast (by lia))
           | positivity
           | norm_num
           | nlinarith)
@@ -57,6 +65,7 @@ macro_rules
           | exact_mod_cast (by assumption)
           | positivity
           | norm_num
+          | exact ne_of_gt (by rr_side_pos)
           | apply ne_of_gt
             positivity
           | apply ne_of_lt

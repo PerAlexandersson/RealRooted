@@ -1193,11 +1193,6 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
 -- `A178343`: beta-binomial rows, `B_n(t)=-(n/(n-1))(1-t)^2`, active for `n>=2`.
 example {n : Nat} (hn : 2 ≤ n) {r : ℝ} :
     (-(C ((n : ℝ) / ((n : ℝ) - 1))) * (1 - X) ^ 2 : ℝ[X]).eval r ≤ 0 := by
-  have hden : 0 < (n : ℝ) - 1 := by
-    have hn' : (1 : ℝ) < n := by exact_mod_cast hn
-    linarith
-  have hc : 0 ≤ (n : ℝ) / ((n : ℝ) - 1) := by
-    positivity
   rr_sign
 
 -- `A178343`: denominator-fused beta-binomial lag after the active row shift.
