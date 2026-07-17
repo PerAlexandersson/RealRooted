@@ -6707,12 +6707,12 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        first
-          | exact RealRooted.prec_lw_positive_X_mul_lag_sequence
-              $hbase $hpos $hnonneg $hQ $hrec $hdeg_succ $hno
-          | exact RealRooted.prec_lw_positive_X_mul_lag_sequence
-              $hbase $hpos $hnonneg $hQ
-              (fun n => by simpa only [mul_assoc] using $hrec n) $hdeg_succ $hno)
+        rr_first_exact
+          (RealRooted.prec_lw_positive_X_mul_lag_sequence
+            $hbase $hpos $hnonneg $hQ $hrec $hdeg_succ $hno),
+          (RealRooted.prec_lw_positive_X_mul_lag_sequence
+            $hbase $hpos $hnonneg $hQ
+            (fun n => by simpa only [mul_assoc] using $hrec n) $hdeg_succ $hno))
   | `(tactic|
       rr_lw_positive_X_mul_sequence_realrooted using
         base := $hbase:term,
@@ -6742,12 +6742,12 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        first
-          | exact RealRooted.prec_lw_positive_C_mul_X_mul_lag_sequence
-              $hbase $hpos $hnonneg $hc $hQ $hrec $hdeg_succ $hno
-          | exact RealRooted.prec_lw_positive_C_mul_X_mul_lag_sequence
-              $hbase $hpos $hnonneg $hc $hQ
-              (fun n => by simpa only [mul_assoc] using $hrec n) $hdeg_succ $hno)
+        rr_first_exact
+          (RealRooted.prec_lw_positive_C_mul_X_mul_lag_sequence
+            $hbase $hpos $hnonneg $hc $hQ $hrec $hdeg_succ $hno),
+          (RealRooted.prec_lw_positive_C_mul_X_mul_lag_sequence
+            $hbase $hpos $hnonneg $hc $hQ
+            (fun n => by simpa only [mul_assoc] using $hrec n) $hdeg_succ $hno))
   | `(tactic|
       rr_lw_positive_C_mul_X_mul_sequence_auto using
         base := $hbase:term,
@@ -7122,12 +7122,12 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        first
-          | exact RealRooted.prec_lw_current_X_positive_t_lag_sequence
-              $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno
-          | exact RealRooted.prec_lw_current_X_positive_t_lag_sequence
-              $hbase $hpos $hnonneg $hc
-              (fun n => by simpa using $hrec n) $hdeg_succ $hno)
+        rr_first_exact
+          (RealRooted.prec_lw_current_X_positive_t_lag_sequence
+            $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno),
+          (RealRooted.prec_lw_current_X_positive_t_lag_sequence
+            $hbase $hpos $hnonneg $hc
+            (fun n => by simpa using $hrec n) $hdeg_succ $hno))
   | `(tactic|
       rr_lw_current_X_sequence_auto using
         base := $hbase:term,

@@ -323,6 +323,10 @@ syntax (name := rr_exact_realrooted_pair_sequence_or_projection)
   "rr_exact_realrooted_pair_sequence_or_projection" term :
   tactic
 
+syntax (name := rr_first_exact)
+  "rr_first_exact" term,* :
+  tactic
+
 syntax (name := rr_first_exact_or_simpa)
   "rr_first_exact_or_simpa" term ", " term :
   tactic
@@ -478,6 +482,10 @@ macro_rules
           | exact (RealRooted.left_eq_zero_or_splits_of_isRealRooted_pair_sequence $h _)
           | exact RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair_sequence $h
           | exact (RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair_sequence $h _))
+  | `(tactic| rr_first_exact $[$hs:term],*) =>
+      `(tactic|
+        first
+          $[ | exact $hs]*)
   | `(tactic| rr_first_exact_or_simpa $hdirect:term, $hnormalized:term) =>
       `(tactic|
         first
