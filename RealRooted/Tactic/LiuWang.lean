@@ -4523,30 +4523,29 @@ macro_rules
       `(tactic|
         first
           | exact $hdirect
-          | refine (by simpa using $hnormalized))
+          | simpa using $hnormalized)
   | `(tactic| rr_lw_exact_or_simpa_mul_assoc $hdirect:term, $hnormalized:term) =>
       `(tactic|
         first
           | exact $hdirect
-          | refine (by simpa [mul_assoc] using $hnormalized))
+          | simpa [mul_assoc] using $hnormalized)
   | `(tactic|
       rr_liu_wang using
         $hgf:term, $hg_pos:term, $hl_inter:term, $hl_pos:term, $hl_nonpos:term,
         $hF_pos:term, $hdeg_lo:term, $hdeg_hi:term, $hno:term, $hb_nonpos:term) =>
       `(tactic|
-        refine (by
-          simpa using
-            (RealRooted.prec_generalizedLiuWang_of_no_common
-              (by simpa using $hgf)
-              (by simpa using $hg_pos)
-              (by simpa using $hl_inter)
-              (by simpa using $hl_pos)
-              (by simpa using $hl_nonpos)
-              (by simpa using $hF_pos)
-              (by simpa using $hdeg_lo)
-              (by simpa using $hdeg_hi)
-              (by simpa using $hno)
-              (by simpa using $hb_nonpos))))
+        simpa using
+          (RealRooted.prec_generalizedLiuWang_of_no_common
+            (by simpa using $hgf)
+            (by simpa using $hg_pos)
+            (by simpa using $hl_inter)
+            (by simpa using $hl_pos)
+            (by simpa using $hl_nonpos)
+            (by simpa using $hF_pos)
+            (by simpa using $hdeg_lo)
+            (by simpa using $hdeg_hi)
+            (by simpa using $hno)
+            (by simpa using $hb_nonpos)))
   | `(tactic|
       rr_liu_wang using
         interlacer := $hgf:term,
@@ -4568,19 +4567,18 @@ macro_rules
         $hgf:term, $hg_pos:term, $hl_inter:term, $hl_pos:term, $hl_nonpos:term,
         $hF_pos:term, $hdeg_lo:term, $hdeg_hi:term, $hno:term, $hb_neg:term) =>
       `(tactic|
-        refine (by
-          simpa using
-            (RealRooted.prec_generalizedLiuWang_strict
-              (by simpa using $hgf)
-              (by simpa using $hg_pos)
-              (by simpa using $hl_inter)
-              (by simpa using $hl_pos)
-              (by simpa using $hl_nonpos)
-              (by simpa using $hF_pos)
-              (by simpa using $hdeg_lo)
-              (by simpa using $hdeg_hi)
-              (by simpa using $hno)
-              (by simpa using $hb_neg))))
+        simpa using
+          (RealRooted.prec_generalizedLiuWang_strict
+            (by simpa using $hgf)
+            (by simpa using $hg_pos)
+            (by simpa using $hl_inter)
+            (by simpa using $hl_pos)
+            (by simpa using $hl_nonpos)
+            (by simpa using $hF_pos)
+            (by simpa using $hdeg_lo)
+            (by simpa using $hdeg_hi)
+            (by simpa using $hno)
+            (by simpa using $hb_neg)))
   | `(tactic|
       rr_liu_wang_strict using
         interlacer := $hgf:term,
@@ -4602,18 +4600,17 @@ macro_rules
         $hgf:term, $hg_pos:term, $hl_inter:term, $hl_pos:term, $hl_nonpos:term,
         $hF_pos:term, $hdeg:term, $hno:term, $hb_neg:term) =>
       `(tactic|
-        refine (by
-          simpa using
-            (RealRooted.prec_generalizedLiuWang_strict_same
-              (by simpa using $hgf)
-              (by simpa using $hg_pos)
-              (by simpa using $hl_inter)
-              (by simpa using $hl_pos)
-              (by simpa using $hl_nonpos)
-              (by simpa using $hF_pos)
-              (by simpa using $hdeg)
-              (by simpa using $hno)
-              (by simpa using $hb_neg))))
+        simpa using
+          (RealRooted.prec_generalizedLiuWang_strict_same
+            (by simpa using $hgf)
+            (by simpa using $hg_pos)
+            (by simpa using $hl_inter)
+            (by simpa using $hl_pos)
+            (by simpa using $hl_nonpos)
+            (by simpa using $hF_pos)
+            (by simpa using $hdeg)
+            (by simpa using $hno)
+            (by simpa using $hb_neg)))
   | `(tactic|
       rr_liu_wang_strict_same using
         interlacer := $hgf:term,
@@ -4634,18 +4631,17 @@ macro_rules
         $hgf:term, $hg_pos:term, $hl_inter:term, $hl_pos:term, $hl_nonpos:term,
         $hF_pos:term, $hdeg:term, $hno:term, $hb_neg:term) =>
       `(tactic|
-        refine (by
-          simpa using
-            (RealRooted.prec_generalizedLiuWang_strict_succ
-              (by simpa using $hgf)
-              (by simpa using $hg_pos)
-              (by simpa using $hl_inter)
-              (by simpa using $hl_pos)
-              (by simpa using $hl_nonpos)
-              (by simpa using $hF_pos)
-              (by simpa using $hdeg)
-              (by simpa using $hno)
-              (by simpa using $hb_neg))))
+        simpa using
+          (RealRooted.prec_generalizedLiuWang_strict_succ
+            (by simpa using $hgf)
+            (by simpa using $hg_pos)
+            (by simpa using $hl_inter)
+            (by simpa using $hl_pos)
+            (by simpa using $hl_nonpos)
+            (by simpa using $hF_pos)
+            (by simpa using $hdeg)
+            (by simpa using $hno)
+            (by simpa using $hb_neg)))
   | `(tactic|
       rr_liu_wang_strict_succ using
         interlacer := $hgf:term,
