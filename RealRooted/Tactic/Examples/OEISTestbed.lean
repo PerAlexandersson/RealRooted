@@ -574,11 +574,11 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     coeff := fun n => (2 * ((n : ℝ) + 4)) / (((n : ℝ) + 3) * ((n : ℝ) + 5)),
     den := fun n => (((n : ℝ) + 3) * ((n : ℝ) + 5) / 3),
     raw_coeff := fun n => 2 * ((n : ℝ) + 4) / 3,
-    den_nonzero := by intro n; positivity,
+    den_nonzero := by intro n; rr_side_ne,
     coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by positivity,
-        show (n : ℝ) + 5 ≠ 0 by positivity],
+      field_simp [show (n : ℝ) + 3 ≠ 0 by rr_side_ne,
+        show (n : ℝ) + 5 ≠ 0 by rr_side_ne],
     raw_recurrence := hraw,
     degree_succ := hdeg
 
@@ -660,10 +660,10 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     coeff := fun n => (2 : ℝ) / ((n : ℝ) + 1),
-    den_nonzero := by intro n; positivity,
+    den_nonzero := by intro n; rr_side_ne,
     coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 1 ≠ 0 by positivity],
+      field_simp [show (n : ℝ) + 1 ≠ 0 by rr_side_ne],
     raw_recurrence := hraw,
     degree_succ := hdeg
 
@@ -687,10 +687,10 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     coeff := fun n => (2 : ℝ) / ((n : ℝ) + 3),
-    den_nonzero := by intro n; positivity,
+    den_nonzero := by intro n; rr_side_ne,
     coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by positivity],
+      field_simp [show (n : ℝ) + 3 ≠ 0 by rr_side_ne],
     raw_recurrence := hraw,
     degree_succ := hdeg
 
@@ -775,13 +775,13 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     raw_lag_coeff := fun n => (n : ℝ) + 1,
     root_lower := hroot_lower,
     root_upper := hroot_upper,
-    den_nonzero := by intro n; positivity,
+    den_nonzero := by intro n; rr_side_ne,
     deriv_coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by positivity],
+      field_simp [show (n : ℝ) + 3 ≠ 0 by rr_side_ne],
     lag_coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by positivity],
+      field_simp [show (n : ℝ) + 3 ≠ 0 by rr_side_ne],
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -834,13 +834,13 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     den := fun n => (n : ℝ) + 3,
     raw_deriv_coeff := fun _ => (2 : ℝ),
     raw_lag_coeff := fun n => (n : ℝ) + 3,
-    den_nonzero := by intro n; positivity,
+    den_nonzero := by intro n; rr_side_ne,
     deriv_coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by positivity],
+      field_simp [show (n : ℝ) + 3 ≠ 0 by rr_side_ne],
     lag_coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by positivity],
+      field_simp [show (n : ℝ) + 3 ≠ 0 by rr_side_ne],
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -872,13 +872,13 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     den := fun n => (n : ℝ) + 3,
     raw_deriv_coeff := fun _ => (2 : ℝ),
     raw_lag_coeff := fun n => (n : ℝ) + 1,
-    den_nonzero := by intro n; positivity,
+    den_nonzero := by intro n; rr_side_ne,
     deriv_coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by positivity],
+      field_simp [show (n : ℝ) + 3 ≠ 0 by rr_side_ne],
     lag_coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by positivity],
+      field_simp [show (n : ℝ) + 3 ≠ 0 by rr_side_ne],
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -1113,11 +1113,11 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     coeff := fun n => ((n : ℝ) + 2) / ((n : ℝ) + 5),
     raw_coeff := fun n => (n : ℝ) + 2,
     den := fun n => (n : ℝ) + 5,
-    coeff_nonneg := by intro n; positivity,
-    den_nonzero := by intro n; positivity,
+    coeff_nonneg := by intro n; rr_side_nonneg,
+    den_nonzero := by intro n; rr_side_ne,
     coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 5 ≠ 0 by positivity],
+      field_simp [show (n : ℝ) + 5 ≠ 0 by rr_side_ne],
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -1145,10 +1145,10 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     coeff := fun n => ((n : ℝ) + 1) / ((n : ℝ) + 4),
     raw_coeff := fun n => ((n : ℝ) + 1) / 2,
     den := fun n => ((n : ℝ) + 4) / 2,
-    den_nonzero := by intro n; positivity,
+    den_nonzero := by intro n; rr_side_ne,
     coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 4 ≠ 0 by positivity],
+      field_simp [show (n : ℝ) + 4 ≠ 0 by rr_side_ne],
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -1184,8 +1184,8 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
       exact neg_ne_zero.mpr (ne_of_gt hden_pos),
     coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 1 ≠ 0 by positivity,
-        show (n : ℝ) + 5 ≠ 0 by positivity],
+      field_simp [show (n : ℝ) + 1 ≠ 0 by rr_side_ne,
+        show (n : ℝ) + 5 ≠ 0 by rr_side_ne],
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -1214,11 +1214,11 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     coeff := fun n => ((n : ℝ) + 2) / ((n : ℝ) + 1),
     raw_coeff := fun n => ((n : ℝ) + 2) * ((n : ℝ) + 1),
     den := fun n => ((n : ℝ) + 1) ^ 2,
-    coeff_nonneg := by intro n; positivity,
-    den_nonzero := by intro n; positivity,
+    coeff_nonneg := by intro n; rr_side_nonneg,
+    den_nonzero := by intro n; rr_side_ne,
     coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 1 ≠ 0 by positivity],
+      field_simp [show (n : ℝ) + 1 ≠ 0 by rr_side_ne],
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -1527,22 +1527,22 @@ example {P : Nat → ℝ[X]}
       norm_num
       simpa using hP1,
     den := fun n : Nat => 1 + ((n + 2 : Nat) : ℝ) / 2,
-    den_nonzero := by intro n; positivity,
+    den_nonzero := by intro n; rr_side_ne,
     slope_coeff_eq := by
       intro n
-      have hd : 1 + ((n + 2 : Nat) : ℝ) / 2 ≠ 0 := by positivity
+      have hd : 1 + ((n + 2 : Nat) : ℝ) / 2 ≠ 0 := by rr_side_ne
       field_simp [hd]
       norm_num [Nat.cast_add, Nat.cast_one]
       ring_nf,
     alpha_coeff_eq := by
       intro n
-      have hd : 1 + ((n + 2 : Nat) : ℝ) / 2 ≠ 0 := by positivity
+      have hd : 1 + ((n + 2 : Nat) : ℝ) / 2 ≠ 0 := by rr_side_ne
       field_simp [hd]
       norm_num [Nat.cast_add, Nat.cast_one]
       ring_nf,
     beta_coeff_eq := by
       intro n
-      have hd : 1 + ((n + 2 : Nat) : ℝ) / 2 ≠ 0 := by positivity
+      have hd : 1 + ((n + 2 : Nat) : ℝ) / 2 ≠ 0 := by rr_side_ne
       field_simp [hd]
       norm_num [Nat.cast_add, Nat.cast_one]
       ring_nf,

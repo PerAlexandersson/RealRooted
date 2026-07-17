@@ -84,13 +84,13 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     raw_lag_coeff := fun n => (n : ℝ) + 1,
     root_lower := hroot_lower,
     root_upper := hroot_upper,
-    den_nonzero := by intro n; positivity,
+    den_nonzero := by intro n; rr_side_ne,
     deriv_coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by positivity],
+      field_simp [show (n : ℝ) + 3 ≠ 0 by rr_side_ne],
     lag_coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by positivity],
+      field_simp [show (n : ℝ) + 3 ≠ 0 by rr_side_ne],
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
