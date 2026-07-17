@@ -2839,6 +2839,16 @@ syntax (name := rr_lw_negative_square_named)
     "no_common_roots" ":=" term :
   tactic
 
+syntax (name := rr_lw_negative_square_auto_named)
+  "rr_lw_negative_square_auto" " using "
+    "interlacer" ":=" term ","
+    "interlacer_pos_lc" ":=" term ","
+    "target_pos_lc" ":=" term ","
+    "degree_lower" ":=" term ","
+    "degree_upper" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
 syntax (name := rr_lw_negative_monic_quadratic_named)
   "rr_lw_negative_monic_quadratic" " using "
     "interlacer" ":=" term ","
@@ -2894,11 +2904,31 @@ syntax (name := rr_lw_negative_const_named)
     "no_common_roots" ":=" term :
   tactic
 
+syntax (name := rr_lw_negative_const_auto_named)
+  "rr_lw_negative_const_auto" " using "
+    "interlacer" ":=" term ","
+    "interlacer_pos_lc" ":=" term ","
+    "target_pos_lc" ":=" term ","
+    "degree_lower" ":=" term ","
+    "degree_upper" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
 syntax (name := rr_lw_negative_const_C_neg_named)
   "rr_lw_negative_const_C_neg" " using "
     "interlacer" ":=" term ","
     "interlacer_pos_lc" ":=" term ","
     "coeff_nonneg" ":=" term ","
+    "target_pos_lc" ":=" term ","
+    "degree_lower" ":=" term ","
+    "degree_upper" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_negative_const_C_neg_auto_named)
+  "rr_lw_negative_const_C_neg_auto" " using "
+    "interlacer" ":=" term ","
+    "interlacer_pos_lc" ":=" term ","
     "target_pos_lc" ":=" term ","
     "degree_lower" ":=" term ","
     "degree_upper" ":=" term ","
@@ -4811,6 +4841,28 @@ macro_rules
                   (by simpa using $hdeg_hi)
                   $hno)))
   | `(tactic|
+      rr_lw_negative_square_auto using
+        interlacer := $hgf:term,
+        interlacer_pos_lc := $hg_pos:term,
+        target_pos_lc := $hF_pos:term,
+        degree_lower := $hdeg_lo:term,
+        degree_upper := $hdeg_hi:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        first
+          | refine RealRooted.prec_lw_negative_square_lag
+              $hgf $hg_pos ?_ $hF_pos $hdeg_lo $hdeg_hi $hno
+            rr_lw_coeff_nonneg
+          | refine (by
+              simpa using
+                (RealRooted.prec_lw_negative_square_lag
+                  $hgf $hg_pos ?_
+                  (by simpa using $hF_pos)
+                  (by simpa using $hdeg_lo)
+                  (by simpa using $hdeg_hi)
+                  $hno))
+            rr_lw_coeff_nonneg)
+  | `(tactic|
       rr_lw_negative_monic_quadratic using
         interlacer := $hgf:term,
         interlacer_pos_lc := $hg_pos:term,
@@ -4920,6 +4972,28 @@ macro_rules
                   (by simpa using $hdeg_hi)
                   $hno)))
   | `(tactic|
+      rr_lw_negative_const_auto using
+        interlacer := $hgf:term,
+        interlacer_pos_lc := $hg_pos:term,
+        target_pos_lc := $hF_pos:term,
+        degree_lower := $hdeg_lo:term,
+        degree_upper := $hdeg_hi:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        first
+          | refine RealRooted.prec_lw_negative_const_lag
+              $hgf $hg_pos ?_ $hF_pos $hdeg_lo $hdeg_hi $hno
+            rr_lw_coeff_nonneg
+          | refine (by
+              simpa using
+                (RealRooted.prec_lw_negative_const_lag
+                  $hgf $hg_pos ?_
+                  (by simpa using $hF_pos)
+                  (by simpa using $hdeg_lo)
+                  (by simpa using $hdeg_hi)
+                  $hno))
+            rr_lw_coeff_nonneg)
+  | `(tactic|
       rr_lw_negative_const_C_neg using
         interlacer := $hgf:term,
         interlacer_pos_lc := $hg_pos:term,
@@ -4940,6 +5014,28 @@ macro_rules
                   (by simpa using $hdeg_lo)
                   (by simpa using $hdeg_hi)
                   $hno)))
+  | `(tactic|
+      rr_lw_negative_const_C_neg_auto using
+        interlacer := $hgf:term,
+        interlacer_pos_lc := $hg_pos:term,
+        target_pos_lc := $hF_pos:term,
+        degree_lower := $hdeg_lo:term,
+        degree_upper := $hdeg_hi:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        first
+          | refine RealRooted.prec_lw_negative_const_lag_C_neg
+              $hgf $hg_pos ?_ $hF_pos $hdeg_lo $hdeg_hi $hno
+            rr_lw_coeff_nonneg
+          | refine (by
+              simpa using
+                (RealRooted.prec_lw_negative_const_lag_C_neg
+                  $hgf $hg_pos ?_
+                  (by simpa using $hF_pos)
+                  (by simpa using $hdeg_lo)
+                  (by simpa using $hdeg_hi)
+                  $hno))
+            rr_lw_coeff_nonneg)
   | `(tactic|
       rr_lw_nonpos_lag_sequence using
         base := $hbase:term,

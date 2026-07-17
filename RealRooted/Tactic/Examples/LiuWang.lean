@@ -1899,6 +1899,42 @@ example {f g : ℝ[X]} {α c : ℝ}
     degree_upper := hdeg_hi,
     no_common_roots := hno
 
+/-- Favard-like negative constant lag with automatic constant nonnegativity. -/
+example {f g : ℝ[X]} {α : ℝ}
+    (hgf : Interlaces g f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hF_pos : HasPosLeadingCoeff ((X - C α) * f + (-(C (1 : ℝ))) * g))
+    (hdeg_lo :
+      f.natDegree ≤ ((X - C α) * f + (-(C (1 : ℝ))) * g).natDegree)
+    (hdeg_hi :
+      ((X - C α) * f + (-(C (1 : ℝ))) * g).natDegree ≤ f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    Prec f ((X - C α) * f + (-(C (1 : ℝ))) * g) := by
+  rr_lw_negative_const_auto using
+    interlacer := hgf,
+    interlacer_pos_lc := hg_pos,
+    target_pos_lc := hF_pos,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi,
+    no_common_roots := hno
+
+/-- Normalized negative constant lag with automatic constant nonnegativity. -/
+example {f g : ℝ[X]} {α : ℝ}
+    (hgf : Interlaces g f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hF_pos : HasPosLeadingCoeff ((X - C α) * f + C (-1 : ℝ) * g))
+    (hdeg_lo : f.natDegree ≤ ((X - C α) * f + C (-1 : ℝ) * g).natDegree)
+    (hdeg_hi : ((X - C α) * f + C (-1 : ℝ) * g).natDegree ≤ f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    Prec f ((X - C α) * f + C (-1 : ℝ) * g) := by
+  rr_lw_negative_const_C_neg_auto using
+    interlacer := hgf,
+    interlacer_pos_lc := hg_pos,
+    target_pos_lc := hF_pos,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi,
+    no_common_roots := hno
+
 /-- Family G quadratic lag: `B(t) = -c(t-α)^2`, a globally nonpositive lag. -/
 example {f g a : ℝ[X]} {α c : ℝ}
     (hgf : Interlaces g f)
@@ -1914,6 +1950,27 @@ example {f g a : ℝ[X]} {α c : ℝ}
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
     coeff_nonneg := hc,
+    target_pos_lc := hF_pos,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi,
+    no_common_roots := hno
+
+/-- Family G unit negative-square lag with automatic coefficient
+nonnegativity. -/
+example {f g a : ℝ[X]} {α : ℝ}
+    (hgf : Interlaces g f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hF_pos : HasPosLeadingCoeff (a * f + (-(C (1 : ℝ)) * (X - C α) ^ 2) * g))
+    (hdeg_lo :
+      f.natDegree ≤ (a * f + (-(C (1 : ℝ)) * (X - C α) ^ 2) * g).natDegree)
+    (hdeg_hi :
+      (a * f + (-(C (1 : ℝ)) * (X - C α) ^ 2) * g).natDegree ≤
+        f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    Prec f (a * f + (-(C (1 : ℝ)) * (X - C α) ^ 2) * g) := by
+  rr_lw_negative_square_auto using
+    interlacer := hgf,
+    interlacer_pos_lc := hg_pos,
     target_pos_lc := hF_pos,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi,
