@@ -283,10 +283,22 @@ sure public modules are imported by `RealRooted.lean`. All committed code must
 build without warnings (with the exception of `sorry` warnings).
 
 Please keep repository configuration files (like `lakefile.toml` and
-`lake-manifest.json`) free of hardcoded absolute paths such as
-`/lake-cache/projects/...`. Reusable relative repository paths
-(e.g. `.lake/packages` and `.lake/build`) ensure that the builds work
-out-of-the-box in local developer environments.
+  `lake-manifest.json`) free of hardcoded absolute paths such as
+  `/lake-cache/projects/...`. Reusable relative repository paths
+  (e.g. `.lake/packages` and `.lake/build`) ensure that the builds work
+  out-of-the-box in local developer environments.
+
+### Repository Cleanliness
+
+To maintain a polished repository:
+* Do not commit transient development artifacts such as build logs (`*.log`),
+  Git patch files (`*.patch`), backup files (e.g., `*~`), or temporary
+  scratch files.
+* Keep issue-specific design or reference notes local. Note that `.gitignore`
+  is configured to ignore all Markdown (`*.md`) files by default, with
+  exceptions only for `README.md` and `RealRooted/Tactic/PLAN.md`.
+* Ensure any new types of temporary files or scratch directories are kept
+  local or explicitly added to `.gitignore`.
 
 ## Bibliography and Links
 
