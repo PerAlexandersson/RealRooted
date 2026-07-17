@@ -439,6 +439,22 @@ the A036969 shifted `beta` endpoint. -/
 def a036969ResidualBeta : ℝ[X] :=
   X * (X + 1) ^ 2
 
+/-- The A036969 beta Jensen endpoint after removing the common residual
+factor. -/
+theorem a036969Beta_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
+    X * jensenPolynomial d a036969Beta =
+      ((X + 1 : ℝ[X]) ^ (d - 2)) * a036969ResidualBeta := by
+  change X * jensenPolynomial d (fun _ => (1 : ℝ)) =
+    ((X + 1 : ℝ[X]) ^ (d - 2)) * a036969ResidualBeta
+  rw [jensenPolynomial_one_sequence, a036969ResidualBeta]
+  have hpow :
+      (X + 1 : ℝ[X]) ^ d =
+        (X + 1 : ℝ[X]) ^ (d - 2) * (X + 1) ^ 2 := by
+    simpa [Nat.sub_add_cancel hd] using
+      (pow_add (X + 1 : ℝ[X]) (d - 2) 2)
+  rw [hpow]
+  ring
+
 /-- The residual pencil for the A036969 PF-bidiagonal certificate. -/
 def a036969ResidualPencil (d : ℕ) (lam : ℝ) : ℝ[X] :=
   a036969ResidualAlpha d + C lam * a036969ResidualBeta
@@ -1431,19 +1447,18 @@ example
 /-- A036969-shaped recurrence shell.
 
 This example has the actual differential recurrence and actual residual
-polynomials.  The residual cubic certificates are discharged below; the
-remaining hypotheses are the endpoint symbolic Jensen factorization leaves. -/
+polynomials.  The residual cubic certificates and beta endpoint factorization
+are discharged below; the remaining arithmetic leaf is the alpha endpoint
+Jensen factorization. -/
 example
-    {P : Nat → ℝ[X]} {d m : Nat → ℕ}
+    {P : Nat → ℝ[X]} {d : Nat → ℕ}
     (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
+    (hd : ∀ n : Nat, 2 ≤ d n)
     (halpha : ∀ n : Nat,
       jensenPolynomial (d n) a036969Alpha =
-        ((X + 1 : ℝ[X]) ^ m n) * a036969ResidualAlpha (d n))
-    (hbeta : ∀ n : Nat,
-      X * jensenPolynomial (d n) a036969Beta =
-        ((X + 1 : ℝ[X]) ^ m n) * a036969ResidualBeta)
+        ((X + 1 : ℝ[X]) ^ (d n - 2)) * a036969ResidualAlpha (d n))
     (hrec : ∀ n : Nat,
       P (n + 1) = secondDerivativeBidiagonalForm 1 1 3 0 1 0 (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
@@ -1452,7 +1467,7 @@ example
     base := hbase,
     degree := hdeg,
     alpha_factor := halpha,
-    beta_factor := hbeta,
+    beta_factor := (fun n => a036969Beta_jensen_factor (d n) (hd n)),
     alpha_cubic := (fun n => a036969ResidualAlpha_cubicPFDiscriminantCertificate (d n)),
     beta_cubic := (fun _ => a036969ResidualBeta_cubicPFDiscriminantCertificate),
     pencil_cubic := (fun n lam hlam => by
@@ -1462,16 +1477,14 @@ example
     recurrence := hrec
 
 example
-    {P : Nat → ℝ[X]} {d m : Nat → ℕ}
+    {P : Nat → ℝ[X]} {d : Nat → ℕ}
     (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
+    (hd : ∀ n : Nat, 2 ≤ d n)
     (halpha : ∀ n : Nat,
       jensenPolynomial (d n) a036969Alpha =
-        ((X + 1 : ℝ[X]) ^ m n) * a036969ResidualAlpha (d n))
-    (hbeta : ∀ n : Nat,
-      X * jensenPolynomial (d n) a036969Beta =
-        ((X + 1 : ℝ[X]) ^ m n) * a036969ResidualBeta)
+        ((X + 1 : ℝ[X]) ^ (d n - 2)) * a036969ResidualAlpha (d n))
     (hne : ∀ n : Nat, P n ≠ 0)
     (hrec : ∀ n : Nat,
       P (n + 1) = secondDerivativeBidiagonalForm 1 1 3 0 1 0 (P n)) :
@@ -1481,7 +1494,7 @@ example
     base := hbase,
     degree := hdeg,
     alpha_factor := halpha,
-    beta_factor := hbeta,
+    beta_factor := (fun n => a036969Beta_jensen_factor (d n) (hd n)),
     alpha_cubic := (fun n => a036969ResidualAlpha_cubicPFDiscriminantCertificate (d n)),
     beta_cubic := (fun _ => a036969ResidualBeta_cubicPFDiscriminantCertificate),
     pencil_cubic := (fun n lam hlam => by
