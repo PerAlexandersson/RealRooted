@@ -17,6 +17,8 @@ rr_oeis liu_wang
 rr_oeis matrix
 rr_i2_derivative_lag_sequence using ... certificate := directHalfLine
 rr_i2_derivative_lag_sequence using ... certificate := wagnerGap
+rr_i2_derivative_lag_sequence_den_coeff using ... certificate := directHalfLine
+rr_i2_derivative_lag_sequence_den using ... certificate := wagnerGap
 ```
 
 This should remain a thin wrapper over explicit family tactics.  Generated
@@ -53,6 +55,50 @@ syntax (name := rr_i2_derivative_lag_sequence_realrooted_direct_halfline)
     "certificate" ":=" "directHalfLine" :
   tactic
 
+syntax (name := rr_i2_derivative_lag_sequence_den_direct_halfline)
+  "rr_i2_derivative_lag_sequence_den_coeff" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "degree_two" ":=" term ","
+    "deriv_factor" ":=" term ","
+    "lag_factor" ":=" term ","
+    "norm_deriv_coeff" ":=" term ","
+    "norm_lag_coeff" ":=" term ","
+    "den" ":=" term ","
+    "raw_deriv_coeff" ":=" term ","
+    "raw_lag_coeff" ":=" term ","
+    "den_nonzero" ":=" term ","
+    "deriv_coeff_eq" ":=" term ","
+    "lag_coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "certificate" ":=" "directHalfLine" :
+  tactic
+
+syntax (name := rr_i2_derivative_lag_sequence_den_realrooted_direct_halfline)
+  "rr_i2_derivative_lag_sequence_den_coeff_realrooted" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "degree_two" ":=" term ","
+    "deriv_factor" ":=" term ","
+    "lag_factor" ":=" term ","
+    "norm_deriv_coeff" ":=" term ","
+    "norm_lag_coeff" ":=" term ","
+    "den" ":=" term ","
+    "raw_deriv_coeff" ":=" term ","
+    "raw_lag_coeff" ":=" term ","
+    "den_nonzero" ":=" term ","
+    "deriv_coeff_eq" ":=" term ","
+    "lag_coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "certificate" ":=" "directHalfLine" :
+  tactic
+
 syntax (name := rr_i2_derivative_lag_sequence_wagner_gap)
   "rr_i2_derivative_lag_sequence" " using "
     "base" ":=" term ","
@@ -71,6 +117,30 @@ syntax (name := rr_i2_derivative_lag_sequence_realrooted_wagner_gap)
     "degree_two" ":=" term ","
     "lag_coeff_pos" ":=" term ","
     "derivative_coeff_pos" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "wagnerGap" :
+  tactic
+
+syntax (name := rr_i2_derivative_lag_sequence_den_wagner_gap)
+  "rr_i2_derivative_lag_sequence_den" " using "
+    "base" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "degree_two" ":=" term ","
+    "lag_coeff_pos" ":=" term ","
+    "derivative_coeff_pos" ":=" term ","
+    "denom_pos" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "wagnerGap" :
+  tactic
+
+syntax (name := rr_i2_derivative_lag_sequence_den_realrooted_wagner_gap)
+  "rr_i2_derivative_lag_sequence_den_realrooted" " using "
+    "base" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "degree_two" ":=" term ","
+    "lag_coeff_pos" ":=" term ","
+    "derivative_coeff_pos" ":=" term ","
+    "denom_pos" ":=" term ","
     "recurrence" ":=" term ","
     "certificate" ":=" "wagnerGap" :
   tactic
@@ -145,6 +215,84 @@ macro_rules
           degree_succ := $hdeg_succ,
           no_common_roots := $hno)
   | `(tactic|
+      rr_i2_derivative_lag_sequence_den_coeff using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        degree_two := $hdeg_two:term,
+        deriv_factor := $V:term,
+        lag_factor := $W:term,
+        norm_deriv_coeff := $cV:term,
+        norm_lag_coeff := $cW:term,
+        den := $d:term,
+        raw_deriv_coeff := $b:term,
+        raw_lag_coeff := $e:term,
+        den_nonzero := $hden:term,
+        deriv_coeff_eq := $hcoeffV:term,
+        lag_coeff_eq := $hcoeffW:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := directHalfLine) =>
+      `(tactic|
+        rr_lw_derivative_lag_sequence_den_coeff_sign_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          degree_two := $hdeg_two,
+          deriv_factor := $V,
+          lag_factor := $W,
+          norm_deriv_coeff := $cV,
+          norm_lag_coeff := $cW,
+          den := $d,
+          raw_deriv_coeff := $b,
+          raw_lag_coeff := $e,
+          den_nonzero := $hden,
+          deriv_coeff_eq := $hcoeffV,
+          lag_coeff_eq := $hcoeffW,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_i2_derivative_lag_sequence_den_coeff_realrooted using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        degree_two := $hdeg_two:term,
+        deriv_factor := $V:term,
+        lag_factor := $W:term,
+        norm_deriv_coeff := $cV:term,
+        norm_lag_coeff := $cW:term,
+        den := $d:term,
+        raw_deriv_coeff := $b:term,
+        raw_lag_coeff := $e:term,
+        den_nonzero := $hden:term,
+        deriv_coeff_eq := $hcoeffV:term,
+        lag_coeff_eq := $hcoeffW:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := directHalfLine) =>
+      `(tactic|
+        rr_lw_derivative_lag_sequence_den_coeff_realrooted_sign_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          degree_two := $hdeg_two,
+          deriv_factor := $V,
+          lag_factor := $W,
+          norm_deriv_coeff := $cV,
+          norm_lag_coeff := $cW,
+          den := $d,
+          raw_deriv_coeff := $b,
+          raw_lag_coeff := $e,
+          den_nonzero := $hden,
+          deriv_coeff_eq := $hcoeffV,
+          lag_coeff_eq := $hcoeffW,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
       rr_i2_derivative_lag_sequence using
         base := $hbase:term,
         nonneg_coeffs := $hnonneg:term,
@@ -177,6 +325,44 @@ macro_rules
           degree_two := $hdeg,
           lag_coeff_pos := $ha,
           derivative_coeff_pos := $hc,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_i2_derivative_lag_sequence_den using
+        base := $hbase:term,
+        nonneg_coeffs := $hnonneg:term,
+        degree_two := $hdeg:term,
+        lag_coeff_pos := $ha:term,
+        derivative_coeff_pos := $hc:term,
+        denom_pos := $hd:term,
+        recurrence := $hrec:term,
+        certificate := wagnerGap) =>
+      `(tactic|
+        rr_prec_wagner_derivative_gap_lag_sequence_den using
+          base := $hbase,
+          nonneg_coeffs := $hnonneg,
+          degree_two := $hdeg,
+          lag_coeff_pos := $ha,
+          derivative_coeff_pos := $hc,
+          denom_pos := $hd,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_i2_derivative_lag_sequence_den_realrooted using
+        base := $hbase:term,
+        nonneg_coeffs := $hnonneg:term,
+        degree_two := $hdeg:term,
+        lag_coeff_pos := $ha:term,
+        derivative_coeff_pos := $hc:term,
+        denom_pos := $hd:term,
+        recurrence := $hrec:term,
+        certificate := wagnerGap) =>
+      `(tactic|
+        rr_prec_wagner_derivative_gap_lag_sequence_den_realrooted using
+          base := $hbase,
+          nonneg_coeffs := $hnonneg,
+          degree_two := $hdeg,
+          lag_coeff_pos := $ha,
+          derivative_coeff_pos := $hc,
+          denom_pos := $hd,
           recurrence := $hrec)
 
 elab_rules : tactic
