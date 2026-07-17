@@ -1031,7 +1031,7 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by intro n; norm_num,
+    den_nonzero := by intro n; rr_side_ne,
     slope_coeff_eq := by
       intro n
       norm_num,
@@ -1068,7 +1068,7 @@ example {P : Nat → ℝ[X]}
       norm_num
       simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by intro n; norm_num,
+    den_nonzero := by intro n; rr_side_ne,
     slope_coeff_eq := by
       intro n
       norm_num
@@ -1107,7 +1107,7 @@ example {P : Nat → ℝ[X]}
       norm_num
       simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by intro n; norm_num,
+    den_nonzero := by intro n; rr_side_ne,
     slope_coeff_eq := by
       intro n
       norm_num
@@ -1139,7 +1139,7 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by intro n; norm_num,
+    den_nonzero := by intro n; rr_side_ne,
     slope_coeff_eq := by
       intro n
       norm_num,
@@ -1168,7 +1168,7 @@ example {P : Nat → ℝ[X]} {n : Nat}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by intro n; norm_num,
+    den_nonzero := by intro n; rr_side_ne,
     slope_coeff_eq := by
       intro n
       norm_num,
@@ -1198,7 +1198,7 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by intro n; norm_num,
+    den_nonzero := by intro n; rr_side_ne,
     slope_coeff_eq := by
       intro n
       norm_num,
@@ -1227,7 +1227,7 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by intro n; norm_num,
+    den_nonzero := by intro n; rr_side_ne,
     slope_coeff_eq := by
       intro n
       norm_num,
