@@ -1022,47 +1022,6 @@ theorem isRealRooted_of_product_scalar_right_sequence
   isRealRooted_of_product_factor_right_sequence hbase
     (fun n => isRealRooted_C (ha n)) hstep
 
-/-- Sequence shell for degree-plateau product families.
-
-This covers recurrences where odd steps only rescale the previous row, while
-even steps multiply by a real linear factor.  The motivating OEIS example is
-`A060523`, after replacing the fitted lag-2 recurrence by its product form:
-`P_{2m+1}=a_m P_{2m}` and `P_{2m+2}=(X+b_m)P_{2m+1}`. -/
-theorem isRealRooted_of_product_scalar_linear_sequence
-    {P : Nat → ℝ[X]} {a b : Nat → ℝ}
-    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
-    (ha : ∀ n : Nat, a n ≠ 0)
-    (hscalar : ∀ n : Nat, P (2 * n + 1) = C (a n) * P (2 * n))
-    (hlinear : ∀ n : Nat, P (2 * n + 2) = (X + C (b n)) * P (2 * n + 1)) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  have heven : ∀ n : Nat, P (2 * n) ≠ 0 ∧ (P (2 * n)).Splits := by
-    intro n
-    induction n with
-    | zero =>
-        simpa using hbase
-    | succ n ih =>
-        have hodd : P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
-          simpa [hscalar n] using isRealRooted_C_mul ih.1 ih.2 (ha n)
-        have hnext :
-            ((X + C (b n)) * P (2 * n + 1) ≠ 0 ∧
-              ((X + C (b n)) * P (2 * n + 1)).Splits) :=
-          isRealRooted_X_add_C_mul hodd
-        simpa [Nat.mul_succ, Nat.succ_eq_add_one, Nat.add_assoc] using
-          (by simpa [hlinear n] using hnext)
-  have hodd : ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
-    intro n
-    simpa [hscalar n] using isRealRooted_C_mul (heven n).1 (heven n).2 (ha n)
-  intro n
-  rcases Nat.mod_two_eq_zero_or_one n with hmod | hmod
-  · have hn : n = 2 * (n / 2) := by
-      simpa [hmod] using (Nat.div_add_mod n 2).symm
-    rw [hn]
-    exact heven (n / 2)
-  · have hn : n = 2 * (n / 2) + 1 := by
-      simpa [hmod] using (Nat.div_add_mod n 2).symm
-    rw [hn]
-    exact hodd (n / 2)
-
 /-- Sequence shell for degree-plateau scalar/product families with supplied factors.
 
 This generalizes `isRealRooted_of_product_scalar_linear_sequence` by requiring
@@ -1139,6 +1098,22 @@ theorem isRealRooted_of_product_scalar_factor_scalar_right_factor_right_sequence
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   exact isRealRooted_of_product_scalar_factor_right_sequence hbase ha hfactor
     (fun n => by rw [hscalar n, mul_comm]) hstep
+
+/-- Sequence shell for degree-plateau product families.
+
+This covers recurrences where odd steps only rescale the previous row, while
+even steps multiply by a real linear factor.  The motivating OEIS example is
+`A060523`, after replacing the fitted lag-2 recurrence by its product form:
+`P_{2m+1}=a_m P_{2m}` and `P_{2m+2}=(X+b_m)P_{2m+1}`. -/
+theorem isRealRooted_of_product_scalar_linear_sequence
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hscalar : ∀ n : Nat, P (2 * n + 1) = C (a n) * P (2 * n))
+    (hlinear : ∀ n : Nat, P (2 * n + 2) = (X + C (b n)) * P (2 * n + 1)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_sequence hbase ha
+    (fun n => by simpa using isRealRooted_X_add_C_pow (b n) 1) hscalar hlinear
 
 /-- Constant-first variant of
 `isRealRooted_of_product_scalar_linear_sequence`. -/
