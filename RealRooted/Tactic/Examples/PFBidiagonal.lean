@@ -907,6 +907,24 @@ theorem secondDerivativeBidiagonalForm_a371081 (n : ℕ) (p : ℝ[X]) :
   · intro k
     simp [a371081Beta, secondDerivativeQuadraticCoeff]
 
+/-- A371081-shaped normalized recurrence shell. -/
+example
+    {P : Nat → ℝ[X]} {d : Nat → ℕ}
+    (hbase : IsPFPolynomial (P 0))
+    (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
+    (hpres : ∀ n : Nat, BidiagonalPFPreserver (a371081Alpha n) a371081Beta (d n))
+    (hrec : ∀ n : Nat,
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (((n : ℝ) + 2) ^ 2) 1 (5 + 2 * (n : ℝ)) 0 1 0 (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) := by
+  rr_pf_second_derivative_bidiagonal_sequence using
+    preserver := hpres,
+    base := hbase,
+    degree := hdeg,
+    normalizer := (fun n => secondDerivativeBidiagonalForm_a371081 n (P n)),
+    recurrence := hrec
+
 /-- The coefficient multiplier for the A371259 recurrence. -/
 def a371259Alpha (n k : ℕ) : ℝ :=
   ((n : ℝ) + (k : ℝ) + 4) ^ 2
