@@ -402,6 +402,39 @@ theorem isPFPolynomial_bidiagonalOperator_of_cubicResidualCertificate
   isPFPolynomial_bidiagonalOperator_of_preserver
     (hcert.toPFPreserver hbackend) hp hdeg
 
+/-- Project splitting from a zero-aware PF certificate. -/
+theorem splits_of_isPFPolynomial {p : ℝ[X]} (hp : IsPFPolynomial p) :
+    p.Splits := by
+  rcases hp.eq_zero_or_splits with rfl | hsplits
+  · simp
+  · exact hsplits
+
+/-- Project row-wise coefficient nonnegativity from a PF sequence certificate. -/
+theorem hasNonnegCoeffs_of_isPFPolynomial_sequence {P : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, IsPFPolynomial (P n)) :
+    ∀ n : Nat, HasNonnegCoeffs (P n) :=
+  fun n => (hP n).hasNonnegCoeffs
+
+/-- Project row-wise zero-or-splitting from a PF sequence certificate. -/
+theorem eq_zero_or_splits_of_isPFPolynomial_sequence {P : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, IsPFPolynomial (P n)) :
+    ∀ n : Nat, P n = 0 ∨ (P n).Splits :=
+  fun n => (hP n).eq_zero_or_splits
+
+/-- Project row-wise splitting from a PF sequence certificate. -/
+theorem splits_of_isPFPolynomial_sequence {P : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, IsPFPolynomial (P n)) :
+    ∀ n : Nat, (P n).Splits :=
+  fun n => splits_of_isPFPolynomial (hP n)
+
+/-- Combine a PF sequence certificate with row-wise nonvanishing to obtain the
+strict real-rootedness shape used by the scalar recurrence tactics. -/
+theorem isRealRooted_of_isPFPolynomial_sequence {P : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, IsPFPolynomial (P n))
+    (hne : ∀ n : Nat, P n ≠ 0) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  fun n => (hP n).ne_zero_and_splits (hne n)
+
 /-- Sequence wrapper for first-order recurrences by coefficient-bidiagonal
 PF-preserving operators. -/
 theorem isPFPolynomial_of_bidiagonalOperator_sequence
@@ -728,6 +761,14 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidu
 
 namespace Tactic
 
+syntax (name := rr_exact_pf_sequence_or_projection)
+  "rr_exact_pf_sequence_or_projection" term :
+  tactic
+
+syntax (name := rr_exact_pf_sequence_realrooted)
+  "rr_exact_pf_sequence_realrooted" term ", " term :
+  tactic
+
 syntax (name := rr_pf_bidiagonal_sequence_named)
   "rr_pf_bidiagonal_sequence" " using "
     "preserver" ":=" term ","
@@ -737,6 +778,16 @@ syntax (name := rr_pf_bidiagonal_sequence_named)
   tactic
 
 macro_rules
+  | `(tactic| rr_exact_pf_sequence_or_projection $h:term) =>
+      `(tactic|
+        first
+          | exact $h
+          | exact RealRooted.hasNonnegCoeffs_of_isPFPolynomial_sequence $h
+          | exact RealRooted.splits_of_isPFPolynomial_sequence $h
+          | exact RealRooted.eq_zero_or_splits_of_isPFPolynomial_sequence $h)
+  | `(tactic| rr_exact_pf_sequence_realrooted $h:term, $hne:term) =>
+      `(tactic|
+        exact RealRooted.isRealRooted_of_isPFPolynomial_sequence $h $hne)
   | `(tactic|
       rr_pf_bidiagonal_sequence using
         preserver := $hPF:term,
@@ -744,8 +795,9 @@ macro_rules
         degree := $hdeg:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.isPFPolynomial_of_bidiagonalOperator_sequence
-          $hbase $hdeg $hPF $hrec)
+        rr_exact_pf_sequence_or_projection
+          (RealRooted.isPFPolynomial_of_bidiagonalOperator_sequence
+            $hbase $hdeg $hPF $hrec))
 
 syntax (name := rr_pf_bidiagonal_certificate_cubic_named)
   "rr_pf_bidiagonal_certificate" " using "
@@ -821,8 +873,9 @@ macro_rules
         pencil_cubic := $hS:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidual
-          $hbackend $hbase $hdeg $halpha $hbeta $hpencil $hA $hB $hS $hrec)
+        rr_exact_pf_sequence_or_projection
+          (RealRooted.isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidual
+            $hbackend $hbase $hdeg $halpha $hbeta $hpencil $hA $hB $hS $hrec))
 
 syntax (name := rr_pf_second_derivative_bidiagonal_sequence_cubic_named)
   "rr_pf_second_derivative_bidiagonal_sequence_cubic" " using "
@@ -852,9 +905,9 @@ macro_rules
         pencil_cubic := $hS:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact
-          RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidual
-            $hbackend $hbase $hdeg $halpha $hbeta $hpencil $hA $hB $hS $hrec)
+        rr_exact_pf_sequence_or_projection
+          (RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidual
+            $hbackend $hbase $hdeg $halpha $hbeta $hpencil $hA $hB $hS $hrec))
 
 syntax (name := rr_pf_second_derivative_bidiagonal_sequence_cubic_normalized_named)
   "rr_pf_second_derivative_bidiagonal_sequence_cubic" " using "
@@ -886,10 +939,10 @@ macro_rules
         normalizer := $hnorm:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact
-          RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidual_norm
+        rr_exact_pf_sequence_or_projection
+          (isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidual_norm
             $hbackend $hbase $hdeg $halpha $hbeta $hpencil $hA $hB $hS $hnorm
-            $hrec)
+            $hrec))
 
 syntax (name := rr_pf_bidiagonal_sequence_jensen_named)
   "rr_pf_bidiagonal_sequence" " using "
@@ -909,8 +962,9 @@ macro_rules
         degree := $hdeg:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.isPFPolynomial_of_bidiagonalOperator_sequence_of_jensenPencil
-          $hbackend $hbase $hdeg $hcert $hrec)
+        rr_exact_pf_sequence_or_projection
+          (RealRooted.isPFPolynomial_of_bidiagonalOperator_sequence_of_jensenPencil
+            $hbackend $hbase $hdeg $hcert $hrec))
 
 syntax (name := rr_pf_bidiagonal_sequence_cubic_certificate_named)
   "rr_pf_bidiagonal_sequence" " using "
@@ -930,9 +984,9 @@ macro_rules
         degree := $hdeg:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact
-          RealRooted.isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidualCertificate
-            $hbackend $hbase $hdeg $hcert $hrec)
+        rr_exact_pf_sequence_or_projection
+          (RealRooted.isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidualCertificate
+            $hbackend $hbase $hdeg $hcert $hrec))
 
 syntax (name := rr_pf_second_derivative_bidiagonal_sequence_named)
   "rr_pf_second_derivative_bidiagonal_sequence" " using "
@@ -950,8 +1004,9 @@ macro_rules
         degree := $hdeg:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence
-          $hbase $hdeg $hPF $hrec)
+        rr_exact_pf_sequence_or_projection
+          (RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence
+            $hbase $hdeg $hPF $hrec))
 
 syntax (name := rr_pf_second_derivative_bidiagonal_sequence_preserver_normalized_named)
   "rr_pf_second_derivative_bidiagonal_sequence" " using "
@@ -971,8 +1026,9 @@ macro_rules
         normalizer := $hnorm:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_norm
-          $hbase $hdeg $hPF $hnorm $hrec)
+        rr_exact_pf_sequence_or_projection
+          (RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_norm
+            $hbase $hdeg $hPF $hnorm $hrec))
 
 syntax (name := rr_pf_second_derivative_bidiagonal_sequence_jensen_named)
   "rr_pf_second_derivative_bidiagonal_sequence" " using "
@@ -992,8 +1048,9 @@ macro_rules
         degree := $hdeg:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_jensenPencil
-          $hbackend $hbase $hdeg $hcert $hrec)
+        rr_exact_pf_sequence_or_projection
+          (RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_jensenPencil
+            $hbackend $hbase $hdeg $hcert $hrec))
 
 syntax (name := rr_pf_second_derivative_bidiagonal_sequence_jensen_normalized_named)
   "rr_pf_second_derivative_bidiagonal_sequence" " using "
@@ -1015,9 +1072,9 @@ macro_rules
         normalizer := $hnorm:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact
-          RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_jensenPencil_norm
-            $hbackend $hbase $hdeg $hcert $hnorm $hrec)
+        rr_exact_pf_sequence_or_projection
+          (RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_jensenPencil_norm
+            $hbackend $hbase $hdeg $hcert $hnorm $hrec))
 
 syntax (name := rr_pf_second_derivative_bidiagonal_sequence_cubic_certificate_named)
   "rr_pf_second_derivative_bidiagonal_sequence" " using "
@@ -1037,9 +1094,9 @@ macro_rules
         degree := $hdeg:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact
-          RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert
-            $hbackend $hbase $hdeg $hcert $hrec)
+        rr_exact_pf_sequence_or_projection
+          (RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert
+            $hbackend $hbase $hdeg $hcert $hrec))
 
 syntax (name := rr_pf_second_derivative_bidiagonal_sequence_cubic_certificate_normalized_named)
   "rr_pf_second_derivative_bidiagonal_sequence" " using "
@@ -1061,9 +1118,9 @@ macro_rules
         normalizer := $hnorm:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact
-          RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_norm
-            $hbackend $hbase $hdeg $hcert $hnorm $hrec)
+        rr_exact_pf_sequence_or_projection
+          (RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_norm
+            $hbackend $hbase $hdeg $hcert $hnorm $hrec))
 
 end Tactic
 
