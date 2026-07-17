@@ -470,6 +470,19 @@ private theorem diagonalOperator_succ_mul_succ_two_eq_euler (p : ℝ[X]) :
   simp [coeff_diagonalOperator]
   ring
 
+private theorem X_add_one_pow_eq_pow_sub_two_mul_sq (d : ℕ) (hd : 2 ≤ d) :
+    (X + 1 : ℝ[X]) ^ d =
+      (X + 1 : ℝ[X]) ^ (d - 2) * (X + 1) ^ 2 := by
+  simpa [Nat.sub_add_cancel hd] using
+    (pow_add (X + 1 : ℝ[X]) (d - 2) 2)
+
+private theorem oneSequence_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
+    X * jensenPolynomial d (fun _ => (1 : ℝ)) =
+      ((X + 1 : ℝ[X]) ^ (d - 2)) * a036969ResidualBeta := by
+  rw [jensenPolynomial_one_sequence, a036969ResidualBeta]
+  rw [X_add_one_pow_eq_pow_sub_two_mul_sq d hd]
+  ring
+
 /-- The A036969 alpha Jensen endpoint after removing the common residual
 factor. -/
 theorem a036969Alpha_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
@@ -490,16 +503,11 @@ theorem a036969Alpha_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
     have hd_one : 1 ≤ d := by lia
     rw [hnat]
     norm_num [Nat.cast_sub hd_one]
-  have hpowd :
-      (X + 1 : ℝ[X]) ^ d =
-        (X + 1 : ℝ[X]) ^ (d - 2) * (X + 1) ^ 2 := by
-    simpa [Nat.sub_add_cancel hd] using
-      (pow_add (X + 1 : ℝ[X]) (d - 2) 2)
   have hC2 : (C (2 : ℝ) : ℝ[X]) = (2 : ℝ[X]) :=
     Polynomial.C_eq_natCast (R := ℝ) 2
   have hC3 : (C (3 : ℝ) : ℝ[X]) = (3 : ℝ[X]) :=
     Polynomial.C_eq_natCast (R := ℝ) 3
-  rw [hd11, hd1, hpowd]
+  rw [hd11, hd1, X_add_one_pow_eq_pow_sub_two_mul_sq d hd]
   rw [pow_add]
   rw [hcast_poly, hC2, hC3]
   ring
@@ -511,14 +519,7 @@ theorem a036969Beta_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
       ((X + 1 : ℝ[X]) ^ (d - 2)) * a036969ResidualBeta := by
   change X * jensenPolynomial d (fun _ => (1 : ℝ)) =
     ((X + 1 : ℝ[X]) ^ (d - 2)) * a036969ResidualBeta
-  rw [jensenPolynomial_one_sequence, a036969ResidualBeta]
-  have hpow :
-      (X + 1 : ℝ[X]) ^ d =
-        (X + 1 : ℝ[X]) ^ (d - 2) * (X + 1) ^ 2 := by
-    simpa [Nat.sub_add_cancel hd] using
-      (pow_add (X + 1 : ℝ[X]) (d - 2) 2)
-  rw [hpow]
-  ring
+  exact oneSequence_jensen_factor d hd
 
 /-- The residual pencil for the A036969 PF-bidiagonal certificate. -/
 def a036969ResidualPencil (d : ℕ) (lam : ℝ) : ℝ[X] :=
@@ -814,18 +815,13 @@ theorem a071951Alpha_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
     have hd_one : 1 ≤ d := by lia
     rw [hnat]
     norm_num [Nat.cast_sub hd_one]
-  have hpowd :
-      (X + 1 : ℝ[X]) ^ d =
-        (X + 1 : ℝ[X]) ^ (d - 2) * (X + 1) ^ 2 := by
-    simpa [Nat.sub_add_cancel hd] using
-      (pow_add (X + 1 : ℝ[X]) (d - 2) 2)
   have hC2 : (C (2 : ℝ) : ℝ[X]) = (2 : ℝ[X]) :=
     Polynomial.C_eq_natCast (R := ℝ) 2
   have hC3 : (C (3 : ℝ) : ℝ[X]) = (3 : ℝ[X]) :=
     Polynomial.C_eq_natCast (R := ℝ) 3
   have hC4 : (C (4 : ℝ) : ℝ[X]) = (4 : ℝ[X]) :=
     Polynomial.C_eq_natCast (R := ℝ) 4
-  rw [hd11, hd1, hpowd]
+  rw [hd11, hd1, X_add_one_pow_eq_pow_sub_two_mul_sq d hd]
   rw [pow_add]
   rw [hcast_poly, hC2, hC3, hC4]
   ring
@@ -837,14 +833,7 @@ theorem a071951Beta_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
       ((X + 1 : ℝ[X]) ^ (d - 2)) * a036969ResidualBeta := by
   change X * jensenPolynomial d (fun _ => (1 : ℝ)) =
     ((X + 1 : ℝ[X]) ^ (d - 2)) * a036969ResidualBeta
-  rw [jensenPolynomial_one_sequence, a036969ResidualBeta]
-  have hpow :
-      (X + 1 : ℝ[X]) ^ d =
-        (X + 1 : ℝ[X]) ^ (d - 2) * (X + 1) ^ 2 := by
-    simpa [Nat.sub_add_cancel hd] using
-      (pow_add (X + 1 : ℝ[X]) (d - 2) 2)
-  rw [hpow]
-  ring
+  exact oneSequence_jensen_factor d hd
 
 /-- The A071951 alpha residual has nonnegative coefficients. -/
 theorem a071951ResidualAlpha_hasNonnegCoeffs (d : ℕ) :
