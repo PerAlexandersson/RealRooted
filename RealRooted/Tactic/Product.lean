@@ -1115,6 +1115,31 @@ theorem isRealRooted_of_product_scalar_factor_right_sequence
   exact isRealRooted_of_product_scalar_factor_sequence hbase ha hfactor hscalar
     (fun n => by rw [hstep n, mul_comm])
 
+/-- Right-scalar variant of `isRealRooted_of_product_scalar_factor_sequence`. -/
+theorem isRealRooted_of_product_scalar_factor_scalar_right_sequence
+    {P F : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hscalar : ∀ n : Nat, P (2 * n + 1) = P (2 * n) * C (a n))
+    (hstep : ∀ n : Nat, P (2 * n + 2) = F n * P (2 * n + 1)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  exact isRealRooted_of_product_scalar_factor_sequence hbase ha hfactor
+    (fun n => by rw [hscalar n, mul_comm]) hstep
+
+/-- Right-scalar/right-factor variant of
+`isRealRooted_of_product_scalar_factor_sequence`. -/
+theorem isRealRooted_of_product_scalar_factor_scalar_right_factor_right_sequence
+    {P F : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hscalar : ∀ n : Nat, P (2 * n + 1) = P (2 * n) * C (a n))
+    (hstep : ∀ n : Nat, P (2 * n + 2) = P (2 * n + 1) * F n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  exact isRealRooted_of_product_scalar_factor_right_sequence hbase ha hfactor
+    (fun n => by rw [hscalar n, mul_comm]) hstep
+
 /-- Constant-first variant of
 `isRealRooted_of_product_scalar_linear_sequence`. -/
 theorem isRealRooted_of_product_scalar_C_add_X_sequence
@@ -2365,19 +2390,11 @@ macro_rules
               (RealRooted.isRealRooted_of_product_scalar_factor_right_sequence
                 $hbase $ha $hfactor $hscalar $hstep)
           | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_factor_sequence
-                $hbase $ha $hfactor
-                (by
-                  intro n
-                  rw [($hscalar) n, mul_comm])
-                $hstep)
+              (RealRooted.isRealRooted_of_product_scalar_factor_scalar_right_sequence
+                $hbase $ha $hfactor $hscalar $hstep)
           | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_factor_right_sequence
-                $hbase $ha $hfactor
-                (by
-                  intro n
-                  rw [($hscalar) n, mul_comm])
-                $hstep))
+              (RealRooted.isRealRooted_of_product_scalar_factor_scalar_right_factor_right_sequence
+                $hbase $ha $hfactor $hscalar $hstep))
   | `(tactic|
       rr_product_scalar_factor_sequence_auto using
         base := $hbase:term,
