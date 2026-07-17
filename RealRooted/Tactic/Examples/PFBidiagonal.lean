@@ -1178,6 +1178,35 @@ example
     nonzero := hne
 
 example
+    {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
+    {d m : Nat → ℕ} {A B : Nat → ℝ[X]}
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbase : IsPFPolynomial (P 0))
+    (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
+    (halpha : ∀ n : Nat,
+      jensenPolynomial (d n) (alpha n) = ((X + 1 : ℝ[X]) ^ m n) * A n)
+    (hbeta : ∀ n : Nat,
+      X * jensenPolynomial (d n) (beta n) =
+        ((X + 1 : ℝ[X]) ^ m n) * B n)
+    (hA : ∀ n : Nat, CubicPFDiscriminantCertificate (A n))
+    (hB : ∀ n : Nat, CubicPFDiscriminantCertificate (B n))
+    (hS : ∀ n : Nat, ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate (A n + C lam * B n))
+    (hrec : ∀ n : Nat,
+      P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) := by
+  rr_pf_bidiagonal_sequence_cubic using
+    jensen_backend := hbackend,
+    base := hbase,
+    degree := hdeg,
+    alpha_factor := halpha,
+    beta_factor := hbeta,
+    alpha_cubic := hA,
+    beta_cubic := hB,
+    pencil_cubic := hS,
+    recurrence := hrec
+
+example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ}
     {d m : Nat → ℕ} {A B : Nat → ℝ[X]} {S : Nat → ℝ → ℝ[X]}
     (hbackend : jensenPencilBidiagonalPreserverStatement)
@@ -1255,6 +1284,42 @@ example
     alpha_factor := halpha,
     beta_factor := hbeta,
     pencil_factor := hpencil,
+    alpha_cubic := hA,
+    beta_cubic := hB,
+    pencil_cubic := hS,
+    recurrence := hrec,
+    nonzero := hne
+
+example
+    {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ}
+    {d m : Nat → ℕ} {A B : Nat → ℝ[X]}
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbase : IsPFPolynomial (P 0))
+    (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
+    (halpha : ∀ n : Nat,
+      jensenPolynomial (d n)
+          (fun k => secondDerivativeQuadraticCoeff (a0 n) (b1 n) (c2 n) k) =
+        ((X + 1 : ℝ[X]) ^ m n) * A n)
+    (hbeta : ∀ n : Nat,
+      X * jensenPolynomial (d n)
+          (fun k => secondDerivativeQuadraticCoeff (a1 n) (b2 n) (c3 n) k) =
+        ((X + 1 : ℝ[X]) ^ m n) * B n)
+    (hA : ∀ n : Nat, CubicPFDiscriminantCertificate (A n))
+    (hB : ∀ n : Nat, CubicPFDiscriminantCertificate (B n))
+    (hS : ∀ n : Nat, ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate (A n + C lam * B n))
+    (hne : ∀ n : Nat, P n ≠ 0)
+    (hrec : ∀ n : Nat,
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_pf_second_derivative_bidiagonal_sequence_cubic using
+    jensen_backend := hbackend,
+    base := hbase,
+    degree := hdeg,
+    alpha_factor := halpha,
+    beta_factor := hbeta,
     alpha_cubic := hA,
     beta_cubic := hB,
     pencil_cubic := hS,
