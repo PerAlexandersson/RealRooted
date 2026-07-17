@@ -571,7 +571,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     coeff := fun n => (2 * ((n : ℝ) + 4)) / (((n : ℝ) + 3) * ((n : ℝ) + 5)),
     den := fun n => (((n : ℝ) + 3) * ((n : ℝ) + 5) / 3),
     raw_coeff := fun n => 2 * ((n : ℝ) + 4) / 3,
-    den_nonzero := by intro n; rr_side_ne,
+    den_nonzero := by intro n; rr_scalar_active_den_at n,
     coeff_eq := by
       intro n
       rr_scalar_coeff_at n,
@@ -656,7 +656,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     coeff := fun n => (2 : ℝ) / ((n : ℝ) + 1),
-    den_nonzero := by intro n; rr_side_ne,
+    den_nonzero := by intro n; rr_scalar_active_den_at n,
     coeff_eq := by
       intro n
       rr_scalar_coeff_at n,
@@ -683,7 +683,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     coeff := fun n => (2 : ℝ) / ((n : ℝ) + 3),
-    den_nonzero := by intro n; rr_side_ne,
+    den_nonzero := by intro n; rr_scalar_active_den_at n,
     coeff_eq := by
       intro n
       rr_scalar_coeff_at n,
@@ -771,7 +771,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     raw_lag_coeff := fun n => (n : ℝ) + 1,
     root_lower := hroot_lower,
     root_upper := hroot_upper,
-    den_nonzero := by intro n; rr_side_ne,
+    den_nonzero := by intro n; rr_scalar_active_den_at n,
     deriv_coeff_eq := by
       intro n
       rr_scalar_coeff_at n,
@@ -830,7 +830,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     den := fun n => (n : ℝ) + 3,
     raw_deriv_coeff := fun _ => (2 : ℝ),
     raw_lag_coeff := fun n => (n : ℝ) + 3,
-    den_nonzero := by intro n; rr_side_ne,
+    den_nonzero := by intro n; rr_scalar_active_den_at n,
     deriv_coeff_eq := by
       intro n
       rr_scalar_coeff_at n,
@@ -868,7 +868,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     den := fun n => (n : ℝ) + 3,
     raw_deriv_coeff := fun _ => (2 : ℝ),
     raw_lag_coeff := fun n => (n : ℝ) + 1,
-    den_nonzero := by intro n; rr_side_ne,
+    den_nonzero := by intro n; rr_scalar_active_den_at n,
     deriv_coeff_eq := by
       intro n
       rr_scalar_coeff_at n,
@@ -1109,7 +1109,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     coeff := fun n => ((n : ℝ) + 2) / ((n : ℝ) + 5),
     raw_coeff := fun n => (n : ℝ) + 2,
     den := fun n => (n : ℝ) + 5,
-    den_nonzero := by intro n; rr_side_ne,
+    den_nonzero := by intro n; rr_scalar_active_den_at n,
     coeff_eq := by
       intro n
       rr_scalar_coeff_at n,
@@ -1140,7 +1140,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     coeff := fun n => ((n : ℝ) + 1) / ((n : ℝ) + 4),
     raw_coeff := fun n => ((n : ℝ) + 1) / 2,
     den := fun n => ((n : ℝ) + 4) / 2,
-    den_nonzero := by intro n; rr_side_ne,
+    den_nonzero := by intro n; rr_scalar_active_den_at n,
     coeff_eq := by
       intro n
       rr_scalar_coeff_at n,
@@ -1173,9 +1173,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     coeff := fun n => ((n : ℝ) + 2) / ((n : ℝ) + 5),
     raw_coeff := fun n => -(((n : ℝ) + 2) * ((n : ℝ) + 1) / 3),
     den := fun n => -(((n : ℝ) + 5) * ((n : ℝ) + 1) / 3),
-    den_nonzero := by
-      intro n
-      rr_side_ne,
+    den_nonzero := by intro n; rr_scalar_active_den_at n,
     coeff_eq := by
       intro n
       rr_scalar_coeff_at n,
@@ -1207,7 +1205,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     coeff := fun n => ((n : ℝ) + 2) / ((n : ℝ) + 1),
     raw_coeff := fun n => ((n : ℝ) + 2) * ((n : ℝ) + 1),
     den := fun n => ((n : ℝ) + 1) ^ 2,
-    den_nonzero := by intro n; rr_side_ne,
+    den_nonzero := by intro n; rr_scalar_active_den_at n,
     coeff_eq := by
       intro n
       rr_scalar_coeff_at n,
@@ -1530,7 +1528,7 @@ example {P : Nat → ℝ[X]}
       norm_num
       simpa using hP1,
     den := fun n : Nat => 1 + ((n + 2 : Nat) : ℝ) / 2,
-    den_nonzero := by intro n; rr_side_ne,
+    den_nonzero := by intro n; rr_scalar_active_den_at n,
     slope_coeff_eq := by
       intro n
       rr_scalar_coeff_at n,
