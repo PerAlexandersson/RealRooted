@@ -987,6 +987,24 @@ theorem secondDerivativeBidiagonalForm_a390433 (n : ℕ) (p : ℝ[X]) :
   · intro k
     simp [a390433Beta, secondDerivativeQuadraticCoeff]
 
+/-- A390433-shaped normalized recurrence shell. -/
+example
+    {P : Nat → ℝ[X]} {d : Nat → ℕ}
+    (hbase : IsPFPolynomial (P 0))
+    (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
+    (hpres : ∀ n : Nat, BidiagonalPFPreserver (a390433Alpha n) a390433Beta (d n))
+    (hrec : ∀ n : Nat,
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (((n : ℝ) - 2) ^ 2) 1 (-3 + 2 * (n : ℝ)) 0 1 0 (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) := by
+  rr_pf_second_derivative_bidiagonal_sequence using
+    preserver := hpres,
+    base := hbase,
+    degree := hdeg,
+    normalizer := (fun n => secondDerivativeBidiagonalForm_a390433 n (P n)),
+    recurrence := hrec
+
 example
     {alpha beta : ℕ → ℝ} {d : ℕ}
     (hbackend : jensenPencilBidiagonalPreserverStatement)
