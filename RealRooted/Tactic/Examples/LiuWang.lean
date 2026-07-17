@@ -13,6 +13,15 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
+example {c : ℝ} (hc : 0 ≤ c) : 0 ≤ c := by
+  rr_lw_coeff_nonneg
+
+example {n : Nat} : 0 ≤ (n : ℝ) + 1 := by
+  rr_lw_coeff_nonneg
+
+example {n : Nat} (hn : 1 ≤ n) : 0 ≤ (n : ℝ) - 1 := by
+  rr_lw_coeff_nonneg
+
 example {f g a b : ℝ[X]} {l : List (ℝ[X] × ℝ[X])}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)

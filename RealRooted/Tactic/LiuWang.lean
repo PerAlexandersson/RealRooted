@@ -2506,20 +2506,29 @@ theorem isRealRooted_of_lw_current_one_add_X_positive_t_lag_sequence
 
 namespace Tactic
 
+syntax (name := rr_lw_coeff_nonneg) "rr_lw_coeff_nonneg" : tactic
+
+macro_rules
+  | `(tactic| rr_lw_coeff_nonneg) =>
+      `(tactic|
+        first
+          | assumption
+          | exact_mod_cast (by assumption)
+          | exact sub_nonneg.mpr (by exact_mod_cast (by assumption))
+          | positivity
+          | norm_num
+          | nlinarith)
+
 macro "rr_lw_active_nonneg_at " n:term : tactic =>
   `(tactic|
     solve
-      | assumption
-      | positivity
-      | norm_num
+      | rr_lw_coeff_nonneg
       | nlinarith [sq_nonneg (($n : ℝ) + 1), show 0 ≤ ($n : ℝ) by positivity])
 
 macro "rr_lw_quadratic_discriminant_at " n:term : tactic =>
   `(tactic|
     solve
-      | assumption
-      | positivity
-      | norm_num
+      | rr_lw_coeff_nonneg
       | nlinarith [sq_nonneg ($n : ℝ),
           sq_nonneg (($n : ℝ) + 1),
           sq_nonneg (($n : ℝ) + 2),
@@ -4530,7 +4539,7 @@ macro_rules
           interlacer := $hgf,
           interlacer_pos_lc := $hg_pos,
           roots_nonpos := $hf_roots,
-          coeff_nonneg := by first | assumption | positivity | norm_num | nlinarith,
+          coeff_nonneg := by rr_lw_coeff_nonneg,
           target_pos_lc := $hF_pos,
           degree_lower := $hdeg_lo,
           degree_upper := $hdeg_hi,
@@ -4632,7 +4641,7 @@ macro_rules
           interlacer := $hgf,
           interlacer_pos_lc := $hg_pos,
           nonneg_coeffs := $hf_nonneg,
-          coeff_nonneg := by first | assumption | positivity | norm_num | nlinarith,
+          coeff_nonneg := by rr_lw_coeff_nonneg,
           target_pos_lc := $hF_pos,
           degree_lower := $hdeg_lo,
           degree_upper := $hdeg_hi,
@@ -4741,7 +4750,7 @@ macro_rules
         first
           | refine RealRooted.prec_lw_positive_C_mul_X_mul_lag_of_nonneg_coeffs
               $hgf $hg_pos $hf_nonneg ?_ $hQ $hF_pos $hdeg_lo $hdeg_hi $hno
-            first | assumption | positivity | norm_num | nlinarith
+            rr_lw_coeff_nonneg
           | refine (by
               simpa [mul_assoc] using
                 (RealRooted.prec_lw_positive_C_mul_X_mul_lag_of_nonneg_coeffs
@@ -4750,7 +4759,7 @@ macro_rules
                   (by simpa [mul_assoc] using $hdeg_lo)
                   (by simpa [mul_assoc] using $hdeg_hi)
                   $hno))
-            first | assumption | positivity | norm_num | nlinarith)
+            rr_lw_coeff_nonneg)
   | `(tactic|
       rr_lw_negative_square using
         interlacer := $hgf:term,
