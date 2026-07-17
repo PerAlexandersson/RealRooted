@@ -1121,9 +1121,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     coeff := fun _ => (1 : ℝ),
     root_lower := hroot_lower,
-    den_nonzero := by
-      intro n
-      rr_side_ne,
+    den_nonzero := by intro n; rr_scalar_active_den_at n,
     coeff_eq := by
       intro n
       rr_scalar_coeff_at n,
@@ -1679,9 +1677,7 @@ example {P : Nat → ℝ[X]} {Araw : Nat → ℝ[X]}
     raw_linear := fun n => -((n : ℝ) + 1),
     raw_constant := fun n => (n : ℝ) + 1,
     den := fun n => (n : ℝ) + 1,
-    den_nonzero := by
-      intro n
-      rr_side_ne,
+    den_nonzero := by intro n; rr_scalar_active_den_at n,
     leading_coeff_eq := by
       intro n
       rr_scalar_coeff_at n,
