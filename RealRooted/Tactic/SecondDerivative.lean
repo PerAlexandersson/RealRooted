@@ -651,9 +651,8 @@ macro_rules
           degree_two := $hdeg_two,
           inner_pos_lc := $hinner_pos,
           coeff_nonpos := (by
-            intro n r hr
-            have hr_nonpos : r ≤ 0 := ($hroot) n r hr
-            rr_sign),
+            intro n
+            rr_sign_at_roots_upper using ($hroot n)),
           recurrence := $hrec,
           inner_degree_lower := $hinner_deg_lo,
           inner_degree_upper := $hinner_deg_hi)
@@ -681,9 +680,8 @@ macro_rules
           degree_two := $hdeg_two,
           inner_pos_lc := $hinner_pos,
           coeff_nonpos := (by
-            intro n r hr
-            have hr_upper := ($hroot) n r hr
-            rr_sign),
+            intro n
+            rr_sign_at_roots_upper using ($hroot n)),
           recurrence := $hrec,
           inner_degree_lower := $hinner_deg_lo,
           inner_degree_upper := $hinner_deg_hi)
@@ -711,9 +709,8 @@ macro_rules
           degree_two := $hdeg_two,
           inner_neg_lc := $hinner_neg,
           coeff_nonneg := (by
-            intro n r hr
-            have hr_nonneg : 0 ≤ r := ($hroot) n r hr
-            rr_sign),
+            intro n
+            rr_sign_at_roots_lower using ($hroot n)),
           recurrence := $hrec,
           inner_degree_lower := $hinner_deg_lo,
           inner_degree_upper := $hinner_deg_hi)
