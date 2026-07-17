@@ -111,6 +111,9 @@ import RealRooted.Challenges.OperatorPreservers
 import RealRooted.Challenges.VeroneseSections
 import RealRooted.Challenges.Wagner
 
+-- Tactics
+import RealRooted.Tactic
+
 -- Local Mathlib extensions
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
