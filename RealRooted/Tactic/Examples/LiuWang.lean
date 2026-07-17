@@ -2438,6 +2438,30 @@ example {P : Nat → ℝ[X]} {A Q : Nat → ℝ[X]} {c : Nat → ℝ}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
+/-- The explicit scalar product-lag sequence endpoint uses a supplied
+coefficient certificate. -/
+example {P : Nat → ℝ[X]} {A Q : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hQ : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ (Q n).eval r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (C (c n) * X * Q n) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_positive_C_mul_X_mul_sequence using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    coeff_nonneg := hc,
+    factor_nonneg := hQ,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
 /-- Scalar product-lag sequence shell with automatic nonnegativity of the
 scalar coefficient. -/
 example {P : Nat → ℝ[X]} {A Q : Nat → ℝ[X]}
@@ -2586,6 +2610,52 @@ example {P : Nat → ℝ[X]} {A R : Nat → ℝ[X]}
     base := hbase,
     pos_lc := hpos,
     nonneg_coeffs := hnonneg,
+    factor_nonneg := hR,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Explicit active-coefficient `c_n t R_n(t)` shell with a supplied
+coefficient certificate. -/
+example {P : Nat → ℝ[X]} {A R : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hR : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ (R n).eval r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (C (c n) * X * R n) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_c_tR_lag_sequence using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    coeff_nonneg := hc,
+    factor_nonneg := hR,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Real-rootedness endpoint for the explicit `c_n t R_n(t)` alias. -/
+example {P : Nat → ℝ[X]} {A R : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hR : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ (R n).eval r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + C (c n) * (X * (R n * P n)))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_lw_c_tR_lag_sequence_realrooted using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    coeff_nonneg := hc,
     factor_nonneg := hR,
     recurrence := hrec,
     degree_succ := hdeg_succ,
