@@ -1002,6 +1002,26 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a : Nat → ℝ}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
+/-- The same affine half-line lag, with automatic scalar side-goals and the
+`Prec` endpoint. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (C ((n : ℝ) + 1) * X - C (1 : ℝ)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_C_mul_X_sub_C_lag_sequence_auto using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
 /-- The affine half-line lag also has an auto side-goal path for routine
 nonnegative scalar parameters. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
@@ -1746,6 +1766,52 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
+/-- The same interval lag, with automatic coefficient side-goals on the `Prec`
+endpoint. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(1 / 2 : ℝ))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) +
+          (C ((n : ℝ) + 1) * (1 + X) * (1 + C (2 : ℝ) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_C_mul_one_add_X_one_add_two_X_lag_sequence_interval_auto using
+    base := hbase,
+    pos_lc := hpos,
+    root_lower := hroot_lower,
+    root_upper := hroot_upper,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Explicit-coefficient real-rootedness endpoint for the scalar interval lag. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(1 / 2 : ℝ))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (C (c n) * (1 + X) * (1 + C (2 : ℝ) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_lw_C_mul_one_add_X_one_add_two_X_lag_sequence_realrooted_interval using
+    base := hbase,
+    pos_lc := hpos,
+    coeff_nonneg := hc,
+    root_lower := hroot_lower,
+    root_upper := hroot_upper,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
 /-- Real-rootedness endpoint for the same interval lag, with automatic
 coefficient nonnegativity. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
@@ -1792,6 +1858,98 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a b : Nat → ℝ}
     coeff_nonneg := hc,
     slope_nonneg := hb,
     slope_le_const := hba,
+    root_lower := hroot_lower,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Real-rootedness endpoint for the inner-window negative affine lag. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a b : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hb : ∀ n : Nat, 0 ≤ b n)
+    (hba : ∀ n : Nat, b n ≤ a n)
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (-(C (c n)) * (C (a n) + C (b n) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_lw_neg_C_mul_affine_inner_lag_sequence_realrooted_nonneg using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    coeff_nonneg := hc,
+    slope_nonneg := hb,
+    slope_le_const := hba,
+    root_lower := hroot_lower,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Explicit coefficient endpoint for the `-c_n(1+t)` lag. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (-(C (c n)) * (1 + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_neg_C_mul_one_add_X_lag_sequence_nonneg using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    coeff_nonneg := hc,
+    root_lower := hroot_lower,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Automatic coefficient endpoint for the `-c_n(1+t)` lag. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (-(C ((n : ℝ) + 1)) * (1 + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_neg_C_mul_one_add_X_lag_sequence_nonneg_auto using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    root_lower := hroot_lower,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Explicit real-rootedness endpoint for the `-c_n(1+t)` lag. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = A n * P (n + 1) + (-(C (c n)) * (1 + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_lw_neg_C_mul_one_add_X_lag_sequence_realrooted_nonneg using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    coeff_nonneg := hc,
     root_lower := hroot_lower,
     recurrence := hrec,
     degree_succ := hdeg_succ,
@@ -1865,6 +2023,74 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     base := hbase,
     pos_lc := hpos,
     nonneg_coeffs := hnonneg,
+    root_lower_half := hroot_lower,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Explicit coefficient endpoint for the tighter `-c_n(1+2t)` lag. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -(1 / 2 : ℝ) ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (-(C (c n)) * (1 + C (2 : ℝ) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_neg_C_mul_one_add_two_X_lag_sequence_nonneg using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    coeff_nonneg := hc,
+    root_lower_half := hroot_lower,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Automatic coefficient endpoint for the tighter `-c_n(1+2t)` lag. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -(1 / 2 : ℝ) ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) +
+          (-(C ((n : ℝ) + 1)) * (1 + C (2 : ℝ) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_neg_C_mul_one_add_two_X_lag_sequence_nonneg_auto using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    root_lower_half := hroot_lower,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Explicit real-rootedness endpoint for the tighter `-c_n(1+2t)` lag. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -(1 / 2 : ℝ) ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (-(C (c n)) * (1 + C (2 : ℝ) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_lw_neg_C_mul_one_add_two_X_lag_sequence_realrooted_nonneg using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    coeff_nonneg := hc,
     root_lower_half := hroot_lower,
     recurrence := hrec,
     degree_succ := hdeg_succ,
