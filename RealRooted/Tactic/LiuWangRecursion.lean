@@ -163,17 +163,11 @@ macro_rules
           RealRooted.prec_lw_derivative_lag_sequence_of_root_signs
             $hbase $hpos $hdeg_two $hrec
             (by
-              intro n hsource r hr
-              have hr_nonpos : r ≤ 0 :=
-                RealRooted.root_nonpos_of_realrooted_of_nonneg_coeffs
-                  hsource ($hnonneg (n + 1)) hr
-              rr_sign)
+              intro n hsource
+              rr_sign_at_roots using hsource, ($hnonneg (n + 1)))
             (by
-              intro n hsource r hr
-              have hr_nonpos : r ≤ 0 :=
-                RealRooted.root_nonpos_of_realrooted_of_nonneg_coeffs
-                  hsource ($hnonneg (n + 1)) hr
-              rr_sign)
+              intro n hsource
+              rr_sign_at_roots using hsource, ($hnonneg (n + 1)))
             $hdeg_succ $hno)
   | `(tactic|
       rr_lw_derivative_lag_sequence_realrooted_sign_auto using
@@ -189,17 +183,11 @@ macro_rules
           (RealRooted.isRealRooted_of_lw_derivative_lag_sequence_of_root_signs
             $hbase $hpos $hdeg_two $hrec
             (by
-              intro n hsource r hr
-              have hr_nonpos : r ≤ 0 :=
-                RealRooted.root_nonpos_of_realrooted_of_nonneg_coeffs
-                  hsource ($hnonneg (n + 1)) hr
-              rr_sign)
+              intro n hsource
+              rr_sign_at_roots using hsource, ($hnonneg (n + 1)))
             (by
-              intro n hsource r hr
-              have hr_nonpos : r ≤ 0 :=
-                RealRooted.root_nonpos_of_realrooted_of_nonneg_coeffs
-                  hsource ($hnonneg (n + 1)) hr
-              rr_sign)
+              intro n hsource
+              rr_sign_at_roots using hsource, ($hnonneg (n + 1)))
             $hdeg_succ $hno))
   | `(tactic|
       rr_lw_derivative_lag_sequence_window_sign_auto using
