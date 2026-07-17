@@ -122,6 +122,37 @@ example {P Q : Nat → ℝ[X]}
     quotient_realrooted := hquot,
     factorization := hrow
 
+/-- Nonzero scalar-power lift for rows `P_n = c_n^{m_n} Q_n`. -/
+example {P Q : Nat → ℝ[X]} {c : Nat → ℝ} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hrow : ∀ n : Nat, P n = (C (c n) : ℝ[X]) ^ (m n) * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_C_pow_sequence using
+    quotient_realrooted := hquot,
+    scalar_ne := hc,
+    factorization := hrow
+
+/-- The scalar-power lift also accepts the quotient factor on the left. -/
+example {P Q : Nat → ℝ[X]} {c : Nat → ℝ} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hrow : ∀ n : Nat, P n = Q n * (C (c n) : ℝ[X]) ^ (m n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_C_pow_sequence using
+    quotient_realrooted := hquot,
+    scalar_ne := hc,
+    factorization := hrow
+
+/-- Automatic scalar certificate for positive scalar-power lifts. -/
+example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = (C ((n : ℝ) + 1) : ℝ[X]) ^ (m n) * Q n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_C_pow_sequence_auto using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
 /-- Root-at-zero power lift for rows `P_n = X^{m_n} Q_n`. -/
 example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)

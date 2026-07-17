@@ -173,6 +173,39 @@ theorem isRealRooted_X_pow (n : Nat) :
       rw [pow_succ]
       exact isRealRooted_mul ih.1 ih.2 isRealRooted_X.1 isRealRooted_X.2
 
+/-- Powers of a nonzero scalar constant are real-rooted. -/
+theorem isRealRooted_C_pow {a : ℝ} (ha : a ≠ 0) (n : Nat) :
+    ((C a : ℝ[X]) ^ n ≠ 0 ∧ (((C a : ℝ[X]) ^ n).Splits)) := by
+  induction n with
+  | zero =>
+      simp
+  | succ n ih =>
+      have hC : (C a : ℝ[X]) ≠ 0 ∧ (C a : ℝ[X]).Splits := by
+        simpa using
+          (isRealRooted_C_mul (p := (1 : ℝ[X])) (by simp) (by simp) ha)
+      rw [pow_succ]
+      exact isRealRooted_mul ih.1 ih.2 hC.1 hC.2
+
+/-- Lift through row-wise powers of nonzero scalar constants. -/
+theorem isRealRooted_of_C_pow_lift_sequence
+    {P Q : Nat → ℝ[X]} {c : Nat → ℝ} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hrow : ∀ n : Nat, P n = (C (c n) : ℝ[X]) ^ (m n) * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_lift_sequence hquot
+    (fun n => isRealRooted_C_pow (hc n) (m n)) hrow
+
+/-- Right-factor variant of `isRealRooted_of_C_pow_lift_sequence`. -/
+theorem isRealRooted_of_C_pow_lift_right_sequence
+    {P Q : Nat → ℝ[X]} {c : Nat → ℝ} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hrow : ∀ n : Nat, P n = Q n * (C (c n) : ℝ[X]) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_lift_right_sequence hquot
+    (fun n => isRealRooted_C_pow (hc n) (m n)) hrow
+
 /-- Lift through row-wise powers of `X`. -/
 theorem isRealRooted_of_X_pow_lift_sequence
     {P Q : Nat → ℝ[X]} {m : Nat → Nat}
@@ -831,6 +864,19 @@ syntax (name := rr_product_lift_X_sequence_named)
     "factorization" ":=" term :
   tactic
 
+syntax (name := rr_product_lift_C_pow_sequence_named)
+  "rr_product_lift_C_pow_sequence" " using "
+    "quotient_realrooted" ":=" term ","
+    "scalar_ne" ":=" term ","
+    "factorization" ":=" term :
+  tactic
+
+syntax (name := rr_product_lift_C_pow_sequence_auto_named)
+  "rr_product_lift_C_pow_sequence_auto" " using "
+    "quotient_realrooted" ":=" term ","
+    "factorization" ":=" term :
+  tactic
+
 syntax (name := rr_product_lift_X_pow_sequence_named)
   "rr_product_lift_X_pow_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -1084,6 +1130,36 @@ macro_rules
               (RealRooted.isRealRooted_of_X_lift_sequence $hquot $hrow)
           | rr_exact_realrooted_sequence_or_projection
               (RealRooted.isRealRooted_of_X_lift_right_sequence $hquot $hrow))
+  | `(tactic|
+      rr_product_lift_C_pow_sequence using
+        quotient_realrooted := $hquot:term,
+        scalar_ne := $hc:term,
+        factorization := $hrow:term) =>
+      `(tactic|
+        first
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_C_pow_lift_sequence $hquot $hc $hrow)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_C_pow_lift_right_sequence
+                $hquot $hc $hrow))
+  | `(tactic|
+      rr_product_lift_C_pow_sequence_auto using
+        quotient_realrooted := $hquot:term,
+        factorization := $hrow:term) =>
+      `(tactic|
+        first
+          | rr_exact_realrooted_sequence_or_projection
+              (by
+                refine RealRooted.isRealRooted_of_C_pow_lift_sequence
+                  $hquot ?_ $hrow
+                intro n
+                positivity)
+          | rr_exact_realrooted_sequence_or_projection
+              (by
+                refine RealRooted.isRealRooted_of_C_pow_lift_right_sequence
+                  $hquot ?_ $hrow
+                intro n
+                positivity))
   | `(tactic|
       rr_product_lift_X_pow_sequence using
         quotient_realrooted := $hquot:term,
