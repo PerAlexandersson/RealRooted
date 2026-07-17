@@ -815,15 +815,15 @@ theorem a036969ResidualPencil_cubicPFDiscriminantCertificate
 operator. -/
 def a036969_bidiagonalCubicResidualCertificate (d : ℕ) (hd : 2 ≤ d) :
     BidiagonalCubicResidualCertificate a036969Alpha a036969Beta d := by
-  refine bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
-    (a036969Alpha_jensen_factor d hd)
-    (a036969Beta_jensen_factor d hd)
-    (a036969ResidualAlpha_cubicPFDiscriminantCertificate d)
-    a036969ResidualBeta_cubicPFDiscriminantCertificate
-    ?_
-  intro lam hlam
-  simpa [a036969ResidualPencil] using
-    a036969ResidualPencil_cubicPFDiscriminantCertificate d hlam
+  rr_pf_bidiagonal_cubic_certificate using
+    alpha_factor := a036969Alpha_jensen_factor d hd,
+    beta_factor := a036969Beta_jensen_factor d hd,
+    alpha_cubic := a036969ResidualAlpha_cubicPFDiscriminantCertificate d,
+    beta_cubic := a036969ResidualBeta_cubicPFDiscriminantCertificate,
+    pencil_cubic := by
+      intro lam hlam
+      simpa [a036969ResidualPencil] using
+        a036969ResidualPencil_cubicPFDiscriminantCertificate d hlam
 
 /-- The A036969 differential recurrence normalizes to a coefficient-bidiagonal
 operator with `alpha(k)=(k+1)^2` and `beta(k)=1`. -/
@@ -1068,15 +1068,15 @@ theorem a071951ResidualPencil_cubicPFDiscriminantCertificate
 operator. -/
 def a071951_bidiagonalCubicResidualCertificate (d : ℕ) (hd : 2 ≤ d) :
     BidiagonalCubicResidualCertificate a071951Alpha a071951Beta d := by
-  refine bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
-    (a071951Alpha_jensen_factor d hd)
-    (a071951Beta_jensen_factor d hd)
-    (a071951ResidualAlpha_cubicPFDiscriminantCertificate d)
-    a036969ResidualBeta_cubicPFDiscriminantCertificate
-    ?_
-  intro lam hlam
-  simpa [a071951ResidualPencil] using
-    a071951ResidualPencil_cubicPFDiscriminantCertificate d hlam
+  rr_pf_bidiagonal_cubic_certificate using
+    alpha_factor := a071951Alpha_jensen_factor d hd,
+    beta_factor := a071951Beta_jensen_factor d hd,
+    alpha_cubic := a071951ResidualAlpha_cubicPFDiscriminantCertificate d,
+    beta_cubic := a036969ResidualBeta_cubicPFDiscriminantCertificate,
+    pencil_cubic := by
+      intro lam hlam
+      simpa [a071951ResidualPencil] using
+        a071951ResidualPencil_cubicPFDiscriminantCertificate d hlam
 
 /-- The A071951 differential recurrence normalizes to a coefficient-bidiagonal
 operator with `alpha(k)=(k+1)(k+2)` and `beta(k)=1`. -/
@@ -1267,15 +1267,15 @@ theorem a080248ResidualPencil_cubicPFDiscriminantCertificate
 operator. -/
 def a080248_bidiagonalCubicResidualCertificate (d : ℕ) (hd : 2 ≤ d) :
     BidiagonalCubicResidualCertificate a080248Alpha a080248Beta d := by
-  refine bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
-    (a080248Alpha_jensen_factor d hd)
-    (a080248Beta_jensen_factor d hd)
-    (a080248ResidualAlpha_cubicPFDiscriminantCertificate d)
-    a036969ResidualBeta_cubicPFDiscriminantCertificate
-    ?_
-  intro lam hlam
-  simpa [a080248ResidualPencil] using
-    a080248ResidualPencil_cubicPFDiscriminantCertificate d hlam
+  rr_pf_bidiagonal_cubic_certificate using
+    alpha_factor := a080248Alpha_jensen_factor d hd,
+    beta_factor := a080248Beta_jensen_factor d hd,
+    alpha_cubic := a080248ResidualAlpha_cubicPFDiscriminantCertificate d,
+    beta_cubic := a036969ResidualBeta_cubicPFDiscriminantCertificate,
+    pencil_cubic := by
+      intro lam hlam
+      simpa [a080248ResidualPencil] using
+        a080248ResidualPencil_cubicPFDiscriminantCertificate d hlam
 
 /-- The A080248 differential recurrence normalizes to a coefficient-bidiagonal
 operator with `alpha(k)=(k+1)(k+2)/2` and `beta(k)=1`. -/
@@ -1550,15 +1550,15 @@ theorem a160562ResidualPencil_cubicPFDiscriminantCertificate
 operator. -/
 def a160562_bidiagonalCubicResidualCertificate (d : ℕ) (hd : 2 ≤ d) :
     BidiagonalCubicResidualCertificate a160562Alpha a160562Beta d := by
-  refine bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
-    (a160562Alpha_jensen_factor d hd)
-    (a160562Beta_jensen_factor d hd)
-    (a160562ResidualAlpha_cubicPFDiscriminantCertificate d)
-    a036969ResidualBeta_cubicPFDiscriminantCertificate
-    ?_
-  intro lam hlam
-  simpa [a160562ResidualPencil] using
-    a160562ResidualPencil_cubicPFDiscriminantCertificate d hlam
+  rr_pf_bidiagonal_cubic_certificate using
+    alpha_factor := a160562Alpha_jensen_factor d hd,
+    beta_factor := a160562Beta_jensen_factor d hd,
+    alpha_cubic := a160562ResidualAlpha_cubicPFDiscriminantCertificate d,
+    beta_cubic := a036969ResidualBeta_cubicPFDiscriminantCertificate,
+    pencil_cubic := by
+      intro lam hlam
+      simpa [a160562ResidualPencil] using
+        a160562ResidualPencil_cubicPFDiscriminantCertificate d hlam
 
 /-- The coefficient multiplier for the A269945 recurrence. -/
 def a269945Alpha (k : ℕ) : ℝ :=
@@ -1774,15 +1774,15 @@ theorem a269945ResidualPencil_cubicPFDiscriminantCertificate
 operator. -/
 def a269945_bidiagonalCubicResidualCertificate (d : ℕ) (hd : 2 ≤ d) :
     BidiagonalCubicResidualCertificate a269945Alpha a269945Beta d := by
-  refine bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
-    (a269945Alpha_jensen_factor d hd)
-    (a269945Beta_jensen_factor d hd)
-    (a269945ResidualAlpha_cubicPFDiscriminantCertificate d)
-    a036969ResidualBeta_cubicPFDiscriminantCertificate
-    ?_
-  intro lam hlam
-  simpa [a269945ResidualPencil] using
-    a269945ResidualPencil_cubicPFDiscriminantCertificate d hlam
+  rr_pf_bidiagonal_cubic_certificate using
+    alpha_factor := a269945Alpha_jensen_factor d hd,
+    beta_factor := a269945Beta_jensen_factor d hd,
+    alpha_cubic := a269945ResidualAlpha_cubicPFDiscriminantCertificate d,
+    beta_cubic := a036969ResidualBeta_cubicPFDiscriminantCertificate,
+    pencil_cubic := by
+      intro lam hlam
+      simpa [a269945ResidualPencil] using
+        a269945ResidualPencil_cubicPFDiscriminantCertificate d hlam
 
 /-- The coefficient multiplier for the A166960 recurrence. -/
 def a166960Alpha (k : ℕ) : ℝ :=
