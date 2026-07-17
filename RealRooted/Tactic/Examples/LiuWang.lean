@@ -612,6 +612,85 @@ example {P : Nat → ℝ[X]}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
+/-- Explicit-coefficient version of the current-`1+X` positive-lag shell. -/
+example {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = (1 + X : ℝ[X]) * P (n + 1) + (C (c n) * X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_current_one_add_X_sequence using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    coeff_nonneg := hc,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Real-rootedness endpoint for the explicit current-`1+X` shell. -/
+example {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = (1 + X : ℝ[X]) * P (n + 1) + (C (c n) * X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_lw_current_one_add_X_sequence_realrooted using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    coeff_nonneg := hc,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Current factor `X` with an explicit positive-lag coefficient. -/
+example {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat, P (n + 2) = X * P (n + 1) + (C (c n) * X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_current_X_sequence using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    coeff_nonneg := hc,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Current factor `c_n X` with an explicit positive-lag coefficient. -/
+example {P : Nat → ℝ[X]} {a c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = (C (a n) * X) * P (n + 1) + (C (c n) * X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_lw_current_CX_sequence_realrooted using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    coeff_nonneg := hc,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
 /-- Strict Family E1 unit-lag shell: `P_{n+2}=A_n P_{n+1}+tP_n`.
 
 The plateau-safe version is handled by the Wagner-X shell; this wrapper covers
@@ -815,6 +894,23 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {a : Nat → ℝ}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
+/-- Unit positive-affine lag, tested on the `Prec` endpoint. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(a n))
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + (C (a n) + X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_C_add_X_lag_sequence using
+    base := hbase,
+    pos_lc := hpos,
+    root_upper := hroot_upper,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
 /-- The shifted certificate version removes the explicit root-location
 hypothesis from the positive-affine lag. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a : Nat → ℝ}
@@ -832,6 +928,25 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a : Nat → ℝ}
     base := hbase,
     pos_lc := hpos,
     coeff_nonneg := hc,
+    shift_nonneg := hshift_nonneg,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Unit positive-affine lag with shifted nonnegative coefficients, tested on
+the `Prec` endpoint. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hshift_nonneg :
+      ∀ n : Nat, HasNonnegCoeffs ((P (n + 1)).comp (X - C (a n))))
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + (C (a n) + X) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_C_add_X_lag_sequence_shift_nonneg using
+    base := hbase,
+    pos_lc := hpos,
     shift_nonneg := hshift_nonneg,
     recurrence := hrec,
     degree_succ := hdeg_succ,
