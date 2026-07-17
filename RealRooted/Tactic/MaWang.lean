@@ -1807,10 +1807,7 @@ theorem isRealRooted_of_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_c
 namespace Tactic
 
 macro "rr_mw_active_nonneg_at " n:term : tactic =>
-  `(tactic|
-    solve
-      | rr_side_nonneg
-      | nlinarith [sq_nonneg (($n : ℝ) + 1), show 0 ≤ ($n : ℝ) by positivity])
+  `(tactic| rr_scalar_active_nonneg_at $n)
 
 macro "rr_mw_degree_from " hdeg:term : tactic =>
   `(tactic|

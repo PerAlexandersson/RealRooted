@@ -91,6 +91,12 @@ theorem eq_add_C_mul_add_C_mul_of_C_mul_eq_C_mul_add_C_mul_add_C_mul
 
 namespace Tactic
 
+macro "rr_scalar_active_nonneg_at " n:term : tactic =>
+  `(tactic|
+    solve
+      | rr_side_nonneg
+      | nlinarith [sq_nonneg (($n : ℝ) + 1), show 0 ≤ ($n : ℝ) by positivity])
+
 macro "rr_scalar_active_den_at " n:term : tactic =>
   `(tactic|
     solve

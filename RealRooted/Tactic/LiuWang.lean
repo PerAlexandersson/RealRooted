@@ -2513,10 +2513,7 @@ macro_rules
       `(tactic| rr_side_nonneg)
 
 macro "rr_lw_active_nonneg_at " n:term : tactic =>
-  `(tactic|
-    solve
-      | rr_lw_coeff_nonneg
-      | nlinarith [sq_nonneg (($n : ℝ) + 1), show 0 ≤ ($n : ℝ) by positivity])
+  `(tactic| rr_scalar_active_nonneg_at $n)
 
 macro "rr_lw_quadratic_discriminant_at " n:term : tactic =>
   `(tactic|
