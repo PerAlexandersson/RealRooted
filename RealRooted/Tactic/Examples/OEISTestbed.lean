@@ -1102,14 +1102,13 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  rr_lw_negative_square_sequence_den_coeff_split using
+  rr_lw_negative_square_sequence_den_coeff_auto_split using
     base := hbase,
     pos_lc := hpos,
     square_factor := fun _ => 1 - X,
     coeff := fun n => ((n : ℝ) + 2) / ((n : ℝ) + 5),
     raw_coeff := fun n => (n : ℝ) + 2,
     den := fun n => (n : ℝ) + 5,
-    coeff_nonneg := by intro n; rr_side_nonneg,
     den_nonzero := by intro n; rr_side_ne,
     coeff_eq := by
       intro n
@@ -1201,14 +1200,13 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_lw_negative_square_sequence_den_coeff_realrooted_split using
+  rr_lw_negative_square_sequence_den_coeff_realrooted_auto_split using
     base := hbase,
     pos_lc := hpos,
     square_factor := fun _ => 1 - X,
     coeff := fun n => ((n : ℝ) + 2) / ((n : ℝ) + 1),
     raw_coeff := fun n => ((n : ℝ) + 2) * ((n : ℝ) + 1),
     den := fun n => ((n : ℝ) + 1) ^ 2,
-    coeff_nonneg := by intro n; rr_side_nonneg,
     den_nonzero := by intro n; rr_side_ne,
     coeff_eq := by
       intro n
