@@ -790,6 +790,33 @@ example {P : Nat → ℝ[X]} {a b : Nat → ℝ}
     scalar_step := hscalar,
     linear_step := hlinear
 
+/-- Alternating scalar/linear shell with report-order factors `C b_m + X`. -/
+example {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hscalar : ∀ n : Nat, P (2 * n + 1) = C (a n) * P (2 * n))
+    (hlinear : ∀ n : Nat, P (2 * n + 2) = (C (b n) + X) * P (2 * n + 1)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_scalar_C_add_X_sequence using
+    base := hbase,
+    scalar_ne := ha,
+    scalar_step := hscalar,
+    linear_step := hlinear
+
+/-- The constant-first alternating shell accepts right-side scalar and linear
+steps. -/
+example {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hscalar : ∀ n : Nat, P (2 * n + 1) = P (2 * n) * C (a n))
+    (hlinear : ∀ n : Nat, P (2 * n + 2) = P (2 * n + 1) * (C (b n) + X)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_scalar_C_add_X_sequence using
+    base := hbase,
+    scalar_ne := ha,
+    scalar_step := hscalar,
+    linear_step := hlinear
+
 /-- Alternating scalar/supplied-factor product shell. -/
 example {P F : Nat → ℝ[X]} {a : Nat → ℝ}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
@@ -856,6 +883,34 @@ example {P : Nat → ℝ[X]}
     (hstep : ∀ n : Nat, P (2 * n + 2) = ((X : ℝ[X]) ^ 2) * P (2 * n + 1)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_product_scalar_X_pow_sequence_auto using
+    base := hbase,
+    scalar_step := hscalar,
+    factor_step := hstep
+
+/-- Alternating scalar/powered unit-linear shell. -/
+example {P : Nat → ℝ[X]} {a b : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hscalar : ∀ n : Nat, P (2 * n + 1) = C (a n) * P (2 * n))
+    (hstep : ∀ n : Nat,
+      P (2 * n + 2) = (X + C (b n)) ^ (m n) * P (2 * n + 1)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_scalar_X_add_C_pow_sequence using
+    base := hbase,
+    scalar_ne := ha,
+    scalar_step := hscalar,
+    factor_step := hstep
+
+/-- The powered constant-first shell accepts automatic positive scalar
+certificates and right-side growth factors. -/
+example {P : Nat → ℝ[X]} {b : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hscalar : ∀ n : Nat,
+      P (2 * n + 1) = C (2 * (n : ℝ) + 1) * P (2 * n))
+    (hstep : ∀ n : Nat,
+      P (2 * n + 2) = P (2 * n + 1) * (C (b n) + X) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_scalar_C_add_X_pow_sequence_auto using
     base := hbase,
     scalar_step := hscalar,
     factor_step := hstep
