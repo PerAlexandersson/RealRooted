@@ -97,6 +97,21 @@ theorem secondDerivativeBidiagonalForm_eq_bidiagonalOperator
                 secondDerivativeQuadraticCoeff, coeff_derivative]
               ring
 
+/-- Normalize a second-derivative differential form to a named coefficient
+bidiagonal operator by identifying the two quadratic coefficient functions. -/
+theorem secondDerivativeBidiagonalForm_eq_bidiagonalOperator_of_coeff_eq
+    {alpha beta : ℕ → ℝ} {a0 a1 b1 b2 c2 c3 : ℝ} (p : ℝ[X])
+    (halpha : ∀ k : ℕ, secondDerivativeQuadraticCoeff a0 b1 c2 k = alpha k)
+    (hbeta : ∀ k : ℕ, secondDerivativeQuadraticCoeff a1 b2 c3 k = beta k) :
+    secondDerivativeBidiagonalForm a0 a1 b1 b2 c2 c3 p =
+      bidiagonalOperator alpha beta p := by
+  rw [secondDerivativeBidiagonalForm_eq_bidiagonalOperator]
+  congr
+  · funext k
+    exact halpha k
+  · funext k
+    exact hbeta k
+
 /-- The bidiagonal operator raises degree by at most one. -/
 theorem natDegree_bidiagonalOperator_le
     (alpha beta : ℕ → ℝ) (p : ℝ[X]) :
