@@ -2538,6 +2538,49 @@ example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
+/-- Denominator-normalized generic nonpositive-lag shell. -/
+example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]} {d : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hB : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0)
+    (hD : ∀ n : Nat, d n ≠ 0)
+    (hraw : ∀ n : Nat,
+      C (d n) * P (n + 2) =
+        C (d n) * (A n * P (n + 1) + B n * P n))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_nonpos_lag_sequence_den using
+    base := hbase,
+    pos_lc := hpos,
+    lag_nonpos := hB,
+    den_nonzero := hD,
+    raw_recurrence := hraw,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Real-rootedness endpoint for the denominator-normalized generic
+nonpositive-lag shell. -/
+example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]} {d : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hB : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0)
+    (hD : ∀ n : Nat, d n ≠ 0)
+    (hraw : ∀ n : Nat,
+      C (d n) * P (n + 2) =
+        C (d n) * (A n * P (n + 1) + B n * P n))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_lw_nonpos_lag_sequence_den_realrooted using
+    base := hbase,
+    pos_lc := hpos,
+    lag_nonpos := hB,
+    den_nonzero := hD,
+    raw_recurrence := hraw,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
 /-- Family E2-style global lag: `P_{n+2}=A_n P_{n+1}-t^2P_n`. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
@@ -2834,6 +2877,197 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {α : ℝ}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
+/-- Denominator-normalized negative-square lag with an explicit scalar
+coefficient certificate. -/
+example {P : Nat → ℝ[X]} {A q : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hraw : ∀ n : Nat,
+      C ((n : ℝ) + 1) * P (n + 2) =
+        C ((n : ℝ) + 1) * (A n * P (n + 1)) +
+          C ((n : ℝ) + 1) * (-(q n) ^ 2 * P n))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_negative_square_sequence_den_coeff using
+    base := hbase,
+    pos_lc := hpos,
+    coeff := fun _ => (1 : ℝ),
+    coeff_nonneg := (fun _ => by norm_num),
+    den_nonzero := by rr_scalar_active_den_all,
+    coeff_eq := by rr_scalar_coeff_all,
+    raw_recurrence := hraw,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Split-form denominator-normalized negative-square lag. -/
+example {P : Nat → ℝ[X]} {A q : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hraw : ∀ n : Nat,
+      C ((n : ℝ) + 1) * P (n + 2) =
+        C ((n : ℝ) + 1) * (A n * P (n + 1)) +
+          C ((n : ℝ) + 1) * (-(q n) ^ 2 * P n))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_negative_square_sequence_den_coeff_split using
+    base := hbase,
+    pos_lc := hpos,
+    square_factor := q,
+    coeff := fun _ => (1 : ℝ),
+    raw_coeff := fun n => (n : ℝ) + 1,
+    den := fun n => (n : ℝ) + 1,
+    coeff_nonneg := (fun _ => by norm_num),
+    den_nonzero := by rr_scalar_active_den_all,
+    coeff_eq := by rr_scalar_coeff_all,
+    raw_recurrence := hraw,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Denominator-normalized negative-square lag with automatic scalar
+side-goals. -/
+example {P : Nat → ℝ[X]} {A q : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hraw : ∀ n : Nat,
+      C ((n : ℝ) + 1) * P (n + 2) =
+        C ((n : ℝ) + 1) * (A n * P (n + 1)) +
+          C ((n : ℝ) + 1) * (-(q n) ^ 2 * P n))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_negative_square_sequence_den_coeff_auto using
+    base := hbase,
+    pos_lc := hpos,
+    coeff := fun _ => (1 : ℝ),
+    den_nonzero := by rr_scalar_active_den_all,
+    coeff_eq := by rr_scalar_coeff_all,
+    raw_recurrence := hraw,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Split-form denominator-normalized negative-square lag with automatic
+scalar side-goals. -/
+example {P : Nat → ℝ[X]} {A q : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hraw : ∀ n : Nat,
+      C ((n : ℝ) + 1) * P (n + 2) =
+        C ((n : ℝ) + 1) * (A n * P (n + 1)) +
+          C ((n : ℝ) + 1) * (-(q n) ^ 2 * P n))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_negative_square_sequence_den_coeff_auto_split using
+    base := hbase,
+    pos_lc := hpos,
+    square_factor := q,
+    coeff := fun _ => (1 : ℝ),
+    raw_coeff := fun n => (n : ℝ) + 1,
+    den := fun n => (n : ℝ) + 1,
+    den_nonzero := by rr_scalar_active_den_all,
+    coeff_eq := by rr_scalar_coeff_all,
+    raw_recurrence := hraw,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Real-rootedness endpoint for the denominator-normalized negative-square
+lag. -/
+example {P : Nat → ℝ[X]} {A q : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hraw : ∀ n : Nat,
+      C ((n : ℝ) + 1) * P (n + 2) =
+        C ((n : ℝ) + 1) * (A n * P (n + 1)) +
+          C ((n : ℝ) + 1) * (-(q n) ^ 2 * P n))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_lw_negative_square_sequence_den_coeff_realrooted using
+    base := hbase,
+    pos_lc := hpos,
+    coeff := fun _ => (1 : ℝ),
+    coeff_nonneg := (fun _ => by norm_num),
+    den_nonzero := by rr_scalar_active_den_all,
+    coeff_eq := by rr_scalar_coeff_all,
+    raw_recurrence := hraw,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Split-form real-rootedness endpoint for the denominator-normalized
+negative-square lag. -/
+example {P : Nat → ℝ[X]} {A q : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hraw : ∀ n : Nat,
+      C ((n : ℝ) + 1) * P (n + 2) =
+        C ((n : ℝ) + 1) * (A n * P (n + 1)) +
+          C ((n : ℝ) + 1) * (-(q n) ^ 2 * P n))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_lw_negative_square_sequence_den_coeff_realrooted_split using
+    base := hbase,
+    pos_lc := hpos,
+    square_factor := q,
+    coeff := fun _ => (1 : ℝ),
+    raw_coeff := fun n => (n : ℝ) + 1,
+    den := fun n => (n : ℝ) + 1,
+    coeff_nonneg := (fun _ => by norm_num),
+    den_nonzero := by rr_scalar_active_den_all,
+    coeff_eq := by rr_scalar_coeff_all,
+    raw_recurrence := hraw,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Real-rootedness endpoint for the denominator-normalized negative-square
+lag with automatic scalar side-goals. -/
+example {P : Nat → ℝ[X]} {A q : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hraw : ∀ n : Nat,
+      C ((n : ℝ) + 1) * P (n + 2) =
+        C ((n : ℝ) + 1) * (A n * P (n + 1)) +
+          C ((n : ℝ) + 1) * (-(q n) ^ 2 * P n))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_lw_negative_square_sequence_den_coeff_realrooted_auto using
+    base := hbase,
+    pos_lc := hpos,
+    coeff := fun _ => (1 : ℝ),
+    den_nonzero := by rr_scalar_active_den_all,
+    coeff_eq := by rr_scalar_coeff_all,
+    raw_recurrence := hraw,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Split-form real-rootedness endpoint for the denominator-normalized
+negative-square lag with automatic scalar side-goals. -/
+example {P : Nat → ℝ[X]} {A q : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hraw : ∀ n : Nat,
+      C ((n : ℝ) + 1) * P (n + 2) =
+        C ((n : ℝ) + 1) * (A n * P (n + 1)) +
+          C ((n : ℝ) + 1) * (-(q n) ^ 2 * P n))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_lw_negative_square_sequence_den_coeff_realrooted_auto_split using
+    base := hbase,
+    pos_lc := hpos,
+    square_factor := q,
+    coeff := fun _ => (1 : ℝ),
+    raw_coeff := fun n => (n : ℝ) + 1,
+    den := fun n => (n : ℝ) + 1,
+    den_nonzero := by rr_scalar_active_den_all,
+    coeff_eq := by rr_scalar_coeff_all,
+    raw_recurrence := hraw,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
 /-- `A181738`-style sequence shell: negative-definite monic quadratic lag. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
@@ -3085,6 +3319,103 @@ example {P : Nat → ℝ[X]} {Araw : Nat → ℝ[X]}
     raw_linear := fun n => -((n : ℝ) + 1),
     raw_constant := fun n => (n : ℝ) + 1,
     den := fun n => (n : ℝ) + 1,
+    den_nonzero := by rr_scalar_active_den_all,
+    leading_coeff_eq := by rr_scalar_coeff_all,
+    linear_coeff_eq := by rr_scalar_coeff_all,
+    constant_coeff_eq := by rr_scalar_coeff_all,
+    raw_recurrence := hraw,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Denominator-normalized raw quadratic smoke test, explicit endpoint. -/
+example {P : Nat → ℝ[X]} {Araw : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hraw : ∀ n : Nat,
+      C ((n : ℝ) + 1) * P (n + 2) =
+        Araw n * P (n + 1) +
+          (-(C (2 * ((n : ℝ) + 1)) * X ^ 2 +
+            C (-((n : ℝ) + 1)) * X + C ((n : ℝ) + 1))) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_negative_quadratic_sequence_den_coeff_split using
+    base := hbase,
+    pos_lc := hpos,
+    leading := fun _ => (2 : ℝ),
+    linear := fun _ => (-1 : ℝ),
+    constant := fun _ => (1 : ℝ),
+    raw_leading := fun n => 2 * ((n : ℝ) + 1),
+    raw_linear := fun n => -((n : ℝ) + 1),
+    raw_constant := fun n => (n : ℝ) + 1,
+    den := fun n => (n : ℝ) + 1,
+    leading_nonneg := (fun _ => by norm_num),
+    constant_nonneg := (fun _ => by norm_num),
+    discriminant := (fun _ => by norm_num),
+    den_nonzero := by rr_scalar_active_den_all,
+    leading_coeff_eq := by rr_scalar_coeff_all,
+    linear_coeff_eq := by rr_scalar_coeff_all,
+    constant_coeff_eq := by rr_scalar_coeff_all,
+    raw_recurrence := hraw,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Denominator-normalized raw quadratic smoke test, automatic side-goals. -/
+example {P : Nat → ℝ[X]} {Araw : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hraw : ∀ n : Nat,
+      C ((n : ℝ) + 1) * P (n + 2) =
+        Araw n * P (n + 1) +
+          (-(C (2 * ((n : ℝ) + 1)) * X ^ 2 +
+            C (-((n : ℝ) + 1)) * X + C ((n : ℝ) + 1))) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_negative_quadratic_sequence_den_coeff_auto_split using
+    base := hbase,
+    pos_lc := hpos,
+    leading := fun _ => (2 : ℝ),
+    linear := fun _ => (-1 : ℝ),
+    constant := fun _ => (1 : ℝ),
+    raw_leading := fun n => 2 * ((n : ℝ) + 1),
+    raw_linear := fun n => -((n : ℝ) + 1),
+    raw_constant := fun n => (n : ℝ) + 1,
+    den := fun n => (n : ℝ) + 1,
+    den_nonzero := by rr_scalar_active_den_all,
+    leading_coeff_eq := by rr_scalar_coeff_all,
+    linear_coeff_eq := by rr_scalar_coeff_all,
+    constant_coeff_eq := by rr_scalar_coeff_all,
+    raw_recurrence := hraw,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Denominator-normalized raw quadratic smoke test, explicit
+real-rootedness endpoint. -/
+example {P : Nat → ℝ[X]} {Araw : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hraw : ∀ n : Nat,
+      C ((n : ℝ) + 1) * P (n + 2) =
+        Araw n * P (n + 1) +
+          (-(C (2 * ((n : ℝ) + 1)) * X ^ 2 +
+            C (-((n : ℝ) + 1)) * X + C ((n : ℝ) + 1))) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_lw_negative_quadratic_sequence_den_coeff_realrooted_split using
+    base := hbase,
+    pos_lc := hpos,
+    leading := fun _ => (2 : ℝ),
+    linear := fun _ => (-1 : ℝ),
+    constant := fun _ => (1 : ℝ),
+    raw_leading := fun n => 2 * ((n : ℝ) + 1),
+    raw_linear := fun n => -((n : ℝ) + 1),
+    raw_constant := fun n => (n : ℝ) + 1,
+    den := fun n => (n : ℝ) + 1,
+    leading_nonneg := (fun _ => by norm_num),
+    constant_nonneg := (fun _ => by norm_num),
+    discriminant := (fun _ => by norm_num),
     den_nonzero := by rr_scalar_active_den_all,
     leading_coeff_eq := by rr_scalar_coeff_all,
     linear_coeff_eq := by rr_scalar_coeff_all,
