@@ -188,7 +188,7 @@ theorem prec_lw_positive_t_lag_of_nonneg_coeffs {f g a : ℝ[X]} {c : ℝ}
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     Prec f (a * f + (C c * X) * g) :=
   prec_lw_positive_t_lag_of_roots_nonpos hgf hg_pos
-    (fun _ hr => root_nonpos_of_realrooted_of_nonneg_coeffs hgf.1 hf_nonneg hr)
+    (fun _ hr => by rr_root_nonpos using hgf.1, hf_nonneg, hr)
     hc hF_pos hdeg_lo hdeg_hi hno
 
 /-- Affine half-line lag `c t - a`, deriving the root half-line certificate
@@ -206,7 +206,7 @@ theorem prec_lw_C_mul_X_sub_C_lag_of_nonneg_coeffs
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     Prec f (A * f + (C c * X - C a) * g) :=
   prec_lw_C_mul_X_sub_C_lag_of_roots_nonpos hgf hg_pos
-    (fun _ hr => root_nonpos_of_realrooted_of_nonneg_coeffs hgf.1 hf_nonneg hr)
+    (fun _ hr => by rr_root_nonpos using hgf.1, hf_nonneg, hr)
     hc ha hF_pos hdeg_lo hdeg_hi hno
 
 /-- Positive affine lag `c(a+t)`, using an explicit upper root bound
@@ -295,7 +295,7 @@ theorem prec_lw_positive_X_mul_lag_of_nonneg_coeffs {f g a q : ℝ[X]}
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     Prec f (a * f + (X * q) * g) :=
   prec_lw_positive_X_mul_lag_of_roots_nonpos hgf hg_pos
-    (fun _ hr => root_nonpos_of_realrooted_of_nonneg_coeffs hgf.1 hf_nonneg hr)
+    (fun _ hr => by rr_root_nonpos using hgf.1, hf_nonneg, hr)
     hq_nonneg hF_pos hdeg_lo hdeg_hi hno
 
 /-- Positive `c t Q(t)` lag, deriving the nonpositive-root certificate from
@@ -313,7 +313,7 @@ theorem prec_lw_positive_C_mul_X_mul_lag_of_nonneg_coeffs
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     Prec f (a * f + (C c * X * q) * g) :=
   prec_lw_positive_C_mul_X_mul_lag_of_roots_nonpos hgf hg_pos
-    (fun _ hr => root_nonpos_of_realrooted_of_nonneg_coeffs hgf.1 hf_nonneg hr)
+    (fun _ hr => by rr_root_nonpos using hgf.1, hf_nonneg, hr)
     hc hq_nonneg hF_pos hdeg_lo hdeg_hi hno
 
 /-- Family E `t R(t)` Liu--Wang step with an explicit half-line root
@@ -373,7 +373,7 @@ theorem prec_lw_X_mul_one_sub_X_lag_of_nonneg_coeffs {f g a : ℝ[X]}
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     Prec f (a * f + (X * (1 - X)) * g) :=
   prec_lw_X_mul_one_sub_X_lag_of_roots_nonpos hgf hg_pos
-    (fun _ hr => root_nonpos_of_realrooted_of_nonneg_coeffs hgf.1 hf_nonneg hr)
+    (fun _ hr => by rr_root_nonpos using hgf.1, hf_nonneg, hr)
     hF_pos hdeg_lo hdeg_hi hno
 
 /-- Family E `t(a-bt)` Liu--Wang step with an explicit half-line root
@@ -412,7 +412,7 @@ theorem prec_lw_X_mul_C_sub_C_mul_X_lag_of_nonneg_coeffs
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     Prec f (A * f + (X * (C a - C b * X)) * g) :=
   prec_lw_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos hgf hg_pos ha hb
-    (fun _ hr => root_nonpos_of_realrooted_of_nonneg_coeffs hgf.1 hf_nonneg hr)
+    (fun _ hr => by rr_root_nonpos using hgf.1, hf_nonneg, hr)
     hF_pos hdeg_lo hdeg_hi hno
 
 /-- Family E `c t(a-bt)` Liu--Wang step with an explicit half-line root
@@ -454,7 +454,7 @@ theorem prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_of_nonneg_coeffs
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
     Prec f (A * f + (C c * X * (C a - C b * X)) * g) :=
   prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos hgf hg_pos hc ha hb
-    (fun _ hr => root_nonpos_of_realrooted_of_nonneg_coeffs hgf.1 hf_nonneg hr)
+    (fun _ hr => by rr_root_nonpos using hgf.1, hf_nonneg, hr)
     hF_pos hdeg_lo hdeg_hi hno
 
 /-- Globally nonpositive negative-square lag Liu--Wang step. -/
@@ -1109,8 +1109,8 @@ theorem prec_lw_C_mul_X_sub_C_lag_sequence {P : Nat → ℝ[X]}
           Prec (P (n + 1))
             (A n * P (n + 1) + (C (c n) * X - C (a n)) * P n) :=
         prec_lw_C_mul_X_sub_C_lag_of_roots_nonpos hInter (hpos n)
-          (fun _ hr =>
-            root_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) hr)
+          (fun _ hr => by
+            rr_root_nonpos using hsource, (hnonneg (n + 1)), hr)
           (hc n) (ha n) hF_pos hdeg_lo hdeg_hi (hno n)
       simpa [← hrec n] using hstep
 
@@ -1368,7 +1368,7 @@ theorem prec_lw_inner_window_lag_sequence_of_nonneg_coeffs {P : Nat → ℝ[X]}
       have hB_step : ∀ r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0 := by
         intro r hr
         exact hB_nonpos n r hr (hroot_lower n r hr)
-          (root_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) hr)
+          (by rr_root_nonpos using hsource, (hnonneg (n + 1)), hr)
       have hstep :
           Prec (P (n + 1)) (A n * P (n + 1) + B n * P n) :=
         prec_lw_two_of_nonpos hInter (hpos n) hF_pos hdeg_lo hdeg_hi
@@ -2055,8 +2055,8 @@ theorem prec_lw_positive_X_mul_lag_sequence {P : Nat → ℝ[X]}
           Prec (P (n + 1)) (A n * P (n + 1) + (X * Q n) * P n) :=
         prec_lw_positive_X_mul_lag_of_roots_nonpos
           hInter (hpos n)
-          (fun _ hr =>
-            root_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) hr)
+          (fun _ hr => by
+            rr_root_nonpos using hsource, (hnonneg (n + 1)), hr)
           (hQ_nonneg n)
           hF_pos hdeg_lo hdeg_hi (hno n)
       simpa [← hrec n] using hstep
@@ -2117,8 +2117,8 @@ theorem prec_lw_positive_C_mul_X_mul_lag_sequence {P : Nat → ℝ[X]}
           Prec (P (n + 1)) (A n * P (n + 1) + (C (c n) * X * Q n) * P n) :=
         prec_lw_positive_C_mul_X_mul_lag_of_roots_nonpos
           hInter (hpos n)
-          (fun _ hr =>
-            root_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) hr)
+          (fun _ hr => by
+            rr_root_nonpos using hsource, (hnonneg (n + 1)), hr)
           (hc n) (hQ_nonneg n)
           hF_pos hdeg_lo hdeg_hi (hno n)
       simpa [← hrec n] using hstep
@@ -2245,8 +2245,8 @@ theorem prec_lw_X_mul_one_sub_X_lag_sequence {P : Nat → ℝ[X]}
       have hstep :
           Prec (P (n + 1)) (A n * P (n + 1) + (X * (1 - X)) * P n) :=
         prec_lw_X_mul_one_sub_X_lag_of_roots_nonpos hInter (hpos n)
-          (fun _ hr =>
-            root_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) hr)
+          (fun _ hr => by
+            rr_root_nonpos using hsource, (hnonneg (n + 1)), hr)
           hF_pos hdeg_lo hdeg_hi (hno n)
       simpa [← hrec n] using hstep
 
@@ -2310,8 +2310,8 @@ theorem prec_lw_X_mul_C_sub_C_mul_X_lag_sequence {P : Nat → ℝ[X]}
             (A n * P (n + 1) + (X * (C (a n) - C (b n) * X)) * P n) :=
         prec_lw_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos hInter (hpos n)
           (ha n) (hb n)
-          (fun _ hr =>
-            root_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) hr)
+          (fun _ hr => by
+            rr_root_nonpos using hsource, (hnonneg (n + 1)), hr)
           hF_pos hdeg_lo hdeg_hi (hno n)
       simpa [← hrec n] using hstep
 
@@ -2382,8 +2382,8 @@ theorem prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_sequence {P : Nat → ℝ[X]}
               (C (c n) * X * (C (a n) - C (b n) * X)) * P n) :=
         prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos hInter (hpos n)
           (hc n) (ha n) (hb n)
-          (fun _ hr =>
-            root_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) hr)
+          (fun _ hr => by
+            rr_root_nonpos using hsource, (hnonneg (n + 1)), hr)
           hF_pos hdeg_lo hdeg_hi (hno n)
       simpa [← hrec n] using hstep
 
