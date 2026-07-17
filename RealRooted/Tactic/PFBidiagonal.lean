@@ -2392,6 +2392,247 @@ macro_rules
           (isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_norm_from
             $hbackend $N $hbase $hdeg $hcert $hnorm $hrec), $hne)
 
+/-- Family-H second-derivative router for the known PF-bidiagonal route with a
+bundled cubic-residual Jensen-pencil certificate. -/
+syntax (name := rr_h_second_derivative_sequence_pf_bidiagonal_cubic_named)
+  "rr_h_second_derivative_sequence" " using "
+    "route" ":=" "pf_bidiagonal" ","
+    "jensen_backend" ":=" term ","
+    "cubic_certificate" ":=" term ","
+    "base" ":=" term ","
+    "degree" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_h_second_derivative_sequence_pf_bidiagonal_cubic_realrooted_named)
+  "rr_h_second_derivative_sequence" " using "
+    "route" ":=" "pf_bidiagonal" ","
+    "jensen_backend" ":=" term ","
+    "cubic_certificate" ":=" term ","
+    "base" ":=" term ","
+    "degree" ":=" term ","
+    "recurrence" ":=" term ","
+    "nonzero" ":=" term :
+  tactic
+
+syntax (name := rr_h_second_derivative_sequence_pf_bidiagonal_cubic_from_named)
+  "rr_h_second_derivative_sequence" " using "
+    "route" ":=" "pf_bidiagonal" ","
+    "jensen_backend" ":=" term ","
+    "cubic_certificate" ":=" term ","
+    "cutoff" ":=" term ","
+    "base" ":=" term ","
+    "degree" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_h_second_derivative_sequence_pf_bidiagonal_cubic_from_realrooted_named)
+  "rr_h_second_derivative_sequence" " using "
+    "route" ":=" "pf_bidiagonal" ","
+    "jensen_backend" ":=" term ","
+    "cubic_certificate" ":=" term ","
+    "cutoff" ":=" term ","
+    "base" ":=" term ","
+    "degree" ":=" term ","
+    "recurrence" ":=" term ","
+    "nonzero" ":=" term :
+  tactic
+
+syntax (name := rr_h_second_derivative_sequence_pf_bidiagonal_cubic_norm_named)
+  "rr_h_second_derivative_sequence" " using "
+    "route" ":=" "pf_bidiagonal" ","
+    "jensen_backend" ":=" term ","
+    "cubic_certificate" ":=" term ","
+    "base" ":=" term ","
+    "degree" ":=" term ","
+    "normalizer" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_h_second_derivative_sequence_pf_bidiagonal_cubic_norm_realrooted_named)
+  "rr_h_second_derivative_sequence" " using "
+    "route" ":=" "pf_bidiagonal" ","
+    "jensen_backend" ":=" term ","
+    "cubic_certificate" ":=" term ","
+    "base" ":=" term ","
+    "degree" ":=" term ","
+    "normalizer" ":=" term ","
+    "recurrence" ":=" term ","
+    "nonzero" ":=" term :
+  tactic
+
+syntax (name := rr_h_second_derivative_sequence_pf_bidiagonal_cubic_norm_from_named)
+  "rr_h_second_derivative_sequence" " using "
+    "route" ":=" "pf_bidiagonal" ","
+    "jensen_backend" ":=" term ","
+    "cubic_certificate" ":=" term ","
+    "cutoff" ":=" term ","
+    "base" ":=" term ","
+    "degree" ":=" term ","
+    "normalizer" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name :=
+    rr_h_second_derivative_sequence_pf_bidiagonal_cubic_norm_from_realrooted_named)
+  "rr_h_second_derivative_sequence" " using "
+    "route" ":=" "pf_bidiagonal" ","
+    "jensen_backend" ":=" term ","
+    "cubic_certificate" ":=" term ","
+    "cutoff" ":=" term ","
+    "base" ":=" term ","
+    "degree" ":=" term ","
+    "normalizer" ":=" term ","
+    "recurrence" ":=" term ","
+    "nonzero" ":=" term :
+  tactic
+
+macro_rules
+  | `(tactic|
+      rr_h_second_derivative_sequence using
+        route := pf_bidiagonal,
+        jensen_backend := $hbackend:term,
+        cubic_certificate := $hcert:term,
+        base := $hbase:term,
+        degree := $hdeg:term,
+        recurrence := $hrec:term) =>
+      `(tactic|
+        rr_pf_second_derivative_bidiagonal_sequence using
+          jensen_backend := $hbackend,
+          cubic_certificate := $hcert,
+          base := $hbase,
+          degree := $hdeg,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_h_second_derivative_sequence using
+        route := pf_bidiagonal,
+        jensen_backend := $hbackend:term,
+        cubic_certificate := $hcert:term,
+        base := $hbase:term,
+        degree := $hdeg:term,
+        recurrence := $hrec:term,
+        nonzero := $hne:term) =>
+      `(tactic|
+        rr_pf_second_derivative_bidiagonal_sequence using
+          jensen_backend := $hbackend,
+          cubic_certificate := $hcert,
+          base := $hbase,
+          degree := $hdeg,
+          recurrence := $hrec,
+          nonzero := $hne)
+  | `(tactic|
+      rr_h_second_derivative_sequence using
+        route := pf_bidiagonal,
+        jensen_backend := $hbackend:term,
+        cubic_certificate := $hcert:term,
+        cutoff := $N:term,
+        base := $hbase:term,
+        degree := $hdeg:term,
+        recurrence := $hrec:term) =>
+      `(tactic|
+        rr_pf_second_derivative_bidiagonal_sequence using
+          jensen_backend := $hbackend,
+          cubic_certificate := $hcert,
+          cutoff := $N,
+          base := $hbase,
+          degree := $hdeg,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_h_second_derivative_sequence using
+        route := pf_bidiagonal,
+        jensen_backend := $hbackend:term,
+        cubic_certificate := $hcert:term,
+        cutoff := $N:term,
+        base := $hbase:term,
+        degree := $hdeg:term,
+        recurrence := $hrec:term,
+        nonzero := $hne:term) =>
+      `(tactic|
+        rr_pf_second_derivative_bidiagonal_sequence using
+          jensen_backend := $hbackend,
+          cubic_certificate := $hcert,
+          cutoff := $N,
+          base := $hbase,
+          degree := $hdeg,
+          recurrence := $hrec,
+          nonzero := $hne)
+  | `(tactic|
+      rr_h_second_derivative_sequence using
+        route := pf_bidiagonal,
+        jensen_backend := $hbackend:term,
+        cubic_certificate := $hcert:term,
+        base := $hbase:term,
+        degree := $hdeg:term,
+        normalizer := $hnorm:term,
+        recurrence := $hrec:term) =>
+      `(tactic|
+        rr_pf_second_derivative_bidiagonal_sequence using
+          jensen_backend := $hbackend,
+          cubic_certificate := $hcert,
+          base := $hbase,
+          degree := $hdeg,
+          normalizer := $hnorm,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_h_second_derivative_sequence using
+        route := pf_bidiagonal,
+        jensen_backend := $hbackend:term,
+        cubic_certificate := $hcert:term,
+        base := $hbase:term,
+        degree := $hdeg:term,
+        normalizer := $hnorm:term,
+        recurrence := $hrec:term,
+        nonzero := $hne:term) =>
+      `(tactic|
+        rr_pf_second_derivative_bidiagonal_sequence using
+          jensen_backend := $hbackend,
+          cubic_certificate := $hcert,
+          base := $hbase,
+          degree := $hdeg,
+          normalizer := $hnorm,
+          recurrence := $hrec,
+          nonzero := $hne)
+  | `(tactic|
+      rr_h_second_derivative_sequence using
+        route := pf_bidiagonal,
+        jensen_backend := $hbackend:term,
+        cubic_certificate := $hcert:term,
+        cutoff := $N:term,
+        base := $hbase:term,
+        degree := $hdeg:term,
+        normalizer := $hnorm:term,
+        recurrence := $hrec:term) =>
+      `(tactic|
+        rr_pf_second_derivative_bidiagonal_sequence using
+          jensen_backend := $hbackend,
+          cubic_certificate := $hcert,
+          cutoff := $N,
+          base := $hbase,
+          degree := $hdeg,
+          normalizer := $hnorm,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_h_second_derivative_sequence using
+        route := pf_bidiagonal,
+        jensen_backend := $hbackend:term,
+        cubic_certificate := $hcert:term,
+        cutoff := $N:term,
+        base := $hbase:term,
+        degree := $hdeg:term,
+        normalizer := $hnorm:term,
+        recurrence := $hrec:term,
+        nonzero := $hne:term) =>
+      `(tactic|
+        rr_pf_second_derivative_bidiagonal_sequence using
+          jensen_backend := $hbackend,
+          cubic_certificate := $hcert,
+          cutoff := $N,
+          base := $hbase,
+          degree := $hdeg,
+          normalizer := $hnorm,
+          recurrence := $hrec,
+          nonzero := $hne)
+
 end Tactic
 
 end RealRooted
