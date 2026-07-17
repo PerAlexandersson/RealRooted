@@ -185,8 +185,8 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact
-          RealRooted.isRealRooted_of_lw_derivative_lag_sequence_of_root_signs
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_lw_derivative_lag_sequence_of_root_signs
             $hbase $hpos $hdeg_two $hrec
             (by
               intro n hsource r hr
@@ -200,7 +200,7 @@ macro_rules
                 RealRooted.root_nonpos_of_realrooted_of_nonneg_coeffs
                   hsource ($hnonneg (n + 1)) hr
               rr_sign)
-            $hdeg_succ $hno)
+            $hdeg_succ $hno))
   | `(tactic|
       rr_lw_derivative_lag_sequence_window_sign_auto using
         base := $hbase:term,
@@ -235,8 +235,8 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        exact
-          RealRooted.isRealRooted_of_lw_derivative_lag_sequence_of_root_window
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_lw_derivative_lag_sequence_of_root_window
             $hbase $hpos $hdeg_two $hrec $hroot_lower $hroot_upper
             (by
               intro n r hr hroot_window_lower hroot_window_upper
@@ -246,7 +246,7 @@ macro_rules
               intro n r hr hroot_window_lower hroot_window_upper
               rr_mw_root_window_linear_facts
               rr_sign)
-            $hdeg_succ $hno)
+            $hdeg_succ $hno))
   | `(tactic|
       rr_lw_derivative_lag_sequence_den_coeff_sign_auto using
         base := $hbase:term,
