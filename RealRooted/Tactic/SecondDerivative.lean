@@ -428,6 +428,20 @@ syntax (name := rr_mw_plus_derivative_sequence_expanded_auto)
     "inner_degree_upper" ":=" term :
   tactic
 
+syntax (name := rr_mw_plus_derivative_sequence_expanded_upper_auto)
+  "rr_mw_plus_derivative_sequence_expanded_auto" " using "
+    "outer" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "pos_lc" ":=" term ","
+    "degree_two" ":=" term ","
+    "inner_pos_lc" ":=" term ","
+    "root_upper" ":=" term ","
+    "recurrence" ":=" term ","
+    "inner_degree_lower" ":=" term ","
+    "inner_degree_upper" ":=" term :
+  tactic
+
 syntax (name := rr_neg_mw_plus_derivative_sequence_named)
   "rr_neg_mw_plus_derivative_sequence" " using "
     "outer" ":=" term ","
@@ -639,6 +653,36 @@ macro_rules
           coeff_nonpos := (by
             intro n r hr
             have hr_nonpos : r ≤ 0 := ($hroot) n r hr
+            rr_sign),
+          recurrence := $hrec,
+          inner_degree_lower := $hinner_deg_lo,
+          inner_degree_upper := $hinner_deg_hi)
+  | `(tactic|
+      rr_mw_plus_derivative_sequence_expanded_auto using
+        outer := $a:term,
+        base_zero := $hbase_zero:term,
+        base_one := $hbase_one:term,
+        pos_lc := $hpos:term,
+        degree_two := $hdeg_two:term,
+        inner_pos_lc := $hinner_pos:term,
+        root_upper := $hroot:term,
+        recurrence := $hrec:term,
+        inner_degree_lower := $hinner_deg_lo:term,
+        inner_degree_upper := $hinner_deg_hi:term) =>
+      `(tactic|
+        rr_mw_plus_derivative_sequence_expanded using
+          outer := $a,
+          base_zero := $hbase_zero,
+          base_one := $hbase_one,
+          pos_lc := $hpos,
+          outer_nonzero := (by
+            intro n
+            positivity),
+          degree_two := $hdeg_two,
+          inner_pos_lc := $hinner_pos,
+          coeff_nonpos := (by
+            intro n r hr
+            have hr_upper := ($hroot) n r hr
             rr_sign),
           recurrence := $hrec,
           inner_degree_lower := $hinner_deg_lo,

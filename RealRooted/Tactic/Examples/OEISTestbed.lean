@@ -2412,18 +2412,14 @@ example {P : Nat → ℝ[X]}
       (X * P (n + 1) + (1 + X : ℝ[X]) * (P (n + 1)).derivative).natDegree ≤
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_mw_plus_derivative_sequence_expanded using
+  rr_mw_plus_derivative_sequence_expanded_auto using
     outer := fun _ => (1 : ℝ),
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    outer_nonzero := by intro n; norm_num,
     degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
-    coeff_nonpos := by
-      intro n r hr
-      have hr_upper : r ≤ -1 := hroots_le_neg_one n r hr
-      rr_sign,
+    root_upper := hroots_le_neg_one,
     recurrence := hrec,
     inner_degree_lower := hinner_deg_lo,
     inner_degree_upper := hinner_deg_hi
