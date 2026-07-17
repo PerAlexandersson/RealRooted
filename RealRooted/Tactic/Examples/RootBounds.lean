@@ -27,6 +27,16 @@ example {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits)
     r ≤ 0 := by
   rr_root_nonpos using hp_ne, hp_splits, hpnn, hr
 
+example {p : ℝ[X]} {a r : ℝ}
+    (hrr : p ≠ 0 ∧ p.Splits)
+    (hshift_nonneg : HasNonnegCoeffs (p.comp (X - C a)))
+    (hr : p.IsRoot r) :
+    r ≤ -a := by
+  rr_root_le_neg_shift using
+    realrooted := hrr,
+    shift_nonneg := hshift_nonneg,
+    root := hr
+
 example {p : ℝ[X]} (hrr : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p)
     (hder_ne : p.derivative ≠ 0) {r : ℝ} (hr : p.derivative.IsRoot r) :
     r ≤ 0 := by
@@ -88,6 +98,12 @@ example {p : ℝ[X]}
     ∀ r, p.IsRoot r → (X - 1 : ℝ[X]).eval r ≤ 0 := by
   rr_sign_at_roots_upper using
     root_upper := hhi
+
+example {p : ℝ[X]}
+    (hlo : ∀ r, p.IsRoot r → -1 ≤ r) :
+    ∀ r, p.IsRoot r → (-1 - X : ℝ[X]).eval r ≤ 0 := by
+  rr_sign_at_roots_lower using
+    root_lower := hlo
 
 example {p : ℝ[X]}
     (hlo : ∀ r, p.IsRoot r → -1 ≤ r)
