@@ -91,6 +91,31 @@ example {g f : ℝ[X]} (hgf : Interlaces g f) :
     f.natDegree = g.natDegree + 1 := by
   rr_finish
 
+example {P : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_nonzero using hP
+
+example {P : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_splits
+
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
+    P n ≠ 0 := by
+  rr_nonzero using hP
+
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
+    (P n).Splits := by
+  rr_splits
+
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
+    P n ≠ 0 ∧ (P n).Splits := by
+  rr_realrooted
+
 example {A B : Nat → ℝ[X]}
     (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
       (B n ≠ 0 ∧ (B n).Splits)) :
@@ -114,6 +139,24 @@ example {A B : Nat → ℝ[X]}
       (B n ≠ 0 ∧ (B n).Splits)) :
     ∀ n : Nat, (B n).Splits := by
   rr_splits
+
+example {A B : Nat → ℝ[X]} {n : Nat}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    A n ≠ 0 ∧ (A n).Splits := by
+  rr_realrooted using hP
+
+example {A B : Nat → ℝ[X]} {n : Nat}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    B n ≠ 0 := by
+  rr_nonzero
+
+example {A B : Nat → ℝ[X]} {n : Nat}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    (A n).Splits := by
+  rr_splits using hP
 
 example {f g : ℝ[X]} (hfg : Prec f g)
     (hdeg : f.natDegree + 1 = g.natDegree) :
