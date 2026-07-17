@@ -109,6 +109,64 @@ example {P F : Nat → ℝ[X]}
     factor_realrooted := hfactor,
     recurrence := hrec
 
+/-- `A010054`-style product exit: the active rows are constant in `n`. -/
+example {P : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_identity_sequence using
+    base := hbase,
+    recurrence := hrec
+
+/-- Projection endpoint for the identity product exit. -/
+example {P : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_identity_sequence using
+    base := hbase,
+    recurrence := hrec
+
+/-- `A103451`-style product exit: each active row gains one root at zero. -/
+example {P : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = X * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_root_zero_sequence using
+    base := hbase,
+    recurrence := hrec
+
+/-- `A122431`-style product exit, accepting the root-zero factor on the right. -/
+example {P : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = P n * X) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_root_zero_sequence using
+    base := hbase,
+    recurrence := hrec
+
+/-- `A266178`-style product exit: two real-rooted base parities repeat. -/
+example {P : Nat → ℝ[X]}
+    (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
+    (hrec : ∀ n : Nat, P (n + 2) = P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_period_two_sequence using
+    base_zero := hbase_zero,
+    base_one := hbase_one,
+    recurrence := hrec
+
+/-- Projection endpoint for two-periodic product exits. -/
+example {P : Nat → ℝ[X]}
+    (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
+    (hrec : ∀ n : Nat, P (n + 2) = P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_period_two_sequence using
+    base_zero := hbase_zero,
+    base_one := hbase_one,
+    recurrence := hrec
+
 /-- Row-wise product lift from a proved quotient sequence. -/
 example {P Q F : Nat → ℝ[X]}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)

@@ -137,6 +137,57 @@ theorem isRealRooted_of_product_factor_right_sequence
   exact isRealRooted_of_product_factor_sequence hbase hfactor
     (fun n => by rw [hstep n, mul_comm])
 
+/-- Sequence shell for identity product recurrences. -/
+theorem isRealRooted_of_product_identity_sequence
+    {P : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hstep : ∀ n : Nat, P (n + 1) = P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  intro n
+  induction n with
+  | zero =>
+      simpa using hbase
+  | succ n ih =>
+      simpa [Nat.succ_eq_add_one, hstep n] using ih
+
+/-- Sequence shell for recurrences that multiply each row by `X`. -/
+theorem isRealRooted_of_product_root_zero_sequence
+    {P : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hstep : ∀ n : Nat, P (n + 1) = X * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_sequence hbase (fun _ => isRealRooted_X) hstep
+
+/-- Right-factor variant of `isRealRooted_of_product_root_zero_sequence`. -/
+theorem isRealRooted_of_product_root_zero_right_sequence
+    {P : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hstep : ∀ n : Nat, P (n + 1) = P n * X) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_right_sequence hbase (fun _ => isRealRooted_X) hstep
+
+/-- Sequence shell for period-two product recurrences. -/
+theorem isRealRooted_of_product_period_two_sequence
+    {P : Nat → ℝ[X]}
+    (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
+    (hstep : ∀ n : Nat, P (n + 2) = P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  intro n
+  refine Nat.strong_induction_on n ?_
+  intro n ih
+  cases n with
+  | zero =>
+      simpa using hbase_zero
+  | succ n =>
+      cases n with
+      | zero =>
+          simpa using hbase_one
+      | succ n =>
+          have hprev := ih n (Nat.lt_succ_of_lt (Nat.lt_succ_self n))
+          change P (n + 2) ≠ 0 ∧ (P (n + 2)).Splits
+          simpa [hstep n] using hprev
+
 /-- Lift real-rootedness from a quotient sequence through row-wise real-rooted
 left factors. -/
 theorem isRealRooted_of_product_lift_sequence
@@ -1406,6 +1457,25 @@ syntax (name := rr_product_factor_sequence_named)
     "recurrence" ":=" term :
   tactic
 
+syntax (name := rr_product_identity_sequence_named)
+  "rr_product_identity_sequence" " using "
+    "base" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_product_root_zero_sequence_named)
+  "rr_product_root_zero_sequence" " using "
+    "base" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_product_period_two_sequence_named)
+  "rr_product_period_two_sequence" " using "
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
 syntax (name := rr_product_lift_sequence_named)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -1895,6 +1965,34 @@ macro_rules
           | rr_exact_realrooted_sequence_or_projection
               (RealRooted.isRealRooted_of_product_factor_right_sequence
                 $hbase $hfactor $hstep))
+  | `(tactic|
+      rr_product_identity_sequence using
+        base := $hbase:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_product_identity_sequence $hbase $hstep))
+  | `(tactic|
+      rr_product_root_zero_sequence using
+        base := $hbase:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        first
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_root_zero_sequence
+                $hbase $hstep)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_root_zero_right_sequence
+                $hbase $hstep))
+  | `(tactic|
+      rr_product_period_two_sequence using
+        base_zero := $hbase_zero:term,
+        base_one := $hbase_one:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_product_period_two_sequence
+            $hbase_zero $hbase_one $hstep))
   | `(tactic|
       rr_product_lift_sequence using
         quotient_realrooted := $hquot:term,
