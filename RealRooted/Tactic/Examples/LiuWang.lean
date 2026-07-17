@@ -2637,6 +2637,24 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     no_common_roots := hno
 
 /-- Normalized `C (-c_n)` negative-constant lag, real-rootedness endpoint. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + C (-(c n)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_lw_negative_const_C_neg_sequence_realrooted using
+    base := hbase,
+    pos_lc := hpos,
+    coeff_nonneg := hc,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Normalized `C (-c_n)` negative-constant lag, automatic real-rootedness
+endpoint. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -2686,6 +2704,26 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     no_common_roots := hno
 
 /-- Family G sequence shell: Narayana/Jacobi-style negative-square lag. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ} {α : ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (-(C (c n)) * (X - C α) ^ 2) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_negative_square_sequence using
+    base := hbase,
+    pos_lc := hpos,
+    coeff_nonneg := hc,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Family G sequence shell: Narayana/Jacobi-style negative-square lag with
+automatic coefficient side-goals. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -2845,6 +2883,50 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
 
 /-- `A001607`-style sequence shell: non-monic negative-definite quadratic
 lag `-(2t^2-t+1)`. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) +
+          (-(C (2 : ℝ) * X ^ 2 + C (-1 : ℝ) * X + C (1 : ℝ))) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_negative_quadratic_sequence using
+    base := hbase,
+    pos_lc := hpos,
+    leading_nonneg := (fun _ => by norm_num),
+    constant_nonneg := (fun _ => by norm_num),
+    discriminant := (fun _ => by norm_num),
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Real-rootedness endpoint for the explicit non-monic negative quadratic
+shell. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) +
+          (-(C (2 : ℝ) * X ^ 2 + C (-1 : ℝ) * X + C (1 : ℝ))) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_lw_negative_quadratic_sequence_realrooted using
+    base := hbase,
+    pos_lc := hpos,
+    leading_nonneg := (fun _ => by norm_num),
+    constant_nonneg := (fun _ => by norm_num),
+    discriminant := (fun _ => by norm_num),
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- The same non-monic negative quadratic shell with automatic side-goal
+discharge. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
