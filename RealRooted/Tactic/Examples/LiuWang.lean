@@ -478,6 +478,30 @@ example {f g : ℝ[X]} {c : ℝ}
     degree_upper := hdeg_hi,
     no_common_roots := hno
 
+/-- One-step scalar `c t Q(t)` positive lag with an explicit factor
+nonnegativity certificate. -/
+example {f g a q : ℝ[X]} {c : ℝ}
+    (hgf : Interlaces g f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hf_roots : ∀ r, f.IsRoot r → r ≤ 0)
+    (hc : 0 ≤ c)
+    (hq_nonneg : ∀ r, f.IsRoot r → 0 ≤ q.eval r)
+    (hF_pos : HasPosLeadingCoeff (a * f + (C c * X * q) * g))
+    (hdeg_lo : f.natDegree ≤ (a * f + (C c * X * q) * g).natDegree)
+    (hdeg_hi : (a * f + (C c * X * q) * g).natDegree ≤ f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    Prec f (a * f + (C c * X * q) * g) := by
+  rr_lw_positive_C_mul_X_mul using
+    interlacer := hgf,
+    interlacer_pos_lc := hg_pos,
+    roots_nonpos := hf_roots,
+    coeff_nonneg := hc,
+    factor_nonneg := hq_nonneg,
+    target_pos_lc := hF_pos,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi,
+    no_common_roots := hno
+
 /-- OEIS shape `A113214`: `P_n = t P_{n-1} + t P_{n-2}`. -/
 example {f g : ℝ[X]}
     (hgf : Interlaces g f)
@@ -3352,6 +3376,29 @@ example {f g a : ℝ[X]} {α : ℝ}
 
 /-- OEIS shape `A181738`: a negative-definite monic quadratic lag can be
 certified directly by the discriminant inequality, without exposing a square. -/
+example {f g a : ℝ[X]}
+    (hgf : Interlaces g f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hF_pos :
+      HasPosLeadingCoeff (a * f + (-(X ^ 2 + C (2 : ℝ) * X + C (4 : ℝ))) * g))
+    (hdeg_lo :
+      f.natDegree ≤ (a * f + (-(X ^ 2 + C (2 : ℝ) * X + C (4 : ℝ))) * g).natDegree)
+    (hdeg_hi :
+      (a * f + (-(X ^ 2 + C (2 : ℝ) * X + C (4 : ℝ))) * g).natDegree ≤
+        f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    Prec f (a * f + (-(X ^ 2 + C (2 : ℝ) * X + C (4 : ℝ))) * g) := by
+  rr_lw_negative_monic_quadratic using
+    interlacer := hgf,
+    interlacer_pos_lc := hg_pos,
+    discriminant := by norm_num,
+    target_pos_lc := hF_pos,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi,
+    no_common_roots := hno
+
+/-- OEIS shape `A181738`: automatic discriminant discharge for a monic
+quadratic lag. -/
 example {f g a : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
