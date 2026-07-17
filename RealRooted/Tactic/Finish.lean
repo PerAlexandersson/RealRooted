@@ -91,6 +91,36 @@ theorem splits_of_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
     p.Splits :=
   hp.2
 
+/-- Project real-rootedness of the right argument from an `Interlaces` certificate. -/
+theorem right_isRealRooted_of_interlaces {g f : ℝ[X]} (hgf : Interlaces g f) :
+    f ≠ 0 ∧ f.Splits :=
+  hgf.1
+
+/-- Project real-rootedness of the left argument from an `Interlaces` certificate. -/
+theorem left_isRealRooted_of_interlaces {g f : ℝ[X]} (hgf : Interlaces g f) :
+    g ≠ 0 ∧ g.Splits :=
+  hgf.2.1
+
+/-- Project right-argument nonvanishing from an `Interlaces` certificate. -/
+theorem right_ne_zero_of_interlaces {g f : ℝ[X]} (hgf : Interlaces g f) :
+    f ≠ 0 :=
+  (right_isRealRooted_of_interlaces hgf).1
+
+/-- Project right-argument splitting from an `Interlaces` certificate. -/
+theorem right_splits_of_interlaces {g f : ℝ[X]} (hgf : Interlaces g f) :
+    f.Splits :=
+  (right_isRealRooted_of_interlaces hgf).2
+
+/-- Project left-argument nonvanishing from an `Interlaces` certificate. -/
+theorem left_ne_zero_of_interlaces {g f : ℝ[X]} (hgf : Interlaces g f) :
+    g ≠ 0 :=
+  (left_isRealRooted_of_interlaces hgf).1
+
+/-- Project left-argument splitting from an `Interlaces` certificate. -/
+theorem left_splits_of_interlaces {g f : ℝ[X]} (hgf : Interlaces g f) :
+    g.Splits :=
+  (left_isRealRooted_of_interlaces hgf).2
+
 /-- Project row-wise nonvanishing from a sequence real-rootedness certificate. -/
 theorem ne_zero_of_isRealRooted_sequence {P : Nat → ℝ[X]}
     (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
@@ -220,7 +250,13 @@ macro_rules
         first
           | exact $h
           | exact RealRooted.ne_zero_of_isRealRooted $h
-          | exact RealRooted.splits_of_isRealRooted $h)
+          | exact RealRooted.splits_of_isRealRooted $h
+          | exact RealRooted.right_isRealRooted_of_interlaces $h
+          | exact RealRooted.left_isRealRooted_of_interlaces $h
+          | exact RealRooted.right_ne_zero_of_interlaces $h
+          | exact RealRooted.left_ne_zero_of_interlaces $h
+          | exact RealRooted.right_splits_of_interlaces $h
+          | exact RealRooted.left_splits_of_interlaces $h)
   | `(tactic| rr_exact_realrooted_sequence_or_projection $h:term) =>
       `(tactic|
         first
@@ -238,12 +274,16 @@ macro_rules
   | `(tactic| rr_nonzero using $h:term) =>
       `(tactic|
         first
+          | exact RealRooted.right_ne_zero_of_interlaces $h
+          | exact RealRooted.left_ne_zero_of_interlaces $h
           | exact ($h).1
           | exact ($h).1.1
           | exact ($h).2.1.1)
   | `(tactic| rr_splits using $h:term) =>
       `(tactic|
         first
+          | exact RealRooted.right_splits_of_interlaces $h
+          | exact RealRooted.left_splits_of_interlaces $h
           | exact ($h).2
           | exact ($h).1.2
           | exact ($h).2.1.2)
@@ -251,6 +291,8 @@ macro_rules
       `(tactic|
         first
           | exact $h
+          | exact RealRooted.right_isRealRooted_of_interlaces $h
+          | exact RealRooted.left_isRealRooted_of_interlaces $h
           | exact ($h).1
           | exact ($h).2.1)
   | `(tactic| rr_interlaces using $hprec:term, $hdeg:term) =>
@@ -332,6 +374,12 @@ macro_rules
         first
           | rr_lookup
           | assumption
+          | exact RealRooted.right_isRealRooted_of_interlaces (by rr_lookup)
+          | exact RealRooted.left_isRealRooted_of_interlaces (by rr_lookup)
+          | exact RealRooted.right_ne_zero_of_interlaces (by rr_lookup)
+          | exact RealRooted.left_ne_zero_of_interlaces (by rr_lookup)
+          | exact RealRooted.right_splits_of_interlaces (by rr_lookup)
+          | exact RealRooted.left_splits_of_interlaces (by rr_lookup)
           | exact RealRooted.Prec.toInterlaces (by rr_lookup) (by rr_lookup)
           | exact RealRooted.Prec.toInterlaces (by rr_lookup) (by
               symm
