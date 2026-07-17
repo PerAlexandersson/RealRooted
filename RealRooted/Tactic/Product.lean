@@ -477,6 +477,40 @@ theorem isRealRooted_of_C_add_C_mul_X_pow_lift_right_sequence
   isRealRooted_of_product_lift_right_sequence hquot
     (fun n => isRealRooted_C_add_C_mul_X_pow (hs n) (m n)) hrow
 
+/-- Parity lift for product-form rows whose odd rows are a nonzero scalar
+times `X` times the corresponding even quotient row.
+
+This is the final bookkeeping step for product exits such as A137477 after the
+even quotient sequence has been proved real-rooted by a product-factor shell. -/
+theorem isRealRooted_of_even_product_odd_X_scalar_sequence
+    {P Q : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (heven : ∀ n : Nat, P (2 * n) = Q n)
+    (hodd : ∀ n : Nat, P (2 * n + 1) = C (a n) * X * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have heven_realrooted : ∀ n : Nat, P (2 * n) ≠ 0 ∧ (P (2 * n)).Splits := by
+    intro n
+    simpa [heven n] using hquot n
+  have hodd_realrooted :
+      ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
+    intro n
+    have hfactor : C (a n) * X ≠ 0 ∧ (C (a n) * X).Splits :=
+      isRealRooted_C_mul isRealRooted_X.1 isRealRooted_X.2 (ha n)
+    have hrow : (C (a n) * X) * Q n ≠ 0 ∧ ((C (a n) * X) * Q n).Splits :=
+      isRealRooted_mul hfactor.1 hfactor.2 (hquot n).1 (hquot n).2
+    simpa [hodd n, mul_assoc] using hrow
+  intro n
+  rcases Nat.mod_two_eq_zero_or_one n with hmod | hmod
+  · have hn : n = 2 * (n / 2) := by
+      simpa [hmod] using (Nat.div_add_mod n 2).symm
+    rw [hn]
+    exact heven_realrooted (n / 2)
+  · have hn : n = 2 * (n / 2) + 1 := by
+      simpa [hmod] using (Nat.div_add_mod n 2).symm
+    rw [hn]
+    exact hodd_realrooted (n / 2)
+
 /-- One endpoint-quotient transition: first form `a+b`, then the next row is
 `b+X(a+b)`. -/
 theorem prec_endpoint_sum_then_X_step {a b : ℝ[X]}
@@ -1514,6 +1548,14 @@ syntax (name := rr_product_lift_C_sequence_auto_named)
     "factorization" ":=" term :
   tactic
 
+syntax (name := rr_even_product_odd_X_scalar_sequence_named)
+  "rr_even_product_odd_X_scalar_sequence" " using "
+    "even_realrooted" ":=" term ","
+    "scalar_ne" ":=" term ","
+    "even_factorization" ":=" term ","
+    "odd_factorization" ":=" term :
+  tactic
+
 syntax (name := rr_product_lift_affine_sequence_named)
   "rr_product_lift_affine_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -2059,6 +2101,16 @@ macro_rules
           quotient_realrooted := $hquot,
           scalar_ne := (fun n => by rr_product_nonzero),
           factorization := $hrow)
+  | `(tactic|
+      rr_even_product_odd_X_scalar_sequence using
+        even_realrooted := $hquot:term,
+        scalar_ne := $ha:term,
+        even_factorization := $heven:term,
+        odd_factorization := $hodd:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_even_product_odd_X_scalar_sequence
+            $hquot $ha $heven $hodd))
   | `(tactic|
       rr_product_lift_affine_sequence using
         quotient_realrooted := $hquot:term,

@@ -1108,6 +1108,41 @@ example {P : Nat → ℝ[X]} {b : Nat → ℝ} {m : Nat → Nat}
     scalar_step := hscalar,
     factor_step := hstep
 
+/-- Parity lift for product exits where odd rows are scalar multiples of
+`X` times the even quotient. -/
+example {P Q : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (heven : ∀ n : Nat, P (2 * n) = Q n)
+    (hodd : ∀ n : Nat, P (2 * n + 1) = C (a n) * X * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_even_product_odd_X_scalar_sequence using
+    even_realrooted := hquot,
+    scalar_ne := ha,
+    even_factorization := heven,
+    odd_factorization := hodd
+
+/-- A137477-style route: prove the even quotient by supplied product factors,
+then lift the odd rows by the parity scalar-`X` wrapper. -/
+example {P Q F : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hbase : Q 0 ≠ 0 ∧ (Q 0).Splits)
+    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hstep : ∀ n : Nat, Q (n + 1) = F n * Q n)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (heven : ∀ n : Nat, P (2 * n) = Q n)
+    (hodd : ∀ n : Nat, P (2 * n + 1) = C (a n) * X * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits := by
+    rr_product_factor_sequence using
+      base := hbase,
+      factor_realrooted := hfactor,
+      recurrence := hstep
+  rr_even_product_odd_X_scalar_sequence using
+    even_realrooted := hquot,
+    scalar_ne := ha,
+    even_factorization := heven,
+    odd_factorization := hodd
+
 /-- `A060523`: permutations by number of even cycles.  In product form,
 `P_{2m+1}=(2m+1)P_{2m}` and
 `P_{2m+2}=(X+(2m+1))P_{2m+1}`. -/
