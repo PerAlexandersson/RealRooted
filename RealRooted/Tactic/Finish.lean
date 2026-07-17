@@ -213,6 +213,9 @@ syntax (name := rr_exact_realrooted_pair_sequence_or_projection)
 syntax (name := rr_nonzero) "rr_nonzero" " using " term : tactic
 syntax (name := rr_splits) "rr_splits" " using " term : tactic
 syntax (name := rr_realrooted) "rr_realrooted" " using " term : tactic
+syntax (name := rr_nonzero_auto) "rr_nonzero" : tactic
+syntax (name := rr_splits_auto) "rr_splits" : tactic
+syntax (name := rr_realrooted_auto) "rr_realrooted" : tactic
 
 syntax (name := rr_interlaces_with_degree)
   "rr_interlaces" " using " term ", " term : tactic
@@ -322,6 +325,16 @@ macro_rules
           | exact ($h).1
           | exact ($h).1.1
           | exact ($h).2.1.1)
+  | `(tactic| rr_nonzero) =>
+      `(tactic|
+        first
+          | rr_lookup
+          | exact RealRooted.left_ne_zero_of_prec (by rr_lookup)
+          | exact RealRooted.right_ne_zero_of_prec (by rr_lookup)
+          | exact RealRooted.right_ne_zero_of_interlaces (by rr_lookup)
+          | exact RealRooted.left_ne_zero_of_interlaces (by rr_lookup)
+          | assumption
+          | simp_all [RealRooted.Prec, RealRooted.Interlaces])
   | `(tactic| rr_splits using $h:term) =>
       `(tactic|
         first
@@ -332,6 +345,16 @@ macro_rules
           | exact ($h).2
           | exact ($h).1.2
           | exact ($h).2.1.2)
+  | `(tactic| rr_splits) =>
+      `(tactic|
+        first
+          | rr_lookup
+          | exact RealRooted.left_splits_of_prec (by rr_lookup)
+          | exact RealRooted.right_splits_of_prec (by rr_lookup)
+          | exact RealRooted.right_splits_of_interlaces (by rr_lookup)
+          | exact RealRooted.left_splits_of_interlaces (by rr_lookup)
+          | assumption
+          | simp_all [RealRooted.Prec, RealRooted.Interlaces])
   | `(tactic| rr_realrooted using $h:term) =>
       `(tactic|
         first
@@ -342,6 +365,16 @@ macro_rules
           | exact RealRooted.left_isRealRooted_of_interlaces $h
           | exact ($h).1
           | exact ($h).2.1)
+  | `(tactic| rr_realrooted) =>
+      `(tactic|
+        first
+          | rr_lookup
+          | exact RealRooted.left_isRealRooted_of_prec (by rr_lookup)
+          | exact RealRooted.right_isRealRooted_of_prec (by rr_lookup)
+          | exact RealRooted.right_isRealRooted_of_interlaces (by rr_lookup)
+          | exact RealRooted.left_isRealRooted_of_interlaces (by rr_lookup)
+          | assumption
+          | simp_all [RealRooted.Prec, RealRooted.Interlaces])
   | `(tactic| rr_interlaces using $hprec:term, $hdeg:term) =>
       `(tactic|
         first

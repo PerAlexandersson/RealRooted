@@ -15,10 +15,16 @@ example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 := by
   rr_nonzero using hfg
 
 example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 := by
+  rr_nonzero
+
+example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 := by
   rr_finish
 
 example {f g : ℝ[X]} (hfg : Prec f g) : g.Splits := by
   rr_splits using hfg
+
+example {f g : ℝ[X]} (hfg : Prec f g) : g.Splits := by
+  rr_splits
 
 example {f g : ℝ[X]} (hfg : Prec f g) : g.Splits := by
   rr_finish
@@ -26,8 +32,14 @@ example {f g : ℝ[X]} (hfg : Prec f g) : g.Splits := by
 example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 ∧ f.Splits := by
   rr_realrooted using hfg
 
+example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 ∧ f.Splits := by
+  rr_realrooted
+
 example {f g : ℝ[X]} (hfg : Prec f g) : g ≠ 0 ∧ g.Splits := by
   rr_realrooted using hfg
+
+example {f g : ℝ[X]} (hfg : Prec f g) : g ≠ 0 ∧ g.Splits := by
+  rr_realrooted
 
 example {f g : ℝ[X]} (hfg : Prec f g) : g ≠ 0 := by
   rr_nonzero using hfg
@@ -44,14 +56,26 @@ example {f g : ℝ[X]} (hfg : Prec f g) : g ≠ 0 ∧ g.Splits := by
 example {g f : ℝ[X]} (hgf : Interlaces g f) : f ≠ 0 ∧ f.Splits := by
   rr_realrooted using hgf
 
+example {g f : ℝ[X]} (hgf : Interlaces g f) : f ≠ 0 ∧ f.Splits := by
+  rr_realrooted
+
 example {g f : ℝ[X]} (hgf : Interlaces g f) : g ≠ 0 ∧ g.Splits := by
   rr_realrooted using hgf
+
+example {g f : ℝ[X]} (hgf : Interlaces g f) : g ≠ 0 ∧ g.Splits := by
+  rr_realrooted
 
 example {g f : ℝ[X]} (hgf : Interlaces g f) : f ≠ 0 := by
   rr_nonzero using hgf
 
+example {g f : ℝ[X]} (hgf : Interlaces g f) : f ≠ 0 := by
+  rr_nonzero
+
 example {g f : ℝ[X]} (hgf : Interlaces g f) : g.Splits := by
   rr_splits using hgf
+
+example {g f : ℝ[X]} (hgf : Interlaces g f) : g.Splits := by
+  rr_splits
 
 example {g f : ℝ[X]} (hgf : Interlaces g f) : f ≠ 0 ∧ f.Splits := by
   rr_finish
