@@ -437,11 +437,11 @@ def a036969ResidualAlpha (d : ℕ) : ℝ[X] :=
 /-- The residual after removing the common `(1 + X)^(d-2)` Jensen factor for
 the A036969 shifted `beta` endpoint. -/
 def a036969ResidualBeta : ℝ[X] :=
-  (X + 1) ^ 2
+  X * (X + 1) ^ 2
 
 /-- The residual pencil for the A036969 PF-bidiagonal certificate. -/
 def a036969ResidualPencil (d : ℕ) (lam : ℝ) : ℝ[X] :=
-  a036969ResidualAlpha d + C lam * X * a036969ResidualBeta
+  a036969ResidualAlpha d + C lam * a036969ResidualBeta
 
 /-- The A036969 alpha residual has nonnegative coefficients. -/
 theorem a036969ResidualAlpha_hasNonnegCoeffs (d : ℕ) :
@@ -489,45 +489,53 @@ theorem a036969ResidualAlpha_cubicPFDiscriminantCertificate (d : ℕ) :
 theorem a036969ResidualBeta_cubicPFDiscriminantCertificate :
     CubicPFDiscriminantCertificate a036969ResidualBeta := by
   refine ⟨?_, ?_, ?_⟩
-  · simpa [a036969ResidualBeta] using (isPFPolynomial_X_add_one.pow 2).hasNonnegCoeffs
+  · simpa [a036969ResidualBeta, mul_assoc] using
+      (isPFPolynomial_X.mul (isPFPolynomial_X_add_one.pow 2)).hasNonnegCoeffs
   · unfold a036969ResidualBeta
     compute_degree
-    norm_num
   · have hdeg : a036969ResidualBeta.natDegree ≤ 3 := by
       unfold a036969ResidualBeta
       compute_degree
-      norm_num
     have hsplit : a036969ResidualBeta.Splits := by
-      have hpf := (isPFPolynomial_X_add_one.pow 2).eq_zero_or_splits
+      have hpf :=
+        (isPFPolynomial_X.mul (isPFPolynomial_X_add_one.pow 2)).eq_zero_or_splits
       rcases hpf with hzero | hsplit
       · exfalso
+        have hX : (X : ℝ[X]) ≠ 0 := X_ne_zero
         have hbase : (X + 1 : ℝ[X]) ≠ 0 := by
           simpa using Polynomial.X_add_C_ne_zero (1 : ℝ)
         have hpow : (X + 1 : ℝ[X]) ^ 2 ≠ 0 := pow_ne_zero 2 hbase
-        exact hpow hzero
+        exact (mul_ne_zero hX hpow) hzero
       · simpa [a036969ResidualBeta] using hsplit
     exact cubicDiscr_nonneg_of_splits_natDegree_le_three hdeg hsplit
 
 private theorem a036969ResidualBeta_coeff_zero :
-    a036969ResidualBeta.coeff 0 = 1 := by
+    a036969ResidualBeta.coeff 0 = 0 := by
   rw [a036969ResidualBeta]
   ring_nf
   repeat rw [Polynomial.coeff_add]
-  simp [Polynomial.coeff_X_pow, Polynomial.coeff_one, Polynomial.coeff_X]
+  simp [Polynomial.coeff_X_pow, Polynomial.coeff_X]
 
 private theorem a036969ResidualBeta_coeff_one :
-    a036969ResidualBeta.coeff 1 = 2 := by
+    a036969ResidualBeta.coeff 1 = 1 := by
   rw [a036969ResidualBeta]
   ring_nf
   repeat rw [Polynomial.coeff_add]
-  simp [Polynomial.coeff_X_pow, Polynomial.coeff_one, Polynomial.coeff_X]
+  simp [Polynomial.coeff_X_pow, Polynomial.coeff_X]
 
 private theorem a036969ResidualBeta_coeff_two :
-    a036969ResidualBeta.coeff 2 = 1 := by
+    a036969ResidualBeta.coeff 2 = 2 := by
   rw [a036969ResidualBeta]
   ring_nf
   repeat rw [Polynomial.coeff_add]
-  simp [Polynomial.coeff_X_pow, Polynomial.coeff_one, Polynomial.coeff_X]
+  simp [Polynomial.coeff_X_pow, Polynomial.coeff_X]
+
+private theorem a036969ResidualBeta_coeff_three :
+    a036969ResidualBeta.coeff 3 = 1 := by
+  rw [a036969ResidualBeta]
+  ring_nf
+  repeat rw [Polynomial.coeff_add]
+  simp [Polynomial.coeff_X_pow, Polynomial.coeff_X]
 
 private theorem a036969ResidualAlpha_coeff_three (d : ℕ) :
     (a036969ResidualAlpha d).coeff 3 = 0 := by
@@ -560,9 +568,8 @@ private theorem a036969ResidualAlpha_coeff_zero (d : ℕ) :
 private theorem a036969ResidualPencil_coeff_three (d : ℕ) (lam : ℝ) :
     (a036969ResidualPencil d lam).coeff 3 = lam := by
   rw [a036969ResidualPencil, Polynomial.coeff_add, a036969ResidualAlpha_coeff_three]
-  have hterm : (C lam * X * a036969ResidualBeta).coeff 3 = lam := by
-    rw [mul_assoc, Polynomial.coeff_C_mul, Polynomial.coeff_X_mul]
-    rw [a036969ResidualBeta_coeff_two]
+  have hterm : (C lam * a036969ResidualBeta).coeff 3 = lam := by
+    rw [Polynomial.coeff_C_mul, a036969ResidualBeta_coeff_three]
     ring
   rw [hterm]
   ring
@@ -571,9 +578,8 @@ private theorem a036969ResidualPencil_coeff_two (d : ℕ) (lam : ℝ) :
     (a036969ResidualPencil d lam).coeff 2 =
       ((d : ℝ) + 1) ^ 2 + 2 * lam := by
   rw [a036969ResidualPencil, Polynomial.coeff_add, a036969ResidualAlpha_coeff_two]
-  have hterm : (C lam * X * a036969ResidualBeta).coeff 2 = 2 * lam := by
-    rw [mul_assoc, Polynomial.coeff_C_mul, Polynomial.coeff_X_mul]
-    rw [a036969ResidualBeta_coeff_one]
+  have hterm : (C lam * a036969ResidualBeta).coeff 2 = 2 * lam := by
+    rw [Polynomial.coeff_C_mul, a036969ResidualBeta_coeff_two]
     ring
   rw [hterm]
 
@@ -581,17 +587,16 @@ private theorem a036969ResidualPencil_coeff_one (d : ℕ) (lam : ℝ) :
     (a036969ResidualPencil d lam).coeff 1 =
       3 * (d : ℝ) + 2 + lam := by
   rw [a036969ResidualPencil, Polynomial.coeff_add, a036969ResidualAlpha_coeff_one]
-  have hterm : (C lam * X * a036969ResidualBeta).coeff 1 = lam := by
-    rw [mul_assoc, Polynomial.coeff_C_mul, Polynomial.coeff_X_mul]
-    rw [a036969ResidualBeta_coeff_zero]
+  have hterm : (C lam * a036969ResidualBeta).coeff 1 = lam := by
+    rw [Polynomial.coeff_C_mul, a036969ResidualBeta_coeff_one]
     ring
   rw [hterm]
 
 private theorem a036969ResidualPencil_coeff_zero (d : ℕ) (lam : ℝ) :
     (a036969ResidualPencil d lam).coeff 0 = 1 := by
   rw [a036969ResidualPencil, Polynomial.coeff_add, a036969ResidualAlpha_coeff_zero]
-  have hterm : (C lam * X * a036969ResidualBeta).coeff 0 = 0 := by
-    rw [mul_assoc, Polynomial.coeff_C_mul, Polynomial.coeff_X_mul_zero]
+  have hterm : (C lam * a036969ResidualBeta).coeff 0 = 0 := by
+    rw [Polynomial.coeff_C_mul, a036969ResidualBeta_coeff_zero]
     ring
   rw [hterm]
   ring
@@ -602,10 +607,10 @@ theorem a036969ResidualPencil_hasNonnegCoeffs
     (d : ℕ) {lam : ℝ} (hlam : 0 ≤ lam) :
     HasNonnegCoeffs (a036969ResidualPencil d lam) := by
   have hbeta : HasNonnegCoeffs a036969ResidualBeta := by
-    simpa [a036969ResidualBeta] using
-      (isPFPolynomial_X_add_one.pow 2).hasNonnegCoeffs
-  have hterm : HasNonnegCoeffs (C lam * X * a036969ResidualBeta) := by
-    simpa [mul_assoc] using nonnegCoeffs_C_mul hlam hbeta.X_mul
+    simpa [a036969ResidualBeta, mul_assoc] using
+      (isPFPolynomial_X.mul (isPFPolynomial_X_add_one.pow 2)).hasNonnegCoeffs
+  have hterm : HasNonnegCoeffs (C lam * a036969ResidualBeta) :=
+    nonnegCoeffs_C_mul hlam hbeta
   simpa [a036969ResidualPencil] using
     (a036969ResidualAlpha_hasNonnegCoeffs d).add hterm
 
