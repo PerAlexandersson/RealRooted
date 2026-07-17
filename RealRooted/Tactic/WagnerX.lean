@@ -1,5 +1,6 @@
 import RealRooted.PosCombo
 import RealRooted.AffineFamily
+import RealRooted.Tactic.Finish
 
 /-!
 # Wagner `X`-shift tactics
@@ -706,8 +707,9 @@ macro_rules
         derivative_coeff_pos := $hc:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_prec_wagner_derivative_gap_lag_sequence
-          $hbase $hnonneg $hdeg $ha $hc $hrec)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_prec_wagner_derivative_gap_lag_sequence
+            $hbase $hnonneg $hdeg $ha $hc $hrec))
   | `(tactic|
       rr_prec_wagner_derivative_gap_lag_sequence_den using
         base := $hbase:term,
@@ -730,8 +732,9 @@ macro_rules
         denom_pos := $hd:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_prec_wagner_derivative_gap_lag_sequence_den
-          $hbase $hnonneg $hdeg $ha $hc $hd $hrec)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_prec_wagner_derivative_gap_lag_sequence_den
+            $hbase $hnonneg $hdeg $ha $hc $hd $hrec))
   | `(tactic|
       rr_prec_pos_X_lag_combo using
         proper := $hprec:term,
@@ -794,8 +797,9 @@ macro_rules
         lag_coeff_nonneg := $hc:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
-          $hbase $hnonneg $ha $hc $hrec)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
+            $hbase $hnonneg $ha $hc $hrec))
   | `(tactic|
       rr_prec_pos_X_lag_sequence_realrooted_auto using
         base := $hbase:term,
@@ -803,13 +807,16 @@ macro_rules
         recurrence := $hrec:term) =>
       `(tactic|
         first
-          | exact RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
-              $hbase $hnonneg (fun n => by positivity) (fun n => by positivity) $hrec
-          | refine RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
-              (a := fun _ => (1 : ℝ)) (c := fun _ => (1 : ℝ))
-              $hbase $hnonneg (fun n => by positivity) (fun n => by positivity) ?_
-            intro n
-            simpa using $hrec n)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
+                $hbase $hnonneg (fun n => by positivity) (fun n => by positivity) $hrec)
+          | rr_exact_realrooted_sequence_or_projection
+              (by
+                refine RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
+                  (a := fun _ => (1 : ℝ)) (c := fun _ => (1 : ℝ))
+                  $hbase $hnonneg (fun n => by positivity) (fun n => by positivity) ?_
+                intro n
+                simpa using $hrec n))
   | `(tactic|
       rr_prec_pos_X_unit_lag_sequence_auto using
         current_coeff := $a:term,
@@ -828,10 +835,11 @@ macro_rules
         nonneg_coeffs := $hnonneg:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
-          (a := $a) (c := fun _ => (1 : ℝ))
-          $hbase $hnonneg (fun n => by positivity) (fun n => by positivity)
-          (fun n => by simpa using ($hrec n)))
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
+            (a := $a) (c := fun _ => (1 : ℝ))
+            $hbase $hnonneg (fun n => by positivity) (fun n => by positivity)
+            (fun n => by simpa using ($hrec n))))
   | `(tactic|
       rr_prec_pos_X_same_coeff_sequence_auto using
         shared_coeff := $c:term,
@@ -850,10 +858,11 @@ macro_rules
         nonneg_coeffs := $hnonneg:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
-          (a := $c) (c := $c)
-          $hbase $hnonneg (fun n => by positivity) (fun n => by positivity)
-          (fun n => by simpa using ($hrec n)))
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
+            (a := $c) (c := $c)
+            $hbase $hnonneg (fun n => by positivity) (fun n => by positivity)
+            (fun n => by simpa using ($hrec n))))
 
 end Tactic
 end RealRooted

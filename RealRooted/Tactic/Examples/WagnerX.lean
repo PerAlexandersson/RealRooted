@@ -195,6 +195,17 @@ example {P : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     recurrence := hrec
 
+/-- Projection endpoint for the same positive-`X` lag shell. -/
+example {P : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
+    (hrec : ∀ n : Nat, P (n + 2) = P (n + 1) + X * P n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_prec_pos_X_lag_sequence_realrooted_auto using
+    base := hbase,
+    nonneg_coeffs := hnonneg,
+    recurrence := hrec
+
 /-- Full sequence shell for `A201701`: `P_{n+2}=2P_{n+1}+tP_n`. -/
 example {P : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
@@ -322,6 +333,24 @@ example {P : Nat → ℝ[X]} {a c : Nat → ℝ}
     (hrec : ∀ n : Nat,
       P (n + 2) = X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_prec_wagner_derivative_gap_lag_sequence_realrooted using
+    base := hbase,
+    nonneg_coeffs := hnonneg,
+    degree_two := hdeg,
+    lag_coeff_pos := ha,
+    derivative_coeff_pos := hc,
+    recurrence := hrec
+
+/-- Projection endpoint for the normalized derivative-gap shell. -/
+example {P : Nat → ℝ[X]} {a c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
+    (hdeg : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
+    (ha : ∀ n : Nat, 0 < a n)
+    (hc : ∀ n : Nat, 0 < c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :
+    ∀ n : Nat, (P n).Splits := by
   rr_prec_wagner_derivative_gap_lag_sequence_realrooted using
     base := hbase,
     nonneg_coeffs := hnonneg,
