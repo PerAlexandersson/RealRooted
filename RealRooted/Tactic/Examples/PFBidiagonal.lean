@@ -64,6 +64,28 @@ example
     recurrence := hrec
 
 example
+    {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
+    {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
+    (hbase : IsPFPolynomial (P 0))
+    (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
+    (hpres : ∀ n : Nat, BidiagonalPFPreserver (alpha n) (beta n) (d n))
+    (hnorm : ∀ n : Nat,
+      secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n) =
+        bidiagonalOperator (alpha n) (beta n) (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) := by
+  rr_pf_second_derivative_bidiagonal_sequence using
+    preserver := hpres,
+    base := hbase,
+    degree := hdeg,
+    normalizer := hnorm,
+    recurrence := hrec
+
+example
     {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
     (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
@@ -83,6 +105,31 @@ example
     certificate := hcert,
     base := hbase,
     degree := hdeg,
+    recurrence := hrec
+
+example
+    {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
+    {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbase : IsPFPolynomial (P 0))
+    (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
+    (hcert : ∀ n : Nat,
+      BidiagonalJensenPencilCertificate (alpha n) (beta n) (d n))
+    (hnorm : ∀ n : Nat,
+      secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n) =
+        bidiagonalOperator (alpha n) (beta n) (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) := by
+  rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
+    certificate := hcert,
+    base := hbase,
+    degree := hdeg,
+    normalizer := hnorm,
     recurrence := hrec
 
 /-- The coefficient multiplier for the A036969 recurrence. -/
