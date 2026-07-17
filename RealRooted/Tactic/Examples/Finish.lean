@@ -53,10 +53,19 @@ example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 ∧ f.Splits := by
 example {f g : ℝ[X]} (hfg : Prec f g) : g ≠ 0 ∧ g.Splits := by
   rr_finish
 
+example {f g : ℝ[X]} (hfg : Prec f g) : g = 0 ∨ g.Splits := by
+  rr_finish
+
 example {f g : ℝ[X]}
     (hfg : (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits)) :
     f ≠ 0 ∧ f.Splits := by
   rr_realrooted using hfg
+
+example {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits) : f = 0 ∨ f.Splits := by
+  rr_exact_realrooted_or_projection hf
+
+example {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits) : f = 0 ∨ f.Splits := by
+  rr_finish
 
 example {f g : ℝ[X]}
     (hfg : (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits)) :
@@ -87,6 +96,11 @@ example {f g : ℝ[X]}
     (hfg : (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits)) :
     g.Splits := by
   rr_splits
+
+example {f g : ℝ[X]}
+    (hfg : (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits)) :
+    g = 0 ∨ g.Splits := by
+  rr_finish
 
 example {f g : ℝ[X]}
     (hfg : (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits)) :
@@ -123,6 +137,9 @@ example {g f : ℝ[X]} (hgf : Interlaces g f) : f ≠ 0 ∧ f.Splits := by
 example {g f : ℝ[X]} (hgf : Interlaces g f) : g ≠ 0 ∧ g.Splits := by
   rr_finish
 
+example {g f : ℝ[X]} (hgf : Interlaces g f) : g = 0 ∨ g.Splits := by
+  rr_finish
+
 example {g f : ℝ[X]} (hgf : Interlaces g f) :
     g.natDegree + 1 = f.natDegree := by
   rr_finish
@@ -151,6 +168,16 @@ example {P : Nat → ℝ[X]}
     ∀ n : Nat, (P n).Splits := by
   rr_finish
 
+example {P : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
+    ∀ n : Nat, P n = 0 ∨ (P n).Splits := by
+  rr_exact_realrooted_sequence_or_projection hP
+
+example {P : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
+    ∀ n : Nat, P n = 0 ∨ (P n).Splits := by
+  rr_finish
+
 example {P : Nat → ℝ[X]} {n : Nat}
     (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
     P n ≠ 0 := by
@@ -169,6 +196,11 @@ example {P : Nat → ℝ[X]} {n : Nat}
 example {P : Nat → ℝ[X]} {n : Nat}
     (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
     (P n).Splits := by
+  rr_finish
+
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
+    P n = 0 ∨ (P n).Splits := by
   rr_finish
 
 example {P : Nat → ℝ[X]} {n : Nat}
@@ -217,6 +249,18 @@ example {A B : Nat → ℝ[X]}
     ∀ n : Nat, (B n).Splits := by
   rr_finish
 
+example {A B : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    ∀ n : Nat, B n = 0 ∨ (B n).Splits := by
+  rr_exact_realrooted_pair_sequence_or_projection hP
+
+example {A B : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    ∀ n : Nat, B n = 0 ∨ (B n).Splits := by
+  rr_finish
+
 example {A B : Nat → ℝ[X]} {n : Nat}
     (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
       (B n ≠ 0 ∧ (B n).Splits)) :
@@ -245,6 +289,12 @@ example {A B : Nat → ℝ[X]} {n : Nat}
     (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
       (B n ≠ 0 ∧ (B n).Splits)) :
     (A n).Splits := by
+  rr_finish
+
+example {A B : Nat → ℝ[X]} {n : Nat}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    A n = 0 ∨ (A n).Splits := by
   rr_finish
 
 example {f g : ℝ[X]} (hfg : Prec f g)
