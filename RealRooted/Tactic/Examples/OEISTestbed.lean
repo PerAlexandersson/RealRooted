@@ -145,14 +145,13 @@ example {f u : ℝ[X]}
       HasPosLeadingCoeff (u * f + (-(C (1 : ℝ)) * X * (1 + X)) * f.derivative))
     (hf_pos : HasPosLeadingCoeff f) :
     Prec f (u * f + (-(C (1 : ℝ)) * X * (1 + X)) * f.derivative) := by
-  rr_mw_derivative_neg_X_one_add_outer using
+  rr_mw_derivative_neg_X_one_add_outer_auto using
     splits := hf,
     degree_two := hdegf,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi,
     target_pos_lc := hF_pos,
     source_pos_lc := hf_pos,
-    coeff_nonneg := by norm_num,
     root_upper := hroots
 
 -- `A106800`/`A021010`: `v_n(t)=-t^2`.
@@ -166,14 +165,13 @@ example {f u : ℝ[X]}
     (hF_pos : HasPosLeadingCoeff (u * f + (-(C (1 : ℝ)) * X ^ 2) * f.derivative))
     (hf_pos : HasPosLeadingCoeff f) :
     Prec f (u * f + (-(C (1 : ℝ)) * X ^ 2) * f.derivative) := by
-  rr_mw_derivative_neg_X_sq using
+  rr_mw_derivative_neg_X_sq_auto using
     splits := hf,
     degree_two := hdegf,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi,
     target_pos_lc := hF_pos,
-    source_pos_lc := hf_pos,
-    coeff_nonneg := by norm_num
+    source_pos_lc := hf_pos
 
 -- `A395972`: `v_n(t)=-2t^2`.
 example {f u : ℝ[X]}
@@ -186,14 +184,13 @@ example {f u : ℝ[X]}
     (hF_pos : HasPosLeadingCoeff (u * f + (-(C (2 : ℝ)) * X ^ 2) * f.derivative))
     (hf_pos : HasPosLeadingCoeff f) :
     Prec f (u * f + (-(C (2 : ℝ)) * X ^ 2) * f.derivative) := by
-  rr_mw_derivative_neg_X_sq using
+  rr_mw_derivative_neg_X_sq_auto using
     splits := hf,
     degree_two := hdegf,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi,
     target_pos_lc := hF_pos,
-    source_pos_lc := hf_pos,
-    coeff_nonneg := by norm_num
+    source_pos_lc := hf_pos
 
 /-! ## Ma--Wang sequence-level OEIS smoke tests -/
 

@@ -1990,6 +1990,17 @@ syntax (name := rr_mw_derivative_neg_X_one_add_outer_named)
     "root_upper" ":=" term :
   tactic
 
+syntax (name := rr_mw_derivative_neg_X_one_add_outer_auto_named)
+  "rr_mw_derivative_neg_X_one_add_outer_auto" " using "
+    "splits" ":=" term ","
+    "degree_two" ":=" term ","
+    "degree_lower" ":=" term ","
+    "degree_upper" ":=" term ","
+    "target_pos_lc" ":=" term ","
+    "source_pos_lc" ":=" term ","
+    "root_upper" ":=" term :
+  tactic
+
 syntax (name := rr_mw_derivative_one_add_two_window_named)
   "rr_mw_derivative_one_add_two_window" " using "
     "splits" ":=" term ","
@@ -2059,6 +2070,16 @@ syntax (name := rr_mw_derivative_neg_const_named)
     "coeff_nonneg" ":=" term :
   tactic
 
+syntax (name := rr_mw_derivative_neg_const_auto_named)
+  "rr_mw_derivative_neg_const_auto" " using "
+    "splits" ":=" term ","
+    "degree_two" ":=" term ","
+    "degree_lower" ":=" term ","
+    "degree_upper" ":=" term ","
+    "target_pos_lc" ":=" term ","
+    "source_pos_lc" ":=" term :
+  tactic
+
 syntax (name := rr_mw_derivative_neg_X_sq_named)
   "rr_mw_derivative_neg_X_sq" " using "
     "splits" ":=" term ","
@@ -2068,6 +2089,16 @@ syntax (name := rr_mw_derivative_neg_X_sq_named)
     "target_pos_lc" ":=" term ","
     "source_pos_lc" ":=" term ","
     "coeff_nonneg" ":=" term :
+  tactic
+
+syntax (name := rr_mw_derivative_neg_X_sq_auto_named)
+  "rr_mw_derivative_neg_X_sq_auto" " using "
+    "splits" ":=" term ","
+    "degree_two" ":=" term ","
+    "degree_lower" ":=" term ","
+    "degree_upper" ":=" term ","
+    "target_pos_lc" ":=" term ","
+    "source_pos_lc" ":=" term :
   tactic
 
 syntax (name := rr_mw_derivative_nonpos_sequence_named)
@@ -3428,6 +3459,20 @@ macro_rules
           RealRooted.prec_mw_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one
             $hf $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos $hc $hroot_hi)
   | `(tactic|
+      rr_mw_derivative_neg_X_one_add_outer_auto using
+        splits := $hf:term,
+        degree_two := $hdegf:term,
+        degree_lower := $hdeg_lo:term,
+        degree_upper := $hdeg_hi:term,
+        target_pos_lc := $hF_pos:term,
+        source_pos_lc := $hf_pos:term,
+        root_upper := $hroot_hi:term) =>
+      `(tactic|
+        refine
+          RealRooted.prec_mw_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one
+            $hf $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos ?_ $hroot_hi
+        <;> rr_mw_active_nonneg_at 0)
+  | `(tactic|
       rr_mw_derivative_one_add_two_window using
         splits := $hf:term,
         degree_two := $hdegf:term,
@@ -3528,6 +3573,18 @@ macro_rules
         exact RealRooted.prec_mw_derivative_neg_const
           $hf $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos $hc)
   | `(tactic|
+      rr_mw_derivative_neg_const_auto using
+        splits := $hf:term,
+        degree_two := $hdegf:term,
+        degree_lower := $hdeg_lo:term,
+        degree_upper := $hdeg_hi:term,
+        target_pos_lc := $hF_pos:term,
+        source_pos_lc := $hf_pos:term) =>
+      `(tactic|
+        refine RealRooted.prec_mw_derivative_neg_const
+          $hf $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos ?_
+        <;> rr_mw_active_nonneg_at 0)
+  | `(tactic|
       rr_mw_derivative_neg_X_sq using
         splits := $hf:term,
         degree_two := $hdegf:term,
@@ -3539,6 +3596,18 @@ macro_rules
       `(tactic|
         exact RealRooted.prec_mw_derivative_neg_C_mul_X_sq
           $hf $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos $hc)
+  | `(tactic|
+      rr_mw_derivative_neg_X_sq_auto using
+        splits := $hf:term,
+        degree_two := $hdegf:term,
+        degree_lower := $hdeg_lo:term,
+        degree_upper := $hdeg_hi:term,
+        target_pos_lc := $hF_pos:term,
+        source_pos_lc := $hf_pos:term) =>
+      `(tactic|
+        refine RealRooted.prec_mw_derivative_neg_C_mul_X_sq
+          $hf $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos ?_
+        <;> rr_mw_active_nonneg_at 0)
   | `(tactic|
       rr_mw_derivative_nonpos_sequence using
         base := $hbase:term,
