@@ -112,10 +112,12 @@ theorem hurwitzStableToMatrixTotallyNonnegativeStatement_iff_minors :
   Iff.rfl
 
 abbrev HurwitzMatrixTotallyNonnegativeToStableStatement : Prop :=
-  ∀ ⦃p : ℝ[X]⦄, (hurwitz p.coeff).IsTotallyNonneg → IsHurwitzStable p
+  ∀ ⦃p : ℝ[X]⦄, p ≠ 0 → (hurwitz p.coeff).IsTotallyNonneg → IsHurwitzStable p
 
-/-- Total nonnegativity of the Hurwitz matrix implies Hurwitz stability of the polynomial. -/
+/-- Total nonnegativity of the Hurwitz matrix implies Hurwitz stability of a
+nonzero polynomial. -/
 theorem hurwitzMatrixTotallyNonnegativeToStable {p : ℝ[X]}
+    (hp0 : p ≠ 0)
     (h : (hurwitz p.coeff).IsTotallyNonneg) :
     IsHurwitzStable p := by
   sorry
@@ -124,8 +126,9 @@ theorem hurwitzMatrixTotallyNonnegativeToStable {p : ℝ[X]}
 bridge by the explicit Hurwitz/Lace matrix identity. -/
 theorem fullyInterlacingPairToHurwitzOddEvenStable_of_matrixTNN :
     FullyInterlacingPairToHurwitzOddEvenStableStatement :=
-  fun {p q} hfull =>
+  fun {p q} hpq0 hfull =>
     hurwitzMatrixTotallyNonnegativeToStable
+      (oddEvenPolynomial_ne_zero_iff.mpr hpq0)
       ((hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair p q).2
         hfull)
 

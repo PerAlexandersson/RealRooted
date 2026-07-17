@@ -2582,17 +2582,21 @@ Theorem 1) — precise external interface.
 
 This is the main theorem of Garloff--Wagner, *Hadamard Products of Stable
 Polynomials Are Stable*: the coefficientwise Hadamard product of two
-Hurwitz-stable real polynomials is again Hurwitz stable. In the present
-`IsHurwitzStable` convention this is the genuinely deep classical input (its
-classical proofs go through Polya--Schur / total-nonnegativity machinery that is
-not available in Mathlib), recorded here as a precise interface. This is the
-only new external interface needed below; the remaining inputs are the
-Hermite--Biehler odd/even bridges already recorded in
-`RealRooted.VeroneseSection`. -/
+Hurwitz-stable real polynomials is again Hurwitz stable, provided the
+coefficientwise product is nonzero.  The nonzero side condition is part of the
+interface because this project's `IsHurwitzStable` convention excludes the zero
+polynomial, while coefficientwise products of two nonzero stable polynomials can
+vanish when their coefficient supports are disjoint.  This is the genuinely
+deep classical input (its classical proofs go through Polya--Schur /
+total-nonnegativity machinery that is not available in Mathlib), recorded here
+as a precise interface. This is the only new external interface needed below;
+the remaining inputs are the Hermite--Biehler odd/even bridges already recorded
+in `RealRooted.VeroneseSection`. -/
 def hadamardPreservesHurwitzStableStatement : Prop :=
   ∀ {a b : ℝ[X]},
     IsHurwitzStable a →
     IsHurwitzStable b →
+    hadamardProduct a b ≠ 0 →
     IsHurwitzStable (hadamardProduct a b)
 
 /-! ### Sharper sub-interfaces for Garloff--Wagner Theorem 1
@@ -2606,13 +2610,14 @@ Garloff--Wagner Theorem 1, as checked `sorry`-free reductions. -/
 
 /-- The deep half of Garloff--Wagner Theorem 1: the complexified coefficientwise
 Hadamard product of two right-half-plane-stable, nonnegative-coefficient
-polynomials is again right-half-plane stable. -/
+polynomials is again right-half-plane stable when the product is nonzero. -/
 def hadamardPreservesRightHalfPlaneStableStatement : Prop :=
   ∀ {a b : ℝ[X]},
     HasNonnegCoeffs a →
     HasNonnegCoeffs b →
     IsRightHalfPlaneStable (complexify a) →
     IsRightHalfPlaneStable (complexify b) →
+    hadamardProduct a b ≠ 0 →
     IsRightHalfPlaneStable (complexify (hadamardProduct a b))
 
 /-- Reduction of Garloff--Wagner Theorem 1 to its deep half: the
@@ -2621,7 +2626,7 @@ right-half-plane stability of the product remains. -/
 theorem hadamardPreservesHurwitzStable_of_rightHalfPlane
     (h : hadamardPreservesRightHalfPlaneStableStatement) :
     hadamardPreservesHurwitzStableStatement :=
-  fun ha hb => ⟨ha.1.hadamardProduct hb.1, h ha.1 hb.1 ha.2 hb.2⟩
+  fun ha hb hprod => ⟨ha.1.hadamardProduct hb.1, h ha.1 hb.1 ha.2 hb.2 hprod⟩
 
 /-- The analytic core is conversely implied by Garloff--Wagner Theorem 1, so the
 two interfaces are equivalent: isolating the right-half-plane half loses no
@@ -2629,7 +2634,7 @@ content. -/
 theorem hadamardPreservesRightHalfPlaneStable_of_hurwitzStable
     (h : hadamardPreservesHurwitzStableStatement) :
     hadamardPreservesRightHalfPlaneStableStatement :=
-  fun hann hbnn harhp hbrhp => (h ⟨hann, harhp⟩ ⟨hbnn, hbrhp⟩).2
+  fun hann hbnn harhp hbrhp hprod => (h ⟨hann, harhp⟩ ⟨hbnn, hbrhp⟩ hprod).2
 
 /-- Garloff--Wagner Theorem 1 is equivalent to its right-half-plane analytic
 core; coefficient nonnegativity of the product is elementary. -/
@@ -2656,8 +2661,9 @@ converse criterion. -/
 theorem hadamardPreservesHurwitzStable_of_matrixRoute
     (hHad : hadamardPreservesHurwitzMatrixTNStatement) :
     hadamardPreservesHurwitzStableStatement :=
-  fun ha hb =>
+  fun ha hb hprod =>
     hurwitzMatrixTotallyNonnegativeToStable
+      hprod
       (hHad (hurwitzStableToMatrixTotallyNonnegative ha)
             (hurwitzStableToMatrixTotallyNonnegative hb))
 
@@ -2879,10 +2885,19 @@ records the equivalence of the matrix leaf and Theorem 1 modulo that criterion. 
 theorem hadamardPreservesHurwitzMatrixTN_of_stableRoute
     (hThm1 : hadamardPreservesHurwitzStableStatement) :
     hadamardPreservesHurwitzMatrixTNStatement :=
-  fun ha hb =>
-    hurwitzStableToMatrixTotallyNonnegative
-      (hThm1 (hurwitzMatrixTotallyNonnegativeToStable ha)
-             (hurwitzMatrixTotallyNonnegativeToStable hb))
+  fun {a b} ha hb => by
+    by_cases hprod : hadamardProduct a b = 0
+    · rw [hprod]
+      have hzero : hurwitz (0 : ℝ[X]).coeff = (0 : Matrix ℕ ℕ ℝ) := by
+        ext i j
+        simp [hurwitz, toeplitz]
+      simpa only [hzero] using
+        (Matrix.IsTotallyNonneg.zero : (0 : Matrix ℕ ℕ ℝ).IsTotallyNonneg)
+    · have ha0 : a ≠ 0 := fun ha_zero => hprod (by simp [ha_zero])
+      have hb0 : b ≠ 0 := fun hb_zero => hprod (by simp [hb_zero])
+      exact hurwitzStableToMatrixTotallyNonnegative
+        (hThm1 (hurwitzMatrixTotallyNonnegativeToStable ha0 ha)
+          (hurwitzMatrixTotallyNonnegativeToStable hb0 hb) hprod)
 
 /-- Low-order Hurwitz-matrix Hadamard minors from Garloff--Wagner Theorem 1
 plus both directions of the Hurwitz-matrix total-nonnegativity criterion. -/
@@ -2952,7 +2967,8 @@ inputs (the latter three are pre-existing interfaces from
 `RealRooted.VeroneseSection`):
 
 * `hadamardPreservesHurwitzStableStatement` — Garloff--Wagner Theorem 1
-  (Hadamard products of Hurwitz-stable polynomials are Hurwitz stable);
+  (Hadamard products of Hurwitz-stable polynomials are Hurwitz stable when the
+  coefficientwise product is nonzero);
 * `NonnegPrecToHurwitzOddEvenStatement` — the forward Hermite--Biehler bridge
   from proper position `Prec f g` of nonnegative-coefficient polynomials to
   Hurwitz stability of `oddEvenPolynomial f g = g(x²) + x·f(x²)`;
@@ -2982,10 +2998,18 @@ theorem garloffWagnerHadamardNonnegPrec_of_oddEven
       HasNonnegCoeffs f → HasNonnegCoeffs g → HasNonnegCoeffs p → HasNonnegCoeffs q →
       Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q) := by
   intro f g p q hf hg hp hq hfg hpq
+  by_cases hfp0 : hadamardProduct f p = 0
+  · simpa [hfp0] using prec0_zero_left (hadamardProduct g q)
+  by_cases hgq0 : hadamardProduct g q = 0
+  · simpa [hgq0] using prec0_zero_right (hadamardProduct f p)
   have hOE1 : IsHurwitzStable (oddEvenPolynomial f g) := hPrecToHurwitz hf hg hfg
   have hOE2 : IsHurwitzStable (oddEvenPolynomial p q) := hPrecToHurwitz hp hq hpq
+  have hOEprod0 :
+      hadamardProduct (oddEvenPolynomial f g) (oddEvenPolynomial p q) ≠ 0 := by
+    rw [hadamardProduct_oddEvenPolynomial]
+    exact oddEvenPolynomial_ne_zero_iff.mpr (Or.inl hfp0)
   exact hFullToPrec0 (hHurwitzToFull (by
-    simpa [hadamardProduct_oddEvenPolynomial] using hThm1 hOE1 hOE2))
+    simpa [hadamardProduct_oddEvenPolynomial] using hThm1 hOE1 hOE2 hOEprod0))
 
 /-- **Garloff--Wagner two-pair theorem reduced to its irreducible classical
 inputs** (issue #34 / TODO T9).
@@ -2996,7 +3020,8 @@ reduction of the #34 target `garloffWagnerHadamardNonnegPrecStatement` onto six
 classical bottom-level inputs:
 
 * `hadamardPreservesRightHalfPlaneStableStatement` — the analytic core of
-  Garloff--Wagner Theorem 1;
+  Garloff--Wagner Theorem 1, with the nonzero-product side condition imposed by
+  this project's stability convention;
 * `hermiteBiehlerForwardPosStatement` and
   `HermiteBiehlerStableToHurwitzOddEvenStatement` — the forward
   Hermite--Biehler bridge and conformal substitution;

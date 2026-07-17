@@ -864,13 +864,15 @@ theorem fullyInterlacingPairToPrec0_of_forwardASW_interlace
 This is the orientation of the classical total-nonnegativity criterion needed
 for the converse Lace bridge: total nonnegativity of the two-row Lace matrix of
 `p` and `q`, equivalently of the Hurwitz matrix of `q(x^2) + x p(x^2)`, forces
-Hurwitz stability of `q(x^2) + x p(x^2)`. It is the exact converse of the
-forward interface `HurwitzOddEvenToFullyInterlacingPairStatement` and follows
-from the matrix Hurwitz criterion
+Hurwitz stability of `q(x^2) + x p(x^2)` when that odd/even polynomial is
+nonzero. It is the exact converse of the forward interface
+`HurwitzOddEvenToFullyInterlacingPairStatement` and follows from the matrix
+Hurwitz criterion
 `HurwitzMatrixTotallyNonnegativeToStableStatement` via
 `hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair`. -/
 def FullyInterlacingPairToHurwitzOddEvenStableStatement : Prop :=
   ∀ ⦃p q : ℝ[X]⦄,
+    p ≠ 0 ∨ q ≠ 0 →
     FullyInterlacingPair p.coeff q.coeff →
     IsHurwitzStable (oddEvenPolynomial p q)
 
@@ -1267,10 +1269,10 @@ theorem hurwitzOddEvenToHermiteBiehlerRotated_of_hurwitzStablePrec
 smaller classical inputs, both natural converses of forward interfaces already
 in the project:
 
-* `FullyInterlacingPairToHurwitzOddEvenStableStatement`, the converse Hurwitz
-  matrix criterion specialized to the odd/even polynomial, which turns the
-  two-row Lace total-nonnegativity certificate into Hurwitz stability of
-  `q(x^2) + x p(x^2)`; and
+* `FullyInterlacingPairToHurwitzOddEvenStableStatement`, the nonzero-aware
+  converse Hurwitz matrix criterion specialized to the odd/even polynomial,
+  which turns the two-row Lace total-nonnegativity certificate into Hurwitz
+  stability of `q(x^2) + x p(x^2)`; and
 * `HurwitzStableOddEvenToPrecStatement`, the analytic converse
   Hermite--Biehler/Hurwitz step, which turns that Hurwitz stability into the
   proper-position relation `Prec p q`.
@@ -1281,7 +1283,7 @@ theorem fullyInterlacingPairInterlace_of_oddEvenStableToPrec
     (hStable : FullyInterlacingPairToHurwitzOddEvenStableStatement)
     (hPrec : HurwitzStableOddEvenToPrecStatement) :
     FullyInterlacingPairInterlaceStatement := fun p q hp hq hfull => by
-  have hstable : IsHurwitzStable (oddEvenPolynomial p q) := hStable hfull
+  have hstable : IsHurwitzStable (oddEvenPolynomial p q) := hStable (Or.inl hp) hfull
   obtain ⟨_, _, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩ := hPrec hp hq hstable
   exact ⟨ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
 
