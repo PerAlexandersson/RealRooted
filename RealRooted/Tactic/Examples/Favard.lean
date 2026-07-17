@@ -1071,15 +1071,13 @@ example {P : Nat → ℝ[X]}
     den_nonzero := by intro n; rr_side_ne,
     slope_coeff_eq := by
       intro n
-      norm_num
-      ring_nf,
+      rr_scalar_coeff_at n,
     alpha_coeff_eq := by
       intro n
-      norm_num,
+      rr_scalar_coeff_at n,
     beta_coeff_eq := by
       intro n
-      norm_num
-      ring_nf,
+      rr_scalar_coeff_at n,
     raw_recurrence := hraw
 
 /-- Row-sign raw scalar-denominator Favard with product-displayed slope and
@@ -1110,15 +1108,13 @@ example {P : Nat → ℝ[X]}
     den_nonzero := by intro n; rr_side_ne,
     slope_coeff_eq := by
       intro n
-      norm_num
-      ring_nf,
+      rr_scalar_coeff_at n,
     alpha_coeff_eq := by
       intro n
-      norm_num,
+      rr_scalar_coeff_at n,
     beta_coeff_eq := by
       intro n
-      norm_num
-      ring_nf,
+      rr_scalar_coeff_at n,
     raw_recurrence := hraw
 
 /-- Monic raw scalar-denominator Favard alias. -/
