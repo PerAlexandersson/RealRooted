@@ -1,7 +1,21 @@
 # RealRooted Agent Guide
 
-This guide applies to the `RealRooted` Lean project.  It supplements the
-workspace Lean guide in `/workspace/lean/AGENTS.md`.
+> [!IMPORTANT]
+> **Precedence and Guidelines:**
+> 1. Before reading or acting on this guide, read [README.md](README.md) first.
+>    The instructions and guidelines in [README.md](README.md) take precedence
+>    over this file.
+> 2. Do **not** add any of the following to this guide (`AGENTS.md`):
+>    * Environment-specific paths (e.g., references to directories outside
+>      the repository like `/workspace/` or `/lake-cache/`).
+>    * System environment files or variables (e.g., sourcing `/usr/local/lib/`
+>      files or referencing API keys).
+>    * API key handling instructions, security warnings, or credentials.
+>    * Sandbox/Docker-specific workarounds or parallel worker tag settings.
+>    * Highly specific references to individual contributors or specific
+>      transient pull request branches.
+> Keep this document generic, clean, and focused solely on development
+> guidelines for agentic coding assistants.
 
 ## Mathlib-Upstream Style
 
@@ -32,19 +46,18 @@ workspace Lean guide in `/workspace/lean/AGENTS.md`.
 
 ## Polynomial Derivatives
 
-Follow Yael's `Polynomial.natDegree_derivative` extraction pattern from the
-open derivative-refactor PR.
+Follow the `Polynomial.natDegree_derivative` extraction pattern.
 
-- Once the upstream-shaped shim is available, prefer
-  `p.natDegree_derivative h` from
-  `RealRooted.Mathlib.Algebra.Polynomial.Derivative`, where
-  `h : p.natDegree ≠ 0`.
-- Once the upstream-shaped shim is available, prefer
-  `(p.derivative_ne_zero).mpr h`, where `h : p.natDegree ≠ 0`; derive `h`
-  with `by lia` from stronger degree assumptions when needed.
+- Prefer using `p.natDegree_derivative` from
+  `RealRooted.Mathlib.Algebra.Polynomial.Derivative` (which has the signature
+  `p.derivative.natDegree = p.natDegree - 1` and does not require a degree
+  non-zero hypothesis).
+- Prefer using `(p.derivative_ne_zero).mpr h` (or
+  `Polynomial.derivative_ne_zero.mpr h`), where `h : p.natDegree ≠ 0`; derive
+  `h` with `by lia` from stronger degree assumptions when needed.
 - Do not reintroduce new local copies of the old
   `RealRooted.natDegree_derivative_eq`; migrate touched code toward the
-  `Polynomial` namespace API when the PR is merged or checked out.
+  `Polynomial` namespace API.
 - Keep coefficient/leading-coefficient derivative positivity centralized in
   `RealRooted/Derivative.lean`:
   `HasNonnegCoeffs.derivative`, `nonnegCoeffs_derivative`, and
@@ -60,54 +73,26 @@ open derivative-refactor PR.
 ## Automation
 
 - For proof-golfing and cleanup passes, follow `LEAN_GOLF.md` as the local
-  rulebook.  It summarizes the project-specific patterns from prior Yael and
-  sqrt-of-2 cleanup PRs.
+  rulebook.
 - Do not use `omega`; use `lia` for linear arithmetic.
 - Use `grind`, `simp_all`, and `positivity` for routine local plumbing when they
   keep the proof shorter and stable.
 
-## External Lean Assistants
+## External Proving Assistants
 
-- Aristotle is available in this Docker profile as `aristotle`.  The API key is
-  loaded through `ARISTOTLE_API_KEY` and the key file
-  `/workspace/lean/aristotle-api-key`.  Never print, copy, or commit the key.
-- If a shell does not have the assistant keys loaded, source
-  `/usr/local/lib/ai-projects-env.sh` and check only for presence, for example
-  `${ARISTOTLE_API_KEY:+yes}` or `${AXLE_API_KEY:+yes}`.  Do not echo the
-  values.
-- Use Aristotle proactively for focused proof-golfing, deduplication review,
-  theorem-shape suggestions, and candidate proof repair.  Keep requests small
-  and concrete:
-  the CLI currently accepts at most five files for `aristotle continue --files`,
-  so split larger cleanup work into batches.
-- Prefer continuing an existing relevant Aristotle RealRooted project when one
-  exists; otherwise submit a small project directory or focused file bundle.
-  Review downloaded or suggested patches manually before applying them.
-- Axle is available as `axle`.  The API key is loaded through `AXLE_API_KEY` and
-  `/workspace/lean/axle-api-key`; never print, copy, or commit the key.
-- Use `axle environments` and choose the closest environment to the project
-  toolchain, currently `lean-4.31.0`, for isolated snippets, candidate proof
-  checks, proof repair, and simplification experiments.  It is also useful for
-  testing tiny abstraction patterns before editing a local proof.  Axle
-  generally sees Mathlib environments rather than local project imports, so
-  local declarations need self-contained snippets or must still be verified
-  with Lake.
-- Aristotle and Axle results are advisory.  Every accepted Lean edit must be
-  checked locally with the cache-aware focused Lake command shape below.
+When using Lean-specific external proving assistants (such as Aristotle,
+Leanstral, or Axle) to help with proof-golfing, deduplication reviews,
+theorem-shape suggestions, or proof repairs:
+- Keep assistant queries and requests small and self-contained.
+- Review and verify all suggested proof patches manually before applying them
+  to the codebase.
+- Test isolated snippets and candidate proof steps within the assistant's
+  scratch environment first.
+- All suggested results are advisory; every proof modification must be fully
+  validated locally using Lake.
 
 ## Workflow
 
-- Before changing files touched by an open Yael PR, inspect the PR diff and
-  avoid fighting the intended API direction.
-- For local Docker builds after PR #63, do not run plain `lake build` unless
-  you are intentionally allowing a project-local `.lake`.  The committed
-  manifest uses relative `.lake/packages` for portability, so use the
-  `/workspace/lean/AGENTS.md` temporary-Lakefile plus `--packages` override
-  pattern with the existing `/lake-cache/ai-projects/packages` checkouts and a
-  per-worker build directory under
-  `/lake-cache/ai-projects/build/RealRooted-<worker-tag>`.
-  In this project, also pass the matching `-KbuildDir=<external-build-dir>`
-  option; the temporary Lakefile `buildDir` entry alone can still materialize a
-  root `.lake/build` directory.
-- Run focused Lake builds for touched Lean modules, then run a full Lake build
-  before pushing Lean changes, using the same cache-aware local command shape.
+- Run focused Lake builds for touched Lean modules to verify changes quickly.
+- Run a full Lake build and check for warnings before pushing or committing
+  Lean changes.
