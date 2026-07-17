@@ -439,6 +439,60 @@ the A036969 shifted `beta` endpoint. -/
 def a036969ResidualBeta : ℝ[X] :=
   X * (X + 1) ^ 2
 
+/-- The Euler operator `X d/dX` acts diagonally with multiplier `k`. -/
+private theorem eulerOperator_eq_diagonalOperator (p : ℝ[X]) :
+    X * derivative p = diagonalOperator (fun k => (k : ℝ)) p := by
+  ext k
+  cases k with
+  | zero => simp [coeff_diagonalOperator]
+  | succ k =>
+      simp [Polynomial.coeff_X_mul, Polynomial.coeff_derivative, coeff_diagonalOperator]
+      ring
+
+/-- The multiplier `(k + 1)^2` is `(X d/dX + 1)^2` on coefficients. -/
+private theorem diagonalOperator_succ_sq_eq_euler (p : ℝ[X]) :
+    diagonalOperator (fun k => ((k : ℝ) + 1) ^ 2) p =
+      X * derivative (X * derivative p) + C 2 * (X * derivative p) + p := by
+  rw [eulerOperator_eq_diagonalOperator p]
+  rw [eulerOperator_eq_diagonalOperator (diagonalOperator (fun k => (k : ℝ)) p)]
+  ext k
+  simp [coeff_diagonalOperator]
+  ring
+
+/-- The A036969 alpha Jensen endpoint after removing the common residual
+factor. -/
+theorem a036969Alpha_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
+    jensenPolynomial d a036969Alpha =
+      ((X + 1 : ℝ[X]) ^ (d - 2)) * a036969ResidualAlpha d := by
+  rw [jensenPolynomial_eq_diagonalOperator_X_add_one_pow]
+  change diagonalOperator (fun k => ((k : ℝ) + 1) ^ 2) ((X + 1 : ℝ[X]) ^ d) =
+    ((X + 1 : ℝ[X]) ^ (d - 2)) * a036969ResidualAlpha d
+  rw [diagonalOperator_succ_sq_eq_euler]
+  simp only [a036969ResidualAlpha, Polynomial.derivative_mul, Polynomial.derivative_pow,
+    Polynomial.derivative_X, Polynomial.derivative_add, Polynomial.derivative_one,
+    Polynomial.derivative_natCast, Polynomial.C_add, Polynomial.C_mul, Polynomial.C_pow,
+    Polynomial.C_eq_natCast, Polynomial.C_1, one_mul, mul_one, add_zero]
+  have hd1 : d - 1 = d - 2 + 1 := by lia
+  have hd11 : d - 1 - 1 = d - 2 := by lia
+  have hcast_poly : ((d - 2 + 1 : ℕ) : ℝ[X]) = (d : ℝ[X]) - 1 := by
+    have hnat : d - 2 + 1 = d - 1 := by lia
+    have hd_one : 1 ≤ d := by lia
+    rw [hnat]
+    norm_num [Nat.cast_sub hd_one]
+  have hpowd :
+      (X + 1 : ℝ[X]) ^ d =
+        (X + 1 : ℝ[X]) ^ (d - 2) * (X + 1) ^ 2 := by
+    simpa [Nat.sub_add_cancel hd] using
+      (pow_add (X + 1 : ℝ[X]) (d - 2) 2)
+  have hC2 : (C (2 : ℝ) : ℝ[X]) = (2 : ℝ[X]) :=
+    Polynomial.C_eq_natCast (R := ℝ) 2
+  have hC3 : (C (3 : ℝ) : ℝ[X]) = (3 : ℝ[X]) :=
+    Polynomial.C_eq_natCast (R := ℝ) 3
+  rw [hd11, hd1, hpowd]
+  rw [pow_add]
+  rw [hcast_poly, hC2, hC3]
+  ring
+
 /-- The A036969 beta Jensen endpoint after removing the common residual
 factor. -/
 theorem a036969Beta_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
@@ -1447,18 +1501,15 @@ example
 /-- A036969-shaped recurrence shell.
 
 This example has the actual differential recurrence and actual residual
-polynomials.  The residual cubic certificates and beta endpoint factorization
-are discharged below; the remaining arithmetic leaf is the alpha endpoint
-Jensen factorization. -/
+polynomials.  The residual cubic certificates and endpoint factorizations are
+discharged below; the remaining row-specific arithmetic input is the active
+degree lower bound `2 ≤ d n`. -/
 example
     {P : Nat → ℝ[X]} {d : Nat → ℕ}
     (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hd : ∀ n : Nat, 2 ≤ d n)
-    (halpha : ∀ n : Nat,
-      jensenPolynomial (d n) a036969Alpha =
-        ((X + 1 : ℝ[X]) ^ (d n - 2)) * a036969ResidualAlpha (d n))
     (hrec : ∀ n : Nat,
       P (n + 1) = secondDerivativeBidiagonalForm 1 1 3 0 1 0 (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
@@ -1466,7 +1517,7 @@ example
     jensen_backend := hbackend,
     base := hbase,
     degree := hdeg,
-    alpha_factor := halpha,
+    alpha_factor := (fun n => a036969Alpha_jensen_factor (d n) (hd n)),
     beta_factor := (fun n => a036969Beta_jensen_factor (d n) (hd n)),
     alpha_cubic := (fun n => a036969ResidualAlpha_cubicPFDiscriminantCertificate (d n)),
     beta_cubic := (fun _ => a036969ResidualBeta_cubicPFDiscriminantCertificate),
@@ -1482,9 +1533,6 @@ example
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hd : ∀ n : Nat, 2 ≤ d n)
-    (halpha : ∀ n : Nat,
-      jensenPolynomial (d n) a036969Alpha =
-        ((X + 1 : ℝ[X]) ^ (d n - 2)) * a036969ResidualAlpha (d n))
     (hne : ∀ n : Nat, P n ≠ 0)
     (hrec : ∀ n : Nat,
       P (n + 1) = secondDerivativeBidiagonalForm 1 1 3 0 1 0 (P n)) :
@@ -1493,7 +1541,7 @@ example
     jensen_backend := hbackend,
     base := hbase,
     degree := hdeg,
-    alpha_factor := halpha,
+    alpha_factor := (fun n => a036969Alpha_jensen_factor (d n) (hd n)),
     beta_factor := (fun n => a036969Beta_jensen_factor (d n) (hd n)),
     alpha_cubic := (fun n => a036969ResidualAlpha_cubicPFDiscriminantCertificate (d n)),
     beta_cubic := (fun _ => a036969ResidualBeta_cubicPFDiscriminantCertificate),
