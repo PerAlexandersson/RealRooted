@@ -853,6 +853,19 @@ example {P : Nat → ℝ[X]} {a b : Nat → ℝ}
     scalar_step := hscalar,
     linear_step := hlinear
 
+/-- Positive scalar steps in the constant-first alternating shell are inferred
+automatically. -/
+example {P : Nat → ℝ[X]} {b : Nat → ℝ}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hscalar : ∀ n : Nat,
+      P (2 * n + 1) = C ((n : ℝ) + 1) * P (2 * n))
+    (hlinear : ∀ n : Nat, P (2 * n + 2) = (C (b n) + X) * P (2 * n + 1)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_scalar_C_add_X_sequence_auto using
+    base := hbase,
+    scalar_step := hscalar,
+    linear_step := hlinear
+
 /-- Alternating scalar/supplied-factor product shell. -/
 example {P F : Nat → ℝ[X]} {a : Nat → ℝ}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
@@ -864,6 +877,20 @@ example {P F : Nat → ℝ[X]} {a : Nat → ℝ}
   rr_product_scalar_factor_sequence using
     base := hbase,
     scalar_ne := ha,
+    factor_realrooted := hfactor,
+    scalar_step := hscalar,
+    factor_step := hstep
+
+/-- The supplied-factor shell also has an automatic positive scalar form. -/
+example {P F : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hscalar : ∀ n : Nat,
+      P (2 * n + 1) = C ((n : ℝ) + 1) * P (2 * n))
+    (hstep : ∀ n : Nat, P (2 * n + 2) = F n * P (2 * n + 1)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_scalar_factor_sequence_auto using
+    base := hbase,
     factor_realrooted := hfactor,
     scalar_step := hscalar,
     factor_step := hstep
