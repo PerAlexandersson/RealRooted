@@ -81,7 +81,69 @@ theorem isRealRooted_of_prec_sequence_degree_branches {P : Nat → ℝ[X]}
   · exact hsame n hsame_degree hprev
   · exact hsucc n hsucc_degree hprev
 
+/-- Project the nonvanishing half of a real-rootedness certificate. -/
+theorem ne_zero_of_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
+    p ≠ 0 :=
+  hp.1
+
+/-- Project the splitting half of a real-rootedness certificate. -/
+theorem splits_of_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
+    p.Splits :=
+  hp.2
+
+/-- Project row-wise nonvanishing from a sequence real-rootedness certificate. -/
+theorem ne_zero_of_isRealRooted_sequence {P : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
+    ∀ n : Nat, P n ≠ 0 :=
+  fun n => (hP n).1
+
+/-- Project row-wise splitting from a sequence real-rootedness certificate. -/
+theorem splits_of_isRealRooted_sequence {P : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
+    ∀ n : Nat, (P n).Splits :=
+  fun n => (hP n).2
+
+/-- Project left row-wise nonvanishing from a pair-sequence certificate. -/
+theorem left_ne_zero_of_isRealRooted_pair_sequence {A B : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    ∀ n : Nat, A n ≠ 0 :=
+  fun n => (hP n).1.1
+
+/-- Project left row-wise splitting from a pair-sequence certificate. -/
+theorem left_splits_of_isRealRooted_pair_sequence {A B : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    ∀ n : Nat, (A n).Splits :=
+  fun n => (hP n).1.2
+
+/-- Project right row-wise nonvanishing from a pair-sequence certificate. -/
+theorem right_ne_zero_of_isRealRooted_pair_sequence {A B : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    ∀ n : Nat, B n ≠ 0 :=
+  fun n => (hP n).2.1
+
+/-- Project right row-wise splitting from a pair-sequence certificate. -/
+theorem right_splits_of_isRealRooted_pair_sequence {A B : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    ∀ n : Nat, (B n).Splits :=
+  fun n => (hP n).2.2
+
 namespace Tactic
+
+syntax (name := rr_exact_realrooted_or_projection)
+  "rr_exact_realrooted_or_projection" term :
+  tactic
+
+syntax (name := rr_exact_realrooted_sequence_or_projection)
+  "rr_exact_realrooted_sequence_or_projection" term :
+  tactic
+
+syntax (name := rr_exact_realrooted_pair_sequence_or_projection)
+  "rr_exact_realrooted_pair_sequence_or_projection" term :
+  tactic
 
 syntax (name := rr_nonzero) "rr_nonzero" " using " term : tactic
 syntax (name := rr_splits) "rr_splits" " using " term : tactic
@@ -123,7 +185,7 @@ syntax (name := rr_prec_sequence_branches)
     "base" ":=" term ","
     "degree" ":=" term ","
     "same" ":=" term ","
-    "succ" ":=" term :
+    "successor" ":=" term :
   tactic
 
 syntax (name := rr_prec_sequence_branches_degree_branch)
@@ -131,7 +193,7 @@ syntax (name := rr_prec_sequence_branches_degree_branch)
     "base" ":=" term ","
     "degree_branch" ":=" term ","
     "same" ":=" term ","
-    "succ" ":=" term :
+    "successor" ":=" term :
   tactic
 
 syntax (name := rr_prec_sequence_branches_realrooted)
@@ -139,7 +201,7 @@ syntax (name := rr_prec_sequence_branches_realrooted)
     "base" ":=" term ","
     "degree" ":=" term ","
     "same" ":=" term ","
-    "succ" ":=" term :
+    "successor" ":=" term :
   tactic
 
 syntax (name := rr_prec_sequence_branches_realrooted_degree_branch)
@@ -147,12 +209,32 @@ syntax (name := rr_prec_sequence_branches_realrooted_degree_branch)
     "base" ":=" term ","
     "degree_branch" ":=" term ","
     "same" ":=" term ","
-    "succ" ":=" term :
+    "successor" ":=" term :
   tactic
 
 syntax (name := rr_finish) "rr_finish" : tactic
 
 macro_rules
+  | `(tactic| rr_exact_realrooted_or_projection $h:term) =>
+      `(tactic|
+        first
+          | exact $h
+          | exact RealRooted.ne_zero_of_isRealRooted $h
+          | exact RealRooted.splits_of_isRealRooted $h)
+  | `(tactic| rr_exact_realrooted_sequence_or_projection $h:term) =>
+      `(tactic|
+        first
+          | exact $h
+          | exact RealRooted.ne_zero_of_isRealRooted_sequence $h
+          | exact RealRooted.splits_of_isRealRooted_sequence $h)
+  | `(tactic| rr_exact_realrooted_pair_sequence_or_projection $h:term) =>
+      `(tactic|
+        first
+          | exact $h
+          | exact RealRooted.left_ne_zero_of_isRealRooted_pair_sequence $h
+          | exact RealRooted.left_splits_of_isRealRooted_pair_sequence $h
+          | exact RealRooted.right_ne_zero_of_isRealRooted_pair_sequence $h
+          | exact RealRooted.right_splits_of_isRealRooted_pair_sequence $h)
   | `(tactic| rr_nonzero using $h:term) =>
       `(tactic|
         first
@@ -205,13 +287,14 @@ macro_rules
         base := $hbase:term,
         step := $hstep:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_prec_sequence $hbase $hstep)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_prec_sequence $hbase $hstep))
   | `(tactic|
       rr_prec_sequence_branches using
         base := $hbase:term,
         degree := $hbranch:term,
         same := $hsame:term,
-        succ := $hsucc:term) =>
+        successor := $hsucc:term) =>
       `(tactic|
         exact RealRooted.prec_sequence_of_base_and_degree_branches
           $hbase $hbranch $hsame $hsucc)
@@ -220,7 +303,7 @@ macro_rules
         base := $hbase:term,
         degree_branch := $hbranch:term,
         same := $hsame:term,
-        succ := $hsucc:term) =>
+        successor := $hsucc:term) =>
       `(tactic|
         exact RealRooted.prec_sequence_of_base_and_degree_branches
           $hbase $hbranch $hsame $hsucc)
@@ -229,19 +312,21 @@ macro_rules
         base := $hbase:term,
         degree := $hbranch:term,
         same := $hsame:term,
-        succ := $hsucc:term) =>
+        successor := $hsucc:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_prec_sequence_degree_branches
-          $hbase $hbranch $hsame $hsucc)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_prec_sequence_degree_branches
+            $hbase $hbranch $hsame $hsucc))
   | `(tactic|
       rr_prec_sequence_branches_realrooted using
         base := $hbase:term,
         degree_branch := $hbranch:term,
         same := $hsame:term,
-        succ := $hsucc:term) =>
+        successor := $hsucc:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_prec_sequence_degree_branches
-          $hbase $hbranch $hsame $hsucc)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_prec_sequence_degree_branches
+            $hbase $hbranch $hsame $hsucc))
   | `(tactic| rr_finish) =>
       `(tactic|
         first

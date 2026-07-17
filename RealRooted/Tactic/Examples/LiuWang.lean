@@ -1794,7 +1794,7 @@ example {P : Nat → ℝ[X]} {A B : Nat → ℝ[X]}
     base := hbase,
     degree_branch := hdegree,
     same := hsame,
-    succ := hsucc
+    successor := hsucc
 
 /-- OEIS shapes `A154227`/`A154228`/`A249248`, using nonnegative coefficients
 to infer the half-line root certificate for a positive `t` lag. -/

@@ -1,6 +1,6 @@
 import RealRooted.Linear
 import RealRooted.PosCombo
-import RealRooted.Tactic.SideGoals
+import RealRooted.Tactic.Finish
 
 /-!
 # Product-factor tactic
@@ -69,56 +69,6 @@ theorem isRealRooted_X_add_C_pow (t : ℝ) (n : Nat) :
   | succ n ih =>
       simpa [pow_succ, mul_comm, mul_left_comm, mul_assoc] using
         isRealRooted_X_add_C_mul (p := (X + C t : ℝ[X]) ^ n) (t := t) ih
-
-/-- Project the nonvanishing half of a real-rootedness certificate. -/
-theorem ne_zero_of_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
-    p ≠ 0 :=
-  hp.1
-
-/-- Project the splitting half of a real-rootedness certificate. -/
-theorem splits_of_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
-    p.Splits :=
-  hp.2
-
-/-- Project row-wise nonvanishing from a sequence real-rootedness certificate. -/
-theorem ne_zero_of_isRealRooted_sequence {P : Nat → ℝ[X]}
-    (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
-    ∀ n : Nat, P n ≠ 0 :=
-  fun n => (hP n).1
-
-/-- Project row-wise splitting from a sequence real-rootedness certificate. -/
-theorem splits_of_isRealRooted_sequence {P : Nat → ℝ[X]}
-    (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
-    ∀ n : Nat, (P n).Splits :=
-  fun n => (hP n).2
-
-/-- Project left row-wise nonvanishing from a pair-sequence certificate. -/
-theorem left_ne_zero_of_isRealRooted_pair_sequence {A B : Nat → ℝ[X]}
-    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
-      (B n ≠ 0 ∧ (B n).Splits)) :
-    ∀ n : Nat, A n ≠ 0 :=
-  fun n => (hP n).1.1
-
-/-- Project left row-wise splitting from a pair-sequence certificate. -/
-theorem left_splits_of_isRealRooted_pair_sequence {A B : Nat → ℝ[X]}
-    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
-      (B n ≠ 0 ∧ (B n).Splits)) :
-    ∀ n : Nat, (A n).Splits :=
-  fun n => (hP n).1.2
-
-/-- Project right row-wise nonvanishing from a pair-sequence certificate. -/
-theorem right_ne_zero_of_isRealRooted_pair_sequence {A B : Nat → ℝ[X]}
-    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
-      (B n ≠ 0 ∧ (B n).Splits)) :
-    ∀ n : Nat, B n ≠ 0 :=
-  fun n => (hP n).2.1
-
-/-- Project right row-wise splitting from a pair-sequence certificate. -/
-theorem right_splits_of_isRealRooted_pair_sequence {A B : Nat → ℝ[X]}
-    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
-      (B n ≠ 0 ∧ (B n).Splits)) :
-    ∀ n : Nat, (B n).Splits :=
-  fun n => (hP n).2.2
 
 /-- Sequence shell for first-order product recurrences with a supplied factor certificate. -/
 theorem isRealRooted_of_product_factor_sequence
@@ -747,18 +697,6 @@ theorem isRealRooted_of_product_scalar_factor_right_sequence
 
 namespace Tactic
 
-syntax (name := rr_exact_realrooted_or_projection)
-  "rr_exact_realrooted_or_projection" term :
-  tactic
-
-syntax (name := rr_exact_realrooted_sequence_or_projection)
-  "rr_exact_realrooted_sequence_or_projection" term :
-  tactic
-
-syntax (name := rr_exact_realrooted_pair_sequence_or_projection)
-  "rr_exact_realrooted_pair_sequence_or_projection" term :
-  tactic
-
 syntax (name := rr_product_factor)
   "rr_product_factor" " using " term ", " term : tactic
 
@@ -952,26 +890,6 @@ syntax (name := rr_product_scalar_factor_sequence_auto_named)
   tactic
 
 macro_rules
-  | `(tactic| rr_exact_realrooted_or_projection $h:term) =>
-      `(tactic|
-        first
-          | exact $h
-          | exact RealRooted.ne_zero_of_isRealRooted $h
-          | exact RealRooted.splits_of_isRealRooted $h)
-  | `(tactic| rr_exact_realrooted_sequence_or_projection $h:term) =>
-      `(tactic|
-        first
-          | exact $h
-          | exact RealRooted.ne_zero_of_isRealRooted_sequence $h
-          | exact RealRooted.splits_of_isRealRooted_sequence $h)
-  | `(tactic| rr_exact_realrooted_pair_sequence_or_projection $h:term) =>
-      `(tactic|
-        first
-          | exact $h
-          | exact RealRooted.left_ne_zero_of_isRealRooted_pair_sequence $h
-          | exact RealRooted.left_splits_of_isRealRooted_pair_sequence $h
-          | exact RealRooted.right_ne_zero_of_isRealRooted_pair_sequence $h
-          | exact RealRooted.right_splits_of_isRealRooted_pair_sequence $h)
   | `(tactic| rr_product_factor using $hp:term, $hs:term) =>
       `(tactic|
         first
