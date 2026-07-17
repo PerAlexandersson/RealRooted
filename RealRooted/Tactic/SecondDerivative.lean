@@ -69,8 +69,9 @@ theorem splits_mw_derivative_of_nonpos {f u v : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
     (u * f + v * f.derivative).Splits :=
-  (prec_mw_derivative_of_nonpos
-    hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos hv_nonpos).2.1.2
+  right_splits_of_prec
+    (prec_mw_derivative_of_nonpos
+      hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos hv_nonpos)
 
 /-- Splits-only Ma--Wang wrapper for the sign-flipped inner transform.  This
 is useful when `u f + v f'` has negative leading coefficient and `v` is
