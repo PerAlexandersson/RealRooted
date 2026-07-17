@@ -4975,19 +4975,16 @@ macro_rules
         degree_upper := $hdeg_hi:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        first
-          | refine RealRooted.prec_lw_positive_C_mul_X_mul_lag_of_nonneg_coeffs
-              $hgf $hg_pos $hf_nonneg ?_ $hQ $hF_pos $hdeg_lo $hdeg_hi $hno
-            rr_lw_coeff_nonneg
-          | refine (by
-              simpa [mul_assoc] using
-                (RealRooted.prec_lw_positive_C_mul_X_mul_lag_of_nonneg_coeffs
-                  $hgf $hg_pos $hf_nonneg ?_ $hQ
-                  (by simpa [mul_assoc] using $hF_pos)
-                  (by simpa [mul_assoc] using $hdeg_lo)
-                  (by simpa [mul_assoc] using $hdeg_hi)
-                  $hno))
-            rr_lw_coeff_nonneg)
+        rr_lw_exact_or_simpa_mul_assoc
+          (RealRooted.prec_lw_positive_C_mul_X_mul_lag_of_nonneg_coeffs
+            $hgf $hg_pos $hf_nonneg (by rr_lw_coeff_nonneg) $hQ
+            $hF_pos $hdeg_lo $hdeg_hi $hno),
+          (RealRooted.prec_lw_positive_C_mul_X_mul_lag_of_nonneg_coeffs
+            $hgf $hg_pos $hf_nonneg (by rr_lw_coeff_nonneg) $hQ
+            (by simpa [mul_assoc] using $hF_pos)
+            (by simpa [mul_assoc] using $hdeg_lo)
+            (by simpa [mul_assoc] using $hdeg_hi)
+            $hno))
   | `(tactic|
       rr_lw_negative_square using
         interlacer := $hgf:term,
@@ -5016,19 +5013,15 @@ macro_rules
         degree_upper := $hdeg_hi:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        first
-          | refine RealRooted.prec_lw_negative_square_lag
-              $hgf $hg_pos ?_ $hF_pos $hdeg_lo $hdeg_hi $hno
-            rr_lw_coeff_nonneg
-          | refine (by
-              simpa using
-                (RealRooted.prec_lw_negative_square_lag
-                  $hgf $hg_pos ?_
-                  (by simpa using $hF_pos)
-                  (by simpa using $hdeg_lo)
-                  (by simpa using $hdeg_hi)
-                  $hno))
-            rr_lw_coeff_nonneg)
+        rr_lw_exact_or_simpa
+          (RealRooted.prec_lw_negative_square_lag
+            $hgf $hg_pos (by rr_lw_coeff_nonneg) $hF_pos $hdeg_lo $hdeg_hi $hno),
+          (RealRooted.prec_lw_negative_square_lag
+            $hgf $hg_pos (by rr_lw_coeff_nonneg)
+            (by simpa using $hF_pos)
+            (by simpa using $hdeg_lo)
+            (by simpa using $hdeg_hi)
+            $hno))
   | `(tactic|
       rr_lw_negative_monic_quadratic using
         interlacer := $hgf:term,
@@ -5057,19 +5050,15 @@ macro_rules
         degree_upper := $hdeg_hi:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        first
-          | refine RealRooted.prec_lw_negative_monic_quadratic_lag
-              $hgf $hg_pos ?_ $hF_pos $hdeg_lo $hdeg_hi $hno
-            rr_lw_coeff_nonneg
-          | refine (by
-              simpa using
-                (RealRooted.prec_lw_negative_monic_quadratic_lag
-                  $hgf $hg_pos ?_
-                  (by simpa using $hF_pos)
-                  (by simpa using $hdeg_lo)
-                  (by simpa using $hdeg_hi)
-                  $hno))
-            rr_lw_coeff_nonneg)
+        rr_lw_exact_or_simpa
+          (RealRooted.prec_lw_negative_monic_quadratic_lag
+            $hgf $hg_pos (by rr_lw_coeff_nonneg) $hF_pos $hdeg_lo $hdeg_hi $hno),
+          (RealRooted.prec_lw_negative_monic_quadratic_lag
+            $hgf $hg_pos (by rr_lw_coeff_nonneg)
+            (by simpa using $hF_pos)
+            (by simpa using $hdeg_lo)
+            (by simpa using $hdeg_hi)
+            $hno))
   | `(tactic|
       rr_lw_negative_quadratic using
         interlacer := $hgf:term,
@@ -5100,19 +5089,18 @@ macro_rules
         degree_upper := $hdeg_hi:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        first
-          | refine RealRooted.prec_lw_negative_quadratic_lag
-              $hgf $hg_pos ?_ ?_ ?_ $hF_pos $hdeg_lo $hdeg_hi $hno <;>
-            rr_lw_coeff_nonneg
-          | refine (by
-              simpa using
-                (RealRooted.prec_lw_negative_quadratic_lag
-                  $hgf $hg_pos ?_ ?_ ?_
-                  (by simpa using $hF_pos)
-                  (by simpa using $hdeg_lo)
-                  (by simpa using $hdeg_hi)
-                  $hno)) <;>
-            rr_lw_coeff_nonneg)
+        rr_lw_exact_or_simpa
+          (RealRooted.prec_lw_negative_quadratic_lag
+            $hgf $hg_pos
+            (by rr_lw_coeff_nonneg) (by rr_lw_coeff_nonneg) (by rr_lw_coeff_nonneg)
+            $hF_pos $hdeg_lo $hdeg_hi $hno),
+          (RealRooted.prec_lw_negative_quadratic_lag
+            $hgf $hg_pos
+            (by rr_lw_coeff_nonneg) (by rr_lw_coeff_nonneg) (by rr_lw_coeff_nonneg)
+            (by simpa using $hF_pos)
+            (by simpa using $hdeg_lo)
+            (by simpa using $hdeg_hi)
+            $hno))
   | `(tactic|
       rr_lw_negative_const using
         interlacer := $hgf:term,
@@ -5141,19 +5129,15 @@ macro_rules
         degree_upper := $hdeg_hi:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        first
-          | refine RealRooted.prec_lw_negative_const_lag
-              $hgf $hg_pos ?_ $hF_pos $hdeg_lo $hdeg_hi $hno
-            rr_lw_coeff_nonneg
-          | refine (by
-              simpa using
-                (RealRooted.prec_lw_negative_const_lag
-                  $hgf $hg_pos ?_
-                  (by simpa using $hF_pos)
-                  (by simpa using $hdeg_lo)
-                  (by simpa using $hdeg_hi)
-                  $hno))
-            rr_lw_coeff_nonneg)
+        rr_lw_exact_or_simpa
+          (RealRooted.prec_lw_negative_const_lag
+            $hgf $hg_pos (by rr_lw_coeff_nonneg) $hF_pos $hdeg_lo $hdeg_hi $hno),
+          (RealRooted.prec_lw_negative_const_lag
+            $hgf $hg_pos (by rr_lw_coeff_nonneg)
+            (by simpa using $hF_pos)
+            (by simpa using $hdeg_lo)
+            (by simpa using $hdeg_hi)
+            $hno))
   | `(tactic|
       rr_lw_negative_const_C_neg using
         interlacer := $hgf:term,
@@ -5182,19 +5166,15 @@ macro_rules
         degree_upper := $hdeg_hi:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        first
-          | refine RealRooted.prec_lw_negative_const_lag_C_neg
-              $hgf $hg_pos ?_ $hF_pos $hdeg_lo $hdeg_hi $hno
-            rr_lw_coeff_nonneg
-          | refine (by
-              simpa using
-                (RealRooted.prec_lw_negative_const_lag_C_neg
-                  $hgf $hg_pos ?_
-                  (by simpa using $hF_pos)
-                  (by simpa using $hdeg_lo)
-                  (by simpa using $hdeg_hi)
-                  $hno))
-            rr_lw_coeff_nonneg)
+        rr_lw_exact_or_simpa
+          (RealRooted.prec_lw_negative_const_lag_C_neg
+            $hgf $hg_pos (by rr_lw_coeff_nonneg) $hF_pos $hdeg_lo $hdeg_hi $hno),
+          (RealRooted.prec_lw_negative_const_lag_C_neg
+            $hgf $hg_pos (by rr_lw_coeff_nonneg)
+            (by simpa using $hF_pos)
+            (by simpa using $hdeg_lo)
+            (by simpa using $hdeg_hi)
+            $hno))
   | `(tactic|
       rr_lw_nonpos_lag_sequence using
         base := $hbase:term,
