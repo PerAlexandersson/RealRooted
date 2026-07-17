@@ -1173,6 +1173,30 @@ theorem isRealRooted_of_product_scalar_C_add_X_right_sequence
   isRealRooted_of_product_scalar_factor_right_sequence hbase ha
     (fun n => by simpa using isRealRooted_C_add_X_pow (b n) 1) hscalar hlinear
 
+/-- Right-scalar variant of
+`isRealRooted_of_product_scalar_C_add_X_sequence`. -/
+theorem isRealRooted_of_product_scalar_C_add_X_scalar_right_sequence
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hscalar : ∀ n : Nat, P (2 * n + 1) = P (2 * n) * C (a n))
+    (hlinear : ∀ n : Nat, P (2 * n + 2) = (C (b n) + X) * P (2 * n + 1)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_scalar_right_sequence hbase ha
+    (fun n => by simpa using isRealRooted_C_add_X_pow (b n) 1) hscalar hlinear
+
+/-- Right-scalar/right-factor variant of
+`isRealRooted_of_product_scalar_C_add_X_sequence`. -/
+theorem isRealRooted_of_product_scalar_C_add_X_scalar_right_linear_right_sequence
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hscalar : ∀ n : Nat, P (2 * n + 1) = P (2 * n) * C (a n))
+    (hlinear : ∀ n : Nat, P (2 * n + 2) = P (2 * n + 1) * (C (b n) + X)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_scalar_right_factor_right_sequence hbase ha
+    (fun n => by simpa using isRealRooted_C_add_X_pow (b n) 1) hscalar hlinear
+
 /-- Sequence shell for degree-plateau scalar/product families whose growth
 step is multiplication by `X ^ m_n`. -/
 theorem isRealRooted_of_product_scalar_X_pow_sequence
@@ -1194,6 +1218,29 @@ theorem isRealRooted_of_product_scalar_X_pow_right_sequence
     (hstep : ∀ n : Nat, P (2 * n + 2) = P (2 * n + 1) * X ^ (m n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_scalar_factor_right_sequence hbase ha
+    (fun n => isRealRooted_X_pow (m n)) hscalar hstep
+
+/-- Right-scalar variant of `isRealRooted_of_product_scalar_X_pow_sequence`. -/
+theorem isRealRooted_of_product_scalar_X_pow_scalar_right_sequence
+    {P : Nat → ℝ[X]} {a : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hscalar : ∀ n : Nat, P (2 * n + 1) = P (2 * n) * C (a n))
+    (hstep : ∀ n : Nat, P (2 * n + 2) = X ^ (m n) * P (2 * n + 1)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_scalar_right_sequence hbase ha
+    (fun n => isRealRooted_X_pow (m n)) hscalar hstep
+
+/-- Right-scalar/right-factor variant of
+`isRealRooted_of_product_scalar_X_pow_sequence`. -/
+theorem isRealRooted_of_product_scalar_X_pow_scalar_right_factor_right_sequence
+    {P : Nat → ℝ[X]} {a : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hscalar : ∀ n : Nat, P (2 * n + 1) = P (2 * n) * C (a n))
+    (hstep : ∀ n : Nat, P (2 * n + 2) = P (2 * n + 1) * X ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_scalar_right_factor_right_sequence hbase ha
     (fun n => isRealRooted_X_pow (m n)) hscalar hstep
 
 /-- Alternating scalar/product shell whose growth step is multiplication by
@@ -1222,6 +1269,32 @@ theorem isRealRooted_of_product_scalar_X_add_C_pow_right_sequence
   isRealRooted_of_product_scalar_factor_right_sequence hbase ha
     (fun n => isRealRooted_X_add_C_pow (b n) (m n)) hscalar hstep
 
+/-- Right-scalar variant of
+`isRealRooted_of_product_scalar_X_add_C_pow_sequence`. -/
+theorem isRealRooted_of_product_scalar_X_add_C_pow_scalar_right_sequence
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hscalar : ∀ n : Nat, P (2 * n + 1) = P (2 * n) * C (a n))
+    (hstep : ∀ n : Nat, P (2 * n + 2) = (X + C (b n)) ^ (m n) *
+      P (2 * n + 1)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_scalar_right_sequence hbase ha
+    (fun n => isRealRooted_X_add_C_pow (b n) (m n)) hscalar hstep
+
+/-- Right-scalar/right-factor variant of
+`isRealRooted_of_product_scalar_X_add_C_pow_sequence`. -/
+theorem isRealRooted_of_product_scalar_X_add_C_pow_scalar_right_factor_right_sequence
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hscalar : ∀ n : Nat, P (2 * n + 1) = P (2 * n) * C (a n))
+    (hstep : ∀ n : Nat, P (2 * n + 2) = P (2 * n + 1) *
+      (X + C (b n)) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_scalar_right_factor_right_sequence hbase ha
+    (fun n => isRealRooted_X_add_C_pow (b n) (m n)) hscalar hstep
+
 /-- Alternating scalar/product shell whose growth step is multiplication by
 `(C b_n + X) ^ m_n`. -/
 theorem isRealRooted_of_product_scalar_C_add_X_pow_sequence
@@ -1246,6 +1319,32 @@ theorem isRealRooted_of_product_scalar_C_add_X_pow_right_sequence
       (C (b n) + X) ^ (m n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_scalar_factor_right_sequence hbase ha
+    (fun n => isRealRooted_C_add_X_pow (b n) (m n)) hscalar hstep
+
+/-- Right-scalar variant of
+`isRealRooted_of_product_scalar_C_add_X_pow_sequence`. -/
+theorem isRealRooted_of_product_scalar_C_add_X_pow_scalar_right_sequence
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hscalar : ∀ n : Nat, P (2 * n + 1) = P (2 * n) * C (a n))
+    (hstep : ∀ n : Nat, P (2 * n + 2) = (C (b n) + X) ^ (m n) *
+      P (2 * n + 1)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_scalar_right_sequence hbase ha
+    (fun n => isRealRooted_C_add_X_pow (b n) (m n)) hscalar hstep
+
+/-- Right-scalar/right-factor variant of
+`isRealRooted_of_product_scalar_C_add_X_pow_sequence`. -/
+theorem isRealRooted_of_product_scalar_C_add_X_pow_scalar_right_factor_right_sequence
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hscalar : ∀ n : Nat, P (2 * n + 1) = P (2 * n) * C (a n))
+    (hstep : ∀ n : Nat, P (2 * n + 2) = P (2 * n + 1) *
+      (C (b n) + X) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_scalar_right_factor_right_sequence hbase ha
     (fun n => isRealRooted_C_add_X_pow (b n) (m n)) hscalar hstep
 
 namespace Tactic
@@ -2346,19 +2445,11 @@ macro_rules
               (RealRooted.isRealRooted_of_product_scalar_C_add_X_right_sequence
                 $hbase $ha $hscalar $hlinear)
           | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_C_add_X_sequence
-                $hbase $ha
-                (by
-                  intro n
-                  rw [($hscalar) n, mul_comm])
-                $hlinear)
+              (RealRooted.isRealRooted_of_product_scalar_C_add_X_scalar_right_sequence
+                $hbase $ha $hscalar $hlinear)
           | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_C_add_X_right_sequence
-                $hbase $ha
-                (by
-                  intro n
-                  rw [($hscalar) n, mul_comm])
-                $hlinear))
+              (RealRooted.isRealRooted_of_product_scalar_C_add_X_scalar_right_linear_right_sequence
+                $hbase $ha $hscalar $hlinear))
   | `(tactic|
       rr_product_scalar_C_add_X_sequence_auto using
         base := $hbase:term,
@@ -2419,19 +2510,11 @@ macro_rules
               (RealRooted.isRealRooted_of_product_scalar_X_pow_right_sequence
                 $hbase $ha $hscalar $hstep)
           | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_X_pow_sequence
-                $hbase $ha
-                (by
-                  intro n
-                  rw [($hscalar) n, mul_comm])
-                $hstep)
+              (RealRooted.isRealRooted_of_product_scalar_X_pow_scalar_right_sequence
+                $hbase $ha $hscalar $hstep)
           | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_X_pow_right_sequence
-                $hbase $ha
-                (by
-                  intro n
-                  rw [($hscalar) n, mul_comm])
-                $hstep))
+              (RealRooted.isRealRooted_of_product_scalar_X_pow_scalar_right_factor_right_sequence
+                $hbase $ha $hscalar $hstep))
   | `(tactic|
       rr_product_scalar_X_pow_sequence_auto using
         base := $hbase:term,
@@ -2458,19 +2541,11 @@ macro_rules
               (RealRooted.isRealRooted_of_product_scalar_X_add_C_pow_right_sequence
                 $hbase $ha $hscalar $hstep)
           | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_X_add_C_pow_sequence
-                $hbase $ha
-                (by
-                  intro n
-                  rw [($hscalar) n, mul_comm])
-                $hstep)
+              (RealRooted.isRealRooted_of_product_scalar_X_add_C_pow_scalar_right_sequence
+                $hbase $ha $hscalar $hstep)
           | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_X_add_C_pow_right_sequence
-                $hbase $ha
-                (by
-                  intro n
-                  rw [($hscalar) n, mul_comm])
-                $hstep))
+              (isRealRooted_of_product_scalar_X_add_C_pow_scalar_right_factor_right_sequence
+                $hbase $ha $hscalar $hstep))
   | `(tactic|
       rr_product_scalar_X_add_C_pow_sequence_auto using
         base := $hbase:term,
@@ -2497,19 +2572,11 @@ macro_rules
               (RealRooted.isRealRooted_of_product_scalar_C_add_X_pow_right_sequence
                 $hbase $ha $hscalar $hstep)
           | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_C_add_X_pow_sequence
-                $hbase $ha
-                (by
-                  intro n
-                  rw [($hscalar) n, mul_comm])
-                $hstep)
+              (RealRooted.isRealRooted_of_product_scalar_C_add_X_pow_scalar_right_sequence
+                $hbase $ha $hscalar $hstep)
           | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_product_scalar_C_add_X_pow_right_sequence
-                $hbase $ha
-                (by
-                  intro n
-                  rw [($hscalar) n, mul_comm])
-                $hstep))
+              (isRealRooted_of_product_scalar_C_add_X_pow_scalar_right_factor_right_sequence
+                $hbase $ha $hscalar $hstep))
   | `(tactic|
       rr_product_scalar_C_add_X_pow_sequence_auto using
         base := $hbase:term,
