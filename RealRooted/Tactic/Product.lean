@@ -1120,32 +1120,8 @@ theorem isRealRooted_of_product_scalar_factor_right_sequence
     (hscalar : ∀ n : Nat, P (2 * n + 1) = C (a n) * P (2 * n))
     (hstep : ∀ n : Nat, P (2 * n + 2) = P (2 * n + 1) * F n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  have heven : ∀ n : Nat, P (2 * n) ≠ 0 ∧ (P (2 * n)).Splits := by
-    intro n
-    induction n with
-    | zero =>
-        simpa using hbase
-    | succ n ih =>
-        have hodd : P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
-          simpa [hscalar n] using isRealRooted_C_mul ih.1 ih.2 (ha n)
-        have hnext :
-            (P (2 * n + 1) * F n ≠ 0 ∧ (P (2 * n + 1) * F n).Splits) :=
-          isRealRooted_mul hodd.1 hodd.2 (hfactor n).1 (hfactor n).2
-        simpa [Nat.mul_succ, Nat.succ_eq_add_one, Nat.add_assoc] using
-          (by simpa [hstep n] using hnext)
-  have hodd : ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
-    intro n
-    simpa [hscalar n] using isRealRooted_C_mul (heven n).1 (heven n).2 (ha n)
-  intro n
-  rcases Nat.mod_two_eq_zero_or_one n with hmod | hmod
-  · have hn : n = 2 * (n / 2) := by
-      simpa [hmod] using (Nat.div_add_mod n 2).symm
-    rw [hn]
-    exact heven (n / 2)
-  · have hn : n = 2 * (n / 2) + 1 := by
-      simpa [hmod] using (Nat.div_add_mod n 2).symm
-    rw [hn]
-    exact hodd (n / 2)
+  exact isRealRooted_of_product_scalar_factor_sequence hbase ha hfactor hscalar
+    (fun n => by rw [hstep n, mul_comm])
 
 /-- Constant-first variant of
 `isRealRooted_of_product_scalar_linear_sequence`. -/
