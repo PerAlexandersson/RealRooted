@@ -882,10 +882,10 @@ theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidual
     (hrec : ∀ n : Nat,
       P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) :=
-  isPFPolynomial_of_bidiagonalOperator_sequence_of_jensenPencil
+  isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidualCertificate
     hbackend hbase hdeg
     (fun n =>
-      bidiagonalJensenPencilCertificate_of_cubicResidual
+      bidiagonalCubicResidualCertificate_of_cubicResidual
         (halpha n) (hbeta n) (hpencil n) (hA n) (hB n) (hS n))
     hrec
 
@@ -909,12 +909,12 @@ theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_endpoint_cubicResidual
     (hrec : ∀ n : Nat,
       P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) :=
-  isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidual
-    (S := fun n lam => A n + C lam * B n)
-    hbackend hbase hdeg halpha hbeta
-    (fun n lam _hlam =>
-      bidiagonalJensenPencil_factor_of_endpoint_factors (halpha n) (hbeta n) lam)
-    hA hB hS hrec
+  isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidualCertificate
+    hbackend hbase hdeg
+    (fun n =>
+      bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
+        (halpha n) (hbeta n) (hA n) (hB n) (hS n))
+    hrec
 
 /-- Sequence wrapper for Family H-style second-derivative recurrences.
 
@@ -951,11 +951,12 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidu
         secondDerivativeBidiagonalForm
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) :=
-  isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidual
-    hbackend hbase hdeg halpha hbeta hpencil hA hB hS
-    (fun n => (hrec n).trans
-      (secondDerivativeBidiagonalForm_eq_bidiagonalOperator
-        (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)))
+  isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert
+    hbackend hbase hdeg
+    (fun n =>
+      bidiagonalCubicResidualCertificate_of_cubicResidual
+        (halpha n) (hbeta n) (hpencil n) (hA n) (hB n) (hS n))
+    hrec
 
 /-- Second-derivative sequence wrapper whose residual pencil is derived from
 the endpoint factorizations as `A n + C lam * B n`. -/
@@ -982,12 +983,12 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_endpoint_cu
         secondDerivativeBidiagonalForm
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) :=
-  isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidual
-    (S := fun n lam => A n + C lam * B n)
-    hbackend hbase hdeg halpha hbeta
-    (fun n lam _hlam =>
-      bidiagonalJensenPencil_factor_of_endpoint_factors (halpha n) (hbeta n) lam)
-    hA hB hS hrec
+  isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert
+    hbackend hbase hdeg
+    (fun n =>
+      bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
+        (halpha n) (hbeta n) (hA n) (hB n) (hS n))
+    hrec
 
 /-- Sequence wrapper for second-derivative recurrences with unbundled
 common-factor residual cubic certificates attached to named coefficient
@@ -1020,9 +1021,12 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidu
         secondDerivativeBidiagonalForm
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) :=
-  isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidual
-    hbackend hbase hdeg halpha hbeta hpencil hA hB hS
-    (fun n => (hrec n).trans (hnorm n))
+  isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_norm
+    hbackend hbase hdeg
+    (fun n =>
+      bidiagonalCubicResidualCertificate_of_cubicResidual
+        (halpha n) (hbeta n) (hpencil n) (hA n) (hB n) (hS n))
+    hnorm hrec
 
 /-- Normalized second-derivative sequence wrapper whose residual pencil is
 derived from the endpoint factorizations as `A n + C lam * B n`. -/
@@ -1051,9 +1055,12 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_endpoint_cu
         secondDerivativeBidiagonalForm
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) :=
-  isPFPolynomial_of_bidiagonalOperator_sequence_of_endpoint_cubicResidual
-    hbackend hbase hdeg halpha hbeta hA hB hS
-    (fun n => (hrec n).trans (hnorm n))
+  isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_norm
+    hbackend hbase hdeg
+    (fun n =>
+      bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
+        (halpha n) (hbeta n) (hA n) (hB n) (hS n))
+    hnorm hrec
 
 namespace Tactic
 
