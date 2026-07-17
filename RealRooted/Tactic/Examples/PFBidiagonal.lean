@@ -7,6 +7,17 @@ noncomputable section
 namespace RealRooted
 namespace TacticExamples
 
+example {P : Nat → ℝ[X]}
+    (hpf : ∀ n : Nat, IsPFPolynomial (P n)) :
+    ∀ n : Nat, HasNonnegCoeffs (P n) := by
+  rr_exact_pf_sequence_or_projection hpf
+
+example {P : Nat → ℝ[X]}
+    (hpf : ∀ n : Nat, IsPFPolynomial (P n))
+    (hne : ∀ n : Nat, P n ≠ 0) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_exact_pf_sequence_realrooted hpf, hne
+
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
     (hbase : IsPFPolynomial (P 0))
