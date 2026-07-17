@@ -1172,7 +1172,7 @@ syntax (name := rr_pf_bidiagonal_certificate_cubic_named)
   "rr_pf_bidiagonal_certificate" " using "
     "alpha_factor" ":=" term ","
     "beta_factor" ":=" term ","
-    "pencil_factor" ":=" term ","
+    ("pencil_factor" ":=" term ",")?
     "alpha_cubic" ":=" term ","
     "beta_cubic" ":=" term ","
     "pencil_cubic" ":=" term :
@@ -1191,15 +1191,6 @@ macro_rules
         exact RealRooted.bidiagonalJensenPencilCertificate_of_cubicResidual
           $halpha $hbeta $hpencil $hA $hB $hS)
 
-syntax (name := rr_pf_bidiagonal_certificate_endpoint_cubic_named)
-  "rr_pf_bidiagonal_certificate" " using "
-    "alpha_factor" ":=" term ","
-    "beta_factor" ":=" term ","
-    "alpha_cubic" ":=" term ","
-    "beta_cubic" ":=" term ","
-    "pencil_cubic" ":=" term :
-  tactic
-
 macro_rules
   | `(tactic|
       rr_pf_bidiagonal_certificate using
@@ -1216,7 +1207,7 @@ syntax (name := rr_pf_bidiagonal_cubic_certificate_named)
   "rr_pf_bidiagonal_cubic_certificate" " using "
     "alpha_factor" ":=" term ","
     "beta_factor" ":=" term ","
-    "pencil_factor" ":=" term ","
+    ("pencil_factor" ":=" term ",")?
     "alpha_cubic" ":=" term ","
     "beta_cubic" ":=" term ","
     "pencil_cubic" ":=" term :
@@ -1234,15 +1225,6 @@ macro_rules
       `(tactic|
         exact RealRooted.bidiagonalCubicResidualCertificate_of_cubicResidual
           $halpha $hbeta $hpencil $hA $hB $hS)
-
-syntax (name := rr_pf_bidiagonal_cubic_certificate_endpoint_named)
-  "rr_pf_bidiagonal_cubic_certificate" " using "
-    "alpha_factor" ":=" term ","
-    "beta_factor" ":=" term ","
-    "alpha_cubic" ":=" term ","
-    "beta_cubic" ":=" term ","
-    "pencil_cubic" ":=" term :
-  tactic
 
 macro_rules
   | `(tactic|
@@ -1324,7 +1306,7 @@ syntax (name := rr_pf_bidiagonal_sequence_cubic_named)
     "degree" ":=" term ","
     "alpha_factor" ":=" term ","
     "beta_factor" ":=" term ","
-    "pencil_factor" ":=" term ","
+    ("pencil_factor" ":=" term ",")?
     "alpha_cubic" ":=" term ","
     "beta_cubic" ":=" term ","
     "pencil_cubic" ":=" term ","
@@ -1352,20 +1334,6 @@ macro_rules
             $hbackend $hbase $hdeg $halpha $hbeta $hpencil $hA $hB $hS $hrec)
           $[, nonzero := $hne]?)
 
-syntax (name := rr_pf_bidiagonal_sequence_endpoint_cubic_named)
-  "rr_pf_bidiagonal_sequence_cubic" " using "
-    "jensen_backend" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "alpha_factor" ":=" term ","
-    "beta_factor" ":=" term ","
-    "alpha_cubic" ":=" term ","
-    "beta_cubic" ":=" term ","
-    "pencil_cubic" ":=" term ","
-    "recurrence" ":=" term
-    ("," "nonzero" ":=" term)? :
-  tactic
-
 macro_rules
   | `(tactic|
       rr_pf_bidiagonal_sequence_cubic using
@@ -1392,7 +1360,7 @@ syntax (name := rr_pf_second_derivative_bidiagonal_sequence_cubic_named)
     "degree" ":=" term ","
     "alpha_factor" ":=" term ","
     "beta_factor" ":=" term ","
-    "pencil_factor" ":=" term ","
+    ("pencil_factor" ":=" term ",")?
     "alpha_cubic" ":=" term ","
     "beta_cubic" ":=" term ","
     "pencil_cubic" ":=" term ","
@@ -1420,20 +1388,6 @@ macro_rules
             $hbackend $hbase $hdeg $halpha $hbeta $hpencil $hA $hB $hS $hrec)
           $[, nonzero := $hne]?)
 
-syntax (name := rr_pf_second_derivative_bidiagonal_sequence_endpoint_cubic_named)
-  "rr_pf_second_derivative_bidiagonal_sequence_cubic" " using "
-    "jensen_backend" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "alpha_factor" ":=" term ","
-    "beta_factor" ":=" term ","
-    "alpha_cubic" ":=" term ","
-    "beta_cubic" ":=" term ","
-    "pencil_cubic" ":=" term ","
-    "recurrence" ":=" term
-    ("," "nonzero" ":=" term)? :
-  tactic
-
 macro_rules
   | `(tactic|
       rr_pf_second_derivative_bidiagonal_sequence_cubic using
@@ -1460,7 +1414,7 @@ syntax (name := rr_pf_second_derivative_bidiagonal_sequence_cubic_normalized_nam
     "degree" ":=" term ","
     "alpha_factor" ":=" term ","
     "beta_factor" ":=" term ","
-    "pencil_factor" ":=" term ","
+    ("pencil_factor" ":=" term ",")?
     "alpha_cubic" ":=" term ","
     "beta_cubic" ":=" term ","
     "pencil_cubic" ":=" term ","
@@ -1490,21 +1444,6 @@ macro_rules
             $hbackend $hbase $hdeg $halpha $hbeta $hpencil $hA $hB $hS $hnorm
             $hrec)
           $[, nonzero := $hne]?)
-
-syntax (name := rr_pf_second_derivative_bidiagonal_sequence_endpoint_cubic_norm_named)
-  "rr_pf_second_derivative_bidiagonal_sequence_cubic" " using "
-    "jensen_backend" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "alpha_factor" ":=" term ","
-    "beta_factor" ":=" term ","
-    "alpha_cubic" ":=" term ","
-    "beta_cubic" ":=" term ","
-    "pencil_cubic" ":=" term ","
-    "normalizer" ":=" term ","
-    "recurrence" ":=" term
-    ("," "nonzero" ":=" term)? :
-  tactic
 
 macro_rules
   | `(tactic|

@@ -10,13 +10,13 @@ namespace TacticExamples
 example {P : Nat → ℝ[X]}
     (hpf : ∀ n : Nat, IsPFPolynomial (P n)) :
     ∀ n : Nat, HasNonnegCoeffs (P n) := by
-  rr_exact_pf_sequence_or_projection hpf
+  rr_exact_pf_sequence hpf
 
 example {P : Nat → ℝ[X]}
     (hpf : ∀ n : Nat, IsPFPolynomial (P n))
     (hne : ∀ n : Nat, P n ≠ 0) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_exact_pf_sequence_realrooted hpf, hne
+  rr_exact_pf_sequence hpf, nonzero := hne
 
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
