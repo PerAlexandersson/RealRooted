@@ -766,6 +766,28 @@ example {P : Nat → ℝ[X]} {s t : Nat → ℝ} {m : Nat → Nat}
     slope_ne := hs,
     recurrence := hrec
 
+/-- Positive slopes in powered affine product recurrences are inferred. -/
+example {P : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat,
+      P (n + 1) = (C ((n : ℝ) + 1) * X + C (t n)) ^ (m n) * P n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_affine_pow_sequence_auto using
+    base := hbase,
+    recurrence := hrec
+
+/-- Report-order powered affine recurrences also accept explicit slopes. -/
+example {P : Nat → ℝ[X]} {s t : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hs : ∀ n : Nat, s n ≠ 0)
+    (hrec :
+      ∀ n : Nat, P (n + 1) = (C (t n) + C (s n) * X) ^ (m n) * P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_const_first_affine_pow_sequence using
+    base := hbase,
+    slope_ne := hs,
+    recurrence := hrec
+
 /-- Report-order powered affine recurrences also have an auto-positive form. -/
 example {P : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
@@ -959,6 +981,20 @@ example {P : Nat → ℝ[X]}
     scalar_step := hscalar,
     factor_step := hstep
 
+/-- The repeated-zero alternating shell also accepts explicit scalar
+certificates and right-side steps. -/
+example {P : Nat → ℝ[X]} {a : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hscalar : ∀ n : Nat, P (2 * n + 1) = P (2 * n) * C (a n))
+    (hstep : ∀ n : Nat, P (2 * n + 2) = P (2 * n + 1) * X ^ (m n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_scalar_X_pow_sequence using
+    base := hbase,
+    scalar_ne := ha,
+    scalar_step := hscalar,
+    factor_step := hstep
+
 /-- Alternating scalar/powered unit-linear shell. -/
 example {P : Nat → ℝ[X]} {a b : Nat → ℝ} {m : Nat → Nat}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
@@ -968,6 +1004,33 @@ example {P : Nat → ℝ[X]} {a b : Nat → ℝ} {m : Nat → Nat}
       P (2 * n + 2) = (X + C (b n)) ^ (m n) * P (2 * n + 1)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_product_scalar_X_add_C_pow_sequence using
+    base := hbase,
+    scalar_ne := ha,
+    scalar_step := hscalar,
+    factor_step := hstep
+
+/-- Positive scalar steps in the powered unit-linear shell are inferred. -/
+example {P : Nat → ℝ[X]} {b : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hscalar : ∀ n : Nat,
+      P (2 * n + 1) = C ((n : ℝ) + 1) * P (2 * n))
+    (hstep : ∀ n : Nat,
+      P (2 * n + 2) = (X + C (b n)) ^ (m n) * P (2 * n + 1)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_scalar_X_add_C_pow_sequence_auto using
+    base := hbase,
+    scalar_step := hscalar,
+    factor_step := hstep
+
+/-- Alternating scalar/powered constant-first shell. -/
+example {P : Nat → ℝ[X]} {a b : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hscalar : ∀ n : Nat, P (2 * n + 1) = C (a n) * P (2 * n))
+    (hstep : ∀ n : Nat,
+      P (2 * n + 2) = (C (b n) + X) ^ (m n) * P (2 * n + 1)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_scalar_C_add_X_pow_sequence using
     base := hbase,
     scalar_ne := ha,
     scalar_step := hscalar,
