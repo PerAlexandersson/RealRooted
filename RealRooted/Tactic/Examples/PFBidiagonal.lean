@@ -1897,6 +1897,27 @@ example
     normalizer := (fun n => secondDerivativeBidiagonalForm_a371081 n (P n)),
     recurrence := hrec
 
+/-- A371081-shaped tail shell with row degree `n`.
+
+The first three rows are supplied as base cases; from `n >= 2`, a concrete
+cubic-residual certificate can handle the shifted-square Jensen pencil. -/
+example
+    {P : Nat → ℝ[X]}
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbase : ∀ n : Nat, n ≤ 2 → IsPFPolynomial (P n))
+    (hdeg : ∀ n : Nat, 2 ≤ n → (P n).natDegree ≤ n)
+    (hcert : ∀ n : Nat, 2 ≤ n →
+      BidiagonalCubicResidualCertificate (a371081Alpha n) a371081Beta n)
+    (hrec : ∀ n : Nat, 2 ≤ n →
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (((n : ℝ) + 2) ^ 2) 1 (5 + 2 * (n : ℝ)) 0 1 0 (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) :=
+  isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_norm_from
+    hbackend 2 hbase hdeg hcert
+    (fun n _hn => secondDerivativeBidiagonalForm_a371081 n (P n))
+    hrec
+
 /-- The coefficient multiplier for the A371259 recurrence. -/
 def a371259Alpha (n k : ℕ) : ℝ :=
   ((n : ℝ) + (k : ℝ) + 4) ^ 2
@@ -1938,6 +1959,27 @@ example
     recurrence := hrec,
     nonzero := hne
 
+/-- A371259-shaped tail shell with row degree `n`. -/
+example
+    {P : Nat → ℝ[X]}
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbase : ∀ n : Nat, n ≤ 2 → IsPFPolynomial (P n))
+    (hdeg : ∀ n : Nat, 2 ≤ n → (P n).natDegree ≤ n)
+    (hcert : ∀ n : Nat, 2 ≤ n →
+      BidiagonalCubicResidualCertificate (a371259Alpha n) a371259Beta n)
+    (hne : ∀ n : Nat, P n ≠ 0)
+    (hrec : ∀ n : Nat, 2 ≤ n →
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (((n : ℝ) + 4) ^ 2) 1 (9 + 2 * (n : ℝ)) 0 1 0 (P n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  exact isRealRooted_of_isPFPolynomial_sequence
+    (isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_norm_from
+      hbackend 2 hbase hdeg hcert
+      (fun n _hn => secondDerivativeBidiagonalForm_a371259 n (P n))
+      hrec)
+    hne
+
 /-- The coefficient multiplier for the A390433 recurrence. -/
 def a390433Alpha (n k : ℕ) : ℝ :=
   ((n : ℝ) + (k : ℝ) - 2) ^ 2
@@ -1976,6 +2018,24 @@ example
     degree := hdeg,
     normalizer := (fun n => secondDerivativeBidiagonalForm_a390433 n (P n)),
     recurrence := hrec
+
+/-- A390433-shaped tail shell with row degree `n`. -/
+example
+    {P : Nat → ℝ[X]}
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbase : ∀ n : Nat, n ≤ 2 → IsPFPolynomial (P n))
+    (hdeg : ∀ n : Nat, 2 ≤ n → (P n).natDegree ≤ n)
+    (hcert : ∀ n : Nat, 2 ≤ n →
+      BidiagonalCubicResidualCertificate (a390433Alpha n) a390433Beta n)
+    (hrec : ∀ n : Nat, 2 ≤ n →
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (((n : ℝ) - 2) ^ 2) 1 (-3 + 2 * (n : ℝ)) 0 1 0 (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) :=
+  isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_norm_from
+    hbackend 2 hbase hdeg hcert
+    (fun n _hn => secondDerivativeBidiagonalForm_a390433 n (P n))
+    hrec
 
 example
     {alpha beta : ℕ → ℝ} {d : ℕ}

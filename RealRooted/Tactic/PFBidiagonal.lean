@@ -517,6 +517,31 @@ theorem isPFPolynomial_of_bidiagonalOperator_sequence
       simpa [hrec n] using
         isPFPolynomial_bidiagonalOperator_of_preserver (hpres n) ih (hdeg n)
 
+/-- Sequence wrapper for first-order recurrences whose PF-bidiagonal
+certificate only starts from a cutoff row.  The finitely many rows before the
+cutoff are supplied as base cases. -/
+theorem isPFPolynomial_of_bidiagonalOperator_sequence_from
+    {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
+    (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
+    (hpres : ∀ n : Nat, N ≤ n → BidiagonalPFPreserver (alpha n) (beta n) (d n))
+    (hrec : ∀ n : Nat, N ≤ n →
+      P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) := by
+  intro n
+  exact Nat.strong_induction_on n fun n ih => by
+    by_cases hn : n ≤ N
+    · exact hbase n hn
+    · cases n with
+      | zero =>
+          exact False.elim (hn (Nat.zero_le N))
+      | succ m =>
+          have hNm : N ≤ m := by lia
+          have hPm : IsPFPolynomial (P m) := ih m (Nat.lt_succ_self m)
+          simpa [hrec m hNm] using
+            isPFPolynomial_bidiagonalOperator_of_preserver (hpres m hNm) hPm (hdeg m hNm)
+
 /-- Sequence wrapper using per-row Jensen-pencil certificates. -/
 theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_jensenPencil
     (hbackend : jensenPencilBidiagonalPreserverStatement)
@@ -544,6 +569,22 @@ theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidualCertificat
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_bidiagonalOperator_sequence hbase hdeg
     (fun n => (hcert n).toPFPreserver hbackend) hrec
+
+/-- Tail-start sequence wrapper using bundled cubic-residual certificates as
+row hints. -/
+theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidualCertificate_from
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
+    (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
+    (hcert : ∀ n : Nat, N ≤ n →
+      BidiagonalCubicResidualCertificate (alpha n) (beta n) (d n))
+    (hrec : ∀ n : Nat, N ≤ n →
+      P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) :=
+  isPFPolynomial_of_bidiagonalOperator_sequence_from N hbase hdeg
+    (fun n hn => (hcert n hn).toPFPreserver hbackend) hrec
 
 /-- Sequence wrapper for Family H-style second-derivative recurrences with an
 explicit per-row PF-bidiagonal preserver.
@@ -707,6 +748,34 @@ theorem
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidualCertificate
     hbackend hbase hdeg hcert (fun n => (hrec n).trans (hnorm n))
+
+/-- Tail-start version of
+`isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_norm`.
+
+This is useful for `n`-dependent coefficient-bidiagonal certificates whose
+common Jensen factor only has the stable residual shape from a cutoff row
+onward. -/
+theorem
+    isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_norm_from
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
+    {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
+    (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
+    (hcert : ∀ n : Nat, N ≤ n →
+      BidiagonalCubicResidualCertificate (alpha n) (beta n) (d n))
+    (hnorm : ∀ n : Nat, N ≤ n →
+      secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n) =
+        bidiagonalOperator (alpha n) (beta n) (P n))
+    (hrec : ∀ n : Nat, N ≤ n →
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) :=
+  isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidualCertificate_from
+    hbackend N hbase hdeg hcert (fun n hn => (hrec n hn).trans (hnorm n hn))
 
 /-- Sequence wrapper whose per-row Jensen-pencil certificates are supplied by
 common-factor residual cubic certificates. -/
