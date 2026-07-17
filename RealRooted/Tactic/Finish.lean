@@ -91,6 +91,42 @@ theorem splits_of_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
     p.Splits :=
   hp.2
 
+/-- Project real-rootedness of the left argument from a pair certificate. -/
+theorem left_isRealRooted_of_isRealRooted_pair {p q : ℝ[X]}
+    (hpq : (p ≠ 0 ∧ p.Splits) ∧ (q ≠ 0 ∧ q.Splits)) :
+    p ≠ 0 ∧ p.Splits :=
+  hpq.1
+
+/-- Project real-rootedness of the right argument from a pair certificate. -/
+theorem right_isRealRooted_of_isRealRooted_pair {p q : ℝ[X]}
+    (hpq : (p ≠ 0 ∧ p.Splits) ∧ (q ≠ 0 ∧ q.Splits)) :
+    q ≠ 0 ∧ q.Splits :=
+  hpq.2
+
+/-- Project left-argument nonvanishing from a pair certificate. -/
+theorem left_ne_zero_of_isRealRooted_pair {p q : ℝ[X]}
+    (hpq : (p ≠ 0 ∧ p.Splits) ∧ (q ≠ 0 ∧ q.Splits)) :
+    p ≠ 0 :=
+  (left_isRealRooted_of_isRealRooted_pair hpq).1
+
+/-- Project left-argument splitting from a pair certificate. -/
+theorem left_splits_of_isRealRooted_pair {p q : ℝ[X]}
+    (hpq : (p ≠ 0 ∧ p.Splits) ∧ (q ≠ 0 ∧ q.Splits)) :
+    p.Splits :=
+  (left_isRealRooted_of_isRealRooted_pair hpq).2
+
+/-- Project right-argument nonvanishing from a pair certificate. -/
+theorem right_ne_zero_of_isRealRooted_pair {p q : ℝ[X]}
+    (hpq : (p ≠ 0 ∧ p.Splits) ∧ (q ≠ 0 ∧ q.Splits)) :
+    q ≠ 0 :=
+  (right_isRealRooted_of_isRealRooted_pair hpq).1
+
+/-- Project right-argument splitting from a pair certificate. -/
+theorem right_splits_of_isRealRooted_pair {p q : ℝ[X]}
+    (hpq : (p ≠ 0 ∧ p.Splits) ∧ (q ≠ 0 ∧ q.Splits)) :
+    q.Splits :=
+  (right_isRealRooted_of_isRealRooted_pair hpq).2
+
 /-- Project real-rootedness of the left argument from a `Prec` certificate. -/
 theorem left_isRealRooted_of_prec {f g : ℝ[X]} (hfg : Prec f g) :
     f ≠ 0 ∧ f.Splits :=
@@ -309,6 +345,12 @@ macro_rules
           | exact $h
           | exact RealRooted.ne_zero_of_isRealRooted $h
           | exact RealRooted.splits_of_isRealRooted $h
+          | exact RealRooted.left_isRealRooted_of_isRealRooted_pair $h
+          | exact RealRooted.right_isRealRooted_of_isRealRooted_pair $h
+          | exact RealRooted.left_ne_zero_of_isRealRooted_pair $h
+          | exact RealRooted.right_ne_zero_of_isRealRooted_pair $h
+          | exact RealRooted.left_splits_of_isRealRooted_pair $h
+          | exact RealRooted.right_splits_of_isRealRooted_pair $h
           | exact RealRooted.left_isRealRooted_of_prec $h
           | exact RealRooted.right_isRealRooted_of_prec $h
           | exact RealRooted.left_ne_zero_of_prec $h
@@ -359,9 +401,9 @@ macro_rules
           | exact RealRooted.right_ne_zero_of_prec $h
           | exact RealRooted.right_ne_zero_of_interlaces $h
           | exact RealRooted.left_ne_zero_of_interlaces $h
-          | exact ($h).1
-          | exact ($h).1.1
-          | exact ($h).2.1.1)
+          | exact RealRooted.ne_zero_of_isRealRooted $h
+          | exact RealRooted.left_ne_zero_of_isRealRooted_pair $h
+          | exact RealRooted.right_ne_zero_of_isRealRooted_pair $h)
   | `(tactic| rr_nonzero) =>
       `(tactic|
         first
@@ -376,6 +418,8 @@ macro_rules
           | exact RealRooted.right_ne_zero_of_prec (by rr_lookup)
           | exact RealRooted.right_ne_zero_of_interlaces (by rr_lookup)
           | exact RealRooted.left_ne_zero_of_interlaces (by rr_lookup)
+          | exact RealRooted.left_ne_zero_of_isRealRooted_pair (by rr_lookup)
+          | exact RealRooted.right_ne_zero_of_isRealRooted_pair (by rr_lookup)
           | assumption
           | simp_all [RealRooted.Prec, RealRooted.Interlaces])
   | `(tactic| rr_splits using $h:term) =>
@@ -391,9 +435,9 @@ macro_rules
           | exact RealRooted.right_splits_of_prec $h
           | exact RealRooted.right_splits_of_interlaces $h
           | exact RealRooted.left_splits_of_interlaces $h
-          | exact ($h).2
-          | exact ($h).1.2
-          | exact ($h).2.1.2)
+          | exact RealRooted.splits_of_isRealRooted $h
+          | exact RealRooted.left_splits_of_isRealRooted_pair $h
+          | exact RealRooted.right_splits_of_isRealRooted_pair $h)
   | `(tactic| rr_splits) =>
       `(tactic|
         first
@@ -408,6 +452,8 @@ macro_rules
           | exact RealRooted.right_splits_of_prec (by rr_lookup)
           | exact RealRooted.right_splits_of_interlaces (by rr_lookup)
           | exact RealRooted.left_splits_of_interlaces (by rr_lookup)
+          | exact RealRooted.left_splits_of_isRealRooted_pair (by rr_lookup)
+          | exact RealRooted.right_splits_of_isRealRooted_pair (by rr_lookup)
           | assumption
           | simp_all [RealRooted.Prec, RealRooted.Interlaces])
   | `(tactic| rr_realrooted using $h:term) =>
@@ -423,8 +469,8 @@ macro_rules
           | exact RealRooted.right_isRealRooted_of_prec $h
           | exact RealRooted.right_isRealRooted_of_interlaces $h
           | exact RealRooted.left_isRealRooted_of_interlaces $h
-          | exact ($h).1
-          | exact ($h).2.1)
+          | exact RealRooted.left_isRealRooted_of_isRealRooted_pair $h
+          | exact RealRooted.right_isRealRooted_of_isRealRooted_pair $h)
   | `(tactic| rr_realrooted) =>
       `(tactic|
         first
@@ -438,6 +484,8 @@ macro_rules
           | exact RealRooted.right_isRealRooted_of_prec (by rr_lookup)
           | exact RealRooted.right_isRealRooted_of_interlaces (by rr_lookup)
           | exact RealRooted.left_isRealRooted_of_interlaces (by rr_lookup)
+          | exact RealRooted.left_isRealRooted_of_isRealRooted_pair (by rr_lookup)
+          | exact RealRooted.right_isRealRooted_of_isRealRooted_pair (by rr_lookup)
           | assumption
           | simp_all [RealRooted.Prec, RealRooted.Interlaces])
   | `(tactic| rr_interlaces using $hprec:term, $hdeg:term) =>
@@ -536,6 +584,12 @@ macro_rules
           | exact (RealRooted.left_splits_of_isRealRooted_pair_sequence (by rr_lookup) _)
           | exact RealRooted.right_splits_of_isRealRooted_pair_sequence (by rr_lookup)
           | exact (RealRooted.right_splits_of_isRealRooted_pair_sequence (by rr_lookup) _)
+          | exact RealRooted.left_isRealRooted_of_isRealRooted_pair (by rr_lookup)
+          | exact RealRooted.right_isRealRooted_of_isRealRooted_pair (by rr_lookup)
+          | exact RealRooted.left_ne_zero_of_isRealRooted_pair (by rr_lookup)
+          | exact RealRooted.right_ne_zero_of_isRealRooted_pair (by rr_lookup)
+          | exact RealRooted.left_splits_of_isRealRooted_pair (by rr_lookup)
+          | exact RealRooted.right_splits_of_isRealRooted_pair (by rr_lookup)
           | exact RealRooted.left_isRealRooted_of_prec (by rr_lookup)
           | exact RealRooted.right_isRealRooted_of_prec (by rr_lookup)
           | exact RealRooted.left_ne_zero_of_prec (by rr_lookup)
