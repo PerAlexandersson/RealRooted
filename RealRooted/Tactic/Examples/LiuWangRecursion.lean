@@ -84,7 +84,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     raw_lag_coeff := fun n => (n : ℝ) + 1,
     root_lower := hroot_lower,
     root_upper := hroot_upper,
-    den_nonzero := by intro n; rr_scalar_active_den_at n,
+    den_nonzero := by rr_scalar_active_den_all,
     deriv_coeff_eq := by
       intro n
       rr_scalar_coeff_at n,
