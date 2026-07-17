@@ -2009,6 +2009,17 @@ syntax (name := rr_mw_derivative_one_add_two_window_sequence_named)
     "degree_upper" ":=" term :
   tactic
 
+syntax (name := rr_mw_derivative_one_add_two_window_sequence_degree_succ_named)
+  "rr_mw_derivative_one_add_two_window_sequence" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "degree_two" ":=" term ","
+    "root_lower" ":=" term ","
+    "root_upper" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term :
+  tactic
+
 syntax (name := rr_mw_derivative_one_add_two_window_sequence_realrooted_named)
   "rr_mw_derivative_one_add_two_window_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -2019,6 +2030,17 @@ syntax (name := rr_mw_derivative_one_add_two_window_sequence_realrooted_named)
     "recurrence" ":=" term ","
     "degree_lower" ":=" term ","
     "degree_upper" ":=" term :
+  tactic
+
+syntax (name := rr_mw_derivative_one_add_two_window_sequence_realrooted_degree_succ_named)
+  "rr_mw_derivative_one_add_two_window_sequence_realrooted" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "degree_two" ":=" term ","
+    "root_lower" ":=" term ","
+    "root_upper" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term :
   tactic
 
 syntax (name := rr_mw_derivative_neg_const_named)
@@ -2320,6 +2342,16 @@ syntax (name := rr_mw_derivative_nonpos_nonneg_sequence_sign_auto_named)
     "degree_upper" ":=" term :
   tactic
 
+syntax (name := rr_mw_derivative_nonpos_nonneg_sequence_sign_auto_degree_succ_named)
+  "rr_mw_derivative_nonpos_nonneg_sequence_sign_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "degree_two" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term :
+  tactic
+
 syntax (name := rr_mw_derivative_nonpos_nonneg_sequence_realrooted_sign_auto_named)
   "rr_mw_derivative_nonpos_nonneg_sequence_realrooted_sign_auto" " using "
     "base" ":=" term ","
@@ -2329,6 +2361,16 @@ syntax (name := rr_mw_derivative_nonpos_nonneg_sequence_realrooted_sign_auto_nam
     "recurrence" ":=" term ","
     "degree_lower" ":=" term ","
     "degree_upper" ":=" term :
+  tactic
+
+syntax (name := rr_mw_derivative_nonpos_nonneg_sequence_realrooted_sign_auto_degree_succ_named)
+  "rr_mw_derivative_nonpos_nonneg_sequence_realrooted_sign_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "degree_two" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term :
   tactic
 
 syntax (name := rr_mw_lw_derivative_lag_sequence_sign_auto_named)
@@ -2864,6 +2906,17 @@ syntax (name := rr_mw_derivative_C_mul_X_one_add_X_sequence_nonneg_auto_named)
     "degree_upper" ":=" term :
   tactic
 
+syntax (name := rr_mw_derivative_C_mul_X_one_add_X_sequence_nonneg_auto_degree_succ_named)
+  "rr_mw_derivative_C_mul_X_one_add_X_sequence_nonneg_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "degree_two" ":=" term ","
+    "root_lower" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term :
+  tactic
+
 syntax (name := rr_mw_derivative_C_mul_X_one_add_X_sequence_realrooted_nonneg_named)
   "rr_mw_derivative_C_mul_X_one_add_X_sequence_realrooted_nonneg" " using "
     "base" ":=" term ","
@@ -2887,6 +2940,18 @@ syntax (name := rr_mw_derivative_C_mul_X_one_add_X_sequence_realrooted_nonneg_au
     "recurrence" ":=" term ","
     "degree_lower" ":=" term ","
     "degree_upper" ":=" term :
+  tactic
+
+syntax (name :=
+    rr_mw_derivative_C_mul_X_one_add_X_sequence_realrooted_nonneg_auto_degree_succ_named)
+  "rr_mw_derivative_C_mul_X_one_add_X_sequence_realrooted_nonneg_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "degree_two" ":=" term ","
+    "root_lower" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term :
   tactic
 
 syntax (name := rr_mw_derivative_neg_X_one_add_outer_sequence_named)
@@ -3294,6 +3359,29 @@ macro_rules
           RealRooted.prec_mw_derivative_one_add_X_mul_one_add_two_mul_X_sequence
             $hbase $hpos $hdeg_two $hroot_lo $hroot_hi $hrec $hdeg_lo $hdeg_hi)
   | `(tactic|
+      rr_mw_derivative_one_add_two_window_sequence using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        degree_two := $hdeg_two:term,
+        root_lower := $hroot_lo:term,
+        root_upper := $hroot_hi:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg:term) =>
+      `(tactic|
+        rr_mw_derivative_one_add_two_window_sequence using
+          base := $hbase,
+          pos_lc := $hpos,
+          degree_two := $hdeg_two,
+          root_lower := $hroot_lo,
+          root_upper := $hroot_hi,
+          recurrence := $hrec,
+          degree_lower := (by
+            intro n
+            rr_mw_degree_from (($hdeg) n)),
+          degree_upper := (by
+            intro n
+            rr_mw_degree_from (($hdeg) n)))
+  | `(tactic|
       rr_mw_derivative_one_add_two_window_sequence_realrooted using
         base := $hbase:term,
         pos_lc := $hpos:term,
@@ -3307,6 +3395,29 @@ macro_rules
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_mw_derivative_one_add_X_mul_one_add_two_mul_X_sequence
             $hbase $hpos $hdeg_two $hroot_lo $hroot_hi $hrec $hdeg_lo $hdeg_hi))
+  | `(tactic|
+      rr_mw_derivative_one_add_two_window_sequence_realrooted using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        degree_two := $hdeg_two:term,
+        root_lower := $hroot_lo:term,
+        root_upper := $hroot_hi:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg:term) =>
+      `(tactic|
+        rr_mw_derivative_one_add_two_window_sequence_realrooted using
+          base := $hbase,
+          pos_lc := $hpos,
+          degree_two := $hdeg_two,
+          root_lower := $hroot_lo,
+          root_upper := $hroot_hi,
+          recurrence := $hrec,
+          degree_lower := (by
+            intro n
+            rr_mw_degree_from (($hdeg) n)),
+          degree_upper := (by
+            intro n
+            rr_mw_degree_from (($hdeg) n)))
   | `(tactic|
       rr_mw_derivative_neg_const using
         splits := $hf:term,
@@ -3750,6 +3861,27 @@ macro_rules
           $hbase $hpos $hnonneg $hdeg_two
           (by intro n r hr; rr_sign) $hrec $hdeg_lo $hdeg_hi)
   | `(tactic|
+      rr_mw_derivative_nonpos_nonneg_sequence_sign_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        degree_two := $hdeg_two:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg:term) =>
+      `(tactic|
+        rr_mw_derivative_nonpos_nonneg_sequence_sign_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          degree_two := $hdeg_two,
+          recurrence := $hrec,
+          degree_lower := (by
+            intro n
+            rr_mw_degree_from (($hdeg) n)),
+          degree_upper := (by
+            intro n
+            rr_mw_degree_from (($hdeg) n)))
+  | `(tactic|
       rr_mw_derivative_nonpos_nonneg_sequence_realrooted_sign_auto using
         base := $hbase:term,
         pos_lc := $hpos:term,
@@ -3763,6 +3895,27 @@ macro_rules
           (RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence_of_nonneg_coeffs
             $hbase $hpos $hnonneg $hdeg_two
             (by intro n r hr; rr_sign) $hrec $hdeg_lo $hdeg_hi))
+  | `(tactic|
+      rr_mw_derivative_nonpos_nonneg_sequence_realrooted_sign_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        degree_two := $hdeg_two:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg:term) =>
+      `(tactic|
+        rr_mw_derivative_nonpos_nonneg_sequence_realrooted_sign_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          degree_two := $hdeg_two,
+          recurrence := $hrec,
+          degree_lower := (by
+            intro n
+            rr_mw_degree_from (($hdeg) n)),
+          degree_upper := (by
+            intro n
+            rr_mw_degree_from (($hdeg) n)))
   | `(tactic|
       rr_mw_lw_derivative_lag_sequence_sign_auto using
         base := $hbase:term,
@@ -4497,6 +4650,29 @@ macro_rules
             $hrec $hdeg_lo $hdeg_hi
           <;> intro n <;> rr_mw_active_nonneg_at n)
   | `(tactic|
+      rr_mw_derivative_C_mul_X_one_add_X_sequence_nonneg_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        degree_two := $hdeg_two:term,
+        root_lower := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg:term) =>
+      `(tactic|
+        rr_mw_derivative_C_mul_X_one_add_X_sequence_nonneg_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          degree_two := $hdeg_two,
+          root_lower := $hroot_lower,
+          recurrence := $hrec,
+          degree_lower := (by
+            intro n
+            rr_mw_degree_from (($hdeg) n)),
+          degree_upper := (by
+            intro n
+            rr_mw_degree_from (($hdeg) n)))
+  | `(tactic|
       rr_mw_derivative_C_mul_X_one_add_X_sequence_realrooted_nonneg using
         base := $hbase:term,
         pos_lc := $hpos:term,
@@ -4530,6 +4706,29 @@ macro_rules
                 $hbase $hpos $hnonneg $hdeg_two ?_ $hroot_lower
                 $hrec $hdeg_lo $hdeg_hi
               <;> intro n <;> rr_mw_active_nonneg_at n))
+  | `(tactic|
+      rr_mw_derivative_C_mul_X_one_add_X_sequence_realrooted_nonneg_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        degree_two := $hdeg_two:term,
+        root_lower := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg:term) =>
+      `(tactic|
+        rr_mw_derivative_C_mul_X_one_add_X_sequence_realrooted_nonneg_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          degree_two := $hdeg_two,
+          root_lower := $hroot_lower,
+          recurrence := $hrec,
+          degree_lower := (by
+            intro n
+            rr_mw_degree_from (($hdeg) n)),
+          degree_upper := (by
+            intro n
+            rr_mw_degree_from (($hdeg) n)))
   | `(tactic|
       rr_mw_derivative_neg_X_one_add_outer_sequence using
         base := $hbase:term,

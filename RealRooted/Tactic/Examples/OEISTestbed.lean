@@ -218,12 +218,7 @@ example {P : Nat → ℝ[X]}
     degree_two := hdeg_two,
     root_lower := hroot_lower,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A284861`: same inner-window proof path, but with `3t(1+t)P'`.
 example {P : Nat → ℝ[X]}
@@ -246,12 +241,7 @@ example {P : Nat → ℝ[X]}
     degree_two := hdeg_two,
     root_lower := hroot_lower,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A111999`: unscaled inner-window shape `t(1+t)P'`.
 example {P : Nat → ℝ[X]}
@@ -304,12 +294,7 @@ example {P : Nat → ℝ[X]}
     root_lower := hroot_lower,
     root_upper := hroot_upper,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A102365`: half-line factor `2t-t^2=t(2-t)` with no denominator.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -329,12 +314,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A142963`: half-line factor `t-4t^2=t(1-4t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -355,12 +335,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A156920`: half-line factor `t-2t^2=t(1-2t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -381,12 +356,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A290315`: half-line factor `2t-4t^2=2t(1-2t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -408,12 +378,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A290316`: half-line factor `3t-9t^2=3t(1-3t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -435,12 +400,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A257608`: half-line factor `9t-9t^2=9t(1-t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -461,12 +421,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A257614`: half-line factor `5t-5t^2=5t(1-t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -487,12 +442,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A257621`: half-line factor `4t-4t^2=4t(1-t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -513,12 +463,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A257626`: half-line factor `3t-3t^2=3t(1-t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -539,12 +484,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A156366`: half-line factor `t-3t^2=t(1-3t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -565,12 +505,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A257620`: half-line factor `3t-3t^2=3t(1-t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -591,12 +526,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A062190`: negative scalar denominator after the active shift.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
