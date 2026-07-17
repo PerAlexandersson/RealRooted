@@ -537,13 +537,8 @@ example {P : Nat → ℝ[X]}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hrec : ∀ n : Nat, P (n + 1) = ((X : ℝ[X]) ^ 2) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  have hfactor :
-      ∀ n : Nat, ((X : ℝ[X]) ^ 2) ≠ 0 ∧ (((X : ℝ[X]) ^ 2).Splits) := by
-    intro n
-    simp [pow_two]
-  rr_product_factor_sequence using
+  rr_product_X_pow_sequence using
     base := hbase,
-    factor_realrooted := hfactor,
     recurrence := hrec
 
 /-- `A054654`-style factor `1 + 2t - n t`. -/
@@ -860,13 +855,8 @@ example {P : Nat → ℝ[X]}
       P (2 * n + 1) = C (2 * (n : ℝ) + 1) * P (2 * n))
     (hstep : ∀ n : Nat, P (2 * n + 2) = ((X : ℝ[X]) ^ 2) * P (2 * n + 1)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  have hfactor :
-      ∀ n : Nat, ((X : ℝ[X]) ^ 2) ≠ 0 ∧ (((X : ℝ[X]) ^ 2).Splits) := by
-    intro n
-    simp [pow_two]
-  rr_product_scalar_factor_sequence_auto using
+  rr_product_scalar_X_pow_sequence_auto using
     base := hbase,
-    factor_realrooted := hfactor,
     scalar_step := hscalar,
     factor_step := hstep
 

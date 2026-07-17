@@ -1158,6 +1158,29 @@ theorem isRealRooted_of_product_scalar_factor_right_sequence
     rw [hn]
     exact hodd (n / 2)
 
+/-- Sequence shell for degree-plateau scalar/product families whose growth
+step is multiplication by `X ^ m_n`. -/
+theorem isRealRooted_of_product_scalar_X_pow_sequence
+    {P : Nat → ℝ[X]} {a : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hscalar : ∀ n : Nat, P (2 * n + 1) = C (a n) * P (2 * n))
+    (hstep : ∀ n : Nat, P (2 * n + 2) = X ^ (m n) * P (2 * n + 1)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_sequence hbase ha
+    (fun n => isRealRooted_X_pow (m n)) hscalar hstep
+
+/-- Right-factor variant of `isRealRooted_of_product_scalar_X_pow_sequence`. -/
+theorem isRealRooted_of_product_scalar_X_pow_right_sequence
+    {P : Nat → ℝ[X]} {a : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hscalar : ∀ n : Nat, P (2 * n + 1) = C (a n) * P (2 * n))
+    (hstep : ∀ n : Nat, P (2 * n + 2) = P (2 * n + 1) * X ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_right_sequence hbase ha
+    (fun n => isRealRooted_X_pow (m n)) hscalar hstep
+
 namespace Tactic
 
 syntax (name := rr_product_factor)
@@ -1540,6 +1563,21 @@ syntax (name := rr_product_scalar_factor_sequence_auto_named)
   "rr_product_scalar_factor_sequence_auto" " using "
     "base" ":=" term ","
     "factor_realrooted" ":=" term ","
+    "scalar_step" ":=" term ","
+    "factor_step" ":=" term :
+  tactic
+
+syntax (name := rr_product_scalar_X_pow_sequence_named)
+  "rr_product_scalar_X_pow_sequence" " using "
+    "base" ":=" term ","
+    "scalar_ne" ":=" term ","
+    "scalar_step" ":=" term ","
+    "factor_step" ":=" term :
+  tactic
+
+syntax (name := rr_product_scalar_X_pow_sequence_auto_named)
+  "rr_product_scalar_X_pow_sequence_auto" " using "
+    "base" ":=" term ","
     "scalar_step" ":=" term ","
     "factor_step" ":=" term :
   tactic
@@ -2196,6 +2234,45 @@ macro_rules
           base := $hbase,
           scalar_ne := (fun n => by positivity),
           factor_realrooted := $hfactor,
+          scalar_step := $hscalar,
+          factor_step := $hstep)
+  | `(tactic|
+      rr_product_scalar_X_pow_sequence using
+        base := $hbase:term,
+        scalar_ne := $ha:term,
+        scalar_step := $hscalar:term,
+        factor_step := $hstep:term) =>
+      `(tactic|
+        first
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_scalar_X_pow_sequence
+                $hbase $ha $hscalar $hstep)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_scalar_X_pow_right_sequence
+                $hbase $ha $hscalar $hstep)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_scalar_X_pow_sequence
+                $hbase $ha
+                (by
+                  intro n
+                  rw [($hscalar) n, mul_comm])
+                $hstep)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_scalar_X_pow_right_sequence
+                $hbase $ha
+                (by
+                  intro n
+                  rw [($hscalar) n, mul_comm])
+                $hstep))
+  | `(tactic|
+      rr_product_scalar_X_pow_sequence_auto using
+        base := $hbase:term,
+        scalar_step := $hscalar:term,
+        factor_step := $hstep:term) =>
+      `(tactic|
+        rr_product_scalar_X_pow_sequence using
+          base := $hbase,
+          scalar_ne := (fun n => by positivity),
           scalar_step := $hscalar,
           factor_step := $hstep)
 
