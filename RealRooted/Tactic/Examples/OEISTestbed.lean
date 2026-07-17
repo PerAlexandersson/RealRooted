@@ -711,6 +711,29 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
+-- Real-rooted projection endpoint for the same direct root-sign route.
+example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
+    (hroots : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ 0)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        U n * P (n + 1) +
+          (C (2 : ℝ) * X * (1 - X)) * (P (n + 1)).derivative +
+          (X * (C (2 : ℝ) - X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_mw_lw_derivative_lag_sequence_realrooted_root_upper_sign_auto using
+    base := hbase,
+    pos_lc := hpos,
+    degree_two := hdeg_two,
+    root_upper := hroots,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
 -- Root-window route for I2-type derivative-lag recurrences.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
