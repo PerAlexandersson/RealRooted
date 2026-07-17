@@ -122,6 +122,24 @@ example {P Q : Nat → ℝ[X]}
     quotient_realrooted := hquot,
     factorization := hrow
 
+/-- Row-wise unit-slope linear lift for rows `P_n = (X+t_n) Q_n`. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = (X + C (t n)) * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_X_add_C_sequence using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
+/-- Unit-slope linear lifts also accept the quotient factor on the left. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = Q n * (X + C (t n))) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_X_add_C_sequence using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
 /-- Nonzero scalar lift for rows `P_n = c_n Q_n`. -/
 example {P Q : Nat → ℝ[X]} {c : Nat → ℝ}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
@@ -150,6 +168,37 @@ example {P Q : Nat → ℝ[X]}
     (hrow : ∀ n : Nat, P n = C ((n : ℝ) + 1) * Q n) :
     ∀ n : Nat, P n ≠ 0 := by
   rr_product_lift_C_sequence_auto using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
+/-- Row-wise affine linear lift for rows `P_n = (s_n X+t_n) Q_n`. -/
+example {P Q : Nat → ℝ[X]} {s t : Nat → ℝ}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hs : ∀ n : Nat, s n ≠ 0)
+    (hrow : ∀ n : Nat, P n = (C (s n) * X + C (t n)) * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_affine_sequence using
+    quotient_realrooted := hquot,
+    slope_ne := hs,
+    factorization := hrow
+
+/-- Constant-first affine linear lifts accept the quotient factor on the left. -/
+example {P Q : Nat → ℝ[X]} {s t : Nat → ℝ}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hs : ∀ n : Nat, s n ≠ 0)
+    (hrow : ∀ n : Nat, P n = Q n * (C (t n) + C (s n) * X)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_const_first_sequence using
+    quotient_realrooted := hquot,
+    slope_ne := hs,
+    factorization := hrow
+
+/-- Positive row-wise affine slopes can be certified automatically. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = (C ((n : ℝ) + 1) * X + C (t n)) * Q n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_affine_sequence_auto using
     quotient_realrooted := hquot,
     factorization := hrow
 
