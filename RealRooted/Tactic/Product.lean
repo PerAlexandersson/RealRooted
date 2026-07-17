@@ -163,6 +163,30 @@ theorem isRealRooted_of_X_lift_right_sequence
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_lift_right_sequence hquot (fun _ => isRealRooted_X) hrow
 
+/-- Lift through row-wise nonzero scalar constants. -/
+theorem isRealRooted_of_C_lift_sequence
+    {P Q : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hrow : ∀ n : Nat, P n = C (c n) * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  intro n
+  simpa [hrow n] using isRealRooted_C_mul (hquot n).1 (hquot n).2 (hc n)
+
+/-- Right-factor variant of `isRealRooted_of_C_lift_sequence`. -/
+theorem isRealRooted_of_C_lift_right_sequence
+    {P Q : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hrow : ∀ n : Nat, P n = Q n * C (c n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  intro n
+  have hfactor : (C (c n) : ℝ[X]) ≠ 0 ∧ (C (c n) : ℝ[X]).Splits :=
+    ⟨C_ne_zero.mpr (hc n), Polynomial.Splits.C (R := ℝ) (c n)⟩
+  have hnext : Q n * C (c n) ≠ 0 ∧ (Q n * C (c n)).Splits :=
+    isRealRooted_mul (hquot n).1 (hquot n).2 hfactor.1 hfactor.2
+  simpa [hrow n] using hnext
+
 /-- Powers of the root-at-zero factor are real-rooted. -/
 theorem isRealRooted_X_pow (n : Nat) :
     ((X : ℝ[X]) ^ n ≠ 0 ∧ (((X : ℝ[X]) ^ n).Splits)) := by
@@ -699,6 +723,40 @@ theorem isRealRooted_of_product_X_add_C_right_sequence
         isRealRooted_mul_X_add_C ih
       simpa [Nat.succ_eq_add_one, hstep n] using hnext
 
+/-- Sequence shell for scalar product recurrences. -/
+theorem isRealRooted_of_product_scalar_sequence
+    {P : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hstep : ∀ n : Nat, P (n + 1) = C (a n) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  intro n
+  induction n with
+  | zero =>
+      simpa using hbase
+  | succ n ih =>
+      have hnext : C (a n) * P n ≠ 0 ∧ (C (a n) * P n).Splits :=
+        isRealRooted_C_mul ih.1 ih.2 (ha n)
+      simpa [Nat.succ_eq_add_one, hstep n] using hnext
+
+/-- Right-factor variant of `isRealRooted_of_product_scalar_sequence`. -/
+theorem isRealRooted_of_product_scalar_right_sequence
+    {P : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hstep : ∀ n : Nat, P (n + 1) = P n * C (a n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  intro n
+  induction n with
+  | zero =>
+      simpa using hbase
+  | succ n ih =>
+      have hfactor : (C (a n) : ℝ[X]) ≠ 0 ∧ (C (a n) : ℝ[X]).Splits :=
+        ⟨C_ne_zero.mpr (ha n), Polynomial.Splits.C (R := ℝ) (a n)⟩
+      have hnext : P n * C (a n) ≠ 0 ∧ (P n * C (a n)).Splits :=
+        isRealRooted_mul ih.1 ih.2 hfactor.1 hfactor.2
+      simpa [Nat.succ_eq_add_one, hstep n] using hnext
+
 /-- Sequence shell for degree-plateau product families.
 
 This covers recurrences where odd steps only rescale the previous row, while
@@ -864,6 +922,19 @@ syntax (name := rr_product_lift_X_sequence_named)
     "factorization" ":=" term :
   tactic
 
+syntax (name := rr_product_lift_C_sequence_named)
+  "rr_product_lift_C_sequence" " using "
+    "quotient_realrooted" ":=" term ","
+    "scalar_ne" ":=" term ","
+    "factorization" ":=" term :
+  tactic
+
+syntax (name := rr_product_lift_C_sequence_auto_named)
+  "rr_product_lift_C_sequence_auto" " using "
+    "quotient_realrooted" ":=" term ","
+    "factorization" ":=" term :
+  tactic
+
 syntax (name := rr_product_lift_C_pow_sequence_named)
   "rr_product_lift_C_pow_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -1023,6 +1094,19 @@ syntax (name := rr_product_X_sequence_named)
     "recurrence" ":=" term :
   tactic
 
+syntax (name := rr_product_scalar_sequence_named)
+  "rr_product_scalar_sequence" " using "
+    "base" ":=" term ","
+    "scalar_ne" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_product_scalar_sequence_auto_named)
+  "rr_product_scalar_sequence_auto" " using "
+    "base" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
 syntax (name := rr_product_scalar_linear_sequence_named)
   "rr_product_scalar_linear_sequence" " using "
     "base" ":=" term ","
@@ -1130,6 +1214,27 @@ macro_rules
               (RealRooted.isRealRooted_of_X_lift_sequence $hquot $hrow)
           | rr_exact_realrooted_sequence_or_projection
               (RealRooted.isRealRooted_of_X_lift_right_sequence $hquot $hrow))
+  | `(tactic|
+      rr_product_lift_C_sequence using
+        quotient_realrooted := $hquot:term,
+        scalar_ne := $hc:term,
+        factorization := $hrow:term) =>
+      `(tactic|
+        first
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_C_lift_sequence $hquot $hc $hrow)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_C_lift_right_sequence
+                $hquot $hc $hrow))
+  | `(tactic|
+      rr_product_lift_C_sequence_auto using
+        quotient_realrooted := $hquot:term,
+        factorization := $hrow:term) =>
+      `(tactic|
+        rr_product_lift_C_sequence using
+          quotient_realrooted := $hquot,
+          scalar_ne := (fun n => by positivity),
+          factorization := $hrow)
   | `(tactic|
       rr_product_lift_C_pow_sequence using
         quotient_realrooted := $hquot:term,
@@ -1391,6 +1496,28 @@ macro_rules
           | rr_exact_realrooted_sequence_or_projection
               (RealRooted.isRealRooted_of_product_X_add_C_right_sequence
                 $hbase $hstep))
+  | `(tactic|
+      rr_product_scalar_sequence using
+        base := $hbase:term,
+        scalar_ne := $ha:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        first
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_scalar_sequence
+                $hbase $ha $hstep)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_scalar_right_sequence
+                $hbase $ha $hstep))
+  | `(tactic|
+      rr_product_scalar_sequence_auto using
+        base := $hbase:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_product_scalar_sequence using
+          base := $hbase,
+          scalar_ne := (fun n => by positivity),
+          recurrence := $hstep)
   | `(tactic|
       rr_product_scalar_linear_sequence using
         base := $hbase:term,

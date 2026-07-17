@@ -122,6 +122,37 @@ example {P Q : Nat → ℝ[X]}
     quotient_realrooted := hquot,
     factorization := hrow
 
+/-- Nonzero scalar lift for rows `P_n = c_n Q_n`. -/
+example {P Q : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hrow : ∀ n : Nat, P n = C (c n) * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_C_sequence using
+    quotient_realrooted := hquot,
+    scalar_ne := hc,
+    factorization := hrow
+
+/-- The scalar lift also accepts the quotient factor on the left. -/
+example {P Q : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hrow : ∀ n : Nat, P n = Q n * C (c n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_C_sequence using
+    quotient_realrooted := hquot,
+    scalar_ne := hc,
+    factorization := hrow
+
+/-- Automatic scalar certificate for positive scalar lifts. -/
+example {P Q : Nat → ℝ[X]}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = C ((n : ℝ) + 1) * Q n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_C_sequence_auto using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
 /-- Nonzero scalar-power lift for rows `P_n = c_n^{m_n} Q_n`. -/
 example {P Q : Nat → ℝ[X]} {c : Nat → ℝ} {m : Nat → Nat}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
@@ -512,6 +543,37 @@ example {P : Nat → ℝ[X]} {t : Nat → ℝ}
     (hrec : ∀ n : Nat, P (n + 1) = P n * (X + C (t n))) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_product_X_sequence using
+    base := hbase,
+    recurrence := hrec
+
+/-- Sequence-level scalar product recurrence. -/
+example {P : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hrec : ∀ n : Nat, P (n + 1) = C (a n) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_scalar_sequence using
+    base := hbase,
+    scalar_ne := ha,
+    recurrence := hrec
+
+/-- The scalar product recurrence also accepts the factor on the right. -/
+example {P : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hrec : ∀ n : Nat, P (n + 1) = P n * C (a n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_scalar_sequence using
+    base := hbase,
+    scalar_ne := ha,
+    recurrence := hrec
+
+/-- Automatic scalar certificate for positive product recurrences. -/
+example {P : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = C ((n : ℝ) + 1) * P n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_scalar_sequence_auto using
     base := hbase,
     recurrence := hrec
 
