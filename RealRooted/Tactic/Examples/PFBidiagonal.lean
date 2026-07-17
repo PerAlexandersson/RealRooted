@@ -736,6 +736,20 @@ theorem a036969ResidualPencil_cubicPFDiscriminantCertificate
     natDegree_a036969ResidualPencil_le d lam,
     cubicDiscr_a036969ResidualPencil_nonneg d hlam⟩
 
+/-- Bundled cubic-residual certificate for the A036969 coefficient-bidiagonal
+operator. -/
+def a036969_bidiagonalCubicResidualCertificate (d : ℕ) (hd : 2 ≤ d) :
+    BidiagonalCubicResidualCertificate a036969Alpha a036969Beta d := by
+  refine bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
+    (a036969Alpha_jensen_factor d hd)
+    (a036969Beta_jensen_factor d hd)
+    (a036969ResidualAlpha_cubicPFDiscriminantCertificate d)
+    a036969ResidualBeta_cubicPFDiscriminantCertificate
+    ?_
+  intro lam hlam
+  simpa [a036969ResidualPencil] using
+    a036969ResidualPencil_cubicPFDiscriminantCertificate d hlam
+
 /-- The A036969 differential recurrence normalizes to a coefficient-bidiagonal
 operator with `alpha(k)=(k+1)^2` and `beta(k)=1`. -/
 theorem secondDerivativeBidiagonalForm_a036969 (p : ℝ[X]) :
@@ -1552,22 +1566,19 @@ example
     recurrence := hrec,
     nonzero := hne
 
-/-- Same A036969 shell, but with all residual/factorization hints bundled in a
-single per-row certificate.  This is the intended OEIS-facing interface once
-the arithmetic leaves have been generated. -/
+/-- Same A036969 shell through the bundled per-row certificate constructor. -/
 example
     {P : Nat → ℝ[X]} {d : Nat → ℕ}
     (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
-    (hcert : ∀ n : Nat,
-      BidiagonalCubicResidualCertificate a036969Alpha a036969Beta (d n))
+    (hd : ∀ n : Nat, 2 ≤ d n)
     (hrec : ∀ n : Nat,
       P (n + 1) = secondDerivativeBidiagonalForm 1 1 3 0 1 0 (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
   rr_pf_second_derivative_bidiagonal_sequence using
     jensen_backend := hbackend,
-    cubic_certificate := hcert,
+    cubic_certificate := (fun n => a036969_bidiagonalCubicResidualCertificate (d n) (hd n)),
     base := hbase,
     degree := hdeg,
     normalizer := (fun n => secondDerivativeBidiagonalForm_a036969 (P n)),
@@ -1578,15 +1589,14 @@ example
     (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
-    (hcert : ∀ n : Nat,
-      BidiagonalCubicResidualCertificate a036969Alpha a036969Beta (d n))
+    (hd : ∀ n : Nat, 2 ≤ d n)
     (hne : ∀ n : Nat, P n ≠ 0)
     (hrec : ∀ n : Nat,
       P (n + 1) = secondDerivativeBidiagonalForm 1 1 3 0 1 0 (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_pf_second_derivative_bidiagonal_sequence using
     jensen_backend := hbackend,
-    cubic_certificate := hcert,
+    cubic_certificate := (fun n => a036969_bidiagonalCubicResidualCertificate (d n) (hd n)),
     base := hbase,
     degree := hdeg,
     normalizer := (fun n => secondDerivativeBidiagonalForm_a036969 (P n)),
