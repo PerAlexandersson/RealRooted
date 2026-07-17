@@ -1992,6 +1992,83 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
           (C ((n : ℝ) + 1) * (1 + X)) * P n)
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    coeff := fun _ => (1 : ℝ),
+    coeff_nonneg := by intro _; norm_num,
+    root_lower := hroot_lower,
+    den_nonzero := by rr_scalar_active_den_all,
+    coeff_eq := by rr_scalar_coeff_all,
+    raw_recurrence := hraw,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Automatic coefficient endpoint for the denominator-normalized `-(1+t)` lag. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hraw : ∀ n : Nat,
+      C (-((n : ℝ) + 1)) * P (n + 2) =
+        C (-((n : ℝ) + 1)) * (A n * P (n + 1)) +
+          (C ((n : ℝ) + 1) * (1 + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_auto using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    coeff := fun _ => (1 : ℝ),
+    root_lower := hroot_lower,
+    den_nonzero := by rr_scalar_active_den_all,
+    coeff_eq := by rr_scalar_coeff_all,
+    raw_recurrence := hraw,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Explicit real-rootedness endpoint for the denominator-normalized
+`-(1+t)` lag. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hraw : ∀ n : Nat,
+      C (-((n : ℝ) + 1)) * P (n + 2) =
+        C (-((n : ℝ) + 1)) * (A n * P (n + 1)) +
+          (C ((n : ℝ) + 1) * (1 + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonneg using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    coeff := fun _ => (1 : ℝ),
+    coeff_nonneg := by intro _; norm_num,
+    root_lower := hroot_lower,
+    den_nonzero := by rr_scalar_active_den_all,
+    coeff_eq := by rr_scalar_coeff_all,
+    raw_recurrence := hraw,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hraw : ∀ n : Nat,
+      C (-((n : ℝ) + 1)) * P (n + 2) =
+        C (-((n : ℝ) + 1)) * (A n * P (n + 1)) +
+          (C ((n : ℝ) + 1) * (1 + X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonneg_auto using
     base := hbase,
