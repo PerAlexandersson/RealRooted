@@ -305,6 +305,29 @@ structure BidiagonalCubicResidualCertificate
   pencil_cubic : ∀ lam : ℝ, 0 ≤ lam →
     CubicPFDiscriminantCertificate (pencilResidual lam)
 
+/-- Build the bundled cubic-residual certificate from its arithmetic leaves. -/
+def bidiagonalCubicResidualCertificate_of_cubicResidual
+    {alpha beta : ℕ → ℝ} {d m : ℕ}
+    {A B : ℝ[X]} {S : ℝ → ℝ[X]}
+    (halpha : jensenPolynomial d alpha = ((X + 1 : ℝ[X]) ^ m) * A)
+    (hbeta : X * jensenPolynomial d beta = ((X + 1 : ℝ[X]) ^ m) * B)
+    (hpencil : ∀ lam : ℝ, 0 ≤ lam →
+      bidiagonalJensenPencil alpha beta d lam = ((X + 1 : ℝ[X]) ^ m) * S lam)
+    (hA : CubicPFDiscriminantCertificate A)
+    (hB : CubicPFDiscriminantCertificate B)
+    (hS : ∀ lam : ℝ, 0 ≤ lam → CubicPFDiscriminantCertificate (S lam)) :
+    BidiagonalCubicResidualCertificate alpha beta d where
+  m := m
+  alphaResidual := A
+  betaResidual := B
+  pencilResidual := S
+  alpha_factor := halpha
+  beta_factor := hbeta
+  pencil_factor := hpencil
+  alpha_cubic := hA
+  beta_cubic := hB
+  pencil_cubic := hS
+
 /-- Forget a bundled cubic-residual certificate to the Jensen-pencil
 certificate used by the PF-bidiagonal backend. -/
 theorem BidiagonalCubicResidualCertificate.toJensenPencilCertificate
@@ -745,6 +768,29 @@ macro_rules
         pencil_cubic := $hS:term) =>
       `(tactic|
         exact RealRooted.bidiagonalJensenPencilCertificate_of_cubicResidual
+          $halpha $hbeta $hpencil $hA $hB $hS)
+
+syntax (name := rr_pf_bidiagonal_cubic_certificate_named)
+  "rr_pf_bidiagonal_cubic_certificate" " using "
+    "alpha_factor" ":=" term ","
+    "beta_factor" ":=" term ","
+    "pencil_factor" ":=" term ","
+    "alpha_cubic" ":=" term ","
+    "beta_cubic" ":=" term ","
+    "pencil_cubic" ":=" term :
+  tactic
+
+macro_rules
+  | `(tactic|
+      rr_pf_bidiagonal_cubic_certificate using
+        alpha_factor := $halpha:term,
+        beta_factor := $hbeta:term,
+        pencil_factor := $hpencil:term,
+        alpha_cubic := $hA:term,
+        beta_cubic := $hB:term,
+        pencil_cubic := $hS:term) =>
+      `(tactic|
+        exact RealRooted.bidiagonalCubicResidualCertificate_of_cubicResidual
           $halpha $hbeta $hpencil $hA $hB $hS)
 
 syntax (name := rr_pf_bidiagonal_sequence_cubic_named)

@@ -474,6 +474,26 @@ example
     pencil_cubic := hS
 
 example
+    {alpha beta : ℕ → ℝ} {d m : ℕ}
+    {A B : ℝ[X]} {S : ℝ → ℝ[X]}
+    (halpha : jensenPolynomial d alpha = ((X + 1 : ℝ[X]) ^ m) * A)
+    (hbeta : X * jensenPolynomial d beta = ((X + 1 : ℝ[X]) ^ m) * B)
+    (hpencil : ∀ lam : ℝ, 0 ≤ lam →
+      bidiagonalJensenPencil alpha beta d lam =
+        ((X + 1 : ℝ[X]) ^ m) * S lam)
+    (hA : CubicPFDiscriminantCertificate A)
+    (hB : CubicPFDiscriminantCertificate B)
+    (hS : ∀ lam : ℝ, 0 ≤ lam → CubicPFDiscriminantCertificate (S lam)) :
+    BidiagonalCubicResidualCertificate alpha beta d := by
+  rr_pf_bidiagonal_cubic_certificate using
+    alpha_factor := halpha,
+    beta_factor := hbeta,
+    pencil_factor := hpencil,
+    alpha_cubic := hA,
+    beta_cubic := hB,
+    pencil_cubic := hS
+
+example
     {alpha beta : ℕ → ℝ} {d : ℕ} {p : ℝ[X]}
     (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hcert : BidiagonalJensenPencilCertificate alpha beta d)
