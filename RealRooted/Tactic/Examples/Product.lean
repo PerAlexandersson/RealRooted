@@ -122,6 +122,42 @@ example {P Q : Nat → ℝ[X]}
     quotient_realrooted := hquot,
     factorization := hrow
 
+/-- Root-at-zero power lift for rows `P_n = X^{m_n} Q_n`. -/
+example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = X ^ (m n) * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_X_pow_sequence using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
+/-- The `X^{m_n}` lift also accepts the quotient factor on the left. -/
+example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = Q n * X ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_X_pow_sequence using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
+/-- Projection endpoint for the `X^{m_n}` product lift. -/
+example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = X ^ (m n) * Q n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_X_pow_sequence using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
+/-- Nonzero projection endpoint for the right-factor `X^{m_n}` product lift. -/
+example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = Q n * X ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_X_pow_sequence using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
 /-- Endpoint-factor lift for rows `P_n = (X+1)^{m_n} Q_n`. -/
 example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
