@@ -266,6 +266,24 @@ theorem isRealRooted_of_X_add_C_pow_lift_right_sequence
   isRealRooted_of_product_lift_right_sequence hquot
     (fun n => isRealRooted_X_add_C_pow t (m n)) hrow
 
+/-- Lift through row-wise powers of unit-slope real linear factors. -/
+theorem isRealRooted_of_X_add_C_row_pow_lift_sequence
+    {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = (X + C (t n)) ^ (m n) * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_lift_sequence hquot
+    (fun n => isRealRooted_X_add_C_pow (t n) (m n)) hrow
+
+/-- Right-factor variant of `isRealRooted_of_X_add_C_row_pow_lift_sequence`. -/
+theorem isRealRooted_of_X_add_C_row_pow_lift_right_sequence
+    {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = Q n * (X + C (t n)) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_lift_right_sequence hquot
+    (fun n => isRealRooted_X_add_C_pow (t n) (m n)) hrow
+
 /-- Lift through row-wise powers of a nonzero-slope real linear factor. -/
 theorem isRealRooted_of_C_mul_X_add_C_pow_lift_sequence
     {P Q : Nat → ℝ[X]} {s t : Nat → ℝ} {m : Nat → Nat}
@@ -1063,6 +1081,12 @@ syntax (name := rr_product_lift_X_add_C_pow_sequence_named)
     "factorization" ":=" term :
   tactic
 
+syntax (name := rr_product_lift_X_add_C_row_pow_sequence_named)
+  "rr_product_lift_X_add_C_row_pow_sequence" " using "
+    "quotient_realrooted" ":=" term ","
+    "factorization" ":=" term :
+  tactic
+
 syntax (name := rr_product_lift_affine_pow_sequence_named)
   "rr_product_lift_affine_pow_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -1440,6 +1464,18 @@ macro_rules
                 $hquot $hrow)
           | rr_exact_realrooted_sequence_or_projection
               (RealRooted.isRealRooted_of_X_add_C_pow_lift_right_sequence
+                $hquot $hrow))
+  | `(tactic|
+      rr_product_lift_X_add_C_row_pow_sequence using
+        quotient_realrooted := $hquot:term,
+        factorization := $hrow:term) =>
+      `(tactic|
+        first
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_X_add_C_row_pow_lift_sequence
+                $hquot $hrow)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_X_add_C_row_pow_lift_right_sequence
                 $hquot $hrow))
   | `(tactic|
       rr_product_lift_affine_pow_sequence using

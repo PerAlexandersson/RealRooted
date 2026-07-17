@@ -229,6 +229,24 @@ example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
     quotient_realrooted := hquot,
     factorization := hrow
 
+/-- Row-wise endpoint-factor lift for rows `P_n = (X+t_n)^{m_n} Q_n`. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = (X + C (t n)) ^ (m n) * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_X_add_C_row_pow_sequence using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
+/-- Row-wise endpoint lifts also accept the quotient factor on the left. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = Q n * (X + C (t n)) ^ (m n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_X_add_C_row_pow_sequence using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
 /-- General affine-power lift for rows
 `P_n = (s_n X + t_n)^{m_n} Q_n`. -/
 example {P Q : Nat → ℝ[X]} {s t : Nat → ℝ} {m : Nat → Nat}
