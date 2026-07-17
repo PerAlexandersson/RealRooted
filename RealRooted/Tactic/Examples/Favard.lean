@@ -411,6 +411,59 @@ example {P : Nat → ℝ[X]} {s α β : ℝ} {n : Nat}
     base_one := hP1,
     step := hstep
 
+/-- Automatic positivity for the positive-slope affine constant wrapper. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = C (2 : ℝ) * X - C (0 : ℝ))
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        (C (2 : ℝ) * X - C (0 : ℝ)) * P (n + 1) -
+          C (1 : ℝ) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_favard_affine_const_auto using
+    slope := 2,
+    alpha := 0,
+    beta := 1,
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
+/-- Row-sign affine constant wrapper with explicit positive certificates. -/
+example {P : Nat → ℝ[X]} {β : ℝ}
+    (hβ : 0 < β)
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = -(C (2 : ℝ) * X - C (0 : ℝ)))
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        -(C (2 : ℝ) * X - C (0 : ℝ)) * P (n + 1) - C β * P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_favard_affine_const_row_sign using
+    slope := 2,
+    alpha := 0,
+    beta := β,
+    slope_pos := (by norm_num : 0 < (2 : ℝ)),
+    beta_pos := hβ,
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
+/-- Automatic positivity for row-sign affine constant wrappers. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = -(C (2 : ℝ) * X - C (0 : ℝ)))
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        -(C (2 : ℝ) * X - C (0 : ℝ)) * P (n + 1) -
+          C (1 : ℝ) * P n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_favard_affine_const_row_sign_auto using
+    slope := 2,
+    alpha := 0,
+    beta := 1,
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
 /-- Constant-coefficient Favard shape with arbitrary positive lag. -/
 example {P : Nat → ℝ[X]} {α β : ℝ}
     (hβ : 0 < β)
@@ -448,6 +501,33 @@ example {P : Nat → ℝ[X]}
   rr_favard_param_auto using
     alpha := αfun,
     beta := βfun,
+    base_zero := hP0,
+    base_one := hP1',
+    step := hstep'
+
+/-- Parameterized monic Favard wrapper with explicit beta positivity. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = X)
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        (X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) -
+          C (((n + 1 : Nat) : ℝ)) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  let αfun : Nat → ℝ := fun m => (m : ℝ)
+  let βfun : Nat → ℝ := fun m => (m : ℝ)
+  have hP1' : P 1 = X - C (αfun 0) := by
+    simpa [αfun] using hP1
+  have hstep' :
+      ∀ n : Nat,
+        P (n + 2) =
+          (X - C (αfun (n + 1))) * P (n + 1) - C (βfun (n + 1)) * P n := by
+    intro n
+    simpa [αfun, βfun] using hstep n
+  rr_favard_param using
+    alpha := αfun,
+    beta := βfun,
+    beta_pos := (by intro n; positivity),
     base_zero := hP0,
     base_one := hP1',
     step := hstep'
@@ -504,6 +584,37 @@ example {P : Nat → ℝ[X]}
     slope := sfun,
     alpha := αfun,
     beta := βfun,
+    base_zero := hP0,
+    base_one := hP1',
+    step := hstep'
+
+/-- Parameterized affine Favard wrapper with explicit positivity certificates. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = C (2 : ℝ) * X)
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        (C (2 : ℝ) * X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) -
+          C (((n + 1 : Nat) : ℝ)) * P n) :
+    ∀ n : Nat, (P n).Splits := by
+  let sfun : Nat → ℝ := fun _ => 2
+  let αfun : Nat → ℝ := fun m => (m : ℝ)
+  let βfun : Nat → ℝ := fun m => (m : ℝ)
+  have hP1' : P 1 = C (sfun 0) * X - C (αfun 0) := by
+    simpa [sfun, αfun] using hP1
+  have hstep' :
+      ∀ n : Nat,
+        P (n + 2) =
+          (C (sfun (n + 1)) * X - C (αfun (n + 1))) * P (n + 1) -
+            C (βfun (n + 1)) * P n := by
+    intro n
+    simpa [sfun, αfun, βfun] using hstep n
+  rr_favard_affine_param using
+    slope := sfun,
+    alpha := αfun,
+    beta := βfun,
+    slope_pos := (by intro n; positivity),
+    beta_pos := (by intro n; positivity),
     base_zero := hP0,
     base_one := hP1',
     step := hstep'
