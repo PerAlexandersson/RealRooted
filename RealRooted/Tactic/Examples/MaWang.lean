@@ -130,8 +130,7 @@ example {f u v : ℝ[X]}
   rr_mw_derivative_nonpos using
     splits := hf,
     degree_two := hdegf,
-    degree_lower := by rr_mw_degree_from hdeg,
-    degree_upper := by rr_mw_degree_from hdeg,
+    degree := hdeg,
     target_pos_lc := hF_pos,
     source_pos_lc := hf_pos,
     coeff_nonpos := hv_nonpos
@@ -183,12 +182,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
       rr_mw_den_norm using
         recurrence := hraw n,
         den_nonzero := by rr_mw_active_den_at n,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 example {f u : ℝ[X]}
     (hf : f.Splits)
@@ -1119,12 +1113,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     degree_two := hdeg_two,
     roots_nonpos := hroots,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 /-- Real-rootedness endpoint for the `X(1-X)` derivative shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}

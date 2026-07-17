@@ -1879,6 +1879,16 @@ syntax (name := rr_mw_derivative_nonpos_named)
     "coeff_nonpos" ":=" term :
   tactic
 
+syntax (name := rr_mw_derivative_nonpos_degree_named)
+  "rr_mw_derivative_nonpos" " using "
+    "splits" ":=" term ","
+    "degree_two" ":=" term ","
+    "degree" ":=" term ","
+    "target_pos_lc" ":=" term ","
+    "source_pos_lc" ":=" term ","
+    "coeff_nonpos" ":=" term :
+  tactic
+
 syntax (name := rr_mw_derivative_sign_roots_nonpos_named)
   "rr_mw_derivative_sign_roots_nonpos" " using "
     "splits" ":=" term ","
@@ -3260,6 +3270,23 @@ macro_rules
       `(tactic|
         rr_mw_derivative_nonpos using
           $hf, $hdegf, $hdeg_lo, $hdeg_hi, $hF_pos, $hf_pos, $hv_nonpos)
+  | `(tactic|
+      rr_mw_derivative_nonpos using
+        splits := $hf:term,
+        degree_two := $hdegf:term,
+        degree := $hdeg:term,
+        target_pos_lc := $hF_pos:term,
+        source_pos_lc := $hf_pos:term,
+        coeff_nonpos := $hv_nonpos:term) =>
+      `(tactic|
+        rr_mw_derivative_nonpos using
+          splits := $hf,
+          degree_two := $hdegf,
+          degree_lower := (by rr_mw_degree_from $hdeg),
+          degree_upper := (by rr_mw_degree_from $hdeg),
+          target_pos_lc := $hF_pos,
+          source_pos_lc := $hf_pos,
+          coeff_nonpos := $hv_nonpos)
   | `(tactic|
       rr_mw_derivative_sign_roots_nonpos using
         splits := $hf:term,
