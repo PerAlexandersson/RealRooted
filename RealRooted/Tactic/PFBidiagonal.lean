@@ -1155,6 +1155,9 @@ macro_rules
   | `(tactic| rr_exact_pf_sequence_realrooted $h:term, $hne:term) =>
       `(tactic|
         first
+          | rr_exact_pf_sequence_or_projection $h
+          | exact $hne
+          | exact ($hne _)
           | exact RealRooted.isRealRooted_of_isPFPolynomial_sequence $h $hne
           | exact (RealRooted.isRealRooted_of_isPFPolynomial_sequence $h $hne _))
   | `(tactic|

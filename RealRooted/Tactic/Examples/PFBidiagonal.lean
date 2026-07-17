@@ -127,6 +127,38 @@ example
 
 example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
+    (_hbase : IsPFPolynomial (P 0))
+    (_hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
+    (_hpres : ∀ n : Nat, BidiagonalPFPreserver (alpha n) (beta n) (d n))
+    (hne : ∀ n : Nat, P n ≠ 0)
+    (_hrec : ∀ n : Nat,
+      P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_pf_bidiagonal_sequence using
+    preserver := _hpres,
+    base := _hbase,
+    degree := _hdeg,
+    recurrence := _hrec,
+    nonzero := hne
+
+example
+    {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
+    (hbase : IsPFPolynomial (P 0))
+    (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
+    (hpres : ∀ n : Nat, BidiagonalPFPreserver (alpha n) (beta n) (d n))
+    (_hne : ∀ n : Nat, P n ≠ 0)
+    (hrec : ∀ n : Nat,
+      P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_pf_bidiagonal_sequence using
+    preserver := hpres,
+    base := hbase,
+    degree := hdeg,
+    recurrence := hrec,
+    nonzero := _hne
+
+example
+    {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
     (hbase : IsPFPolynomial (P 0))
     (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
     (hpres : ∀ n : Nat, BidiagonalPFPreserver (alpha n) (beta n) (d n))
