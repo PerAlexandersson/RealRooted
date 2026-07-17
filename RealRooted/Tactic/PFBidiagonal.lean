@@ -1,4 +1,5 @@
 import RealRooted.MultiplierSequence
+import RealRooted.Tactic.Finish
 import RealRooted.Tactic.Lookup
 
 /-!
@@ -1148,18 +1149,17 @@ macro_rules
           | exact (RealRooted.splits_of_isPFPolynomial_sequence $h _)
           | exact RealRooted.eq_zero_or_splits_of_isPFPolynomial_sequence $h
           | exact (RealRooted.eq_zero_or_splits_of_isPFPolynomial_sequence $h _)
-          | exact RealRooted.isRealRooted_of_isPFPolynomial_sequence $h (by
-              rr_lookup)
-          | exact (RealRooted.isRealRooted_of_isPFPolynomial_sequence $h (by
-              rr_lookup) _))
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_isPFPolynomial_sequence $h (by
+                rr_lookup)))
   | `(tactic| rr_exact_pf_sequence_realrooted $h:term, $hne:term) =>
       `(tactic|
         first
           | rr_exact_pf_sequence_or_projection $h
           | exact $hne
           | exact ($hne _)
-          | exact RealRooted.isRealRooted_of_isPFPolynomial_sequence $h $hne
-          | exact (RealRooted.isRealRooted_of_isPFPolynomial_sequence $h $hne _))
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_isPFPolynomial_sequence $h $hne))
   | `(tactic|
       rr_pf_bidiagonal_sequence using
         preserver := $hPF:term,
