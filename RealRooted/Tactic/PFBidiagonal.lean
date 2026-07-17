@@ -410,6 +410,12 @@ theorem splits_of_isPFPolynomial {p : ℝ[X]} (hp : IsPFPolynomial p) :
   · simp
   · exact hsplits
 
+/-- Project one row from a PF sequence certificate. -/
+theorem at_of_isPFPolynomial_sequence {P : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, IsPFPolynomial (P n)) (n : Nat) :
+    IsPFPolynomial (P n) :=
+  hP n
+
 /-- Project row-wise coefficient nonnegativity from a PF sequence certificate. -/
 theorem hasNonnegCoeffs_of_isPFPolynomial_sequence {P : Nat → ℝ[X]}
     (hP : ∀ n : Nat, IsPFPolynomial (P n)) :
@@ -792,14 +798,22 @@ macro_rules
       `(tactic|
         first
           | exact $h
+          | exact (RealRooted.at_of_isPFPolynomial_sequence $h _)
           | exact RealRooted.hasNonnegCoeffs_of_isPFPolynomial_sequence $h
+          | exact (RealRooted.hasNonnegCoeffs_of_isPFPolynomial_sequence $h _)
           | exact RealRooted.splits_of_isPFPolynomial_sequence $h
+          | exact (RealRooted.splits_of_isPFPolynomial_sequence $h _)
           | exact RealRooted.eq_zero_or_splits_of_isPFPolynomial_sequence $h
+          | exact (RealRooted.eq_zero_or_splits_of_isPFPolynomial_sequence $h _)
           | exact RealRooted.isRealRooted_of_isPFPolynomial_sequence $h (by
-              rr_lookup))
+              rr_lookup)
+          | exact (RealRooted.isRealRooted_of_isPFPolynomial_sequence $h (by
+              rr_lookup) _))
   | `(tactic| rr_exact_pf_sequence_realrooted $h:term, $hne:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_isPFPolynomial_sequence $h $hne)
+        first
+          | exact RealRooted.isRealRooted_of_isPFPolynomial_sequence $h $hne
+          | exact (RealRooted.isRealRooted_of_isPFPolynomial_sequence $h $hne _))
   | `(tactic|
       rr_pf_bidiagonal_sequence using
         preserver := $hPF:term,
