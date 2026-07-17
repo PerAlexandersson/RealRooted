@@ -599,6 +599,10 @@ theorem a036969ResidualBeta_cubicPFDiscriminantCertificate :
       · simpa [a036969ResidualBeta] using hsplit
     exact cubicDiscr_nonneg_of_splits_natDegree_le_three hdeg hsplit
 
+private theorem a036969ResidualBeta_hasNonnegCoeffs :
+    HasNonnegCoeffs a036969ResidualBeta :=
+  a036969ResidualBeta_cubicPFDiscriminantCertificate.1
+
 private theorem a036969ResidualBeta_coeff_zero :
     a036969ResidualBeta.coeff 0 = 0 := by
   rw [a036969ResidualBeta]
@@ -696,11 +700,8 @@ nonnegative pencil parameter. -/
 theorem a036969ResidualPencil_hasNonnegCoeffs
     (d : ℕ) {lam : ℝ} (hlam : 0 ≤ lam) :
     HasNonnegCoeffs (a036969ResidualPencil d lam) := by
-  have hbeta : HasNonnegCoeffs a036969ResidualBeta := by
-    simpa [a036969ResidualBeta, mul_assoc] using
-      (isPFPolynomial_X.mul (isPFPolynomial_X_add_one.pow 2)).hasNonnegCoeffs
   have hterm : HasNonnegCoeffs (C lam * a036969ResidualBeta) :=
-    nonnegCoeffs_C_mul hlam hbeta
+    nonnegCoeffs_C_mul hlam a036969ResidualBeta_hasNonnegCoeffs
   simpa [a036969ResidualPencil] using
     (a036969ResidualAlpha_hasNonnegCoeffs d).add hterm
 
@@ -956,11 +957,8 @@ nonnegative pencil parameter. -/
 theorem a071951ResidualPencil_hasNonnegCoeffs
     (d : ℕ) {lam : ℝ} (hlam : 0 ≤ lam) :
     HasNonnegCoeffs (a071951ResidualPencil d lam) := by
-  have hbeta : HasNonnegCoeffs a036969ResidualBeta := by
-    simpa [a036969ResidualBeta, mul_assoc] using
-      (isPFPolynomial_X.mul (isPFPolynomial_X_add_one.pow 2)).hasNonnegCoeffs
   have hterm : HasNonnegCoeffs (C lam * a036969ResidualBeta) :=
-    nonnegCoeffs_C_mul hlam hbeta
+    nonnegCoeffs_C_mul hlam a036969ResidualBeta_hasNonnegCoeffs
   simpa [a071951ResidualPencil] using
     (a071951ResidualAlpha_hasNonnegCoeffs d).add hterm
 
@@ -1156,11 +1154,8 @@ nonnegative pencil parameter. -/
 theorem a080248ResidualPencil_hasNonnegCoeffs
     (d : ℕ) {lam : ℝ} (hlam : 0 ≤ lam) :
     HasNonnegCoeffs (a080248ResidualPencil d lam) := by
-  have hbeta : HasNonnegCoeffs a036969ResidualBeta := by
-    simpa [a036969ResidualBeta, mul_assoc] using
-      (isPFPolynomial_X.mul (isPFPolynomial_X_add_one.pow 2)).hasNonnegCoeffs
   have hterm : HasNonnegCoeffs (C lam * a036969ResidualBeta) :=
-    nonnegCoeffs_C_mul hlam hbeta
+    nonnegCoeffs_C_mul hlam a036969ResidualBeta_hasNonnegCoeffs
   have halpha : HasNonnegCoeffs (a080248ResidualAlpha d) :=
     (a080248ResidualAlpha_cubicPFDiscriminantCertificate d).1
   simpa [a080248ResidualPencil] using halpha.add hterm
