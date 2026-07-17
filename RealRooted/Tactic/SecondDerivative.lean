@@ -773,10 +773,10 @@ macro_rules
         inner_degree_lower := $hinner_deg_lo:term,
         inner_degree_upper := $hinner_deg_hi:term) =>
       `(tactic|
-        exact
-          RealRooted.isRealRooted_of_mw_then_const_add_derivative_sequence
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_mw_then_const_add_derivative_sequence
             $a $hbase_zero $hbase_one $hpos $ha $hdeg_two $hinner_pos $hV $hrec
-            $hinner_deg_lo $hinner_deg_hi)
+            $hinner_deg_lo $hinner_deg_hi))
   | `(tactic|
       rr_mw_plus_derivative_sequence using
         outer := $a:term,
@@ -791,10 +791,10 @@ macro_rules
         inner_degree_lower := $hinner_deg_lo:term,
         inner_degree_upper := $hinner_deg_hi:term) =>
       `(tactic|
-        exact
-          RealRooted.isRealRooted_of_mw_then_pos_const_add_derivative_sequence
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_mw_then_pos_const_add_derivative_sequence
             $a $hbase_zero $hbase_one $hpos $ha $hdeg_two $hinner_pos $hV $hrec
-            $hinner_deg_lo $hinner_deg_hi)
+            $hinner_deg_lo $hinner_deg_hi))
   | `(tactic|
       rr_neg_mw_plus_derivative_sequence using
         outer := $a:term,
@@ -809,10 +809,10 @@ macro_rules
         inner_degree_lower := $hinner_deg_lo:term,
         inner_degree_upper := $hinner_deg_hi:term) =>
       `(tactic|
-        exact
-          RealRooted.isRealRooted_of_neg_mw_then_const_add_derivative_sequence
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_neg_mw_then_const_add_derivative_sequence
             $a $hbase_zero $hbase_one $hpos $ha $hdeg_two $hinner_neg $hV $hrec
-            $hinner_deg_lo $hinner_deg_hi)
+            $hinner_deg_lo $hinner_deg_hi))
 
 end Tactic
 end RealRooted
