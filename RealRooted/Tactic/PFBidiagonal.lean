@@ -1799,9 +1799,12 @@ macro_rules
         recurrence := $hrec:term
         $[, nonzero := $hne:term]?) =>
       `(tactic|
-        rr_exact_pf_sequence
-          (RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert
-            $hbackend $hbase $hdeg $hcert $hrec)
+        rr_pf_second_derivative_bidiagonal_sequence using
+          jensen_backend := $hbackend,
+          cubic_certificate := $hcert,
+          base := $hbase,
+          degree := $hdeg,
+          recurrence := $hrec
           $[, nonzero := $hne]?)
   | `(tactic|
       rr_h_second_derivative_sequence using
@@ -1814,9 +1817,13 @@ macro_rules
         recurrence := $hrec:term
         $[, nonzero := $hne:term]?) =>
       `(tactic|
-        rr_exact_pf_sequence
-          (isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_from
-            $hbackend $N $hbase $hdeg $hcert $hrec)
+        rr_pf_second_derivative_bidiagonal_sequence using
+          jensen_backend := $hbackend,
+          cubic_certificate := $hcert,
+          cutoff := $N,
+          base := $hbase,
+          degree := $hdeg,
+          recurrence := $hrec
           $[, nonzero := $hne]?)
   | `(tactic|
       rr_h_second_derivative_sequence using
@@ -1829,9 +1836,13 @@ macro_rules
         recurrence := $hrec:term
         $[, nonzero := $hne:term]?) =>
       `(tactic|
-        rr_exact_pf_sequence
-          (RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_norm
-            $hbackend $hbase $hdeg $hcert $hnorm $hrec)
+        rr_pf_second_derivative_bidiagonal_sequence using
+          jensen_backend := $hbackend,
+          cubic_certificate := $hcert,
+          base := $hbase,
+          degree := $hdeg,
+          normalizer := $hnorm,
+          recurrence := $hrec
           $[, nonzero := $hne]?)
   | `(tactic|
       rr_h_second_derivative_sequence using
@@ -1845,9 +1856,14 @@ macro_rules
         recurrence := $hrec:term
         $[, nonzero := $hne:term]?) =>
       `(tactic|
-        rr_exact_pf_sequence
-          (isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_norm_from
-            $hbackend $N $hbase $hdeg $hcert $hnorm $hrec)
+        rr_pf_second_derivative_bidiagonal_sequence using
+          jensen_backend := $hbackend,
+          cubic_certificate := $hcert,
+          cutoff := $N,
+          base := $hbase,
+          degree := $hdeg,
+          normalizer := $hnorm,
+          recurrence := $hrec
           $[, nonzero := $hne]?)
 
 end Tactic
