@@ -26,6 +26,11 @@ lemma isRealRooted_C_mul_X_add_C {s t : ℝ} (hs : s ≠ 0) :
   exact isRealRooted_C_mul
     (isRealRooted_X_sub_C (-t / s)).1 (isRealRooted_X_sub_C (-t / s)).2 hs
 
+/-- Nonzero constant polynomials are real-rooted. -/
+lemma isRealRooted_C {a : ℝ} (ha : a ≠ 0) :
+    ((C a : ℝ[X]) ≠ 0 ∧ (C a : ℝ[X]).Splits) :=
+  ⟨C_ne_zero.mpr ha, Polynomial.Splits.C (R := ℝ) a⟩
+
 theorem isRealRooted_C_mul_X_add_C_mul {p : ℝ[X]} {s t : ℝ}
     (hp : p ≠ 0 ∧ p.Splits) (hs : s ≠ 0) :
     ((C s * X + C t) * p ≠ 0 ∧ ((C s * X + C t) * p).Splits) :=
@@ -222,9 +227,8 @@ theorem isRealRooted_of_C_lift_sequence
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
     (hc : ∀ n : Nat, c n ≠ 0)
     (hrow : ∀ n : Nat, P n = C (c n) * Q n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  intro n
-  simpa [hrow n] using isRealRooted_C_mul (hquot n).1 (hquot n).2 (hc n)
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_lift_sequence hquot (fun n => isRealRooted_C (hc n)) hrow
 
 /-- Right-factor variant of `isRealRooted_of_C_lift_sequence`. -/
 theorem isRealRooted_of_C_lift_right_sequence
@@ -232,13 +236,9 @@ theorem isRealRooted_of_C_lift_right_sequence
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
     (hc : ∀ n : Nat, c n ≠ 0)
     (hrow : ∀ n : Nat, P n = Q n * C (c n)) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  intro n
-  have hfactor : (C (c n) : ℝ[X]) ≠ 0 ∧ (C (c n) : ℝ[X]).Splits :=
-    ⟨C_ne_zero.mpr (hc n), Polynomial.Splits.C (R := ℝ) (c n)⟩
-  have hnext : Q n * C (c n) ≠ 0 ∧ (Q n * C (c n)).Splits :=
-    isRealRooted_mul (hquot n).1 (hquot n).2 hfactor.1 hfactor.2
-  simpa [hrow n] using hnext
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_lift_right_sequence hquot
+    (fun n => isRealRooted_C (hc n)) hrow
 
 /-- Lift through row-wise nonzero-slope real linear factors. -/
 theorem isRealRooted_of_C_mul_X_add_C_lift_sequence
@@ -297,11 +297,8 @@ theorem isRealRooted_C_pow {a : ℝ} (ha : a ≠ 0) (n : Nat) :
   | zero =>
       simp
   | succ n ih =>
-      have hC : (C a : ℝ[X]) ≠ 0 ∧ (C a : ℝ[X]).Splits := by
-        simpa using
-          (isRealRooted_C_mul (p := (1 : ℝ[X])) (by simp) (by simp) ha)
       rw [pow_succ]
-      exact isRealRooted_mul ih.1 ih.2 hC.1 hC.2
+      exact isRealRooted_mul ih.1 ih.2 (isRealRooted_C ha).1 (isRealRooted_C ha).2
 
 /-- Lift through row-wise powers of nonzero scalar constants. -/
 theorem isRealRooted_of_C_pow_lift_sequence
@@ -1029,17 +1026,9 @@ theorem isRealRooted_of_product_scalar_right_sequence
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (ha : ∀ n : Nat, a n ≠ 0)
     (hstep : ∀ n : Nat, P (n + 1) = P n * C (a n)) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  intro n
-  induction n with
-  | zero =>
-      simpa using hbase
-  | succ n ih =>
-      have hfactor : (C (a n) : ℝ[X]) ≠ 0 ∧ (C (a n) : ℝ[X]).Splits :=
-        ⟨C_ne_zero.mpr (ha n), Polynomial.Splits.C (R := ℝ) (a n)⟩
-      have hnext : P n * C (a n) ≠ 0 ∧ (P n * C (a n)).Splits :=
-        isRealRooted_mul ih.1 ih.2 hfactor.1 hfactor.2
-      simpa [Nat.succ_eq_add_one, hstep n] using hnext
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_right_sequence hbase
+    (fun n => isRealRooted_C (ha n)) hstep
 
 /-- Sequence shell for degree-plateau product families.
 
