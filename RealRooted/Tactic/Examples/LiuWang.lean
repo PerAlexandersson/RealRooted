@@ -1941,6 +1941,57 @@ example {f g a : ℝ[X]}
     degree_upper := hdeg_hi,
     no_common_roots := hno
 
+/-- One-step non-monic negative quadratic lag, with explicit scalar
+certificates. -/
+example {f g a : ℝ[X]}
+    (hgf : Interlaces g f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hF_pos :
+      HasPosLeadingCoeff
+        (a * f + (-(C (2 : ℝ) * X ^ 2 + C (-1 : ℝ) * X + C (1 : ℝ))) * g))
+    (hdeg_lo :
+      f.natDegree ≤
+        (a * f + (-(C (2 : ℝ) * X ^ 2 + C (-1 : ℝ) * X + C (1 : ℝ))) * g).natDegree)
+    (hdeg_hi :
+      (a * f + (-(C (2 : ℝ) * X ^ 2 + C (-1 : ℝ) * X + C (1 : ℝ))) * g).natDegree ≤
+        f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    Prec f (a * f + (-(C (2 : ℝ) * X ^ 2 + C (-1 : ℝ) * X + C (1 : ℝ))) * g) := by
+  rr_lw_negative_quadratic using
+    interlacer := hgf,
+    interlacer_pos_lc := hg_pos,
+    leading_nonneg := by norm_num,
+    constant_nonneg := by norm_num,
+    discriminant := by norm_num,
+    target_pos_lc := hF_pos,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi,
+    no_common_roots := hno
+
+/-- One-step non-monic negative quadratic lag, with automatic scalar
+certificates. -/
+example {f g a : ℝ[X]}
+    (hgf : Interlaces g f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hF_pos :
+      HasPosLeadingCoeff
+        (a * f + (-(C (2 : ℝ) * X ^ 2 + C (-1 : ℝ) * X + C (1 : ℝ))) * g))
+    (hdeg_lo :
+      f.natDegree ≤
+        (a * f + (-(C (2 : ℝ) * X ^ 2 + C (-1 : ℝ) * X + C (1 : ℝ))) * g).natDegree)
+    (hdeg_hi :
+      (a * f + (-(C (2 : ℝ) * X ^ 2 + C (-1 : ℝ) * X + C (1 : ℝ))) * g).natDegree ≤
+        f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    Prec f (a * f + (-(C (2 : ℝ) * X ^ 2 + C (-1 : ℝ) * X + C (1 : ℝ))) * g) := by
+  rr_lw_negative_quadratic_auto using
+    interlacer := hgf,
+    interlacer_pos_lc := hg_pos,
+    target_pos_lc := hF_pos,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi,
+    no_common_roots := hno
+
 /-- One-step Family E3 product lag: `t Q(t)` reduces to a focused
 `Q(r) >= 0` certificate at current-row roots. -/
 example {f g a q : ℝ[X]}
