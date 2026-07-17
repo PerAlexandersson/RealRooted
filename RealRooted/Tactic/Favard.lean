@@ -2280,32 +2280,12 @@ macro_rules
               RealRooted.favardInterlacing_affine_param_coeff_den
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done)
+                (by rr_favard_den_raw using $hraw)
           | exact
               RealRooted.favardInterlacing_affine_param_coeff_den_split
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done)
+                (by rr_favard_den_raw using $hraw)
           | exact
               RealRooted.favardInterlacing_affine_param_coeff_den_split_rev
                 (s := $s) (α := $α) (β := $β) (d := $d)
@@ -2315,32 +2295,12 @@ macro_rules
               RealRooted.isRealRooted_of_favard_affine_param_coeff_den
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done)
+                (by rr_favard_den_raw using $hraw)
           | exact
               RealRooted.isRealRooted_of_favard_affine_param_coeff_den_split
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done)
+                (by rr_favard_den_raw using $hraw)
           | exact
               RealRooted.isRealRooted_of_favard_affine_param_coeff_den_split_rev
                 (s := $s) (α := $α) (β := $β) (d := $d)
@@ -2350,32 +2310,12 @@ macro_rules
               RealRooted.nonzero_of_favard_affine_param_coeff_den
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done)
+                (by rr_favard_den_raw using $hraw)
           | exact
               RealRooted.nonzero_of_favard_affine_param_coeff_den_split
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done)
+                (by rr_favard_den_raw using $hraw)
           | exact
               RealRooted.nonzero_of_favard_affine_param_coeff_den_split_rev
                 (s := $s) (α := $α) (β := $β) (d := $d)
@@ -2385,32 +2325,12 @@ macro_rules
               RealRooted.favardInterlacing_affine_param_coeff_den
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done) _
+                (by rr_favard_den_raw using $hraw) _
           | exact
               RealRooted.favardInterlacing_affine_param_coeff_den_split
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done) _
+                (by rr_favard_den_raw using $hraw) _
           | exact
               RealRooted.favardInterlacing_affine_param_coeff_den_split_rev
                 (s := $s) (α := $α) (β := $β) (d := $d)
@@ -2420,32 +2340,12 @@ macro_rules
               RealRooted.isRealRooted_of_favard_affine_param_coeff_den
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done) _
+                (by rr_favard_den_raw using $hraw) _
           | exact
               RealRooted.isRealRooted_of_favard_affine_param_coeff_den_split
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done) _
+                (by rr_favard_den_raw using $hraw) _
           | exact
               RealRooted.isRealRooted_of_favard_affine_param_coeff_den_split_rev
                 (s := $s) (α := $α) (β := $β) (d := $d)
@@ -2455,32 +2355,12 @@ macro_rules
               RealRooted.nonzero_of_favard_affine_param_coeff_den
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done) _
+                (by rr_favard_den_raw using $hraw) _
           | exact
               RealRooted.nonzero_of_favard_affine_param_coeff_den_split
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done) _
+                (by rr_favard_den_raw using $hraw) _
           | exact
               RealRooted.nonzero_of_favard_affine_param_coeff_den_split_rev
                 (s := $s) (α := $α) (β := $β) (d := $d)
@@ -3091,32 +2971,12 @@ macro_rules
               RealRooted.favardInterlacing_affine_param_coeff_rowSign_den
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done)
+                (by rr_favard_den_raw using $hraw)
           | exact
               RealRooted.favardInterlacing_affine_param_coeff_rowSign_den_split
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done)
+                (by rr_favard_den_raw using $hraw)
           | exact
               RealRooted.favardInterlacing_affine_param_coeff_rowSign_den_split_rev
                 (s := $s) (α := $α) (β := $β) (d := $d)
@@ -3126,32 +2986,12 @@ macro_rules
               RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done)
+                (by rr_favard_den_raw using $hraw)
           | exact
               RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den_split
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done)
+                (by rr_favard_den_raw using $hraw)
           | exact
               RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den_split_rev
                 (s := $s) (α := $α) (β := $β) (d := $d)
@@ -3161,32 +3001,12 @@ macro_rules
               RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done)
+                (by rr_favard_den_raw using $hraw)
           | exact
               RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den_split
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done)
+                (by rr_favard_den_raw using $hraw)
           | exact
               RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den_split_rev
                 (s := $s) (α := $α) (β := $β) (d := $d)
@@ -3196,32 +3016,12 @@ macro_rules
               RealRooted.favardInterlacing_affine_param_coeff_rowSign_den
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done) _
+                (by rr_favard_den_raw using $hraw) _
           | exact
               RealRooted.favardInterlacing_affine_param_coeff_rowSign_den_split
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done) _
+                (by rr_favard_den_raw using $hraw) _
           | exact
               RealRooted.favardInterlacing_affine_param_coeff_rowSign_den_split_rev
                 (s := $s) (α := $α) (β := $β) (d := $d)
@@ -3231,32 +3031,12 @@ macro_rules
               RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done) _
+                (by rr_favard_den_raw using $hraw) _
           | exact
               RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den_split
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done) _
+                (by rr_favard_den_raw using $hraw) _
           | exact
               RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den_split_rev
                 (s := $s) (α := $α) (β := $β) (d := $d)
@@ -3266,32 +3046,12 @@ macro_rules
               RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done) _
+                (by rr_favard_den_raw using $hraw) _
           | exact
               RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den_split
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done) _
+                (by rr_favard_den_raw using $hraw) _
           | exact
               RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den_split_rev
                 (s := $s) (α := $α) (β := $β) (d := $d)
