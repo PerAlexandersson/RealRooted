@@ -296,6 +296,15 @@ example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
     quotient_realrooted := hquot,
     factorization := hrow
 
+/-- Automatic scalar certificates also work for right scalar-power lifts. -/
+example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = Q n * (C ((n : ℝ) + 1) : ℝ[X]) ^ (m n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_C_pow_sequence_auto using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
 /-- Root-at-zero power lift for rows `P_n = X^{m_n} Q_n`. -/
 example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
