@@ -1491,22 +1491,8 @@ syntax (name := rr_pf_second_derivative_bidiagonal_sequence_cubic_named)
     "alpha_cubic" ":=" term ","
     "beta_cubic" ":=" term ","
     "pencil_cubic" ":=" term ","
-    "recurrence" ":=" term :
-  tactic
-
-syntax (name := rr_pf_second_derivative_bidiagonal_sequence_cubic_realrooted_named)
-  "rr_pf_second_derivative_bidiagonal_sequence_cubic" " using "
-    "jensen_backend" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "alpha_factor" ":=" term ","
-    "beta_factor" ":=" term ","
-    "pencil_factor" ":=" term ","
-    "alpha_cubic" ":=" term ","
-    "beta_cubic" ":=" term ","
-    "pencil_cubic" ":=" term ","
-    "recurrence" ":=" term ","
-    "nonzero" ":=" term :
+    "recurrence" ":=" term
+    ("," "nonzero" ":=" term)? :
   tactic
 
 macro_rules
@@ -1555,22 +1541,8 @@ syntax (name := rr_pf_second_derivative_bidiagonal_sequence_endpoint_cubic_named
     "alpha_cubic" ":=" term ","
     "beta_cubic" ":=" term ","
     "pencil_cubic" ":=" term ","
-    "recurrence" ":=" term :
-  tactic
-
-syntax (name :=
-    rr_pf_second_derivative_bidiagonal_sequence_endpoint_cubic_realrooted_named)
-  "rr_pf_second_derivative_bidiagonal_sequence_cubic" " using "
-    "jensen_backend" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "alpha_factor" ":=" term ","
-    "beta_factor" ":=" term ","
-    "alpha_cubic" ":=" term ","
-    "beta_cubic" ":=" term ","
-    "pencil_cubic" ":=" term ","
-    "recurrence" ":=" term ","
-    "nonzero" ":=" term :
+    "recurrence" ":=" term
+    ("," "nonzero" ":=" term)? :
   tactic
 
 macro_rules
@@ -1619,24 +1591,8 @@ syntax (name := rr_pf_second_derivative_bidiagonal_sequence_cubic_normalized_nam
     "beta_cubic" ":=" term ","
     "pencil_cubic" ":=" term ","
     "normalizer" ":=" term ","
-    "recurrence" ":=" term :
-  tactic
-
-syntax (name :=
-    rr_pf_second_derivative_bidiagonal_sequence_cubic_normalized_realrooted_named)
-  "rr_pf_second_derivative_bidiagonal_sequence_cubic" " using "
-    "jensen_backend" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "alpha_factor" ":=" term ","
-    "beta_factor" ":=" term ","
-    "pencil_factor" ":=" term ","
-    "alpha_cubic" ":=" term ","
-    "beta_cubic" ":=" term ","
-    "pencil_cubic" ":=" term ","
-    "normalizer" ":=" term ","
-    "recurrence" ":=" term ","
-    "nonzero" ":=" term :
+    "recurrence" ":=" term
+    ("," "nonzero" ":=" term)? :
   tactic
 
 macro_rules
@@ -1690,23 +1646,8 @@ syntax (name := rr_pf_second_derivative_bidiagonal_sequence_endpoint_cubic_norm_
     "beta_cubic" ":=" term ","
     "pencil_cubic" ":=" term ","
     "normalizer" ":=" term ","
-    "recurrence" ":=" term :
-  tactic
-
-syntax (name :=
-    rr_pf_second_derivative_bidiagonal_sequence_endpoint_cubic_norm_realrooted_named)
-  "rr_pf_second_derivative_bidiagonal_sequence_cubic" " using "
-    "jensen_backend" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "alpha_factor" ":=" term ","
-    "beta_factor" ":=" term ","
-    "alpha_cubic" ":=" term ","
-    "beta_cubic" ":=" term ","
-    "pencil_cubic" ":=" term ","
-    "normalizer" ":=" term ","
-    "recurrence" ":=" term ","
-    "nonzero" ":=" term :
+    "recurrence" ":=" term
+    ("," "nonzero" ":=" term)? :
   tactic
 
 macro_rules
@@ -1930,16 +1871,8 @@ syntax (name := rr_pf_second_derivative_bidiagonal_sequence_named)
     "preserver" ":=" term ","
     "base" ":=" term ","
     "degree" ":=" term ","
-    "recurrence" ":=" term :
-  tactic
-
-syntax (name := rr_pf_second_derivative_bidiagonal_sequence_realrooted_named)
-  "rr_pf_second_derivative_bidiagonal_sequence" " using "
-    "preserver" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "recurrence" ":=" term ","
-    "nonzero" ":=" term :
+    "recurrence" ":=" term
+    ("," "nonzero" ":=" term)? :
   tactic
 
 macro_rules
@@ -1971,18 +1904,8 @@ syntax (name := rr_pf_second_derivative_bidiagonal_sequence_preserver_normalized
     "base" ":=" term ","
     "degree" ":=" term ","
     "normalizer" ":=" term ","
-    "recurrence" ":=" term :
-  tactic
-
-syntax (name :=
-    rr_pf_second_derivative_bidiagonal_sequence_preserver_normalized_realrooted_named)
-  "rr_pf_second_derivative_bidiagonal_sequence" " using "
-    "preserver" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "normalizer" ":=" term ","
-    "recurrence" ":=" term ","
-    "nonzero" ":=" term :
+    "recurrence" ":=" term
+    ("," "nonzero" ":=" term)? :
   tactic
 
 macro_rules
@@ -2014,40 +1937,11 @@ syntax (name := rr_pf_second_derivative_bidiagonal_sequence_jensen_named)
   "rr_pf_second_derivative_bidiagonal_sequence" " using "
     "jensen_backend" ":=" term ","
     "certificate" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "base" ":=" term ","
     "degree" ":=" term ","
-    "recurrence" ":=" term :
-  tactic
-
-syntax (name := rr_pf_second_derivative_bidiagonal_sequence_jensen_realrooted_named)
-  "rr_pf_second_derivative_bidiagonal_sequence" " using "
-    "jensen_backend" ":=" term ","
-    "certificate" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "recurrence" ":=" term ","
-    "nonzero" ":=" term :
-  tactic
-
-syntax (name := rr_pf_second_derivative_bidiagonal_sequence_jensen_from_named)
-  "rr_pf_second_derivative_bidiagonal_sequence" " using "
-    "jensen_backend" ":=" term ","
-    "certificate" ":=" term ","
-    "cutoff" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "recurrence" ":=" term :
-  tactic
-
-syntax (name := rr_pf_second_derivative_bidiagonal_sequence_jensen_from_realrooted_named)
-  "rr_pf_second_derivative_bidiagonal_sequence" " using "
-    "jensen_backend" ":=" term ","
-    "certificate" ":=" term ","
-    "cutoff" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "recurrence" ":=" term ","
-    "nonzero" ":=" term :
+    "recurrence" ":=" term
+    ("," "nonzero" ":=" term)? :
   tactic
 
 macro_rules
@@ -2104,46 +1998,12 @@ syntax (name := rr_pf_second_derivative_bidiagonal_sequence_jensen_normalized_na
   "rr_pf_second_derivative_bidiagonal_sequence" " using "
     "jensen_backend" ":=" term ","
     "certificate" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "base" ":=" term ","
     "degree" ":=" term ","
     "normalizer" ":=" term ","
-    "recurrence" ":=" term :
-  tactic
-
-syntax (name :=
-    rr_pf_second_derivative_bidiagonal_sequence_jensen_normalized_realrooted_named)
-  "rr_pf_second_derivative_bidiagonal_sequence" " using "
-    "jensen_backend" ":=" term ","
-    "certificate" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "normalizer" ":=" term ","
-    "recurrence" ":=" term ","
-    "nonzero" ":=" term :
-  tactic
-
-syntax (name := rr_pf_second_derivative_bidiagonal_sequence_jensen_normalized_from_named)
-  "rr_pf_second_derivative_bidiagonal_sequence" " using "
-    "jensen_backend" ":=" term ","
-    "certificate" ":=" term ","
-    "cutoff" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "normalizer" ":=" term ","
-    "recurrence" ":=" term :
-  tactic
-
-syntax (name :=
-    rr_pf_second_derivative_bidiagonal_sequence_jensen_normalized_from_realrooted_named)
-  "rr_pf_second_derivative_bidiagonal_sequence" " using "
-    "jensen_backend" ":=" term ","
-    "certificate" ":=" term ","
-    "cutoff" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "normalizer" ":=" term ","
-    "recurrence" ":=" term ","
-    "nonzero" ":=" term :
+    "recurrence" ":=" term
+    ("," "nonzero" ":=" term)? :
   tactic
 
 macro_rules
@@ -2204,42 +2064,11 @@ syntax (name := rr_pf_second_derivative_bidiagonal_sequence_cubic_certificate_na
   "rr_pf_second_derivative_bidiagonal_sequence" " using "
     "jensen_backend" ":=" term ","
     "cubic_certificate" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "base" ":=" term ","
     "degree" ":=" term ","
-    "recurrence" ":=" term :
-  tactic
-
-syntax (name :=
-    rr_pf_second_derivative_bidiagonal_sequence_cubic_certificate_realrooted_named)
-  "rr_pf_second_derivative_bidiagonal_sequence" " using "
-    "jensen_backend" ":=" term ","
-    "cubic_certificate" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "recurrence" ":=" term ","
-    "nonzero" ":=" term :
-  tactic
-
-syntax (name := rr_pf_second_derivative_bidiagonal_sequence_cubic_certificate_from_direct_named)
-  "rr_pf_second_derivative_bidiagonal_sequence" " using "
-    "jensen_backend" ":=" term ","
-    "cubic_certificate" ":=" term ","
-    "cutoff" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "recurrence" ":=" term :
-  tactic
-
-syntax (name :=
-    rr_pf_second_derivative_bidiagonal_sequence_cubic_certificate_from_direct_realrooted_named)
-  "rr_pf_second_derivative_bidiagonal_sequence" " using "
-    "jensen_backend" ":=" term ","
-    "cubic_certificate" ":=" term ","
-    "cutoff" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "recurrence" ":=" term ","
-    "nonzero" ":=" term :
+    "recurrence" ":=" term
+    ("," "nonzero" ":=" term)? :
   tactic
 
 macro_rules
@@ -2296,46 +2125,12 @@ syntax (name := rr_pf_second_derivative_bidiagonal_sequence_cubic_certificate_no
   "rr_pf_second_derivative_bidiagonal_sequence" " using "
     "jensen_backend" ":=" term ","
     "cubic_certificate" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "base" ":=" term ","
     "degree" ":=" term ","
     "normalizer" ":=" term ","
-    "recurrence" ":=" term :
-  tactic
-
-syntax (name :=
-    rr_pf_second_derivative_bidiagonal_sequence_cubic_certificate_normalized_realrooted_named)
-  "rr_pf_second_derivative_bidiagonal_sequence" " using "
-    "jensen_backend" ":=" term ","
-    "cubic_certificate" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "normalizer" ":=" term ","
-    "recurrence" ":=" term ","
-    "nonzero" ":=" term :
-  tactic
-
-syntax (name := rr_pf_second_derivative_bidiagonal_sequence_cubic_certificate_from_named)
-  "rr_pf_second_derivative_bidiagonal_sequence" " using "
-    "jensen_backend" ":=" term ","
-    "cubic_certificate" ":=" term ","
-    "cutoff" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "normalizer" ":=" term ","
-    "recurrence" ":=" term :
-  tactic
-
-syntax (name :=
-    rr_pf_second_derivative_bidiagonal_sequence_cubic_certificate_from_realrooted_named)
-  "rr_pf_second_derivative_bidiagonal_sequence" " using "
-    "jensen_backend" ":=" term ","
-    "cubic_certificate" ":=" term ","
-    "cutoff" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "normalizer" ":=" term ","
-    "recurrence" ":=" term ","
-    "nonzero" ":=" term :
+    "recurrence" ":=" term
+    ("," "nonzero" ":=" term)? :
   tactic
 
 macro_rules
@@ -2394,97 +2189,17 @@ macro_rules
 
 /-- Family-H second-derivative router for the known PF-bidiagonal route with a
 bundled cubic-residual Jensen-pencil certificate. -/
-syntax (name := rr_h_second_derivative_sequence_pf_bidiagonal_cubic_named)
+syntax (name := rr_h_second_derivative_sequence_pf_bidiagonal_cubic)
   "rr_h_second_derivative_sequence" " using "
     "route" ":=" "pf_bidiagonal" ","
     "jensen_backend" ":=" term ","
     "cubic_certificate" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "base" ":=" term ","
     "degree" ":=" term ","
-    "recurrence" ":=" term :
-  tactic
-
-syntax (name := rr_h_second_derivative_sequence_pf_bidiagonal_cubic_realrooted_named)
-  "rr_h_second_derivative_sequence" " using "
-    "route" ":=" "pf_bidiagonal" ","
-    "jensen_backend" ":=" term ","
-    "cubic_certificate" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "recurrence" ":=" term ","
-    "nonzero" ":=" term :
-  tactic
-
-syntax (name := rr_h_second_derivative_sequence_pf_bidiagonal_cubic_from_named)
-  "rr_h_second_derivative_sequence" " using "
-    "route" ":=" "pf_bidiagonal" ","
-    "jensen_backend" ":=" term ","
-    "cubic_certificate" ":=" term ","
-    "cutoff" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "recurrence" ":=" term :
-  tactic
-
-syntax (name := rr_h_second_derivative_sequence_pf_bidiagonal_cubic_from_realrooted_named)
-  "rr_h_second_derivative_sequence" " using "
-    "route" ":=" "pf_bidiagonal" ","
-    "jensen_backend" ":=" term ","
-    "cubic_certificate" ":=" term ","
-    "cutoff" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "recurrence" ":=" term ","
-    "nonzero" ":=" term :
-  tactic
-
-syntax (name := rr_h_second_derivative_sequence_pf_bidiagonal_cubic_norm_named)
-  "rr_h_second_derivative_sequence" " using "
-    "route" ":=" "pf_bidiagonal" ","
-    "jensen_backend" ":=" term ","
-    "cubic_certificate" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "normalizer" ":=" term ","
-    "recurrence" ":=" term :
-  tactic
-
-syntax (name := rr_h_second_derivative_sequence_pf_bidiagonal_cubic_norm_realrooted_named)
-  "rr_h_second_derivative_sequence" " using "
-    "route" ":=" "pf_bidiagonal" ","
-    "jensen_backend" ":=" term ","
-    "cubic_certificate" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "normalizer" ":=" term ","
-    "recurrence" ":=" term ","
-    "nonzero" ":=" term :
-  tactic
-
-syntax (name := rr_h_second_derivative_sequence_pf_bidiagonal_cubic_norm_from_named)
-  "rr_h_second_derivative_sequence" " using "
-    "route" ":=" "pf_bidiagonal" ","
-    "jensen_backend" ":=" term ","
-    "cubic_certificate" ":=" term ","
-    "cutoff" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "normalizer" ":=" term ","
-    "recurrence" ":=" term :
-  tactic
-
-syntax (name :=
-    rr_h_second_derivative_sequence_pf_bidiagonal_cubic_norm_from_realrooted_named)
-  "rr_h_second_derivative_sequence" " using "
-    "route" ":=" "pf_bidiagonal" ","
-    "jensen_backend" ":=" term ","
-    "cubic_certificate" ":=" term ","
-    "cutoff" ":=" term ","
-    "base" ":=" term ","
-    "degree" ":=" term ","
-    "normalizer" ":=" term ","
-    "recurrence" ":=" term ","
-    "nonzero" ":=" term :
+    ("normalizer" ":=" term ",")?
+    "recurrence" ":=" term
+    ("," "nonzero" ":=" term)? :
   tactic
 
 macro_rules
