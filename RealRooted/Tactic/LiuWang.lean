@@ -4521,14 +4521,10 @@ syntax (name := rr_lw_exact_or_simpa_mul_assoc)
 macro_rules
   | `(tactic| rr_lw_exact_or_simpa $hdirect:term, $hnormalized:term) =>
       `(tactic|
-        first
-          | exact $hdirect
-          | simpa using $hnormalized)
+        rr_first_exact_or_simpa $hdirect, $hnormalized)
   | `(tactic| rr_lw_exact_or_simpa_mul_assoc $hdirect:term, $hnormalized:term) =>
       `(tactic|
-        first
-          | exact $hdirect
-          | simpa [mul_assoc] using $hnormalized)
+        rr_first_exact_or_simpa_mul_assoc $hdirect, $hnormalized)
   | `(tactic|
       rr_liu_wang using
         $hgf:term, $hg_pos:term, $hl_inter:term, $hl_pos:term, $hl_nonpos:term,

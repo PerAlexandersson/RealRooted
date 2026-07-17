@@ -3251,21 +3251,11 @@ macro_rules
               linarith only [hroot_window_lower])
   | `(tactic| rr_mw_two_variants $hleft:term, $hright:term) =>
       `(tactic|
-        first
-        | exact $hleft
-        | exact $hright
-        | rr_exact_realrooted_sequence_or_projection $hleft
-        | rr_exact_realrooted_sequence_or_projection $hright)
+        rr_first_exact_then_realrooted_sequence_or_projection $hleft, $hright)
   | `(tactic|
       rr_mw_three_variants $hleft:term, $hmiddle:term, $hright:term) =>
       `(tactic|
-        first
-        | exact $hleft
-        | exact $hmiddle
-        | exact $hright
-        | rr_exact_realrooted_sequence_or_projection $hleft
-        | rr_exact_realrooted_sequence_or_projection $hmiddle
-        | rr_exact_realrooted_sequence_or_projection $hright)
+        rr_first_exact_then_realrooted_sequence_or_projection $hleft, $hmiddle, $hright)
   | `(tactic|
       rr_ma_wang using
         $hf:term, $hdegf:term, $hdeg_lo:term, $hdeg_hi:term, $hF_pos:term,

@@ -1940,23 +1940,16 @@ macro_rules
       `(tactic| rr_side_ne)
   | `(tactic| rr_product_two_variants $hleft:term, $hright:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_or_projection $hleft
-          | rr_exact_realrooted_or_projection $hright)
+        rr_first_realrooted_or_projection $hleft, $hright)
   | `(tactic| rr_product_two_sequence_variants $hleft:term, $hright:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection $hleft
-          | rr_exact_realrooted_sequence_or_projection $hright)
+        rr_first_realrooted_sequence_or_projection $hleft, $hright)
   | `(tactic|
       rr_product_four_sequence_variants
         $hleft:term, $hright:term, $hscalar_right:term, $hfactor_right:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection $hleft
-          | rr_exact_realrooted_sequence_or_projection $hright
-          | rr_exact_realrooted_sequence_or_projection $hscalar_right
-          | rr_exact_realrooted_sequence_or_projection $hfactor_right)
+        rr_first_realrooted_sequence_or_projection
+          $hleft, $hright, $hscalar_right, $hfactor_right)
 
 macro_rules
   | `(tactic| rr_product_factor using $hp:term, $hs:term) =>

@@ -323,6 +323,26 @@ syntax (name := rr_exact_realrooted_pair_sequence_or_projection)
   "rr_exact_realrooted_pair_sequence_or_projection" term :
   tactic
 
+syntax (name := rr_first_exact_or_simpa)
+  "rr_first_exact_or_simpa" term ", " term :
+  tactic
+
+syntax (name := rr_first_exact_or_simpa_mul_assoc)
+  "rr_first_exact_or_simpa_mul_assoc" term ", " term :
+  tactic
+
+syntax (name := rr_first_realrooted_or_projection)
+  "rr_first_realrooted_or_projection" term,* :
+  tactic
+
+syntax (name := rr_first_realrooted_sequence_or_projection)
+  "rr_first_realrooted_sequence_or_projection" term,* :
+  tactic
+
+syntax (name := rr_first_exact_then_realrooted_sequence_or_projection)
+  "rr_first_exact_then_realrooted_sequence_or_projection" term,* :
+  tactic
+
 syntax (name := rr_nonzero) "rr_nonzero" " using " term : tactic
 syntax (name := rr_splits) "rr_splits" " using " term : tactic
 syntax (name := rr_realrooted) "rr_realrooted" " using " term : tactic
@@ -458,6 +478,29 @@ macro_rules
           | exact (RealRooted.left_eq_zero_or_splits_of_isRealRooted_pair_sequence $h _)
           | exact RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair_sequence $h
           | exact (RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair_sequence $h _))
+  | `(tactic| rr_first_exact_or_simpa $hdirect:term, $hnormalized:term) =>
+      `(tactic|
+        first
+          | exact $hdirect
+          | simpa using $hnormalized)
+  | `(tactic| rr_first_exact_or_simpa_mul_assoc $hdirect:term, $hnormalized:term) =>
+      `(tactic|
+        first
+          | exact $hdirect
+          | simpa [mul_assoc] using $hnormalized)
+  | `(tactic| rr_first_realrooted_or_projection $[$hs:term],*) =>
+      `(tactic|
+        first
+          $[ | rr_exact_realrooted_or_projection $hs]*)
+  | `(tactic| rr_first_realrooted_sequence_or_projection $[$hs:term],*) =>
+      `(tactic|
+        first
+          $[ | rr_exact_realrooted_sequence_or_projection $hs]*)
+  | `(tactic| rr_first_exact_then_realrooted_sequence_or_projection $[$hs:term],*) =>
+      `(tactic|
+        first
+          $[ | exact $hs]*
+          $[ | rr_exact_realrooted_sequence_or_projection $hs]*)
   | `(tactic| rr_nonzero using $h:term) =>
       `(tactic|
         first
