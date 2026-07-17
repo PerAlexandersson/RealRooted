@@ -167,6 +167,51 @@ example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
     quotient_realrooted := hquot,
     factorization := hrow
 
+/-- General affine-power lift for rows
+`P_n = (s_n X + t_n)^{m_n} Q_n`. -/
+example {P Q : Nat → ℝ[X]} {s t : Nat → ℝ} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hs : ∀ n : Nat, s n ≠ 0)
+    (hrow : ∀ n : Nat, P n = (C (s n) * X + C (t n)) ^ (m n) * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_affine_pow_sequence using
+    quotient_realrooted := hquot,
+    slope_ne := hs,
+    factorization := hrow
+
+/-- The affine-power lift also accepts the quotient factor on the left. -/
+example {P Q : Nat → ℝ[X]} {s t : Nat → ℝ} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hs : ∀ n : Nat, s n ≠ 0)
+    (hrow : ∀ n : Nat, P n = Q n * (C (s n) * X + C (t n)) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_affine_pow_sequence using
+    quotient_realrooted := hquot,
+    slope_ne := hs,
+    factorization := hrow
+
+/-- The same lift accepts constant-first linear factors. -/
+example {P Q : Nat → ℝ[X]} {s t : Nat → ℝ} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hs : ∀ n : Nat, s n ≠ 0)
+    (hrow : ∀ n : Nat, P n = (C (t n) + C (s n) * X) ^ (m n) * Q n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_const_first_affine_pow_sequence using
+    quotient_realrooted := hquot,
+    slope_ne := hs,
+    factorization := hrow
+
+/-- Nonzero projection endpoint for the right constant-first affine lift. -/
+example {P Q : Nat → ℝ[X]} {s t : Nat → ℝ} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hs : ∀ n : Nat, s n ≠ 0)
+    (hrow : ∀ n : Nat, P n = Q n * (C (t n) + C (s n) * X) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_const_first_affine_pow_sequence using
+    quotient_realrooted := hquot,
+    slope_ne := hs,
+    factorization := hrow
+
 /-- Endpoint quotient with `A_{n+1}=A_n+B_n`,
 `B_{n+1}=B_n+X A_{n+1}`. -/
 example {A B : Nat → ℝ[X]}
