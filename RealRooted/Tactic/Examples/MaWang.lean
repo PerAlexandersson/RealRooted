@@ -366,6 +366,30 @@ example {f u : ℝ[X]}
     root_lower := hroot_lo,
     root_upper := hroot_hi
 
+/-- Sequence endpoint for the `(1+X)(1+2X)P'` window shell. -/
+example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
+    (hroot_lo : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hroot_hi : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(1 / 2 : ℝ))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        U n * P (n + 1) +
+          ((1 + X) * (1 + C (2 : ℝ) * X)) * (P (n + 1)).derivative)
+    (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
+    (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_mw_derivative_one_add_two_window_sequence using
+    base := hbase,
+    pos_lc := hpos,
+    degree_two := hdeg_two,
+    root_lower := hroot_lo,
+    root_upper := hroot_hi,
+    recurrence := hrec,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi
+
 /-- Projection endpoint for the `(1+X)(1+2X)P'` sequence shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
@@ -448,6 +472,27 @@ example {f u : ℝ[X]} {c : ℝ}
     target_pos_lc := hF_pos,
     source_pos_lc := hf_pos,
     coeff_nonneg := hc
+
+example {f u : ℝ[X]}
+    (hf : f.Splits)
+    (hdegf : 2 ≤ f.natDegree)
+    (hdeg_lo :
+      f.natDegree ≤
+        (u * f + (-(C ((3 : ℝ) + 1)) * X ^ 2) * f.derivative).natDegree)
+    (hdeg_hi :
+      (u * f + (-(C ((3 : ℝ) + 1)) * X ^ 2) * f.derivative).natDegree ≤
+        f.natDegree + 1)
+    (hF_pos :
+      HasPosLeadingCoeff (u * f + (-(C ((3 : ℝ) + 1)) * X ^ 2) * f.derivative))
+    (hf_pos : HasPosLeadingCoeff f) :
+    Prec f (u * f + (-(C ((3 : ℝ) + 1)) * X ^ 2) * f.derivative) := by
+  rr_mw_derivative_neg_X_sq_auto using
+    splits := hf,
+    degree_two := hdegf,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi,
+    target_pos_lc := hF_pos,
+    source_pos_lc := hf_pos
 
 /-- Full sequence shell for weak Ma--Wang derivative recurrences with a
 sequence-supplied coefficient sign certificate. -/
@@ -1016,6 +1061,26 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi
 
+/-- Real-rootedness endpoint for the unscaled `(1+X)P'` sequence wrapper. -/
+example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
+    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -1)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = U n * P (n + 1) + (1 + X) * (P (n + 1)).derivative)
+    (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
+    (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_mw_derivative_one_add_X_sequence_realrooted using
+    base := hbase,
+    pos_lc := hpos,
+    degree_two := hdeg_two,
+    root_upper := hroot_upper,
+    recurrence := hrec,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi
+
 /-- Regression: scalar affine factors may appear with the scalar on the right. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : Prec (P 0) (P 1))
@@ -1051,6 +1116,26 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
   rr_mw_derivative_X_sub_one_sequence using
+    base := hbase,
+    pos_lc := hpos,
+    degree_two := hdeg_two,
+    root_upper := hroot_upper,
+    recurrence := hrec,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi
+
+/-- Real-rootedness endpoint for the unscaled `(X-1)P'` sequence wrapper. -/
+example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
+    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ 1)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = U n * P (n + 1) + (X - 1) * (P (n + 1)).derivative)
+    (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
+    (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_mw_derivative_X_sub_one_sequence_realrooted using
     base := hbase,
     pos_lc := hpos,
     degree_two := hdeg_two,
@@ -2211,6 +2296,30 @@ example {f u : ℝ[X]} {c : ℝ}
     target_pos_lc := hF_pos,
     source_pos_lc := hf_pos,
     coeff_nonneg := hc,
+    root_upper := hroots_le_neg_one
+
+example {f u : ℝ[X]}
+    (hf : f.Splits)
+    (hdegf : 2 ≤ f.natDegree)
+    (hroots_le_neg_one : ∀ r, f.IsRoot r → r ≤ -1)
+    (hdeg_lo :
+      f.natDegree ≤
+        (u * f + (-(C ((3 : ℝ) + 1)) * X * (1 + X)) * f.derivative).natDegree)
+    (hdeg_hi :
+      (u * f + (-(C ((3 : ℝ) + 1)) * X * (1 + X)) * f.derivative).natDegree ≤
+        f.natDegree + 1)
+    (hF_pos :
+      HasPosLeadingCoeff
+        (u * f + (-(C ((3 : ℝ) + 1)) * X * (1 + X)) * f.derivative))
+    (hf_pos : HasPosLeadingCoeff f) :
+    Prec f (u * f + (-(C ((3 : ℝ) + 1)) * X * (1 + X)) * f.derivative) := by
+  rr_mw_derivative_neg_X_one_add_outer_auto using
+    splits := hf,
+    degree_two := hdegf,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi,
+    target_pos_lc := hF_pos,
+    source_pos_lc := hf_pos,
     root_upper := hroots_le_neg_one
 
 example {f u : ℝ[X]} {c : ℝ}
