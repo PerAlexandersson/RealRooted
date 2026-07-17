@@ -985,6 +985,23 @@ example
 
 example
     {alpha beta : ℕ → ℝ} {d m : ℕ}
+    {A B : ℝ[X]}
+    (halpha : jensenPolynomial d alpha = ((X + 1 : ℝ[X]) ^ m) * A)
+    (hbeta : X * jensenPolynomial d beta = ((X + 1 : ℝ[X]) ^ m) * B)
+    (hA : CubicPFDiscriminantCertificate A)
+    (hB : CubicPFDiscriminantCertificate B)
+    (hS : ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate (A + C lam * B)) :
+    BidiagonalJensenPencilCertificate alpha beta d := by
+  rr_pf_bidiagonal_certificate using
+    alpha_factor := halpha,
+    beta_factor := hbeta,
+    alpha_cubic := hA,
+    beta_cubic := hB,
+    pencil_cubic := hS
+
+example
+    {alpha beta : ℕ → ℝ} {d m : ℕ}
     {A B : ℝ[X]} {S : ℝ → ℝ[X]}
     (halpha : jensenPolynomial d alpha = ((X + 1 : ℝ[X]) ^ m) * A)
     (hbeta : X * jensenPolynomial d beta = ((X + 1 : ℝ[X]) ^ m) * B)
@@ -999,6 +1016,23 @@ example
     alpha_factor := halpha,
     beta_factor := hbeta,
     pencil_factor := hpencil,
+    alpha_cubic := hA,
+    beta_cubic := hB,
+    pencil_cubic := hS
+
+example
+    {alpha beta : ℕ → ℝ} {d m : ℕ}
+    {A B : ℝ[X]}
+    (halpha : jensenPolynomial d alpha = ((X + 1 : ℝ[X]) ^ m) * A)
+    (hbeta : X * jensenPolynomial d beta = ((X + 1 : ℝ[X]) ^ m) * B)
+    (hA : CubicPFDiscriminantCertificate A)
+    (hB : CubicPFDiscriminantCertificate B)
+    (hS : ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate (A + C lam * B)) :
+    BidiagonalCubicResidualCertificate alpha beta d := by
+  rr_pf_bidiagonal_cubic_certificate using
+    alpha_factor := halpha,
+    beta_factor := hbeta,
     alpha_cubic := hA,
     beta_cubic := hB,
     pencil_cubic := hS
@@ -1277,7 +1311,7 @@ example
 
 This example has the actual differential recurrence and actual residual
 polynomials.  The residual cubic certificates are discharged below; the
-remaining hypotheses are the symbolic Jensen factorization leaves. -/
+remaining hypotheses are the endpoint symbolic Jensen factorization leaves. -/
 example
     {P : Nat → ℝ[X]} {d m : Nat → ℕ}
     (hbackend : jensenPencilBidiagonalPreserverStatement)
@@ -1289,9 +1323,6 @@ example
     (hbeta : ∀ n : Nat,
       X * jensenPolynomial (d n) a036969Beta =
         ((X + 1 : ℝ[X]) ^ m n) * a036969ResidualBeta)
-    (hpencil : ∀ n : Nat, ∀ lam : ℝ, 0 ≤ lam →
-      bidiagonalJensenPencil a036969Alpha a036969Beta (d n) lam =
-        ((X + 1 : ℝ[X]) ^ m n) * a036969ResidualPencil (d n) lam)
     (hrec : ∀ n : Nat,
       P (n + 1) = secondDerivativeBidiagonalForm 1 1 3 0 1 0 (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
@@ -1301,11 +1332,11 @@ example
     degree := hdeg,
     alpha_factor := halpha,
     beta_factor := hbeta,
-    pencil_factor := hpencil,
     alpha_cubic := (fun n => a036969ResidualAlpha_cubicPFDiscriminantCertificate (d n)),
     beta_cubic := (fun _ => a036969ResidualBeta_cubicPFDiscriminantCertificate),
-    pencil_cubic := (fun n _lam hlam =>
-      a036969ResidualPencil_cubicPFDiscriminantCertificate (d n) hlam),
+    pencil_cubic := (fun n lam hlam => by
+      simpa [a036969ResidualPencil] using
+        a036969ResidualPencil_cubicPFDiscriminantCertificate (d n) hlam),
     normalizer := (fun n => secondDerivativeBidiagonalForm_a036969 (P n)),
     recurrence := hrec
 
@@ -1320,9 +1351,6 @@ example
     (hbeta : ∀ n : Nat,
       X * jensenPolynomial (d n) a036969Beta =
         ((X + 1 : ℝ[X]) ^ m n) * a036969ResidualBeta)
-    (hpencil : ∀ n : Nat, ∀ lam : ℝ, 0 ≤ lam →
-      bidiagonalJensenPencil a036969Alpha a036969Beta (d n) lam =
-        ((X + 1 : ℝ[X]) ^ m n) * a036969ResidualPencil (d n) lam)
     (hne : ∀ n : Nat, P n ≠ 0)
     (hrec : ∀ n : Nat,
       P (n + 1) = secondDerivativeBidiagonalForm 1 1 3 0 1 0 (P n)) :
@@ -1333,11 +1361,11 @@ example
     degree := hdeg,
     alpha_factor := halpha,
     beta_factor := hbeta,
-    pencil_factor := hpencil,
     alpha_cubic := (fun n => a036969ResidualAlpha_cubicPFDiscriminantCertificate (d n)),
     beta_cubic := (fun _ => a036969ResidualBeta_cubicPFDiscriminantCertificate),
-    pencil_cubic := (fun n _lam hlam =>
-      a036969ResidualPencil_cubicPFDiscriminantCertificate (d n) hlam),
+    pencil_cubic := (fun n lam hlam => by
+      simpa [a036969ResidualPencil] using
+        a036969ResidualPencil_cubicPFDiscriminantCertificate (d n) hlam),
     normalizer := (fun n => secondDerivativeBidiagonalForm_a036969 (P n)),
     recurrence := hrec,
     nonzero := hne
