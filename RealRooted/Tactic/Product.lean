@@ -70,6 +70,56 @@ theorem isRealRooted_X_add_C_pow (t : ℝ) (n : Nat) :
       simpa [pow_succ, mul_comm, mul_left_comm, mul_assoc] using
         isRealRooted_X_add_C_mul (p := (X + C t : ℝ[X]) ^ n) (t := t) ih
 
+/-- Project the nonvanishing half of a real-rootedness certificate. -/
+theorem ne_zero_of_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
+    p ≠ 0 :=
+  hp.1
+
+/-- Project the splitting half of a real-rootedness certificate. -/
+theorem splits_of_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
+    p.Splits :=
+  hp.2
+
+/-- Project row-wise nonvanishing from a sequence real-rootedness certificate. -/
+theorem ne_zero_of_isRealRooted_sequence {P : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
+    ∀ n : Nat, P n ≠ 0 :=
+  fun n => (hP n).1
+
+/-- Project row-wise splitting from a sequence real-rootedness certificate. -/
+theorem splits_of_isRealRooted_sequence {P : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
+    ∀ n : Nat, (P n).Splits :=
+  fun n => (hP n).2
+
+/-- Project left row-wise nonvanishing from a pair-sequence certificate. -/
+theorem left_ne_zero_of_isRealRooted_pair_sequence {A B : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    ∀ n : Nat, A n ≠ 0 :=
+  fun n => (hP n).1.1
+
+/-- Project left row-wise splitting from a pair-sequence certificate. -/
+theorem left_splits_of_isRealRooted_pair_sequence {A B : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    ∀ n : Nat, (A n).Splits :=
+  fun n => (hP n).1.2
+
+/-- Project right row-wise nonvanishing from a pair-sequence certificate. -/
+theorem right_ne_zero_of_isRealRooted_pair_sequence {A B : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    ∀ n : Nat, B n ≠ 0 :=
+  fun n => (hP n).2.1
+
+/-- Project right row-wise splitting from a pair-sequence certificate. -/
+theorem right_splits_of_isRealRooted_pair_sequence {A B : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    ∀ n : Nat, (B n).Splits :=
+  fun n => (hP n).2.2
+
 /-- Sequence shell for first-order product recurrences with a supplied factor certificate. -/
 theorem isRealRooted_of_product_factor_sequence
     {P F : Nat → ℝ[X]}
@@ -697,6 +747,18 @@ theorem isRealRooted_of_product_scalar_factor_right_sequence
 
 namespace Tactic
 
+syntax (name := rr_exact_realrooted_or_projection)
+  "rr_exact_realrooted_or_projection" term :
+  tactic
+
+syntax (name := rr_exact_realrooted_sequence_or_projection)
+  "rr_exact_realrooted_sequence_or_projection" term :
+  tactic
+
+syntax (name := rr_exact_realrooted_pair_sequence_or_projection)
+  "rr_exact_realrooted_pair_sequence_or_projection" term :
+  tactic
+
 syntax (name := rr_product_factor)
   "rr_product_factor" " using " term ", " term : tactic
 
@@ -890,11 +952,33 @@ syntax (name := rr_product_scalar_factor_sequence_auto_named)
   tactic
 
 macro_rules
+  | `(tactic| rr_exact_realrooted_or_projection $h:term) =>
+      `(tactic|
+        first
+          | exact $h
+          | exact RealRooted.ne_zero_of_isRealRooted $h
+          | exact RealRooted.splits_of_isRealRooted $h)
+  | `(tactic| rr_exact_realrooted_sequence_or_projection $h:term) =>
+      `(tactic|
+        first
+          | exact $h
+          | exact RealRooted.ne_zero_of_isRealRooted_sequence $h
+          | exact RealRooted.splits_of_isRealRooted_sequence $h)
+  | `(tactic| rr_exact_realrooted_pair_sequence_or_projection $h:term) =>
+      `(tactic|
+        first
+          | exact $h
+          | exact RealRooted.left_ne_zero_of_isRealRooted_pair_sequence $h
+          | exact RealRooted.left_splits_of_isRealRooted_pair_sequence $h
+          | exact RealRooted.right_ne_zero_of_isRealRooted_pair_sequence $h
+          | exact RealRooted.right_splits_of_isRealRooted_pair_sequence $h)
   | `(tactic| rr_product_factor using $hp:term, $hs:term) =>
       `(tactic|
         first
-        | exact RealRooted.isRealRooted_C_mul_X_add_C_mul $hp $hs
-        | exact RealRooted.isRealRooted_mul_C_mul_X_add_C $hp $hs)
+          | rr_exact_realrooted_or_projection
+              (RealRooted.isRealRooted_C_mul_X_add_C_mul $hp $hs)
+          | rr_exact_realrooted_or_projection
+              (RealRooted.isRealRooted_mul_C_mul_X_add_C $hp $hs))
   | `(tactic|
       rr_product_factor using
         realrooted := $hp:term,
@@ -904,8 +988,10 @@ macro_rules
   | `(tactic| rr_product_factor_const_first using $hp:term, $hs:term) =>
       `(tactic|
         first
-        | exact RealRooted.isRealRooted_C_add_C_mul_X_mul $hp $hs
-        | exact RealRooted.isRealRooted_mul_C_add_C_mul_X $hp $hs)
+          | rr_exact_realrooted_or_projection
+              (RealRooted.isRealRooted_C_add_C_mul_X_mul $hp $hs)
+          | rr_exact_realrooted_or_projection
+              (RealRooted.isRealRooted_mul_C_add_C_mul_X $hp $hs))
   | `(tactic|
       rr_product_factor_const_first using
         realrooted := $hp:term,
@@ -915,8 +1001,10 @@ macro_rules
   | `(tactic| rr_product_factor_X using $hp:term) =>
       `(tactic|
         first
-        | exact RealRooted.isRealRooted_X_add_C_mul $hp
-        | exact RealRooted.isRealRooted_mul_X_add_C $hp)
+          | rr_exact_realrooted_or_projection
+              (RealRooted.isRealRooted_X_add_C_mul $hp)
+          | rr_exact_realrooted_or_projection
+              (RealRooted.isRealRooted_mul_X_add_C $hp))
   | `(tactic|
       rr_product_factor_X using
         realrooted := $hp:term) =>
@@ -929,10 +1017,12 @@ macro_rules
         recurrence := $hstep:term) =>
       `(tactic|
         first
-          | exact RealRooted.isRealRooted_of_product_factor_sequence
-              $hbase $hfactor $hstep
-          | exact RealRooted.isRealRooted_of_product_factor_right_sequence
-              $hbase $hfactor $hstep)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_factor_sequence
+                $hbase $hfactor $hstep)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_factor_right_sequence
+                $hbase $hfactor $hstep))
   | `(tactic|
       rr_product_lift_sequence using
         quotient_realrooted := $hquot:term,
@@ -940,28 +1030,34 @@ macro_rules
         factorization := $hrow:term) =>
       `(tactic|
         first
-          | exact RealRooted.isRealRooted_of_product_lift_sequence
-              $hquot $hfactor $hrow
-          | exact RealRooted.isRealRooted_of_product_lift_right_sequence
-              $hquot $hfactor $hrow)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_lift_sequence
+                $hquot $hfactor $hrow)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_lift_right_sequence
+                $hquot $hfactor $hrow))
   | `(tactic|
       rr_product_lift_X_sequence using
         quotient_realrooted := $hquot:term,
         factorization := $hrow:term) =>
       `(tactic|
         first
-          | exact RealRooted.isRealRooted_of_X_lift_sequence $hquot $hrow
-          | exact RealRooted.isRealRooted_of_X_lift_right_sequence $hquot $hrow)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_X_lift_sequence $hquot $hrow)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_X_lift_right_sequence $hquot $hrow))
   | `(tactic|
       rr_product_lift_X_add_C_pow_sequence using
         quotient_realrooted := $hquot:term,
         factorization := $hrow:term) =>
       `(tactic|
         first
-          | exact RealRooted.isRealRooted_of_X_add_C_pow_lift_sequence
-              $hquot $hrow
-          | exact RealRooted.isRealRooted_of_X_add_C_pow_lift_right_sequence
-              $hquot $hrow)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_X_add_C_pow_lift_sequence
+                $hquot $hrow)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_X_add_C_pow_lift_right_sequence
+                $hquot $hrow))
   | `(tactic|
       rr_endpoint_sum_then_X_pair_sequence using
         base := $hbase:term,
@@ -982,8 +1078,9 @@ macro_rules
         x_step := $hx_step:term,
         coprime := $hcop:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_endpoint_sum_then_X_pair_sequence
-          $hbase $hleft_nonneg $hright_nonneg $hsum_step $hx_step $hcop)
+        rr_exact_realrooted_pair_sequence_or_projection
+          (RealRooted.isRealRooted_of_endpoint_sum_then_X_pair_sequence
+            $hbase $hleft_nonneg $hright_nonneg $hsum_step $hx_step $hcop))
   | `(tactic|
       rr_endpoint_X_then_sum_pair_sequence using
         base := $hbase:term,
@@ -1004,8 +1101,9 @@ macro_rules
         sum_step := $hsum_step:term,
         coprime := $hcop:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_endpoint_X_then_sum_pair_sequence
-          $hbase $hleft_nonneg $hright_nonneg $hx_step $hsum_step $hcop)
+        rr_exact_realrooted_pair_sequence_or_projection
+          (RealRooted.isRealRooted_of_endpoint_X_then_sum_pair_sequence
+            $hbase $hleft_nonneg $hright_nonneg $hx_step $hsum_step $hcop))
   | `(tactic|
       rr_endpoint_sum_then_X_pair_lift_sequence using
         base := $hbase:term,
@@ -1017,9 +1115,10 @@ macro_rules
         even_factorization := $heven:term,
         odd_factorization := $hodd:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_endpoint_sum_then_X_pair_lift_sequence
-          $hbase $hleft_nonneg $hright_nonneg $hsum_step $hx_step $hcop
-          $heven $hodd)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_endpoint_sum_then_X_pair_lift_sequence
+            $hbase $hleft_nonneg $hright_nonneg $hsum_step $hx_step $hcop
+            $heven $hodd))
   | `(tactic|
       rr_endpoint_X_then_sum_pair_lift_sequence using
         base := $hbase:term,
@@ -1031,9 +1130,10 @@ macro_rules
         even_factorization := $heven:term,
         odd_factorization := $hodd:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_endpoint_X_then_sum_pair_lift_sequence
-          $hbase $hleft_nonneg $hright_nonneg $hx_step $hsum_step $hcop
-          $heven $hodd)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_endpoint_X_then_sum_pair_lift_sequence
+            $hbase $hleft_nonneg $hright_nonneg $hx_step $hsum_step $hcop
+            $heven $hodd))
   | `(tactic|
       rr_endpoint_X_then_sum_pair_lift_swapped_sequence using
         base := $hbase:term,
@@ -1045,9 +1145,10 @@ macro_rules
         even_factorization := $heven:term,
         odd_factorization := $hodd:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_endpoint_X_then_sum_pair_lift_swapped_sequence
-          $hbase $hleft_nonneg $hright_nonneg $hx_step $hsum_step $hcop
-          $heven $hodd)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_endpoint_X_then_sum_pair_lift_swapped_sequence
+            $hbase $hleft_nonneg $hright_nonneg $hx_step $hsum_step $hcop
+            $heven $hodd))
   | `(tactic|
       rr_product_affine_sequence using
         base := $hbase:term,
@@ -1055,10 +1156,12 @@ macro_rules
         recurrence := $hstep:term) =>
       `(tactic|
         first
-          | exact RealRooted.isRealRooted_of_product_affine_sequence
-              $hbase $hs $hstep
-          | exact RealRooted.isRealRooted_of_product_affine_right_sequence
-              $hbase $hs $hstep)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_affine_sequence
+                $hbase $hs $hstep)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_affine_right_sequence
+                $hbase $hs $hstep))
   | `(tactic|
       rr_product_affine_sequence_auto using
         base := $hbase:term,
@@ -1075,10 +1178,12 @@ macro_rules
         recurrence := $hstep:term) =>
       `(tactic|
         first
-          | exact RealRooted.isRealRooted_of_product_const_first_affine_sequence
-              $hbase $hs $hstep
-          | exact RealRooted.isRealRooted_of_product_const_first_affine_right_sequence
-              $hbase $hs $hstep)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_const_first_affine_sequence
+                $hbase $hs $hstep)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_const_first_affine_right_sequence
+                $hbase $hs $hstep))
   | `(tactic|
       rr_product_const_first_sequence_auto using
         base := $hbase:term,
@@ -1094,10 +1199,12 @@ macro_rules
         recurrence := $hstep:term) =>
       `(tactic|
         first
-          | exact RealRooted.isRealRooted_of_product_X_add_C_sequence
-              $hbase $hstep
-          | exact RealRooted.isRealRooted_of_product_X_add_C_right_sequence
-              $hbase $hstep)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_X_add_C_sequence
+                $hbase $hstep)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_X_add_C_right_sequence
+                $hbase $hstep))
   | `(tactic|
       rr_product_scalar_linear_sequence using
         base := $hbase:term,
@@ -1105,16 +1212,18 @@ macro_rules
         scalar_step := $hscalar:term,
         linear_step := $hlinear:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_product_scalar_linear_sequence
-          $hbase $ha $hscalar $hlinear)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_product_scalar_linear_sequence
+            $hbase $ha $hscalar $hlinear))
   | `(tactic|
       rr_product_scalar_linear_sequence_auto using
         base := $hbase:term,
         scalar_step := $hscalar:term,
         linear_step := $hlinear:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_product_scalar_linear_sequence
-          $hbase (fun n => by positivity) $hscalar $hlinear)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_product_scalar_linear_sequence
+            $hbase (fun n => by positivity) $hscalar $hlinear))
   | `(tactic|
       rr_product_scalar_factor_sequence using
         base := $hbase:term,
@@ -1124,10 +1233,12 @@ macro_rules
         factor_step := $hstep:term) =>
       `(tactic|
         first
-          | exact RealRooted.isRealRooted_of_product_scalar_factor_sequence
-              $hbase $ha $hfactor $hscalar $hstep
-          | exact RealRooted.isRealRooted_of_product_scalar_factor_right_sequence
-              $hbase $ha $hfactor $hscalar $hstep)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_scalar_factor_sequence
+                $hbase $ha $hfactor $hscalar $hstep)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_scalar_factor_right_sequence
+                $hbase $ha $hfactor $hscalar $hstep))
   | `(tactic|
       rr_product_scalar_factor_sequence_auto using
         base := $hbase:term,

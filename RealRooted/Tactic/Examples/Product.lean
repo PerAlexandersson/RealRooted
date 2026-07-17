@@ -17,6 +17,14 @@ example {p : ℝ[X]} {s t : ℝ} (hp : p ≠ 0 ∧ p.Splits) (hs : s ≠ 0) :
   rr_product_factor using hp, hs
 
 example {p : ℝ[X]} {s t : ℝ} (hp : p ≠ 0 ∧ p.Splits) (hs : s ≠ 0) :
+    (C s * X + C t) * p ≠ 0 := by
+  rr_product_factor using hp, hs
+
+example {p : ℝ[X]} {s t : ℝ} (hp : p ≠ 0 ∧ p.Splits) (hs : s ≠ 0) :
+    ((C s * X + C t) * p).Splits := by
+  rr_product_factor using hp, hs
+
+example {p : ℝ[X]} {s t : ℝ} (hp : p ≠ 0 ∧ p.Splits) (hs : s ≠ 0) :
     (p * (C s * X + C t) ≠ 0 ∧ (p * (C s * X + C t)).Splits) := by
   rr_product_factor using
     realrooted := hp,
@@ -47,6 +55,26 @@ example {P F : Nat → ℝ[X]}
     (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
     (hrec : ∀ n : Nat, P (n + 1) = F n * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_factor_sequence using
+    base := hbase,
+    factor_realrooted := hfactor,
+    recurrence := hrec
+
+example {P F : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = F n * P n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_factor_sequence using
+    base := hbase,
+    factor_realrooted := hfactor,
+    recurrence := hrec
+
+example {P F : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = F n * P n) :
+    ∀ n : Nat, (P n).Splits := by
   rr_product_factor_sequence using
     base := hbase,
     factor_realrooted := hfactor,
