@@ -561,19 +561,19 @@ example {p : ℝ[X]} {n : ℕ}
 example {p : ℝ[X]} {n : ℕ} (hp : p ≠ 0 ∧ p.Splits) :
     ((C (2 : ℝ) * X + C (1 + 2 * (n : ℝ))) * p ≠ 0 ∧
       ((C (2 : ℝ) * X + C (1 + 2 * (n : ℝ))) * p).Splits) := by
-  rr_product_factor using hp, (by norm_num : (2 : ℝ) ≠ 0)
+  rr_product_factor_auto using hp
 
 /-- `A038220`-style report order `3 + 2t`. -/
 example {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
     ((C (3 : ℝ) + C (2 : ℝ) * X) * p ≠ 0 ∧
       ((C (3 : ℝ) + C (2 : ℝ) * X) * p).Splits) := by
-  rr_product_factor_const_first using hp, (by norm_num : (2 : ℝ) ≠ 0)
+  rr_product_factor_const_first_auto using hp
 
 /-- `A038226`-style report order `3 + 8t`. -/
 example {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
     ((C (3 : ℝ) + C (8 : ℝ) * X) * p ≠ 0 ∧
       ((C (3 : ℝ) + C (8 : ℝ) * X) * p).Splits) := by
-  rr_product_factor_const_first using hp, (by norm_num : (8 : ℝ) ≠ 0)
+  rr_product_factor_const_first_auto using hp
 
 /-- `A204579`-style unit-slope factor `t - 1 - 2n - n^2`. -/
 example {p : ℝ[X]} {n : ℕ} (hp : p ≠ 0 ∧ p.Splits) :

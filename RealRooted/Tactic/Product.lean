@@ -1268,6 +1268,14 @@ syntax (name := rr_product_factor_named)
     "slope_ne" ":=" term :
   tactic
 
+syntax (name := rr_product_factor_auto)
+  "rr_product_factor_auto" " using " term : tactic
+
+syntax (name := rr_product_factor_auto_named)
+  "rr_product_factor_auto" " using "
+    "realrooted" ":=" term :
+  tactic
+
 syntax (name := rr_product_factor_const_first)
   "rr_product_factor_const_first" " using " term ", " term : tactic
 
@@ -1275,6 +1283,14 @@ syntax (name := rr_product_factor_const_first_named)
   "rr_product_factor_const_first" " using "
     "realrooted" ":=" term ","
     "slope_ne" ":=" term :
+  tactic
+
+syntax (name := rr_product_factor_const_first_auto)
+  "rr_product_factor_const_first_auto" " using " term : tactic
+
+syntax (name := rr_product_factor_const_first_auto_named)
+  "rr_product_factor_const_first_auto" " using "
+    "realrooted" ":=" term :
   tactic
 
 syntax (name := rr_product_factor_X)
@@ -1723,6 +1739,14 @@ macro_rules
         slope_ne := $hs:term) =>
       `(tactic|
         rr_product_factor using $hp, $hs)
+  | `(tactic| rr_product_factor_auto using $hp:term) =>
+      `(tactic|
+        rr_product_factor using $hp, (by rr_product_nonzero))
+  | `(tactic|
+      rr_product_factor_auto using
+        realrooted := $hp:term) =>
+      `(tactic|
+        rr_product_factor_auto using $hp)
   | `(tactic| rr_product_factor_const_first using $hp:term, $hs:term) =>
       `(tactic|
         first
@@ -1736,6 +1760,14 @@ macro_rules
         slope_ne := $hs:term) =>
       `(tactic|
         rr_product_factor_const_first using $hp, $hs)
+  | `(tactic| rr_product_factor_const_first_auto using $hp:term) =>
+      `(tactic|
+        rr_product_factor_const_first using $hp, (by rr_product_nonzero))
+  | `(tactic|
+      rr_product_factor_const_first_auto using
+        realrooted := $hp:term) =>
+      `(tactic|
+        rr_product_factor_const_first_auto using $hp)
   | `(tactic| rr_product_factor_X using $hp:term) =>
       `(tactic|
         first
