@@ -620,6 +620,21 @@ example {P F : Nat → ℝ[X]} {a : Nat → ℝ}
     scalar_step := hscalar,
     factor_step := hstep
 
+/-- The alternating scalar/supplied-factor shell accepts right scalar steps. -/
+example {P F : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hscalar : ∀ n : Nat, P (2 * n + 1) = P (2 * n) * C (a n))
+    (hstep : ∀ n : Nat, P (2 * n + 2) = P (2 * n + 1) * F n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_scalar_factor_sequence using
+    base := hbase,
+    scalar_ne := ha,
+    factor_realrooted := hfactor,
+    scalar_step := hscalar,
+    factor_step := hstep
+
 /-- The alternating scalar/supplied-factor shell also accepts the factor on the right. -/
 example {P F : Nat → ℝ[X]} {a : Nat → ℝ}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
@@ -634,6 +649,19 @@ example {P F : Nat → ℝ[X]} {a : Nat → ℝ}
     factor_realrooted := hfactor,
     scalar_step := hscalar,
     factor_step := hstep
+
+/-- The alternating scalar/linear shell accepts right-side scalar and linear steps. -/
+example {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hscalar : ∀ n : Nat, P (2 * n + 1) = P (2 * n) * C (a n))
+    (hlinear : ∀ n : Nat, P (2 * n + 2) = P (2 * n + 1) * (X + C (b n))) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_scalar_linear_sequence using
+    base := hbase,
+    scalar_ne := ha,
+    scalar_step := hscalar,
+    linear_step := hlinear
 
 /-- Degree-plateau product shell with a repeated-zero factor on the growth step. -/
 example {P : Nat → ℝ[X]}

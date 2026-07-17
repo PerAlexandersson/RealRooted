@@ -1525,18 +1525,43 @@ macro_rules
         scalar_step := $hscalar:term,
         linear_step := $hlinear:term) =>
       `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_product_scalar_linear_sequence
-            $hbase $ha $hscalar $hlinear))
+        first
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_scalar_linear_sequence
+                $hbase $ha $hscalar $hlinear)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_scalar_linear_sequence
+                $hbase $ha
+                (by
+                  intro n
+                  rw [($hscalar) n, mul_comm])
+                $hlinear)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_scalar_linear_sequence
+                $hbase $ha $hscalar
+                (by
+                  intro n
+                  rw [($hlinear) n, mul_comm]))
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_scalar_linear_sequence
+                $hbase $ha
+                (by
+                  intro n
+                  rw [($hscalar) n, mul_comm])
+                (by
+                  intro n
+                  rw [($hlinear) n, mul_comm])))
   | `(tactic|
       rr_product_scalar_linear_sequence_auto using
         base := $hbase:term,
         scalar_step := $hscalar:term,
         linear_step := $hlinear:term) =>
       `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_product_scalar_linear_sequence
-            $hbase (fun n => by positivity) $hscalar $hlinear))
+        rr_product_scalar_linear_sequence using
+          base := $hbase,
+          scalar_ne := (fun n => by positivity),
+          scalar_step := $hscalar,
+          linear_step := $hlinear)
   | `(tactic|
       rr_product_scalar_factor_sequence using
         base := $hbase:term,
@@ -1551,7 +1576,21 @@ macro_rules
                 $hbase $ha $hfactor $hscalar $hstep)
           | rr_exact_realrooted_sequence_or_projection
               (RealRooted.isRealRooted_of_product_scalar_factor_right_sequence
-                $hbase $ha $hfactor $hscalar $hstep))
+                $hbase $ha $hfactor $hscalar $hstep)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_scalar_factor_sequence
+                $hbase $ha $hfactor
+                (by
+                  intro n
+                  rw [($hscalar) n, mul_comm])
+                $hstep)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_product_scalar_factor_right_sequence
+                $hbase $ha $hfactor
+                (by
+                  intro n
+                  rw [($hscalar) n, mul_comm])
+                $hstep))
   | `(tactic|
       rr_product_scalar_factor_sequence_auto using
         base := $hbase:term,
