@@ -38,8 +38,8 @@ theorem prec_mul_X_both_of_prec_of_nonneg {f g : ℝ[X]}
     Prec (X * f) (X * g) := by
   exact
     prec_mul_X_both_of_roots_nonpos h
-      (roots_nonpos_of_nonneg_coeffs h.1.2 hfnn)
-      (roots_nonpos_of_nonneg_coeffs h.2.1.2 hgnn)
+      (roots_nonpos_of_nonneg_coeffs (left_splits_of_prec h) hfnn)
+      (roots_nonpos_of_nonneg_coeffs (right_splits_of_prec h) hgnn)
 
 /-- Derivative-lag bridge for later mixed lag recurrences.
 
@@ -69,10 +69,10 @@ theorem prec_wagner_derivative_gap_lag_step {f g : ℝ[X]} {a c : ℝ}
     (ha : 0 < a)
     (hc : 0 < c) :
     Prec g (X * (C c * g.derivative + C a * f)) := by
-  have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff h.2.1.1
-  have hf_pos : HasPosLeadingCoeff f := hfnn.pos_leadingCoeff h.1.1
+  have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff (right_ne_zero_of_prec h)
+  have hf_pos : HasPosLeadingCoeff f := hfnn.pos_leadingCoeff (left_ne_zero_of_prec h)
   have hg_der_pos : HasPosLeadingCoeff g.derivative := hg_pos.derivative (by lia)
-  have hder : Prec g.derivative g := (derivative_interlaces h.2.1.2 hdeg).toPrec
+  have hder : Prec g.derivative g := (derivative_interlaces (right_splits_of_prec h) hdeg).toPrec
   have hnonneg : ∀ ap ∈ [(c, g.derivative), (a, f)], 0 ≤ ap.1 := by
     intro ap hap
     rcases List.mem_cons.mp hap with rfl | hap
@@ -263,9 +263,9 @@ theorem not_prec_X_sq_mul_derivative_left {f g : ℝ[X]}
     (hgc0 : g.coeff 0 ≠ 0) :
     ¬ Prec (X ^ 2 * f.derivative) g := by
   intro h
-  have hg0 : g ≠ 0 := h.2.1.1
-  have hgs : g.Splits := h.2.1.2
-  have hXf_ne : X ^ 2 * f.derivative ≠ 0 := h.1.1
+  have hg0 : g ≠ 0 := right_ne_zero_of_prec h
+  have hgs : g.Splits := right_splits_of_prec h
+  have hXf_ne : X ^ 2 * f.derivative ≠ 0 := left_ne_zero_of_prec h
   have hfd : f.derivative ≠ 0 := by
     intro hz
     simp [hz] at hXf_ne
@@ -296,9 +296,9 @@ theorem not_prec_X_sq_mul_derivative_right {f g : ℝ[X]}
     (hgc0 : g.coeff 0 ≠ 0) :
     ¬ Prec g (X ^ 2 * f.derivative) := by
   intro h
-  have hg0 : g ≠ 0 := h.1.1
-  have hgs : g.Splits := h.1.2
-  have hXf_ne : X ^ 2 * f.derivative ≠ 0 := h.2.1.1
+  have hg0 : g ≠ 0 := left_ne_zero_of_prec h
+  have hgs : g.Splits := left_splits_of_prec h
+  have hXf_ne : X ^ 2 * f.derivative ≠ 0 := right_ne_zero_of_prec h
   have hfd : f.derivative ≠ 0 := by
     intro hz
     simp [hz] at hXf_ne
@@ -317,7 +317,7 @@ theorem not_prec_X_sq_mul_derivative_right {f g : ℝ[X]}
       ring
     rw [hrw]
     exact hfnn.derivative.X_mul.X_mul
-  have hXf_splits : (X ^ 2 * f.derivative).Splits := h.2.1.2
+  have hXf_splits : (X ^ 2 * f.derivative).Splits := right_splits_of_prec h
   have huR_mem : uR ∈ (X ^ 2 * f.derivative).roots :=
     (mem_roots hXf_ne).mpr huR_root
   have huR_le : uR ≤ 0 :=
@@ -362,11 +362,11 @@ theorem prec_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
     (ha : 0 < a)
     (hc : 0 ≤ c) :
     Prec g (C a * g + (C c * X) * f) := by
-  have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff h.2.1.1
+  have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff (right_ne_zero_of_prec h)
   have hXf_pos : HasPosLeadingCoeff (X * f) :=
-    (hfnn.pos_leadingCoeff h.1.1).X_mul
+    (hfnn.pos_leadingCoeff (left_ne_zero_of_prec h)).X_mul
   have hX : Prec g (X * f) := prec_mul_X_of_prec_of_nonneg h hfnn hgnn
-  have hself : Prec g g := prec_refl h.2.1.1 h.2.1.2
+  have hself : Prec g g := prec_refl (right_ne_zero_of_prec h) (right_splits_of_prec h)
   have hnonneg : ∀ ap ∈ [(a, g), (c, X * f)], 0 ≤ ap.1 := by
     intro ap hap
     rcases List.mem_cons.mp hap with rfl | hap
