@@ -49,6 +49,15 @@ example {p : ℝ[X]} {t : ℝ} (hp : p ≠ 0 ∧ p.Splits) :
   rr_product_factor_X using
     realrooted := hp
 
+example {p : ℝ[X]} {t : ℝ} (hp : p ≠ 0 ∧ p.Splits) :
+    ((C t + X) * p ≠ 0 ∧ ((C t + X) * p).Splits) := by
+  rr_product_factor_C_add_X using hp
+
+example {p : ℝ[X]} {t : ℝ} (hp : p ≠ 0 ∧ p.Splits) :
+    (p * (C t + X) ≠ 0 ∧ (p * (C t + X)).Splits) := by
+  rr_product_factor_C_add_X using
+    realrooted := hp
+
 /-- Sequence-level product recurrence with supplied real-rooted factors. -/
 example {P F : Nat → ℝ[X]}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
@@ -137,6 +146,24 @@ example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
     (hrow : ∀ n : Nat, P n = Q n * (X + C (t n))) :
     ∀ n : Nat, (P n).Splits := by
   rr_product_lift_X_add_C_sequence using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
+/-- Constant-first unit-slope lifts accept rows `P_n = (t_n+X) Q_n`. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = (C (t n) + X) * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_C_add_X_sequence using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
+/-- Constant-first unit-slope lifts also accept the factor on the right. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = Q n * (C (t n) + X)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_C_add_X_sequence using
     quotient_realrooted := hquot,
     factorization := hrow
 
@@ -293,6 +320,15 @@ example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
     (hrow : ∀ n : Nat, P n = Q n * (X + C (t n)) ^ (m n)) :
     ∀ n : Nat, (P n).Splits := by
   rr_product_lift_X_add_C_row_pow_sequence using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
+/-- Constant-first endpoint powers accept rows `P_n = (t_n+X)^{m_n} Q_n`. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = (C (t n) + X) ^ (m n) * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_C_add_X_pow_sequence using
     quotient_realrooted := hquot,
     factorization := hrow
 
@@ -613,6 +649,24 @@ example {P : Nat → ℝ[X]} {t : Nat → ℝ}
     base := hbase,
     recurrence := hrec
 
+/-- Constant-first unit-slope recurrence with factor `C t_n+X`. -/
+example {P : Nat → ℝ[X]} {t : Nat → ℝ}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = (C (t n) + X) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_C_add_X_sequence using
+    base := hbase,
+    recurrence := hrec
+
+/-- The constant-first unit-slope recurrence accepts the factor on the right. -/
+example {P : Nat → ℝ[X]} {t : Nat → ℝ}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = P n * (C (t n) + X)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_C_add_X_sequence using
+    base := hbase,
+    recurrence := hrec
+
 /-- Product recurrence with powers of the root-at-zero factor. -/
 example {P : Nat → ℝ[X]} {m : Nat → Nat}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
@@ -628,6 +682,15 @@ example {P : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
     (hrec : ∀ n : Nat, P (n + 1) = P n * (X + C (t n)) ^ (m n)) :
     ∀ n : Nat, (P n).Splits := by
   rr_product_X_add_C_pow_sequence using
+    base := hbase,
+    recurrence := hrec
+
+/-- Powered constant-first unit-slope recurrences accept right factors. -/
+example {P : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = P n * (C (t n) + X) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_C_add_X_pow_sequence using
     base := hbase,
     recurrence := hrec
 
