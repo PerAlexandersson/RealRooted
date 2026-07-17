@@ -1703,6 +1703,21 @@ syntax (name := rr_product_scalar_C_add_X_pow_sequence_auto_named)
     "factor_step" ":=" term :
   tactic
 
+syntax (name := rr_product_nonzero) "rr_product_nonzero" : tactic
+
+macro_rules
+  | `(tactic| rr_product_nonzero) =>
+      `(tactic|
+        first
+          | assumption
+          | exact_mod_cast (by assumption)
+          | positivity
+          | norm_num
+          | apply ne_of_gt
+            positivity
+          | apply ne_of_lt
+            nlinarith)
+
 macro_rules
   | `(tactic| rr_product_factor using $hp:term, $hs:term) =>
       `(tactic|
@@ -1831,7 +1846,7 @@ macro_rules
       `(tactic|
         rr_product_lift_C_sequence using
           quotient_realrooted := $hquot,
-          scalar_ne := (fun n => by positivity),
+          scalar_ne := (fun n => by rr_product_nonzero),
           factorization := $hrow)
   | `(tactic|
       rr_product_lift_affine_sequence using
@@ -1853,7 +1868,7 @@ macro_rules
       `(tactic|
         rr_product_lift_affine_sequence using
           quotient_realrooted := $hquot,
-          slope_ne := (fun n => by positivity),
+          slope_ne := (fun n => by rr_product_nonzero),
           factorization := $hrow)
   | `(tactic|
       rr_product_lift_const_first_sequence using
@@ -1875,7 +1890,7 @@ macro_rules
       `(tactic|
         rr_product_lift_const_first_sequence using
           quotient_realrooted := $hquot,
-          slope_ne := (fun n => by positivity),
+          slope_ne := (fun n => by rr_product_nonzero),
           factorization := $hrow)
   | `(tactic|
       rr_product_lift_C_pow_sequence using
@@ -1896,7 +1911,7 @@ macro_rules
       `(tactic|
         rr_product_lift_C_pow_sequence using
           quotient_realrooted := $hquot,
-          scalar_ne := (fun n => by positivity),
+          scalar_ne := (fun n => by rr_product_nonzero),
           factorization := $hrow)
   | `(tactic|
       rr_product_lift_X_pow_sequence using
@@ -1964,7 +1979,7 @@ macro_rules
       `(tactic|
         rr_product_lift_affine_pow_sequence using
           quotient_realrooted := $hquot,
-          slope_ne := (fun n => by positivity),
+          slope_ne := (fun n => by rr_product_nonzero),
           factorization := $hrow)
   | `(tactic|
       rr_product_lift_const_first_affine_pow_sequence using
@@ -1986,7 +2001,7 @@ macro_rules
       `(tactic|
         rr_product_lift_const_first_affine_pow_sequence using
           quotient_realrooted := $hquot,
-          slope_ne := (fun n => by positivity),
+          slope_ne := (fun n => by rr_product_nonzero),
           factorization := $hrow)
   | `(tactic|
       rr_endpoint_sum_then_X_pair_sequence using
@@ -2099,7 +2114,7 @@ macro_rules
       `(tactic|
         rr_product_affine_sequence using
           base := $hbase,
-          slope_ne := (fun n => by positivity),
+          slope_ne := (fun n => by rr_product_nonzero),
           recurrence := $hstep)
   | `(tactic|
       rr_product_const_first_sequence using
@@ -2121,7 +2136,7 @@ macro_rules
       `(tactic|
         rr_product_const_first_sequence using
           base := $hbase,
-          slope_ne := (fun n => by positivity),
+          slope_ne := (fun n => by rr_product_nonzero),
           recurrence := $hstep)
   | `(tactic|
       rr_product_X_sequence using
@@ -2167,7 +2182,7 @@ macro_rules
       `(tactic|
         rr_product_C_pow_sequence using
           base := $hbase,
-          scalar_ne := (fun n => by positivity),
+          scalar_ne := (fun n => by rr_product_nonzero),
           recurrence := $hstep)
   | `(tactic|
       rr_product_X_pow_sequence using
@@ -2225,7 +2240,7 @@ macro_rules
       `(tactic|
         rr_product_affine_pow_sequence using
           base := $hbase,
-          slope_ne := (fun n => by positivity),
+          slope_ne := (fun n => by rr_product_nonzero),
           recurrence := $hstep)
   | `(tactic|
       rr_product_const_first_affine_pow_sequence using
@@ -2247,7 +2262,7 @@ macro_rules
       `(tactic|
         rr_product_const_first_affine_pow_sequence using
           base := $hbase,
-          slope_ne := (fun n => by positivity),
+          slope_ne := (fun n => by rr_product_nonzero),
           recurrence := $hstep)
   | `(tactic|
       rr_product_scalar_sequence using
@@ -2269,7 +2284,7 @@ macro_rules
       `(tactic|
         rr_product_scalar_sequence using
           base := $hbase,
-          scalar_ne := (fun n => by positivity),
+          scalar_ne := (fun n => by rr_product_nonzero),
           recurrence := $hstep)
   | `(tactic|
       rr_product_scalar_linear_sequence using
@@ -2312,7 +2327,7 @@ macro_rules
       `(tactic|
         rr_product_scalar_linear_sequence using
           base := $hbase,
-          scalar_ne := (fun n => by positivity),
+          scalar_ne := (fun n => by rr_product_nonzero),
           scalar_step := $hscalar,
           linear_step := $hlinear)
   | `(tactic|
@@ -2351,7 +2366,7 @@ macro_rules
       `(tactic|
         rr_product_scalar_C_add_X_sequence using
           base := $hbase,
-          scalar_ne := (fun n => by positivity),
+          scalar_ne := (fun n => by rr_product_nonzero),
           scalar_step := $hscalar,
           linear_step := $hlinear)
   | `(tactic|
@@ -2392,7 +2407,7 @@ macro_rules
       `(tactic|
         rr_product_scalar_factor_sequence using
           base := $hbase,
-          scalar_ne := (fun n => by positivity),
+          scalar_ne := (fun n => by rr_product_nonzero),
           factor_realrooted := $hfactor,
           scalar_step := $hscalar,
           factor_step := $hstep)
@@ -2432,7 +2447,7 @@ macro_rules
       `(tactic|
         rr_product_scalar_X_pow_sequence using
           base := $hbase,
-          scalar_ne := (fun n => by positivity),
+          scalar_ne := (fun n => by rr_product_nonzero),
           scalar_step := $hscalar,
           factor_step := $hstep)
   | `(tactic|
@@ -2471,7 +2486,7 @@ macro_rules
       `(tactic|
         rr_product_scalar_X_add_C_pow_sequence using
           base := $hbase,
-          scalar_ne := (fun n => by positivity),
+          scalar_ne := (fun n => by rr_product_nonzero),
           scalar_step := $hscalar,
           factor_step := $hstep)
   | `(tactic|
@@ -2510,7 +2525,7 @@ macro_rules
       `(tactic|
         rr_product_scalar_C_add_X_pow_sequence using
           base := $hbase,
-          scalar_ne := (fun n => by positivity),
+          scalar_ne := (fun n => by rr_product_nonzero),
           scalar_step := $hscalar,
           factor_step := $hstep)
 

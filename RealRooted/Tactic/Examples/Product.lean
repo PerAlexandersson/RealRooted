@@ -12,6 +12,15 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
+example {c : ℝ} (hc : c ≠ 0) : c ≠ 0 := by
+  rr_product_nonzero
+
+example {n : Nat} : (n : ℝ) + 1 ≠ 0 := by
+  rr_product_nonzero
+
+example {n : Nat} : 2 * (n : ℝ) + 1 ≠ 0 := by
+  rr_product_nonzero
+
 example {p : ℝ[X]} {s t : ℝ} (hp : p ≠ 0 ∧ p.Splits) (hs : s ≠ 0) :
     ((C s * X + C t) * p ≠ 0 ∧ ((C s * X + C t) * p).Splits) := by
   rr_product_factor using hp, hs
