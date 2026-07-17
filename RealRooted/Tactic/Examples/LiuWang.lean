@@ -1126,8 +1126,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
       rr_side_ne,
     coeff_eq := by
       intro n
-      have hden : -((n : ℝ) + 1) ≠ 0 := by rr_side_ne
-      field_simp [hden],
+      rr_scalar_coeff_at n,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -1685,16 +1684,13 @@ example {P : Nat → ℝ[X]} {Araw : Nat → ℝ[X]}
       rr_side_ne,
     leading_coeff_eq := by
       intro n
-      have hden : (n : ℝ) + 1 ≠ 0 := by rr_side_ne
-      field_simp [hden],
+      rr_scalar_coeff_at n,
     linear_coeff_eq := by
       intro n
-      have hden : (n : ℝ) + 1 ≠ 0 := by rr_side_ne
-      field_simp [hden],
+      rr_scalar_coeff_at n,
     constant_coeff_eq := by
       intro n
-      have hden : (n : ℝ) + 1 ≠ 0 := by rr_side_ne
-      field_simp [hden],
+      rr_scalar_coeff_at n,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno

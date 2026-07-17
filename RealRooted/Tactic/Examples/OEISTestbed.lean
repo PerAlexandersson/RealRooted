@@ -577,8 +577,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     den_nonzero := by intro n; rr_side_ne,
     coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by rr_side_ne,
-        show (n : ℝ) + 5 ≠ 0 by rr_side_ne],
+      rr_scalar_coeff_at n,
     raw_recurrence := hraw,
     degree_succ := hdeg
 
@@ -663,7 +662,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     den_nonzero := by intro n; rr_side_ne,
     coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 1 ≠ 0 by rr_side_ne],
+      rr_scalar_coeff_at n,
     raw_recurrence := hraw,
     degree_succ := hdeg
 
@@ -690,7 +689,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     den_nonzero := by intro n; rr_side_ne,
     coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by rr_side_ne],
+      rr_scalar_coeff_at n,
     raw_recurrence := hraw,
     degree_succ := hdeg
 
@@ -778,10 +777,10 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     den_nonzero := by intro n; rr_side_ne,
     deriv_coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by rr_side_ne],
+      rr_scalar_coeff_at n,
     lag_coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by rr_side_ne],
+      rr_scalar_coeff_at n,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -837,10 +836,10 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     den_nonzero := by intro n; rr_side_ne,
     deriv_coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by rr_side_ne],
+      rr_scalar_coeff_at n,
     lag_coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by rr_side_ne],
+      rr_scalar_coeff_at n,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -875,10 +874,10 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     den_nonzero := by intro n; rr_side_ne,
     deriv_coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by rr_side_ne],
+      rr_scalar_coeff_at n,
     lag_coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by rr_side_ne],
+      rr_scalar_coeff_at n,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -1117,7 +1116,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     den_nonzero := by intro n; rr_side_ne,
     coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 5 ≠ 0 by rr_side_ne],
+      rr_scalar_coeff_at n,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -1148,7 +1147,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     den_nonzero := by intro n; rr_side_ne,
     coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 4 ≠ 0 by rr_side_ne],
+      rr_scalar_coeff_at n,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -1183,8 +1182,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
       rr_side_ne,
     coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 1 ≠ 0 by rr_side_ne,
-        show (n : ℝ) + 5 ≠ 0 by rr_side_ne],
+      rr_scalar_coeff_at n,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -1217,7 +1215,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     den_nonzero := by intro n; rr_side_ne,
     coeff_eq := by
       intro n
-      field_simp [show (n : ℝ) + 1 ≠ 0 by rr_side_ne],
+      rr_scalar_coeff_at n,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
