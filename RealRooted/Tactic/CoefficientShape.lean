@@ -124,55 +124,55 @@ macro_rules
         nonneg := $hPnn:term,
         realrooted := $hPrr:term) =>
       `(tactic|
-        first
-          | exact RealRooted.hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits
-              $hPnn $hPrr
-          | exact RealRooted.hasNoInternalCoeffZeros_of_hasNonnegCoeffs_of_eq_zero_or_splits
-              $hPnn $hPrr
-          | exact RealRooted.hasLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits
-              $hPnn $hPrr
-          | exact RealRooted.hasUnimodalCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits
-              $hPnn $hPrr
-          | exact RealRooted.hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_isRealRooted
-              $hPnn $hPrr
-          | exact RealRooted.hasNoInternalCoeffZeros_of_hasNonnegCoeffs_of_isRealRooted
-              $hPnn $hPrr
-          | exact RealRooted.hasLogConcaveCoeffs_of_hasNonnegCoeffs_of_isRealRooted
-              $hPnn $hPrr
-          | exact RealRooted.hasUnimodalCoeffs_of_hasNonnegCoeffs_of_isRealRooted
-              $hPnn $hPrr
-          | exact RealRooted.sequence_hasUltraLogConcaveCoeffs_of_nonneg_of_eq_zero_or_splits
-              $hPnn $hPrr
-          | exact (RealRooted.sequence_hasUltraLogConcaveCoeffs_of_nonneg_of_eq_zero_or_splits
-              $hPnn $hPrr _)
-          | exact RealRooted.sequence_hasNoInternalCoeffZeros_of_nonneg_of_eq_zero_or_splits
-              $hPnn $hPrr
-          | exact (RealRooted.sequence_hasNoInternalCoeffZeros_of_nonneg_of_eq_zero_or_splits
-              $hPnn $hPrr _)
-          | exact RealRooted.sequence_hasLogConcaveCoeffs_of_nonneg_of_eq_zero_or_splits
-              $hPnn $hPrr
-          | exact (RealRooted.sequence_hasLogConcaveCoeffs_of_nonneg_of_eq_zero_or_splits
-              $hPnn $hPrr _)
-          | exact RealRooted.sequence_hasUnimodalCoeffs_of_nonneg_of_eq_zero_or_splits
-              $hPnn $hPrr
-          | exact (RealRooted.sequence_hasUnimodalCoeffs_of_nonneg_of_eq_zero_or_splits
-              $hPnn $hPrr _)
-          | exact RealRooted.sequence_hasUltraLogConcaveCoeffs_of_nonneg_of_isRealRooted
-              $hPnn $hPrr
-          | exact (RealRooted.sequence_hasUltraLogConcaveCoeffs_of_nonneg_of_isRealRooted
-              $hPnn $hPrr _)
-          | exact RealRooted.sequence_hasNoInternalCoeffZeros_of_nonneg_of_isRealRooted
-              $hPnn $hPrr
-          | exact (RealRooted.sequence_hasNoInternalCoeffZeros_of_nonneg_of_isRealRooted
-              $hPnn $hPrr _)
-          | exact RealRooted.sequence_hasLogConcaveCoeffs_of_nonneg_of_isRealRooted
-              $hPnn $hPrr
-          | exact (RealRooted.sequence_hasLogConcaveCoeffs_of_nonneg_of_isRealRooted
-              $hPnn $hPrr _)
-          | exact RealRooted.sequence_hasUnimodalCoeffs_of_nonneg_of_isRealRooted
-              $hPnn $hPrr
-          | exact (RealRooted.sequence_hasUnimodalCoeffs_of_nonneg_of_isRealRooted
-              $hPnn $hPrr _))
+        rr_first_exact
+          (RealRooted.hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits
+            $hPnn $hPrr),
+          (RealRooted.hasNoInternalCoeffZeros_of_hasNonnegCoeffs_of_eq_zero_or_splits
+            $hPnn $hPrr),
+          (RealRooted.hasLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits
+            $hPnn $hPrr),
+          (RealRooted.hasUnimodalCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits
+            $hPnn $hPrr),
+          (RealRooted.hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_isRealRooted
+            $hPnn $hPrr),
+          (RealRooted.hasNoInternalCoeffZeros_of_hasNonnegCoeffs_of_isRealRooted
+            $hPnn $hPrr),
+          (RealRooted.hasLogConcaveCoeffs_of_hasNonnegCoeffs_of_isRealRooted
+            $hPnn $hPrr),
+          (RealRooted.hasUnimodalCoeffs_of_hasNonnegCoeffs_of_isRealRooted
+            $hPnn $hPrr),
+          (RealRooted.sequence_hasUltraLogConcaveCoeffs_of_nonneg_of_eq_zero_or_splits
+            $hPnn $hPrr),
+          (RealRooted.sequence_hasUltraLogConcaveCoeffs_of_nonneg_of_eq_zero_or_splits
+            $hPnn $hPrr _),
+          (RealRooted.sequence_hasNoInternalCoeffZeros_of_nonneg_of_eq_zero_or_splits
+            $hPnn $hPrr),
+          (RealRooted.sequence_hasNoInternalCoeffZeros_of_nonneg_of_eq_zero_or_splits
+            $hPnn $hPrr _),
+          (RealRooted.sequence_hasLogConcaveCoeffs_of_nonneg_of_eq_zero_or_splits
+            $hPnn $hPrr),
+          (RealRooted.sequence_hasLogConcaveCoeffs_of_nonneg_of_eq_zero_or_splits
+            $hPnn $hPrr _),
+          (RealRooted.sequence_hasUnimodalCoeffs_of_nonneg_of_eq_zero_or_splits
+            $hPnn $hPrr),
+          (RealRooted.sequence_hasUnimodalCoeffs_of_nonneg_of_eq_zero_or_splits
+            $hPnn $hPrr _),
+          (RealRooted.sequence_hasUltraLogConcaveCoeffs_of_nonneg_of_isRealRooted
+            $hPnn $hPrr),
+          (RealRooted.sequence_hasUltraLogConcaveCoeffs_of_nonneg_of_isRealRooted
+            $hPnn $hPrr _),
+          (RealRooted.sequence_hasNoInternalCoeffZeros_of_nonneg_of_isRealRooted
+            $hPnn $hPrr),
+          (RealRooted.sequence_hasNoInternalCoeffZeros_of_nonneg_of_isRealRooted
+            $hPnn $hPrr _),
+          (RealRooted.sequence_hasLogConcaveCoeffs_of_nonneg_of_isRealRooted
+            $hPnn $hPrr),
+          (RealRooted.sequence_hasLogConcaveCoeffs_of_nonneg_of_isRealRooted
+            $hPnn $hPrr _),
+          (RealRooted.sequence_hasUnimodalCoeffs_of_nonneg_of_isRealRooted
+            $hPnn $hPrr),
+          (RealRooted.sequence_hasUnimodalCoeffs_of_nonneg_of_isRealRooted
+            $hPnn $hPrr _))
   | `(tactic| rr_coeff_shape) =>
       `(tactic|
         first
