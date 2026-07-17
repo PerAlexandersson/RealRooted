@@ -193,6 +193,20 @@ example {P : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     recurrence := hrec
 
+/-- Explicit-coefficient form of the same positive-`X` lag shell. -/
+example {P : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = C (1 : ℝ) * P (n + 1) + (C (1 : ℝ) * X) * P n) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_prec_pos_X_lag_sequence using
+    base := hbase,
+    nonneg_coeffs := hnonneg,
+    current_coeff_pos := (fun _ => by norm_num : ∀ n : Nat, 0 < (1 : ℝ)),
+    lag_coeff_nonneg := (fun _ => by norm_num : ∀ n : Nat, 0 ≤ (1 : ℝ)),
+    recurrence := hrec
+
 /-- Real-rootedness corollary for the same `P_{n+2}=P_{n+1}+tP_n` shell. -/
 example {P : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
@@ -202,6 +216,20 @@ example {P : Nat → ℝ[X]}
   rr_prec_pos_X_lag_sequence_realrooted_auto using
     base := hbase,
     nonneg_coeffs := hnonneg,
+    recurrence := hrec
+
+/-- Explicit-coefficient real-rootedness endpoint for the positive-`X` shell. -/
+example {P : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = C (1 : ℝ) * P (n + 1) + (C (1 : ℝ) * X) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_prec_pos_X_lag_sequence_realrooted using
+    base := hbase,
+    nonneg_coeffs := hnonneg,
+    current_coeff_pos := (fun _ => by norm_num : ∀ n : Nat, 0 < (1 : ℝ)),
+    lag_coeff_nonneg := (fun _ => by norm_num : ∀ n : Nat, 0 ≤ (1 : ℝ)),
     recurrence := hrec
 
 /-- Projection endpoint for the same positive-`X` lag shell. -/
