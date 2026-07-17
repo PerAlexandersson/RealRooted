@@ -2850,6 +2850,16 @@ syntax (name := rr_lw_negative_monic_quadratic_named)
     "no_common_roots" ":=" term :
   tactic
 
+syntax (name := rr_lw_negative_monic_quadratic_auto_named)
+  "rr_lw_negative_monic_quadratic_auto" " using "
+    "interlacer" ":=" term ","
+    "interlacer_pos_lc" ":=" term ","
+    "target_pos_lc" ":=" term ","
+    "degree_lower" ":=" term ","
+    "degree_upper" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
 syntax (name := rr_lw_negative_const_named)
   "rr_lw_negative_const" " using "
     "interlacer" ":=" term ","
@@ -4798,6 +4808,28 @@ macro_rules
                   (by simpa using $hdeg_lo)
                   (by simpa using $hdeg_hi)
                   $hno)))
+  | `(tactic|
+      rr_lw_negative_monic_quadratic_auto using
+        interlacer := $hgf:term,
+        interlacer_pos_lc := $hg_pos:term,
+        target_pos_lc := $hF_pos:term,
+        degree_lower := $hdeg_lo:term,
+        degree_upper := $hdeg_hi:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        first
+          | refine RealRooted.prec_lw_negative_monic_quadratic_lag
+              $hgf $hg_pos ?_ $hF_pos $hdeg_lo $hdeg_hi $hno
+            rr_lw_coeff_nonneg
+          | refine (by
+              simpa using
+                (RealRooted.prec_lw_negative_monic_quadratic_lag
+                  $hgf $hg_pos ?_
+                  (by simpa using $hF_pos)
+                  (by simpa using $hdeg_lo)
+                  (by simpa using $hdeg_hi)
+                  $hno))
+            rr_lw_coeff_nonneg)
   | `(tactic|
       rr_lw_negative_const using
         interlacer := $hgf:term,
