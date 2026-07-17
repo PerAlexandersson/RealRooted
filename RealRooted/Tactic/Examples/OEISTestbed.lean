@@ -265,12 +265,7 @@ example {P : Nat → ℝ[X]}
     degree_two := hdeg_two,
     root_lower := hroot_lower,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A194649`: window shape `(1+t)(1+2t)P'`.
 example {P : Nat → ℝ[X]}
@@ -554,12 +549,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
       rr_mw_den_norm using
         recurrence := hraw n,
         den_nonzero := by rr_mw_active_den_at n,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A062196`: quadratic scalar denominator with `t(1-t)P'`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -590,12 +580,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
       field_simp [show (n : ℝ) + 3 ≠ 0 by positivity,
         show (n : ℝ) + 5 ≠ 0 by positivity],
     raw_recurrence := hraw,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A357613`: positive scalar denominator, leaving the derivative sign
 -- certificate as a separate family-specific obligation.
@@ -653,12 +638,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     pos_lc := hpos,
     degree_two := hdeg_two,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A375853`: active shift of
 -- `(n-1)P_n=(n+2+(3n-2)t)P_{n-1}+2t(1-t)P'_{n-1}`.
@@ -685,12 +665,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
       intro n
       field_simp [show (n : ℝ) + 1 ≠ 0 by positivity],
     raw_recurrence := hraw,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A114655`: active shift of
 -- `(n+1)P_n=(3nt+2n-3t+2)P_{n-1}+2t(2-t)P'_{n-1}`.
@@ -717,12 +692,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
       intro n
       field_simp [show (n : ℝ) + 3 ≠ 0 by positivity],
     raw_recurrence := hraw,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 /-! ## Ma--Wang plus Liu--Wang derivative-lag recurrences -/
 
