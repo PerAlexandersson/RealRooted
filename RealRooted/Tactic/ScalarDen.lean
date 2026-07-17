@@ -91,24 +91,28 @@ theorem eq_add_C_mul_add_C_mul_of_C_mul_eq_C_mul_add_C_mul_add_C_mul
 
 namespace Tactic
 
+macro "rr_scalar_active_arith_at " n:term : tactic =>
+  `(tactic|
+    nlinarith [sq_nonneg (($n : ℝ) + 1), show 0 ≤ ($n : ℝ) by positivity])
+
 macro "rr_scalar_active_nonneg_at " n:term : tactic =>
   `(tactic|
     solve
       | rr_side_nonneg
-      | nlinarith [sq_nonneg (($n : ℝ) + 1), show 0 ≤ ($n : ℝ) by positivity])
+      | rr_scalar_active_arith_at $n)
 
 macro "rr_scalar_active_den_at " n:term : tactic =>
   `(tactic|
     solve
       | rr_side_ne
       | rr_side_pos
-      | nlinarith [sq_nonneg (($n : ℝ) + 1), show 0 ≤ ($n : ℝ) by positivity]
+      | rr_scalar_active_arith_at $n
       | apply ne_of_gt
         rr_side_pos
       | apply ne_of_gt
-        nlinarith [sq_nonneg (($n : ℝ) + 1), show 0 ≤ ($n : ℝ) by positivity]
+        rr_scalar_active_arith_at $n
       | apply ne_of_lt
-        nlinarith [sq_nonneg (($n : ℝ) + 1), show 0 ≤ ($n : ℝ) by positivity])
+        rr_scalar_active_arith_at $n)
 
 syntax (name := rr_scalar_den_norm_named)
   "rr_scalar_den_norm" " using "
