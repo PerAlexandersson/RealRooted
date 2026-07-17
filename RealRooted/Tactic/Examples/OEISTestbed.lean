@@ -617,7 +617,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     have hscalar :
         (1 - (1 / 2 : ℝ) * ((n : ℝ) + 3))⁻¹ * (((n : ℝ) + 2) / 2) =
           -(((n : ℝ) + 2) / ((n : ℝ) + 1)) := by
-      have hnp1 : (n : ℝ) + 1 ≠ 0 := by positivity
+      have hnp1 : (n : ℝ) + 1 ≠ 0 := by rr_side_ne
       have hden_eq :
           1 - (1 / 2 : ℝ) * ((n : ℝ) + 3) = -(((n : ℝ) + 1) / 2) := by
         ring

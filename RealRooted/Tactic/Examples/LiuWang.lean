@@ -1123,12 +1123,11 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     root_lower := hroot_lower,
     den_nonzero := by
       intro n
-      have hposn : 0 < (n : ℝ) + 1 := by positivity
-      exact ne_of_lt (by linarith),
+      exact neg_ne_zero.mpr (ne_of_gt (by rr_side_pos)),
     coeff_eq := by
       intro n
-      have hposn : 0 < (n : ℝ) + 1 := by positivity
-      have hden : -((n : ℝ) + 1) ≠ 0 := ne_of_lt (by linarith)
+      have hden : -((n : ℝ) + 1) ≠ 0 :=
+        neg_ne_zero.mpr (ne_of_gt (by rr_side_pos))
       field_simp [hden],
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
@@ -1684,18 +1683,18 @@ example {P : Nat → ℝ[X]} {Araw : Nat → ℝ[X]}
     den := fun n => (n : ℝ) + 1,
     den_nonzero := by
       intro n
-      exact ne_of_gt (by positivity),
+      rr_side_ne,
     leading_coeff_eq := by
       intro n
-      have hden : (n : ℝ) + 1 ≠ 0 := ne_of_gt (by positivity)
+      have hden : (n : ℝ) + 1 ≠ 0 := by rr_side_ne
       field_simp [hden],
     linear_coeff_eq := by
       intro n
-      have hden : (n : ℝ) + 1 ≠ 0 := ne_of_gt (by positivity)
+      have hden : (n : ℝ) + 1 ≠ 0 := by rr_side_ne
       field_simp [hden],
     constant_coeff_eq := by
       intro n
-      have hden : (n : ℝ) + 1 ≠ 0 := ne_of_gt (by positivity)
+      have hden : (n : ℝ) + 1 ≠ 0 := by rr_side_ne
       field_simp [hden],
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
