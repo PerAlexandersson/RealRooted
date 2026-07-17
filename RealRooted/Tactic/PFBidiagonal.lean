@@ -315,6 +315,23 @@ theorem BidiagonalCubicResidualCertificate.toJensenPencilCertificate
     hcert.alpha_factor hcert.beta_factor hcert.pencil_factor
     hcert.alpha_cubic hcert.beta_cubic hcert.pencil_cubic
 
+/-- A bundled cubic-residual certificate gives a coefficient-bidiagonal PF
+preserver once the global Jensen-pencil backend is available. -/
+theorem BidiagonalCubicResidualCertificate.toPFPreserver
+    {alpha beta : ℕ → ℝ} {d : ℕ}
+    (hcert : BidiagonalCubicResidualCertificate alpha beta d)
+    (hbackend : jensenPencilBidiagonalPreserverStatement) :
+    BidiagonalPFPreserver alpha beta d :=
+  bidiagonalPFPreserver_of_jensenPencil hbackend hcert.toJensenPencilCertificate
+
+/-- Apply a bundled cubic-residual certificate as a PF-bidiagonal preserver. -/
+theorem bidiagonalPFPreserver_of_cubicResidualCertificate
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    {alpha beta : ℕ → ℝ} {d : ℕ}
+    (hcert : BidiagonalCubicResidualCertificate alpha beta d) :
+    BidiagonalPFPreserver alpha beta d :=
+  hcert.toPFPreserver hbackend
+
 /-- Compatibility name for notes and tactic scripts that speak about the
 PF-bidiagonal backend as a theorem statement. -/
 abbrev pfBidiagonalPreserverStatement
@@ -349,6 +366,18 @@ theorem isPFPolynomial_bidiagonalOperator_of_jensenPencil
     IsPFPolynomial (bidiagonalOperator alpha beta p) :=
   isPFPolynomial_bidiagonalOperator_of_preserver
     (bidiagonalPFPreserver_of_jensenPencil hbackend hcert) hp hdeg
+
+/-- Apply a bundled cubic-residual certificate to one coefficient-bidiagonal
+operator. -/
+theorem isPFPolynomial_bidiagonalOperator_of_cubicResidualCertificate
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    {alpha beta : ℕ → ℝ} {d : ℕ} {p : ℝ[X]}
+    (hcert : BidiagonalCubicResidualCertificate alpha beta d)
+    (hp : IsPFPolynomial p)
+    (hdeg : p.natDegree ≤ d) :
+    IsPFPolynomial (bidiagonalOperator alpha beta p) :=
+  isPFPolynomial_bidiagonalOperator_of_preserver
+    (hcert.toPFPreserver hbackend) hp hdeg
 
 /-- Sequence wrapper for first-order recurrences by coefficient-bidiagonal
 PF-preserving operators. -/
@@ -393,9 +422,8 @@ theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidualCertificat
     (hrec : ∀ n : Nat,
       P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) :=
-  isPFPolynomial_of_bidiagonalOperator_sequence_of_jensenPencil
-    hbackend hbase hdeg
-    (fun n => (hcert n).toJensenPencilCertificate) hrec
+  isPFPolynomial_of_bidiagonalOperator_sequence hbase hdeg
+    (fun n => (hcert n).toPFPreserver hbackend) hrec
 
 /-- Sequence wrapper for Family H-style second-derivative recurrences with an
 explicit per-row PF-bidiagonal preserver.
@@ -511,9 +539,8 @@ theorem
         secondDerivativeBidiagonalForm
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) :=
-  isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_jensenPencil
-    hbackend hbase hdeg
-    (fun n => (hcert n).toJensenPencilCertificate) hrec
+  isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence hbase hdeg
+    (fun n => (hcert n).toPFPreserver hbackend) hrec
 
 /-- Short compatibility spelling for the bundled cubic-residual version of the
 second-derivative PF-bidiagonal sequence wrapper. -/

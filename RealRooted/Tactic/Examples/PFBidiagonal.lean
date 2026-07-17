@@ -496,6 +496,22 @@ example
   hcert.toJensenPencilCertificate
 
 example
+    {alpha beta : ℕ → ℝ} {d : ℕ}
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hcert : BidiagonalCubicResidualCertificate alpha beta d) :
+    BidiagonalPFPreserver alpha beta d :=
+  hcert.toPFPreserver hbackend
+
+example
+    {alpha beta : ℕ → ℝ} {d : ℕ} {p : ℝ[X]}
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hcert : BidiagonalCubicResidualCertificate alpha beta d)
+    (hp : IsPFPolynomial p)
+    (hdeg : p.natDegree ≤ d) :
+    IsPFPolynomial (bidiagonalOperator alpha beta p) :=
+  isPFPolynomial_bidiagonalOperator_of_cubicResidualCertificate hbackend hcert hp hdeg
+
+example
     {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
     (hbackend : jensenPencilBidiagonalPreserverStatement)
     (hbase : IsPFPolynomial (P 0))
