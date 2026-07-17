@@ -542,11 +542,7 @@ example
     (hrec : ∀ n : Nat,
       P (n + 1) = secondDerivativeBidiagonalForm 1 1 3 0 1 0 (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
-  have hrecB : ∀ n : Nat,
-      P (n + 1) = bidiagonalOperator a036969Alpha a036969Beta (P n) := by
-    intro n
-    rw [hrec n, secondDerivativeBidiagonalForm_a036969]
-  rr_pf_bidiagonal_sequence_cubic using
+  rr_pf_second_derivative_bidiagonal_sequence_cubic using
     jensen_backend := hbackend,
     base := hbase,
     degree := hdeg,
@@ -556,7 +552,8 @@ example
     alpha_cubic := hA,
     beta_cubic := (fun _ => hB),
     pencil_cubic := hS,
-    recurrence := hrecB
+    normalizer := (fun n => secondDerivativeBidiagonalForm_a036969 (P n)),
+    recurrence := hrec
 
 /-- Same A036969 shell, but with all residual/factorization hints bundled in a
 single per-row certificate.  This is the intended OEIS-facing interface once
@@ -571,16 +568,13 @@ example
     (hrec : ∀ n : Nat,
       P (n + 1) = secondDerivativeBidiagonalForm 1 1 3 0 1 0 (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
-  have hrecB : ∀ n : Nat,
-      P (n + 1) = bidiagonalOperator a036969Alpha a036969Beta (P n) := by
-    intro n
-    rw [hrec n, secondDerivativeBidiagonalForm_a036969]
-  rr_pf_bidiagonal_sequence using
+  rr_pf_second_derivative_bidiagonal_sequence using
     jensen_backend := hbackend,
     cubic_certificate := hcert,
     base := hbase,
     degree := hdeg,
-    recurrence := hrecB
+    normalizer := (fun n => secondDerivativeBidiagonalForm_a036969 (P n)),
+    recurrence := hrec
 
 end TacticExamples
 end RealRooted

@@ -479,6 +479,32 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert
   isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidualCertificate
     hbackend hbase hdeg hcert hrec
 
+/-- Sequence wrapper for second-derivative recurrences whose certificate is
+stated using named coefficient-bidiagonal functions.
+
+This is useful for promoted sequence shells: the recurrence is often recorded
+in differential form, while the generated Jensen/cubic certificate is attached
+to named `alpha` and `beta` coefficient functions. -/
+theorem
+    isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_norm
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
+    {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
+    (hbase : IsPFPolynomial (P 0))
+    (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
+    (hcert : ∀ n : Nat, BidiagonalCubicResidualCertificate (alpha n) (beta n) (d n))
+    (hnorm : ∀ n : Nat,
+      secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n) =
+        bidiagonalOperator (alpha n) (beta n) (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) :=
+  isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidualCertificate
+    hbackend hbase hdeg hcert (fun n => (hrec n).trans (hnorm n))
+
 /-- Sequence wrapper whose per-row Jensen-pencil certificates are supplied by
 common-factor residual cubic certificates. -/
 theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidual
@@ -558,6 +584,41 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidu
               (P n) :=
             secondDerivativeBidiagonalForm_eq_bidiagonalOperator
               (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n))
+
+/-- Sequence wrapper for second-derivative recurrences with unbundled
+common-factor residual cubic certificates attached to named coefficient
+bidiagonal functions. -/
+theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidual_norm
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
+    {a0 a1 b1 b2 c2 c3 : Nat → ℝ}
+    {d m : Nat → ℕ} {A B : Nat → ℝ[X]} {S : Nat → ℝ → ℝ[X]}
+    (hbase : IsPFPolynomial (P 0))
+    (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
+    (halpha : ∀ n : Nat,
+      jensenPolynomial (d n) (alpha n) = ((X + 1 : ℝ[X]) ^ m n) * A n)
+    (hbeta : ∀ n : Nat,
+      X * jensenPolynomial (d n) (beta n) =
+        ((X + 1 : ℝ[X]) ^ m n) * B n)
+    (hpencil : ∀ n : Nat, ∀ lam : ℝ, 0 ≤ lam →
+      bidiagonalJensenPencil (alpha n) (beta n) (d n) lam =
+        ((X + 1 : ℝ[X]) ^ m n) * S n lam)
+    (hA : ∀ n : Nat, CubicPFDiscriminantCertificate (A n))
+    (hB : ∀ n : Nat, CubicPFDiscriminantCertificate (B n))
+    (hS : ∀ n : Nat, ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate (S n lam))
+    (hnorm : ∀ n : Nat,
+      secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n) =
+        bidiagonalOperator (alpha n) (beta n) (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) :=
+  isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidual
+    hbackend hbase hdeg halpha hbeta hpencil hA hB hS
+    (fun n => (hrec n).trans (hnorm n))
 
 namespace Tactic
 
@@ -666,6 +727,41 @@ macro_rules
           RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidual
             $hbackend $hbase $hdeg $halpha $hbeta $hpencil $hA $hB $hS $hrec)
 
+syntax (name := rr_pf_second_derivative_bidiagonal_sequence_cubic_normalized_named)
+  "rr_pf_second_derivative_bidiagonal_sequence_cubic" " using "
+    "jensen_backend" ":=" term ","
+    "base" ":=" term ","
+    "degree" ":=" term ","
+    "alpha_factor" ":=" term ","
+    "beta_factor" ":=" term ","
+    "pencil_factor" ":=" term ","
+    "alpha_cubic" ":=" term ","
+    "beta_cubic" ":=" term ","
+    "pencil_cubic" ":=" term ","
+    "normalizer" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+macro_rules
+  | `(tactic|
+      rr_pf_second_derivative_bidiagonal_sequence_cubic using
+        jensen_backend := $hbackend:term,
+        base := $hbase:term,
+        degree := $hdeg:term,
+        alpha_factor := $halpha:term,
+        beta_factor := $hbeta:term,
+        pencil_factor := $hpencil:term,
+        alpha_cubic := $hA:term,
+        beta_cubic := $hB:term,
+        pencil_cubic := $hS:term,
+        normalizer := $hnorm:term,
+        recurrence := $hrec:term) =>
+      `(tactic|
+        exact
+          RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidual_norm
+            $hbackend $hbase $hdeg $halpha $hbeta $hpencil $hA $hB $hS $hnorm
+            $hrec)
+
 syntax (name := rr_pf_bidiagonal_sequence_jensen_named)
   "rr_pf_bidiagonal_sequence" " using "
     "jensen_backend" ":=" term ","
@@ -770,6 +866,30 @@ macro_rules
         exact
           RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert
             $hbackend $hbase $hdeg $hcert $hrec)
+
+syntax (name := rr_pf_second_derivative_bidiagonal_sequence_cubic_certificate_normalized_named)
+  "rr_pf_second_derivative_bidiagonal_sequence" " using "
+    "jensen_backend" ":=" term ","
+    "cubic_certificate" ":=" term ","
+    "base" ":=" term ","
+    "degree" ":=" term ","
+    "normalizer" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+macro_rules
+  | `(tactic|
+      rr_pf_second_derivative_bidiagonal_sequence using
+        jensen_backend := $hbackend:term,
+        cubic_certificate := $hcert:term,
+        base := $hbase:term,
+        degree := $hdeg:term,
+        normalizer := $hnorm:term,
+        recurrence := $hrec:term) =>
+      `(tactic|
+        exact
+          RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_norm
+            $hbackend $hbase $hdeg $hcert $hnorm $hrec)
 
 end Tactic
 
