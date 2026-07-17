@@ -1105,6 +1105,13 @@ syntax (name := rr_exact_pf_sequence)
   "rr_exact_pf_sequence" term ("," "nonzero" ":=" term)? :
   tactic
 
+syntax (name := rr_second_derivative_bidiagonal_normalizer)
+  "rr_second_derivative_bidiagonal_normalizer" " ["
+    (Lean.Parser.Tactic.simpStar <|>
+     Lean.Parser.Tactic.simpErase <|>
+     Lean.Parser.Tactic.simpLemma),* "]" :
+  tactic
+
 syntax (name := rr_pf_bidiagonal_sequence_named)
   "rr_pf_bidiagonal_sequence" " using "
     "preserver" ":=" term ","
@@ -1142,6 +1149,13 @@ macro_rules
       `(tactic| rr_exact_pf_sequence_or_projection $h)
   | `(tactic| rr_exact_pf_sequence $h:term, nonzero := $hne:term) =>
       `(tactic| rr_exact_pf_sequence_realrooted $h, $hne)
+  | `(tactic| rr_second_derivative_bidiagonal_normalizer [$defs,*]) =>
+      `(tactic|
+        refine RealRooted.secondDerivativeBidiagonalForm_eq_bidiagonalOperator_of_coeff_eq
+          _ ?_ ?_ <;>
+          intro k <;>
+          simp [RealRooted.secondDerivativeQuadraticCoeff, $defs,*] <;>
+          ring)
   | `(tactic|
       rr_pf_bidiagonal_sequence using
         preserver := $hPF:term,

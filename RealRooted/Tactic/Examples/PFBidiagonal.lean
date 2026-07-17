@@ -841,13 +841,7 @@ operator with `alpha(k)=(k+1)^2` and `beta(k)=1`. -/
 theorem secondDerivativeBidiagonalForm_a036969 (p : ℝ[X]) :
     secondDerivativeBidiagonalForm 1 1 3 0 1 0 p =
       bidiagonalOperator a036969Alpha a036969Beta p := by
-  rw [secondDerivativeBidiagonalForm_eq_bidiagonalOperator]
-  congr
-  · funext k
-    simp [a036969Alpha, secondDerivativeQuadraticCoeff]
-    ring
-  · funext k
-    simp [a036969Beta, secondDerivativeQuadraticCoeff]
+  rr_second_derivative_bidiagonal_normalizer [a036969Alpha, a036969Beta]
 
 /-- The coefficient multiplier for the A071951 recurrence. -/
 def a071951Alpha (k : ℕ) : ℝ :=
@@ -1094,12 +1088,7 @@ operator with `alpha(k)=(k+1)(k+2)` and `beta(k)=1`. -/
 theorem secondDerivativeBidiagonalForm_a071951 (p : ℝ[X]) :
     secondDerivativeBidiagonalForm 2 1 4 0 1 0 p =
       bidiagonalOperator a071951Alpha a071951Beta p := by
-  refine secondDerivativeBidiagonalForm_eq_bidiagonalOperator_of_coeff_eq p ?_ ?_
-  · intro k
-    simp [a071951Alpha, secondDerivativeQuadraticCoeff]
-    ring
-  · intro k
-    simp [a071951Beta, secondDerivativeQuadraticCoeff]
+  rr_second_derivative_bidiagonal_normalizer [a071951Alpha, a071951Beta]
 
 /-- The coefficient multiplier for the A080248 recurrence. -/
 def a080248Alpha (k : ℕ) : ℝ :=
@@ -1293,12 +1282,7 @@ operator with `alpha(k)=(k+1)(k+2)/2` and `beta(k)=1`. -/
 theorem secondDerivativeBidiagonalForm_a080248 (p : ℝ[X]) :
     secondDerivativeBidiagonalForm 1 1 2 0 (1 / 2) 0 p =
       bidiagonalOperator a080248Alpha a080248Beta p := by
-  refine secondDerivativeBidiagonalForm_eq_bidiagonalOperator_of_coeff_eq p ?_ ?_
-  · intro k
-    simp [a080248Alpha, secondDerivativeQuadraticCoeff]
-    ring
-  · intro k
-    simp [a080248Beta, secondDerivativeQuadraticCoeff]
+  rr_second_derivative_bidiagonal_normalizer [a080248Alpha, a080248Beta]
 
 /-- The coefficient multiplier for the A156289 recurrence. -/
 def a156289Alpha (k : ℕ) : ℝ :=
@@ -1313,13 +1297,7 @@ operator with `alpha(k)=(k+1)^2` and `beta(k)=2k+3`. -/
 theorem secondDerivativeBidiagonalForm_a156289 (p : ℝ[X]) :
     secondDerivativeBidiagonalForm 1 3 3 2 1 0 p =
       bidiagonalOperator a156289Alpha a156289Beta p := by
-  refine secondDerivativeBidiagonalForm_eq_bidiagonalOperator_of_coeff_eq p ?_ ?_
-  · intro k
-    simp [a156289Alpha, secondDerivativeQuadraticCoeff]
-    ring
-  · intro k
-    simp [a156289Beta, secondDerivativeQuadraticCoeff]
-    ring
+  rr_second_derivative_bidiagonal_normalizer [a156289Alpha, a156289Beta]
 
 /-- The coefficient multiplier for the A160562 recurrence. -/
 def a160562Alpha (k : ℕ) : ℝ :=
@@ -1334,12 +1312,7 @@ operator with `alpha(k)=(2k+1)^2` and `beta(k)=1`. -/
 theorem secondDerivativeBidiagonalForm_a160562 (p : ℝ[X]) :
     secondDerivativeBidiagonalForm 1 1 8 0 4 0 p =
       bidiagonalOperator a160562Alpha a160562Beta p := by
-  refine secondDerivativeBidiagonalForm_eq_bidiagonalOperator_of_coeff_eq p ?_ ?_
-  · intro k
-    simp [a160562Alpha, secondDerivativeQuadraticCoeff]
-    ring
-  · intro k
-    simp [a160562Beta, secondDerivativeQuadraticCoeff]
+  rr_second_derivative_bidiagonal_normalizer [a160562Alpha, a160562Beta]
 
 /-- The residual after removing the common `(1 + X)^(d-2)` Jensen factor for
 the A160562 `alpha` endpoint. -/
@@ -1584,12 +1557,7 @@ operator with `alpha(k)=k^2` and `beta(k)=1`. -/
 theorem secondDerivativeBidiagonalForm_a269945 (p : ℝ[X]) :
     secondDerivativeBidiagonalForm 0 1 1 0 1 0 p =
       bidiagonalOperator a269945Alpha a269945Beta p := by
-  refine secondDerivativeBidiagonalForm_eq_bidiagonalOperator_of_coeff_eq p ?_ ?_
-  · intro k
-    simp [a269945Alpha, secondDerivativeQuadraticCoeff]
-    ring
-  · intro k
-    simp [a269945Beta, secondDerivativeQuadraticCoeff]
+  rr_second_derivative_bidiagonal_normalizer [a269945Alpha, a269945Beta]
 
 /-- The residual after removing the common `(1 + X)^(d-2)` Jensen factor for
 the A269945 `alpha` endpoint. -/
@@ -1808,13 +1776,7 @@ operator with `alpha(k)=(k+1)^2` and `beta(k)=n+1-k`. -/
 theorem secondDerivativeBidiagonalForm_a166960 (n : ℕ) (p : ℝ[X]) :
     secondDerivativeBidiagonalForm 1 (1 + (n : ℝ)) 3 (-1) 1 0 p =
       bidiagonalOperator a166960Alpha (a166960Beta n) p := by
-  refine secondDerivativeBidiagonalForm_eq_bidiagonalOperator_of_coeff_eq p ?_ ?_
-  · intro k
-    simp [a166960Alpha, secondDerivativeQuadraticCoeff]
-    ring
-  · intro k
-    simp [a166960Beta, secondDerivativeQuadraticCoeff]
-    ring
+  rr_second_derivative_bidiagonal_normalizer [a166960Alpha, a166960Beta]
 
 /-- The coefficient multiplier for the A166961 recurrence. -/
 def a166961Alpha (k : ℕ) : ℝ :=
@@ -1829,13 +1791,7 @@ operator with `alpha(k)=(k+1)(2k+1)` and `beta(k)=2n+1-2k`. -/
 theorem secondDerivativeBidiagonalForm_a166961 (n : ℕ) (p : ℝ[X]) :
     secondDerivativeBidiagonalForm 1 (1 + 2 * (n : ℝ)) 5 (-2) 2 0 p =
       bidiagonalOperator a166961Alpha (a166961Beta n) p := by
-  refine secondDerivativeBidiagonalForm_eq_bidiagonalOperator_of_coeff_eq p ?_ ?_
-  · intro k
-    simp [a166961Alpha, secondDerivativeQuadraticCoeff]
-    ring
-  · intro k
-    simp [a166961Beta, secondDerivativeQuadraticCoeff]
-    ring
+  rr_second_derivative_bidiagonal_normalizer [a166961Alpha, a166961Beta]
 
 /-- The coefficient multiplier for the A166962 recurrence. -/
 def a166962Alpha (k : ℕ) : ℝ :=
@@ -1850,13 +1806,7 @@ operator with `alpha(k)=(k+1)(3k+1)` and `beta(k)=3n-5-3k`. -/
 theorem secondDerivativeBidiagonalForm_a166962 (n : ℕ) (p : ℝ[X]) :
     secondDerivativeBidiagonalForm 1 (-5 + 3 * (n : ℝ)) 7 (-3) 3 0 p =
       bidiagonalOperator a166962Alpha (a166962Beta n) p := by
-  refine secondDerivativeBidiagonalForm_eq_bidiagonalOperator_of_coeff_eq p ?_ ?_
-  · intro k
-    simp [a166962Alpha, secondDerivativeQuadraticCoeff]
-    ring
-  · intro k
-    simp [a166962Beta, secondDerivativeQuadraticCoeff]
-    ring
+  rr_second_derivative_bidiagonal_normalizer [a166962Alpha, a166962Beta]
 
 /-- The coefficient multiplier for the A166972 recurrence. -/
 def a166972Alpha (k : ℕ) : ℝ :=
@@ -1871,13 +1821,7 @@ operator with `alpha(k)=(k+1)(3k+1)` and `beta(k)=n-1-k`. -/
 theorem secondDerivativeBidiagonalForm_a166972 (n : ℕ) (p : ℝ[X]) :
     secondDerivativeBidiagonalForm 1 (-1 + (n : ℝ)) 7 (-1) 3 0 p =
       bidiagonalOperator a166972Alpha (a166972Beta n) p := by
-  refine secondDerivativeBidiagonalForm_eq_bidiagonalOperator_of_coeff_eq p ?_ ?_
-  · intro k
-    simp [a166972Alpha, secondDerivativeQuadraticCoeff]
-    ring
-  · intro k
-    simp [a166972Beta, secondDerivativeQuadraticCoeff]
-    ring
+  rr_second_derivative_bidiagonal_normalizer [a166972Alpha, a166972Beta]
 
 /-- The coefficient multiplier for the A191935 recurrence. -/
 def a191935Alpha (_k : ℕ) : ℝ :=
@@ -1894,12 +1838,7 @@ theorem secondDerivativeBidiagonalForm_a191935 (n : ℕ) (p : ℝ[X]) :
         1 (2 + 3 * (n : ℝ) + (n : ℝ) ^ 2)
         0 (-2 - 2 * (n : ℝ)) 0 1 p =
       bidiagonalOperator a191935Alpha (a191935Beta n) p := by
-  refine secondDerivativeBidiagonalForm_eq_bidiagonalOperator_of_coeff_eq p ?_ ?_
-  · intro k
-    simp [a191935Alpha, secondDerivativeQuadraticCoeff]
-  · intro k
-    simp [a191935Beta, secondDerivativeQuadraticCoeff]
-    ring
+  rr_second_derivative_bidiagonal_normalizer [a191935Alpha, a191935Beta]
 
 /-- The coefficient multiplier for the A371081 recurrence. -/
 def a371081Alpha (n k : ℕ) : ℝ :=
@@ -1915,12 +1854,7 @@ theorem secondDerivativeBidiagonalForm_a371081 (n : ℕ) (p : ℝ[X]) :
     secondDerivativeBidiagonalForm
         (((n : ℝ) + 2) ^ 2) 1 (5 + 2 * (n : ℝ)) 0 1 0 p =
       bidiagonalOperator (a371081Alpha n) a371081Beta p := by
-  refine secondDerivativeBidiagonalForm_eq_bidiagonalOperator_of_coeff_eq p ?_ ?_
-  · intro k
-    simp [a371081Alpha, secondDerivativeQuadraticCoeff]
-    ring
-  · intro k
-    simp [a371081Beta, secondDerivativeQuadraticCoeff]
+  rr_second_derivative_bidiagonal_normalizer [a371081Alpha, a371081Beta]
 
 /-- A371081-shaped normalized recurrence shell. -/
 example
@@ -1979,12 +1913,7 @@ theorem secondDerivativeBidiagonalForm_a371259 (n : ℕ) (p : ℝ[X]) :
     secondDerivativeBidiagonalForm
         (((n : ℝ) + 4) ^ 2) 1 (9 + 2 * (n : ℝ)) 0 1 0 p =
       bidiagonalOperator (a371259Alpha n) a371259Beta p := by
-  refine secondDerivativeBidiagonalForm_eq_bidiagonalOperator_of_coeff_eq p ?_ ?_
-  · intro k
-    simp [a371259Alpha, secondDerivativeQuadraticCoeff]
-    ring
-  · intro k
-    simp [a371259Beta, secondDerivativeQuadraticCoeff]
+  rr_second_derivative_bidiagonal_normalizer [a371259Alpha, a371259Beta]
 
 /-- A371259-shaped normalized recurrence shell, real-rooted endpoint. -/
 example
@@ -2044,12 +1973,7 @@ theorem secondDerivativeBidiagonalForm_a390433 (n : ℕ) (p : ℝ[X]) :
     secondDerivativeBidiagonalForm
         (((n : ℝ) - 2) ^ 2) 1 (-3 + 2 * (n : ℝ)) 0 1 0 p =
       bidiagonalOperator (a390433Alpha n) a390433Beta p := by
-  refine secondDerivativeBidiagonalForm_eq_bidiagonalOperator_of_coeff_eq p ?_ ?_
-  · intro k
-    simp [a390433Alpha, secondDerivativeQuadraticCoeff]
-    ring
-  · intro k
-    simp [a390433Beta, secondDerivativeQuadraticCoeff]
+  rr_second_derivative_bidiagonal_normalizer [a390433Alpha, a390433Beta]
 
 /-- A390433-shaped normalized recurrence shell. -/
 example
