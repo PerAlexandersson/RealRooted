@@ -48,9 +48,10 @@ Current test-bed entries:
 - Narayana/Jacobi Family G:
   `A001263`, `A091044`, `A145596`, `A178343`;
 - Favard/Chebyshev Family F:
-  `A049310`.
+  `A049310`, `A053117`, `A053120`, `A053122`, `A053124`, `A078812`,
+  `A084930`, `A124038`.
 
-These 15 entries are meant to stay small and executable.  Harder targets such
+These 22 entries are meant to stay small and executable.  Harder targets such
 as `A390883` should be recorded here, but not forced into this scalar test bed
 until a refinement, companion-vector recurrence, or production-matrix
 certificate is explicit.

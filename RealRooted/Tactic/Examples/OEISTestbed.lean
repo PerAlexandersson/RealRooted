@@ -1344,15 +1344,35 @@ example {P : Nat → ℝ[X]}
     (hP1 : P 1 = X)
     (hstep : ∀ n : Nat, P (n + 2) = X * P (n + 1) - P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  rr_favard_const using
+  rr_favard_const_unit using
     alpha := 0,
-    beta := 1,
-    beta_pos := by norm_num,
     base_zero := hP0,
-    base_one := by simpa using hP1,
-    step := by
-      intro n
-      simpa using hstep n
+    base_one := hP1,
+    step := hstep
+
+-- `A053122`: `P_{n+2}=(t-2)P_{n+1}-P_n`.
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = X - C (2 : ℝ))
+    (hstep : ∀ n : Nat, P (n + 2) = (X - C (2 : ℝ)) * P (n + 1) - P n) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_favard_const_unit using
+    alpha := 2,
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
+-- `A078812`: `P_{n+2}=(t+2)P_{n+1}-P_n`.
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = X - C (-2 : ℝ))
+    (hstep : ∀ n : Nat, P (n + 2) = (X - C (-2 : ℝ)) * P (n + 1) - P n) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_favard_const_unit using
+    alpha := -2,
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
 
 -- `A124039`: row-sign normalized Chebyshev step `P_{n+2}=-tP_{n+1}-P_n`.
 example {P : Nat → ℝ[X]}
@@ -1384,17 +1404,26 @@ example {P : Nat → ℝ[X]}
     (hP1 : P 1 = C (2 : ℝ) * X)
     (hstep : ∀ n : Nat, P (n + 2) = (C (2 : ℝ) * X) * P (n + 1) - P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  rr_favard_affine_const using
+  rr_favard_affine_const_unit using
     slope := 2,
     alpha := 0,
-    beta := 1,
-    slope_pos := by norm_num,
-    beta_pos := by norm_num,
     base_zero := hP0,
-    base_one := by simpa using hP1,
-    step := by
-      intro n
-      simpa using hstep n
+    base_one := hP1,
+    step := hstep
+
+-- `A053124`/`A084930`: `P_{n+2}=(4t-2)P_{n+1}-P_n`.
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = C (4 : ℝ) * X - C (2 : ℝ))
+    (hstep : ∀ n : Nat,
+      P (n + 2) = (C (4 : ℝ) * X - C (2 : ℝ)) * P (n + 1) - P n) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_favard_affine_const_unit using
+    slope := 4,
+    alpha := 2,
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
 
 -- `A137286`: parameterized Favard step `P_m=tP_{m-1}-(m+1)P_{m-2}`.
 example {P : Nat → ℝ[X]}
