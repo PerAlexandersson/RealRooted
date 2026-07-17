@@ -1809,9 +1809,7 @@ namespace Tactic
 macro "rr_mw_active_nonneg_at " n:term : tactic =>
   `(tactic|
     solve
-      | assumption
-      | positivity
-      | norm_num
+      | rr_side_nonneg
       | nlinarith [sq_nonneg (($n : ℝ) + 1), show 0 ≤ ($n : ℝ) by positivity])
 
 macro "rr_mw_degree_from " hdeg:term : tactic =>

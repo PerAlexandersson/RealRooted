@@ -94,12 +94,11 @@ namespace Tactic
 macro "rr_scalar_active_den_at " n:term : tactic =>
   `(tactic|
     solve
-      | assumption
-      | positivity
-      | norm_num
+      | rr_side_ne
+      | rr_side_pos
       | nlinarith [sq_nonneg (($n : ℝ) + 1), show 0 ≤ ($n : ℝ) by positivity]
       | apply ne_of_gt
-        positivity
+        rr_side_pos
       | apply ne_of_gt
         nlinarith [sq_nonneg (($n : ℝ) + 1), show 0 ≤ ($n : ℝ) by positivity]
       | apply ne_of_lt
