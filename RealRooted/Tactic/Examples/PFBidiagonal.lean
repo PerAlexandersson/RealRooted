@@ -478,6 +478,15 @@ private theorem diagonalOperator_succ_mul_succ_two_half_eq (p : ℝ[X]) :
   simp [coeff_diagonalOperator]
   ring
 
+private theorem diagonalOperator_sq_eq_euler (p : ℝ[X]) :
+    diagonalOperator (fun k => (k : ℝ) ^ 2) p =
+      X * derivative (X * derivative p) := by
+  rw [eulerOperator_eq_diagonalOperator p]
+  rw [eulerOperator_eq_diagonalOperator (diagonalOperator (fun k => (k : ℝ)) p)]
+  ext k
+  simp [coeff_diagonalOperator]
+  ring
+
 private theorem diagonalOperator_two_mul_add_one_sq_eq_euler (p : ℝ[X]) :
     diagonalOperator (fun k => (2 * (k : ℝ) + 1) ^ 2) p =
       C (4 : ℝ) * (X * derivative (X * derivative p)) +
@@ -1544,6 +1553,214 @@ theorem secondDerivativeBidiagonalForm_a269945 (p : ℝ[X]) :
   · intro k
     simp [a269945Beta, secondDerivativeQuadraticCoeff]
 
+/-- The residual after removing the common `(1 + X)^(d-2)` Jensen factor for
+the A269945 `alpha` endpoint. -/
+def a269945ResidualAlpha (d : ℕ) : ℝ[X] :=
+  C (d : ℝ) * X + C ((d : ℝ) ^ 2) * X ^ 2
+
+/-- The residual pencil for the A269945 PF-bidiagonal certificate. -/
+def a269945ResidualPencil (d : ℕ) (lam : ℝ) : ℝ[X] :=
+  a269945ResidualAlpha d + C lam * a036969ResidualBeta
+
+/-- The A269945 alpha Jensen endpoint after removing the common residual
+factor. -/
+theorem a269945Alpha_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
+    jensenPolynomial d a269945Alpha =
+      ((X + 1 : ℝ[X]) ^ (d - 2)) * a269945ResidualAlpha d := by
+  rw [jensenPolynomial_eq_diagonalOperator_X_add_one_pow]
+  change diagonalOperator (fun k => (k : ℝ) ^ 2) ((X + 1 : ℝ[X]) ^ d) =
+    ((X + 1 : ℝ[X]) ^ (d - 2)) * a269945ResidualAlpha d
+  rw [diagonalOperator_sq_eq_euler]
+  simp only [a269945ResidualAlpha, Polynomial.derivative_mul, Polynomial.derivative_pow,
+    Polynomial.derivative_X, Polynomial.derivative_add, Polynomial.derivative_one,
+    Polynomial.derivative_natCast, Polynomial.C_pow, Polynomial.C_eq_natCast,
+    one_mul, mul_one, add_zero]
+  have hd1 : d - 1 = d - 2 + 1 := by lia
+  have hd11 : d - 1 - 1 = d - 2 := by lia
+  have hcast_poly : ((d - 2 + 1 : ℕ) : ℝ[X]) = (d : ℝ[X]) - 1 := by
+    have hnat : d - 2 + 1 = d - 1 := by lia
+    have hd_one : 1 ≤ d := by lia
+    rw [hnat]
+    norm_num [Nat.cast_sub hd_one]
+  rw [hd11, hd1]
+  rw [pow_add]
+  rw [hcast_poly]
+  ring
+
+/-- The A269945 beta Jensen endpoint after removing the common residual
+factor. -/
+theorem a269945Beta_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
+    X * jensenPolynomial d a269945Beta =
+      ((X + 1 : ℝ[X]) ^ (d - 2)) * a036969ResidualBeta := by
+  change X * jensenPolynomial d (fun _ => (1 : ℝ)) =
+    ((X + 1 : ℝ[X]) ^ (d - 2)) * a036969ResidualBeta
+  exact oneSequence_jensen_factor d hd
+
+/-- The A269945 alpha residual has nonnegative coefficients. -/
+theorem a269945ResidualAlpha_hasNonnegCoeffs (d : ℕ) :
+    HasNonnegCoeffs (a269945ResidualAlpha d) := by
+  have h1 : HasNonnegCoeffs (C (d : ℝ) * X) :=
+    nonnegCoeffs_C_mul (by positivity) hasNonnegCoeffs_X
+  have h2 : HasNonnegCoeffs (C ((d : ℝ) ^ 2) * X ^ 2) :=
+    nonnegCoeffs_C_mul (by positivity) (hasNonnegCoeffs_X.pow 2)
+  simpa [a269945ResidualAlpha] using h1.add h2
+
+/-- The A269945 alpha residual is at most quadratic. -/
+theorem natDegree_a269945ResidualAlpha_le (d : ℕ) :
+    (a269945ResidualAlpha d).natDegree ≤ 3 := by
+  unfold a269945ResidualAlpha
+  compute_degree
+  norm_num
+
+/-- The A269945 alpha residual has nonnegative cubic discriminant. -/
+theorem cubicDiscr_a269945ResidualAlpha_nonneg (d : ℕ) :
+    0 ≤ cubicDiscr (a269945ResidualAlpha d) := by
+  have hpoly :
+      a269945ResidualAlpha d =
+        C (0 : ℝ) * X ^ 3 +
+          C ((d : ℝ) ^ 2) * X ^ 2 + C (d : ℝ) * X + C (0 : ℝ) := by
+    simp [a269945ResidualAlpha]
+    ring
+  have hdisc :
+      cubicDiscr (a269945ResidualAlpha d) = (d : ℝ) ^ 6 := by
+    rw [hpoly, cubicDiscr_of_coeffs]
+    ring
+  rw [hdisc]
+  positivity
+
+/-- Cubic-discriminant certificate for the A269945 alpha residual. -/
+theorem a269945ResidualAlpha_cubicPFDiscriminantCertificate (d : ℕ) :
+    CubicPFDiscriminantCertificate (a269945ResidualAlpha d) :=
+  ⟨a269945ResidualAlpha_hasNonnegCoeffs d,
+    natDegree_a269945ResidualAlpha_le d,
+    cubicDiscr_a269945ResidualAlpha_nonneg d⟩
+
+private theorem a269945ResidualAlpha_coeff_three (d : ℕ) :
+    (a269945ResidualAlpha d).coeff 3 = 0 := by
+  rw [a269945ResidualAlpha]
+  rw [Polynomial.coeff_add]
+  rw [Polynomial.coeff_C_mul_X, Polynomial.coeff_C_mul_X_pow]
+  simp
+
+private theorem a269945ResidualAlpha_coeff_two (d : ℕ) :
+    (a269945ResidualAlpha d).coeff 2 = (d : ℝ) ^ 2 := by
+  rw [a269945ResidualAlpha]
+  rw [Polynomial.coeff_add]
+  rw [Polynomial.coeff_C_mul_X, Polynomial.coeff_C_mul_X_pow]
+  simp
+
+private theorem a269945ResidualAlpha_coeff_one (d : ℕ) :
+    (a269945ResidualAlpha d).coeff 1 = (d : ℝ) := by
+  rw [a269945ResidualAlpha]
+  rw [Polynomial.coeff_add]
+  rw [Polynomial.coeff_C_mul_X, Polynomial.coeff_C_mul_X_pow]
+  simp
+
+private theorem a269945ResidualAlpha_coeff_zero (d : ℕ) :
+    (a269945ResidualAlpha d).coeff 0 = 0 := by
+  rw [a269945ResidualAlpha]
+  rw [Polynomial.coeff_add]
+  rw [Polynomial.coeff_C_mul_X, Polynomial.coeff_C_mul_X_pow]
+  simp
+
+private theorem a269945ResidualPencil_coeff_three (d : ℕ) (lam : ℝ) :
+    (a269945ResidualPencil d lam).coeff 3 = lam := by
+  rw [a269945ResidualPencil, Polynomial.coeff_add, a269945ResidualAlpha_coeff_three]
+  have hterm : (C lam * a036969ResidualBeta).coeff 3 = lam := by
+    rw [Polynomial.coeff_C_mul, a036969ResidualBeta_coeff_three]
+    ring
+  rw [hterm]
+  ring
+
+private theorem a269945ResidualPencil_coeff_two (d : ℕ) (lam : ℝ) :
+    (a269945ResidualPencil d lam).coeff 2 = (d : ℝ) ^ 2 + 2 * lam := by
+  rw [a269945ResidualPencil, Polynomial.coeff_add, a269945ResidualAlpha_coeff_two]
+  have hterm : (C lam * a036969ResidualBeta).coeff 2 = 2 * lam := by
+    rw [Polynomial.coeff_C_mul, a036969ResidualBeta_coeff_two]
+    ring
+  rw [hterm]
+
+private theorem a269945ResidualPencil_coeff_one (d : ℕ) (lam : ℝ) :
+    (a269945ResidualPencil d lam).coeff 1 = (d : ℝ) + lam := by
+  rw [a269945ResidualPencil, Polynomial.coeff_add, a269945ResidualAlpha_coeff_one]
+  have hterm : (C lam * a036969ResidualBeta).coeff 1 = lam := by
+    rw [Polynomial.coeff_C_mul, a036969ResidualBeta_coeff_one]
+    ring
+  rw [hterm]
+
+private theorem a269945ResidualPencil_coeff_zero (d : ℕ) (lam : ℝ) :
+    (a269945ResidualPencil d lam).coeff 0 = 0 := by
+  rw [a269945ResidualPencil, Polynomial.coeff_add, a269945ResidualAlpha_coeff_zero]
+  have hterm : (C lam * a036969ResidualBeta).coeff 0 = 0 := by
+    rw [Polynomial.coeff_C_mul, a036969ResidualBeta_coeff_zero]
+    ring
+  rw [hterm]
+  ring
+
+/-- The A269945 residual pencil has nonnegative coefficients for
+nonnegative pencil parameter. -/
+theorem a269945ResidualPencil_hasNonnegCoeffs
+    (d : ℕ) {lam : ℝ} (hlam : 0 ≤ lam) :
+    HasNonnegCoeffs (a269945ResidualPencil d lam) := by
+  have hterm : HasNonnegCoeffs (C lam * a036969ResidualBeta) :=
+    nonnegCoeffs_C_mul hlam a036969ResidualBeta_hasNonnegCoeffs
+  simpa [a269945ResidualPencil] using
+    (a269945ResidualAlpha_hasNonnegCoeffs d).add hterm
+
+/-- The A269945 residual pencil has degree at most three. -/
+theorem natDegree_a269945ResidualPencil_le (d : ℕ) (lam : ℝ) :
+    (a269945ResidualPencil d lam).natDegree ≤ 3 := by
+  unfold a269945ResidualPencil a269945ResidualAlpha a036969ResidualBeta
+  compute_degree
+
+/-- The A269945 residual pencil has nonnegative cubic discriminant for
+nonnegative pencil parameter. -/
+theorem cubicDiscr_a269945ResidualPencil_nonneg
+    (d : ℕ) {lam : ℝ} (hlam : 0 ≤ lam) :
+    0 ≤ cubicDiscr (a269945ResidualPencil d lam) := by
+  cases d with
+  | zero =>
+      unfold cubicDiscr
+      rw [a269945ResidualPencil_coeff_three, a269945ResidualPencil_coeff_two,
+        a269945ResidualPencil_coeff_one, a269945ResidualPencil_coeff_zero]
+      ring_nf
+      norm_num
+  | succ e =>
+      have hdisc :
+          cubicDiscr (a269945ResidualPencil (Nat.succ e) lam) =
+            ((e : ℝ) + 1) * ((e : ℝ) + lam + 1) ^ 2 *
+              ((e : ℝ) ^ 3 + 3 * (e : ℝ) ^ 2 +
+                4 * (e : ℝ) * lam + 3 * (e : ℝ) + 1) := by
+        unfold cubicDiscr
+        rw [a269945ResidualPencil_coeff_three, a269945ResidualPencil_coeff_two,
+          a269945ResidualPencil_coeff_one, a269945ResidualPencil_coeff_zero]
+        norm_num [Nat.cast_succ]
+        ring
+      rw [hdisc]
+      positivity
+
+/-- Cubic-discriminant certificate for the A269945 residual pencil. -/
+theorem a269945ResidualPencil_cubicPFDiscriminantCertificate
+    (d : ℕ) {lam : ℝ} (hlam : 0 ≤ lam) :
+    CubicPFDiscriminantCertificate (a269945ResidualPencil d lam) :=
+  ⟨a269945ResidualPencil_hasNonnegCoeffs d hlam,
+    natDegree_a269945ResidualPencil_le d lam,
+    cubicDiscr_a269945ResidualPencil_nonneg d hlam⟩
+
+/-- Bundled cubic-residual certificate for the A269945 coefficient-bidiagonal
+operator. -/
+def a269945_bidiagonalCubicResidualCertificate (d : ℕ) (hd : 2 ≤ d) :
+    BidiagonalCubicResidualCertificate a269945Alpha a269945Beta d := by
+  refine bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
+    (a269945Alpha_jensen_factor d hd)
+    (a269945Beta_jensen_factor d hd)
+    (a269945ResidualAlpha_cubicPFDiscriminantCertificate d)
+    a036969ResidualBeta_cubicPFDiscriminantCertificate
+    ?_
+  intro lam hlam
+  simpa [a269945ResidualPencil] using
+    a269945ResidualPencil_cubicPFDiscriminantCertificate d hlam
+
 /-- The coefficient multiplier for the A166960 recurrence. -/
 def a166960Alpha (k : ℕ) : ℝ :=
   ((k : ℝ) + 1) ^ 2
@@ -2391,6 +2608,43 @@ example
     base := hbase,
     degree := hdeg,
     normalizer := (fun n => secondDerivativeBidiagonalForm_a160562 (P n)),
+    recurrence := hrec,
+    nonzero := hne
+
+/-- A269945 shell through the bundled per-row certificate constructor. -/
+example
+    {P : Nat → ℝ[X]} {d : Nat → ℕ}
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbase : IsPFPolynomial (P 0))
+    (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
+    (hd : ∀ n : Nat, 2 ≤ d n)
+    (hrec : ∀ n : Nat,
+      P (n + 1) = secondDerivativeBidiagonalForm 0 1 1 0 1 0 (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) := by
+  rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
+    cubic_certificate := (fun n => a269945_bidiagonalCubicResidualCertificate (d n) (hd n)),
+    base := hbase,
+    degree := hdeg,
+    normalizer := (fun n => secondDerivativeBidiagonalForm_a269945 (P n)),
+    recurrence := hrec
+
+example
+    {P : Nat → ℝ[X]} {d : Nat → ℕ}
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbase : IsPFPolynomial (P 0))
+    (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
+    (hd : ∀ n : Nat, 2 ≤ d n)
+    (hne : ∀ n : Nat, P n ≠ 0)
+    (hrec : ∀ n : Nat,
+      P (n + 1) = secondDerivativeBidiagonalForm 0 1 1 0 1 0 (P n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_pf_second_derivative_bidiagonal_sequence using
+    jensen_backend := hbackend,
+    cubic_certificate := (fun n => a269945_bidiagonalCubicResidualCertificate (d n) (hd n)),
+    base := hbase,
+    degree := hdeg,
+    normalizer := (fun n => secondDerivativeBidiagonalForm_a269945 (P n)),
     recurrence := hrec,
     nonzero := hne
 
