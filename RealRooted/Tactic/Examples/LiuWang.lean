@@ -1123,11 +1123,10 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     root_lower := hroot_lower,
     den_nonzero := by
       intro n
-      exact neg_ne_zero.mpr (ne_of_gt (by rr_side_pos)),
+      rr_side_ne,
     coeff_eq := by
       intro n
-      have hden : -((n : ℝ) + 1) ≠ 0 :=
-        neg_ne_zero.mpr (ne_of_gt (by rr_side_pos))
+      have hden : -((n : ℝ) + 1) ≠ 0 := by rr_side_ne
       field_simp [hden],
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,

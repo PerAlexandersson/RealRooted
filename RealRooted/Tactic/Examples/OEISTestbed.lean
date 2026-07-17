@@ -1180,8 +1180,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     den := fun n => -(((n : ℝ) + 5) * ((n : ℝ) + 1) / 3),
     den_nonzero := by
       intro n
-      have hden_pos : 0 < ((n : ℝ) + 5) * ((n : ℝ) + 1) / 3 := by positivity
-      exact neg_ne_zero.mpr (ne_of_gt hden_pos),
+      rr_side_ne,
     coeff_eq := by
       intro n
       field_simp [show (n : ℝ) + 1 ≠ 0 by rr_side_ne,

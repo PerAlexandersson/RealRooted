@@ -44,6 +44,9 @@ example {n : Nat} : (n : ℝ) + 3 ≠ 0 := by
 example {n : Nat} : 1 + ((n + 2 : Nat) : ℝ) / 2 ≠ 0 := by
   rr_side_ne
 
+example {n : Nat} : -(((n : ℝ) + 5) * ((n : ℝ) + 1) / 3) ≠ 0 := by
+  rr_side_ne
+
 example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a * b := by
   rr_side
 
