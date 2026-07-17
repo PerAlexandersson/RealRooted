@@ -2510,14 +2510,7 @@ syntax (name := rr_lw_coeff_nonneg) "rr_lw_coeff_nonneg" : tactic
 
 macro_rules
   | `(tactic| rr_lw_coeff_nonneg) =>
-      `(tactic|
-        first
-          | assumption
-          | exact_mod_cast (by assumption)
-          | exact sub_nonneg.mpr (by exact_mod_cast (by assumption))
-          | positivity
-          | norm_num
-          | nlinarith)
+      `(tactic| rr_side_nonneg)
 
 macro "rr_lw_active_nonneg_at " n:term : tactic =>
   `(tactic|

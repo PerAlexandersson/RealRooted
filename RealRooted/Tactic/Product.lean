@@ -1707,16 +1707,7 @@ syntax (name := rr_product_nonzero) "rr_product_nonzero" : tactic
 
 macro_rules
   | `(tactic| rr_product_nonzero) =>
-      `(tactic|
-        first
-          | assumption
-          | exact_mod_cast (by assumption)
-          | positivity
-          | norm_num
-          | apply ne_of_gt
-            positivity
-          | apply ne_of_lt
-            nlinarith)
+      `(tactic| rr_side_ne)
 
 macro_rules
   | `(tactic| rr_product_factor using $hp:term, $hs:term) =>

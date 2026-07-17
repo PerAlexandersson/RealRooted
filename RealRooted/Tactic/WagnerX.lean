@@ -627,13 +627,7 @@ syntax (name := rr_wagner_pos) "rr_wagner_pos" : tactic
 
 macro_rules
   | `(tactic| rr_wagner_pos) =>
-      `(tactic|
-        first
-          | assumption
-          | exact_mod_cast (by assumption)
-          | positivity
-          | norm_num
-          | nlinarith)
+      `(tactic| rr_side_pos)
 
 macro_rules
   | `(tactic|

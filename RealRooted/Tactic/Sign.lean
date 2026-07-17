@@ -407,9 +407,7 @@ macro_rules
   | `(tactic| rr_sign_side) =>
       `(tactic|
         first
-          | assumption
-          | exact_mod_cast (by assumption)
-          | exact sub_nonneg.mpr (by exact_mod_cast (by assumption))
+          | rr_side_nonneg
           | rr_side)
 
 syntax (name := rr_sign) "rr_sign" : tactic

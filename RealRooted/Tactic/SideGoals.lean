@@ -27,9 +27,40 @@ This tactic should fail clearly when a mathematical certificate is missing.
 namespace RealRooted
 namespace Tactic
 
+syntax (name := rr_side_nonneg) "rr_side_nonneg" : tactic
+syntax (name := rr_side_pos) "rr_side_pos" : tactic
+syntax (name := rr_side_ne) "rr_side_ne" : tactic
 syntax (name := rr_side) "rr_side" : tactic
 
 macro_rules
+  | `(tactic| rr_side_nonneg) =>
+      `(tactic|
+        first
+          | assumption
+          | exact_mod_cast (by assumption)
+          | exact sub_nonneg.mpr (by exact_mod_cast (by assumption))
+          | positivity
+          | norm_num
+          | nlinarith)
+  | `(tactic| rr_side_pos) =>
+      `(tactic|
+        first
+          | assumption
+          | exact_mod_cast (by assumption)
+          | positivity
+          | norm_num
+          | nlinarith)
+  | `(tactic| rr_side_ne) =>
+      `(tactic|
+        first
+          | assumption
+          | exact_mod_cast (by assumption)
+          | positivity
+          | norm_num
+          | apply ne_of_gt
+            positivity
+          | apply ne_of_lt
+            nlinarith)
   | `(tactic| rr_side) =>
       `(tactic|
         first
