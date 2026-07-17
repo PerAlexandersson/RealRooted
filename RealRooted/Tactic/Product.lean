@@ -134,14 +134,8 @@ theorem isRealRooted_of_product_factor_right_sequence
     (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
     (hstep : ∀ n : Nat, P (n + 1) = P n * F n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  intro n
-  induction n with
-  | zero =>
-      simpa using hbase
-  | succ n ih =>
-      have hnext : P n * F n ≠ 0 ∧ (P n * F n).Splits :=
-        isRealRooted_mul ih.1 ih.2 (hfactor n).1 (hfactor n).2
-      simpa [Nat.succ_eq_add_one, hstep n] using hnext
+  exact isRealRooted_of_product_factor_sequence hbase hfactor
+    (fun n => by rw [hstep n, mul_comm])
 
 /-- Lift real-rootedness from a quotient sequence through row-wise real-rooted
 left factors. -/
@@ -163,10 +157,8 @@ theorem isRealRooted_of_product_lift_right_sequence
     (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
     (hrow : ∀ n : Nat, P n = Q n * F n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  intro n
-  have hnext : Q n * F n ≠ 0 ∧ (Q n * F n).Splits :=
-    isRealRooted_mul (hquot n).1 (hquot n).2 (hfactor n).1 (hfactor n).2
-  simpa [hrow n] using hnext
+  exact isRealRooted_of_product_lift_sequence hquot hfactor
+    (fun n => by rw [hrow n, mul_comm])
 
 /-- Lift through a row-wise factor `X`, used for product reductions with a
 persistent root at the origin. -/
