@@ -13,6 +13,7 @@ import RealRooted.Tactic.Examples.SecondDerivative
 import RealRooted.Tactic.Examples.LiuWang
 import RealRooted.Tactic.Examples.Product
 import RealRooted.Tactic.Examples.PFBidiagonal
+import RealRooted.Tactic.Examples.OEIS
 import RealRooted.Tactic.Examples.OEISPositiveTLag
 import RealRooted.Tactic.Examples.Matrix
 import RealRooted.Tactic.Examples.Combinatorial
