@@ -85,12 +85,8 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     root_lower := hroot_lower,
     root_upper := hroot_upper,
     den_nonzero := by rr_scalar_active_den_all,
-    deriv_coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
-    lag_coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
+    deriv_coeff_eq := by rr_scalar_coeff_all,
+    lag_coeff_eq := by rr_scalar_coeff_all,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno

@@ -1122,9 +1122,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     coeff := fun _ => (1 : ℝ),
     root_lower := hroot_lower,
     den_nonzero := by rr_scalar_active_den_all,
-    coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
+    coeff_eq := by rr_scalar_coeff_all,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -1678,15 +1676,9 @@ example {P : Nat → ℝ[X]} {Araw : Nat → ℝ[X]}
     raw_constant := fun n => (n : ℝ) + 1,
     den := fun n => (n : ℝ) + 1,
     den_nonzero := by rr_scalar_active_den_all,
-    leading_coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
-    linear_coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
-    constant_coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
+    leading_coeff_eq := by rr_scalar_coeff_all,
+    linear_coeff_eq := by rr_scalar_coeff_all,
+    constant_coeff_eq := by rr_scalar_coeff_all,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno

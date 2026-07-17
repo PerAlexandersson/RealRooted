@@ -1069,15 +1069,9 @@ example {P : Nat → ℝ[X]}
       simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
     den_nonzero := by rr_scalar_active_den_all,
-    slope_coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
-    alpha_coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
-    beta_coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
+    slope_coeff_eq := by rr_scalar_coeff_all,
+    alpha_coeff_eq := by rr_scalar_coeff_all,
+    beta_coeff_eq := by rr_scalar_coeff_all,
     raw_recurrence := hraw
 
 /-- Row-sign raw scalar-denominator Favard with product-displayed slope and
@@ -1106,15 +1100,9 @@ example {P : Nat → ℝ[X]}
       simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
     den_nonzero := by rr_scalar_active_den_all,
-    slope_coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
-    alpha_coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
-    beta_coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
+    slope_coeff_eq := by rr_scalar_coeff_all,
+    alpha_coeff_eq := by rr_scalar_coeff_all,
+    beta_coeff_eq := by rr_scalar_coeff_all,
     raw_recurrence := hraw
 
 /-- Monic raw scalar-denominator Favard alias. -/

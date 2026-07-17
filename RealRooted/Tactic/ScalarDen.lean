@@ -129,6 +129,9 @@ macro "rr_scalar_coeff_at " n:term : tactic =>
       | norm_num [Nat.cast_add, Nat.cast_one]
       | simp)
 
+macro "rr_scalar_coeff_all" : tactic =>
+  `(tactic| exact fun n => by rr_scalar_coeff_at n)
+
 syntax (name := rr_scalar_den_norm_named)
   "rr_scalar_den_norm" " using "
     "recurrence" ":=" term ","
