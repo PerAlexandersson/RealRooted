@@ -702,15 +702,14 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  refine
-    RealRooted.prec_mw_lw_derivative_lag_sequence
-      hbase hpos hdeg_two hrec ?_ ?_ hdeg_succ hno
-  · intro n r hr
-    have hr_nonpos : r ≤ 0 := hroots n r hr
-    rr_sign
-  · intro n r hr
-    have hr_nonpos : r ≤ 0 := hroots n r hr
-    rr_sign
+  rr_mw_lw_derivative_lag_sequence_root_upper_sign_auto using
+    base := hbase,
+    pos_lc := hpos,
+    degree_two := hdeg_two,
+    root_upper := hroots,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
 
 -- Root-window route for I2-type derivative-lag recurrences.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
