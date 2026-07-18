@@ -577,6 +577,14 @@ theorem bidiagonalPFPreserver_of_cubicResidualCertificate
     BidiagonalPFPreserver alpha beta d :=
   hcert.toPFPreserver hbackend
 
+/-- Method-style compatibility spelling for cubic-residual PF-bidiagonal certificates. -/
+theorem BidiagonalPFPreserver.of_cubicResidualCertificate
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    {alpha beta : ℕ → ℝ} {d : ℕ}
+    (hcert : BidiagonalCubicResidualCertificate alpha beta d) :
+    BidiagonalPFPreserver alpha beta d :=
+  bidiagonalPFPreserver_of_cubicResidualCertificate hbackend hcert
+
 /-- Quadratic Jensen residual certificate route for a coefficient-bidiagonal preserver. -/
 theorem quadraticBidiagonalPFPreserver_of_cubicResidualCertificate
     (hbackend : jensenPencilBidiagonalPreserverStatement)
