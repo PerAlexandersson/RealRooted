@@ -6726,15 +6726,15 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         first
-          | refine RealRooted.prec_lw_positive_C_mul_X_mul_lag_sequence
-              $hbase $hpos $hnonneg ?_ $hQ $hrec $hdeg_succ $hno <;>
-          rr_lw_active_nonneg_seq
-          | refine RealRooted.prec_lw_positive_C_mul_X_mul_lag_sequence
-              (hbase := $hbase) (hpos := $hpos) (hnonneg := $hnonneg)
-              (hQ_nonneg := $hQ)
-              (hrec := rr_lw_recurrence_mul_assoc_seq $hrec)
-              (hdeg_succ := $hdeg_succ) (hno := $hno) (hc := ?_) <;>
-          rr_lw_active_nonneg_seq)
+          | rr_lw_refine_active_nonneg_seq
+              (RealRooted.prec_lw_positive_C_mul_X_mul_lag_sequence
+                $hbase $hpos $hnonneg ?_ $hQ $hrec $hdeg_succ $hno)
+          | rr_lw_refine_active_nonneg_seq
+              (RealRooted.prec_lw_positive_C_mul_X_mul_lag_sequence
+                (hbase := $hbase) (hpos := $hpos) (hnonneg := $hnonneg)
+                (hQ_nonneg := $hQ)
+                (hrec := rr_lw_recurrence_mul_assoc_seq $hrec)
+                (hdeg_succ := $hdeg_succ) (hno := $hno) (hc := ?_)))
   | `(tactic|
       rr_lw_positive_C_mul_X_mul_sequence_realrooted using
         base := $hbase:term,
@@ -6764,16 +6764,16 @@ macro_rules
       `(tactic|
         rr_first_realrooted_sequence_or_projection
           (by
-            refine RealRooted.isRealRooted_of_lw_positive_C_mul_X_mul_lag_sequence
-              $hbase $hpos $hnonneg ?_ $hQ $hrec $hdeg_succ $hno <;>
-          rr_lw_active_nonneg_seq),
+            rr_lw_refine_active_nonneg_seq
+              (RealRooted.isRealRooted_of_lw_positive_C_mul_X_mul_lag_sequence
+                $hbase $hpos $hnonneg ?_ $hQ $hrec $hdeg_succ $hno)),
           (by
-            refine RealRooted.isRealRooted_of_lw_positive_C_mul_X_mul_lag_sequence
-              (hbase := $hbase) (hpos := $hpos) (hnonneg := $hnonneg)
-              (hQ_nonneg := $hQ)
-              (hrec := rr_lw_recurrence_mul_assoc_seq $hrec)
-              (hdeg_succ := $hdeg_succ) (hno := $hno) (hc := ?_) <;>
-          rr_lw_active_nonneg_seq))
+            rr_lw_refine_active_nonneg_seq
+              (RealRooted.isRealRooted_of_lw_positive_C_mul_X_mul_lag_sequence
+                (hbase := $hbase) (hpos := $hpos) (hnonneg := $hnonneg)
+                (hQ_nonneg := $hQ)
+                (hrec := rr_lw_recurrence_mul_assoc_seq $hrec)
+                (hdeg_succ := $hdeg_succ) (hno := $hno) (hc := ?_))))
   | `(tactic|
       rr_lw_tR_lag_sequence using
         base := $hbase:term,
@@ -6931,9 +6931,9 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        refine RealRooted.prec_lw_X_mul_C_sub_C_mul_X_lag_sequence
-          $hbase $hpos $hnonneg ?_ ?_ $hrec $hdeg_succ $hno <;>
-          rr_lw_active_nonneg_seq)
+        rr_lw_refine_active_nonneg_seq
+          (RealRooted.prec_lw_X_mul_C_sub_C_mul_X_lag_sequence
+            $hbase $hpos $hnonneg ?_ ?_ $hrec $hdeg_succ $hno))
   | `(tactic|
       rr_lw_X_C_sub_C_mul_X_lag_sequence_realrooted using
         base := $hbase:term,
@@ -6959,9 +6959,9 @@ macro_rules
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
           (by
-            refine RealRooted.isRealRooted_of_lw_X_mul_C_sub_C_mul_X_lag_sequence
-              $hbase $hpos $hnonneg ?_ ?_ $hrec $hdeg_succ $hno <;>
-          rr_lw_active_nonneg_seq))
+            rr_lw_refine_active_nonneg_seq
+              (RealRooted.isRealRooted_of_lw_X_mul_C_sub_C_mul_X_lag_sequence
+                $hbase $hpos $hnonneg ?_ ?_ $hrec $hdeg_succ $hno)))
   | `(tactic|
       rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence using
         base := $hbase:term,
@@ -6985,9 +6985,9 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        refine RealRooted.prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_sequence
-          $hbase $hpos $hnonneg ?_ ?_ ?_ $hrec $hdeg_succ $hno <;>
-          rr_lw_active_nonneg_seq)
+        rr_lw_refine_active_nonneg_seq
+          (RealRooted.prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_sequence
+            $hbase $hpos $hnonneg ?_ ?_ ?_ $hrec $hdeg_succ $hno))
   | `(tactic|
       rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_realrooted using
         base := $hbase:term,
@@ -7014,9 +7014,9 @@ macro_rules
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
           (by
-            refine RealRooted.isRealRooted_of_lw_C_mul_X_mul_C_sub_C_mul_X_lag_sequence
-              $hbase $hpos $hnonneg ?_ ?_ ?_ $hrec $hdeg_succ $hno <;>
-          rr_lw_active_nonneg_seq))
+            rr_lw_refine_active_nonneg_seq
+              (RealRooted.isRealRooted_of_lw_C_mul_X_mul_C_sub_C_mul_X_lag_sequence
+                $hbase $hpos $hnonneg ?_ ?_ ?_ $hrec $hdeg_succ $hno)))
   | `(tactic|
       rr_lw_current_CX_sequence using
         base := $hbase:term,
@@ -7096,10 +7096,10 @@ macro_rules
           | exact RealRooted.prec_lw_current_X_positive_t_lag_sequence
               $hbase $hpos $hnonneg
               rr_lw_active_nonneg $hrec $hdeg_succ $hno
-          | refine RealRooted.prec_lw_current_X_positive_t_lag_sequence
-              $hbase $hpos $hnonneg ?_
-              (rr_lw_recurrence_seq $hrec) $hdeg_succ $hno
-            rr_lw_active_nonneg_seq)
+          | rr_lw_refine_active_nonneg_seq
+              (RealRooted.prec_lw_current_X_positive_t_lag_sequence
+                $hbase $hpos $hnonneg ?_
+                (rr_lw_recurrence_seq $hrec) $hdeg_succ $hno))
   | `(tactic|
       rr_lw_current_X_sequence_realrooted using
         base := $hbase:term,
@@ -7130,10 +7130,10 @@ macro_rules
             $hbase $hpos $hnonneg
             rr_lw_active_nonneg $hrec $hdeg_succ $hno),
           (by
-            refine RealRooted.isRealRooted_of_lw_current_X_positive_t_lag_sequence
-              $hbase $hpos $hnonneg ?_
-              (rr_lw_recurrence_seq $hrec) $hdeg_succ $hno
-            rr_lw_active_nonneg_seq))
+            rr_lw_refine_active_nonneg_seq
+              (RealRooted.isRealRooted_of_lw_current_X_positive_t_lag_sequence
+                $hbase $hpos $hnonneg ?_
+                (rr_lw_recurrence_seq $hrec) $hdeg_succ $hno)))
   | `(tactic|
       rr_lw_current_one_add_X_sequence using
         base := $hbase:term,
