@@ -1910,7 +1910,13 @@ syntax (name := rr_favard_goal_variants)
     term ", " term ", " term ", " term ", " term ", " term :
   tactic
 
+syntax (name := rr_favard_refine_positivity_seq)
+  "rr_favard_refine_positivity_seq " term :
+  tactic
+
 macro_rules
+  | `(tactic| rr_favard_refine_positivity_seq $h:term) =>
+      `(tactic| refine $h <;> rr_positivity_seq)
   | `(tactic|
       rr_favard_goal_variants
         $hinterlace:term, $hrealrooted:term, $hnonzero:term,
@@ -1963,28 +1969,28 @@ macro_rules
         recurrence := $hrec:term) =>
       `(tactic|
         first
-          | refine RealRooted.favardInterlacing $hrec ?_ <;>
-              rr_positivity_seq
+          | rr_favard_refine_positivity_seq
+              (RealRooted.favardInterlacing $hrec ?_)
           | rr_exact_realrooted_sequence_or_projection
               (by
-                refine RealRooted.isRealRooted_of_favard $hrec ?_ <;>
-                rr_positivity_seq)
-          | refine RealRooted.nonzero_of_favard $hrec ?_ <;>
-              rr_positivity_seq
-          | refine RealRooted.isGeneralizedSturmSeq_reverse_range_map_of_favard
-              $hrec ?_ <;>
-              rr_positivity_seq
-          | refine RealRooted.favardInterlacing $hrec ?_ _ <;>
-              rr_positivity_seq
+                rr_favard_refine_positivity_seq
+                  (RealRooted.isRealRooted_of_favard $hrec ?_))
+          | rr_favard_refine_positivity_seq
+              (RealRooted.nonzero_of_favard $hrec ?_)
+          | rr_favard_refine_positivity_seq
+              (RealRooted.isGeneralizedSturmSeq_reverse_range_map_of_favard
+                $hrec ?_)
+          | rr_favard_refine_positivity_seq
+              (RealRooted.favardInterlacing $hrec ?_ _)
           | rr_exact_realrooted_sequence_or_projection
               (by
-                refine RealRooted.isRealRooted_of_favard $hrec ?_ _ <;>
-                rr_positivity_seq)
-          | refine RealRooted.nonzero_of_favard $hrec ?_ _ <;>
-              rr_positivity_seq
-          | refine RealRooted.isGeneralizedSturmSeq_reverse_range_map_of_favard
-              $hrec ?_ _ <;>
-              rr_positivity_seq)
+                rr_favard_refine_positivity_seq
+                  (RealRooted.isRealRooted_of_favard $hrec ?_ _))
+          | rr_favard_refine_positivity_seq
+              (RealRooted.nonzero_of_favard $hrec ?_ _)
+          | rr_favard_refine_positivity_seq
+              (RealRooted.isGeneralizedSturmSeq_reverse_range_map_of_favard
+                $hrec ?_ _))
   | `(tactic|
       rr_favard_const using
         $α:term, $β:term, $hβ:term, $hP0:term, $hP1:term, $hstep:term) =>
