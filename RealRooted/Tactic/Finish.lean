@@ -563,6 +563,7 @@ macro_rules
   | `(tactic| rr_nonzero using $h:term) =>
       `(tactic|
         rr_first_exact
+          $h,
           RealRooted.ne_zero_of_isRealRooted_sequence $h,
           (RealRooted.ne_zero_of_isRealRooted_sequence $h _),
           RealRooted.left_ne_zero_of_isRealRooted_pair_sequence $h,
@@ -586,6 +587,7 @@ macro_rules
   | `(tactic| rr_splits using $h:term) =>
       `(tactic|
         rr_first_exact
+          $h,
           RealRooted.splits_of_isRealRooted_sequence $h,
           (RealRooted.splits_of_isRealRooted_sequence $h _),
           RealRooted.left_splits_of_isRealRooted_pair_sequence $h,

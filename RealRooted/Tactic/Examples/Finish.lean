@@ -11,6 +11,12 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
+example {f : ℝ[X]} (hf : f ≠ 0) : f ≠ 0 := by
+  rr_nonzero using hf
+
+example {f : ℝ[X]} (hf : f.Splits) : f.Splits := by
+  rr_splits using hf
+
 example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 := by
   rr_nonzero using hfg
 
@@ -163,6 +169,11 @@ example {P : Nat → ℝ[X]}
   rr_nonzero using hP
 
 example {P : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, P n ≠ 0) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_nonzero using hP
+
+example {P : Nat → ℝ[X]}
     (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
     ∀ n : Nat, P n ≠ 0 := by
   rr_finish
@@ -176,6 +187,11 @@ example {P : Nat → ℝ[X]}
     (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
     ∀ n : Nat, (P n).Splits := by
   rr_splits
+
+example {P : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (P n).Splits) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_splits using hP
 
 example {P : Nat → ℝ[X]}
     (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
