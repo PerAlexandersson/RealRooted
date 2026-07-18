@@ -10,6 +10,7 @@ previous row by a real linear factor.
 -/
 
 open Polynomial
+open scoped BigOperators
 
 namespace RealRooted
 
@@ -206,6 +207,56 @@ theorem isRealRooted_of_product_factor_right_sequence
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_factor_sequence hbase hfactor
     (fun n => by rw [hstep n, mul_comm])
+
+/-- Sequence shell for rows supplied as finite products of real linear factors. -/
+theorem finiteLinearProductSequence_realRooted
+    {P : Nat → ℝ[X]} {root : Nat → Nat → ℝ}
+    (hroot : ∀ n : Nat,
+      P n = ∏ j ∈ Finset.range n, (X - C (root n j))) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  intro n
+  classical
+  have hprod :
+      (∏ j ∈ Finset.range n, (X - C (root n j))) ≠ 0 ∧
+        (∏ j ∈ Finset.range n, (X - C (root n j))).Splits := by
+    induction (Finset.range n) using Finset.induction_on with
+    | empty =>
+        simp
+    | insert j s hjs hs =>
+        have hlin := isRealRooted_X_sub_C (root n j)
+        have hmul :
+            (X - C (root n j)) * (∏ k ∈ s, (X - C (root n k))) ≠ 0 ∧
+              ((X - C (root n j)) * (∏ k ∈ s, (X - C (root n k)))).Splits :=
+          isRealRooted_mul hlin.1 hlin.2 hs.1 hs.2
+        simpa [Finset.prod_insert hjs] using hmul
+  simpa [hroot n] using hprod
+
+/-- Sequence shell for nonzero scalar multiples of finite products of real
+linear factors. -/
+theorem finiteLinearProductScalarSequence_realRooted
+    {P : Nat → ℝ[X]} {c : Nat → ℝ} {rootCount : Nat → Nat}
+    {roots : Nat → Nat → ℝ}
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hroot : ∀ n : Nat,
+      P n = C (c n) *
+        ∏ j ∈ Finset.range (rootCount n), (X - C (roots n j))) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  intro n
+  classical
+  have hprod :
+      (∏ j ∈ Finset.range (rootCount n), (X - C (roots n j))) ≠ 0 ∧
+        (∏ j ∈ Finset.range (rootCount n), (X - C (roots n j))).Splits := by
+    induction (Finset.range (rootCount n)) using Finset.induction_on with
+    | empty =>
+        simp
+    | insert j s hjs hs =>
+        have hlin := isRealRooted_X_sub_C (roots n j)
+        have hmul :
+            (X - C (roots n j)) * (∏ k ∈ s, (X - C (roots n k))) ≠ 0 ∧
+              ((X - C (roots n j)) * (∏ k ∈ s, (X - C (roots n k)))).Splits :=
+          isRealRooted_mul hlin.1 hlin.2 hs.1 hs.2
+        simpa [Finset.prod_insert hjs] using hmul
+  simpa [hroot n] using isRealRooted_C_mul hprod.1 hprod.2 (hc n)
 
 /-- Sequence shell for identity product recurrences. -/
 theorem isRealRooted_of_product_identity_sequence
@@ -1431,6 +1482,16 @@ syntax (name := rr_product_factor_sequence_named)
     "recurrence" ":=" term :
   tactic
 
+syntax (name := rr_affine_product_sequence_named)
+  "rr_affine_product_sequence" " using " "formula" ":=" term :
+  tactic
+
+syntax (name := rr_j1_factorable_lag3_sequence_realrooted_named)
+  "rr_j1_factorable_lag3_sequence_realrooted" " using "
+    "scalar_ne_zero" ":=" term ","
+    "root_grid" ":=" term :
+  tactic
+
 syntax (name := rr_product_identity_sequence_named)
   "rr_product_identity_sequence" " using "
     "base" ":=" term ","
@@ -1969,6 +2030,15 @@ macro_rules
             $hbase $hfactor $hstep),
           (RealRooted.isRealRooted_of_product_factor_right_sequence
             $hbase $hfactor $hstep))
+  | `(tactic| rr_affine_product_sequence using formula := $hroot:term) =>
+      `(tactic|
+        exact RealRooted.finiteLinearProductSequence_realRooted $hroot)
+  | `(tactic|
+      rr_j1_factorable_lag3_sequence_realrooted using
+        scalar_ne_zero := $hc:term,
+        root_grid := $hroot:term) =>
+      `(tactic|
+        exact RealRooted.finiteLinearProductScalarSequence_realRooted $hc $hroot)
   | `(tactic|
       rr_product_identity_sequence using
         base := $hbase:term,

@@ -8,6 +8,7 @@ times `P_{n-1}`.
 -/
 
 open Polynomial
+open scoped BigOperators
 
 namespace RealRooted
 namespace Tactic
@@ -108,6 +109,25 @@ example {P F : Nat → ℝ[X]}
     base := hbase,
     factor_realrooted := hfactor,
     recurrence := hrec
+
+/-- Direct finite-product formula route. -/
+example {P : Nat → ℝ[X]} {root : Nat → Nat → ℝ}
+    (hroot : ∀ n : Nat,
+      P n = ∏ j ∈ Finset.range n, (X - C (root n j))) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_affine_product_sequence using formula := hroot
+
+/-- Scalar finite-product formula route, used by factorable J1 shells. -/
+example {P : Nat → ℝ[X]} {c : Nat → ℝ} {rootCount : Nat → Nat}
+    {roots : Nat → Nat → ℝ}
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hroot : ∀ n : Nat,
+      P n = C (c n) *
+        ∏ j ∈ Finset.range (rootCount n), (X - C (roots n j))) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_j1_factorable_lag3_sequence_realrooted using
+    scalar_ne_zero := hc,
+    root_grid := hroot
 
 /-- `A010054`-style product exit: the active rows are constant in `n`. -/
 example {P : Nat → ℝ[X]}
