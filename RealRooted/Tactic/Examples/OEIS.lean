@@ -536,6 +536,68 @@ example {P : Nat → ℝ[X]}
     recurrence := hrec,
     certificate := periodTwo
 
+/-- Product-lift router with a supplied factor certificate. -/
+example {P Q F : Nat → ℝ[X]}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hrow : ∀ n : Nat, P n = Q n * F n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_sequence using
+    quotient_realrooted := hquot,
+    factor_realrooted := hfactor,
+    factorization := hrow,
+    certificate := suppliedFactor
+
+/-- Product-lift router, repeated root-zero factor. -/
+example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = Q n * X ^ (m n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_sequence using
+    quotient_realrooted := hquot,
+    factorization := hrow,
+    certificate := rootZeroPow
+
+/-- Product-lift router, row-wise unit linear factor. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = (X + C (t n)) * Q n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_sequence using
+    quotient_realrooted := hquot,
+    factorization := hrow,
+    certificate := xAddC
+
+/-- Product-lift router, row-wise unit linear power. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = Q n * (X + C (t n)) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_sequence using
+    quotient_realrooted := hquot,
+    factorization := hrow,
+    certificate := rowXAddCPow
+
+/-- Product-lift router, automatic scalar certificate. -/
+example {P Q : Nat → ℝ[X]}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = C ((n : ℝ) + 1) * Q n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_sequence using
+    quotient_realrooted := hquot,
+    factorization := hrow,
+    certificate := scalarAuto
+
+/-- Product-lift router, automatic affine-slope certificate. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = Q n * (C ((n : ℝ) + 1) * X + C (t n))) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_sequence using
+    quotient_realrooted := hquot,
+    factorization := hrow,
+    certificate := affineAuto
+
 /-- Family G negative-lag router, shifted-square branch. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
