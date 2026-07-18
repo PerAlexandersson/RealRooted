@@ -60,6 +60,7 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairwi
     chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target :=
   fun {fs} hrr hpos =>
     pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
+      chudnovskySeymour_compatiblePairHasCommonLeftInterleaver
       (fs := fs) hpos (hglobal (fun f hf => (hrr f hf).2) hpos)
 
 /-- Direct roadmap wrapper after the finite-family common-left upgrade: the
@@ -69,6 +70,7 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairwi
     : chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target :=
   fun {fs} hrr hpos =>
     pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direct
+      chudnovskySeymour_compatiblePairHasCommonLeftInterleaver
       (fs := fs) (fun f hf => (hrr f hf).2) hpos
 
 /-- The common-left roadmap target follows from the positive-leading common
