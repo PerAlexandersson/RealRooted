@@ -1,0 +1,76 @@
+import RealRooted.Linear
+import RealRooted.Tactic.Finish
+
+/-!
+# Linear-polynomial tactic frontends
+
+Thin wrappers for the degree-one real-rootedness and interlacing endpoints.
+-/
+
+open Lean.Elab.Tactic
+
+namespace RealRooted
+namespace Tactic
+
+syntax (name := rr_X_sub_C_realrooted_named)
+  "rr_X_sub_C_realrooted" " using "
+    "root" ":=" term :
+  tactic
+
+syntax (name := rr_degree_one_realrooted_named)
+  "rr_degree_one_realrooted" " using "
+    "degree" ":=" term :
+  tactic
+
+syntax (name := rr_natDegree_le_one_realrooted_named)
+  "rr_natDegree_le_one_realrooted" " using "
+    "nonzero" ":=" term ","
+    "degree" ":=" term :
+  tactic
+
+syntax (name := rr_interlaces_one_linear_named)
+  "rr_interlaces_one_linear" " using "
+    "degree" ":=" term :
+  tactic
+
+syntax (name := rr_C_mul_realrooted_named)
+  "rr_C_mul_realrooted" " using "
+    "realrooted" ":=" term ","
+    "scalar_ne" ":=" term :
+  tactic
+
+syntax (name := rr_X_mul_realrooted_named)
+  "rr_X_mul_realrooted" " using "
+    "realrooted" ":=" term :
+  tactic
+
+macro_rules
+  | `(tactic|
+      rr_X_sub_C_realrooted using
+        root := $r:term) =>
+      `(tactic| exact RealRooted.isRealRooted_X_sub_C $r)
+  | `(tactic|
+      rr_degree_one_realrooted using
+        degree := $hdeg:term) =>
+      `(tactic| exact RealRooted.isRealRooted_of_degree_one $hdeg)
+  | `(tactic|
+      rr_natDegree_le_one_realrooted using
+        nonzero := $hne:term,
+        degree := $hdeg:term) =>
+      `(tactic| exact RealRooted.isRealRooted_of_natDegree_le_one $hne $hdeg)
+  | `(tactic|
+      rr_interlaces_one_linear using
+        degree := $hdeg:term) =>
+      `(tactic| exact RealRooted.interlaces_one_linear $hdeg)
+  | `(tactic|
+      rr_C_mul_realrooted using
+        realrooted := $hp:term,
+        scalar_ne := $ha:term) =>
+      `(tactic| exact RealRooted.isRealRooted_C_mul $hp.1 $hp.2 $ha)
+  | `(tactic|
+      rr_X_mul_realrooted using
+        realrooted := $hp:term) =>
+      `(tactic| exact RealRooted.isRealRooted_X_mul $hp.1 $hp.2)
+
+end Tactic
+end RealRooted

@@ -9,6 +9,7 @@ import RealRooted.Tactic.Examples.CubicDiscriminant
 import RealRooted.Tactic.Examples.WagnerX
 import RealRooted.Tactic.Examples.Favard
 import RealRooted.Tactic.Examples.MaWang
+import RealRooted.Tactic.Examples.Linear
 import RealRooted.Tactic.Examples.LinearPowerFamily
 import RealRooted.Tactic.Examples.LiuWangRecursion
 import RealRooted.Tactic.Examples.SecondDerivative

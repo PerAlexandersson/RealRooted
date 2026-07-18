@@ -125,6 +125,7 @@ import RealRooted.Tactic.Examples.Favard
 import RealRooted.Tactic.Examples.Finish
 import RealRooted.Tactic.Examples.I2DerivativeLag
 import RealRooted.Tactic.Examples.J1Gap3Reciprocal
+import RealRooted.Tactic.Examples.Linear
 import RealRooted.Tactic.Examples.LinearPowerFamily
 import RealRooted.Tactic.Examples.LiuWang
 import RealRooted.Tactic.Examples.LiuWangRecursion
@@ -147,6 +148,7 @@ import RealRooted.Tactic.Finish
 import RealRooted.Tactic.I2DerivativeLag
 import RealRooted.Tactic.J1Chebyshev
 import RealRooted.Tactic.J1Gap3Reciprocal
+import RealRooted.Tactic.Linear
 import RealRooted.Tactic.LinearPowerFamily
 import RealRooted.Tactic.LiuWang
 import RealRooted.Tactic.LiuWangRecursion
