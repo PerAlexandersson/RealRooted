@@ -81,6 +81,7 @@ rr_mw_plus_derivative_sequence_expanded_auto using ...
 rr_narayana_polynomial_splits using ...
 rr_product_exit_sequence using ... certificate := identity
 rr_product_exit_sequence using ... certificate := rootZero
+rr_product_exit_sequence using ... certificate := auto
 rr_product_exit_sequence using ... certificate := periodTwo
 rr_product_factor_sequence using ... certificate := suppliedFactor
 rr_product_factor_sequence using ... certificate := affine
@@ -568,6 +569,13 @@ syntax (name := rr_product_exit_sequence_root_zero)
     "base" ":=" term ","
     "recurrence" ":=" term ","
     "certificate" ":=" "rootZero" :
+  tactic
+
+syntax (name := rr_product_exit_sequence_auto)
+  "rr_product_exit_sequence" " using "
+    "base" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "auto" :
   tactic
 
 syntax (name := rr_product_exit_sequence_period_two)
@@ -1816,6 +1824,19 @@ macro_rules
         rr_product_root_zero_sequence using
           base := $hbase,
           recurrence := $hrec)
+  | `(tactic|
+      rr_product_exit_sequence using
+        base := $hbase:term,
+        recurrence := $hrec:term,
+        certificate := auto) =>
+      `(tactic|
+        first
+          | rr_product_identity_sequence using
+              base := $hbase,
+              recurrence := $hrec
+          | rr_product_root_zero_sequence using
+              base := $hbase,
+              recurrence := $hrec)
   | `(tactic|
       rr_product_exit_sequence using
         base_zero := $hbase_zero:term,

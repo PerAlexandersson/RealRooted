@@ -591,6 +591,26 @@ example {P : Nat → ℝ[X]}
     recurrence := hrec,
     certificate := rootZero
 
+/-- Product-exit router, automatic one-step branch for constant rows. -/
+example {P : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_exit_sequence using
+    base := hbase,
+    recurrence := hrec,
+    certificate := auto
+
+/-- Product-exit router, automatic one-step branch for a zero-root factor. -/
+example {P : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = X * P n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_exit_sequence using
+    base := hbase,
+    recurrence := hrec,
+    certificate := auto
+
 /-- Product-exit router, period-two branch. -/
 example {P : Nat → ℝ[X]}
     (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
