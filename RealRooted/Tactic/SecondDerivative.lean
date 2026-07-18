@@ -115,6 +115,26 @@ theorem splits_mw_derivative_of_nonneg_neg_inner {f u v : ℝ[X]}
     simp
   simpa [hscale_eq, add_comm, add_left_comm, add_assoc] using hscaled
 
+private theorem isRealRooted_of_tail_splits_step {P : Nat → ℝ[X]}
+    (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hstep : ∀ n : Nat, (P (n + 1)).Splits → (P (n + 2)).Splits) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have htail : ∀ n : Nat, P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := by
+    intro n
+    induction n with
+    | zero =>
+        simpa using hbase_one
+    | succ n ih =>
+        exact ⟨(hpos (n + 2)).ne_zero, hstep n ih.2⟩
+  intro n
+  cases n with
+  | zero =>
+      exact hbase_zero
+  | succ n =>
+      exact htail n
+
 /-- Sequence-level LS4 shell: first prove the inner Ma--Wang transform
 `U_n P_{n+1}+V_n P'_{n+1}` is in proper position with `P_{n+1}`, then apply
 the outer operator `a_n + D`.  The recurrence is supplied in the factored
@@ -140,30 +160,18 @@ theorem isRealRooted_of_mw_then_const_add_derivative_sequence
       (U n * P (n + 1) + V n * (P (n + 1)).derivative).natDegree ≤
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  have htail : ∀ n : Nat, P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := by
-    intro n
-    induction n with
-    | zero =>
-        simpa using hbase_one
-    | succ n ih =>
-        let G : ℝ[X] := U n * P (n + 1) + V n * (P (n + 1)).derivative
-        have hinner_splits : G.Splits :=
-          splits_mw_derivative_of_nonpos
-            ih.2 (hdeg_two n) (by simpa [G] using hinner_deg_lo n)
-            (by simpa [G] using hinner_deg_hi n)
-            (by simpa [G] using hinner_pos n)
-            (hpos (n + 1)) (by simpa [G] using hV_nonpos n)
-        have houter : (C (a n) * G + G.derivative).Splits :=
-          splits_C_mul_add_derivative hinner_splits (ha n)
-        exact
-          ⟨(hpos (n + 2)).ne_zero, by
-            simpa [G, hrec n] using houter⟩
-  intro n
-  cases n with
-  | zero =>
-      exact hbase_zero
-  | succ n =>
-      exact htail n
+  refine isRealRooted_of_tail_splits_step hbase_zero hbase_one hpos ?_
+  intro n hP_splits
+  let G : ℝ[X] := U n * P (n + 1) + V n * (P (n + 1)).derivative
+  have hinner_splits : G.Splits :=
+    splits_mw_derivative_of_nonpos
+      hP_splits (hdeg_two n) (by simpa [G] using hinner_deg_lo n)
+      (by simpa [G] using hinner_deg_hi n)
+      (by simpa [G] using hinner_pos n)
+      (hpos (n + 1)) (by simpa [G] using hV_nonpos n)
+  have houter : (C (a n) * G + G.derivative).Splits :=
+    splits_C_mul_add_derivative hinner_splits (ha n)
+  simpa [G, hrec n] using houter
 
 /-- Compatibility wrapper for the positive-outer branch. -/
 theorem isRealRooted_of_mw_then_pos_const_add_derivative_sequence
@@ -215,30 +223,18 @@ theorem isRealRooted_of_neg_mw_then_const_add_derivative_sequence
       (U n * P (n + 1) + V n * (P (n + 1)).derivative).natDegree ≤
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  have htail : ∀ n : Nat, P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := by
-    intro n
-    induction n with
-    | zero =>
-        simpa using hbase_one
-    | succ n ih =>
-        let G : ℝ[X] := U n * P (n + 1) + V n * (P (n + 1)).derivative
-        have hinner_splits : G.Splits :=
-          splits_mw_derivative_of_nonneg_neg_inner
-            ih.2 (hdeg_two n) (by simpa [G] using hinner_deg_lo n)
-            (by simpa [G] using hinner_deg_hi n)
-            (by simpa [G] using hinner_neg_pos n)
-            (hpos (n + 1)) (by simpa [G] using hV_nonneg n)
-        have houter : (C (a n) * G + G.derivative).Splits :=
-          splits_C_mul_add_derivative hinner_splits (ha n)
-        exact
-          ⟨(hpos (n + 2)).ne_zero, by
-            simpa [G, hrec n] using houter⟩
-  intro n
-  cases n with
-  | zero =>
-      exact hbase_zero
-  | succ n =>
-      exact htail n
+  refine isRealRooted_of_tail_splits_step hbase_zero hbase_one hpos ?_
+  intro n hP_splits
+  let G : ℝ[X] := U n * P (n + 1) + V n * (P (n + 1)).derivative
+  have hinner_splits : G.Splits :=
+    splits_mw_derivative_of_nonneg_neg_inner
+      hP_splits (hdeg_two n) (by simpa [G] using hinner_deg_lo n)
+      (by simpa [G] using hinner_deg_hi n)
+      (by simpa [G] using hinner_neg_pos n)
+      (hpos (n + 1)) (by simpa [G] using hV_nonneg n)
+  have houter : (C (a n) * G + G.derivative).Splits :=
+    splits_C_mul_add_derivative hinner_splits (ha n)
+  simpa [G, hrec n] using houter
 
 /-- Sequence-level wrapper for an LS4 output plus a nonnegative multiple of
 the current row.
