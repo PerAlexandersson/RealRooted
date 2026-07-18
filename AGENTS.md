@@ -3,8 +3,8 @@
 > [!IMPORTANT]
 > **Precedence and Guidelines:**
 > 1. Before reading or acting on this guide, read [README.md](README.md) first.
->    The instructions and guidelines in [README.md](README.md) take precedence
->    over this file.
+>    The instructions and guidelines in [README.md](README.md) take absolute
+>    precedence over this file.
 > 2. Do **not** add any of the following to this guide (`AGENTS.md`):
 >    * Environment-specific paths (e.g., references to directories outside
 >      the repository like `/workspace/` or `/lake-cache/`).
@@ -16,6 +16,8 @@
 >      transient pull request branches.
 > Keep this document generic, clean, and focused solely on development
 > guidelines for agentic coding assistants.
+
+This guide applies to the `RealRooted` Lean project.
 
 ## Mathlib-Upstream Style
 
@@ -93,6 +95,8 @@ theorem-shape suggestions, or proof repairs:
 
 ## Workflow
 
+- Before changing files touched by open PRs, inspect the PR diffs to avoid
+  conflicting with the intended API direction.
 - Run focused Lake builds for touched Lean modules to verify changes quickly.
 - Run a full Lake build and check for warnings before pushing or committing
   Lean changes.
