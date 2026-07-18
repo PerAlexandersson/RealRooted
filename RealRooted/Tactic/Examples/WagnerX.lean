@@ -530,12 +530,10 @@ theorem a358623Shifted_nonneg : ∀ n : Nat, HasNonnegCoeffs (a358623Shifted n)
       rw [a358623Shifted_one]
       rr_nonneg_coeffs
   | n + 2 => by
-      have hder : HasNonnegCoeffs (a358623Shifted (n + 1)).derivative :=
-        (a358623Shifted_nonneg (n + 1)).derivative
-      have hlag : HasNonnegCoeffs (a358623Shifted n) :=
-        a358623Shifted_nonneg n
       rw [a358623Shifted_succ_succ]
-      rr_nonneg_coeffs
+      rr_nonneg_coeffs using
+        a358623Shifted_nonneg (n + 1),
+        a358623Shifted_nonneg n
 
 lemma a358623Shifted_coeff_zero :
     ∀ n : Nat, (a358623Shifted n).coeff 0 = 0

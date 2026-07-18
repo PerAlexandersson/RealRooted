@@ -1,3 +1,4 @@
+import RealRooted.Derivative
 import RealRooted.WagnerX
 import RealRooted.Tactic.Attr
 import Mathlib.Tactic
@@ -253,6 +254,8 @@ macro_rules
             rr_side_nonneg
           | apply RealRooted.hasNonnegCoeffs_X_sub_C
             rr_close_side
+          | apply RealRooted.HasNonnegCoeffs.derivative
+            rr_nonneg_coeffs
           | apply RealRooted.nonnegCoeffs_C_mul
             · rr_side_nonneg
             · rr_nonneg_coeffs
@@ -293,6 +296,9 @@ macro_rules
             · rr_pos_lc
           | apply RealRooted.HasPosLeadingCoeff.X_mul
             rr_pos_lc
+          | apply RealRooted.HasPosLeadingCoeff.derivative
+            · rr_pos_lc
+            · rr_close_side
           | apply RealRooted.HasPosLeadingCoeff.mul <;> rr_pos_lc
           | apply RealRooted.HasNonnegCoeffs.pos_leadingCoeff
             · rr_nonneg_coeffs

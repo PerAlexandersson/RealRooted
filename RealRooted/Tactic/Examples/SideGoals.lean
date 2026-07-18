@@ -134,6 +134,10 @@ example {a : ℝ} {p q : ℝ[X]} (ha : 0 ≤ a)
     HasNonnegCoeffs (p + C a * q) := by
   rr_nonneg_coeffs using hp, hq
 
+example {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
+    HasNonnegCoeffs p.derivative := by
+  rr_nonneg_coeffs
+
 example (d : Nat) :
     HasNonnegCoeffs
       (1 + C (3 * (d : ℝ) + 2) * X + C (((d : ℝ) + 1) ^ 2) * X ^ 2 :
@@ -162,6 +166,14 @@ example {p : ℝ[X]} (hnn : HasNonnegCoeffs p) (hp0 : p ≠ 0) :
 example {p : ℝ[X]} (hnn : HasNonnegCoeffs p) (hp0 : p ≠ 0) :
     HasPosLeadingCoeff p := by
   rr_pos_lc using nonzero := hp0
+
+example {p : ℝ[X]} (hpos : HasPosLeadingCoeff p) (hdeg : p.natDegree ≠ 0) :
+    HasPosLeadingCoeff p.derivative := by
+  rr_pos_lc
+
+example {p : ℝ[X]} (hpos : HasPosLeadingCoeff p) (hdeg : 2 ≤ p.natDegree) :
+    HasPosLeadingCoeff p.derivative := by
+  rr_pos_lc
 
 example {a : ℝ} {p : ℝ[X]} (ha : 0 < a) (hp : HasPosLeadingCoeff p) :
     HasPosLeadingCoeff (C a * p) := by
