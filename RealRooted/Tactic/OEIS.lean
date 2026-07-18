@@ -1,5 +1,6 @@
 import RealRooted.Tactic.MaWang
 import RealRooted.Tactic.Favard
+import RealRooted.Tactic.LinearPowerFamily
 import RealRooted.Tactic.LiuWang
 import RealRooted.Tactic.LiuWangRecursion
 import RealRooted.Tactic.Matrix
