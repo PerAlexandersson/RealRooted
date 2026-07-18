@@ -7088,7 +7088,7 @@ macro_rules
             $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno),
           (RealRooted.prec_lw_current_X_positive_t_lag_sequence
             $hbase $hpos $hnonneg $hc
-            (fun n => by simpa using $hrec n) $hdeg_succ $hno))
+            (rr_lw_recurrence_seq $hrec) $hdeg_succ $hno))
   | `(tactic|
       rr_lw_current_X_sequence_auto using
         base := $hbase:term,
@@ -7104,7 +7104,7 @@ macro_rules
               rr_lw_active_nonneg $hrec $hdeg_succ $hno
           | refine RealRooted.prec_lw_current_X_positive_t_lag_sequence
               $hbase $hpos $hnonneg ?_
-              (fun n => by simpa using $hrec n) $hdeg_succ $hno
+              (rr_lw_recurrence_seq $hrec) $hdeg_succ $hno
             rr_lw_active_nonneg_seq)
   | `(tactic|
       rr_lw_current_X_sequence_realrooted using
@@ -7123,7 +7123,7 @@ macro_rules
           | rr_exact_realrooted_sequence_or_projection
               (RealRooted.isRealRooted_of_lw_current_X_positive_t_lag_sequence
                 $hbase $hpos $hnonneg $hc
-                (fun n => by simpa using $hrec n) $hdeg_succ $hno))
+                (rr_lw_recurrence_seq $hrec) $hdeg_succ $hno))
   | `(tactic|
       rr_lw_current_X_sequence_realrooted_auto using
         base := $hbase:term,
@@ -7142,7 +7142,7 @@ macro_rules
               (by
                 refine RealRooted.isRealRooted_of_lw_current_X_positive_t_lag_sequence
                   $hbase $hpos $hnonneg ?_
-                  (fun n => by simpa using $hrec n) $hdeg_succ $hno
+                  (rr_lw_recurrence_seq $hrec) $hdeg_succ $hno
                 rr_lw_active_nonneg_seq))
   | `(tactic|
       rr_lw_current_one_add_X_sequence using
