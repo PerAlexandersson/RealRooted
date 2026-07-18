@@ -106,8 +106,8 @@ theorem favardInterlacing_param_coeff {P : Nat → ℝ[X]} {α β : Nat → ℝ}
     (hP1 : P 1 = X - C (α 0))
     (hstep : ∀ n : Nat,
       P (n + 2) = (X - C (α (n + 1))) * P (n + 1) - C (β (n + 1)) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  exact favardInterlacing ⟨hP0, hP1, hstep⟩ hβ
+    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+  favardInterlacing ⟨hP0, hP1, hstep⟩ hβ
 
 /-- Real-rootedness consequence of the parameterized Favard wrapper. -/
 theorem isRealRooted_of_favard_param_coeff {P : Nat → ℝ[X]} {α β : Nat → ℝ}
@@ -116,8 +116,8 @@ theorem isRealRooted_of_favard_param_coeff {P : Nat → ℝ[X]} {α β : Nat →
     (hP1 : P 1 = X - C (α 0))
     (hstep : ∀ n : Nat,
       P (n + 2) = (X - C (α (n + 1))) * P (n + 1) - C (β (n + 1)) * P n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  exact isRealRooted_of_favard ⟨hP0, hP1, hstep⟩ hβ
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_favard ⟨hP0, hP1, hstep⟩ hβ
 
 /-- Nonzero consequence of the parameterized Favard wrapper. -/
 theorem nonzero_of_favard_param_coeff {P : Nat → ℝ[X]} {α β : Nat → ℝ}
