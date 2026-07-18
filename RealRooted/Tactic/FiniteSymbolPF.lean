@@ -769,6 +769,33 @@ theorem isPFPolynomial_of_bidiagonalOperator_sequence
       rw [hrec n]
       exact hpres n ih (hdegree n)
 
+/-- Induction principle for a sequence whose PF-bidiagonal recurrence
+certificate only starts from a cutoff row.  The finitely many rows before the
+cutoff are supplied as base cases. -/
+theorem isPFPolynomial_of_bidiagonalOperator_sequence_from
+    {P : ℕ → ℝ[X]} {alpha beta : ℕ → ℕ → ℝ}
+    {degreeBound : ℕ → ℕ}
+    (N : ℕ)
+    (hbase : ∀ n, n ≤ N → IsPFPolynomial (P n))
+    (hdegree : ∀ n, N ≤ n → (P n).natDegree ≤ degreeBound n)
+    (hpres :
+      ∀ n, N ≤ n → BidiagonalPFPreserver (alpha n) (beta n) (degreeBound n))
+    (hrec : ∀ n, N ≤ n →
+      P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
+    ∀ n, IsPFPolynomial (P n) := by
+  intro n
+  exact Nat.strong_induction_on n fun n ih => by
+    by_cases hn : n ≤ N
+    · exact hbase n hn
+    · cases n with
+      | zero =>
+          exact False.elim (hn (Nat.zero_le N))
+      | succ m =>
+          have hNm : N ≤ m := by lia
+          have hPm : IsPFPolynomial (P m) := ih m (Nat.lt_succ_self m)
+          rw [hrec m hNm]
+          exact hpres m hNm hPm (hdegree m hNm)
+
 /-- Diagonal coefficient of the second-derivative form as a quadratic Jensen
 weight. -/
 theorem secondDerivativeAlpha_eq_quadraticJensenWeight
@@ -903,6 +930,47 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence
     exact secondDerivativeBidiagonalForm_eq_bidiagonalOperator
       (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (P n)
 
+/-- Cutoff version of
+`isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence`. -/
+theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_from
+    (hBB : finiteSymbolBBStatement)
+    (hhom : homogenizeStableStatement)
+    (hmul : bivariateStableMulXAddYPowStatement)
+    (N : ℕ)
+    {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c2 : ℕ → ℝ}
+    {degreeBound : ℕ → ℕ}
+    (hbase : ∀ n, n ≤ N → IsPFPolynomial (P n))
+    (hdegree : ∀ n, N ≤ n → (P n).natDegree ≤ degreeBound n)
+    (hd : ∀ n, N ≤ n → 2 ≤ degreeBound n)
+    (hdeg : ∀ n, N ≤ n →
+      (quadraticBidiagonalResidual
+        (c2 n) (b1 n - c2 n) (a0 n) 0 (b2 n) (a1 n)
+        (degreeBound n)).natDegree = 3)
+    (hpf : ∀ n, N ≤ n →
+      IsPFPolynomial
+        (quadraticBidiagonalResidual
+          (c2 n) (b1 n - c2 n) (a0 n) 0 (b2 n) (a1 n)
+          (degreeBound n)))
+    (halpha : ∀ n k, N ≤ n → 0 ≤ secondDerivativeAlpha (a0 n) (b1 n) (c2 n) k)
+    (hbeta : ∀ n k, N ≤ n → 0 ≤ secondDerivativeBeta (a1 n) (b2 n) k)
+    (hrec : ∀ n, N ≤ n →
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (P n)) :
+    ∀ n, IsPFPolynomial (P n) := by
+  apply isPFPolynomial_of_bidiagonalOperator_sequence_from
+    (alpha := fun n => secondDerivativeAlpha (a0 n) (b1 n) (c2 n))
+    (beta := fun n => secondDerivativeBeta (a1 n) (b2 n))
+    N hbase hdegree
+  · intro n hn
+    exact secondDerivativeBidiagonalPFPreserver_of_residual_certificate
+      hBB hhom hmul (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (hd n hn)
+      (hdeg n hn) (hpf n hn) (fun k => halpha n k hn) (fun k => hbeta n k hn)
+  · intro n hn
+    rw [hrec n hn]
+    exact secondDerivativeBidiagonalForm_eq_bidiagonalOperator
+      (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (P n)
+
 /-- Diagonal coefficient of the shifted second-derivative form as a quadratic
 Jensen weight. -/
 theorem shiftedSecondDerivativeAlpha_eq_quadraticJensenWeight
@@ -997,6 +1065,48 @@ theorem isPFPolynomial_of_shiftedSecondDerivativeBidiagonalForm_sequence
       (hdeg n) (hpf n) (halpha n) (hbeta n)
   · intro n
     rw [hrec n]
+    exact shiftedSecondDerivativeBidiagonalForm_eq_bidiagonalOperator
+      (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (P n)
+
+/-- Cutoff version of
+`isPFPolynomial_of_shiftedSecondDerivativeBidiagonalForm_sequence`. -/
+theorem isPFPolynomial_of_shiftedSecondDerivativeBidiagonalForm_sequence_from
+    (hBB : finiteSymbolBBStatement)
+    (hhom : homogenizeStableStatement)
+    (hmul : bivariateStableMulXAddYPowStatement)
+    (N : ℕ)
+    {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c3 : ℕ → ℝ}
+    {degreeBound : ℕ → ℕ}
+    (hbase : ∀ n, n ≤ N → IsPFPolynomial (P n))
+    (hdegree : ∀ n, N ≤ n → (P n).natDegree ≤ degreeBound n)
+    (hd : ∀ n, N ≤ n → 2 ≤ degreeBound n)
+    (hdeg : ∀ n, N ≤ n →
+      (quadraticBidiagonalResidual
+        0 (b1 n) (a0 n) (c3 n) (b2 n - c3 n) (a1 n)
+        (degreeBound n)).natDegree = 3)
+    (hpf : ∀ n, N ≤ n →
+      IsPFPolynomial
+        (quadraticBidiagonalResidual
+          0 (b1 n) (a0 n) (c3 n) (b2 n - c3 n) (a1 n)
+          (degreeBound n)))
+    (halpha : ∀ n k, N ≤ n → 0 ≤ shiftedSecondDerivativeAlpha (a0 n) (b1 n) k)
+    (hbeta : ∀ n k, N ≤ n →
+      0 ≤ shiftedSecondDerivativeBeta (a1 n) (b2 n) (c3 n) k)
+    (hrec : ∀ n, N ≤ n →
+      P (n + 1) =
+        shiftedSecondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (P n)) :
+    ∀ n, IsPFPolynomial (P n) := by
+  apply isPFPolynomial_of_bidiagonalOperator_sequence_from
+    (alpha := fun n => shiftedSecondDerivativeAlpha (a0 n) (b1 n))
+    (beta := fun n => shiftedSecondDerivativeBeta (a1 n) (b2 n) (c3 n))
+    N hbase hdegree
+  · intro n hn
+    exact shiftedSecondDerivativeBidiagonalPFPreserver_of_residual_certificate
+      hBB hhom hmul (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (hd n hn)
+      (hdeg n hn) (hpf n hn) (fun k => halpha n k hn) (fun k => hbeta n k hn)
+  · intro n hn
+    rw [hrec n hn]
     exact shiftedSecondDerivativeBidiagonalForm_eq_bidiagonalOperator
       (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (P n)
 

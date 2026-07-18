@@ -107,6 +107,7 @@ syntax (name := rr_fsp_second_derivative_sequence_named)
     "bb_backend" ":=" term ","
     "homogenize_stable" ":=" term ","
     "mul_stable" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "base" ":=" term ","
     "degree" ":=" term ","
     "degree_ge_two" ":=" term ","
@@ -123,6 +124,7 @@ syntax (name := rr_fsp_shifted_second_derivative_sequence_named)
     "bb_backend" ":=" term ","
     "homogenize_stable" ":=" term ","
     "mul_stable" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "base" ":=" term ","
     "degree" ":=" term ","
     "degree_ge_two" ":=" term ","
@@ -261,6 +263,26 @@ macro_rules
             $hBB $hhom $hmul $hbase $hdegree $hd $hdeg $hpf $halpha $hbeta $hrec)
           $[, nonzero := $hne]?)
   | `(tactic|
+      rr_fsp_second_derivative_sequence using
+        bb_backend := $hBB:term,
+        homogenize_stable := $hhom:term,
+        mul_stable := $hmul:term,
+        cutoff := $N:term,
+        base := $hbase:term,
+        degree := $hdegree:term,
+        degree_ge_two := $hd:term,
+        cubic_degree := $hdeg:term,
+        residual_pf := $hpf:term,
+        alpha_nonneg := $halpha:term,
+        beta_nonneg := $hbeta:term,
+        recurrence := $hrec:term
+        $[, nonzero := $hne:term]?) =>
+      `(tactic|
+        rr_exact_pf_sequence
+          (FiniteSymbolPF.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_from
+            $hBB $hhom $hmul $N $hbase $hdegree $hd $hdeg $hpf $halpha $hbeta $hrec)
+          $[, nonzero := $hne]?)
+  | `(tactic|
       rr_fsp_shifted_second_derivative_sequence using
         bb_backend := $hBB:term,
         homogenize_stable := $hhom:term,
@@ -278,6 +300,26 @@ macro_rules
         rr_exact_pf_sequence
           (FiniteSymbolPF.isPFPolynomial_of_shiftedSecondDerivativeBidiagonalForm_sequence
             $hBB $hhom $hmul $hbase $hdegree $hd $hdeg $hpf $halpha $hbeta $hrec)
+          $[, nonzero := $hne]?)
+  | `(tactic|
+      rr_fsp_shifted_second_derivative_sequence using
+        bb_backend := $hBB:term,
+        homogenize_stable := $hhom:term,
+        mul_stable := $hmul:term,
+        cutoff := $N:term,
+        base := $hbase:term,
+        degree := $hdegree:term,
+        degree_ge_two := $hd:term,
+        cubic_degree := $hdeg:term,
+        residual_pf := $hpf:term,
+        alpha_nonneg := $halpha:term,
+        beta_nonneg := $hbeta:term,
+        recurrence := $hrec:term
+        $[, nonzero := $hne:term]?) =>
+      `(tactic|
+        rr_exact_pf_sequence
+          (FiniteSymbolPF.isPFPolynomial_of_shiftedSecondDerivativeBidiagonalForm_sequence_from
+            $hBB $hhom $hmul $N $hbase $hdegree $hd $hdeg $hpf $halpha $hbeta $hrec)
           $[, nonzero := $hne]?)
 
 end Tactic
