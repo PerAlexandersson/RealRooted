@@ -735,6 +735,44 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi
 
+/-- Strict-degree shortcut for the automatic `-c_n X^2 P'` real-rootedness
+endpoint. -/
+example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        U n * P (n + 1) +
+          (-(C ((n : ℝ) + 1)) * X ^ 2) * (P (n + 1)).derivative)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_mw_derivative_neg_X_sq_sequence_realrooted_auto using
+    base := hbase,
+    pos_lc := hpos,
+    degree_two := hdeg_two,
+    recurrence := hrec,
+    degree_succ := hdeg_succ
+
+/-- Projection endpoint for the strict-degree `-c_n X^2 P'` shortcut. -/
+example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
+    (hc : ∀ n : Nat, 0 ≤ c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        U n * P (n + 1) + (-(C (c n)) * X ^ 2) * (P (n + 1)).derivative)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_mw_derivative_neg_X_sq_sequence_realrooted using
+    base := hbase,
+    pos_lc := hpos,
+    degree_two := hdeg_two,
+    coeff_nonneg := hc,
+    recurrence := hrec,
+    degree_succ := hdeg_succ
+
 /-- Projection endpoint for the automatic `-c_n X^2 P'` shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
@@ -1764,6 +1802,42 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     recurrence := hrec,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi
+
+/-- Strict-degree shortcut for the `X P'` Ma--Wang sequence shell. -/
+example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = U n * P (n + 1) + X * (P (n + 1)).derivative)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_mw_derivative_X_sequence_nonneg using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    degree_two := hdeg_two,
+    recurrence := hrec,
+    degree_succ := hdeg_succ
+
+/-- Strict-degree real-rootedness endpoint for the `X P'` shell. -/
+example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = U n * P (n + 1) + X * (P (n + 1)).derivative)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_mw_derivative_X_sequence_realrooted_nonneg using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    degree_two := hdeg_two,
+    recurrence := hrec,
+    degree_succ := hdeg_succ
 
 /-- Projection endpoint for the `X P'` shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
