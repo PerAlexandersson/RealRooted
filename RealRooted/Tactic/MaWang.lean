@@ -1073,6 +1073,43 @@ theorem isRealRooted_of_mw_lw_derivative_lag_sequence_of_nonneg_coeffs
     (fun n r _ hr_nonpos => hW_nonpos n r hr_nonpos)
     hdeg_succ hno
 
+private theorem eval_C_mul_nonpos_of_nonneg_of_eval_nonpos {c : ℝ} {q : ℝ[X]} {r : ℝ}
+    (hc : 0 ≤ c) (hq : q.eval r ≤ 0) :
+    (C c * q).eval r ≤ 0 := by
+  simpa [Polynomial.eval_mul] using mul_nonpos_of_nonneg_of_nonpos hc hq
+
+private theorem mw_lw_derivative_lag_den_coeff_recurrence
+    {P : Nat → ℝ[X]} {U V W : Nat → ℝ[X]} {b c e a d : Nat → ℝ}
+    (hden : ∀ n : Nat, d n ≠ 0)
+    (hcoeffV : ∀ n : Nat, (d n)⁻¹ * b n = c n)
+    (hcoeffW : ∀ n : Nat, (d n)⁻¹ * e n = a n)
+    (hraw : ∀ n : Nat,
+      C (d n) * P (n + 2) =
+        C (d n) * (U n * P (n + 1)) +
+          C (b n) * (V n * (P (n + 1)).derivative) +
+          C (e n) * (W n * P n))
+    (n : Nat) :
+    P (n + 2) =
+      U n * P (n + 1) +
+        (C (c n) * V n) * (P (n + 1)).derivative +
+        (C (a n) * W n) * P n := by
+  have hnorm :
+      P (n + 2) =
+        U n * P (n + 1) +
+          C (c n) * (V n * (P (n + 1)).derivative) +
+          C (a n) * (W n * P n) :=
+    eq_add_C_mul_add_C_mul_of_C_mul_eq_C_mul_add_C_mul_add_C_mul
+      (hden n) (hcoeffV n) (hcoeffW n) (hraw n)
+  calc
+    P (n + 2) =
+        U n * P (n + 1) +
+          C (c n) * (V n * (P (n + 1)).derivative) +
+          C (a n) * (W n * P n) := hnorm
+    _ =
+        U n * P (n + 1) +
+          (C (c n) * V n) * (P (n + 1)).derivative +
+          (C (a n) * W n) * P n := by ring
+
 /-- Denominator-fused combined Ma--Wang/Liu--Wang induction.
 
 This consumes the split raw recurrence
@@ -1099,32 +1136,16 @@ theorem prec_mw_lw_derivative_lag_sequence_den_coeff_of_nonneg_coeffs
           C (e n) * (W n * P n))
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  refine
-    prec_mw_lw_derivative_lag_sequence_of_nonneg_coeffs
-      (U := U) (V := fun n => C (c n) * V n) (W := fun n => C (a n) * W n)
-      hbase hpos hnonneg hdeg_two ?_ ?_ ?_ hdeg_succ hno
-  · intro n
-    have hnorm :
-        P (n + 2) =
-          U n * P (n + 1) +
-            C (c n) * (V n * (P (n + 1)).derivative) +
-            C (a n) * (W n * P n) :=
-      eq_add_C_mul_add_C_mul_of_C_mul_eq_C_mul_add_C_mul_add_C_mul
-        (hden n) (hcoeffV n) (hcoeffW n) (hraw n)
-    calc
-      P (n + 2) =
-          U n * P (n + 1) +
-            C (c n) * (V n * (P (n + 1)).derivative) +
-            C (a n) * (W n * P n) := hnorm
-      _ =
-          U n * P (n + 1) +
-            (C (c n) * V n) * (P (n + 1)).derivative +
-            (C (a n) * W n) * P n := by ring
-  · intro n r hr
-    simpa [Polynomial.eval_mul] using mul_nonpos_of_nonneg_of_nonpos (hc n) (hV_nonpos n r hr)
-  · intro n r hr
-    simpa [Polynomial.eval_mul] using mul_nonpos_of_nonneg_of_nonpos (ha n) (hW_nonpos n r hr)
+    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+  prec_mw_lw_derivative_lag_sequence_of_nonneg_coeffs
+    (U := U) (V := fun n => C (c n) * V n) (W := fun n => C (a n) * W n)
+    hbase hpos hnonneg hdeg_two
+    (mw_lw_derivative_lag_den_coeff_recurrence hden hcoeffV hcoeffW hraw)
+    (fun n r hr => eval_C_mul_nonpos_of_nonneg_of_eval_nonpos
+      (hc n) (hV_nonpos n r hr))
+    (fun n r hr => eval_C_mul_nonpos_of_nonneg_of_eval_nonpos
+      (ha n) (hW_nonpos n r hr))
+    hdeg_succ hno
 
 /-- Denominator-fused combined Ma--Wang/Liu--Wang induction with explicit
 root-window sign certificates. -/
@@ -1154,34 +1175,17 @@ theorem prec_mw_lw_derivative_lag_sequence_den_coeff_of_root_window
           C (e n) * (W n * P n))
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  refine
-    prec_mw_lw_derivative_lag_sequence_of_root_window
-      (U := U) (V := fun n => C (c n) * V n) (W := fun n => C (a n) * W n)
-      hbase hpos hdeg_two ?_ hroot_lower hroot_upper ?_ ?_ hdeg_succ hno
-  · intro n
-    have hnorm :
-        P (n + 2) =
-          U n * P (n + 1) +
-            C (c n) * (V n * (P (n + 1)).derivative) +
-            C (a n) * (W n * P n) :=
-      eq_add_C_mul_add_C_mul_of_C_mul_eq_C_mul_add_C_mul_add_C_mul
-        (hden n) (hcoeffV n) (hcoeffW n) (hraw n)
-    calc
-      P (n + 2) =
-          U n * P (n + 1) +
-            C (c n) * (V n * (P (n + 1)).derivative) +
-            C (a n) * (W n * P n) := hnorm
-      _ =
-          U n * P (n + 1) +
-            (C (c n) * V n) * (P (n + 1)).derivative +
-            (C (a n) * W n) * P n := by ring
-  · intro n r hr hlo hhi
-    simpa [Polynomial.eval_mul] using
-      mul_nonpos_of_nonneg_of_nonpos (hc n) (hV_nonpos n r hr hlo hhi)
-  · intro n r hr hlo hhi
-    simpa [Polynomial.eval_mul] using
-      mul_nonpos_of_nonneg_of_nonpos (ha n) (hW_nonpos n r hr hlo hhi)
+    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+  prec_mw_lw_derivative_lag_sequence_of_root_window
+    (U := U) (V := fun n => C (c n) * V n) (W := fun n => C (a n) * W n)
+    hbase hpos hdeg_two
+    (mw_lw_derivative_lag_den_coeff_recurrence hden hcoeffV hcoeffW hraw)
+    hroot_lower hroot_upper
+    (fun n r hr hlo hhi => eval_C_mul_nonpos_of_nonneg_of_eval_nonpos
+      (hc n) (hV_nonpos n r hr hlo hhi))
+    (fun n r hr hlo hhi => eval_C_mul_nonpos_of_nonneg_of_eval_nonpos
+      (ha n) (hW_nonpos n r hr hlo hhi))
+    hdeg_succ hno
 
 /-- Real-rootedness corollary for denominator-fused combined Ma--Wang/Liu--Wang
 induction. -/
@@ -1209,27 +1213,11 @@ theorem isRealRooted_of_mw_lw_derivative_lag_sequence_den_coeff_of_nonneg_coeffs
   isRealRooted_of_mw_lw_derivative_lag_sequence_of_nonneg_coeffs
     (U := U) (V := fun n => C (c n) * V n) (W := fun n => C (a n) * W n)
     hbase hpos hnonneg hdeg_two
-    (fun n => by
-      have hnorm :
-          P (n + 2) =
-            U n * P (n + 1) +
-              C (c n) * (V n * (P (n + 1)).derivative) +
-              C (a n) * (W n * P n) :=
-        eq_add_C_mul_add_C_mul_of_C_mul_eq_C_mul_add_C_mul_add_C_mul
-          (hden n) (hcoeffV n) (hcoeffW n) (hraw n)
-      calc
-        P (n + 2) =
-            U n * P (n + 1) +
-              C (c n) * (V n * (P (n + 1)).derivative) +
-              C (a n) * (W n * P n) := hnorm
-        _ =
-            U n * P (n + 1) +
-              (C (c n) * V n) * (P (n + 1)).derivative +
-              (C (a n) * W n) * P n := by ring)
-    (fun n r hr => by
-      simpa [Polynomial.eval_mul] using mul_nonpos_of_nonneg_of_nonpos (hc n) (hV_nonpos n r hr))
-    (fun n r hr => by
-      simpa [Polynomial.eval_mul] using mul_nonpos_of_nonneg_of_nonpos (ha n) (hW_nonpos n r hr))
+    (mw_lw_derivative_lag_den_coeff_recurrence hden hcoeffV hcoeffW hraw)
+    (fun n r hr => eval_C_mul_nonpos_of_nonneg_of_eval_nonpos
+      (hc n) (hV_nonpos n r hr))
+    (fun n r hr => eval_C_mul_nonpos_of_nonneg_of_eval_nonpos
+      (ha n) (hW_nonpos n r hr))
     hdeg_succ hno
 
 /-- Real-rootedness corollary for denominator-fused combined Ma--Wang/Liu--Wang
@@ -1264,30 +1252,12 @@ theorem isRealRooted_of_mw_lw_derivative_lag_sequence_den_coeff_of_root_window
   isRealRooted_of_mw_lw_derivative_lag_sequence_of_root_window
     (U := U) (V := fun n => C (c n) * V n) (W := fun n => C (a n) * W n)
     hbase hpos hdeg_two
-    (fun n => by
-      have hnorm :
-          P (n + 2) =
-            U n * P (n + 1) +
-              C (c n) * (V n * (P (n + 1)).derivative) +
-              C (a n) * (W n * P n) :=
-        eq_add_C_mul_add_C_mul_of_C_mul_eq_C_mul_add_C_mul_add_C_mul
-          (hden n) (hcoeffV n) (hcoeffW n) (hraw n)
-      calc
-        P (n + 2) =
-            U n * P (n + 1) +
-              C (c n) * (V n * (P (n + 1)).derivative) +
-              C (a n) * (W n * P n) := hnorm
-        _ =
-            U n * P (n + 1) +
-              (C (c n) * V n) * (P (n + 1)).derivative +
-              (C (a n) * W n) * P n := by ring)
+    (mw_lw_derivative_lag_den_coeff_recurrence hden hcoeffV hcoeffW hraw)
     hroot_lower hroot_upper
-    (fun n r hr hlo hhi => by
-      simpa [Polynomial.eval_mul] using
-        mul_nonpos_of_nonneg_of_nonpos (hc n) (hV_nonpos n r hr hlo hhi))
-    (fun n r hr hlo hhi => by
-      simpa [Polynomial.eval_mul] using
-        mul_nonpos_of_nonneg_of_nonpos (ha n) (hW_nonpos n r hr hlo hhi))
+    (fun n r hr hlo hhi => eval_C_mul_nonpos_of_nonneg_of_eval_nonpos
+      (hc n) (hV_nonpos n r hr hlo hhi))
+    (fun n r hr hlo hhi => eval_C_mul_nonpos_of_nonneg_of_eval_nonpos
+      (ha n) (hW_nonpos n r hr hlo hhi))
     hdeg_succ hno
 
 /-- Denominator-fused nonpositive-factor Ma--Wang induction with
