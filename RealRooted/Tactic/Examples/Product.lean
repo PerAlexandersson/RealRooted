@@ -74,10 +74,7 @@ example {P F : Nat → ℝ[X]}
     (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
     (hrec : ∀ n : Nat, P (n + 1) = F n * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_product_factor_sequence using
-    base := hbase,
-    factor_realrooted := hfactor,
-    recurrence := hrec
+  rr_product_factor_sequence using hbase, hfactor, hrec
 
 example {P F : Nat → ℝ[X]}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
@@ -134,9 +131,7 @@ example {P : Nat → ℝ[X]}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hrec : ∀ n : Nat, P (n + 1) = P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_product_identity_sequence using
-    base := hbase,
-    recurrence := hrec
+  rr_product_identity_sequence using hbase, hrec
 
 /-- Projection endpoint for the identity product exit. -/
 example {P : Nat → ℝ[X]}
@@ -152,9 +147,7 @@ example {P : Nat → ℝ[X]}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hrec : ∀ n : Nat, P (n + 1) = X * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_product_root_zero_sequence using
-    base := hbase,
-    recurrence := hrec
+  rr_product_root_zero_sequence using hbase, hrec
 
 /-- `A122431`-style product exit, accepting the root-zero factor on the right. -/
 example {P : Nat → ℝ[X]}
@@ -171,10 +164,7 @@ example {P : Nat → ℝ[X]}
     (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
     (hrec : ∀ n : Nat, P (n + 2) = P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_product_period_two_sequence using
-    base_zero := hbase_zero,
-    base_one := hbase_one,
-    recurrence := hrec
+  rr_product_period_two_sequence using hbase_zero, hbase_one, hrec
 
 /-- Projection endpoint for two-periodic product exits. -/
 example {P : Nat → ℝ[X]}
@@ -193,10 +183,7 @@ example {P Q F : Nat → ℝ[X]}
     (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
     (hrow : ∀ n : Nat, P n = F n * Q n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_product_lift_sequence using
-    quotient_realrooted := hquot,
-    factor_realrooted := hfactor,
-    factorization := hrow
+  rr_product_lift_sequence using hquot, hfactor, hrow
 
 /-- The product lift also accepts the quotient factor on the left. -/
 example {P Q F : Nat → ℝ[X]}

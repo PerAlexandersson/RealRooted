@@ -1476,6 +1476,10 @@ syntax (name := rr_product_factor_sequence_named)
     "recurrence" ":=" term :
   tactic
 
+syntax (name := rr_product_factor_sequence)
+  "rr_product_factor_sequence" " using " term ", " term ", " term :
+  tactic
+
 syntax (name := rr_affine_product_sequence_named)
   "rr_affine_product_sequence" " using " "formula" ":=" term :
   tactic
@@ -1492,10 +1496,18 @@ syntax (name := rr_product_identity_sequence_named)
     "recurrence" ":=" term :
   tactic
 
+syntax (name := rr_product_identity_sequence)
+  "rr_product_identity_sequence" " using " term ", " term :
+  tactic
+
 syntax (name := rr_product_root_zero_sequence_named)
   "rr_product_root_zero_sequence" " using "
     "base" ":=" term ","
     "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_product_root_zero_sequence)
+  "rr_product_root_zero_sequence" " using " term ", " term :
   tactic
 
 syntax (name := rr_product_period_two_sequence_named)
@@ -1505,11 +1517,19 @@ syntax (name := rr_product_period_two_sequence_named)
     "recurrence" ":=" term :
   tactic
 
+syntax (name := rr_product_period_two_sequence)
+  "rr_product_period_two_sequence" " using " term ", " term ", " term :
+  tactic
+
 syntax (name := rr_product_lift_sequence_named)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
     "factor_realrooted" ":=" term ","
     "factorization" ":=" term :
+  tactic
+
+syntax (name := rr_product_lift_sequence)
+  "rr_product_lift_sequence" " using " term ", " term ", " term :
   tactic
 
 syntax (name := rr_product_lift_X_sequence_named)
@@ -2024,6 +2044,14 @@ macro_rules
             $hbase $hfactor $hstep),
           (RealRooted.isRealRooted_of_product_factor_right_sequence
             $hbase $hfactor $hstep))
+  | `(tactic|
+      rr_product_factor_sequence using
+        $hbase:term, $hfactor:term, $hstep:term) =>
+      `(tactic|
+        rr_product_factor_sequence using
+          base := $hbase,
+          factor_realrooted := $hfactor,
+          recurrence := $hstep)
   | `(tactic| rr_affine_product_sequence using formula := $hroot:term) =>
       `(tactic|
         exact RealRooted.finiteLinearProductSequence_realRooted $hroot)
@@ -2041,6 +2069,13 @@ macro_rules
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_product_identity_sequence $hbase $hstep))
   | `(tactic|
+      rr_product_identity_sequence using
+        $hbase:term, $hstep:term) =>
+      `(tactic|
+        rr_product_identity_sequence using
+          base := $hbase,
+          recurrence := $hstep)
+  | `(tactic|
       rr_product_root_zero_sequence using
         base := $hbase:term,
         recurrence := $hstep:term) =>
@@ -2050,6 +2085,13 @@ macro_rules
           (RealRooted.isRealRooted_of_product_root_zero_right_sequence
             $hbase $hstep))
   | `(tactic|
+      rr_product_root_zero_sequence using
+        $hbase:term, $hstep:term) =>
+      `(tactic|
+        rr_product_root_zero_sequence using
+          base := $hbase,
+          recurrence := $hstep)
+  | `(tactic|
       rr_product_period_two_sequence using
         base_zero := $hbase_zero:term,
         base_one := $hbase_one:term,
@@ -2058,6 +2100,14 @@ macro_rules
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_product_period_two_sequence
             $hbase_zero $hbase_one $hstep))
+  | `(tactic|
+      rr_product_period_two_sequence using
+        $hbase_zero:term, $hbase_one:term, $hstep:term) =>
+      `(tactic|
+        rr_product_period_two_sequence using
+          base_zero := $hbase_zero,
+          base_one := $hbase_one,
+          recurrence := $hstep)
   | `(tactic|
       rr_product_lift_sequence using
         quotient_realrooted := $hquot:term,
@@ -2069,6 +2119,14 @@ macro_rules
             $hquot $hfactor $hrow),
           (RealRooted.isRealRooted_of_product_lift_right_sequence
             $hquot $hfactor $hrow))
+  | `(tactic|
+      rr_product_lift_sequence using
+        $hquot:term, $hfactor:term, $hrow:term) =>
+      `(tactic|
+        rr_product_lift_sequence using
+          quotient_realrooted := $hquot,
+          factor_realrooted := $hfactor,
+          factorization := $hrow)
   | `(tactic|
       rr_product_lift_X_sequence using
         quotient_realrooted := $hquot:term,
