@@ -388,6 +388,60 @@ syntax (name := rr_sameDegree_rootCountAbove_pos_crossing_named)
     "positive_crossing" ":=" term :
   tactic
 
+syntax (name := rr_posCombo_sameDegree_rootCount_degree_le_two_named)
+  "rr_posCombo_sameDegree_rootCount_degree_le_two" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_nonneg_coeffs" ":=" term ","
+    "right_nonneg_coeffs" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "left_degree_le_two" ":=" term ","
+    "threshold" ":=" term :
+  tactic
+
+syntax (name := rr_posCombo_sameDegree_rootCountAbove_degree_le_two_named)
+  "rr_posCombo_sameDegree_rootCountAbove_degree_le_two" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_nonneg_coeffs" ":=" term ","
+    "right_nonneg_coeffs" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "left_degree_le_two" ":=" term ","
+    "threshold" ":=" term :
+  tactic
+
+syntax (name := rr_sameDegree_rootCrossing_degree_le_one_named)
+  "rr_sameDegree_rootCrossing_degree_le_one" " using "
+    "left_degree_le_one" ":=" term :
+  tactic
+
+syntax (name := rr_posCombo_sameDegree_rootCrossing_degree_le_two_named)
+  "rr_posCombo_sameDegree_rootCrossing_degree_le_two" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_nonneg_coeffs" ":=" term ","
+    "right_nonneg_coeffs" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "left_degree_le_two" ":=" term :
+  tactic
+
+syntax (name := rr_compatible_succDegree_rootCountAbove_le_two_named)
+  "rr_compatible_succDegree_rootCountAbove_le_two" " using "
+    "compatible" ":=" term ","
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "succ_degree" ":=" term ","
+    "left_splits" ":=" term ","
+    "left_degree_le_two" ":=" term ","
+    "threshold" ":=" term :
+  tactic
+
 macro_rules
   | `(tactic|
       rr_natDegree_add_C_mul_lt using
@@ -791,6 +845,64 @@ macro_rules
       `(tactic|
         exact RealRooted.sameDegree_rootCountAbove_pointwise_of_exists_pos_isRoot
           $hfpos $hgpos $hfg $hdeg $hno $hxf $hxg $hcross)
+  | `(tactic|
+      rr_posCombo_sameDegree_rootCount_degree_le_two using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        left_nonneg_coeffs := $hfnn:term,
+        right_nonneg_coeffs := $hgnn:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        no_common_roots := $hno:term,
+        left_degree_le_two := $hfdeg:term,
+        threshold := $x:term) =>
+      `(tactic|
+        exact rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
+          $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg $x)
+  | `(tactic|
+      rr_posCombo_sameDegree_rootCountAbove_degree_le_two using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        left_nonneg_coeffs := $hfnn:term,
+        right_nonneg_coeffs := $hgnn:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        no_common_roots := $hno:term,
+        left_degree_le_two := $hfdeg:term,
+        threshold := $x:term) =>
+      `(tactic|
+        exact rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
+          $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg $x)
+  | `(tactic|
+      rr_sameDegree_rootCrossing_degree_le_one using
+        left_degree_le_one := $hfdeg:term) =>
+      `(tactic|
+        exact sameDegreeRootCrossing_of_natDegree_le_one $hfdeg)
+  | `(tactic|
+      rr_posCombo_sameDegree_rootCrossing_degree_le_two using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        left_nonneg_coeffs := $hfnn:term,
+        right_nonneg_coeffs := $hgnn:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        no_common_roots := $hno:term,
+        left_degree_le_two := $hfdeg:term) =>
+      `(tactic|
+        exact sameDegreeRootCrossing_of_posCombo_natDegree_le_two
+          $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg)
+  | `(tactic|
+      rr_compatible_succDegree_rootCountAbove_le_two using
+        compatible := $hcomp:term,
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        succ_degree := $hdeg:term,
+        left_splits := $hfsplit:term,
+        left_degree_le_two := $hfdeg:term,
+        threshold := $x:term) =>
+      `(tactic|
+        exact compatibleSuccDegreeRootCountAbove_le_two_of_natDegree_le_two
+          $hcomp $hfpos $hgpos $hdeg $hfsplit $hfdeg $x)
 
 end Tactic
 end RealRooted

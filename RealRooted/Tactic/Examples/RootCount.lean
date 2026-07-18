@@ -663,5 +663,105 @@ example {f g : ℝ[X]} {x : ℝ}
     right_not_root := hxg,
     positive_crossing := hcross
 
+example {f g : ℝ[X]} {x : ℝ}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hfdeg : f.natDegree ≤ 2) :
+    ((f.roots.filter (· ≤ x)).card : ℤ) -
+        (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) -
+        (f.roots.filter (· ≤ x)).card ≤ 1 := by
+  rr_posCombo_sameDegree_rootCount_degree_le_two using
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    left_nonneg_coeffs := hfnn,
+    right_nonneg_coeffs := hgnn,
+    pos_combo := hfg,
+    same_degree := hdeg,
+    no_common_roots := hno,
+    left_degree_le_two := hfdeg,
+    threshold := x
+
+example {f g : ℝ[X]} {x : ℝ}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hfdeg : f.natDegree ≤ 2) :
+    ((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) -
+        (f.roots.filter (x < ·)).card ≤ 1 := by
+  rr_posCombo_sameDegree_rootCountAbove_degree_le_two using
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    left_nonneg_coeffs := hfnn,
+    right_nonneg_coeffs := hgnn,
+    pos_combo := hfg,
+    same_degree := hdeg,
+    no_common_roots := hno,
+    left_degree_le_two := hfdeg,
+    threshold := x
+
+example {f g : ℝ[X]}
+    (hfdeg : f.natDegree ≤ 1) :
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+      (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
+  rr_sameDegree_rootCrossing_degree_le_one using
+    left_degree_le_one := hfdeg
+
+example {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hfdeg : f.natDegree ≤ 2) :
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+      (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
+  rr_posCombo_sameDegree_rootCrossing_degree_le_two using
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    left_nonneg_coeffs := hfnn,
+    right_nonneg_coeffs := hgnn,
+    pos_combo := hfg,
+    same_degree := hdeg,
+    no_common_roots := hno,
+    left_degree_le_two := hfdeg
+
+example {f g : ℝ[X]} {x : ℝ}
+    (hcomp : Compatible f g)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree + 1)
+    (hf_split : f.Splits)
+    (hfdeg : f.natDegree ≤ 2) :
+    ((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card ≤ 2 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) -
+        (f.roots.filter (x < ·)).card ≤ 2 := by
+  rr_compatible_succDegree_rootCountAbove_le_two using
+    compatible := hcomp,
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    succ_degree := hdeg,
+    left_splits := hf_split,
+    left_degree_le_two := hfdeg,
+    threshold := x
+
 end Tactic
 end RealRooted
