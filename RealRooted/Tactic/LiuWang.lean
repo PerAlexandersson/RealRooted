@@ -1111,24 +1111,17 @@ theorem prec_lw_C_mul_X_sub_C_lag_sequence {P : Nat → ℝ[X]}
       have hInter : Interlaces (P n) (P (n + 1)) :=
         ih.toInterlaces (hdeg_succ n)
       have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
-      have hF_pos :
-          HasPosLeadingCoeff
-            (A n * P (n + 1) + (C (c n) * X - C (a n)) * P n) := by
-        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
-      have hdeg_lo :
-          (P (n + 1)).natDegree ≤
-            (A n * P (n + 1) + (C (c n) * X - C (a n)) * P n).natDegree := by
-        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
-      have hdeg_hi :
-          (A n * P (n + 1) + (C (c n) * X - C (a n)) * P n).natDegree ≤
-            (P (n + 1)).natDegree + 1 := by
-        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
+      have hB_nonpos :
+          ∀ r, (P (n + 1)).IsRoot r → (C (c n) * X - C (a n)).eval r ≤ 0 := by
+        intro r hr
+        exact eval_C_mul_X_sub_C_nonpos_of_nonneg_of_nonneg_of_nonpos
+          (hc n) (ha n)
+          (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
       have hstep :
           Prec (P (n + 1))
             (A n * P (n + 1) + (C (c n) * X - C (a n)) * P n) :=
-        prec_lw_C_mul_X_sub_C_lag_of_roots_nonpos hInter (hpos n)
-          (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)))
-          (hc n) (ha n) hF_pos hdeg_lo hdeg_hi (hno n)
+        prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
+          (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_nonpos
       simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary for the affine half-line lag induction. -/
@@ -1171,23 +1164,17 @@ theorem prec_lw_positive_affine_lag_sequence {P : Nat → ℝ[X]}
   | succ n ih =>
       have hInter : Interlaces (P n) (P (n + 1)) :=
         ih.toInterlaces (hdeg_succ n)
-      have hF_pos :
-          HasPosLeadingCoeff
-            (A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n) := by
-        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
-      have hdeg_lo :
-          (P (n + 1)).natDegree ≤
-            (A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n).natDegree := by
-        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
-      have hdeg_hi :
-          (A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n).natDegree ≤
-            (P (n + 1)).natDegree + 1 := by
-        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
+      have hB_nonpos :
+          ∀ r, (P (n + 1)).IsRoot r →
+            (C (c n) * (C (a n) + X)).eval r ≤ 0 := by
+        intro r hr
+        exact eval_C_mul_C_add_X_nonpos_of_nonneg_of_le_neg
+          (hc n) (hroot_upper n r hr)
       have hstep :
           Prec (P (n + 1))
             (A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n) :=
-        prec_lw_positive_affine_lag_of_roots_upper hInter (hpos n)
-          (hroot_upper n) (hc n) hF_pos hdeg_lo hdeg_hi (hno n)
+        prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
+          (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_nonpos
       simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary for the positive affine lag sequence wrapper. -/
@@ -1237,23 +1224,17 @@ theorem prec_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs
         intro r hr
         exact root_le_neg_of_realrooted_of_shift_nonneg_coeffs
           hsource (hshift_nonneg n) hr
-      have hF_pos :
-          HasPosLeadingCoeff
-            (A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n) := by
-        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
-      have hdeg_lo :
-          (P (n + 1)).natDegree ≤
-            (A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n).natDegree := by
-        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
-      have hdeg_hi :
-          (A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n).natDegree ≤
-            (P (n + 1)).natDegree + 1 := by
-        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
+      have hB_nonpos :
+          ∀ r, (P (n + 1)).IsRoot r →
+            (C (c n) * (C (a n) + X)).eval r ≤ 0 := by
+        intro r hr
+        exact eval_C_mul_C_add_X_nonpos_of_nonneg_of_le_neg
+          (hc n) (hroot_upper r hr)
       have hstep :
           Prec (P (n + 1))
             (A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n) :=
-        prec_lw_positive_affine_lag_of_roots_upper hInter (hpos n)
-          hroot_upper (hc n) hF_pos hdeg_lo hdeg_hi (hno n)
+        prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
+          (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_nonpos
       simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary for the shifted-coefficient positive affine
@@ -2031,24 +2012,16 @@ theorem prec_lw_positive_X_mul_lag_sequence {P : Nat → ℝ[X]}
       have hInter : Interlaces (P n) (P (n + 1)) :=
         ih.toInterlaces (hdeg_succ n)
       have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
-      have hF_pos :
-          HasPosLeadingCoeff (A n * P (n + 1) + (X * Q n) * P n) := by
-        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
-      have hdeg_lo :
-          (P (n + 1)).natDegree ≤
-            (A n * P (n + 1) + (X * Q n) * P n).natDegree := by
-        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
-      have hdeg_hi :
-          (A n * P (n + 1) + (X * Q n) * P n).natDegree ≤
-            (P (n + 1)).natDegree + 1 := by
-        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
+      have hB_nonpos :
+          ∀ r, (P (n + 1)).IsRoot r → (X * Q n).eval r ≤ 0 := by
+        intro r hr
+        exact eval_X_mul_nonpos_of_nonpos_of_nonneg
+          (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
+          (hQ_nonneg n r hr)
       have hstep :
           Prec (P (n + 1)) (A n * P (n + 1) + (X * Q n) * P n) :=
-        prec_lw_positive_X_mul_lag_of_roots_nonpos
-          hInter (hpos n)
-          (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)))
-          (hQ_nonneg n)
-          hF_pos hdeg_lo hdeg_hi (hno n)
+        prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
+          (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_nonpos
       simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary for sequence-level `X Q_n` positive-lag
@@ -2088,24 +2061,17 @@ theorem prec_lw_positive_C_mul_X_mul_lag_sequence {P : Nat → ℝ[X]}
       have hInter : Interlaces (P n) (P (n + 1)) :=
         ih.toInterlaces (hdeg_succ n)
       have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
-      have hF_pos :
-          HasPosLeadingCoeff (A n * P (n + 1) + (C (c n) * X * Q n) * P n) := by
-        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
-      have hdeg_lo :
-          (P (n + 1)).natDegree ≤
-            (A n * P (n + 1) + (C (c n) * X * Q n) * P n).natDegree := by
-        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
-      have hdeg_hi :
-          (A n * P (n + 1) + (C (c n) * X * Q n) * P n).natDegree ≤
-            (P (n + 1)).natDegree + 1 := by
-        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
+      have hB_nonpos :
+          ∀ r, (P (n + 1)).IsRoot r → (C (c n) * X * Q n).eval r ≤ 0 := by
+        intro r hr
+        exact eval_C_mul_X_mul_nonpos_of_nonneg_of_nonpos_of_nonneg
+          (hc n)
+          (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
+          (hQ_nonneg n r hr)
       have hstep :
           Prec (P (n + 1)) (A n * P (n + 1) + (C (c n) * X * Q n) * P n) :=
-        prec_lw_positive_C_mul_X_mul_lag_of_roots_nonpos
-          hInter (hpos n)
-          (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)))
-          (hc n) (hQ_nonneg n)
-          hF_pos hdeg_lo hdeg_hi (hno n)
+        prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
+          (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_nonpos
       simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary for sequence-level `c_n X Q_n` positive-lag
@@ -2212,22 +2178,15 @@ theorem prec_lw_X_mul_one_sub_X_lag_sequence {P : Nat → ℝ[X]}
       have hInter : Interlaces (P n) (P (n + 1)) :=
         ih.toInterlaces (hdeg_succ n)
       have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
-      have hF_pos :
-          HasPosLeadingCoeff (A n * P (n + 1) + (X * (1 - X)) * P n) := by
-        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
-      have hdeg_lo :
-          (P (n + 1)).natDegree ≤
-            (A n * P (n + 1) + (X * (1 - X)) * P n).natDegree := by
-        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
-      have hdeg_hi :
-          (A n * P (n + 1) + (X * (1 - X)) * P n).natDegree ≤
-            (P (n + 1)).natDegree + 1 := by
-        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
+      have hB_nonpos :
+          ∀ r, (P (n + 1)).IsRoot r → (X * ((1 : ℝ[X]) - X)).eval r ≤ 0 := by
+        intro r hr
+        exact eval_X_mul_one_sub_X_nonpos_of_nonpos
+          (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
       have hstep :
           Prec (P (n + 1)) (A n * P (n + 1) + (X * (1 - X)) * P n) :=
-        prec_lw_X_mul_one_sub_X_lag_of_roots_nonpos hInter (hpos n)
-          (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)))
-          hF_pos hdeg_lo hdeg_hi (hno n)
+        prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
+          (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_nonpos
       simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary for strict-degree Family E `t(1-t)` lag
@@ -2267,27 +2226,18 @@ theorem prec_lw_X_mul_C_sub_C_mul_X_lag_sequence {P : Nat → ℝ[X]}
       have hInter : Interlaces (P n) (P (n + 1)) :=
         ih.toInterlaces (hdeg_succ n)
       have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
-      have hF_pos :
-          HasPosLeadingCoeff
-            (A n * P (n + 1) + (X * (C (a n) - C (b n) * X)) * P n) := by
-        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
-      have hdeg_lo :
-          (P (n + 1)).natDegree ≤
-            (A n * P (n + 1) +
-              (X * (C (a n) - C (b n) * X)) * P n).natDegree := by
-        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
-      have hdeg_hi :
-          (A n * P (n + 1) +
-            (X * (C (a n) - C (b n) * X)) * P n).natDegree ≤
-            (P (n + 1)).natDegree + 1 := by
-        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
+      have hB_nonpos :
+          ∀ r, (P (n + 1)).IsRoot r →
+            (X * (C (a n) - C (b n) * X)).eval r ≤ 0 := by
+        intro r hr
+        exact eval_X_mul_C_sub_C_mul_X_nonpos_of_nonneg_of_nonneg_of_nonpos
+          (ha n) (hb n)
+          (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
       have hstep :
           Prec (P (n + 1))
             (A n * P (n + 1) + (X * (C (a n) - C (b n) * X)) * P n) :=
-        prec_lw_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos hInter (hpos n)
-          (ha n) (hb n)
-          (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)))
-          hF_pos hdeg_lo hdeg_hi (hno n)
+        prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
+          (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_nonpos
       simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary for strict-degree Family E `t(a_n-b_n t)` lag
@@ -2332,29 +2282,19 @@ theorem prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_sequence {P : Nat → ℝ[X]}
       have hInter : Interlaces (P n) (P (n + 1)) :=
         ih.toInterlaces (hdeg_succ n)
       have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
-      have hF_pos :
-          HasPosLeadingCoeff
-            (A n * P (n + 1) +
-              (C (c n) * X * (C (a n) - C (b n) * X)) * P n) := by
-        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
-      have hdeg_lo :
-          (P (n + 1)).natDegree ≤
-            (A n * P (n + 1) +
-              (C (c n) * X * (C (a n) - C (b n) * X)) * P n).natDegree := by
-        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
-      have hdeg_hi :
-          (A n * P (n + 1) +
-            (C (c n) * X * (C (a n) - C (b n) * X)) * P n).natDegree ≤
-            (P (n + 1)).natDegree + 1 := by
-        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
+      have hB_nonpos :
+          ∀ r, (P (n + 1)).IsRoot r →
+            (C (c n) * X * (C (a n) - C (b n) * X)).eval r ≤ 0 := by
+        intro r hr
+        exact eval_C_mul_X_mul_C_sub_C_mul_X_nonpos
+          (hc n) (ha n) (hb n)
+          (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
       have hstep :
           Prec (P (n + 1))
             (A n * P (n + 1) +
               (C (c n) * X * (C (a n) - C (b n) * X)) * P n) :=
-        prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_of_roots_nonpos hInter (hpos n)
-          (hc n) (ha n) (hb n)
-          (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)))
-          hF_pos hdeg_lo hdeg_hi (hno n)
+        prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
+          (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_nonpos
       simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary for strict-degree Family E
