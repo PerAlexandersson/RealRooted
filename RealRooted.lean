@@ -140,6 +140,7 @@ import RealRooted.Tactic.Examples.LiuWang
 import RealRooted.Tactic.Examples.LiuWangRecursion
 import RealRooted.Tactic.Examples.Lookup
 import RealRooted.Tactic.Examples.MaWang
+import RealRooted.Tactic.Examples.MagnitudeDominated
 import RealRooted.Tactic.Examples.Matrix
 import RealRooted.Tactic.Examples.MultiplierSequence
 import RealRooted.Tactic.Examples.OperatorPreservesInterlacing
@@ -172,6 +173,7 @@ import RealRooted.Tactic.LiuWang
 import RealRooted.Tactic.LiuWangRecursion
 import RealRooted.Tactic.Lookup
 import RealRooted.Tactic.MaWang
+import RealRooted.Tactic.MagnitudeDominated
 import RealRooted.Tactic.Matrix
 import RealRooted.Tactic.MultiplierSequence
 import RealRooted.Tactic.OEIS
