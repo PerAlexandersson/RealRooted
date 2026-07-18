@@ -32,6 +32,21 @@ lemma isRealRooted_C {a : ℝ} (ha : a ≠ 0) :
     ((C a : ℝ[X]) ≠ 0 ∧ (C a : ℝ[X]).Splits) :=
   ⟨C_ne_zero.mpr ha, Polynomial.Splits.C (R := ℝ) a⟩
 
+/-- Unit-slope real linear factors are real-rooted. -/
+theorem isRealRooted_X_add_C (t : ℝ) :
+    (X + C t : ℝ[X]) ≠ 0 ∧ (X + C t : ℝ[X]).Splits := by
+  simpa using isRealRooted_C_mul_X_add_C (s := 1) (t := t) (by norm_num)
+
+/-- Constant-first spelling of `isRealRooted_X_add_C`. -/
+theorem isRealRooted_C_add_X (t : ℝ) :
+    (C t + X : ℝ[X]) ≠ 0 ∧ (C t + X : ℝ[X]).Splits := by
+  simpa [add_comm] using isRealRooted_X_add_C t
+
+/-- Constant-first spelling of `isRealRooted_C_mul_X_add_C`. -/
+theorem isRealRooted_C_add_C_mul_X {s t : ℝ} (hs : s ≠ 0) :
+    (C t + C s * X : ℝ[X]) ≠ 0 ∧ (C t + C s * X : ℝ[X]).Splits := by
+  simpa [add_comm] using isRealRooted_C_mul_X_add_C (s := s) (t := t) hs
+
 theorem isRealRooted_C_mul_X_add_C_mul {p : ℝ[X]} {s t : ℝ}
     (hp : p ≠ 0 ∧ p.Splits) (hs : s ≠ 0) :
     ((C s * X + C t) * p ≠ 0 ∧ ((C s * X + C t) * p).Splits) :=
@@ -1419,6 +1434,91 @@ theorem isRealRooted_of_product_scalar_C_add_X_pow_scalar_right_factor_right_seq
 
 namespace Tactic
 
+syntax (name := rr_product_C_named)
+  "rr_product_C" " using "
+    "scalar_ne" ":=" term :
+  tactic
+
+syntax (name := rr_product_C_auto) "rr_product_C_auto" : tactic
+
+syntax (name := rr_product_C_pow_named)
+  "rr_product_C_pow" " using "
+    "scalar_ne" ":=" term ","
+    "exponent" ":=" term :
+  tactic
+
+syntax (name := rr_product_C_pow_auto_named)
+  "rr_product_C_pow_auto" " using "
+    "exponent" ":=" term :
+  tactic
+
+syntax (name := rr_product_X_named) "rr_product_X" : tactic
+
+syntax (name := rr_product_X_pow_named)
+  "rr_product_X_pow" " using "
+    "exponent" ":=" term :
+  tactic
+
+syntax (name := rr_product_X_add_C_named)
+  "rr_product_X_add_C" " using "
+    "constant" ":=" term :
+  tactic
+
+syntax (name := rr_product_X_add_C_pow_named)
+  "rr_product_X_add_C_pow" " using "
+    "constant" ":=" term ","
+    "exponent" ":=" term :
+  tactic
+
+syntax (name := rr_product_C_add_X_named)
+  "rr_product_C_add_X" " using "
+    "constant" ":=" term :
+  tactic
+
+syntax (name := rr_product_C_add_X_pow_named)
+  "rr_product_C_add_X_pow" " using "
+    "constant" ":=" term ","
+    "exponent" ":=" term :
+  tactic
+
+syntax (name := rr_product_affine_named)
+  "rr_product_affine" " using "
+    "slope_ne" ":=" term :
+  tactic
+
+syntax (name := rr_product_affine_auto) "rr_product_affine_auto" : tactic
+
+syntax (name := rr_product_affine_pow_named)
+  "rr_product_affine_pow" " using "
+    "slope_ne" ":=" term ","
+    "exponent" ":=" term :
+  tactic
+
+syntax (name := rr_product_affine_pow_auto_named)
+  "rr_product_affine_pow_auto" " using "
+    "exponent" ":=" term :
+  tactic
+
+syntax (name := rr_product_const_first_affine_named)
+  "rr_product_const_first_affine" " using "
+    "slope_ne" ":=" term :
+  tactic
+
+syntax (name := rr_product_const_first_affine_auto)
+  "rr_product_const_first_affine_auto" :
+  tactic
+
+syntax (name := rr_product_const_first_affine_pow_named)
+  "rr_product_const_first_affine_pow" " using "
+    "slope_ne" ":=" term ","
+    "exponent" ":=" term :
+  tactic
+
+syntax (name := rr_product_const_first_affine_pow_auto_named)
+  "rr_product_const_first_affine_pow_auto" " using "
+    "exponent" ":=" term :
+  tactic
+
 syntax (name := rr_product_factor)
   "rr_product_factor" " using " term ", " term : tactic
 
@@ -1975,6 +2075,85 @@ macro_rules
           $hleft, $hright, $hscalar_right, $hfactor_right)
 
 macro_rules
+  | `(tactic| rr_product_C using scalar_ne := $ha:term) =>
+      `(tactic|
+        rr_first_realrooted_or_projection (RealRooted.isRealRooted_C $ha))
+  | `(tactic| rr_product_C_auto) =>
+      `(tactic|
+        rr_product_C using scalar_ne := rr_product_nonzero_term)
+  | `(tactic|
+      rr_product_C_pow using
+        scalar_ne := $ha:term,
+        exponent := $n:term) =>
+      `(tactic|
+        rr_first_realrooted_or_projection (RealRooted.isRealRooted_C_pow $ha $n))
+  | `(tactic| rr_product_C_pow_auto using exponent := $n:term) =>
+      `(tactic|
+        rr_product_C_pow using
+          scalar_ne := rr_product_nonzero_term,
+          exponent := $n)
+  | `(tactic| rr_product_X) =>
+      `(tactic|
+        rr_first_realrooted_or_projection RealRooted.isRealRooted_X)
+  | `(tactic| rr_product_X_pow using exponent := $n:term) =>
+      `(tactic|
+        rr_first_realrooted_or_projection (RealRooted.isRealRooted_X_pow $n))
+  | `(tactic| rr_product_X_add_C using constant := $t:term) =>
+      `(tactic|
+        rr_first_realrooted_or_projection (RealRooted.isRealRooted_X_add_C $t))
+  | `(tactic|
+      rr_product_X_add_C_pow using
+        constant := $t:term,
+        exponent := $n:term) =>
+      `(tactic|
+        rr_first_realrooted_or_projection (RealRooted.isRealRooted_X_add_C_pow $t $n))
+  | `(tactic| rr_product_C_add_X using constant := $t:term) =>
+      `(tactic|
+        rr_first_realrooted_or_projection (RealRooted.isRealRooted_C_add_X $t))
+  | `(tactic|
+      rr_product_C_add_X_pow using
+        constant := $t:term,
+        exponent := $n:term) =>
+      `(tactic|
+        rr_first_realrooted_or_projection (RealRooted.isRealRooted_C_add_X_pow $t $n))
+  | `(tactic| rr_product_affine using slope_ne := $hs:term) =>
+      `(tactic|
+        rr_first_realrooted_or_projection
+          (RealRooted.isRealRooted_C_mul_X_add_C $hs))
+  | `(tactic| rr_product_affine_auto) =>
+      `(tactic|
+        rr_product_affine using slope_ne := rr_product_nonzero_term)
+  | `(tactic|
+      rr_product_affine_pow using
+        slope_ne := $hs:term,
+        exponent := $n:term) =>
+      `(tactic|
+        rr_first_realrooted_or_projection
+          (RealRooted.isRealRooted_C_mul_X_add_C_pow $hs $n))
+  | `(tactic| rr_product_affine_pow_auto using exponent := $n:term) =>
+      `(tactic|
+        rr_product_affine_pow using
+          slope_ne := rr_product_nonzero_term,
+          exponent := $n)
+  | `(tactic| rr_product_const_first_affine using slope_ne := $hs:term) =>
+      `(tactic|
+        rr_first_realrooted_or_projection
+          (RealRooted.isRealRooted_C_add_C_mul_X $hs))
+  | `(tactic| rr_product_const_first_affine_auto) =>
+      `(tactic|
+        rr_product_const_first_affine using slope_ne := rr_product_nonzero_term)
+  | `(tactic|
+      rr_product_const_first_affine_pow using
+        slope_ne := $hs:term,
+        exponent := $n:term) =>
+      `(tactic|
+        rr_first_realrooted_or_projection
+          (RealRooted.isRealRooted_C_add_C_mul_X_pow $hs $n))
+  | `(tactic| rr_product_const_first_affine_pow_auto using exponent := $n:term) =>
+      `(tactic|
+        rr_product_const_first_affine_pow using
+          slope_ne := rr_product_nonzero_term,
+          exponent := $n)
   | `(tactic| rr_product_factor using $hp:term, $hs:term) =>
       `(tactic|
         rr_product_two_variants

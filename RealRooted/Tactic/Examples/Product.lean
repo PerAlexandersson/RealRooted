@@ -22,6 +22,68 @@ example {n : Nat} : (n : ℝ) + 1 ≠ 0 := by
 example {n : Nat} : 2 * (n : ℝ) + 1 ≠ 0 := by
   rr_product_nonzero
 
+example {a : ℝ} (ha : a ≠ 0) :
+    (C a : ℝ[X]) ≠ 0 ∧ (C a : ℝ[X]).Splits := by
+  rr_product_C using scalar_ne := ha
+
+example {a : ℝ} (ha : a ≠ 0) :
+    (C a : ℝ[X]).Splits := by
+  rr_product_C using scalar_ne := ha
+
+example {n : Nat} :
+    (C ((n : ℝ) + 1) : ℝ[X]) ≠ 0 := by
+  rr_product_C_auto
+
+example {a : ℝ} (ha : a ≠ 0) :
+    ((C a : ℝ[X]) ^ 2).Splits := by
+  rr_product_C_pow using
+    scalar_ne := ha,
+    exponent := 2
+
+example :
+    (X : ℝ[X]) ≠ 0 ∧ (X : ℝ[X]).Splits := by
+  rr_product_X
+
+example {n : Nat} :
+    ((X : ℝ[X]) ^ n).Splits := by
+  rr_product_X_pow using exponent := n
+
+example {t : ℝ} :
+    (X + C t : ℝ[X]).Splits := by
+  rr_product_X_add_C using constant := t
+
+example {t : ℝ} :
+    (C t + X : ℝ[X]) ≠ 0 := by
+  rr_product_C_add_X using constant := t
+
+example {t : ℝ} :
+    ((X + C t : ℝ[X]) ^ 3 ≠ 0 ∧ ((X + C t : ℝ[X]) ^ 3).Splits) := by
+  rr_product_X_add_C_pow using
+    constant := t,
+    exponent := 3
+
+example {s t : ℝ} (hs : s ≠ 0) :
+    (C s * X + C t : ℝ[X]).Splits := by
+  rr_product_affine using slope_ne := hs
+
+example {s t : ℝ} (hs : s ≠ 0) :
+    (C t + C s * X : ℝ[X]) ≠ 0 := by
+  rr_product_const_first_affine using slope_ne := hs
+
+example {t : ℝ} :
+    (C (2 : ℝ) * X + C t : ℝ[X]).Splits := by
+  rr_product_affine_auto
+
+example {s t : ℝ} (hs : s ≠ 0) :
+    ((C s * X + C t : ℝ[X]) ^ 2).Splits := by
+  rr_product_affine_pow using
+    slope_ne := hs,
+    exponent := 2
+
+example {t : ℝ} :
+    ((C t + C (3 : ℝ) * X : ℝ[X]) ^ 2) ≠ 0 := by
+  rr_product_const_first_affine_pow_auto using exponent := 2
+
 example {p : ℝ[X]} {s t : ℝ} (hp : p ≠ 0 ∧ p.Splits) (hs : s ≠ 0) :
     ((C s * X + C t) * p ≠ 0 ∧ ((C s * X + C t) * p).Splits) := by
   rr_product_factor using hp, hs
