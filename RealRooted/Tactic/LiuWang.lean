@@ -39,6 +39,8 @@ private lemma oneNonnegSeq : ∀ _ : Nat, 0 ≤ (1 : ℝ) :=
 
 syntax (name := rr_lw_recurrence_seq) "rr_lw_recurrence_seq " term : term
 
+syntax (name := rr_lw_recurrence_mul_assoc_seq) "rr_lw_recurrence_mul_assoc_seq " term : term
+
 syntax (name := rr_lw_simpa) "rr_lw_simpa " term : term
 
 syntax (name := rr_lw_simpa_mul_assoc) "rr_lw_simpa_mul_assoc " term : term
@@ -46,6 +48,8 @@ syntax (name := rr_lw_simpa_mul_assoc) "rr_lw_simpa_mul_assoc " term : term
 macro_rules
   | `(rr_lw_recurrence_seq $hrec:term) =>
       `(fun n => by simpa using $hrec n)
+  | `(rr_lw_recurrence_mul_assoc_seq $hrec:term) =>
+      `(fun n => by simpa only [mul_assoc] using $hrec n)
   | `(rr_lw_simpa $h:term) =>
       `(by simpa using $h)
   | `(rr_lw_simpa_mul_assoc $h:term) =>
@@ -6681,7 +6685,7 @@ macro_rules
             $hbase $hpos $hnonneg $hQ $hrec $hdeg_succ $hno),
           (RealRooted.prec_lw_positive_X_mul_lag_sequence
             $hbase $hpos $hnonneg $hQ
-            (fun n => by simpa only [mul_assoc] using $hrec n) $hdeg_succ $hno))
+            (rr_lw_recurrence_mul_assoc_seq $hrec) $hdeg_succ $hno))
   | `(tactic|
       rr_lw_positive_X_mul_sequence_realrooted using
         base := $hbase:term,
@@ -6699,7 +6703,7 @@ macro_rules
           | rr_exact_realrooted_sequence_or_projection
               (RealRooted.isRealRooted_of_lw_positive_X_mul_lag_sequence
                 $hbase $hpos $hnonneg $hQ
-                (fun n => by simpa only [mul_assoc] using $hrec n) $hdeg_succ $hno))
+                (rr_lw_recurrence_mul_assoc_seq $hrec) $hdeg_succ $hno))
   | `(tactic|
       rr_lw_positive_C_mul_X_mul_sequence using
         base := $hbase:term,
@@ -6716,7 +6720,7 @@ macro_rules
             $hbase $hpos $hnonneg $hc $hQ $hrec $hdeg_succ $hno),
           (RealRooted.prec_lw_positive_C_mul_X_mul_lag_sequence
             $hbase $hpos $hnonneg $hc $hQ
-            (fun n => by simpa only [mul_assoc] using $hrec n) $hdeg_succ $hno))
+            (rr_lw_recurrence_mul_assoc_seq $hrec) $hdeg_succ $hno))
   | `(tactic|
       rr_lw_positive_C_mul_X_mul_sequence_auto using
         base := $hbase:term,
@@ -6734,7 +6738,7 @@ macro_rules
           | refine RealRooted.prec_lw_positive_C_mul_X_mul_lag_sequence
               (hbase := $hbase) (hpos := $hpos) (hnonneg := $hnonneg)
               (hQ_nonneg := $hQ)
-              (hrec := fun n => by simpa only [mul_assoc] using $hrec n)
+              (hrec := rr_lw_recurrence_mul_assoc_seq $hrec)
               (hdeg_succ := $hdeg_succ) (hno := $hno) (hc := ?_) <;>
           rr_lw_active_nonneg_seq)
   | `(tactic|
@@ -6755,7 +6759,7 @@ macro_rules
           | rr_exact_realrooted_sequence_or_projection
               (RealRooted.isRealRooted_of_lw_positive_C_mul_X_mul_lag_sequence
                 $hbase $hpos $hnonneg $hc $hQ
-                (fun n => by simpa only [mul_assoc] using $hrec n) $hdeg_succ $hno))
+                (rr_lw_recurrence_mul_assoc_seq $hrec) $hdeg_succ $hno))
   | `(tactic|
       rr_lw_positive_C_mul_X_mul_sequence_realrooted_auto using
         base := $hbase:term,
@@ -6777,7 +6781,7 @@ macro_rules
                 refine RealRooted.isRealRooted_of_lw_positive_C_mul_X_mul_lag_sequence
                   (hbase := $hbase) (hpos := $hpos) (hnonneg := $hnonneg)
                   (hQ_nonneg := $hQ)
-                  (hrec := fun n => by simpa only [mul_assoc] using $hrec n)
+                  (hrec := rr_lw_recurrence_mul_assoc_seq $hrec)
                   (hdeg_succ := $hdeg_succ) (hno := $hno) (hc := ?_) <;>
           rr_lw_active_nonneg_seq))
   | `(tactic|
