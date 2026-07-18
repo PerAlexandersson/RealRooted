@@ -1916,7 +1916,7 @@ syntax (name := rr_favard_refine_positivity_seq)
 
 macro_rules
   | `(tactic| rr_favard_refine_positivity_seq $h:term) =>
-      `(tactic| refine $h <;> rr_positivity_seq)
+      `(tactic| rr_refine_then $h with rr_positivity_seq)
   | `(tactic|
       rr_favard_goal_variants
         $hinterlace:term, $hrealrooted:term, $hnonzero:term,

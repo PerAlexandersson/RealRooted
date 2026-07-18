@@ -2545,7 +2545,7 @@ syntax (name := rr_lw_refine_active_nonneg_seq)
 
 macro_rules
   | `(tactic| rr_lw_refine_active_nonneg_seq $h:term) =>
-      `(tactic| refine $h <;> rr_lw_active_nonneg_seq)
+      `(tactic| rr_refine_then $h with rr_lw_active_nonneg_seq)
 
 syntax (name := rr_lw_active_nonneg) "rr_lw_active_nonneg" : term
 

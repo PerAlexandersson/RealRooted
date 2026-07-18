@@ -35,6 +35,7 @@ syntax (name := rr_side_pos_seq) "rr_side_pos_seq" : tactic
 syntax (name := rr_side_ne_seq) "rr_side_ne_seq" : tactic
 syntax (name := rr_positivity_seq) "rr_positivity_seq" : tactic
 syntax (name := rr_side) "rr_side" : tactic
+syntax (name := rr_refine_then) "rr_refine_then " term " with " tactic : tactic
 
 syntax (name := rr_positivity_term) "rr_positivity_term" : term
 syntax (name := rr_side_pos_term) "rr_side_pos_term" : term
@@ -43,6 +44,8 @@ syntax (name := rr_side_nonneg_seq_term) "rr_side_nonneg_seq_term" : term
 syntax (name := rr_side_ne_seq_term) "rr_side_ne_seq_term" : term
 
 macro_rules
+  | `(tactic| rr_refine_then $h:term with $tac:tactic) =>
+      `(tactic| refine $h <;> $tac)
   | `(tactic| rr_side_nonneg) =>
       `(tactic|
         first
