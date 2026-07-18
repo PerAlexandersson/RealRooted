@@ -426,6 +426,21 @@ example {f g : ℝ[X]} (hfg : Prec f g) : Prec0 f g := by
 example {f g : ℝ[X]} (hfg : Prec f g) : Prec0 f g := by
   rr_finish using hfg
 
+example {f g : ℝ[X]} (hfg : Interlaces f g) : Prec f g := by
+  rr_prec using hfg
+
+example {f g : ℝ[X]} (hfg : Interlaces f g) : Prec f g := by
+  rr_finish using hfg
+
+example {f g : ℝ[X]} (hfg : Interlaces f g) : Prec f g := by
+  rr_finish
+
+example {f g : ℝ[X]} (hfg : Interlaces f g) : Prec0 f g := by
+  rr_prec0 using hfg
+
+example {f g : ℝ[X]} (hfg : Interlaces f g) : Prec0 f g := by
+  rr_finish using hfg
+
 example {f g : ℝ[X]} (hfg : Prec0 f g) (hf : f ≠ 0) (hg : g ≠ 0) :
     Prec f g := by
   rr_prec using hfg, hf, hg

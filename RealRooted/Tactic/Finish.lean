@@ -406,6 +406,10 @@ syntax (name := rr_interlaces_auto_degree)
 
 syntax (name := rr_prec0) "rr_prec0" " using " term : tactic
 
+syntax (name := rr_prec_of_interlaces)
+  "rr_prec" " using " term :
+  tactic
+
 syntax (name := rr_prec_of_prec0)
   "rr_prec" " using " term ", " term ", " term : tactic
 
@@ -711,7 +715,15 @@ macro_rules
         exact RealRooted.Prec.toInterlaces $hprec (by rr_close_side))
   | `(tactic| rr_prec0 using $hprec:term) =>
       `(tactic|
-        exact RealRooted.Prec.toPrec0 $hprec)
+        rr_first_exact
+          $hprec,
+          RealRooted.Prec.toPrec0 $hprec,
+          RealRooted.Prec.toPrec0 (RealRooted.Interlaces.toPrec $hprec))
+  | `(tactic| rr_prec using $hinter:term) =>
+      `(tactic|
+        rr_first_exact
+          $hinter,
+          RealRooted.Interlaces.toPrec $hinter)
   | `(tactic| rr_prec using $hprec0:term, $hf:term, $hg:term) =>
       `(tactic|
         exact RealRooted.Prec0.toPrec_of_ne $hprec0 $hf $hg)
@@ -785,7 +797,9 @@ macro_rules
           | exact RealRooted.natDegree_succ_of_interlaces $h
           | exact (RealRooted.natDegree_succ_of_interlaces $h).symm
           | exact RealRooted.Prec.toInterlaces $h (by rr_close_side)
+          | exact RealRooted.Interlaces.toPrec $h
           | exact RealRooted.Prec.toPrec0 $h
+          | exact RealRooted.Prec.toPrec0 (RealRooted.Interlaces.toPrec $h)
           | rr_close_side)
   | `(tactic| rr_finish using $hprec:term, $hdeg:term) =>
       `(tactic|
@@ -819,8 +833,10 @@ macro_rules
           | exact RealRooted.natDegree_succ_of_interlaces rr_lookup_term
           | exact (RealRooted.natDegree_succ_of_interlaces rr_lookup_term).symm
           | exact rr_lookup_interlaces_term
+          | exact RealRooted.Interlaces.toPrec rr_lookup_term
           | exact RealRooted.ne_zero_of_natDegree_eq_one (by rr_degree_eq_one)
           | (apply Polynomial.Splits.of_natDegree_le_one <;> rr_degree_le_one)
+          | exact RealRooted.Prec.toPrec0 (RealRooted.Interlaces.toPrec rr_lookup_term)
           | (exact ⟨by rr_nonzero, by rr_splits⟩ <;> done)
           | rr_sign
           | simp_all [
