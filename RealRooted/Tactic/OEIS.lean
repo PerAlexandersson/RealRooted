@@ -61,6 +61,18 @@ rr_g_negative_lag_sequence_den_coeff using ... certificate := negativeQuadratic
 rr_product_exit_sequence using ... certificate := identity
 rr_product_exit_sequence using ... certificate := rootZero
 rr_product_exit_sequence using ... certificate := periodTwo
+rr_product_factor_sequence using ... certificate := suppliedFactor
+rr_product_factor_sequence using ... certificate := affine
+rr_product_factor_sequence using ... certificate := affineAuto
+rr_product_factor_sequence using ... certificate := constFirstAffine
+rr_product_factor_sequence using ... certificate := constFirstAffineAuto
+rr_product_factor_sequence using ... certificate := xAddC
+rr_product_factor_sequence using ... certificate := cAddX
+rr_product_factor_sequence using ... certificate := rootZeroPow
+rr_product_factor_sequence using ... certificate := xAddCPow
+rr_product_factor_sequence using ... certificate := cAddXPow
+rr_product_factor_sequence using ... certificate := scalar
+rr_product_factor_sequence using ... certificate := scalarAuto
 rr_product_lift_sequence using ... certificate := suppliedFactor
 rr_product_lift_sequence using ... certificate := rootZero
 rr_product_lift_sequence using ... certificate := rootZeroPow
@@ -506,6 +518,94 @@ syntax (name := rr_product_exit_sequence_period_two)
     "certificate" ":=" "periodTwo" :
   tactic
 
+syntax (name := rr_product_factor_sequence_supplied_factor)
+  "rr_product_factor_sequence" " using "
+    "base" ":=" term ","
+    "factor_realrooted" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "suppliedFactor" :
+  tactic
+
+syntax (name := rr_product_factor_sequence_affine)
+  "rr_product_factor_sequence" " using "
+    "base" ":=" term ","
+    "slope_ne" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "affine" :
+  tactic
+
+syntax (name := rr_product_factor_sequence_affine_auto)
+  "rr_product_factor_sequence" " using "
+    "base" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "affineAuto" :
+  tactic
+
+syntax (name := rr_product_factor_sequence_const_first_affine)
+  "rr_product_factor_sequence" " using "
+    "base" ":=" term ","
+    "slope_ne" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "constFirstAffine" :
+  tactic
+
+syntax (name := rr_product_factor_sequence_const_first_affine_auto)
+  "rr_product_factor_sequence" " using "
+    "base" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "constFirstAffineAuto" :
+  tactic
+
+syntax (name := rr_product_factor_sequence_x_add_c)
+  "rr_product_factor_sequence" " using "
+    "base" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "xAddC" :
+  tactic
+
+syntax (name := rr_product_factor_sequence_c_add_x)
+  "rr_product_factor_sequence" " using "
+    "base" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "cAddX" :
+  tactic
+
+syntax (name := rr_product_factor_sequence_root_zero_pow)
+  "rr_product_factor_sequence" " using "
+    "base" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "rootZeroPow" :
+  tactic
+
+syntax (name := rr_product_factor_sequence_x_add_c_pow)
+  "rr_product_factor_sequence" " using "
+    "base" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "xAddCPow" :
+  tactic
+
+syntax (name := rr_product_factor_sequence_c_add_x_pow)
+  "rr_product_factor_sequence" " using "
+    "base" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "cAddXPow" :
+  tactic
+
+syntax (name := rr_product_factor_sequence_scalar)
+  "rr_product_factor_sequence" " using "
+    "base" ":=" term ","
+    "scalar_ne" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "scalar" :
+  tactic
+
+syntax (name := rr_product_factor_sequence_scalar_auto)
+  "rr_product_factor_sequence" " using "
+    "base" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "scalarAuto" :
+  tactic
+
 syntax (name := rr_product_lift_sequence_supplied_factor)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -573,6 +673,122 @@ syntax (name := rr_product_lift_sequence_affine_auto)
   tactic
 
 macro_rules
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        factor_realrooted := $hfactor:term,
+        recurrence := $hrec:term,
+        certificate := suppliedFactor) =>
+      `(tactic|
+        rr_product_factor_sequence using
+          base := $hbase,
+          factor_realrooted := $hfactor,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        slope_ne := $hs:term,
+        recurrence := $hrec:term,
+        certificate := affine) =>
+      `(tactic|
+        rr_product_affine_sequence using
+          base := $hbase,
+          slope_ne := $hs,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        recurrence := $hrec:term,
+        certificate := affineAuto) =>
+      `(tactic|
+        rr_product_affine_sequence_auto using
+          base := $hbase,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        slope_ne := $hs:term,
+        recurrence := $hrec:term,
+        certificate := constFirstAffine) =>
+      `(tactic|
+        rr_product_const_first_sequence using
+          base := $hbase,
+          slope_ne := $hs,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        recurrence := $hrec:term,
+        certificate := constFirstAffineAuto) =>
+      `(tactic|
+        rr_product_const_first_sequence_auto using
+          base := $hbase,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        recurrence := $hrec:term,
+        certificate := xAddC) =>
+      `(tactic|
+        rr_product_X_sequence using
+          base := $hbase,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        recurrence := $hrec:term,
+        certificate := cAddX) =>
+      `(tactic|
+        rr_product_C_add_X_sequence using
+          base := $hbase,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        recurrence := $hrec:term,
+        certificate := rootZeroPow) =>
+      `(tactic|
+        rr_product_X_pow_sequence using
+          base := $hbase,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        recurrence := $hrec:term,
+        certificate := xAddCPow) =>
+      `(tactic|
+        rr_product_X_add_C_pow_sequence using
+          base := $hbase,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        recurrence := $hrec:term,
+        certificate := cAddXPow) =>
+      `(tactic|
+        rr_product_C_add_X_pow_sequence using
+          base := $hbase,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        scalar_ne := $hs:term,
+        recurrence := $hrec:term,
+        certificate := scalar) =>
+      `(tactic|
+        rr_product_scalar_sequence using
+          base := $hbase,
+          scalar_ne := $hs,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        recurrence := $hrec:term,
+        certificate := scalarAuto) =>
+      `(tactic|
+        rr_product_scalar_sequence_auto using
+          base := $hbase,
+          recurrence := $hrec)
   | `(tactic|
       rr_product_lift_sequence using
         quotient_realrooted := $hquot:term,

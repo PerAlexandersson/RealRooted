@@ -602,6 +602,71 @@ example {P : Nat → ℝ[X]}
     recurrence := hrec,
     certificate := periodTwo
 
+/-- Product-factor recurrence router with a supplied factor certificate. -/
+example {P F : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = P n * F n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_factor_sequence using
+    base := hbase,
+    factor_realrooted := hfactor,
+    recurrence := hrec,
+    certificate := suppliedFactor
+
+/-- Product-factor recurrence router, automatic affine-slope certificate. -/
+example {P : Nat → ℝ[X]} {t : Nat → ℝ}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat,
+      P (n + 1) = (C ((n : ℝ) + 1) * X + C (t n)) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_factor_sequence using
+    base := hbase,
+    recurrence := hrec,
+    certificate := affineAuto
+
+/-- Product-factor recurrence router, constant-first affine factor. -/
+example {P : Nat → ℝ[X]} {s t : Nat → ℝ}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hs : ∀ n : Nat, s n ≠ 0)
+    (hrec : ∀ n : Nat, P (n + 1) = P n * (C (t n) + C (s n) * X)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_factor_sequence using
+    base := hbase,
+    slope_ne := hs,
+    recurrence := hrec,
+    certificate := constFirstAffine
+
+/-- Product-factor recurrence router, unit-linear factor. -/
+example {P : Nat → ℝ[X]} {t : Nat → ℝ}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = P n * (X + C (t n))) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_factor_sequence using
+    base := hbase,
+    recurrence := hrec,
+    certificate := xAddC
+
+/-- Product-factor recurrence router, repeated root-zero factor. -/
+example {P : Nat → ℝ[X]} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = X ^ (m n) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_factor_sequence using
+    base := hbase,
+    recurrence := hrec,
+    certificate := rootZeroPow
+
+/-- Product-factor recurrence router, automatic scalar certificate. -/
+example {P : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = C ((n : ℝ) + 1) * P n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_factor_sequence using
+    base := hbase,
+    recurrence := hrec,
+    certificate := scalarAuto
+
 /-- Product-lift router with a supplied factor certificate. -/
 example {P Q F : Nat → ℝ[X]}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
