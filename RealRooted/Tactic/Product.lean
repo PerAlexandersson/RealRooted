@@ -208,6 +208,23 @@ theorem isRealRooted_of_product_factor_right_sequence
   isRealRooted_of_product_factor_sequence hbase hfactor
     (fun n => by rw [hstep n, mul_comm])
 
+/-- A finite product of real linear factors is real-rooted. -/
+theorem isRealRooted_finset_prod_X_sub_C
+    {ι : Type*} (s : Finset ι) (root : ι → ℝ) :
+    (∏ j ∈ s, (X - C (root j))) ≠ 0 ∧
+      (∏ j ∈ s, (X - C (root j))).Splits := by
+  classical
+  induction s using Finset.induction_on with
+  | empty =>
+      simp
+  | insert j s hjs hs =>
+      have hlin := isRealRooted_X_sub_C (root j)
+      have hmul :
+          (X - C (root j)) * (∏ k ∈ s, (X - C (root k))) ≠ 0 ∧
+            ((X - C (root j)) * (∏ k ∈ s, (X - C (root k)))).Splits :=
+        isRealRooted_mul hlin.1 hlin.2 hs.1 hs.2
+      simpa [Finset.prod_insert hjs] using hmul
+
 /-- Sequence shell for rows supplied as finite products of real linear factors. -/
 theorem finiteLinearProductSequence_realRooted
     {P : Nat → ℝ[X]} {root : Nat → Nat → ℝ}
@@ -216,19 +233,7 @@ theorem finiteLinearProductSequence_realRooted
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   intro n
   classical
-  have hprod :
-      (∏ j ∈ Finset.range n, (X - C (root n j))) ≠ 0 ∧
-        (∏ j ∈ Finset.range n, (X - C (root n j))).Splits := by
-    induction (Finset.range n) using Finset.induction_on with
-    | empty =>
-        simp
-    | insert j s hjs hs =>
-        have hlin := isRealRooted_X_sub_C (root n j)
-        have hmul :
-            (X - C (root n j)) * (∏ k ∈ s, (X - C (root n k))) ≠ 0 ∧
-              ((X - C (root n j)) * (∏ k ∈ s, (X - C (root n k)))).Splits :=
-          isRealRooted_mul hlin.1 hlin.2 hs.1 hs.2
-        simpa [Finset.prod_insert hjs] using hmul
+  have hprod := isRealRooted_finset_prod_X_sub_C (Finset.range n) (root n)
   simpa [hroot n] using hprod
 
 /-- Sequence shell for nonzero scalar multiples of finite products of real
@@ -243,19 +248,8 @@ theorem finiteLinearProductScalarSequence_realRooted
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   intro n
   classical
-  have hprod :
-      (∏ j ∈ Finset.range (rootCount n), (X - C (roots n j))) ≠ 0 ∧
-        (∏ j ∈ Finset.range (rootCount n), (X - C (roots n j))).Splits := by
-    induction (Finset.range (rootCount n)) using Finset.induction_on with
-    | empty =>
-        simp
-    | insert j s hjs hs =>
-        have hlin := isRealRooted_X_sub_C (roots n j)
-        have hmul :
-            (X - C (roots n j)) * (∏ k ∈ s, (X - C (roots n k))) ≠ 0 ∧
-              ((X - C (roots n j)) * (∏ k ∈ s, (X - C (roots n k)))).Splits :=
-          isRealRooted_mul hlin.1 hlin.2 hs.1 hs.2
-        simpa [Finset.prod_insert hjs] using hmul
+  have hprod := isRealRooted_finset_prod_X_sub_C
+    (Finset.range (rootCount n)) (roots n)
   simpa [hroot n] using isRealRooted_C_mul hprod.1 hprod.2 (hc n)
 
 /-- Sequence shell for identity product recurrences. -/
