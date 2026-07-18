@@ -39,6 +39,41 @@ example
   exact quadraticBidiagonalPFPreserver_of_cubicResidualCertificate
     hbackend 1 2 1 0 0 1 hd hA hB hS
 
+example {a0 a1 b1 b2 c2 c3 : ℝ} {d : ℕ} (hd : 2 ≤ d)
+    (hA : CubicPFDiscriminantCertificate
+      (quadraticJensenResidual c2 (b1 - c2) a0 d))
+    (hB : CubicPFDiscriminantCertificate
+      (X * quadraticJensenResidual c3 (b2 - c3) a1 d))
+    (hS : ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate
+        (quadraticBidiagonalPencilResidual
+          c2 (b1 - c2) a0 c3 (b2 - c3) a1 lam d)) :
+    BidiagonalCubicResidualCertificate
+      (fun k => secondDerivativeQuadraticCoeff a0 b1 c2 k)
+      (fun k => secondDerivativeQuadraticCoeff a1 b2 c3 k) d := by
+  rr_pf_second_derivative_bidiagonal_cubic_certificate_quadratic using
+    active_degree := hd,
+    alpha_cubic := hA,
+    beta_cubic := hB,
+    pencil_cubic := hS
+
+example
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    {a0 a1 b1 b2 c2 c3 : ℝ} {d : ℕ} (hd : 2 ≤ d)
+    (hA : CubicPFDiscriminantCertificate
+      (quadraticJensenResidual c2 (b1 - c2) a0 d))
+    (hB : CubicPFDiscriminantCertificate
+      (X * quadraticJensenResidual c3 (b2 - c3) a1 d))
+    (hS : ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate
+        (quadraticBidiagonalPencilResidual
+          c2 (b1 - c2) a0 c3 (b2 - c3) a1 lam d)) :
+    BidiagonalPFPreserver
+      (fun k => secondDerivativeQuadraticCoeff a0 b1 c2 k)
+      (fun k => secondDerivativeQuadraticCoeff a1 b2 c3 k) d := by
+  exact secondDerivativeBidiagonalPFPreserver_of_cubicResidualCertificate
+    hbackend hd hA hB hS
+
 example {P : Nat → ℝ[X]}
     (hpf : ∀ n : Nat, IsPFPolynomial (P n)) :
     ∀ n : Nat, HasNonnegCoeffs (P n) := by
@@ -2783,6 +2818,137 @@ example
     base := hbase,
     degree := hdeg,
     normalizer := hnorm,
+    recurrence := hrec,
+    nonzero := hne
+
+/-- Quadratic residual route for canonical second-derivative coefficient
+functions.  This avoids separate endpoint Jensen factorization leaves. -/
+example
+    {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbase : IsPFPolynomial (P 0))
+    (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
+    (hd : ∀ n : Nat, 2 ≤ d n)
+    (hA : ∀ n : Nat, CubicPFDiscriminantCertificate
+      (quadraticJensenResidual (c2 n) (b1 n - c2 n) (a0 n) (d n)))
+    (hB : ∀ n : Nat, CubicPFDiscriminantCertificate
+      (X * quadraticJensenResidual (c3 n) (b2 n - c3 n) (a1 n) (d n)))
+    (hS : ∀ n : Nat, ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate
+        (quadraticBidiagonalPencilResidual
+          (c2 n) (b1 n - c2 n) (a0 n)
+          (c3 n) (b2 n - c3 n) (a1 n) lam (d n)))
+    (hrec : ∀ n : Nat,
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) := by
+  rr_pf_second_derivative_bidiagonal_sequence_quadratic using
+    jensen_backend := hbackend,
+    base := hbase,
+    degree := hdeg,
+    active_degree := hd,
+    alpha_cubic := hA,
+    beta_cubic := hB,
+    pencil_cubic := hS,
+    recurrence := hrec
+
+example
+    {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbase : IsPFPolynomial (P 0))
+    (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
+    (hd : ∀ n : Nat, 2 ≤ d n)
+    (hA : ∀ n : Nat, CubicPFDiscriminantCertificate
+      (quadraticJensenResidual (c2 n) (b1 n - c2 n) (a0 n) (d n)))
+    (hB : ∀ n : Nat, CubicPFDiscriminantCertificate
+      (X * quadraticJensenResidual (c3 n) (b2 n - c3 n) (a1 n) (d n)))
+    (hS : ∀ n : Nat, ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate
+        (quadraticBidiagonalPencilResidual
+          (c2 n) (b1 n - c2 n) (a0 n)
+          (c3 n) (b2 n - c3 n) (a1 n) lam (d n)))
+    (hne : ∀ n : Nat, P n ≠ 0)
+    (hrec : ∀ n : Nat,
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_pf_second_derivative_bidiagonal_sequence_quadratic using
+    jensen_backend := hbackend,
+    base := hbase,
+    degree := hdeg,
+    active_degree := hd,
+    alpha_cubic := hA,
+    beta_cubic := hB,
+    pencil_cubic := hS,
+    recurrence := hrec,
+    nonzero := hne
+
+example
+    {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
+    (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
+    (hd : ∀ n : Nat, N ≤ n → 2 ≤ d n)
+    (hA : ∀ n : Nat, N ≤ n → CubicPFDiscriminantCertificate
+      (quadraticJensenResidual (c2 n) (b1 n - c2 n) (a0 n) (d n)))
+    (hB : ∀ n : Nat, N ≤ n → CubicPFDiscriminantCertificate
+      (X * quadraticJensenResidual (c3 n) (b2 n - c3 n) (a1 n) (d n)))
+    (hS : ∀ n : Nat, N ≤ n → ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate
+        (quadraticBidiagonalPencilResidual
+          (c2 n) (b1 n - c2 n) (a0 n)
+          (c3 n) (b2 n - c3 n) (a1 n) lam (d n)))
+    (hrec : ∀ n : Nat, N ≤ n →
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) := by
+  rr_pf_second_derivative_bidiagonal_sequence_quadratic using
+    jensen_backend := hbackend,
+    cutoff := N,
+    base := hbase,
+    degree := hdeg,
+    active_degree := hd,
+    alpha_cubic := hA,
+    beta_cubic := hB,
+    pencil_cubic := hS,
+    recurrence := hrec
+
+example
+    {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
+    (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
+    (hd : ∀ n : Nat, N ≤ n → 2 ≤ d n)
+    (hA : ∀ n : Nat, N ≤ n → CubicPFDiscriminantCertificate
+      (quadraticJensenResidual (c2 n) (b1 n - c2 n) (a0 n) (d n)))
+    (hB : ∀ n : Nat, N ≤ n → CubicPFDiscriminantCertificate
+      (X * quadraticJensenResidual (c3 n) (b2 n - c3 n) (a1 n) (d n)))
+    (hS : ∀ n : Nat, N ≤ n → ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate
+        (quadraticBidiagonalPencilResidual
+          (c2 n) (b1 n - c2 n) (a0 n)
+          (c3 n) (b2 n - c3 n) (a1 n) lam (d n)))
+    (hne : ∀ n : Nat, P n ≠ 0)
+    (hrec : ∀ n : Nat, N ≤ n →
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_h_second_derivative_sequence using
+    route := pf_bidiagonal_quadratic,
+    jensen_backend := hbackend,
+    cutoff := N,
+    base := hbase,
+    degree := hdeg,
+    active_degree := hd,
+    alpha_cubic := hA,
+    beta_cubic := hB,
+    pencil_cubic := hS,
     recurrence := hrec,
     nonzero := hne
 
