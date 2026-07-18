@@ -668,6 +668,42 @@ example {P : Nat → ℝ[X]}
     recurrence := hrec,
     certificate := scalarAuto
 
+/-- Product-factor recurrence router, scalar-power factor. -/
+example {P : Nat → ℝ[X]} {a : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hrec : ∀ n : Nat, P (n + 1) = P n * (C (a n) : ℝ[X]) ^ (m n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_factor_sequence using
+    base := hbase,
+    scalar_ne := ha,
+    recurrence := hrec,
+    certificate := scalarPow
+
+/-- Product-factor recurrence router, automatic powered affine factor. -/
+example {P : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat,
+      P (n + 1) = (C ((n : ℝ) + 1) * X + C (t n)) ^ (m n) * P n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_factor_sequence using
+    base := hbase,
+    recurrence := hrec,
+    certificate := affinePowAuto
+
+/-- Product-factor recurrence router, constant-first powered affine factor. -/
+example {P : Nat → ℝ[X]} {s t : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hs : ∀ n : Nat, s n ≠ 0)
+    (hrec :
+      ∀ n : Nat, P (n + 1) = P n * (C (t n) + C (s n) * X) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_factor_sequence using
+    base := hbase,
+    slope_ne := hs,
+    recurrence := hrec,
+    certificate := constFirstAffinePow
+
 /-- Product-formula router, finite product of linear factors. -/
 example {P : Nat → ℝ[X]} {roots : Nat → Nat → ℝ}
     (hroot : ∀ n : Nat,

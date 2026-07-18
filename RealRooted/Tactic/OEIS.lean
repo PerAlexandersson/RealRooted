@@ -73,6 +73,12 @@ rr_product_factor_sequence using ... certificate := xAddCPow
 rr_product_factor_sequence using ... certificate := cAddXPow
 rr_product_factor_sequence using ... certificate := scalar
 rr_product_factor_sequence using ... certificate := scalarAuto
+rr_product_factor_sequence using ... certificate := scalarPow
+rr_product_factor_sequence using ... certificate := scalarPowAuto
+rr_product_factor_sequence using ... certificate := affinePow
+rr_product_factor_sequence using ... certificate := affinePowAuto
+rr_product_factor_sequence using ... certificate := constFirstAffinePow
+rr_product_factor_sequence using ... certificate := constFirstAffinePowAuto
 rr_product_formula_sequence using ... certificate := finiteLinearProduct
 rr_product_formula_sequence using ... certificate := scalarFiniteLinearProduct
 rr_product_lift_sequence using ... certificate := suppliedFactor
@@ -608,6 +614,51 @@ syntax (name := rr_product_factor_sequence_scalar_auto)
     "certificate" ":=" "scalarAuto" :
   tactic
 
+syntax (name := rr_product_factor_sequence_scalar_pow)
+  "rr_product_factor_sequence" " using "
+    "base" ":=" term ","
+    "scalar_ne" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "scalarPow" :
+  tactic
+
+syntax (name := rr_product_factor_sequence_scalar_pow_auto)
+  "rr_product_factor_sequence" " using "
+    "base" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "scalarPowAuto" :
+  tactic
+
+syntax (name := rr_product_factor_sequence_affine_pow)
+  "rr_product_factor_sequence" " using "
+    "base" ":=" term ","
+    "slope_ne" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "affinePow" :
+  tactic
+
+syntax (name := rr_product_factor_sequence_affine_pow_auto)
+  "rr_product_factor_sequence" " using "
+    "base" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "affinePowAuto" :
+  tactic
+
+syntax (name := rr_product_factor_sequence_const_first_affine_pow)
+  "rr_product_factor_sequence" " using "
+    "base" ":=" term ","
+    "slope_ne" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "constFirstAffinePow" :
+  tactic
+
+syntax (name := rr_product_factor_sequence_const_first_affine_pow_auto)
+  "rr_product_factor_sequence" " using "
+    "base" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "constFirstAffinePowAuto" :
+  tactic
+
 syntax (name := rr_product_formula_sequence_finite_linear_product)
   "rr_product_formula_sequence" " using "
     "formula" ":=" term ","
@@ -802,6 +853,66 @@ macro_rules
         certificate := scalarAuto) =>
       `(tactic|
         rr_product_scalar_sequence_auto using
+          base := $hbase,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        scalar_ne := $hs:term,
+        recurrence := $hrec:term,
+        certificate := scalarPow) =>
+      `(tactic|
+        rr_product_C_pow_sequence using
+          base := $hbase,
+          scalar_ne := $hs,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        recurrence := $hrec:term,
+        certificate := scalarPowAuto) =>
+      `(tactic|
+        rr_product_C_pow_sequence_auto using
+          base := $hbase,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        slope_ne := $hs:term,
+        recurrence := $hrec:term,
+        certificate := affinePow) =>
+      `(tactic|
+        rr_product_affine_pow_sequence using
+          base := $hbase,
+          slope_ne := $hs,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        recurrence := $hrec:term,
+        certificate := affinePowAuto) =>
+      `(tactic|
+        rr_product_affine_pow_sequence_auto using
+          base := $hbase,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        slope_ne := $hs:term,
+        recurrence := $hrec:term,
+        certificate := constFirstAffinePow) =>
+      `(tactic|
+        rr_product_const_first_affine_pow_sequence using
+          base := $hbase,
+          slope_ne := $hs,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        recurrence := $hrec:term,
+        certificate := constFirstAffinePowAuto) =>
+      `(tactic|
+        rr_product_const_first_affine_pow_sequence_auto using
           base := $hbase,
           recurrence := $hrec)
   | `(tactic|
