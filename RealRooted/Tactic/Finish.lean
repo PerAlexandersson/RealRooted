@@ -329,6 +329,23 @@ syntax (name := rr_realrooted_term) "rr_realrooted_term" : term
 syntax (name := rr_lookup_interlaces_term) "rr_lookup_interlaces_term" : term
 syntax (name := rr_degree_eq_one) "rr_degree_eq_one" : tactic
 syntax (name := rr_degree_le_one) "rr_degree_le_one" : tactic
+syntax (name := rr_natDegree_from_top_above)
+  "rr_natDegree_from_top_above" " using "
+    "top_ne" ":=" term ","
+    "above" ":=" term :
+  tactic
+
+syntax (name := rr_natDegree_from_top_eq_above)
+  "rr_natDegree_from_top_above" " using "
+    "top_eq" ":=" term ","
+    "above" ":=" term :
+  tactic
+
+syntax (name := rr_natDegree_from_top_pos_above)
+  "rr_natDegree_from_top_above" " using "
+    "top_pos" ":=" term ","
+    "above" ":=" term :
+  tactic
 
 syntax (name := rr_exact_realrooted_or_projection)
   "rr_exact_realrooted_or_projection" term :
@@ -483,6 +500,35 @@ macro_rules
           | exact le_of_eq (by
               symm
               rr_lookup [rr_degree]))
+  | `(tactic|
+      rr_natDegree_from_top_above using
+        top_ne := $htop:term,
+        above := $habove:term) =>
+      `(tactic|
+        exact Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
+          (Polynomial.natDegree_le_iff_coeff_eq_zero.mpr
+            (fun m hm => by exact $habove m hm))
+          $htop)
+  | `(tactic|
+      rr_natDegree_from_top_above using
+        top_pos := $htop:term,
+        above := $habove:term) =>
+      `(tactic|
+        exact Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
+          (Polynomial.natDegree_le_iff_coeff_eq_zero.mpr
+            (fun m hm => by exact $habove m hm))
+          (ne_of_gt $htop))
+  | `(tactic|
+      rr_natDegree_from_top_above using
+        top_eq := $htop:term,
+        above := $habove:term) =>
+      `(tactic|
+        exact Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
+          (Polynomial.natDegree_le_iff_coeff_eq_zero.mpr
+            (fun m hm => by exact $habove m hm))
+          (by
+            have htop' := $htop
+            simp [htop']))
   | `(tactic| rr_exact_realrooted_or_projection $h:term) =>
       `(tactic|
         rr_first_exact

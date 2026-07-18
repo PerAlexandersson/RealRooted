@@ -393,6 +393,30 @@ example {f g : ℝ[X]} (hfg : Prec f g)
     Interlaces f g := by
   rr_finish
 
+example {p : ℝ[X]} {d : Nat}
+    (htop : p.coeff d ≠ 0)
+    (habove : ∀ m, d < m → p.coeff m = 0) :
+    p.natDegree = d := by
+  rr_natDegree_from_top_above using
+    top_ne := htop,
+    above := habove
+
+example {p : ℝ[X]} {d : Nat}
+    (htop : 0 < p.coeff d)
+    (habove : ∀ m, d < m → p.coeff m = 0) :
+    p.natDegree = d := by
+  rr_natDegree_from_top_above using
+    top_pos := htop,
+    above := habove
+
+example {p : ℝ[X]} {d : Nat}
+    (htop : p.coeff d = 1)
+    (habove : ∀ m, d < m → p.coeff m = 0) :
+    p.natDegree = d := by
+  rr_natDegree_from_top_above using
+    top_eq := htop,
+    above := habove
+
 example {f g : ℝ[X]} (hfg : Prec f g) : Prec0 f g := by
   rr_prec0 using hfg
 
