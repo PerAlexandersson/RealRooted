@@ -128,6 +128,7 @@ import RealRooted.Tactic.Examples.CubicDiscriminant
 import RealRooted.Tactic.Examples.Derivative
 import RealRooted.Tactic.Examples.EulerOperator
 import RealRooted.Tactic.Examples.Favard
+import RealRooted.Tactic.Examples.FiniteSymbolPFFrontend
 import RealRooted.Tactic.Examples.Finish
 import RealRooted.Tactic.Examples.I2DerivativeLag
 import RealRooted.Tactic.Examples.IteratedDerivativeShift
@@ -157,6 +158,7 @@ import RealRooted.Tactic.Examples.WagnerX
 import RealRooted.Tactic.Examples.WeightedSum
 import RealRooted.Tactic.Favard
 import RealRooted.Tactic.FiniteSymbolPF
+import RealRooted.Tactic.FiniteSymbolPFFrontend
 import RealRooted.Tactic.Finish
 import RealRooted.Tactic.I2DerivativeLag
 import RealRooted.Tactic.IteratedDerivativeShift

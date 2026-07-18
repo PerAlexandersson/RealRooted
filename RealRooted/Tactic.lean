@@ -21,6 +21,7 @@ import RealRooted.Tactic.OperatorPreservesInterlacing
 import RealRooted.Tactic.PFPolynomial
 import RealRooted.Tactic.PFBidiagonal
 import RealRooted.Tactic.FiniteSymbolPF
+import RealRooted.Tactic.FiniteSymbolPFFrontend
 import RealRooted.Tactic.PFBidiagonalFrontend
 import RealRooted.Tactic.I2DerivativeLag
 import RealRooted.Tactic.IteratedDerivativeShift

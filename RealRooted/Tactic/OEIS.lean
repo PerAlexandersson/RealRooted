@@ -5,6 +5,7 @@ import RealRooted.Tactic.Derivative
 import RealRooted.Tactic.EulerOperator
 import RealRooted.Tactic.Favard
 import RealRooted.Tactic.IteratedDerivativeShift
+import RealRooted.Tactic.FiniteSymbolPFFrontend
 import RealRooted.Tactic.Linear
 import RealRooted.Tactic.LinearPowerFamily
 import RealRooted.Tactic.LiuWang
