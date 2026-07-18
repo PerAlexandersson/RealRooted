@@ -188,8 +188,8 @@ theorem isRealRooted_of_product_factor_right_sequence
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
     (hstep : ∀ n : Nat, P (n + 1) = P n * F n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  exact isRealRooted_of_product_factor_sequence hbase hfactor
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_sequence hbase hfactor
     (fun n => by rw [hstep n, mul_comm])
 
 /-- Sequence shell for identity product recurrences. -/
@@ -262,8 +262,8 @@ theorem isRealRooted_of_product_lift_right_sequence
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
     (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
     (hrow : ∀ n : Nat, P n = Q n * F n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  exact isRealRooted_of_product_lift_sequence hquot hfactor
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_lift_sequence hquot hfactor
     (fun n => by rw [hrow n, mul_comm])
 
 /-- Lift through a row-wise factor `X`, used for product reductions with a
@@ -1213,8 +1213,8 @@ theorem isRealRooted_of_product_scalar_factor_right_sequence
     (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
     (hscalar : ∀ n : Nat, P (2 * n + 1) = C (a n) * P (2 * n))
     (hstep : ∀ n : Nat, P (2 * n + 2) = P (2 * n + 1) * F n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  exact isRealRooted_of_product_scalar_factor_sequence hbase ha hfactor hscalar
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_sequence hbase ha hfactor hscalar
     (fun n => by rw [hstep n, mul_comm])
 
 /-- Right-scalar variant of `isRealRooted_of_product_scalar_factor_sequence`. -/
@@ -1225,8 +1225,8 @@ theorem isRealRooted_of_product_scalar_factor_scalar_right_sequence
     (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
     (hscalar : ∀ n : Nat, P (2 * n + 1) = P (2 * n) * C (a n))
     (hstep : ∀ n : Nat, P (2 * n + 2) = F n * P (2 * n + 1)) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  exact isRealRooted_of_product_scalar_factor_sequence hbase ha hfactor
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_sequence hbase ha hfactor
     (fun n => by rw [hscalar n, mul_comm]) hstep
 
 /-- Right-scalar/right-factor variant of
@@ -1238,8 +1238,8 @@ theorem isRealRooted_of_product_scalar_factor_scalar_right_factor_right_sequence
     (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
     (hscalar : ∀ n : Nat, P (2 * n + 1) = P (2 * n) * C (a n))
     (hstep : ∀ n : Nat, P (2 * n + 2) = P (2 * n + 1) * F n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  exact isRealRooted_of_product_scalar_factor_right_sequence hbase ha hfactor
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_right_sequence hbase ha hfactor
     (fun n => by rw [hscalar n, mul_comm]) hstep
 
 /-- Sequence shell for degree-plateau product families.
