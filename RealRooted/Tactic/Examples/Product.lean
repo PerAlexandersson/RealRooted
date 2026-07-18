@@ -54,6 +54,22 @@ example :
     RealRooted.isRealRooted_mul_X_add_C
       (p := (X : ℝ[X])) (t := (1 : ℝ)) RealRooted.isRealRooted_X
 
+example {p q : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hq : q ≠ 0 ∧ q.Splits) :
+    p * q ≠ 0 ∧ (p * q).Splits := by
+  rr_mul_realrooted using hp, hq
+
+example {p q : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hq : q ≠ 0 ∧ q.Splits) :
+    (p * q).Splits := by
+  rr_mul_realrooted using
+    left := hp,
+    right := hq
+
+example {p q : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hq : q ≠ 0 ∧ q.Splits) :
+    q * p ≠ 0 ∧ (q * p).Splits := by
+  rr_mul_realrooted using
+    left := hp,
+    right := hq
+
 example {t : ℝ} :
     (X + C t : ℝ[X]).Splits := by
   rr_product_X_add_C using constant := t
