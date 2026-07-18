@@ -311,6 +311,8 @@ theorem right_eq_zero_or_splits_of_isRealRooted_pair_sequence {A B : Nat → ℝ
 
 namespace Tactic
 
+syntax (name := rr_lookup_term) "rr_lookup_term" : term
+
 syntax (name := rr_exact_realrooted_or_projection)
   "rr_exact_realrooted_or_projection" term :
   tactic
@@ -420,6 +422,8 @@ syntax (name := rr_prec_sequence_branches_realrooted_degree_branch)
 syntax (name := rr_finish) "rr_finish" : tactic
 
 macro_rules
+  | `(rr_lookup_term) =>
+      `(by rr_lookup)
   | `(tactic| rr_exact_realrooted_or_projection $h:term) =>
       `(tactic|
         first
@@ -529,18 +533,18 @@ macro_rules
       `(tactic|
         first
           | rr_lookup
-          | exact RealRooted.ne_zero_of_isRealRooted_sequence (by rr_lookup)
-          | exact (RealRooted.ne_zero_of_isRealRooted_sequence (by rr_lookup) _)
-          | exact RealRooted.left_ne_zero_of_isRealRooted_pair_sequence (by rr_lookup)
-          | exact (RealRooted.left_ne_zero_of_isRealRooted_pair_sequence (by rr_lookup) _)
-          | exact RealRooted.right_ne_zero_of_isRealRooted_pair_sequence (by rr_lookup)
-          | exact (RealRooted.right_ne_zero_of_isRealRooted_pair_sequence (by rr_lookup) _)
-          | exact RealRooted.left_ne_zero_of_prec (by rr_lookup)
-          | exact RealRooted.right_ne_zero_of_prec (by rr_lookup)
-          | exact RealRooted.right_ne_zero_of_interlaces (by rr_lookup)
-          | exact RealRooted.left_ne_zero_of_interlaces (by rr_lookup)
-          | exact RealRooted.left_ne_zero_of_isRealRooted_pair (by rr_lookup)
-          | exact RealRooted.right_ne_zero_of_isRealRooted_pair (by rr_lookup)
+          | exact RealRooted.ne_zero_of_isRealRooted_sequence rr_lookup_term
+          | exact (RealRooted.ne_zero_of_isRealRooted_sequence rr_lookup_term _)
+          | exact RealRooted.left_ne_zero_of_isRealRooted_pair_sequence rr_lookup_term
+          | exact (RealRooted.left_ne_zero_of_isRealRooted_pair_sequence rr_lookup_term _)
+          | exact RealRooted.right_ne_zero_of_isRealRooted_pair_sequence rr_lookup_term
+          | exact (RealRooted.right_ne_zero_of_isRealRooted_pair_sequence rr_lookup_term _)
+          | exact RealRooted.left_ne_zero_of_prec rr_lookup_term
+          | exact RealRooted.right_ne_zero_of_prec rr_lookup_term
+          | exact RealRooted.right_ne_zero_of_interlaces rr_lookup_term
+          | exact RealRooted.left_ne_zero_of_interlaces rr_lookup_term
+          | exact RealRooted.left_ne_zero_of_isRealRooted_pair rr_lookup_term
+          | exact RealRooted.right_ne_zero_of_isRealRooted_pair rr_lookup_term
           | assumption
           | simp_all [RealRooted.Prec, RealRooted.Interlaces])
   | `(tactic| rr_splits using $h:term) =>
@@ -563,18 +567,18 @@ macro_rules
       `(tactic|
         first
           | rr_lookup
-          | exact RealRooted.splits_of_isRealRooted_sequence (by rr_lookup)
-          | exact (RealRooted.splits_of_isRealRooted_sequence (by rr_lookup) _)
-          | exact RealRooted.left_splits_of_isRealRooted_pair_sequence (by rr_lookup)
-          | exact (RealRooted.left_splits_of_isRealRooted_pair_sequence (by rr_lookup) _)
-          | exact RealRooted.right_splits_of_isRealRooted_pair_sequence (by rr_lookup)
-          | exact (RealRooted.right_splits_of_isRealRooted_pair_sequence (by rr_lookup) _)
-          | exact RealRooted.left_splits_of_prec (by rr_lookup)
-          | exact RealRooted.right_splits_of_prec (by rr_lookup)
-          | exact RealRooted.right_splits_of_interlaces (by rr_lookup)
-          | exact RealRooted.left_splits_of_interlaces (by rr_lookup)
-          | exact RealRooted.left_splits_of_isRealRooted_pair (by rr_lookup)
-          | exact RealRooted.right_splits_of_isRealRooted_pair (by rr_lookup)
+          | exact RealRooted.splits_of_isRealRooted_sequence rr_lookup_term
+          | exact (RealRooted.splits_of_isRealRooted_sequence rr_lookup_term _)
+          | exact RealRooted.left_splits_of_isRealRooted_pair_sequence rr_lookup_term
+          | exact (RealRooted.left_splits_of_isRealRooted_pair_sequence rr_lookup_term _)
+          | exact RealRooted.right_splits_of_isRealRooted_pair_sequence rr_lookup_term
+          | exact (RealRooted.right_splits_of_isRealRooted_pair_sequence rr_lookup_term _)
+          | exact RealRooted.left_splits_of_prec rr_lookup_term
+          | exact RealRooted.right_splits_of_prec rr_lookup_term
+          | exact RealRooted.right_splits_of_interlaces rr_lookup_term
+          | exact RealRooted.left_splits_of_interlaces rr_lookup_term
+          | exact RealRooted.left_splits_of_isRealRooted_pair rr_lookup_term
+          | exact RealRooted.right_splits_of_isRealRooted_pair rr_lookup_term
           | assumption
           | simp_all [RealRooted.Prec, RealRooted.Interlaces])
   | `(tactic| rr_realrooted using $h:term) =>
@@ -596,17 +600,17 @@ macro_rules
       `(tactic|
         first
           | rr_lookup
-          | exact (RealRooted.at_of_isRealRooted_sequence (by rr_lookup) _)
-          | exact RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence (by rr_lookup)
-          | exact (RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence (by rr_lookup) _)
-          | exact RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence (by rr_lookup)
-          | exact (RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence (by rr_lookup) _)
-          | exact RealRooted.left_isRealRooted_of_prec (by rr_lookup)
-          | exact RealRooted.right_isRealRooted_of_prec (by rr_lookup)
-          | exact RealRooted.right_isRealRooted_of_interlaces (by rr_lookup)
-          | exact RealRooted.left_isRealRooted_of_interlaces (by rr_lookup)
-          | exact RealRooted.left_isRealRooted_of_isRealRooted_pair (by rr_lookup)
-          | exact RealRooted.right_isRealRooted_of_isRealRooted_pair (by rr_lookup)
+          | exact (RealRooted.at_of_isRealRooted_sequence rr_lookup_term _)
+          | exact RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence rr_lookup_term
+          | exact (RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence rr_lookup_term _)
+          | exact RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence rr_lookup_term
+          | exact (RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence rr_lookup_term _)
+          | exact RealRooted.left_isRealRooted_of_prec rr_lookup_term
+          | exact RealRooted.right_isRealRooted_of_prec rr_lookup_term
+          | exact RealRooted.right_isRealRooted_of_interlaces rr_lookup_term
+          | exact RealRooted.left_isRealRooted_of_interlaces rr_lookup_term
+          | exact RealRooted.left_isRealRooted_of_isRealRooted_pair rr_lookup_term
+          | exact RealRooted.right_isRealRooted_of_isRealRooted_pair rr_lookup_term
           | assumption
           | simp_all [RealRooted.Prec, RealRooted.Interlaces])
   | `(tactic| rr_interlaces using $hprec:term, $hdeg:term) =>
@@ -688,62 +692,62 @@ macro_rules
         first
           | rr_lookup
           | assumption
-          | exact RealRooted.ne_zero_of_isRealRooted (by rr_lookup)
-          | exact RealRooted.splits_of_isRealRooted (by rr_lookup)
-          | exact RealRooted.eq_zero_or_splits_of_isRealRooted (by rr_lookup)
-          | exact RealRooted.at_of_isRealRooted_sequence (by rr_lookup) _
-          | exact RealRooted.ne_zero_of_isRealRooted_sequence (by rr_lookup)
-          | exact (RealRooted.ne_zero_of_isRealRooted_sequence (by rr_lookup) _)
-          | exact RealRooted.splits_of_isRealRooted_sequence (by rr_lookup)
-          | exact (RealRooted.splits_of_isRealRooted_sequence (by rr_lookup) _)
-          | exact RealRooted.eq_zero_or_splits_of_isRealRooted_sequence (by rr_lookup)
-          | exact (RealRooted.eq_zero_or_splits_of_isRealRooted_sequence (by rr_lookup) _)
-          | exact RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence (by rr_lookup)
-          | exact (RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence (by rr_lookup) _)
-          | exact RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence (by rr_lookup)
-          | exact (RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence (by rr_lookup) _)
-          | exact RealRooted.left_ne_zero_of_isRealRooted_pair_sequence (by rr_lookup)
-          | exact (RealRooted.left_ne_zero_of_isRealRooted_pair_sequence (by rr_lookup) _)
-          | exact RealRooted.right_ne_zero_of_isRealRooted_pair_sequence (by rr_lookup)
-          | exact (RealRooted.right_ne_zero_of_isRealRooted_pair_sequence (by rr_lookup) _)
-          | exact RealRooted.left_splits_of_isRealRooted_pair_sequence (by rr_lookup)
-          | exact (RealRooted.left_splits_of_isRealRooted_pair_sequence (by rr_lookup) _)
-          | exact RealRooted.right_splits_of_isRealRooted_pair_sequence (by rr_lookup)
-          | exact (RealRooted.right_splits_of_isRealRooted_pair_sequence (by rr_lookup) _)
-          | exact RealRooted.left_eq_zero_or_splits_of_isRealRooted_pair_sequence (by rr_lookup)
+          | exact RealRooted.ne_zero_of_isRealRooted rr_lookup_term
+          | exact RealRooted.splits_of_isRealRooted rr_lookup_term
+          | exact RealRooted.eq_zero_or_splits_of_isRealRooted rr_lookup_term
+          | exact RealRooted.at_of_isRealRooted_sequence rr_lookup_term _
+          | exact RealRooted.ne_zero_of_isRealRooted_sequence rr_lookup_term
+          | exact (RealRooted.ne_zero_of_isRealRooted_sequence rr_lookup_term _)
+          | exact RealRooted.splits_of_isRealRooted_sequence rr_lookup_term
+          | exact (RealRooted.splits_of_isRealRooted_sequence rr_lookup_term _)
+          | exact RealRooted.eq_zero_or_splits_of_isRealRooted_sequence rr_lookup_term
+          | exact (RealRooted.eq_zero_or_splits_of_isRealRooted_sequence rr_lookup_term _)
+          | exact RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence rr_lookup_term
+          | exact (RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence rr_lookup_term _)
+          | exact RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence rr_lookup_term
+          | exact (RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence rr_lookup_term _)
+          | exact RealRooted.left_ne_zero_of_isRealRooted_pair_sequence rr_lookup_term
+          | exact (RealRooted.left_ne_zero_of_isRealRooted_pair_sequence rr_lookup_term _)
+          | exact RealRooted.right_ne_zero_of_isRealRooted_pair_sequence rr_lookup_term
+          | exact (RealRooted.right_ne_zero_of_isRealRooted_pair_sequence rr_lookup_term _)
+          | exact RealRooted.left_splits_of_isRealRooted_pair_sequence rr_lookup_term
+          | exact (RealRooted.left_splits_of_isRealRooted_pair_sequence rr_lookup_term _)
+          | exact RealRooted.right_splits_of_isRealRooted_pair_sequence rr_lookup_term
+          | exact (RealRooted.right_splits_of_isRealRooted_pair_sequence rr_lookup_term _)
+          | exact RealRooted.left_eq_zero_or_splits_of_isRealRooted_pair_sequence rr_lookup_term
           | exact (RealRooted.left_eq_zero_or_splits_of_isRealRooted_pair_sequence
-              (by rr_lookup) _)
-          | exact RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair_sequence (by rr_lookup)
+              rr_lookup_term _)
+          | exact RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair_sequence rr_lookup_term
           | exact (RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair_sequence
-              (by rr_lookup) _)
-          | exact RealRooted.left_isRealRooted_of_isRealRooted_pair (by rr_lookup)
-          | exact RealRooted.right_isRealRooted_of_isRealRooted_pair (by rr_lookup)
-          | exact RealRooted.left_ne_zero_of_isRealRooted_pair (by rr_lookup)
-          | exact RealRooted.right_ne_zero_of_isRealRooted_pair (by rr_lookup)
-          | exact RealRooted.left_splits_of_isRealRooted_pair (by rr_lookup)
-          | exact RealRooted.right_splits_of_isRealRooted_pair (by rr_lookup)
-          | exact RealRooted.left_eq_zero_or_splits_of_isRealRooted_pair (by rr_lookup)
-          | exact RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair (by rr_lookup)
-          | exact RealRooted.left_isRealRooted_of_prec (by rr_lookup)
-          | exact RealRooted.right_isRealRooted_of_prec (by rr_lookup)
-          | exact RealRooted.left_ne_zero_of_prec (by rr_lookup)
-          | exact RealRooted.right_ne_zero_of_prec (by rr_lookup)
-          | exact RealRooted.left_splits_of_prec (by rr_lookup)
-          | exact RealRooted.right_splits_of_prec (by rr_lookup)
-          | exact RealRooted.left_eq_zero_or_splits_of_prec (by rr_lookup)
-          | exact RealRooted.right_eq_zero_or_splits_of_prec (by rr_lookup)
-          | exact RealRooted.right_isRealRooted_of_interlaces (by rr_lookup)
-          | exact RealRooted.left_isRealRooted_of_interlaces (by rr_lookup)
-          | exact RealRooted.right_ne_zero_of_interlaces (by rr_lookup)
-          | exact RealRooted.left_ne_zero_of_interlaces (by rr_lookup)
-          | exact RealRooted.right_splits_of_interlaces (by rr_lookup)
-          | exact RealRooted.left_splits_of_interlaces (by rr_lookup)
-          | exact RealRooted.right_eq_zero_or_splits_of_interlaces (by rr_lookup)
-          | exact RealRooted.left_eq_zero_or_splits_of_interlaces (by rr_lookup)
-          | exact RealRooted.natDegree_succ_of_interlaces (by rr_lookup)
-          | exact (RealRooted.natDegree_succ_of_interlaces (by rr_lookup)).symm
-          | exact RealRooted.Prec.toInterlaces (by rr_lookup) (by rr_lookup)
-          | exact RealRooted.Prec.toInterlaces (by rr_lookup) (by
+              rr_lookup_term _)
+          | exact RealRooted.left_isRealRooted_of_isRealRooted_pair rr_lookup_term
+          | exact RealRooted.right_isRealRooted_of_isRealRooted_pair rr_lookup_term
+          | exact RealRooted.left_ne_zero_of_isRealRooted_pair rr_lookup_term
+          | exact RealRooted.right_ne_zero_of_isRealRooted_pair rr_lookup_term
+          | exact RealRooted.left_splits_of_isRealRooted_pair rr_lookup_term
+          | exact RealRooted.right_splits_of_isRealRooted_pair rr_lookup_term
+          | exact RealRooted.left_eq_zero_or_splits_of_isRealRooted_pair rr_lookup_term
+          | exact RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair rr_lookup_term
+          | exact RealRooted.left_isRealRooted_of_prec rr_lookup_term
+          | exact RealRooted.right_isRealRooted_of_prec rr_lookup_term
+          | exact RealRooted.left_ne_zero_of_prec rr_lookup_term
+          | exact RealRooted.right_ne_zero_of_prec rr_lookup_term
+          | exact RealRooted.left_splits_of_prec rr_lookup_term
+          | exact RealRooted.right_splits_of_prec rr_lookup_term
+          | exact RealRooted.left_eq_zero_or_splits_of_prec rr_lookup_term
+          | exact RealRooted.right_eq_zero_or_splits_of_prec rr_lookup_term
+          | exact RealRooted.right_isRealRooted_of_interlaces rr_lookup_term
+          | exact RealRooted.left_isRealRooted_of_interlaces rr_lookup_term
+          | exact RealRooted.right_ne_zero_of_interlaces rr_lookup_term
+          | exact RealRooted.left_ne_zero_of_interlaces rr_lookup_term
+          | exact RealRooted.right_splits_of_interlaces rr_lookup_term
+          | exact RealRooted.left_splits_of_interlaces rr_lookup_term
+          | exact RealRooted.right_eq_zero_or_splits_of_interlaces rr_lookup_term
+          | exact RealRooted.left_eq_zero_or_splits_of_interlaces rr_lookup_term
+          | exact RealRooted.natDegree_succ_of_interlaces rr_lookup_term
+          | exact (RealRooted.natDegree_succ_of_interlaces rr_lookup_term).symm
+          | exact RealRooted.Prec.toInterlaces rr_lookup_term rr_lookup_term
+          | exact RealRooted.Prec.toInterlaces rr_lookup_term (by
               symm
               rr_lookup)
           | rr_sign
