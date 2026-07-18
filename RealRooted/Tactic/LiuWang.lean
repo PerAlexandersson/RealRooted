@@ -640,10 +640,9 @@ theorem prec_lw_nonpos_lag_sequence_den {P : Nat → ℝ[X]}
         C (d n) * (A n * P (n + 1) + B n * P n))
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  refine prec_lw_nonpos_lag_sequence (A := A) hbase hpos hB_nonpos ?_ hdeg_succ hno
-  intro n
-  exact eq_of_C_mul_eq_C_mul (hden n) (hraw n)
+    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+  prec_lw_nonpos_lag_sequence (A := A) hbase hpos hB_nonpos
+    (fun n => eq_of_C_mul_eq_C_mul (hden n) (hraw n)) hdeg_succ hno
 
 /-- Real-rootedness corollary for denominator-fused nonpositive-lag
 Liu--Wang induction. -/

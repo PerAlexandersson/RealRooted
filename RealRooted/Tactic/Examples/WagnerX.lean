@@ -570,8 +570,8 @@ lemma a358623Shifted_coeff_two_pos_succ :
 
 /-- Active shifted rows have degree at least two, as required by Rolle. -/
 lemma a358623Shifted_degree_two_succ (n : Nat) :
-    2 ≤ (a358623Shifted (n + 1)).natDegree := by
-  exact Polynomial.le_natDegree_of_ne_zero
+    2 ≤ (a358623Shifted (n + 1)).natDegree :=
+  Polynomial.le_natDegree_of_ne_zero
     (ne_of_gt (a358623Shifted_coeff_two_pos_succ n))
 
 /-- Adjacent `Prec` invariant for the shifted recurrence-defined `A358623`
