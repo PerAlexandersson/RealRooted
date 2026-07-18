@@ -1128,9 +1128,6 @@ theorem nonzero_of_favard_affine_param_coeff_rowSign_den_raw_prod
 
 namespace Tactic
 
-macro "rr_favard_beta_pos" : tactic =>
-  `(tactic| intro n <;> positivity)
-
 syntax (name := rr_favard) "rr_favard" " using " term ", " term : tactic
 
 syntax (name := rr_favard_named)
@@ -1941,27 +1938,27 @@ macro_rules
       `(tactic|
         first
           | refine RealRooted.favardInterlacing $hrec ?_ <;>
-              rr_favard_beta_pos
+              rr_positivity_seq
           | rr_exact_realrooted_sequence_or_projection
               (by
                 refine RealRooted.isRealRooted_of_favard $hrec ?_ <;>
-                rr_favard_beta_pos)
+                rr_positivity_seq)
           | refine RealRooted.nonzero_of_favard $hrec ?_ <;>
-              rr_favard_beta_pos
+              rr_positivity_seq
           | refine RealRooted.isGeneralizedSturmSeq_reverse_range_map_of_favard
               $hrec ?_ <;>
-              rr_favard_beta_pos
+              rr_positivity_seq
           | refine RealRooted.favardInterlacing $hrec ?_ _ <;>
-              rr_favard_beta_pos
+              rr_positivity_seq
           | rr_exact_realrooted_sequence_or_projection
               (by
                 refine RealRooted.isRealRooted_of_favard $hrec ?_ _ <;>
-                rr_favard_beta_pos)
+                rr_positivity_seq)
           | refine RealRooted.nonzero_of_favard $hrec ?_ _ <;>
-              rr_favard_beta_pos
+              rr_positivity_seq
           | refine RealRooted.isGeneralizedSturmSeq_reverse_range_map_of_favard
               $hrec ?_ _ <;>
-              rr_favard_beta_pos)
+              rr_positivity_seq)
   | `(tactic|
       rr_favard_const using
         $α:term, $β:term, $hβ:term, $hP0:term, $hP1:term, $hstep:term) =>
@@ -2057,9 +2054,7 @@ macro_rules
         rr_favard_param using
           alpha := $α,
           beta := $β,
-          beta_pos := by
-            intro n
-            positivity,
+          beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
           base_one := $hP1,
           step := $hstep)
@@ -2248,12 +2243,8 @@ macro_rules
           slope := $s,
           alpha := $α,
           beta := $β,
-          slope_pos := by
-            intro n
-            positivity,
-          beta_pos := by
-            intro n
-            positivity,
+          slope_pos := by rr_positivity_seq,
+          beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
           base_one := $hP1,
           step := $hstep)
@@ -2376,12 +2367,8 @@ macro_rules
           slope := $s,
           alpha := $α,
           beta := $β,
-          slope_pos := by
-            intro n
-            positivity,
-          beta_pos := by
-            intro n
-            positivity,
+          slope_pos := by rr_positivity_seq,
+          beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
@@ -2461,12 +2448,8 @@ macro_rules
           raw_slope := $araw,
           raw_const := $braw,
           raw_lag := $craw,
-          slope_pos := by
-            intro n
-            positivity,
-          beta_pos := by
-            intro n
-            positivity,
+          slope_pos := by rr_positivity_seq,
+          beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
@@ -2561,12 +2544,8 @@ macro_rules
           raw_const := $braw,
           raw_lag_left := $cleft,
           raw_lag_right := $cright,
-          slope_pos := by
-            intro n
-            positivity,
-          beta_pos := by
-            intro n
-            positivity,
+          slope_pos := by rr_positivity_seq,
+          beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
@@ -2600,9 +2579,7 @@ macro_rules
           raw_const := $braw,
           raw_lag := $craw,
           slope_pos := $hs,
-          beta_pos := by
-            intro n
-            positivity,
+          beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
           base_one := by
             try dsimp
@@ -2670,9 +2647,7 @@ macro_rules
           raw_slope := $araw,
           raw_const := $braw,
           raw_lag := $craw,
-          slope_pos := by
-            intro n
-            positivity,
+          slope_pos := by rr_positivity_seq,
           beta_pos := $hβ,
           base_zero := $hP0,
           base_one := by
@@ -2706,9 +2681,7 @@ macro_rules
           raw_slope := $araw,
           raw_const := $braw,
           raw_lag := $craw,
-          beta_pos := by
-            intro n
-            positivity,
+          beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
@@ -2762,9 +2735,7 @@ macro_rules
           alpha := $α,
           beta := fun _ => (1 : ℝ),
           slope_pos := $hs,
-          beta_pos := by
-            intro n
-            positivity,
+          beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
           base_one := by
             try dsimp
@@ -2808,9 +2779,7 @@ macro_rules
           slope := fun _ => (1 : ℝ),
           alpha := $α,
           beta := $β,
-          slope_pos := by
-            intro n
-            positivity,
+          slope_pos := by rr_positivity_seq,
           beta_pos := $hβ,
           base_zero := $hP0,
           base_one := by
@@ -2832,9 +2801,7 @@ macro_rules
         rr_favard_param_den using
           alpha := $α,
           beta := $β,
-          beta_pos := by
-            intro n
-            positivity,
+          beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
@@ -2871,9 +2838,7 @@ macro_rules
           alpha := $α,
           beta := fun _ => (1 : ℝ),
           slope_pos := $hs,
-          beta_pos := by
-            intro n
-            positivity,
+          beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
           base_one := by
             try dsimp
@@ -2939,12 +2904,8 @@ macro_rules
           slope := $s,
           alpha := $α,
           beta := $β,
-          slope_pos := by
-            intro n
-            positivity,
-          beta_pos := by
-            intro n
-            positivity,
+          slope_pos := by rr_positivity_seq,
+          beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
           base_one := $hP1,
           step := $hstep)
@@ -3067,12 +3028,8 @@ macro_rules
           slope := $s,
           alpha := $α,
           beta := $β,
-          slope_pos := by
-            intro n
-            positivity,
-          beta_pos := by
-            intro n
-            positivity,
+          slope_pos := by rr_positivity_seq,
+          beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
@@ -3152,12 +3109,8 @@ macro_rules
           raw_slope := $araw,
           raw_const := $braw,
           raw_lag := $craw,
-          slope_pos := by
-            intro n
-            positivity,
-          beta_pos := by
-            intro n
-            positivity,
+          slope_pos := by rr_positivity_seq,
+          beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
@@ -3252,12 +3205,8 @@ macro_rules
           raw_const := $braw,
           raw_lag_left := $cleft,
           raw_lag_right := $cright,
-          slope_pos := by
-            intro n
-            positivity,
-          beta_pos := by
-            intro n
-            positivity,
+          slope_pos := by rr_positivity_seq,
+          beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
@@ -3291,9 +3240,7 @@ macro_rules
           raw_const := $braw,
           raw_lag := $craw,
           slope_pos := $hs,
-          beta_pos := by
-            intro n
-            positivity,
+          beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
           base_one := by
             try dsimp
@@ -3361,9 +3308,7 @@ macro_rules
           raw_slope := $araw,
           raw_const := $braw,
           raw_lag := $craw,
-          slope_pos := by
-            intro n
-            positivity,
+          slope_pos := by rr_positivity_seq,
           beta_pos := $hβ,
           base_zero := $hP0,
           base_one := by
@@ -3397,9 +3342,7 @@ macro_rules
           raw_slope := $araw,
           raw_const := $braw,
           raw_lag := $craw,
-          beta_pos := by
-            intro n
-            positivity,
+          beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
@@ -3453,9 +3396,7 @@ macro_rules
           alpha := $α,
           beta := fun _ => (1 : ℝ),
           slope_pos := $hs,
-          beta_pos := by
-            intro n
-            positivity,
+          beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
           base_one := by
             try dsimp
@@ -3499,9 +3440,7 @@ macro_rules
           slope := fun _ => (1 : ℝ),
           alpha := $α,
           beta := $β,
-          slope_pos := by
-            intro n
-            positivity,
+          slope_pos := by rr_positivity_seq,
           beta_pos := $hβ,
           base_zero := $hP0,
           base_one := by
@@ -3523,9 +3462,7 @@ macro_rules
         rr_favard_param_row_sign_den using
           alpha := $α,
           beta := $β,
-          beta_pos := by
-            intro n
-            positivity,
+          beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
@@ -3562,9 +3499,7 @@ macro_rules
           alpha := $α,
           beta := fun _ => (1 : ℝ),
           slope_pos := $hs,
-          beta_pos := by
-            intro n
-            positivity,
+          beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
           base_one := by
             try dsimp
@@ -3619,9 +3554,7 @@ macro_rules
           slope := fun _ => (1 : ℝ),
           alpha := $α,
           beta := $β,
-          slope_pos := by
-            intro n
-            positivity,
+          slope_pos := by rr_positivity_seq,
           beta_pos := $hβ,
           base_zero := $hP0,
           base_one := by
@@ -3642,9 +3575,7 @@ macro_rules
         rr_favard_param_row_sign using
           alpha := $α,
           beta := $β,
-          beta_pos := by
-            intro n
-            positivity,
+          beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
           base_one := $hP1,
           step := $hstep)

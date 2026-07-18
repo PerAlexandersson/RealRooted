@@ -1,6 +1,7 @@
 import RealRooted.IteratedDerivativeShift
 import RealRooted.PosCombo
 import RealRooted.Tactic.MaWang
+import RealRooted.Tactic.SideGoals
 
 /-!
 # Second-derivative tactic shells
@@ -645,9 +646,7 @@ macro_rules
           base_zero := $hbase_zero,
           base_one := $hbase_one,
           pos_lc := $hpos,
-          outer_nonzero := (by
-            intro n
-            positivity),
+          outer_nonzero := (by rr_side_ne_seq),
           degree_two := $hdeg_two,
           inner_pos_lc := $hinner_pos,
           coeff_nonpos := (by
@@ -674,9 +673,7 @@ macro_rules
           base_zero := $hbase_zero,
           base_one := $hbase_one,
           pos_lc := $hpos,
-          outer_nonzero := (by
-            intro n
-            positivity),
+          outer_nonzero := (by rr_side_ne_seq),
           degree_two := $hdeg_two,
           inner_pos_lc := $hinner_pos,
           coeff_nonpos := (by
@@ -703,9 +700,7 @@ macro_rules
           base_zero := $hbase_zero,
           base_one := $hbase_one,
           pos_lc := $hpos,
-          outer_nonzero := (by
-            intro n
-            norm_num),
+          outer_nonzero := (by rr_side_ne_seq),
           degree_two := $hdeg_two,
           inner_neg_lc := $hinner_neg,
           coeff_nonneg := (by
@@ -750,9 +745,7 @@ macro_rules
           base_zero := $hbase_zero,
           base_one := $hbase_one,
           pos_lc := $hpos,
-          tail_nonneg := (by
-            intro n
-            positivity),
+          tail_nonneg := (by rr_side_nonneg_seq),
           outer_pos_lc := $houter_pos,
           outer_prec := $houter_prec,
           recurrence := $hrec)

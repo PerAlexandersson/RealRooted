@@ -30,6 +30,10 @@ namespace Tactic
 syntax (name := rr_side_nonneg) "rr_side_nonneg" : tactic
 syntax (name := rr_side_pos) "rr_side_pos" : tactic
 syntax (name := rr_side_ne) "rr_side_ne" : tactic
+syntax (name := rr_side_nonneg_seq) "rr_side_nonneg_seq" : tactic
+syntax (name := rr_side_pos_seq) "rr_side_pos_seq" : tactic
+syntax (name := rr_side_ne_seq) "rr_side_ne_seq" : tactic
+syntax (name := rr_positivity_seq) "rr_positivity_seq" : tactic
 syntax (name := rr_side) "rr_side" : tactic
 
 macro_rules
@@ -72,6 +76,14 @@ macro_rules
             positivity
           | apply ne_of_lt
             nlinarith)
+  | `(tactic| rr_side_nonneg_seq) =>
+      `(tactic| intro n <;> rr_side_nonneg)
+  | `(tactic| rr_side_pos_seq) =>
+      `(tactic| intro n <;> rr_side_pos)
+  | `(tactic| rr_side_ne_seq) =>
+      `(tactic| intro n <;> rr_side_ne)
+  | `(tactic| rr_positivity_seq) =>
+      `(tactic| intro n <;> positivity)
   | `(tactic| rr_side) =>
       `(tactic|
         first
