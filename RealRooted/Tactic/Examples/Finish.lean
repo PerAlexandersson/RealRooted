@@ -56,6 +56,13 @@ example {p : ℝ[X]} (hdeg : 2 ≤ p.natDegree) : p.derivative ≠ 0 := by
 example {p : ℝ[X]} (hp : X ^ 2 * p.derivative ≠ 0) : p.derivative ≠ 0 := by
   rr_nonzero
 
+example {p : ℝ[X]} (hp : HasPosLeadingCoeff p) : p ≠ 0 := by
+  rr_nonzero
+
+example {p q : ℝ[X]} (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q) :
+    p * q ≠ 0 := by
+  rr_nonzero
+
 example {f : ℝ[X]} (hdeg : f.natDegree = 1) : f ≠ 0 := by
   rr_nonzero
 

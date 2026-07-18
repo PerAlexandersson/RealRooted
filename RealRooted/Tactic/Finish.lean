@@ -671,6 +671,7 @@ macro_rules
           | exact Polynomial.X_sub_C_ne_zero _
           | (rw [add_comm]; exact Polynomial.X_add_C_ne_zero _)
           | (apply Polynomial.C_ne_zero.mpr <;> rr_side_ne)
+          | exact RealRooted.HasPosLeadingCoeff.ne_zero (by assumption)
           | (apply mul_ne_zero <;> rr_nonzero)
           | (apply pow_ne_zero <;> rr_nonzero)
           | (rw [Ne, Polynomial.reverse_eq_zero] <;> rr_nonzero)
