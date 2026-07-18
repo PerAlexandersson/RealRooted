@@ -206,6 +206,39 @@ syntax (name := rr_pairwise_common_interleaver_degree_split_nonnegShift_named)
     "pairwise_compatible" ":=" term :
   tactic
 
+syntax (name := rr_posCombo_pair_common_interleaver_degree_le_two_named)
+  "rr_posCombo_pair_common_interleaver_degree_le_two" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_splits" ":=" term ","
+    "right_splits" ":=" term ","
+    "pos_combo" ":=" term ","
+    "left_degree_le_two" ":=" term ","
+    "right_degree_le_two" ":=" term :
+  tactic
+
+syntax (name := rr_compatible_pair_common_interleaver_degree_le_two_named)
+  "rr_compatible_pair_common_interleaver_degree_le_two" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "compatible" ":=" term ","
+    "left_degree_le_two" ":=" term ","
+    "right_degree_le_two" ":=" term :
+  tactic
+
+syntax (name := rr_pairwise_common_interleaver_degree_le_one_named)
+  "rr_pairwise_common_interleaver_degree_le_one" " using "
+    "member_pos_lc" ":=" term ","
+    "member_degree_le_one" ":=" term :
+  tactic
+
+syntax (name := rr_pairwise_common_interleaver_degree_le_two_named)
+  "rr_pairwise_common_interleaver_degree_le_two" " using "
+    "member_pos_lc" ":=" term ","
+    "member_degree_le_two" ":=" term ","
+    "pairwise_compatible" ":=" term :
+  tactic
+
 macro_rules
   | `(tactic| rr_compatible_comm using compatible := $h:term) =>
       `(tactic| exact RealRooted.Compatible.comm $h)
@@ -394,6 +427,43 @@ macro_rules
       `(tactic|
         exact pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairDegreeSplit_via_nonnegShift
           $hsame $hsucc $hpos $hpair)
+  | `(tactic|
+      rr_posCombo_pair_common_interleaver_degree_le_two using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        left_splits := $hfsplit:term,
+        right_splits := $hgsplit:term,
+        pos_combo := $hfg:term,
+        left_degree_le_two := $hfdeg:term,
+        right_degree_le_two := $hgdeg:term) =>
+      `(tactic|
+        exact RealRooted.posComboPairHasCommonInterleaver_of_natDegree_le_two
+          $hfpos $hgpos $hfsplit $hgsplit $hfg $hfdeg $hgdeg)
+  | `(tactic|
+      rr_compatible_pair_common_interleaver_degree_le_two using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        compatible := $hfg:term,
+        left_degree_le_two := $hfdeg:term,
+        right_degree_le_two := $hgdeg:term) =>
+      `(tactic|
+        exact RealRooted.compatiblePairHasCommonInterleaver_of_natDegree_le_two
+          $hfpos $hgpos $hfg $hfdeg $hgdeg)
+  | `(tactic|
+      rr_pairwise_common_interleaver_degree_le_one using
+        member_pos_lc := $hpos:term,
+        member_degree_le_one := $hdeg:term) =>
+      `(tactic|
+        exact RealRooted.pairwiseHasCommonInterleaver_of_natDegree_le_one
+          $hpos $hdeg)
+  | `(tactic|
+      rr_pairwise_common_interleaver_degree_le_two using
+        member_pos_lc := $hpos:term,
+        member_degree_le_two := $hdeg:term,
+        pairwise_compatible := $hpair:term) =>
+      `(tactic|
+        exact RealRooted.pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_natDegree_le_two
+          $hpos $hdeg $hpair)
 
 end Tactic
 end RealRooted

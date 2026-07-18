@@ -254,5 +254,55 @@ example {fs : List ℝ[X]}
     member_pos_lc := hpos,
     pairwise_compatible := hpair
 
+example {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hf_split : f.Splits)
+    (hg_split : g.Splits)
+    (hfg : PosComboRealRooted f g)
+    (hfdeg : f.natDegree ≤ 2)
+    (hgdeg : g.natDegree ≤ 2) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+  rr_posCombo_pair_common_interleaver_degree_le_two using
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    left_splits := hf_split,
+    right_splits := hg_split,
+    pos_combo := hfg,
+    left_degree_le_two := hfdeg,
+    right_degree_le_two := hgdeg
+
+example {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfg : Compatible f g)
+    (hfdeg : f.natDegree ≤ 2)
+    (hgdeg : g.natDegree ≤ 2) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+  rr_compatible_pair_common_interleaver_degree_le_two using
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    compatible := hfg,
+    left_degree_le_two := hfdeg,
+    right_degree_le_two := hgdeg
+
+example {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
+    PairwiseHasCommonInterleaver fs := by
+  rr_pairwise_common_interleaver_degree_le_one using
+    member_pos_lc := hpos,
+    member_degree_le_one := hdeg
+
+example {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 2)
+    (hpair : PairwiseCompatible fs) :
+    PairwiseHasCommonInterleaver fs := by
+  rr_pairwise_common_interleaver_degree_le_two using
+    member_pos_lc := hpos,
+    member_degree_le_two := hdeg,
+    pairwise_compatible := hpair
+
 end Tactic
 end RealRooted
