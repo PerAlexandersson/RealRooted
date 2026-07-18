@@ -1132,6 +1132,10 @@ syntax (name := rr_favard_step_seq) "rr_favard_step_seq " term : term
 
 syntax (name := rr_favard_step_dsimp_seq) "rr_favard_step_dsimp_seq " term : term
 
+syntax (name := rr_favard_base_one) "rr_favard_base_one " term : term
+
+syntax (name := rr_favard_base_one_dsimp) "rr_favard_base_one_dsimp " term : term
+
 macro_rules
   | `(rr_favard_step_seq $hstep:term) =>
       `(fun n => by simpa using $hstep n)
@@ -1139,6 +1143,12 @@ macro_rules
       `(fun n => by
         try dsimp
         simpa using $hstep n)
+  | `(rr_favard_base_one $hP1:term) =>
+      `(by simpa using $hP1)
+  | `(rr_favard_base_one_dsimp $hP1:term) =>
+      `(by
+        try dsimp
+        simpa using $hP1)
 
 syntax (name := rr_favard) "rr_favard" " using " term ", " term : tactic
 
@@ -2024,7 +2034,7 @@ macro_rules
           alpha := $α,
           beta := 1,
           base_zero := $hP0,
-          base_one := by simpa using $hP1,
+          base_one := rr_favard_base_one $hP1,
           step := rr_favard_step_seq $hstep)
   | `(tactic|
       rr_favard_param using
@@ -2079,9 +2089,7 @@ macro_rules
           alpha := $α,
           beta := fun _ => (1 : ℝ),
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           step := rr_favard_step_dsimp_seq $hstep)
   | `(tactic|
       rr_favard_affine_const using
@@ -2145,7 +2153,7 @@ macro_rules
           alpha := $α,
           beta := 1,
           base_zero := $hP0,
-          base_one := by simpa using $hP1,
+          base_one := rr_favard_base_one $hP1,
           step := rr_favard_step_seq $hstep)
   | `(tactic|
       rr_favard_affine_const_row_sign using
@@ -2201,7 +2209,7 @@ macro_rules
           alpha := $α,
           beta := 1,
           base_zero := $hP0,
-          base_one := by simpa using $hP1,
+          base_one := rr_favard_base_one $hP1,
           step := rr_favard_step_seq $hstep)
   | `(tactic|
       rr_favard_affine_param using
@@ -2584,9 +2592,7 @@ macro_rules
           slope_pos := $hs,
           beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           den := $d,
           den_nonzero := $hden,
           slope_coeff_eq := $hs_coeff,
@@ -2617,9 +2623,7 @@ macro_rules
           raw_const := $braw,
           raw_lag := $craw,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           den := $d,
           den_nonzero := $hden,
           slope_coeff_eq := $hs_coeff,
@@ -2653,9 +2657,7 @@ macro_rules
           slope_pos := by rr_positivity_seq,
           beta_pos := $hβ,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           den := $d,
           den_nonzero := $hden,
           slope_coeff_eq := $hs_coeff,
@@ -2740,9 +2742,7 @@ macro_rules
           slope_pos := $hs,
           beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           den := $d,
           den_nonzero := $hden,
           raw_recurrence := $hraw)
@@ -2761,9 +2761,7 @@ macro_rules
           alpha := $α,
           beta := fun _ => (1 : ℝ),
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           den := $d,
           den_nonzero := $hden,
           raw_recurrence := $hraw)
@@ -2785,9 +2783,7 @@ macro_rules
           slope_pos := by rr_positivity_seq,
           beta_pos := $hβ,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           den := $d,
           den_nonzero := $hden,
           raw_recurrence := $hraw)
@@ -2843,9 +2839,7 @@ macro_rules
           slope_pos := $hs,
           beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           step := rr_favard_step_dsimp_seq $hstep)
   | `(tactic|
       rr_favard_affine_param_unit using
@@ -2860,9 +2854,7 @@ macro_rules
           alpha := $α,
           beta := fun _ => (1 : ℝ),
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           step := rr_favard_step_dsimp_seq $hstep)
   | `(tactic|
       rr_favard_affine_param_row_sign using
@@ -3239,9 +3231,7 @@ macro_rules
           slope_pos := $hs,
           beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           den := $d,
           den_nonzero := $hden,
           slope_coeff_eq := $hs_coeff,
@@ -3272,9 +3262,7 @@ macro_rules
           raw_const := $braw,
           raw_lag := $craw,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           den := $d,
           den_nonzero := $hden,
           slope_coeff_eq := $hs_coeff,
@@ -3308,9 +3296,7 @@ macro_rules
           slope_pos := by rr_positivity_seq,
           beta_pos := $hβ,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           den := $d,
           den_nonzero := $hden,
           slope_coeff_eq := $hs_coeff,
@@ -3395,9 +3381,7 @@ macro_rules
           slope_pos := $hs,
           beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           den := $d,
           den_nonzero := $hden,
           raw_recurrence := $hraw)
@@ -3416,9 +3400,7 @@ macro_rules
           alpha := $α,
           beta := fun _ => (1 : ℝ),
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           den := $d,
           den_nonzero := $hden,
           raw_recurrence := $hraw)
@@ -3440,9 +3422,7 @@ macro_rules
           slope_pos := by rr_positivity_seq,
           beta_pos := $hβ,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           den := $d,
           den_nonzero := $hden,
           raw_recurrence := $hraw)
@@ -3498,9 +3478,7 @@ macro_rules
           slope_pos := $hs,
           beta_pos := by rr_positivity_seq,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           step := rr_favard_step_dsimp_seq $hstep)
   | `(tactic|
       rr_favard_affine_param_row_sign_unit using
@@ -3515,9 +3493,7 @@ macro_rules
           alpha := $α,
           beta := fun _ => (1 : ℝ),
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           step := rr_favard_step_dsimp_seq $hstep)
   | `(tactic|
       rr_favard_param_row_sign_unit using
@@ -3548,9 +3524,7 @@ macro_rules
           slope_pos := by rr_positivity_seq,
           beta_pos := $hβ,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           step := rr_favard_step_dsimp_seq $hstep)
   | `(tactic|
       rr_favard_param_row_sign_auto using
