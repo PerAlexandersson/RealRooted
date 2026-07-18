@@ -123,6 +123,8 @@ macro_rules
           | exact_mod_cast (by assumption)
           | apply neg_ne_zero.mpr
             exact ne_of_gt rr_side_pos_term
+          | apply pow_ne_zero
+            rr_side_ne
           | positivity
           | norm_num
           | exact ne_of_gt rr_side_pos_term

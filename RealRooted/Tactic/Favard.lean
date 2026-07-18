@@ -254,8 +254,8 @@ theorem favardInterlacing_affine_const_coeff_rowSign
   have hQprec : ∀ n : Nat, Prec (Q n) (Q (n + 1)) :=
     favardInterlacing_affine_const_coeff hs hβ hQ0 hQ1 hQstep
   intro n
-  have hleft_ne : ((-1 : ℝ) ^ n) ≠ 0 := pow_ne_zero _ (by norm_num)
-  have hright_ne : ((-1 : ℝ) ^ (n + 1)) ≠ 0 := pow_ne_zero _ (by norm_num)
+  have hleft_ne : ((-1 : ℝ) ^ n) ≠ 0 := by rr_side_ne
+  have hright_ne : ((-1 : ℝ) ^ (n + 1)) ≠ 0 := by rr_side_ne
   have hscaled : Prec (C ((-1 : ℝ) ^ n) * Q n)
       (C ((-1 : ℝ) ^ (n + 1)) * Q (n + 1)) :=
     prec_C_mul_right (prec_C_mul_left (hQprec n) hleft_ne) hright_ne
@@ -764,8 +764,8 @@ theorem favardInterlacing_affine_param_coeff_rowSign
   have hQprec : ∀ n : Nat, Prec (Q n) (Q (n + 1)) :=
     favardInterlacing_affine_param_coeff hs hβ hQ0 hQ1 hQstep
   intro n
-  have hleft_ne : ((-1 : ℝ) ^ n) ≠ 0 := pow_ne_zero _ (by norm_num)
-  have hright_ne : ((-1 : ℝ) ^ (n + 1)) ≠ 0 := pow_ne_zero _ (by norm_num)
+  have hleft_ne : ((-1 : ℝ) ^ n) ≠ 0 := by rr_side_ne
+  have hright_ne : ((-1 : ℝ) ^ (n + 1)) ≠ 0 := by rr_side_ne
   have hscaled : Prec (C ((-1 : ℝ) ^ n) * Q n)
       (C ((-1 : ℝ) ^ (n + 1)) * Q (n + 1)) :=
     prec_C_mul_right (prec_C_mul_left (hQprec n) hleft_ne) hright_ne
