@@ -2515,6 +2515,12 @@ macro_rules
 macro "rr_lw_active_nonneg_at " n:term : tactic =>
   `(tactic| rr_scalar_active_nonneg_at $n)
 
+syntax (name := rr_lw_active_nonneg) "rr_lw_active_nonneg" : term
+
+macro_rules
+  | `(rr_lw_active_nonneg) =>
+      `(fun n => by rr_lw_active_nonneg_at n)
+
 macro "rr_lw_quadratic_discriminant_at " n:term : tactic =>
   `(tactic|
     solve
@@ -2529,6 +2535,15 @@ macro "rr_lw_negative_quadratic_side_at " n:term : tactic =>
     first
       | rr_lw_active_nonneg_at $n
       | rr_lw_quadratic_discriminant_at $n)
+
+syntax (name := rr_lw_quadratic_discriminant) "rr_lw_quadratic_discriminant" : term
+syntax (name := rr_lw_negative_quadratic_side) "rr_lw_negative_quadratic_side" : term
+
+macro_rules
+  | `(rr_lw_quadratic_discriminant) =>
+      `(fun n => by rr_lw_quadratic_discriminant_at n)
+  | `(rr_lw_negative_quadratic_side) =>
+      `(fun n => by rr_lw_negative_quadratic_side_at n)
 
 syntax (name := rr_liu_wang)
   "rr_liu_wang" " using " term ", "
@@ -5269,8 +5284,8 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        refine RealRooted.prec_lw_negative_const_lag_sequence
-          $hbase $hpos ?_ $hrec $hdeg_succ $hno <;> intro n <;> rr_lw_active_nonneg_at n)
+        exact RealRooted.prec_lw_negative_const_lag_sequence
+          $hbase $hpos rr_lw_active_nonneg $hrec $hdeg_succ $hno)
   | `(tactic|
       rr_lw_negative_const_sequence_realrooted using
         base := $hbase:term,
@@ -5292,11 +5307,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (by
-            refine RealRooted.isRealRooted_of_lw_negative_const_lag_sequence
-              $hbase $hpos ?_ $hrec $hdeg_succ $hno <;>
-            intro n <;>
-            rr_lw_active_nonneg_at n))
+          (RealRooted.isRealRooted_of_lw_negative_const_lag_sequence
+            $hbase $hpos rr_lw_active_nonneg $hrec $hdeg_succ $hno))
   | `(tactic|
       rr_lw_negative_const_C_neg_sequence using
         base := $hbase:term,
@@ -5316,8 +5328,8 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        refine RealRooted.prec_lw_negative_const_C_neg_lag_sequence
-          $hbase $hpos ?_ $hrec $hdeg_succ $hno <;> intro n <;> rr_lw_active_nonneg_at n)
+        exact RealRooted.prec_lw_negative_const_C_neg_lag_sequence
+          $hbase $hpos rr_lw_active_nonneg $hrec $hdeg_succ $hno)
   | `(tactic|
       rr_lw_negative_const_C_neg_sequence_realrooted using
         base := $hbase:term,
@@ -5339,11 +5351,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (by
-            refine RealRooted.isRealRooted_of_lw_negative_const_C_neg_lag_sequence
-              $hbase $hpos ?_ $hrec $hdeg_succ $hno <;>
-            intro n <;>
-            rr_lw_active_nonneg_at n))
+          (RealRooted.isRealRooted_of_lw_negative_const_C_neg_lag_sequence
+            $hbase $hpos rr_lw_active_nonneg $hrec $hdeg_succ $hno))
   | `(tactic|
       rr_lw_negative_square_sequence using
         base := $hbase:term,
@@ -5363,8 +5372,8 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        refine RealRooted.prec_lw_negative_square_lag_sequence
-          $hbase $hpos ?_ $hrec $hdeg_succ $hno <;> intro n <;> rr_lw_active_nonneg_at n)
+        exact RealRooted.prec_lw_negative_square_lag_sequence
+          $hbase $hpos rr_lw_active_nonneg $hrec $hdeg_succ $hno)
   | `(tactic|
       rr_lw_negative_square_sequence_realrooted using
         base := $hbase:term,
@@ -5386,11 +5395,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (by
-            refine RealRooted.isRealRooted_of_lw_negative_square_lag_sequence
-              $hbase $hpos ?_ $hrec $hdeg_succ $hno <;>
-            intro n <;>
-            rr_lw_active_nonneg_at n))
+          (RealRooted.isRealRooted_of_lw_negative_square_lag_sequence
+            $hbase $hpos rr_lw_active_nonneg $hrec $hdeg_succ $hno))
   | `(tactic|
       rr_lw_negative_square_sequence_unit using
         base := $hbase:term,
@@ -5460,9 +5466,9 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        refine RealRooted.prec_lw_negative_square_lag_sequence_den_coeff
-          (c := $c) $hbase $hpos ?_ $hden $hcoeff $hraw $hdeg_succ $hno <;>
-        intro n <;> rr_lw_active_nonneg_at n)
+        exact RealRooted.prec_lw_negative_square_lag_sequence_den_coeff
+          (c := $c) $hbase $hpos rr_lw_active_nonneg $hden $hcoeff $hraw
+          $hdeg_succ $hno)
   | `(tactic|
       rr_lw_negative_square_sequence_den_coeff_auto_split using
         base := $hbase:term,
@@ -5480,7 +5486,7 @@ macro_rules
         exact
           RealRooted.prec_lw_negative_square_lag_sequence_den_coeff
             (q := $q) (b := $b) (c := $c) (d := $d)
-            $hbase $hpos (by intro n; rr_lw_active_nonneg_at n) $hden $hcoeff
+            $hbase $hpos rr_lw_active_nonneg $hden $hcoeff
             (by
               intro n
               simpa [add_comm, add_left_comm, add_assoc, mul_assoc] using $hraw n)
@@ -5535,11 +5541,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (by
-            refine RealRooted.isRealRooted_of_lw_negative_square_lag_sequence_den_coeff
-              (c := $c) $hbase $hpos ?_ $hden $hcoeff $hraw $hdeg_succ $hno <;>
-            intro n <;>
-            rr_lw_active_nonneg_at n))
+          (RealRooted.isRealRooted_of_lw_negative_square_lag_sequence_den_coeff
+            (c := $c) $hbase $hpos rr_lw_active_nonneg $hden $hcoeff $hraw
+            $hdeg_succ $hno))
   | `(tactic|
       rr_lw_negative_square_sequence_den_coeff_realrooted_auto_split using
         base := $hbase:term,
@@ -5557,7 +5561,7 @@ macro_rules
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_lw_negative_square_lag_sequence_den_coeff
             (q := $q) (b := $b) (c := $c) (d := $d)
-            $hbase $hpos (by intro n; rr_lw_active_nonneg_at n) $hden $hcoeff
+            $hbase $hpos rr_lw_active_nonneg $hden $hcoeff
             (by
               intro n
               simpa [add_comm, add_left_comm, add_assoc, mul_assoc] using $hraw n)
@@ -5593,10 +5597,8 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        refine RealRooted.prec_lw_negative_monic_quadratic_lag_sequence
-          $hbase $hpos ?_ $hrec $hdeg_succ $hno <;>
-        intro n <;>
-        rr_lw_quadratic_discriminant_at n)
+        exact RealRooted.prec_lw_negative_monic_quadratic_lag_sequence
+          $hbase $hpos rr_lw_quadratic_discriminant $hrec $hdeg_succ $hno)
   | `(tactic|
       rr_lw_negative_monic_quadratic_sequence_realrooted_auto using
         base := $hbase:term,
@@ -5606,11 +5608,8 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (by
-            refine RealRooted.isRealRooted_of_lw_negative_monic_quadratic_lag_sequence
-              $hbase $hpos ?_ $hrec $hdeg_succ $hno <;>
-            intro n <;>
-            rr_lw_quadratic_discriminant_at n))
+          (RealRooted.isRealRooted_of_lw_negative_monic_quadratic_lag_sequence
+            $hbase $hpos rr_lw_quadratic_discriminant $hrec $hdeg_succ $hno))
   | `(tactic|
       rr_lw_negative_quadratic_sequence using
         base := $hbase:term,
@@ -5646,10 +5645,9 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        refine RealRooted.prec_lw_negative_quadratic_lag_sequence
-          $hbase $hpos ?_ ?_ ?_ $hrec $hdeg_succ $hno <;>
-        intro n <;>
-        rr_lw_negative_quadratic_side_at n)
+        exact RealRooted.prec_lw_negative_quadratic_lag_sequence
+          $hbase $hpos rr_lw_negative_quadratic_side rr_lw_negative_quadratic_side
+          rr_lw_negative_quadratic_side $hrec $hdeg_succ $hno)
   | `(tactic|
       rr_lw_negative_quadratic_sequence_realrooted_auto using
         base := $hbase:term,
@@ -5659,11 +5657,9 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (by
-            refine RealRooted.isRealRooted_of_lw_negative_quadratic_lag_sequence
-              $hbase $hpos ?_ ?_ ?_ $hrec $hdeg_succ $hno <;>
-            intro n <;>
-            rr_lw_negative_quadratic_side_at n))
+          (RealRooted.isRealRooted_of_lw_negative_quadratic_lag_sequence
+            $hbase $hpos rr_lw_negative_quadratic_side rr_lw_negative_quadratic_side
+            rr_lw_negative_quadratic_side $hrec $hdeg_succ $hno))
   | `(tactic|
       rr_lw_negative_quadratic_sequence_den_coeff_split using
         base := $hbase:term,
@@ -5711,14 +5707,13 @@ macro_rules
         degree_succ := $hdeg_succ:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        refine
+        exact
           RealRooted.prec_lw_negative_quadratic_lag_sequence_den_coeff
             (araw := $araw) (braw := $braw) (craw := $craw)
             (a := $a) (b := $b) (c := $c) (d := $d)
-            $hbase $hpos ?_ ?_ ?_ $hden $ha_coeff $hb_coeff $hc_coeff
-            $hraw $hdeg_succ $hno <;>
-        intro n <;>
-        rr_lw_negative_quadratic_side_at n)
+            $hbase $hpos rr_lw_negative_quadratic_side rr_lw_negative_quadratic_side
+            rr_lw_negative_quadratic_side $hden $ha_coeff $hb_coeff $hc_coeff $hraw
+            $hdeg_succ $hno)
   | `(tactic|
       rr_lw_negative_quadratic_sequence_den_coeff_realrooted_split using
         base := $hbase:term,
@@ -5767,15 +5762,12 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (by
-            refine
-              RealRooted.isRealRooted_of_lw_negative_quadratic_lag_sequence_den_coeff
-                (araw := $araw) (braw := $braw) (craw := $craw)
-                (a := $a) (b := $b) (c := $c) (d := $d)
-                $hbase $hpos ?_ ?_ ?_ $hden $ha_coeff $hb_coeff $hc_coeff
-                $hraw $hdeg_succ $hno <;>
-            intro n <;>
-            rr_lw_negative_quadratic_side_at n))
+          (RealRooted.isRealRooted_of_lw_negative_quadratic_lag_sequence_den_coeff
+            (araw := $araw) (braw := $braw) (craw := $craw)
+            (a := $a) (b := $b) (c := $c) (d := $d)
+            $hbase $hpos rr_lw_negative_quadratic_side rr_lw_negative_quadratic_side
+            rr_lw_negative_quadratic_side $hden $ha_coeff $hb_coeff $hc_coeff $hraw
+            $hdeg_succ $hno))
   | `(tactic|
       rr_lw_positive_t_sequence using
         base := $hbase:term,
@@ -5798,7 +5790,7 @@ macro_rules
         no_common_roots := $hno:term) =>
       `(tactic|
         exact RealRooted.prec_lw_positive_t_lag_sequence
-          $hbase $hpos $hnonneg (fun n => by rr_lw_active_nonneg_at n) $hrec $hdeg_succ
+          $hbase $hpos $hnonneg rr_lw_active_nonneg $hrec $hdeg_succ
           $hno)
   | `(tactic|
       rr_lw_positive_t_sequence_realrooted using
@@ -5824,7 +5816,7 @@ macro_rules
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_lw_positive_t_lag_sequence
-            $hbase $hpos $hnonneg (fun n => by rr_lw_active_nonneg_at n) $hrec
+            $hbase $hpos $hnonneg rr_lw_active_nonneg $hrec
             $hdeg_succ $hno))
   | `(tactic|
       rr_lw_positive_X_lag_sequence using
@@ -7065,7 +7057,7 @@ macro_rules
       `(tactic|
         exact RealRooted.prec_lw_current_CX_positive_t_lag_sequence
           $hbase $hpos $hnonneg
-          (fun n => by rr_lw_active_nonneg_at n) $hrec $hdeg_succ $hno)
+          rr_lw_active_nonneg $hrec $hdeg_succ $hno)
   | `(tactic|
       rr_lw_current_CX_sequence_realrooted using
         base := $hbase:term,
@@ -7091,7 +7083,7 @@ macro_rules
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_lw_current_CX_positive_t_lag_sequence
             $hbase $hpos $hnonneg
-            (fun n => by rr_lw_active_nonneg_at n) $hrec $hdeg_succ $hno))
+            rr_lw_active_nonneg $hrec $hdeg_succ $hno))
   | `(tactic|
       rr_lw_current_X_sequence using
         base := $hbase:term,
@@ -7120,7 +7112,7 @@ macro_rules
         first
           | exact RealRooted.prec_lw_current_X_positive_t_lag_sequence
               $hbase $hpos $hnonneg
-              (fun n => by rr_lw_active_nonneg_at n) $hrec $hdeg_succ $hno
+              rr_lw_active_nonneg $hrec $hdeg_succ $hno
           | refine RealRooted.prec_lw_current_X_positive_t_lag_sequence
               $hbase $hpos $hnonneg ?_
               (fun n => by simpa using $hrec n) $hdeg_succ $hno
@@ -7157,7 +7149,7 @@ macro_rules
           | rr_exact_realrooted_sequence_or_projection
               (RealRooted.isRealRooted_of_lw_current_X_positive_t_lag_sequence
                 $hbase $hpos $hnonneg
-                (fun n => by rr_lw_active_nonneg_at n) $hrec $hdeg_succ $hno)
+                rr_lw_active_nonneg $hrec $hdeg_succ $hno)
           | rr_exact_realrooted_sequence_or_projection
               (by
                 refine RealRooted.isRealRooted_of_lw_current_X_positive_t_lag_sequence
@@ -7188,7 +7180,7 @@ macro_rules
       `(tactic|
         exact RealRooted.prec_lw_current_one_add_X_positive_t_lag_sequence
           $hbase $hpos $hnonneg
-          (fun n => by rr_lw_active_nonneg_at n) $hrec $hdeg_succ $hno)
+          rr_lw_active_nonneg $hrec $hdeg_succ $hno)
   | `(tactic|
       rr_lw_current_one_add_X_sequence_realrooted using
         base := $hbase:term,
@@ -7214,7 +7206,7 @@ macro_rules
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_lw_current_one_add_X_positive_t_lag_sequence
             $hbase $hpos $hnonneg
-            (fun n => by rr_lw_active_nonneg_at n) $hrec $hdeg_succ $hno))
+            rr_lw_active_nonneg $hrec $hdeg_succ $hno))
 
 end Tactic
 end RealRooted
