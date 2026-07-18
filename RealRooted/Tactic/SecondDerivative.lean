@@ -355,6 +355,8 @@ namespace Tactic
 
 syntax (name := rr_ls4_factorize) "rr_ls4_factorize" : tactic
 
+syntax (name := rr_ls4_recurrence_factorize) "rr_ls4_recurrence_factorize " term : tactic
+
 syntax (name := rr_mw_plus_derivative_sequence_named)
   "rr_mw_plus_derivative_sequence" " using "
     "outer" ":=" term ","
@@ -565,6 +567,15 @@ macro_rules
                   Polynomial.C_neg, one_mul, mul_one]
             repeat rw [RealRooted.ls4_C_ofNat_real]
             ring_nf)
+  | `(tactic| rr_ls4_recurrence_factorize $hrec:term) =>
+      `(tactic|
+        first
+          | intro n
+            rw [$hrec n]
+            rr_ls4_factorize
+          | rename_i n
+            rw [$hrec n]
+            rr_ls4_factorize)
   | `(tactic|
       rr_mw_plus_derivative_sequence_expanded using
         outer := $a:term,
@@ -583,9 +594,7 @@ macro_rules
           RealRooted.isRealRooted_of_mw_then_const_add_derivative_sequence
             $a $hbase_zero $hbase_one $hpos $ha $hdeg_two $hinner_pos $hV ?_
             $hinner_deg_lo $hinner_deg_hi <;>
-          (intro n
-           rw [$hrec n]
-           rr_ls4_factorize))
+          (rr_ls4_recurrence_factorize $hrec))
   | `(tactic|
       rr_mw_plus_derivative_sequence_expanded using
         outer := $a:term,
@@ -604,9 +613,7 @@ macro_rules
           RealRooted.isRealRooted_of_mw_then_pos_const_add_derivative_sequence
             $a $hbase_zero $hbase_one $hpos $ha $hdeg_two $hinner_pos $hV ?_
             $hinner_deg_lo $hinner_deg_hi <;>
-          (intro n
-           rw [$hrec n]
-           rr_ls4_factorize))
+          (rr_ls4_recurrence_factorize $hrec))
   | `(tactic|
       rr_neg_mw_plus_derivative_sequence_expanded using
         outer := $a:term,
@@ -625,9 +632,7 @@ macro_rules
           RealRooted.isRealRooted_of_neg_mw_then_const_add_derivative_sequence
             $a $hbase_zero $hbase_one $hpos $ha $hdeg_two $hinner_neg $hV ?_
             $hinner_deg_lo $hinner_deg_hi <;>
-          (intro n
-           rw [$hrec n]
-           rr_ls4_factorize))
+          (rr_ls4_recurrence_factorize $hrec))
   | `(tactic|
       rr_mw_plus_derivative_sequence_expanded_auto using
         outer := $a:term,
@@ -719,9 +724,7 @@ macro_rules
           RealRooted.isRealRooted_of_mw_then_const_add_derivative_plus_current_sequence
             $a $b $hbase_zero $hbase_one (fun n => $hpos (n + 1)) $hb
             $houter_pos $houter_prec ?_ <;>
-          (intro n
-           rw [$hrec n]
-           rr_ls4_factorize))
+          (rr_ls4_recurrence_factorize $hrec))
   | `(tactic|
       rr_ls4_plus_current_sequence_expanded_auto using
         outer := $a:term,
