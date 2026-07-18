@@ -1903,6 +1903,8 @@ syntax (name := rr_favard_param_row_sign_auto_named)
 
 syntax (name := rr_favard_den_raw) "rr_favard_den_raw" " using " term : tactic
 
+syntax (name := rr_favard_den_raw_term) "rr_favard_den_raw_term " term : term
+
 syntax (name := rr_favard_goal_variants)
   "rr_favard_goal_variants"
     term ", " term ", " term ", " term ", " term ", " term :
@@ -1933,6 +1935,8 @@ macro_rules
           | intro n
             simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc, C_mul,
               mul_assoc] using $hraw n)
+  | `(rr_favard_den_raw_term $hraw:term) =>
+      `(by rr_favard_den_raw using $hraw)
   | `(tactic| rr_favard using $hrec:term, $hbeta:term) =>
       `(tactic|
         first
@@ -2277,92 +2281,92 @@ macro_rules
               RealRooted.favardInterlacing_affine_param_coeff_den
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw)
+                (rr_favard_den_raw_term $hraw)
           | exact
               RealRooted.favardInterlacing_affine_param_coeff_den_split
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw)
+                (rr_favard_den_raw_term $hraw)
           | exact
               RealRooted.favardInterlacing_affine_param_coeff_den_split_rev
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw)
+                (rr_favard_den_raw_term $hraw)
           | exact
               RealRooted.isRealRooted_of_favard_affine_param_coeff_den
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw)
+                (rr_favard_den_raw_term $hraw)
           | exact
               RealRooted.isRealRooted_of_favard_affine_param_coeff_den_split
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw)
+                (rr_favard_den_raw_term $hraw)
           | exact
               RealRooted.isRealRooted_of_favard_affine_param_coeff_den_split_rev
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw)
+                (rr_favard_den_raw_term $hraw)
           | exact
               RealRooted.nonzero_of_favard_affine_param_coeff_den
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw)
+                (rr_favard_den_raw_term $hraw)
           | exact
               RealRooted.nonzero_of_favard_affine_param_coeff_den_split
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw)
+                (rr_favard_den_raw_term $hraw)
           | exact
               RealRooted.nonzero_of_favard_affine_param_coeff_den_split_rev
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw)
+                (rr_favard_den_raw_term $hraw)
           | exact
               RealRooted.favardInterlacing_affine_param_coeff_den
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw) _
+                (rr_favard_den_raw_term $hraw) _
           | exact
               RealRooted.favardInterlacing_affine_param_coeff_den_split
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw) _
+                (rr_favard_den_raw_term $hraw) _
           | exact
               RealRooted.favardInterlacing_affine_param_coeff_den_split_rev
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw) _
+                (rr_favard_den_raw_term $hraw) _
           | exact
               RealRooted.isRealRooted_of_favard_affine_param_coeff_den
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw) _
+                (rr_favard_den_raw_term $hraw) _
           | exact
               RealRooted.isRealRooted_of_favard_affine_param_coeff_den_split
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw) _
+                (rr_favard_den_raw_term $hraw) _
           | exact
               RealRooted.isRealRooted_of_favard_affine_param_coeff_den_split_rev
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw) _
+                (rr_favard_den_raw_term $hraw) _
           | exact
               RealRooted.nonzero_of_favard_affine_param_coeff_den
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw) _
+                (rr_favard_den_raw_term $hraw) _
           | exact
               RealRooted.nonzero_of_favard_affine_param_coeff_den_split
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw) _
+                (rr_favard_den_raw_term $hraw) _
           | exact
               RealRooted.nonzero_of_favard_affine_param_coeff_den_split_rev
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw) _)
+                (rr_favard_den_raw_term $hraw) _)
   | `(tactic|
       rr_favard_affine_param_den_auto using
         slope := $s:term,
@@ -2916,92 +2920,92 @@ macro_rules
               RealRooted.favardInterlacing_affine_param_coeff_rowSign_den
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw)
+                (rr_favard_den_raw_term $hraw)
           | exact
               RealRooted.favardInterlacing_affine_param_coeff_rowSign_den_split
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw)
+                (rr_favard_den_raw_term $hraw)
           | exact
               RealRooted.favardInterlacing_affine_param_coeff_rowSign_den_split_rev
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw)
+                (rr_favard_den_raw_term $hraw)
           | exact
               RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw)
+                (rr_favard_den_raw_term $hraw)
           | exact
               RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den_split
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw)
+                (rr_favard_den_raw_term $hraw)
           | exact
               RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den_split_rev
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw)
+                (rr_favard_den_raw_term $hraw)
           | exact
               RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw)
+                (rr_favard_den_raw_term $hraw)
           | exact
               RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den_split
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw)
+                (rr_favard_den_raw_term $hraw)
           | exact
               RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den_split_rev
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw)
+                (rr_favard_den_raw_term $hraw)
           | exact
               RealRooted.favardInterlacing_affine_param_coeff_rowSign_den
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw) _
+                (rr_favard_den_raw_term $hraw) _
           | exact
               RealRooted.favardInterlacing_affine_param_coeff_rowSign_den_split
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw) _
+                (rr_favard_den_raw_term $hraw) _
           | exact
               RealRooted.favardInterlacing_affine_param_coeff_rowSign_den_split_rev
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw) _
+                (rr_favard_den_raw_term $hraw) _
           | exact
               RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw) _
+                (rr_favard_den_raw_term $hraw) _
           | exact
               RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den_split
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw) _
+                (rr_favard_den_raw_term $hraw) _
           | exact
               RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den_split_rev
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw) _
+                (rr_favard_den_raw_term $hraw) _
           | exact
               RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw) _
+                (rr_favard_den_raw_term $hraw) _
           | exact
               RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den_split
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw) _
+                (rr_favard_den_raw_term $hraw) _
           | exact
               RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den_split_rev
                 (s := $s) (α := $α) (β := $β) (d := $d)
                 $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw) _)
+                (rr_favard_den_raw_term $hraw) _)
   | `(tactic|
       rr_favard_affine_param_row_sign_den_auto using
         slope := $s:term,
