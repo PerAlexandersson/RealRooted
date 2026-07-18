@@ -31,6 +31,7 @@ import RealRooted.Tactic.Product
 import RealRooted.Tactic.PosCombo
 import RealRooted.Tactic.Narayana
 import RealRooted.Tactic.RootCount
+import RealRooted.Tactic.SecondDerivative
 import RealRooted.Tactic.StaircaseSum
 import RealRooted.Tactic.SymmetricDecomposition
 import RealRooted.Tactic.VeroneseSection
@@ -75,6 +76,8 @@ rr_j1_factorable_sequence_realrooted using ... certificate := finiteLinearProduc
 rr_j1_gap3_reciprocal_sequence_realrooted using ... certificate := modelRealRooted
 rr_j1_gap3_reciprocal_sequence_realrooted using ... certificate := modelPF
 rr_kurtz using ...
+rr_mw_plus_derivative_sequence using ...
+rr_mw_plus_derivative_sequence_expanded_auto using ...
 rr_narayana_polynomial_splits using ...
 rr_product_exit_sequence using ... certificate := identity
 rr_product_exit_sequence using ... certificate := rootZero
