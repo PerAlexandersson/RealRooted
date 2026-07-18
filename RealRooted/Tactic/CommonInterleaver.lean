@@ -192,6 +192,72 @@ syntax (name := rr_succDegree_pair_common_interleaver_local_lower_named)
   "rr_succDegree_pair_common_interleaver_local_lower" :
   tactic
 
+syntax (name := rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_leTwo_noGapTwo_named)
+  "rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_leTwo_noGapTwo" " using "
+    "le_two" ":=" term ","
+    "no_gap_two" ":=" term :
+  tactic
+
+syntax (name := rr_posComboSuccDegree_rootCountAbove_nonRoot_of_compatible_named)
+  "rr_posComboSuccDegree_rootCountAbove_nonRoot_of_compatible" " using "
+    "root_count" ":=" term :
+  tactic
+
+syntax (name := rr_succDegree_pair_common_interleaver_rootCrossing_named)
+  "rr_succDegree_pair_common_interleaver_rootCrossing" " using "
+    "root_crossing" ":=" term :
+  tactic
+
+syntax (name := rr_succDegree_pair_common_interleaver_rootCount_named)
+  "rr_succDegree_pair_common_interleaver_rootCount" " using "
+    "root_count" ":=" term :
+  tactic
+
+syntax (name := rr_succDegree_pair_common_interleaver_rootCountAbove_named)
+  "rr_succDegree_pair_common_interleaver_rootCountAbove" " using "
+    "root_count_above" ":=" term :
+  tactic
+
+syntax (name := rr_succDegree_pair_common_interleaver_rootCountNonRoot_named)
+  "rr_succDegree_pair_common_interleaver_rootCountNonRoot" " using "
+    "root_count" ":=" term :
+  tactic
+
+syntax (name := rr_succDegree_pair_common_interleaver_rootCountAboveNonRoot_named)
+  "rr_succDegree_pair_common_interleaver_rootCountAboveNonRoot" " using "
+    "root_count_above" ":=" term :
+  tactic
+
+syntax (name := rr_succDegree_pair_common_interleaver_closedSegmentCountEq_named)
+  "rr_succDegree_pair_common_interleaver_closedSegmentCountEq" " using "
+    "count_eq" ":=" term :
+  tactic
+
+syntax (name := rr_succDegree_pair_common_interleaver_closedSegmentNoGapTwo_named)
+  "rr_succDegree_pair_common_interleaver_closedSegmentNoGapTwo" " using "
+    "no_gap_two" ":=" term :
+  tactic
+
+syntax (name := rr_succDegree_pair_common_interleaver_rightFamilyNoGapTwo_named)
+  "rr_succDegree_pair_common_interleaver_rightFamilyNoGapTwo" " using "
+    "no_gap_two" ":=" term :
+  tactic
+
+syntax (name := rr_succDegree_pair_common_interleaver_endpointSignNoGapTwo_named)
+  "rr_succDegree_pair_common_interleaver_endpointSignNoGapTwo" " using "
+    "no_gap_two" ":=" term :
+  tactic
+
+syntax (name := rr_succDegree_pair_common_interleaver_endpointSignLowerNoGap_named)
+  "rr_succDegree_pair_common_interleaver_endpointSignLowerNoGap" " using "
+    "no_gap" ":=" term :
+  tactic
+
+syntax (name := rr_succDegree_pair_common_interleaver_endpointSignLowerCountEq_named)
+  "rr_succDegree_pair_common_interleaver_endpointSignLowerCountEq" " using "
+    "count_eq" ":=" term :
+  tactic
+
 syntax (name := rr_compatible_pair_common_interleaver_degree_split_nonnegShift_named)
   "rr_compatible_pair_common_interleaver_degree_split_nonnegShift" " using "
     "same_degree" ":=" term ","
@@ -511,6 +577,85 @@ macro_rules
       `(tactic|
         exact
           RealRooted.succDegreePairHasCommonInterleaver_nonneg_of_local_lower_counts)
+  | `(tactic|
+      rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_leTwo_noGapTwo using
+        le_two := $hle2:term,
+        no_gap_two := $hgap:term) =>
+      `(tactic|
+        exact RealRooted.compatibleSuccDegreeRootCountAboveNonRoot_of_leTwo_of_noGapTwo
+          $hle2 $hgap)
+  | `(tactic|
+      rr_posComboSuccDegree_rootCountAbove_nonRoot_of_compatible using
+        root_count := $hcount:term) =>
+      `(tactic|
+        exact RealRooted.posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_compatible
+          $hcount)
+  | `(tactic|
+      rr_succDegree_pair_common_interleaver_rootCrossing using
+        root_crossing := $hcross:term) =>
+      `(tactic|
+        exact RealRooted.succDegreePairHasCommonInterleaver_nonneg_of_rootCrossing
+          $hcross)
+  | `(tactic|
+      rr_succDegree_pair_common_interleaver_rootCount using
+        root_count := $hcount:term) =>
+      `(tactic|
+        exact RealRooted.succDegreePairHasCommonInterleaver_nonneg_of_rootCount
+          $hcount)
+  | `(tactic|
+      rr_succDegree_pair_common_interleaver_rootCountAbove using
+        root_count_above := $hcount:term) =>
+      `(tactic|
+        exact RealRooted.succDegreePairHasCommonInterleaver_nonneg_of_rootCountAbove
+          $hcount)
+  | `(tactic|
+      rr_succDegree_pair_common_interleaver_rootCountNonRoot using
+        root_count := $hcount:term) =>
+      `(tactic|
+        exact RealRooted.succDegreePairHasCommonInterleaver_nonneg_of_rootCountNonRoot
+          $hcount)
+  | `(tactic|
+      rr_succDegree_pair_common_interleaver_rootCountAboveNonRoot using
+        root_count_above := $hcount:term) =>
+      `(tactic|
+        exact RealRooted.succDegreePairHasCommonInterleaver_nonneg_of_rootCountAboveNonRoot
+          $hcount)
+  | `(tactic|
+      rr_succDegree_pair_common_interleaver_closedSegmentCountEq using
+        count_eq := $hcount:term) =>
+      `(tactic|
+        exact RealRooted.succDegreePairHasCommonInterleaver_nonneg_of_closedSegmentCountEq
+          $hcount)
+  | `(tactic|
+      rr_succDegree_pair_common_interleaver_closedSegmentNoGapTwo using
+        no_gap_two := $hgap:term) =>
+      `(tactic|
+        exact RealRooted.succDegreePairHasCommonInterleaver_nonneg_of_closedSegmentNoGapTwo
+          $hgap)
+  | `(tactic|
+      rr_succDegree_pair_common_interleaver_rightFamilyNoGapTwo using
+        no_gap_two := $hgap:term) =>
+      `(tactic|
+        exact RealRooted.succDegreePairHasCommonInterleaver_nonneg_of_rightFamilyNoGapTwo
+          $hgap)
+  | `(tactic|
+      rr_succDegree_pair_common_interleaver_endpointSignNoGapTwo using
+        no_gap_two := $hgap:term) =>
+      `(tactic|
+        exact RealRooted.succDegreePairHasCommonInterleaver_nonneg_of_endpointSignNoGapTwo
+          $hgap)
+  | `(tactic|
+      rr_succDegree_pair_common_interleaver_endpointSignLowerNoGap using
+        no_gap := $hgap:term) =>
+      `(tactic|
+        exact RealRooted.succDegreePairHasCommonInterleaver_nonneg_of_endpointSignLower
+          $hgap)
+  | `(tactic|
+      rr_succDegree_pair_common_interleaver_endpointSignLowerCountEq using
+        count_eq := $hcount:term) =>
+      `(tactic|
+        exact RealRooted.succDegreePairHasCommonInterleaver_nonneg_of_lowerCountEq
+          $hcount)
   | `(tactic|
       rr_compatible_pair_common_interleaver_degree_split_nonnegShift using
         same_degree := $hsame:term,

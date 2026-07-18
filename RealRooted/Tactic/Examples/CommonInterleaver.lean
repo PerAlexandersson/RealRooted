@@ -235,6 +235,86 @@ example :
   rr_succDegree_pair_common_interleaver_local_lower
 
 example
+    (hle2 : CompatibleSuccDegreeRootCountAboveLeTwoStatement)
+    (hgap : CompatibleSuccDegreeRootCountAboveNoGapTwoStatement) :
+    CompatibleSuccDegreeRootCountAboveNonRootStatement := by
+  rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_leTwo_noGapTwo using
+    le_two := hle2,
+    no_gap_two := hgap
+
+example
+    (hcount : CompatibleSuccDegreeRootCountAboveNonRootStatement) :
+    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement := by
+  rr_posComboSuccDegree_rootCountAbove_nonRoot_of_compatible using
+    root_count := hcount
+
+example
+    (hcross : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+  rr_succDegree_pair_common_interleaver_rootCrossing using
+    root_crossing := hcross
+
+example
+    (hcount : PosComboNoCommonSuccDegreeRootCountNonnegStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+  rr_succDegree_pair_common_interleaver_rootCount using
+    root_count := hcount
+
+example
+    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+  rr_succDegree_pair_common_interleaver_rootCountAbove using
+    root_count_above := hcount
+
+example
+    (hcount : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+  rr_succDegree_pair_common_interleaver_rootCountNonRoot using
+    root_count := hcount
+
+example
+    (hcount : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+  rr_succDegree_pair_common_interleaver_rootCountAboveNonRoot using
+    root_count_above := hcount
+
+example
+    (hcount : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+  rr_succDegree_pair_common_interleaver_closedSegmentCountEq using
+    count_eq := hcount
+
+example
+    (hgap : CompatibleSuccDegreeClosedSegmentNoGapTwoStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+  rr_succDegree_pair_common_interleaver_closedSegmentNoGapTwo using
+    no_gap_two := hgap
+
+example
+    (hgap : CompatibleSuccDegreeRightFamilyNoGapTwoStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+  rr_succDegree_pair_common_interleaver_rightFamilyNoGapTwo using
+    no_gap_two := hgap
+
+example
+    (hgap : CompatibleSuccDegreeEndpointSignNoGapTwoStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+  rr_succDegree_pair_common_interleaver_endpointSignNoGapTwo using
+    no_gap_two := hgap
+
+example
+    (hgap : CompatibleSuccDegreeEndpointSignLowerNoGapStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+  rr_succDegree_pair_common_interleaver_endpointSignLowerNoGap using
+    no_gap := hgap
+
+example
+    (hcount : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+  rr_succDegree_pair_common_interleaver_endpointSignLowerCountEq using
+    count_eq := hcount
+
+example
     (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     CompatiblePairHasCommonInterleaverStatement := by
