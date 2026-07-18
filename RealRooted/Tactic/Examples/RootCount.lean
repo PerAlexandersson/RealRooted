@@ -553,5 +553,115 @@ example {f g : ℝ[X]} {a b : ℝ}
     lower_source_bound := hle,
     upper_source_bound := hgt
 
+example {f g : ℝ[X]} {μ₀ μ₁ x : ℝ}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hμ₀ : 0 ≤ μ₀)
+    (hμ₀μ₁ : μ₀ ≤ μ₁)
+    (hne : ∀ μ ∈ Set.Icc μ₀ μ₁, ¬ (f + C μ * g).IsRoot x) :
+    ((f + C μ₀ * g).roots.filter (x < ·)).card =
+      ((f + C μ₁ * g).roots.filter (x < ·)).card := by
+  rr_rightFamily_sameDegree_gt_count_eq using
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    pos_combo := hfg,
+    same_degree := hdeg,
+    left_parameter_nonneg := hμ₀,
+    interval_order := hμ₀μ₁,
+    threshold_not_root := hne
+
+example {f g : ℝ[X]} {x : ℝ}
+    (hdeg : ∀ μ ∈ Set.Icc (0 : ℝ) 1,
+      (f + C μ * g).natDegree = (f + C (0 : ℝ) * g).natDegree)
+    (hrr : ∀ μ ∈ Set.Icc (0 : ℝ) 1, (f + C μ * g).Splits)
+    (hne : ∀ μ ∈ Set.Icc (0 : ℝ) 1, ¬ (f + C μ * g).IsRoot x) :
+    ((f + C (0 : ℝ) * g).roots.filter (x < ·)).card =
+      ((f + C (1 : ℝ) * g).roots.filter (x < ·)).card := by
+  rr_rightFamily_zero_one_gt_count_eq using
+    degree_on_interval := hdeg,
+    splits_on_interval := hrr,
+    threshold_not_root := hne
+
+example {f g : ℝ[X]} {x : ℝ}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hxg : ¬ g.IsRoot x)
+    (hno : ∀ {μ : ℝ}, 0 ≤ μ → ¬ (f + C μ * g).IsRoot x) :
+    (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card := by
+  rr_sameDegree_gt_count_eq_no_rightFamily using
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    pos_combo := hfg,
+    same_degree := hdeg,
+    right_not_root := hxg,
+    no_right_family_roots := hno
+
+example {f g : ℝ[X]} {x : ℝ}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hxg : ¬ g.IsRoot x)
+    (hno : ∀ {μ : ℝ}, 0 ≤ μ → ¬ (f + C μ * g).IsRoot x) :
+    ((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) -
+        (f.roots.filter (x < ·)).card ≤ 1 := by
+  rr_sameDegree_rootCountAbove_no_rightFamily using
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    pos_combo := hfg,
+    same_degree := hdeg,
+    right_not_root := hxg,
+    no_right_family_roots := hno
+
+example {f g : ℝ[X]} {x : ℝ}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hxf : ¬ f.IsRoot x)
+    (hxg : ¬ g.IsRoot x)
+    (hno : ¬ ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) :
+    ((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) -
+        (f.roots.filter (x < ·)).card ≤ 1 := by
+  rr_sameDegree_rootCountAbove_no_pos_crossing using
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    pos_combo := hfg,
+    same_degree := hdeg,
+    left_not_root := hxf,
+    right_not_root := hxg,
+    no_positive_crossing := hno
+
+example {f g : ℝ[X]} {x : ℝ}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hxf : ¬ f.IsRoot x)
+    (hxg : ¬ g.IsRoot x)
+    (hcross : ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) :
+    ((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) -
+        (f.roots.filter (x < ·)).card ≤ 1 := by
+  rr_sameDegree_rootCountAbove_pos_crossing using
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    pos_combo := hfg,
+    same_degree := hdeg,
+    no_common_roots := hno,
+    left_not_root := hxf,
+    right_not_root := hxg,
+    positive_crossing := hcross
+
 end Tactic
 end RealRooted

@@ -1,6 +1,7 @@
 import RealRooted.DegreeIncreasingLocalLowerCount
 import RealRooted.RootContinuity
 import RealRooted.RootCountJump
+import RealRooted.SameDegreeCountFromAnalytic
 import RealRooted.SmallPositiveParameterCount
 import RealRooted.SuccDegreeLeftEndpoint
 
@@ -324,6 +325,67 @@ syntax (name := rr_card_roots_filter_le_and_gt_bound_no_isRoot_Icc_named)
     "right_no_roots" ":=" term ","
     "lower_source_bound" ":=" term ","
     "upper_source_bound" ":=" term :
+  tactic
+
+syntax (name := rr_rightFamily_sameDegree_gt_count_eq_named)
+  "rr_rightFamily_sameDegree_gt_count_eq" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "left_parameter_nonneg" ":=" term ","
+    "interval_order" ":=" term ","
+    "threshold_not_root" ":=" term :
+  tactic
+
+syntax (name := rr_rightFamily_zero_one_gt_count_eq_named)
+  "rr_rightFamily_zero_one_gt_count_eq" " using "
+    "degree_on_interval" ":=" term ","
+    "splits_on_interval" ":=" term ","
+    "threshold_not_root" ":=" term :
+  tactic
+
+syntax (name := rr_sameDegree_gt_count_eq_no_rightFamily_named)
+  "rr_sameDegree_gt_count_eq_no_rightFamily" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "right_not_root" ":=" term ","
+    "no_right_family_roots" ":=" term :
+  tactic
+
+syntax (name := rr_sameDegree_rootCountAbove_no_rightFamily_named)
+  "rr_sameDegree_rootCountAbove_no_rightFamily" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "right_not_root" ":=" term ","
+    "no_right_family_roots" ":=" term :
+  tactic
+
+syntax (name := rr_sameDegree_rootCountAbove_no_pos_crossing_named)
+  "rr_sameDegree_rootCountAbove_no_pos_crossing" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "left_not_root" ":=" term ","
+    "right_not_root" ":=" term ","
+    "no_positive_crossing" ":=" term :
+  tactic
+
+syntax (name := rr_sameDegree_rootCountAbove_pos_crossing_named)
+  "rr_sameDegree_rootCountAbove_pos_crossing" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "left_not_root" ":=" term ","
+    "right_not_root" ":=" term ","
+    "positive_crossing" ":=" term :
   tactic
 
 macro_rules
@@ -662,6 +724,73 @@ macro_rules
       `(tactic|
         exact RealRooted.card_roots_filter_le_and_gt_bound_of_no_isRoot_Icc
           $hab $hf $hg $hle $hgt)
+  | `(tactic|
+      rr_rightFamily_sameDegree_gt_count_eq using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        left_parameter_nonneg := $hμ₀:term,
+        interval_order := $hμ₀μ₁:term,
+        threshold_not_root := $hne:term) =>
+      `(tactic|
+        exact RealRooted.rightFamily_card_roots_gt_eq_of_no_isRoot_interval_sameDegree
+          $hfpos $hgpos $hfg $hdeg $hμ₀ $hμ₀μ₁ $hne)
+  | `(tactic|
+      rr_rightFamily_zero_one_gt_count_eq using
+        degree_on_interval := $hdeg:term,
+        splits_on_interval := $hrr:term,
+        threshold_not_root := $hne:term) =>
+      `(tactic|
+        exact RealRooted.rightFamily_card_roots_gt_eq_zero_one_of_constant_degree
+          $hdeg $hrr $hne)
+  | `(tactic|
+      rr_sameDegree_gt_count_eq_no_rightFamily using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        right_not_root := $hxg:term,
+        no_right_family_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.sameDegree_card_roots_gt_eq_of_no_rightFamily_isRoot
+          $hfpos $hgpos $hfg $hdeg $hxg $hno)
+  | `(tactic|
+      rr_sameDegree_rootCountAbove_no_rightFamily using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        right_not_root := $hxg:term,
+        no_right_family_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.sameDegree_rootCountAbove_pointwise_of_no_rightFamily_isRoot
+          $hfpos $hgpos $hfg $hdeg $hxg $hno)
+  | `(tactic|
+      rr_sameDegree_rootCountAbove_no_pos_crossing using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        left_not_root := $hxf:term,
+        right_not_root := $hxg:term,
+        no_positive_crossing := $hno:term) =>
+      `(tactic|
+        exact RealRooted.sameDegree_rootCountAbove_pointwise_of_not_exists_pos_isRoot
+          $hfpos $hgpos $hfg $hdeg $hxf $hxg $hno)
+  | `(tactic|
+      rr_sameDegree_rootCountAbove_pos_crossing using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        no_common_roots := $hno:term,
+        left_not_root := $hxf:term,
+        right_not_root := $hxg:term,
+        positive_crossing := $hcross:term) =>
+      `(tactic|
+        exact RealRooted.sameDegree_rootCountAbove_pointwise_of_exists_pos_isRoot
+          $hfpos $hgpos $hfg $hdeg $hno $hxf $hxg $hcross)
 
 end Tactic
 end RealRooted
