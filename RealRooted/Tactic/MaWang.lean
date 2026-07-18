@@ -1824,6 +1824,12 @@ macro "rr_mw_degree_from " hdeg:term : tactic =>
       | have hdeg' := $hdeg
         lia)
 
+syntax (name := rr_mw_degree_seq) "rr_mw_degree_seq " term : term
+
+macro_rules
+  | `(rr_mw_degree_seq $hdeg:term) =>
+      `(fun n => by rr_mw_degree_from (($hdeg) n))
+
 syntax (name := rr_ma_wang)
   "rr_ma_wang" " using " term ", " term ", " term ", " term ", " term ", " term ", " term :
   tactic
@@ -3549,12 +3555,8 @@ macro_rules
           root_lower := $hroot_lo,
           root_upper := $hroot_hi,
           recurrence := $hrec,
-          degree_lower := (by
-            intro n
-            rr_mw_degree_from (($hdeg) n)),
-          degree_upper := (by
-            intro n
-            rr_mw_degree_from (($hdeg) n)))
+          degree_lower := rr_mw_degree_seq $hdeg,
+          degree_upper := rr_mw_degree_seq $hdeg)
   | `(tactic|
       rr_mw_derivative_one_add_two_window_sequence_realrooted using
         base := $hbase:term,
@@ -3586,12 +3588,8 @@ macro_rules
           root_lower := $hroot_lo,
           root_upper := $hroot_hi,
           recurrence := $hrec,
-          degree_lower := (by
-            intro n
-            rr_mw_degree_from (($hdeg) n)),
-          degree_upper := (by
-            intro n
-            rr_mw_degree_from (($hdeg) n)))
+          degree_lower := rr_mw_degree_seq $hdeg,
+          degree_upper := rr_mw_degree_seq $hdeg)
   | `(tactic|
       rr_mw_derivative_neg_const using
         splits := $hf:term,
@@ -3776,12 +3774,8 @@ macro_rules
           pos_lc := $hpos,
           degree_two := $hdeg_two,
           recurrence := $hrec,
-          degree_lower := (by
-            intro n
-            rr_mw_degree_from (($hdeg) n)),
-          degree_upper := (by
-            intro n
-            rr_mw_degree_from (($hdeg) n)))
+          degree_lower := rr_mw_degree_seq $hdeg,
+          degree_upper := rr_mw_degree_seq $hdeg)
   | `(tactic|
       rr_mw_derivative_neg_X_sq_sequence_realrooted using
         base := $hbase:term,
@@ -4055,12 +4049,8 @@ macro_rules
           nonneg_coeffs := $hnonneg,
           degree_two := $hdeg_two,
           recurrence := $hrec,
-          degree_lower := (by
-            intro n
-            rr_mw_degree_from (($hdeg) n)),
-          degree_upper := (by
-            intro n
-            rr_mw_degree_from (($hdeg) n)))
+          degree_lower := rr_mw_degree_seq $hdeg,
+          degree_upper := rr_mw_degree_seq $hdeg)
   | `(tactic|
       rr_mw_derivative_nonpos_nonneg_sequence_realrooted_sign_auto using
         base := $hbase:term,
@@ -4090,12 +4080,8 @@ macro_rules
           nonneg_coeffs := $hnonneg,
           degree_two := $hdeg_two,
           recurrence := $hrec,
-          degree_lower := (by
-            intro n
-            rr_mw_degree_from (($hdeg) n)),
-          degree_upper := (by
-            intro n
-            rr_mw_degree_from (($hdeg) n)))
+          degree_lower := rr_mw_degree_seq $hdeg,
+          degree_upper := rr_mw_degree_seq $hdeg)
   | `(tactic|
       rr_mw_lw_derivative_lag_sequence_sign_auto using
         base := $hbase:term,
@@ -4443,12 +4429,8 @@ macro_rules
           den_nonzero := $hden,
           coeff_eq := $hcoeff,
           raw_recurrence := $hraw,
-          degree_lower := (by
-            intro n
-            rr_mw_degree_from (($hdeg) n)),
-          degree_upper := (by
-            intro n
-            rr_mw_degree_from (($hdeg) n)))
+          degree_lower := rr_mw_degree_seq $hdeg,
+          degree_upper := rr_mw_degree_seq $hdeg)
   | `(tactic|
       rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_split using
         base := $hbase:term,
@@ -4503,12 +4485,8 @@ macro_rules
           den_nonzero := $hden,
           coeff_eq := $hcoeff,
           raw_recurrence := $hraw,
-          degree_lower := (by
-            intro n
-            rr_mw_degree_from (($hdeg) n)),
-          degree_upper := (by
-            intro n
-            rr_mw_degree_from (($hdeg) n)))
+          degree_lower := rr_mw_degree_seq $hdeg,
+          degree_upper := rr_mw_degree_seq $hdeg)
   | `(tactic|
       rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg using
         base := $hbase:term,
@@ -4586,12 +4564,8 @@ macro_rules
           den_nonzero := $hden,
           coeff_eq := $hcoeff,
           raw_recurrence := $hraw,
-          degree_lower := (by
-            intro n
-            rr_mw_degree_from (($hdeg) n)),
-          degree_upper := (by
-            intro n
-            rr_mw_degree_from (($hdeg) n)))
+          degree_lower := rr_mw_degree_seq $hdeg,
+          degree_upper := rr_mw_degree_seq $hdeg)
   | `(tactic|
       rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto_split using
         base := $hbase:term,
@@ -4916,12 +4890,8 @@ macro_rules
           degree_two := $hdeg_two,
           root_lower := $hroot_lower,
           recurrence := $hrec,
-          degree_lower := (by
-            intro n
-            rr_mw_degree_from (($hdeg) n)),
-          degree_upper := (by
-            intro n
-            rr_mw_degree_from (($hdeg) n)))
+          degree_lower := rr_mw_degree_seq $hdeg,
+          degree_upper := rr_mw_degree_seq $hdeg)
   | `(tactic|
       rr_mw_derivative_X_one_add_sequence_realrooted_nonneg using
         base := $hbase:term,
@@ -4985,12 +4955,8 @@ macro_rules
           degree_two := $hdeg_two,
           root_lower := $hroot_lower,
           recurrence := $hrec,
-          degree_lower := (by
-            intro n
-            rr_mw_degree_from (($hdeg) n)),
-          degree_upper := (by
-            intro n
-            rr_mw_degree_from (($hdeg) n)))
+          degree_lower := rr_mw_degree_seq $hdeg,
+          degree_upper := rr_mw_degree_seq $hdeg)
   | `(tactic|
       rr_mw_derivative_C_mul_X_one_add_X_sequence_realrooted_nonneg using
         base := $hbase:term,
@@ -5042,12 +5008,8 @@ macro_rules
           degree_two := $hdeg_two,
           root_lower := $hroot_lower,
           recurrence := $hrec,
-          degree_lower := (by
-            intro n
-            rr_mw_degree_from (($hdeg) n)),
-          degree_upper := (by
-            intro n
-            rr_mw_degree_from (($hdeg) n)))
+          degree_lower := rr_mw_degree_seq $hdeg,
+          degree_upper := rr_mw_degree_seq $hdeg)
   | `(tactic|
       rr_mw_derivative_neg_X_one_add_outer_sequence using
         base := $hbase:term,
@@ -5145,12 +5107,8 @@ macro_rules
           degree_two := $hdeg_two,
           roots_nonpos := $hroots,
           recurrence := $hrec,
-          degree_lower := (by
-            intro n
-            rr_mw_degree_from (($hdeg) n)),
-          degree_upper := (by
-            intro n
-            rr_mw_degree_from (($hdeg) n)))
+          degree_lower := rr_mw_degree_seq $hdeg,
+          degree_upper := rr_mw_degree_seq $hdeg)
   | `(tactic|
       rr_mw_derivative_C_mul_X_one_sub_X_sequence_nonneg using
         base := $hbase:term,
