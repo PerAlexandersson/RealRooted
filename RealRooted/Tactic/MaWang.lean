@@ -1837,6 +1837,25 @@ syntax (name := rr_ma_wang_succ_named)
     "root_sign" ":=" term :
   tactic
 
+syntax (name := rr_prec_evalCoeff_nonpos_named)
+  "rr_prec_evalCoeff_nonpos" " using "
+    "interlaces" ":=" term ","
+    "source_pos_lc" ":=" term ","
+    "target_pos_lc" ":=" term ","
+    "degree_lower" ":=" term ","
+    "degree_upper" ":=" term ","
+    "coeff_nonpos" ":=" term :
+  tactic
+
+syntax (name := rr_prec_evalCoeff_nonpos_degree_named)
+  "rr_prec_evalCoeff_nonpos" " using "
+    "interlaces" ":=" term ","
+    "source_pos_lc" ":=" term ","
+    "target_pos_lc" ":=" term ","
+    "degree" ":=" term ","
+    "coeff_nonpos" ":=" term :
+  tactic
+
 syntax (name := rr_mw_derivative_nonpos)
   "rr_mw_derivative_nonpos" " using " term ", " term ", " term ", " term ", "
     term ", " term ", " term :
@@ -3327,6 +3346,32 @@ macro_rules
         root_sign := $hroot_sign:term) =>
       `(tactic|
         rr_ma_wang_succ using $hf, $hdegf, $hdeg, $hF_pos, $hf_pos, $hroot_sign)
+  | `(tactic|
+      rr_prec_evalCoeff_nonpos using
+        interlaces := $hgf:term,
+        source_pos_lc := $hg_pos:term,
+        target_pos_lc := $hF_pos:term,
+        degree_lower := $hdeg_lo:term,
+        degree_upper := $hdeg_hi:term,
+        coeff_nonpos := $hb_nonpos:term) =>
+      `(tactic|
+        exact RealRooted.prec_of_interlaces_evalCoeff_nonpos
+          $hgf $hg_pos $hF_pos $hdeg_lo $hdeg_hi $hb_nonpos)
+  | `(tactic|
+      rr_prec_evalCoeff_nonpos using
+        interlaces := $hgf:term,
+        source_pos_lc := $hg_pos:term,
+        target_pos_lc := $hF_pos:term,
+        degree := $hdeg:term,
+        coeff_nonpos := $hb_nonpos:term) =>
+      `(tactic|
+        rr_prec_evalCoeff_nonpos using
+          interlaces := $hgf,
+          source_pos_lc := $hg_pos,
+          target_pos_lc := $hF_pos,
+          degree_lower := (by rr_mw_degree_from $hdeg),
+          degree_upper := (by rr_mw_degree_from $hdeg),
+          coeff_nonpos := $hb_nonpos)
   | `(tactic|
       rr_mw_derivative_nonpos using
         $hf:term, $hdegf:term, $hdeg_lo:term, $hdeg_hi:term, $hF_pos:term,

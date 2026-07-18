@@ -116,6 +116,36 @@ example {f u v : ℝ[X]}
     source_pos_lc := hf_pos,
     root_sign := hroot_sign
 
+example {f g a b : ℝ[X]}
+    (hgf : Interlaces g f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hdeg_lo : f.natDegree ≤ (a * f + b * g).natDegree)
+    (hdeg_hi : (a * f + b * g).natDegree ≤ f.natDegree + 1)
+    (hF_pos : HasPosLeadingCoeff (a * f + b * g))
+    (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0) :
+    Prec f (a * f + b * g) := by
+  rr_prec_evalCoeff_nonpos using
+    interlaces := hgf,
+    source_pos_lc := hg_pos,
+    target_pos_lc := hF_pos,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi,
+    coeff_nonpos := hb_nonpos
+
+example {f g a b : ℝ[X]}
+    (hgf : Interlaces g f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : (a * f + b * g).natDegree = f.natDegree)
+    (hF_pos : HasPosLeadingCoeff (a * f + b * g))
+    (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0) :
+    Prec f (a * f + b * g) := by
+  rr_prec_evalCoeff_nonpos using
+    interlaces := hgf,
+    source_pos_lc := hg_pos,
+    target_pos_lc := hF_pos,
+    degree := hdeg,
+    coeff_nonpos := hb_nonpos
+
 example {f u v : ℝ[X]}
     (hf : f.Splits)
     (hdegf : 2 ≤ f.natDegree)
