@@ -1128,6 +1128,18 @@ theorem nonzero_of_favard_affine_param_coeff_rowSign_den_raw_prod
 
 namespace Tactic
 
+syntax (name := rr_favard_step_seq) "rr_favard_step_seq " term : term
+
+syntax (name := rr_favard_step_dsimp_seq) "rr_favard_step_dsimp_seq " term : term
+
+macro_rules
+  | `(rr_favard_step_seq $hstep:term) =>
+      `(fun n => by simpa using $hstep n)
+  | `(rr_favard_step_dsimp_seq $hstep:term) =>
+      `(fun n => by
+        try dsimp
+        simpa using $hstep n)
+
 syntax (name := rr_favard) "rr_favard" " using " term ", " term : tactic
 
 syntax (name := rr_favard_named)
@@ -2013,9 +2025,7 @@ macro_rules
           beta := 1,
           base_zero := $hP0,
           base_one := by simpa using $hP1,
-          step := by
-            intro n
-            simpa using $hstep n)
+          step := rr_favard_step_seq $hstep)
   | `(tactic|
       rr_favard_param using
         $α:term, $β:term, $hβ:term, $hP0:term, $hP1:term, $hstep:term) =>
@@ -2072,10 +2082,7 @@ macro_rules
           base_one := by
             try dsimp
             simpa using $hP1,
-          step := by
-            intro n
-            try dsimp
-            simpa using $hstep n)
+          step := rr_favard_step_dsimp_seq $hstep)
   | `(tactic|
       rr_favard_affine_const using
         $s:term, $α:term, $β:term, $hs:term, $hβ:term, $hP0:term, $hP1:term,
@@ -2139,9 +2146,7 @@ macro_rules
           beta := 1,
           base_zero := $hP0,
           base_one := by simpa using $hP1,
-          step := by
-            intro n
-            simpa using $hstep n)
+          step := rr_favard_step_seq $hstep)
   | `(tactic|
       rr_favard_affine_const_row_sign using
         slope := $s:term,
@@ -2197,9 +2202,7 @@ macro_rules
           beta := 1,
           base_zero := $hP0,
           base_one := by simpa using $hP1,
-          step := by
-            intro n
-            simpa using $hstep n)
+          step := rr_favard_step_seq $hstep)
   | `(tactic|
       rr_favard_affine_param using
         $s:term, $α:term, $β:term, $hs:term, $hβ:term, $hP0:term, $hP1:term,
@@ -2843,10 +2846,7 @@ macro_rules
           base_one := by
             try dsimp
             simpa using $hP1,
-          step := by
-            intro n
-            try dsimp
-            simpa using $hstep n)
+          step := rr_favard_step_dsimp_seq $hstep)
   | `(tactic|
       rr_favard_affine_param_unit using
         slope := $s:term,
@@ -2863,10 +2863,7 @@ macro_rules
           base_one := by
             try dsimp
             simpa using $hP1,
-          step := by
-            intro n
-            try dsimp
-            simpa using $hstep n)
+          step := rr_favard_step_dsimp_seq $hstep)
   | `(tactic|
       rr_favard_affine_param_row_sign using
         slope := $s:term,
@@ -3504,10 +3501,7 @@ macro_rules
           base_one := by
             try dsimp
             simpa using $hP1,
-          step := by
-            intro n
-            try dsimp
-            simpa using $hstep n)
+          step := rr_favard_step_dsimp_seq $hstep)
   | `(tactic|
       rr_favard_affine_param_row_sign_unit using
         slope := $s:term,
@@ -3524,10 +3518,7 @@ macro_rules
           base_one := by
             try dsimp
             simpa using $hP1,
-          step := by
-            intro n
-            try dsimp
-            simpa using $hstep n)
+          step := rr_favard_step_dsimp_seq $hstep)
   | `(tactic|
       rr_favard_param_row_sign_unit using
         alpha := $α:term,
@@ -3560,10 +3551,7 @@ macro_rules
           base_one := by
             try dsimp
             simpa using $hP1,
-          step := by
-            intro n
-            try dsimp
-            simpa using $hstep n)
+          step := rr_favard_step_dsimp_seq $hstep)
   | `(tactic|
       rr_favard_param_row_sign_auto using
         alpha := $α:term,
