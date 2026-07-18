@@ -155,6 +155,7 @@ import RealRooted.Tactic.Examples.PFBidiagonal
 import RealRooted.Tactic.Examples.PosCombo
 import RealRooted.Tactic.Examples.Product
 import RealRooted.Tactic.Examples.RootBounds
+import RealRooted.Tactic.Examples.RootCount
 import RealRooted.Tactic.Examples.SecondDerivative
 import RealRooted.Tactic.Examples.SequenceSurvey
 import RealRooted.Tactic.Examples.SideGoals
@@ -192,6 +193,7 @@ import RealRooted.Tactic.PFBidiagonalFrontend
 import RealRooted.Tactic.PosCombo
 import RealRooted.Tactic.Product
 import RealRooted.Tactic.RootBounds
+import RealRooted.Tactic.RootCount
 import RealRooted.Tactic.ScalarDen
 import RealRooted.Tactic.SecondDerivative
 import RealRooted.Tactic.SideGoals

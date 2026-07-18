@@ -20,6 +20,7 @@ import RealRooted.Tactic.MultiplierSequence
 import RealRooted.Tactic.OperatorPreservesInterlacing
 import RealRooted.Tactic.PFPolynomial
 import RealRooted.Tactic.PosCombo
+import RealRooted.Tactic.RootCount
 import RealRooted.Tactic.StaircaseSum
 import RealRooted.Tactic.SymmetricDecomposition
 import RealRooted.Tactic.VeroneseSection
