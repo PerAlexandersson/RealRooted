@@ -27,6 +27,17 @@ lemma root_nonpos_of_realrooted_of_nonneg_coeffs {p : ℝ[X]}
     r ≤ 0 :=
   root_nonpos_of_ne_zero_of_splits_of_nonneg_coeffs hrr.1 hrr.2 hpnn hr
 
+lemma roots_nonpos_of_realrooted_of_nonneg_coeffs {p : ℝ[X]}
+    (hrr : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p) :
+    ∀ r, p.IsRoot r → r ≤ 0 := by
+  intro r hr
+  exact root_nonpos_of_realrooted_of_nonneg_coeffs hrr hpnn hr
+
+lemma roots_nonpos_of_interlaces_of_nonneg_coeffs {f g : ℝ[X]}
+    (hgf : Interlaces g f) (hfnn : HasNonnegCoeffs f) :
+    ∀ r, f.IsRoot r → r ≤ 0 :=
+  roots_nonpos_of_realrooted_of_nonneg_coeffs hgf.1 hfnn
+
 /-- Shifted nonnegative coefficients give a left root bound in the original
 variable.  If `p(t-a)` has nonnegative coefficients, then every real root of
 `p(t)` is at most `-a`. -/

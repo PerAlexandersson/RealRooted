@@ -762,8 +762,8 @@ theorem prec_mw_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
       have hV_at_roots :
           ∀ r, (P (n + 1)).IsRoot r → (V n).eval r ≤ 0 := by
         intro r hr
-        have hr_nonpos : r ≤ 0 := by
-          rr_root_nonpos using hsource, (hnonneg (n + 1)), hr
+        have hr_nonpos : r ≤ 0 :=
+          roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr
         exact hV_nonpos n r hr hr_nonpos
       have hstep :
           Prec (P (n + 1))
@@ -938,12 +938,12 @@ theorem prec_mw_lw_derivative_lag_sequence_of_nonneg_coeffs_on_roots
   prec_mw_lw_derivative_lag_sequence_of_root_signs
     hbase hpos hdeg_two hrec
     (fun n hsource r hr => by
-      have hr_nonpos : r ≤ 0 := by
-        rr_root_nonpos using hsource, (hnonneg (n + 1)), hr
+      have hr_nonpos : r ≤ 0 :=
+        roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr
       exact hV_nonpos n r hr hr_nonpos)
     (fun n hsource r hr => by
-      have hr_nonpos : r ≤ 0 := by
-        rr_root_nonpos using hsource, (hnonneg (n + 1)), hr
+      have hr_nonpos : r ≤ 0 :=
+        roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr
       exact hW_nonpos n r hr hr_nonpos)
     hdeg_succ hno
 
@@ -1062,12 +1062,12 @@ theorem isRealRooted_of_mw_lw_derivative_lag_sequence_of_nonneg_coeffs_on_roots
   isRealRooted_of_mw_lw_derivative_lag_sequence_of_root_signs
     hbase hpos hdeg_two hrec
     (fun n hsource r hr => by
-      have hr_nonpos : r ≤ 0 := by
-        rr_root_nonpos using hsource, (hnonneg (n + 1)), hr
+      have hr_nonpos : r ≤ 0 :=
+        roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr
       exact hV_nonpos n r hr hr_nonpos)
     (fun n hsource r hr => by
-      have hr_nonpos : r ≤ 0 := by
-        rr_root_nonpos using hsource, (hnonneg (n + 1)), hr
+      have hr_nonpos : r ≤ 0 :=
+        roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr
       exact hW_nonpos n r hr hr_nonpos)
     hdeg_succ hno
 
