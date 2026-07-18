@@ -7,6 +7,7 @@ import RealRooted.Tactic.Sign
 import RealRooted.Tactic.RootBounds
 import RealRooted.Tactic.Lookup
 import RealRooted.Tactic.Finish
+import RealRooted.Tactic.StaircaseSum
 import RealRooted.Tactic.CoefficientShape
 import RealRooted.Tactic.CubicDiscriminant
 import RealRooted.Tactic.Derivative
