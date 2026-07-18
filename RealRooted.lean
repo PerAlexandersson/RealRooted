@@ -139,6 +139,8 @@ import RealRooted.Tactic.Examples.Sign
 import RealRooted.Tactic.Examples.WagnerX
 import RealRooted.Tactic.Favard
 import RealRooted.Tactic.Finish
+import RealRooted.Tactic.I2DerivativeLag
+import RealRooted.Tactic.J1Gap3Reciprocal
 import RealRooted.Tactic.LiuWang
 import RealRooted.Tactic.LiuWangRecursion
 import RealRooted.Tactic.Lookup
