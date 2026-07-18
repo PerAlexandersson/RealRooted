@@ -131,6 +131,14 @@ macro_rules
             exact ne_of_gt rr_side_pos_term
           | apply pow_ne_zero
             rr_side_ne
+          | (guard_target =~ ((_ : ℝ) / (_ : ℝ)) ≠ 0;
+             exact div_ne_zero (by rr_side_ne) (by rr_side_ne))
+          | (guard_target =~ ((_ : ℂ) / (_ : ℂ)) ≠ 0;
+             exact div_ne_zero (by rr_side_ne) (by rr_side_ne))
+          | (guard_target =~ ((_ : ℝ)⁻¹) ≠ 0;
+             exact inv_ne_zero (by rr_side_ne))
+          | (guard_target =~ ((_ : ℂ)⁻¹) ≠ 0;
+             exact inv_ne_zero (by rr_side_ne))
           | positivity
           | norm_num
           | exact ne_of_gt rr_side_pos_term
