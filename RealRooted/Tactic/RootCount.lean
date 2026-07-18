@@ -442,6 +442,50 @@ syntax (name := rr_compatible_succDegree_rootCountAbove_le_two_named)
     "threshold" ":=" term :
   tactic
 
+syntax (name := rr_posCombo_sameDegree_rootCount_cubicInterior_named)
+  "rr_posCombo_sameDegree_rootCount_cubicInterior" " using "
+    "below_certificate" ":=" term ","
+    "above_certificate" ":=" term ","
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_nonneg_coeffs" ":=" term ","
+    "right_nonneg_coeffs" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "left_degree_le_three" ":=" term ","
+    "threshold" ":=" term :
+  tactic
+
+syntax (name := rr_posCombo_sameDegree_rootCountAbove_cubicInterior_named)
+  "rr_posCombo_sameDegree_rootCountAbove_cubicInterior" " using "
+    "below_certificate" ":=" term ","
+    "above_certificate" ":=" term ","
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_nonneg_coeffs" ":=" term ","
+    "right_nonneg_coeffs" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "left_degree_le_three" ":=" term ","
+    "threshold" ":=" term :
+  tactic
+
+syntax (name := rr_posCombo_sameDegree_rootCrossing_cubicInterior_named)
+  "rr_posCombo_sameDegree_rootCrossing_cubicInterior" " using "
+    "below_certificate" ":=" term ","
+    "above_certificate" ":=" term ","
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_nonneg_coeffs" ":=" term ","
+    "right_nonneg_coeffs" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "left_degree_le_three" ":=" term :
+  tactic
+
 macro_rules
   | `(tactic|
       rr_natDegree_add_C_mul_lt using
@@ -903,6 +947,59 @@ macro_rules
       `(tactic|
         exact compatibleSuccDegreeRootCountAbove_le_two_of_natDegree_le_two
           $hcomp $hfpos $hgpos $hdeg $hfsplit $hfdeg $x)
+  | `(tactic|
+      rr_posCombo_sameDegree_rootCount_cubicInterior using
+        below_certificate := $hbelow:term,
+        above_certificate := $habove:term,
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        left_nonneg_coeffs := $hfnn:term,
+        right_nonneg_coeffs := $hgnn:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        no_common_roots := $hno:term,
+        left_degree_le_three := $hfdeg:term,
+        threshold := $x:term) =>
+      `(tactic|
+        exact
+          rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_three_of_cubicInterior
+            $hbelow $habove $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno
+            $hfdeg $x)
+  | `(tactic|
+      rr_posCombo_sameDegree_rootCountAbove_cubicInterior using
+        below_certificate := $hbelow:term,
+        above_certificate := $habove:term,
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        left_nonneg_coeffs := $hfnn:term,
+        right_nonneg_coeffs := $hgnn:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        no_common_roots := $hno:term,
+        left_degree_le_three := $hfdeg:term,
+        threshold := $x:term) =>
+      `(tactic|
+        exact
+          rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_three_of_cubicInterior
+            $hbelow $habove $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno
+            $hfdeg $x)
+  | `(tactic|
+      rr_posCombo_sameDegree_rootCrossing_cubicInterior using
+        below_certificate := $hbelow:term,
+        above_certificate := $habove:term,
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        left_nonneg_coeffs := $hfnn:term,
+        right_nonneg_coeffs := $hgnn:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        no_common_roots := $hno:term,
+        left_degree_le_three := $hfdeg:term) =>
+      `(tactic|
+        exact
+          sameDegreeRootCrossing_of_posCombo_natDegree_le_three_of_cubicInterior
+            $hbelow $habove $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno
+            $hfdeg)
 
 end Tactic
 end RealRooted

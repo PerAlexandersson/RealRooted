@@ -763,5 +763,88 @@ example {f g : ℝ[X]} {x : ℝ}
     left_degree_le_two := hfdeg,
     threshold := x
 
+example {f g : ℝ[X]} {x : ℝ}
+    (hbelow : CubicInteriorTwoBelowStatement)
+    (habove : CubicInteriorTwoAboveStatement)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hfdeg : f.natDegree ≤ 3) :
+    ((f.roots.filter (· ≤ x)).card : ℤ) -
+        (g.roots.filter (· ≤ x)).card ≤ 1 ∧
+      ((g.roots.filter (· ≤ x)).card : ℤ) -
+        (f.roots.filter (· ≤ x)).card ≤ 1 := by
+  rr_posCombo_sameDegree_rootCount_cubicInterior using
+    below_certificate := hbelow,
+    above_certificate := habove,
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    left_nonneg_coeffs := hfnn,
+    right_nonneg_coeffs := hgnn,
+    pos_combo := hfg,
+    same_degree := hdeg,
+    no_common_roots := hno,
+    left_degree_le_three := hfdeg,
+    threshold := x
+
+example {f g : ℝ[X]} {x : ℝ}
+    (hbelow : CubicInteriorTwoBelowStatement)
+    (habove : CubicInteriorTwoAboveStatement)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hfdeg : f.natDegree ≤ 3) :
+    ((f.roots.filter (x < ·)).card : ℤ) -
+        (g.roots.filter (x < ·)).card ≤ 1 ∧
+      ((g.roots.filter (x < ·)).card : ℤ) -
+        (f.roots.filter (x < ·)).card ≤ 1 := by
+  rr_posCombo_sameDegree_rootCountAbove_cubicInterior using
+    below_certificate := hbelow,
+    above_certificate := habove,
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    left_nonneg_coeffs := hfnn,
+    right_nonneg_coeffs := hgnn,
+    pos_combo := hfg,
+    same_degree := hdeg,
+    no_common_roots := hno,
+    left_degree_le_three := hfdeg,
+    threshold := x
+
+example {f g : ℝ[X]}
+    (hbelow : CubicInteriorTwoBelowStatement)
+    (habove : CubicInteriorTwoAboveStatement)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hfdeg : f.natDegree ≤ 3) :
+    (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
+      (∀ j, 1 ≤ j → j < f.natDegree →
+        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
+  rr_posCombo_sameDegree_rootCrossing_cubicInterior using
+    below_certificate := hbelow,
+    above_certificate := habove,
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    left_nonneg_coeffs := hfnn,
+    right_nonneg_coeffs := hgnn,
+    pos_combo := hfg,
+    same_degree := hdeg,
+    no_common_roots := hno,
+    left_degree_le_three := hfdeg
+
 end Tactic
 end RealRooted
