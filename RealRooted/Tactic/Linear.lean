@@ -50,6 +50,40 @@ syntax (name := rr_interlaces_C_linear_auto)
     "scalar_ne" ":=" term :
   tactic
 
+syntax (name := rr_prec_C_mul_left_named)
+  "rr_prec_C_mul_left" " using "
+    "prec" ":=" term ","
+    "scalar_ne" ":=" term :
+  tactic
+
+syntax (name := rr_prec_C_mul_left_auto)
+  "rr_prec_C_mul_left" " using "
+    "prec" ":=" term :
+  tactic
+
+syntax (name := rr_prec_C_mul_right_named)
+  "rr_prec_C_mul_right" " using "
+    "prec" ":=" term ","
+    "scalar_ne" ":=" term :
+  tactic
+
+syntax (name := rr_prec_C_mul_right_auto)
+  "rr_prec_C_mul_right" " using "
+    "prec" ":=" term :
+  tactic
+
+syntax (name := rr_prec_C_mul_both_named)
+  "rr_prec_C_mul_both" " using "
+    "prec" ":=" term ","
+    "left_ne" ":=" term ","
+    "right_ne" ":=" term :
+  tactic
+
+syntax (name := rr_prec_C_mul_both_auto)
+  "rr_prec_C_mul_both" " using "
+    "prec" ":=" term :
+  tactic
+
 syntax (name := rr_C_mul_realrooted_named)
   "rr_C_mul_realrooted" " using "
     "realrooted" ":=" term ","
@@ -104,6 +138,38 @@ macro_rules
           first
             | rr_lookup [rr_degree]
             | compute_degree!))
+  | `(tactic|
+      rr_prec_C_mul_left using
+        prec := $hprec:term,
+        scalar_ne := $ha:term) =>
+      `(tactic| exact RealRooted.prec_C_mul_left $hprec $ha)
+  | `(tactic|
+      rr_prec_C_mul_left using
+        prec := $hprec:term) =>
+      `(tactic| exact RealRooted.prec_C_mul_left $hprec (by rr_side_ne))
+  | `(tactic|
+      rr_prec_C_mul_right using
+        prec := $hprec:term,
+        scalar_ne := $ha:term) =>
+      `(tactic| exact RealRooted.prec_C_mul_right $hprec $ha)
+  | `(tactic|
+      rr_prec_C_mul_right using
+        prec := $hprec:term) =>
+      `(tactic| exact RealRooted.prec_C_mul_right $hprec (by rr_side_ne))
+  | `(tactic|
+      rr_prec_C_mul_both using
+        prec := $hprec:term,
+        left_ne := $hleft:term,
+        right_ne := $hright:term) =>
+      `(tactic|
+        exact RealRooted.prec_C_mul_right
+          (RealRooted.prec_C_mul_left $hprec $hleft) $hright)
+  | `(tactic|
+      rr_prec_C_mul_both using
+        prec := $hprec:term) =>
+      `(tactic|
+        exact RealRooted.prec_C_mul_right
+          (RealRooted.prec_C_mul_left $hprec (by rr_side_ne)) (by rr_side_ne))
   | `(tactic|
       rr_C_mul_realrooted using
         realrooted := $hp:term,
