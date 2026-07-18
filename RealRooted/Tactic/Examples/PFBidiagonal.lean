@@ -2955,9 +2955,9 @@ example
 /-- A036969-shaped recurrence shell.
 
 This example has the actual differential recurrence and actual residual
-polynomials.  The residual cubic certificates and endpoint factorizations are
-discharged below; the remaining row-specific arithmetic input is the active
-degree lower bound `2 ≤ d n`. -/
+polynomials.  The quadratic residual route derives the Jensen factorizations;
+the remaining row-specific arithmetic input is the active degree lower bound
+`2 ≤ d n`. -/
 example
     {P : Nat → ℝ[X]} {d : Nat → ℕ}
     (hbackend : jensenPencilBidiagonalPreserverStatement)
@@ -2997,18 +2997,24 @@ example
     (hrec : ∀ n : Nat,
       P (n + 1) = secondDerivativeBidiagonalForm 1 1 3 0 1 0 (P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_pf_second_derivative_bidiagonal_sequence_cubic using
+  rr_pf_second_derivative_bidiagonal_sequence_quadratic using
     jensen_backend := hbackend,
     base := hbase,
     degree := hdeg,
-    alpha_factor := (fun n => a036969Alpha_jensen_factor (d n) (hd n)),
-    beta_factor := (fun n => a036969Beta_jensen_factor (d n) (hd n)),
-    alpha_cubic := (fun n => a036969ResidualAlpha_cubicPFDiscriminantCertificate (d n)),
-    beta_cubic := (fun _ => a036969ResidualBeta_cubicPFDiscriminantCertificate),
+    active_degree := hd,
+    alpha_cubic := (fun n => by
+      rr_pf_cubic_certificate_via using
+        certificate := a036969ResidualAlpha_cubicPFDiscriminantCertificate (d n),
+        defs := quadraticJensenResidual, a036969ResidualAlpha),
+    beta_cubic := (fun _ => by
+      rr_pf_cubic_certificate_via using
+        certificate := a036969ResidualBeta_cubicPFDiscriminantCertificate,
+        defs := quadraticJensenResidual, a036969ResidualBeta),
     pencil_cubic := (fun n lam hlam => by
-      simpa [a036969ResidualPencil] using
-        a036969ResidualPencil_cubicPFDiscriminantCertificate (d n) hlam),
-    normalizer := (fun n => secondDerivativeBidiagonalForm_a036969 (P n)),
+      rr_pf_cubic_certificate_via using
+        certificate := a036969ResidualPencil_cubicPFDiscriminantCertificate (d n) hlam,
+        defs := quadraticBidiagonalPencilResidual, quadraticJensenResidual,
+          a036969ResidualPencil, a036969ResidualAlpha, a036969ResidualBeta),
     recurrence := hrec,
     nonzero := hne
 
