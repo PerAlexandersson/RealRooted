@@ -837,6 +837,8 @@ macro_rules
       `(tactic|
         first
           | exact $h
+          | exact RealRooted.derivative_interlaces $h (by rr_close_side)
+          | exact (RealRooted.derivative_interlaces $h (by rr_close_side)).toPrec
           | rr_exact_realrooted_sequence_or_projection $h
           | rr_exact_realrooted_pair_sequence_or_projection $h
           | rr_exact_realrooted_or_projection $h
@@ -879,6 +881,8 @@ macro_rules
           | exact RealRooted.natDegree_succ_of_interlaces rr_lookup_term
           | exact (RealRooted.natDegree_succ_of_interlaces rr_lookup_term).symm
           | exact rr_lookup_interlaces_term
+          | exact RealRooted.derivative_interlaces (by rr_splits) (by rr_close_side)
+          | exact (RealRooted.derivative_interlaces (by rr_splits) (by rr_close_side)).toPrec
           | exact RealRooted.Interlaces.toPrec rr_lookup_term
           | exact RealRooted.ne_zero_of_natDegree_eq_one (by rr_degree_eq_one)
           | (apply Polynomial.Splits.of_natDegree_le_one <;> rr_degree_le_one)

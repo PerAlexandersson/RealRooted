@@ -77,6 +77,22 @@ example {p : ℝ[X]} (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) :
   rr_splits
 
 example {p : ℝ[X]} (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) :
+    Interlaces p.derivative p := by
+  rr_finish using hp
+
+example {p : ℝ[X]} (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) :
+    Interlaces p.derivative p := by
+  rr_finish
+
+example {p : ℝ[X]} (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) :
+    Prec p.derivative p := by
+  rr_finish using hp
+
+example {p : ℝ[X]} (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) :
+    Prec p.derivative p := by
+  rr_finish
+
+example {p : ℝ[X]} (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) :
     p.derivative ≠ 0 ∧ p.derivative.Splits := by
   rr_realrooted
 
