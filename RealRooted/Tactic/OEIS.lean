@@ -2,6 +2,7 @@ import RealRooted.Tactic.AllCombo
 import RealRooted.Tactic.AffineDerivative
 import RealRooted.Tactic.MaWang
 import RealRooted.Tactic.CubicDiscriminant
+import RealRooted.Tactic.CommonInterleaver
 import RealRooted.Tactic.Derivative
 import RealRooted.Tactic.EulerOperator
 import RealRooted.Tactic.Favard

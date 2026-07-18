@@ -125,6 +125,7 @@ import RealRooted.Tactic.Examples.AllCombo
 import RealRooted.Tactic.Examples.AffineDerivative
 import RealRooted.Tactic.Examples.Attr
 import RealRooted.Tactic.Examples.CoefficientShape
+import RealRooted.Tactic.Examples.CommonInterleaver
 import RealRooted.Tactic.Examples.Combinatorial
 import RealRooted.Tactic.Examples.CubicDiscriminant
 import RealRooted.Tactic.Examples.Derivative
@@ -167,6 +168,7 @@ import RealRooted.Tactic.FiniteSymbolPF
 import RealRooted.Tactic.FiniteSymbolPFFrontend
 import RealRooted.Tactic.Finish
 import RealRooted.Tactic.GammaRealRoots
+import RealRooted.Tactic.CommonInterleaver
 import RealRooted.Tactic.I2DerivativeLag
 import RealRooted.Tactic.IteratedDerivativeShift
 import RealRooted.Tactic.J1Chebyshev

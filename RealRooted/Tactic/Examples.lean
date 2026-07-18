@@ -7,6 +7,7 @@ import RealRooted.Tactic.Examples.RootBounds
 import RealRooted.Tactic.Examples.Lookup
 import RealRooted.Tactic.Examples.Finish
 import RealRooted.Tactic.Examples.StaircaseSum
+import RealRooted.Tactic.Examples.CommonInterleaver
 import RealRooted.Tactic.Examples.CoefficientShape
 import RealRooted.Tactic.Examples.CubicDiscriminant
 import RealRooted.Tactic.Examples.Derivative
