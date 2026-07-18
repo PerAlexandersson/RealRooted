@@ -2967,18 +2967,33 @@ example
     (hrec : ∀ n : Nat,
       P (n + 1) = secondDerivativeBidiagonalForm 1 1 3 0 1 0 (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) := by
-  rr_pf_second_derivative_bidiagonal_sequence_cubic using
+  rr_pf_second_derivative_bidiagonal_sequence_quadratic using
     jensen_backend := hbackend,
     base := hbase,
     degree := hdeg,
-    alpha_factor := (fun n => a036969Alpha_jensen_factor (d n) (hd n)),
-    beta_factor := (fun n => a036969Beta_jensen_factor (d n) (hd n)),
-    alpha_cubic := (fun n => a036969ResidualAlpha_cubicPFDiscriminantCertificate (d n)),
-    beta_cubic := (fun _ => a036969ResidualBeta_cubicPFDiscriminantCertificate),
+    active_degree := hd,
+    alpha_cubic := (fun n => by
+      convert a036969ResidualAlpha_cubicPFDiscriminantCertificate (d n) using 1
+      norm_num [quadraticJensenResidual, a036969ResidualAlpha]
+      have hC2 : (C (2 : ℝ) : ℝ[X]) = (2 : ℝ[X]) :=
+        Polynomial.C_eq_natCast (R := ℝ) 2
+      have hC3 : (C (3 : ℝ) : ℝ[X]) = (3 : ℝ[X]) :=
+        Polynomial.C_eq_natCast (R := ℝ) 3
+      rw [hC2, hC3]
+      ring_nf),
+    beta_cubic := (fun _ => by
+      convert a036969ResidualBeta_cubicPFDiscriminantCertificate using 1
+      simp [quadraticJensenResidual, a036969ResidualBeta]),
     pencil_cubic := (fun n lam hlam => by
-      simpa [a036969ResidualPencil] using
-        a036969ResidualPencil_cubicPFDiscriminantCertificate (d n) hlam),
-    normalizer := (fun n => secondDerivativeBidiagonalForm_a036969 (P n)),
+      convert a036969ResidualPencil_cubicPFDiscriminantCertificate (d n) hlam using 1
+      norm_num [quadraticBidiagonalPencilResidual, quadraticJensenResidual,
+        a036969ResidualPencil, a036969ResidualAlpha, a036969ResidualBeta]
+      have hC2 : (C (2 : ℝ) : ℝ[X]) = (2 : ℝ[X]) :=
+        Polynomial.C_eq_natCast (R := ℝ) 2
+      have hC3 : (C (3 : ℝ) : ℝ[X]) = (3 : ℝ[X]) :=
+        Polynomial.C_eq_natCast (R := ℝ) 3
+      rw [hC2, hC3]
+      ring_nf),
     recurrence := hrec
 
 example
