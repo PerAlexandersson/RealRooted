@@ -519,6 +519,37 @@ def bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
       bidiagonalJensenPencil_factor_of_endpoint_factors halpha hbeta lam)
     hA hB hS
 
+/-- Cubic-residual certificate specialized to quadratic Jensen coefficient functions. -/
+def quadraticBidiagonalCubicResidualCertificate
+    (aa ab ac ba bb bc : ℝ) {d : ℕ} (hd : 2 ≤ d)
+    (hA : CubicPFDiscriminantCertificate (quadraticJensenResidual aa ab ac d))
+    (hB : CubicPFDiscriminantCertificate (X * quadraticJensenResidual ba bb bc d))
+    (hS : ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate
+        (quadraticBidiagonalPencilResidual aa ab ac ba bb bc lam d)) :
+    BidiagonalCubicResidualCertificate
+      (quadraticJensenWeight aa ab ac)
+      (quadraticJensenWeight ba bb bc) d where
+  m := d - 2
+  alphaResidual := quadraticJensenResidual aa ab ac d
+  betaResidual := X * quadraticJensenResidual ba bb bc d
+  pencilResidual := fun lam => quadraticBidiagonalPencilResidual aa ab ac ba bb bc lam d
+  alpha_factor := by
+    exact quadraticJensen_eq_factor_residual aa ab ac hd
+  beta_factor := by
+    have hbeta := quadraticJensen_eq_factor_residual ba bb bc hd
+    change X * quadraticJensen ba bb bc d =
+      (X + 1) ^ (d - 2) * (X * quadraticJensenResidual ba bb bc d)
+    rw [hbeta]
+    ring
+  pencil_factor := by
+    intro lam hlam
+    exact quadraticBidiagonalJensenPencil_eq_factor_residual
+      aa ab ac ba bb bc lam hd
+  alpha_cubic := hA
+  beta_cubic := hB
+  pencil_cubic := hS
+
 /-- Forget a bundled cubic-residual certificate to the Jensen-pencil
 certificate used by the PF-bidiagonal backend. -/
 theorem BidiagonalCubicResidualCertificate.toJensenPencilCertificate
@@ -545,6 +576,21 @@ theorem bidiagonalPFPreserver_of_cubicResidualCertificate
     (hcert : BidiagonalCubicResidualCertificate alpha beta d) :
     BidiagonalPFPreserver alpha beta d :=
   hcert.toPFPreserver hbackend
+
+/-- Quadratic Jensen residual certificate route for a coefficient-bidiagonal preserver. -/
+theorem quadraticBidiagonalPFPreserver_of_cubicResidualCertificate
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (aa ab ac ba bb bc : ℝ) {d : ℕ} (hd : 2 ≤ d)
+    (hA : CubicPFDiscriminantCertificate (quadraticJensenResidual aa ab ac d))
+    (hB : CubicPFDiscriminantCertificate (X * quadraticJensenResidual ba bb bc d))
+    (hS : ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate
+        (quadraticBidiagonalPencilResidual aa ab ac ba bb bc lam d)) :
+    BidiagonalPFPreserver
+      (quadraticJensenWeight aa ab ac)
+      (quadraticJensenWeight ba bb bc) d :=
+  bidiagonalPFPreserver_of_cubicResidualCertificate hbackend
+    (quadraticBidiagonalCubicResidualCertificate aa ab ac ba bb bc hd hA hB hS)
 
 /-- Compatibility name for notes and tactic scripts that speak about the
 PF-bidiagonal backend as a theorem statement. -/

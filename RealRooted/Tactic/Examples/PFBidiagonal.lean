@@ -25,6 +25,19 @@ example {alpha beta alpha' beta' : ℕ → ℝ} {d : ℕ}
     BidiagonalPFPreserver alpha beta d := by
   exact hpres.of_eq_on_degree halpha hbeta
 
+example
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    {d : ℕ} (hd : 2 ≤ d)
+    (hA : CubicPFDiscriminantCertificate (quadraticJensenResidual 1 2 1 d))
+    (hB : CubicPFDiscriminantCertificate (X * quadraticJensenResidual 0 0 1 d))
+    (hS : ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate
+        (quadraticBidiagonalPencilResidual 1 2 1 0 0 1 lam d)) :
+    BidiagonalPFPreserver
+      (quadraticJensenWeight 1 2 1) (quadraticJensenWeight 0 0 1) d := by
+  exact quadraticBidiagonalPFPreserver_of_cubicResidualCertificate
+    hbackend 1 2 1 0 0 1 hd hA hB hS
+
 example {P : Nat → ℝ[X]}
     (hpf : ∀ n : Nat, IsPFPolynomial (P n)) :
     ∀ n : Nat, HasNonnegCoeffs (P n) := by
