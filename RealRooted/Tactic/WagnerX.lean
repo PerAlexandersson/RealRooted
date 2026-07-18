@@ -625,9 +625,17 @@ syntax (name := rr_prec_pos_X_same_coeff_sequence_realrooted_auto)
 
 syntax (name := rr_wagner_pos) "rr_wagner_pos" : tactic
 
+syntax (name := rr_wagner_pos_seq) "rr_wagner_pos_seq" : term
+
+syntax (name := rr_wagner_recurrence_seq) "rr_wagner_recurrence_seq " term : term
+
 macro_rules
   | `(tactic| rr_wagner_pos) =>
       `(tactic| rr_side_pos)
+  | `(rr_wagner_pos_seq) =>
+      `(fun n => by rr_wagner_pos)
+  | `(rr_wagner_recurrence_seq $hrec:term) =>
+      `(fun n => by simpa using $hrec n)
 
 macro_rules
   | `(tactic|
@@ -787,14 +795,11 @@ macro_rules
       `(tactic|
         first
           | exact RealRooted.prec_pos_X_lag_combo_sequence
-              $hbase $hnonneg (fun n => by rr_wagner_pos)
-              (fun n => by rr_wagner_pos) $hrec
+              $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq $hrec
           | refine RealRooted.prec_pos_X_lag_combo_sequence
               (a := fun _ => (1 : ℝ)) (c := fun _ => (1 : ℝ))
-              $hbase $hnonneg (fun n => by rr_wagner_pos)
-              (fun n => by rr_wagner_pos) ?_
-            intro n
-            simpa using $hrec n)
+              $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
+              (rr_wagner_recurrence_seq $hrec))
   | `(tactic|
       rr_prec_pos_X_lag_sequence_realrooted using
         base := $hbase:term,
@@ -815,16 +820,13 @@ macro_rules
         first
           | rr_exact_realrooted_sequence_or_projection
               (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
-                $hbase $hnonneg (fun n => by rr_wagner_pos)
-                (fun n => by rr_wagner_pos) $hrec)
+                $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq $hrec)
           | rr_exact_realrooted_sequence_or_projection
               (by
                 refine RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
                   (a := fun _ => (1 : ℝ)) (c := fun _ => (1 : ℝ))
-                  $hbase $hnonneg (fun n => by rr_wagner_pos)
-                  (fun n => by rr_wagner_pos) ?_
-                intro n
-                simpa using $hrec n))
+                  $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
+                  (rr_wagner_recurrence_seq $hrec)))
   | `(tactic|
       rr_prec_pos_X_unit_lag_sequence_auto using
         current_coeff := $a:term,
@@ -834,8 +836,8 @@ macro_rules
       `(tactic|
         exact RealRooted.prec_pos_X_lag_combo_sequence
           (a := $a) (c := fun _ => (1 : ℝ))
-          $hbase $hnonneg (fun n => by rr_wagner_pos) (fun n => by rr_wagner_pos)
-          (fun n => by simpa using ($hrec n)))
+          $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
+          (rr_wagner_recurrence_seq $hrec))
   | `(tactic|
       rr_prec_pos_X_unit_lag_sequence_realrooted_auto using
         current_coeff := $a:term,
@@ -846,8 +848,8 @@ macro_rules
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
             (a := $a) (c := fun _ => (1 : ℝ))
-            $hbase $hnonneg (fun n => by rr_wagner_pos) (fun n => by rr_wagner_pos)
-            (fun n => by simpa using ($hrec n))))
+            $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
+            (rr_wagner_recurrence_seq $hrec)))
   | `(tactic|
       rr_prec_pos_X_same_coeff_sequence_auto using
         shared_coeff := $c:term,
@@ -857,8 +859,8 @@ macro_rules
       `(tactic|
         exact RealRooted.prec_pos_X_lag_combo_sequence
           (a := $c) (c := $c)
-          $hbase $hnonneg (fun n => by rr_wagner_pos) (fun n => by rr_wagner_pos)
-          (fun n => by simpa using ($hrec n)))
+          $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
+          (rr_wagner_recurrence_seq $hrec))
   | `(tactic|
       rr_prec_pos_X_same_coeff_sequence_realrooted_auto using
         shared_coeff := $c:term,
@@ -869,8 +871,8 @@ macro_rules
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
             (a := $c) (c := $c)
-            $hbase $hnonneg (fun n => by rr_wagner_pos) (fun n => by rr_wagner_pos)
-            (fun n => by simpa using ($hrec n))))
+            $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
+            (rr_wagner_recurrence_seq $hrec)))
 
 end Tactic
 end RealRooted
