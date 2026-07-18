@@ -14,6 +14,7 @@ import RealRooted.Tactic.Favard
 import RealRooted.Tactic.LiuWang
 import RealRooted.Tactic.Product
 import RealRooted.Tactic.PFBidiagonal
+import RealRooted.Tactic.FiniteSymbolPF
 import RealRooted.Tactic.PFBidiagonalFrontend
 import RealRooted.Tactic.I2DerivativeLag
 import RealRooted.Tactic.J1Chebyshev

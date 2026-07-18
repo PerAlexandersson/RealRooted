@@ -140,6 +140,7 @@ import RealRooted.Tactic.Examples.SideGoals
 import RealRooted.Tactic.Examples.Sign
 import RealRooted.Tactic.Examples.WagnerX
 import RealRooted.Tactic.Favard
+import RealRooted.Tactic.FiniteSymbolPF
 import RealRooted.Tactic.Finish
 import RealRooted.Tactic.I2DerivativeLag
 import RealRooted.Tactic.J1Chebyshev
