@@ -4111,12 +4111,8 @@ macro_rules
         exact
           RealRooted.prec_mw_lw_derivative_lag_sequence
             $hbase $hpos $hdeg_two $hrec
-            (by
-              intro n
-              rr_sign_at_roots_upper using ($hroot_upper n))
-            (by
-              intro n
-              rr_sign_at_roots_upper using ($hroot_upper n))
+            (rr_sign_at_roots_upper_seq $hroot_upper)
+            (rr_sign_at_roots_upper_seq $hroot_upper)
             $hdeg_succ $hno)
   | `(tactic|
       rr_mw_lw_derivative_lag_sequence_realrooted_sign_auto using
@@ -4147,12 +4143,8 @@ macro_rules
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_mw_lw_derivative_lag_sequence
             $hbase $hpos $hdeg_two $hrec
-            (by
-              intro n
-              rr_sign_at_roots_upper using ($hroot_upper n))
-            (by
-              intro n
-              rr_sign_at_roots_upper using ($hroot_upper n))
+            (rr_sign_at_roots_upper_seq $hroot_upper)
+            (rr_sign_at_roots_upper_seq $hroot_upper)
             $hdeg_succ $hno))
   | `(tactic|
       rr_mw_lw_derivative_lag_sequence_window_sign_auto using

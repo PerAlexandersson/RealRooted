@@ -141,6 +141,14 @@ syntax (name := rr_sign_at_roots_upper_named)
     "root_upper" ":=" term :
   tactic
 
+syntax (name := rr_sign_at_roots_lower_seq)
+  "rr_sign_at_roots_lower_seq " term :
+  term
+
+syntax (name := rr_sign_at_roots_upper_seq)
+  "rr_sign_at_roots_upper_seq " term :
+  term
+
 syntax (name := rr_sign_at_roots_window)
   "rr_sign_at_roots_window" " using " term ", " term : tactic
 
@@ -258,6 +266,10 @@ macro_rules
         root_upper := $hhi:term) =>
       `(tactic|
         rr_sign_at_roots_upper using $hhi)
+  | `(rr_sign_at_roots_lower_seq $hlo:term) =>
+      `(fun n => by rr_sign_at_roots_lower using ($hlo n))
+  | `(rr_sign_at_roots_upper_seq $hhi:term) =>
+      `(fun n => by rr_sign_at_roots_upper using ($hhi n))
   | `(tactic|
       rr_sign_at_roots_window using $hlo:term, $hhi:term) =>
       `(tactic|
