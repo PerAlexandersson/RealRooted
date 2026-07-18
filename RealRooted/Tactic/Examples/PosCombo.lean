@@ -418,5 +418,189 @@ example {d f g f' g' : ℝ[X]} {a b : ℝ}
     reduced_combo_splits := hsplits,
     reduced_coprime := hcop
 
+example {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : f.natDegree ≤ g.natDegree) :
+    (g ≠ 0 ∧ g.Splits) := by
+  rr_pos_combo_right_natDegree_le_realrooted using
+    pos_combo := hfg,
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    degree_le := hdeg
+
+example {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree ≤ f.natDegree) :
+    (f ≠ 0 ∧ f.Splits) := by
+  rr_pos_combo_left_natDegree_le_realrooted using
+    pos_combo := hfg,
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    degree_le := hdeg
+
+example {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hsucc : g.natDegree = f.natDegree + 1) :
+    (g ≠ 0 ∧ g.Splits) := by
+  rr_pos_combo_right_succ_degree_realrooted using
+    pos_combo := hfg,
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    succ_degree := hsucc
+
+example {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hsucc : g.natDegree = f.natDegree + 1) :
+    (f ≠ 0 ∧ f.Splits) := by
+  rr_pos_combo_left_succ_degree_realrooted using
+    pos_combo := hfg,
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    succ_degree := hsucc
+
+example {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hsucc : g.natDegree = f.natDegree + 1) :
+    f.Splits := by
+  rr_pos_combo_left_succ_degree_splits using
+    pos_combo := hfg,
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    succ_degree := hsucc
+
+example {f g : ℝ[X]}
+    (hfg : PosComboRealRooted f g)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hsucc : f.natDegree = g.natDegree + 1) :
+    g.Splits := by
+  rr_pos_combo_right_succ_degree_splits using
+    pos_combo := hfg,
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    succ_degree := hsucc
+
+example {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hsucc : g.natDegree = f.natDegree + 1) :
+    f.Splits := by
+  rr_pos_combo_left_closed_segment_succ_degree_splits using
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    pos_combo := hfg,
+    succ_degree := hsucc
+
+example {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hsucc : f.natDegree = g.natDegree + 1) :
+    g.Splits := by
+  rr_pos_combo_right_closed_segment_succ_degree_splits using
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    pos_combo := hfg,
+    succ_degree := hsucc
+
+example {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hsucc : g.natDegree = f.natDegree + 1) :
+    (f ≠ 0 ∧ f.Splits) := by
+  rr_pos_combo_left_closed_segment_succ_degree_realrooted using
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    pos_combo := hfg,
+    succ_degree := hsucc
+
+example {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfg : PosComboRealRooted f g)
+    (hsucc : f.natDegree = g.natDegree + 1) :
+    (g ≠ 0 ∧ g.Splits) := by
+  rr_pos_combo_right_closed_segment_succ_degree_realrooted using
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    pos_combo := hfg,
+    succ_degree := hsucc
+
+example {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hsucc : g.natDegree = f.natDegree + 1) :
+    f.Splits := by
+  rr_pos_combo_left_nonneg_closed_segment_succ_degree_splits using
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    left_nonneg_coeffs := hfnn,
+    right_nonneg_coeffs := hgnn,
+    pos_combo := hfg,
+    succ_degree := hsucc
+
+example {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hsucc : f.natDegree = g.natDegree + 1) :
+    g.Splits := by
+  rr_pos_combo_right_nonneg_closed_segment_succ_degree_splits using
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    left_nonneg_coeffs := hfnn,
+    right_nonneg_coeffs := hgnn,
+    pos_combo := hfg,
+    succ_degree := hsucc
+
+example {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hsucc : g.natDegree = f.natDegree + 1) :
+    (f ≠ 0 ∧ f.Splits) := by
+  rr_pos_combo_left_nonneg_closed_segment_succ_degree_realrooted using
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    left_nonneg_coeffs := hfnn,
+    right_nonneg_coeffs := hgnn,
+    pos_combo := hfg,
+    succ_degree := hsucc
+
+example {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hsucc : f.natDegree = g.natDegree + 1) :
+    (g ≠ 0 ∧ g.Splits) := by
+  rr_pos_combo_right_nonneg_closed_segment_succ_degree_realrooted using
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    left_nonneg_coeffs := hfnn,
+    right_nonneg_coeffs := hgnn,
+    pos_combo := hfg,
+    succ_degree := hsucc
+
 end Tactic
 end RealRooted
