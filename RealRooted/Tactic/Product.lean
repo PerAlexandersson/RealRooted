@@ -125,6 +125,20 @@ private theorem isRealRooted_C_add_C_mul_X_one_sequence {s t : Nat → ℝ}
       (C (t n) + C (s n) * X : ℝ[X]).Splits :=
   fun n => by simpa using isRealRooted_C_add_C_mul_X_pow (hs n) 1
 
+private theorem isRealRooted_X_sequence :
+    ∀ _ : Nat, (X : ℝ[X]) ≠ 0 ∧ (X : ℝ[X]).Splits :=
+  fun _ => isRealRooted_X
+
+private theorem isRealRooted_C_sequence {c : Nat → ℝ} (hc : ∀ n : Nat, c n ≠ 0) :
+    ∀ n : Nat, (C (c n) : ℝ[X]) ≠ 0 ∧ (C (c n) : ℝ[X]).Splits :=
+  fun n => isRealRooted_C (hc n)
+
+private theorem isRealRooted_C_mul_X_add_C_sequence {s t : Nat → ℝ}
+    (hs : ∀ n : Nat, s n ≠ 0) :
+    ∀ n : Nat, (C (s n) * X + C (t n) : ℝ[X]) ≠ 0 ∧
+      (C (s n) * X + C (t n) : ℝ[X]).Splits :=
+  fun n => isRealRooted_C_mul_X_add_C (hs n)
+
 private theorem isRealRooted_fixed_X_add_C_pow_sequence (t : ℝ) (m : Nat → Nat) :
     ∀ n : Nat, (X + C t : ℝ[X]) ^ (m n) ≠ 0 ∧
       ((X + C t : ℝ[X]) ^ (m n)).Splits :=
@@ -197,7 +211,7 @@ theorem isRealRooted_of_product_root_zero_sequence
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hstep : ∀ n : Nat, P (n + 1) = X * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_product_factor_sequence hbase (fun _ => isRealRooted_X) hstep
+  isRealRooted_of_product_factor_sequence hbase isRealRooted_X_sequence hstep
 
 /-- Right-factor variant of `isRealRooted_of_product_root_zero_sequence`. -/
 theorem isRealRooted_of_product_root_zero_right_sequence
@@ -205,7 +219,7 @@ theorem isRealRooted_of_product_root_zero_right_sequence
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hstep : ∀ n : Nat, P (n + 1) = P n * X) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_product_factor_right_sequence hbase (fun _ => isRealRooted_X) hstep
+  isRealRooted_of_product_factor_right_sequence hbase isRealRooted_X_sequence hstep
 
 /-- Sequence shell for period-two product recurrences. -/
 theorem isRealRooted_of_product_period_two_sequence
@@ -259,7 +273,7 @@ theorem isRealRooted_of_X_lift_sequence
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
     (hrow : ∀ n : Nat, P n = X * Q n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_product_lift_sequence hquot (fun _ => isRealRooted_X) hrow
+  isRealRooted_of_product_lift_sequence hquot isRealRooted_X_sequence hrow
 
 /-- Right-factor variant of `isRealRooted_of_X_lift_sequence`. -/
 theorem isRealRooted_of_X_lift_right_sequence
@@ -267,7 +281,7 @@ theorem isRealRooted_of_X_lift_right_sequence
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
     (hrow : ∀ n : Nat, P n = Q n * X) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_product_lift_right_sequence hquot (fun _ => isRealRooted_X) hrow
+  isRealRooted_of_product_lift_right_sequence hquot isRealRooted_X_sequence hrow
 
 /-- Lift through row-wise unit-slope real linear factors. -/
 theorem isRealRooted_of_X_add_C_lift_sequence
@@ -312,7 +326,7 @@ theorem isRealRooted_of_C_lift_sequence
     (hc : ∀ n : Nat, c n ≠ 0)
     (hrow : ∀ n : Nat, P n = C (c n) * Q n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_product_lift_sequence hquot (fun n => isRealRooted_C (hc n)) hrow
+  isRealRooted_of_product_lift_sequence hquot (isRealRooted_C_sequence hc) hrow
 
 /-- Right-factor variant of `isRealRooted_of_C_lift_sequence`. -/
 theorem isRealRooted_of_C_lift_right_sequence
@@ -322,7 +336,7 @@ theorem isRealRooted_of_C_lift_right_sequence
     (hrow : ∀ n : Nat, P n = Q n * C (c n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_lift_right_sequence hquot
-    (fun n => isRealRooted_C (hc n)) hrow
+    (isRealRooted_C_sequence hc) hrow
 
 /-- Lift through row-wise nonzero-slope real linear factors. -/
 theorem isRealRooted_of_C_mul_X_add_C_lift_sequence
@@ -332,7 +346,7 @@ theorem isRealRooted_of_C_mul_X_add_C_lift_sequence
     (hrow : ∀ n : Nat, P n = (C (s n) * X + C (t n)) * Q n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_lift_sequence hquot
-    (fun n => isRealRooted_C_mul_X_add_C (hs n)) hrow
+    (isRealRooted_C_mul_X_add_C_sequence hs) hrow
 
 /-- Right-factor variant of `isRealRooted_of_C_mul_X_add_C_lift_sequence`. -/
 theorem isRealRooted_of_C_mul_X_add_C_lift_right_sequence
@@ -342,7 +356,7 @@ theorem isRealRooted_of_C_mul_X_add_C_lift_right_sequence
     (hrow : ∀ n : Nat, P n = Q n * (C (s n) * X + C (t n))) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_lift_right_sequence hquot
-    (fun n => isRealRooted_C_mul_X_add_C (hs n)) hrow
+    (isRealRooted_C_mul_X_add_C_sequence hs) hrow
 
 /-- Constant-first spelling of `isRealRooted_of_C_mul_X_add_C_lift_sequence`. -/
 theorem isRealRooted_of_C_add_C_mul_X_lift_sequence
@@ -1156,7 +1170,7 @@ theorem isRealRooted_of_product_scalar_right_sequence
     (hstep : ∀ n : Nat, P (n + 1) = P n * C (a n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_factor_right_sequence hbase
-    (fun n => isRealRooted_C (ha n)) hstep
+    (isRealRooted_C_sequence ha) hstep
 
 /-- Sequence shell for degree-plateau scalar/product families with supplied factors.
 
