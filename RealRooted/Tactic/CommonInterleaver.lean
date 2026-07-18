@@ -410,8 +410,78 @@ syntax (name := rr_compatible_pair_common_interleaver_degree_split_nonnegShift_n
     "succ_degree" ":=" term :
   tactic
 
+syntax (name := rr_compatible_pair_common_interleaver_rootCrossing_named)
+  "rr_compatible_pair_common_interleaver_rootCrossing" " using "
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
+syntax (name := rr_compatible_pair_common_interleaver_rootCount_named)
+  "rr_compatible_pair_common_interleaver_rootCount" " using "
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
+syntax (name := rr_compatible_pair_common_interleaver_rootCountAbove_named)
+  "rr_compatible_pair_common_interleaver_rootCountAbove" " using "
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
+syntax (name := rr_compatible_pair_common_interleaver_rootCountNonRoot_named)
+  "rr_compatible_pair_common_interleaver_rootCountNonRoot" " using "
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
+syntax (name := rr_compatible_pair_common_interleaver_rootCountAboveNonRoot_named)
+  "rr_compatible_pair_common_interleaver_rootCountAboveNonRoot" " using "
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
 syntax (name := rr_pairwise_common_interleaver_degree_split_nonnegShift_named)
   "rr_pairwise_common_interleaver_degree_split_nonnegShift" " using "
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "pairwise_compatible" ":=" term :
+  tactic
+
+syntax (name := rr_pairwise_common_interleaver_rootCrossing_named)
+  "rr_pairwise_common_interleaver_rootCrossing" " using "
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "pairwise_compatible" ":=" term :
+  tactic
+
+syntax (name := rr_pairwise_common_interleaver_rootCount_named)
+  "rr_pairwise_common_interleaver_rootCount" " using "
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "pairwise_compatible" ":=" term :
+  tactic
+
+syntax (name := rr_pairwise_common_interleaver_rootCountAbove_named)
+  "rr_pairwise_common_interleaver_rootCountAbove" " using "
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "pairwise_compatible" ":=" term :
+  tactic
+
+syntax (name := rr_pairwise_common_interleaver_rootCountNonRoot_named)
+  "rr_pairwise_common_interleaver_rootCountNonRoot" " using "
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "pairwise_compatible" ":=" term :
+  tactic
+
+syntax (name := rr_pairwise_common_interleaver_rootCountAboveNonRoot_named)
+  "rr_pairwise_common_interleaver_rootCountAboveNonRoot" " using "
     "same_degree" ":=" term ","
     "succ_degree" ":=" term ","
     "member_pos_lc" ":=" term ","
@@ -982,6 +1052,41 @@ macro_rules
         exact RealRooted.compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
           $hsame $hsucc)
   | `(tactic|
+      rr_compatible_pair_common_interleaver_rootCrossing using
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact RealRooted.compatiblePairHasCommonInterleaver_of_rootCrossing
+          $hsame $hsucc)
+  | `(tactic|
+      rr_compatible_pair_common_interleaver_rootCount using
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact RealRooted.compatiblePairHasCommonInterleaver_of_rootCount
+          $hsame $hsucc)
+  | `(tactic|
+      rr_compatible_pair_common_interleaver_rootCountAbove using
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact RealRooted.compatiblePairHasCommonInterleaver_of_rootCountAboveBoth
+          $hsame $hsucc)
+  | `(tactic|
+      rr_compatible_pair_common_interleaver_rootCountNonRoot using
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact RealRooted.compatiblePairHasCommonInterleaver_of_rootCountNonRoot
+          $hsame $hsucc)
+  | `(tactic|
+      rr_compatible_pair_common_interleaver_rootCountAboveNonRoot using
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact RealRooted.compatiblePairHasCommonInterleaver_of_rootCountAboveBothNonRoot
+          $hsame $hsucc)
+  | `(tactic|
       rr_pairwise_common_interleaver_degree_split_nonnegShift using
         same_degree := $hsame:term,
         succ_degree := $hsucc:term,
@@ -989,6 +1094,51 @@ macro_rules
         pairwise_compatible := $hpair:term) =>
       `(tactic|
         exact pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairDegreeSplit_via_nonnegShift
+          $hsame $hsucc $hpos $hpair)
+  | `(tactic|
+      rr_pairwise_common_interleaver_rootCrossing using
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term,
+        member_pos_lc := $hpos:term,
+        pairwise_compatible := $hpair:term) =>
+      `(tactic|
+        exact pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCrossing
+          $hsame $hsucc $hpos $hpair)
+  | `(tactic|
+      rr_pairwise_common_interleaver_rootCount using
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term,
+        member_pos_lc := $hpos:term,
+        pairwise_compatible := $hpair:term) =>
+      `(tactic|
+        exact pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCount
+          $hsame $hsucc $hpos $hpair)
+  | `(tactic|
+      rr_pairwise_common_interleaver_rootCountAbove using
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term,
+        member_pos_lc := $hpos:term,
+        pairwise_compatible := $hpair:term) =>
+      `(tactic|
+        exact pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCountAboveBoth
+          $hsame $hsucc $hpos $hpair)
+  | `(tactic|
+      rr_pairwise_common_interleaver_rootCountNonRoot using
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term,
+        member_pos_lc := $hpos:term,
+        pairwise_compatible := $hpair:term) =>
+      `(tactic|
+        exact pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCountNonRoot
+          $hsame $hsucc $hpos $hpair)
+  | `(tactic|
+      rr_pairwise_common_interleaver_rootCountAboveNonRoot using
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term,
+        member_pos_lc := $hpos:term,
+        pairwise_compatible := $hpair:term) =>
+      `(tactic|
+        exact pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCountAboveBothNonRoot
           $hsame $hsucc $hpos $hpair)
   | `(tactic|
       rr_posCombo_pair_common_interleaver_degree_le_two using

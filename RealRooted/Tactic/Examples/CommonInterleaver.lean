@@ -515,6 +515,46 @@ example
     same_degree := hsame,
     succ_degree := hsucc
 
+example
+    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
+    CompatiblePairHasCommonInterleaverStatement := by
+  rr_compatible_pair_common_interleaver_rootCrossing using
+    same_degree := hsame,
+    succ_degree := hsucc
+
+example
+    (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountNonnegStatement) :
+    CompatiblePairHasCommonInterleaverStatement := by
+  rr_compatible_pair_common_interleaver_rootCount using
+    same_degree := hsame,
+    succ_degree := hsucc
+
+example
+    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement) :
+    CompatiblePairHasCommonInterleaverStatement := by
+  rr_compatible_pair_common_interleaver_rootCountAbove using
+    same_degree := hsame,
+    succ_degree := hsucc
+
+example
+    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement) :
+    CompatiblePairHasCommonInterleaverStatement := by
+  rr_compatible_pair_common_interleaver_rootCountNonRoot using
+    same_degree := hsame,
+    succ_degree := hsucc
+
+example
+    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement) :
+    CompatiblePairHasCommonInterleaverStatement := by
+  rr_compatible_pair_common_interleaver_rootCountAboveNonRoot using
+    same_degree := hsame,
+    succ_degree := hsucc
+
 example {fs : List ℝ[X]}
     (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
@@ -522,6 +562,66 @@ example {fs : List ℝ[X]}
     (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonInterleaver fs := by
   rr_pairwise_common_interleaver_degree_split_nonnegShift using
+    same_degree := hsame,
+    succ_degree := hsucc,
+    member_pos_lc := hpos,
+    pairwise_compatible := hpair
+
+example {fs : List ℝ[X]}
+    (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hpair : PairwiseCompatible fs) :
+    PairwiseHasCommonInterleaver fs := by
+  rr_pairwise_common_interleaver_rootCrossing using
+    same_degree := hsame,
+    succ_degree := hsucc,
+    member_pos_lc := hpos,
+    pairwise_compatible := hpair
+
+example {fs : List ℝ[X]}
+    (hsame : PosComboNoCommonSameDegreeRootCountNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountNonnegStatement)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hpair : PairwiseCompatible fs) :
+    PairwiseHasCommonInterleaver fs := by
+  rr_pairwise_common_interleaver_rootCount using
+    same_degree := hsame,
+    succ_degree := hsucc,
+    member_pos_lc := hpos,
+    pairwise_compatible := hpair
+
+example {fs : List ℝ[X]}
+    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hpair : PairwiseCompatible fs) :
+    PairwiseHasCommonInterleaver fs := by
+  rr_pairwise_common_interleaver_rootCountAbove using
+    same_degree := hsame,
+    succ_degree := hsucc,
+    member_pos_lc := hpos,
+    pairwise_compatible := hpair
+
+example {fs : List ℝ[X]}
+    (hsame : PosComboNoCommonSameDegreeRootCountNonRootNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountNonRootNonnegStatement)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hpair : PairwiseCompatible fs) :
+    PairwiseHasCommonInterleaver fs := by
+  rr_pairwise_common_interleaver_rootCountNonRoot using
+    same_degree := hsame,
+    succ_degree := hsucc,
+    member_pos_lc := hpos,
+    pairwise_compatible := hpair
+
+example {fs : List ℝ[X]}
+    (hsame : PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hpair : PairwiseCompatible fs) :
+    PairwiseHasCommonInterleaver fs := by
+  rr_pairwise_common_interleaver_rootCountAboveNonRoot using
     same_degree := hsame,
     succ_degree := hsucc,
     member_pos_lc := hpos,
