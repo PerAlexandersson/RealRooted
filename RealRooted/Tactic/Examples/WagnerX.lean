@@ -515,9 +515,7 @@ lemma a358623Shifted_base : Prec (a358623Shifted 0) (a358623Shifted 1) := by
         (Polynomial.natDegree_linear (a := (3 : ℝ)) (b := (1 : ℝ)) (by simp)))
   have hprec : Prec (1 : ℝ[X]) (1 + C (3 : ℝ) * X) := hlin.toPrec
   have hlin_nonneg : HasNonnegCoeffs (1 + C (3 : ℝ) * X) := by
-    have hCX_nonneg : HasNonnegCoeffs (C (3 : ℝ) * X) :=
-      nonnegCoeffs_C_mul (by norm_num) hasNonnegCoeffs_X
-    exact hasNonnegCoeffs_one.add hCX_nonneg
+    rr_nonneg_coeffs
   have hmul : Prec (X * (1 : ℝ[X])) (X * (1 + C (3 : ℝ) * X)) := by
     rr_prec_mul_X_both using
       proper := hprec,
@@ -529,18 +527,15 @@ lemma a358623Shifted_base : Prec (a358623Shifted 0) (a358623Shifted 1) := by
 theorem a358623Shifted_nonneg : ∀ n : Nat, HasNonnegCoeffs (a358623Shifted n)
   | 0 => by simpa using hasNonnegCoeffs_X
   | 1 => by
-      have hCX_nonneg : HasNonnegCoeffs (C (3 : ℝ) * X) :=
-        nonnegCoeffs_C_mul (by norm_num) hasNonnegCoeffs_X
-      simpa using hasNonnegCoeffs_X.mul (hasNonnegCoeffs_one.add hCX_nonneg)
+      rw [a358623Shifted_one]
+      rr_nonneg_coeffs
   | n + 2 => by
       have hder : HasNonnegCoeffs (a358623Shifted (n + 1)).derivative :=
         (a358623Shifted_nonneg (n + 1)).derivative
-      have hterm_der :
-          HasNonnegCoeffs (C (1 : ℝ) * (a358623Shifted (n + 1)).derivative) :=
-        nonnegCoeffs_C_mul (by norm_num) hder
-      have hterm_lag : HasNonnegCoeffs (C ((n : ℝ) + 4) * a358623Shifted n) :=
-        nonnegCoeffs_C_mul (by positivity) (a358623Shifted_nonneg n)
-      simpa [a358623Shifted_succ_succ] using (hterm_der.add hterm_lag).X_mul
+      have hlag : HasNonnegCoeffs (a358623Shifted n) :=
+        a358623Shifted_nonneg n
+      rw [a358623Shifted_succ_succ]
+      rr_nonneg_coeffs
 
 lemma a358623Shifted_coeff_zero :
     ∀ n : Nat, (a358623Shifted n).coeff 0 = 0

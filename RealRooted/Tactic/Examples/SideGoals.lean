@@ -129,6 +129,11 @@ example {a : ℝ} (ha : 0 ≤ a) :
     HasNonnegCoeffs (C a * (X + C 1) ^ 2 : ℝ[X]) := by
   rr_nonneg_coeffs
 
+example {a : ℝ} {p q : ℝ[X]} (ha : 0 ≤ a)
+    (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q) :
+    HasNonnegCoeffs (p + C a * q) := by
+  rr_nonneg_coeffs using hp, hq
+
 example (d : Nat) :
     HasNonnegCoeffs
       (1 + C (3 * (d : ℝ) + 2) * X + C (((d : ℝ) + 1) ^ 2) * X ^ 2 :

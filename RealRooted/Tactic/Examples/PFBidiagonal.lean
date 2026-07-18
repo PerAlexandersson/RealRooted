@@ -633,12 +633,8 @@ def a036969ResidualPencil (d : ℕ) (lam : ℝ) : ℝ[X] :=
 /-- The A036969 alpha residual has nonnegative coefficients. -/
 theorem a036969ResidualAlpha_hasNonnegCoeffs (d : ℕ) :
     HasNonnegCoeffs (a036969ResidualAlpha d) := by
-  have h0 : HasNonnegCoeffs (1 : ℝ[X]) := hasNonnegCoeffs_one
-  have h1 : HasNonnegCoeffs (C (3 * (d : ℝ) + 2) * X) :=
-    nonnegCoeffs_C_mul (by positivity) hasNonnegCoeffs_X
-  have h2 : HasNonnegCoeffs (C (((d : ℝ) + 1) ^ 2) * X ^ 2) :=
-    nonnegCoeffs_C_mul (by positivity) (hasNonnegCoeffs_X.pow 2)
-  simpa [a036969ResidualAlpha, add_assoc] using h0.add (h1.add h2)
+  unfold a036969ResidualAlpha
+  rr_nonneg_coeffs
 
 /-- The A036969 alpha residual is at most quadratic. -/
 theorem natDegree_a036969ResidualAlpha_le (d : ℕ) :
@@ -796,10 +792,10 @@ nonnegative pencil parameter. -/
 theorem a036969ResidualPencil_hasNonnegCoeffs
     (d : ℕ) {lam : ℝ} (hlam : 0 ≤ lam) :
     HasNonnegCoeffs (a036969ResidualPencil d lam) := by
-  have hterm : HasNonnegCoeffs (C lam * a036969ResidualBeta) :=
-    nonnegCoeffs_C_mul hlam a036969ResidualBeta_hasNonnegCoeffs
-  simpa [a036969ResidualPencil] using
-    (a036969ResidualAlpha_hasNonnegCoeffs d).add hterm
+  unfold a036969ResidualPencil
+  rr_nonneg_coeffs using
+    a036969ResidualAlpha_hasNonnegCoeffs d,
+    a036969ResidualBeta_hasNonnegCoeffs
 
 /-- The A036969 residual pencil has degree at most three. -/
 theorem natDegree_a036969ResidualPencil_le (d : ℕ) (lam : ℝ) :
@@ -933,13 +929,8 @@ theorem a071951Beta_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
 /-- The A071951 alpha residual has nonnegative coefficients. -/
 theorem a071951ResidualAlpha_hasNonnegCoeffs (d : ℕ) :
     HasNonnegCoeffs (a071951ResidualAlpha d) := by
-  have h0 : HasNonnegCoeffs (C (2 : ℝ)) :=
-    hasNonnegCoeffs_C (by positivity)
-  have h1 : HasNonnegCoeffs (C (4 * ((d : ℝ) + 1)) * X) :=
-    nonnegCoeffs_C_mul (by positivity) hasNonnegCoeffs_X
-  have h2 : HasNonnegCoeffs (C (((d : ℝ) + 1) * ((d : ℝ) + 2)) * X ^ 2) :=
-    nonnegCoeffs_C_mul (by positivity) (hasNonnegCoeffs_X.pow 2)
-  simpa [a071951ResidualAlpha, add_assoc] using h0.add (h1.add h2)
+  unfold a071951ResidualAlpha
+  rr_nonneg_coeffs
 
 /-- The A071951 alpha residual is at most quadratic. -/
 theorem natDegree_a071951ResidualAlpha_le (d : ℕ) :
@@ -1043,10 +1034,10 @@ nonnegative pencil parameter. -/
 theorem a071951ResidualPencil_hasNonnegCoeffs
     (d : ℕ) {lam : ℝ} (hlam : 0 ≤ lam) :
     HasNonnegCoeffs (a071951ResidualPencil d lam) := by
-  have hterm : HasNonnegCoeffs (C lam * a036969ResidualBeta) :=
-    nonnegCoeffs_C_mul hlam a036969ResidualBeta_hasNonnegCoeffs
-  simpa [a071951ResidualPencil] using
-    (a071951ResidualAlpha_hasNonnegCoeffs d).add hterm
+  unfold a071951ResidualPencil
+  rr_nonneg_coeffs using
+    a071951ResidualAlpha_hasNonnegCoeffs d,
+    a036969ResidualBeta_hasNonnegCoeffs
 
 /-- The A071951 residual pencil has degree at most three. -/
 theorem natDegree_a071951ResidualPencil_le (d : ℕ) (lam : ℝ) :
@@ -1235,11 +1226,10 @@ nonnegative pencil parameter. -/
 theorem a080248ResidualPencil_hasNonnegCoeffs
     (d : ℕ) {lam : ℝ} (hlam : 0 ≤ lam) :
     HasNonnegCoeffs (a080248ResidualPencil d lam) := by
-  have hterm : HasNonnegCoeffs (C lam * a036969ResidualBeta) :=
-    nonnegCoeffs_C_mul hlam a036969ResidualBeta_hasNonnegCoeffs
-  have halpha : HasNonnegCoeffs (a080248ResidualAlpha d) :=
-    (a080248ResidualAlpha_cubicPFDiscriminantCertificate d).1
-  simpa [a080248ResidualPencil] using halpha.add hterm
+  unfold a080248ResidualPencil
+  rr_nonneg_coeffs using
+    (a080248ResidualAlpha_cubicPFDiscriminantCertificate d).1,
+    a036969ResidualBeta_hasNonnegCoeffs
 
 /-- The A080248 residual pencil has degree at most three. -/
 theorem natDegree_a080248ResidualPencil_le (d : ℕ) (lam : ℝ) :
@@ -1397,12 +1387,8 @@ theorem a160562Beta_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
 /-- The A160562 alpha residual has nonnegative coefficients. -/
 theorem a160562ResidualAlpha_hasNonnegCoeffs (d : ℕ) :
     HasNonnegCoeffs (a160562ResidualAlpha d) := by
-  have h0 : HasNonnegCoeffs (1 : ℝ[X]) := hasNonnegCoeffs_one
-  have h1 : HasNonnegCoeffs (C (8 * (d : ℝ) + 2) * X) :=
-    nonnegCoeffs_C_mul (by positivity) hasNonnegCoeffs_X
-  have h2 : HasNonnegCoeffs (C ((2 * (d : ℝ) + 1) ^ 2) * X ^ 2) :=
-    nonnegCoeffs_C_mul (by positivity) (hasNonnegCoeffs_X.pow 2)
-  simpa [a160562ResidualAlpha, add_assoc] using h0.add (h1.add h2)
+  unfold a160562ResidualAlpha
+  rr_nonneg_coeffs
 
 /-- The A160562 alpha residual is at most quadratic. -/
 theorem natDegree_a160562ResidualAlpha_le (d : ℕ) :
@@ -1504,10 +1490,10 @@ nonnegative pencil parameter. -/
 theorem a160562ResidualPencil_hasNonnegCoeffs
     (d : ℕ) {lam : ℝ} (hlam : 0 ≤ lam) :
     HasNonnegCoeffs (a160562ResidualPencil d lam) := by
-  have hterm : HasNonnegCoeffs (C lam * a036969ResidualBeta) :=
-    nonnegCoeffs_C_mul hlam a036969ResidualBeta_hasNonnegCoeffs
-  simpa [a160562ResidualPencil] using
-    (a160562ResidualAlpha_hasNonnegCoeffs d).add hterm
+  unfold a160562ResidualPencil
+  rr_nonneg_coeffs using
+    a160562ResidualAlpha_hasNonnegCoeffs d,
+    a036969ResidualBeta_hasNonnegCoeffs
 
 /-- The A160562 residual pencil has degree at most three. -/
 theorem natDegree_a160562ResidualPencil_le (d : ℕ) (lam : ℝ) :
@@ -1632,11 +1618,8 @@ theorem a269945Beta_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
 /-- The A269945 alpha residual has nonnegative coefficients. -/
 theorem a269945ResidualAlpha_hasNonnegCoeffs (d : ℕ) :
     HasNonnegCoeffs (a269945ResidualAlpha d) := by
-  have h1 : HasNonnegCoeffs (C (d : ℝ) * X) :=
-    nonnegCoeffs_C_mul (by positivity) hasNonnegCoeffs_X
-  have h2 : HasNonnegCoeffs (C ((d : ℝ) ^ 2) * X ^ 2) :=
-    nonnegCoeffs_C_mul (by positivity) (hasNonnegCoeffs_X.pow 2)
-  simpa [a269945ResidualAlpha] using h1.add h2
+  unfold a269945ResidualAlpha
+  rr_nonneg_coeffs
 
 /-- The A269945 alpha residual is at most quadratic. -/
 theorem natDegree_a269945ResidualAlpha_le (d : ℕ) :
@@ -1735,10 +1718,10 @@ nonnegative pencil parameter. -/
 theorem a269945ResidualPencil_hasNonnegCoeffs
     (d : ℕ) {lam : ℝ} (hlam : 0 ≤ lam) :
     HasNonnegCoeffs (a269945ResidualPencil d lam) := by
-  have hterm : HasNonnegCoeffs (C lam * a036969ResidualBeta) :=
-    nonnegCoeffs_C_mul hlam a036969ResidualBeta_hasNonnegCoeffs
-  simpa [a269945ResidualPencil] using
-    (a269945ResidualAlpha_hasNonnegCoeffs d).add hterm
+  unfold a269945ResidualPencil
+  rr_nonneg_coeffs using
+    a269945ResidualAlpha_hasNonnegCoeffs d,
+    a036969ResidualBeta_hasNonnegCoeffs
 
 /-- The A269945 residual pencil has degree at most three. -/
 theorem natDegree_a269945ResidualPencil_le (d : ℕ) (lam : ℝ) :

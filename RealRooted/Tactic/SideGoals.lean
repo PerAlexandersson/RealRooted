@@ -38,6 +38,12 @@ syntax (name := rr_positivity_seq) "rr_positivity_seq" : tactic
 syntax (name := rr_coeff_simp) "rr_coeff_simp" : tactic
 syntax (name := rr_coeff) "rr_coeff" : tactic
 syntax (name := rr_nonneg_coeffs) "rr_nonneg_coeffs" : tactic
+syntax (name := rr_nonneg_coeffs_using_one)
+  "rr_nonneg_coeffs" " using " term : tactic
+syntax (name := rr_nonneg_coeffs_using_two)
+  "rr_nonneg_coeffs" " using " term "," term : tactic
+syntax (name := rr_nonneg_coeffs_using_three)
+  "rr_nonneg_coeffs" " using " term "," term "," term : tactic
 syntax (name := rr_nonneg_coeffs_zero) "rr_nonneg_coeffs_zero" : tactic
 syntax (name := rr_nonneg_coeffs_one) "rr_nonneg_coeffs_one" : tactic
 syntax (name := rr_nonneg_coeffs_C)
@@ -216,6 +222,21 @@ macro_rules
   | `(tactic|
       rr_nonneg_coeffs_pow using poly_nonneg := $hp:term, exponent := $n:term) =>
       `(tactic| exact RealRooted.HasNonnegCoeffs.pow $hp $n)
+  | `(tactic| rr_nonneg_coeffs using $h:term) =>
+      `(tactic|
+        have rr_nonneg_coeffs_h := ($h);
+        rr_nonneg_coeffs)
+  | `(tactic| rr_nonneg_coeffs using $h1:term, $h2:term) =>
+      `(tactic|
+        have rr_nonneg_coeffs_h1 := ($h1);
+        have rr_nonneg_coeffs_h2 := ($h2);
+        rr_nonneg_coeffs)
+  | `(tactic| rr_nonneg_coeffs using $h1:term, $h2:term, $h3:term) =>
+      `(tactic|
+        have rr_nonneg_coeffs_h1 := ($h1);
+        have rr_nonneg_coeffs_h2 := ($h2);
+        have rr_nonneg_coeffs_h3 := ($h3);
+        rr_nonneg_coeffs)
   | `(tactic| rr_nonneg_coeffs) =>
       `(tactic|
         first
