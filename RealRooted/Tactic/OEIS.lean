@@ -7,10 +7,14 @@ import RealRooted.Tactic.Derivative
 import RealRooted.Tactic.EulerOperator
 import RealRooted.Tactic.Favard
 import RealRooted.Tactic.GammaRealRoots
+import RealRooted.Tactic.Hadamard
+import RealRooted.Tactic.HermiteBiehler
+import RealRooted.Tactic.HermitePoulain
 import RealRooted.Tactic.IteratedDerivativeShift
 import RealRooted.Tactic.FiniteSymbolPFFrontend
 import RealRooted.Tactic.J1Chebyshev
 import RealRooted.Tactic.J1Gap3Reciprocal
+import RealRooted.Tactic.Kurtz
 import RealRooted.Tactic.Linear
 import RealRooted.Tactic.InterlacingSequence
 import RealRooted.Tactic.LinearPowerFamily
@@ -22,8 +26,10 @@ import RealRooted.Tactic.MultiplierSequence
 import RealRooted.Tactic.OperatorPreservesInterlacing
 import RealRooted.Tactic.PFPolynomial
 import RealRooted.Tactic.PFBidiagonal
+import RealRooted.Tactic.PFBidiagonalFrontend
 import RealRooted.Tactic.Product
 import RealRooted.Tactic.PosCombo
+import RealRooted.Tactic.Narayana
 import RealRooted.Tactic.RootCount
 import RealRooted.Tactic.StaircaseSum
 import RealRooted.Tactic.SymmetricDecomposition
@@ -41,6 +47,9 @@ rr_oeis ma_wang
 rr_oeis favard
 rr_oeis liu_wang
 rr_oeis matrix
+rr_hadamard_pf using ...
+rr_hermite_biehler_odd_even_hurwitz using ...
+rr_hermite_poulain using ...
 rr_i2_derivative_lag_sequence using ... certificate := directHalfLine
 rr_i2_derivative_lag_sequence using ... certificate := wagnerGap
 rr_i2_derivative_lag_sequence_den_coeff using ... certificate := directHalfLine
@@ -65,6 +74,8 @@ rr_h_second_derivative_sequence using route := pf_bidiagonal, ...
 rr_j1_factorable_sequence_realrooted using ... certificate := finiteLinearProduct
 rr_j1_gap3_reciprocal_sequence_realrooted using ... certificate := modelRealRooted
 rr_j1_gap3_reciprocal_sequence_realrooted using ... certificate := modelPF
+rr_kurtz using ...
+rr_narayana_polynomial_splits using ...
 rr_product_exit_sequence using ... certificate := identity
 rr_product_exit_sequence using ... certificate := rootZero
 rr_product_exit_sequence using ... certificate := periodTwo
