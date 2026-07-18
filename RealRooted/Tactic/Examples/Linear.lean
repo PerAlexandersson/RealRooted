@@ -101,8 +101,20 @@ example {p : ℝ[X]} {a : ℝ}
     realrooted := hp,
     scalar_ne := ha
 
+example {p : ℝ[X]} {a : ℝ}
+    (hp : p ≠ 0 ∧ p.Splits) (ha : a ≠ 0) :
+    (C a * p).Splits := by
+  rr_C_mul_realrooted using
+    realrooted := hp,
+    scalar_ne := ha
+
 example {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
     X * p ≠ 0 ∧ (X * p).Splits := by
+  rr_X_mul_realrooted using
+    realrooted := hp
+
+example {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
+    X * p ≠ 0 := by
   rr_X_mul_realrooted using
     realrooted := hp
 

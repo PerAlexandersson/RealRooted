@@ -174,11 +174,15 @@ macro_rules
       rr_C_mul_realrooted using
         realrooted := $hp:term,
         scalar_ne := $ha:term) =>
-      `(tactic| exact RealRooted.isRealRooted_C_mul $hp.1 $hp.2 $ha)
+      `(tactic|
+        rr_first_realrooted_or_projection
+          (RealRooted.isRealRooted_C_mul $hp.1 $hp.2 $ha))
   | `(tactic|
       rr_X_mul_realrooted using
         realrooted := $hp:term) =>
-      `(tactic| exact RealRooted.isRealRooted_X_mul $hp.1 $hp.2)
+      `(tactic|
+        rr_first_realrooted_or_projection
+          (RealRooted.isRealRooted_X_mul $hp.1 $hp.2))
 
 end Tactic
 end RealRooted
