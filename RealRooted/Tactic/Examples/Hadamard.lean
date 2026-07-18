@@ -1,0 +1,92 @@
+import RealRooted.Tactic.Hadamard
+
+open Polynomial
+
+namespace RealRooted
+namespace Tactic
+
+example :
+    finiteSchurSzegoCompositionNonzeroStatement := by
+  rr_schur_szego_nonzero_statement
+
+example :
+    finiteSchurSzegoCompositionStatement := by
+  rr_schur_szego_statement
+
+example :
+    schurPolyaWagnerHadamardPFStatement := by
+  rr_hadamard_pf_statement
+
+example :
+    garloffWagnerHadamardNonnegRealRootedStatement := by
+  rr_hadamard_nonneg_realrooted_statement
+
+example {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f)
+    (hfdeg : f.natDegree ≤ n)
+    (hpdeg : p.natDegree ≤ n)
+    (hsplits : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits := by
+  rr_schur_szego using
+    pf_factor := hf,
+    pf_degree := hfdeg,
+    input_degree := hpdeg,
+    input_splits := hsplits
+
+example {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f)
+    (hfdeg : f.natDegree ≤ n)
+    (hpdeg : p.natDegree ≤ n)
+    (hsplits : p.Splits)
+    (hout : schurSzegoComp n f p ≠ 0) :
+    (schurSzegoComp n f p).Splits := by
+  rr_schur_szego_splits using
+    pf_factor := hf,
+    pf_degree := hfdeg,
+    input_degree := hpdeg,
+    input_splits := hsplits,
+    nonzero := hout
+
+example {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f) (hf0 : f ≠ 0)
+    (hfdeg : f.natDegree ≤ n)
+    (hp0 : p ≠ 0)
+    (hpdeg : p.natDegree ≤ n)
+    (hsplits : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits := by
+  rr_schur_szego_nonzero using
+    pf_factor := hf,
+    pf_nonzero := hf0,
+    pf_degree := hfdeg,
+    input_nonzero := hp0,
+    input_degree := hpdeg,
+    input_splits := hsplits
+
+example {p q : ℝ[X]}
+    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
+    IsPFPolynomial (hadamardProduct p q) := by
+  rr_hadamard_pf using
+    left_pf := hp,
+    right_pf := hq
+
+example {p q : ℝ[X]}
+    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
+    (hp : p ≠ 0 ∧ p.Splits) (hq : q ≠ 0 ∧ q.Splits) :
+    (hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧
+      HasNonnegCoeffs (hadamardProduct p q) ∧
+      ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0 := by
+  rr_hadamard_nonneg_realrooted using
+    left_nonneg := hpnn,
+    right_nonneg := hqnn,
+    left_realrooted := hp,
+    right_realrooted := hq
+
+example {p q : ℝ[X]}
+    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q) :
+    HasNonnegCoeffs (hadamardProduct p q) := by
+  rr_hadamard_nonneg_coeffs using
+    left_nonneg := hpnn,
+    right_nonneg := hqnn
+
+end Tactic
+end RealRooted
