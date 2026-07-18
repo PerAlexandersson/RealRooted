@@ -437,66 +437,66 @@ macro_rules
               rr_lookup))
   | `(tactic| rr_exact_realrooted_or_projection $h:term) =>
       `(tactic|
-        first
-          | exact $h
-          | exact RealRooted.ne_zero_of_isRealRooted $h
-          | exact RealRooted.splits_of_isRealRooted $h
-          | exact RealRooted.eq_zero_or_splits_of_isRealRooted $h
-          | exact RealRooted.left_isRealRooted_of_isRealRooted_pair $h
-          | exact RealRooted.right_isRealRooted_of_isRealRooted_pair $h
-          | exact RealRooted.left_ne_zero_of_isRealRooted_pair $h
-          | exact RealRooted.right_ne_zero_of_isRealRooted_pair $h
-          | exact RealRooted.left_splits_of_isRealRooted_pair $h
-          | exact RealRooted.right_splits_of_isRealRooted_pair $h
-          | exact RealRooted.left_eq_zero_or_splits_of_isRealRooted_pair $h
-          | exact RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair $h
-          | exact RealRooted.left_isRealRooted_of_prec $h
-          | exact RealRooted.right_isRealRooted_of_prec $h
-          | exact RealRooted.left_ne_zero_of_prec $h
-          | exact RealRooted.right_ne_zero_of_prec $h
-          | exact RealRooted.left_splits_of_prec $h
-          | exact RealRooted.right_splits_of_prec $h
-          | exact RealRooted.left_eq_zero_or_splits_of_prec $h
-          | exact RealRooted.right_eq_zero_or_splits_of_prec $h
-          | exact RealRooted.right_isRealRooted_of_interlaces $h
-          | exact RealRooted.left_isRealRooted_of_interlaces $h
-          | exact RealRooted.right_ne_zero_of_interlaces $h
-          | exact RealRooted.left_ne_zero_of_interlaces $h
-          | exact RealRooted.right_splits_of_interlaces $h
-          | exact RealRooted.left_splits_of_interlaces $h
-          | exact RealRooted.right_eq_zero_or_splits_of_interlaces $h
-          | exact RealRooted.left_eq_zero_or_splits_of_interlaces $h)
+        rr_first_exact
+          $h,
+          RealRooted.ne_zero_of_isRealRooted $h,
+          RealRooted.splits_of_isRealRooted $h,
+          RealRooted.eq_zero_or_splits_of_isRealRooted $h,
+          RealRooted.left_isRealRooted_of_isRealRooted_pair $h,
+          RealRooted.right_isRealRooted_of_isRealRooted_pair $h,
+          RealRooted.left_ne_zero_of_isRealRooted_pair $h,
+          RealRooted.right_ne_zero_of_isRealRooted_pair $h,
+          RealRooted.left_splits_of_isRealRooted_pair $h,
+          RealRooted.right_splits_of_isRealRooted_pair $h,
+          RealRooted.left_eq_zero_or_splits_of_isRealRooted_pair $h,
+          RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair $h,
+          RealRooted.left_isRealRooted_of_prec $h,
+          RealRooted.right_isRealRooted_of_prec $h,
+          RealRooted.left_ne_zero_of_prec $h,
+          RealRooted.right_ne_zero_of_prec $h,
+          RealRooted.left_splits_of_prec $h,
+          RealRooted.right_splits_of_prec $h,
+          RealRooted.left_eq_zero_or_splits_of_prec $h,
+          RealRooted.right_eq_zero_or_splits_of_prec $h,
+          RealRooted.right_isRealRooted_of_interlaces $h,
+          RealRooted.left_isRealRooted_of_interlaces $h,
+          RealRooted.right_ne_zero_of_interlaces $h,
+          RealRooted.left_ne_zero_of_interlaces $h,
+          RealRooted.right_splits_of_interlaces $h,
+          RealRooted.left_splits_of_interlaces $h,
+          RealRooted.right_eq_zero_or_splits_of_interlaces $h,
+          RealRooted.left_eq_zero_or_splits_of_interlaces $h)
   | `(tactic| rr_exact_realrooted_sequence_or_projection $h:term) =>
       `(tactic|
-        first
-          | exact $h
-          | exact (RealRooted.at_of_isRealRooted_sequence $h _)
-          | exact RealRooted.ne_zero_of_isRealRooted_sequence $h
-          | exact (RealRooted.ne_zero_of_isRealRooted_sequence $h _)
-          | exact RealRooted.splits_of_isRealRooted_sequence $h
-          | exact (RealRooted.splits_of_isRealRooted_sequence $h _)
-          | exact RealRooted.eq_zero_or_splits_of_isRealRooted_sequence $h
-          | exact (RealRooted.eq_zero_or_splits_of_isRealRooted_sequence $h _))
+        rr_first_exact
+          $h,
+          (RealRooted.at_of_isRealRooted_sequence $h _),
+          RealRooted.ne_zero_of_isRealRooted_sequence $h,
+          (RealRooted.ne_zero_of_isRealRooted_sequence $h _),
+          RealRooted.splits_of_isRealRooted_sequence $h,
+          (RealRooted.splits_of_isRealRooted_sequence $h _),
+          RealRooted.eq_zero_or_splits_of_isRealRooted_sequence $h,
+          (RealRooted.eq_zero_or_splits_of_isRealRooted_sequence $h _))
   | `(tactic| rr_exact_realrooted_pair_sequence_or_projection $h:term) =>
       `(tactic|
-        first
-          | exact $h
-          | exact RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence $h
-          | exact (RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence $h _)
-          | exact RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence $h
-          | exact (RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence $h _)
-          | exact RealRooted.left_ne_zero_of_isRealRooted_pair_sequence $h
-          | exact (RealRooted.left_ne_zero_of_isRealRooted_pair_sequence $h _)
-          | exact RealRooted.left_splits_of_isRealRooted_pair_sequence $h
-          | exact (RealRooted.left_splits_of_isRealRooted_pair_sequence $h _)
-          | exact RealRooted.right_ne_zero_of_isRealRooted_pair_sequence $h
-          | exact (RealRooted.right_ne_zero_of_isRealRooted_pair_sequence $h _)
-          | exact RealRooted.right_splits_of_isRealRooted_pair_sequence $h
-          | exact (RealRooted.right_splits_of_isRealRooted_pair_sequence $h _)
-          | exact RealRooted.left_eq_zero_or_splits_of_isRealRooted_pair_sequence $h
-          | exact (RealRooted.left_eq_zero_or_splits_of_isRealRooted_pair_sequence $h _)
-          | exact RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair_sequence $h
-          | exact (RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair_sequence $h _))
+        rr_first_exact
+          $h,
+          RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence $h,
+          (RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence $h _),
+          RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence $h,
+          (RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence $h _),
+          RealRooted.left_ne_zero_of_isRealRooted_pair_sequence $h,
+          (RealRooted.left_ne_zero_of_isRealRooted_pair_sequence $h _),
+          RealRooted.left_splits_of_isRealRooted_pair_sequence $h,
+          (RealRooted.left_splits_of_isRealRooted_pair_sequence $h _),
+          RealRooted.right_ne_zero_of_isRealRooted_pair_sequence $h,
+          (RealRooted.right_ne_zero_of_isRealRooted_pair_sequence $h _),
+          RealRooted.right_splits_of_isRealRooted_pair_sequence $h,
+          (RealRooted.right_splits_of_isRealRooted_pair_sequence $h _),
+          RealRooted.left_eq_zero_or_splits_of_isRealRooted_pair_sequence $h,
+          (RealRooted.left_eq_zero_or_splits_of_isRealRooted_pair_sequence $h _),
+          RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair_sequence $h,
+          (RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair_sequence $h _))
   | `(tactic| rr_first_exact $[$hs:term],*) =>
       `(tactic|
         first
@@ -526,20 +526,20 @@ macro_rules
           $[ | rr_exact_realrooted_sequence_or_projection $hs]*)
   | `(tactic| rr_nonzero using $h:term) =>
       `(tactic|
-        first
-          | exact RealRooted.ne_zero_of_isRealRooted_sequence $h
-          | exact (RealRooted.ne_zero_of_isRealRooted_sequence $h _)
-          | exact RealRooted.left_ne_zero_of_isRealRooted_pair_sequence $h
-          | exact (RealRooted.left_ne_zero_of_isRealRooted_pair_sequence $h _)
-          | exact RealRooted.right_ne_zero_of_isRealRooted_pair_sequence $h
-          | exact (RealRooted.right_ne_zero_of_isRealRooted_pair_sequence $h _)
-          | exact RealRooted.left_ne_zero_of_prec $h
-          | exact RealRooted.right_ne_zero_of_prec $h
-          | exact RealRooted.right_ne_zero_of_interlaces $h
-          | exact RealRooted.left_ne_zero_of_interlaces $h
-          | exact RealRooted.ne_zero_of_isRealRooted $h
-          | exact RealRooted.left_ne_zero_of_isRealRooted_pair $h
-          | exact RealRooted.right_ne_zero_of_isRealRooted_pair $h)
+        rr_first_exact
+          RealRooted.ne_zero_of_isRealRooted_sequence $h,
+          (RealRooted.ne_zero_of_isRealRooted_sequence $h _),
+          RealRooted.left_ne_zero_of_isRealRooted_pair_sequence $h,
+          (RealRooted.left_ne_zero_of_isRealRooted_pair_sequence $h _),
+          RealRooted.right_ne_zero_of_isRealRooted_pair_sequence $h,
+          (RealRooted.right_ne_zero_of_isRealRooted_pair_sequence $h _),
+          RealRooted.left_ne_zero_of_prec $h,
+          RealRooted.right_ne_zero_of_prec $h,
+          RealRooted.right_ne_zero_of_interlaces $h,
+          RealRooted.left_ne_zero_of_interlaces $h,
+          RealRooted.ne_zero_of_isRealRooted $h,
+          RealRooted.left_ne_zero_of_isRealRooted_pair $h,
+          RealRooted.right_ne_zero_of_isRealRooted_pair $h)
   | `(tactic| rr_nonzero) =>
       `(tactic|
         first
@@ -560,20 +560,20 @@ macro_rules
           | simp_all [RealRooted.Prec, RealRooted.Interlaces])
   | `(tactic| rr_splits using $h:term) =>
       `(tactic|
-        first
-          | exact RealRooted.splits_of_isRealRooted_sequence $h
-          | exact (RealRooted.splits_of_isRealRooted_sequence $h _)
-          | exact RealRooted.left_splits_of_isRealRooted_pair_sequence $h
-          | exact (RealRooted.left_splits_of_isRealRooted_pair_sequence $h _)
-          | exact RealRooted.right_splits_of_isRealRooted_pair_sequence $h
-          | exact (RealRooted.right_splits_of_isRealRooted_pair_sequence $h _)
-          | exact RealRooted.left_splits_of_prec $h
-          | exact RealRooted.right_splits_of_prec $h
-          | exact RealRooted.right_splits_of_interlaces $h
-          | exact RealRooted.left_splits_of_interlaces $h
-          | exact RealRooted.splits_of_isRealRooted $h
-          | exact RealRooted.left_splits_of_isRealRooted_pair $h
-          | exact RealRooted.right_splits_of_isRealRooted_pair $h)
+        rr_first_exact
+          RealRooted.splits_of_isRealRooted_sequence $h,
+          (RealRooted.splits_of_isRealRooted_sequence $h _),
+          RealRooted.left_splits_of_isRealRooted_pair_sequence $h,
+          (RealRooted.left_splits_of_isRealRooted_pair_sequence $h _),
+          RealRooted.right_splits_of_isRealRooted_pair_sequence $h,
+          (RealRooted.right_splits_of_isRealRooted_pair_sequence $h _),
+          RealRooted.left_splits_of_prec $h,
+          RealRooted.right_splits_of_prec $h,
+          RealRooted.right_splits_of_interlaces $h,
+          RealRooted.left_splits_of_interlaces $h,
+          RealRooted.splits_of_isRealRooted $h,
+          RealRooted.left_splits_of_isRealRooted_pair $h,
+          RealRooted.right_splits_of_isRealRooted_pair $h)
   | `(tactic| rr_splits) =>
       `(tactic|
         first
@@ -594,19 +594,19 @@ macro_rules
           | simp_all [RealRooted.Prec, RealRooted.Interlaces])
   | `(tactic| rr_realrooted using $h:term) =>
       `(tactic|
-        first
-          | exact $h
-          | exact (RealRooted.at_of_isRealRooted_sequence $h _)
-          | exact RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence $h
-          | exact (RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence $h _)
-          | exact RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence $h
-          | exact (RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence $h _)
-          | exact RealRooted.left_isRealRooted_of_prec $h
-          | exact RealRooted.right_isRealRooted_of_prec $h
-          | exact RealRooted.right_isRealRooted_of_interlaces $h
-          | exact RealRooted.left_isRealRooted_of_interlaces $h
-          | exact RealRooted.left_isRealRooted_of_isRealRooted_pair $h
-          | exact RealRooted.right_isRealRooted_of_isRealRooted_pair $h)
+        rr_first_exact
+          $h,
+          (RealRooted.at_of_isRealRooted_sequence $h _),
+          RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence $h,
+          (RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence $h _),
+          RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence $h,
+          (RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence $h _),
+          RealRooted.left_isRealRooted_of_prec $h,
+          RealRooted.right_isRealRooted_of_prec $h,
+          RealRooted.right_isRealRooted_of_interlaces $h,
+          RealRooted.left_isRealRooted_of_interlaces $h,
+          RealRooted.left_isRealRooted_of_isRealRooted_pair $h,
+          RealRooted.right_isRealRooted_of_isRealRooted_pair $h)
   | `(tactic| rr_realrooted) =>
       `(tactic|
         first
@@ -626,9 +626,9 @@ macro_rules
           | simp_all [RealRooted.Prec, RealRooted.Interlaces])
   | `(tactic| rr_interlaces using $hprec:term, $hdeg:term) =>
       `(tactic|
-        first
-          | exact RealRooted.Prec.toInterlaces $hprec $hdeg
-          | exact RealRooted.Prec.toInterlaces $hprec ($hdeg).symm)
+        rr_first_exact
+          RealRooted.Prec.toInterlaces $hprec $hdeg,
+          RealRooted.Prec.toInterlaces $hprec ($hdeg).symm)
   | `(tactic| rr_interlaces using $hprec:term) =>
       `(tactic|
         exact RealRooted.Prec.toInterlaces $hprec (by rr_side))

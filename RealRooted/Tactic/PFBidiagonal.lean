@@ -1097,14 +1097,15 @@ macro_rules
   | `(tactic| rr_exact_pf_sequence_or_projection $h:term) =>
       `(tactic|
         first
-          | exact $h
-          | exact (RealRooted.at_of_isPFPolynomial_sequence $h _)
-          | exact RealRooted.hasNonnegCoeffs_of_isPFPolynomial_sequence $h
-          | exact (RealRooted.hasNonnegCoeffs_of_isPFPolynomial_sequence $h _)
-          | exact RealRooted.splits_of_isPFPolynomial_sequence $h
-          | exact (RealRooted.splits_of_isPFPolynomial_sequence $h _)
-          | exact RealRooted.eq_zero_or_splits_of_isPFPolynomial_sequence $h
-          | exact (RealRooted.eq_zero_or_splits_of_isPFPolynomial_sequence $h _)
+          | rr_first_exact
+              $h,
+              (RealRooted.at_of_isPFPolynomial_sequence $h _),
+              RealRooted.hasNonnegCoeffs_of_isPFPolynomial_sequence $h,
+              (RealRooted.hasNonnegCoeffs_of_isPFPolynomial_sequence $h _),
+              RealRooted.splits_of_isPFPolynomial_sequence $h,
+              (RealRooted.splits_of_isPFPolynomial_sequence $h _),
+              RealRooted.eq_zero_or_splits_of_isPFPolynomial_sequence $h,
+              (RealRooted.eq_zero_or_splits_of_isPFPolynomial_sequence $h _)
           | rr_exact_realrooted_sequence_or_projection
               (RealRooted.isRealRooted_of_isPFPolynomial_sequence $h (by
                 rr_lookup)))
@@ -1112,8 +1113,9 @@ macro_rules
       `(tactic|
         first
           | rr_exact_pf_sequence_or_projection $h
-          | exact $hne
-          | exact ($hne _)
+          | rr_first_exact
+              $hne,
+              ($hne _)
           | rr_exact_realrooted_sequence_or_projection
               (RealRooted.isRealRooted_of_isPFPolynomial_sequence $h $hne))
   | `(tactic| rr_exact_pf_sequence $h:term) =>
