@@ -49,6 +49,9 @@ rr_e_positive_t_lag_sequence using ... certificate := plateauX
 rr_e_positive_t_lag_sequence using ... certificate := xOneSubX
 rr_e_positive_t_lag_sequence using ... certificate := xCSubCMulX
 rr_e_positive_t_lag_sequence using ... certificate := cMulXCSubCMulX
+rr_e_positive_t_lag_sequence using ... certificate := tR
+rr_e_positive_t_lag_sequence using ... certificate := cTR
+rr_e_positive_t_lag_sequence using ... certificate := cTRAuto
 rr_g_negative_lag_sequence using ... certificate := negativeSquare
 rr_g_negative_lag_sequence using ... certificate := negativeMonicQuadratic
 rr_g_negative_lag_sequence using ... certificate := negativeQuadratic
@@ -263,6 +266,80 @@ syntax (name := rr_e_positive_t_lag_sequence_realrooted_plateau_x)
     "nonneg_coeffs" ":=" term ","
     "recurrence" ":=" term ","
     "certificate" ":=" "plateauX" :
+  tactic
+
+syntax (name := rr_e_positive_t_lag_sequence_tR)
+  "rr_e_positive_t_lag_sequence" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "factor_nonneg" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "certificate" ":=" "tR" :
+  tactic
+
+syntax (name := rr_e_positive_t_lag_sequence_realrooted_tR)
+  "rr_e_positive_t_lag_sequence_realrooted" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "factor_nonneg" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "certificate" ":=" "tR" :
+  tactic
+
+syntax (name := rr_e_positive_t_lag_sequence_cTR)
+  "rr_e_positive_t_lag_sequence" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "coeff_nonneg" ":=" term ","
+    "factor_nonneg" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "certificate" ":=" "cTR" :
+  tactic
+
+syntax (name := rr_e_positive_t_lag_sequence_realrooted_cTR)
+  "rr_e_positive_t_lag_sequence_realrooted" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "coeff_nonneg" ":=" term ","
+    "factor_nonneg" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "certificate" ":=" "cTR" :
+  tactic
+
+syntax (name := rr_e_positive_t_lag_sequence_cTR_auto)
+  "rr_e_positive_t_lag_sequence" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "factor_nonneg" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "certificate" ":=" "cTRAuto" :
+  tactic
+
+syntax (name := rr_e_positive_t_lag_sequence_realrooted_cTR_auto)
+  "rr_e_positive_t_lag_sequence_realrooted" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "factor_nonneg" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "certificate" ":=" "cTRAuto" :
   tactic
 
 syntax (name := rr_g_negative_lag_sequence_auto)
@@ -900,6 +977,124 @@ macro_rules
           linear_coeff_eq := $hb_coeff,
           constant_coeff_eq := $hc_coeff,
           raw_recurrence := $hraw,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_e_positive_t_lag_sequence using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        factor_nonneg := $hR:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := tR) =>
+      `(tactic|
+        rr_lw_tR_lag_sequence using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          factor_nonneg := $hR,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_e_positive_t_lag_sequence_realrooted using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        factor_nonneg := $hR:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := tR) =>
+      `(tactic|
+        rr_lw_tR_lag_sequence_realrooted using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          factor_nonneg := $hR,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_e_positive_t_lag_sequence using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        coeff_nonneg := $hc:term,
+        factor_nonneg := $hR:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := cTR) =>
+      `(tactic|
+        rr_lw_c_tR_lag_sequence using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          coeff_nonneg := $hc,
+          factor_nonneg := $hR,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_e_positive_t_lag_sequence_realrooted using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        coeff_nonneg := $hc:term,
+        factor_nonneg := $hR:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := cTR) =>
+      `(tactic|
+        rr_lw_c_tR_lag_sequence_realrooted using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          coeff_nonneg := $hc,
+          factor_nonneg := $hR,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_e_positive_t_lag_sequence using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        factor_nonneg := $hR:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := cTRAuto) =>
+      `(tactic|
+        rr_lw_c_tR_lag_sequence_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          factor_nonneg := $hR,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_e_positive_t_lag_sequence_realrooted using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        factor_nonneg := $hR:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := cTRAuto) =>
+      `(tactic|
+        rr_lw_c_tR_lag_sequence_realrooted_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          factor_nonneg := $hR,
+          recurrence := $hrec,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno)
   | `(tactic|
