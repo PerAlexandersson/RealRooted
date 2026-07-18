@@ -192,9 +192,27 @@ macro "rr_mw_active_den_all" : tactic =>
 
 syntax (name := rr_mw_active_den_at_term) "rr_mw_active_den_at_term " term : term
 
+syntax (name := rr_scalar_exact_or_simpa_add_assoc)
+  "rr_scalar_exact_or_simpa_add_assoc" term :
+  tactic
+
+syntax (name := rr_scalar_exact_or_simpa_add_mul_assoc)
+  "rr_scalar_exact_or_simpa_add_mul_assoc" term :
+  tactic
+
 macro_rules
   | `(rr_mw_active_den_at_term $n:term) =>
       `(by rr_mw_active_den_at $n)
+  | `(tactic| rr_scalar_exact_or_simpa_add_assoc $h:term) =>
+      `(tactic|
+        first
+          | exact $h
+          | simpa [add_comm, add_left_comm, add_assoc] using $h)
+  | `(tactic| rr_scalar_exact_or_simpa_add_mul_assoc $h:term) =>
+      `(tactic|
+        first
+          | exact $h
+          | simpa [add_comm, add_left_comm, add_assoc, mul_assoc] using $h)
 
 macro_rules
   | `(tactic|
@@ -204,12 +222,10 @@ macro_rules
       `(tactic|
         first
           | exact RealRooted.eq_of_C_mul_eq_C_mul $hden $hrec
-          | exact RealRooted.eq_add_C_inv_mul_of_C_mul_eq_C_mul_add $hden $hrec
-          | simpa [add_comm, add_left_comm, add_assoc] using
-              RealRooted.eq_add_C_inv_mul_of_C_mul_eq_C_mul_add $hden $hrec
-          | exact RealRooted.eq_add_C_inv_mul_of_C_mul_eq_add_C_mul $hden $hrec
-          | simpa [add_comm, add_left_comm, add_assoc] using
-              RealRooted.eq_add_C_inv_mul_of_C_mul_eq_add_C_mul $hden $hrec
+          | rr_scalar_exact_or_simpa_add_assoc
+              (RealRooted.eq_add_C_inv_mul_of_C_mul_eq_C_mul_add $hden $hrec)
+          | rr_scalar_exact_or_simpa_add_assoc
+              (RealRooted.eq_add_C_inv_mul_of_C_mul_eq_add_C_mul $hden $hrec)
           | exact RealRooted.eq_C_inv_mul_of_C_mul_eq $hden $hrec
           | simpa [one_div] using RealRooted.eq_C_inv_mul_of_C_mul_eq $hden $hrec)
   | `(tactic|
@@ -227,16 +243,12 @@ macro_rules
         coeff_eq := $hcoeff:term) =>
       `(tactic|
         first
-          | exact RealRooted.eq_add_C_mul_of_C_mul_eq_C_mul_add_C_mul
-              $hden $hcoeff $hrec
-          | simpa [add_comm, add_left_comm, add_assoc, mul_assoc] using
-              RealRooted.eq_add_C_mul_of_C_mul_eq_C_mul_add_C_mul
-                $hden $hcoeff $hrec
-          | exact RealRooted.eq_add_C_mul_of_C_mul_eq_C_mul_add_comm_C_mul
-              $hden $hcoeff $hrec
-          | simpa [add_comm, add_left_comm, add_assoc, mul_assoc] using
-              RealRooted.eq_add_C_mul_of_C_mul_eq_C_mul_add_comm_C_mul
+          | rr_scalar_exact_or_simpa_add_mul_assoc
+              (RealRooted.eq_add_C_mul_of_C_mul_eq_C_mul_add_C_mul
                 $hden $hcoeff $hrec)
+          | rr_scalar_exact_or_simpa_add_mul_assoc
+              (RealRooted.eq_add_C_mul_of_C_mul_eq_C_mul_add_comm_C_mul
+                $hden $hcoeff $hrec))
   | `(tactic|
       rr_mw_den_norm_coeff using
         recurrence := $hrec:term,
@@ -258,10 +270,10 @@ macro_rules
           | exact
               RealRooted.eq_add_C_mul_add_C_mul_of_C_mul_eq_C_mul_add_C_mul_add_C_mul
                 $hden $hcoeff_first $hcoeff_second $hrec
-          | refine
+          | exact
               RealRooted.eq_add_C_mul_add_C_mul_of_C_mul_eq_C_mul_add_C_mul_add_C_mul
-                $hden $hcoeff_first $hcoeff_second ?_
-            simpa [add_comm, add_left_comm, add_assoc, mul_assoc] using $hrec)
+                $hden $hcoeff_first $hcoeff_second
+                (by simpa [add_comm, add_left_comm, add_assoc, mul_assoc] using $hrec))
   | `(tactic|
       rr_mw_den_norm_two_coeff using
         recurrence := $hrec:term,
