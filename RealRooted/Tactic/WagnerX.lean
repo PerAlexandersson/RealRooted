@@ -35,11 +35,10 @@ theorem prec_mul_X_both_of_prec_of_nonneg {f g : ℝ[X]}
     (h : Prec f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g) :
-    Prec (X * f) (X * g) := by
-  exact
-    prec_mul_X_both_of_roots_nonpos h
-      (roots_nonpos_of_nonneg_coeffs (left_splits_of_prec h) hfnn)
-      (roots_nonpos_of_nonneg_coeffs (right_splits_of_prec h) hgnn)
+    Prec (X * f) (X * g) :=
+  prec_mul_X_both_of_roots_nonpos h
+    (roots_nonpos_of_nonneg_coeffs (left_splits_of_prec h) hfnn)
+    (roots_nonpos_of_nonneg_coeffs (right_splits_of_prec h) hgnn)
 
 /-- Derivative-lag bridge for later mixed lag recurrences.
 
@@ -50,10 +49,9 @@ theorem prec_X_mul_derivative_X_mul_self_of_splits_nonneg {f : ℝ[X]}
     (hf : f.Splits)
     (hdeg : 2 ≤ f.natDegree)
     (hfnn : HasNonnegCoeffs f) :
-    Prec (X * f.derivative) (X * f) := by
-  exact
-    prec_mul_X_both_of_prec_of_nonneg
-      (derivative_interlaces hf hdeg).toPrec hfnn.derivative hfnn
+    Prec (X * f.derivative) (X * f) :=
+  prec_mul_X_both_of_prec_of_nonneg
+    (derivative_interlaces hf hdeg).toPrec hfnn.derivative hfnn
 
 /-- Wagner derivative-gap-lag step.
 
@@ -389,8 +387,7 @@ theorem prec_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
     rcases List.mem_cons.mp hap with rfl | hap
     · exact hXf_pos
     · cases hap
-  have hex : ∃ ap ∈ [(a, g), (c, X * f)], 0 < ap.1 := by
-    exact ⟨(a, g), by simp, ha⟩
+  have hex : ∃ ap ∈ [(a, g), (c, X * f)], 0 < ap.1 := ⟨(a, g), by simp, ha⟩
   have hsum : Prec g (weightedSum [(a, g), (c, X * f)]) :=
     prec_weightedSum_left_of_common_left
       [(a, g), (c, X * f)] g hnonneg hprec hg_pos hpoly_pos hex
