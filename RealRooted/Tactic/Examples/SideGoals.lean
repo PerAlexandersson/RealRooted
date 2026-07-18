@@ -74,16 +74,33 @@ example :
 example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a * b := by
   rr_side
 
+example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a * b := by
+  rr_close_side
+
 example (n : Nat) : n ≤ n + 1 := by
   rr_side
+
+example (n : Nat) : n ≤ n + 1 := by
+  rr_close_side
+
+example {p : ℝ[X]} (hdeg : 2 ≤ p.natDegree) : p.natDegree ≠ 0 := by
+  rr_close_side
 
 example (p q : ℝ[X]) (r : ℝ) :
     (p + q).eval r = p.eval r + q.eval r := by
   rr_side
 
+example (p q : ℝ[X]) (r : ℝ) :
+    (p + q).eval r = p.eval r + q.eval r := by
+  rr_close_side
+
 example (x : ℝ) :
     ((X + C 1 : ℝ[X]).eval x) = x + 1 := by
   rr_side
+
+example (x : ℝ) :
+    ((X + C 1 : ℝ[X]).eval x) = x + 1 := by
+  rr_close_side
 
 end Tactic
 end RealRooted

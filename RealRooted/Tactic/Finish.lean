@@ -662,7 +662,7 @@ macro_rules
           RealRooted.Prec.toInterlaces $hprec ($hdeg).symm)
   | `(tactic| rr_interlaces using $hprec:term) =>
       `(tactic|
-        exact RealRooted.Prec.toInterlaces $hprec (by rr_side))
+        exact RealRooted.Prec.toInterlaces $hprec (by rr_close_side))
   | `(tactic| rr_prec0 using $hprec:term) =>
       `(tactic|
         exact RealRooted.Prec.toPrec0 $hprec)
@@ -738,9 +738,9 @@ macro_rules
           | rr_exact_realrooted_or_projection $h
           | exact RealRooted.natDegree_succ_of_interlaces $h
           | exact (RealRooted.natDegree_succ_of_interlaces $h).symm
-          | exact RealRooted.Prec.toInterlaces $h (by rr_side)
+          | exact RealRooted.Prec.toInterlaces $h (by rr_close_side)
           | exact RealRooted.Prec.toPrec0 $h
-          | rr_side)
+          | rr_close_side)
   | `(tactic| rr_finish using $hprec:term, $hdeg:term) =>
       `(tactic|
         first
@@ -783,7 +783,7 @@ macro_rules
               RealRooted.Interlaces,
               RealRooted.IsSturmSeq,
               RealRooted.IsGeneralizedSturmSeq]
-          | rr_side)
+          | rr_close_side)
 
 end Tactic
 end RealRooted

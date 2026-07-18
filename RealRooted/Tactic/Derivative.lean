@@ -12,8 +12,6 @@ open Lean.Elab.Tactic
 namespace RealRooted
 namespace Tactic
 
-syntax (name := rr_derivative_degree_side) "rr_derivative_degree_side" : tactic
-
 syntax (name := rr_derivative_interlaces_named)
   "rr_derivative_interlaces" " using "
     "splits" ":=" term ","
@@ -62,13 +60,6 @@ syntax (name := rr_derivative_ne_zero_auto)
   tactic
 
 macro_rules
-  | `(tactic| rr_derivative_degree_side) =>
-      `(tactic|
-        first
-          | assumption
-          | lia
-          | nlinarith
-          | rr_side <;> done)
   | `(tactic|
       rr_derivative_interlaces using
         splits := $hsplits:term,
@@ -77,7 +68,7 @@ macro_rules
   | `(tactic|
       rr_derivative_interlaces using
         splits := $hsplits:term) =>
-      `(tactic| exact RealRooted.derivative_interlaces $hsplits (by rr_derivative_degree_side))
+      `(tactic| exact RealRooted.derivative_interlaces $hsplits (by rr_close_side))
   | `(tactic|
       rr_derivative_prec using
         splits := $hsplits:term,
@@ -87,7 +78,7 @@ macro_rules
       rr_derivative_prec using
         splits := $hsplits:term) =>
       `(tactic|
-        exact (RealRooted.derivative_interlaces $hsplits (by rr_derivative_degree_side)).toPrec)
+        exact (RealRooted.derivative_interlaces $hsplits (by rr_close_side)).toPrec)
   | `(tactic|
       rr_nonneg_coeffs_derivative using
         nonneg_coeffs := $hnn:term) =>
@@ -101,14 +92,14 @@ macro_rules
       rr_pos_lc_derivative using
         pos_lc := $hpos:term) =>
       `(tactic|
-        exact RealRooted.HasPosLeadingCoeff.derivative $hpos (by rr_derivative_degree_side))
+        exact RealRooted.HasPosLeadingCoeff.derivative $hpos (by rr_close_side))
   | `(tactic|
       rr_derivative_ne_zero using
         degree_ne_zero := $hdeg:term) =>
       `(tactic| exact RealRooted.derivative_ne_zero_of_natDegree_ne_zero $hdeg)
   | `(tactic| rr_derivative_ne_zero) =>
       `(tactic|
-        exact RealRooted.derivative_ne_zero_of_natDegree_ne_zero (by rr_derivative_degree_side))
+        exact RealRooted.derivative_ne_zero_of_natDegree_ne_zero (by rr_close_side))
 
 end Tactic
 end RealRooted

@@ -36,6 +36,7 @@ syntax (name := rr_side_ne_seq) "rr_side_ne_seq" : tactic
 syntax (name := rr_positivity_seq) "rr_positivity_seq" : tactic
 syntax (name := rr_coeff_simp) "rr_coeff_simp" : tactic
 syntax (name := rr_coeff) "rr_coeff" : tactic
+syntax (name := rr_close_side) "rr_close_side" : tactic
 syntax (name := rr_side) "rr_side" : tactic
 syntax (name := rr_refine_then) "rr_refine_then " term " with " tactic : tactic
 
@@ -147,6 +148,26 @@ macro_rules
           <;> try rr_coeff_simp
           <;> try norm_num
           <;> try ring_nf))
+  | `(tactic| rr_close_side) =>
+      `(tactic|
+        first
+          | assumption
+          | exact_mod_cast (by assumption)
+          | positivity <;> done
+          | norm_num <;> done
+          | rr_coeff <;> done
+          | ring_nf <;> done
+          | ring <;> done
+          | lia
+          | nlinarith
+          | simp_all [
+              Polynomial.eval_add,
+              Polynomial.eval_sub,
+              Polynomial.eval_mul,
+              Polynomial.eval_pow,
+              Polynomial.eval_C,
+              Polynomial.eval_X] <;> done
+          | grind)
   | `(tactic| rr_side) =>
       `(tactic|
         first
