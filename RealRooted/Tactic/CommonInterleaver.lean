@@ -496,6 +496,38 @@ syntax (name := rr_chudnovskySeymour_fourWay_rootCrossing_named)
     "succ_degree" ":=" term :
   tactic
 
+syntax (name := rr_chudnovskySeymour_fourWay_rootCount_named)
+  "rr_chudnovskySeymour_fourWay_rootCount" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
+syntax (name := rr_chudnovskySeymour_fourWay_rootCountAbove_named)
+  "rr_chudnovskySeymour_fourWay_rootCountAbove" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
+syntax (name := rr_chudnovskySeymour_fourWay_rootCountNonRoot_named)
+  "rr_chudnovskySeymour_fourWay_rootCountNonRoot" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
+syntax (name := rr_chudnovskySeymour_fourWay_rootCountAboveNonRoot_named)
+  "rr_chudnovskySeymour_fourWay_rootCountAboveNonRoot" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
 syntax (name := rr_pairwiseCompatible_iff_commonInterleaver_rootCrossing_named)
   "rr_pairwiseCompatible_iff_commonInterleaver_rootCrossing" " using "
     "member_realrooted" ":=" term ","
@@ -504,8 +536,74 @@ syntax (name := rr_pairwiseCompatible_iff_commonInterleaver_rootCrossing_named)
     "succ_degree" ":=" term :
   tactic
 
+syntax (name := rr_pairwiseCompatible_iff_commonInterleaver_rootCount_named)
+  "rr_pairwiseCompatible_iff_commonInterleaver_rootCount" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
+syntax (name := rr_pairwiseCompatible_iff_commonInterleaver_rootCountAbove_named)
+  "rr_pairwiseCompatible_iff_commonInterleaver_rootCountAbove" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
+syntax (name := rr_pairwiseCompatible_iff_commonInterleaver_rootCountNonRoot_named)
+  "rr_pairwiseCompatible_iff_commonInterleaver_rootCountNonRoot" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
+syntax
+  (name := rr_pairwiseCompatible_iff_commonInterleaver_rootCountAboveNonRoot_named)
+  "rr_pairwiseCompatible_iff_commonInterleaver_rootCountAboveNonRoot" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
 syntax (name := rr_pairwiseCompatible_iff_familyCompatible_rootCrossing_named)
   "rr_pairwiseCompatible_iff_familyCompatible_rootCrossing" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
+syntax (name := rr_pairwiseCompatible_iff_familyCompatible_rootCount_named)
+  "rr_pairwiseCompatible_iff_familyCompatible_rootCount" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
+syntax (name := rr_pairwiseCompatible_iff_familyCompatible_rootCountAbove_named)
+  "rr_pairwiseCompatible_iff_familyCompatible_rootCountAbove" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
+syntax (name := rr_pairwiseCompatible_iff_familyCompatible_rootCountNonRoot_named)
+  "rr_pairwiseCompatible_iff_familyCompatible_rootCountNonRoot" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
+syntax
+  (name := rr_pairwiseCompatible_iff_familyCompatible_rootCountAboveNonRoot_named)
+  "rr_pairwiseCompatible_iff_familyCompatible_rootCountAboveNonRoot" " using "
     "member_realrooted" ":=" term ","
     "member_pos_lc" ":=" term ","
     "same_degree" ":=" term ","
@@ -1174,6 +1272,54 @@ macro_rules
         exact chudnovskySeymour_fourWay_of_rootCrossing
           $hrr $hpos $hsame $hsucc)
   | `(tactic|
+      rr_chudnovskySeymour_fourWay_rootCount using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact chudnovskySeymour_fourWay_of_rootCrossing
+          $hrr $hpos
+          (RealRooted.posComboNoCommonSameDegreeRootCrossing_of_rootCount $hsame)
+          (RealRooted.posComboNoCommonSuccDegreeRootCrossing_of_rootCount $hsucc))
+  | `(tactic|
+      rr_chudnovskySeymour_fourWay_rootCountAbove using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact chudnovskySeymour_fourWay_of_rootCrossing
+          $hrr $hpos
+          (RealRooted.posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove $hsame)
+          (RealRooted.posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove $hsucc))
+  | `(tactic|
+      rr_chudnovskySeymour_fourWay_rootCountNonRoot using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact chudnovskySeymour_fourWay_of_rootCrossing
+          $hrr $hpos
+          (RealRooted.posComboNoCommonSameDegreeRootCrossing_of_rootCountNonRoot
+            $hsame)
+          (RealRooted.posComboNoCommonSuccDegreeRootCrossing_of_rootCountNonRoot
+            $hsucc))
+  | `(tactic|
+      rr_chudnovskySeymour_fourWay_rootCountAboveNonRoot using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact chudnovskySeymour_fourWay_of_rootCrossing
+          $hrr $hpos
+          (RealRooted.posComboNoCommonSameDegreeRootCrossing_of_rootCountAboveNonRoot
+            $hsame)
+          (RealRooted.posComboNoCommonSuccDegreeRootCrossing_of_rootCountAboveNonRoot
+            $hsucc))
+  | `(tactic|
       rr_pairwiseCompatible_iff_commonInterleaver_rootCrossing using
         member_realrooted := $hrr:term,
         member_pos_lc := $hpos:term,
@@ -1183,6 +1329,54 @@ macro_rules
         exact pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing
           $hrr $hpos $hsame $hsucc)
   | `(tactic|
+      rr_pairwiseCompatible_iff_commonInterleaver_rootCount using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing
+          $hrr $hpos
+          (RealRooted.posComboNoCommonSameDegreeRootCrossing_of_rootCount $hsame)
+          (RealRooted.posComboNoCommonSuccDegreeRootCrossing_of_rootCount $hsucc))
+  | `(tactic|
+      rr_pairwiseCompatible_iff_commonInterleaver_rootCountAbove using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing
+          $hrr $hpos
+          (RealRooted.posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove $hsame)
+          (RealRooted.posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove $hsucc))
+  | `(tactic|
+      rr_pairwiseCompatible_iff_commonInterleaver_rootCountNonRoot using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing
+          $hrr $hpos
+          (RealRooted.posComboNoCommonSameDegreeRootCrossing_of_rootCountNonRoot
+            $hsame)
+          (RealRooted.posComboNoCommonSuccDegreeRootCrossing_of_rootCountNonRoot
+            $hsucc))
+  | `(tactic|
+      rr_pairwiseCompatible_iff_commonInterleaver_rootCountAboveNonRoot using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing
+          $hrr $hpos
+          (RealRooted.posComboNoCommonSameDegreeRootCrossing_of_rootCountAboveNonRoot
+            $hsame)
+          (RealRooted.posComboNoCommonSuccDegreeRootCrossing_of_rootCountAboveNonRoot
+            $hsucc))
+  | `(tactic|
       rr_pairwiseCompatible_iff_familyCompatible_rootCrossing using
         member_realrooted := $hrr:term,
         member_pos_lc := $hpos:term,
@@ -1191,6 +1385,54 @@ macro_rules
       `(tactic|
         exact pairwiseCompatible_iff_familyCompatible_of_rootCrossing
           $hrr $hpos $hsame $hsucc)
+  | `(tactic|
+      rr_pairwiseCompatible_iff_familyCompatible_rootCount using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact pairwiseCompatible_iff_familyCompatible_of_rootCrossing
+          $hrr $hpos
+          (RealRooted.posComboNoCommonSameDegreeRootCrossing_of_rootCount $hsame)
+          (RealRooted.posComboNoCommonSuccDegreeRootCrossing_of_rootCount $hsucc))
+  | `(tactic|
+      rr_pairwiseCompatible_iff_familyCompatible_rootCountAbove using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact pairwiseCompatible_iff_familyCompatible_of_rootCrossing
+          $hrr $hpos
+          (RealRooted.posComboNoCommonSameDegreeRootCrossing_of_rootCountAbove $hsame)
+          (RealRooted.posComboNoCommonSuccDegreeRootCrossing_of_rootCountAbove $hsucc))
+  | `(tactic|
+      rr_pairwiseCompatible_iff_familyCompatible_rootCountNonRoot using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact pairwiseCompatible_iff_familyCompatible_of_rootCrossing
+          $hrr $hpos
+          (RealRooted.posComboNoCommonSameDegreeRootCrossing_of_rootCountNonRoot
+            $hsame)
+          (RealRooted.posComboNoCommonSuccDegreeRootCrossing_of_rootCountNonRoot
+            $hsucc))
+  | `(tactic|
+      rr_pairwiseCompatible_iff_familyCompatible_rootCountAboveNonRoot using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact pairwiseCompatible_iff_familyCompatible_of_rootCrossing
+          $hrr $hpos
+          (RealRooted.posComboNoCommonSameDegreeRootCrossing_of_rootCountAboveNonRoot
+            $hsame)
+          (RealRooted.posComboNoCommonSuccDegreeRootCrossing_of_rootCountAboveNonRoot
+            $hsucc))
   | `(tactic|
       rr_posCombo_pair_common_interleaver_degree_le_two using
         left_pos_lc := $hfpos:term,
