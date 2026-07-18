@@ -1110,6 +1110,29 @@ private theorem mw_lw_derivative_lag_den_coeff_recurrence
           (C (c n) * V n) * (P (n + 1)).derivative +
           (C (a n) * W n) * P n := by ring
 
+private theorem mw_derivative_den_coeff_recurrence
+    {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]} {b c d : Nat → ℝ}
+    (hden : ∀ n : Nat, d n ≠ 0)
+    (hcoeff : ∀ n : Nat, (d n)⁻¹ * b n = c n)
+    (hraw : ∀ n : Nat,
+      C (d n) * P (n + 2) =
+        C (d n) * (U n * P (n + 1)) +
+          C (b n) * (V n * (P (n + 1)).derivative))
+    (n : Nat) :
+    P (n + 2) =
+      U n * P (n + 1) + (C (c n) * V n) * (P (n + 1)).derivative := by
+  have hnorm :
+      P (n + 2) =
+        U n * P (n + 1) +
+          C (c n) * (V n * (P (n + 1)).derivative) :=
+    eq_add_C_mul_of_C_mul_eq_C_mul_add_C_mul (hden n) (hcoeff n) (hraw n)
+  calc
+    P (n + 2) =
+        U n * P (n + 1) +
+          C (c n) * (V n * (P (n + 1)).derivative) := hnorm
+    _ =
+        U n * P (n + 1) + (C (c n) * V n) * (P (n + 1)).derivative := by ring
+
 /-- Denominator-fused combined Ma--Wang/Liu--Wang induction.
 
 This consumes the split raw recurrence
@@ -1283,26 +1306,13 @@ theorem prec_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
           C (b n) * (V n * (P (n + 1)).derivative))
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  refine
-    prec_mw_derivative_nonpos_sequence_of_nonneg_coeffs
-      (U := U) (V := fun n => C (c n) * V n) hbase hpos hnonneg hdeg_two ?_ ?_
-      hdeg_lo hdeg_hi
-  · intro n r hr
-    simpa [Polynomial.eval_mul] using mul_nonpos_of_nonneg_of_nonpos (hc n) (hV_nonpos n r hr)
-  · intro n
-    have hnorm :
-        P (n + 2) =
-          U n * P (n + 1) +
-            C (c n) * (V n * (P (n + 1)).derivative) :=
-      eq_add_C_mul_of_C_mul_eq_C_mul_add_C_mul (hden n) (hcoeff n) (hraw n)
-    calc
-      P (n + 2) =
-          U n * P (n + 1) +
-            C (c n) * (V n * (P (n + 1)).derivative) := hnorm
-      _ =
-          U n * P (n + 1) +
-            (C (c n) * V n) * (P (n + 1)).derivative := by ring
+    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+  prec_mw_derivative_nonpos_sequence_of_nonneg_coeffs
+    (U := U) (V := fun n => C (c n) * V n) hbase hpos hnonneg hdeg_two
+    (fun n r hr => eval_C_mul_nonpos_of_nonneg_of_eval_nonpos
+      (hc n) (hV_nonpos n r hr))
+    (mw_derivative_den_coeff_recurrence hden hcoeff hraw)
+    hdeg_lo hdeg_hi
 
 /-- Real-rootedness corollary for denominator-fused nonpositive-factor
 Ma--Wang induction with nonnegative coefficients. -/
@@ -1325,21 +1335,9 @@ theorem isRealRooted_of_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_mw_derivative_nonpos_sequence_of_nonneg_coeffs
     (U := U) (V := fun n => C (c n) * V n) hbase hpos hnonneg hdeg_two
-    (fun n r hr => by
-      simpa [Polynomial.eval_mul] using mul_nonpos_of_nonneg_of_nonpos (hc n) (hV_nonpos n r hr))
-    (fun n => by
-      have hnorm :
-          P (n + 2) =
-            U n * P (n + 1) +
-              C (c n) * (V n * (P (n + 1)).derivative) :=
-        eq_add_C_mul_of_C_mul_eq_C_mul_add_C_mul (hden n) (hcoeff n) (hraw n)
-      calc
-        P (n + 2) =
-            U n * P (n + 1) +
-              C (c n) * (V n * (P (n + 1)).derivative) := hnorm
-        _ =
-            U n * P (n + 1) +
-              (C (c n) * V n) * (P (n + 1)).derivative := by ring)
+    (fun n r hr => eval_C_mul_nonpos_of_nonneg_of_eval_nonpos
+      (hc n) (hV_nonpos n r hr))
+    (mw_derivative_den_coeff_recurrence hden hcoeff hraw)
     hdeg_lo hdeg_hi
 
 /-- Sequence-level `X Q_n P'` Ma--Wang wrapper.  The current-row root bound is
@@ -1453,24 +1451,14 @@ theorem prec_mw_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_coeffs
           C (b n) * ((X * Q n) * (P (n + 1)).derivative))
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  refine
-    prec_mw_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
-      (U := U) (Q := Q) (c := c) hbase hpos hnonneg hdeg_two hc hQ_nonneg ?_
-      hdeg_lo hdeg_hi
-  intro n
-  have hnorm :
-      P (n + 2) =
-        U n * P (n + 1) +
-          C (c n) * ((X * Q n) * (P (n + 1)).derivative) :=
-    eq_add_C_mul_of_C_mul_eq_C_mul_add_C_mul (hden n) (hcoeff n) (hraw n)
-  calc
-    P (n + 2) =
-        U n * P (n + 1) +
-          C (c n) * ((X * Q n) * (P (n + 1)).derivative) := hnorm
-    _ =
-        U n * P (n + 1) +
-          (C (c n) * X * Q n) * (P (n + 1)).derivative := by ring
+    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+  prec_mw_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
+    (U := U) (Q := Q) (c := c) hbase hpos hnonneg hdeg_two hc hQ_nonneg
+    (fun n => by
+      simpa only [mul_assoc] using
+        mw_derivative_den_coeff_recurrence
+          (P := P) (U := U) (V := fun n => X * Q n) hden hcoeff hraw n)
+    hdeg_lo hdeg_hi
 
 /-- Real-rootedness corollary for denominator-fused `c_n X Q_n P'`
 Ma--Wang induction with nonnegative coefficients. -/
@@ -1494,18 +1482,9 @@ theorem isRealRooted_of_mw_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_c
   isRealRooted_of_mw_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
     (U := U) (Q := Q) (c := c) hbase hpos hnonneg hdeg_two hc hQ_nonneg
     (fun n => by
-      have hnorm :
-          P (n + 2) =
-            U n * P (n + 1) +
-              C (c n) * ((X * Q n) * (P (n + 1)).derivative) :=
-        eq_add_C_mul_of_C_mul_eq_C_mul_add_C_mul (hden n) (hcoeff n) (hraw n)
-      calc
-        P (n + 2) =
-            U n * P (n + 1) +
-              C (c n) * ((X * Q n) * (P (n + 1)).derivative) := hnorm
-        _ =
-            U n * P (n + 1) +
-              (C (c n) * X * Q n) * (P (n + 1)).derivative := by ring)
+      simpa only [mul_assoc] using
+        mw_derivative_den_coeff_recurrence
+          (P := P) (U := U) (V := fun n => X * Q n) hden hcoeff hraw n)
     hdeg_lo hdeg_hi
 
 /-- Sequence-level `X P'` Ma--Wang wrapper.  The current-row root bound is
