@@ -22,6 +22,7 @@ import RealRooted.Tactic.Examples.J1Gap3Reciprocal
 import RealRooted.Tactic.Examples.OEIS
 import RealRooted.Tactic.Examples.OEISPositiveTLag
 import RealRooted.Tactic.Examples.Matrix
+import RealRooted.Tactic.Examples.SymmetricDecomposition
 import RealRooted.Tactic.Examples.Combinatorial
 import RealRooted.Tactic.Examples.SequenceSurvey
 import RealRooted.Tactic.Examples.OEISTestbed
