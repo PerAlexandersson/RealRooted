@@ -44,6 +44,41 @@ private lemma hasPosLeadingCoeff_C_mul_X_sub_C {s t : ℝ} (hs : 0 < s) :
   rw [C_mul_X_sub_C_eq_C_mul_X_sub_C_div hs.ne']
   rr_pos_lc
 
+private theorem prec_affine_favard_step {f g aPoly bPoly : ℝ[X]}
+    (hInter : Interlaces g f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hA_deg : aPoly.natDegree = 1)
+    (hA_pos : HasPosLeadingCoeff aPoly)
+    (hA_ne : aPoly ≠ 0)
+    (hBg_le : (bPoly * g).natDegree ≤ g.natDegree)
+    (hb_nonpos : ∀ r, f.IsRoot r → bPoly.eval r ≤ 0) :
+    Prec f (aPoly * f + bPoly * g) ∧
+      Interlaces f (aPoly * f + bPoly * g) ∧
+      HasPosLeadingCoeff (aPoly * f + bPoly * g) := by
+  have hdeg_gf : g.natDegree + 1 = f.natDegree := by
+    simpa using natDegree_succ_of_interlaces hInter
+  have hf_ne : f ≠ 0 := by
+    simpa using right_ne_zero_of_interlaces hInter
+  have hAf_deg : (aPoly * f).natDegree = f.natDegree + 1 := by
+    rw [natDegree_mul hA_ne hf_ne, hA_deg]
+    lia
+  have hAf_pos : HasPosLeadingCoeff (aPoly * f) := by
+    rr_pos_lc
+  have hBg_lt_Af : (bPoly * g).natDegree < (aPoly * f).natDegree := by
+    lia
+  have hF_pos : HasPosLeadingCoeff (aPoly * f + bPoly * g) := by
+    simpa [add_comm] using
+      hasPosLeadingCoeff_add_of_natDegree_lt_right hBg_lt_Af hAf_pos
+  have hF_deg : (aPoly * f + bPoly * g).natDegree = f.natDegree + 1 := by
+    simpa [add_comm, hAf_deg] using
+      natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hBg_lt_Af hAf_pos
+  have hPrec_step : Prec f (aPoly * f + bPoly * g) :=
+    prec_of_interlaces_evalCoeff_nonpos
+      (f := f) (g := g) (a := aPoly) (b := bPoly)
+      hInter hg_pos hF_pos (by lia) (by lia) hb_nonpos
+  exact ⟨hPrec_step, hPrec_step.toInterlaces (by lia), hF_pos⟩
+
 private lemma neg_one_pow_mul_self (n : Nat) :
     ((-1 : ℝ) ^ n) * ((-1 : ℝ) ^ n) = 1 := by
   rw [← pow_add, ← two_mul, pow_mul]
@@ -164,40 +199,18 @@ theorem favardInterlacing_affine_const_coeff {P : Nat → ℝ[X]} {s α β : ℝ
         rcases ih with ⟨hInter, hPos_n, hPos_n1⟩
         let f : ℝ[X] := P (n + 1)
         let g : ℝ[X] := P n
-        have hdeg_gf : g.natDegree + 1 = f.natDegree := by
-          simpa [f, g] using natDegree_succ_of_interlaces hInter
-        have hf_ne : f ≠ 0 := by
-          simpa [f] using right_ne_zero_of_interlaces hInter
-        have hAf_deg : (aPoly * f).natDegree = f.natDegree + 1 := by
-          rw [natDegree_mul hA_ne hf_ne, hA_deg]
-          lia
-        have hAf_pos : HasPosLeadingCoeff (aPoly * f) := by
-          rr_pos_lc
-        have hBg_lt_Af : (bPoly * g).natDegree < (aPoly * f).natDegree := by
-          have hBg_le : (bPoly * g).natDegree ≤ g.natDegree := by
-            dsimp [bPoly]
-            exact Polynomial.natDegree_C_mul_le _ _
-          lia
-        have hF_pos : HasPosLeadingCoeff (aPoly * f + bPoly * g) := by
-          rr_pos_lc
-        have hF_deg :
-            (aPoly * f + bPoly * g).natDegree = f.natDegree + 1 := by
-          have hdeg_aux :
-              (bPoly * g + aPoly * f).natDegree = (aPoly * f).natDegree :=
-            natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hBg_lt_Af hAf_pos
-          grind
-        have hdeg_lo : f.natDegree ≤ (aPoly * f + bPoly * g).natDegree := by lia
-        have hdeg_hi : (aPoly * f + bPoly * g).natDegree ≤ f.natDegree + 1 := by lia
+        have hBg_le : (bPoly * g).natDegree ≤ g.natDegree := by
+          dsimp [bPoly]
+          exact Polynomial.natDegree_C_mul_le _ _
         have hb_nonpos : ∀ r, f.IsRoot r → bPoly.eval r ≤ 0 := by
           intros
           have hb_le : 0 ≤ β := hβ.le
           simpa [bPoly] using (neg_nonpos.mpr hb_le)
-        have hPrec_step : Prec f (aPoly * f + bPoly * g) :=
-          prec_of_interlaces_evalCoeff_nonpos
-            (f := f) (g := g) (a := aPoly) (b := bPoly)
-            hInter hPos_n hF_pos hdeg_lo hdeg_hi hb_nonpos
-        have hInter_step : Interlaces f (aPoly * f + bPoly * g) :=
-          hPrec_step.toInterlaces (by lia)
+        have hFavardStep :=
+          prec_affine_favard_step hInter hPos_n hPos_n1 hA_deg hA_pos hA_ne
+            hBg_le hb_nonpos
+        have hInter_step : Interlaces f (aPoly * f + bPoly * g) := hFavardStep.2.1
+        have hF_pos : HasPosLeadingCoeff (aPoly * f + bPoly * g) := hFavardStep.2.2
         grind
   exact fun n => (hQ n).1.toPrec
 
@@ -339,40 +352,18 @@ theorem favardInterlacing_affine_param_coeff
               (hs (n + 1))
         have hA_ne : aPoly ≠ 0 := by
           rr_nonzero
-        have hdeg_gf : g.natDegree + 1 = f.natDegree := by
-          simpa [f, g] using natDegree_succ_of_interlaces hInter
-        have hf_ne : f ≠ 0 := by
-          simpa [f] using right_ne_zero_of_interlaces hInter
-        have hAf_deg : (aPoly * f).natDegree = f.natDegree + 1 := by
-          rw [natDegree_mul hA_ne hf_ne, hA_deg]
-          lia
-        have hAf_pos : HasPosLeadingCoeff (aPoly * f) := by
-          rr_pos_lc
-        have hBg_lt_Af : (bPoly * g).natDegree < (aPoly * f).natDegree := by
-          have hBg_le : (bPoly * g).natDegree ≤ g.natDegree := by
-            dsimp [bPoly]
-            exact Polynomial.natDegree_C_mul_le _ _
-          lia
-        have hF_pos : HasPosLeadingCoeff (aPoly * f + bPoly * g) := by
-          rr_pos_lc
-        have hF_deg :
-            (aPoly * f + bPoly * g).natDegree = f.natDegree + 1 := by
-          have hdeg_aux :
-              (bPoly * g + aPoly * f).natDegree = (aPoly * f).natDegree :=
-            natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hBg_lt_Af hAf_pos
-          grind
-        have hdeg_lo : f.natDegree ≤ (aPoly * f + bPoly * g).natDegree := by lia
-        have hdeg_hi : (aPoly * f + bPoly * g).natDegree ≤ f.natDegree + 1 := by lia
+        have hBg_le : (bPoly * g).natDegree ≤ g.natDegree := by
+          dsimp [bPoly]
+          exact Polynomial.natDegree_C_mul_le _ _
         have hb_nonpos : ∀ r, f.IsRoot r → bPoly.eval r ≤ 0 := by
           intros
           have hb_le : 0 ≤ β (n + 1) := (hβ n).le
           simpa [bPoly] using (neg_nonpos.mpr hb_le)
-        have hPrec_step : Prec f (aPoly * f + bPoly * g) :=
-          prec_of_interlaces_evalCoeff_nonpos
-            (f := f) (g := g) (a := aPoly) (b := bPoly)
-            hInter hPos_n hF_pos hdeg_lo hdeg_hi hb_nonpos
-        have hInter_step : Interlaces f (aPoly * f + bPoly * g) :=
-          hPrec_step.toInterlaces (by lia)
+        have hFavardStep :=
+          prec_affine_favard_step hInter hPos_n hPos_n1 hA_deg hA_pos hA_ne
+            hBg_le hb_nonpos
+        have hInter_step : Interlaces f (aPoly * f + bPoly * g) := hFavardStep.2.1
+        have hF_pos : HasPosLeadingCoeff (aPoly * f + bPoly * g) := hFavardStep.2.2
         grind
   exact fun n => (hQ n).1.toPrec
 
