@@ -504,6 +504,38 @@ example {P : Nat → ℝ[X]}
     recurrence := hrec,
     certificate := plateauX
 
+/-- Product-exit router, identity branch. -/
+example {P : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_exit_sequence using
+    base := hbase,
+    recurrence := hrec,
+    certificate := identity
+
+/-- Product-exit router, root-zero branch with a projection endpoint. -/
+example {P : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = P n * X) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_exit_sequence using
+    base := hbase,
+    recurrence := hrec,
+    certificate := rootZero
+
+/-- Product-exit router, period-two branch. -/
+example {P : Nat → ℝ[X]}
+    (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
+    (hrec : ∀ n : Nat, P (n + 2) = P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_exit_sequence using
+    base_zero := hbase_zero,
+    base_one := hbase_one,
+    recurrence := hrec,
+    certificate := periodTwo
+
 /-- Family G negative-lag router, shifted-square branch. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))

@@ -19,6 +19,7 @@ import RealRooted.Tactic.MagnitudeDominated
 import RealRooted.Tactic.MultiplierSequence
 import RealRooted.Tactic.OperatorPreservesInterlacing
 import RealRooted.Tactic.PFPolynomial
+import RealRooted.Tactic.Product
 import RealRooted.Tactic.PosCombo
 import RealRooted.Tactic.RootCount
 import RealRooted.Tactic.StaircaseSum
@@ -54,6 +55,9 @@ rr_g_negative_lag_sequence using ... certificate := negativeQuadratic
 rr_g_negative_lag_sequence using ... certificate := globalNonpos
 rr_g_negative_lag_sequence_den_coeff using ... certificate := negativeSquare
 rr_g_negative_lag_sequence_den_coeff using ... certificate := negativeQuadratic
+rr_product_exit_sequence using ... certificate := identity
+rr_product_exit_sequence using ... certificate := rootZero
+rr_product_exit_sequence using ... certificate := periodTwo
 ```
 
 This should remain a thin wrapper over explicit family tactics.  Generated
@@ -394,7 +398,58 @@ syntax (name := rr_g_neg_lag_den_quad_rr)
     "certificate" ":=" "negativeQuadratic" :
   tactic
 
+syntax (name := rr_product_exit_sequence_identity)
+  "rr_product_exit_sequence" " using "
+    "base" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "identity" :
+  tactic
+
+syntax (name := rr_product_exit_sequence_root_zero)
+  "rr_product_exit_sequence" " using "
+    "base" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "rootZero" :
+  tactic
+
+syntax (name := rr_product_exit_sequence_period_two)
+  "rr_product_exit_sequence" " using "
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "periodTwo" :
+  tactic
+
 macro_rules
+  | `(tactic|
+      rr_product_exit_sequence using
+        base := $hbase:term,
+        recurrence := $hrec:term,
+        certificate := identity) =>
+      `(tactic|
+        rr_product_identity_sequence using
+          base := $hbase,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_exit_sequence using
+        base := $hbase:term,
+        recurrence := $hrec:term,
+        certificate := rootZero) =>
+      `(tactic|
+        rr_product_root_zero_sequence using
+          base := $hbase,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_exit_sequence using
+        base_zero := $hbase_zero:term,
+        base_one := $hbase_one:term,
+        recurrence := $hrec:term,
+        certificate := periodTwo) =>
+      `(tactic|
+        rr_product_period_two_sequence using
+          base_zero := $hbase_zero,
+          base_one := $hbase_one,
+          recurrence := $hrec)
   | `(tactic|
       rr_g_negative_lag_sequence using
         base := $hbase:term,
