@@ -355,6 +355,10 @@ example {f g : ℝ[X]} (hfg : Prec0 f g) (hf : f ≠ 0) (hg : g ≠ 0) :
     Prec f g := by
   rr_prec using hfg, hf, hg
 
+example {f g : ℝ[X]} (hfg : Prec0 f g) (hf : f ≠ 0) (hg : g ≠ 0) :
+    Prec f g := by
+  rr_finish using hfg, hf, hg
+
 example {P : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
     (hstep : ∀ n : Nat,
@@ -460,12 +464,22 @@ example {p q : ℝ[X]} {rest : List ℝ[X]}
 example {p q : ℝ[X]} {rest : List ℝ[X]}
     (hpq : Prec q p) (htail : IsGeneralizedSturmSeq (q :: rest)) :
     IsGeneralizedSturmSeq (p :: q :: rest) := by
+  rr_finish using hpq, htail
+
+example {p q : ℝ[X]} {rest : List ℝ[X]}
+    (hpq : Prec q p) (htail : IsGeneralizedSturmSeq (q :: rest)) :
+    IsGeneralizedSturmSeq (p :: q :: rest) := by
   rr_finish
 
 example {p q : ℝ[X]} {rest : List ℝ[X]}
     (hpq : Interlaces q p) (htail : IsSturmSeq (q :: rest)) :
     IsSturmSeq (p :: q :: rest) := by
   rr_sturm_cons using hpq, htail
+
+example {p q : ℝ[X]} {rest : List ℝ[X]}
+    (hpq : Interlaces q p) (htail : IsSturmSeq (q :: rest)) :
+    IsSturmSeq (p :: q :: rest) := by
+  rr_finish using hpq, htail
 
 example {p q : ℝ[X]} {rest : List ℝ[X]}
     (hpq : Interlaces q p) (htail : IsSturmSeq (q :: rest)) :

@@ -441,6 +441,9 @@ syntax (name := rr_finish_using) "rr_finish" " using " term : tactic
 syntax (name := rr_finish_using_interlaces_degree)
   "rr_finish" " using " term ", " term : tactic
 
+syntax (name := rr_finish_using_prec0)
+  "rr_finish" " using " term ", " term ", " term : tactic
+
 syntax (name := rr_finish_using_sequence_branches)
   "rr_finish" " using " term ", " term ", " term ", " term : tactic
 
@@ -718,7 +721,12 @@ macro_rules
           | exact RealRooted.Prec.toInterlaces $hprec ($hdeg).symm
           | exact RealRooted.prec_sequence_of_base_and_step $hprec $hdeg
           | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_prec_sequence $hprec $hdeg))
+              (RealRooted.isRealRooted_of_prec_sequence $hprec $hdeg)
+          | simpa [RealRooted.IsGeneralizedSturmSeq] using
+              And.intro $hprec $hdeg
+          | simpa [RealRooted.IsSturmSeq] using And.intro $hprec $hdeg)
+  | `(tactic| rr_finish using $hprec0:term, $hf:term, $hg:term) =>
+      `(tactic| exact RealRooted.Prec0.toPrec_of_ne $hprec0 $hf $hg)
   | `(tactic| rr_finish using $hbase:term, $hbranch:term, $hsame:term, $hsucc:term) =>
       `(tactic|
         first
