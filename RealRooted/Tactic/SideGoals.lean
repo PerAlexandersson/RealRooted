@@ -36,6 +36,7 @@ syntax (name := rr_side_ne_seq) "rr_side_ne_seq" : tactic
 syntax (name := rr_positivity_seq) "rr_positivity_seq" : tactic
 syntax (name := rr_side) "rr_side" : tactic
 
+syntax (name := rr_side_pos_term) "rr_side_pos_term" : term
 syntax (name := rr_side_nonneg_seq_term) "rr_side_nonneg_seq_term" : term
 syntax (name := rr_side_ne_seq_term) "rr_side_ne_seq_term" : term
 
@@ -71,10 +72,10 @@ macro_rules
           | assumption
           | exact_mod_cast (by assumption)
           | apply neg_ne_zero.mpr
-            exact ne_of_gt (by rr_side_pos)
+            exact ne_of_gt rr_side_pos_term
           | positivity
           | norm_num
-          | exact ne_of_gt (by rr_side_pos)
+          | exact ne_of_gt rr_side_pos_term
           | apply ne_of_gt
             positivity
           | apply ne_of_lt
@@ -104,6 +105,8 @@ macro_rules
               Polynomial.eval_C,
               Polynomial.eval_X]
           | grind)
+  | `(rr_side_pos_term) =>
+      `(by rr_side_pos)
   | `(rr_side_nonneg_seq_term) =>
       `(by rr_side_nonneg_seq)
   | `(rr_side_ne_seq_term) =>
