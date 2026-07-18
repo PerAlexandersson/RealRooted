@@ -94,6 +94,13 @@ rr_product_parity_sequence using ... certificate := scalarThenXAddCPowAuto
 rr_product_parity_sequence using ... certificate := scalarThenCAddXPow
 rr_product_parity_sequence using ... certificate := scalarThenCAddXPowAuto
 rr_product_parity_lift_sequence using ... certificate := scalarXOdd
+rr_endpoint_pair_sequence using ... certificate := sumThenX
+rr_endpoint_pair_sequence_realrooted using ... certificate := sumThenX
+rr_endpoint_pair_sequence using ... certificate := xThenSum
+rr_endpoint_pair_sequence_realrooted using ... certificate := xThenSum
+rr_endpoint_pair_lift_sequence using ... certificate := sumThenX
+rr_endpoint_pair_lift_sequence using ... certificate := xThenSum
+rr_endpoint_pair_lift_sequence using ... certificate := xThenSumSwapped
 rr_product_lift_sequence using ... certificate := suppliedFactor
 rr_product_lift_sequence using ... certificate := rootZero
 rr_product_lift_sequence using ... certificate := rootZeroPow
@@ -798,6 +805,89 @@ syntax (name := rr_product_parity_lift_sequence_scalar_x_odd)
     "certificate" ":=" "scalarXOdd" :
   tactic
 
+syntax (name := rr_endpoint_pair_sequence_sum_then_x)
+  "rr_endpoint_pair_sequence" " using "
+    "base" ":=" term ","
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term ","
+    "sum_step" ":=" term ","
+    "x_step" ":=" term ","
+    "coprime" ":=" term ","
+    "certificate" ":=" "sumThenX" :
+  tactic
+
+syntax (name := rr_endpoint_pair_sequence_realrooted_sum_then_x)
+  "rr_endpoint_pair_sequence_realrooted" " using "
+    "base" ":=" term ","
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term ","
+    "sum_step" ":=" term ","
+    "x_step" ":=" term ","
+    "coprime" ":=" term ","
+    "certificate" ":=" "sumThenX" :
+  tactic
+
+syntax (name := rr_endpoint_pair_sequence_x_then_sum)
+  "rr_endpoint_pair_sequence" " using "
+    "base" ":=" term ","
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term ","
+    "x_step" ":=" term ","
+    "sum_step" ":=" term ","
+    "coprime" ":=" term ","
+    "certificate" ":=" "xThenSum" :
+  tactic
+
+syntax (name := rr_endpoint_pair_sequence_realrooted_x_then_sum)
+  "rr_endpoint_pair_sequence_realrooted" " using "
+    "base" ":=" term ","
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term ","
+    "x_step" ":=" term ","
+    "sum_step" ":=" term ","
+    "coprime" ":=" term ","
+    "certificate" ":=" "xThenSum" :
+  tactic
+
+syntax (name := rr_endpoint_pair_lift_sequence_sum_then_x)
+  "rr_endpoint_pair_lift_sequence" " using "
+    "base" ":=" term ","
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term ","
+    "sum_step" ":=" term ","
+    "x_step" ":=" term ","
+    "coprime" ":=" term ","
+    "even_factorization" ":=" term ","
+    "odd_factorization" ":=" term ","
+    "certificate" ":=" "sumThenX" :
+  tactic
+
+syntax (name := rr_endpoint_pair_lift_sequence_x_then_sum)
+  "rr_endpoint_pair_lift_sequence" " using "
+    "base" ":=" term ","
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term ","
+    "x_step" ":=" term ","
+    "sum_step" ":=" term ","
+    "coprime" ":=" term ","
+    "even_factorization" ":=" term ","
+    "odd_factorization" ":=" term ","
+    "certificate" ":=" "xThenSum" :
+  tactic
+
+syntax (name := rr_endpoint_pair_lift_sequence_x_then_sum_swapped)
+  "rr_endpoint_pair_lift_sequence" " using "
+    "base" ":=" term ","
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term ","
+    "x_step" ":=" term ","
+    "sum_step" ":=" term ","
+    "coprime" ":=" term ","
+    "even_factorization" ":=" term ","
+    "odd_factorization" ":=" term ","
+    "certificate" ":=" "xThenSumSwapped" :
+  tactic
+
 syntax (name := rr_product_lift_sequence_supplied_factor)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -1215,6 +1305,137 @@ macro_rules
         rr_even_product_odd_X_scalar_sequence using
           even_realrooted := $hquot,
           scalar_ne := $ha,
+          even_factorization := $heven,
+          odd_factorization := $hodd)
+  | `(tactic|
+      rr_endpoint_pair_sequence using
+        base := $hbase:term,
+        left_nonneg := $hleft_nonneg:term,
+        right_nonneg := $hright_nonneg:term,
+        sum_step := $hsum_step:term,
+        x_step := $hx_step:term,
+        coprime := $hcop:term,
+        certificate := sumThenX) =>
+      `(tactic|
+        rr_endpoint_sum_then_X_pair_sequence using
+          base := $hbase,
+          left_nonneg := $hleft_nonneg,
+          right_nonneg := $hright_nonneg,
+          sum_step := $hsum_step,
+          x_step := $hx_step,
+          coprime := $hcop)
+  | `(tactic|
+      rr_endpoint_pair_sequence_realrooted using
+        base := $hbase:term,
+        left_nonneg := $hleft_nonneg:term,
+        right_nonneg := $hright_nonneg:term,
+        sum_step := $hsum_step:term,
+        x_step := $hx_step:term,
+        coprime := $hcop:term,
+        certificate := sumThenX) =>
+      `(tactic|
+        rr_endpoint_sum_then_X_pair_sequence_realrooted using
+          base := $hbase,
+          left_nonneg := $hleft_nonneg,
+          right_nonneg := $hright_nonneg,
+          sum_step := $hsum_step,
+          x_step := $hx_step,
+          coprime := $hcop)
+  | `(tactic|
+      rr_endpoint_pair_sequence using
+        base := $hbase:term,
+        left_nonneg := $hleft_nonneg:term,
+        right_nonneg := $hright_nonneg:term,
+        x_step := $hx_step:term,
+        sum_step := $hsum_step:term,
+        coprime := $hcop:term,
+        certificate := xThenSum) =>
+      `(tactic|
+        rr_endpoint_X_then_sum_pair_sequence using
+          base := $hbase,
+          left_nonneg := $hleft_nonneg,
+          right_nonneg := $hright_nonneg,
+          x_step := $hx_step,
+          sum_step := $hsum_step,
+          coprime := $hcop)
+  | `(tactic|
+      rr_endpoint_pair_sequence_realrooted using
+        base := $hbase:term,
+        left_nonneg := $hleft_nonneg:term,
+        right_nonneg := $hright_nonneg:term,
+        x_step := $hx_step:term,
+        sum_step := $hsum_step:term,
+        coprime := $hcop:term,
+        certificate := xThenSum) =>
+      `(tactic|
+        rr_endpoint_X_then_sum_pair_sequence_realrooted using
+          base := $hbase,
+          left_nonneg := $hleft_nonneg,
+          right_nonneg := $hright_nonneg,
+          x_step := $hx_step,
+          sum_step := $hsum_step,
+          coprime := $hcop)
+  | `(tactic|
+      rr_endpoint_pair_lift_sequence using
+        base := $hbase:term,
+        left_nonneg := $hleft_nonneg:term,
+        right_nonneg := $hright_nonneg:term,
+        sum_step := $hsum_step:term,
+        x_step := $hx_step:term,
+        coprime := $hcop:term,
+        even_factorization := $heven:term,
+        odd_factorization := $hodd:term,
+        certificate := sumThenX) =>
+      `(tactic|
+        rr_endpoint_sum_then_X_pair_lift_sequence using
+          base := $hbase,
+          left_nonneg := $hleft_nonneg,
+          right_nonneg := $hright_nonneg,
+          sum_step := $hsum_step,
+          x_step := $hx_step,
+          coprime := $hcop,
+          even_factorization := $heven,
+          odd_factorization := $hodd)
+  | `(tactic|
+      rr_endpoint_pair_lift_sequence using
+        base := $hbase:term,
+        left_nonneg := $hleft_nonneg:term,
+        right_nonneg := $hright_nonneg:term,
+        x_step := $hx_step:term,
+        sum_step := $hsum_step:term,
+        coprime := $hcop:term,
+        even_factorization := $heven:term,
+        odd_factorization := $hodd:term,
+        certificate := xThenSum) =>
+      `(tactic|
+        rr_endpoint_X_then_sum_pair_lift_sequence using
+          base := $hbase,
+          left_nonneg := $hleft_nonneg,
+          right_nonneg := $hright_nonneg,
+          x_step := $hx_step,
+          sum_step := $hsum_step,
+          coprime := $hcop,
+          even_factorization := $heven,
+          odd_factorization := $hodd)
+  | `(tactic|
+      rr_endpoint_pair_lift_sequence using
+        base := $hbase:term,
+        left_nonneg := $hleft_nonneg:term,
+        right_nonneg := $hright_nonneg:term,
+        x_step := $hx_step:term,
+        sum_step := $hsum_step:term,
+        coprime := $hcop:term,
+        even_factorization := $heven:term,
+        odd_factorization := $hodd:term,
+        certificate := xThenSumSwapped) =>
+      `(tactic|
+        rr_endpoint_X_then_sum_pair_lift_swapped_sequence using
+          base := $hbase,
+          left_nonneg := $hleft_nonneg,
+          right_nonneg := $hright_nonneg,
+          x_step := $hx_step,
+          sum_step := $hsum_step,
+          coprime := $hcop,
           even_factorization := $heven,
           odd_factorization := $hodd)
   | `(tactic|

@@ -826,6 +826,108 @@ example {P Q : Nat → ℝ[X]} {a : Nat → ℝ}
     odd_factorization := hodd,
     certificate := scalarXOdd
 
+/-- Endpoint-pair router, sum-then-`X` branch. -/
+example {A B : Nat → ℝ[X]}
+    (hbase : Prec (A 0) (B 0))
+    (hA0_nonneg : HasNonnegCoeffs (A 0))
+    (hB0_nonneg : HasNonnegCoeffs (B 0))
+    (hstepA : ∀ n : Nat, A (n + 1) = A n + B n)
+    (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A (n + 1))
+    (hcop : ∀ n : Nat, IsCoprime (B n) (X * A (n + 1))) :
+    ∀ n : Nat, Prec (A n) (B n) := by
+  rr_endpoint_pair_sequence using
+    base := hbase,
+    left_nonneg := hA0_nonneg,
+    right_nonneg := hB0_nonneg,
+    sum_step := hstepA,
+    x_step := hstepB,
+    coprime := hcop,
+    certificate := sumThenX
+
+/-- Endpoint-pair router, real-rootedness endpoint for the reversed branch. -/
+example {A B : Nat → ℝ[X]}
+    (hbase : Prec (A 0) (B 0))
+    (hA0_nonneg : HasNonnegCoeffs (A 0))
+    (hB0_nonneg : HasNonnegCoeffs (B 0))
+    (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A n)
+    (hstepA : ∀ n : Nat, A (n + 1) = A n + B (n + 1))
+    (hcop : ∀ n : Nat, IsCoprime (B n) (X * A n)) :
+    ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧ (B n ≠ 0 ∧ (B n).Splits) := by
+  rr_endpoint_pair_sequence_realrooted using
+    base := hbase,
+    left_nonneg := hA0_nonneg,
+    right_nonneg := hB0_nonneg,
+    x_step := hstepB,
+    sum_step := hstepA,
+    coprime := hcop,
+    certificate := xThenSum
+
+/-- Endpoint-pair lift router, sum-then-`X` branch. -/
+example {P A B : Nat → ℝ[X]} {mA mB : Nat → Nat}
+    (hbase : Prec (A 0) (B 0))
+    (hA0_nonneg : HasNonnegCoeffs (A 0))
+    (hB0_nonneg : HasNonnegCoeffs (B 0))
+    (hstepA : ∀ n : Nat, A (n + 1) = A n + B n)
+    (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A (n + 1))
+    (hcop : ∀ n : Nat, IsCoprime (B n) (X * A (n + 1)))
+    (hrowA : ∀ n : Nat, P (2 * n) = (X + C (1 : ℝ)) ^ (mA n) * A n)
+    (hrowB : ∀ n : Nat, P (2 * n + 1) = (X + C (1 : ℝ)) ^ (mB n) * B n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_endpoint_pair_lift_sequence using
+    base := hbase,
+    left_nonneg := hA0_nonneg,
+    right_nonneg := hB0_nonneg,
+    sum_step := hstepA,
+    x_step := hstepB,
+    coprime := hcop,
+    even_factorization := hrowA,
+    odd_factorization := hrowB,
+    certificate := sumThenX
+
+/-- Endpoint-pair lift router, reversed branch. -/
+example {P A B : Nat → ℝ[X]} {mA mB : Nat → Nat}
+    (hbase : Prec (A 0) (B 0))
+    (hA0_nonneg : HasNonnegCoeffs (A 0))
+    (hB0_nonneg : HasNonnegCoeffs (B 0))
+    (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A n)
+    (hstepA : ∀ n : Nat, A (n + 1) = A n + B (n + 1))
+    (hcop : ∀ n : Nat, IsCoprime (B n) (X * A n))
+    (hrowA : ∀ n : Nat, P (2 * n) = (X + C (1 : ℝ)) ^ (mA n) * A n)
+    (hrowB : ∀ n : Nat, P (2 * n + 1) = (X + C (1 : ℝ)) ^ (mB n) * B n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_endpoint_pair_lift_sequence using
+    base := hbase,
+    left_nonneg := hA0_nonneg,
+    right_nonneg := hB0_nonneg,
+    x_step := hstepB,
+    sum_step := hstepA,
+    coprime := hcop,
+    even_factorization := hrowA,
+    odd_factorization := hrowB,
+    certificate := xThenSum
+
+/-- Endpoint-pair lift router, reversed branch with swapped row quotient. -/
+example {P A B : Nat → ℝ[X]} {mA mB : Nat → Nat}
+    (hbase : Prec (A 0) (B 0))
+    (hA0_nonneg : HasNonnegCoeffs (A 0))
+    (hB0_nonneg : HasNonnegCoeffs (B 0))
+    (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A n)
+    (hstepA : ∀ n : Nat, A (n + 1) = A n + B (n + 1))
+    (hcop : ∀ n : Nat, IsCoprime (B n) (X * A n))
+    (hrowB : ∀ n : Nat, P (2 * n) = (X + C (1 : ℝ)) ^ (mB n) * B n)
+    (hrowA : ∀ n : Nat, P (2 * n + 1) = (X + C (1 : ℝ)) ^ (mA n) * A n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_endpoint_pair_lift_sequence using
+    base := hbase,
+    left_nonneg := hA0_nonneg,
+    right_nonneg := hB0_nonneg,
+    x_step := hstepB,
+    sum_step := hstepA,
+    coprime := hcop,
+    even_factorization := hrowB,
+    odd_factorization := hrowA,
+    certificate := xThenSumSwapped
+
 /-- Product-lift router with a supplied factor certificate. -/
 example {P Q F : Nat → ℝ[X]}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
