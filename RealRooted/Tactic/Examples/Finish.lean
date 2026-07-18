@@ -26,6 +26,9 @@ example {f : ℝ[X]} (hf : f.Splits) : f.Splits := by
 example {f : ℝ[X]} (hdeg : f.natDegree ≤ 1) : f.Splits := by
   rr_splits
 
+example {f : ℝ[X]} (hdeg : f.natDegree ≤ 1) : f.Splits := by
+  rr_finish
+
 example {f : ℝ[X]} (hf : f ≠ 0) (hdeg : f.natDegree ≤ 1) :
     f ≠ 0 ∧ f.Splits := by
   rr_realrooted

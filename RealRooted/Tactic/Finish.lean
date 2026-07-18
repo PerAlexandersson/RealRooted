@@ -774,6 +774,7 @@ macro_rules
           | exact (RealRooted.natDegree_succ_of_interlaces rr_lookup_term).symm
           | exact rr_lookup_interlaces_term
           | exact RealRooted.ne_zero_of_natDegree_eq_one (by rr_degree_eq_one)
+          | (apply Polynomial.Splits.of_natDegree_le_one <;> rr_degree_le_one)
           | (exact ⟨by rr_nonzero, by rr_splits⟩ <;> done)
           | rr_sign
           | simp_all [
