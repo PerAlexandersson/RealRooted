@@ -95,7 +95,7 @@ theorem interlaces_const_linear {c p : ℝ[X]}
     rw [← Multiset.card_eq_zero]
     have hcard := card_roots_of_splits hc_rr.2
     rw [hcdeg] at hcard
-    omega
+    lia
   refine ⟨hp_rr, hc_rr, by simp [hcdeg, hp_deg], ?_⟩
   refine ⟨[-(p.coeff 1)⁻¹ * p.coeff 0], [], by simp, by simp, ?_, ?_,
     by simp [ListInterlaces]⟩
@@ -197,7 +197,7 @@ theorem linear_tail_sequence_natDegree {A : ℕ → ℝ[X]} {c a b u v : ℝ}
         (linear_tail_sequence_ne_zero (A := A) hc hb hv h0 h1 hstep (n + 1)),
         htail_deg,
         linear_tail_sequence_natDegree (A := A) hc hb hv h0 h1 hstep (n + 1)]
-      omega
+      lia
 
 /-- Multiplication by a positive linear factor appends a negative root and interlaces. -/
 theorem interlaces_self_mul_C_add_C_mul_X_of_nonnegCoeffs {f : ℝ[X]}
@@ -363,7 +363,7 @@ theorem monomial_tail_sequence_natDegree {A : ℕ → ℝ[X]} {c a b u : ℝ}
         (monomial_tail_sequence_ne_zero (A := A) hc hb hu h0 h1 hstep (n + 1)),
         natDegree_C_mul_X u hu,
         monomial_tail_sequence_natDegree (A := A) hc hb hu h0 h1 hstep (n + 1)]
-      omega
+      lia
 
 /-- Consecutive interlacing for a positive constant/linear-base monomial-tail sequence. -/
 theorem monomial_tail_sequence_interlaces {A : ℕ → ℝ[X]} {c a b u : ℝ}
@@ -462,6 +462,6 @@ theorem interlaces_X_sub_C_pow_mul_linear_pow (r : ℝ) (m : ℕ) (a b : ℝ)
     intro k
     rw [natDegree_mul (pow_ne_zero _ (X_sub_C_ne_zero r)) (pow_ne_zero _ hlin_ne),
       natDegree_pow, natDegree_X_sub_C, mul_one, natDegree_pow, hlin_deg, mul_one]
-  exact hprecm.toInterlaces (by rw [hdegree n, hdegree (n + 1)]; omega)
+  exact hprecm.toInterlaces (by rw [hdegree n, hdegree (n + 1)]; lia)
 
 end RealRooted

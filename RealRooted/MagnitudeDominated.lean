@@ -68,7 +68,7 @@ theorem prec_of_magnitude_dominated
       b₁.eval r * (g₁.eval r) ^ 2 + b₂.eval r * (g₂.eval r * g₁.eval r) < 0) :
     Prec f (a * f + b₁ * g₁ + b₂ * g₂) := by
   rcases (by
-      omega : (a * f + b₁ * g₁ + b₂ * g₂).natDegree = f.natDegree ∨
+      lia : (a * f + b₁ * g₁ + b₂ * g₂).natDegree = f.natDegree ∨
         (a * f + b₁ * g₁ + b₂ * g₂).natDegree = f.natDegree + 1) with hsame | hsucc
   · exact prec_of_magnitude_dominated_same hg₁f hg₁_pos hF_pos hsame hcert
   · exact prec_of_magnitude_dominated_succ hg₁f hg₁_pos hF_pos hsucc hcert
