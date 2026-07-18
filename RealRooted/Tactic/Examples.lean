@@ -28,6 +28,7 @@ import RealRooted.Tactic.Examples.OEISPositiveTLag
 import RealRooted.Tactic.Examples.Matrix
 import RealRooted.Tactic.Examples.SymmetricDecomposition
 import RealRooted.Tactic.Examples.VeroneseSection
+import RealRooted.Tactic.Examples.WeightedSum
 import RealRooted.Tactic.Examples.Combinatorial
 import RealRooted.Tactic.Examples.SequenceSurvey
 import RealRooted.Tactic.Examples.OEISTestbed

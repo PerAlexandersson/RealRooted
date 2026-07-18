@@ -152,6 +152,7 @@ import RealRooted.Tactic.Examples.Sign
 import RealRooted.Tactic.Examples.SymmetricDecomposition
 import RealRooted.Tactic.Examples.VeroneseSection
 import RealRooted.Tactic.Examples.WagnerX
+import RealRooted.Tactic.Examples.WeightedSum
 import RealRooted.Tactic.Favard
 import RealRooted.Tactic.FiniteSymbolPF
 import RealRooted.Tactic.Finish
@@ -180,6 +181,7 @@ import RealRooted.Tactic.SymmetricDecomposition
 import RealRooted.Tactic.Targets
 import RealRooted.Tactic.VeroneseSection
 import RealRooted.Tactic.WagnerX
+import RealRooted.Tactic.WeightedSum
 import RealRooted.TridiagonalDet
 import RealRooted.UpperDerivativeInterlace
 import RealRooted.VeroneseMatrix
