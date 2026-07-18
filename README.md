@@ -135,11 +135,11 @@ the checked or challenge-facing highlights are:
   `RealRooted.Challenges.ChudnovskySeymour`; references include
   Chudnovsky--Seymour (2007) and Heilmann--Lieb (1972).
 
-The challenge surface also records open theorem-shaped targets.  Kurtz's
-coefficient inequality criterion and the Hermite--Poulain differential-operator
-preserver are stated as `sorry` targets, while Borcea--Branden's finite-symbol
-classification is currently a scaffold because a faithful statement needs a
-multivariate real-stability API.
+The challenge surface also records theorem-shaped targets as they mature.
+Kurtz's coefficient inequality criterion and the finite Hermite--Poulain
+differential-operator preserver are checked, while Borcea--Branden's
+finite-symbol classification is currently a scaffold because a faithful
+statement needs a multivariate real-stability API.
 
 ### Interlacing And Preservers
 
@@ -264,9 +264,9 @@ theorems.
 GitHub issues track individual proof tasks rather than being duplicated here.
 Current open themes include Liu's compatible-sequences theorem, the
 Gustafsson-Solus interlacing recursion, the Haglund-Zhang `s`-inversion
-backend, characteristic-polynomial packaging for Cauchy interlacing, Kurtz and
-Hermite-Poulain preservers, a finite Borcea-Branden symbol interface, and the
-Braun-Jal generalized snake poset target.
+backend, characteristic-polynomial packaging for Cauchy interlacing, a finite
+Borcea-Branden symbol interface, and the Braun-Jal generalized snake poset
+target.
 
 ## Development Notes
 
