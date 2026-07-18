@@ -42,9 +42,7 @@ private lemma natDegree_C_mul_X_sub_C {s t : ℝ} (hs : s ≠ 0) :
 private lemma hasPosLeadingCoeff_C_mul_X_sub_C {s t : ℝ} (hs : 0 < s) :
     HasPosLeadingCoeff (C s * X - C t : ℝ[X]) := by
   rw [C_mul_X_sub_C_eq_C_mul_X_sub_C_div hs.ne']
-  unfold HasPosLeadingCoeff
-  rw [Polynomial.leadingCoeff_mul, leadingCoeff_C, leadingCoeff_X_sub_C]
-  simpa using hs
+  rr_pos_lc
 
 private lemma neg_one_pow_mul_self (n : Nat) :
     ((-1 : ℝ) ^ n) * ((-1 : ℝ) ^ n) = 1 := by
@@ -159,8 +157,7 @@ theorem favardInterlacing_affine_const_coeff {P : Nat → ℝ[X]} {s α β : ℝ
         · rw [hP0, hP1]
           exact interlaces_one_linear (by simpa [aPoly] using hA_deg)
         · rw [hP0]
-          unfold HasPosLeadingCoeff
-          simp
+          rr_pos_lc
         · rw [hP1]
           simpa [aPoly] using hA_pos
     | succ n ih =>
@@ -323,8 +320,7 @@ theorem favardInterlacing_affine_param_coeff
         · rw [hP0, hP1]
           exact interlaces_one_linear (by simpa [aPoly] using hA_deg)
         · rw [hP0]
-          unfold HasPosLeadingCoeff
-          simp
+          rr_pos_lc
         · rw [hP1]
           simpa [aPoly] using hA_pos
     | succ n ih =>
