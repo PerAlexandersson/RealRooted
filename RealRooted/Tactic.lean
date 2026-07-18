@@ -1,4 +1,5 @@
 import RealRooted.Tactic.Attr
+import RealRooted.Tactic.AllCombo
 import RealRooted.Tactic.SideGoals
 import RealRooted.Tactic.ScalarDen
 import RealRooted.Tactic.Sign

@@ -1,3 +1,4 @@
+import RealRooted.Tactic.AllCombo
 import RealRooted.Tactic.MaWang
 import RealRooted.Tactic.CubicDiscriminant
 import RealRooted.Tactic.Derivative
