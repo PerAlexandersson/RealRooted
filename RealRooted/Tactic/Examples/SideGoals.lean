@@ -254,6 +254,21 @@ example {p : ℝ[X]} (hp : HasPosLeadingCoeff p) :
     HasPosLeadingCoeff (p * X) := by
   rr_pos_lc
 
+example {p q : ℝ[X]} (hp : HasPosLeadingCoeff p)
+    (hdeg : q.natDegree < p.natDegree) :
+    HasPosLeadingCoeff (p + q) := by
+  rr_pos_lc
+
+example {p q : ℝ[X]} (hq : HasPosLeadingCoeff q)
+    (hdeg : p.natDegree < q.natDegree) :
+    HasPosLeadingCoeff (p + q) := by
+  rr_pos_lc
+
+example {p q : ℝ[X]} (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q)
+    (hdeg : p.natDegree = q.natDegree) :
+    HasPosLeadingCoeff (p + q) := by
+  rr_pos_lc
+
 example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a * b := by
   rr_side
 

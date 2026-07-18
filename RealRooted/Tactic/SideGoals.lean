@@ -316,6 +316,12 @@ macro_rules
             · rr_pos_lc
             · rr_close_side
           | apply RealRooted.HasPosLeadingCoeff.mul <;> rr_pos_lc
+          | exact RealRooted.hasPosLeadingCoeff_add_of_natDegree_lt_left
+              (by assumption) (by rr_pos_lc)
+          | exact RealRooted.hasPosLeadingCoeff_add_of_natDegree_lt_right
+              (by assumption) (by rr_pos_lc)
+          | exact RealRooted.hasPosLeadingCoeff_add_of_same_natDegree
+              (by assumption) (by rr_pos_lc) (by rr_pos_lc)
           | apply RealRooted.HasNonnegCoeffs.pos_leadingCoeff
             · rr_nonneg_coeffs
             · rr_close_side
