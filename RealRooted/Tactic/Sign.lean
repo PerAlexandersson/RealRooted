@@ -49,6 +49,17 @@ lemma eval_C_mul_X_mul_one_sub_X_nonpos_of_nonneg_of_nonpos {c r : ℝ}
   have hone : 0 ≤ 1 - r := by linarith
   simpa [sub_eq_add_neg, mul_assoc] using mul_nonpos_of_nonpos_of_nonneg hcr hone
 
+lemma eval_C_mul_two_X_sub_two_X_sq_nonpos_of_nonneg_of_nonpos {c r : ℝ}
+    (hc : 0 ≤ c) (hr : r ≤ 0) :
+    (C c * (C (2 : ℝ) * X - C (2 : ℝ) * X ^ 2) : ℝ[X]).eval r ≤ 0 := by
+  have htail : 2 * r - 2 * r ^ 2 ≤ 0 := by
+    nlinarith [sq_nonneg r, hr]
+  simpa [
+    Polynomial.eval_mul,
+    Polynomial.eval_sub,
+    Polynomial.eval_pow,
+    mul_assoc] using mul_nonpos_of_nonneg_of_nonpos hc htail
+
 lemma eval_X_mul_one_sub_X_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
     (X * (1 - X) : ℝ[X]).eval r ≤ 0 := by
   have hone : 0 ≤ 1 - r := by linarith
@@ -439,6 +450,10 @@ macro_rules
                 rr_sign_side_term
           | exact
               RealRooted.eval_C_mul_X_mul_one_sub_X_nonpos_of_nonneg_of_nonpos
+                rr_sign_side_term
+                rr_sign_side_term
+          | exact
+              RealRooted.eval_C_mul_two_X_sub_two_X_sq_nonpos_of_nonneg_of_nonpos
                 rr_sign_side_term
                 rr_sign_side_term
           | exact RealRooted.eval_X_mul_one_sub_X_nonpos_of_nonpos

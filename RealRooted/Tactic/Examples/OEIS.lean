@@ -61,6 +61,33 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     no_common_roots := hno,
     certificate := directHalfLine
 
+/-- Direct Family I2 half-line branch, Narayana-style zero-lag derivative
+term. -/
+example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {m : Nat}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        U n * P (n + 1) +
+          (C (((n + 1 : Nat) : ℝ) + 2 * m + 2)⁻¹ *
+              (C (2 : ℝ) * X - C (2 : ℝ) * X ^ 2)) *
+            (P (n + 1)).derivative +
+          0 * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_i2_derivative_lag_sequence_realrooted using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    degree_two := hdeg_two,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno,
+    certificate := directHalfLine
+
 /-- `A358623`-style Wagner gap-lag branch, adjacent-`Prec` endpoint. -/
 example {P : Nat → ℝ[X]} {a c : Nat → ℝ}
     (hbase : Prec (P 0) (P 1))

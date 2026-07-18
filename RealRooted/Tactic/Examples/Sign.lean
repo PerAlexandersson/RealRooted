@@ -48,6 +48,15 @@ example {c r : ℝ} (hc : 0 ≤ c) (hr : r ≤ 0) :
     (C c * X * (1 - X) : ℝ[X]).eval r ≤ 0 := by
   rr_sign
 
+example {c r : ℝ} (hc : 0 ≤ c) (hr : r ≤ 0) :
+    (C c * (C (2 : ℝ) * X - C (2 : ℝ) * X ^ 2) : ℝ[X]).eval r ≤ 0 := by
+  rr_sign
+
+example {n m : Nat} {r : ℝ} (hr : r ≤ 0) :
+    (C (((n + 1 : Nat) : ℝ) + 2 * m + 2)⁻¹ *
+        (C (2 : ℝ) * X - C (2 : ℝ) * X ^ 2) : ℝ[X]).eval r ≤ 0 := by
+  rr_sign
+
 example {r : ℝ} (hr : r ≤ -1) :
     (1 + X : ℝ[X]).eval r ≤ 0 := by
   rr_sign
