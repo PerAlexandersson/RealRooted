@@ -23,6 +23,7 @@ import RealRooted.Tactic.PFBidiagonal
 import RealRooted.Tactic.FiniteSymbolPF
 import RealRooted.Tactic.PFBidiagonalFrontend
 import RealRooted.Tactic.I2DerivativeLag
+import RealRooted.Tactic.IteratedDerivativeShift
 import RealRooted.Tactic.J1Chebyshev
 import RealRooted.Tactic.J1Gap3Reciprocal
 import RealRooted.Tactic.Linear

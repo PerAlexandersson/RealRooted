@@ -130,6 +130,7 @@ import RealRooted.Tactic.Examples.EulerOperator
 import RealRooted.Tactic.Examples.Favard
 import RealRooted.Tactic.Examples.Finish
 import RealRooted.Tactic.Examples.I2DerivativeLag
+import RealRooted.Tactic.Examples.IteratedDerivativeShift
 import RealRooted.Tactic.Examples.J1Gap3Reciprocal
 import RealRooted.Tactic.Examples.Linear
 import RealRooted.Tactic.Examples.LinearPowerFamily
@@ -157,6 +158,7 @@ import RealRooted.Tactic.Favard
 import RealRooted.Tactic.FiniteSymbolPF
 import RealRooted.Tactic.Finish
 import RealRooted.Tactic.I2DerivativeLag
+import RealRooted.Tactic.IteratedDerivativeShift
 import RealRooted.Tactic.J1Chebyshev
 import RealRooted.Tactic.J1Gap3Reciprocal
 import RealRooted.Tactic.Linear
