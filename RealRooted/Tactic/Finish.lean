@@ -723,6 +723,8 @@ macro_rules
           | exact Polynomial.Splits.X_sub_C _
           | exact Polynomial.Splits.X_pow _
           | exact Polynomial.Splits.C_mul_X_pow _ _
+          | exact RealRooted.left_splits_of_interlaces
+              (RealRooted.derivative_interlaces (by assumption) (by rr_close_side))
           | simp [add_comm]
           | (apply Polynomial.Splits.of_natDegree_le_one <;> rr_degree_le_one)
           | simp_all [RealRooted.Prec, RealRooted.Interlaces])

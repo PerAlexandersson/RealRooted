@@ -72,6 +72,14 @@ example {f : ℝ[X]} (hdeg : f.natDegree = 1) : f ≠ 0 := by
 example {f : ℝ[X]} (hf : f.Splits) : f.Splits := by
   rr_splits using hf
 
+example {p : ℝ[X]} (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) :
+    p.derivative.Splits := by
+  rr_splits
+
+example {p : ℝ[X]} (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) :
+    p.derivative ≠ 0 ∧ p.derivative.Splits := by
+  rr_realrooted
+
 example {a : ℝ} : (C a : ℝ[X]).Splits := by
   rr_splits
 
