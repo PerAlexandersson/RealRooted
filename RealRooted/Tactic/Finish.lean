@@ -323,6 +323,10 @@ syntax (name := rr_exact_realrooted_sequence_or_projection)
   "rr_exact_realrooted_sequence_or_projection" term :
   tactic
 
+syntax (name := rr_exact_realrooted_refine_then)
+  "rr_exact_realrooted_refine_then " term " with " tactic :
+  tactic
+
 syntax (name := rr_exact_realrooted_pair_sequence_or_projection)
   "rr_exact_realrooted_pair_sequence_or_projection" term :
   tactic
@@ -481,6 +485,11 @@ macro_rules
           (RealRooted.splits_of_isRealRooted_sequence $h _),
           RealRooted.eq_zero_or_splits_of_isRealRooted_sequence $h,
           (RealRooted.eq_zero_or_splits_of_isRealRooted_sequence $h _))
+  | `(tactic| rr_exact_realrooted_refine_then $h:term with $tac:tactic) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (by
+            rr_refine_then $h with $tac))
   | `(tactic| rr_exact_realrooted_pair_sequence_or_projection $h:term) =>
       `(tactic|
         rr_first_exact

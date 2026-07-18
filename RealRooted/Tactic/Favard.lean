@@ -1914,9 +1914,15 @@ syntax (name := rr_favard_refine_positivity_seq)
   "rr_favard_refine_positivity_seq " term :
   tactic
 
+syntax (name := rr_favard_exact_realrooted_positivity_seq)
+  "rr_favard_exact_realrooted_positivity_seq " term :
+  tactic
+
 macro_rules
   | `(tactic| rr_favard_refine_positivity_seq $h:term) =>
       `(tactic| rr_refine_then $h with rr_positivity_seq)
+  | `(tactic| rr_favard_exact_realrooted_positivity_seq $h:term) =>
+      `(tactic| rr_exact_realrooted_refine_then $h with rr_positivity_seq)
   | `(tactic|
       rr_favard_goal_variants
         $hinterlace:term, $hrealrooted:term, $hnonzero:term,
@@ -1971,10 +1977,8 @@ macro_rules
         first
           | rr_favard_refine_positivity_seq
               (RealRooted.favardInterlacing $hrec ?_)
-          | rr_exact_realrooted_sequence_or_projection
-              (by
-                rr_favard_refine_positivity_seq
-                  (RealRooted.isRealRooted_of_favard $hrec ?_))
+          | rr_favard_exact_realrooted_positivity_seq
+              (RealRooted.isRealRooted_of_favard $hrec ?_)
           | rr_favard_refine_positivity_seq
               (RealRooted.nonzero_of_favard $hrec ?_)
           | rr_favard_refine_positivity_seq
@@ -1982,10 +1986,8 @@ macro_rules
                 $hrec ?_)
           | rr_favard_refine_positivity_seq
               (RealRooted.favardInterlacing $hrec ?_ _)
-          | rr_exact_realrooted_sequence_or_projection
-              (by
-                rr_favard_refine_positivity_seq
-                  (RealRooted.isRealRooted_of_favard $hrec ?_ _))
+          | rr_favard_exact_realrooted_positivity_seq
+              (RealRooted.isRealRooted_of_favard $hrec ?_ _)
           | rr_favard_refine_positivity_seq
               (RealRooted.nonzero_of_favard $hrec ?_ _)
           | rr_favard_refine_positivity_seq

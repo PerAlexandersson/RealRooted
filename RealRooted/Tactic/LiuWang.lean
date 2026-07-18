@@ -2553,10 +2553,7 @@ syntax (name := rr_lw_exact_realrooted_active_nonneg_seq)
 
 macro_rules
   | `(tactic| rr_lw_exact_realrooted_active_nonneg_seq $h:term) =>
-      `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (by
-            rr_lw_refine_active_nonneg_seq $h))
+      `(tactic| rr_exact_realrooted_refine_then $h with rr_lw_active_nonneg_seq)
 
 syntax (name := rr_lw_active_nonneg) "rr_lw_active_nonneg" : term
 
