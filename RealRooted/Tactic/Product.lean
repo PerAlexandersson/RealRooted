@@ -661,24 +661,24 @@ theorem prec_endpoint_sum_then_X_step {a b : ℝ[X]}
     (ha_nonneg : HasNonnegCoeffs a) (hb_nonneg : HasNonnegCoeffs b)
     (hcop : IsCoprime b (X * (a + b))) :
     Prec (a + b) (b + X * (a + b)) := by
-  have ha_pos : HasPosLeadingCoeff a :=
-    ha_nonneg.pos_leadingCoeff (left_ne_zero_of_prec hab)
-  have hb_pos : HasPosLeadingCoeff b :=
-    hb_nonneg.pos_leadingCoeff (right_ne_zero_of_prec hab)
+  have ha_pos : HasPosLeadingCoeff a := by
+    rr_pos_lc using nonzero := left_ne_zero_of_prec hab
+  have hb_pos : HasPosLeadingCoeff b := by
+    rr_pos_lc using nonzero := right_ne_zero_of_prec hab
   have hsum_prec_raw : Prec (C (1 : ℝ) * a + C (1 : ℝ) * b) b :=
     prec_nonneg_combo_right hab ha_pos hb_pos zero_le_one zero_le_one (Or.inl zero_lt_one)
   have hsum_prec : Prec (a + b) b := by
     simpa using hsum_prec_raw
   have hsum_nonneg : HasNonnegCoeffs (a + b) :=
     ha_nonneg.add hb_nonneg
-  have hsum_pos : HasPosLeadingCoeff (a + b) :=
-    hsum_nonneg.pos_leadingCoeff (left_ne_zero_of_prec hsum_prec)
+  have hsum_pos : HasPosLeadingCoeff (a + b) := by
+    rr_pos_lc using nonzero := left_ne_zero_of_prec hsum_prec
   have hXsum_prec : Prec (a + b) (X * (a + b)) :=
     prec_mul_X_of_prec_of_nonneg
       (prec_refl (left_ne_zero_of_prec hsum_prec) (left_splits_of_prec hsum_prec))
       hsum_nonneg hsum_nonneg
-  have hXsum_pos : HasPosLeadingCoeff (X * (a + b)) :=
-    hsum_pos.X_mul
+  have hXsum_pos : HasPosLeadingCoeff (X * (a + b)) := by
+    rr_pos_lc
   have hcombo : PosComboRealRooted b (X * (a + b)) :=
     PosComboRealRooted.of_commonLeftInterleaver
       hsum_prec hXsum_prec hb_pos hXsum_pos
@@ -695,16 +695,16 @@ theorem prec_endpoint_X_then_sum_step {a b : ℝ[X]}
     (ha_nonneg : HasNonnegCoeffs a) (hb_nonneg : HasNonnegCoeffs b)
     (hcop : IsCoprime b (X * a)) :
     Prec (a + (b + X * a)) (b + X * a) := by
-  have ha_pos : HasPosLeadingCoeff a :=
-    ha_nonneg.pos_leadingCoeff (left_ne_zero_of_prec hab)
-  have hb_pos : HasPosLeadingCoeff b :=
-    hb_nonneg.pos_leadingCoeff (right_ne_zero_of_prec hab)
+  have ha_pos : HasPosLeadingCoeff a := by
+    rr_pos_lc using nonzero := left_ne_zero_of_prec hab
+  have hb_pos : HasPosLeadingCoeff b := by
+    rr_pos_lc using nonzero := right_ne_zero_of_prec hab
   have hXa_prec : Prec a (X * a) :=
     prec_mul_X_of_prec_of_nonneg
       (prec_refl (left_ne_zero_of_prec hab) (left_splits_of_prec hab))
       ha_nonneg ha_nonneg
-  have hXa_pos : HasPosLeadingCoeff (X * a) :=
-    ha_pos.X_mul
+  have hXa_pos : HasPosLeadingCoeff (X * a) := by
+    rr_pos_lc
   have hcombo : PosComboRealRooted b (X * a) :=
     PosComboRealRooted.of_commonLeftInterleaver hab hXa_prec hb_pos hXa_pos
   have hrr : b + X * a ≠ 0 ∧ (b + X * a).Splits :=
@@ -713,8 +713,8 @@ theorem prec_endpoint_X_then_sum_step {a b : ℝ[X]}
     prec_add_of_prec_left hab hXa_prec hb_pos hXa_pos hrr.1 hrr.2 hcop
   have hsum_nonneg : HasNonnegCoeffs (b + X * a) :=
     hb_nonneg.add ha_nonneg.X_mul
-  have hsum_pos : HasPosLeadingCoeff (b + X * a) :=
-    hsum_nonneg.pos_leadingCoeff (right_ne_zero_of_prec ha_sum_prec)
+  have hsum_pos : HasPosLeadingCoeff (b + X * a) := by
+    rr_pos_lc using nonzero := right_ne_zero_of_prec ha_sum_prec
   have hnext_raw :
       Prec (C (1 : ℝ) * a + C (1 : ℝ) * (b + X * a)) (b + X * a) :=
     prec_nonneg_combo_right ha_sum_prec ha_pos hsum_pos

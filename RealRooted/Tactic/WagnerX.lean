@@ -67,8 +67,10 @@ theorem prec_wagner_derivative_gap_lag_step {f g : ℝ[X]} {a c : ℝ}
     (ha : 0 < a)
     (hc : 0 < c) :
     Prec g (X * (C c * g.derivative + C a * f)) := by
-  have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff (right_ne_zero_of_prec h)
-  have hf_pos : HasPosLeadingCoeff f := hfnn.pos_leadingCoeff (left_ne_zero_of_prec h)
+  have hg_pos : HasPosLeadingCoeff g := by
+    rr_pos_lc using nonzero := right_ne_zero_of_prec h
+  have hf_pos : HasPosLeadingCoeff f := by
+    rr_pos_lc using nonzero := left_ne_zero_of_prec h
   have hg_der_pos : HasPosLeadingCoeff g.derivative := hg_pos.derivative (by lia)
   have hder : Prec g.derivative g := (derivative_interlaces (right_splits_of_prec h) hdeg).toPrec
   have hnonneg : ∀ ap ∈ [(c, g.derivative), (a, f)], 0 ≤ ap.1 := by
@@ -348,9 +350,12 @@ theorem prec_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
     (ha : 0 < a)
     (hc : 0 ≤ c) :
     Prec g (C a * g + (C c * X) * f) := by
-  have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff (right_ne_zero_of_prec h)
-  have hXf_pos : HasPosLeadingCoeff (X * f) :=
-    (hfnn.pos_leadingCoeff (left_ne_zero_of_prec h)).X_mul
+  have hg_pos : HasPosLeadingCoeff g := by
+    rr_pos_lc using nonzero := right_ne_zero_of_prec h
+  have hXf_pos : HasPosLeadingCoeff (X * f) := by
+    have hf_pos : HasPosLeadingCoeff f := by
+      rr_pos_lc using nonzero := left_ne_zero_of_prec h
+    rr_pos_lc
   have hX : Prec g (X * f) := prec_mul_X_of_prec_of_nonneg h hfnn hgnn
   have hself : Prec g g := prec_refl (right_ne_zero_of_prec h) (right_splits_of_prec h)
   have hnonneg : ∀ ap ∈ [(a, g), (c, X * f)], 0 ≤ ap.1 := by

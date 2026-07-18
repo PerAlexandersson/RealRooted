@@ -65,9 +65,12 @@ syntax (name := rr_nonneg_coeffs_mul)
 syntax (name := rr_nonneg_coeffs_pow)
   "rr_nonneg_coeffs_pow" " using " "poly_nonneg" ":=" term "," "exponent" ":=" term :
     tactic
+syntax (name := rr_pos_lc_auto) "rr_pos_lc" : tactic
 syntax (name := rr_pos_lc_one) "rr_pos_lc_one" : tactic
 syntax (name := rr_pos_lc_from_nonneg)
   "rr_pos_lc" " using " "nonneg" ":=" term "," "nonzero" ":=" term : tactic
+syntax (name := rr_pos_lc_from_nonzero)
+  "rr_pos_lc" " using " "nonzero" ":=" term : tactic
 syntax (name := rr_pos_lc_C_mul)
   "rr_pos_lc_C_mul" " using " "scalar_pos" ":=" term "," "pos_lc" ":=" term : tactic
 syntax (name := rr_pos_lc_mul)
@@ -263,6 +266,8 @@ macro_rules
       `(tactic| exact RealRooted.hasPosLeadingCoeff_one)
   | `(tactic| rr_pos_lc using nonneg := $hnn:term, nonzero := $hp0:term) =>
       `(tactic| exact RealRooted.HasNonnegCoeffs.pos_leadingCoeff $hnn $hp0)
+  | `(tactic| rr_pos_lc using nonzero := $hp0:term) =>
+      `(tactic| exact RealRooted.HasNonnegCoeffs.pos_leadingCoeff (by rr_nonneg_coeffs) $hp0)
   | `(tactic| rr_pos_lc_C_mul using scalar_pos := $ha:term, pos_lc := $hp:term) =>
       `(tactic|
         first
@@ -278,6 +283,22 @@ macro_rules
         first
           | exact RealRooted.HasPosLeadingCoeff.X_mul $hp
           | simpa [mul_comm] using RealRooted.HasPosLeadingCoeff.X_mul $hp)
+  | `(tactic| rr_pos_lc) =>
+      `(tactic|
+        first
+          | assumption
+          | exact RealRooted.hasPosLeadingCoeff_one
+          | apply RealRooted.hasPosLeadingCoeff_C_mul
+            · rr_side_pos
+            · rr_pos_lc
+          | apply RealRooted.HasPosLeadingCoeff.X_mul
+            rr_pos_lc
+          | apply RealRooted.HasPosLeadingCoeff.mul <;> rr_pos_lc
+          | apply RealRooted.HasNonnegCoeffs.pos_leadingCoeff
+            · rr_nonneg_coeffs
+            · rr_close_side
+          | unfold RealRooted.HasPosLeadingCoeff
+            simp <;> try rr_side_pos)
   | `(tactic| rr_close_side) =>
       `(tactic|
         first
