@@ -45,8 +45,8 @@ theorem eq_add_C_inv_mul_of_C_mul_eq_C_mul_add {d : ℝ} (hd : d ≠ 0)
 /-- Symmetric variant of `eq_add_C_inv_mul_of_C_mul_eq_C_mul_add`. -/
 theorem eq_add_C_inv_mul_of_C_mul_eq_add_C_mul {d : ℝ} (hd : d ≠ 0)
     {F A B : ℝ[X]} (h : C d * F = B + C d * A) :
-    F = A + C d⁻¹ * B := by
-  exact eq_add_C_inv_mul_of_C_mul_eq_C_mul_add hd (by simpa [add_comm] using h)
+    F = A + C d⁻¹ * B :=
+  eq_add_C_inv_mul_of_C_mul_eq_C_mul_add hd (by simpa [add_comm] using h)
 
 /-- Divide a split recurrence and simplify a scalar coefficient in the extra
 summand.
@@ -72,8 +72,8 @@ theorem eq_add_C_mul_of_C_mul_eq_C_mul_add_C_mul {d b c : ℝ}
 theorem eq_add_C_mul_of_C_mul_eq_C_mul_add_comm_C_mul {d b c : ℝ}
     (hd : d ≠ 0) (hbc : d⁻¹ * b = c) {F A Q : ℝ[X]}
     (h : C d * F = C b * Q + C d * A) :
-    F = A + C c * Q := by
-  exact eq_add_C_mul_of_C_mul_eq_C_mul_add_C_mul hd hbc (by simpa [add_comm] using h)
+    F = A + C c * Q :=
+  eq_add_C_mul_of_C_mul_eq_C_mul_add_C_mul hd hbc (by simpa [add_comm] using h)
 
 /-- Divide a split recurrence and simplify two scalar coefficients in the extra
 summands. -/
