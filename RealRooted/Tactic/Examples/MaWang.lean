@@ -26,6 +26,26 @@ example {n : Nat} : 1 - ((n : ℝ) + 3) ≠ 0 := by
 example : ∀ n : Nat, 1 - ((n : ℝ) + 3) ≠ 0 := by
   rr_scalar_active_den_all
 
+example {f F u v : ℝ[X]}
+    (hf : f.Splits)
+    (hdegf : 2 ≤ f.natDegree)
+    (hrec : F = u * f + v * f.derivative)
+    (hF_pos : HasPosLeadingCoeff F)
+    (hdeg_lo : f.natDegree ≤ F.natDegree)
+    (hdeg_hi : F.natDegree ≤ f.natDegree + 1)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
+    Prec f (u * f + v * f.derivative) := by
+  rr_mw_derivative_nonpos_step using
+    splits := hf,
+    degree_two := hdegf,
+    target_pos_lc := hF_pos,
+    recurrence := hrec,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi,
+    source_pos_lc := hf_pos,
+    coeff_nonpos := hv_nonpos
+
 example {f u v : ℝ[X]}
     (hf : f.Splits)
     (hdegf : 2 ≤ f.natDegree)

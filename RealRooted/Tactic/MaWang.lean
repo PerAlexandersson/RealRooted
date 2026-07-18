@@ -58,6 +58,27 @@ theorem prec_mw_derivative_of_nonpos {f u v : ℝ[X]}
       (f := f) (g := f.derivative) (a := u) (b := v)
       hder hf'_pos hF_pos hdeg_lo hdeg_hi hv_nonpos
 
+/-- Ma--Wang derivative step where the target leading-coefficient and degree
+side goals are supplied through a normalized recurrence identity. -/
+theorem prec_mw_derivative_of_nonpos_of_recurrence {f F u v : ℝ[X]}
+    (hf : f.Splits)
+    (hdegf : 2 ≤ f.natDegree)
+    (hrec : F = u * f + v * f.derivative)
+    (hF_pos : HasPosLeadingCoeff F)
+    (hdeg_lo : f.natDegree ≤ F.natDegree)
+    (hdeg_hi : F.natDegree ≤ f.natDegree + 1)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
+    Prec f (u * f + v * f.derivative) :=
+  prec_mw_derivative_of_nonpos hf hdegf
+    (by
+      rr_recurrence_simpa using recurrence := hrec, certificate := hdeg_lo)
+    (by
+      rr_recurrence_simpa using recurrence := hrec, certificate := hdeg_hi)
+    (by
+      rr_recurrence_simpa using recurrence := hrec, certificate := hF_pos)
+    hf_pos hv_nonpos
+
 theorem prec_mw_derivative_X_mul_of_nonneg_on_roots {f u q : ℝ[X]}
     (hf : f.Splits)
     (hdegf : 2 ≤ f.natDegree)
@@ -191,19 +212,12 @@ theorem prec_mw_derivative_nonpos_sequence {P : Nat → ℝ[X]}
       exact hbase
   | succ n ih =>
       have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
-      have hF_pos :
-          HasPosLeadingCoeff (U n * P (n + 1) + V n * (P (n + 1)).derivative) := by
-        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
       have hstep :
           Prec (P (n + 1))
             (U n * P (n + 1) + V n * (P (n + 1)).derivative) :=
-        prec_mw_derivative_of_nonpos
-          hsource.2 (hdeg_two n)
-          (by
-            rr_recurrence_simpa using recurrence := hrec n, certificate := hdeg_lo n)
-          (by
-            rr_recurrence_simpa using recurrence := hrec n, certificate := hdeg_hi n)
-          hF_pos (hpos (n + 1)) (hV_nonpos n)
+        prec_mw_derivative_of_nonpos_of_recurrence hsource.2 (hdeg_two n)
+          (hrec n) (hpos (n + 2)) (hdeg_lo n) (hdeg_hi n)
+          (hpos (n + 1)) (hV_nonpos n)
       simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary for sequence-level weak Ma--Wang induction. -/
@@ -739,9 +753,6 @@ theorem prec_mw_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
       exact hbase
   | succ n ih =>
       have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
-      have hF_pos :
-          HasPosLeadingCoeff (U n * P (n + 1) + V n * (P (n + 1)).derivative) := by
-        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
       have hV_at_roots :
           ∀ r, (P (n + 1)).IsRoot r → (V n).eval r ≤ 0 := by
         intro r hr
@@ -751,13 +762,9 @@ theorem prec_mw_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
       have hstep :
           Prec (P (n + 1))
             (U n * P (n + 1) + V n * (P (n + 1)).derivative) :=
-        prec_mw_derivative_of_nonpos
-          hsource.2 (hdeg_two n)
-          (by
-            rr_recurrence_simpa using recurrence := hrec n, certificate := hdeg_lo n)
-          (by
-            rr_recurrence_simpa using recurrence := hrec n, certificate := hdeg_hi n)
-          hF_pos (hpos (n + 1)) hV_at_roots
+        prec_mw_derivative_of_nonpos_of_recurrence hsource.2 (hdeg_two n)
+          (hrec n) (hpos (n + 2)) (hdeg_lo n) (hdeg_hi n)
+          (hpos (n + 1)) hV_at_roots
       simpa [← hrec n] using hstep
 
 /-- Sequence-level weak Ma--Wang induction where the derivative coefficient is
@@ -1872,6 +1879,18 @@ syntax (name := rr_mw_derivative_nonpos_named)
     "degree_lower" ":=" term ","
     "degree_upper" ":=" term ","
     "target_pos_lc" ":=" term ","
+    "source_pos_lc" ":=" term ","
+    "coeff_nonpos" ":=" term :
+  tactic
+
+syntax (name := rr_mw_derivative_nonpos_step_named)
+  "rr_mw_derivative_nonpos_step" " using "
+    "splits" ":=" term ","
+    "degree_two" ":=" term ","
+    "target_pos_lc" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_lower" ":=" term ","
+    "degree_upper" ":=" term ","
     "source_pos_lc" ":=" term ","
     "coeff_nonpos" ":=" term :
   tactic
@@ -3376,6 +3395,19 @@ macro_rules
           degree_lower := (by rr_mw_degree_from $hdeg),
           degree_upper := (by rr_mw_degree_from $hdeg),
           coeff_nonpos := $hb_nonpos)
+  | `(tactic|
+      rr_mw_derivative_nonpos_step using
+        splits := $hf:term,
+        degree_two := $hdegf:term,
+        target_pos_lc := $hF_pos:term,
+        recurrence := $hrec:term,
+        degree_lower := $hdeg_lo:term,
+        degree_upper := $hdeg_hi:term,
+        source_pos_lc := $hf_pos:term,
+        coeff_nonpos := $hv_nonpos:term) =>
+      `(tactic|
+        exact RealRooted.prec_mw_derivative_of_nonpos_of_recurrence
+          $hf $hdegf $hrec $hF_pos $hdeg_lo $hdeg_hi $hf_pos $hv_nonpos)
   | `(tactic|
       rr_mw_derivative_nonpos using
         $hf:term, $hdegf:term, $hdeg_lo:term, $hdeg_hi:term, $hF_pos:term,
