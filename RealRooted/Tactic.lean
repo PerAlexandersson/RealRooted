@@ -44,6 +44,7 @@ import RealRooted.Tactic.Linear
 import RealRooted.Tactic.LinearPowerFamily
 import RealRooted.Tactic.Matrix
 import RealRooted.Tactic.MultiplierSequence
+import RealRooted.Tactic.Narayana
 import RealRooted.Tactic.SymmetricDecomposition
 import RealRooted.Tactic.VeroneseSection
 import RealRooted.Tactic.WeightedSum
