@@ -48,6 +48,10 @@ rr_e_positive_t_lag_sequence using ... certificate := plateauX
 rr_e_positive_t_lag_sequence using ... certificate := xOneSubX
 rr_e_positive_t_lag_sequence using ... certificate := xCSubCMulX
 rr_e_positive_t_lag_sequence using ... certificate := cMulXCSubCMulX
+rr_g_negative_lag_sequence using ... certificate := negativeSquare
+rr_g_negative_lag_sequence using ... certificate := negativeMonicQuadratic
+rr_g_negative_lag_sequence using ... certificate := negativeQuadratic
+rr_g_negative_lag_sequence using ... certificate := globalNonpos
 ```
 
 This should remain a thin wrapper over explicit family tactics.  Generated
@@ -246,7 +250,237 @@ syntax (name := rr_e_positive_t_lag_sequence_realrooted_plateau_x)
     "certificate" ":=" "plateauX" :
   tactic
 
+syntax (name := rr_g_negative_lag_sequence_auto)
+  "rr_g_negative_lag_sequence" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "certificate" ":="
+      ("negativeSquare" <|> "negativeMonicQuadratic" <|> "negativeQuadratic") :
+  tactic
+
+syntax (name := rr_g_negative_lag_sequence_realrooted_auto)
+  "rr_g_negative_lag_sequence_realrooted" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "certificate" ":="
+      ("negativeSquare" <|> "negativeMonicQuadratic" <|> "negativeQuadratic") :
+  tactic
+
+syntax (name := rr_g_negative_lag_sequence_global_nonpos)
+  "rr_g_negative_lag_sequence" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "lag" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "certificate" ":=" "globalNonpos" :
+  tactic
+
+syntax (name := rr_g_negative_lag_sequence_realrooted_global_nonpos)
+  "rr_g_negative_lag_sequence_realrooted" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "lag" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "certificate" ":=" "globalNonpos" :
+  tactic
+
+syntax (name := rr_g_negative_lag_sequence_den_global_nonpos)
+  "rr_g_negative_lag_sequence_den" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "lag" ":=" term ","
+    "den_nonzero" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "certificate" ":=" "globalNonpos" :
+  tactic
+
+syntax (name := rr_g_negative_lag_sequence_den_realrooted_global_nonpos)
+  "rr_g_negative_lag_sequence_den_realrooted" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "lag" ":=" term ","
+    "den_nonzero" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "certificate" ":=" "globalNonpos" :
+  tactic
+
 macro_rules
+  | `(tactic|
+      rr_g_negative_lag_sequence using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := negativeSquare) =>
+      `(tactic|
+        rr_lw_negative_square_sequence_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_g_negative_lag_sequence_realrooted using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := negativeSquare) =>
+      `(tactic|
+        rr_lw_negative_square_sequence_realrooted_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_g_negative_lag_sequence using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := negativeMonicQuadratic) =>
+      `(tactic|
+        rr_lw_negative_monic_quadratic_sequence_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_g_negative_lag_sequence_realrooted using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := negativeMonicQuadratic) =>
+      `(tactic|
+        rr_lw_negative_monic_quadratic_sequence_realrooted_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_g_negative_lag_sequence using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := negativeQuadratic) =>
+      `(tactic|
+        rr_lw_negative_quadratic_sequence_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_g_negative_lag_sequence_realrooted using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := negativeQuadratic) =>
+      `(tactic|
+        rr_lw_negative_quadratic_sequence_realrooted_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_g_negative_lag_sequence using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag := $B:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := globalNonpos) =>
+      `(tactic|
+        rr_lw_global_nonpos_sequence_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          lag := $B,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_g_negative_lag_sequence_realrooted using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag := $B:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := globalNonpos) =>
+      `(tactic|
+        rr_lw_global_nonpos_sequence_realrooted_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          lag := $B,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_g_negative_lag_sequence_den using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag := $B:term,
+        den_nonzero := $hden:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := globalNonpos) =>
+      `(tactic|
+        rr_lw_global_nonpos_sequence_den_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          lag := $B,
+          den_nonzero := $hden,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_g_negative_lag_sequence_den_realrooted using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag := $B:term,
+        den_nonzero := $hden:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := globalNonpos) =>
+      `(tactic|
+        rr_lw_global_nonpos_sequence_den_realrooted_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          lag := $B,
+          den_nonzero := $hden,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
   | `(tactic|
       rr_e_positive_t_lag_sequence using
         base := $hbase:term,
