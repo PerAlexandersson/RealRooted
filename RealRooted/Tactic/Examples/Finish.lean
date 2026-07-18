@@ -41,6 +41,21 @@ example {p : ℝ[X]} (hp : p ≠ 0) : p.reverse ≠ 0 := by
 example {p : ℝ[X]} {n : Nat} (hp : p ≠ 0) : X ^ n * p.reverse ≠ 0 := by
   rr_nonzero
 
+example {p q : ℝ[X]} (hpq : p * q ≠ 0) : p ≠ 0 := by
+  rr_nonzero
+
+example {p q : ℝ[X]} (hpq : p * q ≠ 0) : q ≠ 0 := by
+  rr_nonzero
+
+example {p : ℝ[X]} (hdeg : p.natDegree ≠ 0) : p.derivative ≠ 0 := by
+  rr_nonzero
+
+example {p : ℝ[X]} (hdeg : 2 ≤ p.natDegree) : p.derivative ≠ 0 := by
+  rr_nonzero
+
+example {p : ℝ[X]} (hp : X ^ 2 * p.derivative ≠ 0) : p.derivative ≠ 0 := by
+  rr_nonzero
+
 example {f : ℝ[X]} (hdeg : f.natDegree = 1) : f ≠ 0 := by
   rr_nonzero
 

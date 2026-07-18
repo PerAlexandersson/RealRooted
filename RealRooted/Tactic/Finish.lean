@@ -674,6 +674,8 @@ macro_rules
           | (apply mul_ne_zero <;> rr_nonzero)
           | (apply pow_ne_zero <;> rr_nonzero)
           | (rw [Ne, Polynomial.reverse_eq_zero] <;> rr_nonzero)
+          | exact RealRooted.derivative_ne_zero_of_natDegree_ne_zero (by rr_close_side)
+          | (intro hzero; simp_all [RealRooted.Prec, RealRooted.Interlaces])
           | simp_all [RealRooted.Prec, RealRooted.Interlaces])
   | `(tactic| rr_splits using $h:term) =>
       `(tactic|

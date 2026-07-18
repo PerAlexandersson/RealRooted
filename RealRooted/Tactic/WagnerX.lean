@@ -255,8 +255,7 @@ theorem not_prec_X_sq_mul_derivative_left {f g : ℝ[X]}
   have hgs : g.Splits := right_splits_of_prec h
   have hXf_ne : X ^ 2 * f.derivative ≠ 0 := left_ne_zero_of_prec h
   have hfd : f.derivative ≠ 0 := by
-    intro hz
-    simp [hz] at hXf_ne
+    rr_nonzero
   have hXdeg : 2 ≤ (X ^ 2 * f.derivative).natDegree := by
     rw [natDegree_mul (pow_ne_zero 2 X_ne_zero) hfd, natDegree_pow, natDegree_X]
     lia
@@ -288,8 +287,7 @@ theorem not_prec_X_sq_mul_derivative_right {f g : ℝ[X]}
   have hgs : g.Splits := left_splits_of_prec h
   have hXf_ne : X ^ 2 * f.derivative ≠ 0 := right_ne_zero_of_prec h
   have hfd : f.derivative ≠ 0 := by
-    intro hz
-    simp [hz] at hXf_ne
+    rr_nonzero
   have hXf_deg : (X ^ 2 * f.derivative).natDegree = g.natDegree := by
     rw [natDegree_mul (pow_ne_zero 2 X_ne_zero) hfd, natDegree_pow, natDegree_X,
       f.natDegree_derivative]
@@ -326,7 +324,7 @@ theorem not_prec_X_sq_mul_derivative_right {f g : ℝ[X]}
     (mul_left_cancel₀ X_ne_zero hq_alt).symm
   have hq_ne : q ≠ 0 := by
     rw [hq]
-    exact mul_ne_zero X_ne_zero hfd
+    rr_nonzero
   have hq_zero_root : q.IsRoot 0 := by
     rw [hq]
     simp [IsRoot]
