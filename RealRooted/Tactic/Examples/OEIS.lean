@@ -726,6 +726,106 @@ example {P : Nat → ℝ[X]} {c : Nat → ℝ} {rootCount : Nat → Nat}
     root_grid := hroot,
     certificate := scalarFiniteLinearProduct
 
+/-- Product-parity router, automatic scalar step with supplied factor. -/
+example {P F : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hscalar : ∀ n : Nat,
+      P (2 * n + 1) = C ((n : ℝ) + 1) * P (2 * n))
+    (hstep : ∀ n : Nat, P (2 * n + 2) = P (2 * n + 1) * F n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_parity_sequence using
+    base := hbase,
+    factor_realrooted := hfactor,
+    scalar_step := hscalar,
+    factor_step := hstep,
+    certificate := scalarThenFactorAuto
+
+/-- Product-parity router, automatic scalar then unit-linear step. -/
+example {P : Nat → ℝ[X]} {b : Nat → ℝ}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hscalar : ∀ n : Nat,
+      P (2 * n + 1) = C (2 * (n : ℝ) + 1) * P (2 * n))
+    (hlinear : ∀ n : Nat,
+      P (2 * n + 2) = (X + C (b n)) * P (2 * n + 1)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_parity_sequence using
+    base := hbase,
+    scalar_step := hscalar,
+    linear_step := hlinear,
+    certificate := scalarThenXAddCAuto
+
+/-- Product-parity router, constant-first unit-linear step. -/
+example {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hscalar : ∀ n : Nat, P (2 * n + 1) = P (2 * n) * C (a n))
+    (hlinear : ∀ n : Nat, P (2 * n + 2) = P (2 * n + 1) * (C (b n) + X)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_parity_sequence using
+    base := hbase,
+    scalar_ne := ha,
+    scalar_step := hscalar,
+    linear_step := hlinear,
+    certificate := scalarThenCAddX
+
+/-- Product-parity router, automatic scalar then root-zero powers. -/
+example {P : Nat → ℝ[X]} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hscalar : ∀ n : Nat,
+      P (2 * n + 1) = C ((n : ℝ) + 1) * P (2 * n))
+    (hstep : ∀ n : Nat, P (2 * n + 2) = P (2 * n + 1) * X ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_parity_sequence using
+    base := hbase,
+    scalar_step := hscalar,
+    factor_step := hstep,
+    certificate := scalarThenRootZeroPowAuto
+
+/-- Product-parity router, powered unit-linear step. -/
+example {P : Nat → ℝ[X]} {a b : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hscalar : ∀ n : Nat, P (2 * n + 1) = C (a n) * P (2 * n))
+    (hstep : ∀ n : Nat,
+      P (2 * n + 2) = (X + C (b n)) ^ (m n) * P (2 * n + 1)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_parity_sequence using
+    base := hbase,
+    scalar_ne := ha,
+    scalar_step := hscalar,
+    factor_step := hstep,
+    certificate := scalarThenXAddCPow
+
+/-- Product-parity router, automatic scalar then powered constant-first step. -/
+example {P : Nat → ℝ[X]} {b : Nat → ℝ} {m : Nat → Nat}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hscalar : ∀ n : Nat,
+      P (2 * n + 1) = C ((n : ℝ) + 1) * P (2 * n))
+    (hstep : ∀ n : Nat,
+      P (2 * n + 2) = P (2 * n + 1) * (C (b n) + X) ^ (m n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_parity_sequence using
+    base := hbase,
+    scalar_step := hscalar,
+    factor_step := hstep,
+    certificate := scalarThenCAddXPowAuto
+
+/-- Product-parity lift router, odd rows are scalar multiples of `X` times
+the even quotient. -/
+example {P Q : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (heven : ∀ n : Nat, P (2 * n) = Q n)
+    (hodd : ∀ n : Nat, P (2 * n + 1) = C (a n) * X * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_parity_lift_sequence using
+    even_realrooted := hquot,
+    scalar_ne := ha,
+    even_factorization := heven,
+    odd_factorization := hodd,
+    certificate := scalarXOdd
+
 /-- Product-lift router with a supplied factor certificate. -/
 example {P Q F : Nat → ℝ[X]}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)

@@ -81,6 +81,19 @@ rr_product_factor_sequence using ... certificate := constFirstAffinePow
 rr_product_factor_sequence using ... certificate := constFirstAffinePowAuto
 rr_product_formula_sequence using ... certificate := finiteLinearProduct
 rr_product_formula_sequence using ... certificate := scalarFiniteLinearProduct
+rr_product_parity_sequence using ... certificate := scalarThenFactor
+rr_product_parity_sequence using ... certificate := scalarThenFactorAuto
+rr_product_parity_sequence using ... certificate := scalarThenXAddC
+rr_product_parity_sequence using ... certificate := scalarThenXAddCAuto
+rr_product_parity_sequence using ... certificate := scalarThenCAddX
+rr_product_parity_sequence using ... certificate := scalarThenCAddXAuto
+rr_product_parity_sequence using ... certificate := scalarThenRootZeroPow
+rr_product_parity_sequence using ... certificate := scalarThenRootZeroPowAuto
+rr_product_parity_sequence using ... certificate := scalarThenXAddCPow
+rr_product_parity_sequence using ... certificate := scalarThenXAddCPowAuto
+rr_product_parity_sequence using ... certificate := scalarThenCAddXPow
+rr_product_parity_sequence using ... certificate := scalarThenCAddXPowAuto
+rr_product_parity_lift_sequence using ... certificate := scalarXOdd
 rr_product_lift_sequence using ... certificate := suppliedFactor
 rr_product_lift_sequence using ... certificate := rootZero
 rr_product_lift_sequence using ... certificate := rootZeroPow
@@ -672,6 +685,119 @@ syntax (name := rr_product_formula_sequence_scalar_finite_linear_product)
     "certificate" ":=" "scalarFiniteLinearProduct" :
   tactic
 
+syntax (name := rr_product_parity_sequence_scalar_then_factor)
+  "rr_product_parity_sequence" " using "
+    "base" ":=" term ","
+    "scalar_ne" ":=" term ","
+    "factor_realrooted" ":=" term ","
+    "scalar_step" ":=" term ","
+    "factor_step" ":=" term ","
+    "certificate" ":=" "scalarThenFactor" :
+  tactic
+
+syntax (name := rr_product_parity_sequence_scalar_then_factor_auto)
+  "rr_product_parity_sequence" " using "
+    "base" ":=" term ","
+    "factor_realrooted" ":=" term ","
+    "scalar_step" ":=" term ","
+    "factor_step" ":=" term ","
+    "certificate" ":=" "scalarThenFactorAuto" :
+  tactic
+
+syntax (name := rr_product_parity_sequence_scalar_then_x_add_c)
+  "rr_product_parity_sequence" " using "
+    "base" ":=" term ","
+    "scalar_ne" ":=" term ","
+    "scalar_step" ":=" term ","
+    "linear_step" ":=" term ","
+    "certificate" ":=" "scalarThenXAddC" :
+  tactic
+
+syntax (name := rr_product_parity_sequence_scalar_then_x_add_c_auto)
+  "rr_product_parity_sequence" " using "
+    "base" ":=" term ","
+    "scalar_step" ":=" term ","
+    "linear_step" ":=" term ","
+    "certificate" ":=" "scalarThenXAddCAuto" :
+  tactic
+
+syntax (name := rr_product_parity_sequence_scalar_then_c_add_x)
+  "rr_product_parity_sequence" " using "
+    "base" ":=" term ","
+    "scalar_ne" ":=" term ","
+    "scalar_step" ":=" term ","
+    "linear_step" ":=" term ","
+    "certificate" ":=" "scalarThenCAddX" :
+  tactic
+
+syntax (name := rr_product_parity_sequence_scalar_then_c_add_x_auto)
+  "rr_product_parity_sequence" " using "
+    "base" ":=" term ","
+    "scalar_step" ":=" term ","
+    "linear_step" ":=" term ","
+    "certificate" ":=" "scalarThenCAddXAuto" :
+  tactic
+
+syntax (name := rr_product_parity_sequence_scalar_then_root_zero_pow)
+  "rr_product_parity_sequence" " using "
+    "base" ":=" term ","
+    "scalar_ne" ":=" term ","
+    "scalar_step" ":=" term ","
+    "factor_step" ":=" term ","
+    "certificate" ":=" "scalarThenRootZeroPow" :
+  tactic
+
+syntax (name := rr_product_parity_sequence_scalar_then_root_zero_pow_auto)
+  "rr_product_parity_sequence" " using "
+    "base" ":=" term ","
+    "scalar_step" ":=" term ","
+    "factor_step" ":=" term ","
+    "certificate" ":=" "scalarThenRootZeroPowAuto" :
+  tactic
+
+syntax (name := rr_product_parity_sequence_scalar_then_x_add_c_pow)
+  "rr_product_parity_sequence" " using "
+    "base" ":=" term ","
+    "scalar_ne" ":=" term ","
+    "scalar_step" ":=" term ","
+    "factor_step" ":=" term ","
+    "certificate" ":=" "scalarThenXAddCPow" :
+  tactic
+
+syntax (name := rr_product_parity_sequence_scalar_then_x_add_c_pow_auto)
+  "rr_product_parity_sequence" " using "
+    "base" ":=" term ","
+    "scalar_step" ":=" term ","
+    "factor_step" ":=" term ","
+    "certificate" ":=" "scalarThenXAddCPowAuto" :
+  tactic
+
+syntax (name := rr_product_parity_sequence_scalar_then_c_add_x_pow)
+  "rr_product_parity_sequence" " using "
+    "base" ":=" term ","
+    "scalar_ne" ":=" term ","
+    "scalar_step" ":=" term ","
+    "factor_step" ":=" term ","
+    "certificate" ":=" "scalarThenCAddXPow" :
+  tactic
+
+syntax (name := rr_product_parity_sequence_scalar_then_c_add_x_pow_auto)
+  "rr_product_parity_sequence" " using "
+    "base" ":=" term ","
+    "scalar_step" ":=" term ","
+    "factor_step" ":=" term ","
+    "certificate" ":=" "scalarThenCAddXPowAuto" :
+  tactic
+
+syntax (name := rr_product_parity_lift_sequence_scalar_x_odd)
+  "rr_product_parity_lift_sequence" " using "
+    "even_realrooted" ":=" term ","
+    "scalar_ne" ":=" term ","
+    "even_factorization" ":=" term ","
+    "odd_factorization" ":=" term ","
+    "certificate" ":=" "scalarXOdd" :
+  tactic
+
 syntax (name := rr_product_lift_sequence_supplied_factor)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -930,6 +1056,167 @@ macro_rules
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.finiteLinearProductScalarSequence_realRooted $hc $hroot))
+  | `(tactic|
+      rr_product_parity_sequence using
+        base := $hbase:term,
+        scalar_ne := $ha:term,
+        factor_realrooted := $hfactor:term,
+        scalar_step := $hscalar:term,
+        factor_step := $hstep:term,
+        certificate := scalarThenFactor) =>
+      `(tactic|
+        rr_product_scalar_factor_sequence using
+          base := $hbase,
+          scalar_ne := $ha,
+          factor_realrooted := $hfactor,
+          scalar_step := $hscalar,
+          factor_step := $hstep)
+  | `(tactic|
+      rr_product_parity_sequence using
+        base := $hbase:term,
+        factor_realrooted := $hfactor:term,
+        scalar_step := $hscalar:term,
+        factor_step := $hstep:term,
+        certificate := scalarThenFactorAuto) =>
+      `(tactic|
+        rr_product_scalar_factor_sequence_auto using
+          base := $hbase,
+          factor_realrooted := $hfactor,
+          scalar_step := $hscalar,
+          factor_step := $hstep)
+  | `(tactic|
+      rr_product_parity_sequence using
+        base := $hbase:term,
+        scalar_ne := $ha:term,
+        scalar_step := $hscalar:term,
+        linear_step := $hlinear:term,
+        certificate := scalarThenXAddC) =>
+      `(tactic|
+        rr_product_scalar_linear_sequence using
+          base := $hbase,
+          scalar_ne := $ha,
+          scalar_step := $hscalar,
+          linear_step := $hlinear)
+  | `(tactic|
+      rr_product_parity_sequence using
+        base := $hbase:term,
+        scalar_step := $hscalar:term,
+        linear_step := $hlinear:term,
+        certificate := scalarThenXAddCAuto) =>
+      `(tactic|
+        rr_product_scalar_linear_sequence_auto using
+          base := $hbase,
+          scalar_step := $hscalar,
+          linear_step := $hlinear)
+  | `(tactic|
+      rr_product_parity_sequence using
+        base := $hbase:term,
+        scalar_ne := $ha:term,
+        scalar_step := $hscalar:term,
+        linear_step := $hlinear:term,
+        certificate := scalarThenCAddX) =>
+      `(tactic|
+        rr_product_scalar_C_add_X_sequence using
+          base := $hbase,
+          scalar_ne := $ha,
+          scalar_step := $hscalar,
+          linear_step := $hlinear)
+  | `(tactic|
+      rr_product_parity_sequence using
+        base := $hbase:term,
+        scalar_step := $hscalar:term,
+        linear_step := $hlinear:term,
+        certificate := scalarThenCAddXAuto) =>
+      `(tactic|
+        rr_product_scalar_C_add_X_sequence_auto using
+          base := $hbase,
+          scalar_step := $hscalar,
+          linear_step := $hlinear)
+  | `(tactic|
+      rr_product_parity_sequence using
+        base := $hbase:term,
+        scalar_ne := $ha:term,
+        scalar_step := $hscalar:term,
+        factor_step := $hstep:term,
+        certificate := scalarThenRootZeroPow) =>
+      `(tactic|
+        rr_product_scalar_X_pow_sequence using
+          base := $hbase,
+          scalar_ne := $ha,
+          scalar_step := $hscalar,
+          factor_step := $hstep)
+  | `(tactic|
+      rr_product_parity_sequence using
+        base := $hbase:term,
+        scalar_step := $hscalar:term,
+        factor_step := $hstep:term,
+        certificate := scalarThenRootZeroPowAuto) =>
+      `(tactic|
+        rr_product_scalar_X_pow_sequence_auto using
+          base := $hbase,
+          scalar_step := $hscalar,
+          factor_step := $hstep)
+  | `(tactic|
+      rr_product_parity_sequence using
+        base := $hbase:term,
+        scalar_ne := $ha:term,
+        scalar_step := $hscalar:term,
+        factor_step := $hstep:term,
+        certificate := scalarThenXAddCPow) =>
+      `(tactic|
+        rr_product_scalar_X_add_C_pow_sequence using
+          base := $hbase,
+          scalar_ne := $ha,
+          scalar_step := $hscalar,
+          factor_step := $hstep)
+  | `(tactic|
+      rr_product_parity_sequence using
+        base := $hbase:term,
+        scalar_step := $hscalar:term,
+        factor_step := $hstep:term,
+        certificate := scalarThenXAddCPowAuto) =>
+      `(tactic|
+        rr_product_scalar_X_add_C_pow_sequence_auto using
+          base := $hbase,
+          scalar_step := $hscalar,
+          factor_step := $hstep)
+  | `(tactic|
+      rr_product_parity_sequence using
+        base := $hbase:term,
+        scalar_ne := $ha:term,
+        scalar_step := $hscalar:term,
+        factor_step := $hstep:term,
+        certificate := scalarThenCAddXPow) =>
+      `(tactic|
+        rr_product_scalar_C_add_X_pow_sequence using
+          base := $hbase,
+          scalar_ne := $ha,
+          scalar_step := $hscalar,
+          factor_step := $hstep)
+  | `(tactic|
+      rr_product_parity_sequence using
+        base := $hbase:term,
+        scalar_step := $hscalar:term,
+        factor_step := $hstep:term,
+        certificate := scalarThenCAddXPowAuto) =>
+      `(tactic|
+        rr_product_scalar_C_add_X_pow_sequence_auto using
+          base := $hbase,
+          scalar_step := $hscalar,
+          factor_step := $hstep)
+  | `(tactic|
+      rr_product_parity_lift_sequence using
+        even_realrooted := $hquot:term,
+        scalar_ne := $ha:term,
+        even_factorization := $heven:term,
+        odd_factorization := $hodd:term,
+        certificate := scalarXOdd) =>
+      `(tactic|
+        rr_even_product_odd_X_scalar_sequence using
+          even_realrooted := $hquot,
+          scalar_ne := $ha,
+          even_factorization := $heven,
+          odd_factorization := $hodd)
   | `(tactic|
       rr_product_lift_sequence using
         quotient_realrooted := $hquot:term,
