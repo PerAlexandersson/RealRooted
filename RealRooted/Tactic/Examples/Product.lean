@@ -48,6 +48,12 @@ example {n : Nat} :
     ((X : ℝ[X]) ^ n).Splits := by
   rr_product_X_pow using exponent := n
 
+example :
+    (X + X ^ 2 : ℝ[X]) ≠ 0 ∧ (X + X ^ 2 : ℝ[X]).Splits := by
+  rr_product_normalize using
+    RealRooted.isRealRooted_mul_X_add_C
+      (p := (X : ℝ[X])) (t := (1 : ℝ)) RealRooted.isRealRooted_X
+
 example {t : ℝ} :
     (X + C t : ℝ[X]).Splits := by
   rr_product_X_add_C using constant := t
@@ -61,6 +67,12 @@ example {t : ℝ} :
   rr_product_X_add_C_pow using
     constant := t,
     exponent := 3
+
+example :
+    (1 + 3 * X + 3 * X ^ 2 + X ^ 3 : ℝ[X]) ≠ 0 ∧
+      (1 + 3 * X + 3 * X ^ 2 + X ^ 3 : ℝ[X]).Splits := by
+  rr_product_normalize using
+    RealRooted.isRealRooted_X_add_C_pow (1 : ℝ) 3
 
 example {s t : ℝ} (hs : s ≠ 0) :
     (C s * X + C t : ℝ[X]).Splits := by

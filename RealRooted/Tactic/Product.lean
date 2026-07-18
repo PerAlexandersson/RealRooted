@@ -2038,6 +2038,10 @@ syntax (name := rr_product_scalar_C_add_X_pow_sequence_auto_named)
 
 syntax (name := rr_product_nonzero) "rr_product_nonzero" : tactic
 
+syntax (name := rr_product_normalize)
+  "rr_product_normalize" " using " term :
+  tactic
+
 syntax (name := rr_product_nonzero_term) "rr_product_nonzero_term" : term
 
 syntax (name := rr_product_nonzero_seq) "rr_product_nonzero_seq" : term
@@ -2057,6 +2061,12 @@ syntax (name := rr_product_four_sequence_variants)
 macro_rules
   | `(tactic| rr_product_nonzero) =>
       `(tactic| rr_side_ne)
+  | `(tactic| rr_product_normalize using $h:term) =>
+      `(tactic|
+        have hcert := ($h);
+        first
+          | exact hcert
+          | convert hcert using 2 <;> norm_num <;> ring)
   | `(rr_product_nonzero_term) =>
       `(by rr_product_nonzero)
   | `(rr_product_nonzero_seq) =>
