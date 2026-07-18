@@ -41,6 +41,10 @@ rr_i2_derivative_lag_sequence using ... certificate := directHalfLine
 rr_i2_derivative_lag_sequence using ... certificate := wagnerGap
 rr_i2_derivative_lag_sequence_den_coeff using ... certificate := directHalfLine
 rr_i2_derivative_lag_sequence_den using ... certificate := wagnerGap
+rr_e_positive_t_lag_sequence using ... certificate := currentX
+rr_e_positive_t_lag_sequence using ... certificate := currentCX
+rr_e_positive_t_lag_sequence using ... certificate := currentOneAddX
+rr_e_positive_t_lag_sequence using ... certificate := plateauX
 ```
 
 This should remain a thin wrapper over explicit family tactics.  Generated
@@ -197,7 +201,169 @@ syntax (name := rr_i2_derivative_lag_sequence_realrooted_vector)
     "certificate" ":=" "vectorNeeded" :
   tactic
 
+syntax (name := rr_e_positive_t_lag_sequence_strict)
+  "rr_e_positive_t_lag_sequence" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "certificate" ":=" ("currentX" <|> "currentCX" <|> "currentOneAddX") :
+  tactic
+
+syntax (name := rr_e_positive_t_lag_sequence_realrooted_strict)
+  "rr_e_positive_t_lag_sequence_realrooted" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "certificate" ":=" ("currentX" <|> "currentCX" <|> "currentOneAddX") :
+  tactic
+
+syntax (name := rr_e_positive_t_lag_sequence_plateau_x)
+  "rr_e_positive_t_lag_sequence" " using "
+    "base" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "plateauX" :
+  tactic
+
+syntax (name := rr_e_positive_t_lag_sequence_realrooted_plateau_x)
+  "rr_e_positive_t_lag_sequence_realrooted" " using "
+    "base" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "plateauX" :
+  tactic
+
 macro_rules
+  | `(tactic|
+      rr_e_positive_t_lag_sequence using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := currentX) =>
+      `(tactic|
+        rr_lw_current_X_sequence_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_e_positive_t_lag_sequence_realrooted using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := currentX) =>
+      `(tactic|
+        rr_lw_current_X_sequence_realrooted_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_e_positive_t_lag_sequence using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := currentCX) =>
+      `(tactic|
+        rr_lw_current_CX_sequence_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_e_positive_t_lag_sequence_realrooted using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := currentCX) =>
+      `(tactic|
+        rr_lw_current_CX_sequence_realrooted_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_e_positive_t_lag_sequence using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := currentOneAddX) =>
+      `(tactic|
+        rr_lw_current_one_add_X_sequence_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_e_positive_t_lag_sequence_realrooted using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := currentOneAddX) =>
+      `(tactic|
+        rr_lw_current_one_add_X_sequence_realrooted_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_e_positive_t_lag_sequence using
+        base := $hbase:term,
+        nonneg_coeffs := $hnonneg:term,
+        recurrence := $hrec:term,
+        certificate := plateauX) =>
+      `(tactic|
+        rr_prec_pos_X_lag_sequence_auto using
+          base := $hbase,
+          nonneg_coeffs := $hnonneg,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_e_positive_t_lag_sequence_realrooted using
+        base := $hbase:term,
+        nonneg_coeffs := $hnonneg:term,
+        recurrence := $hrec:term,
+        certificate := plateauX) =>
+      `(tactic|
+        rr_prec_pos_X_lag_sequence_realrooted_auto using
+          base := $hbase,
+          nonneg_coeffs := $hnonneg,
+          recurrence := $hrec)
   | `(tactic|
       rr_i2_derivative_lag_sequence using
         base := $hbase:term,
