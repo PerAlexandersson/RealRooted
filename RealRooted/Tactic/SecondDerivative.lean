@@ -302,17 +302,17 @@ theorem ls4_factor_expansion (a : ℝ) (U V f : ℝ[X]) :
   simp [Polynomial.derivative_add, Polynomial.derivative_mul]
   ring
 
-theorem ls4_C_two_real : (C (2 : ℝ) : ℝ[X]) = 2 := by
-  exact Polynomial.C_eq_natCast 2
+theorem ls4_C_two_real : (C (2 : ℝ) : ℝ[X]) = 2 :=
+  Polynomial.C_eq_natCast 2
 
-theorem ls4_C_four_real : (C (4 : ℝ) : ℝ[X]) = 4 := by
-  exact Polynomial.C_eq_natCast 4
+theorem ls4_C_four_real : (C (4 : ℝ) : ℝ[X]) = 4 :=
+  Polynomial.C_eq_natCast 4
 
-theorem ls4_C_eight_real : (C (8 : ℝ) : ℝ[X]) = 8 := by
-  exact Polynomial.C_eq_natCast 8
+theorem ls4_C_eight_real : (C (8 : ℝ) : ℝ[X]) = 8 :=
+  Polynomial.C_eq_natCast 8
 
-theorem ls4_C_sixteen_real : (C (16 : ℝ) : ℝ[X]) = 16 := by
-  exact Polynomial.C_eq_natCast 16
+theorem ls4_C_sixteen_real : (C (16 : ℝ) : ℝ[X]) = 16 :=
+  Polynomial.C_eq_natCast 16
 
 theorem ls4_C_neg_one_real : (C (-1 : ℝ) : ℝ[X]) = -1 := by
   norm_num
