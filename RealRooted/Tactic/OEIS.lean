@@ -10,6 +10,7 @@ import RealRooted.Tactic.LinearPowerFamily
 import RealRooted.Tactic.LiuWang
 import RealRooted.Tactic.LiuWangRecursion
 import RealRooted.Tactic.Matrix
+import RealRooted.Tactic.MultiplierSequence
 import RealRooted.Tactic.OperatorPreservesInterlacing
 import RealRooted.Tactic.PFPolynomial
 import RealRooted.Tactic.SymmetricDecomposition
