@@ -69,6 +69,7 @@ import RealRooted.LinearPowerFamily
 import RealRooted.LiuWangBenchmark
 import RealRooted.LiuWangRecursion
 import RealRooted.MaWang
+import RealRooted.MagnitudeDominated
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 import RealRooted.Mathlib.Algebra.Polynomial.Splits
