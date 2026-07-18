@@ -1,3 +1,4 @@
+import RealRooted.Basic
 import RealRooted.Tactic.Attr
 import Mathlib.Tactic
 
@@ -36,6 +37,15 @@ syntax (name := rr_side_ne_seq) "rr_side_ne_seq" : tactic
 syntax (name := rr_positivity_seq) "rr_positivity_seq" : tactic
 syntax (name := rr_coeff_simp) "rr_coeff_simp" : tactic
 syntax (name := rr_coeff) "rr_coeff" : tactic
+syntax (name := rr_pos_lc_one) "rr_pos_lc_one" : tactic
+syntax (name := rr_pos_lc_from_nonneg)
+  "rr_pos_lc" " using " "nonneg" ":=" term "," "nonzero" ":=" term : tactic
+syntax (name := rr_pos_lc_C_mul)
+  "rr_pos_lc_C_mul" " using " "scalar_pos" ":=" term "," "pos_lc" ":=" term : tactic
+syntax (name := rr_pos_lc_mul)
+  "rr_pos_lc_mul" " using " "left" ":=" term "," "right" ":=" term : tactic
+syntax (name := rr_pos_lc_X_mul)
+  "rr_pos_lc_X_mul" " using " "pos_lc" ":=" term : tactic
 syntax (name := rr_close_side) "rr_close_side" : tactic
 syntax (name := rr_side) "rr_side" : tactic
 syntax (name := rr_refine_then) "rr_refine_then " term " with " tactic : tactic
@@ -148,6 +158,25 @@ macro_rules
           <;> try rr_coeff_simp
           <;> try norm_num
           <;> try ring_nf))
+  | `(tactic| rr_pos_lc_one) =>
+      `(tactic| exact RealRooted.hasPosLeadingCoeff_one)
+  | `(tactic| rr_pos_lc using nonneg := $hnn:term, nonzero := $hp0:term) =>
+      `(tactic| exact RealRooted.HasNonnegCoeffs.pos_leadingCoeff $hnn $hp0)
+  | `(tactic| rr_pos_lc_C_mul using scalar_pos := $ha:term, pos_lc := $hp:term) =>
+      `(tactic|
+        first
+          | exact RealRooted.hasPosLeadingCoeff_C_mul $ha $hp
+          | simpa [mul_comm] using RealRooted.hasPosLeadingCoeff_C_mul $ha $hp)
+  | `(tactic| rr_pos_lc_mul using left := $hp:term, right := $hq:term) =>
+      `(tactic|
+        first
+          | exact RealRooted.HasPosLeadingCoeff.mul $hp $hq
+          | simpa [mul_comm] using RealRooted.HasPosLeadingCoeff.mul $hq $hp)
+  | `(tactic| rr_pos_lc_X_mul using pos_lc := $hp:term) =>
+      `(tactic|
+        first
+          | exact RealRooted.HasPosLeadingCoeff.X_mul $hp
+          | simpa [mul_comm] using RealRooted.HasPosLeadingCoeff.X_mul $hp)
   | `(tactic| rr_close_side) =>
       `(tactic|
         first

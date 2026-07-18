@@ -71,6 +71,37 @@ example :
     ((X * (X + C 2) : ℝ[X]).coeff 2) = 1 := by
   rr_coeff
 
+example : HasPosLeadingCoeff (1 : ℝ[X]) := by
+  rr_pos_lc_one
+
+example {p : ℝ[X]} (hnn : HasNonnegCoeffs p) (hp0 : p ≠ 0) :
+    HasPosLeadingCoeff p := by
+  rr_pos_lc using nonneg := hnn, nonzero := hp0
+
+example {a : ℝ} {p : ℝ[X]} (ha : 0 < a) (hp : HasPosLeadingCoeff p) :
+    HasPosLeadingCoeff (C a * p) := by
+  rr_pos_lc_C_mul using scalar_pos := ha, pos_lc := hp
+
+example {a : ℝ} {p : ℝ[X]} (ha : 0 < a) (hp : HasPosLeadingCoeff p) :
+    HasPosLeadingCoeff (p * C a) := by
+  rr_pos_lc_C_mul using scalar_pos := ha, pos_lc := hp
+
+example {p q : ℝ[X]} (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q) :
+    HasPosLeadingCoeff (p * q) := by
+  rr_pos_lc_mul using left := hp, right := hq
+
+example {p q : ℝ[X]} (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q) :
+    HasPosLeadingCoeff (q * p) := by
+  rr_pos_lc_mul using left := hp, right := hq
+
+example {p : ℝ[X]} (hp : HasPosLeadingCoeff p) :
+    HasPosLeadingCoeff (X * p) := by
+  rr_pos_lc_X_mul using pos_lc := hp
+
+example {p : ℝ[X]} (hp : HasPosLeadingCoeff p) :
+    HasPosLeadingCoeff (p * X) := by
+  rr_pos_lc_X_mul using pos_lc := hp
+
 example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a * b := by
   rr_side
 
