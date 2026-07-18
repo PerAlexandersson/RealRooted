@@ -304,5 +304,101 @@ example {fs : List ℝ[X]}
     member_degree_le_two := hdeg,
     pairwise_compatible := hpair
 
+example {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
+    PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs := by
+  rr_pairwiseCompatible_iff_pairwiseCommon_degree_le_one using
+    member_pos_lc := hpos,
+    member_degree_le_one := hdeg
+
+example {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 2) :
+    PairwiseCompatible fs ↔ PairwiseHasCommonInterleaver fs := by
+  rr_pairwiseCompatible_iff_pairwiseCommon_degree_le_two using
+    member_pos_lc := hpos,
+    member_degree_le_two := hdeg
+
+example {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
+    PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs := by
+  rr_pairwiseCommon_iff_commonInterleaver_degree_le_one using
+    member_pos_lc := hpos,
+    member_degree_le_one := hdeg
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 2) :
+    PairwiseHasCommonInterleaver fs ↔ HasCommonInterleaver fs := by
+  rr_pairwiseCommon_iff_commonInterleaver_degree_le_two using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_degree_le_two := hdeg
+
+example {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
+    HasCommonInterleaver fs ↔ FamilyCompatible fs := by
+  rr_commonInterleaver_iff_familyCompatible_degree_le_one using
+    member_pos_lc := hpos,
+    member_degree_le_one := hdeg
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 2) :
+    HasCommonInterleaver fs ↔ FamilyCompatible fs := by
+  rr_commonInterleaver_iff_familyCompatible_degree_le_two using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_degree_le_two := hdeg
+
+example {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs := by
+  rr_pairwiseCompatible_iff_commonInterleaver_degree_le_one using
+    member_pos_lc := hpos,
+    member_degree_le_one := hdeg
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 2) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs := by
+  rr_pairwiseCompatible_iff_commonInterleaver_degree_le_two using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_degree_le_two := hdeg
+
+example {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
+    PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs := by
+  rr_pairwiseCompatible_iff_commonLeft_degree_le_one using
+    member_pos_lc := hpos,
+    member_degree_le_one := hdeg
+
+example {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
+    PairwiseCompatible fs ↔ FamilyCompatible fs := by
+  rr_pairwiseCompatible_iff_familyCompatible_degree_le_one using
+    member_pos_lc := hpos,
+    member_degree_le_one := hdeg
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 2) :
+    PairwiseCompatible fs ↔ FamilyCompatible fs := by
+  rr_pairwiseCompatible_iff_familyCompatible_degree_le_two using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_degree_le_two := hdeg
+
 end Tactic
 end RealRooted

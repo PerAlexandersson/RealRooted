@@ -239,6 +239,76 @@ syntax (name := rr_pairwise_common_interleaver_degree_le_two_named)
     "pairwise_compatible" ":=" term :
   tactic
 
+syntax (name := rr_pairwiseCompatible_iff_pairwiseCommon_degree_le_one_named)
+  "rr_pairwiseCompatible_iff_pairwiseCommon_degree_le_one" " using "
+    "member_pos_lc" ":=" term ","
+    "member_degree_le_one" ":=" term :
+  tactic
+
+syntax (name := rr_pairwiseCompatible_iff_pairwiseCommon_degree_le_two_named)
+  "rr_pairwiseCompatible_iff_pairwiseCommon_degree_le_two" " using "
+    "member_pos_lc" ":=" term ","
+    "member_degree_le_two" ":=" term :
+  tactic
+
+syntax (name := rr_pairwiseCommon_iff_commonInterleaver_degree_le_one_named)
+  "rr_pairwiseCommon_iff_commonInterleaver_degree_le_one" " using "
+    "member_pos_lc" ":=" term ","
+    "member_degree_le_one" ":=" term :
+  tactic
+
+syntax (name := rr_pairwiseCommon_iff_commonInterleaver_degree_le_two_named)
+  "rr_pairwiseCommon_iff_commonInterleaver_degree_le_two" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "member_degree_le_two" ":=" term :
+  tactic
+
+syntax (name := rr_commonInterleaver_iff_familyCompatible_degree_le_one_named)
+  "rr_commonInterleaver_iff_familyCompatible_degree_le_one" " using "
+    "member_pos_lc" ":=" term ","
+    "member_degree_le_one" ":=" term :
+  tactic
+
+syntax (name := rr_commonInterleaver_iff_familyCompatible_degree_le_two_named)
+  "rr_commonInterleaver_iff_familyCompatible_degree_le_two" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "member_degree_le_two" ":=" term :
+  tactic
+
+syntax (name := rr_pairwiseCompatible_iff_commonInterleaver_degree_le_one_named)
+  "rr_pairwiseCompatible_iff_commonInterleaver_degree_le_one" " using "
+    "member_pos_lc" ":=" term ","
+    "member_degree_le_one" ":=" term :
+  tactic
+
+syntax (name := rr_pairwiseCompatible_iff_commonInterleaver_degree_le_two_named)
+  "rr_pairwiseCompatible_iff_commonInterleaver_degree_le_two" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "member_degree_le_two" ":=" term :
+  tactic
+
+syntax (name := rr_pairwiseCompatible_iff_commonLeft_degree_le_one_named)
+  "rr_pairwiseCompatible_iff_commonLeft_degree_le_one" " using "
+    "member_pos_lc" ":=" term ","
+    "member_degree_le_one" ":=" term :
+  tactic
+
+syntax (name := rr_pairwiseCompatible_iff_familyCompatible_degree_le_one_named)
+  "rr_pairwiseCompatible_iff_familyCompatible_degree_le_one" " using "
+    "member_pos_lc" ":=" term ","
+    "member_degree_le_one" ":=" term :
+  tactic
+
+syntax (name := rr_pairwiseCompatible_iff_familyCompatible_degree_le_two_named)
+  "rr_pairwiseCompatible_iff_familyCompatible_degree_le_two" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "member_degree_le_two" ":=" term :
+  tactic
+
 macro_rules
   | `(tactic| rr_compatible_comm using compatible := $h:term) =>
       `(tactic| exact RealRooted.Compatible.comm $h)
@@ -464,6 +534,87 @@ macro_rules
       `(tactic|
         exact RealRooted.pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_natDegree_le_two
           $hpos $hdeg $hpair)
+  | `(tactic|
+      rr_pairwiseCompatible_iff_pairwiseCommon_degree_le_one using
+        member_pos_lc := $hpos:term,
+        member_degree_le_one := $hdeg:term) =>
+      `(tactic|
+        exact pairwiseCompatible_iff_pairwiseHasCommonInterleaver_of_natDegree_le_one
+          $hpos $hdeg)
+  | `(tactic|
+      rr_pairwiseCompatible_iff_pairwiseCommon_degree_le_two using
+        member_pos_lc := $hpos:term,
+        member_degree_le_two := $hdeg:term) =>
+      `(tactic|
+        exact pairwiseCompatible_iff_pairwiseHasCommonInterleaver_of_natDegree_le_two
+          $hpos $hdeg)
+  | `(tactic|
+      rr_pairwiseCommon_iff_commonInterleaver_degree_le_one using
+        member_pos_lc := $hpos:term,
+        member_degree_le_one := $hdeg:term) =>
+      `(tactic|
+        exact pairwiseHasCommonInterleaver_iff_hasCommonInterleaver_of_natDegree_le_one
+          $hpos $hdeg)
+  | `(tactic|
+      rr_pairwiseCommon_iff_commonInterleaver_degree_le_two using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        member_degree_le_two := $hdeg:term) =>
+      `(tactic|
+        exact pairwiseHasCommonInterleaver_iff_hasCommonInterleaver_of_natDegree_le_two
+          $hrr $hpos $hdeg)
+  | `(tactic|
+      rr_commonInterleaver_iff_familyCompatible_degree_le_one using
+        member_pos_lc := $hpos:term,
+        member_degree_le_one := $hdeg:term) =>
+      `(tactic|
+        exact hasCommonInterleaver_iff_familyCompatible_of_natDegree_le_one
+          $hpos $hdeg)
+  | `(tactic|
+      rr_commonInterleaver_iff_familyCompatible_degree_le_two using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        member_degree_le_two := $hdeg:term) =>
+      `(tactic|
+        exact hasCommonInterleaver_iff_familyCompatible_of_natDegree_le_two
+          $hrr $hpos $hdeg)
+  | `(tactic|
+      rr_pairwiseCompatible_iff_commonInterleaver_degree_le_one using
+        member_pos_lc := $hpos:term,
+        member_degree_le_one := $hdeg:term) =>
+      `(tactic|
+        exact pairwiseCompatible_iff_hasCommonInterleaver_of_natDegree_le_one
+          $hpos $hdeg)
+  | `(tactic|
+      rr_pairwiseCompatible_iff_commonInterleaver_degree_le_two using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        member_degree_le_two := $hdeg:term) =>
+      `(tactic|
+        exact pairwiseCompatible_iff_hasCommonInterleaver_of_natDegree_le_two
+          $hrr $hpos $hdeg)
+  | `(tactic|
+      rr_pairwiseCompatible_iff_commonLeft_degree_le_one using
+        member_pos_lc := $hpos:term,
+        member_degree_le_one := $hdeg:term) =>
+      `(tactic|
+        exact pairwiseCompatible_iff_commonLeftInterleaver_of_natDegree_le_one
+          $hpos $hdeg)
+  | `(tactic|
+      rr_pairwiseCompatible_iff_familyCompatible_degree_le_one using
+        member_pos_lc := $hpos:term,
+        member_degree_le_one := $hdeg:term) =>
+      `(tactic|
+        exact pairwiseCompatible_iff_familyCompatible_of_natDegree_le_one
+          $hpos $hdeg)
+  | `(tactic|
+      rr_pairwiseCompatible_iff_familyCompatible_degree_le_two using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        member_degree_le_two := $hdeg:term) =>
+      `(tactic|
+        exact pairwiseCompatible_iff_familyCompatible_of_natDegree_le_two
+          $hrr $hpos $hdeg)
 
 end Tactic
 end RealRooted
