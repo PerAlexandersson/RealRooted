@@ -34,6 +34,7 @@ syntax (name := rr_side_nonneg_seq) "rr_side_nonneg_seq" : tactic
 syntax (name := rr_side_pos_seq) "rr_side_pos_seq" : tactic
 syntax (name := rr_side_ne_seq) "rr_side_ne_seq" : tactic
 syntax (name := rr_positivity_seq) "rr_positivity_seq" : tactic
+syntax (name := rr_coeff) "rr_coeff" : tactic
 syntax (name := rr_side) "rr_side" : tactic
 syntax (name := rr_refine_then) "rr_refine_then " term " with " tactic : tactic
 
@@ -93,11 +94,52 @@ macro_rules
       `(tactic| intro n <;> rr_side_ne)
   | `(tactic| rr_positivity_seq) =>
       `(tactic| intro n <;> positivity)
+  | `(tactic| rr_coeff) =>
+      `(tactic|
+        (simp (discharger := decide) only [
+            Polynomial.coeff_add,
+            Polynomial.coeff_sub,
+            Polynomial.coeff_neg,
+            Polynomial.coeff_smul,
+            Polynomial.coeff_C_mul,
+            Polynomial.coeff_mul_C,
+            Polynomial.coeff_C,
+            Polynomial.coeff_X,
+            Polynomial.coeff_X_pow,
+            Polynomial.coeff_X_pow_self,
+            Polynomial.coeff_X_mul,
+            Polynomial.coeff_X_mul_zero,
+            Polynomial.coeff_mul_X,
+            Polynomial.coeff_mul_X_zero,
+            Polynomial.coeff_derivative,
+            Polynomial.coeff_one,
+            Polynomial.coeff_zero,
+            Polynomial.C_add,
+            Polynomial.C_sub,
+            Polynomial.C_neg,
+            Polynomial.C_mul,
+            Polynomial.C_1,
+            Polynomial.C_0,
+            Polynomial.C_ofNat,
+            add_zero,
+            zero_add,
+            sub_zero,
+            zero_sub,
+            one_mul,
+            mul_one,
+            zero_mul,
+            mul_zero,
+            neg_zero,
+            Nat.succ_ne_zero,
+            Nat.succ.injEq]
+          <;> try norm_num
+          <;> try ring_nf))
   | `(tactic| rr_side) =>
       `(tactic|
         first
           | positivity
           | norm_num
+          | rr_coeff
           | ring_nf
           | ring
           | lia

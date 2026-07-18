@@ -47,6 +47,26 @@ example {n : Nat} : 1 + ((n + 2 : Nat) : ℝ) / 2 ≠ 0 := by
 example {n : Nat} : -(((n : ℝ) + 5) * ((n : ℝ) + 1) / 3) ≠ 0 := by
   rr_side_ne
 
+example (p q : ℝ[X]) (n : Nat) :
+    (p + q).coeff n = p.coeff n + q.coeff n := by
+  rr_coeff
+
+example (p : ℝ[X]) (n : Nat) :
+    (X * p).coeff (n + 1) = p.coeff n := by
+  rr_coeff
+
+example (p : ℝ[X]) :
+    (X * p).coeff 0 = 0 := by
+  rr_coeff
+
+example (p : ℝ[X]) (n : Nat) :
+    p.derivative.coeff n = p.coeff (n + 1) * ((n : ℝ) + 1) := by
+  rr_coeff
+
+example :
+    ((X * (X + C 2) : ℝ[X]).coeff 2) = 1 := by
+  rr_coeff
+
 example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a * b := by
   rr_side
 
