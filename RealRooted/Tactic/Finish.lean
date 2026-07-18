@@ -312,6 +312,7 @@ theorem right_eq_zero_or_splits_of_isRealRooted_pair_sequence {A B : Nat → ℝ
 namespace Tactic
 
 syntax (name := rr_lookup_term) "rr_lookup_term" : term
+syntax (name := rr_realrooted_term) "rr_realrooted_term" : term
 
 syntax (name := rr_exact_realrooted_or_projection)
   "rr_exact_realrooted_or_projection" term :
@@ -424,6 +425,8 @@ syntax (name := rr_finish) "rr_finish" : tactic
 macro_rules
   | `(rr_lookup_term) =>
       `(by rr_lookup)
+  | `(rr_realrooted_term) =>
+      `(by rr_realrooted)
   | `(tactic| rr_exact_realrooted_or_projection $h:term) =>
       `(tactic|
         first

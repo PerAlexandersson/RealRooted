@@ -176,8 +176,8 @@ macro_rules
   | `(tactic| rr_coeff_shape) =>
       `(tactic|
         first
-          | rr_coeff_shape using nonneg := by rr_lookup, realrooted := by rr_lookup
-          | rr_coeff_shape using nonneg := by rr_lookup, realrooted := by rr_realrooted)
+          | rr_coeff_shape using nonneg := rr_lookup_term, realrooted := rr_lookup_term
+          | rr_coeff_shape using nonneg := rr_lookup_term, realrooted := rr_realrooted_term)
 
 end Tactic
 end RealRooted
