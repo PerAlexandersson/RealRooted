@@ -65,6 +65,7 @@ import RealRooted.InterlacingSequence
 import RealRooted.InterlacingSequenceBasic
 import RealRooted.IteratedDerivativeShift
 import RealRooted.Linear
+import RealRooted.LinearPowerFamily
 import RealRooted.LiuWangBenchmark
 import RealRooted.LiuWangRecursion
 import RealRooted.MaWang
@@ -119,6 +120,7 @@ import RealRooted.Tactic.Examples.CoefficientShape
 import RealRooted.Tactic.Examples.Combinatorial
 import RealRooted.Tactic.Examples.Favard
 import RealRooted.Tactic.Examples.Finish
+import RealRooted.Tactic.Examples.LinearPowerFamily
 import RealRooted.Tactic.Examples.LiuWang
 import RealRooted.Tactic.Examples.LiuWangRecursion
 import RealRooted.Tactic.Examples.Lookup
