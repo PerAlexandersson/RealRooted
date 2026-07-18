@@ -136,6 +136,7 @@ import RealRooted.Tactic.Examples.LiuWangRecursion
 import RealRooted.Tactic.Examples.Lookup
 import RealRooted.Tactic.Examples.MaWang
 import RealRooted.Tactic.Examples.Matrix
+import RealRooted.Tactic.Examples.OperatorPreservesInterlacing
 import RealRooted.Tactic.Examples.OEISPositiveTLag
 import RealRooted.Tactic.Examples.OEISTestbed
 import RealRooted.Tactic.Examples.PFBidiagonal
@@ -162,6 +163,7 @@ import RealRooted.Tactic.Lookup
 import RealRooted.Tactic.MaWang
 import RealRooted.Tactic.Matrix
 import RealRooted.Tactic.OEIS
+import RealRooted.Tactic.OperatorPreservesInterlacing
 import RealRooted.Tactic.PFBidiagonal
 import RealRooted.Tactic.PFBidiagonalFrontend
 import RealRooted.Tactic.Product

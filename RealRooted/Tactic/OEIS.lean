@@ -8,6 +8,7 @@ import RealRooted.Tactic.LinearPowerFamily
 import RealRooted.Tactic.LiuWang
 import RealRooted.Tactic.LiuWangRecursion
 import RealRooted.Tactic.Matrix
+import RealRooted.Tactic.OperatorPreservesInterlacing
 import RealRooted.Tactic.SymmetricDecomposition
 import RealRooted.Tactic.VeroneseSection
 import RealRooted.Tactic.WagnerX

@@ -17,6 +17,7 @@ import RealRooted.Tactic.Examples.LiuWangRecursion
 import RealRooted.Tactic.Examples.SecondDerivative
 import RealRooted.Tactic.Examples.LiuWang
 import RealRooted.Tactic.Examples.Product
+import RealRooted.Tactic.Examples.OperatorPreservesInterlacing
 import RealRooted.Tactic.Examples.PFBidiagonal
 import RealRooted.Tactic.Examples.I2DerivativeLag
 import RealRooted.Tactic.Examples.J1Gap3Reciprocal
