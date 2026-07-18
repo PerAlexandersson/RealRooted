@@ -1,4 +1,5 @@
 import RealRooted.ClosedSegmentCountEqFromAnalytic
+import RealRooted.ChudnovskySeymour
 import RealRooted.CommonInterleaverTwo
 import RealRooted.SameDegreeCountFromAnalytic
 
@@ -785,6 +786,12 @@ syntax (name := rr_pairwiseCompatible_iff_commonInterleaver_degreeSplit_nonnegCo
     "member_nonneg_coeffs" ":=" term ","
     "same_degree" ":=" term ","
     "succ_degree" ":=" term :
+  tactic
+
+syntax (name := rr_chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_named)
+  "rr_chudnovskySeymour_pairwiseCompatible_iff_familyCompatible" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term :
   tactic
 
 syntax (name := rr_pairwiseCompatible_iff_familyCompatible_rootCrossing_named)
@@ -2019,6 +2026,13 @@ macro_rules
         exact
           pairwiseCompatible_iff_hasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
             $hrr $hpos $hnn $hsame $hsucc)
+  | `(tactic|
+      rr_chudnovskySeymour_pairwiseCompatible_iff_familyCompatible using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term) =>
+      `(tactic|
+        exact RealRooted.chudnovskySeymour_pairwiseCompatible_iff_familyCompatible
+          $hrr $hpos)
   | `(tactic|
       rr_pairwiseCompatible_iff_familyCompatible_rootCrossing using
         member_realrooted := $hrr:term,

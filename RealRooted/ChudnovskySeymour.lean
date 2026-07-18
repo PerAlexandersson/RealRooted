@@ -78,8 +78,29 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
-    PairwiseCompatible fs ↔ FamilyCompatible fs := by
-  sorry
+    PairwiseCompatible fs ↔ FamilyCompatible fs :=
+  ⟨fun hpair l hmem hnonneg => by
+    obtain ⟨h, hprec⟩ :=
+      (chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver hrr hpos).mp hpair
+    by_cases hex : ∃ ap ∈ l, 0 < ap.1
+    · right
+      obtain ⟨ap₀, hap₀, h₀⟩ := hex
+      rcases lt_or_gt_of_ne
+        (leadingCoeff_ne_zero.mpr (hprec ap₀.2 (hmem ap₀ hap₀)).1.1) with hlt | hgt
+      · have : HasPosLeadingCoeff (C (-1 : ℝ) * h) := by
+          simp [HasPosLeadingCoeff, hlt]
+        exact (prec_weightedSum_left_of_common_left
+          l (C (-1 : ℝ) * h) hnonneg
+          (fun ap hap =>
+            prec_C_mul_left (hprec ap.2 (hmem ap hap)) (neg_ne_zero.mpr one_ne_zero))
+          this (fun ap hap => hpos _ (hmem ap hap)) ⟨ap₀, hap₀, h₀⟩).2.1
+      · exact (prec_weightedSum_left_of_common_left
+          l h hnonneg (fun ap hap => hprec ap.2 (hmem ap hap)) hgt
+          (fun ap hap => hpos _ (hmem ap hap)) ⟨ap₀, hap₀, h₀⟩).2.1
+    · left
+      have : ∀ ap ∈ l, ap.1 = 0 := by grind
+      exact weightedSum_eq_zero_of_forall_coeff_zero l this,
+   pairwiseCompatible_of_familyCompatible⟩
 
 private abbrev chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_target : Prop :=
   ∀ {fs : List ℝ[X]},
