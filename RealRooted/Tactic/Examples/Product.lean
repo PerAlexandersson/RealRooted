@@ -250,6 +250,15 @@ example {P : Nat → ℝ[X]}
     base := hbase,
     recurrence := hrec
 
+/-- Nonzero projection endpoint for the identity product exit. -/
+example {P : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = P n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_identity_sequence using
+    base := hbase,
+    recurrence := hrec
+
 /-- `A103451`-style product exit: each active row gains one root at zero. -/
 example {P : Nat → ℝ[X]}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
@@ -280,6 +289,17 @@ example {P : Nat → ℝ[X]}
     (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
     (hrec : ∀ n : Nat, P (n + 2) = P n) :
     ∀ n : Nat, (P n).Splits := by
+  rr_product_period_two_sequence using
+    base_zero := hbase_zero,
+    base_one := hbase_one,
+    recurrence := hrec
+
+/-- Nonzero projection endpoint for two-periodic product exits. -/
+example {P : Nat → ℝ[X]}
+    (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
+    (hrec : ∀ n : Nat, P (n + 2) = P n) :
+    ∀ n : Nat, P n ≠ 0 := by
   rr_product_period_two_sequence using
     base_zero := hbase_zero,
     base_one := hbase_one,
