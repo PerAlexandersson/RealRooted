@@ -249,6 +249,101 @@ example
     root_count := hcount
 
 example
+    (hcount : CompatibleSuccDegreeRootCountAboveNonRootStatement) :
+    CompatibleSuccDegreeClosedSegmentCountEqStatement := by
+  rr_compatibleSuccDegree_closedSegmentCountEq_of_nonRoot using
+    root_count := hcount
+
+example
+    (hcount : CompatibleSuccDegreeRootCountAboveNonRootStatement) :
+    CompatibleSuccDegreeRootCountAboveLeTwoStatement := by
+  rr_compatibleSuccDegree_rootCountAbove_leTwo_of_nonRoot using
+    root_count := hcount
+
+example
+    (hgap : CompatibleSuccDegreeRootCountAboveNoGapTwoStatement) :
+    CompatibleSuccDegreeRootCountAboveNonRootStatement := by
+  rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_noGapTwo using
+    no_gap_two := hgap
+
+example
+    (hgap : CompatibleSuccDegreeClosedSegmentNoGapTwoStatement) :
+    CompatibleSuccDegreeRootCountAboveNonRootStatement := by
+  rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_closedSegment using
+    no_gap_two := hgap
+
+example
+    (hcount : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    CompatibleSuccDegreeRootCountAboveNonRootStatement := by
+  rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_countEq using
+    count_eq := hcount
+
+example :
+    CompatibleSuccDegreeClosedSegmentCountEqStatement ↔
+      CompatibleSuccDegreeRootCountAboveNonRootStatement := by
+  rr_compatibleSuccDegree_closedSegmentCountEq_iff_nonRoot
+
+example
+    (hgap : CompatibleSuccDegreeRightFamilyNoGapTwoStatement) :
+    CompatibleSuccDegreeRootCountAboveNonRootStatement := by
+  rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_rightFamily using
+    no_gap_two := hgap
+
+example
+    (hgap : CompatibleSuccDegreeEndpointSignNoGapTwoStatement) :
+    CompatibleSuccDegreeRootCountAboveNonRootStatement := by
+  rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_endpointSign using
+    no_gap_two := hgap
+
+example
+    (hgap : CompatibleSuccDegreeEndpointSignLowerNoGapStatement) :
+    CompatibleSuccDegreeRootCountAboveNonRootStatement := by
+  rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_endpointSignLower using
+    no_gap := hgap
+
+example
+    (hcount : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    CompatibleSuccDegreeRootCountAboveNonRootStatement := by
+  rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_lowerCountEq using
+    count_eq := hcount
+
+example
+    (hcount : CompatibleSuccDegreeClosedSegmentCountEqStatement) :
+    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement := by
+  rr_posComboSuccDegree_rootCountAbove_nonRoot_of_countEq using
+    count_eq := hcount
+
+example
+    (hgap : CompatibleSuccDegreeClosedSegmentNoGapTwoStatement) :
+    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement := by
+  rr_posComboSuccDegree_rootCountAbove_nonRoot_of_closedSegment using
+    no_gap_two := hgap
+
+example
+    (hgap : CompatibleSuccDegreeRightFamilyNoGapTwoStatement) :
+    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement := by
+  rr_posComboSuccDegree_rootCountAbove_nonRoot_of_rightFamily using
+    no_gap_two := hgap
+
+example
+    (hgap : CompatibleSuccDegreeEndpointSignNoGapTwoStatement) :
+    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement := by
+  rr_posComboSuccDegree_rootCountAbove_nonRoot_of_endpointSign using
+    no_gap_two := hgap
+
+example
+    (hgap : CompatibleSuccDegreeEndpointSignLowerNoGapStatement) :
+    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement := by
+  rr_posComboSuccDegree_rootCountAbove_nonRoot_of_endpointSignLower using
+    no_gap := hgap
+
+example
+    (hcount : CompatibleSuccDegreeEndpointSignLowerCountEqStatement) :
+    PosComboNoCommonSuccDegreeRootCountAboveNonRootNonnegStatement := by
+  rr_posComboSuccDegree_rootCountAbove_nonRoot_of_lowerCountEq using
+    count_eq := hcount
+
+example
     (hcross : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
     PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
   rr_succDegree_pair_common_interleaver_rootCrossing using

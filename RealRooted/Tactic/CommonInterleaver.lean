@@ -203,6 +203,85 @@ syntax (name := rr_posComboSuccDegree_rootCountAbove_nonRoot_of_compatible_named
     "root_count" ":=" term :
   tactic
 
+syntax (name := rr_compatibleSuccDegree_closedSegmentCountEq_of_nonRoot_named)
+  "rr_compatibleSuccDegree_closedSegmentCountEq_of_nonRoot" " using "
+    "root_count" ":=" term :
+  tactic
+
+syntax (name := rr_compatibleSuccDegree_rootCountAbove_leTwo_of_nonRoot_named)
+  "rr_compatibleSuccDegree_rootCountAbove_leTwo_of_nonRoot" " using "
+    "root_count" ":=" term :
+  tactic
+
+syntax (name := rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_noGapTwo_named)
+  "rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_noGapTwo" " using "
+    "no_gap_two" ":=" term :
+  tactic
+
+syntax (name := rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_closedSegment_named)
+  "rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_closedSegment" " using "
+    "no_gap_two" ":=" term :
+  tactic
+
+syntax (name := rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_countEq_named)
+  "rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_countEq" " using "
+    "count_eq" ":=" term :
+  tactic
+
+syntax (name := rr_compatibleSuccDegree_closedSegmentCountEq_iff_nonRoot_named)
+  "rr_compatibleSuccDegree_closedSegmentCountEq_iff_nonRoot" :
+  tactic
+
+syntax (name := rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_rightFamily_named)
+  "rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_rightFamily" " using "
+    "no_gap_two" ":=" term :
+  tactic
+
+syntax (name := rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_endpointSign_named)
+  "rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_endpointSign" " using "
+    "no_gap_two" ":=" term :
+  tactic
+
+syntax (name := rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_endpointSignLower_named)
+  "rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_endpointSignLower" " using "
+    "no_gap" ":=" term :
+  tactic
+
+syntax (name := rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_lowerCountEq_named)
+  "rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_lowerCountEq" " using "
+    "count_eq" ":=" term :
+  tactic
+
+syntax (name := rr_posComboSuccDegree_rootCountAbove_nonRoot_of_countEq_named)
+  "rr_posComboSuccDegree_rootCountAbove_nonRoot_of_countEq" " using "
+    "count_eq" ":=" term :
+  tactic
+
+syntax (name := rr_posComboSuccDegree_rootCountAbove_nonRoot_of_closedSegment_named)
+  "rr_posComboSuccDegree_rootCountAbove_nonRoot_of_closedSegment" " using "
+    "no_gap_two" ":=" term :
+  tactic
+
+syntax (name := rr_posComboSuccDegree_rootCountAbove_nonRoot_of_rightFamily_named)
+  "rr_posComboSuccDegree_rootCountAbove_nonRoot_of_rightFamily" " using "
+    "no_gap_two" ":=" term :
+  tactic
+
+syntax (name := rr_posComboSuccDegree_rootCountAbove_nonRoot_of_endpointSign_named)
+  "rr_posComboSuccDegree_rootCountAbove_nonRoot_of_endpointSign" " using "
+    "no_gap_two" ":=" term :
+  tactic
+
+syntax (name := rr_posComboSuccDegree_rootCountAbove_nonRoot_of_endpointSignLower_named)
+  "rr_posComboSuccDegree_rootCountAbove_nonRoot_of_endpointSignLower" " using "
+    "no_gap" ":=" term :
+  tactic
+
+syntax (name := rr_posComboSuccDegree_rootCountAbove_nonRoot_of_lowerCountEq_named)
+  "rr_posComboSuccDegree_rootCountAbove_nonRoot_of_lowerCountEq" " using "
+    "count_eq" ":=" term :
+  tactic
+
 syntax (name := rr_succDegree_pair_common_interleaver_rootCrossing_named)
   "rr_succDegree_pair_common_interleaver_rootCrossing" " using "
     "root_crossing" ":=" term :
@@ -656,6 +735,100 @@ macro_rules
         root_count := $hcount:term) =>
       `(tactic|
         exact RealRooted.posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_compatible
+          $hcount)
+  | `(tactic|
+      rr_compatibleSuccDegree_closedSegmentCountEq_of_nonRoot using
+        root_count := $hcount:term) =>
+      `(tactic|
+        exact RealRooted.compatibleSuccDegreeClosedSegmentCountEq_of_nonRoot
+          $hcount)
+  | `(tactic|
+      rr_compatibleSuccDegree_rootCountAbove_leTwo_of_nonRoot using
+        root_count := $hcount:term) =>
+      `(tactic|
+        exact RealRooted.compatibleSuccDegreeRootCountAboveLeTwo_of_nonRoot
+          $hcount)
+  | `(tactic|
+      rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_noGapTwo using
+        no_gap_two := $hgap:term) =>
+      `(tactic|
+        exact RealRooted.compatibleSuccDegreeRootCountAboveNonRoot_of_noGapTwo
+          $hgap)
+  | `(tactic|
+      rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_closedSegment using
+        no_gap_two := $hgap:term) =>
+      `(tactic|
+        exact RealRooted.compatibleSuccDegreeRootCountAboveNonRoot_of_closedSegment
+          $hgap)
+  | `(tactic|
+      rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_countEq using
+        count_eq := $hcount:term) =>
+      `(tactic|
+        exact
+          RealRooted.compatibleSuccDegreeRootCountAboveNonRoot_of_closedSegmentCountEq
+            $hcount)
+  | `(tactic| rr_compatibleSuccDegree_closedSegmentCountEq_iff_nonRoot) =>
+      `(tactic|
+        exact RealRooted.compatibleSuccDegreeClosedSegmentCountEq_iff_nonRoot)
+  | `(tactic|
+      rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_rightFamily using
+        no_gap_two := $hgap:term) =>
+      `(tactic|
+        exact RealRooted.compatibleSuccDegreeRootCountAboveNonRoot_of_rightFamily
+          $hgap)
+  | `(tactic|
+      rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_endpointSign using
+        no_gap_two := $hgap:term) =>
+      `(tactic|
+        exact RealRooted.compatibleSuccDegreeRootCountAboveNonRoot_of_endpointSign
+          $hgap)
+  | `(tactic|
+      rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_endpointSignLower using
+        no_gap := $hgap:term) =>
+      `(tactic|
+        exact RealRooted.compatibleSuccDegreeRootCountAboveNonRoot_of_endpointSignLower
+          $hgap)
+  | `(tactic|
+      rr_compatibleSuccDegree_rootCountAbove_nonRoot_of_lowerCountEq using
+        count_eq := $hcount:term) =>
+      `(tactic|
+        exact RealRooted.compatibleSuccDegreeRootCountAboveNonRoot_of_lowerCountEq
+          $hcount)
+  | `(tactic|
+      rr_posComboSuccDegree_rootCountAbove_nonRoot_of_countEq using
+        count_eq := $hcount:term) =>
+      `(tactic|
+        exact RealRooted.posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_closedSegmentCountEq
+          $hcount)
+  | `(tactic|
+      rr_posComboSuccDegree_rootCountAbove_nonRoot_of_closedSegment using
+        no_gap_two := $hgap:term) =>
+      `(tactic|
+        exact RealRooted.posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_closedSegmentNoGapTwo
+          $hgap)
+  | `(tactic|
+      rr_posComboSuccDegree_rootCountAbove_nonRoot_of_rightFamily using
+        no_gap_two := $hgap:term) =>
+      `(tactic|
+        exact RealRooted.posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_rightFamilyNoGapTwo
+          $hgap)
+  | `(tactic|
+      rr_posComboSuccDegree_rootCountAbove_nonRoot_of_endpointSign using
+        no_gap_two := $hgap:term) =>
+      `(tactic|
+        exact RealRooted.posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_endpointSignNoGapTwo
+          $hgap)
+  | `(tactic|
+      rr_posComboSuccDegree_rootCountAbove_nonRoot_of_endpointSignLower using
+        no_gap := $hgap:term) =>
+      `(tactic|
+        exact RealRooted.posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_endpointSignLower
+          $hgap)
+  | `(tactic|
+      rr_posComboSuccDegree_rootCountAbove_nonRoot_of_lowerCountEq using
+        count_eq := $hcount:term) =>
+      `(tactic|
+        exact RealRooted.posComboNoCommonSuccDegreeRootCountAboveNonRoot_of_lowerCountEq
           $hcount)
   | `(tactic|
       rr_succDegree_pair_common_interleaver_rootCrossing using
