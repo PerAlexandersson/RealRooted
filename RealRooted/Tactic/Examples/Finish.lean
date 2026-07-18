@@ -14,6 +14,12 @@ namespace Tactic
 example {f : ℝ[X]} (hf : f ≠ 0) : f ≠ 0 := by
   rr_nonzero using hf
 
+example {f : ℝ[X]} (hdeg : f.natDegree = 1) : f ≠ 0 := by
+  rr_nonzero
+
+example {f : ℝ[X]} (hdeg : f.natDegree = 1) : f ≠ 0 := by
+  rr_finish
+
 example {f : ℝ[X]} (hf : f.Splits) : f.Splits := by
   rr_splits using hf
 

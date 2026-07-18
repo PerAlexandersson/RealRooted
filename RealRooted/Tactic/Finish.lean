@@ -103,6 +103,12 @@ theorem eq_zero_or_splits_of_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Split
     p = 0 ∨ p.Splits :=
   Or.inr hp.2
 
+/-- A polynomial with natural degree one is nonzero. -/
+theorem ne_zero_of_natDegree_eq_one {p : ℝ[X]} (hdeg : p.natDegree = 1) :
+    p ≠ 0 := by
+  intro hp
+  simp [hp] at hdeg
+
 /-- Project real-rootedness of the left argument from a pair certificate. -/
 theorem left_isRealRooted_of_isRealRooted_pair {p q : ℝ[X]}
     (hpq : (p ≠ 0 ∧ p.Splits) ∧ (q ≠ 0 ∧ q.Splits)) :
@@ -321,6 +327,7 @@ namespace Tactic
 syntax (name := rr_lookup_term) "rr_lookup_term" : term
 syntax (name := rr_realrooted_term) "rr_realrooted_term" : term
 syntax (name := rr_lookup_interlaces_term) "rr_lookup_interlaces_term" : term
+syntax (name := rr_degree_eq_one) "rr_degree_eq_one" : tactic
 syntax (name := rr_degree_le_one) "rr_degree_le_one" : tactic
 
 syntax (name := rr_exact_realrooted_or_projection)
@@ -462,6 +469,11 @@ macro_rules
           | exact RealRooted.Prec.toInterlaces rr_lookup_term (by
               symm
               rr_lookup))
+  | `(tactic| rr_degree_eq_one) =>
+      `(tactic|
+        first
+          | rr_lookup [rr_degree]
+          | (symm; rr_lookup [rr_degree]))
   | `(tactic| rr_degree_le_one) =>
       `(tactic|
         first
@@ -593,6 +605,7 @@ macro_rules
           | rr_lookup
           | rr_nonzero using rr_lookup_term
           | assumption
+          | (apply RealRooted.ne_zero_of_natDegree_eq_one <;> rr_degree_eq_one)
           | simp_all [RealRooted.Prec, RealRooted.Interlaces])
   | `(tactic| rr_splits using $h:term) =>
       `(tactic|
@@ -760,6 +773,7 @@ macro_rules
           | exact RealRooted.natDegree_succ_of_interlaces rr_lookup_term
           | exact (RealRooted.natDegree_succ_of_interlaces rr_lookup_term).symm
           | exact rr_lookup_interlaces_term
+          | exact RealRooted.ne_zero_of_natDegree_eq_one (by rr_degree_eq_one)
           | (exact ⟨by rr_nonzero, by rr_splits⟩ <;> done)
           | rr_sign
           | simp_all [
