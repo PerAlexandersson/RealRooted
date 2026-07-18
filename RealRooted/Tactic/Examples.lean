@@ -25,6 +25,7 @@ import RealRooted.Tactic.Examples.Product
 import RealRooted.Tactic.Examples.OperatorPreservesInterlacing
 import RealRooted.Tactic.Examples.PFPolynomial
 import RealRooted.Tactic.Examples.PFBidiagonal
+import RealRooted.Tactic.Examples.PosCombo
 import RealRooted.Tactic.Examples.FiniteSymbolPFFrontend
 import RealRooted.Tactic.Examples.I2DerivativeLag
 import RealRooted.Tactic.Examples.IteratedDerivativeShift

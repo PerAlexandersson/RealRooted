@@ -150,6 +150,7 @@ import RealRooted.Tactic.Examples.PFPolynomial
 import RealRooted.Tactic.Examples.OEISPositiveTLag
 import RealRooted.Tactic.Examples.OEISTestbed
 import RealRooted.Tactic.Examples.PFBidiagonal
+import RealRooted.Tactic.Examples.PosCombo
 import RealRooted.Tactic.Examples.Product
 import RealRooted.Tactic.Examples.RootBounds
 import RealRooted.Tactic.Examples.SecondDerivative
@@ -184,6 +185,7 @@ import RealRooted.Tactic.OperatorPreservesInterlacing
 import RealRooted.Tactic.PFPolynomial
 import RealRooted.Tactic.PFBidiagonal
 import RealRooted.Tactic.PFBidiagonalFrontend
+import RealRooted.Tactic.PosCombo
 import RealRooted.Tactic.Product
 import RealRooted.Tactic.RootBounds
 import RealRooted.Tactic.ScalarDen
