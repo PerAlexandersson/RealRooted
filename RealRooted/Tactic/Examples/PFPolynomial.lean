@@ -22,8 +22,30 @@ example {p : ℝ[X]} (hp : IsPFPolynomial p) :
   rr_pf_has_nonneg using pf := hp
 
 example {p : ℝ[X]} (hp : IsPFPolynomial p) :
+    HasNonnegCoeffs p := by
+  rr_pf using pf := hp
+
+example {p : ℝ[X]} (hp : IsPFPolynomial p) :
     p = 0 ∨ p.Splits := by
   rr_pf_zero_or_splits using pf := hp
+
+example {p : ℝ[X]} (hp : IsPFPolynomial p) :
+    p = 0 ∨ p.Splits := by
+  rr_pf using pf := hp
+
+example {p : ℝ[X]} (hp : IsPFPolynomial p) :
+    p.Splits := by
+  rr_pf using pf := hp
+
+example {p : ℝ[X]} (hp : IsPFPolynomial p) :
+    ∀ r ∈ p.roots, r ≤ 0 := by
+  rr_pf using pf := hp
+
+example {p : ℝ[X]} (hp : IsPFPolynomial p) (hp0 : p ≠ 0) :
+    p ≠ 0 ∧ p.Splits := by
+  rr_pf using
+    pf := hp,
+    nonzero := hp0
 
 example {p : ℝ[X]} (hnn : HasNonnegCoeffs p) (hsplits : p.Splits) :
     IsPFPolynomial p := by

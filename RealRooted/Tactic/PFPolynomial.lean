@@ -16,6 +16,16 @@ syntax (name := rr_pf_one_named) "rr_pf_one" : tactic
 syntax (name := rr_pf_X_named) "rr_pf_X" : tactic
 syntax (name := rr_pf_X_add_one_named) "rr_pf_X_add_one" : tactic
 
+syntax (name := rr_pf_using_named)
+  "rr_pf" " using " "pf" ":=" term :
+  tactic
+
+syntax (name := rr_pf_using_nonzero_named)
+  "rr_pf" " using "
+    "pf" ":=" term ","
+    "nonzero" ":=" term :
+  tactic
+
 syntax (name := rr_pf_has_nonneg_named)
   "rr_pf_has_nonneg" " using " "pf" ":=" term :
   tactic
@@ -108,6 +118,26 @@ macro_rules
       `(tactic| exact RealRooted.isPFPolynomial_X)
   | `(tactic| rr_pf_X_add_one) =>
       `(tactic| exact RealRooted.isPFPolynomial_X_add_one)
+  | `(tactic| rr_pf using pf := $hp:term) =>
+      `(tactic|
+        first
+          | exact $hp
+          | exact RealRooted.IsPFPolynomial.hasNonnegCoeffs $hp
+          | exact RealRooted.IsPFPolynomial.eq_zero_or_splits $hp
+          | exact RealRooted.IsPFPolynomial.roots_nonpos $hp
+          | (rcases RealRooted.IsPFPolynomial.eq_zero_or_splits $hp with hzero | hsplits
+             · rw [hzero]
+               simp
+             · exact hsplits))
+  | `(tactic|
+      rr_pf using
+        pf := $hp:term,
+        nonzero := $hp0:term) =>
+      `(tactic|
+        first
+          | rr_pf using pf := $hp
+          | exact $hp0
+          | exact RealRooted.IsPFPolynomial.ne_zero_and_splits $hp $hp0)
   | `(tactic| rr_pf_has_nonneg using pf := $hp:term) =>
       `(tactic| exact RealRooted.IsPFPolynomial.hasNonnegCoeffs $hp)
   | `(tactic| rr_pf_zero_or_splits using pf := $hp:term) =>
