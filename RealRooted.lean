@@ -155,6 +155,7 @@ import RealRooted.Tactic.Sign
 import RealRooted.Tactic.Targets
 import RealRooted.Tactic.WagnerX
 import RealRooted.TridiagonalDet
+import RealRooted.UpperDerivativeInterlace
 import RealRooted.VeroneseMatrix
 import RealRooted.VeroneseSection
 import RealRooted.Wagner
