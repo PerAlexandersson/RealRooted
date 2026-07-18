@@ -1,5 +1,6 @@
 import RealRooted.DegreeDropReversal
 import RealRooted.PFPolynomial
+import RealRooted.Tactic.Finish
 
 /-!
 # J1 gap-3 reciprocal frontend
@@ -24,11 +25,10 @@ theorem isRealRooted_of_j1_gap3_reciprocal_sequence
       reciprocalShift (D n) (R n) =
         X ^ (D n - (R n).natDegree) * (R n).reverse :=
     reciprocalShift_eq_X_pow_mul_reverse (hdegree n)
+  have hmodel_ne : R n ≠ 0 := (hmodel n).1
   have hne : reciprocalShift (D n) (R n) ≠ 0 := by
     rw [hshift]
-    exact mul_ne_zero (pow_ne_zero _ (by simp : (X : ℝ[X]) ≠ 0)) (by
-      rw [Ne, Polynomial.reverse_eq_zero]
-      exact (hmodel n).1)
+    rr_nonzero
   have hsplits : (reciprocalShift (D n) (R n)).Splits := by
     rw [hshift]
     exact DegreeDropReversal.splits_X_pow_mul_reverse (hmodel n).2 (D n)

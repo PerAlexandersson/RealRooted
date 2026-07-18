@@ -14,6 +14,33 @@ namespace Tactic
 example {f : ℝ[X]} (hf : f ≠ 0) : f ≠ 0 := by
   rr_nonzero using hf
 
+example : (X : ℝ[X]) ≠ 0 := by
+  rr_nonzero
+
+example {a : ℝ} (ha : a ≠ 0) : (C a : ℝ[X]) ≠ 0 := by
+  rr_nonzero
+
+example {a : ℝ} : (X + C a : ℝ[X]) ≠ 0 := by
+  rr_nonzero
+
+example {a : ℝ} : (C a + X : ℝ[X]) ≠ 0 := by
+  rr_nonzero
+
+example {a : ℝ} : (X - C a : ℝ[X]) ≠ 0 := by
+  rr_nonzero
+
+example {p q : ℝ[X]} (hp : p ≠ 0) (hq : q ≠ 0) : p * q ≠ 0 := by
+  rr_nonzero
+
+example {p : ℝ[X]} {n : Nat} (hp : p ≠ 0) : p ^ n ≠ 0 := by
+  rr_nonzero
+
+example {p : ℝ[X]} (hp : p ≠ 0) : p.reverse ≠ 0 := by
+  rr_nonzero
+
+example {p : ℝ[X]} {n : Nat} (hp : p ≠ 0) : X ^ n * p.reverse ≠ 0 := by
+  rr_nonzero
+
 example {f : ℝ[X]} (hdeg : f.natDegree = 1) : f ≠ 0 := by
   rr_nonzero
 

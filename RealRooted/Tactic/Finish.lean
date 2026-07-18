@@ -666,6 +666,14 @@ macro_rules
           | rr_nonzero using rr_lookup_term
           | assumption
           | (apply RealRooted.ne_zero_of_natDegree_eq_one <;> rr_degree_eq_one)
+          | exact Polynomial.X_ne_zero
+          | exact Polynomial.X_add_C_ne_zero _
+          | exact Polynomial.X_sub_C_ne_zero _
+          | (rw [add_comm]; exact Polynomial.X_add_C_ne_zero _)
+          | (apply Polynomial.C_ne_zero.mpr <;> rr_side_ne)
+          | (apply mul_ne_zero <;> rr_nonzero)
+          | (apply pow_ne_zero <;> rr_nonzero)
+          | (rw [Ne, Polynomial.reverse_eq_zero] <;> rr_nonzero)
           | simp_all [RealRooted.Prec, RealRooted.Interlaces])
   | `(tactic| rr_splits using $h:term) =>
       `(tactic|
