@@ -1421,22 +1421,12 @@ example {P : Nat → ℝ[X]}
     (hstep : ∀ n : Nat,
       P (n + 2) = X * P (n + 1) - C (((n + 1 : Nat) : ℝ) + 2) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let αfun : Nat → ℝ := fun _ => 0
-  let βfun : Nat → ℝ := fun m => (m : ℝ) + 2
-  have hP1' : P 1 = X - C (αfun 0) := by
-    simpa [αfun] using hP1
-  have hstep' :
-      ∀ n : Nat,
-        P (n + 2) =
-          (X - C (αfun (n + 1))) * P (n + 1) - C (βfun (n + 1)) * P n := by
-    intro n
-    simpa [αfun, βfun] using hstep n
   rr_favard_param_auto using
-    alpha := αfun,
-    beta := βfun,
+    alpha := fun _ : Nat => (0 : ℝ),
+    beta := fun m : Nat => (m : ℝ) + 2,
     base_zero := hP0,
-    base_one := hP1',
-    step := hstep'
+    base_one := hP1,
+    step := hstep
 
 -- `A137338`: parameterized Favard step `P_m=(t+1-m)P_{m-1}-(m-1)P_{m-2}`.
 example {P : Nat → ℝ[X]}
@@ -1446,22 +1436,12 @@ example {P : Nat → ℝ[X]}
       P (n + 2) = (X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) -
         C (((n + 1 : Nat) : ℝ)) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let αfun : Nat → ℝ := fun m => (m : ℝ)
-  let βfun : Nat → ℝ := fun m => (m : ℝ)
-  have hP1' : P 1 = X - C (αfun 0) := by
-    simpa [αfun] using hP1
-  have hstep' :
-      ∀ n : Nat,
-        P (n + 2) =
-          (X - C (αfun (n + 1))) * P (n + 1) - C (βfun (n + 1)) * P n := by
-    intro n
-    simpa [αfun, βfun] using hstep n
   rr_favard_param_auto using
-    alpha := αfun,
-    beta := βfun,
+    alpha := fun m : Nat => (m : ℝ),
+    beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := hP1',
-    step := hstep'
+    base_one := hP1,
+    step := hstep
 
 /-! ### Family F promoted scalar-lag extension scan -/
 
@@ -1475,22 +1455,12 @@ example {P : Nat → ℝ[X]}
         X * P (n + 1) -
           C (((((n + 1 : Nat) : ℝ) + 1) * (((n + 1 : Nat) : ℝ) + 2))) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let αfun : Nat → ℝ := fun _ => 0
-  let βfun : Nat → ℝ := fun m => ((m : ℝ) + 1) * ((m : ℝ) + 2)
-  have hP1' : P 1 = X - C (αfun 0) := by
-    simpa [αfun] using hP1
-  have hstep' :
-      ∀ n : Nat,
-        P (n + 2) =
-          (X - C (αfun (n + 1))) * P (n + 1) - C (βfun (n + 1)) * P n := by
-    intro n
-    simpa [αfun, βfun] using hstep n
   rr_favard_param_auto using
-    alpha := αfun,
-    beta := βfun,
+    alpha := fun _ : Nat => (0 : ℝ),
+    beta := fun m : Nat => ((m : ℝ) + 1) * ((m : ℝ) + 2),
     base_zero := hP0,
-    base_one := hP1',
-    step := hstep'
+    base_one := hP1,
+    step := hstep
 
 -- `A094816`: shifted active range of
 -- `P_m=(t+m-1)P_{m-1}-(m-2)P_{m-2}`.
@@ -1502,23 +1472,12 @@ example {P : Nat → ℝ[X]}
         (X - C (-((((n + 1 : Nat) : ℝ) + 1)))) * P (n + 1) -
           C (((n + 1 : Nat) : ℝ)) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let αfun : Nat → ℝ := fun m => -((m : ℝ) + 1)
-  let βfun : Nat → ℝ := fun m => (m : ℝ)
-  have hP1' : P 1 = X - C (αfun 0) := by
-    norm_num [αfun]
-    simpa using hP1
-  have hstep' :
-      ∀ n : Nat,
-        P (n + 2) =
-          (X - C (αfun (n + 1))) * P (n + 1) - C (βfun (n + 1)) * P n := by
-    intro n
-    simpa [αfun, βfun] using hstep n
   rr_favard_param_auto using
-    alpha := αfun,
-    beta := βfun,
+    alpha := fun m : Nat => -((m : ℝ) + 1),
+    beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := hP1',
-    step := hstep'
+    base_one := hP1,
+    step := hstep
 
 -- `A136532`: scalar-denominator row-sign Favard raw numerator.
 example {P : Nat → ℝ[X]}
@@ -1566,26 +1525,13 @@ example {P : Nat → ℝ[X]}
         (C (2 * (((n + 1 : Nat) : ℝ) + 1)) * X) * P (n + 1) -
           C ((((n + 1 : Nat) : ℝ) + 2)) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let sfun : Nat → ℝ := fun m => 2 * ((m : ℝ) + 1)
-  let αfun : Nat → ℝ := fun _ => 0
-  let βfun : Nat → ℝ := fun m => (m : ℝ) + 2
-  have hP1' : P 1 = C (sfun 0) * X - C (αfun 0) := by
-    norm_num [sfun, αfun]
-    simpa using hP1
-  have hstep' :
-      ∀ n : Nat,
-        P (n + 2) =
-          (C (sfun (n + 1)) * X - C (αfun (n + 1))) * P (n + 1) -
-            C (βfun (n + 1)) * P n := by
-    intro n
-    simpa [sfun, αfun, βfun] using hstep n
   rr_favard_affine_param_auto using
-    slope := sfun,
-    alpha := αfun,
-    beta := βfun,
+    slope := fun m : Nat => 2 * ((m : ℝ) + 1),
+    alpha := fun _ : Nat => (0 : ℝ),
+    beta := fun m : Nat => (m : ℝ) + 2,
     base_zero := hP0,
-    base_one := hP1',
-    step := hstep'
+    base_one := hP1,
+    step := hstep
 
 -- `A181332`: constant affine Favard row `P_m=(t+3)P_{m-1}-2P_{m-2}`.
 example {P : Nat → ℝ[X]}
@@ -1611,23 +1557,12 @@ example {P : Nat → ℝ[X]}
         (X - C (2 * ((n + 1 : Nat) : ℝ) + 5)) * P (n + 1) -
           C (((((n + 1 : Nat) : ℝ) + 2) ^ 2)) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let αfun : Nat → ℝ := fun m => 2 * (m : ℝ) + 5
-  let βfun : Nat → ℝ := fun m => ((m : ℝ) + 2) ^ 2
-  have hP1' : P 1 = X - C (αfun 0) := by
-    norm_num [αfun]
-    simpa using hP1
-  have hstep' :
-      ∀ n : Nat,
-        P (n + 2) =
-          (X - C (αfun (n + 1))) * P (n + 1) - C (βfun (n + 1)) * P n := by
-    intro n
-    simpa [αfun, βfun] using hstep n
   rr_favard_param_auto using
-    alpha := αfun,
-    beta := βfun,
+    alpha := fun m : Nat => 2 * (m : ℝ) + 5,
+    beta := fun m : Nat => ((m : ℝ) + 2) ^ 2,
     base_zero := hP0,
-    base_one := hP1',
-    step := hstep'
+    base_one := hP1,
+    step := hstep
 
 -- `A269951`: shifted active range of
 -- `P_m=(t+m-1)P_{m-1}-(m-3)P_{m-2}`.
@@ -1639,23 +1574,12 @@ example {P : Nat → ℝ[X]}
         (X - C (-((((n + 1 : Nat) : ℝ) + 2)))) * P (n + 1) -
           C (((n + 1 : Nat) : ℝ)) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let αfun : Nat → ℝ := fun m => -((m : ℝ) + 2)
-  let βfun : Nat → ℝ := fun m => (m : ℝ)
-  have hP1' : P 1 = X - C (αfun 0) := by
-    norm_num [αfun]
-    simpa using hP1
-  have hstep' :
-      ∀ n : Nat,
-        P (n + 2) =
-          (X - C (αfun (n + 1))) * P (n + 1) - C (βfun (n + 1)) * P n := by
-    intro n
-    simpa [αfun, βfun] using hstep n
   rr_favard_param_auto using
-    alpha := αfun,
-    beta := βfun,
+    alpha := fun m : Nat => -((m : ℝ) + 2),
+    beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := hP1',
-    step := hstep'
+    base_one := hP1,
+    step := hstep
 
 -- `A285072`: `P_m=(2-t)P_{m-1}-P_{m-2}`, another row-sign Favard case.
 example {P : Nat → ℝ[X]}
@@ -1679,23 +1603,12 @@ example {P : Nat → ℝ[X]}
         (X - C (-((((n + 1 : Nat) : ℝ) + 3)))) * P (n + 1) -
           C (3 * ((n + 1 : Nat) : ℝ)) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let αfun : Nat → ℝ := fun m => -((m : ℝ) + 3)
-  let βfun : Nat → ℝ := fun m => 3 * (m : ℝ)
-  have hP1' : P 1 = X - C (αfun 0) := by
-    norm_num [αfun]
-    simpa using hP1
-  have hstep' :
-      ∀ n : Nat,
-        P (n + 2) =
-          (X - C (αfun (n + 1))) * P (n + 1) - C (βfun (n + 1)) * P n := by
-    intro n
-    simpa [αfun, βfun] using hstep n
   rr_favard_param_auto using
-    alpha := αfun,
-    beta := βfun,
+    alpha := fun m : Nat => -((m : ℝ) + 3),
+    beta := fun m : Nat => 3 * (m : ℝ),
     base_zero := hP0,
-    base_one := hP1',
-    step := hstep'
+    base_one := hP1,
+    step := hstep
 
 -- `A137338`-shaped row-sign surface for n-dependent Favard coefficients.
 example {P : Nat → ℝ[X]}
@@ -1705,21 +1618,12 @@ example {P : Nat → ℝ[X]}
       P (n + 2) = -(X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) -
         C (((n + 1 : Nat) : ℝ)) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let αfun : Nat → ℝ := fun m => (m : ℝ)
-  let βfun : Nat → ℝ := fun m => (m : ℝ)
-  have hP1' : P 1 = -(X - C (αfun 0)) := by
-    simpa [αfun] using hP1
-  have hstep' : ∀ n : Nat,
-      P (n + 2) =
-        -(X - C (αfun (n + 1))) * P (n + 1) - C (βfun (n + 1)) * P n := by
-    intro n
-    simpa [αfun, βfun] using hstep n
   rr_favard_param_row_sign_auto using
-    alpha := αfun,
-    beta := βfun,
+    alpha := fun m : Nat => (m : ℝ),
+    beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := hP1',
-    step := hstep'
+    base_one := hP1,
+    step := hstep
 
 -- Unit-lag shortcut for A124039-type row-sign Favard shifts.
 example {P : Nat → ℝ[X]} {α : Nat → ℝ}

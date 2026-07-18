@@ -307,22 +307,13 @@ example {P : Nat → ℝ[X]} {s : Nat → ℝ}
       P (n + 2) =
         (C (s (n + 1)) * X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) - P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let αfun : Nat → ℝ := fun m => (m : ℝ)
-  have hP1' : P 1 = C (s 0) * X - C (αfun 0) := by
-    simpa [αfun] using hP1
-  have hstep' :
-      ∀ n : Nat,
-        P (n + 2) =
-          (C (s (n + 1)) * X - C (αfun (n + 1))) * P (n + 1) - P n := by
-    intro n
-    simpa [αfun] using hstep n
   rr_favard_affine_param_unit using
     slope := s,
-    alpha := αfun,
+    alpha := fun m : Nat => (m : ℝ),
     slope_pos := hs,
     base_zero := hP0,
-    base_one := hP1',
-    step := hstep'
+    base_one := hP1,
+    step := hstep
 
 /-- Constant-coefficient Favard shape with a shifted affine multiplier and
 arbitrary positive lag, tested pointwise. -/
@@ -469,22 +460,12 @@ example {P : Nat → ℝ[X]}
         (X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) -
           C (((n + 1 : Nat) : ℝ)) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let αfun : Nat → ℝ := fun m => (m : ℝ)
-  let βfun : Nat → ℝ := fun m => (m : ℝ)
-  have hP1' : P 1 = X - C (αfun 0) := by
-    simpa [αfun] using hP1
-  have hstep' :
-      ∀ n : Nat,
-        P (n + 2) =
-          (X - C (αfun (n + 1))) * P (n + 1) - C (βfun (n + 1)) * P n := by
-    intro n
-    simpa [αfun, βfun] using hstep n
   rr_favard_param_auto using
-    alpha := αfun,
-    beta := βfun,
+    alpha := fun m : Nat => (m : ℝ),
+    beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := hP1',
-    step := hstep'
+    base_one := hP1,
+    step := hstep
 
 /-- Parameterized monic Favard wrapper with explicit beta positivity. -/
 example {P : Nat → ℝ[X]}
@@ -522,22 +503,12 @@ example {P : Nat → ℝ[X]} {n : Nat}
         (X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) -
           C (((n + 1 : Nat) : ℝ)) * P n) :
     P n ≠ 0 := by
-  let αfun : Nat → ℝ := fun m => (m : ℝ)
-  let βfun : Nat → ℝ := fun m => (m : ℝ)
-  have hP1' : P 1 = X - C (αfun 0) := by
-    simpa [αfun] using hP1
-  have hstep' :
-      ∀ n : Nat,
-        P (n + 2) =
-          (X - C (αfun (n + 1))) * P (n + 1) - C (βfun (n + 1)) * P n := by
-    intro n
-    simpa [αfun, βfun] using hstep n
   rr_favard_param_auto using
-    alpha := αfun,
-    beta := βfun,
+    alpha := fun m : Nat => (m : ℝ),
+    beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := hP1',
-    step := hstep'
+    base_one := hP1,
+    step := hstep
 
 /-- Positive-slope parameterized affine Favard smoke test with variable lag
 and shift. -/
@@ -549,25 +520,13 @@ example {P : Nat → ℝ[X]}
         (C (2 : ℝ) * X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) -
           C (((n + 1 : Nat) : ℝ)) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let sfun : Nat → ℝ := fun _ => 2
-  let αfun : Nat → ℝ := fun m => (m : ℝ)
-  let βfun : Nat → ℝ := fun m => (m : ℝ)
-  have hP1' : P 1 = C (sfun 0) * X - C (αfun 0) := by
-    simpa [sfun, αfun] using hP1
-  have hstep' :
-      ∀ n : Nat,
-        P (n + 2) =
-          (C (sfun (n + 1)) * X - C (αfun (n + 1))) * P (n + 1) -
-            C (βfun (n + 1)) * P n := by
-    intro n
-    simpa [sfun, αfun, βfun] using hstep n
   rr_favard_affine_param_auto using
-    slope := sfun,
-    alpha := αfun,
-    beta := βfun,
+    slope := fun _ : Nat => (2 : ℝ),
+    alpha := fun m : Nat => (m : ℝ),
+    beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := hP1',
-    step := hstep'
+    base_one := hP1,
+    step := hstep
 
 /-- Parameterized affine Favard wrapper with explicit positivity certificates. -/
 example {P : Nat → ℝ[X]}
