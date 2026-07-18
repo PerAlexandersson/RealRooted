@@ -1,4 +1,5 @@
 import RealRooted.Tactic.PFBidiagonal
+import RealRooted.Tactic.PFPolynomial
 
 open Polynomial
 
@@ -674,17 +675,20 @@ theorem a036969ResidualAlpha_cubicPFDiscriminantCertificate (d : ℕ) :
 /-- Cubic-discriminant certificate for the A036969 beta residual. -/
 theorem a036969ResidualBeta_cubicPFDiscriminantCertificate :
     CubicPFDiscriminantCertificate a036969ResidualBeta := by
+  have hpfBeta : IsPFPolynomial (X * (X + 1 : ℝ[X]) ^ 2) := by
+    rr_pf_mul using
+      left_pf := by rr_pf_X,
+      right_pf := by
+        rr_pf_pow using pf := by rr_pf_X_add_one, exponent := 2
   refine ⟨?_, ?_, ?_⟩
-  · simpa [a036969ResidualBeta, mul_assoc] using
-      (isPFPolynomial_X.mul (isPFPolynomial_X_add_one.pow 2)).hasNonnegCoeffs
+  · simpa [a036969ResidualBeta, mul_assoc] using hpfBeta.hasNonnegCoeffs
   · unfold a036969ResidualBeta
     compute_degree
   · have hdeg : a036969ResidualBeta.natDegree ≤ 3 := by
       unfold a036969ResidualBeta
       compute_degree
     have hsplit : a036969ResidualBeta.Splits := by
-      have hpf :=
-        (isPFPolynomial_X.mul (isPFPolynomial_X_add_one.pow 2)).eq_zero_or_splits
+      have hpf := hpfBeta.eq_zero_or_splits
       rcases hpf with hzero | hsplit
       · exfalso
         have hX : (X : ℝ[X]) ≠ 0 := X_ne_zero
