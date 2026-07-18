@@ -1372,7 +1372,43 @@ syntax (name := rr_second_derivative_bidiagonal_normalizer)
   "rr_second_derivative_bidiagonal_normalizer" " ["
     (Lean.Parser.Tactic.simpStar <|>
      Lean.Parser.Tactic.simpErase <|>
-     Lean.Parser.Tactic.simpLemma),* "]" :
+     Lean.Parser.Tactic.simpLemma) ", "
+    (Lean.Parser.Tactic.simpStar <|>
+     Lean.Parser.Tactic.simpErase <|>
+     Lean.Parser.Tactic.simpLemma) "]" :
+  tactic
+
+syntax (name := rr_pf_cubic_certificate_via_two)
+  "rr_pf_cubic_certificate_via" " using "
+    "certificate" ":=" term ","
+    "defs" ":="
+    (Lean.Parser.Tactic.simpStar <|>
+     Lean.Parser.Tactic.simpErase <|>
+     Lean.Parser.Tactic.simpLemma) ", "
+    (Lean.Parser.Tactic.simpStar <|>
+     Lean.Parser.Tactic.simpErase <|>
+     Lean.Parser.Tactic.simpLemma) :
+  tactic
+
+syntax (name := rr_pf_cubic_certificate_via_five)
+  "rr_pf_cubic_certificate_via" " using "
+    "certificate" ":=" term ","
+    "defs" ":="
+    (Lean.Parser.Tactic.simpStar <|>
+     Lean.Parser.Tactic.simpErase <|>
+     Lean.Parser.Tactic.simpLemma) ", "
+    (Lean.Parser.Tactic.simpStar <|>
+     Lean.Parser.Tactic.simpErase <|>
+     Lean.Parser.Tactic.simpLemma) ", "
+    (Lean.Parser.Tactic.simpStar <|>
+     Lean.Parser.Tactic.simpErase <|>
+     Lean.Parser.Tactic.simpLemma) ", "
+    (Lean.Parser.Tactic.simpStar <|>
+     Lean.Parser.Tactic.simpErase <|>
+     Lean.Parser.Tactic.simpLemma) ", "
+    (Lean.Parser.Tactic.simpStar <|>
+     Lean.Parser.Tactic.simpErase <|>
+     Lean.Parser.Tactic.simpLemma) :
   tactic
 
 syntax (name := rr_pf_bidiagonal_sequence_named)
@@ -1414,13 +1450,37 @@ macro_rules
       `(tactic| rr_exact_pf_sequence_or_projection $h)
   | `(tactic| rr_exact_pf_sequence $h:term, nonzero := $hne:term) =>
       `(tactic| rr_exact_pf_sequence_realrooted $h, $hne)
-  | `(tactic| rr_second_derivative_bidiagonal_normalizer [$defs,*]) =>
+  | `(tactic| rr_second_derivative_bidiagonal_normalizer [$d1, $d2]) =>
       `(tactic|
         refine RealRooted.secondDerivativeBidiagonalForm_eq_bidiagonalOperator_of_coeff_eq
           _ ?_ ?_ <;>
           intro k <;>
-          simp [RealRooted.secondDerivativeQuadraticCoeff, $defs,*] <;>
+          simp [RealRooted.secondDerivativeQuadraticCoeff, $d1, $d2] <;>
           ring)
+  | `(tactic|
+      rr_pf_cubic_certificate_via using
+        certificate := $hcert:term,
+        defs := $d1, $d2) =>
+      `(tactic|
+        convert ($hcert) using 1 <;>
+        simp [$d1, $d2] <;>
+        try rw [show (C (2 : ℝ) : ℝ[X]) = (2 : ℝ[X]) from
+          Polynomial.C_eq_natCast (R := ℝ) 2] <;>
+        try rw [show (C (3 : ℝ) : ℝ[X]) = (3 : ℝ[X]) from
+          Polynomial.C_eq_natCast (R := ℝ) 3] <;>
+        ring_nf)
+  | `(tactic|
+      rr_pf_cubic_certificate_via using
+        certificate := $hcert:term,
+        defs := $d1, $d2, $d3, $d4, $d5) =>
+      `(tactic|
+        convert ($hcert) using 1 <;>
+        simp [$d1, $d2, $d3, $d4, $d5] <;>
+        try rw [show (C (2 : ℝ) : ℝ[X]) = (2 : ℝ[X]) from
+          Polynomial.C_eq_natCast (R := ℝ) 2] <;>
+        try rw [show (C (3 : ℝ) : ℝ[X]) = (3 : ℝ[X]) from
+          Polynomial.C_eq_natCast (R := ℝ) 3] <;>
+        ring_nf)
   | `(tactic|
       rr_pf_bidiagonal_sequence using
         preserver := $hPF:term,

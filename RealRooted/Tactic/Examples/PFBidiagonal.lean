@@ -2973,27 +2973,18 @@ example
     degree := hdeg,
     active_degree := hd,
     alpha_cubic := (fun n => by
-      convert a036969ResidualAlpha_cubicPFDiscriminantCertificate (d n) using 1
-      norm_num [quadraticJensenResidual, a036969ResidualAlpha]
-      have hC2 : (C (2 : ℝ) : ℝ[X]) = (2 : ℝ[X]) :=
-        Polynomial.C_eq_natCast (R := ℝ) 2
-      have hC3 : (C (3 : ℝ) : ℝ[X]) = (3 : ℝ[X]) :=
-        Polynomial.C_eq_natCast (R := ℝ) 3
-      rw [hC2, hC3]
-      ring_nf),
+      rr_pf_cubic_certificate_via using
+        certificate := a036969ResidualAlpha_cubicPFDiscriminantCertificate (d n),
+        defs := quadraticJensenResidual, a036969ResidualAlpha),
     beta_cubic := (fun _ => by
-      convert a036969ResidualBeta_cubicPFDiscriminantCertificate using 1
-      simp [quadraticJensenResidual, a036969ResidualBeta]),
+      rr_pf_cubic_certificate_via using
+        certificate := a036969ResidualBeta_cubicPFDiscriminantCertificate,
+        defs := quadraticJensenResidual, a036969ResidualBeta),
     pencil_cubic := (fun n lam hlam => by
-      convert a036969ResidualPencil_cubicPFDiscriminantCertificate (d n) hlam using 1
-      norm_num [quadraticBidiagonalPencilResidual, quadraticJensenResidual,
-        a036969ResidualPencil, a036969ResidualAlpha, a036969ResidualBeta]
-      have hC2 : (C (2 : ℝ) : ℝ[X]) = (2 : ℝ[X]) :=
-        Polynomial.C_eq_natCast (R := ℝ) 2
-      have hC3 : (C (3 : ℝ) : ℝ[X]) = (3 : ℝ[X]) :=
-        Polynomial.C_eq_natCast (R := ℝ) 3
-      rw [hC2, hC3]
-      ring_nf),
+      rr_pf_cubic_certificate_via using
+        certificate := a036969ResidualPencil_cubicPFDiscriminantCertificate (d n) hlam,
+        defs := quadraticBidiagonalPencilResidual, quadraticJensenResidual,
+          a036969ResidualPencil, a036969ResidualAlpha, a036969ResidualBeta),
     recurrence := hrec
 
 example
