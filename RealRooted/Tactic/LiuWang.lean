@@ -39,9 +39,17 @@ private lemma oneNonnegSeq : ∀ _ : Nat, 0 ≤ (1 : ℝ) :=
 
 syntax (name := rr_lw_recurrence_seq) "rr_lw_recurrence_seq " term : term
 
+syntax (name := rr_lw_simpa) "rr_lw_simpa " term : term
+
+syntax (name := rr_lw_simpa_mul_assoc) "rr_lw_simpa_mul_assoc " term : term
+
 macro_rules
   | `(rr_lw_recurrence_seq $hrec:term) =>
       `(fun n => by simpa using $hrec n)
+  | `(rr_lw_simpa $h:term) =>
+      `(by simpa using $h)
+  | `(rr_lw_simpa_mul_assoc $h:term) =>
+      `(by simpa [mul_assoc] using $h)
 
 /-- Two-polynomial Liu--Wang wrapper with no tail summands.  This is the
 common recurrence shape `F = a*f + b*g`, where `g` interlaces `f` and `b` has
@@ -4566,16 +4574,16 @@ macro_rules
       `(tactic|
         simpa using
           (RealRooted.prec_generalizedLiuWang_of_no_common
-            (by simpa using $hgf)
-            (by simpa using $hg_pos)
-            (by simpa using $hl_inter)
-            (by simpa using $hl_pos)
-            (by simpa using $hl_nonpos)
-            (by simpa using $hF_pos)
-            (by simpa using $hdeg_lo)
-            (by simpa using $hdeg_hi)
-            (by simpa using $hno)
-            (by simpa using $hb_nonpos)))
+            (rr_lw_simpa $hgf)
+            (rr_lw_simpa $hg_pos)
+            (rr_lw_simpa $hl_inter)
+            (rr_lw_simpa $hl_pos)
+            (rr_lw_simpa $hl_nonpos)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdeg_lo)
+            (rr_lw_simpa $hdeg_hi)
+            (rr_lw_simpa $hno)
+            (rr_lw_simpa $hb_nonpos)))
   | `(tactic|
       rr_liu_wang using
         interlacer := $hgf:term,
@@ -4599,16 +4607,16 @@ macro_rules
       `(tactic|
         simpa using
           (RealRooted.prec_generalizedLiuWang_strict
-            (by simpa using $hgf)
-            (by simpa using $hg_pos)
-            (by simpa using $hl_inter)
-            (by simpa using $hl_pos)
-            (by simpa using $hl_nonpos)
-            (by simpa using $hF_pos)
-            (by simpa using $hdeg_lo)
-            (by simpa using $hdeg_hi)
-            (by simpa using $hno)
-            (by simpa using $hb_neg)))
+            (rr_lw_simpa $hgf)
+            (rr_lw_simpa $hg_pos)
+            (rr_lw_simpa $hl_inter)
+            (rr_lw_simpa $hl_pos)
+            (rr_lw_simpa $hl_nonpos)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdeg_lo)
+            (rr_lw_simpa $hdeg_hi)
+            (rr_lw_simpa $hno)
+            (rr_lw_simpa $hb_neg)))
   | `(tactic|
       rr_liu_wang_strict using
         interlacer := $hgf:term,
@@ -4632,15 +4640,15 @@ macro_rules
       `(tactic|
         simpa using
           (RealRooted.prec_generalizedLiuWang_strict_same
-            (by simpa using $hgf)
-            (by simpa using $hg_pos)
-            (by simpa using $hl_inter)
-            (by simpa using $hl_pos)
-            (by simpa using $hl_nonpos)
-            (by simpa using $hF_pos)
-            (by simpa using $hdeg)
-            (by simpa using $hno)
-            (by simpa using $hb_neg)))
+            (rr_lw_simpa $hgf)
+            (rr_lw_simpa $hg_pos)
+            (rr_lw_simpa $hl_inter)
+            (rr_lw_simpa $hl_pos)
+            (rr_lw_simpa $hl_nonpos)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdeg)
+            (rr_lw_simpa $hno)
+            (rr_lw_simpa $hb_neg)))
   | `(tactic|
       rr_liu_wang_strict_same using
         interlacer := $hgf:term,
@@ -4663,15 +4671,15 @@ macro_rules
       `(tactic|
         simpa using
           (RealRooted.prec_generalizedLiuWang_strict_succ
-            (by simpa using $hgf)
-            (by simpa using $hg_pos)
-            (by simpa using $hl_inter)
-            (by simpa using $hl_pos)
-            (by simpa using $hl_nonpos)
-            (by simpa using $hF_pos)
-            (by simpa using $hdeg)
-            (by simpa using $hno)
-            (by simpa using $hb_neg)))
+            (rr_lw_simpa $hgf)
+            (rr_lw_simpa $hg_pos)
+            (rr_lw_simpa $hl_inter)
+            (rr_lw_simpa $hl_pos)
+            (rr_lw_simpa $hl_nonpos)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdeg)
+            (rr_lw_simpa $hno)
+            (rr_lw_simpa $hb_neg)))
   | `(tactic|
       rr_liu_wang_strict_succ using
         interlacer := $hgf:term,
@@ -4702,11 +4710,11 @@ macro_rules
             $hgf $hg_pos $hF_pos $hdeg_lo $hdeg_hi $hno $hb_nonpos),
           (RealRooted.prec_lw_two_of_nonpos
             $hgf $hg_pos
-            (by simpa using $hF_pos)
-            (by simpa using $hdeg_lo)
-            (by simpa using $hdeg_hi)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdeg_lo)
+            (rr_lw_simpa $hdeg_hi)
             $hno
-            (by simpa using $hb_nonpos)))
+            (rr_lw_simpa $hb_nonpos)))
   | `(tactic|
       rr_liu_wang_two_strict using
         interlacer := $hgf:term,
@@ -4722,11 +4730,11 @@ macro_rules
             $hgf $hg_pos $hF_pos $hdeg_lo $hdeg_hi $hno $hb_neg),
           (RealRooted.prec_lw_two_strict_of_neg
             $hgf $hg_pos
-            (by simpa using $hF_pos)
-            (by simpa using $hdeg_lo)
-            (by simpa using $hdeg_hi)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdeg_lo)
+            (rr_lw_simpa $hdeg_hi)
             $hno
-            (by simpa using $hb_neg)))
+            (rr_lw_simpa $hb_neg)))
   | `(tactic|
       rr_liu_wang_two_strict_same using
         interlacer := $hgf:term,
@@ -4741,10 +4749,10 @@ macro_rules
             $hgf $hg_pos $hF_pos $hdeg $hno $hb_neg),
           (RealRooted.prec_lw_two_strict_same_of_neg
             $hgf $hg_pos
-            (by simpa using $hF_pos)
-            (by simpa using $hdeg)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdeg)
             $hno
-            (by simpa using $hb_neg)))
+            (rr_lw_simpa $hb_neg)))
   | `(tactic|
       rr_liu_wang_two_strict_succ using
         interlacer := $hgf:term,
@@ -4759,10 +4767,10 @@ macro_rules
             $hgf $hg_pos $hF_pos $hdeg $hno $hb_neg),
           (RealRooted.prec_lw_two_strict_succ_of_neg
             $hgf $hg_pos
-            (by simpa using $hF_pos)
-            (by simpa using $hdeg)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdeg)
             $hno
-            (by simpa using $hb_neg)))
+            (rr_lw_simpa $hb_neg)))
   | `(tactic|
       rr_liu_wang_two_strict_branch using
         interlacer := $hgf:term,
@@ -4777,10 +4785,10 @@ macro_rules
             $hgf $hg_pos $hF_pos $hdegree $hno $hb_neg),
           (RealRooted.prec_lw_two_strict_branch_of_neg
             $hgf $hg_pos
-            (by simpa using $hF_pos)
-            (by simpa using $hdegree)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdegree)
             $hno
-            (by simpa using $hb_neg)))
+            (rr_lw_simpa $hb_neg)))
   | `(tactic|
       rr_lw_positive_t using
         interlacer := $hgf:term,
@@ -4797,9 +4805,9 @@ macro_rules
             $hgf $hg_pos $hf_roots $hc $hF_pos $hdeg_lo $hdeg_hi $hno),
           (RealRooted.prec_lw_positive_t_lag_of_roots_nonpos
             $hgf $hg_pos $hf_roots $hc
-            (by simpa using $hF_pos)
-            (by simpa using $hdeg_lo)
-            (by simpa using $hdeg_hi)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdeg_lo)
+            (rr_lw_simpa $hdeg_hi)
             $hno))
   | `(tactic|
       rr_lw_positive_t_auto using
@@ -4836,9 +4844,9 @@ macro_rules
             $hgf $hg_pos $hf_roots $hF_pos $hdeg_lo $hdeg_hi $hno),
           (RealRooted.prec_lw_positive_X_lag_of_roots_nonpos
             $hgf $hg_pos $hf_roots
-            (by simpa using $hF_pos)
-            (by simpa using $hdeg_lo)
-            (by simpa using $hdeg_hi)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdeg_lo)
+            (rr_lw_simpa $hdeg_hi)
             $hno))
   | `(tactic|
       rr_lw_positive_X using
@@ -4855,9 +4863,9 @@ macro_rules
             $hgf $hg_pos $hf_roots $hF_pos $hdeg_lo $hdeg_hi $hno),
           (RealRooted.prec_lw_positive_X_lag_of_roots_nonpos
             $hgf $hg_pos $hf_roots
-            (by simpa using $hF_pos)
-            (by simpa using $hdeg_lo)
-            (by simpa using $hdeg_hi)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdeg_lo)
+            (rr_lw_simpa $hdeg_hi)
             $hno))
   | `(tactic|
       rr_lw_positive_X_unit using
@@ -4893,9 +4901,9 @@ macro_rules
             $hgf $hg_pos $hf_nonneg $hc $hF_pos $hdeg_lo $hdeg_hi $hno),
           (RealRooted.prec_lw_positive_t_lag_of_nonneg_coeffs
             $hgf $hg_pos $hf_nonneg $hc
-            (by simpa using $hF_pos)
-            (by simpa using $hdeg_lo)
-            (by simpa using $hdeg_hi)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdeg_lo)
+            (rr_lw_simpa $hdeg_hi)
             $hno))
   | `(tactic|
       rr_lw_positive_t_nonneg_auto using
@@ -4932,9 +4940,9 @@ macro_rules
             $hgf $hg_pos $hf_roots $hQ $hF_pos $hdeg_lo $hdeg_hi $hno),
           (RealRooted.prec_lw_positive_X_mul_lag_of_roots_nonpos
             $hgf $hg_pos $hf_roots $hQ
-            (by simpa [mul_assoc] using $hF_pos)
-            (by simpa [mul_assoc] using $hdeg_lo)
-            (by simpa [mul_assoc] using $hdeg_hi)
+            (rr_lw_simpa_mul_assoc $hF_pos)
+            (rr_lw_simpa_mul_assoc $hdeg_lo)
+            (rr_lw_simpa_mul_assoc $hdeg_hi)
             $hno))
   | `(tactic|
       rr_lw_positive_C_mul_X_mul using
@@ -4953,9 +4961,9 @@ macro_rules
             $hgf $hg_pos $hf_roots $hc $hQ $hF_pos $hdeg_lo $hdeg_hi $hno),
           (RealRooted.prec_lw_positive_C_mul_X_mul_lag_of_roots_nonpos
             $hgf $hg_pos $hf_roots $hc $hQ
-            (by simpa [mul_assoc] using $hF_pos)
-            (by simpa [mul_assoc] using $hdeg_lo)
-            (by simpa [mul_assoc] using $hdeg_hi)
+            (rr_lw_simpa_mul_assoc $hF_pos)
+            (rr_lw_simpa_mul_assoc $hdeg_lo)
+            (rr_lw_simpa_mul_assoc $hdeg_hi)
             $hno))
   | `(tactic|
       rr_lw_positive_X_mul_nonneg using
@@ -4973,9 +4981,9 @@ macro_rules
             $hgf $hg_pos $hf_nonneg $hQ $hF_pos $hdeg_lo $hdeg_hi $hno),
           (RealRooted.prec_lw_positive_X_mul_lag_of_nonneg_coeffs
             $hgf $hg_pos $hf_nonneg $hQ
-            (by simpa [mul_assoc] using $hF_pos)
-            (by simpa [mul_assoc] using $hdeg_lo)
-            (by simpa [mul_assoc] using $hdeg_hi)
+            (rr_lw_simpa_mul_assoc $hF_pos)
+            (rr_lw_simpa_mul_assoc $hdeg_lo)
+            (rr_lw_simpa_mul_assoc $hdeg_hi)
             $hno))
   | `(tactic|
       rr_lw_positive_C_mul_X_mul_nonneg using
@@ -4994,9 +5002,9 @@ macro_rules
             $hgf $hg_pos $hf_nonneg $hc $hQ $hF_pos $hdeg_lo $hdeg_hi $hno),
           (RealRooted.prec_lw_positive_C_mul_X_mul_lag_of_nonneg_coeffs
             $hgf $hg_pos $hf_nonneg $hc $hQ
-            (by simpa [mul_assoc] using $hF_pos)
-            (by simpa [mul_assoc] using $hdeg_lo)
-            (by simpa [mul_assoc] using $hdeg_hi)
+            (rr_lw_simpa_mul_assoc $hF_pos)
+            (rr_lw_simpa_mul_assoc $hdeg_lo)
+            (rr_lw_simpa_mul_assoc $hdeg_hi)
             $hno))
   | `(tactic|
       rr_lw_positive_C_mul_X_mul_nonneg_auto using
@@ -5015,9 +5023,9 @@ macro_rules
             $hF_pos $hdeg_lo $hdeg_hi $hno),
           (RealRooted.prec_lw_positive_C_mul_X_mul_lag_of_nonneg_coeffs
             $hgf $hg_pos $hf_nonneg (by rr_lw_coeff_nonneg) $hQ
-            (by simpa [mul_assoc] using $hF_pos)
-            (by simpa [mul_assoc] using $hdeg_lo)
-            (by simpa [mul_assoc] using $hdeg_hi)
+            (rr_lw_simpa_mul_assoc $hF_pos)
+            (rr_lw_simpa_mul_assoc $hdeg_lo)
+            (rr_lw_simpa_mul_assoc $hdeg_hi)
             $hno))
   | `(tactic|
       rr_lw_negative_square using
@@ -5034,9 +5042,9 @@ macro_rules
             $hgf $hg_pos $hc $hF_pos $hdeg_lo $hdeg_hi $hno),
           (RealRooted.prec_lw_negative_square_lag
             $hgf $hg_pos $hc
-            (by simpa using $hF_pos)
-            (by simpa using $hdeg_lo)
-            (by simpa using $hdeg_hi)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdeg_lo)
+            (rr_lw_simpa $hdeg_hi)
             $hno))
   | `(tactic|
       rr_lw_negative_square_auto using
@@ -5052,9 +5060,9 @@ macro_rules
             $hgf $hg_pos (by rr_lw_coeff_nonneg) $hF_pos $hdeg_lo $hdeg_hi $hno),
           (RealRooted.prec_lw_negative_square_lag
             $hgf $hg_pos (by rr_lw_coeff_nonneg)
-            (by simpa using $hF_pos)
-            (by simpa using $hdeg_lo)
-            (by simpa using $hdeg_hi)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdeg_lo)
+            (rr_lw_simpa $hdeg_hi)
             $hno))
   | `(tactic|
       rr_lw_negative_monic_quadratic using
@@ -5071,9 +5079,9 @@ macro_rules
             $hgf $hg_pos $hdisc $hF_pos $hdeg_lo $hdeg_hi $hno),
           (RealRooted.prec_lw_negative_monic_quadratic_lag
             $hgf $hg_pos $hdisc
-            (by simpa using $hF_pos)
-            (by simpa using $hdeg_lo)
-            (by simpa using $hdeg_hi)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdeg_lo)
+            (rr_lw_simpa $hdeg_hi)
             $hno))
   | `(tactic|
       rr_lw_negative_monic_quadratic_auto using
@@ -5089,9 +5097,9 @@ macro_rules
             $hgf $hg_pos (by rr_lw_coeff_nonneg) $hF_pos $hdeg_lo $hdeg_hi $hno),
           (RealRooted.prec_lw_negative_monic_quadratic_lag
             $hgf $hg_pos (by rr_lw_coeff_nonneg)
-            (by simpa using $hF_pos)
-            (by simpa using $hdeg_lo)
-            (by simpa using $hdeg_hi)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdeg_lo)
+            (rr_lw_simpa $hdeg_hi)
             $hno))
   | `(tactic|
       rr_lw_negative_quadratic using
@@ -5110,9 +5118,9 @@ macro_rules
             $hgf $hg_pos $ha $hc $hdisc $hF_pos $hdeg_lo $hdeg_hi $hno),
           (RealRooted.prec_lw_negative_quadratic_lag
             $hgf $hg_pos $ha $hc $hdisc
-            (by simpa using $hF_pos)
-            (by simpa using $hdeg_lo)
-            (by simpa using $hdeg_hi)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdeg_lo)
+            (rr_lw_simpa $hdeg_hi)
             $hno))
   | `(tactic|
       rr_lw_negative_quadratic_auto using
@@ -5131,9 +5139,9 @@ macro_rules
           (RealRooted.prec_lw_negative_quadratic_lag
             $hgf $hg_pos
             (by rr_lw_coeff_nonneg) (by rr_lw_coeff_nonneg) (by rr_lw_coeff_nonneg)
-            (by simpa using $hF_pos)
-            (by simpa using $hdeg_lo)
-            (by simpa using $hdeg_hi)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdeg_lo)
+            (rr_lw_simpa $hdeg_hi)
             $hno))
   | `(tactic|
       rr_lw_negative_const using
@@ -5150,9 +5158,9 @@ macro_rules
             $hgf $hg_pos $hc $hF_pos $hdeg_lo $hdeg_hi $hno),
           (RealRooted.prec_lw_negative_const_lag
             $hgf $hg_pos $hc
-            (by simpa using $hF_pos)
-            (by simpa using $hdeg_lo)
-            (by simpa using $hdeg_hi)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdeg_lo)
+            (rr_lw_simpa $hdeg_hi)
             $hno))
   | `(tactic|
       rr_lw_negative_const_auto using
@@ -5168,9 +5176,9 @@ macro_rules
             $hgf $hg_pos (by rr_lw_coeff_nonneg) $hF_pos $hdeg_lo $hdeg_hi $hno),
           (RealRooted.prec_lw_negative_const_lag
             $hgf $hg_pos (by rr_lw_coeff_nonneg)
-            (by simpa using $hF_pos)
-            (by simpa using $hdeg_lo)
-            (by simpa using $hdeg_hi)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdeg_lo)
+            (rr_lw_simpa $hdeg_hi)
             $hno))
   | `(tactic|
       rr_lw_negative_const_C_neg using
@@ -5187,9 +5195,9 @@ macro_rules
             $hgf $hg_pos $hc $hF_pos $hdeg_lo $hdeg_hi $hno),
           (RealRooted.prec_lw_negative_const_lag_C_neg
             $hgf $hg_pos $hc
-            (by simpa using $hF_pos)
-            (by simpa using $hdeg_lo)
-            (by simpa using $hdeg_hi)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdeg_lo)
+            (rr_lw_simpa $hdeg_hi)
             $hno))
   | `(tactic|
       rr_lw_negative_const_C_neg_auto using
@@ -5205,9 +5213,9 @@ macro_rules
             $hgf $hg_pos (by rr_lw_coeff_nonneg) $hF_pos $hdeg_lo $hdeg_hi $hno),
           (RealRooted.prec_lw_negative_const_lag_C_neg
             $hgf $hg_pos (by rr_lw_coeff_nonneg)
-            (by simpa using $hF_pos)
-            (by simpa using $hdeg_lo)
-            (by simpa using $hdeg_hi)
+            (rr_lw_simpa $hF_pos)
+            (rr_lw_simpa $hdeg_lo)
+            (rr_lw_simpa $hdeg_hi)
             $hno))
   | `(tactic|
       rr_lw_nonpos_lag_sequence using
