@@ -687,11 +687,10 @@ theorem a036969ResidualBeta_cubicPFDiscriminantCertificate :
       have hpf := hpfBeta.eq_zero_or_splits
       rcases hpf with hzero | hsplit
       · exfalso
-        have hX : (X : ℝ[X]) ≠ 0 := X_ne_zero
-        have hbase : (X + 1 : ℝ[X]) ≠ 0 := by
-          simpa using Polynomial.X_add_C_ne_zero (1 : ℝ)
-        have hpow : (X + 1 : ℝ[X]) ^ 2 ≠ 0 := pow_ne_zero 2 hbase
-        exact (mul_ne_zero hX hpow) hzero
+        have hne : a036969ResidualBeta ≠ 0 := by
+          rw [a036969ResidualBeta]
+          rr_nonzero
+        exact hne hzero
       · simpa [a036969ResidualBeta] using hsplit
     exact cubicDiscr_nonneg_of_splits_natDegree_le_three hdeg hsplit
 
