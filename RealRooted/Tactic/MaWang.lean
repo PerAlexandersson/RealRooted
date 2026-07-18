@@ -67,12 +67,10 @@ theorem prec_mw_derivative_X_mul_of_nonneg_on_roots {f u q : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hf_roots : ∀ r, f.IsRoot r → r ≤ 0)
     (hq_nonneg : ∀ r, f.IsRoot r → 0 ≤ q.eval r) :
-    Prec f (u * f + (X * q) * f.derivative) := by
-  refine
-    prec_mw_derivative_of_nonpos
-      hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos ?_
-  intro r hr
-  exact eval_X_mul_nonpos_of_nonpos_of_nonneg (hf_roots r hr) (hq_nonneg r hr)
+    Prec f (u * f + (X * q) * f.derivative) :=
+  prec_mw_derivative_of_nonpos hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos
+    (fun r hr => eval_X_mul_nonpos_of_nonpos_of_nonneg
+      (hf_roots r hr) (hq_nonneg r hr))
 
 theorem prec_mw_derivative_C_mul_X_mul_of_nonneg_on_roots {f u q : ℝ[X]} {c : ℝ}
     (hf : f.Splits)
@@ -85,14 +83,11 @@ theorem prec_mw_derivative_C_mul_X_mul_of_nonneg_on_roots {f u q : ℝ[X]} {c : 
     (hc : 0 ≤ c)
     (hf_roots : ∀ r, f.IsRoot r → r ≤ 0)
     (hq_nonneg : ∀ r, f.IsRoot r → 0 ≤ q.eval r) :
-    Prec f (u * f + (C c * X * q) * f.derivative) := by
-  refine
-    prec_mw_derivative_of_nonpos
-      hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos ?_
-  intro r hr
-  exact
-    eval_C_mul_X_mul_nonpos_of_nonneg_of_nonpos_of_nonneg
-      hc (hf_roots r hr) (hq_nonneg r hr)
+    Prec f (u * f + (C c * X * q) * f.derivative) :=
+  prec_mw_derivative_of_nonpos hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos
+    (fun r hr =>
+      eval_C_mul_X_mul_nonpos_of_nonneg_of_nonpos_of_nonneg
+        hc (hf_roots r hr) (hq_nonneg r hr))
 
 theorem prec_mw_derivative_X_mul_one_add_X_of_roots_in_Icc {f u : ℝ[X]}
     (hf : f.Splits)
@@ -104,12 +99,10 @@ theorem prec_mw_derivative_X_mul_one_add_X_of_roots_in_Icc {f u : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hroot_lo : ∀ r, f.IsRoot r → -1 ≤ r)
     (hroot_hi : ∀ r, f.IsRoot r → r ≤ 0) :
-    Prec f (u * f + (X * (1 + X)) * f.derivative) := by
-  refine
-    prec_mw_derivative_of_nonpos
-      hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos ?_
-  intro r hr
-  exact eval_X_mul_one_add_X_nonpos_of_mem_Icc (hroot_lo r hr) (hroot_hi r hr)
+    Prec f (u * f + (X * (1 + X)) * f.derivative) :=
+  prec_mw_derivative_of_nonpos hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos
+    (fun r hr => eval_X_mul_one_add_X_nonpos_of_mem_Icc
+      (hroot_lo r hr) (hroot_hi r hr))
 
 theorem prec_mw_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one
     {f u : ℝ[X]} {c : ℝ}
@@ -125,14 +118,11 @@ theorem prec_mw_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one
     (hf_pos : HasPosLeadingCoeff f)
     (hc : 0 ≤ c)
     (hroot_hi : ∀ r, f.IsRoot r → r ≤ -1) :
-    Prec f (u * f + (-(C c) * X * (1 + X)) * f.derivative) := by
-  refine
-    prec_mw_derivative_of_nonpos
-      hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos ?_
-  intro r hr
-  exact
-    eval_neg_C_mul_X_mul_one_add_X_nonpos_of_nonneg_of_le_neg_one
-      hc (hroot_hi r hr)
+    Prec f (u * f + (-(C c) * X * (1 + X)) * f.derivative) :=
+  prec_mw_derivative_of_nonpos hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos
+    (fun r hr =>
+      eval_neg_C_mul_X_mul_one_add_X_nonpos_of_nonneg_of_le_neg_one
+        hc (hroot_hi r hr))
 
 theorem prec_mw_derivative_one_add_X_mul_one_add_two_mul_X_of_roots_in_interval
     {f u : ℝ[X]}
@@ -150,14 +140,11 @@ theorem prec_mw_derivative_one_add_X_mul_one_add_two_mul_X_of_roots_in_interval
     (hf_pos : HasPosLeadingCoeff f)
     (hroot_lo : ∀ r, f.IsRoot r → -1 ≤ r)
     (hroot_hi : ∀ r, f.IsRoot r → r ≤ -(1 / 2 : ℝ)) :
-    Prec f (u * f + ((1 + X) * (1 + C (2 : ℝ) * X)) * f.derivative) := by
-  refine
-    prec_mw_derivative_of_nonpos
-      hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos ?_
-  intro r hr
-  exact
-    eval_one_add_X_mul_one_add_two_mul_X_nonpos_of_mem_interval
-      (hroot_lo r hr) (hroot_hi r hr)
+    Prec f (u * f + ((1 + X) * (1 + C (2 : ℝ) * X)) * f.derivative) :=
+  prec_mw_derivative_of_nonpos hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos
+    (fun r hr =>
+      eval_one_add_X_mul_one_add_two_mul_X_nonpos_of_mem_interval
+        (hroot_lo r hr) (hroot_hi r hr))
 
 theorem prec_mw_derivative_neg_const {f u : ℝ[X]} {c : ℝ}
     (hf : f.Splits)
@@ -167,12 +154,9 @@ theorem prec_mw_derivative_neg_const {f u : ℝ[X]} {c : ℝ}
     (hF_pos : HasPosLeadingCoeff (u * f + C (-c) * f.derivative))
     (hf_pos : HasPosLeadingCoeff f)
     (hc : 0 ≤ c) :
-    Prec f (u * f + C (-c) * f.derivative) := by
-  refine
-    prec_mw_derivative_of_nonpos
-      hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos ?_
-  intro r hr
-  exact eval_C_neg_nonpos_of_nonneg hc
+    Prec f (u * f + C (-c) * f.derivative) :=
+  prec_mw_derivative_of_nonpos hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos
+    (fun _ _ => eval_C_neg_nonpos_of_nonneg hc)
 
 theorem prec_mw_derivative_neg_C_mul_X_sq {f u : ℝ[X]} {c : ℝ}
     (hf : f.Splits)
@@ -184,12 +168,9 @@ theorem prec_mw_derivative_neg_C_mul_X_sq {f u : ℝ[X]} {c : ℝ}
     (hF_pos : HasPosLeadingCoeff (u * f + (-(C c) * X ^ 2) * f.derivative))
     (hf_pos : HasPosLeadingCoeff f)
     (hc : 0 ≤ c) :
-    Prec f (u * f + (-(C c) * X ^ 2) * f.derivative) := by
-  refine
-    prec_mw_derivative_of_nonpos
-      hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos ?_
-  intro r hr
-  exact eval_neg_C_mul_X_sq_nonpos_of_nonneg hc
+    Prec f (u * f + (-(C c) * X ^ 2) * f.derivative) :=
+  prec_mw_derivative_of_nonpos hf hdegf hdeg_lo hdeg_hi hF_pos hf_pos
+    (fun _ _ => eval_neg_C_mul_X_sq_nonpos_of_nonneg hc)
 
 /-- Sequence-level weak Ma--Wang induction for derivative recurrences whose
 derivative coefficient is nonpositive at every old root. -/
