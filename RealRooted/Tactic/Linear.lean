@@ -39,6 +39,17 @@ syntax (name := rr_interlaces_one_linear_named)
 syntax (name := rr_interlaces_one_linear_auto)
   "rr_interlaces_one_linear" : tactic
 
+syntax (name := rr_interlaces_C_linear_named)
+  "rr_interlaces_C_linear" " using "
+    "scalar_ne" ":=" term ","
+    "degree" ":=" term :
+  tactic
+
+syntax (name := rr_interlaces_C_linear_auto)
+  "rr_interlaces_C_linear" " using "
+    "scalar_ne" ":=" term :
+  tactic
+
 syntax (name := rr_C_mul_realrooted_named)
   "rr_C_mul_realrooted" " using "
     "realrooted" ":=" term ","
@@ -77,6 +88,19 @@ macro_rules
   | `(tactic| rr_interlaces_one_linear) =>
       `(tactic|
         exact RealRooted.interlaces_one_linear (by
+          first
+            | rr_lookup [rr_degree]
+            | compute_degree!))
+  | `(tactic|
+      rr_interlaces_C_linear using
+        scalar_ne := $hc:term,
+        degree := $hdeg:term) =>
+      `(tactic| exact RealRooted.interlaces_C_linear $hc $hdeg)
+  | `(tactic|
+      rr_interlaces_C_linear using
+        scalar_ne := $hc:term) =>
+      `(tactic|
+        exact RealRooted.interlaces_C_linear $hc (by
           first
             | rr_lookup [rr_degree]
             | compute_degree!))

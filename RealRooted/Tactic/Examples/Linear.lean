@@ -44,6 +44,17 @@ example :
     Interlaces (1 : ℝ[X]) (X + C (2 : ℝ) : ℝ[X]) := by
   rr_interlaces_one_linear
 
+example {p : ℝ[X]} {c : ℝ} (hc : c ≠ 0) (hdeg : p.natDegree = 1) :
+    Interlaces (C c) p := by
+  rr_interlaces_C_linear using
+    scalar_ne := hc,
+    degree := hdeg
+
+example :
+    Interlaces (C (3 : ℝ)) (X + C (2 : ℝ) : ℝ[X]) := by
+  rr_interlaces_C_linear using
+    scalar_ne := (by norm_num : (3 : ℝ) ≠ 0)
+
 example {p : ℝ[X]} {a : ℝ}
     (hp : p ≠ 0 ∧ p.Splits) (ha : a ≠ 0) :
     C a * p ≠ 0 ∧ (C a * p).Splits := by
