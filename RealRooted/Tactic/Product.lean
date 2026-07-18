@@ -1152,15 +1152,8 @@ theorem isRealRooted_of_product_scalar_sequence
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (ha : ∀ n : Nat, a n ≠ 0)
     (hstep : ∀ n : Nat, P (n + 1) = C (a n) * P n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  intro n
-  induction n with
-  | zero =>
-      simpa using hbase
-  | succ n ih =>
-      have hnext : C (a n) * P n ≠ 0 ∧ (C (a n) * P n).Splits :=
-        isRealRooted_C_mul ih.1 ih.2 (ha n)
-      simpa [Nat.succ_eq_add_one, hstep n] using hnext
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_sequence hbase (isRealRooted_C_sequence ha) hstep
 
 /-- Right-factor variant of `isRealRooted_of_product_scalar_sequence`. -/
 theorem isRealRooted_of_product_scalar_right_sequence
@@ -1988,6 +1981,8 @@ syntax (name := rr_product_scalar_C_add_X_pow_sequence_auto_named)
 
 syntax (name := rr_product_nonzero) "rr_product_nonzero" : tactic
 
+syntax (name := rr_product_nonzero_term) "rr_product_nonzero_term" : term
+
 syntax (name := rr_product_nonzero_seq) "rr_product_nonzero_seq" : term
 
 syntax (name := rr_product_two_variants)
@@ -2005,6 +2000,8 @@ syntax (name := rr_product_four_sequence_variants)
 macro_rules
   | `(tactic| rr_product_nonzero) =>
       `(tactic| rr_side_ne)
+  | `(rr_product_nonzero_term) =>
+      `(by rr_product_nonzero)
   | `(rr_product_nonzero_seq) =>
       `(fun n => by rr_product_nonzero)
   | `(tactic| rr_product_two_variants $hleft:term, $hright:term) =>
@@ -2034,7 +2031,7 @@ macro_rules
         rr_product_factor using $hp, $hs)
   | `(tactic| rr_product_factor_auto using $hp:term) =>
       `(tactic|
-        rr_product_factor using $hp, (by rr_product_nonzero))
+        rr_product_factor using $hp, rr_product_nonzero_term)
   | `(tactic|
       rr_product_factor_auto using
         realrooted := $hp:term) =>
@@ -2053,7 +2050,7 @@ macro_rules
         rr_product_factor_const_first using $hp, $hs)
   | `(tactic| rr_product_factor_const_first_auto using $hp:term) =>
       `(tactic|
-        rr_product_factor_const_first using $hp, (by rr_product_nonzero))
+        rr_product_factor_const_first using $hp, rr_product_nonzero_term)
   | `(tactic|
       rr_product_factor_const_first_auto using
         realrooted := $hp:term) =>
