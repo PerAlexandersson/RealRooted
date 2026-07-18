@@ -1,4 +1,5 @@
 import RealRooted.Tactic.MaWang
+import RealRooted.Tactic.CubicDiscriminant
 import RealRooted.Tactic.Favard
 import RealRooted.Tactic.LinearPowerFamily
 import RealRooted.Tactic.LiuWang

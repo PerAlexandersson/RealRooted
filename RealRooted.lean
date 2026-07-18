@@ -115,10 +115,12 @@ import RealRooted.SymmetricDecomposition
 import RealRooted.Tactic
 import RealRooted.Tactic.Attr
 import RealRooted.Tactic.CoefficientShape
+import RealRooted.Tactic.CubicDiscriminant
 import RealRooted.Tactic.Examples
 import RealRooted.Tactic.Examples.Attr
 import RealRooted.Tactic.Examples.CoefficientShape
 import RealRooted.Tactic.Examples.Combinatorial
+import RealRooted.Tactic.Examples.CubicDiscriminant
 import RealRooted.Tactic.Examples.Favard
 import RealRooted.Tactic.Examples.Finish
 import RealRooted.Tactic.Examples.I2DerivativeLag

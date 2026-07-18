@@ -5,6 +5,7 @@ import RealRooted.Tactic.Examples.RootBounds
 import RealRooted.Tactic.Examples.Lookup
 import RealRooted.Tactic.Examples.Finish
 import RealRooted.Tactic.Examples.CoefficientShape
+import RealRooted.Tactic.Examples.CubicDiscriminant
 import RealRooted.Tactic.Examples.WagnerX
 import RealRooted.Tactic.Examples.Favard
 import RealRooted.Tactic.Examples.MaWang
