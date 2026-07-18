@@ -2728,6 +2728,50 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
+/-- Compact inner-window router for scalar `c_n(t^2-1)`. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (C ((n : ℝ) + 1) * (X ^ 2 - 1)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_inner_window_lag_sequence using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    root_lower := hroot_lower,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno,
+    certificate := cMulXSqSubOne
+
+/-- Compact inner-window router for scalar `c_n(t^2-1)`, real-rooted endpoint. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + (C ((n : ℝ) + 1) * (X ^ 2 - 1)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_lw_inner_window_lag_sequence_realrooted using
+    base := hbase,
+    pos_lc := hpos,
+    nonneg_coeffs := hnonneg,
+    root_lower := hroot_lower,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno,
+    certificate := cMulXSqSubOne
+
 /-- Unit strict-degree Family E lag `t(1-t)`. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
