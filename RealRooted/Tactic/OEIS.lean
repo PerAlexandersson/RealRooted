@@ -9,6 +9,8 @@ import RealRooted.Tactic.Favard
 import RealRooted.Tactic.GammaRealRoots
 import RealRooted.Tactic.IteratedDerivativeShift
 import RealRooted.Tactic.FiniteSymbolPFFrontend
+import RealRooted.Tactic.J1Chebyshev
+import RealRooted.Tactic.J1Gap3Reciprocal
 import RealRooted.Tactic.Linear
 import RealRooted.Tactic.InterlacingSequence
 import RealRooted.Tactic.LinearPowerFamily
@@ -60,6 +62,9 @@ rr_g_negative_lag_sequence using ... certificate := globalNonpos
 rr_g_negative_lag_sequence_den_coeff using ... certificate := negativeSquare
 rr_g_negative_lag_sequence_den_coeff using ... certificate := negativeQuadratic
 rr_h_second_derivative_sequence using route := pf_bidiagonal, ...
+rr_j1_factorable_sequence_realrooted using ... certificate := finiteLinearProduct
+rr_j1_gap3_reciprocal_sequence_realrooted using ... certificate := modelRealRooted
+rr_j1_gap3_reciprocal_sequence_realrooted using ... certificate := modelPF
 rr_product_exit_sequence using ... certificate := identity
 rr_product_exit_sequence using ... certificate := rootZero
 rr_product_exit_sequence using ... certificate := periodTwo
@@ -705,6 +710,30 @@ syntax (name := rr_product_formula_sequence_scalar_finite_linear_product)
     "certificate" ":=" "scalarFiniteLinearProduct" :
   tactic
 
+syntax (name := rr_j1_factorable_sequence_realrooted_finite_linear_product)
+  "rr_j1_factorable_sequence_realrooted" " using "
+    "scalar_ne_zero" ":=" term ","
+    "root_grid" ":=" term ","
+    "certificate" ":=" "finiteLinearProduct" :
+  tactic
+
+syntax (name := rr_j1_gap3_reciprocal_sequence_realrooted_model_realrooted)
+  "rr_j1_gap3_reciprocal_sequence_realrooted" " using "
+    "model_realrooted" ":=" term ","
+    "degree" ":=" term ","
+    "reciprocal" ":=" term ","
+    "certificate" ":=" "modelRealRooted" :
+  tactic
+
+syntax (name := rr_j1_gap3_reciprocal_sequence_realrooted_model_pf)
+  "rr_j1_gap3_reciprocal_sequence_realrooted" " using "
+    "model_pf" ":=" term ","
+    "model_ne" ":=" term ","
+    "degree" ":=" term ","
+    "reciprocal" ":=" term ","
+    "certificate" ":=" "modelPF" :
+  tactic
+
 syntax (name := rr_product_parity_sequence_scalar_then_factor)
   "rr_product_parity_sequence" " using "
     "base" ":=" term ","
@@ -1240,6 +1269,35 @@ macro_rules
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.finiteLinearProductScalarSequence_realRooted $hc $hroot))
+  | `(tactic|
+      rr_j1_factorable_sequence_realrooted using
+        scalar_ne_zero := $hc:term,
+        root_grid := $hroot:term,
+        certificate := finiteLinearProduct) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.j1FactorableLag3Sequence_realRooted $hc $hroot))
+  | `(tactic|
+      rr_j1_gap3_reciprocal_sequence_realrooted using
+        model_realrooted := $hmodel:term,
+        degree := $hdegree:term,
+        reciprocal := $hreciprocal:term,
+        certificate := modelRealRooted) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_j1_gap3_reciprocal_sequence
+            $hmodel $hdegree $hreciprocal))
+  | `(tactic|
+      rr_j1_gap3_reciprocal_sequence_realrooted using
+        model_pf := $hmodel:term,
+        model_ne := $hmodel_ne:term,
+        degree := $hdegree:term,
+        reciprocal := $hreciprocal:term,
+        certificate := modelPF) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_j1_gap3_reciprocal_pf_sequence
+            $hmodel $hmodel_ne $hdegree $hreciprocal))
   | `(tactic|
       rr_product_parity_sequence using
         base := $hbase:term,

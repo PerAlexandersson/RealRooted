@@ -726,6 +726,45 @@ example {P : Nat → ℝ[X]} {c : Nat → ℝ} {rootCount : Nat → Nat}
     root_grid := hroot,
     certificate := scalarFiniteLinearProduct
 
+/-- J1 factorable-row router, scalar finite product of linear factors. -/
+example {P : Nat → ℝ[X]} {c : Nat → ℝ} {rootCount : Nat → Nat}
+    {roots : Nat → Nat → ℝ}
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hroot : ∀ n : Nat,
+      P n = C (c n) *
+        ∏ j ∈ Finset.range (rootCount n), (X - C (roots n j))) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_j1_factorable_sequence_realrooted using
+    scalar_ne_zero := hc,
+    root_grid := hroot,
+    certificate := finiteLinearProduct
+
+/-- J1 gap-3 reciprocal router from a real-rooted model family. -/
+example {P R : Nat → ℝ[X]} {D : Nat → Nat}
+    (hmodel : ∀ n : Nat, R n ≠ 0 ∧ (R n).Splits)
+    (hdegree : ∀ n : Nat, (R n).natDegree ≤ D n)
+    (hreciprocal : ∀ n : Nat, P n = reciprocalShift (D n) (R n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_j1_gap3_reciprocal_sequence_realrooted using
+    model_realrooted := hmodel,
+    degree := hdegree,
+    reciprocal := hreciprocal,
+    certificate := modelRealRooted
+
+/-- J1 gap-3 reciprocal router from a PF-polynomial model family. -/
+example {P R : Nat → ℝ[X]} {D : Nat → Nat}
+    (hmodel : ∀ n : Nat, IsPFPolynomial (R n))
+    (hmodel_ne : ∀ n : Nat, R n ≠ 0)
+    (hdegree : ∀ n : Nat, (R n).natDegree ≤ D n)
+    (hreciprocal : ∀ n : Nat, P n = reciprocalShift (D n) (R n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_j1_gap3_reciprocal_sequence_realrooted using
+    model_pf := hmodel,
+    model_ne := hmodel_ne,
+    degree := hdegree,
+    reciprocal := hreciprocal,
+    certificate := modelPF
+
 /-- Product-parity router, automatic scalar step with supplied factor. -/
 example {P F : Nat → ℝ[X]}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
