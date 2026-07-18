@@ -101,6 +101,34 @@ syntax (name := rr_matrix0_weak_named)
     "input_real_rooted" ":=" term :
   tactic
 
+syntax (name := rr_row_threshold_matrix_named)
+  "rr_row_threshold_matrix" " using "
+    "n_pos" ":=" term ","
+    "matrix" ":=" term ","
+    "rectangular" ":=" term ","
+    "row_threshold" ":=" term ","
+    "two_by_two" ":=" term ","
+    "input" ":=" term ","
+    "input_length" ":=" term ","
+    "input_interlacing" ":=" term :
+  tactic
+
+syntax (name := rr_row_threshold_matrix0_named)
+  "rr_row_threshold_matrix0" " using "
+    "matrix" ":=" term ","
+    "rectangular" ":=" term ","
+    "row_threshold" ":=" term ","
+    "two_by_two" ":=" term ","
+    "input" ":=" term ","
+    "input_length" ":=" term ","
+    "input_interlacing" ":=" term :
+  tactic
+
+syntax (name := rr_row_threshold_entry_nonneg_named)
+  "rr_row_threshold_entry_nonneg" " using "
+    "row_threshold" ":=" term :
+  tactic
+
 macro_rules
   | `(tactic|
       rr_matrix using
@@ -161,6 +189,36 @@ macro_rules
       `(tactic|
         rr_matrix0_weak using $G, $hG_rect, $hG_nonneg, $hG_affine, $fs,
           $hfs_len, $hfs, $hfs_real)
+  | `(tactic|
+      rr_row_threshold_matrix using
+        n_pos := $hn:term,
+        matrix := $G:term,
+        rectangular := $hG_rect:term,
+        row_threshold := $hG_threshold:term,
+        two_by_two := $hG_affine:term,
+        input := $fs:term,
+        input_length := $hfs_len:term,
+        input_interlacing := $hfs:term) =>
+      `(tactic|
+        exact RealRooted.rowThreshold_matrix_preserves_interlacing_seq_of_2x2
+          $hn $G $hG_rect $hG_threshold $hG_affine $fs $hfs_len $hfs)
+  | `(tactic|
+      rr_row_threshold_matrix0 using
+        matrix := $G:term,
+        rectangular := $hG_rect:term,
+        row_threshold := $hG_threshold:term,
+        two_by_two := $hG_affine:term,
+        input := $fs:term,
+        input_length := $hfs_len:term,
+        input_interlacing := $hfs:term) =>
+      `(tactic|
+        exact RealRooted.rowThreshold_matrix_preserves_interlacing_seq0_of_2x2
+          $G $hG_rect $hG_threshold $hG_affine $fs $hfs_len $hfs)
+  | `(tactic|
+      rr_row_threshold_entry_nonneg using
+        row_threshold := $hG_threshold:term) =>
+      `(tactic|
+        exact RealRooted.hasRowThresholdLinearStructure_nonneg $hG_threshold)
 
 end Tactic
 end RealRooted
