@@ -677,14 +677,14 @@ theorem nonnegPrecToFullyInterlacingPair_of_pfPrec
 
 /-- `PrecToFullyInterlacingPairStatement` is false as stated. -/
 theorem not_precToFullyInterlacingPairStatement :
-    ¬ PrecToFullyInterlacingPairStatement := by
-  exact fun h => not_nonnegPrecToFullyInterlacingPairStatement
+    ¬ PrecToFullyInterlacingPairStatement :=
+  fun h => not_nonnegPrecToFullyInterlacingPairStatement
     (nonnegPrecToFullyInterlacingPair_of_precToFully h)
 
 /-- `PfPrecToFullyInterlacingPairStatement` is false as stated. -/
 theorem not_pfPrecToFullyInterlacingPairStatement :
-    ¬ PfPrecToFullyInterlacingPairStatement := by
-  exact fun h => not_nonnegPrecToFullyInterlacingPairStatement
+    ¬ PfPrecToFullyInterlacingPairStatement :=
+  fun h => not_nonnegPrecToFullyInterlacingPairStatement
     (nonnegPrecToFullyInterlacingPair_of_pfPrec h)
 
 /-- Positive-leading-coefficient form used when zero coefficients are ruled out
