@@ -553,18 +553,7 @@ macro_rules
       `(tactic|
         first
           | rr_lookup
-          | exact RealRooted.ne_zero_of_isRealRooted_sequence rr_lookup_term
-          | exact (RealRooted.ne_zero_of_isRealRooted_sequence rr_lookup_term _)
-          | exact RealRooted.left_ne_zero_of_isRealRooted_pair_sequence rr_lookup_term
-          | exact (RealRooted.left_ne_zero_of_isRealRooted_pair_sequence rr_lookup_term _)
-          | exact RealRooted.right_ne_zero_of_isRealRooted_pair_sequence rr_lookup_term
-          | exact (RealRooted.right_ne_zero_of_isRealRooted_pair_sequence rr_lookup_term _)
-          | exact RealRooted.left_ne_zero_of_prec rr_lookup_term
-          | exact RealRooted.right_ne_zero_of_prec rr_lookup_term
-          | exact RealRooted.right_ne_zero_of_interlaces rr_lookup_term
-          | exact RealRooted.left_ne_zero_of_interlaces rr_lookup_term
-          | exact RealRooted.left_ne_zero_of_isRealRooted_pair rr_lookup_term
-          | exact RealRooted.right_ne_zero_of_isRealRooted_pair rr_lookup_term
+          | rr_nonzero using rr_lookup_term
           | assumption
           | simp_all [RealRooted.Prec, RealRooted.Interlaces])
   | `(tactic| rr_splits using $h:term) =>
@@ -587,18 +576,7 @@ macro_rules
       `(tactic|
         first
           | rr_lookup
-          | exact RealRooted.splits_of_isRealRooted_sequence rr_lookup_term
-          | exact (RealRooted.splits_of_isRealRooted_sequence rr_lookup_term _)
-          | exact RealRooted.left_splits_of_isRealRooted_pair_sequence rr_lookup_term
-          | exact (RealRooted.left_splits_of_isRealRooted_pair_sequence rr_lookup_term _)
-          | exact RealRooted.right_splits_of_isRealRooted_pair_sequence rr_lookup_term
-          | exact (RealRooted.right_splits_of_isRealRooted_pair_sequence rr_lookup_term _)
-          | exact RealRooted.left_splits_of_prec rr_lookup_term
-          | exact RealRooted.right_splits_of_prec rr_lookup_term
-          | exact RealRooted.right_splits_of_interlaces rr_lookup_term
-          | exact RealRooted.left_splits_of_interlaces rr_lookup_term
-          | exact RealRooted.left_splits_of_isRealRooted_pair rr_lookup_term
-          | exact RealRooted.right_splits_of_isRealRooted_pair rr_lookup_term
+          | rr_splits using rr_lookup_term
           | assumption
           | simp_all [RealRooted.Prec, RealRooted.Interlaces])
   | `(tactic| rr_realrooted using $h:term) =>
@@ -620,17 +598,7 @@ macro_rules
       `(tactic|
         first
           | rr_lookup
-          | exact (RealRooted.at_of_isRealRooted_sequence rr_lookup_term _)
-          | exact RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence rr_lookup_term
-          | exact (RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence rr_lookup_term _)
-          | exact RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence rr_lookup_term
-          | exact (RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence rr_lookup_term _)
-          | exact RealRooted.left_isRealRooted_of_prec rr_lookup_term
-          | exact RealRooted.right_isRealRooted_of_prec rr_lookup_term
-          | exact RealRooted.right_isRealRooted_of_interlaces rr_lookup_term
-          | exact RealRooted.left_isRealRooted_of_interlaces rr_lookup_term
-          | exact RealRooted.left_isRealRooted_of_isRealRooted_pair rr_lookup_term
-          | exact RealRooted.right_isRealRooted_of_isRealRooted_pair rr_lookup_term
+          | rr_realrooted using rr_lookup_term
           | assumption
           | simp_all [RealRooted.Prec, RealRooted.Interlaces])
   | `(tactic| rr_interlaces using $hprec:term, $hdeg:term) =>
