@@ -1837,6 +1837,12 @@ macro_rules
       `(fun n => by
         simpa [add_comm, add_left_comm, add_assoc] using $hraw n)
 
+syntax (name := rr_mw_root_sign_seq) "rr_mw_root_sign_seq" : term
+
+macro_rules
+  | `(rr_mw_root_sign_seq) =>
+      `(fun n r hr => by rr_sign)
+
 syntax (name := rr_ma_wang)
   "rr_ma_wang" " using " term ", " term ", " term ", " term ", " term ", " term ", " term :
   tactic
@@ -4040,7 +4046,7 @@ macro_rules
       `(tactic|
         exact RealRooted.prec_mw_derivative_nonpos_sequence_of_nonneg_coeffs
           $hbase $hpos $hnonneg $hdeg_two
-          (by intro n r hr; rr_sign) $hrec $hdeg_lo $hdeg_hi)
+          (rr_mw_root_sign_seq) $hrec $hdeg_lo $hdeg_hi)
   | `(tactic|
       rr_mw_derivative_nonpos_nonneg_sequence_sign_auto using
         base := $hbase:term,
@@ -4071,7 +4077,7 @@ macro_rules
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence_of_nonneg_coeffs
             $hbase $hpos $hnonneg $hdeg_two
-            (by intro n r hr; rr_sign) $hrec $hdeg_lo $hdeg_hi))
+            (rr_mw_root_sign_seq) $hrec $hdeg_lo $hdeg_hi))
   | `(tactic|
       rr_mw_derivative_nonpos_nonneg_sequence_realrooted_sign_auto using
         base := $hbase:term,
@@ -4226,8 +4232,8 @@ macro_rules
             $hbase $hpos $hnonneg $hdeg_two
             rr_mw_active_nonneg
             rr_mw_active_nonneg
-            (by intro n r hr; rr_sign)
-            (by intro n r hr; rr_sign)
+            (rr_mw_root_sign_seq)
+            (rr_mw_root_sign_seq)
             $hden $hcoeffV $hcoeffW
             (rr_mw_raw_recurrence_seq $hraw)
             $hdeg_succ $hno)
@@ -4258,8 +4264,8 @@ macro_rules
             $hbase $hpos $hnonneg $hdeg_two
             rr_mw_active_nonneg
             rr_mw_active_nonneg
-            (by intro n r hr; rr_sign)
-            (by intro n r hr; rr_sign)
+            (rr_mw_root_sign_seq)
+            (rr_mw_root_sign_seq)
             $hden $hcoeffV $hcoeffW
             (rr_mw_raw_recurrence_seq $hraw)
             $hdeg_succ $hno))
@@ -4397,7 +4403,7 @@ macro_rules
           RealRooted.prec_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
             (c := $c) $hbase $hpos $hnonneg $hdeg_two
             rr_mw_active_nonneg
-            (by intro n r hr; rr_sign)
+            (rr_mw_root_sign_seq)
             $hden $hcoeff $hraw $hdeg_lo $hdeg_hi)
   | `(tactic|
       rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto using
@@ -4443,7 +4449,7 @@ macro_rules
             (V := $V) (b := $b) (c := $c) (d := $d)
             $hbase $hpos $hnonneg $hdeg_two
             rr_mw_active_nonneg
-            (by intro n r hr; rr_sign)
+            (rr_mw_root_sign_seq)
             $hden $hcoeff
             (rr_mw_raw_recurrence_seq $hraw)
             $hdeg_lo $hdeg_hi)
@@ -4530,7 +4536,7 @@ macro_rules
           (RealRooted.isRealRooted_of_mw_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
             (c := $c) $hbase $hpos $hnonneg $hdeg_two
             rr_mw_active_nonneg
-            (by intro n r hr; rr_sign)
+            (rr_mw_root_sign_seq)
             $hden $hcoeff $hraw $hdeg_lo $hdeg_hi))
   | `(tactic|
       rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto using
@@ -4576,7 +4582,7 @@ macro_rules
             (V := $V) (b := $b) (c := $c) (d := $d)
             $hbase $hpos $hnonneg $hdeg_two
             rr_mw_active_nonneg
-            (by intro n r hr; rr_sign)
+            (rr_mw_root_sign_seq)
             $hden $hcoeff
             (rr_mw_raw_recurrence_seq $hraw)
             $hdeg_lo $hdeg_hi))
