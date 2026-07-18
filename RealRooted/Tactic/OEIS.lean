@@ -10,6 +10,7 @@ import RealRooted.Tactic.GammaRealRoots
 import RealRooted.Tactic.IteratedDerivativeShift
 import RealRooted.Tactic.FiniteSymbolPFFrontend
 import RealRooted.Tactic.Linear
+import RealRooted.Tactic.InterlacingSequence
 import RealRooted.Tactic.LinearPowerFamily
 import RealRooted.Tactic.LiuWang
 import RealRooted.Tactic.LiuWangRecursion

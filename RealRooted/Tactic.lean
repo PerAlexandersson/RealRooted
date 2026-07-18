@@ -13,6 +13,7 @@ import RealRooted.Tactic.CoefficientShape
 import RealRooted.Tactic.CubicDiscriminant
 import RealRooted.Tactic.Derivative
 import RealRooted.Tactic.EulerOperator
+import RealRooted.Tactic.InterlacingSequence
 import RealRooted.Tactic.WagnerX
 import RealRooted.Tactic.MaWang
 import RealRooted.Tactic.LiuWangRecursion

@@ -135,6 +135,7 @@ import RealRooted.Tactic.Examples.FiniteSymbolPFFrontend
 import RealRooted.Tactic.Examples.Finish
 import RealRooted.Tactic.Examples.GammaRealRoots
 import RealRooted.Tactic.Examples.I2DerivativeLag
+import RealRooted.Tactic.Examples.InterlacingSequence
 import RealRooted.Tactic.Examples.IteratedDerivativeShift
 import RealRooted.Tactic.Examples.J1Gap3Reciprocal
 import RealRooted.Tactic.Examples.Linear
@@ -170,6 +171,7 @@ import RealRooted.Tactic.Finish
 import RealRooted.Tactic.GammaRealRoots
 import RealRooted.Tactic.CommonInterleaver
 import RealRooted.Tactic.I2DerivativeLag
+import RealRooted.Tactic.InterlacingSequence
 import RealRooted.Tactic.IteratedDerivativeShift
 import RealRooted.Tactic.J1Chebyshev
 import RealRooted.Tactic.J1Gap3Reciprocal
