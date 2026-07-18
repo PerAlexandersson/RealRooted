@@ -817,16 +817,14 @@ macro_rules
         nonneg_coeffs := $hnonneg:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        first
-          | rr_exact_realrooted_sequence_or_projection
-              (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
-                $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq $hrec)
-          | rr_exact_realrooted_sequence_or_projection
-              (by
-                refine RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
-                  (a := fun _ => (1 : ℝ)) (c := fun _ => (1 : ℝ))
-                  $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
-                  (rr_wagner_recurrence_seq $hrec)))
+        rr_first_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
+            $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq $hrec),
+          (by
+            refine RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
+              (a := fun _ => (1 : ℝ)) (c := fun _ => (1 : ℝ))
+              $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
+              (rr_wagner_recurrence_seq $hrec)))
   | `(tactic|
       rr_prec_pos_X_unit_lag_sequence_auto using
         current_coeff := $a:term,
