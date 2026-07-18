@@ -11,6 +11,10 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
+@[rr_degree] theorem rr_linear_X_add_two_degree_smoke :
+    (X + C (2 : ℝ) : ℝ[X]).natDegree = 1 := by
+  compute_degree!
+
 example (r : ℝ) :
     (X - C r : ℝ[X]) ≠ 0 ∧ (X - C r : ℝ[X]).Splits := by
   rr_X_sub_C_realrooted using
@@ -20,6 +24,10 @@ example {p : ℝ[X]} (hdeg : p.natDegree = 1) :
     p ≠ 0 ∧ p.Splits := by
   rr_degree_one_realrooted using
     degree := hdeg
+
+example :
+    (X + C (2 : ℝ) : ℝ[X]) ≠ 0 ∧ (X + C (2 : ℝ) : ℝ[X]).Splits := by
+  rr_degree_one_realrooted
 
 example {p : ℝ[X]} (hne : p ≠ 0) (hdeg : p.natDegree ≤ 1) :
     p ≠ 0 ∧ p.Splits := by
@@ -31,6 +39,10 @@ example {p : ℝ[X]} (hdeg : p.natDegree = 1) :
     Interlaces (1 : ℝ[X]) p := by
   rr_interlaces_one_linear using
     degree := hdeg
+
+example :
+    Interlaces (1 : ℝ[X]) (X + C (2 : ℝ) : ℝ[X]) := by
+  rr_interlaces_one_linear
 
 example {p : ℝ[X]} {a : ℝ}
     (hp : p ≠ 0 ∧ p.Splits) (ha : a ≠ 0) :

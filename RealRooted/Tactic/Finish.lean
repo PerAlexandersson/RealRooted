@@ -321,6 +321,7 @@ namespace Tactic
 syntax (name := rr_lookup_term) "rr_lookup_term" : term
 syntax (name := rr_realrooted_term) "rr_realrooted_term" : term
 syntax (name := rr_lookup_interlaces_term) "rr_lookup_interlaces_term" : term
+syntax (name := rr_degree_le_one) "rr_degree_le_one" : tactic
 
 syntax (name := rr_exact_realrooted_or_projection)
   "rr_exact_realrooted_or_projection" term :
@@ -461,6 +462,15 @@ macro_rules
           | exact RealRooted.Prec.toInterlaces rr_lookup_term (by
               symm
               rr_lookup))
+  | `(tactic| rr_degree_le_one) =>
+      `(tactic|
+        first
+          | assumption
+          | rr_lookup [rr_degree]
+          | exact le_of_eq (by rr_lookup [rr_degree])
+          | exact le_of_eq (by
+              symm
+              rr_lookup [rr_degree]))
   | `(tactic| rr_exact_realrooted_or_projection $h:term) =>
       `(tactic|
         rr_first_exact
@@ -607,6 +617,7 @@ macro_rules
           | rr_lookup
           | rr_splits using rr_lookup_term
           | assumption
+          | (apply Polynomial.Splits.of_natDegree_le_one <;> rr_degree_le_one)
           | simp_all [RealRooted.Prec, RealRooted.Interlaces])
   | `(tactic| rr_realrooted using $h:term) =>
       `(tactic|
@@ -629,6 +640,7 @@ macro_rules
           | rr_lookup
           | rr_realrooted using rr_lookup_term
           | assumption
+          | (exact ⟨by rr_nonzero, by rr_splits⟩ <;> done)
           | simp_all [RealRooted.Prec, RealRooted.Interlaces])
   | `(tactic| rr_interlaces using $hprec:term, $hdeg:term) =>
       `(tactic|
@@ -748,6 +760,7 @@ macro_rules
           | exact RealRooted.natDegree_succ_of_interlaces rr_lookup_term
           | exact (RealRooted.natDegree_succ_of_interlaces rr_lookup_term).symm
           | exact rr_lookup_interlaces_term
+          | (exact ⟨by rr_nonzero, by rr_splits⟩ <;> done)
           | rr_sign
           | simp_all [
               RealRooted.Prec,

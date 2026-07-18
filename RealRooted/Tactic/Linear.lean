@@ -22,6 +22,9 @@ syntax (name := rr_degree_one_realrooted_named)
     "degree" ":=" term :
   tactic
 
+syntax (name := rr_degree_one_realrooted_auto)
+  "rr_degree_one_realrooted" : tactic
+
 syntax (name := rr_natDegree_le_one_realrooted_named)
   "rr_natDegree_le_one_realrooted" " using "
     "nonzero" ":=" term ","
@@ -32,6 +35,9 @@ syntax (name := rr_interlaces_one_linear_named)
   "rr_interlaces_one_linear" " using "
     "degree" ":=" term :
   tactic
+
+syntax (name := rr_interlaces_one_linear_auto)
+  "rr_interlaces_one_linear" : tactic
 
 syntax (name := rr_C_mul_realrooted_named)
   "rr_C_mul_realrooted" " using "
@@ -53,6 +59,12 @@ macro_rules
       rr_degree_one_realrooted using
         degree := $hdeg:term) =>
       `(tactic| exact RealRooted.isRealRooted_of_degree_one $hdeg)
+  | `(tactic| rr_degree_one_realrooted) =>
+      `(tactic|
+        exact RealRooted.isRealRooted_of_degree_one (by
+          first
+            | rr_lookup [rr_degree]
+            | compute_degree!))
   | `(tactic|
       rr_natDegree_le_one_realrooted using
         nonzero := $hne:term,
@@ -62,6 +74,12 @@ macro_rules
       rr_interlaces_one_linear using
         degree := $hdeg:term) =>
       `(tactic| exact RealRooted.interlaces_one_linear $hdeg)
+  | `(tactic| rr_interlaces_one_linear) =>
+      `(tactic|
+        exact RealRooted.interlaces_one_linear (by
+          first
+            | rr_lookup [rr_degree]
+            | compute_degree!))
   | `(tactic|
       rr_C_mul_realrooted using
         realrooted := $hp:term,

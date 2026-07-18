@@ -17,6 +17,17 @@ example {f : ℝ[X]} (hf : f ≠ 0) : f ≠ 0 := by
 example {f : ℝ[X]} (hf : f.Splits) : f.Splits := by
   rr_splits using hf
 
+example {f : ℝ[X]} (hdeg : f.natDegree ≤ 1) : f.Splits := by
+  rr_splits
+
+example {f : ℝ[X]} (hf : f ≠ 0) (hdeg : f.natDegree ≤ 1) :
+    f ≠ 0 ∧ f.Splits := by
+  rr_realrooted
+
+example {f : ℝ[X]} (hf : f ≠ 0) (hdeg : f.natDegree = 1) :
+    f ≠ 0 ∧ f.Splits := by
+  rr_finish
+
 example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 := by
   rr_nonzero using hfg
 
