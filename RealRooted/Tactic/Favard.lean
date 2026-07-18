@@ -1194,6 +1194,10 @@ syntax (name := rr_favard_const_unit_named)
     "step" ":=" term :
   tactic
 
+syntax (name := rr_favard_const_unit)
+  "rr_favard_const_unit" " using " term ", " term ", " term ", " term :
+  tactic
+
 syntax (name := rr_favard_param)
   "rr_favard_param" " using " term ", " term ", " term ", " term ", " term ", " term :
   tactic
@@ -1223,6 +1227,10 @@ syntax (name := rr_favard_param_unit_named)
     "base_zero" ":=" term ","
     "base_one" ":=" term ","
     "step" ":=" term :
+  tactic
+
+syntax (name := rr_favard_param_unit)
+  "rr_favard_param_unit" " using " term ", " term ", " term ", " term :
   tactic
 
 syntax (name := rr_favard_affine_const)
@@ -1261,6 +1269,11 @@ syntax (name := rr_favard_affine_const_unit_named)
     "step" ":=" term :
   tactic
 
+syntax (name := rr_favard_affine_const_unit)
+  "rr_favard_affine_const_unit" " using " term ", " term ", " term ", "
+    term ", " term :
+  tactic
+
 syntax (name := rr_favard_affine_const_row_sign_named)
   "rr_favard_affine_const_row_sign" " using "
     "slope" ":=" term ","
@@ -1289,6 +1302,10 @@ syntax (name := rr_favard_const_row_sign_unit_named)
     "base_zero" ":=" term ","
     "base_one" ":=" term ","
     "step" ":=" term :
+  tactic
+
+syntax (name := rr_favard_const_row_sign_unit)
+  "rr_favard_const_row_sign_unit" " using " term ", " term ", " term ", " term :
   tactic
 
 syntax (name := rr_favard_affine_param)
@@ -2049,6 +2066,15 @@ macro_rules
           base_one := rr_favard_base_one $hP1,
           step := rr_favard_step_seq $hstep)
   | `(tactic|
+      rr_favard_const_unit using
+        $α:term, $hP0:term, $hP1:term, $hstep:term) =>
+      `(tactic|
+        rr_favard_const_unit using
+          alpha := $α,
+          base_zero := $hP0,
+          base_one := $hP1,
+          step := $hstep)
+  | `(tactic|
       rr_favard_param using
         $α:term, $β:term, $hβ:term, $hP0:term, $hP1:term, $hstep:term) =>
       `(tactic|
@@ -2103,6 +2129,15 @@ macro_rules
           base_zero := $hP0,
           base_one := rr_favard_base_one_dsimp $hP1,
           step := rr_favard_step_dsimp_seq $hstep)
+  | `(tactic|
+      rr_favard_param_unit using
+        $α:term, $hP0:term, $hP1:term, $hstep:term) =>
+      `(tactic|
+        rr_favard_param_unit using
+          alpha := $α,
+          base_zero := $hP0,
+          base_one := $hP1,
+          step := $hstep)
   | `(tactic|
       rr_favard_affine_const using
         $s:term, $α:term, $β:term, $hs:term, $hβ:term, $hP0:term, $hP1:term,
@@ -2168,6 +2203,16 @@ macro_rules
           base_one := rr_favard_base_one $hP1,
           step := rr_favard_step_seq $hstep)
   | `(tactic|
+      rr_favard_affine_const_unit using
+        $s:term, $α:term, $hP0:term, $hP1:term, $hstep:term) =>
+      `(tactic|
+        rr_favard_affine_const_unit using
+          slope := $s,
+          alpha := $α,
+          base_zero := $hP0,
+          base_one := $hP1,
+          step := $hstep)
+  | `(tactic|
       rr_favard_affine_const_row_sign using
         slope := $s:term,
         alpha := $α:term,
@@ -2223,6 +2268,15 @@ macro_rules
           base_zero := $hP0,
           base_one := rr_favard_base_one $hP1,
           step := rr_favard_step_seq $hstep)
+  | `(tactic|
+      rr_favard_const_row_sign_unit using
+        $α:term, $hP0:term, $hP1:term, $hstep:term) =>
+      `(tactic|
+        rr_favard_const_row_sign_unit using
+          alpha := $α,
+          base_zero := $hP0,
+          base_one := $hP1,
+          step := $hstep)
   | `(tactic|
       rr_favard_affine_param using
         $s:term, $α:term, $β:term, $hs:term, $hβ:term, $hP0:term, $hP1:term,

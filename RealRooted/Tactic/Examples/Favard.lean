@@ -86,13 +86,7 @@ example {P : Nat → ℝ[X]}
     (hP1 : P 1 = X)
     (hstep : ∀ n : Nat, P (n + 2) = X * P (n + 1) - P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  have hβ : 0 < (1 : ℝ) := by norm_num
-  have hP1' : P 1 = X - C (0 : ℝ) := by simpa using hP1
-  have hstep' :
-      ∀ n : Nat, P (n + 2) = (X - C (0 : ℝ)) * P (n + 1) - C (1 : ℝ) * P n := by
-    intro n
-    simpa using hstep n
-  rr_favard_const using 0, 1, hβ, hP0, hP1', hstep'
+  rr_favard_const_unit using 0, hP0, hP1, hstep
 
 /-- OEIS shape `A053122`/`A110162`: `P_{n+2}=(t-2)P_{n+1}-P_n`. -/
 example {P : Nat → ℝ[X]}
@@ -151,16 +145,7 @@ example {P : Nat → ℝ[X]}
     (hP1 : P 1 = C (2 : ℝ) * X)
     (hstep : ∀ n : Nat, P (n + 2) = (C (2 : ℝ) * X) * P (n + 1) - P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  have hs : 0 < (2 : ℝ) := by norm_num
-  have hβ : 0 < (1 : ℝ) := by norm_num
-  have hP1' : P 1 = C (2 : ℝ) * X - C (0 : ℝ) := by simpa using hP1
-  have hstep' :
-      ∀ n : Nat,
-        P (n + 2) = (C (2 : ℝ) * X - C (0 : ℝ)) * P (n + 1) -
-          C (1 : ℝ) * P n := by
-    intro n
-    simpa using hstep n
-  rr_favard_affine_const using 2, 0, 1, hs, hβ, hP0, hP1', hstep'
+  rr_favard_affine_const_unit using 2, 0, hP0, hP1, hstep
 
 /-- OEIS shapes `A053124`/`A084930`: `P_{n+2}=(4t-2)P_{n+1}-P_n`. -/
 example {P : Nat → ℝ[X]}
@@ -236,11 +221,7 @@ example {P : Nat → ℝ[X]}
       P (n + 2) =
         (X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) - P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  rr_favard_param_unit using
-    alpha := fun m : Nat => (m : ℝ),
-    base_zero := hP0,
-    base_one := hP1,
-    step := hstep
+  rr_favard_param_unit using (fun m : Nat => (m : ℝ)), hP0, hP1, hstep
 
 /-- The same parameterized unit-lag wrapper also dispatches real-rootedness
 and pointwise nonzero goals. -/
@@ -1510,11 +1491,7 @@ example {P : Nat → ℝ[X]}
     (hP1 : P 1 = -(X - C (0 : ℝ)))
     (hstep : ∀ n : Nat, P (n + 2) = -(X - C (0 : ℝ)) * P (n + 1) - P n) :
     ∀ n : Nat, (P n).Splits := by
-  rr_favard_const_row_sign_unit using
-    alpha := 0,
-    base_zero := hP0,
-    base_one := hP1,
-    step := hstep
+  rr_favard_const_row_sign_unit using 0, hP0, hP1, hstep
 
 /-- Parameterized affine row-sign wrapper with explicit positivity
 certificates. -/
