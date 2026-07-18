@@ -1,5 +1,6 @@
 import RealRooted.Tactic.MaWang
 import RealRooted.Tactic.CubicDiscriminant
+import RealRooted.Tactic.Derivative
 import RealRooted.Tactic.Favard
 import RealRooted.Tactic.Linear
 import RealRooted.Tactic.LinearPowerFamily

@@ -7,6 +7,7 @@ import RealRooted.Tactic.Lookup
 import RealRooted.Tactic.Finish
 import RealRooted.Tactic.CoefficientShape
 import RealRooted.Tactic.CubicDiscriminant
+import RealRooted.Tactic.Derivative
 import RealRooted.Tactic.WagnerX
 import RealRooted.Tactic.MaWang
 import RealRooted.Tactic.LiuWangRecursion
