@@ -52,6 +52,8 @@ rr_g_negative_lag_sequence using ... certificate := negativeSquare
 rr_g_negative_lag_sequence using ... certificate := negativeMonicQuadratic
 rr_g_negative_lag_sequence using ... certificate := negativeQuadratic
 rr_g_negative_lag_sequence using ... certificate := globalNonpos
+rr_g_negative_lag_sequence_den_coeff using ... certificate := negativeSquare
+rr_g_negative_lag_sequence_den_coeff using ... certificate := negativeQuadratic
 ```
 
 This should remain a thin wrapper over explicit family tactics.  Generated
@@ -318,6 +320,80 @@ syntax (name := rr_g_negative_lag_sequence_den_realrooted_global_nonpos)
     "certificate" ":=" "globalNonpos" :
   tactic
 
+syntax (name := rr_g_neg_lag_den_sq)
+  "rr_g_negative_lag_sequence_den_coeff" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "square_factor" ":=" term ","
+    "coeff" ":=" term ","
+    "raw_coeff" ":=" term ","
+    "den" ":=" term ","
+    "den_nonzero" ":=" term ","
+    "coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "certificate" ":=" "negativeSquare" :
+  tactic
+
+syntax (name := rr_g_neg_lag_den_sq_rr)
+  "rr_g_negative_lag_sequence_den_coeff_realrooted" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "square_factor" ":=" term ","
+    "coeff" ":=" term ","
+    "raw_coeff" ":=" term ","
+    "den" ":=" term ","
+    "den_nonzero" ":=" term ","
+    "coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "certificate" ":=" "negativeSquare" :
+  tactic
+
+syntax (name := rr_g_neg_lag_den_quad)
+  "rr_g_negative_lag_sequence_den_coeff" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "leading" ":=" term ","
+    "linear" ":=" term ","
+    "constant" ":=" term ","
+    "raw_leading" ":=" term ","
+    "raw_linear" ":=" term ","
+    "raw_constant" ":=" term ","
+    "den" ":=" term ","
+    "den_nonzero" ":=" term ","
+    "leading_coeff_eq" ":=" term ","
+    "linear_coeff_eq" ":=" term ","
+    "constant_coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "certificate" ":=" "negativeQuadratic" :
+  tactic
+
+syntax (name := rr_g_neg_lag_den_quad_rr)
+  "rr_g_negative_lag_sequence_den_coeff_realrooted" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "leading" ":=" term ","
+    "linear" ":=" term ","
+    "constant" ":=" term ","
+    "raw_leading" ":=" term ","
+    "raw_linear" ":=" term ","
+    "raw_constant" ":=" term ","
+    "den" ":=" term ","
+    "den_nonzero" ":=" term ","
+    "leading_coeff_eq" ":=" term ","
+    "linear_coeff_eq" ":=" term ","
+    "constant_coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "certificate" ":=" "negativeQuadratic" :
+  tactic
+
 macro_rules
   | `(tactic|
       rr_g_negative_lag_sequence using
@@ -478,6 +554,134 @@ macro_rules
           pos_lc := $hpos,
           lag := $B,
           den_nonzero := $hden,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_g_negative_lag_sequence_den_coeff using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        square_factor := $q:term,
+        coeff := $c:term,
+        raw_coeff := $b:term,
+        den := $d:term,
+        den_nonzero := $hden:term,
+        coeff_eq := $hcoeff:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := negativeSquare) =>
+      `(tactic|
+        rr_lw_negative_square_sequence_den_coeff_auto_split using
+          base := $hbase,
+          pos_lc := $hpos,
+          square_factor := $q,
+          coeff := $c,
+          raw_coeff := $b,
+          den := $d,
+          den_nonzero := $hden,
+          coeff_eq := $hcoeff,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_g_negative_lag_sequence_den_coeff_realrooted using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        square_factor := $q:term,
+        coeff := $c:term,
+        raw_coeff := $b:term,
+        den := $d:term,
+        den_nonzero := $hden:term,
+        coeff_eq := $hcoeff:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := negativeSquare) =>
+      `(tactic|
+        rr_lw_negative_square_sequence_den_coeff_realrooted_auto_split using
+          base := $hbase,
+          pos_lc := $hpos,
+          square_factor := $q,
+          coeff := $c,
+          raw_coeff := $b,
+          den := $d,
+          den_nonzero := $hden,
+          coeff_eq := $hcoeff,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_g_negative_lag_sequence_den_coeff using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        leading := $a:term,
+        linear := $b:term,
+        constant := $c:term,
+        raw_leading := $araw:term,
+        raw_linear := $braw:term,
+        raw_constant := $craw:term,
+        den := $d:term,
+        den_nonzero := $hden:term,
+        leading_coeff_eq := $ha_coeff:term,
+        linear_coeff_eq := $hb_coeff:term,
+        constant_coeff_eq := $hc_coeff:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := negativeQuadratic) =>
+      `(tactic|
+        rr_lw_negative_quadratic_sequence_den_coeff_auto_split using
+          base := $hbase,
+          pos_lc := $hpos,
+          leading := $a,
+          linear := $b,
+          constant := $c,
+          raw_leading := $araw,
+          raw_linear := $braw,
+          raw_constant := $craw,
+          den := $d,
+          den_nonzero := $hden,
+          leading_coeff_eq := $ha_coeff,
+          linear_coeff_eq := $hb_coeff,
+          constant_coeff_eq := $hc_coeff,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_g_negative_lag_sequence_den_coeff_realrooted using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        leading := $a:term,
+        linear := $b:term,
+        constant := $c:term,
+        raw_leading := $araw:term,
+        raw_linear := $braw:term,
+        raw_constant := $craw:term,
+        den := $d:term,
+        den_nonzero := $hden:term,
+        leading_coeff_eq := $ha_coeff:term,
+        linear_coeff_eq := $hb_coeff:term,
+        constant_coeff_eq := $hc_coeff:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := negativeQuadratic) =>
+      `(tactic|
+        rr_lw_negative_quadratic_sequence_den_coeff_realrooted_auto_split using
+          base := $hbase,
+          pos_lc := $hpos,
+          leading := $a,
+          linear := $b,
+          constant := $c,
+          raw_leading := $araw,
+          raw_linear := $braw,
+          raw_constant := $craw,
+          den := $d,
+          den_nonzero := $hden,
+          leading_coeff_eq := $ha_coeff,
+          linear_coeff_eq := $hb_coeff,
+          constant_coeff_eq := $hc_coeff,
           raw_recurrence := $hraw,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno)
