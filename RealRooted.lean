@@ -121,6 +121,8 @@ import RealRooted.Tactic.Examples.CoefficientShape
 import RealRooted.Tactic.Examples.Combinatorial
 import RealRooted.Tactic.Examples.Favard
 import RealRooted.Tactic.Examples.Finish
+import RealRooted.Tactic.Examples.I2DerivativeLag
+import RealRooted.Tactic.Examples.J1Gap3Reciprocal
 import RealRooted.Tactic.Examples.LinearPowerFamily
 import RealRooted.Tactic.Examples.LiuWang
 import RealRooted.Tactic.Examples.LiuWangRecursion

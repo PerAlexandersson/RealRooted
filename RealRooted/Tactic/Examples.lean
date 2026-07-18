@@ -14,6 +14,8 @@ import RealRooted.Tactic.Examples.SecondDerivative
 import RealRooted.Tactic.Examples.LiuWang
 import RealRooted.Tactic.Examples.Product
 import RealRooted.Tactic.Examples.PFBidiagonal
+import RealRooted.Tactic.Examples.I2DerivativeLag
+import RealRooted.Tactic.Examples.J1Gap3Reciprocal
 import RealRooted.Tactic.Examples.OEIS
 import RealRooted.Tactic.Examples.OEISPositiveTLag
 import RealRooted.Tactic.Examples.Matrix
