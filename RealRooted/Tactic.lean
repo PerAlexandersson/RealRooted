@@ -32,6 +32,7 @@ import RealRooted.Tactic.PosCombo
 import RealRooted.Tactic.FiniteSymbolPF
 import RealRooted.Tactic.FiniteSymbolPFFrontend
 import RealRooted.Tactic.PFBidiagonalFrontend
+import RealRooted.Tactic.HermiteBiehler
 import RealRooted.Tactic.HermitePoulain
 import RealRooted.Tactic.I2DerivativeLag
 import RealRooted.Tactic.IteratedDerivativeShift
