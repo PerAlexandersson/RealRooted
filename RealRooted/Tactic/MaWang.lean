@@ -1830,6 +1830,13 @@ macro_rules
   | `(rr_mw_degree_seq $hdeg:term) =>
       `(fun n => by rr_mw_degree_from (($hdeg) n))
 
+syntax (name := rr_mw_raw_recurrence_seq) "rr_mw_raw_recurrence_seq " term : term
+
+macro_rules
+  | `(rr_mw_raw_recurrence_seq $hraw:term) =>
+      `(fun n => by
+        simpa [add_comm, add_left_comm, add_assoc] using $hraw n)
+
 syntax (name := rr_ma_wang)
   "rr_ma_wang" " using " term ", " term ", " term ", " term ", " term ", " term ", " term :
   tactic
@@ -4222,9 +4229,7 @@ macro_rules
             (by intro n r hr; rr_sign)
             (by intro n r hr; rr_sign)
             $hden $hcoeffV $hcoeffW
-            (by
-              intro n
-              simpa [add_comm, add_left_comm, add_assoc] using $hraw n)
+            (rr_mw_raw_recurrence_seq $hraw)
             $hdeg_succ $hno)
   | `(tactic|
       rr_mw_lw_derivative_lag_sequence_den_coeff_realrooted_sign_auto using
@@ -4256,9 +4261,7 @@ macro_rules
             (by intro n r hr; rr_sign)
             (by intro n r hr; rr_sign)
             $hden $hcoeffV $hcoeffW
-            (by
-              intro n
-              simpa [add_comm, add_left_comm, add_assoc] using $hraw n)
+            (rr_mw_raw_recurrence_seq $hraw)
             $hdeg_succ $hno))
   | `(tactic|
       rr_mw_lw_derivative_lag_sequence_den_coeff_window_sign_auto using
@@ -4298,9 +4301,7 @@ macro_rules
               rr_mw_root_window_linear_facts
               rr_sign)
             $hden $hcoeffV $hcoeffW
-            (by
-              intro n
-              simpa [add_comm, add_left_comm, add_assoc] using $hraw n)
+            (rr_mw_raw_recurrence_seq $hraw)
             $hdeg_succ $hno)
   | `(tactic|
       rr_mw_lw_derivative_lag_sequence_den_coeff_realrooted_window_sign_auto using
@@ -4340,9 +4341,7 @@ macro_rules
               rr_mw_root_window_linear_facts
               rr_sign)
             $hden $hcoeffV $hcoeffW
-            (by
-              intro n
-              simpa [add_comm, add_left_comm, add_assoc] using $hraw n)
+            (rr_mw_raw_recurrence_seq $hraw)
             $hdeg_succ $hno))
   | `(tactic|
       rr_mw_derivative_nonpos_sequence_den_coeff_nonneg using
@@ -4446,9 +4445,7 @@ macro_rules
             rr_mw_active_nonneg
             (by intro n r hr; rr_sign)
             $hden $hcoeff
-            (by
-              intro n
-              simpa [add_comm, add_left_comm, add_assoc] using $hraw n)
+            (rr_mw_raw_recurrence_seq $hraw)
             $hdeg_lo $hdeg_hi)
   | `(tactic|
       rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_split using
@@ -4581,9 +4578,7 @@ macro_rules
             rr_mw_active_nonneg
             (by intro n r hr; rr_sign)
             $hden $hcoeff
-            (by
-              intro n
-              simpa [add_comm, add_left_comm, add_assoc] using $hraw n)
+            (rr_mw_raw_recurrence_seq $hraw)
             $hdeg_lo $hdeg_hi))
   | `(tactic|
       rr_mw_derivative_nonpos_nonneg_sequence_on_roots using

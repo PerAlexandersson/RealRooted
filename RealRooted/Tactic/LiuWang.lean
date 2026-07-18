@@ -2524,6 +2524,13 @@ macro_rules
   | `(rr_lw_active_nonneg) =>
       `(fun n => by rr_lw_active_nonneg_at n)
 
+syntax (name := rr_lw_raw_recurrence_seq) "rr_lw_raw_recurrence_seq " term : term
+
+macro_rules
+  | `(rr_lw_raw_recurrence_seq $hraw:term) =>
+      `(fun n => by
+        simpa [add_comm, add_left_comm, add_assoc, mul_assoc] using $hraw n)
+
 macro "rr_lw_quadratic_discriminant_at " n:term : tactic =>
   `(tactic|
     solve
@@ -5454,9 +5461,7 @@ macro_rules
           RealRooted.prec_lw_negative_square_lag_sequence_den_coeff
             (q := $q) (b := $b) (c := $c) (d := $d)
             $hbase $hpos $hc $hden $hcoeff
-            (by
-              intro n
-              simpa [add_comm, add_left_comm, add_assoc, mul_assoc] using $hraw n)
+            (rr_lw_raw_recurrence_seq $hraw)
             $hdeg_succ $hno)
   | `(tactic|
       rr_lw_negative_square_sequence_den_coeff_auto using
@@ -5490,9 +5495,7 @@ macro_rules
           RealRooted.prec_lw_negative_square_lag_sequence_den_coeff
             (q := $q) (b := $b) (c := $c) (d := $d)
             $hbase $hpos rr_lw_active_nonneg $hden $hcoeff
-            (by
-              intro n
-              simpa [add_comm, add_left_comm, add_assoc, mul_assoc] using $hraw n)
+            (rr_lw_raw_recurrence_seq $hraw)
             $hdeg_succ $hno)
   | `(tactic|
       rr_lw_negative_square_sequence_den_coeff_realrooted using
@@ -5528,9 +5531,7 @@ macro_rules
           (RealRooted.isRealRooted_of_lw_negative_square_lag_sequence_den_coeff
             (q := $q) (b := $b) (c := $c) (d := $d)
             $hbase $hpos $hc $hden $hcoeff
-            (by
-              intro n
-              simpa [add_comm, add_left_comm, add_assoc, mul_assoc] using $hraw n)
+            (rr_lw_raw_recurrence_seq $hraw)
             $hdeg_succ $hno))
   | `(tactic|
       rr_lw_negative_square_sequence_den_coeff_realrooted_auto using
@@ -5565,9 +5566,7 @@ macro_rules
           (RealRooted.isRealRooted_of_lw_negative_square_lag_sequence_den_coeff
             (q := $q) (b := $b) (c := $c) (d := $d)
             $hbase $hpos rr_lw_active_nonneg $hden $hcoeff
-            (by
-              intro n
-              simpa [add_comm, add_left_comm, add_assoc, mul_assoc] using $hraw n)
+            (rr_lw_raw_recurrence_seq $hraw)
             $hdeg_succ $hno))
   | `(tactic|
       rr_lw_negative_monic_quadratic_sequence using
