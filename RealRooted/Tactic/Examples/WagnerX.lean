@@ -410,8 +410,8 @@ example {P : Nat → ℝ[X]}
     base := hbase,
     nonneg_coeffs := hnonneg,
     degree_two := hdeg,
-    lag_coeff_pos := fun _ => by rr_wagner_pos,
-    derivative_coeff_pos := fun _ => by rr_wagner_pos,
+    lag_coeff_pos := rr_wagner_pos_seq,
+    derivative_coeff_pos := rr_wagner_pos_seq,
     recurrence := hrec
 
 /-- `A358623`, active offset: the recurrence
@@ -444,8 +444,8 @@ theorem a358623_activeOffset_prec {P : Nat → ℝ[X]}
       base := hQbase,
       nonneg_coeffs := hQnonneg,
       degree_two := hQdeg,
-      lag_coeff_pos := fun _ => by rr_wagner_pos,
-      derivative_coeff_pos := fun _ => by rr_wagner_pos,
+      lag_coeff_pos := rr_wagner_pos_seq,
+      derivative_coeff_pos := rr_wagner_pos_seq,
       recurrence := hQrec
   intro n
   simpa [Q] using hQprec n
@@ -479,8 +479,8 @@ theorem a358623_activeOffset_realRooted {P : Nat → ℝ[X]}
       base := hQbase,
       nonneg_coeffs := hQnonneg,
       degree_two := hQdeg,
-      lag_coeff_pos := fun _ => by rr_wagner_pos,
-      derivative_coeff_pos := fun _ => by rr_wagner_pos,
+      lag_coeff_pos := rr_wagner_pos_seq,
+      derivative_coeff_pos := rr_wagner_pos_seq,
       recurrence := hQrec
   intro n
   simpa [Q] using hQrr n
@@ -582,8 +582,8 @@ theorem a358623Shifted_prec :
     base := a358623Shifted_base,
     nonneg_coeffs := a358623Shifted_nonneg,
     degree_two := a358623Shifted_degree_two_succ,
-    lag_coeff_pos := fun _ => by rr_wagner_pos,
-    derivative_coeff_pos := fun _ => by rr_wagner_pos,
+    lag_coeff_pos := rr_wagner_pos_seq,
+    derivative_coeff_pos := rr_wagner_pos_seq,
     recurrence := a358623Shifted_succ_succ
 
 /-- Real-rootedness of the shifted recurrence-defined `A358623` active family. -/
@@ -593,8 +593,8 @@ theorem a358623Shifted_realRooted :
     base := a358623Shifted_base,
     nonneg_coeffs := a358623Shifted_nonneg,
     degree_two := a358623Shifted_degree_two_succ,
-    lag_coeff_pos := fun _ => by rr_wagner_pos,
-    derivative_coeff_pos := fun _ => by rr_wagner_pos,
+    lag_coeff_pos := rr_wagner_pos_seq,
+    derivative_coeff_pos := rr_wagner_pos_seq,
     recurrence := a358623Shifted_succ_succ
 
 /-- Active-range sequence shell with a positive scalar on the left side. -/
