@@ -3122,6 +3122,69 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
+/-- Denominator-normalized global nonpositive lag with automatic sign
+discharge. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hraw : ∀ n : Nat,
+      C ((n : ℝ) + 1) * P (n + 2) =
+        C ((n : ℝ) + 1) *
+          (A n * P (n + 1) + (-(X ^ 2 : ℝ[X])) * P n))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_global_nonpos_sequence_den_auto using
+    base := hbase,
+    pos_lc := hpos,
+    lag := fun _ => -(X ^ 2 : ℝ[X]),
+    den_nonzero := rr_scalar_active_den_all_term,
+    raw_recurrence := hraw,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Real-rootedness endpoint for denominator-normalized global nonpositive
+lags. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hraw : ∀ n : Nat,
+      C ((n : ℝ) + 1) * P (n + 2) =
+        C ((n : ℝ) + 1) *
+          (A n * P (n + 1) + (-(X ^ 2 : ℝ[X])) * P n))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_lw_global_nonpos_sequence_den_realrooted_auto using
+    base := hbase,
+    pos_lc := hpos,
+    lag := fun _ => -(X ^ 2 : ℝ[X]),
+    den_nonzero := rr_scalar_active_den_all_term,
+    raw_recurrence := hraw,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+/-- Projection endpoint for the denominator-normalized global-nonpositive
+router. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hraw : ∀ n : Nat,
+      C ((n : ℝ) + 1) * P (n + 2) =
+        C ((n : ℝ) + 1) *
+          (A n * P (n + 1) + (-(X ^ 2 : ℝ[X])) * P n))
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_lw_global_nonpos_sequence_den_realrooted_auto using
+    base := hbase,
+    pos_lc := hpos,
+    lag := fun _ => -(X ^ 2 : ℝ[X]),
+    den_nonzero := rr_scalar_active_den_all_term,
+    raw_recurrence := hraw,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
 /-- Favard-like sequence shell: negative constant lag with automatic
 nonnegativity of `c_n`. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}

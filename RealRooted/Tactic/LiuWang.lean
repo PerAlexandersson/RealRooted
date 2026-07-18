@@ -3024,6 +3024,28 @@ syntax (name := rr_lw_global_nonpos_sequence_realrooted_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+syntax (name := rr_lw_global_nonpos_sequence_den_auto_named)
+  "rr_lw_global_nonpos_sequence_den_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "lag" ":=" term ","
+    "den_nonzero" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_global_nonpos_sequence_den_realrooted_auto_named)
+  "rr_lw_global_nonpos_sequence_den_realrooted_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "lag" ":=" term ","
+    "den_nonzero" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
 syntax (name := rr_lw_nonpos_lag_sequence_den_named)
   "rr_lw_nonpos_lag_sequence_den" " using "
     "base" ":=" term ","
@@ -5352,6 +5374,36 @@ macro_rules
             (B := $B) $hbase $hpos (by
               intro n r hr
               rr_sign) $hrec $hdeg_succ $hno))
+  | `(tactic|
+      rr_lw_global_nonpos_sequence_den_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag := $B:term,
+        den_nonzero := $hden:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.prec_lw_nonpos_lag_sequence_den
+          (B := $B) $hbase $hpos (by
+            intro n r hr
+            rr_sign) $hden $hraw $hdeg_succ $hno)
+  | `(tactic|
+      rr_lw_global_nonpos_sequence_den_realrooted_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        lag := $B:term,
+        den_nonzero := $hden:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        have hrr :=
+          (RealRooted.isRealRooted_of_lw_nonpos_lag_sequence_den
+            (B := $B) $hbase $hpos (by
+              intro n r hr
+              rr_sign) $hden $hraw $hdeg_succ $hno);
+        rr_exact_realrooted_sequence_or_projection hrr)
   | `(tactic|
       rr_lw_nonpos_lag_sequence_den using
         base := $hbase:term,
