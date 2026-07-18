@@ -1,4 +1,4 @@
-import RealRooted.Basic
+import RealRooted.WagnerX
 import RealRooted.Tactic.Attr
 import Mathlib.Tactic
 
@@ -37,6 +37,28 @@ syntax (name := rr_side_ne_seq) "rr_side_ne_seq" : tactic
 syntax (name := rr_positivity_seq) "rr_positivity_seq" : tactic
 syntax (name := rr_coeff_simp) "rr_coeff_simp" : tactic
 syntax (name := rr_coeff) "rr_coeff" : tactic
+syntax (name := rr_nonneg_coeffs) "rr_nonneg_coeffs" : tactic
+syntax (name := rr_nonneg_coeffs_zero) "rr_nonneg_coeffs_zero" : tactic
+syntax (name := rr_nonneg_coeffs_one) "rr_nonneg_coeffs_one" : tactic
+syntax (name := rr_nonneg_coeffs_C)
+  "rr_nonneg_coeffs_C" " using " "scalar_nonneg" ":=" term : tactic
+syntax (name := rr_nonneg_coeffs_X) "rr_nonneg_coeffs_X" : tactic
+syntax (name := rr_nonneg_coeffs_X_add_C)
+  "rr_nonneg_coeffs_X_add_C" " using " "scalar_nonneg" ":=" term : tactic
+syntax (name := rr_nonneg_coeffs_X_sub_C)
+  "rr_nonneg_coeffs_X_sub_C" " using " "root_nonpos" ":=" term : tactic
+syntax (name := rr_nonneg_coeffs_C_mul)
+  "rr_nonneg_coeffs_C_mul" " using "
+    "scalar_nonneg" ":=" term "," "poly_nonneg" ":=" term : tactic
+syntax (name := rr_nonneg_coeffs_X_mul)
+  "rr_nonneg_coeffs_X_mul" " using " "poly_nonneg" ":=" term : tactic
+syntax (name := rr_nonneg_coeffs_add)
+  "rr_nonneg_coeffs_add" " using " "left" ":=" term "," "right" ":=" term : tactic
+syntax (name := rr_nonneg_coeffs_mul)
+  "rr_nonneg_coeffs_mul" " using " "left" ":=" term "," "right" ":=" term : tactic
+syntax (name := rr_nonneg_coeffs_pow)
+  "rr_nonneg_coeffs_pow" " using " "poly_nonneg" ":=" term "," "exponent" ":=" term :
+    tactic
 syntax (name := rr_pos_lc_one) "rr_pos_lc_one" : tactic
 syntax (name := rr_pos_lc_from_nonneg)
   "rr_pos_lc" " using " "nonneg" ":=" term "," "nonzero" ":=" term : tactic
@@ -158,6 +180,64 @@ macro_rules
           <;> try rr_coeff_simp
           <;> try norm_num
           <;> try ring_nf))
+  | `(tactic| rr_nonneg_coeffs_zero) =>
+      `(tactic| exact RealRooted.hasNonnegCoeffs_zero)
+  | `(tactic| rr_nonneg_coeffs_one) =>
+      `(tactic| exact RealRooted.hasNonnegCoeffs_one)
+  | `(tactic| rr_nonneg_coeffs_C using scalar_nonneg := $ha:term) =>
+      `(tactic| exact RealRooted.hasNonnegCoeffs_C $ha)
+  | `(tactic| rr_nonneg_coeffs_X) =>
+      `(tactic| exact RealRooted.hasNonnegCoeffs_X)
+  | `(tactic| rr_nonneg_coeffs_X_add_C using scalar_nonneg := $ha:term) =>
+      `(tactic| exact RealRooted.hasNonnegCoeffs_X_add_C $ha)
+  | `(tactic| rr_nonneg_coeffs_X_sub_C using root_nonpos := $hr:term) =>
+      `(tactic| exact RealRooted.hasNonnegCoeffs_X_sub_C $hr)
+  | `(tactic|
+      rr_nonneg_coeffs_C_mul using scalar_nonneg := $ha:term, poly_nonneg := $hp:term) =>
+      `(tactic|
+        first
+          | exact RealRooted.nonnegCoeffs_C_mul $ha $hp
+          | simpa [mul_comm] using RealRooted.nonnegCoeffs_C_mul $ha $hp)
+  | `(tactic| rr_nonneg_coeffs_X_mul using poly_nonneg := $hp:term) =>
+      `(tactic|
+        first
+          | exact RealRooted.HasNonnegCoeffs.X_mul $hp
+          | simpa [mul_comm] using RealRooted.HasNonnegCoeffs.X_mul $hp)
+  | `(tactic| rr_nonneg_coeffs_add using left := $hp:term, right := $hq:term) =>
+      `(tactic|
+        first
+          | exact RealRooted.HasNonnegCoeffs.add $hp $hq
+          | simpa [add_comm] using RealRooted.HasNonnegCoeffs.add $hq $hp)
+  | `(tactic| rr_nonneg_coeffs_mul using left := $hp:term, right := $hq:term) =>
+      `(tactic|
+        first
+          | exact RealRooted.HasNonnegCoeffs.mul $hp $hq
+          | simpa [mul_comm] using RealRooted.HasNonnegCoeffs.mul $hq $hp)
+  | `(tactic|
+      rr_nonneg_coeffs_pow using poly_nonneg := $hp:term, exponent := $n:term) =>
+      `(tactic| exact RealRooted.HasNonnegCoeffs.pow $hp $n)
+  | `(tactic| rr_nonneg_coeffs) =>
+      `(tactic|
+        first
+          | assumption
+          | exact RealRooted.hasNonnegCoeffs_zero
+          | exact RealRooted.hasNonnegCoeffs_one
+          | exact RealRooted.hasNonnegCoeffs_X
+          | apply RealRooted.hasNonnegCoeffs_C
+            rr_side_nonneg
+          | apply RealRooted.hasNonnegCoeffs_X_add_C
+            rr_side_nonneg
+          | apply RealRooted.hasNonnegCoeffs_X_sub_C
+            rr_close_side
+          | apply RealRooted.nonnegCoeffs_C_mul
+            · rr_side_nonneg
+            · rr_nonneg_coeffs
+          | apply RealRooted.HasNonnegCoeffs.X_mul
+            rr_nonneg_coeffs
+          | apply RealRooted.HasNonnegCoeffs.add <;> rr_nonneg_coeffs
+          | apply RealRooted.HasNonnegCoeffs.mul <;> rr_nonneg_coeffs
+          | apply RealRooted.HasNonnegCoeffs.pow
+            rr_nonneg_coeffs)
   | `(tactic| rr_pos_lc_one) =>
       `(tactic| exact RealRooted.hasPosLeadingCoeff_one)
   | `(tactic| rr_pos_lc using nonneg := $hnn:term, nonzero := $hp0:term) =>
