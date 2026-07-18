@@ -114,7 +114,8 @@ syntax (name := rr_fsp_second_derivative_sequence_named)
     "residual_pf" ":=" term ","
     "alpha_nonneg" ":=" term ","
     "beta_nonneg" ":=" term ","
-    "recurrence" ":=" term :
+    "recurrence" ":=" term
+    ("," "nonzero" ":=" term)? :
   tactic
 
 syntax (name := rr_fsp_shifted_second_derivative_sequence_named)
@@ -129,7 +130,8 @@ syntax (name := rr_fsp_shifted_second_derivative_sequence_named)
     "residual_pf" ":=" term ","
     "alpha_nonneg" ":=" term ","
     "beta_nonneg" ":=" term ","
-    "recurrence" ":=" term :
+    "recurrence" ":=" term
+    ("," "nonzero" ":=" term)? :
   tactic
 
 macro_rules
@@ -251,11 +253,13 @@ macro_rules
         residual_pf := $hpf:term,
         alpha_nonneg := $halpha:term,
         beta_nonneg := $hbeta:term,
-        recurrence := $hrec:term) =>
+        recurrence := $hrec:term
+        $[, nonzero := $hne:term]?) =>
       `(tactic|
-        exact
-          FiniteSymbolPF.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence
+        rr_exact_pf_sequence
+          (FiniteSymbolPF.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence
             $hBB $hhom $hmul $hbase $hdegree $hd $hdeg $hpf $halpha $hbeta $hrec)
+          $[, nonzero := $hne]?)
   | `(tactic|
       rr_fsp_shifted_second_derivative_sequence using
         bb_backend := $hBB:term,
@@ -268,11 +272,13 @@ macro_rules
         residual_pf := $hpf:term,
         alpha_nonneg := $halpha:term,
         beta_nonneg := $hbeta:term,
-        recurrence := $hrec:term) =>
+        recurrence := $hrec:term
+        $[, nonzero := $hne:term]?) =>
       `(tactic|
-        exact
-          FiniteSymbolPF.isPFPolynomial_of_shiftedSecondDerivativeBidiagonalForm_sequence
+        rr_exact_pf_sequence
+          (FiniteSymbolPF.isPFPolynomial_of_shiftedSecondDerivativeBidiagonalForm_sequence
             $hBB $hhom $hmul $hbase $hdegree $hd $hdeg $hpf $halpha $hbeta $hrec)
+          $[, nonzero := $hne]?)
 
 end Tactic
 end RealRooted

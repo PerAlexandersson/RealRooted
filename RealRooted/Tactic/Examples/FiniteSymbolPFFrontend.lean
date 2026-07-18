@@ -184,6 +184,45 @@ example (hBB : finiteSymbolBBStatement)
 example (hBB : finiteSymbolBBStatement)
     (hhom : homogenizeStableStatement)
     (hmul : bivariateStableMulXAddYPowStatement)
+    {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c2 : ℕ → ℝ}
+    {degreeBound : ℕ → ℕ}
+    (hbase : IsPFPolynomial (P 0))
+    (hdegree : ∀ n, (P n).natDegree ≤ degreeBound n)
+    (hd : ∀ n, 2 ≤ degreeBound n)
+    (hdeg : ∀ n,
+      (quadraticBidiagonalResidual
+        (c2 n) (b1 n - c2 n) (a0 n) 0 (b2 n) (a1 n)
+        (degreeBound n)).natDegree = 3)
+    (hpf : ∀ n,
+      IsPFPolynomial
+        (quadraticBidiagonalResidual
+          (c2 n) (b1 n - c2 n) (a0 n) 0 (b2 n) (a1 n)
+          (degreeBound n)))
+    (halpha : ∀ n k, 0 ≤ secondDerivativeAlpha (a0 n) (b1 n) (c2 n) k)
+    (hbeta : ∀ n k, 0 ≤ secondDerivativeBeta (a1 n) (b2 n) k)
+    (hne : ∀ n, P n ≠ 0)
+    (hrec : ∀ n,
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (P n)) :
+    ∀ n, P n ≠ 0 ∧ (P n).Splits := by
+  rr_fsp_second_derivative_sequence using
+    bb_backend := hBB,
+    homogenize_stable := hhom,
+    mul_stable := hmul,
+    base := hbase,
+    degree := hdegree,
+    degree_ge_two := hd,
+    cubic_degree := hdeg,
+    residual_pf := hpf,
+    alpha_nonneg := halpha,
+    beta_nonneg := hbeta,
+    recurrence := hrec,
+    nonzero := hne
+
+example (hBB : finiteSymbolBBStatement)
+    (hhom : homogenizeStableStatement)
+    (hmul : bivariateStableMulXAddYPowStatement)
     {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c3 : ℕ → ℝ}
     {degreeBound : ℕ → ℕ}
     (hbase : IsPFPolynomial (P 0))
@@ -217,6 +256,45 @@ example (hBB : finiteSymbolBBStatement)
     alpha_nonneg := halpha,
     beta_nonneg := hbeta,
     recurrence := hrec
+
+example (hBB : finiteSymbolBBStatement)
+    (hhom : homogenizeStableStatement)
+    (hmul : bivariateStableMulXAddYPowStatement)
+    {P : ℕ → ℝ[X]} {a0 a1 b1 b2 c3 : ℕ → ℝ}
+    {degreeBound : ℕ → ℕ}
+    (hbase : IsPFPolynomial (P 0))
+    (hdegree : ∀ n, (P n).natDegree ≤ degreeBound n)
+    (hd : ∀ n, 2 ≤ degreeBound n)
+    (hdeg : ∀ n,
+      (quadraticBidiagonalResidual
+        0 (b1 n) (a0 n) (c3 n) (b2 n - c3 n) (a1 n)
+        (degreeBound n)).natDegree = 3)
+    (hpf : ∀ n,
+      IsPFPolynomial
+        (quadraticBidiagonalResidual
+          0 (b1 n) (a0 n) (c3 n) (b2 n - c3 n) (a1 n)
+          (degreeBound n)))
+    (halpha : ∀ n k, 0 ≤ shiftedSecondDerivativeAlpha (a0 n) (b1 n) k)
+    (hbeta : ∀ n k, 0 ≤ shiftedSecondDerivativeBeta (a1 n) (b2 n) (c3 n) k)
+    (hne : ∀ n, P n ≠ 0)
+    (hrec : ∀ n,
+      P (n + 1) =
+        shiftedSecondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (P n)) :
+    ∀ n, P n ≠ 0 ∧ (P n).Splits := by
+  rr_fsp_shifted_second_derivative_sequence using
+    bb_backend := hBB,
+    homogenize_stable := hhom,
+    mul_stable := hmul,
+    base := hbase,
+    degree := hdegree,
+    degree_ge_two := hd,
+    cubic_degree := hdeg,
+    residual_pf := hpf,
+    alpha_nonneg := halpha,
+    beta_nonneg := hbeta,
+    recurrence := hrec,
+    nonzero := hne
 
 end FiniteSymbolPF
 end Tactic
