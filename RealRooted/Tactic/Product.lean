@@ -669,8 +669,8 @@ theorem prec_endpoint_sum_then_X_step {a b : ℝ[X]}
     prec_nonneg_combo_right hab ha_pos hb_pos zero_le_one zero_le_one (Or.inl zero_lt_one)
   have hsum_prec : Prec (a + b) b := by
     simpa using hsum_prec_raw
-  have hsum_nonneg : HasNonnegCoeffs (a + b) :=
-    ha_nonneg.add hb_nonneg
+  have hsum_nonneg : HasNonnegCoeffs (a + b) := by
+    rr_nonneg_coeffs
   have hsum_pos : HasPosLeadingCoeff (a + b) := by
     rr_pos_lc using nonzero := left_ne_zero_of_prec hsum_prec
   have hXsum_prec : Prec (a + b) (X * (a + b)) :=
@@ -711,8 +711,8 @@ theorem prec_endpoint_X_then_sum_step {a b : ℝ[X]}
     PosComboRealRooted.isRealRooted_add hcombo
   have ha_sum_prec : Prec a (b + X * a) :=
     prec_add_of_prec_left hab hXa_prec hb_pos hXa_pos hrr.1 hrr.2 hcop
-  have hsum_nonneg : HasNonnegCoeffs (b + X * a) :=
-    hb_nonneg.add ha_nonneg.X_mul
+  have hsum_nonneg : HasNonnegCoeffs (b + X * a) := by
+    rr_nonneg_coeffs
   have hsum_pos : HasPosLeadingCoeff (b + X * a) := by
     rr_pos_lc using nonzero := right_ne_zero_of_prec ha_sum_prec
   have hnext_raw :
@@ -751,9 +751,11 @@ theorem prec_endpoint_sum_then_X_pair_sequence
           simpa [hstepA n, hstepB n] using
             prec_endpoint_sum_then_X_step hprec hA_nonneg hB_nonneg hcop'
         have hA_nonneg_next : HasNonnegCoeffs (A (n + 1)) := by
-          simpa [hstepA n] using hA_nonneg.add hB_nonneg
+          rw [hstepA n]
+          rr_nonneg_coeffs
         have hB_nonneg_next : HasNonnegCoeffs (B (n + 1)) := by
-          simpa [hstepB n] using hB_nonneg.add hA_nonneg_next.X_mul
+          rw [hstepB n]
+          rr_nonneg_coeffs
         exact ⟨hprec_next, hA_nonneg_next, hB_nonneg_next⟩
   exact fun n => (hpack n).1
 
@@ -801,9 +803,11 @@ theorem prec_endpoint_X_then_sum_pair_sequence
           simpa [hstepB n, hstepA n] using
             prec_endpoint_X_then_sum_step hprec hA_nonneg hB_nonneg (hcop n)
         have hB_nonneg_next : HasNonnegCoeffs (B (n + 1)) := by
-          simpa [hstepB n] using hB_nonneg.add hA_nonneg.X_mul
+          rw [hstepB n]
+          rr_nonneg_coeffs
         have hA_nonneg_next : HasNonnegCoeffs (A (n + 1)) := by
-          simpa [hstepA n] using hA_nonneg.add hB_nonneg_next
+          rw [hstepA n]
+          rr_nonneg_coeffs
         exact ⟨hprec_next, hA_nonneg_next, hB_nonneg_next⟩
   exact fun n => (hpack n).1
 

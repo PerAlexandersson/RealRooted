@@ -100,8 +100,8 @@ theorem prec_wagner_derivative_gap_lag_step {f g : ℝ[X]} {a c : ℝ}
   have hsum_prec : Prec (weightedSum [(c, g.derivative), (a, f)]) g :=
     prec_weightedSum_right [(c, g.derivative), (a, f)] g
       hnonneg hprec hpoly_pos hex
-  have hsum_nonneg : HasNonnegCoeffs (C c * g.derivative + C a * f) :=
-    (nonnegCoeffs_C_mul hc.le hgnn.derivative).add (nonnegCoeffs_C_mul ha.le hfnn)
+  have hsum_nonneg : HasNonnegCoeffs (C c * g.derivative + C a * f) := by
+    rr_nonneg_coeffs using hgnn.derivative, hfnn
   have hsum_nonneg_weighted :
       HasNonnegCoeffs (weightedSum [(c, g.derivative), (a, f)]) := by
     simpa [weightedSum, add_assoc] using hsum_nonneg
@@ -304,7 +304,7 @@ theorem not_prec_X_sq_mul_derivative_right {f g : ℝ[X]}
     have hrw : X ^ 2 * f.derivative = X * (X * f.derivative) := by
       ring
     rw [hrw]
-    exact hfnn.derivative.X_mul.X_mul
+    rr_nonneg_coeffs using hfnn.derivative
   have hXf_splits : (X ^ 2 * f.derivative).Splits := right_splits_of_prec h
   have huR_mem : uR ∈ (X ^ 2 * f.derivative).roots :=
     (mem_roots hXf_ne).mpr huR_root

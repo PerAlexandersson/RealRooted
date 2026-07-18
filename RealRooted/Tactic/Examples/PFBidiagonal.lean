@@ -1159,7 +1159,7 @@ theorem a080248Beta_jensen_factor (d : ℕ) (hd : 2 ≤ d) :
 theorem a080248ResidualAlpha_cubicPFDiscriminantCertificate (d : ℕ) :
     CubicPFDiscriminantCertificate (a080248ResidualAlpha d) := by
   refine ⟨?_, ?_, ?_⟩
-  · exact nonnegCoeffs_C_mul (by positivity) (a071951ResidualAlpha_hasNonnegCoeffs d)
+  · rr_nonneg_coeffs using a071951ResidualAlpha_hasNonnegCoeffs d
   · exact (Polynomial.natDegree_C_mul_le (1 / 2 : ℝ) (a071951ResidualAlpha d)).trans
       (natDegree_a071951ResidualAlpha_le d)
   · rw [a080248ResidualAlpha, cubicDiscr_C_mul]
