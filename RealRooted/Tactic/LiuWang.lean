@@ -580,18 +580,14 @@ theorem prec_lw_nonpos_lag_sequence {P : Nat → ℝ[X]}
       have hInter : Interlaces (P n) (P (n + 1)) :=
         ih.toInterlaces (hdeg_succ n)
       have hF_pos : HasPosLeadingCoeff (A n * P (n + 1) + B n * P n) := by
-        simpa [← hrec n] using hpos (n + 2)
+        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
       have hdeg_lo :
           (P (n + 1)).natDegree ≤ (A n * P (n + 1) + B n * P n).natDegree := by
-        rw [← hrec n]
-        have hs := hdeg_succ (n + 1)
-        lia
+        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hdeg_hi :
           (A n * P (n + 1) + B n * P n).natDegree ≤
             (P (n + 1)).natDegree + 1 := by
-        rw [← hrec n]
-        have hs := hdeg_succ (n + 1)
-        lia
+        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hstep : Prec (P (n + 1)) (A n * P (n + 1) + B n * P n) :=
         prec_lw_two_of_nonpos hInter (hpos n) hF_pos hdeg_lo hdeg_hi
           (hno n) (hB_nonpos n)
@@ -1004,19 +1000,15 @@ theorem prec_lw_positive_t_lag_sequence {P : Nat → ℝ[X]}
         ih.toInterlaces (hdeg_succ n)
       have hF_pos :
           HasPosLeadingCoeff (A n * P (n + 1) + (C (c n) * X) * P n) := by
-        simpa [← hrec n] using hpos (n + 2)
+        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
       have hdeg_lo :
           (P (n + 1)).natDegree ≤
             (A n * P (n + 1) + (C (c n) * X) * P n).natDegree := by
-        rw [← hrec n]
-        have hs := hdeg_succ (n + 1)
-        lia
+        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hdeg_hi :
           (A n * P (n + 1) + (C (c n) * X) * P n).natDegree ≤
             (P (n + 1)).natDegree + 1 := by
-        rw [← hrec n]
-        have hs := hdeg_succ (n + 1)
-        lia
+        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hstep :
           Prec (P (n + 1)) (A n * P (n + 1) + (C (c n) * X) * P n) :=
         prec_lw_positive_t_lag_of_nonneg_coeffs
@@ -1100,19 +1092,15 @@ theorem prec_lw_C_mul_X_sub_C_lag_sequence {P : Nat → ℝ[X]}
       have hF_pos :
           HasPosLeadingCoeff
             (A n * P (n + 1) + (C (c n) * X - C (a n)) * P n) := by
-        simpa [← hrec n] using hpos (n + 2)
+        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
       have hdeg_lo :
           (P (n + 1)).natDegree ≤
             (A n * P (n + 1) + (C (c n) * X - C (a n)) * P n).natDegree := by
-        rw [← hrec n]
-        have hs := hdeg_succ (n + 1)
-        lia
+        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hdeg_hi :
           (A n * P (n + 1) + (C (c n) * X - C (a n)) * P n).natDegree ≤
             (P (n + 1)).natDegree + 1 := by
-        rw [← hrec n]
-        have hs := hdeg_succ (n + 1)
-        lia
+        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hstep :
           Prec (P (n + 1))
             (A n * P (n + 1) + (C (c n) * X - C (a n)) * P n) :=
@@ -1164,19 +1152,15 @@ theorem prec_lw_positive_affine_lag_sequence {P : Nat → ℝ[X]}
       have hF_pos :
           HasPosLeadingCoeff
             (A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n) := by
-        simpa [← hrec n] using hpos (n + 2)
+        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
       have hdeg_lo :
           (P (n + 1)).natDegree ≤
             (A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n).natDegree := by
-        rw [← hrec n]
-        have hs := hdeg_succ (n + 1)
-        lia
+        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hdeg_hi :
           (A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n).natDegree ≤
             (P (n + 1)).natDegree + 1 := by
-        rw [← hrec n]
-        have hs := hdeg_succ (n + 1)
-        lia
+        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hstep :
           Prec (P (n + 1))
             (A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n) :=
@@ -1234,19 +1218,15 @@ theorem prec_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs
       have hF_pos :
           HasPosLeadingCoeff
             (A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n) := by
-        simpa [← hrec n] using hpos (n + 2)
+        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
       have hdeg_lo :
           (P (n + 1)).natDegree ≤
             (A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n).natDegree := by
-        rw [← hrec n]
-        have hs := hdeg_succ (n + 1)
-        lia
+        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hdeg_hi :
           (A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n).natDegree ≤
             (P (n + 1)).natDegree + 1 := by
-        rw [← hrec n]
-        have hs := hdeg_succ (n + 1)
-        lia
+        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hstep :
           Prec (P (n + 1))
             (A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n) :=
@@ -1360,18 +1340,14 @@ theorem prec_lw_inner_window_lag_sequence_of_nonneg_coeffs {P : Nat → ℝ[X]}
       have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
       have hF_pos :
           HasPosLeadingCoeff (A n * P (n + 1) + B n * P n) := by
-        simpa [← hrec n] using hpos (n + 2)
+        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
       have hdeg_lo :
           (P (n + 1)).natDegree ≤ (A n * P (n + 1) + B n * P n).natDegree := by
-        rw [← hrec n]
-        have hs := hdeg_succ (n + 1)
-        lia
+        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hdeg_hi :
           (A n * P (n + 1) + B n * P n).natDegree ≤
             (P (n + 1)).natDegree + 1 := by
-        rw [← hrec n]
-        have hs := hdeg_succ (n + 1)
-        lia
+        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hB_step : ∀ r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0 := by
         intro r hr
         exact hB_nonpos n r hr (hroot_lower n r hr)
@@ -2045,19 +2021,15 @@ theorem prec_lw_positive_X_mul_lag_sequence {P : Nat → ℝ[X]}
       have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
       have hF_pos :
           HasPosLeadingCoeff (A n * P (n + 1) + (X * Q n) * P n) := by
-        simpa [← hrec n] using hpos (n + 2)
+        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
       have hdeg_lo :
           (P (n + 1)).natDegree ≤
             (A n * P (n + 1) + (X * Q n) * P n).natDegree := by
-        rw [← hrec n]
-        have hs := hdeg_succ (n + 1)
-        lia
+        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hdeg_hi :
           (A n * P (n + 1) + (X * Q n) * P n).natDegree ≤
             (P (n + 1)).natDegree + 1 := by
-        rw [← hrec n]
-        have hs := hdeg_succ (n + 1)
-        lia
+        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hstep :
           Prec (P (n + 1)) (A n * P (n + 1) + (X * Q n) * P n) :=
         prec_lw_positive_X_mul_lag_of_roots_nonpos
@@ -2106,19 +2078,15 @@ theorem prec_lw_positive_C_mul_X_mul_lag_sequence {P : Nat → ℝ[X]}
       have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
       have hF_pos :
           HasPosLeadingCoeff (A n * P (n + 1) + (C (c n) * X * Q n) * P n) := by
-        simpa [← hrec n] using hpos (n + 2)
+        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
       have hdeg_lo :
           (P (n + 1)).natDegree ≤
             (A n * P (n + 1) + (C (c n) * X * Q n) * P n).natDegree := by
-        rw [← hrec n]
-        have hs := hdeg_succ (n + 1)
-        lia
+        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hdeg_hi :
           (A n * P (n + 1) + (C (c n) * X * Q n) * P n).natDegree ≤
             (P (n + 1)).natDegree + 1 := by
-        rw [← hrec n]
-        have hs := hdeg_succ (n + 1)
-        lia
+        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hstep :
           Prec (P (n + 1)) (A n * P (n + 1) + (C (c n) * X * Q n) * P n) :=
         prec_lw_positive_C_mul_X_mul_lag_of_roots_nonpos
@@ -2234,19 +2202,15 @@ theorem prec_lw_X_mul_one_sub_X_lag_sequence {P : Nat → ℝ[X]}
       have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
       have hF_pos :
           HasPosLeadingCoeff (A n * P (n + 1) + (X * (1 - X)) * P n) := by
-        simpa [← hrec n] using hpos (n + 2)
+        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
       have hdeg_lo :
           (P (n + 1)).natDegree ≤
             (A n * P (n + 1) + (X * (1 - X)) * P n).natDegree := by
-        rw [← hrec n]
-        have hs := hdeg_succ (n + 1)
-        lia
+        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hdeg_hi :
           (A n * P (n + 1) + (X * (1 - X)) * P n).natDegree ≤
             (P (n + 1)).natDegree + 1 := by
-        rw [← hrec n]
-        have hs := hdeg_succ (n + 1)
-        lia
+        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hstep :
           Prec (P (n + 1)) (A n * P (n + 1) + (X * (1 - X)) * P n) :=
         prec_lw_X_mul_one_sub_X_lag_of_roots_nonpos hInter (hpos n)
@@ -2294,21 +2258,17 @@ theorem prec_lw_X_mul_C_sub_C_mul_X_lag_sequence {P : Nat → ℝ[X]}
       have hF_pos :
           HasPosLeadingCoeff
             (A n * P (n + 1) + (X * (C (a n) - C (b n) * X)) * P n) := by
-        simpa [← hrec n] using hpos (n + 2)
+        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
       have hdeg_lo :
           (P (n + 1)).natDegree ≤
             (A n * P (n + 1) +
               (X * (C (a n) - C (b n) * X)) * P n).natDegree := by
-        rw [← hrec n]
-        have hs := hdeg_succ (n + 1)
-        lia
+        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hdeg_hi :
           (A n * P (n + 1) +
             (X * (C (a n) - C (b n) * X)) * P n).natDegree ≤
             (P (n + 1)).natDegree + 1 := by
-        rw [← hrec n]
-        have hs := hdeg_succ (n + 1)
-        lia
+        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hstep :
           Prec (P (n + 1))
             (A n * P (n + 1) + (X * (C (a n) - C (b n) * X)) * P n) :=
@@ -2364,21 +2324,17 @@ theorem prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_sequence {P : Nat → ℝ[X]}
           HasPosLeadingCoeff
             (A n * P (n + 1) +
               (C (c n) * X * (C (a n) - C (b n) * X)) * P n) := by
-        simpa [← hrec n] using hpos (n + 2)
+        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
       have hdeg_lo :
           (P (n + 1)).natDegree ≤
             (A n * P (n + 1) +
               (C (c n) * X * (C (a n) - C (b n) * X)) * P n).natDegree := by
-        rw [← hrec n]
-        have hs := hdeg_succ (n + 1)
-        lia
+        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hdeg_hi :
           (A n * P (n + 1) +
             (C (c n) * X * (C (a n) - C (b n) * X)) * P n).natDegree ≤
             (P (n + 1)).natDegree + 1 := by
-        rw [← hrec n]
-        have hs := hdeg_succ (n + 1)
-        lia
+        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hstep :
           Prec (P (n + 1))
             (A n * P (n + 1) +

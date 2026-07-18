@@ -81,6 +81,16 @@ syntax (name := rr_pos_lc_X_mul)
 syntax (name := rr_close_side) "rr_close_side" : tactic
 syntax (name := rr_side) "rr_side" : tactic
 syntax (name := rr_refine_then) "rr_refine_then " term " with " tactic : tactic
+syntax (name := rr_recurrence_simpa)
+  "rr_recurrence_simpa" " using "
+    "recurrence" ":=" term ","
+    "certificate" ":=" term :
+  tactic
+syntax (name := rr_recurrence_degree)
+  "rr_recurrence_degree" " using "
+    "recurrence" ":=" term ","
+    "degree" ":=" term :
+  tactic
 
 syntax (name := rr_positivity_term) "rr_positivity_term" : term
 syntax (name := rr_side_pos_term) "rr_side_pos_term" : term
@@ -91,6 +101,13 @@ syntax (name := rr_side_ne_seq_term) "rr_side_ne_seq_term" : term
 macro_rules
   | `(tactic| rr_refine_then $h:term with $tac:tactic) =>
       `(tactic| refine $h <;> $tac)
+  | `(tactic| rr_recurrence_simpa using recurrence := $hrec:term, certificate := $h:term) =>
+      `(tactic| simpa [← $hrec] using $h)
+  | `(tactic| rr_recurrence_degree using recurrence := $hrec:term, degree := $hdeg:term) =>
+      `(tactic|
+        rw [← $hrec];
+        have rr_recurrence_degree_h := $hdeg;
+        lia)
   | `(tactic| rr_side_nonneg) =>
       `(tactic|
         first

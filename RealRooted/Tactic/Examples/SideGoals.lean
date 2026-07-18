@@ -269,6 +269,23 @@ example {p q : ℝ[X]} (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q)
     HasPosLeadingCoeff (p + q) := by
   rr_pos_lc
 
+example {P F : Nat → ℝ[X]} (hrec : ∀ n : Nat, P (n + 2) = F n)
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n)) (n : Nat) :
+    HasPosLeadingCoeff (F n) := by
+  rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
+
+example {P F : Nat → ℝ[X]} (hrec : ∀ n : Nat, P (n + 2) = F n)
+    (hdeg : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (n : Nat) :
+    (P (n + 1)).natDegree ≤ (F n).natDegree := by
+  rr_recurrence_degree using recurrence := hrec n, degree := hdeg (n + 1)
+
+example {P F : Nat → ℝ[X]} (hrec : ∀ n : Nat, P (n + 2) = F n)
+    (hdeg : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (n : Nat) :
+    (F n).natDegree ≤ (P (n + 1)).natDegree + 1 := by
+  rr_recurrence_degree using recurrence := hrec n, degree := hdeg (n + 1)
+
 example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) : 0 ≤ a * b := by
   rr_side
 

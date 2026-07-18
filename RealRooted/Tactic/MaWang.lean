@@ -193,14 +193,16 @@ theorem prec_mw_derivative_nonpos_sequence {P : Nat → ℝ[X]}
       have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
       have hF_pos :
           HasPosLeadingCoeff (U n * P (n + 1) + V n * (P (n + 1)).derivative) := by
-        simpa [← hrec n] using hpos (n + 2)
+        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
       have hstep :
           Prec (P (n + 1))
             (U n * P (n + 1) + V n * (P (n + 1)).derivative) :=
         prec_mw_derivative_of_nonpos
           hsource.2 (hdeg_two n)
-          (by simpa [← hrec n] using hdeg_lo n)
-          (by simpa [← hrec n] using hdeg_hi n)
+          (by
+            rr_recurrence_simpa using recurrence := hrec n, certificate := hdeg_lo n)
+          (by
+            rr_recurrence_simpa using recurrence := hrec n, certificate := hdeg_hi n)
           hF_pos (hpos (n + 1)) (hV_nonpos n)
       simpa [← hrec n] using hstep
 
@@ -739,7 +741,7 @@ theorem prec_mw_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
       have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
       have hF_pos :
           HasPosLeadingCoeff (U n * P (n + 1) + V n * (P (n + 1)).derivative) := by
-        simpa [← hrec n] using hpos (n + 2)
+        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
       have hV_at_roots :
           ∀ r, (P (n + 1)).IsRoot r → (V n).eval r ≤ 0 := by
         intro r hr
@@ -751,8 +753,10 @@ theorem prec_mw_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
             (U n * P (n + 1) + V n * (P (n + 1)).derivative) :=
         prec_mw_derivative_of_nonpos
           hsource.2 (hdeg_two n)
-          (by simpa [← hrec n] using hdeg_lo n)
-          (by simpa [← hrec n] using hdeg_hi n)
+          (by
+            rr_recurrence_simpa using recurrence := hrec n, certificate := hdeg_lo n)
+          (by
+            rr_recurrence_simpa using recurrence := hrec n, certificate := hdeg_hi n)
           hF_pos (hpos (n + 1)) hV_at_roots
       simpa [← hrec n] using hstep
 
