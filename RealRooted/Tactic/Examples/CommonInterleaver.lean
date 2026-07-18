@@ -400,5 +400,57 @@ example {fs : List ℝ[X]}
     member_pos_lc := hpos,
     member_degree_le_two := hdeg
 
+example {f g : ℝ[X]}
+    (hbelow : CubicInteriorTwoBelowStatement)
+    (habove : CubicInteriorTwoAboveStatement)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hfdeg : f.natDegree ≤ 3) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+  rr_sameDegree_pair_common_interleaver_cubicInterior using
+    below_certificate := hbelow,
+    above_certificate := habove,
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    left_nonneg_coeffs := hfnn,
+    right_nonneg_coeffs := hgnn,
+    pos_combo := hfg,
+    same_degree := hdeg,
+    no_common_roots := hno,
+    left_degree_le_three := hfdeg
+
+example {f g : ℝ[X]}
+    (hbelow : CubicInteriorTwoBelowStatement)
+    (habove : CubicInteriorTwoAboveStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g)
+    (hfg : PosComboRealRooted f g)
+    (hdeg_lo : f.natDegree ≤ g.natDegree)
+    (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hgdeg : g.natDegree ≤ 3) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+  rr_noCommon_pair_common_interleaver_degree_le_three using
+    below_certificate := hbelow,
+    above_certificate := habove,
+    succ_degree_endpoint := hsucc,
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    left_nonneg_coeffs := hfnn,
+    right_nonneg_coeffs := hgnn,
+    pos_combo := hfg,
+    left_degree_le_right := hdeg_lo,
+    right_degree_le_succ_left := hdeg_hi,
+    no_common_roots := hno,
+    right_degree_le_three := hgdeg
+
 end Tactic
 end RealRooted

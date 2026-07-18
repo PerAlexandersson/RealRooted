@@ -309,6 +309,36 @@ syntax (name := rr_pairwiseCompatible_iff_familyCompatible_degree_le_two_named)
     "member_degree_le_two" ":=" term :
   tactic
 
+syntax (name := rr_sameDegree_pair_common_interleaver_cubicInterior_named)
+  "rr_sameDegree_pair_common_interleaver_cubicInterior" " using "
+    "below_certificate" ":=" term ","
+    "above_certificate" ":=" term ","
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_nonneg_coeffs" ":=" term ","
+    "right_nonneg_coeffs" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "left_degree_le_three" ":=" term :
+  tactic
+
+syntax (name := rr_noCommon_pair_common_interleaver_degree_le_three_named)
+  "rr_noCommon_pair_common_interleaver_degree_le_three" " using "
+    "below_certificate" ":=" term ","
+    "above_certificate" ":=" term ","
+    "succ_degree_endpoint" ":=" term ","
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_nonneg_coeffs" ":=" term ","
+    "right_nonneg_coeffs" ":=" term ","
+    "pos_combo" ":=" term ","
+    "left_degree_le_right" ":=" term ","
+    "right_degree_le_succ_left" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "right_degree_le_three" ":=" term :
+  tactic
+
 macro_rules
   | `(tactic| rr_compatible_comm using compatible := $h:term) =>
       `(tactic| exact RealRooted.Compatible.comm $h)
@@ -615,6 +645,39 @@ macro_rules
       `(tactic|
         exact pairwiseCompatible_iff_familyCompatible_of_natDegree_le_two
           $hrr $hpos $hdeg)
+  | `(tactic|
+      rr_sameDegree_pair_common_interleaver_cubicInterior using
+        below_certificate := $hbelow:term,
+        above_certificate := $habove:term,
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        left_nonneg_coeffs := $hfnn:term,
+        right_nonneg_coeffs := $hgnn:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        no_common_roots := $hno:term,
+        left_degree_le_three := $hfdeg:term) =>
+      `(tactic|
+        exact sameDegreePairHasCommonInterleaver_nonneg_of_natDegree_le_three_of_cubicInterior
+          $hbelow $habove $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg)
+  | `(tactic|
+      rr_noCommon_pair_common_interleaver_degree_le_three using
+        below_certificate := $hbelow:term,
+        above_certificate := $habove:term,
+        succ_degree_endpoint := $hsucc:term,
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        left_nonneg_coeffs := $hfnn:term,
+        right_nonneg_coeffs := $hgnn:term,
+        pos_combo := $hfg:term,
+        left_degree_le_right := $hdeg_lo:term,
+        right_degree_le_succ_left := $hdeg_hi:term,
+        no_common_roots := $hno:term,
+        right_degree_le_three := $hgdeg:term) =>
+      `(tactic|
+        exact posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_three_and_succDegree
+          $hbelow $habove $hsucc $hfpos $hgpos $hfnn $hgnn $hfg
+          $hdeg_lo $hdeg_hi $hno $hgdeg)
 
 end Tactic
 end RealRooted
