@@ -313,6 +313,7 @@ namespace Tactic
 
 syntax (name := rr_lookup_term) "rr_lookup_term" : term
 syntax (name := rr_realrooted_term) "rr_realrooted_term" : term
+syntax (name := rr_lookup_interlaces_term) "rr_lookup_interlaces_term" : term
 
 syntax (name := rr_exact_realrooted_or_projection)
   "rr_exact_realrooted_or_projection" term :
@@ -427,6 +428,13 @@ macro_rules
       `(by rr_lookup)
   | `(rr_realrooted_term) =>
       `(by rr_realrooted)
+  | `(rr_lookup_interlaces_term) =>
+      `(by
+        first
+          | exact RealRooted.Prec.toInterlaces rr_lookup_term rr_lookup_term
+          | exact RealRooted.Prec.toInterlaces rr_lookup_term (by
+              symm
+              rr_lookup))
   | `(tactic| rr_exact_realrooted_or_projection $h:term) =>
       `(tactic|
         first
@@ -749,10 +757,7 @@ macro_rules
           | exact RealRooted.left_eq_zero_or_splits_of_interlaces rr_lookup_term
           | exact RealRooted.natDegree_succ_of_interlaces rr_lookup_term
           | exact (RealRooted.natDegree_succ_of_interlaces rr_lookup_term).symm
-          | exact RealRooted.Prec.toInterlaces rr_lookup_term rr_lookup_term
-          | exact RealRooted.Prec.toInterlaces rr_lookup_term (by
-              symm
-              rr_lookup)
+          | exact rr_lookup_interlaces_term
           | rr_sign
           | simp_all [
               RealRooted.Prec,
