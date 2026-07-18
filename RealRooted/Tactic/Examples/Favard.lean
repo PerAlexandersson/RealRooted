@@ -1142,7 +1142,7 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by rr_scalar_active_den_all,
+    den_nonzero := rr_scalar_active_den_all_term,
     slope_coeff_eq := by
       intro n
       norm_num,
@@ -1179,10 +1179,10 @@ example {P : Nat → ℝ[X]}
       norm_num
       simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by rr_scalar_active_den_all,
-    slope_coeff_eq := by rr_scalar_coeff_all,
-    alpha_coeff_eq := by rr_scalar_coeff_all,
-    beta_coeff_eq := by rr_scalar_coeff_all,
+    den_nonzero := rr_scalar_active_den_all_term,
+    slope_coeff_eq := rr_scalar_coeff_all_term,
+    alpha_coeff_eq := rr_scalar_coeff_all_term,
+    beta_coeff_eq := rr_scalar_coeff_all_term,
     raw_recurrence := hraw
 
 /-- Row-sign raw scalar-denominator Favard with product-displayed slope and
@@ -1210,10 +1210,10 @@ example {P : Nat → ℝ[X]}
       norm_num
       simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by rr_scalar_active_den_all,
-    slope_coeff_eq := by rr_scalar_coeff_all,
-    alpha_coeff_eq := by rr_scalar_coeff_all,
-    beta_coeff_eq := by rr_scalar_coeff_all,
+    den_nonzero := rr_scalar_active_den_all_term,
+    slope_coeff_eq := rr_scalar_coeff_all_term,
+    alpha_coeff_eq := rr_scalar_coeff_all_term,
+    beta_coeff_eq := rr_scalar_coeff_all_term,
     raw_recurrence := hraw
 
 /-- Monic raw scalar-denominator Favard alias. -/
@@ -1234,7 +1234,7 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by rr_scalar_active_den_all,
+    den_nonzero := rr_scalar_active_den_all_term,
     slope_coeff_eq := by
       intro n
       norm_num,
@@ -1263,7 +1263,7 @@ example {P : Nat → ℝ[X]} {n : Nat}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by rr_scalar_active_den_all,
+    den_nonzero := rr_scalar_active_den_all_term,
     slope_coeff_eq := by
       intro n
       norm_num,
@@ -1293,7 +1293,7 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by rr_scalar_active_den_all,
+    den_nonzero := rr_scalar_active_den_all_term,
     slope_coeff_eq := by
       intro n
       norm_num,
@@ -1322,7 +1322,7 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by rr_scalar_active_den_all,
+    den_nonzero := rr_scalar_active_den_all_term,
     slope_coeff_eq := by
       intro n
       norm_num,
@@ -1369,10 +1369,10 @@ example {P : Nat → ℝ[X]}
       norm_num
       simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by rr_scalar_active_den_all,
-    slope_coeff_eq := by rr_scalar_coeff_all,
-    alpha_coeff_eq := by rr_scalar_coeff_all,
-    beta_coeff_eq := by rr_scalar_coeff_all,
+    den_nonzero := rr_scalar_active_den_all_term,
+    slope_coeff_eq := rr_scalar_coeff_all_term,
+    alpha_coeff_eq := rr_scalar_coeff_all_term,
+    beta_coeff_eq := rr_scalar_coeff_all_term,
     raw_recurrence := hraw
 
 /-- Automatic positivity variant of the affine raw scalar-denominator alias. -/
@@ -1394,10 +1394,10 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by rr_scalar_active_den_all,
-    slope_coeff_eq := by rr_scalar_coeff_all,
-    alpha_coeff_eq := by rr_scalar_coeff_all,
-    beta_coeff_eq := by rr_scalar_coeff_all,
+    den_nonzero := rr_scalar_active_den_all_term,
+    slope_coeff_eq := rr_scalar_coeff_all_term,
+    alpha_coeff_eq := rr_scalar_coeff_all_term,
+    beta_coeff_eq := rr_scalar_coeff_all_term,
     raw_recurrence := hraw
 
 /-- Explicit product-displayed affine raw scalar-denominator Favard alias. -/
@@ -1430,10 +1430,10 @@ example {P : Nat → ℝ[X]} {n : Nat}
       norm_num
       simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by rr_scalar_active_den_all,
-    slope_coeff_eq := by rr_scalar_coeff_all,
-    alpha_coeff_eq := by rr_scalar_coeff_all,
-    beta_coeff_eq := by rr_scalar_coeff_all,
+    den_nonzero := rr_scalar_active_den_all_term,
+    slope_coeff_eq := rr_scalar_coeff_all_term,
+    alpha_coeff_eq := rr_scalar_coeff_all_term,
+    beta_coeff_eq := rr_scalar_coeff_all_term,
     raw_recurrence := hraw
 
 /-- Unit-lag affine raw scalar-denominator Favard alias. -/
@@ -1457,10 +1457,10 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by rr_scalar_active_den_all,
-    slope_coeff_eq := by rr_scalar_coeff_all,
-    alpha_coeff_eq := by rr_scalar_coeff_all,
-    beta_coeff_eq := by rr_scalar_coeff_all,
+    den_nonzero := rr_scalar_active_den_all_term,
+    slope_coeff_eq := rr_scalar_coeff_all_term,
+    alpha_coeff_eq := rr_scalar_coeff_all_term,
+    beta_coeff_eq := rr_scalar_coeff_all_term,
     raw_recurrence := hraw
 
 /-- Explicit monic raw scalar-denominator Favard alias. -/
@@ -1484,10 +1484,10 @@ example {P : Nat → ℝ[X]} {n : Nat}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by rr_scalar_active_den_all,
-    slope_coeff_eq := by rr_scalar_coeff_all,
-    alpha_coeff_eq := by rr_scalar_coeff_all,
-    beta_coeff_eq := by rr_scalar_coeff_all,
+    den_nonzero := rr_scalar_active_den_all_term,
+    slope_coeff_eq := rr_scalar_coeff_all_term,
+    alpha_coeff_eq := rr_scalar_coeff_all_term,
+    beta_coeff_eq := rr_scalar_coeff_all_term,
     raw_recurrence := hraw
 
 /-- Constant-coefficient Favard wrapper with automatic positivity. -/
@@ -1628,7 +1628,7 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by rr_scalar_active_den_all,
+    den_nonzero := rr_scalar_active_den_all_term,
     slope_coeff_eq := by
       intro n
       norm_num,
@@ -1670,10 +1670,10 @@ example {P : Nat → ℝ[X]} {n : Nat}
       norm_num
       simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by rr_scalar_active_den_all,
-    slope_coeff_eq := by rr_scalar_coeff_all,
-    alpha_coeff_eq := by rr_scalar_coeff_all,
-    beta_coeff_eq := by rr_scalar_coeff_all,
+    den_nonzero := rr_scalar_active_den_all_term,
+    slope_coeff_eq := rr_scalar_coeff_all_term,
+    alpha_coeff_eq := rr_scalar_coeff_all_term,
+    beta_coeff_eq := rr_scalar_coeff_all_term,
     raw_recurrence := hraw
 
 /-- Unit-lag row-sign affine raw denominator alias. -/
@@ -1697,7 +1697,7 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by rr_scalar_active_den_all,
+    den_nonzero := rr_scalar_active_den_all_term,
     slope_coeff_eq := by
       intro n
       norm_num,
@@ -1730,7 +1730,7 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by rr_scalar_active_den_all,
+    den_nonzero := rr_scalar_active_den_all_term,
     slope_coeff_eq := by
       intro n
       norm_num,

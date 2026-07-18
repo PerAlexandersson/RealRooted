@@ -117,6 +117,8 @@ macro "rr_scalar_active_den_at " n:term : tactic =>
 macro "rr_scalar_active_den_all" : tactic =>
   `(tactic| exact fun n => by rr_scalar_active_den_at n)
 
+syntax (name := rr_scalar_active_den_all_term) "rr_scalar_active_den_all_term" : term
+
 macro "rr_scalar_coeff_at " n:term : tactic =>
   `(tactic|
     solve
@@ -131,6 +133,14 @@ macro "rr_scalar_coeff_at " n:term : tactic =>
 
 macro "rr_scalar_coeff_all" : tactic =>
   `(tactic| exact fun n => by rr_scalar_coeff_at n)
+
+syntax (name := rr_scalar_coeff_all_term) "rr_scalar_coeff_all_term" : term
+
+macro_rules
+  | `(rr_scalar_active_den_all_term) =>
+      `(by rr_scalar_active_den_all)
+  | `(rr_scalar_coeff_all_term) =>
+      `(by rr_scalar_coeff_all)
 
 syntax (name := rr_scalar_den_norm_named)
   "rr_scalar_den_norm" " using "
