@@ -281,7 +281,8 @@ private theorem multiset_sum_im (s : Multiset ℂ) : s.sum.im = (s.map Complex.i
   | empty => simp
   | cons a t ih => simp [ih]
 
-private theorem multiset_sum_nonpos (s : Multiset ℝ) (h : ∀ x ∈ s, x ≤ 0) : s.sum ≤ 0 := by
+private theorem multiset_sum_nonpos (s : Multiset ℝ) (h : ∀ x ∈ s, x ≤ 0) :
+    s.sum ≤ 0 := by
   induction s using Multiset.induction with
   | empty => simp
   | cons a t ih =>
@@ -426,9 +427,10 @@ private theorem countP_min_strict (a : ℝ) (l : List ℝ) (h : (a :: l).Pairwis
     (a :: l).countP (fun r ↦ decide (a < r)) = l.length := by simp_all
 
 theorem countP_eq_interlaces_strict :
-    ∀ (ss rs : List ℝ), ss.Pairwise (· < ·) → rs.Pairwise (· < ·) → ListInterlaces ss rs →
-    ∀ x ∈ rs, x ∉ ss →
-    (rs.countP (fun r => decide (x < r))) = (ss.countP (fun s => decide (x < s))) := by
+    ∀ (ss rs : List ℝ), ss.Pairwise (· < ·) → rs.Pairwise (· < ·) →
+    ListInterlaces ss rs → ∀ x ∈ rs, x ∉ ss →
+    (rs.countP (fun r => decide (x < r))) =
+      (ss.countP (fun s => decide (x < s))) := by
   intro ss rs
   induction ss generalizing rs with
   | nil =>
@@ -478,9 +480,10 @@ theorem countP_eq_interlaces_strict :
         simp [*]
 
 theorem countP_eq_alternates_strict :
-    ∀ (ss rs : List ℝ), ss.Pairwise (· < ·) → rs.Pairwise (· < ·) → ListAlternates ss rs →
-    ∀ x ∈ rs, x ∉ ss →
-    (rs.countP (fun r ↦ decide (x < r))) = (ss.countP (fun s ↦ decide (x < s))) := by
+    ∀ (ss rs : List ℝ), ss.Pairwise (· < ·) → rs.Pairwise (· < ·) →
+    ListAlternates ss rs → ∀ x ∈ rs, x ∉ ss →
+    (rs.countP (fun r ↦ decide (x < r))) =
+      (ss.countP (fun s ↦ decide (x < s))) := by
   intro ss rs hss hrs halt x hx hxnss
   match ss, rs with
   | [], [] => simp
@@ -675,7 +678,9 @@ theorem hermiteBiehlerForwardPos_of_natDegree_le_one {f g : ℝ[X]}
     have hfr : f.roots = 0 := by rw [← Multiset.card_eq_zero, card_roots_of_splits hfs, hd₀]
     rw [hfr] at hroot
     simp only [Multiset.map_zero, Multiset.prod_zero, mul_one] at hroot
-    have h_im : (((f.leadingCoeff : ℂ)) + Complex.I * (g.leadingCoeff : ℂ)).im = 0 := by simp [*]
+    have h_im :
+        (((f.leadingCoeff : ℂ)) + Complex.I * (g.leadingCoeff : ℂ)).im = 0 := by
+      simp [*]
     simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.I_re, Complex.I_im,
       Complex.ofReal_re, zero_mul, one_mul, zero_add] at h_im
     simp_all
@@ -698,7 +703,10 @@ theorem im_partialfraction_nonpos {f g : ℝ[X]} (z : ℂ) (hz : 0 < z.im) (c₀
   simp only [Multiset.mem_map] at hy
   obtain ⟨s, hsf, rfl⟩ := hy
   simp only [Function.comp_apply]
-  have h_div : (residue s : ℂ) / (z - (s : ℂ)) = (residue s : ℂ) * (1 / (z - (s : ℂ))) := by ring
+  have h_div :
+      (residue s : ℂ) / (z - (s : ℂ)) =
+        (residue s : ℂ) * (1 / (z - (s : ℂ))) := by
+    ring
   rw [h_div]
   exact im_real_mul_nonpos (residue s) _ (hres s hsf) (le_of_lt (inv_sub_real_im_neg s hz))
 
@@ -765,7 +773,8 @@ theorem lagInterp_degree_lt {f g : ℝ[X]} (hfs : f.Splits) (hnd : f.roots.Nodup
   have : (f /ₘ (X - C s)).natDegree = f.natDegree - 1 := by
     rw [natDegree_divByMonic f (monic_X_sub_C s)]
     simp
-  calc (f /ₘ (X - C s)).degree ≤ ((f /ₘ (X - C s)).natDegree : WithBot ℕ) := degree_le_natDegree
+  calc (f /ₘ (X - C s)).degree ≤ ((f /ₘ (X - C s)).natDegree : WithBot ℕ) :=
+      degree_le_natDegree
     _ = ((f.natDegree - 1 : ℕ) : WithBot ℕ) := by simp [*]
     _ < (f.natDegree : WithBot ℕ) := by exact_mod_cast by lia
 
@@ -781,7 +790,8 @@ theorem lagInterp_eq_g {f g : ℝ[X]} (hfs : f.Splits) (hnd : f.roots.Nodup)
   · intro x hx
     exact eval_lagInterp_at_root hnd (Multiset.mem_toFinset.mp hx)
 
-private theorem finset_sum_eq_multiset_map_sum (M : Multiset ℝ) (hnd : M.Nodup) (h : ℝ → ℂ) :
+private theorem finset_sum_eq_multiset_map_sum (M : Multiset ℝ) (hnd : M.Nodup)
+    (h : ℝ → ℂ) :
     ∑ s ∈ M.toFinset, h s = (M.map h).sum := by
   rw [Finset.sum, Multiset.toFinset_val, Multiset.dedup_eq_self.mpr hnd]
 
@@ -1004,7 +1014,8 @@ theorem interlaces_dup_mem {ss rs : List ℝ} (hrs : rs.Pairwise (· ≤ ·))
           · exact absurd (h_r₂_le r₁ hm) (not_le.mpr h_r₁_lt)
         have h_dup_tail : ¬ (r₂ :: rest).Nodup := fun hnod ↦
           hnd (List.nodup_cons.mpr ⟨h_r₁_notin, hnod⟩)
-        obtain ⟨r, h_r_mem, h_r_ss⟩ := ih (List.pairwise_cons.mpr ⟨h_r₂_le, hrest⟩) htail h_dup_tail
+        obtain ⟨r, h_r_mem, h_r_ss⟩ :=
+          ih (List.pairwise_cons.mpr ⟨h_r₂_le, hrest⟩) htail h_dup_tail
         exact ⟨r, List.mem_cons_of_mem r₁ h_r_mem, List.mem_cons_of_mem s h_r_ss⟩
 
 theorem alternates_dup_mem {ss rs : List ℝ} (hrs : rs.Pairwise (· ≤ ·))
@@ -1386,9 +1397,12 @@ lemma interlace_core {u₁ u₂ v₁ v₂ b₁ b₂ c₁ c₂ : ℝ}
     (hb₂ : b₂ = -(u₁ + u₂) - (v₁ + v₂))
     (hc₁ : c₁ = u₁ * u₂ - v₁ * v₂ - (u₁ * v₂ + u₂ * v₁))
     (hc₂ : c₂ = u₁ * u₂ - v₁ * v₂ + (u₁ * v₂ + u₂ * v₁)) :
-    (-b₂ - Real.sqrt (b₂ ^ 2 - 4 * c₂)) / 2 ≤ (-b₁ - Real.sqrt (b₁ ^ 2 - 4 * c₁)) / 2 ∧
-      (-b₁ - Real.sqrt (b₁ ^ 2 - 4 * c₁)) / 2 ≤ (-b₂ + Real.sqrt (b₂ ^ 2 - 4 * c₂)) / 2 ∧
-      (-b₂ + Real.sqrt (b₂ ^ 2 - 4 * c₂)) / 2 ≤ (-b₁ + Real.sqrt (b₁ ^ 2 - 4 * c₁)) / 2 := by
+    (-b₂ - Real.sqrt (b₂ ^ 2 - 4 * c₂)) / 2 ≤
+        (-b₁ - Real.sqrt (b₁ ^ 2 - 4 * c₁)) / 2 ∧
+      (-b₁ - Real.sqrt (b₁ ^ 2 - 4 * c₁)) / 2 ≤
+        (-b₂ + Real.sqrt (b₂ ^ 2 - 4 * c₂)) / 2 ∧
+      (-b₂ + Real.sqrt (b₂ ^ 2 - 4 * c₂)) / 2 ≤
+        (-b₁ + Real.sqrt (b₁ ^ 2 - 4 * c₁)) / 2 := by
   have hvv : 0 ≤ v₁ * v₂ := mul_nonneg_of_nonpos_of_nonpos hv₁ hv₂
   have hDf : b₁ ^ 2 - 4 * c₁ = (u₁ - u₂ - v₁ + v₂) ^ 2 + 8 * (v₁ * v₂) := by
     rw [hb₁, hc₁]
@@ -1632,8 +1646,12 @@ lemma hermiteBiehler_vieta_two_posLead {f g : ℝ[X]}
     ∃ u₁ u₂ v₁ v₂ : ℝ, v₁ ≤ 0 ∧ v₂ ≤ 0 ∧
       f.coeff 1 = -(f.coeff 2 * (u₁ + u₂)) + g.coeff 2 * (v₁ + v₂) ∧
       g.coeff 1 = -(f.coeff 2 * (v₁ + v₂)) - g.coeff 2 * (u₁ + u₂) ∧
-      f.coeff 0 = f.coeff 2 * (u₁ * u₂ - v₁ * v₂) - g.coeff 2 * (u₁ * v₂ + u₂ * v₁) ∧
-      g.coeff 0 = f.coeff 2 * (u₁ * v₂ + u₂ * v₁) + g.coeff 2 * (u₁ * u₂ - v₁ * v₂) := by
+      f.coeff 0 =
+        f.coeff 2 * (u₁ * u₂ - v₁ * v₂) -
+          g.coeff 2 * (u₁ * v₂ + u₂ * v₁) ∧
+      g.coeff 0 =
+        f.coeff 2 * (u₁ * v₂ + u₂ * v₁) +
+          g.coeff 2 * (u₁ * u₂ - v₁ * v₂) := by
   obtain ⟨w₁, w₂, hfact, hroots⟩ := hermiteBiehler_factor_two_posLead hf hf₂ hg₂
   have hne : hermiteBiehlerPolynomial f g ≠ 0 := by
     intro h_zero
@@ -1875,7 +1893,8 @@ theorem prec_of_stable_two {f g : ℝ[X]}
       (-b₂ + Real.sqrt (b₂ ^ 2 - 4 * bb * c₂)) / (2 * bb)} := by
     conv_lhs => rw [hgexp]
     exact roots_quadratic_posLead h_b_pos hDg₀
-  obtain ⟨h₁, h₂, h₃⟩ := interlace_core_posLead ha h_b_pos hv₁ hv₂ hb₁ hb₂ h_cf h_cg
+  obtain ⟨h₁, h₂, h₃⟩ :=
+    interlace_core_posLead ha h_b_pos hv₁ hv₂ hb₁ hb₂ h_cf h_cg
   refine ⟨⟨h_g_ne, hgs⟩, ⟨h_f_ne, hfs⟩,
     [(-b₂ - Real.sqrt (b₂ ^ 2 - 4 * bb * c₂)) / (2 * bb),
       (-b₂ + Real.sqrt (b₂ ^ 2 - 4 * bb * c₂)) / (2 * bb)],
@@ -2094,7 +2113,8 @@ private lemma nonpos_le_of_sq_le_sq {W X : ℝ} (hW : W ≤ 0) (h : X ^ 2 ≤ W 
 lemma interlace_core_two_one {a u₁ u₂ v₁ v₂ b₁ b₂ c₁ c₂ : ℝ} (ha : 0 < a)
     (hv₁ : v₁ ≤ 0) (hv₂ : v₂ ≤ 0) (hb₂_pos : 0 < b₂)
     (hb₁ : b₁ = -(a * (u₁ + u₂))) (hb₂ : b₂ = -(a * (v₁ + v₂)))
-    (hc₁ : c₁ = a * (u₁ * u₂ - v₁ * v₂)) (hc₂ : c₂ = a * (u₁ * v₂ + u₂ * v₁)) :
+    (hc₁ : c₁ = a * (u₁ * u₂ - v₁ * v₂))
+    (hc₂ : c₂ = a * (u₁ * v₂ + u₂ * v₁)) :
     (-b₁ - Real.sqrt (b₁ ^ 2 - 4 * a * c₁)) / (2 * a) ≤ -c₂ / b₂ ∧
       -c₂ / b₂ ≤ (-b₁ + Real.sqrt (b₁ ^ 2 - 4 * a * c₁)) / (2 * a) := by
   have hvv : 0 ≤ v₁ * v₂ := mul_nonneg_of_nonpos_of_nonpos hv₁ hv₂
@@ -2119,7 +2139,10 @@ lemma interlace_core_two_one {a u₁ u₂ v₁ v₂ b₁ b₂ c₁ c₂ : ℝ} (
   have hdiff : (t * (a * (v₁ + v₂))) ^ 2 - (a ^ 2 * ((u₁ - u₂) * (v₁ - v₂))) ^ 2 =
       4 * (a ^ 2 * a ^ 2) * (v₁ * v₂) * ((u₁ - u₂) ^ 2 + (v₁ + v₂) ^ 2) := by
     rw [hWsq]; ring
-  have hrhs : 0 ≤ 4 * (a ^ 2 * a ^ 2) * (v₁ * v₂) * ((u₁ - u₂) ^ 2 + (v₁ + v₂) ^ 2) := by
+  have hrhs :
+      0 ≤
+        4 * (a ^ 2 * a ^ 2) * (v₁ * v₂) *
+          ((u₁ - u₂) ^ 2 + (v₁ + v₂) ^ 2) := by
     have h₁ : (0 : ℝ) ≤ 4 * (a ^ 2 * a ^ 2) := by positivity
     have h₂ : (0 : ℝ) ≤ (u₁ - u₂) ^ 2 + (v₁ + v₂) ^ 2 := by positivity
     exact mul_nonneg (mul_nonneg h₁ hvv) h₂
@@ -2325,7 +2348,8 @@ lemma multiset_prod_norm_conj_le {z : ℂ} (hz : 0 < z.im) (S : Multiset ℂ)
 lemma multiset_prod_norm_conj_lt {z : ℂ} (hz : 0 < z.im) (S : Multiset ℂ)
     (hS : ∀ w ∈ S, w.im ≤ 0) {w₀ : ℂ} (hw₀ : w₀ ∈ S) (hneg : w₀.im < 0) :
     ‖(S.map fun w => (starRingEnd ℂ) z - w).prod‖ < ‖(S.map fun w => z - w).prod‖ := by
-  obtain ⟨S', rfl⟩ : ∃ S', S = w₀ ::ₘ S' := ⟨S.erase w₀, (Multiset.cons_erase hw₀).symm⟩
+  obtain ⟨S', rfl⟩ : ∃ S', S = w₀ ::ₘ S' :=
+    ⟨S.erase w₀, (Multiset.cons_erase hw₀).symm⟩
   simp only [Multiset.map_cons, Multiset.prod_cons, norm_mul]
   have hS' : ∀ w ∈ S', w.im ≤ 0 := fun w hw => hS w (Multiset.mem_cons_of_mem hw)
   have h_norm_pos : 0 < ‖(S'.map fun w => z - w).prod‖ := by
@@ -2358,7 +2382,9 @@ lemma roots_real_of_stable_norm_eq {p : ℂ[X]} (hp : p ≠ 0)
   have hle : ∀ w ∈ p.roots, w.im ≤ 0 := fun w hw =>
     im_nonpos_of_stable_root hstab (isRoot_of_mem_roots hw)
   have hneg : w₀.im < 0 := lt_of_le_of_ne (hle w₀ hw₀) hne
-  have : ‖(p.roots.map fun w ↦ starRingEnd ℂ z - w).prod‖ < ‖(p.roots.map fun w ↦ z - w).prod‖ :=
+  have :
+      ‖(p.roots.map fun w ↦ starRingEnd ℂ z - w).prod‖ <
+        ‖(p.roots.map fun w ↦ z - w).prod‖ :=
     multiset_prod_norm_conj_lt hz p.roots hle hw₀ hneg
   rw [eval_eq_prod_roots_complex p, eval_eq_prod_roots_complex p, norm_mul, norm_mul] at heq
   simp_all
@@ -2668,7 +2694,9 @@ theorem im_deriv_mul_conj_neg {p : ℂ[X]}
       hzero, mul_zero, mul_zero]
   rw [← Multiset.sum_map_erase (f := fun w =>
     Complex.normSq ((p.roots.erase w).map (fun u => (x : ℂ) - u)).prod * w.im) hw₀]
-  have hterm : Complex.normSq ((p.roots.erase w₀).map (fun u => (x : ℂ) - u)).prod * w₀.im < 0 := by
+  have hterm :
+      Complex.normSq ((p.roots.erase w₀).map (fun u => (x : ℂ) - u)).prod *
+        w₀.im < 0 := by
     have hP : ((p.roots.erase w₀).map (fun u => (x : ℂ) - u)).prod ≠ 0 := hfac w₀ hw₀
     exact mul_neg_of_pos_of_neg (Complex.normSq_pos.mpr hP) hneg
   have hrest : ((p.roots.erase w₀).map (fun w =>
@@ -2787,8 +2815,9 @@ theorem isUpperHalfPlaneStable_cofactor_of_stable {f g : ℝ[X]} {r : ℝ}
   rw [hermiteBiehlerPolynomial_factor_common_root hrf hrg, eval_mul, hroot, mul_zero]
 
 theorem hermiteBiehlerConverse_general :
-    ∀ (n : ℕ) (f g : ℝ[X]), f.natDegree = n → HasPosLeadingCoeff f → HasPosLeadingCoeff g →
-      IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) → Prec g f ∨ Prec f g := by
+    ∀ (n : ℕ) (f g : ℝ[X]), f.natDegree = n → HasPosLeadingCoeff f →
+      HasPosLeadingCoeff g → IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) →
+      Prec g f ∨ Prec f g := by
   intro n
   induction n using Nat.strong_induction_on with
   | _ n ih =>
