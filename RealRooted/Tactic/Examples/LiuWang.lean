@@ -2121,6 +2121,96 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
+/-- Compact interval router for `(1+t)(1+2t)`. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(1 / 2 : ℝ))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + ((1 + X) * (1 + C (2 : ℝ) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_interval_lag_sequence using
+    base := hbase,
+    pos_lc := hpos,
+    root_lower := hroot_lower,
+    root_upper := hroot_upper,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno,
+    certificate := oneAddXOneAddTwoX
+
+/-- Compact interval router for `(1+t)(1+2t)`, real-rootedness endpoint. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(1 / 2 : ℝ))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) + ((1 + X) * (1 + C (2 : ℝ) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_lw_interval_lag_sequence_realrooted using
+    base := hbase,
+    pos_lc := hpos,
+    root_lower := hroot_lower,
+    root_upper := hroot_upper,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno,
+    certificate := oneAddXOneAddTwoX
+
+/-- Compact interval router for scalar `c_n(1+t)(1+2t)`. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(1 / 2 : ℝ))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) +
+          (C ((n : ℝ) + 1) * (1 + X) * (1 + C (2 : ℝ) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_lw_interval_lag_sequence using
+    base := hbase,
+    pos_lc := hpos,
+    root_lower := hroot_lower,
+    root_upper := hroot_upper,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno,
+    certificate := cMulOneAddXOneAddTwoX
+
+/-- Compact interval router for scalar interval lag, real-rootedness endpoint. -/
+example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -1 ≤ r)
+    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -(1 / 2 : ℝ))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        A n * P (n + 1) +
+          (C ((n : ℝ) + 1) * (1 + X) * (1 + C (2 : ℝ) * X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_lw_interval_lag_sequence_realrooted using
+    base := hbase,
+    pos_lc := hpos,
+    root_lower := hroot_lower,
+    root_upper := hroot_upper,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno,
+    certificate := cMulOneAddXOneAddTwoX
+
 /-- Inner-window negative affine lag:
 `P_{n+2}=A_nP_{n+1}-c_n(a_n+b_n t)P_n`, with `0 <= b_n <= a_n`. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c a b : Nat → ℝ}

@@ -3922,6 +3922,30 @@ syntax (name := rr_lw_inner_window_lag_sequence_realrooted_named)
         "cMulXOneAddX" <|> "cMulXOneSubXOneAddX" <|> "cMulXSubXPowThree") :
   tactic
 
+syntax (name := rr_lw_interval_lag_sequence_named)
+  "rr_lw_interval_lag_sequence" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "root_lower" ":=" term ","
+    "root_upper" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "certificate" ":=" ("oneAddXOneAddTwoX" <|> "cMulOneAddXOneAddTwoX") :
+  tactic
+
+syntax (name := rr_lw_interval_lag_sequence_realrooted_named)
+  "rr_lw_interval_lag_sequence_realrooted" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "root_lower" ":=" term ","
+    "root_upper" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "certificate" ":=" ("oneAddXOneAddTwoX" <|> "cMulOneAddXOneAddTwoX") :
+  tactic
+
 syntax (name := rr_lw_one_add_X_one_add_two_X_lag_sequence_interval_named)
   "rr_lw_one_add_X_one_add_two_X_lag_sequence_interval" " using "
     "base" ":=" term ","
@@ -6552,6 +6576,82 @@ macro_rules
           pos_lc := $hpos,
           nonneg_coeffs := $hnonneg,
           root_lower := $hroot_lower,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_interval_lag_sequence using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        root_lower := $hroot_lower:term,
+        root_upper := $hroot_upper:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := oneAddXOneAddTwoX) =>
+      `(tactic|
+        rr_lw_one_add_X_one_add_two_X_lag_sequence_interval using
+          base := $hbase,
+          pos_lc := $hpos,
+          root_lower := $hroot_lower,
+          root_upper := $hroot_upper,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_interval_lag_sequence_realrooted using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        root_lower := $hroot_lower:term,
+        root_upper := $hroot_upper:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := oneAddXOneAddTwoX) =>
+      `(tactic|
+        rr_lw_one_add_X_one_add_two_X_lag_sequence_realrooted_interval using
+          base := $hbase,
+          pos_lc := $hpos,
+          root_lower := $hroot_lower,
+          root_upper := $hroot_upper,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_interval_lag_sequence using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        root_lower := $hroot_lower:term,
+        root_upper := $hroot_upper:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := cMulOneAddXOneAddTwoX) =>
+      `(tactic|
+        rr_lw_C_mul_one_add_X_one_add_two_X_lag_sequence_interval_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          root_lower := $hroot_lower,
+          root_upper := $hroot_upper,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_interval_lag_sequence_realrooted using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        root_lower := $hroot_lower:term,
+        root_upper := $hroot_upper:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := cMulOneAddXOneAddTwoX) =>
+      `(tactic|
+        rr_lw_C_mul_one_add_X_one_add_two_X_lag_sequence_realrooted_interval_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          root_lower := $hroot_lower,
+          root_upper := $hroot_upper,
           recurrence := $hrec,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno)
