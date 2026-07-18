@@ -165,7 +165,7 @@ example {P RHS : Nat → ℝ[X]}
   intro n
   rr_mw_den_norm using
     recurrence := hraw n,
-    den_nonzero := by rr_mw_active_den_at n
+    den_nonzero := rr_mw_active_den_at_term n
 
 /-- A062190 has a negative scalar denominator after the active row shift. -/
 example (n : Nat) :
@@ -196,7 +196,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
       intro n
       rr_mw_den_norm using
         recurrence := hraw n,
-        den_nonzero := by rr_mw_active_den_at n,
+        den_nonzero := rr_mw_active_den_at_term n,
     degree_succ := hdeg
 
 example {f u : ℝ[X]}

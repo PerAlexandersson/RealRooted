@@ -190,6 +190,12 @@ macro "rr_mw_active_den_at " n:term : tactic =>
 macro "rr_mw_active_den_all" : tactic =>
   `(tactic| rr_scalar_active_den_all)
 
+syntax (name := rr_mw_active_den_at_term) "rr_mw_active_den_at_term " term : term
+
+macro_rules
+  | `(rr_mw_active_den_at_term $n:term) =>
+      `(by rr_mw_active_den_at $n)
+
 macro_rules
   | `(tactic|
       rr_scalar_den_norm using

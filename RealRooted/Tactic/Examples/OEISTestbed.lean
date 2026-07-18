@@ -545,7 +545,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
       intro n
       rr_mw_den_norm using
         recurrence := hraw n,
-        den_nonzero := by rr_mw_active_den_at n,
+        den_nonzero := rr_mw_active_den_at_term n,
     degree_succ := hdeg
 
 -- `A062196`: quadratic scalar denominator with `t(1-t)P'`.
@@ -588,7 +588,7 @@ example {P RHS : Nat → ℝ[X]}
   intro n
   rr_mw_den_norm using
     recurrence := hraw n,
-    den_nonzero := by rr_mw_active_den_at n
+    den_nonzero := rr_mw_active_den_at_term n
 
 -- `A361893`: split scalar denominator normalizing into `-c_n t^2 P'`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
