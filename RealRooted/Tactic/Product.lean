@@ -846,17 +846,9 @@ theorem isRealRooted_of_product_affine_sequence
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hs : ∀ n : Nat, s n ≠ 0)
     (hstep : ∀ n : Nat, P (n + 1) = (C (s n) * X + C (t n)) * P n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  intro n
-  induction n with
-  | zero =>
-      simpa using hbase
-  | succ n ih =>
-      have hnext :
-          ((C (s n) * X + C (t n)) * P n ≠ 0 ∧
-            ((C (s n) * X + C (t n)) * P n).Splits) :=
-        isRealRooted_C_mul_X_add_C_mul ih (hs n)
-      simpa [Nat.succ_eq_add_one, hstep n] using hnext
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_sequence hbase
+    (isRealRooted_C_mul_X_add_C_sequence hs) hstep
 
 /-- Right-factor variant of `isRealRooted_of_product_affine_sequence`. -/
 theorem isRealRooted_of_product_affine_right_sequence
@@ -864,17 +856,9 @@ theorem isRealRooted_of_product_affine_right_sequence
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hs : ∀ n : Nat, s n ≠ 0)
     (hstep : ∀ n : Nat, P (n + 1) = P n * (C (s n) * X + C (t n))) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  intro n
-  induction n with
-  | zero =>
-      simpa using hbase
-  | succ n ih =>
-      have hnext :
-          (P n * (C (s n) * X + C (t n)) ≠ 0 ∧
-            (P n * (C (s n) * X + C (t n))).Splits) :=
-        isRealRooted_mul_C_mul_X_add_C ih (hs n)
-      simpa [Nat.succ_eq_add_one, hstep n] using hnext
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_right_sequence hbase
+    (isRealRooted_C_mul_X_add_C_sequence hs) hstep
 
 /-- Sequence shell for report-order affine factors `C t + C s * X`. -/
 theorem isRealRooted_of_product_const_first_affine_sequence
@@ -882,17 +866,9 @@ theorem isRealRooted_of_product_const_first_affine_sequence
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hs : ∀ n : Nat, s n ≠ 0)
     (hstep : ∀ n : Nat, P (n + 1) = (C (t n) + C (s n) * X) * P n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  intro n
-  induction n with
-  | zero =>
-      simpa using hbase
-  | succ n ih =>
-      have hnext :
-          ((C (t n) + C (s n) * X) * P n ≠ 0 ∧
-            ((C (t n) + C (s n) * X) * P n).Splits) :=
-        isRealRooted_C_add_C_mul_X_mul ih (hs n)
-      simpa [Nat.succ_eq_add_one, hstep n] using hnext
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_sequence hbase
+    (isRealRooted_C_add_C_mul_X_one_sequence hs) hstep
 
 /-- Right-factor variant of `isRealRooted_of_product_const_first_affine_sequence`. -/
 theorem isRealRooted_of_product_const_first_affine_right_sequence
@@ -900,49 +876,27 @@ theorem isRealRooted_of_product_const_first_affine_right_sequence
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hs : ∀ n : Nat, s n ≠ 0)
     (hstep : ∀ n : Nat, P (n + 1) = P n * (C (t n) + C (s n) * X)) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  intro n
-  induction n with
-  | zero =>
-      simpa using hbase
-  | succ n ih =>
-      have hnext :
-          (P n * (C (t n) + C (s n) * X) ≠ 0 ∧
-            (P n * (C (t n) + C (s n) * X)).Splits) :=
-        isRealRooted_mul_C_add_C_mul_X ih (hs n)
-      simpa [Nat.succ_eq_add_one, hstep n] using hnext
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_right_sequence hbase
+    (isRealRooted_C_add_C_mul_X_one_sequence hs) hstep
 
 /-- Sequence shell for unit-slope factors `X + C t`. -/
 theorem isRealRooted_of_product_X_add_C_sequence
     {P : Nat → ℝ[X]} {t : Nat → ℝ}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hstep : ∀ n : Nat, P (n + 1) = (X + C (t n)) * P n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  intro n
-  induction n with
-  | zero =>
-      simpa using hbase
-  | succ n ih =>
-      have hnext :
-          ((X + C (t n)) * P n ≠ 0 ∧ ((X + C (t n)) * P n).Splits) :=
-        isRealRooted_X_add_C_mul ih
-      simpa [Nat.succ_eq_add_one, hstep n] using hnext
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_sequence hbase
+    (isRealRooted_X_add_C_one_sequence t) hstep
 
 /-- Right-factor variant of `isRealRooted_of_product_X_add_C_sequence`. -/
 theorem isRealRooted_of_product_X_add_C_right_sequence
     {P : Nat → ℝ[X]} {t : Nat → ℝ}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hstep : ∀ n : Nat, P (n + 1) = P n * (X + C (t n))) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  intro n
-  induction n with
-  | zero =>
-      simpa using hbase
-  | succ n ih =>
-      have hnext :
-          (P n * (X + C (t n)) ≠ 0 ∧ (P n * (X + C (t n))).Splits) :=
-        isRealRooted_mul_X_add_C ih
-      simpa [Nat.succ_eq_add_one, hstep n] using hnext
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_right_sequence hbase
+    (isRealRooted_X_add_C_one_sequence t) hstep
 
 /-- Sequence shell for constant-first unit-slope factors `C t + X`. -/
 theorem isRealRooted_of_product_C_add_X_sequence
