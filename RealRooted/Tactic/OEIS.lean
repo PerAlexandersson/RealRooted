@@ -19,6 +19,7 @@ import RealRooted.Tactic.MagnitudeDominated
 import RealRooted.Tactic.MultiplierSequence
 import RealRooted.Tactic.OperatorPreservesInterlacing
 import RealRooted.Tactic.PFPolynomial
+import RealRooted.Tactic.PFBidiagonal
 import RealRooted.Tactic.Product
 import RealRooted.Tactic.PosCombo
 import RealRooted.Tactic.RootCount
@@ -58,6 +59,7 @@ rr_g_negative_lag_sequence using ... certificate := negativeQuadratic
 rr_g_negative_lag_sequence using ... certificate := globalNonpos
 rr_g_negative_lag_sequence_den_coeff using ... certificate := negativeSquare
 rr_g_negative_lag_sequence_den_coeff using ... certificate := negativeQuadratic
+rr_h_second_derivative_sequence using route := pf_bidiagonal, ...
 rr_product_exit_sequence using ... certificate := identity
 rr_product_exit_sequence using ... certificate := rootZero
 rr_product_exit_sequence using ... certificate := periodTwo

@@ -1317,5 +1317,61 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     no_common_roots := hno,
     certificate := globalNonpos
 
+/-- Family H second-derivative router, PF-bidiagonal cubic-residual branch. -/
+example
+    {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbase : IsPFPolynomial (P 0))
+    (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
+    (hcert : ∀ n : Nat,
+      BidiagonalCubicResidualCertificate
+        (fun k => secondDerivativeQuadraticCoeff (a0 n) (b1 n) (c2 n) k)
+        (fun k => secondDerivativeQuadraticCoeff (a1 n) (b2 n) (c3 n) k)
+        (d n))
+    (hrec : ∀ n : Nat,
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) := by
+  rr_h_second_derivative_sequence using
+    route := pf_bidiagonal,
+    jensen_backend := hbackend,
+    cubic_certificate := hcert,
+    base := hbase,
+    degree := hdeg,
+    recurrence := hrec
+
+/-- Family H second-derivative router, cutoff and normalized PF-bidiagonal
+branch. -/
+example
+    {P : Nat → ℝ[X]} {alphaSeq betaSeq : Nat → ℕ → ℝ}
+    {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
+    (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
+    (hcert : ∀ n : Nat, N ≤ n →
+      BidiagonalCubicResidualCertificate (alphaSeq n) (betaSeq n) (d n))
+    (hnorm : ∀ n : Nat, N ≤ n →
+      secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n) =
+        bidiagonalOperator (alphaSeq n) (betaSeq n) (P n))
+    (hne : ∀ n : Nat, P n ≠ 0)
+    (hrec : ∀ n : Nat, N ≤ n →
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_h_second_derivative_sequence using
+    route := pf_bidiagonal,
+    jensen_backend := hbackend,
+    cubic_certificate := hcert,
+    cutoff := N,
+    base := hbase,
+    degree := hdeg,
+    normalizer := hnorm,
+    recurrence := hrec,
+    nonzero := hne
+
 end Tactic
 end RealRooted
