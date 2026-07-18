@@ -714,6 +714,78 @@ example {fs : List ℝ[X]}
 example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
+    (haff : PosComboNoCommonAffineFamilyStatement) :
+    ChudnovskySeymourFourWayPackage fs := by
+  rr_chudnovskySeymour_fourWay_affineFamily_nonnegShift using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    same_degree := hsame,
+    affine_family := haff
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    ChudnovskySeymourFourWayPackage fs := by
+  rr_chudnovskySeymour_fourWay_boundaryRight_nonnegShift using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    boundary_right := hboundary
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
+    (haff : PosComboNoCommonAffineFamilyStatement) :
+    ChudnovskySeymourFourWayPackage fs := by
+  rr_chudnovskySeymour_fourWay_sameDegreePair_affineFamily_nonneg using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_nonneg_coeffs := hnn,
+    same_degree := hsame,
+    affine_family := haff
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (hall : PosComboNoCommonToAllComboBridgeStatement) :
+    ChudnovskySeymourFourWayPackage fs := by
+  rr_chudnovskySeymour_fourWay_allCombo_nonnegCoeffs using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_nonneg_coeffs := hnn,
+    all_combo := hall
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (haff : PosComboNoCommonAffineFamilyStatement) :
+    ChudnovskySeymourFourWayPackage fs := by
+  rr_chudnovskySeymour_fourWay_affineFamily_nonnegCoeffs using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_nonneg_coeffs := hnn,
+    affine_family := haff
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    ChudnovskySeymourFourWayPackage fs := by
+  rr_chudnovskySeymour_fourWay_boundaryRight_nonnegCoeffs using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_nonneg_coeffs := hnn,
+    boundary_right := hboundary
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs := by
@@ -798,6 +870,79 @@ example {fs : List ℝ[X]}
 example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
+    (haff : PosComboNoCommonAffineFamilyStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs := by
+  rr_pairwiseCompatible_iff_commonInterleaver_affineFamily_nonnegShift using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    same_degree := hsame,
+    affine_family := haff
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs := by
+  rr_pairwiseCompatible_iff_commonInterleaver_boundaryRight_nonnegShift using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    boundary_right := hboundary
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
+    (haff : PosComboNoCommonAffineFamilyStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs := by
+  rr_pairwiseCompatible_iff_commonInterleaver_sameDegreePair_affineFamily_nonneg
+    using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_nonneg_coeffs := hnn,
+    same_degree := hsame,
+    affine_family := haff
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (hall : PosComboNoCommonToAllComboBridgeStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs := by
+  rr_pairwiseCompatible_iff_commonInterleaver_allCombo_nonnegCoeffs using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_nonneg_coeffs := hnn,
+    all_combo := hall
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (haff : PosComboNoCommonAffineFamilyStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs := by
+  rr_pairwiseCompatible_iff_commonInterleaver_affineFamily_nonnegCoeffs using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_nonneg_coeffs := hnn,
+    affine_family := haff
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs := by
+  rr_pairwiseCompatible_iff_commonInterleaver_boundaryRight_nonnegCoeffs using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_nonneg_coeffs := hnn,
+    boundary_right := hboundary
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
     PairwiseCompatible fs ↔ FamilyCompatible fs := by
@@ -878,6 +1023,79 @@ example {fs : List ℝ[X]}
     member_pos_lc := hpos,
     same_degree := hsame,
     succ_degree := hsucc
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
+    (haff : PosComboNoCommonAffineFamilyStatement) :
+    PairwiseCompatible fs ↔ FamilyCompatible fs := by
+  rr_pairwiseCompatible_iff_familyCompatible_affineFamily_nonnegShift using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    same_degree := hsame,
+    affine_family := haff
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    PairwiseCompatible fs ↔ FamilyCompatible fs := by
+  rr_pairwiseCompatible_iff_familyCompatible_boundaryRight_nonnegShift using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    boundary_right := hboundary
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
+    (haff : PosComboNoCommonAffineFamilyStatement) :
+    PairwiseCompatible fs ↔ FamilyCompatible fs := by
+  rr_pairwiseCompatible_iff_familyCompatible_sameDegreePair_affineFamily_nonneg
+    using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_nonneg_coeffs := hnn,
+    same_degree := hsame,
+    affine_family := haff
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (hall : PosComboNoCommonToAllComboBridgeStatement) :
+    PairwiseCompatible fs ↔ FamilyCompatible fs := by
+  rr_pairwiseCompatible_iff_familyCompatible_allCombo_nonnegCoeffs using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_nonneg_coeffs := hnn,
+    all_combo := hall
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (haff : PosComboNoCommonAffineFamilyStatement) :
+    PairwiseCompatible fs ↔ FamilyCompatible fs := by
+  rr_pairwiseCompatible_iff_familyCompatible_affineFamily_nonnegCoeffs using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_nonneg_coeffs := hnn,
+    affine_family := haff
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (hboundary : PosComboNoCommonBoundaryRightPairOrientationStatement) :
+    PairwiseCompatible fs ↔ FamilyCompatible fs := by
+  rr_pairwiseCompatible_iff_familyCompatible_boundaryRight_nonnegCoeffs using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_nonneg_coeffs := hnn,
+    boundary_right := hboundary
 
 example {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
