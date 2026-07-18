@@ -111,6 +111,20 @@ theorem isRealRooted_C_add_C_mul_X_pow {s t : ℝ} (hs : s ≠ 0) (n : Nat) :
       ((C t + C s * X : ℝ[X]) ^ n).Splits) := by
   simpa [add_comm] using isRealRooted_C_mul_X_add_C_pow (s := s) (t := t) hs n
 
+private theorem isRealRooted_X_add_C_one_sequence (t : Nat → ℝ) :
+    ∀ n : Nat, (X + C (t n) : ℝ[X]) ≠ 0 ∧ (X + C (t n) : ℝ[X]).Splits :=
+  fun n => by simpa using isRealRooted_X_add_C_pow (t n) 1
+
+private theorem isRealRooted_C_add_X_one_sequence (t : Nat → ℝ) :
+    ∀ n : Nat, (C (t n) + X : ℝ[X]) ≠ 0 ∧ (C (t n) + X : ℝ[X]).Splits :=
+  fun n => by simpa using isRealRooted_C_add_X_pow (t n) 1
+
+private theorem isRealRooted_C_add_C_mul_X_one_sequence {s t : Nat → ℝ}
+    (hs : ∀ n : Nat, s n ≠ 0) :
+    ∀ n : Nat, (C (t n) + C (s n) * X : ℝ[X]) ≠ 0 ∧
+      (C (t n) + C (s n) * X : ℝ[X]).Splits :=
+  fun n => by simpa using isRealRooted_C_add_C_mul_X_pow (hs n) 1
+
 /-- Sequence shell for first-order product recurrences with a supplied factor certificate. -/
 theorem isRealRooted_of_product_factor_sequence
     {P F : Nat → ℝ[X]}
@@ -235,7 +249,7 @@ theorem isRealRooted_of_X_add_C_lift_sequence
     (hrow : ∀ n : Nat, P n = (X + C (t n)) * Q n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_lift_sequence hquot
-    (fun n => by simpa using isRealRooted_X_add_C_pow (t n) 1) hrow
+    (isRealRooted_X_add_C_one_sequence t) hrow
 
 /-- Right-factor variant of `isRealRooted_of_X_add_C_lift_sequence`. -/
 theorem isRealRooted_of_X_add_C_lift_right_sequence
@@ -244,7 +258,7 @@ theorem isRealRooted_of_X_add_C_lift_right_sequence
     (hrow : ∀ n : Nat, P n = Q n * (X + C (t n))) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_lift_right_sequence hquot
-    (fun n => by simpa using isRealRooted_X_add_C_pow (t n) 1) hrow
+    (isRealRooted_X_add_C_one_sequence t) hrow
 
 /-- Constant-first spelling of `isRealRooted_of_X_add_C_lift_sequence`. -/
 theorem isRealRooted_of_C_add_X_lift_sequence
@@ -253,7 +267,7 @@ theorem isRealRooted_of_C_add_X_lift_sequence
     (hrow : ∀ n : Nat, P n = (C (t n) + X) * Q n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_lift_sequence hquot
-    (fun n => by simpa using isRealRooted_C_add_X_pow (t n) 1) hrow
+    (isRealRooted_C_add_X_one_sequence t) hrow
 
 /-- Right-factor variant of `isRealRooted_of_C_add_X_lift_sequence`. -/
 theorem isRealRooted_of_C_add_X_lift_right_sequence
@@ -262,7 +276,7 @@ theorem isRealRooted_of_C_add_X_lift_right_sequence
     (hrow : ∀ n : Nat, P n = Q n * (C (t n) + X)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_lift_right_sequence hquot
-    (fun n => by simpa using isRealRooted_C_add_X_pow (t n) 1) hrow
+    (isRealRooted_C_add_X_one_sequence t) hrow
 
 /-- Lift through row-wise nonzero scalar constants. -/
 theorem isRealRooted_of_C_lift_sequence
@@ -311,7 +325,7 @@ theorem isRealRooted_of_C_add_C_mul_X_lift_sequence
     (hrow : ∀ n : Nat, P n = (C (t n) + C (s n) * X) * Q n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_lift_sequence hquot
-    (fun n => by simpa using isRealRooted_C_add_C_mul_X_pow (hs n) 1) hrow
+    (isRealRooted_C_add_C_mul_X_one_sequence hs) hrow
 
 /-- Right-factor variant of `isRealRooted_of_C_add_C_mul_X_lift_sequence`. -/
 theorem isRealRooted_of_C_add_C_mul_X_lift_right_sequence
@@ -321,7 +335,7 @@ theorem isRealRooted_of_C_add_C_mul_X_lift_right_sequence
     (hrow : ∀ n : Nat, P n = Q n * (C (t n) + C (s n) * X)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_lift_right_sequence hquot
-    (fun n => by simpa using isRealRooted_C_add_C_mul_X_pow (hs n) 1) hrow
+    (isRealRooted_C_add_C_mul_X_one_sequence hs) hrow
 
 /-- Powers of the root-at-zero factor are real-rooted. -/
 theorem isRealRooted_X_pow (n : Nat) :
@@ -949,7 +963,7 @@ theorem isRealRooted_of_product_C_add_X_sequence
     (hstep : ∀ n : Nat, P (n + 1) = (C (t n) + X) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_factor_sequence hbase
-    (fun n => by simpa using isRealRooted_C_add_X_pow (t n) 1) hstep
+    (isRealRooted_C_add_X_one_sequence t) hstep
 
 /-- Right-factor variant of `isRealRooted_of_product_C_add_X_sequence`. -/
 theorem isRealRooted_of_product_C_add_X_right_sequence
@@ -958,7 +972,7 @@ theorem isRealRooted_of_product_C_add_X_right_sequence
     (hstep : ∀ n : Nat, P (n + 1) = P n * (C (t n) + X)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_factor_right_sequence hbase
-    (fun n => by simpa using isRealRooted_C_add_X_pow (t n) 1) hstep
+    (isRealRooted_C_add_X_one_sequence t) hstep
 
 /-- Sequence shell for product recurrences with factors `X ^ m_n`. -/
 theorem isRealRooted_of_product_X_pow_sequence
@@ -1198,7 +1212,7 @@ theorem isRealRooted_of_product_scalar_linear_sequence
     (hlinear : ∀ n : Nat, P (2 * n + 2) = (X + C (b n)) * P (2 * n + 1)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_scalar_factor_sequence hbase ha
-    (fun n => by simpa using isRealRooted_X_add_C_pow (b n) 1) hscalar hlinear
+    (isRealRooted_X_add_C_one_sequence b) hscalar hlinear
 
 /-- Right-factor variant of `isRealRooted_of_product_scalar_linear_sequence`. -/
 theorem isRealRooted_of_product_scalar_linear_right_sequence
@@ -1209,7 +1223,7 @@ theorem isRealRooted_of_product_scalar_linear_right_sequence
     (hlinear : ∀ n : Nat, P (2 * n + 2) = P (2 * n + 1) * (X + C (b n))) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_scalar_factor_right_sequence hbase ha
-    (fun n => by simpa using isRealRooted_X_add_C_pow (b n) 1) hscalar hlinear
+    (isRealRooted_X_add_C_one_sequence b) hscalar hlinear
 
 /-- Right-scalar variant of `isRealRooted_of_product_scalar_linear_sequence`. -/
 theorem isRealRooted_of_product_scalar_linear_scalar_right_sequence
@@ -1220,7 +1234,7 @@ theorem isRealRooted_of_product_scalar_linear_scalar_right_sequence
     (hlinear : ∀ n : Nat, P (2 * n + 2) = (X + C (b n)) * P (2 * n + 1)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_scalar_factor_scalar_right_sequence hbase ha
-    (fun n => by simpa using isRealRooted_X_add_C_pow (b n) 1) hscalar hlinear
+    (isRealRooted_X_add_C_one_sequence b) hscalar hlinear
 
 /-- Right-scalar/right-factor variant of
 `isRealRooted_of_product_scalar_linear_sequence`. -/
@@ -1232,7 +1246,7 @@ theorem isRealRooted_of_product_scalar_linear_scalar_right_linear_right_sequence
     (hlinear : ∀ n : Nat, P (2 * n + 2) = P (2 * n + 1) * (X + C (b n))) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_scalar_factor_scalar_right_factor_right_sequence hbase ha
-    (fun n => by simpa using isRealRooted_X_add_C_pow (b n) 1) hscalar hlinear
+    (isRealRooted_X_add_C_one_sequence b) hscalar hlinear
 
 /-- Constant-first variant of
 `isRealRooted_of_product_scalar_linear_sequence`. -/
@@ -1244,7 +1258,7 @@ theorem isRealRooted_of_product_scalar_C_add_X_sequence
     (hlinear : ∀ n : Nat, P (2 * n + 2) = (C (b n) + X) * P (2 * n + 1)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_scalar_factor_sequence hbase ha
-    (fun n => by simpa using isRealRooted_C_add_X_pow (b n) 1) hscalar hlinear
+    (isRealRooted_C_add_X_one_sequence b) hscalar hlinear
 
 /-- Right-factor variant of
 `isRealRooted_of_product_scalar_C_add_X_sequence`. -/
@@ -1256,7 +1270,7 @@ theorem isRealRooted_of_product_scalar_C_add_X_right_sequence
     (hlinear : ∀ n : Nat, P (2 * n + 2) = P (2 * n + 1) * (C (b n) + X)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_scalar_factor_right_sequence hbase ha
-    (fun n => by simpa using isRealRooted_C_add_X_pow (b n) 1) hscalar hlinear
+    (isRealRooted_C_add_X_one_sequence b) hscalar hlinear
 
 /-- Right-scalar variant of
 `isRealRooted_of_product_scalar_C_add_X_sequence`. -/
@@ -1268,7 +1282,7 @@ theorem isRealRooted_of_product_scalar_C_add_X_scalar_right_sequence
     (hlinear : ∀ n : Nat, P (2 * n + 2) = (C (b n) + X) * P (2 * n + 1)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_scalar_factor_scalar_right_sequence hbase ha
-    (fun n => by simpa using isRealRooted_C_add_X_pow (b n) 1) hscalar hlinear
+    (isRealRooted_C_add_X_one_sequence b) hscalar hlinear
 
 /-- Right-scalar/right-factor variant of
 `isRealRooted_of_product_scalar_C_add_X_sequence`. -/
@@ -1280,7 +1294,7 @@ theorem isRealRooted_of_product_scalar_C_add_X_scalar_right_linear_right_sequenc
     (hlinear : ∀ n : Nat, P (2 * n + 2) = P (2 * n + 1) * (C (b n) + X)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_scalar_factor_scalar_right_factor_right_sequence hbase ha
-    (fun n => by simpa using isRealRooted_C_add_X_pow (b n) 1) hscalar hlinear
+    (isRealRooted_C_add_X_one_sequence b) hscalar hlinear
 
 /-- Sequence shell for degree-plateau scalar/product families whose growth
 step is multiplication by `X ^ m_n`. -/
