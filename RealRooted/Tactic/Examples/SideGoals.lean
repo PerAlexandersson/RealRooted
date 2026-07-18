@@ -50,6 +50,20 @@ example {n : Nat} : -(((n : ℝ) + 5) * ((n : ℝ) + 1) / 3) ≠ 0 := by
 example {n : Nat} : ((-1 : ℝ) ^ n) ≠ 0 := by
   rr_side_ne
 
+example {n : Nat} (hn : 0 < n) : (n : ℝ) ≠ 0 := by
+  rr_side_ne
+
+example {n : Nat} (hn : 0 < n) : (n : ℂ) ≠ 0 := by
+  rr_side_ne
+
+example {m k : Nat} (hk : k ≤ m) :
+    (((Nat.choose m k : Nat) : ℝ)) ≠ 0 := by
+  rr_side_ne
+
+example {m : Nat} :
+    (((Nat.choose m (m - 1) : Nat) : ℝ)) ≠ 0 := by
+  rr_side_ne
+
 example (p q : ℝ[X]) (n : Nat) :
     (p + q).coeff n = p.coeff n + q.coeff n := by
   rr_coeff

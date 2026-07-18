@@ -20,6 +20,10 @@ example : (X : ℝ[X]) ≠ 0 := by
 example {a : ℝ} (ha : a ≠ 0) : (C a : ℝ[X]) ≠ 0 := by
   rr_nonzero
 
+example {m k : Nat} (hk : k ≤ m) :
+    (C (((Nat.choose m k : Nat) : ℝ)) : ℝ[X]) ≠ 0 := by
+  rr_nonzero
+
 example {a : ℝ} : (X + C a : ℝ[X]) ≠ 0 := by
   rr_nonzero
 

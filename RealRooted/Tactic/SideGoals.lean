@@ -121,6 +121,10 @@ macro_rules
         first
           | assumption
           | exact_mod_cast (by assumption)
+          | apply Nat.cast_ne_zero_of_pos
+            rr_close_side
+          | apply Nat.cast_choose_ne_zero
+            rr_close_side
           | apply neg_ne_zero.mpr
             exact ne_of_gt rr_side_pos_term
           | apply pow_ne_zero
