@@ -14,6 +14,7 @@ import RealRooted.Tactic.Examples.CubicDiscriminant
 import RealRooted.Tactic.Examples.Derivative
 import RealRooted.Tactic.Examples.EulerOperator
 import RealRooted.Tactic.Examples.InterlacingSequence
+import RealRooted.Tactic.Examples.Wagner
 import RealRooted.Tactic.Examples.WagnerX
 import RealRooted.Tactic.Examples.Favard
 import RealRooted.Tactic.Examples.GammaRealRoots
