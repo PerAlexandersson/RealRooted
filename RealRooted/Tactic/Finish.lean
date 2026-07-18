@@ -339,6 +339,10 @@ syntax (name := rr_first_exact_or_simpa_mul_assoc)
   "rr_first_exact_or_simpa_mul_assoc" term ", " term :
   tactic
 
+syntax (name := rr_first_exact_or_simpa_mul_add_assoc)
+  "rr_first_exact_or_simpa_mul_add_assoc" term ", " term :
+  tactic
+
 syntax (name := rr_first_realrooted_or_projection)
   "rr_first_realrooted_or_projection" term,* :
   tactic
@@ -511,6 +515,11 @@ macro_rules
         first
           | exact $hdirect
           | simpa [mul_assoc] using $hnormalized)
+  | `(tactic| rr_first_exact_or_simpa_mul_add_assoc $hdirect:term, $hnormalized:term) =>
+      `(tactic|
+        first
+          | exact $hdirect
+          | simpa [mul_assoc, add_assoc] using $hnormalized)
   | `(tactic| rr_first_realrooted_or_projection $[$hs:term],*) =>
       `(tactic|
         first
