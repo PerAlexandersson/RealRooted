@@ -43,6 +43,13 @@ theorem isRealRooted_of_prec_sequence {P : Nat → ℝ[X]}
   | succ n =>
       exact (hprec n).2.1
 
+/-- A consecutive `Prec` chain gives rowwise nonzero real-rootedness. -/
+theorem isRealRooted_of_prec_chain {P : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1))) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_prec_sequence hbase (fun n _ => hprec (n + 1))
+
 /-- Generic `Prec`-chain induction with a same-degree/successor-degree branch.
 
 This wraps plateau recurrences such as degree patterns `1,1,2,2,3,3,...`.

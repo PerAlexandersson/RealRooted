@@ -597,18 +597,6 @@ theorem prec_lw_nonpos_lag_sequence {P : Nat → ℝ[X]}
           (hno n) (hB_nonpos n)
       simpa [← hrec n] using hstep
 
-/-- A consecutive `Prec` chain gives rowwise nonzero real-rootedness. -/
-theorem isRealRooted_of_prec_chain {P : Nat → ℝ[X]}
-    (hbase : Prec (P 0) (P 1))
-    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1))) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  intro n
-  cases n with
-  | zero =>
-      exact hbase.1
-  | succ n =>
-      exact (hprec n).2.1
-
 /-- Real-rootedness corollary for sequence-level nonpositive-lag
 Liu--Wang induction. -/
 theorem isRealRooted_of_lw_nonpos_lag_sequence {P : Nat → ℝ[X]}

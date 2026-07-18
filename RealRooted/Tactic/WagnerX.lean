@@ -168,15 +168,9 @@ theorem isRealRooted_of_prec_wagner_derivative_gap_lag_sequence
     (hc : ∀ n : Nat, 0 < c n)
     (hrec : ∀ n : Nat,
       P (n + 2) = X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  have hprec : ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_prec_chain hbase <|
     prec_wagner_derivative_gap_lag_sequence hbase hnonneg hdeg ha hc hrec
-  intro n
-  cases n with
-  | zero =>
-      exact hbase.1
-  | succ n =>
-      exact (hprec n).2.1
 
 /-- Sequence induction for scalar-left active Wagner derivative-gap-lag recurrences. -/
 theorem prec_wagner_derivative_gap_lag_sequence_den
@@ -213,15 +207,9 @@ theorem isRealRooted_of_prec_wagner_derivative_gap_lag_sequence_den
     (hrec : ∀ n : Nat,
       C (d n) * P (n + 2) =
         X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  have hprec : ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_prec_chain hbase <|
     prec_wagner_derivative_gap_lag_sequence_den hbase hnonneg hdeg ha hc hd hrec
-  intro n
-  cases n with
-  | zero =>
-      exact hbase.1
-  | succ n =>
-      exact (hprec n).2.1
 
 /-!
 ### The `X^2 * P'` derivative-lag obstruction
@@ -425,15 +413,9 @@ theorem isRealRooted_of_prec_pos_X_lag_combo_sequence {P : Nat → ℝ[X]}
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hrec : ∀ n : Nat,
       P (n + 2) = C (a n) * P (n + 1) + (C (c n) * X) * P n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  have hprec : ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_prec_chain hbase <|
     prec_pos_X_lag_combo_sequence hbase hnonneg ha hc hrec
-  intro n
-  cases n with
-  | zero =>
-      exact hbase.1
-  | succ n =>
-      exact (hprec n).2.1
 
 namespace Tactic
 
