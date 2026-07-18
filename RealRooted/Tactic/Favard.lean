@@ -143,11 +143,10 @@ theorem favardInterlacing_affine_const_coeff {P : Nat → ℝ[X]} {s α β : ℝ
   let bPoly : ℝ[X] := C (-β)
   have hA_deg : aPoly.natDegree = 1 := by
     simpa [aPoly] using natDegree_C_mul_X_sub_C (s := s) (t := α) hs.ne'
-  have hA_ne : aPoly ≠ 0 := by
-    intro h
-    simp [h] at hA_deg
   have hA_pos : HasPosLeadingCoeff aPoly := by
     simpa [aPoly] using hasPosLeadingCoeff_C_mul_X_sub_C (s := s) (t := α) hs
+  have hA_ne : aPoly ≠ 0 := by
+    rr_nonzero
   let Q : Nat → Prop := fun n =>
     Interlaces (P n) (P (n + 1)) ∧
       HasPosLeadingCoeff (P n) ∧
@@ -176,16 +175,14 @@ theorem favardInterlacing_affine_const_coeff {P : Nat → ℝ[X]} {s α β : ℝ
           rw [natDegree_mul hA_ne hf_ne, hA_deg]
           lia
         have hAf_pos : HasPosLeadingCoeff (aPoly * f) := by
-          unfold HasPosLeadingCoeff at hA_pos hPos_n1 ⊢
-          simpa [Polynomial.leadingCoeff_mul] using mul_pos hA_pos hPos_n1
+          rr_pos_lc
         have hBg_lt_Af : (bPoly * g).natDegree < (aPoly * f).natDegree := by
           have hBg_le : (bPoly * g).natDegree ≤ g.natDegree := by
             dsimp [bPoly]
             exact Polynomial.natDegree_C_mul_le _ _
           lia
-        have hF_pos_aux : HasPosLeadingCoeff (bPoly * g + aPoly * f) :=
-          hasPosLeadingCoeff_add_of_natDegree_lt_right hBg_lt_Af hAf_pos
-        have hF_pos : HasPosLeadingCoeff (aPoly * f + bPoly * g) := by grind
+        have hF_pos : HasPosLeadingCoeff (aPoly * f + bPoly * g) := by
+          rr_pos_lc
         have hF_deg :
             (aPoly * f + bPoly * g).natDegree = f.natDegree + 1 := by
           have hdeg_aux :
@@ -340,13 +337,12 @@ theorem favardInterlacing_affine_param_coeff
           simpa [aPoly] using
             natDegree_C_mul_X_sub_C (s := s (n + 1)) (t := α (n + 1))
               (hs (n + 1)).ne'
-        have hA_ne : aPoly ≠ 0 := by
-          intro h
-          simp [h] at hA_deg
         have hA_pos : HasPosLeadingCoeff aPoly := by
           simpa [aPoly] using
             hasPosLeadingCoeff_C_mul_X_sub_C (s := s (n + 1)) (t := α (n + 1))
               (hs (n + 1))
+        have hA_ne : aPoly ≠ 0 := by
+          rr_nonzero
         have hdeg_gf : g.natDegree + 1 = f.natDegree := by
           simpa [f, g] using natDegree_succ_of_interlaces hInter
         have hf_ne : f ≠ 0 := by
@@ -355,16 +351,14 @@ theorem favardInterlacing_affine_param_coeff
           rw [natDegree_mul hA_ne hf_ne, hA_deg]
           lia
         have hAf_pos : HasPosLeadingCoeff (aPoly * f) := by
-          unfold HasPosLeadingCoeff at hA_pos hPos_n1 ⊢
-          simpa [Polynomial.leadingCoeff_mul] using mul_pos hA_pos hPos_n1
+          rr_pos_lc
         have hBg_lt_Af : (bPoly * g).natDegree < (aPoly * f).natDegree := by
           have hBg_le : (bPoly * g).natDegree ≤ g.natDegree := by
             dsimp [bPoly]
             exact Polynomial.natDegree_C_mul_le _ _
           lia
-        have hF_pos_aux : HasPosLeadingCoeff (bPoly * g + aPoly * f) :=
-          hasPosLeadingCoeff_add_of_natDegree_lt_right hBg_lt_Af hAf_pos
-        have hF_pos : HasPosLeadingCoeff (aPoly * f + bPoly * g) := by grind
+        have hF_pos : HasPosLeadingCoeff (aPoly * f + bPoly * g) := by
+          rr_pos_lc
         have hF_deg :
             (aPoly * f + bPoly * g).natDegree = f.natDegree + 1 := by
           have hdeg_aux :
