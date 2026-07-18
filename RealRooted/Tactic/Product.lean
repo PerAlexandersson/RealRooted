@@ -129,6 +129,21 @@ private theorem isRealRooted_X_sequence :
     ∀ _ : Nat, (X : ℝ[X]) ≠ 0 ∧ (X : ℝ[X]).Splits :=
   fun _ => isRealRooted_X
 
+private theorem isRealRooted_of_even_odd_sequence {P : Nat → ℝ[X]}
+    (heven : ∀ n : Nat, P (2 * n) ≠ 0 ∧ (P (2 * n)).Splits)
+    (hodd : ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  intro n
+  rcases Nat.mod_two_eq_zero_or_one n with hmod | hmod
+  · have hn : n = 2 * (n / 2) := by
+      simpa [hmod] using (Nat.div_add_mod n 2).symm
+    rw [hn]
+    exact heven (n / 2)
+  · have hn : n = 2 * (n / 2) + 1 := by
+      simpa [hmod] using (Nat.div_add_mod n 2).symm
+    rw [hn]
+    exact hodd (n / 2)
+
 private theorem isRealRooted_C_sequence {c : Nat → ℝ} (hc : ∀ n : Nat, c n ≠ 0) :
     ∀ n : Nat, (C (c n) : ℝ[X]) ≠ 0 ∧ (C (c n) : ℝ[X]).Splits :=
   fun n => isRealRooted_C (hc n)
@@ -565,16 +580,7 @@ theorem isRealRooted_of_even_product_odd_X_scalar_sequence
     have hrow : (C (a n) * X) * Q n ≠ 0 ∧ ((C (a n) * X) * Q n).Splits :=
       isRealRooted_mul hfactor.1 hfactor.2 (hquot n).1 (hquot n).2
     simpa [hodd n, mul_assoc] using hrow
-  intro n
-  rcases Nat.mod_two_eq_zero_or_one n with hmod | hmod
-  · have hn : n = 2 * (n / 2) := by
-      simpa [hmod] using (Nat.div_add_mod n 2).symm
-    rw [hn]
-    exact heven_realrooted (n / 2)
-  · have hn : n = 2 * (n / 2) + 1 := by
-      simpa [hmod] using (Nat.div_add_mod n 2).symm
-    rw [hn]
-    exact hodd_realrooted (n / 2)
+  exact isRealRooted_of_even_odd_sequence heven_realrooted hodd_realrooted
 
 /-- One endpoint-quotient transition: first form `a+b`, then the next row is
 `b+X(a+b)`. -/
@@ -787,16 +793,7 @@ theorem isRealRooted_of_endpoint_sum_then_X_pair_lift_sequence
         (right_ne_zero_of_isRealRooted_pair_sequence hquot n)
         (right_splits_of_isRealRooted_pair_sequence hquot n)
     simpa [hrowB n] using hrow
-  intro n
-  rcases Nat.mod_two_eq_zero_or_one n with hmod | hmod
-  · have hn : n = 2 * (n / 2) := by
-      simpa [hmod] using (Nat.div_add_mod n 2).symm
-    rw [hn]
-    exact heven (n / 2)
-  · have hn : n = 2 * (n / 2) + 1 := by
-      simpa [hmod] using (Nat.div_add_mod n 2).symm
-    rw [hn]
-    exact hodd (n / 2)
+  exact isRealRooted_of_even_odd_sequence heven hodd
 
 /-- Endpoint quotient plus endpoint-power lift for the reversed quotient
 parity. -/
@@ -837,16 +834,7 @@ theorem isRealRooted_of_endpoint_X_then_sum_pair_lift_sequence
         (right_ne_zero_of_isRealRooted_pair_sequence hquot n)
         (right_splits_of_isRealRooted_pair_sequence hquot n)
     simpa [hrowB n] using hrow
-  intro n
-  rcases Nat.mod_two_eq_zero_or_one n with hmod | hmod
-  · have hn : n = 2 * (n / 2) := by
-      simpa [hmod] using (Nat.div_add_mod n 2).symm
-    rw [hn]
-    exact heven (n / 2)
-  · have hn : n = 2 * (n / 2) + 1 := by
-      simpa [hmod] using (Nat.div_add_mod n 2).symm
-    rw [hn]
-    exact hodd (n / 2)
+  exact isRealRooted_of_even_odd_sequence heven hodd
 
 /-- Endpoint quotient plus endpoint-power lift for the reversed quotient
 parity, with the single row sequence using the opposite even/odd assignment.
@@ -892,16 +880,7 @@ theorem isRealRooted_of_endpoint_X_then_sum_pair_lift_swapped_sequence
         (left_ne_zero_of_isRealRooted_pair_sequence hquot n)
         (left_splits_of_isRealRooted_pair_sequence hquot n)
     simpa [hrowA n] using hrow
-  intro n
-  rcases Nat.mod_two_eq_zero_or_one n with hmod | hmod
-  · have hn : n = 2 * (n / 2) := by
-      simpa [hmod] using (Nat.div_add_mod n 2).symm
-    rw [hn]
-    exact heven (n / 2)
-  · have hn : n = 2 * (n / 2) + 1 := by
-      simpa [hmod] using (Nat.div_add_mod n 2).symm
-    rw [hn]
-    exact hodd (n / 2)
+  exact isRealRooted_of_even_odd_sequence heven hodd
 
 /-- Sequence shell for first-order affine-product recurrences. -/
 theorem isRealRooted_of_product_affine_sequence
@@ -1194,16 +1173,7 @@ theorem isRealRooted_of_product_scalar_factor_sequence
   have hodd : ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
     intro n
     simpa [hscalar n] using isRealRooted_C_mul (heven n).1 (heven n).2 (ha n)
-  intro n
-  rcases Nat.mod_two_eq_zero_or_one n with hmod | hmod
-  · have hn : n = 2 * (n / 2) := by
-      simpa [hmod] using (Nat.div_add_mod n 2).symm
-    rw [hn]
-    exact heven (n / 2)
-  · have hn : n = 2 * (n / 2) + 1 := by
-      simpa [hmod] using (Nat.div_add_mod n 2).symm
-    rw [hn]
-    exact hodd (n / 2)
+  exact isRealRooted_of_even_odd_sequence heven hodd
 
 /-- Right-factor variant of `isRealRooted_of_product_scalar_factor_sequence`. -/
 theorem isRealRooted_of_product_scalar_factor_right_sequence
