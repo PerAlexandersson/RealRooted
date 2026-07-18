@@ -76,6 +76,26 @@ theorem prec_lw_two_of_nonpos {f g a b : ℝ[X]}
       (by simpa [polynomialWeightedSum] using hdeg_hi)
       hno hb_nonpos)
 
+/-- Liu--Wang step where the target leading-coefficient and degree side goals
+are supplied through a normalized recurrence identity. -/
+theorem prec_lw_two_of_nonpos_of_recurrence {f g F a b : ℝ[X]}
+    (hgf : Interlaces g f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hrec : F = a * f + b * g)
+    (hF_pos : HasPosLeadingCoeff F)
+    (hdeg_succ : f.natDegree + 1 = F.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0) :
+    Prec f (a * f + b * g) :=
+  prec_lw_two_of_nonpos hgf hg_pos
+    (by
+      rr_recurrence_simpa using recurrence := hrec, certificate := hF_pos)
+    (by
+      rr_recurrence_degree using recurrence := hrec, degree := hdeg_succ)
+    (by
+      rr_recurrence_degree using recurrence := hrec, degree := hdeg_succ)
+    hno hb_nonpos
+
 /-- Strict two-polynomial Liu--Wang wrapper with no tail summands. -/
 theorem prec_lw_two_strict_of_neg {f g a b : ℝ[X]}
     (hgf : Interlaces g f)
@@ -211,6 +231,28 @@ theorem prec_lw_positive_t_lag_of_nonneg_coeffs {f g a : ℝ[X]} {c : ℝ}
   prec_lw_positive_t_lag_of_roots_nonpos hgf hg_pos
     (roots_nonpos_of_interlaces_of_nonneg_coeffs hgf hf_nonneg)
     hc hF_pos hdeg_lo hdeg_hi hno
+
+/-- Positive `t`-lag Liu--Wang step with recurrence-derived target
+leading-coefficient and degree side goals. -/
+theorem prec_lw_positive_t_lag_of_nonneg_coeffs_of_recurrence
+    {f g F a : ℝ[X]} {c : ℝ}
+    (hgf : Interlaces g f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hf_nonneg : HasNonnegCoeffs f)
+    (hc : 0 ≤ c)
+    (hrec : F = a * f + (C c * X) * g)
+    (hF_pos : HasPosLeadingCoeff F)
+    (hdeg_succ : f.natDegree + 1 = F.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    Prec f (a * f + (C c * X) * g) :=
+  prec_lw_positive_t_lag_of_nonneg_coeffs hgf hg_pos hf_nonneg hc
+    (by
+      rr_recurrence_simpa using recurrence := hrec, certificate := hF_pos)
+    (by
+      rr_recurrence_degree using recurrence := hrec, degree := hdeg_succ)
+    (by
+      rr_recurrence_degree using recurrence := hrec, degree := hdeg_succ)
+    hno
 
 /-- Affine half-line lag `c t - a`, deriving the root half-line certificate
 from nonnegative coefficients of the current row. -/
@@ -579,18 +621,9 @@ theorem prec_lw_nonpos_lag_sequence {P : Nat → ℝ[X]}
   | succ n ih =>
       have hInter : Interlaces (P n) (P (n + 1)) :=
         ih.toInterlaces (hdeg_succ n)
-      have hF_pos : HasPosLeadingCoeff (A n * P (n + 1) + B n * P n) := by
-        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
-      have hdeg_lo :
-          (P (n + 1)).natDegree ≤ (A n * P (n + 1) + B n * P n).natDegree := by
-        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
-      have hdeg_hi :
-          (A n * P (n + 1) + B n * P n).natDegree ≤
-            (P (n + 1)).natDegree + 1 := by
-        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hstep : Prec (P (n + 1)) (A n * P (n + 1) + B n * P n) :=
-        prec_lw_two_of_nonpos hInter (hpos n) hF_pos hdeg_lo hdeg_hi
-          (hno n) (hB_nonpos n)
+        prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
+          (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) (hB_nonpos n)
       simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary for sequence-level nonpositive-lag
@@ -998,22 +1031,11 @@ theorem prec_lw_positive_t_lag_sequence {P : Nat → ℝ[X]}
   | succ n ih =>
       have hInter : Interlaces (P n) (P (n + 1)) :=
         ih.toInterlaces (hdeg_succ n)
-      have hF_pos :
-          HasPosLeadingCoeff (A n * P (n + 1) + (C (c n) * X) * P n) := by
-        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
-      have hdeg_lo :
-          (P (n + 1)).natDegree ≤
-            (A n * P (n + 1) + (C (c n) * X) * P n).natDegree := by
-        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
-      have hdeg_hi :
-          (A n * P (n + 1) + (C (c n) * X) * P n).natDegree ≤
-            (P (n + 1)).natDegree + 1 := by
-        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hstep :
           Prec (P (n + 1)) (A n * P (n + 1) + (C (c n) * X) * P n) :=
-        prec_lw_positive_t_lag_of_nonneg_coeffs
-          hInter (hpos n) (hnonneg (n + 1)) (hc n)
-          hF_pos hdeg_lo hdeg_hi (hno n)
+        prec_lw_positive_t_lag_of_nonneg_coeffs_of_recurrence
+          hInter (hpos n) (hnonneg (n + 1)) (hc n) (hrec n)
+          (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n)
       simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary of the sequence-level positive `t`-lag
@@ -1338,24 +1360,14 @@ theorem prec_lw_inner_window_lag_sequence_of_nonneg_coeffs {P : Nat → ℝ[X]}
       have hInter : Interlaces (P n) (P (n + 1)) :=
         ih.toInterlaces (hdeg_succ n)
       have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
-      have hF_pos :
-          HasPosLeadingCoeff (A n * P (n + 1) + B n * P n) := by
-        rr_recurrence_simpa using recurrence := hrec n, certificate := hpos (n + 2)
-      have hdeg_lo :
-          (P (n + 1)).natDegree ≤ (A n * P (n + 1) + B n * P n).natDegree := by
-        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
-      have hdeg_hi :
-          (A n * P (n + 1) + B n * P n).natDegree ≤
-            (P (n + 1)).natDegree + 1 := by
-        rr_recurrence_degree using recurrence := hrec n, degree := hdeg_succ (n + 1)
       have hB_step : ∀ r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0 := by
         intro r hr
         exact hB_nonpos n r hr (hroot_lower n r hr)
           (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
       have hstep :
           Prec (P (n + 1)) (A n * P (n + 1) + B n * P n) :=
-        prec_lw_two_of_nonpos hInter (hpos n) hF_pos hdeg_lo hdeg_hi
-          (hno n) hB_step
+        prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
+          (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_step
       simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary for the inner-window Liu--Wang induction. -/
@@ -2940,6 +2952,17 @@ syntax (name := rr_lw_negative_const_C_neg_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+syntax (name := rr_lw_nonpos_lag_step_named)
+  "rr_lw_nonpos_lag_step" " using "
+    "interlaces" ":=" term ","
+    "interlacer_pos_lc" ":=" term ","
+    "target_pos_lc" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "lag_nonpos" ":=" term :
+  tactic
+
 syntax (name := rr_lw_nonpos_lag_sequence_named)
   "rr_lw_nonpos_lag_sequence" " using "
     "base" ":=" term ","
@@ -3471,6 +3494,18 @@ syntax (name := rr_lw_positive_t_sequence_realrooted_auto_named)
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_positive_t_lag_step_named)
+  "rr_lw_positive_t_lag_step" " using "
+    "interlaces" ":=" term ","
+    "interlacer_pos_lc" ":=" term ","
+    "source_nonneg_coeffs" ":=" term ","
+    "coeff_nonneg" ":=" term ","
+    "target_pos_lc" ":=" term ","
     "recurrence" ":=" term ","
     "degree_succ" ":=" term ","
     "no_common_roots" ":=" term :
@@ -5281,6 +5316,18 @@ macro_rules
             (rr_lw_simpa $hdeg_hi)
             $hno))
   | `(tactic|
+      rr_lw_nonpos_lag_step using
+        interlaces := $hInter:term,
+        interlacer_pos_lc := $hg_pos:term,
+        target_pos_lc := $hF_pos:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        lag_nonpos := $hB:term) =>
+      `(tactic|
+        exact RealRooted.prec_lw_two_of_nonpos_of_recurrence
+          $hInter $hg_pos $hrec $hF_pos $hdeg_succ $hno $hB)
+  | `(tactic|
       rr_lw_nonpos_lag_sequence using
         base := $hbase:term,
         pos_lc := $hpos:term,
@@ -5880,6 +5927,19 @@ macro_rules
             $hbase $hpos rr_lw_negative_quadratic_side rr_lw_negative_quadratic_side
             rr_lw_negative_quadratic_side $hden $ha_coeff $hb_coeff $hc_coeff $hraw
             $hdeg_succ $hno))
+  | `(tactic|
+      rr_lw_positive_t_lag_step using
+        interlaces := $hInter:term,
+        interlacer_pos_lc := $hg_pos:term,
+        source_nonneg_coeffs := $hf_nonneg:term,
+        coeff_nonneg := $hc:term,
+        target_pos_lc := $hF_pos:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.prec_lw_positive_t_lag_of_nonneg_coeffs_of_recurrence
+          $hInter $hg_pos $hf_nonneg $hc $hrec $hF_pos $hdeg_succ $hno)
   | `(tactic|
       rr_lw_positive_t_sequence using
         base := $hbase:term,

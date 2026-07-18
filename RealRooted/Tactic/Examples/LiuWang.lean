@@ -22,6 +22,44 @@ example {n : Nat} : 0 ≤ (n : ℝ) + 1 := by
 example {n : Nat} (hn : 1 ≤ n) : 0 ≤ (n : ℝ) - 1 := by
   rr_lw_coeff_nonneg
 
+example {f g F a b : ℝ[X]}
+    (hgf : Interlaces g f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hrec : F = a * f + b * g)
+    (hF_pos : HasPosLeadingCoeff F)
+    (hdeg : f.natDegree + 1 = F.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0) :
+    Prec f (a * f + b * g) := by
+  rr_lw_nonpos_lag_step using
+    interlaces := hgf,
+    interlacer_pos_lc := hg_pos,
+    target_pos_lc := hF_pos,
+    recurrence := hrec,
+    degree_succ := hdeg,
+    no_common_roots := hno,
+    lag_nonpos := hb_nonpos
+
+example {f g F a : ℝ[X]} {c : ℝ}
+    (hgf : Interlaces g f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hf_nonneg : HasNonnegCoeffs f)
+    (hc : 0 ≤ c)
+    (hrec : F = a * f + (C c * X) * g)
+    (hF_pos : HasPosLeadingCoeff F)
+    (hdeg : f.natDegree + 1 = F.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
+    Prec f (a * f + (C c * X) * g) := by
+  rr_lw_positive_t_lag_step using
+    interlaces := hgf,
+    interlacer_pos_lc := hg_pos,
+    source_nonneg_coeffs := hf_nonneg,
+    coeff_nonneg := hc,
+    target_pos_lc := hF_pos,
+    recurrence := hrec,
+    degree_succ := hdeg,
+    no_common_roots := hno
+
 example {f g a b : ℝ[X]} {l : List (ℝ[X] × ℝ[X])}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
