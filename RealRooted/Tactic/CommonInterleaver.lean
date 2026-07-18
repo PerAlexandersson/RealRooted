@@ -258,6 +258,73 @@ syntax (name := rr_succDegree_pair_common_interleaver_endpointSignLowerCountEq_n
     "count_eq" ":=" term :
   tactic
 
+syntax (name := rr_succDegree_rootCountLeadRightZero_divXPrec_of_prec_named)
+  "rr_succDegree_rootCountLeadRightZero_divXPrec_of_prec" " using "
+    "orientation" ":=" term :
+  tactic
+
+syntax (name := rr_succDegree_rootCountLeadRightZero_of_divXPrec_named)
+  "rr_succDegree_rootCountLeadRightZero_of_divXPrec" " using "
+    "divX_prec" ":=" term :
+  tactic
+
+syntax (name := rr_succDegree_rootCountLead_of_bothNonzero_and_rightZero_named)
+  "rr_succDegree_rootCountLead_of_bothNonzero_and_rightZero" " using "
+    "both_nonzero" ":=" term ","
+    "right_zero" ":=" term :
+  tactic
+
+syntax (name := rr_succDegree_rootCountLead_of_bothNonzero_and_divXPrec_named)
+  "rr_succDegree_rootCountLead_of_bothNonzero_and_divXPrec" " using "
+    "both_nonzero" ":=" term ","
+    "divX_prec" ":=" term :
+  tactic
+
+syntax (name := rr_succDegree_rootCountResidual_of_prec_named)
+  "rr_succDegree_rootCountResidual_of_prec" " using "
+    "orientation" ":=" term :
+  tactic
+
+syntax (name := rr_succDegree_rootCount_of_residual_and_lead_named)
+  "rr_succDegree_rootCount_of_residual_and_lead" " using "
+    "lead" ":=" term ","
+    "residual" ":=" term :
+  tactic
+
+syntax (name := rr_succDegree_rootCountAbove_of_residual_and_lead_named)
+  "rr_succDegree_rootCountAbove_of_residual_and_lead" " using "
+    "lead" ":=" term ","
+    "residual" ":=" term :
+  tactic
+
+syntax (name := rr_succDegree_rootCrossing_of_residual_and_lead_named)
+  "rr_succDegree_rootCrossing_of_residual_and_lead" " using "
+    "lead" ":=" term ","
+    "residual" ":=" term :
+  tactic
+
+syntax (name := rr_succDegree_pair_common_interleaver_residual_and_lead_named)
+  "rr_succDegree_pair_common_interleaver_residual_and_lead" " using "
+    "lead" ":=" term ","
+    "residual" ":=" term :
+  tactic
+
+syntax
+  (name := rr_succDegree_pair_common_interleaver_residual_bothNonzero_divXPrec_named)
+  "rr_succDegree_pair_common_interleaver_residual_bothNonzero_divXPrec" " using "
+    "both_nonzero" ":=" term ","
+    "divX_prec" ":=" term ","
+    "residual" ":=" term :
+  tactic
+
+syntax
+  (name := rr_succDegree_pair_common_interleaver_residualPrec_bothNonzero_divXPrec_named)
+  "rr_succDegree_pair_common_interleaver_residualPrec_bothNonzero_divXPrec" " using "
+    "residual_prec" ":=" term ","
+    "both_nonzero" ":=" term ","
+    "divX_prec" ":=" term :
+  tactic
+
 syntax (name := rr_compatible_pair_common_interleaver_degree_split_nonnegShift_named)
   "rr_compatible_pair_common_interleaver_degree_split_nonnegShift" " using "
     "same_degree" ":=" term ","
@@ -656,6 +723,84 @@ macro_rules
       `(tactic|
         exact RealRooted.succDegreePairHasCommonInterleaver_nonneg_of_lowerCountEq
           $hcount)
+  | `(tactic|
+      rr_succDegree_rootCountLeadRightZero_divXPrec_of_prec using
+        orientation := $horient:term) =>
+      `(tactic|
+        exact RealRooted.posComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrec_of_precFG
+          $horient)
+  | `(tactic|
+      rr_succDegree_rootCountLeadRightZero_of_divXPrec using
+        divX_prec := $hdivX:term) =>
+      `(tactic|
+        exact RealRooted.posComboNoCommonSuccDegreeRootCountLeadRightZero_of_divX_prec
+          $hdivX)
+  | `(tactic|
+      rr_succDegree_rootCountLead_of_bothNonzero_and_rightZero using
+        both_nonzero := $hboth:term,
+        right_zero := $hright:term) =>
+      `(tactic|
+        exact RealRooted.posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_rightZero
+          $hboth $hright)
+  | `(tactic|
+      rr_succDegree_rootCountLead_of_bothNonzero_and_divXPrec using
+        both_nonzero := $hboth:term,
+        divX_prec := $hdivX:term) =>
+      `(tactic|
+        exact RealRooted.posComboNoCommonSuccDegreeRootCountLead_of_bothNonzero_and_divX_prec
+          $hboth $hdivX)
+  | `(tactic|
+      rr_succDegree_rootCountResidual_of_prec using
+        orientation := $horient:term) =>
+      `(tactic|
+        exact RealRooted.posComboNoCommonSuccDegreeRootCountResidual_of_prec
+          $horient)
+  | `(tactic|
+      rr_succDegree_rootCount_of_residual_and_lead using
+        lead := $hlead:term,
+        residual := $hres:term) =>
+      `(tactic|
+        exact RealRooted.posComboNoCommonSuccDegreeRootCount_of_residual_and_lead
+          $hlead $hres)
+  | `(tactic|
+      rr_succDegree_rootCountAbove_of_residual_and_lead using
+        lead := $hlead:term,
+        residual := $hres:term) =>
+      `(tactic|
+        exact RealRooted.posComboNoCommonSuccDegreeRootCountAbove_of_residual_and_lead
+          $hlead $hres)
+  | `(tactic|
+      rr_succDegree_rootCrossing_of_residual_and_lead using
+        lead := $hlead:term,
+        residual := $hres:term) =>
+      `(tactic|
+        exact RealRooted.posComboNoCommonSuccDegreeRootCrossing_of_residual_and_lead
+          $hlead $hres)
+  | `(tactic|
+      rr_succDegree_pair_common_interleaver_residual_and_lead using
+        lead := $hlead:term,
+        residual := $hres:term) =>
+      `(tactic|
+        exact RealRooted.succDegreePairHasCommonInterleaver_nonneg_of_residual_and_lead
+          $hlead $hres)
+  | `(tactic|
+      rr_succDegree_pair_common_interleaver_residual_bothNonzero_divXPrec using
+        both_nonzero := $hboth:term,
+        divX_prec := $hdivX:term,
+        residual := $hres:term) =>
+      `(tactic|
+        exact
+          RealRooted.succDegreePairHasCommonInterleaver_nonneg_of_residual_bothNonzero_divX_prec
+            $hboth $hdivX $hres)
+  | `(tactic|
+      rr_succDegree_pair_common_interleaver_residualPrec_bothNonzero_divXPrec using
+        residual_prec := $hres:term,
+        both_nonzero := $hboth:term,
+        divX_prec := $hdivX:term) =>
+      `(tactic|
+        exact
+          RealRooted.succDegreePairHasCommonInterleaver_nonneg_of_residualPrec_bothNonzero_divX_prec
+            $hres $hboth $hdivX)
   | `(tactic|
       rr_compatible_pair_common_interleaver_degree_split_nonnegShift using
         same_degree := $hsame:term,

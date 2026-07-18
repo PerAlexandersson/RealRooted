@@ -315,6 +315,104 @@ example
     count_eq := hcount
 
 example
+    (horient :
+      ∀ ⦃f g : ℝ[X]⦄,
+        HasPosLeadingCoeff f →
+        HasPosLeadingCoeff g →
+        HasNonnegCoeffs f →
+        HasNonnegCoeffs g →
+        PosComboRealRooted f g →
+        g.natDegree = f.natDegree + 1 →
+        (∀ r, f.IsRoot r → ¬ g.IsRoot r) →
+        f.Splits →
+        f.coeff 0 ≠ 0 →
+        g.coeff 0 = 0 →
+        Prec f g) :
+    PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement := by
+  rr_succDegree_rootCountLeadRightZero_divXPrec_of_prec using
+    orientation := horient
+
+example
+    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement) :
+    PosComboNoCommonSuccDegreeRootCountLeadRightZeroNonnegStatement := by
+  rr_succDegree_rootCountLeadRightZero_of_divXPrec using
+    divX_prec := hdivX
+
+example
+    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
+    (hright : PosComboNoCommonSuccDegreeRootCountLeadRightZeroNonnegStatement) :
+    PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement := by
+  rr_succDegree_rootCountLead_of_bothNonzero_and_rightZero using
+    both_nonzero := hboth,
+    right_zero := hright
+
+example
+    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
+    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement) :
+    PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement := by
+  rr_succDegree_rootCountLead_of_bothNonzero_and_divXPrec using
+    both_nonzero := hboth,
+    divX_prec := hdivX
+
+example
+    (horient : PosComboNoCommonSuccDegreeRootCountResidualPrecStatement) :
+    PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement := by
+  rr_succDegree_rootCountResidual_of_prec using
+    orientation := horient
+
+example
+    (hlead : PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement)
+    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
+    PosComboNoCommonSuccDegreeRootCountNonnegStatement := by
+  rr_succDegree_rootCount_of_residual_and_lead using
+    lead := hlead,
+    residual := hres
+
+example
+    (hlead : PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement)
+    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
+    PosComboNoCommonSuccDegreeRootCountAboveNonnegStatement := by
+  rr_succDegree_rootCountAbove_of_residual_and_lead using
+    lead := hlead,
+    residual := hres
+
+example
+    (hlead : PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement)
+    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
+    PosComboNoCommonSuccDegreeRootCrossingNonnegStatement := by
+  rr_succDegree_rootCrossing_of_residual_and_lead using
+    lead := hlead,
+    residual := hres
+
+example
+    (hlead : PosComboNoCommonSuccDegreeRootCountLeadNonnegStatement)
+    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+  rr_succDegree_pair_common_interleaver_residual_and_lead using
+    lead := hlead,
+    residual := hres
+
+example
+    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
+    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement)
+    (hres : PosComboNoCommonSuccDegreeRootCountResidualNonnegStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+  rr_succDegree_pair_common_interleaver_residual_bothNonzero_divXPrec using
+    both_nonzero := hboth,
+    divX_prec := hdivX,
+    residual := hres
+
+example
+    (hres : PosComboNoCommonSuccDegreeRootCountResidualPrecStatement)
+    (hboth : PosComboNoCommonSuccDegreeRootCountLeadBothNonzeroNonnegStatement)
+    (hdivX : PosComboNoCommonSuccDegreeRootCountLeadRightZeroDivXPrecStatement) :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+  rr_succDegree_pair_common_interleaver_residualPrec_bothNonzero_divXPrec using
+    residual_prec := hres,
+    both_nonzero := hboth,
+    divX_prec := hdivX
+
+example
     (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
     CompatiblePairHasCommonInterleaverStatement := by
