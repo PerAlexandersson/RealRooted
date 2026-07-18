@@ -73,6 +73,8 @@ rr_product_factor_sequence using ... certificate := xAddCPow
 rr_product_factor_sequence using ... certificate := cAddXPow
 rr_product_factor_sequence using ... certificate := scalar
 rr_product_factor_sequence using ... certificate := scalarAuto
+rr_product_formula_sequence using ... certificate := finiteLinearProduct
+rr_product_formula_sequence using ... certificate := scalarFiniteLinearProduct
 rr_product_lift_sequence using ... certificate := suppliedFactor
 rr_product_lift_sequence using ... certificate := rootZero
 rr_product_lift_sequence using ... certificate := rootZeroPow
@@ -606,6 +608,19 @@ syntax (name := rr_product_factor_sequence_scalar_auto)
     "certificate" ":=" "scalarAuto" :
   tactic
 
+syntax (name := rr_product_formula_sequence_finite_linear_product)
+  "rr_product_formula_sequence" " using "
+    "formula" ":=" term ","
+    "certificate" ":=" "finiteLinearProduct" :
+  tactic
+
+syntax (name := rr_product_formula_sequence_scalar_finite_linear_product)
+  "rr_product_formula_sequence" " using "
+    "scalar_ne_zero" ":=" term ","
+    "root_grid" ":=" term ","
+    "certificate" ":=" "scalarFiniteLinearProduct" :
+  tactic
+
 syntax (name := rr_product_lift_sequence_supplied_factor)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -789,6 +804,21 @@ macro_rules
         rr_product_scalar_sequence_auto using
           base := $hbase,
           recurrence := $hrec)
+  | `(tactic|
+      rr_product_formula_sequence using
+        formula := $hroot:term,
+        certificate := finiteLinearProduct) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.finiteLinearProductSequence_realRooted $hroot))
+  | `(tactic|
+      rr_product_formula_sequence using
+        scalar_ne_zero := $hc:term,
+        root_grid := $hroot:term,
+        certificate := scalarFiniteLinearProduct) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.finiteLinearProductScalarSequence_realRooted $hc $hroot))
   | `(tactic|
       rr_product_lift_sequence using
         quotient_realrooted := $hquot:term,

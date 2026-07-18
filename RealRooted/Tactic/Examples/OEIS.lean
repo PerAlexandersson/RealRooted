@@ -9,6 +9,7 @@ names a concrete certificate branch.
 -/
 
 open Polynomial
+open scoped BigOperators
 
 namespace RealRooted
 namespace Tactic
@@ -666,6 +667,28 @@ example {P : Nat → ℝ[X]}
     base := hbase,
     recurrence := hrec,
     certificate := scalarAuto
+
+/-- Product-formula router, finite product of linear factors. -/
+example {P : Nat → ℝ[X]} {roots : Nat → Nat → ℝ}
+    (hroot : ∀ n : Nat,
+      P n = ∏ j ∈ Finset.range n, (X - C (roots n j))) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_formula_sequence using
+    formula := hroot,
+    certificate := finiteLinearProduct
+
+/-- Product-formula router, scalar finite product of linear factors. -/
+example {P : Nat → ℝ[X]} {c : Nat → ℝ} {rootCount : Nat → Nat}
+    {roots : Nat → Nat → ℝ}
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hroot : ∀ n : Nat,
+      P n = C (c n) *
+        ∏ j ∈ Finset.range (rootCount n), (X - C (roots n j))) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_formula_sequence using
+    scalar_ne_zero := hc,
+    root_grid := hroot,
+    certificate := scalarFiniteLinearProduct
 
 /-- Product-lift router with a supplied factor certificate. -/
 example {P Q F : Nat → ℝ[X]}
