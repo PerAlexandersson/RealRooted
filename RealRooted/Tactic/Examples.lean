@@ -11,6 +11,7 @@ import RealRooted.Tactic.Examples.Derivative
 import RealRooted.Tactic.Examples.EulerOperator
 import RealRooted.Tactic.Examples.WagnerX
 import RealRooted.Tactic.Examples.Favard
+import RealRooted.Tactic.Examples.GammaRealRoots
 import RealRooted.Tactic.Examples.MaWang
 import RealRooted.Tactic.Examples.Linear
 import RealRooted.Tactic.Examples.LinearPowerFamily

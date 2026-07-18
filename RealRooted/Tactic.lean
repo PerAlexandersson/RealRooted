@@ -16,6 +16,7 @@ import RealRooted.Tactic.LiuWangRecursion
 import RealRooted.Tactic.SecondDerivative
 import RealRooted.Tactic.Favard
 import RealRooted.Tactic.LiuWang
+import RealRooted.Tactic.GammaRealRoots
 import RealRooted.Tactic.Product
 import RealRooted.Tactic.OperatorPreservesInterlacing
 import RealRooted.Tactic.PFPolynomial

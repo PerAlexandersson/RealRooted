@@ -130,6 +130,7 @@ import RealRooted.Tactic.Examples.EulerOperator
 import RealRooted.Tactic.Examples.Favard
 import RealRooted.Tactic.Examples.FiniteSymbolPFFrontend
 import RealRooted.Tactic.Examples.Finish
+import RealRooted.Tactic.Examples.GammaRealRoots
 import RealRooted.Tactic.Examples.I2DerivativeLag
 import RealRooted.Tactic.Examples.IteratedDerivativeShift
 import RealRooted.Tactic.Examples.J1Gap3Reciprocal
@@ -160,6 +161,7 @@ import RealRooted.Tactic.Favard
 import RealRooted.Tactic.FiniteSymbolPF
 import RealRooted.Tactic.FiniteSymbolPFFrontend
 import RealRooted.Tactic.Finish
+import RealRooted.Tactic.GammaRealRoots
 import RealRooted.Tactic.I2DerivativeLag
 import RealRooted.Tactic.IteratedDerivativeShift
 import RealRooted.Tactic.J1Chebyshev
