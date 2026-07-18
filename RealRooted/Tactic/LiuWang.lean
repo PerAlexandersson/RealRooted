@@ -2533,6 +2533,12 @@ macro_rules
   | `(tactic| rr_lw_coeff_nonneg) =>
       `(tactic| rr_side_nonneg)
 
+syntax (name := rr_lw_coeff_nonneg_term) "rr_lw_coeff_nonneg_term" : term
+
+macro_rules
+  | `(rr_lw_coeff_nonneg_term) =>
+      `(by rr_lw_coeff_nonneg)
+
 macro "rr_lw_active_nonneg_at " n:term : tactic =>
   `(tactic| rr_scalar_active_nonneg_at $n)
 
@@ -4827,7 +4833,7 @@ macro_rules
           interlacer := $hgf,
           interlacer_pos_lc := $hg_pos,
           roots_nonpos := $hf_roots,
-          coeff_nonneg := by rr_lw_coeff_nonneg,
+          coeff_nonneg := rr_lw_coeff_nonneg_term,
           target_pos_lc := $hF_pos,
           degree_lower := $hdeg_lo,
           degree_upper := $hdeg_hi,
@@ -4923,7 +4929,7 @@ macro_rules
           interlacer := $hgf,
           interlacer_pos_lc := $hg_pos,
           nonneg_coeffs := $hf_nonneg,
-          coeff_nonneg := by rr_lw_coeff_nonneg,
+          coeff_nonneg := rr_lw_coeff_nonneg_term,
           target_pos_lc := $hF_pos,
           degree_lower := $hdeg_lo,
           degree_upper := $hdeg_hi,
@@ -5023,10 +5029,10 @@ macro_rules
       `(tactic|
         rr_lw_exact_or_simpa_mul_assoc
           (RealRooted.prec_lw_positive_C_mul_X_mul_lag_of_nonneg_coeffs
-            $hgf $hg_pos $hf_nonneg (by rr_lw_coeff_nonneg) $hQ
+            $hgf $hg_pos $hf_nonneg rr_lw_coeff_nonneg_term $hQ
             $hF_pos $hdeg_lo $hdeg_hi $hno),
           (RealRooted.prec_lw_positive_C_mul_X_mul_lag_of_nonneg_coeffs
-            $hgf $hg_pos $hf_nonneg (by rr_lw_coeff_nonneg) $hQ
+            $hgf $hg_pos $hf_nonneg rr_lw_coeff_nonneg_term $hQ
             (rr_lw_simpa_mul_assoc $hF_pos)
             (rr_lw_simpa_mul_assoc $hdeg_lo)
             (rr_lw_simpa_mul_assoc $hdeg_hi)
@@ -5061,9 +5067,9 @@ macro_rules
       `(tactic|
         rr_lw_exact_or_simpa
           (RealRooted.prec_lw_negative_square_lag
-            $hgf $hg_pos (by rr_lw_coeff_nonneg) $hF_pos $hdeg_lo $hdeg_hi $hno),
+            $hgf $hg_pos rr_lw_coeff_nonneg_term $hF_pos $hdeg_lo $hdeg_hi $hno),
           (RealRooted.prec_lw_negative_square_lag
-            $hgf $hg_pos (by rr_lw_coeff_nonneg)
+            $hgf $hg_pos rr_lw_coeff_nonneg_term
             (rr_lw_simpa $hF_pos)
             (rr_lw_simpa $hdeg_lo)
             (rr_lw_simpa $hdeg_hi)
@@ -5098,9 +5104,9 @@ macro_rules
       `(tactic|
         rr_lw_exact_or_simpa
           (RealRooted.prec_lw_negative_monic_quadratic_lag
-            $hgf $hg_pos (by rr_lw_coeff_nonneg) $hF_pos $hdeg_lo $hdeg_hi $hno),
+            $hgf $hg_pos rr_lw_coeff_nonneg_term $hF_pos $hdeg_lo $hdeg_hi $hno),
           (RealRooted.prec_lw_negative_monic_quadratic_lag
-            $hgf $hg_pos (by rr_lw_coeff_nonneg)
+            $hgf $hg_pos rr_lw_coeff_nonneg_term
             (rr_lw_simpa $hF_pos)
             (rr_lw_simpa $hdeg_lo)
             (rr_lw_simpa $hdeg_hi)
@@ -5138,11 +5144,11 @@ macro_rules
         rr_lw_exact_or_simpa
           (RealRooted.prec_lw_negative_quadratic_lag
             $hgf $hg_pos
-            (by rr_lw_coeff_nonneg) (by rr_lw_coeff_nonneg) (by rr_lw_coeff_nonneg)
+            rr_lw_coeff_nonneg_term rr_lw_coeff_nonneg_term rr_lw_coeff_nonneg_term
             $hF_pos $hdeg_lo $hdeg_hi $hno),
           (RealRooted.prec_lw_negative_quadratic_lag
             $hgf $hg_pos
-            (by rr_lw_coeff_nonneg) (by rr_lw_coeff_nonneg) (by rr_lw_coeff_nonneg)
+            rr_lw_coeff_nonneg_term rr_lw_coeff_nonneg_term rr_lw_coeff_nonneg_term
             (rr_lw_simpa $hF_pos)
             (rr_lw_simpa $hdeg_lo)
             (rr_lw_simpa $hdeg_hi)
@@ -5177,9 +5183,9 @@ macro_rules
       `(tactic|
         rr_lw_exact_or_simpa
           (RealRooted.prec_lw_negative_const_lag
-            $hgf $hg_pos (by rr_lw_coeff_nonneg) $hF_pos $hdeg_lo $hdeg_hi $hno),
+            $hgf $hg_pos rr_lw_coeff_nonneg_term $hF_pos $hdeg_lo $hdeg_hi $hno),
           (RealRooted.prec_lw_negative_const_lag
-            $hgf $hg_pos (by rr_lw_coeff_nonneg)
+            $hgf $hg_pos rr_lw_coeff_nonneg_term
             (rr_lw_simpa $hF_pos)
             (rr_lw_simpa $hdeg_lo)
             (rr_lw_simpa $hdeg_hi)
@@ -5214,9 +5220,9 @@ macro_rules
       `(tactic|
         rr_lw_exact_or_simpa
           (RealRooted.prec_lw_negative_const_lag_C_neg
-            $hgf $hg_pos (by rr_lw_coeff_nonneg) $hF_pos $hdeg_lo $hdeg_hi $hno),
+            $hgf $hg_pos rr_lw_coeff_nonneg_term $hF_pos $hdeg_lo $hdeg_hi $hno),
           (RealRooted.prec_lw_negative_const_lag_C_neg
-            $hgf $hg_pos (by rr_lw_coeff_nonneg)
+            $hgf $hg_pos rr_lw_coeff_nonneg_term
             (rr_lw_simpa $hF_pos)
             (rr_lw_simpa $hdeg_lo)
             (rr_lw_simpa $hdeg_hi)
