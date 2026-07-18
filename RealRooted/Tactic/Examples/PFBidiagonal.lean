@@ -703,29 +703,25 @@ private theorem a036969ResidualBeta_coeff_zero :
     a036969ResidualBeta.coeff 0 = 0 := by
   rw [a036969ResidualBeta]
   ring_nf
-  repeat rw [Polynomial.coeff_add]
-  simp [Polynomial.coeff_X_pow, Polynomial.coeff_X]
+  rr_coeff
 
 private theorem a036969ResidualBeta_coeff_one :
     a036969ResidualBeta.coeff 1 = 1 := by
   rw [a036969ResidualBeta]
   ring_nf
-  repeat rw [Polynomial.coeff_add]
-  simp [Polynomial.coeff_X_pow, Polynomial.coeff_X]
+  rr_coeff
 
 private theorem a036969ResidualBeta_coeff_two :
     a036969ResidualBeta.coeff 2 = 2 := by
   rw [a036969ResidualBeta]
   ring_nf
-  repeat rw [Polynomial.coeff_add]
-  simp [Polynomial.coeff_X_pow, Polynomial.coeff_X]
+  rr_coeff
 
 private theorem a036969ResidualBeta_coeff_three :
     a036969ResidualBeta.coeff 3 = 1 := by
   rw [a036969ResidualBeta]
   ring_nf
-  repeat rw [Polynomial.coeff_add]
-  simp [Polynomial.coeff_X_pow, Polynomial.coeff_X]
+  rr_coeff
 
 private theorem a036969ResidualAlpha_coeff_three (d : ℕ) :
     (a036969ResidualAlpha d).coeff 3 = 0 := by
