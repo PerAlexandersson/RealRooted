@@ -368,6 +368,13 @@ example {P : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
     (hstep : ∀ n : Nat,
       Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2))) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_finish using hbase, hstep
+
+example {P : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hstep : ∀ n : Nat,
+      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2))) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_prec_sequence_realrooted using
     base := hbase,
@@ -378,9 +385,7 @@ example {P : Nat → ℝ[X]}
     (hstep : ∀ n : Nat,
       Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2))) :
     ∀ n : Nat, P n ≠ 0 := by
-  rr_prec_sequence_realrooted using
-    base := hbase,
-    step := hstep
+  rr_finish using hbase, hstep
 
 example {P : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
@@ -416,6 +421,18 @@ example {P : Nat → ℝ[X]}
       Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2)))
     (hsucc : ∀ n : Nat, (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1 →
       Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2))) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_finish using hbase, hdegree, hsame, hsucc
+
+example {P : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hdegree : ∀ n : Nat,
+      (P (n + 2)).natDegree = (P (n + 1)).natDegree ∨
+        (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1)
+    (hsame : ∀ n : Nat, (P (n + 2)).natDegree = (P (n + 1)).natDegree →
+      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2)))
+    (hsucc : ∀ n : Nat, (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1 →
+      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2))) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_prec_sequence_branches_realrooted using
     base := hbase,
@@ -433,11 +450,7 @@ example {P : Nat → ℝ[X]}
     (hsucc : ∀ n : Nat, (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1 →
       Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2))) :
     ∀ n : Nat, (P n).Splits := by
-  rr_prec_sequence_branches_realrooted using
-    base := hbase,
-    degree_branch := hdegree,
-    same := hsame,
-    successor := hsucc
+  rr_finish using hbase, hdegree, hsame, hsucc
 
 example {p q : ℝ[X]} {rest : List ℝ[X]}
     (hpq : Prec q p) (htail : IsGeneralizedSturmSeq (q :: rest)) :
