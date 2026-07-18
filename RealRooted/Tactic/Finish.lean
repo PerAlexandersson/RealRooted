@@ -393,6 +393,16 @@ syntax (name := rr_first_exact_then_realrooted_sequence_or_projection)
 
 syntax (name := rr_nonzero) "rr_nonzero" " using " term : tactic
 syntax (name := rr_splits) "rr_splits" " using " term : tactic
+syntax (name := rr_splits_mul)
+  "rr_splits_mul" " using "
+    "left" ":=" term ","
+    "right" ":=" term :
+  tactic
+syntax (name := rr_splits_pow)
+  "rr_splits_pow" " using "
+    "splits" ":=" term ","
+    "exponent" ":=" term :
+  tactic
 syntax (name := rr_realrooted) "rr_realrooted" " using " term : tactic
 syntax (name := rr_nonzero_auto) "rr_nonzero" : tactic
 syntax (name := rr_splits_auto) "rr_splits" : tactic
@@ -673,13 +683,36 @@ macro_rules
           RealRooted.left_splits_of_interlaces $h,
           RealRooted.splits_of_isRealRooted $h,
           RealRooted.left_splits_of_isRealRooted_pair $h,
-          RealRooted.right_splits_of_isRealRooted_pair $h)
+          RealRooted.right_splits_of_isRealRooted_pair $h,
+          Polynomial.Splits.pow $h _)
+  | `(tactic|
+      rr_splits_mul using
+        left := $hleft:term,
+        right := $hright:term) =>
+      `(tactic|
+        rr_first_exact
+          Polynomial.Splits.mul $hleft $hright,
+          (by
+            simpa [mul_comm] using Polynomial.Splits.mul $hright $hleft))
+  | `(tactic|
+      rr_splits_pow using
+        splits := $h:term,
+        exponent := $n:term) =>
+      `(tactic|
+        exact Polynomial.Splits.pow $h $n)
   | `(tactic| rr_splits) =>
       `(tactic|
         first
           | rr_lookup
           | rr_splits using rr_lookup_term
           | assumption
+          | exact Polynomial.Splits.C _
+          | exact Polynomial.Splits.X
+          | exact Polynomial.Splits.X_add_C _
+          | exact Polynomial.Splits.X_sub_C _
+          | exact Polynomial.Splits.X_pow _
+          | exact Polynomial.Splits.C_mul_X_pow _ _
+          | simp [add_comm]
           | (apply Polynomial.Splits.of_natDegree_le_one <;> rr_degree_le_one)
           | simp_all [RealRooted.Prec, RealRooted.Interlaces])
   | `(tactic| rr_realrooted using $h:term) =>

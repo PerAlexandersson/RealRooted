@@ -23,6 +23,47 @@ example {f : ℝ[X]} (hdeg : f.natDegree = 1) : f ≠ 0 := by
 example {f : ℝ[X]} (hf : f.Splits) : f.Splits := by
   rr_splits using hf
 
+example {a : ℝ} : (C a : ℝ[X]).Splits := by
+  rr_splits
+
+example : (X : ℝ[X]).Splits := by
+  rr_splits
+
+example {a : ℝ} : (X + C a : ℝ[X]).Splits := by
+  rr_splits
+
+example {a : ℝ} : (C a + X : ℝ[X]).Splits := by
+  rr_splits
+
+example {a : ℝ} : (X - C a : ℝ[X]).Splits := by
+  rr_splits
+
+example {n : Nat} : ((X : ℝ[X]) ^ n).Splits := by
+  rr_splits
+
+example {a : ℝ} {n : Nat} : (C a * X ^ n : ℝ[X]).Splits := by
+  rr_splits
+
+example {f : ℝ[X]} {n : Nat} (hf : f.Splits) : (f ^ n).Splits := by
+  rr_splits using hf
+
+example {f : ℝ[X]} {n : Nat} (hf : f.Splits) : (f ^ n).Splits := by
+  rr_splits_pow using
+    splits := hf,
+    exponent := n
+
+example {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits) :
+    (f * g).Splits := by
+  rr_splits_mul using
+    left := hf,
+    right := hg
+
+example {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits) :
+    (g * f).Splits := by
+  rr_splits_mul using
+    left := hf,
+    right := hg
+
 example {f : ℝ[X]} (hdeg : f.natDegree ≤ 1) : f.Splits := by
   rr_splits
 
