@@ -8,6 +8,40 @@ namespace RealRooted
 
 open Polynomial
 
+/-- Checked positive-leading two-polynomial Chudnovsky--Seymour common-right
+bridge assembled from the same-degree and successor-degree analytic endpoints.
+-/
+theorem chudnovskySeymour_compatiblePairHasCommonInterleaver :
+    CompatiblePairHasCommonInterleaverStatement :=
+  compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
+    posComboNoCommonSameDegreePairHasCommonInterleaverNonneg_from_analytic
+    succDegreePairHasCommonInterleaver_nonneg_of_local_lower_counts
+
+/-- Checked positive-leading two-polynomial Chudnovsky--Seymour common-left
+bridge, derived from the common-right bridge by the existing left/right
+conversion.
+-/
+theorem chudnovskySeymour_compatiblePairHasCommonLeftInterleaver :
+    CompatiblePairHasCommonLeftInterleaverPosStatement :=
+  compatiblePairHasCommonLeftInterleaverPos_of_pairBridge
+    chudnovskySeymour_compatiblePairHasCommonInterleaver
+
+/-- Pair-level common-right interleaver form of the checked
+Chudnovsky--Seymour bridge. -/
+theorem compatiblePairHasCommonInterleaver_chudnovskySeymour
+    {f g : ℝ[X]} (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
+    (h : Compatible f g) :
+    ∃ k : ℝ[X], Prec f k ∧ Prec g k :=
+  chudnovskySeymour_compatiblePairHasCommonInterleaver hf hg h
+
+/-- Pair-level common-left interleaver form of the checked
+Chudnovsky--Seymour bridge. -/
+theorem compatiblePairHasCommonLeftInterleaver_chudnovskySeymour
+    {f g : ℝ[X]} (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
+    (h : Compatible f g) :
+    ∃ k : ℝ[X], Prec k f ∧ Prec k g :=
+  chudnovskySeymour_compatiblePairHasCommonLeftInterleaver hf hg h
+
 /--
 Roadmap stub for the full Chudnovsky–Seymour compatibility direction.
 
@@ -53,9 +87,7 @@ the left-oriented pairwise/common-left-interleaver Chudnovsky--Seymour target.
 theorem chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver :
     chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_target :=
   chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_of_pairBridge
-    (compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
-      posComboNoCommonSameDegreePairHasCommonInterleaverNonneg_from_analytic
-      succDegreePairHasCommonInterleaver_nonneg_of_local_lower_counts)
+    chudnovskySeymour_compatiblePairHasCommonInterleaver
 
 /--
 Roadmap target for a direct pairwise-to-common interleaver equivalence.
@@ -160,7 +192,8 @@ theorem chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge
     chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_target :=
   fun hrr hpos =>
     pairwiseCompatible_iff_hasCommonInterleaver_of_pairBridgePos hrr hpos
-      (fun _ _ hf hg h => compatiblePairHasCommonInterleaver hf hg h)
+      (fun _ _ hf hg h =>
+        compatiblePairHasCommonInterleaver_chudnovskySeymour hf hg h)
 
 /-- The finite-family compatibility roadmap target is a formal consequence of
 the corresponding common-interleaver target. -/

@@ -555,6 +555,32 @@ example
     same_degree := hsame,
     succ_degree := hsucc
 
+example :
+    CompatiblePairHasCommonInterleaverStatement := by
+  rr_chudnovskySeymour_compatible_pair_common_interleaver_statement
+
+example :
+    CompatiblePairHasCommonLeftInterleaverPosStatement := by
+  rr_chudnovskySeymour_compatible_pair_common_left_interleaver_statement
+
+example {f g : ℝ[X]}
+    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
+    (hcomp : Compatible f g) :
+    ∃ k : ℝ[X], Prec f k ∧ Prec g k := by
+  rr_chudnovskySeymour_compatible_pair_common_interleaver using
+    left_pos_lc := hf,
+    right_pos_lc := hg,
+    compatible := hcomp
+
+example {f g : ℝ[X]}
+    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
+    (hcomp : Compatible f g) :
+    ∃ k : ℝ[X], Prec k f ∧ Prec k g := by
+  rr_chudnovskySeymour_compatible_pair_common_left_interleaver using
+    left_pos_lc := hf,
+    right_pos_lc := hg,
+    compatible := hcomp
+
 example {fs : List ℝ[X]}
     (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)

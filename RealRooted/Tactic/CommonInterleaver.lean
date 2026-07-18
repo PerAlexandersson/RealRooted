@@ -441,6 +441,30 @@ syntax (name := rr_compatible_pair_common_interleaver_rootCountAboveNonRoot_name
     "succ_degree" ":=" term :
   tactic
 
+syntax
+  (name := rr_chudnovskySeymour_compatible_pair_common_interleaver_statement_named)
+  "rr_chudnovskySeymour_compatible_pair_common_interleaver_statement" :
+  tactic
+
+syntax
+  (name := rr_chudnovskySeymour_compatible_pair_common_left_interleaver_statement_named)
+  "rr_chudnovskySeymour_compatible_pair_common_left_interleaver_statement" :
+  tactic
+
+syntax (name := rr_chudnovskySeymour_compatible_pair_common_interleaver_named)
+  "rr_chudnovskySeymour_compatible_pair_common_interleaver" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "compatible" ":=" term :
+  tactic
+
+syntax (name := rr_chudnovskySeymour_compatible_pair_common_left_interleaver_named)
+  "rr_chudnovskySeymour_compatible_pair_common_left_interleaver" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "compatible" ":=" term :
+  tactic
+
 syntax (name := rr_pairwise_common_interleaver_degree_split_nonnegShift_named)
   "rr_pairwise_common_interleaver_degree_split_nonnegShift" " using "
     "same_degree" ":=" term ","
@@ -1609,6 +1633,28 @@ macro_rules
       `(tactic|
         exact RealRooted.compatiblePairHasCommonInterleaver_of_rootCountAboveBothNonRoot
           $hsame $hsucc)
+  | `(tactic| rr_chudnovskySeymour_compatible_pair_common_interleaver_statement) =>
+      `(tactic|
+        exact RealRooted.chudnovskySeymour_compatiblePairHasCommonInterleaver)
+  | `(tactic| rr_chudnovskySeymour_compatible_pair_common_left_interleaver_statement) =>
+      `(tactic|
+        exact RealRooted.chudnovskySeymour_compatiblePairHasCommonLeftInterleaver)
+  | `(tactic|
+      rr_chudnovskySeymour_compatible_pair_common_interleaver using
+        left_pos_lc := $hf:term,
+        right_pos_lc := $hg:term,
+        compatible := $hcomp:term) =>
+      `(tactic|
+        exact RealRooted.compatiblePairHasCommonInterleaver_chudnovskySeymour
+          $hf $hg $hcomp)
+  | `(tactic|
+      rr_chudnovskySeymour_compatible_pair_common_left_interleaver using
+        left_pos_lc := $hf:term,
+        right_pos_lc := $hg:term,
+        compatible := $hcomp:term) =>
+      `(tactic|
+        exact RealRooted.compatiblePairHasCommonLeftInterleaver_chudnovskySeymour
+          $hf $hg $hcomp)
   | `(tactic|
       rr_pairwise_common_interleaver_degree_split_nonnegShift using
         same_degree := $hsame:term,
