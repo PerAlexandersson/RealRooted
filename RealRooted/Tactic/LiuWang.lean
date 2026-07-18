@@ -3904,7 +3904,8 @@ syntax (name := rr_lw_inner_window_lag_sequence_named)
     "degree_succ" ":=" term ","
     "no_common_roots" ":=" term ","
     "certificate" ":="
-      ("xOneAddX" <|> "xOneSubXOneAddX" <|> "xSubXPowThree") :
+      ("xOneAddX" <|> "xOneSubXOneAddX" <|> "xSubXPowThree" <|>
+        "cMulXOneAddX" <|> "cMulXOneSubXOneAddX" <|> "cMulXSubXPowThree") :
   tactic
 
 syntax (name := rr_lw_inner_window_lag_sequence_realrooted_named)
@@ -3917,7 +3918,8 @@ syntax (name := rr_lw_inner_window_lag_sequence_realrooted_named)
     "degree_succ" ":=" term ","
     "no_common_roots" ":=" term ","
     "certificate" ":="
-      ("xOneAddX" <|> "xOneSubXOneAddX" <|> "xSubXPowThree") :
+      ("xOneAddX" <|> "xOneSubXOneAddX" <|> "xSubXPowThree" <|>
+        "cMulXOneAddX" <|> "cMulXOneSubXOneAddX" <|> "cMulXSubXPowThree") :
   tactic
 
 syntax (name := rr_lw_one_add_X_one_add_two_X_lag_sequence_interval_named)
@@ -6432,6 +6434,120 @@ macro_rules
         certificate := xSubXPowThree) =>
       `(tactic|
         rr_lw_X_sub_X_pow_three_lag_sequence_realrooted_nonneg using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          root_lower := $hroot_lower,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_inner_window_lag_sequence using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        root_lower := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := cMulXOneAddX) =>
+      `(tactic|
+        rr_lw_C_mul_X_one_add_X_lag_sequence_nonneg_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          root_lower := $hroot_lower,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_inner_window_lag_sequence_realrooted using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        root_lower := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := cMulXOneAddX) =>
+      `(tactic|
+        rr_lw_C_mul_X_one_add_X_lag_sequence_realrooted_nonneg_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          root_lower := $hroot_lower,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_inner_window_lag_sequence using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        root_lower := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := cMulXOneSubXOneAddX) =>
+      `(tactic|
+        rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_nonneg_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          root_lower := $hroot_lower,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_inner_window_lag_sequence_realrooted using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        root_lower := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := cMulXOneSubXOneAddX) =>
+      `(tactic|
+        rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_realrooted_nonneg_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          root_lower := $hroot_lower,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_inner_window_lag_sequence using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        root_lower := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := cMulXSubXPowThree) =>
+      `(tactic|
+        rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_nonneg_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          root_lower := $hroot_lower,
+          recurrence := $hrec,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_inner_window_lag_sequence_realrooted using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        root_lower := $hroot_lower:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term,
+        certificate := cMulXSubXPowThree) =>
+      `(tactic|
+        rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_realrooted_nonneg_auto using
           base := $hbase,
           pos_lc := $hpos,
           nonneg_coeffs := $hnonneg,
