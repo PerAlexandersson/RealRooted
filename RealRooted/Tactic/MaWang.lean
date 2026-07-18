@@ -3403,7 +3403,7 @@ macro_rules
         exact
           RealRooted.prec_mw_derivative_of_nonpos
             ($hrr).2 $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos
-            (by rr_sign_at_roots using $hrr, $hnn))
+            (rr_sign_at_roots_term $hrr, $hnn))
   | `(tactic|
       rr_mw_derivative_sign_nonneg_factor using
         realrooted := $hrr:term,
@@ -3418,7 +3418,7 @@ macro_rules
         exact
           RealRooted.prec_mw_derivative_of_nonpos
             ($hrr).2 $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos
-            (by rr_sign_at_roots_with_factor using $hrr, $hnn, $hfactor))
+            (rr_sign_at_roots_factor_term $hrr, $hnn, $hfactor))
   | `(tactic|
       rr_mw_derivative_sign_root_upper using
         splits := $hf:term,

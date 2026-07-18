@@ -110,6 +110,8 @@ syntax (name := rr_sign_at_roots_named)
 
 syntax (name := rr_sign_at_roots_auto) "rr_sign_at_roots" : tactic
 
+syntax (name := rr_sign_at_roots_term) "rr_sign_at_roots_term " term ", " term : term
+
 syntax (name := rr_sign_at_roots_factor)
   "rr_sign_at_roots_with_factor" " using " term ", " term ", " term : tactic
 
@@ -124,6 +126,10 @@ syntax (name := rr_sign_at_roots_factor_auto)
   "rr_sign_at_roots_with_factor" " using "
     "factor_nonneg" ":=" term :
   tactic
+
+syntax (name := rr_sign_at_roots_factor_term)
+  "rr_sign_at_roots_factor_term " term ", " term ", " term :
+  term
 
 syntax (name := rr_sign_at_roots_lower)
   "rr_sign_at_roots_lower" " using " term : tactic
@@ -214,6 +220,8 @@ macro_rules
         nonneg := $hnn:term) =>
       `(tactic|
         rr_sign_at_roots using $hrr, $hnn)
+  | `(rr_sign_at_roots_term $hrr:term, $hnn:term) =>
+      `(by rr_sign_at_roots using $hrr, $hnn)
   | `(tactic| rr_sign_at_roots) =>
       `(tactic|
         exact fun r hroot => by
@@ -235,6 +243,8 @@ macro_rules
         factor_nonneg := $hq:term) =>
       `(tactic|
         rr_sign_at_roots_with_factor using $hrr, $hnn, $hq)
+  | `(rr_sign_at_roots_factor_term $hrr:term, $hnn:term, $hq:term) =>
+      `(by rr_sign_at_roots_with_factor using $hrr, $hnn, $hq)
   | `(tactic|
       rr_sign_at_roots_with_factor using
         factor_nonneg := $hq:term) =>
