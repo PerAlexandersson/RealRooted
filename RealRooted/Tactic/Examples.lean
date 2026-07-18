@@ -33,6 +33,7 @@ import RealRooted.Tactic.Examples.FiniteSymbolPFFrontend
 import RealRooted.Tactic.Examples.I2DerivativeLag
 import RealRooted.Tactic.Examples.IteratedDerivativeShift
 import RealRooted.Tactic.Examples.J1Gap3Reciprocal
+import RealRooted.Tactic.Examples.Kurtz
 import RealRooted.Tactic.Examples.OEIS
 import RealRooted.Tactic.Examples.OEISPositiveTLag
 import RealRooted.Tactic.Examples.Matrix
