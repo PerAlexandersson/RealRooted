@@ -38,6 +38,12 @@ theorem isRealRooted_mul_of_isRealRooted {p q : ℝ[X]}
     (p * q ≠ 0 ∧ (p * q).Splits) :=
   isRealRooted_mul hp.1 hp.2 hq.1 hq.2
 
+/-- Powers of a nonzero split polynomial are nonzero and split. -/
+theorem isRealRooted_pow_of_isRealRooted {p : ℝ[X]}
+    (hp : p ≠ 0 ∧ p.Splits) (n : Nat) :
+    (p ^ n ≠ 0 ∧ (p ^ n).Splits) :=
+  ⟨pow_ne_zero n hp.1, hp.2.pow n⟩
+
 /-- Unit-slope real linear factors are real-rooted. -/
 theorem isRealRooted_X_add_C (t : ℝ) :
     (X + C t : ℝ[X]) ≠ 0 ∧ (X + C t : ℝ[X]).Splits := by
@@ -2058,6 +2064,12 @@ syntax (name := rr_mul_realrooted_named)
     "right" ":=" term :
   tactic
 
+syntax (name := rr_pow_realrooted)
+  "rr_pow_realrooted" " using "
+    "realrooted" ":=" term ","
+    "exponent" ":=" term :
+  tactic
+
 syntax (name := rr_product_nonzero_term) "rr_product_nonzero_term" : term
 
 syntax (name := rr_product_nonzero_seq) "rr_product_nonzero_seq" : term
@@ -2094,6 +2106,13 @@ macro_rules
         right := $hq:term) =>
       `(tactic|
         rr_mul_realrooted using $hp, $hq)
+  | `(tactic|
+      rr_pow_realrooted using
+        realrooted := $hp:term,
+        exponent := $n:term) =>
+      `(tactic|
+        rr_first_realrooted_or_projection
+          (RealRooted.isRealRooted_pow_of_isRealRooted $hp $n))
   | `(rr_product_nonzero_term) =>
       `(by rr_product_nonzero)
   | `(rr_product_nonzero_seq) =>

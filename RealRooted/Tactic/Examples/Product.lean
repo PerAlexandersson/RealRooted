@@ -70,6 +70,24 @@ example {p q : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (hq : q ≠ 0 ∧ q.Splits) :
     left := hp,
     right := hq
 
+example {p : ℝ[X]} {n : Nat} (hp : p ≠ 0 ∧ p.Splits) :
+    p ^ n ≠ 0 ∧ (p ^ n).Splits := by
+  rr_pow_realrooted using
+    realrooted := hp,
+    exponent := n
+
+example {p : ℝ[X]} {n : Nat} (hp : p ≠ 0 ∧ p.Splits) :
+    (p ^ n).Splits := by
+  rr_pow_realrooted using
+    realrooted := hp,
+    exponent := n
+
+example {p : ℝ[X]} {n : Nat} (hp : p ≠ 0 ∧ p.Splits) :
+    p ^ n ≠ 0 := by
+  rr_pow_realrooted using
+    realrooted := hp,
+    exponent := n
+
 example {t : ℝ} :
     (X + C t : ℝ[X]).Splits := by
   rr_product_X_add_C using constant := t
