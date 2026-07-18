@@ -51,8 +51,8 @@ theorem splits_C_mul_add_derivative {p : ℝ[X]} (hp : p.Splits) {a : ℝ}
     (C a * p + p.derivative).Splits := by
   have hscaled : (p + C a⁻¹ * p.derivative).Splits :=
     splits_add_C_mul_derivative_all hp a⁻¹
-  have hmul : (C a * (p + C a⁻¹ * p.derivative)).Splits := by
-    exact (Polynomial.Splits.C (R := ℝ) a).mul hscaled
+  have hmul : (C a * (p + C a⁻¹ * p.derivative)).Splits :=
+    (Polynomial.Splits.C (R := ℝ) a).mul hscaled
   have hEq : C a * (p + C a⁻¹ * p.derivative) = C a * p + p.derivative := by
     rw [mul_add]
     have hterm : C a * (C a⁻¹ * p.derivative) = p.derivative := by

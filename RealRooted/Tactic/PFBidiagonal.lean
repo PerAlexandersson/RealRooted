@@ -124,10 +124,8 @@ theorem natDegree_bidiagonalOperator_le
   | zero =>
       lia
   | succ n =>
-      have hpn1 : p.coeff (n + 1) = 0 := by
-        exact coeff_eq_zero_of_natDegree_lt (by lia)
-      have hpn : p.coeff n = 0 := by
-        exact coeff_eq_zero_of_natDegree_lt (by lia)
+      have hpn1 : p.coeff (n + 1) = 0 := coeff_eq_zero_of_natDegree_lt (by lia)
+      have hpn : p.coeff n = 0 := coeff_eq_zero_of_natDegree_lt (by lia)
       simp [hpn1, hpn]
 
 /-- Nonnegative bidiagonal entries preserve coefficient nonnegativity. -/
@@ -183,15 +181,15 @@ theorem natDegree_bidiagonalJensenPencil_le
     (bidiagonalJensenPencil alpha beta d lam).natDegree ≤ d + 1 := by
   rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
   intro n hn
-  have halpha : (jensenPolynomial d alpha).coeff n = 0 := by
-    exact coeff_eq_zero_of_natDegree_lt
+  have halpha : (jensenPolynomial d alpha).coeff n = 0 :=
+    coeff_eq_zero_of_natDegree_lt
       (lt_of_le_of_lt (natDegree_jensenPolynomial_le d alpha) (by lia))
   cases n with
   | zero =>
       simp [bidiagonalJensenPencil, halpha]
   | succ n =>
-      have hbeta : (jensenPolynomial d beta).coeff n = 0 := by
-        exact coeff_eq_zero_of_natDegree_lt
+      have hbeta : (jensenPolynomial d beta).coeff n = 0 :=
+        coeff_eq_zero_of_natDegree_lt
           (lt_of_le_of_lt (natDegree_jensenPolynomial_le d beta) (by lia))
       simp [bidiagonalJensenPencil, halpha, mul_assoc, hbeta]
 

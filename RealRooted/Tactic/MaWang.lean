@@ -833,12 +833,11 @@ theorem isRealRooted_of_mw_derivative_nonpos_sequence_of_nonneg_coeffs
       P (n + 2) = U n * P (n + 1) + V n * (P (n + 1)).derivative)
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  exact
-    isRealRooted_of_mw_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
-      hbase hpos hnonneg hdeg_two
-      (fun n r _ hr_nonpos => hV_nonpos n r hr_nonpos)
-      hrec hdeg_lo hdeg_hi
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_mw_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
+    hbase hpos hnonneg hdeg_two
+    (fun n r _ hr_nonpos => hV_nonpos n r hr_nonpos)
+    hrec hdeg_lo hdeg_hi
 
 /-- Combined Ma--Wang/Liu--Wang sequence induction for recurrences
 `P_{n+2} = U_n P_{n+1} + V_n P'_{n+1} + W_n P_n`.
