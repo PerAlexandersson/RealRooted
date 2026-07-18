@@ -1096,6 +1096,22 @@ example {fs : List ℝ[X]}
 example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
+    PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs := by
+  rr_chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver using
+    member_realrooted := hrr,
+    member_pos_lc := hpos
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs := by
+  rr_chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver using
+    member_realrooted := hrr,
+    member_pos_lc := hpos
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
     PairwiseCompatible fs ↔ FamilyCompatible fs := by
   rr_chudnovskySeymour_pairwiseCompatible_iff_familyCompatible using
     member_realrooted := hrr,

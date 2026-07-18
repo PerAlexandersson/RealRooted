@@ -812,6 +812,18 @@ syntax (name := rr_pairwiseCompatible_iff_commonInterleaver_degreeSplit_nonnegCo
     "succ_degree" ":=" term :
   tactic
 
+syntax (name := rr_chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver_named)
+  "rr_chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term :
+  tactic
+
+syntax (name := rr_chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_named)
+  "rr_chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term :
+  tactic
+
 syntax (name := rr_chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_named)
   "rr_chudnovskySeymour_pairwiseCompatible_iff_familyCompatible" " using "
     "member_realrooted" ":=" term ","
@@ -2079,6 +2091,22 @@ macro_rules
       `(tactic|
         exact RealRooted.chudnovskySeymour_pairwiseCompatible_iff_familyCompatible
           $hrr $hpos)
+  | `(tactic|
+      rr_chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term) =>
+      `(tactic|
+        exact
+          RealRooted.chudnovskySeymour_pairwiseCompatible_iff_commonLeftInterleaver
+            $hrr $hpos)
+  | `(tactic|
+      rr_chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term) =>
+      `(tactic|
+        exact
+          RealRooted.chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver_of_pairBridge
+            $hrr $hpos)
   | `(tactic|
       rr_pairwiseCompatible_iff_familyCompatible_rootCrossing using
         member_realrooted := $hrr:term,
