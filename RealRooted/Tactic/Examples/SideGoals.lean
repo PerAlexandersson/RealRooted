@@ -23,10 +23,19 @@ example {n : Nat} (hn : 1 ≤ n) : 0 ≤ (n : ℝ) - 1 := by
 example {n : Nat} (hn : 2 ≤ n) : 0 ≤ (n : ℝ) / ((n : ℝ) - 1) := by
   rr_side_nonneg
 
+example {n : Nat} : 0 ≤ (n : ℝ) := by
+  rr_side_nonneg
+
+example {m k : Nat} : 0 ≤ (((Nat.choose m k : Nat) : ℝ)) := by
+  rr_side_nonneg
+
 example {c : ℝ} (hc : 0 < c) : 0 < c := by
   rr_side_pos
 
 example {n : Nat} : 0 < (n : ℝ) + 1 := by
+  rr_side_pos
+
+example {n : Nat} (hn : 0 < n) : 0 < (n : ℝ) := by
   rr_side_pos
 
 example {n : Nat} (hn : 2 ≤ n) : 0 < (n : ℝ) - 1 := by

@@ -96,6 +96,8 @@ macro_rules
         first
           | assumption
           | exact_mod_cast (by assumption)
+          | (guard_target =~ 0 ≤ (((_ : Nat) : _));
+             exact Nat.cast_nonneg _)
           | exact sub_nonneg.mpr (by exact_mod_cast (by assumption))
           | exact sub_nonneg.mpr (by exact_mod_cast (by lia))
           | exact div_nonneg (by positivity) (by
