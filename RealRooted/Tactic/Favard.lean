@@ -1128,6 +1128,9 @@ theorem nonzero_of_favard_affine_param_coeff_rowSign_den_raw_prod
 
 namespace Tactic
 
+macro "rr_favard_beta_pos" : tactic =>
+  `(tactic| intro n <;> positivity)
+
 syntax (name := rr_favard) "rr_favard" " using " term ", " term : tactic
 
 syntax (name := rr_favard_named)
@@ -1938,35 +1941,27 @@ macro_rules
       `(tactic|
         first
           | refine RealRooted.favardInterlacing $hrec ?_ <;>
-              intro n <;>
-              positivity
+              rr_favard_beta_pos
           | rr_exact_realrooted_sequence_or_projection
               (by
                 refine RealRooted.isRealRooted_of_favard $hrec ?_ <;>
-                intro n <;>
-                positivity)
+                rr_favard_beta_pos)
           | refine RealRooted.nonzero_of_favard $hrec ?_ <;>
-              intro n <;>
-              positivity
+              rr_favard_beta_pos
           | refine RealRooted.isGeneralizedSturmSeq_reverse_range_map_of_favard
               $hrec ?_ <;>
-              intro n <;>
-              positivity
+              rr_favard_beta_pos
           | refine RealRooted.favardInterlacing $hrec ?_ _ <;>
-              intro n <;>
-              positivity
+              rr_favard_beta_pos
           | rr_exact_realrooted_sequence_or_projection
               (by
                 refine RealRooted.isRealRooted_of_favard $hrec ?_ _ <;>
-                intro n <;>
-                positivity)
+                rr_favard_beta_pos)
           | refine RealRooted.nonzero_of_favard $hrec ?_ _ <;>
-              intro n <;>
-              positivity
+              rr_favard_beta_pos
           | refine RealRooted.isGeneralizedSturmSeq_reverse_range_map_of_favard
               $hrec ?_ _ <;>
-              intro n <;>
-              positivity)
+              rr_favard_beta_pos)
   | `(tactic|
       rr_favard_const using
         $α:term, $β:term, $hβ:term, $hP0:term, $hP1:term, $hstep:term) =>
