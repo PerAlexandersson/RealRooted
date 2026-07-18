@@ -26,6 +26,7 @@ import RealRooted.Tactic.Linear
 import RealRooted.Tactic.LinearPowerFamily
 import RealRooted.Tactic.Matrix
 import RealRooted.Tactic.SymmetricDecomposition
+import RealRooted.Tactic.VeroneseSection
 import RealRooted.Tactic.OEIS
 import RealRooted.Tactic.Targets
 

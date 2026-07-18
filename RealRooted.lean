@@ -146,6 +146,7 @@ import RealRooted.Tactic.Examples.SequenceSurvey
 import RealRooted.Tactic.Examples.SideGoals
 import RealRooted.Tactic.Examples.Sign
 import RealRooted.Tactic.Examples.SymmetricDecomposition
+import RealRooted.Tactic.Examples.VeroneseSection
 import RealRooted.Tactic.Examples.WagnerX
 import RealRooted.Tactic.Favard
 import RealRooted.Tactic.FiniteSymbolPF
@@ -171,6 +172,7 @@ import RealRooted.Tactic.SideGoals
 import RealRooted.Tactic.Sign
 import RealRooted.Tactic.SymmetricDecomposition
 import RealRooted.Tactic.Targets
+import RealRooted.Tactic.VeroneseSection
 import RealRooted.Tactic.WagnerX
 import RealRooted.TridiagonalDet
 import RealRooted.UpperDerivativeInterlace
