@@ -20,6 +20,9 @@ example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 := by
 example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 := by
   rr_finish
 
+example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 := by
+  rr_finish using hfg
+
 example {f g : ℝ[X]} (hfg : Prec f g) : g.Splits := by
   rr_splits using hfg
 
@@ -52,6 +55,9 @@ example {f g : ℝ[X]} (hfg : Prec f g) : f ≠ 0 ∧ f.Splits := by
 
 example {f g : ℝ[X]} (hfg : Prec f g) : g ≠ 0 ∧ g.Splits := by
   rr_finish
+
+example {f g : ℝ[X]} (hfg : Prec f g) : g ≠ 0 ∧ g.Splits := by
+  rr_finish using hfg
 
 example {f g : ℝ[X]} (hfg : Prec f g) : g = 0 ∨ g.Splits := by
   rr_finish
@@ -134,6 +140,9 @@ example {g f : ℝ[X]} (hgf : Interlaces g f) : g.Splits := by
 example {g f : ℝ[X]} (hgf : Interlaces g f) : f ≠ 0 ∧ f.Splits := by
   rr_finish
 
+example {g f : ℝ[X]} (hgf : Interlaces g f) : f ≠ 0 ∧ f.Splits := by
+  rr_finish using hgf
+
 example {g f : ℝ[X]} (hgf : Interlaces g f) : g ≠ 0 ∧ g.Splits := by
   rr_finish
 
@@ -157,6 +166,11 @@ example {P : Nat → ℝ[X]}
     (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
     ∀ n : Nat, P n ≠ 0 := by
   rr_finish
+
+example {P : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_finish using hP
 
 example {P : Nat → ℝ[X]}
     (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
@@ -230,6 +244,12 @@ example {A B : Nat → ℝ[X]}
       (B n ≠ 0 ∧ (B n).Splits)) :
     ∀ n : Nat, B n ≠ 0 ∧ (B n).Splits := by
   rr_finish
+
+example {A B : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    ∀ n : Nat, B n ≠ 0 ∧ (B n).Splits := by
+  rr_finish using hP
 
 example {A B : Nat → ℝ[X]}
     (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
@@ -308,6 +328,11 @@ example {f g : ℝ[X]} (hfg : Prec f g)
   rr_finish
 
 example {f g : ℝ[X]} (hfg : Prec f g)
+    (hdeg : f.natDegree + 1 = g.natDegree) :
+    Interlaces f g := by
+  rr_finish using hfg, hdeg
+
+example {f g : ℝ[X]} (hfg : Prec f g)
     (hdeg : g.natDegree = f.natDegree + 1) :
     Interlaces f g := by
   rr_interlaces using hfg, hdeg
@@ -322,6 +347,9 @@ example {f g : ℝ[X]} (hfg : Prec f g) : Prec0 f g := by
 
 example {f g : ℝ[X]} (hfg : Prec f g) : Prec0 f g := by
   rr_finish
+
+example {f g : ℝ[X]} (hfg : Prec f g) : Prec0 f g := by
+  rr_finish using hfg
 
 example {f g : ℝ[X]} (hfg : Prec0 f g) (hf : f ≠ 0) (hg : g ≠ 0) :
     Prec f g := by
