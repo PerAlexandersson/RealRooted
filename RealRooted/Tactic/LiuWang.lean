@@ -34,6 +34,9 @@ open Polynomial
 
 namespace RealRooted
 
+private lemma oneNonnegSeq : ∀ _ : Nat, 0 ≤ (1 : ℝ) :=
+  fun _ => by norm_num
+
 /-- Two-polynomial Liu--Wang wrapper with no tail summands.  This is the
 common recurrence shape `F = a*f + b*g`, where `g` interlaces `f` and `b` has
 the correct sign at the roots of `f`. -/
@@ -749,7 +752,7 @@ theorem prec_lw_negative_square_lag_sequence_unit {P : Nat → ℝ[X]}
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
   prec_lw_negative_square_lag_sequence
-    (A := A) (q := q) (c := fun _ => 1) hbase hpos (fun _ => by norm_num)
+    (A := A) (q := q) (c := fun _ => 1) hbase hpos oneNonnegSeq
     (fun n => by simpa using hrec n) hdeg_succ hno
 
 /-- Real-rootedness corollary for unit-coefficient negative-square lag. -/
@@ -763,7 +766,7 @@ theorem isRealRooted_of_lw_negative_square_lag_sequence_unit {P : Nat → ℝ[X]
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_lw_negative_square_lag_sequence
-    (A := A) (q := q) (c := fun _ => 1) hbase hpos (fun _ => by norm_num)
+    (A := A) (q := q) (c := fun _ => 1) hbase hpos oneNonnegSeq
     (fun n => by simpa using hrec n) hdeg_succ hno
 
 /-- Denominator-fused negative-square Liu--Wang induction for split raw
@@ -1047,7 +1050,7 @@ theorem prec_lw_positive_X_lag_sequence {P : Nat → ℝ[X]}
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
   prec_lw_positive_t_lag_sequence
-    (A := A) (c := fun _ => 1) hbase hpos hnonneg (fun _ => by norm_num)
+    (A := A) (c := fun _ => 1) hbase hpos hnonneg oneNonnegSeq
     (fun n => by simpa using hrec n) hdeg_succ hno
 
 /-- Real-rootedness corollary for sequence-level positive unit-`X` lag. -/
@@ -1061,7 +1064,7 @@ theorem isRealRooted_of_lw_positive_X_lag_sequence {P : Nat → ℝ[X]}
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_lw_positive_t_lag_sequence
-    (A := A) (c := fun _ => 1) hbase hpos hnonneg (fun _ => by norm_num)
+    (A := A) (c := fun _ => 1) hbase hpos hnonneg oneNonnegSeq
     (fun n => by simpa using hrec n) hdeg_succ hno
 
 /-- Sequence-level affine half-line lag induction.
@@ -1276,7 +1279,7 @@ theorem prec_lw_C_add_X_lag_sequence {P : Nat → ℝ[X]}
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
   prec_lw_positive_affine_lag_sequence
-    (c := fun _ => 1) hbase hpos (fun _ => by norm_num) hroot_upper
+    (c := fun _ => 1) hbase hpos oneNonnegSeq hroot_upper
     (fun n => by simpa using hrec n) hdeg_succ hno
 
 /-- Real-rootedness corollary for sequence-level unit affine lag `a_n+t`. -/
@@ -1290,7 +1293,7 @@ theorem isRealRooted_of_lw_C_add_X_lag_sequence {P : Nat → ℝ[X]}
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_lw_positive_affine_lag_sequence
-    (c := fun _ => 1) hbase hpos (fun _ => by norm_num) hroot_upper
+    (c := fun _ => 1) hbase hpos oneNonnegSeq hroot_upper
     (fun n => by simpa using hrec n) hdeg_succ hno
 
 /-- Sequence-level unit affine lag `a_n+t` with automated shifted root
@@ -1306,7 +1309,7 @@ theorem prec_lw_C_add_X_lag_sequence_of_shift_nonneg_coeffs
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
   prec_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs
-    (c := fun _ => 1) hbase hpos (fun _ => by norm_num) hshift_nonneg
+    (c := fun _ => 1) hbase hpos oneNonnegSeq hshift_nonneg
     (fun n => by simpa using hrec n) hdeg_succ hno
 
 /-- Real-rootedness corollary for sequence-level unit affine lag `a_n+t` with
@@ -1322,7 +1325,7 @@ theorem isRealRooted_of_lw_C_add_X_lag_sequence_of_shift_nonneg_coeffs
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs
-    (c := fun _ => 1) hbase hpos (fun _ => by norm_num) hshift_nonneg
+    (c := fun _ => 1) hbase hpos oneNonnegSeq hshift_nonneg
     (fun n => by simpa using hrec n) hdeg_succ hno
 
 /-- Sequence-level Liu--Wang induction for lags controlled on the inner
