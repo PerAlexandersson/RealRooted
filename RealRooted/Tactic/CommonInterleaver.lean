@@ -488,6 +488,30 @@ syntax (name := rr_pairwise_common_interleaver_rootCountAboveNonRoot_named)
     "pairwise_compatible" ":=" term :
   tactic
 
+syntax (name := rr_chudnovskySeymour_fourWay_rootCrossing_named)
+  "rr_chudnovskySeymour_fourWay_rootCrossing" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
+syntax (name := rr_pairwiseCompatible_iff_commonInterleaver_rootCrossing_named)
+  "rr_pairwiseCompatible_iff_commonInterleaver_rootCrossing" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
+syntax (name := rr_pairwiseCompatible_iff_familyCompatible_rootCrossing_named)
+  "rr_pairwiseCompatible_iff_familyCompatible_rootCrossing" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
 syntax (name := rr_posCombo_pair_common_interleaver_degree_le_two_named)
   "rr_posCombo_pair_common_interleaver_degree_le_two" " using "
     "left_pos_lc" ":=" term ","
@@ -1140,6 +1164,33 @@ macro_rules
       `(tactic|
         exact pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_rootCountAboveBothNonRoot
           $hsame $hsucc $hpos $hpair)
+  | `(tactic|
+      rr_chudnovskySeymour_fourWay_rootCrossing using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact chudnovskySeymour_fourWay_of_rootCrossing
+          $hrr $hpos $hsame $hsucc)
+  | `(tactic|
+      rr_pairwiseCompatible_iff_commonInterleaver_rootCrossing using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact pairwiseCompatible_iff_hasCommonInterleaver_of_rootCrossing
+          $hrr $hpos $hsame $hsucc)
+  | `(tactic|
+      rr_pairwiseCompatible_iff_familyCompatible_rootCrossing using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact pairwiseCompatible_iff_familyCompatible_of_rootCrossing
+          $hrr $hpos $hsame $hsucc)
   | `(tactic|
       rr_posCombo_pair_common_interleaver_degree_le_two using
         left_pos_lc := $hfpos:term,
