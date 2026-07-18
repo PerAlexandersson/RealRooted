@@ -3538,10 +3538,10 @@ macro_rules
         source_pos_lc := $hf_pos:term,
         root_upper := $hroot_hi:term) =>
       `(tactic|
-        refine
-          RealRooted.prec_mw_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one
-            $hf $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos ?_ $hroot_hi
-        <;> rr_mw_active_nonneg_at 0)
+        rr_refine_then
+          (RealRooted.prec_mw_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one
+            $hf $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos ?_ $hroot_hi)
+          with rr_mw_active_nonneg_at 0)
   | `(tactic|
       rr_mw_derivative_one_add_two_window using
         splits := $hf:term,
@@ -3643,9 +3643,10 @@ macro_rules
         target_pos_lc := $hF_pos:term,
         source_pos_lc := $hf_pos:term) =>
       `(tactic|
-        refine RealRooted.prec_mw_derivative_neg_const
-          $hf $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos ?_
-        <;> rr_mw_active_nonneg_at 0)
+        rr_refine_then
+          (RealRooted.prec_mw_derivative_neg_const
+            $hf $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos ?_)
+          with rr_mw_active_nonneg_at 0)
   | `(tactic|
       rr_mw_derivative_neg_X_sq using
         splits := $hf:term,
@@ -3667,9 +3668,10 @@ macro_rules
         target_pos_lc := $hF_pos:term,
         source_pos_lc := $hf_pos:term) =>
       `(tactic|
-        refine RealRooted.prec_mw_derivative_neg_C_mul_X_sq
-          $hf $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos ?_
-        <;> rr_mw_active_nonneg_at 0)
+        rr_refine_then
+          (RealRooted.prec_mw_derivative_neg_C_mul_X_sq
+            $hf $hdegf $hdeg_lo $hdeg_hi $hF_pos $hf_pos ?_)
+          with rr_mw_active_nonneg_at 0)
   | `(tactic|
       rr_mw_derivative_nonpos_sequence using
         base := $hbase:term,
