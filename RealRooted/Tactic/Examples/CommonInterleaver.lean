@@ -786,6 +786,68 @@ example {fs : List ℝ[X]}
 example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hbridge : PosComboPairHasCommonInterleaverStatement) :
+    ChudnovskySeymourFourWayPackage fs := by
+  rr_chudnovskySeymour_fourWay_posComboBridge using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    pos_combo_bridge := hbridge
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (horient : PosComboNoCommonOrientationStatement)
+    (hdeg : PosComboNatDegreeCloseStatement) :
+    ChudnovskySeymourFourWayPackage fs := by
+  rr_chudnovskySeymour_fourWay_noCommonOrientation_degreeClose using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    orientation := horient,
+    degree_close := hdeg
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (horient : PosComboNoCommonOrientationStatement) :
+    ChudnovskySeymourFourWayPackage fs := by
+  rr_chudnovskySeymour_fourWay_noCommonOrientation_nonnegCoeffs using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_nonneg_coeffs := hnn,
+    orientation := horient
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    ChudnovskySeymourFourWayPackage fs := by
+  rr_chudnovskySeymour_fourWay_pairDegreeSplit_nonnegCoeffs using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_nonneg_coeffs := hnn,
+    same_degree := hsame,
+    succ_degree := hsucc
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    ChudnovskySeymourFourWayPackage fs := by
+  rr_chudnovskySeymour_fourWay_degreeSplit_nonnegCoeffs using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_nonneg_coeffs := hnn,
+    same_degree := hsame,
+    succ_degree := hsucc
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
     PairwiseCompatible fs ↔ HasCommonInterleaver fs := by
@@ -943,6 +1005,71 @@ example {fs : List ℝ[X]}
 example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hbridge : PosComboPairHasCommonInterleaverStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs := by
+  rr_pairwiseCompatible_iff_commonInterleaver_posComboBridge using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    pos_combo_bridge := hbridge
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (horient : PosComboNoCommonOrientationStatement)
+    (hdeg : PosComboNatDegreeCloseStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs := by
+  rr_pairwiseCompatible_iff_commonInterleaver_noCommonOrientation_degreeClose
+    using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    orientation := horient,
+    degree_close := hdeg
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (horient : PosComboNoCommonOrientationStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs := by
+  rr_pairwiseCompatible_iff_commonInterleaver_noCommonOrientation_nonnegCoeffs
+    using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_nonneg_coeffs := hnn,
+    orientation := horient
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs := by
+  rr_pairwiseCompatible_iff_commonInterleaver_pairDegreeSplit_nonnegCoeffs
+    using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_nonneg_coeffs := hnn,
+    same_degree := hsame,
+    succ_degree := hsucc
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs := by
+  rr_pairwiseCompatible_iff_commonInterleaver_degreeSplit_nonnegCoeffs using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_nonneg_coeffs := hnn,
+    same_degree := hsame,
+    succ_degree := hsucc
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
     (hsucc : PosComboNoCommonSuccDegreeRootCrossingNonnegStatement) :
     PairwiseCompatible fs ↔ FamilyCompatible fs := by
@@ -1096,6 +1223,71 @@ example {fs : List ℝ[X]}
     member_pos_lc := hpos,
     member_nonneg_coeffs := hnn,
     boundary_right := hboundary
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hbridge : PosComboPairHasCommonInterleaverStatement) :
+    PairwiseCompatible fs ↔ FamilyCompatible fs := by
+  rr_pairwiseCompatible_iff_familyCompatible_posComboBridge using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    pos_combo_bridge := hbridge
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (horient : PosComboNoCommonOrientationStatement)
+    (hdeg : PosComboNatDegreeCloseStatement) :
+    PairwiseCompatible fs ↔ FamilyCompatible fs := by
+  rr_pairwiseCompatible_iff_familyCompatible_noCommonOrientation_degreeClose
+    using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    orientation := horient,
+    degree_close := hdeg
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (horient : PosComboNoCommonOrientationStatement) :
+    PairwiseCompatible fs ↔ FamilyCompatible fs := by
+  rr_pairwiseCompatible_iff_familyCompatible_noCommonOrientation_nonnegCoeffs
+    using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_nonneg_coeffs := hnn,
+    orientation := horient
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    PairwiseCompatible fs ↔ FamilyCompatible fs := by
+  rr_pairwiseCompatible_iff_familyCompatible_pairDegreeSplit_nonnegCoeffs
+    using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_nonneg_coeffs := hnn,
+    same_degree := hsame,
+    succ_degree := hsucc
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hnn : ∀ f ∈ fs, HasNonnegCoeffs f)
+    (hsame : PosComboNoCommonSameDegreeOrientationAlternativeNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    PairwiseCompatible fs ↔ FamilyCompatible fs := by
+  rr_pairwiseCompatible_iff_familyCompatible_degreeSplit_nonnegCoeffs using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_nonneg_coeffs := hnn,
+    same_degree := hsame,
+    succ_degree := hsucc
 
 example {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)

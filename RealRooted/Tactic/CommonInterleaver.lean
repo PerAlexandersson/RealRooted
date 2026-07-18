@@ -592,6 +592,47 @@ syntax (name := rr_chudnovskySeymour_fourWay_boundaryRight_nonnegCoeffs_named)
     "boundary_right" ":=" term :
   tactic
 
+syntax (name := rr_chudnovskySeymour_fourWay_posComboBridge_named)
+  "rr_chudnovskySeymour_fourWay_posComboBridge" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "pos_combo_bridge" ":=" term :
+  tactic
+
+syntax (name := rr_chudnovskySeymour_fourWay_noCommonOrientation_degreeClose_named)
+  "rr_chudnovskySeymour_fourWay_noCommonOrientation_degreeClose" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "orientation" ":=" term ","
+    "degree_close" ":=" term :
+  tactic
+
+syntax (name := rr_chudnovskySeymour_fourWay_noCommonOrientation_nonnegCoeffs_named)
+  "rr_chudnovskySeymour_fourWay_noCommonOrientation_nonnegCoeffs" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "member_nonneg_coeffs" ":=" term ","
+    "orientation" ":=" term :
+  tactic
+
+syntax (name := rr_chudnovskySeymour_fourWay_pairDegreeSplit_nonnegCoeffs_named)
+  "rr_chudnovskySeymour_fourWay_pairDegreeSplit_nonnegCoeffs" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "member_nonneg_coeffs" ":=" term ","
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
+syntax (name := rr_chudnovskySeymour_fourWay_degreeSplit_nonnegCoeffs_named)
+  "rr_chudnovskySeymour_fourWay_degreeSplit_nonnegCoeffs" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "member_nonneg_coeffs" ":=" term ","
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
 syntax (name := rr_pairwiseCompatible_iff_commonInterleaver_rootCrossing_named)
   "rr_pairwiseCompatible_iff_commonInterleaver_rootCrossing" " using "
     "member_realrooted" ":=" term ","
@@ -699,6 +740,53 @@ syntax (name := rr_pairwiseCompatible_iff_commonInterleaver_boundaryRight_nonneg
     "boundary_right" ":=" term :
   tactic
 
+syntax (name := rr_pairwiseCompatible_iff_commonInterleaver_posComboBridge_named)
+  "rr_pairwiseCompatible_iff_commonInterleaver_posComboBridge" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "pos_combo_bridge" ":=" term :
+  tactic
+
+syntax
+  (name := rr_pairwiseCompatible_iff_commonInterleaver_noCommonOrientation_degreeClose_named)
+  "rr_pairwiseCompatible_iff_commonInterleaver_noCommonOrientation_degreeClose"
+    " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "orientation" ":=" term ","
+    "degree_close" ":=" term :
+  tactic
+
+syntax
+  (name := rr_pairwiseCompatible_iff_commonInterleaver_noCommonOrientation_nonnegCoeffs_named)
+  "rr_pairwiseCompatible_iff_commonInterleaver_noCommonOrientation_nonnegCoeffs"
+    " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "member_nonneg_coeffs" ":=" term ","
+    "orientation" ":=" term :
+  tactic
+
+syntax
+  (name := rr_pairwiseCompatible_iff_commonInterleaver_pairDegreeSplit_nonnegCoeffs_named)
+  "rr_pairwiseCompatible_iff_commonInterleaver_pairDegreeSplit_nonnegCoeffs"
+    " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "member_nonneg_coeffs" ":=" term ","
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
+syntax (name := rr_pairwiseCompatible_iff_commonInterleaver_degreeSplit_nonnegCoeffs_named)
+  "rr_pairwiseCompatible_iff_commonInterleaver_degreeSplit_nonnegCoeffs" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "member_nonneg_coeffs" ":=" term ","
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
 syntax (name := rr_pairwiseCompatible_iff_familyCompatible_rootCrossing_named)
   "rr_pairwiseCompatible_iff_familyCompatible_rootCrossing" " using "
     "member_realrooted" ":=" term ","
@@ -804,6 +892,53 @@ syntax (name := rr_pairwiseCompatible_iff_familyCompatible_boundaryRight_nonnegC
     "member_pos_lc" ":=" term ","
     "member_nonneg_coeffs" ":=" term ","
     "boundary_right" ":=" term :
+  tactic
+
+syntax (name := rr_pairwiseCompatible_iff_familyCompatible_posComboBridge_named)
+  "rr_pairwiseCompatible_iff_familyCompatible_posComboBridge" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "pos_combo_bridge" ":=" term :
+  tactic
+
+syntax
+  (name := rr_pairwiseCompatible_iff_familyCompatible_noCommonOrientation_degreeClose_named)
+  "rr_pairwiseCompatible_iff_familyCompatible_noCommonOrientation_degreeClose"
+    " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "orientation" ":=" term ","
+    "degree_close" ":=" term :
+  tactic
+
+syntax
+  (name := rr_pairwiseCompatible_iff_familyCompatible_noCommonOrientation_nonnegCoeffs_named)
+  "rr_pairwiseCompatible_iff_familyCompatible_noCommonOrientation_nonnegCoeffs"
+    " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "member_nonneg_coeffs" ":=" term ","
+    "orientation" ":=" term :
+  tactic
+
+syntax
+  (name := rr_pairwiseCompatible_iff_familyCompatible_pairDegreeSplit_nonnegCoeffs_named)
+  "rr_pairwiseCompatible_iff_familyCompatible_pairDegreeSplit_nonnegCoeffs"
+    " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "member_nonneg_coeffs" ":=" term ","
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
+syntax (name := rr_pairwiseCompatible_iff_familyCompatible_degreeSplit_nonnegCoeffs_named)
+  "rr_pairwiseCompatible_iff_familyCompatible_degreeSplit_nonnegCoeffs" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "member_nonneg_coeffs" ":=" term ","
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
   tactic
 
 syntax (name := rr_posCombo_pair_common_interleaver_degree_le_two_named)
@@ -959,6 +1094,48 @@ private theorem pairwiseCommonInterleaver_boundaryRight_nonnegCoeffs
   pairwiseCompatible_iff_hasCommonInterleaver_of_affineFamilyBridge_and_nonnegCoeffs
     (fs := fs) hrr hpos hnn
     (posComboNoCommonAffineFamily_of_boundaryRightPairOrientation hboundary)
+
+private theorem pairwiseCommonInterleaver_posComboBridge
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hbridge : PosComboPairHasCommonInterleaverStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
+  pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay <|
+    chudnovskySeymour_fourWay_of_posComboBridge
+      (fs := fs) hrr hpos hbridge
+
+private theorem pairwiseCommonInterleaver_noCommonOrientation_degreeClose
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (horient : PosComboNoCommonOrientationStatement)
+    (hdegClose : PosComboNatDegreeCloseStatement) :
+    PairwiseCompatible fs ↔ HasCommonInterleaver fs :=
+  pairwiseCompatible_iff_hasCommonInterleaver_of_fourWay <|
+    chudnovskySeymour_fourWay_of_noCommonOrientation_and_degreeClose
+      (fs := fs) hrr hpos horient hdegClose
+
+private theorem pairwiseFamilyCompatible_posComboBridge
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hbridge : PosComboPairHasCommonInterleaverStatement) :
+    PairwiseCompatible fs ↔ FamilyCompatible fs :=
+  pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos <|
+    (pairwiseCommonInterleaver_posComboBridge
+      (fs := fs) hrr hpos hbridge).1
+
+private theorem pairwiseFamilyCompatible_noCommonOrientation_degreeClose
+    {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (horient : PosComboNoCommonOrientationStatement)
+    (hdegClose : PosComboNatDegreeCloseStatement) :
+    PairwiseCompatible fs ↔ FamilyCompatible fs :=
+  pairwiseCompatible_iff_familyCompatible_of_commonInterleaver_forward hpos <|
+    (pairwiseCommonInterleaver_noCommonOrientation_degreeClose
+      (fs := fs) hrr hpos horient hdegClose).1
 
 macro_rules
   | `(tactic| rr_compatible_comm using compatible := $h:term) =>
@@ -1612,6 +1789,52 @@ macro_rules
           chudnovskySeymour_fourWay_of_boundaryRightPairOrientation_and_nonnegCoeffs
             $hrr $hpos $hnn $hboundary)
   | `(tactic|
+      rr_chudnovskySeymour_fourWay_posComboBridge using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        pos_combo_bridge := $hbridge:term) =>
+      `(tactic|
+        exact chudnovskySeymour_fourWay_of_posComboBridge
+          $hrr $hpos $hbridge)
+  | `(tactic|
+      rr_chudnovskySeymour_fourWay_noCommonOrientation_degreeClose using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        orientation := $horient:term,
+        degree_close := $hdegClose:term) =>
+      `(tactic|
+        exact chudnovskySeymour_fourWay_of_noCommonOrientation_and_degreeClose
+          $hrr $hpos $horient $hdegClose)
+  | `(tactic|
+      rr_chudnovskySeymour_fourWay_noCommonOrientation_nonnegCoeffs using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        member_nonneg_coeffs := $hnn:term,
+        orientation := $horient:term) =>
+      `(tactic|
+        exact chudnovskySeymour_fourWay_of_noCommonOrientation_and_nonnegCoeffs
+          $hrr $hpos $hnn $horient)
+  | `(tactic|
+      rr_chudnovskySeymour_fourWay_pairDegreeSplit_nonnegCoeffs using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        member_nonneg_coeffs := $hnn:term,
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact chudnovskySeymour_fourWay_of_pairDegreeSplit_and_nonnegCoeffs
+          $hrr $hpos $hnn $hsame $hsucc)
+  | `(tactic|
+      rr_chudnovskySeymour_fourWay_degreeSplit_nonnegCoeffs using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        member_nonneg_coeffs := $hnn:term,
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact chudnovskySeymour_fourWay_of_degreeSplit_and_nonnegCoeffs
+          $hrr $hpos $hnn $hsame $hsucc)
+  | `(tactic|
       rr_pairwiseCompatible_iff_commonInterleaver_rootCrossing using
         member_realrooted := $hrr:term,
         member_pos_lc := $hpos:term,
@@ -1744,6 +1967,58 @@ macro_rules
       `(tactic|
         exact pairwiseCommonInterleaver_boundaryRight_nonnegCoeffs
           $hrr $hpos $hnn $hboundary)
+  | `(tactic|
+      rr_pairwiseCompatible_iff_commonInterleaver_posComboBridge using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        pos_combo_bridge := $hbridge:term) =>
+      `(tactic|
+        exact pairwiseCommonInterleaver_posComboBridge
+          $hrr $hpos $hbridge)
+  | `(tactic|
+      rr_pairwiseCompatible_iff_commonInterleaver_noCommonOrientation_degreeClose
+        using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        orientation := $horient:term,
+        degree_close := $hdegClose:term) =>
+      `(tactic|
+        exact pairwiseCommonInterleaver_noCommonOrientation_degreeClose
+          $hrr $hpos $horient $hdegClose)
+  | `(tactic|
+      rr_pairwiseCompatible_iff_commonInterleaver_noCommonOrientation_nonnegCoeffs
+        using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        member_nonneg_coeffs := $hnn:term,
+        orientation := $horient:term) =>
+      `(tactic|
+        exact
+          pairwiseCompatible_iff_hasCommonInterleaver_of_noCommonOrientation_and_nonnegCoeffs
+            $hrr $hpos $hnn $horient)
+  | `(tactic|
+      rr_pairwiseCompatible_iff_commonInterleaver_pairDegreeSplit_nonnegCoeffs
+        using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        member_nonneg_coeffs := $hnn:term,
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact
+          pairwiseCompatible_iff_hasCommonInterleaver_of_pairDegreeSplit_and_nonnegCoeffs
+            $hrr $hpos $hnn $hsame $hsucc)
+  | `(tactic|
+      rr_pairwiseCompatible_iff_commonInterleaver_degreeSplit_nonnegCoeffs using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        member_nonneg_coeffs := $hnn:term,
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact
+          pairwiseCompatible_iff_hasCommonInterleaver_of_degreeSplit_and_nonnegCoeffs
+            $hrr $hpos $hnn $hsame $hsucc)
   | `(tactic|
       rr_pairwiseCompatible_iff_familyCompatible_rootCrossing using
         member_realrooted := $hrr:term,
@@ -1879,6 +2154,58 @@ macro_rules
         exact
           pairwiseCompatible_iff_familyCompatible_of_boundaryRightPairOrientation_and_nonnegCoeffs
             $hrr $hpos $hnn $hboundary)
+  | `(tactic|
+      rr_pairwiseCompatible_iff_familyCompatible_posComboBridge using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        pos_combo_bridge := $hbridge:term) =>
+      `(tactic|
+        exact pairwiseFamilyCompatible_posComboBridge
+          $hrr $hpos $hbridge)
+  | `(tactic|
+      rr_pairwiseCompatible_iff_familyCompatible_noCommonOrientation_degreeClose
+        using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        orientation := $horient:term,
+        degree_close := $hdegClose:term) =>
+      `(tactic|
+        exact pairwiseFamilyCompatible_noCommonOrientation_degreeClose
+          $hrr $hpos $horient $hdegClose)
+  | `(tactic|
+      rr_pairwiseCompatible_iff_familyCompatible_noCommonOrientation_nonnegCoeffs
+        using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        member_nonneg_coeffs := $hnn:term,
+        orientation := $horient:term) =>
+      `(tactic|
+        exact
+          pairwiseCompatible_iff_familyCompatible_of_noCommonOrientation_and_nonnegCoeffs
+            $hrr $hpos $hnn $horient)
+  | `(tactic|
+      rr_pairwiseCompatible_iff_familyCompatible_pairDegreeSplit_nonnegCoeffs
+        using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        member_nonneg_coeffs := $hnn:term,
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact
+          pairwiseCompatible_iff_familyCompatible_of_pairDegreeSplit_and_nonnegCoeffs
+            $hrr $hpos $hnn $hsame $hsucc)
+  | `(tactic|
+      rr_pairwiseCompatible_iff_familyCompatible_degreeSplit_nonnegCoeffs using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        member_nonneg_coeffs := $hnn:term,
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact
+          pairwiseCompatible_iff_familyCompatible_of_degreeSplit_and_nonnegCoeffs
+            $hrr $hpos $hnn $hsame $hsucc)
   | `(tactic|
       rr_posCombo_pair_common_interleaver_degree_le_two using
         left_pos_lc := $hfpos:term,
