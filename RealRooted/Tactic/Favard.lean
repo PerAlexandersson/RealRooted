@@ -2023,7 +2023,7 @@ macro_rules
         rr_favard_const using
           alpha := $α,
           beta := $β,
-          beta_pos := by positivity,
+          beta_pos := rr_positivity_term,
           base_zero := $hP0,
           base_one := $hP1,
           step := $hstep)
@@ -2139,8 +2139,8 @@ macro_rules
           slope := $s,
           alpha := $α,
           beta := $β,
-          slope_pos := by positivity,
-          beta_pos := by positivity,
+          slope_pos := rr_positivity_term,
+          beta_pos := rr_positivity_term,
           base_zero := $hP0,
           base_one := $hP1,
           step := $hstep)
@@ -2196,8 +2196,8 @@ macro_rules
           slope := $s,
           alpha := $α,
           beta := $β,
-          slope_pos := by positivity,
-          beta_pos := by positivity,
+          slope_pos := rr_positivity_term,
+          beta_pos := rr_positivity_term,
           base_zero := $hP0,
           base_one := $hP1,
           step := $hstep)
