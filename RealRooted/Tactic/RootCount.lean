@@ -1,4 +1,5 @@
 import RealRooted.DegreeIncreasingLocalLowerCount
+import RealRooted.RootContinuity
 import RealRooted.RootCountJump
 import RealRooted.SmallPositiveParameterCount
 import RealRooted.SuccDegreeLeftEndpoint
@@ -184,6 +185,147 @@ syntax (name := rr_right_ne_zero_card_roots_succDegree_named)
     "succ_degree" ":=" term :
   tactic
 
+syntax (name := rr_card_roots_filter_le_eq_no_isRoot_Ioc_named)
+  "rr_card_roots_filter_le_eq_no_isRoot_Ioc" " using "
+    "interval_order" ":=" term ","
+    "no_roots" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_gt_eq_no_isRoot_Ioc_named)
+  "rr_card_roots_filter_gt_eq_no_isRoot_Ioc" " using "
+    "interval_order" ":=" term ","
+    "no_roots" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_Ioc_zero_no_isRoot_Ioc_named)
+  "rr_card_roots_filter_Ioc_zero_no_isRoot_Ioc" " using "
+    "interval_order" ":=" term ","
+    "no_roots" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_all_eq_no_isRoot_Ioc_named)
+  "rr_card_roots_filter_all_eq_no_isRoot_Ioc" " using "
+    "interval_order" ":=" term ","
+    "no_roots" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_le_mono_named)
+  "rr_card_roots_filter_le_mono" " using "
+    "interval_order" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_gt_antitone_named)
+  "rr_card_roots_filter_gt_antitone" " using "
+    "interval_order" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_le_and_gt_mono_named)
+  "rr_card_roots_filter_le_and_gt_mono" " using "
+    "interval_order" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_le_eq_no_isRoot_Icc_named)
+  "rr_card_roots_filter_le_eq_no_isRoot_Icc" " using "
+    "interval_order" ":=" term ","
+    "no_roots" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_gt_eq_no_isRoot_Icc_named)
+  "rr_card_roots_filter_gt_eq_no_isRoot_Icc" " using "
+    "interval_order" ":=" term ","
+    "no_roots" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_Ioc_zero_no_isRoot_Icc_named)
+  "rr_card_roots_filter_Ioc_zero_no_isRoot_Icc" " using "
+    "interval_order" ":=" term ","
+    "no_roots" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_all_eq_no_isRoot_Icc_named)
+  "rr_card_roots_filter_all_eq_no_isRoot_Icc" " using "
+    "interval_order" ":=" term ","
+    "no_roots" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_le_sub_eq_no_isRoot_Ioc_named)
+  "rr_card_roots_filter_le_sub_eq_no_isRoot_Ioc" " using "
+    "interval_order" ":=" term ","
+    "left_no_roots" ":=" term ","
+    "right_no_roots" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_gt_sub_eq_no_isRoot_Ioc_named)
+  "rr_card_roots_filter_gt_sub_eq_no_isRoot_Ioc" " using "
+    "interval_order" ":=" term ","
+    "left_no_roots" ":=" term ","
+    "right_no_roots" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_le_bound_no_isRoot_Ioc_named)
+  "rr_card_roots_filter_le_bound_no_isRoot_Ioc" " using "
+    "interval_order" ":=" term ","
+    "left_no_roots" ":=" term ","
+    "right_no_roots" ":=" term ","
+    "source_bound" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_gt_bound_no_isRoot_Ioc_named)
+  "rr_card_roots_filter_gt_bound_no_isRoot_Ioc" " using "
+    "interval_order" ":=" term ","
+    "left_no_roots" ":=" term ","
+    "right_no_roots" ":=" term ","
+    "source_bound" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_le_and_gt_bound_no_isRoot_Ioc_named)
+  "rr_card_roots_filter_le_and_gt_bound_no_isRoot_Ioc" " using "
+    "interval_order" ":=" term ","
+    "left_no_roots" ":=" term ","
+    "right_no_roots" ":=" term ","
+    "lower_source_bound" ":=" term ","
+    "upper_source_bound" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_le_sub_eq_no_isRoot_Icc_named)
+  "rr_card_roots_filter_le_sub_eq_no_isRoot_Icc" " using "
+    "interval_order" ":=" term ","
+    "left_no_roots" ":=" term ","
+    "right_no_roots" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_gt_sub_eq_no_isRoot_Icc_named)
+  "rr_card_roots_filter_gt_sub_eq_no_isRoot_Icc" " using "
+    "interval_order" ":=" term ","
+    "left_no_roots" ":=" term ","
+    "right_no_roots" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_le_bound_no_isRoot_Icc_named)
+  "rr_card_roots_filter_le_bound_no_isRoot_Icc" " using "
+    "interval_order" ":=" term ","
+    "left_no_roots" ":=" term ","
+    "right_no_roots" ":=" term ","
+    "source_bound" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_gt_bound_no_isRoot_Icc_named)
+  "rr_card_roots_filter_gt_bound_no_isRoot_Icc" " using "
+    "interval_order" ":=" term ","
+    "left_no_roots" ":=" term ","
+    "right_no_roots" ":=" term ","
+    "source_bound" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_le_and_gt_bound_no_isRoot_Icc_named)
+  "rr_card_roots_filter_le_and_gt_bound_no_isRoot_Icc" " using "
+    "interval_order" ":=" term ","
+    "left_no_roots" ":=" term ","
+    "right_no_roots" ":=" term ","
+    "lower_source_bound" ":=" term ","
+    "upper_source_bound" ":=" term :
+  tactic
+
 macro_rules
   | `(tactic|
       rr_natDegree_add_C_mul_lt using
@@ -361,6 +503,165 @@ macro_rules
       `(tactic|
         exact RealRooted.right_ne_zero_and_card_roots_of_succDegree
           $hfpos $hgpos $hfg $hsucc)
+  | `(tactic|
+      rr_card_roots_filter_le_eq_no_isRoot_Ioc using
+        interval_order := $hab:term,
+        no_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.card_roots_filter_le_eq_of_no_isRoot_Ioc
+          $hab $hno)
+  | `(tactic|
+      rr_card_roots_filter_gt_eq_no_isRoot_Ioc using
+        interval_order := $hab:term,
+        no_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.card_roots_filter_gt_eq_of_no_isRoot_Ioc
+          $hab $hno)
+  | `(tactic|
+      rr_card_roots_filter_Ioc_zero_no_isRoot_Ioc using
+        interval_order := $hab:term,
+        no_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.card_roots_filter_Ioc_eq_zero_of_no_isRoot_Ioc
+          $hab $hno)
+  | `(tactic|
+      rr_card_roots_filter_all_eq_no_isRoot_Ioc using
+        interval_order := $hab:term,
+        no_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.card_roots_filter_all_eq_of_no_isRoot_Ioc
+          $hab $hno)
+  | `(tactic|
+      rr_card_roots_filter_le_mono using
+        interval_order := $hab:term) =>
+      `(tactic|
+        exact RealRooted.card_roots_filter_le_mono_of_le $hab)
+  | `(tactic|
+      rr_card_roots_filter_gt_antitone using
+        interval_order := $hab:term) =>
+      `(tactic|
+        exact RealRooted.card_roots_filter_gt_antitone_of_le $hab)
+  | `(tactic|
+      rr_card_roots_filter_le_and_gt_mono using
+        interval_order := $hab:term) =>
+      `(tactic|
+        exact RealRooted.card_roots_filter_le_and_gt_mono_of_le $hab)
+  | `(tactic|
+      rr_card_roots_filter_le_eq_no_isRoot_Icc using
+        interval_order := $hab:term,
+        no_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.card_roots_filter_le_eq_of_no_isRoot_Icc
+          $hab $hno)
+  | `(tactic|
+      rr_card_roots_filter_gt_eq_no_isRoot_Icc using
+        interval_order := $hab:term,
+        no_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.card_roots_filter_gt_eq_of_no_isRoot_Icc
+          $hab $hno)
+  | `(tactic|
+      rr_card_roots_filter_Ioc_zero_no_isRoot_Icc using
+        interval_order := $hab:term,
+        no_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.card_roots_filter_Ioc_eq_zero_of_no_isRoot_Icc
+          $hab $hno)
+  | `(tactic|
+      rr_card_roots_filter_all_eq_no_isRoot_Icc using
+        interval_order := $hab:term,
+        no_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.card_roots_filter_all_eq_of_no_isRoot_Icc
+          $hab $hno)
+  | `(tactic|
+      rr_card_roots_filter_le_sub_eq_no_isRoot_Ioc using
+        interval_order := $hab:term,
+        left_no_roots := $hf:term,
+        right_no_roots := $hg:term) =>
+      `(tactic|
+        exact RealRooted.card_roots_filter_le_sub_eq_of_no_isRoot_Ioc
+          $hab $hf $hg)
+  | `(tactic|
+      rr_card_roots_filter_gt_sub_eq_no_isRoot_Ioc using
+        interval_order := $hab:term,
+        left_no_roots := $hf:term,
+        right_no_roots := $hg:term) =>
+      `(tactic|
+        exact RealRooted.card_roots_filter_gt_sub_eq_of_no_isRoot_Ioc
+          $hab $hf $hg)
+  | `(tactic|
+      rr_card_roots_filter_le_bound_no_isRoot_Ioc using
+        interval_order := $hab:term,
+        left_no_roots := $hf:term,
+        right_no_roots := $hg:term,
+        source_bound := $h:term) =>
+      `(tactic|
+        exact RealRooted.card_roots_filter_le_bound_of_no_isRoot_Ioc
+          $hab $hf $hg $h)
+  | `(tactic|
+      rr_card_roots_filter_gt_bound_no_isRoot_Ioc using
+        interval_order := $hab:term,
+        left_no_roots := $hf:term,
+        right_no_roots := $hg:term,
+        source_bound := $h:term) =>
+      `(tactic|
+        exact RealRooted.card_roots_filter_gt_bound_of_no_isRoot_Ioc
+          $hab $hf $hg $h)
+  | `(tactic|
+      rr_card_roots_filter_le_and_gt_bound_no_isRoot_Ioc using
+        interval_order := $hab:term,
+        left_no_roots := $hf:term,
+        right_no_roots := $hg:term,
+        lower_source_bound := $hle:term,
+        upper_source_bound := $hgt:term) =>
+      `(tactic|
+        exact RealRooted.card_roots_filter_le_and_gt_bound_of_no_isRoot_Ioc
+          $hab $hf $hg $hle $hgt)
+  | `(tactic|
+      rr_card_roots_filter_le_sub_eq_no_isRoot_Icc using
+        interval_order := $hab:term,
+        left_no_roots := $hf:term,
+        right_no_roots := $hg:term) =>
+      `(tactic|
+        exact RealRooted.card_roots_filter_le_sub_eq_of_no_isRoot_Icc
+          $hab $hf $hg)
+  | `(tactic|
+      rr_card_roots_filter_gt_sub_eq_no_isRoot_Icc using
+        interval_order := $hab:term,
+        left_no_roots := $hf:term,
+        right_no_roots := $hg:term) =>
+      `(tactic|
+        exact RealRooted.card_roots_filter_gt_sub_eq_of_no_isRoot_Icc
+          $hab $hf $hg)
+  | `(tactic|
+      rr_card_roots_filter_le_bound_no_isRoot_Icc using
+        interval_order := $hab:term,
+        left_no_roots := $hf:term,
+        right_no_roots := $hg:term,
+        source_bound := $h:term) =>
+      `(tactic|
+        exact RealRooted.card_roots_filter_le_bound_of_no_isRoot_Icc
+          $hab $hf $hg $h)
+  | `(tactic|
+      rr_card_roots_filter_gt_bound_no_isRoot_Icc using
+        interval_order := $hab:term,
+        left_no_roots := $hf:term,
+        right_no_roots := $hg:term,
+        source_bound := $h:term) =>
+      `(tactic|
+        exact RealRooted.card_roots_filter_gt_bound_of_no_isRoot_Icc
+          $hab $hf $hg $h)
+  | `(tactic|
+      rr_card_roots_filter_le_and_gt_bound_no_isRoot_Icc using
+        interval_order := $hab:term,
+        left_no_roots := $hf:term,
+        right_no_roots := $hg:term,
+        lower_source_bound := $hle:term,
+        upper_source_bound := $hgt:term) =>
+      `(tactic|
+        exact RealRooted.card_roots_filter_le_and_gt_bound_of_no_isRoot_Icc
+          $hab $hf $hg $hle $hgt)
 
 end Tactic
 end RealRooted
