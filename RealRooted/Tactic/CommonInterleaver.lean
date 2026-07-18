@@ -1,4 +1,6 @@
+import RealRooted.ClosedSegmentCountEqFromAnalytic
 import RealRooted.CommonInterleaverTwo
+import RealRooted.SameDegreeCountFromAnalytic
 
 /-!
 # Common-interleaver and compatibility tactic frontends
@@ -178,6 +180,32 @@ syntax (name := rr_common_left_interleaver_sum_realrooted_named)
     "nonempty" ":=" term :
   tactic
 
+syntax (name := rr_sameDegree_rootCountAbove_nonRoot_analytic_named)
+  "rr_sameDegree_rootCountAbove_nonRoot_analytic" :
+  tactic
+
+syntax (name := rr_sameDegree_pair_common_interleaver_analytic_named)
+  "rr_sameDegree_pair_common_interleaver_analytic" :
+  tactic
+
+syntax (name := rr_succDegree_pair_common_interleaver_local_lower_named)
+  "rr_succDegree_pair_common_interleaver_local_lower" :
+  tactic
+
+syntax (name := rr_compatible_pair_common_interleaver_degree_split_nonnegShift_named)
+  "rr_compatible_pair_common_interleaver_degree_split_nonnegShift" " using "
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
+syntax (name := rr_pairwise_common_interleaver_degree_split_nonnegShift_named)
+  "rr_pairwise_common_interleaver_degree_split_nonnegShift" " using "
+    "same_degree" ":=" term ","
+    "succ_degree" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "pairwise_compatible" ":=" term :
+  tactic
+
 macro_rules
   | `(tactic| rr_compatible_comm using compatible := $h:term) =>
       `(tactic| exact RealRooted.Compatible.comm $h)
@@ -338,6 +366,34 @@ macro_rules
       `(tactic|
         exact RealRooted.isRealRooted_sum_of_commonLeftInterleaver
           $hcommon $hpos $hne)
+  | `(tactic| rr_sameDegree_rootCountAbove_nonRoot_analytic) =>
+      `(tactic|
+        exact
+          RealRooted.posComboNoCommonSameDegreeRootCountAboveNonRootNonneg_from_analytic)
+  | `(tactic| rr_sameDegree_pair_common_interleaver_analytic) =>
+      `(tactic|
+        exact
+          RealRooted.posComboNoCommonSameDegreePairHasCommonInterleaverNonneg_from_analytic)
+  | `(tactic| rr_succDegree_pair_common_interleaver_local_lower) =>
+      `(tactic|
+        exact
+          RealRooted.succDegreePairHasCommonInterleaver_nonneg_of_local_lower_counts)
+  | `(tactic|
+      rr_compatible_pair_common_interleaver_degree_split_nonnegShift using
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact RealRooted.compatiblePairHasCommonInterleaver_of_pairDegreeSplit_via_nonnegShift
+          $hsame $hsucc)
+  | `(tactic|
+      rr_pairwise_common_interleaver_degree_split_nonnegShift using
+        same_degree := $hsame:term,
+        succ_degree := $hsucc:term,
+        member_pos_lc := $hpos:term,
+        pairwise_compatible := $hpair:term) =>
+      `(tactic|
+        exact pairwiseHasCommonInterleaver_of_pairwiseCompatible_of_pairDegreeSplit_via_nonnegShift
+          $hsame $hsucc $hpos $hpair)
 
 end Tactic
 end RealRooted

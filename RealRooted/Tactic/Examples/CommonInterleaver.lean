@@ -222,5 +222,37 @@ example {fs : List ℝ[X]}
     member_pos_lc := hpos,
     nonempty := hne
 
+example :
+    PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement := by
+  rr_sameDegree_rootCountAbove_nonRoot_analytic
+
+example :
+    PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement := by
+  rr_sameDegree_pair_common_interleaver_analytic
+
+example :
+    PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement := by
+  rr_succDegree_pair_common_interleaver_local_lower
+
+example
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement) :
+    CompatiblePairHasCommonInterleaverStatement := by
+  rr_compatible_pair_common_interleaver_degree_split_nonnegShift using
+    same_degree := hsame,
+    succ_degree := hsucc
+
+example {fs : List ℝ[X]}
+    (hsame : PosComboNoCommonSameDegreePairHasCommonInterleaverNonnegStatement)
+    (hsucc : PosComboNoCommonSuccDegreePairHasCommonInterleaverNonnegStatement)
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hpair : PairwiseCompatible fs) :
+    PairwiseHasCommonInterleaver fs := by
+  rr_pairwise_common_interleaver_degree_split_nonnegShift using
+    same_degree := hsame,
+    succ_degree := hsucc,
+    member_pos_lc := hpos,
+    pairwise_compatible := hpair
+
 end Tactic
 end RealRooted
