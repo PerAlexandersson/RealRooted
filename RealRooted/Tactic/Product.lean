@@ -771,28 +771,14 @@ theorem isRealRooted_of_endpoint_sum_then_X_pair_lift_sequence
       ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧ (B n ≠ 0 ∧ (B n).Splits) :=
     isRealRooted_of_endpoint_sum_then_X_pair_sequence
       hbase hA0_nonneg hB0_nonneg hstepA hstepB hcop
-  have heven : ∀ n : Nat, P (2 * n) ≠ 0 ∧ (P (2 * n)).Splits := by
-    intro n
-    have hfactor : (X + C t) ^ (mA n) ≠ 0 ∧ ((X + C t) ^ (mA n)).Splits :=
-      isRealRooted_X_add_C_pow t (mA n)
-    have hrow :
-        (X + C t) ^ (mA n) * A n ≠ 0 ∧
-          ((X + C t) ^ (mA n) * A n).Splits :=
-      isRealRooted_mul hfactor.1 hfactor.2
-        (left_ne_zero_of_isRealRooted_pair_sequence hquot n)
-        (left_splits_of_isRealRooted_pair_sequence hquot n)
-    simpa [hrowA n] using hrow
-  have hodd : ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
-    intro n
-    have hfactor : (X + C t) ^ (mB n) ≠ 0 ∧ ((X + C t) ^ (mB n)).Splits :=
-      isRealRooted_X_add_C_pow t (mB n)
-    have hrow :
-        (X + C t) ^ (mB n) * B n ≠ 0 ∧
-          ((X + C t) ^ (mB n) * B n).Splits :=
-      isRealRooted_mul hfactor.1 hfactor.2
-        (right_ne_zero_of_isRealRooted_pair_sequence hquot n)
-        (right_splits_of_isRealRooted_pair_sequence hquot n)
-    simpa [hrowB n] using hrow
+  have heven : ∀ n : Nat, P (2 * n) ≠ 0 ∧ (P (2 * n)).Splits :=
+    isRealRooted_of_X_add_C_pow_lift_sequence
+      (P := fun n => P (2 * n)) (Q := A) (t := t) (m := mA)
+      (left_isRealRooted_of_isRealRooted_pair_sequence hquot) hrowA
+  have hodd : ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits :=
+    isRealRooted_of_X_add_C_pow_lift_sequence
+      (P := fun n => P (2 * n + 1)) (Q := B) (t := t) (m := mB)
+      (right_isRealRooted_of_isRealRooted_pair_sequence hquot) hrowB
   exact isRealRooted_of_even_odd_sequence heven hodd
 
 /-- Endpoint quotient plus endpoint-power lift for the reversed quotient
@@ -812,28 +798,14 @@ theorem isRealRooted_of_endpoint_X_then_sum_pair_lift_sequence
       ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧ (B n ≠ 0 ∧ (B n).Splits) :=
     isRealRooted_of_endpoint_X_then_sum_pair_sequence
       hbase hA0_nonneg hB0_nonneg hstepB hstepA hcop
-  have heven : ∀ n : Nat, P (2 * n) ≠ 0 ∧ (P (2 * n)).Splits := by
-    intro n
-    have hfactor : (X + C t) ^ (mA n) ≠ 0 ∧ ((X + C t) ^ (mA n)).Splits :=
-      isRealRooted_X_add_C_pow t (mA n)
-    have hrow :
-        (X + C t) ^ (mA n) * A n ≠ 0 ∧
-          ((X + C t) ^ (mA n) * A n).Splits :=
-      isRealRooted_mul hfactor.1 hfactor.2
-        (left_ne_zero_of_isRealRooted_pair_sequence hquot n)
-        (left_splits_of_isRealRooted_pair_sequence hquot n)
-    simpa [hrowA n] using hrow
-  have hodd : ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
-    intro n
-    have hfactor : (X + C t) ^ (mB n) ≠ 0 ∧ ((X + C t) ^ (mB n)).Splits :=
-      isRealRooted_X_add_C_pow t (mB n)
-    have hrow :
-        (X + C t) ^ (mB n) * B n ≠ 0 ∧
-          ((X + C t) ^ (mB n) * B n).Splits :=
-      isRealRooted_mul hfactor.1 hfactor.2
-        (right_ne_zero_of_isRealRooted_pair_sequence hquot n)
-        (right_splits_of_isRealRooted_pair_sequence hquot n)
-    simpa [hrowB n] using hrow
+  have heven : ∀ n : Nat, P (2 * n) ≠ 0 ∧ (P (2 * n)).Splits :=
+    isRealRooted_of_X_add_C_pow_lift_sequence
+      (P := fun n => P (2 * n)) (Q := A) (t := t) (m := mA)
+      (left_isRealRooted_of_isRealRooted_pair_sequence hquot) hrowA
+  have hodd : ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits :=
+    isRealRooted_of_X_add_C_pow_lift_sequence
+      (P := fun n => P (2 * n + 1)) (Q := B) (t := t) (m := mB)
+      (right_isRealRooted_of_isRealRooted_pair_sequence hquot) hrowB
   exact isRealRooted_of_even_odd_sequence heven hodd
 
 /-- Endpoint quotient plus endpoint-power lift for the reversed quotient
@@ -858,28 +830,14 @@ theorem isRealRooted_of_endpoint_X_then_sum_pair_lift_swapped_sequence
       ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧ (B n ≠ 0 ∧ (B n).Splits) :=
     isRealRooted_of_endpoint_X_then_sum_pair_sequence
       hbase hA0_nonneg hB0_nonneg hstepB hstepA hcop
-  have heven : ∀ n : Nat, P (2 * n) ≠ 0 ∧ (P (2 * n)).Splits := by
-    intro n
-    have hfactor : (X + C t) ^ (mB n) ≠ 0 ∧ ((X + C t) ^ (mB n)).Splits :=
-      isRealRooted_X_add_C_pow t (mB n)
-    have hrow :
-        (X + C t) ^ (mB n) * B n ≠ 0 ∧
-          ((X + C t) ^ (mB n) * B n).Splits :=
-      isRealRooted_mul hfactor.1 hfactor.2
-        (right_ne_zero_of_isRealRooted_pair_sequence hquot n)
-        (right_splits_of_isRealRooted_pair_sequence hquot n)
-    simpa [hrowB n] using hrow
-  have hodd : ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
-    intro n
-    have hfactor : (X + C t) ^ (mA n) ≠ 0 ∧ ((X + C t) ^ (mA n)).Splits :=
-      isRealRooted_X_add_C_pow t (mA n)
-    have hrow :
-        (X + C t) ^ (mA n) * A n ≠ 0 ∧
-          ((X + C t) ^ (mA n) * A n).Splits :=
-      isRealRooted_mul hfactor.1 hfactor.2
-        (left_ne_zero_of_isRealRooted_pair_sequence hquot n)
-        (left_splits_of_isRealRooted_pair_sequence hquot n)
-    simpa [hrowA n] using hrow
+  have heven : ∀ n : Nat, P (2 * n) ≠ 0 ∧ (P (2 * n)).Splits :=
+    isRealRooted_of_X_add_C_pow_lift_sequence
+      (P := fun n => P (2 * n)) (Q := B) (t := t) (m := mB)
+      (right_isRealRooted_of_isRealRooted_pair_sequence hquot) hrowB
+  have hodd : ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits :=
+    isRealRooted_of_X_add_C_pow_lift_sequence
+      (P := fun n => P (2 * n + 1)) (Q := A) (t := t) (m := mA)
+      (left_isRealRooted_of_isRealRooted_pair_sequence hquot) hrowA
   exact isRealRooted_of_even_odd_sequence heven hodd
 
 /-- Sequence shell for first-order affine-product recurrences. -/
