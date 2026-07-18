@@ -7,6 +7,24 @@ noncomputable section
 namespace RealRooted
 namespace TacticExamples
 
+example (a b c : ℝ) {d : ℕ} (hd : 2 ≤ d) :
+    quadraticJensen a b c d =
+      (X + 1) ^ (d - 2) * quadraticJensenResidual a b c d := by
+  exact quadraticJensen_eq_factor_residual a b c hd
+
+example {d : ℕ} (hd : 2 ≤ d) :
+    bidiagonalJensenPencil
+        (quadraticJensenWeight 1 2 1) (quadraticJensenWeight 0 0 1) d 1 =
+      (X + 1) ^ (d - 2) * quadraticBidiagonalResidual 1 2 1 0 0 1 d := by
+  exact quadraticBidiagonalJensenPencil_eq_factor_residual_one 1 2 1 0 0 1 hd
+
+example {alpha beta alpha' beta' : ℕ → ℝ} {d : ℕ}
+    (hpres : BidiagonalPFPreserver alpha' beta' d)
+    (halpha : ∀ k, k ≤ d → alpha k = alpha' k)
+    (hbeta : ∀ k, k ≤ d → beta k = beta' k) :
+    BidiagonalPFPreserver alpha beta d := by
+  exact hpres.of_eq_on_degree halpha hbeta
+
 example {P : Nat → ℝ[X]}
     (hpf : ∀ n : Nat, IsPFPolynomial (P n)) :
     ∀ n : Nat, HasNonnegCoeffs (P n) := by

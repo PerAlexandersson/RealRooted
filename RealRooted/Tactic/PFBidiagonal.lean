@@ -156,6 +156,58 @@ def BidiagonalPFPreserver (alpha beta : ℕ → ℝ) (d : ℕ) : Prop :=
     p.natDegree ≤ d →
     IsPFPolynomial (bidiagonalOperator alpha beta p)
 
+/-- Replace a coefficient sequence by zero above degree `d`. -/
+def degreeTruncate (d : ℕ) (gamma : ℕ → ℝ) : ℕ → ℝ :=
+  fun k => if k ≤ d then gamma k else 0
+
+theorem degreeTruncate_eq_of_le (d : ℕ) (gamma : ℕ → ℝ) {k : ℕ}
+    (hk : k ≤ d) :
+    degreeTruncate d gamma k = gamma k := by
+  simp [degreeTruncate, hk]
+
+theorem degreeTruncate_nonneg {d : ℕ} {gamma : ℕ → ℝ}
+    (hgamma : ∀ k, k ≤ d → 0 ≤ gamma k) :
+    ∀ k, 0 ≤ degreeTruncate d gamma k := by
+  intro k
+  by_cases hk : k ≤ d
+  · rw [degreeTruncate_eq_of_le d gamma hk]
+    exact hgamma k hk
+  · simp [degreeTruncate, hk]
+
+theorem diagonalOperator_congr_of_eq_on_degree
+    {gamma delta : ℕ → ℝ} {p : ℝ[X]} {d : ℕ}
+    (hgamma : ∀ k, k ≤ d → gamma k = delta k)
+    (hp : p.natDegree ≤ d) :
+    diagonalOperator gamma p = diagonalOperator delta p := by
+  ext k
+  rw [coeff_diagonalOperator, coeff_diagonalOperator]
+  by_cases hk : k ≤ d
+  · rw [hgamma k hk]
+  · have hdk : d < k := Nat.lt_of_not_ge hk
+    have hklt : p.natDegree < k := lt_of_le_of_lt hp hdk
+    rw [Polynomial.coeff_eq_zero_of_natDegree_lt hklt]
+    ring
+
+theorem bidiagonalOperator_congr_of_eq_on_degree
+    {alpha beta alpha' beta' : ℕ → ℝ} {p : ℝ[X]} {d : ℕ}
+    (halpha : ∀ k, k ≤ d → alpha k = alpha' k)
+    (hbeta : ∀ k, k ≤ d → beta k = beta' k)
+    (hp : p.natDegree ≤ d) :
+    bidiagonalOperator alpha beta p = bidiagonalOperator alpha' beta' p := by
+  unfold bidiagonalOperator
+  rw [diagonalOperator_congr_of_eq_on_degree halpha hp]
+  rw [diagonalOperator_congr_of_eq_on_degree hbeta hp]
+
+theorem BidiagonalPFPreserver.of_eq_on_degree
+    {alpha beta alpha' beta' : ℕ → ℝ} {d : ℕ}
+    (hpres : BidiagonalPFPreserver alpha' beta' d)
+    (halpha : ∀ k, k ≤ d → alpha k = alpha' k)
+    (hbeta : ∀ k, k ≤ d → beta k = beta' k) :
+    BidiagonalPFPreserver alpha beta d := by
+  intro p hp hdeg
+  rw [bidiagonalOperator_congr_of_eq_on_degree halpha hbeta hdeg]
+  exact hpres hp hdeg
+
 /-- Jensen-pencil attached to a coefficient-bidiagonal operator.
 
 For a degree bound `d`, the two diagonal parts have finite Jensen kernels
@@ -169,6 +221,88 @@ is the finite Schur--Szego/proper-position certificate we expect to use for
 the Family H coefficient-bidiagonal operators. -/
 def bidiagonalJensenPencil (alpha beta : ℕ → ℝ) (d : ℕ) (lam : ℝ) : ℝ[X] :=
   jensenPolynomial d alpha + C lam * X * jensenPolynomial d beta
+
+/-- Quadratic coefficient function `a k^2 + b k + c`. -/
+def quadraticJensenWeight (a b c : ℝ) (k : ℕ) : ℝ :=
+  a * (k : ℝ) ^ 2 + b * (k : ℝ) + c
+
+/-- Jensen polynomial attached to `quadraticJensenWeight`. -/
+def quadraticJensen (a b c : ℝ) (d : ℕ) : ℝ[X] :=
+  jensenPolynomial d (quadraticJensenWeight a b c)
+
+/-- The residual quadratic after removing the common `(1+X)^(d-2)` factor. -/
+def quadraticJensenResidual (a b c : ℝ) (d : ℕ) : ℝ[X] :=
+  C c * (X + 1) ^ 2 +
+    C ((a + b) * (d : ℝ)) * X * (X + 1) +
+      C (a * (d : ℝ) * ((d : ℝ) - 1)) * X ^ 2
+
+/-- Cubic residual for a bidiagonal Jensen pencil with quadratic coefficient functions. -/
+def quadraticBidiagonalResidual
+    (aa ab ac ba bb bc : ℝ) (d : ℕ) : ℝ[X] :=
+  quadraticJensenResidual aa ab ac d + X * quadraticJensenResidual ba bb bc d
+
+/-- Cubic residual pencil for a bidiagonal Jensen pencil with quadratic coefficients. -/
+def quadraticBidiagonalPencilResidual
+    (aa ab ac ba bb bc lam : ℝ) (d : ℕ) : ℝ[X] :=
+  quadraticJensenResidual aa ab ac d +
+    C lam * X * quadraticJensenResidual ba bb bc d
+
+theorem quadraticBidiagonalPencilResidual_one
+    (aa ab ac ba bb bc : ℝ) (d : ℕ) :
+    quadraticBidiagonalPencilResidual aa ab ac ba bb bc 1 d =
+      quadraticBidiagonalResidual aa ab ac ba bb bc d := by
+  simp [quadraticBidiagonalPencilResidual, quadraticBidiagonalResidual]
+
+/-- The written second-derivative quadratic coefficient is a quadratic Jensen weight. -/
+theorem secondDerivativeQuadraticCoeff_eq_quadraticJensenWeight
+    (a b c : ℝ) :
+    secondDerivativeQuadraticCoeff a b c = quadraticJensenWeight c (b - c) a := by
+  funext k
+  simp [secondDerivativeQuadraticCoeff, quadraticJensenWeight]
+  ring
+
+/-- `quadraticJensen` is the Jensen polynomial for `quadraticJensenWeight`. -/
+theorem quadraticJensen_eq_jensenPolynomial (a b c : ℝ) (d : ℕ) :
+    quadraticJensen a b c d =
+      jensenPolynomial d (quadraticJensenWeight a b c) := rfl
+
+/-- Factorization of a quadratic Jensen polynomial through its residual. -/
+theorem quadraticJensen_eq_factor_residual
+    (a b c : ℝ) {d : ℕ} (hd : 2 ≤ d) :
+    quadraticJensen a b c d =
+      (X + 1) ^ (d - 2) * quadraticJensenResidual a b c d := by
+  change jensenPolynomial d (fun k => a * (k : ℝ) ^ 2 + b * (k : ℝ) + c) =
+    (X + 1) ^ (d - 2) * quadraticJensenResidual a b c d
+  simpa [quadraticJensenResidual] using
+    jensenPolynomial_quadratic_sequence_factor a b c d hd
+
+/-- Quadratic coefficient functions give a cubic residual pencil after the common factor. -/
+theorem quadraticBidiagonalJensenPencil_eq_factor_residual
+    (aa ab ac ba bb bc lam : ℝ) {d : ℕ} (hd : 2 ≤ d) :
+    bidiagonalJensenPencil
+        (quadraticJensenWeight aa ab ac)
+        (quadraticJensenWeight ba bb bc) d lam =
+      (X + 1) ^ (d - 2) *
+        quadraticBidiagonalPencilResidual aa ab ac ba bb bc lam d := by
+  rw [bidiagonalJensenPencil]
+  change quadraticJensen aa ab ac d + C lam * X * quadraticJensen ba bb bc d =
+    (X + 1) ^ (d - 2) *
+      quadraticBidiagonalPencilResidual aa ab ac ba bb bc lam d
+  rw [quadraticJensen_eq_factor_residual aa ab ac hd]
+  rw [quadraticJensen_eq_factor_residual ba bb bc hd]
+  simp [quadraticBidiagonalPencilResidual]
+  ring
+
+/-- The `lambda = 1` specialization of the quadratic bidiagonal residual factorization. -/
+theorem quadraticBidiagonalJensenPencil_eq_factor_residual_one
+    (aa ab ac ba bb bc : ℝ) {d : ℕ} (hd : 2 ≤ d) :
+    bidiagonalJensenPencil
+        (quadraticJensenWeight aa ab ac)
+        (quadraticJensenWeight ba bb bc) d 1 =
+      (X + 1) ^ (d - 2) *
+        quadraticBidiagonalResidual aa ab ac ba bb bc d := by
+  rw [quadraticBidiagonalJensenPencil_eq_factor_residual aa ab ac ba bb bc 1 hd]
+  rw [quadraticBidiagonalPencilResidual_one]
 
 @[simp] theorem bidiagonalJensenPencil_zero_lambda
     (alpha beta : ℕ → ℝ) (d : ℕ) :
