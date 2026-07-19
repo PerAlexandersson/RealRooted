@@ -53,5 +53,49 @@ example {p q : ℝ[X]}
     even_nonneg := hq,
     stable := hstable
 
+example {F G : Nat → ℝ[X]}
+    (hF : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hG : ∀ n : Nat, HasPosLeadingCoeff (G n))
+    (hprec : ∀ n : Nat, Prec (G n) (F n)) :
+    ∀ n : Nat, IsUpperHalfPlaneStable (hermiteBiehlerPolynomial (F n) (G n)) := by
+  rr_hermite_biehler_forward_pos_sequence using
+    real_pos_lc := hF,
+    imag_pos_lc := hG,
+    prec_imag_real := hprec
+
+example {F G : Nat → ℝ[X]}
+    (hF : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hG : ∀ n : Nat, HasPosLeadingCoeff (G n))
+    (hstable :
+      ∀ n : Nat, IsUpperHalfPlaneStable (hermiteBiehlerPolynomial (F n) (G n))) :
+    ∀ n : Nat, Prec (G n) (F n) ∨ Prec (F n) (G n) := by
+  rr_hermite_biehler_converse_sequence using
+    real_pos_lc := hF,
+    imag_pos_lc := hG,
+    stable := hstable
+
+example {P Q : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hQ : ∀ n : Nat, HasNonnegCoeffs (Q n))
+    (hstable :
+      ∀ n : Nat, IsUpperHalfPlaneStable (hermiteBiehlerPolynomial (Q n) (P n))) :
+    ∀ n : Nat,
+      IsRightHalfPlaneStable (complexify (oddEvenPolynomial (P n) (Q n))) := by
+  rr_hermite_biehler_odd_even_hurwitz_sequence using
+    odd_nonneg := hP,
+    even_nonneg := hQ,
+    stable := hstable
+
+example {P Q : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hQ : ∀ n : Nat, HasNonnegCoeffs (Q n))
+    (hstable :
+      ∀ n : Nat, IsUpperHalfPlaneStable (hermiteBiehlerPolynomial (Q n) (P n))) :
+    ∀ n : Nat, IsHurwitzStable (oddEvenPolynomial (P n) (Q n)) := by
+  rr_hermite_biehler_odd_even_hurwitz_stable_sequence using
+    odd_nonneg := hP,
+    even_nonneg := hQ,
+    stable := hstable
+
 end Tactic
 end RealRooted
