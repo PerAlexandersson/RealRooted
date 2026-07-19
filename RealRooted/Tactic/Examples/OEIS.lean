@@ -86,6 +86,22 @@ example {P : Nat → ℝ[X]}
   rr_X_mul_realrooted_sequence using
     realrooted := hP
 
+/-- Coefficient-shape row-family exit exposed through the OEIS facade. -/
+example {P : Nat → ℝ[X]}
+    (hPnn : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hPrr : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
+    ∀ n : Nat, HasLogConcaveCoeffs (P n) := by
+  rr_coeff_shape using
+    nonneg := hPnn,
+    realrooted := hPrr
+
+/-- Single-row coefficient-shape exit exposed through the OEIS facade. -/
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hPnn : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hPrr : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
+    HasUnimodalCoeffs (P n) := by
+  rr_coeff_shape
+
 /-- Direct Family I2 half-line branch, adjacent-`Prec` endpoint. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
