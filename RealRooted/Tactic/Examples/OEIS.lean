@@ -1084,6 +1084,17 @@ example {P : Nat → ℝ[X]} {t : Nat → ℝ}
     recurrence := hrec,
     certificate := auto
 
+/-- Product-factor auto router reaches constant-first affine factors. -/
+example {P : Nat → ℝ[X]} {t : Nat → ℝ}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat,
+      P (n + 1) = P n * (C (t n) + C ((n : ℝ) + 1) * X)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_factor_sequence using
+    base := hbase,
+    recurrence := hrec,
+    certificate := auto
+
 /-- Product-factor cutoff auto reaches constant-first affine factors. -/
 example {P : Nat → ℝ[X]} {t : Nat → ℝ}
     (N : Nat)
@@ -2784,6 +2795,16 @@ example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
 example {P Q : Nat → ℝ[X]}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
     (hrow : ∀ n : Nat, P n = C ((n : ℝ) + 1) * Q n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_sequence using
+    quotient_realrooted := hquot,
+    factorization := hrow,
+    certificate := auto
+
+/-- Product-lift auto router reaches constant-first affine factors. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = (C (t n) + C ((n : ℝ) + 1) * X) * Q n) :
     ∀ n : Nat, P n ≠ 0 := by
   rr_product_lift_sequence using
     quotient_realrooted := hquot,

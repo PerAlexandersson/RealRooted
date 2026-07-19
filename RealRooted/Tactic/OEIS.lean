@@ -229,6 +229,7 @@ rr_g_negative_lag_sequence using ... certificate := globalNonpos
 rr_g_negative_lag_sequence_den_coeff using ... certificate := negativeSquare
 rr_g_negative_lag_sequence_den_coeff using ... certificate := negativeQuadratic
 rr_h_second_derivative_sequence using route := pf_bidiagonal, ...
+rr_h_second_derivative_sequence using route := pf_bidiagonal_quadratic, ...
 rr_j1_factorable_sequence_realrooted using ... certificate := finiteLinearProduct
 rr_j1_gap3_reciprocal_sequence_realrooted using ... certificate := modelRealRooted
 rr_j1_gap3_reciprocal_sequence_realrooted using ... certificate := modelPF
