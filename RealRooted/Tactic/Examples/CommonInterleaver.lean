@@ -1416,6 +1416,30 @@ example {f g : ℝ[X]}
 example {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hfdeg : f.natDegree ≤ 1) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
+  rr_pair_common_interleaver_sameDegree_degree_le_one using
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    same_degree := hdeg,
+    left_degree_le_one := hfdeg
+
+example {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = f.natDegree)
+    (hfdeg : f.natDegree ≤ 1) :
+    ∃ h : ℝ[X], Prec h f ∧ Prec h g := by
+  rr_pair_common_left_interleaver_sameDegree_degree_le_one using
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    same_degree := hdeg,
+    left_degree_le_one := hfdeg
+
+example {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
     (hfg : Compatible f g)
     (hfdeg : f.natDegree ≤ 1)
     (hgdeg : g.natDegree ≤ 1) :
