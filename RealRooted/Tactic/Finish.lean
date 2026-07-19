@@ -1541,6 +1541,8 @@ macro_rules
           | exact $h
           | exact RealRooted.derivative_interlaces $h (by rr_close_side)
           | exact (RealRooted.derivative_interlaces $h (by rr_close_side)).toPrec
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_prec_chain_from_step $h)
           | rr_exact_realrooted_sequence_or_projection $h
           | rr_exact_realrooted_pair_sequence_or_projection $h
           | rr_exact_realrooted_or_projection $h
@@ -1555,6 +1557,13 @@ macro_rules
   | `(tactic| rr_finish using $hprec:term, $hdeg:term) =>
       `(tactic|
         first
+          | exact RealRooted.interlaces_of_prec_chain $hprec $hdeg
+          | exact RealRooted.interlaces_of_prec_chain $hprec (fun n => ($hdeg n).symm)
+          | exact (RealRooted.interlaces_of_prec_chain $hprec $hdeg _)
+          | exact (RealRooted.interlaces_of_prec_chain
+              $hprec (fun n => ($hdeg n).symm) _)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_prec_chain_from_step $hprec)
           | exact RealRooted.Prec.toInterlaces $hprec $hdeg
           | exact RealRooted.Prec.toInterlaces $hprec ($hdeg).symm
           | exact RealRooted.prec_sequence_of_base_and_step $hprec $hdeg
@@ -1578,6 +1587,11 @@ macro_rules
         first
           | rr_lookup
           | assumption
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_prec_chain_from_step rr_lookup_term)
+          | exact RealRooted.interlaces_of_prec_chain rr_lookup_term rr_lookup_term
+          | exact RealRooted.interlaces_of_prec_chain
+              rr_lookup_term (fun n => (rr_lookup_term n).symm)
           | rr_exact_realrooted_sequence_or_projection rr_lookup_term
           | rr_exact_realrooted_pair_sequence_or_projection rr_lookup_term
           | rr_exact_realrooted_or_projection rr_lookup_term

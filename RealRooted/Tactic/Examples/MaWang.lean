@@ -565,6 +565,28 @@ example {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]}
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi
 
+/-- A Ma--Wang `Prec` sequence feeds the generic finish tail directly. -/
+example {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
+    (hV : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (V n).eval r ≤ 0)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = U n * P (n + 1) + V n * (P (n + 1)).derivative)
+    (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
+    (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
+    ∀ n : Nat, (P n).Splits := by
+  have hprec : ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    rr_mw_derivative_nonpos_sequence using
+      base := hbase,
+      pos_lc := hpos,
+      degree_two := hdeg_two,
+      coeff_nonpos := hV,
+      recurrence := hrec,
+      degree_lower := hdeg_lo,
+      degree_upper := hdeg_hi
+  rr_finish using hprec
+
 /-- The generic weak Ma--Wang sequence shell also closes real-rootedness of all
 rows. -/
 example {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]}
@@ -1870,6 +1892,26 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     degree_two := hdeg_two,
     recurrence := hrec,
     degree_succ := hdeg_succ
+
+/-- The strict-degree Ma--Wang shell feeds the generic interlacing finish. -/
+example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = U n * P (n + 1) + X * (P (n + 1)).derivative)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  have hprec : ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+    rr_mw_derivative_X_sequence_nonneg using
+      base := hbase,
+      pos_lc := hpos,
+      nonneg_coeffs := hnonneg,
+      degree_two := hdeg_two,
+      recurrence := hrec,
+      degree_succ := hdeg_succ
+  rr_finish using hprec, hdeg_succ
 
 /-- Strict-degree real-rootedness endpoint for the `X P'` shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
