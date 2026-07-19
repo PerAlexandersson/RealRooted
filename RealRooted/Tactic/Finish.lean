@@ -1,4 +1,5 @@
 import RealRooted.Basic
+import RealRooted.DegreeDropReversal
 import RealRooted.Tactic.Lookup
 import RealRooted.Tactic.Sign
 import RealRooted.Tactic.SideGoals
@@ -403,6 +404,33 @@ syntax (name := rr_splits_pow)
     "splits" ":=" term ","
     "exponent" ":=" term :
   tactic
+syntax (name := rr_splits_reverse)
+  "rr_splits_reverse" " using "
+    "splits" ":=" term :
+  tactic
+syntax (name := rr_splits_of_reverse)
+  "rr_splits_of_reverse" " using "
+    "reverse_splits" ":=" term :
+  tactic
+syntax (name := rr_splits_reflect)
+  "rr_splits_reflect" " using "
+    "splits" ":=" term ","
+    "degree_bound" ":=" term :
+  tactic
+syntax (name := rr_splits_X_pow_mul_reverse)
+  "rr_splits_X_pow_mul_reverse" " using "
+    "splits" ":=" term :
+  tactic
+syntax (name := rr_splits_divX)
+  "rr_splits_divX" " using "
+    "coeff_zero" ":=" term ","
+    "splits" ":=" term :
+  tactic
+syntax (name := rr_splits_of_divX)
+  "rr_splits_of_divX" " using "
+    "coeff_zero" ":=" term ","
+    "divX_splits" ":=" term :
+  tactic
 syntax (name := rr_realrooted) "rr_realrooted" " using " term : tactic
 syntax (name := rr_nonzero_auto) "rr_nonzero" : tactic
 syntax (name := rr_splits_auto) "rr_splits" : tactic
@@ -695,7 +723,12 @@ macro_rules
           RealRooted.splits_of_isRealRooted $h,
           RealRooted.left_splits_of_isRealRooted_pair $h,
           RealRooted.right_splits_of_isRealRooted_pair $h,
-          Polynomial.Splits.pow $h _)
+          Polynomial.Splits.pow $h _,
+          RealRooted.DegreeDropReversal.splits_reverse $h,
+          RealRooted.DegreeDropReversal.splits_of_reverse $h,
+          RealRooted.DegreeDropReversal.splits_X_pow_mul_reverse $h _,
+          (RealRooted.DegreeDropReversal.splits_X_pow_mul_iff _).mpr $h,
+          (RealRooted.DegreeDropReversal.splits_X_pow_mul_iff _).mp $h)
   | `(tactic|
       rr_splits_mul using
         left := $hleft:term,
@@ -711,6 +744,41 @@ macro_rules
         exponent := $n:term) =>
       `(tactic|
         exact Polynomial.Splits.pow $h $n)
+  | `(tactic|
+      rr_splits_reverse using
+        splits := $h:term) =>
+      `(tactic|
+        exact RealRooted.DegreeDropReversal.splits_reverse $h)
+  | `(tactic|
+      rr_splits_of_reverse using
+        reverse_splits := $h:term) =>
+      `(tactic|
+        exact RealRooted.DegreeDropReversal.splits_of_reverse $h)
+  | `(tactic|
+      rr_splits_reflect using
+        splits := $h:term,
+        degree_bound := $hN:term) =>
+      `(tactic|
+        exact RealRooted.DegreeDropReversal.splits_reflect_of_splits $h $hN)
+  | `(tactic|
+      rr_splits_X_pow_mul_reverse using
+        splits := $h:term) =>
+      `(tactic|
+        exact RealRooted.DegreeDropReversal.splits_X_pow_mul_reverse $h _)
+  | `(tactic|
+      rr_splits_divX using
+        coeff_zero := $h0:term,
+        splits := $h:term) =>
+      `(tactic|
+        exact (RealRooted.DegreeDropReversal.splits_iff_divX_splits_of_coeff_zero
+          $h0).1 $h)
+  | `(tactic|
+      rr_splits_of_divX using
+        coeff_zero := $h0:term,
+        divX_splits := $h:term) =>
+      `(tactic|
+        exact RealRooted.DegreeDropReversal.splits_of_divX_splits_of_coeff_zero
+          $h0 $h)
   | `(tactic| rr_splits) =>
       `(tactic|
         first
