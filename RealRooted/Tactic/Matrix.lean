@@ -14,6 +14,7 @@ rr_matrix0
 rr_matrix0_weak
 rr_matrix0_realrooted
 rr_matrix0_filter_ne_zero
+rr_row_threshold_matrix0_weak
 rr_row_threshold_matrix0_realrooted
 rr_row_threshold_matrix0_filter_ne_zero
 ```
@@ -170,6 +171,18 @@ syntax (name := rr_row_threshold_matrix0_named)
     "input_interlacing" ":=" term :
   tactic
 
+syntax (name := rr_row_threshold_matrix0_weak_named)
+  "rr_row_threshold_matrix0_weak" " using "
+    "matrix" ":=" term ","
+    "rectangular" ":=" term ","
+    "row_threshold" ":=" term ","
+    "two_by_two" ":=" term ","
+    "input" ":=" term ","
+    "input_length" ":=" term ","
+    "input_interlacing" ":=" term ","
+    "input_real_rooted" ":=" term :
+  tactic
+
 syntax (name := rr_row_threshold_matrix0_realrooted_named)
   "rr_row_threshold_matrix0_realrooted" " using "
     "matrix" ":=" term ","
@@ -320,6 +333,20 @@ macro_rules
       `(tactic|
         exact RealRooted.rowThreshold_matrix_preserves_interlacing_seq0_of_2x2
           $G $hG_rect $hG_threshold $hG_affine $fs $hfs_len $hfs)
+  | `(tactic|
+      rr_row_threshold_matrix0_weak using
+        matrix := $G:term,
+        rectangular := $hG_rect:term,
+        row_threshold := $hG_threshold:term,
+        two_by_two := $hG_affine:term,
+        input := $fs:term,
+        input_length := $hfs_len:term,
+        input_interlacing := $hfs:term,
+        input_real_rooted := $hfs_real:term) =>
+      `(tactic|
+        exact
+          RealRooted.rowThreshold_matrix_preserves_interlacing_seq0_of_2x2_weak
+            $G $hG_rect $hG_threshold $hG_affine $fs $hfs_len $hfs $hfs_real)
   | `(tactic|
       rr_row_threshold_matrix0_realrooted using
         matrix := $G:term,
