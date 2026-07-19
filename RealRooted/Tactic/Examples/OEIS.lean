@@ -3159,5 +3159,91 @@ example
     recurrence := hrec,
     nonzero := hne
 
+/-- Family H second-derivative router, finite-symbol ordinary branch. -/
+example
+    (hBB : FiniteSymbolPF.finiteSymbolBBStatement)
+    (hhom : FiniteSymbolPF.homogenizeStableStatement)
+    (hmul : FiniteSymbolPF.bivariateStableMulXAddYPowStatement)
+    {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 : Nat → ℝ} {degreeBound : Nat → Nat}
+    (hbase : IsPFPolynomial (P 0))
+    (hdegree : ∀ n : Nat, (P n).natDegree ≤ degreeBound n)
+    (hd : ∀ n : Nat, 2 ≤ degreeBound n)
+    (hdeg : ∀ n : Nat,
+      (FiniteSymbolPF.quadraticBidiagonalResidual
+        (c2 n) (b1 n - c2 n) (a0 n) 0 (b2 n) (a1 n)
+        (degreeBound n)).natDegree = 3)
+    (hpf : ∀ n : Nat,
+      IsPFPolynomial
+        (FiniteSymbolPF.quadraticBidiagonalResidual
+          (c2 n) (b1 n - c2 n) (a0 n) 0 (b2 n) (a1 n)
+          (degreeBound n)))
+    (halpha : ∀ n k : Nat,
+      0 ≤ FiniteSymbolPF.secondDerivativeAlpha (a0 n) (b1 n) (c2 n) k)
+    (hbeta : ∀ n k : Nat,
+      0 ≤ FiniteSymbolPF.secondDerivativeBeta (a1 n) (b2 n) k)
+    (hrec : ∀ n : Nat,
+      P (n + 1) =
+        FiniteSymbolPF.secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) := by
+  rr_h_second_derivative_sequence using
+    route := finite_symbol,
+    bb_backend := hBB,
+    homogenize_stable := hhom,
+    mul_stable := hmul,
+    base := hbase,
+    degree := hdegree,
+    degree_ge_two := hd,
+    cubic_degree := hdeg,
+    residual_pf := hpf,
+    alpha_nonneg := halpha,
+    beta_nonneg := hbeta,
+    recurrence := hrec
+
+/-- Family H shifted second-derivative router, finite-symbol cutoff branch. -/
+example
+    (hBB : FiniteSymbolPF.finiteSymbolBBStatement)
+    (hhom : FiniteSymbolPF.homogenizeStableStatement)
+    (hmul : FiniteSymbolPF.bivariateStableMulXAddYPowStatement)
+    {P : Nat → ℝ[X]} {a0 a1 b1 b2 c3 : Nat → ℝ} {degreeBound : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
+    (hdegree : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ degreeBound n)
+    (hd : ∀ n : Nat, N ≤ n → 2 ≤ degreeBound n)
+    (hdeg : ∀ n : Nat, N ≤ n →
+      (FiniteSymbolPF.quadraticBidiagonalResidual
+        0 (b1 n) (a0 n) (c3 n) (b2 n - c3 n) (a1 n)
+        (degreeBound n)).natDegree = 3)
+    (hpf : ∀ n : Nat, N ≤ n →
+      IsPFPolynomial
+        (FiniteSymbolPF.quadraticBidiagonalResidual
+          0 (b1 n) (a0 n) (c3 n) (b2 n - c3 n) (a1 n)
+          (degreeBound n)))
+    (halpha : ∀ n k : Nat, N ≤ n →
+      0 ≤ FiniteSymbolPF.shiftedSecondDerivativeAlpha (a0 n) (b1 n) k)
+    (hbeta : ∀ n k : Nat, N ≤ n →
+      0 ≤ FiniteSymbolPF.shiftedSecondDerivativeBeta (a1 n) (b2 n) (c3 n) k)
+    (hne : ∀ n : Nat, P n ≠ 0)
+    (hrec : ∀ n : Nat, N ≤ n →
+      P (n + 1) =
+        FiniteSymbolPF.shiftedSecondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (P n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_h_shifted_second_derivative_sequence using
+    route := finite_symbol,
+    bb_backend := hBB,
+    homogenize_stable := hhom,
+    mul_stable := hmul,
+    cutoff := N,
+    base := hbase,
+    degree := hdegree,
+    degree_ge_two := hd,
+    cubic_degree := hdeg,
+    residual_pf := hpf,
+    alpha_nonneg := halpha,
+    beta_nonneg := hbeta,
+    recurrence := hrec,
+    nonzero := hne
+
 end Tactic
 end RealRooted
