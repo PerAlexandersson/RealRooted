@@ -38,6 +38,17 @@ syntax (name := rr_lw_derivative_lag_sequence_realrooted_sign_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+syntax (name := rr_lw_derivative_lag_sequence_interlaces_sign_auto_named)
+  "rr_lw_derivative_lag_sequence_interlaces_sign_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "degree_two" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
 syntax (name := rr_lw_derivative_lag_sequence_window_sign_auto_named)
   "rr_lw_derivative_lag_sequence_window_sign_auto" " using "
     "base" ":=" term ","
@@ -52,6 +63,18 @@ syntax (name := rr_lw_derivative_lag_sequence_window_sign_auto_named)
 
 syntax (name := rr_lw_derivative_lag_sequence_realrooted_window_sign_auto_named)
   "rr_lw_derivative_lag_sequence_realrooted_window_sign_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "degree_two" ":=" term ","
+    "root_lower" ":=" term ","
+    "root_upper" ":=" term ","
+    "recurrence" ":=" term ","
+    "degree_succ" ":=" term ","
+    "no_common_roots" ":=" term :
+  tactic
+
+syntax (name := rr_lw_derivative_lag_sequence_interlaces_window_sign_auto_named)
+  "rr_lw_derivative_lag_sequence_interlaces_window_sign_auto" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "degree_two" ":=" term ","
@@ -264,6 +287,27 @@ macro_rules
               rr_sign_at_roots using hsource, ($hnonneg (n + 1)))
             $hdeg_succ $hno))
   | `(tactic|
+      rr_lw_derivative_lag_sequence_interlaces_sign_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        degree_two := $hdeg_two:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        rr_finish using
+          (RealRooted.prec_lw_derivative_lag_sequence_of_root_signs
+            $hbase $hpos $hdeg_two $hrec
+            (by
+              intro n hsource
+              rr_sign_at_roots using hsource, ($hnonneg (n + 1)))
+            (by
+              intro n hsource
+              rr_sign_at_roots using hsource, ($hnonneg (n + 1)))
+            $hdeg_succ $hno),
+          $hdeg_succ)
+  | `(tactic|
       rr_lw_derivative_lag_sequence_window_sign_auto using
         base := $hbase:term,
         pos_lc := $hpos:term,
@@ -309,6 +353,30 @@ macro_rules
               rr_mw_root_window_linear_facts
               rr_sign)
             $hdeg_succ $hno))
+  | `(tactic|
+      rr_lw_derivative_lag_sequence_interlaces_window_sign_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        degree_two := $hdeg_two:term,
+        root_lower := $hroot_lower:term,
+        root_upper := $hroot_upper:term,
+        recurrence := $hrec:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        rr_finish using
+          (RealRooted.prec_lw_derivative_lag_sequence_of_root_window
+            $hbase $hpos $hdeg_two $hrec $hroot_lower $hroot_upper
+            (by
+              intro n r hr hroot_window_lower hroot_window_upper
+              rr_mw_root_window_linear_facts
+              rr_sign)
+            (by
+              intro n r hr hroot_window_lower hroot_window_upper
+              rr_mw_root_window_linear_facts
+              rr_sign)
+            $hdeg_succ $hno),
+          $hdeg_succ)
   | `(tactic|
       rr_lw_derivative_lag_sequence_den_coeff_sign_auto using
         base := $hbase:term,
