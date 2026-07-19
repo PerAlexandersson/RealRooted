@@ -1521,6 +1521,22 @@ example {P Q F : Nat → ℝ[X]}
     factorization := hrow,
     certificate := suppliedFactor
 
+/-- Product-lift router with supplied factor and cutoff. -/
+example {P Q F : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
+    (hrow : ∀ n : Nat, N ≤ n → P n = F n * Q n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    factor_realrooted := hfactor,
+    cutoff := N,
+    factorization := hrow,
+    certificate := suppliedFactor
+
 /-- Product-lift router, repeated root-zero factor. -/
 example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)

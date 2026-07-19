@@ -456,6 +456,37 @@ theorem isRealRooted_of_product_lift_right_sequence
   isRealRooted_of_product_lift_sequence hquot hfactor
     (fun n => by rw [hrow n, mul_comm])
 
+/-- Tail-start lift from a quotient sequence through row-wise real-rooted
+left factors. -/
+theorem isRealRooted_of_product_lift_sequence_from
+    {P Q F : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
+    (hrow : ∀ n : Nat, N ≤ n → P n = F n * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  intro n
+  by_cases hn : n ≤ N
+  · exact hbase n hn
+  · have hNn : N ≤ n := by lia
+    have hnext : F n * Q n ≠ 0 ∧ (F n * Q n).Splits :=
+      isRealRooted_mul (hfactor n hNn).1 (hfactor n hNn).2
+        (hquot n hNn).1 (hquot n hNn).2
+    simpa [hrow n hNn] using hnext
+
+/-- Right-factor variant of `isRealRooted_of_product_lift_sequence_from`. -/
+theorem isRealRooted_of_product_lift_right_sequence_from
+    {P Q F : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
+    (hrow : ∀ n : Nat, N ≤ n → P n = Q n * F n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_lift_sequence_from N hbase hquot hfactor
+    (fun n hn => by rw [hrow n hn, mul_comm])
+
 /-- Lift through a row-wise factor `X`, used for product reductions with a
 persistent root at the origin. -/
 theorem isRealRooted_of_X_lift_sequence
@@ -2390,6 +2421,15 @@ syntax (name := rr_product_lift_sequence_named)
     "factorization" ":=" term :
   tactic
 
+syntax (name := rr_product_lift_sequence_cutoff_named)
+  "rr_product_lift_sequence" " using "
+    "base" ":=" term ","
+    "quotient_realrooted" ":=" term ","
+    "factor_realrooted" ":=" term ","
+    "cutoff" ":=" term ","
+    "factorization" ":=" term :
+  tactic
+
 syntax (name := rr_product_lift_sequence)
   "rr_product_lift_sequence" " using " term ", " term ", " term :
   tactic
@@ -3174,6 +3214,19 @@ macro_rules
             $hquot $hfactor $hrow),
           (RealRooted.isRealRooted_of_product_lift_right_sequence
             $hquot $hfactor $hrow))
+  | `(tactic|
+      rr_product_lift_sequence using
+        base := $hbase:term,
+        quotient_realrooted := $hquot:term,
+        factor_realrooted := $hfactor:term,
+        cutoff := $N:term,
+        factorization := $hrow:term) =>
+      `(tactic|
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_product_lift_sequence_from
+            $N $hbase $hquot $hfactor $hrow),
+          (RealRooted.isRealRooted_of_product_lift_right_sequence_from
+            $N $hbase $hquot $hfactor $hrow))
   | `(tactic|
       rr_product_lift_sequence using
         $hquot:term, $hfactor:term, $hrow:term) =>

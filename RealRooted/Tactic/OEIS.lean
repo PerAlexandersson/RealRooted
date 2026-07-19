@@ -1010,6 +1010,16 @@ syntax (name := rr_product_lift_sequence_supplied_factor)
     "certificate" ":=" "suppliedFactor" :
   tactic
 
+syntax (name := rr_product_lift_sequence_supplied_factor_cutoff)
+  "rr_product_lift_sequence" " using "
+    "base" ":=" term ","
+    "quotient_realrooted" ":=" term ","
+    "factor_realrooted" ":=" term ","
+    "cutoff" ":=" term ","
+    "factorization" ":=" term ","
+    "certificate" ":=" "suppliedFactor" :
+  tactic
+
 syntax (name := rr_product_lift_sequence_root_zero)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -2106,6 +2116,21 @@ macro_rules
         rr_product_lift_sequence using
           quotient_realrooted := $hquot,
           factor_realrooted := $hfactor,
+          factorization := $hrow)
+  | `(tactic|
+      rr_product_lift_sequence using
+        base := $hbase:term,
+        quotient_realrooted := $hquot:term,
+        factor_realrooted := $hfactor:term,
+        cutoff := $N:term,
+        factorization := $hrow:term,
+        certificate := suppliedFactor) =>
+      `(tactic|
+        rr_product_lift_sequence using
+          base := $hbase,
+          quotient_realrooted := $hquot,
+          factor_realrooted := $hfactor,
+          cutoff := $N,
           factorization := $hrow)
   | `(tactic|
       rr_product_lift_sequence using

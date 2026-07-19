@@ -410,6 +410,21 @@ example {P Q F : Nat → ℝ[X]}
     factor_realrooted := hfactor,
     factorization := hrow
 
+/-- Product lifts can start after a finite base interval. -/
+example {P Q F : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
+    (hrow : ∀ n : Nat, N ≤ n → P n = Q n * F n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    factor_realrooted := hfactor,
+    cutoff := N,
+    factorization := hrow
+
 /-- `A155112`-style persistent root at zero: `P_n = X Q_n`. -/
 example {P Q : Nat → ℝ[X]}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
