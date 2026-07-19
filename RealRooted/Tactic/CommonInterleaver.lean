@@ -13,6 +13,102 @@ common-interleaver upgrades.
 open Polynomial
 
 namespace RealRooted
+
+theorem compatible_sequence_comm {F G : Nat → ℝ[X]}
+    (h : ∀ n : Nat, Compatible (F n) (G n)) :
+    ∀ n : Nat, Compatible (G n) (F n) := fun n =>
+  Compatible.comm (h n)
+
+theorem compatible_sequence_comp_X_add_C
+    {F G : Nat → ℝ[X]} {c : Nat → ℝ}
+    (h : ∀ n : Nat, Compatible (F n) (G n)) :
+    ∀ n : Nat,
+      Compatible ((F n).comp (X + C (c n))) ((G n).comp (X + C (c n))) := fun n =>
+  Compatible.comp_X_add_C (h n) (c n)
+
+theorem compatible_sequence_reflect
+    {N : Nat → Nat} {F G : Nat → ℝ[X]}
+    (h : ∀ n : Nat, Compatible (F n) (G n))
+    (hFN : ∀ n : Nat, (F n).natDegree ≤ N n)
+    (hGN : ∀ n : Nat, (G n).natDegree ≤ N n) :
+    ∀ n : Nat, Compatible (reflect (N n) (F n)) (reflect (N n) (G n)) := fun n =>
+  Compatible.reflect_of_natDegree_le (h n) (hFN n) (hGN n)
+
+theorem compatible_sequence_reflect_iff
+    {N : Nat → Nat} {F G : Nat → ℝ[X]}
+    (hFN : ∀ n : Nat, (F n).natDegree ≤ N n)
+    (hGN : ∀ n : Nat, (G n).natDegree ≤ N n) :
+    ∀ n : Nat,
+      Compatible (reflect (N n) (F n)) (reflect (N n) (G n)) ↔
+        Compatible (F n) (G n) := fun n =>
+  Compatible.reflect_iff_natDegree_le (hFN n) (hGN n)
+
+theorem compatible_sequence_derivative {F G : Nat → ℝ[X]}
+    (h : ∀ n : Nat, Compatible (F n) (G n)) :
+    ∀ n : Nat, Compatible (F n).derivative (G n).derivative := fun n =>
+  Compatible.derivative (h n)
+
+theorem compatible_sequence_left_realrooted {F G : Nat → ℝ[X]}
+    (h : ∀ n : Nat, Compatible (F n) (G n))
+    (hfpos : ∀ n : Nat, HasPosLeadingCoeff (F n)) :
+    ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits := fun n =>
+  Compatible.isRealRooted_left (h n) (hfpos n)
+
+theorem compatible_sequence_right_realrooted {F G : Nat → ℝ[X]}
+    (h : ∀ n : Nat, Compatible (F n) (G n))
+    (hgpos : ∀ n : Nat, HasPosLeadingCoeff (G n)) :
+    ∀ n : Nat, G n ≠ 0 ∧ (G n).Splits := fun n =>
+  Compatible.isRealRooted_right (h n) (hgpos n)
+
+theorem compatible_sequence_right_degree_le_succ {F G : Nat → ℝ[X]}
+    (h : ∀ n : Nat, Compatible (F n) (G n))
+    (hfpos : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hgpos : ∀ n : Nat, HasPosLeadingCoeff (G n)) :
+    ∀ n : Nat, (G n).natDegree ≤ (F n).natDegree + 1 := fun n =>
+  Compatible.natDegree_right_le_succ (h n) (hfpos n) (hgpos n)
+
+theorem compatible_sequence_degree_close {F G : Nat → ℝ[X]}
+    (h : ∀ n : Nat, Compatible (F n) (G n))
+    (hfpos : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hgpos : ∀ n : Nat, HasPosLeadingCoeff (G n)) :
+    ∀ n : Nat,
+      (F n).natDegree ≤ (G n).natDegree + 1 ∧
+        (G n).natDegree ≤ (F n).natDegree + 1 := fun n =>
+  Compatible.natDegree_close (h n) (hfpos n) (hgpos n)
+
+theorem compatible_sequence_to_pos_combo {F G : Nat → ℝ[X]}
+    (h : ∀ n : Nat, Compatible (F n) (G n))
+    (hfpos : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hgpos : ∀ n : Nat, HasPosLeadingCoeff (G n)) :
+    ∀ n : Nat, PosComboRealRooted (F n) (G n) := fun n =>
+  Compatible.toPosComboRealRooted (h n) (hfpos n) (hgpos n)
+
+theorem compatible_sequence_of_pos_combo {F G : Nat → ℝ[X]}
+    (hfg : ∀ n : Nat, PosComboRealRooted (F n) (G n))
+    (hf : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hg : ∀ n : Nat, G n ≠ 0 ∧ (G n).Splits) :
+    ∀ n : Nat, Compatible (F n) (G n) := fun n =>
+  Compatible.of_posComboRealRooted (hfg n) (hf n) (hg n)
+
+theorem compatible_sequence_of_pos_combo_same_degree {F G : Nat → ℝ[X]}
+    (hfg : ∀ n : Nat, PosComboRealRooted (F n) (G n))
+    (hfpos : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hgpos : ∀ n : Nat, HasPosLeadingCoeff (G n))
+    (hdeg : ∀ n : Nat, (G n).natDegree = (F n).natDegree) :
+    ∀ n : Nat, Compatible (F n) (G n) := fun n =>
+  Compatible.of_posComboRealRooted_sameDegree
+    (hfg n) (hfpos n) (hgpos n) (hdeg n)
+
+theorem compatible_sequence_of_pos_combo_succ_degree {F G : Nat → ℝ[X]}
+    (hfg : ∀ n : Nat, PosComboRealRooted (F n) (G n))
+    (hfpos : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hgpos : ∀ n : Nat, HasPosLeadingCoeff (G n))
+    (hdeg : ∀ n : Nat, (G n).natDegree = (F n).natDegree + 1)
+    (hfsplits : ∀ n : Nat, (F n).Splits) :
+    ∀ n : Nat, Compatible (F n) (G n) := fun n =>
+  Compatible.of_posComboRealRooted_succDegree
+    (hfg n) (hfpos n) (hgpos n) (hdeg n) (hfsplits n)
+
 namespace Tactic
 
 syntax (name := rr_compatible_comm_named)
@@ -92,6 +188,90 @@ syntax (name := rr_compatible_of_pos_combo_same_degree_named)
 
 syntax (name := rr_compatible_of_pos_combo_succ_degree_named)
   "rr_compatible_of_pos_combo_succ_degree" " using "
+    "pos_combo" ":=" term ","
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "succ_degree" ":=" term ","
+    "left_splits" ":=" term :
+  tactic
+
+syntax (name := rr_compatible_sequence_comm_named)
+  "rr_compatible_sequence_comm" " using " "compatible" ":=" term :
+  tactic
+
+syntax (name := rr_compatible_sequence_comp_X_add_C_named)
+  "rr_compatible_sequence_comp_X_add_C" " using "
+    "compatible" ":=" term ","
+    "shift" ":=" term :
+  tactic
+
+syntax (name := rr_compatible_sequence_reflect_named)
+  "rr_compatible_sequence_reflect" " using "
+    "compatible" ":=" term ","
+    "left_degree_bound" ":=" term ","
+    "right_degree_bound" ":=" term :
+  tactic
+
+syntax (name := rr_compatible_sequence_reflect_iff_named)
+  "rr_compatible_sequence_reflect_iff" " using "
+    "left_degree_bound" ":=" term ","
+    "right_degree_bound" ":=" term :
+  tactic
+
+syntax (name := rr_compatible_sequence_derivative_named)
+  "rr_compatible_sequence_derivative" " using " "compatible" ":=" term :
+  tactic
+
+syntax (name := rr_compatible_sequence_left_realrooted_named)
+  "rr_compatible_sequence_left_realrooted" " using "
+    "compatible" ":=" term ","
+    "left_pos_lc" ":=" term :
+  tactic
+
+syntax (name := rr_compatible_sequence_right_realrooted_named)
+  "rr_compatible_sequence_right_realrooted" " using "
+    "compatible" ":=" term ","
+    "right_pos_lc" ":=" term :
+  tactic
+
+syntax (name := rr_compatible_sequence_right_degree_le_succ_named)
+  "rr_compatible_sequence_right_degree_le_succ" " using "
+    "compatible" ":=" term ","
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term :
+  tactic
+
+syntax (name := rr_compatible_sequence_degree_close_named)
+  "rr_compatible_sequence_degree_close" " using "
+    "compatible" ":=" term ","
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term :
+  tactic
+
+syntax (name := rr_compatible_sequence_to_pos_combo_named)
+  "rr_compatible_sequence_to_pos_combo" " using "
+    "compatible" ":=" term ","
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term :
+  tactic
+
+syntax (name := rr_compatible_sequence_of_pos_combo_named)
+  "rr_compatible_sequence_of_pos_combo" " using "
+    "pos_combo" ":=" term ","
+    "left_realrooted" ":=" term ","
+    "right_realrooted" ":=" term :
+  tactic
+
+syntax (name := rr_compatible_sequence_of_pos_combo_same_degree_named)
+  "rr_compatible_sequence_of_pos_combo_same_degree" " using "
+    "pos_combo" ":=" term ","
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "same_degree" ":=" term :
+  tactic
+
+syntax (name := rr_compatible_sequence_of_pos_combo_succ_degree_named)
+  "rr_compatible_sequence_of_pos_combo_succ_degree" " using "
     "pos_combo" ":=" term ","
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
@@ -1318,6 +1498,83 @@ macro_rules
         left_splits := $hfsplits:term) =>
       `(tactic| exact RealRooted.Compatible.of_posComboRealRooted_succDegree
         $hfg $hfpos $hgpos $hdeg $hfsplits)
+  | `(tactic| rr_compatible_sequence_comm using compatible := $h:term) =>
+      `(tactic| exact RealRooted.compatible_sequence_comm $h)
+  | `(tactic|
+      rr_compatible_sequence_comp_X_add_C using
+        compatible := $h:term,
+        shift := $r:term) =>
+      `(tactic| exact RealRooted.compatible_sequence_comp_X_add_C (c := $r) $h)
+  | `(tactic|
+      rr_compatible_sequence_reflect using
+        compatible := $h:term,
+        left_degree_bound := $hfN:term,
+        right_degree_bound := $hgN:term) =>
+      `(tactic| exact RealRooted.compatible_sequence_reflect $h $hfN $hgN)
+  | `(tactic|
+      rr_compatible_sequence_reflect_iff using
+        left_degree_bound := $hfN:term,
+        right_degree_bound := $hgN:term) =>
+      `(tactic| exact RealRooted.compatible_sequence_reflect_iff $hfN $hgN)
+  | `(tactic| rr_compatible_sequence_derivative using compatible := $h:term) =>
+      `(tactic| exact RealRooted.compatible_sequence_derivative $h)
+  | `(tactic|
+      rr_compatible_sequence_left_realrooted using
+        compatible := $h:term,
+        left_pos_lc := $hfpos:term) =>
+      `(tactic| exact RealRooted.compatible_sequence_left_realrooted $h $hfpos)
+  | `(tactic|
+      rr_compatible_sequence_right_realrooted using
+        compatible := $h:term,
+        right_pos_lc := $hgpos:term) =>
+      `(tactic| exact RealRooted.compatible_sequence_right_realrooted $h $hgpos)
+  | `(tactic|
+      rr_compatible_sequence_right_degree_le_succ using
+        compatible := $h:term,
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term) =>
+      `(tactic|
+        exact RealRooted.compatible_sequence_right_degree_le_succ
+          $h $hfpos $hgpos)
+  | `(tactic|
+      rr_compatible_sequence_degree_close using
+        compatible := $h:term,
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term) =>
+      `(tactic|
+        exact RealRooted.compatible_sequence_degree_close $h $hfpos $hgpos)
+  | `(tactic|
+      rr_compatible_sequence_to_pos_combo using
+        compatible := $h:term,
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term) =>
+      `(tactic|
+        exact RealRooted.compatible_sequence_to_pos_combo $h $hfpos $hgpos)
+  | `(tactic|
+      rr_compatible_sequence_of_pos_combo using
+        pos_combo := $hfg:term,
+        left_realrooted := $hf:term,
+        right_realrooted := $hg:term) =>
+      `(tactic| exact RealRooted.compatible_sequence_of_pos_combo $hfg $hf $hg)
+  | `(tactic|
+      rr_compatible_sequence_of_pos_combo_same_degree using
+        pos_combo := $hfg:term,
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        same_degree := $hdeg:term) =>
+      `(tactic|
+        exact RealRooted.compatible_sequence_of_pos_combo_same_degree
+          $hfg $hfpos $hgpos $hdeg)
+  | `(tactic|
+      rr_compatible_sequence_of_pos_combo_succ_degree using
+        pos_combo := $hfg:term,
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        succ_degree := $hdeg:term,
+        left_splits := $hfsplits:term) =>
+      `(tactic|
+        exact RealRooted.compatible_sequence_of_pos_combo_succ_degree
+          $hfg $hfpos $hgpos $hdeg $hfsplits)
   | `(tactic|
       rr_compatible_of_common_left using
         common_to_left := $hhf:term,

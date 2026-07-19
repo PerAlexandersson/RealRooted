@@ -189,6 +189,23 @@ example {r i j : Nat → Nat} {P Q : Nat → ℝ[X]}
     index_lt := hij,
     right_lt_bound := hj
 
+/-- Compatibility derivative closure exposed through the OEIS facade. -/
+example {F G : Nat → ℝ[X]}
+    (h : ∀ n : Nat, Compatible (F n) (G n)) :
+    ∀ n : Nat, Compatible (F n).derivative (G n).derivative := by
+  rr_compatible_sequence_derivative using compatible := h
+
+/-- Compatibility-to-positive-combo bridge exposed through the OEIS facade. -/
+example {F G : Nat → ℝ[X]}
+    (h : ∀ n : Nat, Compatible (F n) (G n))
+    (hf_pos : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hg_pos : ∀ n : Nat, HasPosLeadingCoeff (G n)) :
+    ∀ n : Nat, PosComboRealRooted (F n) (G n) := by
+  rr_compatible_sequence_to_pos_combo using
+    compatible := h,
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos
+
 /-- Direct Family I2 half-line branch, adjacent-`Prec` endpoint. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))

@@ -114,6 +114,128 @@ example {f g : ℝ[X]}
     succ_degree := hdeg,
     left_splits := hf_splits
 
+example {F G : Nat → ℝ[X]}
+    (h : ∀ n : Nat, Compatible (F n) (G n)) :
+    ∀ n : Nat, Compatible (G n) (F n) := by
+  rr_compatible_sequence_comm using compatible := h
+
+example {F G : Nat → ℝ[X]} {c : Nat → ℝ}
+    (h : ∀ n : Nat, Compatible (F n) (G n)) :
+    ∀ n : Nat,
+      Compatible ((F n).comp (X + C (c n))) ((G n).comp (X + C (c n))) := by
+  rr_compatible_sequence_comp_X_add_C using
+    compatible := h,
+    shift := c
+
+example {N : Nat → Nat} {F G : Nat → ℝ[X]}
+    (h : ∀ n : Nat, Compatible (F n) (G n))
+    (hFN : ∀ n : Nat, (F n).natDegree ≤ N n)
+    (hGN : ∀ n : Nat, (G n).natDegree ≤ N n) :
+    ∀ n : Nat, Compatible (reflect (N n) (F n)) (reflect (N n) (G n)) := by
+  rr_compatible_sequence_reflect using
+    compatible := h,
+    left_degree_bound := hFN,
+    right_degree_bound := hGN
+
+example {N : Nat → Nat} {F G : Nat → ℝ[X]}
+    (hFN : ∀ n : Nat, (F n).natDegree ≤ N n)
+    (hGN : ∀ n : Nat, (G n).natDegree ≤ N n) :
+    ∀ n : Nat,
+      Compatible (reflect (N n) (F n)) (reflect (N n) (G n)) ↔
+        Compatible (F n) (G n) := by
+  rr_compatible_sequence_reflect_iff using
+    left_degree_bound := hFN,
+    right_degree_bound := hGN
+
+example {F G : Nat → ℝ[X]}
+    (h : ∀ n : Nat, Compatible (F n) (G n)) :
+    ∀ n : Nat, Compatible (F n).derivative (G n).derivative := by
+  rr_compatible_sequence_derivative using compatible := h
+
+example {F G : Nat → ℝ[X]}
+    (h : ∀ n : Nat, Compatible (F n) (G n))
+    (hf_pos : ∀ n : Nat, HasPosLeadingCoeff (F n)) :
+    ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits := by
+  rr_compatible_sequence_left_realrooted using
+    compatible := h,
+    left_pos_lc := hf_pos
+
+example {F G : Nat → ℝ[X]}
+    (h : ∀ n : Nat, Compatible (F n) (G n))
+    (hg_pos : ∀ n : Nat, HasPosLeadingCoeff (G n)) :
+    ∀ n : Nat, G n ≠ 0 ∧ (G n).Splits := by
+  rr_compatible_sequence_right_realrooted using
+    compatible := h,
+    right_pos_lc := hg_pos
+
+example {F G : Nat → ℝ[X]}
+    (h : ∀ n : Nat, Compatible (F n) (G n))
+    (hf_pos : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hg_pos : ∀ n : Nat, HasPosLeadingCoeff (G n)) :
+    ∀ n : Nat, (G n).natDegree ≤ (F n).natDegree + 1 := by
+  rr_compatible_sequence_right_degree_le_succ using
+    compatible := h,
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos
+
+example {F G : Nat → ℝ[X]}
+    (h : ∀ n : Nat, Compatible (F n) (G n))
+    (hf_pos : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hg_pos : ∀ n : Nat, HasPosLeadingCoeff (G n)) :
+    ∀ n : Nat,
+      (F n).natDegree ≤ (G n).natDegree + 1 ∧
+        (G n).natDegree ≤ (F n).natDegree + 1 := by
+  rr_compatible_sequence_degree_close using
+    compatible := h,
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos
+
+example {F G : Nat → ℝ[X]}
+    (h : ∀ n : Nat, Compatible (F n) (G n))
+    (hf_pos : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hg_pos : ∀ n : Nat, HasPosLeadingCoeff (G n)) :
+    ∀ n : Nat, PosComboRealRooted (F n) (G n) := by
+  rr_compatible_sequence_to_pos_combo using
+    compatible := h,
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos
+
+example {F G : Nat → ℝ[X]}
+    (hfg : ∀ n : Nat, PosComboRealRooted (F n) (G n))
+    (hf : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hg : ∀ n : Nat, G n ≠ 0 ∧ (G n).Splits) :
+    ∀ n : Nat, Compatible (F n) (G n) := by
+  rr_compatible_sequence_of_pos_combo using
+    pos_combo := hfg,
+    left_realrooted := hf,
+    right_realrooted := hg
+
+example {F G : Nat → ℝ[X]}
+    (hfg : ∀ n : Nat, PosComboRealRooted (F n) (G n))
+    (hf_pos : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hg_pos : ∀ n : Nat, HasPosLeadingCoeff (G n))
+    (hdeg : ∀ n : Nat, (G n).natDegree = (F n).natDegree) :
+    ∀ n : Nat, Compatible (F n) (G n) := by
+  rr_compatible_sequence_of_pos_combo_same_degree using
+    pos_combo := hfg,
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    same_degree := hdeg
+
+example {F G : Nat → ℝ[X]}
+    (hfg : ∀ n : Nat, PosComboRealRooted (F n) (G n))
+    (hf_pos : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hg_pos : ∀ n : Nat, HasPosLeadingCoeff (G n))
+    (hdeg : ∀ n : Nat, (G n).natDegree = (F n).natDegree + 1)
+    (hf_splits : ∀ n : Nat, (F n).Splits) :
+    ∀ n : Nat, Compatible (F n) (G n) := by
+  rr_compatible_sequence_of_pos_combo_succ_degree using
+    pos_combo := hfg,
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos,
+    succ_degree := hdeg,
+    left_splits := hf_splits
+
 example {f g h : ℝ[X]}
     (hhf : Prec h f)
     (hhg : Prec h g)
