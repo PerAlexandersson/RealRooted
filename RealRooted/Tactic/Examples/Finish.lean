@@ -220,6 +220,32 @@ example {f : ℝ[X]} {N : Nat} (hf : f = 0 ∨ f.Splits) :
       (X ^ (N - f.natDegree) * f.reverse).Splits := by
   rr_zero_or_splits using hf
 
+example {f g : ℝ[X]} (hf : f = 0 ∨ f.Splits) (hg : g = 0 ∨ g.Splits) :
+    f * g = 0 ∨ (f * g).Splits := by
+  rr_zero_or_splits_mul using
+    left := hf,
+    right := hg
+
+example {f g : ℝ[X]} (hf : f = 0 ∨ f.Splits) (hg : g = 0 ∨ g.Splits) :
+    g * f = 0 ∨ (g * f).Splits := by
+  rr_zero_or_splits_mul using
+    left := hf,
+    right := hg
+
+example {f : ℝ[X]} {n : Nat} (hf : f = 0 ∨ f.Splits) :
+    f ^ n = 0 ∨ (f ^ n).Splits := by
+  rr_zero_or_splits_pow using
+    zero_or_splits := hf,
+    exponent := n
+
+example {f : ℝ[X]} {n : Nat} (hf : f = 0 ∨ f.Splits) :
+    f ^ n = 0 ∨ (f ^ n).Splits := by
+  rr_zero_or_splits using hf
+
+example {f : ℝ[X]} {n : Nat} (hf : f = 0 ∨ f.Splits) :
+    f ^ n = 0 ∨ (f ^ n).Splits := by
+  rr_finish using hf
+
 example {f : ℝ[X]} {n : Nat} (hf : f.Splits) :
     X ^ n * f = 0 ∨ (X ^ n * f).Splits := by
   rr_zero_or_splits using hf
