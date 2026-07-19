@@ -147,6 +147,27 @@ theorem rowThreshold_matrix_preserves_interlacing_seq0_of_2x2_weak
     (hasRowThresholdLinearStructure_nonneg hG_threshold)
     hG_affine fs hfs_len hfs hfs_real
 
+/-- Strict-output row-threshold route with zero-aware input, obtained by
+discarding zero output entries. -/
+theorem rowThreshold_matrix_preserves_interlacing_seq0_filter_ne_zero_of_2x2_weak
+    (G : List (List ℝ[X]))
+    (hG_rect : ∀ row ∈ G, row.length = n)
+    (hG_threshold : HasRowThresholdLinearStructure G)
+    (hG_affine : ∀ (i₁ i₂ : Fin G.length) (j₁ j₂ : Fin n),
+      i₁ ≤ i₂ → j₁ ≤ j₂ →
+      Has2x2InterlacingProperty0
+        ((G.get i₁).get ⟨j₁, by simp_all⟩)
+        ((G.get i₁).get ⟨j₂, by simp_all⟩)
+        ((G.get i₂).get ⟨j₁, by simp_all⟩)
+        ((G.get i₂).get ⟨j₂, by simp_all⟩))
+    (fs : List ℝ[X]) (hfs_len : fs.length = n)
+    (hfs : IsInterlacingSeq0Nonneg fs)
+    (hfs_real : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits)) :
+    IsInterlacingSeqNonneg ((matPolyAction G fs).filter (· ≠ 0)) :=
+  matrix_preserves_interlacing_seq0_filter_ne_zero_of_2x2_weak G hG_rect
+    (hasRowThresholdLinearStructure_nonneg hG_threshold)
+    hG_affine fs hfs_len hfs hfs_real
+
 /-- Row-threshold weak-output route with strict input, retaining the fact that
 each nonzero output entry is real-rooted. -/
 theorem rowThreshold_matrix_preserves_interlacing_seq0_of_2x2_realRooted
