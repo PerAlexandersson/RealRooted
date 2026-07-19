@@ -1195,6 +1195,22 @@ example (n : Nat) :
     b_nonneg := by norm_num,
     index := n
 
+/-- Wagner common-left addition row-family exit exposed through the OEIS
+facade. -/
+example {F G H : Nat → ℝ[X]}
+    (hF : ∀ n : Nat, Challenges.Wagner.HasNonposRootsPosLeading (F n))
+    (hG : ∀ n : Nat, Challenges.Wagner.HasNonposRootsPosLeading (G n))
+    (hH : ∀ n : Nat, Challenges.Wagner.HasNonposRootsPosLeading (H n))
+    (hHF : ∀ n : Nat, Prec (H n) (F n))
+    (hHG : ∀ n : Nat, Prec (H n) (G n)) :
+    ∀ n : Nat, Prec (H n) (F n + G n) := by
+  rr_wagner_common_left_add_sequence using
+    left := hF,
+    right := hG,
+    common := hH,
+    common_interlaces_left := hHF,
+    common_interlaces_right := hHG
+
 /-- Hadamard PF exit exposed through the OEIS facade. -/
 example {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :

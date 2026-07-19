@@ -41,5 +41,43 @@ example {f g : ℝ[X]}
     longer := hg,
     degree := hdeg
 
+example {F G H : Nat → ℝ[X]}
+    (hF : ∀ n : Nat, Challenges.Wagner.HasNonposRootsPosLeading (F n))
+    (hG : ∀ n : Nat, Challenges.Wagner.HasNonposRootsPosLeading (G n))
+    (hH : ∀ n : Nat, Challenges.Wagner.HasNonposRootsPosLeading (H n))
+    (hFH : ∀ n : Nat, Prec (F n) (H n))
+    (hGH : ∀ n : Nat, Prec (G n) (H n)) :
+    ∀ n : Nat, Prec (F n + G n) (H n) := by
+  rr_wagner_common_right_add_sequence using
+    left := hF,
+    right := hG,
+    common := hH,
+    left_interlaces_common := hFH,
+    right_interlaces_common := hGH
+
+example {F G H : Nat → ℝ[X]}
+    (hF : ∀ n : Nat, Challenges.Wagner.HasNonposRootsPosLeading (F n))
+    (hG : ∀ n : Nat, Challenges.Wagner.HasNonposRootsPosLeading (G n))
+    (hH : ∀ n : Nat, Challenges.Wagner.HasNonposRootsPosLeading (H n))
+    (hHF : ∀ n : Nat, Prec (H n) (F n))
+    (hHG : ∀ n : Nat, Prec (H n) (G n)) :
+    ∀ n : Nat, Prec (H n) (F n + G n) := by
+  rr_wagner_common_left_add_sequence using
+    left := hF,
+    right := hG,
+    common := hH,
+    common_interlaces_left := hHF,
+    common_interlaces_right := hHG
+
+example {F G : Nat → ℝ[X]}
+    (hF : ∀ n : Nat, Challenges.Wagner.HasNonposRootsPosLeading (F n))
+    (hG : ∀ n : Nat, Challenges.Wagner.HasNonposRootsPosLeading (G n))
+    (hdeg : ∀ n : Nat, (F n).natDegree + 1 = (G n).natDegree) :
+    ∀ n : Nat, Prec (F n) (G n) ↔ Prec (G n) (X * F n) := by
+  rr_wagner_mulX_iff_sequence using
+    shorter := hF,
+    longer := hG,
+    degree := hdeg
+
 end Tactic
 end RealRooted
