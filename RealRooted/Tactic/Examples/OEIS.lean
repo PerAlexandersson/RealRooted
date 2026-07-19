@@ -1228,6 +1228,30 @@ example {P : Nat → ℝ[X]}
     ∀ n : Nat, HasNonnegCoeffs (P n).derivative := by
   rr_nonneg_coeffs_sequence_derivative using nonneg_coeffs := hP
 
+/-- Magnitude-dominated row-family interlacing exit exposed through the OEIS
+facade. -/
+example {F G1 G2 A B1 B2 : Nat → ℝ[X]}
+    (hG1F : ∀ n : Nat, Interlaces (G1 n) (F n))
+    (hG1_pos : ∀ n : Nat, HasPosLeadingCoeff (G1 n))
+    (hF_pos : ∀ n : Nat,
+      HasPosLeadingCoeff (A n * F n + B1 n * G1 n + B2 n * G2 n))
+    (hdeg_lo : ∀ n : Nat,
+      (F n).natDegree ≤ (A n * F n + B1 n * G1 n + B2 n * G2 n).natDegree)
+    (hdeg_hi : ∀ n : Nat,
+      (A n * F n + B1 n * G1 n + B2 n * G2 n).natDegree ≤
+        (F n).natDegree + 1)
+    (hcert : ∀ n : Nat, ∀ r, (F n).IsRoot r →
+      (B1 n).eval r * ((G1 n).eval r) ^ 2 +
+        (B2 n).eval r * ((G2 n).eval r * (G1 n).eval r) < 0) :
+    ∀ n : Nat, Prec (F n) (A n * F n + B1 n * G1 n + B2 n * G2 n) := by
+  rr_magnitude_dominated_sequence using
+    interlaces := hG1F,
+    interlacer_pos_lc := hG1_pos,
+    target_pos_lc := hF_pos,
+    degree_lower := hdeg_lo,
+    degree_upper := hdeg_hi,
+    certificate := hcert
+
 /-- All-combinations to positive-combinations row-family exit exposed through
 the OEIS facade. -/
 example {F G : Nat → ℝ[X]}

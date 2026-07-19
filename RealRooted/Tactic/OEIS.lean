@@ -88,6 +88,7 @@ rr_i2_derivative_lag_sequence using ... certificate := directHalfLine
 rr_i2_derivative_lag_sequence using ... certificate := wagnerGap
 rr_i2_derivative_lag_sequence_den_coeff using ... certificate := directHalfLine
 rr_i2_derivative_lag_sequence_den using ... certificate := wagnerGap
+rr_magnitude_dominated_sequence using ...
 rr_e_positive_t_lag_sequence using ... certificate := currentX
 rr_e_positive_t_lag_sequence using ... certificate := currentCX
 rr_e_positive_t_lag_sequence using ... certificate := currentOneAddX
