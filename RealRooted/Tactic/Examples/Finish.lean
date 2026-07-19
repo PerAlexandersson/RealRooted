@@ -966,6 +966,11 @@ example {P : Nat → ℝ[X]} {n : Nat}
     (P n).Splits := by
   rr_finish using hprec
 
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1))) :
+    (P n).Splits := by
+  rr_finish
+
 example {P : Nat → ℝ[X]}
     (hprec : ∀ n : Nat, Prec (P n) (P (n + 1)))
     (hdegree : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree) :
@@ -979,6 +984,12 @@ example {P : Nat → ℝ[X]}
     (hdegree : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree) :
     ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
   rr_finish using hprec, hdegree
+
+example {P : Nat → ℝ[X]}
+    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1)))
+    (hdegree : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  rr_finish
 
 example {P : Nat → ℝ[X]} {n : Nat}
     (hprec : ∀ n : Nat, Prec (P n) (P (n + 1)))
