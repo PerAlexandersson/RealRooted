@@ -1114,10 +1114,6 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     coeff := fun n => ((n : ℝ) + 2) / ((n : ℝ) + 5),
     raw_coeff := fun n => (n : ℝ) + 2,
     den := fun n => (n : ℝ) + 5,
-    den_nonzero := by intro n; rr_scalar_active_den_at n,
-    coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -1145,10 +1141,6 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     coeff := fun n => ((n : ℝ) + 1) / ((n : ℝ) + 4),
     raw_coeff := fun n => ((n : ℝ) + 1) / 2,
     den := fun n => ((n : ℝ) + 4) / 2,
-    den_nonzero := by intro n; rr_scalar_active_den_at n,
-    coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -1178,10 +1170,6 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     coeff := fun n => ((n : ℝ) + 2) / ((n : ℝ) + 5),
     raw_coeff := fun n => -(((n : ℝ) + 2) * ((n : ℝ) + 1) / 3),
     den := fun n => -(((n : ℝ) + 5) * ((n : ℝ) + 1) / 3),
-    den_nonzero := by intro n; rr_scalar_active_den_at n,
-    coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -1210,10 +1198,6 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     coeff := fun n => ((n : ℝ) + 2) / ((n : ℝ) + 1),
     raw_coeff := fun n => ((n : ℝ) + 2) * ((n : ℝ) + 1),
     den := fun n => ((n : ℝ) + 1) ^ 2,
-    den_nonzero := by intro n; rr_scalar_active_den_at n,
-    coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
