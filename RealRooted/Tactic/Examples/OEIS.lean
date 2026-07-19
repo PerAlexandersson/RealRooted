@@ -1992,6 +1992,30 @@ example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
     factorization := hrow,
     certificate := constFirstAffinePowAuto
 
+/-- Product-lift router, automatic certificate selection. -/
+example {P Q : Nat → ℝ[X]}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = C ((n : ℝ) + 1) * Q n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_sequence using
+    quotient_realrooted := hquot,
+    factorization := hrow,
+    certificate := auto
+
+/-- Product-lift router, automatic certificate selection after a cutoff. -/
+example {P Q : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, N ≤ n → P n = Q n * X) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow,
+    certificate := auto
+
 /-- Family G negative-lag router, shifted-square branch. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))

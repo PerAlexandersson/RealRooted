@@ -1002,6 +1002,28 @@ example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
     cutoff := N,
     factorization := hrow
 
+/-- The product-lift auto router recognizes positive scalar factors. -/
+example {P Q : Nat → ℝ[X]}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, P n = Q n * C ((n : ℝ) + 1)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_sequence_auto using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
+/-- The product-lift auto router also supports cutoff lifts. -/
+example {P Q : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, N ≤ n → P n = Q n * X) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_sequence_auto using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow
+
 /-- Endpoint quotient with `A_{n+1}=A_n+B_n`,
 `B_{n+1}=B_n+X A_{n+1}`. -/
 example {A B : Nat → ℝ[X]}

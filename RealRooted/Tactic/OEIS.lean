@@ -125,6 +125,7 @@ rr_endpoint_pair_lift_sequence using ... certificate := sumThenX
 rr_endpoint_pair_lift_sequence using ... certificate := xThenSum
 rr_endpoint_pair_lift_sequence using ... certificate := xThenSumSwapped
 rr_product_lift_sequence using ... certificate := suppliedFactor
+rr_product_lift_sequence using ... certificate := auto
 rr_product_lift_sequence using ... certificate := rootZero
 rr_product_lift_sequence using ... certificate := rootZeroPow
 rr_product_lift_sequence using ... certificate := xAddC
@@ -1018,6 +1019,22 @@ syntax (name := rr_product_lift_sequence_supplied_factor_cutoff)
     "cutoff" ":=" term ","
     "factorization" ":=" term ","
     "certificate" ":=" "suppliedFactor" :
+  tactic
+
+syntax (name := rr_product_lift_sequence_auto)
+  "rr_product_lift_sequence" " using "
+    "quotient_realrooted" ":=" term ","
+    "factorization" ":=" term ","
+    "certificate" ":=" "auto" :
+  tactic
+
+syntax (name := rr_product_lift_sequence_auto_cutoff)
+  "rr_product_lift_sequence" " using "
+    "base" ":=" term ","
+    "quotient_realrooted" ":=" term ","
+    "cutoff" ":=" term ","
+    "factorization" ":=" term ","
+    "certificate" ":=" "auto" :
   tactic
 
 syntax (name := rr_product_lift_sequence_root_zero)
@@ -2307,6 +2324,28 @@ macro_rules
           base := $hbase,
           quotient_realrooted := $hquot,
           factor_realrooted := $hfactor,
+          cutoff := $N,
+          factorization := $hrow)
+  | `(tactic|
+      rr_product_lift_sequence using
+        quotient_realrooted := $hquot:term,
+        factorization := $hrow:term,
+        certificate := auto) =>
+      `(tactic|
+        rr_product_lift_sequence_auto using
+          quotient_realrooted := $hquot,
+          factorization := $hrow)
+  | `(tactic|
+      rr_product_lift_sequence using
+        base := $hbase:term,
+        quotient_realrooted := $hquot:term,
+        cutoff := $N:term,
+        factorization := $hrow:term,
+        certificate := auto) =>
+      `(tactic|
+        rr_product_lift_sequence_auto using
+          base := $hbase,
+          quotient_realrooted := $hquot,
           cutoff := $N,
           factorization := $hrow)
   | `(tactic|
