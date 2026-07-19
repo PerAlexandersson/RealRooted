@@ -193,28 +193,7 @@ syntax (name := rr_i2_derivative_lag_sequence_den_direct_halfline)
     "den" ":=" term ","
     "raw_deriv_coeff" ":=" term ","
     "raw_lag_coeff" ":=" term ","
-    "den_nonzero" ":=" term ","
-    "deriv_coeff_eq" ":=" term ","
-    "lag_coeff_eq" ":=" term ","
-    "raw_recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term ","
-    "certificate" ":=" "directHalfLine" :
-  tactic
-
-syntax (name := rr_i2_derivative_lag_sequence_den_direct_halfline_active_den)
-  "rr_i2_derivative_lag_sequence_den_coeff" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "nonneg_coeffs" ":=" term ","
-    "degree_two" ":=" term ","
-    "deriv_factor" ":=" term ","
-    "lag_factor" ":=" term ","
-    "norm_deriv_coeff" ":=" term ","
-    "norm_lag_coeff" ":=" term ","
-    "den" ":=" term ","
-    "raw_deriv_coeff" ":=" term ","
-    "raw_lag_coeff" ":=" term ","
+    ("den_nonzero" ":=" term ",")?
     "deriv_coeff_eq" ":=" term ","
     "lag_coeff_eq" ":=" term ","
     "raw_recurrence" ":=" term ","
@@ -236,28 +215,7 @@ syntax (name := rr_i2_derivative_lag_sequence_den_realrooted_direct_halfline)
     "den" ":=" term ","
     "raw_deriv_coeff" ":=" term ","
     "raw_lag_coeff" ":=" term ","
-    "den_nonzero" ":=" term ","
-    "deriv_coeff_eq" ":=" term ","
-    "lag_coeff_eq" ":=" term ","
-    "raw_recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term ","
-    "certificate" ":=" "directHalfLine" :
-  tactic
-
-syntax (name := rr_i2_derivative_lag_sequence_den_realrooted_direct_halfline_active_den)
-  "rr_i2_derivative_lag_sequence_den_coeff_realrooted" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "nonneg_coeffs" ":=" term ","
-    "degree_two" ":=" term ","
-    "deriv_factor" ":=" term ","
-    "lag_factor" ":=" term ","
-    "norm_deriv_coeff" ":=" term ","
-    "norm_lag_coeff" ":=" term ","
-    "den" ":=" term ","
-    "raw_deriv_coeff" ":=" term ","
-    "raw_lag_coeff" ":=" term ","
+    ("den_nonzero" ":=" term ",")?
     "deriv_coeff_eq" ":=" term ","
     "lag_coeff_eq" ":=" term ","
     "raw_recurrence" ":=" term ","
@@ -507,18 +465,7 @@ syntax (name := rr_g_negative_lag_sequence_den_global_nonpos)
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "lag" ":=" term ","
-    "den_nonzero" ":=" term ","
-    "raw_recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term ","
-    "certificate" ":=" "globalNonpos" :
-  tactic
-
-syntax (name := rr_g_negative_lag_sequence_den_global_nonpos_active_den)
-  "rr_g_negative_lag_sequence_den" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "lag" ":=" term ","
+    ("den_nonzero" ":=" term ",")?
     "raw_recurrence" ":=" term ","
     "degree_succ" ":=" term ","
     "no_common_roots" ":=" term ","
@@ -530,18 +477,7 @@ syntax (name := rr_g_negative_lag_sequence_den_realrooted_global_nonpos)
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "lag" ":=" term ","
-    "den_nonzero" ":=" term ","
-    "raw_recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term ","
-    "certificate" ":=" "globalNonpos" :
-  tactic
-
-syntax (name := rr_g_negative_lag_sequence_den_realrooted_global_nonpos_active_den)
-  "rr_g_negative_lag_sequence_den_realrooted" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "lag" ":=" term ","
+    ("den_nonzero" ":=" term ",")?
     "raw_recurrence" ":=" term ","
     "degree_succ" ":=" term ","
     "no_common_roots" ":=" term ","
@@ -556,22 +492,7 @@ syntax (name := rr_g_neg_lag_den_sq)
     "coeff" ":=" term ","
     "raw_coeff" ":=" term ","
     "den" ":=" term ","
-    "den_nonzero" ":=" term ","
-    "coeff_eq" ":=" term ","
-    "raw_recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term ","
-    "certificate" ":=" "negativeSquare" :
-  tactic
-
-syntax (name := rr_g_neg_lag_den_sq_active_den)
-  "rr_g_negative_lag_sequence_den_coeff" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "square_factor" ":=" term ","
-    "coeff" ":=" term ","
-    "raw_coeff" ":=" term ","
-    "den" ":=" term ","
+    ("den_nonzero" ":=" term ",")?
     "coeff_eq" ":=" term ","
     "raw_recurrence" ":=" term ","
     "degree_succ" ":=" term ","
@@ -587,22 +508,7 @@ syntax (name := rr_g_neg_lag_den_sq_rr)
     "coeff" ":=" term ","
     "raw_coeff" ":=" term ","
     "den" ":=" term ","
-    "den_nonzero" ":=" term ","
-    "coeff_eq" ":=" term ","
-    "raw_recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term ","
-    "certificate" ":=" "negativeSquare" :
-  tactic
-
-syntax (name := rr_g_neg_lag_den_sq_rr_active_den)
-  "rr_g_negative_lag_sequence_den_coeff_realrooted" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "square_factor" ":=" term ","
-    "coeff" ":=" term ","
-    "raw_coeff" ":=" term ","
-    "den" ":=" term ","
+    ("den_nonzero" ":=" term ",")?
     "coeff_eq" ":=" term ","
     "raw_recurrence" ":=" term ","
     "degree_succ" ":=" term ","
@@ -621,27 +527,7 @@ syntax (name := rr_g_neg_lag_den_quad)
     "raw_linear" ":=" term ","
     "raw_constant" ":=" term ","
     "den" ":=" term ","
-    "den_nonzero" ":=" term ","
-    "leading_coeff_eq" ":=" term ","
-    "linear_coeff_eq" ":=" term ","
-    "constant_coeff_eq" ":=" term ","
-    "raw_recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term ","
-    "certificate" ":=" "negativeQuadratic" :
-  tactic
-
-syntax (name := rr_g_neg_lag_den_quad_active_den)
-  "rr_g_negative_lag_sequence_den_coeff" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "leading" ":=" term ","
-    "linear" ":=" term ","
-    "constant" ":=" term ","
-    "raw_leading" ":=" term ","
-    "raw_linear" ":=" term ","
-    "raw_constant" ":=" term ","
-    "den" ":=" term ","
+    ("den_nonzero" ":=" term ",")?
     "leading_coeff_eq" ":=" term ","
     "linear_coeff_eq" ":=" term ","
     "constant_coeff_eq" ":=" term ","
@@ -662,27 +548,7 @@ syntax (name := rr_g_neg_lag_den_quad_rr)
     "raw_linear" ":=" term ","
     "raw_constant" ":=" term ","
     "den" ":=" term ","
-    "den_nonzero" ":=" term ","
-    "leading_coeff_eq" ":=" term ","
-    "linear_coeff_eq" ":=" term ","
-    "constant_coeff_eq" ":=" term ","
-    "raw_recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term ","
-    "certificate" ":=" "negativeQuadratic" :
-  tactic
-
-syntax (name := rr_g_neg_lag_den_quad_rr_active_den)
-  "rr_g_negative_lag_sequence_den_coeff_realrooted" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "leading" ":=" term ","
-    "linear" ":=" term ","
-    "constant" ":=" term ","
-    "raw_leading" ":=" term ","
-    "raw_linear" ":=" term ","
-    "raw_constant" ":=" term ","
-    "den" ":=" term ","
+    ("den_nonzero" ":=" term ",")?
     "leading_coeff_eq" ":=" term ","
     "linear_coeff_eq" ":=" term ","
     "constant_coeff_eq" ":=" term ","
