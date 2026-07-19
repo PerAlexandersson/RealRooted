@@ -1814,6 +1814,28 @@ example {p q : ℝ[X]}
     left_pf := hp,
     right_pf := hq
 
+/-- Hadamard nonnegative real-rootedness exit exposed through the OEIS
+facade. -/
+example {p q : ℝ[X]}
+    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q)
+    (hp : p ≠ 0 ∧ p.Splits) (hq : q ≠ 0 ∧ q.Splits) :
+    (hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧
+      HasNonnegCoeffs (hadamardProduct p q) ∧
+      ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0 := by
+  rr_hadamard_nonneg_realrooted using
+    left_nonneg := hpnn,
+    right_nonneg := hqnn,
+    left_realrooted := hp,
+    right_realrooted := hq
+
+/-- Hadamard nonnegative-coefficient exit exposed through the OEIS facade. -/
+example {p q : ℝ[X]}
+    (hpnn : HasNonnegCoeffs p) (hqnn : HasNonnegCoeffs q) :
+    HasNonnegCoeffs (hadamardProduct p q) := by
+  rr_hadamard_nonneg_coeffs using
+    left_nonneg := hpnn,
+    right_nonneg := hqnn
+
 /-- Hadamard PF row-family exit exposed through the OEIS facade. -/
 example {P Q : Nat → ℝ[X]}
     (hP : ∀ n : Nat, IsPFPolynomial (P n))
@@ -1822,6 +1844,34 @@ example {P Q : Nat → ℝ[X]}
   rr_hadamard_sequence_pf using
     left_pf := hP,
     right_pf := hQ
+
+/-- Hadamard nonnegative real-rootedness row-family exit exposed through the
+OEIS facade. -/
+example {P Q : Nat → ℝ[X]}
+    (hPnn : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hQnn : ∀ n : Nat, HasNonnegCoeffs (Q n))
+    (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits)
+    (hQ : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits) :
+    ∀ n : Nat,
+      (hadamardProduct (P n) (Q n) = 0 ∨
+          (hadamardProduct (P n) (Q n)).Splits) ∧
+        HasNonnegCoeffs (hadamardProduct (P n) (Q n)) ∧
+        ∀ r ∈ (hadamardProduct (P n) (Q n)).roots, r ≤ 0 := by
+  rr_hadamard_sequence_nonneg_realrooted using
+    left_nonneg := hPnn,
+    right_nonneg := hQnn,
+    left_realrooted := hP,
+    right_realrooted := hQ
+
+/-- Hadamard nonnegative-coefficient row-family exit exposed through the OEIS
+facade. -/
+example {P Q : Nat → ℝ[X]}
+    (hPnn : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hQnn : ∀ n : Nat, HasNonnegCoeffs (Q n)) :
+    ∀ n : Nat, HasNonnegCoeffs (hadamardProduct (P n) (Q n)) := by
+  rr_hadamard_sequence_nonneg_coeffs using
+    left_nonneg := hPnn,
+    right_nonneg := hQnn
 
 /-- Hadamard proper-position row-family exit exposed through the OEIS facade. -/
 example {F G P Q : Nat → ℝ[X]}
