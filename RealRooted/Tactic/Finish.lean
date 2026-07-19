@@ -104,6 +104,59 @@ theorem eq_zero_or_splits_of_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Split
     p = 0 ∨ p.Splits :=
   Or.inr hp.2
 
+/-- Reverse transport for zero-aware real-rootedness certificates. -/
+theorem reverse_eq_zero_or_splits {p : ℝ[X]} (hp : p = 0 ∨ p.Splits) :
+    p.reverse = 0 ∨ p.reverse.Splits := by
+  rcases hp with hp | hp
+  · left
+    simp [hp]
+  · exact Or.inr (DegreeDropReversal.splits_reverse hp)
+
+/-- Consume a reverse zero-aware real-rootedness certificate. -/
+theorem eq_zero_or_splits_of_reverse {p : ℝ[X]}
+    (hp : p.reverse = 0 ∨ p.reverse.Splits) :
+    p = 0 ∨ p.Splits := by
+  rcases hp with hp | hp
+  · exact Or.inl (Polynomial.reverse_eq_zero.mp hp)
+  · exact Or.inr (DegreeDropReversal.splits_of_reverse hp)
+
+/-- Reflect transport for zero-aware real-rootedness certificates. -/
+theorem reflect_eq_zero_or_splits {p : ℝ[X]} (hp : p = 0 ∨ p.Splits) {N : ℕ}
+    (hN : p.natDegree ≤ N) :
+    reflect N p = 0 ∨ (reflect N p).Splits := by
+  rcases hp with hp | hp
+  · left
+    simp [hp]
+  · exact Or.inr (DegreeDropReversal.splits_reflect_of_splits hp hN)
+
+/-- Degree-padded reverse transport for zero-aware real-rootedness certificates. -/
+theorem X_pow_mul_reverse_eq_zero_or_splits {p : ℝ[X]} (hp : p = 0 ∨ p.Splits)
+    (N : ℕ) :
+    X ^ (N - p.natDegree) * p.reverse = 0 ∨
+      (X ^ (N - p.natDegree) * p.reverse).Splits := by
+  rcases hp with hp | hp
+  · left
+    simp [hp]
+  · exact Or.inr (DegreeDropReversal.splits_X_pow_mul_reverse hp N)
+
+/-- Divide out a zero root in a zero-aware real-rootedness certificate. -/
+theorem divX_eq_zero_or_splits_of_coeff_zero {p : ℝ[X]} (h0 : p.coeff 0 = 0)
+    (hp : p = 0 ∨ p.Splits) :
+    p.divX = 0 ∨ p.divX.Splits := by
+  rcases hp with hp | hp
+  · left
+    simp [hp]
+  · exact Or.inr ((DegreeDropReversal.splits_iff_divX_splits_of_coeff_zero h0).1 hp)
+
+/-- Lift a zero-aware real-rootedness certificate after dividing out a zero root. -/
+theorem eq_zero_or_splits_of_divX {p : ℝ[X]} (h0 : p.coeff 0 = 0)
+    (hp : p.divX = 0 ∨ p.divX.Splits) :
+    p = 0 ∨ p.Splits := by
+  rcases hp with hp | hp
+  · left
+    rw [DegreeDropReversal.eq_X_mul_divX_of_coeff_zero h0, hp, mul_zero]
+  · exact Or.inr (DegreeDropReversal.splits_of_divX_splits_of_coeff_zero h0 hp)
+
 /-- Reverse transport for nonzero real-rootedness certificates. -/
 theorem reverse_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
     p.reverse ≠ 0 ∧ p.reverse.Splits :=
@@ -474,6 +527,36 @@ syntax (name := rr_splits_of_divX)
     "coeff_zero" ":=" term ","
     "divX_splits" ":=" term :
   tactic
+syntax (name := rr_zero_or_splits)
+  "rr_zero_or_splits" " using " term :
+  tactic
+syntax (name := rr_zero_or_splits_reverse)
+  "rr_zero_or_splits_reverse" " using "
+    "zero_or_splits" ":=" term :
+  tactic
+syntax (name := rr_zero_or_splits_of_reverse)
+  "rr_zero_or_splits_of_reverse" " using "
+    "reverse_zero_or_splits" ":=" term :
+  tactic
+syntax (name := rr_zero_or_splits_reflect)
+  "rr_zero_or_splits_reflect" " using "
+    "zero_or_splits" ":=" term ","
+    "degree_bound" ":=" term :
+  tactic
+syntax (name := rr_zero_or_splits_X_pow_mul_reverse)
+  "rr_zero_or_splits_X_pow_mul_reverse" " using "
+    "zero_or_splits" ":=" term :
+  tactic
+syntax (name := rr_zero_or_splits_divX)
+  "rr_zero_or_splits_divX" " using "
+    "coeff_zero" ":=" term ","
+    "zero_or_splits" ":=" term :
+  tactic
+syntax (name := rr_zero_or_splits_of_divX)
+  "rr_zero_or_splits_of_divX" " using "
+    "coeff_zero" ":=" term ","
+    "divX_zero_or_splits" ":=" term :
+  tactic
 syntax (name := rr_realrooted) "rr_realrooted" " using " term : tactic
 syntax (name := rr_realrooted_reverse)
   "rr_realrooted_reverse" " using "
@@ -504,6 +587,7 @@ syntax (name := rr_realrooted_of_divX)
   tactic
 syntax (name := rr_nonzero_auto) "rr_nonzero" : tactic
 syntax (name := rr_splits_auto) "rr_splits" : tactic
+syntax (name := rr_zero_or_splits_auto) "rr_zero_or_splits" : tactic
 syntax (name := rr_realrooted_auto) "rr_realrooted" : tactic
 
 syntax (name := rr_interlaces_with_degree)
@@ -865,6 +949,74 @@ macro_rules
               (RealRooted.derivative_interlaces (by assumption) (by rr_close_side))
           | simp [add_comm]
           | (apply Polynomial.Splits.of_natDegree_le_one <;> rr_degree_le_one)
+          | simp_all [RealRooted.Prec, RealRooted.Interlaces])
+  | `(tactic| rr_zero_or_splits using $h:term) =>
+      `(tactic|
+        rr_first_exact
+          $h,
+          RealRooted.eq_zero_or_splits_of_isRealRooted $h,
+          RealRooted.left_eq_zero_or_splits_of_isRealRooted_pair $h,
+          RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair $h,
+          RealRooted.left_eq_zero_or_splits_of_prec $h,
+          RealRooted.right_eq_zero_or_splits_of_prec $h,
+          RealRooted.right_eq_zero_or_splits_of_interlaces $h,
+          RealRooted.left_eq_zero_or_splits_of_interlaces $h,
+          RealRooted.eq_zero_or_splits_of_isRealRooted_sequence $h,
+          (RealRooted.eq_zero_or_splits_of_isRealRooted_sequence $h _),
+          RealRooted.left_eq_zero_or_splits_of_isRealRooted_pair_sequence $h,
+          (RealRooted.left_eq_zero_or_splits_of_isRealRooted_pair_sequence $h _),
+          RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair_sequence $h,
+          (RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair_sequence $h _),
+          Or.inr $h,
+          Or.inr (Polynomial.Splits.pow $h _),
+          Or.inr (RealRooted.DegreeDropReversal.splits_reverse $h),
+          Or.inr (RealRooted.DegreeDropReversal.splits_of_reverse $h),
+          Or.inr (RealRooted.DegreeDropReversal.splits_X_pow_mul_reverse $h _),
+          Or.inr ((RealRooted.DegreeDropReversal.splits_X_pow_mul_iff _).mpr $h),
+          Or.inr ((RealRooted.DegreeDropReversal.splits_X_pow_mul_iff _).mp $h),
+          RealRooted.reverse_eq_zero_or_splits $h,
+          RealRooted.eq_zero_or_splits_of_reverse $h,
+          RealRooted.X_pow_mul_reverse_eq_zero_or_splits $h _)
+  | `(tactic|
+      rr_zero_or_splits_reverse using
+        zero_or_splits := $h:term) =>
+      `(tactic|
+        exact RealRooted.reverse_eq_zero_or_splits $h)
+  | `(tactic|
+      rr_zero_or_splits_of_reverse using
+        reverse_zero_or_splits := $h:term) =>
+      `(tactic|
+        exact RealRooted.eq_zero_or_splits_of_reverse $h)
+  | `(tactic|
+      rr_zero_or_splits_reflect using
+        zero_or_splits := $h:term,
+        degree_bound := $hN:term) =>
+      `(tactic|
+        exact RealRooted.reflect_eq_zero_or_splits $h $hN)
+  | `(tactic|
+      rr_zero_or_splits_X_pow_mul_reverse using
+        zero_or_splits := $h:term) =>
+      `(tactic|
+        exact RealRooted.X_pow_mul_reverse_eq_zero_or_splits $h _)
+  | `(tactic|
+      rr_zero_or_splits_divX using
+        coeff_zero := $h0:term,
+        zero_or_splits := $h:term) =>
+      `(tactic|
+        exact RealRooted.divX_eq_zero_or_splits_of_coeff_zero $h0 $h)
+  | `(tactic|
+      rr_zero_or_splits_of_divX using
+        coeff_zero := $h0:term,
+        divX_zero_or_splits := $h:term) =>
+      `(tactic|
+        exact RealRooted.eq_zero_or_splits_of_divX $h0 $h)
+  | `(tactic| rr_zero_or_splits) =>
+      `(tactic|
+        first
+          | rr_lookup
+          | rr_zero_or_splits using rr_lookup_term
+          | assumption
+          | exact Or.inr (by rr_splits)
           | simp_all [RealRooted.Prec, RealRooted.Interlaces])
   | `(tactic| rr_realrooted using $h:term) =>
       `(tactic|

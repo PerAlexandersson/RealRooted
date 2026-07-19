@@ -176,6 +176,70 @@ example {f : ℝ[X]} (h0 : f.coeff 0 = 0) (hf : f.divX.Splits) :
     coeff_zero := h0,
     divX_splits := hf
 
+example {f : ℝ[X]} (hf : f.Splits) : f = 0 ∨ f.Splits := by
+  rr_zero_or_splits using hf
+
+example {f : ℝ[X]} (hf : f.Splits) : f = 0 ∨ f.Splits := by
+  rr_zero_or_splits
+
+example {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits) : f = 0 ∨ f.Splits := by
+  rr_zero_or_splits using hf
+
+example {f : ℝ[X]} (hf : f = 0 ∨ f.Splits) :
+    f.reverse = 0 ∨ f.reverse.Splits := by
+  rr_zero_or_splits_reverse using
+    zero_or_splits := hf
+
+example {f : ℝ[X]} (hf : f = 0 ∨ f.Splits) :
+    f.reverse = 0 ∨ f.reverse.Splits := by
+  rr_zero_or_splits using hf
+
+example {f : ℝ[X]} (hf : f.reverse = 0 ∨ f.reverse.Splits) :
+    f = 0 ∨ f.Splits := by
+  rr_zero_or_splits_of_reverse using
+    reverse_zero_or_splits := hf
+
+example {f : ℝ[X]} (hf : f.reverse = 0 ∨ f.reverse.Splits) :
+    f = 0 ∨ f.Splits := by
+  rr_zero_or_splits using hf
+
+example {f : ℝ[X]} {N : Nat} (hf : f = 0 ∨ f.Splits) (hN : f.natDegree ≤ N) :
+    reflect N f = 0 ∨ (reflect N f).Splits := by
+  rr_zero_or_splits_reflect using
+    zero_or_splits := hf,
+    degree_bound := hN
+
+example {f : ℝ[X]} {N : Nat} (hf : f = 0 ∨ f.Splits) :
+    X ^ (N - f.natDegree) * f.reverse = 0 ∨
+      (X ^ (N - f.natDegree) * f.reverse).Splits := by
+  rr_zero_or_splits_X_pow_mul_reverse using
+    zero_or_splits := hf
+
+example {f : ℝ[X]} {N : Nat} (hf : f = 0 ∨ f.Splits) :
+    X ^ (N - f.natDegree) * f.reverse = 0 ∨
+      (X ^ (N - f.natDegree) * f.reverse).Splits := by
+  rr_zero_or_splits using hf
+
+example {f : ℝ[X]} {n : Nat} (hf : f.Splits) :
+    X ^ n * f = 0 ∨ (X ^ n * f).Splits := by
+  rr_zero_or_splits using hf
+
+example {f : ℝ[X]} {n : Nat} (hf : (X ^ n * f).Splits) :
+    f = 0 ∨ f.Splits := by
+  rr_zero_or_splits using hf
+
+example {f : ℝ[X]} (h0 : f.coeff 0 = 0) (hf : f = 0 ∨ f.Splits) :
+    f.divX = 0 ∨ f.divX.Splits := by
+  rr_zero_or_splits_divX using
+    coeff_zero := h0,
+    zero_or_splits := hf
+
+example {f : ℝ[X]} (h0 : f.coeff 0 = 0) (hf : f.divX = 0 ∨ f.divX.Splits) :
+    f = 0 ∨ f.Splits := by
+  rr_zero_or_splits_of_divX using
+    coeff_zero := h0,
+    divX_zero_or_splits := hf
+
 example {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits) :
     (f * g).Splits := by
   rr_splits_mul using
