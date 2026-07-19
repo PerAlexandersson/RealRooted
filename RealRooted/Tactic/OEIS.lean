@@ -1391,6 +1391,9 @@ macro_rules
           | rr_product_C_add_X_sequence using
               base := $hbase,
               recurrence := $hrec
+          | rr_product_checked_affine_pow_sequence_auto using
+              base := $hbase,
+              recurrence := $hrec
           | rr_product_X_pow_sequence using
               base := $hbase,
               recurrence := $hrec
@@ -1413,6 +1416,10 @@ macro_rules
               cutoff := $N,
               recurrence := $hrec
           | rr_product_C_add_X_sequence using
+              base := $hbase,
+              cutoff := $N,
+              recurrence := $hrec
+          | rr_product_checked_affine_pow_sequence_auto using
               base := $hbase,
               cutoff := $N,
               recurrence := $hrec

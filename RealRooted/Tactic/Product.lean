@@ -3238,6 +3238,13 @@ syntax (name := rr_product_const_first_affine_pow_sequence_auto_named)
     "recurrence" ":=" term :
   tactic
 
+syntax (name := rr_product_checked_affine_pow_sequence_auto_named)
+  "rr_product_checked_affine_pow_sequence_auto" " using "
+    "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
+    "recurrence" ":=" term :
+  tactic
+
 syntax (name := rr_product_scalar_sequence_named)
   "rr_product_scalar_sequence" " using "
     "base" ":=" term ","
@@ -3454,20 +3461,20 @@ private partial def findAffinePowOrientation? (e : Expr) :
   | .proj _ _ body => findAffinePowOrientation? body
   | _ => none
 
-private def affinePowOrientationOfFactorization (hrow : Syntax) :
+private def affinePowOrientationOfEvidence (label : String) (evidence : Syntax) :
     TacticM AffinePowOrientation := withMainContext do
-  let hrowExpr ← Lean.Elab.Tactic.elabTerm hrow none
-  let hrowType ← instantiateMVars (← inferType hrowExpr)
-  match findAffinePowOrientation? hrowType with
+  let evidenceExpr ← Lean.Elab.Tactic.elabTerm evidence none
+  let evidenceType ← instantiateMVars (← inferType evidenceExpr)
+  match findAffinePowOrientation? evidenceType with
   | some orientation => pure orientation
   | none =>
       throwError
-        "rr_product_lift_checked_affine_pow_sequence_auto: no affine-power factor found"
+        "rr_product checked affine-power auto: no affine-power factor found in {label}"
 
 elab "rr_product_lift_checked_affine_pow_sequence_auto" " using "
     "quotient_realrooted" ":=" hquot:term ","
     "factorization" ":=" hrow:term : tactic => do
-  match ← affinePowOrientationOfFactorization hrow with
+  match ← affinePowOrientationOfEvidence "factorization" hrow with
   | .mulXFirst =>
       evalTactic
         (← `(tactic|
@@ -3486,7 +3493,7 @@ elab "rr_product_lift_checked_affine_pow_sequence_auto" " using "
     "quotient_realrooted" ":=" hquot:term ","
     "cutoff" ":=" N:term ","
     "factorization" ":=" hrow:term : tactic => do
-  match ← affinePowOrientationOfFactorization hrow with
+  match ← affinePowOrientationOfEvidence "factorization" hrow with
   | .mulXFirst =>
       evalTactic
         (← `(tactic|
@@ -3503,6 +3510,43 @@ elab "rr_product_lift_checked_affine_pow_sequence_auto" " using "
             quotient_realrooted := $hquot,
             cutoff := $N,
             factorization := $hrow))
+
+elab "rr_product_checked_affine_pow_sequence_auto" " using "
+    "base" ":=" hbase:term ","
+    "recurrence" ":=" hrec:term : tactic => do
+  match ← affinePowOrientationOfEvidence "recurrence" hrec with
+  | .mulXFirst =>
+      evalTactic
+        (← `(tactic|
+          rr_product_affine_pow_sequence_auto using
+            base := $hbase,
+            recurrence := $hrec))
+  | .constFirst =>
+      evalTactic
+        (← `(tactic|
+          rr_product_const_first_affine_pow_sequence_auto using
+            base := $hbase,
+            recurrence := $hrec))
+
+elab "rr_product_checked_affine_pow_sequence_auto" " using "
+    "base" ":=" hbase:term ","
+    "cutoff" ":=" N:term ","
+    "recurrence" ":=" hrec:term : tactic => do
+  match ← affinePowOrientationOfEvidence "recurrence" hrec with
+  | .mulXFirst =>
+      evalTactic
+        (← `(tactic|
+          rr_product_affine_pow_sequence_auto using
+            base := $hbase,
+            cutoff := $N,
+            recurrence := $hrec))
+  | .constFirst =>
+      evalTactic
+        (← `(tactic|
+          rr_product_const_first_affine_pow_sequence_auto using
+            base := $hbase,
+            cutoff := $N,
+            recurrence := $hrec))
 
 macro_rules
   | `(tactic| rr_product_nonzero) =>
