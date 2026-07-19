@@ -1208,6 +1208,19 @@ example :
     hermiteBiehlerForwardPosStatement := by
   rr_hermite_biehler_forward_pos_statement
 
+/-- Hermite--Poulain row-family exit exposed through the OEIS facade. -/
+example {F G : Nat → ℝ[X]}
+    (hF : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
+    (hG : ∀ n : Nat, G n ≠ 0 ∧ (G n).Splits) :
+    ∀ n : Nat,
+      RealRooted.Challenges.HermitePoulain.applyAsDifferentialOperator (F n) (G n)
+          = 0 ∨
+        (RealRooted.Challenges.HermitePoulain.applyAsDifferentialOperator
+          (F n) (G n)).Splits := by
+  rr_hermite_poulain_sequence using
+    operator := hF,
+    input := hG
+
 /-- Kurtz coefficient-criterion exit exposed through the OEIS facade. -/
 example {p : ℝ[X]}
     (hdeg : 2 ≤ p.natDegree)
