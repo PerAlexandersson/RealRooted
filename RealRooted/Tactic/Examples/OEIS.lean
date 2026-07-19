@@ -1584,6 +1584,37 @@ example {P : Nat → ℝ[X]} {a b : Nat → ℝ}
     interval_order := hab,
     no_roots := hno
 
+/-- Interval root-count comparison transfer exposed through the OEIS facade. -/
+example {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hab : ∀ n : Nat, a n ≤ b n)
+    (hF : ∀ n : Nat, ∀ x, a n < x → x ≤ b n → ¬ (F n).IsRoot x)
+    (hG : ∀ n : Nat, ∀ x, a n < x → x ≤ b n → ¬ (G n).IsRoot x)
+    (hle : ∀ n : Nat,
+      (((F n).roots.filter (· ≤ a n)).card : ℤ) -
+          ((G n).roots.filter (· ≤ a n)).card ≤ 1 ∧
+        (((G n).roots.filter (· ≤ a n)).card : ℤ) -
+          ((F n).roots.filter (· ≤ a n)).card ≤ 1)
+    (hgt : ∀ n : Nat,
+      (((F n).roots.filter (a n < ·)).card : ℤ) -
+          ((G n).roots.filter (a n < ·)).card ≤ 1 ∧
+        (((G n).roots.filter (a n < ·)).card : ℤ) -
+          ((F n).roots.filter (a n < ·)).card ≤ 1) :
+    ∀ n : Nat,
+      ((((F n).roots.filter (· ≤ b n)).card : ℤ) -
+          ((G n).roots.filter (· ≤ b n)).card ≤ 1 ∧
+        (((G n).roots.filter (· ≤ b n)).card : ℤ) -
+          ((F n).roots.filter (· ≤ b n)).card ≤ 1) ∧
+        ((((F n).roots.filter (b n < ·)).card : ℤ) -
+            ((G n).roots.filter (b n < ·)).card ≤ 1 ∧
+          (((G n).roots.filter (b n < ·)).card : ℤ) -
+            ((F n).roots.filter (b n < ·)).card ≤ 1) := by
+  rr_card_roots_filter_le_and_gt_bound_no_isRoot_Ioc_sequence using
+    interval_order := hab,
+    left_no_roots := hF,
+    right_no_roots := hG,
+    lower_source_bound := hle,
+    upper_source_bound := hgt
+
 /-- Euler-operator PF row-family exit exposed through the OEIS facade. -/
 example {P : Nat → ℝ[X]}
     (hP : ∀ n : Nat, IsPFPolynomial (P n)) :
