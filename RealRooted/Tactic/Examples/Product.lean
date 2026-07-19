@@ -285,6 +285,17 @@ example {P : Nat → ℝ[X]}
     base := hbase,
     recurrence := hrec
 
+/-- Identity product exits can start after finitely many base rows. -/
+example {P : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hrec : ∀ n : Nat, N ≤ n → P (n + 1) = P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_identity_sequence using
+    base := hbase,
+    cutoff := N,
+    recurrence := hrec
+
 /-- `A103451`-style product exit: each active row gains one root at zero. -/
 example {P : Nat → ℝ[X]}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
@@ -328,6 +339,17 @@ example {P : Nat → ℝ[X]}
     base := hbase,
     recurrence := hrec
 
+/-- Root-zero product exits can start after finitely many base rows. -/
+example {P : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hrec : ∀ n : Nat, N ≤ n → P (n + 1) = P n * X) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_root_zero_sequence using
+    base := hbase,
+    cutoff := N,
+    recurrence := hrec
+
 /-- `A266178`-style product exit: two real-rooted base parities repeat. -/
 example {P : Nat → ℝ[X]}
     (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
@@ -356,6 +378,17 @@ example {P : Nat → ℝ[X]}
   rr_product_period_two_sequence using
     base_zero := hbase_zero,
     base_one := hbase_one,
+    recurrence := hrec
+
+/-- Period-two product exits can start from any finite cutoff row. -/
+example {P : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N + 1 → P n ≠ 0 ∧ (P n).Splits)
+    (hrec : ∀ n : Nat, N ≤ n → P (n + 2) = P n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_period_two_sequence using
+    base := hbase,
+    cutoff := N,
     recurrence := hrec
 
 /-- Row-wise product lift from a proved quotient sequence. -/

@@ -609,6 +609,30 @@ example {P : Nat → ℝ[X]}
     recurrence := hrec,
     certificate := auto
 
+/-- Product-exit router, cutoff identity branch. -/
+example {P : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hrec : ∀ n : Nat, N ≤ n → P (n + 1) = P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_exit_sequence using
+    base := hbase,
+    cutoff := N,
+    recurrence := hrec,
+    certificate := identity
+
+/-- Product-exit router, cutoff automatic zero-root branch. -/
+example {P : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hrec : ∀ n : Nat, N ≤ n → P (n + 1) = P n * X) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_exit_sequence using
+    base := hbase,
+    cutoff := N,
+    recurrence := hrec,
+    certificate := auto
+
 /-- Product-exit router, period-two branch. -/
 example {P : Nat → ℝ[X]}
     (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
@@ -618,6 +642,18 @@ example {P : Nat → ℝ[X]}
   rr_product_exit_sequence using
     base_zero := hbase_zero,
     base_one := hbase_one,
+    recurrence := hrec,
+    certificate := periodTwo
+
+/-- Product-exit router, period-two branch from a cutoff row. -/
+example {P : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N + 1 → P n ≠ 0 ∧ (P n).Splits)
+    (hrec : ∀ n : Nat, N ≤ n → P (n + 2) = P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_exit_sequence using
+    base := hbase,
+    cutoff := N,
     recurrence := hrec,
     certificate := periodTwo
 

@@ -328,6 +328,25 @@ theorem isRealRooted_of_product_identity_sequence
   | succ n ih =>
       simpa [Nat.succ_eq_add_one, hstep n] using ih
 
+/-- Tail-start sequence shell for identity product recurrences. -/
+theorem isRealRooted_of_product_identity_sequence_from
+    {P : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hstep : ∀ n : Nat, N ≤ n → P (n + 1) = P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  intro n
+  exact Nat.strong_induction_on n fun n ih => by
+    by_cases hn : n ≤ N
+    · exact hbase n hn
+    · cases n with
+      | zero =>
+          exact False.elim (hn (Nat.zero_le N))
+      | succ m =>
+          have hNm : N ≤ m := by lia
+          have hm : P m ≠ 0 ∧ (P m).Splits := ih m (Nat.lt_succ_self m)
+          simpa [Nat.succ_eq_add_one, hstep m hNm] using hm
+
 /-- Sequence shell for recurrences that multiply each row by `X`. -/
 theorem isRealRooted_of_product_root_zero_sequence
     {P : Nat → ℝ[X]}
@@ -343,6 +362,27 @@ theorem isRealRooted_of_product_root_zero_right_sequence
     (hstep : ∀ n : Nat, P (n + 1) = P n * X) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_factor_right_sequence hbase isRealRooted_X_sequence hstep
+
+/-- Tail-start sequence shell for recurrences that multiply each row by `X`. -/
+theorem isRealRooted_of_product_root_zero_sequence_from
+    {P : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hstep : ∀ n : Nat, N ≤ n → P (n + 1) = X * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_sequence_from N hbase
+    (fun n _ => isRealRooted_X_sequence n) hstep
+
+/-- Right-factor variant of
+`isRealRooted_of_product_root_zero_sequence_from`. -/
+theorem isRealRooted_of_product_root_zero_right_sequence_from
+    {P : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hstep : ∀ n : Nat, N ≤ n → P (n + 1) = P n * X) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_right_sequence_from N hbase
+    (fun n _ => isRealRooted_X_sequence n) hstep
 
 /-- Sequence shell for period-two product recurrences. -/
 theorem isRealRooted_of_product_period_two_sequence
@@ -365,6 +405,33 @@ theorem isRealRooted_of_product_period_two_sequence
           have hprev := ih n (Nat.lt_succ_of_lt (Nat.lt_succ_self n))
           change P (n + 2) ≠ 0 ∧ (P (n + 2)).Splits
           simpa [hstep n] using hprev
+
+/-- Tail-start sequence shell for period-two product recurrences.  The
+recurrence starts at row `N`, so the finite base interval must include rows
+through `N + 1`. -/
+theorem isRealRooted_of_product_period_two_sequence_from
+    {P : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N + 1 → P n ≠ 0 ∧ (P n).Splits)
+    (hstep : ∀ n : Nat, N ≤ n → P (n + 2) = P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  intro n
+  exact Nat.strong_induction_on n fun n ih => by
+    by_cases hn : n ≤ N + 1
+    · exact hbase n hn
+    · cases n with
+      | zero =>
+          exact False.elim (hn (by lia))
+      | succ m =>
+          cases m with
+          | zero =>
+              exact False.elim (hn (by lia))
+          | succ k =>
+              have hNk : N ≤ k := by lia
+              have hklt : k < k + 2 := Nat.lt_succ_of_lt (Nat.lt_succ_self k)
+              have hk : P k ≠ 0 ∧ (P k).Splits := ih k hklt
+              change P (k + 2) ≠ 0 ∧ (P (k + 2)).Splits
+              simpa [hstep k hNk] using hk
 
 /-- Lift real-rootedness from a quotient sequence through row-wise real-rooted
 left factors. -/
@@ -1646,6 +1713,7 @@ syntax (name := rr_j1_factorable_lag3_sequence_realrooted_named)
 syntax (name := rr_product_identity_sequence_named)
   "rr_product_identity_sequence" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term :
   tactic
 
@@ -1656,6 +1724,7 @@ syntax (name := rr_product_identity_sequence)
 syntax (name := rr_product_root_zero_sequence_named)
   "rr_product_root_zero_sequence" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term :
   tactic
 
@@ -1667,6 +1736,13 @@ syntax (name := rr_product_period_two_sequence_named)
   "rr_product_period_two_sequence" " using "
     "base_zero" ":=" term ","
     "base_one" ":=" term ","
+    "recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_product_period_two_sequence_cutoff_named)
+  "rr_product_period_two_sequence" " using "
+    "base" ":=" term ","
+    "cutoff" ":=" term ","
     "recurrence" ":=" term :
   tactic
 
@@ -2358,6 +2434,15 @@ macro_rules
           (RealRooted.isRealRooted_of_product_identity_sequence $hbase $hstep))
   | `(tactic|
       rr_product_identity_sequence using
+        base := $hbase:term,
+        cutoff := $N:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_product_identity_sequence_from
+            $N $hbase $hstep))
+  | `(tactic|
+      rr_product_identity_sequence using
         $hbase:term, $hstep:term) =>
       `(tactic|
         rr_product_identity_sequence using
@@ -2374,6 +2459,17 @@ macro_rules
             $hbase $hstep))
   | `(tactic|
       rr_product_root_zero_sequence using
+        base := $hbase:term,
+        cutoff := $N:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_product_root_zero_sequence_from
+            $N $hbase $hstep),
+          (RealRooted.isRealRooted_of_product_root_zero_right_sequence_from
+            $N $hbase $hstep))
+  | `(tactic|
+      rr_product_root_zero_sequence using
         $hbase:term, $hstep:term) =>
       `(tactic|
         rr_product_root_zero_sequence using
@@ -2388,6 +2484,15 @@ macro_rules
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_product_period_two_sequence
             $hbase_zero $hbase_one $hstep))
+  | `(tactic|
+      rr_product_period_two_sequence using
+        base := $hbase:term,
+        cutoff := $N:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_product_period_two_sequence_from
+            $N $hbase $hstep))
   | `(tactic|
       rr_product_period_two_sequence using
         $hbase_zero:term, $hbase_one:term, $hstep:term) =>
