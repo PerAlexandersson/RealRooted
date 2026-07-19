@@ -76,6 +76,30 @@ lemma derivative_root_nonpos_of_realrooted_of_nonneg_coeffs {p : ℝ[X]}
     r ≤ 0 :=
   derivative_root_nonpos_of_splits_of_nonneg_coeffs hrr.2 hpnn hp_der_ne hr
 
+lemma roots_nonpos_sequence_of_realrooted_of_nonneg_coeffs
+    {P : Nat → ℝ[X]}
+    (hrr : ∀ i : Nat, P i ≠ 0 ∧ (P i).Splits)
+    (hnn : ∀ i : Nat, HasNonnegCoeffs (P i)) :
+    ∀ i : Nat, ∀ r, (P i).IsRoot r → r ≤ 0 := fun i _ hr =>
+  root_nonpos_of_realrooted_of_nonneg_coeffs (hrr i) (hnn i) hr
+
+lemma roots_le_neg_sequence_of_realrooted_of_shift_nonneg_coeffs
+    {P : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hrr : ∀ i : Nat, P i ≠ 0 ∧ (P i).Splits)
+    (hshift_nonneg : ∀ i : Nat, HasNonnegCoeffs ((P i).comp (X - C (a i)))) :
+    ∀ i : Nat, ∀ r, (P i).IsRoot r → r ≤ -(a i) := fun i _ hr =>
+  root_le_neg_of_realrooted_of_shift_nonneg_coeffs
+    (hrr i) (hshift_nonneg i) hr
+
+lemma derivative_roots_nonpos_sequence_of_realrooted_of_nonneg_coeffs
+    {P : Nat → ℝ[X]}
+    (hrr : ∀ i : Nat, P i ≠ 0 ∧ (P i).Splits)
+    (hnn : ∀ i : Nat, HasNonnegCoeffs (P i))
+    (hder_ne : ∀ i : Nat, (P i).derivative ≠ 0) :
+    ∀ i : Nat, ∀ r, (P i).derivative.IsRoot r → r ≤ 0 := fun i _ hr =>
+  derivative_root_nonpos_of_realrooted_of_nonneg_coeffs
+    (hrr i) (hnn i) (hder_ne i) hr
+
 namespace Tactic
 
 syntax (name := rr_root_nonpos_realrooted)
@@ -93,11 +117,23 @@ syntax (name := rr_root_nonpos_named)
 
 syntax (name := rr_root_nonpos_auto) "rr_root_nonpos" : tactic
 
+syntax (name := rr_root_nonpos_sequence_named)
+  "rr_root_nonpos_sequence" " using "
+    "realrooted" ":=" term ","
+    "nonneg" ":=" term :
+  tactic
+
 syntax (name := rr_root_le_neg_shift_named)
   "rr_root_le_neg_shift" " using "
     "realrooted" ":=" term ","
     "shift_nonneg" ":=" term ","
     "root" ":=" term :
+  tactic
+
+syntax (name := rr_root_le_neg_shift_sequence_named)
+  "rr_root_le_neg_shift_sequence" " using "
+    "realrooted" ":=" term ","
+    "shift_nonneg" ":=" term :
   tactic
 
 syntax (name := rr_derivative_root_nonpos_named)
@@ -110,6 +146,13 @@ syntax (name := rr_derivative_root_nonpos_named)
 
 syntax (name := rr_derivative_root_nonpos_auto) "rr_derivative_root_nonpos" : tactic
 
+syntax (name := rr_derivative_root_nonpos_sequence_named)
+  "rr_derivative_root_nonpos_sequence" " using "
+    "realrooted" ":=" term ","
+    "nonneg" ":=" term ","
+    "derivative_ne" ":=" term :
+  tactic
+
 syntax (name := rr_sign_at_roots)
   "rr_sign_at_roots" " using " term ", " term : tactic
 
@@ -120,6 +163,12 @@ syntax (name := rr_sign_at_roots_named)
   tactic
 
 syntax (name := rr_sign_at_roots_auto) "rr_sign_at_roots" : tactic
+
+syntax (name := rr_sign_at_roots_sequence_named)
+  "rr_sign_at_roots_sequence" " using "
+    "realrooted" ":=" term ","
+    "nonneg" ":=" term :
+  tactic
 
 syntax (name := rr_sign_at_roots_term) "rr_sign_at_roots_term " term ", " term : term
 
@@ -135,6 +184,13 @@ syntax (name := rr_sign_at_roots_factor_named)
 
 syntax (name := rr_sign_at_roots_factor_auto)
   "rr_sign_at_roots_with_factor" " using "
+    "factor_nonneg" ":=" term :
+  tactic
+
+syntax (name := rr_sign_at_roots_sequence_factor_named)
+  "rr_sign_at_roots_sequence_with_factor" " using "
+    "realrooted" ":=" term ","
+    "nonneg" ":=" term ","
     "factor_nonneg" ":=" term :
   tactic
 
@@ -199,6 +255,13 @@ macro_rules
           | exact RealRooted.root_nonpos_of_ne_zero_of_splits_of_nonneg_coeffs
               (by assumption) (by assumption) (by assumption) (by assumption))
   | `(tactic|
+      rr_root_nonpos_sequence using
+        realrooted := $hrr:term,
+        nonneg := $hnn:term) =>
+      `(tactic|
+        exact RealRooted.roots_nonpos_sequence_of_realrooted_of_nonneg_coeffs
+          $hrr $hnn)
+  | `(tactic|
       rr_root_le_neg_shift using
         realrooted := $hrr:term,
         shift_nonneg := $hnn:term,
@@ -206,6 +269,13 @@ macro_rules
       `(tactic|
         exact RealRooted.root_le_neg_of_realrooted_of_shift_nonneg_coeffs
           $hrr $hnn $hr)
+  | `(tactic|
+      rr_root_le_neg_shift_sequence using
+        realrooted := $hrr:term,
+        shift_nonneg := $hnn:term) =>
+      `(tactic|
+        exact RealRooted.roots_le_neg_sequence_of_realrooted_of_shift_nonneg_coeffs
+          $hrr $hnn)
   | `(tactic|
       rr_derivative_root_nonpos using
         realrooted := $hrr:term,
@@ -219,6 +289,14 @@ macro_rules
       `(tactic|
         exact RealRooted.derivative_root_nonpos_of_realrooted_of_nonneg_coeffs
           (by assumption) (by assumption) (by assumption) (by assumption))
+  | `(tactic|
+      rr_derivative_root_nonpos_sequence using
+        realrooted := $hrr:term,
+        nonneg := $hnn:term,
+        derivative_ne := $hder_ne:term) =>
+      `(tactic|
+        exact RealRooted.derivative_roots_nonpos_sequence_of_realrooted_of_nonneg_coeffs
+          $hrr $hnn $hder_ne)
   | `(tactic| rr_sign_at_roots using $hrr:term, $hnn:term) =>
       `(tactic|
         exact fun r hroot => by
@@ -238,6 +316,16 @@ macro_rules
         exact fun r hroot => by
           have hroot_nonpos : r ≤ 0 := by
             rr_root_nonpos
+          rr_sign)
+  | `(tactic|
+      rr_sign_at_roots_sequence using
+        realrooted := $hrr:term,
+        nonneg := $hnn:term) =>
+      `(tactic|
+        exact fun n r hroot => by
+          have hroot_nonpos : r ≤ 0 := by
+            exact RealRooted.root_nonpos_of_realrooted_of_nonneg_coeffs
+              ($hrr n) ($hnn n) hroot
           rr_sign)
   | `(tactic|
       rr_sign_at_roots_with_factor using $hrr:term, $hnn:term, $hq:term) =>
@@ -264,6 +352,18 @@ macro_rules
           have hroot_nonpos : r ≤ 0 := by
             rr_root_nonpos
           have hfactor_nonneg := $hq r hroot
+          rr_sign)
+  | `(tactic|
+      rr_sign_at_roots_sequence_with_factor using
+        realrooted := $hrr:term,
+        nonneg := $hnn:term,
+        factor_nonneg := $hq:term) =>
+      `(tactic|
+        exact fun n r hroot => by
+          have hroot_nonpos : r ≤ 0 := by
+            exact RealRooted.root_nonpos_of_realrooted_of_nonneg_coeffs
+              ($hrr n) ($hnn n) hroot
+          have hfactor_nonneg := $hq n r hroot
           rr_sign)
   | `(tactic|
       rr_sign_at_roots_lower using $hlo:term) =>

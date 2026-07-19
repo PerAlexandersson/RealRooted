@@ -14,6 +14,25 @@ open scoped BigOperators
 namespace RealRooted
 namespace Tactic
 
+/-- Root-bound row-family exit exposed through the OEIS facade. -/
+example {P : Nat → ℝ[X]}
+    (hrr : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits)
+    (hpnn : ∀ n : Nat, HasNonnegCoeffs (P n)) :
+    ∀ n : Nat, ∀ r, (P n).IsRoot r → r ≤ 0 := by
+  rr_root_nonpos_sequence using
+    realrooted := hrr,
+    nonneg := hpnn
+
+/-- Sign-at-roots row-family exit exposed through the OEIS facade. -/
+example {P : Nat → ℝ[X]}
+    (hrr : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits)
+    (hpnn : ∀ n : Nat, HasNonnegCoeffs (P n)) :
+    ∀ n : Nat, ∀ r, (P n).IsRoot r →
+      (C (2 : ℝ) * X : ℝ[X]).eval r ≤ 0 := by
+  rr_sign_at_roots_sequence using
+    realrooted := hrr,
+    nonneg := hpnn
+
 /-- Direct Family I2 half-line branch, adjacent-`Prec` endpoint. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
