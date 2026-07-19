@@ -55,5 +55,55 @@ example {p : ℝ[X]}
     HasNonnegCoeffs p := by
   rr_kurtz_nonneg_coeffs using positive_coeffs := hpos
 
+example {P : Nat → ℝ[X]}
+    (hdeg : ∀ n : Nat, 2 ≤ (P n).natDegree)
+    (hpos : ∀ n : Nat, ∀ i ≤ (P n).natDegree, 0 < (P n).coeff i)
+    (hineq : ∀ n : Nat, RealRooted.Challenges.Kurtz.KurtzStrictInequalities (P n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_kurtz_sequence using
+    degree := hdeg,
+    positive_coeffs := hpos,
+    inequalities := hineq
+
+example {P : Nat → ℝ[X]}
+    (hdeg : ∀ n : Nat, 2 ≤ (P n).natDegree)
+    (hpos : ∀ n : Nat, ∀ i ≤ (P n).natDegree, 0 < (P n).coeff i)
+    (hineq : ∀ n : Nat, RealRooted.Challenges.Kurtz.KurtzStrictInequalities (P n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_kurtz_sequence using
+    degree := hdeg,
+    positive_coeffs := hpos,
+    inequalities := hineq
+
+example {P : Nat → ℝ[X]}
+    (hdeg : ∀ n : Nat, 2 ≤ (P n).natDegree)
+    (hpos : ∀ n : Nat, ∀ i ≤ (P n).natDegree, 0 < (P n).coeff i)
+    (hineq : ∀ n : Nat, RealRooted.Challenges.Kurtz.KurtzStrictInequalities (P n)) :
+    ∀ n : Nat, P n = 0 ∨ (P n).Splits := by
+  rr_kurtz_sequence using
+    degree := hdeg,
+    positive_coeffs := hpos,
+    inequalities := hineq
+
+example {P : Nat → ℝ[X]}
+    (hdeg : ∀ n : Nat, 2 ≤ (P n).natDegree)
+    (hpos : ∀ n : Nat, ∀ i ≤ (P n).natDegree, 0 < (P n).coeff i)
+    (hineq : ∀ n : Nat, RealRooted.Challenges.Kurtz.KurtzStrictInequalities (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) := by
+  rr_kurtz_sequence using
+    degree := hdeg,
+    positive_coeffs := hpos,
+    inequalities := hineq
+
+example {P : Nat → ℝ[X]}
+    (hpos : ∀ n : Nat, ∀ i ≤ (P n).natDegree, 0 < (P n).coeff i) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_kurtz_sequence_nonzero using positive_coeffs := hpos
+
+example {P : Nat → ℝ[X]}
+    (hpos : ∀ n : Nat, ∀ i ≤ (P n).natDegree, 0 < (P n).coeff i) :
+    ∀ n : Nat, HasNonnegCoeffs (P n) := by
+  rr_kurtz_sequence_nonneg_coeffs using positive_coeffs := hpos
+
 end Tactic
 end RealRooted

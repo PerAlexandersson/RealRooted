@@ -1219,6 +1219,17 @@ example {p : ℝ[X]}
     positive_coeffs := hpos,
     inequalities := hineq
 
+/-- Kurtz row-family exit exposed through the OEIS facade. -/
+example {P : Nat → ℝ[X]}
+    (hdeg : ∀ n : Nat, 2 ≤ (P n).natDegree)
+    (hpos : ∀ n : Nat, ∀ i ≤ (P n).natDegree, 0 < (P n).coeff i)
+    (hineq : ∀ n : Nat, RealRooted.Challenges.Kurtz.KurtzStrictInequalities (P n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_kurtz_sequence using
+    degree := hdeg,
+    positive_coeffs := hpos,
+    inequalities := hineq
+
 /-- Narayana polynomial exit exposed through the OEIS facade. -/
 example {m n : ℕ} :
     (narayanaPolynomial m n).Splits := by
