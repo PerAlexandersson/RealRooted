@@ -1529,6 +1529,28 @@ example {L : Nat → List ℝ[X]} {M : Nat → Nat}
     interlacing_nonneg := hL,
     index_lt := hM
 
+/-- Root-count degree side-goal row-family exit exposed through the OEIS
+facade. -/
+example {F G : Nat → ℝ[X]} {μ : Nat → ℝ}
+    (hμ : ∀ n : Nat, μ n ≠ 0)
+    (hdeg : ∀ n : Nat, (F n).natDegree < (G n).natDegree) :
+    ∀ n : Nat, (F n + C (μ n) * G n).natDegree = (G n).natDegree := by
+  rr_natDegree_add_C_mul_lt_sequence using
+    parameter_ne_zero := hμ,
+    degree_lt := hdeg
+
+/-- Root-count same-sign nonroot row-family exit exposed through the OEIS
+facade. -/
+example {F G : Nat → ℝ[X]} {β x : Nat → ℝ}
+    (hβ0 : ∀ n : Nat, 0 ≤ β n)
+    (hβ1 : ∀ n : Nat, β n ≤ 1)
+    (hprod : ∀ n : Nat, 0 < (F n).eval (x n) * (G n).eval (x n)) :
+    ∀ n : Nat, ¬ (C (1 - β n) * F n + C (β n) * G n).IsRoot (x n) := by
+  rr_closedSegment_not_isRoot_same_sign_sequence using
+    parameter_nonneg := hβ0,
+    parameter_le_one := hβ1,
+    eval_product_pos := hprod
+
 /-- Euler-operator PF row-family exit exposed through the OEIS facade. -/
 example {P : Nat → ℝ[X]}
     (hP : ∀ n : Nat, IsPFPolynomial (P n)) :

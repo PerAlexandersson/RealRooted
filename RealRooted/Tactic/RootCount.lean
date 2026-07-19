@@ -17,14 +17,98 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
+theorem natDegree_add_C_mul_lt_sequence
+    {F G : Nat → ℝ[X]} {μ : Nat → ℝ}
+    (hμ : ∀ i : Nat, μ i ≠ 0)
+    (hdeg : ∀ i : Nat, (F i).natDegree < (G i).natDegree) :
+    ∀ i : Nat, (F i + C (μ i) * G i).natDegree = (G i).natDegree := fun i =>
+  Polynomial.natDegree_add_C_mul_of_natDegree_lt (hμ i) (hdeg i)
+
+theorem leadingCoeff_add_C_mul_lt_sequence
+    {F G : Nat → ℝ[X]} {μ : Nat → ℝ}
+    (hμ : ∀ i : Nat, μ i ≠ 0)
+    (hdeg : ∀ i : Nat, (F i).natDegree < (G i).natDegree) :
+    ∀ i : Nat,
+      (F i + C (μ i) * G i).leadingCoeff = μ i * (G i).leadingCoeff :=
+  fun i =>
+    Polynomial.leadingCoeff_add_C_mul_of_natDegree_lt (hμ i) (hdeg i)
+
+theorem closedSegment_eval_ne_zero_same_sign_sequence
+    {F G : Nat → ℝ[X]} {β x : Nat → ℝ}
+    (hβ0 : ∀ i : Nat, 0 ≤ β i)
+    (hβ1 : ∀ i : Nat, β i ≤ 1)
+    (hprod : ∀ i : Nat, 0 < (F i).eval (x i) * (G i).eval (x i)) :
+    ∀ i : Nat,
+      (C (1 - β i) * F i + C (β i) * G i).eval (x i) ≠ 0 := fun i =>
+  RealRooted.closedSegment_eval_ne_zero_of_eval_mul_pos
+    (hβ0 i) (hβ1 i) (hprod i)
+
+theorem closedSegment_not_isRoot_same_sign_sequence
+    {F G : Nat → ℝ[X]} {β x : Nat → ℝ}
+    (hβ0 : ∀ i : Nat, 0 ≤ β i)
+    (hβ1 : ∀ i : Nat, β i ≤ 1)
+    (hprod : ∀ i : Nat, 0 < (F i).eval (x i) * (G i).eval (x i)) :
+    ∀ i : Nat, ¬ (C (1 - β i) * F i + C (β i) * G i).IsRoot (x i) :=
+  fun i =>
+    RealRooted.closedSegment_not_isRoot_of_eval_mul_pos
+      (hβ0 i) (hβ1 i) (hprod i)
+
+theorem rightFamily_eval_ne_zero_same_sign_sequence
+    {F G : Nat → ℝ[X]} {μ x : Nat → ℝ}
+    (hμ : ∀ i : Nat, 0 ≤ μ i)
+    (hprod : ∀ i : Nat, 0 < (F i).eval (x i) * (G i).eval (x i)) :
+    ∀ i : Nat, (F i + C (μ i) * G i).eval (x i) ≠ 0 := fun i =>
+  RealRooted.rightFamily_eval_ne_zero_of_eval_mul_pos (hμ i) (hprod i)
+
+theorem exists_threshold_no_mem_Ioc_sequence (S : Nat → Multiset ℝ)
+    (x : Nat → ℝ) :
+    ∀ i : Nat, ∃ x' : ℝ, x i < x' ∧ ∀ r ∈ S i, r ≤ x i ∨ x' < r :=
+  fun i => RealRooted.exists_threshold_no_mem_Ioc (S i) (x i)
+
+theorem exists_nonRoot_threshold_count_eq_sequence
+    {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hF : ∀ i : Nat, F i ≠ 0)
+    (hG : ∀ i : Nat, G i ≠ 0) :
+    ∀ i : Nat,
+      ∃ x' : ℝ, x i ≤ x' ∧ (F i).eval x' ≠ 0 ∧ (G i).eval x' ≠ 0 ∧
+        ((F i).roots.filter (· ≤ x')).card =
+          ((F i).roots.filter (· ≤ x i)).card ∧
+        ((G i).roots.filter (· ≤ x')).card =
+          ((G i).roots.filter (· ≤ x i)).card := fun i =>
+  RealRooted.exists_nonRoot_threshold_count_eq (hF i) (hG i) (x i)
+
+theorem exists_nonRoot_threshold_count_gt_eq_sequence
+    {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hF : ∀ i : Nat, F i ≠ 0)
+    (hG : ∀ i : Nat, G i ≠ 0) :
+    ∀ i : Nat,
+      ∃ x' : ℝ, x i ≤ x' ∧ (F i).eval x' ≠ 0 ∧ (G i).eval x' ≠ 0 ∧
+        ((F i).roots.filter (x' < ·)).card =
+          ((F i).roots.filter (x i < ·)).card ∧
+        ((G i).roots.filter (x' < ·)).card =
+          ((G i).roots.filter (x i < ·)).card := fun i =>
+  RealRooted.exists_nonRoot_threshold_count_gt_eq (hF i) (hG i) (x i)
+
 syntax (name := rr_natDegree_add_C_mul_lt_named)
   "rr_natDegree_add_C_mul_lt" " using "
     "parameter_ne_zero" ":=" term ","
     "degree_lt" ":=" term :
   tactic
 
+syntax (name := rr_natDegree_add_C_mul_lt_sequence_named)
+  "rr_natDegree_add_C_mul_lt_sequence" " using "
+    "parameter_ne_zero" ":=" term ","
+    "degree_lt" ":=" term :
+  tactic
+
 syntax (name := rr_leadingCoeff_add_C_mul_lt_named)
   "rr_leadingCoeff_add_C_mul_lt" " using "
+    "parameter_ne_zero" ":=" term ","
+    "degree_lt" ":=" term :
+  tactic
+
+syntax (name := rr_leadingCoeff_add_C_mul_lt_sequence_named)
+  "rr_leadingCoeff_add_C_mul_lt_sequence" " using "
     "parameter_ne_zero" ":=" term ","
     "degree_lt" ":=" term :
   tactic
@@ -83,8 +167,22 @@ syntax (name := rr_closedSegment_eval_ne_zero_same_sign_named)
     "eval_product_pos" ":=" term :
   tactic
 
+syntax (name := rr_closedSegment_eval_ne_zero_same_sign_sequence_named)
+  "rr_closedSegment_eval_ne_zero_same_sign_sequence" " using "
+    "parameter_nonneg" ":=" term ","
+    "parameter_le_one" ":=" term ","
+    "eval_product_pos" ":=" term :
+  tactic
+
 syntax (name := rr_closedSegment_not_isRoot_same_sign_named)
   "rr_closedSegment_not_isRoot_same_sign" " using "
+    "parameter_nonneg" ":=" term ","
+    "parameter_le_one" ":=" term ","
+    "eval_product_pos" ":=" term :
+  tactic
+
+syntax (name := rr_closedSegment_not_isRoot_same_sign_sequence_named)
+  "rr_closedSegment_not_isRoot_same_sign_sequence" " using "
     "parameter_nonneg" ":=" term ","
     "parameter_le_one" ":=" term ","
     "eval_product_pos" ":=" term :
@@ -96,8 +194,18 @@ syntax (name := rr_rightFamily_eval_ne_zero_same_sign_named)
     "eval_product_pos" ":=" term :
   tactic
 
+syntax (name := rr_rightFamily_eval_ne_zero_same_sign_sequence_named)
+  "rr_rightFamily_eval_ne_zero_same_sign_sequence" " using "
+    "parameter_nonneg" ":=" term ","
+    "eval_product_pos" ":=" term :
+  tactic
+
 syntax (name := rr_exists_threshold_no_mem_Ioc_named)
   "rr_exists_threshold_no_mem_Ioc" :
+  tactic
+
+syntax (name := rr_exists_threshold_no_mem_Ioc_sequence_named)
+  "rr_exists_threshold_no_mem_Ioc_sequence" :
   tactic
 
 syntax (name := rr_exists_nonRoot_threshold_count_eq_named)
@@ -107,11 +215,23 @@ syntax (name := rr_exists_nonRoot_threshold_count_eq_named)
     "threshold" ":=" term :
   tactic
 
+syntax (name := rr_exists_nonRoot_threshold_count_eq_sequence_named)
+  "rr_exists_nonRoot_threshold_count_eq_sequence" " using "
+    "left_ne_zero" ":=" term ","
+    "right_ne_zero" ":=" term :
+  tactic
+
 syntax (name := rr_exists_nonRoot_threshold_count_gt_eq_named)
   "rr_exists_nonRoot_threshold_count_gt_eq" " using "
     "left_ne_zero" ":=" term ","
     "right_ne_zero" ":=" term ","
     "threshold" ":=" term :
+  tactic
+
+syntax (name := rr_exists_nonRoot_threshold_count_gt_eq_sequence_named)
+  "rr_exists_nonRoot_threshold_count_gt_eq_sequence" " using "
+    "left_ne_zero" ":=" term ","
+    "right_ne_zero" ":=" term :
   tactic
 
 syntax (name := rr_rootCount_diff_le_one_nonRoot_named)
@@ -494,11 +614,23 @@ macro_rules
       `(tactic|
         exact Polynomial.natDegree_add_C_mul_of_natDegree_lt $hμ $hdeg)
   | `(tactic|
+      rr_natDegree_add_C_mul_lt_sequence using
+        parameter_ne_zero := $hμ:term,
+        degree_lt := $hdeg:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.natDegree_add_C_mul_lt_sequence $hμ $hdeg)
+  | `(tactic|
       rr_leadingCoeff_add_C_mul_lt using
         parameter_ne_zero := $hμ:term,
         degree_lt := $hdeg:term) =>
       `(tactic|
         exact Polynomial.leadingCoeff_add_C_mul_of_natDegree_lt $hμ $hdeg)
+  | `(tactic|
+      rr_leadingCoeff_add_C_mul_lt_sequence using
+        parameter_ne_zero := $hμ:term,
+        degree_lt := $hdeg:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.leadingCoeff_add_C_mul_lt_sequence $hμ $hdeg)
   | `(tactic|
       rr_exists_root_lt_succDegree_add_right_small using
         left_pos_lc := $hfpos:term,
@@ -561,6 +693,14 @@ macro_rules
         exact RealRooted.closedSegment_eval_ne_zero_of_eval_mul_pos
           $hβ0 $hβ1 $hprod)
   | `(tactic|
+      rr_closedSegment_eval_ne_zero_same_sign_sequence using
+        parameter_nonneg := $hβ0:term,
+        parameter_le_one := $hβ1:term,
+        eval_product_pos := $hprod:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.closedSegment_eval_ne_zero_same_sign_sequence
+          $hβ0 $hβ1 $hprod)
+  | `(tactic|
       rr_closedSegment_not_isRoot_same_sign using
         parameter_nonneg := $hβ0:term,
         parameter_le_one := $hβ1:term,
@@ -569,13 +709,30 @@ macro_rules
         exact RealRooted.closedSegment_not_isRoot_of_eval_mul_pos
           $hβ0 $hβ1 $hprod)
   | `(tactic|
+      rr_closedSegment_not_isRoot_same_sign_sequence using
+        parameter_nonneg := $hβ0:term,
+        parameter_le_one := $hβ1:term,
+        eval_product_pos := $hprod:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.closedSegment_not_isRoot_same_sign_sequence
+          $hβ0 $hβ1 $hprod)
+  | `(tactic|
       rr_rightFamily_eval_ne_zero_same_sign using
         parameter_nonneg := $hμ:term,
         eval_product_pos := $hprod:term) =>
       `(tactic|
         exact RealRooted.rightFamily_eval_ne_zero_of_eval_mul_pos $hμ $hprod)
+  | `(tactic|
+      rr_rightFamily_eval_ne_zero_same_sign_sequence using
+        parameter_nonneg := $hμ:term,
+        eval_product_pos := $hprod:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.rightFamily_eval_ne_zero_same_sign_sequence
+          $hμ $hprod)
   | `(tactic| rr_exists_threshold_no_mem_Ioc) =>
       `(tactic| exact RealRooted.exists_threshold_no_mem_Ioc _ _)
+  | `(tactic| rr_exists_threshold_no_mem_Ioc_sequence) =>
+      `(tactic| exact RealRooted.Tactic.exists_threshold_no_mem_Ioc_sequence _ _)
   | `(tactic|
       rr_exists_nonRoot_threshold_count_eq using
         left_ne_zero := $hf:term,
@@ -583,11 +740,25 @@ macro_rules
         threshold := $x:term) =>
       `(tactic| exact RealRooted.exists_nonRoot_threshold_count_eq $hf $hg $x)
   | `(tactic|
+      rr_exists_nonRoot_threshold_count_eq_sequence using
+        left_ne_zero := $hf:term,
+        right_ne_zero := $hg:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.exists_nonRoot_threshold_count_eq_sequence
+          $hf $hg)
+  | `(tactic|
       rr_exists_nonRoot_threshold_count_gt_eq using
         left_ne_zero := $hf:term,
         right_ne_zero := $hg:term,
         threshold := $x:term) =>
       `(tactic| exact RealRooted.exists_nonRoot_threshold_count_gt_eq $hf $hg $x)
+  | `(tactic|
+      rr_exists_nonRoot_threshold_count_gt_eq_sequence using
+        left_ne_zero := $hf:term,
+        right_ne_zero := $hg:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.exists_nonRoot_threshold_count_gt_eq_sequence
+          $hf $hg)
   | `(tactic|
       rr_rootCount_diff_le_one_nonRoot using
         left_ne_zero := $hf:term,
