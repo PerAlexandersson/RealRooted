@@ -1632,72 +1632,6 @@ syntax (name := rr_second_derivative_bidiagonal_normalizer)
      Lean.Parser.Tactic.simpLemma) "]" :
   tactic
 
-syntax (name := rr_pf_cubic_certificate_via_two)
-  "rr_pf_cubic_certificate_via" " using "
-    "certificate" ":=" term ","
-    "defs" ":="
-    (Lean.Parser.Tactic.simpStar <|>
-     Lean.Parser.Tactic.simpErase <|>
-     Lean.Parser.Tactic.simpLemma) ", "
-    (Lean.Parser.Tactic.simpStar <|>
-     Lean.Parser.Tactic.simpErase <|>
-     Lean.Parser.Tactic.simpLemma) :
-  tactic
-
-syntax (name := rr_pf_cubic_certificate_via_three)
-  "rr_pf_cubic_certificate_via" " using "
-    "certificate" ":=" term ","
-    "defs" ":="
-    (Lean.Parser.Tactic.simpStar <|>
-     Lean.Parser.Tactic.simpErase <|>
-     Lean.Parser.Tactic.simpLemma) ", "
-    (Lean.Parser.Tactic.simpStar <|>
-     Lean.Parser.Tactic.simpErase <|>
-     Lean.Parser.Tactic.simpLemma) ", "
-    (Lean.Parser.Tactic.simpStar <|>
-     Lean.Parser.Tactic.simpErase <|>
-     Lean.Parser.Tactic.simpLemma) :
-  tactic
-
-syntax (name := rr_pf_cubic_certificate_via_four)
-  "rr_pf_cubic_certificate_via" " using "
-    "certificate" ":=" term ","
-    "defs" ":="
-    (Lean.Parser.Tactic.simpStar <|>
-     Lean.Parser.Tactic.simpErase <|>
-     Lean.Parser.Tactic.simpLemma) ", "
-    (Lean.Parser.Tactic.simpStar <|>
-     Lean.Parser.Tactic.simpErase <|>
-     Lean.Parser.Tactic.simpLemma) ", "
-    (Lean.Parser.Tactic.simpStar <|>
-     Lean.Parser.Tactic.simpErase <|>
-     Lean.Parser.Tactic.simpLemma) ", "
-    (Lean.Parser.Tactic.simpStar <|>
-     Lean.Parser.Tactic.simpErase <|>
-     Lean.Parser.Tactic.simpLemma) :
-  tactic
-
-syntax (name := rr_pf_cubic_certificate_via_five)
-  "rr_pf_cubic_certificate_via" " using "
-    "certificate" ":=" term ","
-    "defs" ":="
-    (Lean.Parser.Tactic.simpStar <|>
-     Lean.Parser.Tactic.simpErase <|>
-     Lean.Parser.Tactic.simpLemma) ", "
-    (Lean.Parser.Tactic.simpStar <|>
-     Lean.Parser.Tactic.simpErase <|>
-     Lean.Parser.Tactic.simpLemma) ", "
-    (Lean.Parser.Tactic.simpStar <|>
-     Lean.Parser.Tactic.simpErase <|>
-     Lean.Parser.Tactic.simpLemma) ", "
-    (Lean.Parser.Tactic.simpStar <|>
-     Lean.Parser.Tactic.simpErase <|>
-     Lean.Parser.Tactic.simpLemma) ", "
-    (Lean.Parser.Tactic.simpStar <|>
-     Lean.Parser.Tactic.simpErase <|>
-     Lean.Parser.Tactic.simpLemma) :
-  tactic
-
 syntax (name := rr_pf_bidiagonal_sequence_named)
   "rr_pf_bidiagonal_sequence" " using "
     "preserver" ":=" term ","
@@ -1711,6 +1645,16 @@ syntax (name := rr_pf_bidiagonal_sequence_named)
 syntax (name := rr_pf_cubic_certificate_finish)
   "rr_pf_cubic_certificate_finish" :
   tactic
+
+macro
+    "rr_pf_cubic_certificate_via" " using "
+      "certificate" ":=" hcert:term ","
+      "defs" ":=" defs:sepBy(Lean.Parser.Tactic.simpLemma, ", ") :
+    tactic =>
+  `(tactic|
+    convert ($hcert) using 1 <;>
+    simp [$defs,*] <;>
+    rr_pf_cubic_certificate_finish)
 
 macro_rules
   | `(tactic| rr_pf_cubic_certificate_finish) =>
@@ -1755,38 +1699,6 @@ macro_rules
           intro k <;>
           simp [RealRooted.secondDerivativeQuadraticCoeff, $d1, $d2] <;>
           ring)
-  | `(tactic|
-      rr_pf_cubic_certificate_via using
-        certificate := $hcert:term,
-        defs := $d1, $d2) =>
-      `(tactic|
-        convert ($hcert) using 1 <;>
-        simp [$d1, $d2] <;>
-        rr_pf_cubic_certificate_finish)
-  | `(tactic|
-      rr_pf_cubic_certificate_via using
-        certificate := $hcert:term,
-        defs := $d1, $d2, $d3) =>
-      `(tactic|
-        convert ($hcert) using 1 <;>
-        simp [$d1, $d2, $d3] <;>
-        rr_pf_cubic_certificate_finish)
-  | `(tactic|
-      rr_pf_cubic_certificate_via using
-        certificate := $hcert:term,
-        defs := $d1, $d2, $d3, $d4) =>
-      `(tactic|
-        convert ($hcert) using 1 <;>
-        simp [$d1, $d2, $d3, $d4] <;>
-        rr_pf_cubic_certificate_finish)
-  | `(tactic|
-      rr_pf_cubic_certificate_via using
-        certificate := $hcert:term,
-        defs := $d1, $d2, $d3, $d4, $d5) =>
-      `(tactic|
-        convert ($hcert) using 1 <;>
-        simp [$d1, $d2, $d3, $d4, $d5] <;>
-        rr_pf_cubic_certificate_finish)
   | `(tactic|
       rr_pf_bidiagonal_sequence using
         preserver := $hPF:term,
