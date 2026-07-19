@@ -13,6 +13,11 @@ example :
     finiteSchurSzegoCompositionStatement := by
   rr_schur_szego_statement
 
+example (hSZ : finiteSchurSzegoCompositionStatement) :
+    pfCubicDiscrDiagonalNonnegStatement := by
+  rr_schur_szego_pf_cubic_diagonal_base using
+    schur_szego := hSZ
+
 example :
     schurPolyaWagnerHadamardPFStatement := by
   rr_hadamard_pf_statement
@@ -203,6 +208,109 @@ example {n : ℕ} {f p : ℝ[X]}
     level_ge_three := hn,
     pf_factor := hf,
     pf_degree_le_three := hfdeg,
+    input_degree := hpdeg,
+    input_splits := hsplits,
+    cubic_numerator := hnum,
+    nonzero := hout
+
+example {n : ℕ} {f p : ℝ[X]}
+    (hbase : pfCubicDiscrDiagonalNonnegStatement)
+    (hn : 3 ≤ n)
+    (hf : IsPFPolynomial f)
+    (hfdeg : f.natDegree ≤ 3)
+    (hpdeg : p.natDegree ≤ n)
+    (hsplits : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits := by
+  rr_schur_szego_pf_factor_degree_le_three_diagonal_base using
+    diagonal_base := hbase,
+    level_ge_three := hn,
+    pf_factor := hf,
+    pf_degree_le_three := hfdeg,
+    input_degree := hpdeg,
+    input_splits := hsplits
+
+example {n : ℕ} {f p : ℝ[X]}
+    (hbase : pfCubicDiscrDiagonalNonnegStatement)
+    (hn : 3 ≤ n)
+    (hf : IsPFPolynomial f)
+    (hfdeg : f.natDegree ≤ 3)
+    (hpdeg : p.natDegree ≤ n)
+    (hsplits : p.Splits)
+    (hout : schurSzegoComp n f p ≠ 0) :
+    (schurSzegoComp n f p).Splits := by
+  rr_schur_szego_pf_factor_degree_le_three_diagonal_base_splits using
+    diagonal_base := hbase,
+    level_ge_three := hn,
+    pf_factor := hf,
+    pf_degree_le_three := hfdeg,
+    input_degree := hpdeg,
+    input_splits := hsplits,
+    nonzero := hout
+
+example {n : ℕ} {f p : ℝ[X]}
+    (hbase : pfCubicDiscrDiagonalNonnegStatement)
+    (hf : IsPFPolynomial f)
+    (hfdeg : f.natDegree ≤ 3)
+    (hfn : f.natDegree ≤ n)
+    (hpdeg : p.natDegree ≤ n)
+    (hsplits : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits := by
+  rr_schur_szego_pf_factor_degree_le_three_diagonal_base_left_degree using
+    diagonal_base := hbase,
+    pf_factor := hf,
+    pf_degree_le_three := hfdeg,
+    pf_degree := hfn,
+    input_degree := hpdeg,
+    input_splits := hsplits
+
+example {n : ℕ} {f p : ℝ[X]}
+    (hbase : pfCubicDiscrDiagonalNonnegStatement)
+    (hf : IsPFPolynomial f)
+    (hfdeg : f.natDegree ≤ 3)
+    (hfn : f.natDegree ≤ n)
+    (hpdeg : p.natDegree ≤ n)
+    (hsplits : p.Splits)
+    (hout : schurSzegoComp n f p ≠ 0) :
+    (schurSzegoComp n f p).Splits := by
+  rr_schur_szego_pf_factor_degree_le_three_diagonal_base_left_degree_splits
+    using
+    diagonal_base := hbase,
+    pf_factor := hf,
+    pf_degree_le_three := hfdeg,
+    pf_degree := hfn,
+    input_degree := hpdeg,
+    input_splits := hsplits,
+    nonzero := hout
+
+example {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f)
+    (hfdeg : f.natDegree ≤ 3)
+    (hfn : f.natDegree ≤ n)
+    (hpdeg : p.natDegree ≤ n)
+    (hsplits : p.Splits)
+    (hnum : 3 ≤ n → 0 ≤ schurSzegoCompCubicDiscrNumerator n f p) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits := by
+  rr_schur_szego_pf_factor_degree_le_three_num_left_degree using
+    pf_factor := hf,
+    pf_degree_le_three := hfdeg,
+    pf_degree := hfn,
+    input_degree := hpdeg,
+    input_splits := hsplits,
+    cubic_numerator := hnum
+
+example {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f)
+    (hfdeg : f.natDegree ≤ 3)
+    (hfn : f.natDegree ≤ n)
+    (hpdeg : p.natDegree ≤ n)
+    (hsplits : p.Splits)
+    (hnum : 3 ≤ n → 0 ≤ schurSzegoCompCubicDiscrNumerator n f p)
+    (hout : schurSzegoComp n f p ≠ 0) :
+    (schurSzegoComp n f p).Splits := by
+  rr_schur_szego_pf_factor_degree_le_three_num_left_degree_splits using
+    pf_factor := hf,
+    pf_degree_le_three := hfdeg,
+    pf_degree := hfn,
     input_degree := hpdeg,
     input_splits := hsplits,
     cubic_numerator := hnum,
