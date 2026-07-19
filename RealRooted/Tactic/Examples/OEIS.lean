@@ -1886,6 +1886,112 @@ example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
     factorization := hrow,
     certificate := constFirstAffinePowAuto
 
+/-- Product-lift router, fixed unit-linear power with cutoff. -/
+example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, N ≤ n → P n = (X + C (1 : ℝ)) ^ (m n) * Q n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow,
+    certificate := fixedXAddCPow
+
+/-- Product-lift router, row-wise unit-linear power with cutoff. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, N ≤ n → P n = Q n * (X + C (t n)) ^ (m n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow,
+    certificate := rowXAddCPow
+
+/-- Product-lift router, constant-first unit-linear power with cutoff. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, N ≤ n → P n = (C (t n) + X) ^ (m n) * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow,
+    certificate := cAddXPow
+
+/-- Product-lift router, affine-power factor with cutoff. -/
+example {P Q : Nat → ℝ[X]} {s t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hs : ∀ n : Nat, N ≤ n → s n ≠ 0)
+    (hrow : ∀ n : Nat,
+      N ≤ n → P n = Q n * (C (s n) * X + C (t n)) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    slope_ne := hs,
+    cutoff := N,
+    factorization := hrow,
+    certificate := affinePow
+
+/-- Product-lift router, automatic affine-power factor with cutoff. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat,
+      N ≤ n → P n = (C ((n : ℝ) + 1) * X + C (t n)) ^ (m n) * Q n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow,
+    certificate := affinePowAuto
+
+/-- Product-lift router, powered constant-first affine factor with cutoff. -/
+example {P Q : Nat → ℝ[X]} {s t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hs : ∀ n : Nat, N ≤ n → s n ≠ 0)
+    (hrow : ∀ n : Nat,
+      N ≤ n → P n = (C (t n) + C (s n) * X) ^ (m n) * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    slope_ne := hs,
+    cutoff := N,
+    factorization := hrow,
+    certificate := constFirstAffinePow
+
+/-- Product-lift router, automatic powered constant-first affine cutoff. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat,
+      N ≤ n → P n = Q n * (C (t n) + C ((n : ℝ) + 1) * X) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow,
+    certificate := constFirstAffinePowAuto
+
 /-- Family G negative-lag router, shifted-square branch. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))

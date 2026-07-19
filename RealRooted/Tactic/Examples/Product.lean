@@ -903,6 +903,105 @@ example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
     quotient_realrooted := hquot,
     factorization := hrow
 
+/-- Fixed endpoint-factor powers can start after a cutoff. -/
+example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, N ≤ n → P n = Q n * (X + C (1 : ℝ)) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_X_add_C_pow_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow
+
+/-- Row-wise endpoint-factor powers can start after a cutoff. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, N ≤ n → P n = (X + C (t n)) ^ (m n) * Q n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_X_add_C_row_pow_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow
+
+/-- Constant-first endpoint powers can start after a cutoff. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, N ≤ n → P n = Q n * (C (t n) + X) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_C_add_X_pow_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow
+
+/-- Affine-power lifts can start after a finite base interval. -/
+example {P Q : Nat → ℝ[X]} {s t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hs : ∀ n : Nat, N ≤ n → s n ≠ 0)
+    (hrow : ∀ n : Nat,
+      N ≤ n → P n = (C (s n) * X + C (t n)) ^ (m n) * Q n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_affine_pow_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    slope_ne := hs,
+    cutoff := N,
+    factorization := hrow
+
+/-- Automatic affine-power slope certificates also work after a cutoff. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat,
+      N ≤ n → P n = Q n * (C ((n : ℝ) + 1) * X + C (t n)) ^ (m n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_affine_pow_sequence_auto using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow
+
+/-- Constant-first affine-power lifts can start after a cutoff. -/
+example {P Q : Nat → ℝ[X]} {s t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hs : ∀ n : Nat, N ≤ n → s n ≠ 0)
+    (hrow : ∀ n : Nat,
+      N ≤ n → P n = Q n * (C (t n) + C (s n) * X) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_const_first_affine_pow_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    slope_ne := hs,
+    cutoff := N,
+    factorization := hrow
+
+/-- Automatic constant-first affine powers are inferred after a cutoff. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat,
+      N ≤ n → P n = (C (t n) + C ((n : ℝ) + 1) * X) ^ (m n) * Q n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_const_first_affine_pow_sequence_auto using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow
+
 /-- Endpoint quotient with `A_{n+1}=A_n+B_n`,
 `B_{n+1}=B_n+X A_{n+1}`. -/
 example {A B : Nat → ℝ[X]}
