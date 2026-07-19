@@ -1538,6 +1538,31 @@ example {l : Nat → Nat} {P Q : Nat → ℝ[X]}
     right_pf := hQ,
     prec0 := hPQ
 
+/-- Derivative-shift row-family real-rootedness exit exposed through the OEIS
+facade. -/
+example {eps : Nat → ℝ} {P : Nat → ℝ[X]}
+    (heps : ∀ n : Nat, 0 < eps n)
+    (hP : ∀ n : Nat, (P n).Splits) :
+    ∀ n : Nat, (TDeriv (eps n) (P n)).Splits := by
+  rr_TDeriv_sequence_splits using
+    eps_pos := heps,
+    splits := hP
+
+/-- Iterated derivative-shift row-family proper-position exit exposed through
+the OEIS facade. -/
+example {eps : Nat → ℝ} {K : Nat → Nat} {P : Nat → ℝ[X]}
+    (heps : ∀ n : Nat, 0 < eps n)
+    (hP0 : ∀ n : Nat, P n ≠ 0)
+    (hP : ∀ n : Nat, (P n).Splits) :
+    ∀ n : Nat,
+      Prec (iterateTDeriv (eps n) (K n) (P n))
+        (iterateTDeriv (eps n) (K n + 1) (P n)) := by
+  rr_iterateTDeriv_sequence_prec_succ using
+    eps_pos := heps,
+    nonzero := hP0,
+    splits := hP,
+    index := K
+
 /-- Wagner common-left addition row-family exit exposed through the OEIS
 facade. -/
 example {F G H : Nat → ℝ[X]}
