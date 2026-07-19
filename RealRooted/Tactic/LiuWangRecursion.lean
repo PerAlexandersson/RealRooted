@@ -75,7 +75,7 @@ syntax (name := rr_lw_derivative_lag_sequence_den_coeff_sign_auto_named)
     "den" ":=" term ","
     "raw_deriv_coeff" ":=" term ","
     "raw_lag_coeff" ":=" term ","
-    "den_nonzero" ":=" term ","
+    ("den_nonzero" ":=" term ",")?
     "deriv_coeff_eq" ":=" term ","
     "lag_coeff_eq" ":=" term ","
     "raw_recurrence" ":=" term ","
@@ -96,7 +96,7 @@ syntax (name := rr_lw_derivative_lag_sequence_den_coeff_realrooted_sign_auto_nam
     "den" ":=" term ","
     "raw_deriv_coeff" ":=" term ","
     "raw_lag_coeff" ":=" term ","
-    "den_nonzero" ":=" term ","
+    ("den_nonzero" ":=" term ",")?
     "deriv_coeff_eq" ":=" term ","
     "lag_coeff_eq" ":=" term ","
     "raw_recurrence" ":=" term ","
@@ -118,7 +118,7 @@ syntax (name := rr_lw_derivative_lag_sequence_den_coeff_window_sign_auto_named)
     "raw_lag_coeff" ":=" term ","
     "root_lower" ":=" term ","
     "root_upper" ":=" term ","
-    "den_nonzero" ":=" term ","
+    ("den_nonzero" ":=" term ",")?
     "deriv_coeff_eq" ":=" term ","
     "lag_coeff_eq" ":=" term ","
     "raw_recurrence" ":=" term ","
@@ -140,7 +140,7 @@ syntax (name := rr_lw_derivative_lag_sequence_den_coeff_realrooted_window_sign_a
     "raw_lag_coeff" ":=" term ","
     "root_lower" ":=" term ","
     "root_upper" ":=" term ","
-    "den_nonzero" ":=" term ","
+    ("den_nonzero" ":=" term ",")?
     "deriv_coeff_eq" ":=" term ","
     "lag_coeff_eq" ":=" term ","
     "raw_recurrence" ":=" term ","
@@ -248,6 +248,43 @@ macro_rules
         den := $d:term,
         raw_deriv_coeff := $b:term,
         raw_lag_coeff := $e:term,
+        deriv_coeff_eq := $hcoeffV:term,
+        lag_coeff_eq := $hcoeffW:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        rr_lw_derivative_lag_sequence_den_coeff_sign_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          degree_two := $hdeg_two,
+          deriv_factor := $V,
+          lag_factor := $W,
+          norm_deriv_coeff := $cV,
+          norm_lag_coeff := $cW,
+          den := $d,
+          raw_deriv_coeff := $b,
+          raw_lag_coeff := $e,
+          den_nonzero := rr_scalar_active_den_all_term,
+          deriv_coeff_eq := $hcoeffV,
+          lag_coeff_eq := $hcoeffW,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_derivative_lag_sequence_den_coeff_sign_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        degree_two := $hdeg_two:term,
+        deriv_factor := $V:term,
+        lag_factor := $W:term,
+        norm_deriv_coeff := $cV:term,
+        norm_lag_coeff := $cW:term,
+        den := $d:term,
+        raw_deriv_coeff := $b:term,
+        raw_lag_coeff := $e:term,
         den_nonzero := $hden:term,
         deriv_coeff_eq := $hcoeffV:term,
         lag_coeff_eq := $hcoeffW:term,
@@ -268,6 +305,43 @@ macro_rules
           raw_deriv_coeff := $b,
           raw_lag_coeff := $e,
           den_nonzero := $hden,
+          deriv_coeff_eq := $hcoeffV,
+          lag_coeff_eq := $hcoeffW,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_derivative_lag_sequence_den_coeff_realrooted_sign_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        degree_two := $hdeg_two:term,
+        deriv_factor := $V:term,
+        lag_factor := $W:term,
+        norm_deriv_coeff := $cV:term,
+        norm_lag_coeff := $cW:term,
+        den := $d:term,
+        raw_deriv_coeff := $b:term,
+        raw_lag_coeff := $e:term,
+        deriv_coeff_eq := $hcoeffV:term,
+        lag_coeff_eq := $hcoeffW:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        rr_lw_derivative_lag_sequence_den_coeff_realrooted_sign_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          degree_two := $hdeg_two,
+          deriv_factor := $V,
+          lag_factor := $W,
+          norm_deriv_coeff := $cV,
+          norm_lag_coeff := $cW,
+          den := $d,
+          raw_deriv_coeff := $b,
+          raw_lag_coeff := $e,
+          den_nonzero := rr_scalar_active_den_all_term,
           deriv_coeff_eq := $hcoeffV,
           lag_coeff_eq := $hcoeffW,
           raw_recurrence := $hraw,
@@ -325,6 +399,45 @@ macro_rules
         raw_lag_coeff := $e:term,
         root_lower := $hroot_lower:term,
         root_upper := $hroot_upper:term,
+        deriv_coeff_eq := $hcoeffV:term,
+        lag_coeff_eq := $hcoeffW:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        rr_lw_derivative_lag_sequence_den_coeff_window_sign_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          degree_two := $hdeg_two,
+          deriv_factor := $V,
+          lag_factor := $W,
+          norm_deriv_coeff := $cV,
+          norm_lag_coeff := $cW,
+          den := $d,
+          raw_deriv_coeff := $b,
+          raw_lag_coeff := $e,
+          root_lower := $hroot_lower,
+          root_upper := $hroot_upper,
+          den_nonzero := rr_scalar_active_den_all_term,
+          deriv_coeff_eq := $hcoeffV,
+          lag_coeff_eq := $hcoeffW,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_derivative_lag_sequence_den_coeff_window_sign_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        degree_two := $hdeg_two:term,
+        deriv_factor := $V:term,
+        lag_factor := $W:term,
+        norm_deriv_coeff := $cV:term,
+        norm_lag_coeff := $cW:term,
+        den := $d:term,
+        raw_deriv_coeff := $b:term,
+        raw_lag_coeff := $e:term,
+        root_lower := $hroot_lower:term,
+        root_upper := $hroot_upper:term,
         den_nonzero := $hden:term,
         deriv_coeff_eq := $hcoeffV:term,
         lag_coeff_eq := $hcoeffW:term,
@@ -346,6 +459,45 @@ macro_rules
           root_lower := $hroot_lower,
           root_upper := $hroot_upper,
           den_nonzero := $hden,
+          deriv_coeff_eq := $hcoeffV,
+          lag_coeff_eq := $hcoeffW,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg_succ,
+          no_common_roots := $hno)
+  | `(tactic|
+      rr_lw_derivative_lag_sequence_den_coeff_realrooted_window_sign_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        degree_two := $hdeg_two:term,
+        deriv_factor := $V:term,
+        lag_factor := $W:term,
+        norm_deriv_coeff := $cV:term,
+        norm_lag_coeff := $cW:term,
+        den := $d:term,
+        raw_deriv_coeff := $b:term,
+        raw_lag_coeff := $e:term,
+        root_lower := $hroot_lower:term,
+        root_upper := $hroot_upper:term,
+        deriv_coeff_eq := $hcoeffV:term,
+        lag_coeff_eq := $hcoeffW:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg_succ:term,
+        no_common_roots := $hno:term) =>
+      `(tactic|
+        rr_lw_derivative_lag_sequence_den_coeff_realrooted_window_sign_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          degree_two := $hdeg_two,
+          deriv_factor := $V,
+          lag_factor := $W,
+          norm_deriv_coeff := $cV,
+          norm_lag_coeff := $cW,
+          den := $d,
+          raw_deriv_coeff := $b,
+          raw_lag_coeff := $e,
+          root_lower := $hroot_lower,
+          root_upper := $hroot_upper,
+          den_nonzero := rr_scalar_active_den_all_term,
           deriv_coeff_eq := $hcoeffV,
           lag_coeff_eq := $hcoeffW,
           raw_recurrence := $hraw,
