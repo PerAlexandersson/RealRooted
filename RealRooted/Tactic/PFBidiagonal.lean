@@ -1675,7 +1675,18 @@ syntax (name := rr_pf_bidiagonal_sequence_named)
     ("," "nonzero" ":=" term)? :
   tactic
 
+syntax (name := rr_pf_cubic_certificate_finish)
+  "rr_pf_cubic_certificate_finish" :
+  tactic
+
 macro_rules
+  | `(tactic| rr_pf_cubic_certificate_finish) =>
+      `(tactic|
+        try rw [show (C (2 : ℝ) : ℝ[X]) = (2 : ℝ[X]) from
+          Polynomial.C_eq_natCast (R := ℝ) 2] <;>
+        try rw [show (C (3 : ℝ) : ℝ[X]) = (3 : ℝ[X]) from
+          Polynomial.C_eq_natCast (R := ℝ) 3] <;>
+        ring_nf)
   | `(tactic| rr_exact_pf_sequence_or_projection $h:term) =>
       `(tactic|
         first
@@ -1718,11 +1729,7 @@ macro_rules
       `(tactic|
         convert ($hcert) using 1 <;>
         simp [$d1, $d2] <;>
-        try rw [show (C (2 : ℝ) : ℝ[X]) = (2 : ℝ[X]) from
-          Polynomial.C_eq_natCast (R := ℝ) 2] <;>
-        try rw [show (C (3 : ℝ) : ℝ[X]) = (3 : ℝ[X]) from
-          Polynomial.C_eq_natCast (R := ℝ) 3] <;>
-        ring_nf)
+        rr_pf_cubic_certificate_finish)
   | `(tactic|
       rr_pf_cubic_certificate_via using
         certificate := $hcert:term,
@@ -1730,11 +1737,7 @@ macro_rules
       `(tactic|
         convert ($hcert) using 1 <;>
         simp [$d1, $d2, $d3, $d4, $d5] <;>
-        try rw [show (C (2 : ℝ) : ℝ[X]) = (2 : ℝ[X]) from
-          Polynomial.C_eq_natCast (R := ℝ) 2] <;>
-        try rw [show (C (3 : ℝ) : ℝ[X]) = (3 : ℝ[X]) from
-          Polynomial.C_eq_natCast (R := ℝ) 3] <;>
-        ring_nf)
+        rr_pf_cubic_certificate_finish)
   | `(tactic|
       rr_pf_bidiagonal_sequence using
         preserver := $hPF:term,
