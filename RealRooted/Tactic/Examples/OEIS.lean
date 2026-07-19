@@ -1316,6 +1316,22 @@ example {F G H : Nat → ℝ[X]}
     common_interlaces_left := hHF,
     common_interlaces_right := hHG
 
+/-- PF-polynomial product row-family exit exposed through the OEIS facade. -/
+example {P Q : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, IsPFPolynomial (P n))
+    (hQ : ∀ n : Nat, IsPFPolynomial (Q n)) :
+    ∀ n : Nat, IsPFPolynomial (P n * Q n) := by
+  rr_pf_sequence_mul using
+    left_pf := hP,
+    right_pf := hQ
+
+/-- PF-polynomial real-rootedness row-family exit exposed through the OEIS
+facade. -/
+example {P : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, IsPFPolynomial (P n)) :
+    ∀ n : Nat, P n = 0 ∨ (P n).Splits := by
+  rr_pf_sequence_zero_or_splits using pf := hP
+
 /-- Hadamard PF exit exposed through the OEIS facade. -/
 example {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
