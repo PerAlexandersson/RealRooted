@@ -3470,8 +3470,6 @@ example {P : Nat → ℝ[X]} {A q : Nat → ℝ[X]}
     pos_lc := hpos,
     coeff := fun _ => (1 : ℝ),
     coeff_nonneg := (fun _ => by norm_num),
-    den_nonzero := rr_scalar_active_den_all_term,
-    coeff_eq := rr_scalar_coeff_all_term,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -3495,8 +3493,6 @@ example {P : Nat → ℝ[X]} {A q : Nat → ℝ[X]}
     raw_coeff := fun n => (n : ℝ) + 1,
     den := fun n => (n : ℝ) + 1,
     coeff_nonneg := (fun _ => by norm_num),
-    den_nonzero := rr_scalar_active_den_all_term,
-    coeff_eq := rr_scalar_coeff_all_term,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -3561,8 +3557,6 @@ example {P : Nat → ℝ[X]} {A q : Nat → ℝ[X]}
     pos_lc := hpos,
     coeff := fun _ => (1 : ℝ),
     coeff_nonneg := (fun _ => by norm_num),
-    den_nonzero := rr_scalar_active_den_all_term,
-    coeff_eq := rr_scalar_coeff_all_term,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -3587,8 +3581,6 @@ example {P : Nat → ℝ[X]} {A q : Nat → ℝ[X]}
     raw_coeff := fun n => (n : ℝ) + 1,
     den := fun n => (n : ℝ) + 1,
     coeff_nonneg := (fun _ => by norm_num),
-    den_nonzero := rr_scalar_active_den_all_term,
-    coeff_eq := rr_scalar_coeff_all_term,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
