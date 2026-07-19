@@ -571,10 +571,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     coeff := fun n => (2 * ((n : ℝ) + 4)) / (((n : ℝ) + 3) * ((n : ℝ) + 5)),
     den := fun n => (((n : ℝ) + 3) * ((n : ℝ) + 5) / 3),
     raw_coeff := fun n => 2 * ((n : ℝ) + 4) / 3,
-    den_nonzero := by intro n; rr_scalar_active_den_at n,
-    coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
     raw_recurrence := hraw,
     degree_succ := hdeg
 
@@ -651,10 +647,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     coeff := fun n => (2 : ℝ) / ((n : ℝ) + 1),
-    den_nonzero := by intro n; rr_scalar_active_den_at n,
-    coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
     raw_recurrence := hraw,
     degree_succ := hdeg
 
@@ -678,10 +670,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     coeff := fun n => (2 : ℝ) / ((n : ℝ) + 3),
-    den_nonzero := by intro n; rr_scalar_active_den_at n,
-    coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
     raw_recurrence := hraw,
     degree_succ := hdeg
 

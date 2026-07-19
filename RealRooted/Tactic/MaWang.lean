@@ -2658,6 +2658,19 @@ syntax (name := rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_name
   tactic
 
 syntax (name :=
+    rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_active_named)
+  "rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "degree_two" ":=" term ","
+    "coeff" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_lower" ":=" term ","
+    "degree_upper" ":=" term :
+  tactic
+
+syntax (name :=
     rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_degree_succ_named)
   "rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto" " using "
     "base" ":=" term ","
@@ -2667,6 +2680,18 @@ syntax (name :=
     "coeff" ":=" term ","
     "den_nonzero" ":=" term ","
     "coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term :
+  tactic
+
+syntax (name :=
+    rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_active_degree_succ_named)
+  "rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "degree_two" ":=" term ","
+    "coeff" ":=" term ","
     "raw_recurrence" ":=" term ","
     "degree_succ" ":=" term :
   tactic
@@ -2689,6 +2714,22 @@ syntax (name := rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_spli
   tactic
 
 syntax (name :=
+    rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_split_active_named)
+  "rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_split" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "degree_two" ":=" term ","
+    "deriv_factor" ":=" term ","
+    "coeff" ":=" term ","
+    "den" ":=" term ","
+    "raw_coeff" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_lower" ":=" term ","
+    "degree_upper" ":=" term :
+  tactic
+
+syntax (name :=
     rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_split_degree_succ_named)
   "rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_split" " using "
     "base" ":=" term ","
@@ -2701,6 +2742,21 @@ syntax (name :=
     "raw_coeff" ":=" term ","
     "den_nonzero" ":=" term ","
     "coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term :
+  tactic
+
+syntax (name :=
+    rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_split_active_degree_succ_named)
+  "rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_split" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "degree_two" ":=" term ","
+    "deriv_factor" ":=" term ","
+    "coeff" ":=" term ","
+    "den" ":=" term ","
+    "raw_coeff" ":=" term ","
     "raw_recurrence" ":=" term ","
     "degree_succ" ":=" term :
   tactic
@@ -2751,6 +2807,19 @@ syntax (name := rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sig
   tactic
 
 syntax (name :=
+    rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto_active_named)
+  "rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "degree_two" ":=" term ","
+    "coeff" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_lower" ":=" term ","
+    "degree_upper" ":=" term :
+  tactic
+
+syntax (name :=
     rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto_degree_succ_named)
   "rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto" " using "
     "base" ":=" term ","
@@ -2760,6 +2829,18 @@ syntax (name :=
     "coeff" ":=" term ","
     "den_nonzero" ":=" term ","
     "coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_succ" ":=" term :
+  tactic
+
+syntax (name :=
+    rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto_active_degree_succ_named)
+  "rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "degree_two" ":=" term ","
+    "coeff" ":=" term ","
     "raw_recurrence" ":=" term ","
     "degree_succ" ":=" term :
   tactic
@@ -2962,6 +3043,22 @@ syntax (name := rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sig
     "raw_coeff" ":=" term ","
     "den_nonzero" ":=" term ","
     "coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term ","
+    "degree_lower" ":=" term ","
+    "degree_upper" ":=" term :
+  tactic
+
+syntax (name :=
+    rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto_split_active_named)
+  "rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto_split" " using "
+    "base" ":=" term ","
+    "pos_lc" ":=" term ","
+    "nonneg_coeffs" ":=" term ","
+    "degree_two" ":=" term ","
+    "deriv_factor" ":=" term ","
+    "coeff" ":=" term ","
+    "den" ":=" term ","
+    "raw_coeff" ":=" term ","
     "raw_recurrence" ":=" term ","
     "degree_lower" ":=" term ","
     "degree_upper" ":=" term :
@@ -4661,6 +4758,28 @@ macro_rules
         nonneg_coeffs := $hnonneg:term,
         degree_two := $hdeg_two:term,
         coeff := $c:term,
+        raw_recurrence := $hraw:term,
+        degree_lower := $hdeg_lo:term,
+        degree_upper := $hdeg_hi:term) =>
+      `(tactic|
+        rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          degree_two := $hdeg_two,
+          coeff := $c,
+          den_nonzero := rr_scalar_active_den_all_term,
+          coeff_eq := rr_scalar_coeff_all_term,
+          raw_recurrence := $hraw,
+          degree_lower := $hdeg_lo,
+          degree_upper := $hdeg_hi)
+  | `(tactic|
+      rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        degree_two := $hdeg_two:term,
+        coeff := $c:term,
         den_nonzero := $hden:term,
         coeff_eq := $hcoeff:term,
         raw_recurrence := $hraw:term,
@@ -4673,6 +4792,26 @@ macro_rules
             rr_mw_active_nonneg
             (rr_mw_root_sign_seq)
             $hden $hcoeff $hraw $hdeg_lo $hdeg_hi)
+  | `(tactic|
+      rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        degree_two := $hdeg_two:term,
+        coeff := $c:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg:term) =>
+      `(tactic|
+        rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          degree_two := $hdeg_two,
+          coeff := $c,
+          den_nonzero := rr_scalar_active_den_all_term,
+          coeff_eq := rr_scalar_coeff_all_term,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg)
   | `(tactic|
       rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto using
         base := $hbase:term,
@@ -4706,6 +4845,34 @@ macro_rules
         coeff := $c:term,
         den := $d:term,
         raw_coeff := $b:term,
+        raw_recurrence := $hraw:term,
+        degree_lower := $hdeg_lo:term,
+        degree_upper := $hdeg_hi:term) =>
+      `(tactic|
+        rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_split using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          degree_two := $hdeg_two,
+          deriv_factor := $V,
+          coeff := $c,
+          den := $d,
+          raw_coeff := $b,
+          den_nonzero := rr_scalar_active_den_all_term,
+          coeff_eq := rr_scalar_coeff_all_term,
+          raw_recurrence := $hraw,
+          degree_lower := $hdeg_lo,
+          degree_upper := $hdeg_hi)
+  | `(tactic|
+      rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_split using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        degree_two := $hdeg_two:term,
+        deriv_factor := $V:term,
+        coeff := $c:term,
+        den := $d:term,
+        raw_coeff := $b:term,
         den_nonzero := $hden:term,
         coeff_eq := $hcoeff:term,
         raw_recurrence := $hraw:term,
@@ -4721,6 +4888,32 @@ macro_rules
             $hden $hcoeff
             (rr_mw_raw_recurrence_seq $hraw)
             $hdeg_lo $hdeg_hi)
+  | `(tactic|
+      rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_split using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        degree_two := $hdeg_two:term,
+        deriv_factor := $V:term,
+        coeff := $c:term,
+        den := $d:term,
+        raw_coeff := $b:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg:term) =>
+      `(tactic|
+        rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_split using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          degree_two := $hdeg_two,
+          deriv_factor := $V,
+          coeff := $c,
+          den := $d,
+          raw_coeff := $b,
+          den_nonzero := rr_scalar_active_den_all_term,
+          coeff_eq := rr_scalar_coeff_all_term,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg)
   | `(tactic|
       rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_split using
         base := $hbase:term,
@@ -4794,6 +4987,28 @@ macro_rules
         nonneg_coeffs := $hnonneg:term,
         degree_two := $hdeg_two:term,
         coeff := $c:term,
+        raw_recurrence := $hraw:term,
+        degree_lower := $hdeg_lo:term,
+        degree_upper := $hdeg_hi:term) =>
+      `(tactic|
+        rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          degree_two := $hdeg_two,
+          coeff := $c,
+          den_nonzero := rr_scalar_active_den_all_term,
+          coeff_eq := rr_scalar_coeff_all_term,
+          raw_recurrence := $hraw,
+          degree_lower := $hdeg_lo,
+          degree_upper := $hdeg_hi)
+  | `(tactic|
+      rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        degree_two := $hdeg_two:term,
+        coeff := $c:term,
         den_nonzero := $hden:term,
         coeff_eq := $hcoeff:term,
         raw_recurrence := $hraw:term,
@@ -4806,6 +5021,26 @@ macro_rules
             rr_mw_active_nonneg
             (rr_mw_root_sign_seq)
             $hden $hcoeff $hraw $hdeg_lo $hdeg_hi))
+  | `(tactic|
+      rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        degree_two := $hdeg_two:term,
+        coeff := $c:term,
+        raw_recurrence := $hraw:term,
+        degree_succ := $hdeg:term) =>
+      `(tactic|
+        rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          degree_two := $hdeg_two,
+          coeff := $c,
+          den_nonzero := rr_scalar_active_den_all_term,
+          coeff_eq := rr_scalar_coeff_all_term,
+          raw_recurrence := $hraw,
+          degree_succ := $hdeg)
   | `(tactic|
       rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto using
         base := $hbase:term,
@@ -4829,6 +5064,34 @@ macro_rules
           raw_recurrence := $hraw,
           degree_lower := rr_mw_degree_seq $hdeg,
           degree_upper := rr_mw_degree_seq $hdeg)
+  | `(tactic|
+      rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto_split using
+        base := $hbase:term,
+        pos_lc := $hpos:term,
+        nonneg_coeffs := $hnonneg:term,
+        degree_two := $hdeg_two:term,
+        deriv_factor := $V:term,
+        coeff := $c:term,
+        den := $d:term,
+        raw_coeff := $b:term,
+        raw_recurrence := $hraw:term,
+        degree_lower := $hdeg_lo:term,
+        degree_upper := $hdeg_hi:term) =>
+      `(tactic|
+        rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto_split using
+          base := $hbase,
+          pos_lc := $hpos,
+          nonneg_coeffs := $hnonneg,
+          degree_two := $hdeg_two,
+          deriv_factor := $V,
+          coeff := $c,
+          den := $d,
+          raw_coeff := $b,
+          den_nonzero := rr_scalar_active_den_all_term,
+          coeff_eq := rr_scalar_coeff_all_term,
+          raw_recurrence := $hraw,
+          degree_lower := $hdeg_lo,
+          degree_upper := $hdeg_hi)
   | `(tactic|
       rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto_split using
         base := $hbase:term,
