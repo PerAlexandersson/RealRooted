@@ -3158,6 +3158,13 @@ syntax (name := rr_product_const_first_sequence_auto_named)
     "recurrence" ":=" term :
   tactic
 
+syntax (name := rr_product_checked_affine_sequence_auto_named)
+  "rr_product_checked_affine_sequence_auto" " using "
+    "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
+    "recurrence" ":=" term :
+  tactic
+
 syntax (name := rr_product_X_sequence_named)
   "rr_product_X_sequence" " using "
     "base" ":=" term ","
@@ -3416,7 +3423,7 @@ private def isPolynomialCMulX (e : Expr) : Bool :=
       containsAppFn ``Polynomial.C args[4]! &&
       isPolynomialX args[5]!
 
-private def affinePowOrientationOfBase? (e : Expr) : Option AffinePowOrientation :=
+private def affineOrientationOfBase? (e : Expr) : Option AffinePowOrientation :=
   let e := e.consumeMData
   if appFnName? e == some ``HAdd.hAdd then
     let args := e.getAppArgs
@@ -3438,7 +3445,7 @@ private partial def findAffinePowOrientation? (e : Expr) :
   if appFnName? e == some ``HPow.hPow then
     let args := e.getAppArgs
     if args.size > 5 then
-      if let some orientation := affinePowOrientationOfBase? args[4]! then
+      if let some orientation := affineOrientationOfBase? args[4]! then
         return some orientation
   for arg in e.getAppArgs do
     if let some orientation := findAffinePowOrientation? arg then
@@ -3460,6 +3467,44 @@ private partial def findAffinePowOrientation? (e : Expr) :
       findAffinePowOrientation? body
   | .proj _ _ body => findAffinePowOrientation? body
   | _ => none
+
+private partial def findAffineLinearOrientation? (e : Expr) :
+    Option AffinePowOrientation := Id.run do
+  let e := e.consumeMData
+  if appFnName? e == some ``HPow.hPow then
+    return none
+  if let some orientation := affineOrientationOfBase? e then
+    return some orientation
+  for arg in e.getAppArgs do
+    if let some orientation := findAffineLinearOrientation? arg then
+      return some orientation
+  match e with
+  | .forallE _ domain body _ =>
+      if let some orientation := findAffineLinearOrientation? domain then
+        return some orientation
+      findAffineLinearOrientation? body
+  | .lam _ domain body _ =>
+      if let some orientation := findAffineLinearOrientation? domain then
+        return some orientation
+      findAffineLinearOrientation? body
+  | .letE _ type value body _ =>
+      if let some orientation := findAffineLinearOrientation? type then
+        return some orientation
+      if let some orientation := findAffineLinearOrientation? value then
+        return some orientation
+      findAffineLinearOrientation? body
+  | .proj _ _ body => findAffineLinearOrientation? body
+  | _ => none
+
+private def affineLinearOrientationOfEvidence (label : String) (evidence : Syntax) :
+    TacticM AffinePowOrientation := withMainContext do
+  let evidenceExpr ← Lean.Elab.Tactic.elabTerm evidence none
+  let evidenceType ← instantiateMVars (← inferType evidenceExpr)
+  match findAffineLinearOrientation? evidenceType with
+  | some orientation => pure orientation
+  | none =>
+      throwError
+        "rr_product checked affine auto: no affine factor found in {label}"
 
 private def affinePowOrientationOfEvidence (label : String) (evidence : Syntax) :
     TacticM AffinePowOrientation := withMainContext do
@@ -3510,6 +3555,43 @@ elab "rr_product_lift_checked_affine_pow_sequence_auto" " using "
             quotient_realrooted := $hquot,
             cutoff := $N,
             factorization := $hrow))
+
+elab "rr_product_checked_affine_sequence_auto" " using "
+    "base" ":=" hbase:term ","
+    "recurrence" ":=" hrec:term : tactic => do
+  match ← affineLinearOrientationOfEvidence "recurrence" hrec with
+  | .mulXFirst =>
+      evalTactic
+        (← `(tactic|
+          rr_product_affine_sequence_auto using
+            base := $hbase,
+            recurrence := $hrec))
+  | .constFirst =>
+      evalTactic
+        (← `(tactic|
+          rr_product_const_first_sequence_auto using
+            base := $hbase,
+            recurrence := $hrec))
+
+elab "rr_product_checked_affine_sequence_auto" " using "
+    "base" ":=" hbase:term ","
+    "cutoff" ":=" N:term ","
+    "recurrence" ":=" hrec:term : tactic => do
+  match ← affineLinearOrientationOfEvidence "recurrence" hrec with
+  | .mulXFirst =>
+      evalTactic
+        (← `(tactic|
+          rr_product_affine_sequence_auto using
+            base := $hbase,
+            cutoff := $N,
+            recurrence := $hrec))
+  | .constFirst =>
+      evalTactic
+        (← `(tactic|
+          rr_product_const_first_sequence_auto using
+            base := $hbase,
+            cutoff := $N,
+            recurrence := $hrec))
 
 elab "rr_product_checked_affine_pow_sequence_auto" " using "
     "base" ":=" hbase:term ","

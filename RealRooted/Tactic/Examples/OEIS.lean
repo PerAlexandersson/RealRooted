@@ -818,6 +818,30 @@ example {P : Nat → ℝ[X]} {t : Nat → ℝ}
     recurrence := hrec,
     certificate := auto
 
+/-- Product-factor auto router reaches positive affine factors. -/
+example {P : Nat → ℝ[X]} {t : Nat → ℝ}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat,
+      P (n + 1) = (C ((n : ℝ) + 1) * X + C (t n)) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_factor_sequence using
+    base := hbase,
+    recurrence := hrec,
+    certificate := auto
+
+/-- Product-factor cutoff auto reaches constant-first affine factors. -/
+example {P : Nat → ℝ[X]} {t : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hrec : ∀ n : Nat,
+      N ≤ n → P (n + 1) = P n * (C (t n) + C (2 : ℝ) * X)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_factor_sequence using
+    base := hbase,
+    cutoff := N,
+    recurrence := hrec,
+    certificate := auto
+
 /-- Product-factor recurrence router, repeated root-zero factor. -/
 example {P : Nat → ℝ[X]} {m : Nat → Nat}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
