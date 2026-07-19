@@ -132,5 +132,83 @@ example {d : ℕ} {p γ : ℝ[X]}
     symmetric := hsym,
     expansion := hexp
 
+example {d : Nat → Nat} {Γ : Nat → ℝ[X]}
+    (hdeg : ∀ n : Nat, (Γ n).natDegree ≤ d n / 2)
+    (hne : ∀ n : Nat, Γ n ≠ 0)
+    (hsplits : ∀ n : Nat, (Γ n).Splits)
+    (hnn : ∀ n : Nat, HasNonnegCoeffs (Γ n)) :
+    ∀ n : Nat, gammaTransform (d n) (Γ n) ≠ 0 ∧
+      (gammaTransform (d n) (Γ n)).Splits := by
+  rr_gamma_transform_sequence_realrooted_nonneg using
+    gamma_degree := hdeg,
+    gamma_nonzero := hne,
+    gamma_splits := hsplits,
+    gamma_nonneg := hnn
+
+example {d : Nat → Nat} {Γ : Nat → ℝ[X]}
+    (hdeg : ∀ n : Nat, (Γ n).natDegree ≤ d n / 2)
+    (hne : ∀ n : Nat, Γ n ≠ 0)
+    (hsplits : ∀ n : Nat, (Γ n).Splits)
+    (hnn : ∀ n : Nat, HasNonnegCoeffs (Γ n)) :
+    ∀ n : Nat, HasRootsNonpos (gammaTransform (d n) (Γ n)) := by
+  rr_gamma_transform_sequence_roots_nonpos_nonneg using
+    gamma_degree := hdeg,
+    gamma_nonzero := hne,
+    gamma_splits := hsplits,
+    gamma_nonneg := hnn
+
+example {d : Nat → Nat} {Γ : Nat → ℝ[X]}
+    (hdeg : ∀ n : Nat, (Γ n).natDegree ≤ d n / 2)
+    (hne : ∀ n : Nat, Γ n ≠ 0)
+    (hsplits : ∀ n : Nat, (Γ n).Splits)
+    (hnp : ∀ n : Nat, HasRootsNonpos (Γ n)) :
+    ∀ n : Nat,
+      (gammaTransform (d n) (Γ n) ≠ 0 ∧
+        (gammaTransform (d n) (Γ n)).Splits) ∧
+        HasRootsNonpos (gammaTransform (d n) (Γ n)) := by
+  rr_gamma_transform_sequence_realrooted_nonpos using
+    gamma_degree := hdeg,
+    gamma_nonzero := hne,
+    gamma_splits := hsplits,
+    gamma_roots_nonpos := hnp
+
+example {d : Nat → Nat} {Γ : Nat → ℝ[X]}
+    (hdeg : ∀ n : Nat, (Γ n).natDegree ≤ d n / 2)
+    (hne : ∀ n : Nat, gammaTransform (d n) (Γ n) ≠ 0)
+    (hsplits : ∀ n : Nat, (gammaTransform (d n) (Γ n)).Splits)
+    (hnp : ∀ n : Nat, HasRootsNonpos (gammaTransform (d n) (Γ n))) :
+    ∀ n : Nat, (Γ n ≠ 0 ∧ (Γ n).Splits) ∧ HasRootsNonpos (Γ n) := by
+  rr_gamma_transform_sequence_backward using
+    gamma_degree := hdeg,
+    transform_nonzero := hne,
+    transform_splits := hsplits,
+    transform_roots_nonpos := hnp
+
+example {Γ : Nat → ℝ[X]}
+    (hne : ∀ n : Nat, gammaTransform (2 * (Γ n).natDegree) (Γ n) ≠ 0)
+    (hsplits : ∀ n : Nat,
+      (gammaTransform (2 * (Γ n).natDegree) (Γ n)).Splits)
+    (hnp : ∀ n : Nat,
+      HasRootsNonpos (gammaTransform (2 * (Γ n).natDegree) (Γ n))) :
+    ∀ n : Nat, (Γ n ≠ 0 ∧ (Γ n).Splits) ∧ HasRootsNonpos (Γ n) := by
+  rr_gamma_transform_sequence_backward_minimal using
+    transform_nonzero := hne,
+    transform_splits := hsplits,
+    transform_roots_nonpos := hnp
+
+example {d : Nat → Nat} {P Γ : Nat → ℝ[X]}
+    (hγdeg : ∀ n : Nat, (Γ n).natDegree ≤ d n / 2)
+    (hpdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
+    (hsym : ∀ n : Nat, IdTransform (d n) (P n) = P n)
+    (hexp : ∀ n : Nat, IsGammaExpansion (d n) (P n) (Γ n)) :
+    ∀ n : Nat,
+      (((Γ n ≠ 0 ∧ (Γ n).Splits) ∧ HasRootsNonpos (Γ n)) ↔
+        ((P n ≠ 0 ∧ (P n).Splits) ∧ HasRootsNonpos (P n))) := by
+  rr_gamma_sequence_realrooted_iff using
+    gamma_degree := hγdeg,
+    polynomial_degree := hpdeg,
+    symmetric := hsym,
+    expansion := hexp
+
 end Tactic
 end RealRooted

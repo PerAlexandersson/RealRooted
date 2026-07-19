@@ -129,6 +129,35 @@ example {d : Nat → Nat} {U V : Nat → ℝ[X]}
     right_nonneg := hv_nonneg,
     prec := hprec
 
+/-- Gamma-transform row-family real-rootedness exposed through the OEIS facade. -/
+example {d : Nat → Nat} {Γ : Nat → ℝ[X]}
+    (hdeg : ∀ n : Nat, (Γ n).natDegree ≤ d n / 2)
+    (hne : ∀ n : Nat, Γ n ≠ 0)
+    (hsplits : ∀ n : Nat, (Γ n).Splits)
+    (hnn : ∀ n : Nat, HasNonnegCoeffs (Γ n)) :
+    ∀ n : Nat, gammaTransform (d n) (Γ n) ≠ 0 ∧
+      (gammaTransform (d n) (Γ n)).Splits := by
+  rr_gamma_transform_sequence_realrooted_nonneg using
+    gamma_degree := hdeg,
+    gamma_nonzero := hne,
+    gamma_splits := hsplits,
+    gamma_nonneg := hnn
+
+/-- Gamma row-family bridge exposed through the OEIS facade. -/
+example {d : Nat → Nat} {P Γ : Nat → ℝ[X]}
+    (hγdeg : ∀ n : Nat, (Γ n).natDegree ≤ d n / 2)
+    (hpdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
+    (hsym : ∀ n : Nat, IdTransform (d n) (P n) = P n)
+    (hexp : ∀ n : Nat, IsGammaExpansion (d n) (P n) (Γ n)) :
+    ∀ n : Nat,
+      (((Γ n ≠ 0 ∧ (Γ n).Splits) ∧ HasRootsNonpos (Γ n)) ↔
+        ((P n ≠ 0 ∧ (P n).Splits) ∧ HasRootsNonpos (P n))) := by
+  rr_gamma_sequence_realrooted_iff using
+    gamma_degree := hγdeg,
+    polynomial_degree := hpdeg,
+    symmetric := hsym,
+    expansion := hexp
+
 /-- Direct Family I2 half-line branch, adjacent-`Prec` endpoint. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
