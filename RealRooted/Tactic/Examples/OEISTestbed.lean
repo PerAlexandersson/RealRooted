@@ -1225,7 +1225,6 @@ example {P : Nat → ℝ[X]}
       norm_num
       simpa using hP1,
     den := fun n => 1 - ((n : ℝ) + 3),
-    den_nonzero := by intro n; rr_scalar_active_den_at n,
     raw_recurrence := hraw
 
 -- `A063007`: raw scalar-denominator Favard numerator with nonzero shift.
@@ -1248,16 +1247,6 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun n => 1 - ((n : ℝ) + 3),
-    den_nonzero := by intro n; rr_scalar_active_den_at n,
-    slope_coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
-    alpha_coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
-    beta_coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
     raw_recurrence := hraw
 
 -- `A376467`: same denominator-Favard normalization with a larger shift.
@@ -1280,16 +1269,6 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun n => 1 - ((n : ℝ) + 3),
-    den_nonzero := by intro n; rr_scalar_active_den_at n,
-    slope_coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
-    alpha_coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
-    beta_coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
     raw_recurrence := hraw
 
 -- `A049310`: Chebyshev `S(n,x)=U(n,x/2)` coefficient triangle.
@@ -1476,16 +1455,6 @@ example {P : Nat → ℝ[X]}
       norm_num
       simpa using hP1,
     den := fun n : Nat => 1 + ((n + 2 : Nat) : ℝ) / 2,
-    den_nonzero := by intro n; rr_scalar_active_den_at n,
-    slope_coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
-    alpha_coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
-    beta_coeff_eq := by
-      intro n
-      rr_scalar_coeff_at n,
     raw_recurrence := hraw
 
 -- `A136668`: `P_m=2mtP_{m-1}-(m+1)P_{m-2}`.
