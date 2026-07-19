@@ -1263,6 +1263,26 @@ example {L : Nat → List ℝ[X]} {H : Nat → ℝ[X]}
     terms_pos_lc := hpos,
     nonempty := hne
 
+/-- Euler-operator PF row-family exit exposed through the OEIS facade. -/
+example {P : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, IsPFPolynomial (P n)) :
+    ∀ n : Nat, IsPFPolynomial (thetaPlusOne (P n)) := by
+  rr_thetaPlusOne_sequence_pf using pf := hP
+
+/-- Iterated Euler-operator proper-position row-family exit exposed through
+the OEIS facade. -/
+example {l : Nat → Nat} {P Q : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, IsPFPolynomial (P n))
+    (hQ : ∀ n : Nat, IsPFPolynomial (Q n))
+    (hPQ : ∀ n : Nat, Prec0 (P n) (Q n)) :
+    ∀ n : Nat,
+      Prec0 (iterateThetaPlusOne (l n) (P n)) (iterateThetaPlusOne (l n) (Q n)) := by
+  rr_iterateThetaPlusOne_sequence_prec0 using
+    index := l,
+    left_pf := hP,
+    right_pf := hQ,
+    prec0 := hPQ
+
 /-- Wagner common-left addition row-family exit exposed through the OEIS
 facade. -/
 example {F G H : Nat → ℝ[X]}
