@@ -658,6 +658,19 @@ syntax (name := rr_chudnovskySeymour_fourWay_degreeSplit_nonnegCoeffs_named)
     "succ_degree" ":=" term :
   tactic
 
+syntax (name := rr_chudnovskySeymour_fourWay_degree_le_one_named)
+  "rr_chudnovskySeymour_fourWay_degree_le_one" " using "
+    "member_pos_lc" ":=" term ","
+    "member_degree_le_one" ":=" term :
+  tactic
+
+syntax (name := rr_chudnovskySeymour_fourWay_degree_le_two_named)
+  "rr_chudnovskySeymour_fourWay_degree_le_two" " using "
+    "member_realrooted" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "member_degree_le_two" ":=" term :
+  tactic
+
 syntax (name := rr_pairwiseCompatible_iff_commonInterleaver_rootCrossing_named)
   "rr_pairwiseCompatible_iff_commonInterleaver_rootCrossing" " using "
     "member_realrooted" ":=" term ","
@@ -1899,6 +1912,21 @@ macro_rules
       `(tactic|
         exact chudnovskySeymour_fourWay_of_degreeSplit_and_nonnegCoeffs
           $hrr $hpos $hnn $hsame $hsucc)
+  | `(tactic|
+      rr_chudnovskySeymour_fourWay_degree_le_one using
+        member_pos_lc := $hpos:term,
+        member_degree_le_one := $hdeg:term) =>
+      `(tactic|
+        exact chudnovskySeymour_fourWay_of_natDegree_le_one
+          $hpos $hdeg)
+  | `(tactic|
+      rr_chudnovskySeymour_fourWay_degree_le_two using
+        member_realrooted := $hrr:term,
+        member_pos_lc := $hpos:term,
+        member_degree_le_two := $hdeg:term) =>
+      `(tactic|
+        exact chudnovskySeymour_fourWay_of_natDegree_le_two
+          $hrr $hpos $hdeg)
   | `(tactic|
       rr_pairwiseCompatible_iff_commonInterleaver_rootCrossing using
         member_realrooted := $hrr:term,

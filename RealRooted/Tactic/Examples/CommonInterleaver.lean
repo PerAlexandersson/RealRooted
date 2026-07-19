@@ -872,6 +872,24 @@ example {fs : List ℝ[X]}
     succ_degree := hsucc
 
 example {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 1) :
+    ChudnovskySeymourFourWayPackage fs := by
+  rr_chudnovskySeymour_fourWay_degree_le_one using
+    member_pos_lc := hpos,
+    member_degree_le_one := hdeg
+
+example {fs : List ℝ[X]}
+    (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hdeg : ∀ f ∈ fs, f.natDegree ≤ 2) :
+    ChudnovskySeymourFourWayPackage fs := by
+  rr_chudnovskySeymour_fourWay_degree_le_two using
+    member_realrooted := hrr,
+    member_pos_lc := hpos,
+    member_degree_le_two := hdeg
+
+example {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, (f ≠ 0 ∧ f.Splits))
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hsame : PosComboNoCommonSameDegreeRootCrossingNonnegStatement)
