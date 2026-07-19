@@ -1268,6 +1268,39 @@ example {P : Nat → ℝ[X]} {a b : Nat → ℝ}
     linear_step := hlinear,
     certificate := scalarThenCAddX
 
+/-- Product-parity router, unit-linear step with cutoff. -/
+example {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ k : Nat, k ≤ 2 * N → P k ≠ 0 ∧ (P k).Splits)
+    (ha : ∀ n : Nat, N ≤ n → a n ≠ 0)
+    (hscalar : ∀ n : Nat, N ≤ n → P (2 * n + 1) = C (a n) * P (2 * n))
+    (hlinear :
+      ∀ n : Nat, N ≤ n → P (2 * n + 2) = P (2 * n + 1) * (X + C (b n))) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_parity_sequence using
+    base := hbase,
+    scalar_ne := ha,
+    cutoff := N,
+    scalar_step := hscalar,
+    linear_step := hlinear,
+    certificate := scalarThenXAddC
+
+/-- Product-parity router, automatic scalar constant-first unit-linear cutoff. -/
+example {P : Nat → ℝ[X]} {b : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ k : Nat, k ≤ 2 * N → P k ≠ 0 ∧ (P k).Splits)
+    (hscalar : ∀ n : Nat, N ≤ n →
+      P (2 * n + 1) = P (2 * n) * C (2 * (n : ℝ) + 1))
+    (hlinear :
+      ∀ n : Nat, N ≤ n → P (2 * n + 2) = (C (b n) + X) * P (2 * n + 1)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_parity_sequence using
+    base := hbase,
+    cutoff := N,
+    scalar_step := hscalar,
+    linear_step := hlinear,
+    certificate := scalarThenCAddXAuto
+
 /-- Product-parity router, automatic scalar then root-zero powers. -/
 example {P : Nat → ℝ[X]} {m : Nat → Nat}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)

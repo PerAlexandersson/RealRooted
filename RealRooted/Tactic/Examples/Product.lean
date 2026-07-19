@@ -1494,6 +1494,37 @@ example {P : Nat → ℝ[X]} {a b : Nat → ℝ}
     scalar_step := hscalar,
     linear_step := hlinear
 
+/-- The alternating scalar/unit-linear shell can start from a cutoff. -/
+example {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ k : Nat, k ≤ 2 * N → P k ≠ 0 ∧ (P k).Splits)
+    (ha : ∀ n : Nat, N ≤ n → a n ≠ 0)
+    (hscalar : ∀ n : Nat, N ≤ n → P (2 * n + 1) = C (a n) * P (2 * n))
+    (hlinear :
+      ∀ n : Nat, N ≤ n → P (2 * n + 2) = P (2 * n + 1) * (X + C (b n))) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_scalar_linear_sequence using
+    base := hbase,
+    scalar_ne := ha,
+    cutoff := N,
+    scalar_step := hscalar,
+    linear_step := hlinear
+
+/-- The cutoff scalar/unit-linear shell has an automatic positive scalar form. -/
+example {P : Nat → ℝ[X]} {b : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ k : Nat, k ≤ 2 * N → P k ≠ 0 ∧ (P k).Splits)
+    (hscalar : ∀ n : Nat, N ≤ n →
+      P (2 * n + 1) = C ((n : ℝ) + 1) * P (2 * n))
+    (hlinear :
+      ∀ n : Nat, N ≤ n → P (2 * n + 2) = (C (b n) + X) * P (2 * n + 1)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_scalar_C_add_X_sequence_auto using
+    base := hbase,
+    cutoff := N,
+    scalar_step := hscalar,
+    linear_step := hlinear
+
 /-- Degree-plateau product shell with a repeated-zero factor on the growth step. -/
 example {P : Nat → ℝ[X]}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)

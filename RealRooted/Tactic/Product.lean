@@ -1707,6 +1707,62 @@ theorem isRealRooted_of_product_scalar_linear_scalar_right_linear_right_sequence
   isRealRooted_of_product_scalar_factor_scalar_right_factor_right_sequence hbase ha
     (isRealRooted_X_add_C_one_sequence b) hscalar hlinear
 
+/-- Tail-start variant of `isRealRooted_of_product_scalar_linear_sequence`. -/
+theorem isRealRooted_of_product_scalar_linear_sequence_from
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ k : Nat, k ≤ 2 * N → P k ≠ 0 ∧ (P k).Splits)
+    (ha : ∀ n : Nat, N ≤ n → a n ≠ 0)
+    (hscalar : ∀ n : Nat, N ≤ n → P (2 * n + 1) = C (a n) * P (2 * n))
+    (hlinear :
+      ∀ n : Nat, N ≤ n → P (2 * n + 2) = (X + C (b n)) * P (2 * n + 1)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_sequence_from N hbase ha
+    (fun n _ => isRealRooted_X_add_C_one_sequence b n) hscalar hlinear
+
+/-- Right-factor variant of
+`isRealRooted_of_product_scalar_linear_sequence_from`. -/
+theorem isRealRooted_of_product_scalar_linear_right_sequence_from
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ k : Nat, k ≤ 2 * N → P k ≠ 0 ∧ (P k).Splits)
+    (ha : ∀ n : Nat, N ≤ n → a n ≠ 0)
+    (hscalar : ∀ n : Nat, N ≤ n → P (2 * n + 1) = C (a n) * P (2 * n))
+    (hlinear :
+      ∀ n : Nat, N ≤ n → P (2 * n + 2) = P (2 * n + 1) * (X + C (b n))) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_right_sequence_from N hbase ha
+    (fun n _ => isRealRooted_X_add_C_one_sequence b n) hscalar hlinear
+
+/-- Right-scalar variant of
+`isRealRooted_of_product_scalar_linear_sequence_from`. -/
+theorem isRealRooted_of_product_scalar_linear_scalar_right_sequence_from
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ k : Nat, k ≤ 2 * N → P k ≠ 0 ∧ (P k).Splits)
+    (ha : ∀ n : Nat, N ≤ n → a n ≠ 0)
+    (hscalar : ∀ n : Nat, N ≤ n → P (2 * n + 1) = P (2 * n) * C (a n))
+    (hlinear :
+      ∀ n : Nat, N ≤ n → P (2 * n + 2) = (X + C (b n)) * P (2 * n + 1)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_scalar_right_sequence_from N hbase ha
+    (fun n _ => isRealRooted_X_add_C_one_sequence b n) hscalar hlinear
+
+/-- Right-scalar/right-factor variant of
+`isRealRooted_of_product_scalar_linear_sequence_from`. -/
+theorem isRealRooted_of_product_scalar_linear_scalar_right_linear_right_sequence_from
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ k : Nat, k ≤ 2 * N → P k ≠ 0 ∧ (P k).Splits)
+    (ha : ∀ n : Nat, N ≤ n → a n ≠ 0)
+    (hscalar : ∀ n : Nat, N ≤ n → P (2 * n + 1) = P (2 * n) * C (a n))
+    (hlinear :
+      ∀ n : Nat, N ≤ n → P (2 * n + 2) = P (2 * n + 1) * (X + C (b n))) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_scalar_right_factor_right_sequence_from
+    N hbase ha (fun n _ => isRealRooted_X_add_C_one_sequence b n)
+    hscalar hlinear
+
 /-- Constant-first variant of
 `isRealRooted_of_product_scalar_linear_sequence`. -/
 theorem isRealRooted_of_product_scalar_C_add_X_sequence
@@ -1754,6 +1810,63 @@ theorem isRealRooted_of_product_scalar_C_add_X_scalar_right_linear_right_sequenc
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_scalar_factor_scalar_right_factor_right_sequence hbase ha
     (isRealRooted_C_add_X_one_sequence b) hscalar hlinear
+
+/-- Tail-start variant of
+`isRealRooted_of_product_scalar_C_add_X_sequence`. -/
+theorem isRealRooted_of_product_scalar_C_add_X_sequence_from
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ k : Nat, k ≤ 2 * N → P k ≠ 0 ∧ (P k).Splits)
+    (ha : ∀ n : Nat, N ≤ n → a n ≠ 0)
+    (hscalar : ∀ n : Nat, N ≤ n → P (2 * n + 1) = C (a n) * P (2 * n))
+    (hlinear :
+      ∀ n : Nat, N ≤ n → P (2 * n + 2) = (C (b n) + X) * P (2 * n + 1)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_sequence_from N hbase ha
+    (fun n _ => isRealRooted_C_add_X_one_sequence b n) hscalar hlinear
+
+/-- Right-factor variant of
+`isRealRooted_of_product_scalar_C_add_X_sequence_from`. -/
+theorem isRealRooted_of_product_scalar_C_add_X_right_sequence_from
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ k : Nat, k ≤ 2 * N → P k ≠ 0 ∧ (P k).Splits)
+    (ha : ∀ n : Nat, N ≤ n → a n ≠ 0)
+    (hscalar : ∀ n : Nat, N ≤ n → P (2 * n + 1) = C (a n) * P (2 * n))
+    (hlinear :
+      ∀ n : Nat, N ≤ n → P (2 * n + 2) = P (2 * n + 1) * (C (b n) + X)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_right_sequence_from N hbase ha
+    (fun n _ => isRealRooted_C_add_X_one_sequence b n) hscalar hlinear
+
+/-- Right-scalar variant of
+`isRealRooted_of_product_scalar_C_add_X_sequence_from`. -/
+theorem isRealRooted_of_product_scalar_C_add_X_scalar_right_sequence_from
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ k : Nat, k ≤ 2 * N → P k ≠ 0 ∧ (P k).Splits)
+    (ha : ∀ n : Nat, N ≤ n → a n ≠ 0)
+    (hscalar : ∀ n : Nat, N ≤ n → P (2 * n + 1) = P (2 * n) * C (a n))
+    (hlinear :
+      ∀ n : Nat, N ≤ n → P (2 * n + 2) = (C (b n) + X) * P (2 * n + 1)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_scalar_right_sequence_from N hbase ha
+    (fun n _ => isRealRooted_C_add_X_one_sequence b n) hscalar hlinear
+
+/-- Right-scalar/right-factor variant of
+`isRealRooted_of_product_scalar_C_add_X_sequence_from`. -/
+theorem isRealRooted_of_product_scalar_C_add_X_scalar_right_linear_right_sequence_from
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ k : Nat, k ≤ 2 * N → P k ≠ 0 ∧ (P k).Splits)
+    (ha : ∀ n : Nat, N ≤ n → a n ≠ 0)
+    (hscalar : ∀ n : Nat, N ≤ n → P (2 * n + 1) = P (2 * n) * C (a n))
+    (hlinear :
+      ∀ n : Nat, N ≤ n → P (2 * n + 2) = P (2 * n + 1) * (C (b n) + X)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_scalar_right_factor_right_sequence_from
+    N hbase ha (fun n _ => isRealRooted_C_add_X_one_sequence b n)
+    hscalar hlinear
 
 /-- Sequence shell for degree-plateau scalar/product families whose growth
 step is multiplication by `X ^ m_n`. -/
@@ -2448,6 +2561,7 @@ syntax (name := rr_product_scalar_linear_sequence_named)
   "rr_product_scalar_linear_sequence" " using "
     "base" ":=" term ","
     "scalar_ne" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "scalar_step" ":=" term ","
     "linear_step" ":=" term :
   tactic
@@ -2455,6 +2569,7 @@ syntax (name := rr_product_scalar_linear_sequence_named)
 syntax (name := rr_product_scalar_linear_sequence_auto_named)
   "rr_product_scalar_linear_sequence_auto" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "scalar_step" ":=" term ","
     "linear_step" ":=" term :
   tactic
@@ -2463,6 +2578,7 @@ syntax (name := rr_product_scalar_C_add_X_sequence_named)
   "rr_product_scalar_C_add_X_sequence" " using "
     "base" ":=" term ","
     "scalar_ne" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "scalar_step" ":=" term ","
     "linear_step" ":=" term :
   tactic
@@ -2470,6 +2586,7 @@ syntax (name := rr_product_scalar_C_add_X_sequence_named)
 syntax (name := rr_product_scalar_C_add_X_sequence_auto_named)
   "rr_product_scalar_C_add_X_sequence_auto" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "scalar_step" ":=" term ","
     "linear_step" ":=" term :
   tactic
@@ -3537,6 +3654,23 @@ macro_rules
       rr_product_scalar_linear_sequence using
         base := $hbase:term,
         scalar_ne := $ha:term,
+        cutoff := $N:term,
+        scalar_step := $hscalar:term,
+        linear_step := $hlinear:term) =>
+      `(tactic|
+        rr_product_four_sequence_variants
+          (RealRooted.isRealRooted_of_product_scalar_linear_sequence_from
+            $N $hbase $ha $hscalar $hlinear),
+          (RealRooted.isRealRooted_of_product_scalar_linear_right_sequence_from
+            $N $hbase $ha $hscalar $hlinear),
+          (RealRooted.isRealRooted_of_product_scalar_linear_scalar_right_sequence_from
+            $N $hbase $ha $hscalar $hlinear),
+          (RealRooted.isRealRooted_of_product_scalar_linear_scalar_right_linear_right_sequence_from
+            $N $hbase $ha $hscalar $hlinear))
+  | `(tactic|
+      rr_product_scalar_linear_sequence using
+        base := $hbase:term,
+        scalar_ne := $ha:term,
         scalar_step := $hscalar:term,
         linear_step := $hlinear:term) =>
       `(tactic|
@@ -3552,6 +3686,19 @@ macro_rules
   | `(tactic|
       rr_product_scalar_linear_sequence_auto using
         base := $hbase:term,
+        cutoff := $N:term,
+        scalar_step := $hscalar:term,
+        linear_step := $hlinear:term) =>
+      `(tactic|
+        rr_product_scalar_linear_sequence using
+          base := $hbase,
+          scalar_ne := fun n _ => by rr_product_nonzero,
+          cutoff := $N,
+          scalar_step := $hscalar,
+          linear_step := $hlinear)
+  | `(tactic|
+      rr_product_scalar_linear_sequence_auto using
+        base := $hbase:term,
         scalar_step := $hscalar:term,
         linear_step := $hlinear:term) =>
       `(tactic|
@@ -3560,6 +3707,23 @@ macro_rules
           scalar_ne := rr_product_nonzero_seq,
           scalar_step := $hscalar,
           linear_step := $hlinear)
+  | `(tactic|
+      rr_product_scalar_C_add_X_sequence using
+        base := $hbase:term,
+        scalar_ne := $ha:term,
+        cutoff := $N:term,
+        scalar_step := $hscalar:term,
+        linear_step := $hlinear:term) =>
+      `(tactic|
+        rr_product_four_sequence_variants
+          (RealRooted.isRealRooted_of_product_scalar_C_add_X_sequence_from
+            $N $hbase $ha $hscalar $hlinear),
+          (RealRooted.isRealRooted_of_product_scalar_C_add_X_right_sequence_from
+            $N $hbase $ha $hscalar $hlinear),
+          (RealRooted.isRealRooted_of_product_scalar_C_add_X_scalar_right_sequence_from
+            $N $hbase $ha $hscalar $hlinear),
+          (RealRooted.isRealRooted_of_product_scalar_C_add_X_scalar_right_linear_right_sequence_from
+            $N $hbase $ha $hscalar $hlinear))
   | `(tactic|
       rr_product_scalar_C_add_X_sequence using
         base := $hbase:term,
@@ -3576,6 +3740,19 @@ macro_rules
             $hbase $ha $hscalar $hlinear),
           (RealRooted.isRealRooted_of_product_scalar_C_add_X_scalar_right_linear_right_sequence
             $hbase $ha $hscalar $hlinear))
+  | `(tactic|
+      rr_product_scalar_C_add_X_sequence_auto using
+        base := $hbase:term,
+        cutoff := $N:term,
+        scalar_step := $hscalar:term,
+        linear_step := $hlinear:term) =>
+      `(tactic|
+        rr_product_scalar_C_add_X_sequence using
+          base := $hbase,
+          scalar_ne := fun n _ => by rr_product_nonzero,
+          cutoff := $N,
+          scalar_step := $hscalar,
+          linear_step := $hlinear)
   | `(tactic|
       rr_product_scalar_C_add_X_sequence_auto using
         base := $hbase:term,
