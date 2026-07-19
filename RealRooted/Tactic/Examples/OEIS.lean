@@ -1219,6 +1219,30 @@ example {p q : ℝ[X]}
     left_pf := hp,
     right_pf := hq
 
+/-- Hadamard PF row-family exit exposed through the OEIS facade. -/
+example {P Q : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, IsPFPolynomial (P n))
+    (hQ : ∀ n : Nat, IsPFPolynomial (Q n)) :
+    ∀ n : Nat, IsPFPolynomial (hadamardProduct (P n) (Q n)) := by
+  rr_hadamard_sequence_pf using
+    left_pf := hP,
+    right_pf := hQ
+
+/-- Schur--Szego row-family exit exposed through the OEIS facade. -/
+example {N : Nat → ℕ} {F P : Nat → ℝ[X]}
+    (hF : ∀ n : Nat, IsPFPolynomial (F n))
+    (hFdeg : ∀ n : Nat, (F n).natDegree ≤ N n)
+    (hPdeg : ∀ n : Nat, (P n).natDegree ≤ N n)
+    (hPsplits : ∀ n : Nat, (P n).Splits) :
+    ∀ n : Nat,
+      schurSzegoComp (N n) (F n) (P n) = 0 ∨
+        (schurSzegoComp (N n) (F n) (P n)).Splits := by
+  rr_schur_szego_sequence using
+    pf_factor := hF,
+    pf_degree := hFdeg,
+    input_degree := hPdeg,
+    input_splits := hPsplits
+
 /-- Hermite--Biehler statement exit exposed through the OEIS facade. -/
 example :
     hermiteBiehlerForwardPosStatement := by

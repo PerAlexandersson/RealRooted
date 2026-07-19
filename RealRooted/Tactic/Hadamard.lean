@@ -146,6 +146,53 @@ theorem schurSzegoComp_splits_of_pf_factor_degree_le_three_num_leftDegree
       hf hfdeg hfn hpdeg hsplits hnum)
     hout
 
+theorem schurSzegoComp_sequence_zero_or_splits {N : Nat → ℕ}
+    {F P : Nat → ℝ[X]}
+    (hF : ∀ i : Nat, IsPFPolynomial (F i))
+    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ N i)
+    (hPdeg : ∀ i : Nat, (P i).natDegree ≤ N i)
+    (hPsplits : ∀ i : Nat, (P i).Splits) :
+    ∀ i : Nat,
+      schurSzegoComp (N i) (F i) (P i) = 0 ∨
+        (schurSzegoComp (N i) (F i) (P i)).Splits := fun i =>
+  schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial
+    (hF i) (hFdeg i) (hPdeg i) (hPsplits i)
+
+theorem schurSzegoComp_sequence_splits {N : Nat → ℕ} {F P : Nat → ℝ[X]}
+    (hF : ∀ i : Nat, IsPFPolynomial (F i))
+    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ N i)
+    (hPdeg : ∀ i : Nat, (P i).natDegree ≤ N i)
+    (hPsplits : ∀ i : Nat, (P i).Splits)
+    (hout : ∀ i : Nat, schurSzegoComp (N i) (F i) (P i) ≠ 0) :
+    ∀ i : Nat, (schurSzegoComp (N i) (F i) (P i)).Splits := fun i =>
+  schurSzegoComp_splits_of_nonzero
+    (hF i) (hFdeg i) (hPdeg i) (hPsplits i) (hout i)
+
+theorem hadamardProduct_sequence_pf {P Q : Nat → ℝ[X]}
+    (hP : ∀ i : Nat, IsPFPolynomial (P i))
+    (hQ : ∀ i : Nat, IsPFPolynomial (Q i)) :
+    ∀ i : Nat, IsPFPolynomial (hadamardProduct (P i) (Q i)) := fun i =>
+  hadamardProduct_preserves_pf_of_nonnegPrec (hP i) (hQ i)
+
+theorem hadamardProduct_sequence_nonneg_realrooted {P Q : Nat → ℝ[X]}
+    (hPnonneg : ∀ i : Nat, HasNonnegCoeffs (P i))
+    (hQnonneg : ∀ i : Nat, HasNonnegCoeffs (Q i))
+    (hP : ∀ i : Nat, P i ≠ 0 ∧ (P i).Splits)
+    (hQ : ∀ i : Nat, Q i ≠ 0 ∧ (Q i).Splits) :
+    ∀ i : Nat,
+      (hadamardProduct (P i) (Q i) = 0 ∨
+          (hadamardProduct (P i) (Q i)).Splits) ∧
+        HasNonnegCoeffs (hadamardProduct (P i) (Q i)) ∧
+        ∀ r ∈ (hadamardProduct (P i) (Q i)).roots, r ≤ 0 := fun i =>
+  garloffWagnerHadamardNonnegRealRooted_of_nonnegPrec
+    (hPnonneg i) (hQnonneg i) (hP i) (hQ i)
+
+theorem hadamardProduct_sequence_nonneg_coeffs {P Q : Nat → ℝ[X]}
+    (hPnonneg : ∀ i : Nat, HasNonnegCoeffs (P i))
+    (hQnonneg : ∀ i : Nat, HasNonnegCoeffs (Q i)) :
+    ∀ i : Nat, HasNonnegCoeffs (hadamardProduct (P i) (Q i)) := fun i =>
+  HasNonnegCoeffs.hadamardProduct (hPnonneg i) (hQnonneg i)
+
 syntax (name := rr_schur_szego_nonzero_statement_named)
   "rr_schur_szego_nonzero_statement" : tactic
 
@@ -348,6 +395,23 @@ syntax (name := rr_schur_szego_nonzero_named)
     "input_splits" ":=" term :
   tactic
 
+syntax (name := rr_schur_szego_sequence_named)
+  "rr_schur_szego_sequence" " using "
+    "pf_factor" ":=" term ","
+    "pf_degree" ":=" term ","
+    "input_degree" ":=" term ","
+    "input_splits" ":=" term :
+  tactic
+
+syntax (name := rr_schur_szego_sequence_splits_named)
+  "rr_schur_szego_sequence_splits" " using "
+    "pf_factor" ":=" term ","
+    "pf_degree" ":=" term ","
+    "input_degree" ":=" term ","
+    "input_splits" ":=" term ","
+    "nonzero" ":=" term :
+  tactic
+
 syntax (name := rr_hadamard_pf_named)
   "rr_hadamard_pf" " using "
     "left_pf" ":=" term ","
@@ -364,6 +428,26 @@ syntax (name := rr_hadamard_nonneg_realrooted_named)
 
 syntax (name := rr_hadamard_nonneg_coeffs_named)
   "rr_hadamard_nonneg_coeffs" " using "
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term :
+  tactic
+
+syntax (name := rr_hadamard_sequence_pf_named)
+  "rr_hadamard_sequence_pf" " using "
+    "left_pf" ":=" term ","
+    "right_pf" ":=" term :
+  tactic
+
+syntax (name := rr_hadamard_sequence_nonneg_realrooted_named)
+  "rr_hadamard_sequence_nonneg_realrooted" " using "
+    "left_nonneg" ":=" term ","
+    "right_nonneg" ":=" term ","
+    "left_realrooted" ":=" term ","
+    "right_realrooted" ":=" term :
+  tactic
+
+syntax (name := rr_hadamard_sequence_nonneg_coeffs_named)
+  "rr_hadamard_sequence_nonneg_coeffs" " using "
     "left_nonneg" ":=" term ","
     "right_nonneg" ":=" term :
   tactic
@@ -599,6 +683,25 @@ macro_rules
         exact RealRooted.finiteSchurSzegoCompositionNonzero
           $hf $hf0 $hfdeg $hp0 $hpdeg $hsplits)
   | `(tactic|
+      rr_schur_szego_sequence using
+        pf_factor := $hf:term,
+        pf_degree := $hfdeg:term,
+        input_degree := $hpdeg:term,
+        input_splits := $hsplits:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.schurSzegoComp_sequence_zero_or_splits
+          $hf $hfdeg $hpdeg $hsplits)
+  | `(tactic|
+      rr_schur_szego_sequence_splits using
+        pf_factor := $hf:term,
+        pf_degree := $hfdeg:term,
+        input_degree := $hpdeg:term,
+        input_splits := $hsplits:term,
+        nonzero := $hout:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.schurSzegoComp_sequence_splits
+          $hf $hfdeg $hpdeg $hsplits $hout)
+  | `(tactic|
       rr_hadamard_pf using
         left_pf := $hp:term,
         right_pf := $hq:term) =>
@@ -619,6 +722,28 @@ macro_rules
         right_nonneg := $hqnn:term) =>
       `(tactic|
         exact RealRooted.HasNonnegCoeffs.hadamardProduct $hpnn $hqnn)
+  | `(tactic|
+      rr_hadamard_sequence_pf using
+        left_pf := $hp:term,
+        right_pf := $hq:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.hadamardProduct_sequence_pf $hp $hq)
+  | `(tactic|
+      rr_hadamard_sequence_nonneg_realrooted using
+        left_nonneg := $hpnn:term,
+        right_nonneg := $hqnn:term,
+        left_realrooted := $hp:term,
+        right_realrooted := $hq:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.hadamardProduct_sequence_nonneg_realrooted
+          $hpnn $hqnn $hp $hq)
+  | `(tactic|
+      rr_hadamard_sequence_nonneg_coeffs using
+        left_nonneg := $hpnn:term,
+        right_nonneg := $hqnn:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.hadamardProduct_sequence_nonneg_coeffs
+          $hpnn $hqnn)
 
 end Tactic
 end RealRooted

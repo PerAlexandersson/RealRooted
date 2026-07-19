@@ -316,6 +316,34 @@ example {n : ℕ} {f p : ℝ[X]}
     cubic_numerator := hnum,
     nonzero := hout
 
+example {N : Nat → ℕ} {F P : Nat → ℝ[X]}
+    (hF : ∀ i : Nat, IsPFPolynomial (F i))
+    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ N i)
+    (hPdeg : ∀ i : Nat, (P i).natDegree ≤ N i)
+    (hPsplits : ∀ i : Nat, (P i).Splits) :
+    ∀ i : Nat,
+      schurSzegoComp (N i) (F i) (P i) = 0 ∨
+        (schurSzegoComp (N i) (F i) (P i)).Splits := by
+  rr_schur_szego_sequence using
+    pf_factor := hF,
+    pf_degree := hFdeg,
+    input_degree := hPdeg,
+    input_splits := hPsplits
+
+example {N : Nat → ℕ} {F P : Nat → ℝ[X]}
+    (hF : ∀ i : Nat, IsPFPolynomial (F i))
+    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ N i)
+    (hPdeg : ∀ i : Nat, (P i).natDegree ≤ N i)
+    (hPsplits : ∀ i : Nat, (P i).Splits)
+    (hout : ∀ i : Nat, schurSzegoComp (N i) (F i) (P i) ≠ 0) :
+    ∀ i : Nat, (schurSzegoComp (N i) (F i) (P i)).Splits := by
+  rr_schur_szego_sequence_splits using
+    pf_factor := hF,
+    pf_degree := hFdeg,
+    input_degree := hPdeg,
+    input_splits := hPsplits,
+    nonzero := hout
+
 example {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
     IsPFPolynomial (hadamardProduct p q) := by
@@ -341,6 +369,38 @@ example {p q : ℝ[X]}
   rr_hadamard_nonneg_coeffs using
     left_nonneg := hpnn,
     right_nonneg := hqnn
+
+example {P Q : Nat → ℝ[X]}
+    (hP : ∀ i : Nat, IsPFPolynomial (P i))
+    (hQ : ∀ i : Nat, IsPFPolynomial (Q i)) :
+    ∀ i : Nat, IsPFPolynomial (hadamardProduct (P i) (Q i)) := by
+  rr_hadamard_sequence_pf using
+    left_pf := hP,
+    right_pf := hQ
+
+example {P Q : Nat → ℝ[X]}
+    (hPnn : ∀ i : Nat, HasNonnegCoeffs (P i))
+    (hQnn : ∀ i : Nat, HasNonnegCoeffs (Q i))
+    (hP : ∀ i : Nat, P i ≠ 0 ∧ (P i).Splits)
+    (hQ : ∀ i : Nat, Q i ≠ 0 ∧ (Q i).Splits) :
+    ∀ i : Nat,
+      (hadamardProduct (P i) (Q i) = 0 ∨
+          (hadamardProduct (P i) (Q i)).Splits) ∧
+        HasNonnegCoeffs (hadamardProduct (P i) (Q i)) ∧
+        ∀ r ∈ (hadamardProduct (P i) (Q i)).roots, r ≤ 0 := by
+  rr_hadamard_sequence_nonneg_realrooted using
+    left_nonneg := hPnn,
+    right_nonneg := hQnn,
+    left_realrooted := hP,
+    right_realrooted := hQ
+
+example {P Q : Nat → ℝ[X]}
+    (hPnn : ∀ i : Nat, HasNonnegCoeffs (P i))
+    (hQnn : ∀ i : Nat, HasNonnegCoeffs (Q i)) :
+    ∀ i : Nat, HasNonnegCoeffs (hadamardProduct (P i) (Q i)) := by
+  rr_hadamard_sequence_nonneg_coeffs using
+    left_nonneg := hPnn,
+    right_nonneg := hQnn
 
 end Tactic
 end RealRooted
