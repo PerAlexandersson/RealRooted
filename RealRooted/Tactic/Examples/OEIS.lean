@@ -1244,6 +1244,25 @@ example {F G : Nat → ℝ[X]}
     ∀ n : Nat, F n + G n ≠ 0 ∧ (F n + G n).Splits := by
   rr_pos_combo_sequence_add_realrooted using pos_combo := hfg
 
+/-- Weighted Wagner-sum row-family common-left exit exposed through the OEIS
+facade. -/
+example {H : Nat → ℝ[X]} {L : Nat → List (ℝ × ℝ[X])}
+    (hl : ∀ n : Nat, WeightedCompatibleLeft (H n) (L n)) :
+    ∀ n : Nat, Prec (H n) (weightedSum (L n)) := by
+  rr_weighted_sum_sequence_left_prec using compatible := hl
+
+/-- Unweighted Wagner-sum row-family common-right exit exposed through the OEIS
+facade. -/
+example {L : Nat → List ℝ[X]} {H : Nat → ℝ[X]}
+    (hprec : ∀ n : Nat, ∀ p ∈ L n, Prec p (H n))
+    (hpos : ∀ n : Nat, ∀ p ∈ L n, HasPosLeadingCoeff p)
+    (hne : ∀ n : Nat, L n ≠ []) :
+    ∀ n : Nat, Prec (L n).sum (H n) := by
+  rr_sum_sequence_right_prec using
+    all_prec := hprec,
+    terms_pos_lc := hpos,
+    nonempty := hne
+
 /-- Wagner common-left addition row-family exit exposed through the OEIS
 facade. -/
 example {F G H : Nat → ℝ[X]}
