@@ -852,6 +852,28 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence
       (secondDerivativeBidiagonalForm_eq_bidiagonalOperator
         (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)))
 
+/-- Tail-start version of
+`isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence`. -/
+theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_from
+    {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
+    (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
+    (hpres : ∀ n : Nat, N ≤ n →
+      BidiagonalPFPreserver
+        (fun k => secondDerivativeQuadraticCoeff (a0 n) (b1 n) (c2 n) k)
+        (fun k => secondDerivativeQuadraticCoeff (a1 n) (b2 n) (c3 n) k)
+        (d n))
+    (hrec : ∀ n : Nat, N ≤ n →
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) :=
+  isPFPolynomial_of_bidiagonalOperator_sequence_from N hbase hdeg hpres
+    (fun n hn => (hrec n hn).trans
+      (secondDerivativeBidiagonalForm_eq_bidiagonalOperator
+        (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)))
+
 /-- Sequence wrapper for second-derivative recurrences whose preserver is
 stated using named coefficient-bidiagonal functions. -/
 theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_norm
@@ -871,6 +893,28 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_norm
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_bidiagonalOperator_sequence hbase hdeg hpres
     (fun n => (hrec n).trans (hnorm n))
+
+/-- Tail-start version of
+`isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_norm`. -/
+theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_norm_from
+    {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
+    {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
+    (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
+    (hpres : ∀ n : Nat, N ≤ n →
+      BidiagonalPFPreserver (alpha n) (beta n) (d n))
+    (hnorm : ∀ n : Nat, N ≤ n →
+      secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n) =
+        bidiagonalOperator (alpha n) (beta n) (P n))
+    (hrec : ∀ n : Nat, N ≤ n →
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) :=
+  isPFPolynomial_of_bidiagonalOperator_sequence_from N hbase hdeg hpres
+    (fun n hn => (hrec n hn).trans (hnorm n hn))
 
 /-- Sequence wrapper for Family H-style second-derivative recurrences using
 per-row Jensen-pencil certificates. -/
@@ -1906,6 +1950,7 @@ macro_rules
 syntax (name := rr_pf_second_derivative_bidiagonal_sequence_named)
   "rr_pf_second_derivative_bidiagonal_sequence" " using "
     "preserver" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "base" ":=" term ","
     "degree" ":=" term ","
     "recurrence" ":=" term
@@ -1925,10 +1970,24 @@ macro_rules
           (RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence
             $hbase $hdeg $hPF $hrec)
           $[, nonzero := $hne]?)
+  | `(tactic|
+      rr_pf_second_derivative_bidiagonal_sequence using
+        preserver := $hPF:term,
+        cutoff := $N:term,
+        base := $hbase:term,
+        degree := $hdeg:term,
+        recurrence := $hrec:term
+        $[, nonzero := $hne:term]?) =>
+      `(tactic|
+        rr_exact_pf_sequence
+          (RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_from
+            $N $hbase $hdeg $hPF $hrec)
+          $[, nonzero := $hne]?)
 
 syntax (name := rr_pf_second_derivative_bidiagonal_sequence_preserver_normalized_named)
   "rr_pf_second_derivative_bidiagonal_sequence" " using "
     "preserver" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "base" ":=" term ","
     "degree" ":=" term ","
     "normalizer" ":=" term ","
@@ -1949,6 +2008,20 @@ macro_rules
         rr_exact_pf_sequence
           (RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_norm
             $hbase $hdeg $hPF $hnorm $hrec)
+          $[, nonzero := $hne]?)
+  | `(tactic|
+      rr_pf_second_derivative_bidiagonal_sequence using
+        preserver := $hPF:term,
+        cutoff := $N:term,
+        base := $hbase:term,
+        degree := $hdeg:term,
+        normalizer := $hnorm:term,
+        recurrence := $hrec:term
+        $[, nonzero := $hne:term]?) =>
+      `(tactic|
+        rr_exact_pf_sequence
+          (RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_norm_from
+            $N $hbase $hdeg $hPF $hnorm $hrec)
           $[, nonzero := $hne]?)
 
 syntax (name := rr_pf_second_derivative_bidiagonal_sequence_jensen_named)
