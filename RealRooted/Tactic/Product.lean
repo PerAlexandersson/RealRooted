@@ -3252,6 +3252,13 @@ syntax (name := rr_product_checked_affine_pow_sequence_auto_named)
     "recurrence" ":=" term :
   tactic
 
+syntax (name := rr_product_checked_scalar_sequence_auto_named)
+  "rr_product_checked_scalar_sequence_auto" " using "
+    "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
+    "recurrence" ":=" term :
+  tactic
+
 syntax (name := rr_product_scalar_sequence_named)
   "rr_product_scalar_sequence" " using "
     "base" ":=" term ","
@@ -3397,6 +3404,10 @@ private inductive AffinePowOrientation where
   | mulXFirst
   | constFirst
 
+private inductive ScalarFactorKind where
+  | scalar
+  | scalarPow
+
 private def appFnName? (e : Expr) : Option Name :=
   e.consumeMData.getAppFn.constName?
 
@@ -3414,6 +3425,63 @@ private partial def containsAppFn (needle : Name) (e : Expr) : Bool :=
 
 private def isPolynomialX (e : Expr) : Bool :=
   appFnName? e == some ``Polynomial.X
+
+private def containsPolynomialX (e : Expr) : Bool :=
+  containsAppFn ``Polynomial.X e
+
+private def isScalarPolynomialExpr (e : Expr) : Bool :=
+  containsAppFn ``Polynomial.C e && !containsPolynomialX e
+
+private def scalarFactorKind? (e : Expr) : Option ScalarFactorKind :=
+  let e := e.consumeMData
+  if appFnName? e == some ``HPow.hPow then
+    let args := e.getAppArgs
+    if args.size > 5 && isScalarPolynomialExpr args[4]! then
+      some .scalarPow
+    else
+      none
+  else if isScalarPolynomialExpr e then
+    some .scalar
+  else
+    none
+
+private partial def topMulFactors (e : Expr) : List Expr :=
+  let e := e.consumeMData
+  if appFnName? e == some ``HMul.hMul then
+    let args := e.getAppArgs
+    if args.size > 5 then
+      topMulFactors args[4]! ++ topMulFactors args[5]!
+    else
+      [e]
+  else
+    [e]
+
+private def scalarKindOfTopProduct? (rhs : Expr) : Option ScalarFactorKind :=
+  match topMulFactors rhs with
+  | lhsFactor :: rhsFactor :: [] =>
+      match scalarFactorKind? lhsFactor, scalarFactorKind? rhsFactor with
+      | some kind, none => some kind
+      | none, some kind => some kind
+      | _, _ => none
+  | _ => none
+
+private partial def findScalarTopProductKind? (e : Expr) :
+    Option ScalarFactorKind := Id.run do
+  let e := e.consumeMData
+  if appFnName? e == some ``Eq then
+    let args := e.getAppArgs
+    if args.size > 0 then
+      if let some kind := scalarKindOfTopProduct? args[args.size - 1]! then
+        return some kind
+  match e with
+  | .forallE _ _ body _ => findScalarTopProductKind? body
+  | .lam _ _ body _ => findScalarTopProductKind? body
+  | .letE _ _ value body _ =>
+      if let some kind := findScalarTopProductKind? value then
+        return some kind
+      findScalarTopProductKind? body
+  | .proj _ _ body => findScalarTopProductKind? body
+  | _ => none
 
 private def isPolynomialCMulX (e : Expr) : Bool :=
   let e := e.consumeMData
@@ -3516,6 +3584,15 @@ private def affinePowOrientationOfEvidence (label : String) (evidence : Syntax) 
       throwError
         "rr_product checked affine-power auto: no affine-power factor found in {label}"
 
+private def scalarKindOfEvidence (label : String) (evidence : Syntax) :
+    TacticM ScalarFactorKind := withMainContext do
+  let evidenceExpr ← Lean.Elab.Tactic.elabTerm evidence none
+  let evidenceType ← instantiateMVars (← inferType evidenceExpr)
+  match findScalarTopProductKind? evidenceType with
+  | some kind => pure kind
+  | none =>
+      throwError "rr_product checked scalar auto: no scalar factor found in {label}"
+
 elab "rr_product_lift_checked_affine_pow_sequence_auto" " using "
     "quotient_realrooted" ":=" hquot:term ","
     "factorization" ":=" hrow:term : tactic => do
@@ -3589,6 +3666,43 @@ elab "rr_product_checked_affine_sequence_auto" " using "
       evalTactic
         (← `(tactic|
           rr_product_const_first_sequence_auto using
+            base := $hbase,
+            cutoff := $N,
+            recurrence := $hrec))
+
+elab "rr_product_checked_scalar_sequence_auto" " using "
+    "base" ":=" hbase:term ","
+    "recurrence" ":=" hrec:term : tactic => do
+  match ← scalarKindOfEvidence "recurrence" hrec with
+  | .scalar =>
+      evalTactic
+        (← `(tactic|
+          rr_product_scalar_sequence_auto using
+            base := $hbase,
+            recurrence := $hrec))
+  | .scalarPow =>
+      evalTactic
+        (← `(tactic|
+          rr_product_C_pow_sequence_auto using
+            base := $hbase,
+            recurrence := $hrec))
+
+elab "rr_product_checked_scalar_sequence_auto" " using "
+    "base" ":=" hbase:term ","
+    "cutoff" ":=" N:term ","
+    "recurrence" ":=" hrec:term : tactic => do
+  match ← scalarKindOfEvidence "recurrence" hrec with
+  | .scalar =>
+      evalTactic
+        (← `(tactic|
+          rr_product_scalar_sequence_auto using
+            base := $hbase,
+            cutoff := $N,
+            recurrence := $hrec))
+  | .scalarPow =>
+      evalTactic
+        (← `(tactic|
+          rr_product_C_pow_sequence_auto using
             base := $hbase,
             cutoff := $N,
             recurrence := $hrec))

@@ -936,6 +936,29 @@ example {P : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
     recurrence := hrec,
     certificate := auto
 
+/-- Product-factor auto router reaches positive scalar factors. -/
+example {P : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = C ((n : ℝ) + 1) * P n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_factor_sequence using
+    base := hbase,
+    recurrence := hrec,
+    certificate := auto
+
+/-- Product-factor cutoff auto reaches positive scalar-power factors. -/
+example {P : Nat → ℝ[X]} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hrec : ∀ n : Nat,
+      N ≤ n → P (n + 1) = P n * (C ((n : ℝ) + 1) : ℝ[X]) ^ (m n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_factor_sequence using
+    base := hbase,
+    cutoff := N,
+    recurrence := hrec,
+    certificate := auto
+
 /-- Product-factor recurrence router, automatic scalar certificate. -/
 example {P : Nat → ℝ[X]}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)

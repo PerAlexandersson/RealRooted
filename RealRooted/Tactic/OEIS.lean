@@ -1385,6 +1385,9 @@ macro_rules
         certificate := auto) =>
       `(tactic|
         first
+          | rr_product_checked_scalar_sequence_auto using
+              base := $hbase,
+              recurrence := $hrec
           | rr_product_checked_affine_sequence_auto using
               base := $hbase,
               recurrence := $hrec
@@ -1414,6 +1417,10 @@ macro_rules
         certificate := auto) =>
       `(tactic|
         first
+          | rr_product_checked_scalar_sequence_auto using
+              base := $hbase,
+              cutoff := $N,
+              recurrence := $hrec
           | rr_product_checked_affine_sequence_auto using
               base := $hbase,
               cutoff := $N,
