@@ -484,6 +484,37 @@ theorem right_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence
     ∀ n : Nat, B n = 0 ∨ (B n).Splits :=
   fun n => (hP n).2
 
+/-- Row-wise product transport for nonzero real-rooted pair-sequences. -/
+theorem isRealRooted_mul_sequence_of_isRealRooted_pair_sequence {A B : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    ∀ n : Nat, A n * B n ≠ 0 ∧ (A n * B n).Splits :=
+  fun n => isRealRooted_mul_of_isRealRooted (hP n).1 (hP n).2
+
+/-- Row-wise swapped product transport for nonzero real-rooted pair-sequences. -/
+theorem isRealRooted_swap_mul_sequence_of_isRealRooted_pair_sequence
+    {A B : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    ∀ n : Nat, B n * A n ≠ 0 ∧ (B n * A n).Splits :=
+  fun n => isRealRooted_mul_of_isRealRooted (hP n).2 (hP n).1
+
+/-- Row-wise product transport for zero-aware pair-sequences. -/
+theorem mul_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence
+    {A B : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (A n = 0 ∨ (A n).Splits) ∧
+      (B n = 0 ∨ (B n).Splits)) :
+    ∀ n : Nat, A n * B n = 0 ∨ (A n * B n).Splits :=
+  fun n => mul_eq_zero_or_splits (hP n).1 (hP n).2
+
+/-- Row-wise swapped product transport for zero-aware pair-sequences. -/
+theorem swap_mul_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence
+    {A B : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (A n = 0 ∨ (A n).Splits) ∧
+      (B n = 0 ∨ (B n).Splits)) :
+    ∀ n : Nat, B n * A n = 0 ∨ (B n * A n).Splits :=
+  fun n => mul_eq_zero_or_splits (hP n).2 (hP n).1
+
 namespace Tactic
 
 syntax (name := rr_lookup_term) "rr_lookup_term" : term
@@ -885,7 +916,11 @@ macro_rules
           RealRooted.left_eq_zero_or_splits_of_isRealRooted_pair_sequence $h,
           (RealRooted.left_eq_zero_or_splits_of_isRealRooted_pair_sequence $h _),
           RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair_sequence $h,
-          (RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair_sequence $h _))
+          (RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair_sequence $h _),
+          RealRooted.isRealRooted_mul_sequence_of_isRealRooted_pair_sequence $h,
+          (RealRooted.isRealRooted_mul_sequence_of_isRealRooted_pair_sequence $h _),
+          RealRooted.isRealRooted_swap_mul_sequence_of_isRealRooted_pair_sequence $h,
+          (RealRooted.isRealRooted_swap_mul_sequence_of_isRealRooted_pair_sequence $h _))
   | `(tactic| rr_first_exact $[$hs:term],*) =>
       `(tactic|
         first
@@ -1073,26 +1108,11 @@ macro_rules
           (RealRooted.left_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence $h _),
           RealRooted.right_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence $h,
           (RealRooted.right_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence $h _),
-          (fun n => RealRooted.mul_eq_zero_or_splits
-            (RealRooted.left_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence
-              $h n)
-            (RealRooted.right_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence
-              $h n)),
-          (fun n => RealRooted.mul_eq_zero_or_splits
-            (RealRooted.right_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence
-              $h n)
-            (RealRooted.left_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence
-              $h n)),
-          (RealRooted.mul_eq_zero_or_splits
-            (RealRooted.left_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence
-              $h _)
-            (RealRooted.right_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence
-              $h _)),
-          (RealRooted.mul_eq_zero_or_splits
-            (RealRooted.right_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence
-              $h _)
-            (RealRooted.left_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence
-              $h _)),
+          RealRooted.mul_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence $h,
+          (RealRooted.mul_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence $h _),
+          RealRooted.swap_mul_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence $h,
+          (RealRooted.swap_mul_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence
+            $h _),
           Or.inr $h,
           Or.inr (Polynomial.Splits.pow $h _),
           Or.inr (RealRooted.DegreeDropReversal.splits_reverse $h),
@@ -1168,6 +1188,11 @@ macro_rules
           (RealRooted.left_isRealRooted_of_isRealRooted_pair_sequence $h _),
           RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence $h,
           (RealRooted.right_isRealRooted_of_isRealRooted_pair_sequence $h _),
+          RealRooted.isRealRooted_mul_sequence_of_isRealRooted_pair_sequence $h,
+          (RealRooted.isRealRooted_mul_sequence_of_isRealRooted_pair_sequence $h _),
+          RealRooted.isRealRooted_swap_mul_sequence_of_isRealRooted_pair_sequence $h,
+          (RealRooted.isRealRooted_swap_mul_sequence_of_isRealRooted_pair_sequence
+            $h _),
           RealRooted.left_isRealRooted_of_prec $h,
           RealRooted.right_isRealRooted_of_prec $h,
           RealRooted.right_isRealRooted_of_interlaces $h,

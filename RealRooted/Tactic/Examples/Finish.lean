@@ -668,6 +668,18 @@ example {A B : Nat → ℝ[X]}
   rr_finish
 
 example {A B : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    ∀ n : Nat, A n * B n ≠ 0 ∧ (A n * B n).Splits := by
+  rr_realrooted using hP
+
+example {A B : Nat → ℝ[X]} {n : Nat}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    B n * A n ≠ 0 ∧ (B n * A n).Splits := by
+  rr_finish using hP
+
+example {A B : Nat → ℝ[X]}
     (hP : ∀ n : Nat, (A n = 0 ∨ (A n).Splits) ∧
       (B n = 0 ∨ (B n).Splits)) :
     ∀ n : Nat, A n = 0 ∨ (A n).Splits := by
