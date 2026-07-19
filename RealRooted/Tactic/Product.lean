@@ -3728,13 +3728,25 @@ macro_rules
           | rr_product_lift_X_sequence using
               quotient_realrooted := $hquot,
               factorization := $hrow
+          | rr_product_lift_C_sequence_auto using
+              quotient_realrooted := $hquot,
+              factorization := $hrow
           | rr_product_lift_X_add_C_sequence using
               quotient_realrooted := $hquot,
               factorization := $hrow
           | rr_product_lift_C_add_X_sequence using
               quotient_realrooted := $hquot,
               factorization := $hrow
+          | rr_product_lift_affine_sequence_auto using
+              quotient_realrooted := $hquot,
+              factorization := $hrow
+          | rr_product_lift_const_first_sequence_auto using
+              quotient_realrooted := $hquot,
+              factorization := $hrow
           | rr_product_lift_X_pow_sequence using
+              quotient_realrooted := $hquot,
+              factorization := $hrow
+          | rr_product_lift_C_pow_sequence_auto using
               quotient_realrooted := $hquot,
               factorization := $hrow
           | rr_product_lift_X_add_C_pow_sequence using
@@ -3744,24 +3756,6 @@ macro_rules
               quotient_realrooted := $hquot,
               factorization := $hrow
           | rr_product_lift_C_add_X_pow_sequence using
-              quotient_realrooted := $hquot,
-              factorization := $hrow
-          | rr_product_lift_C_sequence_auto using
-              quotient_realrooted := $hquot,
-              factorization := $hrow
-          | rr_product_lift_C_pow_sequence_auto using
-              quotient_realrooted := $hquot,
-              factorization := $hrow
-          | rr_product_lift_affine_sequence_auto using
-              quotient_realrooted := $hquot,
-              factorization := $hrow
-          | rr_product_lift_const_first_sequence_auto using
-              quotient_realrooted := $hquot,
-              factorization := $hrow
-          | rr_product_lift_affine_pow_sequence_auto using
-              quotient_realrooted := $hquot,
-              factorization := $hrow
-          | rr_product_lift_const_first_affine_pow_sequence_auto using
               quotient_realrooted := $hquot,
               factorization := $hrow)
   | `(tactic|
@@ -3777,6 +3771,11 @@ macro_rules
               quotient_realrooted := $hquot,
               cutoff := $N,
               factorization := $hrow
+          | rr_product_lift_C_sequence_auto using
+              base := $hbase,
+              quotient_realrooted := $hquot,
+              cutoff := $N,
+              factorization := $hrow
           | rr_product_lift_X_add_C_sequence using
               base := $hbase,
               quotient_realrooted := $hquot,
@@ -3787,7 +3786,22 @@ macro_rules
               quotient_realrooted := $hquot,
               cutoff := $N,
               factorization := $hrow
+          | rr_product_lift_affine_sequence_auto using
+              base := $hbase,
+              quotient_realrooted := $hquot,
+              cutoff := $N,
+              factorization := $hrow
+          | rr_product_lift_const_first_sequence_auto using
+              base := $hbase,
+              quotient_realrooted := $hquot,
+              cutoff := $N,
+              factorization := $hrow
           | rr_product_lift_X_pow_sequence using
+              base := $hbase,
+              quotient_realrooted := $hquot,
+              cutoff := $N,
+              factorization := $hrow
+          | rr_product_lift_C_pow_sequence_auto using
               base := $hbase,
               quotient_realrooted := $hquot,
               cutoff := $N,
@@ -3803,36 +3817,6 @@ macro_rules
               cutoff := $N,
               factorization := $hrow
           | rr_product_lift_C_add_X_pow_sequence using
-              base := $hbase,
-              quotient_realrooted := $hquot,
-              cutoff := $N,
-              factorization := $hrow
-          | rr_product_lift_C_sequence_auto using
-              base := $hbase,
-              quotient_realrooted := $hquot,
-              cutoff := $N,
-              factorization := $hrow
-          | rr_product_lift_C_pow_sequence_auto using
-              base := $hbase,
-              quotient_realrooted := $hquot,
-              cutoff := $N,
-              factorization := $hrow
-          | rr_product_lift_affine_sequence_auto using
-              base := $hbase,
-              quotient_realrooted := $hquot,
-              cutoff := $N,
-              factorization := $hrow
-          | rr_product_lift_const_first_sequence_auto using
-              base := $hbase,
-              quotient_realrooted := $hquot,
-              cutoff := $N,
-              factorization := $hrow
-          | rr_product_lift_affine_pow_sequence_auto using
-              base := $hbase,
-              quotient_realrooted := $hquot,
-              cutoff := $N,
-              factorization := $hrow
-          | rr_product_lift_const_first_affine_pow_sequence_auto using
               base := $hbase,
               quotient_realrooted := $hquot,
               cutoff := $N,
