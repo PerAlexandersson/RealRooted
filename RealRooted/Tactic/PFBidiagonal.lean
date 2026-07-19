@@ -1157,6 +1157,38 @@ theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidual
         (halpha n) (hbeta n) (hpencil n) (hA n) (hB n) (hS n))
     hrec
 
+/-- Tail-start version of
+`isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidual`. -/
+theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidual_from
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
+    {d m : Nat → ℕ} {A B : Nat → ℝ[X]} {S : Nat → ℝ → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
+    (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
+    (halpha : ∀ n : Nat, N ≤ n →
+      jensenPolynomial (d n) (alpha n) = ((X + 1 : ℝ[X]) ^ m n) * A n)
+    (hbeta : ∀ n : Nat, N ≤ n →
+      X * jensenPolynomial (d n) (beta n) =
+        ((X + 1 : ℝ[X]) ^ m n) * B n)
+    (hpencil : ∀ n : Nat, N ≤ n → ∀ lam : ℝ, 0 ≤ lam →
+      bidiagonalJensenPencil (alpha n) (beta n) (d n) lam =
+        ((X + 1 : ℝ[X]) ^ m n) * S n lam)
+    (hA : ∀ n : Nat, N ≤ n → CubicPFDiscriminantCertificate (A n))
+    (hB : ∀ n : Nat, N ≤ n → CubicPFDiscriminantCertificate (B n))
+    (hS : ∀ n : Nat, N ≤ n → ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate (S n lam))
+    (hrec : ∀ n : Nat, N ≤ n →
+      P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) :=
+  isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidualCertificate_from
+    hbackend N hbase hdeg
+    (fun n hn =>
+      bidiagonalCubicResidualCertificate_of_cubicResidual
+        (halpha n hn) (hbeta n hn) (hpencil n hn)
+        (hA n hn) (hB n hn) (hS n hn))
+    hrec
+
 /-- Sequence wrapper whose residual pencil is derived from the endpoint
 factorizations as `A n + C lam * B n`. -/
 theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_endpoint_cubicResidual
@@ -1182,6 +1214,34 @@ theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_endpoint_cubicResidual
     (fun n =>
       bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
         (halpha n) (hbeta n) (hA n) (hB n) (hS n))
+    hrec
+
+/-- Tail-start version of
+`isPFPolynomial_of_bidiagonalOperator_sequence_of_endpoint_cubicResidual`. -/
+theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_endpoint_cubicResidual_from
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
+    {d m : Nat → ℕ} {A B : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
+    (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
+    (halpha : ∀ n : Nat, N ≤ n →
+      jensenPolynomial (d n) (alpha n) = ((X + 1 : ℝ[X]) ^ m n) * A n)
+    (hbeta : ∀ n : Nat, N ≤ n →
+      X * jensenPolynomial (d n) (beta n) =
+        ((X + 1 : ℝ[X]) ^ m n) * B n)
+    (hA : ∀ n : Nat, N ≤ n → CubicPFDiscriminantCertificate (A n))
+    (hB : ∀ n : Nat, N ≤ n → CubicPFDiscriminantCertificate (B n))
+    (hS : ∀ n : Nat, N ≤ n → ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate (A n + C lam * B n))
+    (hrec : ∀ n : Nat, N ≤ n →
+      P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) :=
+  isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidualCertificate_from
+    hbackend N hbase hdeg
+    (fun n hn =>
+      bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
+        (halpha n hn) (hbeta n hn) (hA n hn) (hB n hn) (hS n hn))
     hrec
 
 /-- Sequence wrapper for Family H-style second-derivative recurrences.
@@ -1226,6 +1286,46 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidu
         (halpha n) (hbeta n) (hpencil n) (hA n) (hB n) (hS n))
     hrec
 
+/-- Tail-start version of
+`isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidual`. -/
+theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidual_from
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ}
+    {d m : Nat → ℕ} {A B : Nat → ℝ[X]} {S : Nat → ℝ → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
+    (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
+    (halpha : ∀ n : Nat, N ≤ n →
+      jensenPolynomial (d n)
+          (fun k => secondDerivativeQuadraticCoeff (a0 n) (b1 n) (c2 n) k) =
+        ((X + 1 : ℝ[X]) ^ m n) * A n)
+    (hbeta : ∀ n : Nat, N ≤ n →
+      X * jensenPolynomial (d n)
+          (fun k => secondDerivativeQuadraticCoeff (a1 n) (b2 n) (c3 n) k) =
+        ((X + 1 : ℝ[X]) ^ m n) * B n)
+    (hpencil : ∀ n : Nat, N ≤ n → ∀ lam : ℝ, 0 ≤ lam →
+      bidiagonalJensenPencil
+          (fun k => secondDerivativeQuadraticCoeff (a0 n) (b1 n) (c2 n) k)
+          (fun k => secondDerivativeQuadraticCoeff (a1 n) (b2 n) (c3 n) k)
+          (d n) lam =
+        ((X + 1 : ℝ[X]) ^ m n) * S n lam)
+    (hA : ∀ n : Nat, N ≤ n → CubicPFDiscriminantCertificate (A n))
+    (hB : ∀ n : Nat, N ≤ n → CubicPFDiscriminantCertificate (B n))
+    (hS : ∀ n : Nat, N ≤ n → ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate (S n lam))
+    (hrec : ∀ n : Nat, N ≤ n →
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) :=
+  isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_from
+    hbackend N hbase hdeg
+    (fun n hn =>
+      bidiagonalCubicResidualCertificate_of_cubicResidual
+        (halpha n hn) (hbeta n hn) (hpencil n hn)
+        (hA n hn) (hB n hn) (hS n hn))
+    hrec
+
 /-- Second-derivative sequence wrapper whose residual pencil is derived from
 the endpoint factorizations as `A n + C lam * B n`. -/
 theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_endpoint_cubicResidual
@@ -1256,6 +1356,40 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_endpoint_cu
     (fun n =>
       bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
         (halpha n) (hbeta n) (hA n) (hB n) (hS n))
+    hrec
+
+/-- Tail-start version of
+`isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_endpoint_cubicResidual`. -/
+theorem
+    isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_endpoint_cubicResidual_from
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ}
+    {d m : Nat → ℕ} {A B : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
+    (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
+    (halpha : ∀ n : Nat, N ≤ n →
+      jensenPolynomial (d n)
+          (fun k => secondDerivativeQuadraticCoeff (a0 n) (b1 n) (c2 n) k) =
+        ((X + 1 : ℝ[X]) ^ m n) * A n)
+    (hbeta : ∀ n : Nat, N ≤ n →
+      X * jensenPolynomial (d n)
+          (fun k => secondDerivativeQuadraticCoeff (a1 n) (b2 n) (c3 n) k) =
+        ((X + 1 : ℝ[X]) ^ m n) * B n)
+    (hA : ∀ n : Nat, N ≤ n → CubicPFDiscriminantCertificate (A n))
+    (hB : ∀ n : Nat, N ≤ n → CubicPFDiscriminantCertificate (B n))
+    (hS : ∀ n : Nat, N ≤ n → ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate (A n + C lam * B n))
+    (hrec : ∀ n : Nat, N ≤ n →
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) :=
+  isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_from
+    hbackend N hbase hdeg
+    (fun n hn =>
+      bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
+        (halpha n hn) (hbeta n hn) (hA n hn) (hB n hn) (hS n hn))
     hrec
 
 /-- Second-derivative sequence wrapper using the quadratic Jensen
@@ -1364,6 +1498,46 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidu
         (halpha n) (hbeta n) (hpencil n) (hA n) (hB n) (hS n))
     hnorm hrec
 
+/-- Tail-start version of
+`isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidual_norm`. -/
+theorem
+    isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidual_norm_from
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
+    {a0 a1 b1 b2 c2 c3 : Nat → ℝ}
+    {d m : Nat → ℕ} {A B : Nat → ℝ[X]} {S : Nat → ℝ → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
+    (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
+    (halpha : ∀ n : Nat, N ≤ n →
+      jensenPolynomial (d n) (alpha n) = ((X + 1 : ℝ[X]) ^ m n) * A n)
+    (hbeta : ∀ n : Nat, N ≤ n →
+      X * jensenPolynomial (d n) (beta n) =
+        ((X + 1 : ℝ[X]) ^ m n) * B n)
+    (hpencil : ∀ n : Nat, N ≤ n → ∀ lam : ℝ, 0 ≤ lam →
+      bidiagonalJensenPencil (alpha n) (beta n) (d n) lam =
+        ((X + 1 : ℝ[X]) ^ m n) * S n lam)
+    (hA : ∀ n : Nat, N ≤ n → CubicPFDiscriminantCertificate (A n))
+    (hB : ∀ n : Nat, N ≤ n → CubicPFDiscriminantCertificate (B n))
+    (hS : ∀ n : Nat, N ≤ n → ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate (S n lam))
+    (hnorm : ∀ n : Nat, N ≤ n →
+      secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n) =
+        bidiagonalOperator (alpha n) (beta n) (P n))
+    (hrec : ∀ n : Nat, N ≤ n →
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) :=
+  isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_norm_from
+    hbackend N hbase hdeg
+    (fun n hn =>
+      bidiagonalCubicResidualCertificate_of_cubicResidual
+        (halpha n hn) (hbeta n hn) (hpencil n hn)
+        (hA n hn) (hB n hn) (hS n hn))
+    hnorm hrec
+
 /-- Normalized second-derivative sequence wrapper whose residual pencil is
 derived from the endpoint factorizations as `A n + C lam * B n`. -/
 theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_endpoint_cubicResidual_norm
@@ -1396,6 +1570,42 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_endpoint_cu
     (fun n =>
       bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
         (halpha n) (hbeta n) (hA n) (hB n) (hS n))
+    hnorm hrec
+
+/-- Tail-start version of
+`isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_endpoint_cubicResidual_norm`. -/
+theorem
+    isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_endpoint_cubicResidual_norm_from
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    {P : Nat → ℝ[X]} {alpha beta : Nat → ℕ → ℝ}
+    {a0 a1 b1 b2 c2 c3 : Nat → ℝ}
+    {d m : Nat → ℕ} {A B : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → IsPFPolynomial (P n))
+    (hdeg : ∀ n : Nat, N ≤ n → (P n).natDegree ≤ d n)
+    (halpha : ∀ n : Nat, N ≤ n →
+      jensenPolynomial (d n) (alpha n) = ((X + 1 : ℝ[X]) ^ m n) * A n)
+    (hbeta : ∀ n : Nat, N ≤ n →
+      X * jensenPolynomial (d n) (beta n) =
+        ((X + 1 : ℝ[X]) ^ m n) * B n)
+    (hA : ∀ n : Nat, N ≤ n → CubicPFDiscriminantCertificate (A n))
+    (hB : ∀ n : Nat, N ≤ n → CubicPFDiscriminantCertificate (B n))
+    (hS : ∀ n : Nat, N ≤ n → ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate (A n + C lam * B n))
+    (hnorm : ∀ n : Nat, N ≤ n →
+      secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n) =
+        bidiagonalOperator (alpha n) (beta n) (P n))
+    (hrec : ∀ n : Nat, N ≤ n →
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) :=
+  isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_norm_from
+    hbackend N hbase hdeg
+    (fun n hn =>
+      bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
+        (halpha n hn) (hbeta n hn) (hA n hn) (hB n hn) (hS n hn))
     hnorm hrec
 
 namespace Tactic
@@ -1706,6 +1916,7 @@ syntax (name := rr_pf_bidiagonal_sequence_cubic_named)
     "jensen_backend" ":=" term ","
     "base" ":=" term ","
     "degree" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "alpha_factor" ":=" term ","
     "beta_factor" ":=" term ","
     ("pencil_factor" ":=" term ",")?
@@ -1735,6 +1946,26 @@ macro_rules
           (RealRooted.isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidual
             $hbackend $hbase $hdeg $halpha $hbeta $hpencil $hA $hB $hS $hrec)
           $[, nonzero := $hne]?)
+  | `(tactic|
+      rr_pf_bidiagonal_sequence_cubic using
+        jensen_backend := $hbackend:term,
+        base := $hbase:term,
+        degree := $hdeg:term,
+        cutoff := $N:term,
+        alpha_factor := $halpha:term,
+        beta_factor := $hbeta:term,
+        pencil_factor := $hpencil:term,
+        alpha_cubic := $hA:term,
+        beta_cubic := $hB:term,
+        pencil_cubic := $hS:term,
+        recurrence := $hrec:term
+        $[, nonzero := $hne:term]?) =>
+      `(tactic|
+        rr_exact_pf_sequence
+          (RealRooted.isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidual_from
+            $hbackend $N $hbase $hdeg $halpha $hbeta $hpencil $hA $hB $hS
+            $hrec)
+          $[, nonzero := $hne]?)
 
 macro_rules
   | `(tactic|
@@ -1754,12 +1985,31 @@ macro_rules
           (RealRooted.isPFPolynomial_of_bidiagonalOperator_sequence_of_endpoint_cubicResidual
             $hbackend $hbase $hdeg $halpha $hbeta $hA $hB $hS $hrec)
           $[, nonzero := $hne]?)
+  | `(tactic|
+      rr_pf_bidiagonal_sequence_cubic using
+        jensen_backend := $hbackend:term,
+        base := $hbase:term,
+        degree := $hdeg:term,
+        cutoff := $N:term,
+        alpha_factor := $halpha:term,
+        beta_factor := $hbeta:term,
+        alpha_cubic := $hA:term,
+        beta_cubic := $hB:term,
+        pencil_cubic := $hS:term,
+        recurrence := $hrec:term
+        $[, nonzero := $hne:term]?) =>
+      `(tactic|
+        rr_exact_pf_sequence
+          (RealRooted.isPFPolynomial_of_bidiagonalOperator_sequence_of_endpoint_cubicResidual_from
+            $hbackend $N $hbase $hdeg $halpha $hbeta $hA $hB $hS $hrec)
+          $[, nonzero := $hne]?)
 
 syntax (name := rr_pf_second_derivative_bidiagonal_sequence_cubic_named)
   "rr_pf_second_derivative_bidiagonal_sequence_cubic" " using "
     "jensen_backend" ":=" term ","
     "base" ":=" term ","
     "degree" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "alpha_factor" ":=" term ","
     "beta_factor" ":=" term ","
     ("pencil_factor" ":=" term ",")?
@@ -1789,6 +2039,26 @@ macro_rules
           (RealRooted.isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidual
             $hbackend $hbase $hdeg $halpha $hbeta $hpencil $hA $hB $hS $hrec)
           $[, nonzero := $hne]?)
+  | `(tactic|
+      rr_pf_second_derivative_bidiagonal_sequence_cubic using
+        jensen_backend := $hbackend:term,
+        base := $hbase:term,
+        degree := $hdeg:term,
+        cutoff := $N:term,
+        alpha_factor := $halpha:term,
+        beta_factor := $hbeta:term,
+        pencil_factor := $hpencil:term,
+        alpha_cubic := $hA:term,
+        beta_cubic := $hB:term,
+        pencil_cubic := $hS:term,
+        recurrence := $hrec:term
+        $[, nonzero := $hne:term]?) =>
+      `(tactic|
+        rr_exact_pf_sequence
+          (isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidual_from
+            $hbackend $N $hbase $hdeg $halpha $hbeta $hpencil $hA $hB $hS
+            $hrec)
+          $[, nonzero := $hne]?)
 
 macro_rules
   | `(tactic|
@@ -1808,12 +2078,31 @@ macro_rules
           (isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_endpoint_cubicResidual
             $hbackend $hbase $hdeg $halpha $hbeta $hA $hB $hS $hrec)
           $[, nonzero := $hne]?)
+  | `(tactic|
+      rr_pf_second_derivative_bidiagonal_sequence_cubic using
+        jensen_backend := $hbackend:term,
+        base := $hbase:term,
+        degree := $hdeg:term,
+        cutoff := $N:term,
+        alpha_factor := $halpha:term,
+        beta_factor := $hbeta:term,
+        alpha_cubic := $hA:term,
+        beta_cubic := $hB:term,
+        pencil_cubic := $hS:term,
+        recurrence := $hrec:term
+        $[, nonzero := $hne:term]?) =>
+      `(tactic|
+        rr_exact_pf_sequence
+          (isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_endpoint_cubicResidual_from
+            $hbackend $N $hbase $hdeg $halpha $hbeta $hA $hB $hS $hrec)
+          $[, nonzero := $hne]?)
 
 syntax (name := rr_pf_second_derivative_bidiagonal_sequence_cubic_normalized_named)
   "rr_pf_second_derivative_bidiagonal_sequence_cubic" " using "
     "jensen_backend" ":=" term ","
     "base" ":=" term ","
     "degree" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "alpha_factor" ":=" term ","
     "beta_factor" ":=" term ","
     ("pencil_factor" ":=" term ",")?
@@ -1846,6 +2135,27 @@ macro_rules
             $hbackend $hbase $hdeg $halpha $hbeta $hpencil $hA $hB $hS $hnorm
             $hrec)
           $[, nonzero := $hne]?)
+  | `(tactic|
+      rr_pf_second_derivative_bidiagonal_sequence_cubic using
+        jensen_backend := $hbackend:term,
+        base := $hbase:term,
+        degree := $hdeg:term,
+        cutoff := $N:term,
+        alpha_factor := $halpha:term,
+        beta_factor := $hbeta:term,
+        pencil_factor := $hpencil:term,
+        alpha_cubic := $hA:term,
+        beta_cubic := $hB:term,
+        pencil_cubic := $hS:term,
+        normalizer := $hnorm:term,
+        recurrence := $hrec:term
+        $[, nonzero := $hne:term]?) =>
+      `(tactic|
+        rr_exact_pf_sequence
+          (isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidual_norm_from
+            $hbackend $N $hbase $hdeg $halpha $hbeta $hpencil $hA $hB $hS
+            $hnorm $hrec)
+          $[, nonzero := $hne]?)
 
 macro_rules
   | `(tactic|
@@ -1865,6 +2175,29 @@ macro_rules
         rr_exact_pf_sequence
           (isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_endpoint_cubicResidual_norm
             $hbackend $hbase $hdeg $halpha $hbeta $hA $hB $hS $hnorm $hrec)
+          $[, nonzero := $hne]?)
+  | `(tactic|
+      rr_pf_second_derivative_bidiagonal_sequence_cubic using
+        jensen_backend := $hbackend:term,
+        base := $hbase:term,
+        degree := $hdeg:term,
+        cutoff := $N:term,
+        alpha_factor := $halpha:term,
+        beta_factor := $hbeta:term,
+        alpha_cubic := $hA:term,
+        beta_cubic := $hB:term,
+        pencil_cubic := $hS:term,
+        normalizer := $hnorm:term,
+        recurrence := $hrec:term
+        $[, nonzero := $hne:term]?) =>
+      `(tactic|
+        rr_exact_pf_sequence
+          (isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_norm_from
+            $hbackend $N $hbase $hdeg
+            (fun n hn =>
+              RealRooted.bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
+                ($halpha n hn) ($hbeta n hn) ($hA n hn) ($hB n hn) ($hS n hn))
+            $hnorm $hrec)
           $[, nonzero := $hne]?)
 
 syntax (name := rr_pf_bidiagonal_sequence_jensen_named)
