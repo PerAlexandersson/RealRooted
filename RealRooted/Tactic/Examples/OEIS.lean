@@ -1615,6 +1615,20 @@ example {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
     lower_source_bound := hle,
     upper_source_bound := hgt
 
+/-- Succ-degree endpoint root-count row-family exit exposed through the OEIS
+facade. -/
+example {F G : Nat → ℝ[X]}
+    (hF_pos : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hG_pos : ∀ n : Nat, HasPosLeadingCoeff (G n))
+    (hFG : ∀ n : Nat, PosComboRealRooted (F n) (G n))
+    (hsucc : ∀ n : Nat, (G n).natDegree = (F n).natDegree + 1) :
+    ∀ n : Nat, F n ≠ 0 ∧ (F n).roots.card = (F n).natDegree := by
+  rr_left_ne_zero_card_roots_succDegree_sequence using
+    left_pos_lc := hF_pos,
+    right_pos_lc := hG_pos,
+    pos_combo := hFG,
+    succ_degree := hsucc
+
 /-- Same-degree root-count row-family exit exposed through the OEIS facade. -/
 example {F G : Nat → ℝ[X]} {x : Nat → ℝ}
     (hF_pos : ∀ n : Nat, HasPosLeadingCoeff (F n))

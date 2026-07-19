@@ -126,6 +126,119 @@ example {f g : ℝ[X]} {x : ℝ}
     swapped_family_splits := hgf_split,
     swapped_family_not_root := hgf_no
 
+example {F G : Nat → ℝ[X]} {A : Nat → ℝ}
+    (hF_pos : ∀ i : Nat, 0 < (F i).leadingCoeff)
+    (hG_pos : ∀ i : Nat, 0 < (G i).leadingCoeff)
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree + 1) :
+    ∀ i : Nat, ∃ δ : ℝ, 0 < δ ∧ ∀ μ : ℝ, 0 < μ → μ < δ →
+      (F i + C μ * G i).Splits →
+        ∃ r : ℝ, r ∈ (F i + C μ * G i).roots ∧ r < A i := by
+  rr_exists_root_lt_succDegree_add_right_small_sequence using
+    left_pos_lc := hF_pos,
+    right_pos_lc := hG_pos,
+    succ_degree := hdeg,
+    bound := A
+
+example {F G : Nat → ℝ[X]} {ρ : Nat → ℝ}
+    (hF : ∀ i : Nat, (F i).Splits)
+    (hdeg : ∀ i : Nat, (F i).natDegree < (G i).natDegree)
+    (hρ : ∀ i : Nat, 0 < ρ i) :
+    ∀ i : Nat,
+      ∃ δ : ℝ, 0 < δ ∧ ∀ μ : ℝ, 0 < μ → μ < δ →
+        (F i + C μ * G i).Splits →
+          ∀ a ∈ (F i).roots.toFinset,
+            (F i).roots.count a ≤
+              ((F i + C μ * G i).roots.filter
+                (fun q => |q - a| < ρ i)).card := by
+  rr_degreeIncreasing_local_lower_count_sequence using
+    left_splits := hF,
+    degree_lt := hdeg,
+    radius := ρ,
+    radius_pos := hρ
+
+example {F G : Nat → ℝ[X]} {μ₀ μ₁ μ ρ : Nat → ℝ}
+    (hsplit : ∀ i : Nat, ∀ ν ∈ Set.Icc (μ₀ i) (μ₁ i),
+      (F i + C ν * G i).Splits)
+    (hdeg : ∀ i : Nat, ∀ ν ∈ Set.Icc (μ₀ i) (μ₁ i),
+      (F i + C ν * G i).natDegree =
+        (F i + C (μ₀ i) * G i).natDegree)
+    (hμ : ∀ i : Nat, μ i ∈ Set.Icc (μ₀ i) (μ₁ i))
+    (hρ : ∀ i : Nat, 0 < ρ i) :
+    ∀ i : Nat,
+      ∃ ε : ℝ, 0 < ε ∧
+        ∀ ν ∈ Set.Icc (μ₀ i) (μ₁ i), |ν - μ i| < ε →
+          ∀ a ∈ (F i + C (μ i) * G i).roots.toFinset,
+            (F i + C (μ i) * G i).roots.count a ≤
+              ((F i + C ν * G i).roots.filter
+                (fun q => |q - a| < ρ i)).card := by
+  rr_positiveParameter_local_lower_count_sequence using
+    splits_on_interval := hsplit,
+    degree_on_interval := hdeg,
+    parameter_mem := hμ,
+    radius_pos := hρ
+
+example {F G : Nat → ℝ[X]} {μ₀ μ₁ x : Nat → ℝ}
+    (hμ₁ : ∀ i : Nat, μ₀ i ≤ μ₁ i)
+    (hdeg : ∀ i : Nat, ∀ μ ∈ Set.Icc (μ₀ i) (μ₁ i),
+      (F i + C μ * G i).natDegree =
+        (F i + C (μ₀ i) * G i).natDegree)
+    (hrr : ∀ i : Nat, ∀ μ ∈ Set.Icc (μ₀ i) (μ₁ i),
+      (F i + C μ * G i).Splits)
+    (hne : ∀ i : Nat, ∀ μ ∈ Set.Icc (μ₀ i) (μ₁ i),
+      ¬ (F i + C μ * G i).IsRoot (x i))
+    (hlower : ∀ i : Nat, ∀ μ ∈ Set.Icc (μ₀ i) (μ₁ i),
+      ∀ ρ > 0, ∃ ε > 0,
+        ∀ ν ∈ Set.Icc (μ₀ i) (μ₁ i), |ν - μ| < ε →
+          ∀ a ∈ (F i + C μ * G i).roots.toFinset,
+            (F i + C μ * G i).roots.count a ≤
+              ((F i + C ν * G i).roots.filter
+                (fun r => |r - a| < ρ)).card) :
+    ∀ i : Nat,
+      ((F i + C (μ₀ i) * G i).roots.filter (x i < ·)).card =
+        ((F i + C (μ₁ i) * G i).roots.filter (x i < ·)).card := by
+  rr_rightFamily_card_roots_gt_eq_local_lower_sequence using
+    interval_order := hμ₁,
+    degree_on_interval := hdeg,
+    splits_on_interval := hrr,
+    threshold_not_root := hne,
+    local_lower := hlower
+
+example {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hF_pos : ∀ i : Nat, 0 < (F i).leadingCoeff)
+    (hG_pos : ∀ i : Nat, 0 < (G i).leadingCoeff)
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree + 1)
+    (hF_split : ∀ i : Nat, (F i).Splits)
+    (hx : ∀ i : Nat, x i ∉ (F i).roots)
+    (hlocal_lower : ∀ i : Nat, ∀ ρ : ℝ, 0 < ρ →
+      ∃ δ : ℝ, 0 < δ ∧ ∀ μ : ℝ, 0 < μ → μ < δ →
+        (F i + C μ * G i).Splits ∧
+          ∀ a ∈ (F i).roots.toFinset,
+            (F i).roots.count a ≤
+              ((F i + C μ * G i).roots.filter
+                (fun q => |q - a| < ρ)).card)
+    (hfg_split : ∀ i : Nat, ∀ μ : ℝ, 0 < μ → μ ≤ 1 →
+      (F i + C μ * G i).Splits)
+    (hfg_no : ∀ i : Nat, ∀ μ : ℝ, 0 < μ → μ ≤ 1 →
+      ¬ (F i + C μ * G i).IsRoot (x i))
+    (hgf_split : ∀ i : Nat, ∀ ν ∈ Set.Icc (0 : ℝ) 1,
+      (G i + C ν * F i).Splits)
+    (hgf_no : ∀ i : Nat, ∀ ν ∈ Set.Icc (0 : ℝ) 1,
+      ¬ (G i + C ν * F i).IsRoot (x i)) :
+    ∀ i : Nat,
+      ((F i).roots.filter (x i < ·)).card =
+        ((G i).roots.filter (x i < ·)).card := by
+  rr_card_filter_gt_endpoint_eq_local_lower_sequence using
+    left_pos_lc := hF_pos,
+    right_pos_lc := hG_pos,
+    succ_degree := hdeg,
+    left_splits := hF_split,
+    threshold_not_left_root := hx,
+    small_local_lower := hlocal_lower,
+    right_family_splits := hfg_split,
+    right_family_not_root := hfg_no,
+    swapped_family_splits := hgf_split,
+    swapped_family_not_root := hgf_no
+
 example {f g : ℝ[X]} {β x : ℝ}
     (hβ0 : 0 ≤ β)
     (hβ1 : β ≤ 1)
@@ -466,6 +579,54 @@ example {f g : ℝ[X]}
     left_pos_lc := hf_pos,
     right_pos_lc := hg_pos,
     pos_combo := hfg,
+    succ_degree := hsucc
+
+example {F G : Nat → ℝ[X]}
+    (hF_pos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG_pos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hsucc : ∀ i : Nat, (G i).natDegree = (F i).natDegree + 1) :
+    ∀ i : Nat, (F i).roots.card = (F i).natDegree := by
+  rr_left_card_roots_succDegree_sequence using
+    left_pos_lc := hF_pos,
+    right_pos_lc := hG_pos,
+    pos_combo := hFG,
+    succ_degree := hsucc
+
+example {F G : Nat → ℝ[X]}
+    (hF_pos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG_pos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hsucc : ∀ i : Nat, (F i).natDegree = (G i).natDegree + 1) :
+    ∀ i : Nat, (G i).roots.card = (G i).natDegree := by
+  rr_right_card_roots_succDegree_sequence using
+    left_pos_lc := hF_pos,
+    right_pos_lc := hG_pos,
+    pos_combo := hFG,
+    succ_degree := hsucc
+
+example {F G : Nat → ℝ[X]}
+    (hF_pos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG_pos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hsucc : ∀ i : Nat, (G i).natDegree = (F i).natDegree + 1) :
+    ∀ i : Nat, F i ≠ 0 ∧ (F i).roots.card = (F i).natDegree := by
+  rr_left_ne_zero_card_roots_succDegree_sequence using
+    left_pos_lc := hF_pos,
+    right_pos_lc := hG_pos,
+    pos_combo := hFG,
+    succ_degree := hsucc
+
+example {F G : Nat → ℝ[X]}
+    (hF_pos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG_pos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hsucc : ∀ i : Nat, (F i).natDegree = (G i).natDegree + 1) :
+    ∀ i : Nat, G i ≠ 0 ∧ (G i).roots.card = (G i).natDegree := by
+  rr_right_ne_zero_card_roots_succDegree_sequence using
+    left_pos_lc := hF_pos,
+    right_pos_lc := hG_pos,
+    pos_combo := hFG,
     succ_degree := hsucc
 
 example {p : ℝ[X]} {a b : ℝ}

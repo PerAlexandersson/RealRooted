@@ -33,6 +33,103 @@ theorem leadingCoeff_add_C_mul_lt_sequence
   fun i =>
     Polynomial.leadingCoeff_add_C_mul_of_natDegree_lt (hμ i) (hdeg i)
 
+theorem exists_root_lt_succDegree_add_right_small_sequence
+    {F G : Nat → ℝ[X]} (A : Nat → ℝ)
+    (hFpos : ∀ i : Nat, 0 < (F i).leadingCoeff)
+    (hGpos : ∀ i : Nat, 0 < (G i).leadingCoeff)
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree + 1) :
+    ∀ i : Nat, ∃ δ : ℝ, 0 < δ ∧ ∀ μ : ℝ, 0 < μ → μ < δ →
+      (F i + C μ * G i).Splits →
+        ∃ r : ℝ, r ∈ (F i + C μ * G i).roots ∧ r < A i := fun i =>
+  RealRooted.exists_root_lt_of_succDegree_add_right_small
+    (hFpos i) (hGpos i) (hdeg i) (A i)
+
+theorem degreeIncreasing_local_lower_count_sequence
+    {F G : Nat → ℝ[X]} (ρ : Nat → ℝ)
+    (hF : ∀ i : Nat, (F i).Splits)
+    (hdeg : ∀ i : Nat, (F i).natDegree < (G i).natDegree)
+    (hρ : ∀ i : Nat, 0 < ρ i) :
+    ∀ i : Nat,
+      ∃ δ : ℝ, 0 < δ ∧ ∀ μ : ℝ, 0 < μ → μ < δ →
+        (F i + C μ * G i).Splits →
+          ∀ a ∈ (F i).roots.toFinset,
+            (F i).roots.count a ≤
+              ((F i + C μ * G i).roots.filter
+                (fun q => |q - a| < ρ i)).card := fun i =>
+  RealRooted.degreeIncreasing_local_lower_count
+    (hF i) (hdeg i) (ρ i) (hρ i)
+
+theorem positiveParameter_local_lower_count_sequence
+    {F G : Nat → ℝ[X]} {μ₀ μ₁ μ ρ : Nat → ℝ}
+    (hsplit : ∀ i : Nat, ∀ ν ∈ Set.Icc (μ₀ i) (μ₁ i),
+      (F i + C ν * G i).Splits)
+    (hdeg : ∀ i : Nat, ∀ ν ∈ Set.Icc (μ₀ i) (μ₁ i),
+      (F i + C ν * G i).natDegree =
+        (F i + C (μ₀ i) * G i).natDegree)
+    (hμ : ∀ i : Nat, μ i ∈ Set.Icc (μ₀ i) (μ₁ i))
+    (hρ : ∀ i : Nat, 0 < ρ i) :
+    ∀ i : Nat,
+      ∃ ε : ℝ, 0 < ε ∧
+        ∀ ν ∈ Set.Icc (μ₀ i) (μ₁ i), |ν - μ i| < ε →
+          ∀ a ∈ (F i + C (μ i) * G i).roots.toFinset,
+            (F i + C (μ i) * G i).roots.count a ≤
+              ((F i + C ν * G i).roots.filter
+                (fun q => |q - a| < ρ i)).card := fun i =>
+  RealRooted.positiveParameter_local_lower_count
+    (hsplit i) (hdeg i) (hμ i) (hρ i)
+
+theorem rightFamily_card_roots_gt_eq_local_lower_sequence
+    {F G : Nat → ℝ[X]} {μ₀ μ₁ x : Nat → ℝ}
+    (hμ₁ : ∀ i : Nat, μ₀ i ≤ μ₁ i)
+    (hdeg : ∀ i : Nat, ∀ μ ∈ Set.Icc (μ₀ i) (μ₁ i),
+      (F i + C μ * G i).natDegree =
+        (F i + C (μ₀ i) * G i).natDegree)
+    (hrr : ∀ i : Nat, ∀ μ ∈ Set.Icc (μ₀ i) (μ₁ i),
+      (F i + C μ * G i).Splits)
+    (hne : ∀ i : Nat, ∀ μ ∈ Set.Icc (μ₀ i) (μ₁ i),
+      ¬ (F i + C μ * G i).IsRoot (x i))
+    (hlower : ∀ i : Nat, ∀ μ ∈ Set.Icc (μ₀ i) (μ₁ i),
+      ∀ ρ > 0, ∃ ε > 0,
+        ∀ ν ∈ Set.Icc (μ₀ i) (μ₁ i), |ν - μ| < ε →
+          ∀ a ∈ (F i + C μ * G i).roots.toFinset,
+            (F i + C μ * G i).roots.count a ≤
+              ((F i + C ν * G i).roots.filter
+                (fun r => |r - a| < ρ)).card) :
+    ∀ i : Nat,
+      ((F i + C (μ₀ i) * G i).roots.filter (x i < ·)).card =
+        ((F i + C (μ₁ i) * G i).roots.filter (x i < ·)).card := fun i =>
+  RealRooted.rightFamily_card_roots_gt_eq_of_local_lower_counts
+    (hμ₁ i) (hdeg i) (hrr i) (hne i) (hlower i)
+
+theorem card_filter_gt_endpoint_eq_local_lower_sequence
+    {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hFpos : ∀ i : Nat, 0 < (F i).leadingCoeff)
+    (hGpos : ∀ i : Nat, 0 < (G i).leadingCoeff)
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree + 1)
+    (hFsplit : ∀ i : Nat, (F i).Splits)
+    (hx : ∀ i : Nat, x i ∉ (F i).roots)
+    (hlocal_lower : ∀ i : Nat, ∀ ρ : ℝ, 0 < ρ →
+      ∃ δ : ℝ, 0 < δ ∧ ∀ μ : ℝ, 0 < μ → μ < δ →
+        (F i + C μ * G i).Splits ∧
+          ∀ a ∈ (F i).roots.toFinset,
+            (F i).roots.count a ≤
+              ((F i + C μ * G i).roots.filter
+                (fun q => |q - a| < ρ)).card)
+    (hfg_split : ∀ i : Nat, ∀ μ : ℝ, 0 < μ → μ ≤ 1 →
+      (F i + C μ * G i).Splits)
+    (hfg_no : ∀ i : Nat, ∀ μ : ℝ, 0 < μ → μ ≤ 1 →
+      ¬ (F i + C μ * G i).IsRoot (x i))
+    (hgf_split : ∀ i : Nat, ∀ ν ∈ Set.Icc (0 : ℝ) 1,
+      (G i + C ν * F i).Splits)
+    (hgf_no : ∀ i : Nat, ∀ ν ∈ Set.Icc (0 : ℝ) 1,
+      ¬ (G i + C ν * F i).IsRoot (x i)) :
+    ∀ i : Nat,
+      ((F i).roots.filter (x i < ·)).card =
+        ((G i).roots.filter (x i < ·)).card := fun i =>
+  RealRooted.card_filter_gt_endpoint_eq_of_local_lower_counts
+    (hFpos i) (hGpos i) (hdeg i) (hFsplit i) (hx i) (hlocal_lower i)
+    (hfg_split i) (hfg_no i) (hgf_split i) (hgf_no i)
+
 theorem closedSegment_eval_ne_zero_same_sign_sequence
     {F G : Nat → ℝ[X]} {β x : Nat → ℝ}
     (hβ0 : ∀ i : Nat, 0 ≤ β i)
@@ -184,6 +281,46 @@ theorem rootCount_max_abs_diff_le_one_sequence
         |(((F i).roots.filter (x < ·)).card : ℤ) -
           ((G i).roots.filter (x < ·)).card| ≤ (1 : ℤ) := fun i =>
   RealRooted.rootCount_max_abs_diff_le_one_of_bundled (h i)
+
+theorem left_card_roots_succDegree_sequence
+    {F G : Nat → ℝ[X]}
+    (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hsucc : ∀ i : Nat, (G i).natDegree = (F i).natDegree + 1) :
+    ∀ i : Nat, (F i).roots.card = (F i).natDegree := fun i =>
+  RealRooted.left_card_roots_of_succDegree
+    (hFpos i) (hGpos i) (hFG i) (hsucc i)
+
+theorem right_card_roots_succDegree_sequence
+    {F G : Nat → ℝ[X]}
+    (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hsucc : ∀ i : Nat, (F i).natDegree = (G i).natDegree + 1) :
+    ∀ i : Nat, (G i).roots.card = (G i).natDegree := fun i =>
+  RealRooted.right_card_roots_of_succDegree
+    (hFpos i) (hGpos i) (hFG i) (hsucc i)
+
+theorem left_ne_zero_card_roots_succDegree_sequence
+    {F G : Nat → ℝ[X]}
+    (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hsucc : ∀ i : Nat, (G i).natDegree = (F i).natDegree + 1) :
+    ∀ i : Nat, F i ≠ 0 ∧ (F i).roots.card = (F i).natDegree := fun i =>
+  RealRooted.left_ne_zero_and_card_roots_of_succDegree
+    (hFpos i) (hGpos i) (hFG i) (hsucc i)
+
+theorem right_ne_zero_card_roots_succDegree_sequence
+    {F G : Nat → ℝ[X]}
+    (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hsucc : ∀ i : Nat, (F i).natDegree = (G i).natDegree + 1) :
+    ∀ i : Nat, G i ≠ 0 ∧ (G i).roots.card = (G i).natDegree := fun i =>
+  RealRooted.right_ne_zero_and_card_roots_of_succDegree
+    (hFpos i) (hGpos i) (hFG i) (hsucc i)
 
 theorem card_roots_filter_le_eq_no_isRoot_Ioc_sequence
     {P : Nat → ℝ[X]} {a b : Nat → ℝ}
@@ -752,6 +889,14 @@ syntax (name := rr_exists_root_lt_succDegree_add_right_small_named)
     "bound" ":=" term :
   tactic
 
+syntax (name := rr_exists_root_lt_succDegree_add_right_small_sequence_named)
+  "rr_exists_root_lt_succDegree_add_right_small_sequence" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "succ_degree" ":=" term ","
+    "bound" ":=" term :
+  tactic
+
 syntax (name := rr_degreeIncreasing_local_lower_count_named)
   "rr_degreeIncreasing_local_lower_count" " using "
     "left_splits" ":=" term ","
@@ -760,8 +905,24 @@ syntax (name := rr_degreeIncreasing_local_lower_count_named)
     "radius_pos" ":=" term :
   tactic
 
+syntax (name := rr_degreeIncreasing_local_lower_count_sequence_named)
+  "rr_degreeIncreasing_local_lower_count_sequence" " using "
+    "left_splits" ":=" term ","
+    "degree_lt" ":=" term ","
+    "radius" ":=" term ","
+    "radius_pos" ":=" term :
+  tactic
+
 syntax (name := rr_positiveParameter_local_lower_count_named)
   "rr_positiveParameter_local_lower_count" " using "
+    "splits_on_interval" ":=" term ","
+    "degree_on_interval" ":=" term ","
+    "parameter_mem" ":=" term ","
+    "radius_pos" ":=" term :
+  tactic
+
+syntax (name := rr_positiveParameter_local_lower_count_sequence_named)
+  "rr_positiveParameter_local_lower_count_sequence" " using "
     "splits_on_interval" ":=" term ","
     "degree_on_interval" ":=" term ","
     "parameter_mem" ":=" term ","
@@ -777,8 +938,31 @@ syntax (name := rr_rightFamily_card_roots_gt_eq_local_lower_named)
     "local_lower" ":=" term :
   tactic
 
+syntax (name := rr_rightFamily_card_roots_gt_eq_local_lower_sequence_named)
+  "rr_rightFamily_card_roots_gt_eq_local_lower_sequence" " using "
+    "interval_order" ":=" term ","
+    "degree_on_interval" ":=" term ","
+    "splits_on_interval" ":=" term ","
+    "threshold_not_root" ":=" term ","
+    "local_lower" ":=" term :
+  tactic
+
 syntax (name := rr_card_filter_gt_endpoint_eq_local_lower_named)
   "rr_card_filter_gt_endpoint_eq_local_lower" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "succ_degree" ":=" term ","
+    "left_splits" ":=" term ","
+    "threshold_not_left_root" ":=" term ","
+    "small_local_lower" ":=" term ","
+    "right_family_splits" ":=" term ","
+    "right_family_not_root" ":=" term ","
+    "swapped_family_splits" ":=" term ","
+    "swapped_family_not_root" ":=" term :
+  tactic
+
+syntax (name := rr_card_filter_gt_endpoint_eq_local_lower_sequence_named)
+  "rr_card_filter_gt_endpoint_eq_local_lower_sequence" " using "
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
     "succ_degree" ":=" term ","
@@ -953,8 +1137,24 @@ syntax (name := rr_left_card_roots_succDegree_named)
     "succ_degree" ":=" term :
   tactic
 
+syntax (name := rr_left_card_roots_succDegree_sequence_named)
+  "rr_left_card_roots_succDegree_sequence" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "pos_combo" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
 syntax (name := rr_right_card_roots_succDegree_named)
   "rr_right_card_roots_succDegree" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "pos_combo" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
+syntax (name := rr_right_card_roots_succDegree_sequence_named)
+  "rr_right_card_roots_succDegree_sequence" " using "
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
     "pos_combo" ":=" term ","
@@ -969,8 +1169,24 @@ syntax (name := rr_left_ne_zero_card_roots_succDegree_named)
     "succ_degree" ":=" term :
   tactic
 
+syntax (name := rr_left_ne_zero_card_roots_succDegree_sequence_named)
+  "rr_left_ne_zero_card_roots_succDegree_sequence" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "pos_combo" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
 syntax (name := rr_right_ne_zero_card_roots_succDegree_named)
   "rr_right_ne_zero_card_roots_succDegree" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "pos_combo" ":=" term ","
+    "succ_degree" ":=" term :
+  tactic
+
+syntax (name := rr_right_ne_zero_card_roots_succDegree_sequence_named)
+  "rr_right_ne_zero_card_roots_succDegree_sequence" " using "
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
     "pos_combo" ":=" term ","
@@ -1607,6 +1823,16 @@ macro_rules
         exact RealRooted.exists_root_lt_of_succDegree_add_right_small
           $hfpos $hgpos $hdeg $A)
   | `(tactic|
+      rr_exists_root_lt_succDegree_add_right_small_sequence using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        succ_degree := $hdeg:term,
+        bound := $A:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.exists_root_lt_succDegree_add_right_small_sequence
+            $A $hfpos $hgpos $hdeg)
+  | `(tactic|
       rr_degreeIncreasing_local_lower_count using
         left_splits := $hf:term,
         degree_lt := $hdeg:term,
@@ -1616,6 +1842,15 @@ macro_rules
         exact RealRooted.degreeIncreasing_local_lower_count
           $hf $hdeg $ρ $hρ)
   | `(tactic|
+      rr_degreeIncreasing_local_lower_count_sequence using
+        left_splits := $hf:term,
+        degree_lt := $hdeg:term,
+        radius := $ρ:term,
+        radius_pos := $hρ:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.degreeIncreasing_local_lower_count_sequence
+          $ρ $hf $hdeg $hρ)
+  | `(tactic|
       rr_positiveParameter_local_lower_count using
         splits_on_interval := $hsplit:term,
         degree_on_interval := $hdeg:term,
@@ -1623,6 +1858,15 @@ macro_rules
         radius_pos := $hρ:term) =>
       `(tactic|
         exact RealRooted.positiveParameter_local_lower_count
+          $hsplit $hdeg $hμ $hρ)
+  | `(tactic|
+      rr_positiveParameter_local_lower_count_sequence using
+        splits_on_interval := $hsplit:term,
+        degree_on_interval := $hdeg:term,
+        parameter_mem := $hμ:term,
+        radius_pos := $hρ:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.positiveParameter_local_lower_count_sequence
           $hsplit $hdeg $hμ $hρ)
   | `(tactic|
       rr_rightFamily_card_roots_gt_eq_local_lower using
@@ -1634,6 +1878,17 @@ macro_rules
       `(tactic|
         exact RealRooted.rightFamily_card_roots_gt_eq_of_local_lower_counts
           $hμ₁ $hdeg $hrr $hne $hlower)
+  | `(tactic|
+      rr_rightFamily_card_roots_gt_eq_local_lower_sequence using
+        interval_order := $hμ₁:term,
+        degree_on_interval := $hdeg:term,
+        splits_on_interval := $hrr:term,
+        threshold_not_root := $hne:term,
+        local_lower := $hlower:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.rightFamily_card_roots_gt_eq_local_lower_sequence
+            $hμ₁ $hdeg $hrr $hne $hlower)
   | `(tactic|
       rr_card_filter_gt_endpoint_eq_local_lower using
         left_pos_lc := $hfpos:term,
@@ -1648,6 +1903,22 @@ macro_rules
         swapped_family_not_root := $hgfno:term) =>
       `(tactic|
         exact RealRooted.card_filter_gt_endpoint_eq_of_local_lower_counts
+          $hfpos $hgpos $hdeg $hfsplit $hx $hlocal $hfgsplit $hfgno
+          $hgfsplit $hgfno)
+  | `(tactic|
+      rr_card_filter_gt_endpoint_eq_local_lower_sequence using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        succ_degree := $hdeg:term,
+        left_splits := $hfsplit:term,
+        threshold_not_left_root := $hx:term,
+        small_local_lower := $hlocal:term,
+        right_family_splits := $hfgsplit:term,
+        right_family_not_root := $hfgno:term,
+        swapped_family_splits := $hgfsplit:term,
+        swapped_family_not_root := $hgfno:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.card_filter_gt_endpoint_eq_local_lower_sequence
           $hfpos $hgpos $hdeg $hfsplit $hx $hlocal $hfgsplit $hfgno
           $hgfsplit $hgfno)
   | `(tactic|
@@ -1819,6 +2090,15 @@ macro_rules
         exact RealRooted.left_card_roots_of_succDegree
           $hfpos $hgpos $hfg $hsucc)
   | `(tactic|
+      rr_left_card_roots_succDegree_sequence using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        pos_combo := $hfg:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.left_card_roots_succDegree_sequence
+          $hfpos $hgpos $hfg $hsucc)
+  | `(tactic|
       rr_right_card_roots_succDegree using
         left_pos_lc := $hfpos:term,
         right_pos_lc := $hgpos:term,
@@ -1826,6 +2106,15 @@ macro_rules
         succ_degree := $hsucc:term) =>
       `(tactic|
         exact RealRooted.right_card_roots_of_succDegree
+          $hfpos $hgpos $hfg $hsucc)
+  | `(tactic|
+      rr_right_card_roots_succDegree_sequence using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        pos_combo := $hfg:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.right_card_roots_succDegree_sequence
           $hfpos $hgpos $hfg $hsucc)
   | `(tactic|
       rr_left_ne_zero_card_roots_succDegree using
@@ -1837,6 +2126,15 @@ macro_rules
         exact RealRooted.left_ne_zero_and_card_roots_of_succDegree
           $hfpos $hgpos $hfg $hsucc)
   | `(tactic|
+      rr_left_ne_zero_card_roots_succDegree_sequence using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        pos_combo := $hfg:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.left_ne_zero_card_roots_succDegree_sequence
+          $hfpos $hgpos $hfg $hsucc)
+  | `(tactic|
       rr_right_ne_zero_card_roots_succDegree using
         left_pos_lc := $hfpos:term,
         right_pos_lc := $hgpos:term,
@@ -1844,6 +2142,15 @@ macro_rules
         succ_degree := $hsucc:term) =>
       `(tactic|
         exact RealRooted.right_ne_zero_and_card_roots_of_succDegree
+          $hfpos $hgpos $hfg $hsucc)
+  | `(tactic|
+      rr_right_ne_zero_card_roots_succDegree_sequence using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        pos_combo := $hfg:term,
+        succ_degree := $hsucc:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.right_ne_zero_card_roots_succDegree_sequence
           $hfpos $hgpos $hfg $hsucc)
   | `(tactic|
       rr_card_roots_filter_le_eq_no_isRoot_Ioc using
