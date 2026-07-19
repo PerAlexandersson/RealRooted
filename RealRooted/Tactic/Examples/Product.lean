@@ -1011,6 +1011,16 @@ example {P Q : Nat → ℝ[X]}
     quotient_realrooted := hquot,
     factorization := hrow
 
+/-- The product-lift auto router reaches positive affine-power factors. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat,
+      P n = Q n * (C ((n : ℝ) + 1) * X + C (t n)) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_sequence_auto using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
 /-- The product-lift auto router also supports cutoff lifts. -/
 example {P Q : Nat → ℝ[X]}
     (N : Nat)
@@ -1018,6 +1028,20 @@ example {P Q : Nat → ℝ[X]}
     (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
     (hrow : ∀ n : Nat, N ≤ n → P n = Q n * X) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_sequence_auto using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow
+
+/-- The cutoff auto router reaches constant-first positive affine powers. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat,
+      N ≤ n → P n = (C (t n) + C (2 : ℝ) * X) ^ (m n) * Q n) :
+    ∀ n : Nat, P n ≠ 0 := by
   rr_product_lift_sequence_auto using
     base := hbase,
     quotient_realrooted := hquot,

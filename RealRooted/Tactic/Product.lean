@@ -2517,6 +2517,10 @@ theorem isRealRooted_of_product_scalar_C_add_X_pow_scalar_right_factor_right_seq
 
 namespace Tactic
 
+open Lean
+open Lean.Elab.Tactic
+open Lean.Meta
+
 syntax (name := rr_product_C_named)
   "rr_product_C" " using "
     "scalar_ne" ":=" term :
@@ -3034,6 +3038,20 @@ syntax (name := rr_product_lift_const_first_affine_pow_sequence_auto_cutoff_name
     "factorization" ":=" term :
   tactic
 
+syntax (name := rr_product_lift_checked_affine_pow_sequence_auto_named)
+  "rr_product_lift_checked_affine_pow_sequence_auto" " using "
+    "quotient_realrooted" ":=" term ","
+    "factorization" ":=" term :
+  tactic
+
+syntax (name := rr_product_lift_checked_affine_pow_sequence_auto_cutoff_named)
+  "rr_product_lift_checked_affine_pow_sequence_auto" " using "
+    "base" ":=" term ","
+    "quotient_realrooted" ":=" term ","
+    "cutoff" ":=" term ","
+    "factorization" ":=" term :
+  tactic
+
 syntax (name := rr_endpoint_sum_then_X_pair_sequence_named)
   "rr_endpoint_sum_then_X_pair_sequence" " using "
     "base" ":=" term ","
@@ -3360,6 +3378,131 @@ syntax (name := rr_product_two_sequence_variants)
 syntax (name := rr_product_four_sequence_variants)
   "rr_product_four_sequence_variants" term ", " term ", " term ", " term :
   tactic
+
+private inductive AffinePowOrientation where
+  | mulXFirst
+  | constFirst
+
+private def appFnName? (e : Expr) : Option Name :=
+  e.consumeMData.getAppFn.constName?
+
+private partial def containsAppFn (needle : Name) (e : Expr) : Bool :=
+  let e := e.consumeMData
+  appFnName? e == some needle ||
+    e.getAppArgs.any (containsAppFn needle) ||
+    match e with
+    | .forallE _ domain body _ => containsAppFn needle domain || containsAppFn needle body
+    | .lam _ domain body _ => containsAppFn needle domain || containsAppFn needle body
+    | .letE _ type value body _ =>
+        containsAppFn needle type || containsAppFn needle value || containsAppFn needle body
+    | .proj _ _ body => containsAppFn needle body
+    | _ => false
+
+private def isPolynomialX (e : Expr) : Bool :=
+  appFnName? e == some ``Polynomial.X
+
+private def isPolynomialCMulX (e : Expr) : Bool :=
+  let e := e.consumeMData
+  appFnName? e == some ``HMul.hMul &&
+    let args := e.getAppArgs
+    args.size > 5 &&
+      containsAppFn ``Polynomial.C args[4]! &&
+      isPolynomialX args[5]!
+
+private def affinePowOrientationOfBase? (e : Expr) : Option AffinePowOrientation :=
+  let e := e.consumeMData
+  if appFnName? e == some ``HAdd.hAdd then
+    let args := e.getAppArgs
+    if args.size > 5 then
+      if isPolynomialCMulX args[4]! then
+        some .mulXFirst
+      else if isPolynomialCMulX args[5]! then
+        some .constFirst
+      else
+        none
+    else
+      none
+  else
+    none
+
+private partial def findAffinePowOrientation? (e : Expr) :
+    Option AffinePowOrientation := Id.run do
+  let e := e.consumeMData
+  if appFnName? e == some ``HPow.hPow then
+    let args := e.getAppArgs
+    if args.size > 5 then
+      if let some orientation := affinePowOrientationOfBase? args[4]! then
+        return some orientation
+  for arg in e.getAppArgs do
+    if let some orientation := findAffinePowOrientation? arg then
+      return some orientation
+  match e with
+  | .forallE _ domain body _ =>
+      if let some orientation := findAffinePowOrientation? domain then
+        return some orientation
+      findAffinePowOrientation? body
+  | .lam _ domain body _ =>
+      if let some orientation := findAffinePowOrientation? domain then
+        return some orientation
+      findAffinePowOrientation? body
+  | .letE _ type value body _ =>
+      if let some orientation := findAffinePowOrientation? type then
+        return some orientation
+      if let some orientation := findAffinePowOrientation? value then
+        return some orientation
+      findAffinePowOrientation? body
+  | .proj _ _ body => findAffinePowOrientation? body
+  | _ => none
+
+private def affinePowOrientationOfFactorization (hrow : Syntax) :
+    TacticM AffinePowOrientation := withMainContext do
+  let hrowExpr ← Lean.Elab.Tactic.elabTerm hrow none
+  let hrowType ← instantiateMVars (← inferType hrowExpr)
+  match findAffinePowOrientation? hrowType with
+  | some orientation => pure orientation
+  | none =>
+      throwError
+        "rr_product_lift_checked_affine_pow_sequence_auto: no affine-power factor found"
+
+elab "rr_product_lift_checked_affine_pow_sequence_auto" " using "
+    "quotient_realrooted" ":=" hquot:term ","
+    "factorization" ":=" hrow:term : tactic => do
+  match ← affinePowOrientationOfFactorization hrow with
+  | .mulXFirst =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_affine_pow_sequence_auto using
+            quotient_realrooted := $hquot,
+            factorization := $hrow))
+  | .constFirst =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_const_first_affine_pow_sequence_auto using
+            quotient_realrooted := $hquot,
+            factorization := $hrow))
+
+elab "rr_product_lift_checked_affine_pow_sequence_auto" " using "
+    "base" ":=" hbase:term ","
+    "quotient_realrooted" ":=" hquot:term ","
+    "cutoff" ":=" N:term ","
+    "factorization" ":=" hrow:term : tactic => do
+  match ← affinePowOrientationOfFactorization hrow with
+  | .mulXFirst =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_affine_pow_sequence_auto using
+            base := $hbase,
+            quotient_realrooted := $hquot,
+            cutoff := $N,
+            factorization := $hrow))
+  | .constFirst =>
+      evalTactic
+        (← `(tactic|
+          rr_product_lift_const_first_affine_pow_sequence_auto using
+            base := $hbase,
+            quotient_realrooted := $hquot,
+            cutoff := $N,
+            factorization := $hrow))
 
 macro_rules
   | `(tactic| rr_product_nonzero) =>
@@ -3691,6 +3834,9 @@ macro_rules
           | rr_product_lift_C_add_X_sequence using
               quotient_realrooted := $hquot,
               factorization := $hrow
+          | rr_product_lift_checked_affine_pow_sequence_auto using
+              quotient_realrooted := $hquot,
+              factorization := $hrow
           | rr_product_lift_affine_sequence_auto using
               quotient_realrooted := $hquot,
               factorization := $hrow
@@ -3736,6 +3882,11 @@ macro_rules
               cutoff := $N,
               factorization := $hrow
           | rr_product_lift_C_add_X_sequence using
+              base := $hbase,
+              quotient_realrooted := $hquot,
+              cutoff := $N,
+              factorization := $hrow
+          | rr_product_lift_checked_affine_pow_sequence_auto using
               base := $hbase,
               quotient_realrooted := $hquot,
               cutoff := $N,
