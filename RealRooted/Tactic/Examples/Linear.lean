@@ -84,6 +84,45 @@ example {f g : ℝ[X]} {n : Nat} (hfg : Prec f g) :
   rr_prec_C_mul_both using
     prec := hfg
 
+example {F G : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hFG : ∀ n : Nat, Prec (F n) (G n))
+    (ha : ∀ n : Nat, a n ≠ 0) :
+    ∀ n : Nat, Prec (C (a n) * F n) (G n) := by
+  rr_prec_C_mul_left_sequence using
+    prec := hFG,
+    scalar_ne := ha
+
+example {F G : Nat → ℝ[X]} :
+    (∀ n : Nat, Prec (F n) (G n)) →
+      ∀ n : Nat, Prec (C ((n : ℝ) + 1) * F n) (G n) := by
+  intro hFG
+  rr_prec_C_mul_left_sequence using
+    prec := hFG
+
+example {F G : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hFG : ∀ n : Nat, Prec (F n) (G n))
+    (ha : ∀ n : Nat, a n ≠ 0) :
+    ∀ n : Nat, Prec (F n) (C (a n) * G n) := by
+  rr_prec_C_mul_right_sequence using
+    prec := hFG,
+    scalar_ne := ha
+
+example {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hFG : ∀ n : Nat, Prec (F n) (G n))
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hb : ∀ n : Nat, b n ≠ 0) :
+    ∀ n : Nat, Prec (C (a n) * F n) (C (b n) * G n) := by
+  rr_prec_C_mul_both_sequence using
+    prec := hFG,
+    left_ne := ha,
+    right_ne := hb
+
+example {F G : Nat → ℝ[X]}
+    (hFG : ∀ n : Nat, Prec (F n) (G n)) :
+    ∀ n : Nat, Prec (C ((n : ℝ) + 1) * F n) (C ((n : ℝ) + 2) * G n) := by
+  rr_prec_C_mul_both_sequence using
+    prec := hFG
+
 example {f g : ℝ[X]} {a b : ℝ} (hfg : Prec f g) (ha : a ≠ 0) (hb : b ≠ 0)
     (hdeg : (C a * f).natDegree + 1 = (C b * g).natDegree) :
     Interlaces (C a * f) (C b * g) := by
@@ -117,6 +156,41 @@ example {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
     X * p ≠ 0 := by
   rr_X_mul_realrooted using
     realrooted := hp
+
+example {P : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0) :
+    ∀ n : Nat, C (a n) * P n ≠ 0 ∧ (C (a n) * P n).Splits := by
+  rr_C_mul_realrooted_sequence using
+    realrooted := hP,
+    scalar_ne := ha
+
+example {P : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
+    ∀ n : Nat, C ((n : ℝ) + 1) * P n ≠ 0 ∧
+      (C ((n : ℝ) + 1) * P n).Splits := by
+  rr_C_mul_realrooted_sequence using
+    realrooted := hP
+
+example {P : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0) :
+    ∀ n : Nat, (C (a n) * P n).Splits := by
+  rr_C_mul_realrooted_sequence using
+    realrooted := hP,
+    scalar_ne := ha
+
+example {P : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
+    ∀ n : Nat, X * P n ≠ 0 ∧ (X * P n).Splits := by
+  rr_X_mul_realrooted_sequence using
+    realrooted := hP
+
+example {P : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
+    ∀ n : Nat, X * P n ≠ 0 := by
+  rr_X_mul_realrooted_sequence using
+    realrooted := hP
 
 end Tactic
 end RealRooted

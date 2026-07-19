@@ -63,6 +63,29 @@ example {P : Nat → ℝ[X]} {c : Nat → ℝ}
     nonneg := hnn,
     scalar_gt_degree := hc
 
+/-- Scalar-left `Prec` row-family exit exposed through the OEIS facade. -/
+example {F G : Nat → ℝ[X]} {a : Nat → ℝ}
+    (hFG : ∀ n : Nat, Prec (F n) (G n))
+    (ha : ∀ n : Nat, a n ≠ 0) :
+    ∀ n : Nat, Prec (C (a n) * F n) (G n) := by
+  rr_prec_C_mul_left_sequence using
+    prec := hFG,
+    scalar_ne := ha
+
+/-- Scalar-both `Prec` row-family exit exposed through the OEIS facade. -/
+example {F G : Nat → ℝ[X]}
+    (hFG : ∀ n : Nat, Prec (F n) (G n)) :
+    ∀ n : Nat, Prec (C ((n : ℝ) + 1) * F n) (C ((n : ℝ) + 2) * G n) := by
+  rr_prec_C_mul_both_sequence using
+    prec := hFG
+
+/-- Multiplication by `X` row-family real-rootedness exposed through the OEIS facade. -/
+example {P : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
+    ∀ n : Nat, X * P n ≠ 0 ∧ (X * P n).Splits := by
+  rr_X_mul_realrooted_sequence using
+    realrooted := hP
+
 /-- Direct Family I2 half-line branch, adjacent-`Prec` endpoint. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
