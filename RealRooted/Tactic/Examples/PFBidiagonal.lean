@@ -3226,6 +3226,22 @@ example
     recurrence := hrec,
     nonzero := hne
 
+/-- Cubic certificate normalizer with three definition arguments. -/
+example {d : Nat} :
+    CubicPFDiscriminantCertificate (quadraticJensenResidual 1 2 1 d) := by
+  rr_pf_cubic_certificate_via using
+    certificate := a036969ResidualAlpha_cubicPFDiscriminantCertificate d,
+    defs := quadraticJensenResidual, a036969ResidualAlpha,
+      quadraticBidiagonalPencilResidual
+
+/-- Cubic certificate normalizer with four definition arguments. -/
+example {d : Nat} :
+    CubicPFDiscriminantCertificate (quadraticJensenResidual 1 2 1 d) := by
+  rr_pf_cubic_certificate_via using
+    certificate := a036969ResidualAlpha_cubicPFDiscriminantCertificate d,
+    defs := quadraticJensenResidual, a036969ResidualAlpha,
+      quadraticBidiagonalPencilResidual, a036969ResidualBeta
+
 /-- A036969-shaped recurrence shell.
 
 This example has the actual differential recurrence and actual residual

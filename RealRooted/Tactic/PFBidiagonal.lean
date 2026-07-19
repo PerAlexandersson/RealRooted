@@ -1644,6 +1644,39 @@ syntax (name := rr_pf_cubic_certificate_via_two)
      Lean.Parser.Tactic.simpLemma) :
   tactic
 
+syntax (name := rr_pf_cubic_certificate_via_three)
+  "rr_pf_cubic_certificate_via" " using "
+    "certificate" ":=" term ","
+    "defs" ":="
+    (Lean.Parser.Tactic.simpStar <|>
+     Lean.Parser.Tactic.simpErase <|>
+     Lean.Parser.Tactic.simpLemma) ", "
+    (Lean.Parser.Tactic.simpStar <|>
+     Lean.Parser.Tactic.simpErase <|>
+     Lean.Parser.Tactic.simpLemma) ", "
+    (Lean.Parser.Tactic.simpStar <|>
+     Lean.Parser.Tactic.simpErase <|>
+     Lean.Parser.Tactic.simpLemma) :
+  tactic
+
+syntax (name := rr_pf_cubic_certificate_via_four)
+  "rr_pf_cubic_certificate_via" " using "
+    "certificate" ":=" term ","
+    "defs" ":="
+    (Lean.Parser.Tactic.simpStar <|>
+     Lean.Parser.Tactic.simpErase <|>
+     Lean.Parser.Tactic.simpLemma) ", "
+    (Lean.Parser.Tactic.simpStar <|>
+     Lean.Parser.Tactic.simpErase <|>
+     Lean.Parser.Tactic.simpLemma) ", "
+    (Lean.Parser.Tactic.simpStar <|>
+     Lean.Parser.Tactic.simpErase <|>
+     Lean.Parser.Tactic.simpLemma) ", "
+    (Lean.Parser.Tactic.simpStar <|>
+     Lean.Parser.Tactic.simpErase <|>
+     Lean.Parser.Tactic.simpLemma) :
+  tactic
+
 syntax (name := rr_pf_cubic_certificate_via_five)
   "rr_pf_cubic_certificate_via" " using "
     "certificate" ":=" term ","
@@ -1729,6 +1762,22 @@ macro_rules
       `(tactic|
         convert ($hcert) using 1 <;>
         simp [$d1, $d2] <;>
+        rr_pf_cubic_certificate_finish)
+  | `(tactic|
+      rr_pf_cubic_certificate_via using
+        certificate := $hcert:term,
+        defs := $d1, $d2, $d3) =>
+      `(tactic|
+        convert ($hcert) using 1 <;>
+        simp [$d1, $d2, $d3] <;>
+        rr_pf_cubic_certificate_finish)
+  | `(tactic|
+      rr_pf_cubic_certificate_via using
+        certificate := $hcert:term,
+        defs := $d1, $d2, $d3, $d4) =>
+      `(tactic|
+        convert ($hcert) using 1 <;>
+        simp [$d1, $d2, $d3, $d4] <;>
         rr_pf_cubic_certificate_finish)
   | `(tactic|
       rr_pf_cubic_certificate_via using
