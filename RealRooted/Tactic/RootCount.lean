@@ -185,6 +185,110 @@ theorem rootCount_max_abs_diff_le_one_sequence
           ((G i).roots.filter (x < ·)).card| ≤ (1 : ℤ) := fun i =>
   RealRooted.rootCount_max_abs_diff_le_one_of_bundled (h i)
 
+theorem card_roots_filter_le_eq_no_isRoot_Ioc_sequence
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hab : ∀ i : Nat, a i ≤ b i)
+    (hno : ∀ i : Nat, ∀ x : ℝ, a i < x → x ≤ b i → ¬ (P i).IsRoot x) :
+    ∀ i : Nat,
+      ((P i).roots.filter (· ≤ a i)).card =
+        ((P i).roots.filter (· ≤ b i)).card := fun i =>
+  RealRooted.card_roots_filter_le_eq_of_no_isRoot_Ioc (hab i) (hno i)
+
+theorem card_roots_filter_gt_eq_no_isRoot_Ioc_sequence
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hab : ∀ i : Nat, a i ≤ b i)
+    (hno : ∀ i : Nat, ∀ x : ℝ, a i < x → x ≤ b i → ¬ (P i).IsRoot x) :
+    ∀ i : Nat,
+      ((P i).roots.filter (a i < ·)).card =
+        ((P i).roots.filter (b i < ·)).card := fun i =>
+  RealRooted.card_roots_filter_gt_eq_of_no_isRoot_Ioc (hab i) (hno i)
+
+theorem card_roots_filter_Ioc_zero_no_isRoot_Ioc_sequence
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hab : ∀ i : Nat, a i ≤ b i)
+    (hno : ∀ i : Nat, ∀ x : ℝ, a i < x → x ≤ b i → ¬ (P i).IsRoot x) :
+    ∀ i : Nat,
+      ((P i).roots.filter (fun x => a i < x ∧ x ≤ b i)).card = 0 := fun i =>
+  RealRooted.card_roots_filter_Ioc_eq_zero_of_no_isRoot_Ioc (hab i) (hno i)
+
+theorem card_roots_filter_all_eq_no_isRoot_Ioc_sequence
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hab : ∀ i : Nat, a i ≤ b i)
+    (hno : ∀ i : Nat, ∀ x : ℝ, a i < x → x ≤ b i → ¬ (P i).IsRoot x) :
+    ∀ i : Nat,
+      ((P i).roots.filter (· ≤ a i)).card =
+          ((P i).roots.filter (· ≤ b i)).card ∧
+        ((P i).roots.filter (a i < ·)).card =
+          ((P i).roots.filter (b i < ·)).card ∧
+          ((P i).roots.filter (fun x => a i < x ∧ x ≤ b i)).card = 0 :=
+  fun i =>
+    RealRooted.card_roots_filter_all_eq_of_no_isRoot_Ioc (hab i) (hno i)
+
+theorem card_roots_filter_le_mono_sequence
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hab : ∀ i : Nat, a i ≤ b i) :
+    ∀ i : Nat,
+      ((P i).roots.filter (· ≤ a i)).card ≤
+        ((P i).roots.filter (· ≤ b i)).card := fun i =>
+  RealRooted.card_roots_filter_le_mono_of_le (hab i)
+
+theorem card_roots_filter_gt_antitone_sequence
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hab : ∀ i : Nat, a i ≤ b i) :
+    ∀ i : Nat,
+      ((P i).roots.filter (b i < ·)).card ≤
+        ((P i).roots.filter (a i < ·)).card := fun i =>
+  RealRooted.card_roots_filter_gt_antitone_of_le (hab i)
+
+theorem card_roots_filter_le_and_gt_mono_sequence
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hab : ∀ i : Nat, a i ≤ b i) :
+    ∀ i : Nat,
+      ((P i).roots.filter (· ≤ a i)).card ≤
+          ((P i).roots.filter (· ≤ b i)).card ∧
+        ((P i).roots.filter (b i < ·)).card ≤
+          ((P i).roots.filter (a i < ·)).card := fun i =>
+  RealRooted.card_roots_filter_le_and_gt_mono_of_le (hab i)
+
+theorem card_roots_filter_le_eq_no_isRoot_Icc_sequence
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hab : ∀ i : Nat, a i ≤ b i)
+    (hno : ∀ i : Nat, ∀ x : ℝ, a i ≤ x → x ≤ b i → ¬ (P i).IsRoot x) :
+    ∀ i : Nat,
+      ((P i).roots.filter (· ≤ a i)).card =
+        ((P i).roots.filter (· ≤ b i)).card := fun i =>
+  RealRooted.card_roots_filter_le_eq_of_no_isRoot_Icc (hab i) (hno i)
+
+theorem card_roots_filter_gt_eq_no_isRoot_Icc_sequence
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hab : ∀ i : Nat, a i ≤ b i)
+    (hno : ∀ i : Nat, ∀ x : ℝ, a i ≤ x → x ≤ b i → ¬ (P i).IsRoot x) :
+    ∀ i : Nat,
+      ((P i).roots.filter (a i < ·)).card =
+        ((P i).roots.filter (b i < ·)).card := fun i =>
+  RealRooted.card_roots_filter_gt_eq_of_no_isRoot_Icc (hab i) (hno i)
+
+theorem card_roots_filter_Ioc_zero_no_isRoot_Icc_sequence
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hab : ∀ i : Nat, a i ≤ b i)
+    (hno : ∀ i : Nat, ∀ x : ℝ, a i ≤ x → x ≤ b i → ¬ (P i).IsRoot x) :
+    ∀ i : Nat,
+      ((P i).roots.filter (fun x => a i < x ∧ x ≤ b i)).card = 0 := fun i =>
+  RealRooted.card_roots_filter_Ioc_eq_zero_of_no_isRoot_Icc (hab i) (hno i)
+
+theorem card_roots_filter_all_eq_no_isRoot_Icc_sequence
+    {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hab : ∀ i : Nat, a i ≤ b i)
+    (hno : ∀ i : Nat, ∀ x : ℝ, a i ≤ x → x ≤ b i → ¬ (P i).IsRoot x) :
+    ∀ i : Nat,
+      ((P i).roots.filter (· ≤ a i)).card =
+          ((P i).roots.filter (· ≤ b i)).card ∧
+        ((P i).roots.filter (a i < ·)).card =
+          ((P i).roots.filter (b i < ·)).card ∧
+          ((P i).roots.filter (fun x => a i < x ∧ x ≤ b i)).card = 0 :=
+  fun i =>
+    RealRooted.card_roots_filter_all_eq_of_no_isRoot_Icc (hab i) (hno i)
+
 syntax (name := rr_natDegree_add_C_mul_lt_named)
   "rr_natDegree_add_C_mul_lt" " using "
     "parameter_ne_zero" ":=" term ","
@@ -448,8 +552,20 @@ syntax (name := rr_card_roots_filter_le_eq_no_isRoot_Ioc_named)
     "no_roots" ":=" term :
   tactic
 
+syntax (name := rr_card_roots_filter_le_eq_no_isRoot_Ioc_sequence_named)
+  "rr_card_roots_filter_le_eq_no_isRoot_Ioc_sequence" " using "
+    "interval_order" ":=" term ","
+    "no_roots" ":=" term :
+  tactic
+
 syntax (name := rr_card_roots_filter_gt_eq_no_isRoot_Ioc_named)
   "rr_card_roots_filter_gt_eq_no_isRoot_Ioc" " using "
+    "interval_order" ":=" term ","
+    "no_roots" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_gt_eq_no_isRoot_Ioc_sequence_named)
+  "rr_card_roots_filter_gt_eq_no_isRoot_Ioc_sequence" " using "
     "interval_order" ":=" term ","
     "no_roots" ":=" term :
   tactic
@@ -460,8 +576,20 @@ syntax (name := rr_card_roots_filter_Ioc_zero_no_isRoot_Ioc_named)
     "no_roots" ":=" term :
   tactic
 
+syntax (name := rr_card_roots_filter_Ioc_zero_no_isRoot_Ioc_sequence_named)
+  "rr_card_roots_filter_Ioc_zero_no_isRoot_Ioc_sequence" " using "
+    "interval_order" ":=" term ","
+    "no_roots" ":=" term :
+  tactic
+
 syntax (name := rr_card_roots_filter_all_eq_no_isRoot_Ioc_named)
   "rr_card_roots_filter_all_eq_no_isRoot_Ioc" " using "
+    "interval_order" ":=" term ","
+    "no_roots" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_all_eq_no_isRoot_Ioc_sequence_named)
+  "rr_card_roots_filter_all_eq_no_isRoot_Ioc_sequence" " using "
     "interval_order" ":=" term ","
     "no_roots" ":=" term :
   tactic
@@ -471,8 +599,18 @@ syntax (name := rr_card_roots_filter_le_mono_named)
     "interval_order" ":=" term :
   tactic
 
+syntax (name := rr_card_roots_filter_le_mono_sequence_named)
+  "rr_card_roots_filter_le_mono_sequence" " using "
+    "interval_order" ":=" term :
+  tactic
+
 syntax (name := rr_card_roots_filter_gt_antitone_named)
   "rr_card_roots_filter_gt_antitone" " using "
+    "interval_order" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_gt_antitone_sequence_named)
+  "rr_card_roots_filter_gt_antitone_sequence" " using "
     "interval_order" ":=" term :
   tactic
 
@@ -481,8 +619,19 @@ syntax (name := rr_card_roots_filter_le_and_gt_mono_named)
     "interval_order" ":=" term :
   tactic
 
+syntax (name := rr_card_roots_filter_le_and_gt_mono_sequence_named)
+  "rr_card_roots_filter_le_and_gt_mono_sequence" " using "
+    "interval_order" ":=" term :
+  tactic
+
 syntax (name := rr_card_roots_filter_le_eq_no_isRoot_Icc_named)
   "rr_card_roots_filter_le_eq_no_isRoot_Icc" " using "
+    "interval_order" ":=" term ","
+    "no_roots" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_le_eq_no_isRoot_Icc_sequence_named)
+  "rr_card_roots_filter_le_eq_no_isRoot_Icc_sequence" " using "
     "interval_order" ":=" term ","
     "no_roots" ":=" term :
   tactic
@@ -493,14 +642,32 @@ syntax (name := rr_card_roots_filter_gt_eq_no_isRoot_Icc_named)
     "no_roots" ":=" term :
   tactic
 
+syntax (name := rr_card_roots_filter_gt_eq_no_isRoot_Icc_sequence_named)
+  "rr_card_roots_filter_gt_eq_no_isRoot_Icc_sequence" " using "
+    "interval_order" ":=" term ","
+    "no_roots" ":=" term :
+  tactic
+
 syntax (name := rr_card_roots_filter_Ioc_zero_no_isRoot_Icc_named)
   "rr_card_roots_filter_Ioc_zero_no_isRoot_Icc" " using "
     "interval_order" ":=" term ","
     "no_roots" ":=" term :
   tactic
 
+syntax (name := rr_card_roots_filter_Ioc_zero_no_isRoot_Icc_sequence_named)
+  "rr_card_roots_filter_Ioc_zero_no_isRoot_Icc_sequence" " using "
+    "interval_order" ":=" term ","
+    "no_roots" ":=" term :
+  tactic
+
 syntax (name := rr_card_roots_filter_all_eq_no_isRoot_Icc_named)
   "rr_card_roots_filter_all_eq_no_isRoot_Icc" " using "
+    "interval_order" ":=" term ","
+    "no_roots" ":=" term :
+  tactic
+
+syntax (name := rr_card_roots_filter_all_eq_no_isRoot_Icc_sequence_named)
+  "rr_card_roots_filter_all_eq_no_isRoot_Icc_sequence" " using "
     "interval_order" ":=" term ","
     "no_roots" ":=" term :
   tactic
@@ -1023,12 +1190,28 @@ macro_rules
         exact RealRooted.card_roots_filter_le_eq_of_no_isRoot_Ioc
           $hab $hno)
   | `(tactic|
+      rr_card_roots_filter_le_eq_no_isRoot_Ioc_sequence using
+        interval_order := $hab:term,
+        no_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.card_roots_filter_le_eq_no_isRoot_Ioc_sequence
+            $hab $hno)
+  | `(tactic|
       rr_card_roots_filter_gt_eq_no_isRoot_Ioc using
         interval_order := $hab:term,
         no_roots := $hno:term) =>
       `(tactic|
         exact RealRooted.card_roots_filter_gt_eq_of_no_isRoot_Ioc
           $hab $hno)
+  | `(tactic|
+      rr_card_roots_filter_gt_eq_no_isRoot_Ioc_sequence using
+        interval_order := $hab:term,
+        no_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.card_roots_filter_gt_eq_no_isRoot_Ioc_sequence
+            $hab $hno)
   | `(tactic|
       rr_card_roots_filter_Ioc_zero_no_isRoot_Ioc using
         interval_order := $hab:term,
@@ -1037,6 +1220,14 @@ macro_rules
         exact RealRooted.card_roots_filter_Ioc_eq_zero_of_no_isRoot_Ioc
           $hab $hno)
   | `(tactic|
+      rr_card_roots_filter_Ioc_zero_no_isRoot_Ioc_sequence using
+        interval_order := $hab:term,
+        no_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.card_roots_filter_Ioc_zero_no_isRoot_Ioc_sequence
+            $hab $hno)
+  | `(tactic|
       rr_card_roots_filter_all_eq_no_isRoot_Ioc using
         interval_order := $hab:term,
         no_roots := $hno:term) =>
@@ -1044,20 +1235,43 @@ macro_rules
         exact RealRooted.card_roots_filter_all_eq_of_no_isRoot_Ioc
           $hab $hno)
   | `(tactic|
+      rr_card_roots_filter_all_eq_no_isRoot_Ioc_sequence using
+        interval_order := $hab:term,
+        no_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.card_roots_filter_all_eq_no_isRoot_Ioc_sequence
+            $hab $hno)
+  | `(tactic|
       rr_card_roots_filter_le_mono using
         interval_order := $hab:term) =>
       `(tactic|
         exact RealRooted.card_roots_filter_le_mono_of_le $hab)
+  | `(tactic|
+      rr_card_roots_filter_le_mono_sequence using
+        interval_order := $hab:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.card_roots_filter_le_mono_sequence $hab)
   | `(tactic|
       rr_card_roots_filter_gt_antitone using
         interval_order := $hab:term) =>
       `(tactic|
         exact RealRooted.card_roots_filter_gt_antitone_of_le $hab)
   | `(tactic|
+      rr_card_roots_filter_gt_antitone_sequence using
+        interval_order := $hab:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.card_roots_filter_gt_antitone_sequence $hab)
+  | `(tactic|
       rr_card_roots_filter_le_and_gt_mono using
         interval_order := $hab:term) =>
       `(tactic|
         exact RealRooted.card_roots_filter_le_and_gt_mono_of_le $hab)
+  | `(tactic|
+      rr_card_roots_filter_le_and_gt_mono_sequence using
+        interval_order := $hab:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.card_roots_filter_le_and_gt_mono_sequence $hab)
   | `(tactic|
       rr_card_roots_filter_le_eq_no_isRoot_Icc using
         interval_order := $hab:term,
@@ -1066,12 +1280,28 @@ macro_rules
         exact RealRooted.card_roots_filter_le_eq_of_no_isRoot_Icc
           $hab $hno)
   | `(tactic|
+      rr_card_roots_filter_le_eq_no_isRoot_Icc_sequence using
+        interval_order := $hab:term,
+        no_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.card_roots_filter_le_eq_no_isRoot_Icc_sequence
+            $hab $hno)
+  | `(tactic|
       rr_card_roots_filter_gt_eq_no_isRoot_Icc using
         interval_order := $hab:term,
         no_roots := $hno:term) =>
       `(tactic|
         exact RealRooted.card_roots_filter_gt_eq_of_no_isRoot_Icc
           $hab $hno)
+  | `(tactic|
+      rr_card_roots_filter_gt_eq_no_isRoot_Icc_sequence using
+        interval_order := $hab:term,
+        no_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.card_roots_filter_gt_eq_no_isRoot_Icc_sequence
+            $hab $hno)
   | `(tactic|
       rr_card_roots_filter_Ioc_zero_no_isRoot_Icc using
         interval_order := $hab:term,
@@ -1080,12 +1310,28 @@ macro_rules
         exact RealRooted.card_roots_filter_Ioc_eq_zero_of_no_isRoot_Icc
           $hab $hno)
   | `(tactic|
+      rr_card_roots_filter_Ioc_zero_no_isRoot_Icc_sequence using
+        interval_order := $hab:term,
+        no_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.card_roots_filter_Ioc_zero_no_isRoot_Icc_sequence
+            $hab $hno)
+  | `(tactic|
       rr_card_roots_filter_all_eq_no_isRoot_Icc using
         interval_order := $hab:term,
         no_roots := $hno:term) =>
       `(tactic|
         exact RealRooted.card_roots_filter_all_eq_of_no_isRoot_Icc
           $hab $hno)
+  | `(tactic|
+      rr_card_roots_filter_all_eq_no_isRoot_Icc_sequence using
+        interval_order := $hab:term,
+        no_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.card_roots_filter_all_eq_no_isRoot_Icc_sequence
+            $hab $hno)
   | `(tactic|
       rr_card_roots_filter_le_sub_eq_no_isRoot_Ioc using
         interval_order := $hab:term,

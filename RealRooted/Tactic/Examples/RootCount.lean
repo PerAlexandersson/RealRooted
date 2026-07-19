@@ -549,6 +549,113 @@ example {p : ℝ[X]} {a b : ℝ}
     interval_order := hab,
     no_roots := hno
 
+example {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hab : ∀ i : Nat, a i ≤ b i)
+    (hno : ∀ i : Nat, ∀ x, a i < x → x ≤ b i → ¬ (P i).IsRoot x) :
+    ∀ i : Nat,
+      ((P i).roots.filter (· ≤ a i)).card =
+        ((P i).roots.filter (· ≤ b i)).card := by
+  rr_card_roots_filter_le_eq_no_isRoot_Ioc_sequence using
+    interval_order := hab,
+    no_roots := hno
+
+example {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hab : ∀ i : Nat, a i ≤ b i)
+    (hno : ∀ i : Nat, ∀ x, a i < x → x ≤ b i → ¬ (P i).IsRoot x) :
+    ∀ i : Nat,
+      ((P i).roots.filter (a i < ·)).card =
+        ((P i).roots.filter (b i < ·)).card := by
+  rr_card_roots_filter_gt_eq_no_isRoot_Ioc_sequence using
+    interval_order := hab,
+    no_roots := hno
+
+example {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hab : ∀ i : Nat, a i ≤ b i)
+    (hno : ∀ i : Nat, ∀ x, a i < x → x ≤ b i → ¬ (P i).IsRoot x) :
+    ∀ i : Nat,
+      ((P i).roots.filter (fun x => a i < x ∧ x ≤ b i)).card = 0 := by
+  rr_card_roots_filter_Ioc_zero_no_isRoot_Ioc_sequence using
+    interval_order := hab,
+    no_roots := hno
+
+example {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hab : ∀ i : Nat, a i ≤ b i)
+    (hno : ∀ i : Nat, ∀ x, a i < x → x ≤ b i → ¬ (P i).IsRoot x) :
+    ∀ i : Nat,
+      ((P i).roots.filter (· ≤ a i)).card =
+          ((P i).roots.filter (· ≤ b i)).card ∧
+        ((P i).roots.filter (a i < ·)).card =
+          ((P i).roots.filter (b i < ·)).card ∧
+          ((P i).roots.filter (fun x => a i < x ∧ x ≤ b i)).card = 0 := by
+  rr_card_roots_filter_all_eq_no_isRoot_Ioc_sequence using
+    interval_order := hab,
+    no_roots := hno
+
+example {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hab : ∀ i : Nat, a i ≤ b i) :
+    ∀ i : Nat,
+      ((P i).roots.filter (· ≤ a i)).card ≤
+        ((P i).roots.filter (· ≤ b i)).card := by
+  rr_card_roots_filter_le_mono_sequence using interval_order := hab
+
+example {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hab : ∀ i : Nat, a i ≤ b i) :
+    ∀ i : Nat,
+      ((P i).roots.filter (b i < ·)).card ≤
+        ((P i).roots.filter (a i < ·)).card := by
+  rr_card_roots_filter_gt_antitone_sequence using interval_order := hab
+
+example {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hab : ∀ i : Nat, a i ≤ b i) :
+    ∀ i : Nat,
+      ((P i).roots.filter (· ≤ a i)).card ≤
+          ((P i).roots.filter (· ≤ b i)).card ∧
+        ((P i).roots.filter (b i < ·)).card ≤
+          ((P i).roots.filter (a i < ·)).card := by
+  rr_card_roots_filter_le_and_gt_mono_sequence using interval_order := hab
+
+example {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hab : ∀ i : Nat, a i ≤ b i)
+    (hno : ∀ i : Nat, ∀ x, a i ≤ x → x ≤ b i → ¬ (P i).IsRoot x) :
+    ∀ i : Nat,
+      ((P i).roots.filter (· ≤ a i)).card =
+        ((P i).roots.filter (· ≤ b i)).card := by
+  rr_card_roots_filter_le_eq_no_isRoot_Icc_sequence using
+    interval_order := hab,
+    no_roots := hno
+
+example {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hab : ∀ i : Nat, a i ≤ b i)
+    (hno : ∀ i : Nat, ∀ x, a i ≤ x → x ≤ b i → ¬ (P i).IsRoot x) :
+    ∀ i : Nat,
+      ((P i).roots.filter (a i < ·)).card =
+        ((P i).roots.filter (b i < ·)).card := by
+  rr_card_roots_filter_gt_eq_no_isRoot_Icc_sequence using
+    interval_order := hab,
+    no_roots := hno
+
+example {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hab : ∀ i : Nat, a i ≤ b i)
+    (hno : ∀ i : Nat, ∀ x, a i ≤ x → x ≤ b i → ¬ (P i).IsRoot x) :
+    ∀ i : Nat,
+      ((P i).roots.filter (fun x => a i < x ∧ x ≤ b i)).card = 0 := by
+  rr_card_roots_filter_Ioc_zero_no_isRoot_Icc_sequence using
+    interval_order := hab,
+    no_roots := hno
+
+example {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hab : ∀ i : Nat, a i ≤ b i)
+    (hno : ∀ i : Nat, ∀ x, a i ≤ x → x ≤ b i → ¬ (P i).IsRoot x) :
+    ∀ i : Nat,
+      ((P i).roots.filter (· ≤ a i)).card =
+          ((P i).roots.filter (· ≤ b i)).card ∧
+        ((P i).roots.filter (a i < ·)).card =
+          ((P i).roots.filter (b i < ·)).card ∧
+          ((P i).roots.filter (fun x => a i < x ∧ x ≤ b i)).card = 0 := by
+  rr_card_roots_filter_all_eq_no_isRoot_Icc_sequence using
+    interval_order := hab,
+    no_roots := hno
+
 example {f g : ℝ[X]} {a b : ℝ}
     (hab : a ≤ b)
     (hf : ∀ x, a < x → x ≤ b → ¬ f.IsRoot x)

@@ -1570,6 +1570,20 @@ example {F G : Nat → ℝ[X]}
     right_ne_zero := hG,
     nonroot_bound := hbound
 
+/-- Interval root-count row-family transport exposed through the OEIS facade. -/
+example {P : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hab : ∀ n : Nat, a n ≤ b n)
+    (hno : ∀ n : Nat, ∀ x, a n < x → x ≤ b n → ¬ (P n).IsRoot x) :
+    ∀ n : Nat,
+      ((P n).roots.filter (· ≤ a n)).card =
+          ((P n).roots.filter (· ≤ b n)).card ∧
+        ((P n).roots.filter (a n < ·)).card =
+          ((P n).roots.filter (b n < ·)).card ∧
+          ((P n).roots.filter (fun x => a n < x ∧ x ≤ b n)).card = 0 := by
+  rr_card_roots_filter_all_eq_no_isRoot_Ioc_sequence using
+    interval_order := hab,
+    no_roots := hno
+
 /-- Euler-operator PF row-family exit exposed through the OEIS facade. -/
 example {P : Nat → ℝ[X]}
     (hP : ∀ n : Nat, IsPFPolynomial (P n)) :
