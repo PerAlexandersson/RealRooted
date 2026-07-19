@@ -1250,6 +1250,13 @@ example {m n : ℕ} :
     parameter := m,
     degree := n
 
+/-- Narayana row-family exit exposed through the OEIS facade. -/
+example {m d : Nat → ℕ} :
+    ∀ n : Nat, (narayanaPolynomial (m n) (d n)).Splits := by
+  rr_narayana_polynomial_sequence_splits using
+    parameter := m,
+    degree := d
+
 /-- Second-derivative shell exposed through the OEIS facade. -/
 example {P U V : Nat → ℝ[X]} {a : Nat → ℝ}
     (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)

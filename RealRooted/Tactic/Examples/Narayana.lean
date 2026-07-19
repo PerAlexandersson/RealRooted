@@ -27,5 +27,29 @@ example {m n : ℕ} :
     parameter := m,
     degree := n
 
+example {m d : Nat → ℕ} :
+    ∀ n : Nat, IsPFPolynomial (narayanaPolynomial (m n) (d n)) := by
+  rr_narayana_polynomial_sequence_pf using
+    parameter := m,
+    degree := d
+
+example {m d : Nat → ℕ} :
+    ∀ n : Nat, HasNonnegCoeffs (narayanaPolynomial (m n) (d n)) := by
+  rr_narayana_polynomial_sequence_nonneg_coeffs using
+    parameter := m,
+    degree := d
+
+example {m d : Nat → ℕ} :
+    ∀ n : Nat, (narayanaPolynomial (m n) (d n)).Splits := by
+  rr_narayana_polynomial_sequence_splits using
+    parameter := m,
+    degree := d
+
+example {m d : Nat → ℕ} :
+    ∀ n : Nat, HasOnlyNonposRoots (narayanaPolynomial (m n) (d n)) := by
+  rr_narayana_polynomial_sequence_nonpos_roots using
+    parameter := m,
+    degree := d
+
 end Tactic
 end RealRooted
