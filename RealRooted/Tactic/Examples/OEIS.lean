@@ -1204,6 +1204,27 @@ example {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {F G : Nat → ℝ[X]}
     preserves := hT,
     prec := hfg
 
+/-- All-combinations derivative row-family exit exposed through the OEIS
+facade. -/
+example {F G : Nat → ℝ[X]}
+    (hall : ∀ n : Nat, AllComboRealRooted (F n) (G n)) :
+    ∀ n : Nat, AllComboRealRooted (F n).derivative (G n).derivative := by
+  rr_all_combo_sequence_derivative using all_combo := hall
+
+/-- All-combinations to positive-combinations row-family exit exposed through
+the OEIS facade. -/
+example {F G : Nat → ℝ[X]}
+    (hall : ∀ n : Nat, AllComboRealRooted (F n) (G n))
+    (hF : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hG : ∀ n : Nat, HasPosLeadingCoeff (G n))
+    (hdeg : ∀ n : Nat, (F n).natDegree = (G n).natDegree) :
+    ∀ n : Nat, PosComboRealRooted (F n) (G n) := by
+  rr_all_combo_sequence_to_pos_combo_sameDegree using
+    all_combo := hall,
+    left_pos_lc := hF,
+    right_pos_lc := hG,
+    degree_eq := hdeg
+
 /-- Wagner common-left addition row-family exit exposed through the OEIS
 facade. -/
 example {F G H : Nat → ℝ[X]}
