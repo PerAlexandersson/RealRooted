@@ -334,12 +334,28 @@ example {f : ℝ[X]} {n : Nat} (hf : f ≠ 0 ∧ f.Splits) :
   rr_realrooted using hf
 
 example {f : ℝ[X]} {n : Nat} (hf : f ≠ 0 ∧ f.Splits) :
+    (f ^ n).Splits := by
+  rr_splits using hf
+
+example {f : ℝ[X]} {n : Nat} (hf : f ≠ 0 ∧ f.Splits) :
+    f ^ n = 0 ∨ (f ^ n).Splits := by
+  rr_finish using hf
+
+example {f : ℝ[X]} {n : Nat} (hf : f ≠ 0 ∧ f.Splits) :
     f ^ n ≠ 0 ∧ (f ^ n).Splits := by
   rr_realrooted
 
 example {f g : ℝ[X]} (hfg : (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits)) :
     f * g ≠ 0 ∧ (f * g).Splits := by
   rr_realrooted using hfg
+
+example {f g : ℝ[X]} (hfg : (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits)) :
+    (f * g).Splits := by
+  rr_splits using hfg
+
+example {f g : ℝ[X]} (hfg : (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits)) :
+    g * f = 0 ∨ (g * f).Splits := by
+  rr_finish using hfg
 
 example {f g : ℝ[X]} (hfg : (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits)) :
     g * f ≠ 0 ∧ (g * f).Splits := by
@@ -677,6 +693,30 @@ example {A B : Nat → ℝ[X]} {n : Nat}
     (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
       (B n ≠ 0 ∧ (B n).Splits)) :
     B n * A n ≠ 0 ∧ (B n * A n).Splits := by
+  rr_finish using hP
+
+example {A B : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    ∀ n : Nat, (A n * B n).Splits := by
+  rr_splits using hP
+
+example {A B : Nat → ℝ[X]} {n : Nat}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    (B n * A n).Splits := by
+  rr_finish using hP
+
+example {A B : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    ∀ n : Nat, A n * B n = 0 ∨ (A n * B n).Splits := by
+  rr_zero_or_splits using hP
+
+example {A B : Nat → ℝ[X]} {n : Nat}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    B n * A n = 0 ∨ (B n * A n).Splits := by
   rr_finish using hP
 
 example {A B : Nat → ℝ[X]}

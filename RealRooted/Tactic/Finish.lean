@@ -116,6 +116,11 @@ theorem isRealRooted_pow_of_isRealRooted {p : ℝ[X]}
     p ^ n ≠ 0 ∧ (p ^ n).Splits :=
   ⟨pow_ne_zero n hp.1, hp.2.pow n⟩
 
+/-- Power transport from nonzero real-rootedness to splitting. -/
+theorem splits_pow_of_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) (n : Nat) :
+    (p ^ n).Splits :=
+  (isRealRooted_pow_of_isRealRooted hp n).2
+
 /-- Product transport for zero-aware real-rootedness certificates. -/
 theorem mul_eq_zero_or_splits {p q : ℝ[X]}
     (hp : p = 0 ∨ p.Splits) (hq : q = 0 ∨ q.Splits) :
@@ -140,6 +145,12 @@ theorem pow_eq_zero_or_splits {p : ℝ[X]} (hp : p = 0 ∨ p.Splits) (n : Nat) :
         left
         simp
   · exact Or.inr (hp.pow n)
+
+/-- Power transport from nonzero real-rootedness to zero-aware real-rootedness. -/
+theorem pow_eq_zero_or_splits_of_isRealRooted {p : ℝ[X]}
+    (hp : p ≠ 0 ∧ p.Splits) (n : Nat) :
+    p ^ n = 0 ∨ (p ^ n).Splits :=
+  eq_zero_or_splits_of_isRealRooted (isRealRooted_pow_of_isRealRooted hp n)
 
 /-- Project the left zero-aware certificate from a pair certificate. -/
 theorem left_eq_zero_or_splits_of_eq_zero_or_splits_pair {p q : ℝ[X]}
@@ -266,6 +277,30 @@ theorem right_isRealRooted_of_isRealRooted_pair {p q : ℝ[X]}
     (hpq : (p ≠ 0 ∧ p.Splits) ∧ (q ≠ 0 ∧ q.Splits)) :
     q ≠ 0 ∧ q.Splits :=
   hpq.2
+
+/-- Product splitting transport from a bundled nonzero real-rooted pair. -/
+theorem mul_splits_of_isRealRooted_pair {p q : ℝ[X]}
+    (hpq : (p ≠ 0 ∧ p.Splits) ∧ (q ≠ 0 ∧ q.Splits)) :
+    (p * q).Splits :=
+  (isRealRooted_mul_of_isRealRooted hpq.1 hpq.2).2
+
+/-- Swapped product splitting transport from a bundled nonzero real-rooted pair. -/
+theorem swap_mul_splits_of_isRealRooted_pair {p q : ℝ[X]}
+    (hpq : (p ≠ 0 ∧ p.Splits) ∧ (q ≠ 0 ∧ q.Splits)) :
+    (q * p).Splits :=
+  (isRealRooted_mul_of_isRealRooted hpq.2 hpq.1).2
+
+/-- Product zero-aware transport from a bundled nonzero real-rooted pair. -/
+theorem mul_eq_zero_or_splits_of_isRealRooted_pair {p q : ℝ[X]}
+    (hpq : (p ≠ 0 ∧ p.Splits) ∧ (q ≠ 0 ∧ q.Splits)) :
+    p * q = 0 ∨ (p * q).Splits :=
+  eq_zero_or_splits_of_isRealRooted (isRealRooted_mul_of_isRealRooted hpq.1 hpq.2)
+
+/-- Swapped product zero-aware transport from a bundled nonzero real-rooted pair. -/
+theorem swap_mul_eq_zero_or_splits_of_isRealRooted_pair {p q : ℝ[X]}
+    (hpq : (p ≠ 0 ∧ p.Splits) ∧ (q ≠ 0 ∧ q.Splits)) :
+    q * p = 0 ∨ (q * p).Splits :=
+  eq_zero_or_splits_of_isRealRooted (isRealRooted_mul_of_isRealRooted hpq.2 hpq.1)
 
 /-- Project left-argument nonvanishing from a pair certificate. -/
 theorem left_ne_zero_of_isRealRooted_pair {p q : ℝ[X]}
@@ -498,6 +533,38 @@ theorem isRealRooted_swap_mul_sequence_of_isRealRooted_pair_sequence
       (B n ≠ 0 ∧ (B n).Splits)) :
     ∀ n : Nat, B n * A n ≠ 0 ∧ (B n * A n).Splits :=
   fun n => isRealRooted_mul_of_isRealRooted (hP n).2 (hP n).1
+
+/-- Row-wise product splitting transport for nonzero real-rooted pair-sequences. -/
+theorem splits_mul_sequence_of_isRealRooted_pair_sequence {A B : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    ∀ n : Nat, (A n * B n).Splits :=
+  fun n => (isRealRooted_mul_of_isRealRooted (hP n).1 (hP n).2).2
+
+/-- Row-wise swapped product splitting transport for nonzero real-rooted pair-sequences. -/
+theorem splits_swap_mul_sequence_of_isRealRooted_pair_sequence
+    {A B : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    ∀ n : Nat, (B n * A n).Splits :=
+  fun n => (isRealRooted_mul_of_isRealRooted (hP n).2 (hP n).1).2
+
+/-- Row-wise product zero-aware transport for nonzero real-rooted pair-sequences. -/
+theorem mul_eq_zero_or_splits_of_isRealRooted_pair_sequence {A B : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    ∀ n : Nat, A n * B n = 0 ∨ (A n * B n).Splits :=
+  fun n => eq_zero_or_splits_of_isRealRooted
+    (isRealRooted_mul_of_isRealRooted (hP n).1 (hP n).2)
+
+/-- Row-wise swapped product zero-aware transport for nonzero real-rooted pair-sequences. -/
+theorem swap_mul_eq_zero_or_splits_of_isRealRooted_pair_sequence
+    {A B : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    ∀ n : Nat, B n * A n = 0 ∨ (B n * A n).Splits :=
+  fun n => eq_zero_or_splits_of_isRealRooted
+    (isRealRooted_mul_of_isRealRooted (hP n).2 (hP n).1)
 
 /-- Row-wise product transport for zero-aware pair-sequences. -/
 theorem mul_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence
@@ -999,6 +1066,10 @@ macro_rules
           (RealRooted.left_splits_of_isRealRooted_pair_sequence $h _),
           RealRooted.right_splits_of_isRealRooted_pair_sequence $h,
           (RealRooted.right_splits_of_isRealRooted_pair_sequence $h _),
+          RealRooted.splits_mul_sequence_of_isRealRooted_pair_sequence $h,
+          (RealRooted.splits_mul_sequence_of_isRealRooted_pair_sequence $h _),
+          RealRooted.splits_swap_mul_sequence_of_isRealRooted_pair_sequence $h,
+          (RealRooted.splits_swap_mul_sequence_of_isRealRooted_pair_sequence $h _),
           RealRooted.left_splits_of_prec $h,
           RealRooted.right_splits_of_prec $h,
           RealRooted.right_splits_of_interlaces $h,
@@ -1006,6 +1077,9 @@ macro_rules
           RealRooted.splits_of_isRealRooted $h,
           RealRooted.left_splits_of_isRealRooted_pair $h,
           RealRooted.right_splits_of_isRealRooted_pair $h,
+          RealRooted.mul_splits_of_isRealRooted_pair $h,
+          RealRooted.swap_mul_splits_of_isRealRooted_pair $h,
+          RealRooted.splits_pow_of_isRealRooted $h _,
           Polynomial.Splits.pow $h _,
           RealRooted.DegreeDropReversal.splits_reverse $h,
           RealRooted.DegreeDropReversal.splits_of_reverse $h,
@@ -1094,6 +1168,8 @@ macro_rules
             (RealRooted.left_eq_zero_or_splits_of_eq_zero_or_splits_pair $h)),
           RealRooted.left_eq_zero_or_splits_of_isRealRooted_pair $h,
           RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair $h,
+          RealRooted.mul_eq_zero_or_splits_of_isRealRooted_pair $h,
+          RealRooted.swap_mul_eq_zero_or_splits_of_isRealRooted_pair $h,
           RealRooted.left_eq_zero_or_splits_of_prec $h,
           RealRooted.right_eq_zero_or_splits_of_prec $h,
           RealRooted.right_eq_zero_or_splits_of_interlaces $h,
@@ -1104,6 +1180,11 @@ macro_rules
           (RealRooted.left_eq_zero_or_splits_of_isRealRooted_pair_sequence $h _),
           RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair_sequence $h,
           (RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair_sequence $h _),
+          RealRooted.mul_eq_zero_or_splits_of_isRealRooted_pair_sequence $h,
+          (RealRooted.mul_eq_zero_or_splits_of_isRealRooted_pair_sequence $h _),
+          RealRooted.swap_mul_eq_zero_or_splits_of_isRealRooted_pair_sequence $h,
+          (RealRooted.swap_mul_eq_zero_or_splits_of_isRealRooted_pair_sequence
+            $h _),
           RealRooted.left_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence $h,
           (RealRooted.left_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence $h _),
           RealRooted.right_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence $h,
@@ -1121,6 +1202,7 @@ macro_rules
           Or.inr ((RealRooted.DegreeDropReversal.splits_X_pow_mul_iff _).mpr $h),
           Or.inr ((RealRooted.DegreeDropReversal.splits_X_pow_mul_iff _).mp $h),
           RealRooted.pow_eq_zero_or_splits $h _,
+          RealRooted.pow_eq_zero_or_splits_of_isRealRooted $h _,
           RealRooted.reverse_eq_zero_or_splits $h,
           RealRooted.eq_zero_or_splits_of_reverse $h,
           RealRooted.X_pow_mul_reverse_eq_zero_or_splits $h _)
