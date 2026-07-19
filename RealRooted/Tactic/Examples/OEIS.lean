@@ -1211,6 +1211,23 @@ example {F G : Nat → ℝ[X]}
     ∀ n : Nat, AllComboRealRooted (F n).derivative (G n).derivative := by
   rr_all_combo_sequence_derivative using all_combo := hall
 
+/-- Derivative proper-position row-family exit exposed through the OEIS
+facade. -/
+example {P : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, (P n).Splits)
+    (hdeg : ∀ n : Nat, 2 ≤ (P n).natDegree) :
+    ∀ n : Nat, Prec (P n).derivative (P n) := by
+  rr_derivative_sequence_prec using
+    splits := hP,
+    degree_two := hdeg
+
+/-- Derivative nonnegative-coefficient row-family exit exposed through the
+OEIS facade. -/
+example {P : Nat → ℝ[X]}
+    (hP : ∀ n : Nat, HasNonnegCoeffs (P n)) :
+    ∀ n : Nat, HasNonnegCoeffs (P n).derivative := by
+  rr_nonneg_coeffs_sequence_derivative using nonneg_coeffs := hP
+
 /-- All-combinations to positive-combinations row-family exit exposed through
 the OEIS facade. -/
 example {F G : Nat → ℝ[X]}
