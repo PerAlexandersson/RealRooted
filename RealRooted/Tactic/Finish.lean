@@ -1150,6 +1150,8 @@ macro_rules
           | exact Polynomial.Splits.C_mul_X_pow _ _
           | exact RealRooted.left_splits_of_interlaces
               (RealRooted.derivative_interlaces (by assumption) (by rr_close_side))
+          | (apply Polynomial.Splits.mul <;> rr_splits)
+          | (apply Polynomial.Splits.pow <;> rr_splits)
           | simp [add_comm]
           | (apply Polynomial.Splits.of_natDegree_le_one <;> rr_degree_le_one)
           | simp_all [RealRooted.Prec, RealRooted.Interlaces])
@@ -1259,6 +1261,8 @@ macro_rules
           | rr_lookup
           | rr_zero_or_splits using rr_lookup_term
           | assumption
+          | (apply RealRooted.mul_eq_zero_or_splits <;> rr_zero_or_splits)
+          | (apply RealRooted.pow_eq_zero_or_splits <;> rr_zero_or_splits)
           | exact Or.inr (by rr_splits)
           | simp_all [RealRooted.Prec, RealRooted.Interlaces])
   | `(tactic| rr_realrooted using $h:term) =>
@@ -1488,6 +1492,7 @@ macro_rules
           | (apply Polynomial.Splits.of_natDegree_le_one <;> rr_degree_le_one)
           | exact RealRooted.Prec.toPrec0 (RealRooted.Interlaces.toPrec rr_lookup_term)
           | (exact ⟨by rr_nonzero, by rr_splits⟩ <;> done)
+          | rr_zero_or_splits
           | rr_sign
           | simp_all [
               RealRooted.Prec,
