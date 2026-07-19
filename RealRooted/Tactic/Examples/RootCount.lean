@@ -1144,6 +1144,131 @@ example {f g : ℝ[X]} {x : ℝ}
     right_not_root := hxg,
     positive_crossing := hcross
 
+example {F G : Nat → ℝ[X]} {μ₀ μ₁ x : Nat → ℝ}
+    (hF_pos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG_pos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hμ₀ : ∀ i : Nat, 0 ≤ μ₀ i)
+    (hμ₀μ₁ : ∀ i : Nat, μ₀ i ≤ μ₁ i)
+    (hne : ∀ i : Nat, ∀ μ ∈ Set.Icc (μ₀ i) (μ₁ i),
+      ¬ (F i + C μ * G i).IsRoot (x i)) :
+    ∀ i : Nat,
+      ((F i + C (μ₀ i) * G i).roots.filter (x i < ·)).card =
+        ((F i + C (μ₁ i) * G i).roots.filter (x i < ·)).card := by
+  rr_rightFamily_sameDegree_gt_count_eq_sequence using
+    left_pos_lc := hF_pos,
+    right_pos_lc := hG_pos,
+    pos_combo := hFG,
+    same_degree := hdeg,
+    left_parameter_nonneg := hμ₀,
+    interval_order := hμ₀μ₁,
+    threshold_not_root := hne
+
+example {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hdeg : ∀ i : Nat, ∀ μ ∈ Set.Icc (0 : ℝ) 1,
+      (F i + C μ * G i).natDegree =
+        (F i + C (0 : ℝ) * G i).natDegree)
+    (hrr : ∀ i : Nat, ∀ μ ∈ Set.Icc (0 : ℝ) 1,
+      (F i + C μ * G i).Splits)
+    (hne : ∀ i : Nat, ∀ μ ∈ Set.Icc (0 : ℝ) 1,
+      ¬ (F i + C μ * G i).IsRoot (x i)) :
+    ∀ i : Nat,
+      ((F i + C (0 : ℝ) * G i).roots.filter (x i < ·)).card =
+        ((F i + C (1 : ℝ) * G i).roots.filter (x i < ·)).card := by
+  rr_rightFamily_zero_one_gt_count_eq_sequence using
+    degree_on_interval := hdeg,
+    splits_on_interval := hrr,
+    threshold_not_root := hne
+
+example {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hF_pos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG_pos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hxG : ∀ i : Nat, ¬ (G i).IsRoot (x i))
+    (hno : ∀ i : Nat, ∀ {μ : ℝ}, 0 ≤ μ →
+      ¬ (F i + C μ * G i).IsRoot (x i)) :
+    ∀ i : Nat,
+      ((F i).roots.filter (x i < ·)).card =
+        ((G i).roots.filter (x i < ·)).card := by
+  rr_sameDegree_gt_count_eq_no_rightFamily_sequence using
+    left_pos_lc := hF_pos,
+    right_pos_lc := hG_pos,
+    pos_combo := hFG,
+    same_degree := hdeg,
+    right_not_root := hxG,
+    no_right_family_roots := hno
+
+example {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hF_pos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG_pos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hxG : ∀ i : Nat, ¬ (G i).IsRoot (x i))
+    (hno : ∀ i : Nat, ∀ {μ : ℝ}, 0 ≤ μ →
+      ¬ (F i + C μ * G i).IsRoot (x i)) :
+    ∀ i : Nat,
+      (((F i).roots.filter (x i < ·)).card : ℤ) -
+          ((G i).roots.filter (x i < ·)).card ≤ 1 ∧
+        (((G i).roots.filter (x i < ·)).card : ℤ) -
+          ((F i).roots.filter (x i < ·)).card ≤ 1 := by
+  rr_sameDegree_rootCountAbove_no_rightFamily_sequence using
+    left_pos_lc := hF_pos,
+    right_pos_lc := hG_pos,
+    pos_combo := hFG,
+    same_degree := hdeg,
+    right_not_root := hxG,
+    no_right_family_roots := hno
+
+example {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hF_pos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG_pos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hxF : ∀ i : Nat, ¬ (F i).IsRoot (x i))
+    (hxG : ∀ i : Nat, ¬ (G i).IsRoot (x i))
+    (hno : ∀ i : Nat,
+      ¬ ∃ μ : ℝ, 0 < μ ∧ (F i + C μ * G i).IsRoot (x i)) :
+    ∀ i : Nat,
+      (((F i).roots.filter (x i < ·)).card : ℤ) -
+          ((G i).roots.filter (x i < ·)).card ≤ 1 ∧
+        (((G i).roots.filter (x i < ·)).card : ℤ) -
+          ((F i).roots.filter (x i < ·)).card ≤ 1 := by
+  rr_sameDegree_rootCountAbove_no_pos_crossing_sequence using
+    left_pos_lc := hF_pos,
+    right_pos_lc := hG_pos,
+    pos_combo := hFG,
+    same_degree := hdeg,
+    left_not_root := hxF,
+    right_not_root := hxG,
+    no_positive_crossing := hno
+
+example {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hF_pos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG_pos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
+    (hxF : ∀ i : Nat, ¬ (F i).IsRoot (x i))
+    (hxG : ∀ i : Nat, ¬ (G i).IsRoot (x i))
+    (hcross : ∀ i : Nat,
+      ∃ μ : ℝ, 0 < μ ∧ (F i + C μ * G i).IsRoot (x i)) :
+    ∀ i : Nat,
+      (((F i).roots.filter (x i < ·)).card : ℤ) -
+          ((G i).roots.filter (x i < ·)).card ≤ 1 ∧
+        (((G i).roots.filter (x i < ·)).card : ℤ) -
+          ((F i).roots.filter (x i < ·)).card ≤ 1 := by
+  rr_sameDegree_rootCountAbove_pos_crossing_sequence using
+    left_pos_lc := hF_pos,
+    right_pos_lc := hG_pos,
+    pos_combo := hFG,
+    same_degree := hdeg,
+    no_common_roots := hno,
+    left_not_root := hxF,
+    right_not_root := hxG,
+    positive_crossing := hcross
+
 example {f g : ℝ[X]} {x : ℝ}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)

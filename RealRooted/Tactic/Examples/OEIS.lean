@@ -1615,6 +1615,28 @@ example {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
     lower_source_bound := hle,
     upper_source_bound := hgt
 
+/-- Same-degree root-count row-family exit exposed through the OEIS facade. -/
+example {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hF_pos : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hG_pos : ∀ n : Nat, HasPosLeadingCoeff (G n))
+    (hFG : ∀ n : Nat, PosComboRealRooted (F n) (G n))
+    (hdeg : ∀ n : Nat, (G n).natDegree = (F n).natDegree)
+    (hxG : ∀ n : Nat, ¬ (G n).IsRoot (x n))
+    (hno : ∀ n : Nat, ∀ {μ : ℝ}, 0 ≤ μ →
+      ¬ (F n + C μ * G n).IsRoot (x n)) :
+    ∀ n : Nat,
+      (((F n).roots.filter (x n < ·)).card : ℤ) -
+          ((G n).roots.filter (x n < ·)).card ≤ 1 ∧
+        (((G n).roots.filter (x n < ·)).card : ℤ) -
+          ((F n).roots.filter (x n < ·)).card ≤ 1 := by
+  rr_sameDegree_rootCountAbove_no_rightFamily_sequence using
+    left_pos_lc := hF_pos,
+    right_pos_lc := hG_pos,
+    pos_combo := hFG,
+    same_degree := hdeg,
+    right_not_root := hxG,
+    no_right_family_roots := hno
+
 /-- Euler-operator PF row-family exit exposed through the OEIS facade. -/
 example {P : Nat → ℝ[X]}
     (hP : ∀ n : Nat, IsPFPolynomial (P n)) :

@@ -467,6 +467,107 @@ theorem card_roots_filter_le_and_gt_bound_no_isRoot_Icc_sequence
   RealRooted.card_roots_filter_le_and_gt_bound_of_no_isRoot_Icc
     (hab i) (hF i) (hG i) (hle i) (hgt i)
 
+theorem rightFamily_sameDegree_gt_count_eq_sequence
+    {F G : Nat → ℝ[X]} {μ₀ μ₁ x : Nat → ℝ}
+    (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hμ₀ : ∀ i : Nat, 0 ≤ μ₀ i)
+    (hμ₀μ₁ : ∀ i : Nat, μ₀ i ≤ μ₁ i)
+    (hne : ∀ i : Nat, ∀ μ ∈ Set.Icc (μ₀ i) (μ₁ i),
+      ¬ (F i + C μ * G i).IsRoot (x i)) :
+    ∀ i : Nat,
+      ((F i + C (μ₀ i) * G i).roots.filter (x i < ·)).card =
+        ((F i + C (μ₁ i) * G i).roots.filter (x i < ·)).card := fun i =>
+  RealRooted.rightFamily_card_roots_gt_eq_of_no_isRoot_interval_sameDegree
+    (hFpos i) (hGpos i) (hFG i) (hdeg i) (hμ₀ i) (hμ₀μ₁ i) (hne i)
+
+theorem rightFamily_zero_one_gt_count_eq_sequence
+    {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hdeg : ∀ i : Nat, ∀ μ ∈ Set.Icc (0 : ℝ) 1,
+      (F i + C μ * G i).natDegree =
+        (F i + C (0 : ℝ) * G i).natDegree)
+    (hrr : ∀ i : Nat, ∀ μ ∈ Set.Icc (0 : ℝ) 1,
+      (F i + C μ * G i).Splits)
+    (hne : ∀ i : Nat, ∀ μ ∈ Set.Icc (0 : ℝ) 1,
+      ¬ (F i + C μ * G i).IsRoot (x i)) :
+    ∀ i : Nat,
+      ((F i + C (0 : ℝ) * G i).roots.filter (x i < ·)).card =
+        ((F i + C (1 : ℝ) * G i).roots.filter (x i < ·)).card := fun i =>
+  RealRooted.rightFamily_card_roots_gt_eq_zero_one_of_constant_degree
+    (hdeg i) (hrr i) (hne i)
+
+theorem sameDegree_gt_count_eq_no_rightFamily_sequence
+    {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hxG : ∀ i : Nat, ¬ (G i).IsRoot (x i))
+    (hno : ∀ i : Nat, ∀ {μ : ℝ}, 0 ≤ μ →
+      ¬ (F i + C μ * G i).IsRoot (x i)) :
+    ∀ i : Nat,
+      ((F i).roots.filter (x i < ·)).card =
+        ((G i).roots.filter (x i < ·)).card := fun i =>
+  RealRooted.sameDegree_card_roots_gt_eq_of_no_rightFamily_isRoot
+    (hFpos i) (hGpos i) (hFG i) (hdeg i) (hxG i) (hno i)
+
+theorem sameDegree_rootCountAbove_no_rightFamily_sequence
+    {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hxG : ∀ i : Nat, ¬ (G i).IsRoot (x i))
+    (hno : ∀ i : Nat, ∀ {μ : ℝ}, 0 ≤ μ →
+      ¬ (F i + C μ * G i).IsRoot (x i)) :
+    ∀ i : Nat,
+      (((F i).roots.filter (x i < ·)).card : ℤ) -
+          ((G i).roots.filter (x i < ·)).card ≤ 1 ∧
+        (((G i).roots.filter (x i < ·)).card : ℤ) -
+          ((F i).roots.filter (x i < ·)).card ≤ (1 : ℤ) := fun i =>
+  RealRooted.sameDegree_rootCountAbove_pointwise_of_no_rightFamily_isRoot
+    (hFpos i) (hGpos i) (hFG i) (hdeg i) (hxG i) (hno i)
+
+theorem sameDegree_rootCountAbove_no_pos_crossing_sequence
+    {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hxF : ∀ i : Nat, ¬ (F i).IsRoot (x i))
+    (hxG : ∀ i : Nat, ¬ (G i).IsRoot (x i))
+    (hno : ∀ i : Nat,
+      ¬ ∃ μ : ℝ, 0 < μ ∧ (F i + C μ * G i).IsRoot (x i)) :
+    ∀ i : Nat,
+      (((F i).roots.filter (x i < ·)).card : ℤ) -
+          ((G i).roots.filter (x i < ·)).card ≤ 1 ∧
+        (((G i).roots.filter (x i < ·)).card : ℤ) -
+          ((F i).roots.filter (x i < ·)).card ≤ (1 : ℤ) := fun i =>
+  RealRooted.sameDegree_rootCountAbove_pointwise_of_not_exists_pos_isRoot
+    (hFpos i) (hGpos i) (hFG i) (hdeg i) (hxF i) (hxG i) (hno i)
+
+theorem sameDegree_rootCountAbove_pos_crossing_sequence
+    {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
+    (hxF : ∀ i : Nat, ¬ (F i).IsRoot (x i))
+    (hxG : ∀ i : Nat, ¬ (G i).IsRoot (x i))
+    (hcross : ∀ i : Nat,
+      ∃ μ : ℝ, 0 < μ ∧ (F i + C μ * G i).IsRoot (x i)) :
+    ∀ i : Nat,
+      (((F i).roots.filter (x i < ·)).card : ℤ) -
+          ((G i).roots.filter (x i < ·)).card ≤ 1 ∧
+        (((G i).roots.filter (x i < ·)).card : ℤ) -
+          ((F i).roots.filter (x i < ·)).card ≤ (1 : ℤ) := fun i =>
+  RealRooted.sameDegree_rootCountAbove_pointwise_of_exists_pos_isRoot
+    (hFpos i) (hGpos i) (hFG i) (hdeg i) (hno i) (hxF i) (hxG i)
+    (hcross i)
+
 syntax (name := rr_natDegree_add_C_mul_lt_named)
   "rr_natDegree_add_C_mul_lt" " using "
     "parameter_ne_zero" ":=" term ","
@@ -1017,8 +1118,26 @@ syntax (name := rr_rightFamily_sameDegree_gt_count_eq_named)
     "threshold_not_root" ":=" term :
   tactic
 
+syntax (name := rr_rightFamily_sameDegree_gt_count_eq_sequence_named)
+  "rr_rightFamily_sameDegree_gt_count_eq_sequence" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "left_parameter_nonneg" ":=" term ","
+    "interval_order" ":=" term ","
+    "threshold_not_root" ":=" term :
+  tactic
+
 syntax (name := rr_rightFamily_zero_one_gt_count_eq_named)
   "rr_rightFamily_zero_one_gt_count_eq" " using "
+    "degree_on_interval" ":=" term ","
+    "splits_on_interval" ":=" term ","
+    "threshold_not_root" ":=" term :
+  tactic
+
+syntax (name := rr_rightFamily_zero_one_gt_count_eq_sequence_named)
+  "rr_rightFamily_zero_one_gt_count_eq_sequence" " using "
     "degree_on_interval" ":=" term ","
     "splits_on_interval" ":=" term ","
     "threshold_not_root" ":=" term :
@@ -1034,8 +1153,28 @@ syntax (name := rr_sameDegree_gt_count_eq_no_rightFamily_named)
     "no_right_family_roots" ":=" term :
   tactic
 
+syntax (name := rr_sameDegree_gt_count_eq_no_rightFamily_sequence_named)
+  "rr_sameDegree_gt_count_eq_no_rightFamily_sequence" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "right_not_root" ":=" term ","
+    "no_right_family_roots" ":=" term :
+  tactic
+
 syntax (name := rr_sameDegree_rootCountAbove_no_rightFamily_named)
   "rr_sameDegree_rootCountAbove_no_rightFamily" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "right_not_root" ":=" term ","
+    "no_right_family_roots" ":=" term :
+  tactic
+
+syntax (name := rr_sameDegree_rootCountAbove_no_rightFamily_sequence_named)
+  "rr_sameDegree_rootCountAbove_no_rightFamily_sequence" " using "
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
     "pos_combo" ":=" term ","
@@ -1055,8 +1194,31 @@ syntax (name := rr_sameDegree_rootCountAbove_no_pos_crossing_named)
     "no_positive_crossing" ":=" term :
   tactic
 
+syntax (name := rr_sameDegree_rootCountAbove_no_pos_crossing_sequence_named)
+  "rr_sameDegree_rootCountAbove_no_pos_crossing_sequence" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "left_not_root" ":=" term ","
+    "right_not_root" ":=" term ","
+    "no_positive_crossing" ":=" term :
+  tactic
+
 syntax (name := rr_sameDegree_rootCountAbove_pos_crossing_named)
   "rr_sameDegree_rootCountAbove_pos_crossing" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "left_not_root" ":=" term ","
+    "right_not_root" ":=" term ","
+    "positive_crossing" ":=" term :
+  tactic
+
+syntax (name := rr_sameDegree_rootCountAbove_pos_crossing_sequence_named)
+  "rr_sameDegree_rootCountAbove_pos_crossing_sequence" " using "
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
     "pos_combo" ":=" term ","
@@ -1787,12 +1949,32 @@ macro_rules
         exact RealRooted.rightFamily_card_roots_gt_eq_of_no_isRoot_interval_sameDegree
           $hfpos $hgpos $hfg $hdeg $hμ₀ $hμ₀μ₁ $hne)
   | `(tactic|
+      rr_rightFamily_sameDegree_gt_count_eq_sequence using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        left_parameter_nonneg := $hμ₀:term,
+        interval_order := $hμ₀μ₁:term,
+        threshold_not_root := $hne:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.rightFamily_sameDegree_gt_count_eq_sequence
+          $hfpos $hgpos $hfg $hdeg $hμ₀ $hμ₀μ₁ $hne)
+  | `(tactic|
       rr_rightFamily_zero_one_gt_count_eq using
         degree_on_interval := $hdeg:term,
         splits_on_interval := $hrr:term,
         threshold_not_root := $hne:term) =>
       `(tactic|
         exact RealRooted.rightFamily_card_roots_gt_eq_zero_one_of_constant_degree
+          $hdeg $hrr $hne)
+  | `(tactic|
+      rr_rightFamily_zero_one_gt_count_eq_sequence using
+        degree_on_interval := $hdeg:term,
+        splits_on_interval := $hrr:term,
+        threshold_not_root := $hne:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.rightFamily_zero_one_gt_count_eq_sequence
           $hdeg $hrr $hne)
   | `(tactic|
       rr_sameDegree_gt_count_eq_no_rightFamily using
@@ -1806,6 +1988,17 @@ macro_rules
         exact RealRooted.sameDegree_card_roots_gt_eq_of_no_rightFamily_isRoot
           $hfpos $hgpos $hfg $hdeg $hxg $hno)
   | `(tactic|
+      rr_sameDegree_gt_count_eq_no_rightFamily_sequence using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        right_not_root := $hxg:term,
+        no_right_family_roots := $hno:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.sameDegree_gt_count_eq_no_rightFamily_sequence
+          $hfpos $hgpos $hfg $hdeg $hxg $hno)
+  | `(tactic|
       rr_sameDegree_rootCountAbove_no_rightFamily using
         left_pos_lc := $hfpos:term,
         right_pos_lc := $hgpos:term,
@@ -1816,6 +2009,18 @@ macro_rules
       `(tactic|
         exact RealRooted.sameDegree_rootCountAbove_pointwise_of_no_rightFamily_isRoot
           $hfpos $hgpos $hfg $hdeg $hxg $hno)
+  | `(tactic|
+      rr_sameDegree_rootCountAbove_no_rightFamily_sequence using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        right_not_root := $hxg:term,
+        no_right_family_roots := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.sameDegree_rootCountAbove_no_rightFamily_sequence
+            $hfpos $hgpos $hfg $hdeg $hxg $hno)
   | `(tactic|
       rr_sameDegree_rootCountAbove_no_pos_crossing using
         left_pos_lc := $hfpos:term,
@@ -1829,6 +2034,19 @@ macro_rules
         exact RealRooted.sameDegree_rootCountAbove_pointwise_of_not_exists_pos_isRoot
           $hfpos $hgpos $hfg $hdeg $hxf $hxg $hno)
   | `(tactic|
+      rr_sameDegree_rootCountAbove_no_pos_crossing_sequence using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        left_not_root := $hxf:term,
+        right_not_root := $hxg:term,
+        no_positive_crossing := $hno:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.sameDegree_rootCountAbove_no_pos_crossing_sequence
+            $hfpos $hgpos $hfg $hdeg $hxf $hxg $hno)
+  | `(tactic|
       rr_sameDegree_rootCountAbove_pos_crossing using
         left_pos_lc := $hfpos:term,
         right_pos_lc := $hgpos:term,
@@ -1840,6 +2058,19 @@ macro_rules
         positive_crossing := $hcross:term) =>
       `(tactic|
         exact RealRooted.sameDegree_rootCountAbove_pointwise_of_exists_pos_isRoot
+          $hfpos $hgpos $hfg $hdeg $hno $hxf $hxg $hcross)
+  | `(tactic|
+      rr_sameDegree_rootCountAbove_pos_crossing_sequence using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        no_common_roots := $hno:term,
+        left_not_root := $hxf:term,
+        right_not_root := $hxg:term,
+        positive_crossing := $hcross:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.sameDegree_rootCountAbove_pos_crossing_sequence
           $hfpos $hgpos $hfg $hdeg $hno $hxf $hxg $hcross)
   | `(tactic|
       rr_posCombo_sameDegree_rootCount_degree_le_two using
