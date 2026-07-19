@@ -1228,6 +1228,24 @@ example {P Q : Nat → ℝ[X]}
     left_pf := hP,
     right_pf := hQ
 
+/-- Hadamard proper-position row-family exit exposed through the OEIS facade. -/
+example {F G P Q : Nat → ℝ[X]}
+    (hF : ∀ n : Nat, HasNonnegCoeffs (F n))
+    (hG : ∀ n : Nat, HasNonnegCoeffs (G n))
+    (hP : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hQ : ∀ n : Nat, HasNonnegCoeffs (Q n))
+    (hFG : ∀ n : Nat, Prec (F n) (G n))
+    (hPQ : ∀ n : Nat, Prec (P n) (Q n)) :
+    ∀ n : Nat,
+      Prec0 (hadamardProduct (F n) (P n)) (hadamardProduct (G n) (Q n)) := by
+  rr_hadamard_sequence_prec0 using
+    first_left_nonneg := hF,
+    first_right_nonneg := hG,
+    second_left_nonneg := hP,
+    second_right_nonneg := hQ,
+    first_prec := hFG,
+    second_prec := hPQ
+
 /-- Schur--Szego row-family exit exposed through the OEIS facade. -/
 example {N : Nat → ℕ} {F P : Nat → ℝ[X]}
     (hF : ∀ n : Nat, IsPFPolynomial (F n))

@@ -193,6 +193,29 @@ theorem hadamardProduct_sequence_nonneg_coeffs {P Q : Nat → ℝ[X]}
     ∀ i : Nat, HasNonnegCoeffs (hadamardProduct (P i) (Q i)) := fun i =>
   HasNonnegCoeffs.hadamardProduct (hPnonneg i) (hQnonneg i)
 
+theorem hadamardProduct_prec0_of_nonneg_prec {f g p q : ℝ[X]}
+    (hf : HasNonnegCoeffs f)
+    (hg : HasNonnegCoeffs g)
+    (hp : HasNonnegCoeffs p)
+    (hq : HasNonnegCoeffs q)
+    (hfg : Prec f g)
+    (hpq : Prec p q) :
+    Prec0 (hadamardProduct f p) (hadamardProduct g q) :=
+  garloffWagnerHadamardNonnegPrec hf hg hp hq hfg hpq
+
+theorem hadamardProduct_sequence_prec0 {F G P Q : Nat → ℝ[X]}
+    (hF : ∀ i : Nat, HasNonnegCoeffs (F i))
+    (hG : ∀ i : Nat, HasNonnegCoeffs (G i))
+    (hP : ∀ i : Nat, HasNonnegCoeffs (P i))
+    (hQ : ∀ i : Nat, HasNonnegCoeffs (Q i))
+    (hFG : ∀ i : Nat, Prec (F i) (G i))
+    (hPQ : ∀ i : Nat, Prec (P i) (Q i)) :
+    ∀ i : Nat,
+      Prec0 (hadamardProduct (F i) (P i)) (hadamardProduct (G i) (Q i)) :=
+  fun i =>
+    hadamardProduct_prec0_of_nonneg_prec
+      (hF i) (hG i) (hP i) (hQ i) (hFG i) (hPQ i)
+
 syntax (name := rr_schur_szego_nonzero_statement_named)
   "rr_schur_szego_nonzero_statement" : tactic
 
@@ -432,6 +455,16 @@ syntax (name := rr_hadamard_nonneg_coeffs_named)
     "right_nonneg" ":=" term :
   tactic
 
+syntax (name := rr_hadamard_prec0_named)
+  "rr_hadamard_prec0" " using "
+    "first_left_nonneg" ":=" term ","
+    "first_right_nonneg" ":=" term ","
+    "second_left_nonneg" ":=" term ","
+    "second_right_nonneg" ":=" term ","
+    "first_prec" ":=" term ","
+    "second_prec" ":=" term :
+  tactic
+
 syntax (name := rr_hadamard_sequence_pf_named)
   "rr_hadamard_sequence_pf" " using "
     "left_pf" ":=" term ","
@@ -450,6 +483,16 @@ syntax (name := rr_hadamard_sequence_nonneg_coeffs_named)
   "rr_hadamard_sequence_nonneg_coeffs" " using "
     "left_nonneg" ":=" term ","
     "right_nonneg" ":=" term :
+  tactic
+
+syntax (name := rr_hadamard_sequence_prec0_named)
+  "rr_hadamard_sequence_prec0" " using "
+    "first_left_nonneg" ":=" term ","
+    "first_right_nonneg" ":=" term ","
+    "second_left_nonneg" ":=" term ","
+    "second_right_nonneg" ":=" term ","
+    "first_prec" ":=" term ","
+    "second_prec" ":=" term :
   tactic
 
 macro_rules
@@ -723,6 +766,17 @@ macro_rules
       `(tactic|
         exact RealRooted.HasNonnegCoeffs.hadamardProduct $hpnn $hqnn)
   | `(tactic|
+      rr_hadamard_prec0 using
+        first_left_nonneg := $hf:term,
+        first_right_nonneg := $hg:term,
+        second_left_nonneg := $hp:term,
+        second_right_nonneg := $hq:term,
+        first_prec := $hfg:term,
+        second_prec := $hpq:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.hadamardProduct_prec0_of_nonneg_prec
+          $hf $hg $hp $hq $hfg $hpq)
+  | `(tactic|
       rr_hadamard_sequence_pf using
         left_pf := $hp:term,
         right_pf := $hq:term) =>
@@ -744,6 +798,17 @@ macro_rules
       `(tactic|
         exact RealRooted.Tactic.hadamardProduct_sequence_nonneg_coeffs
           $hpnn $hqnn)
+  | `(tactic|
+      rr_hadamard_sequence_prec0 using
+        first_left_nonneg := $hf:term,
+        first_right_nonneg := $hg:term,
+        second_left_nonneg := $hp:term,
+        second_right_nonneg := $hq:term,
+        first_prec := $hfg:term,
+        second_prec := $hpq:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.hadamardProduct_sequence_prec0
+          $hf $hg $hp $hq $hfg $hpq)
 
 end Tactic
 end RealRooted

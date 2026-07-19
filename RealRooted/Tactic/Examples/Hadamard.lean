@@ -370,6 +370,22 @@ example {p q : ℝ[X]}
     left_nonneg := hpnn,
     right_nonneg := hqnn
 
+example {f g p q : ℝ[X]}
+    (hf : HasNonnegCoeffs f)
+    (hg : HasNonnegCoeffs g)
+    (hp : HasNonnegCoeffs p)
+    (hq : HasNonnegCoeffs q)
+    (hfg : Prec f g)
+    (hpq : Prec p q) :
+    Prec0 (hadamardProduct f p) (hadamardProduct g q) := by
+  rr_hadamard_prec0 using
+    first_left_nonneg := hf,
+    first_right_nonneg := hg,
+    second_left_nonneg := hp,
+    second_right_nonneg := hq,
+    first_prec := hfg,
+    second_prec := hpq
+
 example {P Q : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i))
     (hQ : ∀ i : Nat, IsPFPolynomial (Q i)) :
@@ -401,6 +417,23 @@ example {P Q : Nat → ℝ[X]}
   rr_hadamard_sequence_nonneg_coeffs using
     left_nonneg := hPnn,
     right_nonneg := hQnn
+
+example {F G P Q : Nat → ℝ[X]}
+    (hF : ∀ i : Nat, HasNonnegCoeffs (F i))
+    (hG : ∀ i : Nat, HasNonnegCoeffs (G i))
+    (hP : ∀ i : Nat, HasNonnegCoeffs (P i))
+    (hQ : ∀ i : Nat, HasNonnegCoeffs (Q i))
+    (hFG : ∀ i : Nat, Prec (F i) (G i))
+    (hPQ : ∀ i : Nat, Prec (P i) (Q i)) :
+    ∀ i : Nat,
+      Prec0 (hadamardProduct (F i) (P i)) (hadamardProduct (G i) (Q i)) := by
+  rr_hadamard_sequence_prec0 using
+    first_left_nonneg := hF,
+    first_right_nonneg := hG,
+    second_left_nonneg := hP,
+    second_right_nonneg := hQ,
+    first_prec := hFG,
+    second_prec := hPQ
 
 end Tactic
 end RealRooted
