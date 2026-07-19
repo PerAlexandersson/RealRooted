@@ -84,6 +84,7 @@ rr_product_exit_sequence using ... certificate := rootZero
 rr_product_exit_sequence using ... certificate := auto
 rr_product_exit_sequence using ... certificate := periodTwo
 rr_product_factor_sequence using ... certificate := suppliedFactor
+rr_product_factor_sequence using ... certificate := auto
 rr_product_factor_sequence using ... certificate := affine
 rr_product_factor_sequence using ... certificate := affineAuto
 rr_product_factor_sequence using ... certificate := constFirstAffine
@@ -592,6 +593,13 @@ syntax (name := rr_product_factor_sequence_supplied_factor)
     "factor_realrooted" ":=" term ","
     "recurrence" ":=" term ","
     "certificate" ":=" "suppliedFactor" :
+  tactic
+
+syntax (name := rr_product_factor_sequence_auto)
+  "rr_product_factor_sequence" " using "
+    "base" ":=" term ","
+    "recurrence" ":=" term ","
+    "certificate" ":=" "auto" :
   tactic
 
 syntax (name := rr_product_factor_sequence_affine)
@@ -1111,6 +1119,28 @@ macro_rules
           base := $hbase,
           factor_realrooted := $hfactor,
           recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        recurrence := $hrec:term,
+        certificate := auto) =>
+      `(tactic|
+        first
+          | rr_product_X_sequence using
+              base := $hbase,
+              recurrence := $hrec
+          | rr_product_C_add_X_sequence using
+              base := $hbase,
+              recurrence := $hrec
+          | rr_product_X_pow_sequence using
+              base := $hbase,
+              recurrence := $hrec
+          | rr_product_X_add_C_pow_sequence using
+              base := $hbase,
+              recurrence := $hrec
+          | rr_product_C_add_X_pow_sequence using
+              base := $hbase,
+              recurrence := $hrec)
   | `(tactic|
       rr_product_factor_sequence using
         base := $hbase:term,
