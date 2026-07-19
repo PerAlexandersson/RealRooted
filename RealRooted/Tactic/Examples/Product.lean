@@ -266,11 +266,38 @@ example {P : Nat → ℝ[X]}
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_product_root_zero_sequence using hbase, hrec
 
+/-- Nonzero projection endpoint for root-zero product exits. -/
+example {P : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = X * P n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_root_zero_sequence using
+    base := hbase,
+    recurrence := hrec
+
+/-- Splitting projection endpoint for root-zero product exits. -/
+example {P : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = X * P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_root_zero_sequence using
+    base := hbase,
+    recurrence := hrec
+
 /-- `A122431`-style product exit, accepting the root-zero factor on the right. -/
 example {P : Nat → ℝ[X]}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hrec : ∀ n : Nat, P (n + 1) = P n * X) :
     ∀ n : Nat, P n ≠ 0 := by
+  rr_product_root_zero_sequence using
+    base := hbase,
+    recurrence := hrec
+
+/-- Splitting projection endpoint for right root-zero product exits. -/
+example {P : Nat → ℝ[X]}
+    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
+    (hrec : ∀ n : Nat, P (n + 1) = P n * X) :
+    ∀ n : Nat, (P n).Splits := by
   rr_product_root_zero_sequence using
     base := hbase,
     recurrence := hrec
