@@ -126,6 +126,13 @@ lemma IsInterlacingSeq.toIsInterlacingSeq0 {fs : List ℝ[X]} (h : IsInterlacing
   rw [isInterlacingSeq0_iff_pairwise]
   exact h.imp Prec.toPrec0
 
+/-- A strict nonnegative interlacing sequence is also a weak zero-aware
+nonnegative interlacing sequence. -/
+lemma IsInterlacingSeqNonneg.toIsInterlacingSeq0Nonneg {fs : List ℝ[X]}
+    (hfs : IsInterlacingSeqNonneg fs) :
+    IsInterlacingSeq0Nonneg fs :=
+  ⟨hfs.2.toIsInterlacingSeq0, fun f hf => (hfs.1 f hf).2⟩
+
 /-- Any pair in an interlacing sequence interlaces. -/
 lemma IsInterlacingSeq.prec {fs : List ℝ[X]} (h : IsInterlacingSeq fs)
     {i j : Fin fs.length} (hij : i < j) :
