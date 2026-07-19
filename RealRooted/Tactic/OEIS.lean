@@ -647,6 +647,7 @@ syntax (name := rr_product_factor_sequence_const_first_affine_auto)
 syntax (name := rr_product_factor_sequence_x_add_c)
   "rr_product_factor_sequence" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term ","
     "certificate" ":=" "xAddC" :
   tactic
@@ -654,6 +655,7 @@ syntax (name := rr_product_factor_sequence_x_add_c)
 syntax (name := rr_product_factor_sequence_c_add_x)
   "rr_product_factor_sequence" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term ","
     "certificate" ":=" "cAddX" :
   tactic
@@ -661,6 +663,7 @@ syntax (name := rr_product_factor_sequence_c_add_x)
 syntax (name := rr_product_factor_sequence_root_zero_pow)
   "rr_product_factor_sequence" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term ","
     "certificate" ":=" "rootZeroPow" :
   tactic
@@ -668,6 +671,7 @@ syntax (name := rr_product_factor_sequence_root_zero_pow)
 syntax (name := rr_product_factor_sequence_x_add_c_pow)
   "rr_product_factor_sequence" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term ","
     "certificate" ":=" "xAddCPow" :
   tactic
@@ -675,6 +679,7 @@ syntax (name := rr_product_factor_sequence_x_add_c_pow)
 syntax (name := rr_product_factor_sequence_c_add_x_pow)
   "rr_product_factor_sequence" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term ","
     "certificate" ":=" "cAddXPow" :
   tactic
@@ -1218,11 +1223,33 @@ macro_rules
   | `(tactic|
       rr_product_factor_sequence using
         base := $hbase:term,
+        cutoff := $N:term,
+        recurrence := $hrec:term,
+        certificate := xAddC) =>
+      `(tactic|
+        rr_product_X_sequence using
+          base := $hbase,
+          cutoff := $N,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
         recurrence := $hrec:term,
         certificate := cAddX) =>
       `(tactic|
         rr_product_C_add_X_sequence using
           base := $hbase,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        cutoff := $N:term,
+        recurrence := $hrec:term,
+        certificate := cAddX) =>
+      `(tactic|
+        rr_product_C_add_X_sequence using
+          base := $hbase,
+          cutoff := $N,
           recurrence := $hrec)
   | `(tactic|
       rr_product_factor_sequence using
@@ -1236,6 +1263,17 @@ macro_rules
   | `(tactic|
       rr_product_factor_sequence using
         base := $hbase:term,
+        cutoff := $N:term,
+        recurrence := $hrec:term,
+        certificate := rootZeroPow) =>
+      `(tactic|
+        rr_product_X_pow_sequence using
+          base := $hbase,
+          cutoff := $N,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
         recurrence := $hrec:term,
         certificate := xAddCPow) =>
       `(tactic|
@@ -1245,11 +1283,33 @@ macro_rules
   | `(tactic|
       rr_product_factor_sequence using
         base := $hbase:term,
+        cutoff := $N:term,
+        recurrence := $hrec:term,
+        certificate := xAddCPow) =>
+      `(tactic|
+        rr_product_X_add_C_pow_sequence using
+          base := $hbase,
+          cutoff := $N,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
         recurrence := $hrec:term,
         certificate := cAddXPow) =>
       `(tactic|
         rr_product_C_add_X_pow_sequence using
           base := $hbase,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        cutoff := $N:term,
+        recurrence := $hrec:term,
+        certificate := cAddXPow) =>
+      `(tactic|
+        rr_product_C_add_X_pow_sequence using
+          base := $hbase,
+          cutoff := $N,
           recurrence := $hrec)
   | `(tactic|
       rr_product_factor_sequence using

@@ -716,6 +716,30 @@ example {P : Nat → ℝ[X]} {t : Nat → ℝ}
     recurrence := hrec,
     certificate := xAddC
 
+/-- Product-factor router, unit-linear factor from a cutoff row. -/
+example {P : Nat → ℝ[X]} {t : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hrec : ∀ n : Nat, N ≤ n → P (n + 1) = P n * (X + C (t n))) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_factor_sequence using
+    base := hbase,
+    cutoff := N,
+    recurrence := hrec,
+    certificate := xAddC
+
+/-- Product-factor router, constant-first unit-linear factor from a cutoff row. -/
+example {P : Nat → ℝ[X]} {t : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hrec : ∀ n : Nat, N ≤ n → P (n + 1) = (C (t n) + X) * P n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_factor_sequence using
+    base := hbase,
+    cutoff := N,
+    recurrence := hrec,
+    certificate := cAddX
+
 /-- Product-factor recurrence router, automatic unit-linear factor. -/
 example {P : Nat → ℝ[X]} {t : Nat → ℝ}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
@@ -735,6 +759,44 @@ example {P : Nat → ℝ[X]} {m : Nat → Nat}
     base := hbase,
     recurrence := hrec,
     certificate := rootZeroPow
+
+/-- Product-factor router, repeated root-zero factor from a cutoff row. -/
+example {P : Nat → ℝ[X]} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hrec : ∀ n : Nat, N ≤ n → P (n + 1) = P n * X ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_factor_sequence using
+    base := hbase,
+    cutoff := N,
+    recurrence := hrec,
+    certificate := rootZeroPow
+
+/-- Product-factor router, powered unit-linear factor from a cutoff row. -/
+example {P : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hrec : ∀ n : Nat,
+      N ≤ n → P (n + 1) = (X + C (t n)) ^ (m n) * P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_factor_sequence using
+    base := hbase,
+    cutoff := N,
+    recurrence := hrec,
+    certificate := xAddCPow
+
+/-- Product-factor router, powered constant-first factor from a cutoff row. -/
+example {P : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hrec : ∀ n : Nat,
+      N ≤ n → P (n + 1) = P n * (C (t n) + X) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_factor_sequence using
+    base := hbase,
+    cutoff := N,
+    recurrence := hrec,
+    certificate := cAddXPow
 
 /-- Product-factor recurrence router, automatic repeated root-zero factor. -/
 example {P : Nat → ℝ[X]} {m : Nat → Nat}

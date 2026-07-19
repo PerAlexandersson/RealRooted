@@ -968,6 +968,17 @@ example {P : Nat → ℝ[X]} {t : Nat → ℝ}
     base := hbase,
     recurrence := hrec
 
+/-- Unit-slope product recurrences can start after finitely many base rows. -/
+example {P : Nat → ℝ[X]} {t : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hrec : ∀ n : Nat, N ≤ n → P (n + 1) = P n * (X + C (t n))) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_X_sequence using
+    base := hbase,
+    cutoff := N,
+    recurrence := hrec
+
 /-- Constant-first unit-slope recurrence with factor `C t_n+X`. -/
 example {P : Nat → ℝ[X]} {t : Nat → ℝ}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
@@ -986,6 +997,17 @@ example {P : Nat → ℝ[X]} {t : Nat → ℝ}
     base := hbase,
     recurrence := hrec
 
+/-- Constant-first unit-slope recurrences also accept a cutoff row. -/
+example {P : Nat → ℝ[X]} {t : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hrec : ∀ n : Nat, N ≤ n → P (n + 1) = (C (t n) + X) * P n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_C_add_X_sequence using
+    base := hbase,
+    cutoff := N,
+    recurrence := hrec
+
 /-- Product recurrence with powers of the root-at-zero factor. -/
 example {P : Nat → ℝ[X]} {m : Nat → Nat}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
@@ -993,6 +1015,17 @@ example {P : Nat → ℝ[X]} {m : Nat → Nat}
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_product_X_pow_sequence using
     base := hbase,
+    recurrence := hrec
+
+/-- Root-zero-power recurrences also accept a cutoff row. -/
+example {P : Nat → ℝ[X]} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hrec : ∀ n : Nat, N ≤ n → P (n + 1) = P n * X ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_X_pow_sequence using
+    base := hbase,
+    cutoff := N,
     recurrence := hrec
 
 /-- Powered unit-slope recurrences accept the factor on the right. -/
@@ -1004,6 +1037,18 @@ example {P : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
     base := hbase,
     recurrence := hrec
 
+/-- Powered unit-slope recurrences can start from a cutoff row. -/
+example {P : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hrec : ∀ n : Nat,
+      N ≤ n → P (n + 1) = (X + C (t n)) ^ (m n) * P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_X_add_C_pow_sequence using
+    base := hbase,
+    cutoff := N,
+    recurrence := hrec
+
 /-- Powered constant-first unit-slope recurrences accept right factors. -/
 example {P : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
@@ -1011,6 +1056,18 @@ example {P : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
     ∀ n : Nat, P n ≠ 0 := by
   rr_product_C_add_X_pow_sequence using
     base := hbase,
+    recurrence := hrec
+
+/-- Powered constant-first unit-slope recurrences accept cutoff rows. -/
+example {P : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hrec : ∀ n : Nat,
+      N ≤ n → P (n + 1) = P n * (C (t n) + X) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_C_add_X_pow_sequence using
+    base := hbase,
+    cutoff := N,
     recurrence := hrec
 
 /-- Product recurrence with nonzero scalar-power factors. -/
