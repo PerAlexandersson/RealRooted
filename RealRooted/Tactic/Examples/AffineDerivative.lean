@@ -96,6 +96,66 @@ example {f : ℝ[X]} (hf : f.Splits)
     nonneg := hfnn,
     scalar_gt_degree := hc
 
+example {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hsplits : ∀ n : Nat, (P n).Splits)
+    (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree)
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hroots_nonpos : ∀ n : Nat, ∀ r ∈ (P n).roots, r ≤ 0)
+    (hc : ∀ n : Nat, ((P n).natDegree : ℝ) < c n) :
+    ∀ n : Nat, Prec
+      (C (c n) * P n + (1 - X) * (P n).derivative)
+      (P n) := by
+  rr_prec_affine_derivative_sequence using
+    splits := hsplits,
+    degree_ge_one := hdeg,
+    pos_lc := hpos,
+    roots_nonpos := hroots_nonpos,
+    scalar_gt_degree := hc
+
+example {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hsplits : ∀ n : Nat, (P n).Splits)
+    (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree)
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hroots_nonpos : ∀ n : Nat, ∀ r ∈ (P n).roots, r ≤ 0)
+    (hc : ∀ n : Nat, ((P n).natDegree : ℝ) < c n) :
+    ∀ n : Nat,
+      C (c n) * P n + (1 - X) * (P n).derivative ≠ 0 ∧
+        (C (c n) * P n + (1 - X) * (P n).derivative).Splits := by
+  rr_prec_affine_derivative_sequence_realrooted using
+    splits := hsplits,
+    degree_ge_one := hdeg,
+    pos_lc := hpos,
+    roots_nonpos := hroots_nonpos,
+    scalar_gt_degree := hc
+
+example {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hsplits : ∀ n : Nat, (P n).Splits)
+    (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree)
+    (hnn : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, ((P n).natDegree : ℝ) < c n) :
+    ∀ n : Nat, Prec
+      (C (c n) * P n + (1 - X) * (P n).derivative)
+      (P n) := by
+  rr_prec_affine_derivative_nonneg_sequence using
+    splits := hsplits,
+    degree_ge_one := hdeg,
+    nonneg := hnn,
+    scalar_gt_degree := hc
+
+example {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hsplits : ∀ n : Nat, (P n).Splits)
+    (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree)
+    (hnn : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, ((P n).natDegree : ℝ) < c n) :
+    ∀ n : Nat,
+      C (c n) * P n + (1 - X) * (P n).derivative ≠ 0 ∧
+        (C (c n) * P n + (1 - X) * (P n).derivative).Splits := by
+  rr_prec_affine_derivative_nonneg_sequence_realrooted using
+    splits := hsplits,
+    degree_ge_one := hdeg,
+    nonneg := hnn,
+    scalar_gt_degree := hc
+
 example {f : ℝ[X]} {r : ℝ} (hr : f.IsRoot r) (c : ℝ)
     (hr_nonpos : r ≤ 0) :
     0 < (C c * f + (1 - X) * f.derivative).eval r ↔

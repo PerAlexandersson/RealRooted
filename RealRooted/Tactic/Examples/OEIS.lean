@@ -33,6 +33,36 @@ example {P : Nat → ℝ[X]}
     realrooted := hrr,
     nonneg := hpnn
 
+/-- Affine-derivative row-family `Prec` exit exposed through the OEIS facade. -/
+example {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hsplits : ∀ n : Nat, (P n).Splits)
+    (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree)
+    (hnn : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, ((P n).natDegree : ℝ) < c n) :
+    ∀ n : Nat, Prec
+      (C (c n) * P n + (1 - X) * (P n).derivative)
+      (P n) := by
+  rr_prec_affine_derivative_nonneg_sequence using
+    splits := hsplits,
+    degree_ge_one := hdeg,
+    nonneg := hnn,
+    scalar_gt_degree := hc
+
+/-- Affine-derivative row-family real-rootedness exit exposed through the OEIS facade. -/
+example {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hsplits : ∀ n : Nat, (P n).Splits)
+    (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree)
+    (hnn : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hc : ∀ n : Nat, ((P n).natDegree : ℝ) < c n) :
+    ∀ n : Nat,
+      C (c n) * P n + (1 - X) * (P n).derivative ≠ 0 ∧
+        (C (c n) * P n + (1 - X) * (P n).derivative).Splits := by
+  rr_prec_affine_derivative_nonneg_sequence_realrooted using
+    splits := hsplits,
+    degree_ge_one := hdeg,
+    nonneg := hnn,
+    scalar_gt_degree := hc
+
 /-- Direct Family I2 half-line branch, adjacent-`Prec` endpoint. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
