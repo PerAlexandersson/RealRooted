@@ -434,6 +434,19 @@ example {P Q : Nat → ℝ[X]}
     quotient_realrooted := hquot,
     factorization := hrow
 
+/-- Persistent root-at-zero lifts can start after a finite base interval. -/
+example {P Q : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, N ≤ n → P n = Q n * X) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_X_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow
+
 /-- Row-wise unit-slope linear lift for rows `P_n = (X+t_n) Q_n`. -/
 example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
@@ -452,6 +465,19 @@ example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
     quotient_realrooted := hquot,
     factorization := hrow
 
+/-- Unit-slope linear lifts can start after a finite base interval. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, N ≤ n → P n = (X + C (t n)) * Q n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_X_add_C_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow
+
 /-- Constant-first unit-slope lifts accept rows `P_n = (t_n+X) Q_n`. -/
 example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
@@ -468,6 +494,19 @@ example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
     ∀ n : Nat, P n ≠ 0 := by
   rr_product_lift_C_add_X_sequence using
     quotient_realrooted := hquot,
+    factorization := hrow
+
+/-- Constant-first unit-slope lifts can also start from a cutoff. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, N ≤ n → P n = Q n * (C (t n) + X)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_C_add_X_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
     factorization := hrow
 
 /-- Nonzero scalar lift for rows `P_n = c_n Q_n`. -/
@@ -615,6 +654,19 @@ example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_product_lift_X_pow_sequence using
     quotient_realrooted := hquot,
+    factorization := hrow
+
+/-- Root-at-zero power lifts can start after a finite base interval. -/
+example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, N ≤ n → P n = X ^ (m n) * Q n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_X_pow_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
     factorization := hrow
 
 /-- Projection endpoint for the `X^{m_n}` product lift. -/

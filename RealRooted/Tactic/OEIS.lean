@@ -1027,9 +1027,27 @@ syntax (name := rr_product_lift_sequence_root_zero)
     "certificate" ":=" "rootZero" :
   tactic
 
+syntax (name := rr_product_lift_sequence_root_zero_cutoff)
+  "rr_product_lift_sequence" " using "
+    "base" ":=" term ","
+    "quotient_realrooted" ":=" term ","
+    "cutoff" ":=" term ","
+    "factorization" ":=" term ","
+    "certificate" ":=" "rootZero" :
+  tactic
+
 syntax (name := rr_product_lift_sequence_root_zero_pow)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
+    "factorization" ":=" term ","
+    "certificate" ":=" "rootZeroPow" :
+  tactic
+
+syntax (name := rr_product_lift_sequence_root_zero_pow_cutoff)
+  "rr_product_lift_sequence" " using "
+    "base" ":=" term ","
+    "quotient_realrooted" ":=" term ","
+    "cutoff" ":=" term ","
     "factorization" ":=" term ","
     "certificate" ":=" "rootZeroPow" :
   tactic
@@ -1041,9 +1059,27 @@ syntax (name := rr_product_lift_sequence_x_add_c)
     "certificate" ":=" "xAddC" :
   tactic
 
+syntax (name := rr_product_lift_sequence_x_add_c_cutoff)
+  "rr_product_lift_sequence" " using "
+    "base" ":=" term ","
+    "quotient_realrooted" ":=" term ","
+    "cutoff" ":=" term ","
+    "factorization" ":=" term ","
+    "certificate" ":=" "xAddC" :
+  tactic
+
 syntax (name := rr_product_lift_sequence_c_add_x)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
+    "factorization" ":=" term ","
+    "certificate" ":=" "cAddX" :
+  tactic
+
+syntax (name := rr_product_lift_sequence_c_add_x_cutoff)
+  "rr_product_lift_sequence" " using "
+    "base" ":=" term ","
+    "quotient_realrooted" ":=" term ","
+    "cutoff" ":=" term ","
     "factorization" ":=" term ","
     "certificate" ":=" "cAddX" :
   tactic
@@ -2143,12 +2179,38 @@ macro_rules
           factorization := $hrow)
   | `(tactic|
       rr_product_lift_sequence using
+        base := $hbase:term,
+        quotient_realrooted := $hquot:term,
+        cutoff := $N:term,
+        factorization := $hrow:term,
+        certificate := rootZero) =>
+      `(tactic|
+        rr_product_lift_X_sequence using
+          base := $hbase,
+          quotient_realrooted := $hquot,
+          cutoff := $N,
+          factorization := $hrow)
+  | `(tactic|
+      rr_product_lift_sequence using
         quotient_realrooted := $hquot:term,
         factorization := $hrow:term,
         certificate := rootZeroPow) =>
       `(tactic|
         rr_product_lift_X_pow_sequence using
           quotient_realrooted := $hquot,
+          factorization := $hrow)
+  | `(tactic|
+      rr_product_lift_sequence using
+        base := $hbase:term,
+        quotient_realrooted := $hquot:term,
+        cutoff := $N:term,
+        factorization := $hrow:term,
+        certificate := rootZeroPow) =>
+      `(tactic|
+        rr_product_lift_X_pow_sequence using
+          base := $hbase,
+          quotient_realrooted := $hquot,
+          cutoff := $N,
           factorization := $hrow)
   | `(tactic|
       rr_product_lift_sequence using
@@ -2161,12 +2223,38 @@ macro_rules
           factorization := $hrow)
   | `(tactic|
       rr_product_lift_sequence using
+        base := $hbase:term,
+        quotient_realrooted := $hquot:term,
+        cutoff := $N:term,
+        factorization := $hrow:term,
+        certificate := xAddC) =>
+      `(tactic|
+        rr_product_lift_X_add_C_sequence using
+          base := $hbase,
+          quotient_realrooted := $hquot,
+          cutoff := $N,
+          factorization := $hrow)
+  | `(tactic|
+      rr_product_lift_sequence using
         quotient_realrooted := $hquot:term,
         factorization := $hrow:term,
         certificate := cAddX) =>
       `(tactic|
         rr_product_lift_C_add_X_sequence using
           quotient_realrooted := $hquot,
+          factorization := $hrow)
+  | `(tactic|
+      rr_product_lift_sequence using
+        base := $hbase:term,
+        quotient_realrooted := $hquot:term,
+        cutoff := $N:term,
+        factorization := $hrow:term,
+        certificate := cAddX) =>
+      `(tactic|
+        rr_product_lift_C_add_X_sequence using
+          base := $hbase,
+          quotient_realrooted := $hquot,
+          cutoff := $N,
           factorization := $hrow)
   | `(tactic|
       rr_product_lift_sequence using
