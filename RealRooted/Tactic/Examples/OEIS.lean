@@ -570,6 +570,36 @@ example {P : Nat → ℝ[X]} {a c d : Nat → ℝ}
     recurrence := hrec,
     certificate := wagnerGap
 
+/-- error: rr_i2_derivative_lag_sequence: jacobiOrHypergeom requires a classical coefficient-formula/root-location bridge -/
+#guard_msgs in
+example : True := by
+  rr_i2_derivative_lag_sequence using certificate := jacobiOrHypergeom
+
+/-- error: rr_i2_derivative_lag_sequence_realrooted: jacobiOrHypergeom requires a classical coefficient-formula/root-location bridge -/
+#guard_msgs in
+example : True := by
+  rr_i2_derivative_lag_sequence_realrooted using certificate := jacobiOrHypergeom
+
+/-- error: rr_i2_derivative_lag_sequence: transformNeeded requires an explicit transformed recurrence and root-window certificate -/
+#guard_msgs in
+example : True := by
+  rr_i2_derivative_lag_sequence using certificate := transformNeeded
+
+/-- error: rr_i2_derivative_lag_sequence_realrooted: transformNeeded requires an explicit transformed recurrence and root-window certificate -/
+#guard_msgs in
+example : True := by
+  rr_i2_derivative_lag_sequence_realrooted using certificate := transformNeeded
+
+/-- error: rr_i2_derivative_lag_sequence: vectorNeeded means the scalar derivative-lag wrapper is invalid; provide a vector/PF certificate -/
+#guard_msgs in
+example : True := by
+  rr_i2_derivative_lag_sequence using certificate := vectorNeeded
+
+/-- error: rr_i2_derivative_lag_sequence_realrooted: vectorNeeded means the scalar derivative-lag wrapper is invalid; provide a vector/PF certificate -/
+#guard_msgs in
+example : True := by
+  rr_i2_derivative_lag_sequence_realrooted using certificate := vectorNeeded
+
 /-- Family E positive `t`-lag router, exact-current `X` branch. -/
 example {P : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
