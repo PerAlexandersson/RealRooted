@@ -937,6 +937,43 @@ example {P : Nat → ℝ[X]}
 
 example {P : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
+    (hstep : ∀ n : Nat,
+      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2))) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_finish_sequence using
+    base := hbase,
+    step := hstep
+
+example {P : Nat → ℝ[X]}
+    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1))) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_finish_sequence using
+    prec := hprec
+
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1))) :
+    P n ≠ 0 := by
+  rr_finish_sequence using
+    prec := hprec
+
+example {P : Nat → ℝ[X]}
+    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1)))
+    (hdegree : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
+  rr_finish_sequence using
+    prec := hprec,
+    degree := hdegree
+
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1)))
+    (hdegree : ∀ n : Nat, (P (n + 1)).natDegree = (P n).natDegree + 1) :
+    Interlaces (P n) (P (n + 1)) := by
+  rr_finish_sequence using
+    prec := hprec,
+    degree := hdegree
+
+example {P : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
     (hdegree : ∀ n : Nat,
       (P (n + 2)).natDegree = (P (n + 1)).natDegree ∨
         (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1)
@@ -990,6 +1027,22 @@ example {P : Nat → ℝ[X]}
       Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2))) :
     ∀ n : Nat, (P n).Splits := by
   rr_finish using hbase, hdegree, hsame, hsucc
+
+example {P : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hdegree : ∀ n : Nat,
+      (P (n + 2)).natDegree = (P (n + 1)).natDegree ∨
+        (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1)
+    (hsame : ∀ n : Nat, (P (n + 2)).natDegree = (P (n + 1)).natDegree →
+      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2)))
+    (hsucc : ∀ n : Nat, (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1 →
+      Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2))) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_finish_sequence_branches using
+    base := hbase,
+    degree_branch := hdegree,
+    same := hsame,
+    successor := hsucc
 
 example {p q : ℝ[X]} {rest : List ℝ[X]}
     (hpq : Prec q p) (htail : IsGeneralizedSturmSeq (q :: rest)) :

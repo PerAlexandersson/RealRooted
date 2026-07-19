@@ -51,6 +51,21 @@ theorem isRealRooted_of_prec_chain {P : Nat → ℝ[X]}
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_prec_sequence hbase (fun n _ => hprec (n + 1))
 
+/-- A consecutive `Prec` chain gives rowwise nonzero real-rootedness, using
+the first step as the base certificate. -/
+theorem isRealRooted_of_prec_chain_from_step {P : Nat → ℝ[X]}
+    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1))) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_prec_chain (hprec 0) hprec
+
+/-- A consecutive `Prec` chain gives consecutive interlacing once the degree
+increments are supplied. -/
+theorem interlaces_of_prec_chain {P : Nat → ℝ[X]}
+    (hprec : ∀ n : Nat, Prec (P n) (P (n + 1)))
+    (hdegree : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree) :
+    ∀ n : Nat, Interlaces (P n) (P (n + 1)) :=
+  fun n => (hprec n).toInterlaces (hdegree n)
+
 /-- Generic `Prec`-chain induction with a same-degree/successor-degree branch.
 
 This wraps plateau recurrences such as degree patterns `1,1,2,2,3,3,...`.
@@ -811,6 +826,23 @@ syntax (name := rr_prec_sequence_realrooted)
     "step" ":=" term :
   tactic
 
+syntax (name := rr_finish_sequence_base_step)
+  "rr_finish_sequence" " using "
+    "base" ":=" term ","
+    "step" ":=" term :
+  tactic
+
+syntax (name := rr_finish_sequence_prec)
+  "rr_finish_sequence" " using "
+    "prec" ":=" term :
+  tactic
+
+syntax (name := rr_finish_sequence_prec_degree)
+  "rr_finish_sequence" " using "
+    "prec" ":=" term ","
+    "degree" ":=" term :
+  tactic
+
 syntax (name := rr_prec_sequence_branches)
   "rr_prec_sequence_branches" " using "
     "base" ":=" term ","
@@ -837,6 +869,22 @@ syntax (name := rr_prec_sequence_branches_realrooted)
 
 syntax (name := rr_prec_sequence_branches_realrooted_degree_branch)
   "rr_prec_sequence_branches_realrooted" " using "
+    "base" ":=" term ","
+    "degree_branch" ":=" term ","
+    "same" ":=" term ","
+    "successor" ":=" term :
+  tactic
+
+syntax (name := rr_finish_sequence_branches)
+  "rr_finish_sequence_branches" " using "
+    "base" ":=" term ","
+    "degree" ":=" term ","
+    "same" ":=" term ","
+    "successor" ":=" term :
+  tactic
+
+syntax (name := rr_finish_sequence_branches_degree_branch)
+  "rr_finish_sequence_branches" " using "
     "base" ":=" term ","
     "degree_branch" ":=" term ","
     "same" ":=" term ","
@@ -1399,6 +1447,33 @@ macro_rules
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_prec_sequence $hbase $hstep))
   | `(tactic|
+      rr_finish_sequence using
+        base := $hbase:term,
+        step := $hstep:term) =>
+      `(tactic|
+        rr_prec_sequence_realrooted using
+          base := $hbase,
+          step := $hstep)
+  | `(tactic|
+      rr_finish_sequence using
+        prec := $hprec:term) =>
+      `(tactic|
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_prec_chain_from_step $hprec))
+  | `(tactic|
+      rr_finish_sequence using
+        prec := $hprec:term,
+        degree := $hdegree:term) =>
+      `(tactic|
+        first
+          | exact RealRooted.interlaces_of_prec_chain $hprec $hdegree
+          | exact RealRooted.interlaces_of_prec_chain $hprec (fun n => ($hdegree n).symm)
+          | exact (RealRooted.interlaces_of_prec_chain $hprec $hdegree _)
+          | exact (RealRooted.interlaces_of_prec_chain
+              $hprec (fun n => ($hdegree n).symm) _)
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_prec_chain_from_step $hprec))
+  | `(tactic|
       rr_prec_sequence_branches using
         base := $hbase:term,
         degree := $hbranch:term,
@@ -1436,6 +1511,30 @@ macro_rules
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.isRealRooted_of_prec_sequence_degree_branches
             $hbase $hbranch $hsame $hsucc))
+  | `(tactic|
+      rr_finish_sequence_branches using
+        base := $hbase:term,
+        degree := $hbranch:term,
+        same := $hsame:term,
+        successor := $hsucc:term) =>
+      `(tactic|
+        rr_prec_sequence_branches_realrooted using
+          base := $hbase,
+          degree := $hbranch,
+          same := $hsame,
+          successor := $hsucc)
+  | `(tactic|
+      rr_finish_sequence_branches using
+        base := $hbase:term,
+        degree_branch := $hbranch:term,
+        same := $hsame:term,
+        successor := $hsucc:term) =>
+      `(tactic|
+        rr_prec_sequence_branches_realrooted using
+          base := $hbase,
+          degree_branch := $hbranch,
+          same := $hsame,
+          successor := $hsucc)
   | `(tactic| rr_finish using $h:term) =>
       `(tactic|
         first
