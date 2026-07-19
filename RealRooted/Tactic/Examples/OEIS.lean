@@ -1343,6 +1343,55 @@ example {P : Nat → ℝ[X]} {b : Nat → ℝ} {m : Nat → Nat}
     factor_step := hstep,
     certificate := scalarThenCAddXPowAuto
 
+/-- Product-parity router, root-zero powers with cutoff. -/
+example {P : Nat → ℝ[X]} {a : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ k : Nat, k ≤ 2 * N → P k ≠ 0 ∧ (P k).Splits)
+    (ha : ∀ n : Nat, N ≤ n → a n ≠ 0)
+    (hscalar : ∀ n : Nat, N ≤ n → P (2 * n + 1) = P (2 * n) * C (a n))
+    (hstep : ∀ n : Nat, N ≤ n → P (2 * n + 2) = X ^ (m n) * P (2 * n + 1)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_parity_sequence using
+    base := hbase,
+    scalar_ne := ha,
+    cutoff := N,
+    scalar_step := hscalar,
+    factor_step := hstep,
+    certificate := scalarThenRootZeroPow
+
+/-- Product-parity router, powered unit-linear step with cutoff. -/
+example {P : Nat → ℝ[X]} {b : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ k : Nat, k ≤ 2 * N → P k ≠ 0 ∧ (P k).Splits)
+    (hscalar : ∀ n : Nat, N ≤ n →
+      P (2 * n + 1) = C ((n : ℝ) + 1) * P (2 * n))
+    (hstep : ∀ n : Nat, N ≤ n →
+      P (2 * n + 2) = P (2 * n + 1) * (X + C (b n)) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_parity_sequence using
+    base := hbase,
+    cutoff := N,
+    scalar_step := hscalar,
+    factor_step := hstep,
+    certificate := scalarThenXAddCPowAuto
+
+/-- Product-parity router, powered constant-first step with cutoff. -/
+example {P : Nat → ℝ[X]} {a b : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ k : Nat, k ≤ 2 * N → P k ≠ 0 ∧ (P k).Splits)
+    (ha : ∀ n : Nat, N ≤ n → a n ≠ 0)
+    (hscalar : ∀ n : Nat, N ≤ n → P (2 * n + 1) = C (a n) * P (2 * n))
+    (hstep : ∀ n : Nat, N ≤ n →
+      P (2 * n + 2) = (C (b n) + X) ^ (m n) * P (2 * n + 1)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_parity_sequence using
+    base := hbase,
+    scalar_ne := ha,
+    cutoff := N,
+    scalar_step := hscalar,
+    factor_step := hstep,
+    certificate := scalarThenCAddXPow
+
 /-- Product-parity lift router, odd rows are scalar multiples of `X` times
 the even quotient. -/
 example {P Q : Nat → ℝ[X]} {a : Nat → ℝ}

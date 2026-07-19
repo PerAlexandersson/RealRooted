@@ -857,6 +857,7 @@ syntax (name := rr_product_parity_sequence_scalar_then_root_zero_pow)
   "rr_product_parity_sequence" " using "
     "base" ":=" term ","
     "scalar_ne" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "scalar_step" ":=" term ","
     "factor_step" ":=" term ","
     "certificate" ":=" "scalarThenRootZeroPow" :
@@ -865,6 +866,7 @@ syntax (name := rr_product_parity_sequence_scalar_then_root_zero_pow)
 syntax (name := rr_product_parity_sequence_scalar_then_root_zero_pow_auto)
   "rr_product_parity_sequence" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "scalar_step" ":=" term ","
     "factor_step" ":=" term ","
     "certificate" ":=" "scalarThenRootZeroPowAuto" :
@@ -874,6 +876,7 @@ syntax (name := rr_product_parity_sequence_scalar_then_x_add_c_pow)
   "rr_product_parity_sequence" " using "
     "base" ":=" term ","
     "scalar_ne" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "scalar_step" ":=" term ","
     "factor_step" ":=" term ","
     "certificate" ":=" "scalarThenXAddCPow" :
@@ -882,6 +885,7 @@ syntax (name := rr_product_parity_sequence_scalar_then_x_add_c_pow)
 syntax (name := rr_product_parity_sequence_scalar_then_x_add_c_pow_auto)
   "rr_product_parity_sequence" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "scalar_step" ":=" term ","
     "factor_step" ":=" term ","
     "certificate" ":=" "scalarThenXAddCPowAuto" :
@@ -891,6 +895,7 @@ syntax (name := rr_product_parity_sequence_scalar_then_c_add_x_pow)
   "rr_product_parity_sequence" " using "
     "base" ":=" term ","
     "scalar_ne" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "scalar_step" ":=" term ","
     "factor_step" ":=" term ","
     "certificate" ":=" "scalarThenCAddXPow" :
@@ -899,6 +904,7 @@ syntax (name := rr_product_parity_sequence_scalar_then_c_add_x_pow)
 syntax (name := rr_product_parity_sequence_scalar_then_c_add_x_pow_auto)
   "rr_product_parity_sequence" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "scalar_step" ":=" term ","
     "factor_step" ":=" term ","
     "certificate" ":=" "scalarThenCAddXPowAuto" :
@@ -1794,6 +1800,21 @@ macro_rules
       rr_product_parity_sequence using
         base := $hbase:term,
         scalar_ne := $ha:term,
+        cutoff := $N:term,
+        scalar_step := $hscalar:term,
+        factor_step := $hstep:term,
+        certificate := scalarThenRootZeroPow) =>
+      `(tactic|
+        rr_product_scalar_X_pow_sequence using
+          base := $hbase,
+          scalar_ne := $ha,
+          cutoff := $N,
+          scalar_step := $hscalar,
+          factor_step := $hstep)
+  | `(tactic|
+      rr_product_parity_sequence using
+        base := $hbase:term,
+        scalar_ne := $ha:term,
         scalar_step := $hscalar:term,
         factor_step := $hstep:term,
         certificate := scalarThenRootZeroPow) =>
@@ -1806,12 +1827,40 @@ macro_rules
   | `(tactic|
       rr_product_parity_sequence using
         base := $hbase:term,
+        cutoff := $N:term,
         scalar_step := $hscalar:term,
         factor_step := $hstep:term,
         certificate := scalarThenRootZeroPowAuto) =>
       `(tactic|
         rr_product_scalar_X_pow_sequence_auto using
           base := $hbase,
+          cutoff := $N,
+          scalar_step := $hscalar,
+          factor_step := $hstep)
+  | `(tactic|
+      rr_product_parity_sequence using
+        base := $hbase:term,
+        scalar_step := $hscalar:term,
+        factor_step := $hstep:term,
+        certificate := scalarThenRootZeroPowAuto) =>
+      `(tactic|
+        rr_product_scalar_X_pow_sequence_auto using
+          base := $hbase,
+          scalar_step := $hscalar,
+          factor_step := $hstep)
+  | `(tactic|
+      rr_product_parity_sequence using
+        base := $hbase:term,
+        scalar_ne := $ha:term,
+        cutoff := $N:term,
+        scalar_step := $hscalar:term,
+        factor_step := $hstep:term,
+        certificate := scalarThenXAddCPow) =>
+      `(tactic|
+        rr_product_scalar_X_add_C_pow_sequence using
+          base := $hbase,
+          scalar_ne := $ha,
+          cutoff := $N,
           scalar_step := $hscalar,
           factor_step := $hstep)
   | `(tactic|
@@ -1830,12 +1879,40 @@ macro_rules
   | `(tactic|
       rr_product_parity_sequence using
         base := $hbase:term,
+        cutoff := $N:term,
         scalar_step := $hscalar:term,
         factor_step := $hstep:term,
         certificate := scalarThenXAddCPowAuto) =>
       `(tactic|
         rr_product_scalar_X_add_C_pow_sequence_auto using
           base := $hbase,
+          cutoff := $N,
+          scalar_step := $hscalar,
+          factor_step := $hstep)
+  | `(tactic|
+      rr_product_parity_sequence using
+        base := $hbase:term,
+        scalar_step := $hscalar:term,
+        factor_step := $hstep:term,
+        certificate := scalarThenXAddCPowAuto) =>
+      `(tactic|
+        rr_product_scalar_X_add_C_pow_sequence_auto using
+          base := $hbase,
+          scalar_step := $hscalar,
+          factor_step := $hstep)
+  | `(tactic|
+      rr_product_parity_sequence using
+        base := $hbase:term,
+        scalar_ne := $ha:term,
+        cutoff := $N:term,
+        scalar_step := $hscalar:term,
+        factor_step := $hstep:term,
+        certificate := scalarThenCAddXPow) =>
+      `(tactic|
+        rr_product_scalar_C_add_X_pow_sequence using
+          base := $hbase,
+          scalar_ne := $ha,
+          cutoff := $N,
           scalar_step := $hscalar,
           factor_step := $hstep)
   | `(tactic|
@@ -1849,6 +1926,19 @@ macro_rules
         rr_product_scalar_C_add_X_pow_sequence using
           base := $hbase,
           scalar_ne := $ha,
+          scalar_step := $hscalar,
+          factor_step := $hstep)
+  | `(tactic|
+      rr_product_parity_sequence using
+        base := $hbase:term,
+        cutoff := $N:term,
+        scalar_step := $hscalar:term,
+        factor_step := $hstep:term,
+        certificate := scalarThenCAddXPowAuto) =>
+      `(tactic|
+        rr_product_scalar_C_add_X_pow_sequence_auto using
+          base := $hbase,
+          cutoff := $N,
           scalar_step := $hscalar,
           factor_step := $hstep)
   | `(tactic|
