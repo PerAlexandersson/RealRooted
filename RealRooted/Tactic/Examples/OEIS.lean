@@ -1195,6 +1195,15 @@ example (n : Nat) :
     b_nonneg := by norm_num,
     index := n
 
+/-- Operator-preserver row-family exit exposed through the OEIS facade. -/
+example {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {F G : Nat → ℝ[X]}
+    (hT : PreservesRealRootedOrZero T)
+    (hfg : ∀ n : Nat, Prec (F n) (G n)) :
+    ∀ n : Nat, Prec0 (T (F n)) (T (G n)) ∨ Prec0 (T (G n)) (T (F n)) := by
+  rr_operator_prec0_sequence_up_to_order using
+    preserves := hT,
+    prec := hfg
+
 /-- Wagner common-left addition row-family exit exposed through the OEIS
 facade. -/
 example {F G H : Nat → ℝ[X]}
