@@ -633,6 +633,20 @@ example {P F : Nat → ℝ[X]}
     recurrence := hrec,
     certificate := suppliedFactor
 
+/-- Product-factor router with a supplied factor certificate from a cutoff row. -/
+example {P F : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
+    (hrec : ∀ n : Nat, N ≤ n → P (n + 1) = P n * F n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_factor_sequence using
+    base := hbase,
+    factor_realrooted := hfactor,
+    cutoff := N,
+    recurrence := hrec,
+    certificate := suppliedFactor
+
 /-- Product-factor recurrence router, automatic affine-slope certificate. -/
 example {P : Nat → ℝ[X]} {t : Nat → ℝ}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)

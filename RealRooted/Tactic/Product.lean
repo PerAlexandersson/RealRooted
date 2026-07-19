@@ -225,6 +225,30 @@ theorem isRealRooted_of_product_factor_sequence
         isRealRooted_mul (hfactor n).1 (hfactor n).2 ih.1 ih.2
       simpa [Nat.succ_eq_add_one, hstep n] using hnext
 
+/-- Tail-start sequence shell for first-order product recurrences with a
+supplied factor certificate.  The finitely many rows before `N` are supplied
+as base cases, and the product recurrence is used from row `N` onward. -/
+theorem isRealRooted_of_product_factor_sequence_from
+    {P F : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
+    (hstep : ∀ n : Nat, N ≤ n → P (n + 1) = F n * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  intro n
+  exact Nat.strong_induction_on n fun n ih => by
+    by_cases hn : n ≤ N
+    · exact hbase n hn
+    · cases n with
+      | zero =>
+          exact False.elim (hn (Nat.zero_le N))
+      | succ m =>
+          have hNm : N ≤ m := by lia
+          have hm : P m ≠ 0 ∧ (P m).Splits := ih m (Nat.lt_succ_self m)
+          have hnext : F m * P m ≠ 0 ∧ (F m * P m).Splits :=
+            isRealRooted_mul (hfactor m hNm).1 (hfactor m hNm).2 hm.1 hm.2
+          simpa [Nat.succ_eq_add_one, hstep m hNm] using hnext
+
 /-- Right-factor variant of `isRealRooted_of_product_factor_sequence`. -/
 theorem isRealRooted_of_product_factor_right_sequence
     {P F : Nat → ℝ[X]}
@@ -234,6 +258,18 @@ theorem isRealRooted_of_product_factor_right_sequence
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_factor_sequence hbase hfactor
     (fun n => by rw [hstep n, mul_comm])
+
+/-- Right-factor variant of
+`isRealRooted_of_product_factor_sequence_from`. -/
+theorem isRealRooted_of_product_factor_right_sequence_from
+    {P F : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
+    (hstep : ∀ n : Nat, N ≤ n → P (n + 1) = P n * F n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_sequence_from N hbase hfactor
+    (fun n hn => by rw [hstep n hn, mul_comm])
 
 /-- A finite product of real linear factors is real-rooted. -/
 theorem isRealRooted_finset_prod_X_sub_C
@@ -1589,6 +1625,7 @@ syntax (name := rr_product_factor_sequence_named)
   "rr_product_factor_sequence" " using "
     "base" ":=" term ","
     "factor_realrooted" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term :
   tactic
 
@@ -2283,6 +2320,18 @@ macro_rules
             $hbase $hfactor $hstep),
           (RealRooted.isRealRooted_of_product_factor_right_sequence
             $hbase $hfactor $hstep))
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        factor_realrooted := $hfactor:term,
+        cutoff := $N:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_product_factor_sequence_from
+            $N $hbase $hfactor $hstep),
+          (RealRooted.isRealRooted_of_product_factor_right_sequence_from
+            $N $hbase $hfactor $hstep))
   | `(tactic|
       rr_product_factor_sequence using
         $hbase:term, $hfactor:term, $hstep:term) =>

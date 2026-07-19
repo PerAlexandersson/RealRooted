@@ -591,6 +591,7 @@ syntax (name := rr_product_factor_sequence_supplied_factor)
   "rr_product_factor_sequence" " using "
     "base" ":=" term ","
     "factor_realrooted" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term ","
     "certificate" ":=" "suppliedFactor" :
   tactic
@@ -1118,6 +1119,19 @@ macro_rules
         rr_product_factor_sequence using
           base := $hbase,
           factor_realrooted := $hfactor,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        factor_realrooted := $hfactor:term,
+        cutoff := $N:term,
+        recurrence := $hrec:term,
+        certificate := suppliedFactor) =>
+      `(tactic|
+        rr_product_factor_sequence using
+          base := $hbase,
+          factor_realrooted := $hfactor,
+          cutoff := $N,
           recurrence := $hrec)
   | `(tactic|
       rr_product_factor_sequence using
