@@ -89,6 +89,102 @@ theorem exists_nonRoot_threshold_count_gt_eq_sequence
           ((G i).roots.filter (x i < ·)).card := fun i =>
   RealRooted.exists_nonRoot_threshold_count_gt_eq (hF i) (hG i) (x i)
 
+theorem rootCount_diff_le_one_nonRoot_sequence
+    {F G : Nat → ℝ[X]}
+    (hF : ∀ i : Nat, F i ≠ 0)
+    (hG : ∀ i : Nat, G i ≠ 0)
+    (hbound : ∀ i : Nat, ∀ x : ℝ, (F i).eval x ≠ 0 → (G i).eval x ≠ 0 →
+      (((F i).roots.filter (· ≤ x)).card : ℤ) -
+          ((G i).roots.filter (· ≤ x)).card ≤ 1 ∧
+        (((G i).roots.filter (· ≤ x)).card : ℤ) -
+            ((F i).roots.filter (· ≤ x)).card ≤ (1 : ℤ)) :
+    ∀ i : Nat, ∀ x : ℝ,
+      (((F i).roots.filter (· ≤ x)).card : ℤ) -
+          ((G i).roots.filter (· ≤ x)).card ≤ 1 ∧
+        (((G i).roots.filter (· ≤ x)).card : ℤ) -
+            ((F i).roots.filter (· ≤ x)).card ≤ (1 : ℤ) := fun i =>
+  RealRooted.rootCount_diff_le_one_of_nonRoot (hF i) (hG i) (hbound i)
+
+theorem rootCount_abs_diff_le_one_nonRoot_sequence
+    {F G : Nat → ℝ[X]}
+    (hF : ∀ i : Nat, F i ≠ 0)
+    (hG : ∀ i : Nat, G i ≠ 0)
+    (hbound : ∀ i : Nat, ∀ x : ℝ, (F i).eval x ≠ 0 → (G i).eval x ≠ 0 →
+      (((F i).roots.filter (· ≤ x)).card : ℤ) -
+          ((G i).roots.filter (· ≤ x)).card ≤ 1 ∧
+        (((G i).roots.filter (· ≤ x)).card : ℤ) -
+            ((F i).roots.filter (· ≤ x)).card ≤ (1 : ℤ)) :
+    ∀ i : Nat, ∀ x : ℝ,
+      |(((F i).roots.filter (· ≤ x)).card : ℤ) -
+          ((G i).roots.filter (· ≤ x)).card| ≤ (1 : ℤ) := fun i =>
+  RealRooted.rootCount_abs_diff_le_one_of_nonRoot (hF i) (hG i) (hbound i)
+
+theorem rootCount_diff_le_one_nonRoot_isRoot_sequence
+    {F G : Nat → ℝ[X]}
+    (hF : ∀ i : Nat, F i ≠ 0)
+    (hG : ∀ i : Nat, G i ≠ 0)
+    (hbound : ∀ i : Nat, ∀ x : ℝ, ¬ (F i).IsRoot x → ¬ (G i).IsRoot x →
+      (((F i).roots.filter (· ≤ x)).card : ℤ) -
+          ((G i).roots.filter (· ≤ x)).card ≤ 1 ∧
+        (((G i).roots.filter (· ≤ x)).card : ℤ) -
+            ((F i).roots.filter (· ≤ x)).card ≤ (1 : ℤ)) :
+    ∀ i : Nat, ∀ x : ℝ,
+      (((F i).roots.filter (· ≤ x)).card : ℤ) -
+          ((G i).roots.filter (· ≤ x)).card ≤ 1 ∧
+        (((G i).roots.filter (· ≤ x)).card : ℤ) -
+            ((F i).roots.filter (· ≤ x)).card ≤ (1 : ℤ) := fun i =>
+  RealRooted.rootCount_diff_le_one_of_nonRoot_isRoot
+    (hF i) (hG i) (hbound i)
+
+theorem rootCountAbove_diff_le_one_nonRoot_sequence
+    {F G : Nat → ℝ[X]}
+    (hF : ∀ i : Nat, F i ≠ 0)
+    (hG : ∀ i : Nat, G i ≠ 0)
+    (hbound : ∀ i : Nat, ∀ x : ℝ, (F i).eval x ≠ 0 → (G i).eval x ≠ 0 →
+      (((F i).roots.filter (x < ·)).card : ℤ) -
+          ((G i).roots.filter (x < ·)).card ≤ 1 ∧
+        (((G i).roots.filter (x < ·)).card : ℤ) -
+            ((F i).roots.filter (x < ·)).card ≤ (1 : ℤ)) :
+    ∀ i : Nat, ∀ x : ℝ,
+      (((F i).roots.filter (x < ·)).card : ℤ) -
+          ((G i).roots.filter (x < ·)).card ≤ 1 ∧
+        (((G i).roots.filter (x < ·)).card : ℤ) -
+            ((F i).roots.filter (x < ·)).card ≤ (1 : ℤ) := fun i =>
+  RealRooted.rootCountAbove_diff_le_one_of_nonRoot
+    (hF i) (hG i) (hbound i)
+
+theorem rootCountAbove_diff_le_one_nonRoot_isRoot_sequence
+    {F G : Nat → ℝ[X]}
+    (hF : ∀ i : Nat, F i ≠ 0)
+    (hG : ∀ i : Nat, G i ≠ 0)
+    (hbound : ∀ i : Nat, ∀ x : ℝ, ¬ (F i).IsRoot x → ¬ (G i).IsRoot x →
+      (((F i).roots.filter (x < ·)).card : ℤ) -
+          ((G i).roots.filter (x < ·)).card ≤ 1 ∧
+        (((G i).roots.filter (x < ·)).card : ℤ) -
+            ((F i).roots.filter (x < ·)).card ≤ (1 : ℤ)) :
+    ∀ i : Nat, ∀ x : ℝ,
+      (((F i).roots.filter (x < ·)).card : ℤ) -
+          ((G i).roots.filter (x < ·)).card ≤ 1 ∧
+        (((G i).roots.filter (x < ·)).card : ℤ) -
+            ((F i).roots.filter (x < ·)).card ≤ (1 : ℤ) := fun i =>
+  RealRooted.rootCountAbove_diff_le_one_of_nonRoot_isRoot
+    (hF i) (hG i) (hbound i)
+
+theorem rootCount_max_abs_diff_le_one_sequence
+    {F G : Nat → ℝ[X]}
+    (h : ∀ i : Nat, ∀ x : ℝ,
+      |(((F i).roots.filter (· ≤ x)).card : ℤ) -
+          ((G i).roots.filter (· ≤ x)).card| ≤ 1 ∧
+        |(((F i).roots.filter (x < ·)).card : ℤ) -
+            ((G i).roots.filter (x < ·)).card| ≤ (1 : ℤ)) :
+    ∀ i : Nat, ∀ x : ℝ,
+      max
+        |(((F i).roots.filter (· ≤ x)).card : ℤ) -
+          ((G i).roots.filter (· ≤ x)).card|
+        |(((F i).roots.filter (x < ·)).card : ℤ) -
+          ((G i).roots.filter (x < ·)).card| ≤ (1 : ℤ) := fun i =>
+  RealRooted.rootCount_max_abs_diff_le_one_of_bundled (h i)
+
 syntax (name := rr_natDegree_add_C_mul_lt_named)
   "rr_natDegree_add_C_mul_lt" " using "
     "parameter_ne_zero" ":=" term ","
@@ -241,8 +337,22 @@ syntax (name := rr_rootCount_diff_le_one_nonRoot_named)
     "nonroot_bound" ":=" term :
   tactic
 
+syntax (name := rr_rootCount_diff_le_one_nonRoot_sequence_named)
+  "rr_rootCount_diff_le_one_nonRoot_sequence" " using "
+    "left_ne_zero" ":=" term ","
+    "right_ne_zero" ":=" term ","
+    "nonroot_bound" ":=" term :
+  tactic
+
 syntax (name := rr_rootCount_abs_diff_le_one_nonRoot_named)
   "rr_rootCount_abs_diff_le_one_nonRoot" " using "
+    "left_ne_zero" ":=" term ","
+    "right_ne_zero" ":=" term ","
+    "nonroot_bound" ":=" term :
+  tactic
+
+syntax (name := rr_rootCount_abs_diff_le_one_nonRoot_sequence_named)
+  "rr_rootCount_abs_diff_le_one_nonRoot_sequence" " using "
     "left_ne_zero" ":=" term ","
     "right_ne_zero" ":=" term ","
     "nonroot_bound" ":=" term :
@@ -255,8 +365,22 @@ syntax (name := rr_rootCount_diff_le_one_nonRoot_isRoot_named)
     "nonroot_bound" ":=" term :
   tactic
 
+syntax (name := rr_rootCount_diff_le_one_nonRoot_isRoot_sequence_named)
+  "rr_rootCount_diff_le_one_nonRoot_isRoot_sequence" " using "
+    "left_ne_zero" ":=" term ","
+    "right_ne_zero" ":=" term ","
+    "nonroot_bound" ":=" term :
+  tactic
+
 syntax (name := rr_rootCountAbove_diff_le_one_nonRoot_named)
   "rr_rootCountAbove_diff_le_one_nonRoot" " using "
+    "left_ne_zero" ":=" term ","
+    "right_ne_zero" ":=" term ","
+    "nonroot_bound" ":=" term :
+  tactic
+
+syntax (name := rr_rootCountAbove_diff_le_one_nonRoot_sequence_named)
+  "rr_rootCountAbove_diff_le_one_nonRoot_sequence" " using "
     "left_ne_zero" ":=" term ","
     "right_ne_zero" ":=" term ","
     "nonroot_bound" ":=" term :
@@ -269,8 +393,20 @@ syntax (name := rr_rootCountAbove_diff_le_one_nonRoot_isRoot_named)
     "nonroot_bound" ":=" term :
   tactic
 
+syntax (name := rr_rootCountAbove_diff_le_one_nonRoot_isRoot_sequence_named)
+  "rr_rootCountAbove_diff_le_one_nonRoot_isRoot_sequence" " using "
+    "left_ne_zero" ":=" term ","
+    "right_ne_zero" ":=" term ","
+    "nonroot_bound" ":=" term :
+  tactic
+
 syntax (name := rr_rootCount_max_abs_diff_le_one_named)
   "rr_rootCount_max_abs_diff_le_one" " using "
+    "bundled_bound" ":=" term :
+  tactic
+
+syntax (name := rr_rootCount_max_abs_diff_le_one_sequence_named)
+  "rr_rootCount_max_abs_diff_le_one_sequence" " using "
     "bundled_bound" ":=" term :
   tactic
 
@@ -767,12 +903,28 @@ macro_rules
       `(tactic| exact RealRooted.rootCount_diff_le_one_of_nonRoot
         $hf $hg $hbound)
   | `(tactic|
+      rr_rootCount_diff_le_one_nonRoot_sequence using
+        left_ne_zero := $hf:term,
+        right_ne_zero := $hg:term,
+        nonroot_bound := $hbound:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.rootCount_diff_le_one_nonRoot_sequence
+          $hf $hg $hbound)
+  | `(tactic|
       rr_rootCount_abs_diff_le_one_nonRoot using
         left_ne_zero := $hf:term,
         right_ne_zero := $hg:term,
         nonroot_bound := $hbound:term) =>
       `(tactic| exact RealRooted.rootCount_abs_diff_le_one_of_nonRoot
         $hf $hg $hbound)
+  | `(tactic|
+      rr_rootCount_abs_diff_le_one_nonRoot_sequence using
+        left_ne_zero := $hf:term,
+        right_ne_zero := $hg:term,
+        nonroot_bound := $hbound:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.rootCount_abs_diff_le_one_nonRoot_sequence
+          $hf $hg $hbound)
   | `(tactic|
       rr_rootCount_diff_le_one_nonRoot_isRoot using
         left_ne_zero := $hf:term,
@@ -781,12 +933,28 @@ macro_rules
       `(tactic| exact RealRooted.rootCount_diff_le_one_of_nonRoot_isRoot
         $hf $hg $hbound)
   | `(tactic|
+      rr_rootCount_diff_le_one_nonRoot_isRoot_sequence using
+        left_ne_zero := $hf:term,
+        right_ne_zero := $hg:term,
+        nonroot_bound := $hbound:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.rootCount_diff_le_one_nonRoot_isRoot_sequence
+          $hf $hg $hbound)
+  | `(tactic|
       rr_rootCountAbove_diff_le_one_nonRoot using
         left_ne_zero := $hf:term,
         right_ne_zero := $hg:term,
         nonroot_bound := $hbound:term) =>
       `(tactic| exact RealRooted.rootCountAbove_diff_le_one_of_nonRoot
         $hf $hg $hbound)
+  | `(tactic|
+      rr_rootCountAbove_diff_le_one_nonRoot_sequence using
+        left_ne_zero := $hf:term,
+        right_ne_zero := $hg:term,
+        nonroot_bound := $hbound:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.rootCountAbove_diff_le_one_nonRoot_sequence
+          $hf $hg $hbound)
   | `(tactic|
       rr_rootCountAbove_diff_le_one_nonRoot_isRoot using
         left_ne_zero := $hf:term,
@@ -795,9 +963,22 @@ macro_rules
       `(tactic| exact RealRooted.rootCountAbove_diff_le_one_of_nonRoot_isRoot
         $hf $hg $hbound)
   | `(tactic|
+      rr_rootCountAbove_diff_le_one_nonRoot_isRoot_sequence using
+        left_ne_zero := $hf:term,
+        right_ne_zero := $hg:term,
+        nonroot_bound := $hbound:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.rootCountAbove_diff_le_one_nonRoot_isRoot_sequence
+          $hf $hg $hbound)
+  | `(tactic|
       rr_rootCount_max_abs_diff_le_one using
         bundled_bound := $h:term) =>
       `(tactic| exact RealRooted.rootCount_max_abs_diff_le_one_of_bundled $h)
+  | `(tactic|
+      rr_rootCount_max_abs_diff_le_one_sequence using
+        bundled_bound := $h:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.rootCount_max_abs_diff_le_one_sequence $h)
   | `(tactic|
       rr_left_card_roots_succDegree using
         left_pos_lc := $hfpos:term,

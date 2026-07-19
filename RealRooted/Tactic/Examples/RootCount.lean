@@ -318,6 +318,108 @@ example {f g : ℝ[X]}
           (g.roots.filter (x < ·)).card| ≤ 1 := by
   rr_rootCount_max_abs_diff_le_one using bundled_bound := h
 
+example {F G : Nat → ℝ[X]}
+    (hF : ∀ i : Nat, F i ≠ 0)
+    (hG : ∀ i : Nat, G i ≠ 0)
+    (hbound : ∀ i : Nat, ∀ x : ℝ, (F i).eval x ≠ 0 → (G i).eval x ≠ 0 →
+      (((F i).roots.filter (· ≤ x)).card : ℤ) -
+          ((G i).roots.filter (· ≤ x)).card ≤ 1 ∧
+        (((G i).roots.filter (· ≤ x)).card : ℤ) -
+          ((F i).roots.filter (· ≤ x)).card ≤ 1) :
+    ∀ i : Nat, ∀ x : ℝ,
+      (((F i).roots.filter (· ≤ x)).card : ℤ) -
+          ((G i).roots.filter (· ≤ x)).card ≤ 1 ∧
+        (((G i).roots.filter (· ≤ x)).card : ℤ) -
+          ((F i).roots.filter (· ≤ x)).card ≤ 1 := by
+  rr_rootCount_diff_le_one_nonRoot_sequence using
+    left_ne_zero := hF,
+    right_ne_zero := hG,
+    nonroot_bound := hbound
+
+example {F G : Nat → ℝ[X]}
+    (hF : ∀ i : Nat, F i ≠ 0)
+    (hG : ∀ i : Nat, G i ≠ 0)
+    (hbound : ∀ i : Nat, ∀ x : ℝ, (F i).eval x ≠ 0 → (G i).eval x ≠ 0 →
+      (((F i).roots.filter (· ≤ x)).card : ℤ) -
+          ((G i).roots.filter (· ≤ x)).card ≤ 1 ∧
+        (((G i).roots.filter (· ≤ x)).card : ℤ) -
+          ((F i).roots.filter (· ≤ x)).card ≤ 1) :
+    ∀ i : Nat, ∀ x : ℝ,
+      |(((F i).roots.filter (· ≤ x)).card : ℤ) -
+          ((G i).roots.filter (· ≤ x)).card| ≤ 1 := by
+  rr_rootCount_abs_diff_le_one_nonRoot_sequence using
+    left_ne_zero := hF,
+    right_ne_zero := hG,
+    nonroot_bound := hbound
+
+example {F G : Nat → ℝ[X]}
+    (hF : ∀ i : Nat, F i ≠ 0)
+    (hG : ∀ i : Nat, G i ≠ 0)
+    (hbound : ∀ i : Nat, ∀ x : ℝ, ¬ (F i).IsRoot x → ¬ (G i).IsRoot x →
+      (((F i).roots.filter (· ≤ x)).card : ℤ) -
+          ((G i).roots.filter (· ≤ x)).card ≤ 1 ∧
+        (((G i).roots.filter (· ≤ x)).card : ℤ) -
+          ((F i).roots.filter (· ≤ x)).card ≤ 1) :
+    ∀ i : Nat, ∀ x : ℝ,
+      (((F i).roots.filter (· ≤ x)).card : ℤ) -
+          ((G i).roots.filter (· ≤ x)).card ≤ 1 ∧
+        (((G i).roots.filter (· ≤ x)).card : ℤ) -
+          ((F i).roots.filter (· ≤ x)).card ≤ 1 := by
+  rr_rootCount_diff_le_one_nonRoot_isRoot_sequence using
+    left_ne_zero := hF,
+    right_ne_zero := hG,
+    nonroot_bound := hbound
+
+example {F G : Nat → ℝ[X]}
+    (hF : ∀ i : Nat, F i ≠ 0)
+    (hG : ∀ i : Nat, G i ≠ 0)
+    (hbound : ∀ i : Nat, ∀ x : ℝ, (F i).eval x ≠ 0 → (G i).eval x ≠ 0 →
+      (((F i).roots.filter (x < ·)).card : ℤ) -
+          ((G i).roots.filter (x < ·)).card ≤ 1 ∧
+        (((G i).roots.filter (x < ·)).card : ℤ) -
+          ((F i).roots.filter (x < ·)).card ≤ 1) :
+    ∀ i : Nat, ∀ x : ℝ,
+      (((F i).roots.filter (x < ·)).card : ℤ) -
+          ((G i).roots.filter (x < ·)).card ≤ 1 ∧
+        (((G i).roots.filter (x < ·)).card : ℤ) -
+          ((F i).roots.filter (x < ·)).card ≤ 1 := by
+  rr_rootCountAbove_diff_le_one_nonRoot_sequence using
+    left_ne_zero := hF,
+    right_ne_zero := hG,
+    nonroot_bound := hbound
+
+example {F G : Nat → ℝ[X]}
+    (hF : ∀ i : Nat, F i ≠ 0)
+    (hG : ∀ i : Nat, G i ≠ 0)
+    (hbound : ∀ i : Nat, ∀ x : ℝ, ¬ (F i).IsRoot x → ¬ (G i).IsRoot x →
+      (((F i).roots.filter (x < ·)).card : ℤ) -
+          ((G i).roots.filter (x < ·)).card ≤ 1 ∧
+        (((G i).roots.filter (x < ·)).card : ℤ) -
+          ((F i).roots.filter (x < ·)).card ≤ 1) :
+    ∀ i : Nat, ∀ x : ℝ,
+      (((F i).roots.filter (x < ·)).card : ℤ) -
+          ((G i).roots.filter (x < ·)).card ≤ 1 ∧
+        (((G i).roots.filter (x < ·)).card : ℤ) -
+          ((F i).roots.filter (x < ·)).card ≤ 1 := by
+  rr_rootCountAbove_diff_le_one_nonRoot_isRoot_sequence using
+    left_ne_zero := hF,
+    right_ne_zero := hG,
+    nonroot_bound := hbound
+
+example {F G : Nat → ℝ[X]}
+    (h : ∀ i : Nat, ∀ x : ℝ,
+      |(((F i).roots.filter (· ≤ x)).card : ℤ) -
+          ((G i).roots.filter (· ≤ x)).card| ≤ 1 ∧
+        |(((F i).roots.filter (x < ·)).card : ℤ) -
+          ((G i).roots.filter (x < ·)).card| ≤ 1) :
+    ∀ i : Nat, ∀ x : ℝ,
+      max
+        |(((F i).roots.filter (· ≤ x)).card : ℤ) -
+          ((G i).roots.filter (· ≤ x)).card|
+        |(((F i).roots.filter (x < ·)).card : ℤ) -
+          ((G i).roots.filter (x < ·)).card| ≤ 1 := by
+  rr_rootCount_max_abs_diff_le_one_sequence using bundled_bound := h
+
 example {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)

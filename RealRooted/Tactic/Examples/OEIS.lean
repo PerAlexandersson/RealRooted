@@ -1551,6 +1551,25 @@ example {F G : Nat → ℝ[X]} {β x : Nat → ℝ}
     parameter_le_one := hβ1,
     eval_product_pos := hprod
 
+/-- Root-count comparison row-family exit exposed through the OEIS facade. -/
+example {F G : Nat → ℝ[X]}
+    (hF : ∀ n : Nat, F n ≠ 0)
+    (hG : ∀ n : Nat, G n ≠ 0)
+    (hbound : ∀ n : Nat, ∀ x : ℝ, (F n).eval x ≠ 0 → (G n).eval x ≠ 0 →
+      (((F n).roots.filter (x < ·)).card : ℤ) -
+          ((G n).roots.filter (x < ·)).card ≤ 1 ∧
+        (((G n).roots.filter (x < ·)).card : ℤ) -
+          ((F n).roots.filter (x < ·)).card ≤ 1) :
+    ∀ n : Nat, ∀ x : ℝ,
+      (((F n).roots.filter (x < ·)).card : ℤ) -
+          ((G n).roots.filter (x < ·)).card ≤ 1 ∧
+        (((G n).roots.filter (x < ·)).card : ℤ) -
+          ((F n).roots.filter (x < ·)).card ≤ 1 := by
+  rr_rootCountAbove_diff_le_one_nonRoot_sequence using
+    left_ne_zero := hF,
+    right_ne_zero := hG,
+    nonroot_bound := hbound
+
 /-- Euler-operator PF row-family exit exposed through the OEIS facade. -/
 example {P : Nat → ℝ[X]}
     (hP : ∀ n : Nat, IsPFPolynomial (P n)) :
