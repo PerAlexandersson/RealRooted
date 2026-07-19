@@ -59,9 +59,18 @@ example {n : ℕ} {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k) :
     HasNonnegCoeffs (jensenPolynomial n gamma) := by
   rr_jensen_nonneg using sequence_nonneg := hgamma
 
+example {N : Nat → ℕ} {Gamma : Nat → ℕ → ℝ}
+    (hGamma : ∀ i k, 0 ≤ Gamma i k) :
+    ∀ i : Nat, HasNonnegCoeffs (jensenPolynomial (N i) (Gamma i)) := by
+  rr_jensen_sequence_nonneg using level := N, sequence_nonneg := hGamma
+
 example {n : ℕ} {gamma : ℕ → ℝ} :
     (jensenPolynomial n gamma).natDegree ≤ n := by
   rr_jensen_natDegree_le
+
+example {N : Nat → ℕ} {Gamma : Nat → ℕ → ℝ} :
+    ∀ i : Nat, (jensenPolynomial (N i) (Gamma i)).natDegree ≤ N i := by
+  rr_jensen_sequence_natDegree_le using level := N, sequence := Gamma
 
 example {n : ℕ} {gamma : ℕ → ℝ} :
     jensenPolynomial n gamma = 0 ↔ ∀ k, k ≤ n → gamma k = 0 := by
@@ -123,16 +132,39 @@ example {m n : ℕ} {gamma : ℕ → ℝ} (hmn : m ≤ n)
     IsFiniteMultiplierSequence m gamma := by
   rr_finite_multiplier_mono using degree_le := hmn, multiplier := h
 
+example {M N : Nat → ℕ} {Gamma : Nat → ℕ → ℝ}
+    (hMN : ∀ i : Nat, M i ≤ N i)
+    (h : ∀ i : Nat, IsFiniteMultiplierSequence (N i) (Gamma i)) :
+    ∀ i : Nat, IsFiniteMultiplierSequence (M i) (Gamma i) := by
+  rr_finite_multiplier_sequence_mono using degree_le := hMN, multiplier := h
+
 example {m n : ℕ} {gamma : ℕ → ℝ} (hmn : m ≤ n)
     (h : IsFinitePFMultiplierSequence n gamma) :
     IsFinitePFMultiplierSequence m gamma := by
   rr_finite_pf_multiplier_mono using degree_le := hmn, pf_multiplier := h
+
+example {M N : Nat → ℕ} {Gamma : Nat → ℕ → ℝ}
+    (hMN : ∀ i : Nat, M i ≤ N i)
+    (h : ∀ i : Nat, IsFinitePFMultiplierSequence (N i) (Gamma i)) :
+    ∀ i : Nat, IsFinitePFMultiplierSequence (M i) (Gamma i) := by
+  rr_finite_pf_multiplier_sequence_mono using
+    degree_le := hMN,
+    pf_multiplier := h
 
 example {n : ℕ} {gamma delta : ℕ → ℝ}
     (hgamma : IsFiniteMultiplierSequence n gamma)
     (hdelta : IsFiniteMultiplierSequence n delta) :
     IsFiniteMultiplierSequence n (fun k => gamma k * delta k) := by
   rr_finite_multiplier_mul using left_multiplier := hgamma, right_multiplier := hdelta
+
+example {N : Nat → ℕ} {Gamma Delta : Nat → ℕ → ℝ}
+    (hGamma : ∀ i : Nat, IsFiniteMultiplierSequence (N i) (Gamma i))
+    (hDelta : ∀ i : Nat, IsFiniteMultiplierSequence (N i) (Delta i)) :
+    ∀ i : Nat, IsFiniteMultiplierSequence (N i)
+      (fun k => Gamma i k * Delta i k) := by
+  rr_finite_multiplier_sequence_mul using
+    left_multiplier := hGamma,
+    right_multiplier := hDelta
 
 example {n : ℕ} {gamma delta : ℕ → ℝ}
     (hgamma : IsFinitePFMultiplierSequence n gamma)
@@ -141,6 +173,15 @@ example {n : ℕ} {gamma delta : ℕ → ℝ}
   rr_finite_pf_multiplier_mul using
     left_pf_multiplier := hgamma,
     right_pf_multiplier := hdelta
+
+example {N : Nat → ℕ} {Gamma Delta : Nat → ℕ → ℝ}
+    (hGamma : ∀ i : Nat, IsFinitePFMultiplierSequence (N i) (Gamma i))
+    (hDelta : ∀ i : Nat, IsFinitePFMultiplierSequence (N i) (Delta i)) :
+    ∀ i : Nat, IsFinitePFMultiplierSequence (N i)
+      (fun k => Gamma i k * Delta i k) := by
+  rr_finite_pf_multiplier_sequence_mul using
+    left_pf_multiplier := hGamma,
+    right_pf_multiplier := hDelta
 
 example {n : ℕ} {a : ℝ} :
     IsFiniteMultiplierSequence n (fun _ => a) := by
@@ -199,9 +240,25 @@ example {n : ℕ} {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k)
     IsPFPolynomial (jensenPolynomial n gamma) := by
   rr_jensen_pf_of_finite_multiplier using sequence_nonneg := hgamma, multiplier := hmult
 
+example {N : Nat → ℕ} {Gamma : Nat → ℕ → ℝ}
+    (hGamma : ∀ i k, 0 ≤ Gamma i k)
+    (hmult : ∀ i : Nat, IsFiniteMultiplierSequence (N i) (Gamma i)) :
+    ∀ i : Nat, IsPFPolynomial (jensenPolynomial (N i) (Gamma i)) := by
+  rr_jensen_sequence_pf_of_finite_multiplier using
+    level := N,
+    sequence_nonneg := hGamma,
+    multiplier := hmult
+
 example {n : ℕ} {gamma : ℕ → ℝ} (hmult : IsFinitePFMultiplierSequence n gamma) :
     IsPFPolynomial (jensenPolynomial n gamma) := by
   rr_jensen_pf_of_finite_pf_multiplier using pf_multiplier := hmult
+
+example {N : Nat → ℕ} {Gamma : Nat → ℕ → ℝ}
+    (hmult : ∀ i : Nat, IsFinitePFMultiplierSequence (N i) (Gamma i)) :
+    ∀ i : Nat, IsPFPolynomial (jensenPolynomial (N i) (Gamma i)) := by
+  rr_jensen_sequence_pf_of_finite_pf_multiplier using
+    level := N,
+    pf_multiplier := hmult
 
 example {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k)
     (hmult : IsFiniteMultiplierSequence 3 gamma) :
@@ -221,6 +278,15 @@ example {n : ℕ} {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k)
     IsFinitePFMultiplierSequence n gamma := by
   rr_finite_pf_multiplier_of_finite_multiplier using
     sequence_nonneg := hgamma,
+    multiplier := hmult
+
+example {N : Nat → ℕ} {Gamma : Nat → ℕ → ℝ}
+    (hGamma : ∀ i k, 0 ≤ Gamma i k)
+    (hmult : ∀ i : Nat, IsFiniteMultiplierSequence (N i) (Gamma i)) :
+    ∀ i : Nat, IsFinitePFMultiplierSequence (N i) (Gamma i) := by
+  rr_finite_pf_multiplier_sequence_of_finite_multiplier using
+    level := N,
+    sequence_nonneg := hGamma,
     multiplier := hmult
 
 example {n : ℕ} {gamma : ℕ → ℝ} (hn : n ≤ 1)
@@ -252,6 +318,26 @@ example {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k)
     IsFinitePFMultiplierSequence 2 gamma := by
   rr_finite_pf_multiplier_degree_two_of_jensen_pf using
     sequence_nonneg := hgamma,
+    jensen_pf := hjensen
+
+example {N : Nat → ℕ} {Gamma : Nat → ℕ → ℝ}
+    (hN : ∀ i : Nat, N i ≤ 2)
+    (hGamma : ∀ i k, 0 ≤ Gamma i k)
+    (hjensen : ∀ i : Nat, IsPFPolynomial (jensenPolynomial (N i) (Gamma i))) :
+    ∀ i : Nat, IsFiniteMultiplierSequence (N i) (Gamma i) := by
+  rr_finite_multiplier_sequence_le_two_of_jensen_pf using
+    degree_le_two := hN,
+    sequence_nonneg := hGamma,
+    jensen_pf := hjensen
+
+example {N : Nat → ℕ} {Gamma : Nat → ℕ → ℝ}
+    (hN : ∀ i : Nat, N i ≤ 2)
+    (hGamma : ∀ i k, 0 ≤ Gamma i k)
+    (hjensen : ∀ i : Nat, IsPFPolynomial (jensenPolynomial (N i) (Gamma i))) :
+    ∀ i : Nat, IsFinitePFMultiplierSequence (N i) (Gamma i) := by
+  rr_finite_pf_multiplier_sequence_le_two_of_jensen_pf using
+    degree_le_two := hN,
+    sequence_nonneg := hGamma,
     jensen_pf := hjensen
 
 end Tactic

@@ -1261,6 +1261,37 @@ example {N : Nat → ℕ} {F P : Nat → ℝ[X]}
     input_degree := hPdeg,
     input_splits := hPsplits
 
+/-- Jensen nonnegative-coefficient row-family exit exposed through the OEIS
+facade. -/
+example {N : Nat → ℕ} {Gamma : Nat → ℕ → ℝ}
+    (hGamma : ∀ n k, 0 ≤ Gamma n k) :
+    ∀ n : Nat, HasNonnegCoeffs (jensenPolynomial (N n) (Gamma n)) := by
+  rr_jensen_sequence_nonneg using
+    level := N,
+    sequence_nonneg := hGamma
+
+/-- Jensen PF row-family exit from finite multipliers exposed through the OEIS
+facade. -/
+example {N : Nat → ℕ} {Gamma : Nat → ℕ → ℝ}
+    (hGamma : ∀ n k, 0 ≤ Gamma n k)
+    (hmult : ∀ n : Nat, IsFiniteMultiplierSequence (N n) (Gamma n)) :
+    ∀ n : Nat, IsPFPolynomial (jensenPolynomial (N n) (Gamma n)) := by
+  rr_jensen_sequence_pf_of_finite_multiplier using
+    level := N,
+    sequence_nonneg := hGamma,
+    multiplier := hmult
+
+/-- Finite PF-multiplier row-family conversion exposed through the OEIS
+facade. -/
+example {N : Nat → ℕ} {Gamma : Nat → ℕ → ℝ}
+    (hGamma : ∀ n k, 0 ≤ Gamma n k)
+    (hmult : ∀ n : Nat, IsFiniteMultiplierSequence (N n) (Gamma n)) :
+    ∀ n : Nat, IsFinitePFMultiplierSequence (N n) (Gamma n) := by
+  rr_finite_pf_multiplier_sequence_of_finite_multiplier using
+    level := N,
+    sequence_nonneg := hGamma,
+    multiplier := hmult
+
 /-- Hermite--Biehler statement exit exposed through the OEIS facade. -/
 example :
     hermiteBiehlerForwardPosStatement := by

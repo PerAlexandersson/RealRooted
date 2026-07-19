@@ -12,6 +12,87 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
+theorem jensenPolynomial_sequence_nonneg
+    (N : Nat → ℕ) (Gamma : Nat → ℕ → ℝ)
+    (hGamma : ∀ i k, 0 ≤ Gamma i k) :
+    ∀ i : Nat, HasNonnegCoeffs (jensenPolynomial (N i) (Gamma i)) := fun i =>
+  hasNonnegCoeffs_jensenPolynomial (hGamma i)
+
+theorem jensenPolynomial_sequence_natDegree_le
+    (N : Nat → ℕ) (Gamma : Nat → ℕ → ℝ) :
+    ∀ i : Nat, (jensenPolynomial (N i) (Gamma i)).natDegree ≤ N i := fun i =>
+  natDegree_jensenPolynomial_le (N i) (Gamma i)
+
+theorem jensenPolynomial_sequence_pf_of_finite_multiplier
+    (N : Nat → ℕ) (Gamma : Nat → ℕ → ℝ)
+    (hGamma : ∀ i k, 0 ≤ Gamma i k)
+    (hmult : ∀ i : Nat, IsFiniteMultiplierSequence (N i) (Gamma i)) :
+    ∀ i : Nat, IsPFPolynomial (jensenPolynomial (N i) (Gamma i)) := fun i =>
+  isPFPolynomial_jensenPolynomial_of_finiteMultiplierSequence
+    (hGamma i) (hmult i)
+
+theorem jensenPolynomial_sequence_pf_of_finite_pf_multiplier
+    (N : Nat → ℕ) (Gamma : Nat → ℕ → ℝ)
+    (hmult : ∀ i : Nat, IsFinitePFMultiplierSequence (N i) (Gamma i)) :
+    ∀ i : Nat, IsPFPolynomial (jensenPolynomial (N i) (Gamma i)) := fun i =>
+  isPFPolynomial_jensenPolynomial_of_finitePFMultiplierSequence (hmult i)
+
+theorem finiteMultiplierSequence_sequence_mono
+    {M N : Nat → ℕ} {Gamma : Nat → ℕ → ℝ}
+    (hMN : ∀ i : Nat, M i ≤ N i)
+    (hmult : ∀ i : Nat, IsFiniteMultiplierSequence (N i) (Gamma i)) :
+    ∀ i : Nat, IsFiniteMultiplierSequence (M i) (Gamma i) := fun i =>
+  IsFiniteMultiplierSequence.mono (hMN i) (hmult i)
+
+theorem finitePFMultiplierSequence_sequence_mono
+    {M N : Nat → ℕ} {Gamma : Nat → ℕ → ℝ}
+    (hMN : ∀ i : Nat, M i ≤ N i)
+    (hmult : ∀ i : Nat, IsFinitePFMultiplierSequence (N i) (Gamma i)) :
+    ∀ i : Nat, IsFinitePFMultiplierSequence (M i) (Gamma i) := fun i =>
+  IsFinitePFMultiplierSequence.mono (hMN i) (hmult i)
+
+theorem finiteMultiplierSequence_sequence_mul
+    {N : Nat → ℕ} {Gamma Delta : Nat → ℕ → ℝ}
+    (hGamma : ∀ i : Nat, IsFiniteMultiplierSequence (N i) (Gamma i))
+    (hDelta : ∀ i : Nat, IsFiniteMultiplierSequence (N i) (Delta i)) :
+    ∀ i : Nat, IsFiniteMultiplierSequence (N i)
+      (fun k => Gamma i k * Delta i k) := fun i =>
+  IsFiniteMultiplierSequence.mul (hGamma i) (hDelta i)
+
+theorem finitePFMultiplierSequence_sequence_mul
+    {N : Nat → ℕ} {Gamma Delta : Nat → ℕ → ℝ}
+    (hGamma : ∀ i : Nat, IsFinitePFMultiplierSequence (N i) (Gamma i))
+    (hDelta : ∀ i : Nat, IsFinitePFMultiplierSequence (N i) (Delta i)) :
+    ∀ i : Nat, IsFinitePFMultiplierSequence (N i)
+      (fun k => Gamma i k * Delta i k) := fun i =>
+  IsFinitePFMultiplierSequence.mul (hGamma i) (hDelta i)
+
+theorem finitePFMultiplierSequence_sequence_of_finite_multiplier
+    (N : Nat → ℕ) (Gamma : Nat → ℕ → ℝ)
+    (hGamma : ∀ i k, 0 ≤ Gamma i k)
+    (hmult : ∀ i : Nat, IsFiniteMultiplierSequence (N i) (Gamma i)) :
+    ∀ i : Nat, IsFinitePFMultiplierSequence (N i) (Gamma i) := fun i =>
+  isFinitePFMultiplierSequence_of_finiteMultiplierSequence
+    (hGamma i) (hmult i)
+
+theorem finiteMultiplierSequence_sequence_le_two_of_jensen_pf
+    {N : Nat → ℕ} {Gamma : Nat → ℕ → ℝ}
+    (hN : ∀ i : Nat, N i ≤ 2)
+    (hGamma : ∀ i k, 0 ≤ Gamma i k)
+    (hjensen : ∀ i : Nat, IsPFPolynomial (jensenPolynomial (N i) (Gamma i))) :
+    ∀ i : Nat, IsFiniteMultiplierSequence (N i) (Gamma i) := fun i =>
+  isFiniteMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
+    (hN i) (hGamma i) (hjensen i)
+
+theorem finitePFMultiplierSequence_sequence_le_two_of_jensen_pf
+    {N : Nat → ℕ} {Gamma : Nat → ℕ → ℝ}
+    (hN : ∀ i : Nat, N i ≤ 2)
+    (hGamma : ∀ i k, 0 ≤ Gamma i k)
+    (hjensen : ∀ i : Nat, IsPFPolynomial (jensenPolynomial (N i) (Gamma i))) :
+    ∀ i : Nat, IsFinitePFMultiplierSequence (N i) (Gamma i) := fun i =>
+  isFinitePFMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
+    (hN i) (hGamma i) (hjensen i)
+
 syntax (name := rr_diagonal_nonneg_named)
   "rr_diagonal_nonneg" " using "
     "nonneg" ":=" term ","
@@ -62,8 +143,20 @@ syntax (name := rr_jensen_nonneg_named)
   "rr_jensen_nonneg" " using " "sequence_nonneg" ":=" term :
   tactic
 
+syntax (name := rr_jensen_sequence_nonneg_named)
+  "rr_jensen_sequence_nonneg" " using "
+    "level" ":=" term ","
+    "sequence_nonneg" ":=" term :
+  tactic
+
 syntax (name := rr_jensen_natDegree_le_named)
   "rr_jensen_natDegree_le" :
+  tactic
+
+syntax (name := rr_jensen_sequence_natDegree_le_named)
+  "rr_jensen_sequence_natDegree_le" " using "
+    "level" ":=" term ","
+    "sequence" ":=" term :
   tactic
 
 syntax (name := rr_jensen_zero_iff_named)
@@ -118,6 +211,18 @@ syntax (name := rr_finite_pf_multiplier_mono_named)
     "pf_multiplier" ":=" term :
   tactic
 
+syntax (name := rr_finite_multiplier_sequence_mono_named)
+  "rr_finite_multiplier_sequence_mono" " using "
+    "degree_le" ":=" term ","
+    "multiplier" ":=" term :
+  tactic
+
+syntax (name := rr_finite_pf_multiplier_sequence_mono_named)
+  "rr_finite_pf_multiplier_sequence_mono" " using "
+    "degree_le" ":=" term ","
+    "pf_multiplier" ":=" term :
+  tactic
+
 syntax (name := rr_finite_multiplier_mul_named)
   "rr_finite_multiplier_mul" " using "
     "left_multiplier" ":=" term ","
@@ -126,6 +231,18 @@ syntax (name := rr_finite_multiplier_mul_named)
 
 syntax (name := rr_finite_pf_multiplier_mul_named)
   "rr_finite_pf_multiplier_mul" " using "
+    "left_pf_multiplier" ":=" term ","
+    "right_pf_multiplier" ":=" term :
+  tactic
+
+syntax (name := rr_finite_multiplier_sequence_mul_named)
+  "rr_finite_multiplier_sequence_mul" " using "
+    "left_multiplier" ":=" term ","
+    "right_multiplier" ":=" term :
+  tactic
+
+syntax (name := rr_finite_pf_multiplier_sequence_mul_named)
+  "rr_finite_pf_multiplier_sequence_mul" " using "
     "left_pf_multiplier" ":=" term ","
     "right_pf_multiplier" ":=" term :
   tactic
@@ -185,8 +302,21 @@ syntax (name := rr_jensen_pf_of_finite_multiplier_named)
     "multiplier" ":=" term :
   tactic
 
+syntax (name := rr_jensen_sequence_pf_of_finite_multiplier_named)
+  "rr_jensen_sequence_pf_of_finite_multiplier" " using "
+    "level" ":=" term ","
+    "sequence_nonneg" ":=" term ","
+    "multiplier" ":=" term :
+  tactic
+
 syntax (name := rr_jensen_pf_of_finite_pf_multiplier_named)
   "rr_jensen_pf_of_finite_pf_multiplier" " using " "pf_multiplier" ":=" term :
+  tactic
+
+syntax (name := rr_jensen_sequence_pf_of_finite_pf_multiplier_named)
+  "rr_jensen_sequence_pf_of_finite_pf_multiplier" " using "
+    "level" ":=" term ","
+    "pf_multiplier" ":=" term :
   tactic
 
 syntax (name := rr_finite_multiplier_three_log_concave_named)
@@ -202,6 +332,13 @@ syntax (name := rr_finite_pf_multiplier_three_log_concave_named)
 
 syntax (name := rr_finite_pf_multiplier_of_finite_multiplier_named)
   "rr_finite_pf_multiplier_of_finite_multiplier" " using "
+    "sequence_nonneg" ":=" term ","
+    "multiplier" ":=" term :
+  tactic
+
+syntax (name := rr_finite_pf_multiplier_sequence_of_finite_multiplier_named)
+  "rr_finite_pf_multiplier_sequence_of_finite_multiplier" " using "
+    "level" ":=" term ","
     "sequence_nonneg" ":=" term ","
     "multiplier" ":=" term :
   tactic
@@ -229,6 +366,20 @@ syntax (name := rr_finite_pf_multiplier_le_two_of_jensen_pf_named)
 
 syntax (name := rr_finite_pf_multiplier_degree_two_of_jensen_pf_named)
   "rr_finite_pf_multiplier_degree_two_of_jensen_pf" " using "
+    "sequence_nonneg" ":=" term ","
+    "jensen_pf" ":=" term :
+  tactic
+
+syntax (name := rr_finite_multiplier_sequence_le_two_of_jensen_pf_named)
+  "rr_finite_multiplier_sequence_le_two_of_jensen_pf" " using "
+    "degree_le_two" ":=" term ","
+    "sequence_nonneg" ":=" term ","
+    "jensen_pf" ":=" term :
+  tactic
+
+syntax (name := rr_finite_pf_multiplier_sequence_le_two_of_jensen_pf_named)
+  "rr_finite_pf_multiplier_sequence_le_two_of_jensen_pf" " using "
+    "degree_le_two" ":=" term ","
     "sequence_nonneg" ":=" term ","
     "jensen_pf" ":=" term :
   tactic
@@ -269,8 +420,22 @@ macro_rules
           $hdeg $hdisc)
   | `(tactic| rr_jensen_nonneg using sequence_nonneg := $hgamma:term) =>
       `(tactic| exact RealRooted.hasNonnegCoeffs_jensenPolynomial $hgamma)
+  | `(tactic|
+      rr_jensen_sequence_nonneg using
+        level := $N:term,
+        sequence_nonneg := $hgamma:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.jensenPolynomial_sequence_nonneg
+          $N _ $hgamma)
   | `(tactic| rr_jensen_natDegree_le) =>
       `(tactic| exact RealRooted.natDegree_jensenPolynomial_le _ _)
+  | `(tactic|
+      rr_jensen_sequence_natDegree_le using
+        level := $N:term,
+        sequence := $Gamma:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.jensenPolynomial_sequence_natDegree_le
+          $N $Gamma)
   | `(tactic| rr_jensen_zero_iff) =>
       `(tactic| exact RealRooted.jensenPolynomial_eq_zero_iff)
   | `(tactic| rr_jensen_as_diagonal_X_add_one_pow) =>
@@ -304,6 +469,20 @@ macro_rules
         pf_multiplier := $h:term) =>
       `(tactic| exact RealRooted.IsFinitePFMultiplierSequence.mono $hmn $h)
   | `(tactic|
+      rr_finite_multiplier_sequence_mono using
+        degree_le := $hmn:term,
+        multiplier := $h:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.finiteMultiplierSequence_sequence_mono
+          $hmn $h)
+  | `(tactic|
+      rr_finite_pf_multiplier_sequence_mono using
+        degree_le := $hmn:term,
+        pf_multiplier := $h:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.finitePFMultiplierSequence_sequence_mono
+          $hmn $h)
+  | `(tactic|
       rr_finite_multiplier_mul using
         left_multiplier := $hgamma:term,
         right_multiplier := $hdelta:term) =>
@@ -313,6 +492,20 @@ macro_rules
         left_pf_multiplier := $hgamma:term,
         right_pf_multiplier := $hdelta:term) =>
       `(tactic| exact RealRooted.IsFinitePFMultiplierSequence.mul $hgamma $hdelta)
+  | `(tactic|
+      rr_finite_multiplier_sequence_mul using
+        left_multiplier := $hgamma:term,
+        right_multiplier := $hdelta:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.finiteMultiplierSequence_sequence_mul
+          $hgamma $hdelta)
+  | `(tactic|
+      rr_finite_pf_multiplier_sequence_mul using
+        left_pf_multiplier := $hgamma:term,
+        right_pf_multiplier := $hdelta:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.finitePFMultiplierSequence_sequence_mul
+          $hgamma $hdelta)
   | `(tactic| rr_finite_multiplier_const) =>
       `(tactic| exact RealRooted.isFiniteMultiplierSequence_const_sequence _ _)
   | `(tactic| rr_finite_pf_multiplier_const using scalar_nonneg := $ha:term) =>
@@ -353,10 +546,25 @@ macro_rules
       `(tactic|
         exact RealRooted.isPFPolynomial_jensenPolynomial_of_finiteMultiplierSequence
           $hgamma $hmult)
+  | `(tactic|
+      rr_jensen_sequence_pf_of_finite_multiplier using
+        level := $N:term,
+        sequence_nonneg := $hgamma:term,
+        multiplier := $hmult:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.jensenPolynomial_sequence_pf_of_finite_multiplier
+          $N _ $hgamma $hmult)
   | `(tactic| rr_jensen_pf_of_finite_pf_multiplier using pf_multiplier := $hmult:term) =>
       `(tactic|
         exact RealRooted.isPFPolynomial_jensenPolynomial_of_finitePFMultiplierSequence
           $hmult)
+  | `(tactic|
+      rr_jensen_sequence_pf_of_finite_pf_multiplier using
+        level := $N:term,
+        pf_multiplier := $hmult:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.jensenPolynomial_sequence_pf_of_finite_pf_multiplier
+          $N _ $hmult)
   | `(tactic|
       rr_finite_multiplier_three_log_concave using
         sequence_nonneg := $hgamma:term,
@@ -373,6 +581,14 @@ macro_rules
       `(tactic|
         exact RealRooted.isFinitePFMultiplierSequence_of_finiteMultiplierSequence
           $hgamma $hmult)
+  | `(tactic|
+      rr_finite_pf_multiplier_sequence_of_finite_multiplier using
+        level := $N:term,
+        sequence_nonneg := $hgamma:term,
+        multiplier := $hmult:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.finitePFMultiplierSequence_sequence_of_finite_multiplier
+          $N _ $hgamma $hmult)
   | `(tactic|
       rr_finite_pf_multiplier_le_one using
         degree_le_one := $hn:term,
@@ -403,6 +619,22 @@ macro_rules
       `(tactic|
         exact RealRooted.isFinitePFMultiplierSequence_natDegree_two_of_isPF_jensenPolynomial
           $hgamma $hj)
+  | `(tactic|
+      rr_finite_multiplier_sequence_le_two_of_jensen_pf using
+        degree_le_two := $hn:term,
+        sequence_nonneg := $hgamma:term,
+        jensen_pf := $hj:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.finiteMultiplierSequence_sequence_le_two_of_jensen_pf
+          $hn $hgamma $hj)
+  | `(tactic|
+      rr_finite_pf_multiplier_sequence_le_two_of_jensen_pf using
+        degree_le_two := $hn:term,
+        sequence_nonneg := $hgamma:term,
+        jensen_pf := $hj:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.finitePFMultiplierSequence_sequence_le_two_of_jensen_pf
+          $hn $hgamma $hj)
 
 end Tactic
 end RealRooted
