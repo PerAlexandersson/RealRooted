@@ -198,6 +198,53 @@ example {f : ℝ[X]} (hf : f ≠ 0) (hdeg : f.natDegree ≤ 1) :
     f ≠ 0 ∧ f.Splits := by
   rr_realrooted
 
+example {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits) :
+    f.reverse ≠ 0 ∧ f.reverse.Splits := by
+  rr_realrooted_reverse using
+    realrooted := hf
+
+example {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits) :
+    f.reverse ≠ 0 ∧ f.reverse.Splits := by
+  rr_realrooted using hf
+
+example {f : ℝ[X]} (hf : f.reverse ≠ 0 ∧ f.reverse.Splits) :
+    f ≠ 0 ∧ f.Splits := by
+  rr_realrooted_of_reverse using
+    reverse_realrooted := hf
+
+example {f : ℝ[X]} (hf : f.reverse ≠ 0 ∧ f.reverse.Splits) :
+    f ≠ 0 ∧ f.Splits := by
+  rr_realrooted using hf
+
+example {f : ℝ[X]} {N : Nat} (hf : f ≠ 0 ∧ f.Splits) (hN : f.natDegree ≤ N) :
+    (reflect N f) ≠ 0 ∧ (reflect N f).Splits := by
+  rr_realrooted_reflect using
+    realrooted := hf,
+    degree_bound := hN
+
+example {f : ℝ[X]} {N : Nat} (hf : f ≠ 0 ∧ f.Splits) :
+    (X ^ (N - f.natDegree) * f.reverse) ≠ 0 ∧
+      (X ^ (N - f.natDegree) * f.reverse).Splits := by
+  rr_realrooted_X_pow_mul_reverse using
+    realrooted := hf
+
+example {f : ℝ[X]} {N : Nat} (hf : f ≠ 0 ∧ f.Splits) :
+    (X ^ (N - f.natDegree) * f.reverse) ≠ 0 ∧
+      (X ^ (N - f.natDegree) * f.reverse).Splits := by
+  rr_realrooted using hf
+
+example {f : ℝ[X]} (h0 : f.coeff 0 = 0) (hf : f ≠ 0 ∧ f.Splits) :
+    f.divX ≠ 0 ∧ f.divX.Splits := by
+  rr_realrooted_divX using
+    coeff_zero := h0,
+    realrooted := hf
+
+example {f : ℝ[X]} (h0 : f.coeff 0 = 0) (hf : f.divX ≠ 0 ∧ f.divX.Splits) :
+    f ≠ 0 ∧ f.Splits := by
+  rr_realrooted_of_divX using
+    coeff_zero := h0,
+    divX_realrooted := hf
+
 example {f : ℝ[X]} (hf : f ≠ 0) (hdeg : f.natDegree = 1) :
     f ≠ 0 ∧ f.Splits := by
   rr_finish

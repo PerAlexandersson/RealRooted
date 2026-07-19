@@ -104,6 +104,49 @@ theorem eq_zero_or_splits_of_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Split
     p = 0 ∨ p.Splits :=
   Or.inr hp.2
 
+/-- Reverse transport for nonzero real-rootedness certificates. -/
+theorem reverse_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
+    p.reverse ≠ 0 ∧ p.reverse.Splits :=
+  ⟨fun h => hp.1 (Polynomial.reverse_eq_zero.mp h),
+    DegreeDropReversal.splits_reverse hp.2⟩
+
+/-- Consume a reverse nonzero real-rootedness certificate. -/
+theorem isRealRooted_of_reverse {p : ℝ[X]} (hp : p.reverse ≠ 0 ∧ p.reverse.Splits) :
+    p ≠ 0 ∧ p.Splits :=
+  ⟨fun h => hp.1 (by simp [h]), DegreeDropReversal.splits_of_reverse hp.2⟩
+
+/-- Reflect transport for nonzero real-rootedness certificates. -/
+theorem reflect_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) {N : ℕ}
+    (hN : p.natDegree ≤ N) :
+    (reflect N p) ≠ 0 ∧ (reflect N p).Splits :=
+  ⟨fun h => hp.1 (Polynomial.reflect_eq_zero_iff.mp h),
+    DegreeDropReversal.splits_reflect_of_splits hp.2 hN⟩
+
+/-- Degree-padded reverse transport for nonzero real-rootedness certificates. -/
+theorem X_pow_mul_reverse_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits)
+    (N : ℕ) :
+    (X ^ (N - p.natDegree) * p.reverse) ≠ 0 ∧
+      (X ^ (N - p.natDegree) * p.reverse).Splits :=
+  ⟨mul_ne_zero (pow_ne_zero _ Polynomial.X_ne_zero)
+      (fun h => hp.1 (Polynomial.reverse_eq_zero.mp h)),
+    DegreeDropReversal.splits_X_pow_mul_reverse hp.2 N⟩
+
+/-- Divide out a zero root in a nonzero real-rootedness certificate. -/
+theorem divX_isRealRooted_of_coeff_zero {p : ℝ[X]} (h0 : p.coeff 0 = 0)
+    (hp : p ≠ 0 ∧ p.Splits) :
+    p.divX ≠ 0 ∧ p.divX.Splits :=
+  ⟨fun h => hp.1 (by rw [DegreeDropReversal.eq_X_mul_divX_of_coeff_zero h0, h, mul_zero]),
+    (DegreeDropReversal.splits_iff_divX_splits_of_coeff_zero h0).1 hp.2⟩
+
+/-- Lift a nonzero real-rootedness certificate after dividing out a zero root. -/
+theorem isRealRooted_of_divX {p : ℝ[X]} (h0 : p.coeff 0 = 0)
+    (hp : p.divX ≠ 0 ∧ p.divX.Splits) :
+    p ≠ 0 ∧ p.Splits :=
+  ⟨by
+      rw [DegreeDropReversal.eq_X_mul_divX_of_coeff_zero h0]
+      exact mul_ne_zero Polynomial.X_ne_zero hp.1,
+    DegreeDropReversal.splits_of_divX_splits_of_coeff_zero h0 hp.2⟩
+
 /-- A polynomial with natural degree one is nonzero. -/
 theorem ne_zero_of_natDegree_eq_one {p : ℝ[X]} (hdeg : p.natDegree = 1) :
     p ≠ 0 := by
@@ -432,6 +475,33 @@ syntax (name := rr_splits_of_divX)
     "divX_splits" ":=" term :
   tactic
 syntax (name := rr_realrooted) "rr_realrooted" " using " term : tactic
+syntax (name := rr_realrooted_reverse)
+  "rr_realrooted_reverse" " using "
+    "realrooted" ":=" term :
+  tactic
+syntax (name := rr_realrooted_of_reverse)
+  "rr_realrooted_of_reverse" " using "
+    "reverse_realrooted" ":=" term :
+  tactic
+syntax (name := rr_realrooted_reflect)
+  "rr_realrooted_reflect" " using "
+    "realrooted" ":=" term ","
+    "degree_bound" ":=" term :
+  tactic
+syntax (name := rr_realrooted_X_pow_mul_reverse)
+  "rr_realrooted_X_pow_mul_reverse" " using "
+    "realrooted" ":=" term :
+  tactic
+syntax (name := rr_realrooted_divX)
+  "rr_realrooted_divX" " using "
+    "coeff_zero" ":=" term ","
+    "realrooted" ":=" term :
+  tactic
+syntax (name := rr_realrooted_of_divX)
+  "rr_realrooted_of_divX" " using "
+    "coeff_zero" ":=" term ","
+    "divX_realrooted" ":=" term :
+  tactic
 syntax (name := rr_nonzero_auto) "rr_nonzero" : tactic
 syntax (name := rr_splits_auto) "rr_splits" : tactic
 syntax (name := rr_realrooted_auto) "rr_realrooted" : tactic
@@ -810,7 +880,43 @@ macro_rules
           RealRooted.right_isRealRooted_of_interlaces $h,
           RealRooted.left_isRealRooted_of_interlaces $h,
           RealRooted.left_isRealRooted_of_isRealRooted_pair $h,
-          RealRooted.right_isRealRooted_of_isRealRooted_pair $h)
+          RealRooted.right_isRealRooted_of_isRealRooted_pair $h,
+          RealRooted.reverse_isRealRooted $h,
+          RealRooted.isRealRooted_of_reverse $h,
+          RealRooted.X_pow_mul_reverse_isRealRooted $h _)
+  | `(tactic|
+      rr_realrooted_reverse using
+        realrooted := $h:term) =>
+      `(tactic|
+        exact RealRooted.reverse_isRealRooted $h)
+  | `(tactic|
+      rr_realrooted_of_reverse using
+        reverse_realrooted := $h:term) =>
+      `(tactic|
+        exact RealRooted.isRealRooted_of_reverse $h)
+  | `(tactic|
+      rr_realrooted_reflect using
+        realrooted := $h:term,
+        degree_bound := $hN:term) =>
+      `(tactic|
+        exact RealRooted.reflect_isRealRooted $h $hN)
+  | `(tactic|
+      rr_realrooted_X_pow_mul_reverse using
+        realrooted := $h:term) =>
+      `(tactic|
+        exact RealRooted.X_pow_mul_reverse_isRealRooted $h _)
+  | `(tactic|
+      rr_realrooted_divX using
+        coeff_zero := $h0:term,
+        realrooted := $h:term) =>
+      `(tactic|
+        exact RealRooted.divX_isRealRooted_of_coeff_zero $h0 $h)
+  | `(tactic|
+      rr_realrooted_of_divX using
+        coeff_zero := $h0:term,
+        divX_realrooted := $h:term) =>
+      `(tactic|
+        exact RealRooted.isRealRooted_of_divX $h0 $h)
   | `(tactic| rr_realrooted) =>
       `(tactic|
         first
