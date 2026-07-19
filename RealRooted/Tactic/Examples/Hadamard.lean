@@ -62,6 +62,88 @@ example {n : ℕ} {f p : ℝ[X]}
     input_degree := hpdeg,
     input_splits := hsplits
 
+example {n : ℕ} {f p : ℝ[X]}
+    (hn : n ≤ 2)
+    (hf : IsPFPolynomial f)
+    (hfdeg : f.natDegree ≤ n)
+    (hpdeg : p.natDegree ≤ n)
+    (hsplits : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits := by
+  rr_schur_szego_level_le_two using
+    level_le_two := hn,
+    pf_factor := hf,
+    pf_degree := hfdeg,
+    input_degree := hpdeg,
+    input_splits := hsplits
+
+example {n : ℕ} {f p : ℝ[X]}
+    (hn : n ≤ 2)
+    (hf : IsPFPolynomial f)
+    (hfdeg : f.natDegree ≤ n)
+    (hpdeg : p.natDegree ≤ n)
+    (hsplits : p.Splits)
+    (hout : schurSzegoComp n f p ≠ 0) :
+    (schurSzegoComp n f p).Splits := by
+  rr_schur_szego_level_le_two_splits using
+    level_le_two := hn,
+    pf_factor := hf,
+    pf_degree := hfdeg,
+    input_degree := hpdeg,
+    input_splits := hsplits,
+    nonzero := hout
+
+example {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f)
+    (hfdeg : f.natDegree ≤ 2)
+    (hpdeg : p.natDegree ≤ n)
+    (hsplits : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits := by
+  rr_schur_szego_pf_factor_degree_le_two using
+    pf_factor := hf,
+    pf_degree_le_two := hfdeg,
+    input_degree := hpdeg,
+    input_splits := hsplits
+
+example {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f)
+    (hfdeg : f.natDegree ≤ 2)
+    (hpdeg : p.natDegree ≤ n)
+    (hsplits : p.Splits)
+    (hout : schurSzegoComp n f p ≠ 0) :
+    (schurSzegoComp n f p).Splits := by
+  rr_schur_szego_pf_factor_degree_le_two_splits using
+    pf_factor := hf,
+    pf_degree_le_two := hfdeg,
+    input_degree := hpdeg,
+    input_splits := hsplits,
+    nonzero := hout
+
+example {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f)
+    (hfdeg : f.natDegree ≤ 2)
+    (hpdeg : p.natDegree ≤ 2)
+    (hsplits : p.Splits) :
+    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits := by
+  rr_schur_szego_factors_degree_le_two using
+    pf_factor := hf,
+    pf_degree_le_two := hfdeg,
+    input_degree_le_two := hpdeg,
+    input_splits := hsplits
+
+example {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f)
+    (hfdeg : f.natDegree ≤ 2)
+    (hpdeg : p.natDegree ≤ 2)
+    (hsplits : p.Splits)
+    (hout : schurSzegoComp n f p ≠ 0) :
+    (schurSzegoComp n f p).Splits := by
+  rr_schur_szego_factors_degree_le_two_splits using
+    pf_factor := hf,
+    pf_degree_le_two := hfdeg,
+    input_degree_le_two := hpdeg,
+    input_splits := hsplits,
+    nonzero := hout
+
 example {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
     IsPFPolynomial (hadamardProduct p q) := by

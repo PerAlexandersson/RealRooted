@@ -18,10 +18,49 @@ theorem schurSzegoComp_splits_of_nonzero {n : ℕ} {f p : ℝ[X]}
     (hsplits : p.Splits)
     (hout : schurSzegoComp n f p ≠ 0) :
     (schurSzegoComp n f p).Splits := by
-  rcases schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial
-      hf hfdeg hpdeg hsplits with hzero | hsplits
-  · exact (hout hzero).elim
-  · exact hsplits
+  exact Or.resolve_left
+    (schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial
+      hf hfdeg hpdeg hsplits)
+    hout
+
+theorem schurSzegoComp_splits_of_level_le_two {n : ℕ} {f p : ℝ[X]}
+    (hn : n ≤ 2)
+    (hf : IsPFPolynomial f)
+    (hfdeg : f.natDegree ≤ n)
+    (hpdeg : p.natDegree ≤ n)
+    (hsplits : p.Splits)
+    (hout : schurSzegoComp n f p ≠ 0) :
+    (schurSzegoComp n f p).Splits := by
+  exact Or.resolve_left
+    (finiteSchurSzegoComposition_of_natDegree_le_two
+      hn hf hfdeg hpdeg hsplits)
+    hout
+
+theorem schurSzegoComp_splits_of_pf_factor_natDegree_le_two
+    {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f)
+    (hfdeg : f.natDegree ≤ 2)
+    (hpdeg : p.natDegree ≤ n)
+    (hsplits : p.Splits)
+    (hout : schurSzegoComp n f p ≠ 0) :
+    (schurSzegoComp n f p).Splits := by
+  exact Or.resolve_left
+    (finiteSchurSzegoComposition_of_pf_factor_natDegree_le_two
+      hf hfdeg hpdeg hsplits)
+    hout
+
+theorem schurSzegoComp_splits_of_factors_natDegree_le_two
+    {n : ℕ} {f p : ℝ[X]}
+    (hf : IsPFPolynomial f)
+    (hfdeg : f.natDegree ≤ 2)
+    (hpdeg : p.natDegree ≤ 2)
+    (hsplits : p.Splits)
+    (hout : schurSzegoComp n f p ≠ 0) :
+    (schurSzegoComp n f p).Splits := by
+  exact Or.resolve_left
+    (finiteSchurSzegoComposition_of_factors_natDegree_le_two
+      hf hfdeg hpdeg hsplits)
+    hout
 
 syntax (name := rr_schur_szego_nonzero_statement_named)
   "rr_schur_szego_nonzero_statement" : tactic
@@ -48,6 +87,59 @@ syntax (name := rr_schur_szego_splits_named)
     "pf_factor" ":=" term ","
     "pf_degree" ":=" term ","
     "input_degree" ":=" term ","
+    "input_splits" ":=" term ","
+    "nonzero" ":=" term :
+  tactic
+
+syntax (name := rr_schur_szego_level_le_two_named)
+  "rr_schur_szego_level_le_two" " using "
+    "level_le_two" ":=" term ","
+    "pf_factor" ":=" term ","
+    "pf_degree" ":=" term ","
+    "input_degree" ":=" term ","
+    "input_splits" ":=" term :
+  tactic
+
+syntax (name := rr_schur_szego_level_le_two_splits_named)
+  "rr_schur_szego_level_le_two_splits" " using "
+    "level_le_two" ":=" term ","
+    "pf_factor" ":=" term ","
+    "pf_degree" ":=" term ","
+    "input_degree" ":=" term ","
+    "input_splits" ":=" term ","
+    "nonzero" ":=" term :
+  tactic
+
+syntax (name := rr_schur_szego_pf_factor_degree_le_two_named)
+  "rr_schur_szego_pf_factor_degree_le_two" " using "
+    "pf_factor" ":=" term ","
+    "pf_degree_le_two" ":=" term ","
+    "input_degree" ":=" term ","
+    "input_splits" ":=" term :
+  tactic
+
+syntax (name := rr_schur_szego_pf_factor_degree_le_two_splits_named)
+  "rr_schur_szego_pf_factor_degree_le_two_splits" " using "
+    "pf_factor" ":=" term ","
+    "pf_degree_le_two" ":=" term ","
+    "input_degree" ":=" term ","
+    "input_splits" ":=" term ","
+    "nonzero" ":=" term :
+  tactic
+
+syntax (name := rr_schur_szego_factors_degree_le_two_named)
+  "rr_schur_szego_factors_degree_le_two" " using "
+    "pf_factor" ":=" term ","
+    "pf_degree_le_two" ":=" term ","
+    "input_degree_le_two" ":=" term ","
+    "input_splits" ":=" term :
+  tactic
+
+syntax (name := rr_schur_szego_factors_degree_le_two_splits_named)
+  "rr_schur_szego_factors_degree_le_two_splits" " using "
+    "pf_factor" ":=" term ","
+    "pf_degree_le_two" ":=" term ","
+    "input_degree_le_two" ":=" term ","
     "input_splits" ":=" term ","
     "nonzero" ":=" term :
   tactic
@@ -109,6 +201,67 @@ macro_rules
         nonzero := $hout:term) =>
       `(tactic|
         exact RealRooted.Tactic.schurSzegoComp_splits_of_nonzero
+          $hf $hfdeg $hpdeg $hsplits $hout)
+  | `(tactic|
+      rr_schur_szego_level_le_two using
+        level_le_two := $hn:term,
+        pf_factor := $hf:term,
+        pf_degree := $hfdeg:term,
+        input_degree := $hpdeg:term,
+        input_splits := $hsplits:term) =>
+      `(tactic|
+        exact RealRooted.finiteSchurSzegoComposition_of_natDegree_le_two
+          $hn $hf $hfdeg $hpdeg $hsplits)
+  | `(tactic|
+      rr_schur_szego_level_le_two_splits using
+        level_le_two := $hn:term,
+        pf_factor := $hf:term,
+        pf_degree := $hfdeg:term,
+        input_degree := $hpdeg:term,
+        input_splits := $hsplits:term,
+        nonzero := $hout:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.schurSzegoComp_splits_of_level_le_two
+          $hn $hf $hfdeg $hpdeg $hsplits $hout)
+  | `(tactic|
+      rr_schur_szego_pf_factor_degree_le_two using
+        pf_factor := $hf:term,
+        pf_degree_le_two := $hfdeg:term,
+        input_degree := $hpdeg:term,
+        input_splits := $hsplits:term) =>
+      `(tactic|
+        exact
+          RealRooted.finiteSchurSzegoComposition_of_pf_factor_natDegree_le_two
+            $hf $hfdeg $hpdeg $hsplits)
+  | `(tactic|
+      rr_schur_szego_pf_factor_degree_le_two_splits using
+        pf_factor := $hf:term,
+        pf_degree_le_two := $hfdeg:term,
+        input_degree := $hpdeg:term,
+        input_splits := $hsplits:term,
+        nonzero := $hout:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.schurSzegoComp_splits_of_pf_factor_natDegree_le_two
+            $hf $hfdeg $hpdeg $hsplits $hout)
+  | `(tactic|
+      rr_schur_szego_factors_degree_le_two using
+        pf_factor := $hf:term,
+        pf_degree_le_two := $hfdeg:term,
+        input_degree_le_two := $hpdeg:term,
+        input_splits := $hsplits:term) =>
+      `(tactic|
+        exact RealRooted.finiteSchurSzegoComposition_of_factors_natDegree_le_two
+          $hf $hfdeg $hpdeg $hsplits)
+  | `(tactic|
+      rr_schur_szego_factors_degree_le_two_splits using
+        pf_factor := $hf:term,
+        pf_degree_le_two := $hfdeg:term,
+        input_degree_le_two := $hpdeg:term,
+        input_splits := $hsplits:term,
+        nonzero := $hout:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.schurSzegoComp_splits_of_factors_natDegree_le_two
           $hf $hfdeg $hpdeg $hsplits $hout)
   | `(tactic|
       rr_schur_szego_nonzero using
