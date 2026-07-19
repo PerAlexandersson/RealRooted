@@ -1343,16 +1343,9 @@ example {P : Nat → ℝ[X]}
     raw_slope := fun _ : Nat => (2 : ℝ),
     raw_const := fun n : Nat => -(n.succ : ℝ),
     raw_lag := fun _ : Nat => (-1 : ℝ),
-    slope_pos := by
-      intro n
-      positivity,
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := rr_scalar_active_den_all_term,
-    slope_coeff_eq := rr_scalar_coeff_all_term,
-    alpha_coeff_eq := rr_scalar_coeff_all_term,
-    beta_coeff_eq := rr_scalar_coeff_all_term,
     raw_recurrence := hraw
 
 /-- Explicit monic raw scalar-denominator Favard alias. -/
@@ -1579,22 +1572,9 @@ example {P : Nat → ℝ[X]}
     raw_slope := fun _ : Nat => (-2 : ℝ),
     raw_const := fun n : Nat => (n.succ : ℝ),
     raw_lag := fun _ : Nat => (-1 : ℝ),
-    slope_pos := by
-      intro n
-      positivity,
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := rr_scalar_active_den_all_term,
-    slope_coeff_eq := by
-      intro n
-      norm_num,
-    alpha_coeff_eq := by
-      intro n
-      simp,
-    beta_coeff_eq := by
-      intro n
-      norm_num,
     raw_recurrence := hraw
 
 /-- Explicit monic row-sign raw scalar-denominator Favard alias. -/
