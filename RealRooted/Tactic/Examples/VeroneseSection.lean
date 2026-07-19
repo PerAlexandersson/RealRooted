@@ -118,5 +118,160 @@ example {p q : ℝ[X]} {r : ℕ}
     right := j,
     index_lt := hij
 
+example {r k : Nat → Nat} {P : Nat → ℝ[X]}
+    (hnn : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hr : ∀ n : Nat, 0 < r n) :
+    ∀ n : Nat, HasNonnegCoeffs (veroneseSectionPolynomial (r n) (k n) (P n)) := by
+  rr_veronese_section_sequence_nonneg using
+    nonneg := hnn,
+    r_pos := hr
+
+example {r k : Nat → Nat} {P : Nat → ℝ[X]}
+    (hpf : ∀ n : Nat, IsPolyaFreqSeq (P n).coeff)
+    (hr : ∀ n : Nat, 0 < r n)
+    (hk : ∀ n : Nat, k n < r n) :
+    ∀ n : Nat,
+      IsPolyaFreqSeq (veroneseSectionPolynomial (r n) (k n) (P n)).coeff := by
+  rr_veronese_section_sequence_pf_coeff using
+    pf_coeff := hpf,
+    r_pos := hr,
+    k_lt_r := hk
+
+example {r k : Nat → Nat} {P : Nat → ℝ[X]}
+    (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hpf : ∀ n : Nat, IsPolyaFreqSeq (P n).coeff)
+    (hr : ∀ n : Nat, 0 < r n)
+    (hk : ∀ n : Nat, k n < r n) :
+    ∀ n : Nat,
+      veroneseSectionPolynomial (r n) (k n) (P n) = 0 ∨
+        (veroneseSectionPolynomial (r n) (k n) (P n)).Splits := by
+  rr_veronese_section_sequence_splits_pf using
+    asw := hASW,
+    pf_coeff := hpf,
+    r_pos := hr,
+    k_lt_r := hk
+
+example {r k : Nat → Nat} {P : Nat → ℝ[X]}
+    (hASW : aissenSchoenbergWhitneyForwardStatement)
+    (hnn : ∀ n : Nat, HasNonnegCoeffs (P n))
+    (hsplits : ∀ n : Nat, (P n).Splits)
+    (hr : ∀ n : Nat, 0 < r n)
+    (hk : ∀ n : Nat, k n < r n) :
+    ∀ n : Nat,
+      veroneseSectionPolynomial (r n) (k n) (P n) = 0 ∨
+        (veroneseSectionPolynomial (r n) (k n) (P n)).Splits := by
+  rr_veronese_section_sequence_splits_nonneg using
+    asw := hASW,
+    nonneg := hnn,
+    splits := hsplits,
+    r_pos := hr,
+    k_lt_r := hk
+
+example {r k : Nat → Nat} {P Q : Nat → ℝ[X]}
+    (hPrecToFull : PrecToFullyInterlacingPairStatement)
+    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
+    (hpq : ∀ n : Nat, Prec (P n) (Q n))
+    (hr : ∀ n : Nat, 0 < r n)
+    (hk : ∀ n : Nat, k n < r n) :
+    ∀ n : Nat, Prec0
+      (veroneseSectionPolynomial (r n) (k n) (P n))
+      (veroneseSectionPolynomial (r n) (k n) (Q n)) := by
+  rr_veronese_section_sequence_prec0 using
+    prec_to_full := hPrecToFull,
+    full_to_prec0 := hFullToPrec0,
+    prec := hpq,
+    r_pos := hr,
+    k_lt_r := hk
+
+example {r k : Nat → Nat} {P Q : Nat → ℝ[X]}
+    (hPrecToFull : PrecToFullyInterlacingPairStatement)
+    (hFullToPrec : FullyInterlacingPairToPrecStatement)
+    (hpq : ∀ n : Nat, Prec (P n) (Q n))
+    (hr : ∀ n : Nat, 0 < r n)
+    (hk : ∀ n : Nat, k n < r n) :
+    ∀ n : Nat, Prec
+      (veroneseSectionPolynomial (r n) (k n) (P n))
+      (veroneseSectionPolynomial (r n) (k n) (Q n)) := by
+  rr_veronese_section_sequence_prec using
+    prec_to_full := hPrecToFull,
+    full_to_prec := hFullToPrec,
+    prec := hpq,
+    r_pos := hr,
+    k_lt_r := hk
+
+example {r i j : Nat → Nat} {P Q : Nat → ℝ[X]}
+    (hPrecToFull : PrecToFullyInterlacingPairStatement)
+    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
+    (hpq : ∀ n : Nat, Prec (P n) (Q n))
+    (hr : ∀ n : Nat, 0 < r n)
+    (hij : ∀ n : Nat, i n < j n)
+    (hj : ∀ n : Nat, j n < 2 * r n) :
+    ∀ n : Nat, Prec0
+      (veronesePairSectionPolynomial (r n) (P n) (Q n) (i n))
+      (veronesePairSectionPolynomial (r n) (P n) (Q n) (j n)) := by
+  rr_veronese_pair_sequence_prec0 using
+    prec_to_full := hPrecToFull,
+    full_to_prec0 := hFullToPrec0,
+    prec := hpq,
+    r_pos := hr,
+    index_lt := hij,
+    right_lt_bound := hj
+
+example {r i j : Nat → Nat} {P Q : Nat → ℝ[X]}
+    (hPrecToFull : PrecToFullyInterlacingPairStatement)
+    (hFullToPrec : FullyInterlacingPairToPrecStatement)
+    (hpq : ∀ n : Nat, Prec (P n) (Q n))
+    (hr : ∀ n : Nat, 0 < r n)
+    (hij : ∀ n : Nat, i n < j n)
+    (hj : ∀ n : Nat, j n < 2 * r n) :
+    ∀ n : Nat, Prec
+      (veronesePairSectionPolynomial (r n) (P n) (Q n) (i n))
+      (veronesePairSectionPolynomial (r n) (P n) (Q n) (j n)) := by
+  rr_veronese_pair_sequence_prec using
+    prec_to_full := hPrecToFull,
+    full_to_prec := hFullToPrec,
+    prec := hpq,
+    r_pos := hr,
+    index_lt := hij,
+    right_lt_bound := hj
+
+example {r : Nat → Nat} {P Q : Nat → ℝ[X]}
+    (hPrecToFull : PrecToFullyInterlacingPairStatement)
+    (hFullToPrec0 : FullyInterlacingPairToPrec0Statement)
+    (hpq : ∀ n : Nat, Prec (P n) (Q n))
+    (hr : ∀ n : Nat, 0 < r n)
+    (i j : ∀ n : Nat, Fin (2 * r n))
+    (hij : ∀ n : Nat, i n < j n) :
+    ∀ n : Nat, Prec0
+      (veronesePairSectionPolynomial (r n) (P n) (Q n) (i n))
+      (veronesePairSectionPolynomial (r n) (P n) (Q n) (j n)) := by
+  rr_veronese_pair_fin_sequence_prec0 using
+    prec_to_full := hPrecToFull,
+    full_to_prec0 := hFullToPrec0,
+    prec := hpq,
+    r_pos := hr,
+    left := i,
+    right := j,
+    index_lt := hij
+
+example {r : Nat → Nat} {P Q : Nat → ℝ[X]}
+    (hPrecToFull : PrecToFullyInterlacingPairStatement)
+    (hFullToPrec : FullyInterlacingPairToPrecStatement)
+    (hpq : ∀ n : Nat, Prec (P n) (Q n))
+    (hr : ∀ n : Nat, 0 < r n)
+    (i j : ∀ n : Nat, Fin (2 * r n))
+    (hij : ∀ n : Nat, i n < j n) :
+    ∀ n : Nat, Prec
+      (veronesePairSectionPolynomial (r n) (P n) (Q n) (i n))
+      (veronesePairSectionPolynomial (r n) (P n) (Q n) (j n)) := by
+  rr_veronese_pair_fin_sequence_prec using
+    prec_to_full := hPrecToFull,
+    full_to_prec := hFullToPrec,
+    prec := hpq,
+    r_pos := hr,
+    left := i,
+    right := j,
+    index_lt := hij
+
 end Tactic
 end RealRooted

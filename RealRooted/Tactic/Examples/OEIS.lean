@@ -158,6 +158,37 @@ example {d : Nat → Nat} {P Γ : Nat → ℝ[X]}
     symmetric := hsym,
     expansion := hexp
 
+/-- Veronese-section row-family PF exit exposed through the OEIS facade. -/
+example {r k : Nat → Nat} {P : Nat → ℝ[X]}
+    (hpf : ∀ n : Nat, IsPolyaFreqSeq (P n).coeff)
+    (hr : ∀ n : Nat, 0 < r n)
+    (hk : ∀ n : Nat, k n < r n) :
+    ∀ n : Nat,
+      IsPolyaFreqSeq (veroneseSectionPolynomial (r n) (k n) (P n)).coeff := by
+  rr_veronese_section_sequence_pf_coeff using
+    pf_coeff := hpf,
+    r_pos := hr,
+    k_lt_r := hk
+
+/-- Veronese pair-section row-family `Prec` exit exposed through the OEIS facade. -/
+example {r i j : Nat → Nat} {P Q : Nat → ℝ[X]}
+    (hPrecToFull : PrecToFullyInterlacingPairStatement)
+    (hFullToPrec : FullyInterlacingPairToPrecStatement)
+    (hpq : ∀ n : Nat, Prec (P n) (Q n))
+    (hr : ∀ n : Nat, 0 < r n)
+    (hij : ∀ n : Nat, i n < j n)
+    (hj : ∀ n : Nat, j n < 2 * r n) :
+    ∀ n : Nat, Prec
+      (veronesePairSectionPolynomial (r n) (P n) (Q n) (i n))
+      (veronesePairSectionPolynomial (r n) (P n) (Q n) (j n)) := by
+  rr_veronese_pair_sequence_prec using
+    prec_to_full := hPrecToFull,
+    full_to_prec := hFullToPrec,
+    prec := hpq,
+    r_pos := hr,
+    index_lt := hij,
+    right_lt_bound := hj
+
 /-- Direct Family I2 half-line branch, adjacent-`Prec` endpoint. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
