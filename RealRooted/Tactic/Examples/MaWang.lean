@@ -3001,8 +3001,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     den := fun n => (n : ℝ) + 3,
     raw_deriv_coeff := fun n => (n : ℝ) + 3,
     raw_lag_coeff := fun n => (n : ℝ) + 3,
-    deriv_coeff_eq := rr_scalar_coeff_all_term,
-    lag_coeff_eq := rr_scalar_coeff_all_term,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -3034,8 +3032,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     den := fun n => (n : ℝ) + 3,
     raw_deriv_coeff := fun n => (n : ℝ) + 3,
     raw_lag_coeff := fun n => (n : ℝ) + 3,
-    deriv_coeff_eq := rr_scalar_coeff_all_term,
-    lag_coeff_eq := rr_scalar_coeff_all_term,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -3069,8 +3065,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     raw_lag_coeff := fun n => (n : ℝ) + 1,
     root_lower := hroot_lower,
     root_upper := hroot_upper,
-    deriv_coeff_eq := rr_scalar_coeff_all_term,
-    lag_coeff_eq := rr_scalar_coeff_all_term,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -3105,8 +3099,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     raw_lag_coeff := fun n => (n : ℝ) + 1,
     root_lower := hroot_lower,
     root_upper := hroot_upper,
-    deriv_coeff_eq := rr_scalar_coeff_all_term,
-    lag_coeff_eq := rr_scalar_coeff_all_term,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
