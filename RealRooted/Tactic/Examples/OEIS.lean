@@ -1225,6 +1225,25 @@ example {F G : Nat → ℝ[X]}
     right_pos_lc := hG,
     degree_eq := hdeg
 
+/-- Positive-combination row-family exit from proper position exposed through
+the OEIS facade. -/
+example {F G : Nat → ℝ[X]}
+    (hfg : ∀ n : Nat, Prec (F n) (G n))
+    (hF : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hG : ∀ n : Nat, HasPosLeadingCoeff (G n)) :
+    ∀ n : Nat, PosComboRealRooted (F n) (G n) := by
+  rr_pos_combo_sequence_of_prec using
+    prec := hfg,
+    left_pos_lc := hF,
+    right_pos_lc := hG
+
+/-- Positive-combination sum real-rooted row-family exit exposed through the
+OEIS facade. -/
+example {F G : Nat → ℝ[X]}
+    (hfg : ∀ n : Nat, PosComboRealRooted (F n) (G n)) :
+    ∀ n : Nat, F n + G n ≠ 0 ∧ (F n + G n).Splits := by
+  rr_pos_combo_sequence_add_realrooted using pos_combo := hfg
+
 /-- Wagner common-left addition row-family exit exposed through the OEIS
 facade. -/
 example {F G H : Nat → ℝ[X]}

@@ -21,6 +21,22 @@ example {f g : ℝ[X]} {a b : ℝ}
     right_coeff_nonneg := hb,
     some_coeff_pos := hab
 
+example {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hfg : ∀ i : Nat, Prec (F i) (G i))
+    (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (ha : ∀ i : Nat, 0 ≤ a i)
+    (hb : ∀ i : Nat, 0 ≤ b i)
+    (hab : ∀ i : Nat, 0 < a i ∨ 0 < b i) :
+    ∀ i : Nat, Prec (C (a i) * F i + C (b i) * G i) (G i) := by
+  rr_pos_combo_sequence_nonneg_right_prec using
+    prec := hfg,
+    left_pos_lc := hF,
+    right_pos_lc := hG,
+    left_coeff_nonneg := ha,
+    right_coeff_nonneg := hb,
+    some_coeff_pos := hab
+
 example {f g : ℝ[X]} {a b : ℝ}
     (hfg : Prec f g)
     (hf_pos : HasPosLeadingCoeff f)
@@ -33,6 +49,24 @@ example {f g : ℝ[X]} {a b : ℝ}
     prec := hfg,
     left_pos_lc := hf_pos,
     right_pos_lc := hg_pos,
+    left_coeff_nonneg := ha,
+    right_coeff_nonneg := hb,
+    some_coeff_pos := hab
+
+example {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hfg : ∀ i : Nat, Prec (F i) (G i))
+    (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (ha : ∀ i : Nat, 0 ≤ a i)
+    (hb : ∀ i : Nat, 0 ≤ b i)
+    (hab : ∀ i : Nat, 0 < a i ∨ 0 < b i) :
+    ∀ i : Nat,
+      (C (a i) * F i + C (b i) * G i) ≠ 0 ∧
+        (C (a i) * F i + C (b i) * G i).Splits := by
+  rr_pos_combo_sequence_nonneg_realrooted using
+    prec := hfg,
+    left_pos_lc := hF,
+    right_pos_lc := hG,
     left_coeff_nonneg := ha,
     right_coeff_nonneg := hb,
     some_coeff_pos := hab
@@ -51,6 +85,22 @@ example {f g : ℝ[X]} {a b : ℝ}
     left_coeff_pos := ha,
     right_coeff_pos := hb
 
+example {F G : Nat → ℝ[X]} {a b : Nat → ℝ}
+    (hfg : ∀ i : Nat, Prec (F i) (G i))
+    (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (ha : ∀ i : Nat, 0 < a i)
+    (hb : ∀ i : Nat, 0 < b i) :
+    ∀ i : Nat,
+      (C (a i) * F i + C (b i) * G i) ≠ 0 ∧
+        (C (a i) * F i + C (b i) * G i).Splits := by
+  rr_pos_combo_sequence_positive_realrooted using
+    prec := hfg,
+    left_pos_lc := hF,
+    right_pos_lc := hG,
+    left_coeff_pos := ha,
+    right_coeff_pos := hb
+
 example {f g : ℝ[X]} (hfg : PosComboRealRooted f g) :
     RealRooted.PosComboHyp f g := by
   rr_pos_combo_to_hyp using pos_combo := hfg
@@ -58,6 +108,11 @@ example {f g : ℝ[X]} (hfg : PosComboRealRooted f g) :
 example {f g : ℝ[X]} (hfg : PosComboRealRooted f g) :
     PosComboRealRooted g f := by
   rr_pos_combo_comm using pos_combo := hfg
+
+example {F G : Nat → ℝ[X]}
+    (hfg : ∀ i : Nat, PosComboRealRooted (F i) (G i)) :
+    ∀ i : Nat, PosComboRealRooted (G i) (F i) := by
+  rr_pos_combo_sequence_comm using pos_combo := hfg
 
 example {f g : ℝ[X]} {N : ℕ}
     (hfg : PosComboRealRooted f g)
@@ -81,6 +136,11 @@ example {f g : ℝ[X]} (hfg : PosComboRealRooted f g) :
     ((f + g) ≠ 0 ∧ (f + g).Splits) := by
   rr_pos_combo_add_realrooted using pos_combo := hfg
 
+example {F G : Nat → ℝ[X]}
+    (hfg : ∀ i : Nat, PosComboRealRooted (F i) (G i)) :
+    ∀ i : Nat, F i + G i ≠ 0 ∧ (F i + G i).Splits := by
+  rr_pos_combo_sequence_add_realrooted using pos_combo := hfg
+
 example {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hf0 : f.coeff 0 = 0)
@@ -97,11 +157,29 @@ example {f g : ℝ[X]} {μ : ℝ}
     ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits) := by
   rr_pos_combo_add_right_realrooted using pos_combo := hfg, parameter_pos := hμ
 
+example {F G : Nat → ℝ[X]} {mu : Nat → ℝ}
+    (hfg : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hmu : ∀ i : Nat, 0 < mu i) :
+    ∀ i : Nat, F i + C (mu i) * G i ≠ 0 ∧
+      (F i + C (mu i) * G i).Splits := by
+  rr_pos_combo_sequence_add_right_realrooted using
+    pos_combo := hfg,
+    parameter_pos := hmu
+
 example {f g : ℝ[X]} {lam : ℝ}
     (hfg : PosComboRealRooted f g)
     (hlam : 0 < lam) :
     ((C lam * f + g) ≠ 0 ∧ (C lam * f + g).Splits) := by
   rr_pos_combo_add_left_realrooted using pos_combo := hfg, parameter_pos := hlam
+
+example {F G : Nat → ℝ[X]} {lam : Nat → ℝ}
+    (hfg : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hlam : ∀ i : Nat, 0 < lam i) :
+    ∀ i : Nat, C (lam i) * F i + G i ≠ 0 ∧
+      (C (lam i) * F i + G i).Splits := by
+  rr_pos_combo_sequence_add_left_realrooted using
+    pos_combo := hfg,
+    parameter_pos := hlam
 
 example {f g : ℝ[X]}
     (hfg : Prec f g)
@@ -112,6 +190,16 @@ example {f g : ℝ[X]}
     prec := hfg,
     left_pos_lc := hf_pos,
     right_pos_lc := hg_pos
+
+example {F G : Nat → ℝ[X]}
+    (hfg : ∀ i : Nat, Prec (F i) (G i))
+    (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG : ∀ i : Nat, HasPosLeadingCoeff (G i)) :
+    ∀ i : Nat, PosComboRealRooted (F i) (G i) := by
+  rr_pos_combo_sequence_of_prec using
+    prec := hfg,
+    left_pos_lc := hF,
+    right_pos_lc := hG
 
 example {f g : ℝ[X]} :
     PosComboRealRooted f g ↔
@@ -148,6 +236,18 @@ example {f g h : ℝ[X]}
     left_pos_lc := hf_pos,
     right_pos_lc := hg_pos
 
+example {F G H : Nat → ℝ[X]}
+    (hHF : ∀ i : Nat, Prec (H i) (F i))
+    (hHG : ∀ i : Nat, Prec (H i) (G i))
+    (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG : ∀ i : Nat, HasPosLeadingCoeff (G i)) :
+    ∀ i : Nat, PosComboRealRooted (F i) (G i) := by
+  rr_pos_combo_sequence_of_common_left using
+    common_to_left := hHF,
+    common_to_right := hHG,
+    left_pos_lc := hF,
+    right_pos_lc := hG
+
 example {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hf_pos : HasPosLeadingCoeff f)
@@ -160,6 +260,18 @@ example {f g : ℝ[X]}
     right_pos_lc := hg_pos,
     same_degree := hdeg
 
+example {F G : Nat → ℝ[X]}
+    (hfg : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree) :
+    ∀ i : Nat, F i ≠ 0 ∧ (F i).Splits := by
+  rr_pos_combo_sequence_left_same_degree_realrooted using
+    pos_combo := hfg,
+    left_pos_lc := hF,
+    right_pos_lc := hG,
+    same_degree := hdeg
+
 example {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hf_pos : HasPosLeadingCoeff f)
@@ -170,6 +282,18 @@ example {f g : ℝ[X]}
     pos_combo := hfg,
     left_pos_lc := hf_pos,
     right_pos_lc := hg_pos,
+    same_degree := hdeg
+
+example {F G : Nat → ℝ[X]}
+    (hfg : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree) :
+    ∀ i : Nat, G i ≠ 0 ∧ (G i).Splits := by
+  rr_pos_combo_sequence_right_same_degree_realrooted using
+    pos_combo := hfg,
+    left_pos_lc := hF,
+    right_pos_lc := hG,
     same_degree := hdeg
 
 example {f g : ℝ[X]} {β : ℝ}
@@ -207,6 +331,23 @@ example {f g : ℝ[X]} {β : ℝ}
     same_degree := hdeg,
     parameter_nonneg := hβ0,
     parameter_le_one := hβ1
+
+example {F G : Nat → ℝ[X]} {beta : Nat → ℝ}
+    (hfg : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hbeta0 : ∀ i : Nat, 0 ≤ beta i)
+    (hbeta1 : ∀ i : Nat, beta i ≤ 1) :
+    ∀ i : Nat, C (1 - beta i) * F i + C (beta i) * G i ≠ 0 ∧
+      (C (1 - beta i) * F i + C (beta i) * G i).Splits := by
+  rr_pos_combo_sequence_closed_segment_same_degree_realrooted using
+    pos_combo := hfg,
+    left_pos_lc := hF,
+    right_pos_lc := hG,
+    same_degree := hdeg,
+    parameter_nonneg := hbeta0,
+    parameter_le_one := hbeta1
 
 example {f g : ℝ[X]}
     (hASW : aissenSchoenbergWhitneyForwardStatement)
