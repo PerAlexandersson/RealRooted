@@ -104,6 +104,18 @@ theorem eq_zero_or_splits_of_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Split
     p = 0 ∨ p.Splits :=
   Or.inr hp.2
 
+/-- Product transport for nonzero real-rootedness certificates. -/
+theorem isRealRooted_mul_of_isRealRooted {p q : ℝ[X]}
+    (hp : p ≠ 0 ∧ p.Splits) (hq : q ≠ 0 ∧ q.Splits) :
+    p * q ≠ 0 ∧ (p * q).Splits :=
+  isRealRooted_mul hp.1 hp.2 hq.1 hq.2
+
+/-- Power transport for nonzero real-rootedness certificates. -/
+theorem isRealRooted_pow_of_isRealRooted {p : ℝ[X]}
+    (hp : p ≠ 0 ∧ p.Splits) (n : Nat) :
+    p ^ n ≠ 0 ∧ (p ^ n).Splits :=
+  ⟨pow_ne_zero n hp.1, hp.2.pow n⟩
+
 /-- Reverse transport for zero-aware real-rootedness certificates. -/
 theorem reverse_eq_zero_or_splits {p : ℝ[X]} (hp : p = 0 ∨ p.Splits) :
     p.reverse = 0 ∨ p.reverse.Splits := by
@@ -558,6 +570,19 @@ syntax (name := rr_zero_or_splits_of_divX)
     "divX_zero_or_splits" ":=" term :
   tactic
 syntax (name := rr_realrooted) "rr_realrooted" " using " term : tactic
+syntax (name := rr_mul_realrooted)
+  "rr_mul_realrooted" " using " term ", " term :
+  tactic
+syntax (name := rr_mul_realrooted_named)
+  "rr_mul_realrooted" " using "
+    "left" ":=" term ","
+    "right" ":=" term :
+  tactic
+syntax (name := rr_pow_realrooted)
+  "rr_pow_realrooted" " using "
+    "realrooted" ":=" term ","
+    "exponent" ":=" term :
+  tactic
 syntax (name := rr_realrooted_reverse)
   "rr_realrooted_reverse" " using "
     "realrooted" ":=" term :
@@ -740,6 +765,12 @@ macro_rules
           RealRooted.right_splits_of_isRealRooted_pair $h,
           RealRooted.left_eq_zero_or_splits_of_isRealRooted_pair $h,
           RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair $h,
+          (RealRooted.isRealRooted_mul_of_isRealRooted
+            (RealRooted.left_isRealRooted_of_isRealRooted_pair $h)
+            (RealRooted.right_isRealRooted_of_isRealRooted_pair $h)),
+          (RealRooted.isRealRooted_mul_of_isRealRooted
+            (RealRooted.right_isRealRooted_of_isRealRooted_pair $h)
+            (RealRooted.left_isRealRooted_of_isRealRooted_pair $h)),
           RealRooted.left_isRealRooted_of_prec $h,
           RealRooted.right_isRealRooted_of_prec $h,
           RealRooted.left_ne_zero_of_prec $h,
@@ -1033,9 +1064,34 @@ macro_rules
           RealRooted.left_isRealRooted_of_interlaces $h,
           RealRooted.left_isRealRooted_of_isRealRooted_pair $h,
           RealRooted.right_isRealRooted_of_isRealRooted_pair $h,
+          (RealRooted.isRealRooted_mul_of_isRealRooted
+            (RealRooted.left_isRealRooted_of_isRealRooted_pair $h)
+            (RealRooted.right_isRealRooted_of_isRealRooted_pair $h)),
+          (RealRooted.isRealRooted_mul_of_isRealRooted
+            (RealRooted.right_isRealRooted_of_isRealRooted_pair $h)
+            (RealRooted.left_isRealRooted_of_isRealRooted_pair $h)),
+          RealRooted.isRealRooted_pow_of_isRealRooted $h _,
           RealRooted.reverse_isRealRooted $h,
           RealRooted.isRealRooted_of_reverse $h,
           RealRooted.X_pow_mul_reverse_isRealRooted $h _)
+  | `(tactic| rr_mul_realrooted using $hp:term, $hq:term) =>
+      `(tactic|
+        rr_first_realrooted_or_projection
+          (RealRooted.isRealRooted_mul_of_isRealRooted $hp $hq),
+          (RealRooted.isRealRooted_mul_of_isRealRooted $hq $hp))
+  | `(tactic|
+      rr_mul_realrooted using
+        left := $hp:term,
+        right := $hq:term) =>
+      `(tactic|
+        rr_mul_realrooted using $hp, $hq)
+  | `(tactic|
+      rr_pow_realrooted using
+        realrooted := $hp:term,
+        exponent := $n:term) =>
+      `(tactic|
+        rr_first_realrooted_or_projection
+          (RealRooted.isRealRooted_pow_of_isRealRooted $hp $n))
   | `(tactic|
       rr_realrooted_reverse using
         realrooted := $h:term) =>

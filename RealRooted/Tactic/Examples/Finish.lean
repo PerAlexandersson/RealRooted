@@ -271,6 +271,38 @@ example {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits) :
     f.reverse ≠ 0 ∧ f.reverse.Splits := by
   rr_realrooted using hf
 
+example {f g : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits) (hg : g ≠ 0 ∧ g.Splits) :
+    f * g ≠ 0 ∧ (f * g).Splits := by
+  rr_mul_realrooted using hf, hg
+
+example {f g : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits) (hg : g ≠ 0 ∧ g.Splits) :
+    (g * f).Splits := by
+  rr_mul_realrooted using
+    left := hf,
+    right := hg
+
+example {f : ℝ[X]} {n : Nat} (hf : f ≠ 0 ∧ f.Splits) :
+    f ^ n ≠ 0 ∧ (f ^ n).Splits := by
+  rr_pow_realrooted using
+    realrooted := hf,
+    exponent := n
+
+example {f : ℝ[X]} {n : Nat} (hf : f ≠ 0 ∧ f.Splits) :
+    f ^ n ≠ 0 ∧ (f ^ n).Splits := by
+  rr_realrooted using hf
+
+example {f : ℝ[X]} {n : Nat} (hf : f ≠ 0 ∧ f.Splits) :
+    f ^ n ≠ 0 ∧ (f ^ n).Splits := by
+  rr_realrooted
+
+example {f g : ℝ[X]} (hfg : (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits)) :
+    f * g ≠ 0 ∧ (f * g).Splits := by
+  rr_realrooted using hfg
+
+example {f g : ℝ[X]} (hfg : (f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits)) :
+    g * f ≠ 0 ∧ (g * f).Splits := by
+  rr_finish using hfg
+
 example {f : ℝ[X]} (hf : f.reverse ≠ 0 ∧ f.reverse.Splits) :
     f ≠ 0 ∧ f.Splits := by
   rr_realrooted_of_reverse using
