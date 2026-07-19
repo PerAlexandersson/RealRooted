@@ -3908,10 +3908,6 @@ example {P : Nat → ℝ[X]} {Araw : Nat → ℝ[X]}
     leading_nonneg := (fun _ => by norm_num),
     constant_nonneg := (fun _ => by norm_num),
     discriminant := (fun _ => by norm_num),
-    den_nonzero := rr_scalar_active_den_all_term,
-    leading_coeff_eq := rr_scalar_coeff_all_term,
-    linear_coeff_eq := rr_scalar_coeff_all_term,
-    constant_coeff_eq := rr_scalar_coeff_all_term,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -3968,10 +3964,6 @@ example {P : Nat → ℝ[X]} {Araw : Nat → ℝ[X]}
     leading_nonneg := (fun _ => by norm_num),
     constant_nonneg := (fun _ => by norm_num),
     discriminant := (fun _ => by norm_num),
-    den_nonzero := rr_scalar_active_den_all_term,
-    leading_coeff_eq := rr_scalar_coeff_all_term,
-    linear_coeff_eq := rr_scalar_coeff_all_term,
-    constant_coeff_eq := rr_scalar_coeff_all_term,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
