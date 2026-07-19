@@ -568,6 +568,158 @@ theorem sameDegree_rootCountAbove_pos_crossing_sequence
     (hFpos i) (hGpos i) (hFG i) (hdeg i) (hno i) (hxF i) (hxG i)
     (hcross i)
 
+theorem posCombo_sameDegree_rootCount_degree_le_two_sequence
+    {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFnn : ∀ i : Nat, HasNonnegCoeffs (F i))
+    (hGnn : ∀ i : Nat, HasNonnegCoeffs (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
+    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 2) :
+    ∀ i : Nat,
+      (((F i).roots.filter (· ≤ x i)).card : ℤ) -
+          ((G i).roots.filter (· ≤ x i)).card ≤ 1 ∧
+        (((G i).roots.filter (· ≤ x i)).card : ℤ) -
+          ((F i).roots.filter (· ≤ x i)).card ≤ (1 : ℤ) := fun i =>
+  rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
+    (hFpos i) (hGpos i) (hFnn i) (hGnn i) (hFG i) (hdeg i) (hno i)
+    (hFdeg i) (x i)
+
+theorem posCombo_sameDegree_rootCountAbove_degree_le_two_sequence
+    {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFnn : ∀ i : Nat, HasNonnegCoeffs (F i))
+    (hGnn : ∀ i : Nat, HasNonnegCoeffs (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
+    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 2) :
+    ∀ i : Nat,
+      (((F i).roots.filter (x i < ·)).card : ℤ) -
+          ((G i).roots.filter (x i < ·)).card ≤ 1 ∧
+        (((G i).roots.filter (x i < ·)).card : ℤ) -
+          ((F i).roots.filter (x i < ·)).card ≤ (1 : ℤ) := fun i =>
+  rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
+    (hFpos i) (hGpos i) (hFnn i) (hGnn i) (hFG i) (hdeg i) (hno i)
+    (hFdeg i) (x i)
+
+theorem sameDegree_rootCrossing_degree_le_one_sequence
+    {F G : Nat → ℝ[X]}
+    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 1) :
+    ∀ i : Nat,
+      (∀ j, 1 ≤ j → j < (F i).natDegree →
+          (rootSeqDesc (G i)).getD j 0 ≤
+            (rootSeqDesc (F i)).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < (F i).natDegree →
+          (rootSeqDesc (F i)).getD j 0 ≤
+            (rootSeqDesc (G i)).getD (j - 1) 0) := fun i =>
+  sameDegreeRootCrossing_of_natDegree_le_one (hFdeg i)
+
+theorem posCombo_sameDegree_rootCrossing_degree_le_two_sequence
+    {F G : Nat → ℝ[X]}
+    (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFnn : ∀ i : Nat, HasNonnegCoeffs (F i))
+    (hGnn : ∀ i : Nat, HasNonnegCoeffs (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
+    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 2) :
+    ∀ i : Nat,
+      (∀ j, 1 ≤ j → j < (F i).natDegree →
+          (rootSeqDesc (G i)).getD j 0 ≤
+            (rootSeqDesc (F i)).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < (F i).natDegree →
+          (rootSeqDesc (F i)).getD j 0 ≤
+            (rootSeqDesc (G i)).getD (j - 1) 0) := fun i =>
+  sameDegreeRootCrossing_of_posCombo_natDegree_le_two
+    (hFpos i) (hGpos i) (hFnn i) (hGnn i) (hFG i) (hdeg i) (hno i)
+    (hFdeg i)
+
+theorem compatible_succDegree_rootCountAbove_le_two_sequence
+    {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hcomp : ∀ i : Nat, Compatible (F i) (G i))
+    (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree + 1)
+    (hFsplit : ∀ i : Nat, (F i).Splits)
+    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 2) :
+    ∀ i : Nat,
+      (((F i).roots.filter (x i < ·)).card : ℤ) -
+          ((G i).roots.filter (x i < ·)).card ≤ 2 ∧
+        (((G i).roots.filter (x i < ·)).card : ℤ) -
+          ((F i).roots.filter (x i < ·)).card ≤ (2 : ℤ) := fun i =>
+  compatibleSuccDegreeRootCountAbove_le_two_of_natDegree_le_two
+    (hcomp i) (hFpos i) (hGpos i) (hdeg i) (hFsplit i) (hFdeg i) (x i)
+
+theorem posCombo_sameDegree_rootCount_cubicInterior_sequence
+    {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hbelow : CubicInteriorTwoBelowStatement)
+    (habove : CubicInteriorTwoAboveStatement)
+    (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFnn : ∀ i : Nat, HasNonnegCoeffs (F i))
+    (hGnn : ∀ i : Nat, HasNonnegCoeffs (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
+    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 3) :
+    ∀ i : Nat,
+      (((F i).roots.filter (· ≤ x i)).card : ℤ) -
+          ((G i).roots.filter (· ≤ x i)).card ≤ 1 ∧
+        (((G i).roots.filter (· ≤ x i)).card : ℤ) -
+          ((F i).roots.filter (· ≤ x i)).card ≤ (1 : ℤ) := fun i =>
+  rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_three_of_cubicInterior
+    hbelow habove (hFpos i) (hGpos i) (hFnn i) (hGnn i) (hFG i)
+    (hdeg i) (hno i) (hFdeg i) (x i)
+
+theorem posCombo_sameDegree_rootCountAbove_cubicInterior_sequence
+    {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hbelow : CubicInteriorTwoBelowStatement)
+    (habove : CubicInteriorTwoAboveStatement)
+    (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFnn : ∀ i : Nat, HasNonnegCoeffs (F i))
+    (hGnn : ∀ i : Nat, HasNonnegCoeffs (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
+    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 3) :
+    ∀ i : Nat,
+      (((F i).roots.filter (x i < ·)).card : ℤ) -
+          ((G i).roots.filter (x i < ·)).card ≤ 1 ∧
+        (((G i).roots.filter (x i < ·)).card : ℤ) -
+          ((F i).roots.filter (x i < ·)).card ≤ (1 : ℤ) := fun i =>
+  rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_three_of_cubicInterior
+    hbelow habove (hFpos i) (hGpos i) (hFnn i) (hGnn i) (hFG i)
+    (hdeg i) (hno i) (hFdeg i) (x i)
+
+theorem posCombo_sameDegree_rootCrossing_cubicInterior_sequence
+    {F G : Nat → ℝ[X]}
+    (hbelow : CubicInteriorTwoBelowStatement)
+    (habove : CubicInteriorTwoAboveStatement)
+    (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFnn : ∀ i : Nat, HasNonnegCoeffs (F i))
+    (hGnn : ∀ i : Nat, HasNonnegCoeffs (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
+    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 3) :
+    ∀ i : Nat,
+      (∀ j, 1 ≤ j → j < (F i).natDegree →
+          (rootSeqDesc (G i)).getD j 0 ≤
+            (rootSeqDesc (F i)).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < (F i).natDegree →
+          (rootSeqDesc (F i)).getD j 0 ≤
+            (rootSeqDesc (G i)).getD (j - 1) 0) := fun i =>
+  sameDegreeRootCrossing_of_posCombo_natDegree_le_three_of_cubicInterior
+    hbelow habove (hFpos i) (hGpos i) (hFnn i) (hGnn i) (hFG i)
+    (hdeg i) (hno i) (hFdeg i)
+
 syntax (name := rr_natDegree_add_C_mul_lt_named)
   "rr_natDegree_add_C_mul_lt" " using "
     "parameter_ne_zero" ":=" term ","
@@ -1242,6 +1394,18 @@ syntax (name := rr_posCombo_sameDegree_rootCount_degree_le_two_named)
     "threshold" ":=" term :
   tactic
 
+syntax (name := rr_posCombo_sameDegree_rootCount_degree_le_two_sequence_named)
+  "rr_posCombo_sameDegree_rootCount_degree_le_two_sequence" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_nonneg_coeffs" ":=" term ","
+    "right_nonneg_coeffs" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "left_degree_le_two" ":=" term :
+  tactic
+
 syntax (name := rr_posCombo_sameDegree_rootCountAbove_degree_le_two_named)
   "rr_posCombo_sameDegree_rootCountAbove_degree_le_two" " using "
     "left_pos_lc" ":=" term ","
@@ -1255,13 +1419,42 @@ syntax (name := rr_posCombo_sameDegree_rootCountAbove_degree_le_two_named)
     "threshold" ":=" term :
   tactic
 
+syntax (name := rr_posCombo_sameDegree_rootCountAbove_degree_le_two_sequence_named)
+  "rr_posCombo_sameDegree_rootCountAbove_degree_le_two_sequence" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_nonneg_coeffs" ":=" term ","
+    "right_nonneg_coeffs" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "left_degree_le_two" ":=" term :
+  tactic
+
 syntax (name := rr_sameDegree_rootCrossing_degree_le_one_named)
   "rr_sameDegree_rootCrossing_degree_le_one" " using "
     "left_degree_le_one" ":=" term :
   tactic
 
+syntax (name := rr_sameDegree_rootCrossing_degree_le_one_sequence_named)
+  "rr_sameDegree_rootCrossing_degree_le_one_sequence" " using "
+    "left_degree_le_one" ":=" term :
+  tactic
+
 syntax (name := rr_posCombo_sameDegree_rootCrossing_degree_le_two_named)
   "rr_posCombo_sameDegree_rootCrossing_degree_le_two" " using "
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_nonneg_coeffs" ":=" term ","
+    "right_nonneg_coeffs" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "left_degree_le_two" ":=" term :
+  tactic
+
+syntax (name := rr_posCombo_sameDegree_rootCrossing_degree_le_two_sequence_named)
+  "rr_posCombo_sameDegree_rootCrossing_degree_le_two_sequence" " using "
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
     "left_nonneg_coeffs" ":=" term ","
@@ -1283,6 +1476,16 @@ syntax (name := rr_compatible_succDegree_rootCountAbove_le_two_named)
     "threshold" ":=" term :
   tactic
 
+syntax (name := rr_compatible_succDegree_rootCountAbove_le_two_sequence_named)
+  "rr_compatible_succDegree_rootCountAbove_le_two_sequence" " using "
+    "compatible" ":=" term ","
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "succ_degree" ":=" term ","
+    "left_splits" ":=" term ","
+    "left_degree_le_two" ":=" term :
+  tactic
+
 syntax (name := rr_posCombo_sameDegree_rootCount_cubicInterior_named)
   "rr_posCombo_sameDegree_rootCount_cubicInterior" " using "
     "below_certificate" ":=" term ","
@@ -1296,6 +1499,20 @@ syntax (name := rr_posCombo_sameDegree_rootCount_cubicInterior_named)
     "no_common_roots" ":=" term ","
     "left_degree_le_three" ":=" term ","
     "threshold" ":=" term :
+  tactic
+
+syntax (name := rr_posCombo_sameDegree_rootCount_cubicInterior_sequence_named)
+  "rr_posCombo_sameDegree_rootCount_cubicInterior_sequence" " using "
+    "below_certificate" ":=" term ","
+    "above_certificate" ":=" term ","
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_nonneg_coeffs" ":=" term ","
+    "right_nonneg_coeffs" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "left_degree_le_three" ":=" term :
   tactic
 
 syntax (name := rr_posCombo_sameDegree_rootCountAbove_cubicInterior_named)
@@ -1313,8 +1530,36 @@ syntax (name := rr_posCombo_sameDegree_rootCountAbove_cubicInterior_named)
     "threshold" ":=" term :
   tactic
 
+syntax (name := rr_posCombo_sameDegree_rootCountAbove_cubicInterior_sequence_named)
+  "rr_posCombo_sameDegree_rootCountAbove_cubicInterior_sequence" " using "
+    "below_certificate" ":=" term ","
+    "above_certificate" ":=" term ","
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_nonneg_coeffs" ":=" term ","
+    "right_nonneg_coeffs" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "left_degree_le_three" ":=" term :
+  tactic
+
 syntax (name := rr_posCombo_sameDegree_rootCrossing_cubicInterior_named)
   "rr_posCombo_sameDegree_rootCrossing_cubicInterior" " using "
+    "below_certificate" ":=" term ","
+    "above_certificate" ":=" term ","
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term ","
+    "left_nonneg_coeffs" ":=" term ","
+    "right_nonneg_coeffs" ":=" term ","
+    "pos_combo" ":=" term ","
+    "same_degree" ":=" term ","
+    "no_common_roots" ":=" term ","
+    "left_degree_le_three" ":=" term :
+  tactic
+
+syntax (name := rr_posCombo_sameDegree_rootCrossing_cubicInterior_sequence_named)
+  "rr_posCombo_sameDegree_rootCrossing_cubicInterior_sequence" " using "
     "below_certificate" ":=" term ","
     "above_certificate" ":=" term ","
     "left_pos_lc" ":=" term ","
@@ -2087,6 +2332,20 @@ macro_rules
         exact rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
           $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg $x)
   | `(tactic|
+      rr_posCombo_sameDegree_rootCount_degree_le_two_sequence using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        left_nonneg_coeffs := $hfnn:term,
+        right_nonneg_coeffs := $hgnn:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        no_common_roots := $hno:term,
+        left_degree_le_two := $hfdeg:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.posCombo_sameDegree_rootCount_degree_le_two_sequence
+            $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg)
+  | `(tactic|
       rr_posCombo_sameDegree_rootCountAbove_degree_le_two using
         left_pos_lc := $hfpos:term,
         right_pos_lc := $hgpos:term,
@@ -2101,10 +2360,31 @@ macro_rules
         exact rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
           $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg $x)
   | `(tactic|
+      rr_posCombo_sameDegree_rootCountAbove_degree_le_two_sequence using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        left_nonneg_coeffs := $hfnn:term,
+        right_nonneg_coeffs := $hgnn:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        no_common_roots := $hno:term,
+        left_degree_le_two := $hfdeg:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.posCombo_sameDegree_rootCountAbove_degree_le_two_sequence
+            $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg)
+  | `(tactic|
       rr_sameDegree_rootCrossing_degree_le_one using
         left_degree_le_one := $hfdeg:term) =>
       `(tactic|
         exact sameDegreeRootCrossing_of_natDegree_le_one $hfdeg)
+  | `(tactic|
+      rr_sameDegree_rootCrossing_degree_le_one_sequence using
+        left_degree_le_one := $hfdeg:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.sameDegree_rootCrossing_degree_le_one_sequence
+            $hfdeg)
   | `(tactic|
       rr_posCombo_sameDegree_rootCrossing_degree_le_two using
         left_pos_lc := $hfpos:term,
@@ -2119,6 +2399,20 @@ macro_rules
         exact sameDegreeRootCrossing_of_posCombo_natDegree_le_two
           $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg)
   | `(tactic|
+      rr_posCombo_sameDegree_rootCrossing_degree_le_two_sequence using
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        left_nonneg_coeffs := $hfnn:term,
+        right_nonneg_coeffs := $hgnn:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        no_common_roots := $hno:term,
+        left_degree_le_two := $hfdeg:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.posCombo_sameDegree_rootCrossing_degree_le_two_sequence
+            $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg)
+  | `(tactic|
       rr_compatible_succDegree_rootCountAbove_le_two using
         compatible := $hcomp:term,
         left_pos_lc := $hfpos:term,
@@ -2130,6 +2424,18 @@ macro_rules
       `(tactic|
         exact compatibleSuccDegreeRootCountAbove_le_two_of_natDegree_le_two
           $hcomp $hfpos $hgpos $hdeg $hfsplit $hfdeg $x)
+  | `(tactic|
+      rr_compatible_succDegree_rootCountAbove_le_two_sequence using
+        compatible := $hcomp:term,
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        succ_degree := $hdeg:term,
+        left_splits := $hfsplit:term,
+        left_degree_le_two := $hfdeg:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.compatible_succDegree_rootCountAbove_le_two_sequence
+            $hcomp $hfpos $hgpos $hdeg $hfsplit $hfdeg)
   | `(tactic|
       rr_posCombo_sameDegree_rootCount_cubicInterior using
         below_certificate := $hbelow:term,
@@ -2149,6 +2455,23 @@ macro_rules
             $hbelow $habove $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno
             $hfdeg $x)
   | `(tactic|
+      rr_posCombo_sameDegree_rootCount_cubicInterior_sequence using
+        below_certificate := $hbelow:term,
+        above_certificate := $habove:term,
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        left_nonneg_coeffs := $hfnn:term,
+        right_nonneg_coeffs := $hgnn:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        no_common_roots := $hno:term,
+        left_degree_le_three := $hfdeg:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.posCombo_sameDegree_rootCount_cubicInterior_sequence
+            $hbelow $habove $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno
+            $hfdeg)
+  | `(tactic|
       rr_posCombo_sameDegree_rootCountAbove_cubicInterior using
         below_certificate := $hbelow:term,
         above_certificate := $habove:term,
@@ -2167,6 +2490,23 @@ macro_rules
             $hbelow $habove $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno
             $hfdeg $x)
   | `(tactic|
+      rr_posCombo_sameDegree_rootCountAbove_cubicInterior_sequence using
+        below_certificate := $hbelow:term,
+        above_certificate := $habove:term,
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        left_nonneg_coeffs := $hfnn:term,
+        right_nonneg_coeffs := $hgnn:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        no_common_roots := $hno:term,
+        left_degree_le_three := $hfdeg:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.posCombo_sameDegree_rootCountAbove_cubicInterior_sequence
+            $hbelow $habove $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno
+            $hfdeg)
+  | `(tactic|
       rr_posCombo_sameDegree_rootCrossing_cubicInterior using
         below_certificate := $hbelow:term,
         above_certificate := $habove:term,
@@ -2181,6 +2521,23 @@ macro_rules
       `(tactic|
         exact
           sameDegreeRootCrossing_of_posCombo_natDegree_le_three_of_cubicInterior
+            $hbelow $habove $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno
+            $hfdeg)
+  | `(tactic|
+      rr_posCombo_sameDegree_rootCrossing_cubicInterior_sequence using
+        below_certificate := $hbelow:term,
+        above_certificate := $habove:term,
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term,
+        left_nonneg_coeffs := $hfnn:term,
+        right_nonneg_coeffs := $hgnn:term,
+        pos_combo := $hfg:term,
+        same_degree := $hdeg:term,
+        no_common_roots := $hno:term,
+        left_degree_le_three := $hfdeg:term) =>
+      `(tactic|
+        exact
+          RealRooted.Tactic.posCombo_sameDegree_rootCrossing_cubicInterior_sequence
             $hbelow $habove $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno
             $hfdeg)
 

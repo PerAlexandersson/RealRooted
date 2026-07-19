@@ -1452,5 +1452,197 @@ example {f g : ℝ[X]}
     no_common_roots := hno,
     left_degree_le_three := hfdeg
 
+example {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hF_pos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG_pos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFnn : ∀ i : Nat, HasNonnegCoeffs (F i))
+    (hGnn : ∀ i : Nat, HasNonnegCoeffs (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
+    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 2) :
+    ∀ i : Nat,
+      (((F i).roots.filter (· ≤ x i)).card : ℤ) -
+          ((G i).roots.filter (· ≤ x i)).card ≤ 1 ∧
+        (((G i).roots.filter (· ≤ x i)).card : ℤ) -
+          ((F i).roots.filter (· ≤ x i)).card ≤ 1 := by
+  rr_posCombo_sameDegree_rootCount_degree_le_two_sequence using
+    left_pos_lc := hF_pos,
+    right_pos_lc := hG_pos,
+    left_nonneg_coeffs := hFnn,
+    right_nonneg_coeffs := hGnn,
+    pos_combo := hFG,
+    same_degree := hdeg,
+    no_common_roots := hno,
+    left_degree_le_two := hFdeg
+
+example {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hF_pos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG_pos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFnn : ∀ i : Nat, HasNonnegCoeffs (F i))
+    (hGnn : ∀ i : Nat, HasNonnegCoeffs (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
+    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 2) :
+    ∀ i : Nat,
+      (((F i).roots.filter (x i < ·)).card : ℤ) -
+          ((G i).roots.filter (x i < ·)).card ≤ 1 ∧
+        (((G i).roots.filter (x i < ·)).card : ℤ) -
+          ((F i).roots.filter (x i < ·)).card ≤ 1 := by
+  rr_posCombo_sameDegree_rootCountAbove_degree_le_two_sequence using
+    left_pos_lc := hF_pos,
+    right_pos_lc := hG_pos,
+    left_nonneg_coeffs := hFnn,
+    right_nonneg_coeffs := hGnn,
+    pos_combo := hFG,
+    same_degree := hdeg,
+    no_common_roots := hno,
+    left_degree_le_two := hFdeg
+
+example {F G : Nat → ℝ[X]}
+    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 1) :
+    ∀ i : Nat,
+      (∀ j, 1 ≤ j → j < (F i).natDegree →
+          (rootSeqDesc (G i)).getD j 0 ≤
+            (rootSeqDesc (F i)).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < (F i).natDegree →
+          (rootSeqDesc (F i)).getD j 0 ≤
+            (rootSeqDesc (G i)).getD (j - 1) 0) := by
+  rr_sameDegree_rootCrossing_degree_le_one_sequence using
+    left_degree_le_one := hFdeg
+
+example {F G : Nat → ℝ[X]}
+    (hF_pos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG_pos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFnn : ∀ i : Nat, HasNonnegCoeffs (F i))
+    (hGnn : ∀ i : Nat, HasNonnegCoeffs (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
+    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 2) :
+    ∀ i : Nat,
+      (∀ j, 1 ≤ j → j < (F i).natDegree →
+          (rootSeqDesc (G i)).getD j 0 ≤
+            (rootSeqDesc (F i)).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < (F i).natDegree →
+          (rootSeqDesc (F i)).getD j 0 ≤
+            (rootSeqDesc (G i)).getD (j - 1) 0) := by
+  rr_posCombo_sameDegree_rootCrossing_degree_le_two_sequence using
+    left_pos_lc := hF_pos,
+    right_pos_lc := hG_pos,
+    left_nonneg_coeffs := hFnn,
+    right_nonneg_coeffs := hGnn,
+    pos_combo := hFG,
+    same_degree := hdeg,
+    no_common_roots := hno,
+    left_degree_le_two := hFdeg
+
+example {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hcomp : ∀ i : Nat, Compatible (F i) (G i))
+    (hF_pos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG_pos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree + 1)
+    (hFsplit : ∀ i : Nat, (F i).Splits)
+    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 2) :
+    ∀ i : Nat,
+      (((F i).roots.filter (x i < ·)).card : ℤ) -
+          ((G i).roots.filter (x i < ·)).card ≤ 2 ∧
+        (((G i).roots.filter (x i < ·)).card : ℤ) -
+          ((F i).roots.filter (x i < ·)).card ≤ 2 := by
+  rr_compatible_succDegree_rootCountAbove_le_two_sequence using
+    compatible := hcomp,
+    left_pos_lc := hF_pos,
+    right_pos_lc := hG_pos,
+    succ_degree := hdeg,
+    left_splits := hFsplit,
+    left_degree_le_two := hFdeg
+
+example {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hbelow : CubicInteriorTwoBelowStatement)
+    (habove : CubicInteriorTwoAboveStatement)
+    (hF_pos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG_pos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFnn : ∀ i : Nat, HasNonnegCoeffs (F i))
+    (hGnn : ∀ i : Nat, HasNonnegCoeffs (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
+    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 3) :
+    ∀ i : Nat,
+      (((F i).roots.filter (· ≤ x i)).card : ℤ) -
+          ((G i).roots.filter (· ≤ x i)).card ≤ 1 ∧
+        (((G i).roots.filter (· ≤ x i)).card : ℤ) -
+          ((F i).roots.filter (· ≤ x i)).card ≤ 1 := by
+  rr_posCombo_sameDegree_rootCount_cubicInterior_sequence using
+    below_certificate := hbelow,
+    above_certificate := habove,
+    left_pos_lc := hF_pos,
+    right_pos_lc := hG_pos,
+    left_nonneg_coeffs := hFnn,
+    right_nonneg_coeffs := hGnn,
+    pos_combo := hFG,
+    same_degree := hdeg,
+    no_common_roots := hno,
+    left_degree_le_three := hFdeg
+
+example {F G : Nat → ℝ[X]} {x : Nat → ℝ}
+    (hbelow : CubicInteriorTwoBelowStatement)
+    (habove : CubicInteriorTwoAboveStatement)
+    (hF_pos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG_pos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFnn : ∀ i : Nat, HasNonnegCoeffs (F i))
+    (hGnn : ∀ i : Nat, HasNonnegCoeffs (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
+    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 3) :
+    ∀ i : Nat,
+      (((F i).roots.filter (x i < ·)).card : ℤ) -
+          ((G i).roots.filter (x i < ·)).card ≤ 1 ∧
+        (((G i).roots.filter (x i < ·)).card : ℤ) -
+          ((F i).roots.filter (x i < ·)).card ≤ 1 := by
+  rr_posCombo_sameDegree_rootCountAbove_cubicInterior_sequence using
+    below_certificate := hbelow,
+    above_certificate := habove,
+    left_pos_lc := hF_pos,
+    right_pos_lc := hG_pos,
+    left_nonneg_coeffs := hFnn,
+    right_nonneg_coeffs := hGnn,
+    pos_combo := hFG,
+    same_degree := hdeg,
+    no_common_roots := hno,
+    left_degree_le_three := hFdeg
+
+example {F G : Nat → ℝ[X]}
+    (hbelow : CubicInteriorTwoBelowStatement)
+    (habove : CubicInteriorTwoAboveStatement)
+    (hF_pos : ∀ i : Nat, HasPosLeadingCoeff (F i))
+    (hG_pos : ∀ i : Nat, HasPosLeadingCoeff (G i))
+    (hFnn : ∀ i : Nat, HasNonnegCoeffs (F i))
+    (hGnn : ∀ i : Nat, HasNonnegCoeffs (G i))
+    (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
+    (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
+    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
+    (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 3) :
+    ∀ i : Nat,
+      (∀ j, 1 ≤ j → j < (F i).natDegree →
+          (rootSeqDesc (G i)).getD j 0 ≤
+            (rootSeqDesc (F i)).getD (j - 1) 0) ∧
+        (∀ j, 1 ≤ j → j < (F i).natDegree →
+          (rootSeqDesc (F i)).getD j 0 ≤
+            (rootSeqDesc (G i)).getD (j - 1) 0) := by
+  rr_posCombo_sameDegree_rootCrossing_cubicInterior_sequence using
+    below_certificate := hbelow,
+    above_certificate := habove,
+    left_pos_lc := hF_pos,
+    right_pos_lc := hG_pos,
+    left_nonneg_coeffs := hFnn,
+    right_nonneg_coeffs := hGnn,
+    pos_combo := hFG,
+    same_degree := hdeg,
+    no_common_roots := hno,
+    left_degree_le_three := hFdeg
+
 end Tactic
 end RealRooted
