@@ -1695,6 +1695,129 @@ example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
     factorization := hrow,
     certificate := scalarPowAuto
 
+/-- Product-lift router, scalar factor with cutoff. -/
+example {P Q : Nat → ℝ[X]} {c : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hc : ∀ n : Nat, N ≤ n → c n ≠ 0)
+    (hrow : ∀ n : Nat, N ≤ n → P n = C (c n) * Q n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    scalar_ne := hc,
+    cutoff := N,
+    factorization := hrow,
+    certificate := scalar
+
+/-- Product-lift router, automatic scalar factor with cutoff. -/
+example {P Q : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, N ≤ n → P n = Q n * C ((n : ℝ) + 1)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow,
+    certificate := scalarAuto
+
+/-- Product-lift router, scalar-power factor with cutoff. -/
+example {P Q : Nat → ℝ[X]} {c : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hc : ∀ n : Nat, N ≤ n → c n ≠ 0)
+    (hrow : ∀ n : Nat, N ≤ n → P n = Q n * (C (c n) : ℝ[X]) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    scalar_ne := hc,
+    cutoff := N,
+    factorization := hrow,
+    certificate := scalarPow
+
+/-- Product-lift router, automatic scalar-power factor with cutoff. -/
+example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat,
+      N ≤ n → P n = (C ((n : ℝ) + 1) : ℝ[X]) ^ (m n) * Q n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow,
+    certificate := scalarPowAuto
+
+/-- Product-lift router, affine factor with cutoff. -/
+example {P Q : Nat → ℝ[X]} {s t : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hs : ∀ n : Nat, N ≤ n → s n ≠ 0)
+    (hrow : ∀ n : Nat, N ≤ n → P n = (C (s n) * X + C (t n)) * Q n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    slope_ne := hs,
+    cutoff := N,
+    factorization := hrow,
+    certificate := affine
+
+/-- Product-lift router, automatic affine factor with cutoff. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat,
+      N ≤ n → P n = Q n * (C ((n : ℝ) + 1) * X + C (t n))) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow,
+    certificate := affineAuto
+
+/-- Product-lift router, constant-first affine factor with cutoff. -/
+example {P Q : Nat → ℝ[X]} {s t : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hs : ∀ n : Nat, N ≤ n → s n ≠ 0)
+    (hrow : ∀ n : Nat, N ≤ n → P n = Q n * (C (t n) + C (s n) * X)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    slope_ne := hs,
+    cutoff := N,
+    factorization := hrow,
+    certificate := constFirstAffine
+
+/-- Product-lift router, automatic constant-first affine factor with cutoff. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat,
+      N ≤ n → P n = (C (t n) + C ((n : ℝ) + 1) * X) * Q n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow,
+    certificate := constFirstAffineAuto
+
 /-- Product-lift router, constant-first affine factor. -/
 example {P Q : Nat → ℝ[X]} {s t : Nat → ℝ}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)

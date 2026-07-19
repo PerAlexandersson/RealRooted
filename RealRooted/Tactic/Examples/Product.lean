@@ -638,6 +638,121 @@ example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
     quotient_realrooted := hquot,
     factorization := hrow
 
+/-- Scalar lifts can start after a finite base interval. -/
+example {P Q : Nat → ℝ[X]} {c : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hc : ∀ n : Nat, N ≤ n → c n ≠ 0)
+    (hrow : ∀ n : Nat, N ≤ n → P n = Q n * C (c n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_C_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    scalar_ne := hc,
+    cutoff := N,
+    factorization := hrow
+
+/-- Automatic scalar certificates also work after a cutoff. -/
+example {P Q : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat, N ≤ n → P n = C ((n : ℝ) + 1) * Q n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_C_sequence_auto using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow
+
+/-- Affine linear lifts can start after a finite base interval. -/
+example {P Q : Nat → ℝ[X]} {s t : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hs : ∀ n : Nat, N ≤ n → s n ≠ 0)
+    (hrow : ∀ n : Nat, N ≤ n → P n = (C (s n) * X + C (t n)) * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_affine_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    slope_ne := hs,
+    cutoff := N,
+    factorization := hrow
+
+/-- Automatic affine-slope certificates also work after a cutoff. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat,
+      N ≤ n → P n = Q n * (C ((n : ℝ) + 1) * X + C (t n))) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_affine_sequence_auto using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow
+
+/-- Constant-first affine lifts have the same cutoff route. -/
+example {P Q : Nat → ℝ[X]} {s t : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hs : ∀ n : Nat, N ≤ n → s n ≠ 0)
+    (hrow : ∀ n : Nat, N ≤ n → P n = Q n * (C (t n) + C (s n) * X)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_const_first_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    slope_ne := hs,
+    cutoff := N,
+    factorization := hrow
+
+/-- Constant-first automatic slopes are also inferred after a cutoff. -/
+example {P Q : Nat → ℝ[X]} {t : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat,
+      N ≤ n → P n = (C (t n) + C ((n : ℝ) + 1) * X) * Q n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_lift_const_first_sequence_auto using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow
+
+/-- Scalar-power lifts can start after a finite base interval. -/
+example {P Q : Nat → ℝ[X]} {c : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hc : ∀ n : Nat, N ≤ n → c n ≠ 0)
+    (hrow : ∀ n : Nat, N ≤ n → P n = (C (c n) : ℝ[X]) ^ (m n) * Q n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_C_pow_sequence using
+    base := hbase,
+    quotient_realrooted := hquot,
+    scalar_ne := hc,
+    cutoff := N,
+    factorization := hrow
+
+/-- Automatic scalar-power certificates also work after a cutoff. -/
+example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat,
+      N ≤ n → P n = Q n * (C ((n : ℝ) + 1) : ℝ[X]) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_lift_C_pow_sequence_auto using
+    base := hbase,
+    quotient_realrooted := hquot,
+    cutoff := N,
+    factorization := hrow
+
 /-- Root-at-zero power lift for rows `P_n = X^{m_n} Q_n`. -/
 example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
