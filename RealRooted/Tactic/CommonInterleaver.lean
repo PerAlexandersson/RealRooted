@@ -109,6 +109,92 @@ theorem compatible_sequence_of_pos_combo_succ_degree {F G : Nat → ℝ[X]}
   Compatible.of_posComboRealRooted_succDegree
     (hfg n) (hfpos n) (hgpos n) (hdeg n) (hfsplits n)
 
+theorem compatible_sequence_of_common_left {F G H : Nat → ℝ[X]}
+    (hHF : ∀ n : Nat, Prec (H n) (F n))
+    (hHG : ∀ n : Nat, Prec (H n) (G n))
+    (hfpos : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hgpos : ∀ n : Nat, HasPosLeadingCoeff (G n)) :
+    ∀ n : Nat, Compatible (F n) (G n) := fun n =>
+  Compatible.of_commonLeftInterleaver (hHF n) (hHG n) (hfpos n) (hgpos n)
+
+theorem compatible_sequence_of_common_right {F G H : Nat → ℝ[X]}
+    (hFH : ∀ n : Nat, Prec (F n) (H n))
+    (hGH : ∀ n : Nat, Prec (G n) (H n))
+    (hfpos : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hgpos : ∀ n : Nat, HasPosLeadingCoeff (G n)) :
+    ∀ n : Nat, Compatible (F n) (G n) := fun n =>
+  Compatible.of_commonInterleaver (hFH n) (hGH n) (hfpos n) (hgpos n)
+
+theorem posCombo_sequence_comp_X_add_C
+    {F G : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hfg : ∀ n : Nat, PosComboRealRooted (F n) (G n)) :
+    ∀ n : Nat,
+      PosComboRealRooted
+        ((F n).comp (X + C (c n))) ((G n).comp (X + C (c n))) := fun n =>
+  PosComboRealRooted.comp_X_add_C (hfg n) (c n)
+
+theorem pairwiseCompatible_sequence_of_commonLeftInterleaver
+    {FS : Nat → List ℝ[X]}
+    (hcommon : ∀ n : Nat, HasCommonLeftInterleaver (FS n))
+    (hpos : ∀ n : Nat, ∀ f ∈ FS n, HasPosLeadingCoeff f) :
+    ∀ n : Nat, PairwiseCompatible (FS n) := fun n =>
+  pairwiseCompatible_of_commonLeftInterleaver (hcommon n) (hpos n)
+
+theorem pairwiseCompatible_sequence_of_pairwiseHasCommonLeftInterleaver
+    {FS : Nat → List ℝ[X]}
+    (hpair : ∀ n : Nat, PairwiseHasCommonLeftInterleaver (FS n))
+    (hpos : ∀ n : Nat, ∀ f ∈ FS n, HasPosLeadingCoeff f) :
+    ∀ n : Nat, PairwiseCompatible (FS n) := fun n =>
+  pairwiseCompatible_of_pairwiseHasCommonLeftInterleaver (hpair n) (hpos n)
+
+theorem pairwiseCompatible_sequence_of_commonInterleaver
+    {FS : Nat → List ℝ[X]}
+    (hcommon : ∀ n : Nat, HasCommonInterleaver (FS n))
+    (hpos : ∀ n : Nat, ∀ f ∈ FS n, HasPosLeadingCoeff f) :
+    ∀ n : Nat, PairwiseCompatible (FS n) := fun n =>
+  pairwiseCompatible_of_commonInterleaver (hcommon n) (hpos n)
+
+theorem pairwiseCompatible_sequence_of_pairwiseHasCommonInterleaver
+    {FS : Nat → List ℝ[X]}
+    (hpair : ∀ n : Nat, PairwiseHasCommonInterleaver (FS n))
+    (hpos : ∀ n : Nat, ∀ f ∈ FS n, HasPosLeadingCoeff f) :
+    ∀ n : Nat, PairwiseCompatible (FS n) := fun n =>
+  pairwiseCompatible_of_pairwiseHasCommonInterleaver (hpair n) (hpos n)
+
+theorem hasCommonInterleaver_sequence_of_pairwiseHasCommonInterleaver
+    {FS : Nat → List ℝ[X]}
+    (hrr : ∀ n : Nat, ∀ f ∈ FS n, f.Splits)
+    (hpos : ∀ n : Nat, ∀ f ∈ FS n, HasPosLeadingCoeff f)
+    (hpair : ∀ n : Nat, PairwiseHasCommonInterleaver (FS n)) :
+    ∀ n : Nat, HasCommonInterleaver (FS n) := fun n =>
+  hasCommonInterleaver_of_pairwiseHasCommonInterleaver
+    (hrr n) (hpos n) (hpair n)
+
+theorem hasCommonLeftInterleaver_sequence_of_pairwiseHasCommonLeftInterleaver
+    {FS : Nat → List ℝ[X]}
+    (hrr : ∀ n : Nat, ∀ f ∈ FS n, f.Splits)
+    (hpos : ∀ n : Nat, ∀ f ∈ FS n, HasPosLeadingCoeff f)
+    (hpair : ∀ n : Nat, PairwiseHasCommonLeftInterleaver (FS n)) :
+    ∀ n : Nat, HasCommonLeftInterleaver (FS n) := fun n =>
+  hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver
+    (hrr n) (hpos n) (hpair n)
+
+theorem isRealRooted_sum_sequence_of_commonInterleaver
+    {FS : Nat → List ℝ[X]}
+    (hcommon : ∀ n : Nat, HasCommonInterleaver (FS n))
+    (hpos : ∀ n : Nat, ∀ f ∈ FS n, HasPosLeadingCoeff f)
+    (hne : ∀ n : Nat, FS n ≠ []) :
+    ∀ n : Nat, (FS n).sum ≠ 0 ∧ (FS n).sum.Splits := fun n =>
+  isRealRooted_sum_of_commonInterleaver (hcommon n) (hpos n) (hne n)
+
+theorem isRealRooted_sum_sequence_of_commonLeftInterleaver
+    {FS : Nat → List ℝ[X]}
+    (hcommon : ∀ n : Nat, HasCommonLeftInterleaver (FS n))
+    (hpos : ∀ n : Nat, ∀ f ∈ FS n, HasPosLeadingCoeff f)
+    (hne : ∀ n : Nat, FS n ≠ []) :
+    ∀ n : Nat, (FS n).sum ≠ 0 ∧ (FS n).sum.Splits := fun n =>
+  isRealRooted_sum_of_commonLeftInterleaver (hcommon n) (hpos n) (hne n)
+
 namespace Tactic
 
 syntax (name := rr_compatible_comm_named)
@@ -301,6 +387,28 @@ syntax (name := rr_pos_combo_comp_X_add_C_named)
     "shift" ":=" term :
   tactic
 
+syntax (name := rr_compatible_sequence_of_common_left_named)
+  "rr_compatible_sequence_of_common_left" " using "
+    "common_to_left" ":=" term ","
+    "common_to_right" ":=" term ","
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term :
+  tactic
+
+syntax (name := rr_compatible_sequence_of_common_right_named)
+  "rr_compatible_sequence_of_common_right" " using "
+    "left_to_common" ":=" term ","
+    "right_to_common" ":=" term ","
+    "left_pos_lc" ":=" term ","
+    "right_pos_lc" ":=" term :
+  tactic
+
+syntax (name := rr_pos_combo_sequence_comp_X_add_C_named)
+  "rr_pos_combo_sequence_comp_X_add_C" " using "
+    "pos_combo" ":=" term ","
+    "shift" ":=" term :
+  tactic
+
 syntax (name := rr_pairwise_compatible_of_common_left_named)
   "rr_pairwise_compatible_of_common_left" " using "
     "common_left" ":=" term ","
@@ -356,6 +464,58 @@ syntax (name := rr_common_interleaver_sum_realrooted_named)
 
 syntax (name := rr_common_left_interleaver_sum_realrooted_named)
   "rr_common_left_interleaver_sum_realrooted" " using "
+    "common_left" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "nonempty" ":=" term :
+  tactic
+
+syntax (name := rr_pairwise_compatible_sequence_of_common_left_named)
+  "rr_pairwise_compatible_sequence_of_common_left" " using "
+    "common_left" ":=" term ","
+    "member_pos_lc" ":=" term :
+  tactic
+
+syntax (name := rr_pairwise_compatible_sequence_of_pairwise_common_left_named)
+  "rr_pairwise_compatible_sequence_of_pairwise_common_left" " using "
+    "pairwise_common_left" ":=" term ","
+    "member_pos_lc" ":=" term :
+  tactic
+
+syntax (name := rr_pairwise_compatible_sequence_of_common_right_named)
+  "rr_pairwise_compatible_sequence_of_common_right" " using "
+    "common_right" ":=" term ","
+    "member_pos_lc" ":=" term :
+  tactic
+
+syntax (name := rr_pairwise_compatible_sequence_of_pairwise_common_right_named)
+  "rr_pairwise_compatible_sequence_of_pairwise_common_right" " using "
+    "pairwise_common_right" ":=" term ","
+    "member_pos_lc" ":=" term :
+  tactic
+
+syntax (name := rr_common_interleaver_sequence_of_pairwise_named)
+  "rr_common_interleaver_sequence_of_pairwise" " using "
+    "member_splits" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "pairwise_common" ":=" term :
+  tactic
+
+syntax (name := rr_common_left_interleaver_sequence_of_pairwise_named)
+  "rr_common_left_interleaver_sequence_of_pairwise" " using "
+    "member_splits" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "pairwise_common_left" ":=" term :
+  tactic
+
+syntax (name := rr_common_interleaver_sum_sequence_realrooted_named)
+  "rr_common_interleaver_sum_sequence_realrooted" " using "
+    "common_right" ":=" term ","
+    "member_pos_lc" ":=" term ","
+    "nonempty" ":=" term :
+  tactic
+
+syntax (name := rr_common_left_interleaver_sum_sequence_realrooted_named)
+  "rr_common_left_interleaver_sum_sequence_realrooted" " using "
     "common_left" ":=" term ","
     "member_pos_lc" ":=" term ","
     "nonempty" ":=" term :
@@ -1597,6 +1757,29 @@ macro_rules
         shift := $r:term) =>
       `(tactic| exact RealRooted.PosComboRealRooted.comp_X_add_C $hfg $r)
   | `(tactic|
+      rr_compatible_sequence_of_common_left using
+        common_to_left := $hhf:term,
+        common_to_right := $hhg:term,
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term) =>
+      `(tactic|
+        exact RealRooted.compatible_sequence_of_common_left
+          $hhf $hhg $hfpos $hgpos)
+  | `(tactic|
+      rr_compatible_sequence_of_common_right using
+        left_to_common := $hfh:term,
+        right_to_common := $hgh:term,
+        left_pos_lc := $hfpos:term,
+        right_pos_lc := $hgpos:term) =>
+      `(tactic|
+        exact RealRooted.compatible_sequence_of_common_right
+          $hfh $hgh $hfpos $hgpos)
+  | `(tactic|
+      rr_pos_combo_sequence_comp_X_add_C using
+        pos_combo := $hfg:term,
+        shift := $r:term) =>
+      `(tactic| exact RealRooted.posCombo_sequence_comp_X_add_C (c := $r) $hfg)
+  | `(tactic|
       rr_pairwise_compatible_of_common_left using
         common_left := $hcommon:term,
         member_pos_lc := $hpos:term) =>
@@ -1659,6 +1842,69 @@ macro_rules
         nonempty := $hne:term) =>
       `(tactic|
         exact RealRooted.isRealRooted_sum_of_commonLeftInterleaver
+          $hcommon $hpos $hne)
+  | `(tactic|
+      rr_pairwise_compatible_sequence_of_common_left using
+        common_left := $hcommon:term,
+        member_pos_lc := $hpos:term) =>
+      `(tactic|
+        exact RealRooted.pairwiseCompatible_sequence_of_commonLeftInterleaver
+          $hcommon $hpos)
+  | `(tactic|
+      rr_pairwise_compatible_sequence_of_pairwise_common_left using
+        pairwise_common_left := $hpair:term,
+        member_pos_lc := $hpos:term) =>
+      `(tactic|
+        exact
+          RealRooted.pairwiseCompatible_sequence_of_pairwiseHasCommonLeftInterleaver
+            $hpair $hpos)
+  | `(tactic|
+      rr_pairwise_compatible_sequence_of_common_right using
+        common_right := $hcommon:term,
+        member_pos_lc := $hpos:term) =>
+      `(tactic|
+        exact RealRooted.pairwiseCompatible_sequence_of_commonInterleaver
+          $hcommon $hpos)
+  | `(tactic|
+      rr_pairwise_compatible_sequence_of_pairwise_common_right using
+        pairwise_common_right := $hpair:term,
+        member_pos_lc := $hpos:term) =>
+      `(tactic|
+        exact
+          RealRooted.pairwiseCompatible_sequence_of_pairwiseHasCommonInterleaver
+            $hpair $hpos)
+  | `(tactic|
+      rr_common_interleaver_sequence_of_pairwise using
+        member_splits := $hrr:term,
+        member_pos_lc := $hpos:term,
+        pairwise_common := $hpair:term) =>
+      `(tactic|
+        exact RealRooted.hasCommonInterleaver_sequence_of_pairwiseHasCommonInterleaver
+          $hrr $hpos $hpair)
+  | `(tactic|
+      rr_common_left_interleaver_sequence_of_pairwise using
+        member_splits := $hrr:term,
+        member_pos_lc := $hpos:term,
+        pairwise_common_left := $hpair:term) =>
+      `(tactic|
+        exact
+          RealRooted.hasCommonLeftInterleaver_sequence_of_pairwiseHasCommonLeftInterleaver
+            $hrr $hpos $hpair)
+  | `(tactic|
+      rr_common_interleaver_sum_sequence_realrooted using
+        common_right := $hcommon:term,
+        member_pos_lc := $hpos:term,
+        nonempty := $hne:term) =>
+      `(tactic|
+        exact RealRooted.isRealRooted_sum_sequence_of_commonInterleaver
+          $hcommon $hpos $hne)
+  | `(tactic|
+      rr_common_left_interleaver_sum_sequence_realrooted using
+        common_left := $hcommon:term,
+        member_pos_lc := $hpos:term,
+        nonempty := $hne:term) =>
+      `(tactic|
+        exact RealRooted.isRealRooted_sum_sequence_of_commonLeftInterleaver
           $hcommon $hpos $hne)
   | `(tactic| rr_sameDegree_rootCountAbove_nonRoot_analytic) =>
       `(tactic|

@@ -344,6 +344,111 @@ example {fs : List ℝ[X]}
     member_pos_lc := hpos,
     nonempty := hne
 
+example {F G H : Nat → ℝ[X]}
+    (hHF : ∀ n : Nat, Prec (H n) (F n))
+    (hHG : ∀ n : Nat, Prec (H n) (G n))
+    (hf_pos : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hg_pos : ∀ n : Nat, HasPosLeadingCoeff (G n)) :
+    ∀ n : Nat, Compatible (F n) (G n) := by
+  rr_compatible_sequence_of_common_left using
+    common_to_left := hHF,
+    common_to_right := hHG,
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos
+
+example {F G H : Nat → ℝ[X]}
+    (hFH : ∀ n : Nat, Prec (F n) (H n))
+    (hGH : ∀ n : Nat, Prec (G n) (H n))
+    (hf_pos : ∀ n : Nat, HasPosLeadingCoeff (F n))
+    (hg_pos : ∀ n : Nat, HasPosLeadingCoeff (G n)) :
+    ∀ n : Nat, Compatible (F n) (G n) := by
+  rr_compatible_sequence_of_common_right using
+    left_to_common := hFH,
+    right_to_common := hGH,
+    left_pos_lc := hf_pos,
+    right_pos_lc := hg_pos
+
+example {F G : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hfg : ∀ n : Nat, PosComboRealRooted (F n) (G n)) :
+    ∀ n : Nat,
+      PosComboRealRooted
+        ((F n).comp (X + C (c n))) ((G n).comp (X + C (c n))) := by
+  rr_pos_combo_sequence_comp_X_add_C using
+    pos_combo := hfg,
+    shift := c
+
+example {FS : Nat → List ℝ[X]}
+    (hcommon : ∀ n : Nat, HasCommonLeftInterleaver (FS n))
+    (hpos : ∀ n : Nat, ∀ f ∈ FS n, HasPosLeadingCoeff f) :
+    ∀ n : Nat, PairwiseCompatible (FS n) := by
+  rr_pairwise_compatible_sequence_of_common_left using
+    common_left := hcommon,
+    member_pos_lc := hpos
+
+example {FS : Nat → List ℝ[X]}
+    (hpair : ∀ n : Nat, PairwiseHasCommonLeftInterleaver (FS n))
+    (hpos : ∀ n : Nat, ∀ f ∈ FS n, HasPosLeadingCoeff f) :
+    ∀ n : Nat, PairwiseCompatible (FS n) := by
+  rr_pairwise_compatible_sequence_of_pairwise_common_left using
+    pairwise_common_left := hpair,
+    member_pos_lc := hpos
+
+example {FS : Nat → List ℝ[X]}
+    (hcommon : ∀ n : Nat, HasCommonInterleaver (FS n))
+    (hpos : ∀ n : Nat, ∀ f ∈ FS n, HasPosLeadingCoeff f) :
+    ∀ n : Nat, PairwiseCompatible (FS n) := by
+  rr_pairwise_compatible_sequence_of_common_right using
+    common_right := hcommon,
+    member_pos_lc := hpos
+
+example {FS : Nat → List ℝ[X]}
+    (hpair : ∀ n : Nat, PairwiseHasCommonInterleaver (FS n))
+    (hpos : ∀ n : Nat, ∀ f ∈ FS n, HasPosLeadingCoeff f) :
+    ∀ n : Nat, PairwiseCompatible (FS n) := by
+  rr_pairwise_compatible_sequence_of_pairwise_common_right using
+    pairwise_common_right := hpair,
+    member_pos_lc := hpos
+
+example {FS : Nat → List ℝ[X]}
+    (hrr : ∀ n : Nat, ∀ f ∈ FS n, f.Splits)
+    (hpos : ∀ n : Nat, ∀ f ∈ FS n, HasPosLeadingCoeff f)
+    (hpair : ∀ n : Nat, PairwiseHasCommonInterleaver (FS n)) :
+    ∀ n : Nat, HasCommonInterleaver (FS n) := by
+  rr_common_interleaver_sequence_of_pairwise using
+    member_splits := hrr,
+    member_pos_lc := hpos,
+    pairwise_common := hpair
+
+example {FS : Nat → List ℝ[X]}
+    (hrr : ∀ n : Nat, ∀ f ∈ FS n, f.Splits)
+    (hpos : ∀ n : Nat, ∀ f ∈ FS n, HasPosLeadingCoeff f)
+    (hpair : ∀ n : Nat, PairwiseHasCommonLeftInterleaver (FS n)) :
+    ∀ n : Nat, HasCommonLeftInterleaver (FS n) := by
+  rr_common_left_interleaver_sequence_of_pairwise using
+    member_splits := hrr,
+    member_pos_lc := hpos,
+    pairwise_common_left := hpair
+
+example {FS : Nat → List ℝ[X]}
+    (hcommon : ∀ n : Nat, HasCommonInterleaver (FS n))
+    (hpos : ∀ n : Nat, ∀ f ∈ FS n, HasPosLeadingCoeff f)
+    (hne : ∀ n : Nat, FS n ≠ []) :
+    ∀ n : Nat, (FS n).sum ≠ 0 ∧ (FS n).sum.Splits := by
+  rr_common_interleaver_sum_sequence_realrooted using
+    common_right := hcommon,
+    member_pos_lc := hpos,
+    nonempty := hne
+
+example {FS : Nat → List ℝ[X]}
+    (hcommon : ∀ n : Nat, HasCommonLeftInterleaver (FS n))
+    (hpos : ∀ n : Nat, ∀ f ∈ FS n, HasPosLeadingCoeff f)
+    (hne : ∀ n : Nat, FS n ≠ []) :
+    ∀ n : Nat, (FS n).sum ≠ 0 ∧ (FS n).sum.Splits := by
+  rr_common_left_interleaver_sum_sequence_realrooted using
+    common_left := hcommon,
+    member_pos_lc := hpos,
+    nonempty := hne
+
 example :
     PosComboNoCommonSameDegreeRootCountAboveNonRootNonnegStatement := by
   rr_sameDegree_rootCountAbove_nonRoot_analytic
