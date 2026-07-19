@@ -618,6 +618,7 @@ syntax (name := rr_product_factor_sequence_affine)
   "rr_product_factor_sequence" " using "
     "base" ":=" term ","
     "slope_ne" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term ","
     "certificate" ":=" "affine" :
   tactic
@@ -625,6 +626,7 @@ syntax (name := rr_product_factor_sequence_affine)
 syntax (name := rr_product_factor_sequence_affine_auto)
   "rr_product_factor_sequence" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term ","
     "certificate" ":=" "affineAuto" :
   tactic
@@ -633,6 +635,7 @@ syntax (name := rr_product_factor_sequence_const_first_affine)
   "rr_product_factor_sequence" " using "
     "base" ":=" term ","
     "slope_ne" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term ","
     "certificate" ":=" "constFirstAffine" :
   tactic
@@ -640,6 +643,7 @@ syntax (name := rr_product_factor_sequence_const_first_affine)
 syntax (name := rr_product_factor_sequence_const_first_affine_auto)
   "rr_product_factor_sequence" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term ","
     "certificate" ":=" "constFirstAffineAuto" :
   tactic
@@ -688,6 +692,7 @@ syntax (name := rr_product_factor_sequence_scalar)
   "rr_product_factor_sequence" " using "
     "base" ":=" term ","
     "scalar_ne" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term ","
     "certificate" ":=" "scalar" :
   tactic
@@ -695,6 +700,7 @@ syntax (name := rr_product_factor_sequence_scalar)
 syntax (name := rr_product_factor_sequence_scalar_auto)
   "rr_product_factor_sequence" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term ","
     "certificate" ":=" "scalarAuto" :
   tactic
@@ -703,6 +709,7 @@ syntax (name := rr_product_factor_sequence_scalar_pow)
   "rr_product_factor_sequence" " using "
     "base" ":=" term ","
     "scalar_ne" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term ","
     "certificate" ":=" "scalarPow" :
   tactic
@@ -710,6 +717,7 @@ syntax (name := rr_product_factor_sequence_scalar_pow)
 syntax (name := rr_product_factor_sequence_scalar_pow_auto)
   "rr_product_factor_sequence" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term ","
     "certificate" ":=" "scalarPowAuto" :
   tactic
@@ -718,6 +726,7 @@ syntax (name := rr_product_factor_sequence_affine_pow)
   "rr_product_factor_sequence" " using "
     "base" ":=" term ","
     "slope_ne" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term ","
     "certificate" ":=" "affinePow" :
   tactic
@@ -725,6 +734,7 @@ syntax (name := rr_product_factor_sequence_affine_pow)
 syntax (name := rr_product_factor_sequence_affine_pow_auto)
   "rr_product_factor_sequence" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term ","
     "certificate" ":=" "affinePowAuto" :
   tactic
@@ -733,6 +743,7 @@ syntax (name := rr_product_factor_sequence_const_first_affine_pow)
   "rr_product_factor_sequence" " using "
     "base" ":=" term ","
     "slope_ne" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term ","
     "certificate" ":=" "constFirstAffinePow" :
   tactic
@@ -740,6 +751,7 @@ syntax (name := rr_product_factor_sequence_const_first_affine_pow)
 syntax (name := rr_product_factor_sequence_const_first_affine_pow_auto)
   "rr_product_factor_sequence" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term ","
     "certificate" ":=" "constFirstAffinePowAuto" :
   tactic
@@ -1185,11 +1197,35 @@ macro_rules
   | `(tactic|
       rr_product_factor_sequence using
         base := $hbase:term,
+        slope_ne := $hs:term,
+        cutoff := $N:term,
+        recurrence := $hrec:term,
+        certificate := affine) =>
+      `(tactic|
+        rr_product_affine_sequence using
+          base := $hbase,
+          slope_ne := $hs,
+          cutoff := $N,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
         recurrence := $hrec:term,
         certificate := affineAuto) =>
       `(tactic|
         rr_product_affine_sequence_auto using
           base := $hbase,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        cutoff := $N:term,
+        recurrence := $hrec:term,
+        certificate := affineAuto) =>
+      `(tactic|
+        rr_product_affine_sequence_auto using
+          base := $hbase,
+          cutoff := $N,
           recurrence := $hrec)
   | `(tactic|
       rr_product_factor_sequence using
@@ -1205,11 +1241,35 @@ macro_rules
   | `(tactic|
       rr_product_factor_sequence using
         base := $hbase:term,
+        slope_ne := $hs:term,
+        cutoff := $N:term,
+        recurrence := $hrec:term,
+        certificate := constFirstAffine) =>
+      `(tactic|
+        rr_product_const_first_sequence using
+          base := $hbase,
+          slope_ne := $hs,
+          cutoff := $N,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
         recurrence := $hrec:term,
         certificate := constFirstAffineAuto) =>
       `(tactic|
         rr_product_const_first_sequence_auto using
           base := $hbase,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        cutoff := $N:term,
+        recurrence := $hrec:term,
+        certificate := constFirstAffineAuto) =>
+      `(tactic|
+        rr_product_const_first_sequence_auto using
+          base := $hbase,
+          cutoff := $N,
           recurrence := $hrec)
   | `(tactic|
       rr_product_factor_sequence using
@@ -1325,11 +1385,35 @@ macro_rules
   | `(tactic|
       rr_product_factor_sequence using
         base := $hbase:term,
+        scalar_ne := $hs:term,
+        cutoff := $N:term,
+        recurrence := $hrec:term,
+        certificate := scalar) =>
+      `(tactic|
+        rr_product_scalar_sequence using
+          base := $hbase,
+          scalar_ne := $hs,
+          cutoff := $N,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
         recurrence := $hrec:term,
         certificate := scalarAuto) =>
       `(tactic|
         rr_product_scalar_sequence_auto using
           base := $hbase,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        cutoff := $N:term,
+        recurrence := $hrec:term,
+        certificate := scalarAuto) =>
+      `(tactic|
+        rr_product_scalar_sequence_auto using
+          base := $hbase,
+          cutoff := $N,
           recurrence := $hrec)
   | `(tactic|
       rr_product_factor_sequence using
@@ -1345,11 +1429,35 @@ macro_rules
   | `(tactic|
       rr_product_factor_sequence using
         base := $hbase:term,
+        scalar_ne := $hs:term,
+        cutoff := $N:term,
+        recurrence := $hrec:term,
+        certificate := scalarPow) =>
+      `(tactic|
+        rr_product_C_pow_sequence using
+          base := $hbase,
+          scalar_ne := $hs,
+          cutoff := $N,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
         recurrence := $hrec:term,
         certificate := scalarPowAuto) =>
       `(tactic|
         rr_product_C_pow_sequence_auto using
           base := $hbase,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        cutoff := $N:term,
+        recurrence := $hrec:term,
+        certificate := scalarPowAuto) =>
+      `(tactic|
+        rr_product_C_pow_sequence_auto using
+          base := $hbase,
+          cutoff := $N,
           recurrence := $hrec)
   | `(tactic|
       rr_product_factor_sequence using
@@ -1365,11 +1473,35 @@ macro_rules
   | `(tactic|
       rr_product_factor_sequence using
         base := $hbase:term,
+        slope_ne := $hs:term,
+        cutoff := $N:term,
+        recurrence := $hrec:term,
+        certificate := affinePow) =>
+      `(tactic|
+        rr_product_affine_pow_sequence using
+          base := $hbase,
+          slope_ne := $hs,
+          cutoff := $N,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
         recurrence := $hrec:term,
         certificate := affinePowAuto) =>
       `(tactic|
         rr_product_affine_pow_sequence_auto using
           base := $hbase,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        cutoff := $N:term,
+        recurrence := $hrec:term,
+        certificate := affinePowAuto) =>
+      `(tactic|
+        rr_product_affine_pow_sequence_auto using
+          base := $hbase,
+          cutoff := $N,
           recurrence := $hrec)
   | `(tactic|
       rr_product_factor_sequence using
@@ -1385,11 +1517,35 @@ macro_rules
   | `(tactic|
       rr_product_factor_sequence using
         base := $hbase:term,
+        slope_ne := $hs:term,
+        cutoff := $N:term,
+        recurrence := $hrec:term,
+        certificate := constFirstAffinePow) =>
+      `(tactic|
+        rr_product_const_first_affine_pow_sequence using
+          base := $hbase,
+          slope_ne := $hs,
+          cutoff := $N,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
         recurrence := $hrec:term,
         certificate := constFirstAffinePowAuto) =>
       `(tactic|
         rr_product_const_first_affine_pow_sequence_auto using
           base := $hbase,
+          recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        cutoff := $N:term,
+        recurrence := $hrec:term,
+        certificate := constFirstAffinePowAuto) =>
+      `(tactic|
+        rr_product_const_first_affine_pow_sequence_auto using
+          base := $hbase,
+          cutoff := $N,
           recurrence := $hrec)
   | `(tactic|
       rr_product_formula_sequence using

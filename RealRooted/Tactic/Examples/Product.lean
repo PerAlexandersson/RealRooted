@@ -1090,6 +1090,32 @@ example {P : Nat → ℝ[X]} {m : Nat → Nat}
     base := hbase,
     recurrence := hrec
 
+/-- Scalar-power product recurrences can start from a cutoff row. -/
+example {P : Nat → ℝ[X]} {c : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hrec : ∀ n : Nat,
+      N ≤ n → P (n + 1) = P n * (C (c n) : ℝ[X]) ^ (m n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_C_pow_sequence using
+    base := hbase,
+    scalar_ne := hc,
+    cutoff := N,
+    recurrence := hrec
+
+/-- Positive scalar-power factors are inferred from a cutoff row too. -/
+example {P : Nat → ℝ[X]} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hrec : ∀ n : Nat,
+      N ≤ n → P (n + 1) = (C ((n : ℝ) + 1) : ℝ[X]) ^ (m n) * P n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_C_pow_sequence_auto using
+    base := hbase,
+    cutoff := N,
+    recurrence := hrec
+
 /-- Product recurrence with powered affine factors. -/
 example {P : Nat → ℝ[X]} {s t : Nat → ℝ} {m : Nat → Nat}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
@@ -1102,6 +1128,20 @@ example {P : Nat → ℝ[X]} {s t : Nat → ℝ} {m : Nat → Nat}
     slope_ne := hs,
     recurrence := hrec
 
+/-- Powered affine product recurrences can start from a cutoff row. -/
+example {P : Nat → ℝ[X]} {s t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hs : ∀ n : Nat, s n ≠ 0)
+    (hrec : ∀ n : Nat,
+      N ≤ n → P (n + 1) = P n * (C (s n) * X + C (t n)) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_affine_pow_sequence using
+    base := hbase,
+    slope_ne := hs,
+    cutoff := N,
+    recurrence := hrec
+
 /-- Positive slopes in powered affine product recurrences are inferred. -/
 example {P : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
@@ -1110,6 +1150,19 @@ example {P : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
     ∀ n : Nat, P n ≠ 0 := by
   rr_product_affine_pow_sequence_auto using
     base := hbase,
+    recurrence := hrec
+
+/-- Powered affine positive slopes are inferred from a cutoff row. -/
+example {P : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hrec : ∀ n : Nat,
+      N ≤ n →
+        P (n + 1) = (C ((n : ℝ) + 1) * X + C (t n)) ^ (m n) * P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_affine_pow_sequence_auto using
+    base := hbase,
+    cutoff := N,
     recurrence := hrec
 
 /-- Report-order powered affine recurrences also accept explicit slopes. -/
@@ -1124,6 +1177,20 @@ example {P : Nat → ℝ[X]} {s t : Nat → ℝ} {m : Nat → Nat}
     slope_ne := hs,
     recurrence := hrec
 
+/-- Report-order powered affine recurrences accept cutoff rows. -/
+example {P : Nat → ℝ[X]} {s t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hs : ∀ n : Nat, s n ≠ 0)
+    (hrec : ∀ n : Nat,
+      N ≤ n → P (n + 1) = P n * (C (t n) + C (s n) * X) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_const_first_affine_pow_sequence using
+    base := hbase,
+    slope_ne := hs,
+    cutoff := N,
+    recurrence := hrec
+
 /-- Report-order powered affine recurrences also have an auto-positive form. -/
 example {P : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
@@ -1132,6 +1199,19 @@ example {P : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
     ∀ n : Nat, (P n).Splits := by
   rr_product_const_first_affine_pow_sequence_auto using
     base := hbase,
+    recurrence := hrec
+
+/-- Report-order powered affine auto routes accept cutoff rows. -/
+example {P : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hrec : ∀ n : Nat,
+      N ≤ n →
+        P (n + 1) = P n * (C (t n) + C ((n : ℝ) + 1) * X) ^ (m n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_const_first_affine_pow_sequence_auto using
+    base := hbase,
+    cutoff := N,
     recurrence := hrec
 
 /-- Sequence-level scalar product recurrence. -/
@@ -1143,6 +1223,19 @@ example {P : Nat → ℝ[X]} {a : Nat → ℝ}
   rr_product_scalar_sequence using
     base := hbase,
     scalar_ne := ha,
+    recurrence := hrec
+
+/-- Scalar product recurrences can start from a cutoff row. -/
+example {P : Nat → ℝ[X]} {a : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hrec : ∀ n : Nat, N ≤ n → P (n + 1) = C (a n) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_scalar_sequence using
+    base := hbase,
+    scalar_ne := ha,
+    cutoff := N,
     recurrence := hrec
 
 /-- The scalar product recurrence also accepts the factor on the right. -/
@@ -1165,6 +1258,17 @@ example {P : Nat → ℝ[X]}
     base := hbase,
     recurrence := hrec
 
+/-- Automatic scalar certificates can start from a cutoff row. -/
+example {P : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hrec : ∀ n : Nat, N ≤ n → P (n + 1) = P n * C ((n : ℝ) + 1)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_scalar_sequence_auto using
+    base := hbase,
+    cutoff := N,
+    recurrence := hrec
+
 /-- `A204420`: permutations of degree `2n` by number of even cycles.
 Zero-based generator indexing gives
 `P_{n+1}=((2n+1)t+(2n+1)(2n))P_n`. -/
@@ -1177,6 +1281,58 @@ example {P : Nat → ℝ[X]}
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_product_affine_sequence_auto using
     base := hbase,
+    recurrence := hrec
+
+/-- Affine product recurrences can start from a cutoff row. -/
+example {P : Nat → ℝ[X]} {s t : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hs : ∀ n : Nat, s n ≠ 0)
+    (hrec : ∀ n : Nat,
+      N ≤ n → P (n + 1) = (C (s n) * X + C (t n)) * P n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_affine_sequence using
+    base := hbase,
+    slope_ne := hs,
+    cutoff := N,
+    recurrence := hrec
+
+/-- Automatic affine product recurrences can start from a cutoff row. -/
+example {P : Nat → ℝ[X]} {t : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hrec : ∀ n : Nat,
+      N ≤ n → P (n + 1) = P n * (C ((n : ℝ) + 1) * X + C (t n))) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_affine_sequence_auto using
+    base := hbase,
+    cutoff := N,
+    recurrence := hrec
+
+/-- Constant-first affine product recurrences accept cutoff rows. -/
+example {P : Nat → ℝ[X]} {s t : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hs : ∀ n : Nat, s n ≠ 0)
+    (hrec : ∀ n : Nat,
+      N ≤ n → P (n + 1) = (C (t n) + C (s n) * X) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_const_first_sequence using
+    base := hbase,
+    slope_ne := hs,
+    cutoff := N,
+    recurrence := hrec
+
+/-- Constant-first automatic affine recurrences accept cutoff rows. -/
+example {P : Nat → ℝ[X]} {t : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hrec : ∀ n : Nat,
+      N ≤ n → P (n + 1) = P n * (C (t n) + C ((n : ℝ) + 1) * X)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_const_first_sequence_auto using
+    base := hbase,
+    cutoff := N,
     recurrence := hrec
 
 /-- Alternating scalar/linear product shell:

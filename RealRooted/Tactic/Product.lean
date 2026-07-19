@@ -1039,6 +1039,31 @@ theorem isRealRooted_of_product_affine_right_sequence
   isRealRooted_of_product_factor_right_sequence hbase
     (isRealRooted_C_mul_X_add_C_sequence hs) hstep
 
+/-- Tail-start sequence shell for first-order affine-product recurrences. -/
+theorem isRealRooted_of_product_affine_sequence_from
+    {P : Nat → ℝ[X]} {s t : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hs : ∀ n : Nat, s n ≠ 0)
+    (hstep :
+      ∀ n : Nat, N ≤ n → P (n + 1) = (C (s n) * X + C (t n)) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_sequence_from N hbase
+    (fun n _ => isRealRooted_C_mul_X_add_C_sequence hs n) hstep
+
+/-- Right-factor variant of
+`isRealRooted_of_product_affine_sequence_from`. -/
+theorem isRealRooted_of_product_affine_right_sequence_from
+    {P : Nat → ℝ[X]} {s t : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hs : ∀ n : Nat, s n ≠ 0)
+    (hstep :
+      ∀ n : Nat, N ≤ n → P (n + 1) = P n * (C (s n) * X + C (t n))) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_right_sequence_from N hbase
+    (fun n _ => isRealRooted_C_mul_X_add_C_sequence hs n) hstep
+
 /-- Sequence shell for report-order affine factors `C t + C s * X`. -/
 theorem isRealRooted_of_product_const_first_affine_sequence
     {P : Nat → ℝ[X]} {s t : Nat → ℝ}
@@ -1058,6 +1083,32 @@ theorem isRealRooted_of_product_const_first_affine_right_sequence
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_factor_right_sequence hbase
     (isRealRooted_C_add_C_mul_X_one_sequence hs) hstep
+
+/-- Tail-start sequence shell for report-order affine factors
+`C t + C s * X`. -/
+theorem isRealRooted_of_product_const_first_affine_sequence_from
+    {P : Nat → ℝ[X]} {s t : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hs : ∀ n : Nat, s n ≠ 0)
+    (hstep :
+      ∀ n : Nat, N ≤ n → P (n + 1) = (C (t n) + C (s n) * X) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_sequence_from N hbase
+    (fun n _ => isRealRooted_C_add_C_mul_X_one_sequence hs n) hstep
+
+/-- Right-factor variant of
+`isRealRooted_of_product_const_first_affine_sequence_from`. -/
+theorem isRealRooted_of_product_const_first_affine_right_sequence_from
+    {P : Nat → ℝ[X]} {s t : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hs : ∀ n : Nat, s n ≠ 0)
+    (hstep :
+      ∀ n : Nat, N ≤ n → P (n + 1) = P n * (C (t n) + C (s n) * X)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_right_sequence_from N hbase
+    (fun n _ => isRealRooted_C_add_C_mul_X_one_sequence hs n) hstep
 
 /-- Sequence shell for unit-slope factors `X + C t`. -/
 theorem isRealRooted_of_product_X_add_C_sequence
@@ -1196,6 +1247,32 @@ theorem isRealRooted_of_product_C_pow_right_sequence
   isRealRooted_of_product_factor_right_sequence hbase
     (isRealRooted_C_pow_sequence hc m) hstep
 
+/-- Tail-start sequence shell for product recurrences with nonzero
+scalar-power factors. -/
+theorem isRealRooted_of_product_C_pow_sequence_from
+    {P : Nat → ℝ[X]} {c : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hstep :
+      ∀ n : Nat, N ≤ n → P (n + 1) = (C (c n) : ℝ[X]) ^ (m n) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_sequence_from N hbase
+    (fun n _ => isRealRooted_C_pow_sequence hc m n) hstep
+
+/-- Right-factor variant of
+`isRealRooted_of_product_C_pow_sequence_from`. -/
+theorem isRealRooted_of_product_C_pow_right_sequence_from
+    {P : Nat → ℝ[X]} {c : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hc : ∀ n : Nat, c n ≠ 0)
+    (hstep :
+      ∀ n : Nat, N ≤ n → P (n + 1) = P n * (C (c n) : ℝ[X]) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_right_sequence_from N hbase
+    (fun n _ => isRealRooted_C_pow_sequence hc m n) hstep
+
 /-- Sequence shell for product recurrences with factors `(X + C t_n) ^ m_n`. -/
 theorem isRealRooted_of_product_X_add_C_pow_sequence
     {P : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
@@ -1327,6 +1404,62 @@ theorem isRealRooted_of_product_C_add_C_mul_X_pow_right_sequence
   isRealRooted_of_product_factor_right_sequence hbase
     (isRealRooted_C_add_C_mul_X_pow_sequence hs m) hstep
 
+/-- Tail-start sequence shell for product recurrences with powered affine
+factors. -/
+theorem isRealRooted_of_product_C_mul_X_add_C_pow_sequence_from
+    {P : Nat → ℝ[X]} {s t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hs : ∀ n : Nat, s n ≠ 0)
+    (hstep :
+      ∀ n : Nat, N ≤ n →
+        P (n + 1) = (C (s n) * X + C (t n)) ^ (m n) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_sequence_from N hbase
+    (fun n _ => isRealRooted_C_mul_X_add_C_pow_sequence hs m n) hstep
+
+/-- Right-factor variant of
+`isRealRooted_of_product_C_mul_X_add_C_pow_sequence_from`. -/
+theorem isRealRooted_of_product_C_mul_X_add_C_pow_right_sequence_from
+    {P : Nat → ℝ[X]} {s t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hs : ∀ n : Nat, s n ≠ 0)
+    (hstep :
+      ∀ n : Nat, N ≤ n →
+        P (n + 1) = P n * (C (s n) * X + C (t n)) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_right_sequence_from N hbase
+    (fun n _ => isRealRooted_C_mul_X_add_C_pow_sequence hs m n) hstep
+
+/-- Tail-start sequence shell for product recurrences with powered
+constant-first affine factors. -/
+theorem isRealRooted_of_product_C_add_C_mul_X_pow_sequence_from
+    {P : Nat → ℝ[X]} {s t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hs : ∀ n : Nat, s n ≠ 0)
+    (hstep :
+      ∀ n : Nat, N ≤ n →
+        P (n + 1) = (C (t n) + C (s n) * X) ^ (m n) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_sequence_from N hbase
+    (fun n _ => isRealRooted_C_add_C_mul_X_pow_sequence hs m n) hstep
+
+/-- Right-factor variant of
+`isRealRooted_of_product_C_add_C_mul_X_pow_sequence_from`. -/
+theorem isRealRooted_of_product_C_add_C_mul_X_pow_right_sequence_from
+    {P : Nat → ℝ[X]} {s t : Nat → ℝ} {m : Nat → Nat}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (hs : ∀ n : Nat, s n ≠ 0)
+    (hstep :
+      ∀ n : Nat, N ≤ n →
+        P (n + 1) = P n * (C (t n) + C (s n) * X) ^ (m n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_right_sequence_from N hbase
+    (fun n _ => isRealRooted_C_add_C_mul_X_pow_sequence hs m n) hstep
+
 /-- Sequence shell for scalar product recurrences. -/
 theorem isRealRooted_of_product_scalar_sequence
     {P : Nat → ℝ[X]} {a : Nat → ℝ}
@@ -1345,6 +1478,29 @@ theorem isRealRooted_of_product_scalar_right_sequence
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_product_factor_right_sequence hbase
     (isRealRooted_C_sequence ha) hstep
+
+/-- Tail-start sequence shell for scalar product recurrences. -/
+theorem isRealRooted_of_product_scalar_sequence_from
+    {P : Nat → ℝ[X]} {a : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hstep : ∀ n : Nat, N ≤ n → P (n + 1) = C (a n) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_sequence_from N hbase
+    (fun n _ => isRealRooted_C_sequence ha n) hstep
+
+/-- Right-factor variant of
+`isRealRooted_of_product_scalar_sequence_from`. -/
+theorem isRealRooted_of_product_scalar_right_sequence_from
+    {P : Nat → ℝ[X]} {a : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
+    (ha : ∀ n : Nat, a n ≠ 0)
+    (hstep : ∀ n : Nat, N ≤ n → P (n + 1) = P n * C (a n)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_right_sequence_from N hbase
+    (fun n _ => isRealRooted_C_sequence ha n) hstep
 
 /-- Sequence shell for degree-plateau scalar/product families with supplied factors.
 
@@ -2080,12 +2236,14 @@ syntax (name := rr_product_affine_sequence_named)
   "rr_product_affine_sequence" " using "
     "base" ":=" term ","
     "slope_ne" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term :
   tactic
 
 syntax (name := rr_product_affine_sequence_auto_named)
   "rr_product_affine_sequence_auto" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term :
   tactic
 
@@ -2093,12 +2251,14 @@ syntax (name := rr_product_const_first_sequence_named)
   "rr_product_const_first_sequence" " using "
     "base" ":=" term ","
     "slope_ne" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term :
   tactic
 
 syntax (name := rr_product_const_first_sequence_auto_named)
   "rr_product_const_first_sequence_auto" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term :
   tactic
 
@@ -2120,12 +2280,14 @@ syntax (name := rr_product_C_pow_sequence_named)
   "rr_product_C_pow_sequence" " using "
     "base" ":=" term ","
     "scalar_ne" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term :
   tactic
 
 syntax (name := rr_product_C_pow_sequence_auto_named)
   "rr_product_C_pow_sequence_auto" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term :
   tactic
 
@@ -2154,12 +2316,14 @@ syntax (name := rr_product_affine_pow_sequence_named)
   "rr_product_affine_pow_sequence" " using "
     "base" ":=" term ","
     "slope_ne" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term :
   tactic
 
 syntax (name := rr_product_affine_pow_sequence_auto_named)
   "rr_product_affine_pow_sequence_auto" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term :
   tactic
 
@@ -2167,12 +2331,14 @@ syntax (name := rr_product_const_first_affine_pow_sequence_named)
   "rr_product_const_first_affine_pow_sequence" " using "
     "base" ":=" term ","
     "slope_ne" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term :
   tactic
 
 syntax (name := rr_product_const_first_affine_pow_sequence_auto_named)
   "rr_product_const_first_affine_pow_sequence_auto" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term :
   tactic
 
@@ -2180,12 +2346,14 @@ syntax (name := rr_product_scalar_sequence_named)
   "rr_product_scalar_sequence" " using "
     "base" ":=" term ","
     "scalar_ne" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term :
   tactic
 
 syntax (name := rr_product_scalar_sequence_auto_named)
   "rr_product_scalar_sequence_auto" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term :
   tactic
 
@@ -2928,6 +3096,18 @@ macro_rules
           (RealRooted.isRealRooted_of_product_affine_right_sequence
             $hbase $hs $hstep))
   | `(tactic|
+      rr_product_affine_sequence using
+        base := $hbase:term,
+        slope_ne := $hs:term,
+        cutoff := $N:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_product_affine_sequence_from
+            $N $hbase $hs $hstep),
+          (RealRooted.isRealRooted_of_product_affine_right_sequence_from
+            $N $hbase $hs $hstep))
+  | `(tactic|
       rr_product_affine_sequence_auto using
         base := $hbase:term,
         recurrence := $hstep:term) =>
@@ -2935,6 +3115,17 @@ macro_rules
         rr_product_affine_sequence using
           base := $hbase,
           slope_ne := rr_product_nonzero_seq,
+          recurrence := $hstep)
+  | `(tactic|
+      rr_product_affine_sequence_auto using
+        base := $hbase:term,
+        cutoff := $N:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_product_affine_sequence using
+          base := $hbase,
+          slope_ne := rr_product_nonzero_seq,
+          cutoff := $N,
           recurrence := $hstep)
   | `(tactic|
       rr_product_const_first_sequence using
@@ -2948,6 +3139,18 @@ macro_rules
           (RealRooted.isRealRooted_of_product_const_first_affine_right_sequence
             $hbase $hs $hstep))
   | `(tactic|
+      rr_product_const_first_sequence using
+        base := $hbase:term,
+        slope_ne := $hs:term,
+        cutoff := $N:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_product_const_first_affine_sequence_from
+            $N $hbase $hs $hstep),
+          (RealRooted.isRealRooted_of_product_const_first_affine_right_sequence_from
+            $N $hbase $hs $hstep))
+  | `(tactic|
       rr_product_const_first_sequence_auto using
         base := $hbase:term,
         recurrence := $hstep:term) =>
@@ -2955,6 +3158,17 @@ macro_rules
         rr_product_const_first_sequence using
           base := $hbase,
           slope_ne := rr_product_nonzero_seq,
+          recurrence := $hstep)
+  | `(tactic|
+      rr_product_const_first_sequence_auto using
+        base := $hbase:term,
+        cutoff := $N:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_product_const_first_sequence using
+          base := $hbase,
+          slope_ne := rr_product_nonzero_seq,
+          cutoff := $N,
           recurrence := $hstep)
   | `(tactic|
       rr_product_X_sequence using
@@ -3008,6 +3222,18 @@ macro_rules
           (RealRooted.isRealRooted_of_product_C_pow_right_sequence
             $hbase $hc $hstep))
   | `(tactic|
+      rr_product_C_pow_sequence using
+        base := $hbase:term,
+        scalar_ne := $hc:term,
+        cutoff := $N:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_product_C_pow_sequence_from
+            $N $hbase $hc $hstep),
+          (RealRooted.isRealRooted_of_product_C_pow_right_sequence_from
+            $N $hbase $hc $hstep))
+  | `(tactic|
       rr_product_C_pow_sequence_auto using
         base := $hbase:term,
         recurrence := $hstep:term) =>
@@ -3015,6 +3241,17 @@ macro_rules
         rr_product_C_pow_sequence using
           base := $hbase,
           scalar_ne := rr_product_nonzero_seq,
+          recurrence := $hstep)
+  | `(tactic|
+      rr_product_C_pow_sequence_auto using
+        base := $hbase:term,
+        cutoff := $N:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_product_C_pow_sequence using
+          base := $hbase,
+          scalar_ne := rr_product_nonzero_seq,
+          cutoff := $N,
           recurrence := $hstep)
   | `(tactic|
       rr_product_X_pow_sequence using
@@ -3090,6 +3327,18 @@ macro_rules
           (RealRooted.isRealRooted_of_product_C_mul_X_add_C_pow_right_sequence
             $hbase $hs $hstep))
   | `(tactic|
+      rr_product_affine_pow_sequence using
+        base := $hbase:term,
+        slope_ne := $hs:term,
+        cutoff := $N:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_product_C_mul_X_add_C_pow_sequence_from
+            $N $hbase $hs $hstep),
+          (RealRooted.isRealRooted_of_product_C_mul_X_add_C_pow_right_sequence_from
+            $N $hbase $hs $hstep))
+  | `(tactic|
       rr_product_affine_pow_sequence_auto using
         base := $hbase:term,
         recurrence := $hstep:term) =>
@@ -3097,6 +3346,17 @@ macro_rules
         rr_product_affine_pow_sequence using
           base := $hbase,
           slope_ne := rr_product_nonzero_seq,
+          recurrence := $hstep)
+  | `(tactic|
+      rr_product_affine_pow_sequence_auto using
+        base := $hbase:term,
+        cutoff := $N:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_product_affine_pow_sequence using
+          base := $hbase,
+          slope_ne := rr_product_nonzero_seq,
+          cutoff := $N,
           recurrence := $hstep)
   | `(tactic|
       rr_product_const_first_affine_pow_sequence using
@@ -3110,6 +3370,18 @@ macro_rules
           (RealRooted.isRealRooted_of_product_C_add_C_mul_X_pow_right_sequence
             $hbase $hs $hstep))
   | `(tactic|
+      rr_product_const_first_affine_pow_sequence using
+        base := $hbase:term,
+        slope_ne := $hs:term,
+        cutoff := $N:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_product_C_add_C_mul_X_pow_sequence_from
+            $N $hbase $hs $hstep),
+          (RealRooted.isRealRooted_of_product_C_add_C_mul_X_pow_right_sequence_from
+            $N $hbase $hs $hstep))
+  | `(tactic|
       rr_product_const_first_affine_pow_sequence_auto using
         base := $hbase:term,
         recurrence := $hstep:term) =>
@@ -3117,6 +3389,17 @@ macro_rules
         rr_product_const_first_affine_pow_sequence using
           base := $hbase,
           slope_ne := rr_product_nonzero_seq,
+          recurrence := $hstep)
+  | `(tactic|
+      rr_product_const_first_affine_pow_sequence_auto using
+        base := $hbase:term,
+        cutoff := $N:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_product_const_first_affine_pow_sequence using
+          base := $hbase,
+          slope_ne := rr_product_nonzero_seq,
+          cutoff := $N,
           recurrence := $hstep)
   | `(tactic|
       rr_product_scalar_sequence using
@@ -3130,6 +3413,18 @@ macro_rules
           (RealRooted.isRealRooted_of_product_scalar_right_sequence
             $hbase $ha $hstep))
   | `(tactic|
+      rr_product_scalar_sequence using
+        base := $hbase:term,
+        scalar_ne := $ha:term,
+        cutoff := $N:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_product_two_sequence_variants
+          (RealRooted.isRealRooted_of_product_scalar_sequence_from
+            $N $hbase $ha $hstep),
+          (RealRooted.isRealRooted_of_product_scalar_right_sequence_from
+            $N $hbase $ha $hstep))
+  | `(tactic|
       rr_product_scalar_sequence_auto using
         base := $hbase:term,
         recurrence := $hstep:term) =>
@@ -3137,6 +3432,17 @@ macro_rules
         rr_product_scalar_sequence using
           base := $hbase,
           scalar_ne := rr_product_nonzero_seq,
+          recurrence := $hstep)
+  | `(tactic|
+      rr_product_scalar_sequence_auto using
+        base := $hbase:term,
+        cutoff := $N:term,
+        recurrence := $hstep:term) =>
+      `(tactic|
+        rr_product_scalar_sequence using
+          base := $hbase,
+          scalar_ne := rr_product_nonzero_seq,
+          cutoff := $N,
           recurrence := $hstep)
   | `(tactic|
       rr_product_scalar_linear_sequence using
