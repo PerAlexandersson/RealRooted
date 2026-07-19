@@ -56,6 +56,42 @@ theorem isRealRooted_of_prec_affine_derivative_nonneg_sequence
         (C (c n) * P n + (1 - X) * (P n).derivative).Splits := fun n =>
   (prec_affine_derivative_nonneg_sequence hsplits hdeg hnn hc n).1
 
+theorem coeff_affineDeriv_sequence
+    {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree) :
+    ∀ n : Nat,
+      (C (c n) * P n + (1 - X) * (P n).derivative).coeff (P n).natDegree =
+        (c n - (P n).natDegree) * (P n).leadingCoeff := fun n =>
+  coeff_affineDeriv (hdeg n) (c n)
+
+theorem natDegree_affineDeriv_sequence
+    {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hne : ∀ n : Nat, P n ≠ 0)
+    (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree)
+    (hc : ∀ n : Nat, c n ≠ ((P n).natDegree : ℝ)) :
+    ∀ n : Nat,
+      (C (c n) * P n + (1 - X) * (P n).derivative).natDegree =
+        (P n).natDegree := fun n =>
+  natDegree_affineDeriv (hne n) (hdeg n) (hc n)
+
+theorem leadingCoeff_affineDeriv_sequence
+    {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hne : ∀ n : Nat, P n ≠ 0)
+    (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree)
+    (hc : ∀ n : Nat, c n ≠ ((P n).natDegree : ℝ)) :
+    ∀ n : Nat,
+      (C (c n) * P n + (1 - X) * (P n).derivative).leadingCoeff =
+        (c n - (P n).natDegree) * (P n).leadingCoeff := fun n =>
+  leadingCoeff_affineDeriv (hne n) (hdeg n) (hc n)
+
+theorem affineDeriv_ne_zero_sequence
+    {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hne : ∀ n : Nat, P n ≠ 0)
+    (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree)
+    (hc : ∀ n : Nat, c n ≠ ((P n).natDegree : ℝ)) :
+    ∀ n : Nat, C (c n) * P n + (1 - X) * (P n).derivative ≠ 0 := fun n =>
+  affineDeriv_ne_zero (hne n) (hdeg n) (hc n)
+
 namespace Tactic
 
 syntax (name := rr_affine_deriv_eval_at_root_named)
@@ -72,8 +108,19 @@ syntax (name := rr_affine_deriv_coeff_named)
   "rr_affine_deriv_coeff" " using " "degree_ge_one" ":=" term :
   tactic
 
+syntax (name := rr_affine_deriv_coeff_sequence_named)
+  "rr_affine_deriv_coeff_sequence" " using " "degree_ge_one" ":=" term :
+  tactic
+
 syntax (name := rr_affine_deriv_natDegree_named)
   "rr_affine_deriv_natDegree" " using "
+    "nonzero" ":=" term ","
+    "degree_ge_one" ":=" term ","
+    "scalar_ne_degree" ":=" term :
+  tactic
+
+syntax (name := rr_affine_deriv_natDegree_sequence_named)
+  "rr_affine_deriv_natDegree_sequence" " using "
     "nonzero" ":=" term ","
     "degree_ge_one" ":=" term ","
     "scalar_ne_degree" ":=" term :
@@ -86,8 +133,22 @@ syntax (name := rr_affine_deriv_leadingCoeff_named)
     "scalar_ne_degree" ":=" term :
   tactic
 
+syntax (name := rr_affine_deriv_leadingCoeff_sequence_named)
+  "rr_affine_deriv_leadingCoeff_sequence" " using "
+    "nonzero" ":=" term ","
+    "degree_ge_one" ":=" term ","
+    "scalar_ne_degree" ":=" term :
+  tactic
+
 syntax (name := rr_affine_deriv_ne_zero_named)
   "rr_affine_deriv_ne_zero" " using "
+    "nonzero" ":=" term ","
+    "degree_ge_one" ":=" term ","
+    "scalar_ne_degree" ":=" term :
+  tactic
+
+syntax (name := rr_affine_deriv_ne_zero_sequence_named)
+  "rr_affine_deriv_ne_zero_sequence" " using "
     "nonzero" ":=" term ","
     "degree_ge_one" ":=" term ","
     "scalar_ne_degree" ":=" term :
@@ -184,6 +245,8 @@ macro_rules
       `(tactic| exact RealRooted.eval_affineDeriv_eq_zero_iff $hr _ $hrnp)
   | `(tactic| rr_affine_deriv_coeff using degree_ge_one := $hdeg:term) =>
       `(tactic| exact RealRooted.coeff_affineDeriv $hdeg _)
+  | `(tactic| rr_affine_deriv_coeff_sequence using degree_ge_one := $hdeg:term) =>
+      `(tactic| exact RealRooted.coeff_affineDeriv_sequence $hdeg)
   | `(tactic|
       rr_affine_deriv_natDegree using
         nonzero := $hf:term,
@@ -191,17 +254,35 @@ macro_rules
         scalar_ne_degree := $hc:term) =>
       `(tactic| exact RealRooted.natDegree_affineDeriv $hf $hdeg $hc)
   | `(tactic|
+      rr_affine_deriv_natDegree_sequence using
+        nonzero := $hf:term,
+        degree_ge_one := $hdeg:term,
+        scalar_ne_degree := $hc:term) =>
+      `(tactic| exact RealRooted.natDegree_affineDeriv_sequence $hf $hdeg $hc)
+  | `(tactic|
       rr_affine_deriv_leadingCoeff using
         nonzero := $hf:term,
         degree_ge_one := $hdeg:term,
         scalar_ne_degree := $hc:term) =>
       `(tactic| exact RealRooted.leadingCoeff_affineDeriv $hf $hdeg $hc)
   | `(tactic|
+      rr_affine_deriv_leadingCoeff_sequence using
+        nonzero := $hf:term,
+        degree_ge_one := $hdeg:term,
+        scalar_ne_degree := $hc:term) =>
+      `(tactic| exact RealRooted.leadingCoeff_affineDeriv_sequence $hf $hdeg $hc)
+  | `(tactic|
       rr_affine_deriv_ne_zero using
         nonzero := $hf:term,
         degree_ge_one := $hdeg:term,
         scalar_ne_degree := $hc:term) =>
       `(tactic| exact RealRooted.affineDeriv_ne_zero $hf $hdeg $hc)
+  | `(tactic|
+      rr_affine_deriv_ne_zero_sequence using
+        nonzero := $hf:term,
+        degree_ge_one := $hdeg:term,
+        scalar_ne_degree := $hc:term) =>
+      `(tactic| exact RealRooted.affineDeriv_ne_zero_sequence $hf $hdeg $hc)
   | `(tactic|
       rr_prec_affine_derivative_strong using
         splits := $hsplits:term,

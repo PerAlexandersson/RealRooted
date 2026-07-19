@@ -46,6 +46,47 @@ example {f : ℝ[X]} (hf : f ≠ 0) (hdeg : 1 ≤ f.natDegree)
     degree_ge_one := hdeg,
     scalar_ne_degree := hc
 
+example {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree) :
+    ∀ n : Nat,
+      (C (c n) * P n + (1 - X) * (P n).derivative).coeff (P n).natDegree =
+        (c n - (P n).natDegree) * (P n).leadingCoeff := by
+  rr_affine_deriv_coeff_sequence using degree_ge_one := hdeg
+
+example {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hne : ∀ n : Nat, P n ≠ 0)
+    (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree)
+    (hc : ∀ n : Nat, c n ≠ ((P n).natDegree : ℝ)) :
+    ∀ n : Nat,
+      (C (c n) * P n + (1 - X) * (P n).derivative).natDegree =
+        (P n).natDegree := by
+  rr_affine_deriv_natDegree_sequence using
+    nonzero := hne,
+    degree_ge_one := hdeg,
+    scalar_ne_degree := hc
+
+example {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hne : ∀ n : Nat, P n ≠ 0)
+    (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree)
+    (hc : ∀ n : Nat, c n ≠ ((P n).natDegree : ℝ)) :
+    ∀ n : Nat,
+      (C (c n) * P n + (1 - X) * (P n).derivative).leadingCoeff =
+        (c n - (P n).natDegree) * (P n).leadingCoeff := by
+  rr_affine_deriv_leadingCoeff_sequence using
+    nonzero := hne,
+    degree_ge_one := hdeg,
+    scalar_ne_degree := hc
+
+example {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hne : ∀ n : Nat, P n ≠ 0)
+    (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree)
+    (hc : ∀ n : Nat, c n ≠ ((P n).natDegree : ℝ)) :
+    ∀ n : Nat, C (c n) * P n + (1 - X) * (P n).derivative ≠ 0 := by
+  rr_affine_deriv_ne_zero_sequence using
+    nonzero := hne,
+    degree_ge_one := hdeg,
+    scalar_ne_degree := hc
+
 example {f : ℝ[X]} (hf : f.Splits)
     (hdeg : 2 ≤ f.natDegree)
     (hf_pos : HasPosLeadingCoeff f)
