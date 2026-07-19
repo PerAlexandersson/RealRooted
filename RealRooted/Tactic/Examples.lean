@@ -5,6 +5,7 @@ import RealRooted.Tactic.Examples.SideGoals
 import RealRooted.Tactic.Examples.Sign
 import RealRooted.Tactic.Examples.RootBounds
 import RealRooted.Tactic.Examples.RootCount
+import RealRooted.Tactic.Examples.ScalarDen
 import RealRooted.Tactic.Examples.Lookup
 import RealRooted.Tactic.Examples.Finish
 import RealRooted.Tactic.Examples.StaircaseSum
