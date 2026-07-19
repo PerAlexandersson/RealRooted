@@ -799,6 +799,7 @@ syntax (name := rr_product_parity_sequence_scalar_then_factor)
     "base" ":=" term ","
     "scalar_ne" ":=" term ","
     "factor_realrooted" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "scalar_step" ":=" term ","
     "factor_step" ":=" term ","
     "certificate" ":=" "scalarThenFactor" :
@@ -808,6 +809,7 @@ syntax (name := rr_product_parity_sequence_scalar_then_factor_auto)
   "rr_product_parity_sequence" " using "
     "base" ":=" term ","
     "factor_realrooted" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "scalar_step" ":=" term ","
     "factor_step" ":=" term ","
     "certificate" ":=" "scalarThenFactorAuto" :
@@ -1625,6 +1627,7 @@ macro_rules
         base := $hbase:term,
         scalar_ne := $ha:term,
         factor_realrooted := $hfactor:term,
+        cutoff := $N:term,
         scalar_step := $hscalar:term,
         factor_step := $hstep:term,
         certificate := scalarThenFactor) =>
@@ -1633,6 +1636,37 @@ macro_rules
           base := $hbase,
           scalar_ne := $ha,
           factor_realrooted := $hfactor,
+          cutoff := $N,
+          scalar_step := $hscalar,
+          factor_step := $hstep)
+  | `(tactic|
+      rr_product_parity_sequence using
+        base := $hbase:term,
+        scalar_ne := $ha:term,
+        factor_realrooted := $hfactor:term,
+        scalar_step := $hscalar:term,
+        factor_step := $hstep:term,
+        certificate := scalarThenFactor) =>
+      `(tactic|
+        rr_product_scalar_factor_sequence using
+          base := $hbase,
+          scalar_ne := $ha,
+          factor_realrooted := $hfactor,
+          scalar_step := $hscalar,
+          factor_step := $hstep)
+  | `(tactic|
+      rr_product_parity_sequence using
+        base := $hbase:term,
+        factor_realrooted := $hfactor:term,
+        cutoff := $N:term,
+        scalar_step := $hscalar:term,
+        factor_step := $hstep:term,
+        certificate := scalarThenFactorAuto) =>
+      `(tactic|
+        rr_product_scalar_factor_sequence_auto using
+          base := $hbase,
+          factor_realrooted := $hfactor,
+          cutoff := $N,
           scalar_step := $hscalar,
           factor_step := $hstep)
   | `(tactic|

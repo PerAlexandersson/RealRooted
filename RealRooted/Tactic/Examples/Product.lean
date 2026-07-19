@@ -1418,6 +1418,39 @@ example {P F : Nat → ℝ[X]}
     scalar_step := hscalar,
     factor_step := hstep
 
+/-- Alternating scalar/supplied-factor product shells can start from a cutoff. -/
+example {P F : Nat → ℝ[X]} {a : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ k : Nat, k ≤ 2 * N → P k ≠ 0 ∧ (P k).Splits)
+    (ha : ∀ n : Nat, N ≤ n → a n ≠ 0)
+    (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
+    (hscalar : ∀ n : Nat, N ≤ n → P (2 * n + 1) = C (a n) * P (2 * n))
+    (hstep : ∀ n : Nat, N ≤ n → P (2 * n + 2) = P (2 * n + 1) * F n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_scalar_factor_sequence using
+    base := hbase,
+    scalar_ne := ha,
+    factor_realrooted := hfactor,
+    cutoff := N,
+    scalar_step := hscalar,
+    factor_step := hstep
+
+/-- The cutoff supplied-factor shell also has an automatic positive scalar form. -/
+example {P F : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ k : Nat, k ≤ 2 * N → P k ≠ 0 ∧ (P k).Splits)
+    (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
+    (hscalar : ∀ n : Nat, N ≤ n →
+      P (2 * n + 1) = C ((n : ℝ) + 1) * P (2 * n))
+    (hstep : ∀ n : Nat, N ≤ n → P (2 * n + 2) = F n * P (2 * n + 1)) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_product_scalar_factor_sequence_auto using
+    base := hbase,
+    factor_realrooted := hfactor,
+    cutoff := N,
+    scalar_step := hscalar,
+    factor_step := hstep
+
 /-- The alternating scalar/supplied-factor shell accepts right scalar steps. -/
 example {P F : Nat → ℝ[X]} {a : Nat → ℝ}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)

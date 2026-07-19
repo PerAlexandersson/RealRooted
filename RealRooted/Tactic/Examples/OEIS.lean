@@ -1205,6 +1205,41 @@ example {P F : Nat → ℝ[X]}
     factor_step := hstep,
     certificate := scalarThenFactorAuto
 
+/-- Product-parity router, supplied factor with cutoff. -/
+example {P F : Nat → ℝ[X]} {a : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ k : Nat, k ≤ 2 * N → P k ≠ 0 ∧ (P k).Splits)
+    (ha : ∀ n : Nat, N ≤ n → a n ≠ 0)
+    (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
+    (hscalar : ∀ n : Nat, N ≤ n → P (2 * n + 1) = P (2 * n) * C (a n))
+    (hstep : ∀ n : Nat, N ≤ n → P (2 * n + 2) = F n * P (2 * n + 1)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_parity_sequence using
+    base := hbase,
+    scalar_ne := ha,
+    factor_realrooted := hfactor,
+    cutoff := N,
+    scalar_step := hscalar,
+    factor_step := hstep,
+    certificate := scalarThenFactor
+
+/-- Product-parity router, automatic scalar supplied factor with cutoff. -/
+example {P F : Nat → ℝ[X]}
+    (N : Nat)
+    (hbase : ∀ k : Nat, k ≤ 2 * N → P k ≠ 0 ∧ (P k).Splits)
+    (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
+    (hscalar : ∀ n : Nat, N ≤ n →
+      P (2 * n + 1) = C (2 * (n : ℝ) + 1) * P (2 * n))
+    (hstep : ∀ n : Nat, N ≤ n → P (2 * n + 2) = P (2 * n + 1) * F n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_product_parity_sequence using
+    base := hbase,
+    factor_realrooted := hfactor,
+    cutoff := N,
+    scalar_step := hscalar,
+    factor_step := hstep,
+    certificate := scalarThenFactorAuto
+
 /-- Product-parity router, automatic scalar then unit-linear step. -/
 example {P : Nat → ℝ[X]} {b : Nat → ℝ}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)

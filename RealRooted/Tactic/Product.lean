@@ -1570,6 +1570,93 @@ theorem isRealRooted_of_product_scalar_factor_scalar_right_factor_right_sequence
   isRealRooted_of_product_scalar_factor_right_sequence hbase ha hfactor
     (fun n => by rw [hscalar n, mul_comm]) hstep
 
+/-- Tail-start sequence shell for degree-plateau scalar/product families with
+supplied factors.
+
+The parity recurrence starts at parity index `N`, so the finite base interval
+contains rows through `2 * N`.  The odd row `2 * N + 1` is then produced by
+the scalar step. -/
+theorem isRealRooted_of_product_scalar_factor_sequence_from
+    {P F : Nat → ℝ[X]} {a : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ k : Nat, k ≤ 2 * N → P k ≠ 0 ∧ (P k).Splits)
+    (ha : ∀ n : Nat, N ≤ n → a n ≠ 0)
+    (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
+    (hscalar : ∀ n : Nat, N ≤ n → P (2 * n + 1) = C (a n) * P (2 * n))
+    (hstep : ∀ n : Nat, N ≤ n → P (2 * n + 2) = F n * P (2 * n + 1)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  have heven : ∀ n : Nat, P (2 * n) ≠ 0 ∧ (P (2 * n)).Splits := by
+    intro n
+    refine Nat.strong_induction_on n ?_
+    intro n ih
+    by_cases hn : n ≤ N
+    · exact hbase (2 * n) (by lia)
+    · cases n with
+      | zero =>
+          exact False.elim (hn (Nat.zero_le N))
+      | succ m =>
+          have hNm : N ≤ m := by lia
+          have hm : P (2 * m) ≠ 0 ∧ (P (2 * m)).Splits :=
+            ih m (Nat.lt_succ_self m)
+          have hodd : P (2 * m + 1) ≠ 0 ∧ (P (2 * m + 1)).Splits := by
+            simpa [hscalar m hNm] using isRealRooted_C_mul hm.1 hm.2 (ha m hNm)
+          have hnext :
+              (F m * P (2 * m + 1) ≠ 0 ∧
+                (F m * P (2 * m + 1)).Splits) :=
+            isRealRooted_mul (hfactor m hNm).1 (hfactor m hNm).2 hodd.1 hodd.2
+          simpa [Nat.mul_succ, Nat.succ_eq_add_one, Nat.add_assoc] using
+            (by simpa [hstep m hNm] using hnext)
+  have hodd : ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
+    intro n
+    by_cases hn : n < N
+    · exact hbase (2 * n + 1) (by lia)
+    · have hNn : N ≤ n := by lia
+      simpa [hscalar n hNn] using
+        isRealRooted_C_mul (heven n).1 (heven n).2 (ha n hNn)
+  exact isRealRooted_of_even_odd_sequence heven hodd
+
+/-- Right-factor variant of
+`isRealRooted_of_product_scalar_factor_sequence_from`. -/
+theorem isRealRooted_of_product_scalar_factor_right_sequence_from
+    {P F : Nat → ℝ[X]} {a : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ k : Nat, k ≤ 2 * N → P k ≠ 0 ∧ (P k).Splits)
+    (ha : ∀ n : Nat, N ≤ n → a n ≠ 0)
+    (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
+    (hscalar : ∀ n : Nat, N ≤ n → P (2 * n + 1) = C (a n) * P (2 * n))
+    (hstep : ∀ n : Nat, N ≤ n → P (2 * n + 2) = P (2 * n + 1) * F n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_sequence_from N hbase ha hfactor hscalar
+    (fun n hn => by rw [hstep n hn, mul_comm])
+
+/-- Right-scalar variant of
+`isRealRooted_of_product_scalar_factor_sequence_from`. -/
+theorem isRealRooted_of_product_scalar_factor_scalar_right_sequence_from
+    {P F : Nat → ℝ[X]} {a : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ k : Nat, k ≤ 2 * N → P k ≠ 0 ∧ (P k).Splits)
+    (ha : ∀ n : Nat, N ≤ n → a n ≠ 0)
+    (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
+    (hscalar : ∀ n : Nat, N ≤ n → P (2 * n + 1) = P (2 * n) * C (a n))
+    (hstep : ∀ n : Nat, N ≤ n → P (2 * n + 2) = F n * P (2 * n + 1)) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_sequence_from N hbase ha hfactor
+    (fun n hn => by rw [hscalar n hn, mul_comm]) hstep
+
+/-- Right-scalar/right-factor variant of
+`isRealRooted_of_product_scalar_factor_sequence_from`. -/
+theorem isRealRooted_of_product_scalar_factor_scalar_right_factor_right_sequence_from
+    {P F : Nat → ℝ[X]} {a : Nat → ℝ}
+    (N : Nat)
+    (hbase : ∀ k : Nat, k ≤ 2 * N → P k ≠ 0 ∧ (P k).Splits)
+    (ha : ∀ n : Nat, N ≤ n → a n ≠ 0)
+    (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
+    (hscalar : ∀ n : Nat, N ≤ n → P (2 * n + 1) = P (2 * n) * C (a n))
+    (hstep : ∀ n : Nat, N ≤ n → P (2 * n + 2) = P (2 * n + 1) * F n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_scalar_factor_right_sequence_from N hbase ha hfactor
+    (fun n hn => by rw [hscalar n hn, mul_comm]) hstep
+
 /-- Sequence shell for degree-plateau product families.
 
 This covers recurrences where odd steps only rescale the previous row, while
@@ -2392,6 +2479,7 @@ syntax (name := rr_product_scalar_factor_sequence_named)
     "base" ":=" term ","
     "scalar_ne" ":=" term ","
     "factor_realrooted" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "scalar_step" ":=" term ","
     "factor_step" ":=" term :
   tactic
@@ -2400,6 +2488,7 @@ syntax (name := rr_product_scalar_factor_sequence_auto_named)
   "rr_product_scalar_factor_sequence_auto" " using "
     "base" ":=" term ","
     "factor_realrooted" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "scalar_step" ":=" term ","
     "factor_step" ":=" term :
   tactic
@@ -3503,6 +3592,24 @@ macro_rules
         base := $hbase:term,
         scalar_ne := $ha:term,
         factor_realrooted := $hfactor:term,
+        cutoff := $N:term,
+        scalar_step := $hscalar:term,
+        factor_step := $hstep:term) =>
+      `(tactic|
+        rr_product_four_sequence_variants
+          (RealRooted.isRealRooted_of_product_scalar_factor_sequence_from
+            $N $hbase $ha $hfactor $hscalar $hstep),
+          (RealRooted.isRealRooted_of_product_scalar_factor_right_sequence_from
+            $N $hbase $ha $hfactor $hscalar $hstep),
+          (RealRooted.isRealRooted_of_product_scalar_factor_scalar_right_sequence_from
+            $N $hbase $ha $hfactor $hscalar $hstep),
+          (RealRooted.isRealRooted_of_product_scalar_factor_scalar_right_factor_right_sequence_from
+            $N $hbase $ha $hfactor $hscalar $hstep))
+  | `(tactic|
+      rr_product_scalar_factor_sequence using
+        base := $hbase:term,
+        scalar_ne := $ha:term,
+        factor_realrooted := $hfactor:term,
         scalar_step := $hscalar:term,
         factor_step := $hstep:term) =>
       `(tactic|
@@ -3515,6 +3622,21 @@ macro_rules
             $hbase $ha $hfactor $hscalar $hstep),
           (RealRooted.isRealRooted_of_product_scalar_factor_scalar_right_factor_right_sequence
             $hbase $ha $hfactor $hscalar $hstep))
+  | `(tactic|
+      rr_product_scalar_factor_sequence_auto using
+        base := $hbase:term,
+        factor_realrooted := $hfactor:term,
+        cutoff := $N:term,
+        scalar_step := $hscalar:term,
+        factor_step := $hstep:term) =>
+      `(tactic|
+        rr_product_scalar_factor_sequence using
+          base := $hbase,
+          scalar_ne := fun n _ => by rr_product_nonzero,
+          factor_realrooted := $hfactor,
+          cutoff := $N,
+          scalar_step := $hscalar,
+          factor_step := $hstep)
   | `(tactic|
       rr_product_scalar_factor_sequence_auto using
         base := $hbase:term,
