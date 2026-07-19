@@ -98,6 +98,44 @@ example {n : ℕ} (G : List (List ℝ[X])) (fs : List ℝ[X])
         ((G.get i₂).get ⟨j₂, by simp_all⟩))
     (hfs_len : fs.length = n)
     (hfs : IsInterlacingSeqNonneg fs) :
+    IsInterlacingSeqNonneg ((matPolyAction G fs).filter (· ≠ 0)) := by
+  rr_matrix0_filter_ne_zero using
+    G, hG_rect, hG_nonneg, hG_affine, fs, hfs_len, hfs
+
+example {n : ℕ} (G : List (List ℝ[X])) (fs : List ℝ[X])
+    (hG_rect : ∀ row ∈ G, row.length = n)
+    (hG_nonneg : ∀ row ∈ G, ∀ p ∈ row, HasNonnegCoeffs p)
+    (hG_affine : ∀ (i₁ i₂ : Fin G.length) (j₁ j₂ : Fin n),
+      i₁ ≤ i₂ → j₁ ≤ j₂ →
+      Has2x2InterlacingProperty0
+        ((G.get i₁).get ⟨j₁, by simp_all⟩)
+        ((G.get i₁).get ⟨j₂, by simp_all⟩)
+        ((G.get i₂).get ⟨j₁, by simp_all⟩)
+        ((G.get i₂).get ⟨j₂, by simp_all⟩))
+    (hfs_len : fs.length = n)
+    (hfs : IsInterlacingSeqNonneg fs) :
+    IsInterlacingSeqNonneg ((matPolyAction G fs).filter (· ≠ 0)) := by
+  rr_matrix0_filter_ne_zero using
+    matrix := G,
+    rectangular := hG_rect,
+    entry_nonneg := hG_nonneg,
+    two_by_two := hG_affine,
+    input := fs,
+    input_length := hfs_len,
+    input_interlacing := hfs
+
+example {n : ℕ} (G : List (List ℝ[X])) (fs : List ℝ[X])
+    (hG_rect : ∀ row ∈ G, row.length = n)
+    (hG_nonneg : ∀ row ∈ G, ∀ p ∈ row, HasNonnegCoeffs p)
+    (hG_affine : ∀ (i₁ i₂ : Fin G.length) (j₁ j₂ : Fin n),
+      i₁ ≤ i₂ → j₁ ≤ j₂ →
+      Has2x2InterlacingProperty0
+        ((G.get i₁).get ⟨j₁, by simp_all⟩)
+        ((G.get i₁).get ⟨j₂, by simp_all⟩)
+        ((G.get i₂).get ⟨j₁, by simp_all⟩)
+        ((G.get i₂).get ⟨j₂, by simp_all⟩))
+    (hfs_len : fs.length = n)
+    (hfs : IsInterlacingSeqNonneg fs) :
     IsInterlacingSeq0Nonneg (matPolyAction G fs) ∧
       ∀ f ∈ matPolyAction G fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits) := by
   rr_matrix0_realrooted using G, hG_rect, hG_nonneg, hG_affine, fs, hfs_len, hfs

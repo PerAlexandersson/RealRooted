@@ -13,6 +13,7 @@ rr_matrix
 rr_matrix0
 rr_matrix0_weak
 rr_matrix0_realrooted
+rr_matrix0_filter_ne_zero
 ```
 
 Primary target:
@@ -114,6 +115,27 @@ syntax (name := rr_matrix0_realrooted)
 
 syntax (name := rr_matrix0_realrooted_named)
   "rr_matrix0_realrooted" " using "
+    "matrix" ":=" term ","
+    "rectangular" ":=" term ","
+    "entry_nonneg" ":=" term ","
+    "two_by_two" ":=" term ","
+    "input" ":=" term ","
+    "input_length" ":=" term ","
+    "input_interlacing" ":=" term :
+  tactic
+
+syntax (name := rr_matrix0_filter_ne_zero)
+  "rr_matrix0_filter_ne_zero" " using " term ", "
+    term ", "
+    term ", "
+    term ", "
+    term ", "
+    term ", "
+    term :
+  tactic
+
+syntax (name := rr_matrix0_filter_ne_zero_named)
+  "rr_matrix0_filter_ne_zero" " using "
     "matrix" ":=" term ","
     "rectangular" ":=" term ","
     "entry_nonneg" ":=" term ","
@@ -230,6 +252,25 @@ macro_rules
       `(tactic|
         rr_matrix0_realrooted using $G, $hG_rect, $hG_nonneg, $hG_affine, $fs,
           $hfs_len, $hfs)
+  | `(tactic|
+      rr_matrix0_filter_ne_zero using
+        $G:term, $hG_rect:term, $hG_nonneg:term, $hG_affine:term, $fs:term,
+        $hfs_len:term, $hfs:term) =>
+      `(tactic|
+        exact RealRooted.matrix_preserves_interlacing_seq0_filter_ne_zero_of_2x2
+          $G $hG_rect $hG_nonneg $hG_affine $fs $hfs_len $hfs)
+  | `(tactic|
+      rr_matrix0_filter_ne_zero using
+        matrix := $G:term,
+        rectangular := $hG_rect:term,
+        entry_nonneg := $hG_nonneg:term,
+        two_by_two := $hG_affine:term,
+        input := $fs:term,
+        input_length := $hfs_len:term,
+        input_interlacing := $hfs:term) =>
+      `(tactic|
+        rr_matrix0_filter_ne_zero using $G, $hG_rect, $hG_nonneg, $hG_affine,
+          $fs, $hfs_len, $hfs)
   | `(tactic|
       rr_row_threshold_matrix using
         n_pos := $hn:term,
