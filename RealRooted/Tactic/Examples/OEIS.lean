@@ -3074,6 +3074,38 @@ example
     degree := hdeg,
     recurrence := hrec
 
+/-- Family H second-derivative router, quadratic PF-bidiagonal residual branch. -/
+example
+    {P : Nat → ℝ[X]} {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (hbase : IsPFPolynomial (P 0))
+    (hdeg : ∀ n : Nat, (P n).natDegree ≤ d n)
+    (hd : ∀ n : Nat, 2 ≤ d n)
+    (hA : ∀ n : Nat, CubicPFDiscriminantCertificate
+      (quadraticJensenResidual (c2 n) (b1 n - c2 n) (a0 n) (d n)))
+    (hB : ∀ n : Nat, CubicPFDiscriminantCertificate
+      (X * quadraticJensenResidual (c3 n) (b2 n - c3 n) (a1 n) (d n)))
+    (hS : ∀ n : Nat, ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate
+        (quadraticBidiagonalPencilResidual
+          (c2 n) (b1 n - c2 n) (a0 n)
+          (c3 n) (b2 n - c3 n) (a1 n) lam (d n)))
+    (hrec : ∀ n : Nat,
+      P (n + 1) =
+        secondDerivativeBidiagonalForm
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
+    ∀ n : Nat, IsPFPolynomial (P n) := by
+  rr_h_second_derivative_sequence using
+    route := pf_bidiagonal_quadratic,
+    jensen_backend := hbackend,
+    base := hbase,
+    degree := hdeg,
+    active_degree := hd,
+    alpha_cubic := hA,
+    beta_cubic := hB,
+    pencil_cubic := hS,
+    recurrence := hrec
+
 /-- Family H second-derivative router, cutoff and normalized PF-bidiagonal
 branch. -/
 example
