@@ -610,6 +610,7 @@ syntax (name := rr_product_factor_sequence_supplied_factor)
 syntax (name := rr_product_factor_sequence_auto)
   "rr_product_factor_sequence" " using "
     "base" ":=" term ","
+    ("cutoff" ":=" term ",")?
     "recurrence" ":=" term ","
     "certificate" ":=" "auto" :
   tactic
@@ -1182,6 +1183,34 @@ macro_rules
               recurrence := $hrec
           | rr_product_C_add_X_pow_sequence using
               base := $hbase,
+              recurrence := $hrec)
+  | `(tactic|
+      rr_product_factor_sequence using
+        base := $hbase:term,
+        cutoff := $N:term,
+        recurrence := $hrec:term,
+        certificate := auto) =>
+      `(tactic|
+        first
+          | rr_product_X_sequence using
+              base := $hbase,
+              cutoff := $N,
+              recurrence := $hrec
+          | rr_product_C_add_X_sequence using
+              base := $hbase,
+              cutoff := $N,
+              recurrence := $hrec
+          | rr_product_X_pow_sequence using
+              base := $hbase,
+              cutoff := $N,
+              recurrence := $hrec
+          | rr_product_X_add_C_pow_sequence using
+              base := $hbase,
+              cutoff := $N,
+              recurrence := $hrec
+          | rr_product_C_add_X_pow_sequence using
+              base := $hbase,
+              cutoff := $N,
               recurrence := $hrec)
   | `(tactic|
       rr_product_factor_sequence using
