@@ -1011,6 +1011,16 @@ example {P Q : Nat → ℝ[X]}
     quotient_realrooted := hquot,
     factorization := hrow
 
+/-- The product-lift auto router reaches positive scalar-power factors. -/
+example {P Q : Nat → ℝ[X]} {m : Nat → Nat}
+    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
+    (hrow : ∀ n : Nat,
+      P n = Q n * (C ((n : ℝ) + 1) : ℝ[X]) ^ (m n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_product_lift_sequence_auto using
+    quotient_realrooted := hquot,
+    factorization := hrow
+
 /-- The product-lift auto router reaches positive affine-power factors. -/
 example {P Q : Nat → ℝ[X]} {t : Nat → ℝ} {m : Nat → Nat}
     (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
