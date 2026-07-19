@@ -63,6 +63,51 @@ example {P : Nat → ℝ[X]} {c : Nat → ℝ}
     nonneg := hnn,
     scalar_gt_degree := hc
 
+/-- Affine-derivative row-family coefficient side goal exposed through the OEIS facade. -/
+example {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree) :
+    ∀ n : Nat,
+      (C (c n) * P n + (1 - X) * (P n).derivative).coeff (P n).natDegree =
+        (c n - (P n).natDegree) * (P n).leadingCoeff := by
+  rr_affine_deriv_coeff_sequence using degree_ge_one := hdeg
+
+/-- Affine-derivative row-family degree side goal exposed through the OEIS facade. -/
+example {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hne : ∀ n : Nat, P n ≠ 0)
+    (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree)
+    (hc : ∀ n : Nat, c n ≠ ((P n).natDegree : ℝ)) :
+    ∀ n : Nat,
+      (C (c n) * P n + (1 - X) * (P n).derivative).natDegree =
+        (P n).natDegree := by
+  rr_affine_deriv_natDegree_sequence using
+    nonzero := hne,
+    degree_ge_one := hdeg,
+    scalar_ne_degree := hc
+
+/-- Affine-derivative row-family leading coefficient side goal via the OEIS facade. -/
+example {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hne : ∀ n : Nat, P n ≠ 0)
+    (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree)
+    (hc : ∀ n : Nat, c n ≠ ((P n).natDegree : ℝ)) :
+    ∀ n : Nat,
+      (C (c n) * P n + (1 - X) * (P n).derivative).leadingCoeff =
+        (c n - (P n).natDegree) * (P n).leadingCoeff := by
+  rr_affine_deriv_leadingCoeff_sequence using
+    nonzero := hne,
+    degree_ge_one := hdeg,
+    scalar_ne_degree := hc
+
+/-- Affine-derivative row-family nonzero side goal exposed through the OEIS facade. -/
+example {P : Nat → ℝ[X]} {c : Nat → ℝ}
+    (hne : ∀ n : Nat, P n ≠ 0)
+    (hdeg : ∀ n : Nat, 1 ≤ (P n).natDegree)
+    (hc : ∀ n : Nat, c n ≠ ((P n).natDegree : ℝ)) :
+    ∀ n : Nat, C (c n) * P n + (1 - X) * (P n).derivative ≠ 0 := by
+  rr_affine_deriv_ne_zero_sequence using
+    nonzero := hne,
+    degree_ge_one := hdeg,
+    scalar_ne_degree := hc
+
 /-- Scalar-left `Prec` row-family exit exposed through the OEIS facade. -/
 example {F G : Nat → ℝ[X]} {a : Nat → ℝ}
     (hFG : ∀ n : Nat, Prec (F n) (G n))
