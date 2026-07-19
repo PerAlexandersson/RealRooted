@@ -141,6 +141,18 @@ theorem pow_eq_zero_or_splits {p : ℝ[X]} (hp : p = 0 ∨ p.Splits) (n : Nat) :
         simp
   · exact Or.inr (hp.pow n)
 
+/-- Project the left zero-aware certificate from a pair certificate. -/
+theorem left_eq_zero_or_splits_of_eq_zero_or_splits_pair {p q : ℝ[X]}
+    (hpq : (p = 0 ∨ p.Splits) ∧ (q = 0 ∨ q.Splits)) :
+    p = 0 ∨ p.Splits :=
+  hpq.1
+
+/-- Project the right zero-aware certificate from a pair certificate. -/
+theorem right_eq_zero_or_splits_of_eq_zero_or_splits_pair {p q : ℝ[X]}
+    (hpq : (p = 0 ∨ p.Splits) ∧ (q = 0 ∨ q.Splits)) :
+    q = 0 ∨ q.Splits :=
+  hpq.2
+
 /-- Reverse transport for zero-aware real-rootedness certificates. -/
 theorem reverse_eq_zero_or_splits {p : ℝ[X]} (hp : p = 0 ∨ p.Splits) :
     p.reverse = 0 ∨ p.reverse.Splits := by
@@ -1021,6 +1033,14 @@ macro_rules
         rr_first_exact
           $h,
           RealRooted.eq_zero_or_splits_of_isRealRooted $h,
+          RealRooted.left_eq_zero_or_splits_of_eq_zero_or_splits_pair $h,
+          RealRooted.right_eq_zero_or_splits_of_eq_zero_or_splits_pair $h,
+          (RealRooted.mul_eq_zero_or_splits
+            (RealRooted.left_eq_zero_or_splits_of_eq_zero_or_splits_pair $h)
+            (RealRooted.right_eq_zero_or_splits_of_eq_zero_or_splits_pair $h)),
+          (RealRooted.mul_eq_zero_or_splits
+            (RealRooted.right_eq_zero_or_splits_of_eq_zero_or_splits_pair $h)
+            (RealRooted.left_eq_zero_or_splits_of_eq_zero_or_splits_pair $h)),
           RealRooted.left_eq_zero_or_splits_of_isRealRooted_pair $h,
           RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair $h,
           RealRooted.left_eq_zero_or_splits_of_prec $h,

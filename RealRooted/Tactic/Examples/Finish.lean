@@ -232,6 +232,22 @@ example {f g : ℝ[X]} (hf : f = 0 ∨ f.Splits) (hg : g = 0 ∨ g.Splits) :
     left := hf,
     right := hg
 
+example {f g : ℝ[X]} (hfg : (f = 0 ∨ f.Splits) ∧ (g = 0 ∨ g.Splits)) :
+    f = 0 ∨ f.Splits := by
+  rr_zero_or_splits using hfg
+
+example {f g : ℝ[X]} (hfg : (f = 0 ∨ f.Splits) ∧ (g = 0 ∨ g.Splits)) :
+    g = 0 ∨ g.Splits := by
+  rr_zero_or_splits using hfg
+
+example {f g : ℝ[X]} (hfg : (f = 0 ∨ f.Splits) ∧ (g = 0 ∨ g.Splits)) :
+    f * g = 0 ∨ (f * g).Splits := by
+  rr_zero_or_splits using hfg
+
+example {f g : ℝ[X]} (hfg : (f = 0 ∨ f.Splits) ∧ (g = 0 ∨ g.Splits)) :
+    g * f = 0 ∨ (g * f).Splits := by
+  rr_finish using hfg
+
 example {f : ℝ[X]} {n : Nat} (hf : f = 0 ∨ f.Splits) :
     f ^ n = 0 ∨ (f ^ n).Splits := by
   rr_zero_or_splits_pow using
