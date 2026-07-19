@@ -1447,6 +1447,24 @@ syntax (name := rr_favard_affine_param_den_raw_prod_named)
     "raw_recurrence" ":=" term :
   tactic
 
+syntax (name := rr_favard_affine_param_den_raw_prod_active_named)
+  "rr_favard_affine_param_den_raw_prod" " using "
+    "slope" ":=" term ","
+    "alpha" ":=" term ","
+    "beta" ":=" term ","
+    "raw_slope_left" ":=" term ","
+    "raw_slope_right" ":=" term ","
+    "raw_const" ":=" term ","
+    "raw_lag_left" ":=" term ","
+    "raw_lag_right" ":=" term ","
+    "slope_pos" ":=" term ","
+    "beta_pos" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "den" ":=" term ","
+    "raw_recurrence" ":=" term :
+  tactic
+
 syntax (name := rr_favard_affine_param_den_raw_prod_auto_named)
   "rr_favard_affine_param_den_raw_prod_auto" " using "
     "slope" ":=" term ","
@@ -1546,6 +1564,20 @@ syntax (name := rr_favard_param_den_raw_named)
     "slope_coeff_eq" ":=" term ","
     "alpha_coeff_eq" ":=" term ","
     "beta_coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_favard_param_den_raw_active_named)
+  "rr_favard_param_den_raw" " using "
+    "alpha" ":=" term ","
+    "beta" ":=" term ","
+    "raw_slope" ":=" term ","
+    "raw_const" ":=" term ","
+    "raw_lag" ":=" term ","
+    "beta_pos" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "den" ":=" term ","
     "raw_recurrence" ":=" term :
   tactic
 
@@ -1820,6 +1852,24 @@ syntax (name := rr_favard_affine_param_row_sign_den_raw_prod_named)
     "raw_recurrence" ":=" term :
   tactic
 
+syntax (name := rr_favard_affine_param_row_sign_den_raw_prod_active_named)
+  "rr_favard_affine_param_row_sign_den_raw_prod" " using "
+    "slope" ":=" term ","
+    "alpha" ":=" term ","
+    "beta" ":=" term ","
+    "raw_slope_left" ":=" term ","
+    "raw_slope_right" ":=" term ","
+    "raw_const" ":=" term ","
+    "raw_lag_left" ":=" term ","
+    "raw_lag_right" ":=" term ","
+    "slope_pos" ":=" term ","
+    "beta_pos" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "den" ":=" term ","
+    "raw_recurrence" ":=" term :
+  tactic
+
 syntax (name := rr_favard_affine_param_row_sign_den_raw_prod_auto_named)
   "rr_favard_affine_param_row_sign_den_raw_prod_auto" " using "
     "slope" ":=" term ","
@@ -1919,6 +1969,20 @@ syntax (name := rr_favard_param_row_sign_den_raw_named)
     "slope_coeff_eq" ":=" term ","
     "alpha_coeff_eq" ":=" term ","
     "beta_coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_favard_param_row_sign_den_raw_active_named)
+  "rr_favard_param_row_sign_den_raw" " using "
+    "alpha" ":=" term ","
+    "beta" ":=" term ","
+    "raw_slope" ":=" term ","
+    "raw_const" ":=" term ","
+    "raw_lag" ":=" term ","
+    "beta_pos" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "den" ":=" term ","
     "raw_recurrence" ":=" term :
   tactic
 
@@ -2713,6 +2777,42 @@ macro_rules
         base_zero := $hP0:term,
         base_one := $hP1:term,
         den := $d:term,
+        raw_recurrence := $hraw:term) =>
+      `(tactic|
+        rr_favard_affine_param_den_raw_prod using
+          slope := $s,
+          alpha := $α,
+          beta := $β,
+          raw_slope_left := $aleft,
+          raw_slope_right := $aright,
+          raw_const := $braw,
+          raw_lag_left := $cleft,
+          raw_lag_right := $cright,
+          slope_pos := $hs,
+          beta_pos := $hβ,
+          base_zero := $hP0,
+          base_one := $hP1,
+          den := $d,
+          den_nonzero := rr_scalar_active_den_all_term,
+          slope_coeff_eq := rr_scalar_coeff_all_term,
+          alpha_coeff_eq := rr_scalar_coeff_all_term,
+          beta_coeff_eq := rr_scalar_coeff_all_term,
+          raw_recurrence := $hraw)
+  | `(tactic|
+      rr_favard_affine_param_den_raw_prod using
+        slope := $s:term,
+        alpha := $α:term,
+        beta := $β:term,
+        raw_slope_left := $aleft:term,
+        raw_slope_right := $aright:term,
+        raw_const := $braw:term,
+        raw_lag_left := $cleft:term,
+        raw_lag_right := $cright:term,
+        slope_pos := $hs:term,
+        beta_pos := $hβ:term,
+        base_zero := $hP0:term,
+        base_one := $hP1:term,
+        den := $d:term,
         den_nonzero := $hden:term,
         slope_coeff_eq := $hs_coeff:term,
         alpha_coeff_eq := $hα_coeff:term,
@@ -2895,6 +2995,34 @@ macro_rules
           slope_coeff_eq := $hs_coeff,
           alpha_coeff_eq := $hα_coeff,
           beta_coeff_eq := $hβ_coeff,
+          raw_recurrence := $hraw)
+  | `(tactic|
+      rr_favard_param_den_raw using
+        alpha := $α:term,
+        beta := $β:term,
+        raw_slope := $araw:term,
+        raw_const := $braw:term,
+        raw_lag := $craw:term,
+        beta_pos := $hβ:term,
+        base_zero := $hP0:term,
+        base_one := $hP1:term,
+        den := $d:term,
+        raw_recurrence := $hraw:term) =>
+      `(tactic|
+        rr_favard_param_den_raw using
+          alpha := $α,
+          beta := $β,
+          raw_slope := $araw,
+          raw_const := $braw,
+          raw_lag := $craw,
+          beta_pos := $hβ,
+          base_zero := $hP0,
+          base_one := $hP1,
+          den := $d,
+          den_nonzero := rr_scalar_active_den_all_term,
+          slope_coeff_eq := rr_scalar_coeff_all_term,
+          alpha_coeff_eq := rr_scalar_coeff_all_term,
+          beta_coeff_eq := rr_scalar_coeff_all_term,
           raw_recurrence := $hraw)
   | `(tactic|
       rr_favard_param_den_raw using
@@ -3412,6 +3540,42 @@ macro_rules
         base_zero := $hP0:term,
         base_one := $hP1:term,
         den := $d:term,
+        raw_recurrence := $hraw:term) =>
+      `(tactic|
+        rr_favard_affine_param_row_sign_den_raw_prod using
+          slope := $s,
+          alpha := $α,
+          beta := $β,
+          raw_slope_left := $aleft,
+          raw_slope_right := $aright,
+          raw_const := $braw,
+          raw_lag_left := $cleft,
+          raw_lag_right := $cright,
+          slope_pos := $hs,
+          beta_pos := $hβ,
+          base_zero := $hP0,
+          base_one := $hP1,
+          den := $d,
+          den_nonzero := rr_scalar_active_den_all_term,
+          slope_coeff_eq := rr_scalar_coeff_all_term,
+          alpha_coeff_eq := rr_scalar_coeff_all_term,
+          beta_coeff_eq := rr_scalar_coeff_all_term,
+          raw_recurrence := $hraw)
+  | `(tactic|
+      rr_favard_affine_param_row_sign_den_raw_prod using
+        slope := $s:term,
+        alpha := $α:term,
+        beta := $β:term,
+        raw_slope_left := $aleft:term,
+        raw_slope_right := $aright:term,
+        raw_const := $braw:term,
+        raw_lag_left := $cleft:term,
+        raw_lag_right := $cright:term,
+        slope_pos := $hs:term,
+        beta_pos := $hβ:term,
+        base_zero := $hP0:term,
+        base_one := $hP1:term,
+        den := $d:term,
         den_nonzero := $hden:term,
         slope_coeff_eq := $hs_coeff:term,
         alpha_coeff_eq := $hα_coeff:term,
@@ -3594,6 +3758,34 @@ macro_rules
           slope_coeff_eq := $hs_coeff,
           alpha_coeff_eq := $hα_coeff,
           beta_coeff_eq := $hβ_coeff,
+          raw_recurrence := $hraw)
+  | `(tactic|
+      rr_favard_param_row_sign_den_raw using
+        alpha := $α:term,
+        beta := $β:term,
+        raw_slope := $araw:term,
+        raw_const := $braw:term,
+        raw_lag := $craw:term,
+        beta_pos := $hβ:term,
+        base_zero := $hP0:term,
+        base_one := $hP1:term,
+        den := $d:term,
+        raw_recurrence := $hraw:term) =>
+      `(tactic|
+        rr_favard_param_row_sign_den_raw using
+          alpha := $α,
+          beta := $β,
+          raw_slope := $araw,
+          raw_const := $braw,
+          raw_lag := $craw,
+          beta_pos := $hβ,
+          base_zero := $hP0,
+          base_one := $hP1,
+          den := $d,
+          den_nonzero := rr_scalar_active_den_all_term,
+          slope_coeff_eq := rr_scalar_coeff_all_term,
+          alpha_coeff_eq := rr_scalar_coeff_all_term,
+          beta_coeff_eq := rr_scalar_coeff_all_term,
           raw_recurrence := $hraw)
   | `(tactic|
       rr_favard_param_row_sign_den_raw using

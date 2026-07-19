@@ -1304,10 +1304,6 @@ example {P : Nat → ℝ[X]} {n : Nat}
       norm_num
       simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := rr_scalar_active_den_all_term,
-    slope_coeff_eq := rr_scalar_coeff_all_term,
-    alpha_coeff_eq := rr_scalar_coeff_all_term,
-    beta_coeff_eq := rr_scalar_coeff_all_term,
     raw_recurrence := hraw
 
 /-- Unit-lag affine raw scalar-denominator Favard alias. -/
@@ -1351,10 +1347,6 @@ example {P : Nat → ℝ[X]} {n : Nat}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := rr_scalar_active_den_all_term,
-    slope_coeff_eq := rr_scalar_coeff_all_term,
-    alpha_coeff_eq := rr_scalar_coeff_all_term,
-    beta_coeff_eq := rr_scalar_coeff_all_term,
     raw_recurrence := hraw
 
 /-- Constant-coefficient Favard wrapper with automatic positivity. -/
@@ -1523,10 +1515,6 @@ example {P : Nat → ℝ[X]} {n : Nat}
       norm_num
       simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := rr_scalar_active_den_all_term,
-    slope_coeff_eq := rr_scalar_coeff_all_term,
-    alpha_coeff_eq := rr_scalar_coeff_all_term,
-    beta_coeff_eq := rr_scalar_coeff_all_term,
     raw_recurrence := hraw
 
 /-- Unit-lag row-sign affine raw denominator alias. -/
@@ -1570,16 +1558,6 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := rr_scalar_active_den_all_term,
-    slope_coeff_eq := by
-      intro n
-      norm_num,
-    alpha_coeff_eq := by
-      intro n
-      simp,
-    beta_coeff_eq := by
-      intro n
-      simp,
     raw_recurrence := hraw
 
 end Tactic
