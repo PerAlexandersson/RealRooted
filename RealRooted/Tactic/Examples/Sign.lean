@@ -12,8 +12,27 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
+example {c : ℝ} (hc : 0 ≤ c) : 0 ≤ c := by
+  rr_sign_side
+
 example {c r : ℝ} (hc : 0 ≤ c) (hr : r ≤ 0) :
     (C c * X : ℝ[X]).eval r ≤ 0 := by
+  rr_sign
+
+example {n : Nat} (hn : 1 ≤ n) {r : ℝ} (hr : r ≤ 0) :
+    (C ((n : ℝ) - 1) * X : ℝ[X]).eval r ≤ 0 := by
+  rr_sign
+
+example {n : Nat} (hn : 2 ≤ n) {r : ℝ} (hr : r ≤ 0) :
+    (C ((n : ℝ) - 2) * X : ℝ[X]).eval r ≤ 0 := by
+  rr_sign
+
+example {n : Nat} {r : ℝ} (hr : r ≤ 0) :
+    (C (((n : ℝ) * ((n : ℝ) + 1)) / 2) * X : ℝ[X]).eval r ≤ 0 := by
+  rr_sign
+
+example {n : Nat} (hn : 2 ≤ n) {r : ℝ} :
+    (-(C ((n : ℝ) / ((n : ℝ) - 1))) * (1 - X) ^ 2 : ℝ[X]).eval r ≤ 0 := by
   rr_sign
 
 example {r : ℝ} {q : ℝ[X]} (hr : r ≤ 0) (hq : 0 ≤ q.eval r) :
@@ -27,6 +46,15 @@ example {c r : ℝ} {q : ℝ[X]}
 
 example {c r : ℝ} (hc : 0 ≤ c) (hr : r ≤ 0) :
     (C c * X * (1 - X) : ℝ[X]).eval r ≤ 0 := by
+  rr_sign
+
+example {c r : ℝ} (hc : 0 ≤ c) (hr : r ≤ 0) :
+    (C c * (C (2 : ℝ) * X - C (2 : ℝ) * X ^ 2) : ℝ[X]).eval r ≤ 0 := by
+  rr_sign
+
+example {n m : Nat} {r : ℝ} (hr : r ≤ 0) :
+    (C (((n + 1 : Nat) : ℝ) + 2 * m + 2)⁻¹ *
+        (C (2 : ℝ) * X - C (2 : ℝ) * X ^ 2) : ℝ[X]).eval r ≤ 0 := by
   rr_sign
 
 example {r : ℝ} (hr : r ≤ -1) :

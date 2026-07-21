@@ -34,6 +34,12 @@ example {P : Nat → ℝ[X]} {α β : Nat → ℝ}
 example {P : Nat → ℝ[X]} {α β : Nat → ℝ}
     (hrec : SatisfiesFavardRecurrence P α β)
     (hbeta : ∀ n : Nat, 0 < β (n + 1)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_favard using hrec, hbeta
+
+example {P : Nat → ℝ[X]} {α β : Nat → ℝ}
+    (hrec : SatisfiesFavardRecurrence P α β)
+    (hbeta : ∀ n : Nat, 0 < β (n + 1)) :
     ∀ n : Nat, IsGeneralizedSturmSeq ((List.range (n + 1)).reverse.map P) := by
   rr_favard using hrec, hbeta
 
@@ -56,6 +62,12 @@ example {P : Nat → ℝ[X]}
   rr_favard_auto using
     recurrence := hrec
 
+example {P : Nat → ℝ[X]}
+    (hrec : SatisfiesFavardRecurrence P (fun _ => (0 : ℝ)) (fun _ => (1 : ℝ))) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_favard_auto using
+    recurrence := hrec
+
 /-- OEIS shape `A049310`/`A124038`: `P_{n+2}=tP_{n+1}-P_n`. -/
 example {P : Nat → ℝ[X]}
     (hP0 : P 0 = 1)
@@ -74,13 +86,7 @@ example {P : Nat → ℝ[X]}
     (hP1 : P 1 = X)
     (hstep : ∀ n : Nat, P (n + 2) = X * P (n + 1) - P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  have hβ : 0 < (1 : ℝ) := by norm_num
-  have hP1' : P 1 = X - C (0 : ℝ) := by simpa using hP1
-  have hstep' :
-      ∀ n : Nat, P (n + 2) = (X - C (0 : ℝ)) * P (n + 1) - C (1 : ℝ) * P n := by
-    intro n
-    simpa using hstep n
-  rr_favard_const using 0, 1, hβ, hP0, hP1', hstep'
+  rr_favard_const_unit using 0, hP0, hP1, hstep
 
 /-- OEIS shape `A053122`/`A110162`: `P_{n+2}=(t-2)P_{n+1}-P_n`. -/
 example {P : Nat → ℝ[X]}
@@ -139,16 +145,7 @@ example {P : Nat → ℝ[X]}
     (hP1 : P 1 = C (2 : ℝ) * X)
     (hstep : ∀ n : Nat, P (n + 2) = (C (2 : ℝ) * X) * P (n + 1) - P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  have hs : 0 < (2 : ℝ) := by norm_num
-  have hβ : 0 < (1 : ℝ) := by norm_num
-  have hP1' : P 1 = C (2 : ℝ) * X - C (0 : ℝ) := by simpa using hP1
-  have hstep' :
-      ∀ n : Nat,
-        P (n + 2) = (C (2 : ℝ) * X - C (0 : ℝ)) * P (n + 1) -
-          C (1 : ℝ) * P n := by
-    intro n
-    simpa using hstep n
-  rr_favard_affine_const using 2, 0, 1, hs, hβ, hP0, hP1', hstep'
+  rr_favard_affine_const_unit using 2, 0, hP0, hP1, hstep
 
 /-- OEIS shapes `A053124`/`A084930`: `P_{n+2}=(4t-2)P_{n+1}-P_n`. -/
 example {P : Nat → ℝ[X]}
@@ -177,12 +174,37 @@ example {P : Nat → ℝ[X]}
     base_one := hP1,
     step := hstep
 
+/-- Projection endpoint for the monic Chebyshev Favard wrapper. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = X)
+    (hstep : ∀ n : Nat, P (n + 2) = X * P (n + 1) - P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_favard_const_unit using
+    alpha := 0,
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
 /-- Real-rootedness consequence for the nonmonic `2t` Chebyshev recurrence. -/
 example {P : Nat → ℝ[X]}
     (hP0 : P 0 = 1)
     (hP1 : P 1 = C (2 : ℝ) * X)
     (hstep : ∀ n : Nat, P (n + 2) = (C (2 : ℝ) * X) * P (n + 1) - P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_favard_affine_const_unit using
+    slope := 2,
+    alpha := 0,
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
+/-- Projection endpoint for the nonmonic `2t` Chebyshev recurrence. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = C (2 : ℝ) * X)
+    (hstep : ∀ n : Nat, P (n + 2) = (C (2 : ℝ) * X) * P (n + 1) - P n) :
+    ∀ n : Nat, (P n).Splits := by
   rr_favard_affine_const_unit using
     slope := 2,
     alpha := 0,
@@ -199,11 +221,7 @@ example {P : Nat → ℝ[X]}
       P (n + 2) =
         (X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) - P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  rr_favard_param_unit using
-    alpha := fun m : Nat => (m : ℝ),
-    base_zero := hP0,
-    base_one := hP1,
-    step := hstep
+  rr_favard_param_unit using (fun m : Nat => (m : ℝ)), hP0, hP1, hstep
 
 /-- The same parameterized unit-lag wrapper also dispatches real-rootedness
 and pointwise nonzero goals. -/
@@ -214,6 +232,20 @@ example {P : Nat → ℝ[X]} {n : Nat}
       P (n + 2) =
         (X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) - P n) :
     P n ≠ 0 := by
+  rr_favard_param_unit using
+    alpha := fun m : Nat => (m : ℝ),
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
+/-- Projection endpoint for the parameterized monic Favard wrapper. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = X)
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        (X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) - P n) :
+    ∀ n : Nat, (P n).Splits := by
   rr_favard_param_unit using
     alpha := fun m : Nat => (m : ℝ),
     base_zero := hP0,
@@ -236,6 +268,35 @@ example {P : Nat → ℝ[X]}
     base_one := hP1,
     step := hstep
 
+/-- Projection endpoint for the affine parameterized Favard wrapper. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = C (2 : ℝ) * X)
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        (C (2 : ℝ) * X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) - P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_favard_affine_param_unit using
+    slope := fun _ : Nat => (2 : ℝ),
+    alpha := fun m : Nat => (m : ℝ),
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
+/-- Projection endpoint for the monic row-sign Favard wrapper. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = -X)
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        (C (((n + 1 : Nat) : ℝ)) - X) * P (n + 1) - P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_favard_param_row_sign_unit using
+    alpha := fun m : Nat => (m : ℝ),
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
 /-- The affine parameterized unit-lag wrapper also accepts an explicit
 positive-slope certificate when the slope sequence is symbolic. -/
 example {P : Nat → ℝ[X]} {s : Nat → ℝ}
@@ -246,22 +307,13 @@ example {P : Nat → ℝ[X]} {s : Nat → ℝ}
       P (n + 2) =
         (C (s (n + 1)) * X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) - P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let αfun : Nat → ℝ := fun m => (m : ℝ)
-  have hP1' : P 1 = C (s 0) * X - C (αfun 0) := by
-    simpa [αfun] using hP1
-  have hstep' :
-      ∀ n : Nat,
-        P (n + 2) =
-          (C (s (n + 1)) * X - C (αfun (n + 1))) * P (n + 1) - P n := by
-    intro n
-    simpa [αfun] using hstep n
   rr_favard_affine_param_unit using
     slope := s,
-    alpha := αfun,
+    alpha := fun m : Nat => (m : ℝ),
     slope_pos := hs,
     base_zero := hP0,
-    base_one := hP1',
-    step := hstep'
+    base_one := hP1,
+    step := hstep
 
 /-- Constant-coefficient Favard shape with a shifted affine multiplier and
 arbitrary positive lag, tested pointwise. -/
@@ -331,6 +383,59 @@ example {P : Nat → ℝ[X]} {s α β : ℝ} {n : Nat}
     base_one := hP1,
     step := hstep
 
+/-- Automatic positivity for the positive-slope affine constant wrapper. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = C (2 : ℝ) * X - C (0 : ℝ))
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        (C (2 : ℝ) * X - C (0 : ℝ)) * P (n + 1) -
+          C (1 : ℝ) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_favard_affine_const_auto using
+    slope := 2,
+    alpha := 0,
+    beta := 1,
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
+/-- Row-sign affine constant wrapper with explicit positive certificates. -/
+example {P : Nat → ℝ[X]} {β : ℝ}
+    (hβ : 0 < β)
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = -(C (2 : ℝ) * X - C (0 : ℝ)))
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        -(C (2 : ℝ) * X - C (0 : ℝ)) * P (n + 1) - C β * P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_favard_affine_const_row_sign using
+    slope := 2,
+    alpha := 0,
+    beta := β,
+    slope_pos := (by norm_num : 0 < (2 : ℝ)),
+    beta_pos := hβ,
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
+/-- Automatic positivity for row-sign affine constant wrappers. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = -(C (2 : ℝ) * X - C (0 : ℝ)))
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        -(C (2 : ℝ) * X - C (0 : ℝ)) * P (n + 1) -
+          C (1 : ℝ) * P n) :
+    ∀ n : Nat, P n ≠ 0 := by
+  rr_favard_affine_const_row_sign_auto using
+    slope := 2,
+    alpha := 0,
+    beta := 1,
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
 /-- Constant-coefficient Favard shape with arbitrary positive lag. -/
 example {P : Nat → ℝ[X]} {α β : ℝ}
     (hβ : 0 < β)
@@ -355,6 +460,22 @@ example {P : Nat → ℝ[X]}
         (X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) -
           C (((n + 1 : Nat) : ℝ)) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_favard_param_auto using
+    alpha := fun m : Nat => (m : ℝ),
+    beta := fun m : Nat => (m : ℝ),
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
+/-- Parameterized monic Favard wrapper with explicit beta positivity. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = X)
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        (X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) -
+          C (((n + 1 : Nat) : ℝ)) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   let αfun : Nat → ℝ := fun m => (m : ℝ)
   let βfun : Nat → ℝ := fun m => (m : ℝ)
   have hP1' : P 1 = X - C (αfun 0) := by
@@ -365,9 +486,10 @@ example {P : Nat → ℝ[X]}
           (X - C (αfun (n + 1))) * P (n + 1) - C (βfun (n + 1)) * P n := by
     intro n
     simpa [αfun, βfun] using hstep n
-  rr_favard_param_auto using
+  rr_favard_param using
     alpha := αfun,
     beta := βfun,
+    beta_pos := (by intro n; positivity),
     base_zero := hP0,
     base_one := hP1',
     step := hstep'
@@ -381,22 +503,12 @@ example {P : Nat → ℝ[X]} {n : Nat}
         (X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) -
           C (((n + 1 : Nat) : ℝ)) * P n) :
     P n ≠ 0 := by
-  let αfun : Nat → ℝ := fun m => (m : ℝ)
-  let βfun : Nat → ℝ := fun m => (m : ℝ)
-  have hP1' : P 1 = X - C (αfun 0) := by
-    simpa [αfun] using hP1
-  have hstep' :
-      ∀ n : Nat,
-        P (n + 2) =
-          (X - C (αfun (n + 1))) * P (n + 1) - C (βfun (n + 1)) * P n := by
-    intro n
-    simpa [αfun, βfun] using hstep n
   rr_favard_param_auto using
-    alpha := αfun,
-    beta := βfun,
+    alpha := fun m : Nat => (m : ℝ),
+    beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := hP1',
-    step := hstep'
+    base_one := hP1,
+    step := hstep
 
 /-- Positive-slope parameterized affine Favard smoke test with variable lag
 and shift. -/
@@ -408,6 +520,23 @@ example {P : Nat → ℝ[X]}
         (C (2 : ℝ) * X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) -
           C (((n + 1 : Nat) : ℝ)) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_favard_affine_param_auto using
+    slope := fun _ : Nat => (2 : ℝ),
+    alpha := fun m : Nat => (m : ℝ),
+    beta := fun m : Nat => (m : ℝ),
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
+/-- Parameterized affine Favard wrapper with explicit positivity certificates. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = C (2 : ℝ) * X)
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        (C (2 : ℝ) * X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) -
+          C (((n + 1 : Nat) : ℝ)) * P n) :
+    ∀ n : Nat, (P n).Splits := by
   let sfun : Nat → ℝ := fun _ => 2
   let αfun : Nat → ℝ := fun m => (m : ℝ)
   let βfun : Nat → ℝ := fun m => (m : ℝ)
@@ -420,10 +549,12 @@ example {P : Nat → ℝ[X]}
             C (βfun (n + 1)) * P n := by
     intro n
     simpa [sfun, αfun, βfun] using hstep n
-  rr_favard_affine_param_auto using
+  rr_favard_affine_param using
     slope := sfun,
     alpha := αfun,
     beta := βfun,
+    slope_pos := (by intro n; positivity),
+    beta_pos := (by intro n; positivity),
     base_zero := hP0,
     base_one := hP1',
     step := hstep'
@@ -951,16 +1082,6 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by intro n; norm_num,
-    slope_coeff_eq := by
-      intro n
-      norm_num,
-    alpha_coeff_eq := by
-      intro n
-      simp,
-    beta_coeff_eq := by
-      intro n
-      simp,
     raw_recurrence := hraw
 
 /-- Raw scalar-denominator Favard with product-displayed slope and lag
@@ -988,18 +1109,6 @@ example {P : Nat → ℝ[X]}
       norm_num
       simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by intro n; norm_num,
-    slope_coeff_eq := by
-      intro n
-      norm_num
-      ring_nf,
-    alpha_coeff_eq := by
-      intro n
-      norm_num,
-    beta_coeff_eq := by
-      intro n
-      norm_num
-      ring_nf,
     raw_recurrence := hraw
 
 /-- Row-sign raw scalar-denominator Favard with product-displayed slope and
@@ -1027,18 +1136,6 @@ example {P : Nat → ℝ[X]}
       norm_num
       simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by intro n; norm_num,
-    slope_coeff_eq := by
-      intro n
-      norm_num
-      ring_nf,
-    alpha_coeff_eq := by
-      intro n
-      norm_num,
-    beta_coeff_eq := by
-      intro n
-      norm_num
-      ring_nf,
     raw_recurrence := hraw
 
 /-- Monic raw scalar-denominator Favard alias. -/
@@ -1059,16 +1156,6 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by intro n; norm_num,
-    slope_coeff_eq := by
-      intro n
-      norm_num,
-    alpha_coeff_eq := by
-      intro n
-      simp,
-    beta_coeff_eq := by
-      intro n
-      simp,
     raw_recurrence := hraw
 
 /-- Monic unit-lag raw scalar-denominator Favard alias. -/
@@ -1088,16 +1175,6 @@ example {P : Nat → ℝ[X]} {n : Nat}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by intro n; norm_num,
-    slope_coeff_eq := by
-      intro n
-      norm_num,
-    alpha_coeff_eq := by
-      intro n
-      simp,
-    beta_coeff_eq := by
-      intro n
-      norm_num,
     raw_recurrence := hraw
 
 /-- Row-sign monic raw scalar-denominator Favard alias. -/
@@ -1118,16 +1195,6 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by intro n; norm_num,
-    slope_coeff_eq := by
-      intro n
-      norm_num,
-    alpha_coeff_eq := by
-      intro n
-      simp,
-    beta_coeff_eq := by
-      intro n
-      simp,
     raw_recurrence := hraw
 
 /-- Row-sign monic unit-lag raw scalar-denominator Favard alias. -/
@@ -1147,16 +1214,350 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun _ : Nat => (1 : ℝ),
-    den_nonzero := by intro n; norm_num,
-    slope_coeff_eq := by
+    raw_recurrence := hraw
+
+/-- Direct raw Favard denominator normalizer. -/
+example {P : Nat → ℝ[X]} {α β : Nat → ℝ}
+    (hraw : ∀ n : Nat,
+      P (n + 2) = (X - C (α (n + 1))) * P (n + 1) - C (β (n + 1)) * P n) :
+    ∀ n : Nat,
+      P (n + 2) = (X - C (α (n + 1))) * P (n + 1) - C (β (n + 1)) * P n := by
+  rr_favard_den_raw using hraw
+
+/-- Explicit affine raw scalar-denominator Favard alias. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = C (2 : ℝ) * X)
+    (hraw : ∀ n : Nat,
+      C (1 : ℝ) * P (n + 2) =
+        (C (2 : ℝ) * X + C (-(n.succ : ℝ))) * P (n + 1) +
+          C (-((n : ℝ) + 2)) * P n) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_favard_affine_param_den_raw using
+    slope := fun _ : Nat => (2 : ℝ),
+    alpha := fun m : Nat => (m : ℝ),
+    beta := fun m : Nat => (m : ℝ) + 1,
+    raw_slope := fun _ : Nat => (2 : ℝ),
+    raw_const := fun n : Nat => -(n.succ : ℝ),
+    raw_lag := fun n : Nat => -((n : ℝ) + 2),
+    slope_pos := by
       intro n
-      norm_num,
-    alpha_coeff_eq := by
+      positivity,
+    beta_pos := by
       intro n
-      simp,
-    beta_coeff_eq := by
+      positivity,
+    base_zero := hP0,
+    base_one := by
+      norm_num
+      simpa using hP1,
+    den := fun _ : Nat => (1 : ℝ),
+    raw_recurrence := hraw
+
+/-- Automatic positivity variant of the affine raw scalar-denominator alias. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = C (2 : ℝ) * X)
+    (hraw : ∀ n : Nat,
+      C (1 : ℝ) * P (n + 2) =
+        (C (2 : ℝ) * X + C (-(n.succ : ℝ))) * P (n + 1) +
+          C (-((n : ℝ) + 2)) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_favard_affine_param_den_raw_auto using
+    slope := fun _ : Nat => (2 : ℝ),
+    alpha := fun m : Nat => (m : ℝ),
+    beta := fun m : Nat => (m : ℝ) + 1,
+    raw_slope := fun _ : Nat => (2 : ℝ),
+    raw_const := fun n : Nat => -(n.succ : ℝ),
+    raw_lag := fun n : Nat => -((n : ℝ) + 2),
+    base_zero := hP0,
+    base_one := by simpa using hP1,
+    den := fun _ : Nat => (1 : ℝ),
+    raw_recurrence := hraw
+
+/-- Explicit product-displayed affine raw scalar-denominator Favard alias. -/
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = C (2 : ℝ) * X)
+    (hraw : ∀ n : Nat,
+      C (1 : ℝ) * P (n + 2) =
+        (C (2 : ℝ) * C ((n : ℝ) + 2) * X + C (-((n : ℝ) + 1))) *
+            P (n + 1) +
+          C (-1 : ℝ) * C ((n : ℝ) + 2) * P n) :
+    P n ≠ 0 := by
+  rr_favard_affine_param_den_raw_prod using
+    slope := fun m : Nat => 2 * ((m : ℝ) + 1),
+    alpha := fun m : Nat => (m : ℝ),
+    beta := fun m : Nat => (m : ℝ) + 1,
+    raw_slope_left := fun _ : Nat => (2 : ℝ),
+    raw_slope_right := fun n : Nat => (n : ℝ) + 2,
+    raw_const := fun n : Nat => -((n : ℝ) + 1),
+    raw_lag_left := fun _ : Nat => (-1 : ℝ),
+    raw_lag_right := fun n : Nat => (n : ℝ) + 2,
+    slope_pos := by
       intro n
-      norm_num,
+      positivity,
+    beta_pos := by
+      intro n
+      positivity,
+    base_zero := hP0,
+    base_one := by
+      norm_num
+      simpa using hP1,
+    den := fun _ : Nat => (1 : ℝ),
+    raw_recurrence := hraw
+
+/-- Unit-lag affine raw scalar-denominator Favard alias. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = C (2 : ℝ) * X)
+    (hraw : ∀ n : Nat,
+      C (1 : ℝ) * P (n + 2) =
+        (C (2 : ℝ) * X + C (-(n.succ : ℝ))) * P (n + 1) +
+          C (-1 : ℝ) * P n) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_favard_affine_param_den_raw_unit using
+    slope := fun _ : Nat => (2 : ℝ),
+    alpha := fun m : Nat => (m : ℝ),
+    raw_slope := fun _ : Nat => (2 : ℝ),
+    raw_const := fun n : Nat => -(n.succ : ℝ),
+    raw_lag := fun _ : Nat => (-1 : ℝ),
+    base_zero := hP0,
+    base_one := by simpa using hP1,
+    den := fun _ : Nat => (1 : ℝ),
+    raw_recurrence := hraw
+
+/-- Explicit monic raw scalar-denominator Favard alias. -/
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = X)
+    (hraw : ∀ n : Nat,
+      C (1 : ℝ) * P (n + 2) =
+        (C (1 : ℝ) * X + C (-(n.succ : ℝ))) * P (n + 1) +
+          C (-(n.succ : ℝ)) * P n) :
+    P n ≠ 0 := by
+  rr_favard_param_den_raw using
+    alpha := fun m : Nat => (m : ℝ),
+    beta := fun m : Nat => (m : ℝ),
+    raw_slope := fun _ : Nat => (1 : ℝ),
+    raw_const := fun n : Nat => -(n.succ : ℝ),
+    raw_lag := fun n : Nat => -(n.succ : ℝ),
+    beta_pos := by
+      intro n
+      positivity,
+    base_zero := hP0,
+    base_one := by simpa using hP1,
+    den := fun _ : Nat => (1 : ℝ),
+    raw_recurrence := hraw
+
+/-- Constant-coefficient Favard wrapper with automatic positivity. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = X - C (0 : ℝ))
+    (hstep : ∀ n : Nat,
+      P (n + 2) = (X - C (0 : ℝ)) * P (n + 1) - C (1 : ℝ) * P n) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_favard_const_auto using
+    alpha := 0,
+    beta := 1,
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
+/-- Constant row-sign unit-lag wrapper. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = -(X - C (0 : ℝ)))
+    (hstep : ∀ n : Nat, P (n + 2) = -(X - C (0 : ℝ)) * P (n + 1) - P n) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_favard_const_row_sign_unit using 0, hP0, hP1, hstep
+
+/-- Parameterized affine row-sign wrapper with explicit positivity
+certificates. -/
+example {P : Nat → ℝ[X]} {s α β : Nat → ℝ}
+    (hs : ∀ n : Nat, 0 < s n)
+    (hβ : ∀ n : Nat, 0 < β (n + 1))
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = -(C (s 0) * X - C (α 0)))
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        -(C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
+          C (β (n + 1)) * P n) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_favard_affine_param_row_sign using
+    slope := s,
+    alpha := α,
+    beta := β,
+    slope_pos := hs,
+    beta_pos := hβ,
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
+/-- Automatic positivity for parameterized affine row-sign wrappers. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = -(C (2 : ℝ) * X - C ((0 : Nat) : ℝ)))
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        -(C (2 : ℝ) * X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) -
+          C ((((n + 1 : Nat) : ℝ) + 1)) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_favard_affine_param_row_sign_auto using
+    slope := fun _ : Nat => (2 : ℝ),
+    alpha := fun m : Nat => (m : ℝ),
+    beta := fun m : Nat => (m : ℝ) + 1,
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
+/-- Unit-lag affine row-sign wrapper. -/
+example {P : Nat → ℝ[X]} {s α : Nat → ℝ} {n : Nat}
+    (hs : ∀ n : Nat, 0 < s n)
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = -(C (s 0) * X - C (α 0)))
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        -(C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) - P n) :
+    P n ≠ 0 := by
+  rr_favard_affine_param_row_sign_unit using
+    slope := s,
+    alpha := α,
+    slope_pos := hs,
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
+/-- Monic parameterized row-sign wrapper with explicit positivity. -/
+example {P : Nat → ℝ[X]} {α β : Nat → ℝ}
+    (hβ : ∀ n : Nat, 0 < β (n + 1))
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = -(X - C (α 0)))
+    (hstep : ∀ n : Nat,
+      P (n + 2) = -(X - C (α (n + 1))) * P (n + 1) - C (β (n + 1)) * P n) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_favard_param_row_sign using
+    alpha := α,
+    beta := β,
+    beta_pos := hβ,
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
+/-- Automatic positivity for monic parameterized row-sign wrappers. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = -X)
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        (C (n.succ : ℝ) - X) * P (n + 1) - C ((n.succ : ℝ) + 1) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_favard_param_row_sign_auto using
+    alpha := fun m : Nat => (m : ℝ),
+    beta := fun m : Nat => (m : ℝ) + 1,
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
+/-- Explicit row-sign affine raw scalar-denominator Favard alias. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = -(C (2 : ℝ) * X))
+    (hraw : ∀ n : Nat,
+      C (1 : ℝ) * P (n + 2) =
+        (C (-2 : ℝ) * X + C (n.succ : ℝ)) * P (n + 1) +
+          C (-(n.succ : ℝ)) * P n) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_favard_affine_param_row_sign_den_raw using
+    slope := fun _ : Nat => (2 : ℝ),
+    alpha := fun m : Nat => (m : ℝ),
+    beta := fun m : Nat => (m : ℝ),
+    raw_slope := fun _ : Nat => (-2 : ℝ),
+    raw_const := fun n : Nat => (n.succ : ℝ),
+    raw_lag := fun n : Nat => -(n.succ : ℝ),
+    slope_pos := by
+      intro n
+      positivity,
+    beta_pos := by
+      intro n
+      positivity,
+    base_zero := hP0,
+    base_one := by simpa using hP1,
+    den := fun _ : Nat => (1 : ℝ),
+    raw_recurrence := hraw
+
+/-- Explicit product-displayed row-sign affine raw denominator alias. -/
+example {P : Nat → ℝ[X]} {n : Nat}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = -(C (2 : ℝ) * X))
+    (hraw : ∀ n : Nat,
+      C (1 : ℝ) * P (n + 2) =
+        (C (-2 : ℝ) * C ((n : ℝ) + 2) * X + C ((n : ℝ) + 1)) *
+            P (n + 1) +
+          C (-1 : ℝ) * C ((n : ℝ) + 2) * P n) :
+    P n ≠ 0 := by
+  rr_favard_affine_param_row_sign_den_raw_prod using
+    slope := fun m : Nat => 2 * ((m : ℝ) + 1),
+    alpha := fun m : Nat => (m : ℝ),
+    beta := fun m : Nat => (m : ℝ) + 1,
+    raw_slope_left := fun _ : Nat => (-2 : ℝ),
+    raw_slope_right := fun n : Nat => (n : ℝ) + 2,
+    raw_const := fun n : Nat => (n : ℝ) + 1,
+    raw_lag_left := fun _ : Nat => (-1 : ℝ),
+    raw_lag_right := fun n : Nat => (n : ℝ) + 2,
+    slope_pos := by
+      intro n
+      positivity,
+    beta_pos := by
+      intro n
+      positivity,
+    base_zero := hP0,
+    base_one := by
+      norm_num
+      simpa using hP1,
+    den := fun _ : Nat => (1 : ℝ),
+    raw_recurrence := hraw
+
+/-- Unit-lag row-sign affine raw denominator alias. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = -(C (2 : ℝ) * X))
+    (hraw : ∀ n : Nat,
+      C (1 : ℝ) * P (n + 2) =
+        (C (-2 : ℝ) * X + C (n.succ : ℝ)) * P (n + 1) +
+          C (-1 : ℝ) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_favard_affine_param_row_sign_den_raw_unit using
+    slope := fun _ : Nat => (2 : ℝ),
+    alpha := fun m : Nat => (m : ℝ),
+    raw_slope := fun _ : Nat => (-2 : ℝ),
+    raw_const := fun n : Nat => (n.succ : ℝ),
+    raw_lag := fun _ : Nat => (-1 : ℝ),
+    base_zero := hP0,
+    base_one := by simpa using hP1,
+    den := fun _ : Nat => (1 : ℝ),
+    raw_recurrence := hraw
+
+/-- Explicit monic row-sign raw scalar-denominator Favard alias. -/
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = -X)
+    (hraw : ∀ n : Nat,
+      C (1 : ℝ) * P (n + 2) =
+        (C (-1 : ℝ) * X + C (n.succ : ℝ)) * P (n + 1) +
+          C (-(n.succ : ℝ)) * P n) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_favard_param_row_sign_den_raw using
+    alpha := fun m : Nat => (m : ℝ),
+    beta := fun m : Nat => (m : ℝ),
+    raw_slope := fun _ : Nat => (-1 : ℝ),
+    raw_const := fun n : Nat => (n.succ : ℝ),
+    raw_lag := fun n : Nat => -(n.succ : ℝ),
+    beta_pos := by
+      intro n
+      positivity,
+    base_zero := hP0,
+    base_one := by simpa using hP1,
+    den := fun _ : Nat => (1 : ℝ),
     raw_recurrence := hraw
 
 end Tactic

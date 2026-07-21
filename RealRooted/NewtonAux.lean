@@ -269,15 +269,17 @@ lemma newton_poly {g : ℝ[X]} (hg : Multiset.card g.roots = g.natDegree)
       rw [hq_coeff2]
       simp
     rw [hq0, hq1, hq2] at h_discriminant
-    rw [Nat.cast_choose, Nat.cast_choose] at h_discriminant <;> try linarith
-    norm_num [Nat.succ_sub, Nat.factorial_succ] at h_discriminant
-    field_simp at h_discriminant
-    rw [Nat.sub_sub] at h_discriminant
-    rw [Nat.cast_sub (by linarith)] at h_discriminant
-    push_cast at h_neg
-    rw [Nat.cast_sub (by linarith)] at h_neg
-    push_cast at h_neg h_discriminant
-    nlinarith [(by norm_cast : (j : ℝ) + 1 < g.natDegree)]
+    rw [Nat.cast_choose, Nat.cast_choose] at h_discriminant
+    · norm_num [Nat.succ_sub, Nat.factorial_succ] at h_discriminant
+      field_simp at h_discriminant
+      rw [Nat.sub_sub] at h_discriminant
+      rw [Nat.cast_sub (by linarith)] at h_discriminant
+      push_cast at h_neg
+      rw [Nat.cast_sub (by linarith)] at h_neg
+      push_cast at h_neg h_discriminant
+      nlinarith [(by norm_cast : (j : ℝ) + 1 < g.natDegree)]
+    · linarith
+    · linarith
 
 theorem newton_esymm_ineq (t : Multiset ℝ) {n m : ℕ} (hn : Multiset.card t = n)
     (hm0 : 0 < m) (hmn : m < n) :
@@ -301,11 +303,13 @@ theorem newton_esymm_ineq (t : Multiset ℝ) {n m : ℕ} (hn : Multiset.card t =
       (show Multiset.card g.roots = g.natDegree from ?_) (show 0 < n - m from ?_)
       (show n - m < g.natDegree from ?_) using 1 <;>
     norm_num [hg_natDegree, hg_card_roots]
-  · rw [hg_coeff, hg_coeff] <;> try lia
-    rw [show n - (n - m - 1) = m + 1 by lia,
-      show n - (n - m + 1) = m - 1 by lia]
-    push_cast [Nat.cast_sub hmn.le]
-    ring
+  · rw [hg_coeff, hg_coeff]
+    · rw [show n - (n - m - 1) = m + 1 by lia,
+        show n - (n - m + 1) = m - 1 by lia]
+      push_cast [Nat.cast_sub hmn.le]
+      ring
+    · lia
+    · lia
   · rw [hg_coeff _ (Nat.sub_le _ _), Nat.cast_sub hmn.le]
     ring_nf
     rw [Nat.sub_sub_self hmn.le]

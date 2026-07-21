@@ -14,6 +14,15 @@ noncomputable section
 namespace RealRooted
 namespace Tactic
 
+example {c : ℝ} (hc : 0 < c) : 0 < c := by
+  rr_wagner_pos
+
+example {n : Nat} : 0 < (n : ℝ) + 1 := by
+  rr_wagner_pos
+
+example {n : Nat} (hn : 0 < n) : 0 < (n : ℝ) := by
+  rr_wagner_pos
+
 example {f g : ℝ[X]}
     (hfg : Prec f g)
     (hfnn : HasNonnegCoeffs f)
@@ -184,12 +193,51 @@ example {P : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     recurrence := hrec
 
+/-- Explicit-coefficient form of the same positive-`X` lag shell. -/
+example {P : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = C (1 : ℝ) * P (n + 1) + (C (1 : ℝ) * X) * P n) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_prec_pos_X_lag_sequence using
+    base := hbase,
+    nonneg_coeffs := hnonneg,
+    current_coeff_pos := (fun _ => by norm_num : ∀ n : Nat, 0 < (1 : ℝ)),
+    lag_coeff_nonneg := (fun _ => by norm_num : ∀ n : Nat, 0 ≤ (1 : ℝ)),
+    recurrence := hrec
+
 /-- Real-rootedness corollary for the same `P_{n+2}=P_{n+1}+tP_n` shell. -/
 example {P : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
     (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
     (hrec : ∀ n : Nat, P (n + 2) = P (n + 1) + X * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_prec_pos_X_lag_sequence_realrooted_auto using
+    base := hbase,
+    nonneg_coeffs := hnonneg,
+    recurrence := hrec
+
+/-- Explicit-coefficient real-rootedness endpoint for the positive-`X` shell. -/
+example {P : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
+    (hrec : ∀ n : Nat,
+      P (n + 2) = C (1 : ℝ) * P (n + 1) + (C (1 : ℝ) * X) * P n) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_prec_pos_X_lag_sequence_realrooted using
+    base := hbase,
+    nonneg_coeffs := hnonneg,
+    current_coeff_pos := (fun _ => by norm_num : ∀ n : Nat, 0 < (1 : ℝ)),
+    lag_coeff_nonneg := (fun _ => by norm_num : ∀ n : Nat, 0 ≤ (1 : ℝ)),
+    recurrence := hrec
+
+/-- Projection endpoint for the same positive-`X` lag shell. -/
+example {P : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
+    (hrec : ∀ n : Nat, P (n + 2) = P (n + 1) + X * P n) :
+    ∀ n : Nat, P n ≠ 0 := by
   rr_prec_pos_X_lag_sequence_realrooted_auto using
     base := hbase,
     nonneg_coeffs := hnonneg,
@@ -330,6 +378,24 @@ example {P : Nat → ℝ[X]} {a c : Nat → ℝ}
     derivative_coeff_pos := hc,
     recurrence := hrec
 
+/-- Projection endpoint for the normalized derivative-gap shell. -/
+example {P : Nat → ℝ[X]} {a c : Nat → ℝ}
+    (hbase : Prec (P 0) (P 1))
+    (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
+    (hdeg : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
+    (ha : ∀ n : Nat, 0 < a n)
+    (hc : ∀ n : Nat, 0 < c n)
+    (hrec : ∀ n : Nat,
+      P (n + 2) = X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :
+    ∀ n : Nat, (P n).Splits := by
+  rr_prec_wagner_derivative_gap_lag_sequence_realrooted using
+    base := hbase,
+    nonneg_coeffs := hnonneg,
+    degree_two := hdeg,
+    lag_coeff_pos := ha,
+    derivative_coeff_pos := hc,
+    recurrence := hrec
+
 /-- Active-offset `A358623`/`A124324` shape:
 `P_{n+2}=t(P'_{n+1}+(n+1)P_n)`. -/
 example {P : Nat → ℝ[X]}
@@ -344,8 +410,8 @@ example {P : Nat → ℝ[X]}
     base := hbase,
     nonneg_coeffs := hnonneg,
     degree_two := hdeg,
-    lag_coeff_pos := fun _ => by positivity,
-    derivative_coeff_pos := fun _ => by positivity,
+    lag_coeff_pos := rr_wagner_pos_seq,
+    derivative_coeff_pos := rr_wagner_pos_seq,
     recurrence := hrec
 
 /-- `A358623`, active offset: the recurrence
@@ -378,8 +444,8 @@ theorem a358623_activeOffset_prec {P : Nat → ℝ[X]}
       base := hQbase,
       nonneg_coeffs := hQnonneg,
       degree_two := hQdeg,
-      lag_coeff_pos := fun _ => by positivity,
-      derivative_coeff_pos := fun _ => by positivity,
+      lag_coeff_pos := rr_wagner_pos_seq,
+      derivative_coeff_pos := rr_wagner_pos_seq,
       recurrence := hQrec
   intro n
   simpa [Q] using hQprec n
@@ -413,8 +479,8 @@ theorem a358623_activeOffset_realRooted {P : Nat → ℝ[X]}
       base := hQbase,
       nonneg_coeffs := hQnonneg,
       degree_two := hQdeg,
-      lag_coeff_pos := fun _ => by positivity,
-      derivative_coeff_pos := fun _ => by positivity,
+      lag_coeff_pos := rr_wagner_pos_seq,
+      derivative_coeff_pos := rr_wagner_pos_seq,
       recurrence := hQrec
   intro n
   simpa [Q] using hQrr n
@@ -449,9 +515,7 @@ lemma a358623Shifted_base : Prec (a358623Shifted 0) (a358623Shifted 1) := by
         (Polynomial.natDegree_linear (a := (3 : ℝ)) (b := (1 : ℝ)) (by simp)))
   have hprec : Prec (1 : ℝ[X]) (1 + C (3 : ℝ) * X) := hlin.toPrec
   have hlin_nonneg : HasNonnegCoeffs (1 + C (3 : ℝ) * X) := by
-    have hCX_nonneg : HasNonnegCoeffs (C (3 : ℝ) * X) :=
-      nonnegCoeffs_C_mul (by norm_num) hasNonnegCoeffs_X
-    exact hasNonnegCoeffs_one.add hCX_nonneg
+    rr_nonneg_coeffs
   have hmul : Prec (X * (1 : ℝ[X])) (X * (1 + C (3 : ℝ) * X)) := by
     rr_prec_mul_X_both using
       proper := hprec,
@@ -463,18 +527,13 @@ lemma a358623Shifted_base : Prec (a358623Shifted 0) (a358623Shifted 1) := by
 theorem a358623Shifted_nonneg : ∀ n : Nat, HasNonnegCoeffs (a358623Shifted n)
   | 0 => by simpa using hasNonnegCoeffs_X
   | 1 => by
-      have hCX_nonneg : HasNonnegCoeffs (C (3 : ℝ) * X) :=
-        nonnegCoeffs_C_mul (by norm_num) hasNonnegCoeffs_X
-      simpa using hasNonnegCoeffs_X.mul (hasNonnegCoeffs_one.add hCX_nonneg)
+      rw [a358623Shifted_one]
+      rr_nonneg_coeffs
   | n + 2 => by
-      have hder : HasNonnegCoeffs (a358623Shifted (n + 1)).derivative :=
-        (a358623Shifted_nonneg (n + 1)).derivative
-      have hterm_der :
-          HasNonnegCoeffs (C (1 : ℝ) * (a358623Shifted (n + 1)).derivative) :=
-        nonnegCoeffs_C_mul (by norm_num) hder
-      have hterm_lag : HasNonnegCoeffs (C ((n : ℝ) + 4) * a358623Shifted n) :=
-        nonnegCoeffs_C_mul (by positivity) (a358623Shifted_nonneg n)
-      simpa [a358623Shifted_succ_succ] using (hterm_der.add hterm_lag).X_mul
+      rw [a358623Shifted_succ_succ]
+      rr_nonneg_coeffs using
+        a358623Shifted_nonneg (n + 1),
+        a358623Shifted_nonneg n
 
 lemma a358623Shifted_coeff_zero :
     ∀ n : Nat, (a358623Shifted n).coeff 0 = 0
@@ -504,8 +563,8 @@ lemma a358623Shifted_coeff_two_pos_succ :
 
 /-- Active shifted rows have degree at least two, as required by Rolle. -/
 lemma a358623Shifted_degree_two_succ (n : Nat) :
-    2 ≤ (a358623Shifted (n + 1)).natDegree := by
-  exact Polynomial.le_natDegree_of_ne_zero
+    2 ≤ (a358623Shifted (n + 1)).natDegree :=
+  Polynomial.le_natDegree_of_ne_zero
     (ne_of_gt (a358623Shifted_coeff_two_pos_succ n))
 
 /-- Adjacent `Prec` invariant for the shifted recurrence-defined `A358623`
@@ -516,8 +575,8 @@ theorem a358623Shifted_prec :
     base := a358623Shifted_base,
     nonneg_coeffs := a358623Shifted_nonneg,
     degree_two := a358623Shifted_degree_two_succ,
-    lag_coeff_pos := fun _ => by positivity,
-    derivative_coeff_pos := fun _ => by positivity,
+    lag_coeff_pos := rr_wagner_pos_seq,
+    derivative_coeff_pos := rr_wagner_pos_seq,
     recurrence := a358623Shifted_succ_succ
 
 /-- Real-rootedness of the shifted recurrence-defined `A358623` active family. -/
@@ -527,8 +586,8 @@ theorem a358623Shifted_realRooted :
     base := a358623Shifted_base,
     nonneg_coeffs := a358623Shifted_nonneg,
     degree_two := a358623Shifted_degree_two_succ,
-    lag_coeff_pos := fun _ => by positivity,
-    derivative_coeff_pos := fun _ => by positivity,
+    lag_coeff_pos := rr_wagner_pos_seq,
+    derivative_coeff_pos := rr_wagner_pos_seq,
     recurrence := a358623Shifted_succ_succ
 
 /-- Active-range sequence shell with a positive scalar on the left side. -/

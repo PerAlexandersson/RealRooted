@@ -1,4 +1,5 @@
 import RealRooted.Favard
+import RealRooted.Tactic.Finish
 import RealRooted.Tactic.ScalarDen
 import RealRooted.Tactic.SideGoals
 
@@ -41,9 +42,42 @@ private lemma natDegree_C_mul_X_sub_C {s t : ℝ} (hs : s ≠ 0) :
 private lemma hasPosLeadingCoeff_C_mul_X_sub_C {s t : ℝ} (hs : 0 < s) :
     HasPosLeadingCoeff (C s * X - C t : ℝ[X]) := by
   rw [C_mul_X_sub_C_eq_C_mul_X_sub_C_div hs.ne']
-  unfold HasPosLeadingCoeff
-  rw [Polynomial.leadingCoeff_mul, leadingCoeff_C, leadingCoeff_X_sub_C]
-  simpa using hs
+  rr_pos_lc
+
+private theorem prec_affine_favard_step {f g aPoly bPoly : ℝ[X]}
+    (hInter : Interlaces g f)
+    (hg_pos : HasPosLeadingCoeff g)
+    (hf_pos : HasPosLeadingCoeff f)
+    (hA_deg : aPoly.natDegree = 1)
+    (hA_pos : HasPosLeadingCoeff aPoly)
+    (hA_ne : aPoly ≠ 0)
+    (hBg_le : (bPoly * g).natDegree ≤ g.natDegree)
+    (hb_nonpos : ∀ r, f.IsRoot r → bPoly.eval r ≤ 0) :
+    Prec f (aPoly * f + bPoly * g) ∧
+      Interlaces f (aPoly * f + bPoly * g) ∧
+      HasPosLeadingCoeff (aPoly * f + bPoly * g) := by
+  have hdeg_gf : g.natDegree + 1 = f.natDegree := by
+    simpa using natDegree_succ_of_interlaces hInter
+  have hf_ne : f ≠ 0 := by
+    simpa using right_ne_zero_of_interlaces hInter
+  have hAf_deg : (aPoly * f).natDegree = f.natDegree + 1 := by
+    rw [natDegree_mul hA_ne hf_ne, hA_deg]
+    lia
+  have hAf_pos : HasPosLeadingCoeff (aPoly * f) := by
+    rr_pos_lc
+  have hBg_lt_Af : (bPoly * g).natDegree < (aPoly * f).natDegree := by
+    lia
+  have hF_pos : HasPosLeadingCoeff (aPoly * f + bPoly * g) := by
+    simpa [add_comm] using
+      hasPosLeadingCoeff_add_of_natDegree_lt_right hBg_lt_Af hAf_pos
+  have hF_deg : (aPoly * f + bPoly * g).natDegree = f.natDegree + 1 := by
+    simpa [add_comm, hAf_deg] using
+      natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hBg_lt_Af hAf_pos
+  have hPrec_step : Prec f (aPoly * f + bPoly * g) :=
+    prec_of_interlaces_evalCoeff_nonpos
+      (f := f) (g := g) (a := aPoly) (b := bPoly)
+      hInter hg_pos hF_pos (by lia) (by lia) hb_nonpos
+  exact ⟨hPrec_step, hPrec_step.toInterlaces (by lia), hF_pos⟩
 
 private lemma neg_one_pow_mul_self (n : Nat) :
     ((-1 : ℝ) ^ n) * ((-1 : ℝ) ^ n) = 1 := by
@@ -105,8 +139,8 @@ theorem favardInterlacing_param_coeff {P : Nat → ℝ[X]} {α β : Nat → ℝ}
     (hP1 : P 1 = X - C (α 0))
     (hstep : ∀ n : Nat,
       P (n + 2) = (X - C (α (n + 1))) * P (n + 1) - C (β (n + 1)) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  exact favardInterlacing ⟨hP0, hP1, hstep⟩ hβ
+    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+  favardInterlacing ⟨hP0, hP1, hstep⟩ hβ
 
 /-- Real-rootedness consequence of the parameterized Favard wrapper. -/
 theorem isRealRooted_of_favard_param_coeff {P : Nat → ℝ[X]} {α β : Nat → ℝ}
@@ -115,8 +149,8 @@ theorem isRealRooted_of_favard_param_coeff {P : Nat → ℝ[X]} {α β : Nat →
     (hP1 : P 1 = X - C (α 0))
     (hstep : ∀ n : Nat,
       P (n + 2) = (X - C (α (n + 1))) * P (n + 1) - C (β (n + 1)) * P n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  exact isRealRooted_of_favard ⟨hP0, hP1, hstep⟩ hβ
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_favard ⟨hP0, hP1, hstep⟩ hβ
 
 /-- Nonzero consequence of the parameterized Favard wrapper. -/
 theorem nonzero_of_favard_param_coeff {P : Nat → ℝ[X]} {α β : Nat → ℝ}
@@ -142,11 +176,10 @@ theorem favardInterlacing_affine_const_coeff {P : Nat → ℝ[X]} {s α β : ℝ
   let bPoly : ℝ[X] := C (-β)
   have hA_deg : aPoly.natDegree = 1 := by
     simpa [aPoly] using natDegree_C_mul_X_sub_C (s := s) (t := α) hs.ne'
-  have hA_ne : aPoly ≠ 0 := by
-    intro h
-    simp [h] at hA_deg
   have hA_pos : HasPosLeadingCoeff aPoly := by
     simpa [aPoly] using hasPosLeadingCoeff_C_mul_X_sub_C (s := s) (t := α) hs
+  have hA_ne : aPoly ≠ 0 := by
+    rr_nonzero
   let Q : Nat → Prop := fun n =>
     Interlaces (P n) (P (n + 1)) ∧
       HasPosLeadingCoeff (P n) ∧
@@ -159,49 +192,25 @@ theorem favardInterlacing_affine_const_coeff {P : Nat → ℝ[X]} {s α β : ℝ
         · rw [hP0, hP1]
           exact interlaces_one_linear (by simpa [aPoly] using hA_deg)
         · rw [hP0]
-          unfold HasPosLeadingCoeff
-          simp
+          rr_pos_lc
         · rw [hP1]
           simpa [aPoly] using hA_pos
     | succ n ih =>
         rcases ih with ⟨hInter, hPos_n, hPos_n1⟩
         let f : ℝ[X] := P (n + 1)
         let g : ℝ[X] := P n
-        have hdeg_gf : g.natDegree + 1 = f.natDegree := by
-          simpa [f, g] using hInter.2.2.1
-        have hf_ne : f ≠ 0 := by simpa [f] using hInter.1.1
-        have hAf_deg : (aPoly * f).natDegree = f.natDegree + 1 := by
-          rw [natDegree_mul hA_ne hf_ne, hA_deg]
-          lia
-        have hAf_pos : HasPosLeadingCoeff (aPoly * f) := by
-          unfold HasPosLeadingCoeff at hA_pos hPos_n1 ⊢
-          simpa [Polynomial.leadingCoeff_mul] using mul_pos hA_pos hPos_n1
-        have hBg_lt_Af : (bPoly * g).natDegree < (aPoly * f).natDegree := by
-          have hBg_le : (bPoly * g).natDegree ≤ g.natDegree := by
-            dsimp [bPoly]
-            exact Polynomial.natDegree_C_mul_le _ _
-          lia
-        have hF_pos_aux : HasPosLeadingCoeff (bPoly * g + aPoly * f) :=
-          hasPosLeadingCoeff_add_of_natDegree_lt_right hBg_lt_Af hAf_pos
-        have hF_pos : HasPosLeadingCoeff (aPoly * f + bPoly * g) := by grind
-        have hF_deg :
-            (aPoly * f + bPoly * g).natDegree = f.natDegree + 1 := by
-          have hdeg_aux :
-              (bPoly * g + aPoly * f).natDegree = (aPoly * f).natDegree :=
-            natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hBg_lt_Af hAf_pos
-          grind
-        have hdeg_lo : f.natDegree ≤ (aPoly * f + bPoly * g).natDegree := by lia
-        have hdeg_hi : (aPoly * f + bPoly * g).natDegree ≤ f.natDegree + 1 := by lia
+        have hBg_le : (bPoly * g).natDegree ≤ g.natDegree := by
+          dsimp [bPoly]
+          exact Polynomial.natDegree_C_mul_le _ _
         have hb_nonpos : ∀ r, f.IsRoot r → bPoly.eval r ≤ 0 := by
           intros
           have hb_le : 0 ≤ β := hβ.le
           simpa [bPoly] using (neg_nonpos.mpr hb_le)
-        have hPrec_step : Prec f (aPoly * f + bPoly * g) :=
-          prec_of_interlaces_evalCoeff_nonpos
-            (f := f) (g := g) (a := aPoly) (b := bPoly)
-            hInter hPos_n hF_pos hdeg_lo hdeg_hi hb_nonpos
-        have hInter_step : Interlaces f (aPoly * f + bPoly * g) :=
-          hPrec_step.toInterlaces (by lia)
+        have hFavardStep :=
+          prec_affine_favard_step hInter hPos_n hPos_n1 hA_deg hA_pos hA_ne
+            hBg_le hb_nonpos
+        have hInter_step : Interlaces f (aPoly * f + bPoly * g) := hFavardStep.2.1
+        have hF_pos : HasPosLeadingCoeff (aPoly * f + bPoly * g) := hFavardStep.2.2
         grind
   exact fun n => (hQ n).1.toPrec
 
@@ -252,8 +261,8 @@ theorem favardInterlacing_affine_const_coeff_rowSign
   have hQprec : ∀ n : Nat, Prec (Q n) (Q (n + 1)) :=
     favardInterlacing_affine_const_coeff hs hβ hQ0 hQ1 hQstep
   intro n
-  have hleft_ne : ((-1 : ℝ) ^ n) ≠ 0 := pow_ne_zero _ (by norm_num)
-  have hright_ne : ((-1 : ℝ) ^ (n + 1)) ≠ 0 := pow_ne_zero _ (by norm_num)
+  have hleft_ne : ((-1 : ℝ) ^ n) ≠ 0 := by rr_side_ne
+  have hright_ne : ((-1 : ℝ) ^ (n + 1)) ≠ 0 := by rr_side_ne
   have hscaled : Prec (C ((-1 : ℝ) ^ n) * Q n)
       (C ((-1 : ℝ) ^ (n + 1)) * Q (n + 1)) :=
     prec_C_mul_right (prec_C_mul_left (hQprec n) hleft_ne) hright_ne
@@ -324,8 +333,7 @@ theorem favardInterlacing_affine_param_coeff
         · rw [hP0, hP1]
           exact interlaces_one_linear (by simpa [aPoly] using hA_deg)
         · rw [hP0]
-          unfold HasPosLeadingCoeff
-          simp
+          rr_pos_lc
         · rw [hP1]
           simpa [aPoly] using hA_pos
     | succ n ih =>
@@ -338,48 +346,24 @@ theorem favardInterlacing_affine_param_coeff
           simpa [aPoly] using
             natDegree_C_mul_X_sub_C (s := s (n + 1)) (t := α (n + 1))
               (hs (n + 1)).ne'
-        have hA_ne : aPoly ≠ 0 := by
-          intro h
-          simp [h] at hA_deg
         have hA_pos : HasPosLeadingCoeff aPoly := by
           simpa [aPoly] using
             hasPosLeadingCoeff_C_mul_X_sub_C (s := s (n + 1)) (t := α (n + 1))
               (hs (n + 1))
-        have hdeg_gf : g.natDegree + 1 = f.natDegree := by
-          simpa [f, g] using hInter.2.2.1
-        have hf_ne : f ≠ 0 := by simpa [f] using hInter.1.1
-        have hAf_deg : (aPoly * f).natDegree = f.natDegree + 1 := by
-          rw [natDegree_mul hA_ne hf_ne, hA_deg]
-          lia
-        have hAf_pos : HasPosLeadingCoeff (aPoly * f) := by
-          unfold HasPosLeadingCoeff at hA_pos hPos_n1 ⊢
-          simpa [Polynomial.leadingCoeff_mul] using mul_pos hA_pos hPos_n1
-        have hBg_lt_Af : (bPoly * g).natDegree < (aPoly * f).natDegree := by
-          have hBg_le : (bPoly * g).natDegree ≤ g.natDegree := by
-            dsimp [bPoly]
-            exact Polynomial.natDegree_C_mul_le _ _
-          lia
-        have hF_pos_aux : HasPosLeadingCoeff (bPoly * g + aPoly * f) :=
-          hasPosLeadingCoeff_add_of_natDegree_lt_right hBg_lt_Af hAf_pos
-        have hF_pos : HasPosLeadingCoeff (aPoly * f + bPoly * g) := by grind
-        have hF_deg :
-            (aPoly * f + bPoly * g).natDegree = f.natDegree + 1 := by
-          have hdeg_aux :
-              (bPoly * g + aPoly * f).natDegree = (aPoly * f).natDegree :=
-            natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hBg_lt_Af hAf_pos
-          grind
-        have hdeg_lo : f.natDegree ≤ (aPoly * f + bPoly * g).natDegree := by lia
-        have hdeg_hi : (aPoly * f + bPoly * g).natDegree ≤ f.natDegree + 1 := by lia
+        have hA_ne : aPoly ≠ 0 := by
+          rr_nonzero
+        have hBg_le : (bPoly * g).natDegree ≤ g.natDegree := by
+          dsimp [bPoly]
+          exact Polynomial.natDegree_C_mul_le _ _
         have hb_nonpos : ∀ r, f.IsRoot r → bPoly.eval r ≤ 0 := by
           intros
           have hb_le : 0 ≤ β (n + 1) := (hβ n).le
           simpa [bPoly] using (neg_nonpos.mpr hb_le)
-        have hPrec_step : Prec f (aPoly * f + bPoly * g) :=
-          prec_of_interlaces_evalCoeff_nonpos
-            (f := f) (g := g) (a := aPoly) (b := bPoly)
-            hInter hPos_n hF_pos hdeg_lo hdeg_hi hb_nonpos
-        have hInter_step : Interlaces f (aPoly * f + bPoly * g) :=
-          hPrec_step.toInterlaces (by lia)
+        have hFavardStep :=
+          prec_affine_favard_step hInter hPos_n hPos_n1 hA_deg hA_pos hA_ne
+            hBg_le hb_nonpos
+        have hInter_step : Interlaces f (aPoly * f + bPoly * g) := hFavardStep.2.1
+        have hF_pos : HasPosLeadingCoeff (aPoly * f + bPoly * g) := hFavardStep.2.2
         grind
   exact fun n => (hQ n).1.toPrec
 
@@ -761,8 +745,8 @@ theorem favardInterlacing_affine_param_coeff_rowSign
   have hQprec : ∀ n : Nat, Prec (Q n) (Q (n + 1)) :=
     favardInterlacing_affine_param_coeff hs hβ hQ0 hQ1 hQstep
   intro n
-  have hleft_ne : ((-1 : ℝ) ^ n) ≠ 0 := pow_ne_zero _ (by norm_num)
-  have hright_ne : ((-1 : ℝ) ^ (n + 1)) ≠ 0 := pow_ne_zero _ (by norm_num)
+  have hleft_ne : ((-1 : ℝ) ^ n) ≠ 0 := by rr_side_ne
+  have hright_ne : ((-1 : ℝ) ^ (n + 1)) ≠ 0 := by rr_side_ne
   have hscaled : Prec (C ((-1 : ℝ) ^ n) * Q n)
       (C ((-1 : ℝ) ^ (n + 1)) * Q (n + 1)) :=
     prec_C_mul_right (prec_C_mul_left (hQprec n) hleft_ne) hright_ne
@@ -1125,6 +1109,32 @@ theorem nonzero_of_favard_affine_param_coeff_rowSign_den_raw_prod
 
 namespace Tactic
 
+syntax (name := rr_favard_step_seq) "rr_favard_step_seq " term : term
+
+syntax (name := rr_favard_step_dsimp_seq) "rr_favard_step_dsimp_seq " term : term
+
+syntax (name := rr_favard_base_one) "rr_favard_base_one " term : term
+
+syntax (name := rr_favard_base_one_dsimp) "rr_favard_base_one_dsimp " term : term
+
+macro_rules
+  | `(rr_favard_step_seq $hstep:term) =>
+      `(fun n => by simpa using $hstep n)
+  | `(rr_favard_step_dsimp_seq $hstep:term) =>
+      `(by
+        intro n
+        try dsimp
+        first
+        | simpa using $hstep n
+        | (convert ($hstep n); all_goals (try dsimp; simp; try ring_nf)))
+  | `(rr_favard_base_one $hP1:term) =>
+      `(by simpa using $hP1)
+  | `(rr_favard_base_one_dsimp $hP1:term) =>
+      `(by
+        try dsimp
+        first
+        | simpa using $hP1
+        | (convert ($hP1); all_goals (try dsimp; simp; try ring_nf)))
 syntax (name := rr_favard) "rr_favard" " using " term ", " term : tactic
 
 syntax (name := rr_favard_named)
@@ -1169,6 +1179,10 @@ syntax (name := rr_favard_const_unit_named)
     "step" ":=" term :
   tactic
 
+syntax (name := rr_favard_const_unit)
+  "rr_favard_const_unit" " using " term ", " term ", " term ", " term :
+  tactic
+
 syntax (name := rr_favard_param)
   "rr_favard_param" " using " term ", " term ", " term ", " term ", " term ", " term :
   tactic
@@ -1198,6 +1212,10 @@ syntax (name := rr_favard_param_unit_named)
     "base_zero" ":=" term ","
     "base_one" ":=" term ","
     "step" ":=" term :
+  tactic
+
+syntax (name := rr_favard_param_unit)
+  "rr_favard_param_unit" " using " term ", " term ", " term ", " term :
   tactic
 
 syntax (name := rr_favard_affine_const)
@@ -1236,6 +1254,11 @@ syntax (name := rr_favard_affine_const_unit_named)
     "step" ":=" term :
   tactic
 
+syntax (name := rr_favard_affine_const_unit)
+  "rr_favard_affine_const_unit" " using " term ", " term ", " term ", "
+    term ", " term :
+  tactic
+
 syntax (name := rr_favard_affine_const_row_sign_named)
   "rr_favard_affine_const_row_sign" " using "
     "slope" ":=" term ","
@@ -1264,6 +1287,10 @@ syntax (name := rr_favard_const_row_sign_unit_named)
     "base_zero" ":=" term ","
     "base_one" ":=" term ","
     "step" ":=" term :
+  tactic
+
+syntax (name := rr_favard_const_row_sign_unit)
+  "rr_favard_const_row_sign_unit" " using " term ", " term ", " term ", " term :
   tactic
 
 syntax (name := rr_favard_affine_param)
@@ -1319,6 +1346,17 @@ syntax (name := rr_favard_affine_param_den_auto_named)
     "raw_recurrence" ":=" term :
   tactic
 
+syntax (name := rr_favard_affine_param_den_auto_active_named)
+  "rr_favard_affine_param_den_auto" " using "
+    "slope" ":=" term ","
+    "alpha" ":=" term ","
+    "beta" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "den" ":=" term ","
+    "raw_recurrence" ":=" term :
+  tactic
+
 syntax (name := rr_favard_affine_param_den_raw_named)
   "rr_favard_affine_param_den_raw" " using "
     "slope" ":=" term ","
@@ -1339,6 +1377,22 @@ syntax (name := rr_favard_affine_param_den_raw_named)
     "raw_recurrence" ":=" term :
   tactic
 
+syntax (name := rr_favard_affine_param_den_raw_active_named)
+  "rr_favard_affine_param_den_raw" " using "
+    "slope" ":=" term ","
+    "alpha" ":=" term ","
+    "beta" ":=" term ","
+    "raw_slope" ":=" term ","
+    "raw_const" ":=" term ","
+    "raw_lag" ":=" term ","
+    "slope_pos" ":=" term ","
+    "beta_pos" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "den" ":=" term ","
+    "raw_recurrence" ":=" term :
+  tactic
+
 syntax (name := rr_favard_affine_param_den_raw_auto_named)
   "rr_favard_affine_param_den_raw_auto" " using "
     "slope" ":=" term ","
@@ -1354,6 +1408,20 @@ syntax (name := rr_favard_affine_param_den_raw_auto_named)
     "slope_coeff_eq" ":=" term ","
     "alpha_coeff_eq" ":=" term ","
     "beta_coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_favard_affine_param_den_raw_auto_active_named)
+  "rr_favard_affine_param_den_raw_auto" " using "
+    "slope" ":=" term ","
+    "alpha" ":=" term ","
+    "beta" ":=" term ","
+    "raw_slope" ":=" term ","
+    "raw_const" ":=" term ","
+    "raw_lag" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "den" ":=" term ","
     "raw_recurrence" ":=" term :
   tactic
 
@@ -1379,6 +1447,24 @@ syntax (name := rr_favard_affine_param_den_raw_prod_named)
     "raw_recurrence" ":=" term :
   tactic
 
+syntax (name := rr_favard_affine_param_den_raw_prod_active_named)
+  "rr_favard_affine_param_den_raw_prod" " using "
+    "slope" ":=" term ","
+    "alpha" ":=" term ","
+    "beta" ":=" term ","
+    "raw_slope_left" ":=" term ","
+    "raw_slope_right" ":=" term ","
+    "raw_const" ":=" term ","
+    "raw_lag_left" ":=" term ","
+    "raw_lag_right" ":=" term ","
+    "slope_pos" ":=" term ","
+    "beta_pos" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "den" ":=" term ","
+    "raw_recurrence" ":=" term :
+  tactic
+
 syntax (name := rr_favard_affine_param_den_raw_prod_auto_named)
   "rr_favard_affine_param_den_raw_prod_auto" " using "
     "slope" ":=" term ","
@@ -1396,6 +1482,22 @@ syntax (name := rr_favard_affine_param_den_raw_prod_auto_named)
     "slope_coeff_eq" ":=" term ","
     "alpha_coeff_eq" ":=" term ","
     "beta_coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_favard_affine_param_den_raw_prod_auto_active_named)
+  "rr_favard_affine_param_den_raw_prod_auto" " using "
+    "slope" ":=" term ","
+    "alpha" ":=" term ","
+    "beta" ":=" term ","
+    "raw_slope_left" ":=" term ","
+    "raw_slope_right" ":=" term ","
+    "raw_const" ":=" term ","
+    "raw_lag_left" ":=" term ","
+    "raw_lag_right" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "den" ":=" term ","
     "raw_recurrence" ":=" term :
   tactic
 
@@ -1434,6 +1536,19 @@ syntax (name := rr_favard_affine_param_den_raw_unit_named)
     "raw_recurrence" ":=" term :
   tactic
 
+syntax (name := rr_favard_affine_param_den_raw_unit_active_named)
+  "rr_favard_affine_param_den_raw_unit" " using "
+    "slope" ":=" term ","
+    "alpha" ":=" term ","
+    "raw_slope" ":=" term ","
+    "raw_const" ":=" term ","
+    "raw_lag" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "den" ":=" term ","
+    "raw_recurrence" ":=" term :
+  tactic
+
 syntax (name := rr_favard_param_den_raw_named)
   "rr_favard_param_den_raw" " using "
     "alpha" ":=" term ","
@@ -1449,6 +1564,20 @@ syntax (name := rr_favard_param_den_raw_named)
     "slope_coeff_eq" ":=" term ","
     "alpha_coeff_eq" ":=" term ","
     "beta_coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_favard_param_den_raw_active_named)
+  "rr_favard_param_den_raw" " using "
+    "alpha" ":=" term ","
+    "beta" ":=" term ","
+    "raw_slope" ":=" term ","
+    "raw_const" ":=" term ","
+    "raw_lag" ":=" term ","
+    "beta_pos" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "den" ":=" term ","
     "raw_recurrence" ":=" term :
   tactic
 
@@ -1469,6 +1598,19 @@ syntax (name := rr_favard_param_den_raw_auto_named)
     "raw_recurrence" ":=" term :
   tactic
 
+syntax (name := rr_favard_param_den_raw_auto_active_named)
+  "rr_favard_param_den_raw_auto" " using "
+    "alpha" ":=" term ","
+    "beta" ":=" term ","
+    "raw_slope" ":=" term ","
+    "raw_const" ":=" term ","
+    "raw_lag" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "den" ":=" term ","
+    "raw_recurrence" ":=" term :
+  tactic
+
 syntax (name := rr_favard_param_den_raw_unit_named)
   "rr_favard_param_den_raw_unit" " using "
     "alpha" ":=" term ","
@@ -1482,6 +1624,18 @@ syntax (name := rr_favard_param_den_raw_unit_named)
     "slope_coeff_eq" ":=" term ","
     "alpha_coeff_eq" ":=" term ","
     "beta_coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_favard_param_den_raw_unit_active_named)
+  "rr_favard_param_den_raw_unit" " using "
+    "alpha" ":=" term ","
+    "raw_slope" ":=" term ","
+    "raw_const" ":=" term ","
+    "raw_lag" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "den" ":=" term ","
     "raw_recurrence" ":=" term :
   tactic
 
@@ -1628,6 +1782,22 @@ syntax (name := rr_favard_affine_param_row_sign_den_raw_named)
     "raw_recurrence" ":=" term :
   tactic
 
+syntax (name := rr_favard_affine_param_row_sign_den_raw_active_named)
+  "rr_favard_affine_param_row_sign_den_raw" " using "
+    "slope" ":=" term ","
+    "alpha" ":=" term ","
+    "beta" ":=" term ","
+    "raw_slope" ":=" term ","
+    "raw_const" ":=" term ","
+    "raw_lag" ":=" term ","
+    "slope_pos" ":=" term ","
+    "beta_pos" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "den" ":=" term ","
+    "raw_recurrence" ":=" term :
+  tactic
+
 syntax (name := rr_favard_affine_param_row_sign_den_raw_auto_named)
   "rr_favard_affine_param_row_sign_den_raw_auto" " using "
     "slope" ":=" term ","
@@ -1643,6 +1813,20 @@ syntax (name := rr_favard_affine_param_row_sign_den_raw_auto_named)
     "slope_coeff_eq" ":=" term ","
     "alpha_coeff_eq" ":=" term ","
     "beta_coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_favard_affine_param_row_sign_den_raw_auto_active_named)
+  "rr_favard_affine_param_row_sign_den_raw_auto" " using "
+    "slope" ":=" term ","
+    "alpha" ":=" term ","
+    "beta" ":=" term ","
+    "raw_slope" ":=" term ","
+    "raw_const" ":=" term ","
+    "raw_lag" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "den" ":=" term ","
     "raw_recurrence" ":=" term :
   tactic
 
@@ -1668,6 +1852,24 @@ syntax (name := rr_favard_affine_param_row_sign_den_raw_prod_named)
     "raw_recurrence" ":=" term :
   tactic
 
+syntax (name := rr_favard_affine_param_row_sign_den_raw_prod_active_named)
+  "rr_favard_affine_param_row_sign_den_raw_prod" " using "
+    "slope" ":=" term ","
+    "alpha" ":=" term ","
+    "beta" ":=" term ","
+    "raw_slope_left" ":=" term ","
+    "raw_slope_right" ":=" term ","
+    "raw_const" ":=" term ","
+    "raw_lag_left" ":=" term ","
+    "raw_lag_right" ":=" term ","
+    "slope_pos" ":=" term ","
+    "beta_pos" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "den" ":=" term ","
+    "raw_recurrence" ":=" term :
+  tactic
+
 syntax (name := rr_favard_affine_param_row_sign_den_raw_prod_auto_named)
   "rr_favard_affine_param_row_sign_den_raw_prod_auto" " using "
     "slope" ":=" term ","
@@ -1685,6 +1887,22 @@ syntax (name := rr_favard_affine_param_row_sign_den_raw_prod_auto_named)
     "slope_coeff_eq" ":=" term ","
     "alpha_coeff_eq" ":=" term ","
     "beta_coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_favard_affine_param_row_sign_den_raw_prod_auto_active_named)
+  "rr_favard_affine_param_row_sign_den_raw_prod_auto" " using "
+    "slope" ":=" term ","
+    "alpha" ":=" term ","
+    "beta" ":=" term ","
+    "raw_slope_left" ":=" term ","
+    "raw_slope_right" ":=" term ","
+    "raw_const" ":=" term ","
+    "raw_lag_left" ":=" term ","
+    "raw_lag_right" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "den" ":=" term ","
     "raw_recurrence" ":=" term :
   tactic
 
@@ -1723,6 +1941,19 @@ syntax (name := rr_favard_affine_param_row_sign_den_raw_unit_named)
     "raw_recurrence" ":=" term :
   tactic
 
+syntax (name := rr_favard_affine_param_row_sign_den_raw_unit_active_named)
+  "rr_favard_affine_param_row_sign_den_raw_unit" " using "
+    "slope" ":=" term ","
+    "alpha" ":=" term ","
+    "raw_slope" ":=" term ","
+    "raw_const" ":=" term ","
+    "raw_lag" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "den" ":=" term ","
+    "raw_recurrence" ":=" term :
+  tactic
+
 syntax (name := rr_favard_param_row_sign_den_raw_named)
   "rr_favard_param_row_sign_den_raw" " using "
     "alpha" ":=" term ","
@@ -1738,6 +1969,20 @@ syntax (name := rr_favard_param_row_sign_den_raw_named)
     "slope_coeff_eq" ":=" term ","
     "alpha_coeff_eq" ":=" term ","
     "beta_coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_favard_param_row_sign_den_raw_active_named)
+  "rr_favard_param_row_sign_den_raw" " using "
+    "alpha" ":=" term ","
+    "beta" ":=" term ","
+    "raw_slope" ":=" term ","
+    "raw_const" ":=" term ","
+    "raw_lag" ":=" term ","
+    "beta_pos" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "den" ":=" term ","
     "raw_recurrence" ":=" term :
   tactic
 
@@ -1758,6 +2003,19 @@ syntax (name := rr_favard_param_row_sign_den_raw_auto_named)
     "raw_recurrence" ":=" term :
   tactic
 
+syntax (name := rr_favard_param_row_sign_den_raw_auto_active_named)
+  "rr_favard_param_row_sign_den_raw_auto" " using "
+    "alpha" ":=" term ","
+    "beta" ":=" term ","
+    "raw_slope" ":=" term ","
+    "raw_const" ":=" term ","
+    "raw_lag" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "den" ":=" term ","
+    "raw_recurrence" ":=" term :
+  tactic
+
 syntax (name := rr_favard_param_row_sign_den_raw_unit_named)
   "rr_favard_param_row_sign_den_raw_unit" " using "
     "alpha" ":=" term ","
@@ -1771,6 +2029,18 @@ syntax (name := rr_favard_param_row_sign_den_raw_unit_named)
     "slope_coeff_eq" ":=" term ","
     "alpha_coeff_eq" ":=" term ","
     "beta_coeff_eq" ":=" term ","
+    "raw_recurrence" ":=" term :
+  tactic
+
+syntax (name := rr_favard_param_row_sign_den_raw_unit_active_named)
+  "rr_favard_param_row_sign_den_raw_unit" " using "
+    "alpha" ":=" term ","
+    "raw_slope" ":=" term ","
+    "raw_const" ":=" term ","
+    "raw_lag" ":=" term ","
+    "base_zero" ":=" term ","
+    "base_one" ":=" term ","
+    "den" ":=" term ","
     "raw_recurrence" ":=" term :
   tactic
 
@@ -1878,7 +2148,69 @@ syntax (name := rr_favard_param_row_sign_auto_named)
 
 syntax (name := rr_favard_den_raw) "rr_favard_den_raw" " using " term : tactic
 
+syntax (name := rr_favard_den_raw_term) "rr_favard_den_raw_term " term : term
+
+syntax (name := rr_favard_goal_variants)
+  "rr_favard_goal_variants"
+    term ", " term ", " term ", " term ", " term ", " term :
+  tactic
+
+syntax (name := rr_favard_goal_variants_seq)
+  "rr_favard_goal_variants" term ", " term ", " term :
+  tactic
+
+syntax (name := rr_favard_goal_variant_alternatives3)
+  "rr_favard_goal_variant_alternatives3"
+    term ", " term ", " term "; "
+    term ", " term ", " term "; "
+    term ", " term ", " term :
+  tactic
+
+syntax (name := rr_favard_refine_positivity_seq)
+  "rr_favard_refine_positivity_seq " term :
+  tactic
+
+syntax (name := rr_favard_exact_realrooted_positivity_seq)
+  "rr_favard_exact_realrooted_positivity_seq " term :
+  tactic
+
 macro_rules
+  | `(tactic| rr_favard_refine_positivity_seq $h:term) =>
+      `(tactic| rr_refine_then $h with rr_positivity_seq)
+  | `(tactic| rr_favard_exact_realrooted_positivity_seq $h:term) =>
+      `(tactic| rr_exact_realrooted_refine_then $h with rr_positivity_seq)
+  | `(tactic|
+      rr_favard_goal_variants
+        $hinterlace:term, $hrealrooted:term, $hnonzero:term,
+        $hinterlace_proj:term, $hrealrooted_proj:term, $hnonzero_proj:term) =>
+      `(tactic|
+        first
+          | exact $hinterlace
+          | rr_exact_realrooted_sequence_or_projection $hrealrooted
+          | exact $hnonzero
+          | exact $hinterlace_proj
+          | rr_exact_realrooted_sequence_or_projection $hrealrooted_proj
+          | exact $hnonzero_proj)
+  | `(tactic|
+      rr_favard_goal_variants
+        $hinterlace:term, $hrealrooted:term, $hnonzero:term) =>
+      `(tactic|
+        rr_favard_goal_variants
+          $hinterlace, $hrealrooted, $hnonzero,
+          ($hinterlace _), ($hrealrooted _), ($hnonzero _))
+  | `(tactic|
+      rr_favard_goal_variant_alternatives3
+        $hinterlace1:term, $hrealrooted1:term, $hnonzero1:term;
+        $hinterlace2:term, $hrealrooted2:term, $hnonzero2:term;
+        $hinterlace3:term, $hrealrooted3:term, $hnonzero3:term) =>
+      `(tactic|
+        first
+          | rr_first_exact $hinterlace1, $hinterlace2, $hinterlace3
+          | rr_first_exact $hrealrooted1, $hrealrooted2, $hrealrooted3
+          | rr_first_exact $hnonzero1, $hnonzero2, $hnonzero3
+          | rr_first_exact ($hinterlace1 _), ($hinterlace2 _), ($hinterlace3 _)
+          | rr_first_exact ($hrealrooted1 _), ($hrealrooted2 _), ($hrealrooted3 _)
+          | rr_first_exact ($hnonzero1 _), ($hnonzero2 _), ($hnonzero3 _))
   | `(tactic| rr_favard_den_raw using $hraw:term) =>
       `(tactic|
         first
@@ -1891,16 +2223,20 @@ macro_rules
           | intro n
             simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc, C_mul,
               mul_assoc] using $hraw n)
+  | `(rr_favard_den_raw_term $hraw:term) =>
+      `(by rr_favard_den_raw using $hraw)
   | `(tactic| rr_favard using $hrec:term, $hbeta:term) =>
       `(tactic|
         first
           | exact RealRooted.favardInterlacing $hrec $hbeta
-          | exact RealRooted.isRealRooted_of_favard $hrec $hbeta
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_favard $hrec $hbeta)
           | exact RealRooted.nonzero_of_favard $hrec $hbeta
           | exact RealRooted.isGeneralizedSturmSeq_reverse_range_map_of_favard
               $hrec $hbeta
           | exact RealRooted.favardInterlacing $hrec $hbeta _
-          | exact RealRooted.isRealRooted_of_favard $hrec $hbeta _
+          | rr_exact_realrooted_sequence_or_projection
+              (RealRooted.isRealRooted_of_favard $hrec $hbeta _)
           | exact RealRooted.nonzero_of_favard $hrec $hbeta _
           | exact RealRooted.isGeneralizedSturmSeq_reverse_range_map_of_favard
               $hrec $hbeta _)
@@ -1915,49 +2251,35 @@ macro_rules
         recurrence := $hrec:term) =>
       `(tactic|
         first
-          | refine RealRooted.favardInterlacing $hrec ?_ <;>
-              intro n <;>
-              positivity
-          | refine RealRooted.isRealRooted_of_favard $hrec ?_ <;>
-              intro n <;>
-              positivity
-          | refine RealRooted.nonzero_of_favard $hrec ?_ <;>
-              intro n <;>
-              positivity
-          | refine RealRooted.isGeneralizedSturmSeq_reverse_range_map_of_favard
-              $hrec ?_ <;>
-              intro n <;>
-              positivity
-          | refine RealRooted.favardInterlacing $hrec ?_ _ <;>
-              intro n <;>
-              positivity
-          | refine RealRooted.isRealRooted_of_favard $hrec ?_ _ <;>
-              intro n <;>
-              positivity
-          | refine RealRooted.nonzero_of_favard $hrec ?_ _ <;>
-              intro n <;>
-              positivity
-          | refine RealRooted.isGeneralizedSturmSeq_reverse_range_map_of_favard
-              $hrec ?_ _ <;>
-              intro n <;>
-              positivity)
+          | rr_favard_refine_positivity_seq
+              (RealRooted.favardInterlacing $hrec ?_)
+          | rr_favard_exact_realrooted_positivity_seq
+              (RealRooted.isRealRooted_of_favard $hrec ?_)
+          | rr_favard_refine_positivity_seq
+              (RealRooted.nonzero_of_favard $hrec ?_)
+          | rr_favard_refine_positivity_seq
+              (RealRooted.isGeneralizedSturmSeq_reverse_range_map_of_favard
+                $hrec ?_)
+          | rr_favard_refine_positivity_seq
+              (RealRooted.favardInterlacing $hrec ?_ _)
+          | rr_favard_exact_realrooted_positivity_seq
+              (RealRooted.isRealRooted_of_favard $hrec ?_ _)
+          | rr_favard_refine_positivity_seq
+              (RealRooted.nonzero_of_favard $hrec ?_ _)
+          | rr_favard_refine_positivity_seq
+              (RealRooted.isGeneralizedSturmSeq_reverse_range_map_of_favard
+                $hrec ?_ _))
   | `(tactic|
       rr_favard_const using
         $α:term, $β:term, $hβ:term, $hP0:term, $hP1:term, $hstep:term) =>
       `(tactic|
-        first
-          | exact RealRooted.favardInterlacing_const_coeff
-              (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep
-          | exact RealRooted.isRealRooted_of_favard_const_coeff
-              (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep
-          | exact RealRooted.nonzero_of_favard_const_coeff
-              (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep
-          | exact RealRooted.favardInterlacing_const_coeff
-              (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep _
-          | exact RealRooted.isRealRooted_of_favard_const_coeff
-              (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep _
-          | exact RealRooted.nonzero_of_favard_const_coeff
-              (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep _)
+        rr_favard_goal_variants
+          (RealRooted.favardInterlacing_const_coeff
+            (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep),
+          (RealRooted.isRealRooted_of_favard_const_coeff
+            (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep),
+          (RealRooted.nonzero_of_favard_const_coeff
+            (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep))
   | `(tactic|
       rr_favard_const using
         alpha := $α:term,
@@ -1979,7 +2301,7 @@ macro_rules
         rr_favard_const using
           alpha := $α,
           beta := $β,
-          beta_pos := by positivity,
+          beta_pos := rr_positivity_term,
           base_zero := $hP0,
           base_one := $hP1,
           step := $hstep)
@@ -1994,27 +2316,28 @@ macro_rules
           alpha := $α,
           beta := 1,
           base_zero := $hP0,
-          base_one := by simpa using $hP1,
-          step := by
-            intro n
-            simpa using $hstep n)
+          base_one := rr_favard_base_one $hP1,
+          step := rr_favard_step_seq $hstep)
+  | `(tactic|
+      rr_favard_const_unit using
+        $α:term, $hP0:term, $hP1:term, $hstep:term) =>
+      `(tactic|
+        rr_favard_const_unit using
+          alpha := $α,
+          base_zero := $hP0,
+          base_one := $hP1,
+          step := $hstep)
   | `(tactic|
       rr_favard_param using
         $α:term, $β:term, $hβ:term, $hP0:term, $hP1:term, $hstep:term) =>
       `(tactic|
-        first
-          | exact RealRooted.favardInterlacing_param_coeff
-              (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep
-          | exact RealRooted.isRealRooted_of_favard_param_coeff
-              (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep
-          | exact RealRooted.nonzero_of_favard_param_coeff
-              (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep
-          | exact RealRooted.favardInterlacing_param_coeff
-              (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep _
-          | exact RealRooted.isRealRooted_of_favard_param_coeff
-              (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep _
-          | exact RealRooted.nonzero_of_favard_param_coeff
-              (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep _)
+        rr_favard_goal_variants
+          (RealRooted.favardInterlacing_param_coeff
+            (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep),
+          (RealRooted.isRealRooted_of_favard_param_coeff
+            (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep),
+          (RealRooted.nonzero_of_favard_param_coeff
+            (α := $α) (β := $β) $hβ $hP0 $hP1 $hstep))
   | `(tactic|
       rr_favard_param using
         alpha := $α:term,
@@ -2036,12 +2359,10 @@ macro_rules
         rr_favard_param using
           alpha := $α,
           beta := $β,
-          beta_pos := by
-            intro n
-            positivity,
+          beta_pos := rr_positivity_seq_term,
           base_zero := $hP0,
-          base_one := $hP1,
-          step := $hstep)
+          base_one := rr_favard_base_one_dsimp $hP1,
+          step := rr_favard_step_dsimp_seq $hstep)
   | `(tactic|
       rr_favard_param_unit using
         alpha := $α:term,
@@ -2053,31 +2374,29 @@ macro_rules
           alpha := $α,
           beta := fun _ => (1 : ℝ),
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
-          step := by
-            intro n
-            try dsimp
-            simpa using $hstep n)
+          base_one := $hP1,
+          step := $hstep)
+  | `(tactic|
+      rr_favard_param_unit using
+        $α:term, $hP0:term, $hP1:term, $hstep:term) =>
+      `(tactic|
+        rr_favard_param_unit using
+          alpha := $α,
+          base_zero := $hP0,
+          base_one := $hP1,
+          step := $hstep)
   | `(tactic|
       rr_favard_affine_const using
         $s:term, $α:term, $β:term, $hs:term, $hβ:term, $hP0:term, $hP1:term,
         $hstep:term) =>
       `(tactic|
-        first
-          | exact RealRooted.favardInterlacing_affine_const_coeff
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep
-          | exact RealRooted.isRealRooted_of_favard_affine_const_coeff
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep
-          | exact RealRooted.nonzero_of_favard_affine_const_coeff
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep
-          | exact RealRooted.favardInterlacing_affine_const_coeff
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _
-          | exact RealRooted.isRealRooted_of_favard_affine_const_coeff
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _
-          | exact RealRooted.nonzero_of_favard_affine_const_coeff
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _)
+        rr_favard_goal_variants
+          (RealRooted.favardInterlacing_affine_const_coeff
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep),
+          (RealRooted.isRealRooted_of_favard_affine_const_coeff
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep),
+          (RealRooted.nonzero_of_favard_affine_const_coeff
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep))
   | `(tactic|
       rr_favard_affine_const using
         slope := $s:term,
@@ -2104,8 +2423,8 @@ macro_rules
           slope := $s,
           alpha := $α,
           beta := $β,
-          slope_pos := by positivity,
-          beta_pos := by positivity,
+          slope_pos := rr_positivity_term,
+          beta_pos := rr_positivity_term,
           base_zero := $hP0,
           base_one := $hP1,
           step := $hstep)
@@ -2122,10 +2441,18 @@ macro_rules
           alpha := $α,
           beta := 1,
           base_zero := $hP0,
-          base_one := by simpa using $hP1,
-          step := by
-            intro n
-            simpa using $hstep n)
+          base_one := rr_favard_base_one $hP1,
+          step := rr_favard_step_seq $hstep)
+  | `(tactic|
+      rr_favard_affine_const_unit using
+        $s:term, $α:term, $hP0:term, $hP1:term, $hstep:term) =>
+      `(tactic|
+        rr_favard_affine_const_unit using
+          slope := $s,
+          alpha := $α,
+          base_zero := $hP0,
+          base_one := $hP1,
+          step := $hstep)
   | `(tactic|
       rr_favard_affine_const_row_sign using
         slope := $s:term,
@@ -2137,19 +2464,13 @@ macro_rules
         base_one := $hP1:term,
         step := $hstep:term) =>
       `(tactic|
-        first
-          | exact RealRooted.favardInterlacing_affine_const_coeff_rowSign
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep
-          | exact RealRooted.isRealRooted_of_favard_affine_const_coeff_rowSign
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep
-          | exact RealRooted.nonzero_of_favard_affine_const_coeff_rowSign
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep
-          | exact RealRooted.favardInterlacing_affine_const_coeff_rowSign
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _
-          | exact RealRooted.isRealRooted_of_favard_affine_const_coeff_rowSign
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _
-          | exact RealRooted.nonzero_of_favard_affine_const_coeff_rowSign
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _)
+        rr_favard_goal_variants
+          (RealRooted.favardInterlacing_affine_const_coeff_rowSign
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep),
+          (RealRooted.isRealRooted_of_favard_affine_const_coeff_rowSign
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep),
+          (RealRooted.nonzero_of_favard_affine_const_coeff_rowSign
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep))
   | `(tactic|
       rr_favard_affine_const_row_sign_auto using
         slope := $s:term,
@@ -2163,8 +2484,8 @@ macro_rules
           slope := $s,
           alpha := $α,
           beta := $β,
-          slope_pos := by positivity,
-          beta_pos := by positivity,
+          slope_pos := rr_positivity_term,
+          beta_pos := rr_positivity_term,
           base_zero := $hP0,
           base_one := $hP1,
           step := $hstep)
@@ -2180,28 +2501,29 @@ macro_rules
           alpha := $α,
           beta := 1,
           base_zero := $hP0,
-          base_one := by simpa using $hP1,
-          step := by
-            intro n
-            simpa using $hstep n)
+          base_one := rr_favard_base_one $hP1,
+          step := rr_favard_step_seq $hstep)
+  | `(tactic|
+      rr_favard_const_row_sign_unit using
+        $α:term, $hP0:term, $hP1:term, $hstep:term) =>
+      `(tactic|
+        rr_favard_const_row_sign_unit using
+          alpha := $α,
+          base_zero := $hP0,
+          base_one := $hP1,
+          step := $hstep)
   | `(tactic|
       rr_favard_affine_param using
         $s:term, $α:term, $β:term, $hs:term, $hβ:term, $hP0:term, $hP1:term,
         $hstep:term) =>
       `(tactic|
-        first
-          | exact RealRooted.favardInterlacing_affine_param_coeff
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep
-          | exact RealRooted.isRealRooted_of_favard_affine_param_coeff
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep
-          | exact RealRooted.nonzero_of_favard_affine_param_coeff
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep
-          | exact RealRooted.favardInterlacing_affine_param_coeff
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _
-          | exact RealRooted.isRealRooted_of_favard_affine_param_coeff
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _
-          | exact RealRooted.nonzero_of_favard_affine_param_coeff
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _)
+        rr_favard_goal_variants
+          (RealRooted.favardInterlacing_affine_param_coeff
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep),
+          (RealRooted.isRealRooted_of_favard_affine_param_coeff
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep),
+          (RealRooted.nonzero_of_favard_affine_param_coeff
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep))
   | `(tactic|
       rr_favard_affine_param using
         slope := $s:term,
@@ -2227,15 +2549,11 @@ macro_rules
           slope := $s,
           alpha := $α,
           beta := $β,
-          slope_pos := by
-            intro n
-            positivity,
-          beta_pos := by
-            intro n
-            positivity,
+          slope_pos := rr_positivity_seq_term,
+          beta_pos := rr_positivity_seq_term,
           base_zero := $hP0,
-          base_one := $hP1,
-          step := $hstep)
+          base_one := rr_favard_base_one_dsimp $hP1,
+          step := rr_favard_step_dsimp_seq $hstep)
   | `(tactic|
       rr_favard_affine_param_den using
         slope := $s:term,
@@ -2249,217 +2567,53 @@ macro_rules
         den_nonzero := $hden:term,
         raw_recurrence := $hraw:term) =>
       `(tactic|
-        first
-          | exact
-              RealRooted.favardInterlacing_affine_param_coeff_den
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done)
-          | exact
-              RealRooted.favardInterlacing_affine_param_coeff_den_split
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done)
-          | exact
-              RealRooted.favardInterlacing_affine_param_coeff_den_split_rev
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw)
-          | exact
-              RealRooted.isRealRooted_of_favard_affine_param_coeff_den
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done)
-          | exact
-              RealRooted.isRealRooted_of_favard_affine_param_coeff_den_split
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done)
-          | exact
-              RealRooted.isRealRooted_of_favard_affine_param_coeff_den_split_rev
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw)
-          | exact
-              RealRooted.nonzero_of_favard_affine_param_coeff_den
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done)
-          | exact
-              RealRooted.nonzero_of_favard_affine_param_coeff_den_split
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done)
-          | exact
-              RealRooted.nonzero_of_favard_affine_param_coeff_den_split_rev
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw)
-          | exact
-              RealRooted.favardInterlacing_affine_param_coeff_den
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done) _
-          | exact
-              RealRooted.favardInterlacing_affine_param_coeff_den_split
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done) _
-          | exact
-              RealRooted.favardInterlacing_affine_param_coeff_den_split_rev
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw) _
-          | exact
-              RealRooted.isRealRooted_of_favard_affine_param_coeff_den
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done) _
-          | exact
-              RealRooted.isRealRooted_of_favard_affine_param_coeff_den_split
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done) _
-          | exact
-              RealRooted.isRealRooted_of_favard_affine_param_coeff_den_split_rev
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw) _
-          | exact
-              RealRooted.nonzero_of_favard_affine_param_coeff_den
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done) _
-          | exact
-              RealRooted.nonzero_of_favard_affine_param_coeff_den_split
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done) _
-          | exact
-              RealRooted.nonzero_of_favard_affine_param_coeff_den_split_rev
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw) _)
+        rr_favard_goal_variant_alternatives3
+          (RealRooted.favardInterlacing_affine_param_coeff_den
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            $hs $hβ $hP0 $hP1 $hden (rr_favard_den_raw_term $hraw)),
+          (RealRooted.isRealRooted_of_favard_affine_param_coeff_den
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            $hs $hβ $hP0 $hP1 $hden (rr_favard_den_raw_term $hraw)),
+          (RealRooted.nonzero_of_favard_affine_param_coeff_den
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            $hs $hβ $hP0 $hP1 $hden (rr_favard_den_raw_term $hraw));
+          (RealRooted.favardInterlacing_affine_param_coeff_den_split
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            $hs $hβ $hP0 $hP1 $hden (rr_favard_den_raw_term $hraw)),
+          (RealRooted.isRealRooted_of_favard_affine_param_coeff_den_split
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            $hs $hβ $hP0 $hP1 $hden (rr_favard_den_raw_term $hraw)),
+          (RealRooted.nonzero_of_favard_affine_param_coeff_den_split
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            $hs $hβ $hP0 $hP1 $hden (rr_favard_den_raw_term $hraw));
+          (RealRooted.favardInterlacing_affine_param_coeff_den_split_rev
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            $hs $hβ $hP0 $hP1 $hden (rr_favard_den_raw_term $hraw)),
+          (RealRooted.isRealRooted_of_favard_affine_param_coeff_den_split_rev
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            $hs $hβ $hP0 $hP1 $hden (rr_favard_den_raw_term $hraw)),
+          (RealRooted.nonzero_of_favard_affine_param_coeff_den_split_rev
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            $hs $hβ $hP0 $hP1 $hden (rr_favard_den_raw_term $hraw)))
+  | `(tactic|
+      rr_favard_affine_param_den_auto using
+        slope := $s:term,
+        alpha := $α:term,
+        beta := $β:term,
+        base_zero := $hP0:term,
+        base_one := $hP1:term,
+        den := $d:term,
+        raw_recurrence := $hraw:term) =>
+      `(tactic|
+        rr_favard_affine_param_den_auto using
+          slope := $s,
+          alpha := $α,
+          beta := $β,
+          base_zero := $hP0,
+          base_one := $hP1,
+          den := $d,
+          den_nonzero := rr_scalar_active_den_all_term,
+          raw_recurrence := $hraw)
   | `(tactic|
       rr_favard_affine_param_den_auto using
         slope := $s:term,
@@ -2475,16 +2629,44 @@ macro_rules
           slope := $s,
           alpha := $α,
           beta := $β,
-          slope_pos := by
-            intro n
-            positivity,
-          beta_pos := by
-            intro n
-            positivity,
+          slope_pos := rr_positivity_seq_term,
+          beta_pos := rr_positivity_seq_term,
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
           den_nonzero := $hden,
+          raw_recurrence := $hraw)
+  | `(tactic|
+      rr_favard_affine_param_den_raw using
+        slope := $s:term,
+        alpha := $α:term,
+        beta := $β:term,
+        raw_slope := $araw:term,
+        raw_const := $braw:term,
+        raw_lag := $craw:term,
+        slope_pos := $hs:term,
+        beta_pos := $hβ:term,
+        base_zero := $hP0:term,
+        base_one := $hP1:term,
+        den := $d:term,
+        raw_recurrence := $hraw:term) =>
+      `(tactic|
+        rr_favard_affine_param_den_raw using
+          slope := $s,
+          alpha := $α,
+          beta := $β,
+          raw_slope := $araw,
+          raw_const := $braw,
+          raw_lag := $craw,
+          slope_pos := $hs,
+          beta_pos := $hβ,
+          base_zero := $hP0,
+          base_one := $hP1,
+          den := $d,
+          den_nonzero := rr_scalar_active_den_all_term,
+          slope_coeff_eq := rr_scalar_coeff_all_term,
+          alpha_coeff_eq := rr_scalar_coeff_all_term,
+          beta_coeff_eq := rr_scalar_coeff_all_term,
           raw_recurrence := $hraw)
   | `(tactic|
       rr_favard_affine_param_den_raw using
@@ -2505,37 +2687,47 @@ macro_rules
         beta_coeff_eq := $hβ_coeff:term,
         raw_recurrence := $hraw:term) =>
       `(tactic|
-        first
-          | exact
-              RealRooted.favardInterlacing_affine_param_coeff_den_raw
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                (araw := $araw) (braw := $braw) (craw := $craw)
-                $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw
-          | exact
-              RealRooted.isRealRooted_of_favard_affine_param_coeff_den_raw
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                (araw := $araw) (braw := $braw) (craw := $craw)
-                $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw
-          | exact
-              RealRooted.nonzero_of_favard_affine_param_coeff_den_raw
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                (araw := $araw) (braw := $braw) (craw := $craw)
-                $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw
-          | exact
-              RealRooted.favardInterlacing_affine_param_coeff_den_raw
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                (araw := $araw) (braw := $braw) (craw := $craw)
-                $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw _
-          | exact
-              RealRooted.isRealRooted_of_favard_affine_param_coeff_den_raw
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                (araw := $araw) (braw := $braw) (craw := $craw)
-                $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw _
-          | exact
-              RealRooted.nonzero_of_favard_affine_param_coeff_den_raw
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                (araw := $araw) (braw := $braw) (craw := $craw)
-                $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw _)
+        rr_favard_goal_variants
+          (RealRooted.favardInterlacing_affine_param_coeff_den_raw
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            (araw := $araw) (braw := $braw) (craw := $craw)
+            $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw),
+          (RealRooted.isRealRooted_of_favard_affine_param_coeff_den_raw
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            (araw := $araw) (braw := $braw) (craw := $craw)
+            $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw),
+          (RealRooted.nonzero_of_favard_affine_param_coeff_den_raw
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            (araw := $araw) (braw := $braw) (craw := $craw)
+            $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw))
+  | `(tactic|
+      rr_favard_affine_param_den_raw_auto using
+        slope := $s:term,
+        alpha := $α:term,
+        beta := $β:term,
+        raw_slope := $araw:term,
+        raw_const := $braw:term,
+        raw_lag := $craw:term,
+        base_zero := $hP0:term,
+        base_one := $hP1:term,
+        den := $d:term,
+        raw_recurrence := $hraw:term) =>
+      `(tactic|
+        rr_favard_affine_param_den_raw_auto using
+          slope := $s,
+          alpha := $α,
+          beta := $β,
+          raw_slope := $araw,
+          raw_const := $braw,
+          raw_lag := $craw,
+          base_zero := $hP0,
+          base_one := $hP1,
+          den := $d,
+          den_nonzero := rr_scalar_active_den_all_term,
+          slope_coeff_eq := rr_scalar_coeff_all_term,
+          alpha_coeff_eq := rr_scalar_coeff_all_term,
+          beta_coeff_eq := rr_scalar_coeff_all_term,
+          raw_recurrence := $hraw)
   | `(tactic|
       rr_favard_affine_param_den_raw_auto using
         slope := $s:term,
@@ -2560,12 +2752,8 @@ macro_rules
           raw_slope := $araw,
           raw_const := $braw,
           raw_lag := $craw,
-          slope_pos := by
-            intro n
-            positivity,
-          beta_pos := by
-            intro n
-            positivity,
+          slope_pos := rr_positivity_seq_term,
+          beta_pos := rr_positivity_seq_term,
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
@@ -2589,49 +2777,96 @@ macro_rules
         base_zero := $hP0:term,
         base_one := $hP1:term,
         den := $d:term,
+        raw_recurrence := $hraw:term) =>
+      `(tactic|
+        rr_favard_affine_param_den_raw_prod using
+          slope := $s,
+          alpha := $α,
+          beta := $β,
+          raw_slope_left := $aleft,
+          raw_slope_right := $aright,
+          raw_const := $braw,
+          raw_lag_left := $cleft,
+          raw_lag_right := $cright,
+          slope_pos := $hs,
+          beta_pos := $hβ,
+          base_zero := $hP0,
+          base_one := $hP1,
+          den := $d,
+          den_nonzero := rr_scalar_active_den_all_term,
+          slope_coeff_eq := rr_scalar_coeff_all_term,
+          alpha_coeff_eq := rr_scalar_coeff_all_term,
+          beta_coeff_eq := rr_scalar_coeff_all_term,
+          raw_recurrence := $hraw)
+  | `(tactic|
+      rr_favard_affine_param_den_raw_prod using
+        slope := $s:term,
+        alpha := $α:term,
+        beta := $β:term,
+        raw_slope_left := $aleft:term,
+        raw_slope_right := $aright:term,
+        raw_const := $braw:term,
+        raw_lag_left := $cleft:term,
+        raw_lag_right := $cright:term,
+        slope_pos := $hs:term,
+        beta_pos := $hβ:term,
+        base_zero := $hP0:term,
+        base_one := $hP1:term,
+        den := $d:term,
         den_nonzero := $hden:term,
         slope_coeff_eq := $hs_coeff:term,
         alpha_coeff_eq := $hα_coeff:term,
         beta_coeff_eq := $hβ_coeff:term,
         raw_recurrence := $hraw:term) =>
       `(tactic|
-        first
-          | exact
-              RealRooted.favardInterlacing_affine_param_coeff_den_raw_prod
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                (aleft := $aleft) (aright := $aright) (braw := $braw)
-                (cleft := $cleft) (cright := $cright)
-                $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw
-          | exact
-              RealRooted.isRealRooted_of_favard_affine_param_coeff_den_raw_prod
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                (aleft := $aleft) (aright := $aright) (braw := $braw)
-                (cleft := $cleft) (cright := $cright)
-                $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw
-          | exact
-              RealRooted.nonzero_of_favard_affine_param_coeff_den_raw_prod
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                (aleft := $aleft) (aright := $aright) (braw := $braw)
-                (cleft := $cleft) (cright := $cright)
-                $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw
-          | exact
-              RealRooted.favardInterlacing_affine_param_coeff_den_raw_prod
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                (aleft := $aleft) (aright := $aright) (braw := $braw)
-                (cleft := $cleft) (cright := $cright)
-                $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw _
-          | exact
-              RealRooted.isRealRooted_of_favard_affine_param_coeff_den_raw_prod
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                (aleft := $aleft) (aright := $aright) (braw := $braw)
-                (cleft := $cleft) (cright := $cright)
-                $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw _
-          | exact
-              RealRooted.nonzero_of_favard_affine_param_coeff_den_raw_prod
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                (aleft := $aleft) (aright := $aright) (braw := $braw)
-                (cleft := $cleft) (cright := $cright)
-                $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw _)
+        rr_favard_goal_variants
+          (RealRooted.favardInterlacing_affine_param_coeff_den_raw_prod
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            (aleft := $aleft) (aright := $aright) (braw := $braw)
+            (cleft := $cleft) (cright := $cright)
+            $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw),
+          (RealRooted.isRealRooted_of_favard_affine_param_coeff_den_raw_prod
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            (aleft := $aleft) (aright := $aright) (braw := $braw)
+            (cleft := $cleft) (cright := $cright)
+            $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw),
+          (RealRooted.nonzero_of_favard_affine_param_coeff_den_raw_prod
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            (aleft := $aleft) (aright := $aright) (braw := $braw)
+            (cleft := $cleft) (cright := $cright)
+            $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw))
+  | `(tactic|
+      rr_favard_affine_param_den_raw_prod_auto using
+        slope := $s:term,
+        alpha := $α:term,
+        beta := $β:term,
+        raw_slope_left := $aleft:term,
+        raw_slope_right := $aright:term,
+        raw_const := $braw:term,
+        raw_lag_left := $cleft:term,
+        raw_lag_right := $cright:term,
+        base_zero := $hP0:term,
+        base_one := $hP1:term,
+        den := $d:term,
+        raw_recurrence := $hraw:term) =>
+      `(tactic|
+        rr_favard_affine_param_den_raw_prod_auto using
+          slope := $s,
+          alpha := $α,
+          beta := $β,
+          raw_slope_left := $aleft,
+          raw_slope_right := $aright,
+          raw_const := $braw,
+          raw_lag_left := $cleft,
+          raw_lag_right := $cright,
+          base_zero := $hP0,
+          base_one := $hP1,
+          den := $d,
+          den_nonzero := rr_scalar_active_den_all_term,
+          slope_coeff_eq := rr_scalar_coeff_all_term,
+          alpha_coeff_eq := rr_scalar_coeff_all_term,
+          beta_coeff_eq := rr_scalar_coeff_all_term,
+          raw_recurrence := $hraw)
   | `(tactic|
       rr_favard_affine_param_den_raw_prod_auto using
         slope := $s:term,
@@ -2660,12 +2895,8 @@ macro_rules
           raw_const := $braw,
           raw_lag_left := $cleft,
           raw_lag_right := $cright,
-          slope_pos := by
-            intro n
-            positivity,
-          beta_pos := by
-            intro n
-            positivity,
+          slope_pos := rr_positivity_seq_term,
+          beta_pos := rr_positivity_seq_term,
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
@@ -2699,18 +2930,40 @@ macro_rules
           raw_const := $braw,
           raw_lag := $craw,
           slope_pos := $hs,
-          beta_pos := by
-            intro n
-            positivity,
+          beta_pos := rr_positivity_seq_term,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           den := $d,
           den_nonzero := $hden,
           slope_coeff_eq := $hs_coeff,
           alpha_coeff_eq := $hα_coeff,
           beta_coeff_eq := $hβ_coeff,
+          raw_recurrence := $hraw)
+  | `(tactic|
+      rr_favard_affine_param_den_raw_unit using
+        slope := $s:term,
+        alpha := $α:term,
+        raw_slope := $araw:term,
+        raw_const := $braw:term,
+        raw_lag := $craw:term,
+        base_zero := $hP0:term,
+        base_one := $hP1:term,
+        den := $d:term,
+        raw_recurrence := $hraw:term) =>
+      `(tactic|
+        rr_favard_affine_param_den_raw_unit using
+          slope := $s,
+          alpha := $α,
+          raw_slope := $araw,
+          raw_const := $braw,
+          raw_lag := $craw,
+          base_zero := $hP0,
+          base_one := $hP1,
+          den := $d,
+          den_nonzero := rr_scalar_active_den_all_term,
+          slope_coeff_eq := rr_scalar_coeff_all_term,
+          alpha_coeff_eq := rr_scalar_coeff_all_term,
+          beta_coeff_eq := rr_scalar_coeff_all_term,
           raw_recurrence := $hraw)
   | `(tactic|
       rr_favard_affine_param_den_raw_unit using
@@ -2736,14 +2989,40 @@ macro_rules
           raw_const := $braw,
           raw_lag := $craw,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           den := $d,
           den_nonzero := $hden,
           slope_coeff_eq := $hs_coeff,
           alpha_coeff_eq := $hα_coeff,
           beta_coeff_eq := $hβ_coeff,
+          raw_recurrence := $hraw)
+  | `(tactic|
+      rr_favard_param_den_raw using
+        alpha := $α:term,
+        beta := $β:term,
+        raw_slope := $araw:term,
+        raw_const := $braw:term,
+        raw_lag := $craw:term,
+        beta_pos := $hβ:term,
+        base_zero := $hP0:term,
+        base_one := $hP1:term,
+        den := $d:term,
+        raw_recurrence := $hraw:term) =>
+      `(tactic|
+        rr_favard_param_den_raw using
+          alpha := $α,
+          beta := $β,
+          raw_slope := $araw,
+          raw_const := $braw,
+          raw_lag := $craw,
+          beta_pos := $hβ,
+          base_zero := $hP0,
+          base_one := $hP1,
+          den := $d,
+          den_nonzero := rr_scalar_active_den_all_term,
+          slope_coeff_eq := rr_scalar_coeff_all_term,
+          alpha_coeff_eq := rr_scalar_coeff_all_term,
+          beta_coeff_eq := rr_scalar_coeff_all_term,
           raw_recurrence := $hraw)
   | `(tactic|
       rr_favard_param_den_raw using
@@ -2769,19 +3048,41 @@ macro_rules
           raw_slope := $araw,
           raw_const := $braw,
           raw_lag := $craw,
-          slope_pos := by
-            intro n
-            positivity,
+          slope_pos := rr_positivity_seq_term,
           beta_pos := $hβ,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           den := $d,
           den_nonzero := $hden,
           slope_coeff_eq := $hs_coeff,
           alpha_coeff_eq := $hα_coeff,
           beta_coeff_eq := $hβ_coeff,
+          raw_recurrence := $hraw)
+  | `(tactic|
+      rr_favard_param_den_raw_auto using
+        alpha := $α:term,
+        beta := $β:term,
+        raw_slope := $araw:term,
+        raw_const := $braw:term,
+        raw_lag := $craw:term,
+        base_zero := $hP0:term,
+        base_one := $hP1:term,
+        den := $d:term,
+        raw_recurrence := $hraw:term) =>
+      `(tactic|
+        rr_favard_param_den_raw_auto using
+          alpha := $α,
+          beta := $β,
+          raw_slope := $araw,
+          raw_const := $braw,
+          raw_lag := $craw,
+          base_zero := $hP0,
+          base_one := $hP1,
+          den := $d,
+          den_nonzero := rr_scalar_active_den_all_term,
+          slope_coeff_eq := rr_scalar_coeff_all_term,
+          alpha_coeff_eq := rr_scalar_coeff_all_term,
+          beta_coeff_eq := rr_scalar_coeff_all_term,
           raw_recurrence := $hraw)
   | `(tactic|
       rr_favard_param_den_raw_auto using
@@ -2805,9 +3106,7 @@ macro_rules
           raw_slope := $araw,
           raw_const := $braw,
           raw_lag := $craw,
-          beta_pos := by
-            intro n
-            positivity,
+          beta_pos := rr_positivity_seq_term,
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
@@ -2815,6 +3114,30 @@ macro_rules
           slope_coeff_eq := $hs_coeff,
           alpha_coeff_eq := $hα_coeff,
           beta_coeff_eq := $hβ_coeff,
+          raw_recurrence := $hraw)
+  | `(tactic|
+      rr_favard_param_den_raw_unit using
+        alpha := $α:term,
+        raw_slope := $araw:term,
+        raw_const := $braw:term,
+        raw_lag := $craw:term,
+        base_zero := $hP0:term,
+        base_one := $hP1:term,
+        den := $d:term,
+        raw_recurrence := $hraw:term) =>
+      `(tactic|
+        rr_favard_param_den_raw_unit using
+          alpha := $α,
+          raw_slope := $araw,
+          raw_const := $braw,
+          raw_lag := $craw,
+          base_zero := $hP0,
+          base_one := $hP1,
+          den := $d,
+          den_nonzero := rr_scalar_active_den_all_term,
+          slope_coeff_eq := rr_scalar_coeff_all_term,
+          alpha_coeff_eq := rr_scalar_coeff_all_term,
+          beta_coeff_eq := rr_scalar_coeff_all_term,
           raw_recurrence := $hraw)
   | `(tactic|
       rr_favard_param_den_raw_unit using
@@ -2861,13 +3184,9 @@ macro_rules
           alpha := $α,
           beta := fun _ => (1 : ℝ),
           slope_pos := $hs,
-          beta_pos := by
-            intro n
-            positivity,
+          beta_pos := rr_positivity_seq_term,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           den := $d,
           den_nonzero := $hden,
           raw_recurrence := $hraw)
@@ -2886,9 +3205,7 @@ macro_rules
           alpha := $α,
           beta := fun _ => (1 : ℝ),
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           den := $d,
           den_nonzero := $hden,
           raw_recurrence := $hraw)
@@ -2907,14 +3224,10 @@ macro_rules
           slope := fun _ => (1 : ℝ),
           alpha := $α,
           beta := $β,
-          slope_pos := by
-            intro n
-            positivity,
+          slope_pos := rr_positivity_seq_term,
           beta_pos := $hβ,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           den := $d,
           den_nonzero := $hden,
           raw_recurrence := $hraw)
@@ -2931,9 +3244,7 @@ macro_rules
         rr_favard_param_den using
           alpha := $α,
           beta := $β,
-          beta_pos := by
-            intro n
-            positivity,
+          beta_pos := rr_positivity_seq_term,
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
@@ -2970,17 +3281,10 @@ macro_rules
           alpha := $α,
           beta := fun _ => (1 : ℝ),
           slope_pos := $hs,
-          beta_pos := by
-            intro n
-            positivity,
+          beta_pos := rr_positivity_seq_term,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
-          step := by
-            intro n
-            try dsimp
-            simpa using $hstep n)
+          base_one := rr_favard_base_one_dsimp $hP1,
+          step := rr_favard_step_dsimp_seq $hstep)
   | `(tactic|
       rr_favard_affine_param_unit using
         slope := $s:term,
@@ -2994,13 +3298,8 @@ macro_rules
           alpha := $α,
           beta := fun _ => (1 : ℝ),
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
-          step := by
-            intro n
-            try dsimp
-            simpa using $hstep n)
+          base_one := $hP1,
+          step := $hstep)
   | `(tactic|
       rr_favard_affine_param_row_sign using
         slope := $s:term,
@@ -3012,19 +3311,13 @@ macro_rules
         base_one := $hP1:term,
         step := $hstep:term) =>
       `(tactic|
-        first
-          | exact RealRooted.favardInterlacing_affine_param_coeff_rowSign
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep
-          | exact RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep
-          | exact RealRooted.nonzero_of_favard_affine_param_coeff_rowSign
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep
-          | exact RealRooted.favardInterlacing_affine_param_coeff_rowSign
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _
-          | exact RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _
-          | exact RealRooted.nonzero_of_favard_affine_param_coeff_rowSign
-              (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep _)
+        rr_favard_goal_variants
+          (RealRooted.favardInterlacing_affine_param_coeff_rowSign
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep),
+          (RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep),
+          (RealRooted.nonzero_of_favard_affine_param_coeff_rowSign
+            (s := $s) (α := $α) (β := $β) $hs $hβ $hP0 $hP1 $hstep))
   | `(tactic|
       rr_favard_affine_param_row_sign_auto using
         slope := $s:term,
@@ -3038,15 +3331,11 @@ macro_rules
           slope := $s,
           alpha := $α,
           beta := $β,
-          slope_pos := by
-            intro n
-            positivity,
-          beta_pos := by
-            intro n
-            positivity,
+          slope_pos := rr_positivity_seq_term,
+          beta_pos := rr_positivity_seq_term,
           base_zero := $hP0,
-          base_one := $hP1,
-          step := $hstep)
+          base_one := rr_favard_base_one_dsimp $hP1,
+          step := rr_favard_step_dsimp_seq $hstep)
   | `(tactic|
       rr_favard_affine_param_row_sign_den using
         slope := $s:term,
@@ -3060,217 +3349,34 @@ macro_rules
         den_nonzero := $hden:term,
         raw_recurrence := $hraw:term) =>
       `(tactic|
-        first
-          | exact
-              RealRooted.favardInterlacing_affine_param_coeff_rowSign_den
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done)
-          | exact
-              RealRooted.favardInterlacing_affine_param_coeff_rowSign_den_split
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done)
-          | exact
-              RealRooted.favardInterlacing_affine_param_coeff_rowSign_den_split_rev
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw)
-          | exact
-              RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done)
-          | exact
-              RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den_split
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done)
-          | exact
-              RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den_split_rev
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw)
-          | exact
-              RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done)
-          | exact
-              RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den_split
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done)
-          | exact
-              RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den_split_rev
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw)
-          | exact
-              RealRooted.favardInterlacing_affine_param_coeff_rowSign_den
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done) _
-          | exact
-              RealRooted.favardInterlacing_affine_param_coeff_rowSign_den_split
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done) _
-          | exact
-              RealRooted.favardInterlacing_affine_param_coeff_rowSign_den_split_rev
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw) _
-          | exact
-              RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done) _
-          | exact
-              RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den_split
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done) _
-          | exact
-              RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den_split_rev
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw) _
-          | exact
-              RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done) _
-          | exact
-              RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den_split
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by
-                  intro n
-                  first
-                    | simpa [Nat.succ_eq_add_one] using $hraw n
-                    | simpa [Nat.succ_eq_add_one, sub_eq_add_neg, add_comm,
-                        add_left_comm, add_assoc, C_mul, mul_assoc]
-                        using $hraw n
-                    | simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc,
-                        C_mul, mul_assoc]
-                        using $hraw n
-                  all_goals done) _
-          | exact
-              RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den_split_rev
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                $hs $hβ $hP0 $hP1 $hden
-                (by rr_favard_den_raw using $hraw) _)
+        rr_favard_goal_variant_alternatives3
+          (RealRooted.favardInterlacing_affine_param_coeff_rowSign_den
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            $hs $hβ $hP0 $hP1 $hden (rr_favard_den_raw_term $hraw)),
+          (RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            $hs $hβ $hP0 $hP1 $hden (rr_favard_den_raw_term $hraw)),
+          (RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            $hs $hβ $hP0 $hP1 $hden (rr_favard_den_raw_term $hraw));
+          (RealRooted.favardInterlacing_affine_param_coeff_rowSign_den_split
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            $hs $hβ $hP0 $hP1 $hden (rr_favard_den_raw_term $hraw)),
+          (RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den_split
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            $hs $hβ $hP0 $hP1 $hden (rr_favard_den_raw_term $hraw)),
+          (RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den_split
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            $hs $hβ $hP0 $hP1 $hden (rr_favard_den_raw_term $hraw));
+          (RealRooted.favardInterlacing_affine_param_coeff_rowSign_den_split_rev
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            $hs $hβ $hP0 $hP1 $hden (rr_favard_den_raw_term $hraw)),
+          (RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den_split_rev
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            $hs $hβ $hP0 $hP1 $hden (rr_favard_den_raw_term $hraw)),
+          (RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den_split_rev
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            $hs $hβ $hP0 $hP1 $hden (rr_favard_den_raw_term $hraw)))
   | `(tactic|
       rr_favard_affine_param_row_sign_den_auto using
         slope := $s:term,
@@ -3286,16 +3392,44 @@ macro_rules
           slope := $s,
           alpha := $α,
           beta := $β,
-          slope_pos := by
-            intro n
-            positivity,
-          beta_pos := by
-            intro n
-            positivity,
+          slope_pos := rr_positivity_seq_term,
+          beta_pos := rr_positivity_seq_term,
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
           den_nonzero := $hden,
+          raw_recurrence := $hraw)
+  | `(tactic|
+      rr_favard_affine_param_row_sign_den_raw using
+        slope := $s:term,
+        alpha := $α:term,
+        beta := $β:term,
+        raw_slope := $araw:term,
+        raw_const := $braw:term,
+        raw_lag := $craw:term,
+        slope_pos := $hs:term,
+        beta_pos := $hβ:term,
+        base_zero := $hP0:term,
+        base_one := $hP1:term,
+        den := $d:term,
+        raw_recurrence := $hraw:term) =>
+      `(tactic|
+        rr_favard_affine_param_row_sign_den_raw using
+          slope := $s,
+          alpha := $α,
+          beta := $β,
+          raw_slope := $araw,
+          raw_const := $braw,
+          raw_lag := $craw,
+          slope_pos := $hs,
+          beta_pos := $hβ,
+          base_zero := $hP0,
+          base_one := $hP1,
+          den := $d,
+          den_nonzero := rr_scalar_active_den_all_term,
+          slope_coeff_eq := rr_scalar_coeff_all_term,
+          alpha_coeff_eq := rr_scalar_coeff_all_term,
+          beta_coeff_eq := rr_scalar_coeff_all_term,
           raw_recurrence := $hraw)
   | `(tactic|
       rr_favard_affine_param_row_sign_den_raw using
@@ -3316,37 +3450,47 @@ macro_rules
         beta_coeff_eq := $hβ_coeff:term,
         raw_recurrence := $hraw:term) =>
       `(tactic|
-        first
-          | exact
-              RealRooted.favardInterlacing_affine_param_coeff_rowSign_den_raw
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                (araw := $araw) (braw := $braw) (craw := $craw)
-                $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw
-          | exact
-              RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den_raw
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                (araw := $araw) (braw := $braw) (craw := $craw)
-                $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw
-          | exact
-              RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den_raw
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                (araw := $araw) (braw := $braw) (craw := $craw)
-                $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw
-          | exact
-              RealRooted.favardInterlacing_affine_param_coeff_rowSign_den_raw
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                (araw := $araw) (braw := $braw) (craw := $craw)
-                $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw _
-          | exact
-              RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den_raw
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                (araw := $araw) (braw := $braw) (craw := $craw)
-                $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw _
-          | exact
-              RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den_raw
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                (araw := $araw) (braw := $braw) (craw := $craw)
-                $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw _)
+        rr_favard_goal_variants
+          (RealRooted.favardInterlacing_affine_param_coeff_rowSign_den_raw
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            (araw := $araw) (braw := $braw) (craw := $craw)
+            $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw),
+          (RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den_raw
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            (araw := $araw) (braw := $braw) (craw := $craw)
+            $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw),
+          (RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den_raw
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            (araw := $araw) (braw := $braw) (craw := $craw)
+            $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw))
+  | `(tactic|
+      rr_favard_affine_param_row_sign_den_raw_auto using
+        slope := $s:term,
+        alpha := $α:term,
+        beta := $β:term,
+        raw_slope := $araw:term,
+        raw_const := $braw:term,
+        raw_lag := $craw:term,
+        base_zero := $hP0:term,
+        base_one := $hP1:term,
+        den := $d:term,
+        raw_recurrence := $hraw:term) =>
+      `(tactic|
+        rr_favard_affine_param_row_sign_den_raw_auto using
+          slope := $s,
+          alpha := $α,
+          beta := $β,
+          raw_slope := $araw,
+          raw_const := $braw,
+          raw_lag := $craw,
+          base_zero := $hP0,
+          base_one := $hP1,
+          den := $d,
+          den_nonzero := rr_scalar_active_den_all_term,
+          slope_coeff_eq := rr_scalar_coeff_all_term,
+          alpha_coeff_eq := rr_scalar_coeff_all_term,
+          beta_coeff_eq := rr_scalar_coeff_all_term,
+          raw_recurrence := $hraw)
   | `(tactic|
       rr_favard_affine_param_row_sign_den_raw_auto using
         slope := $s:term,
@@ -3371,12 +3515,8 @@ macro_rules
           raw_slope := $araw,
           raw_const := $braw,
           raw_lag := $craw,
-          slope_pos := by
-            intro n
-            positivity,
-          beta_pos := by
-            intro n
-            positivity,
+          slope_pos := rr_positivity_seq_term,
+          beta_pos := rr_positivity_seq_term,
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
@@ -3400,49 +3540,96 @@ macro_rules
         base_zero := $hP0:term,
         base_one := $hP1:term,
         den := $d:term,
+        raw_recurrence := $hraw:term) =>
+      `(tactic|
+        rr_favard_affine_param_row_sign_den_raw_prod using
+          slope := $s,
+          alpha := $α,
+          beta := $β,
+          raw_slope_left := $aleft,
+          raw_slope_right := $aright,
+          raw_const := $braw,
+          raw_lag_left := $cleft,
+          raw_lag_right := $cright,
+          slope_pos := $hs,
+          beta_pos := $hβ,
+          base_zero := $hP0,
+          base_one := $hP1,
+          den := $d,
+          den_nonzero := rr_scalar_active_den_all_term,
+          slope_coeff_eq := rr_scalar_coeff_all_term,
+          alpha_coeff_eq := rr_scalar_coeff_all_term,
+          beta_coeff_eq := rr_scalar_coeff_all_term,
+          raw_recurrence := $hraw)
+  | `(tactic|
+      rr_favard_affine_param_row_sign_den_raw_prod using
+        slope := $s:term,
+        alpha := $α:term,
+        beta := $β:term,
+        raw_slope_left := $aleft:term,
+        raw_slope_right := $aright:term,
+        raw_const := $braw:term,
+        raw_lag_left := $cleft:term,
+        raw_lag_right := $cright:term,
+        slope_pos := $hs:term,
+        beta_pos := $hβ:term,
+        base_zero := $hP0:term,
+        base_one := $hP1:term,
+        den := $d:term,
         den_nonzero := $hden:term,
         slope_coeff_eq := $hs_coeff:term,
         alpha_coeff_eq := $hα_coeff:term,
         beta_coeff_eq := $hβ_coeff:term,
         raw_recurrence := $hraw:term) =>
       `(tactic|
-        first
-          | exact
-              RealRooted.favardInterlacing_affine_param_coeff_rowSign_den_raw_prod
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                (aleft := $aleft) (aright := $aright) (braw := $braw)
-                (cleft := $cleft) (cright := $cright)
-                $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw
-          | exact
-              RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den_raw_prod
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                (aleft := $aleft) (aright := $aright) (braw := $braw)
-                (cleft := $cleft) (cright := $cright)
-                $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw
-          | exact
-              RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den_raw_prod
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                (aleft := $aleft) (aright := $aright) (braw := $braw)
-                (cleft := $cleft) (cright := $cright)
-                $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw
-          | exact
-              RealRooted.favardInterlacing_affine_param_coeff_rowSign_den_raw_prod
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                (aleft := $aleft) (aright := $aright) (braw := $braw)
-                (cleft := $cleft) (cright := $cright)
-                $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw _
-          | exact
-              RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den_raw_prod
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                (aleft := $aleft) (aright := $aright) (braw := $braw)
-                (cleft := $cleft) (cright := $cright)
-                $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw _
-          | exact
-              RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den_raw_prod
-                (s := $s) (α := $α) (β := $β) (d := $d)
-                (aleft := $aleft) (aright := $aright) (braw := $braw)
-                (cleft := $cleft) (cright := $cright)
-                $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw _)
+        rr_favard_goal_variants
+          (RealRooted.favardInterlacing_affine_param_coeff_rowSign_den_raw_prod
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            (aleft := $aleft) (aright := $aright) (braw := $braw)
+            (cleft := $cleft) (cright := $cright)
+            $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw),
+          (RealRooted.isRealRooted_of_favard_affine_param_coeff_rowSign_den_raw_prod
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            (aleft := $aleft) (aright := $aright) (braw := $braw)
+            (cleft := $cleft) (cright := $cright)
+            $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw),
+          (RealRooted.nonzero_of_favard_affine_param_coeff_rowSign_den_raw_prod
+            (s := $s) (α := $α) (β := $β) (d := $d)
+            (aleft := $aleft) (aright := $aright) (braw := $braw)
+            (cleft := $cleft) (cright := $cright)
+            $hs $hβ $hP0 $hP1 $hden $hs_coeff $hα_coeff $hβ_coeff $hraw))
+  | `(tactic|
+      rr_favard_affine_param_row_sign_den_raw_prod_auto using
+        slope := $s:term,
+        alpha := $α:term,
+        beta := $β:term,
+        raw_slope_left := $aleft:term,
+        raw_slope_right := $aright:term,
+        raw_const := $braw:term,
+        raw_lag_left := $cleft:term,
+        raw_lag_right := $cright:term,
+        base_zero := $hP0:term,
+        base_one := $hP1:term,
+        den := $d:term,
+        raw_recurrence := $hraw:term) =>
+      `(tactic|
+        rr_favard_affine_param_row_sign_den_raw_prod_auto using
+          slope := $s,
+          alpha := $α,
+          beta := $β,
+          raw_slope_left := $aleft,
+          raw_slope_right := $aright,
+          raw_const := $braw,
+          raw_lag_left := $cleft,
+          raw_lag_right := $cright,
+          base_zero := $hP0,
+          base_one := $hP1,
+          den := $d,
+          den_nonzero := rr_scalar_active_den_all_term,
+          slope_coeff_eq := rr_scalar_coeff_all_term,
+          alpha_coeff_eq := rr_scalar_coeff_all_term,
+          beta_coeff_eq := rr_scalar_coeff_all_term,
+          raw_recurrence := $hraw)
   | `(tactic|
       rr_favard_affine_param_row_sign_den_raw_prod_auto using
         slope := $s:term,
@@ -3471,12 +3658,8 @@ macro_rules
           raw_const := $braw,
           raw_lag_left := $cleft,
           raw_lag_right := $cright,
-          slope_pos := by
-            intro n
-            positivity,
-          beta_pos := by
-            intro n
-            positivity,
+          slope_pos := rr_positivity_seq_term,
+          beta_pos := rr_positivity_seq_term,
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
@@ -3510,18 +3693,40 @@ macro_rules
           raw_const := $braw,
           raw_lag := $craw,
           slope_pos := $hs,
-          beta_pos := by
-            intro n
-            positivity,
+          beta_pos := rr_positivity_seq_term,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           den := $d,
           den_nonzero := $hden,
           slope_coeff_eq := $hs_coeff,
           alpha_coeff_eq := $hα_coeff,
           beta_coeff_eq := $hβ_coeff,
+          raw_recurrence := $hraw)
+  | `(tactic|
+      rr_favard_affine_param_row_sign_den_raw_unit using
+        slope := $s:term,
+        alpha := $α:term,
+        raw_slope := $araw:term,
+        raw_const := $braw:term,
+        raw_lag := $craw:term,
+        base_zero := $hP0:term,
+        base_one := $hP1:term,
+        den := $d:term,
+        raw_recurrence := $hraw:term) =>
+      `(tactic|
+        rr_favard_affine_param_row_sign_den_raw_unit using
+          slope := $s,
+          alpha := $α,
+          raw_slope := $araw,
+          raw_const := $braw,
+          raw_lag := $craw,
+          base_zero := $hP0,
+          base_one := $hP1,
+          den := $d,
+          den_nonzero := rr_scalar_active_den_all_term,
+          slope_coeff_eq := rr_scalar_coeff_all_term,
+          alpha_coeff_eq := rr_scalar_coeff_all_term,
+          beta_coeff_eq := rr_scalar_coeff_all_term,
           raw_recurrence := $hraw)
   | `(tactic|
       rr_favard_affine_param_row_sign_den_raw_unit using
@@ -3547,14 +3752,40 @@ macro_rules
           raw_const := $braw,
           raw_lag := $craw,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           den := $d,
           den_nonzero := $hden,
           slope_coeff_eq := $hs_coeff,
           alpha_coeff_eq := $hα_coeff,
           beta_coeff_eq := $hβ_coeff,
+          raw_recurrence := $hraw)
+  | `(tactic|
+      rr_favard_param_row_sign_den_raw using
+        alpha := $α:term,
+        beta := $β:term,
+        raw_slope := $araw:term,
+        raw_const := $braw:term,
+        raw_lag := $craw:term,
+        beta_pos := $hβ:term,
+        base_zero := $hP0:term,
+        base_one := $hP1:term,
+        den := $d:term,
+        raw_recurrence := $hraw:term) =>
+      `(tactic|
+        rr_favard_param_row_sign_den_raw using
+          alpha := $α,
+          beta := $β,
+          raw_slope := $araw,
+          raw_const := $braw,
+          raw_lag := $craw,
+          beta_pos := $hβ,
+          base_zero := $hP0,
+          base_one := $hP1,
+          den := $d,
+          den_nonzero := rr_scalar_active_den_all_term,
+          slope_coeff_eq := rr_scalar_coeff_all_term,
+          alpha_coeff_eq := rr_scalar_coeff_all_term,
+          beta_coeff_eq := rr_scalar_coeff_all_term,
           raw_recurrence := $hraw)
   | `(tactic|
       rr_favard_param_row_sign_den_raw using
@@ -3580,19 +3811,41 @@ macro_rules
           raw_slope := $araw,
           raw_const := $braw,
           raw_lag := $craw,
-          slope_pos := by
-            intro n
-            positivity,
+          slope_pos := rr_positivity_seq_term,
           beta_pos := $hβ,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           den := $d,
           den_nonzero := $hden,
           slope_coeff_eq := $hs_coeff,
           alpha_coeff_eq := $hα_coeff,
           beta_coeff_eq := $hβ_coeff,
+          raw_recurrence := $hraw)
+  | `(tactic|
+      rr_favard_param_row_sign_den_raw_auto using
+        alpha := $α:term,
+        beta := $β:term,
+        raw_slope := $araw:term,
+        raw_const := $braw:term,
+        raw_lag := $craw:term,
+        base_zero := $hP0:term,
+        base_one := $hP1:term,
+        den := $d:term,
+        raw_recurrence := $hraw:term) =>
+      `(tactic|
+        rr_favard_param_row_sign_den_raw_auto using
+          alpha := $α,
+          beta := $β,
+          raw_slope := $araw,
+          raw_const := $braw,
+          raw_lag := $craw,
+          base_zero := $hP0,
+          base_one := $hP1,
+          den := $d,
+          den_nonzero := rr_scalar_active_den_all_term,
+          slope_coeff_eq := rr_scalar_coeff_all_term,
+          alpha_coeff_eq := rr_scalar_coeff_all_term,
+          beta_coeff_eq := rr_scalar_coeff_all_term,
           raw_recurrence := $hraw)
   | `(tactic|
       rr_favard_param_row_sign_den_raw_auto using
@@ -3616,9 +3869,7 @@ macro_rules
           raw_slope := $araw,
           raw_const := $braw,
           raw_lag := $craw,
-          beta_pos := by
-            intro n
-            positivity,
+          beta_pos := rr_positivity_seq_term,
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
@@ -3626,6 +3877,30 @@ macro_rules
           slope_coeff_eq := $hs_coeff,
           alpha_coeff_eq := $hα_coeff,
           beta_coeff_eq := $hβ_coeff,
+          raw_recurrence := $hraw)
+  | `(tactic|
+      rr_favard_param_row_sign_den_raw_unit using
+        alpha := $α:term,
+        raw_slope := $araw:term,
+        raw_const := $braw:term,
+        raw_lag := $craw:term,
+        base_zero := $hP0:term,
+        base_one := $hP1:term,
+        den := $d:term,
+        raw_recurrence := $hraw:term) =>
+      `(tactic|
+        rr_favard_param_row_sign_den_raw_unit using
+          alpha := $α,
+          raw_slope := $araw,
+          raw_const := $braw,
+          raw_lag := $craw,
+          base_zero := $hP0,
+          base_one := $hP1,
+          den := $d,
+          den_nonzero := rr_scalar_active_den_all_term,
+          slope_coeff_eq := rr_scalar_coeff_all_term,
+          alpha_coeff_eq := rr_scalar_coeff_all_term,
+          beta_coeff_eq := rr_scalar_coeff_all_term,
           raw_recurrence := $hraw)
   | `(tactic|
       rr_favard_param_row_sign_den_raw_unit using
@@ -3672,13 +3947,9 @@ macro_rules
           alpha := $α,
           beta := fun _ => (1 : ℝ),
           slope_pos := $hs,
-          beta_pos := by
-            intro n
-            positivity,
+          beta_pos := rr_positivity_seq_term,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           den := $d,
           den_nonzero := $hden,
           raw_recurrence := $hraw)
@@ -3697,9 +3968,7 @@ macro_rules
           alpha := $α,
           beta := fun _ => (1 : ℝ),
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           den := $d,
           den_nonzero := $hden,
           raw_recurrence := $hraw)
@@ -3718,14 +3987,10 @@ macro_rules
           slope := fun _ => (1 : ℝ),
           alpha := $α,
           beta := $β,
-          slope_pos := by
-            intro n
-            positivity,
+          slope_pos := rr_positivity_seq_term,
           beta_pos := $hβ,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
+          base_one := rr_favard_base_one_dsimp $hP1,
           den := $d,
           den_nonzero := $hden,
           raw_recurrence := $hraw)
@@ -3742,9 +4007,7 @@ macro_rules
         rr_favard_param_row_sign_den using
           alpha := $α,
           beta := $β,
-          beta_pos := by
-            intro n
-            positivity,
+          beta_pos := rr_positivity_seq_term,
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
@@ -3781,17 +4044,10 @@ macro_rules
           alpha := $α,
           beta := fun _ => (1 : ℝ),
           slope_pos := $hs,
-          beta_pos := by
-            intro n
-            positivity,
+          beta_pos := rr_positivity_seq_term,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
-          step := by
-            intro n
-            try dsimp
-            simpa using $hstep n)
+          base_one := rr_favard_base_one_dsimp $hP1,
+          step := rr_favard_step_dsimp_seq $hstep)
   | `(tactic|
       rr_favard_affine_param_row_sign_unit using
         slope := $s:term,
@@ -3805,13 +4061,8 @@ macro_rules
           alpha := $α,
           beta := fun _ => (1 : ℝ),
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
-          step := by
-            intro n
-            try dsimp
-            simpa using $hstep n)
+          base_one := $hP1,
+          step := $hstep)
   | `(tactic|
       rr_favard_param_row_sign_unit using
         alpha := $α:term,
@@ -3838,18 +4089,11 @@ macro_rules
           slope := fun _ => (1 : ℝ),
           alpha := $α,
           beta := $β,
-          slope_pos := by
-            intro n
-            positivity,
+          slope_pos := rr_positivity_seq_term,
           beta_pos := $hβ,
           base_zero := $hP0,
-          base_one := by
-            try dsimp
-            simpa using $hP1,
-          step := by
-            intro n
-            try dsimp
-            simpa using $hstep n)
+          base_one := rr_favard_base_one_dsimp $hP1,
+          step := rr_favard_step_dsimp_seq $hstep)
   | `(tactic|
       rr_favard_param_row_sign_auto using
         alpha := $α:term,
@@ -3861,9 +4105,7 @@ macro_rules
         rr_favard_param_row_sign using
           alpha := $α,
           beta := $β,
-          beta_pos := by
-            intro n
-            positivity,
+          beta_pos := rr_positivity_seq_term,
           base_zero := $hP0,
           base_one := $hP1,
           step := $hstep)
