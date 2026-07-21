@@ -54,24 +54,30 @@ theorem applyAsDifferentialOperator_C (a : ℝ) (g : ℝ[X]) :
 
 theorem applyAsDifferentialOperator_X_add_C (a : ℝ) (g : ℝ[X]) :
     applyAsDifferentialOperator (X + C a) g = derivative g + C a * g := by
-  simp [applyAsDifferentialOperator_eq_sum_range (N := 2), Finset.sum_range_succ, add_comm]
+  simp [applyAsDifferentialOperator_eq_sum_range (N := 2), Finset.sum_range_succ,
+    add_comm]
 
 theorem applyAsDifferentialOperator_add (f₁ f₂ g : ℝ[X]) :
     applyAsDifferentialOperator (f₁ + f₂) g =
       applyAsDifferentialOperator f₁ g + applyAsDifferentialOperator f₂ g := by
   let N := (f₁ + f₂).natDegree + f₁.natDegree + f₂.natDegree + 1
-  rw [applyAsDifferentialOperator_eq_sum_range (N := N) _ g,
-    applyAsDifferentialOperator_eq_sum_range (N := N) _ g,
-    applyAsDifferentialOperator_eq_sum_range (N := N) _ g, ← Finset.sum_add_distrib]
-  any_goals lia
+  have hN_sum : (f₁ + f₂).natDegree < N := by lia
+  have hN_left : f₁.natDegree < N := by lia
+  have hN_right : f₂.natDegree < N := by lia
+  rw [applyAsDifferentialOperator_eq_sum_range (N := N) hN_sum g,
+    applyAsDifferentialOperator_eq_sum_range (N := N) hN_left g,
+    applyAsDifferentialOperator_eq_sum_range (N := N) hN_right g,
+    ← Finset.sum_add_distrib]
   simp only [coeff_add, C_add, add_mul]
 
 theorem applyAsDifferentialOperator_C_mul (a : ℝ) (f g : ℝ[X]) :
-    applyAsDifferentialOperator (C a * f) g = C a * applyAsDifferentialOperator f g := by
+    applyAsDifferentialOperator (C a * f) g =
+      C a * applyAsDifferentialOperator f g := by
   let N := (C a * f).natDegree + f.natDegree + 1
-  rw [applyAsDifferentialOperator_eq_sum_range (N := N) _ g,
-    applyAsDifferentialOperator_eq_sum_range (N := N) _ g, Finset.mul_sum]
-  any_goals lia
+  have hN_mul : (C a * f).natDegree < N := by lia
+  have hN_f : f.natDegree < N := by lia
+  rw [applyAsDifferentialOperator_eq_sum_range (N := N) hN_mul g,
+    applyAsDifferentialOperator_eq_sum_range (N := N) hN_f g, Finset.mul_sum]
   simp only [coeff_C_mul, map_mul, mul_assoc]
 
 theorem applyAsDifferentialOperator_X_mul (f g : ℝ[X]) :
@@ -159,6 +165,14 @@ theorem differential_operator_preserves_real_rooted {f g : ℝ[X]}
       · simp [hy]
       · exact ihx hy
   exact this f hf.2 hg.2
+
+/-- Compatibility wrapper for the original challenge-facing theorem name. -/
+theorem differentialOperator_preserves_realRooted {f g : ℝ[X]}
+    (hf : f ≠ 0 ∧ f.Splits)
+    (hg : g ≠ 0 ∧ g.Splits) :
+    applyAsDifferentialOperator f g = 0 ∨
+      (applyAsDifferentialOperator f g).Splits :=
+  differential_operator_preserves_real_rooted hf hg
 
 end HermitePoulain
 end Challenges

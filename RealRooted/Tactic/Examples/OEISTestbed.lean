@@ -145,14 +145,13 @@ example {f u : ℝ[X]}
       HasPosLeadingCoeff (u * f + (-(C (1 : ℝ)) * X * (1 + X)) * f.derivative))
     (hf_pos : HasPosLeadingCoeff f) :
     Prec f (u * f + (-(C (1 : ℝ)) * X * (1 + X)) * f.derivative) := by
-  rr_mw_derivative_neg_X_one_add_outer using
+  rr_mw_derivative_neg_X_one_add_outer_auto using
     splits := hf,
     degree_two := hdegf,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi,
     target_pos_lc := hF_pos,
     source_pos_lc := hf_pos,
-    coeff_nonneg := by norm_num,
     root_upper := hroots
 
 -- `A106800`/`A021010`: `v_n(t)=-t^2`.
@@ -166,14 +165,13 @@ example {f u : ℝ[X]}
     (hF_pos : HasPosLeadingCoeff (u * f + (-(C (1 : ℝ)) * X ^ 2) * f.derivative))
     (hf_pos : HasPosLeadingCoeff f) :
     Prec f (u * f + (-(C (1 : ℝ)) * X ^ 2) * f.derivative) := by
-  rr_mw_derivative_neg_X_sq using
+  rr_mw_derivative_neg_X_sq_auto using
     splits := hf,
     degree_two := hdegf,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi,
     target_pos_lc := hF_pos,
-    source_pos_lc := hf_pos,
-    coeff_nonneg := by norm_num
+    source_pos_lc := hf_pos
 
 -- `A395972`: `v_n(t)=-2t^2`.
 example {f u : ℝ[X]}
@@ -186,14 +184,13 @@ example {f u : ℝ[X]}
     (hF_pos : HasPosLeadingCoeff (u * f + (-(C (2 : ℝ)) * X ^ 2) * f.derivative))
     (hf_pos : HasPosLeadingCoeff f) :
     Prec f (u * f + (-(C (2 : ℝ)) * X ^ 2) * f.derivative) := by
-  rr_mw_derivative_neg_X_sq using
+  rr_mw_derivative_neg_X_sq_auto using
     splits := hf,
     degree_two := hdegf,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi,
     target_pos_lc := hF_pos,
-    source_pos_lc := hf_pos,
-    coeff_nonneg := by norm_num
+    source_pos_lc := hf_pos
 
 /-! ## Ma--Wang sequence-level OEIS smoke tests -/
 
@@ -218,12 +215,7 @@ example {P : Nat → ℝ[X]}
     degree_two := hdeg_two,
     root_lower := hroot_lower,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A284861`: same inner-window proof path, but with `3t(1+t)P'`.
 example {P : Nat → ℝ[X]}
@@ -246,12 +238,7 @@ example {P : Nat → ℝ[X]}
     degree_two := hdeg_two,
     root_lower := hroot_lower,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A111999`: unscaled inner-window shape `t(1+t)P'`.
 example {P : Nat → ℝ[X]}
@@ -275,12 +262,7 @@ example {P : Nat → ℝ[X]}
     degree_two := hdeg_two,
     root_lower := hroot_lower,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A194649`: window shape `(1+t)(1+2t)P'`.
 example {P : Nat → ℝ[X]}
@@ -304,12 +286,7 @@ example {P : Nat → ℝ[X]}
     root_lower := hroot_lower,
     root_upper := hroot_upper,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A102365`: half-line factor `2t-t^2=t(2-t)` with no denominator.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -329,12 +306,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A142963`: half-line factor `t-4t^2=t(1-4t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -355,12 +327,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A156920`: half-line factor `t-2t^2=t(1-2t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -381,12 +348,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A290315`: half-line factor `2t-4t^2=2t(1-2t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -408,12 +370,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A290316`: half-line factor `3t-9t^2=3t(1-3t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -435,12 +392,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A257608`: half-line factor `9t-9t^2=9t(1-t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -461,12 +413,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A257614`: half-line factor `5t-5t^2=5t(1-t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -487,12 +434,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A257621`: half-line factor `4t-4t^2=4t(1-t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -513,12 +455,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A257626`: half-line factor `3t-3t^2=3t(1-t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -539,12 +476,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A156366`: half-line factor `t-3t^2=t(1-3t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -565,12 +497,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A257620`: half-line factor `3t-3t^2=3t(1-t)`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -591,12 +518,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A062190`: negative scalar denominator after the active shift.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -623,13 +545,8 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
       intro n
       rr_mw_den_norm using
         recurrence := hraw n,
-        den_nonzero := by rr_mw_active_den_at n,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+        den_nonzero := rr_mw_active_den_at_term n,
+    degree_succ := hdeg
 
 -- `A062196`: quadratic scalar denominator with `t(1-t)P'`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -654,18 +571,8 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     coeff := fun n => (2 * ((n : ℝ) + 4)) / (((n : ℝ) + 3) * ((n : ℝ) + 5)),
     den := fun n => (((n : ℝ) + 3) * ((n : ℝ) + 5) / 3),
     raw_coeff := fun n => 2 * ((n : ℝ) + 4) / 3,
-    den_nonzero := by intro n; positivity,
-    coeff_eq := by
-      intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by positivity,
-        show (n : ℝ) + 5 ≠ 0 by positivity],
     raw_recurrence := hraw,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A357613`: positive scalar denominator, leaving the derivative sign
 -- certificate as a separate family-specific obligation.
@@ -677,7 +584,7 @@ example {P RHS : Nat → ℝ[X]}
   intro n
   rr_mw_den_norm using
     recurrence := hraw n,
-    den_nonzero := by rr_mw_active_den_at n
+    den_nonzero := rr_mw_active_den_at_term n
 
 -- `A361893`: split scalar denominator normalizing into `-c_n t^2 P'`.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -702,12 +609,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     have hscalar :
         (1 - (1 / 2 : ℝ) * ((n : ℝ) + 3))⁻¹ * (((n : ℝ) + 2) / 2) =
           -(((n : ℝ) + 2) / ((n : ℝ) + 1)) := by
-      have hnp1 : (n : ℝ) + 1 ≠ 0 := by positivity
-      have hden_eq :
-          1 - (1 / 2 : ℝ) * ((n : ℝ) + 3) = -(((n : ℝ) + 1) / 2) := by
-        ring
-      rw [hden_eq]
-      field_simp [hnp1]
+      rr_scalar_coeff_at n
     have hrec0 :
         P (n + 2) =
           U n * P (n + 1) +
@@ -723,12 +625,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     pos_lc := hpos,
     degree_two := hdeg_two,
     recurrence := hrec,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A375853`: active shift of
 -- `(n-1)P_n=(n+2+(3n-2)t)P_{n-1}+2t(1-t)P'_{n-1}`.
@@ -750,17 +647,8 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     coeff := fun n => (2 : ℝ) / ((n : ℝ) + 1),
-    den_nonzero := by intro n; positivity,
-    coeff_eq := by
-      intro n
-      field_simp [show (n : ℝ) + 1 ≠ 0 by positivity],
     raw_recurrence := hraw,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 -- `A114655`: active shift of
 -- `(n+1)P_n=(3nt+2n-3t+2)P_{n-1}+2t(2-t)P'_{n-1}`.
@@ -782,17 +670,8 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     nonneg_coeffs := hnonneg,
     degree_two := hdeg_two,
     coeff := fun n => (2 : ℝ) / ((n : ℝ) + 3),
-    den_nonzero := by intro n; positivity,
-    coeff_eq := by
-      intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by positivity],
     raw_recurrence := hraw,
-    degree_lower := by
-      intro n
-      rr_mw_degree_from (hdeg n),
-    degree_upper := by
-      intro n
-      rr_mw_degree_from (hdeg n)
+    degree_succ := hdeg
 
 /-! ## Ma--Wang plus Liu--Wang derivative-lag recurrences -/
 
@@ -811,15 +690,37 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  refine
-    RealRooted.prec_mw_lw_derivative_lag_sequence
-      hbase hpos hdeg_two hrec ?_ ?_ hdeg_succ hno
-  · intro n r hr
-    have hr_nonpos : r ≤ 0 := hroots n r hr
-    rr_sign
-  · intro n r hr
-    have hr_nonpos : r ≤ 0 := hroots n r hr
-    rr_sign
+  rr_mw_lw_derivative_lag_sequence_root_upper_sign_auto using
+    base := hbase,
+    pos_lc := hpos,
+    degree_two := hdeg_two,
+    root_upper := hroots,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
+
+-- Real-rooted projection endpoint for the same direct root-sign route.
+example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
+    (hbase : Prec (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hdeg_two : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
+    (hroots : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ 0)
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        U n * P (n + 1) +
+          (C (2 : ℝ) * X * (1 - X)) * (P (n + 1)).derivative +
+          (X * (C (2 : ℝ) - X)) * P n)
+    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
+    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
+  rr_mw_lw_derivative_lag_sequence_realrooted_root_upper_sign_auto using
+    base := hbase,
+    pos_lc := hpos,
+    degree_two := hdeg_two,
+    root_upper := hroots,
+    recurrence := hrec,
+    degree_succ := hdeg_succ,
+    no_common_roots := hno
 
 -- Root-window route for I2-type derivative-lag recurrences.
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
@@ -875,13 +776,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     raw_lag_coeff := fun n => (n : ℝ) + 1,
     root_lower := hroot_lower,
     root_upper := hroot_upper,
-    den_nonzero := by intro n; positivity,
-    deriv_coeff_eq := by
-      intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by positivity],
-    lag_coeff_eq := by
-      intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by positivity],
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -934,13 +828,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     den := fun n => (n : ℝ) + 3,
     raw_deriv_coeff := fun _ => (2 : ℝ),
     raw_lag_coeff := fun n => (n : ℝ) + 3,
-    den_nonzero := by intro n; positivity,
-    deriv_coeff_eq := by
-      intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by positivity],
-    lag_coeff_eq := by
-      intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by positivity],
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -972,13 +859,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     den := fun n => (n : ℝ) + 3,
     raw_deriv_coeff := fun _ => (2 : ℝ),
     raw_lag_coeff := fun n => (n : ℝ) + 1,
-    den_nonzero := by intro n; positivity,
-    deriv_coeff_eq := by
-      intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by positivity],
-    lag_coeff_eq := by
-      intro n
-      field_simp [show (n : ℝ) + 3 ≠ 0 by positivity],
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -1098,16 +978,12 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
 -- `A049403`: `B_n(t)=(n-1)t`.
 example {n : Nat} (hn : 1 ≤ n) {r : ℝ} (hr : r ≤ 0) :
     (C ((n : ℝ) - 1) * X : ℝ[X]).eval r ≤ 0 := by
-  have hc : 0 ≤ (n : ℝ) - 1 := by
-    exact sub_nonneg.mpr (by exact_mod_cast hn)
   rr_sign
 
 -- `A049403`: root-sign package with the active-range scalar certificate.
 example {p : ℝ[X]} (hrr : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p)
     {n : Nat} (hn : 1 ≤ n) :
     ∀ r, p.IsRoot r → (C ((n : ℝ) - 1) * X : ℝ[X]).eval r ≤ 0 := by
-  have hc : 0 ≤ (n : ℝ) - 1 := by
-    exact sub_nonneg.mpr (by exact_mod_cast hn)
   rr_sign_at_roots using hrr, hpnn
 
 -- `A061896`: Lucas-polynomial coefficient triangle, `B_n(t)=t`.
@@ -1118,30 +994,22 @@ example {r : ℝ} (hr : r ≤ 0) :
 -- `A100862`: matching polynomial triangle, `B_n(t)=(n-2)t`.
 example {n : Nat} (hn : 2 ≤ n) {r : ℝ} (hr : r ≤ 0) :
     (C ((n : ℝ) - 2) * X : ℝ[X]).eval r ≤ 0 := by
-  have hc : 0 ≤ (n : ℝ) - 2 := by
-    exact sub_nonneg.mpr (by exact_mod_cast hn)
   rr_sign
 
 -- `A154227`: triangular-number lag coefficient, `B_n(t)=n(n+1)t/2`.
 example {n : Nat} {r : ℝ} (hr : r ≤ 0) :
     (C (((n : ℝ) * ((n : ℝ) + 1)) / 2) * X : ℝ[X]).eval r ≤ 0 := by
-  have hc : 0 ≤ ((n : ℝ) * ((n : ℝ) + 1)) / 2 := by
-    positivity
   rr_sign
 
 -- `A154228`: square-pyramidal lag coefficient, `B_n(t)=n(n+1)(2n+1)t/6`.
 example {n : Nat} {r : ℝ} (hr : r ≤ 0) :
     (C (((n : ℝ) * ((n : ℝ) + 1) * (2 * (n : ℝ) + 1)) / 6) * X :
       ℝ[X]).eval r ≤ 0 := by
-  have hc : 0 ≤ ((n : ℝ) * ((n : ℝ) + 1) * (2 * (n : ℝ) + 1)) / 6 := by
-    positivity
   rr_sign
 
 -- `A249248`: shifted positive lag coefficient, `B_n(t)=(n+2)t`.
 example {n : Nat} {r : ℝ} (hr : r ≤ 0) :
     (C ((n : ℝ) + 2) * X : ℝ[X]).eval r ≤ 0 := by
-  have hc : 0 ≤ (n : ℝ) + 2 := by
-    positivity
   rr_sign
 
 -- `A154986`: active coefficient `(m-1)(m-2)t`, after the row shift.
@@ -1205,8 +1073,6 @@ example {P : Nat → ℝ[X]}
 -- `A001263`: Narayana/Catalan rows, `B_n(t)=-(n/(n+3))(1-t)^2`.
 example {n : Nat} {r : ℝ} :
     (-(C ((n : ℝ) / ((n : ℝ) + 3))) * (1 - X) ^ 2 : ℝ[X]).eval r ≤ 0 := by
-  have hc : 0 ≤ (n : ℝ) / ((n : ℝ) + 3) := by
-    positivity
   rr_sign
 
 -- `A001263`: denominator-fused Narayana lag after the active row shift.
@@ -1220,18 +1086,13 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  rr_lw_negative_square_sequence_den_coeff_split using
+  rr_lw_negative_square_sequence_den_coeff_auto_split using
     base := hbase,
     pos_lc := hpos,
     square_factor := fun _ => 1 - X,
     coeff := fun n => ((n : ℝ) + 2) / ((n : ℝ) + 5),
     raw_coeff := fun n => (n : ℝ) + 2,
     den := fun n => (n : ℝ) + 5,
-    coeff_nonneg := by intro n; positivity,
-    den_nonzero := by intro n; positivity,
-    coeff_eq := by
-      intro n
-      field_simp [show (n : ℝ) + 5 ≠ 0 by positivity],
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -1259,10 +1120,6 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     coeff := fun n => ((n : ℝ) + 1) / ((n : ℝ) + 4),
     raw_coeff := fun n => ((n : ℝ) + 1) / 2,
     den := fun n => ((n : ℝ) + 4) / 2,
-    den_nonzero := by intro n; positivity,
-    coeff_eq := by
-      intro n
-      field_simp [show (n : ℝ) + 4 ≠ 0 by positivity],
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -1270,8 +1127,6 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
 -- `A145596`: generalized Narayana rows, `B_n(t)=-(n/(n+3))(1-t)^2`.
 example {n : Nat} {r : ℝ} :
     (-(C ((n : ℝ) / ((n : ℝ) + 3))) * (1 - X) ^ 2 : ℝ[X]).eval r ≤ 0 := by
-  have hc : 0 ≤ (n : ℝ) / ((n : ℝ) + 3) := by
-    positivity
   rr_sign
 
 -- `A145596`: denominator-fused generalized Narayana lag.  The active left
@@ -1294,14 +1149,6 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     coeff := fun n => ((n : ℝ) + 2) / ((n : ℝ) + 5),
     raw_coeff := fun n => -(((n : ℝ) + 2) * ((n : ℝ) + 1) / 3),
     den := fun n => -(((n : ℝ) + 5) * ((n : ℝ) + 1) / 3),
-    den_nonzero := by
-      intro n
-      have hden_pos : 0 < ((n : ℝ) + 5) * ((n : ℝ) + 1) / 3 := by positivity
-      exact neg_ne_zero.mpr (ne_of_gt hden_pos),
-    coeff_eq := by
-      intro n
-      field_simp [show (n : ℝ) + 1 ≠ 0 by positivity,
-        show (n : ℝ) + 5 ≠ 0 by positivity],
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -1309,11 +1156,6 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
 -- `A178343`: beta-binomial rows, `B_n(t)=-(n/(n-1))(1-t)^2`, active for `n>=2`.
 example {n : Nat} (hn : 2 ≤ n) {r : ℝ} :
     (-(C ((n : ℝ) / ((n : ℝ) - 1))) * (1 - X) ^ 2 : ℝ[X]).eval r ≤ 0 := by
-  have hden : 0 < (n : ℝ) - 1 := by
-    have hn' : (1 : ℝ) < n := by exact_mod_cast hn
-    linarith
-  have hc : 0 ≤ (n : ℝ) / ((n : ℝ) - 1) := by
-    positivity
   rr_sign
 
 -- `A178343`: denominator-fused beta-binomial lag after the active row shift.
@@ -1328,18 +1170,13 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_lw_negative_square_sequence_den_coeff_realrooted_split using
+  rr_lw_negative_square_sequence_den_coeff_realrooted_auto_split using
     base := hbase,
     pos_lc := hpos,
     square_factor := fun _ => 1 - X,
     coeff := fun n => ((n : ℝ) + 2) / ((n : ℝ) + 1),
     raw_coeff := fun n => ((n : ℝ) + 2) * ((n : ℝ) + 1),
     den := fun n => ((n : ℝ) + 1) ^ 2,
-    coeff_nonneg := by intro n; positivity,
-    den_nonzero := by intro n; positivity,
-    coeff_eq := by
-      intro n
-      field_simp [show (n : ℝ) + 1 ≠ 0 by positivity],
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -1367,7 +1204,6 @@ example {P : Nat → ℝ[X]}
       norm_num
       simpa using hP1,
     den := fun n => 1 - ((n : ℝ) + 3),
-    den_nonzero := by intro n; rr_scalar_active_den_at n,
     raw_recurrence := hraw
 
 -- `A063007`: raw scalar-denominator Favard numerator with nonzero shift.
@@ -1390,25 +1226,6 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun n => 1 - ((n : ℝ) + 3),
-    den_nonzero := by intro n; rr_scalar_active_den_at n,
-    slope_coeff_eq := by
-      intro n
-      have hd : 1 - ((n : ℝ) + 3) ≠ 0 := by rr_scalar_active_den_at n
-      field_simp [hd]
-      norm_num
-      ring_nf,
-    alpha_coeff_eq := by
-      intro n
-      have hd : 1 - ((n : ℝ) + 3) ≠ 0 := by rr_scalar_active_den_at n
-      field_simp [hd]
-      norm_num
-      ring_nf,
-    beta_coeff_eq := by
-      intro n
-      have hd : 1 - ((n : ℝ) + 3) ≠ 0 := by rr_scalar_active_den_at n
-      field_simp [hd]
-      norm_num
-      ring_nf,
     raw_recurrence := hraw
 
 -- `A376467`: same denominator-Favard normalization with a larger shift.
@@ -1431,25 +1248,6 @@ example {P : Nat → ℝ[X]}
     base_zero := hP0,
     base_one := by simpa using hP1,
     den := fun n => 1 - ((n : ℝ) + 3),
-    den_nonzero := by intro n; rr_scalar_active_den_at n,
-    slope_coeff_eq := by
-      intro n
-      have hd : 1 - ((n : ℝ) + 3) ≠ 0 := by rr_scalar_active_den_at n
-      field_simp [hd]
-      norm_num
-      ring_nf,
-    alpha_coeff_eq := by
-      intro n
-      have hd : 1 - ((n : ℝ) + 3) ≠ 0 := by rr_scalar_active_den_at n
-      field_simp [hd]
-      norm_num
-      ring_nf,
-    beta_coeff_eq := by
-      intro n
-      have hd : 1 - ((n : ℝ) + 3) ≠ 0 := by rr_scalar_active_den_at n
-      field_simp [hd]
-      norm_num
-      ring_nf,
     raw_recurrence := hraw
 
 -- `A049310`: Chebyshev `S(n,x)=U(n,x/2)` coefficient triangle.
@@ -1465,15 +1263,35 @@ example {P : Nat → ℝ[X]}
     (hP1 : P 1 = X)
     (hstep : ∀ n : Nat, P (n + 2) = X * P (n + 1) - P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  rr_favard_const using
+  rr_favard_const_unit using
     alpha := 0,
-    beta := 1,
-    beta_pos := by norm_num,
     base_zero := hP0,
-    base_one := by simpa using hP1,
-    step := by
-      intro n
-      simpa using hstep n
+    base_one := hP1,
+    step := hstep
+
+-- `A053122`: `P_{n+2}=(t-2)P_{n+1}-P_n`.
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = X - C (2 : ℝ))
+    (hstep : ∀ n : Nat, P (n + 2) = (X - C (2 : ℝ)) * P (n + 1) - P n) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_favard_const_unit using
+    alpha := 2,
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
+
+-- `A078812`: `P_{n+2}=(t+2)P_{n+1}-P_n`.
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = X - C (-2 : ℝ))
+    (hstep : ∀ n : Nat, P (n + 2) = (X - C (-2 : ℝ)) * P (n + 1) - P n) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_favard_const_unit using
+    alpha := -2,
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
 
 -- `A124039`: row-sign normalized Chebyshev step `P_{n+2}=-tP_{n+1}-P_n`.
 example {P : Nat → ℝ[X]}
@@ -1505,17 +1323,26 @@ example {P : Nat → ℝ[X]}
     (hP1 : P 1 = C (2 : ℝ) * X)
     (hstep : ∀ n : Nat, P (n + 2) = (C (2 : ℝ) * X) * P (n + 1) - P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  rr_favard_affine_const using
+  rr_favard_affine_const_unit using
     slope := 2,
     alpha := 0,
-    beta := 1,
-    slope_pos := by norm_num,
-    beta_pos := by norm_num,
     base_zero := hP0,
-    base_one := by simpa using hP1,
-    step := by
-      intro n
-      simpa using hstep n
+    base_one := hP1,
+    step := hstep
+
+-- `A053124`/`A084930`: `P_{n+2}=(4t-2)P_{n+1}-P_n`.
+example {P : Nat → ℝ[X]}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = C (4 : ℝ) * X - C (2 : ℝ))
+    (hstep : ∀ n : Nat,
+      P (n + 2) = (C (4 : ℝ) * X - C (2 : ℝ)) * P (n + 1) - P n) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
+  rr_favard_affine_const_unit using
+    slope := 4,
+    alpha := 2,
+    base_zero := hP0,
+    base_one := hP1,
+    step := hstep
 
 -- `A137286`: parameterized Favard step `P_m=tP_{m-1}-(m+1)P_{m-2}`.
 example {P : Nat → ℝ[X]}
@@ -1524,22 +1351,12 @@ example {P : Nat → ℝ[X]}
     (hstep : ∀ n : Nat,
       P (n + 2) = X * P (n + 1) - C (((n + 1 : Nat) : ℝ) + 2) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let αfun : Nat → ℝ := fun _ => 0
-  let βfun : Nat → ℝ := fun m => (m : ℝ) + 2
-  have hP1' : P 1 = X - C (αfun 0) := by
-    simpa [αfun] using hP1
-  have hstep' :
-      ∀ n : Nat,
-        P (n + 2) =
-          (X - C (αfun (n + 1))) * P (n + 1) - C (βfun (n + 1)) * P n := by
-    intro n
-    simpa [αfun, βfun] using hstep n
   rr_favard_param_auto using
-    alpha := αfun,
-    beta := βfun,
+    alpha := fun _ : Nat => (0 : ℝ),
+    beta := fun m : Nat => (m : ℝ) + 2,
     base_zero := hP0,
-    base_one := hP1',
-    step := hstep'
+    base_one := hP1,
+    step := hstep
 
 -- `A137338`: parameterized Favard step `P_m=(t+1-m)P_{m-1}-(m-1)P_{m-2}`.
 example {P : Nat → ℝ[X]}
@@ -1549,22 +1366,12 @@ example {P : Nat → ℝ[X]}
       P (n + 2) = (X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) -
         C (((n + 1 : Nat) : ℝ)) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let αfun : Nat → ℝ := fun m => (m : ℝ)
-  let βfun : Nat → ℝ := fun m => (m : ℝ)
-  have hP1' : P 1 = X - C (αfun 0) := by
-    simpa [αfun] using hP1
-  have hstep' :
-      ∀ n : Nat,
-        P (n + 2) =
-          (X - C (αfun (n + 1))) * P (n + 1) - C (βfun (n + 1)) * P n := by
-    intro n
-    simpa [αfun, βfun] using hstep n
   rr_favard_param_auto using
-    alpha := αfun,
-    beta := βfun,
+    alpha := fun m : Nat => (m : ℝ),
+    beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := hP1',
-    step := hstep'
+    base_one := hP1,
+    step := hstep
 
 /-! ### Family F promoted scalar-lag extension scan -/
 
@@ -1578,22 +1385,12 @@ example {P : Nat → ℝ[X]}
         X * P (n + 1) -
           C (((((n + 1 : Nat) : ℝ) + 1) * (((n + 1 : Nat) : ℝ) + 2))) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let αfun : Nat → ℝ := fun _ => 0
-  let βfun : Nat → ℝ := fun m => ((m : ℝ) + 1) * ((m : ℝ) + 2)
-  have hP1' : P 1 = X - C (αfun 0) := by
-    simpa [αfun] using hP1
-  have hstep' :
-      ∀ n : Nat,
-        P (n + 2) =
-          (X - C (αfun (n + 1))) * P (n + 1) - C (βfun (n + 1)) * P n := by
-    intro n
-    simpa [αfun, βfun] using hstep n
   rr_favard_param_auto using
-    alpha := αfun,
-    beta := βfun,
+    alpha := fun _ : Nat => (0 : ℝ),
+    beta := fun m : Nat => ((m : ℝ) + 1) * ((m : ℝ) + 2),
     base_zero := hP0,
-    base_one := hP1',
-    step := hstep'
+    base_one := hP1,
+    step := hstep
 
 -- `A094816`: shifted active range of
 -- `P_m=(t+m-1)P_{m-1}-(m-2)P_{m-2}`.
@@ -1605,23 +1402,12 @@ example {P : Nat → ℝ[X]}
         (X - C (-((((n + 1 : Nat) : ℝ) + 1)))) * P (n + 1) -
           C (((n + 1 : Nat) : ℝ)) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let αfun : Nat → ℝ := fun m => -((m : ℝ) + 1)
-  let βfun : Nat → ℝ := fun m => (m : ℝ)
-  have hP1' : P 1 = X - C (αfun 0) := by
-    norm_num [αfun]
-    simpa using hP1
-  have hstep' :
-      ∀ n : Nat,
-        P (n + 2) =
-          (X - C (αfun (n + 1))) * P (n + 1) - C (βfun (n + 1)) * P n := by
-    intro n
-    simpa [αfun, βfun] using hstep n
   rr_favard_param_auto using
-    alpha := αfun,
-    beta := βfun,
+    alpha := fun m : Nat => -((m : ℝ) + 1),
+    beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := hP1',
-    step := hstep'
+    base_one := hP1,
+    step := hstep
 
 -- `A136532`: scalar-denominator row-sign Favard raw numerator.
 example {P : Nat → ℝ[X]}
@@ -1648,25 +1434,6 @@ example {P : Nat → ℝ[X]}
       norm_num
       simpa using hP1,
     den := fun n : Nat => 1 + ((n + 2 : Nat) : ℝ) / 2,
-    den_nonzero := by intro n; positivity,
-    slope_coeff_eq := by
-      intro n
-      have hd : 1 + ((n + 2 : Nat) : ℝ) / 2 ≠ 0 := by positivity
-      field_simp [hd]
-      norm_num [Nat.cast_add, Nat.cast_one]
-      ring_nf,
-    alpha_coeff_eq := by
-      intro n
-      have hd : 1 + ((n + 2 : Nat) : ℝ) / 2 ≠ 0 := by positivity
-      field_simp [hd]
-      norm_num [Nat.cast_add, Nat.cast_one]
-      ring_nf,
-    beta_coeff_eq := by
-      intro n
-      have hd : 1 + ((n + 2 : Nat) : ℝ) / 2 ≠ 0 := by positivity
-      field_simp [hd]
-      norm_num [Nat.cast_add, Nat.cast_one]
-      ring_nf,
     raw_recurrence := hraw
 
 -- `A136668`: `P_m=2mtP_{m-1}-(m+1)P_{m-2}`.
@@ -1678,26 +1445,13 @@ example {P : Nat → ℝ[X]}
         (C (2 * (((n + 1 : Nat) : ℝ) + 1)) * X) * P (n + 1) -
           C ((((n + 1 : Nat) : ℝ) + 2)) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let sfun : Nat → ℝ := fun m => 2 * ((m : ℝ) + 1)
-  let αfun : Nat → ℝ := fun _ => 0
-  let βfun : Nat → ℝ := fun m => (m : ℝ) + 2
-  have hP1' : P 1 = C (sfun 0) * X - C (αfun 0) := by
-    norm_num [sfun, αfun]
-    simpa using hP1
-  have hstep' :
-      ∀ n : Nat,
-        P (n + 2) =
-          (C (sfun (n + 1)) * X - C (αfun (n + 1))) * P (n + 1) -
-            C (βfun (n + 1)) * P n := by
-    intro n
-    simpa [sfun, αfun, βfun] using hstep n
   rr_favard_affine_param_auto using
-    slope := sfun,
-    alpha := αfun,
-    beta := βfun,
+    slope := fun m : Nat => 2 * ((m : ℝ) + 1),
+    alpha := fun _ : Nat => (0 : ℝ),
+    beta := fun m : Nat => (m : ℝ) + 2,
     base_zero := hP0,
-    base_one := hP1',
-    step := hstep'
+    base_one := hP1,
+    step := hstep
 
 -- `A181332`: constant affine Favard row `P_m=(t+3)P_{m-1}-2P_{m-2}`.
 example {P : Nat → ℝ[X]}
@@ -1723,23 +1477,12 @@ example {P : Nat → ℝ[X]}
         (X - C (2 * ((n + 1 : Nat) : ℝ) + 5)) * P (n + 1) -
           C (((((n + 1 : Nat) : ℝ) + 2) ^ 2)) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let αfun : Nat → ℝ := fun m => 2 * (m : ℝ) + 5
-  let βfun : Nat → ℝ := fun m => ((m : ℝ) + 2) ^ 2
-  have hP1' : P 1 = X - C (αfun 0) := by
-    norm_num [αfun]
-    simpa using hP1
-  have hstep' :
-      ∀ n : Nat,
-        P (n + 2) =
-          (X - C (αfun (n + 1))) * P (n + 1) - C (βfun (n + 1)) * P n := by
-    intro n
-    simpa [αfun, βfun] using hstep n
   rr_favard_param_auto using
-    alpha := αfun,
-    beta := βfun,
+    alpha := fun m : Nat => 2 * (m : ℝ) + 5,
+    beta := fun m : Nat => ((m : ℝ) + 2) ^ 2,
     base_zero := hP0,
-    base_one := hP1',
-    step := hstep'
+    base_one := hP1,
+    step := hstep
 
 -- `A269951`: shifted active range of
 -- `P_m=(t+m-1)P_{m-1}-(m-3)P_{m-2}`.
@@ -1751,23 +1494,12 @@ example {P : Nat → ℝ[X]}
         (X - C (-((((n + 1 : Nat) : ℝ) + 2)))) * P (n + 1) -
           C (((n + 1 : Nat) : ℝ)) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let αfun : Nat → ℝ := fun m => -((m : ℝ) + 2)
-  let βfun : Nat → ℝ := fun m => (m : ℝ)
-  have hP1' : P 1 = X - C (αfun 0) := by
-    norm_num [αfun]
-    simpa using hP1
-  have hstep' :
-      ∀ n : Nat,
-        P (n + 2) =
-          (X - C (αfun (n + 1))) * P (n + 1) - C (βfun (n + 1)) * P n := by
-    intro n
-    simpa [αfun, βfun] using hstep n
   rr_favard_param_auto using
-    alpha := αfun,
-    beta := βfun,
+    alpha := fun m : Nat => -((m : ℝ) + 2),
+    beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := hP1',
-    step := hstep'
+    base_one := hP1,
+    step := hstep
 
 -- `A285072`: `P_m=(2-t)P_{m-1}-P_{m-2}`, another row-sign Favard case.
 example {P : Nat → ℝ[X]}
@@ -1791,23 +1523,12 @@ example {P : Nat → ℝ[X]}
         (X - C (-((((n + 1 : Nat) : ℝ) + 3)))) * P (n + 1) -
           C (3 * ((n + 1 : Nat) : ℝ)) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let αfun : Nat → ℝ := fun m => -((m : ℝ) + 3)
-  let βfun : Nat → ℝ := fun m => 3 * (m : ℝ)
-  have hP1' : P 1 = X - C (αfun 0) := by
-    norm_num [αfun]
-    simpa using hP1
-  have hstep' :
-      ∀ n : Nat,
-        P (n + 2) =
-          (X - C (αfun (n + 1))) * P (n + 1) - C (βfun (n + 1)) * P n := by
-    intro n
-    simpa [αfun, βfun] using hstep n
   rr_favard_param_auto using
-    alpha := αfun,
-    beta := βfun,
+    alpha := fun m : Nat => -((m : ℝ) + 3),
+    beta := fun m : Nat => 3 * (m : ℝ),
     base_zero := hP0,
-    base_one := hP1',
-    step := hstep'
+    base_one := hP1,
+    step := hstep
 
 -- `A137338`-shaped row-sign surface for n-dependent Favard coefficients.
 example {P : Nat → ℝ[X]}
@@ -1817,21 +1538,12 @@ example {P : Nat → ℝ[X]}
       P (n + 2) = -(X - C (((n + 1 : Nat) : ℝ))) * P (n + 1) -
         C (((n + 1 : Nat) : ℝ)) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let αfun : Nat → ℝ := fun m => (m : ℝ)
-  let βfun : Nat → ℝ := fun m => (m : ℝ)
-  have hP1' : P 1 = -(X - C (αfun 0)) := by
-    simpa [αfun] using hP1
-  have hstep' : ∀ n : Nat,
-      P (n + 2) =
-        -(X - C (αfun (n + 1))) * P (n + 1) - C (βfun (n + 1)) * P n := by
-    intro n
-    simpa [αfun, βfun] using hstep n
   rr_favard_param_row_sign_auto using
-    alpha := αfun,
-    beta := βfun,
+    alpha := fun m : Nat => (m : ℝ),
+    beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := hP1',
-    step := hstep'
+    base_one := hP1,
+    step := hstep
 
 -- Unit-lag shortcut for A124039-type row-sign Favard shifts.
 example {P : Nat → ℝ[X]} {α : Nat → ℝ}
@@ -2046,18 +1758,14 @@ example {P : Nat → ℝ[X]}
       ((X - C (1 : ℝ)) * P (n + 1) + X * (P (n + 1)).derivative).natDegree ≤
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_mw_plus_derivative_sequence_expanded using
+  rr_mw_plus_derivative_sequence_expanded_auto using
     outer := fun _ => (1 : ℝ),
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    outer_nonzero := by intro n; norm_num,
     degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
-    coeff_nonpos := by
-      intro n r hr
-      have hr_nonpos : r ≤ 0 := hroots_nonpos n r hr
-      rr_sign,
+    root_nonpos := hroots_nonpos,
     recurrence := hrec,
     inner_degree_lower := hinner_deg_lo,
     inner_degree_upper := hinner_deg_hi
@@ -2086,13 +1794,12 @@ example {P : Nat → ℝ[X]}
           (C (2 : ℝ) * X) * (P (n + 1)).derivative +
             X * (P (n + 1)).derivative.derivative) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_ls4_plus_current_sequence_expanded using
+  rr_ls4_plus_current_sequence_expanded_auto using
     outer := fun _ => (1 : ℝ),
     tail := fun _ => (1 : ℝ),
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    tail_nonneg := by intro n; norm_num,
     outer_pos_lc := houter_pos,
     outer_prec := houter_prec,
     recurrence := hrec
@@ -2120,18 +1827,14 @@ example {P : Nat → ℝ[X]}
       ((X + C (1 : ℝ)) * P (n + 1) + X * (P (n + 1)).derivative).natDegree ≤
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_mw_plus_derivative_sequence_expanded using
+  rr_mw_plus_derivative_sequence_expanded_auto using
     outer := fun _ => (1 : ℝ),
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    outer_nonzero := by intro n; norm_num,
     degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
-    coeff_nonpos := by
-      intro n r hr
-      have hr_nonpos : r ≤ 0 := hroots_nonpos n r hr
-      rr_sign,
+    root_nonpos := hroots_nonpos,
     recurrence := hrec,
     inner_degree_lower := hinner_deg_lo,
     inner_degree_upper := hinner_deg_hi
@@ -2160,13 +1863,12 @@ example {P : Nat → ℝ[X]}
           (C (2 : ℝ) + C (2 : ℝ) * X) * (P (n + 1)).derivative +
             X * (P (n + 1)).derivative.derivative) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_ls4_plus_current_sequence_expanded using
+  rr_ls4_plus_current_sequence_expanded_auto using
     outer := fun _ => (1 : ℝ),
     tail := fun n => (n : ℝ) + 1,
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    tail_nonneg := by intro n; positivity,
     outer_pos_lc := houter_pos,
     outer_prec := houter_prec,
     recurrence := hrec
@@ -2197,18 +1899,14 @@ example {P : Nat → ℝ[X]}
           (C (16 : ℝ) * X) * (P (n + 1)).derivative).natDegree ≤
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_mw_plus_derivative_sequence_expanded using
+  rr_mw_plus_derivative_sequence_expanded_auto using
     outer := fun _ => ((1 : ℝ) / 4),
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    outer_nonzero := by intro n; norm_num,
     degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
-    coeff_nonpos := by
-      intro n r hr
-      have hr_nonpos : r ≤ 0 := hroots_nonpos n r hr
-      rr_sign,
+    root_nonpos := hroots_nonpos,
     recurrence := hrec,
     inner_degree_lower := hinner_deg_lo,
     inner_degree_upper := hinner_deg_hi
@@ -2239,18 +1937,14 @@ example {P : Nat → ℝ[X]}
           (C (2 : ℝ) * X) * (P (n + 1)).derivative).natDegree ≤
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_mw_plus_derivative_sequence_expanded using
+  rr_mw_plus_derivative_sequence_expanded_auto using
     outer := fun _ => (1 : ℝ),
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    outer_nonzero := by intro n; norm_num,
     degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
-    coeff_nonpos := by
-      intro n r hr
-      have hr_nonpos : r ≤ 0 := hroots_nonpos n r hr
-      rr_sign,
+    root_nonpos := hroots_nonpos,
     recurrence := hrec,
     inner_degree_lower := hinner_deg_lo,
     inner_degree_upper := hinner_deg_hi
@@ -2281,18 +1975,14 @@ example {P : Nat → ℝ[X]}
           (C (4 : ℝ) * X) * (P (n + 1)).derivative).natDegree ≤
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_mw_plus_derivative_sequence_expanded using
+  rr_mw_plus_derivative_sequence_expanded_auto using
     outer := fun _ => ((1 : ℝ) / 2),
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    outer_nonzero := by intro n; norm_num,
     degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
-    coeff_nonpos := by
-      intro n r hr
-      have hr_nonpos : r ≤ 0 := hroots_nonpos n r hr
-      rr_sign,
+    root_nonpos := hroots_nonpos,
     recurrence := hrec,
     inner_degree_lower := hinner_deg_lo,
     inner_degree_upper := hinner_deg_hi
@@ -2323,18 +2013,14 @@ example {P : Nat → ℝ[X]}
           (C (9 : ℝ) * X) * (P (n + 1)).derivative).natDegree ≤
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_mw_plus_derivative_sequence_expanded using
+  rr_mw_plus_derivative_sequence_expanded_auto using
     outer := fun _ => ((1 : ℝ) / 3),
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    outer_nonzero := by intro n; norm_num,
     degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
-    coeff_nonpos := by
-      intro n r hr
-      have hr_nonpos : r ≤ 0 := hroots_nonpos n r hr
-      rr_sign,
+    root_nonpos := hroots_nonpos,
     recurrence := hrec,
     inner_degree_lower := hinner_deg_lo,
     inner_degree_upper := hinner_deg_hi
@@ -2365,18 +2051,14 @@ example {P : Nat → ℝ[X]}
           (C (9 : ℝ) * X) * (P (n + 1)).derivative).natDegree ≤
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_mw_plus_derivative_sequence_expanded using
+  rr_mw_plus_derivative_sequence_expanded_auto using
     outer := fun _ => ((1 : ℝ) / 3),
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    outer_nonzero := by intro n; norm_num,
     degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
-    coeff_nonpos := by
-      intro n r hr
-      have hr_nonpos : r ≤ 0 := hroots_nonpos n r hr
-      rr_sign,
+    root_nonpos := hroots_nonpos,
     recurrence := hrec,
     inner_degree_lower := hinner_deg_lo,
     inner_degree_upper := hinner_deg_hi
@@ -2407,18 +2089,14 @@ example {P : Nat → ℝ[X]}
           (C (16 : ℝ) * X) * (P (n + 1)).derivative).natDegree ≤
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_mw_plus_derivative_sequence_expanded using
+  rr_mw_plus_derivative_sequence_expanded_auto using
     outer := fun _ => ((1 : ℝ) / 4),
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    outer_nonzero := by intro n; norm_num,
     degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
-    coeff_nonpos := by
-      intro n r hr
-      have hr_nonpos : r ≤ 0 := hroots_nonpos n r hr
-      rr_sign,
+    root_nonpos := hroots_nonpos,
     recurrence := hrec,
     inner_degree_lower := hinner_deg_lo,
     inner_degree_upper := hinner_deg_hi
@@ -2446,18 +2124,14 @@ example {P : Nat → ℝ[X]}
       (X * P (n + 1) + (1 + X : ℝ[X]) * (P (n + 1)).derivative).natDegree ≤
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_mw_plus_derivative_sequence_expanded using
+  rr_mw_plus_derivative_sequence_expanded_auto using
     outer := fun _ => (1 : ℝ),
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    outer_nonzero := by intro n; norm_num,
     degree_two := hdeg_two,
     inner_pos_lc := hinner_pos,
-    coeff_nonpos := by
-      intro n r hr
-      have hr_upper : r ≤ -1 := hroots_le_neg_one n r hr
-      rr_sign,
+    root_upper := hroots_le_neg_one,
     recurrence := hrec,
     inner_degree_lower := hinner_deg_lo,
     inner_degree_upper := hinner_deg_hi
@@ -2485,17 +2159,14 @@ example {P : Nat → ℝ[X]}
       ((-(X + C (1 : ℝ))) * P (n + 1) + X * (P (n + 1)).derivative).natDegree ≤
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_neg_mw_plus_derivative_sequence_expanded using
+  rr_neg_mw_plus_derivative_sequence_expanded_auto using
     outer := fun _ => (-1 : ℝ),
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    outer_nonzero := by intro n; norm_num,
     degree_two := hdeg_two,
     inner_neg_lc := hinner_neg,
-    coeff_nonneg := by
-      intro n r hr
-      simpa using hroots_nonneg n r hr,
+    root_nonneg := hroots_nonneg,
     recurrence := hrec,
     inner_degree_lower := hinner_deg_lo,
     inner_degree_upper := hinner_deg_hi
@@ -2526,19 +2197,14 @@ example {P : Nat → ℝ[X]}
           (C (4 : ℝ) * X) * (P (n + 1)).derivative).natDegree ≤
         (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_neg_mw_plus_derivative_sequence_expanded using
+  rr_neg_mw_plus_derivative_sequence_expanded_auto using
     outer := fun _ => (-(1 : ℝ) / 2),
     base_zero := hbase_zero,
     base_one := hbase_one,
     pos_lc := hpos,
-    outer_nonzero := by intro n; norm_num,
     degree_two := hdeg_two,
     inner_neg_lc := hinner_neg,
-    coeff_nonneg := by
-      intro n r hr
-      have hr_nonneg : 0 ≤ r := hroots_nonneg n r hr
-      simpa [Polynomial.eval_mul, Polynomial.eval_C] using
-        mul_nonneg (by norm_num : 0 ≤ (4 : ℝ)) hr_nonneg,
+    root_nonneg := hroots_nonneg,
     recurrence := hrec,
     inner_degree_lower := hinner_deg_lo,
     inner_degree_upper := hinner_deg_hi

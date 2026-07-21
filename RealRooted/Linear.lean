@@ -363,6 +363,15 @@ lemma prec_C_mul_right {f g : ℝ[X]} (h : Prec f g) {a : ℝ} (ha : a ≠ 0) :
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hcase⟩
   exact ⟨hf, by simp_all, ss, rs, hss, hrs, hss_eq, by simp_all, hcase⟩
 
+lemma interlaces_C_linear {p : ℝ[X]} {c : ℝ} (hc : c ≠ 0)
+    (hp_deg : p.natDegree = 1) :
+    Interlaces (C c) p := by
+  have hprec : Prec (C c * (1 : ℝ[X])) p :=
+    prec_C_mul_left (interlaces_one_linear hp_deg).toPrec hc
+  have hdeg : (C c * (1 : ℝ[X])).natDegree + 1 = p.natDegree := by
+    simp [hp_deg]
+  simpa using hprec.toInterlaces hdeg
+
 /-- Multiplying the right polynomial in a zero-aware `Prec0` relation by a
 nonnegative scalar preserves the relation; the zero scalar is handled by the
 zero-aware cases. -/

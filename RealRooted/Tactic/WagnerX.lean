@@ -1,5 +1,6 @@
 import RealRooted.PosCombo
 import RealRooted.AffineFamily
+import RealRooted.Tactic.Finish
 
 /-!
 # Wagner `X`-shift tactics
@@ -34,11 +35,10 @@ theorem prec_mul_X_both_of_prec_of_nonneg {f g : ℝ[X]}
     (h : Prec f g)
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g) :
-    Prec (X * f) (X * g) := by
-  exact
-    prec_mul_X_both_of_roots_nonpos h
-      (roots_nonpos_of_nonneg_coeffs h.1.2 hfnn)
-      (roots_nonpos_of_nonneg_coeffs h.2.1.2 hgnn)
+    Prec (X * f) (X * g) :=
+  prec_mul_X_both_of_roots_nonpos h
+    (roots_nonpos_of_nonneg_coeffs (left_splits_of_prec h) hfnn)
+    (roots_nonpos_of_nonneg_coeffs (right_splits_of_prec h) hgnn)
 
 /-- Derivative-lag bridge for later mixed lag recurrences.
 
@@ -49,10 +49,9 @@ theorem prec_X_mul_derivative_X_mul_self_of_splits_nonneg {f : ℝ[X]}
     (hf : f.Splits)
     (hdeg : 2 ≤ f.natDegree)
     (hfnn : HasNonnegCoeffs f) :
-    Prec (X * f.derivative) (X * f) := by
-  exact
-    prec_mul_X_both_of_prec_of_nonneg
-      (derivative_interlaces hf hdeg).toPrec hfnn.derivative hfnn
+    Prec (X * f.derivative) (X * f) :=
+  prec_mul_X_both_of_prec_of_nonneg
+    (derivative_interlaces hf hdeg).toPrec hfnn.derivative hfnn
 
 /-- Wagner derivative-gap-lag step.
 
@@ -68,10 +67,12 @@ theorem prec_wagner_derivative_gap_lag_step {f g : ℝ[X]} {a c : ℝ}
     (ha : 0 < a)
     (hc : 0 < c) :
     Prec g (X * (C c * g.derivative + C a * f)) := by
-  have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff h.2.1.1
-  have hf_pos : HasPosLeadingCoeff f := hfnn.pos_leadingCoeff h.1.1
+  have hg_pos : HasPosLeadingCoeff g := by
+    rr_pos_lc using nonzero := right_ne_zero_of_prec h
+  have hf_pos : HasPosLeadingCoeff f := by
+    rr_pos_lc using nonzero := left_ne_zero_of_prec h
   have hg_der_pos : HasPosLeadingCoeff g.derivative := hg_pos.derivative (by lia)
-  have hder : Prec g.derivative g := (derivative_interlaces h.2.1.2 hdeg).toPrec
+  have hder : Prec g.derivative g := (derivative_interlaces (right_splits_of_prec h) hdeg).toPrec
   have hnonneg : ∀ ap ∈ [(c, g.derivative), (a, f)], 0 ≤ ap.1 := by
     intro ap hap
     rcases List.mem_cons.mp hap with rfl | hap
@@ -99,8 +100,8 @@ theorem prec_wagner_derivative_gap_lag_step {f g : ℝ[X]} {a c : ℝ}
   have hsum_prec : Prec (weightedSum [(c, g.derivative), (a, f)]) g :=
     prec_weightedSum_right [(c, g.derivative), (a, f)] g
       hnonneg hprec hpoly_pos hex
-  have hsum_nonneg : HasNonnegCoeffs (C c * g.derivative + C a * f) :=
-    (nonnegCoeffs_C_mul hc.le hgnn.derivative).add (nonnegCoeffs_C_mul ha.le hfnn)
+  have hsum_nonneg : HasNonnegCoeffs (C c * g.derivative + C a * f) := by
+    rr_nonneg_coeffs using hgnn.derivative, hfnn
   have hsum_nonneg_weighted :
       HasNonnegCoeffs (weightedSum [(c, g.derivative), (a, f)]) := by
     simpa [weightedSum, add_assoc] using hsum_nonneg
@@ -169,15 +170,9 @@ theorem isRealRooted_of_prec_wagner_derivative_gap_lag_sequence
     (hc : ∀ n : Nat, 0 < c n)
     (hrec : ∀ n : Nat,
       P (n + 2) = X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  have hprec : ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_prec_chain hbase <|
     prec_wagner_derivative_gap_lag_sequence hbase hnonneg hdeg ha hc hrec
-  intro n
-  cases n with
-  | zero =>
-      exact hbase.1
-  | succ n =>
-      exact (hprec n).2.1
 
 /-- Sequence induction for scalar-left active Wagner derivative-gap-lag recurrences. -/
 theorem prec_wagner_derivative_gap_lag_sequence_den
@@ -214,15 +209,9 @@ theorem isRealRooted_of_prec_wagner_derivative_gap_lag_sequence_den
     (hrec : ∀ n : Nat,
       C (d n) * P (n + 2) =
         X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  have hprec : ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_prec_chain hbase <|
     prec_wagner_derivative_gap_lag_sequence_den hbase hnonneg hdeg ha hc hd hrec
-  intro n
-  cases n with
-  | zero =>
-      exact hbase.1
-  | succ n =>
-      exact (hprec n).2.1
 
 /-!
 ### The `X^2 * P'` derivative-lag obstruction
@@ -262,12 +251,11 @@ theorem not_prec_X_sq_mul_derivative_left {f g : ℝ[X]}
     (hgc0 : g.coeff 0 ≠ 0) :
     ¬ Prec (X ^ 2 * f.derivative) g := by
   intro h
-  have hg0 : g ≠ 0 := h.2.1.1
-  have hgs : g.Splits := h.2.1.2
-  have hXf_ne : X ^ 2 * f.derivative ≠ 0 := h.1.1
+  have hg0 : g ≠ 0 := right_ne_zero_of_prec h
+  have hgs : g.Splits := right_splits_of_prec h
+  have hXf_ne : X ^ 2 * f.derivative ≠ 0 := left_ne_zero_of_prec h
   have hfd : f.derivative ≠ 0 := by
-    intro hz
-    simp [hz] at hXf_ne
+    rr_nonzero
   have hXdeg : 2 ≤ (X ^ 2 * f.derivative).natDegree := by
     rw [natDegree_mul (pow_ne_zero 2 X_ne_zero) hfd, natDegree_pow, natDegree_X]
     lia
@@ -295,12 +283,11 @@ theorem not_prec_X_sq_mul_derivative_right {f g : ℝ[X]}
     (hgc0 : g.coeff 0 ≠ 0) :
     ¬ Prec g (X ^ 2 * f.derivative) := by
   intro h
-  have hg0 : g ≠ 0 := h.1.1
-  have hgs : g.Splits := h.1.2
-  have hXf_ne : X ^ 2 * f.derivative ≠ 0 := h.2.1.1
+  have hg0 : g ≠ 0 := left_ne_zero_of_prec h
+  have hgs : g.Splits := left_splits_of_prec h
+  have hXf_ne : X ^ 2 * f.derivative ≠ 0 := right_ne_zero_of_prec h
   have hfd : f.derivative ≠ 0 := by
-    intro hz
-    simp [hz] at hXf_ne
+    rr_nonzero
   have hXf_deg : (X ^ 2 * f.derivative).natDegree = g.natDegree := by
     rw [natDegree_mul (pow_ne_zero 2 X_ne_zero) hfd, natDegree_pow, natDegree_X,
       f.natDegree_derivative]
@@ -315,8 +302,8 @@ theorem not_prec_X_sq_mul_derivative_right {f g : ℝ[X]}
     have hrw : X ^ 2 * f.derivative = X * (X * f.derivative) := by
       ring
     rw [hrw]
-    exact hfnn.derivative.X_mul.X_mul
-  have hXf_splits : (X ^ 2 * f.derivative).Splits := h.2.1.2
+    rr_nonneg_coeffs using hfnn.derivative
+  have hXf_splits : (X ^ 2 * f.derivative).Splits := right_splits_of_prec h
   have huR_mem : uR ∈ (X ^ 2 * f.derivative).roots :=
     (mem_roots hXf_ne).mpr huR_root
   have huR_le : uR ≤ 0 :=
@@ -337,7 +324,7 @@ theorem not_prec_X_sq_mul_derivative_right {f g : ℝ[X]}
     (mul_left_cancel₀ X_ne_zero hq_alt).symm
   have hq_ne : q ≠ 0 := by
     rw [hq]
-    exact mul_ne_zero X_ne_zero hfd
+    rr_nonzero
   have hq_zero_root : q.IsRoot 0 := by
     rw [hq]
     simp [IsRoot]
@@ -361,11 +348,14 @@ theorem prec_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
     (ha : 0 < a)
     (hc : 0 ≤ c) :
     Prec g (C a * g + (C c * X) * f) := by
-  have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff h.2.1.1
-  have hXf_pos : HasPosLeadingCoeff (X * f) :=
-    (hfnn.pos_leadingCoeff h.1.1).X_mul
+  have hg_pos : HasPosLeadingCoeff g := by
+    rr_pos_lc using nonzero := right_ne_zero_of_prec h
+  have hXf_pos : HasPosLeadingCoeff (X * f) := by
+    have hf_pos : HasPosLeadingCoeff f := by
+      rr_pos_lc using nonzero := left_ne_zero_of_prec h
+    rr_pos_lc
   have hX : Prec g (X * f) := prec_mul_X_of_prec_of_nonneg h hfnn hgnn
-  have hself : Prec g g := prec_refl h.2.1.1 h.2.1.2
+  have hself : Prec g g := prec_refl (right_ne_zero_of_prec h) (right_splits_of_prec h)
   have hnonneg : ∀ ap ∈ [(a, g), (c, X * f)], 0 ≤ ap.1 := by
     intro ap hap
     rcases List.mem_cons.mp hap with rfl | hap
@@ -388,8 +378,7 @@ theorem prec_pos_X_lag_combo_of_prec_nonneg {f g : ℝ[X]} {a c : ℝ}
     rcases List.mem_cons.mp hap with rfl | hap
     · exact hXf_pos
     · cases hap
-  have hex : ∃ ap ∈ [(a, g), (c, X * f)], 0 < ap.1 := by
-    exact ⟨(a, g), by simp, ha⟩
+  have hex : ∃ ap ∈ [(a, g), (c, X * f)], 0 < ap.1 := ⟨(a, g), by simp, ha⟩
   have hsum : Prec g (weightedSum [(a, g), (c, X * f)]) :=
     prec_weightedSum_left_of_common_left
       [(a, g), (c, X * f)] g hnonneg hprec hg_pos hpoly_pos hex
@@ -427,15 +416,9 @@ theorem isRealRooted_of_prec_pos_X_lag_combo_sequence {P : Nat → ℝ[X]}
     (hc : ∀ n : Nat, 0 ≤ c n)
     (hrec : ∀ n : Nat,
       P (n + 2) = C (a n) * P (n + 1) + (C (c n) * X) * P n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  have hprec : ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_prec_chain hbase <|
     prec_pos_X_lag_combo_sequence hbase hnonneg ha hc hrec
-  intro n
-  cases n with
-  | zero =>
-      exact hbase.1
-  | succ n =>
-      exact (hprec n).2.1
 
 namespace Tactic
 
@@ -622,6 +605,20 @@ syntax (name := rr_prec_pos_X_same_coeff_sequence_realrooted_auto)
     "recurrence" ":=" term :
   tactic
 
+syntax (name := rr_wagner_pos) "rr_wagner_pos" : tactic
+
+syntax (name := rr_wagner_pos_seq) "rr_wagner_pos_seq" : term
+
+syntax (name := rr_wagner_recurrence_seq) "rr_wagner_recurrence_seq " term : term
+
+macro_rules
+  | `(tactic| rr_wagner_pos) =>
+      `(tactic| rr_side_pos)
+  | `(rr_wagner_pos_seq) =>
+      `(fun n => by rr_wagner_pos)
+  | `(rr_wagner_recurrence_seq $hrec:term) =>
+      `(fun n => by simpa using $hrec n)
+
 macro_rules
   | `(tactic|
       rr_prec_mul_X using
@@ -706,8 +703,9 @@ macro_rules
         derivative_coeff_pos := $hc:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_prec_wagner_derivative_gap_lag_sequence
-          $hbase $hnonneg $hdeg $ha $hc $hrec)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_prec_wagner_derivative_gap_lag_sequence
+            $hbase $hnonneg $hdeg $ha $hc $hrec))
   | `(tactic|
       rr_prec_wagner_derivative_gap_lag_sequence_den using
         base := $hbase:term,
@@ -730,8 +728,9 @@ macro_rules
         denom_pos := $hd:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_prec_wagner_derivative_gap_lag_sequence_den
-          $hbase $hnonneg $hdeg $ha $hc $hd $hrec)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_prec_wagner_derivative_gap_lag_sequence_den
+            $hbase $hnonneg $hdeg $ha $hc $hd $hrec))
   | `(tactic|
       rr_prec_pos_X_lag_combo using
         proper := $hprec:term,
@@ -740,13 +739,11 @@ macro_rules
         current_coeff_pos := $ha:term,
         lag_coeff_nonneg := $hc:term) =>
       `(tactic|
-        first
-          | exact RealRooted.prec_pos_X_lag_combo_of_prec_nonneg
-              $hprec $hfnn $hgnn $ha $hc
-          | refine (by
-              simpa [mul_assoc, add_assoc] using
-                (RealRooted.prec_pos_X_lag_combo_of_prec_nonneg
-                  $hprec $hfnn $hgnn $ha $hc)))
+        rr_first_exact_or_simpa_mul_add_assoc
+          (RealRooted.prec_pos_X_lag_combo_of_prec_nonneg
+            $hprec $hfnn $hgnn $ha $hc),
+          (RealRooted.prec_pos_X_lag_combo_of_prec_nonneg
+            $hprec $hfnn $hgnn $ha $hc))
   | `(tactic|
       rr_prec_pos_X_lag_combo using
         proper := $hprec:term,
@@ -755,13 +752,11 @@ macro_rules
         current_coeff_pos := $ha:term,
         lag_coeff_pos := $hc:term) =>
       `(tactic|
-        first
-          | exact RealRooted.prec_pos_X_lag_combo_of_prec_nonneg
-              $hprec $hfnn $hgnn $ha ($hc).le
-          | refine (by
-              simpa [mul_assoc, add_assoc] using
-                (RealRooted.prec_pos_X_lag_combo_of_prec_nonneg
-                  $hprec $hfnn $hgnn $ha ($hc).le)))
+        rr_first_exact_or_simpa_mul_add_assoc
+          (RealRooted.prec_pos_X_lag_combo_of_prec_nonneg
+            $hprec $hfnn $hgnn $ha ($hc).le),
+          (RealRooted.prec_pos_X_lag_combo_of_prec_nonneg
+            $hprec $hfnn $hgnn $ha ($hc).le))
   | `(tactic|
       rr_prec_pos_X_lag_sequence using
         base := $hbase:term,
@@ -778,14 +773,13 @@ macro_rules
         nonneg_coeffs := $hnonneg:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        first
-          | exact RealRooted.prec_pos_X_lag_combo_sequence
-              $hbase $hnonneg (fun n => by positivity) (fun n => by positivity) $hrec
-          | refine RealRooted.prec_pos_X_lag_combo_sequence
+        rr_first_exact
+          (RealRooted.prec_pos_X_lag_combo_sequence
+            $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq $hrec),
+          (RealRooted.prec_pos_X_lag_combo_sequence
               (a := fun _ => (1 : ℝ)) (c := fun _ => (1 : ℝ))
-              $hbase $hnonneg (fun n => by positivity) (fun n => by positivity) ?_
-            intro n
-            simpa using $hrec n)
+              $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
+              (rr_wagner_recurrence_seq $hrec)))
   | `(tactic|
       rr_prec_pos_X_lag_sequence_realrooted using
         base := $hbase:term,
@@ -794,22 +788,22 @@ macro_rules
         lag_coeff_nonneg := $hc:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
-          $hbase $hnonneg $ha $hc $hrec)
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
+            $hbase $hnonneg $ha $hc $hrec))
   | `(tactic|
       rr_prec_pos_X_lag_sequence_realrooted_auto using
         base := $hbase:term,
         nonneg_coeffs := $hnonneg:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        first
-          | exact RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
-              $hbase $hnonneg (fun n => by positivity) (fun n => by positivity) $hrec
-          | refine RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
-              (a := fun _ => (1 : ℝ)) (c := fun _ => (1 : ℝ))
-              $hbase $hnonneg (fun n => by positivity) (fun n => by positivity) ?_
-            intro n
-            simpa using $hrec n)
+        rr_first_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
+            $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq $hrec),
+          (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
+            (a := fun _ => (1 : ℝ)) (c := fun _ => (1 : ℝ))
+            $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
+            (rr_wagner_recurrence_seq $hrec)))
   | `(tactic|
       rr_prec_pos_X_unit_lag_sequence_auto using
         current_coeff := $a:term,
@@ -819,8 +813,8 @@ macro_rules
       `(tactic|
         exact RealRooted.prec_pos_X_lag_combo_sequence
           (a := $a) (c := fun _ => (1 : ℝ))
-          $hbase $hnonneg (fun n => by positivity) (fun n => by positivity)
-          (fun n => by simpa using ($hrec n)))
+          $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
+          (rr_wagner_recurrence_seq $hrec))
   | `(tactic|
       rr_prec_pos_X_unit_lag_sequence_realrooted_auto using
         current_coeff := $a:term,
@@ -828,10 +822,11 @@ macro_rules
         nonneg_coeffs := $hnonneg:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
-          (a := $a) (c := fun _ => (1 : ℝ))
-          $hbase $hnonneg (fun n => by positivity) (fun n => by positivity)
-          (fun n => by simpa using ($hrec n)))
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
+            (a := $a) (c := fun _ => (1 : ℝ))
+            $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
+            (rr_wagner_recurrence_seq $hrec)))
   | `(tactic|
       rr_prec_pos_X_same_coeff_sequence_auto using
         shared_coeff := $c:term,
@@ -841,8 +836,8 @@ macro_rules
       `(tactic|
         exact RealRooted.prec_pos_X_lag_combo_sequence
           (a := $c) (c := $c)
-          $hbase $hnonneg (fun n => by positivity) (fun n => by positivity)
-          (fun n => by simpa using ($hrec n)))
+          $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
+          (rr_wagner_recurrence_seq $hrec))
   | `(tactic|
       rr_prec_pos_X_same_coeff_sequence_realrooted_auto using
         shared_coeff := $c:term,
@@ -850,10 +845,11 @@ macro_rules
         nonneg_coeffs := $hnonneg:term,
         recurrence := $hrec:term) =>
       `(tactic|
-        exact RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
-          (a := $c) (c := $c)
-          $hbase $hnonneg (fun n => by positivity) (fun n => by positivity)
-          (fun n => by simpa using ($hrec n)))
+        rr_exact_realrooted_sequence_or_projection
+          (RealRooted.isRealRooted_of_prec_pos_X_lag_combo_sequence
+            (a := $c) (c := $c)
+            $hbase $hnonneg rr_wagner_pos_seq rr_wagner_pos_seq
+            (rr_wagner_recurrence_seq $hrec)))
 
 end Tactic
 end RealRooted

@@ -69,7 +69,6 @@ theorem cubicDiscr_of_coeffs (α β γ δ : ℝ) :
   simp only [coeff_add, coeff_C_mul, coeff_X_pow, coeff_C,
     coeff_X, mul_ite, mul_one, mul_zero]
   norm_num
-  try ring
 
 /-- Expansion of a monic product of three linear factors. -/
 theorem prod_three_X_sub_C_expand (a b c : ℝ) :
