@@ -1,3 +1,4 @@
+import RealRooted.PosCombo
 import RealRooted.Wagner
 
 /-!
@@ -29,7 +30,6 @@ abbrev HasNonposRootsPosLeading (p : ℝ[X]) : Prop :=
 theorem commonRight_add {f g h : ℝ[X]}
     (hf : HasNonposRootsPosLeading f)
     (hg : HasNonposRootsPosLeading g)
-    (_hh : HasNonposRootsPosLeading h)
     (hfh : Prec f h) (hgh : Prec g h) :
     Prec (f + g) h :=
   RealRooted.prec_add_of_prec_right_of_posLeadingCoeff hfh hgh hf.2.2 hg.2.2
@@ -44,10 +44,11 @@ clean target. -/
 theorem commonLeft_add {f g h : ℝ[X]}
     (hf : HasNonposRootsPosLeading f)
     (hg : HasNonposRootsPosLeading g)
-    (hh : HasNonposRootsPosLeading h)
     (hhf : Prec h f) (hhg : Prec h g) :
     Prec h (f + g) := by
-  sorry
+  have hprec : Prec h ([f, g].sum) := by
+    grind [RealRooted.prec_sum_left_of_common_left_signed]
+  grind
 
 /-- Checked two-summand common-left form currently available in the core
 Wagner module. -/

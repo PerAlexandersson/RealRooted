@@ -45,7 +45,7 @@ lemma tridiagM_det_rec (d s b : ℝ) (n : ℕ) :
   rw [Matrix.det_succ_column_zero]
   norm_num [Fin.sum_univ_succ, Matrix.det_succ_row_zero]
   ring_nf!
-  simp +decide [Matrix.submatrix]
+  simp [Matrix.submatrix]
   ring!
 
 end RealRooted
