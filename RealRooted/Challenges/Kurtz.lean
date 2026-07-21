@@ -491,7 +491,7 @@ theorem coefficient_criterion {p : ℝ[X]}
 /-- Compatibility wrapper for the original challenge-facing theorem name. -/
 theorem coefficientCriterion {p : ℝ[X]}
     (hdeg : 2 ≤ p.natDegree)
-    (hpos : PositiveCoefficientsUpToDegree p)
+    (hpos : PositiveCoeffsUpToDegree p)
     (hineq : KurtzStrictInequalities p) :
     p.Splits :=
   coefficient_criterion hdeg hpos hineq
