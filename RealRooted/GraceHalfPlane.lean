@@ -161,11 +161,11 @@ theorem polarDeriv_natDegree_lowerHalf {n : Nat} {b : ℝ} {ζ : ℂ}
         grind
       have : A.coeff (n - 1)
           = A.leadingCoeff * (-1) ^ (n - (n - 1)) * Multiset.esymm A.roots (n - (n - 1)) := by
-        convert Polynomial.coeff_eq_esymm_roots_of_card _ _ using 1
-        all_goals norm_num [hA]
-        · exact inferInstance
-        · convert Polynomial.splits_iff_card_roots.mp (IsAlgClosed.splits A) using 1
-          simp [*]
+        have h_eq := Polynomial.coeff_eq_esymm_roots_of_card
+          (splits_iff_card_roots.mp (IsAlgClosed.splits A))
+          (show n - 1 ≤ A.natDegree by lia)
+        rw [hA] at h_eq
+        exact h_eq
       rcases n with (_ | _ | n) <;> simp_all [Multiset.esymm]
       · simp_all [Multiset.powersetCard_one, mul_sub] ; ring_nf
         rw [Polynomial.leadingCoeff, hA]

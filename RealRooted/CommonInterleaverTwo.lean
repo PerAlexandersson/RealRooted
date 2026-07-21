@@ -2845,7 +2845,9 @@ theorem rootSlotInterval_inter_nonempty_of_crossing
       List.length_nil, Nat.reduceAdd, List.length_cons, Nat.add_eq_zero_iff, and_false,
       List.get_eq_getElem, add_tsub_cancel_right, Nat.add_right_cancel_iff]
   · rcases rf with (_ | ⟨r, rf⟩) <;> rcases rg with (_ | ⟨s, rg⟩) <;> norm_num at *
-  · split_ifs <;> try lia
+  · split_ifs
+    · exfalso
+      lia
     · rcases x : rf.reverse with (_ | ⟨r, _ | ⟨s, l⟩⟩) <;>
           simp_all +decide only [lt_add_iff_pos_right, Order.lt_one_iff,
             List.reverse_eq_nil_iff, List.length_nil,
@@ -2877,6 +2879,8 @@ theorem rootSlotInterval_inter_nonempty_of_crossing
               (i := ⟨l.length + 1, by lia⟩)
               (j := ⟨l.length + 2, by lia⟩)
               (by simp)
+    · exfalso
+      lia
     · have hrf_step : rf[j + 1] ≤ rf[j] := by
         simpa [List.get_eq_getElem] using
           get_le_get_of_pairwise_ge hrf
@@ -6726,8 +6730,7 @@ private lemma count_above_singleton_pair_le
     ((({β, γ} : Multiset ℝ).filter (x < ·)).card : ℤ) -
         (({α} : Multiset ℝ).filter (x < ·)).card ≤ 1 := by
   simp only [Multiset.insert_eq_cons, Multiset.filter_cons, Multiset.filter_singleton]
-  split_ifs
-  all_goals simp_all; try linarith
+  split_ifs <;> (first | linarith | simp_all)
 
 /-- Counting core (lower threshold): for a singleton `{α}` and an ordered pair
 `{β, γ}` with `γ ≤ α`, the singleton never has more elements `≤ x` than the
@@ -6739,8 +6742,7 @@ private lemma count_below_singleton_pair_le
     ((({β, γ} : Multiset ℝ).filter (· ≤ x)).card : ℤ) -
         (({α} : Multiset ℝ).filter (· ≤ x)).card ≤ 2 := by
   simp only [Multiset.insert_eq_cons, Multiset.filter_cons, Multiset.filter_singleton]
-  split_ifs
-  all_goals simp_all; try linarith
+  split_ifs <;> (first | linarith | simp_all)
 
 /-- Degree-one base case for the upper-threshold succ-degree root-count
 formulation in the positive-combination / no-common-root setting.

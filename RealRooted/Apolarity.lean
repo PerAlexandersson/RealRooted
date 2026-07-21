@@ -628,7 +628,6 @@ reciprocals `1 / (w - z)` over the nonempty multiset `S` (equivalently
 `1/(w-ζ)` is the equal-weight average of the `1/(w - z)`), then `ζ` lies inside
 the disk.
 -/
-set_option maxHeartbeats 1200000 in
 -- The disk-membership proof normalizes a large complex quadratic inequality.
 theorem mem_closedBall_of_recip_avg {c : ℂ} {r : ℝ} (hr : 0 ≤ r) {w ζ : ℂ}
     (S : Multiset ℂ) (hS : S ≠ 0)
@@ -653,20 +652,35 @@ theorem mem_closedBall_of_recip_avg {c : ℂ} {r : ℝ} (hr : 0 ≤ r) {w ζ : �
         simpa [Metric.mem_closedBall, dist_eq_norm] using hz z hzS
       rw [Complex.normSq_eq_norm_sq]
       exact pow_le_pow_left₀ (norm_nonneg (z - c)) hz_norm 2
+    have hwz_ne : w - z ≠ 0 := by
+      intro h
+      apply hw
+      have hw_eq_z : w = z := sub_eq_zero.mp h
+      simpa [hw_eq_z] using hz z hzS
+    let u := 1 / (w - z)
     have hz_reciprocal :
-        Complex.normSq (α * (1 / (w - z)) - 1) ≤ r^2 * Complex.normSq (1 / (w - z)) := by
-      have hwz_ne : w - z ≠ 0 := by
-        intro h
-        apply hw
-        have hw_eq_z : w = z := sub_eq_zero.mp h
-        simpa [hw_eq_z] using hz z hzS
-      have hmul : α * (1 / (w - z)) - 1 = (z - c) * (1 / (w - z)) := by
+        Complex.normSq (α * u - 1) ≤ r^2 * Complex.normSq u := by
+      have hmul : α * u - 1 = (z - c) * u := by
+        dsimp [u]
         field_simp [hwz_ne, α]
         ring
       rw [hmul, Complex.normSq_mul]
-      exact mul_le_mul_of_nonneg_right hz_dist (Complex.normSq_nonneg (1 / (w - z)))
-    simp_all +decide [ Complex.normSq_sub ];
-    grind +extAll;
+      exact mul_le_mul_of_nonneg_right hz_dist (Complex.normSq_nonneg u)
+    have h_normSq_identity :
+        ∀ x : ℂ, Complex.normSq (x - 1) = Complex.normSq x - 2 * x.re + 1 := by
+      intro x
+      simp only [Complex.normSq_apply, Complex.sub_re, Complex.sub_im,
+        Complex.one_re, Complex.one_im]
+      ring
+    have h_normSq_identity2 : Complex.normSq (α * u - 1) =
+        Complex.normSq α * Complex.normSq u - 2 * (α * u).re + 1 := by
+      rw [h_normSq_identity (α * u), Complex.normSq_mul]
+    have h_expand : A * Complex.normSq u =
+        Complex.normSq α * Complex.normSq u - r^2 * Complex.normSq u := by
+      dsimp [A]
+      ring
+    simp only [Set.mem_setOf_eq]
+    linarith [hz_reciprocal, h_normSq_identity2, h_expand]
   -- By definition of $S$, we know that $1 / (w - ζ) \in S$.
   have h_reciprocal_in_S_ζ :
       (1 / (w - ζ)) ∈ {u : ℂ | A * Complex.normSq u - 2 * (α * u).re + 1 ≤ 0} := by
@@ -718,18 +732,19 @@ theorem mem_closedBall_of_recip_avg {c : ℂ} {r : ℝ} (hr : 0 ≤ r) {w ζ : �
     simp +zetaDelta only [sub_pos, Complex.sub_re, Complex.sub_im] at *
     rw [ Real.sqrt_le_left hr ]
     norm_num [ Complex.normSq ] at *;
-    nlinarith [ inv_pos.mpr ( show 0 < ( w.re - ζ.re ) * ( w.re - ζ.re )
-        + ( w.im - ζ.im ) * ( w.im - ζ.im ) from not_le.mp fun h' => h <| by
-          refine Complex.ext ?_ ?_ <;> norm_num <;> nlinarith ),
-      mul_inv_cancel₀ ( show ( w.re - ζ.re ) * ( w.re - ζ.re )
-        + ( w.im - ζ.im ) * ( w.im - ζ.im ) ≠ 0 from fun h' => h <| by
-          refine Complex.ext ?_ ?_ <;> norm_num <;> nlinarith ) ]
+    have hD_pos :
+        0 < (w.re - ζ.re) * (w.re - ζ.re) + (w.im - ζ.im) * (w.im - ζ.im) := by
+      have h_normSq_pos : 0 < Complex.normSq (w - ζ) := Complex.normSq_pos.mpr h
+      simp only [Complex.normSq_apply, Complex.sub_re, Complex.sub_im] at h_normSq_pos
+      exact h_normSq_pos
+    have hD_ne : (w.re - ζ.re) * (w.re - ζ.re) + (w.im - ζ.im) * (w.im - ζ.im) ≠ 0 :=
+      ne_of_gt hD_pos
+    nlinarith [inv_pos.mpr hD_pos, mul_inv_cancel₀ hD_ne]
 
 /-
 The polar derivative of a binomial lift is, up to the nonzero factor `n`, the
 binomial lift of the polar shift.
 -/
-set_option maxHeartbeats 1200000 in
 -- The coefficient comparison below expands a large binomial-sum identity.
 theorem polarDeriv_binomialLift {n : Nat} (hn : 1 ≤ n) (ζ : ℂ) (f : ℂ[X]) :
     polarDeriv n ζ (binomialLift n f)
@@ -752,40 +767,40 @@ theorem polarDeriv_binomialLift {n : Nat} (hn : 1 ≤ n) (ζ : ℂ) (f : ℂ[X])
         Finset.sum_range_succ, Nat.choose_self, Nat.cast_one, one_mul, sub_mul,
         coeff_sub, coeff_C_mul, coeff_add, finsetSum_coeff, coeff_derivative,
         Nat.cast_add, ite_mul, mul_assoc, zero_mul, coeff_X_mul]
-      split_ifs
-      all_goals
-        try (simp only [show n = k + 1 by lia, Nat.choose_self, Nat.cast_add,
-          Nat.cast_one]; ring_nf)
-        try (simp only [show n = k + 1 + 1 by lia, Nat.choose_succ_self_right,
-          Nat.choose_self, Nat.succ_sub_one, Nat.cast_add, Nat.cast_one]; ring_nf)
-        try simp +decide only [add_zero]
-        try simp +decide only [add_zero, mul_zero, zero_sub]
-        try simp +decide only [mul_eq_zero, Nat.cast_eq_zero]
-      any_goals lia
-      · rcases n with _ | n
-        · simp_all
-        · simp_all +decide only [le_add_iff_nonneg_left, zero_le,
-            Order.lt_add_one_iff, Order.add_one_le_iff,
-            Nat.add_right_cancel_iff, Nat.cast_add, Nat.cast_one,
-            Nat.choose_succ_succ, Nat.succ_eq_add_one, add_mul, mul_add,
-            mul_left_comm, one_mul, add_tsub_cancel_right]
-          have hChooseK :
-              ((n + 1 : ℕ) : ℂ) * (n.choose k : ℂ) =
-                ((k + 1 : ℕ) : ℂ) *
-                  ((n.choose k : ℂ) + (n.choose (k + 1) : ℂ)) :=
-            Nat.cast_add_one_mul_choose_eq (R := ℂ) n k
-          have hChooseSucc :
-              ((n + 1 : ℕ) : ℂ) * (n.choose (k + 1) : ℂ) =
-                ((k + 1 + 1 : ℕ) : ℂ) *
-                  ((n.choose (k + 1) : ℂ) + (n.choose (k + 1 + 1) : ℂ)) :=
-            Nat.cast_add_one_mul_choose_eq (R := ℂ) n (k + 1)
-          rw [show k + 1 = 1 + k by lia]
-          rw [show 1 + k + 1 = 2 + k by lia]
-          simp only [Nat.add_comm, Nat.add_left_comm] at *
-          push_cast at hChooseK hChooseSucc ⊢
-          ring_nf at hChooseK hChooseSucc ⊢
-          linear_combination (f.coeff (1 + k)) * hChooseK +
-            (-(ζ * f.coeff (2 + k))) * hChooseSucc
+      have hk_le : k + 1 ≤ n := hk
+      rcases eq_or_lt_of_le hk_le with heq1 | hlt1
+      · have : n = k + 1 := heq1.symm
+        subst this
+        simp; ring
+      · have hlt1_le : k + 2 ≤ n := hlt1
+        rcases eq_or_lt_of_le hlt1_le with heq2 | hlt2
+        · have : n = k + 2 := heq2.symm
+          subst this
+          simp; ring
+        · simp only [show ¬n = k + 1 by lia, ↓reduceIte, show ¬n = k + 1 + 1 by lia]
+          rcases n with _ | n
+          · simp_all
+          · simp_all +decide only [le_add_iff_nonneg_left, zero_le,
+              Order.lt_add_one_iff, Order.add_one_le_iff,
+              Nat.cast_add, Nat.cast_one,
+              Nat.choose_succ_succ, Nat.succ_eq_add_one, add_mul, mul_add,
+              mul_left_comm, one_mul, add_tsub_cancel_right]
+            have hChooseK :
+                ((n + 1 : ℕ) : ℂ) * (n.choose k : ℂ) =
+                  ((k + 1 : ℕ) : ℂ) *
+                    ((n.choose k : ℂ) + (n.choose (k + 1) : ℂ)) :=
+              Nat.cast_add_one_mul_choose_eq (R := ℂ) n k
+            have hChooseSucc :
+                ((n + 1 : ℕ) : ℂ) * (n.choose (k + 1) : ℂ) =
+                  ((k + 1 + 1 : ℕ) : ℂ) *
+                    ((n.choose (k + 1) : ℂ) + (n.choose (k + 1 + 1) : ℂ)) :=
+              Nat.cast_add_one_mul_choose_eq (R := ℂ) n (k + 1)
+            rw [show k + 1 = 1 + k by lia, show 1 + k + 1 = 2 + k by lia]
+            simp only [Nat.add_comm, Nat.add_left_comm] at *
+            push_cast at hChooseK hChooseSucc ⊢
+            ring_nf at hChooseK hChooseSucc ⊢
+            linear_combination (f.coeff (1 + k)) * hChooseK +
+              (-(ζ * f.coeff (2 + k))) * hChooseSucc
     · simp_all +decide only [Order.add_one_le_iff, not_lt, polarDeriv,
         map_natCast, binomialLift, map_sum, coeff_add, coeff_natCast_mul,
         finsetSum_coeff, Nat.sub_add_cancel, coeff_polarShift]
@@ -796,7 +811,8 @@ theorem polarDeriv_binomialLift {n : Nat} (hn : 1 ≤ n) (ζ : ℂ) (f : ℂ[X])
         derivative_C, add_zero, Finset.mul_sum _ _ _, sub_mul, C_mul_monomial,
         X_mul_monomial, Finset.sum_sub_distrib, coeff_sub, finsetSum_coeff,
         Nat.cast_add, Nat.add_right_cancel_iff]
-      grind
+      simp only [show ¬ k + 1 < n by lia, ↓reduceIte, show ¬ k < n by lia]
+      simp
 
 /-- **Laguerre's theorem** (closed-disk case): if all zeros of `A` (of degree
 `n`) lie in the closed disk and the pole `ζ` lies outside it, then all zeros of
@@ -892,11 +908,11 @@ theorem polarDeriv_natDegree {n : Nat} {c : ℂ} {r : ℝ} {ζ : ℂ}
         ring;
       have h_vieta : A.coeff (n - 1)
           = A.leadingCoeff * (-1) ^ (n - (n - 1)) * Multiset.esymm A.roots (n - (n - 1)) := by
-        convert Polynomial.coeff_eq_esymm_roots_of_card _ _ using 1;
-        all_goals norm_num [ hA ];
-        · exact inferInstance
-        · convert Polynomial.splits_iff_card_roots.mp ( IsAlgClosed.splits A ) using 1;
-          all_goals norm_num [ hA ];
+        have h_eq := Polynomial.coeff_eq_esymm_roots_of_card
+          (splits_iff_card_roots.mp (IsAlgClosed.splits A))
+          (show n - 1 ≤ A.natDegree by lia)
+        rw [hA] at h_eq
+        exact h_eq
       rcases n with ( _ | _ | n ) <;> simp_all +decide [ Multiset.esymm ];
       · simp_all +decide [ Multiset.powersetCard_one, mul_sub ] ; ring_nf;
         rw [ Polynomial.leadingCoeff, hA ] ; ring;
@@ -941,7 +957,6 @@ theorem apolarPairing_eq_sum_binomialLift (n : Nat) (f g : ℂ[X]) :
 Apolarity is preserved by polar-shifting one lift and deflating the other by
 a root: the algebraic engine of Grace's theorem.
 -/
-set_option maxHeartbeats 1200000 in
 -- The deflation identity expands two binomial-lift sums before cancellation.
 theorem apolarPairing_deflation {n : Nat} (hn : 1 ≤ n) {ζ : ℂ} {f g g' : ℂ[X]}
     (hdefl : (X - C ζ) * binomialLift (n - 1) g' = binomialLift n g) :

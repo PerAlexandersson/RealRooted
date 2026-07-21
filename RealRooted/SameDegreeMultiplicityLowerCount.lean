@@ -234,8 +234,9 @@ private lemma exists_delta_le_card_filter_roots_near_zero
             / (min ρ 1) ^ n)
           * (1 + (max B 1) ^ n * Nat.choose n (n / 2) / (min ρ 1) ^ n) ^ k := by
       apply abs_coeff_le_of_mul
-      any_goals assumption
       · positivity
+      · exact hF_coeff_zero
+      · exact hF_coeff_bdd
       · intro j hj
         rw [← hR]
         exact le_of_lt (hR₅ j (by linarith))

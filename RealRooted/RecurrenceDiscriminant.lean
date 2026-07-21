@@ -10,7 +10,6 @@ terms are all nonnegative must have a real characteristic polynomial.
 
 namespace RealRooted
 
-set_option linter.flexible false in
 /-- A second-order linear recurrence whose terms are all nonnegative has real
 characteristic roots.  If `D 0 = 1`, `D 1 = b`,
 `D (n + 2) = b * D (n + 1) - Q * D n`, and every `D n` is nonnegative, then
@@ -52,13 +51,21 @@ lemma four_mul_le_sq_of_recurrence_nonneg {b Q : ℝ} {D : ℕ → ℝ}
     intro n
     induction n using Nat.strong_induction_on with
     | h n ih =>
-        rcases n with _ | _ | n <;> simp_all +decide
-        · rw [div_self (ne_of_gt (Real.sin_pos_of_pos_of_lt_pi hθ_lt_pi h_eq.1))]
-        · rw [eq_div_iff h0]
+        rcases n with _ | _ | n
+        · have h_sin : Real.sin θ ≠ 0 := ne_of_gt (Real.sin_pos_of_pos_of_lt_pi hθ_lt_pi h_eq.1)
+          rw [h0]
+          simp only [pow_zero, CharP.cast_eq_zero, zero_add, one_mul]
+          rw [div_self h_sin]
+        · have h_sin : Real.sin θ ≠ 0 := ne_of_gt (Real.sin_pos_of_pos_of_lt_pi hθ_lt_pi h_eq.1)
+          rw [h1, h_eq.2.1]
+          simp only [pow_one, Nat.cast_one, zero_add]
+          rw [eq_div_iff h_sin]
           norm_num [Real.sin_two_mul]
           ring
-        · rw [show ((n + 1 + 1 + 1 : ℝ) * θ) = (n + 1 + 1) * θ + θ by ring,
-            show ((n + 1 : ℝ) * θ) = (n + 1 + 1) * θ - θ by ring]
+        · rw [hrec n, h_eq.2.1, h_eq.2.2, ih (n + 1) (by lia), ih n (by lia)]
+          simp only [Nat.cast_add, Nat.cast_one]
+          rw [show ((n + 1 + 1 + 1 : ℝ) * θ) = (n + 1 + 1) * θ + θ by ring,
+              show ((n + 1 : ℝ) * θ) = (n + 1 + 1) * θ - θ by ring]
           norm_num [Real.sin_add, Real.sin_sub, Real.cos_add, Real.cos_sub]
           ring
   obtain ⟨N, hN⟩ : ∃ N : ℕ, Real.pi < (N + 1) * θ ∧ (N + 1) * θ < 2 * Real.pi := by
