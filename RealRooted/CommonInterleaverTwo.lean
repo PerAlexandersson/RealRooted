@@ -500,11 +500,12 @@ theorem pairwiseCompatible_of_commonLeftInterleaver
     (hcommon : HasCommonLeftInterleaver fs)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
     PairwiseCompatible fs :=
-  Exists.elim hcommon fun _ hprec i j _ => Compatible.of_commonLeftInterleaver
-    (hprec (fs.get i) (List.get_mem _ _))
-    (hprec (fs.get j) (List.get_mem _ _))
-    (hpos (fs.get i) (List.get_mem _ _))
-    (hpos (fs.get j) (List.get_mem _ _))
+  let ⟨_, hprec⟩ := hcommon
+  fun i j _ => Compatible.of_commonLeftInterleaver
+    (hprec (fs.get i) (fs.get_mem i))
+    (hprec (fs.get j) (fs.get_mem j))
+    (hpos (fs.get i) (fs.get_mem i))
+    (hpos (fs.get j) (fs.get_mem j))
 
 /-- The same easy direction, but starting from pairwise common left
 interleavers rather than a single global witness. -/
@@ -514,10 +515,10 @@ theorem pairwiseCompatible_of_pairwiseHasCommonLeftInterleaver
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
     PairwiseCompatible fs :=
   fun i j hij =>
-    Exists.elim (hpair i j hij) fun _ hh => Compatible.of_commonLeftInterleaver
-      hh.1 hh.2
-      (hpos (fs.get i) (List.get_mem _ _))
-      (hpos (fs.get j) (List.get_mem _ _))
+    let ⟨_, hwf, hwg⟩ := hpair i j hij
+    Compatible.of_commonLeftInterleaver hwf hwg
+      (hpos (fs.get i) (fs.get_mem i))
+      (hpos (fs.get j) (fs.get_mem j))
 
 /-- A family with a common right interleaver is pairwise compatible. -/
 theorem pairwiseCompatible_of_commonInterleaver
@@ -525,11 +526,12 @@ theorem pairwiseCompatible_of_commonInterleaver
     (hcommon : HasCommonInterleaver fs)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
     PairwiseCompatible fs :=
-  Exists.elim hcommon fun _ hprec i j _ => Compatible.of_commonInterleaver
-    (hprec (fs.get i) (List.get_mem _ _))
-    (hprec (fs.get j) (List.get_mem _ _))
-    (hpos (fs.get i) (List.get_mem _ _))
-    (hpos (fs.get j) (List.get_mem _ _))
+  let ⟨_, hprec⟩ := hcommon
+  fun i j _ => Compatible.of_commonInterleaver
+    (hprec (fs.get i) (fs.get_mem i))
+    (hprec (fs.get j) (fs.get_mem j))
+    (hpos (fs.get i) (fs.get_mem i))
+    (hpos (fs.get j) (fs.get_mem j))
 
 /-- Pairwise common right interleavers imply pairwise compatibility. -/
 theorem pairwiseCompatible_of_pairwiseHasCommonInterleaver
@@ -538,10 +540,10 @@ theorem pairwiseCompatible_of_pairwiseHasCommonInterleaver
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
     PairwiseCompatible fs :=
   fun i j hij =>
-    Exists.elim (hpair i j hij) fun _ hh => Compatible.of_commonInterleaver
-      hh.1 hh.2
-      (hpos (fs.get i) (List.get_mem _ _))
-      (hpos (fs.get j) (List.get_mem _ _))
+    let ⟨_, hwf, hwg⟩ := hpair i j hij
+    Compatible.of_commonInterleaver hwf hwg
+      (hpos (fs.get i) (fs.get_mem i))
+      (hpos (fs.get j) (fs.get_mem j))
 
 /-- Natural two-polynomial bridge hypothesis in the Chudnovsky--Seymour setup:
 compatibility plus positive leading coefficients implies a common right
@@ -600,8 +602,8 @@ theorem pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible
     PairwiseHasCommonLeftInterleaver fs :=
   fun i j hij =>
     htwo
-      (hpos (fs.get i) (List.get_mem _ _))
-      (hpos (fs.get j) (List.get_mem _ _))
+      (hpos (fs.get i) (fs.get_mem i))
+      (hpos (fs.get j) (fs.get_mem j))
       (hpair i j hij)
 
 /-- Positive-leading version of
@@ -615,8 +617,8 @@ theorem pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible_pos
     PairwiseHasCommonLeftInterleaver fs :=
   fun i j hij =>
     htwo
-      (hpos (fs.get i) (List.get_mem _ _))
-      (hpos (fs.get j) (List.get_mem _ _))
+      (hpos (fs.get i) (fs.get_mem i))
+      (hpos (fs.get j) (fs.get_mem j))
       (hpair i j hij)
 
 /-- Reduction for the left-oriented Chudnovsky--Seymour target: the full
@@ -682,8 +684,6 @@ theorem pairwiseHasCommonInterleaver_of_pairwiseCompatible
     PairwiseHasCommonInterleaver fs :=
   fun i j hij => by simpa using htwo (hpair i j hij)
 
-
-
 /-- Same-degree branch of the positive-leading compatibility bridge. This is
 the honest `Compatible`-level version of article 3.6.1 → 3.6.2 in the equal-
 degree case. -/
@@ -713,20 +713,19 @@ theorem compatiblePairHasCommonInterleaver_of_degreeSplit
     (hsame : CompatibleSameDegreePairHasCommonInterleaverStatement)
     (hsucc : CompatibleSuccDegreePairHasCommonInterleaverStatement) :
     CompatiblePairHasCommonInterleaverStatement := by
-  intro f g hf_pos hg_pos hfg
-  have hclose := hfg.natDegree_close hf_pos hg_pos
+  intro f g hf hg hfg
+  have : f.natDegree ≤ g.natDegree + 1 ∧ g.natDegree ≤ f.natDegree + 1 :=
+    hfg.natDegree_close hf hg
   by_cases hdeg : f.natDegree ≤ g.natDegree
-  · have hcases : g.natDegree = f.natDegree ∨ g.natDegree = f.natDegree + 1 := by
-      lia
-    rcases hcases with hsame_deg | hsucc_deg
-    · exact hsame hf_pos hg_pos hfg hsame_deg
-    · exact hsucc hf_pos hg_pos hfg hsucc_deg
-  · have hdeg' : g.natDegree ≤ f.natDegree := le_of_not_ge hdeg
-    have hcases : f.natDegree = g.natDegree ∨ f.natDegree = g.natDegree + 1 := by lia
-    rcases hcases with hsame_deg | hsucc_deg
+  · rcases (by lia : g.natDegree = f.natDegree ∨
+      g.natDegree = f.natDegree + 1) with hsame_deg | hsucc_deg
+    · exact hsame hf hg hfg hsame_deg
+    · exact hsucc hf hg hfg hsucc_deg
+  · have : g.natDegree ≤ f.natDegree := le_of_not_ge hdeg
+    rcases (by lia : f.natDegree = g.natDegree ∨
+      f.natDegree = g.natDegree + 1) with hsame_deg | hsucc_deg
     · lia
-    · rcases hsucc hg_pos hf_pos hfg.comm hsucc_deg with ⟨h, hg_prec, hf_prec⟩
-      grind
+    · exact (hsucc hg hf hfg.comm hsucc_deg).imp fun _ h => h.symm
 
 /-- A positive-leading common-right bridge implies the corresponding common-left
 bridge: first get a common right interleaver, then convert it to a common left
@@ -734,19 +733,17 @@ interleaver using degree closeness. -/
 theorem compatiblePairHasCommonLeftInterleaverPos_of_pairBridge
     (hright : CompatiblePairHasCommonInterleaverStatement) :
     CompatiblePairHasCommonLeftInterleaverPosStatement := by
-  intro f g hf_pos hg_pos hfg
-  have hclose := hfg.natDegree_close hf_pos hg_pos
+  intro f g hf hg hfg
+  have : f.natDegree ≤ g.natDegree + 1 ∧ g.natDegree ≤ f.natDegree + 1 :=
+    hfg.natDegree_close hf hg
   by_cases hdeg : f.natDegree ≤ g.natDegree
-  · rcases hright hf_pos hg_pos hfg with ⟨h, hfh, hgh⟩
+  · rcases hright hf hg hfg with ⟨h, hfh, hgh⟩
     exact
       pairHasCommonLeftInterleaver_of_commonInterleaver
-        hfh hgh hdeg hclose.2
-  · have hdeg' : g.natDegree ≤ f.natDegree := le_of_not_ge hdeg
-    rcases hright hg_pos hf_pos hfg.comm with ⟨h, hgh, hfh⟩
-    obtain ⟨l, hlg, hlf⟩ :=
-      pairHasCommonLeftInterleaver_of_commonInterleaver
-        hgh hfh hdeg' hclose.1
-    exact ⟨l, hlf, hlg⟩
+        hfh hgh hdeg this.2
+  · rcases hright hg hf hfg.comm with ⟨h, hgh, hfh⟩
+    exact (pairHasCommonLeftInterleaver_of_commonInterleaver
+      hgh hfh (le_of_not_ge hdeg) this.1).imp fun _ h => h.symm
 
 /-- Core two-polynomial target in positive-combination language: a
 positive-leading `PosComboRealRooted` pair admits a common right interleaver. -/
