@@ -543,11 +543,41 @@ theorem pairwiseCompatible_of_pairwiseHasCommonInterleaver
       (hpos (fs.get i) (List.get_mem _ _))
       (hpos (fs.get j) (List.get_mem _ _))
 
-/-- Two-polynomial common-left bridge: compatibility implies a common left
+/-- Natural two-polynomial bridge hypothesis in the Chudnovsky--Seymour setup:
+compatibility plus positive leading coefficients implies a common right
 interleaver. -/
-theorem compatiblePairHasCommonLeftInterleaver {f g : ℝ[X]} (h : Compatible f g) :
+def CompatiblePairHasCommonInterleaverStatement : Prop :=
+  ∀ ⦃f g : ℝ[X]⦄,
+    HasPosLeadingCoeff f →
+    HasPosLeadingCoeff g →
+    Compatible f g →
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h
+
+private theorem compatiblePairHasCommonInterleaver_core
+    (hbridge : CompatiblePairHasCommonInterleaverStatement)
+    {f g : ℝ[X]}
+    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g) (h : Compatible f g) :
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  hbridge hf hg h
+
+/-- Two-polynomial common-left bridge, parameterized by the corresponding
+positive-leading common-right bridge to avoid an import cycle with the analytic
+Chudnovsky--Seymour endpoints. -/
+theorem compatiblePairHasCommonLeftInterleaver
+    (hbridge : CompatiblePairHasCommonInterleaverStatement)
+    {f g : ℝ[X]}
+    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g) (h : Compatible f g) :
     ∃ h : ℝ[X], Prec h f ∧ Prec h g := by
-  sorry
+  have hclose := h.natDegree_close hf hg
+  by_cases hdeg : f.natDegree ≤ g.natDegree
+  · obtain ⟨k, hfk, hgk⟩ := compatiblePairHasCommonInterleaver_core hbridge hf hg h
+    exact pairHasCommonLeftInterleaver_of_commonInterleaver hfk hgk hdeg hclose.2
+  · have hdeg' : g.natDegree ≤ f.natDegree := le_of_not_ge hdeg
+    obtain ⟨k, hgk, hfk⟩ :=
+      compatiblePairHasCommonInterleaver_core hbridge hg hf h.comm
+    obtain ⟨l, hlg, hlf⟩ :=
+      pairHasCommonLeftInterleaver_of_commonInterleaver hgk hfk hdeg' hclose.1
+    exact ⟨l, hlf, hlg⟩
 
 /-- Positive-leading two-polynomial common-left bridge.  This is the usable
 pair-local form for the roadmap theorem, whose finite-family statement already
@@ -563,9 +593,16 @@ def CompatiblePairHasCommonLeftInterleaverPosStatement : Prop :=
 pairwise Chudnovsky--Seymour hypothesis immediately upgrades to pairwise common
 left interleavers. This isolates the exact missing bridge. -/
 theorem pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible
-    {fs : List ℝ[X]} (hpair : PairwiseCompatible fs) :
+    (htwo : CompatiblePairHasCommonLeftInterleaverPosStatement)
+    {fs : List ℝ[X]}
+    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
+    (hpair : PairwiseCompatible fs) :
     PairwiseHasCommonLeftInterleaver fs :=
-  fun i j hij => by simpa using compatiblePairHasCommonLeftInterleaver (hpair i j hij)
+  fun i j hij =>
+    htwo
+      (hpos (fs.get i) (List.get_mem _ _))
+      (hpos (fs.get j) (List.get_mem _ _))
+      (hpair i j hij)
 
 /-- Positive-leading version of
 `pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible`, using the memberwise
@@ -587,21 +624,23 @@ theorem pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible_pos
 two-polynomial common-left bridge and the finite-family left Helly upgrade. -/
 theorem pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge
     {fs : List ℝ[X]}
+    (htwo : CompatiblePairHasCommonLeftInterleaverPosStatement)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
     (hglobal : PairwiseHasCommonLeftInterleaver fs → HasCommonLeftInterleaver fs) :
     PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
   ⟨fun hpair =>
-    hglobal (pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible hpair),
+    hglobal (pairwiseHasCommonLeftInterleaver_of_pairwiseCompatible htwo hpos hpair),
     fun hcommon => pairwiseCompatible_of_commonLeftInterleaver hcommon hpos⟩
 
 /-- Direct left-oriented finite-family reduction after the common-left Helly
 upgrade: only the two-polynomial common-left bridge remains as input. -/
 theorem pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge_direct
     {fs : List ℝ[X]}
+    (htwo : CompatiblePairHasCommonLeftInterleaverPosStatement)
     (hrr : ∀ f ∈ fs, f.Splits)
     (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f) :
     PairwiseCompatible fs ↔ HasCommonLeftInterleaver fs :=
-  pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge hpos <|
+  pairwiseCompatible_iff_commonLeftInterleaver_of_pairwiseLeftBridge htwo hpos <|
     hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver hrr hpos
 
 /-- Direct left-oriented finite-family reduction from the positive-leading
@@ -624,22 +663,14 @@ def CompatiblePairHasCommonRightInterleaverStatement : Prop :=
     Compatible f g →
     ∃ h : ℝ[X], Prec f h ∧ Prec g h
 
-/-- Natural two-polynomial bridge hypothesis in the Chudnovsky--Seymour setup:
-compatibility plus positive leading coefficients implies a common right
-interleaver. -/
-def CompatiblePairHasCommonInterleaverStatement : Prop :=
-  ∀ ⦃f g : ℝ[X]⦄,
-    HasPosLeadingCoeff f →
-    HasPosLeadingCoeff g →
-    Compatible f g →
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h
-
 /-- Natural two-polynomial bridge: compatibility plus positive leading
 coefficients implies a common right interleaver. -/
-theorem compatiblePairHasCommonInterleaver {f g : ℝ[X]}
+theorem compatiblePairHasCommonInterleaver
+    (hbridge : CompatiblePairHasCommonInterleaverStatement)
+    {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g) (h : Compatible f g) :
-    ∃ h : ℝ[X], Prec f h ∧ Prec g h := by
-  sorry
+    ∃ h : ℝ[X], Prec f h ∧ Prec g h :=
+  compatiblePairHasCommonInterleaver_core hbridge hf hg h
 
 /-- Once the two-polynomial common-right-interleaver converse is available, the
 pairwise Chudnovsky--Seymour hypothesis upgrades to pairwise common right
@@ -1817,8 +1848,8 @@ theorem posComboSameDegree_even_card_roots_le_add_iff_not_exists_pos_isRoot_add_
     (hdeg : g.natDegree = f.natDegree)
     {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
     (Even ((f.roots.filter (· ≤ x)).card + (g.roots.filter (· ≤ x)).card) ↔
-      ¬ ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) := by
-  exact sameDegree_even_card_roots_le_add_iff_not_exists_pos_isRoot_add_right
+      ¬ ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) :=
+  sameDegree_even_card_roots_le_add_iff_not_exists_pos_isRoot_add_right
     (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
     (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
     hf_pos hg_pos hdeg hxf hxg
@@ -1853,8 +1884,8 @@ theorem posComboSameDegree_odd_card_roots_le_add_iff_exists_pos_isRoot_add_right
     (hdeg : g.natDegree = f.natDegree)
     {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
     (Odd ((f.roots.filter (· ≤ x)).card + (g.roots.filter (· ≤ x)).card) ↔
-      ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) := by
-  exact sameDegree_odd_card_roots_le_add_iff_exists_pos_isRoot_add_right
+      ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) :=
+  sameDegree_odd_card_roots_le_add_iff_exists_pos_isRoot_add_right
     (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
     (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
     hf_pos hg_pos hdeg hxf hxg
@@ -1916,8 +1947,8 @@ theorem posComboSameDegree_even_card_roots_gt_add_iff_not_exists_pos_isRoot_add_
     (hdeg : g.natDegree = f.natDegree)
     {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
     (Even ((f.roots.filter (x < ·)).card + (g.roots.filter (x < ·)).card) ↔
-      ¬ ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) := by
-  exact sameDegree_even_card_roots_gt_add_iff_not_exists_pos_isRoot_add_right
+      ¬ ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) :=
+  sameDegree_even_card_roots_gt_add_iff_not_exists_pos_isRoot_add_right
     (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
     (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
     hf_pos hg_pos hxf hxg
@@ -1951,8 +1982,8 @@ theorem posComboSameDegree_odd_card_roots_gt_add_iff_exists_pos_isRoot_add_right
     (hdeg : g.natDegree = f.natDegree)
     {x : ℝ} (hxf : ¬ f.IsRoot x) (hxg : ¬ g.IsRoot x) :
     (Odd ((f.roots.filter (x < ·)).card + (g.roots.filter (x < ·)).card) ↔
-      ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) := by
-  exact sameDegree_odd_card_roots_gt_add_iff_exists_pos_isRoot_add_right
+      ∃ μ : ℝ, 0 < μ ∧ (f + C μ * g).IsRoot x) :=
+  sameDegree_odd_card_roots_gt_add_iff_exists_pos_isRoot_add_right
     (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
     (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
     hf_pos hg_pos hxf hxg
@@ -2290,8 +2321,8 @@ theorem rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_eq_two
     (hdeg : g.natDegree = f.natDegree)
     (hfdeg : f.natDegree = 2) (x : ℝ) :
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
-  exact sameDegreeRootCountAbove_of_rootCount
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 :=
+  sameDegreeRootCountAbove_of_rootCount
     (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
     (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
     hdeg
@@ -2383,8 +2414,8 @@ theorem sameDegreeRootCrossing_of_posCombo_natDegree_le_two
     (∀ j, 1 ≤ j → j < f.natDegree →
         (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
     (∀ j, 1 ≤ j → j < f.natDegree →
-        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
-  exact rootCrossing_of_rootCountAbove_diff_le_one
+        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) :=
+  rootCrossing_of_rootCountAbove_diff_le_one
     (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
     (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
     hdeg
@@ -2432,8 +2463,8 @@ theorem rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_three_of_
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hfdeg : f.natDegree ≤ 3) (x : ℝ) :
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
-  exact sameDegreeRootCountAbove_of_rootCount
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 :=
+  sameDegreeRootCountAbove_of_rootCount
     (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
     (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
     hdeg
@@ -2457,8 +2488,8 @@ theorem sameDegreeRootCrossing_of_posCombo_natDegree_le_three_of_cubicInterior
     (∀ j, 1 ≤ j → j < f.natDegree →
         (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
     (∀ j, 1 ≤ j → j < f.natDegree →
-        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
-  exact rootCrossing_of_rootCountAbove_diff_le_one
+        (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) :=
+  rootCrossing_of_rootCountAbove_diff_le_one
     (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
     (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
     hdeg
@@ -5741,8 +5772,8 @@ theorem compatibleSuccDegree_roots_Ioo_eq_of_closedSegmentCountEq
     (hsegb : ∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
       ¬ (C (1 - β) * f + C β * g).IsRoot b) :
     (f.roots.filter (fun r => a < r ∧ r < b)).card =
-      (g.roots.filter (fun r => a < r ∧ r < b)).card := by
-  exact card_roots_filter_Ioo_eq_of_card_filter_gt_eq
+      (g.roots.filter (fun r => a < r ∧ r < b)).card :=
+  card_roots_filter_Ioo_eq_of_card_filter_gt_eq
     hf_pos.ne_zero hg_pos.ne_zero hab hfb hgb
     (hcount hcomp hf_pos hg_pos hdeg hf_split a hfa hga hsega)
     (hcount hcomp hf_pos hg_pos hdeg hf_split b hfb hgb hsegb)

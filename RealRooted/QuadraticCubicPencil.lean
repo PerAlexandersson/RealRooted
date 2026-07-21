@@ -353,8 +353,8 @@ theorem cubicDiscr_quadraticCubicPencil_const_ne_zero_iff
         + (1 - t * (p + q + r)) ^ 2
             * (-(a + b) + t * (p * q + q * r + r * p)) ^ 2
         - 4 * t * (-(a + b) + t * (p * q + q * r + r * p)) ^ 3
-        - 27 * t ^ 2 * (a * b - t * (p * q * r)) ^ 2 ≠ 0 ↔ a ≠ b := by
-  exact not_congr (cubicDiscr_quadraticCubicPencil_const_eq_zero_iff a b p q r t ht)
+        - 27 * t ^ 2 * (a * b - t * (p * q * r)) ^ 2 ≠ 0 ↔ a ≠ b :=
+  not_congr (cubicDiscr_quadraticCubicPencil_const_eq_zero_iff a b p q r t ht)
 
 /-- Positive-iff form of the mixed quadratic/cubic pencil constant
 discriminant. -/

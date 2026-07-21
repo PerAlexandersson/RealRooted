@@ -46,7 +46,8 @@ theorem commonLeft_add {f g h : ℝ[X]}
     (hg : HasNonposRootsPosLeading g)
     (hhf : Prec h f) (hhg : Prec h g) :
     Prec h (f + g) := by
-  have hprec : Prec h ([f, g].sum) := by grind [RealRooted.prec_sum_left_of_common_left_signed]
+  have hprec : Prec h ([f, g].sum) := by
+    grind [RealRooted.prec_sum_left_of_common_left_signed]
   grind
 
 /-- Checked two-summand common-left form currently available in the core
