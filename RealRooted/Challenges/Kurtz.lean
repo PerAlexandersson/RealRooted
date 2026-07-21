@@ -13,8 +13,7 @@ functions", Trans. Amer. Math. Soc. 25 (1923), 325--332, and D. C. Kurtz,
 "A sufficient condition for all the roots of a polynomial to be real",
 Amer. Math. Monthly 99 (1992), 259--263.
 
-This module records the coefficient-inequality theorem-shaped target.  It is
-currently an open challenge; see GitHub issue #72.
+This module records the formal coefficient-inequality criterion.
 -/
 
 open Polynomial
@@ -27,6 +26,11 @@ namespace Kurtz
 of `p`. -/
 abbrev PositiveCoeffsUpToDegree (p : ℝ[X]) : Prop :=
   ∀ i ≤ p.natDegree, 0 < p.coeff i
+
+/-- Compatibility spelling for positivity of all coefficients up to the degree
+of `p`. -/
+abbrev PositiveCoefficientsUpToDegree (p : ℝ[X]) : Prop :=
+  PositiveCoeffsUpToDegree p
 
 /-- Challenge-facing name for the strict Hutchinson--Kurtz coefficient
 inequalities. -/
@@ -483,6 +487,14 @@ theorem coefficient_criterion {p : ℝ[X]}
     (hineq : KurtzStrictInequalities p) :
     p.Splits :=
   splits_of_card_roots (coefficient_criterion_card_roots hdeg hpos hineq)
+
+/-- Compatibility wrapper for the original challenge-facing theorem name. -/
+theorem coefficientCriterion {p : ℝ[X]}
+    (hdeg : 2 ≤ p.natDegree)
+    (hpos : PositiveCoeffsUpToDegree p)
+    (hineq : KurtzStrictInequalities p) :
+    p.Splits :=
+  coefficient_criterion hdeg hpos hineq
 
 end Kurtz
 end Challenges

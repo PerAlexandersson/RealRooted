@@ -27,28 +27,30 @@ theorem root_le_of_posCombo_deg1
       (C lam * (X - C α) + C μ * ((X - C β) * (X - C γ))).Splits) :
     γ ≤ α := by
   contrapose! hsplit
-  refine ⟨β + γ - 2 * α, 1, ?_, ?_, ?_⟩ <;> try linarith
-  rw [Polynomial.splits_iff_card_roots]
-  erw [Polynomial.natDegree_add_eq_right_of_natDegree_lt]
-  · erw [Polynomial.natDegree_C_mul] <;> norm_num
-    erw [Polynomial.natDegree_mul (Polynomial.X_sub_C_ne_zero _)
-        (Polynomial.X_sub_C_ne_zero _), Polynomial.natDegree_X_sub_C,
-      Polynomial.natDegree_X_sub_C]
-    exact ne_of_lt
-      (lt_of_le_of_lt
-        (Multiset.card_le_card <|
-          show Polynomial.roots _ ≤ 0 from by
-            exact Multiset.le_zero.mpr <| by
-              exact Multiset.eq_zero_of_forall_notMem fun r hr => by
-                norm_num at hr
-                nlinarith [sq_nonneg (r - α)])
-        (by norm_num))
-  · rw [Polynomial.natDegree_C_mul, Polynomial.natDegree_C_mul] <;> norm_num
-    · rw [Polynomial.natDegree_mul (Polynomial.X_sub_C_ne_zero _)
-        (Polynomial.X_sub_C_ne_zero _), Polynomial.natDegree_X_sub_C,
+  refine ⟨β + γ - 2 * α, 1, ?_, ?_, ?_⟩
+  · linarith
+  · norm_num
+  · rw [Polynomial.splits_iff_card_roots]
+    erw [Polynomial.natDegree_add_eq_right_of_natDegree_lt]
+    · erw [Polynomial.natDegree_C_mul] <;> norm_num
+      erw [Polynomial.natDegree_mul (Polynomial.X_sub_C_ne_zero _)
+          (Polynomial.X_sub_C_ne_zero _), Polynomial.natDegree_X_sub_C,
         Polynomial.natDegree_X_sub_C]
-      norm_num
-    · linarith
+      exact ne_of_lt
+        (lt_of_le_of_lt
+          (Multiset.card_le_card <|
+            show Polynomial.roots _ ≤ 0 from by
+              exact Multiset.le_zero.mpr <| by
+                exact Multiset.eq_zero_of_forall_notMem fun r hr => by
+                  norm_num at hr
+                  nlinarith [sq_nonneg (r - α)])
+          (by norm_num))
+    · rw [Polynomial.natDegree_C_mul, Polynomial.natDegree_C_mul] <;> norm_num
+      · rw [Polynomial.natDegree_mul (Polynomial.X_sub_C_ne_zero _)
+          (Polynomial.X_sub_C_ne_zero _), Polynomial.natDegree_X_sub_C,
+          Polynomial.natDegree_X_sub_C]
+        norm_num
+      · linarith
 
 /-- Every strictly positive combination of `f = 2 * X + 1` and
 `g = (X + 1) * (X + 2)` is real-rooted.
