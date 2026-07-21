@@ -74,9 +74,13 @@ protected lemma interleaves_reverse_of_interlaced_left :
       h_lt₁ ⟨0, Nat.zero_lt_succ _⟩ ⟨1, Nat.succ_lt_succ (Nat.zero_lt_succ _)⟩ rfl,
       ih h_len ?_ ?_⟩
     · intro i j hij
-      exact h_lt₁ ⟨i.val + 1, Nat.succ_lt_succ i.isLt⟩ ⟨j.val + 1, Nat.succ_lt_succ j.isLt⟩ (by lia)
+      exact
+        h_lt₁ ⟨i.val + 1, Nat.succ_lt_succ i.isLt⟩
+          ⟨j.val + 1, Nat.succ_lt_succ j.isLt⟩ (by lia)
     · intro i j hij
-      exact h_lt₂ ⟨i.val + 1, Nat.succ_lt_succ i.isLt⟩ ⟨j.val + 1, Nat.succ_lt_succ j.isLt⟩ (by lia)
+      exact
+        h_lt₂ ⟨i.val + 1, Nat.succ_lt_succ i.isLt⟩
+          ⟨j.val + 1, Nat.succ_lt_succ j.isLt⟩ (by lia)
 
 protected lemma interleaves_reverse_of_interlaced :
     ∀ {ss rs : List ℝ} (h : ss.length = rs.length)
@@ -147,8 +151,10 @@ protected lemma List.Interleaves.ofFn_succ {n : ℕ}
 protected lemma interlaced_of_interleaves_reverse_left :
     ∀ {ss rs : List ℝ} (h : ss.length + 1 = rs.length)
       (_ : List.Interleaves (· > ·) ss.reverse rs.reverse),
-      (∀ (i : Fin ss.length) (j : Fin rs.length), i.val + 1 = j.val → ss[i.val] < rs[j.val]) ∧
-      (∀ (i : Fin rs.length) (j : Fin ss.length), i.val < j.val + 1 → rs[i.val] < ss[j.val]) := by
+      (∀ (i : Fin ss.length) (j : Fin rs.length), i.val + 1 = j.val →
+        ss[i.val] < rs[j.val]) ∧
+      (∀ (i : Fin rs.length) (j : Fin ss.length), i.val < j.val + 1 →
+        rs[i.val] < ss[j.val]) := by
   intro ss
   induction ss with
   | nil =>
@@ -267,7 +273,8 @@ lemma bezoutSeqEntry.comm {A : Type*} [CommRing A] (a b : ℕ → A) (i j : ℕ)
     bezoutSeqEntry a b i j = bezoutSeqEntry a b j i := by
   simp [bezoutSeqEntry, Nat.add_comm, Nat.add_assoc, min_comm]
 
-lemma bezoutSeqEntry.eq_zero_of_le_left {A : Type*} [CommRing A] (a b : ℕ → A) {n : ℕ} {i j : ℕ}
+lemma bezoutSeqEntry.eq_zero_of_le_left {A : Type*} [CommRing A] (a b : ℕ → A)
+    {n : ℕ} {i j : ℕ}
     (ha : ∀ k, n < k → a k = 0) (hb : ∀ k, n < k → b k = 0) (hi : n ≤ i) :
     bezoutSeqEntry a b i j = 0 := by
   refine Finset.sum_eq_zero fun k hk ↦ ?_
@@ -277,7 +284,8 @@ lemma bezoutSeqEntry.eq_zero_of_le_left {A : Type*} [CommRing A] (a b : ℕ → 
   have hq0 : b (i + j + 1 - k) = 0 := hb _ (by lia)
   simp [hp0, hq0]
 
-lemma bezoutSeqEntry.eq_zero_of_le_right {A : Type*} [CommRing A] (a b : ℕ → A) {n : ℕ} {i j : ℕ}
+lemma bezoutSeqEntry.eq_zero_of_le_right {A : Type*} [CommRing A] (a b : ℕ → A)
+    {n : ℕ} {i j : ℕ}
     (ha : ∀ k, n < k → a k = 0) (hb : ∀ k, n < k → b k = 0) (hj : n ≤ j) :
     bezoutSeqEntry a b i j = 0 :=
   bezoutSeqEntry.comm a b j i ▸ bezoutSeqEntry.eq_zero_of_le_left a b ha hb hj
@@ -304,7 +312,8 @@ lemma bezoutSeqEntry.telescoping {A : Type*} [CommRing A] (a b : ℕ → A) (i j
     rw [h_index]
     ring_nf
 
-lemma bezoutSeqEntry.coeff_mul_sub_coeff_mul {A : Type*} [CommRing A] (a b : ℕ → A) (i j : ℕ) :
+lemma bezoutSeqEntry.coeff_mul_sub_coeff_mul {A : Type*} [CommRing A] (a b : ℕ → A)
+    (i j : ℕ) :
     a i * b j - a j * b i =
       (if i ≠ 0 then bezoutSeqEntry a b (i - 1) j else 0) -
         (if j ≠ 0 then bezoutSeqEntry a b i (j - 1) else 0) := by
@@ -320,12 +329,15 @@ lemma bezoutSeqEntry.coeff_mul_sub_coeff_mul {A : Type*} [CommRing A] (a b : ℕ
         not_false_eq_true, ↓reduceIte, add_tsub_cancel_right]
       rw [← bezoutSeqEntry.telescoping]
 
-lemma bezoutSeqEntry.bilinear_mul_sub {A : Type*} [CommRing A] (a b : ℕ → A) (n : ℕ) (t₁ t₂ : A)
+lemma bezoutSeqEntry.bilinear_mul_sub {A : Type*} [CommRing A] (a b : ℕ → A)
+    (n : ℕ) (t₁ t₂ : A)
     (ha : ∀ k, n < k → a k = 0) (hb : ∀ k, n < k → b k = 0) :
     (t₁ - t₂) * ∑ i : Fin n, ∑ j : Fin n,
     bezoutSeqEntry a b i.val j.val * t₁ ^ i.val * t₂ ^ j.val =
-    (∑ i ∈ Finset.range (n + 1), a i * t₁ ^ i) * (∑ j ∈ Finset.range (n + 1), b j * t₂ ^ j) -
-    (∑ i ∈ Finset.range (n + 1), a i * t₂ ^ i) * (∑ j ∈ Finset.range (n + 1), b j * t₁ ^ j) := by
+    (∑ i ∈ Finset.range (n + 1), a i * t₁ ^ i) *
+      (∑ j ∈ Finset.range (n + 1), b j * t₂ ^ j) -
+    (∑ i ∈ Finset.range (n + 1), a i * t₂ ^ i) *
+      (∑ j ∈ Finset.range (n + 1), b j * t₁ ^ j) := by
   have h_eq_left (i j : ℕ) (hi : n ≤ i) : bezoutSeqEntry a b i j = 0 :=
     bezoutSeqEntry.eq_zero_of_le_left a b ha hb hi
   have h_eq_right (i j : ℕ) (hj : n ≤ j) : bezoutSeqEntry a b i j = 0 :=
@@ -336,18 +348,24 @@ lemma bezoutSeqEntry.bilinear_mul_sub {A : Type*} [CommRing A] (a b : ℕ → A)
           (if j ≠ 0 then bezoutSeqEntry a b i (j - 1) else 0) :=
     bezoutSeqEntry.coeff_mul_sub_coeff_mul a b i j
   have h_rhs :
-      (∑ i ∈ Finset.range (n + 1), a i * t₁ ^ i) * (∑ j ∈ Finset.range (n + 1), b j * t₂ ^ j) -
-      (∑ i ∈ Finset.range (n + 1), a i * t₂ ^ i) * (∑ j ∈ Finset.range (n + 1), b j * t₁ ^ j) =
+      (∑ i ∈ Finset.range (n + 1), a i * t₁ ^ i) *
+        (∑ j ∈ Finset.range (n + 1), b j * t₂ ^ j) -
+      (∑ i ∈ Finset.range (n + 1), a i * t₂ ^ i) *
+        (∑ j ∈ Finset.range (n + 1), b j * t₁ ^ j) =
       ∑ i ∈ Finset.range (n + 1), ∑ j ∈ Finset.range (n + 1),
         (a i * b j - a j * b i) * t₁ ^ i * t₂ ^ j := by
     have h_expand₁ :
-        (∑ i ∈ Finset.range (n + 1), a i * t₁ ^ i) * (∑ j ∈ Finset.range (n + 1), b j * t₂ ^ j) =
-        ∑ i ∈ Finset.range (n + 1), ∑ j ∈ Finset.range (n + 1), a i * b j * t₁ ^ i * t₂ ^ j := by
+        (∑ i ∈ Finset.range (n + 1), a i * t₁ ^ i) *
+          (∑ j ∈ Finset.range (n + 1), b j * t₂ ^ j) =
+        ∑ i ∈ Finset.range (n + 1), ∑ j ∈ Finset.range (n + 1),
+          a i * b j * t₁ ^ i * t₂ ^ j := by
       rw [Finset.sum_mul_sum]
       simp only [mul_assoc, mul_left_comm]
     have h_expand₂ :
-        (∑ i ∈ Finset.range (n + 1), a i * t₂ ^ i) * (∑ j ∈ Finset.range (n + 1), b j * t₁ ^ j) =
-        ∑ i ∈ Finset.range (n + 1), ∑ j ∈ Finset.range (n + 1), a j * b i * t₁ ^ i * t₂ ^ j := by
+        (∑ i ∈ Finset.range (n + 1), a i * t₂ ^ i) *
+          (∑ j ∈ Finset.range (n + 1), b j * t₁ ^ j) =
+        ∑ i ∈ Finset.range (n + 1), ∑ j ∈ Finset.range (n + 1),
+          a j * b i * t₁ ^ i * t₂ ^ j := by
       rw [Finset.sum_mul_sum, Finset.sum_comm]
       simp only [mul_assoc, mul_comm, mul_left_comm]
     simp only [h_expand₁, h_expand₂, sub_mul, Finset.sum_sub_distrib]
@@ -1166,7 +1184,9 @@ lemma PosDef.eq_zero_of_sum_mul_star_eq_zero {m : ℕ} {B : Matrix (Fin m) (Fin 
       Matrix.PosDef.sum_pos hB hre_ne
     have h_re_sum : ∑ i : Fin m, ∑ j : Fin m, B i j * (y i).re * (y j).re +
         ∑ i : Fin m, ∑ j : Fin m, B i j * (y i).im * (y j).im = 0 := by
-      have : (∑ i : Fin m, ∑ j : Fin m, (B i j : ℂ) * y i * starRingEnd ℂ (y j)).re = 0 := by
+      have :
+          (∑ i : Fin m, ∑ j : Fin m,
+            (B i j : ℂ) * y i * starRingEnd ℂ (y j)).re = 0 := by
         rw [hy_sum, Complex.zero_re]
       simp_all only [Complex.ext_iff, Complex.zero_re, Complex.zero_im,
         Complex.re_sum, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul,
@@ -1176,7 +1196,9 @@ lemma PosDef.eq_zero_of_sum_mul_star_eq_zero {m : ℕ} {B : Matrix (Fin m) (Fin 
   have him_zero : (fun i ↦ (y i).im) = 0 := by
     have h_re_sum : ∑ i : Fin m, ∑ j : Fin m, B i j * (y i).re * (y j).re +
         ∑ i : Fin m, ∑ j : Fin m, B i j * (y i).im * (y j).im = 0 := by
-      have : (∑ i : Fin m, ∑ j : Fin m, (B i j : ℂ) * y i * starRingEnd ℂ (y j)).re = 0 := by
+      have :
+          (∑ i : Fin m, ∑ j : Fin m,
+            (B i j : ℂ) * y i * starRingEnd ℂ (y j)).re = 0 := by
         rw [hy_sum, Complex.zero_re]
       simp_all only [Complex.ext_iff, Complex.zero_re, Complex.zero_im,
         Complex.re_sum, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul,
@@ -1426,11 +1448,13 @@ lemma exists_index_eq_of_mem_roots {n : ℕ} {p : ℝ[X]} (s : Fin n → ℝ) (h
   rcases Finset.mem_image.mp hx_in with ⟨i, _, hi⟩
   exact ⟨i, hi⟩
 
-lemma prod_sub_eq_neg_one_pow_mul_prod_abs {m : ℕ} (r : Fin m → ℝ) (hr : StrictMono r) (k : Fin m) :
+lemma prod_sub_eq_neg_one_pow_mul_prod_abs {m : ℕ}
+    (r : Fin m → ℝ) (hr : StrictMono r) (k : Fin m) :
     ∏ j ∈ Finset.univ.erase k, (r k - r j) = (-1) ^ (m - 1 - k.val) *
       ∏ j ∈ Finset.univ.erase k, |r k - r j| := by
   have h_prod_sign_abs : ∏ j ∈ Finset.univ.erase k, (r k - r j) =
-      ∏ j ∈ Finset.univ.erase k, (-1) ^ (if k < j then 1 else 0) * |r k - r j| := by
+      ∏ j ∈ Finset.univ.erase k,
+        (-1) ^ (if k < j then 1 else 0) * |r k - r j| := by
     refine Finset.prod_congr rfl fun j hj ↦ ?_
     split_ifs with hjk
     · simp only [pow_one, neg_mul, one_mul]
@@ -1678,7 +1702,8 @@ lemma lt_apply_of_card_le_le {m : ℕ} {t : Fin m → ℝ} (ht : StrictMono t) {
 lemma card_le_filter_of_inj_roots {N l : ℕ} {p : ℝ[X]} {t : Fin N → ℝ}
     (ht_surj : ∀ x ∈ p.roots, ∃ i, t i = x)
     (hp_ne : p ≠ 0) (g : Fin l → ℝ) (hg_inj : Function.Injective g)
-    (hg_root : ∀ j, p.IsRoot (g j)) (P : ℝ → Prop) [DecidablePred P] (hg_prop : ∀ j, P (g j)) :
+    (hg_root : ∀ j, p.IsRoot (g j)) (P : ℝ → Prop) [DecidablePred P]
+    (hg_prop : ∀ j, P (g j)) :
     l ≤ (Finset.univ.filter (fun i ↦ P (t i))).card := by
   have h_mem (j : Fin l) : ∃ i : Fin N, t i = g j :=
     ht_surj (g j) (mem_roots'.mpr ⟨hp_ne, hg_root j⟩)
@@ -1860,8 +1885,11 @@ lemma exists_strictMono_u_of_bounds {α : Type*} [LinearOrder α] {n : ℕ} (hn 
       exact h_xh_gt
     · exact h_xb_lo ⟨i.val - 1, by lia⟩
   have hu_mono : StrictMono u :=
-    strictMono_of_lt_and_lt u s (fun i ↦ hu_hi i.castSucc i.isLt) (fun i ↦ hu_lo i.succ (by simp))
-  refine ⟨u, hu_mono, fun i ↦ hu_hi i.castSucc i.isLt, fun i ↦ hu_lo i.succ (by simp), fun i ↦ ?_⟩
+    strictMono_of_lt_and_lt u s (fun i ↦ hu_hi i.castSucc i.isLt)
+      (fun i ↦ hu_lo i.succ (by simp))
+  refine
+    ⟨u, hu_mono, fun i ↦ hu_hi i.castSucc i.isLt,
+      fun i ↦ hu_lo i.succ (by simp), fun i ↦ ?_⟩
   simp only [u]
   split_ifs with h₀ hn'
   · exact h_xl_P
@@ -1923,9 +1951,10 @@ lemma prec_of_wronskian_pos_succ {n : ℕ}
   have h_interlace (k : Fin n) : t k.castSucc < s k ∧ s k < t k.succ :=
     interlace_of_interlaced_roots hp_ne t ht_mono ht_surj u hu_mono hu_root s hs_mono hu_hi hu_lo k
   have h_len_st : (List.ofFn s).length + 1 = (List.ofFn t).length := by simp
-  refine ⟨⟨hq_ne, hq_splits⟩, ⟨hp_ne, hp_splits⟩, q.roots.sort (· ≤ ·), p.roots.sort (· ≤ ·),
-    Multiset.pairwise_sort _ _, Multiset.pairwise_sort _ _, by simp,
-    by simp, Or.inl ⟨?_, ?_⟩⟩
+  refine
+    ⟨⟨hq_ne, hq_splits⟩, ⟨hp_ne, hp_splits⟩, q.roots.sort (· ≤ ·),
+      p.roots.sort (· ≤ ·), Multiset.pairwise_sort _ _, Multiset.pairwise_sort _ _,
+      by simp, by simp, Or.inl ⟨?_, ?_⟩⟩
   · rw [Multiset.length_sort, Multiset.length_sort]
     rw [← Splits.natDegree_eq_card_roots hp_splits, ← Splits.natDegree_eq_card_roots hq_splits,
       hp_deg, hq_deg]
@@ -1975,10 +2004,11 @@ theorem StrictPrecSameDegree.to_prec {p q : ℝ[X]} (h : StrictPrecSameDegree p 
   rw [List.interleaves_reverse_reverse_of_length_eq_length h_len] at h_inter
   have h_le : List.Interleaves (· ≤ ·) (q.roots.sort (· ≤ ·))
       (p.roots.sort (· ≤ ·)) := h_inter.mono fun _ _ hab ↦ le_of_lt hab
-  exact ⟨⟨hp_ne, hp_splits⟩, ⟨hq_ne, hq_splits⟩, p.roots.sort (· ≤ ·), q.roots.sort (· ≤ ·),
-    Multiset.pairwise_sort .., Multiset.pairwise_sort ..,
-    Multiset.sort_eq _ _, Multiset.sort_eq _ _,
-    Or.inr ⟨h_len, (listAlternates_iff_interleaves_of_length h_len).2 h_le⟩⟩
+  exact
+    ⟨⟨hp_ne, hp_splits⟩, ⟨hq_ne, hq_splits⟩, p.roots.sort (· ≤ ·),
+      q.roots.sort (· ≤ ·), Multiset.pairwise_sort .., Multiset.pairwise_sort ..,
+      Multiset.sort_eq _ _, Multiset.sort_eq _ _,
+      Or.inr ⟨h_len, (listAlternates_iff_interleaves_of_length h_len).2 h_le⟩⟩
 lemma StrictPrecSameDegree.of_bezoutMatrix_posDef_three_le
     {p q : ℝ[X]} {n : ℕ}
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)

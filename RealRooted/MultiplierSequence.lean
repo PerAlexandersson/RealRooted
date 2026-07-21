@@ -335,6 +335,76 @@ theorem jensenPolynomial_eq_zero_iff {n : ℕ} {gamma : ℕ → ℝ} :
     jensenPolynomial n (fun _ => (1 : ℝ)) = (X + 1 : ℝ[X]) ^ n := by
   simpa using jensenPolynomial_const_sequence n (1 : ℝ)
 
+/-- The Euler operator `X d/dX` acts diagonally with multiplier `k`. -/
+theorem eulerOperator_eq_diagonalOperator_natCast (p : ℝ[X]) :
+    X * derivative p = diagonalOperator (fun k => (k : ℝ)) p := by
+  ext k
+  cases k with
+  | zero => simp [coeff_diagonalOperator]
+  | succ k =>
+      simp [Polynomial.coeff_X_mul, Polynomial.coeff_derivative, coeff_diagonalOperator]
+      ring
+
+/-- The diagonal operator with multiplier `k^2` is the square of the Euler
+operator. -/
+theorem diagonalOperator_natCast_sq_eq_euler_sq (p : ℝ[X]) :
+    diagonalOperator (fun k => (k : ℝ) ^ 2) p =
+      X * derivative (X * derivative p) := by
+  rw [eulerOperator_eq_diagonalOperator_natCast p]
+  rw [eulerOperator_eq_diagonalOperator_natCast
+    (diagonalOperator (fun k => (k : ℝ)) p)]
+  ext k
+  simp [coeff_diagonalOperator]
+  ring
+
+/-- The diagonal operator is linear in a quadratic multiplier. -/
+theorem diagonalOperator_quadratic_sequence
+    (a b c : ℝ) (p : ℝ[X]) :
+    diagonalOperator (fun k => a * (k : ℝ) ^ 2 + b * (k : ℝ) + c) p =
+      C a * diagonalOperator (fun k => (k : ℝ) ^ 2) p +
+        C b * diagonalOperator (fun k => (k : ℝ)) p + C c * p := by
+  ext k
+  simp [coeff_diagonalOperator]
+  ring
+
+/-- Jensen factorization for a quadratic multiplier.
+
+For `d >= 2`, the Jensen polynomial of the sequence `a k^2 + b k + c` has
+the common factor `(1 + X)^(d - 2)` and a residual quadratic. -/
+theorem jensenPolynomial_quadratic_sequence_factor
+    (a b c : ℝ) (d : ℕ) (hd : 2 ≤ d) :
+    jensenPolynomial d (fun k => a * (k : ℝ) ^ 2 + b * (k : ℝ) + c) =
+      ((X + 1 : ℝ[X]) ^ (d - 2)) *
+        (C c * (X + 1) ^ 2 +
+          C ((a + b) * (d : ℝ)) * X * (X + 1) +
+            C (a * (d : ℝ) * ((d : ℝ) - 1)) * X ^ 2) := by
+  rw [jensenPolynomial_eq_diagonalOperator_X_add_one_pow]
+  rw [diagonalOperator_quadratic_sequence]
+  rw [diagonalOperator_natCast_sq_eq_euler_sq]
+  rw [← eulerOperator_eq_diagonalOperator_natCast]
+  simp only [Polynomial.derivative_mul, Polynomial.derivative_pow,
+    Polynomial.derivative_X, Polynomial.derivative_add, Polynomial.derivative_one,
+    Polynomial.derivative_natCast, Polynomial.C_add, Polynomial.C_mul,
+    Polynomial.C_eq_natCast, one_mul, mul_one, add_zero]
+  have hd1 : d - 1 = d - 2 + 1 := by lia
+  have hd11 : d - 1 - 1 = d - 2 := by lia
+  rw [hd11, hd1]
+  have hcast :
+      ((d - 2 + 1 : ℕ) : ℝ[X]) = (d : ℝ[X]) - 1 := by
+    have hnat : d - 2 + 1 = d - 1 := by lia
+    rw [hnat]
+    norm_num [Nat.cast_sub (by lia : 1 ≤ d)]
+  have hpow :
+      (X + 1 : ℝ[X]) ^ d =
+        (X + 1 : ℝ[X]) ^ (d - 2) * (X + 1) ^ 2 := by
+    simpa [Nat.sub_add_cancel hd] using
+      (pow_add (X + 1 : ℝ[X]) (d - 2) 2)
+  rw [hpow]
+  rw [pow_add]
+  rw [hcast]
+  norm_num [Polynomial.C_eq_natCast]
+  ring_nf
+
 /-- Explicit cubic discriminant of the degree-three Jensen polynomial.
 
 This is the coefficient-normalized algebraic target for the degree-three

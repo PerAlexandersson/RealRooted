@@ -17,8 +17,8 @@ def scaledLinearFamily : List ℝ[X] :=
 private lemma xAddOne_isRealRooted : ((X + 1 : ℝ[X]) ≠ 0 ∧ (X + 1 : ℝ[X]).Splits) := by
   simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-1 : ℝ)
 
-private lemma xAddOne_hasNonnegCoeffs : HasNonnegCoeffs (X + 1 : ℝ[X]) := by
-  exact hasNonnegCoeffs_X_add_one
+private lemma xAddOne_hasNonnegCoeffs : HasNonnegCoeffs (X + 1 : ℝ[X]) :=
+  hasNonnegCoeffs_X_add_one
 
 private lemma xAddOne_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 1 : ℝ[X]) := by
   simpa using hasPosLeadingCoeff_X_add_C (1 : ℝ)

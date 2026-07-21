@@ -175,8 +175,10 @@ theorem prec0_self {p : ℝ[X]} (hp : IsPFPolynomial p) :
 theorem of_prec0_self {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hpp : Prec0 p p) :
     IsPFPolynomial p := by
-  rcases hpp with rfl | rfl | hpp' <;> try exact IsPFPolynomial.zero
-  exact IsPFPolynomial.of_realRooted_nonneg hpnn hpp'.1.2
+  rcases hpp with rfl | rfl | hpp'
+  · exact IsPFPolynomial.zero
+  · exact IsPFPolynomial.zero
+  · exact IsPFPolynomial.of_realRooted_nonneg hpnn hpp'.1.2
 
 end IsPFPolynomial
 

@@ -1186,5 +1186,68 @@ theorem matrix_preserves_interlacing_seq0_of_2x2_weak
     have hp0' : ((G.get iG).zipWith (· * ·) fs).sum ≠ 0 := by lia
     simpa [← hsum_eq_p] using (hself0.toPrec_of_ne hp0' hp0').1
 
+/-- Weak zero-aware forward direction with strict input, retaining the fact that
+each nonzero output entry is real-rooted.  This is the form used when a matrix
+step should be followed by another weak matrix step or by a scalar projection. -/
+theorem matrix_preserves_interlacing_seq0_of_2x2_realRooted
+    (G : List (List ℝ[X]))
+    (hG_rect : ∀ row ∈ G, row.length = n)
+    (hG_nonneg : ∀ row ∈ G, ∀ p ∈ row, HasNonnegCoeffs p)
+    (hG_affine : ∀ (i₁ i₂ : Fin G.length) (j₁ j₂ : Fin n),
+      i₁ ≤ i₂ → j₁ ≤ j₂ →
+      Has2x2InterlacingProperty0
+        ((G.get i₁).get ⟨j₁, by simp_all⟩)
+        ((G.get i₁).get ⟨j₂, by simp_all⟩)
+        ((G.get i₂).get ⟨j₁, by simp_all⟩)
+        ((G.get i₂).get ⟨j₂, by simp_all⟩))
+    (fs : List ℝ[X]) (hfs_len : fs.length = n)
+    (hfs : IsInterlacingSeqNonneg fs) :
+    IsInterlacingSeq0Nonneg (matPolyAction G fs) ∧
+      ∀ f ∈ matPolyAction G fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits) :=
+  matrix_preserves_interlacing_seq0_of_2x2_weak
+    G hG_rect hG_nonneg hG_affine fs hfs_len
+    hfs.toIsInterlacingSeq0Nonneg (fun f hf _hne => hfs.realRooted f hf)
+
+/-- Strict-output form of the weak matrix theorem with zero-aware input,
+obtained by discarding zero output entries. -/
+theorem matrix_preserves_interlacing_seq0_filter_ne_zero_of_2x2_weak
+    (G : List (List ℝ[X]))
+    (hG_rect : ∀ row ∈ G, row.length = n)
+    (hG_nonneg : ∀ row ∈ G, ∀ p ∈ row, HasNonnegCoeffs p)
+    (hG_affine : ∀ (i₁ i₂ : Fin G.length) (j₁ j₂ : Fin n),
+      i₁ ≤ i₂ → j₁ ≤ j₂ →
+      Has2x2InterlacingProperty0
+        ((G.get i₁).get ⟨j₁, by simp_all⟩)
+        ((G.get i₁).get ⟨j₂, by simp_all⟩)
+        ((G.get i₂).get ⟨j₁, by simp_all⟩)
+        ((G.get i₂).get ⟨j₂, by simp_all⟩))
+    (fs : List ℝ[X]) (hfs_len : fs.length = n)
+    (hfs : IsInterlacingSeq0Nonneg fs)
+    (hfs_real : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits)) :
+    IsInterlacingSeqNonneg ((matPolyAction G fs).filter (· ≠ 0)) := by
+  have h := matrix_preserves_interlacing_seq0_of_2x2_weak
+    G hG_rect hG_nonneg hG_affine fs hfs_len hfs hfs_real
+  exact h.1.filter_ne_zero_of_realRooted h.2
+
+/-- Strict-output form of the weak matrix theorem, obtained by discarding zero
+output entries. -/
+theorem matrix_preserves_interlacing_seq0_filter_ne_zero_of_2x2
+    (G : List (List ℝ[X]))
+    (hG_rect : ∀ row ∈ G, row.length = n)
+    (hG_nonneg : ∀ row ∈ G, ∀ p ∈ row, HasNonnegCoeffs p)
+    (hG_affine : ∀ (i₁ i₂ : Fin G.length) (j₁ j₂ : Fin n),
+      i₁ ≤ i₂ → j₁ ≤ j₂ →
+      Has2x2InterlacingProperty0
+        ((G.get i₁).get ⟨j₁, by simp_all⟩)
+        ((G.get i₁).get ⟨j₂, by simp_all⟩)
+        ((G.get i₂).get ⟨j₁, by simp_all⟩)
+        ((G.get i₂).get ⟨j₂, by simp_all⟩))
+    (fs : List ℝ[X]) (hfs_len : fs.length = n)
+    (hfs : IsInterlacingSeqNonneg fs) :
+    IsInterlacingSeqNonneg ((matPolyAction G fs).filter (· ≠ 0)) := by
+  have h := matrix_preserves_interlacing_seq0_of_2x2_realRooted
+    G hG_rect hG_nonneg hG_affine fs hfs_len hfs
+  exact h.1.filter_ne_zero_of_realRooted h.2
+
 end
 end RealRooted
