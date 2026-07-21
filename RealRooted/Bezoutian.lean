@@ -1241,6 +1241,7 @@ lemma bezoutMatrix.no_complex_root_of_posDef {n : ℕ}
   have h_y_zero :=
     PosDef.eq_zero_of_sum_mul_star_eq_zero hB (fun (i : Fin (n + 1)) ↦ z ^ i.val) hsum
   exact h_y_ne h_y_zero
+
 lemma bezoutMatrix.no_complex_root_q_of_posDef {n : ℕ}
     {p q : ℝ[X]} (hp_deg : p.natDegree ≤ n + 1) (hq_deg : q.natDegree ≤ n + 1)
     (hB : (bezoutMatrix (n + 1) q p).PosDef)

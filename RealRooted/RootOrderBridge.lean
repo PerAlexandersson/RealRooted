@@ -87,7 +87,6 @@ theorem even_add_iff_odd_add_of_add_eq_succ
     rw [hsum] at htot
     exact Nat.not_even_two_mul_add_one d htot
 
-set_option linter.flexible false in
 /-- If two finite multisets of reals have the same cardinality and their
 counting functions differ by at most one at every threshold, then their
 descending sorted lists satisfy the two interior crossing inequalities. -/
@@ -130,7 +129,6 @@ theorem rootCrossing_of_count_diff_le_one
     norm_num at *
     lia
 
-set_option linter.flexible false in
 /-- Converse of `rootCrossing_of_count_diff_le_one`.
 
 If two finite multisets of reals have the same cardinality and their descending

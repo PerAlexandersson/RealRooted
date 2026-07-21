@@ -402,9 +402,12 @@ lemma toeplitz_const_coeff (c : ℝ) :
     toeplitz (fun n ↦ (C c : ℝ[X]).coeff n) = c • 1 := by
   ext i j
   simp only [toeplitz_apply, coeff_C, Matrix.smul_apply, Matrix.one_apply]
-  split_ifs
-  any_goals simp_all
-  all_goals lia
+  rcases eq_or_ne i j with rfl | hne
+  · simp
+  · split_ifs with hle heq
+    · exfalso; lia
+    · simp
+    · simp
 
 lemma IsPolyaFreqSeq.const (c : ℝ) (hc : 0 ≤ c) :
     IsPolyaFreqSeq (fun n ↦ (C c : ℝ[X]).coeff n) := by

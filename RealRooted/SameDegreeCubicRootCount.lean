@@ -520,9 +520,7 @@ theorem card_filter_le_triple (a b c x : ℝ) :
       (if a ≤ x then 1 else 0) + (if b ≤ x then 1 else 0) +
         (if c ≤ x then 1 else 0) := by
   simp only [Multiset.insert_eq_cons, Multiset.filter_cons, Multiset.filter_singleton]
-  split_ifs
-  all_goals
-    simp_all [Multiset.card_cons]
+  split_ifs <;> simp_all [Multiset.card_cons]
 
 /-- Two split quadratics with positive leading coefficients whose roots are
 separated by a gap cannot form a positive-combination real-rooted pair. -/

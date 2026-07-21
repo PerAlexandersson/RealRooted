@@ -39,11 +39,11 @@ def bMat : Matrix (Fin 3) (Fin 3) ℝ :=
 theorem aMat_isTotallyNonneg : aMat.IsTotallyNonneg := fun n rows cols hrows hcols => by
   have hn : n ≤ 3 := strictMono_fin_three_le hrows
   interval_cases n <;> norm_num [Matrix.det_fin_two, Matrix.det_fin_three]
-  · fin_cases rows <;> fin_cases cols <;> norm_num [aMat]
-    all_goals simp +decide [Multiset.Pi.cons]
+  · fin_cases rows <;> fin_cases cols <;> simp [aMat, Multiset.Pi.cons]
   · unfold aMat
-    fin_cases rows <;> fin_cases cols <;> simp +decide at hrows hcols ⊢
-    all_goals simp +decide [Multiset.Pi.cons]
+    fin_cases rows <;> fin_cases cols <;>
+      norm_num [Multiset.Pi.cons] at hrows hcols ⊢ <;>
+      revert hrows hcols <;> decide
   · obtain ⟨r0, r1, r2⟩ := strictMono_fin_three_eq hrows
     obtain ⟨c0, c1, c2⟩ := strictMono_fin_three_eq hcols
     simp [r0, r1, r2, c0, c1, c2, aMat]
@@ -52,14 +52,13 @@ theorem aMat_isTotallyNonneg : aMat.IsTotallyNonneg := fun n rows cols hrows hco
 theorem bMat_isTotallyNonneg : bMat.IsTotallyNonneg := fun n rows cols hrows hcols => by
   have hn : n ≤ 3 := strictMono_fin_three_le hrows
   interval_cases n <;> norm_num [Matrix.det_fin_two, Matrix.det_fin_three]
-  · fin_cases rows <;> fin_cases cols <;> norm_num [bMat]
-    all_goals simp +decide [Multiset.Pi.cons]
-  · fin_cases rows <;> fin_cases cols <;> simp +decide at hrows hcols ⊢
-    all_goals simp +decide [bMat, Multiset.Pi.cons] <;> norm_num
+  · fin_cases rows <;> fin_cases cols <;> simp [bMat, Multiset.Pi.cons]
+  · fin_cases rows <;> fin_cases cols <;>
+      norm_num [bMat, Multiset.Pi.cons] at hrows hcols ⊢ <;>
+      revert hrows hcols <;> decide
   · obtain ⟨r0, r1, r2⟩ := strictMono_fin_three_eq hrows
     obtain ⟨c0, c1, c2⟩ := strictMono_fin_three_eq hcols
-    simp [r0, r1, r2, c0, c1, c2, bMat]
-    norm_num
+    simp [r0, r1, r2, c0, c1, c2, bMat] ; norm_num
 
 /-- The Hadamard product of the two witness matrices has determinant `-2`. -/
 theorem hadamard_det_eq :
