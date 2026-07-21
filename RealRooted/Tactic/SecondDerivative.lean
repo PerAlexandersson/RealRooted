@@ -564,10 +564,16 @@ macro_rules
         first
           | intro n
             rw [$hrec n]
-            rr_ls4_factorize
+            first
+              | rr_ls4_factorize
+                exact Or.inl trivial
+              | rr_ls4_factorize
           | rename_i n
             rw [$hrec n]
-            rr_ls4_factorize)
+            first
+              | rr_ls4_factorize
+                exact Or.inl trivial
+              | rr_ls4_factorize)
   | `(tactic|
       rr_mw_plus_derivative_sequence_expanded using
         outer := $a:term,
