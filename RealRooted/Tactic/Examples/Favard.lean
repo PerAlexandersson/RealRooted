@@ -17,6 +17,18 @@ example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 := by
 example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 :=
   rr_favard_active_den_all_term
 
+example {n : Nat} : ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 := by
+  rr_favard_coeff_at n
+
+example : ∀ n : Nat, ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 := by
+  rr_favard_coeff_all
+
+example {n : Nat} : ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 :=
+  rr_favard_coeff_at_term n
+
+example : ∀ n : Nat, ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 :=
+  rr_favard_coeff_all_term
+
 example {P : Nat → ℝ[X]} {α β : Nat → ℝ}
     (hrec : SatisfiesFavardRecurrence P α β)
     (hbeta : ∀ n : Nat, 0 < β (n + 1)) :
