@@ -49,6 +49,20 @@ lemma eval_C_mul_X_mul_one_sub_X_nonpos_of_nonneg_of_nonpos {c r : ℝ}
   have hone : 0 ≤ 1 - r := by linarith
   simpa [sub_eq_add_neg, mul_assoc] using mul_nonpos_of_nonpos_of_nonneg hcr hone
 
+lemma eval_C_mul_X_add_C_neg_mul_X_sq_nonpos_of_nonneg_of_nonneg_of_nonpos
+    {a b r : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (hr : r ≤ 0) :
+    (C a * X + C (-b) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
+  have hleft : a * r ≤ 0 := mul_nonpos_of_nonneg_of_nonpos ha hr
+  have hright : -b * r ^ 2 ≤ 0 :=
+    mul_nonpos_of_nonpos_of_nonneg (neg_nonpos.mpr hb) (sq_nonneg r)
+  have hsum : a * r + -b * r ^ 2 ≤ 0 := by linarith
+  simpa [
+    Polynomial.eval_add,
+    Polynomial.eval_mul,
+    Polynomial.eval_pow,
+    Polynomial.eval_C,
+    Polynomial.eval_X] using hsum
+
 lemma eval_C_mul_two_X_sub_two_X_sq_nonpos_of_nonneg_of_nonpos {c r : ℝ}
     (hc : 0 ≤ c) (hr : r ≤ 0) :
     (C c * (C (2 : ℝ) * X - C (2 : ℝ) * X ^ 2) : ℝ[X]).eval r ≤ 0 := by
@@ -166,6 +180,23 @@ lemma eval_X_mul_one_add_X_nonpos_of_mem_Icc {r : ℝ}
   simpa [Polynomial.eval_mul, add_comm, add_left_comm, add_assoc] using
     mul_nonpos_of_nonpos_of_nonneg hhi hone
 
+lemma eval_X_add_X_sq_nonpos_of_mem_Icc {r : ℝ}
+    (hlo : -1 ≤ r) (hhi : r ≤ 0) :
+    (C (1 : ℝ) * X + C (1 : ℝ) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
+  have hone : 0 ≤ 1 + r := by linarith
+  have hprod : r * (1 + r) ≤ 0 :=
+    mul_nonpos_of_nonpos_of_nonneg hhi hone
+  have heval :
+      (C (1 : ℝ) * X + C (1 : ℝ) * X ^ 2 : ℝ[X]).eval r =
+        r * (1 + r) := by
+    simp [
+      Polynomial.eval_add,
+      Polynomial.eval_pow,
+      Polynomial.eval_X]
+    ring
+  rw [heval]
+  exact hprod
+
 lemma eval_C_mul_X_mul_one_add_X_nonpos_of_nonneg_of_mem_Icc {c r : ℝ}
     (hc : 0 ≤ c) (hlo : -1 ≤ r) (hhi : r ≤ 0) :
     (C c * X * (1 + X) : ℝ[X]).eval r ≤ 0 := by
@@ -173,6 +204,26 @@ lemma eval_C_mul_X_mul_one_add_X_nonpos_of_nonneg_of_mem_Icc {c r : ℝ}
   have hone : 0 ≤ 1 + r := by linarith
   simpa [Polynomial.eval_mul, mul_assoc, add_comm, add_left_comm, add_assoc] using
     mul_nonpos_of_nonpos_of_nonneg hcr hone
+
+lemma eval_C_mul_X_add_C_mul_X_sq_nonpos_of_nonneg_of_mem_Icc {c r : ℝ}
+    (hc : 0 ≤ c) (hlo : -1 ≤ r) (hhi : r ≤ 0) :
+    (C c * X + C c * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
+  have hcr : c * r ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hc hhi
+  have hone : 0 ≤ 1 + r := by linarith
+  have hprod : c * r * (1 + r) ≤ 0 :=
+    mul_nonpos_of_nonpos_of_nonneg hcr hone
+  have heval :
+      (C c * X + C c * X ^ 2 : ℝ[X]).eval r =
+        c * r * (1 + r) := by
+    simp [
+      Polynomial.eval_add,
+      Polynomial.eval_mul,
+      Polynomial.eval_pow,
+      Polynomial.eval_C,
+      Polynomial.eval_X]
+    ring
+  rw [heval]
+  exact hprod
 
 lemma eval_X_mul_one_add_C_mul_X_nonpos_of_nonpos_of_linear_nonneg
     {c r : ℝ} (hhi : r ≤ 0) (hlin : 0 ≤ 1 + c * r) :
@@ -344,6 +395,42 @@ lemma eval_neg_C_mul_one_add_X_sq_nonpos_of_nonneg {c r : ℝ}
   simpa [add_comm, add_left_comm, add_assoc] using
     mul_nonpos_of_nonpos_of_nonneg hneg hsq
 
+lemma eval_C_neg_add_C_neg_two_mul_X_add_C_neg_mul_X_sq_nonpos_of_nonneg
+    {c r : ℝ} (hc : 0 ≤ c) :
+    (C (-c) + C (-(2 * c)) * X + C (-c) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
+  have hneg : -c ≤ 0 := neg_nonpos.mpr hc
+  have hsq : 0 ≤ (1 + r) ^ 2 := sq_nonneg (1 + r)
+  have hprod : -c * (1 + r) ^ 2 ≤ 0 :=
+    mul_nonpos_of_nonpos_of_nonneg hneg hsq
+  have heval :
+      (C (-c) + C (-(2 * c)) * X + C (-c) * X ^ 2 : ℝ[X]).eval r =
+        -c * (1 + r) ^ 2 := by
+    simp [
+      Polynomial.eval_add,
+      Polynomial.eval_mul,
+      Polynomial.eval_pow,
+      Polynomial.eval_C,
+      Polynomial.eval_X]
+    ring
+  rw [heval]
+  exact hprod
+
+lemma eval_neg_one_sub_two_X_sub_X_sq_nonpos {r : ℝ} :
+    (C (-1 : ℝ) + C (-2 : ℝ) * X + C (-1 : ℝ) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
+  have hsq : 0 ≤ (1 + r) ^ 2 := sq_nonneg (1 + r)
+  have heval :
+      (C (-1 : ℝ) + C (-2 : ℝ) * X + C (-1 : ℝ) * X ^ 2 : ℝ[X]).eval r =
+        -((1 + r) ^ 2) := by
+    simp [
+      Polynomial.eval_add,
+      Polynomial.eval_mul,
+      Polynomial.eval_pow,
+      Polynomial.eval_C,
+      Polynomial.eval_X]
+    ring
+  rw [heval]
+  exact neg_nonpos.mpr hsq
+
 lemma eval_C_neg_nonpos_of_nonneg {c r : ℝ} (hc : 0 ≤ c) :
     (C (-c) : ℝ[X]).eval r ≤ 0 := by
   simpa using neg_nonpos.mpr hc
@@ -450,6 +537,12 @@ macro_rules
         | first
           | assumption
           | exact
+              RealRooted.eval_X_add_X_sq_nonpos_of_mem_Icc
+                rr_sign_side_term
+                rr_sign_side_term
+          | exact RealRooted.eval_neg_one_add_two_X_sub_X_sq_nonpos
+          | exact RealRooted.eval_neg_one_sub_two_X_sub_X_sq_nonpos
+          | exact
               RealRooted.eval_X_mul_one_add_four_mul_X_nonpos_of_mem_Icc
                 rr_sign_side_term
                 rr_sign_side_term
@@ -530,6 +623,16 @@ macro_rules
                 rr_sign_side_term
                 rr_sign_side_term
           | exact
+              RealRooted.eval_C_mul_X_add_C_mul_X_sq_nonpos_of_nonneg_of_mem_Icc
+                rr_sign_side_term
+                rr_sign_side_term
+                rr_sign_side_term
+          | exact
+              RealRooted.eval_C_mul_X_add_C_neg_mul_X_sq_nonpos_of_nonneg_of_nonneg_of_nonpos
+                rr_sign_side_term
+                rr_sign_side_term
+                rr_sign_side_term
+          | exact
               RealRooted.eval_X_mul_one_add_C_mul_X_nonpos_of_nonpos_of_linear_nonneg
                 rr_sign_side_term
                 rr_sign_side_term
@@ -597,12 +700,14 @@ macro_rules
           | exact
               RealRooted.eval_neg_C_mul_one_sub_X_sq_nonpos_of_nonneg
                 rr_sign_side_term
-          | exact RealRooted.eval_neg_one_add_two_X_sub_X_sq_nonpos
           | exact
               RealRooted.eval_neg_C_mul_X_sq_nonpos_of_nonneg
                 rr_sign_side_term
           | exact
               RealRooted.eval_neg_C_mul_one_add_X_sq_nonpos_of_nonneg
+                rr_sign_side_term
+          | exact
+              RealRooted.eval_C_neg_add_C_neg_two_mul_X_add_C_neg_mul_X_sq_nonpos_of_nonneg
                 rr_sign_side_term
           | exact RealRooted.eval_C_neg_nonpos_of_nonneg
               rr_sign_side_term

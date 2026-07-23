@@ -53,6 +53,10 @@ example {c r : ℝ} (hc : 0 ≤ c) (hr : r ≤ 0) :
     (C c * X * (1 - X) : ℝ[X]).eval r ≤ 0 := by
   rr_sign
 
+example {a b r : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (hr : r ≤ 0) :
+    (C a * X + C (-b) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
+  rr_sign
+
 example {c r : ℝ} (hc : 0 ≤ c) (hr : r ≤ 0) :
     (C c * (C (2 : ℝ) * X - C (2 : ℝ) * X ^ 2) : ℝ[X]).eval r ≤ 0 := by
   rr_sign
@@ -84,6 +88,10 @@ example {r : ℝ} (hlo : -1 ≤ r) (hhi : r ≤ 0) :
 
 example {c r : ℝ} (hc : 0 ≤ c) (hlo : -1 ≤ r) (hhi : r ≤ 0) :
     (C c * X * (1 + X) : ℝ[X]).eval r ≤ 0 := by
+  rr_sign
+
+example {c r : ℝ} (hc : 0 ≤ c) (hlo : -1 ≤ r) (hhi : r ≤ 0) :
+    (C c * X + C c * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
   rr_sign
 
 example {c r : ℝ} (hc : 0 ≤ c) (hr : r ≤ -1) :
@@ -133,6 +141,10 @@ example {c r : ℝ} (hc : 0 ≤ c) :
 
 example {c r : ℝ} (hc : 0 ≤ c) :
     (-(C c) * (1 + X) ^ 2 : ℝ[X]).eval r ≤ 0 := by
+  rr_sign
+
+example {c r : ℝ} (hc : 0 ≤ c) :
+    (C (-c) + C (-(2 * c)) * X + C (-c) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
   rr_sign
 
 example {c r : ℝ} (hc : 0 ≤ c) :

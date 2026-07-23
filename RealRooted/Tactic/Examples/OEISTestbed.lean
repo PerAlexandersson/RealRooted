@@ -77,6 +77,10 @@ example {p : ℝ[X]} (hroots : ∀ r, p.IsRoot r → r ≤ 1) :
   rr_sign_at_roots_upper using hroots
 
 -- `A112493`/`A131689`: MW3 inner case `v_n(t)=t+t^2=t(1+t)`.
+example {r : ℝ} (hlo : -1 ≤ r) (hhi : r ≤ 0) :
+    (C (1 : ℝ) * X + C 1 * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
+  rr_sign
+
 example {f u : ℝ[X]}
     (hf : f.Splits)
     (hdegf : 2 ≤ f.natDegree)
@@ -500,6 +504,10 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     degree_succ := hdeg
 
 -- `A257620`: half-line factor `3t-3t^2=3t(1-t)`.
+example {r : ℝ} (hr : r ≤ 0) :
+    (C (3 : ℝ) * X + C (-3) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
+  rr_sign
+
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -1105,6 +1113,12 @@ example {r : ℝ} :
 -- `A086645`/`A091042`: expanded `B_n(t)=-1+2t-t^2`.
 example {r : ℝ} :
     (C (-1 : ℝ) + C (2 : ℝ) * X + C (-1 : ℝ) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
+  rr_sign
+
+-- `A059340`/`A122076`: expanded `B_n(t)=-1-2t-t^2`.
+example {r : ℝ} :
+    (C (-1 : ℝ) + C (-2 : ℝ) * X + C (-1 : ℝ) * X ^ 2 :
+      ℝ[X]).eval r ≤ 0 := by
   rr_sign
 
 -- `A090181`: denominator-fused Narayana variant with half-scaled denominator.
