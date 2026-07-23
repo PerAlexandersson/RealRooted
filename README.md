@@ -18,6 +18,7 @@ goal is to extract stable, reusable components for eventual upstreaming.
 - [Checked Highlights](#checked-highlights)
 - [Current Roadmap](#current-roadmap)
 - [Development Notes](#development-notes)
+- [License](#license)
 - [Bibliography and Links](#bibliography-and-links)
 
 ## Build
@@ -52,6 +53,13 @@ lake build RealRooted.Bezoutian
   and Veronese-section material.
 - `RealRooted/SymmetricDecomposition.lean`, `Bezoutian.lean`, and
   `Hadamard.lean` contain larger theorem packages and classical interfaces.
+- `RealRooted/RowThreshold.lean` and `ThresholdMatrix.lean` contain
+  row-threshold and threshold-matrix preservers, including the
+  Gustafsson-Solus and Haglund-Zhang/A046802 backends.
+- `RealRooted/LiuOppositeSigns.lean` and `LiuOppositeSignsTheorem.lean`
+  contain the current Liu opposite-leading-sign root-count interface.
+- `RealRooted/GeneralizedSnakePosets.lean` contains theorem-shaped interfaces
+  for the Braun-Jal generalized snake poset target.
 - `RealRooted/Challenges/` contains compact entry points for famous theorem
   statements, each linking the Lean-facing declaration to human catalog
   statements and references.
@@ -262,11 +270,11 @@ multivariate stability infrastructure needed for algebraic-symbol preserver
 theorems.
 
 GitHub issues track individual proof tasks rather than being duplicated here.
-Current open themes include Liu's compatible-sequences theorem, the
-Gustafsson-Solus interlacing recursion, the Haglund-Zhang `s`-inversion
-backend, characteristic-polynomial packaging for Cauchy interlacing, a finite
-Borcea-Branden symbol interface, and the Braun-Jal generalized snake poset
-target.
+Current open themes include Liu's compatible-sequences theorem and the
+Braun-Jal generalized snake poset target.  Recent checked issue surfaces
+include the Gustafsson-Solus interlacing recursion, the Haglund-Zhang
+`s`-inversion/A046802 backend, characteristic-polynomial packaging for Cauchy
+interlacing, and finite Borcea-Branden symbol interfaces.
 
 ## Development Notes
 
@@ -311,6 +319,11 @@ To maintain a polished repository:
   exceptions only for `README.md` and `RealRooted/Tactic/PLAN.md`.
 * Ensure any new types of temporary files or scratch directories are kept
   local or explicitly added to `.gitignore`.
+
+## License
+
+RealRooted is distributed under the Apache License, Version 2.0. See
+[`LICENSE`](LICENSE).
 
 ## Bibliography and Links
 

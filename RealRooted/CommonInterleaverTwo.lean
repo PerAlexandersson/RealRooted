@@ -1201,6 +1201,31 @@ theorem allComboRealRooted_of_prec_or_revPrec
   | Or.inl hprec => allComboRealRooted_of_prec hprec
   | Or.inr hprec => allComboRealRooted_comm (allComboRealRooted_of_prec hprec)
 
+namespace Compatible
+
+/-- All-real-combination real-rootedness implies Chudnovsky--Seymour
+nonnegative compatibility. -/
+lemma of_allComboRealRooted {f g : ℝ[X]}
+    (h : AllComboRealRooted f g) :
+    Compatible f g := by
+  intro α β _hα _hβ
+  by_cases hzero : C α * f + C β * g = 0
+  · exact Or.inl hzero
+  · exact Or.inr ⟨hzero, h α β⟩
+
+/-- A `Prec` relation implies Chudnovsky--Seymour nonnegative compatibility. -/
+lemma of_prec {f g : ℝ[X]} (h : Prec f g) :
+    Compatible f g :=
+  of_allComboRealRooted (allComboRealRooted_of_prec h)
+
+/-- Either `Prec` orientation implies Chudnovsky--Seymour nonnegative
+compatibility. -/
+lemma of_prec_or_revPrec {f g : ℝ[X]} (h : Prec f g ∨ Prec g f) :
+    Compatible f g :=
+  of_allComboRealRooted (allComboRealRooted_of_prec_or_revPrec h)
+
+end Compatible
+
 /-- Therefore every positive-leading pair of degree at most one already
 satisfies the all-combinations conclusion. -/
 theorem allComboRealRooted_of_natDegree_le_one

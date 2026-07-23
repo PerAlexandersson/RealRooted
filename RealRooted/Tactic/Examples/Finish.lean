@@ -672,6 +672,18 @@ example {A B : Nat → ℝ[X]}
     ∀ n : Nat, B n ≠ 0 ∧ (B n).Splits := by
   rr_finish using hP
 
+example {A B : Nat → ℝ[X]} {n : Nat}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    (A n ≠ 0 ∧ (A n).Splits) ∧ (B n ≠ 0 ∧ (B n).Splits) := by
+  rr_realrooted using hP
+
+example {A B : Nat → ℝ[X]} {n : Nat}
+    (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
+      (B n ≠ 0 ∧ (B n).Splits)) :
+    (A n ≠ 0 ∧ (A n).Splits) ∧ (B n ≠ 0 ∧ (B n).Splits) := by
+  rr_finish using hP
+
 example {A B : Nat → ℝ[X]}
     (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
       (B n ≠ 0 ∧ (B n).Splits)) :
@@ -748,6 +760,18 @@ example {A B : Nat → ℝ[X]} {n : Nat}
     (hP : ∀ n : Nat, (A n = 0 ∨ (A n).Splits) ∧
       (B n = 0 ∨ (B n).Splits)) :
     B n = 0 ∨ (B n).Splits := by
+  rr_finish using hP
+
+example {A B : Nat → ℝ[X]} {n : Nat}
+    (hP : ∀ n : Nat, (A n = 0 ∨ (A n).Splits) ∧
+      (B n = 0 ∨ (B n).Splits)) :
+    (A n = 0 ∨ (A n).Splits) ∧ (B n = 0 ∨ (B n).Splits) := by
+  rr_zero_or_splits using hP
+
+example {A B : Nat → ℝ[X]} {n : Nat}
+    (hP : ∀ n : Nat, (A n = 0 ∨ (A n).Splits) ∧
+      (B n = 0 ∨ (B n).Splits)) :
+    (A n = 0 ∨ (A n).Splits) ∧ (B n = 0 ∨ (B n).Splits) := by
   rr_finish using hP
 
 example {A B : Nat → ℝ[X]}
