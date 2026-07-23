@@ -1200,12 +1200,10 @@ theorem isRealRooted_of_endpoint_sum_then_X_pair_sequence
     (hstepA : ∀ n : Nat, A (n + 1) = A n + B n)
     (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A (n + 1))
     (hcop : ∀ n : Nat, IsCoprime (B n) (X * A (n + 1))) :
-    ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧ (B n ≠ 0 ∧ (B n).Splits) := by
-  intro n
-  have hprec :=
+    ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧ (B n ≠ 0 ∧ (B n).Splits) :=
+  isRealRooted_pair_sequence_of_prec_sequence <|
     prec_endpoint_sum_then_X_pair_sequence
-      hbase hA0_nonneg hB0_nonneg hstepA hstepB hcop n
-  exact ⟨hprec.1, hprec.2.1⟩
+      hbase hA0_nonneg hB0_nonneg hstepA hstepB hcop
 
 /-- Pair-sequence endpoint quotient shell with the parity reversed.
 
@@ -1252,12 +1250,10 @@ theorem isRealRooted_of_endpoint_X_then_sum_pair_sequence
     (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A n)
     (hstepA : ∀ n : Nat, A (n + 1) = A n + B (n + 1))
     (hcop : ∀ n : Nat, IsCoprime (B n) (X * A n)) :
-    ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧ (B n ≠ 0 ∧ (B n).Splits) := by
-  intro n
-  have hprec :=
+    ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧ (B n ≠ 0 ∧ (B n).Splits) :=
+  isRealRooted_pair_sequence_of_prec_sequence <|
     prec_endpoint_X_then_sum_pair_sequence
-      hbase hA0_nonneg hB0_nonneg hstepB hstepA hcop n
-  exact ⟨hprec.1, hprec.2.1⟩
+      hbase hA0_nonneg hB0_nonneg hstepB hstepA hcop
 
 /-- Endpoint quotient plus endpoint-power lift for a single row sequence.
 
