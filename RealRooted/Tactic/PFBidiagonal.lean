@@ -661,6 +661,56 @@ def secondDerivativeBidiagonalCubicResidualCertificate
     quadraticBidiagonalCubicResidualCertificate
       c2 (b1 - c2) a0 c3 (b2 - c3) a1 hd hA hB hS
 
+/-- Rowwise canonical second-derivative cubic-residual certificates. -/
+def secondDerivativeBidiagonalCubicResidualCertificate_sequence
+    {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
+    (hd : ∀ n : Nat, 2 ≤ d n)
+    (hA : ∀ n : Nat, CubicPFDiscriminantCertificate
+      (quadraticJensenResidual (c2 n) (b1 n - c2 n) (a0 n) (d n)))
+    (hB : ∀ n : Nat, CubicPFDiscriminantCertificate
+      (X * quadraticJensenResidual (c3 n) (b2 n - c3 n) (a1 n) (d n)))
+    (hS : ∀ n : Nat, ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate
+        (quadraticBidiagonalPencilResidual
+          (c2 n) (b1 n - c2 n) (a0 n)
+          (c3 n) (b2 n - c3 n) (a1 n) lam (d n))) :
+    ∀ n : Nat,
+      BidiagonalCubicResidualCertificate
+        (fun k => secondDerivativeQuadraticCoeff (a0 n) (b1 n) (c2 n) k)
+        (fun k => secondDerivativeQuadraticCoeff (a1 n) (b2 n) (c3 n) k)
+        (d n) :=
+  fun n =>
+    secondDerivativeBidiagonalCubicResidualCertificate
+      (a0 := a0 n) (a1 := a1 n) (b1 := b1 n)
+      (b2 := b2 n) (c2 := c2 n) (c3 := c3 n)
+      (hd n) (hA n) (hB n) (hS n)
+
+/-- Tail-start version of
+`secondDerivativeBidiagonalCubicResidualCertificate_sequence`. -/
+def secondDerivativeBidiagonalCubicResidualCertificate_sequence_from
+    {a0 a1 b1 b2 c2 c3 : Nat → ℝ} {d : Nat → ℕ}
+    (N : Nat)
+    (hd : ∀ n : Nat, N ≤ n → 2 ≤ d n)
+    (hA : ∀ n : Nat, N ≤ n → CubicPFDiscriminantCertificate
+      (quadraticJensenResidual (c2 n) (b1 n - c2 n) (a0 n) (d n)))
+    (hB : ∀ n : Nat, N ≤ n → CubicPFDiscriminantCertificate
+      (X * quadraticJensenResidual (c3 n) (b2 n - c3 n) (a1 n) (d n)))
+    (hS : ∀ n : Nat, N ≤ n → ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate
+        (quadraticBidiagonalPencilResidual
+          (c2 n) (b1 n - c2 n) (a0 n)
+          (c3 n) (b2 n - c3 n) (a1 n) lam (d n))) :
+    ∀ n : Nat, N ≤ n →
+      BidiagonalCubicResidualCertificate
+        (fun k => secondDerivativeQuadraticCoeff (a0 n) (b1 n) (c2 n) k)
+        (fun k => secondDerivativeQuadraticCoeff (a1 n) (b2 n) (c3 n) k)
+        (d n) :=
+  fun n hn =>
+    secondDerivativeBidiagonalCubicResidualCertificate
+      (a0 := a0 n) (a1 := a1 n) (b1 := b1 n)
+      (b2 := b2 n) (c2 := c2 n) (c3 := c3 n)
+      (hd n hn) (hA n hn) (hB n hn) (hS n hn)
+
 /-- Forget a bundled cubic-residual certificate to the Jensen-pencil
 certificate used by the PF-bidiagonal backend. -/
 theorem BidiagonalCubicResidualCertificate.toJensenPencilCertificate
@@ -1520,11 +1570,8 @@ theorem
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert
     hbackend hbase hdeg
-    (fun n =>
-      secondDerivativeBidiagonalCubicResidualCertificate
-        (a0 := a0 n) (a1 := a1 n) (b1 := b1 n)
-        (b2 := b2 n) (c2 := c2 n) (c3 := c3 n)
-        (hd n) (hA n) (hB n) (hS n))
+    (secondDerivativeBidiagonalCubicResidualCertificate_sequence
+      hd hA hB hS)
     hrec
 
 /-- Tail-start version of
@@ -1553,11 +1600,8 @@ theorem
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_from
     hbackend N hbase hdeg
-    (fun n hn =>
-      secondDerivativeBidiagonalCubicResidualCertificate
-        (a0 := a0 n) (a1 := a1 n) (b1 := b1 n)
-        (b2 := b2 n) (c2 := c2 n) (c3 := c3 n)
-        (hd n hn) (hA n hn) (hB n hn) (hS n hn))
+    (secondDerivativeBidiagonalCubicResidualCertificate_sequence_from
+      N hd hA hB hS)
     hrec
 
 /-- Sequence wrapper for second-derivative recurrences with unbundled
