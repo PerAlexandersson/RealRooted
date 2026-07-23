@@ -328,12 +328,28 @@ syntax (name := rr_lw_den_coeff_interlaces_window_scalar_named)
 macro "rr_lw_derivative_lag_active_den_all" : tactic =>
   `(tactic| rr_scalar_active_den_all)
 
+macro "rr_lw_derivative_lag_coeff_at " n:term : tactic =>
+  `(tactic| rr_scalar_coeff_at $n)
+
+macro "rr_lw_derivative_lag_coeff_all" : tactic =>
+  `(tactic| rr_scalar_coeff_all)
+
 syntax (name := rr_lw_derivative_lag_active_den_all_term)
   "rr_lw_derivative_lag_active_den_all_term" : term
+
+syntax (name := rr_lw_derivative_lag_coeff_at_term)
+  "rr_lw_derivative_lag_coeff_at_term " term : term
+
+syntax (name := rr_lw_derivative_lag_coeff_all_term)
+  "rr_lw_derivative_lag_coeff_all_term" : term
 
 macro_rules
   | `(rr_lw_derivative_lag_active_den_all_term) =>
       `(by rr_lw_derivative_lag_active_den_all)
+  | `(rr_lw_derivative_lag_coeff_at_term $n:term) =>
+      `(by rr_lw_derivative_lag_coeff_at $n)
+  | `(rr_lw_derivative_lag_coeff_all_term) =>
+      `(by rr_lw_derivative_lag_coeff_all)
   | `(tactic|
       rr_lw_derivative_lag_sequence_sign_auto using
         base := $hbase:term,
@@ -495,8 +511,8 @@ macro_rules
           raw_deriv_coeff := $b,
           raw_lag_coeff := $e,
           den_nonzero := rr_lw_derivative_lag_active_den_all_term,
-          deriv_coeff_eq := rr_scalar_coeff_all_term,
-          lag_coeff_eq := rr_scalar_coeff_all_term,
+          deriv_coeff_eq := rr_lw_derivative_lag_coeff_all_term,
+          lag_coeff_eq := rr_lw_derivative_lag_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno)
@@ -605,8 +621,8 @@ macro_rules
           raw_deriv_coeff := $b,
           raw_lag_coeff := $e,
           den_nonzero := rr_lw_derivative_lag_active_den_all_term,
-          deriv_coeff_eq := rr_scalar_coeff_all_term,
-          lag_coeff_eq := rr_scalar_coeff_all_term,
+          deriv_coeff_eq := rr_lw_derivative_lag_coeff_all_term,
+          lag_coeff_eq := rr_lw_derivative_lag_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno)
@@ -715,8 +731,8 @@ macro_rules
           raw_deriv_coeff := $b,
           raw_lag_coeff := $e,
           den_nonzero := rr_lw_derivative_lag_active_den_all_term,
-          deriv_coeff_eq := rr_scalar_coeff_all_term,
-          lag_coeff_eq := rr_scalar_coeff_all_term,
+          deriv_coeff_eq := rr_lw_derivative_lag_coeff_all_term,
+          lag_coeff_eq := rr_lw_derivative_lag_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno)
@@ -830,8 +846,8 @@ macro_rules
           root_lower := $hroot_lower,
           root_upper := $hroot_upper,
           den_nonzero := rr_lw_derivative_lag_active_den_all_term,
-          deriv_coeff_eq := rr_scalar_coeff_all_term,
-          lag_coeff_eq := rr_scalar_coeff_all_term,
+          deriv_coeff_eq := rr_lw_derivative_lag_coeff_all_term,
+          lag_coeff_eq := rr_lw_derivative_lag_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno)
@@ -946,8 +962,8 @@ macro_rules
           root_lower := $hroot_lower,
           root_upper := $hroot_upper,
           den_nonzero := rr_lw_derivative_lag_active_den_all_term,
-          deriv_coeff_eq := rr_scalar_coeff_all_term,
-          lag_coeff_eq := rr_scalar_coeff_all_term,
+          deriv_coeff_eq := rr_lw_derivative_lag_coeff_all_term,
+          lag_coeff_eq := rr_lw_derivative_lag_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno)
@@ -1065,8 +1081,8 @@ macro_rules
           root_lower := $hroot_lower,
           root_upper := $hroot_upper,
           den_nonzero := rr_lw_derivative_lag_active_den_all_term,
-          deriv_coeff_eq := rr_scalar_coeff_all_term,
-          lag_coeff_eq := rr_scalar_coeff_all_term,
+          deriv_coeff_eq := rr_lw_derivative_lag_coeff_all_term,
+          lag_coeff_eq := rr_lw_derivative_lag_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno)

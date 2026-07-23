@@ -16,6 +16,18 @@ example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 := by
 example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 :=
   rr_lw_derivative_lag_active_den_all_term
 
+example {n : Nat} : ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 := by
+  rr_lw_derivative_lag_coeff_at n
+
+example : ∀ n : Nat, ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 := by
+  rr_lw_derivative_lag_coeff_all
+
+example {n : Nat} : ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 :=
+  rr_lw_derivative_lag_coeff_at_term n
+
+example : ∀ n : Nat, ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 :=
+  rr_lw_derivative_lag_coeff_all_term
+
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
