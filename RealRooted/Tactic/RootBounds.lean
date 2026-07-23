@@ -171,6 +171,10 @@ syntax (name := rr_sign_at_roots_sequence_named)
 
 syntax (name := rr_sign_at_roots_term) "rr_sign_at_roots_term " term ", " term : term
 
+syntax (name := rr_sign_at_roots_sequence_term)
+  "rr_sign_at_roots_sequence_term " term ", " term :
+  term
+
 syntax (name := rr_sign_at_roots_nonpos_term)
   "rr_sign_at_roots_nonpos_term " term :
   term
@@ -196,6 +200,10 @@ syntax (name := rr_sign_at_roots_sequence_factor_named)
     "nonneg" ":=" term ","
     "factor_nonneg" ":=" term :
   tactic
+
+syntax (name := rr_sign_at_roots_sequence_factor_term)
+  "rr_sign_at_roots_sequence_factor_term " term ", " term ", " term :
+  term
 
 syntax (name := rr_sign_at_roots_factor_term)
   "rr_sign_at_roots_factor_term " term ", " term ", " term :
@@ -343,7 +351,9 @@ macro_rules
         realrooted := $hrr:term,
         nonneg := $hnn:term) =>
       `(tactic|
-        exact fun n =>
+        exact (rr_sign_at_roots_sequence_term $hrr, $hnn))
+  | `(rr_sign_at_roots_sequence_term $hrr:term, $hnn:term) =>
+      `(fun n =>
           (rr_sign_at_roots_nonpos_term
             ((RealRooted.roots_nonpos_sequence_of_realrooted_of_nonneg_coeffs
               $hrr $hnn) n)))
@@ -382,7 +392,9 @@ macro_rules
         nonneg := $hnn:term,
         factor_nonneg := $hq:term) =>
       `(tactic|
-        exact fun n =>
+        exact (rr_sign_at_roots_sequence_factor_term $hrr, $hnn, $hq))
+  | `(rr_sign_at_roots_sequence_factor_term $hrr:term, $hnn:term, $hq:term) =>
+      `(fun n =>
           (rr_sign_at_roots_nonpos_factor_term
             ((RealRooted.roots_nonpos_sequence_of_realrooted_of_nonneg_coeffs
               $hrr $hnn) n),
