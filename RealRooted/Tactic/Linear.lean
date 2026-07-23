@@ -35,12 +35,12 @@ lemma C_mul_realrooted_sequence {P : Nat → ℝ[X]} {a : Nat → ℝ}
     (hrr : ∀ i : Nat, P i ≠ 0 ∧ (P i).Splits)
     (ha : ∀ i : Nat, a i ≠ 0) :
     ∀ i : Nat, C (a i) * P i ≠ 0 ∧ (C (a i) * P i).Splits := fun i =>
-  isRealRooted_C_mul (hrr i).1 (hrr i).2 (ha i)
+  isRealRooted_C_mul_of_isRealRooted (hrr i) (ha i)
 
 lemma X_mul_realrooted_sequence {P : Nat → ℝ[X]}
     (hrr : ∀ i : Nat, P i ≠ 0 ∧ (P i).Splits) :
     ∀ i : Nat, X * P i ≠ 0 ∧ (X * P i).Splits := fun i =>
-  isRealRooted_X_mul (hrr i).1 (hrr i).2
+  isRealRooted_X_mul_of_isRealRooted (hrr i)
 
 namespace Tactic
 
@@ -291,7 +291,7 @@ macro_rules
         scalar_ne := $ha:term) =>
       `(tactic|
         rr_first_realrooted_or_projection
-          (RealRooted.isRealRooted_C_mul $hp.1 $hp.2 $ha))
+          (RealRooted.isRealRooted_C_mul_of_isRealRooted $hp $ha))
   | `(tactic|
       rr_C_mul_realrooted_sequence using
         realrooted := $hp:term,
@@ -310,7 +310,7 @@ macro_rules
         realrooted := $hp:term) =>
       `(tactic|
         rr_first_realrooted_or_projection
-          (RealRooted.isRealRooted_X_mul $hp.1 $hp.2))
+          (RealRooted.isRealRooted_X_mul_of_isRealRooted $hp))
   | `(tactic|
       rr_X_mul_realrooted_sequence using
         realrooted := $hp:term) =>

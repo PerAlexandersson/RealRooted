@@ -86,9 +86,20 @@ lemma isRealRooted_C_mul {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits)
   simpa using
     isRealRooted_mul (C_ne_zero.mpr ha) (Polynomial.Splits.C (R := ℝ) a) hp_ne hp_splits
 
+/-- A nonzero scalar multiple preserves a bundled real-rootedness certificate. -/
+lemma isRealRooted_C_mul_of_isRealRooted {p : ℝ[X]}
+    (hp : p ≠ 0 ∧ p.Splits) {a : ℝ} (ha : a ≠ 0) :
+    C a * p ≠ 0 ∧ (C a * p).Splits :=
+  isRealRooted_C_mul hp.1 hp.2 ha
+
 lemma isRealRooted_X_mul {f : ℝ[X]} (hf_ne : f ≠ 0) (hf_splits : f.Splits) :
     ((X * f) ≠ 0 ∧ (X * f).Splits) :=
   isRealRooted_mul (by simp) (by simp) hf_ne hf_splits
+
+/-- Multiplication by `X` preserves a bundled real-rootedness certificate. -/
+lemma isRealRooted_X_mul_of_isRealRooted {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits) :
+    X * f ≠ 0 ∧ (X * f).Splits :=
+  isRealRooted_X_mul hf.1 hf.2
 
 /-- If `p` has zero constant coefficient, splitting of `p.divX` gives splitting
 of `p` by restoring the common factor `X`. -/
