@@ -22,6 +22,9 @@ example {n : Nat} : (n : ℝ) + 1 ≠ 0 := by
 example {n : Nat} : 2 * (n : ℝ) + 1 ≠ 0 := by
   rr_product_nonzero
 
+example : ∀ n : Nat, 2 ≤ n → (n : ℝ) + 1 ≠ 0 :=
+  rr_product_nonzero_seq_from
+
 example {a : ℝ} (ha : a ≠ 0) :
     (C a : ℝ[X]) ≠ 0 ∧ (C a : ℝ[X]).Splits := by
   rr_product_C using scalar_ne := ha
