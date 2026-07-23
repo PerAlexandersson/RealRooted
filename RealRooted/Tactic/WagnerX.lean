@@ -171,7 +171,7 @@ theorem isRealRooted_of_prec_wagner_derivative_gap_lag_sequence
     (hrec : ∀ n : Nat,
       P (n + 2) = X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain hbase <|
+  isRealRooted_of_prec_chain_from_step <|
     prec_wagner_derivative_gap_lag_sequence hbase hnonneg hdeg ha hc hrec
 
 /-- Sequence induction for scalar-left active Wagner derivative-gap-lag recurrences. -/
@@ -210,7 +210,7 @@ theorem isRealRooted_of_prec_wagner_derivative_gap_lag_sequence_den
       C (d n) * P (n + 2) =
         X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain hbase <|
+  isRealRooted_of_prec_chain_from_step <|
     prec_wagner_derivative_gap_lag_sequence_den hbase hnonneg hdeg ha hc hd hrec
 
 /-!
@@ -417,7 +417,7 @@ theorem isRealRooted_of_prec_pos_X_lag_combo_sequence {P : Nat → ℝ[X]}
     (hrec : ∀ n : Nat,
       P (n + 2) = C (a n) * P (n + 1) + (C (c n) * X) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_prec_chain hbase <|
+  isRealRooted_of_prec_chain_from_step <|
     prec_pos_X_lag_combo_sequence hbase hnonneg ha hc hrec
 
 namespace Tactic

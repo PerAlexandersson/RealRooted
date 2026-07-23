@@ -21,9 +21,8 @@ theorem isRealRooted_of_linear_tail_sequence
     (h0 : A 0 = C c) (h1 : A 1 = C a + C b * X)
     (hstep : ∀ n, A (n + 2) = (C u + C v * X) * A (n + 1)) :
     ∀ n, A n ≠ 0 ∧ (A n).Splits := by
-  have hprec : ∀ n : Nat, Prec (A n) (A (n + 1)) := fun n =>
+  exact isRealRooted_of_prec_chain_from_step <| fun n =>
     (linear_tail_sequence_interlaces hc ha hb hu hv h0 h1 hstep n).toPrec
-  exact isRealRooted_of_prec_chain (hprec 0) hprec
 
 /-- Real-rootedness consequence of the fixed positive monomial-tail sequence
 interlacing wrapper. -/
@@ -33,9 +32,8 @@ theorem isRealRooted_of_monomial_tail_sequence
     (h0 : A 0 = C c) (h1 : A 1 = C a + C b * X)
     (hstep : ∀ n, A (n + 2) = (C u * X) * A (n + 1)) :
     ∀ n, A n ≠ 0 ∧ (A n).Splits := by
-  have hprec : ∀ n : Nat, Prec (A n) (A (n + 1)) := fun n =>
+  exact isRealRooted_of_prec_chain_from_step <| fun n =>
     (monomial_tail_sequence_interlaces hc ha hb hu h0 h1 hstep n).toPrec
-  exact isRealRooted_of_prec_chain (hprec 0) hprec
 
 namespace Tactic
 
