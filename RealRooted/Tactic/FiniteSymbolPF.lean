@@ -778,9 +778,8 @@ theorem isPFPolynomial_of_bidiagonalOperator_sequence_from
       ∀ n, N ≤ n → BidiagonalPFPreserver (alpha n) (beta n) (degreeBound n))
     (hrec : ∀ n, N ≤ n →
       P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
-    ∀ n, IsPFPolynomial (P n) := by
-  intro n
-  exact Nat.strong_induction_on n fun n ih => by
+    ∀ n, IsPFPolynomial (P n) := fun n =>
+  Nat.strong_induction_on n fun n ih => by
     by_cases hn : n ≤ N
     · exact hbase n hn
     · cases n with
