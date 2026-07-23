@@ -78,6 +78,8 @@ syntax (name := rr_pos_lc_mul)
   "rr_pos_lc_mul" " using " "left" ":=" term "," "right" ":=" term : tactic
 syntax (name := rr_pos_lc_X_mul)
   "rr_pos_lc_X_mul" " using " "pos_lc" ":=" term : tactic
+syntax (name := rr_side_arith) "rr_side_arith" : tactic
+syntax (name := rr_eval_simp_arith) "rr_eval_simp_arith" : tactic
 syntax (name := rr_close_side) "rr_close_side" : tactic
 syntax (name := rr_side) "rr_side" : tactic
 syntax (name := rr_refine_then) "rr_refine_then " term " with " tactic : tactic
@@ -344,6 +346,25 @@ macro_rules
             · rr_close_side
           | unfold RealRooted.HasPosLeadingCoeff
             simp <;> try rr_side_pos)
+  | `(tactic| rr_side_arith) =>
+      `(tactic|
+        first
+          | done
+          | positivity <;> done
+          | norm_num <;> done
+          | linarith
+          | lia
+          | nlinarith)
+  | `(tactic| rr_eval_simp_arith) =>
+      `(tactic|
+        simp_all [
+          Polynomial.eval_add,
+          Polynomial.eval_sub,
+          Polynomial.eval_mul,
+          Polynomial.eval_pow,
+          Polynomial.eval_C,
+          Polynomial.eval_X];
+        rr_side_arith)
   | `(tactic| rr_close_side) =>
       `(tactic|
         first

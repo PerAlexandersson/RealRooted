@@ -4646,8 +4646,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
       0 ≤ ((1 + X : ℝ[X]).eval r) := by
     intro n r hr
     have hlo : -1 ≤ r := hroot_lower n r hr
-    have hnonneg : 0 ≤ 1 + r := by linarith
-    simpa [add_comm] using hnonneg
+    rr_eval_simp_arith
   rr_lw_positive_C_mul_X_mul_sequence_realrooted_auto using
     base := hbase,
     pos_lc := hpos,

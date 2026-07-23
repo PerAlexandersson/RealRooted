@@ -98,6 +98,9 @@ example (p : ℝ[X]) (n : Nat) :
     p.derivative.coeff n = p.coeff (n + 1) * ((n : ℝ) + 1) := by
   rr_coeff
 
+example {r : ℝ} (hlo : -1 ≤ r) : 0 ≤ ((1 + X : ℝ[X]).eval r) := by
+  rr_eval_simp_arith
+
 example (p : ℝ[X]) (a n : Nat) :
     (((a : ℝ[X]) * p).coeff n) = (a : ℝ) * p.coeff n := by
   rr_coeff
