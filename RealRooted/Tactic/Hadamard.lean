@@ -163,8 +163,9 @@ theorem schurSzegoComp_sequence_splits {N : Nat → ℕ} {F P : Nat → ℝ[X]}
     (hPsplits : ∀ i : Nat, (P i).Splits)
     (hout : ∀ i : Nat, schurSzegoComp (N i) (F i) (P i) ≠ 0) :
     ∀ i : Nat, (schurSzegoComp (N i) (F i) (P i)).Splits := fun i =>
-  schurSzegoComp_splits_of_nonzero
-    (hF i) (hFdeg i) (hPdeg i) (hPsplits i) (hout i)
+  Or.resolve_left
+    (schurSzegoComp_sequence_zero_or_splits hF hFdeg hPdeg hPsplits i)
+    (hout i)
 
 theorem hadamardProduct_sequence_pf {P Q : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i))
