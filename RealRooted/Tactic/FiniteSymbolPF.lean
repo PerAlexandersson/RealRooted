@@ -710,14 +710,10 @@ theorem quadraticBidiagonalPFPreserver_of_residual_certificate_on_degree
   have hbeta_match : ∀ k, k ≤ d → beta k = betaT k := by
     intro k hk
     simp [betaT, degreeTruncate, hk]
-  have halphaT_nonneg : ∀ k, 0 ≤ alphaT k := by
-    exact degreeTruncate_nonneg (d := d) (gamma := alpha) (by
-      intro k hk
-      exact halpha k hk)
-  have hbetaT_nonneg : ∀ k, 0 ≤ betaT k := by
-    exact degreeTruncate_nonneg (d := d) (gamma := beta) (by
-      intro k hk
-      exact hbeta k hk)
+  have halphaT_nonneg : ∀ k, 0 ≤ alphaT k :=
+    degreeTruncate_nonneg (d := d) (gamma := alpha) (fun k hk => halpha k hk)
+  have hbetaT_nonneg : ∀ k, 0 ≤ betaT k :=
+    degreeTruncate_nonneg (d := d) (gamma := beta) (fun k hk => hbeta k hk)
   have hsymbol :
       complexifyMv (finiteSymbol alphaT betaT d) =
         ((MvPolynomial.X 0 + MvPolynomial.X 1) ^ (d - 2)) *
