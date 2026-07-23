@@ -17,7 +17,7 @@ example (n : Nat) :
   rr_interlaces_linear_pow using
     const := 2,
     slope := 3,
-    slope_pos := by norm_num,
+    slope_pos := rr_side_pos_term,
     index := n
 
 example {A : Nat → ℝ[X]}
@@ -27,11 +27,11 @@ example {A : Nat → ℝ[X]}
     (n : Nat) :
     Interlaces (A n) (A (n + 1)) := by
   rr_linear_tail_sequence_interlaces using
-    c_pos := by norm_num,
-    a_nonneg := by norm_num,
-    b_pos := by norm_num,
-    u_pos := by norm_num,
-    v_pos := by norm_num,
+    c_pos := rr_side_pos_term,
+    a_nonneg := rr_side_nonneg_term,
+    b_pos := rr_side_pos_term,
+    u_pos := rr_side_pos_term,
+    v_pos := rr_side_pos_term,
     base0 := h0,
     base1 := h1,
     recurrence := hstep,
@@ -44,10 +44,10 @@ example {A : Nat → ℝ[X]}
     (n : Nat) :
     Interlaces (A n) (A (n + 1)) := by
   rr_monomial_tail_sequence_interlaces using
-    c_pos := by norm_num,
-    a_nonneg := by norm_num,
-    b_pos := by norm_num,
-    u_pos := by norm_num,
+    c_pos := rr_side_pos_term,
+    a_nonneg := rr_side_nonneg_term,
+    b_pos := rr_side_pos_term,
+    u_pos := rr_side_pos_term,
     base0 := h0,
     base1 := h1,
     recurrence := hstep,
@@ -60,11 +60,11 @@ example {A : Nat → ℝ[X]}
     (n : Nat) :
     A n ≠ 0 ∧ (A n).Splits := by
   rr_linear_tail_sequence_realrooted using
-    c_pos := by norm_num,
-    a_nonneg := by norm_num,
-    b_pos := by norm_num,
-    u_pos := by norm_num,
-    v_pos := by norm_num,
+    c_pos := rr_side_pos_term,
+    a_nonneg := rr_side_nonneg_term,
+    b_pos := rr_side_pos_term,
+    u_pos := rr_side_pos_term,
+    v_pos := rr_side_pos_term,
     base0 := h0,
     base1 := h1,
     recurrence := hstep,

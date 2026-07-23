@@ -17,6 +17,9 @@ namespace Tactic
 example {c : ℝ} (hc : 0 ≤ c) : 0 ≤ c := by
   rr_side_nonneg
 
+example {c : ℝ} (hc : 0 ≤ c) : 0 ≤ c :=
+  rr_side_nonneg_term
+
 example {n : Nat} (hn : 1 ≤ n) : 0 ≤ (n : ℝ) - 1 := by
   rr_side_nonneg
 
@@ -31,6 +34,9 @@ example {m k : Nat} : 0 ≤ (((Nat.choose m k : Nat) : ℝ)) := by
 
 example {c : ℝ} (hc : 0 < c) : 0 < c := by
   rr_side_pos
+
+example {c : ℝ} (hc : c ≠ 0) : c ≠ 0 :=
+  rr_side_ne_term
 
 example {n : Nat} : 0 < (n : ℝ) + 1 := by
   rr_side_pos

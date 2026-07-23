@@ -53,7 +53,7 @@ example {p : ℝ[X]} {c : ℝ} (hc : c ≠ 0) (hdeg : p.natDegree = 1) :
 example :
     Interlaces (C (3 : ℝ)) (X + C (2 : ℝ) : ℝ[X]) := by
   rr_interlaces_C_linear using
-    scalar_ne := (by norm_num : (3 : ℝ) ≠ 0)
+    scalar_ne := rr_side_ne_term
 
 example {f g : ℝ[X]} {a : ℝ} (hfg : Prec f g) (ha : a ≠ 0) :
     Prec (C a * f) g := by
