@@ -617,7 +617,7 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     have hscalar :
         (1 - (1 / 2 : ℝ) * ((n : ℝ) + 3))⁻¹ * (((n : ℝ) + 2) / 2) =
           -(((n : ℝ) + 2) / ((n : ℝ) + 1)) := by
-      rr_scalar_coeff_at n
+      rr_mw_coeff_at n
     have hrec0 :
         P (n + 2) =
           U n * P (n + 1) +
