@@ -100,6 +100,7 @@ syntax (name := rr_side_pos_term) "rr_side_pos_term" : term
 syntax (name := rr_side_ne_term) "rr_side_ne_term" : term
 syntax (name := rr_positivity_seq_term) "rr_positivity_seq_term" : term
 syntax (name := rr_side_nonneg_seq_term) "rr_side_nonneg_seq_term" : term
+syntax (name := rr_side_pos_seq_term) "rr_side_pos_seq_term" : term
 syntax (name := rr_side_ne_seq_term) "rr_side_ne_seq_term" : term
 
 macro_rules
@@ -417,6 +418,8 @@ macro_rules
       `(by rr_positivity_seq)
   | `(rr_side_nonneg_seq_term) =>
       `(by rr_side_nonneg_seq)
+  | `(rr_side_pos_seq_term) =>
+      `(by rr_side_pos_seq)
   | `(rr_side_ne_seq_term) =>
       `(by rr_side_ne_seq)
 

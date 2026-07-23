@@ -41,6 +41,9 @@ example {c : ℝ} (hc : c ≠ 0) : c ≠ 0 :=
 example {n : Nat} : 0 < (n : ℝ) + 1 := by
   rr_side_pos
 
+example : ∀ n : Nat, 0 < (n : ℝ) + 1 :=
+  rr_side_pos_seq_term
+
 example {n : Nat} (hn : 0 < n) : 0 < (n : ℝ) := by
   rr_side_pos
 

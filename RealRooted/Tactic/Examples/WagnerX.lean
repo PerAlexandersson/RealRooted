@@ -203,8 +203,8 @@ example {P : Nat → ℝ[X]}
   rr_prec_pos_X_lag_sequence using
     base := hbase,
     nonneg_coeffs := hnonneg,
-    current_coeff_pos := (fun _ => by norm_num : ∀ n : Nat, 0 < (1 : ℝ)),
-    lag_coeff_nonneg := (fun _ => by norm_num : ∀ n : Nat, 0 ≤ (1 : ℝ)),
+    current_coeff_pos := rr_side_pos_seq_term,
+    lag_coeff_nonneg := rr_side_nonneg_seq_term,
     recurrence := hrec
 
 /-- Real-rootedness corollary for the same `P_{n+2}=P_{n+1}+tP_n` shell. -/
@@ -228,8 +228,8 @@ example {P : Nat → ℝ[X]}
   rr_prec_pos_X_lag_sequence_realrooted using
     base := hbase,
     nonneg_coeffs := hnonneg,
-    current_coeff_pos := (fun _ => by norm_num : ∀ n : Nat, 0 < (1 : ℝ)),
-    lag_coeff_nonneg := (fun _ => by norm_num : ∀ n : Nat, 0 ≤ (1 : ℝ)),
+    current_coeff_pos := rr_side_pos_seq_term,
+    lag_coeff_nonneg := rr_side_nonneg_seq_term,
     recurrence := hrec
 
 /-- Projection endpoint for the same positive-`X` lag shell. -/
