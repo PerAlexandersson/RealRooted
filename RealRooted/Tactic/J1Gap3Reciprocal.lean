@@ -25,14 +25,8 @@ theorem isRealRooted_of_j1_gap3_reciprocal_sequence
       reciprocalShift (D n) (R n) =
         X ^ (D n - (R n).natDegree) * (R n).reverse :=
     reciprocalShift_eq_X_pow_mul_reverse (hdegree n)
-  have hmodel_ne : R n ≠ 0 := (hmodel n).1
-  have hne : reciprocalShift (D n) (R n) ≠ 0 := by
-    rw [hshift]
-    rr_nonzero
-  have hsplits : (reciprocalShift (D n) (R n)).Splits := by
-    rw [hshift]
-    exact DegreeDropReversal.splits_X_pow_mul_reverse (hmodel n).2 (D n)
-  simpa [hreciprocal n] using ⟨hne, hsplits⟩
+  simpa [hreciprocal n, hshift] using
+    X_pow_mul_reverse_isRealRooted (hmodel n) (D n)
 
 /-- PF-polynomial model variant of the J1 gap-3 reciprocal route. -/
 theorem isRealRooted_of_j1_gap3_reciprocal_pf_sequence
