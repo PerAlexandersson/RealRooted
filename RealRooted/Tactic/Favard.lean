@@ -1123,18 +1123,28 @@ macro_rules
   | `(rr_favard_step_dsimp_seq $hstep:term) =>
       `(by
         intro n
-        try dsimp
+        first | dsimp | skip
         first
         | simpa using $hstep n
-        | (convert ($hstep n); all_goals (try dsimp; simp; try ring_nf)))
+        | (convert ($hstep n) <;>
+            first
+              | (dsimp; simp; ring_nf)
+              | (dsimp; simp)
+              | (simp; ring_nf)
+              | simp))
   | `(rr_favard_base_one $hP1:term) =>
       `(by simpa using $hP1)
   | `(rr_favard_base_one_dsimp $hP1:term) =>
       `(by
-        try dsimp
+        first | dsimp | skip
         first
         | simpa using $hP1
-        | (convert ($hP1); all_goals (try dsimp; simp; try ring_nf)))
+        | (convert ($hP1) <;>
+            first
+              | (dsimp; simp; ring_nf)
+              | (dsimp; simp)
+              | (simp; ring_nf)
+              | simp))
 syntax (name := rr_favard) "rr_favard" " using " term ", " term : tactic
 
 syntax (name := rr_favard_named)
