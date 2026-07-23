@@ -1,4 +1,5 @@
 import RealRooted.NarayanaTransformation
+import RealRooted.Tactic.PFPolynomial
 
 /-!
 # Narayana polynomial tactic frontends
@@ -14,17 +15,17 @@ theorem narayanaPolynomial_sequence_pf (m d : Nat → ℕ) :
   RealRooted.narayanaPolynomialRootLocation (m n) (d n)
 
 theorem narayanaPolynomial_sequence_nonneg_coeffs (m d : Nat → ℕ) :
-    ∀ n : Nat, HasNonnegCoeffs (narayanaPolynomial (m n) (d n)) := fun n =>
-  RealRooted.hasNonnegCoeffs_narayanaPolynomial (m n) (d n)
+    ∀ n : Nat, HasNonnegCoeffs (narayanaPolynomial (m n) (d n)) :=
+  pf_sequence_has_nonneg (narayanaPolynomial_sequence_pf m d)
 
 theorem narayanaPolynomial_sequence_splits (m d : Nat → ℕ) :
-    ∀ n : Nat, (narayanaPolynomial (m n) (d n)).Splits := fun n =>
-  RealRooted.splits_narayanaPolynomial (m n) (d n)
+    ∀ n : Nat, (narayanaPolynomial (m n) (d n)).Splits :=
+  pf_sequence_splits (narayanaPolynomial_sequence_pf m d)
 
 theorem narayanaPolynomial_sequence_nonpos_roots (m d : Nat → ℕ) :
     ∀ n : Nat, HasOnlyNonposRoots (narayanaPolynomial (m n) (d n)) := fun n =>
   RealRooted.IsPFPolynomial.hasOnlyNonposRoots
-    (RealRooted.narayanaPolynomialRootLocation (m n) (d n))
+    (narayanaPolynomial_sequence_pf m d n)
 
 syntax (name := rr_narayana_polynomial_pf_named)
   "rr_narayana_polynomial_pf" " using "
