@@ -222,9 +222,8 @@ theorem isRealRooted_of_product_factor_sequence_from
     (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
     (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
     (hstep : ∀ n : Nat, N ≤ n → P (n + 1) = F n * P n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  intro n
-  exact Nat.strong_induction_on n fun n ih => by
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := fun n =>
+  Nat.strong_induction_on n fun n ih => by
     by_cases hn : n ≤ N
     · exact hbase n hn
     · cases n with
@@ -322,9 +321,8 @@ theorem isRealRooted_of_product_identity_sequence_from
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
     (hstep : ∀ n : Nat, N ≤ n → P (n + 1) = P n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  intro n
-  exact Nat.strong_induction_on n fun n ih => by
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := fun n =>
+  Nat.strong_induction_on n fun n ih => by
     by_cases hn : n ≤ N
     · exact hbase n hn
     · cases n with
@@ -402,9 +400,8 @@ theorem isRealRooted_of_product_period_two_sequence_from
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N + 1 → P n ≠ 0 ∧ (P n).Splits)
     (hstep : ∀ n : Nat, N ≤ n → P (n + 2) = P n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  intro n
-  exact Nat.strong_induction_on n fun n ih => by
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := fun n =>
+  Nat.strong_induction_on n fun n ih => by
     by_cases hn : n ≤ N + 1
     · exact hbase n hn
     · cases n with
