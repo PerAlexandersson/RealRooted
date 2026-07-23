@@ -14,6 +14,12 @@ open scoped BigOperators
 namespace RealRooted
 namespace Tactic
 
+example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 := by
+  rr_oeis_active_den_all
+
+example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 :=
+  rr_oeis_active_den_all_term
+
 /-- Root-bound row-family exit exposed through the OEIS facade. -/
 example {P : Nat → ℝ[X]}
     (hrr : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits)
