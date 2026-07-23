@@ -40,6 +40,21 @@ example {r : ℝ} :
     (C (-1 : ℝ) + C (2 : ℝ) * X + C (-1 : ℝ) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
   rr_sign
 
+example {r : ℝ} :
+    (C (-2 / 5 : ℝ) + C (4 / 5 : ℝ) * X + C (-2 / 5 : ℝ) * X ^ 2 :
+      ℝ[X]).eval r ≤ 0 := by
+  rr_sign
+
+example {r : ℝ} :
+    (C (-2 / 3 : ℝ) + C (4 / 3 : ℝ) * X + C (-2 / 3 : ℝ) * X ^ 2 :
+      ℝ[X]).eval r ≤ 0 := by
+  rr_sign
+
+example {r : ℝ} :
+    (C (-8 / 5 : ℝ) + C (8 / 5 : ℝ) * X + C (-2 / 5 : ℝ) * X ^ 2 :
+      ℝ[X]).eval r ≤ 0 := by
+  rr_sign
+
 example {r : ℝ} {q : ℝ[X]} (hr : r ≤ 0) (hq : 0 ≤ q.eval r) :
     (X * q : ℝ[X]).eval r ≤ 0 := by
   rr_sign

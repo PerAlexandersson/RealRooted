@@ -1115,6 +1115,12 @@ example {r : ℝ} :
     (C (-1 : ℝ) + C (2 : ℝ) * X + C (-1 : ℝ) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
   rr_sign
 
+-- `A001263`/`A008459`: scaled expanded `B_n(t)=-c(1-t)^2`.
+example {r : ℝ} :
+    (C (-2 / 5 : ℝ) + C (4 / 5 : ℝ) * X + C (-2 / 5 : ℝ) * X ^ 2 :
+      ℝ[X]).eval r ≤ 0 := by
+  rr_sign
+
 -- `A059340`/`A122076`: expanded `B_n(t)=-1-2t-t^2`.
 example {r : ℝ} :
     (C (-1 : ℝ) + C (-2 : ℝ) * X + C (-1 : ℝ) * X ^ 2 :

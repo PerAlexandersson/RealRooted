@@ -513,6 +513,53 @@ lemma eval_neg_quadratic_nonpos_of_discrim_nonpos
     Polynomial.eval_C,
     Polynomial.eval_X] using neg_nonpos.mpr hpoly
 
+lemma eval_neg_expanded_quadratic_nonpos_of_discrim_nonpos
+    {a b c r : ℝ} (ha : 0 ≤ a) (hc : 0 ≤ c) (hdisc : b ^ 2 ≤ 4 * c * a) :
+    (C (-a) + C b * X + C (-c) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
+  have hdisc' : (-b) ^ 2 ≤ 4 * c * a := by
+    nlinarith
+  have htail : (-(C c * X ^ 2 + C (-b) * X + C a) : ℝ[X]).eval r ≤ 0 :=
+    eval_neg_quadratic_nonpos_of_discrim_nonpos hc ha hdisc'
+  simpa [
+    Polynomial.eval_add,
+    Polynomial.eval_mul,
+    Polynomial.eval_pow,
+    Polynomial.eval_neg,
+    Polynomial.eval_C,
+    Polynomial.eval_X] using htail
+
+lemma eval_quadratic_nonpos_of_nonpos_of_nonpos_of_discrim_nonpos
+    {a b c r : ℝ} (ha : a ≤ 0) (hc : c ≤ 0) (hdisc : b ^ 2 ≤ 4 * a * c) :
+    (C a + C b * X + C c * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
+  have hdisc' : b ^ 2 ≤ 4 * (-c) * (-a) := by
+    nlinarith
+  have htail :
+      (C (-(-a)) + C b * X + C (-(-c)) * X ^ 2 : ℝ[X]).eval r ≤ 0 :=
+    eval_neg_expanded_quadratic_nonpos_of_discrim_nonpos
+      (a := -a) (b := b) (c := -c) (r := r) (by linarith) (by linarith) hdisc'
+  simpa using htail
+
+lemma eval_neg_two_fifths_add_four_fifths_X_sub_two_fifths_X_sq_nonpos {r : ℝ} :
+    (C (-2 / 5 : ℝ) + C (4 / 5 : ℝ) * X + C (-2 / 5 : ℝ) * X ^ 2 :
+      ℝ[X]).eval r ≤ 0 := by
+  exact eval_quadratic_nonpos_of_nonpos_of_nonpos_of_discrim_nonpos
+    (a := -2 / 5) (b := 4 / 5) (c := -2 / 5) (r := r)
+    (by norm_num) (by norm_num) (by norm_num)
+
+lemma eval_neg_two_thirds_add_four_thirds_X_sub_two_thirds_X_sq_nonpos {r : ℝ} :
+    (C (-2 / 3 : ℝ) + C (4 / 3 : ℝ) * X + C (-2 / 3 : ℝ) * X ^ 2 :
+      ℝ[X]).eval r ≤ 0 := by
+  exact eval_quadratic_nonpos_of_nonpos_of_nonpos_of_discrim_nonpos
+    (a := -2 / 3) (b := 4 / 3) (c := -2 / 3) (r := r)
+    (by norm_num) (by norm_num) (by norm_num)
+
+lemma eval_neg_eight_fifths_add_eight_fifths_X_sub_two_fifths_X_sq_nonpos {r : ℝ} :
+    (C (-8 / 5 : ℝ) + C (8 / 5 : ℝ) * X + C (-2 / 5 : ℝ) * X ^ 2 :
+      ℝ[X]).eval r ≤ 0 := by
+  exact eval_quadratic_nonpos_of_nonpos_of_nonpos_of_discrim_nonpos
+    (a := -8 / 5) (b := 8 / 5) (c := -2 / 5) (r := r)
+    (by norm_num) (by norm_num) (by norm_num)
+
 namespace Tactic
 
 syntax (name := rr_sign_side) "rr_sign_side" : tactic
@@ -542,6 +589,12 @@ macro_rules
                 rr_sign_side_term
           | exact RealRooted.eval_neg_one_add_two_X_sub_X_sq_nonpos
           | exact RealRooted.eval_neg_one_sub_two_X_sub_X_sq_nonpos
+          | exact
+              RealRooted.eval_neg_two_fifths_add_four_fifths_X_sub_two_fifths_X_sq_nonpos
+          | exact
+              RealRooted.eval_neg_two_thirds_add_four_thirds_X_sub_two_thirds_X_sq_nonpos
+          | exact
+              RealRooted.eval_neg_eight_fifths_add_eight_fifths_X_sub_two_fifths_X_sq_nonpos
           | exact
               RealRooted.eval_X_mul_one_add_four_mul_X_nonpos_of_mem_Icc
                 rr_sign_side_term
