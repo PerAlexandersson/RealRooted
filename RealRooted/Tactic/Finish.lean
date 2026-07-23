@@ -477,6 +477,18 @@ theorem isRealRooted_pair_sequence_of_prec_sequence {A B : Nat → ℝ[X]}
   fun n =>
     ⟨left_isRealRooted_of_prec (hprec n), right_isRealRooted_of_prec (hprec n)⟩
 
+/-- Project left row-wise real-rootedness from a `Prec` sequence. -/
+theorem left_isRealRooted_of_prec_sequence {A B : Nat → ℝ[X]}
+    (hprec : ∀ n : Nat, Prec (A n) (B n)) :
+    ∀ n : Nat, A n ≠ 0 ∧ (A n).Splits :=
+  fun n => left_isRealRooted_of_prec (hprec n)
+
+/-- Project right row-wise real-rootedness from a `Prec` sequence. -/
+theorem right_isRealRooted_of_prec_sequence {A B : Nat → ℝ[X]}
+    (hprec : ∀ n : Nat, Prec (A n) (B n)) :
+    ∀ n : Nat, B n ≠ 0 ∧ (B n).Splits :=
+  fun n => right_isRealRooted_of_prec (hprec n)
+
 /-- Project left row-wise real-rootedness from a pair-sequence certificate. -/
 theorem left_isRealRooted_of_isRealRooted_pair_sequence {A B : Nat → ℝ[X]}
     (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧

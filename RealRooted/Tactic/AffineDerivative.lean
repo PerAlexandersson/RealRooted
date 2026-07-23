@@ -1,4 +1,5 @@
 import RealRooted.AffineDerivative
+import RealRooted.Tactic.Finish
 
 /-!
 # Affine-derivative tactic frontends
@@ -32,8 +33,9 @@ theorem isRealRooted_of_prec_affine_derivative_sequence
     (hc : ∀ n : Nat, ((P n).natDegree : ℝ) < c n) :
     ∀ n : Nat,
       C (c n) * P n + (1 - X) * (P n).derivative ≠ 0 ∧
-        (C (c n) * P n + (1 - X) * (P n).derivative).Splits := fun n =>
-  (prec_affine_derivative_sequence hsplits hdeg hpos hroots_nonpos hc n).1
+        (C (c n) * P n + (1 - X) * (P n).derivative).Splits :=
+  left_isRealRooted_of_prec_sequence <|
+    prec_affine_derivative_sequence hsplits hdeg hpos hroots_nonpos hc
 
 theorem prec_affine_derivative_nonneg_sequence {P : Nat → ℝ[X]} {c : Nat → ℝ}
     (hsplits : ∀ n : Nat, (P n).Splits)
@@ -53,8 +55,9 @@ theorem isRealRooted_of_prec_affine_derivative_nonneg_sequence
     (hc : ∀ n : Nat, ((P n).natDegree : ℝ) < c n) :
     ∀ n : Nat,
       C (c n) * P n + (1 - X) * (P n).derivative ≠ 0 ∧
-        (C (c n) * P n + (1 - X) * (P n).derivative).Splits := fun n =>
-  (prec_affine_derivative_nonneg_sequence hsplits hdeg hnn hc n).1
+        (C (c n) * P n + (1 - X) * (P n).derivative).Splits :=
+  left_isRealRooted_of_prec_sequence <|
+    prec_affine_derivative_nonneg_sequence hsplits hdeg hnn hc
 
 theorem coeff_affineDeriv_sequence
     {P : Nat → ℝ[X]} {c : Nat → ℝ}
