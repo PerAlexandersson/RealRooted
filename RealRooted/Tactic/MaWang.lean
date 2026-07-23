@@ -235,12 +235,7 @@ theorem isRealRooted_of_mw_derivative_nonpos_sequence {P : Nat → ℝ[X]}
   have hprec : ∀ n : Nat, Prec (P n) (P (n + 1)) :=
     prec_mw_derivative_nonpos_sequence
       hbase hpos hdeg_two hV_nonpos hrec hdeg_lo hdeg_hi
-  intro n
-  cases n with
-  | zero =>
-      exact hbase.1
-  | succ n =>
-      exact (hprec n).2.1
+  exact isRealRooted_of_prec_chain hbase hprec
 
 /-- Sequence-level Ma--Wang induction for the `A194649` window factor
 `(1+X)(1+2X)`.  The sequence proof supplies the root window `[-1,-1/2]`;
@@ -805,12 +800,7 @@ theorem isRealRooted_of_mw_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
   have hprec : ∀ n : Nat, Prec (P n) (P (n + 1)) :=
     prec_mw_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
       hbase hpos hnonneg hdeg_two hV_nonpos hrec hdeg_lo hdeg_hi
-  intro n
-  cases n with
-  | zero =>
-      exact hbase.1
-  | succ n =>
-      exact (hprec n).2.1
+  exact isRealRooted_of_prec_chain hbase hprec
 
 /-- Real-rootedness corollary for the nonnegative-coefficient sequence-level
 weak Ma--Wang induction. -/
