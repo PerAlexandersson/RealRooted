@@ -568,7 +568,8 @@ theorem splits_mul_sequence_of_isRealRooted_pair_sequence {A B : Nat → ℝ[X]}
     (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
       (B n ≠ 0 ∧ (B n).Splits)) :
     ∀ n : Nat, (A n * B n).Splits :=
-  fun n => (isRealRooted_mul_of_isRealRooted (hP n).1 (hP n).2).2
+  splits_of_isRealRooted_sequence <|
+    isRealRooted_mul_sequence_of_isRealRooted_pair_sequence hP
 
 /-- Row-wise swapped product splitting transport for nonzero real-rooted pair-sequences. -/
 theorem splits_swap_mul_sequence_of_isRealRooted_pair_sequence
@@ -576,15 +577,16 @@ theorem splits_swap_mul_sequence_of_isRealRooted_pair_sequence
     (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
       (B n ≠ 0 ∧ (B n).Splits)) :
     ∀ n : Nat, (B n * A n).Splits :=
-  fun n => (isRealRooted_mul_of_isRealRooted (hP n).2 (hP n).1).2
+  splits_of_isRealRooted_sequence <|
+    isRealRooted_swap_mul_sequence_of_isRealRooted_pair_sequence hP
 
 /-- Row-wise product zero-aware transport for nonzero real-rooted pair-sequences. -/
 theorem mul_eq_zero_or_splits_of_isRealRooted_pair_sequence {A B : Nat → ℝ[X]}
     (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
       (B n ≠ 0 ∧ (B n).Splits)) :
     ∀ n : Nat, A n * B n = 0 ∨ (A n * B n).Splits :=
-  fun n => eq_zero_or_splits_of_isRealRooted
-    (isRealRooted_mul_of_isRealRooted (hP n).1 (hP n).2)
+  eq_zero_or_splits_of_isRealRooted_sequence <|
+    isRealRooted_mul_sequence_of_isRealRooted_pair_sequence hP
 
 /-- Row-wise swapped product zero-aware transport for nonzero real-rooted pair-sequences. -/
 theorem swap_mul_eq_zero_or_splits_of_isRealRooted_pair_sequence
@@ -592,8 +594,8 @@ theorem swap_mul_eq_zero_or_splits_of_isRealRooted_pair_sequence
     (hP : ∀ n : Nat, (A n ≠ 0 ∧ (A n).Splits) ∧
       (B n ≠ 0 ∧ (B n).Splits)) :
     ∀ n : Nat, B n * A n = 0 ∨ (B n * A n).Splits :=
-  fun n => eq_zero_or_splits_of_isRealRooted
-    (isRealRooted_mul_of_isRealRooted (hP n).2 (hP n).1)
+  eq_zero_or_splits_of_isRealRooted_sequence <|
+    isRealRooted_swap_mul_sequence_of_isRealRooted_pair_sequence hP
 
 /-- Row-wise product transport for zero-aware pair-sequences. -/
 theorem mul_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence
