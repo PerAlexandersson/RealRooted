@@ -22,6 +22,9 @@ example {n : Nat} : 0 ≤ (n : ℝ) + 1 := by
 example {n : Nat} (hn : 1 ≤ n) : 0 ≤ (n : ℝ) - 1 := by
   rr_lw_coeff_nonneg
 
+example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 :=
+  rr_lw_active_den_all_term
+
 example {f g F a b : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
