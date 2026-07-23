@@ -94,6 +94,13 @@ private lemma neg_one_pow_succ (n : Nat) :
   rw [pow_succ]
   ring
 
+private theorem satisfiesFavardRecurrence_const_coeff {P : Nat → ℝ[X]} {α β : ℝ}
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = X - C α)
+    (hstep : ∀ n : Nat, P (n + 2) = (X - C α) * P (n + 1) - C β * P n) :
+    SatisfiesFavardRecurrence P (fun _ => α) (fun _ => β) :=
+  ⟨hP0, hP1, fun n => by simpa using hstep n⟩
+
 /-- Constant-coefficient Favard wrapper.  This packages the recurring
 Chebyshev-style shape
 `P_{n+2} = (X - α) P_{n+1} - β P_n`, with `β > 0`. -/
@@ -105,7 +112,7 @@ theorem favardInterlacing_const_coeff {P : Nat → ℝ[X]} {α β : ℝ}
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
   favardInterlacing
     (P := P) (α := fun _ => α) (β := fun _ => β)
-    ⟨hP0, hP1, fun n => by simpa using hstep n⟩
+    (satisfiesFavardRecurrence_const_coeff hP0 hP1 hstep)
     (fun _ => hβ)
 
 /-- Real-rootedness consequence of the constant-coefficient Favard wrapper. -/
@@ -117,7 +124,7 @@ theorem isRealRooted_of_favard_const_coeff {P : Nat → ℝ[X]} {α β : ℝ}
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_favard
     (P := P) (α := fun _ => α) (β := fun _ => β)
-    ⟨hP0, hP1, fun n => by simpa using hstep n⟩
+    (satisfiesFavardRecurrence_const_coeff hP0 hP1 hstep)
     (fun _ => hβ)
 
 /-- Nonzero consequence of the constant-coefficient Favard wrapper. -/
