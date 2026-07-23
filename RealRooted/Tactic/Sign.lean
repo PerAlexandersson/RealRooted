@@ -313,6 +313,22 @@ lemma eval_neg_C_mul_one_sub_X_sq_nonpos_of_nonneg {c r : ℝ}
   have hsq : 0 ≤ (1 - r) ^ 2 := sq_nonneg (1 - r)
   simpa [sub_eq_add_neg] using mul_nonpos_of_nonpos_of_nonneg hneg hsq
 
+lemma eval_neg_one_add_two_X_sub_X_sq_nonpos {r : ℝ} :
+    (C (-1 : ℝ) + C (2 : ℝ) * X + C (-1 : ℝ) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
+  have hsq : 0 ≤ (1 - r) ^ 2 := sq_nonneg (1 - r)
+  have heval :
+      (C (-1 : ℝ) + C (2 : ℝ) * X + C (-1 : ℝ) * X ^ 2 : ℝ[X]).eval r =
+        -((1 - r) ^ 2) := by
+    simp [
+      Polynomial.eval_add,
+      Polynomial.eval_mul,
+      Polynomial.eval_pow,
+      Polynomial.eval_C,
+      Polynomial.eval_X]
+    ring
+  rw [heval]
+  exact neg_nonpos.mpr hsq
+
 lemma eval_neg_C_mul_X_sq_nonpos_of_nonneg {c r : ℝ}
     (hc : 0 ≤ c) :
     (-(C c) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
@@ -581,6 +597,7 @@ macro_rules
           | exact
               RealRooted.eval_neg_C_mul_one_sub_X_sq_nonpos_of_nonneg
                 rr_sign_side_term
+          | exact RealRooted.eval_neg_one_add_two_X_sub_X_sq_nonpos
           | exact
               RealRooted.eval_neg_C_mul_X_sq_nonpos_of_nonneg
                 rr_sign_side_term

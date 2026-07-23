@@ -1102,6 +1102,11 @@ example {r : ℝ} :
     (-(C (1 : ℝ)) * (1 - X) ^ 2 : ℝ[X]).eval r ≤ 0 := by
   rr_sign
 
+-- `A086645`/`A091042`: expanded `B_n(t)=-1+2t-t^2`.
+example {r : ℝ} :
+    (C (-1 : ℝ) + C (2 : ℝ) * X + C (-1 : ℝ) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
+  rr_sign
+
 -- `A090181`: denominator-fused Narayana variant with half-scaled denominator.
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
