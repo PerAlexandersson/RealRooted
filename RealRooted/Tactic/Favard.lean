@@ -79,6 +79,16 @@ private theorem prec_affine_favard_step {f g aPoly bPoly : ℝ[X]}
       hInter hg_pos hF_pos (by lia) (by lia) hb_nonpos
   exact ⟨hPrec_step, hPrec_step.toInterlaces (by lia), hF_pos⟩
 
+private def affineFavardChainPackage (P : Nat → ℝ[X]) (n : Nat) : Prop :=
+  Interlaces (P n) (P (n + 1)) ∧
+    HasPosLeadingCoeff (P n) ∧
+    HasPosLeadingCoeff (P (n + 1))
+
+private theorem prec_sequence_of_affineFavardChainPackage {P : Nat → ℝ[X]}
+    (hQ : ∀ n : Nat, affineFavardChainPackage P n) :
+    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+  fun n => (hQ n).1.toPrec
+
 private lemma neg_one_pow_mul_self (n : Nat) :
     ((-1 : ℝ) ^ n) * ((-1 : ℝ) ^ n) = 1 := by
   rw [← pow_add, ← two_mul, pow_mul]
@@ -187,11 +197,7 @@ theorem favardInterlacing_affine_const_coeff {P : Nat → ℝ[X]} {s α β : ℝ
     simpa [aPoly] using hasPosLeadingCoeff_C_mul_X_sub_C (s := s) (t := α) hs
   have hA_ne : aPoly ≠ 0 := by
     rr_nonzero
-  let Q : Nat → Prop := fun n =>
-    Interlaces (P n) (P (n + 1)) ∧
-      HasPosLeadingCoeff (P n) ∧
-      HasPosLeadingCoeff (P (n + 1))
-  have hQ : ∀ n : Nat, Q n := by
+  have hQ : ∀ n : Nat, affineFavardChainPackage P n := by
     intro n
     induction n with
     | zero =>
@@ -218,8 +224,9 @@ theorem favardInterlacing_affine_const_coeff {P : Nat → ℝ[X]} {s α β : ℝ
             hBg_le hb_nonpos
         have hInter_step : Interlaces f (aPoly * f + bPoly * g) := hFavardStep.2.1
         have hF_pos : HasPosLeadingCoeff (aPoly * f + bPoly * g) := hFavardStep.2.2
+        dsimp [affineFavardChainPackage]
         grind
-  exact fun n => (hQ n).1.toPrec
+  exact prec_sequence_of_affineFavardChainPackage hQ
 
 /-- Real-rootedness consequence of the positive-slope affine Favard wrapper. -/
 theorem isRealRooted_of_favard_affine_const_coeff {P : Nat → ℝ[X]} {s α β : ℝ}
@@ -325,11 +332,7 @@ theorem favardInterlacing_affine_param_coeff
         (C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
           C (β (n + 1)) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let Q : Nat → Prop := fun n =>
-    Interlaces (P n) (P (n + 1)) ∧
-      HasPosLeadingCoeff (P n) ∧
-      HasPosLeadingCoeff (P (n + 1))
-  have hQ : ∀ n : Nat, Q n := by
+  have hQ : ∀ n : Nat, affineFavardChainPackage P n := by
     intro n
     induction n with
     | zero =>
@@ -374,8 +377,9 @@ theorem favardInterlacing_affine_param_coeff
             hBg_le hb_nonpos
         have hInter_step : Interlaces f (aPoly * f + bPoly * g) := hFavardStep.2.1
         have hF_pos : HasPosLeadingCoeff (aPoly * f + bPoly * g) := hFavardStep.2.2
+        dsimp [affineFavardChainPackage]
         grind
-  exact fun n => (hQ n).1.toPrec
+  exact prec_sequence_of_affineFavardChainPackage hQ
 
 /-- Real-rootedness consequence of the positive-slope parameterized affine
 Favard wrapper. -/
