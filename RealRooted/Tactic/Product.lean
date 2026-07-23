@@ -50,14 +50,12 @@ theorem isRealRooted_C_add_C_mul_X {s t : ℝ} (hs : s ≠ 0) :
 theorem isRealRooted_C_mul_X_add_C_mul {p : ℝ[X]} {s t : ℝ}
     (hp : p ≠ 0 ∧ p.Splits) (hs : s ≠ 0) :
     ((C s * X + C t) * p ≠ 0 ∧ ((C s * X + C t) * p).Splits) :=
-  isRealRooted_mul
-    (isRealRooted_C_mul_X_add_C hs).1 (isRealRooted_C_mul_X_add_C hs).2 hp.1 hp.2
+  isRealRooted_mul_of_isRealRooted (isRealRooted_C_mul_X_add_C hs) hp
 
 theorem isRealRooted_mul_C_mul_X_add_C {p : ℝ[X]} {s t : ℝ}
     (hp : p ≠ 0 ∧ p.Splits) (hs : s ≠ 0) :
     (p * (C s * X + C t) ≠ 0 ∧ (p * (C s * X + C t)).Splits) :=
-  isRealRooted_mul hp.1 hp.2
-    (isRealRooted_C_mul_X_add_C hs).1 (isRealRooted_C_mul_X_add_C hs).2
+  isRealRooted_mul_of_isRealRooted hp (isRealRooted_C_mul_X_add_C hs)
 
 theorem isRealRooted_C_add_C_mul_X_mul {p : ℝ[X]} {s t : ℝ}
     (hp : p ≠ 0 ∧ p.Splits) (hs : s ≠ 0) :
@@ -95,31 +93,19 @@ theorem isRealRooted_mul_C_add_X {p : ℝ[X]} {t : ℝ}
 
 /-- Powers of a unit-slope real linear factor are real-rooted. -/
 theorem isRealRooted_X_add_C_pow (t : ℝ) (n : Nat) :
-    ((X + C t : ℝ[X]) ^ n ≠ 0 ∧ ((X + C t : ℝ[X]) ^ n).Splits) := by
-  induction n with
-  | zero =>
-      simp
-  | succ n ih =>
-      simpa [pow_succ, mul_comm, mul_left_comm, mul_assoc] using
-        isRealRooted_X_add_C_mul (p := (X + C t : ℝ[X]) ^ n) (t := t) ih
+    ((X + C t : ℝ[X]) ^ n ≠ 0 ∧ ((X + C t : ℝ[X]) ^ n).Splits) :=
+  isRealRooted_pow_of_isRealRooted (isRealRooted_X_add_C t) n
 
 /-- Constant-first spelling of `isRealRooted_X_add_C_pow`. -/
 theorem isRealRooted_C_add_X_pow (t : ℝ) (n : Nat) :
-    ((C t + X : ℝ[X]) ^ n ≠ 0 ∧ ((C t + X : ℝ[X]) ^ n).Splits) := by
-  simpa [add_comm] using isRealRooted_X_add_C_pow t n
+    ((C t + X : ℝ[X]) ^ n ≠ 0 ∧ ((C t + X : ℝ[X]) ^ n).Splits) :=
+  isRealRooted_pow_of_isRealRooted (isRealRooted_C_add_X t) n
 
 /-- Powers of a nonzero-slope real linear factor are real-rooted. -/
 theorem isRealRooted_C_mul_X_add_C_pow {s t : ℝ} (hs : s ≠ 0) (n : Nat) :
     ((C s * X + C t : ℝ[X]) ^ n ≠ 0 ∧
-      ((C s * X + C t : ℝ[X]) ^ n).Splits) := by
-  induction n with
-  | zero =>
-      simp
-  | succ n ih =>
-      rw [pow_succ]
-      exact isRealRooted_mul ih.1 ih.2
-        (isRealRooted_C_mul_X_add_C hs).1
-        (isRealRooted_C_mul_X_add_C hs).2
+      ((C s * X + C t : ℝ[X]) ^ n).Splits) :=
+  isRealRooted_pow_of_isRealRooted (isRealRooted_C_mul_X_add_C hs) n
 
 /-- Constant-first spelling of `isRealRooted_C_mul_X_add_C_pow`. -/
 theorem isRealRooted_C_add_C_mul_X_pow {s t : ℝ} (hs : s ≠ 0) (n : Nat) :
@@ -210,7 +196,7 @@ theorem isRealRooted_of_product_factor_sequence
       simpa using hbase
   | succ n ih =>
       have hnext : F n * P n ≠ 0 ∧ (F n * P n).Splits :=
-        isRealRooted_mul (hfactor n).1 (hfactor n).2 ih.1 ih.2
+        isRealRooted_mul_of_isRealRooted (hfactor n) ih
       simpa [Nat.succ_eq_add_one, hstep n] using hnext
 
 /-- Tail-start sequence shell for first-order product recurrences with a
@@ -233,7 +219,7 @@ theorem isRealRooted_of_product_factor_sequence_from
           have hNm : N ≤ m := by lia
           have hm : P m ≠ 0 ∧ (P m).Splits := ih m (Nat.lt_succ_self m)
           have hnext : F m * P m ≠ 0 ∧ (F m * P m).Splits :=
-            isRealRooted_mul (hfactor m hNm).1 (hfactor m hNm).2 hm.1 hm.2
+            isRealRooted_mul_of_isRealRooted (hfactor m hNm) hm
           simpa [Nat.succ_eq_add_one, hstep m hNm] using hnext
 
 /-- Right-factor variant of `isRealRooted_of_product_factor_sequence`. -/
@@ -272,7 +258,7 @@ theorem isRealRooted_finset_prod_X_sub_C
       have hmul :
           (X - C (root j)) * (∏ k ∈ s, (X - C (root k))) ≠ 0 ∧
             ((X - C (root j)) * (∏ k ∈ s, (X - C (root k)))).Splits :=
-        isRealRooted_mul hlin.1 hlin.2 hs.1 hs.2
+        isRealRooted_mul_of_isRealRooted hlin hs
       simpa [Finset.prod_insert hjs] using hmul
 
 /-- Sequence shell for rows supplied as finite products of real linear factors. -/
@@ -428,7 +414,7 @@ theorem isRealRooted_of_product_lift_sequence
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   intro n
   have hnext : F n * Q n ≠ 0 ∧ (F n * Q n).Splits :=
-    isRealRooted_mul (hfactor n).1 (hfactor n).2 (hquot n).1 (hquot n).2
+    isRealRooted_mul_of_isRealRooted (hfactor n) (hquot n)
   simpa [hrow n] using hnext
 
 /-- Right-factor variant of `isRealRooted_of_product_lift_sequence`. -/
@@ -456,8 +442,7 @@ theorem isRealRooted_of_product_lift_sequence_from
   · exact hbase n hn
   · have hNn : N ≤ n := by lia
     have hnext : F n * Q n ≠ 0 ∧ (F n * Q n).Splits :=
-      isRealRooted_mul (hfactor n hNn).1 (hfactor n hNn).2
-        (hquot n hNn).1 (hquot n hNn).2
+      isRealRooted_mul_of_isRealRooted (hfactor n hNn) (hquot n hNn)
     simpa [hrow n hNn] using hnext
 
 /-- Right-factor variant of `isRealRooted_of_product_lift_sequence_from`. -/
@@ -728,23 +713,13 @@ theorem isRealRooted_of_C_add_C_mul_X_lift_right_sequence_from
 
 /-- Powers of the root-at-zero factor are real-rooted. -/
 theorem isRealRooted_X_pow (n : Nat) :
-    ((X : ℝ[X]) ^ n ≠ 0 ∧ (((X : ℝ[X]) ^ n).Splits)) := by
-  induction n with
-  | zero =>
-      simp
-  | succ n ih =>
-      rw [pow_succ]
-      exact isRealRooted_mul ih.1 ih.2 isRealRooted_X.1 isRealRooted_X.2
+    ((X : ℝ[X]) ^ n ≠ 0 ∧ (((X : ℝ[X]) ^ n).Splits)) :=
+  isRealRooted_pow_of_isRealRooted isRealRooted_X n
 
 /-- Powers of a nonzero scalar constant are real-rooted. -/
 theorem isRealRooted_C_pow {a : ℝ} (ha : a ≠ 0) (n : Nat) :
-    ((C a : ℝ[X]) ^ n ≠ 0 ∧ (((C a : ℝ[X]) ^ n).Splits)) := by
-  induction n with
-  | zero =>
-      simp
-  | succ n ih =>
-      rw [pow_succ]
-      exact isRealRooted_mul ih.1 ih.2 (isRealRooted_C ha).1 (isRealRooted_C ha).2
+    ((C a : ℝ[X]) ^ n ≠ 0 ∧ (((C a : ℝ[X]) ^ n).Splits)) :=
+  isRealRooted_pow_of_isRealRooted (isRealRooted_C ha) n
 
 private theorem isRealRooted_C_pow_sequence {c : Nat → ℝ}
     (hc : ∀ n : Nat, c n ≠ 0) (m : Nat → Nat) :
@@ -1081,7 +1056,7 @@ theorem isRealRooted_of_even_product_odd_X_scalar_sequence
     have hfactor : C (a n) * X ≠ 0 ∧ (C (a n) * X).Splits :=
       isRealRooted_C_mul isRealRooted_X.1 isRealRooted_X.2 (ha n)
     have hrow : (C (a n) * X) * Q n ≠ 0 ∧ ((C (a n) * X) * Q n).Splits :=
-      isRealRooted_mul hfactor.1 hfactor.2 (hquot n).1 (hquot n).2
+      isRealRooted_mul_of_isRealRooted hfactor (hquot n)
     simpa [hodd n, mul_assoc] using hrow
   exact isRealRooted_of_even_odd_sequence heven_realrooted hodd_realrooted
 
@@ -1849,7 +1824,7 @@ theorem isRealRooted_of_product_scalar_factor_sequence
           simpa [hscalar n] using isRealRooted_C_mul ih.1 ih.2 (ha n)
         have hnext :
             (F n * P (2 * n + 1) ≠ 0 ∧ (F n * P (2 * n + 1)).Splits) :=
-          isRealRooted_mul (hfactor n).1 (hfactor n).2 hodd.1 hodd.2
+          isRealRooted_mul_of_isRealRooted (hfactor n) hodd
         simpa [Nat.mul_succ, Nat.succ_eq_add_one, Nat.add_assoc] using
           (by simpa [hstep n] using hnext)
   have hodd : ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
@@ -1927,7 +1902,7 @@ theorem isRealRooted_of_product_scalar_factor_sequence_from
           have hnext :
               (F m * P (2 * m + 1) ≠ 0 ∧
                 (F m * P (2 * m + 1)).Splits) :=
-            isRealRooted_mul (hfactor m hNm).1 (hfactor m hNm).2 hodd.1 hodd.2
+            isRealRooted_mul_of_isRealRooted (hfactor m hNm) hodd
           simpa [Nat.mul_succ, Nat.succ_eq_add_one, Nat.add_assoc] using
             (by simpa [hstep m hNm] using hnext)
   have hodd : ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
