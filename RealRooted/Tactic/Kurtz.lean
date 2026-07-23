@@ -144,8 +144,7 @@ macro_rules
               $hdeg $hpos $hineq
           | exact RealRooted.Tactic.kurtz_splits
               $hdeg $hpos $hineq
-          | exact (RealRooted.Tactic.kurtz_ne_zero_and_splits
-              $hdeg $hpos $hineq).1
+          | exact RealRooted.Tactic.kurtz_ne_zero $hpos
           | exact RealRooted.Tactic.kurtz_hasNonnegCoeffs $hpos)
   | `(tactic| rr_kurtz_nonzero using positive_coeffs := $hpos:term) =>
       `(tactic| exact RealRooted.Tactic.kurtz_ne_zero $hpos)
