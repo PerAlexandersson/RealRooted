@@ -2160,6 +2160,12 @@ syntax (name := rr_favard_den_raw) "rr_favard_den_raw" " using " term : tactic
 
 syntax (name := rr_favard_den_raw_term) "rr_favard_den_raw_term " term : term
 
+macro "rr_favard_active_den_all" : tactic =>
+  `(tactic| rr_scalar_active_den_all)
+
+syntax (name := rr_favard_active_den_all_term)
+  "rr_favard_active_den_all_term" : term
+
 syntax (name := rr_favard_goal_variants)
   "rr_favard_goal_variants"
     term ", " term ", " term ", " term ", " term ", " term :
@@ -2235,6 +2241,8 @@ macro_rules
               mul_assoc] using $hraw n)
   | `(rr_favard_den_raw_term $hraw:term) =>
       `(by rr_favard_den_raw using $hraw)
+  | `(rr_favard_active_den_all_term) =>
+      `(by rr_favard_active_den_all)
   | `(tactic| rr_favard using $hrec:term, $hbeta:term) =>
       `(tactic|
         first
@@ -2622,7 +2630,7 @@ macro_rules
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_favard_active_den_all_term,
           raw_recurrence := $hraw)
   | `(tactic|
       rr_favard_affine_param_den_auto using
@@ -2673,7 +2681,7 @@ macro_rules
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_favard_active_den_all_term,
           slope_coeff_eq := rr_scalar_coeff_all_term,
           alpha_coeff_eq := rr_scalar_coeff_all_term,
           beta_coeff_eq := rr_scalar_coeff_all_term,
@@ -2733,7 +2741,7 @@ macro_rules
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_favard_active_den_all_term,
           slope_coeff_eq := rr_scalar_coeff_all_term,
           alpha_coeff_eq := rr_scalar_coeff_all_term,
           beta_coeff_eq := rr_scalar_coeff_all_term,
@@ -2803,7 +2811,7 @@ macro_rules
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_favard_active_den_all_term,
           slope_coeff_eq := rr_scalar_coeff_all_term,
           alpha_coeff_eq := rr_scalar_coeff_all_term,
           beta_coeff_eq := rr_scalar_coeff_all_term,
@@ -2872,7 +2880,7 @@ macro_rules
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_favard_active_den_all_term,
           slope_coeff_eq := rr_scalar_coeff_all_term,
           alpha_coeff_eq := rr_scalar_coeff_all_term,
           beta_coeff_eq := rr_scalar_coeff_all_term,
@@ -2970,7 +2978,7 @@ macro_rules
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_favard_active_den_all_term,
           slope_coeff_eq := rr_scalar_coeff_all_term,
           alpha_coeff_eq := rr_scalar_coeff_all_term,
           beta_coeff_eq := rr_scalar_coeff_all_term,
@@ -3029,7 +3037,7 @@ macro_rules
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_favard_active_den_all_term,
           slope_coeff_eq := rr_scalar_coeff_all_term,
           alpha_coeff_eq := rr_scalar_coeff_all_term,
           beta_coeff_eq := rr_scalar_coeff_all_term,
@@ -3089,7 +3097,7 @@ macro_rules
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_favard_active_den_all_term,
           slope_coeff_eq := rr_scalar_coeff_all_term,
           alpha_coeff_eq := rr_scalar_coeff_all_term,
           beta_coeff_eq := rr_scalar_coeff_all_term,
@@ -3144,7 +3152,7 @@ macro_rules
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_favard_active_den_all_term,
           slope_coeff_eq := rr_scalar_coeff_all_term,
           alpha_coeff_eq := rr_scalar_coeff_all_term,
           beta_coeff_eq := rr_scalar_coeff_all_term,
@@ -3436,7 +3444,7 @@ macro_rules
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_favard_active_den_all_term,
           slope_coeff_eq := rr_scalar_coeff_all_term,
           alpha_coeff_eq := rr_scalar_coeff_all_term,
           beta_coeff_eq := rr_scalar_coeff_all_term,
@@ -3496,7 +3504,7 @@ macro_rules
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_favard_active_den_all_term,
           slope_coeff_eq := rr_scalar_coeff_all_term,
           alpha_coeff_eq := rr_scalar_coeff_all_term,
           beta_coeff_eq := rr_scalar_coeff_all_term,
@@ -3566,7 +3574,7 @@ macro_rules
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_favard_active_den_all_term,
           slope_coeff_eq := rr_scalar_coeff_all_term,
           alpha_coeff_eq := rr_scalar_coeff_all_term,
           beta_coeff_eq := rr_scalar_coeff_all_term,
@@ -3635,7 +3643,7 @@ macro_rules
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_favard_active_den_all_term,
           slope_coeff_eq := rr_scalar_coeff_all_term,
           alpha_coeff_eq := rr_scalar_coeff_all_term,
           beta_coeff_eq := rr_scalar_coeff_all_term,
@@ -3733,7 +3741,7 @@ macro_rules
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_favard_active_den_all_term,
           slope_coeff_eq := rr_scalar_coeff_all_term,
           alpha_coeff_eq := rr_scalar_coeff_all_term,
           beta_coeff_eq := rr_scalar_coeff_all_term,
@@ -3792,7 +3800,7 @@ macro_rules
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_favard_active_den_all_term,
           slope_coeff_eq := rr_scalar_coeff_all_term,
           alpha_coeff_eq := rr_scalar_coeff_all_term,
           beta_coeff_eq := rr_scalar_coeff_all_term,
@@ -3852,7 +3860,7 @@ macro_rules
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_favard_active_den_all_term,
           slope_coeff_eq := rr_scalar_coeff_all_term,
           alpha_coeff_eq := rr_scalar_coeff_all_term,
           beta_coeff_eq := rr_scalar_coeff_all_term,
@@ -3907,7 +3915,7 @@ macro_rules
           base_zero := $hP0,
           base_one := $hP1,
           den := $d,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_favard_active_den_all_term,
           slope_coeff_eq := rr_scalar_coeff_all_term,
           alpha_coeff_eq := rr_scalar_coeff_all_term,
           beta_coeff_eq := rr_scalar_coeff_all_term,

@@ -11,6 +11,12 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
+example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 := by
+  rr_favard_active_den_all
+
+example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 :=
+  rr_favard_active_den_all_term
+
 example {P : Nat → ℝ[X]} {α β : Nat → ℝ}
     (hrec : SatisfiesFavardRecurrence P α β)
     (hbeta : ∀ n : Nat, 0 < β (n + 1)) :
