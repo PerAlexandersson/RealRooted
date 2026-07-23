@@ -1556,15 +1556,15 @@ example (n : Nat) :
   rr_interlaces_linear_pow using
     const := 2,
     slope := 3,
-    slope_pos := by norm_num,
+    slope_pos := rr_side_pos_term,
     index := n
 
 /-- Linear-power nonnegative-coefficient exit exposed through the OEIS facade. -/
 example (n : Nat) :
     HasNonnegCoeffs ((C (2 : ℝ) + C 3 * X) ^ n) := by
   rr_hasNonnegCoeffs_linear_pow using
-    a_nonneg := by norm_num,
-    b_nonneg := by norm_num,
+    a_nonneg := rr_side_nonneg_term,
+    b_nonneg := rr_side_nonneg_term,
     index := n
 
 /-- Operator-preserver row-family exit exposed through the OEIS facade. -/
