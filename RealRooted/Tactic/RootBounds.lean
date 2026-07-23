@@ -29,9 +29,8 @@ lemma root_nonpos_of_realrooted_of_nonneg_coeffs {p : ℝ[X]}
 
 lemma roots_nonpos_of_realrooted_of_nonneg_coeffs {p : ℝ[X]}
     (hrr : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p) :
-    ∀ r, p.IsRoot r → r ≤ 0 := by
-  intro r hr
-  exact root_nonpos_of_realrooted_of_nonneg_coeffs hrr hpnn hr
+    ∀ r, p.IsRoot r → r ≤ 0 := fun _ hr =>
+  root_nonpos_of_realrooted_of_nonneg_coeffs hrr hpnn hr
 
 lemma roots_nonpos_of_interlaces_of_nonneg_coeffs {f g : ℝ[X]}
     (hgf : Interlaces g f) (hfnn : HasNonnegCoeffs f) :
@@ -323,9 +322,9 @@ macro_rules
         nonneg := $hnn:term) =>
       `(tactic|
         exact fun n r hroot => by
-          have hroot_nonpos : r ≤ 0 := by
-            exact RealRooted.root_nonpos_of_realrooted_of_nonneg_coeffs
-              ($hrr n) ($hnn n) hroot
+          have hroot_nonpos : r ≤ 0 :=
+            (RealRooted.roots_nonpos_sequence_of_realrooted_of_nonneg_coeffs
+              $hrr $hnn) n r hroot
           rr_sign)
   | `(tactic|
       rr_sign_at_roots_with_factor using $hrr:term, $hnn:term, $hq:term) =>
@@ -360,9 +359,9 @@ macro_rules
         factor_nonneg := $hq:term) =>
       `(tactic|
         exact fun n r hroot => by
-          have hroot_nonpos : r ≤ 0 := by
-            exact RealRooted.root_nonpos_of_realrooted_of_nonneg_coeffs
-              ($hrr n) ($hnn n) hroot
+          have hroot_nonpos : r ≤ 0 :=
+            (RealRooted.roots_nonpos_sequence_of_realrooted_of_nonneg_coeffs
+              $hrr $hnn) n r hroot
           have hfactor_nonneg := $hq n r hroot
           rr_sign)
   | `(tactic|
