@@ -238,9 +238,7 @@ macro_rules
       rr_prec_C_mul_left_sequence using
         prec := $hprec:term) =>
       `(tactic|
-        exact fun i => by
-          rr_prec_C_mul_left using
-            prec := $hprec i)
+        exact RealRooted.prec_C_mul_left_sequence $hprec (fun i => by rr_side_ne))
   | `(tactic|
       rr_prec_C_mul_right using
         prec := $hprec:term,
@@ -259,9 +257,7 @@ macro_rules
       rr_prec_C_mul_right_sequence using
         prec := $hprec:term) =>
       `(tactic|
-        exact fun i => by
-          rr_prec_C_mul_right using
-            prec := $hprec i)
+        exact RealRooted.prec_C_mul_right_sequence $hprec (fun i => by rr_side_ne))
   | `(tactic|
       rr_prec_C_mul_both using
         prec := $hprec:term,
@@ -287,9 +283,8 @@ macro_rules
       rr_prec_C_mul_both_sequence using
         prec := $hprec:term) =>
       `(tactic|
-        exact fun i => by
-          rr_prec_C_mul_both using
-            prec := $hprec i)
+        exact RealRooted.prec_C_mul_both_sequence $hprec
+          (fun i => by rr_side_ne) (fun i => by rr_side_ne))
   | `(tactic|
       rr_C_mul_realrooted using
         realrooted := $hp:term,
@@ -302,18 +297,14 @@ macro_rules
         realrooted := $hp:term,
         scalar_ne := $ha:term) =>
       `(tactic|
-        exact fun i => by
-          rr_C_mul_realrooted using
-            realrooted := $hp i,
-            scalar_ne := $ha i)
+        rr_first_realrooted_sequence_or_projection
+          (RealRooted.C_mul_realrooted_sequence $hp $ha))
   | `(tactic|
       rr_C_mul_realrooted_sequence using
         realrooted := $hp:term) =>
       `(tactic|
-        exact fun i => by
-          rr_C_mul_realrooted using
-            realrooted := $hp i,
-            scalar_ne := by rr_side_ne)
+        rr_first_realrooted_sequence_or_projection
+          (RealRooted.C_mul_realrooted_sequence $hp (fun i => by rr_side_ne)))
   | `(tactic|
       rr_X_mul_realrooted using
         realrooted := $hp:term) =>
@@ -324,9 +315,8 @@ macro_rules
       rr_X_mul_realrooted_sequence using
         realrooted := $hp:term) =>
       `(tactic|
-        exact fun i => by
-          rr_X_mul_realrooted using
-            realrooted := $hp i)
+        rr_first_realrooted_sequence_or_projection
+          (RealRooted.X_mul_realrooted_sequence $hp))
 
 end Tactic
 end RealRooted
