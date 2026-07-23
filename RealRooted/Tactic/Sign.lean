@@ -14,6 +14,23 @@ open Polynomial
 
 namespace RealRooted
 
+namespace Tactic
+
+syntax (name := rr_sign_side) "rr_sign_side" : tactic
+
+syntax (name := rr_sign_side_term) "rr_sign_side_term" : term
+
+macro_rules
+  | `(tactic| rr_sign_side) =>
+      `(tactic|
+        first
+          | rr_side_nonneg
+          | rr_side)
+  | `(rr_sign_side_term) =>
+      `(by rr_sign_side)
+
+end Tactic
+
 lemma eval_X_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
     (X : ℝ[X]).eval r ≤ 0 := by
   simpa using hr
@@ -152,7 +169,7 @@ lemma eval_neg_C_mul_one_add_X_nonpos_of_nonneg_of_ge_neg_one {c r : ℝ}
     (-(C c) * (1 + X) : ℝ[X]).eval r ≤ 0 := by
   simpa using
     eval_neg_C_mul_C_add_C_mul_X_nonpos_of_nonneg_of_nonneg_of_le_of_ge_neg_one
-      (c := c) (a := 1) (b := 1) hc (by norm_num) (by norm_num) hlo
+      (c := c) (a := 1) (b := 1) hc rr_sign_side_term rr_sign_side_term hlo
 
 lemma eval_neg_C_mul_one_add_two_mul_X_nonpos_of_nonneg_of_ge_neg_half {c r : ℝ}
     (hc : 0 ≤ c) (hlo : -(1 / 2 : ℝ) ≤ r) :
@@ -544,36 +561,23 @@ lemma eval_neg_two_fifths_add_four_fifths_X_sub_two_fifths_X_sq_nonpos {r : ℝ}
       ℝ[X]).eval r ≤ 0 := by
   exact eval_quadratic_nonpos_of_nonpos_of_nonpos_of_discrim_nonpos
     (a := -2 / 5) (b := 4 / 5) (c := -2 / 5) (r := r)
-    (by norm_num) (by norm_num) (by norm_num)
+    rr_sign_side_term rr_sign_side_term rr_sign_side_term
 
 lemma eval_neg_two_thirds_add_four_thirds_X_sub_two_thirds_X_sq_nonpos {r : ℝ} :
     (C (-2 / 3 : ℝ) + C (4 / 3 : ℝ) * X + C (-2 / 3 : ℝ) * X ^ 2 :
       ℝ[X]).eval r ≤ 0 := by
   exact eval_quadratic_nonpos_of_nonpos_of_nonpos_of_discrim_nonpos
     (a := -2 / 3) (b := 4 / 3) (c := -2 / 3) (r := r)
-    (by norm_num) (by norm_num) (by norm_num)
+    rr_sign_side_term rr_sign_side_term rr_sign_side_term
 
 lemma eval_neg_eight_fifths_add_eight_fifths_X_sub_two_fifths_X_sq_nonpos {r : ℝ} :
     (C (-8 / 5 : ℝ) + C (8 / 5 : ℝ) * X + C (-2 / 5 : ℝ) * X ^ 2 :
       ℝ[X]).eval r ≤ 0 := by
   exact eval_quadratic_nonpos_of_nonpos_of_nonpos_of_discrim_nonpos
     (a := -8 / 5) (b := 8 / 5) (c := -2 / 5) (r := r)
-    (by norm_num) (by norm_num) (by norm_num)
+    rr_sign_side_term rr_sign_side_term rr_sign_side_term
 
 namespace Tactic
-
-syntax (name := rr_sign_side) "rr_sign_side" : tactic
-
-syntax (name := rr_sign_side_term) "rr_sign_side_term" : term
-
-macro_rules
-  | `(tactic| rr_sign_side) =>
-      `(tactic|
-        first
-          | rr_side_nonneg
-          | rr_side)
-  | `(rr_sign_side_term) =>
-      `(by rr_sign_side)
 
 syntax (name := rr_sign) "rr_sign" : tactic
 
