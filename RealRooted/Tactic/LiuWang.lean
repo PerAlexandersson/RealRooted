@@ -1115,9 +1115,9 @@ theorem prec_lw_C_mul_X_sub_C_lag_sequence {P : Nat → ℝ[X]}
         ih.toInterlaces (hdeg_succ n)
       have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
       have hB_nonpos :
-          ∀ r, (P (n + 1)).IsRoot r → (C (c n) * X - C (a n)).eval r ≤ 0 := by
-        intro r hr
-        exact eval_C_mul_X_sub_C_nonpos_of_nonneg_of_nonneg_of_nonpos
+          ∀ r, (P (n + 1)).IsRoot r → (C (c n) * X - C (a n)).eval r ≤ 0 :=
+        fun r hr =>
+          eval_C_mul_X_sub_C_nonpos_of_nonneg_of_nonneg_of_nonpos
           (hc n) (ha n)
           (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
       have hstep :
@@ -1169,9 +1169,9 @@ theorem prec_lw_positive_affine_lag_sequence {P : Nat → ℝ[X]}
         ih.toInterlaces (hdeg_succ n)
       have hB_nonpos :
           ∀ r, (P (n + 1)).IsRoot r →
-            (C (c n) * (C (a n) + X)).eval r ≤ 0 := by
-        intro r hr
-        exact eval_C_mul_C_add_X_nonpos_of_nonneg_of_le_neg
+            (C (c n) * (C (a n) + X)).eval r ≤ 0 :=
+        fun r hr =>
+          eval_C_mul_C_add_X_nonpos_of_nonneg_of_le_neg
           (hc n) (hroot_upper n r hr)
       have hstep :
           Prec (P (n + 1))
@@ -1223,15 +1223,15 @@ theorem prec_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs
         ih.toInterlaces (hdeg_succ n)
       have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
       have hroot_upper :
-          ∀ r, (P (n + 1)).IsRoot r → r ≤ -(a n) := by
-        intro r hr
-        exact root_le_neg_of_realrooted_of_shift_nonneg_coeffs
+          ∀ r, (P (n + 1)).IsRoot r → r ≤ -(a n) :=
+        fun r hr =>
+          root_le_neg_of_realrooted_of_shift_nonneg_coeffs
           hsource (hshift_nonneg n) hr
       have hB_nonpos :
           ∀ r, (P (n + 1)).IsRoot r →
-            (C (c n) * (C (a n) + X)).eval r ≤ 0 := by
-        intro r hr
-        exact eval_C_mul_C_add_X_nonpos_of_nonneg_of_le_neg
+            (C (c n) * (C (a n) + X)).eval r ≤ 0 :=
+        fun r hr =>
+          eval_C_mul_C_add_X_nonpos_of_nonneg_of_le_neg
           (hc n) (hroot_upper r hr)
       have hstep :
           Prec (P (n + 1))
@@ -1344,9 +1344,9 @@ theorem prec_lw_inner_window_lag_sequence_of_nonneg_coeffs {P : Nat → ℝ[X]}
       have hInter : Interlaces (P n) (P (n + 1)) :=
         ih.toInterlaces (hdeg_succ n)
       have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
-      have hB_step : ∀ r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0 := by
-        intro r hr
-        exact hB_nonpos n r hr (hroot_lower n r hr)
+      have hB_step : ∀ r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0 :=
+        fun r hr =>
+          hB_nonpos n r hr (hroot_lower n r hr)
           (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
       have hstep :
           Prec (P (n + 1)) (A n * P (n + 1) + B n * P n) :=
@@ -2016,9 +2016,9 @@ theorem prec_lw_positive_X_mul_lag_sequence {P : Nat → ℝ[X]}
         ih.toInterlaces (hdeg_succ n)
       have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
       have hB_nonpos :
-          ∀ r, (P (n + 1)).IsRoot r → (X * Q n).eval r ≤ 0 := by
-        intro r hr
-        exact eval_X_mul_nonpos_of_nonpos_of_nonneg
+          ∀ r, (P (n + 1)).IsRoot r → (X * Q n).eval r ≤ 0 :=
+        fun r hr =>
+          eval_X_mul_nonpos_of_nonpos_of_nonneg
           (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
           (hQ_nonneg n r hr)
       have hstep :
@@ -2065,9 +2065,9 @@ theorem prec_lw_positive_C_mul_X_mul_lag_sequence {P : Nat → ℝ[X]}
         ih.toInterlaces (hdeg_succ n)
       have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
       have hB_nonpos :
-          ∀ r, (P (n + 1)).IsRoot r → (C (c n) * X * Q n).eval r ≤ 0 := by
-        intro r hr
-        exact eval_C_mul_X_mul_nonpos_of_nonneg_of_nonpos_of_nonneg
+          ∀ r, (P (n + 1)).IsRoot r → (C (c n) * X * Q n).eval r ≤ 0 :=
+        fun r hr =>
+          eval_C_mul_X_mul_nonpos_of_nonneg_of_nonpos_of_nonneg
           (hc n)
           (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
           (hQ_nonneg n r hr)
@@ -2182,9 +2182,9 @@ theorem prec_lw_X_mul_one_sub_X_lag_sequence {P : Nat → ℝ[X]}
         ih.toInterlaces (hdeg_succ n)
       have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
       have hB_nonpos :
-          ∀ r, (P (n + 1)).IsRoot r → (X * ((1 : ℝ[X]) - X)).eval r ≤ 0 := by
-        intro r hr
-        exact eval_X_mul_one_sub_X_nonpos_of_nonpos
+          ∀ r, (P (n + 1)).IsRoot r → (X * ((1 : ℝ[X]) - X)).eval r ≤ 0 :=
+        fun r hr =>
+          eval_X_mul_one_sub_X_nonpos_of_nonpos
           (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
       have hstep :
           Prec (P (n + 1)) (A n * P (n + 1) + (X * (1 - X)) * P n) :=
@@ -2231,9 +2231,9 @@ theorem prec_lw_X_mul_C_sub_C_mul_X_lag_sequence {P : Nat → ℝ[X]}
       have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
       have hB_nonpos :
           ∀ r, (P (n + 1)).IsRoot r →
-            (X * (C (a n) - C (b n) * X)).eval r ≤ 0 := by
-        intro r hr
-        exact eval_X_mul_C_sub_C_mul_X_nonpos_of_nonneg_of_nonneg_of_nonpos
+            (X * (C (a n) - C (b n) * X)).eval r ≤ 0 :=
+        fun r hr =>
+          eval_X_mul_C_sub_C_mul_X_nonpos_of_nonneg_of_nonneg_of_nonpos
           (ha n) (hb n)
           (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
       have hstep :
@@ -2287,9 +2287,9 @@ theorem prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_sequence {P : Nat → ℝ[X]}
       have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
       have hB_nonpos :
           ∀ r, (P (n + 1)).IsRoot r →
-            (C (c n) * X * (C (a n) - C (b n) * X)).eval r ≤ 0 := by
-        intro r hr
-        exact eval_C_mul_X_mul_C_sub_C_mul_X_nonpos
+            (C (c n) * X * (C (a n) - C (b n) * X)).eval r ≤ 0 :=
+        fun r hr =>
+          eval_C_mul_X_mul_C_sub_C_mul_X_nonpos
           (hc n) (ha n) (hb n)
           (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
       have hstep :
