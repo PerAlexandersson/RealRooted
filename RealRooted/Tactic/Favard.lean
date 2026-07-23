@@ -511,8 +511,8 @@ theorem isRealRooted_of_favard_affine_param_coeff_den_split
         C (d n) * ((C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1)) -
           C (d n * β (n + 1)) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  fun n =>
-    (favardInterlacing_affine_param_coeff_den_split hs hβ hP0 hP1 hden hraw n).1
+  isRealRooted_of_prec_chain_from_step <|
+    favardInterlacing_affine_param_coeff_den_split hs hβ hP0 hP1 hden hraw
 
 /-- Nonzero consequence of the distributed scalar-denominator affine Favard
 wrapper. -/
@@ -528,8 +528,8 @@ theorem nonzero_of_favard_affine_param_coeff_den_split
         C (d n) * ((C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1)) -
           C (d n * β (n + 1)) * P n) :
     ∀ n : Nat, P n ≠ 0 :=
-  fun n =>
-    (isRealRooted_of_favard_affine_param_coeff_den_split hs hβ hP0 hP1 hden hraw n).1
+  ne_zero_of_isRealRooted_sequence <|
+    isRealRooted_of_favard_affine_param_coeff_den_split hs hβ hP0 hP1 hden hraw
 
 /-- Distributed scalar-denominator affine Favard wrapper where the displayed
 lag coefficient is written in the reversed scalar order `β_{n+1} d_n`. -/
@@ -564,8 +564,8 @@ theorem isRealRooted_of_favard_affine_param_coeff_den_split_rev
         C (d n) * ((C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1)) -
           C (β (n + 1) * d n) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  fun n =>
-    (favardInterlacing_affine_param_coeff_den_split_rev hs hβ hP0 hP1 hden hraw n).1
+  isRealRooted_of_prec_chain_from_step <|
+    favardInterlacing_affine_param_coeff_den_split_rev hs hβ hP0 hP1 hden hraw
 
 /-- Nonzero consequence of reversed-coefficient distributed
 scalar-denominator affine Favard. -/
@@ -581,9 +581,9 @@ theorem nonzero_of_favard_affine_param_coeff_den_split_rev
         C (d n) * ((C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1)) -
           C (β (n + 1) * d n) * P n) :
     ∀ n : Nat, P n ≠ 0 :=
-  fun n =>
-    (isRealRooted_of_favard_affine_param_coeff_den_split_rev
-      hs hβ hP0 hP1 hden hraw n).1
+  ne_zero_of_isRealRooted_sequence <|
+    isRealRooted_of_favard_affine_param_coeff_den_split_rev
+      hs hβ hP0 hP1 hden hraw
 
 /-- Positive-slope parameterized affine Favard wrapper with a scalar left
 denominator and raw affine numerator coefficients.
@@ -639,9 +639,9 @@ theorem isRealRooted_of_favard_affine_param_coeff_den_raw
       C (d n) * P (n + 2) =
         (C (araw n) * X + C (braw n)) * P (n + 1) + C (craw n) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  fun n =>
-    (favardInterlacing_affine_param_coeff_den_raw
-      hs hβ hP0 hP1 hden hs_coeff hα_coeff hβ_coeff hraw n).1
+  isRealRooted_of_prec_chain_from_step <|
+    favardInterlacing_affine_param_coeff_den_raw
+      hs hβ hP0 hP1 hden hs_coeff hα_coeff hβ_coeff hraw
 
 /-- Nonzero consequence of raw-affine scalar-denominator Favard. -/
 theorem nonzero_of_favard_affine_param_coeff_den_raw
@@ -658,9 +658,9 @@ theorem nonzero_of_favard_affine_param_coeff_den_raw
       C (d n) * P (n + 2) =
         (C (araw n) * X + C (braw n)) * P (n + 1) + C (craw n) * P n) :
     ∀ n : Nat, P n ≠ 0 :=
-  fun n =>
-    (isRealRooted_of_favard_affine_param_coeff_den_raw
-      hs hβ hP0 hP1 hden hs_coeff hα_coeff hβ_coeff hraw n).1
+  ne_zero_of_isRealRooted_sequence <|
+    isRealRooted_of_favard_affine_param_coeff_den_raw
+      hs hβ hP0 hP1 hden hs_coeff hα_coeff hβ_coeff hraw
 
 /-- Raw-affine scalar-denominator Favard where the displayed slope and lag
 coefficients are written as products of two constants. -/
@@ -704,9 +704,9 @@ theorem isRealRooted_of_favard_affine_param_coeff_den_raw_prod
         (C (aleft n) * C (aright n) * X + C (braw n)) * P (n + 1) +
           C (cleft n) * C (cright n) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  fun n =>
-    (favardInterlacing_affine_param_coeff_den_raw_prod
-      hs hβ hP0 hP1 hden hs_coeff hα_coeff hβ_coeff hraw n).1
+  isRealRooted_of_prec_chain_from_step <|
+    favardInterlacing_affine_param_coeff_den_raw_prod
+      hs hβ hP0 hP1 hden hs_coeff hα_coeff hβ_coeff hraw
 
 /-- Nonzero consequence of product-form raw-affine scalar-denominator Favard. -/
 theorem nonzero_of_favard_affine_param_coeff_den_raw_prod
@@ -724,9 +724,9 @@ theorem nonzero_of_favard_affine_param_coeff_den_raw_prod
         (C (aleft n) * C (aright n) * X + C (braw n)) * P (n + 1) +
           C (cleft n) * C (cright n) * P n) :
     ∀ n : Nat, P n ≠ 0 :=
-  fun n =>
-    (isRealRooted_of_favard_affine_param_coeff_den_raw_prod
-      hs hβ hP0 hP1 hden hs_coeff hα_coeff hβ_coeff hraw n).1
+  ne_zero_of_isRealRooted_sequence <|
+    isRealRooted_of_favard_affine_param_coeff_den_raw_prod
+      hs hβ hP0 hP1 hden hs_coeff hα_coeff hβ_coeff hraw
 
 /-- Positive-slope parameterized affine Favard wrapper after row-sign
 normalization.  This packages
@@ -836,8 +836,8 @@ theorem isRealRooted_of_favard_affine_param_coeff_rowSign_den
           (-(C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
             C (β (n + 1)) * P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  fun n =>
-    (favardInterlacing_affine_param_coeff_rowSign_den hs hβ hP0 hP1 hden hraw n).1
+  isRealRooted_of_prec_chain_from_step <|
+    favardInterlacing_affine_param_coeff_rowSign_den hs hβ hP0 hP1 hden hraw
 
 /-- Nonzero consequence of scalar-denominator row-sign Favard. -/
 theorem nonzero_of_favard_affine_param_coeff_rowSign_den
@@ -853,8 +853,8 @@ theorem nonzero_of_favard_affine_param_coeff_rowSign_den
           (-(C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
             C (β (n + 1)) * P n)) :
     ∀ n : Nat, P n ≠ 0 :=
-  fun n =>
-    (isRealRooted_of_favard_affine_param_coeff_rowSign_den hs hβ hP0 hP1 hden hraw n).1
+  ne_zero_of_isRealRooted_sequence <|
+    isRealRooted_of_favard_affine_param_coeff_rowSign_den hs hβ hP0 hP1 hden hraw
 
 /-- Row-sign parameterized affine Favard wrapper with a scalar denominator
 distributed across the two displayed summands. -/
@@ -906,8 +906,8 @@ theorem isRealRooted_of_favard_affine_param_coeff_rowSign_den_split
         C (d n) * (-(C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1)) -
           C (d n * β (n + 1)) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  fun n =>
-    (favardInterlacing_affine_param_coeff_rowSign_den_split hs hβ hP0 hP1 hden hraw n).1
+  isRealRooted_of_prec_chain_from_step <|
+    favardInterlacing_affine_param_coeff_rowSign_den_split hs hβ hP0 hP1 hden hraw
 
 /-- Nonzero consequence of distributed scalar-denominator row-sign Favard. -/
 theorem nonzero_of_favard_affine_param_coeff_rowSign_den_split
@@ -922,9 +922,9 @@ theorem nonzero_of_favard_affine_param_coeff_rowSign_den_split
         C (d n) * (-(C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1)) -
           C (d n * β (n + 1)) * P n) :
     ∀ n : Nat, P n ≠ 0 :=
-  fun n =>
-    (isRealRooted_of_favard_affine_param_coeff_rowSign_den_split
-      hs hβ hP0 hP1 hden hraw n).1
+  ne_zero_of_isRealRooted_sequence <|
+    isRealRooted_of_favard_affine_param_coeff_rowSign_den_split
+      hs hβ hP0 hP1 hden hraw
 
 /-- Distributed scalar-denominator row-sign Favard wrapper where the displayed
 lag coefficient is written in the reversed scalar order `β_{n+1} d_n`. -/
@@ -959,9 +959,9 @@ theorem isRealRooted_of_favard_affine_param_coeff_rowSign_den_split_rev
         C (d n) * (-(C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1)) -
           C (β (n + 1) * d n) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  fun n =>
-    (favardInterlacing_affine_param_coeff_rowSign_den_split_rev
-      hs hβ hP0 hP1 hden hraw n).1
+  isRealRooted_of_prec_chain_from_step <|
+    favardInterlacing_affine_param_coeff_rowSign_den_split_rev
+      hs hβ hP0 hP1 hden hraw
 
 /-- Nonzero consequence of reversed-coefficient distributed scalar-denominator
 row-sign Favard. -/
@@ -977,9 +977,9 @@ theorem nonzero_of_favard_affine_param_coeff_rowSign_den_split_rev
         C (d n) * (-(C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1)) -
           C (β (n + 1) * d n) * P n) :
     ∀ n : Nat, P n ≠ 0 :=
-  fun n =>
-    (isRealRooted_of_favard_affine_param_coeff_rowSign_den_split_rev
-      hs hβ hP0 hP1 hden hraw n).1
+  ne_zero_of_isRealRooted_sequence <|
+    isRealRooted_of_favard_affine_param_coeff_rowSign_den_split_rev
+      hs hβ hP0 hP1 hden hraw
 
 /-- Row-sign parameterized affine Favard wrapper with a scalar left
 denominator and raw affine numerator coefficients. -/
@@ -1032,9 +1032,9 @@ theorem isRealRooted_of_favard_affine_param_coeff_rowSign_den_raw
       C (d n) * P (n + 2) =
         (C (araw n) * X + C (braw n)) * P (n + 1) + C (craw n) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  fun n =>
-    (favardInterlacing_affine_param_coeff_rowSign_den_raw
-      hs hβ hP0 hP1 hden hs_coeff hα_coeff hβ_coeff hraw n).1
+  isRealRooted_of_prec_chain_from_step <|
+    favardInterlacing_affine_param_coeff_rowSign_den_raw
+      hs hβ hP0 hP1 hden hs_coeff hα_coeff hβ_coeff hraw
 
 /-- Nonzero consequence of raw-affine scalar-denominator row-sign Favard. -/
 theorem nonzero_of_favard_affine_param_coeff_rowSign_den_raw
@@ -1051,9 +1051,9 @@ theorem nonzero_of_favard_affine_param_coeff_rowSign_den_raw
       C (d n) * P (n + 2) =
         (C (araw n) * X + C (braw n)) * P (n + 1) + C (craw n) * P n) :
     ∀ n : Nat, P n ≠ 0 :=
-  fun n =>
-    (isRealRooted_of_favard_affine_param_coeff_rowSign_den_raw
-      hs hβ hP0 hP1 hden hs_coeff hα_coeff hβ_coeff hraw n).1
+  ne_zero_of_isRealRooted_sequence <|
+    isRealRooted_of_favard_affine_param_coeff_rowSign_den_raw
+      hs hβ hP0 hP1 hden hs_coeff hα_coeff hβ_coeff hraw
 
 /-- Row-sign raw-affine scalar-denominator Favard where the displayed slope and
 lag coefficients are written as products of two constants. -/
@@ -1097,9 +1097,9 @@ theorem isRealRooted_of_favard_affine_param_coeff_rowSign_den_raw_prod
         (C (aleft n) * C (aright n) * X + C (braw n)) * P (n + 1) +
           C (cleft n) * C (cright n) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  fun n =>
-    (favardInterlacing_affine_param_coeff_rowSign_den_raw_prod
-      hs hβ hP0 hP1 hden hs_coeff hα_coeff hβ_coeff hraw n).1
+  isRealRooted_of_prec_chain_from_step <|
+    favardInterlacing_affine_param_coeff_rowSign_den_raw_prod
+      hs hβ hP0 hP1 hden hs_coeff hα_coeff hβ_coeff hraw
 
 /-- Nonzero consequence of product-form raw-affine scalar-denominator row-sign
 Favard. -/
@@ -1118,9 +1118,9 @@ theorem nonzero_of_favard_affine_param_coeff_rowSign_den_raw_prod
         (C (aleft n) * C (aright n) * X + C (braw n)) * P (n + 1) +
           C (cleft n) * C (cright n) * P n) :
     ∀ n : Nat, P n ≠ 0 :=
-  fun n =>
-    (isRealRooted_of_favard_affine_param_coeff_rowSign_den_raw_prod
-      hs hβ hP0 hP1 hden hs_coeff hα_coeff hβ_coeff hraw n).1
+  ne_zero_of_isRealRooted_sequence <|
+    isRealRooted_of_favard_affine_param_coeff_rowSign_den_raw_prod
+      hs hβ hP0 hP1 hden hs_coeff hα_coeff hβ_coeff hraw
 
 namespace Tactic
 
