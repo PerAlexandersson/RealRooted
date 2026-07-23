@@ -35,7 +35,7 @@ lemma isRealRooted_C {a : ℝ} (ha : a ≠ 0) :
 /-- Unit-slope real linear factors are real-rooted. -/
 theorem isRealRooted_X_add_C (t : ℝ) :
     (X + C t : ℝ[X]) ≠ 0 ∧ (X + C t : ℝ[X]).Splits := by
-  simpa using isRealRooted_C_mul_X_add_C (s := 1) (t := t) (by norm_num)
+  simpa using isRealRooted_C_mul_X_add_C (s := 1) (t := t) rr_side_ne_term
 
 /-- Constant-first spelling of `isRealRooted_X_add_C`. -/
 theorem isRealRooted_C_add_X (t : ℝ) :
@@ -73,13 +73,13 @@ theorem isRealRooted_X_add_C_mul {p : ℝ[X]} {t : ℝ}
     (hp : p ≠ 0 ∧ p.Splits) :
     ((X + C t) * p ≠ 0 ∧ ((X + C t) * p).Splits) := by
   simpa using
-    (isRealRooted_C_mul_X_add_C_mul (p := p) (s := 1) (t := t) hp (by norm_num))
+    (isRealRooted_C_mul_X_add_C_mul (p := p) (s := 1) (t := t) hp rr_side_ne_term)
 
 theorem isRealRooted_mul_X_add_C {p : ℝ[X]} {t : ℝ}
     (hp : p ≠ 0 ∧ p.Splits) :
     (p * (X + C t) ≠ 0 ∧ (p * (X + C t)).Splits) := by
   simpa using
-    (isRealRooted_mul_C_mul_X_add_C (p := p) (s := 1) (t := t) hp (by norm_num))
+    (isRealRooted_mul_C_mul_X_add_C (p := p) (s := 1) (t := t) hp rr_side_ne_term)
 
 /-- Constant-first spelling of `isRealRooted_X_add_C_mul`. -/
 theorem isRealRooted_C_add_X_mul {p : ℝ[X]} {t : ℝ}
