@@ -1431,9 +1431,8 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidu
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert
     hbackend hbase hdeg
-    (fun n =>
-      bidiagonalCubicResidualCertificate_of_cubicResidual
-        (halpha n) (hbeta n) (hpencil n) (hA n) (hB n) (hS n))
+    (bidiagonalCubicResidualCertificate_sequence_of_cubicResidual
+      halpha hbeta hpencil hA hB hS)
     hrec
 
 /-- Tail-start version of
@@ -1470,10 +1469,8 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidu
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_from
     hbackend N hbase hdeg
-    (fun n hn =>
-      bidiagonalCubicResidualCertificate_of_cubicResidual
-        (halpha n hn) (hbeta n hn) (hpencil n hn)
-        (hA n hn) (hB n hn) (hS n hn))
+    (bidiagonalCubicResidualCertificate_sequence_of_cubicResidual_from
+      N halpha hbeta hpencil hA hB hS)
     hrec
 
 /-- Second-derivative sequence wrapper whose residual pencil is derived from
@@ -1503,9 +1500,8 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_endpoint_cu
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert
     hbackend hbase hdeg
-    (fun n =>
-      bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
-        (halpha n) (hbeta n) (hA n) (hB n) (hS n))
+    (bidiagonalCubicResidualCertificate_sequence_of_endpoint_cubicResidual
+      halpha hbeta hA hB hS)
     hrec
 
 /-- Tail-start version of
@@ -1537,9 +1533,8 @@ theorem
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_from
     hbackend N hbase hdeg
-    (fun n hn =>
-      bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
-        (halpha n hn) (hbeta n hn) (hA n hn) (hB n hn) (hS n hn))
+    (bidiagonalCubicResidualCertificate_sequence_of_endpoint_cubicResidual_from
+      N halpha hbeta hA hB hS)
     hrec
 
 /-- Second-derivative sequence wrapper using the quadratic Jensen
