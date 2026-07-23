@@ -10,6 +10,12 @@ namespace RealRooted
 Regression examples for the Liu--Wang-named derivative-lag tactic wrappers.
 -/
 
+example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 := by
+  rr_lw_derivative_lag_active_den_all
+
+example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 :=
+  rr_lw_derivative_lag_active_den_all_term
+
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))

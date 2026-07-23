@@ -325,7 +325,15 @@ syntax (name := rr_lw_den_coeff_interlaces_window_scalar_named)
     "no_common_roots" ":=" term :
   tactic
 
+macro "rr_lw_derivative_lag_active_den_all" : tactic =>
+  `(tactic| rr_scalar_active_den_all)
+
+syntax (name := rr_lw_derivative_lag_active_den_all_term)
+  "rr_lw_derivative_lag_active_den_all_term" : term
+
 macro_rules
+  | `(rr_lw_derivative_lag_active_den_all_term) =>
+      `(by rr_lw_derivative_lag_active_den_all)
   | `(tactic|
       rr_lw_derivative_lag_sequence_sign_auto using
         base := $hbase:term,
@@ -486,7 +494,7 @@ macro_rules
           den := $d,
           raw_deriv_coeff := $b,
           raw_lag_coeff := $e,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_lw_derivative_lag_active_den_all_term,
           deriv_coeff_eq := rr_scalar_coeff_all_term,
           lag_coeff_eq := rr_scalar_coeff_all_term,
           raw_recurrence := $hraw,
@@ -523,7 +531,7 @@ macro_rules
           den := $d,
           raw_deriv_coeff := $b,
           raw_lag_coeff := $e,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_lw_derivative_lag_active_den_all_term,
           deriv_coeff_eq := $hcoeffV,
           lag_coeff_eq := $hcoeffW,
           raw_recurrence := $hraw,
@@ -596,7 +604,7 @@ macro_rules
           den := $d,
           raw_deriv_coeff := $b,
           raw_lag_coeff := $e,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_lw_derivative_lag_active_den_all_term,
           deriv_coeff_eq := rr_scalar_coeff_all_term,
           lag_coeff_eq := rr_scalar_coeff_all_term,
           raw_recurrence := $hraw,
@@ -633,7 +641,7 @@ macro_rules
           den := $d,
           raw_deriv_coeff := $b,
           raw_lag_coeff := $e,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_lw_derivative_lag_active_den_all_term,
           deriv_coeff_eq := $hcoeffV,
           lag_coeff_eq := $hcoeffW,
           raw_recurrence := $hraw,
@@ -706,7 +714,7 @@ macro_rules
           den := $d,
           raw_deriv_coeff := $b,
           raw_lag_coeff := $e,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_lw_derivative_lag_active_den_all_term,
           deriv_coeff_eq := rr_scalar_coeff_all_term,
           lag_coeff_eq := rr_scalar_coeff_all_term,
           raw_recurrence := $hraw,
@@ -743,7 +751,7 @@ macro_rules
           den := $d,
           raw_deriv_coeff := $b,
           raw_lag_coeff := $e,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_lw_derivative_lag_active_den_all_term,
           deriv_coeff_eq := $hcoeffV,
           lag_coeff_eq := $hcoeffW,
           raw_recurrence := $hraw,
@@ -821,7 +829,7 @@ macro_rules
           raw_lag_coeff := $e,
           root_lower := $hroot_lower,
           root_upper := $hroot_upper,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_lw_derivative_lag_active_den_all_term,
           deriv_coeff_eq := rr_scalar_coeff_all_term,
           lag_coeff_eq := rr_scalar_coeff_all_term,
           raw_recurrence := $hraw,
@@ -860,7 +868,7 @@ macro_rules
           raw_lag_coeff := $e,
           root_lower := $hroot_lower,
           root_upper := $hroot_upper,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_lw_derivative_lag_active_den_all_term,
           deriv_coeff_eq := $hcoeffV,
           lag_coeff_eq := $hcoeffW,
           raw_recurrence := $hraw,
@@ -937,7 +945,7 @@ macro_rules
           raw_lag_coeff := $e,
           root_lower := $hroot_lower,
           root_upper := $hroot_upper,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_lw_derivative_lag_active_den_all_term,
           deriv_coeff_eq := rr_scalar_coeff_all_term,
           lag_coeff_eq := rr_scalar_coeff_all_term,
           raw_recurrence := $hraw,
@@ -976,7 +984,7 @@ macro_rules
           raw_lag_coeff := $e,
           root_lower := $hroot_lower,
           root_upper := $hroot_upper,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_lw_derivative_lag_active_den_all_term,
           deriv_coeff_eq := $hcoeffV,
           lag_coeff_eq := $hcoeffW,
           raw_recurrence := $hraw,
@@ -1056,7 +1064,7 @@ macro_rules
           raw_lag_coeff := $e,
           root_lower := $hroot_lower,
           root_upper := $hroot_upper,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_lw_derivative_lag_active_den_all_term,
           deriv_coeff_eq := rr_scalar_coeff_all_term,
           lag_coeff_eq := rr_scalar_coeff_all_term,
           raw_recurrence := $hraw,
@@ -1095,7 +1103,7 @@ macro_rules
           raw_lag_coeff := $e,
           root_lower := $hroot_lower,
           root_upper := $hroot_upper,
-          den_nonzero := rr_scalar_active_den_all_term,
+          den_nonzero := rr_lw_derivative_lag_active_den_all_term,
           deriv_coeff_eq := $hcoeffV,
           lag_coeff_eq := $hcoeffW,
           raw_recurrence := $hraw,
