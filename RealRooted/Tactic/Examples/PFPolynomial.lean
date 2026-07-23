@@ -57,6 +57,14 @@ example {p : ℝ[X]} (hp : IsPFPolynomial p) (hp0 : p ≠ 0) :
     pf := hp,
     nonzero := hp0
 
+example {P : Nat → ℝ[X]}
+    (hP : ∀ i : Nat, IsPFPolynomial (P i))
+    (hP0 : ∀ i : Nat, P i ≠ 0) :
+    ∀ i : Nat, P i ≠ 0 ∧ (P i).Splits := by
+  rr_pf_sequence_realrooted using
+    pf := hP,
+    nonzero := hP0
+
 example {p : ℝ[X]} (hnn : HasNonnegCoeffs p) (hsplits : p.Splits) :
     IsPFPolynomial p := by
   rr_pf_of_nonneg_splits using nonneg := hnn, splits := hsplits

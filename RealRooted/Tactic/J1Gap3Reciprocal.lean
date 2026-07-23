@@ -1,6 +1,6 @@
 import RealRooted.DegreeDropReversal
-import RealRooted.PFPolynomial
 import RealRooted.Tactic.Finish
+import RealRooted.Tactic.PFPolynomial
 
 /-!
 # J1 gap-3 reciprocal frontend
@@ -43,7 +43,7 @@ theorem isRealRooted_of_j1_gap3_reciprocal_pf_sequence
     (hreciprocal : ∀ n : Nat, P n = reciprocalShift (D n) (R n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
   isRealRooted_of_j1_gap3_reciprocal_sequence
-    (fun n => (hmodel n).ne_zero_and_splits (hmodel_ne n))
+    (Tactic.pf_sequence_realrooted hmodel hmodel_ne)
     hdegree hreciprocal
 
 namespace Tactic
