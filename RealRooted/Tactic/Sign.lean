@@ -558,22 +558,22 @@ lemma eval_quadratic_nonpos_of_nonpos_of_nonpos_of_discrim_nonpos
 
 lemma eval_neg_two_fifths_add_four_fifths_X_sub_two_fifths_X_sq_nonpos {r : ℝ} :
     (C (-2 / 5 : ℝ) + C (4 / 5 : ℝ) * X + C (-2 / 5 : ℝ) * X ^ 2 :
-      ℝ[X]).eval r ≤ 0 := by
-  exact eval_quadratic_nonpos_of_nonpos_of_nonpos_of_discrim_nonpos
+      ℝ[X]).eval r ≤ 0 :=
+  eval_quadratic_nonpos_of_nonpos_of_nonpos_of_discrim_nonpos
     (a := -2 / 5) (b := 4 / 5) (c := -2 / 5) (r := r)
     rr_sign_side_term rr_sign_side_term rr_sign_side_term
 
 lemma eval_neg_two_thirds_add_four_thirds_X_sub_two_thirds_X_sq_nonpos {r : ℝ} :
     (C (-2 / 3 : ℝ) + C (4 / 3 : ℝ) * X + C (-2 / 3 : ℝ) * X ^ 2 :
-      ℝ[X]).eval r ≤ 0 := by
-  exact eval_quadratic_nonpos_of_nonpos_of_nonpos_of_discrim_nonpos
+      ℝ[X]).eval r ≤ 0 :=
+  eval_quadratic_nonpos_of_nonpos_of_nonpos_of_discrim_nonpos
     (a := -2 / 3) (b := 4 / 3) (c := -2 / 3) (r := r)
     rr_sign_side_term rr_sign_side_term rr_sign_side_term
 
 lemma eval_neg_eight_fifths_add_eight_fifths_X_sub_two_fifths_X_sq_nonpos {r : ℝ} :
     (C (-8 / 5 : ℝ) + C (8 / 5 : ℝ) * X + C (-2 / 5 : ℝ) * X ^ 2 :
-      ℝ[X]).eval r ≤ 0 := by
-  exact eval_quadratic_nonpos_of_nonpos_of_nonpos_of_discrim_nonpos
+      ℝ[X]).eval r ≤ 0 :=
+  eval_quadratic_nonpos_of_nonpos_of_nonpos_of_discrim_nonpos
     (a := -8 / 5) (b := 8 / 5) (c := -2 / 5) (r := r)
     rr_sign_side_term rr_sign_side_term rr_sign_side_term
 
