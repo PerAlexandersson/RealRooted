@@ -2423,10 +2423,13 @@ macro_rules
       `(tactic| rr_side_nonneg)
 
 syntax (name := rr_lw_coeff_nonneg_term) "rr_lw_coeff_nonneg_term" : term
+syntax (name := rr_lw_coeff_nonneg_seq_term) "rr_lw_coeff_nonneg_seq_term" : term
 
 macro_rules
   | `(rr_lw_coeff_nonneg_term) =>
       `(by rr_lw_coeff_nonneg)
+  | `(rr_lw_coeff_nonneg_seq_term) =>
+      `(by rr_side_nonneg_seq)
 
 macro "rr_lw_active_nonneg_at " n:term : tactic =>
   `(tactic| rr_scalar_active_nonneg_at $n)

@@ -3469,7 +3469,7 @@ example {P : Nat → ℝ[X]} {A q : Nat → ℝ[X]}
     base := hbase,
     pos_lc := hpos,
     coeff := fun _ => (1 : ℝ),
-    coeff_nonneg := (fun _ => by norm_num),
+    coeff_nonneg := rr_lw_coeff_nonneg_seq_term,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -3492,7 +3492,7 @@ example {P : Nat → ℝ[X]} {A q : Nat → ℝ[X]}
     coeff := fun _ => (1 : ℝ),
     raw_coeff := fun n => (n : ℝ) + 1,
     den := fun n => (n : ℝ) + 1,
-    coeff_nonneg := (fun _ => by norm_num),
+    coeff_nonneg := rr_lw_coeff_nonneg_seq_term,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -3556,7 +3556,7 @@ example {P : Nat → ℝ[X]} {A q : Nat → ℝ[X]}
     base := hbase,
     pos_lc := hpos,
     coeff := fun _ => (1 : ℝ),
-    coeff_nonneg := (fun _ => by norm_num),
+    coeff_nonneg := rr_lw_coeff_nonneg_seq_term,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -3580,7 +3580,7 @@ example {P : Nat → ℝ[X]} {A q : Nat → ℝ[X]}
     coeff := fun _ => (1 : ℝ),
     raw_coeff := fun n => (n : ℝ) + 1,
     den := fun n => (n : ℝ) + 1,
-    coeff_nonneg := (fun _ => by norm_num),
+    coeff_nonneg := rr_lw_coeff_nonneg_seq_term,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -3641,7 +3641,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
   rr_lw_negative_monic_quadratic_sequence using
     base := hbase,
     pos_lc := hpos,
-    discriminant := (fun _ => by norm_num),
+    discriminant := rr_lw_quadratic_discriminant,
     recurrence := hrec,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -3659,7 +3659,7 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
   rr_lw_negative_monic_quadratic_sequence_realrooted using
     base := hbase,
     pos_lc := hpos,
-    discriminant := (fun _ => by norm_num),
+    discriminant := rr_lw_quadratic_discriminant,
     recurrence := hrec,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -3714,9 +3714,9 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
   rr_lw_negative_quadratic_sequence using
     base := hbase,
     pos_lc := hpos,
-    leading_nonneg := (fun _ => by norm_num),
-    constant_nonneg := (fun _ => by norm_num),
-    discriminant := (fun _ => by norm_num),
+    leading_nonneg := rr_lw_coeff_nonneg_seq_term,
+    constant_nonneg := rr_lw_coeff_nonneg_seq_term,
+    discriminant := rr_lw_quadratic_discriminant,
     recurrence := hrec,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -3736,9 +3736,9 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
   rr_lw_negative_quadratic_sequence_realrooted using
     base := hbase,
     pos_lc := hpos,
-    leading_nonneg := (fun _ => by norm_num),
-    constant_nonneg := (fun _ => by norm_num),
-    discriminant := (fun _ => by norm_num),
+    leading_nonneg := rr_lw_coeff_nonneg_seq_term,
+    constant_nonneg := rr_lw_coeff_nonneg_seq_term,
+    discriminant := rr_lw_quadratic_discriminant,
     recurrence := hrec,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -3905,9 +3905,9 @@ example {P : Nat → ℝ[X]} {Araw : Nat → ℝ[X]}
     raw_linear := fun n => -((n : ℝ) + 1),
     raw_constant := fun n => (n : ℝ) + 1,
     den := fun n => (n : ℝ) + 1,
-    leading_nonneg := (fun _ => by norm_num),
-    constant_nonneg := (fun _ => by norm_num),
-    discriminant := (fun _ => by norm_num),
+    leading_nonneg := rr_lw_coeff_nonneg_seq_term,
+    constant_nonneg := rr_lw_coeff_nonneg_seq_term,
+    discriminant := rr_lw_quadratic_discriminant,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -3961,9 +3961,9 @@ example {P : Nat → ℝ[X]} {Araw : Nat → ℝ[X]}
     raw_linear := fun n => -((n : ℝ) + 1),
     raw_constant := fun n => (n : ℝ) + 1,
     den := fun n => (n : ℝ) + 1,
-    leading_nonneg := (fun _ => by norm_num),
-    constant_nonneg := (fun _ => by norm_num),
-    discriminant := (fun _ => by norm_num),
+    leading_nonneg := rr_lw_coeff_nonneg_seq_term,
+    constant_nonneg := rr_lw_coeff_nonneg_seq_term,
+    discriminant := rr_lw_quadratic_discriminant,
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -4266,7 +4266,7 @@ example {f g a : ℝ[X]}
   rr_lw_negative_monic_quadratic using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
-    discriminant := by norm_num,
+    discriminant := rr_lw_coeff_nonneg_term,
     target_pos_lc := hF_pos,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi,
@@ -4313,9 +4313,9 @@ example {f g a : ℝ[X]}
   rr_lw_negative_quadratic using
     interlacer := hgf,
     interlacer_pos_lc := hg_pos,
-    leading_nonneg := by norm_num,
-    constant_nonneg := by norm_num,
-    discriminant := by norm_num,
+    leading_nonneg := rr_lw_coeff_nonneg_term,
+    constant_nonneg := rr_lw_coeff_nonneg_term,
+    discriminant := rr_lw_coeff_nonneg_term,
     target_pos_lc := hF_pos,
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi,
