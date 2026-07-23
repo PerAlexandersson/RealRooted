@@ -34,8 +34,11 @@ open Polynomial
 
 namespace RealRooted
 
+private lemma oneNonneg : 0 ≤ (1 : ℝ) :=
+  rr_side_nonneg_term
+
 private lemma oneNonnegSeq : ∀ _ : Nat, 0 ≤ (1 : ℝ) :=
-  fun _ => by norm_num
+  fun _ => oneNonneg
 
 syntax (name := rr_lw_recurrence_seq) "rr_lw_recurrence_seq " term : term
 
@@ -191,7 +194,7 @@ theorem prec_lw_positive_X_lag_of_roots_nonpos {f g a : ℝ[X]}
     Prec f (a * f + X * g) := by
   simpa using
     (prec_lw_positive_t_lag_of_roots_nonpos
-      (c := 1) hgf hg_pos hf_roots (by norm_num)
+      (c := 1) hgf hg_pos hf_roots oneNonneg
       (by simpa using hF_pos)
       (by simpa using hdeg_lo)
       (by simpa using hdeg_hi)
@@ -305,7 +308,7 @@ theorem prec_lw_C_add_X_lag_of_roots_upper
     Prec f (A * f + (C a + X) * g) := by
   simpa using
     (prec_lw_positive_affine_lag_of_roots_upper
-      (c := 1) hgf hg_pos hf_roots (by norm_num)
+      (c := 1) hgf hg_pos hf_roots oneNonneg
       (by simpa using hF_pos)
       (by simpa using hdeg_lo)
       (by simpa using hdeg_hi)
