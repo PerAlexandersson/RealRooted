@@ -939,8 +939,7 @@ def a036969_bidiagonalCubicResidualCertificate (d : ℕ) (hd : 2 ≤ d) :
     beta_factor := a036969Beta_jensen_factor d hd,
     alpha_cubic := a036969ResidualAlpha_cubicPFDiscriminantCertificate d,
     beta_cubic := a036969ResidualBeta_cubicPFDiscriminantCertificate,
-    pencil_cubic := by
-      intro lam hlam
+    pencil_cubic := fun lam hlam => by
       simpa [a036969ResidualPencil] using
         a036969ResidualPencil_cubicPFDiscriminantCertificate d hlam
 
@@ -1181,8 +1180,7 @@ def a071951_bidiagonalCubicResidualCertificate (d : ℕ) (hd : 2 ≤ d) :
     beta_factor := a071951Beta_jensen_factor d hd,
     alpha_cubic := a071951ResidualAlpha_cubicPFDiscriminantCertificate d,
     beta_cubic := a036969ResidualBeta_cubicPFDiscriminantCertificate,
-    pencil_cubic := by
-      intro lam hlam
+    pencil_cubic := fun lam hlam => by
       simpa [a071951ResidualPencil] using
         a071951ResidualPencil_cubicPFDiscriminantCertificate d hlam
 
@@ -1374,8 +1372,7 @@ def a080248_bidiagonalCubicResidualCertificate (d : ℕ) (hd : 2 ≤ d) :
     beta_factor := a080248Beta_jensen_factor d hd,
     alpha_cubic := a080248ResidualAlpha_cubicPFDiscriminantCertificate d,
     beta_cubic := a036969ResidualBeta_cubicPFDiscriminantCertificate,
-    pencil_cubic := by
-      intro lam hlam
+    pencil_cubic := fun lam hlam => by
       simpa [a080248ResidualPencil] using
         a080248ResidualPencil_cubicPFDiscriminantCertificate d hlam
 
@@ -1637,8 +1634,7 @@ def a160562_bidiagonalCubicResidualCertificate (d : ℕ) (hd : 2 ≤ d) :
     beta_factor := a160562Beta_jensen_factor d hd,
     alpha_cubic := a160562ResidualAlpha_cubicPFDiscriminantCertificate d,
     beta_cubic := a036969ResidualBeta_cubicPFDiscriminantCertificate,
-    pencil_cubic := by
-      intro lam hlam
+    pencil_cubic := fun lam hlam => by
       simpa [a160562ResidualPencil] using
         a160562ResidualPencil_cubicPFDiscriminantCertificate d hlam
 
@@ -1853,8 +1849,7 @@ def a269945_bidiagonalCubicResidualCertificate (d : ℕ) (hd : 2 ≤ d) :
     beta_factor := a269945Beta_jensen_factor d hd,
     alpha_cubic := a269945ResidualAlpha_cubicPFDiscriminantCertificate d,
     beta_cubic := a036969ResidualBeta_cubicPFDiscriminantCertificate,
-    pencil_cubic := by
-      intro lam hlam
+    pencil_cubic := fun lam hlam => by
       simpa [a269945ResidualPencil] using
         a269945ResidualPencil_cubicPFDiscriminantCertificate d hlam
 
