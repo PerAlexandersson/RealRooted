@@ -23,6 +23,9 @@ example {n : Nat} : 0 < (n : ℝ) + 1 := by
 example {n : Nat} (hn : 0 < n) : 0 < (n : ℝ) := by
   rr_wagner_pos
 
+example : 0 < (2 : ℝ) :=
+  rr_wagner_pos_term
+
 example {f g : ℝ[X]}
     (hfg : Prec f g)
     (hfnn : HasNonnegCoeffs f)
@@ -117,8 +120,8 @@ example {f g : ℝ[X]}
     proper := hfg,
     left_nonneg := hfnn,
     right_nonneg := hgnn,
-    current_coeff_pos := (by norm_num : 0 < (1 : ℝ)),
-    lag_coeff_pos := (by norm_num : 0 < (1 : ℝ))
+    current_coeff_pos := (rr_wagner_pos_term : 0 < (1 : ℝ)),
+    lag_coeff_pos := (rr_wagner_pos_term : 0 < (1 : ℝ))
 
 /-- OEIS shape `A201701`: `P_n = 2 P_{n-1} + t P_{n-2}`. -/
 example {f g : ℝ[X]}
@@ -130,8 +133,8 @@ example {f g : ℝ[X]}
     proper := hfg,
     left_nonneg := hfnn,
     right_nonneg := hgnn,
-    current_coeff_pos := (by norm_num : 0 < (2 : ℝ)),
-    lag_coeff_pos := (by norm_num : 0 < (1 : ℝ))
+    current_coeff_pos := (rr_wagner_pos_term : 0 < (2 : ℝ)),
+    lag_coeff_pos := (rr_wagner_pos_term : 0 < (1 : ℝ))
 
 /-- OEIS shape `A106828`: `P_n = n P_{n-1} + n t P_{n-2}` on the
 active range `0 < n`. -/
@@ -162,7 +165,7 @@ example {f g : ℝ[X]} {c : ℝ}
     proper := hfg,
     left_nonneg := hfnn,
     right_nonneg := hgnn,
-    current_coeff_pos := (by norm_num : 0 < (1 : ℝ)),
+    current_coeff_pos := (rr_wagner_pos_term : 0 < (1 : ℝ)),
     lag_coeff_nonneg := hlag
 
 /-- Sequence-level scalar positive-lag step.  This is the compact proof shape

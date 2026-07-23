@@ -607,6 +607,8 @@ syntax (name := rr_prec_pos_X_same_coeff_sequence_realrooted_auto)
 
 syntax (name := rr_wagner_pos) "rr_wagner_pos" : tactic
 
+syntax (name := rr_wagner_pos_term) "rr_wagner_pos_term" : term
+
 syntax (name := rr_wagner_pos_seq) "rr_wagner_pos_seq" : term
 
 syntax (name := rr_wagner_recurrence_seq) "rr_wagner_recurrence_seq " term : term
@@ -614,6 +616,8 @@ syntax (name := rr_wagner_recurrence_seq) "rr_wagner_recurrence_seq " term : ter
 macro_rules
   | `(tactic| rr_wagner_pos) =>
       `(tactic| rr_side_pos)
+  | `(rr_wagner_pos_term) =>
+      `(by rr_wagner_pos)
   | `(rr_wagner_pos_seq) =>
       `(fun n => by rr_wagner_pos)
   | `(rr_wagner_recurrence_seq $hrec:term) =>
