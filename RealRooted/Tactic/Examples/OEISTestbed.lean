@@ -1225,9 +1225,7 @@ example {P : Nat → ℝ[X]}
     alpha := fun _ => (0 : ℝ),
     beta := fun m => (4 * (m : ℝ)) / ((m : ℝ) + 1),
     base_zero := hP0,
-    base_one := by
-      norm_num
-      simpa using hP1,
+    base_one := rr_favard_base_one_dsimp hP1,
     den := fun n => 1 - ((n : ℝ) + 3),
     raw_recurrence := hraw
 
@@ -1455,9 +1453,7 @@ example {P : Nat → ℝ[X]}
     raw_lag := fun n : Nat =>
       -((((n : ℝ) + 3) * ((n : ℝ) + 4) * ((n : ℝ) + 5)) / 2),
     base_zero := hP0,
-    base_one := by
-      norm_num
-      simpa using hP1,
+    base_one := rr_favard_base_one_dsimp hP1,
     den := fun n : Nat => 1 + ((n + 2 : Nat) : ℝ) / 2,
     raw_recurrence := hraw
 

@@ -1123,9 +1123,7 @@ example {P : Nat → ℝ[X]}
     raw_lag_left := fun _ : Nat => (-1 : ℝ),
     raw_lag_right := fun n : Nat => (n : ℝ) + 2,
     base_zero := hP0,
-    base_one := by
-      norm_num
-      simpa using hP1,
+    base_one := rr_favard_base_one_dsimp hP1,
     den := fun _ : Nat => (1 : ℝ),
     raw_recurrence := hraw
 
@@ -1150,9 +1148,7 @@ example {P : Nat → ℝ[X]}
     raw_lag_left := fun _ : Nat => (-1 : ℝ),
     raw_lag_right := fun n : Nat => (n : ℝ) + 2,
     base_zero := hP0,
-    base_one := by
-      norm_num
-      simpa using hP1,
+    base_one := rr_favard_base_one_dsimp hP1,
     den := fun _ : Nat => (1 : ℝ),
     raw_recurrence := hraw
 
@@ -1265,9 +1261,7 @@ example {P : Nat → ℝ[X]}
       intro n
       positivity,
     base_zero := hP0,
-    base_one := by
-      norm_num
-      simpa using hP1,
+    base_one := rr_favard_base_one_dsimp hP1,
     den := fun _ : Nat => (1 : ℝ),
     raw_recurrence := hraw
 
@@ -1318,9 +1312,7 @@ example {P : Nat → ℝ[X]} {n : Nat}
       intro n
       positivity,
     base_zero := hP0,
-    base_one := by
-      norm_num
-      simpa using hP1,
+    base_one := rr_favard_base_one_dsimp hP1,
     den := fun _ : Nat => (1 : ℝ),
     raw_recurrence := hraw
 
@@ -1529,9 +1521,7 @@ example {P : Nat → ℝ[X]} {n : Nat}
       intro n
       positivity,
     base_zero := hP0,
-    base_one := by
-      norm_num
-      simpa using hP1,
+    base_one := rr_favard_base_one_dsimp hP1,
     den := fun _ : Nat => (1 : ℝ),
     raw_recurrence := hraw
 

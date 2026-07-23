@@ -174,9 +174,7 @@ example {P : Nat → ℝ[X]}
     alpha := fun _ => (0 : ℝ),
     beta := fun m => (4 * (m : ℝ)) / ((m : ℝ) + 1),
     base_zero := hP0,
-    base_one := by
-      norm_num
-      simpa using hP1,
+    base_one := rr_favard_base_one_dsimp hP1,
     den := fun n => 1 - ((n : ℝ) + 3),
     raw_recurrence := hraw
 
