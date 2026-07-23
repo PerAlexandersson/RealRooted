@@ -17,11 +17,9 @@ theorem schurSzegoComp_splits_of_nonzero {n : ℕ} {f p : ℝ[X]}
     (hpdeg : p.natDegree ≤ n)
     (hsplits : p.Splits)
     (hout : schurSzegoComp n f p ≠ 0) :
-    (schurSzegoComp n f p).Splits := by
-  exact Or.resolve_left
-    (schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial
-      hf hfdeg hpdeg hsplits)
-    hout
+    (schurSzegoComp n f p).Splits :=
+  Or.resolve_left
+    (schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial hf hfdeg hpdeg hsplits) hout
 
 theorem schurSzegoComp_splits_of_level_le_two {n : ℕ} {f p : ℝ[X]}
     (hn : n ≤ 2)
@@ -30,8 +28,8 @@ theorem schurSzegoComp_splits_of_level_le_two {n : ℕ} {f p : ℝ[X]}
     (hpdeg : p.natDegree ≤ n)
     (hsplits : p.Splits)
     (hout : schurSzegoComp n f p ≠ 0) :
-    (schurSzegoComp n f p).Splits := by
-  exact Or.resolve_left
+    (schurSzegoComp n f p).Splits :=
+  Or.resolve_left
     (finiteSchurSzegoComposition_of_natDegree_le_two
       hn hf hfdeg hpdeg hsplits)
     hout
@@ -43,8 +41,8 @@ theorem schurSzegoComp_splits_of_pf_factor_natDegree_le_two
     (hpdeg : p.natDegree ≤ n)
     (hsplits : p.Splits)
     (hout : schurSzegoComp n f p ≠ 0) :
-    (schurSzegoComp n f p).Splits := by
-  exact Or.resolve_left
+    (schurSzegoComp n f p).Splits :=
+  Or.resolve_left
     (finiteSchurSzegoComposition_of_pf_factor_natDegree_le_two
       hf hfdeg hpdeg hsplits)
     hout
@@ -56,8 +54,8 @@ theorem schurSzegoComp_splits_of_factors_natDegree_le_two
     (hpdeg : p.natDegree ≤ 2)
     (hsplits : p.Splits)
     (hout : schurSzegoComp n f p ≠ 0) :
-    (schurSzegoComp n f p).Splits := by
-  exact Or.resolve_left
+    (schurSzegoComp n f p).Splits :=
+  Or.resolve_left
     (finiteSchurSzegoComposition_of_factors_natDegree_le_two
       hf hfdeg hpdeg hsplits)
     hout
@@ -70,8 +68,8 @@ theorem schurSzegoComp_splits_of_pf_factor_natDegree_le_three_cubicDiscr
     (hsplits : p.Splits)
     (hdisc : 0 ≤ cubicDiscr (schurSzegoComp n f p))
     (hout : schurSzegoComp n f p ≠ 0) :
-    (schurSzegoComp n f p).Splits := by
-  exact Or.resolve_left
+    (schurSzegoComp n f p).Splits :=
+  Or.resolve_left
     (finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscr_nonneg
       hf hfdeg hpdeg hsplits hdisc)
     hout
@@ -84,8 +82,8 @@ theorem schurSzegoComp_splits_of_pf_factor_natDegree_le_three_cubicNum
     (hsplits : p.Splits)
     (hnum : 0 ≤ schurSzegoCompCubicDiscrNumerator n f p)
     (hout : schurSzegoComp n f p ≠ 0) :
-    (schurSzegoComp n f p).Splits := by
-  exact Or.resolve_left
+    (schurSzegoComp n f p).Splits :=
+  Or.resolve_left
     (finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscrNumerator_nonneg
       hn hf hfdeg hpdeg hsplits hnum)
     hout
@@ -98,8 +96,8 @@ theorem schurSzegoComp_splits_of_pf_factor_degree_le_three_diagonalBase
     (hpdeg : p.natDegree ≤ n)
     (hsplits : p.Splits)
     (hout : schurSzegoComp n f p ≠ 0) :
-    (schurSzegoComp n f p).Splits := by
-  exact Or.resolve_left
+    (schurSzegoComp n f p).Splits :=
+  Or.resolve_left
     (finiteSchurSzegoComposition_of_pf_factor_le_three_of_pfCubicDiscrDiagonalNonneg
       hbase hn hf hfdeg hpdeg hsplits)
     hout
@@ -125,8 +123,8 @@ theorem schurSzegoComp_splits_of_pf_factor_degree_le_three_diagonalBase_leftDegr
     (hpdeg : p.natDegree ≤ n)
     (hsplits : p.Splits)
     (hout : schurSzegoComp n f p ≠ 0) :
-    (schurSzegoComp n f p).Splits := by
-  exact Or.resolve_left
+    (schurSzegoComp n f p).Splits :=
+  Or.resolve_left
     (schurSzegoComp_zero_or_splits_of_diagonalBase_leftDegree
       hbase hf hfdeg hfn hpdeg hsplits)
     hout
@@ -140,8 +138,8 @@ theorem schurSzegoComp_splits_of_pf_factor_degree_le_three_num_leftDegree
     (hsplits : p.Splits)
     (hnum : 3 ≤ n → 0 ≤ schurSzegoCompCubicDiscrNumerator n f p)
     (hout : schurSzegoComp n f p ≠ 0) :
-    (schurSzegoComp n f p).Splits := by
-  exact Or.resolve_left
+    (schurSzegoComp n f p).Splits :=
+  Or.resolve_left
     (finiteSchurSzegoComposition_of_pf_factor_le_three_leftNatDegree_num_nonneg
       hf hfdeg hfn hpdeg hsplits hnum)
     hout
