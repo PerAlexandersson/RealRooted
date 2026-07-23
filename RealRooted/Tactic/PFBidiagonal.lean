@@ -813,7 +813,7 @@ theorem isPFPolynomial_bidiagonalOperator_of_jensenPencil
     (hdeg : p.natDegree ≤ d) :
     IsPFPolynomial (bidiagonalOperator alpha beta p) :=
   isPFPolynomial_bidiagonalOperator_of_preserver
-    (bidiagonalPFPreserver_of_jensenPencil hbackend hcert) hp hdeg
+    (hcert.toPFPreserver hbackend) hp hdeg
 
 /-- Apply a bundled cubic-residual certificate to one coefficient-bidiagonal
 operator. -/
@@ -1982,7 +1982,7 @@ macro_rules
         jensen_backend := $hbackend:term,
         certificate := $hcert:term) =>
       `(tactic|
-        exact RealRooted.bidiagonalPFPreserver_of_jensenPencil $hbackend $hcert)
+        exact ($hcert).toPFPreserver $hbackend)
   | `(tactic|
       rr_pf_bidiagonal_preserver_cubic using
         jensen_backend := $hbackend:term,
