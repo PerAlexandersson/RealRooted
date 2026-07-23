@@ -115,6 +115,9 @@ example {n : Nat} : ((n : ℝ) + 1) ≠ 0 := by
 example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 := by
   rr_mw_active_den_all
 
+example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 :=
+  rr_mw_active_den_all_term
+
 example {n : Nat} : ((n : ℝ) + 1) ≠ 0 :=
   rr_mw_active_den_at_term n
 
