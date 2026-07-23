@@ -534,18 +534,15 @@ def quadraticBidiagonalCubicResidualCertificate
   alphaResidual := quadraticJensenResidual aa ab ac d
   betaResidual := X * quadraticJensenResidual ba bb bc d
   pencilResidual := fun lam => quadraticBidiagonalPencilResidual aa ab ac ba bb bc lam d
-  alpha_factor := by
-    exact quadraticJensen_eq_factor_residual aa ab ac hd
+  alpha_factor := quadraticJensen_eq_factor_residual aa ab ac hd
   beta_factor := by
     have hbeta := quadraticJensen_eq_factor_residual ba bb bc hd
     change X * quadraticJensen ba bb bc d =
       (X + 1) ^ (d - 2) * (X * quadraticJensenResidual ba bb bc d)
     rw [hbeta]
     ring
-  pencil_factor := by
-    intro lam hlam
-    exact quadraticBidiagonalJensenPencil_eq_factor_residual
-      aa ab ac ba bb bc lam hd
+  pencil_factor := fun lam _ =>
+    quadraticBidiagonalJensenPencil_eq_factor_residual aa ab ac ba bb bc lam hd
   alpha_cubic := hA
   beta_cubic := hB
   pencil_cubic := hS

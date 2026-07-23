@@ -10,21 +10,21 @@ namespace TacticExamples
 
 example (a b c : ℝ) {d : ℕ} (hd : 2 ≤ d) :
     quadraticJensen a b c d =
-      (X + 1) ^ (d - 2) * quadraticJensenResidual a b c d := by
-  exact quadraticJensen_eq_factor_residual a b c hd
+      (X + 1) ^ (d - 2) * quadraticJensenResidual a b c d :=
+  quadraticJensen_eq_factor_residual a b c hd
 
 example {d : ℕ} (hd : 2 ≤ d) :
     bidiagonalJensenPencil
         (quadraticJensenWeight 1 2 1) (quadraticJensenWeight 0 0 1) d 1 =
-      (X + 1) ^ (d - 2) * quadraticBidiagonalResidual 1 2 1 0 0 1 d := by
-  exact quadraticBidiagonalJensenPencil_eq_factor_residual_one 1 2 1 0 0 1 hd
+      (X + 1) ^ (d - 2) * quadraticBidiagonalResidual 1 2 1 0 0 1 d :=
+  quadraticBidiagonalJensenPencil_eq_factor_residual_one 1 2 1 0 0 1 hd
 
 example {alpha beta alpha' beta' : ℕ → ℝ} {d : ℕ}
     (hpres : BidiagonalPFPreserver alpha' beta' d)
     (halpha : ∀ k, k ≤ d → alpha k = alpha' k)
     (hbeta : ∀ k, k ≤ d → beta k = beta' k) :
-    BidiagonalPFPreserver alpha beta d := by
-  exact hpres.of_eq_on_degree halpha hbeta
+    BidiagonalPFPreserver alpha beta d :=
+  hpres.of_eq_on_degree halpha hbeta
 
 example
     (hbackend : jensenPencilBidiagonalPreserverStatement)
@@ -35,8 +35,8 @@ example
       CubicPFDiscriminantCertificate
         (quadraticBidiagonalPencilResidual 1 2 1 0 0 1 lam d)) :
     BidiagonalPFPreserver
-      (quadraticJensenWeight 1 2 1) (quadraticJensenWeight 0 0 1) d := by
-  exact quadraticBidiagonalPFPreserver_of_cubicResidualCertificate
+      (quadraticJensenWeight 1 2 1) (quadraticJensenWeight 0 0 1) d :=
+  quadraticBidiagonalPFPreserver_of_cubicResidualCertificate
     hbackend 1 2 1 0 0 1 hd hA hB hS
 
 example {a0 a1 b1 b2 c2 c3 : ℝ} {d : ℕ} (hd : 2 ≤ d)
@@ -70,8 +70,8 @@ example
           c2 (b1 - c2) a0 c3 (b2 - c3) a1 lam d)) :
     BidiagonalPFPreserver
       (fun k => secondDerivativeQuadraticCoeff a0 b1 c2 k)
-      (fun k => secondDerivativeQuadraticCoeff a1 b2 c3 k) d := by
-  exact secondDerivativeBidiagonalPFPreserver_of_cubicResidualCertificate
+      (fun k => secondDerivativeQuadraticCoeff a1 b2 c3 k) d :=
+  secondDerivativeBidiagonalPFPreserver_of_cubicResidualCertificate
     hbackend hd hA hB hS
 
 example {P : Nat → ℝ[X]}
