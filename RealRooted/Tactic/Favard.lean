@@ -102,12 +102,11 @@ theorem favardInterlacing_const_coeff {P : Nat → ℝ[X]} {α β : ℝ}
     (hP0 : P 0 = 1)
     (hP1 : P 1 = X - C α)
     (hstep : ∀ n : Nat, P (n + 2) = (X - C α) * P (n + 1) - C β * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  have hrec : SatisfiesFavardRecurrence P (fun _ => α) (fun _ => β) :=
-    ⟨hP0, hP1, by
-      intro n
-      simpa using hstep n⟩
-  exact favardInterlacing hrec (by intro n; simpa using hβ)
+    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+  favardInterlacing
+    (P := P) (α := fun _ => α) (β := fun _ => β)
+    ⟨hP0, hP1, fun n => by simpa using hstep n⟩
+    (fun _ => hβ)
 
 /-- Real-rootedness consequence of the constant-coefficient Favard wrapper. -/
 theorem isRealRooted_of_favard_const_coeff {P : Nat → ℝ[X]} {α β : ℝ}
@@ -115,12 +114,11 @@ theorem isRealRooted_of_favard_const_coeff {P : Nat → ℝ[X]} {α β : ℝ}
     (hP0 : P 0 = 1)
     (hP1 : P 1 = X - C α)
     (hstep : ∀ n : Nat, P (n + 2) = (X - C α) * P (n + 1) - C β * P n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  have hrec : SatisfiesFavardRecurrence P (fun _ => α) (fun _ => β) :=
-    ⟨hP0, hP1, by
-      intro n
-      simpa using hstep n⟩
-  exact isRealRooted_of_favard hrec (by intro n; simpa using hβ)
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_favard
+    (P := P) (α := fun _ => α) (β := fun _ => β)
+    ⟨hP0, hP1, fun n => by simpa using hstep n⟩
+    (fun _ => hβ)
 
 /-- Nonzero consequence of the constant-coefficient Favard wrapper. -/
 theorem nonzero_of_favard_const_coeff {P : Nat → ℝ[X]} {α β : ℝ}
