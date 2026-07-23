@@ -11,11 +11,25 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
+theorem pf_splits
+    {p : ℝ[X]}
+    (hp : IsPFPolynomial p) :
+    p.Splits := by
+  rcases RealRooted.IsPFPolynomial.eq_zero_or_splits hp with rfl | hsplits
+  · simp
+  · exact hsplits
+
 theorem pf_sequence_has_nonneg
     {P : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i)) :
     ∀ i : Nat, HasNonnegCoeffs (P i) := fun i =>
   RealRooted.IsPFPolynomial.hasNonnegCoeffs (hP i)
+
+theorem pf_sequence_splits
+    {P : Nat → ℝ[X]}
+    (hP : ∀ i : Nat, IsPFPolynomial (P i)) :
+    ∀ i : Nat, (P i).Splits := fun i =>
+  pf_splits (hP i)
 
 theorem pf_sequence_zero_or_splits
     {P : Nat → ℝ[X]}
@@ -146,8 +160,16 @@ syntax (name := rr_pf_has_nonneg_named)
   "rr_pf_has_nonneg" " using " "pf" ":=" term :
   tactic
 
+syntax (name := rr_pf_splits_named)
+  "rr_pf_splits" " using " "pf" ":=" term :
+  tactic
+
 syntax (name := rr_pf_sequence_has_nonneg_named)
   "rr_pf_sequence_has_nonneg" " using " "pf" ":=" term :
+  tactic
+
+syntax (name := rr_pf_sequence_splits_named)
+  "rr_pf_sequence_splits" " using " "pf" ":=" term :
   tactic
 
 syntax (name := rr_pf_zero_or_splits_named)
@@ -330,10 +352,7 @@ macro_rules
           | exact RealRooted.IsPFPolynomial.hasNonnegCoeffs $hp
           | exact RealRooted.IsPFPolynomial.eq_zero_or_splits $hp
           | exact RealRooted.IsPFPolynomial.roots_nonpos $hp
-          | (rcases RealRooted.IsPFPolynomial.eq_zero_or_splits $hp with hzero | hsplits
-             · rw [hzero]
-               simp
-             · exact hsplits))
+          | exact RealRooted.Tactic.pf_splits $hp)
   | `(tactic|
       rr_pf using
         pf := $hp:term,
@@ -345,8 +364,12 @@ macro_rules
           | exact RealRooted.IsPFPolynomial.ne_zero_and_splits $hp $hp0)
   | `(tactic| rr_pf_has_nonneg using pf := $hp:term) =>
       `(tactic| exact RealRooted.IsPFPolynomial.hasNonnegCoeffs $hp)
+  | `(tactic| rr_pf_splits using pf := $hp:term) =>
+      `(tactic| exact RealRooted.Tactic.pf_splits $hp)
   | `(tactic| rr_pf_sequence_has_nonneg using pf := $hp:term) =>
       `(tactic| exact RealRooted.Tactic.pf_sequence_has_nonneg $hp)
+  | `(tactic| rr_pf_sequence_splits using pf := $hp:term) =>
+      `(tactic| exact RealRooted.Tactic.pf_sequence_splits $hp)
   | `(tactic| rr_pf_zero_or_splits using pf := $hp:term) =>
       `(tactic| exact RealRooted.IsPFPolynomial.eq_zero_or_splits $hp)
   | `(tactic| rr_pf_sequence_zero_or_splits using pf := $hp:term) =>

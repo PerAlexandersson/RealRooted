@@ -34,10 +34,19 @@ example {p : ℝ[X]} (hp : IsPFPolynomial p) :
     p = 0 ∨ p.Splits := by
   rr_pf_zero_or_splits using pf := hp
 
+example {p : ℝ[X]} (hp : IsPFPolynomial p) :
+    p.Splits := by
+  rr_pf_splits using pf := hp
+
 example {P : Nat → ℝ[X]}
     (hP : ∀ i : Nat, IsPFPolynomial (P i)) :
     ∀ i : Nat, P i = 0 ∨ (P i).Splits := by
   rr_pf_sequence_zero_or_splits using pf := hP
+
+example {P : Nat → ℝ[X]}
+    (hP : ∀ i : Nat, IsPFPolynomial (P i)) :
+    ∀ i : Nat, (P i).Splits := by
+  rr_pf_sequence_splits using pf := hP
 
 example {p : ℝ[X]} (hp : IsPFPolynomial p) :
     p = 0 ∨ p.Splits := by

@@ -1,5 +1,6 @@
 import RealRooted.MultiplierSequence
 import RealRooted.Tactic.Finish
+import RealRooted.Tactic.PFPolynomial
 import RealRooted.Tactic.Lookup
 
 /-!
@@ -684,10 +685,8 @@ theorem isPFPolynomial_bidiagonalOperator_of_cubicResidualCertificate
 
 /-- Project splitting from a zero-aware PF certificate. -/
 theorem splits_of_isPFPolynomial {p : ℝ[X]} (hp : IsPFPolynomial p) :
-    p.Splits := by
-  rcases hp.eq_zero_or_splits with rfl | hsplits
-  · simp
-  · exact hsplits
+    p.Splits :=
+  RealRooted.Tactic.pf_splits hp
 
 /-- Project one row from a PF sequence certificate. -/
 theorem at_of_isPFPolynomial_sequence {P : Nat → ℝ[X]}
@@ -699,19 +698,19 @@ theorem at_of_isPFPolynomial_sequence {P : Nat → ℝ[X]}
 theorem hasNonnegCoeffs_of_isPFPolynomial_sequence {P : Nat → ℝ[X]}
     (hP : ∀ n : Nat, IsPFPolynomial (P n)) :
     ∀ n : Nat, HasNonnegCoeffs (P n) :=
-  fun n => (hP n).hasNonnegCoeffs
+  RealRooted.Tactic.pf_sequence_has_nonneg hP
 
 /-- Project row-wise zero-or-splitting from a PF sequence certificate. -/
 theorem eq_zero_or_splits_of_isPFPolynomial_sequence {P : Nat → ℝ[X]}
     (hP : ∀ n : Nat, IsPFPolynomial (P n)) :
     ∀ n : Nat, P n = 0 ∨ (P n).Splits :=
-  fun n => (hP n).eq_zero_or_splits
+  RealRooted.Tactic.pf_sequence_zero_or_splits hP
 
 /-- Project row-wise splitting from a PF sequence certificate. -/
 theorem splits_of_isPFPolynomial_sequence {P : Nat → ℝ[X]}
     (hP : ∀ n : Nat, IsPFPolynomial (P n)) :
     ∀ n : Nat, (P n).Splits :=
-  fun n => splits_of_isPFPolynomial (hP n)
+  RealRooted.Tactic.pf_sequence_splits hP
 
 /-- Combine a PF sequence certificate with row-wise nonvanishing to obtain the
 strict real-rootedness shape used by the scalar recurrence tactics. -/
@@ -719,7 +718,7 @@ theorem isRealRooted_of_isPFPolynomial_sequence {P : Nat → ℝ[X]}
     (hP : ∀ n : Nat, IsPFPolynomial (P n))
     (hne : ∀ n : Nat, P n ≠ 0) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  fun n => (hP n).ne_zero_and_splits (hne n)
+  RealRooted.Tactic.pf_sequence_realrooted hP hne
 
 /-- Sequence wrapper for first-order recurrences by coefficient-bidiagonal
 PF-preserving operators. -/
