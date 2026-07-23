@@ -282,7 +282,7 @@ theorem isRealRooted_of_mw_then_const_add_derivative_plus_current_sequence
             isRealRooted_nonneg_combo_of_prec
               (by simpa [H] using houter_prec n)
               (hcurrent_pos n) (by simpa [H] using houter_pos n)
-              (hb n) (by norm_num : 0 ≤ (1 : ℝ)) (Or.inr (by norm_num))
+              (hb n) rr_side_nonneg_term (Or.inr rr_side_pos_term)
           simpa [H, hrec n] using hcombo
 
 /-- Algebraic expansion of the LS4 operator `(a + D) (U f + V f')`.
