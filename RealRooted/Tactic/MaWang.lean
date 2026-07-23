@@ -4522,8 +4522,8 @@ macro_rules
           raw_deriv_coeff := $b,
           raw_lag_coeff := $e,
           den_nonzero := rr_mw_active_den_all_term,
-          deriv_coeff_eq := rr_scalar_coeff_all_term,
-          lag_coeff_eq := rr_scalar_coeff_all_term,
+          deriv_coeff_eq := rr_mw_coeff_all_term,
+          lag_coeff_eq := rr_mw_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno)
@@ -4626,8 +4626,8 @@ macro_rules
           raw_deriv_coeff := $b,
           raw_lag_coeff := $e,
           den_nonzero := rr_mw_active_den_all_term,
-          deriv_coeff_eq := rr_scalar_coeff_all_term,
-          lag_coeff_eq := rr_scalar_coeff_all_term,
+          deriv_coeff_eq := rr_mw_coeff_all_term,
+          lag_coeff_eq := rr_mw_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno)
@@ -4732,8 +4732,8 @@ macro_rules
           root_lower := $hroot_lower,
           root_upper := $hroot_upper,
           den_nonzero := rr_mw_active_den_all_term,
-          deriv_coeff_eq := rr_scalar_coeff_all_term,
-          lag_coeff_eq := rr_scalar_coeff_all_term,
+          deriv_coeff_eq := rr_mw_coeff_all_term,
+          lag_coeff_eq := rr_mw_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno)
@@ -4848,8 +4848,8 @@ macro_rules
           root_lower := $hroot_lower,
           root_upper := $hroot_upper,
           den_nonzero := rr_mw_active_den_all_term,
-          deriv_coeff_eq := rr_scalar_coeff_all_term,
-          lag_coeff_eq := rr_scalar_coeff_all_term,
+          deriv_coeff_eq := rr_mw_coeff_all_term,
+          lag_coeff_eq := rr_mw_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno)
@@ -4987,7 +4987,7 @@ macro_rules
           degree_two := $hdeg_two,
           coeff := $c,
           den_nonzero := rr_mw_active_den_all_term,
-          coeff_eq := rr_scalar_coeff_all_term,
+          coeff_eq := rr_mw_coeff_all_term,
           raw_recurrence := $hraw,
           degree_lower := $hdeg_lo,
           degree_upper := $hdeg_hi)
@@ -5027,7 +5027,7 @@ macro_rules
           degree_two := $hdeg_two,
           coeff := $c,
           den_nonzero := rr_mw_active_den_all_term,
-          coeff_eq := rr_scalar_coeff_all_term,
+          coeff_eq := rr_mw_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg)
   | `(tactic|
@@ -5077,7 +5077,7 @@ macro_rules
           den := $d,
           raw_coeff := $b,
           den_nonzero := rr_mw_active_den_all_term,
-          coeff_eq := rr_scalar_coeff_all_term,
+          coeff_eq := rr_mw_coeff_all_term,
           raw_recurrence := $hraw,
           degree_lower := $hdeg_lo,
           degree_upper := $hdeg_hi)
@@ -5129,7 +5129,7 @@ macro_rules
           den := $d,
           raw_coeff := $b,
           den_nonzero := rr_mw_active_den_all_term,
-          coeff_eq := rr_scalar_coeff_all_term,
+          coeff_eq := rr_mw_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg)
   | `(tactic|
@@ -5216,7 +5216,7 @@ macro_rules
           degree_two := $hdeg_two,
           coeff := $c,
           den_nonzero := rr_mw_active_den_all_term,
-          coeff_eq := rr_scalar_coeff_all_term,
+          coeff_eq := rr_mw_coeff_all_term,
           raw_recurrence := $hraw,
           degree_lower := $hdeg_lo,
           degree_upper := $hdeg_hi)
@@ -5256,7 +5256,7 @@ macro_rules
           degree_two := $hdeg_two,
           coeff := $c,
           den_nonzero := rr_mw_active_den_all_term,
-          coeff_eq := rr_scalar_coeff_all_term,
+          coeff_eq := rr_mw_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg)
   | `(tactic|
@@ -5306,7 +5306,7 @@ macro_rules
           den := $d,
           raw_coeff := $b,
           den_nonzero := rr_mw_active_den_all_term,
-          coeff_eq := rr_scalar_coeff_all_term,
+          coeff_eq := rr_mw_coeff_all_term,
           raw_recurrence := $hraw,
           degree_lower := $hdeg_lo,
           degree_upper := $hdeg_hi)

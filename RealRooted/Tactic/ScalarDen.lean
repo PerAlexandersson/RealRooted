@@ -190,9 +190,19 @@ macro "rr_mw_active_den_at " n:term : tactic =>
 macro "rr_mw_active_den_all" : tactic =>
   `(tactic| rr_scalar_active_den_all)
 
+macro "rr_mw_coeff_at " n:term : tactic =>
+  `(tactic| rr_scalar_coeff_at $n)
+
+macro "rr_mw_coeff_all" : tactic =>
+  `(tactic| rr_scalar_coeff_all)
+
 syntax (name := rr_mw_active_den_at_term) "rr_mw_active_den_at_term " term : term
 
 syntax (name := rr_mw_active_den_all_term) "rr_mw_active_den_all_term" : term
+
+syntax (name := rr_mw_coeff_at_term) "rr_mw_coeff_at_term " term : term
+
+syntax (name := rr_mw_coeff_all_term) "rr_mw_coeff_all_term" : term
 
 syntax (name := rr_scalar_exact_or_simpa_add_assoc)
   "rr_scalar_exact_or_simpa_add_assoc" term :
@@ -207,6 +217,10 @@ macro_rules
       `(by rr_mw_active_den_at $n)
   | `(rr_mw_active_den_all_term) =>
       `(by rr_mw_active_den_all)
+  | `(rr_mw_coeff_at_term $n:term) =>
+      `(by rr_mw_coeff_at $n)
+  | `(rr_mw_coeff_all_term) =>
+      `(by rr_mw_coeff_all)
   | `(tactic| rr_scalar_exact_or_simpa_add_assoc $h:term) =>
       `(tactic|
         first
