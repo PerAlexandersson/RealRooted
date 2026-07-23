@@ -134,7 +134,8 @@ theorem nonzero_of_favard_const_coeff {P : Nat → ℝ[X]} {α β : ℝ}
     (hP1 : P 1 = X - C α)
     (hstep : ∀ n : Nat, P (n + 2) = (X - C α) * P (n + 1) - C β * P n) :
     ∀ n : Nat, P n ≠ 0 :=
-  fun n => (isRealRooted_of_favard_const_coeff hβ hP0 hP1 hstep n).1
+  ne_zero_of_isRealRooted_sequence <|
+    isRealRooted_of_favard_const_coeff hβ hP0 hP1 hstep
 
 /-- Parameterized Favard wrapper.  This packages the monic shape
 `P_{n+2} = (X - α_{n+1}) P_{n+1} - β_{n+1} P_n`, with `β_{n+1} > 0`. -/
@@ -165,7 +166,8 @@ theorem nonzero_of_favard_param_coeff {P : Nat → ℝ[X]} {α β : Nat → ℝ}
     (hstep : ∀ n : Nat,
       P (n + 2) = (X - C (α (n + 1))) * P (n + 1) - C (β (n + 1)) * P n) :
     ∀ n : Nat, P n ≠ 0 :=
-  fun n => (isRealRooted_of_favard_param_coeff hβ hP0 hP1 hstep n).1
+  ne_zero_of_isRealRooted_sequence <|
+    isRealRooted_of_favard_param_coeff hβ hP0 hP1 hstep
 
 /-- Positive-slope affine Favard wrapper.  This packages the recurring
 nonmonic Chebyshev-style shape
@@ -227,7 +229,8 @@ theorem isRealRooted_of_favard_affine_const_coeff {P : Nat → ℝ[X]} {s α β 
     (hP1 : P 1 = C s * X - C α)
     (hstep : ∀ n : Nat, P (n + 2) = (C s * X - C α) * P (n + 1) - C β * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  fun n => (favardInterlacing_affine_const_coeff hs hβ hP0 hP1 hstep n).1
+  isRealRooted_of_prec_chain_from_step <|
+    favardInterlacing_affine_const_coeff hs hβ hP0 hP1 hstep
 
 /-- Nonzero consequence of the positive-slope affine Favard wrapper. -/
 theorem nonzero_of_favard_affine_const_coeff {P : Nat → ℝ[X]} {s α β : ℝ}
@@ -237,7 +240,8 @@ theorem nonzero_of_favard_affine_const_coeff {P : Nat → ℝ[X]} {s α β : ℝ
     (hP1 : P 1 = C s * X - C α)
     (hstep : ∀ n : Nat, P (n + 2) = (C s * X - C α) * P (n + 1) - C β * P n) :
     ∀ n : Nat, P n ≠ 0 :=
-  fun n => (isRealRooted_of_favard_affine_const_coeff hs hβ hP0 hP1 hstep n).1
+  ne_zero_of_isRealRooted_sequence <|
+    isRealRooted_of_favard_affine_const_coeff hs hβ hP0 hP1 hstep
 
 /-- Positive-slope affine Favard wrapper after row-sign normalization.  This
 packages the Chebyshev-like shape
@@ -291,7 +295,8 @@ theorem isRealRooted_of_favard_affine_const_coeff_rowSign
     (hstep : ∀ n : Nat,
       P (n + 2) = -(C s * X - C α) * P (n + 1) - C β * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  fun n => (favardInterlacing_affine_const_coeff_rowSign hs hβ hP0 hP1 hstep n).1
+  isRealRooted_of_prec_chain_from_step <|
+    favardInterlacing_affine_const_coeff_rowSign hs hβ hP0 hP1 hstep
 
 /-- Nonzero consequence of row-sign normalized affine Favard. -/
 theorem nonzero_of_favard_affine_const_coeff_rowSign
@@ -303,8 +308,8 @@ theorem nonzero_of_favard_affine_const_coeff_rowSign
     (hstep : ∀ n : Nat,
       P (n + 2) = -(C s * X - C α) * P (n + 1) - C β * P n) :
     ∀ n : Nat, P n ≠ 0 :=
-  fun n =>
-    (isRealRooted_of_favard_affine_const_coeff_rowSign hs hβ hP0 hP1 hstep n).1
+  ne_zero_of_isRealRooted_sequence <|
+    isRealRooted_of_favard_affine_const_coeff_rowSign hs hβ hP0 hP1 hstep
 
 /-- Positive-slope parameterized affine Favard wrapper.  This packages
 `P_{n+2} = (s_{n+1} X - α_{n+1}) P_{n+1} - β_{n+1} P_n`, with positive
@@ -385,7 +390,8 @@ theorem isRealRooted_of_favard_affine_param_coeff
         (C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
           C (β (n + 1)) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  fun n => (favardInterlacing_affine_param_coeff hs hβ hP0 hP1 hstep n).1
+  isRealRooted_of_prec_chain_from_step <|
+    favardInterlacing_affine_param_coeff hs hβ hP0 hP1 hstep
 
 /-- Nonzero consequence of the positive-slope parameterized affine Favard
 wrapper. -/
@@ -400,7 +406,8 @@ theorem nonzero_of_favard_affine_param_coeff
         (C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
           C (β (n + 1)) * P n) :
     ∀ n : Nat, P n ≠ 0 :=
-  fun n => (isRealRooted_of_favard_affine_param_coeff hs hβ hP0 hP1 hstep n).1
+  ne_zero_of_isRealRooted_sequence <|
+    isRealRooted_of_favard_affine_param_coeff hs hβ hP0 hP1 hstep
 
 /-- Positive-slope parameterized affine Favard wrapper with a scalar left
 denominator in the displayed recurrence. -/
@@ -435,7 +442,8 @@ theorem isRealRooted_of_favard_affine_param_coeff_den
           ((C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
             C (β (n + 1)) * P n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  fun n => (favardInterlacing_affine_param_coeff_den hs hβ hP0 hP1 hden hraw n).1
+  isRealRooted_of_prec_chain_from_step <|
+    favardInterlacing_affine_param_coeff_den hs hβ hP0 hP1 hden hraw
 
 /-- Nonzero consequence of the scalar-denominator parameterized affine Favard
 wrapper. -/
@@ -452,7 +460,8 @@ theorem nonzero_of_favard_affine_param_coeff_den
           ((C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
             C (β (n + 1)) * P n)) :
     ∀ n : Nat, P n ≠ 0 :=
-  fun n => (isRealRooted_of_favard_affine_param_coeff_den hs hβ hP0 hP1 hden hraw n).1
+  ne_zero_of_isRealRooted_sequence <|
+    isRealRooted_of_favard_affine_param_coeff_den hs hβ hP0 hP1 hden hraw
 
 /-- Positive-slope parameterized affine Favard wrapper with a scalar left
 denominator distributed across the two displayed summands. -/
@@ -777,7 +786,8 @@ theorem isRealRooted_of_favard_affine_param_coeff_rowSign
         -(C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
           C (β (n + 1)) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  fun n => (favardInterlacing_affine_param_coeff_rowSign hs hβ hP0 hP1 hstep n).1
+  isRealRooted_of_prec_chain_from_step <|
+    favardInterlacing_affine_param_coeff_rowSign hs hβ hP0 hP1 hstep
 
 /-- Nonzero consequence of parameterized row-sign affine Favard. -/
 theorem nonzero_of_favard_affine_param_coeff_rowSign
@@ -791,8 +801,8 @@ theorem nonzero_of_favard_affine_param_coeff_rowSign
         -(C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
           C (β (n + 1)) * P n) :
     ∀ n : Nat, P n ≠ 0 :=
-  fun n =>
-    (isRealRooted_of_favard_affine_param_coeff_rowSign hs hβ hP0 hP1 hstep n).1
+  ne_zero_of_isRealRooted_sequence <|
+    isRealRooted_of_favard_affine_param_coeff_rowSign hs hβ hP0 hP1 hstep
 
 /-- Row-sign parameterized affine Favard wrapper with a scalar left
 denominator in the displayed recurrence. -/
