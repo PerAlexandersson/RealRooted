@@ -286,7 +286,7 @@ theorem finiteLinearProductScalarSequence_realRooted
   classical
   have hprod := isRealRooted_finset_prod_X_sub_C
     (Finset.range (rootCount n)) (roots n)
-  simpa [hroot n] using isRealRooted_C_mul hprod.1 hprod.2 (hc n)
+  simpa [hroot n] using isRealRooted_C_mul_of_isRealRooted hprod (hc n)
 
 /-- Sequence shell for identity product recurrences. -/
 theorem isRealRooted_of_product_identity_sequence
@@ -1054,7 +1054,7 @@ theorem isRealRooted_of_even_product_odd_X_scalar_sequence
       ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
     intro n
     have hfactor : C (a n) * X ≠ 0 ∧ (C (a n) * X).Splits :=
-      isRealRooted_C_mul isRealRooted_X.1 isRealRooted_X.2 (ha n)
+      isRealRooted_C_mul_of_isRealRooted isRealRooted_X (ha n)
     have hrow : (C (a n) * X) * Q n ≠ 0 ∧ ((C (a n) * X) * Q n).Splits :=
       isRealRooted_mul_of_isRealRooted hfactor (hquot n)
     simpa [hodd n, mul_assoc] using hrow
@@ -1821,7 +1821,7 @@ theorem isRealRooted_of_product_scalar_factor_sequence
         simpa using hbase
     | succ n ih =>
         have hodd : P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
-          simpa [hscalar n] using isRealRooted_C_mul ih.1 ih.2 (ha n)
+          simpa [hscalar n] using isRealRooted_C_mul_of_isRealRooted ih (ha n)
         have hnext :
             (F n * P (2 * n + 1) ≠ 0 ∧ (F n * P (2 * n + 1)).Splits) :=
           isRealRooted_mul_of_isRealRooted (hfactor n) hodd
@@ -1829,7 +1829,7 @@ theorem isRealRooted_of_product_scalar_factor_sequence
           (by simpa [hstep n] using hnext)
   have hodd : ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
     intro n
-    simpa [hscalar n] using isRealRooted_C_mul (heven n).1 (heven n).2 (ha n)
+    simpa [hscalar n] using isRealRooted_C_mul_of_isRealRooted (heven n) (ha n)
   exact isRealRooted_of_even_odd_sequence heven hodd
 
 /-- Right-factor variant of `isRealRooted_of_product_scalar_factor_sequence`. -/
@@ -1898,7 +1898,8 @@ theorem isRealRooted_of_product_scalar_factor_sequence_from
           have hm : P (2 * m) ≠ 0 ∧ (P (2 * m)).Splits :=
             ih m (Nat.lt_succ_self m)
           have hodd : P (2 * m + 1) ≠ 0 ∧ (P (2 * m + 1)).Splits := by
-            simpa [hscalar m hNm] using isRealRooted_C_mul hm.1 hm.2 (ha m hNm)
+            simpa [hscalar m hNm] using
+              isRealRooted_C_mul_of_isRealRooted hm (ha m hNm)
           have hnext :
               (F m * P (2 * m + 1) ≠ 0 ∧
                 (F m * P (2 * m + 1)).Splits) :=
@@ -1911,7 +1912,7 @@ theorem isRealRooted_of_product_scalar_factor_sequence_from
     · exact hbase (2 * n + 1) (by lia)
     · have hNn : N ≤ n := by lia
       simpa [hscalar n hNn] using
-        isRealRooted_C_mul (heven n).1 (heven n).2 (ha n hNn)
+        isRealRooted_C_mul_of_isRealRooted (heven n) (ha n hNn)
   exact isRealRooted_of_even_odd_sequence heven hodd
 
 /-- Right-factor variant of
