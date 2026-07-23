@@ -413,7 +413,7 @@ example {P : Nat → ℝ[X]} {β : ℝ}
     slope := 2,
     alpha := 0,
     beta := β,
-    slope_pos := (by norm_num : 0 < (2 : ℝ)),
+    slope_pos := rr_positivity_term,
     beta_pos := hβ,
     base_zero := hP0,
     base_one := hP1,
@@ -489,7 +489,7 @@ example {P : Nat → ℝ[X]}
   rr_favard_param using
     alpha := αfun,
     beta := βfun,
-    beta_pos := (by intro n; positivity),
+    beta_pos := rr_positivity_seq_term,
     base_zero := hP0,
     base_one := hP1',
     step := hstep'
@@ -553,8 +553,8 @@ example {P : Nat → ℝ[X]}
     slope := sfun,
     alpha := αfun,
     beta := βfun,
-    slope_pos := (by intro n; positivity),
-    beta_pos := (by intro n; positivity),
+    slope_pos := rr_positivity_seq_term,
+    beta_pos := rr_positivity_seq_term,
     base_zero := hP0,
     base_one := hP1',
     step := hstep'
