@@ -44,7 +44,7 @@ theorem derivative_sequence_ne_zero
     {P : Nat → ℝ[X]}
     (hdeg : ∀ i : Nat, (P i).natDegree ≠ 0) :
     ∀ i : Nat, (P i).derivative ≠ 0 := fun i =>
-  RealRooted.derivative_ne_zero_of_natDegree_ne_zero (hdeg i)
+  Polynomial.derivative_ne_zero.mpr (hdeg i)
 
 syntax (name := rr_derivative_interlaces_named)
   "rr_derivative_interlaces" " using "
@@ -177,14 +177,14 @@ macro_rules
   | `(tactic|
       rr_derivative_ne_zero using
         degree_ne_zero := $hdeg:term) =>
-      `(tactic| exact RealRooted.derivative_ne_zero_of_natDegree_ne_zero $hdeg)
+      `(tactic| exact Polynomial.derivative_ne_zero.mpr $hdeg)
   | `(tactic|
       rr_derivative_sequence_ne_zero using
         degree_ne_zero := $hdeg:term) =>
       `(tactic| exact RealRooted.Tactic.derivative_sequence_ne_zero $hdeg)
   | `(tactic| rr_derivative_ne_zero) =>
       `(tactic|
-        exact RealRooted.derivative_ne_zero_of_natDegree_ne_zero (by rr_close_side))
+        exact Polynomial.derivative_ne_zero.mpr (by rr_close_side))
 
 end Tactic
 end RealRooted
