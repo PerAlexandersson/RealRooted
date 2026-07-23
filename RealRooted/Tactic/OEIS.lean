@@ -1572,12 +1572,28 @@ syntax (name := rr_product_lift_sequence_const_first_affine_pow_auto_cutoff)
 macro "rr_oeis_active_den_all" : tactic =>
   `(tactic| rr_scalar_active_den_all)
 
+macro "rr_oeis_coeff_at " n:term : tactic =>
+  `(tactic| rr_scalar_coeff_at $n)
+
+macro "rr_oeis_coeff_all" : tactic =>
+  `(tactic| rr_scalar_coeff_all)
+
 syntax (name := rr_oeis_active_den_all_term)
   "rr_oeis_active_den_all_term" : term
+
+syntax (name := rr_oeis_coeff_at_term)
+  "rr_oeis_coeff_at_term " term : term
+
+syntax (name := rr_oeis_coeff_all_term)
+  "rr_oeis_coeff_all_term" : term
 
 macro_rules
   | `(rr_oeis_active_den_all_term) =>
       `(by rr_oeis_active_den_all)
+  | `(rr_oeis_coeff_at_term $n:term) =>
+      `(by rr_oeis_coeff_at $n)
+  | `(rr_oeis_coeff_all_term) =>
+      `(by rr_oeis_coeff_all)
   | `(tactic|
       rr_h_second_derivative_sequence using
         route := finite_symbol,
@@ -3466,7 +3482,7 @@ macro_rules
           coeff := $c,
           raw_coeff := $b,
           den := $d,
-          coeff_eq := rr_scalar_coeff_all_term,
+          coeff_eq := rr_oeis_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno,
@@ -3520,7 +3536,7 @@ macro_rules
           raw_coeff := $b,
           den := $d,
           den_nonzero := $hden,
-          coeff_eq := rr_scalar_coeff_all_term,
+          coeff_eq := rr_oeis_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno,
@@ -3572,7 +3588,7 @@ macro_rules
           coeff := $c,
           raw_coeff := $b,
           den := $d,
-          coeff_eq := rr_scalar_coeff_all_term,
+          coeff_eq := rr_oeis_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno,
@@ -3626,7 +3642,7 @@ macro_rules
           raw_coeff := $b,
           den := $d,
           den_nonzero := $hden,
-          coeff_eq := rr_scalar_coeff_all_term,
+          coeff_eq := rr_oeis_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno,
@@ -3684,9 +3700,9 @@ macro_rules
           raw_linear := $braw,
           raw_constant := $craw,
           den := $d,
-          leading_coeff_eq := rr_scalar_coeff_all_term,
-          linear_coeff_eq := rr_scalar_coeff_all_term,
-          constant_coeff_eq := rr_scalar_coeff_all_term,
+          leading_coeff_eq := rr_oeis_coeff_all_term,
+          linear_coeff_eq := rr_oeis_coeff_all_term,
+          constant_coeff_eq := rr_oeis_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno,
@@ -3756,9 +3772,9 @@ macro_rules
           raw_constant := $craw,
           den := $d,
           den_nonzero := $hden,
-          leading_coeff_eq := rr_scalar_coeff_all_term,
-          linear_coeff_eq := rr_scalar_coeff_all_term,
-          constant_coeff_eq := rr_scalar_coeff_all_term,
+          leading_coeff_eq := rr_oeis_coeff_all_term,
+          linear_coeff_eq := rr_oeis_coeff_all_term,
+          constant_coeff_eq := rr_oeis_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno,
@@ -3826,9 +3842,9 @@ macro_rules
           raw_linear := $braw,
           raw_constant := $craw,
           den := $d,
-          leading_coeff_eq := rr_scalar_coeff_all_term,
-          linear_coeff_eq := rr_scalar_coeff_all_term,
-          constant_coeff_eq := rr_scalar_coeff_all_term,
+          leading_coeff_eq := rr_oeis_coeff_all_term,
+          linear_coeff_eq := rr_oeis_coeff_all_term,
+          constant_coeff_eq := rr_oeis_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno,
@@ -3898,9 +3914,9 @@ macro_rules
           raw_constant := $craw,
           den := $d,
           den_nonzero := $hden,
-          leading_coeff_eq := rr_scalar_coeff_all_term,
-          linear_coeff_eq := rr_scalar_coeff_all_term,
-          constant_coeff_eq := rr_scalar_coeff_all_term,
+          leading_coeff_eq := rr_oeis_coeff_all_term,
+          linear_coeff_eq := rr_oeis_coeff_all_term,
+          constant_coeff_eq := rr_oeis_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno,
@@ -4354,8 +4370,8 @@ macro_rules
           den := $d,
           raw_deriv_coeff := $b,
           raw_lag_coeff := $e,
-          deriv_coeff_eq := rr_scalar_coeff_all_term,
-          lag_coeff_eq := rr_scalar_coeff_all_term,
+          deriv_coeff_eq := rr_oeis_coeff_all_term,
+          lag_coeff_eq := rr_oeis_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno,
@@ -4431,8 +4447,8 @@ macro_rules
           raw_deriv_coeff := $b,
           raw_lag_coeff := $e,
           den_nonzero := $hden,
-          deriv_coeff_eq := rr_scalar_coeff_all_term,
-          lag_coeff_eq := rr_scalar_coeff_all_term,
+          deriv_coeff_eq := rr_oeis_coeff_all_term,
+          lag_coeff_eq := rr_oeis_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno,
@@ -4506,8 +4522,8 @@ macro_rules
           den := $d,
           raw_deriv_coeff := $b,
           raw_lag_coeff := $e,
-          deriv_coeff_eq := rr_scalar_coeff_all_term,
-          lag_coeff_eq := rr_scalar_coeff_all_term,
+          deriv_coeff_eq := rr_oeis_coeff_all_term,
+          lag_coeff_eq := rr_oeis_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno,
@@ -4583,8 +4599,8 @@ macro_rules
           raw_deriv_coeff := $b,
           raw_lag_coeff := $e,
           den_nonzero := $hden,
-          deriv_coeff_eq := rr_scalar_coeff_all_term,
-          lag_coeff_eq := rr_scalar_coeff_all_term,
+          deriv_coeff_eq := rr_oeis_coeff_all_term,
+          lag_coeff_eq := rr_oeis_coeff_all_term,
           raw_recurrence := $hraw,
           degree_succ := $hdeg_succ,
           no_common_roots := $hno,

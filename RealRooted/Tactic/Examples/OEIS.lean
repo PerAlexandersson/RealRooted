@@ -20,6 +20,18 @@ example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 := by
 example : ∀ n : Nat, ((n : ℝ) + 1) ≠ 0 :=
   rr_oeis_active_den_all_term
 
+example {n : Nat} : ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 := by
+  rr_oeis_coeff_at n
+
+example : ∀ n : Nat, ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 := by
+  rr_oeis_coeff_all
+
+example {n : Nat} : ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 :=
+  rr_oeis_coeff_at_term n
+
+example : ∀ n : Nat, ((n : ℝ) + 3)⁻¹ * ((n : ℝ) + 3) = 1 :=
+  rr_oeis_coeff_all_term
+
 /-- Root-bound row-family exit exposed through the OEIS facade. -/
 example {P : Nat → ℝ[X]}
     (hrr : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits)
