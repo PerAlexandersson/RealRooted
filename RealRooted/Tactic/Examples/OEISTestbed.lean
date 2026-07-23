@@ -1247,7 +1247,7 @@ example {P : Nat → ℝ[X]}
     raw_const := fun n => 3 - 2 * ((n : ℝ) + 3),
     raw_lag := fun n => -2 + ((n : ℝ) + 3),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := fun n => 1 - ((n : ℝ) + 3),
     raw_recurrence := hraw
 
@@ -1269,7 +1269,7 @@ example {P : Nat → ℝ[X]}
     raw_const := fun n => 9 - 6 * ((n : ℝ) + 3),
     raw_lag := fun n => -2 + ((n : ℝ) + 3),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := fun n => 1 - ((n : ℝ) + 3),
     raw_recurrence := hraw
 
@@ -1485,7 +1485,7 @@ example {P : Nat → ℝ[X]}
     alpha := -3,
     beta := 2,
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     step := hstep
 
 -- `A199577`: shifted active shell

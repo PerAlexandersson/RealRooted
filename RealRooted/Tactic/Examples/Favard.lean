@@ -593,7 +593,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ}
     alpha := fun m : Nat => (m : ℝ),
     beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := d,
     den_nonzero := hden,
     raw_recurrence := hraw
@@ -614,7 +614,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ} {n : Nat}
     alpha := fun m : Nat => (m : ℝ),
     beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := d,
     den_nonzero := hden,
     raw_recurrence := hraw
@@ -634,7 +634,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ} {n : Nat}
     alpha := fun m : Nat => (m : ℝ),
     beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := d,
     den_nonzero := hden,
     raw_recurrence := hraw
@@ -655,7 +655,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ}
     alpha := fun m : Nat => (m : ℝ),
     beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := d,
     den_nonzero := hden,
     raw_recurrence := hraw
@@ -676,7 +676,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ} {n : Nat}
     alpha := fun m : Nat => (m : ℝ),
     beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := d,
     den_nonzero := hden,
     raw_recurrence := hraw
@@ -696,7 +696,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ}
     alpha := fun m : Nat => (m : ℝ),
     beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := d,
     den_nonzero := hden,
     raw_recurrence := hraw
@@ -766,7 +766,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ}
     alpha := fun m : Nat => (m : ℝ),
     beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := d,
     den_nonzero := hden,
     raw_recurrence := hraw
@@ -789,7 +789,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ} {n : Nat}
       intro n
       positivity,
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := d,
     den_nonzero := hden,
     raw_recurrence := hraw
@@ -807,7 +807,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ}
     slope := fun _ : Nat => (2 : ℝ),
     alpha := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := d,
     den_nonzero := hden,
     raw_recurrence := hraw
@@ -829,7 +829,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ} {n : Nat}
       intro n
       positivity,
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := d,
     den_nonzero := hden,
     raw_recurrence := hraw
@@ -846,7 +846,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ}
   rr_favard_param_den_unit using
     alpha := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := d,
     den_nonzero := hden,
     raw_recurrence := hraw
@@ -867,7 +867,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ}
     alpha := fun m : Nat => (m : ℝ),
     beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := d,
     den_nonzero := hden,
     raw_recurrence := hraw
@@ -889,7 +889,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ}
     alpha := fun m : Nat => (m : ℝ),
     beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := d,
     den_nonzero := hden,
     raw_recurrence := hraw
@@ -910,7 +910,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ}
     alpha := fun m : Nat => (m : ℝ),
     beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := d,
     den_nonzero := hden,
     raw_recurrence := hraw
@@ -931,7 +931,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ} {n : Nat}
     alpha := fun m : Nat => (m : ℝ),
     beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := d,
     den_nonzero := hden,
     raw_recurrence := hraw
@@ -952,7 +952,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ}
     alpha := fun m : Nat => (m : ℝ),
     beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := d,
     den_nonzero := hden,
     raw_recurrence := hraw
@@ -971,7 +971,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ}
     alpha := fun m : Nat => (m : ℝ),
     beta := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := d,
     den_nonzero := hden,
     raw_recurrence := hraw
@@ -994,7 +994,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ} {n : Nat}
       intro n
       positivity,
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := d,
     den_nonzero := hden,
     raw_recurrence := hraw
@@ -1012,7 +1012,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ}
     slope := fun _ : Nat => (2 : ℝ),
     alpha := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := d,
     den_nonzero := hden,
     raw_recurrence := hraw
@@ -1034,7 +1034,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ} {n : Nat}
       intro n
       positivity,
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := d,
     den_nonzero := hden,
     raw_recurrence := hraw
@@ -1051,7 +1051,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ}
   rr_favard_param_row_sign_den_unit using
     alpha := fun m : Nat => (m : ℝ),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := d,
     den_nonzero := hden,
     raw_recurrence := hraw
@@ -1098,7 +1098,7 @@ example {P : Nat → ℝ[X]}
     raw_const := fun n : Nat => (n.succ : ℝ),
     raw_lag := fun n : Nat => -(n.succ : ℝ),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := fun _ : Nat => (1 : ℝ),
     raw_recurrence := hraw
 
@@ -1168,7 +1168,7 @@ example {P : Nat → ℝ[X]}
     raw_const := fun n : Nat => -(n.succ : ℝ),
     raw_lag := fun n : Nat => -(n.succ : ℝ),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := fun _ : Nat => (1 : ℝ),
     raw_recurrence := hraw
 
@@ -1187,7 +1187,7 @@ example {P : Nat → ℝ[X]} {n : Nat}
     raw_const := fun n : Nat => -(n.succ : ℝ),
     raw_lag := fun _ : Nat => (-1 : ℝ),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := fun _ : Nat => (1 : ℝ),
     raw_recurrence := hraw
 
@@ -1207,7 +1207,7 @@ example {P : Nat → ℝ[X]}
     raw_const := fun n : Nat => (n.succ : ℝ),
     raw_lag := fun n : Nat => -(n.succ : ℝ),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := fun _ : Nat => (1 : ℝ),
     raw_recurrence := hraw
 
@@ -1226,7 +1226,7 @@ example {P : Nat → ℝ[X]}
     raw_const := fun n : Nat => (n.succ : ℝ),
     raw_lag := fun _ : Nat => (-1 : ℝ),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := fun _ : Nat => (1 : ℝ),
     raw_recurrence := hraw
 
@@ -1282,7 +1282,7 @@ example {P : Nat → ℝ[X]}
     raw_const := fun n : Nat => -(n.succ : ℝ),
     raw_lag := fun n : Nat => -((n : ℝ) + 2),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := fun _ : Nat => (1 : ℝ),
     raw_recurrence := hraw
 
@@ -1332,7 +1332,7 @@ example {P : Nat → ℝ[X]}
     raw_const := fun n : Nat => -(n.succ : ℝ),
     raw_lag := fun _ : Nat => (-1 : ℝ),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := fun _ : Nat => (1 : ℝ),
     raw_recurrence := hraw
 
@@ -1355,7 +1355,7 @@ example {P : Nat → ℝ[X]} {n : Nat}
       intro n
       positivity,
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := fun _ : Nat => (1 : ℝ),
     raw_recurrence := hraw
 
@@ -1491,7 +1491,7 @@ example {P : Nat → ℝ[X]}
       intro n
       positivity,
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := fun _ : Nat => (1 : ℝ),
     raw_recurrence := hraw
 
@@ -1541,7 +1541,7 @@ example {P : Nat → ℝ[X]}
     raw_const := fun n : Nat => (n.succ : ℝ),
     raw_lag := fun _ : Nat => (-1 : ℝ),
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := fun _ : Nat => (1 : ℝ),
     raw_recurrence := hraw
 
@@ -1564,7 +1564,7 @@ example {P : Nat → ℝ[X]}
       intro n
       positivity,
     base_zero := hP0,
-    base_one := by simpa using hP1,
+    base_one := rr_favard_base_one hP1,
     den := fun _ : Nat => (1 : ℝ),
     raw_recurrence := hraw
 
