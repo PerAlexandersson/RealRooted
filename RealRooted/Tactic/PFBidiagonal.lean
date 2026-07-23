@@ -520,6 +520,91 @@ def bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
       bidiagonalJensenPencil_factor_of_endpoint_factors halpha hbeta lam)
     hA hB hS
 
+/-- Build a rowwise bundled cubic-residual certificate sequence from its
+arithmetic leaves. -/
+def bidiagonalCubicResidualCertificate_sequence_of_cubicResidual
+    {alpha beta : Nat → ℕ → ℝ} {d m : Nat → ℕ}
+    {A B : Nat → ℝ[X]} {S : Nat → ℝ → ℝ[X]}
+    (halpha : ∀ n : Nat,
+      jensenPolynomial (d n) (alpha n) = ((X + 1 : ℝ[X]) ^ m n) * A n)
+    (hbeta : ∀ n : Nat,
+      X * jensenPolynomial (d n) (beta n) =
+        ((X + 1 : ℝ[X]) ^ m n) * B n)
+    (hpencil : ∀ n : Nat, ∀ lam : ℝ, 0 ≤ lam →
+      bidiagonalJensenPencil (alpha n) (beta n) (d n) lam =
+        ((X + 1 : ℝ[X]) ^ m n) * S n lam)
+    (hA : ∀ n : Nat, CubicPFDiscriminantCertificate (A n))
+    (hB : ∀ n : Nat, CubicPFDiscriminantCertificate (B n))
+    (hS : ∀ n : Nat, ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate (S n lam)) :
+    ∀ n : Nat, BidiagonalCubicResidualCertificate (alpha n) (beta n) (d n) :=
+  fun n =>
+    bidiagonalCubicResidualCertificate_of_cubicResidual
+      (halpha n) (hbeta n) (hpencil n) (hA n) (hB n) (hS n)
+
+/-- Tail-start version of
+`bidiagonalCubicResidualCertificate_sequence_of_cubicResidual`. -/
+def bidiagonalCubicResidualCertificate_sequence_of_cubicResidual_from
+    {alpha beta : Nat → ℕ → ℝ} {d m : Nat → ℕ}
+    {A B : Nat → ℝ[X]} {S : Nat → ℝ → ℝ[X]}
+    (N : Nat)
+    (halpha : ∀ n : Nat, N ≤ n →
+      jensenPolynomial (d n) (alpha n) = ((X + 1 : ℝ[X]) ^ m n) * A n)
+    (hbeta : ∀ n : Nat, N ≤ n →
+      X * jensenPolynomial (d n) (beta n) =
+        ((X + 1 : ℝ[X]) ^ m n) * B n)
+    (hpencil : ∀ n : Nat, N ≤ n → ∀ lam : ℝ, 0 ≤ lam →
+      bidiagonalJensenPencil (alpha n) (beta n) (d n) lam =
+        ((X + 1 : ℝ[X]) ^ m n) * S n lam)
+    (hA : ∀ n : Nat, N ≤ n → CubicPFDiscriminantCertificate (A n))
+    (hB : ∀ n : Nat, N ≤ n → CubicPFDiscriminantCertificate (B n))
+    (hS : ∀ n : Nat, N ≤ n → ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate (S n lam)) :
+    ∀ n : Nat, N ≤ n →
+      BidiagonalCubicResidualCertificate (alpha n) (beta n) (d n) :=
+  fun n hn =>
+    bidiagonalCubicResidualCertificate_of_cubicResidual
+      (halpha n hn) (hbeta n hn) (hpencil n hn)
+      (hA n hn) (hB n hn) (hS n hn)
+
+/-- Build a rowwise bundled cubic-residual certificate sequence from endpoint
+factorizations and the derived residual pencil `A n + C lam * B n`. -/
+def bidiagonalCubicResidualCertificate_sequence_of_endpoint_cubicResidual
+    {alpha beta : Nat → ℕ → ℝ} {d m : Nat → ℕ} {A B : Nat → ℝ[X]}
+    (halpha : ∀ n : Nat,
+      jensenPolynomial (d n) (alpha n) = ((X + 1 : ℝ[X]) ^ m n) * A n)
+    (hbeta : ∀ n : Nat,
+      X * jensenPolynomial (d n) (beta n) =
+        ((X + 1 : ℝ[X]) ^ m n) * B n)
+    (hA : ∀ n : Nat, CubicPFDiscriminantCertificate (A n))
+    (hB : ∀ n : Nat, CubicPFDiscriminantCertificate (B n))
+    (hS : ∀ n : Nat, ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate (A n + C lam * B n)) :
+    ∀ n : Nat, BidiagonalCubicResidualCertificate (alpha n) (beta n) (d n) :=
+  fun n =>
+    bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
+      (halpha n) (hbeta n) (hA n) (hB n) (hS n)
+
+/-- Tail-start version of
+`bidiagonalCubicResidualCertificate_sequence_of_endpoint_cubicResidual`. -/
+def bidiagonalCubicResidualCertificate_sequence_of_endpoint_cubicResidual_from
+    {alpha beta : Nat → ℕ → ℝ} {d m : Nat → ℕ} {A B : Nat → ℝ[X]}
+    (N : Nat)
+    (halpha : ∀ n : Nat, N ≤ n →
+      jensenPolynomial (d n) (alpha n) = ((X + 1 : ℝ[X]) ^ m n) * A n)
+    (hbeta : ∀ n : Nat, N ≤ n →
+      X * jensenPolynomial (d n) (beta n) =
+        ((X + 1 : ℝ[X]) ^ m n) * B n)
+    (hA : ∀ n : Nat, N ≤ n → CubicPFDiscriminantCertificate (A n))
+    (hB : ∀ n : Nat, N ≤ n → CubicPFDiscriminantCertificate (B n))
+    (hS : ∀ n : Nat, N ≤ n → ∀ lam : ℝ, 0 ≤ lam →
+      CubicPFDiscriminantCertificate (A n + C lam * B n)) :
+    ∀ n : Nat, N ≤ n →
+      BidiagonalCubicResidualCertificate (alpha n) (beta n) (d n) :=
+  fun n hn =>
+    bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
+      (halpha n hn) (hbeta n hn) (hA n hn) (hB n hn) (hS n hn)
+
 /-- Cubic-residual certificate specialized to quadratic Jensen coefficient functions. -/
 def quadraticBidiagonalCubicResidualCertificate
     (aa ab ac ba bb bc : ℝ) {d : ℕ} (hd : 2 ≤ d)
@@ -1163,9 +1248,8 @@ theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidual
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidualCertificate
     hbackend hbase hdeg
-    (fun n =>
-      bidiagonalCubicResidualCertificate_of_cubicResidual
-        (halpha n) (hbeta n) (hpencil n) (hA n) (hB n) (hS n))
+    (bidiagonalCubicResidualCertificate_sequence_of_cubicResidual
+      halpha hbeta hpencil hA hB hS)
     hrec
 
 /-- Tail-start version of
@@ -1194,10 +1278,8 @@ theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidual_from
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidualCertificate_from
     hbackend N hbase hdeg
-    (fun n hn =>
-      bidiagonalCubicResidualCertificate_of_cubicResidual
-        (halpha n hn) (hbeta n hn) (hpencil n hn)
-        (hA n hn) (hB n hn) (hS n hn))
+    (bidiagonalCubicResidualCertificate_sequence_of_cubicResidual_from
+      N halpha hbeta hpencil hA hB hS)
     hrec
 
 /-- Sequence wrapper whose residual pencil is derived from the endpoint
@@ -1222,9 +1304,8 @@ theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_endpoint_cubicResidual
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidualCertificate
     hbackend hbase hdeg
-    (fun n =>
-      bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
-        (halpha n) (hbeta n) (hA n) (hB n) (hS n))
+    (bidiagonalCubicResidualCertificate_sequence_of_endpoint_cubicResidual
+      halpha hbeta hA hB hS)
     hrec
 
 /-- Tail-start version of
@@ -1250,9 +1331,8 @@ theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_endpoint_cubicResidual_
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidualCertificate_from
     hbackend N hbase hdeg
-    (fun n hn =>
-      bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
-        (halpha n hn) (hbeta n hn) (hA n hn) (hB n hn) (hS n hn))
+    (bidiagonalCubicResidualCertificate_sequence_of_endpoint_cubicResidual_from
+      N halpha hbeta hA hB hS)
     hrec
 
 /-- Sequence wrapper for Family H-style second-derivative recurrences.
@@ -1504,9 +1584,8 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicResidu
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_norm
     hbackend hbase hdeg
-    (fun n =>
-      bidiagonalCubicResidualCertificate_of_cubicResidual
-        (halpha n) (hbeta n) (hpencil n) (hA n) (hB n) (hS n))
+    (bidiagonalCubicResidualCertificate_sequence_of_cubicResidual
+      halpha hbeta hpencil hA hB hS)
     hnorm hrec
 
 /-- Tail-start version of
@@ -1543,10 +1622,8 @@ theorem
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_norm_from
     hbackend N hbase hdeg
-    (fun n hn =>
-      bidiagonalCubicResidualCertificate_of_cubicResidual
-        (halpha n hn) (hbeta n hn) (hpencil n hn)
-        (hA n hn) (hB n hn) (hS n hn))
+    (bidiagonalCubicResidualCertificate_sequence_of_cubicResidual_from
+      N halpha hbeta hpencil hA hB hS)
     hnorm hrec
 
 /-- Normalized second-derivative sequence wrapper whose residual pencil is
@@ -1578,9 +1655,8 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_endpoint_cu
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_norm
     hbackend hbase hdeg
-    (fun n =>
-      bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
-        (halpha n) (hbeta n) (hA n) (hB n) (hS n))
+    (bidiagonalCubicResidualCertificate_sequence_of_endpoint_cubicResidual
+      halpha hbeta hA hB hS)
     hnorm hrec
 
 /-- Tail-start version of
@@ -1614,9 +1690,8 @@ theorem
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_norm_from
     hbackend N hbase hdeg
-    (fun n hn =>
-      bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual
-        (halpha n hn) (hbeta n hn) (hA n hn) (hB n hn) (hS n hn))
+    (bidiagonalCubicResidualCertificate_sequence_of_endpoint_cubicResidual_from
+      N halpha hbeta hA hB hS)
     hnorm hrec
 
 namespace Tactic
