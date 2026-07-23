@@ -1127,6 +1127,14 @@ theorem prec_endpoint_X_then_sum_step {a b : ℝ[X]}
       zero_le_one zero_le_one (Or.inl zero_lt_one)
   simpa [add_assoc] using hnext_raw
 
+private def endpointPairPackage (A B : Nat → ℝ[X]) (n : Nat) : Prop :=
+  Prec (A n) (B n) ∧ HasNonnegCoeffs (A n) ∧ HasNonnegCoeffs (B n)
+
+private theorem prec_sequence_of_endpointPairPackage {A B : Nat → ℝ[X]}
+    (hpack : ∀ n : Nat, endpointPairPackage A B n) :
+    ∀ n : Nat, Prec (A n) (B n) :=
+  fun n => (hpack n).1
+
 /-- Pair-sequence endpoint quotient shell.
 
 This is the quotient recurrence after removing endpoint powers when the
@@ -1141,9 +1149,7 @@ theorem prec_endpoint_sum_then_X_pair_sequence
     (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A (n + 1))
     (hcop : ∀ n : Nat, IsCoprime (B n) (X * A (n + 1))) :
     ∀ n : Nat, Prec (A n) (B n) := by
-  have hpack :
-      ∀ n : Nat,
-        Prec (A n) (B n) ∧ HasNonnegCoeffs (A n) ∧ HasNonnegCoeffs (B n) := by
+  have hpack : ∀ n : Nat, endpointPairPackage A B n := by
     intro n
     induction n with
     | zero =>
@@ -1163,7 +1169,7 @@ theorem prec_endpoint_sum_then_X_pair_sequence
           rw [hstepB n]
           rr_nonneg_coeffs
         exact ⟨hprec_next, hA_nonneg_next, hB_nonneg_next⟩
-  exact fun n => (hpack n).1
+  exact prec_sequence_of_endpointPairPackage hpack
 
 /-- Real-rootedness corollary for
 `prec_endpoint_sum_then_X_pair_sequence`. -/
@@ -1193,9 +1199,7 @@ theorem prec_endpoint_X_then_sum_pair_sequence
     (hstepA : ∀ n : Nat, A (n + 1) = A n + B (n + 1))
     (hcop : ∀ n : Nat, IsCoprime (B n) (X * A n)) :
     ∀ n : Nat, Prec (A n) (B n) := by
-  have hpack :
-      ∀ n : Nat,
-        Prec (A n) (B n) ∧ HasNonnegCoeffs (A n) ∧ HasNonnegCoeffs (B n) := by
+  have hpack : ∀ n : Nat, endpointPairPackage A B n := by
     intro n
     induction n with
     | zero =>
@@ -1213,7 +1217,7 @@ theorem prec_endpoint_X_then_sum_pair_sequence
           rw [hstepA n]
           rr_nonneg_coeffs
         exact ⟨hprec_next, hA_nonneg_next, hB_nonneg_next⟩
-  exact fun n => (hpack n).1
+  exact prec_sequence_of_endpointPairPackage hpack
 
 /-- Real-rootedness corollary for
 `prec_endpoint_X_then_sum_pair_sequence`. -/
