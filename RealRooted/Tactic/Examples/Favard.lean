@@ -785,9 +785,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ} {n : Nat}
   rr_favard_param_den using
     alpha := fun m : Nat => (m : ℝ),
     beta := fun m : Nat => (m : ℝ),
-    beta_pos := by
-      intro n
-      positivity,
+    beta_pos := rr_positivity_seq_term,
     base_zero := hP0,
     base_one := rr_favard_base_one hP1,
     den := d,
@@ -825,9 +823,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ} {n : Nat}
   rr_favard_affine_param_den_unit using
     slope := fun _ : Nat => (2 : ℝ),
     alpha := fun m : Nat => (m : ℝ),
-    slope_pos := by
-      intro n
-      positivity,
+    slope_pos := rr_positivity_seq_term,
     base_zero := hP0,
     base_one := rr_favard_base_one hP1,
     den := d,
@@ -990,9 +986,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ} {n : Nat}
   rr_favard_param_row_sign_den using
     alpha := fun m : Nat => (m : ℝ),
     beta := fun m : Nat => (m : ℝ),
-    beta_pos := by
-      intro n
-      positivity,
+    beta_pos := rr_positivity_seq_term,
     base_zero := hP0,
     base_one := rr_favard_base_one hP1,
     den := d,
@@ -1030,9 +1024,7 @@ example {P : Nat → ℝ[X]} {d : Nat → ℝ} {n : Nat}
   rr_favard_affine_param_row_sign_den_unit using
     slope := fun _ : Nat => (2 : ℝ),
     alpha := fun m : Nat => (m : ℝ),
-    slope_pos := by
-      intro n
-      positivity,
+    slope_pos := rr_positivity_seq_term,
     base_zero := hP0,
     base_one := rr_favard_base_one hP1,
     den := d,
@@ -1254,12 +1246,8 @@ example {P : Nat → ℝ[X]}
     raw_slope := fun _ : Nat => (2 : ℝ),
     raw_const := fun n : Nat => -(n.succ : ℝ),
     raw_lag := fun n : Nat => -((n : ℝ) + 2),
-    slope_pos := by
-      intro n
-      positivity,
-    beta_pos := by
-      intro n
-      positivity,
+    slope_pos := rr_positivity_seq_term,
+    beta_pos := rr_positivity_seq_term,
     base_zero := hP0,
     base_one := rr_favard_base_one_dsimp hP1,
     den := fun _ : Nat => (1 : ℝ),
@@ -1305,12 +1293,8 @@ example {P : Nat → ℝ[X]} {n : Nat}
     raw_const := fun n : Nat => -((n : ℝ) + 1),
     raw_lag_left := fun _ : Nat => (-1 : ℝ),
     raw_lag_right := fun n : Nat => (n : ℝ) + 2,
-    slope_pos := by
-      intro n
-      positivity,
-    beta_pos := by
-      intro n
-      positivity,
+    slope_pos := rr_positivity_seq_term,
+    beta_pos := rr_positivity_seq_term,
     base_zero := hP0,
     base_one := rr_favard_base_one_dsimp hP1,
     den := fun _ : Nat => (1 : ℝ),
@@ -1351,9 +1335,7 @@ example {P : Nat → ℝ[X]} {n : Nat}
     raw_slope := fun _ : Nat => (1 : ℝ),
     raw_const := fun n : Nat => -(n.succ : ℝ),
     raw_lag := fun n : Nat => -(n.succ : ℝ),
-    beta_pos := by
-      intro n
-      positivity,
+    beta_pos := rr_positivity_seq_term,
     base_zero := hP0,
     base_one := rr_favard_base_one hP1,
     den := fun _ : Nat => (1 : ℝ),
@@ -1484,12 +1466,8 @@ example {P : Nat → ℝ[X]}
     raw_slope := fun _ : Nat => (-2 : ℝ),
     raw_const := fun n : Nat => (n.succ : ℝ),
     raw_lag := fun n : Nat => -(n.succ : ℝ),
-    slope_pos := by
-      intro n
-      positivity,
-    beta_pos := by
-      intro n
-      positivity,
+    slope_pos := rr_positivity_seq_term,
+    beta_pos := rr_positivity_seq_term,
     base_zero := hP0,
     base_one := rr_favard_base_one hP1,
     den := fun _ : Nat => (1 : ℝ),
@@ -1514,12 +1492,8 @@ example {P : Nat → ℝ[X]} {n : Nat}
     raw_const := fun n : Nat => (n : ℝ) + 1,
     raw_lag_left := fun _ : Nat => (-1 : ℝ),
     raw_lag_right := fun n : Nat => (n : ℝ) + 2,
-    slope_pos := by
-      intro n
-      positivity,
-    beta_pos := by
-      intro n
-      positivity,
+    slope_pos := rr_positivity_seq_term,
+    beta_pos := rr_positivity_seq_term,
     base_zero := hP0,
     base_one := rr_favard_base_one_dsimp hP1,
     den := fun _ : Nat => (1 : ℝ),
@@ -1560,9 +1534,7 @@ example {P : Nat → ℝ[X]}
     raw_slope := fun _ : Nat => (-1 : ℝ),
     raw_const := fun n : Nat => (n.succ : ℝ),
     raw_lag := fun n : Nat => -(n.succ : ℝ),
-    beta_pos := by
-      intro n
-      positivity,
+    beta_pos := rr_positivity_seq_term,
     base_zero := hP0,
     base_one := rr_favard_base_one hP1,
     den := fun _ : Nat => (1 : ℝ),
