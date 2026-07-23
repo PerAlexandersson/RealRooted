@@ -828,21 +828,9 @@ theorem secondDerivativeBidiagonalPFPreserver_of_residual_certificate
       (secondDerivativeAlpha a0 b1 c2)
       (secondDerivativeBeta a1 b2) d := by
   have halpha' : ∀ n, 0 ≤ quadraticJensenWeight c2 (b1 - c2) a0 n := by
-    intro n
-    have hval : quadraticJensenWeight c2 (b1 - c2) a0 n =
-        secondDerivativeAlpha a0 b1 c2 n := by
-      simp [secondDerivativeAlpha, quadraticJensenWeight]
-      ring
-    rw [hval]
-    exact halpha n
+    simpa [← secondDerivativeAlpha_eq_quadraticJensenWeight a0 b1 c2] using halpha
   have hbeta' : ∀ n, 0 ≤ quadraticJensenWeight 0 b2 a1 n := by
-    intro n
-    have hval : quadraticJensenWeight 0 b2 a1 n =
-        secondDerivativeBeta a1 b2 n := by
-      simp [secondDerivativeBeta, quadraticJensenWeight]
-      ring
-    rw [hval]
-    exact hbeta n
+    simpa [← secondDerivativeBeta_eq_quadraticJensenWeight a1 b2] using hbeta
   rw [secondDerivativeAlpha_eq_quadraticJensenWeight]
   rw [secondDerivativeBeta_eq_quadraticJensenWeight]
   exact quadraticBidiagonalPFPreserver_of_residual_certificate hBB hhom hmul
@@ -865,21 +853,9 @@ theorem secondDerivativeBidiagonalPFPreserver_of_residual_certificate_on_degree
       (secondDerivativeAlpha a0 b1 c2)
       (secondDerivativeBeta a1 b2) d := by
   have halpha' : ∀ n, n ≤ d → 0 ≤ quadraticJensenWeight c2 (b1 - c2) a0 n := by
-    intro n hn
-    have hval : quadraticJensenWeight c2 (b1 - c2) a0 n =
-        secondDerivativeAlpha a0 b1 c2 n := by
-      simp [secondDerivativeAlpha, quadraticJensenWeight]
-      ring
-    rw [hval]
-    exact halpha n hn
+    simpa [← secondDerivativeAlpha_eq_quadraticJensenWeight a0 b1 c2] using halpha
   have hbeta' : ∀ n, n ≤ d → 0 ≤ quadraticJensenWeight 0 b2 a1 n := by
-    intro n hn
-    have hval : quadraticJensenWeight 0 b2 a1 n =
-        secondDerivativeBeta a1 b2 n := by
-      simp [secondDerivativeBeta, quadraticJensenWeight]
-      ring
-    rw [hval]
-    exact hbeta n hn
+    simpa [← secondDerivativeBeta_eq_quadraticJensenWeight a1 b2] using hbeta
   rw [secondDerivativeAlpha_eq_quadraticJensenWeight]
   rw [secondDerivativeBeta_eq_quadraticJensenWeight]
   exact quadraticBidiagonalPFPreserver_of_residual_certificate_on_degree
@@ -1003,21 +979,9 @@ theorem shiftedSecondDerivativeBidiagonalPFPreserver_of_residual_certificate
       (shiftedSecondDerivativeAlpha a0 b1)
       (shiftedSecondDerivativeBeta a1 b2 c3) d := by
   have halpha' : ∀ n, 0 ≤ quadraticJensenWeight 0 b1 a0 n := by
-    intro n
-    have hval : quadraticJensenWeight 0 b1 a0 n =
-        shiftedSecondDerivativeAlpha a0 b1 n := by
-      simp [shiftedSecondDerivativeAlpha, quadraticJensenWeight]
-      ring
-    rw [hval]
-    exact halpha n
+    simpa [← shiftedSecondDerivativeAlpha_eq_quadraticJensenWeight a0 b1] using halpha
   have hbeta' : ∀ n, 0 ≤ quadraticJensenWeight c3 (b2 - c3) a1 n := by
-    intro n
-    have hval : quadraticJensenWeight c3 (b2 - c3) a1 n =
-        shiftedSecondDerivativeBeta a1 b2 c3 n := by
-      simp [shiftedSecondDerivativeBeta, quadraticJensenWeight]
-      ring
-    rw [hval]
-    exact hbeta n
+    simpa [← shiftedSecondDerivativeBeta_eq_quadraticJensenWeight a1 b2 c3] using hbeta
   rw [shiftedSecondDerivativeAlpha_eq_quadraticJensenWeight]
   rw [shiftedSecondDerivativeBeta_eq_quadraticJensenWeight]
   exact quadraticBidiagonalPFPreserver_of_residual_certificate hBB hhom hmul
