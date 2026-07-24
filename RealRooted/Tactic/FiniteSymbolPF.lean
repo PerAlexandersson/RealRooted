@@ -887,19 +887,19 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence
       P (n + 1) =
         secondDerivativeBidiagonalForm
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (P n)) :
-    ∀ n, IsPFPolynomial (P n) := by
-  apply isPFPolynomial_of_bidiagonalOperator_sequence
+    ∀ n, IsPFPolynomial (P n) :=
+  isPFPolynomial_of_bidiagonalOperator_sequence
     (alpha := fun n => secondDerivativeAlpha (a0 n) (b1 n) (c2 n))
     (beta := fun n => secondDerivativeBeta (a1 n) (b2 n))
     hbase hdegree
-  · intro n
-    exact secondDerivativeBidiagonalPFPreserver_of_residual_certificate
-      hBB hhom hmul (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (hd n)
-      (hdeg n) (hpf n) (halpha n) (hbeta n)
-  · intro n
-    rw [hrec n]
-    exact secondDerivativeBidiagonalForm_eq_bidiagonalOperator
-      (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (P n)
+    (fun n =>
+      secondDerivativeBidiagonalPFPreserver_of_residual_certificate
+        hBB hhom hmul (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (hd n)
+        (hdeg n) (hpf n) (halpha n) (hbeta n))
+    (fun n =>
+      (hrec n).trans
+        (secondDerivativeBidiagonalForm_eq_bidiagonalOperator
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (P n)))
 
 /-- Cutoff version of
 `isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence`. -/
@@ -928,19 +928,19 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_from
       P (n + 1) =
         secondDerivativeBidiagonalForm
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (P n)) :
-    ∀ n, IsPFPolynomial (P n) := by
-  apply isPFPolynomial_of_bidiagonalOperator_sequence_from
+    ∀ n, IsPFPolynomial (P n) :=
+  isPFPolynomial_of_bidiagonalOperator_sequence_from
     (alpha := fun n => secondDerivativeAlpha (a0 n) (b1 n) (c2 n))
     (beta := fun n => secondDerivativeBeta (a1 n) (b2 n))
     N hbase hdegree
-  · intro n hn
-    exact secondDerivativeBidiagonalPFPreserver_of_residual_certificate
-      hBB hhom hmul (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (hd n hn)
-      (hdeg n hn) (hpf n hn) (fun k => halpha n k hn) (fun k => hbeta n k hn)
-  · intro n hn
-    rw [hrec n hn]
-    exact secondDerivativeBidiagonalForm_eq_bidiagonalOperator
-      (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (P n)
+    (fun n hn =>
+      secondDerivativeBidiagonalPFPreserver_of_residual_certificate
+        hBB hhom hmul (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (hd n hn)
+        (hdeg n hn) (hpf n hn) (fun k => halpha n k hn) (fun k => hbeta n k hn))
+    (fun n hn =>
+      (hrec n hn).trans
+        (secondDerivativeBidiagonalForm_eq_bidiagonalOperator
+          (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (P n)))
 
 /-- Diagonal coefficient of the shifted second-derivative form as a quadratic
 Jensen weight. -/
@@ -1013,19 +1013,19 @@ theorem isPFPolynomial_of_shiftedSecondDerivativeBidiagonalForm_sequence
       P (n + 1) =
         shiftedSecondDerivativeBidiagonalForm
           (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (P n)) :
-    ∀ n, IsPFPolynomial (P n) := by
-  apply isPFPolynomial_of_bidiagonalOperator_sequence
+    ∀ n, IsPFPolynomial (P n) :=
+  isPFPolynomial_of_bidiagonalOperator_sequence
     (alpha := fun n => shiftedSecondDerivativeAlpha (a0 n) (b1 n))
     (beta := fun n => shiftedSecondDerivativeBeta (a1 n) (b2 n) (c3 n))
     hbase hdegree
-  · intro n
-    exact shiftedSecondDerivativeBidiagonalPFPreserver_of_residual_certificate
-      hBB hhom hmul (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (hd n)
-      (hdeg n) (hpf n) (halpha n) (hbeta n)
-  · intro n
-    rw [hrec n]
-    exact shiftedSecondDerivativeBidiagonalForm_eq_bidiagonalOperator
-      (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (P n)
+    (fun n =>
+      shiftedSecondDerivativeBidiagonalPFPreserver_of_residual_certificate
+        hBB hhom hmul (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (hd n)
+        (hdeg n) (hpf n) (halpha n) (hbeta n))
+    (fun n =>
+      (hrec n).trans
+        (shiftedSecondDerivativeBidiagonalForm_eq_bidiagonalOperator
+          (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (P n)))
 
 /-- Cutoff version of
 `isPFPolynomial_of_shiftedSecondDerivativeBidiagonalForm_sequence`. -/
@@ -1055,19 +1055,19 @@ theorem isPFPolynomial_of_shiftedSecondDerivativeBidiagonalForm_sequence_from
       P (n + 1) =
         shiftedSecondDerivativeBidiagonalForm
           (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (P n)) :
-    ∀ n, IsPFPolynomial (P n) := by
-  apply isPFPolynomial_of_bidiagonalOperator_sequence_from
+    ∀ n, IsPFPolynomial (P n) :=
+  isPFPolynomial_of_bidiagonalOperator_sequence_from
     (alpha := fun n => shiftedSecondDerivativeAlpha (a0 n) (b1 n))
     (beta := fun n => shiftedSecondDerivativeBeta (a1 n) (b2 n) (c3 n))
     N hbase hdegree
-  · intro n hn
-    exact shiftedSecondDerivativeBidiagonalPFPreserver_of_residual_certificate
-      hBB hhom hmul (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (hd n hn)
-      (hdeg n hn) (hpf n hn) (fun k => halpha n k hn) (fun k => hbeta n k hn)
-  · intro n hn
-    rw [hrec n hn]
-    exact shiftedSecondDerivativeBidiagonalForm_eq_bidiagonalOperator
-      (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (P n)
+    (fun n hn =>
+      shiftedSecondDerivativeBidiagonalPFPreserver_of_residual_certificate
+        hBB hhom hmul (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (hd n hn)
+        (hdeg n hn) (hpf n hn) (fun k => halpha n k hn) (fun k => hbeta n k hn))
+    (fun n hn =>
+      (hrec n hn).trans
+        (shiftedSecondDerivativeBidiagonalForm_eq_bidiagonalOperator
+          (a0 n) (a1 n) (b1 n) (b2 n) (c3 n) (P n)))
 
 /-- Algebraic dehomogenization statement connecting the finite symbol to the
 existing Jensen pencil. -/
