@@ -119,15 +119,13 @@ macro "rr_scalar_active_den_all" : tactic =>
 
 syntax (name := rr_scalar_active_den_all_term) "rr_scalar_active_den_all_term" : term
 
+syntax (name := rr_scalar_coeff_finish) "rr_scalar_coeff_finish" : tactic
+
 macro "rr_scalar_coeff_at " n:term : tactic =>
   `(tactic|
     solve
-      | field_simp (discharger := rr_scalar_active_den_at $n) <;>
-          try norm_num [Nat.cast_add, Nat.cast_one] <;>
-          try ring_nf
-      | field_simp (discharger := rr_side_ne) <;>
-          try norm_num [Nat.cast_add, Nat.cast_one] <;>
-          try ring_nf
+      | field_simp (discharger := rr_scalar_active_den_at $n) <;> rr_scalar_coeff_finish
+      | field_simp (discharger := rr_side_ne) <;> rr_scalar_coeff_finish
       | norm_num [Nat.cast_add, Nat.cast_one]
       | simp)
 
@@ -137,6 +135,10 @@ macro "rr_scalar_coeff_all" : tactic =>
 syntax (name := rr_scalar_coeff_all_term) "rr_scalar_coeff_all_term" : term
 
 macro_rules
+  | `(tactic| rr_scalar_coeff_finish) =>
+      `(tactic|
+        try norm_num [Nat.cast_add, Nat.cast_one] <;>
+        try ring_nf)
   | `(rr_scalar_active_den_all_term) =>
       `(by rr_scalar_active_den_all)
   | `(rr_scalar_coeff_all_term) =>
