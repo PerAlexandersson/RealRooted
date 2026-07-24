@@ -1,5 +1,5 @@
-import Mathlib.Algebra.MvPolynomial.Basic
 import RealRooted.Basic
+import RealRooted.MultivariateStability
 
 /-!
 # Borcea--Branden finite-symbol challenge entry point
@@ -24,15 +24,6 @@ namespace Challenges
 namespace BorceaBranden
 
 noncomputable section
-
-/-- Complexification of a real multivariate polynomial. -/
-def complexifyMv {sigma : Type*} (P : MvPolynomial sigma ℝ) :
-    MvPolynomial sigma ℂ :=
-  P.map Complex.ofRealHom
-
-/-- Stability in a product of open upper half-planes. -/
-def MvUpperHalfPlaneStable {sigma : Type*} (P : MvPolynomial sigma ℂ) : Prop :=
-  ∀ z : sigma → ℂ, (∀ i, 0 < (z i).im) → MvPolynomial.eval z P ≠ 0
 
 /-- Regard a univariate polynomial as a bivariate polynomial in the first
 variable. -/

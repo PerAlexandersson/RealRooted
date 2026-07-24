@@ -1,6 +1,7 @@
 import Mathlib.Algebra.MvPolynomial.Funext
 import Mathlib.Tactic.ComputeDegree
 import RealRooted.MultiplierSequence
+import RealRooted.MultivariateStability
 import RealRooted.Tactic.PFBidiagonal
 
 /-!
@@ -345,15 +346,9 @@ def homogenizeBivariate (d : ℕ) (p : ℝ[X]) : MvPolynomial (Fin 2) ℝ :=
     MvPolynomial.C (p.coeff k) *
       (MvPolynomial.X 0) ^ k * (MvPolynomial.X 1) ^ (d - k)
 
-/-- Complexification of a real bivariate polynomial. -/
-def complexifyMv (P : MvPolynomial (Fin 2) ℝ) :
-    MvPolynomial (Fin 2) ℂ :=
-  P.map Complex.ofRealHom
-
 /-- Stability in the product of two open upper half-planes. -/
-def IsBivariateUpperStable (P : MvPolynomial (Fin 2) ℂ) : Prop :=
-  ∀ z : Fin 2 → ℂ, 0 < (z 0).im → 0 < (z 1).im →
-    MvPolynomial.eval z P ≠ 0
+abbrev IsBivariateUpperStable (P : MvPolynomial (Fin 2) ℂ) : Prop :=
+  MvUpperHalfPlaneStable P
 
 /-! ## Classical interfaces -/
 

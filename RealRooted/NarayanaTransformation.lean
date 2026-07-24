@@ -1,5 +1,6 @@
 import Mathlib.Tactic
 import RealRooted.LiuWangRecursion
+import RealRooted.MultivariateStability
 import RealRooted.PFPolynomial
 import RealRooted.QuadraticRoot
 import RealRooted.Touchard
@@ -33,6 +34,75 @@ def HasOnlyNonposRoots (p : ℝ[X]) : Prop :=
 nonnegative. -/
 def HasOnlyNonnegRoots (p : ℝ[X]) : Prop :=
   p = 0 ∨ p.Splits ∧ ∀ r ∈ p.roots, 0 ≤ r
+
+/-- The easy direction of Gribinski--Marcus, Lemma 2.5: a nonzero polynomial
+with only nonnegative roots has a real-stable bivariate lift `p(x * y)`. -/
+theorem HasOnlyNonnegRoots.mvRealStable_xyLift {p : ℝ[X]}
+    (hp : HasOnlyNonnegRoots p) (hpne : p ≠ 0) :
+    MvRealStable (xyLift p) := by
+  rcases hp with hpzero | ⟨hsplits, hroots⟩
+  · exact (hpne hpzero).elim
+  intro z hz
+  rw [eval_complexifyMv_xyLift, eval_map_ofReal_eq_prod hsplits]
+  refine mul_ne_zero (by simp [hpne]) ?_
+  apply Multiset.prod_ne_zero
+  simp only [Multiset.mem_map, not_exists, not_and]
+  rintro r hrmem
+  exact sub_ne_zero.mpr
+    (mul_ne_ofReal_of_im_pos (hz 0) (hz 1) (hroots r hrmem))
+
+/-- Gribinski--Marcus, Lemma 2.5, in the project's zero-aware root language.
+The nonzero hypothesis excludes the identically zero lift. -/
+theorem hasOnlyNonnegRoots_iff_mvRealStable_xyLift {p : ℝ[X]} (hpne : p ≠ 0) :
+    HasOnlyNonnegRoots p ↔ MvRealStable (xyLift p) := by
+  refine ⟨fun hp => hp.mvRealStable_xyLift hpne, ?_⟩
+  intro hstable
+  have hroot_nonneg_real {z : ℂ}
+      (hzroot : (p.map Complex.ofRealHom).IsRoot z) :
+      ∃ r : ℝ, 0 ≤ r ∧ z = r := by
+    by_contra houtside
+    have hzoutside : ∀ r : ℝ, 0 ≤ r → z ≠ r := by
+      intro r hr hzr
+      exact houtside ⟨r, hr, hzr⟩
+    obtain ⟨x, y, hx, hy, hxy⟩ := exists_upperHalfPlane_mul_eq hzoutside
+    have hnonzero := hstable ![x, y] (by
+      intro i
+      fin_cases i
+      · simpa using hx
+      · simpa using hy)
+    rw [eval_complexifyMv_xyLift] at hnonzero
+    have harg : ![x, y] 0 * ![x, y] 1 = z := by simpa using hxy
+    rw [harg] at hnonzero
+    exact hnonzero hzroot
+  have hsplitsComplex : (p.map Complex.ofRealHom).Splits := IsAlgClosed.splits _
+  have hsplits : p.Splits :=
+    Polynomial.Splits.of_splits_map Complex.ofRealHom hsplitsComplex (by
+      intro z hzmem
+      have hzroot : (p.map Complex.ofRealHom).IsRoot z :=
+        (Polynomial.mem_roots (Polynomial.map_ne_zero hpne)).mp hzmem
+      obtain ⟨r, -, hzr⟩ := hroot_nonneg_real hzroot
+      exact ⟨r, hzr.symm⟩)
+  refine Or.inr ⟨hsplits, ?_⟩
+  intro r hrmem
+  have hrroot : p.IsRoot r := (Polynomial.mem_roots hpne).mp hrmem
+  have hmappedRoot : (p.map Complex.ofRealHom).IsRoot (r : ℂ) := by
+    rw [Polynomial.IsRoot, Polynomial.eval_map]
+    change p.eval₂ Complex.ofRealHom (Complex.ofRealHom r) = 0
+    rw [Polynomial.eval₂_hom, hrroot]
+    simp
+  obtain ⟨s, hs, hrs⟩ := hroot_nonneg_real hmappedRoot
+  have : r = s := by
+    have := congrArg Complex.re hrs
+    simpa using this
+  simpa [this] using hs
+
+/-- The exact-degree, positive-leading-coefficient form of
+Gribinski--Marcus, Lemma 2.5. -/
+theorem hasOnlyNonnegRoots_iff_realStable_XY {d : ℕ} {p : ℝ[X]}
+    (_hpdeg : p.natDegree = d) (hlead : 0 < p.leadingCoeff) :
+    HasOnlyNonnegRoots p ↔ MvRealStable (xyLift p) :=
+  hasOnlyNonnegRoots_iff_mvRealStable_xyLift
+    (Polynomial.leadingCoeff_ne_zero.mp hlead.ne')
 
 theorem IsPFPolynomial.hasOnlyNonposRoots {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
