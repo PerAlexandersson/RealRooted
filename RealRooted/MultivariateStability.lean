@@ -91,6 +91,20 @@ theorem MvUpperHalfPlaneStable.mul {sigma : Type*}
   rw [MvPolynomial.eval_mul]
   exact mul_ne_zero (hP z hz) (hQ z hz)
 
+theorem MvUpperHalfPlaneStable.left_of_mul {sigma : Type*}
+    {P Q : MvPolynomial sigma ℂ}
+    (hPQ : MvUpperHalfPlaneStable (P * Q)) :
+    MvUpperHalfPlaneStable P := by
+  intro z hz hzero
+  exact hPQ z hz (by simp [hzero])
+
+theorem MvUpperHalfPlaneStable.right_of_mul {sigma : Type*}
+    {P Q : MvPolynomial sigma ℂ}
+    (hPQ : MvUpperHalfPlaneStable (P * Q)) :
+    MvUpperHalfPlaneStable Q := by
+  intro z hz hzero
+  exact hPQ z hz (by simp [hzero])
+
 theorem MvUpperHalfPlaneStable.rename {sigma tau : Type*}
     {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStable P)
     {f : sigma → tau} :
@@ -180,6 +194,15 @@ def xyLift {R : Type*} [CommSemiring R] (p : R[X]) :
     simp
   rw [hC, Polynomial.eval₂_id]
   simp
+
+theorem xyLift_ne_zero {p : ℂ[X]} (hp : p ≠ 0) :
+    xyLift p ≠ 0 := by
+  intro hxy
+  apply hp
+  apply Polynomial.funext
+  intro x
+  have heval := congrArg (MvPolynomial.eval ![x, 1]) hxy
+  simpa using heval
 
 @[simp] theorem complexifyMv_xyLift (p : ℝ[X]) :
     complexifyMv (xyLift p) = xyLift (p.map Complex.ofRealHom) := by

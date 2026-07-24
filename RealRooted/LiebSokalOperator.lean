@@ -238,6 +238,65 @@ theorem applyNegDifferential_add_left
   · intro d a b
     simp [mul_add, add_mul]
 
+theorem iteratedPDerivAt_C_mul
+    {R sigma : Type*} [CommSemiring R] (i : sigma) (n : ℕ)
+    (c : R) (P : MvPolynomial sigma R) :
+    iteratedPDerivAt i n (MvPolynomial.C c * P) =
+      MvPolynomial.C c * iteratedPDerivAt i n P := by
+  induction n with
+  | zero => rfl
+  | succ n ih =>
+      rw [iteratedPDerivAt, ih, MvPolynomial.pderiv_C_mul]
+      rfl
+
+theorem applyMonomialDifferential_C_mul
+    {R sigma : Type*} [CommSemiring R] [Fintype sigma]
+    (d : sigma →₀ ℕ) (c : R) (P : MvPolynomial sigma R) :
+    applyMonomialDifferential d (MvPolynomial.C c * P) =
+      MvPolynomial.C c * applyMonomialDifferential d P := by
+  unfold applyMonomialDifferential
+  generalize differentialVariableOrder sigma = l
+  induction l generalizing P with
+  | nil => rfl
+  | cons i l ih =>
+      rw [List.foldl_cons, iteratedPDerivAt_C_mul, ih]
+      rfl
+
+theorem applyNegDifferential_C_mul_right
+    {R sigma : Type*} [CommRing R] [Fintype sigma]
+    (F : MvPolynomial sigma R) (c : R) (G : MvPolynomial sigma R) :
+    applyNegDifferential F (MvPolynomial.C c * G) =
+      MvPolynomial.C c * applyNegDifferential F G := by
+  unfold applyNegDifferential
+  rw [MvPolynomial.sum_def, MvPolynomial.sum_def, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro d _
+  rw [applyMonomialDifferential_C_mul]
+  ring
+
+theorem applyNegDifferential_C_mul_left
+    {R sigma : Type*} [CommRing R] [Fintype sigma]
+    (c : R) (F G : MvPolynomial sigma R) :
+    applyNegDifferential (MvPolynomial.C c * F) G =
+      MvPolynomial.C c * applyNegDifferential F G := by
+  induction F using MvPolynomial.induction_on' with
+  | monomial d a =>
+      rw [MvPolynomial.C_mul_monomial, applyNegDifferential_monomial,
+        applyNegDifferential_monomial]
+      have hC :
+          (MvPolynomial.C
+              ((-1 : R) ^ (d.sum fun _ n => n) * (c * a)) :
+              MvPolynomial sigma R) =
+            MvPolynomial.C c *
+              MvPolynomial.C ((-1 : R) ^ (d.sum fun _ n => n) * a) := by
+        rw [← map_mul]
+        congr 1
+        ring
+      rw [hC, mul_assoc]
+  | add F H hF hH =>
+      rw [mul_add, applyNegDifferential_add_left, hF, hH,
+        applyNegDifferential_add_left, mul_add]
+
 theorem isMultiaffine_iteratedPDerivAt
     {R sigma : Type*} [CommSemiring R] {P : MvPolynomial sigma R}
     (hP : MvPolynomial.IsMultiaffine P) (i : sigma) :

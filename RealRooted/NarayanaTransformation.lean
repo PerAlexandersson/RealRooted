@@ -1,8 +1,10 @@
 import Mathlib.Tactic
+import RealRooted.LiebSokal
 import RealRooted.LiuWangRecursion
 import RealRooted.PFPolynomial
 import RealRooted.QuadraticRoot
-import RealRooted.RectangularPolarization
+import RealRooted.RectangularConvolution
+import RealRooted.RectangularConvolutionIdentity
 import RealRooted.Touchard
 
 /-!
@@ -1278,65 +1280,6 @@ abbrev narayanaTransformPreservesPFStatement : Prop :=
   ∀ (m : ℕ) {p : ℝ[X]},
     IsPFPolynomial p → IsPFPolynomial (narayanaTransform m p)
 
-/-- Gribinski--Marcus rectangular additive convolution coefficient. -/
-def rectangularConvolutionGamma (m n i j : ℕ) : ℝ :=
-  ((Nat.factorial (n - i) : ℝ) * (Nat.factorial (n - j) : ℝ) /
-      ((Nat.factorial n : ℝ) * (Nat.factorial (n - i - j) : ℝ))) *
-    ((Nat.factorial (n + m - i) : ℝ) * (Nat.factorial (n + m - j) : ℝ) /
-      ((Nat.factorial (n + m) : ℝ) * (Nat.factorial (n + m - i - j) : ℝ)))
-
-/-- The rectangular convolution coefficient is symmetric in its two indices. -/
-theorem rectangularConvolutionGamma_symm (m n i j : ℕ) :
-    rectangularConvolutionGamma m n i j = rectangularConvolutionGamma m n j i := by
-  unfold rectangularConvolutionGamma
-  rw [Nat.sub_right_comm n i j, Nat.sub_right_comm (n + m) i j]
-  ring
-
-def rectangularConvolutionCoeff (m n : ℕ) (f g : ℝ[X]) (k : ℕ) : ℝ :=
-  ∑ i ∈ Finset.range (k + 1),
-    rectangularConvolutionGamma m n i (k - i) *
-      f.coeff (n - i) * g.coeff (n - (k - i))
-
-/-- Rectangular additive convolution in the coefficient convention of
-Mao--Wang, Eq. (2.3). -/
-def rectangularAdditiveConvolution (m n : ℕ) (f g : ℝ[X]) : ℝ[X] :=
-  ∑ k ∈ Finset.range (n + 1),
-    C (rectangularConvolutionCoeff m n f g k) * X ^ (n - k)
-
-/-- Coefficient extraction for the rectangular additive convolution. -/
-theorem coeff_rectangularAdditiveConvolution_of_le (m n : ℕ) (f g : ℝ[X])
-    {j : ℕ} (hj : j ≤ n) :
-    (rectangularAdditiveConvolution m n f g).coeff j =
-      rectangularConvolutionCoeff m n f g (n - j) := by
-  unfold rectangularAdditiveConvolution
-  rw [Polynomial.finsetSum_coeff]
-  rw [Finset.sum_eq_single_of_mem (n - j)
-      (Finset.mem_range.mpr (Nat.lt_succ_iff.mpr (Nat.sub_le n j)))]
-  · rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, Nat.sub_sub_self hj,
-      if_pos rfl, mul_one]
-  · intro k hk hkne
-    have hk' : k ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
-    rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow,
-      if_neg (fun hjk => hkne (by lia)), mul_zero]
-
-/-- The rectangular additive convolution has no coefficients above degree `n`. -/
-theorem coeff_rectangularAdditiveConvolution_of_gt (m n : ℕ) (f g : ℝ[X])
-    {j : ℕ} (hj : n < j) :
-    (rectangularAdditiveConvolution m n f g).coeff j = 0 := by
-  unfold rectangularAdditiveConvolution
-  rw [Polynomial.finsetSum_coeff]
-  apply Finset.sum_eq_zero
-  intro k hk
-  rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_neg (fun hjk => by lia),
-    mul_zero]
-
-/-- The rectangular additive convolution has degree at most `n`. -/
-theorem natDegree_rectangularAdditiveConvolution_le (m n : ℕ) (f g : ℝ[X]) :
-    (rectangularAdditiveConvolution m n f g).natDegree ≤ n := by
-  rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
-  intro k hk
-  exact coeff_rectangularAdditiveConvolution_of_gt m n f g hk
-
 @[simp] theorem rectangularConvolutionCoeff_zero (m : ℕ) (f g : ℝ[X]) :
     rectangularConvolutionCoeff m 0 f g 0 = f.coeff 0 * g.coeff 0 := by
   simp [rectangularConvolutionCoeff, rectangularConvolutionGamma]
@@ -2040,6 +1983,66 @@ theorem rectangularAdditiveConvolutionPreservesNonnegRoots_of_mvRealStable_xyLif
     exact lt_irrefl 0 hpos
   exact (hasOnlyNonnegRoots_iff_mvRealStable_xyLift hne).mpr hstab
 
+/-- Rectangular additive convolution of two exact-degree polynomials with only
+nonnegative roots has a real-stable bivariate lift. -/
+theorem mvRealStable_xyLift_rectangularAdditiveConvolution
+    {m n : ℕ} {f g : ℝ[X]}
+    (hfdeg : f.natDegree = n) (hgdeg : g.natDegree = n)
+    (hflead : 0 < f.leadingCoeff) (hglead : 0 < g.leadingCoeff)
+    (hfroots : HasOnlyNonnegRoots f) (hgroots : HasOnlyNonnegRoots g) :
+    MvRealStable (xyLift (rectangularAdditiveConvolution m n f g)) := by
+  have hfne : f ≠ 0 := Polynomial.leadingCoeff_ne_zero.mp hflead.ne'
+  have hgne : g ≠ 0 := Polynomial.leadingCoeff_ne_zero.mp hglead.ne'
+  have hfdegC : (f.map Complex.ofRealHom).natDegree = n := by
+    rw [Polynomial.natDegree_map_eq_of_injective Complex.ofReal_injective, hfdeg]
+  have hgdegC : (g.map Complex.ofRealHom).natDegree = n := by
+    rw [Polynomial.natDegree_map_eq_of_injective Complex.ofReal_injective, hgdeg]
+  have hfleadC : (f.map Complex.ofRealHom).leadingCoeff ≠ 0 := by
+    rw [Polynomial.leadingCoeff_map_of_injective Complex.ofReal_injective]
+    intro hzero
+    exact hflead.ne' (Complex.ofReal_injective (by simpa using hzero))
+  have hgleadC : (g.map Complex.ofRealHom).leadingCoeff ≠ 0 := by
+    rw [Polynomial.leadingCoeff_map_of_injective Complex.ofReal_injective]
+    intro hzero
+    exact hglead.ne' (Complex.ofReal_injective (by simpa using hzero))
+  have hfstable : MvUpperHalfPlaneStable (xyLift (f.map Complex.ofRealHom)) := by
+    simpa [MvRealStable] using hfroots.mvRealStable_xyLift hfne
+  have hgstable : MvUpperHalfPlaneStable (xyLift (g.map Complex.ofRealHom)) := by
+    simpa [MvRealStable] using hgroots.mvRealStable_xyLift hgne
+  have hFstable := mvUpperHalfPlaneStable_reciprocalRectangularPolarization
+    (m := m) hgdegC hgleadC hgstable
+  have hGstable := mvUpperHalfPlaneStable_rectangularPolarization
+    (m := m) hfdegC hfleadC hfstable
+  have hFma := isMultiaffine_reciprocalRectangularPolarization
+    m n (g.map Complex.ofRealHom)
+  have hGma := isMultiaffine_rectangularPolarization m n (f.map Complex.ofRealHom)
+  rcases hFstable.liebSokal_multiaffine hGstable hFma hGma with hzero | hstable
+  · have hconvne : rectangularAdditiveConvolution m n f g ≠ 0 := by
+      intro hzeroConv
+      have htop := congrArg (fun p : ℝ[X] => p.coeff n) hzeroConv
+      have hfn : f.coeff n = f.leadingCoeff := by
+        rw [← hfdeg]
+        exact Polynomial.coeff_natDegree
+      have hgn : g.coeff n = g.leadingCoeff := by
+        rw [← hgdeg]
+        exact Polynomial.coeff_natDegree
+      rw [coeff_rectangularAdditiveConvolution_top m n f g, hfn, hgn,
+        Polynomial.coeff_zero] at htop
+      exact mul_ne_zero hflead.ne' hglead.ne' htop
+    have hmapne :
+        (rectangularAdditiveConvolution m n f g).map Complex.ofRealHom ≠ 0 :=
+      Polynomial.map_ne_zero hconvne
+    have hxyne := xyLift_ne_zero hmapne
+    have hrename := congrArg (MvPolynomial.rename rectangularDiagonal) hzero
+    rw [map_zero, rectangularDifferential_diagonal_identity] at hrename
+    exact ((mul_ne_zero (pow_ne_zero m (by simp)) hxyne) hrename).elim
+  · have hdiag := hstable.rename (f := rectangularDiagonal)
+    rw [rectangularDifferential_diagonal_identity] at hdiag
+    change MvUpperHalfPlaneStable
+      (complexifyMv (xyLift (rectangularAdditiveConvolution m n f g)))
+    rw [complexifyMv_xyLift]
+    exact hdiag.right_of_mul
+
 /-- Degree-at-least-three case of the Gribinski--Marcus preservation theorem for
 rectangular additive convolution. -/
 theorem rectangularAdditiveConvolutionPreservesNonnegRoots_degreeAtLeastThree
@@ -2050,7 +2053,8 @@ theorem rectangularAdditiveConvolutionPreservesNonnegRoots_degreeAtLeastThree
     HasOnlyNonnegRoots (rectangularAdditiveConvolution m (n + 1 + 1 + 1) f g) := by
   apply rectangularAdditiveConvolutionPreservesNonnegRoots_of_mvRealStable_xyLift
     hfdeg hgdeg hflead hglead
-  sorry
+  exact mvRealStable_xyLift_rectangularAdditiveConvolution
+    hfdeg hgdeg hflead hglead hfroots hgroots
 
 /-- Degree-at-least-two case of the Gribinski--Marcus preservation theorem for
 rectangular additive convolution. -/
