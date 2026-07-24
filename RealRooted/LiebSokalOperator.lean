@@ -64,6 +64,93 @@ def applyNegDifferential
     MvPolynomial.C ((-1 : R) ^ (d.sum fun _ n => n) * c) *
       applyMonomialDifferential d G
 
+@[simp] theorem applyNegDifferential_C
+    {R sigma : Type*} [CommRing R] [Fintype sigma]
+    (c : R) (G : MvPolynomial sigma R) :
+    applyNegDifferential (MvPolynomial.C c) G = MvPolynomial.C c * G := by
+  unfold applyNegDifferential
+  rw [MvPolynomial.sum_C (by simp)]
+  simp [applyMonomialDifferential_zero]
+
+@[simp] theorem applyNegDifferential_zero_left
+    {R sigma : Type*} [CommRing R] [Fintype sigma]
+    (G : MvPolynomial sigma R) :
+    applyNegDifferential 0 G = 0 := by
+  simpa using applyNegDifferential_C (0 : R) G
+
+@[simp] theorem iteratedPDerivAt_zero
+    {R sigma : Type*} [CommSemiring R] (i : sigma) (n : ℕ) :
+    iteratedPDerivAt i n (0 : MvPolynomial sigma R) = 0 := by
+  induction n with
+  | zero => rfl
+  | succ n ih => simp [iteratedPDerivAt, ih]
+
+@[simp] theorem applyMonomialDifferential_zero_right
+    {R sigma : Type*} [CommSemiring R] [Fintype sigma]
+    (d : sigma →₀ ℕ) :
+    applyMonomialDifferential d (0 : MvPolynomial sigma R) = 0 := by
+  unfold applyMonomialDifferential
+  generalize differentialVariableOrder sigma = l
+  induction l with
+  | nil => rfl
+  | cons i l ih =>
+      rw [List.foldl_cons, iteratedPDerivAt_zero]
+      exact ih
+
+@[simp] theorem applyNegDifferential_zero_right
+    {R sigma : Type*} [CommRing R] [Fintype sigma]
+    (F : MvPolynomial sigma R) :
+    applyNegDifferential F 0 = 0 := by
+  unfold applyNegDifferential
+  rw [MvPolynomial.sum_def]
+  apply Finset.sum_eq_zero
+  intro d hd
+  simp
+
+theorem iteratedPDerivAt_add
+    {R sigma : Type*} [CommSemiring R] (i : sigma) (n : ℕ)
+    (P Q : MvPolynomial sigma R) :
+    iteratedPDerivAt i n (P + Q) =
+      iteratedPDerivAt i n P + iteratedPDerivAt i n Q := by
+  induction n with
+  | zero => rfl
+  | succ n ih => simp [iteratedPDerivAt, ih, map_add]
+
+theorem applyMonomialDifferential_add
+    {R sigma : Type*} [CommSemiring R] [Fintype sigma]
+    (d : sigma →₀ ℕ) (P Q : MvPolynomial sigma R) :
+    applyMonomialDifferential d (P + Q) =
+      applyMonomialDifferential d P + applyMonomialDifferential d Q := by
+  unfold applyMonomialDifferential
+  generalize differentialVariableOrder sigma = l
+  induction l generalizing P Q with
+  | nil => rfl
+  | cons i l ih =>
+      rw [List.foldl_cons, iteratedPDerivAt_add, ih]
+      rfl
+
+theorem applyNegDifferential_add_right
+    {R sigma : Type*} [CommRing R] [Fintype sigma]
+    (F G H : MvPolynomial sigma R) :
+    applyNegDifferential F (G + H) =
+      applyNegDifferential F G + applyNegDifferential F H := by
+  unfold applyNegDifferential
+  rw [MvPolynomial.sum_def, MvPolynomial.sum_def, MvPolynomial.sum_def]
+  simp only [applyMonomialDifferential_add, mul_add, Finset.sum_add_distrib]
+
+theorem applyNegDifferential_add_left
+    {R sigma : Type*} [CommRing R] [Fintype sigma]
+    (F H G : MvPolynomial sigma R) :
+    applyNegDifferential (F + H) G =
+      applyNegDifferential F G + applyNegDifferential H G := by
+  unfold applyNegDifferential
+  classical
+  apply Finsupp.sum_add_index'
+  · intro d
+    simp
+  · intro d a b
+    simp [mul_add, add_mul]
+
 theorem isMultiaffine_iteratedPDerivAt
     {R sigma : Type*} [CommSemiring R] {P : MvPolynomial sigma R}
     (hP : MvPolynomial.IsMultiaffine P) (i : sigma) :
