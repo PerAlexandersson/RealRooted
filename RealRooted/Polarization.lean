@@ -1,6 +1,6 @@
-import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 import Mathlib.RingTheory.Polynomial.Vieta
 import RealRooted.GraceHalfPlane
+import RealRooted.Multiaffine
 import RealRooted.MultivariateStability
 
 /-!
@@ -55,6 +55,18 @@ theorem binomialLift_binomialUnlift {n : ℕ} {p : ℂ[X]}
 elementary symmetric polynomial is `p.coeff k / choose n k`. -/
 def polarization (n : ℕ) (p : ℂ[X]) : MvPolynomial (Fin n) ℂ :=
   reducedPolarization n (binomialUnlift n p)
+
+theorem isMultiaffine_reducedPolarization (n : ℕ) (p : ℂ[X]) :
+    MvPolynomial.IsMultiaffine (reducedPolarization n p) := by
+  unfold reducedPolarization
+  apply MvPolynomial.IsMultiaffine.sum
+  intro k hk
+  exact (MvPolynomial.IsMultiaffine.esymm k).C_mul _
+
+/-- A polarization is multiaffine. -/
+theorem isMultiaffine_polarization (n : ℕ) (p : ℂ[X]) :
+    MvPolynomial.IsMultiaffine (polarization n p) :=
+  isMultiaffine_reducedPolarization n (binomialUnlift n p)
 
 /-- The monic polynomial whose roots are the entries of `z`. -/
 def polarizationRootPolynomial {n : ℕ} (z : Fin n → ℂ) : ℂ[X] :=

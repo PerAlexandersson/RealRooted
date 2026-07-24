@@ -26,6 +26,25 @@ def rectangularPolarization (m n : ℕ) (p : ℂ[X]) :
       MvPolynomial.rename Sum.inr
         (MvPolynomial.esymm (Fin (m + n)) ℂ (m + k))
 
+/-- The rectangular polarization is multiaffine in both variable blocks. -/
+theorem isMultiaffine_rectangularPolarization (m n : ℕ) (p : ℂ[X]) :
+    MvPolynomial.IsMultiaffine (rectangularPolarization m n p) := by
+  unfold rectangularPolarization
+  apply MvPolynomial.IsMultiaffine.sum
+  intro k hk
+  rw [mul_assoc]
+  apply MvPolynomial.IsMultiaffine.C_mul
+  apply MvPolynomial.IsMultiaffine.mul_of_disjoint_vars
+  · exact (MvPolynomial.IsMultiaffine.esymm k).rename Sum.inl_injective
+  · exact (MvPolynomial.IsMultiaffine.esymm (m + k)).rename Sum.inr_injective
+  · rw [Finset.disjoint_left]
+    intro v hvleft hvright
+    obtain ⟨i, hi, hiv⟩ := MvPolynomial.mem_vars_rename Sum.inl
+      (MvPolynomial.esymm (Fin n) ℂ k) hvleft
+    obtain ⟨j, hj, hjv⟩ := MvPolynomial.mem_vars_rename Sum.inr
+      (MvPolynomial.esymm (Fin (m + n)) ℂ (m + k)) hvright
+    exact Sum.inl_ne_inr (hiv.trans hjv.symm)
+
 /-- Evaluation formula for the rectangular polarization. -/
 theorem eval_rectangularPolarization (m n : ℕ) (p : ℂ[X])
     (z : Sum (Fin n) (Fin (m + n)) → ℂ) :
