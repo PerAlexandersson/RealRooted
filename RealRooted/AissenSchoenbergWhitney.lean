@@ -119,13 +119,148 @@ theorem IsPolyaFreqSeq.of_forall_pos_add_mul {a b : ℕ → ℝ}
       exact hD_nonneg μ hμ)
   simpa [D, toeplitz] using hD0
 
-/-- Planning stub for the forward Aissen--Schoenberg--Whitney theorem:
-Toeplitz total nonnegativity of the coefficient sequence of a nonzero
-polynomial should imply that the polynomial has only real nonpositive roots. -/
+/-! ### Low-degree forward ASW splitting -/
+
+/-- For a polynomial of degree at most two, the shifted `n × n` Toeplitz
+submatrix with rows `1, ..., n` and columns `0, ..., n - 1` is the tridiagonal
+Toeplitz matrix with diagonal `coeff 1`, superdiagonal `coeff 0`, and
+subdiagonal `coeff 2`. -/
+lemma toeplitz_submatrix_eq_tridiagM {p : ℝ[X]} (hdeg : p.natDegree ≤ 2) (n : ℕ) :
+    (toeplitz p.coeff).submatrix
+        (fun i : Fin n => (i : ℕ) + 1) (fun j : Fin n => (j : ℕ)) =
+      tridiagM (p.coeff 1) (p.coeff 0) (p.coeff 2) n := by
+  ext i j
+  simp only [submatrix_apply, toeplitz_apply, tridiagM_apply]
+  by_cases hle : (j : ℕ) ≤ (i : ℕ) + 1
+  · rw [if_pos hle]
+    rcases Nat.lt_trichotomy (j : ℕ) (i : ℕ) with hji | hji | hji
+    · by_cases hnear : (i : ℕ) = (j : ℕ) + 1
+      · have h1 : (i : ℕ) ≠ (j : ℕ) := by lia
+        have h2 : (j : ℕ) ≠ (i : ℕ) + 1 := by lia
+        rw [if_neg h1, if_neg h2, if_pos hnear]
+        have harg : (i : ℕ) + 1 - (j : ℕ) = 2 := by lia
+        rw [harg]
+      · have h1 : (i : ℕ) ≠ (j : ℕ) := by lia
+        have h2 : (j : ℕ) ≠ (i : ℕ) + 1 := by lia
+        rw [if_neg h1, if_neg h2, if_neg hnear]
+        apply Polynomial.coeff_eq_zero_of_natDegree_lt
+        lia
+    · have h1 : (i : ℕ) = (j : ℕ) := hji.symm
+      rw [if_pos h1]
+      have harg : (i : ℕ) + 1 - (j : ℕ) = 1 := by lia
+      rw [harg]
+    · have h2 : (j : ℕ) = (i : ℕ) + 1 := by lia
+      have h1 : (i : ℕ) ≠ (j : ℕ) := by lia
+      rw [if_neg h1, if_pos h2]
+      have harg : (i : ℕ) + 1 - (j : ℕ) = 0 := by lia
+      rw [harg]
+  · rw [if_neg hle]
+    have h1 : (i : ℕ) ≠ (j : ℕ) := by lia
+    have h2 : (j : ℕ) ≠ (i : ℕ) + 1 := by lia
+    have h3 : (i : ℕ) ≠ (j : ℕ) + 1 := by lia
+    rw [if_neg h1, if_neg h2, if_neg h3]
+
+/-- Forward ASW discriminant bound in degree at most two.  If the coefficient
+sequence of `p` is Pólya-frequency and `p.natDegree ≤ 2`, then
+`4 * (coeff 0 * coeff 2) ≤ (coeff 1) ^ 2`. -/
+lemma disc_nonneg_of_isPolyaFreqSeq_natDegree_le_two {p : ℝ[X]}
+    (hpf : IsPolyaFreqSeq p.coeff) (hdeg : p.natDegree ≤ 2) :
+    4 * (p.coeff 0 * p.coeff 2) ≤ (p.coeff 1) ^ 2 := by
+  set D : ℕ → ℝ := fun n =>
+    (tridiagM (p.coeff 1) (p.coeff 0) (p.coeff 2) n).det with hD
+  have h0 : D 0 = 1 := tridiagM_det_zero _ _ _
+  have h1 : D 1 = p.coeff 1 := tridiagM_det_one _ _ _
+  have hrec :
+      ∀ n, D (n + 2) = p.coeff 1 * D (n + 1) - p.coeff 0 * p.coeff 2 * D n :=
+    fun n => by
+      simpa [hD] using tridiagM_det_rec (p.coeff 1) (p.coeff 0) (p.coeff 2) n
+  have hpos : ∀ n, 0 ≤ D n := by
+    intro n
+    have hmono_r : StrictMono (fun i : Fin n => (i : ℕ) + 1) :=
+      fun _ _ hab => by simpa only [add_lt_add_iff_right] using Fin.val_strictMono hab
+    have hmono_c : StrictMono (fun j : Fin n => (j : ℕ)) :=
+      Fin.val_strictMono
+    simpa [toeplitz_submatrix_eq_tridiagM hdeg n] using hpf hmono_r hmono_c
+  exact four_mul_le_sq_of_recurrence_nonneg h0 h1 hrec hpos
+
+/-- Forward Aissen--Schoenberg--Whitney splitting in degree at most two.  A
+polynomial of degree at most two whose coefficient sequence is Pólya-frequency
+splits over `ℝ`. -/
+theorem splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two {p : ℝ[X]}
+    (hpf : IsPolyaFreqSeq p.coeff) (hdeg : p.natDegree ≤ 2) :
+    p.Splits := by
+  by_cases h2 : p.natDegree = 2
+  · have hp0 : p ≠ 0 := by
+      rintro rfl
+      simp at h2
+    have hc2 : p.coeff 2 ≠ 0 := by
+      have hlc : p.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hp0
+      rwa [Polynomial.leadingCoeff, h2] at hlc
+    have hdisc := disc_nonneg_of_isPolyaFreqSeq_natDegree_le_two hpf hdeg
+    obtain ⟨x, hx⟩ :=
+      exists_root_of_disc_nonneg (a := p.coeff 2) (b := p.coeff 1) (c := p.coeff 0)
+        hc2 (by nlinarith [hdisc])
+    have hev : p.eval x = 0 := by
+      rw [Polynomial.eval_eq_sum_range, h2]
+      simp only [Finset.sum_range_succ, Finset.sum_range_zero]
+      linear_combination hx
+    have hpq : (X - C x) * (p /ₘ (X - C x)) = p :=
+      mul_divByMonic_eq_iff_isRoot.mpr hev
+    have hqdeg : (p /ₘ (X - C x)).natDegree = 1 := by
+      rw [natDegree_divByMonic p (monic_X_sub_C x), h2, natDegree_X_sub_C]
+    have hqsplits : (p /ₘ (X - C x)).Splits := (isRealRooted_of_degree_one hqdeg).2
+    exact hpq ▸ splits_X_sub_C_mul_iff.mpr hqsplits
+  · rcases Nat.lt_or_ge p.natDegree 1 with hlt | hge
+    · have h0 : p.natDegree = 0 := by lia
+      have hcard : p.roots.card = p.natDegree := by
+        have hle := Polynomial.card_roots' p
+        lia
+      exact splits_of_card_roots hcard
+    · have h1 : p.natDegree = 1 := by lia
+      exact (isRealRooted_of_degree_one h1).2
+
+/-- Degree-`≤ 1` case of the forward Aissen--Schoenberg--Whitney theorem. -/
+theorem aissenSchoenbergWhitneyForward_of_natDegree_le_one {p : ℝ[X]}
+    (hpf : IsPolyaFreqSeq p.coeff) (hdeg : p.natDegree ≤ 1) :
+    p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0 :=
+  ⟨Polynomial.Splits.of_natDegree_le_one hdeg, roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
+
+/-- Degree-`≤ 2` case of the forward Aissen--Schoenberg--Whitney theorem. -/
+theorem aissenSchoenbergWhitneyForward_of_natDegree_le_two {p : ℝ[X]}
+    (hpf : IsPolyaFreqSeq p.coeff) (hdeg : p.natDegree ≤ 2) :
+    p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0 :=
+  ⟨splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two hpf hdeg,
+    roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
+
+/-- Degree-at-least-three leaf for the forward
+Aissen--Schoenberg--Whitney theorem. -/
+abbrev aissenSchoenbergWhitneyForwardDegreeAtLeastThreeStatement : Prop :=
+  ∀ {p : ℝ[X]},
+    3 ≤ p.natDegree →
+    IsPolyaFreqSeq p.coeff →
+      p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0
+
+/-- Degree-at-least-three case of the forward Aissen--Schoenberg--Whitney theorem. -/
+theorem aissenSchoenbergWhitneyForward_degreeAtLeastThree {p : ℝ[X]}
+    (hdeg : 3 ≤ p.natDegree) (hpf : IsPolyaFreqSeq p.coeff) :
+    p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0 := by
+  sorry
+
+/-- Degree-at-least-two case of the forward Aissen--Schoenberg--Whitney theorem. -/
+theorem aissenSchoenbergWhitneyForward_degreeAtLeastTwo {p : ℝ[X]}
+    (hdeg : 2 ≤ p.natDegree) (hpf : IsPolyaFreqSeq p.coeff) :
+    p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0 := by
+  by_cases hdeg2 : p.natDegree ≤ 2
+  · exact aissenSchoenbergWhitneyForward_of_natDegree_le_two hpf hdeg2
+  · exact aissenSchoenbergWhitneyForward_degreeAtLeastThree (by lia) hpf
+
+/-- Forward Aissen--Schoenberg--Whitney theorem. -/
 theorem aissenSchoenbergWhitneyForward {p : ℝ[X]}
     (hpf : IsPolyaFreqSeq p.coeff) :
     p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0 := by
-  sorry
+  by_cases hdeg : p.natDegree ≤ 2
+  · exact aissenSchoenbergWhitneyForward_of_natDegree_le_two hpf hdeg
+  · exact aissenSchoenbergWhitneyForward_degreeAtLeastTwo (by lia) hpf
 
 /-- Splitting-only form of forward ASW.  The root-location conjunct follows
 from coefficient nonnegativity, so this is the remaining hard target. -/
@@ -605,106 +740,6 @@ theorem IsPolyaFreqSeq.of_forall_pos_add_C_mul_splits {p q : ℝ[X]}
         (roots_nonpos_of_nonneg_coeffs (hfamily hμ) hnn) using 1
       funext n
       simp [Polynomial.coeff_add, Polynomial.coeff_C_mul])
-
-/-! ### Low-degree forward ASW splitting -/
-
-/-- For a polynomial of degree at most two, the shifted `n × n` Toeplitz
-submatrix with rows `1, ..., n` and columns `0, ..., n - 1` is the tridiagonal
-Toeplitz matrix with diagonal `coeff 1`, superdiagonal `coeff 0`, and
-subdiagonal `coeff 2`. -/
-lemma toeplitz_submatrix_eq_tridiagM {p : ℝ[X]} (hdeg : p.natDegree ≤ 2) (n : ℕ) :
-    (toeplitz p.coeff).submatrix
-        (fun i : Fin n => (i : ℕ) + 1) (fun j : Fin n => (j : ℕ)) =
-      tridiagM (p.coeff 1) (p.coeff 0) (p.coeff 2) n := by
-  ext i j
-  simp only [submatrix_apply, toeplitz_apply, tridiagM_apply]
-  by_cases hle : (j : ℕ) ≤ (i : ℕ) + 1
-  · rw [if_pos hle]
-    rcases Nat.lt_trichotomy (j : ℕ) (i : ℕ) with hji | hji | hji
-    · by_cases hnear : (i : ℕ) = (j : ℕ) + 1
-      · have h1 : (i : ℕ) ≠ (j : ℕ) := by lia
-        have h2 : (j : ℕ) ≠ (i : ℕ) + 1 := by lia
-        rw [if_neg h1, if_neg h2, if_pos hnear]
-        have harg : (i : ℕ) + 1 - (j : ℕ) = 2 := by lia
-        rw [harg]
-      · have h1 : (i : ℕ) ≠ (j : ℕ) := by lia
-        have h2 : (j : ℕ) ≠ (i : ℕ) + 1 := by lia
-        rw [if_neg h1, if_neg h2, if_neg hnear]
-        apply Polynomial.coeff_eq_zero_of_natDegree_lt
-        lia
-    · have h1 : (i : ℕ) = (j : ℕ) := hji.symm
-      rw [if_pos h1]
-      have harg : (i : ℕ) + 1 - (j : ℕ) = 1 := by lia
-      rw [harg]
-    · have h2 : (j : ℕ) = (i : ℕ) + 1 := by lia
-      have h1 : (i : ℕ) ≠ (j : ℕ) := by lia
-      rw [if_neg h1, if_pos h2]
-      have harg : (i : ℕ) + 1 - (j : ℕ) = 0 := by lia
-      rw [harg]
-  · rw [if_neg hle]
-    have h1 : (i : ℕ) ≠ (j : ℕ) := by lia
-    have h2 : (j : ℕ) ≠ (i : ℕ) + 1 := by lia
-    have h3 : (i : ℕ) ≠ (j : ℕ) + 1 := by lia
-    rw [if_neg h1, if_neg h2, if_neg h3]
-
-/-- Forward ASW discriminant bound in degree at most two.  If the coefficient
-sequence of `p` is Pólya-frequency and `p.natDegree ≤ 2`, then
-`4 * (coeff 0 * coeff 2) ≤ (coeff 1) ^ 2`. -/
-lemma disc_nonneg_of_isPolyaFreqSeq_natDegree_le_two {p : ℝ[X]}
-    (hpf : IsPolyaFreqSeq p.coeff) (hdeg : p.natDegree ≤ 2) :
-    4 * (p.coeff 0 * p.coeff 2) ≤ (p.coeff 1) ^ 2 := by
-  set D : ℕ → ℝ := fun n =>
-    (tridiagM (p.coeff 1) (p.coeff 0) (p.coeff 2) n).det with hD
-  have h0 : D 0 = 1 := tridiagM_det_zero _ _ _
-  have h1 : D 1 = p.coeff 1 := tridiagM_det_one _ _ _
-  have hrec :
-      ∀ n, D (n + 2) = p.coeff 1 * D (n + 1) - p.coeff 0 * p.coeff 2 * D n :=
-    fun n => by
-      simpa [hD] using tridiagM_det_rec (p.coeff 1) (p.coeff 0) (p.coeff 2) n
-  have hpos : ∀ n, 0 ≤ D n := by
-    intro n
-    have hmono_r : StrictMono (fun i : Fin n => (i : ℕ) + 1) :=
-      fun _ _ hab => by simpa only [add_lt_add_iff_right] using Fin.val_strictMono hab
-    have hmono_c : StrictMono (fun j : Fin n => (j : ℕ)) :=
-      Fin.val_strictMono
-    simpa [toeplitz_submatrix_eq_tridiagM hdeg n] using hpf hmono_r hmono_c
-  exact four_mul_le_sq_of_recurrence_nonneg h0 h1 hrec hpos
-
-/-- Forward Aissen--Schoenberg--Whitney splitting in degree at most two.  A
-polynomial of degree at most two whose coefficient sequence is Pólya-frequency
-splits over `ℝ`. -/
-theorem splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two {p : ℝ[X]}
-    (hpf : IsPolyaFreqSeq p.coeff) (hdeg : p.natDegree ≤ 2) :
-    p.Splits := by
-  by_cases h2 : p.natDegree = 2
-  · have hp0 : p ≠ 0 := by
-      rintro rfl
-      simp at h2
-    have hc2 : p.coeff 2 ≠ 0 := by
-      have hlc : p.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hp0
-      rwa [Polynomial.leadingCoeff, h2] at hlc
-    have hdisc := disc_nonneg_of_isPolyaFreqSeq_natDegree_le_two hpf hdeg
-    obtain ⟨x, hx⟩ :=
-      exists_root_of_disc_nonneg (a := p.coeff 2) (b := p.coeff 1) (c := p.coeff 0)
-        hc2 (by nlinarith [hdisc])
-    have hev : p.eval x = 0 := by
-      rw [Polynomial.eval_eq_sum_range, h2]
-      simp only [Finset.sum_range_succ, Finset.sum_range_zero]
-      linear_combination hx
-    have hpq : (X - C x) * (p /ₘ (X - C x)) = p :=
-      mul_divByMonic_eq_iff_isRoot.mpr hev
-    have hqdeg : (p /ₘ (X - C x)).natDegree = 1 := by
-      rw [natDegree_divByMonic p (monic_X_sub_C x), h2, natDegree_X_sub_C]
-    have hqsplits : (p /ₘ (X - C x)).Splits := (isRealRooted_of_degree_one hqdeg).2
-    exact hpq ▸ splits_X_sub_C_mul_iff.mpr hqsplits
-  · rcases Nat.lt_or_ge p.natDegree 1 with hlt | hge
-    · have h0 : p.natDegree = 0 := by lia
-      have hcard : p.roots.card = p.natDegree := by
-        have hle := Polynomial.card_roots' p
-        lia
-      exact splits_of_card_roots hcard
-    · have h1 : p.natDegree = 1 := by lia
-      exact (isRealRooted_of_degree_one h1).2
 
 /-! ### Degree-bounded forward ASW splitting interface -/
 
