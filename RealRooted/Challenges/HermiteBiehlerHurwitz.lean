@@ -14,9 +14,10 @@ Classical references include C. Hermite, A. Hurwitz, M. G. Krein, M. A. Naimark,
 and the modern account by O. Holtz, "Hermite-Biehler, Routh-Hurwitz, and
 total positivity", Linear Algebra Appl. 372 (2003), 105--110.
 
-This module exposes the theorem-shaped interfaces currently used by the
-project.  The analytic stability bridges and Hurwitz-matrix finite-minor
-plumbing remain in `RealRooted.HermiteBiehler` and `RealRooted.HurwitzMatrix`.
+This module exposes the checked Hermite--Biehler theorems and the refutation of
+the proposed Hurwitz criterion for the project's row-oriented matrix. The
+analytic stability bridges and finite-minor plumbing remain in
+`RealRooted.HermiteBiehler` and `RealRooted.HurwitzMatrix`.
 -/
 
 namespace RealRooted
@@ -32,8 +33,8 @@ abbrev HermiteBiehlerForwardTarget : Prop :=
 abbrev HermiteBiehlerConverseTarget : Prop :=
   RealRooted.hermiteBiehlerConverseStatement
 
-/-- Challenge-facing name for the Hurwitz-matrix total-nonnegativity
-criterion. -/
+/-- Challenge-facing name for the proposed row-oriented Hurwitz-matrix
+total-nonnegativity criterion. -/
 abbrev HurwitzMatrixCriterionTarget : Prop :=
   RealRooted.HurwitzMatrixCriterionStatement
 
@@ -47,11 +48,11 @@ theorem hermiteBiehler_converse :
     HermiteBiehlerConverseTarget :=
   @RealRooted.hermiteBiehlerConverse
 
-/-- Hurwitz-matrix total-nonnegativity criterion interface. -/
-theorem hurwitzMatrixCriterion :
-    HurwitzMatrixCriterionTarget :=
-  ⟨RealRooted.hurwitzStableToMatrixTotallyNonnegative_of_criterion,
-    RealRooted.hurwitzMatrixTotallyNonnegativeToStable_of_criterion⟩
+/-- The proposed criterion is false for the row orientation used by
+`RealRooted.hurwitz`. -/
+theorem not_hurwitzMatrixCriterion :
+    ¬ HurwitzMatrixCriterionTarget :=
+  RealRooted.not_hurwitzMatrixCriterionStatement
 
 end HermiteBiehlerHurwitz
 end Challenges

@@ -86,7 +86,8 @@ lake build RealRooted.Bezoutian
 - `veroneseSectionPolynomial r k p`: the fixed-residue Veronese section of a
   polynomial.
 - `FullyInterlacingPair a b`: the two-row Lace total-nonnegativity interface
-  used by the Veronese and Hurwitz-matrix route.
+  used by the Veronese development. Its proposed identification with Hurwitz
+  stability is false for the current row orientation.
 
 ## Checked Highlights
 
@@ -260,14 +261,16 @@ symmetricfunctions.com and to the original publications or catalog references,
 while the detailed proof infrastructure remains in the main theorem modules.
 The current challenge surface includes ASW, Chudnovsky-Seymour, Hadamard,
 Wagner, Cauchy interlacing, Obreschkoff, operator and matrix interlacing
-preservers, Hermite-Biehler/Hurwitz, Veronese sections, Favard, Kurtz,
-Hermite-Poulain, Borcea-Branden, and Eulerian polynomials.
+preservers, Hermite-Biehler, the checked row-oriented Hurwitz counterexamples,
+Veronese sections, Favard, Kurtz, Hermite-Poulain, Borcea-Branden, and Eulerian
+polynomials.
 
 Longer term, a Borcea-Branden direction would be a substantial expansion toward
-stability theory.  A realistic path would first build the Hermite-Biehler and
-Hurwitz-matrix total-nonnegativity interfaces into proved theorems, then add the
-multivariate stability infrastructure needed for algebraic-symbol preserver
-theorems.
+stability theory. A realistic path would first define the correctly oriented
+classical Hurwitz matrix and restate its stability criterion; both directions
+of the criterion proposed for the current row-oriented matrix are formally
+refuted. The next stage would add the multivariate stability infrastructure
+needed for algebraic-symbol preserver theorems.
 
 GitHub issues track individual proof tasks rather than being duplicated here.
 Current open themes include Liu's compatible-sequences theorem and the
@@ -283,6 +286,10 @@ declaring standard Lean `theorem` signatures with `sorry` proofs. We avoid
 passing conjectures around as hypothetical parameters (axioms in disguise).
 Using standard `sorry` stubs simplifies downstream signatures, avoids
 parameter propagation clutter, and aligns with Mathlib best practices.
+Known false candidate interfaces are instead retained only when useful for
+diagnosis, together with checked negations. Any reduction through such an
+interface must expose it as an explicit hypothesis and document that the route
+is uninhabited.
 
 New Lean code should follow the Lean community style guidelines and Mathlib
 naming conventions where practical.  In particular, keep declarations explicit,

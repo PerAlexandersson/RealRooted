@@ -646,11 +646,6 @@ def HurwitzOddEvenToFullyInterlacingPairStatement : Prop :=
 abbrev HurwitzStableToMatrixTotallyNonnegativeStatement : Prop :=
   ∀ ⦃p : ℝ[X]⦄, IsHurwitzStable p → (hurwitz p.coeff).IsTotallyNonneg
 
-/-- Hurwitz stability implies that the Hurwitz matrix of the polynomial is totally nonnegative. -/
-theorem hurwitzStableToMatrixTotallyNonnegative {p : ℝ[X]} (hp : IsHurwitzStable p) :
-    (hurwitz p.coeff).IsTotallyNonneg := by
-  sorry
-
 /-- The legacy strong interface implies the PF interface. -/
 theorem pfPrecToFullyInterlacingPair_of_precToFully
     (h : PrecToFullyInterlacingPairStatement) :
@@ -808,8 +803,21 @@ theorem nonnegPrecToFullyInterlacingPair_of_hermiteBiehlerPosHurwitzMatrix
     (nonnegPrecToHurwitzOddEven_of_hermiteBiehlerPos hHB hHBToHurwitz)
     hHurwitzToMatrix
 
-/-- The three classical interfaces in the sign-normalized
-Hermite--Biehler/Hurwitz-matrix route. -/
+/-- The forward Hurwitz-matrix criterion is false for the row orientation used
+by `hurwitz`: together with the checked Hermite--Biehler bridges it would imply
+the refuted polynomial-to-Lace interface. -/
+theorem not_hurwitzStableToMatrixTotallyNonnegativeStatement :
+    ¬ HurwitzStableToMatrixTotallyNonnegativeStatement := by
+  intro h
+  exact not_nonnegPrecToFullyInterlacingPairStatement
+    (nonnegPrecToFullyInterlacingPair_of_hurwitzMatrixDirect
+      (nonnegPrecToHurwitzOddEven_of_hermiteBiehlerPos
+        @hermiteBiehlerForwardPos @hermiteBiehlerStableToHurwitzOddEven)
+      h)
+
+/-- The three interfaces in the sign-normalized Hermite--Biehler/Hurwitz-matrix
+route. This legacy bundle is uninhabited for the current `hurwitz` orientation;
+see `not_HermiteBiehlerHurwitzRoute`. -/
 structure HermiteBiehlerHurwitzRoute : Prop where
   /-- Forward, sign-normalized Hermite--Biehler bridge. -/
   hermiteBiehlerForwardPos : hermiteBiehlerForwardPosStatement
@@ -818,6 +826,12 @@ structure HermiteBiehlerHurwitzRoute : Prop where
   hermiteBiehlerStableToHurwitzOddEven : HermiteBiehlerStableToHurwitzOddEvenStatement
   /-- Forward matrix Hurwitz criterion. -/
   hurwitzStableToMatrixTotallyNonnegative : HurwitzStableToMatrixTotallyNonnegativeStatement
+
+/-- The legacy Hermite--Biehler/Hurwitz route is uninhabited for the current
+row-oriented Hurwitz matrix. -/
+theorem not_HermiteBiehlerHurwitzRoute : ¬ HermiteBiehlerHurwitzRoute :=
+  fun h => not_hurwitzStableToMatrixTotallyNonnegativeStatement
+    h.hurwitzStableToMatrixTotallyNonnegative
 
 /-- Projection of the Hermite--Biehler/Hurwitz-matrix route onto the PF
 polynomial-to-Lace bridge. -/

@@ -76,7 +76,8 @@ theorem garloffWagnerHadamardNonnegPrec :
     RealRooted.garloffWagnerHadamardNonnegPrec
       hfg.1 hfg.2.1 hpq.1 hpq.2.1 hfg.2.2 hpq.2.2
 
-/-- Garloff--Wagner theorem from the bundled classical inputs. -/
+/-- Legacy conditional Garloff--Wagner route. The input bundle is uninhabited
+for the current row-oriented Hurwitz matrix. -/
 theorem garloffWagnerHadamardNonnegPrec_of_classicalInputs :
     ∀ (_h : RealRooted.GarloffWagnerClassicalInputs) {f g p q : ℝ[X]},
       NonnegativeProperPositionPair f g →
@@ -86,7 +87,8 @@ theorem garloffWagnerHadamardNonnegPrec_of_classicalInputs :
     RealRooted.garloffWagnerHadamardNonnegPrec_of_classicalInputsBundle
       h hfg.1 hfg.2.1 hpq.1 hpq.2.1 hfg.2.2 hpq.2.2
 
-/-- PF-polynomial closure under Hadamard product from bundled classical inputs. -/
+/-- Legacy conditional PF closure route through the uninhabited classical-input
+bundle. -/
 theorem hadamardProduct_preserves_pf_of_classicalInputs :
     ∀ (_h : RealRooted.GarloffWagnerClassicalInputs) {p q : ℝ[X]},
       PolyaFrequencyPolynomial p →

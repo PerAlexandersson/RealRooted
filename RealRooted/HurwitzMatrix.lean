@@ -9,9 +9,9 @@ namespace RealRooted
 /-!
 # Hurwitz matrix criterion interface
 
-This file records checked interface lemmas for the Hurwitz-matrix worker.  The
-classical analytic theorem is not proved here; the point is to expose the exact
-finite-minor statement needed by the existing `VeroneseSection` route.
+This file records checked interface lemmas for the row-oriented Hurwitz matrix
+used by the Lace and Veronese developments. The classical Hurwitz criterion
+does not hold for this orientation; both proposed directions are refuted below.
 -/
 
 @[simp] theorem hurwitz_coeff_even_row (p : ℝ[X]) (i j : ℕ) :
@@ -100,9 +100,8 @@ theorem hurwitz_isPolyaFreqSeq_even {c : ℕ → ℝ}
 /-- Unfolded finite-minor form of
 `HurwitzStableToMatrixTotallyNonnegativeStatement`.
 
-This is the statement to target if one proves the classical theorem directly
-from determinant formulas: every finite minor of the row-oriented Hurwitz
-matrix attached to a Hurwitz-stable polynomial is nonnegative. -/
+This candidate statement is false for the current row orientation; see
+`not_hurwitzStableToMatrixTotallyNonnegativeStatement`. -/
 def HurwitzStableToHurwitzMatrixMinorsStatement : Prop :=
   ∀ {p : ℝ[X]}, IsHurwitzStable p → (hurwitz p.coeff).IsTotallyNonneg
 
@@ -114,20 +113,13 @@ theorem hurwitzStableToMatrixTotallyNonnegativeStatement_iff_minors :
 abbrev HurwitzMatrixTotallyNonnegativeToStableStatement : Prop :=
   ∀ ⦃p : ℝ[X]⦄, p ≠ 0 → (hurwitz p.coeff).IsTotallyNonneg → IsHurwitzStable p
 
-/-- Total nonnegativity of the Hurwitz matrix implies Hurwitz stability of a
-nonzero polynomial. -/
-theorem hurwitzMatrixTotallyNonnegativeToStable {p : ℝ[X]}
-    (hp0 : p ≠ 0)
-    (h : (hurwitz p.coeff).IsTotallyNonneg) :
-    IsHurwitzStable p := by
-  sorry
-
 /-- The converse Hurwitz-matrix criterion gives the converse odd/even Lace
 bridge by the explicit Hurwitz/Lace matrix identity. -/
-theorem fullyInterlacingPairToHurwitzOddEvenStable_of_matrixTNN :
+theorem fullyInterlacingPairToHurwitzOddEvenStable_of_matrixTNN
+    (hMatrixToStable : HurwitzMatrixTotallyNonnegativeToStableStatement) :
     FullyInterlacingPairToHurwitzOddEvenStableStatement :=
   fun {p q} hpq0 hfull =>
-    hurwitzMatrixTotallyNonnegativeToStable
+    hMatrixToStable
       (oddEvenPolynomial_ne_zero_iff.mpr hpq0)
       ((hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair p q).2
         hfull)
@@ -138,31 +130,37 @@ abbrev HurwitzMatrixCriterionStatement : Prop :=
   HurwitzStableToMatrixTotallyNonnegativeStatement ∧
     HurwitzMatrixTotallyNonnegativeToStableStatement
 
-theorem hurwitzStableToMatrixTotallyNonnegative_of_criterion :
+theorem hurwitzStableToMatrixTotallyNonnegative_of_criterion
+    (h : HurwitzMatrixCriterionStatement) :
     HurwitzStableToMatrixTotallyNonnegativeStatement :=
-  @hurwitzStableToMatrixTotallyNonnegative
+  h.1
 
-theorem hurwitzStableToHurwitzMatrixMinors_of_criterion :
+theorem hurwitzStableToHurwitzMatrixMinors_of_criterion
+    (h : HurwitzMatrixCriterionStatement) :
     HurwitzStableToHurwitzMatrixMinorsStatement :=
-  @hurwitzStableToMatrixTotallyNonnegative
+  fun hstab => h.1 hstab
 
-theorem hurwitzMatrixTotallyNonnegativeToStable_of_criterion :
+theorem hurwitzMatrixTotallyNonnegativeToStable_of_criterion
+    (h : HurwitzMatrixCriterionStatement) :
     HurwitzMatrixTotallyNonnegativeToStableStatement :=
-  @hurwitzMatrixTotallyNonnegativeToStable
+  h.2
 
-theorem fullyInterlacingPairToHurwitzOddEvenStable_of_criterion :
+theorem fullyInterlacingPairToHurwitzOddEvenStable_of_criterion
+    (h : HurwitzMatrixCriterionStatement) :
     FullyInterlacingPairToHurwitzOddEvenStableStatement :=
-  fullyInterlacingPairToHurwitzOddEvenStable_of_matrixTNN
+  fullyInterlacingPairToHurwitzOddEvenStable_of_matrixTNN h.2
 
-theorem hurwitzOddEvenToFullyInterlacingPair_of_matrixMinors :
+theorem hurwitzOddEvenToFullyInterlacingPair_of_matrixMinors
+    (hStableToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement) :
     HurwitzOddEvenToFullyInterlacingPairStatement :=
   fun {p q} hstab =>
     (hurwitzMatrixTotallyNonnegative_oddEvenPolynomial_iff_fullyInterlacingPair p q).mp
-      (hurwitzStableToMatrixTotallyNonnegative hstab)
+      (hStableToMatrix hstab)
 
-theorem hurwitzOddEvenToFullyInterlacingPair_of_criterion :
+theorem hurwitzOddEvenToFullyInterlacingPair_of_criterion
+    (h : HurwitzMatrixCriterionStatement) :
     HurwitzOddEvenToFullyInterlacingPairStatement :=
-  hurwitzOddEvenToFullyInterlacingPair_of_matrixMinors
+  hurwitzOddEvenToFullyInterlacingPair_of_matrixMinors h.1
 
 /-! ### Entrywise Hadamard structure of Hurwitz matrices
 
@@ -1454,6 +1452,88 @@ theorem hurwitz_isTotallyNonneg_of_firstColumn_isPolyaFreqSeq (c : ℕ → ℝ)
     (hurwitz c).IsTotallyNonneg := by
   exact hurwitz_eq_toeplitz_firstColumn_submatrix c ▸
     Matrix.IsTotallyNonneg.submatrix h strictMono_id (fun _ _ hab => by lia)
+
+/-! ### The row-oriented Hurwitz criterion is false -/
+
+/-- The polynomial `X ^ 3 + 1` refutes the converse criterion for the current
+row-oriented Hurwitz matrix. -/
+def hurwitzMatrixCriterionCounterexample : ℝ[X] := X ^ 3 + 1
+
+theorem hurwitzMatrixCriterionCounterexample_matrix_isTotallyNonneg :
+    (hurwitz hurwitzMatrixCriterionCounterexample.coeff).IsTotallyNonneg := by
+  apply hurwitz_isTotallyNonneg_of_firstColumn_isPolyaFreqSeq
+  have hpf1 : IsPolyaFreqSeq (X + 1 : ℝ[X]).coeff := by
+    convert IsPolyaFreqSeq.linear (r := (-1 : ℝ)) (by norm_num) using 1
+    funext n
+    simp
+  have hpf : IsPolyaFreqSeq (X * (X + 1) : ℝ[X]).coeff := by
+    simpa only [map_zero, sub_zero] using
+      IsPolyaFreqSeq.linear_mul (r := (0 : ℝ)) (by norm_num) hpf1
+  convert hpf using 1
+  funext k
+  rcases Nat.even_or_odd k with ⟨m, hm⟩ | ⟨m, hm⟩
+  · subst hm
+    rw [show m + m = 2 * m by ring, hurwitz_even_row_apply, if_pos (Nat.zero_le m)]
+    rw [show (X * (X + 1) : ℝ[X]) = X ^ 2 + X by ring]
+    simp [hurwitzMatrixCriterionCounterexample, Polynomial.coeff_add,
+      Polynomial.coeff_X_pow, Polynomial.coeff_one, Polynomial.coeff_X]
+    lia
+  · subst hm
+    rw [hurwitz_odd_row_apply, if_pos (Nat.zero_le m)]
+    rw [show (X * (X + 1) : ℝ[X]) = X ^ 2 + X by ring]
+    simp [hurwitzMatrixCriterionCounterexample, Polynomial.coeff_add,
+      Polynomial.coeff_X_pow, Polynomial.coeff_one, Polynomial.coeff_X]
+    lia
+
+private def hurwitzMatrixCriterionCounterexampleRoot : ℂ :=
+  ⟨(1 : ℝ) / 2, Real.sqrt 3 / 2⟩
+
+private theorem hurwitzMatrixCriterionCounterexampleRoot_re_pos :
+    0 < hurwitzMatrixCriterionCounterexampleRoot.re := by
+  norm_num [hurwitzMatrixCriterionCounterexampleRoot]
+
+private theorem hurwitzMatrixCriterionCounterexampleRoot_cube :
+    hurwitzMatrixCriterionCounterexampleRoot ^ 3 = -1 := by
+  have hs : Real.sqrt 3 ^ 2 = (3 : ℝ) := Real.sq_sqrt (by norm_num)
+  have hs3 : Real.sqrt 3 ^ 3 = 3 * Real.sqrt 3 := by
+    calc
+      Real.sqrt 3 ^ 3 = Real.sqrt 3 ^ 2 * Real.sqrt 3 := by ring
+      _ = 3 * Real.sqrt 3 := by rw [hs]
+  apply Complex.ext
+  · simp [hurwitzMatrixCriterionCounterexampleRoot, pow_succ,
+      Complex.mul_re, Complex.mul_im]
+    ring_nf
+    nlinarith
+  · simp [hurwitzMatrixCriterionCounterexampleRoot, pow_succ,
+      Complex.mul_re, Complex.mul_im]
+    ring_nf
+    nlinarith
+
+theorem not_isHurwitzStable_hurwitzMatrixCriterionCounterexample :
+    ¬ IsHurwitzStable hurwitzMatrixCriterionCounterexample := by
+  intro h
+  apply h.2 hurwitzMatrixCriterionCounterexampleRoot
+    hurwitzMatrixCriterionCounterexampleRoot_re_pos
+  rw [show complexify hurwitzMatrixCriterionCounterexample = (X ^ 3 + 1 : ℂ[X]) by
+    simp [hurwitzMatrixCriterionCounterexample, complexify]]
+  simp [hurwitzMatrixCriterionCounterexampleRoot_cube]
+
+/-- Total nonnegativity of the current row-oriented Hurwitz matrix does not
+imply Hurwitz stability, even for a nonzero polynomial. -/
+theorem not_hurwitzMatrixTotallyNonnegativeToStableStatement :
+    ¬ HurwitzMatrixTotallyNonnegativeToStableStatement := by
+  intro h
+  exact not_isHurwitzStable_hurwitzMatrixCriterionCounterexample
+    (h (by
+      intro hp
+      have hc := congrArg (fun p : ℝ[X] => p.coeff 3) hp
+      norm_num [hurwitzMatrixCriterionCounterexample, Polynomial.coeff_add,
+        Polynomial.coeff_X_pow, Polynomial.coeff_one] at hc)
+      hurwitzMatrixCriterionCounterexample_matrix_isTotallyNonneg)
+
+/-- The two-sided row-oriented Hurwitz criterion is false. -/
+theorem not_hurwitzMatrixCriterionStatement : ¬ HurwitzMatrixCriterionStatement :=
+  fun h => not_hurwitzStableToMatrixTotallyNonnegativeStatement h.1
 
 /-- Counterexample first column: the binomial sequence `k ↦ C(16, k)`. -/
 noncomputable def cexFirstColumn : ℕ → ℝ := fun k => (Nat.choose 16 k : ℝ)
