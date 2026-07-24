@@ -116,4 +116,44 @@ theorem MvUpperHalfPlaneStable.sub_pderiv_of_stable_pencil
       simpa using hGma.eval_update_eq_eval_pderiv_mul_add i z (z i)
     rwa [haff] at hne
 
+/-- The polynomial `F(z) + w * G(z)` with `w` represented by one additional
+variable. -/
+noncomputable def mvPencil {R sigma : Type*} [CommSemiring R]
+    (F G : MvPolynomial sigma R) : MvPolynomial (Sum sigma Unit) R :=
+  MvPolynomial.rename Sum.inl F +
+    MvPolynomial.X (Sum.inr ()) * MvPolynomial.rename Sum.inl G
+
+@[simp] theorem eval_mvPencil {R sigma : Type*} [CommSemiring R]
+    (F G : MvPolynomial sigma R) (z : sigma → R) (w : R) :
+    MvPolynomial.eval (Sum.elim z fun _ => w) (mvPencil F G) =
+      MvPolynomial.eval z F + w * MvPolynomial.eval z G := by
+  simp only [mvPencil, MvPolynomial.eval_add, MvPolynomial.eval_mul,
+    MvPolynomial.eval_X, MvPolynomial.eval_rename]
+  rfl
+
+theorem MvUpperHalfPlaneStable.pencil_nonzero
+    {sigma : Type*} {F G : MvPolynomial sigma ℂ}
+    (hFG : MvUpperHalfPlaneStable (mvPencil F G))
+    (z : sigma → ℂ) (hz : ∀ i, 0 < (z i).im)
+    (w : ℂ) (hw : 0 < w.im) :
+    MvPolynomial.eval z F + w * MvPolynomial.eval z G ≠ 0 := by
+  rw [← eval_mvPencil]
+  apply hFG (Sum.elim z fun _ => w)
+  intro i
+  cases i with
+  | inl i => exact hz i
+  | inr i => exact hw
+
+/-- One-variable Lieb--Sokal step stated using a stable polynomial pencil on
+an added variable. -/
+theorem MvUpperHalfPlaneStable.sub_pderiv_of_stable_mvPencil
+    {sigma : Type*} {F G : MvPolynomial sigma ℂ}
+    (hF : MvUpperHalfPlaneStable F) (hG : MvUpperHalfPlaneStable G)
+    (hGma : MvPolynomial.IsMultiaffine G) (i : sigma)
+    (hFG : MvUpperHalfPlaneStable (mvPencil F G)) :
+    MvUpperHalfPlaneStable (F - MvPolynomial.pderiv i G) := by
+  apply hF.sub_pderiv_of_stable_pencil hG hGma i
+  intro z hz w hw
+  exact hFG.pencil_nonzero z hz w hw
+
 end RealRooted
