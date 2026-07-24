@@ -203,6 +203,21 @@ theorem isRealRooted_of_product_factor_sequence
         isRealRooted_mul_of_isRealRooted (hfactor n) ih
       simpa [Nat.succ_eq_add_one, hstep n] using hnext
 
+private theorem sequence_of_base_interval_and_step_from {Q : Nat → Prop}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → Q n)
+    (hstep : ∀ n : Nat, N ≤ n → Q n → Q (n + 1)) :
+    ∀ n : Nat, Q n := fun n =>
+  Nat.strong_induction_on n fun n ih => by
+    by_cases hn : n ≤ N
+    · exact hbase n hn
+    · cases n with
+      | zero =>
+          exact False.elim (hn (Nat.zero_le N))
+      | succ m =>
+          have hNm : N ≤ m := by lia
+          exact hstep m hNm (ih m (Nat.lt_succ_self m))
+
 /-- Tail-start sequence shell for first-order product recurrences with a
 supplied factor certificate.  The finitely many rows before `N` are supplied
 as base cases, and the product recurrence is used from row `N` onward. -/
@@ -212,19 +227,11 @@ theorem isRealRooted_of_product_factor_sequence_from
     (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
     (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
     (hstep : ∀ n : Nat, N ≤ n → P (n + 1) = F n * P n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := fun n =>
-  Nat.strong_induction_on n fun n ih => by
-    by_cases hn : n ≤ N
-    · exact hbase n hn
-    · cases n with
-      | zero =>
-          exact False.elim (hn (Nat.zero_le N))
-      | succ m =>
-          have hNm : N ≤ m := by lia
-          have hm : P m ≠ 0 ∧ (P m).Splits := ih m (Nat.lt_succ_self m)
-          have hnext : F m * P m ≠ 0 ∧ (F m * P m).Splits :=
-            isRealRooted_mul_of_isRealRooted (hfactor m hNm) hm
-          simpa [Nat.succ_eq_add_one, hstep m hNm] using hnext
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  sequence_of_base_interval_and_step_from N hbase fun n hn hP =>
+    have hnext : F n * P n ≠ 0 ∧ (F n * P n).Splits :=
+      isRealRooted_mul_of_isRealRooted (hfactor n hn) hP
+    by simpa [Nat.succ_eq_add_one, hstep n hn] using hnext
 
 /-- Right-factor variant of `isRealRooted_of_product_factor_sequence`. -/
 theorem isRealRooted_of_product_factor_right_sequence
