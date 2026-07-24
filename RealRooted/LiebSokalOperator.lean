@@ -114,6 +114,13 @@ def applyNegDifferential
     MvPolynomial.C ((-1 : R) ^ (d.sum fun _ n => n) * c) *
       applyMonomialDifferential d G
 
+/-- Eliminate variable `i` by replacing its linear occurrence with negative
+partial differentiation in variable `j`. -/
+def contractVariables {R sigma : Type*} [CommRing R]
+    (i j : sigma) (P : MvPolynomial sigma R) : MvPolynomial sigma R :=
+  MvPolynomial.specializeZero i P -
+    MvPolynomial.pderiv j (MvPolynomial.pderiv i P)
+
 @[simp] theorem applyNegDifferential_monomial
     {R sigma : Type*} [CommRing R] [Fintype sigma]
     (d : sigma →₀ ℕ) (c : R) (G : MvPolynomial sigma R) :
@@ -251,6 +258,14 @@ theorem isMultiaffine_applyNegDifferential
   apply MvPolynomial.IsMultiaffine.sum
   intro d hd
   exact (isMultiaffine_applyMonomialDifferential hG d).C_mul _
+
+/-- A paired coordinate contraction preserves multiaffineness. -/
+theorem isMultiaffine_contractVariables
+    {R sigma : Type*} [CommRing R]
+    {P : MvPolynomial sigma R} (hP : MvPolynomial.IsMultiaffine P)
+    (i j : sigma) :
+    MvPolynomial.IsMultiaffine (contractVariables i j P) := by
+  exact (hP.specializeZero_preserves i).sub ((hP.pderiv i).pderiv j)
 
 end
 

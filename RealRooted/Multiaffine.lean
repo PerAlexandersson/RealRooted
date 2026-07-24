@@ -177,6 +177,68 @@ theorem eval_update_pderiv_eq
   rw [hp.pderiv_pderiv_self_eq_zero i] at h
   simpa only [Function.update_eq_self, map_zero, zero_mul, zero_add] using h.symm
 
+end IsMultiaffine
+
+/-- Set one variable to zero while retaining the ambient variable type. -/
+noncomputable def specializeZero {S : Type*} [CommRing S]
+    (i : σ) (p : MvPolynomial σ S) : MvPolynomial σ S :=
+  ∑ d ∈ p.support.filter fun d => d i = 0,
+    MvPolynomial.monomial d (p.coeff d)
+
+@[simp] theorem eval_specializeZero
+    {S : Type*} [CommRing S] [DecidableEq σ]
+    (i : σ) (p : MvPolynomial σ S) (z : σ → S) :
+    MvPolynomial.eval z (specializeZero i p) =
+      MvPolynomial.eval (Function.update z i 0) p := by
+  rw [specializeZero]
+  simp only [map_sum, Finset.sum_filter]
+  conv_rhs => rw [MvPolynomial.as_sum p]
+  simp only [map_sum]
+  apply Finset.sum_congr rfl
+  intro d hd
+  by_cases hdi : d i = 0
+  · simp only [if_pos hdi]
+    rw [MvPolynomial.eval_monomial, MvPolynomial.eval_monomial]
+    congr 1
+    apply Finsupp.prod_congr
+    intro j hj
+    have hji : j ≠ i := by
+      intro h
+      subst j
+      exact (Finsupp.mem_support_iff.mp hj) hdi
+    simp [hji]
+  · rw [if_neg hdi, MvPolynomial.eval_monomial]
+    have hi : i ∈ d.support := by simpa [Finsupp.mem_support_iff]
+    have hprod : d.prod (fun j e => Function.update z i 0 j ^ e) = 0 := by
+      rw [Finsupp.prod]
+      apply Finset.prod_eq_zero hi
+      rw [Function.update_self]
+      exact zero_pow hdi
+    rw [hprod]
+    simp
+
+namespace IsMultiaffine
+
+variable {R σ τ : Type*} [CommSemiring R]
+
+/-- Specializing one variable of a multiaffine polynomial at zero preserves
+multiaffineness. -/
+theorem specializeZero_preserves {S : Type*} [CommRing S]
+    {p : MvPolynomial σ S} (hp : IsMultiaffine p) (i : σ) :
+    IsMultiaffine (MvPolynomial.specializeZero i p) := by
+  classical
+  intro j
+  refine (MvPolynomial.degreeOf_sum_le j
+    (p.support.filter fun d => d i = 0)
+    fun d => MvPolynomial.monomial d (p.coeff d)).trans ?_
+  apply Finset.sup_le
+  intro d hd
+  rw [Finset.mem_filter] at hd
+  have hc : p.coeff d ≠ 0 := by
+    simpa [Finsupp.mem_support_iff] using hd.1
+  rw [MvPolynomial.degreeOf_monomial_eq _ j hc]
+  exact MvPolynomial.degreeOf_le_iff.mp (hp j) d hd.1
+
 theorem rename {p : MvPolynomial σ R} (hp : IsMultiaffine p)
     {f : σ → τ} (hf : Function.Injective f) :
     IsMultiaffine (MvPolynomial.rename f p) := by

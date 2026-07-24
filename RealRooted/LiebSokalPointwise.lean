@@ -1,5 +1,6 @@
 import RealRooted.Multiaffine
 import RealRooted.MultivariateStability
+import RealRooted.LiebSokalOperator
 import RealRooted.Mathlib.Analysis.Complex.OpenMapping
 import Mathlib.Analysis.Complex.Polynomial.GaussLucas
 
@@ -125,6 +126,82 @@ theorem MvUpperHalfPlaneStable.pderiv_zero_or
   have hBeval : MvPolynomial.eval (Function.update zt i 0) P = B.eval t := by
     rw [hB_eval]
   rw [hAeval, hBeval]
+  dsimp [r]
+  field_simp
+  ring
+
+/-- Specializing a variable of a finite-variable multiaffine stable polynomial
+at zero gives zero or another stable polynomial. -/
+theorem MvUpperHalfPlaneStable.specializeZero_zero_or
+    {sigma : Type*} [Finite sigma]
+    {P : MvPolynomial sigma ℂ}
+    (hP : MvUpperHalfPlaneStable P)
+    (hPma : MvPolynomial.IsMultiaffine P) (i : sigma) :
+    MvPolynomial.specializeZero i P = 0 ∨
+      MvUpperHalfPlaneStable (MvPolynomial.specializeZero i P) := by
+  classical
+  let Q := MvPolynomial.specializeZero i P
+  by_cases hQ : Q = 0
+  · exact Or.inl hQ
+  right
+  intro z hz hQz
+  obtain ⟨z₁, _, hQz₁⟩ := exists_upperHalfPlane_eval_ne_zero hQ
+  let v : sigma → ℂ := fun j => z₁ j - z j
+  let A : Polynomial ℂ := affineLineRestriction z v Q
+  let B : Polynomial ℂ := affineLineRestriction z v (MvPolynomial.pderiv i P)
+  have hA0 : A.eval 0 = 0 := by
+    simp only [A, eval_affineLineRestriction, mul_zero, add_zero]
+    simpa [Q] using hQz
+  have hA1 : A.eval 1 ≠ 0 := by
+    simpa [A, v] using hQz₁
+  have hA : A ≠ 0 := by
+    intro hzero
+    rw [hzero, Polynomial.eval_zero] at hA1
+    exact hA1 rfl
+  have hPz : MvPolynomial.eval z P ≠ 0 := hP z hz
+  have hPaff := hPma.eval_update_eq_eval_pderiv_mul_add i z (z i)
+  have hQeval : MvPolynomial.eval z Q =
+      MvPolynomial.eval (Function.update z i 0) P := by
+    exact MvPolynomial.eval_specializeZero i P z
+  have hB0 : B.eval 0 ≠ 0 := by
+    simp only [B, eval_affineLineRestriction, mul_zero, add_zero]
+    intro hzero
+    rw [Function.update_eq_self] at hPaff
+    rw [hzero, zero_mul, zero_add, ← hQeval, hQz] at hPaff
+    exact hPz hPaff
+  let U : Set ℂ := {t | ∀ j, 0 < (z j + v j * t).im}
+  have hUopen : IsOpen U := by
+    rw [show U = ⋂ j, {t : ℂ | 0 < (z j + v j * t).im} by
+      ext t
+      simp [U]]
+    apply isOpen_iInter_of_finite
+    intro j
+    exact isOpen_lt continuous_const (by fun_prop)
+  have hzeroU : (0 : ℂ) ∈ U := by
+    intro j
+    simpa using hz j
+  have hUnhds : U ∈ 𝓝 0 := hUopen.mem_nhds hzeroU
+  obtain ⟨t, htU, _, hBt, hroot⟩ :=
+    Polynomial.exists_neg_self_div_im_pos_of_mem_nhds A B hA hA0 hB0 U hUnhds
+  let zt : sigma → ℂ := fun j => z j + v j * t
+  let r : ℂ := -A.eval t / B.eval t
+  have hr : 0 < r.im := hroot
+  have hzroot : ∀ j, 0 < (Function.update zt i r j).im := by
+    intro j
+    by_cases hji : j = i
+    · subst j
+      simpa using hr
+    · rw [Function.update_of_ne hji]
+      exact htU j
+  apply hP (Function.update zt i r) hzroot
+  rw [hPma.eval_update_eq_eval_pderiv_mul_add]
+  have hBeval :
+      MvPolynomial.eval zt (MvPolynomial.pderiv i P) = B.eval t := by
+    simp [B, zt]
+  have hAeval : MvPolynomial.eval (Function.update zt i 0) P = A.eval t := by
+    rw [← MvPolynomial.eval_specializeZero i P zt]
+    simp [A, zt, Q]
+  rw [hBeval, hAeval]
   dsimp [r]
   field_simp
   ring
@@ -274,5 +351,55 @@ theorem MvUpperHalfPlaneStable.sub_pderiv_of_stable_mvPencil
   apply hF.sub_pderiv_of_stable_pencil hG hGma i
   intro z hz w hw
   exact hFG.pencil_nonzero z hz w hw
+
+/-- Eliminating one variable by replacing it with negative partial
+differentiation in another variable preserves stability, up to zero. -/
+theorem MvUpperHalfPlaneStable.contractVariables_zero_or
+    {sigma : Type*} [Finite sigma]
+    {P : MvPolynomial sigma ℂ}
+    (hP : MvUpperHalfPlaneStable P)
+    (hPma : MvPolynomial.IsMultiaffine P) (i j : sigma) :
+    contractVariables i j P = 0 ∨
+      MvUpperHalfPlaneStable (contractVariables i j P) := by
+  classical
+  let F := MvPolynomial.specializeZero i P
+  let G := MvPolynomial.pderiv i P
+  have hGma : MvPolynomial.IsMultiaffine G := hPma.pderiv i
+  have hFzero : F = 0 ∨ MvUpperHalfPlaneStable F := by
+    simpa [F] using hP.specializeZero_zero_or hPma i
+  have hGzero : G = 0 ∨ MvUpperHalfPlaneStable G := by
+    simpa [G] using hP.pderiv_zero_or hPma i
+  change F - MvPolynomial.pderiv j G = 0 ∨
+    MvUpperHalfPlaneStable (F - MvPolynomial.pderiv j G)
+  rcases hFzero with hF | hF <;> rcases hGzero with hG | hG
+  · left
+    simp [hF, hG]
+  · rcases hG.pderiv_zero_or hGma j with hD | hD
+    · left
+      simp [hF, hD]
+    · right
+      rw [hF, zero_sub]
+      intro z hz
+      rw [MvPolynomial.eval_neg]
+      exact neg_ne_zero.mpr (hD z hz)
+  · right
+    simpa [hG] using hF
+  · right
+    apply hF.sub_pderiv_of_stable_pencil hG hGma j
+    intro z hz w hw
+    have hzupdate : ∀ k, 0 < (Function.update z i w k).im := by
+      intro k
+      by_cases hki : k = i
+      · subst k
+        simpa using hw
+      · rw [Function.update_of_ne hki]
+        exact hz k
+    have hne := hP (Function.update z i w) hzupdate
+    rw [hPma.eval_update_eq_eval_pderiv_mul_add] at hne
+    change MvPolynomial.eval z F + w * MvPolynomial.eval z G ≠ 0
+    rw [show MvPolynomial.eval z F =
+      MvPolynomial.eval (Function.update z i 0) P by
+        exact MvPolynomial.eval_specializeZero i P z]
+    simpa only [G, add_comm, mul_comm] using hne
 
 end RealRooted

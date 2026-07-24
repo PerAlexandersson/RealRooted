@@ -14,14 +14,12 @@ noncomputable section
 
 namespace Polynomial
 
-/-- If `A` is nonzero and vanishes at zero while `B` does not vanish there,
-then every neighborhood of zero contains a point where `-B / A` lies in the
-open upper half-plane. -/
-theorem exists_neg_div_im_pos_of_mem_nhds
+private theorem neg_eval_div_eval_image_mem_nhds
     (A B : Polynomial ℂ) (hA : A ≠ 0)
     (hA0 : A.eval 0 = 0) (hB0 : B.eval 0 ≠ 0)
     (U : Set ℂ) (hU : U ∈ 𝓝 0) :
-    ∃ t ∈ U, A.eval t ≠ 0 ∧ B.eval t ≠ 0 ∧ 0 < (-B.eval t / A.eval t).im := by
+    (fun t => -A.eval t / B.eval t) ''
+        (U ∩ {t | B.eval t ≠ 0}) ∈ 𝓝 0 := by
   let H : ℂ → ℂ := fun t => -A.eval t / B.eval t
   have hAa : AnalyticAt ℂ (fun t => A.eval t) 0 :=
     AnalyticOnNhd.eval_polynomial A 0 (Set.mem_univ 0)
@@ -47,9 +45,51 @@ theorem exists_neg_div_im_pos_of_mem_nhds
       hHa.eventually_constant_or_nhds_le_map_nhds_aux.resolve_left hnotconst
   have hBne : {t : ℂ | B.eval t ≠ 0} ∈ 𝓝 0 :=
     B.continuousAt.eventually_ne hB0
-  let S : Set ℂ := U ∩ {t | B.eval t ≠ 0}
-  have hS : S ∈ 𝓝 0 := inter_mem hU hBne
-  have himage : H '' S ∈ 𝓝 0 := hmap (image_mem_map hS)
+  exact hmap (image_mem_map (inter_mem hU hBne))
+
+/-- If `A` is nonzero and vanishes at zero while `B` does not vanish there,
+then every neighborhood of zero contains a point where `-A / B` lies in the
+open upper half-plane. -/
+theorem exists_neg_self_div_im_pos_of_mem_nhds
+    (A B : Polynomial ℂ) (hA : A ≠ 0)
+    (hA0 : A.eval 0 = 0) (hB0 : B.eval 0 ≠ 0)
+    (U : Set ℂ) (hU : U ∈ 𝓝 0) :
+    ∃ t ∈ U, A.eval t ≠ 0 ∧ B.eval t ≠ 0 ∧ 0 < (-A.eval t / B.eval t).im := by
+  have himage := neg_eval_div_eval_image_mem_nhds A B hA hA0 hB0 U hU
+  obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp himage
+  let w : ℂ := (ε / 2 : ℝ) * Complex.I
+  have hwball : w ∈ ball (0 : ℂ) ε := by
+    rw [mem_ball, dist_zero_right]
+    simp [w, Real.norm_eq_abs, abs_of_pos hε]
+    linarith
+  have hwim : 0 < w.im := by
+    simp [w]
+    linarith
+  obtain ⟨t, htS, htH⟩ := hball hwball
+  change -A.eval t / B.eval t = w at htH
+  have hBt : B.eval t ≠ 0 := htS.2
+  have hwne : w ≠ 0 := by
+    intro hw
+    apply (ne_of_gt hwim)
+    simpa using congrArg Complex.im hw
+  have hAt : A.eval t ≠ 0 := by
+    intro hAt
+    have : -A.eval t / B.eval t = 0 := by simp [hAt]
+    rw [this] at htH
+    exact hwne htH.symm
+  refine ⟨t, htS.1, hAt, hBt, ?_⟩
+  rw [htH]
+  exact hwim
+
+/-- If `A` is nonzero and vanishes at zero while `B` does not vanish there,
+then every neighborhood of zero contains a point where `-B / A` lies in the
+open upper half-plane. -/
+theorem exists_neg_div_im_pos_of_mem_nhds
+    (A B : Polynomial ℂ) (hA : A ≠ 0)
+    (hA0 : A.eval 0 = 0) (hB0 : B.eval 0 ≠ 0)
+    (U : Set ℂ) (hU : U ∈ 𝓝 0) :
+    ∃ t ∈ U, A.eval t ≠ 0 ∧ B.eval t ≠ 0 ∧ 0 < (-B.eval t / A.eval t).im := by
+  have himage := neg_eval_div_eval_image_mem_nhds A B hA hA0 hB0 U hU
   obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp himage
   let w : ℂ := -(ε / 2 : ℝ) * Complex.I
   have hwball : w ∈ ball (0 : ℂ) ε := by
@@ -60,7 +100,7 @@ theorem exists_neg_div_im_pos_of_mem_nhds
     simp [w]
     linarith
   obtain ⟨t, htS, htH⟩ := hball hwball
-  have htU : t ∈ U := htS.1
+  change -A.eval t / B.eval t = w at htH
   have hBt : B.eval t ≠ 0 := htS.2
   have hwne : w ≠ 0 := by
     intro hw
@@ -68,13 +108,12 @@ theorem exists_neg_div_im_pos_of_mem_nhds
     simpa using congrArg Complex.im hw
   have hAt : A.eval t ≠ 0 := by
     intro hAt
-    have : H t = 0 := by simp [H, hAt]
+    have : -A.eval t / B.eval t = 0 := by simp [hAt]
     rw [this] at htH
     exact hwne htH.symm
-  refine ⟨t, htU, hAt, hBt, ?_⟩
+  refine ⟨t, htS.1, hAt, hBt, ?_⟩
   have hroot : -B.eval t / A.eval t = w⁻¹ := by
     rw [← htH]
-    dsimp [H]
     field_simp
   rw [hroot, Complex.inv_im]
   exact div_pos (neg_pos.mpr hwim) (Complex.normSq_pos.mpr hwne)
