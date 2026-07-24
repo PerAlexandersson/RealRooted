@@ -56,6 +56,56 @@ def applyMonomialDifferential
       rw [List.foldl_cons, Finsupp.zero_apply, iteratedPDerivAt]
       exact ih P
 
+private theorem foldl_iteratedPDerivAt_single_of_not_mem
+    {R sigma : Type*} [CommSemiring R] (i : sigma)
+    (l : List sigma) (P : MvPolynomial sigma R) (hi : i ∉ l) :
+    l.foldl
+        (fun Q j => iteratedPDerivAt j ((Finsupp.single i 1) j) Q) P = P := by
+  induction l generalizing P with
+  | nil => rfl
+  | cons j l ih =>
+      have hji : j ≠ i := by
+        intro h
+        apply hi
+        simp [h]
+      have hil : i ∉ l := by
+        intro h
+        exact hi (by simp [h])
+      rw [List.foldl_cons, Finsupp.single_eq_of_ne hji, iteratedPDerivAt]
+      exact ih P hil
+
+private theorem foldl_iteratedPDerivAt_single
+    {R sigma : Type*} [CommSemiring R] (i : sigma)
+    (l : List sigma) (P : MvPolynomial sigma R)
+    (hi : i ∈ l) (hl : l.Nodup) :
+    l.foldl
+        (fun Q j => iteratedPDerivAt j ((Finsupp.single i 1) j) Q) P =
+      MvPolynomial.pderiv i P := by
+  induction l generalizing P with
+  | nil => simp at hi
+  | cons j l ih =>
+      rw [List.foldl_cons]
+      by_cases hji : j = i
+      · subst j
+        have hil : i ∉ l := List.nodup_cons.mp hl |>.1
+        simp only [Finsupp.single_eq_same, iteratedPDerivAt]
+        exact foldl_iteratedPDerivAt_single_of_not_mem i l
+          (MvPolynomial.pderiv i P) hil
+      · have hij : i ≠ j := Ne.symm hji
+        have hil : i ∈ l := by simpa [hij] using hi
+        have hlnodup : l.Nodup := List.nodup_cons.mp hl |>.2
+        rw [Finsupp.single_eq_of_ne hji, iteratedPDerivAt]
+        exact ih P hil hlnodup
+
+@[simp] theorem applyMonomialDifferential_single
+    {R sigma : Type*} [CommSemiring R] [Fintype sigma]
+    (i : sigma) (P : MvPolynomial sigma R) :
+    applyMonomialDifferential (Finsupp.single i 1) P =
+      MvPolynomial.pderiv i P := by
+  unfold applyMonomialDifferential
+  exact foldl_iteratedPDerivAt_single i (differentialVariableOrder sigma) P
+    (mem_differentialVariableOrder i) (nodup_differentialVariableOrder sigma)
+
 /-- The constant-coefficient differential action `F(-∂){G}`. -/
 def applyNegDifferential
     {R sigma : Type*} [CommRing R] [Fintype sigma]
@@ -64,6 +114,16 @@ def applyNegDifferential
     MvPolynomial.C ((-1 : R) ^ (d.sum fun _ n => n) * c) *
       applyMonomialDifferential d G
 
+@[simp] theorem applyNegDifferential_monomial
+    {R sigma : Type*} [CommRing R] [Fintype sigma]
+    (d : sigma →₀ ℕ) (c : R) (G : MvPolynomial sigma R) :
+    applyNegDifferential (MvPolynomial.monomial d c) G =
+      MvPolynomial.C ((-1 : R) ^ (d.sum fun _ n => n) * c) *
+        applyMonomialDifferential d G := by
+  unfold applyNegDifferential
+  rw [MvPolynomial.sum_monomial_eq]
+  simp
+
 @[simp] theorem applyNegDifferential_C
     {R sigma : Type*} [CommRing R] [Fintype sigma]
     (c : R) (G : MvPolynomial sigma R) :
@@ -71,6 +131,14 @@ def applyNegDifferential
   unfold applyNegDifferential
   rw [MvPolynomial.sum_C (by simp)]
   simp [applyMonomialDifferential_zero]
+
+@[simp] theorem applyNegDifferential_X
+    {R sigma : Type*} [CommRing R] [Fintype sigma]
+    (i : sigma) (G : MvPolynomial sigma R) :
+    applyNegDifferential (MvPolynomial.X i) G =
+      -MvPolynomial.pderiv i G := by
+  rw [MvPolynomial.X, applyNegDifferential_monomial]
+  simp
 
 @[simp] theorem applyNegDifferential_zero_left
     {R sigma : Type*} [CommRing R] [Fintype sigma]
