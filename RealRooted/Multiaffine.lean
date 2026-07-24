@@ -81,6 +81,20 @@ theorem pderiv {p : MvPolynomial σ R} (hp : IsMultiaffine p) (i : σ) :
     exact (Nat.sub_le _ _).trans
       (MvPolynomial.degreeOf_le_iff.mp (hp j) d hd)
 
+/-- Differentiating a multiaffine polynomial twice in the same variable gives
+zero. -/
+theorem pderiv_pderiv_self_eq_zero {p : MvPolynomial σ R}
+    (hp : IsMultiaffine p) (i : σ) :
+    MvPolynomial.pderiv i (MvPolynomial.pderiv i p) = 0 := by
+  rw [MvPolynomial.as_sum p]
+  simp only [map_sum]
+  apply Finset.sum_eq_zero
+  intro d hd
+  rw [MvPolynomial.pderiv_monomial, MvPolynomial.pderiv_monomial]
+  have hdi : d i ≤ 1 := MvPolynomial.degreeOf_le_iff.mp (hp i) d hd
+  have hcases : d i = 0 ∨ d i = 1 := by lia
+  rcases hcases with h | h <;> simp [h]
+
 private theorem eval_update_monomial_affine
     {S : Type*} [CommRing S] [DecidableEq σ]
     (i : σ) (z : σ → S) (t : S) (d : σ →₀ ℕ) (c : S)
@@ -147,6 +161,21 @@ theorem eval_update_eq_eval_pderiv_mul_add
   intro d hd
   exact eval_update_monomial_affine i z t d (p.coeff d)
     (MvPolynomial.degreeOf_le_iff.mp (hp i) d hd)
+
+/-- The partial derivative of a multiaffine polynomial is independent of the
+differentiated coordinate. -/
+theorem eval_update_pderiv_eq
+    {S : Type*} [CommRing S] [DecidableEq σ]
+    {p : MvPolynomial σ S} (hp : IsMultiaffine p)
+    (i : σ) (z : σ → S) (t : S) :
+    MvPolynomial.eval (Function.update z i t) (MvPolynomial.pderiv i p) =
+      MvPolynomial.eval z (MvPolynomial.pderiv i p) := by
+  rw [(hp.pderiv i).eval_update_eq_eval_pderiv_mul_add]
+  rw [hp.pderiv_pderiv_self_eq_zero i]
+  simp only [map_zero, zero_mul, zero_add]
+  have h := (hp.pderiv i).eval_update_eq_eval_pderiv_mul_add i z (z i)
+  rw [hp.pderiv_pderiv_self_eq_zero i] at h
+  simpa only [Function.update_eq_self, map_zero, zero_mul, zero_add] using h.symm
 
 theorem rename {p : MvPolynomial σ R} (hp : IsMultiaffine p)
     {f : σ → τ} (hf : Function.Injective f) :
