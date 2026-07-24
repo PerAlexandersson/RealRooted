@@ -261,6 +261,37 @@ theorem basisTransform_fallingFactorial_eq_quadratic_of_natDegree_eq_two {p : �
 def risingFactorialPolynomial (μ : ℝ) (k : ℕ) : ℝ[X] :=
   ∏ i ∈ Finset.range k, (X + C ((i : ℝ) * μ))
 
+/-- The generalized rising-factorial basis transform is the identity on
+degree-one polynomials. -/
+theorem basisTransform_risingFactorial_eq_self_of_natDegree_eq_one {μ : ℝ} {p : ℝ[X]}
+    (hpdeg : p.natDegree = 1) :
+    basisTransform (risingFactorialPolynomial μ) p = p := by
+  rw [Polynomial.eq_X_add_C_of_natDegree_le_one hpdeg.le]
+  rw [basisTransform_add]
+  rw [Polynomial.C_mul', basisTransform_smul]
+  rw [show (X : ℝ[X]) = X ^ 1 by simp, basisTransform_X_pow]
+  simp [risingFactorialPolynomial, Polynomial.C_mul']
+
+/-- Degree-two expansion of the generalized rising-factorial basis transform. -/
+theorem basisTransform_risingFactorial_eq_quadratic_of_natDegree_eq_two
+    {μ : ℝ} {p : ℝ[X]} (hpdeg : p.natDegree = 2) :
+    basisTransform (risingFactorialPolynomial μ) p =
+      C (p.coeff 2) * X ^ 2 + C (p.coeff 1 + μ * p.coeff 2) * X + C (p.coeff 0) := by
+  have hpform : p = C (p.coeff 2) * X ^ 2 + C (p.coeff 1) * X + C (p.coeff 0) :=
+    Polynomial.eq_quadratic_of_degree_le_two (p := p)
+      (Polynomial.degree_le_of_natDegree_le (by rw [hpdeg]))
+  have hBX : basisTransform (risingFactorialPolynomial μ) (X : ℝ[X]) = X := by
+    rw [show (X : ℝ[X]) = X ^ 1 by simp, basisTransform_X_pow]
+    simp [risingFactorialPolynomial]
+  conv_lhs => rw [hpform]
+  simp only [basisTransform_add, Polynomial.C_mul', basisTransform_smul, hBX, basisTransform_C]
+  simp only [basisTransform_X_pow, risingFactorialPolynomial, map_mul, map_natCast, range_zero,
+    prod_empty]
+  norm_num [Finset.prod_range_succ]
+  repeat rw [Polynomial.smul_eq_C_mul]
+  rw [map_add, map_mul]
+  ring_nf
+
 /-- Brenti's falling-factorial inverse transform, paper Lemma 3.9 / Brenti
 Theorem 2.4.2. -/
 abbrev brentiFallingFactorialStatement : Prop :=
@@ -415,11 +446,102 @@ abbrev generalizedRisingFactorialPreservesPFStatement : Prop :=
   ∀ {μ : ℝ}, 0 < μ → ∀ {p : ℝ[X]},
     IsPFPolynomial p → IsPFPolynomial (basisTransform (risingFactorialPolynomial μ) p)
 
+/-- Degree-zero case of the Su--Yang--Zhang generalized rising-factorial
+transform. -/
+theorem generalizedRisingFactorialPreservesPF_of_natDegree_eq_zero {μ : ℝ}
+    {p : ℝ[X]} (hpdeg : p.natDegree = 0) (hp : IsPFPolynomial p) :
+    IsPFPolynomial (basisTransform (risingFactorialPolynomial μ) p) := by
+  have hpC : p = C (p.coeff 0) := Polynomial.eq_C_of_natDegree_eq_zero hpdeg
+  rw [hpC] at hp ⊢
+  simpa [risingFactorialPolynomial] using hp
+
+/-- Degree-one case of the Su--Yang--Zhang generalized rising-factorial
+transform. -/
+theorem generalizedRisingFactorialPreservesPF_of_natDegree_eq_one {μ : ℝ}
+    {p : ℝ[X]} (hpdeg : p.natDegree = 1) (hp : IsPFPolynomial p) :
+    IsPFPolynomial (basisTransform (risingFactorialPolynomial μ) p) := by
+  simpa [basisTransform_risingFactorial_eq_self_of_natDegree_eq_one hpdeg] using hp
+
+/-- Degree-two case of the Su--Yang--Zhang generalized rising-factorial
+transform. -/
+theorem generalizedRisingFactorialPreservesPF_of_natDegree_eq_two {μ : ℝ}
+    (hμ : 0 ≤ μ) {p : ℝ[X]} (hpdeg : p.natDegree = 2) (hp : IsPFPolynomial p) :
+    IsPFPolynomial (basisTransform (risingFactorialPolynomial μ) p) := by
+  rw [basisTransform_risingFactorial_eq_quadratic_of_natDegree_eq_two hpdeg]
+  have hp0 : p ≠ 0 := by
+    intro hpzero
+    simp [hpzero] at hpdeg
+  have hp_pos : HasPosLeadingCoeff p := hp.hasNonnegCoeffs.pos_leadingCoeff hp0
+  have ha : 0 < p.coeff 2 := by
+    simpa [HasPosLeadingCoeff, Polynomial.leadingCoeff, hpdeg] using hp_pos
+  have hb : 0 ≤ p.coeff 1 := hp.hasNonnegCoeffs 1
+  have hc : 0 ≤ p.coeff 0 := hp.hasNonnegCoeffs 0
+  have hpsplits : p.Splits := (hp.ne_zero_and_splits hp0).2
+  have hpform : p = C (p.coeff 2) * X ^ 2 + C (p.coeff 1) * X + C (p.coeff 0) :=
+    Polynomial.eq_quadratic_of_degree_le_two (p := p)
+      (Polynomial.degree_le_of_natDegree_le (by rw [hpdeg]))
+  have hquad_splits : (C (p.coeff 2) * X ^ 2 + C (p.coeff 1) * X +
+      C (p.coeff 0) : ℝ[X]).Splits := by
+    simpa [← hpform] using hpsplits
+  have hdisc : 4 * p.coeff 2 * p.coeff 0 ≤ p.coeff 1 ^ 2 :=
+    (quadraticPoly_splits_iff_le ha).mp hquad_splits
+  have hmu_a : 0 ≤ μ * p.coeff 2 := mul_nonneg hμ ha.le
+  have hsquare : p.coeff 1 ^ 2 ≤ (p.coeff 1 + μ * p.coeff 2) ^ 2 := by
+    nlinarith [sq_nonneg (μ * p.coeff 2), mul_nonneg hb hmu_a]
+  have hdisc' : 4 * p.coeff 2 * p.coeff 0 ≤ (p.coeff 1 + μ * p.coeff 2) ^ 2 :=
+    hdisc.trans hsquare
+  exact IsPFPolynomial.of_realRooted_nonneg
+    (((nonnegCoeffs_C_mul ha.le (hasNonnegCoeffs_X.pow 2)).add
+      (nonnegCoeffs_C_mul (add_nonneg hb hmu_a) hasNonnegCoeffs_X)).add
+        (hasNonnegCoeffs_C hc))
+    (quadraticPoly_splits_of_le ha hdisc')
+
+/-- Positive-degree leaf for the Su--Yang--Zhang generalized rising-factorial
+transform. -/
+abbrev generalizedRisingFactorialPreservesPFPositiveDegreeStatement : Prop :=
+  ∀ {μ : ℝ}, 0 < μ → ∀ {p : ℝ[X]},
+    0 < p.natDegree →
+    IsPFPolynomial p → IsPFPolynomial (basisTransform (risingFactorialPolynomial μ) p)
+
+/-- Degree-at-least-three leaf for the Su--Yang--Zhang generalized
+rising-factorial transform. -/
+abbrev generalizedRisingFactorialPreservesPFDegreeAtLeastThreeStatement : Prop :=
+  ∀ {μ : ℝ}, 0 < μ → ∀ {p : ℝ[X]},
+    3 ≤ p.natDegree →
+    IsPFPolynomial p → IsPFPolynomial (basisTransform (risingFactorialPolynomial μ) p)
+
+/-- Degree-at-least-three case of the Su--Yang--Zhang generalized rising-factorial
+transform. -/
+theorem generalizedRisingFactorialPreservesPF_degreeAtLeastThree {μ : ℝ} (hμ : 0 < μ)
+    {p : ℝ[X]} (hpdeg : 3 ≤ p.natDegree) (hp : IsPFPolynomial p) :
+    IsPFPolynomial (basisTransform (risingFactorialPolynomial μ) p) := by
+  sorry
+
+/-- Degree-at-least-two case of the Su--Yang--Zhang generalized rising-factorial
+transform. -/
+theorem generalizedRisingFactorialPreservesPF_degreeAtLeastTwo {μ : ℝ} (hμ : 0 < μ)
+    {p : ℝ[X]} (hpdeg : 2 ≤ p.natDegree) (hp : IsPFPolynomial p) :
+    IsPFPolynomial (basisTransform (risingFactorialPolynomial μ) p) := by
+  by_cases hdeg2 : p.natDegree = 2
+  · exact generalizedRisingFactorialPreservesPF_of_natDegree_eq_two hμ.le hdeg2 hp
+  · exact generalizedRisingFactorialPreservesPF_degreeAtLeastThree hμ (by lia) hp
+
+/-- Positive-degree case of the Su--Yang--Zhang generalized rising-factorial
+transform. -/
+theorem generalizedRisingFactorialPreservesPF_positiveDegree {μ : ℝ} (hμ : 0 < μ)
+    {p : ℝ[X]} (hpdeg : 0 < p.natDegree) (hp : IsPFPolynomial p) :
+    IsPFPolynomial (basisTransform (risingFactorialPolynomial μ) p) := by
+  by_cases hdeg1 : p.natDegree = 1
+  · exact generalizedRisingFactorialPreservesPF_of_natDegree_eq_one hdeg1 hp
+  · exact generalizedRisingFactorialPreservesPF_degreeAtLeastTwo hμ (by lia) hp
+
 /-- Su--Yang--Zhang generalized rising-factorial transform preserves PF polynomials. -/
 theorem generalizedRisingFactorialPreservesPF {μ : ℝ} (hμ : 0 < μ) {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
     IsPFPolynomial (basisTransform (risingFactorialPolynomial μ) p) := by
-  sorry
+  rcases Nat.eq_zero_or_pos p.natDegree with hpdeg | hpdeg
+  · exact generalizedRisingFactorialPreservesPF_of_natDegree_eq_zero hpdeg hp
+  · exact generalizedRisingFactorialPreservesPF_positiveDegree hμ hpdeg hp
 
 /-- Coefficient `N_m(n,k)` of the generalized Narayana polynomial. -/
 def narayanaTransformCoeff (m n k : ℕ) : ℝ :=
