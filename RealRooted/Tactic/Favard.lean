@@ -89,6 +89,63 @@ private theorem prec_sequence_of_affineFavardChainPackage {P : Nat → ℝ[X]}
     ∀ n : Nat, Prec (P n) (P (n + 1)) :=
   fun n => (hQ n).1.toPrec
 
+private theorem affineFavardChainPackage_of_param_coeff
+    {P : Nat → ℝ[X]} {s α β : Nat → ℝ}
+    (hs : ∀ n : Nat, 0 < s n)
+    (hβ : ∀ n : Nat, 0 < β (n + 1))
+    (hP0 : P 0 = 1)
+    (hP1 : P 1 = C (s 0) * X - C (α 0))
+    (hstep : ∀ n : Nat,
+      P (n + 2) =
+        (C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
+          C (β (n + 1)) * P n) :
+    ∀ n : Nat, affineFavardChainPackage P n := by
+  intro n
+  induction n with
+  | zero =>
+      let aPoly : ℝ[X] := C (s 0) * X - C (α 0)
+      have hA_deg : aPoly.natDegree = 1 := by
+        simpa [aPoly] using natDegree_C_mul_X_sub_C
+          (s := s 0) (t := α 0) (hs 0).ne'
+      have hA_pos : HasPosLeadingCoeff aPoly := by
+        simpa [aPoly] using hasPosLeadingCoeff_C_mul_X_sub_C
+          (s := s 0) (t := α 0) (hs 0)
+      refine ⟨?_, ?_, ?_⟩
+      · rw [hP0, hP1]
+        exact interlaces_one_linear (by simpa [aPoly] using hA_deg)
+      · rw [hP0]
+        rr_pos_lc
+      · rw [hP1]
+        simpa [aPoly] using hA_pos
+  | succ n ih =>
+      rcases ih with ⟨hInter, hPos_n, hPos_n1⟩
+      let f : ℝ[X] := P (n + 1)
+      let g : ℝ[X] := P n
+      let aPoly : ℝ[X] := C (s (n + 1)) * X - C (α (n + 1))
+      let bPoly : ℝ[X] := C (-β (n + 1))
+      have hA_deg : aPoly.natDegree = 1 := by
+        simpa [aPoly] using natDegree_C_mul_X_sub_C
+          (s := s (n + 1)) (t := α (n + 1)) (hs (n + 1)).ne'
+      have hA_pos : HasPosLeadingCoeff aPoly := by
+        simpa [aPoly] using hasPosLeadingCoeff_C_mul_X_sub_C
+          (s := s (n + 1)) (t := α (n + 1)) (hs (n + 1))
+      have hA_ne : aPoly ≠ 0 := by
+        rr_nonzero
+      have hBg_le : (bPoly * g).natDegree ≤ g.natDegree := by
+        dsimp [bPoly]
+        exact Polynomial.natDegree_C_mul_le _ _
+      have hb_nonpos : ∀ r, f.IsRoot r → bPoly.eval r ≤ 0 := by
+        intros
+        have hb_le : 0 ≤ β (n + 1) := (hβ n).le
+        simpa [bPoly] using (neg_nonpos.mpr hb_le)
+      have hFavardStep :=
+        prec_affine_favard_step hInter hPos_n hPos_n1 hA_deg hA_pos hA_ne
+          hBg_le hb_nonpos
+      have hInter_step : Interlaces f (aPoly * f + bPoly * g) := hFavardStep.2.1
+      have hF_pos : HasPosLeadingCoeff (aPoly * f + bPoly * g) := hFavardStep.2.2
+      dsimp [affineFavardChainPackage]
+      grind
+
 private lemma neg_one_pow_mul_self (n : Nat) :
     ((-1 : ℝ) ^ n) * ((-1 : ℝ) ^ n) = 1 := by
   rw [← pow_add, ← two_mul, pow_mul]
@@ -188,45 +245,12 @@ theorem favardInterlacing_affine_const_coeff {P : Nat → ℝ[X]} {s α β : ℝ
     (hP0 : P 0 = 1)
     (hP1 : P 1 = C s * X - C α)
     (hstep : ∀ n : Nat, P (n + 2) = (C s * X - C α) * P (n + 1) - C β * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  let aPoly : ℝ[X] := C s * X - C α
-  let bPoly : ℝ[X] := C (-β)
-  have hA_deg : aPoly.natDegree = 1 := by
-    simpa [aPoly] using natDegree_C_mul_X_sub_C (s := s) (t := α) hs.ne'
-  have hA_pos : HasPosLeadingCoeff aPoly := by
-    simpa [aPoly] using hasPosLeadingCoeff_C_mul_X_sub_C (s := s) (t := α) hs
-  have hA_ne : aPoly ≠ 0 := by
-    rr_nonzero
-  have hQ : ∀ n : Nat, affineFavardChainPackage P n := by
-    intro n
-    induction n with
-    | zero =>
-        refine ⟨?_, ?_, ?_⟩
-        · rw [hP0, hP1]
-          exact interlaces_one_linear (by simpa [aPoly] using hA_deg)
-        · rw [hP0]
-          rr_pos_lc
-        · rw [hP1]
-          simpa [aPoly] using hA_pos
-    | succ n ih =>
-        rcases ih with ⟨hInter, hPos_n, hPos_n1⟩
-        let f : ℝ[X] := P (n + 1)
-        let g : ℝ[X] := P n
-        have hBg_le : (bPoly * g).natDegree ≤ g.natDegree := by
-          dsimp [bPoly]
-          exact Polynomial.natDegree_C_mul_le _ _
-        have hb_nonpos : ∀ r, f.IsRoot r → bPoly.eval r ≤ 0 := by
-          intros
-          have hb_le : 0 ≤ β := hβ.le
-          simpa [bPoly] using (neg_nonpos.mpr hb_le)
-        have hFavardStep :=
-          prec_affine_favard_step hInter hPos_n hPos_n1 hA_deg hA_pos hA_ne
-            hBg_le hb_nonpos
-        have hInter_step : Interlaces f (aPoly * f + bPoly * g) := hFavardStep.2.1
-        have hF_pos : HasPosLeadingCoeff (aPoly * f + bPoly * g) := hFavardStep.2.2
-        dsimp [affineFavardChainPackage]
-        grind
-  exact prec_sequence_of_affineFavardChainPackage hQ
+    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+  prec_sequence_of_affineFavardChainPackage <|
+    affineFavardChainPackage_of_param_coeff
+      (P := P) (s := fun _ => s) (α := fun _ => α) (β := fun _ => β)
+      (fun _ => hs) (fun _ => hβ) hP0 (by simpa using hP1)
+      (fun n => by simpa using hstep n)
 
 /-- Real-rootedness consequence of the positive-slope affine Favard wrapper. -/
 theorem isRealRooted_of_favard_affine_const_coeff {P : Nat → ℝ[X]} {s α β : ℝ}
@@ -331,55 +355,9 @@ theorem favardInterlacing_affine_param_coeff
       P (n + 2) =
         (C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
           C (β (n + 1)) * P n) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  have hQ : ∀ n : Nat, affineFavardChainPackage P n := by
-    intro n
-    induction n with
-    | zero =>
-        let aPoly : ℝ[X] := C (s 0) * X - C (α 0)
-        have hA_deg : aPoly.natDegree = 1 := by
-          simpa [aPoly] using natDegree_C_mul_X_sub_C (s := s 0) (t := α 0) (hs 0).ne'
-        have hA_pos : HasPosLeadingCoeff aPoly := by
-          simpa [aPoly] using hasPosLeadingCoeff_C_mul_X_sub_C (s := s 0) (t := α 0)
-            (hs 0)
-        refine ⟨?_, ?_, ?_⟩
-        · rw [hP0, hP1]
-          exact interlaces_one_linear (by simpa [aPoly] using hA_deg)
-        · rw [hP0]
-          rr_pos_lc
-        · rw [hP1]
-          simpa [aPoly] using hA_pos
-    | succ n ih =>
-        rcases ih with ⟨hInter, hPos_n, hPos_n1⟩
-        let f : ℝ[X] := P (n + 1)
-        let g : ℝ[X] := P n
-        let aPoly : ℝ[X] := C (s (n + 1)) * X - C (α (n + 1))
-        let bPoly : ℝ[X] := C (-β (n + 1))
-        have hA_deg : aPoly.natDegree = 1 := by
-          simpa [aPoly] using
-            natDegree_C_mul_X_sub_C (s := s (n + 1)) (t := α (n + 1))
-              (hs (n + 1)).ne'
-        have hA_pos : HasPosLeadingCoeff aPoly := by
-          simpa [aPoly] using
-            hasPosLeadingCoeff_C_mul_X_sub_C (s := s (n + 1)) (t := α (n + 1))
-              (hs (n + 1))
-        have hA_ne : aPoly ≠ 0 := by
-          rr_nonzero
-        have hBg_le : (bPoly * g).natDegree ≤ g.natDegree := by
-          dsimp [bPoly]
-          exact Polynomial.natDegree_C_mul_le _ _
-        have hb_nonpos : ∀ r, f.IsRoot r → bPoly.eval r ≤ 0 := by
-          intros
-          have hb_le : 0 ≤ β (n + 1) := (hβ n).le
-          simpa [bPoly] using (neg_nonpos.mpr hb_le)
-        have hFavardStep :=
-          prec_affine_favard_step hInter hPos_n hPos_n1 hA_deg hA_pos hA_ne
-            hBg_le hb_nonpos
-        have hInter_step : Interlaces f (aPoly * f + bPoly * g) := hFavardStep.2.1
-        have hF_pos : HasPosLeadingCoeff (aPoly * f + bPoly * g) := hFavardStep.2.2
-        dsimp [affineFavardChainPackage]
-        grind
-  exact prec_sequence_of_affineFavardChainPackage hQ
+    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+  prec_sequence_of_affineFavardChainPackage <|
+    affineFavardChainPackage_of_param_coeff hs hβ hP0 hP1 hstep
 
 /-- Real-rootedness consequence of the positive-slope parameterized affine
 Favard wrapper. -/
