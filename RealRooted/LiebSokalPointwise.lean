@@ -1,5 +1,6 @@
 import RealRooted.Multiaffine
 import RealRooted.MultivariateStability
+import Mathlib.Analysis.Complex.Polynomial.GaussLucas
 
 /-!
 # Pointwise input for the Lieb--Sokal theorem
@@ -9,6 +10,37 @@ of the one-variable Lieb--Sokal argument.
 -/
 
 namespace RealRooted
+
+/-- A complex polynomial with no roots in the open upper half-plane has zero
+derivative or a derivative with the same property. -/
+theorem _root_.Polynomial.derivative_zero_or_upperHalfPlaneStable (p : Polynomial ℂ)
+    (hp : ∀ z : ℂ, 0 < z.im → p.eval z ≠ 0) :
+    p.derivative = 0 ∨ (∀ z : ℂ, 0 < z.im → p.derivative.eval z ≠ 0) := by
+  by_cases hd : p.derivative = 0
+  · exact Or.inl hd
+  right
+  intro z hz hzero
+  have hpdeg : 0 < p.degree := by
+    by_contra h
+    push Not at h
+    have ha := Polynomial.degree_le_zero_iff.mp h
+    rw [ha] at hd
+    simp at hd
+  have hzmem : z ∈ p.derivative.rootSet ℂ := by
+    rw [Polynomial.mem_rootSet]
+    exact ⟨hd, by simpa using hzero⟩
+  have hsub := Polynomial.rootSet_derivative_subset_convexHull_rootSet (P := p) hpdeg hzmem
+  have hconv : convexHull ℝ (p.rootSet ℂ) ⊆ {w : ℂ | Complex.imLm w ≤ 0} := by
+    apply convexHull_min
+    · intro w hw
+      rw [Polynomial.mem_rootSet] at hw
+      simp only [Set.mem_setOf_eq, Complex.imLm, LinearMap.coe_mk, AddHom.coe_mk]
+      by_contra hcon
+      exact hp w (not_le.mp hcon) (by simpa using hw.2)
+    · exact convex_halfSpace_le Complex.imLm.isLinear 0
+  have hmem := hconv hsub
+  simp only [Set.mem_setOf_eq, Complex.imLm, LinearMap.coe_mk, AddHom.coe_mk] at hmem
+  linarith
 
 /-- Suppose the affine function `a * z + b` has no zero in the open upper half
 plane and `f + w * (a * z + b)` is nonzero for every upper-half-plane `w`.
