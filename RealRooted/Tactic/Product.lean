@@ -150,6 +150,10 @@ private theorem isRealRooted_C_sequence {c : Nat → ℝ} (hc : ∀ n : Nat, c n
     ∀ n : Nat, (C (c n) : ℝ[X]) ≠ 0 ∧ (C (c n) : ℝ[X]).Splits :=
   fun n => isRealRooted_C (hc n)
 
+private theorem isRealRooted_one_sequence :
+    ∀ _ : Nat, (1 : ℝ[X]) ≠ 0 ∧ (1 : ℝ[X]).Splits :=
+  isRealRooted_C_sequence (c := fun _ => 1) (fun _ => by norm_num)
+
 private theorem isRealRooted_C_mul_X_add_C_sequence {s t : Nat → ℝ}
     (hs : ∀ n : Nat, s n ≠ 0) :
     ∀ n : Nat, (C (s n) * X + C (t n) : ℝ[X]) ≠ 0 ∧
@@ -293,13 +297,9 @@ theorem isRealRooted_of_product_identity_sequence
     {P : Nat → ℝ[X]}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hstep : ∀ n : Nat, P (n + 1) = P n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  intro n
-  induction n with
-  | zero =>
-      simpa using hbase
-  | succ n ih =>
-      simpa [Nat.succ_eq_add_one, hstep n] using ih
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_sequence (F := fun _ => (1 : ℝ[X]))
+    hbase isRealRooted_one_sequence (fun n => by simpa [one_mul] using hstep n)
 
 /-- Tail-start sequence shell for identity product recurrences. -/
 theorem isRealRooted_of_product_identity_sequence_from
@@ -307,17 +307,10 @@ theorem isRealRooted_of_product_identity_sequence_from
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
     (hstep : ∀ n : Nat, N ≤ n → P (n + 1) = P n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := fun n =>
-  Nat.strong_induction_on n fun n ih => by
-    by_cases hn : n ≤ N
-    · exact hbase n hn
-    · cases n with
-      | zero =>
-          exact False.elim (hn (Nat.zero_le N))
-      | succ m =>
-          have hNm : N ≤ m := by lia
-          have hm : P m ≠ 0 ∧ (P m).Splits := ih m (Nat.lt_succ_self m)
-          simpa [Nat.succ_eq_add_one, hstep m hNm] using hm
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_product_factor_sequence_from (F := fun _ => (1 : ℝ[X]))
+    N hbase (fun n _ => isRealRooted_one_sequence n)
+    (fun n hn => by simpa [one_mul] using hstep n hn)
 
 /-- Sequence shell for recurrences that multiply each row by `X`. -/
 theorem isRealRooted_of_product_root_zero_sequence
