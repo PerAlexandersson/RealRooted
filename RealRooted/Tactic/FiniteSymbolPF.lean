@@ -439,21 +439,28 @@ theorem bidiagonalPFPreserver_of_finiteSymbol_residual_certificate
     (finiteSymbol_stable_of_residual_certificate hhom hmul cert)
     cert.alpha_nonneg cert.beta_nonneg
 
-set_option linter.flexible false in
 /-- Algebraic dehomogenization identity connecting the finite symbol to the
 existing Jensen pencil. -/
 theorem finiteSymbol_dehomog (alpha beta : ℕ → ℝ) (d : ℕ) :
     (finiteSymbol alpha beta d).eval₂ (Polynomial.C : ℝ →+* ℝ[X])
         (fun i => if i = 0 then Polynomial.X else 1) =
       bidiagonalJensenPencil alpha beta d 1 := by
-  simp [finiteSymbol, bidiagonalJensenPencil, jensenPolynomial,
+  simp only [finiteSymbol, bidiagonalJensenPencil, jensenPolynomial,
+    MvPolynomial.eval₂_sum, MvPolynomial.eval₂_mul, MvPolynomial.eval₂_add,
+    MvPolynomial.eval₂_C, MvPolynomial.eval₂_X, MvPolynomial.eval₂_pow,
+    Fin.isValue, if_true, one_ne_zero, if_false, one_pow, mul_one,
     ← Polynomial.C_mul_X_pow_eq_monomial, mul_add, add_mul, mul_assoc]
   rw [Finset.sum_add_distrib]
   congr 1
-  rw [Finset.mul_sum]
-  apply Finset.sum_congr rfl
-  intro k _hk
-  ring
+  · apply Finset.sum_congr rfl
+    intro k _hk
+    rw [← mul_assoc, ← Polynomial.C_mul]
+  · simp only [Polynomial.C_1, one_mul, Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro k _hk
+    rw [← mul_assoc, ← Polynomial.C_mul]
+    rw [pow_succ]
+    ring_nf
 
 private lemma scale_pow_div (x y : ℝ) (n k : ℕ) (hy : y ≠ 0) (hk : k ≤ n) :
     y ^ n * (x / y) ^ k = x ^ k * y ^ (n - k) := by
@@ -464,7 +471,6 @@ private lemma scale_pow_div (x y : ℝ) (n k : ℕ) (hy : y ≠ 0) (hk : k ≤ n
   rw [mul_assoc]
   rw [← pow_sub₀ y hy hk]
 
-set_option linter.flexible false in
 /-- Evaluating the finite symbol at `(x,y)` with `y ≠ 0` is the homogenized
 dehomogenized Jensen pencil. -/
 theorem finiteSymbol_eval_eq_y_pow_dehomog
@@ -472,8 +478,12 @@ theorem finiteSymbol_eval_eq_y_pow_dehomog
     MvPolynomial.eval ![x, y] (finiteSymbol alpha beta d) =
       y ^ (d + 1) * Polynomial.eval (x / y)
         (bidiagonalJensenPencil alpha beta d 1) := by
-  simp [finiteSymbol, bidiagonalJensenPencil, jensenPolynomial,
-    Polynomial.eval_finsetSum, ← Polynomial.C_mul_X_pow_eq_monomial]
+  simp only [finiteSymbol, bidiagonalJensenPencil, jensenPolynomial,
+    MvPolynomial.eval_sum, MvPolynomial.eval_mul, MvPolynomial.eval_add,
+    MvPolynomial.eval_C, MvPolynomial.eval_X, Polynomial.eval_finsetSum,
+    Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C,
+    Polynomial.eval_X, MvPolynomial.eval_pow, Polynomial.eval_pow,
+    Fin.isValue, one_mul, ← Polynomial.C_mul_X_pow_eq_monomial]
   rw [mul_add]
   simp_rw [Finset.mul_sum]
   rw [← Finset.sum_add_distrib]
@@ -498,9 +508,8 @@ theorem finiteSymbol_eval_eq_y_pow_dehomog
     _ = y ^ (d + 1) * ((d.choose k : ℝ) * alpha k * (x / y) ^ k) +
           y ^ (d + 1) *
             (x / y * ((d.choose k : ℝ) * beta k * (x / y) ^ k)) := by
-            ring
+            ring_nf
 
-set_option linter.flexible false in
 /-- Evaluating a homogeneous bivariate lift at `(x,y)` with `y ≠ 0`
 recovers `y^n p(x/y)`. -/
 theorem homogenizeBivariate_eval_eq_y_pow_eval
@@ -508,7 +517,9 @@ theorem homogenizeBivariate_eval_eq_y_pow_eval
     MvPolynomial.eval ![x, y] (homogenizeBivariate n p) =
       y ^ n * p.eval (x / y) := by
   rw [Polynomial.eval_eq_sum_range' (show p.natDegree < n + 1 by lia)]
-  simp [homogenizeBivariate]
+  simp only [homogenizeBivariate, MvPolynomial.eval_sum, MvPolynomial.eval_mul,
+    MvPolynomial.eval_C, MvPolynomial.eval_X, map_pow, Matrix.cons_val_zero,
+    Matrix.cons_val_one]
   rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro k hk
@@ -520,12 +531,11 @@ theorem homogenizeBivariate_eval_eq_y_pow_eval
     _ = p.coeff k * (y ^ n * (x / y) ^ k) := by rw [← hscale]
     _ = y ^ n * (p.coeff k * (x / y) ^ k) := by ring
 
-set_option linter.flexible false in
 /-- The quadratic Jensen residual has degree at most two. -/
 theorem quadraticJensenResidual_natDegree_le_two
     (a b c : ℝ) (d : ℕ) :
     (quadraticJensenResidual a b c d).natDegree ≤ 2 := by
-  simp [quadraticJensenResidual]
+  rw [quadraticJensenResidual]
   compute_degree!
 
 /-- The quadratic bidiagonal residual has degree at most three. -/
@@ -562,7 +572,6 @@ theorem finiteSymbol_quadratic_dehomog_eq_factor_residual
   exact quadraticBidiagonalJensenPencil_eq_factor_residual_one
     aa ab ac ba bb bc hd
 
-set_option linter.flexible false in
 /-- Quadratic coefficient functions give an explicit bivariate finite-symbol
 factorization through the cubic residual homogenized to degree three. -/
 theorem finiteSymbol_quadratic_eq_factor_homogenize_three
@@ -606,7 +615,9 @@ theorem finiteSymbol_quadratic_eq_factor_homogenize_three
     rw [hzvec] at hfin hhom
     rw [hfin]
     rw [hquad]
-    simp [hhom, Polynomial.eval_mul, Polynomial.eval_pow]
+    simp only [hhom, Polynomial.eval_mul, Polynomial.eval_pow,
+      Polynomial.eval_add, Polynomial.eval_X, Polynomial.eval_one,
+      Fin.isValue, map_mul, map_pow, map_add, MvPolynomial.eval_X]
     have hxy : x / y + 1 = (x + y) / y := by
       field_simp [hy]
     rw [hxy]
@@ -621,8 +632,10 @@ theorem finiteSymbol_quadratic_eq_factor_homogenize_three
           (quadraticBidiagonalResidual aa ab ac ba bb bc d))]
     rw [← mul_assoc (y ^ (d - 2)) (((x + y) / y) ^ (d - 2))]
     have hscale := scale_pow_div (x + y) y (d - 2) (d - 2) hy le_rfl
-    simp at hscale
-    rw [hscale]
+    have hscale' :
+        y ^ (d - 2) * ((x + y) / y) ^ (d - 2) = (x + y) ^ (d - 2) := by
+      simpa only [tsub_self, pow_zero, mul_one] using hscale
+    rw [hscale']
     ring
 
 /-- Complexified form of the quadratic bivariate finite-symbol factorization,
