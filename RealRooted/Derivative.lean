@@ -698,6 +698,45 @@ theorem derivative_interlaces {f : ℝ[X]} (hf : f.Splits) (hdeg : 2 ≤ f.natDe
   exact ⟨⟨by rintro rfl; simp at hf'_ne, hf⟩, hf'_rr, by rw [natDegree_derivative_eq f]; lia,
     rs, ss, hrs_sorted, hss_sorted, hrs_multiset, hss_eq, hss_interlaces⟩
 
+/-- A nonzero degree-zero real-rooted polynomial precedes a nonzero
+degree-one real-rooted polynomial. -/
+lemma prec_degree_zero_right_of_degree_one
+    {f g : ℝ[X]}
+    (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hg_ne : g ≠ 0) (hg_splits : g.Splits)
+    (hf_deg0 : f.natDegree = 0) (hg_deg1 : g.natDegree = 1) :
+    Prec f g := by
+  obtain ⟨r, hr_eq⟩ : ∃ r, g.roots = {r} := by
+    apply Multiset.card_eq_one.mp
+    simpa [hg_deg1] using card_roots_of_splits hg_splits
+  have hroots_f : f.roots = 0 := by
+    apply Multiset.card_eq_zero.mp
+    rw [card_roots_of_splits hf_splits, hf_deg0]
+  refine ⟨⟨hf_ne, hf_splits⟩, ⟨hg_ne, hg_splits⟩, [], [r], by simp,
+    List.pairwise_singleton _ _, ?_, ?_, ?_⟩
+  · simp [hroots_f]
+  · simp [hr_eq]
+  · exact Or.inl ⟨by simp, by simp [ListInterlaces]⟩
+
+/-- The derivative of any nonconstant positive-leading real-rooted polynomial
+interlaces the original polynomial, including the degree-one boundary case. -/
+lemma interlaces_derivative_of_pos_natDegree
+    {f : ℝ[X]}
+    (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hf_pos : HasPosLeadingCoeff f)
+    (hdeg : 1 ≤ f.natDegree) :
+    Interlaces f.derivative f := by
+  by_cases hdeg1 : f.natDegree = 1
+  · have hf'_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
+    have hf'_ne : f.derivative ≠ 0 := by
+      simp_all
+    have hf'_deg0 : f.derivative.natDegree = 0 := by
+      simp [hdeg1, f.natDegree_derivative]
+    have hf'_rr : f.derivative ≠ 0 ∧ f.derivative.Splits :=
+      ⟨hf'_ne, Polynomial.Splits.of_natDegree_eq_zero hf'_deg0⟩
+    exact
+      (prec_degree_zero_right_of_degree_one hf'_rr.1 hf'_rr.2 hf_ne hf_splits
+        hf'_deg0 hdeg1).toInterlaces (by lia)
+  · exact derivative_interlaces hf_splits (by lia)
+
 /-- Splitting is preserved by differentiation in the zero-aware convention. -/
 theorem eq_zero_or_splits_derivative {p : ℝ[X]}
     (hp : p = 0 ∨ p.Splits) :

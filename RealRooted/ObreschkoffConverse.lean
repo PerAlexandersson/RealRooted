@@ -865,43 +865,6 @@ private theorem prec_or_revPrec_of_eq_zero_or_simple_combo_sameDegree
     right
     exact prec_of_interlaces_eval_mul_neg_same hder hg'_pos hf_pos hdeg.symm hroot_sign
 
-lemma prec_degree_zero_right_of_degree_one
-    {f g : ℝ[X]}
-    (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hg_ne : g ≠ 0) (hg_splits : g.Splits)
-    (hf_deg0 : f.natDegree = 0) (hg_deg1 : g.natDegree = 1) :
-    Prec f g := by
-  obtain ⟨r, hr_eq⟩ : ∃ r, g.roots = {r} := by
-    apply Multiset.card_eq_one.mp
-    simpa [hg_deg1] using card_roots_of_splits hg_splits
-  have hroots_f : f.roots = 0 := by
-    apply Multiset.card_eq_zero.mp
-    rw [card_roots_of_splits hf_splits, hf_deg0]
-  refine ⟨⟨hf_ne, hf_splits⟩, ⟨hg_ne, hg_splits⟩, [], [r], by simp,
-    List.pairwise_singleton _ _, ?_, ?_, ?_⟩
-  · simp [hroots_f]
-  · simp [hr_eq]
-  · exact Or.inl ⟨by simp, by simp [ListInterlaces]⟩
-
-private lemma interlaces_derivative_of_degree_pos
-    {f : ℝ[X]}
-    (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hf_pos : HasPosLeadingCoeff f)
-    (hdeg : 1 ≤ f.natDegree) :
-    Interlaces f.derivative f := by
-  by_cases hdeg1 : f.natDegree = 1
-  · have hf'_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
-    have hf'_ne : f.derivative ≠ 0 := by
-      simp_all
-    have hf'_deg0 : f.derivative.natDegree = 0 := by
-      simp [hdeg1, f.natDegree_derivative]
-    have hf'_rr : (f.derivative ≠ 0 ∧ f.derivative.Splits) :=
-      isRealRooted_of_deg_zero hf'_ne hf'_deg0
-    exact
-      (prec_degree_zero_right_of_degree_one hf'_rr.1 hf'_rr.2 hf_ne hf_splits
-        hf'_deg0 hdeg1).toInterlaces
-        (by lia)
-  · have hdeg_ge2 : 2 ≤ f.natDegree := by lia
-    exact derivative_interlaces hf_splits hdeg_ge2
-
 private lemma wronskian_coeff_top_succ
     {f g : ℝ[X]}
     (hdeg : g.natDegree = f.natDegree + 1)
@@ -1035,7 +998,7 @@ private theorem prec_of_eq_zero_or_simple_combo_succDegree
       nlinarith
   have hf'_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
   have hder : Interlaces f.derivative f :=
-    interlaces_derivative_of_degree_pos hf_ne hf_splits hf_pos hf_deg_pos
+    interlaces_derivative_of_pos_natDegree hf_ne hf_splits hf_pos hf_deg_pos
   have hroot_sign :
       ∀ r, f.IsRoot r → g.eval r * f.derivative.eval r < 0 := by
     intro r hr

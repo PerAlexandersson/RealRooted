@@ -2,6 +2,7 @@ import Mathlib.Tactic
 import RealRooted.LiuWangRecursion
 import RealRooted.PFPolynomial
 import RealRooted.QuadraticRoot
+import RealRooted.Touchard
 
 /-!
 # The Narayana Transformation
@@ -287,6 +288,154 @@ theorem HasNonnegCoeffs.basisTransform {P : ℕ → ℝ[X]} {p : ℝ[X]}
 /-- Falling factorial `⟨x⟩_k = x (x - 1) ... (x - k + 1)`. -/
 def fallingFactorialPolynomial (k : ℕ) : ℝ[X] :=
   ∏ i ∈ Finset.range k, (X - C (i : ℝ))
+
+theorem fallingFactorialPolynomial_succ_mul (n : ℕ) :
+    fallingFactorialPolynomial (n + 1) =
+      (X - C (n : ℝ)) * fallingFactorialPolynomial n := by
+  simp [fallingFactorialPolynomial, Finset.prod_range_succ]
+  ring
+
+/-- Multiplication by `X` before the Touchard-basis transform becomes the
+Touchard differential recurrence after the transform. -/
+theorem basisTransform_touchard_X_mul (p : ℝ[X]) :
+    basisTransform touchard (X * p) =
+      X * basisTransform touchard p + X * (basisTransform touchard p).derivative := by
+  induction p using Polynomial.induction_on' with
+  | add p q hp hq =>
+      simp only [mul_add, basisTransform_add, hp, hq, derivative_add]
+      ring
+  | monomial n a =>
+      rw [Polynomial.X_mul_monomial]
+      simp only [basisTransform_monomial]
+      rw [touchard_succ]
+      simp [Polynomial.derivative_mul]
+      ring
+
+/-- Factor recurrence for the Touchard-basis transform. -/
+theorem basisTransform_touchard_mul_X_add_C (r : ℝ) (p : ℝ[X]) :
+    basisTransform touchard ((X + C r) * p) =
+      (X + C r) * basisTransform touchard p +
+        X * (basisTransform touchard p).derivative := by
+  rw [add_mul, basisTransform_add, basisTransform_touchard_X_mul]
+  rw [Polynomial.C_mul', basisTransform_smul]
+  ring
+
+/-- The Touchard-basis transform sends a falling factorial back to the
+corresponding monomial. -/
+theorem basisTransform_touchard_fallingFactorialPolynomial :
+    ∀ n : ℕ, basisTransform touchard (fallingFactorialPolynomial n) = X ^ n
+  | 0 => by
+      rw [show fallingFactorialPolynomial 0 = 1 by simp [fallingFactorialPolynomial]]
+      rw [show (1 : ℝ[X]) = C 1 by simp, basisTransform_C]
+      simp [touchard]
+  | n + 1 => by
+      rw [fallingFactorialPolynomial_succ_mul]
+      rw [show (X - C (n : ℝ) : ℝ[X]) = X + C (-(n : ℝ)) by
+        ext k
+        simp [sub_eq_add_neg]]
+      rw [basisTransform_touchard_mul_X_add_C,
+        basisTransform_touchard_fallingFactorialPolynomial]
+      cases n with
+      | zero => simp
+      | succ n =>
+          rw [Polynomial.derivative_X_pow_succ]
+          simp only [Nat.cast_add, Nat.cast_one]
+          have hC : C (-((n : ℝ) + 1)) = -(C ((n : ℝ) + 1)) := by
+            ext k
+            simp
+          rw [hC]
+          ring
+
+/-- The Touchard-basis transform is a left inverse of the falling-factorial
+basis transform. -/
+theorem basisTransform_touchard_fallingFactorial_leftInverse (p : ℝ[X]) :
+    basisTransform touchard (basisTransform fallingFactorialPolynomial p) = p := by
+  induction p using Polynomial.induction_on' with
+  | add p q hp hq =>
+      simp only [basisTransform_add, hp, hq]
+  | monomial n a =>
+      rw [basisTransform_monomial, Polynomial.C_mul', basisTransform_smul]
+      rw [basisTransform_touchard_fallingFactorialPolynomial]
+      simp [Polynomial.X_pow_eq_monomial]
+
+private theorem touchardFactorStep_preservesPF {r : ℝ} (hr : 0 ≤ r)
+    {f : ℝ[X]} (hf : IsPFPolynomial f) :
+    IsPFPolynomial ((X + C r) * f + X * f.derivative) := by
+  by_cases hf0 : f = 0
+  · simpa [hf0] using IsPFPolynomial.zero
+  have hfrr := hf.ne_zero_and_splits hf0
+  by_cases hdeg0 : f.natDegree = 0
+  · have hfC : f = C (f.coeff 0) := Polynomial.eq_C_of_natDegree_eq_zero hdeg0
+    rw [hfC] at hf ⊢
+    simpa using (isPFPolynomial_X_add_C hr).mul hf
+  have hdegpos : 1 ≤ f.natDegree := by lia
+  have hf_pos : HasPosLeadingCoeff f := hf.hasNonnegCoeffs.pos_leadingCoeff hf0
+  have hder_ne : f.derivative ≠ 0 :=
+    derivative_ne_zero_of_natDegree_ne_zero hdeg0
+  have hder_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
+  have hder : Interlaces f.derivative f :=
+    interlaces_derivative_of_pos_natDegree hf0 hfrr.2 hf_pos hdegpos
+  have hfirst_pos : HasPosLeadingCoeff ((X + C r) * f) :=
+    (hasPosLeadingCoeff_X_add_C r).mul hf_pos
+  have hfirst_deg : ((X + C r) * f).natDegree = f.natDegree + 1 := by
+    rw [Polynomial.natDegree_mul (Polynomial.X_add_C_ne_zero r) hf0,
+      Polynomial.natDegree_X_add_C]
+    simp [add_comm]
+  have hsecond_deg : (X * f.derivative).natDegree = f.natDegree := by
+    rw [Polynomial.natDegree_mul X_ne_zero hder_ne, Polynomial.natDegree_X,
+      f.natDegree_derivative]
+    lia
+  have hsum_pos : HasPosLeadingCoeff ((X + C r) * f + X * f.derivative) :=
+    hasPosLeadingCoeff_add_of_natDegree_lt_left (by lia) hfirst_pos
+  have hsum_deg : ((X + C r) * f + X * f.derivative).natDegree =
+      f.natDegree + 1 := by
+    rw [natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff]
+    · exact hfirst_deg
+    · lia
+    · exact hfirst_pos
+  have hprec : Prec f ((X + C r) * f + X * f.derivative) := by
+    apply prec_of_interlaces_evalCoeff_nonpos hder hder_pos hsum_pos
+    · rw [hsum_deg]
+      lia
+    · rw [hsum_deg]
+    · intro s hs
+      simpa using hf.roots_nonpos s ((mem_roots hf0).mpr hs)
+  exact IsPFPolynomial.of_realRooted_nonneg
+    (((isPFPolynomial_X_add_C hr).mul hf).hasNonnegCoeffs.add
+      hf.derivative.X_mul.hasNonnegCoeffs)
+    hprec.2.1.2
+
+private theorem basisTransform_touchard_preservesPF_aux :
+    ∀ n (p : ℝ[X]), p.natDegree = n → p ≠ 0 → IsPFPolynomial p →
+      IsPFPolynomial (basisTransform touchard p) := by
+  intro n
+  induction n using Nat.strong_induction_on with
+  | h n ih =>
+      intro p hpdeg hp0 hp
+      by_cases hn0 : n = 0
+      · have hpdeg0 : p.natDegree = 0 := by lia
+        have hpC : p = C (p.coeff 0) := Polynomial.eq_C_of_natDegree_eq_zero hpdeg0
+        rw [hpC] at hp ⊢
+        simpa [touchard] using hp
+      · have hnpos : 0 < p.natDegree := by lia
+        rcases hp.exists_X_sub_C_factor_of_pos_natDegree hnpos with
+          ⟨u, q, hu, hfactor, hq, hqdeg⟩
+        have hq0 : q ≠ 0 := by
+          intro hqzero
+          apply hp0
+          simp [hfactor, hqzero]
+        have ihq := ih q.natDegree (by lia) q rfl hq0 hq
+        have hfactor' : p = (X + C (-u)) * q := by
+          simpa [sub_eq_add_neg] using hfactor
+        rw [hfactor', basisTransform_touchard_mul_X_add_C]
+        exact touchardFactorStep_preservesPF (neg_nonneg.mpr hu) ihq
+
+private theorem basisTransform_touchard_preservesPF {p : ℝ[X]}
+    (hp : IsPFPolynomial p) :
+    IsPFPolynomial (basisTransform touchard p) := by
+  by_cases hp0 : p = 0
+  · simpa [hp0] using IsPFPolynomial.zero
+  exact basisTransform_touchard_preservesPF_aux p.natDegree p rfl hp0 hp
 
 /-- The falling-factorial basis transform is the identity on degree-one
 polynomials. -/
@@ -689,7 +838,48 @@ abbrev brentiFallingFactorialDegreeAtLeastThreeStatement : Prop :=
 theorem brentiFallingFactorial_degreeAtLeastThree {p : ℝ[X]} (hpdeg : 3 ≤ p.natDegree)
     (h : HasOnlyNonposRoots (basisTransform fallingFactorialPolynomial p)) :
     HasOnlyNonposRoots p := by
-  sorry
+  let q := basisTransform fallingFactorialPolynomial p
+  have hinv : basisTransform touchard q = p :=
+    basisTransform_touchard_fallingFactorial_leftInverse p
+  have hp0 : p ≠ 0 := by
+    intro hpzero
+    simp [hpzero] at hpdeg
+  rcases h with hqzero | ⟨hqsplits, hqroots⟩
+  · exfalso
+    change q = 0 at hqzero
+    apply hp0
+    rw [← hinv, hqzero]
+    simp
+  have hq0 : q ≠ 0 := by
+    intro hqzero
+    apply hp0
+    rw [← hinv, hqzero]
+    simp
+  have hq_lc_ne : q.leadingCoeff ≠ 0 := Polynomial.leadingCoeff_ne_zero.mpr hq0
+  rcases lt_or_gt_of_ne hq_lc_ne with hqneg | hqpos
+  · have hnq_splits : (-q).Splits := hqsplits.neg
+    have hnq_pos : HasPosLeadingCoeff (-q) := hasPosLeadingCoeff_neg hqneg
+    have hnq_roots : ∀ r ∈ (-q).roots, r ≤ 0 := by
+      simpa [Polynomial.roots_neg] using hqroots
+    have hnq_nn : HasNonnegCoeffs (-q) :=
+      ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hnq_splits).mpr
+        ⟨hnq_pos, hnq_roots⟩).1
+    have hnq_pf : IsPFPolynomial (-q) :=
+      IsPFPolynomial.of_realRooted_nonneg hnq_nn hnq_splits
+    have htransform_neg : basisTransform touchard (-q) = -basisTransform touchard q := by
+      rw [show (-q : ℝ[X]) = (-1 : ℝ) • q by simp, basisTransform_smul]
+      simp
+    have hresult := (basisTransform_touchard_preservesPF hnq_pf).hasOnlyNonposRoots
+    rw [htransform_neg, hinv] at hresult
+    exact hresult.of_neg
+  · have hq_pos : HasPosLeadingCoeff q := hqpos
+    have hq_nn : HasNonnegCoeffs q :=
+      ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hqsplits).mpr
+        ⟨hq_pos, hqroots⟩).1
+    have hq_pf : IsPFPolynomial q :=
+      IsPFPolynomial.of_realRooted_nonneg hq_nn hqsplits
+    have hresult := (basisTransform_touchard_preservesPF hq_pf).hasOnlyNonposRoots
+    rwa [hinv] at hresult
 
 /-- Degree-at-least-two case of Brenti's falling-factorial inverse transform. -/
 theorem brentiFallingFactorial_degreeAtLeastTwo {p : ℝ[X]} (hpdeg : 2 ≤ p.natDegree)
