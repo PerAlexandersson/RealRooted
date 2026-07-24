@@ -1999,6 +1999,47 @@ abbrev rectangularAdditiveConvolutionPreservesNonnegRootsDegreeAtLeastThreeState
     HasOnlyNonnegRoots g →
       HasOnlyNonnegRoots (rectangularAdditiveConvolution m (n + 1 + 1 + 1) f g)
 
+/-- The top rectangular-convolution weight is one. -/
+theorem rectangularConvolutionGamma_zero_zero (m n : ℕ) :
+    rectangularConvolutionGamma m n 0 0 = 1 := by
+  unfold rectangularConvolutionGamma
+  simp only [Nat.sub_zero]
+  rw [div_self (by positivity), div_self (by positivity), one_mul]
+
+/-- The zero-index convolution coefficient is the product of the top input
+coefficients. -/
+theorem rectangularConvolutionCoeff_zero_index (m n : ℕ) (f g : ℝ[X]) :
+    rectangularConvolutionCoeff m n f g 0 = f.coeff n * g.coeff n := by
+  simp [rectangularConvolutionCoeff, rectangularConvolutionGamma_zero_zero]
+
+/-- The degree-`n` coefficient of the rectangular additive convolution is the
+product of the degree-`n` input coefficients. -/
+theorem coeff_rectangularAdditiveConvolution_top (m n : ℕ) (f g : ℝ[X]) :
+    (rectangularAdditiveConvolution m n f g).coeff n = f.coeff n * g.coeff n := by
+  rw [coeff_rectangularAdditiveConvolution_of_le m n f g le_rfl, Nat.sub_self,
+    rectangularConvolutionCoeff_zero_index]
+
+/-- Reduce preservation of nonnegative roots to real stability of the
+bivariate lift of the convolution. -/
+theorem rectangularAdditiveConvolutionPreservesNonnegRoots_of_mvRealStable_xyLift
+    {m n : ℕ} {f g : ℝ[X]}
+    (hfdeg : f.natDegree = n) (hgdeg : g.natDegree = n)
+    (hflead : 0 < f.leadingCoeff) (hglead : 0 < g.leadingCoeff)
+    (hstab : MvRealStable (xyLift (rectangularAdditiveConvolution m n f g))) :
+    HasOnlyNonnegRoots (rectangularAdditiveConvolution m n f g) := by
+  have hfn : f.coeff n = f.leadingCoeff := by
+    rw [← hfdeg, Polynomial.coeff_natDegree]
+  have hgn : g.coeff n = g.leadingCoeff := by
+    rw [← hgdeg, Polynomial.coeff_natDegree]
+  have hpos : 0 < (rectangularAdditiveConvolution m n f g).coeff n := by
+    rw [coeff_rectangularAdditiveConvolution_top m n f g, hfn, hgn]
+    exact mul_pos hflead hglead
+  have hne : rectangularAdditiveConvolution m n f g ≠ 0 := by
+    intro h0
+    rw [h0, Polynomial.coeff_zero] at hpos
+    exact lt_irrefl 0 hpos
+  exact (hasOnlyNonnegRoots_iff_mvRealStable_xyLift hne).mpr hstab
+
 /-- Degree-at-least-three case of the Gribinski--Marcus preservation theorem for
 rectangular additive convolution. -/
 theorem rectangularAdditiveConvolutionPreservesNonnegRoots_degreeAtLeastThree
@@ -2007,6 +2048,8 @@ theorem rectangularAdditiveConvolutionPreservesNonnegRoots_degreeAtLeastThree
     (hflead : 0 < f.leadingCoeff) (hglead : 0 < g.leadingCoeff)
     (hfroots : HasOnlyNonnegRoots f) (hgroots : HasOnlyNonnegRoots g) :
     HasOnlyNonnegRoots (rectangularAdditiveConvolution m (n + 1 + 1 + 1) f g) := by
+  apply rectangularAdditiveConvolutionPreservesNonnegRoots_of_mvRealStable_xyLift
+    hfdeg hgdeg hflead hglead
   sorry
 
 /-- Degree-at-least-two case of the Gribinski--Marcus preservation theorem for
