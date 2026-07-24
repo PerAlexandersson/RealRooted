@@ -402,4 +402,34 @@ theorem MvUpperHalfPlaneStable.contractVariables_zero_or
         exact MvPolynomial.eval_specializeZero i P z]
     simpa only [G, add_comm, mul_comm] using hne
 
+/-- A product of stable polynomials in disjoint left and right variable blocks
+is stable. -/
+theorem MvUpperHalfPlaneStable.pairedProduct
+    {sigma : Type*} {F G : MvPolynomial sigma ℂ}
+    (hF : MvUpperHalfPlaneStable F) (hG : MvUpperHalfPlaneStable G) :
+    MvUpperHalfPlaneStable (RealRooted.pairedProduct F G) := by
+  exact hF.rename.mul hG.rename
+
+/-- A finite sequence of paired contractions preserves stability, up to
+zero. -/
+theorem MvUpperHalfPlaneStable.contractVariablePairs_zero_or
+    {sigma : Type*} [Finite sigma]
+    {P : MvPolynomial (Sum sigma sigma) ℂ}
+    (hP : MvUpperHalfPlaneStable P)
+    (hPma : MvPolynomial.IsMultiaffine P) (l : List sigma) :
+    contractVariablePairs l P = 0 ∨
+      MvUpperHalfPlaneStable (contractVariablePairs l P) := by
+  unfold contractVariablePairs
+  induction l generalizing P with
+  | nil => exact Or.inr hP
+  | cons i l ih =>
+      rw [List.foldl_cons]
+      rcases hP.contractVariables_zero_or hPma (Sum.inl i) (Sum.inr i) with hQ | hQ
+      · left
+        change contractVariablePairs l
+          (contractVariables (Sum.inl i) (Sum.inr i) P) = 0
+        rw [hQ]
+        exact contractVariablePairs_zero l
+      · exact ih hQ (isMultiaffine_contractVariables hPma (Sum.inl i) (Sum.inr i))
+
 end RealRooted
