@@ -2749,10 +2749,11 @@ Using `hurwitz_mul_entrywise_matrix`, this strips away the coefficient
 bookkeeping from `hadamardPreservesHurwitzMatrixTNStatement`; the remaining
 input is only that entrywise products of totally nonnegative Hurwitz matrices
 are totally nonnegative. -/
-theorem hadamardPreservesHurwitzMatrixTN_of_schur :
+theorem hadamardPreservesHurwitzMatrixTN_of_schur
+    (hSchur : HurwitzMatrixSchurProductTNStatement) :
     hadamardPreservesHurwitzMatrixTNStatement :=
   fun ha hb => by
-    simpa [hurwitz_hadamardProduct_matrix] using hurwitzMatrixSchurProductTN ha hb
+    simpa [hurwitz_hadamardProduct_matrix] using hSchur ha hb
 
 /-- Odd/even coefficient-subsequence PF consequence of the Hurwitz-matrix
 Hadamard leaf. -/
@@ -2791,27 +2792,30 @@ theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_matrixTN
 
 /-- The pure Hurwitz Schur-product core gives the odd/even PF consequence for
 Hadamard products. -/
-theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_schur :
+theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_schur
+    (hSchur : HurwitzMatrixSchurProductTNStatement) :
     hadamardPreservesHurwitzMatrixOddEvenPFStatement :=
   hadamardPreservesHurwitzMatrixOddEvenPF_of_matrixTN
-    hadamardPreservesHurwitzMatrixTN_of_schur
+    (hadamardPreservesHurwitzMatrixTN_of_schur hSchur)
 
 /-- The pure Hurwitz Schur-product core implies the named low-order,
 size-`≤ 3`, Hurwitz-matrix Hadamard leaf. -/
-theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_schur :
+theorem hadamardPreservesHurwitzMatrixTNDetLeThree_of_schur
+    (hSchur : HurwitzMatrixSchurProductTNStatement) :
     hadamardPreservesHurwitzMatrixTNDetLeThreeStatement :=
   hadamardPreservesHurwitzMatrixTNDetLeThree_of_matrixTN
-    hadamardPreservesHurwitzMatrixTN_of_schur
+    (hadamardPreservesHurwitzMatrixTN_of_schur hSchur)
 
 /-- Conditional reduction of Garloff--Wagner Theorem 1 to the pure Hurwitz
 Schur-product core. The two criterion assumptions are refuted for the current
 matrix orientation. -/
 theorem hadamardPreservesHurwitzStable_of_hurwitzSchur
     (hStableToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hMatrixToStable : HurwitzMatrixTotallyNonnegativeToStableStatement) :
+    (hMatrixToStable : HurwitzMatrixTotallyNonnegativeToStableStatement)
+    (hSchur : HurwitzMatrixSchurProductTNStatement) :
     hadamardPreservesHurwitzStableStatement :=
   hadamardPreservesHurwitzStable_of_matrixRoute hStableToMatrix hMatrixToStable
-    hadamardPreservesHurwitzMatrixTN_of_schur
+    (hadamardPreservesHurwitzMatrixTN_of_schur hSchur)
 
 /-- The Hurwitz-matrix Hadamard leaf also follows from Garloff--Wagner
 Theorem 1 plus both directions of the Hurwitz-matrix total-nonnegativity
@@ -2911,10 +2915,11 @@ theorem hadamardPreservesHurwitzMatrixOddEvenPF_of_rightHalfPlaneRoute
 core, modulo the two directions of the Hurwitz-matrix criterion. -/
 theorem hadamardPreservesRightHalfPlaneStable_of_hurwitzSchur
     (hStableToMatrix : HurwitzStableToMatrixTotallyNonnegativeStatement)
-    (hMatrixToStable : HurwitzMatrixTotallyNonnegativeToStableStatement) :
+    (hMatrixToStable : HurwitzMatrixTotallyNonnegativeToStableStatement)
+    (hSchur : HurwitzMatrixSchurProductTNStatement) :
     hadamardPreservesRightHalfPlaneStableStatement :=
   hadamardPreservesRightHalfPlaneStable_of_matrixRoute hStableToMatrix hMatrixToStable
-    hadamardPreservesHurwitzMatrixTN_of_schur
+    (hadamardPreservesHurwitzMatrixTN_of_schur hSchur)
 
 /-- **Garloff--Wagner, Theorem 4(b), reduced to its classical inputs** (TODO T9).
 
@@ -3069,12 +3074,13 @@ theorem garloffWagnerHadamardNonnegPrec_of_matrixHadamardBridges
 /-- Garloff--Wagner two-pair theorem via the pure Hurwitz Schur-product core. -/
 theorem garloffWagnerHadamardNonnegPrec_of_hurwitzSchur
     (hToFull : NonnegPrecToFullyInterlacingPairStatement)
+    (hSchur : HurwitzMatrixSchurProductTNStatement)
     (hFullToPrec0 : FullyInterlacingPairToPrec0Statement) :
     ∀ {f g p q : ℝ[X]},
       HasNonnegCoeffs f → HasNonnegCoeffs g → HasNonnegCoeffs p → HasNonnegCoeffs q →
       Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q) :=
   garloffWagnerHadamardNonnegPrec_of_matrixHadamardBridges hToFull
-    hadamardPreservesHurwitzMatrixTN_of_schur hFullToPrec0
+    (hadamardPreservesHurwitzMatrixTN_of_schur hSchur) hFullToPrec0
 
 /-- Matrix-core version of the Garloff--Wagner two-pair reduction, with the
 non-Hadamard leaves discharged by the shared Hermite--Biehler route and the
@@ -3094,13 +3100,14 @@ theorem garloffWagnerHadamardNonnegPrec_of_matrixClassicalInputs
 
 theorem garloffWagnerHadamardNonnegPrec_of_hurwitzSchurClassicalInputs
     (hRoute : HermiteBiehlerHurwitzRoute)
+    (hSchur : HurwitzMatrixSchurProductTNStatement)
     (hASW : aissenSchoenbergWhitneyForwardStatement)
     (hInt : FullyInterlacingPairInterlaceStatement) :
     ∀ {f g p q : ℝ[X]},
       HasNonnegCoeffs f → HasNonnegCoeffs g → HasNonnegCoeffs p → HasNonnegCoeffs q →
       Prec f g → Prec p q → Prec0 (hadamardProduct f p) (hadamardProduct g q) :=
   garloffWagnerHadamardNonnegPrec_of_matrixClassicalInputs hRoute
-    hadamardPreservesHurwitzMatrixTN_of_schur hASW hInt
+    (hadamardPreservesHurwitzMatrixTN_of_schur hSchur) hASW hInt
 
 /-- PF-polynomial wrapper around the strict Garloff--Wagner two-pair theorem. -/
 def garloffWagnerHadamardPFPrecStatement : Prop :=

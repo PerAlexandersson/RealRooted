@@ -1,3 +1,4 @@
+import RealRooted.PolyaFrequencyConvolution
 import RealRooted.VeroneseSection
 
 open Polynomial Matrix
@@ -188,24 +189,18 @@ theorem hurwitz_mul_entrywise_matrix (a b : ℕ → ℝ) :
   ext i j
   simpa using hurwitz_mul_entrywise a b i j
 
-/-- Pure-matrix combinatorial core of Garloff--Wagner Theorem 1.
+/-- Proposed infinite-matrix extension of the finite nonsingular Hurwitz-matrix
+form of Garloff--Wagner Theorem 1.
 
-This is the deep leaf of the reduction, stripped of analytic and polynomial
-content: the entrywise product of two totally nonnegative Hurwitz matrices is
-again totally nonnegative.  This is special to the Hurwitz block-Toeplitz
-structure; the entrywise product of arbitrary totally nonnegative matrices is
-not totally nonnegative in general. -/
+The cited theorem proves closure for finite nonsingular Hurwitz matrices. The
+statement below is kept as an explicit interface because neither that theorem
+nor the current development justifies the unrestricted infinite, possibly
+singular version. -/
 abbrev HurwitzMatrixSchurProductTNStatement : Prop :=
   ∀ {a b : ℕ → ℝ},
     (hurwitz a).IsTotallyNonneg →
     (hurwitz b).IsTotallyNonneg →
     (Matrix.of fun i j => hurwitz a i j * hurwitz b i j).IsTotallyNonneg
-
-/-- The Schur product of two totally nonnegative Hurwitz matrices is totally nonnegative. -/
-theorem hurwitzMatrixSchurProductTN {a b : ℕ → ℝ}
-    (ha : (hurwitz a).IsTotallyNonneg) (hb : (hurwitz b).IsTotallyNonneg) :
-    (Matrix.of fun i j => hurwitz a i j * hurwitz b i j).IsTotallyNonneg := by
-  sorry
 
 /-! ### Low-order cases of the Schur-product core -/
 
@@ -475,17 +470,19 @@ theorem hurwitzMatrixSchurProductDetLeThree_of_core
   hurwitzMatrixSchurProductDetLeThree_of_inBand
     (hurwitzMatrixSchurProductDetFinThreeInBand_of_core hcore)
 
-theorem hurwitzMatrixSchurProductDetLeThree_of_schurProductTN :
+theorem hurwitzMatrixSchurProductDetLeThree_of_schurProductTN
+    (hSchur : HurwitzMatrixSchurProductTNStatement) :
     HurwitzMatrixSchurProductDetLeThreeStatement :=
   fun {_a _b} ha hb {_n} {_rows} {_cols} hrows hcols _hn =>
-    hurwitzMatrixSchurProductTN ha hb hrows hcols
+    hSchur ha hb hrows hcols
 
 /-- The full Hurwitz matrix Schur-product statement implies the isolated
 in-band `3 × 3` core. -/
-theorem hurwitzMatrixSchurProductDetFinThreeInBand_of_schurProductTN :
+theorem hurwitzMatrixSchurProductDetFinThreeInBand_of_schurProductTN
+    (hSchur : HurwitzMatrixSchurProductTNStatement) :
     HurwitzMatrixSchurProductDetFinThreeInBandStatement :=
   fun {_a _b} ha hb {_rows} {_cols} hrows hcols _hband =>
-    hurwitzMatrixSchurProductTN ha hb hrows hcols
+    hSchur ha hb hrows hcols
 
 /-- The low-order, size-`≤ 3`, Hurwitz matrix Schur-product statement implies
 the isolated in-band `3 × 3` core. -/
@@ -1990,6 +1987,50 @@ theorem hurwitz_isTotallyNonneg_of_odd_zero {a : ℕ → ℝ}
       rw [hrk]
       exact hurwitz_even_row_eq_zero_of_odd_zero hodd _ _
     exact le_of_eq (Matrix.det_eq_zero_of_row_eq_zero k hzero).symm
+
+/-! ### The unrestricted infinite Schur-product statement is false -/
+
+/-- First coefficient sequence in the infinite Schur-product counterexample.
+Its even subsequence is `1, 2, 2, ...`, and its odd coefficients vanish. -/
+def hurwitzSchurCounterexampleLeft : ℕ → ℝ :=
+  fun n => if n % 2 = 0 then if n = 0 then 1 else 2 else 0
+
+/-- Second coefficient sequence in the infinite Schur-product counterexample.
+Its even subsequence is `1, 2, 3, ...`, and its odd coefficients vanish. -/
+def hurwitzSchurCounterexampleRight : ℕ → ℝ :=
+  fun n => if n % 2 = 0 then (n / 2 + 1 : ℕ) else 0
+
+theorem hurwitzSchurCounterexampleLeft_odd_zero (n : ℕ) :
+    hurwitzSchurCounterexampleLeft (2 * n + 1) = 0 := by
+  simp [hurwitzSchurCounterexampleLeft]
+
+theorem hurwitzSchurCounterexampleRight_odd_zero (n : ℕ) :
+    hurwitzSchurCounterexampleRight (2 * n + 1) = 0 := by
+  simp [hurwitzSchurCounterexampleRight]
+
+/-- The two infinite PF certificates reduce the proposed Hurwitz Schur-product
+statement to an explicit `3 × 3` minor with determinant `-4`. -/
+theorem not_hurwitzMatrixSchurProductTNStatement_of_counterexamplePF
+    (hleft : IsPolyaFreqSeq (fun n => hurwitzSchurCounterexampleLeft (2 * n)))
+    (hright : IsPolyaFreqSeq (fun n => hurwitzSchurCounterexampleRight (2 * n))) :
+    ¬ HurwitzMatrixSchurProductTNStatement := by
+  intro H
+  have hleftTN : (hurwitz hurwitzSchurCounterexampleLeft).IsTotallyNonneg :=
+    hurwitz_isTotallyNonneg_of_odd_zero hurwitzSchurCounterexampleLeft_odd_zero hleft
+  have hrightTN : (hurwitz hurwitzSchurCounterexampleRight).IsTotallyNonneg :=
+    hurwitz_isTotallyNonneg_of_odd_zero hurwitzSchurCounterexampleRight_odd_zero hright
+  have hminor := H hleftTN hrightTN (n := 3) (rows := ![5, 7, 9])
+    (cols := ![0, 1, 2]) (by decide) (by decide)
+  norm_num [Matrix.det_fin_three, Matrix.submatrix_apply, Matrix.of_apply,
+    Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two, hurwitz, toeplitz,
+    hurwitzSchurCounterexampleLeft, hurwitzSchurCounterexampleRight] at hminor
+
+/-- The unrestricted, infinite Hurwitz-matrix Schur-product statement is false. -/
+theorem not_hurwitzMatrixSchurProductTNStatement :
+    ¬ HurwitzMatrixSchurProductTNStatement := by
+  apply not_hurwitzMatrixSchurProductTNStatement_of_counterexamplePF
+  · simpa [hurwitzSchurCounterexampleLeft] using oneThenTwo_isPolyaFreqSeq
+  · simpa [hurwitzSchurCounterexampleRight] using natSucc_isPolyaFreqSeq
 
 /-- Counterexample coefficient sequence `1 + X^2`. -/
 def cexOddZero : ℕ → ℝ :=
