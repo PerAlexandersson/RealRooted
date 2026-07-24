@@ -393,6 +393,26 @@ theorem BidiagonalJensenPencilCertificate.toPFPreserver
     BidiagonalPFPreserver alpha beta d :=
   bidiagonalPFPreserver_of_jensenPencil hbackend hcert
 
+/-- Rowwise Jensen-pencil certificates give rowwise coefficient-bidiagonal
+PF preservers. -/
+theorem BidiagonalJensenPencilCertificate.toPFPreserver_sequence
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
+    (hcert : ∀ n : Nat,
+      BidiagonalJensenPencilCertificate (alpha n) (beta n) (d n)) :
+    ∀ n : Nat, BidiagonalPFPreserver (alpha n) (beta n) (d n) :=
+  fun n => (hcert n).toPFPreserver hbackend
+
+/-- Tail-start rowwise version of
+`BidiagonalJensenPencilCertificate.toPFPreserver_sequence`. -/
+theorem BidiagonalJensenPencilCertificate.toPFPreserver_sequence_from
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (N : Nat) {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
+    (hcert : ∀ n : Nat, N ≤ n →
+      BidiagonalJensenPencilCertificate (alpha n) (beta n) (d n)) :
+    ∀ n : Nat, N ≤ n → BidiagonalPFPreserver (alpha n) (beta n) (d n) :=
+  fun n hn => (hcert n hn).toPFPreserver hbackend
+
 /-- Build a Jensen-pencil certificate from a common `(1 + X)`-power
 factorization and cubic residual discriminant certificates.
 
@@ -730,6 +750,26 @@ theorem BidiagonalCubicResidualCertificate.toPFPreserver
     BidiagonalPFPreserver alpha beta d :=
   bidiagonalPFPreserver_of_jensenPencil hbackend hcert.toJensenPencilCertificate
 
+/-- Rowwise cubic-residual certificates give rowwise coefficient-bidiagonal
+PF preservers. -/
+theorem BidiagonalCubicResidualCertificate.toPFPreserver_sequence
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
+    (hcert : ∀ n : Nat,
+      BidiagonalCubicResidualCertificate (alpha n) (beta n) (d n)) :
+    ∀ n : Nat, BidiagonalPFPreserver (alpha n) (beta n) (d n) :=
+  fun n => (hcert n).toPFPreserver hbackend
+
+/-- Tail-start rowwise version of
+`BidiagonalCubicResidualCertificate.toPFPreserver_sequence`. -/
+theorem BidiagonalCubicResidualCertificate.toPFPreserver_sequence_from
+    (hbackend : jensenPencilBidiagonalPreserverStatement)
+    (N : Nat) {alpha beta : Nat → ℕ → ℝ} {d : Nat → ℕ}
+    (hcert : ∀ n : Nat, N ≤ n →
+      BidiagonalCubicResidualCertificate (alpha n) (beta n) (d n)) :
+    ∀ n : Nat, N ≤ n → BidiagonalPFPreserver (alpha n) (beta n) (d n) :=
+  fun n hn => (hcert n hn).toPFPreserver hbackend
+
 /-- Apply a bundled cubic-residual certificate as a PF-bidiagonal preserver. -/
 theorem bidiagonalPFPreserver_of_cubicResidualCertificate
     (hbackend : jensenPencilBidiagonalPreserverStatement)
@@ -918,7 +958,7 @@ theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_jensenPencil
       P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_bidiagonalOperator_sequence hbase hdeg
-    (fun n => (hcert n).toPFPreserver hbackend) hrec
+    (BidiagonalJensenPencilCertificate.toPFPreserver_sequence hbackend hcert) hrec
 
 /-- Tail-start sequence wrapper using per-row Jensen-pencil certificates. -/
 theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_jensenPencil_from
@@ -933,7 +973,8 @@ theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_jensenPencil_from
       P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_bidiagonalOperator_sequence_from N hbase hdeg
-    (fun n hn => (hcert n hn).toPFPreserver hbackend) hrec
+    (BidiagonalJensenPencilCertificate.toPFPreserver_sequence_from
+      hbackend N hcert) hrec
 
 /-- Sequence wrapper using bundled cubic-residual certificates as row hints. -/
 theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidualCertificate
@@ -947,7 +988,7 @@ theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidualCertificat
       P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_bidiagonalOperator_sequence hbase hdeg
-    (fun n => (hcert n).toPFPreserver hbackend) hrec
+    (BidiagonalCubicResidualCertificate.toPFPreserver_sequence hbackend hcert) hrec
 
 /-- Tail-start sequence wrapper using bundled cubic-residual certificates as
 row hints. -/
@@ -963,7 +1004,8 @@ theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_cubicResidualCertificat
       P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_bidiagonalOperator_sequence_from N hbase hdeg
-    (fun n hn => (hcert n hn).toPFPreserver hbackend) hrec
+    (BidiagonalCubicResidualCertificate.toPFPreserver_sequence_from
+      hbackend N hcert) hrec
 
 /-- Sequence wrapper for Family H-style second-derivative recurrences with an
 explicit per-row PF-bidiagonal preserver.
@@ -1073,7 +1115,7 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_jensenPenci
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence hbase hdeg
-    (fun n => (hcert n).toPFPreserver hbackend) hrec
+    (BidiagonalJensenPencilCertificate.toPFPreserver_sequence hbackend hcert) hrec
 
 /-- Tail-start second-derivative wrapper using per-row Jensen-pencil
 certificates for the canonical coefficient functions. -/
@@ -1094,7 +1136,8 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_jensenPenci
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_from N hbase hdeg
-    (fun n hn => (hcert n hn).toPFPreserver hbackend) hrec
+    (BidiagonalJensenPencilCertificate.toPFPreserver_sequence_from
+      hbackend N hcert) hrec
 
 /-- Sequence wrapper for second-derivative recurrences whose Jensen
 certificates are attached to named coefficient-bidiagonal functions. -/
@@ -1115,7 +1158,8 @@ theorem isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_jensenPenci
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_norm hbase hdeg
-    (fun n => (hcert n).toPFPreserver hbackend) hnorm hrec
+    (BidiagonalJensenPencilCertificate.toPFPreserver_sequence hbackend hcert)
+    hnorm hrec
 
 /-- Tail-start version of
 `isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_jensenPencil_norm`. -/
@@ -1139,7 +1183,8 @@ theorem
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_norm_from N hbase hdeg
-    (fun n hn => (hcert n hn).toPFPreserver hbackend) hnorm hrec
+    (BidiagonalJensenPencilCertificate.toPFPreserver_sequence_from
+      hbackend N hcert) hnorm hrec
 
 /-- Sequence wrapper for second-derivative PF-bidiagonal recurrences using
 bundled cubic-residual certificates as row hints. -/
@@ -1160,7 +1205,7 @@ theorem
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence hbase hdeg
-    (fun n => (hcert n).toPFPreserver hbackend) hrec
+    (BidiagonalCubicResidualCertificate.toPFPreserver_sequence hbackend hcert) hrec
 
 /-- Tail-start second-derivative wrapper using bundled cubic-residual
 certificates attached to the canonical coefficient functions. -/
@@ -1182,7 +1227,8 @@ theorem
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_from N hbase hdeg
-    (fun n hn => (hcert n hn).toPFPreserver hbackend) hrec
+    (BidiagonalCubicResidualCertificate.toPFPreserver_sequence_from
+      hbackend N hcert) hrec
 
 /-- Short compatibility spelling for the bundled cubic-residual version of the
 second-derivative PF-bidiagonal sequence wrapper. -/
@@ -1252,7 +1298,8 @@ theorem
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_norm hbase hdeg
-    (fun n => (hcert n).toPFPreserver hbackend) hnorm hrec
+    (BidiagonalCubicResidualCertificate.toPFPreserver_sequence hbackend hcert)
+    hnorm hrec
 
 /-- Tail-start version of
 `isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_of_cubicCert_norm`.
@@ -1280,7 +1327,8 @@ theorem
           (a0 n) (a1 n) (b1 n) (b2 n) (c2 n) (c3 n) (P n)) :
     ∀ n : Nat, IsPFPolynomial (P n) :=
   isPFPolynomial_of_secondDerivativeBidiagonalForm_sequence_norm_from N hbase hdeg
-    (fun n hn => (hcert n hn).toPFPreserver hbackend) hnorm hrec
+    (BidiagonalCubicResidualCertificate.toPFPreserver_sequence_from
+      hbackend N hcert) hnorm hrec
 
 /-- Sequence wrapper whose per-row Jensen-pencil certificates are supplied by
 common-factor residual cubic certificates. -/
