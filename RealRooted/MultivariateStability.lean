@@ -1,4 +1,5 @@
 import Mathlib.Algebra.MvPolynomial.Eval
+import Mathlib.Algebra.MvPolynomial.Rename
 import Mathlib.Algebra.Polynomial.Eval.Coeff
 import Mathlib.Algebra.Polynomial.Splits
 import Mathlib.Data.Complex.Basic
@@ -31,6 +32,92 @@ def MvUpperHalfPlaneStable {sigma : Type*} (P : MvPolynomial sigma ℂ) : Prop :
 evaluation in a product of open upper half-planes. -/
 def MvRealStable {sigma : Type*} (P : MvPolynomial sigma ℝ) : Prop :=
   MvUpperHalfPlaneStable (complexifyMv P)
+
+theorem MvUpperHalfPlaneStable.C_mul {sigma : Type*}
+    {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStable P)
+    {c : ℂ} (hc : c ≠ 0) :
+    MvUpperHalfPlaneStable (MvPolynomial.C c * P) := by
+  intro z hz
+  simp only [MvPolynomial.eval_mul, MvPolynomial.eval_C]
+  exact mul_ne_zero hc (hP z hz)
+
+theorem MvUpperHalfPlaneStable.mul {sigma : Type*}
+    {P Q : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStable P)
+    (hQ : MvUpperHalfPlaneStable Q) :
+    MvUpperHalfPlaneStable (P * Q) := by
+  intro z hz
+  rw [MvPolynomial.eval_mul]
+  exact mul_ne_zero (hP z hz) (hQ z hz)
+
+theorem MvUpperHalfPlaneStable.rename {sigma tau : Type*}
+    {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStable P)
+    {f : sigma → tau} :
+    MvUpperHalfPlaneStable (MvPolynomial.rename f P) := by
+  intro z hz
+  rw [MvPolynomial.eval_rename]
+  exact hP (z ∘ f) fun i => hz (f i)
+
+/-- Specialize the right block of variables in a polynomial on a sum type. -/
+def specializeRight {sigma tau : Type*} (y : tau → ℂ)
+    (P : MvPolynomial (Sum sigma tau) ℂ) : MvPolynomial sigma ℂ :=
+  MvPolynomial.aeval (Sum.elim MvPolynomial.X (MvPolynomial.C ∘ y)) P
+
+theorem eval_specializeRight {sigma tau : Type*} (x : sigma → ℂ)
+    (y : tau → ℂ) (P : MvPolynomial (Sum sigma tau) ℂ) :
+    MvPolynomial.eval x (specializeRight y P) =
+      MvPolynomial.eval (Sum.elim x y) P := by
+  unfold specializeRight
+  change (MvPolynomial.aeval x)
+      ((MvPolynomial.aeval
+        (Sum.elim MvPolynomial.X (MvPolynomial.C ∘ y))) P) =
+    (MvPolynomial.aeval (Sum.elim x y)) P
+  rw [← AlgHom.comp_apply, MvPolynomial.comp_aeval]
+  congr 1
+  ext i
+  cases i <;> simp
+
+theorem MvUpperHalfPlaneStable.specializeRight
+    {sigma tau : Type*} {P : MvPolynomial (Sum sigma tau) ℂ}
+    (hP : MvUpperHalfPlaneStable P) {y : tau → ℂ}
+    (hy : ∀ i, 0 < (y i).im) :
+    MvUpperHalfPlaneStable (specializeRight y P) := by
+  intro x hx
+  rw [eval_specializeRight]
+  exact hP (Sum.elim x y) fun i => by
+    cases i with
+    | inl i => exact hx i
+    | inr i => exact hy i
+
+/-- Specialize the left block of variables in a polynomial on a sum type. -/
+def specializeLeft {sigma tau : Type*} (x : sigma → ℂ)
+    (P : MvPolynomial (Sum sigma tau) ℂ) : MvPolynomial tau ℂ :=
+  MvPolynomial.aeval (Sum.elim (MvPolynomial.C ∘ x) MvPolynomial.X) P
+
+theorem eval_specializeLeft {sigma tau : Type*} (x : sigma → ℂ)
+    (y : tau → ℂ) (P : MvPolynomial (Sum sigma tau) ℂ) :
+    MvPolynomial.eval y (specializeLeft x P) =
+      MvPolynomial.eval (Sum.elim x y) P := by
+  unfold specializeLeft
+  change (MvPolynomial.aeval y)
+      ((MvPolynomial.aeval
+        (Sum.elim (MvPolynomial.C ∘ x) MvPolynomial.X)) P) =
+    (MvPolynomial.aeval (Sum.elim x y)) P
+  rw [← AlgHom.comp_apply, MvPolynomial.comp_aeval]
+  congr 1
+  ext i
+  cases i <;> simp
+
+theorem MvUpperHalfPlaneStable.specializeLeft
+    {sigma tau : Type*} {P : MvPolynomial (Sum sigma tau) ℂ}
+    (hP : MvUpperHalfPlaneStable P) {x : sigma → ℂ}
+    (hx : ∀ i, 0 < (x i).im) :
+    MvUpperHalfPlaneStable (specializeLeft x P) := by
+  intro y hy
+  rw [eval_specializeLeft]
+  exact hP (Sum.elim x y) fun i => by
+    cases i with
+    | inl i => exact hx i
+    | inr i => exact hy i
 
 /-- The bivariate polynomial `p(x * y)`. -/
 def xyLift {R : Type*} [CommSemiring R] (p : R[X]) :
