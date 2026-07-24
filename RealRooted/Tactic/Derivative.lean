@@ -20,12 +20,17 @@ theorem derivative_sequence_interlaces
     ∀ i : Nat, Interlaces (P i).derivative (P i) := fun i =>
   RealRooted.derivative_interlaces (hsplits i) (hdeg i)
 
+theorem derivative_prec {p : ℝ[X]}
+    (hsplits : p.Splits) (hdeg : 2 ≤ p.natDegree) :
+    Prec p.derivative p :=
+  (RealRooted.derivative_interlaces hsplits hdeg).toPrec
+
 theorem derivative_sequence_prec
     {P : Nat → ℝ[X]}
     (hsplits : ∀ i : Nat, (P i).Splits)
     (hdeg : ∀ i : Nat, 2 ≤ (P i).natDegree) :
     ∀ i : Nat, Prec (P i).derivative (P i) := fun i =>
-  (RealRooted.derivative_interlaces (hsplits i) (hdeg i)).toPrec
+  RealRooted.Tactic.derivative_prec (hsplits i) (hdeg i)
 
 theorem nonnegCoeffs_sequence_derivative
     {P : Nat → ℝ[X]}
@@ -140,7 +145,7 @@ macro_rules
       rr_derivative_prec using
         splits := $hsplits:term,
         degree_two := $hdeg:term) =>
-      `(tactic| exact (RealRooted.derivative_interlaces $hsplits $hdeg).toPrec)
+      `(tactic| exact RealRooted.Tactic.derivative_prec $hsplits $hdeg)
   | `(tactic|
       rr_derivative_sequence_prec using
         splits := $hsplits:term,
@@ -150,7 +155,7 @@ macro_rules
       rr_derivative_prec using
         splits := $hsplits:term) =>
       `(tactic|
-        exact (RealRooted.derivative_interlaces $hsplits (by rr_close_side)).toPrec)
+        exact RealRooted.Tactic.derivative_prec $hsplits (by rr_close_side))
   | `(tactic|
       rr_nonneg_coeffs_derivative using
         nonneg_coeffs := $hnn:term) =>
