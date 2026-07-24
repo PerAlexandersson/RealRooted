@@ -51,8 +51,11 @@ lake build RealRooted.Bezoutian
 - `RealRooted/AissenSchoenbergWhitney.lean`, `PFPolynomial.lean`,
   `VeroneseSection.lean`, and `VeroneseMatrix.lean` contain the PF, Toeplitz,
   and Veronese-section material.
-- `RealRooted/SymmetricDecomposition.lean`, `Bezoutian.lean`, and
-  `Hadamard.lean` contain larger theorem packages and classical interfaces.
+- `RealRooted/HadamardProduct.lean` contains the elementary coefficientwise
+  product API; `GarloffWagner.lean` proves the proper-position preservation
+  theorem; `Hadamard.lean` packages its downstream consequences.
+- `RealRooted/SymmetricDecomposition.lean` and `Bezoutian.lean` contain larger
+  theorem packages and classical interfaces.
 - `RealRooted/RowThreshold.lean` and `ThresholdMatrix.lean` contain
   row-threshold and threshold-matrix preservers, including the
   Gustafsson-Solus and Haglund-Zhang/A046802 backends.
@@ -168,6 +171,8 @@ statement needs a multivariate real-stability API.
   interface for interlacing pairs.
 - `cauchy_interlacing`: Cauchy's eigenvalue interlacing theorem for Hermitian
   matrices and one-index principal submatrices.
+- `gwHadamardProductNonnegPrec`: the Garloff--Wagner proper-position theorem
+  for coefficientwise Hadamard products of nonnegative real-rooted pairs.
 
 ### Compatibility And Common Interleavers
 
@@ -235,10 +240,10 @@ by checked theorem interfaces in `ChudnovskySeymour.lean` and
 independence polynomials.  The matching-polynomial corollaries are packaged
 through the line-graph reduction in `HeilmannLieb`.
 
-The next standard theorem input is Garloff-Wagner Hadamard proper-position,
-recorded as `garloffWagnerHadamardNonnegPrec`.  This is the remaining
-RealRooted theorem currently used as an external standard fact by the
-`SuperEulerian` project.
+Garloff--Wagner Hadamard proper-position is now proved directly in
+`RealRooted.GarloffWagner` and exposed through
+`garloffWagnerHadamardNonnegPrec`. It no longer remains as an external standard
+fact for the `SuperEulerian` project.
 
 New formalization target: Braun-Jal, *Order polytopes of generalized snake
 posets are h^*-real-rooted*, arXiv:2607.00922v1.  The immediate Lean todo is
