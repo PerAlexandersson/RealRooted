@@ -5,6 +5,7 @@ import RealRooted.RecurrenceDiscriminant
 import RealRooted.TridiagonalDet
 import RealRooted.WagnerX
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+import Mathlib.Analysis.SpecialFunctions.Complex.Arg
 import Mathlib.Topology.Algebra.Polynomial
 
 open Polynomial Matrix Filter
@@ -266,6 +267,64 @@ theorem aissenSchoenbergWhitneyForward_of_natDegree_le_two {p : ℝ[X]}
     p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0 :=
   ⟨splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two hpf hdeg,
     roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
+
+/-! ### Karlin sector endgame -/
+
+/-- The zero-free sector threshold in Karlin, *Total Positivity*, Vol. I,
+Chapter 8, Theorem 3.1, for a polynomial of degree `degree` whose coefficient
+sequence is PF of order `order`. -/
+def aswSectorThreshold (degree order : ℕ) : ℝ :=
+  (order : ℝ) / ((order : ℝ) + degree - 1) * Real.pi
+
+/-- For fixed degree, Karlin's finite-order sector threshold tends to `π` as
+the PF order tends to infinity. -/
+lemma tendsto_aswSectorThreshold (degree : ℕ) :
+    Tendsto (aswSectorThreshold degree) atTop (nhds Real.pi) := by
+  have hlim :=
+    (tendsto_natCast_div_add_atTop ((degree : ℝ) - 1)).mul_const Real.pi
+  convert hlim using 1
+  · funext n
+    simp only [aswSectorThreshold]
+    congr 2
+    ring
+  · simp
+
+/-- A complex number excluded from every open Karlin sector has maximal
+absolute argument. -/
+lemma abs_arg_eq_pi_of_forall_aswSectorThreshold {z : ℂ} {degree : ℕ}
+    (hsector : ∀ order : ℕ, aswSectorThreshold degree order ≤ |z.arg|) :
+    |z.arg| = Real.pi := by
+  apply le_antisymm (Complex.abs_arg_le_pi z)
+  exact le_of_tendsto (tendsto_aswSectorThreshold degree)
+    (Eventually.of_forall hsector)
+
+/-- A complex number excluded from every open Karlin sector lies on the
+negative-real ray. The `-π` branch is impossible for Mathlib's convention for
+`Complex.arg`. -/
+lemma arg_eq_pi_of_forall_aswSectorThreshold {z : ℂ} {degree : ℕ}
+    (hsector : ∀ order : ℕ, aswSectorThreshold degree order ≤ |z.arg|) :
+    z.arg = Real.pi := by
+  rcases (abs_eq Real.pi_pos.le).mp
+      (abs_arg_eq_pi_of_forall_aswSectorThreshold hsector) with h | h
+  · exact h
+  · exact (Complex.neg_pi_lt_arg z).ne h.symm |>.elim
+
+/-- Karlin's finite-order sector estimates for every complex root imply that
+the original real polynomial splits over `ℝ`. This is the analytic endgame of
+the forward Aissen--Schoenberg--Whitney proof. -/
+theorem splits_of_forall_complex_root_aswSectorThreshold {p : ℝ[X]}
+    (hsector : ∀ z ∈ (p.map (algebraMap ℝ ℂ)).roots,
+      ∀ order : ℕ, aswSectorThreshold p.natDegree order ≤ |z.arg|) :
+    p.Splits := by
+  refine Polynomial.Splits.of_splits_map (algebraMap ℝ ℂ)
+    (IsAlgClosed.splits _) ?_
+  intro z hz
+  have hzarg : z.arg = Real.pi :=
+    arg_eq_pi_of_forall_aswSectorThreshold (hsector z hz)
+  have hzneg : z.re < 0 ∧ z.im = 0 :=
+    Complex.arg_eq_pi_iff.mp hzarg
+  refine ⟨z.re, Complex.ext ?_ hzneg.2.symm⟩
+  simp
 
 /-! ### Reduction to positive constant coefficient -/
 
