@@ -1,8 +1,8 @@
 import Mathlib.Tactic
 import RealRooted.LiuWangRecursion
-import RealRooted.MultivariateStability
 import RealRooted.PFPolynomial
 import RealRooted.QuadraticRoot
+import RealRooted.RectangularPolarization
 import RealRooted.Touchard
 
 /-!
