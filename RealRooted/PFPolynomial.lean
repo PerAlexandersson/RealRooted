@@ -111,6 +111,56 @@ theorem mul {p q : ℝ[X]}
     (hp.hasNonnegCoeffs.mul hq.hasNonnegCoeffs)
     hpq_rr.2
 
+/-- If a PF polynomial is factored by a real linear factor, then the quotient
+is again PF. -/
+theorem of_X_sub_C_mul_factor {p q : ℝ[X]} {u : ℝ}
+    (hp : IsPFPolynomial p) (hfactor : p = (X - C u) * q) :
+    IsPFPolynomial q := by
+  by_cases hq0 : q = 0
+  · simpa [hq0] using IsPFPolynomial.zero
+  have hp0 : p ≠ 0 := by
+    rw [hfactor]
+    exact mul_ne_zero (X_sub_C_ne_zero u) hq0
+  have hprr := hp.ne_zero_and_splits hp0
+  have hq_dvd : q ∣ p := ⟨X - C u, by rw [hfactor]; ring⟩
+  have hq_splits : q.Splits :=
+    (isRealRooted_of_dvd hp0 hprr.2 hq0 hq_dvd).2
+  have hp_pos : HasPosLeadingCoeff p := hp.hasNonnegCoeffs.pos_leadingCoeff hp0
+  have hq_pos : HasPosLeadingCoeff q := by
+    apply hasPosLeadingCoeff_of_X_sub_C_mul
+    rwa [← hfactor]
+  have hqnn : HasNonnegCoeffs q :=
+    hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff hp0 hprr.2
+      hp.hasNonnegCoeffs hq0 hq_splits hq_pos hq_dvd
+  exact IsPFPolynomial.of_realRooted_nonneg hqnn hq_splits
+
+/-- A positive-degree PF polynomial has a nonpositive linear root factor whose
+quotient is again PF and has smaller degree. -/
+theorem exists_X_sub_C_factor_of_pos_natDegree {p : ℝ[X]}
+    (hp : IsPFPolynomial p) (hdeg : 0 < p.natDegree) :
+    ∃ u : ℝ, ∃ q : ℝ[X],
+      u ≤ 0 ∧ p = (X - C u) * q ∧ IsPFPolynomial q ∧
+        q.natDegree < p.natDegree := by
+  have hp0 : p ≠ 0 := by
+    intro hp0
+    simp [hp0] at hdeg
+  have hpsplits : p.Splits := hp.ne_zero_and_splits hp0 |>.2
+  have hroots_pos : 0 < p.roots.card := by
+    rw [card_roots_of_splits hpsplits]
+    exact hdeg
+  rcases Multiset.card_pos_iff_exists_mem.mp hroots_pos with ⟨u, hu_mem⟩
+  have hu_root : p.IsRoot u := (mem_roots hp0).mp hu_mem
+  rcases (dvd_iff_isRoot).mpr hu_root with ⟨q, hq⟩
+  have hq0 : q ≠ 0 := by
+    intro hq0
+    rw [hq, hq0, mul_zero] at hp0
+    exact hp0 rfl
+  have hqdeg : q.natDegree < p.natDegree := by
+    rw [hq, natDegree_mul (X_sub_C_ne_zero u) hq0, natDegree_X_sub_C]
+    lia
+  exact ⟨u, q, hp.roots_nonpos u hu_mem, hq,
+    hp.of_X_sub_C_mul_factor hq, hqdeg⟩
+
 theorem pow {p : ℝ[X]} (hp : IsPFPolynomial p) (n : ℕ) :
     IsPFPolynomial (p ^ n) := by
   induction n with
