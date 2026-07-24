@@ -206,19 +206,16 @@ theorem prec_mw_derivative_nonpos_sequence {P : Nat → ℝ[X]}
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  intro n
-  induction n with
-  | zero =>
-      exact hbase
-  | succ n ih =>
-      have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
-      have hstep :
-          Prec (P (n + 1))
-            (U n * P (n + 1) + V n * (P (n + 1)).derivative) :=
-        prec_mw_derivative_of_nonpos_of_recurrence hsource.2 (hdeg_two n)
-          (hrec n) (hpos (n + 2)) (hdeg_lo n) (hdeg_hi n)
-          (hpos (n + 1)) (hV_nonpos n)
-      simpa [← hrec n] using hstep
+  refine prec_sequence_of_base_and_step hbase ?_
+  intro n hprev
+  have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := hprev.2.1
+  have hstep :
+      Prec (P (n + 1))
+        (U n * P (n + 1) + V n * (P (n + 1)).derivative) :=
+    prec_mw_derivative_of_nonpos_of_recurrence hsource.2 (hdeg_two n)
+      (hrec n) (hpos (n + 2)) (hdeg_lo n) (hdeg_hi n)
+      (hpos (n + 1)) (hV_nonpos n)
+  simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary for sequence-level weak Ma--Wang induction. -/
 theorem isRealRooted_of_mw_derivative_nonpos_sequence {P : Nat → ℝ[X]}
@@ -742,25 +739,22 @@ theorem prec_mw_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  intro n
-  induction n with
-  | zero =>
-      exact hbase
-  | succ n ih =>
-      have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
-      have hV_at_roots :
-          ∀ r, (P (n + 1)).IsRoot r → (V n).eval r ≤ 0 := by
-        intro r hr
-        have hr_nonpos : r ≤ 0 :=
-          roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr
-        exact hV_nonpos n r hr hr_nonpos
-      have hstep :
-          Prec (P (n + 1))
-            (U n * P (n + 1) + V n * (P (n + 1)).derivative) :=
-        prec_mw_derivative_of_nonpos_of_recurrence hsource.2 (hdeg_two n)
-          (hrec n) (hpos (n + 2)) (hdeg_lo n) (hdeg_hi n)
-          (hpos (n + 1)) hV_at_roots
-      simpa [← hrec n] using hstep
+  refine prec_sequence_of_base_and_step hbase ?_
+  intro n hprev
+  have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := hprev.2.1
+  have hV_at_roots :
+      ∀ r, (P (n + 1)).IsRoot r → (V n).eval r ≤ 0 := by
+    intro r hr
+    have hr_nonpos : r ≤ 0 :=
+      roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr
+    exact hV_nonpos n r hr hr_nonpos
+  have hstep :
+      Prec (P (n + 1))
+        (U n * P (n + 1) + V n * (P (n + 1)).derivative) :=
+    prec_mw_derivative_of_nonpos_of_recurrence hsource.2 (hdeg_two n)
+      (hrec n) (hpos (n + 2)) (hdeg_lo n) (hdeg_hi n)
+      (hpos (n + 1)) hV_at_roots
+  simpa [← hrec n] using hstep
 
 /-- Sequence-level weak Ma--Wang induction where the derivative coefficient is
 nonpositive on the nonpositive half-line, and the current-row root bound is

@@ -617,17 +617,14 @@ theorem prec_lw_nonpos_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  intro n
-  induction n with
-  | zero =>
-      exact hbase
-  | succ n ih =>
-      have hInter : Interlaces (P n) (P (n + 1)) :=
-        ih.toInterlaces (hdeg_succ n)
-      have hstep : Prec (P (n + 1)) (A n * P (n + 1) + B n * P n) :=
-        prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
-          (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) (hB_nonpos n)
-      simpa [← hrec n] using hstep
+  refine prec_sequence_of_base_and_step hbase ?_
+  intro n hprev
+  have hInter : Interlaces (P n) (P (n + 1)) :=
+    hprev.toInterlaces (hdeg_succ n)
+  have hstep : Prec (P (n + 1)) (A n * P (n + 1) + B n * P n) :=
+    prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
+      (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) (hB_nonpos n)
+  simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary for sequence-level nonpositive-lag
 Liu--Wang induction. -/
@@ -1027,19 +1024,16 @@ theorem prec_lw_positive_t_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  intro n
-  induction n with
-  | zero =>
-      exact hbase
-  | succ n ih =>
-      have hInter : Interlaces (P n) (P (n + 1)) :=
-        ih.toInterlaces (hdeg_succ n)
-      have hstep :
-          Prec (P (n + 1)) (A n * P (n + 1) + (C (c n) * X) * P n) :=
-        prec_lw_positive_t_lag_of_nonneg_coeffs_of_recurrence
-          hInter (hpos n) (hnonneg (n + 1)) (hc n) (hrec n)
-          (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n)
-      simpa [← hrec n] using hstep
+  refine prec_sequence_of_base_and_step hbase ?_
+  intro n hprev
+  have hInter : Interlaces (P n) (P (n + 1)) :=
+    hprev.toInterlaces (hdeg_succ n)
+  have hstep :
+      Prec (P (n + 1)) (A n * P (n + 1) + (C (c n) * X) * P n) :=
+    prec_lw_positive_t_lag_of_nonneg_coeffs_of_recurrence
+      hInter (hpos n) (hnonneg (n + 1)) (hc n) (hrec n)
+      (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n)
+  simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary of the sequence-level positive `t`-lag
 Liu--Wang induction. -/
@@ -1106,26 +1100,23 @@ theorem prec_lw_C_mul_X_sub_C_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  intro n
-  induction n with
-  | zero =>
-      exact hbase
-  | succ n ih =>
-      have hInter : Interlaces (P n) (P (n + 1)) :=
-        ih.toInterlaces (hdeg_succ n)
-      have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
-      have hB_nonpos :
-          ∀ r, (P (n + 1)).IsRoot r → (C (c n) * X - C (a n)).eval r ≤ 0 :=
-        fun r hr =>
-          eval_C_mul_X_sub_C_nonpos_of_nonneg_of_nonneg_of_nonpos
-          (hc n) (ha n)
-          (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
-      have hstep :
-          Prec (P (n + 1))
-            (A n * P (n + 1) + (C (c n) * X - C (a n)) * P n) :=
-        prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
-          (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_nonpos
-      simpa [← hrec n] using hstep
+  refine prec_sequence_of_base_and_step hbase ?_
+  intro n hprev
+  have hInter : Interlaces (P n) (P (n + 1)) :=
+    hprev.toInterlaces (hdeg_succ n)
+  have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := hprev.2.1
+  have hB_nonpos :
+      ∀ r, (P (n + 1)).IsRoot r → (C (c n) * X - C (a n)).eval r ≤ 0 :=
+    fun r hr =>
+      eval_C_mul_X_sub_C_nonpos_of_nonneg_of_nonneg_of_nonpos
+      (hc n) (ha n)
+      (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
+  have hstep :
+      Prec (P (n + 1))
+        (A n * P (n + 1) + (C (c n) * X - C (a n)) * P n) :=
+    prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
+      (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_nonpos
+  simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary for the affine half-line lag induction. -/
 theorem isRealRooted_of_lw_C_mul_X_sub_C_lag_sequence {P : Nat → ℝ[X]}
@@ -1160,25 +1151,22 @@ theorem prec_lw_positive_affine_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  intro n
-  induction n with
-  | zero =>
-      exact hbase
-  | succ n ih =>
-      have hInter : Interlaces (P n) (P (n + 1)) :=
-        ih.toInterlaces (hdeg_succ n)
-      have hB_nonpos :
-          ∀ r, (P (n + 1)).IsRoot r →
-            (C (c n) * (C (a n) + X)).eval r ≤ 0 :=
-        fun r hr =>
-          eval_C_mul_C_add_X_nonpos_of_nonneg_of_le_neg
-          (hc n) (hroot_upper n r hr)
-      have hstep :
-          Prec (P (n + 1))
-            (A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n) :=
-        prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
-          (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_nonpos
-      simpa [← hrec n] using hstep
+  refine prec_sequence_of_base_and_step hbase ?_
+  intro n hprev
+  have hInter : Interlaces (P n) (P (n + 1)) :=
+    hprev.toInterlaces (hdeg_succ n)
+  have hB_nonpos :
+      ∀ r, (P (n + 1)).IsRoot r →
+        (C (c n) * (C (a n) + X)).eval r ≤ 0 :=
+    fun r hr =>
+      eval_C_mul_C_add_X_nonpos_of_nonneg_of_le_neg
+      (hc n) (hroot_upper n r hr)
+  have hstep :
+      Prec (P (n + 1))
+        (A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n) :=
+    prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
+      (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_nonpos
+  simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary for the positive affine lag sequence wrapper. -/
 theorem isRealRooted_of_lw_positive_affine_lag_sequence {P : Nat → ℝ[X]}
@@ -1214,31 +1202,28 @@ theorem prec_lw_positive_affine_lag_sequence_of_shift_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  intro n
-  induction n with
-  | zero =>
-      exact hbase
-  | succ n ih =>
-      have hInter : Interlaces (P n) (P (n + 1)) :=
-        ih.toInterlaces (hdeg_succ n)
-      have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
-      have hroot_upper :
-          ∀ r, (P (n + 1)).IsRoot r → r ≤ -(a n) :=
-        fun r hr =>
-          root_le_neg_of_realrooted_of_shift_nonneg_coeffs
-          hsource (hshift_nonneg n) hr
-      have hB_nonpos :
-          ∀ r, (P (n + 1)).IsRoot r →
-            (C (c n) * (C (a n) + X)).eval r ≤ 0 :=
-        fun r hr =>
-          eval_C_mul_C_add_X_nonpos_of_nonneg_of_le_neg
-          (hc n) (hroot_upper r hr)
-      have hstep :
-          Prec (P (n + 1))
-            (A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n) :=
-        prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
-          (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_nonpos
-      simpa [← hrec n] using hstep
+  refine prec_sequence_of_base_and_step hbase ?_
+  intro n hprev
+  have hInter : Interlaces (P n) (P (n + 1)) :=
+    hprev.toInterlaces (hdeg_succ n)
+  have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := hprev.2.1
+  have hroot_upper :
+      ∀ r, (P (n + 1)).IsRoot r → r ≤ -(a n) :=
+    fun r hr =>
+      root_le_neg_of_realrooted_of_shift_nonneg_coeffs
+      hsource (hshift_nonneg n) hr
+  have hB_nonpos :
+      ∀ r, (P (n + 1)).IsRoot r →
+        (C (c n) * (C (a n) + X)).eval r ≤ 0 :=
+    fun r hr =>
+      eval_C_mul_C_add_X_nonpos_of_nonneg_of_le_neg
+      (hc n) (hroot_upper r hr)
+  have hstep :
+      Prec (P (n + 1))
+        (A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n) :=
+    prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
+      (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_nonpos
+  simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary for the shifted-coefficient positive affine
 lag wrapper. -/
@@ -1336,23 +1321,20 @@ theorem prec_lw_inner_window_lag_sequence_of_nonneg_coeffs {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  intro n
-  induction n with
-  | zero =>
-      exact hbase
-  | succ n ih =>
-      have hInter : Interlaces (P n) (P (n + 1)) :=
-        ih.toInterlaces (hdeg_succ n)
-      have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
-      have hB_step : ∀ r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0 :=
-        fun r hr =>
-          hB_nonpos n r hr (hroot_lower n r hr)
-          (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
-      have hstep :
-          Prec (P (n + 1)) (A n * P (n + 1) + B n * P n) :=
-        prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
-          (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_step
-      simpa [← hrec n] using hstep
+  refine prec_sequence_of_base_and_step hbase ?_
+  intro n hprev
+  have hInter : Interlaces (P n) (P (n + 1)) :=
+    hprev.toInterlaces (hdeg_succ n)
+  have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := hprev.2.1
+  have hB_step : ∀ r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0 :=
+    fun r hr =>
+      hB_nonpos n r hr (hroot_lower n r hr)
+      (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
+  have hstep :
+      Prec (P (n + 1)) (A n * P (n + 1) + B n * P n) :=
+    prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
+      (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_step
+  simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary for the inner-window Liu--Wang induction. -/
 theorem isRealRooted_of_lw_inner_window_lag_sequence_of_nonneg_coeffs
@@ -2007,25 +1989,22 @@ theorem prec_lw_positive_X_mul_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  intro n
-  induction n with
-  | zero =>
-      exact hbase
-  | succ n ih =>
-      have hInter : Interlaces (P n) (P (n + 1)) :=
-        ih.toInterlaces (hdeg_succ n)
-      have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
-      have hB_nonpos :
-          ∀ r, (P (n + 1)).IsRoot r → (X * Q n).eval r ≤ 0 :=
-        fun r hr =>
-          eval_X_mul_nonpos_of_nonpos_of_nonneg
-          (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
-          (hQ_nonneg n r hr)
-      have hstep :
-          Prec (P (n + 1)) (A n * P (n + 1) + (X * Q n) * P n) :=
-        prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
-          (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_nonpos
-      simpa [← hrec n] using hstep
+  refine prec_sequence_of_base_and_step hbase ?_
+  intro n hprev
+  have hInter : Interlaces (P n) (P (n + 1)) :=
+    hprev.toInterlaces (hdeg_succ n)
+  have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := hprev.2.1
+  have hB_nonpos :
+      ∀ r, (P (n + 1)).IsRoot r → (X * Q n).eval r ≤ 0 :=
+    fun r hr =>
+      eval_X_mul_nonpos_of_nonpos_of_nonneg
+      (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
+      (hQ_nonneg n r hr)
+  have hstep :
+      Prec (P (n + 1)) (A n * P (n + 1) + (X * Q n) * P n) :=
+    prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
+      (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_nonpos
+  simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary for sequence-level `X Q_n` positive-lag
 Liu--Wang induction. -/
@@ -2056,26 +2035,23 @@ theorem prec_lw_positive_C_mul_X_mul_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  intro n
-  induction n with
-  | zero =>
-      exact hbase
-  | succ n ih =>
-      have hInter : Interlaces (P n) (P (n + 1)) :=
-        ih.toInterlaces (hdeg_succ n)
-      have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
-      have hB_nonpos :
-          ∀ r, (P (n + 1)).IsRoot r → (C (c n) * X * Q n).eval r ≤ 0 :=
-        fun r hr =>
-          eval_C_mul_X_mul_nonpos_of_nonneg_of_nonpos_of_nonneg
-          (hc n)
-          (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
-          (hQ_nonneg n r hr)
-      have hstep :
-          Prec (P (n + 1)) (A n * P (n + 1) + (C (c n) * X * Q n) * P n) :=
-        prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
-          (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_nonpos
-      simpa [← hrec n] using hstep
+  refine prec_sequence_of_base_and_step hbase ?_
+  intro n hprev
+  have hInter : Interlaces (P n) (P (n + 1)) :=
+    hprev.toInterlaces (hdeg_succ n)
+  have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := hprev.2.1
+  have hB_nonpos :
+      ∀ r, (P (n + 1)).IsRoot r → (C (c n) * X * Q n).eval r ≤ 0 :=
+    fun r hr =>
+      eval_C_mul_X_mul_nonpos_of_nonneg_of_nonpos_of_nonneg
+      (hc n)
+      (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
+      (hQ_nonneg n r hr)
+  have hstep :
+      Prec (P (n + 1)) (A n * P (n + 1) + (C (c n) * X * Q n) * P n) :=
+    prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
+      (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_nonpos
+  simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary for sequence-level `c_n X Q_n` positive-lag
 Liu--Wang induction. -/
@@ -2173,24 +2149,21 @@ theorem prec_lw_X_mul_one_sub_X_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  intro n
-  induction n with
-  | zero =>
-      exact hbase
-  | succ n ih =>
-      have hInter : Interlaces (P n) (P (n + 1)) :=
-        ih.toInterlaces (hdeg_succ n)
-      have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
-      have hB_nonpos :
-          ∀ r, (P (n + 1)).IsRoot r → (X * ((1 : ℝ[X]) - X)).eval r ≤ 0 :=
-        fun r hr =>
-          eval_X_mul_one_sub_X_nonpos_of_nonpos
-          (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
-      have hstep :
-          Prec (P (n + 1)) (A n * P (n + 1) + (X * (1 - X)) * P n) :=
-        prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
-          (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_nonpos
-      simpa [← hrec n] using hstep
+  refine prec_sequence_of_base_and_step hbase ?_
+  intro n hprev
+  have hInter : Interlaces (P n) (P (n + 1)) :=
+    hprev.toInterlaces (hdeg_succ n)
+  have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := hprev.2.1
+  have hB_nonpos :
+      ∀ r, (P (n + 1)).IsRoot r → (X * ((1 : ℝ[X]) - X)).eval r ≤ 0 :=
+    fun r hr =>
+      eval_X_mul_one_sub_X_nonpos_of_nonpos
+      (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
+  have hstep :
+      Prec (P (n + 1)) (A n * P (n + 1) + (X * (1 - X)) * P n) :=
+    prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
+      (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_nonpos
+  simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary for strict-degree Family E `t(1-t)` lag
 recurrences. -/
@@ -2221,27 +2194,24 @@ theorem prec_lw_X_mul_C_sub_C_mul_X_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  intro n
-  induction n with
-  | zero =>
-      exact hbase
-  | succ n ih =>
-      have hInter : Interlaces (P n) (P (n + 1)) :=
-        ih.toInterlaces (hdeg_succ n)
-      have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
-      have hB_nonpos :
-          ∀ r, (P (n + 1)).IsRoot r →
-            (X * (C (a n) - C (b n) * X)).eval r ≤ 0 :=
-        fun r hr =>
-          eval_X_mul_C_sub_C_mul_X_nonpos_of_nonneg_of_nonneg_of_nonpos
-          (ha n) (hb n)
-          (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
-      have hstep :
-          Prec (P (n + 1))
-            (A n * P (n + 1) + (X * (C (a n) - C (b n) * X)) * P n) :=
-        prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
-          (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_nonpos
-      simpa [← hrec n] using hstep
+  refine prec_sequence_of_base_and_step hbase ?_
+  intro n hprev
+  have hInter : Interlaces (P n) (P (n + 1)) :=
+    hprev.toInterlaces (hdeg_succ n)
+  have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := hprev.2.1
+  have hB_nonpos :
+      ∀ r, (P (n + 1)).IsRoot r →
+        (X * (C (a n) - C (b n) * X)).eval r ≤ 0 :=
+    fun r hr =>
+      eval_X_mul_C_sub_C_mul_X_nonpos_of_nonneg_of_nonneg_of_nonpos
+      (ha n) (hb n)
+      (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
+  have hstep :
+      Prec (P (n + 1))
+        (A n * P (n + 1) + (X * (C (a n) - C (b n) * X)) * P n) :=
+    prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
+      (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_nonpos
+  simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary for strict-degree Family E `t(a_n-b_n t)` lag
 recurrences. -/
@@ -2277,28 +2247,25 @@ theorem prec_lw_C_mul_X_mul_C_sub_C_mul_X_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  intro n
-  induction n with
-  | zero =>
-      exact hbase
-  | succ n ih =>
-      have hInter : Interlaces (P n) (P (n + 1)) :=
-        ih.toInterlaces (hdeg_succ n)
-      have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
-      have hB_nonpos :
-          ∀ r, (P (n + 1)).IsRoot r →
-            (C (c n) * X * (C (a n) - C (b n) * X)).eval r ≤ 0 :=
-        fun r hr =>
-          eval_C_mul_X_mul_C_sub_C_mul_X_nonpos
-          (hc n) (ha n) (hb n)
-          (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
-      have hstep :
-          Prec (P (n + 1))
-            (A n * P (n + 1) +
-              (C (c n) * X * (C (a n) - C (b n) * X)) * P n) :=
-        prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
-          (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_nonpos
-      simpa [← hrec n] using hstep
+  refine prec_sequence_of_base_and_step hbase ?_
+  intro n hprev
+  have hInter : Interlaces (P n) (P (n + 1)) :=
+    hprev.toInterlaces (hdeg_succ n)
+  have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := hprev.2.1
+  have hB_nonpos :
+      ∀ r, (P (n + 1)).IsRoot r →
+        (C (c n) * X * (C (a n) - C (b n) * X)).eval r ≤ 0 :=
+    fun r hr =>
+      eval_C_mul_X_mul_C_sub_C_mul_X_nonpos
+      (hc n) (ha n) (hb n)
+      (roots_nonpos_of_realrooted_of_nonneg_coeffs hsource (hnonneg (n + 1)) r hr)
+  have hstep :
+      Prec (P (n + 1))
+        (A n * P (n + 1) +
+          (C (c n) * X * (C (a n) - C (b n) * X)) * P n) :=
+    prec_lw_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
+      (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) hB_nonpos
+  simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary for strict-degree Family E
 `c_n t(a_n-b_n t)` lag recurrences. -/
