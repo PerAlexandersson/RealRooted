@@ -218,6 +218,41 @@ private theorem sequence_of_base_interval_and_step_from {Q : Nat → Prop}
           have hNm : N ≤ m := by lia
           exact hstep m hNm (ih m (Nat.lt_succ_self m))
 
+private theorem sequence_of_base_pair_and_step_two {Q : Nat → Prop}
+    (hzero : Q 0)
+    (hone : Q 1)
+    (hstep : ∀ n : Nat, Q n → Q (n + 2)) :
+    ∀ n : Nat, Q n := fun n =>
+  Nat.strong_induction_on n fun n ih => by
+    cases n with
+    | zero =>
+        exact hzero
+    | succ n =>
+        cases n with
+        | zero =>
+            exact hone
+        | succ n =>
+            exact hstep n (ih n (Nat.lt_succ_of_lt (Nat.lt_succ_self n)))
+
+private theorem sequence_of_base_interval_and_step_two_from {Q : Nat → Prop}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N + 1 → Q n)
+    (hstep : ∀ n : Nat, N ≤ n → Q n → Q (n + 2)) :
+    ∀ n : Nat, Q n := fun n =>
+  Nat.strong_induction_on n fun n ih => by
+    by_cases hn : n ≤ N + 1
+    · exact hbase n hn
+    · cases n with
+      | zero =>
+          exact False.elim (hn (by lia))
+      | succ m =>
+          cases m with
+          | zero =>
+              exact False.elim (hn (by lia))
+          | succ k =>
+              have hNk : N ≤ k := by lia
+              exact hstep k hNk (ih k (Nat.lt_succ_of_lt (Nat.lt_succ_self k)))
+
 /-- Tail-start sequence shell for first-order product recurrences with a
 supplied factor certificate.  The finitely many rows before `N` are supplied
 as base cases, and the product recurrence is used from row `N` onward. -/
@@ -362,21 +397,9 @@ theorem isRealRooted_of_product_period_two_sequence
     (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
     (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
     (hstep : ∀ n : Nat, P (n + 2) = P n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  intro n
-  refine Nat.strong_induction_on n ?_
-  intro n ih
-  cases n with
-  | zero =>
-      simpa using hbase_zero
-  | succ n =>
-      cases n with
-      | zero =>
-          simpa using hbase_one
-      | succ n =>
-          have hprev := ih n (Nat.lt_succ_of_lt (Nat.lt_succ_self n))
-          change P (n + 2) ≠ 0 ∧ (P (n + 2)).Splits
-          simpa [hstep n] using hprev
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  sequence_of_base_pair_and_step_two hbase_zero hbase_one fun n hP => by
+    simpa [hstep n] using hP
 
 /-- Tail-start sequence shell for period-two product recurrences.  The
 recurrence starts at row `N`, so the finite base interval must include rows
@@ -386,23 +409,9 @@ theorem isRealRooted_of_product_period_two_sequence_from
     (N : Nat)
     (hbase : ∀ n : Nat, n ≤ N + 1 → P n ≠ 0 ∧ (P n).Splits)
     (hstep : ∀ n : Nat, N ≤ n → P (n + 2) = P n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := fun n =>
-  Nat.strong_induction_on n fun n ih => by
-    by_cases hn : n ≤ N + 1
-    · exact hbase n hn
-    · cases n with
-      | zero =>
-          exact False.elim (hn (by lia))
-      | succ m =>
-          cases m with
-          | zero =>
-              exact False.elim (hn (by lia))
-          | succ k =>
-              have hNk : N ≤ k := by lia
-              have hklt : k < k + 2 := Nat.lt_succ_of_lt (Nat.lt_succ_self k)
-              have hk : P k ≠ 0 ∧ (P k).Splits := ih k hklt
-              change P (k + 2) ≠ 0 ∧ (P (k + 2)).Splits
-              simpa [hstep k hNk] using hk
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  sequence_of_base_interval_and_step_two_from N hbase fun n hn hP => by
+    simpa [hstep n hn] using hP
 
 /-- Lift real-rootedness from a quotient sequence through row-wise real-rooted
 left factors. -/
