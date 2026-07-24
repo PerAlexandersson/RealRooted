@@ -1,5 +1,6 @@
 import RealRooted.IteratedDerivativeShift
 import RealRooted.PosCombo
+import RealRooted.Tactic.Finish
 import RealRooted.Tactic.MaWang
 import RealRooted.Tactic.SideGoals
 
@@ -121,13 +122,9 @@ private theorem isRealRooted_of_tail_splits_step {P : Nat → ℝ[X]}
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hstep : ∀ n : Nat, (P (n + 1)).Splits → (P (n + 2)).Splits) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  have htail : ∀ n : Nat, P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := by
-    intro n
-    induction n with
-    | zero =>
-        simpa using hbase_one
-    | succ n ih =>
-        exact ⟨(hpos (n + 2)).ne_zero, hstep n ih.2⟩
+  have htail : ∀ n : Nat, P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits :=
+    sequence_of_base_and_step (by simpa using hbase_one) fun n hP =>
+      ⟨(hpos (n + 2)).ne_zero, hstep n hP.2⟩
   intro n
   cases n with
   | zero =>
