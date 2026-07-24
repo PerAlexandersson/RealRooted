@@ -68,6 +68,8 @@ lake build RealRooted.Bezoutian
   statements and references.
 - `RealRooted/CombinatorialExamples/` contains examples such as Eulerian,
   type B Eulerian, simsun, Touchard, Narayana, Motzkin, and related families.
+- `RealRooted/Tactic/OEIS_COVERAGE.md` is the generated coverage ledger for
+  OEIS-labelled tactic shells, certificate fragments, and concrete theorems.
 - `RealRooted/Mathlib/` contains local compatibility lemmas intended to look
   like future Mathlib additions.
 

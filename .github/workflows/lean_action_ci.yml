@@ -24,6 +24,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+      - name: Check generated OEIS tactic coverage
+        run: python3 scripts/generate-oeis-tactic-coverage.py --check
       - name: Free up disk space
         run: |
           df -h /

@@ -5,6 +5,7 @@
 *.md
 !README.md
 !RealRooted/Tactic/PLAN.md
+!RealRooted/Tactic/OEIS_COVERAGE.md
 
 # Public companion Lean development.
 !SuperEulerian/
