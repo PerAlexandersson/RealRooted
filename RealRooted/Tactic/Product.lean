@@ -1776,9 +1776,8 @@ theorem isRealRooted_of_product_scalar_factor_sequence
         isRealRooted_mul_of_isRealRooted (hfactor n) hodd
       simpa [Nat.mul_succ, Nat.succ_eq_add_one, Nat.add_assoc] using
         (by simpa [hstep n] using hnext)
-  have hodd : ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
-    intro n
-    simpa [hscalar n] using isRealRooted_C_mul_of_isRealRooted (heven n) (ha n)
+  have hodd : ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits :=
+    isRealRooted_of_C_lift_sequence heven ha hscalar
   exact isRealRooted_of_even_odd_sequence heven hodd
 
 /-- Right-factor variant of `isRealRooted_of_product_scalar_factor_sequence`. -/
