@@ -323,6 +323,52 @@ theorem basisTransform_fallingFactorial_eq_quadratic_of_natDegree_eq_two {p : �
 def risingFactorialPolynomial (μ : ℝ) (k : ℕ) : ℝ[X] :=
   ∏ i ∈ Finset.range k, (X + C ((i : ℝ) * μ))
 
+/-- Append the final factor to a generalized rising factorial. -/
+theorem risingFactorialPolynomial_succ_mul (μ : ℝ) (n : ℕ) :
+    risingFactorialPolynomial μ (n + 1) =
+      risingFactorialPolynomial μ n * (X + C ((n : ℝ) * μ)) := by
+  simp [risingFactorialPolynomial, Finset.prod_range_succ]
+
+/-- A generalized rising factorial is `X` times the preceding factorial
+translated by `μ`. -/
+theorem risingFactorialPolynomial_succ_shift (μ : ℝ) (n : ℕ) :
+    risingFactorialPolynomial μ (n + 1) =
+      X * (risingFactorialPolynomial μ n).comp (X + C μ) := by
+  induction n with
+  | zero =>
+      simp [risingFactorialPolynomial]
+  | succ n ih =>
+      rw [risingFactorialPolynomial_succ_mul]
+      nth_rewrite 1 [ih]
+      rw [risingFactorialPolynomial_succ_mul]
+      simp only [mul_comp, X_comp, add_comp, C_comp]
+      norm_num [Nat.cast_add, Nat.cast_one]
+      ring
+
+/-- Multiplication by `X` before the rising-factorial basis transform becomes
+multiplication by `X` followed by translation after the transform. -/
+theorem basisTransform_risingFactorial_X_mul (μ : ℝ) (p : ℝ[X]) :
+    basisTransform (risingFactorialPolynomial μ) (X * p) =
+      X * (basisTransform (risingFactorialPolynomial μ) p).comp (X + C μ) := by
+  induction p using Polynomial.induction_on' with
+  | add p q hp hq =>
+      simp only [mul_add, basisTransform_add, hp, hq, add_comp]
+  | monomial n a =>
+      rw [Polynomial.X_mul_monomial]
+      simp only [basisTransform_monomial]
+      rw [risingFactorialPolynomial_succ_shift]
+      simp only [mul_comp, C_comp]
+      ring
+
+/-- Su--Yang--Zhang's induction recurrence for the generalized
+rising-factorial basis transform. -/
+theorem basisTransform_risingFactorial_mul_X_add_C (μ r : ℝ) (p : ℝ[X]) :
+    basisTransform (risingFactorialPolynomial μ) ((X + C r) * p) =
+      X * (basisTransform (risingFactorialPolynomial μ) p).comp (X + C μ) +
+        C r * basisTransform (risingFactorialPolynomial μ) p := by
+  rw [add_mul, basisTransform_add, basisTransform_risingFactorial_X_mul]
+  rw [Polynomial.C_mul', basisTransform_smul]
+
 /-- The generalized rising-factorial basis transform is the identity on
 degree-one polynomials. -/
 theorem basisTransform_risingFactorial_eq_self_of_natDegree_eq_one {μ : ℝ} {p : ℝ[X]}
