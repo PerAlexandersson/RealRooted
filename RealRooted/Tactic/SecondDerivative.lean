@@ -315,12 +315,15 @@ theorem ls4_C_ofNat_real (m : Nat) [m.AtLeastTwo] :
   change (C (m : ℝ) : ℝ[X]) = (m : ℝ[X])
   exact Polynomial.C_eq_natCast m
 
+theorem ls4_natCast_eq_C_real (m : Nat) :
+    (m : ℝ[X]) = C (m : ℝ) :=
+  (Polynomial.C_eq_natCast m).symm
+
 theorem ls4_C_mul_ofNat_mul (a : ℝ) (m : Nat) [m.AtLeastTwo] (p : ℝ[X]) :
     C a * ((OfNat.ofNat m : ℝ[X]) * p) =
       C (a * (OfNat.ofNat m : ℝ)) * p := by
   change C a * ((m : ℝ[X]) * p) = C (a * (m : ℝ)) * p
-  rw [show (m : ℝ[X]) = C (m : ℝ) by
-    exact (Polynomial.C_eq_natCast m).symm]
+  rw [ls4_natCast_eq_C_real m]
   rw [← mul_assoc, ← C_mul]
 
 theorem ls4_C_mul_neg_ofNat_mul (a : ℝ) (m : Nat) [m.AtLeastTwo] (p : ℝ[X]) :
@@ -330,8 +333,7 @@ theorem ls4_C_mul_neg_ofNat_mul (a : ℝ) (m : Nat) [m.AtLeastTwo] (p : ℝ[X]) 
   rw [show -((m : ℝ[X]) * p) = (-(m : ℝ[X])) * p by ring]
   rw [← mul_assoc]
   rw [show C a * -(m : ℝ[X]) = C (-(a * (m : ℝ))) by
-    rw [show (m : ℝ[X]) = C (m : ℝ) by
-      exact (Polynomial.C_eq_natCast m).symm]
+    rw [ls4_natCast_eq_C_real m]
     rw [← C_neg, ← C_mul]
     congr
     ring]
@@ -340,8 +342,7 @@ theorem ls4_mul_C_ofNat_right (a : ℝ) (m : Nat) [m.AtLeastTwo] (p : ℝ[X]) :
     p * C a * (OfNat.ofNat m : ℝ[X]) =
       p * C (a * (OfNat.ofNat m : ℝ)) := by
   change p * C a * (m : ℝ[X]) = p * C (a * (m : ℝ))
-  rw [show (m : ℝ[X]) = C (m : ℝ) by
-    exact (Polynomial.C_eq_natCast m).symm]
+  rw [ls4_natCast_eq_C_real m]
   rw [mul_assoc, ← C_mul]
 
 namespace Tactic
