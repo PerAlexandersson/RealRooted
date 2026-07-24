@@ -1,8 +1,10 @@
 import Mathlib.Algebra.MvPolynomial.Eval
+import Mathlib.Algebra.MvPolynomial.Funext
 import Mathlib.Algebra.MvPolynomial.Rename
 import Mathlib.Algebra.Polynomial.Eval.Coeff
 import Mathlib.Algebra.Polynomial.Splits
 import Mathlib.Data.Complex.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 
 /-!
 # Multivariate stability
@@ -32,6 +34,22 @@ def MvUpperHalfPlaneStable {sigma : Type*} (P : MvPolynomial sigma ℂ) : Prop :
 evaluation in a product of open upper half-planes. -/
 def MvRealStable {sigma : Type*} (P : MvPolynomial sigma ℝ) : Prop :=
   MvUpperHalfPlaneStable (complexifyMv P)
+
+/-- A nonzero multivariate polynomial has a nonzero evaluation in a product
+of open upper half-planes. -/
+theorem exists_upperHalfPlane_eval_ne_zero {sigma : Type*}
+    {P : MvPolynomial sigma ℂ} (hP : P ≠ 0) :
+    ∃ z : sigma → ℂ, (∀ i, 0 < (z i).im) ∧ MvPolynomial.eval z P ≠ 0 := by
+  by_contra h
+  push Not at h
+  apply hP
+  let s : sigma → Set ℂ := fun _ => {z | 0 < z.im}
+  apply MvPolynomial.funext_set s
+  · intro i
+    exact Set.infinite_of_injective_forall_mem UpperHalfPlane.coe_injective
+      fun z => z.coe_im_pos
+  · intro z hz
+    simpa using h z fun i => hz i (Set.mem_univ i)
 
 theorem MvUpperHalfPlaneStable.C_mul {sigma : Type*}
     {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStable P)
