@@ -131,6 +131,12 @@ private theorem isRealRooted_X_sequence :
     ∀ _ : Nat, (X : ℝ[X]) ≠ 0 ∧ (X : ℝ[X]).Splits :=
   fun _ => isRealRooted_X
 
+private theorem isRealRooted_C_mul_X_sequence {a : Nat → ℝ}
+    (ha : ∀ n : Nat, a n ≠ 0) :
+    ∀ n : Nat, (C (a n) * X : ℝ[X]) ≠ 0 ∧
+      (C (a n) * X : ℝ[X]).Splits :=
+  fun n => isRealRooted_C_mul_of_isRealRooted isRealRooted_X (ha n)
+
 private theorem isRealRooted_of_even_odd_sequence {P : Nat → ℝ[X]}
     (heven : ∀ n : Nat, P (2 * n) ≠ 0 ∧ (P (2 * n)).Splits)
     (hodd : ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits) :
@@ -1007,12 +1013,8 @@ theorem isRealRooted_of_even_product_odd_X_scalar_sequence
     simpa [heven n] using hquot n
   have hodd_realrooted :
       ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
-    intro n
-    have hfactor : C (a n) * X ≠ 0 ∧ (C (a n) * X).Splits :=
-      isRealRooted_C_mul_of_isRealRooted isRealRooted_X (ha n)
-    have hrow : (C (a n) * X) * Q n ≠ 0 ∧ ((C (a n) * X) * Q n).Splits :=
-      isRealRooted_mul_of_isRealRooted hfactor (hquot n)
-    simpa [hodd n, mul_assoc] using hrow
+    exact isRealRooted_of_product_lift_sequence hquot
+      (isRealRooted_C_mul_X_sequence ha) (fun n => by simpa [mul_assoc] using hodd n)
   exact isRealRooted_of_even_odd_sequence heven_realrooted hodd_realrooted
 
 /-- One endpoint-quotient transition: first form `a+b`, then the next row is
