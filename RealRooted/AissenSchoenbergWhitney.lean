@@ -1,4 +1,5 @@
 import RealRooted.Basic
+import RealRooted.DegreeDropReversal
 import RealRooted.QuadraticRoot
 import RealRooted.RecurrenceDiscriminant
 import RealRooted.TridiagonalDet
@@ -55,6 +56,40 @@ protected nonrec theorem IsPolyaFreqSeq.nonneg
     (ha : IsPolyaFreqSeq a) (k : ℕ) :
     0 ≤ a k := by
   simpa [IsPolyaFreqSeq] using ha.nonneg k 0
+
+/-- If the zeroth term vanishes, deleting it identifies the new Toeplitz
+matrix with an order-preserving row submatrix of the original one. -/
+lemma toeplitz_tail_of_zero {a : ℕ → ℝ} (h0 : a 0 = 0) :
+    toeplitz (fun n => a (n + 1)) =
+      (toeplitz a).submatrix (fun i => i + 1) id := by
+  ext i j
+  simp only [toeplitz_apply, submatrix_apply, id_eq]
+  by_cases hji : j ≤ i
+  · rw [if_pos hji, if_pos (by lia)]
+    congr 1
+    lia
+  · rw [if_neg hji]
+    by_cases hnext : j = i + 1
+    · rw [hnext, if_pos (by lia)]
+      simp [h0]
+    · rw [if_neg (by lia)]
+
+/-- Deleting a zero first term preserves the Pólya-frequency property. -/
+protected theorem IsPolyaFreqSeq.tail_of_zero {a : ℕ → ℝ}
+    (hpf : IsPolyaFreqSeq a) (h0 : a 0 = 0) :
+    IsPolyaFreqSeq (fun n => a (n + 1)) := by
+  rw [IsPolyaFreqSeq, toeplitz_tail_of_zero h0]
+  exact hpf.submatrix (fun _ _ h => by lia) strictMono_id
+
+/-- If a PF polynomial has zero constant coefficient, dividing by `X`
+preserves the PF property of its coefficient sequence. -/
+protected theorem IsPolyaFreqSeq.divX_coeff {p : ℝ[X]}
+    (hpf : IsPolyaFreqSeq p.coeff) (h0 : p.coeff 0 = 0) :
+    IsPolyaFreqSeq p.divX.coeff := by
+  rw [show p.divX.coeff = fun n => p.coeff (n + 1) by
+    funext n
+    exact Polynomial.coeff_divX]
+  exact hpf.tail_of_zero h0
 
 /-- Compatibility spelling for nonnegativity of PF sequences. -/
 theorem nonneg_of_IsPolyaFreqSeq
@@ -232,6 +267,63 @@ theorem aissenSchoenbergWhitneyForward_of_natDegree_le_two {p : ℝ[X]}
   ⟨splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two hpf hdeg,
     roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
 
+/-! ### Reduction to positive constant coefficient -/
+
+/-- The remaining splitting theorem restricted to PF polynomials with positive
+constant coefficient. Zero constant coefficients can be removed one at a time
+using `IsPolyaFreqSeq.divX_coeff`. -/
+def aissenSchoenbergWhitneyForwardSplitsPositiveConstantStatement : Prop :=
+  ∀ {p : ℝ[X]}, 0 < p.coeff 0 → IsPolyaFreqSeq p.coeff → p.Splits
+
+/-- Forward ASW splitting reduces to the positive-constant-coefficient case.
+If the constant coefficient is zero, divide by `X`; the coefficient tail is
+still PF and has strictly smaller degree. -/
+theorem aissenSchoenbergWhitneyForwardSplits_of_positiveConstant
+    (hpositive : aissenSchoenbergWhitneyForwardSplitsPositiveConstantStatement) :
+    ∀ {p : ℝ[X]}, IsPolyaFreqSeq p.coeff → p.Splits := by
+  intro p
+  induction hdeg : p.natDegree using Nat.strong_induction_on generalizing p with
+  | h d ih =>
+      intro hpf
+      by_cases hp0 : p = 0
+      · exact hp0 ▸ Polynomial.Splits.zero
+      have hc0 := hpf.nonneg 0
+      rcases hc0.eq_or_lt with hc0zero | hc0pos
+      · have hc0zero' : p.coeff 0 = 0 := hc0zero.symm
+        have hdpos : 0 < d := by
+          by_contra hd
+          have hd0 : d = 0 := Nat.eq_zero_of_not_pos hd
+          have hpC : p = C (p.coeff 0) :=
+            Polynomial.eq_C_of_natDegree_eq_zero (hdeg.trans hd0)
+          rw [hpC, hc0zero', Polynomial.C_0] at hp0
+          exact hp0 rfl
+        have hdivdeg : p.divX.natDegree < d := by
+          rw [Polynomial.natDegree_divX_eq_natDegree_tsub_one, hdeg]
+          lia
+        have hdivsplits : p.divX.Splits :=
+          ih p.divX.natDegree hdivdeg rfl (hpf.divX_coeff hc0zero')
+        exact DegreeDropReversal.splits_of_divX_splits_of_coeff_zero
+          hc0zero' hdivsplits
+      · exact hpositive hc0pos hpf
+
+/-- Degree-at-least-three leaf for the forward
+Aissen--Schoenberg--Whitney splitting theorem, after removing all zero roots. -/
+abbrev aissenSchoenbergWhitneyForwardSplitsPositiveConstantDegreeAtLeastThreeStatement :
+    Prop :=
+  ∀ {p : ℝ[X]},
+    3 ≤ p.natDegree →
+    0 < p.coeff 0 →
+    IsPolyaFreqSeq p.coeff →
+      p.Splits
+
+/-- Degree-at-least-three, positive-constant-coefficient leaf of the forward
+Aissen--Schoenberg--Whitney splitting theorem. -/
+theorem aissenSchoenbergWhitneyForwardSplits_positiveConstant_degreeAtLeastThree
+    {p : ℝ[X]} (hdeg : 3 ≤ p.natDegree) (hconst : 0 < p.coeff 0)
+    (hpf : IsPolyaFreqSeq p.coeff) :
+    p.Splits := by
+  sorry
+
 /-- Degree-at-least-three leaf for the forward
 Aissen--Schoenberg--Whitney theorem. -/
 abbrev aissenSchoenbergWhitneyForwardDegreeAtLeastThreeStatement : Prop :=
@@ -242,9 +334,15 @@ abbrev aissenSchoenbergWhitneyForwardDegreeAtLeastThreeStatement : Prop :=
 
 /-- Degree-at-least-three case of the forward Aissen--Schoenberg--Whitney theorem. -/
 theorem aissenSchoenbergWhitneyForward_degreeAtLeastThree {p : ℝ[X]}
-    (hdeg : 3 ≤ p.natDegree) (hpf : IsPolyaFreqSeq p.coeff) :
+    (_hdeg : 3 ≤ p.natDegree) (hpf : IsPolyaFreqSeq p.coeff) :
     p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0 := by
-  sorry
+  refine ⟨aissenSchoenbergWhitneyForwardSplits_of_positiveConstant ?_ hpf,
+    roots_nonpos_of_IsPolyaFreqSeq_coeff hpf⟩
+  intro q hconst hqpf
+  by_cases hqdeg : q.natDegree ≤ 2
+  · exact splits_of_isPolyaFreqSeq_coeff_of_natDegree_le_two hqpf hqdeg
+  · exact aissenSchoenbergWhitneyForwardSplits_positiveConstant_degreeAtLeastThree
+      (by lia) hconst hqpf
 
 /-- Degree-at-least-two case of the forward Aissen--Schoenberg--Whitney theorem. -/
 theorem aissenSchoenbergWhitneyForward_degreeAtLeastTwo {p : ℝ[X]}
