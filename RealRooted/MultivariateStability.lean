@@ -51,6 +51,30 @@ theorem exists_upperHalfPlane_eval_ne_zero {sigma : Type*}
   · intro z hz
     simpa using h z fun i => hz i (Set.mem_univ i)
 
+/-- Restrict a multivariate complex polynomial to the affine line
+`z + t * v`. -/
+def affineLineRestriction {sigma : Type*} (z v : sigma → ℂ)
+    (P : MvPolynomial sigma ℂ) : Polynomial ℂ :=
+  MvPolynomial.eval₂Hom Polynomial.C
+    (fun i => Polynomial.C (z i) + Polynomial.C (v i) * Polynomial.X) P
+
+@[simp] theorem eval_affineLineRestriction {sigma : Type*}
+    (z v : sigma → ℂ) (P : MvPolynomial sigma ℂ) (t : ℂ) :
+    (affineLineRestriction z v P).eval t =
+      MvPolynomial.eval (fun i => z i + v i * t) P := by
+  unfold affineLineRestriction
+  change Polynomial.evalRingHom t
+      (MvPolynomial.eval₂Hom Polynomial.C
+        (fun i => Polynomial.C (z i) + Polynomial.C (v i) * Polynomial.X) P) = _
+  rw [MvPolynomial.map_eval₂Hom]
+  simp only [Polynomial.coe_evalRingHom, Polynomial.eval_add, Polynomial.eval_C,
+    Polynomial.eval_mul, Polynomial.eval_X]
+  have hC : (Polynomial.evalRingHom t).comp Polynomial.C = RingHom.id ℂ := by
+    ext c
+    simp
+  rw [hC]
+  rfl
+
 theorem MvUpperHalfPlaneStable.C_mul {sigma : Type*}
     {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStable P)
     {c : ℂ} (hc : c ≠ 0) :
