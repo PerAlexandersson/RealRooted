@@ -1012,8 +1012,8 @@ theorem isRealRooted_of_even_product_odd_X_scalar_sequence
     intro n
     simpa [heven n] using hquot n
   have hodd_realrooted :
-      ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
-    exact isRealRooted_of_product_lift_sequence hquot
+      ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits :=
+    isRealRooted_of_product_lift_sequence hquot
       (isRealRooted_C_mul_X_sequence ha) (fun n => by simpa [mul_assoc] using hodd n)
   exact isRealRooted_of_even_odd_sequence heven_realrooted hodd_realrooted
 
