@@ -770,13 +770,10 @@ theorem isPFPolynomial_of_bidiagonalOperator_sequence
     (hdegree : ∀ n, (P n).natDegree ≤ degreeBound n)
     (hpres : ∀ n, BidiagonalPFPreserver (alpha n) (beta n) (degreeBound n))
     (hrec : ∀ n, P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
-    ∀ n, IsPFPolynomial (P n) := by
-  intro n
-  induction n with
-  | zero => exact hbase
-  | succ n ih =>
-      rw [hrec n]
-      exact hpres n ih (hdegree n)
+    ∀ n, IsPFPolynomial (P n) :=
+  RealRooted.sequence_of_base_and_step hbase fun n hP => by
+    rw [hrec n]
+    exact hpres n hP (hdegree n)
 
 /-- Induction principle for a sequence whose PF-bidiagonal recurrence
 certificate only starts from a cutoff row.  The finitely many rows before the
@@ -791,18 +788,10 @@ theorem isPFPolynomial_of_bidiagonalOperator_sequence_from
       ∀ n, N ≤ n → BidiagonalPFPreserver (alpha n) (beta n) (degreeBound n))
     (hrec : ∀ n, N ≤ n →
       P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
-    ∀ n, IsPFPolynomial (P n) := fun n =>
-  Nat.strong_induction_on n fun n ih => by
-    by_cases hn : n ≤ N
-    · exact hbase n hn
-    · cases n with
-      | zero =>
-          exact False.elim (hn (Nat.zero_le N))
-      | succ m =>
-          have hNm : N ≤ m := by lia
-          have hPm : IsPFPolynomial (P m) := ih m (Nat.lt_succ_self m)
-          rw [hrec m hNm]
-          exact hpres m hNm hPm (hdegree m hNm)
+    ∀ n, IsPFPolynomial (P n) :=
+  RealRooted.sequence_of_base_interval_and_step_from N hbase fun n hn hP => by
+    rw [hrec n hn]
+    exact hpres n hn hP (hdegree n hn)
 
 /-- Diagonal coefficient of the second-derivative form as a quadratic Jensen
 weight. -/

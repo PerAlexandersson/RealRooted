@@ -15,6 +15,74 @@ open Polynomial
 
 namespace RealRooted
 
+/-- Generic sequence induction from one base case and a successor step. -/
+theorem sequence_of_base_and_step {Q : Nat → Prop}
+    (hbase : Q 0)
+    (hstep : ∀ n : Nat, Q n → Q (n + 1)) :
+    ∀ n : Nat, Q n := by
+  intro n
+  induction n with
+  | zero =>
+      exact hbase
+  | succ n ih =>
+      exact hstep n ih
+
+/-- Generic sequence induction from a finite base interval and a successor
+step that starts at the cutoff row. -/
+theorem sequence_of_base_interval_and_step_from {Q : Nat → Prop}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N → Q n)
+    (hstep : ∀ n : Nat, N ≤ n → Q n → Q (n + 1)) :
+    ∀ n : Nat, Q n := fun n =>
+  Nat.strong_induction_on n fun n ih => by
+    by_cases hn : n ≤ N
+    · exact hbase n hn
+    · cases n with
+      | zero =>
+          exact False.elim (hn (Nat.zero_le N))
+      | succ m =>
+          have hNm : N ≤ m := by lia
+          exact hstep m hNm (ih m (Nat.lt_succ_self m))
+
+/-- Generic period-two sequence induction from the two base parities and a
+step advancing by two. -/
+theorem sequence_of_base_pair_and_step_two {Q : Nat → Prop}
+    (hzero : Q 0)
+    (hone : Q 1)
+    (hstep : ∀ n : Nat, Q n → Q (n + 2)) :
+    ∀ n : Nat, Q n := fun n =>
+  Nat.strong_induction_on n fun n ih => by
+    cases n with
+    | zero =>
+        exact hzero
+    | succ n =>
+        cases n with
+        | zero =>
+            exact hone
+        | succ n =>
+            exact hstep n (ih n (Nat.lt_succ_of_lt (Nat.lt_succ_self n)))
+
+/-- Generic period-two sequence induction from a finite base interval and a
+step advancing by two that starts at the cutoff row. -/
+theorem sequence_of_base_interval_and_step_two_from {Q : Nat → Prop}
+    (N : Nat)
+    (hbase : ∀ n : Nat, n ≤ N + 1 → Q n)
+    (hstep : ∀ n : Nat, N ≤ n → Q n → Q (n + 2)) :
+    ∀ n : Nat, Q n := fun n =>
+  Nat.strong_induction_on n fun n ih => by
+    by_cases hn : n ≤ N + 1
+    · exact hbase n hn
+    · cases n with
+      | zero =>
+          exact False.elim (hn (by lia))
+      | succ m =>
+          cases m with
+          | zero =>
+              exact False.elim (hn (by lia))
+          | succ k =>
+              have hNk : N ≤ k := by lia
+              exact hstep k hNk (ih k (Nat.lt_succ_of_lt (Nat.lt_succ_self k)))
+
 /-- Generic `Prec`-chain induction from one base case and a successor step.
 
 This is the plateau-safe sequence shell: the step only needs the previous
@@ -22,13 +90,8 @@ This is the plateau-safe sequence shell: the step only needs the previous
 theorem prec_sequence_of_base_and_step {P : Nat → ℝ[X]}
     (hbase : Prec (P 0) (P 1))
     (hstep : ∀ n : Nat, Prec (P n) (P (n + 1)) → Prec (P (n + 1)) (P (n + 2))) :
-    ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  intro n
-  induction n with
-  | zero =>
-      exact hbase
-  | succ n ih =>
-      exact hstep n ih
+    ∀ n : Nat, Prec (P n) (P (n + 1)) :=
+  sequence_of_base_and_step hbase hstep
 
 /-- Real-rootedness corollary of a generic `Prec`-chain induction. -/
 theorem isRealRooted_of_prec_sequence {P : Nat → ℝ[X]}

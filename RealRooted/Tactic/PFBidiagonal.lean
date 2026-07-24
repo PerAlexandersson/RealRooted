@@ -913,14 +913,10 @@ theorem isPFPolynomial_of_bidiagonalOperator_sequence
     (hpres : ∀ n : Nat, BidiagonalPFPreserver (alpha n) (beta n) (d n))
     (hrec : ∀ n : Nat,
       P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
-    ∀ n : Nat, IsPFPolynomial (P n) := by
-  intro n
-  induction n with
-  | zero =>
-      exact hbase
-  | succ n ih =>
-      simpa [hrec n] using
-        isPFPolynomial_bidiagonalOperator_of_preserver (hpres n) ih (hdeg n)
+    ∀ n : Nat, IsPFPolynomial (P n) :=
+  sequence_of_base_and_step hbase fun n hP => by
+    simpa [hrec n] using
+      isPFPolynomial_bidiagonalOperator_of_preserver (hpres n) hP (hdeg n)
 
 /-- Sequence wrapper for first-order recurrences whose PF-bidiagonal
 certificate only starts from a cutoff row.  The finitely many rows before the
@@ -933,18 +929,10 @@ theorem isPFPolynomial_of_bidiagonalOperator_sequence_from
     (hpres : ∀ n : Nat, N ≤ n → BidiagonalPFPreserver (alpha n) (beta n) (d n))
     (hrec : ∀ n : Nat, N ≤ n →
       P (n + 1) = bidiagonalOperator (alpha n) (beta n) (P n)) :
-    ∀ n : Nat, IsPFPolynomial (P n) := fun n =>
-  Nat.strong_induction_on n fun n ih => by
-    by_cases hn : n ≤ N
-    · exact hbase n hn
-    · cases n with
-      | zero =>
-          exact False.elim (hn (Nat.zero_le N))
-      | succ m =>
-          have hNm : N ≤ m := by lia
-          have hPm : IsPFPolynomial (P m) := ih m (Nat.lt_succ_self m)
-          simpa [hrec m hNm] using
-            isPFPolynomial_bidiagonalOperator_of_preserver (hpres m hNm) hPm (hdeg m hNm)
+    ∀ n : Nat, IsPFPolynomial (P n) :=
+  sequence_of_base_interval_and_step_from N hbase fun n hn hP => by
+    simpa [hrec n hn] using
+      isPFPolynomial_bidiagonalOperator_of_preserver (hpres n hn) hP (hdeg n hn)
 
 /-- Sequence wrapper using per-row Jensen-pencil certificates. -/
 theorem isPFPolynomial_of_bidiagonalOperator_sequence_of_jensenPencil

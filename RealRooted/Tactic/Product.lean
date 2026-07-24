@@ -193,65 +193,11 @@ theorem isRealRooted_of_product_factor_sequence
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
     (hstep : ∀ n : Nat, P (n + 1) = F n * P n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  intro n
-  induction n with
-  | zero =>
-      simpa using hbase
-  | succ n ih =>
-      have hnext : F n * P n ≠ 0 ∧ (F n * P n).Splits :=
-        isRealRooted_mul_of_isRealRooted (hfactor n) ih
-      simpa [Nat.succ_eq_add_one, hstep n] using hnext
-
-private theorem sequence_of_base_interval_and_step_from {Q : Nat → Prop}
-    (N : Nat)
-    (hbase : ∀ n : Nat, n ≤ N → Q n)
-    (hstep : ∀ n : Nat, N ≤ n → Q n → Q (n + 1)) :
-    ∀ n : Nat, Q n := fun n =>
-  Nat.strong_induction_on n fun n ih => by
-    by_cases hn : n ≤ N
-    · exact hbase n hn
-    · cases n with
-      | zero =>
-          exact False.elim (hn (Nat.zero_le N))
-      | succ m =>
-          have hNm : N ≤ m := by lia
-          exact hstep m hNm (ih m (Nat.lt_succ_self m))
-
-private theorem sequence_of_base_pair_and_step_two {Q : Nat → Prop}
-    (hzero : Q 0)
-    (hone : Q 1)
-    (hstep : ∀ n : Nat, Q n → Q (n + 2)) :
-    ∀ n : Nat, Q n := fun n =>
-  Nat.strong_induction_on n fun n ih => by
-    cases n with
-    | zero =>
-        exact hzero
-    | succ n =>
-        cases n with
-        | zero =>
-            exact hone
-        | succ n =>
-            exact hstep n (ih n (Nat.lt_succ_of_lt (Nat.lt_succ_self n)))
-
-private theorem sequence_of_base_interval_and_step_two_from {Q : Nat → Prop}
-    (N : Nat)
-    (hbase : ∀ n : Nat, n ≤ N + 1 → Q n)
-    (hstep : ∀ n : Nat, N ≤ n → Q n → Q (n + 2)) :
-    ∀ n : Nat, Q n := fun n =>
-  Nat.strong_induction_on n fun n ih => by
-    by_cases hn : n ≤ N + 1
-    · exact hbase n hn
-    · cases n with
-      | zero =>
-          exact False.elim (hn (by lia))
-      | succ m =>
-          cases m with
-          | zero =>
-              exact False.elim (hn (by lia))
-          | succ k =>
-              have hNk : N ≤ k := by lia
-              exact hstep k hNk (ih k (Nat.lt_succ_of_lt (Nat.lt_succ_self k)))
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  sequence_of_base_and_step hbase fun n hP => by
+    have hnext : F n * P n ≠ 0 ∧ (F n * P n).Splits :=
+      isRealRooted_mul_of_isRealRooted (hfactor n) hP
+    simpa [Nat.succ_eq_add_one, hstep n] using hnext
 
 /-- Tail-start sequence shell for first-order product recurrences with a
 supplied factor certificate.  The finitely many rows before `N` are supplied
@@ -1158,26 +1104,22 @@ theorem prec_endpoint_sum_then_X_pair_sequence
     (hstepB : ∀ n : Nat, B (n + 1) = B n + X * A (n + 1))
     (hcop : ∀ n : Nat, IsCoprime (B n) (X * A (n + 1))) :
     ∀ n : Nat, Prec (A n) (B n) := by
-  have hpack : ∀ n : Nat, endpointPairPackage A B n := by
-    intro n
-    induction n with
-    | zero =>
-        exact ⟨hbase, hA0_nonneg, hB0_nonneg⟩
-    | succ n ih =>
-        rcases ih with ⟨hprec, hA_nonneg, hB_nonneg⟩
-        have hcop' : IsCoprime (B n) (X * (A n + B n)) := by
-          simpa [hstepA n] using hcop n
-        have hprec_next :
-            Prec (A (n + 1)) (B (n + 1)) := by
-          simpa [hstepA n, hstepB n] using
-            prec_endpoint_sum_then_X_step hprec hA_nonneg hB_nonneg hcop'
-        have hA_nonneg_next : HasNonnegCoeffs (A (n + 1)) := by
-          rw [hstepA n]
-          rr_nonneg_coeffs
-        have hB_nonneg_next : HasNonnegCoeffs (B (n + 1)) := by
-          rw [hstepB n]
-          rr_nonneg_coeffs
-        exact ⟨hprec_next, hA_nonneg_next, hB_nonneg_next⟩
+  have hpack : ∀ n : Nat, endpointPairPackage A B n :=
+    sequence_of_base_and_step ⟨hbase, hA0_nonneg, hB0_nonneg⟩ fun n hP => by
+      rcases hP with ⟨hprec, hA_nonneg, hB_nonneg⟩
+      have hcop' : IsCoprime (B n) (X * (A n + B n)) := by
+        simpa [hstepA n] using hcop n
+      have hprec_next :
+          Prec (A (n + 1)) (B (n + 1)) := by
+        simpa [hstepA n, hstepB n] using
+          prec_endpoint_sum_then_X_step hprec hA_nonneg hB_nonneg hcop'
+      have hA_nonneg_next : HasNonnegCoeffs (A (n + 1)) := by
+        rw [hstepA n]
+        rr_nonneg_coeffs
+      have hB_nonneg_next : HasNonnegCoeffs (B (n + 1)) := by
+        rw [hstepB n]
+        rr_nonneg_coeffs
+      exact ⟨hprec_next, hA_nonneg_next, hB_nonneg_next⟩
   exact prec_sequence_of_endpointPairPackage hpack
 
 /-- Real-rootedness corollary for
@@ -1208,24 +1150,20 @@ theorem prec_endpoint_X_then_sum_pair_sequence
     (hstepA : ∀ n : Nat, A (n + 1) = A n + B (n + 1))
     (hcop : ∀ n : Nat, IsCoprime (B n) (X * A n)) :
     ∀ n : Nat, Prec (A n) (B n) := by
-  have hpack : ∀ n : Nat, endpointPairPackage A B n := by
-    intro n
-    induction n with
-    | zero =>
-        exact ⟨hbase, hA0_nonneg, hB0_nonneg⟩
-    | succ n ih =>
-        rcases ih with ⟨hprec, hA_nonneg, hB_nonneg⟩
-        have hprec_next :
-            Prec (A (n + 1)) (B (n + 1)) := by
-          simpa [hstepB n, hstepA n] using
-            prec_endpoint_X_then_sum_step hprec hA_nonneg hB_nonneg (hcop n)
-        have hB_nonneg_next : HasNonnegCoeffs (B (n + 1)) := by
-          rw [hstepB n]
-          rr_nonneg_coeffs
-        have hA_nonneg_next : HasNonnegCoeffs (A (n + 1)) := by
-          rw [hstepA n]
-          rr_nonneg_coeffs
-        exact ⟨hprec_next, hA_nonneg_next, hB_nonneg_next⟩
+  have hpack : ∀ n : Nat, endpointPairPackage A B n :=
+    sequence_of_base_and_step ⟨hbase, hA0_nonneg, hB0_nonneg⟩ fun n hP => by
+      rcases hP with ⟨hprec, hA_nonneg, hB_nonneg⟩
+      have hprec_next :
+          Prec (A (n + 1)) (B (n + 1)) := by
+        simpa [hstepB n, hstepA n] using
+          prec_endpoint_X_then_sum_step hprec hA_nonneg hB_nonneg (hcop n)
+      have hB_nonneg_next : HasNonnegCoeffs (B (n + 1)) := by
+        rw [hstepB n]
+        rr_nonneg_coeffs
+      have hA_nonneg_next : HasNonnegCoeffs (A (n + 1)) := by
+        rw [hstepA n]
+        rr_nonneg_coeffs
+      exact ⟨hprec_next, hA_nonneg_next, hB_nonneg_next⟩
   exact prec_sequence_of_endpointPairPackage hpack
 
 /-- Real-rootedness corollary for
@@ -1827,19 +1765,15 @@ theorem isRealRooted_of_product_scalar_factor_sequence
     (hscalar : ∀ n : Nat, P (2 * n + 1) = C (a n) * P (2 * n))
     (hstep : ∀ n : Nat, P (2 * n + 2) = F n * P (2 * n + 1)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  have heven : ∀ n : Nat, P (2 * n) ≠ 0 ∧ (P (2 * n)).Splits := by
-    intro n
-    induction n with
-    | zero =>
-        simpa using hbase
-    | succ n ih =>
-        have hodd : P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
-          simpa [hscalar n] using isRealRooted_C_mul_of_isRealRooted ih (ha n)
-        have hnext :
-            (F n * P (2 * n + 1) ≠ 0 ∧ (F n * P (2 * n + 1)).Splits) :=
-          isRealRooted_mul_of_isRealRooted (hfactor n) hodd
-        simpa [Nat.mul_succ, Nat.succ_eq_add_one, Nat.add_assoc] using
-          (by simpa [hstep n] using hnext)
+  have heven : ∀ n : Nat, P (2 * n) ≠ 0 ∧ (P (2 * n)).Splits :=
+    sequence_of_base_and_step (by simpa using hbase) fun n hP => by
+      have hodd : P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
+        simpa [hscalar n] using isRealRooted_C_mul_of_isRealRooted hP (ha n)
+      have hnext :
+          (F n * P (2 * n + 1) ≠ 0 ∧ (F n * P (2 * n + 1)).Splits) :=
+        isRealRooted_mul_of_isRealRooted (hfactor n) hodd
+      simpa [Nat.mul_succ, Nat.succ_eq_add_one, Nat.add_assoc] using
+        (by simpa [hstep n] using hnext)
   have hodd : ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
     intro n
     simpa [hscalar n] using isRealRooted_C_mul_of_isRealRooted (heven n) (ha n)
@@ -1897,28 +1831,18 @@ theorem isRealRooted_of_product_scalar_factor_sequence_from
     (hscalar : ∀ n : Nat, N ≤ n → P (2 * n + 1) = C (a n) * P (2 * n))
     (hstep : ∀ n : Nat, N ≤ n → P (2 * n + 2) = F n * P (2 * n + 1)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  have heven : ∀ n : Nat, P (2 * n) ≠ 0 ∧ (P (2 * n)).Splits := by
-    intro n
-    refine Nat.strong_induction_on n ?_
-    intro n ih
-    by_cases hn : n ≤ N
-    · exact hbase (2 * n) (by lia)
-    · cases n with
-      | zero =>
-          exact False.elim (hn (Nat.zero_le N))
-      | succ m =>
-          have hNm : N ≤ m := by lia
-          have hm : P (2 * m) ≠ 0 ∧ (P (2 * m)).Splits :=
-            ih m (Nat.lt_succ_self m)
-          have hodd : P (2 * m + 1) ≠ 0 ∧ (P (2 * m + 1)).Splits := by
-            simpa [hscalar m hNm] using
-              isRealRooted_C_mul_of_isRealRooted hm (ha m hNm)
-          have hnext :
-              (F m * P (2 * m + 1) ≠ 0 ∧
-                (F m * P (2 * m + 1)).Splits) :=
-            isRealRooted_mul_of_isRealRooted (hfactor m hNm) hodd
-          simpa [Nat.mul_succ, Nat.succ_eq_add_one, Nat.add_assoc] using
-            (by simpa [hstep m hNm] using hnext)
+  have heven : ∀ n : Nat, P (2 * n) ≠ 0 ∧ (P (2 * n)).Splits :=
+    sequence_of_base_interval_and_step_from N
+      (fun n hn => hbase (2 * n) (by lia)) fun n hn hP => by
+        have hodd : P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
+          simpa [hscalar n hn] using
+            isRealRooted_C_mul_of_isRealRooted hP (ha n hn)
+        have hnext :
+            (F n * P (2 * n + 1) ≠ 0 ∧
+              (F n * P (2 * n + 1)).Splits) :=
+          isRealRooted_mul_of_isRealRooted (hfactor n hn) hodd
+        simpa [Nat.mul_succ, Nat.succ_eq_add_one, Nat.add_assoc] using
+          (by simpa [hstep n hn] using hnext)
   have hodd : ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
     intro n
     by_cases hn : n < N
