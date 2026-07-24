@@ -1,5 +1,6 @@
 import RealRooted.Multiaffine
 import RealRooted.MultivariateStability
+import RealRooted.Mathlib.Analysis.Complex.OpenMapping
 import Mathlib.Analysis.Complex.Polynomial.GaussLucas
 
 /-!
@@ -10,6 +11,9 @@ of the one-variable Lieb--Sokal argument.
 -/
 
 namespace RealRooted
+
+open Filter Metric
+open scoped Topology
 
 /-- A complex polynomial with no roots in the open upper half-plane has zero
 derivative or a derivative with the same property. -/
@@ -41,6 +45,89 @@ theorem _root_.Polynomial.derivative_zero_or_upperHalfPlaneStable (p : Polynomia
   have hmem := hconv hsub
   simp only [Set.mem_setOf_eq, Complex.imLm, LinearMap.coe_mk, AddHom.coe_mk] at hmem
   linarith
+
+/-- A partial derivative of a finite-variable multiaffine stable polynomial is
+zero or stable. -/
+theorem MvUpperHalfPlaneStable.pderiv_zero_or
+    {sigma : Type*} [Finite sigma]
+    {P : MvPolynomial sigma ℂ}
+    (hP : MvUpperHalfPlaneStable P)
+    (hPma : MvPolynomial.IsMultiaffine P) (i : sigma) :
+    MvPolynomial.pderiv i P = 0 ∨
+      MvUpperHalfPlaneStable (MvPolynomial.pderiv i P) := by
+  classical
+  by_cases hQ : MvPolynomial.pderiv i P = 0
+  · exact Or.inl hQ
+  right
+  intro z hz hQz
+  obtain ⟨z₁, _, hQz₁⟩ := exists_upperHalfPlane_eval_ne_zero hQ
+  let v : sigma → ℂ := fun j => z₁ j - z j
+  let A : Polynomial ℂ := affineLineRestriction z v (MvPolynomial.pderiv i P)
+  let B : Polynomial ℂ := affineLineRestriction
+    (Function.update z i 0) (Function.update v i 0) P
+  have hA0 : A.eval 0 = 0 := by
+    simp [A, hQz]
+  have hA1 : A.eval 1 ≠ 0 := by
+    simpa [A, v] using hQz₁
+  have hA : A ≠ 0 := by
+    intro hzero
+    rw [hzero, Polynomial.eval_zero] at hA1
+    exact hA1 rfl
+  have hB_eval (t : ℂ) :
+      B.eval t = MvPolynomial.eval
+        (Function.update (fun j => z j + v j * t) i 0) P := by
+    change (affineLineRestriction
+      (Function.update z i 0) (Function.update v i 0) P).eval t = _
+    rw [eval_affineLineRestriction]
+    apply congrArg (fun u : sigma → ℂ => MvPolynomial.eval u P)
+    funext j
+    by_cases hji : j = i
+    · subst j
+      simp
+    · simp only [Function.update_of_ne hji]
+  have hPz : MvPolynomial.eval z P ≠ 0 := hP z hz
+  have hconst :
+      MvPolynomial.eval (Function.update z i 0) P = MvPolynomial.eval z P := by
+    have h := hPma.eval_update_eq_eval_pderiv_mul_add i z (z i)
+    rw [hQz] at h
+    simpa only [Function.update_eq_self, zero_mul, zero_add] using h.symm
+  have hB0 : B.eval 0 ≠ 0 := by
+    rw [hB_eval]
+    simpa [hconst] using hPz
+  let U : Set ℂ := {t | ∀ j, 0 < (z j + v j * t).im}
+  have hUopen : IsOpen U := by
+    rw [show U = ⋂ j, {t : ℂ | 0 < (z j + v j * t).im} by
+      ext t
+      simp [U]]
+    apply isOpen_iInter_of_finite
+    intro j
+    exact isOpen_lt continuous_const (by fun_prop)
+  have hzeroU : (0 : ℂ) ∈ U := by
+    intro j
+    simpa using hz j
+  have hUnhds : U ∈ 𝓝 0 := hUopen.mem_nhds hzeroU
+  obtain ⟨t, htU, hAt, _, hroot⟩ :=
+    Polynomial.exists_neg_div_im_pos_of_mem_nhds A B hA hA0 hB0 U hUnhds
+  let zt : sigma → ℂ := fun j => z j + v j * t
+  let r : ℂ := -B.eval t / A.eval t
+  have hr : 0 < r.im := hroot
+  have hzroot : ∀ j, 0 < (Function.update zt i r j).im := by
+    intro j
+    by_cases hji : j = i
+    · subst j
+      simpa using hr
+    · rw [Function.update_of_ne hji]
+      exact htU j
+  apply hP (Function.update zt i r) hzroot
+  rw [hPma.eval_update_eq_eval_pderiv_mul_add]
+  have hAeval : MvPolynomial.eval zt (MvPolynomial.pderiv i P) = A.eval t := by
+    simp [A, zt]
+  have hBeval : MvPolynomial.eval (Function.update zt i 0) P = B.eval t := by
+    rw [hB_eval]
+  rw [hAeval, hBeval]
+  dsimp [r]
+  field_simp
+  ring
 
 /-- Suppose the affine function `a * z + b` has no zero in the open upper half
 plane and `f + w * (a * z + b)` is nonzero for every upper-half-plane `w`.
