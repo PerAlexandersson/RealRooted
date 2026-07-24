@@ -1,4 +1,5 @@
-import RealRooted.Basic
+import RealRooted.AissenSchoenbergWhitneyBase
+import RealRooted.ASWCubicDegreeThree
 import RealRooted.DegreeDropReversal
 import RealRooted.QuadraticRoot
 import RealRooted.RecurrenceDiscriminant
@@ -27,36 +28,6 @@ functions of totally positive sequences. I*, J. Analyse Math. 2 (1952),
 -/
 
 variable {a : ℕ → ℝ}
-
-/-- Entry of the Toeplitz matrix attached to a sequence `a₀, a₁, ...`. -/
-def toeplitz (a : ℕ → ℝ) : Matrix ℕ ℕ ℝ :=
-  .of fun i j ↦ if j ≤ i then a (i - j) else 0
-
-@[simp]
-lemma toeplitz_apply (a : ℕ → ℝ) (i j : ℕ) :
-    toeplitz a i j = if j ≤ i then a (i - j) else 0 :=
-  rfl
-
-@[to_fun (attr := simp)]
-lemma toeplitz_zero : toeplitz 0 = 0 := by
-  ext
-  simp [toeplitz]
-
-/-- A sequence is a Polya-frequency sequence. -/
-def IsPolyaFreqSeq (a : ℕ → ℝ) : Prop :=
-  (toeplitz a).IsTotallyNonneg
-
-/-- The zero sequence is Polya-frequency. -/
-theorem IsPolyaFreqSeq_zero :
-    IsPolyaFreqSeq (fun _ : ℕ => (0 : ℝ)) := by
-  simp [IsPolyaFreqSeq]
-
-/-- A Polya-frequency sequence has nonnegative entries, by its `1 × 1`
-Toeplitz minors. -/
-protected nonrec theorem IsPolyaFreqSeq.nonneg
-    (ha : IsPolyaFreqSeq a) (k : ℕ) :
-    0 ≤ a k := by
-  simpa [IsPolyaFreqSeq] using ha.nonneg k 0
 
 /-- If the zeroth term vanishes, deleting it identifies the new Toeplitz
 matrix with an order-preserving row submatrix of the original one. -/
@@ -375,13 +346,36 @@ abbrev aissenSchoenbergWhitneyForwardSplitsPositiveConstantDegreeAtLeastThreeSta
     IsPolyaFreqSeq p.coeff →
       p.Splits
 
-/-- Degree-at-least-three, positive-constant-coefficient leaf of the forward
+/-- Degree-at-least-four leaf for the forward
+Aissen--Schoenberg--Whitney splitting theorem, after removing all zero roots
+and proving the cubic case separately. -/
+abbrev aissenSchoenbergWhitneyForwardSplitsPositiveConstantDegreeAtLeastFourStatement :
+    Prop :=
+  ∀ {p : ℝ[X]},
+    4 ≤ p.natDegree →
+    0 < p.coeff 0 →
+    IsPolyaFreqSeq p.coeff →
+      p.Splits
+
+/-- Degree-at-least-four, positive-constant-coefficient leaf of the forward
 Aissen--Schoenberg--Whitney splitting theorem. -/
+theorem aissenSchoenbergWhitneyForwardSplits_positiveConstant_degreeAtLeastFour
+    {p : ℝ[X]} (hdeg : 4 ≤ p.natDegree) (hconst : 0 < p.coeff 0)
+    (hpf : IsPolyaFreqSeq p.coeff) :
+    p.Splits := by
+  sorry
+
+/-- Degree-at-least-three, positive-constant-coefficient case of the forward
+Aissen--Schoenberg--Whitney splitting theorem.  Exact degree three is the
+cubic minor argument; the remaining leaf starts in degree four. -/
 theorem aissenSchoenbergWhitneyForwardSplits_positiveConstant_degreeAtLeastThree
     {p : ℝ[X]} (hdeg : 3 ≤ p.natDegree) (hconst : 0 < p.coeff 0)
     (hpf : IsPolyaFreqSeq p.coeff) :
     p.Splits := by
-  sorry
+  by_cases hthree : p.natDegree = 3
+  · exact splits_of_isPolyaFreqSeq_coeff_of_natDegree_three hthree hconst hpf
+  · exact aissenSchoenbergWhitneyForwardSplits_positiveConstant_degreeAtLeastFour
+      (by lia) hconst hpf
 
 /-- Degree-at-least-three leaf for the forward
 Aissen--Schoenberg--Whitney theorem. -/

@@ -4,7 +4,7 @@ import Mathlib.Algebra.Polynomial.SpecificDegree
 import Mathlib.Algebra.QuadraticDiscriminant
 import Mathlib.Analysis.Complex.Polynomial.Basic
 import Mathlib.Analysis.Real.Sqrt
-import RealRooted.CubicNewton
+import RealRooted.QuadraticRoot
 
 /-!
 # The discriminant criterion for a real cubic to split
@@ -173,11 +173,8 @@ lemma coeff_X_sub_C_mul_of_natDegree_two {q : ℝ[X]} (r : ℝ) (hqdeg : q.natDe
   have hq3 : q.coeff 3 = 0 := coeff_eq_zero_of_natDegree_lt (by rw [hqdeg]; decide)
   refine ⟨?_, ?_, ?_, ?_⟩
   · rw [show (3 : ℕ) = 2 + 1 from rfl, coeff_X_sub_C_mul, hq3, mul_zero, sub_zero]
-    simp
   · rw [show (2 : ℕ) = 1 + 1 from rfl, coeff_X_sub_C_mul]
-    simp
   · rw [show (1 : ℕ) = 0 + 1 from rfl, coeff_X_sub_C_mul]
-    simp
   · rw [sub_mul, coeff_sub, coeff_C_mul, coeff_X_mul_zero, zero_sub]
 
 /-- Discriminant factorisation for a cubic given as `(X - C r) * q` with `q` a

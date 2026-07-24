@@ -1,4 +1,4 @@
-import RealRooted.AissenSchoenbergWhitney
+import RealRooted.AissenSchoenbergWhitneyBase
 
 /-!
 # Toeplitz minor families for the cubic ASW argument
