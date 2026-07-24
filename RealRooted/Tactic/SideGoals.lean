@@ -37,6 +37,7 @@ syntax (name := rr_side_pos_seq) "rr_side_pos_seq" : tactic
 syntax (name := rr_side_ne_seq) "rr_side_ne_seq" : tactic
 syntax (name := rr_positivity_seq) "rr_positivity_seq" : tactic
 syntax (name := rr_coeff_simp) "rr_coeff_simp" : tactic
+syntax (name := rr_coeff_finish) "rr_coeff_finish" : tactic
 syntax (name := rr_coeff) "rr_coeff" : tactic
 syntax (name := rr_nonneg_coeffs) "rr_nonneg_coeffs" : tactic
 syntax (name := rr_nonneg_coeffs_using_one)
@@ -220,14 +221,16 @@ macro_rules
           neg_zero,
           Nat.succ_ne_zero,
           Nat.succ.injEq])
+  | `(tactic| rr_coeff_finish) =>
+      `(tactic|
+        try norm_num <;>
+        try ring_nf)
   | `(tactic| rr_coeff) =>
       `(tactic|
         (rr_coeff_simp
-          <;> try norm_num
-          <;> try ring_nf
+          <;> rr_coeff_finish
           <;> try rr_coeff_simp
-          <;> try norm_num
-          <;> try ring_nf))
+          <;> rr_coeff_finish))
   | `(tactic| rr_nonneg_coeffs_zero) =>
       `(tactic| exact RealRooted.hasNonnegCoeffs_zero)
   | `(tactic| rr_nonneg_coeffs_one) =>
