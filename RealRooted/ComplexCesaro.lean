@@ -59,13 +59,13 @@ lemma tendsto_cesaro_pow_of_norm_le_one_of_ne_one
 geometric modes cannot have those modes grow faster than its nonnegative real
 mode. -/
 theorem norm_le_of_nonneg_conjugate_geometric
-    {x : ℕ → ℝ} {r A : ℝ} {z B : ℂ}
+    {x : ℕ → ℝ} {r : ℝ} {A z B : ℂ}
     (hr : 0 ≤ r)
     (hz : z.im ≠ 0)
     (hB : B ≠ 0)
     (hx : ∀ n,
       (x n : ℂ) =
-        (A : ℂ) * (r : ℂ) ^ n +
+        A * (r : ℂ) ^ n +
           B * z ^ n +
           (starRingEnd ℂ B) * (starRingEnd ℂ z) ^ n)
     (hx_nonneg : ∀ n, 0 ≤ x n) :
@@ -82,7 +82,7 @@ theorem norm_le_of_nonneg_conjugate_geometric
   let y : ℕ → ℝ := fun n => x n / ‖z‖ ^ n
   have hnormalized : ∀ n,
       (y n : ℂ) =
-        (A : ℂ) * (q : ℂ) ^ n +
+        A * (q : ℂ) ^ n +
           B * w ^ n +
           (starRingEnd ℂ B) * (starRingEnd ℂ w) ^ n := by
     intro n
@@ -147,7 +147,7 @@ theorem norm_le_of_nonneg_conjugate_geometric
         (tendsto_add_atTop_nat 1)
   have havg_y_eq : ∀ N,
       avg (fun n => (y n : ℂ)) N =
-        (A : ℂ) * avg (fun n => (q : ℂ) ^ n) N +
+        A * avg (fun n => (q : ℂ) ^ n) N +
           B * avg (fun n => w ^ n) N +
           (starRingEnd ℂ B) * avg (fun n => (starRingEnd ℂ w) ^ n) N := by
     intro N
@@ -157,13 +157,13 @@ theorem norm_le_of_nonneg_conjugate_geometric
     ring
   have havg_y : Tendsto (avg fun n => (y n : ℂ)) atTop (nhds 0) := by
     rw [show avg (fun n => (y n : ℂ)) = fun N =>
-      (A : ℂ) * avg (fun n => (q : ℂ) ^ n) N +
+      A * avg (fun n => (q : ℂ) ^ n) N +
         B * avg (fun n => w ^ n) N +
         (starRingEnd ℂ B) * avg (fun n => (starRingEnd ℂ w) ^ n) N by
       funext N
       exact havg_y_eq N]
     simpa using
-      ((havg_q.const_mul (A : ℂ)).add (havg_w.const_mul B)).add
+      ((havg_q.const_mul A).add (havg_w.const_mul B)).add
         (havg_cw.const_mul (starRingEnd ℂ B))
   let mean : ℕ → ℝ := fun N =>
     ((N + 1 : ℕ) : ℝ)⁻¹ * ∑ n ∈ range (N + 1), y n
@@ -227,12 +227,12 @@ theorem norm_le_of_nonneg_conjugate_geometric
     norm_num
   have hweightedMean_eq : ∀ N,
       weightedMean N =
-        (A : ℂ) * avg (fun n => ((q : ℂ) * starRingEnd ℂ w) ^ n) N + B +
+        A * avg (fun n => ((q : ℂ) * starRingEnd ℂ w) ^ n) N + B +
           (starRingEnd ℂ B) * avg (fun n => ((starRingEnd ℂ w) ^ 2) ^ n) N := by
     intro N
     have hterm : ∀ n,
         (y n : ℂ) * (starRingEnd ℂ w) ^ n =
-          (A : ℂ) * ((q : ℂ) * starRingEnd ℂ w) ^ n + B +
+          A * ((q : ℂ) * starRingEnd ℂ w) ^ n + B +
             (starRingEnd ℂ B) * ((starRingEnd ℂ w) ^ 2) ^ n := by
       intro n
       rw [hnormalized]
@@ -250,12 +250,12 @@ theorem norm_le_of_nonneg_conjugate_geometric
     rw [hnatcast]
   have hweightedMean_B : Tendsto weightedMean atTop (nhds B) := by
     rw [show weightedMean = fun N =>
-      (A : ℂ) * avg (fun n => ((q : ℂ) * starRingEnd ℂ w) ^ n) N + B +
+      A * avg (fun n => ((q : ℂ) * starRingEnd ℂ w) ^ n) N + B +
         (starRingEnd ℂ B) * avg (fun n => ((starRingEnd ℂ w) ^ 2) ^ n) N by
       funext N
       exact hweightedMean_eq N]
     simpa using
-      (((havg_qcw.const_mul (A : ℂ)).add tendsto_const_nhds).add
+      (((havg_qcw.const_mul A).add tendsto_const_nhds).add
         (havg_cw_sq.const_mul (starRingEnd ℂ B)))
   have hzero_eq_B : (0 : ℂ) = B :=
     tendsto_nhds_unique hweightedMean_zero hweightedMean_B
