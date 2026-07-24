@@ -148,17 +148,14 @@ theorem prec_wagner_derivative_gap_lag_sequence {P : Nat → ℝ[X]} {a c : Nat 
     (hrec : ∀ n : Nat,
       P (n + 2) = X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  intro n
-  induction n with
-  | zero =>
-      exact hbase
-  | succ n ih =>
-      have hstep :
-          Prec (P (n + 1))
-            (X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :=
-        prec_wagner_derivative_gap_lag_step
-          ih (hnonneg n) (hnonneg (n + 1)) (hdeg n) (ha n) (hc n)
-      simpa [← hrec n] using hstep
+  refine prec_sequence_of_base_and_step hbase ?_
+  intro n hprev
+  have hstep :
+      Prec (P (n + 1))
+        (X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :=
+    prec_wagner_derivative_gap_lag_step
+      hprev (hnonneg n) (hnonneg (n + 1)) (hdeg n) (ha n) (hc n)
+  simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary for active Wagner derivative-gap-lag recurrences. -/
 theorem isRealRooted_of_prec_wagner_derivative_gap_lag_sequence
@@ -187,15 +184,12 @@ theorem prec_wagner_derivative_gap_lag_sequence_den
       C (d n) * P (n + 2) =
         X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  intro n
-  induction n with
-  | zero =>
-      exact hbase
-  | succ n ih =>
-      exact
-        prec_wagner_derivative_gap_lag_step_den
-          ih (hnonneg n) (hnonneg (n + 1)) (hdeg n) (ha n) (hc n) (hd n)
-          (hrec n)
+  refine prec_sequence_of_base_and_step hbase ?_
+  intro n hprev
+  exact
+    prec_wagner_derivative_gap_lag_step_den
+      hprev (hnonneg n) (hnonneg (n + 1)) (hdeg n) (ha n) (hc n) (hd n)
+      (hrec n)
 
 /-- Real-rootedness corollary for scalar-left active Wagner gap-lag recurrences. -/
 theorem isRealRooted_of_prec_wagner_derivative_gap_lag_sequence_den
@@ -395,16 +389,13 @@ theorem prec_pos_X_lag_combo_sequence {P : Nat → ℝ[X]} {a c : Nat → ℝ}
     (hrec : ∀ n : Nat,
       P (n + 2) = C (a n) * P (n + 1) + (C (c n) * X) * P n) :
     ∀ n : Nat, Prec (P n) (P (n + 1)) := by
-  intro n
-  induction n with
-  | zero =>
-      exact hbase
-  | succ n ih =>
-      have hstep :
-          Prec (P (n + 1)) (C (a n) * P (n + 1) + (C (c n) * X) * P n) :=
-        prec_pos_X_lag_combo_of_prec_nonneg
-          ih (hnonneg n) (hnonneg (n + 1)) (ha n) (hc n)
-      simpa [← hrec n] using hstep
+  refine prec_sequence_of_base_and_step hbase ?_
+  intro n hprev
+  have hstep :
+      Prec (P (n + 1)) (C (a n) * P (n + 1) + (C (c n) * X) * P n) :=
+    prec_pos_X_lag_combo_of_prec_nonneg
+      hprev (hnonneg n) (hnonneg (n + 1)) (ha n) (hc n)
+  simpa [← hrec n] using hstep
 
 /-- Real-rootedness corollary of scalar positive-current plus nonnegative
 `X`-lag sequence induction. -/
