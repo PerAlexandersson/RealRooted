@@ -81,6 +81,73 @@ theorem pderiv {p : MvPolynomial σ R} (hp : IsMultiaffine p) (i : σ) :
     exact (Nat.sub_le _ _).trans
       (MvPolynomial.degreeOf_le_iff.mp (hp j) d hd)
 
+private theorem eval_update_monomial_affine
+    {S : Type*} [CommRing S] [DecidableEq σ]
+    (i : σ) (z : σ → S) (t : S) (d : σ →₀ ℕ) (c : S)
+    (hdi : d i ≤ 1) :
+    MvPolynomial.eval (Function.update z i t) (MvPolynomial.monomial d c) =
+      MvPolynomial.eval z
+          (MvPolynomial.pderiv i (MvPolynomial.monomial d c)) * t +
+        MvPolynomial.eval (Function.update z i 0) (MvPolynomial.monomial d c) := by
+  rw [MvPolynomial.eval_monomial, MvPolynomial.pderiv_monomial,
+    MvPolynomial.eval_monomial, MvPolynomial.eval_monomial]
+  have hcases : d i = 0 ∨ d i = 1 := by lia
+  rcases hcases with h | h
+  · have hi : i ∉ d.support := by simpa [Finsupp.mem_support_iff] using h
+    have hupdate (u : S) :
+        d.prod (fun j e => Function.update z i u j ^ e) =
+          d.prod (fun j e => z j ^ e) := by
+      apply Finsupp.prod_congr
+      intro j hj
+      have hji : j ≠ i := by
+        intro hji
+        subst j
+        exact hi hj
+      simp [hji]
+    rw [hupdate t, hupdate 0]
+    simp [h]
+  · have hi : i ∈ d.support := by simp [Finsupp.mem_support_iff, h]
+    have herase : d - Finsupp.single i 1 = d.erase i := by
+      ext j
+      by_cases hji : j = i
+      · subst j
+        simp [h]
+      · simp [Finsupp.single_eq_of_ne hji, Finsupp.erase, hji]
+    rw [herase]
+    have hleft := Finsupp.mul_prod_erase d i
+      (fun j e => Function.update z i t j ^ e) hi
+    have hzero := Finsupp.mul_prod_erase d i
+      (fun j e => Function.update z i 0 j ^ e) hi
+    have hzprod :
+        (d.erase i).prod (fun j e => z j ^ e) =
+          (d.erase i).prod (fun j e => Function.update z i t j ^ e) := by
+      apply Finsupp.prod_congr
+      intro j hj
+      have hji : j ≠ i := by
+        intro hji
+        subst j
+        simp at hj
+      simp [hji]
+    rw [← hleft, ← hzero]
+    simp [h, hzprod]
+    ring
+
+/-- Evaluation of a multiaffine polynomial is affine in each coordinate, with
+linear coefficient given by the corresponding partial derivative. -/
+theorem eval_update_eq_eval_pderiv_mul_add
+    {S : Type*} [CommRing S] [DecidableEq σ]
+    {p : MvPolynomial σ S} (hp : IsMultiaffine p)
+    (i : σ) (z : σ → S) (t : S) :
+    MvPolynomial.eval (Function.update z i t) p =
+      MvPolynomial.eval z (MvPolynomial.pderiv i p) * t +
+        MvPolynomial.eval (Function.update z i 0) p := by
+  rw [MvPolynomial.as_sum p]
+  simp only [map_sum, Finset.sum_mul, ← Finset.sum_add_distrib]
+  apply Finset.sum_congr rfl
+  intro d hd
+  exact eval_update_monomial_affine i z t d (p.coeff d)
+    (MvPolynomial.degreeOf_le_iff.mp (hp i) d hd)
+
 theorem rename {p : MvPolynomial σ R} (hp : IsMultiaffine p)
     {f : σ → τ} (hf : Function.Injective f) :
     IsMultiaffine (MvPolynomial.rename f p) := by

@@ -1,3 +1,4 @@
+import RealRooted.Multiaffine
 import RealRooted.MultivariateStability
 
 /-!
@@ -56,5 +57,63 @@ theorem liebSokalPointwise_of_ne
     rw [hfeq, hratioeq, one_div, Complex.inv_im]
     exact div_neg_of_neg_of_pos (neg_neg_of_pos huim) (Complex.normSq_pos.mpr hune)
   exact (not_lt_of_ge hratio) hratio_neg
+
+/-- The root of an affine slice of a stable multiaffine polynomial is outside
+the open upper half-plane. -/
+theorem MvUpperHalfPlaneStable.affineRoot_im_nonpos
+    {sigma : Type*} [DecidableEq sigma] {P : MvPolynomial sigma ℂ}
+    (hP : MvUpperHalfPlaneStable P) (hPma : MvPolynomial.IsMultiaffine P)
+    (i : sigma) (z : sigma → ℂ) (hz : ∀ j, 0 < (z j).im)
+    (ha : MvPolynomial.eval z (MvPolynomial.pderiv i P) ≠ 0) :
+    (-MvPolynomial.eval (Function.update z i 0) P /
+        MvPolynomial.eval z (MvPolynomial.pderiv i P)).im ≤ 0 := by
+  by_contra hnonpos
+  have hpos :
+      0 < (-MvPolynomial.eval (Function.update z i 0) P /
+        MvPolynomial.eval z (MvPolynomial.pderiv i P)).im :=
+    lt_of_not_ge hnonpos
+  let t : ℂ := -MvPolynomial.eval (Function.update z i 0) P /
+    MvPolynomial.eval z (MvPolynomial.pderiv i P)
+  let zroot : sigma → ℂ := Function.update z i t
+  have hzroot : ∀ j, 0 < (zroot j).im := by
+    intro j
+    by_cases hji : j = i
+    · subst j
+      simpa [zroot] using hpos
+    · simp [zroot, hji, hz j]
+  apply hP zroot hzroot
+  rw [show zroot = Function.update z i t by rfl,
+    hPma.eval_update_eq_eval_pderiv_mul_add]
+  dsimp [t]
+  field_simp
+  ring
+
+/-- One-variable Lieb--Sokal step under an explicit stable-pencil hypothesis. -/
+theorem MvUpperHalfPlaneStable.sub_pderiv_of_stable_pencil
+    {sigma : Type*} {F G : MvPolynomial sigma ℂ}
+    (hF : MvUpperHalfPlaneStable F) (hG : MvUpperHalfPlaneStable G)
+    (hGma : MvPolynomial.IsMultiaffine G) (i : sigma)
+    (hFG : ∀ z : sigma → ℂ, (∀ j, 0 < (z j).im) →
+      ∀ w : ℂ, 0 < w.im →
+        MvPolynomial.eval z F + w * MvPolynomial.eval z G ≠ 0) :
+    MvUpperHalfPlaneStable (F - MvPolynomial.pderiv i G) := by
+  classical
+  intro z hz
+  rw [MvPolynomial.eval_sub]
+  by_cases ha : MvPolynomial.eval z (MvPolynomial.pderiv i G) = 0
+  · simpa [ha] using hF z hz
+  · apply liebSokalPointwise_of_ne
+      (MvPolynomial.eval z (MvPolynomial.pderiv i G))
+      (MvPolynomial.eval (Function.update z i 0) G)
+      (MvPolynomial.eval z F) (z i) ha (hz i)
+      (hG.affineRoot_im_nonpos hGma i z hz ha)
+    intro w hw
+    have hne := hFG z hz w hw
+    have haff :
+        MvPolynomial.eval z G =
+          MvPolynomial.eval z (MvPolynomial.pderiv i G) * z i +
+            MvPolynomial.eval (Function.update z i 0) G := by
+      simpa using hGma.eval_update_eq_eval_pderiv_mul_add i z (z i)
+    rwa [haff] at hne
 
 end RealRooted
