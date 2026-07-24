@@ -43,6 +43,128 @@ theorem HasOnlyNonposRoots.of_nonnegCoeffs_splits {p : ℝ[X]}
     HasOnlyNonposRoots p :=
   Or.inr ⟨hsplits, roots_nonpos_of_nonneg_coeffs hsplits hpnn⟩
 
+/-! ### Degree-padded sign flip -/
+
+/-- Degree-`n` sign flip: the coefficient of `X^j` is multiplied by
+`(-1)^(n-j)`, with coefficients above degree `n` discarded. For
+`p.natDegree ≤ n` this is the coefficient form of `(-1)^n p(-X)`. -/
+def degreeSignFlip (n : ℕ) (p : ℝ[X]) : ℝ[X] :=
+  ∑ j ∈ Finset.range (n + 1), C ((-1 : ℝ) ^ (n - j) * p.coeff j) * X ^ j
+
+theorem coeff_degreeSignFlip_of_le {n j : ℕ} (p : ℝ[X]) (hj : j ≤ n) :
+    (degreeSignFlip n p).coeff j = (-1 : ℝ) ^ (n - j) * p.coeff j := by
+  unfold degreeSignFlip
+  rw [Polynomial.finsetSum_coeff]
+  rw [Finset.sum_eq_single_of_mem j (Finset.mem_range.mpr (Nat.lt_succ_iff.mpr hj))]
+  · rw [coeff_C_mul, coeff_X_pow, if_pos rfl, mul_one]
+  · intro k hk hkj
+    rw [coeff_C_mul, coeff_X_pow, if_neg (fun h => hkj h.symm), mul_zero]
+
+theorem coeff_degreeSignFlip_of_lt {n j : ℕ} (p : ℝ[X]) (hj : n < j) :
+    (degreeSignFlip n p).coeff j = 0 := by
+  unfold degreeSignFlip
+  rw [Polynomial.finsetSum_coeff]
+  apply Finset.sum_eq_zero
+  intro k hk
+  rw [coeff_C_mul, coeff_X_pow, if_neg (fun h => by
+    have hk_le : k ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
+    lia), mul_zero]
+
+theorem natDegree_degreeSignFlip_le (n : ℕ) (p : ℝ[X]) :
+    (degreeSignFlip n p).natDegree ≤ n := by
+  rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
+  intro j hj
+  exact coeff_degreeSignFlip_of_lt p hj
+
+private theorem neg_one_pow_mul_pow_eq_sub {n j : ℕ} (hj : j ≤ n) :
+    (-1 : ℝ) ^ n * (-1 : ℝ) ^ j = (-1 : ℝ) ^ (n - j) := by
+  have hpow : (-1 : ℝ) ^ n = (-1 : ℝ) ^ (n - j) * (-1 : ℝ) ^ j := by
+    nth_rw 1 [show n = n - j + j by lia]
+    rw [pow_add]
+  have hsq : (-1 : ℝ) ^ j * (-1 : ℝ) ^ j = 1 := by
+    rw [← pow_add]
+    have hEven : Even (j + j) := ⟨j, rfl⟩
+    rw [Even.neg_one_pow hEven]
+  calc
+    (-1 : ℝ) ^ n * (-1 : ℝ) ^ j =
+        ((-1 : ℝ) ^ (n - j) * (-1 : ℝ) ^ j) * (-1 : ℝ) ^ j := by rw [hpow]
+    _ = (-1 : ℝ) ^ (n - j) * ((-1 : ℝ) ^ j * (-1 : ℝ) ^ j) := by ring
+    _ = (-1 : ℝ) ^ (n - j) := by rw [hsq, mul_one]
+
+theorem coeff_comp_neg_X (p : ℝ[X]) (j : ℕ) :
+    (p.comp (-X)).coeff j = p.coeff j * (-1 : ℝ) ^ j := by
+  simpa using Polynomial.comp_C_mul_X_coeff (p := p) (r := (-1 : ℝ)) (n := j)
+
+theorem degreeSignFlip_eq_C_mul_comp_neg_X
+    (n : ℕ) {p : ℝ[X]} (hpdeg : p.natDegree ≤ n) :
+    degreeSignFlip n p = C ((-1 : ℝ) ^ n) * p.comp (-X) := by
+  ext j
+  by_cases hj : j ≤ n
+  · rw [coeff_degreeSignFlip_of_le p hj, coeff_C_mul, coeff_comp_neg_X]
+    calc
+      (-1 : ℝ) ^ (n - j) * p.coeff j =
+          ((-1 : ℝ) ^ n * (-1 : ℝ) ^ j) * p.coeff j := by
+        rw [neg_one_pow_mul_pow_eq_sub hj]
+      _ = (-1 : ℝ) ^ n * (p.coeff j * (-1 : ℝ) ^ j) := by ring
+  · have hjlt : n < j := Nat.lt_of_not_ge hj
+    rw [coeff_degreeSignFlip_of_lt p hjlt, coeff_C_mul, coeff_comp_neg_X]
+    have hpzero : p.coeff j = 0 :=
+      Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hpdeg hjlt)
+    simp [hpzero]
+
+theorem natDegree_degreeSignFlip_eq_of_coeff_ne_zero
+    {n : ℕ} {p : ℝ[X]} (hcoeff : p.coeff n ≠ 0) :
+    (degreeSignFlip n p).natDegree = n := by
+  refine Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
+    (natDegree_degreeSignFlip_le n p) ?_
+  rw [coeff_degreeSignFlip_of_le p le_rfl]
+  simpa using hcoeff
+
+theorem leadingCoeff_degreeSignFlip_of_coeff_ne_zero
+    {n : ℕ} {p : ℝ[X]} (hcoeff : p.coeff n ≠ 0) :
+    (degreeSignFlip n p).leadingCoeff = p.coeff n := by
+  rw [Polynomial.leadingCoeff, natDegree_degreeSignFlip_eq_of_coeff_ne_zero hcoeff,
+    coeff_degreeSignFlip_of_le p le_rfl]
+  simp
+
+theorem degreeSignFlip_splits_of_splits
+    {n : ℕ} {p : ℝ[X]} (hpdeg : p.natDegree ≤ n) (hp : p.Splits) :
+    (degreeSignFlip n p).Splits := by
+  rw [degreeSignFlip_eq_C_mul_comp_neg_X n hpdeg]
+  exact hp.comp_neg_X.C_mul _
+
+theorem splits_of_degreeSignFlip_splits
+    {n : ℕ} {p : ℝ[X]} (hpdeg : p.natDegree ≤ n)
+    (hp : (degreeSignFlip n p).Splits) :
+    p.Splits := by
+  have hcomp : (p.comp (-X)).Splits := by
+    have hscalar : (C ((-1 : ℝ) ^ n) * p.comp (-X)).Splits := by
+      rwa [← degreeSignFlip_eq_C_mul_comp_neg_X n hpdeg]
+    have hunscaled := hscalar.C_mul (((-1 : ℝ) ^ n)⁻¹)
+    have hne : (-1 : ℝ) ^ n ≠ 0 := by simp
+    simpa only [← mul_assoc, ← map_mul, inv_mul_cancel₀ hne, map_one, one_mul] using
+      hunscaled
+  have htwice : ((p.comp (-X)).comp (-X)).Splits := hcomp.comp_neg_X
+  simpa [Polynomial.comp_neg_X_comp_neg_X] using htwice
+
+theorem HasOnlyNonposRoots.degreeSignFlip_hasOnlyNonnegRoots
+    {n : ℕ} {p : ℝ[X]} (hp : HasOnlyNonposRoots p) (hpdeg : p.natDegree ≤ n) :
+    HasOnlyNonnegRoots (degreeSignFlip n p) := by
+  rcases hp with rfl | ⟨hsplits, hroots⟩
+  · left
+    rw [degreeSignFlip_eq_C_mul_comp_neg_X n (by simp)]
+    simp
+  · right
+    refine ⟨degreeSignFlip_splits_of_splits hpdeg hsplits, ?_⟩
+    intro r hr
+    have hrootseq : (degreeSignFlip n p).roots = p.roots.map fun x => -x := by
+      rw [degreeSignFlip_eq_C_mul_comp_neg_X n hpdeg,
+        Polynomial.roots_C_mul _ (by simp : (-1 : ℝ) ^ n ≠ 0)]
+      exact Polynomial.roots_comp_neg_X p
+    rw [hrootseq] at hr
+    rcases Multiset.mem_map.mp hr with ⟨x, hx, rfl⟩
+    exact neg_nonneg.mpr (hroots x hx)
+
 /-- The linear basis transform sending `X ^ k` to `P k`. -/
 def basisTransform (P : ℕ → ℝ[X]) (p : ℝ[X]) : ℝ[X] :=
   p.sum fun k a => C a * P k
@@ -211,6 +333,69 @@ theorem HasNonnegCoeffs.narayanaTransform {m : ℕ} {p : ℝ[X]}
     HasNonnegCoeffs (narayanaTransform m p) :=
   hp.basisTransform (hasNonnegCoeffs_narayanaPolynomial m)
 
+theorem coeff_degreeSignFlip_narayanaTransform_of_le
+    (m n : ℕ) (p : ℝ[X]) {j : ℕ} (hj : j ≤ n) :
+    (degreeSignFlip n (narayanaTransform m p)).coeff j =
+      (-1 : ℝ) ^ (n - j) *
+        p.sum fun k a => a * (narayanaPolynomial m k).coeff j := by
+  rw [coeff_degreeSignFlip_of_le (narayanaTransform m p) hj, coeff_narayanaTransform]
+
+theorem natDegree_narayanaTransform_le (m : ℕ) (p : ℝ[X]) :
+    (narayanaTransform m p).natDegree ≤ p.natDegree := by
+  rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
+  intro j hj
+  rw [coeff_narayanaTransform, Polynomial.sum_def]
+  apply Finset.sum_eq_zero
+  intro k hk
+  have hkdeg : k ≤ p.natDegree := Polynomial.le_natDegree_of_mem_supp k hk
+  rw [coeff_narayanaPolynomial_of_lt (lt_of_le_of_lt hkdeg hj), mul_zero]
+
+theorem narayanaTransform_coeff_sum_reflect
+    (m n j : ℕ) (p : ℝ[X]) (hpdeg : p.natDegree ≤ n) (hj : j ≤ n) :
+    p.sum (fun k a => a * (narayanaPolynomial m k).coeff j) =
+      ∑ i ∈ Finset.range (n - j + 1),
+        p.coeff (n - i) * narayanaTransformCoeff m (n - i) j := by
+  let f : ℕ → ℝ := fun k => p.coeff k * (narayanaPolynomial m k).coeff j
+  have hsum_range :
+      p.sum (fun k a => a * (narayanaPolynomial m k).coeff j) =
+        ∑ k ∈ Finset.range (n + 1), f k := by
+    rw [Polynomial.sum_over_range]
+    · exact Finset.sum_subset (Finset.range_mono (Nat.succ_le_succ hpdeg)) (by
+        intro k hk_big hk_small
+        have hkgt : p.natDegree < k := by
+          have hnot : ¬ k < p.natDegree + 1 := by
+            simpa [Finset.mem_range] using hk_small
+          exact Nat.lt_of_not_ge (by
+            intro hk_le
+            exact hnot (Nat.lt_succ_iff.mpr hk_le))
+        simp [Polynomial.coeff_eq_zero_of_natDegree_lt hkgt])
+    · intro k
+      simp
+  have hlow : ∑ k ∈ Finset.range j, f k = 0 := by
+    apply Finset.sum_eq_zero
+    intro k hk
+    have hkj : k < j := Finset.mem_range.mp hk
+    simp [f, coeff_narayanaPolynomial_of_lt hkj]
+  have htail :
+      ∑ k ∈ Finset.range (n + 1), f k =
+        ∑ k ∈ Finset.Ico j (n + 1), f k := by
+    have hsplit := Finset.sum_range_add_sum_Ico f (Nat.le_succ_of_le hj)
+    rw [hlow, zero_add] at hsplit
+    exact hsplit.symm
+  rw [hsum_range, htail, Finset.sum_Ico_eq_sum_range]
+  have hlen : n + 1 - j = n - j + 1 := by lia
+  rw [hlen]
+  rw [← Finset.sum_range_reflect
+    (fun i => p.coeff (j + i) * (narayanaPolynomial m (j + i)).coeff j)
+    (n - j + 1)]
+  apply Finset.sum_congr rfl
+  intro i hi
+  have hi_le : i ≤ n - j := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
+  have hindex : j + (n - j + 1 - 1 - i) = n - i := by lia
+  rw [hindex]
+  have hj_le : j ≤ n - i := by lia
+  rw [coeff_narayanaPolynomial_of_le hj_le]
+
 /-- Dominici--Johnston--Jordaan root-location input for the generalized
 Narayana polynomials, paper Lemma 2.5. -/
 abbrev narayanaPolynomialRootLocationStatement : Prop :=
@@ -221,11 +406,6 @@ abbrev narayanaPolynomialRootLocationStatement : Prop :=
 abbrev narayanaTransformPreservesPFStatement : Prop :=
   ∀ (m : ℕ) {p : ℝ[X]},
     IsPFPolynomial p → IsPFPolynomial (narayanaTransform m p)
-
-/-- The Narayana transform preserves PF polynomials. -/
-theorem narayanaTransformPreservesPF (m : ℕ) {p : ℝ[X]} (hp : IsPFPolynomial p) :
-    IsPFPolynomial (narayanaTransform m p) := by
-  sorry
 
 /-- Gribinski--Marcus rectangular additive convolution coefficient. -/
 def rectangularConvolutionGamma (m n i j : ℕ) : ℝ :=
@@ -531,6 +711,76 @@ theorem coeff_rectangularAdditiveConvolution_narayanaPolynomial_of_le
       (narayanaPolynomial m n) hj,
     rectangularConvolutionCoeff_narayanaPolynomial_eq_sum_transport m n (n - j)
       (Nat.sub_le n j)]
+
+/-- Rectangular-convolution coefficient after applying the degree-`n` sign flip
+to an arbitrary input and to `N_{n,m}`. -/
+theorem coeff_rectangularAdditiveConvolution_degreeSignFlip_narayanaPolynomial_of_le
+    (m n j : ℕ) (p : ℝ[X]) (hj : j ≤ n) :
+    (rectangularAdditiveConvolution m n (degreeSignFlip n p)
+        (degreeSignFlip n (narayanaPolynomial m n))).coeff j =
+      (-1 : ℝ) ^ (n - j) *
+        ∑ i ∈ Finset.range (n - j + 1),
+          p.coeff (n - i) * narayanaTransformCoeff m (n - i) j := by
+  rw [coeff_rectangularAdditiveConvolution_of_le m n (degreeSignFlip n p)
+    (degreeSignFlip n (narayanaPolynomial m n)) hj]
+  unfold rectangularConvolutionCoeff
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro i hi
+  have hik : i ≤ n - j := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
+  have hki_n : n - j - i ≤ n := by lia
+  have hsum : i + (n - j - i) ≤ n := by
+    rw [Nat.add_sub_of_le hik]
+    exact Nat.sub_le n j
+  have hsign :
+      (-1 : ℝ) ^ i * (-1 : ℝ) ^ (n - j - i) = (-1 : ℝ) ^ (n - j) := by
+    rw [← pow_add, Nat.add_sub_of_le hik]
+  have hgamma :
+      rectangularConvolutionGamma m n i (n - j - i) *
+          narayanaTransformCoeff m n (n - j - i) =
+        narayanaTransformCoeff m (n - i) j := by
+    rw [rectangularConvolutionGamma_mul_narayanaTransformCoeff m n i
+      (n - j - i) hsum]
+    have hsym := narayanaTransformCoeff_symm m (n - i) (n - j - i) (by lia)
+    rwa [show n - i - (n - j - i) = j by lia] at hsym
+  rw [coeff_degreeSignFlip_of_le p (by lia : n - i ≤ n),
+    coeff_degreeSignFlip_of_le (narayanaPolynomial m n)
+      (by lia : n - (n - j - i) ≤ n)]
+  rw [show n - (n - i) = i by lia,
+    show n - (n - (n - j - i)) = n - j - i by lia]
+  rw [coeff_narayanaPolynomial_sub m n (n - j - i) hki_n]
+  calc
+    rectangularConvolutionGamma m n i (n - j - i) *
+          ((-1 : ℝ) ^ i * p.coeff (n - i)) *
+        ((-1 : ℝ) ^ (n - j - i) * narayanaTransformCoeff m n (n - j - i)) =
+        ((-1 : ℝ) ^ i * (-1 : ℝ) ^ (n - j - i)) *
+          p.coeff (n - i) *
+            (rectangularConvolutionGamma m n i (n - j - i) *
+              narayanaTransformCoeff m n (n - j - i)) := by
+      ring
+    _ = (-1 : ℝ) ^ (n - j) *
+        (p.coeff (n - i) * narayanaTransformCoeff m (n - i) j) := by
+      rw [hsign, hgamma]
+      ring
+
+/-- Mao--Wang's coefficient comparison: rectangular convolution of the
+degree-`n` sign flips of `p` and `N_{n,m}` is the degree-`n` sign flip of the
+Narayana transform of `p`. -/
+theorem rectangularAdditiveConvolution_degreeSignFlip_narayanaPolynomial_eq
+    (m n : ℕ) (p : ℝ[X]) (hpdeg : p.natDegree ≤ n) :
+    rectangularAdditiveConvolution m n (degreeSignFlip n p)
+        (degreeSignFlip n (narayanaPolynomial m n)) =
+      degreeSignFlip n (narayanaTransform m p) := by
+  ext j
+  by_cases hj : j ≤ n
+  · rw [coeff_rectangularAdditiveConvolution_degreeSignFlip_narayanaPolynomial_of_le
+      m n j p hj]
+    rw [coeff_degreeSignFlip_narayanaTransform_of_le m n p hj,
+      narayanaTransform_coeff_sum_reflect m n j p hpdeg hj]
+  · have hjlt : n < j := Nat.lt_of_not_ge hj
+    rw [coeff_rectangularAdditiveConvolution_of_gt m n (degreeSignFlip n p)
+        (degreeSignFlip n (narayanaPolynomial m n)) hjlt,
+      coeff_degreeSignFlip_of_lt (narayanaTransform m p) hjlt]
 
 /-- Gribinski--Marcus preservation theorem in the form used by Mao--Wang,
 paper Lemma 2.6. -/
@@ -1192,5 +1442,64 @@ theorem narayanaPolynomialRootLocation (m n : ℕ) :
   IsPFPolynomial.of_realRooted_nonneg
     (hasNonnegCoeffs_narayanaPolynomial m n)
     (splits_narayanaPolynomial m n)
+
+/-- The Narayana transform preserves PF polynomials, reduced to the
+Gribinski--Marcus rectangular additive convolution theorem. -/
+theorem narayanaTransformPreservesPF (m : ℕ) {p : ℝ[X]} (hp : IsPFPolynomial p) :
+    IsPFPolynomial (narayanaTransform m p) := by
+  refine IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
+    hp.hasNonnegCoeffs.narayanaTransform ?_
+  by_cases hp0 : p = 0
+  · left
+    simp [hp0, narayanaTransform]
+  · right
+    set n := p.natDegree with hn
+    have hpdeg : p.natDegree ≤ n := by rw [hn]
+    have hqdeg : (narayanaTransform m p).natDegree ≤ n := by
+      simpa [hn] using natDegree_narayanaTransform_le m p
+    have hpcoeff : p.coeff n ≠ 0 := by
+      rw [hn, Polynomial.coeff_natDegree]
+      exact Polynomial.leadingCoeff_ne_zero.mpr hp0
+    have hfdeg : (degreeSignFlip n p).natDegree = n :=
+      natDegree_degreeSignFlip_eq_of_coeff_ne_zero hpcoeff
+    have hflead : 0 < (degreeSignFlip n p).leadingCoeff := by
+      rw [leadingCoeff_degreeSignFlip_of_coeff_ne_zero hpcoeff, hn,
+        Polynomial.coeff_natDegree]
+      exact hp.hasNonnegCoeffs.pos_leadingCoeff hp0
+    have hNdeg : (narayanaPolynomial m n).natDegree ≤ n := by
+      rw [natDegree_narayanaPolynomial]
+    have hNcoeff : (narayanaPolynomial m n).coeff n ≠ 0 := by simp
+    have hgdeg : (degreeSignFlip n (narayanaPolynomial m n)).natDegree = n :=
+      natDegree_degreeSignFlip_eq_of_coeff_ne_zero hNcoeff
+    have hglead : 0 < (degreeSignFlip n (narayanaPolynomial m n)).leadingCoeff := by
+      rw [leadingCoeff_degreeSignFlip_of_coeff_ne_zero hNcoeff,
+        coeff_narayanaPolynomial_of_le le_rfl]
+      simp
+    have hfroots : HasOnlyNonnegRoots (degreeSignFlip n p) :=
+      hp.hasOnlyNonposRoots.degreeSignFlip_hasOnlyNonnegRoots hpdeg
+    have hgroots : HasOnlyNonnegRoots (degreeSignFlip n (narayanaPolynomial m n)) :=
+      (narayanaPolynomialRootLocation m n).hasOnlyNonposRoots
+        |>.degreeSignFlip_hasOnlyNonnegRoots hNdeg
+    have hconv :
+        HasOnlyNonnegRoots
+          (rectangularAdditiveConvolution m n (degreeSignFlip n p)
+            (degreeSignFlip n (narayanaPolynomial m n))) :=
+      rectangularAdditiveConvolutionPreservesNonnegRoots
+        (m := m) (n := n)
+        (f := degreeSignFlip n p)
+        (g := degreeSignFlip n (narayanaPolynomial m n))
+        hfdeg hgdeg hflead hglead hfroots hgroots
+    have hconv_eq :
+        rectangularAdditiveConvolution m n (degreeSignFlip n p)
+            (degreeSignFlip n (narayanaPolynomial m n)) =
+          degreeSignFlip n (narayanaTransform m p) :=
+      rectangularAdditiveConvolution_degreeSignFlip_narayanaPolynomial_eq m n p hpdeg
+    have hsign : HasOnlyNonnegRoots (degreeSignFlip n (narayanaTransform m p)) := by
+      simpa [hconv_eq] using hconv
+    have hsign_splits : (degreeSignFlip n (narayanaTransform m p)).Splits := by
+      rcases hsign with hzero | ⟨hsplits, _⟩
+      · simp [hzero]
+      · exact hsplits
+    exact splits_of_degreeSignFlip_splits hqdeg hsign_splits
 
 end RealRooted
