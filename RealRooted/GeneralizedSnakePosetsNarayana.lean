@@ -174,6 +174,21 @@ theorem modifiedNarayanaCoeffPolynomial_posLeadingCoeff (n : ℕ) :
       show k ≠ 0 by lia, show (1 : ℕ) ≠ k by lia, show k ≠ 2 by lia,
       show k ≠ 3 by lia]
 
+@[simp] theorem modifiedNarayanaCoeffPolynomial_four :
+    modifiedNarayanaCoeffPolynomial 4 =
+      1 + C (10 : ℝ) * X + C (20 : ℝ) * X ^ 2 +
+        C (10 : ℝ) * X ^ 3 + X ^ 4 := by
+  ext k
+  by_cases hk : k ≤ 4
+  · interval_cases k <;>
+      norm_num [modifiedNarayanaCoeffPolynomial, narayanaTransformCoeff, Nat.choose,
+        coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_C, coeff_one]
+  · have hklt : 4 < k := Nat.lt_of_not_ge hk
+    simp [modifiedNarayanaCoeffPolynomial, coeff_narayanaPolynomial_of_lt hklt,
+      coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_one,
+      show k ≠ 0 by lia, show (1 : ℕ) ≠ k by lia, show k ≠ 2 by lia,
+      show k ≠ 3 by lia, show k ≠ 4 by lia]
+
 /-- The first nontrivial proper-position check for the coefficient-side
 modified Narayana family. -/
 theorem modifiedNarayanaCoeffPolynomial_one_prec_two :
@@ -225,6 +240,24 @@ theorem narayanaCoeffAuxiliaryGRecurrence_modified_three :
   have hC3 : (C (3 : ℝ) : ℝ[X]) = 3 := Polynomial.C_eq_natCast (R := ℝ) 3
   have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
   rw [hC2, hC3, hC6]
+  ring_nf
+
+/-- The `n = 4` Braun--Jal equation (2) reduces to the concrete `G_3`
+finite-board computation. -/
+theorem narayanaCoeffAuxiliaryGRecurrence_modified_four_of_auxiliaryG_three
+    (hG3 : FiniteSkewBoard.auxiliaryG 3 =
+      3 + C (8 : ℝ) * X + C (3 : ℝ) * X ^ 2) :
+    X * FiniteSkewBoard.auxiliaryG 3 =
+      modifiedNarayanaCoeffPolynomial 4 -
+        (1 + X) * modifiedNarayanaCoeffPolynomial 3 := by
+  rw [hG3, modifiedNarayanaCoeffPolynomial_three,
+    modifiedNarayanaCoeffPolynomial_four]
+  have hC3 : (C (3 : ℝ) : ℝ[X]) = 3 := Polynomial.C_eq_natCast (R := ℝ) 3
+  have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
+  have hC8 : (C (8 : ℝ) : ℝ[X]) = 8 := Polynomial.C_eq_natCast (R := ℝ) 8
+  have hC10 : (C (10 : ℝ) : ℝ[X]) = 10 := Polynomial.C_eq_natCast (R := ℝ) 10
+  have hC20 : (C (20 : ℝ) : ℝ[X]) = 20 := Polynomial.C_eq_natCast (R := ℝ) 20
+  rw [hC3, hC6, hC8, hC10, hC20]
   ring_nf
 
 /-- The `m = 1` generalized Narayana polynomials satisfy the same normalized
@@ -316,6 +349,13 @@ theorem modifiedNarayanaPolynomial_hasNonnegCoeffs (n : ℕ) :
   rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
     modifiedNarayanaCoeffPolynomial_three]
 
+@[simp] theorem modifiedNarayanaPolynomial_four :
+    modifiedNarayanaPolynomial 4 =
+      1 + C (10 : ℝ) * X + C (20 : ℝ) * X ^ 2 +
+        C (10 : ℝ) * X ^ 3 + X ^ 4 := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
+    modifiedNarayanaCoeffPolynomial_four]
+
 /-- The `n = 2` case of Braun--Jal equation (2), for the quotient-style
 modified Narayana family and the finite-board auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_two :
@@ -335,6 +375,18 @@ theorem narayanaAuxiliaryGRecurrence_modified_three :
   rw [modifiedNarayanaPolynomial_eq_coeffPolynomial 2,
     modifiedNarayanaPolynomial_eq_coeffPolynomial 3]
   exact narayanaCoeffAuxiliaryGRecurrence_modified_three
+
+/-- The `n = 4` Braun--Jal equation (2), for the quotient-style modified
+Narayana family, reduces to the concrete `G_3` finite-board computation. -/
+theorem narayanaAuxiliaryGRecurrence_modified_four_of_auxiliaryG_three
+    (hG3 : FiniteSkewBoard.auxiliaryG 3 =
+      3 + C (8 : ℝ) * X + C (3 : ℝ) * X ^ 2) :
+    X * FiniteSkewBoard.auxiliaryG 3 =
+      modifiedNarayanaPolynomial 4 -
+        (1 + X) * modifiedNarayanaPolynomial 3 := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial 3,
+    modifiedNarayanaPolynomial_eq_coeffPolynomial 4]
+  exact narayanaCoeffAuxiliaryGRecurrence_modified_four_of_auxiliaryG_three hG3
 
 /-- The checked initial cases `n = 1, 2` of Braun--Jal equation (2), for the
 quotient-style modified Narayana family and the finite-board auxiliary `G`. -/
@@ -358,6 +410,22 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_three
   · exact narayanaAuxiliaryGRecurrence_modified_base
   · exact narayanaAuxiliaryGRecurrence_modified_two
   · exact narayanaAuxiliaryGRecurrence_modified_three
+
+/-- The checked initial cases `n = 1, 2, 3`, plus the conditional `n = 4` case
+of Braun--Jal equation (2), for the quotient-style modified Narayana family and
+the finite-board auxiliary `G`. -/
+theorem narayanaAuxiliaryGRecurrence_modified_of_le_four_of_auxiliaryG_three
+    (hG3 : FiniteSkewBoard.auxiliaryG 3 =
+      3 + C (8 : ℝ) * X + C (3 : ℝ) * X ^ 2)
+    {n : ℕ} (hn₁ : 1 ≤ n) (hn₄ : n ≤ 4) :
+    X * FiniteSkewBoard.auxiliaryG (n - 1) =
+      modifiedNarayanaPolynomial n -
+        (1 + X) * modifiedNarayanaPolynomial (n - 1) := by
+  interval_cases n
+  · exact narayanaAuxiliaryGRecurrence_modified_base
+  · exact narayanaAuxiliaryGRecurrence_modified_two
+  · exact narayanaAuxiliaryGRecurrence_modified_three
+  · exact narayanaAuxiliaryGRecurrence_modified_four_of_auxiliaryG_three hG3
 
 /-- Unconditional consecutive proper position for the modified Narayana
 family. -/

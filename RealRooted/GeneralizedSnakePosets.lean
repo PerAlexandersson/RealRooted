@@ -662,6 +662,39 @@ def truncatedStaircaseRookPolynomial (n i : ℕ) : ℝ[X] :=
   rw [hC2]
   ring_nf
 
+/-- The one-row truncated staircase with three cells has rook polynomial
+`1 + 3X`. -/
+@[simp] theorem truncatedStaircaseRookPolynomial_three_one :
+    truncatedStaircaseRookPolynomial 3 1 = 1 + C (3 : ℝ) * X := by
+  classical
+  have hcells :
+      (truncatedStaircase 3 1).cells =
+        ({(0, 0), (0, 1), (0, 2)} : Finset (ℕ × ℕ)) := by
+    decide
+  have hplacements :
+      (truncatedStaircase 3 1).cells.powerset.filter
+        (fun P => (truncatedStaircase 3 1).IsNonNestingPlacement P) =
+        ({∅, {(0, 0)}, {(0, 1)}, {(0, 2)}} :
+          Finset (Finset (ℕ × ℕ))) := by
+    rw [hcells]
+    ext P
+    constructor
+    · intro hmem
+      rw [Finset.mem_filter] at hmem
+      have hsub := hmem.1
+      fin_cases hsub <;>
+        simp [IsNonNestingPlacement] at hmem <;>
+        try decide
+    · intro hmem
+      simp only [Finset.mem_insert, Finset.mem_singleton] at hmem
+      rcases hmem with rfl | rfl | rfl | rfl <;>
+        simp [IsNonNestingPlacement, hcells]
+  rw [truncatedStaircaseRookPolynomial, rookPolynomial, hplacements]
+  norm_num
+  have hC3 : (C (3 : ℝ) : ℝ[X]) = 3 := Polynomial.C_eq_natCast (R := ℝ) 3
+  rw [hC3]
+  ring_nf
+
 /-- Truncated-staircase rook polynomials are nonzero. -/
 theorem truncatedStaircaseRookPolynomial_ne_zero (n i : ℕ) :
     truncatedStaircaseRookPolynomial n i ≠ 0 :=
