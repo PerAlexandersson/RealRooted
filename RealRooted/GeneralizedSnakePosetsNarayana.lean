@@ -282,6 +282,27 @@ theorem modifiedNarayanaPolynomial_hasNonnegCoeffs (n : ℕ) :
   rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
     modifiedNarayanaCoeffPolynomial_two]
 
+/-- The `n = 2` case of Braun--Jal equation (2), for the quotient-style
+modified Narayana family and the finite-board auxiliary `G`. -/
+theorem narayanaAuxiliaryGRecurrence_modified_two :
+    X * FiniteSkewBoard.auxiliaryG 1 =
+      modifiedNarayanaPolynomial 2 -
+        (1 + X) * modifiedNarayanaPolynomial 1 := by
+  rw [modifiedNarayanaPolynomial_eq_coeffPolynomial 1,
+    modifiedNarayanaPolynomial_eq_coeffPolynomial 2]
+  exact narayanaCoeffAuxiliaryGRecurrence_modified_two
+
+/-- The checked initial cases `n = 1, 2` of Braun--Jal equation (2), for the
+quotient-style modified Narayana family and the finite-board auxiliary `G`. -/
+theorem narayanaAuxiliaryGRecurrence_modified_of_le_two
+    {n : ℕ} (hn₁ : 1 ≤ n) (hn₂ : n ≤ 2) :
+    X * FiniteSkewBoard.auxiliaryG (n - 1) =
+      modifiedNarayanaPolynomial n -
+        (1 + X) * modifiedNarayanaPolynomial (n - 1) := by
+  interval_cases n
+  · exact narayanaAuxiliaryGRecurrence_modified_base
+  · exact narayanaAuxiliaryGRecurrence_modified_two
+
 /-- Unconditional consecutive proper position for the modified Narayana
 family. -/
 theorem modifiedNarayanaPolynomial_prec_succ (n : ℕ) :
@@ -295,6 +316,17 @@ theorem modifiedNarayanaPolynomial_interlaces_succ (n : ℕ) :
       (modifiedNarayanaPolynomial (n + 1)) :=
   modifiedNarayanaPolynomial_interlaces_succ_of_nonnegCoeffs n
     narayanaQuot_hasNonnegCoeffs
+
+/-- The `λ = ν = 0` specialization of Braun--Jal Lemma 3.4 for the concrete
+modified Narayana family.  This exposes the Lemma 3.4 target shape while using
+the checked consecutive proper-position theorem. -/
+theorem lemma34ModifiedNarayanaInterlacing_modified_zero_zero
+    {m : ℕ} (_hm : 2 ≤ m) :
+    Prec ((C (0 : ℝ) * X + C (0 : ℝ)) * modifiedNarayanaPolynomial (m - 1) +
+        modifiedNarayanaPolynomial m)
+      ((C (0 : ℝ) * X + C (0 : ℝ)) * modifiedNarayanaPolynomial m +
+        modifiedNarayanaPolynomial (m + 1)) := by
+  simpa using modifiedNarayanaPolynomial_prec_succ m
 
 /-- The coefficient-side modified Narayana family also satisfies the
 Braun--Jal modified-family interface. -/
