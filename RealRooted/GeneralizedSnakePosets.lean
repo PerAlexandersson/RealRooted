@@ -454,6 +454,82 @@ theorem rookPolynomial_ne_zero (B : FiniteSkewBoard) :
   rw [rookPolynomial_coeff_zero] at hcoeff
   norm_num at hcoeff
 
+/-! ### Skew Ferrers boards -/
+
+/-- The skew Ferrers board `lam / mu` in zero-based row coordinates.
+
+The paper uses cells `(i,j)` with `1 ≤ i` and `mu_i < j ≤ lam_i`; this encoding
+uses rows indexed by `0, ..., lam.length - 1`, keeps the same column inequality,
+and reads missing `mu` entries as zero. -/
+def skewFerrers (lam mu : List ℕ) : FiniteSkewBoard where
+  cells :=
+    (Finset.range lam.length).biUnion fun row =>
+      (Finset.Ioc (mu.getD row 0) (lam.getD row 0)).image fun col => (row, col)
+
+/-- The straight Ferrers board attached to a finite row-length list. -/
+def ferrers (lam : List ℕ) : FiniteSkewBoard :=
+  skewFerrers lam []
+
+/-- The non-nesting rook polynomial of a zero-based skew Ferrers board. -/
+def skewFerrersRookPolynomial (lam mu : List ℕ) : ℝ[X] :=
+  (skewFerrers lam mu).rookPolynomial
+
+/-- The non-nesting rook polynomial of a straight Ferrers board. -/
+def ferrersRookPolynomial (lam : List ℕ) : ℝ[X] :=
+  (ferrers lam).rookPolynomial
+
+/-- Remove one column from every row-length entry. -/
+def partitionSubOne (lam : List ℕ) : List ℕ :=
+  lam.map fun n => n - 1
+
+/-- Keep the first `i` row-length entries. -/
+def partitionPrefix (lam : List ℕ) (i : ℕ) : List ℕ :=
+  lam.take i
+
+/-- Skew Ferrers rook polynomials have nonnegative coefficients. -/
+theorem skewFerrersRookPolynomial_hasNonnegCoeffs (lam mu : List ℕ) :
+    HasNonnegCoeffs (skewFerrersRookPolynomial lam mu) :=
+  rookPolynomial_hasNonnegCoeffs _
+
+/-- Ferrers rook polynomials have nonnegative coefficients. -/
+theorem ferrersRookPolynomial_hasNonnegCoeffs (lam : List ℕ) :
+    HasNonnegCoeffs (ferrersRookPolynomial lam) :=
+  rookPolynomial_hasNonnegCoeffs _
+
+/-- Skew Ferrers rook polynomials have constant coefficient one. -/
+@[simp] theorem skewFerrersRookPolynomial_coeff_zero (lam mu : List ℕ) :
+    (skewFerrersRookPolynomial lam mu).coeff 0 = 1 :=
+  rookPolynomial_coeff_zero _
+
+/-- Ferrers rook polynomials have constant coefficient one. -/
+@[simp] theorem ferrersRookPolynomial_coeff_zero (lam : List ℕ) :
+    (ferrersRookPolynomial lam).coeff 0 = 1 :=
+  rookPolynomial_coeff_zero _
+
+/-- Skew Ferrers rook polynomials are nonzero. -/
+theorem skewFerrersRookPolynomial_ne_zero (lam mu : List ℕ) :
+    skewFerrersRookPolynomial lam mu ≠ 0 :=
+  rookPolynomial_ne_zero _
+
+/-- Ferrers rook polynomials are nonzero. -/
+theorem ferrersRookPolynomial_ne_zero (lam : List ℕ) :
+    ferrersRookPolynomial lam ≠ 0 :=
+  rookPolynomial_ne_zero _
+
+/-- Braun--Jal Proposition 3.2, stated for any straight Ferrers rook-polynomial
+family indexed by row lengths. -/
+def FerrersFirstColumnDeletionStatement (M : List ℕ → ℝ[X]) : Prop :=
+  ∀ lam : List ℕ,
+    M lam =
+      M (partitionSubOne lam) +
+        X * ((List.range lam.length).map fun i =>
+          M (partitionPrefix (partitionSubOne lam) i)).sum
+
+/-- Braun--Jal Proposition 3.2 as the target statement for the concrete finite
+Ferrers-board rook-polynomial model. -/
+def ferrersFirstColumnDeletionStatement : Prop :=
+  FerrersFirstColumnDeletionStatement ferrersRookPolynomial
+
 /-- A finite list sum of nonnegative-coefficient polynomials has nonnegative
 coefficients. -/
 private lemma listSum_hasNonnegCoeffs {ps : List ℝ[X]}
