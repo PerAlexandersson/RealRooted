@@ -153,15 +153,11 @@ lemma arg_eq_pi_of_real_complex_root_of_isPolyaFreqSeq_coeff {p : ℝ[X]} {z : �
   have hzre_neg : z.re < 0 := lt_of_le_of_ne hnonpos hzre_ne
   exact Complex.arg_eq_pi_iff.mpr ⟨hzre_neg, him⟩
 
-/-- Karlin's finite-order sector estimate for a nonreal complex root of a
-positive constant-coefficient PF polynomial.
-
-The checked algebraic inputs above provide the repeated totally nonnegative
-coefficient-window matrix, its full row rank from the positive constant
-coefficient, and the root-supplied kernel vector.  The remaining hard ingredient
-is the classical variation-diminishing/sign-regular kernel theorem. -/
-theorem aswKarlinSectorThreshold_le_abs_arg_of_im_ne_zero {p : ℝ[X]} {z : ℂ}
-    (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots)
+/-- Conditional Karlin finite-order sector estimate for a nonreal complex root,
+with the classical sign-variation input supplied explicitly. -/
+theorem aswKarlinSectorThreshold_le_abs_arg_of_im_ne_zero_of_classicalInput
+    (hclassical : AswKarlinKernelSignVariationClassicalInputStatement)
+    {p : ℝ[X]} {z : ℂ} (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots)
     (hdegree : 0 < p.natDegree) (hconst : 0 < p.coeff 0)
     (hpf : IsPolyaFreqSeq p.coeff) {order : ℕ} (horder : 0 < order)
     (him : z.im ≠ 0) :
@@ -178,8 +174,8 @@ theorem aswKarlinSectorThreshold_le_abs_arg_of_im_ne_zero {p : ℝ[X]} {z : ℂ}
       (hpf.nonneg p.natDegree).lt_of_ne (Ne.symm hlead_ne)
     have hsupport : ∀ k, p.natDegree < k → p.coeff k = 0 :=
       fun k hk => Polynomial.coeff_eq_zero_of_natDegree_lt hk
-    hpf.aswKarlinKernelSignVariationLowerBound p.natDegree order
-      hdegree horder hconst hlead hsupport
+    hpf.aswKarlinKernelSignVariationLowerBound_of_classicalInput
+      hclassical p.natDegree order hdegree horder hconst hlead hsupport
   have hker :
       aswKarlinMatrix p.coeff p.natDegree order 1 *ᵥ
         aswKarlinRootVector z p.natDegree order 1 = 0 :=
@@ -195,6 +191,38 @@ theorem aswKarlinSectorThreshold_le_abs_arg_of_im_ne_zero {p : ℝ[X]} {z : ℂ}
   exact aswSectorThreshold_le_abs_arg_of_karlin_matrix_kernel_of_threshold
     hdegree horder hkernelLower hker hvec_ne hsign
 
+/-- Karlin's finite-order sector estimate for a nonreal complex root of a
+positive constant-coefficient PF polynomial.
+
+The checked algebraic inputs above provide the repeated totally nonnegative
+coefficient-window matrix, its full row rank from the positive constant
+coefficient, and the root-supplied kernel vector.  The remaining hard ingredient
+is the classical variation-diminishing/sign-regular kernel theorem. -/
+theorem aswKarlinSectorThreshold_le_abs_arg_of_im_ne_zero {p : ℝ[X]} {z : ℂ}
+    (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots)
+    (hdegree : 0 < p.natDegree) (hconst : 0 < p.coeff 0)
+    (hpf : IsPolyaFreqSeq p.coeff) {order : ℕ} (horder : 0 < order)
+    (him : z.im ≠ 0) :
+    aswSectorThreshold p.natDegree order ≤ |z.arg| :=
+  aswKarlinSectorThreshold_le_abs_arg_of_im_ne_zero_of_classicalInput
+    aswKarlinKernelSignVariationClassicalInput hz hdegree hconst hpf horder
+    him
+
+/-- Conditional Karlin finite-order sector estimate for one complex root, with
+the classical sign-variation input supplied explicitly. -/
+theorem aswKarlinSectorThreshold_le_abs_arg_of_classicalInput
+    (hclassical : AswKarlinKernelSignVariationClassicalInputStatement)
+    {p : ℝ[X]} {z : ℂ} (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots)
+    (hdegree : 0 < p.natDegree) (hconst : 0 < p.coeff 0)
+    (hpf : IsPolyaFreqSeq p.coeff) {order : ℕ} (horder : 0 < order) :
+    aswSectorThreshold p.natDegree order ≤ |z.arg| := by
+  by_cases him : z.im = 0
+  · rw [arg_eq_pi_of_real_complex_root_of_isPolyaFreqSeq_coeff hz hconst hpf him,
+      abs_of_pos Real.pi_pos]
+    exact aswSectorThreshold_le_pi p.natDegree order hdegree horder
+  · exact aswKarlinSectorThreshold_le_abs_arg_of_im_ne_zero_of_classicalInput
+      hclassical hz hdegree hconst hpf horder him
+
 /-- Karlin's finite-order sector estimate for one complex root of a positive
 constant-coefficient PF polynomial.  The real-root branch follows from
 coefficient nonnegativity; the nonreal branch is the remaining
@@ -203,12 +231,8 @@ theorem aswKarlinSectorThreshold_le_abs_arg {p : ℝ[X]} {z : ℂ}
     (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots)
     (hdegree : 0 < p.natDegree) (hconst : 0 < p.coeff 0)
     (hpf : IsPolyaFreqSeq p.coeff) {order : ℕ} (horder : 0 < order) :
-    aswSectorThreshold p.natDegree order ≤ |z.arg| := by
-  by_cases him : z.im = 0
-  · rw [arg_eq_pi_of_real_complex_root_of_isPolyaFreqSeq_coeff hz hconst hpf him,
-      abs_of_pos Real.pi_pos]
-    exact aswSectorThreshold_le_pi p.natDegree order hdegree horder
-  · exact aswKarlinSectorThreshold_le_abs_arg_of_im_ne_zero hz hdegree hconst
-      hpf horder him
+    aswSectorThreshold p.natDegree order ≤ |z.arg| :=
+  aswKarlinSectorThreshold_le_abs_arg_of_classicalInput
+    aswKarlinKernelSignVariationClassicalInput hz hdegree hconst hpf horder
 
 end RealRooted

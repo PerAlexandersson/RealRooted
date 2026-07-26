@@ -281,16 +281,29 @@ theorem splits_of_forall_complex_root_aswSectorThreshold {p : ℝ[X]}
   simp
 
 /-- Karlin's finite-order sector estimate, in the threshold notation used by
+the ASW endgame, with the classical sign-variation input supplied explicitly.
+-/
+theorem aswSectorThreshold_le_abs_arg_of_isPolyaFreqSeq_coeff_of_classicalInput
+    (hclassical : AswKarlinKernelSignVariationClassicalInputStatement)
+    {p : ℝ[X]} {z : ℂ} (hdegree : 0 < p.natDegree)
+    (hconst : 0 < p.coeff 0) (hpf : IsPolyaFreqSeq p.coeff)
+    (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots) (order : ℕ) :
+    aswSectorThreshold p.natDegree order ≤ |z.arg| := by
+  by_cases horder : order = 0
+  · simp [aswSectorThreshold, horder]
+  · exact aswKarlinSectorThreshold_le_abs_arg_of_classicalInput hclassical
+      (p := p) (z := z) hz hdegree hconst hpf
+      (horder := Nat.pos_of_ne_zero horder)
+
+/-- Karlin's finite-order sector estimate, in the threshold notation used by
 the ASW endgame. -/
 theorem aswSectorThreshold_le_abs_arg_of_isPolyaFreqSeq_coeff {p : ℝ[X]} {z : ℂ}
     (hdegree : 0 < p.natDegree) (hconst : 0 < p.coeff 0)
     (hpf : IsPolyaFreqSeq p.coeff)
     (hz : z ∈ (p.map (algebraMap ℝ ℂ)).roots) (order : ℕ) :
-    aswSectorThreshold p.natDegree order ≤ |z.arg| := by
-  by_cases horder : order = 0
-  · simp [aswSectorThreshold, horder]
-  · exact aswKarlinSectorThreshold_le_abs_arg (p := p) (z := z) hz hdegree
-      hconst hpf (horder := Nat.pos_of_ne_zero horder)
+    aswSectorThreshold p.natDegree order ≤ |z.arg| :=
+  aswSectorThreshold_le_abs_arg_of_isPolyaFreqSeq_coeff_of_classicalInput
+    aswKarlinKernelSignVariationClassicalInput hdegree hconst hpf hz order
 
 /-! ### Reduction to positive constant coefficient -/
 

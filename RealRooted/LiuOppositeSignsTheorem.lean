@@ -20619,6 +20619,57 @@ def theorem21CompatibleRootCountNatDegreeLeThreeNonconstantStatement : Prop :=
       f.natDegree ≤ 3 → g.natDegree ≤ 3 →
         (Compatible f g ↔ theorem21RootCountBranches f g)
 
+/-- The bounded endpoint-degree-three package restricts to the ordinary
+low-degree statement with explicit endpoint degree bounds. -/
+theorem theorem21CompatibleRootCountNatDegreeLeThree_of_endpointLeThree
+    (h : theorem21CompatibleRootCountEndpointLeThreeStatement) :
+    theorem21CompatibleRootCountNatDegreeLeThreeStatement := by
+  intro f g hf hg hsgn hfdeg hgdeg
+  constructor
+  · exact (h f g hf hg hsgn).1
+  · intro hbranches
+    exact (h f g hf hg hsgn).2
+      (theorem21RootCountBranchesEndpointLeThree_of_natDegree_le_three
+        hfdeg hgdeg hbranches)
+
+/-- The bounded endpoint-degree-three package restricts to the nonconstant
+bounded endpoint-degree-three package. -/
+theorem theorem21CompatibleRootCountEndpointLeThreeNonconstant_of_endpointLeThree
+    (h : theorem21CompatibleRootCountEndpointLeThreeStatement) :
+    theorem21CompatibleRootCountEndpointLeThreeNonconstantStatement := by
+  intro f g hf hg hsgn _hfdeg_ne _hgdeg_ne
+  exact h f g hf hg hsgn
+
+/-- The ordinary low-degree Liu package restricts to its nonconstant form. -/
+theorem theorem21CompatibleRootCountNatDegreeLeThreeNonconstant_of_natDegreeLeThree
+    (h : theorem21CompatibleRootCountNatDegreeLeThreeStatement) :
+    theorem21CompatibleRootCountNatDegreeLeThreeNonconstantStatement := by
+  intro f g hf hg hsgn _hfdeg_ne _hgdeg_ne hfdeg hgdeg
+  exact h f g hf hg hsgn hfdeg hgdeg
+
+/-- The bounded endpoint-degree-three nonconstant package restricts to the
+ordinary nonconstant low-degree statement with explicit endpoint degree bounds.
+-/
+theorem
+    theorem21CompatibleRootCountNatDegreeLeThreeNonconstant_of_endpointLeThreeNonconstant
+    (h : theorem21CompatibleRootCountEndpointLeThreeNonconstantStatement) :
+    theorem21CompatibleRootCountNatDegreeLeThreeNonconstantStatement := by
+  intro f g hf hg hsgn hfdeg_ne hgdeg_ne hfdeg hgdeg
+  constructor
+  · exact (h f g hf hg hsgn hfdeg_ne hgdeg_ne).1
+  · intro hbranches
+    exact (h f g hf hg hsgn hfdeg_ne hgdeg_ne).2
+      (theorem21RootCountBranchesEndpointLeThree_of_natDegree_le_three
+        hfdeg hgdeg hbranches)
+
+/-- The bounded endpoint-degree-three package restricts directly to the
+ordinary nonconstant low-degree statement. -/
+theorem theorem21CompatibleRootCountNatDegreeLeThreeNonconstant_of_endpointLeThree
+    (h : theorem21CompatibleRootCountEndpointLeThreeStatement) :
+    theorem21CompatibleRootCountNatDegreeLeThreeNonconstantStatement :=
+  theorem21CompatibleRootCountNatDegreeLeThreeNonconstant_of_natDegreeLeThree
+    (theorem21CompatibleRootCountNatDegreeLeThree_of_endpointLeThree h)
+
 /-- Reassemble the bounded endpoint-degree-three theorem package from the full
 forward direction and the bounded reverse direction. -/
 theorem theorem21CompatibleRootCountEndpointLeThree_of_forward_and_reverse
