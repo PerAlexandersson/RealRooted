@@ -177,5 +177,27 @@ theorem modifiedNarayanaCoeffPolynomial_one_interlaces_two :
     rw [modifiedNarayanaCoeffPolynomial_natDegree,
       modifiedNarayanaCoeffPolynomial_natDegree])
 
+/-- Base case `n = 1` of Braun--Jal equation (2), for the coefficient-side
+modified Narayana family and the finite-board auxiliary `G`. -/
+theorem narayanaCoeffAuxiliaryGRecurrence_modified_base :
+    X * FiniteSkewBoard.auxiliaryG 0 =
+      modifiedNarayanaCoeffPolynomial 1 -
+        (1 + X) * modifiedNarayanaCoeffPolynomial 0 := by
+  rw [FiniteSkewBoard.auxiliaryG_zero]
+  simp
+
+/-- The `n = 2` case of Braun--Jal equation (2), for the coefficient-side
+modified Narayana family and the finite-board auxiliary `G`. -/
+theorem narayanaCoeffAuxiliaryGRecurrence_modified_two :
+    X * FiniteSkewBoard.auxiliaryG 1 =
+      modifiedNarayanaCoeffPolynomial 2 -
+        (1 + X) * modifiedNarayanaCoeffPolynomial 1 := by
+  rw [FiniteSkewBoard.auxiliaryG_one, modifiedNarayanaCoeffPolynomial_one,
+    modifiedNarayanaCoeffPolynomial_two]
+  have hC3 : (C (3 : ℝ) : ℝ[X]) = 3 :=
+    Polynomial.C_eq_natCast (R := ℝ) 3
+  rw [hC3]
+  ring_nf
+
 end GeneralizedSnakePosets
 end RealRooted
