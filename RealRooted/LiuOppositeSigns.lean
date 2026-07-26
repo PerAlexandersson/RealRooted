@@ -156,6 +156,43 @@ theorem RootCountCompatible.natDegree_abs_sub_le_one {p q : ℝ[X]}
     card_roots_of_splits hq_splits] at hgap
   exact hgap
 
+theorem rootCountAtOrAbove_le_natDegree_of_splits {p : ℝ[X]}
+    (hp_splits : p.Splits) (x : ℝ) :
+    rootCountAtOrAbove p x ≤ p.natDegree := by
+  have hfilter_le :
+      (p.roots.filter (fun r => x ≤ r)).card ≤ p.roots.card :=
+    Multiset.card_le_card (Multiset.filter_le (fun r => x ≤ r) p.roots)
+  simpa [rootCountAtOrAbove, card_roots_of_splits hp_splits] using hfilter_le
+
+theorem rootCountAtOrAbove_eq_zero_of_splits_natDegree_eq_zero {p : ℝ[X]}
+    (hp_splits : p.Splits) (hpdeg : p.natDegree = 0) (x : ℝ) :
+    rootCountAtOrAbove p x = 0 := by
+  exact Nat.eq_zero_of_le_zero
+    (by simpa [hpdeg] using rootCountAtOrAbove_le_natDegree_of_splits hp_splits x)
+
+theorem RootCountCompatible.of_left_natDegree_zero_right_natDegree_le_one
+    {p q : ℝ[X]} (hp_splits : p.Splits) (hq_splits : q.Splits)
+    (hpdeg : p.natDegree = 0) (hqdeg : q.natDegree ≤ 1) :
+    RootCountCompatible p q := by
+  intro x
+  have hp_count :
+      rootCountAtOrAbove p x = 0 :=
+    rootCountAtOrAbove_eq_zero_of_splits_natDegree_eq_zero
+      hp_splits hpdeg x
+  have hq_le : rootCountAtOrAbove q x ≤ 1 :=
+    (rootCountAtOrAbove_le_natDegree_of_splits hq_splits x).trans hqdeg
+  have hq_nonneg : (0 : ℤ) ≤ (rootCountAtOrAbove q x : ℤ) := by
+    exact_mod_cast Nat.zero_le (rootCountAtOrAbove q x)
+  have hq_le_int : (rootCountAtOrAbove q x : ℤ) ≤ 1 := by
+    exact_mod_cast hq_le
+  calc
+    |((rootCountAtOrAbove p x : ℤ) - (rootCountAtOrAbove q x : ℤ))|
+        = |(rootCountAtOrAbove q x : ℤ)| := by
+          rw [hp_count]
+          simp
+    _ = (rootCountAtOrAbove q x : ℤ) := abs_of_nonneg hq_nonneg
+    _ ≤ 1 := hq_le_int
+
 /-- The leading coefficients have opposite signs. -/
 def OppositeLeadingSigns (p q : ℝ[X]) : Prop :=
   p.leadingCoeff * q.leadingCoeff < 0

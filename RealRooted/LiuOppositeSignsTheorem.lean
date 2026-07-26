@@ -314,6 +314,53 @@ theorem compatible_iff_theorem21RootCountBranches_symm_nonconstant
     compatible_of_theorem21RootCountBranches_symm_nonconstant h hf hg hsgn
       hf_deg hg_deg⟩
 
+/-- In the nonconstant degree-one endpoint case, Liu's largest-root deletion
+branch condition is automatic: deleting one endpoint leaves a degree-zero
+polynomial, while the other endpoint has at most one root above any threshold.
+-/
+theorem theorem21RootCountBranches_of_natDegree_le_one_nonconstant
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g)
+    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
+    (hf_le : f.natDegree ≤ 1) (hg_le : g.natDegree ≤ 1) :
+    theorem21RootCountBranches f g := by
+  obtain ⟨r, s, hr, hs⟩ :=
+    exists_largestRoots hf hg hsgn hf_deg hg_deg
+  have hf_eq : f.natDegree = 1 :=
+    le_antisymm hf_le (Nat.succ_le_of_lt (Nat.pos_of_ne_zero hf_deg))
+  have hg_eq : g.natDegree = 1 :=
+    le_antisymm hg_le (Nat.succ_le_of_lt (Nat.pos_of_ne_zero hg_deg))
+  by_cases hs_le_r : s ≤ r
+  · refine theorem21RootCountBranches_of_left
+      ⟨hr, hs, hs_le_r, ?_⟩
+    have hdelete_splits : (deleteRootFactor f r).Splits :=
+      hr.deleteRootFactor_splits hf
+    have hdelete_deg : (deleteRootFactor f r).natDegree = 0 := by
+      rw [natDegree_deleteRootFactor, hf_eq]
+    exact RootCountCompatible.of_left_natDegree_zero_right_natDegree_le_one
+      hdelete_splits hg hdelete_deg hg_le
+  · refine theorem21RootCountBranches_of_right
+      ⟨hr, hs, lt_of_not_ge hs_le_r, ?_⟩
+    have hdelete_splits : (deleteRootFactor g s).Splits :=
+      hs.deleteRootFactor_splits hg
+    have hdelete_deg : (deleteRootFactor g s).natDegree = 0 := by
+      rw [natDegree_deleteRootFactor, hg_eq]
+    exact (RootCountCompatible.of_left_natDegree_zero_right_natDegree_le_one
+      hdelete_splits hf hdelete_deg hf_le).symm
+
+/-- Low-degree endpoint forward direction for the nonconstant degree-one case.
+The compatibility hypothesis is retained to match the Liu Theorem 2.1 forward
+shape, although the root-count branch condition follows from degree alone. -/
+theorem theorem21RootCountBranches_of_compatible_natDegree_le_one_nonconstant
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g)
+    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0)
+    (hf_le : f.natDegree ≤ 1) (hg_le : g.natDegree ≤ 1)
+    (_hcompat : Compatible f g) :
+    theorem21RootCountBranches f g :=
+  theorem21RootCountBranches_of_natDegree_le_one_nonconstant
+    hf hg hsgn hf_deg hg_deg hf_le hg_le
+
 /-- The isolated forward direction of Liu Theorem 2.1 gives the pointwise
 root-count gap bound. -/
 theorem rootCountAtOrAbove_abs_sub_le_two_of_compatible_of_forward
@@ -20618,6 +20665,31 @@ def theorem21CompatibleRootCountNatDegreeLeThreeNonconstantStatement : Prop :=
     f.natDegree ≠ 0 → g.natDegree ≠ 0 →
       f.natDegree ≤ 3 → g.natDegree ≤ 3 →
         (Compatible f g ↔ theorem21RootCountBranches f g)
+
+/-- Nonconstant linear-endpoint Liu Theorem 2.1 package.  This is a checked
+base case for the forward direction together with the existing low-degree
+reverse route. -/
+def theorem21CompatibleRootCountNatDegreeLeOneNonconstantStatement : Prop :=
+  ∀ f g : ℝ[X], f.Splits → g.Splits → OppositeLeadingSigns f g →
+    f.natDegree ≠ 0 → g.natDegree ≠ 0 →
+      f.natDegree ≤ 1 → g.natDegree ≤ 1 →
+        (Compatible f g ↔ theorem21RootCountBranches f g)
+
+/-- The nonconstant linear-endpoint case of Liu Theorem 2.1 is fully checked:
+the forward branch condition follows by root counting after deleting the
+unique largest root, and the reverse implication is the existing degree-three
+reverse route. -/
+theorem theorem21CompatibleRootCountNatDegreeLeOneNonconstant :
+    theorem21CompatibleRootCountNatDegreeLeOneNonconstantStatement := by
+  intro f g hf hg hsgn hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le
+  constructor
+  · exact theorem21RootCountBranches_of_compatible_natDegree_le_one_nonconstant
+      hf hg hsgn hfdeg_ne hgdeg_ne hfdeg_le hgdeg_le
+  · intro hbranches
+    exact theorem21RootCountBranchesToCompatibleNonconstant_of_natDegree_le_three
+      hf hg hsgn hfdeg_ne hgdeg_ne
+      (hfdeg_le.trans (by norm_num)) (hgdeg_le.trans (by norm_num))
+      hbranches
 
 /-- The bounded endpoint-degree-three package restricts to the ordinary
 low-degree statement with explicit endpoint degree bounds. -/
