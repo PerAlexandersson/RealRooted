@@ -393,6 +393,56 @@ def rookPolynomial (B : FiniteSkewBoard) : ℝ[X] := by
     B.IsNonNestingPlacement ∅ := by
   simp [IsNonNestingPlacement]
 
+/-- A singleton cell is a non-nesting placement when it lies in the board. -/
+private lemma isNonNestingPlacement_singleton {B : FiniteSkewBoard} {a : ℕ × ℕ}
+    (ha : a ∈ B.cells) :
+    B.IsNonNestingPlacement ({a} : Finset (ℕ × ℕ)) := by
+  refine ⟨?_, ?_, ?_⟩
+  · intro x hx
+    rw [Finset.mem_singleton] at hx
+    rw [hx]
+    exact ha
+  · intro x hx y hy hne
+    rw [Finset.mem_singleton] at hx hy
+    rw [hx, hy] at hne
+    exact (hne rfl).elim
+  · intro x hx y hy hlt
+    rw [Finset.mem_singleton] at hx hy
+    rw [hx, hy] at hlt
+    exact (Nat.lt_irrefl _ hlt).elim
+
+/-- A two-cell set is a non-nesting placement when the two cells lie in the
+board, are in different rows, and satisfy the decreasing-column condition. -/
+private lemma isNonNestingPlacement_pair {B : FiniteSkewBoard} (a b : ℕ × ℕ)
+    (ha : a ∈ B.cells) (hb : b ∈ B.cells) (hrow : a.1 ≠ b.1)
+    (hcol_ab : a.1 < b.1 → b.2 < a.2)
+    (hcol_ba : b.1 < a.1 → a.2 < b.2) :
+    B.IsNonNestingPlacement ({a, b} : Finset (ℕ × ℕ)) := by
+  refine ⟨?_, ?_, ?_⟩
+  · intro x hx
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+    rcases hx with rfl | rfl
+    · exact ha
+    · exact hb
+  · intro x hx y hy hne
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hx hy
+    rcases hx with rfl | rfl
+    · rcases hy with rfl | rfl
+      · exact (hne rfl).elim
+      · exact hrow
+    · rcases hy with rfl | rfl
+      · exact hrow.symm
+      · exact (hne rfl).elim
+  · intro x hx y hy hlt
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hx hy
+    rcases hx with rfl | rfl
+    · rcases hy with rfl | rfl
+      · exact (Nat.lt_irrefl _ hlt).elim
+      · exact hcol_ab hlt
+    · rcases hy with rfl | rfl
+      · exact hcol_ba hlt
+      · exact (Nat.lt_irrefl _ hlt).elim
+
 /-- Powers of `X` have nonnegative coefficients. -/
 private lemma xPow_hasNonnegCoeffs (n : ℕ) :
     HasNonnegCoeffs ((X : ℝ[X]) ^ n) := by
@@ -695,6 +745,112 @@ def truncatedStaircaseRookPolynomial (n i : ℕ) : ℝ[X] :=
   rw [hC3]
   ring_nf
 
+/-- The two-row truncated staircase with row lengths three and two has rook
+polynomial `1 + 5X + 3X^2`. -/
+@[simp] theorem truncatedStaircaseRookPolynomial_three_two :
+    truncatedStaircaseRookPolynomial 3 2 =
+      1 + C (5 : ℝ) * X + C (3 : ℝ) * X ^ 2 := by
+  classical
+  let placements : List (Finset (ℕ × ℕ)) :=
+    [∅, {(0, 0)}, {(0, 1)}, {(0, 2)}, {(1, 0)}, {(1, 1)},
+      {(0, 1), (1, 0)}, {(0, 2), (1, 0)}, {(0, 2), (1, 1)}]
+  have hplacements_nodup : placements.Nodup := by
+    decide
+  have hplacements_toFinset :
+      ({∅, {(0, 0)}, {(0, 1)}, {(0, 2)}, {(1, 0)}, {(1, 1)},
+        {(0, 1), (1, 0)}, {(0, 2), (1, 0)}, {(0, 2), (1, 1)}} :
+        Finset (Finset (ℕ × ℕ))) = placements.toFinset := by
+    decide
+  have hcells :
+      (truncatedStaircase 3 2).cells =
+        ({(0, 0), (0, 1), (0, 2), (1, 0), (1, 1)} : Finset (ℕ × ℕ)) := by
+    decide
+  have hvalid00 :
+      (truncatedStaircase 3 2).IsNonNestingPlacement
+        ({(0, 0)} : Finset (ℕ × ℕ)) := by
+    exact isNonNestingPlacement_singleton (by rw [hcells]; simp)
+  have hvalid01 :
+      (truncatedStaircase 3 2).IsNonNestingPlacement
+        ({(0, 1)} : Finset (ℕ × ℕ)) := by
+    exact isNonNestingPlacement_singleton (by rw [hcells]; simp)
+  have hvalid02 :
+      (truncatedStaircase 3 2).IsNonNestingPlacement
+        ({(0, 2)} : Finset (ℕ × ℕ)) := by
+    exact isNonNestingPlacement_singleton (by rw [hcells]; simp)
+  have hvalid10 :
+      (truncatedStaircase 3 2).IsNonNestingPlacement
+        ({(1, 0)} : Finset (ℕ × ℕ)) := by
+    exact isNonNestingPlacement_singleton (by rw [hcells]; simp)
+  have hvalid11 :
+      (truncatedStaircase 3 2).IsNonNestingPlacement
+        ({(1, 1)} : Finset (ℕ × ℕ)) := by
+    exact isNonNestingPlacement_singleton (by rw [hcells]; simp)
+  have hvalid01_10 :
+      (truncatedStaircase 3 2).IsNonNestingPlacement
+        ({(0, 1), (1, 0)} : Finset (ℕ × ℕ)) := by
+    refine isNonNestingPlacement_pair (0, 1) (1, 0) (by rw [hcells]; simp)
+      (by rw [hcells]; simp) ?_ ?_ ?_
+    · norm_num
+    · intro _
+      norm_num
+    · intro h
+      norm_num at h
+  have hvalid02_10 :
+      (truncatedStaircase 3 2).IsNonNestingPlacement
+        ({(0, 2), (1, 0)} : Finset (ℕ × ℕ)) := by
+    refine isNonNestingPlacement_pair (0, 2) (1, 0) (by rw [hcells]; simp)
+      (by rw [hcells]; simp) ?_ ?_ ?_
+    · norm_num
+    · intro _
+      norm_num
+    · intro h
+      norm_num at h
+  have hvalid02_11 :
+      (truncatedStaircase 3 2).IsNonNestingPlacement
+        ({(0, 2), (1, 1)} : Finset (ℕ × ℕ)) := by
+    refine isNonNestingPlacement_pair (0, 2) (1, 1) (by rw [hcells]; simp)
+      (by rw [hcells]; simp) ?_ ?_ ?_
+    · norm_num
+    · intro _
+      norm_num
+    · intro h
+      norm_num at h
+  have hplacements :
+      (truncatedStaircase 3 2).cells.powerset.filter
+        (fun P => (truncatedStaircase 3 2).IsNonNestingPlacement P) =
+        ({∅, {(0, 0)}, {(0, 1)}, {(0, 2)}, {(1, 0)}, {(1, 1)},
+          {(0, 1), (1, 0)}, {(0, 2), (1, 0)}, {(0, 2), (1, 1)}} :
+          Finset (Finset (ℕ × ℕ))) := by
+    rw [hcells]
+    ext P
+    constructor
+    · intro hmem
+      rw [Finset.mem_filter] at hmem
+      have hsub := hmem.1
+      fin_cases hsub <;>
+        simp [IsNonNestingPlacement] at hmem <;>
+        try decide
+    · intro hmem
+      simp only [Finset.mem_insert, Finset.mem_singleton] at hmem
+      rcases hmem with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl
+      · exact Finset.mem_filter.mpr ⟨by simp, isNonNestingPlacement_empty _⟩
+      · exact Finset.mem_filter.mpr ⟨by simp, hvalid00⟩
+      · exact Finset.mem_filter.mpr ⟨by simp, hvalid01⟩
+      · exact Finset.mem_filter.mpr ⟨by simp, hvalid02⟩
+      · exact Finset.mem_filter.mpr ⟨by simp, hvalid10⟩
+      · exact Finset.mem_filter.mpr ⟨by simp, hvalid11⟩
+      · exact Finset.mem_filter.mpr ⟨by decide, hvalid01_10⟩
+      · exact Finset.mem_filter.mpr ⟨by decide, hvalid02_10⟩
+      · exact Finset.mem_filter.mpr ⟨by decide, hvalid02_11⟩
+  rw [truncatedStaircaseRookPolynomial, rookPolynomial, hplacements,
+    hplacements_toFinset]
+  rw [List.sum_toFinset _ hplacements_nodup]
+  norm_num [placements]
+  have hC3 : (C (3 : ℝ) : ℝ[X]) = 3 := Polynomial.C_eq_natCast (R := ℝ) 3
+  have hC5 : (C (5 : ℝ) : ℝ[X]) = 5 := Polynomial.C_eq_natCast (R := ℝ) 5
+  rw [hC3, hC5]
+  ring_nf
+
 /-- Truncated-staircase rook polynomials are nonzero. -/
 theorem truncatedStaircaseRookPolynomial_ne_zero (n i : ℕ) :
     truncatedStaircaseRookPolynomial n i ≠ 0 :=
@@ -722,6 +878,20 @@ def auxiliaryG : ℕ → ℝ[X] :=
   simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, add_zero]
   rw [truncatedStaircaseRookPolynomial_zero_rows,
     truncatedStaircaseRookPolynomial_two_one]
+  ring_nf
+
+/-- The finite-board auxiliary polynomial `G_3` is `3 + 8X + 3X^2`. -/
+@[simp] theorem auxiliaryG_three :
+    auxiliaryG 3 = 3 + C (8 : ℝ) * X + C (3 : ℝ) * X ^ 2 := by
+  rw [auxiliaryG, show List.range 3 = [0, 1, 2] by rfl]
+  simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, add_zero]
+  rw [truncatedStaircaseRookPolynomial_zero_rows,
+    truncatedStaircaseRookPolynomial_three_one,
+    truncatedStaircaseRookPolynomial_three_two]
+  have hC3 : (C (3 : ℝ) : ℝ[X]) = 3 := Polynomial.C_eq_natCast (R := ℝ) 3
+  have hC5 : (C (5 : ℝ) : ℝ[X]) = 5 := Polynomial.C_eq_natCast (R := ℝ) 5
+  have hC8 : (C (8 : ℝ) : ℝ[X]) = 8 := Polynomial.C_eq_natCast (R := ℝ) 8
+  rw [hC3, hC5, hC8]
   ring_nf
 
 /-- The finite-board version of `G_n` has nonnegative coefficients. -/

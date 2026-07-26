@@ -260,6 +260,15 @@ theorem narayanaCoeffAuxiliaryGRecurrence_modified_four_of_auxiliaryG_three
   rw [hC3, hC6, hC8, hC10, hC20]
   ring_nf
 
+/-- The `n = 4` case of Braun--Jal equation (2), for the coefficient-side
+modified Narayana family and the finite-board auxiliary `G`. -/
+theorem narayanaCoeffAuxiliaryGRecurrence_modified_four :
+    X * FiniteSkewBoard.auxiliaryG 3 =
+      modifiedNarayanaCoeffPolynomial 4 -
+        (1 + X) * modifiedNarayanaCoeffPolynomial 3 :=
+  narayanaCoeffAuxiliaryGRecurrence_modified_four_of_auxiliaryG_three
+    FiniteSkewBoard.auxiliaryG_three
+
 /-- The `m = 1` generalized Narayana polynomials satisfy the same normalized
 recurrence as the quotient-style modified Narayana sequence. -/
 theorem narayanaPolynomial_one_succ_succ (n : ℕ) :
@@ -388,6 +397,15 @@ theorem narayanaAuxiliaryGRecurrence_modified_four_of_auxiliaryG_three
     modifiedNarayanaPolynomial_eq_coeffPolynomial 4]
   exact narayanaCoeffAuxiliaryGRecurrence_modified_four_of_auxiliaryG_three hG3
 
+/-- The `n = 4` case of Braun--Jal equation (2), for the quotient-style
+modified Narayana family and the finite-board auxiliary `G`. -/
+theorem narayanaAuxiliaryGRecurrence_modified_four :
+    X * FiniteSkewBoard.auxiliaryG 3 =
+      modifiedNarayanaPolynomial 4 -
+        (1 + X) * modifiedNarayanaPolynomial 3 :=
+  narayanaAuxiliaryGRecurrence_modified_four_of_auxiliaryG_three
+    FiniteSkewBoard.auxiliaryG_three
+
 /-- The checked initial cases `n = 1, 2` of Braun--Jal equation (2), for the
 quotient-style modified Narayana family and the finite-board auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_of_le_two
@@ -426,6 +444,17 @@ theorem narayanaAuxiliaryGRecurrence_modified_of_le_four_of_auxiliaryG_three
   · exact narayanaAuxiliaryGRecurrence_modified_two
   · exact narayanaAuxiliaryGRecurrence_modified_three
   · exact narayanaAuxiliaryGRecurrence_modified_four_of_auxiliaryG_three hG3
+
+/-- The checked initial cases `n = 1, 2, 3, 4` of Braun--Jal equation (2),
+for the quotient-style modified Narayana family and the finite-board
+auxiliary `G`. -/
+theorem narayanaAuxiliaryGRecurrence_modified_of_le_four
+    {n : ℕ} (hn₁ : 1 ≤ n) (hn₄ : n ≤ 4) :
+    X * FiniteSkewBoard.auxiliaryG (n - 1) =
+      modifiedNarayanaPolynomial n -
+        (1 + X) * modifiedNarayanaPolynomial (n - 1) := by
+  exact narayanaAuxiliaryGRecurrence_modified_of_le_four_of_auxiliaryG_three
+    FiniteSkewBoard.auxiliaryG_three hn₁ hn₄
 
 /-- Unconditional consecutive proper position for the modified Narayana
 family. -/
