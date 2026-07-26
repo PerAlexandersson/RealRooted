@@ -558,10 +558,20 @@ def truncatedStaircase (n i : ℕ) : FiniteSkewBoard where
 def truncatedStaircaseRookPolynomial (n i : ℕ) : ℝ[X] :=
   (truncatedStaircase n i).rookPolynomial
 
+/-- The truncated staircase with zero rows is the empty board. -/
+@[simp] theorem truncatedStaircase_zero_rows (n : ℕ) :
+    truncatedStaircase n 0 = empty := by
+  simp [truncatedStaircase, empty]
+
 /-- Truncated-staircase rook polynomials have constant coefficient one. -/
 @[simp] theorem truncatedStaircaseRookPolynomial_coeff_zero (n i : ℕ) :
     (truncatedStaircaseRookPolynomial n i).coeff 0 = 1 :=
   rookPolynomial_coeff_zero _
+
+/-- The zero-row truncated-staircase rook polynomial is one. -/
+@[simp] theorem truncatedStaircaseRookPolynomial_zero_rows (n : ℕ) :
+    truncatedStaircaseRookPolynomial n 0 = 1 := by
+  simp [truncatedStaircaseRookPolynomial]
 
 /-- Truncated-staircase rook polynomials are nonzero. -/
 theorem truncatedStaircaseRookPolynomial_ne_zero (n i : ℕ) :
@@ -572,6 +582,16 @@ theorem truncatedStaircaseRookPolynomial_ne_zero (n i : ℕ) :
 rook polynomials. -/
 def auxiliaryG : ℕ → ℝ[X] :=
   fun n => ((List.range n).map fun i => truncatedStaircaseRookPolynomial n i).sum
+
+/-- The finite-board auxiliary polynomial `G_0` is zero. -/
+@[simp] theorem auxiliaryG_zero :
+    auxiliaryG 0 = 0 := by
+  simp [auxiliaryG]
+
+/-- The finite-board auxiliary polynomial `G_1` is one. -/
+@[simp] theorem auxiliaryG_one :
+    auxiliaryG 1 = 1 := by
+  simp [auxiliaryG]
 
 /-- The finite-board version of `G_n` has nonnegative coefficients. -/
 theorem auxiliaryG_hasNonnegCoeffs (n : ℕ) :

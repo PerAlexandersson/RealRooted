@@ -26,6 +26,11 @@ def modifiedNarayanaPolynomial (n : ℕ) : ℝ[X] :=
     modifiedNarayanaPolynomial 0 = 1 := by
   simp [modifiedNarayanaPolynomial]
 
+@[simp] theorem modifiedNarayanaPolynomial_one :
+    modifiedNarayanaPolynomial 1 = 1 + X := by
+  norm_num [modifiedNarayanaPolynomial, narayanaQuot_two, narayanaCoeffA,
+    narayanaCoeffB]
+
 /-- The modified Narayana polynomial `P_n` has degree `n`. -/
 theorem modifiedNarayanaPolynomial_natDegree (n : ℕ) :
     (modifiedNarayanaPolynomial n).natDegree = n := by
@@ -75,6 +80,14 @@ theorem modifiedNarayanaPolynomial_interlaces_succ_of_nonnegCoeffs
       (modifiedNarayanaPolynomial (n + 1)) := by
   simpa [modifiedNarayanaPolynomial] using
     (interlaces_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg)
+
+/-- Base case `n = 1` of Braun--Jal equation (2), for the concrete modified
+Narayana family and the finite-board auxiliary `G`. -/
+theorem narayanaAuxiliaryGRecurrence_modified_base :
+    X * FiniteSkewBoard.auxiliaryG 0 =
+      modifiedNarayanaPolynomial 1 - (1 + X) * modifiedNarayanaPolynomial 0 := by
+  rw [FiniteSkewBoard.auxiliaryG_zero]
+  simp
 
 end GeneralizedSnakePosets
 end RealRooted
