@@ -1,5 +1,6 @@
 import RealRooted.CombinatorialExamples.Narayana
 import RealRooted.GeneralizedSnakePosets
+import RealRooted.NarayanaTransformation
 
 /-!
 # Narayana inputs for generalized snake posets
@@ -109,6 +110,72 @@ theorem narayanaAuxiliaryGRecurrence_modified_base :
       modifiedNarayanaPolynomial 1 - (1 + X) * modifiedNarayanaPolynomial 0 := by
   rw [FiniteSkewBoard.auxiliaryG_zero]
   simp
+
+/-! ## Coefficient-side modified Narayana family -/
+
+/-- Coefficient-side model of the modified Narayana family, using the already
+formalized generalized Narayana polynomial with `m = 1`. -/
+def modifiedNarayanaCoeffPolynomial (n : ℕ) : ℝ[X] :=
+  narayanaPolynomial 1 n
+
+/-- The coefficient-side modified Narayana polynomial has nonnegative
+coefficients. -/
+theorem modifiedNarayanaCoeffPolynomial_hasNonnegCoeffs (n : ℕ) :
+    HasNonnegCoeffs (modifiedNarayanaCoeffPolynomial n) :=
+  hasNonnegCoeffs_narayanaPolynomial 1 n
+
+/-- The coefficient-side modified Narayana polynomial has degree `n`. -/
+theorem modifiedNarayanaCoeffPolynomial_natDegree (n : ℕ) :
+    (modifiedNarayanaCoeffPolynomial n).natDegree = n :=
+  natDegree_narayanaPolynomial 1 n
+
+/-- The coefficient-side modified Narayana polynomial is monic. -/
+theorem modifiedNarayanaCoeffPolynomial_leadingCoeff (n : ℕ) :
+    (modifiedNarayanaCoeffPolynomial n).leadingCoeff = 1 :=
+  leadingCoeff_narayanaPolynomial 1 n
+
+/-- Coefficient-side modified Narayana polynomials are nonzero. -/
+theorem modifiedNarayanaCoeffPolynomial_ne_zero (n : ℕ) :
+    modifiedNarayanaCoeffPolynomial n ≠ 0 :=
+  narayanaPolynomial_ne_zero 1 n
+
+/-- Coefficient-side modified Narayana polynomials have positive leading
+coefficient. -/
+theorem modifiedNarayanaCoeffPolynomial_posLeadingCoeff (n : ℕ) :
+    HasPosLeadingCoeff (modifiedNarayanaCoeffPolynomial n) :=
+  hasPosLeadingCoeff_narayanaPolynomial 1 n
+
+@[simp] theorem modifiedNarayanaCoeffPolynomial_zero :
+    modifiedNarayanaCoeffPolynomial 0 = 1 := by
+  simp [modifiedNarayanaCoeffPolynomial]
+
+@[simp] theorem modifiedNarayanaCoeffPolynomial_one :
+    modifiedNarayanaCoeffPolynomial 1 = 1 + X := by
+  rw [modifiedNarayanaCoeffPolynomial, narayanaPolynomial_one]
+  simp [add_comm]
+
+@[simp] theorem modifiedNarayanaCoeffPolynomial_two :
+    modifiedNarayanaCoeffPolynomial 2 = 1 + C (3 : ℝ) * X + X ^ 2 := by
+  rw [modifiedNarayanaCoeffPolynomial, narayanaPolynomial_two]
+  norm_num
+  ring_nf
+
+/-- The first nontrivial proper-position check for the coefficient-side
+modified Narayana family. -/
+theorem modifiedNarayanaCoeffPolynomial_one_prec_two :
+    Prec (modifiedNarayanaCoeffPolynomial 1)
+      (modifiedNarayanaCoeffPolynomial 2) := by
+  simpa [modifiedNarayanaCoeffPolynomial] using
+    (prec_narayanaPolynomial_one_two 1)
+
+/-- The first nontrivial interlacing check for the coefficient-side modified
+Narayana family. -/
+theorem modifiedNarayanaCoeffPolynomial_one_interlaces_two :
+    Interlaces (modifiedNarayanaCoeffPolynomial 1)
+      (modifiedNarayanaCoeffPolynomial 2) :=
+  modifiedNarayanaCoeffPolynomial_one_prec_two.toInterlaces (by
+    rw [modifiedNarayanaCoeffPolynomial_natDegree,
+      modifiedNarayanaCoeffPolynomial_natDegree])
 
 end GeneralizedSnakePosets
 end RealRooted
