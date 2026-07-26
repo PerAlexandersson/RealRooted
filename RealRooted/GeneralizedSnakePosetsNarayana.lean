@@ -81,6 +81,27 @@ theorem modifiedNarayanaPolynomial_interlaces_succ_of_nonnegCoeffs
   simpa [modifiedNarayanaPolynomial] using
     (interlaces_narayanaQuot_succ_of_nonnegCoeffs (n + 1) (by lia) hnonneg)
 
+/-- Base interlacing between the first two modified Narayana polynomials. -/
+theorem modifiedNarayanaPolynomial_zero_interlaces_one :
+    Interlaces (modifiedNarayanaPolynomial 0) (modifiedNarayanaPolynomial 1) := by
+  rw [modifiedNarayanaPolynomial_zero, modifiedNarayanaPolynomial_one]
+  simpa [add_comm] using
+    interlaces_one_linear (p := X + C (1 : ℝ))
+      (Polynomial.natDegree_X_add_C (x := (1 : ℝ)))
+
+/-- Base proper-position relation between the first two modified Narayana
+polynomials. -/
+theorem modifiedNarayanaPolynomial_zero_prec_one :
+    Prec (modifiedNarayanaPolynomial 0) (modifiedNarayanaPolynomial 1) :=
+  modifiedNarayanaPolynomial_zero_interlaces_one.toPrec
+
+/-- The `n = 1` base case of Braun--Jal Lemma 3.3, for the concrete modified
+Narayana family and the finite-board auxiliary `G`. -/
+theorem lemma33AuxiliaryGInterlaces_modified_base :
+    Prec (FiniteSkewBoard.auxiliaryG 1) (modifiedNarayanaPolynomial 1) := by
+  simpa [FiniteSkewBoard.auxiliaryG_one] using
+    modifiedNarayanaPolynomial_zero_prec_one
+
 /-- Base case `n = 1` of Braun--Jal equation (2), for the concrete modified
 Narayana family and the finite-board auxiliary `G`. -/
 theorem narayanaAuxiliaryGRecurrence_modified_base :
