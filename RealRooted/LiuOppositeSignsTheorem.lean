@@ -20751,6 +20751,22 @@ def theorem21CompatibleRootCountNatDegreeLeThreeNonconstantStatement : Prop :=
       f.natDegree ≤ 3 → g.natDegree ≤ 3 →
         (Compatible f g ↔ theorem21RootCountBranches f g)
 
+/-- Low-degree Liu Theorem 2.1 package through endpoint degree two, stated
+with the ordinary branch predicate and explicit endpoint degree bounds. -/
+def theorem21CompatibleRootCountNatDegreeLeTwoStatement : Prop :=
+  ∀ f g : ℝ[X], f.Splits → g.Splits → OppositeLeadingSigns f g →
+    f.natDegree ≤ 2 → g.natDegree ≤ 2 →
+      (Compatible f g ↔ theorem21RootCountBranches f g)
+
+/-- Nonconstant low-degree Liu Theorem 2.1 package through endpoint degree
+two, stated with the ordinary branch predicate and explicit endpoint degree
+bounds. -/
+def theorem21CompatibleRootCountNatDegreeLeTwoNonconstantStatement : Prop :=
+  ∀ f g : ℝ[X], f.Splits → g.Splits → OppositeLeadingSigns f g →
+    f.natDegree ≠ 0 → g.natDegree ≠ 0 →
+      f.natDegree ≤ 2 → g.natDegree ≤ 2 →
+        (Compatible f g ↔ theorem21RootCountBranches f g)
+
 /-- Nonconstant linear-endpoint Liu Theorem 2.1 package.  This is a checked
 base case for the forward direction together with the existing low-degree
 reverse route. -/
@@ -20775,6 +20791,30 @@ theorem theorem21CompatibleRootCountNatDegreeLeOneNonconstant :
       hf hg hsgn hfdeg_ne hgdeg_ne
       (hfdeg_le.trans (by norm_num)) (hgdeg_le.trans (by norm_num))
       hbranches
+
+/-- Low-degree bounded Liu equivalence through endpoint degree two, assuming
+the isolated forward direction. -/
+theorem theorem21CompatibleRootCountNatDegreeLeTwo_of_forward
+    (hforward : theorem21CompatibleToRootCountBranchesStatement) :
+    theorem21CompatibleRootCountNatDegreeLeTwoStatement := by
+  intro f g hf hg hsgn hfdeg hgdeg
+  constructor
+  · exact hforward hf hg hsgn
+  · intro hbranches
+    exact theorem21RootCountBranchesToCompatible_of_natDegree_le_two
+      hf hg hsgn hfdeg hgdeg hbranches
+
+/-- Nonconstant low-degree bounded Liu equivalence through endpoint degree
+two, assuming the isolated nonconstant forward direction. -/
+theorem theorem21CompatibleRootCountNatDegreeLeTwoNonconstant_of_forward
+    (hforward : theorem21CompatibleToRootCountBranchesNonconstantStatement) :
+    theorem21CompatibleRootCountNatDegreeLeTwoNonconstantStatement := by
+  intro f g hf hg hsgn hfdeg_ne hgdeg_ne hfdeg hgdeg
+  constructor
+  · exact hforward hf hg hsgn hfdeg_ne hgdeg_ne
+  · intro hbranches
+    exact theorem21RootCountBranchesToCompatibleNonconstant_of_natDegree_le_two
+      hf hg hsgn hfdeg_ne hgdeg_ne hfdeg hgdeg hbranches
 
 /-- The bounded endpoint-degree-three package restricts to the ordinary
 low-degree statement with explicit endpoint degree bounds. -/
