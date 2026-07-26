@@ -20284,6 +20284,58 @@ theorem theorem21RootCountBranchesToCompatiblePredicate_of_endpoint_le_two :
   theorem21RootCountBranchesToCompatiblePredicate_of_xSubCasePackage
     positiveSplitTranslatedXSubRightFamilyDegreeCasesPredicate_of_endpoint_le_two
 
+/-- Endpoint-degree-two branch data for the current bounded Liu reverse route.
+This is the predicate-restricted branch statement with predicate `n ≤ 2` on the
+lower-degree endpoint. -/
+def theorem21RootCountBranchesEndpointLeTwo (f g : ℝ[X]) : Prop :=
+  theorem21RootCountBranchesPredicate (fun n => n ≤ 2) f g
+
+/-- Left-branch constructor for endpoint-degree-two branch data. -/
+theorem theorem21RootCountBranchesEndpointLeTwo_of_left
+    {f g : ℝ[X]} {r s : ℝ} (hleft : LeftRootCountBranch f g r s)
+    (hgdeg : g.natDegree ≤ 2) :
+    theorem21RootCountBranchesEndpointLeTwo f g :=
+  theorem21RootCountBranchesPredicate_of_left hleft hgdeg
+
+/-- Right-branch constructor for endpoint-degree-two branch data. -/
+theorem theorem21RootCountBranchesEndpointLeTwo_of_right
+    {f g : ℝ[X]} {r s : ℝ} (hright : RightRootCountBranch f g r s)
+    (hfdeg : f.natDegree ≤ 2) :
+    theorem21RootCountBranchesEndpointLeTwo f g :=
+  theorem21RootCountBranchesPredicate_of_right hright hfdeg
+
+/-- Ordinary branch data becomes endpoint-degree-two branch data when both
+endpoints have degree at most two. -/
+theorem theorem21RootCountBranchesEndpointLeTwo_of_natDegree_le_two
+    {f g : ℝ[X]} (hfdeg : f.natDegree ≤ 2) (hgdeg : g.natDegree ≤ 2)
+    (hbranches : theorem21RootCountBranches f g) :
+    theorem21RootCountBranchesEndpointLeTwo f g := by
+  rcases hbranches with ⟨r, s, hleft | hright⟩
+  · exact theorem21RootCountBranchesEndpointLeTwo_of_left hleft hgdeg
+  · exact theorem21RootCountBranchesEndpointLeTwo_of_right hright hfdeg
+
+/-- Low-endpoint reverse route: Liu's reverse direction holds for branches whose
+lower-degree endpoint has degree at most two. -/
+theorem theorem21RootCountBranchesToCompatible_of_endpoint_le_two :
+    ∀ {f g : ℝ[X]},
+      f.Splits → g.Splits → OppositeLeadingSigns f g →
+        theorem21RootCountBranchesEndpointLeTwo f g → Compatible f g := by
+  intro f g hf hg hsgn hbranches
+  exact theorem21RootCountBranchesToCompatiblePredicate_of_endpoint_le_two
+    hf hg hsgn hbranches
+
+/-- Low-degree endpoints turn the endpoint-degree-two reverse route into an
+ordinary reverse implication. -/
+theorem theorem21RootCountBranchesToCompatible_of_natDegree_le_two
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g)
+    (hfdeg : f.natDegree ≤ 2) (hgdeg : g.natDegree ≤ 2)
+    (hbranches : theorem21RootCountBranches f g) :
+    Compatible f g :=
+  theorem21RootCountBranchesToCompatible_of_endpoint_le_two hf hg hsgn
+    (theorem21RootCountBranchesEndpointLeTwo_of_natDegree_le_two
+      hfdeg hgdeg hbranches)
+
 /-- Conditional low-endpoint reverse route: once the normalized quartic/cubic
 arithmetic terminal is proved, Liu's reverse direction holds for branches whose
 lower-degree endpoint has degree at most three. -/
@@ -20345,6 +20397,15 @@ theorem theorem21RootCountBranchesEndpointLeThree_of_natDegree_le_three
   rcases hbranches with ⟨r, s, hleft | hright⟩
   · exact theorem21RootCountBranchesEndpointLeThree_of_left hleft hgdeg
   · exact theorem21RootCountBranchesEndpointLeThree_of_right hright hfdeg
+
+/-- Endpoint-degree-two branch data is a subcase of endpoint-degree-three branch
+data. -/
+theorem theorem21RootCountBranchesEndpointLeThree_of_endpoint_le_two
+    {f g : ℝ[X]} :
+    theorem21RootCountBranchesEndpointLeTwo f g →
+      theorem21RootCountBranchesEndpointLeThree f g :=
+  theorem21RootCountBranchesPredicate_of_imp fun _ hn =>
+    hn.trans (by norm_num)
 
 /-- Low-endpoint reverse route for explicit endpoint-degree-three branch data.
 -/
@@ -20613,6 +20674,30 @@ theorem
       (fun n => n ≤ 2) :=
   theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_predicate
     theorem21RootCountBranchesToCompatiblePredicate_of_endpoint_le_two
+
+/-- Nonconstant wrapper for the endpoint-degree-two reverse route. -/
+theorem theorem21RootCountBranchesToCompatibleNonconstant_of_endpoint_le_two :
+    ∀ {f g : ℝ[X]},
+      f.Splits → g.Splits → OppositeLeadingSigns f g →
+        f.natDegree ≠ 0 → g.natDegree ≠ 0 →
+          theorem21RootCountBranchesEndpointLeTwo f g → Compatible f g := by
+  intro f g hf hg hsgn hf_deg hg_deg hbranches
+  exact theorem21RootCountBranchesToCompatiblePredicateNonconstant_of_endpoint_le_two
+    hf hg hsgn hf_deg hg_deg hbranches
+
+/-- Nonconstant wrapper for the low-degree endpoint-degree-two reverse
+implication. -/
+theorem theorem21RootCountBranchesToCompatibleNonconstant_of_natDegree_le_two
+    {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
+    (hsgn : OppositeLeadingSigns f g)
+    (hfdeg_ne : f.natDegree ≠ 0) (hgdeg_ne : g.natDegree ≠ 0)
+    (hfdeg_le : f.natDegree ≤ 2) (hgdeg_le : g.natDegree ≤ 2)
+    (hbranches : theorem21RootCountBranches f g) :
+    Compatible f g :=
+  theorem21RootCountBranchesToCompatibleNonconstant_of_endpoint_le_two
+    hf hg hsgn hfdeg_ne hgdeg_ne
+    (theorem21RootCountBranchesEndpointLeTwo_of_natDegree_le_two
+      hfdeg_le hgdeg_le hbranches)
 
 /-- Conditional low-endpoint nonconstant reverse route through endpoint degree
 three, modulo the normalized monic quartic/cubic arithmetic leaf. -/
